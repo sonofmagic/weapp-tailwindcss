@@ -24,7 +24,8 @@ import {
   STYLE_REFERENCE_REQUIRED_CASES,
 } from '../types'
 
-const GLOB_TOKEN_RE = /[*?]/
+const GLOB_TOKEN_RE = /\*/
+const VIRTUAL_OUTPUT_ID_RE = /[\0?#]/
 const REGEXP_ESCAPE_RE = /[.*+?^${}()|[\]\\]/g
 
 function escapeRegExp(value: string) {
@@ -39,10 +40,18 @@ export function isOutputFilePattern(file: string) {
   return GLOB_TOKEN_RE.test(path.basename(file))
 }
 
+export function isOutputFileCandidate(file: string) {
+  return !VIRTUAL_OUTPUT_ID_RE.test(file)
+}
+
 export async function expandOutputFileEntries(files: string[]) {
   const resolved = new Set<string>()
 
   for (const file of files) {
+    if (!isOutputFileCandidate(file)) {
+      continue
+    }
+
     if (!isOutputFilePattern(file)) {
       const content = await readFileIfExists(file)
       if (content != null) {
@@ -384,6 +393,9 @@ export async function waitForOutputFilesUpdatedWithDiagnostics(
       const updatedFiles: string[] = []
       let exactFileUpdated = false
       for (const file of files) {
+        if (!isOutputFileCandidate(file)) {
+          continue
+        }
         if (isOutputFilePattern(file)) {
           continue
         }

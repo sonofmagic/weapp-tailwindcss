@@ -51,8 +51,7 @@ export async function runStyleMutation(
 
   const collectOutputCandidateMtimes = async () => {
     const resolvedCandidates = await expandOutputFileEntries(verifyOutputCandidates)
-    const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : verifyOutputCandidates
-    const entries = await Promise.all(targetCandidates.map(async candidate => [candidate, await getMtime(candidate)] as const))
+    const entries = await Promise.all(resolvedCandidates.map(async candidate => [candidate, await getMtime(candidate)] as const))
     return new Map(entries)
   }
 
@@ -65,8 +64,7 @@ export async function runStyleMutation(
     return waitFor(
       async () => {
         const resolvedCandidates = await expandOutputFileEntries(verifyOutputCandidates)
-        const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : verifyOutputCandidates
-        for (const candidate of targetCandidates) {
+        for (const candidate of resolvedCandidates) {
           const baselineMtime = baselineMtimes.get(candidate) ?? 0
           const currentMtime = await getMtime(candidate)
           if (currentMtime > baselineMtime) {
@@ -105,8 +103,7 @@ export async function runStyleMutation(
   const hotUpdateEffectiveMs = await waitFor(
     async () => {
       const resolvedCandidates = await expandOutputFileEntries(verifyOutputCandidates)
-      const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : verifyOutputCandidates
-      for (const candidate of targetCandidates) {
+      for (const candidate of resolvedCandidates) {
         const content = await readFileIfExists(candidate)
         if (content != null && hasExpectedOutput(content)) {
           resolvedOutputStyle = candidate
@@ -202,8 +199,10 @@ export async function runStyleMutation(
     rollbackEffectiveMs = await waitFor(
       async () => {
         const resolvedCandidates = await expandOutputFileEntries(verifyOutputCandidates)
-        const targetCandidates = resolvedCandidates.length > 0 ? resolvedCandidates : verifyOutputCandidates
-        for (const candidate of targetCandidates) {
+        if (resolvedCandidates.length === 0) {
+          return false
+        }
+        for (const candidate of resolvedCandidates) {
           const content = await readFileIfExists(candidate)
           if (content != null && rollbackNeedles.some(needle => content.includes(needle))) {
             return false

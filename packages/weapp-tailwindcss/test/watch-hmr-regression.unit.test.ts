@@ -63,6 +63,7 @@ import {
   createClassMutationScenario,
   collectPluginProcessMetrics,
   hasResolvedOutputFiles,
+  isOutputFileCandidate,
   readJoinedOutputFiles,
   waitForCompileSettled,
   waitForInitialWarmup,
@@ -455,6 +456,19 @@ describe('watch-hmr regression text helpers', () => {
     ])
     expect(joined).toContain('.a{}')
     expect(joined).toContain('.b{}')
+  })
+
+  it('ignores virtual style module ids when resolving output files', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-virtual-output-'))
+    tempDirs.push(tempDir)
+    const componentFile = path.join(tempDir, 'components', 'HelloWorld.vue')
+    const virtualStyleId = `${componentFile}?vue&type=style&index=0&scoped=e17ea971&lang.css`
+    await mkdir(path.dirname(componentFile), { recursive: true })
+    await writeFilePreserveEol(componentFile, '<style>.ignored{}</style>', '<style>.ignored{}</style>')
+
+    expect(isOutputFileCandidate(virtualStyleId)).toBe(false)
+    await expect(expandOutputFileEntries([virtualStyleId])).resolves.toEqual([])
+    await expect(readJoinedOutputFiles([virtualStyleId])).resolves.toBe('')
   })
 
   it('re-reads wildcard output files after hashed style assets change', async () => {
@@ -2161,6 +2175,7 @@ describe('watch-hmr regression cases', () => {
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),
     )
     expect(uniViteCase?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/main.wxss'),
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ])
     expect(uniViteCase?.outputStyleCandidates).toEqual([
@@ -2169,6 +2184,7 @@ describe('watch-hmr regression cases', () => {
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ])
     expect(uniViteCase?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/main.wxss'),
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ])
     expect(uniViteCase?.subPackageMutations?.[0]?.globalStyleCandidates).not.toContain(
@@ -2591,6 +2607,7 @@ describe('watch-hmr regression cases', () => {
         }
         else {
           expect(normalizedCandidates, watchCase.name).toEqual([
+            `/repo/demo/uni-app-vite-tailwindcss-v4/dist/dev/${platform}/main.wxss`,
             `/repo/demo/uni-app-vite-tailwindcss-v4/dist/dev/${platform}/app.wxss`,
           ])
         }
