@@ -17,6 +17,8 @@ module.exports = defineConfig({
     },
   },
   configureWebpack(config) {
+    // Node 24+ 与 Mpx/Webpack 的 filesystem cache 组合在本地全量 build 中容易拖住进程尾部。
+    config.cache = false
     config.plugins.push(
       new WeappTailwindcss({
         appType: 'mpx',
@@ -26,5 +28,8 @@ module.exports = defineConfig({
         cssEntries: [path.resolve(__dirname, 'src/app.css')],
       }),
     )
+  },
+  chainWebpack(config) {
+    config.plugins.delete('fork-ts-checker')
   },
 })
