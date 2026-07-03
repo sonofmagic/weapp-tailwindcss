@@ -55,6 +55,8 @@ const { transformJs, transformWxml, transformWxss } = createPlugins({
   tailwindcssBasedir: projectRoot,
   cssEntries: [
     path.resolve(projectRoot, 'src/app.css'),
+    path.resolve(projectRoot, 'src/sub-normal/pages/index.css'),
+    path.resolve(projectRoot, 'src/sub-independent/pages/index.css'),
   ],
   cssSourceTrace: true,
   rem2rpx: true,
