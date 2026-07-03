@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 5.1.6
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind v4 运行时候选收集对裸 `@apply` 的误判，要求 scoped/CSS module 场景通过 `@reference` 或 utilities 上下文显式声明依赖。** [`32ba3f3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/32ba3f3c789ca8f2b0db3c06f8221a36d1bcb5d1) by @sonofmagic
+
+- 🐛 **修复 uni-app Vite App WebView 下 Tailwind v4 主入口样式未注入根 CSS、并可能重复出现在页面 CSS 的问题。** [`27eb27c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/27eb27c230754d9147f291f3449c5d5dd77e988d) by @sonofmagic
+- 📦 **Dependencies** [`81450d8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/81450d897a44e58cb7104fbe7c6d30a445ef76a7)
+  → `weapp-style-injector@1.0.1`
+
 ## 5.1.5
 
 ### Patch Changes
