@@ -13,6 +13,7 @@ import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtilities, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles, isUniAppXHarmonyBundle } from '@/uni-app-x/style-asset'
+import { withUniAppXWebPreflightReset } from '@/uni-app-x/web-preflight-reset'
 import { resolveUniUtsPlatform } from '@/utils'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../shared/css-source-trace'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
@@ -171,12 +172,13 @@ function finalizeWebCss(
   css: string,
   enabled: boolean,
   webCompat: ReturnType<typeof normalizeWeappTailwindcssGeneratorOptions>['webCompat'],
-  options: { escapeMap?: Record<string, string> | undefined, safeSelectors?: boolean | undefined } = {},
+  options: { escapeMap?: Record<string, string> | undefined, safeSelectors?: boolean | undefined, uniAppXWebPreflightReset?: boolean | undefined } = {},
 ) {
   const compatCss = enabled ? transformWebCssCompat(css, webCompat) : css
-  return options.safeSelectors
+  const webCss = options.safeSelectors
     ? transformWebCssSafeSelectors(compatCss, { escapeMap: options.escapeMap })
     : compatCss
+  return withUniAppXWebPreflightReset(webCss, options.uniAppXWebPreflightReset === true)
 }
 
 export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext): Plugin {
@@ -262,6 +264,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             transformCss: css => finalizeWebCss(css, generatorBranch.isWeb, generatorOptions.webCompat, {
               escapeMap: opts.escapeMap,
               safeSelectors: shouldApplyWebviewSafeSelectors,
+              uniAppXWebPreflightReset: opts.appType === 'uni-app-x' && generatorBranch.isWeb,
             }),
             debug,
           })
@@ -276,6 +279,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             transformCss: css => finalizeWebCss(css, generatorBranch.isWeb, generatorOptions.webCompat, {
               escapeMap: opts.escapeMap,
               safeSelectors: shouldApplyWebviewSafeSelectors,
+              uniAppXWebPreflightReset: opts.appType === 'uni-app-x' && generatorBranch.isWeb,
             }),
             debug,
             onUpdate: opts.onUpdate,
@@ -383,6 +387,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
               {
                 escapeMap: opts.escapeMap,
                 safeSelectors: shouldApplyWebviewSafeSelectors,
+                uniAppXWebPreflightReset: opts.appType === 'uni-app-x' && generatorBranch.isWeb,
               },
             ))
             output.source = nextCss
@@ -440,6 +445,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
               ? finalizeWebCss(rawSource, true, generatorOptions.webCompat, {
                   escapeMap: opts.escapeMap,
                   safeSelectors: shouldApplyWebviewSafeSelectors,
+                  uniAppXWebPreflightReset: opts.appType === 'uni-app-x' && generatorBranch.isWeb,
                 })
               : (await opts.styleHandler(rawSource, cssHandlerOptions)).css
           ))

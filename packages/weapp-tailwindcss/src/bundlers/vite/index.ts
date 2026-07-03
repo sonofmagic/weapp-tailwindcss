@@ -25,6 +25,7 @@ import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/ta
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { createUniAppXPlugins } from '@/uni-app-x/vite'
+import { withUniAppXWebPreflightReset } from '@/uni-app-x/web-preflight-reset'
 import { resolveUniUtsPlatform } from '@/utils'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
@@ -839,7 +840,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     const isUniAppViteWebviewPlatform = opts.appType === 'uni-app-vite'
       && isUniAppViteWebviewStylePlatform(resolveViteStylePlatform())
     const shouldApplyWebviewCssCompat = currentGeneratorBranch.isWeb || isUniAppViteWebviewPlatform
-    const outputCss = removeScopedTailwindPreflightCss(
+    const outputCss = withUniAppXWebPreflightReset(removeScopedTailwindPreflightCss(
       shouldApplyWebviewCssCompat
         ? applyUniAppViteWebviewCssCompat(finalizedCss, {
             compat: currentGeneratorOptions.webCompat ?? true,
@@ -847,7 +848,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
             safeSelectors: isUniAppViteWebviewPlatform,
           })
         : finalizedCss,
-    )
+    ), opts.appType === 'uni-app-x' && currentGeneratorBranch.isWeb)
     const tracedCss = annotateCssSourceTrace(outputCss, {
       opts,
       tokenSources: createCssTokenSourceMap(getSourceCandidateSourcesForEntries(undefined), opts),

@@ -557,7 +557,18 @@ export const webCases: WebCase[] = [
     markerAnchor: '<BindClass />',
     initialCssPath: '/main.css?direct',
     hmrCssPath: '/main.css?direct',
-    initialCssContains: [/:root,\s*:host/, '--text-xl', '--color-white', /background-color:\s*#f21903/],
+    initialCssContains: [/uni-page-body,\s*\.tw-root,\s*wx-root-portal-content,\s*:host/, '--text-xl', '--color-white', /background-color:\s*#f21903/, 'weapp-tailwindcss uni-app-x web preflight reset', 'uni-app uni-view'],
+    initialRuntimeStyles: [
+      {
+        selector: 'uni-app uni-view',
+        styles: {
+          borderBottomWidth: '0px',
+          borderLeftWidth: '0px',
+          borderRightWidth: '0px',
+          borderTopWidth: '0px',
+        },
+      },
+    ],
     workflow: uniAppXHBuilderXWorkflow,
     hmrSteps: [
       {
