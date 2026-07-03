@@ -1,3 +1,9 @@
+<script setup lang="uts">
+defineOptions({
+	styleIsolation: 'app',
+})
+</script>
+
 <template>
 	<view class="bg-independent-subpackage-marker">独立分包</view>
 </template>

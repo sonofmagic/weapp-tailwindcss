@@ -1,3 +1,9 @@
+<script setup lang="uts">
+defineOptions({
+	styleIsolation: 'app',
+})
+</script>
+
 <script lang="uts">
 	import WeappTailwindcss from '../../components/WeappTailwindcss.uvue'
 	import BindClass from '../../components/BindClass.uvue'
