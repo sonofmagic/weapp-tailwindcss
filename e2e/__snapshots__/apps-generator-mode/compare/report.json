@@ -11289,7 +11289,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 420089,
+      "bytes": 419339,
       "selectors": [
         "*",
         ".-bg-conic-180",
@@ -11328,7 +11328,6 @@
         ".bg-radial-\\[at_50\\%_75\\%\\]",
         ".bg-white",
         ".border",
-        ".container",
         ".dark\\:bg-zinc-900.theme-dark",
         ".dark\\:bg-zinc-950.theme-dark",
         ".dark\\:text-zinc-50.theme-dark",

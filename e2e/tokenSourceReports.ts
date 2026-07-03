@@ -269,11 +269,13 @@ export async function collectTokenSourceReports(projectRoot: string, classList?:
     }
     tokens.sort()
     const uniqueTokens = [...new Set(tokens)]
-    sourceReports.push({
-      file: normalizedSourceFile,
-      count: uniqueTokens.length,
-      tokens: uniqueTokens,
-    })
+    if (uniqueTokens.length > 0) {
+      sourceReports.push({
+        file: normalizedSourceFile,
+        count: uniqueTokens.length,
+        tokens: uniqueTokens,
+      })
+    }
     collector.remove(absolutePath)
   }
 

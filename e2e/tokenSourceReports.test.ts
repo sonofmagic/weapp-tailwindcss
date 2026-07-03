@@ -10,7 +10,7 @@ async function createTempProject() {
 }
 
 describe('token source reports', () => {
-  it('records extracted final tokens for each scanned source file', async () => {
+  it('records extracted final tokens for scanned source files with matches', async () => {
     const root = await createTempProject()
     await fs.mkdir(path.resolve(root, 'src/pages'), { recursive: true })
     await fs.mkdir(path.resolve(root, 'packageB/pages'), { recursive: true })
@@ -36,19 +36,9 @@ describe('token source reports', () => {
 
     expect(collection?.sourceReports).toEqual([
       {
-        file: 'app.css',
-        count: 0,
-        tokens: [],
-      },
-      {
         file: 'packageB/pages/index.wxml',
         count: 1,
         tokens: ['rotate-y-90'],
-      },
-      {
-        file: 'src/pages/empty.ts',
-        count: 0,
-        tokens: [],
       },
       {
         file: 'src/pages/index.vue',
@@ -61,7 +51,7 @@ describe('token source reports', () => {
       token: 'bg-[#123456]',
       sources: ['src/pages/index.vue'],
     })
-    expect(formatTokenSourceFileReport(collection!.sourceReports[3]!)).toBe([
+    expect(formatTokenSourceFileReport(collection!.sourceReports[1]!)).toBe([
       '{',
       '  "file": "src/pages/index.vue",',
       '  "count": 2,',

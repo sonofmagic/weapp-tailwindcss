@@ -58,6 +58,7 @@ const localHBuilderXProjectNames = new Set(
     .filter(item => item.hbuilderxLocal)
     .map(item => item.name),
 )
+const cleanedSnapshotDirs = new Set<string>()
 
 const MINI_PROGRAM_CSS_PATTERN = '**/*.{wx,ac,jx,tt,q,c,ty}ss'
 const WEB_CSS_PATTERN = '**/*.css'
@@ -77,6 +78,24 @@ function filterCompareProjects(projects: CompareProject[]) {
 
   const pattern = new RegExp(filter)
   return projects.filter(project => pattern.test(project.name))
+}
+
+function isUpdatingSnapshots() {
+  return expect.getState().snapshotState?.snapshotUpdateState === 'all'
+}
+
+async function clearSnapshotDirOnUpdate(...segments: string[]) {
+  if (!isUpdatingSnapshots()) {
+    return
+  }
+
+  const snapshotDir = path.resolve(__dirname, '__snapshots__', ...segments)
+  if (cleanedSnapshotDirs.has(snapshotDir)) {
+    return
+  }
+
+  cleanedSnapshotDirs.add(snapshotDir)
+  await fs.rm(snapshotDir, { force: true, recursive: true })
 }
 
 const miniProgramProjects = E2E_PROJECTS
@@ -788,6 +807,7 @@ async function createProjectReport(
 }
 
 async function expectReportSnapshot(report: AppsGeneratorCompareReportItem[]) {
+  await clearSnapshotDirOnUpdate('apps-generator-mode', 'compare')
   const jsonSnapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'compare', 'report.json')
   const markdownSnapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'compare', 'report.md')
   const chineseMarkdownSnapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'compare', 'report.zh-CN.md')
@@ -829,6 +849,10 @@ function shouldNormalizeTaroWebpackV4IndependentNutuiNoise(project: CompareProje
     && normalizeOutputCssFileName(fileName) === 'sub-independent/pages/index.wxss'
 }
 
+function shouldNormalizeTaroWebpackReactWebCompactContainerNoise(project: CompareProject) {
+  return project.name === 'taro-webpack-react-tailwindcss-v4' && project.platform === 'web-compact'
+}
+
 function shouldNormalizeProjectCssSnapshots(project: CompareProject) {
   return project.name === 'taro-webpack-react-tailwindcss-v4'
 }
@@ -862,11 +886,35 @@ function removeTaroWebpackV4IndependentNutuiNoise(css: string) {
   }
 }
 
+function removeTaroWebpackReactWebCompactContainerNoise(css: string) {
+  try {
+    const root = postcss.parse(css)
+    root.walkRules((rule) => {
+      if ((rule.selectors ?? [rule.selector]).every(selector => selector === '.container')) {
+        rule.remove()
+      }
+    })
+    root.walkAtRules((rule) => {
+      if (rule.nodes?.length === 0) {
+        rule.remove()
+      }
+    })
+    return normalizeCssSnapshot(root.toString())
+  }
+  catch {
+    return css
+  }
+}
+
 function normalizeProjectCssSnapshot(project: CompareProject, snapshot: GeneratorCssSnapshot) {
-  const normalized = normalizeCssSnapshot(snapshot.content)
-  return shouldNormalizeTaroWebpackV4IndependentNutuiNoise(project, snapshot.fileName)
-    ? removeTaroWebpackV4IndependentNutuiNoise(normalized)
-    : normalized
+  let normalized = normalizeCssSnapshot(snapshot.content)
+  if (shouldNormalizeTaroWebpackV4IndependentNutuiNoise(project, snapshot.fileName)) {
+    normalized = removeTaroWebpackV4IndependentNutuiNoise(normalized)
+  }
+  if (shouldNormalizeTaroWebpackReactWebCompactContainerNoise(project)) {
+    normalized = removeTaroWebpackReactWebCompactContainerNoise(normalized)
+  }
+  return normalized
 }
 
 function formatAllowedPlatforms(platforms: string[]) {
@@ -941,6 +989,7 @@ async function expectCssOutputSnapshot(
   project: CompareProject,
   generatorResult: GeneratorBuildResult,
 ) {
+  await clearSnapshotDirOnUpdate('apps-generator-mode', 'css-output', project.platform, project.name)
   const snapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'css-output', path.join(project.platform, project.name, 'README.md'))
   await expectNormalizedReportSnapshot(snapshotPath, createCssOutputSnapshot(project, generatorResult))
   for (const snapshot of createStableCssSnapshots(generatorResult, project.cssFile)) {
