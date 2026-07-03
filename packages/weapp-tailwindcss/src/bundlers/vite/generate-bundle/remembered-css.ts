@@ -172,7 +172,7 @@ export function collectRememberedCssReplayGroups(
   const groups = new Map<string, Array<{ key: string, remembered: RememberedCssSource }>>()
   for (const [key, remembered] of sources ?? []) {
     const cleanSourceFile = remembered.sourceFile.replace(/[?#].*$/, '')
-    const outputFile = CSS_SOURCE_OUTPUT_EXT_RE.test(cleanSourceFile)
+    const resolvedOutputFile = CSS_SOURCE_OUTPUT_EXT_RE.test(cleanSourceFile)
       ? resolveViteCssPipelineOutputFileFromSourceFile(
           remembered.sourceFile,
           opts,
@@ -193,6 +193,12 @@ export function collectRememberedCssReplayGroups(
           styleOutputExtension,
           styleOutputFiles,
         )
+    const rememberedOutputFile = remembered.outputFile.replace(/[?#].*$/, '')
+    const outputFile = opts.cssMatcher(rememberedOutputFile)
+      && !normalizeOutputPathKey(rememberedOutputFile).includes('/')
+      && normalizeOutputPathKey(rememberedOutputFile) !== normalizeOutputPathKey(resolvedOutputFile.replace(/[?#].*$/, ''))
+      ? remembered.outputFile
+      : resolvedOutputFile
     const outputKey = normalizeOutputPathKey(outputFile)
     const group = groups.get(outputKey) ?? []
     group.push({ key, remembered })

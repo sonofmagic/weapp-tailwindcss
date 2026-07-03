@@ -82,6 +82,16 @@ function sameStringList(first: string[] | undefined, second: string[] | undefine
   return first.every((item, index) => item === second[index])
 }
 
+function collectConfiguredCssEntries(options: UserDefinedOptions) {
+  const runtimeCssEntries = (options.tailwindcssRuntimeOptions as any)?.tailwindcss?.v4?.cssEntries
+  const entries = [
+    ...(Array.isArray(options.cssEntries) ? options.cssEntries : []),
+    ...(Array.isArray(options.tailwindcss?.v4?.cssEntries) ? options.tailwindcss.v4.cssEntries : []),
+    ...(Array.isArray(runtimeCssEntries) ? runtimeCssEntries : []),
+  ].filter((item): item is string => typeof item === 'string' && item.length > 0)
+  return entries.length > 0 ? [...new Set(entries)] : undefined
+}
+
 function normalizeViteStylePlatform(value: string | undefined, appType: UserDefinedOptions['appType']) {
   return normalizeFrameworkStylePlatform(value, appType)
 }
@@ -129,7 +139,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const hasExplicitAppType = typeof options.appType === 'string' && options.appType.trim().length > 0
   const hasExplicitTailwindcssBasedir = typeof options.tailwindcssBasedir === 'string'
     && options.tailwindcssBasedir.trim().length > 0
-  const rawCssEntries = Array.isArray(options.cssEntries) ? [...options.cssEntries] : undefined
+  const rawCssEntries = collectConfiguredCssEntries(options)
   const opts = getCompilerContext({
     ...options,
     __internalDeferMissingCssEntriesWarning: true,

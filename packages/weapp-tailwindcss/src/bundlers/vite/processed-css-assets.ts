@@ -786,6 +786,23 @@ function shouldUseCssAssetAsMainInjectionTarget(
       && normalizeOutputPathKey(record.outputFile) === fileKey,
     )
   }
+  const rootWebOutputTargets = records
+    .map(record => typeof record.outputFile === 'string' ? normalizeOutputPathKey(record.outputFile) : undefined)
+    .filter((outputFile): outputFile is string =>
+      typeof outputFile === 'string'
+      && isRootStyleOutputFile(outputFile)
+      && !isMiniProgramStyleOutputFile(outputFile),
+    )
+  const matchedRootWebOutputTargets = rootWebOutputTargets.filter(outputFile =>
+    opts.mainCssChunkMatcher(outputFile, opts.appType),
+  )
+  if (
+    opts.appType === 'uni-app-vite'
+    && !isMiniProgramStyleOutputFile(file)
+    && matchedRootWebOutputTargets.length > 0
+  ) {
+    return matchedRootWebOutputTargets.includes(fileKey)
+  }
   const explicitRootTargets = records
     .filter(record => record.injectIntoMain === true)
     .map(record => typeof record.outputFile === 'string' ? normalizeOutputPathKey(record.outputFile) : undefined)
@@ -904,6 +921,9 @@ function removeCoveredInjectedSourceAssets(
         continue
       }
       if (candidateIsRootWebStyle && !targetIsRootWebStyle) {
+        continue
+      }
+      if (candidateIsRootWebStyle && !isRecordFile) {
         continue
       }
       if (candidateIsRootWebStyle) {
@@ -1315,6 +1335,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
       ...uncoveredImportedViteCssResults.map(record => record.css),
     ]
     nextCss = removeCssCoveredByImportedViteResults(nextCss, uncoveredImportedViteCssResults.map(record => record.css))
+    const targetViteCssResults: typeof viteCssResults = []
     for (const record of viteCssResults) {
       if (!isRootStyleOutputFile(file)) {
         if (
@@ -1330,6 +1351,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
       if (isViteProcessedCssResultImported(record, importedStyleFiles)) {
         continue
       }
+      targetViteCssResults.push(record)
       let css = stripBundlerGeneratedCssMarkers(record.css).trim()
       css = removeCssCoveredByImportedViteResults(css, importedCssSources).trim()
       if (css.length === 0) {
@@ -1386,7 +1408,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
       options.onUpdate?.(file, originalSource, nextCss)
       options.debug?.('inject vite-processed css into main css asset: %s bytes=%d', file, nextCss.length)
     }
-    const removedSources = removeCoveredInjectedSourceAssets(bundle, file, nextCss, viteCssResults, options)
+    const removedSources = removeCoveredInjectedSourceAssets(bundle, file, nextCss, targetViteCssResults, options)
     if (nextCss === originalSource && removedSources === 0) {
       continue
     }

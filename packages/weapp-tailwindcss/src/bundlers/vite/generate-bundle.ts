@@ -247,17 +247,36 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       hasOmittedKnownFiles,
     })
     const configuredTailwindV4CssSourceEntriesForScope = getConfiguredTailwindV4CssSourceEntries()
+    const normalizeSystemAliasPathKey = (file: string) =>
+      file.startsWith('/private/var/') ? file.slice('/private'.length) : file
+    const normalizeConfiguredTailwindV4CssEntryFileKey = (file: string) => {
+      const cleanFile = file.replace(/[?#].*$/, '')
+      return normalizeSystemAliasPathKey(normalizeOutputPathKey(path.isAbsolute(cleanFile)
+        ? path.resolve(cleanFile)
+        : path.resolve(opts.tailwindcssBasedir ?? rootDir, cleanFile)))
+    }
+    const runtimeTailwindcssOptions = resolveTailwindcssOptions(opts.tailwindcssRuntimeOptions)
+    const tailwindRuntimeOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
     const configuredTailwindV4CssSourceFileKeysForScope = new Set(
-      configuredTailwindV4CssSourceEntriesForScope.map(entry =>
-        normalizeOutputPathKey(entry.file.replace(/[?#].*$/, '')),
-      ),
+      configuredTailwindV4CssSourceEntriesForScope
+        .map(entry => normalizeConfiguredTailwindV4CssEntryFileKey(entry.file)),
+    )
+    const configuredTailwindV4ExplicitCssEntryFileKeysForScope = new Set(
+      [
+        ...(Array.isArray(opts.cssEntries) ? opts.cssEntries : []),
+        ...(Array.isArray(opts.tailwindcss?.v4?.cssEntries) ? opts.tailwindcss.v4.cssEntries : []),
+        ...(Array.isArray(runtimeTailwindcssOptions?.v4?.cssEntries) ? runtimeTailwindcssOptions.v4.cssEntries : []),
+        ...(Array.isArray(tailwindRuntimeOptions?.v4?.cssEntries) ? tailwindRuntimeOptions.v4.cssEntries : []),
+      ]
+        .filter((file): file is string => typeof file === 'string' && file.length > 0)
+        .map(normalizeConfiguredTailwindV4CssEntryFileKey),
     )
     const resolveUniAppViteWebviewRootCssInjectionTarget = (sourceFile: string | undefined, outputFile: string) => {
       if (
         opts.appType !== 'uni-app-vite'
         || !outputFile.replace(/[?#].*$/, '').endsWith('.css')
         || typeof sourceFile !== 'string'
-        || !configuredTailwindV4CssSourceFileKeysForScope.has(normalizeOutputPathKey(sourceFile.replace(/[?#].*$/, '')))
+        || !configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(sourceFile))
       ) {
         return
       }
@@ -275,6 +294,42 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         return
       }
       return rootCssFiles.length === 1 ? rootCssFiles[0] : undefined
+    }
+    const resolveConfiguredTailwindV4CssEntryOutputFile = (sourceFile: string) =>
+      resolveViteCssPipelineOutputFile(sourceFile, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension, bundleFiles)
+    const selectUniAppViteWebviewRootCssSourceEntry = (
+      outputFile: string,
+      entries: ReturnType<typeof getConfiguredTailwindV4CssSourceEntries>,
+    ) => {
+      if (
+        opts.appType !== 'uni-app-vite'
+        || !isWebGeneratorTarget
+        || !opts.cssMatcher(outputFile)
+        || normalizeOutputPathKey(outputFile.replace(/[?#].*$/, '')).includes('/')
+      ) {
+        return undefined
+      }
+      const generationEntries = entries.filter(entry => hasTailwindGenerationSource(entry.source))
+      if (generationEntries.length <= 1) {
+        return generationEntries[0]
+      }
+      const rootOutputEntries = generationEntries.filter((entry) => {
+        const entryOutputFile = normalizeOutputPathKey(resolveConfiguredTailwindV4CssEntryOutputFile(entry.file).replace(/[?#].*$/, ''))
+        return !entryOutputFile.includes('/')
+      })
+      if (rootOutputEntries.length === 1) {
+        return rootOutputEntries[0]
+      }
+      if (currentSubpackageRoots) {
+        const mainPackageEntries = generationEntries.filter((entry) => {
+          const entryOutputFile = resolveConfiguredTailwindV4CssEntryOutputFile(entry.file)
+          return !isSubpackageOutputFile(entryOutputFile, currentSubpackageRoots)
+        })
+        if (mainPackageEntries.length === 1) {
+          return mainPackageEntries[0]
+        }
+      }
+      return undefined
     }
     const {
       createScopedSourceCandidateGetter,
@@ -644,7 +699,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           }))
         }
         rememberedCssSources = rememberedCssSources.filter((remembered) => {
-          if (!configuredTailwindV4CssSourceFileKeysForScope.has(normalizeOutputPathKey(remembered.sourceFile.replace(/[?#].*$/, '')))) {
+          if (!configuredTailwindV4CssSourceFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(remembered.sourceFile))) {
             return true
           }
           const matchedOutputFile = resolveMatchedOutputFileForCurrentAsset(remembered.sourceFile)
@@ -676,7 +731,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         if (
           isTemporaryCssAssetFile(outputFile)
           && rememberedCssSources.some(remembered =>
-            configuredTailwindV4CssSourceFileKeysForScope.has(normalizeOutputPathKey(remembered.sourceFile.replace(/[?#].*$/, ''))),
+            configuredTailwindV4CssSourceFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(remembered.sourceFile)),
           )
         ) {
           rememberedCssSources = []
@@ -717,6 +772,16 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             configuredTailwindV4CssSourceEntries.map(entry => [entry.file, entry.source] as [string, string]),
             debug,
           )
+          const inferredWebviewRootSourceEntry = inferredSourceStyle
+            ? undefined
+            : selectUniAppViteWebviewRootCssSourceEntry(outputFile, configuredTailwindV4CssSourceEntries)
+          const inferredWebviewRootSourceStyle = inferredWebviewRootSourceEntry
+            ? {
+                outputFile,
+                rawSource: inferredWebviewRootSourceEntry.source,
+                sourceFile: inferredWebviewRootSourceEntry.file,
+              }
+            : undefined
           const inferredOriginalSourceStyle = inferredSourceStyle
             ?? (
               outputFile === file
@@ -732,6 +797,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                     debug,
                   )
             )
+            ?? inferredWebviewRootSourceStyle
           if (inferredOriginalSourceStyle) {
             outputFile = resolveMatchedOutputFileForCurrentAsset(inferredOriginalSourceStyle.sourceFile) ?? outputFile
             activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
@@ -796,7 +862,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           rememberedCssSource
           && viteProcessedCssAsset
           && outputCssHandlerOptions.isMainChunk !== true
-          && configuredTailwindV4CssSourceFileKeysForScope.has(normalizeOutputPathKey(rememberedCssSource.sourceFile.replace(/[?#].*$/, '')))
+          && configuredTailwindV4CssSourceFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(rememberedCssSource.sourceFile))
         ) {
           const matchedOutputFile = resolveMatchedOutputFileForCurrentAsset(rememberedCssSource.sourceFile)
           if (matchedOutputFile && normalizeOutputPathKey(matchedOutputFile) !== normalizeOutputPathKey(outputFile)) {
@@ -840,9 +906,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && hasTailwindApplyDirective(rememberedCssSource.rawSource)
         const hasRememberedTailwindGenerationSource = rememberedCssSource != null
           && hasTailwindGenerationSource(rememberedCssSource.rawSource)
-        const usesConfiguredTailwindV4FallbackSource = rememberedCssSource != null
-          && normalizeOutputPathKey(rememberedCssSource.outputFile) === normalizeOutputPathKey(outputFile)
-          && normalizeOutputPathKey(rememberedCssSource.sourceFile.replace(/[?#].*$/, '')) !== normalizeOutputPathKey(file)
         const hasSameOutputRememberedTailwindGenerationSource = hasRememberedTailwindGenerationSource
           && rememberedCssSource != null
           && normalizeOutputPathKey(rememberedCssSource.outputFile) === normalizeOutputPathKey(outputFile)
@@ -856,10 +919,16 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const generatorSourceFile = vitePipelineCssAsset
           ? rememberedCssSource?.sourceFile ?? assetSourceFile
           : assetSourceFile
+        const webviewRootCssInjectionTarget = vitePipelineCssAsset
+          ? resolveUniAppViteWebviewRootCssInjectionTarget(generatorSourceFile, outputFile)
+          : undefined
+        const usesConfiguredTailwindV4FallbackSource = rememberedCssSource != null
+          && normalizeOutputPathKey(rememberedCssSource.outputFile) === normalizeOutputPathKey(outputFile)
+          && normalizeOutputPathKey(rememberedCssSource.sourceFile.replace(/[?#].*$/, '')) !== normalizeOutputPathKey(file)
         if (
           vitePipelineCssAsset
           && outputCssHandlerOptions.isMainChunk !== true
-          && configuredTailwindV4CssSourceFileKeysForScope.has(normalizeOutputPathKey(generatorSourceFile.replace(/[?#].*$/, '')))
+          && configuredTailwindV4CssSourceFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(generatorSourceFile))
         ) {
           usedConfiguredTailwindV4CssSourceFiles.add(normalizeOutputPathKey(generatorSourceFile))
           temporaryCssAssetSourceResolver.markUsed(generatorSourceFile)
@@ -870,7 +939,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               isMainChunk: resolvedFromTemporaryCssAsset ? false : outputCssHandlerOptions.isMainChunk,
             }
           : getCssHandlerOptions(file)
-        const generatorCssEntries = configuredTailwindV4CssSourceFileKeysForScope.has(normalizeOutputPathKey(generatorSourceFile.replace(/[?#].*$/, '')))
+        const generatorCssEntries = configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(generatorSourceFile))
           ? [generatorSourceFile]
           : opts.cssEntries
         const generatorCssHandlerOptions = {
@@ -927,10 +996,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && useIncrementalMode
           && state.generatorCandidateSignature !== undefined
           && generatorCandidatesChanged
-        const webviewRootCssInjectionTarget = vitePipelineCssAsset
-          ? resolveUniAppViteWebviewRootCssInjectionTarget(generatorSourceFile, outputFile)
-          : undefined
         const vitePipelineCssInjectionOutputFile = webviewRootCssInjectionTarget ?? outputFile
+        const shouldRecordVitePipelineCssByOutput = normalizeOutputPathKey(vitePipelineCssInjectionOutputFile) === normalizeOutputPathKey(outputFile)
         const shouldInjectVitePipelineCssIntoMain = vitePipelineCssAsset
           && outputCssHandlerOptions.isMainChunk !== true
           && (
@@ -979,10 +1046,19 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           applyCssResult(nextCss)
           markCssAssetProcessed?.(originalSource, outputFile)
           recordCssAssetResult?.(outputFile, nextCss)
-          recordViteProcessedCssAssetResult?.(vitePipelineCssInjectionOutputFile, nextCss, {
-            injectIntoMain: outputCssHandlerOptions.isMainChunk ? false : shouldInjectVitePipelineCssIntoMain,
-            outputFile: vitePipelineCssInjectionOutputFile,
-          })
+          if (vitePipelineCssAsset && rememberedCssSource) {
+            rememberCssSource?.({
+              outputFile: vitePipelineCssInjectionOutputFile,
+              rawSource: generatorRawSource,
+              sourceFile: generatorSourceFile,
+            })
+          }
+          if (shouldRecordVitePipelineCssByOutput) {
+            recordViteProcessedCssAssetResult?.(vitePipelineCssInjectionOutputFile, nextCss, {
+              injectIntoMain: outputCssHandlerOptions.isMainChunk ? false : shouldInjectVitePipelineCssIntoMain,
+              outputFile: vitePipelineCssInjectionOutputFile,
+            })
+          }
           if (vitePipelineCssAsset && shouldInjectVitePipelineCssIntoMain) {
             recordViteProcessedCssAssetResult?.(file, nextCss, {
               injectIntoMain: shouldInjectVitePipelineCssIntoMain,
@@ -1046,7 +1122,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               markCssAssetProcessed?.(originalSource, outputFile)
               if (rememberedCssSources.length <= 1) {
                 rememberCssSource?.({
-                  outputFile,
+                  outputFile: vitePipelineCssInjectionOutputFile,
                   rawSource: generatorRawSource,
                   sourceFile: generatorSourceFile,
                 }, rememberedCssRuntimeSignature)
@@ -1111,10 +1187,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                     transformRuntime.add(candidate)
                   }
                   recordCssAssetResult?.(outputFile, tracedCss)
-                  recordViteProcessedCssAssetResult?.(vitePipelineCssInjectionOutputFile, tracedCss, {
-                    injectIntoMain: outputCssHandlerOptions.isMainChunk ? false : shouldInjectVitePipelineCssIntoMain,
-                    outputFile: vitePipelineCssInjectionOutputFile,
-                  })
+                  if (shouldRecordVitePipelineCssByOutput) {
+                    recordViteProcessedCssAssetResult?.(vitePipelineCssInjectionOutputFile, tracedCss, {
+                      injectIntoMain: outputCssHandlerOptions.isMainChunk ? false : shouldInjectVitePipelineCssIntoMain,
+                      outputFile: vitePipelineCssInjectionOutputFile,
+                    })
+                  }
                   if (vitePipelineCssAsset && shouldInjectVitePipelineCssIntoMain) {
                     recordViteProcessedCssAssetResult?.(file, tracedCss, {
                       injectIntoMain: shouldInjectVitePipelineCssIntoMain,

@@ -3759,8 +3759,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         const actual = await importOriginal<typeof import('@/generator')>()
         return {
           ...actual,
-          createWeappTailwindcssGenerator: vi.fn(() => ({
-            generate: generateMock,
+          createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
+            generate: vi.fn((options: { candidates: Set<string>, target: string }) => generateMock(options, source)),
           })),
         }
       })
@@ -3840,6 +3840,10 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           ...createRollupAsset(''),
           fileName: 'app.css',
         },
+        'app-service.js': {
+          ...createRollupChunk('function render(){return "template-corpus-card text-[45rpx] space-y-2 bg-radial"}'),
+          fileName: 'app-service.js',
+        },
       }
       const generateBundle = getGenerateBundleHandler(postPlugin)
       await generateBundle?.call({ ...postPlugin, addWatchFile: vi.fn() }, {} as any, bundle)
@@ -3852,6 +3856,239 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       expect(appCss).toContain('.space-y-2')
       expect(appCss).toContain('radial-gradient')
       expect(appCss).not.toContain('.text-_b45rpx_B')
+    }
+    finally {
+      if (previousPlatform === undefined) {
+        delete process.env.UNI_PLATFORM
+      }
+      else {
+        process.env.UNI_PLATFORM = previousPlatform
+      }
+      if (previousUtsPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = previousUtsPlatform
+      }
+    }
+  }, TEST_TIMEOUT_MS)
+
+  it('syncs nested cssEntries for uni-app vite app-plus webview css replay', async () => {
+    const previousPlatform = process.env.UNI_PLATFORM
+    const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_PLATFORM = 'app-plus'
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    try {
+      const cssByCandidate = new Map([
+        ['bg-[#102938]', '.bg-initial-app{background-color:#102938}'],
+        ['bg-[#3b0764]', '.bg-hmr-app{background-color:#3b0764}'],
+        ['text-[#fef08a]', '.text-hmr-app{color:#fef08a}'],
+        ['h-[41px]', '.h-hmr-app{height:41px}'],
+        ['mt-[19px]', '.mt-hmr-app{margin-top:19px}'],
+        ['bg-normal-subpackage-marker', '.bg-normal-subpackage-marker{background-color:#2563eb}'],
+        ['bg-independent-subpackage-marker', '.bg-independent-subpackage-marker{background-color:#dc2626}'],
+      ])
+      const generateMock = vi.fn(async (options: { candidates: Set<string>, target: string }, source: { css: string }) => {
+        const allowedCandidates = source.css.includes('source:main')
+          ? new Set(['bg-[#102938]', 'bg-[#3b0764]', 'text-[#fef08a]', 'h-[41px]', 'mt-[19px]'])
+          : source.css.includes('source:normal')
+            ? new Set(['bg-normal-subpackage-marker'])
+            : source.css.includes('source:independent')
+              ? new Set(['bg-independent-subpackage-marker'])
+              : new Set<string>()
+        const css = [...options.candidates]
+          .sort()
+          .filter(candidate => allowedCandidates.has(candidate))
+          .map(candidate => cssByCandidate.get(candidate))
+          .filter((rule): rule is string => Boolean(rule))
+          .join('\n')
+        return {
+          css,
+          rawCss: css,
+          target: options.target,
+          classSet: new Set(options.candidates),
+          rawCandidates: new Set(options.candidates),
+          dependencies: [],
+          sources: [],
+          root: null,
+          version: 4,
+        }
+      })
+      vi.doMock('@/generator', async (importOriginal) => {
+        const actual = await importOriginal<typeof import('@/generator')>()
+        return {
+          ...actual,
+          createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
+            generate: vi.fn((options: { candidates: Set<string>, target: string }) => generateMock(options, source)),
+          })),
+        }
+      })
+
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-app-plus-nested-css-'))
+      createdDirs.push(root)
+      await mkdir(path.join(root, 'pages/index'), { recursive: true })
+      await mkdir(path.join(root, 'sub-normal/pages'), { recursive: true })
+      await mkdir(path.join(root, 'sub-independent/pages'), { recursive: true })
+      const mainCssFile = path.join(root, 'main.css')
+      const normalCssFile = path.join(root, 'sub-normal/pages/index.css')
+      const independentCssFile = path.join(root, 'sub-independent/pages/index.css')
+      const cssEntries = [mainCssFile, normalCssFile, independentCssFile]
+      const rawMainCss = '/* source:main */\n@import "tailwindcss" source(none);\n@source "./pages/**/*.{vue,js,ts}";'
+      const rawNormalCss = '/* source:normal */\n@import "tailwindcss" source(none);\n@source "./index.vue";'
+      const rawIndependentCss = '/* source:independent */\n@import "tailwindcss" source(none);\n@source "./index.vue";'
+      await writeFile(mainCssFile, rawMainCss, 'utf8')
+      await writeFile(normalCssFile, rawNormalCss, 'utf8')
+      await writeFile(independentCssFile, rawIndependentCss, 'utf8')
+      const pageFile = path.join(root, 'pages/index/index.vue')
+      await writeFile(pageFile, '<template><view class="bg-[#102938]">initial</view></template>', 'utf8')
+      await writeFile(path.join(root, 'sub-normal/pages/index.vue'), '<template><view class="bg-normal-subpackage-marker">normal</view></template>', 'utf8')
+      await writeFile(path.join(root, 'sub-independent/pages/index.vue'), '<template><view class="bg-independent-subpackage-marker">independent</view></template>', 'utf8')
+      const runtimeSet = new Set(cssByCandidate.keys())
+      const tailwindcss = {
+        cwd: root,
+        v4: {
+          base: root,
+          cssEntries,
+        },
+      }
+      setCurrentContext(createContext({
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'app.css'),
+        tailwindcss: {
+          v4: {
+            cssEntries,
+          },
+        },
+        tailwindcssBasedir: root,
+        tailwindcssRuntimeOptions: {
+          projectRoot: root,
+          tailwindcss,
+        },
+        tailwindRuntime: {
+          getClassSet: vi.fn(async () => runtimeSet),
+          getClassSetSync: vi.fn(() => runtimeSet),
+          majorVersion: 4,
+          extract: vi.fn(async () => ({ classSet: runtimeSet })),
+          options: {
+            projectRoot: root,
+            tailwindcss,
+          },
+        },
+      }))
+
+      const plugins = WeappTailwindcss({
+        appType: 'uni-app-vite',
+        tailwindcssBasedir: root,
+        tailwindcss: {
+          version: 4,
+          v4: {
+            base: root,
+            cssEntries,
+          },
+        },
+        tailwindcssRuntimeOptions: {
+          projectRoot: root,
+          tailwindcss,
+        },
+      })
+      expect(getCurrentContext().cssEntries).toEqual(cssEntries)
+
+      const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+      const servePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      expect(sourcePlugin).toBeTruthy()
+      expect(servePlugin).toBeTruthy()
+      expect(postPlugin).toBeTruthy()
+
+      const resolvedConfig = {
+        command: 'serve',
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/app-plus' },
+        plugins: [{ name: 'vite:uni' }],
+      } as ResolvedConfig
+      for (const plugin of [sourcePlugin, servePlugin, postPlugin]) {
+        await (plugin.configResolved as any)?.call(plugin, resolvedConfig)
+      }
+      const buildStart = sourcePlugin.buildStart as any
+      await (typeof buildStart === 'object' ? buildStart.handler : buildStart)?.call({
+        ...sourcePlugin,
+        addWatchFile: vi.fn(),
+      })
+
+      const transform = getTransformHandler(servePlugin)
+      const transformCss = async (source: string, file: string) => {
+        const transformed = await transform?.call({
+          ...servePlugin,
+          addWatchFile: vi.fn(),
+          emitFile: vi.fn(),
+        }, source, file)
+        return typeof transformed === 'object' && transformed != null && 'code' in transformed
+          ? transformed.code
+          : String(transformed ?? source)
+      }
+      const transformedCss = await transformCss(rawMainCss, mainCssFile)
+      const transformedNormalCss = await transformCss(rawNormalCss, normalCssFile)
+      const transformedIndependentCss = await transformCss(rawIndependentCss, independentCssFile)
+      const bundle = {
+        'app.css': {
+          ...createRollupAsset(transformedCss),
+          fileName: 'app.css',
+          originalFileNames: [mainCssFile],
+        },
+        'sub-normal/pages/index.css': {
+          ...createRollupAsset(transformedNormalCss),
+          fileName: 'sub-normal/pages/index.css',
+          originalFileNames: [normalCssFile],
+        },
+        'sub-independent/pages/index.css': {
+          ...createRollupAsset(transformedIndependentCss),
+          fileName: 'sub-independent/pages/index.css',
+          originalFileNames: [independentCssFile],
+        },
+        'app-service.js': {
+          ...createRollupChunk('function render(){return "bg-[#102938]"}'),
+          fileName: 'app-service.js',
+        },
+      }
+      const generateBundle = getGenerateBundleHandler(postPlugin)
+      await generateBundle?.call({ ...postPlugin, addWatchFile: vi.fn() }, {} as any, bundle)
+
+      const initialAppCss = (bundle['app.css'] as OutputAsset).source.toString()
+      expect(generateMock.mock.calls.at(-1)?.[0].target).toBe('web')
+      expect(initialAppCss).toContain('.bg-initial-app')
+      expect(initialAppCss).not.toContain('.bg-hmr-app')
+      expect(initialAppCss).toContain('.bg-normal-subpackage-marker')
+      expect(initialAppCss).toContain('.bg-independent-subpackage-marker')
+
+      await writeFile(pageFile, '<template><view class="bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]">hmr</view></template>', 'utf8')
+      const watchChange = sourcePlugin.watchChange as any
+      await (typeof watchChange === 'object' ? watchChange.handler : watchChange)?.call(sourcePlugin, pageFile, { event: 'update' })
+
+      const emitted: Array<{ type: 'asset', fileName: string, source: string }> = []
+      const jsOnlyBundle = {
+        'app-service.js': {
+          ...createRollupChunk('function render(){return "bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]"}'),
+          fileName: 'app-service.js',
+        },
+      }
+      await generateBundle?.call({
+        ...postPlugin,
+        addWatchFile: vi.fn(),
+        emitFile(file: { type: 'asset', fileName: string, source: string }) {
+          emitted.push(file)
+          return file.fileName
+        },
+      }, {} as any, jsOnlyBundle)
+
+      const replayedAppCss = emitted.find(file => file.fileName === 'app.css')?.source
+      expect(replayedAppCss).toContain('.bg-hmr-app')
+      expect(replayedAppCss).toContain('.text-hmr-app')
+      expect(replayedAppCss).toContain('.h-hmr-app')
+      expect(replayedAppCss).toContain('.mt-hmr-app')
+      expect(emitted.some(file => file.fileName.endsWith('.wxss'))).toBe(false)
     }
     finally {
       if (previousPlatform === undefined) {
@@ -3963,7 +4200,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       }))
 
       const WeappTailwindcss = await loadWeappTailwindcssPlugin()
-      const plugins = WeappTailwindcss()
+      const plugins = WeappTailwindcss({ appType: 'uni-app-x' })
       const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
       const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
       expect(sourcePlugin).toBeTruthy()

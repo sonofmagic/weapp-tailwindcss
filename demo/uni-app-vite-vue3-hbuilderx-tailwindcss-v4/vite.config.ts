@@ -12,6 +12,8 @@ const weappTailwindcssPlugins = WeappTailwindcss(
     base: projectRoot,
     cssEntries: [
       resolve(projectRoot, 'main.css'),
+      resolve(projectRoot, 'sub-normal/pages/index.css'),
+      resolve(projectRoot, 'sub-independent/pages/index.css'),
     ],
     cssSourceTrace: true,
     rem2rpx: true,

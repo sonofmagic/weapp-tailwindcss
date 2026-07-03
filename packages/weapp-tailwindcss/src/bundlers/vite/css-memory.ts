@@ -162,6 +162,7 @@ export function createViteCssMemory(options: {
     for (const [rememberedKey, remembered] of relatedRememberedEntries) {
       touchMapEntry(rememberedCssSources, rememberedKey, {
         ...remembered,
+        outputFile: entry.outputFile,
         rawSource: entry.rawSource,
         sourceFile: entry.sourceFile,
       })

@@ -13,3 +13,7 @@ onHide(() => {
   console.log('App Hide')
 })
 </script>
+
+<style>
+@import "./main.css";
+</style>
