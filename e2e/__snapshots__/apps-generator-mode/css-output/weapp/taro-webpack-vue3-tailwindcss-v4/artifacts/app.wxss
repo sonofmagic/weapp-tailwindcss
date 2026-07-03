@@ -1337,24 +1337,11 @@ wx-root-portal-content {
 .nut-cropper-popup__highlight .highlight {
   box-shadow: 0 0 1000rpx 1000rpx #0009;
 }
- /* tokens: template-corpus-apply <= src/pages/index/index.vue */
-.template-corpus-apply {
-  align-items: center;
-  border-radius: 20rpx;
-  display: inline-flex;
-  gap: calc(var(--spacing) * 2);
-  --tw-gradient-position: to right;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
-  background-image: linear-gradient(var(--tw-gradient-stops));
-  --tw-gradient-from: #9e58e9;
-  --tw-gradient-to: var(--color-blue-500);
-  --tw-gradient-stops:
-    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
-  padding: 10rpx 18rpx;
-  --tw-font-weight: var(--font-weight-semibold);
-  color: var(--color-white);
-  font-size: 26rpx;
-  font-weight: var(--font-weight-semibold);
+.h5-button::after,
+wx-button::after {
+  border: none;
+  content: '';
+  display: none;
 }
  /* tokens: mt-2 <= src/pages/index/index.vue */
 .mt-2 {
@@ -9129,6 +9116,25 @@ wx-root-portal-content {
 .nut-cropper-popup__highlight .highlight__round {
   border-radius: 50%;
 }
+ /* tokens: template-corpus-apply <= src/pages/index/index.vue */
+.template-corpus-apply {
+  align-items: center;
+  border-radius: 20rpx;
+  display: inline-flex;
+  gap: calc(var(--spacing) * 2);
+  --tw-gradient-position: to right;
+  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
+  background-image: linear-gradient(var(--tw-gradient-stops));
+  --tw-gradient-from: #9e58e9;
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
+  padding: 10rpx 18rpx;
+  --tw-font-weight: var(--font-weight-semibold);
+  color: var(--color-white);
+  font-size: 26rpx;
+  font-weight: var(--font-weight-semibold);
+}
 .weapp-tw-user-ui-card {
   align-items: center;
   animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
@@ -9152,4 +9158,28 @@ wx-root-portal-content {
     opacity: 0.65;
     transform: scale(0.96);
   }
+}
+.h5-button::after,
+wx-button::after {
+  border: none;
+  content: '';
+  display: none;
+}
+wx-button {
+  background: #000;
+}
+wx-button {
+  background: #444;
+}
+abc {
+  background: #222;
+}
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
 }

@@ -134,7 +134,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 48332,
+      "bytes": 50093,
       "selectors": [
         ".-mt-2",
         "._2xl_ctext-base",
@@ -305,8 +305,12 @@
         ".wx_cbg-blue-500",
         "50%",
         ":host",
+        "abc",
+        "button:after",
         "page",
         "to",
+        "wx-button",
+        "wx-button:after",
         "wx-root-portal-content"
       ],
       "hasSupports": false,
@@ -344,7 +348,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 596398,
+      "bytes": 596937,
       "selectors": [
         ".-bg-conic-180",
         ".-bg-linear-65",
@@ -401,6 +405,7 @@
         ".from-red-500",
         ".h-14",
         ".h-8",
+        ".h5-button:after",
         ".issue-940-app-class",
         ".issue-940-style-class",
         ".issue-941-bg-image",
@@ -2633,8 +2638,12 @@
         "[dir='rtl'] .nut-uploader-preview-img .tips",
         "[dir='rtl'] .nut-uploader-preview-progress",
         "[dir='rtl'] .nut-uploader-preview.list",
+        "abc",
+        "button:after",
         "page",
         "to",
+        "wx-button",
+        "wx-button:after",
         "wx-root-portal-content"
       ],
       "hasSupports": false,
@@ -2673,7 +2682,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 556560,
+      "bytes": 557534,
       "selectors": [
         ".-translate-y-1",
         "._b--watch-hmr-offset_c000089px_B",
@@ -2728,6 +2737,7 @@
         ".h-_b22px_B",
         ".h-_b300px_B",
         ".h-_b45px_B",
+        ".h5-button:after",
         ".inline-flex",
         ".items-center",
         ".max-_b712px_B_cp-_b13px_B",
@@ -4979,8 +4989,12 @@
         "[dir='rtl'] .nut-uploader-preview-img .tips",
         "[dir='rtl'] .nut-uploader-preview-progress",
         "[dir='rtl'] .nut-uploader-preview.list",
+        "abc",
+        "button:after",
         "page",
         "to",
+        "wx-button",
+        "wx-button:after",
         "wx-root-portal-content"
       ],
       "hasSupports": false,
@@ -5018,7 +5032,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 496242,
+      "bytes": 496632,
       "selectors": [
         "._ebg-_bgray_B",
         ".after_c_econtent-_b_agood_work_e_a_B:after",
@@ -5053,6 +5067,7 @@
         ".h-14",
         ".h-16",
         ".h-_b45px_B",
+        ".h5-button:after",
         ".h5-input",
         ".h5-textarea",
         ".inline-flex",
@@ -6794,8 +6809,12 @@
         "80%",
         "90%",
         ":host",
+        "abc",
+        "button:after",
         "page",
         "to",
+        "wx-button",
+        "wx-button:after",
         "wx-root-portal-content"
       ],
       "hasSupports": false,
@@ -6833,7 +6852,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 466017,
+      "bytes": 466731,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
@@ -6851,6 +6870,7 @@
         ".from-cyan-500",
         ".h-14",
         ".h-_b300px_B",
+        ".h5-button:after",
         ".h5-input",
         ".h5-textarea",
         ".mt-2",
@@ -8563,8 +8583,12 @@
         "80%",
         "90%",
         ":host",
+        "abc",
+        "button:after",
         "page",
         "to",
+        "wx-button",
+        "wx-button:after",
         "wx-root-portal-content"
       ],
       "hasSupports": false,
@@ -8613,7 +8637,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 43276,
+      "bytes": 43574,
       "selectors": [
         "._ebg-_bgray_B",
         ".active_cbg-emerald-600:active",
@@ -8801,8 +8825,12 @@
         "50%",
         ":host",
         "[data-c-h='true']",
+        "abc",
+        "button:after",
         "page",
         "to",
+        "wx-button",
+        "wx-button:after",
         "wx-root-portal-content"
       ],
       "hasSupports": false,
@@ -8833,7 +8861,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 30531,
+      "bytes": 31397,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
@@ -8919,8 +8947,12 @@
         ".weapp-tw-user-ui-loading",
         "50%",
         ":host",
+        "abc",
+        "button:after",
         "page",
         "to",
+        "wx-button",
+        "wx-button:after",
         "wx-root-portal-content"
       ],
       "hasSupports": false,

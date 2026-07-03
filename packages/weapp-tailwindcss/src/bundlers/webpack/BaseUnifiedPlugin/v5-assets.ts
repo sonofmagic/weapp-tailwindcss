@@ -672,7 +672,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     cssPreflight: cssHandlerOptionsForProcessedAsset.isMainChunk,
                     generatedCss: hasGeneratedCssMarker || hasTailwindGeneratedAssetCss,
                   }))
-                  const processedSourceBareUserCss = processedBareSelectorSourceCss === undefined
+                  const processedSourceBareUserCss = isWebGeneratorTarget || processedBareSelectorSourceCss === undefined
                     ? undefined
                     : createWebpackGeneratorUserCssSourceAppend({
                         css: collectWebpackBareSelectorUserCss(processedBareSelectorSourceCss),
@@ -848,30 +848,32 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     cssPreflight: cssHandlerOptions.isMainChunk,
                     generatedCss: true,
                   })
-                  const loaderSourceBareUserCss = createWebpackGeneratorUserCssSourceAppend(
-                    ...[
-                      currentAssetUserCss === undefined
-                        ? undefined
-                        : {
-                            css: currentAssetUserCss,
-                            processed: true,
-                          },
-                      sourceCss === undefined
-                        ? undefined
-                        : {
-                            css: sourceCss,
-                            processed: false,
-                          },
-                    ].map((source) => {
-                      if (source === undefined) {
-                        return undefined
-                      }
-                      return {
-                        css: collectWebpackBareSelectorUserCss(source.css),
-                        processed: source.processed,
-                      }
-                    }),
-                  )
+                  const loaderSourceBareUserCss = isWebGeneratorTarget
+                    ? undefined
+                    : createWebpackGeneratorUserCssSourceAppend(
+                        ...[
+                          currentAssetUserCss === undefined
+                            ? undefined
+                            : {
+                                css: currentAssetUserCss,
+                                processed: true,
+                              },
+                          sourceCss === undefined
+                            ? undefined
+                            : {
+                                css: sourceCss,
+                                processed: false,
+                              },
+                        ].map((source) => {
+                          if (source === undefined) {
+                            return undefined
+                          }
+                          return {
+                            css: collectWebpackBareSelectorUserCss(source.css),
+                            processed: source.processed,
+                          }
+                        }),
+                      )
                   const finalizedLoaderSourceBareUserCss = loaderSourceBareUserCss === undefined
                     ? ''
                     : finalizeCssAssetSource(loaderSourceBareUserCss.css, {
@@ -1077,29 +1079,31 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                         (await compilerOptions.styleHandler(generatorRawSource, cssHandlerOptions)).css,
                         { generatedCss: false },
                       )
-                const sourceBareUserCss = createWebpackGeneratorUserCssSourceAppend(
-                  ...[
-                    userRawSource,
-                    sourceCss === undefined
-                      ? undefined
-                      : {
-                          css: sourceCss,
-                          processed: sourceCssProcessed,
+                const sourceBareUserCss = isWebGeneratorTarget
+                  ? undefined
+                  : createWebpackGeneratorUserCssSourceAppend(
+                      ...[
+                        userRawSource,
+                        sourceCss === undefined
+                          ? undefined
+                          : {
+                              css: sourceCss,
+                              processed: sourceCssProcessed,
+                            },
+                        {
+                          css: generatorRawSource,
+                          processed: false,
                         },
-                    {
-                      css: generatorRawSource,
-                      processed: false,
-                    },
-                  ].map((source) => {
-                    if (source === undefined) {
-                      return undefined
-                    }
-                    return {
-                      css: collectWebpackBareSelectorUserCss(source.css),
-                      processed: source.processed,
-                    }
-                  }),
-                )
+                      ].map((source) => {
+                        if (source === undefined) {
+                          return undefined
+                        }
+                        return {
+                          css: collectWebpackBareSelectorUserCss(source.css),
+                          processed: source.processed,
+                        }
+                      }),
+                    )
                 const finalizedSourceBareUserCss = sourceBareUserCss === undefined
                   ? ''
                   : finalizeCssAssetSource(sourceBareUserCss.css, {

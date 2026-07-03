@@ -204,7 +204,7 @@ async function generateCssForWebpackPipeline(
     cssPreflight: cssHandlerOptions.isMainChunk,
     generatedCss: true,
   })
-  const bareUserCss = collectWebpackBareSelectorUserCss(normalizedSource)
+  const bareUserCss = generatorTarget === 'web' ? '' : collectWebpackBareSelectorUserCss(normalizedSource)
   const finalizedBareUserCss = bareUserCss.trim().length === 0
     ? ''
     : finalizeMiniProgramUserCssAssetSource(bareUserCss, compilerOptions, generatorTarget === 'web', {
