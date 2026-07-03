@@ -189,11 +189,12 @@ async function mutateSource(item: WebViteHmrCase, sourceFile: string, kind: Sour
 
 function createTailwindClassFlowMutation(item: WebViteHmrCase, original: string): TailwindClassFlowMutation {
   const isReact = item.sourceFile.endsWith('.tsx')
-  const replacements: Array<{ from: string, to: string, selector: string }> = isReact
+  const replacements: Array<{ from: string, to: string, removedTo: string, selector: string }> = isReact
     ? [
         {
           from: `className="box-border theme-mode-demo mt-4 rounded leading-[24px] bg-white px-4 py-3 text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#18181b] dark:text-[#fafafa]"`,
           to: `className="box-border theme-mode-demo mt-4 rounded leading-[24px] border border-[#00ff00] bg-white px-4 py-3 text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#18181b] dark:text-[#fafafa]"`,
+          removedTo: `data-web-vite-hmr-flow="removed" className="box-border theme-mode-demo mt-4 rounded leading-[24px] bg-white px-4 py-3 text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#18181b] dark:text-[#fafafa]"`,
           selector: '.theme-mode-demo',
         },
       ]
@@ -201,16 +202,19 @@ function createTailwindClassFlowMutation(item: WebViteHmrCase, original: string)
         {
           from: `class="box-border theme-mode-demo mt-4 rounded leading-[24px] bg-white px-4 py-3 text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#18181b] dark:text-[#fafafa]"`,
           to: `class="box-border theme-mode-demo mt-4 rounded leading-[24px] border border-[#00ff00] bg-white px-4 py-3 text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#18181b] dark:text-[#fafafa]"`,
+          removedTo: `data-web-vite-hmr-flow="removed" class="box-border theme-mode-demo mt-4 rounded leading-[24px] bg-white px-4 py-3 text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#18181b] dark:text-[#fafafa]"`,
           selector: '.theme-mode-demo',
         },
         {
           from: `class="theme-mode-demo mt-4 block bg-white text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#09090b] dark:text-[#fafafa]"`,
           to: `class="theme-mode-demo mt-4 block border border-[#00ff00] bg-white text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#09090b] dark:text-[#fafafa]"`,
+          removedTo: `data-web-vite-hmr-flow="removed" class="theme-mode-demo mt-4 block bg-white text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#09090b] dark:text-[#fafafa]"`,
           selector: '.theme-mode-demo',
         },
         {
           from: `class="min-h-screen bg-white p-6 text-[#111827]"`,
           to: `class="min-h-screen border border-[#00ff00] bg-white p-6 text-[#111827]"`,
+          removedTo: `data-web-vite-hmr-flow="removed" class="min-h-screen bg-white p-6 text-[#111827]"`,
           selector: 'main',
         },
       ]
@@ -222,7 +226,7 @@ function createTailwindClassFlowMutation(item: WebViteHmrCase, original: string)
 
   const addedSource = original.replace(replacement.from, replacement.to)
   const modifiedSource = addedSource.replace('border-[#00ff00]', 'border-[#ff00aa]')
-  const removedClassSource = original
+  const removedClassSource = original.replace(replacement.from, replacement.removedTo)
   return {
     addedSource,
     modifiedSource,
