@@ -793,10 +793,6 @@ function normalizeTailwindV4DefaultTokenUsage(root: postcss.Root) {
       decl.value = decl.value.slice(0, -'in oklab'.length).trimEnd()
       return
     }
-    if (decl.prop === '--tw-gradient-position' && parentSelector === '.bg-gradient-to-r' && /^to \w+(?: \w+)?$/.test(decl.value)) {
-      decl.value = `${decl.value} in oklab`
-      return
-    }
     if (decl.value.includes('rgba(0, 0, 0, 0.10196)')) {
       decl.value = decl.value.replaceAll('rgba(0, 0, 0, 0.10196)', 'rgba(0, 0, 0, 0.1)')
     }

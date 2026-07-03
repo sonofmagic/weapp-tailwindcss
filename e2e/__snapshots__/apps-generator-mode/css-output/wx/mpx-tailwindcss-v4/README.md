@@ -7,7 +7,7 @@ Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 48460 | 172 | false | false | false | true | true | false | true |
+| 48332 | 172 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -29,9 +29,9 @@ Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
 | File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) | 69 | 0 | false | false | false | false | false | false | false |
-| `styles/app.wxss` | [artifacts/styles__app.wxss](artifacts/styles__app.wxss) | 21451 | 164 | false | false | false | true | true | false | true |
+| `styles/app.wxss` | [artifacts/styles__app.wxss](artifacts/styles__app.wxss) | 21387 | 164 | false | false | false | true | true | false | true |
 | `styles/third-party-ui.wxss` | [artifacts/styles__third-party-ui.wxss](artifacts/styles__third-party-ui.wxss) | 513 | 4 | false | false | false | false | false | false | false |
-| `pages/component/index.wxss` | [artifacts/pages__component__index.wxss](artifacts/pages__component__index.wxss) | 22545 | 164 | false | false | false | true | true | false | true |
+| `pages/component/index.wxss` | [artifacts/pages__component__index.wxss](artifacts/pages__component__index.wxss) | 22481 | 164 | false | false | false | true | true | false | true |
 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) | 32 | 0 | false | false | false | false | false | false | false |
 | `sub-independent/styles/index.1.wxss` | [artifacts/sub-independent__styles__index.1.wxss](artifacts/sub-independent__styles__index.1.wxss) | 972 | 6 | false | false | false | false | false | false | true |
 | `sub-independent/styles/index.2.wxss` | [artifacts/sub-independent__styles__index.2.wxss](artifacts/sub-independent__styles__index.2.wxss) | 972 | 6 | false | false | false | false | false | false | true |

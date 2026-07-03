@@ -287,6 +287,18 @@ describe('normalizeCssSnapshot', () => {
     ].join('\n'))
   })
 
+  it('keeps downgraded Tailwind CSS v4 gradient positions in snapshots', () => {
+    expect(normalizeCssSnapshot([
+      '.bg-gradient-to-r {',
+      '  --tw-gradient-position: to right;',
+      '}',
+    ].join('\n'))).toBe([
+      '.bg-gradient-to-r {',
+      '  --tw-gradient-position: to right;',
+      '}',
+    ].join('\n'))
+  })
+
   it('dedupes known Tailwind CSS v4 snapshot comments', () => {
     expect(normalizeCssSnapshot([
       '/* Core plugin extractor sources are intentionally not loaded here. */',

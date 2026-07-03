@@ -1575,7 +1575,7 @@ wx-root-portal-content {
 }
  /* tokens: bg-gradient-to-r <= src/pages/index/index.vue */
 .bg-gradient-to-r {
-  --tw-gradient-position: to right in oklab;
+  --tw-gradient-position: to right;
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }

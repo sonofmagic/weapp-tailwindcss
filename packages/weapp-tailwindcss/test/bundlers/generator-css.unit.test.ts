@@ -147,6 +147,20 @@ describe('bundlers/shared generator css', () => {
     expect(hasTailwindGeneratedCssMarkers('/*! weapp-tailwindcss generator-placeholder */')).toBe(true)
   })
 
+  it('finalizes Tailwind v4 gradient interpolation for wx generator css', async () => {
+    const { finalizeMiniProgramGeneratorCss } = await import('@/bundlers/shared/generator-css/generation-helpers')
+
+    const css = finalizeMiniProgramGeneratorCss([
+      '.bg-gradient-to-r {',
+      '  --tw-gradient-position: to right in oklab;',
+      '  background-image: linear-gradient(var(--tw-gradient-stops));',
+      '}',
+    ].join('\n'), 'wx', 4, false)
+
+    expect(css).toContain('--tw-gradient-position: to right')
+    expect(css).not.toContain('in oklab')
+  })
+
   it('unwraps Tailwind v4 user layer blocks for mini-program generator user css', async () => {
     const { transformGeneratorUserCss } = await import('@/bundlers/shared/generator-css/user-css')
     const styleHandler = vi.fn(async (code: string) => ({ css: code }))

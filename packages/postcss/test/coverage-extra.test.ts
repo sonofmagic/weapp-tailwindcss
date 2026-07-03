@@ -330,6 +330,14 @@ describe('compat helpers', () => {
       .bg-linear-to-r {
         --tw-gradient-position: to right in oklab;
       }
+      .bg-linear-to-r\\/oklch {
+        background-image: linear-gradient(var(--tw-gradient-stops));
+        --tw-gradient-position: to right in oklch shorter hue;
+      }
+      .bg-linear-to-r\\/hsl {
+        background-image: linear-gradient(var(--tw-gradient-stops));
+        --tw-gradient-position: to right in hsl;
+      }
     `)
     root.walkDecls((decl) => {
       normalizeTailwindcssV4Declaration(decl)
@@ -345,6 +353,9 @@ describe('compat helpers', () => {
     expect(css).toContain('--tw-gradient-position: to right;')
     expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-stops));')
     expect(css).not.toContain('in oklab')
+    expect(css).not.toContain('in oklch')
+    expect(css).not.toContain('in hsl')
+    expect(css).not.toContain('shorter hue')
   })
 
   it('does not append duplicate literal Tailwind v4 mini-program gradient rules', () => {

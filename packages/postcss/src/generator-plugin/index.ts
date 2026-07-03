@@ -1,5 +1,7 @@
 import type { PluginCreator, Root } from 'postcss'
+import type { IStyleHandlerOptions } from '../types'
 import type { WeappTailwindcssPostcssPluginAdapters, WeappTailwindcssPostcssPluginOptions } from './types'
+import { finalizeMiniProgramCss } from '../compat/mini-program-css'
 import { transformWebCssCompat } from '../compat/web-css'
 import { createSourceScanPattern, DEFAULT_SOURCE_SCAN_EXTENSIONS, resolveCssSourceEntries } from '../source-scan'
 import { collectApplyOnlyCssSelectorsRoot, filterApplyOnlyGeneratedCss } from './apply-only'
@@ -21,6 +23,31 @@ function resolveTailwindV4PostcssSourceCss(css: string, sourceOptions: Pick<Weap
   return isTailwindV4ApplyOnlyCss(css, root)
     ? `@import "${packageName}" source(none);\n@reference "${packageName}";\n${css}`
     : css
+}
+
+function isMiniProgramGeneratorTarget(target: string) {
+  return target !== 'web' && target !== 'tailwind'
+}
+
+function finalizeGeneratedCss(
+  css: string,
+  target: string,
+  styleOptions: Partial<IStyleHandlerOptions> | undefined,
+  webCompat: ReturnType<WeappTailwindcssPostcssPluginAdapters['normalizeGeneratorOptions']>['webCompat'],
+) {
+  if (target === 'web') {
+    return transformWebCssCompat(css, webCompat)
+  }
+  if (!isMiniProgramGeneratorTarget(target)) {
+    return css
+  }
+  return finalizeMiniProgramCss(css, {
+    cssSelectorReplacement: styleOptions?.cssOptions?.cssSelectorReplacement
+      ?? styleOptions?.cssSelectorReplacement,
+    isTailwindcssV4: true,
+    tailwindcssV4GradientFallback: styleOptions?.cssOptions?.tailwindcssV4GradientFallback
+      ?? styleOptions?.tailwindcssV4GradientFallback,
+  })
 }
 
 export function createWeappTailwindcssPostcssPlugin(
@@ -63,6 +90,10 @@ export function createWeappTailwindcssPostcssPlugin(
           projectRoot,
         })
         const generator = adapters.createGenerator(source)
+        const generatorStyleOptions = {
+          ...generatorOptions.styleOptions,
+          ...styleOptions,
+        }
         const generated = await generator.generate({
           candidates: new Set([
             ...autoCandidates,
@@ -73,18 +104,13 @@ export function createWeappTailwindcssPostcssPlugin(
             ...collectedSources.sources,
             ...(sources ?? []),
           ],
-          styleOptions: {
-            ...generatorOptions.styleOptions,
-            ...styleOptions,
-          },
+          styleOptions: generatorStyleOptions,
           target: generatorOptions.target,
         })
         const css = isApplyOnlyTailwindV4Css
           ? filterApplyOnlyGeneratedCss(generated.css, applyOnlyCssSelectors ?? new Set())
           : generated.css
-        const finalCss = generated.target === 'web'
-          ? transformWebCssCompat(css, generatorOptions.webCompat)
-          : css
+        const finalCss = finalizeGeneratedCss(css, generated.target, generatorStyleOptions, generatorOptions.webCompat)
 
         replaceRootCss(root, finalCss, result)
         addDependencyMessages(result, generated)

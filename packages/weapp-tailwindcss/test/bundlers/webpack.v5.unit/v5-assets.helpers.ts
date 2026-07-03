@@ -702,5 +702,15 @@ describe('bundlers/webpack v5-assets helpers', () => {
     expect(finalizeWebpackCssAssetSource('view,text,::after,::before{border:0 solid}.card{color:red', baseContext as any, false, {
       generatedCss: true,
     })).toContain('.card')
+    const gradientCss = finalizeWebpackCssAssetSource([
+      '.bg-gradient-to-r{',
+      'background-image:linear-gradient(var(--tw-gradient-stops));',
+      '--tw-gradient-position:to right in oklab',
+      '}',
+    ].join(''), baseContext as any, false, {
+      generatedCss: true,
+    })
+    expect(gradientCss).toContain('--tw-gradient-position:to right')
+    expect(gradientCss).not.toContain('in oklab')
   })
 })

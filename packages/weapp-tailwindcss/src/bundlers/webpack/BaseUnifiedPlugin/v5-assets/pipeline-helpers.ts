@@ -304,6 +304,7 @@ export function collectWebpackAssetUserCssMarkers(source: string) {
     })
   }
   catch {
+    // 保留原始生成 CSS，继续交给 finalize 处理声明级兼容降级。
   }
   return markers
 }
@@ -985,16 +986,16 @@ export function finalizeWebpackCssAssetSource(
     })
   }
   catch {
-    finalized = finalizeMiniProgramCss(finalized, {
-      cssPreflight: options.cssPreflight === false
-        ? false
-        : !hasMiniProgramTailwindV4PreflightReset(finalized)
-            ? compilerOptions.cssPreflight
-            : undefined,
-      isTailwindcssV4: true,
-      tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
-    })
   }
+  finalized = finalizeMiniProgramCss(finalized, {
+    cssPreflight: options.cssPreflight === false
+      ? false
+      : !hasMiniProgramTailwindV4PreflightReset(finalized)
+          ? compilerOptions.cssPreflight
+          : undefined,
+    isTailwindcssV4: true,
+    tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
+  })
   return stripMiniProgramCssSpecificityPlaceholders(removeMiniProgramHoverSelectors(finalized, styleOptions.cssRemoveHoverPseudoClass))
 }
 

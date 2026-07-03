@@ -159,6 +159,38 @@ describe('generator postcss plugin factory', () => {
     expect(result.css).toContain('.text-blue')
   })
 
+  it('finalizes Tailwind v4 gradient interpolation for mini-program generator targets', async () => {
+    const { adapters } = createAdapters({
+      createGenerator: vi.fn(() => ({
+        generate: vi.fn(async () => ({
+          css: [
+            '.bg-gradient-to-r {',
+            '  background-image: linear-gradient(var(--tw-gradient-stops));',
+            '  --tw-gradient-position: to right in oklab;',
+            '}',
+          ].join('\n'),
+          rawCss: '',
+          target: 'wx' as any,
+          classSet: new Set<string>(),
+          dependencies: [],
+        })),
+      })),
+    })
+    const plugin = createWeappTailwindcssPostcssPlugin(adapters)
+    const result = await postcss([
+      plugin({
+        generator: {
+          target: 'weapp',
+        },
+      }),
+    ]).process('@import "tailwindcss";', {
+      from: undefined,
+    })
+
+    expect(result.css).toContain('--tw-gradient-position: to right')
+    expect(result.css).not.toContain('in oklab')
+  })
+
   it('applies default web css compatibility transform for web target', async () => {
     const { adapters } = createAdapters({
       normalizeGeneratorOptions: vi.fn(options => ({

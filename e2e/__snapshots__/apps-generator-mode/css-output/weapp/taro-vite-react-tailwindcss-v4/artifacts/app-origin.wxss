@@ -390,7 +390,7 @@ wx-root-portal-content {
 }
  /* tokens: bg-gradient-to-r <= src/app.css, src/pages/index/index.tsx */
 .bg-gradient-to-r {
-  --tw-gradient-position: to right in oklab;
+  --tw-gradient-position: to right;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-[radial-gradient(circle_at_18%_20%,#e0f2fe,#fdf4ff_70%)] <= src/pages/index/index.tsx */

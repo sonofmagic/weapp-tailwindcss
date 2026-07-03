@@ -5,7 +5,6 @@ import valueParser from 'postcss-value-parser'
 import cssVarsV4 from '../cssVarsV4'
 import { createCssVarNodes } from '../utils/css-vars'
 
-const OKLAB_SUFFIX = 'in oklab'
 const RADIUS_THRESHOLD = 100000
 const CLAMP_PX = 9999
 const INFINITY_CALC_VALUE_REGEXP = /^calc\(\s*infinity\s*\*\s*(?:\d+(?:\.\d*)?|\.\d+)r?px\s*\)$/i
@@ -764,12 +763,14 @@ export function normalizeTailwindcssV4Declaration(decl: Declaration): boolean {
     changed = true
   }
 
-  if (decl.prop === '--tw-gradient-position' && decl.value.endsWith(OKLAB_SUFFIX)) {
+  if (decl.prop === '--tw-gradient-position') {
     const nextValue = decl.parent?.type === 'rule'
       ? normalizeTailwindcssV4GradientDirectionDeclaration(decl.parent, decl)
       : normalizeTailwindcssV4GradientPosition(decl.value)
-    decl.value = nextValue
-    return true
+    if (nextValue !== decl.value) {
+      decl.value = nextValue
+      return true
+    }
   }
 
   const normalizedInfinityCalcValue = normalizeTailwindcssV4InfinityCalcValue(decl.value)

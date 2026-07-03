@@ -35,6 +35,10 @@ export function hasMiniProgramTailwindV4PreflightReset(css: string) {
   return /(?:^|[},])\s*view\s*,\s*text\s*,\s*::after\s*,\s*::before\s*\{[^}]*\bborder\s*:\s*0\s+solid\b/.test(css)
 }
 
+function isMiniProgramGeneratorTarget(target: string) {
+  return target !== 'web' && target !== 'tailwind'
+}
+
 export function finalizeMiniProgramGeneratorCss(
   css: string,
   target: string,
@@ -42,7 +46,7 @@ export function finalizeMiniProgramGeneratorCss(
   cssPreflight: InternalUserDefinedOptions['cssPreflight'],
   options: { injectPreflight?: boolean, preservePreflight?: boolean, styleOptions?: Partial<IStyleHandlerOptions> | undefined } = {},
 ) {
-  if (target !== 'weapp') {
+  if (!isMiniProgramGeneratorTarget(target)) {
     return css
   }
   if (isVueScopedStyleSource(options.styleOptions?.postcssOptions?.options?.from)) {
