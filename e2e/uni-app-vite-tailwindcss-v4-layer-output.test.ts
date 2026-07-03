@@ -66,7 +66,7 @@ describe('uni-app vite vue3 Tailwind v4 cascade layer output', () => {
 
     expect(output, 'H5 output should remove native Tailwind v4 @layer wrappers by default').not.toMatch(/@layer\s+components/)
     expect(output, 'H5 output should keep custom Tailwind v4 layer rules').toMatch(/\.layer-card-v4\s*\{[\s\S]*?display:\s*flex/)
-    expect(output, 'H5 output should keep declarations inside custom Tailwind v4 layer rules').toMatch(/color:\s*var\(--color-midnight\)/)
+    expect(output, 'H5 output should keep declarations inside custom Tailwind v4 layer rules').toMatch(/color:\s*#121063/)
   }, 600_000)
 
   it('keeps scoped Vue component css free of injected mini-program preflight', async () => {

@@ -35,20 +35,31 @@ wx-root-portal-content {
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --color-emerald-50: rgb(236, 253, 245);
   --color-emerald-500: #00bc7d;
   --color-emerald-600: #009966;
   --color-blue-500: #2b7fff;
+  --color-slate-200: rgb(226, 232, 240);
+  --color-slate-500: #62748e;
+  --color-slate-800: #1d293d;
   --color-slate-900: #0f172b;
   --color-white: #fff;
   --color-zinc-50: rgb(250, 250, 250);
   --color-zinc-900: rgb(24, 24, 27);
+  --color-red-300: #ffa2a2;
   --color-green-200: #b9f8cf;
+  --color-emerald-200: #a4f4cf;
+  --color-emerald-700: #007a55;
   --color-slate-100: #f1f5f9;
   --color-slate-700: #314158;
   --color-zinc-950: #09090b;
   --spacing: 8rpx;
+  --text-xs: 24rpx;
+  --text-xs--line-height: 1.33333;
   --text-sm: 28rpx;
   --text-sm--line-height: 1.42857;
+  --text-base: 32rpx;
+  --text-base--line-height: 1.5;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --default-font-family: var(--font-sans);
@@ -72,9 +83,21 @@ wx-root-portal-content {
   gap: 8px;
   color: var(--color-midnight);
 }
+ /* tokens: m-3 <= src/pages/index/index.vue */
+.m-3 {
+  margin: calc(var(--spacing) * 3);
+}
+ /* tokens: mt-1 <= src/pages/index/index.vue */
+.mt-1 {
+  margin-top: var(--spacing);
+}
  /* tokens: mt-2 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);
+}
+ /* tokens: mt-3 <= src/pages/index/index.vue */
+.mt-3 {
+  margin-top: calc(var(--spacing) * 3);
 }
  /* tokens: mt-4 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .mt-4 {
@@ -83,6 +106,10 @@ wx-root-portal-content {
  /* tokens: mt-6 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .mt-6 {
   margin-top: calc(var(--spacing) * 6);
+}
+ /* tokens: ml-2 <= src/pages/index/index.vue */
+.ml-2 {
+  margin-left: calc(var(--spacing) * 2);
 }
  /* tokens: i-mdi-home <= src/pages/index/index.vue */
 .i-mdi-home {
@@ -97,6 +124,10 @@ wx-root-portal-content {
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
+}
+ /* tokens: block <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+.block {
+  display: block;
 }
  /* tokens: flex <= src/components/HelloWorld.vue, src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .flex {
@@ -162,7 +193,11 @@ wx-root-portal-content {
 .items-center {
   align-items: center;
 }
- /* tokens: gap-2 <= src/components/HelloWorld.vue, src/main.css */
+ /* tokens: justify-between <= src/pages/index/index.vue */
+.justify-between {
+  justify-content: space-between;
+}
+ /* tokens: gap-2 <= src/components/HelloWorld.vue, src/main.css, src/pages/index/index.vue */
 .gap-2 {
   gap: calc(var(--spacing) * 2);
 }
@@ -301,6 +336,19 @@ wx-root-portal-content {
   border-style: var(--tw-border-style);
   border-width: 1px;
 }
+ /* tokens: border-t <= src/pages/index/index.vue */
+.border-t {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 1px;
+}
+ /* tokens: border-emerald-200 <= src/pages/index/index.vue */
+.border-emerald-200 {
+  border-color: var(--color-emerald-200);
+}
+ /* tokens: border-slate-200 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+.border-slate-200 {
+  border-color: var(--color-slate-200);
+}
  /* tokens: border-slate-200/80 <= src/pages/index/index.vue */
 .border-slate-200_f80 {
   border-color: rgba(226, 232, 240, 0.8);
@@ -325,9 +373,17 @@ wx-root-portal-content {
 .bg-_b_hf8fafc_B {
   background-color: #f8fafc;
 }
+ /* tokens: bg-emerald-50 <= src/pages/index/index.vue */
+.bg-emerald-50 {
+  background-color: var(--color-emerald-50);
+}
  /* tokens: bg-emerald-500 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .bg-emerald-500 {
   background-color: var(--color-emerald-500);
+}
+ /* tokens: bg-emerald-600 <= src/pages/index/index.vue */
+.bg-emerald-600 {
+  background-color: var(--color-emerald-600);
 }
  /* tokens: bg-green-200/70 <= src/pages/index/index.vue */
 .bg-green-200_f70 {
@@ -340,6 +396,14 @@ wx-root-portal-content {
  /* tokens: bg-neutral-1B <= src/pages/index/index.vue */
 .bg-neutral-1B {
   background-color: var(--color-neutral-1B);
+}
+ /* tokens: bg-red-300 <= src/pages/index/index.vue */
+.bg-red-300 {
+  background-color: var(--color-red-300);
+}
+ /* tokens: bg-slate-900 <= src/pages/index/index.vue */
+.bg-slate-900 {
+  background-color: var(--color-slate-900);
 }
  /* tokens: bg-white <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .bg-white {
@@ -450,14 +514,32 @@ wx-root-portal-content {
   padding-top: 24rpx;
   padding-bottom: 24rpx;
 }
+ /* tokens: pt-2 <= src/pages/index/index.vue */
+.pt-2 {
+  padding-top: calc(var(--spacing) * 2);
+}
  /* tokens: text-center <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .text-center {
   text-align: center;
+}
+ /* tokens: text-base <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+.text-base {
+  font-size: var(--text-base);
+  line-height: var(--tw-leading, var(--text-base--line-height));
 }
  /* tokens: text-sm <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .text-sm {
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+ /* tokens: text-xs <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+.text-xs {
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+}
+ /* tokens: text-[24rpx] <= src/pages/index/index.vue */
+.text-_b24rpx_B {
+  font-size: 24rpx;
 }
  /* tokens: text-[26rpx] <= src/main.css, src/pages/index/index.vue */
 .text-_b26rpx_B {
@@ -475,15 +557,24 @@ wx-root-portal-content {
 .text-_b102_d43rpx_B {
   font-size: 102.43rpx;
 }
+ /* tokens: leading-5 <= src/pages/index/index.vue */
+.leading-5 {
+  --tw-leading: calc(var(--spacing) * 5);
+  line-height: calc(var(--spacing) * 5);
+}
  /* tokens: font-bold <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .font-bold {
   --tw-font-weight: var(--font-weight-bold);
   font-weight: var(--font-weight-bold);
 }
- /* tokens: font-semibold <= src/main.css, src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
+ /* tokens: font-semibold <= src/main.css, src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .font-semibold {
   --tw-font-weight: var(--font-weight-semibold);
   font-weight: var(--font-weight-semibold);
+}
+ /* tokens: break-all <= src/pages/index/index.vue */
+.break-all {
+  word-break: break-all;
 }
  /* tokens: text-[#00f285] <= src/pages/index/index.vue */
 .text-_b_h00f285_B {
@@ -493,13 +584,25 @@ wx-root-portal-content {
 .text-_b_h123456_B {
   color: #123456;
 }
+ /* tokens: text-emerald-700 <= src/pages/index/index.vue */
+.text-emerald-700 {
+  color: var(--color-emerald-700);
+}
  /* tokens: text-neutral-66 <= src/pages/index/index.vue */
 .text-neutral-66 {
   color: var(--color-neutral-66);
 }
+ /* tokens: text-slate-500 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+.text-slate-500 {
+  color: var(--color-slate-500);
+}
  /* tokens: text-slate-700 <= src/components/HelloWorld.vue, src/pages/index/index.vue */
 .text-slate-700 {
   color: var(--color-slate-700);
+}
+ /* tokens: text-slate-800 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+.text-slate-800 {
+  color: var(--color-slate-800);
 }
  /* tokens: text-slate-900 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .text-slate-900 {
@@ -546,6 +649,22 @@ wx-root-portal-content {
  /* tokens: active:bg-emerald-600 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
+}
+ /* tokens: active:bg-emerald-700 <= src/pages/index/index.vue */
+.active_cbg-emerald-700:active {
+  background-color: var(--color-emerald-700);
+}
+ /* tokens: active:bg-slate-700 <= src/pages/index/index.vue */
+.active_cbg-slate-700:active {
+  background-color: var(--color-slate-700);
+}
+ /* tokens: dark:bg-red-300 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+.dark_cbg-red-300.theme-dark {
+  background-color: var(--color-red-300);
+}
+ /* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-red-300 <= src/pages/index/index.vue */
+.theme-dark .dark_cbg-red-300 {
+  background-color: var(--color-red-300);
 }
  /* tokens: dark:bg-zinc-900 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
 .dark_cbg-zinc-900.theme-dark {

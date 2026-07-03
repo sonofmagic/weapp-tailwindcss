@@ -7,6 +7,11 @@
       <view class="text-xs font-medium">Fork from Jeff2Ma/WeApp-Workflow</view>
       <view>******</view>
     </view>
+    <view
+      class="theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-left text-slate-900 system-dark_cbg-slate-900 system-dark_ctext-slate-100 dark_cbg-zinc-900 dark_ctext-zinc-50">
+      Gulp Tailwind CSS v4 system dark
+      <view class="theme-dark mt-2 rounded bg-white px-3 py-2 text-slate-900 dark_cbg-zinc-950 dark_ctext-zinc-50">Gulp Tailwind CSS v4 manual dark</view>
+    </view>
     <view class="mt-_b24px_B">
       <view class="text-base font-bold pb-_b10px_B mb-_b20px_B text-left border-b border-_b_hEEEEEE_B">功能介绍</view>
       <view class="pl-_b15px_B text-left block">
@@ -26,7 +31,7 @@
           支持 typescript
           <text class="i-mdi-typewriter"></text>
         </view>
-        <view class="mt-_b24px_B">mt-[24px]</view>
+        <view class="mt-_b24px_B bg-_bred_B">mt-[24px]</view>
         <view class="mt-_b33px_B">mt-[33px]</view>
       </view>
       <view class="bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B text-_b_h123456_B text-_b50px_B bg-_b_hfff_B"></view>
