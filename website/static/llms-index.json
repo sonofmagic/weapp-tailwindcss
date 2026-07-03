@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-07-02T16:10:45.441Z",
+  "generatedAt": "2026-07-03T04:16:10.342Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 164,
-    "docs": 160,
+    "all": 165,
+    "docs": 161,
     "blog": 4
   },
   "documents": [
@@ -2852,6 +2852,43 @@
       "headings": [],
       "updatedAt": null,
       "source": "docs/issues/toast-svg-bug.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:issues/uni-app-vite-app-special-classes",
+      "title": "uni-app Vite App WebView 中特殊字符类名的支持结论",
+      "description": "说明 uni-app Vite 运行到 Android 和 iOS App WebView 后，dark:bg-red-300、text-[45rpx] 这类带特殊字符的 Tailwind class 是否真的不被支持，以及 weapp-tailwindcss 为什么仍会输出 safe class。",
+      "summary": "结论先说清楚：普通 uni-app Vite 运行到 Android / iOS App WebView 后，WebView 的 DOM/CSSOM 本身并不是完全不支持 dark:bg-red-300、text-[45rpx] 这类带 :、[、] 的 class。只要 class 原样进入 DOM，并且 CSS selector 做了标准 CSS 转义，…",
+      "url": "/docs/issues/uni-app-vite-app-special-classes",
+      "canonical": "https://tw.icebreaker.top/docs/issues/uni-app-vite-app-special-classes",
+      "keywords": [
+        "常见问题",
+        "故障排查",
+        "兼容性",
+        "uni-app",
+        "vite",
+        "app",
+        "webview",
+        "dark:bg-red-300",
+        "text-[45rpx]",
+        "special classes",
+        "weapp-tailwindcss",
+        "中特殊字符类名的支持结论",
+        "issues",
+        "uni app vite app special classes",
+        "tailwindcss",
+        "小程序"
+      ],
+      "headings": [
+        "本次验证环境",
+        "验证方式",
+        "推荐写法",
+        "不推荐的做法",
+        "排查标准",
+        "当前结论"
+      ],
+      "updatedAt": null,
+      "source": "docs/issues/uni-app-vite-app-special-classes.md"
     },
     {
       "kind": "doc",

@@ -36,6 +36,10 @@ const issuesSidebar: SidebarConfig = [
     type: 'doc',
     id: 'issues/rpx-ambiguities',
   },
+  {
+    type: 'doc',
+    id: 'issues/uni-app-vite-app-special-classes',
+  },
   // 写在 js 中的 tailwindcss 任意值
   {
     type: 'doc',
