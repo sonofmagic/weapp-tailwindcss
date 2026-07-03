@@ -305,6 +305,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ],
     globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/main.wxss'),
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ],
     userReportedHotUpdate: {
