@@ -7,7 +7,7 @@ Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 50093 | 176 | false | false | false | true | true | false | true |
+| 27612 | 176 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -16,13 +16,12 @@ Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
 | 1 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) |
 | 2 | `styles/app.wxss` | [artifacts/styles__app.wxss](artifacts/styles__app.wxss) |
 | 3 | `styles/third-party-ui.wxss` | [artifacts/styles__third-party-ui.wxss](artifacts/styles__third-party-ui.wxss) |
-| 4 | `pages/component/index.wxss` | [artifacts/pages__component__index.wxss](artifacts/pages__component__index.wxss) |
-| 5 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) |
-| 6 | `sub-independent/styles/index.1.wxss` | [artifacts/sub-independent__styles__index.1.wxss](artifacts/sub-independent__styles__index.1.wxss) |
-| 7 | `sub-independent/styles/index.2.wxss` | [artifacts/sub-independent__styles__index.2.wxss](artifacts/sub-independent__styles__index.2.wxss) |
-| 8 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) |
-| 9 | `sub-normal/styles/index.1.wxss` | [artifacts/sub-normal__styles__index.1.wxss](artifacts/sub-normal__styles__index.1.wxss) |
-| 10 | `sub-normal/styles/index.2.wxss` | [artifacts/sub-normal__styles__index.2.wxss](artifacts/sub-normal__styles__index.2.wxss) |
+| 4 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) |
+| 5 | `sub-independent/styles/index.1.wxss` | [artifacts/sub-independent__styles__index.1.wxss](artifacts/sub-independent__styles__index.1.wxss) |
+| 6 | `sub-independent/styles/index.2.wxss` | [artifacts/sub-independent__styles__index.2.wxss](artifacts/sub-independent__styles__index.2.wxss) |
+| 7 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) |
+| 8 | `sub-normal/styles/index.1.wxss` | [artifacts/sub-normal__styles__index.1.wxss](artifacts/sub-normal__styles__index.1.wxss) |
+| 9 | `sub-normal/styles/index.2.wxss` | [artifacts/sub-normal__styles__index.2.wxss](artifacts/sub-normal__styles__index.2.wxss) |
 
 ## Generator CSS Summary
 
@@ -31,7 +30,6 @@ Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) | 69 | 0 | false | false | false | false | false | false | false |
 | `styles/app.wxss` | [artifacts/styles__app.wxss](artifacts/styles__app.wxss) | 23148 | 168 | false | false | false | true | true | false | true |
 | `styles/third-party-ui.wxss` | [artifacts/styles__third-party-ui.wxss](artifacts/styles__third-party-ui.wxss) | 513 | 4 | false | false | false | false | false | false | false |
-| `pages/component/index.wxss` | [artifacts/pages__component__index.wxss](artifacts/pages__component__index.wxss) | 22481 | 164 | false | false | false | true | true | false | true |
 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) | 32 | 0 | false | false | false | false | false | false | false |
 | `sub-independent/styles/index.1.wxss` | [artifacts/sub-independent__styles__index.1.wxss](artifacts/sub-independent__styles__index.1.wxss) | 972 | 6 | false | false | false | false | false | false | true |
 | `sub-independent/styles/index.2.wxss` | [artifacts/sub-independent__styles__index.2.wxss](artifacts/sub-independent__styles__index.2.wxss) | 972 | 6 | false | false | false | false | false | false | true |

@@ -124,7 +124,6 @@
       "app.wxss",
       "styles/app.wxss",
       "styles/third-party-ui.wxss",
-      "pages/component/index.wxss",
       "sub-independent/pages/index.wxss",
       "sub-independent/styles/index.1.wxss",
       "sub-independent/styles/index.2.wxss",
@@ -134,7 +133,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 50093,
+      "bytes": 27612,
       "selectors": [
         ".-mt-2",
         "._2xl_ctext-base",
