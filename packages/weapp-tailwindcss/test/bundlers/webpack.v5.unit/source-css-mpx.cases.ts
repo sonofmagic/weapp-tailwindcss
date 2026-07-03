@@ -6,15 +6,17 @@ describe('bundlers/webpack WeappTailwindcss / registered source css mpx main', (
   setupWebpackV5UnitTest()
 
   it('does not duplicate mpx app css generation into empty page css assets', async () => {
+    const projectRoot = path.resolve('/workspace')
+    const sourceCssFile = path.join(projectRoot, 'src/app.css')
     const generatedCss = [
-      createBundlerGeneratedCssMarker('webpack', '/workspace/src/app.css'),
-      '/* tokens: test-class <= /workspace/src/app.css */',
+      createBundlerGeneratedCssMarker('webpack', sourceCssFile),
+      `/* tokens: test-class <= ${sourceCssFile} */`,
       '.test-class { color: #040506; }',
     ].join('\n')
     testState.currentContext = createContext({
       appType: 'mpx',
       rewriteCssImports: true,
-      cssEntries: ['/workspace/src/app.css'],
+      cssEntries: [sourceCssFile],
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: `handled:${code}` })),
@@ -25,15 +27,15 @@ describe('bundlers/webpack WeappTailwindcss / registered source css mpx main', (
         extract: vi.fn(async () => ({ classSet: new Set(['test-class']) })),
         majorVersion: 4,
         options: {
-          projectRoot: '/workspace',
+          projectRoot,
           tailwindcss: {
             v4: {
-              cssEntries: ['/workspace/src/app.css'],
+              cssEntries: [sourceCssFile],
             },
           },
         },
       } as any,
-      tailwindcssBasedir: '/workspace',
+      tailwindcssBasedir: projectRoot,
     } as any)
 
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
@@ -43,7 +45,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css mpx main', (
       'pages/component/index.wxss': generatedCss,
     }
     const compilation = {
-      compiler: { outputPath: path.resolve('/workspace', 'dist/wx') },
+      compiler: { outputPath: path.join(projectRoot, 'dist/wx') },
       chunks: [
         {
           id: 'app',
@@ -112,13 +114,13 @@ describe('bundlers/webpack WeappTailwindcss / registered source css mpx main', (
     new WeappTailwindcss().apply(compiler as any)
     const sourceCssModule: LoaderModule = {
       loaders: [{ loader: '/path/postcss-loader.js' }],
-      resource: '/workspace/src/app.css',
+      resource: sourceCssFile,
     }
     loaderHandler?.({}, sourceCssModule)
     const rewriteLoaderEntry = sourceCssModule.loaders.find(isCssImportRewriteLoader)
     const loaderRuntime = getWebpackLoaderRuntime(rewriteLoaderEntry?.options?.tailwindcssImportRewriteRuntimeKey)
     loaderRuntime?.cssImportRewrite?.registerCssSourceFile?.({
-      file: '/workspace/src/app.css',
+      file: sourceCssFile,
       css: [
         '@import "tailwindcss";',
         '@source "./pages";',
@@ -128,10 +130,10 @@ describe('bundlers/webpack WeappTailwindcss / registered source css mpx main', (
     loaderRuntime?.cssImportRewrite?.registerGeneratedCss?.({
       classSet: new Set(['test-class']),
       css: generatedCss,
-      dependencies: ['/workspace/src/app.css'],
-      file: '/workspace/src/app.css',
+      dependencies: [sourceCssFile],
+      file: sourceCssFile,
     })
-    loaderRuntime?.cssImportRewrite?.markGeneratedCssSource?.('/workspace/src/app.css')
+    loaderRuntime?.cssImportRewrite?.markGeneratedCssSource?.(sourceCssFile)
 
     await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
 
