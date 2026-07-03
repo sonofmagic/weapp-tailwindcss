@@ -4,6 +4,7 @@ import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { getE2EProject } from './projectEntries'
 import { defineProjectTest, ensureProjectBuilt } from './projectTest'
+import { defineTaroBareSelectorRegression } from './taroBareSelectorRegression'
 
 const project = getE2EProject('taro-vite-react-tailwindcss-v4')
 
@@ -11,6 +12,8 @@ defineProjectTest(project, {
   suite: 'e2e',
   fixturesDir: '../demo',
 })
+
+defineTaroBareSelectorRegression(project)
 
 function collectCssRuleBlocks(css: string, selector: string) {
   const blocks: string[] = []

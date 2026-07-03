@@ -1,6 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { InternalUserDefinedOptions } from '@/types'
-import { postcss, removeUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
+import { filterExistingCssRules, postcss, removeUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
 import { removeUnsupportedMiniProgramAtRules } from '../css-cleanup'
 import {
   hasTailwindApplyDirective,
@@ -463,6 +463,38 @@ function unwrapMiniProgramCascadeLayers(source: string) {
   }
 }
 
+function hasClassSelector(selector: string) {
+  return /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i.test(selector)
+}
+
+function collectBareSelectorUserCss(source: string) {
+  try {
+    const root = postcss.parse(source)
+    let changed = false
+    root.walkAtRules('import', (rule) => {
+      rule.remove()
+      changed = true
+    })
+    root.walkRules((rule) => {
+      const selectors = rule.selectors?.length ? rule.selectors : [rule.selector]
+      if (selectors.some(selector => hasClassSelector(selector))) {
+        rule.remove()
+        changed = true
+      }
+    })
+    root.walkAtRules((rule) => {
+      if (rule.nodes !== undefined && rule.nodes.length === 0) {
+        rule.remove()
+        changed = true
+      }
+    })
+    return changed ? root.toString() : source
+  }
+  catch {
+    return ''
+  }
+}
+
 export function stripTailwindSourceMediaFragments(source: string) {
   let removedSourceMediaStart = false
   return terminateTailwindSourceAtRulesBeforeNextDirective(removeTailwindSourceMediaBlocks(source))
@@ -824,5 +856,12 @@ export async function transformGeneratorUserCss(
     ...options.generatorStyleOptions,
     ...options.cssUserHandlerOptions,
   })
-  return removeTailwindV4GeneratedUserCssArtifacts(removeUnsupportedMiniProgramAtRules(css))
+  const transformedCss = removeTailwindV4GeneratedUserCssArtifacts(removeUnsupportedMiniProgramAtRules(css))
+  const bareSelectorUserCss = collectBareSelectorUserCss(userSource)
+  const missingBareSelectorUserCss = bareSelectorUserCss.trim().length > 0
+    ? filterExistingCssRules(transformedCss, bareSelectorUserCss)
+    : ''
+  return missingBareSelectorUserCss.trim().length > 0
+    ? `${transformedCss}\n${missingBareSelectorUserCss}`
+    : transformedCss
 }

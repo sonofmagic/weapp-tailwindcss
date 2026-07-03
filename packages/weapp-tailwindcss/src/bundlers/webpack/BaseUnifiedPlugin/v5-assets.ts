@@ -32,6 +32,7 @@ import { applyWebpackLinkedJsResults, createWebpackJsAssetModuleGraph } from './
 import {
   addRuntimeTransformCandidates,
   collectGeneratedCssRuntimeCandidates,
+  collectWebpackBareSelectorUserCss,
   collectWebpackJsRuntimeCandidatesFromAssets,
   collectWebpackJsRuntimeTokenSignature,
   createWebpackCssSourceTraceTokenSources,
@@ -597,6 +598,12 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               })),
               readCurrentProcessedRawSource(),
             ) !== undefined
+          const hasProcessedLoaderGeneratedUserCss = cachedSkipProcessedCssAsset === undefined
+            && processedLoaderGeneratedCss !== undefined
+            && hasAdditionalWebpackAssetUserCssMarkers(
+              processedLoaderGeneratedCss.css,
+              readCurrentProcessedRawSource(),
+            )
           const shouldFinalizeProcessedWebCssAsset = isWebGeneratorTarget
             && !shouldForceConfiguredMainCssGeneration
             && !shouldRegenerateProcessedTailwindV4SourceCss
@@ -613,6 +620,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               || isWebpackProcessedCssAsset?.(file, readCurrentProcessedRawSource(), processedCssAssetMetadata)
             )
             && !hasProcessedMainAssetUserCss
+            && !hasProcessedLoaderGeneratedUserCss
             && (!cssHandlerOptionsForProcessedAsset.isMainChunk || hasGeneratedCssMarker || hasTailwindGeneratedAssetCss)
           const shouldSkipProcessedCssAsset = (
             cachedSkipProcessedCssAsset
@@ -793,20 +801,51 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     ? loaderGeneratedCss.css
                     : (createWebpackGeneratorUserCssSourceAppend(
                         {
-                          css: currentAssetHasProcessedUrl
-                            ? removeGeneratedSelectorCompatCss(loaderGeneratedCss.css, currentAssetUserCss)
-                            : filterExistingCssRules(currentAssetUserCss, loaderGeneratedCss.css),
+                          css: currentAssetUserCss === undefined
+                            ? loaderGeneratedCss.css
+                            : currentAssetHasProcessedUrl
+                              ? removeGeneratedSelectorCompatCss(loaderGeneratedCss.css, currentAssetUserCss)
+                              : filterExistingCssRules(currentAssetUserCss, loaderGeneratedCss.css),
+                          processed: true,
+                        },
+                        currentAssetUserCss === undefined
+                          ? undefined
+                          : {
+                              css: currentAssetUserCss,
+                              processed: true,
+                            },
+                      )!.css)
+                  const finalizedLoaderCss = finalizeCssAssetSource(mergedLoaderCss, {
+                    cssPreflight: cssHandlerOptions.isMainChunk,
+                    generatedCss: true,
+                  })
+                  const currentAssetBareUserCss = currentAssetUserCss === undefined
+                    ? ''
+                    : collectWebpackBareSelectorUserCss(currentAssetUserCss)
+                  const finalizedCurrentAssetBareUserCss = currentAssetBareUserCss.trim().length === 0
+                    ? ''
+                    : finalizeCssAssetSource(currentAssetBareUserCss, {
+                        cssPreflight: false,
+                        generatedCss: false,
+                      })
+                  const missingCurrentAssetBareUserCss = finalizedCurrentAssetBareUserCss.trim().length === 0
+                    ? ''
+                    : filterExistingCssRules(finalizedLoaderCss, finalizedCurrentAssetBareUserCss)
+                  const css = finalizeTracedCss(
+                    missingCurrentAssetBareUserCss.trim().length === 0
+                      ? finalizedLoaderCss
+                      : createWebpackGeneratorUserCssSourceAppend(
+                        {
+                          css: finalizedLoaderCss,
                           processed: true,
                         },
                         {
-                          css: currentAssetUserCss,
+                          css: missingCurrentAssetBareUserCss,
                           processed: true,
                         },
-                      )!.css)
-                  const css = finalizeTracedCss(finalizeCssAssetSource(mergedLoaderCss, {
-                    cssPreflight: cssHandlerOptions.isMainChunk,
-                    generatedCss: true,
-                  }), cssHandlerOptions)
+                      )!.css,
+                    cssHandlerOptions,
+                  )
                   debug('css consume webpack loader generation: %s <- %s', file, sourceFile)
                   return {
                     result: new ConcatSource(css),

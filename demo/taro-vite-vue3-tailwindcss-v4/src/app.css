@@ -11,3 +11,24 @@
     @slot;
   }
 }
+
+@layer base {
+  button::after,
+  wx-button::after {
+    display: none;
+    border: none;
+    content: "";
+  }
+
+  wx-button {
+    background: #000;
+  }
+}
+
+wx-button {
+  background: #444;
+}
+
+abc {
+  background: #222;
+}

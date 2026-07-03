@@ -4,6 +4,7 @@ import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { getE2EProject } from './projectEntries'
 import { defineProjectTest, ensureProjectBuilt } from './projectTest'
+import { defineTaroBareSelectorRegression } from './taroBareSelectorRegression'
 
 const project = getE2EProject('taro-webpack-react-tailwindcss-v4')
 
@@ -112,6 +113,8 @@ describe('e2e', () => {
     expect(countCssSelector(css, '.issue-940-style-class')).toBe(1)
     expect(countCssSelector(css, '.issue-940-app-class')).toBe(1)
   })
+
+  defineTaroBareSelectorRegression(project)
 
   it('keeps webpack processed static asset urls in app wxss', async () => {
     const projectBase = path.resolve(__dirname, '../demo')

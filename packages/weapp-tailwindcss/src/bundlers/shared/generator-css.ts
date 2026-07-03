@@ -501,9 +501,11 @@ export async function generateCssByGenerator(
       const afterLayerUserCss = await transformGeneratorUserCss(afterLayerParts.layer, userCssOptions)
       const afterUserCss = await transformGeneratorUserCss(afterLayerParts.rest, userCssOptions)
       const fallbackLayerUserCss = generated.target === 'weapp'
-        && afterLayerParts.layer.trim().length === 0
         && hasUserCssLayerBlocks(userCssRawSource)
-        ? await transformGeneratorUserCss(splitUserCssLayerBlocks(userCssRawSource).layer, userCssOptions)
+        ? filterExistingCssRules(
+            afterLayerUserCss,
+            await transformGeneratorUserCss(splitUserCssLayerBlocks(userCssRawSource).layer, userCssOptions),
+          )
         : ''
       const orderedAfterLayerUserCss = generated.target === 'weapp'
         ? wrapUserLayerComponentsCss(createCssSourceOrderAppend(afterLayerUserCss, fallbackLayerUserCss))

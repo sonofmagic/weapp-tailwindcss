@@ -7,7 +7,7 @@ import type { InternalUserDefinedOptions, TailwindcssRuntimeLike } from '@/types
 import path from 'node:path'
 import process from 'node:process'
 import { MappingChars2String } from '@weapp-core/escape'
-import { filterExistingCssRules, postcss } from '@weapp-tailwindcss/postcss'
+import { filterExistingCssRules, postcss, removeUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
 import { resolveStyleOptionsFromContext } from '@/context/style-options'
 import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
 import { finalizeMiniProgramCss, pruneMiniProgramGeneratedCss, stripMiniProgramCssSpecificityPlaceholders } from '../../../shared/css-cleanup'
@@ -263,12 +263,14 @@ export function shouldUseWebpackAssetAsGeneratorUserCss(
   generatorRawSource: string,
   options: { processed?: boolean | undefined } = {},
 ) {
+  const rawMarkers = collectWebpackAssetUserCssMarkers(rawSource)
   return rawSource !== generatorRawSource
     && (options.processed === true || !rawSource.includes('data:'))
     && !hasTailwindRootDirectives(rawSource, { importFallback: true })
     && !hasTailwindSourceDirectives(rawSource, { importFallback: true })
     && !hasTailwindApplyDirective(rawSource)
-    && /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i.test(rawSource)
+    && rawMarkers.size > 0
+    && !isOnlyWebpackTailwindGeneratedPreflightCss(rawSource)
     && (
       !hasTailwindGeneratedCssMarkers(rawSource)
       || hasAdditionalWebpackAssetUserCssMarkers(rawSource, generatorRawSource)
@@ -309,10 +311,60 @@ export function collectWebpackAssetUserCssMarkers(source: string) {
   return markers
 }
 
+function hasWebpackClassSelector(selector: string) {
+  return /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i.test(selector)
+}
+
+function isWebpackKeyframesRule(rule: postcss.Rule) {
+  let parent = rule.parent as postcss.Container | undefined
+  while (parent) {
+    if (parent.type === 'atrule' && (parent as postcss.AtRule).name.endsWith('keyframes')) {
+      return true
+    }
+    parent = parent.parent as postcss.Container | undefined
+  }
+  return false
+}
+
+export function collectWebpackBareSelectorUserCss(source: string) {
+  try {
+    const root = postcss.parse(source)
+    let changed = false
+    root.walkAtRules((rule) => {
+      if (rule.name === 'import' || rule.name === 'font-face' || rule.name.endsWith('keyframes')) {
+        rule.remove()
+        changed = true
+      }
+    })
+    root.walkRules((rule) => {
+      if (
+        isWebpackKeyframesRule(rule)
+        || rule.selectors.some(selector => hasWebpackClassSelector(selector))
+      ) {
+        rule.remove()
+        changed = true
+      }
+    })
+    root.walkAtRules((rule) => {
+      if (rule.nodes !== undefined && rule.nodes.length === 0) {
+        rule.remove()
+        changed = true
+      }
+    })
+    return changed ? root.toString() : source
+  }
+  catch {
+    return ''
+  }
+}
+
 const WEBPACK_TAILWIND_GENERATED_LAYER_NAMES = new Set(['theme', 'base', 'utilities'])
 const WEBPACK_TAILWIND_UTILITY_RULE_MARKER_RE = /(?:^|[^\w-])\.[^,{]{0,512}(?:\\:|\\\[|\\#)/
 const WEBPACK_TAILWIND_UTILITY_PREFIX_RE = /^\.(?:-?(?:bg|text|border|ring|shadow|drop-shadow|[pmwhz]|px|py|pt|pr|pb|pl|mx|my|mt|mr|mb|ml|min-w|min-h|max-w|max-h|flex|grid|inline|block|hidden|rounded|opacity|translate|scale|rotate|skew|top|right|bottom|left|inset|gap|font|leading|tracking|underline|container)(?:[\-\\{]|$)|\\\[)/
 const WEBPACK_TAILWIND_BANNER_RE = /tailwindcss v4\./
+const WEBPACK_TAILWIND_PREFLIGHT_SELECTORS = new Set(['*', ':after', ':before', '::after', '::before', '::backdrop', 'view', 'text'])
+const WEBPACK_TAILWIND_PREFLIGHT_PROPS = new Set(['box-sizing', 'border', 'border-width', 'border-style', 'border-color', 'margin', 'padding'])
+const WEBPACK_TAILWIND_THEME_TOKEN_RE = /^--(?:tw-|color-|spacing|breakpoint-|container-|text-|font-|tracking-|leading-|radius-|shadow-|inset-shadow-|drop-shadow-|ease-|animate-|blur-|perspective-|aspect-|default-)/
 
 export function parseWebpackCssLayerNames(params: string) {
   return params
@@ -357,21 +409,25 @@ export function removeWebpackTailwindGeneratedAssetCss(source: string) {
         return
       }
       if (shouldRemoveLayer && !names.includes('utilities')) {
-        rule.remove()
-        changed = true
+        for (const child of [...rule.nodes ?? []]) {
+          if (isWebpackTailwindGeneratedLayerNode(child, names)) {
+            child.remove()
+            changed = true
+          }
+        }
+        if (rule.nodes?.length === 0) {
+          rule.remove()
+          changed = true
+        }
         return
       }
       if (shouldRemoveLayer) {
-        rule.walkRules((nestedRule) => {
-          const selector = nestedRule.selector.trim()
-          if (
-            WEBPACK_TAILWIND_UTILITY_RULE_MARKER_RE.test(selector)
-            || WEBPACK_TAILWIND_UTILITY_PREFIX_RE.test(selector)
-          ) {
-            nestedRule.remove()
+        for (const child of [...rule.nodes ?? []]) {
+          if (isWebpackTailwindGeneratedLayerNode(child, names)) {
+            child.remove()
             changed = true
           }
-        })
+        }
         if (rule.nodes?.length === 0) {
           rule.remove()
           changed = true
@@ -383,7 +439,10 @@ export function removeWebpackTailwindGeneratedAssetCss(source: string) {
         return
       }
       const selector = rule.selector.trim()
-      if (WEBPACK_TAILWIND_UTILITY_RULE_MARKER_RE.test(selector)) {
+      if (
+        WEBPACK_TAILWIND_UTILITY_RULE_MARKER_RE.test(selector)
+        || isWebpackTailwindGeneratedPreflightRule(rule)
+      ) {
         rule.remove()
         changed = true
       }
@@ -409,7 +468,7 @@ export function removeWebpackTailwindGeneratedAssetCss(source: string) {
 
 function isWebpackTailwindGeneratedPrefixNode(node: postcss.ChildNode): boolean {
   if (node.type === 'rule') {
-    return node.selectors.every(selector => isWebpackTailwindGeneratedUtilitySelector(selector.trim(), true))
+    return isWebpackTailwindGeneratedRule(node, ['theme', 'base', 'utilities'], true)
   }
   if (node.type !== 'atrule') {
     return false
@@ -427,12 +486,86 @@ function isWebpackTailwindGeneratedPrefixNode(node: postcss.ChildNode): boolean 
     names.length > 0
     && names.every(name => WEBPACK_TAILWIND_GENERATED_LAYER_NAMES.has(name))
   ) {
-    return true
+    if (node.nodes === undefined) {
+      return true
+    }
+    return node.nodes.length > 0 && node.nodes.every(child => isWebpackTailwindGeneratedLayerNode(child, names))
   }
   if (node.nodes === undefined || node.nodes.length === 0) {
     return false
   }
   return node.nodes.every(child => isWebpackTailwindGeneratedPrefixNode(child))
+}
+
+function isWebpackTailwindGeneratedLayerNode(node: postcss.ChildNode, layerNames: string[]): boolean {
+  if (node.type === 'rule') {
+    return isWebpackTailwindGeneratedRule(node, layerNames, false)
+  }
+  if (node.type !== 'atrule') {
+    return false
+  }
+  if (node.name === 'property' && node.params.trim().startsWith('--tw-')) {
+    return true
+  }
+  if (node.nodes === undefined || node.nodes.length === 0) {
+    return false
+  }
+  return node.nodes.every(child => isWebpackTailwindGeneratedLayerNode(child, layerNames))
+}
+
+function isWebpackTailwindGeneratedRule(rule: postcss.Rule, layerNames: string[], includePrefix: boolean): boolean {
+  const selectors = rule.selectors ?? [rule.selector]
+  if (selectors.every(selector => isWebpackTailwindGeneratedUtilitySelector(selector.trim(), includePrefix))) {
+    return true
+  }
+  if (selectors.every(selector => isWebpackTailwindGeneratedUtilitySelector(selector.trim(), true))) {
+    return true
+  }
+  if (layerNames.includes('theme') && isWebpackTailwindGeneratedThemeRule(rule)) {
+    return true
+  }
+  if (layerNames.includes('base') && isWebpackTailwindGeneratedPreflightRule(rule)) {
+    return true
+  }
+  return false
+}
+
+function isWebpackTailwindGeneratedThemeRule(rule: postcss.Rule): boolean {
+  const declarations = (rule.nodes ?? []).filter((node): node is postcss.Declaration => node.type === 'decl')
+  return declarations.length > 0
+    && declarations.every(decl =>
+      WEBPACK_TAILWIND_THEME_TOKEN_RE.test(decl.prop)
+      || decl.value.includes('--theme('),
+    )
+}
+
+function isWebpackTailwindGeneratedPreflightRule(rule: postcss.Rule): boolean {
+  const selectors = rule.selectors ?? [rule.selector]
+  const declarations = (rule.nodes ?? []).filter((node): node is postcss.Declaration => node.type === 'decl')
+  return selectors.length > 0
+    && declarations.length > 0
+    && selectors.every((selector) => {
+      const normalized = selector.trim().replace(/\s+/g, ' ')
+      return WEBPACK_TAILWIND_PREFLIGHT_SELECTORS.has(normalized)
+    })
+    && declarations.every(decl => WEBPACK_TAILWIND_PREFLIGHT_PROPS.has(decl.prop))
+}
+
+function isOnlyWebpackTailwindGeneratedPreflightCss(source: string): boolean {
+  try {
+    const root = postcss.parse(source)
+    const nodes = root.nodes ?? []
+    return nodes.length > 0
+      && nodes.every((node) => {
+        if (node.type === 'rule') {
+          return isWebpackTailwindGeneratedPreflightRule(node)
+        }
+        return node.type === 'atrule' && (node.nodes === undefined || node.nodes.length === 0)
+      })
+  }
+  catch {
+    return false
+  }
 }
 
 function isWebpackTailwindGeneratedUtilitySelector(selector: string, includePrefix: boolean): boolean {
@@ -554,6 +687,39 @@ export function removeWebpackGeneratorNonTailwindImports(source: string | undefi
   }
   catch {
     return source
+  }
+}
+
+export function removeWebpackUserCssFallbackImports(source: string) {
+  if (!source.includes('@import')) {
+    return source
+  }
+  try {
+    const root = postcss.parse(source)
+    let changed = false
+    root.walkAtRules('import', (rule) => {
+      rule.remove()
+      changed = true
+    })
+    return changed ? root.toString() : source
+  }
+  catch {
+    return source
+  }
+}
+
+export function normalizeWebpackUserCssFallbackSource(source: string) {
+  const withoutImports = removeWebpackUserCssFallbackImports(source)
+  if (!withoutImports.includes('@layer')) {
+    return withoutImports
+  }
+  try {
+    const root = postcss.parse(withoutImports)
+    removeUnsupportedCascadeLayers(root)
+    return root.toString()
+  }
+  catch {
+    return withoutImports
   }
 }
 

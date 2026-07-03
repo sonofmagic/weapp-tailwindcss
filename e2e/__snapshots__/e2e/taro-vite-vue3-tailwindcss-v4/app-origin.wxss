@@ -26,6 +26,15 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
+}
 /* tokens: mt-2 <= src/pages/index/index.vue */
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);
@@ -15375,6 +15384,21 @@ wx-root-portal-content {
 .nut-cropper-popup__highlight .highlight__round {
   border-radius: 50%;
 }
+.h5-button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
+}
+wx-button {
+  background: #444;
+}
+abc {
+  background: #222;
+}
 .weapp-tw-user-ui-card {
   display: inline-flex;
   align-items: center;
@@ -15397,5 +15421,19 @@ wx-root-portal-content {
   50% {
     opacity: 0.65;
     transform: scale(0.96);
+  }
+}
+@keyframes progressActive {
+  0% {
+    background: #ffffff1a;
+    width: 0;
+  }
+  20% {
+    background: #ffffff80;
+    width: 0;
+  }
+  to {
+    background: #fff0;
+    width: 100%;
   }
 }
