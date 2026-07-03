@@ -5712,6 +5712,124 @@ describe('bundlers/shared generator css', () => {
     expect(result?.css.match(/text-_b188rpx_B/g) ?? []).toHaveLength(1)
   })
 
+  it('uses fresh Tailwind v4 source candidates when an upstream scoped runtime is empty', async () => {
+    const mainCss = '@import "tailwindcss";\n@source "../src";'
+    const scannedCandidates = new Set(['text-[102.43rpx]'])
+    const resolveTailwindV4Source = vi.fn(async (options: any) => ({
+      projectRoot: '/project',
+      base: firstResolvedCssSourceOption(options).base,
+      baseFallbacks: [],
+      css: firstResolvedCssSourceOption(options).css,
+      dependencies: [firstResolvedCssSourceOption(options).file],
+    }))
+    const generateMock = vi.fn(async (options: any) => ({
+      css: options.candidates.has('text-[102.43rpx]')
+        ? '/*! tailwindcss v4.0.0 */\n.text-_b102_d43rpx_B{font-size:102.43rpx}'
+        : '/*! tailwindcss v4.0.0 */',
+      rawCss: options.candidates.has('text-[102.43rpx]')
+        ? '.text-\\[102\\.43rpx\\]{font-size:102.43rpx}'
+        : '',
+      target: 'weapp',
+      classSet: new Set(options.candidates),
+      dependencies: ['/project/src/app.css'],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source,
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: '/project',
+        baseFallbacks: [],
+        cssSources: [
+          {
+            file: '/project/src/app.css',
+            base: '/project/src',
+            css: mainCss,
+          },
+        ],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(),
+      rawSource: '/*! weapp-tailwindcss generator-placeholder */',
+      file: '/project/dist/wx/app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: '/project/dist/wx/app.wxss',
+          },
+        },
+        majorVersion: 4,
+        sourceOptions: {
+          outputRoot: '/project/dist/wx',
+          cssSources: [
+            {
+              file: '/project/src/app.css',
+              base: '/project/src',
+              css: mainCss,
+            },
+          ],
+        },
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: '/project/dist/wx/app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+      forceGenerator: true,
+      cssSources: [
+        {
+          file: '/project/src/app.css',
+          base: '/project/src',
+          css: mainCss,
+        },
+      ],
+      getSourceCandidatesForEntries: vi.fn(entries =>
+        entries?.some(entry => entry.base === '/project/src')
+          ? scannedCandidates
+          : new Set<string>(),
+      ),
+      sourceCandidates: new Set(),
+    })
+
+    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+      candidates: scannedCandidates,
+      scanSources: false,
+    }))
+    expect(result?.classSet).toEqual(scannedCandidates)
+    expect(result?.css).toContain('text-_b102_d43rpx_B')
+  })
+
   it('keeps preflight out of non-primary Tailwind v4 cssSource outputs', async () => {
     const runtimeSet = new Set(['sub-only'])
     const mainCss = ':host,page,.tw-root,wx-root-portal-content { --spacing: 0.25rem; }'

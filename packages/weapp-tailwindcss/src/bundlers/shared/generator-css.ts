@@ -82,6 +82,22 @@ function intersectCandidateSets(left: Set<string>, right: Set<string>) {
   return matched
 }
 
+function resolveScopedRuntimeCandidates(
+  sourceCandidates: Set<string> | undefined,
+  sourceScopedRuntime: Set<string> | undefined,
+) {
+  if (!sourceCandidates) {
+    return sourceScopedRuntime
+  }
+  if (!sourceScopedRuntime) {
+    return sourceCandidates
+  }
+  if (sourceCandidates.size === 0) {
+    return sourceScopedRuntime
+  }
+  return intersectCandidateSets(sourceCandidates, sourceScopedRuntime)
+}
+
 function parseCssSourceRoot(rawSource: string) {
   try {
     return postcss.parse(rawSource)
@@ -355,9 +371,7 @@ export async function generateCssByGenerator(
       const sourceScopedRuntime = sourceEntries && sourceEntries.length > 0
         ? getSourceCandidatesForEntries?.(sourceEntries)
         : undefined
-      const scopedRuntime = options.sourceCandidates && sourceScopedRuntime
-        ? intersectCandidateSets(options.sourceCandidates, sourceScopedRuntime)
-        : options.sourceCandidates ?? sourceScopedRuntime
+      const scopedRuntime = resolveScopedRuntimeCandidates(options.sourceCandidates, sourceScopedRuntime)
       const isolateCssSource = shouldIsolateScopedCssSource(majorVersion, source, sourceEntries, {
         cssHandlerOptions,
         target: generatorOptions.target,

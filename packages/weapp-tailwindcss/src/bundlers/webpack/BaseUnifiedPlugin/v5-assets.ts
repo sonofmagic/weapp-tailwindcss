@@ -25,6 +25,7 @@ import { createScopedGeneratorRuntime } from '../../vite/generate-bundle/scoped-
 import { createCandidateSignature } from '../../vite/generate-bundle/signatures'
 import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
 import { collectStrictEscapedRuntimeCandidates, createEscapeFragments } from '../../vite/incremental-runtime-class-set/escaped-candidates'
+import { resolveTailwindV4EntriesFromCssCached } from '../../vite/source-scan'
 import { isWebpackCssLoaderRuntimeSource } from '../shared/css-loader-runtime'
 import { createAssetHashByChunkMap, createRuntimeAwareCssHash, createWebpackCssAssetResourceMap, getCacheKey } from './shared'
 import { createWebpackCssSourceResolvers } from './v5-assets/css-source-resolvers'
@@ -58,6 +59,7 @@ import {
   resolveWebpackMemoryDebugStats,
   scopeWebpackGeneratorOptionsToCssSource,
   shouldAppendCurrentWebpackAssetUserCss,
+  shouldConsumeWebpackLoaderGeneratedCss,
   shouldFallbackToWebpackUserCssOnGeneratorError,
   shouldUseWebpackAssetAsGeneratorUserCss,
   stringifyOptionalWebpackSourceValue,
@@ -800,12 +802,24 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     hasTailwindSourceDirectives(sourceCss, { importFallback: true })
                     || sourceCss.includes('@config')
                   )
+                const explicitTailwindV4SourceCandidates = shouldRegenerateExplicitTailwindV4CssSource
+                  && sourceCss
+                  && sourceFile
+                  && webpackSourceCandidates?.getSourceCandidatesForEntries
+                  ? await resolveTailwindV4EntriesFromCssCached(sourceCss, path.dirname(sourceFile))
+                      .then(resolved => resolved?.entries
+                        ? webpackSourceCandidates.getSourceCandidatesForEntries(resolved.entries)
+                        : undefined)
+                  : undefined
                 if (
                   loaderGeneratedCss
-                  && (
-                    !shouldRegenerateExplicitTailwindV4CssSource
-                    || hasBundlerGeneratedCssMarker(currentRawSource)
-                  )
+                  && shouldConsumeWebpackLoaderGeneratedCss({
+                    hasBundlerGeneratedCssMarker: hasBundlerGeneratedCssMarker(currentRawSource),
+                    loaderGeneratedClassSet: loaderGeneratedCss.classSet,
+                    sourceCandidates: explicitTailwindV4SourceCandidates,
+                    shouldRegenerateExplicitTailwindV4CssSource,
+                    watchMode,
+                  })
                 ) {
                   for (const className of loaderGeneratedCss.classSet) {
                     generatorRuntimeSet.add(className)
