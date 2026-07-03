@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { vitePluginName } from '@/constants'
 import {
   createContext,
+  getTransformUVueMock,
   resetVitePluginTestContext,
   setCurrentContext,
 } from './vite-plugin.testkit'
@@ -153,6 +154,36 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
         process.env.UNI_PLATFORM = previousUniPlatform
       }
     }
+  })
+
+  it('keeps uni-app x uvue transform enabled on Web targets', async () => {
+    const context = createContext({
+      appType: 'uni-app-x',
+      tailwindcssBasedir: '/project',
+      uniAppX: {
+        enabled: false,
+      },
+    })
+    setCurrentContext(context)
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()!
+    const uvuePlugin = plugins.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin | undefined
+
+    expect(uvuePlugin).toBeTruthy()
+
+    const result = await getTransformHandler(uvuePlugin!)?.call(
+      uvuePlugin,
+      '<template><view class="text-[#f7fbff]">Hello</view></template>',
+      '/project/pages/index/index.uvue',
+    )
+
+    expect(getTransformUVueMock()).toHaveBeenCalledWith(
+      '<template><view class="text-[#f7fbff]">Hello</view></template>',
+      '/project/pages/index/index.uvue',
+      context.jsHandler,
+      expect.any(Set),
+    )
+    expect(result?.code).toContain('uvue:/project/pages/index/index.uvue:')
   })
 
   it('infers mini-program platform from vite output directory for early CSS macro compilation', async () => {

@@ -65,9 +65,7 @@ export default defineConfig({
         cssEntries: [
           resolve(projectRoot, 'main.css'),
         ],
-        cssOptions: {
-          rem2rpx: true,
-        },
+        rem2rpx: true,
       }),
     ),
   ],
@@ -75,6 +73,12 @@ export default defineConfig({
 ```
 
 不要再注册 `@tailwindcss/postcss` 或 `@tailwindcss/vite`。小程序和 App 目标下的 Tailwind 生成、类名转译与单位处理都由 `weapp-tailwindcss` 接管。
+
+:::info Web 与 App 调试注意
+`cssEntries` 用来告诉 `weapp-tailwindcss` Tailwind CSS 4 的入口文件，入口仍应是 HBuilderX / Vite 能处理到的真实 CSS 文件。Web/H5、Android 和 iOS 都需要保持 `appType: 'uni-app-x'`，不要因为运行到 Web 端手动关闭 `uniAppX`，否则 `.uvue` 模板里的任意值类名不会转换成安全选择器。
+
+`rem2rpx`、`unitsToPx`、`unitConversion` 是 `uniAppX()` 预设的顶层选项，不要放进 `cssOptions`。
+:::
 
 ## 添加 CSS 入口
 

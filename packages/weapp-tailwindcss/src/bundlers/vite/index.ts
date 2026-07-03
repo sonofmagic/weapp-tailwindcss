@@ -194,6 +194,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const initialTailwindRuntime = tailwindRuntime
   const refreshTailwindRuntime = refreshTailwindcssRuntime
   const uniAppXEnabled = isUniAppXEnabled(uniAppX)
+  const shouldEnableUniAppXPlugins = opts.appType === 'uni-app-x' || uniAppXEnabled
 
   const disabledOptions = resolvePluginDisabledState(disabled)
   const tailwindcssMajorVersion = initialTailwindRuntime.majorVersion ?? 0
@@ -972,7 +973,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     await syncSourceCandidateScan()
   }
-  const uniAppXPlugins = uniAppXEnabled
+  const uniAppXPlugins = shouldEnableUniAppXPlugins
     ? createUniAppXPlugins({
         appType: opts.appType ?? 'uni-app-x',
         customAttributesEntities,
