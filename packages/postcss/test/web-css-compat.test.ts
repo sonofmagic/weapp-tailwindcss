@@ -222,6 +222,25 @@ describe('web css compatibility transform', () => {
     expect(safe).toContain('background-image: radial-gradient(circle at center, #fff, #000)')
   })
 
+  it('preserves CSS custom properties for the Chrome 91 and AppleWebKit 537.36 baseline', () => {
+    const css = [
+      ':root {',
+      '  --app-accent: rgb(16, 185, 129);',
+      '  --app-size: 45px;',
+      '}',
+      '.css-variable-probe {',
+      '  background-color: var(--app-accent);',
+      '  font-size: var(--app-size);',
+      '}',
+    ].join('\n')
+    const result = transformWebCssCompat(css, true)
+
+    expect(result).toContain('--app-accent: rgb(16, 185, 129)')
+    expect(result).toContain('--app-size: 45px')
+    expect(result).toContain('background-color: var(--app-accent)')
+    expect(result).toContain('font-size: var(--app-size)')
+  })
+
   it('preserves Tailwind registered property initial values as web compat fallbacks', () => {
     const css = [
       '@property --tw-border-style { syntax: "*"; inherits: false; initial-value: solid; }',

@@ -313,6 +313,9 @@ function createUniAppAppCases(options: {
   transformedFiles?: string[]
   transformedOutputFiles?: string[]
   launchEnv?: Record<string, string>
+  styleOutputFiles?: string[]
+  styleContains?: Array<string | RegExp>
+  hmrStyleContains?: Array<string | RegExp>
 }) {
   const {
     name,
@@ -327,13 +330,16 @@ function createUniAppAppCases(options: {
     transformedFiles = [`${outputDir}/app-service.js`, `${outputDir}/app.css`],
     transformedOutputFiles,
     launchEnv,
+    styleOutputFiles = ['app.css'],
+    styleContains: extraStyleContains = [],
+    hmrStyleContains: extraHmrStyleContains = [],
   } = options
   const markerClass = 'bg-[#102938] text-[#f7fbff] w-[173px]'
   const hmrMarkerClass = 'bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]'
   const transformedClassNames = ['bg-_b_h102938_B', 'text-_b_hf7fbff_B', 'w-_b173px_B']
   const hmrTransformedClassNames = ['bg-_b_h3b0764_B', 'text-_b_hfef08a_B', 'h-_b41px_B', 'mt-_b19px_B']
-  const styleContains = ['.bg-_b_h102938_B', '.text-_b_hf7fbff_B', '.w-_b173px_B']
-  const hmrStyleContains = ['.bg-_b_h3b0764_B', '.text-_b_hfef08a_B', '.h-_b41px_B', '.mt-_b19px_B']
+  const styleContains = ['.bg-_b_h102938_B', '.text-_b_hf7fbff_B', '.w-_b173px_B', ...extraStyleContains]
+  const hmrStyleContains = ['.bg-_b_h3b0764_B', '.text-_b_hfef08a_B', '.h-_b41px_B', '.mt-_b19px_B', ...extraHmrStyleContains]
 
   function createOutputDirCandidates(platform: AppPlatform) {
     const defaults = [
@@ -369,7 +375,7 @@ function createUniAppAppCases(options: {
       transformedOutputFiles,
       transformedContains: [...transformedClassNames, `hbuilderx-app-dynamic-${version}-${platformName}`],
       hmrTransformedContains: [...hmrTransformedClassNames, `hbuilderx-app-hmr-${version}-${platformName}`],
-      styleOutputFiles: ['app.css'],
+      styleOutputFiles,
       styleContains,
       hmrStyleContains,
     }
@@ -386,13 +392,32 @@ export const uniAppAppCases: AppCase[] = [
     name: 'uni-app-vite-tailwindcss-v4',
     projectDir: 'demo/uni-app-vite-tailwindcss-v4',
     sourceFile: 'src/pages/index/index.vue',
-    markerAnchor: '<view class="i-mdi-home">',
+    markerAnchor: '<view class="special-class-visual-probe',
     version: 'v4',
     launchEnv: {
       UNI_INPUT_DIR: 'src',
     },
     transformedFiles: [],
     transformedOutputFiles: ['app-service.js', 'app.css'],
+    styleOutputFiles: ['app.css', 'pages/index/index.css'],
+    styleContains: [
+      '.bg-white_f70',
+      /background-color:\s*rgba\(255,\s*255,\s*255,\s*0\.7\)/,
+      '.text-_b45rpx_B',
+      '.dark_cbg-red-300',
+      '.bg-_bradial-gradient_pcircle_at_18_v_20_v_m_he0f2fe_m_hfdf4ff_70_v_P_B',
+      /background-image:\s*radial-gradient\(circle at 18% 20%,#e0f2fe,#fdf4ff 70%\)/,
+      '.css-variable-visual-probe',
+      '--visual-probe-bg: rgb(16, 185, 129)',
+      'background-color: var(--visual-probe-bg)',
+      'font-size: var(--visual-probe-size)',
+    ],
+    hmrStyleContains: [
+      '.bg-white_f70',
+      '.text-_b45rpx_B',
+      '.dark_cbg-red-300',
+      '.css-variable-visual-probe',
+    ],
   }),
   ...createUniAppAppCases({
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',

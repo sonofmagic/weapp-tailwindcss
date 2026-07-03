@@ -422,17 +422,71 @@ async function analyzeAppScreenshot(screenshot: string) {
   }
 }
 
+function parseHexColorFromClass(className: string) {
+  const match = className.match(/\bbg-\[#([0-9a-f]{6})\]/i)
+  if (!match?.[1]) {
+    return undefined
+  }
+  const value = match[1]
+  return {
+    blue: Number.parseInt(value.slice(4, 6), 16),
+    green: Number.parseInt(value.slice(2, 4), 16),
+    red: Number.parseInt(value.slice(0, 2), 16),
+  }
+}
+
+async function analyzeScreenshotColorPresence(
+  screenshot: string,
+  color: { red: number, green: number, blue: number },
+) {
+  const image = PNG.sync.read(fsSync.readFileSync(screenshot))
+  const data = image.data
+  let matchingPixels = 0
+  for (let index = 0; index < data.length; index += 4) {
+    const alpha = data[index + 3] ?? 255
+    if (alpha < 8) {
+      continue
+    }
+    const red = data[index] ?? 255
+    const green = data[index + 1] ?? 255
+    const blue = data[index + 2] ?? 255
+    if (
+      Math.abs(red - color.red) <= 3
+      && Math.abs(green - color.green) <= 3
+      && Math.abs(blue - color.blue) <= 3
+    ) {
+      matchingPixels += 1
+    }
+  }
+  return {
+    color,
+    matchingPixels,
+    matched: matchingPixels > 100,
+  }
+}
+
 function isAndroidDebugShell(uiHierarchy: string) {
   return /Connect to HBuilderX successfully|io\.dcloud\.uniappx:id\/pull_msg|io\.dcloud\.HBuilder\/io\.dcloud\.PandoraEntryActivity/.test(uiHierarchy)
 }
 
-async function collectAppScreenshotEvidence(item: AppCase, screenshot: string, env: Record<string, string | undefined>) {
+async function collectAppScreenshotEvidence(
+  item: AppCase,
+  screenshot: string,
+  env: Record<string, string | undefined>,
+  expectedMarkerClass?: string,
+) {
   const visual = await analyzeAppScreenshot(screenshot)
+  const expectedMarkerColor = expectedMarkerClass ? parseHexColorFromClass(expectedMarkerClass) : undefined
+  const marker = expectedMarkerColor
+    ? await analyzeScreenshotColorPresence(screenshot, expectedMarkerColor)
+    : undefined
+  const markerReady = marker ? marker.matched : true
   if (item.platform === 'app-android') {
     const deviceId = resolveAndroidScreenshotDeviceId(item)
     const uiHierarchy = await readAndroidUiHierarchy(env, deviceId)
     return {
-      ready: !isAndroidDebugShell(uiHierarchy) && visual.nonWhiteRatio > 0.01,
+      marker,
+      ready: !isAndroidDebugShell(uiHierarchy) && visual.nonWhiteRatio > 0.01 && markerReady,
       uiTextPreview: uiHierarchy
         .replace(/\s+/g, ' ')
         .slice(0, 800),
@@ -441,12 +495,14 @@ async function collectAppScreenshotEvidence(item: AppCase, screenshot: string, e
   }
   if (item.platform === 'app-harmony') {
     return {
-      ready: visual.nonWhiteRatio > 0.025,
+      marker,
+      ready: visual.nonWhiteRatio > 0.025 && markerReady,
       visual,
     }
   }
   return {
-    ready: visual.nonWhiteRatio > 0.025,
+    marker,
+    ready: visual.nonWhiteRatio > 0.025 && markerReady,
     visual,
   }
 }
@@ -457,6 +513,7 @@ async function waitForAppScreenshotReady(
   env: Record<string, string | undefined>,
   label: string,
   ensureRunning: () => void,
+  expectedMarkerClass?: string,
 ) {
   const startedAt = Date.now()
   let latest: Record<string, unknown> | undefined
@@ -464,7 +521,7 @@ async function waitForAppScreenshotReady(
     ensureRunning()
     await captureAppScreenshot(item, screenshot, env)
     ensureRunning()
-    const evidence = await collectAppScreenshotEvidence(item, screenshot, env)
+    const evidence = await collectAppScreenshotEvidence(item, screenshot, env, expectedMarkerClass)
     latest = evidence
     if (evidence.ready) {
       return evidence
@@ -600,7 +657,7 @@ async function runAppCaseVariant(
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: initial output ${initialOutputRoot}\n`)
     await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot before\n`)
-    beforeScreenshotEvidence = await waitForAppScreenshotReady(item, hmrBeforeScreenshot, toolEnv, `${item.name} HMR 前`, ensureInitialRunning)
+    beforeScreenshotEvidence = await waitForAppScreenshotReady(item, hmrBeforeScreenshot, toolEnv, `${item.name} HMR 前`, ensureInitialRunning, item.markerClass)
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write hmr marker\n`)
     await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
@@ -614,7 +671,7 @@ async function runAppCaseVariant(
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: hmr output ${hmrOutputRoot}\n`)
     await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot after\n`)
-    afterScreenshotEvidence = await waitForAppScreenshotReady(item, hmrAfterScreenshot, toolEnv, `${item.name} HMR 后`, ensureHmrRunning)
+    afterScreenshotEvidence = await waitForAppScreenshotReady(item, hmrAfterScreenshot, toolEnv, `${item.name} HMR 后`, ensureHmrRunning, item.hmrMarkerClass)
     await fs.copyFile(hmrAfterScreenshot, screenshot)
 
     results.push({
