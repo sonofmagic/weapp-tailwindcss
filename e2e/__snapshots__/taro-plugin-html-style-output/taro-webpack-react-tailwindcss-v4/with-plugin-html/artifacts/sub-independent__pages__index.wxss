@@ -372,7 +372,7 @@ wx-root-portal-content {
 }
  /* tokens: bg-conic/decreasing <= src/pages/issue-928/index.tsx */
 .bg-conic_fdecreasing {
-  --tw-gradient-position: in oklch decreasing hue;
+  --tw-gradient-position: from 0deg;
   background-image: conic-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
