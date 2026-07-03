@@ -1,6 +1,6 @@
 import type { IStyleHandlerOptions, WebCssCompatUserOptions } from '../types'
 
-export type WeappTailwindcssPostcssTarget = 'weapp' | 'web' | 'tailwind'
+export type WeappTailwindcssPostcssTarget = 'weapp' | 'web'
 
 export interface TailwindCandidateSource {
   content: string

@@ -36,7 +36,7 @@ export function hasMiniProgramTailwindV4PreflightReset(css: string) {
 }
 
 function isMiniProgramGeneratorTarget(target: string) {
-  return target !== 'web' && target !== 'tailwind'
+  return target !== 'web'
 }
 
 export function finalizeMiniProgramGeneratorCss(

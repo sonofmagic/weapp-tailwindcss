@@ -26,7 +26,7 @@ function resolveTailwindV4PostcssSourceCss(css: string, sourceOptions: Pick<Weap
 }
 
 function isMiniProgramGeneratorTarget(target: string) {
-  return target !== 'web' && target !== 'tailwind'
+  return target !== 'web'
 }
 
 function finalizeGeneratedCss(
