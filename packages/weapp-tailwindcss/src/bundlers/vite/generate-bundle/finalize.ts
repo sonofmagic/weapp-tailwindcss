@@ -3,7 +3,7 @@ import type { BundleBuildState, BundleSnapshot } from '../bundle-state'
 import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext } from './types'
 import path from 'node:path'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { postcss, transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
 import { injectUniAppXHarmonyBundleStyles } from '@/uni-app-x/style-asset'
 import { parseImportRequest } from '../../shared/generator-css/directives'
 import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
@@ -72,6 +72,7 @@ interface FinalizeGenerateBundleOptions {
   tasks: Promise<void>[]
   timingDetails: Record<string, number>
   transformRuntime: Set<string>
+  transformWebTargetCss?: ((css: string, file: string) => string) | undefined
   useIncrementalMode: boolean
 }
 
@@ -83,8 +84,46 @@ function isUniAppViteWebviewAppBundle(bundleFiles: string[]) {
   return bundleFiles.some(file => path.basename(file.replace(/[?#].*$/, '')) === 'app-service.js')
 }
 
+function isUniAppViteWebviewOutDir(outDir: string | undefined) {
+  const normalized = outDir ? path.basename(path.normalize(outDir)).trim().toLowerCase() : undefined
+  return normalized === 'app' || normalized === 'app-plus'
+}
+
 function getAssetFile(bundleFile: string, asset: OutputAsset) {
   return asset.fileName || bundleFile
+}
+
+function finalizeUniAppViteWebviewCssCompat(
+  bundle: Record<string, OutputAsset | OutputChunk>,
+  options: Pick<FinalizeGenerateBundleOptions, 'debug' | 'onUpdate' | 'opts' | 'recordCssAssetResult'>,
+) {
+  if (options.opts.generator?.webCompat === false) {
+    return 0
+  }
+  let transformed = 0
+  for (const [bundleFile, output] of Object.entries(bundle)) {
+    if (output.type !== 'asset') {
+      continue
+    }
+    const file = getAssetFile(bundleFile, output)
+    if (!options.opts.cssMatcher(file) || !/\.css(?:$|[?#])/i.test(file)) {
+      continue
+    }
+    const rawSource = readAssetSource(output)
+    const nextCss = transformWebCssSafeSelectors(
+      transformWebCssCompat(rawSource, options.opts.generator?.webCompat ?? true),
+      { escapeMap: options.opts.escapeMap },
+    )
+    if (nextCss === rawSource) {
+      continue
+    }
+    output.source = nextCss
+    options.recordCssAssetResult?.(file, nextCss)
+    options.onUpdate(file, rawSource, nextCss)
+    options.debug('finalize uni-app vite webview css compat: %s bytes=%d', file, nextCss.length)
+    transformed++
+  }
+  return transformed
 }
 
 function isRootMiniProgramStyleOutputFile(file: string) {
@@ -238,6 +277,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     onEnd,
     onUpdate,
     opts,
+    outDir,
     pendingLinkedUpdates,
     pruneViteCssCaches,
     recordCssAssetResult,
@@ -255,6 +295,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     tasks,
     timingDetails,
     transformRuntime,
+    transformWebTargetCss,
     useIncrementalMode,
   } = options
   const tasksStart = performance.now()
@@ -300,6 +341,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
       recordViteProcessedCssAssetResult,
       resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension, bundleFiles),
       subpackageRoots: collectMiniProgramSubpackageRoots(bundle),
+      transformCss: transformWebTargetCss,
       debug,
     })
     return injectViteProcessedCssIntoMainCssAssets(bundle, {
@@ -307,6 +349,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
       getViteProcessedCssAssetResults,
       markCssAssetProcessed,
       recordCssAssetResult,
+      transformCss: transformWebTargetCss,
       shouldRemoveInjectedSourceAsset: (targetFile, record) => {
         if (record.injectIntoMain === false) {
           return false
@@ -347,7 +390,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     recordCssAssetResult,
     subpackageRoots: collectMiniProgramSubpackageRoots(bundle),
   })
-  if (opts.appType === 'uni-app-vite' && isWebGeneratorTarget && isUniAppViteWebviewAppBundle(bundleFiles)) {
+  if (opts.appType === 'uni-app-vite' && isWebGeneratorTarget && isUniAppViteWebviewAppBundle(Object.keys(bundle))) {
     removeDuplicateUnlinkedRootCssAssetsReferencedByHtml(bundle, { debug })
   }
   await finalizeMiniProgramCssAssets(bundle, {
@@ -360,6 +403,21 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     recordCssAssetResult,
     styleHandler,
   })
+  if (
+    opts.appType === 'uni-app-vite'
+    && (
+      isWebGeneratorTarget
+      || isUniAppViteWebviewAppBundle(Object.keys(bundle))
+      || isUniAppViteWebviewOutDir(outDir)
+    )
+  ) {
+    finalizeUniAppViteWebviewCssCompat(bundle, {
+      debug,
+      onUpdate,
+      opts,
+      recordCssAssetResult,
+    })
+  }
 
   const stateUpdateStart = performance.now()
   updateBundleBuildState(

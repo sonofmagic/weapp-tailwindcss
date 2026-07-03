@@ -179,14 +179,16 @@ export async function generateCssByGenerator(
     cssUserHandlerOptions,
     getSourceCandidatesForEntries,
     styleHandler,
+    generatorPlatform,
     userRawSource,
     userRawSourceProcessed,
     debug,
   } = options
+  const platform = generatorPlatform ?? opts.cssOptions?.platform ?? opts.platform
   const generatorOptions = {
     ...normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
       appType: opts.appType,
-      platform: opts.cssOptions?.platform ?? opts.platform,
+      platform,
       tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
       uniAppX: opts.uniAppX,
     }),
@@ -194,7 +196,7 @@ export async function generateCssByGenerator(
   }
   const generatorBranch = resolveGeneratorRuntimeBranch(generatorOptions, {
     appType: opts.appType,
-    platform: opts.cssOptions?.platform ?? opts.platform,
+    platform,
     tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
     uniAppX: opts.uniAppX,
   })

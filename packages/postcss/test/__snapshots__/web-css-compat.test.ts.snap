@@ -19,12 +19,10 @@ exports[`web css compatibility transform > snapshots web and web compat css outp
   --tw-rotate-x: 0; }
 :root {
   --color-blue-500: rgb(50, 128, 255);
-  --color-blue-500: oklch(62.3% .214 259.815);
-  --shadow-card: 0 8px 24px rgba(50, 128, 255, 0.18);
-  --shadow-card: 0 8px 24px color-mix(in oklab, var(--color-blue-500) 18%, transparent); }
+  --shadow-card: 0 8px 24px rgba(50, 128, 255, 0.18); }
 @keyframes enter { from { opacity: 0; } to { opacity: 1; } }
-.text-blue { color: rgb(50, 128, 255); color: var(--color-blue-500); }
-.shadow-card { box-shadow: 0 8px 24px rgba(50, 128, 255, 0.18); box-shadow: var(--shadow-card); }
-.bg-blue\\/50 { background-color: rgba(50, 128, 255, 0.5); background-color: color-mix(in oklab, var(--color-blue-500) 50%, transparent); }",
+.text-blue { color: rgb(50, 128, 255); }
+.shadow-card { box-shadow: 0 8px 24px rgba(50, 128, 255, 0.18); }
+.bg-blue\\/50 { background-color: rgba(50, 128, 255, 0.5); }",
 }
 `;

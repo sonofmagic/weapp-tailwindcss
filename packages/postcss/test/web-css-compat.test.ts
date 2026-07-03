@@ -1,4 +1,4 @@
-import { normalizeWebCssCompatOptions, transformWebCssCompat } from '@/index'
+import { normalizeWebCssCompatOptions, transformWebCssCompat, transformWebCssSafeSelectors } from '@/index'
 
 describe('web css compatibility transform', () => {
   it('keeps css unchanged by default', () => {
@@ -44,11 +44,51 @@ describe('web css compatibility transform', () => {
     expect(result).not.toContain('@supports')
     expect(result).toContain(':root')
     expect(result).toContain('--color-blue-500: rgb(')
-    expect(result).toContain('--color-blue-500: oklch(')
+    expect(result).not.toContain('--color-blue-500: oklch(')
     expect(result).toContain('.text-blue')
     expect(result).toContain('.bg-blue\\/50')
     expect(result).toContain('background-color: rgba(')
-    expect(result).toContain('background-color: color-mix(')
+    expect(result).not.toContain('background-color: color-mix(')
+  })
+
+  it('resolves Tailwind CSS v4 color variables for legacy WebView background utilities', () => {
+    const css = [
+      '@theme {',
+      '  --color-emerald-500: oklch(69.6% 0.17 162.48);',
+      '  --color-zinc-950: oklch(14.1% 0.005 285.823);',
+      '  --color-white: #fff;',
+      '}',
+      '.bg-emerald-500 { background-color: var(--color-emerald-500); }',
+      '.bg-white { background-color: var(--color-white); }',
+      '.dark\\:bg-zinc-950.theme-dark { background-color: var(--color-zinc-950); }',
+      '.theme-dark .dark\\:bg-zinc-950 { background-color: var(--color-zinc-950); }',
+    ].join('\n')
+    const result = transformWebCssCompat(css, true)
+
+    expect(result).toContain('.bg-emerald-500 { background-color: rgb(')
+    expect(result).toContain('.bg-white { background-color: #fff; }')
+    expect(result).toContain('.dark\\:bg-zinc-950.theme-dark { background-color: rgb(')
+    expect(result).toContain('.theme-dark .dark\\:bg-zinc-950 { background-color: rgb(')
+    expect(result).not.toContain('background-color: var(--color-')
+    expect(result).not.toContain('oklch(')
+  })
+
+  it('maps WebView utility selectors to safe class names without changing declarations', () => {
+    const css = [
+      '.rounded-\\[20rpx\\] { border-radius: 0.625rem; }',
+      '.bg-white\\/70 { background-color: rgba(255, 255, 255, 0.7); }',
+      '.text-\\[26rpx\\] { font-size: 0.8125rem; }',
+      '.text-slate-700 { color: rgb(49, 65, 88); }',
+      '.theme-dark .dark\\:bg-zinc-950 { background-color: rgb(9, 9, 11); }',
+    ].join('\n')
+    const result = transformWebCssSafeSelectors(css)
+
+    expect(result).toContain('.rounded-_b20rpx_B')
+    expect(result).toContain('.bg-white_f70')
+    expect(result).toContain('.text-_b26rpx_B')
+    expect(result).toContain('.text-slate-700')
+    expect(result).toContain('.theme-dark .dark_cbg-zinc-950')
+    expect(result).toContain('background-color: rgba(255, 255, 255, 0.7)')
   })
 
   it('removes Tailwind initial fallback variables that break gradient var fallbacks without @property', () => {
@@ -90,8 +130,51 @@ describe('web css compatibility transform', () => {
     expect(result).not.toContain('--tw-gradient-via-stops: initial')
     expect(result).toContain('--tw-gradient-from: #0000')
     expect(result).toContain('--tw-gradient-to: #0000')
+    expect(result).toContain('--tw-gradient-position: to bottom right')
+    expect(result).not.toContain('to bottom right in oklab')
     expect(result).toContain('background-image: linear-gradient(var(--tw-gradient-stops))')
     expect(result).toContain('var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from)')
+  })
+
+  it('normalizes Tailwind CSS v4 gradient interpolation hints for legacy WebView', () => {
+    const css = [
+      '.bg-linear {',
+      '  --tw-gradient-position: in oklab;',
+      '  background-image: linear-gradient(var(--tw-gradient-stops));',
+      '}',
+      '.bg-radial {',
+      '  --tw-gradient-position: in oklab;',
+      '  background-image: radial-gradient(var(--tw-gradient-stops));',
+      '}',
+      '.bg-conic {',
+      '  --tw-gradient-position: in oklab;',
+      '  background-image: conic-gradient(var(--tw-gradient-stops));',
+      '}',
+    ].join('\n')
+    const result = transformWebCssCompat(css, true)
+
+    expect(result).not.toContain('in oklab')
+    expect(result).toContain('--tw-gradient-position: to bottom')
+    expect(result).toContain('--tw-gradient-position: at center')
+    expect(result).toContain('--tw-gradient-position: from 0deg')
+  })
+
+  it('normalizes Tailwind CSS v4 infinity radius for legacy WebView', () => {
+    const css = [
+      '.rounded-full {',
+      '  border-radius: calc(infinity * 1px);',
+      '}',
+      '.rounded-t-full {',
+      '  border-top-left-radius: calc(infinity * 1px);',
+      '  border-top-right-radius: calc(infinity * 1px);',
+      '}',
+    ].join('\n')
+    const result = transformWebCssCompat(css, true)
+
+    expect(result).toContain('border-radius: 9999px')
+    expect(result).toContain('border-top-left-radius: 9999px')
+    expect(result).toContain('border-top-right-radius: 9999px')
+    expect(result).not.toContain('infinity')
   })
 
   it('preserves Tailwind registered property initial values as web compat fallbacks', () => {
@@ -152,6 +235,8 @@ describe('web css compatibility transform', () => {
     expect(result).not.toContain('--tw-tracking: initial')
     expect(result).toContain('--tw-shadow-color: initial')
     expect(result).toContain('--tw-gradient-from: #0000')
+    expect(result).toContain('--tw-gradient-position: to bottom right')
+    expect(result).not.toContain('to bottom right in oklab')
     expect(result).toContain('background-image: linear-gradient(var(--tw-gradient-stops))')
   })
 
@@ -241,7 +326,7 @@ describe('web css compatibility transform', () => {
     expect(keepSupports).toContain('@supports (display: grid)')
     expect(keepSupports).toContain('@supports (color: color-mix')
     expect(keepSupports).toContain('color: rgb(')
-    expect(keepSupports).toContain('color: oklch(')
+    expect(keepSupports).not.toContain('color: oklch(')
     expect(keepModernColors).toContain('@supports (display: grid)')
     expect(keepModernColors).not.toContain('@supports (color: color-mix')
     expect(keepModernColors).toContain('oklch(')
@@ -275,7 +360,7 @@ describe('web css compatibility transform', () => {
     expect(result).toContain('@layer')
     expect(result).toContain('@property')
     expect(result).toContain('color: rgb(')
-    expect(result).toContain('color: oklch(')
+    expect(result).not.toContain('color: oklch(')
   })
 
   it('removes empty modern supports and empty layer at-rules', () => {

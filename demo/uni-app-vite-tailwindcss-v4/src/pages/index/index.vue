@@ -41,6 +41,18 @@
         uni-app Vite Tailwind CSS v4 manual dark
       </view>
     </view>
+    <view class="mt-4 rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm">
+      <view class="flex items-center justify-between gap-3">
+        <text class="text-base font-semibold text-slate-900">App WebView Runtime</text>
+        <view class="rounded bg-slate-900 px-3 py-1 text-[24rpx] text-white active:bg-slate-700" @tap="refreshWebviewInfo">
+          刷新
+        </view>
+      </view>
+      <view v-for="item in webviewInfoRows" :key="item.label" class="mt-3 border-t border-slate-200 pt-2">
+        <text class="block text-xs text-slate-500">{{ item.label }}</text>
+        <text selectable class="mt-1 block break-all text-[24rpx] leading-5 text-slate-800">{{ item.value }}</text>
+      </view>
+    </view>
     <div class="flex space-x-4 border" :class="{
       'space-x-reverse': reverseFlag,
       'flex-row-reverse': reverseFlag
@@ -84,11 +96,36 @@
 import { twMerge } from '@weapp-tailwindcss/merge'
 import { weappTwIgnore } from "weapp-tailwindcss/escape"
 import HelloWorld from "@/components/HelloWorld.vue"
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+
+interface WebviewInfoRow {
+  label: string
+  value: string
+}
+
+type GlobalWithPlus = typeof globalThis & {
+  plus?: {
+    navigator?: {
+      getUserAgent?: () => string
+    }
+    os?: Record<string, unknown>
+    runtime?: Record<string, unknown>
+    webview?: {
+      currentWebview?: () => {
+        id?: string
+        getURL?: () => string
+      }
+    }
+  }
+}
+
 const title = ref('Hello')
 const className = ref('bg-[#0000ff] text-[45rpx] text-white')
 const templateCorpusDynamicClass = 'template-corpus-dynamic bg-[#68c828] text-[100rpx] w-[323px] h-[45px]'
 const reverseFlag = ref(false)
+const webviewInfoRows = ref<WebviewInfoRow[]>([
+  { label: 'status', value: 'collecting App WebView runtime...' }
+])
 
 const aaa = ref('111')
 const world = {
@@ -97,6 +134,118 @@ const world = {
   BBB: weappTwIgnore`bg-[#123498]`
 }
 console.log(world, twMerge)
+
+function stringifyInfoValue(value: unknown) {
+  if (value === undefined || value === null || value === '') {
+    return ''
+  }
+  if (typeof value === 'string') {
+    return value
+  }
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value)
+  }
+  try {
+    return JSON.stringify(value)
+  }
+  catch {
+    return String(value)
+  }
+}
+
+function pushInfoRow(rows: WebviewInfoRow[], label: string, value: unknown) {
+  const text = stringifyInfoValue(value)
+  if (text) {
+    rows.push({ label, value: text })
+  }
+}
+
+function readRecordValue(record: Record<string, unknown> | undefined, key: string) {
+  return record ? record[key] : undefined
+}
+
+function matchUserAgent(userAgent: string, pattern: RegExp) {
+  return userAgent.match(pattern)?.[1]
+}
+
+function createWebviewEngineRows(userAgent: string) {
+  const rows: WebviewInfoRow[] = []
+  const isAndroid = /Android/i.test(userAgent)
+  const isIOS = /\b(?:iPhone|iPad|iPod)\b/i.test(userAgent)
+  const chromeVersion = matchUserAgent(userAgent, /\b(?:Chrome|Chromium|CriOS)\/([\d.]+)/i)
+  const webkitVersion = matchUserAgent(userAgent, /\bAppleWebKit\/([\d.]+)/i)
+  const safariVersion = matchUserAgent(userAgent, /\bVersion\/([\d.]+)/i)
+    ?? matchUserAgent(userAgent, /\bSafari\/([\d.]+)/i)
+  const mobileBuild = matchUserAgent(userAgent, /\bMobile\/([A-Za-z0-9]+)/i)
+  const androidWebViewMarker = /\bwv\b/i.test(userAgent) || /\bVersion\/4\.0\b/i.test(userAgent)
+
+  pushInfoRow(rows, 'webview.engine', isAndroid
+    ? 'Android System WebView / Chromium'
+    : isIOS
+      ? 'iOS WKWebView / AppleWebKit'
+      : 'Unknown WebView engine')
+  pushInfoRow(rows, 'webview.androidChromiumVersion', chromeVersion)
+  pushInfoRow(rows, 'webview.androidWebViewMarker', isAndroid ? String(androidWebViewMarker) : '')
+  pushInfoRow(rows, 'webview.iosAppleWebKitVersion', webkitVersion)
+  pushInfoRow(rows, 'webview.iosSafariVersion', isIOS ? safariVersion : '')
+  pushInfoRow(rows, 'webview.iosMobileBuild', isIOS ? mobileBuild : '')
+  return rows
+}
+
+function readUserAgent(plusObject: GlobalWithPlus['plus']) {
+  try {
+    const plusUserAgent = plusObject?.navigator?.getUserAgent?.()
+    if (plusUserAgent) {
+      return plusUserAgent
+    }
+  }
+  catch {
+  }
+  return typeof navigator === 'undefined' ? '' : navigator.userAgent
+}
+
+function refreshWebviewInfo() {
+  const rows: WebviewInfoRow[] = []
+  const systemInfo = uni.getSystemInfoSync() as unknown as Record<string, unknown>
+  const plusObject = (globalThis as GlobalWithPlus).plus
+  const userAgent = readUserAgent(plusObject)
+  let currentWebview: ReturnType<NonNullable<NonNullable<GlobalWithPlus['plus']>['webview']>['currentWebview']> | undefined
+
+  try {
+    currentWebview = plusObject?.webview?.currentWebview?.()
+  }
+  catch {
+  }
+
+  pushInfoRow(rows, 'uni.uniPlatform', readRecordValue(systemInfo, 'uniPlatform'))
+  pushInfoRow(rows, 'uni.platform', readRecordValue(systemInfo, 'platform'))
+  pushInfoRow(rows, 'uni.system', readRecordValue(systemInfo, 'system'))
+  pushInfoRow(rows, 'uni.osName', readRecordValue(systemInfo, 'osName'))
+  pushInfoRow(rows, 'uni.osVersion', readRecordValue(systemInfo, 'osVersion'))
+  pushInfoRow(rows, 'device.brand', readRecordValue(systemInfo, 'brand') ?? readRecordValue(systemInfo, 'deviceBrand'))
+  pushInfoRow(rows, 'device.model', readRecordValue(systemInfo, 'model') ?? readRecordValue(systemInfo, 'deviceModel'))
+  pushInfoRow(rows, 'plus.os.name', plusObject?.os?.name)
+  pushInfoRow(rows, 'plus.os.version', plusObject?.os?.version)
+  pushInfoRow(rows, 'plus.runtime.version', plusObject?.runtime?.version)
+  pushInfoRow(rows, 'plus.runtime.innerVersion', plusObject?.runtime?.innerVersion)
+  pushInfoRow(rows, 'plus.runtime.appid', plusObject?.runtime?.appid)
+  pushInfoRow(rows, 'plus.webview.id', currentWebview?.id)
+  pushInfoRow(rows, 'plus.webview.url', currentWebview?.getURL?.())
+  rows.push(...createWebviewEngineRows(userAgent))
+  pushInfoRow(rows, 'navigator.userAgent', userAgent)
+
+  webviewInfoRows.value = rows.length > 0 ? rows : [{ label: 'status', value: 'No WebView runtime info collected' }]
+  console.log('[uni-app-vite] App WebView Runtime', Object.fromEntries(webviewInfoRows.value.map(item => [item.label, item.value])))
+}
+
+onMounted(() => {
+  refreshWebviewInfo()
+  setTimeout(refreshWebviewInfo, 300)
+  if (!(globalThis as GlobalWithPlus).plus && typeof document !== 'undefined') {
+    document.addEventListener('plusready', refreshWebviewInfo, { once: true })
+  }
+})
+
 const goOrder = () => {
   uni.navigateTo({
     url: '/pages-order/pages/home/home'

@@ -1,5 +1,8 @@
 import type { Plugin, ResolvedConfig } from 'vite'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { vitePluginName } from '@/constants'
 import {
   createContext,
@@ -10,6 +13,7 @@ import {
 const mocks = vi.hoisted(() => ({
   generateTailwindV4Css: vi.fn(),
 }))
+const createdDirs: string[] = []
 
 vi.mock('@/bundlers/shared/v4-generation-core', () => ({
   generateTailwindV4Css: mocks.generateTailwindV4Css,
@@ -31,6 +35,12 @@ function getPlugin(plugins: Plugin[], suffix: string) {
 }
 
 describe('bundlers/vite WeappTailwindcss hook coverage', () => {
+  afterEach(async () => {
+    await Promise.all(
+      createdDirs.splice(0).map(dir => rm(dir, { recursive: true, force: true })),
+    )
+  })
+
   beforeEach(() => {
     vi.resetModules()
     resetVitePluginTestContext()
@@ -285,6 +295,81 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     expect(result?.code).toContain('.base-reset')
     expect(result?.code).toContain('.text-red-500')
     expect(result?.code).not.toContain('@layer')
+  })
+
+  it('uses inferred uni-app-vite WebView branch for app-plus serve css compat', async () => {
+    const previousUniPlatform = process.env.UNI_PLATFORM
+    const previousUniUtsPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_PLATFORM = 'app-plus'
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-uni-app-vite-webview-'))
+    createdDirs.push(root)
+    await writeFile(path.join(root, 'package.json'), JSON.stringify({
+      dependencies: {
+        '@dcloudio/uni-app': '^3.0.0',
+      },
+      devDependencies: {
+        '@dcloudio/vite-plugin-uni': '^3.0.0',
+      },
+    }), 'utf8')
+    try {
+      mocks.generateTailwindV4Css.mockResolvedValueOnce({
+        css: [
+          '.bg-gradient-to-br {',
+          '  --tw-gradient-position: to bottom right in oklab;',
+          '  background-image: linear-gradient(var(--tw-gradient-stops));',
+          '}',
+        ].join('\n'),
+        dependencies: [],
+        classSet: new Set(['bg-gradient-to-br']),
+        target: 'web',
+      })
+      const context = createContext({
+        appType: undefined,
+        tailwindcssBasedir: root,
+      })
+      setCurrentContext(context)
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      const plugins = WeappTailwindcss()!
+      const postPlugin = getPlugin(plugins, 'post')
+      await (postPlugin.configResolved as any)?.call(postPlugin, {
+        command: 'serve',
+        root,
+        plugins: [],
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/app-plus' },
+      } as ResolvedConfig)
+
+      expect(context.appType).toBe('uni-app-vite')
+
+      const serveCssPlugin = getPlugin(plugins, 'generate:serve')
+      const result = await getTransformHandler(serveCssPlugin)?.call(
+        { addWatchFile: vi.fn() },
+        '@import "tailwindcss";',
+        path.join(root, 'src/main.css'),
+      )
+
+      expect(result?.code).toContain('--tw-gradient-position: to bottom right')
+      expect(result?.code).not.toContain('to bottom right in oklab')
+      expect(mocks.generateTailwindV4Css).toHaveBeenCalledWith(expect.objectContaining({
+        outputFile: 'src/main.css',
+        restoreLocalCssImports: false,
+      }))
+    }
+    finally {
+      if (previousUniPlatform === undefined) {
+        delete process.env.UNI_PLATFORM
+      }
+      else {
+        process.env.UNI_PLATFORM = previousUniPlatform
+      }
+      if (previousUniUtsPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = previousUniUtsPlatform
+      }
+    }
   })
 
   it('keeps post config inert when plugin ownership is disabled', async () => {

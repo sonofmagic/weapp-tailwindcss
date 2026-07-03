@@ -6,9 +6,9 @@ import cssVarsV4 from '../cssVarsV4'
 import { createCssVarNodes } from '../utils/css-vars'
 
 const OKLAB_SUFFIX = 'in oklab'
-const INFINITY_CALC_REGEXP = /calc\(\s*infinity\s*\*\s*(?:\d+(?:\.\d*)?|\.\d+)r?px/
 const RADIUS_THRESHOLD = 100000
 const CLAMP_PX = 9999
+const INFINITY_CALC_VALUE_REGEXP = /^calc\(\s*infinity\s*\*\s*(?:\d+(?:\.\d*)?|\.\d+)r?px\s*\)$/i
 
 // 用于 isTailwindcssV4ModernCheck 的正则列表
 const MODERN_CHECK_WEBKIT_HYPHENS_RE = /-webkit-hyphens\s*:\s*none/
@@ -202,7 +202,7 @@ function normalizeDeclarationValue(value: string) {
   return value.replace(/\s+/g, ' ').trim()
 }
 
-function normalizeTailwindcssV4GradientPosition(value: string) {
+export function normalizeTailwindcssV4GradientPosition(value: string) {
   return value
     .replace(/calc\(\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:deg|grad|rad|turn))\s*\*\s*-1\s*\)/gi, '-$1')
     .replace(/^in\s+(?:oklab|oklch|hsl|srgb)(?:\s+(?:longer|shorter|increasing|decreasing)\s+hue)?$/i, '')
@@ -211,7 +211,11 @@ function normalizeTailwindcssV4GradientPosition(value: string) {
     .trim()
 }
 
-function normalizeTailwindcssV4GradientDirectionDeclaration(rule: Rule, decl: Declaration) {
+export function normalizeTailwindcssV4InfinityCalcValue(value: string) {
+  return INFINITY_CALC_VALUE_REGEXP.test(value.trim()) ? `${CLAMP_PX}px` : value
+}
+
+function normalizeTailwindcssV4GradientDirectionDeclaration(rule: Rule, decl: PostcssDeclaration) {
   const normalized = normalizeTailwindcssV4GradientPosition(decl.value)
   if (normalized) {
     return normalized
@@ -288,6 +292,10 @@ function reorderTailwindcssV4GradientDirectionRule(rule: Rule) {
     return
   }
 
+  for (const decl of gradientPositionDecls) {
+    decl.value = normalizeTailwindcssV4GradientDirectionDeclaration(rule, decl)
+  }
+
   const anchor = rule.nodes.find((node) => {
     return node.type === 'decl'
       && (
@@ -317,6 +325,9 @@ export function mergeTailwindcssV4GradientDirectionRules(root: Root) {
     if (!isTailwindcssV4GradientDirectionRule(rule)) {
       return
     }
+    rule.walkDecls('--tw-gradient-position', (decl) => {
+      decl.value = normalizeTailwindcssV4GradientDirectionDeclaration(rule, decl)
+    })
     const selector = rule.selector.trim()
     const previous = seen.get(selector)
     if (!previous || previous.parent !== rule.parent) {
@@ -761,8 +772,9 @@ export function normalizeTailwindcssV4Declaration(decl: Declaration): boolean {
     return true
   }
 
-  if (INFINITY_CALC_REGEXP.test(decl.value)) {
-    decl.value = `${CLAMP_PX}px`
+  const normalizedInfinityCalcValue = normalizeTailwindcssV4InfinityCalcValue(decl.value)
+  if (normalizedInfinityCalcValue !== decl.value) {
+    decl.value = normalizedInfinityCalcValue
     return true
   }
 

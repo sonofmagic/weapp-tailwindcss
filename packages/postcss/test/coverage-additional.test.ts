@@ -320,6 +320,7 @@ describe('tailwindcss v4 compat helpers', () => {
     const css = root.toString()
     expect(css.match(/\.bg-gradient-to-r/g)?.length).toBe(2)
     expect(css).toContain('--tw-gradient-position:to right;background-image:linear-gradient(var(--tw-gradient-stops))')
+    expect(css).not.toContain('to right in oklab')
     expect(css).toContain('@supports')
     expect(css).toContain('.not-gradient')
   })

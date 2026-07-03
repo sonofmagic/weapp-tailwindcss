@@ -19,6 +19,7 @@ export interface GenerateCssByGeneratorOptions {
   sourceCandidates?: Set<string> | undefined
   styleHandler: InternalUserDefinedOptions['styleHandler']
   debug: (format: string, ...args: unknown[]) => void
+  generatorPlatform?: string | undefined
   userRawSource?: string | undefined
   userRawSourceProcessed?: boolean | undefined
   forceGenerator?: boolean | undefined

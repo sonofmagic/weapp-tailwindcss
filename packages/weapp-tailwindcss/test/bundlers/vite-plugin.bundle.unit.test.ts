@@ -3726,21 +3726,32 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   it('replays uni-app vite app-plus dev webview css into app.css without wxss output', async () => {
     const previousPlatform = process.env.UNI_PLATFORM
     const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
-    process.env.UNI_PLATFORM = 'app-plus'
-    process.env.UNI_UTS_PLATFORM = 'app-android'
+    delete process.env.UNI_PLATFORM
+    delete process.env.UNI_UTS_PLATFORM
     try {
       const generateMock = vi.fn(async (options: { candidates: Set<string>, target: string }) => {
         const webCss = [
+          ':root{--color-emerald-500:oklch(69.6% 0.17 162.48);--color-zinc-950:oklch(14.1% 0.005 285.823)}',
           '.template-corpus-card{display:block}',
+          '.bg-emerald-500{background-color:var(--color-emerald-500)}',
+          '.bg-white\\/70{background-color:rgba(255, 255, 255, 0.7)}',
+          '.theme-dark .dark\\:bg-zinc-950{background-color:var(--color-zinc-950)}',
+          '.text-slate-700{color:rgb(49, 65, 88)}',
           '.text-\\[45rpx\\]{font-size:45rpx}',
           '.space-y-2>:not([hidden])~:not([hidden]){margin-top:.5rem}',
           '.bg-radial{background-image:radial-gradient(circle,#fff,#000)}',
+          '.bg-gradient-to-br{--tw-gradient-position:to bottom right in oklab;background-image:linear-gradient(var(--tw-gradient-stops))}',
         ].join('\n')
         const miniProgramCss = [
           '.template-corpus-card{display:block}',
+          '.bg-emerald-500{background-color:rgb(0,185,129)}',
+          '.bg-white_f70{background-color:rgba(255, 255, 255, 0.7)}',
+          '.theme-dark .dark\\:bg-zinc-950{background-color:rgb(9,9,11)}',
+          '.text-slate-700{color:rgb(49, 65, 88)}',
           '.text-_b45rpx_B{font-size:45rpx}',
           '.space-y-2>view+view{margin-top:.5rem}',
           '.bg-radial{background-image:radial-gradient(circle,#fff,#000)}',
+          '.bg-gradient-to-br{--tw-gradient-position:to bottom right;background-image:linear-gradient(var(--tw-gradient-stops))}',
         ].join('\n')
 
         return {
@@ -3774,9 +3785,14 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       await writeFile(cssFile, rawCss, 'utf8')
       const runtimeSet = new Set([
         'template-corpus-card',
+        'bg-emerald-500',
+        'bg-white/70',
+        'dark:bg-zinc-950',
+        'text-slate-700',
         'text-[45rpx]',
         'space-y-2',
         'bg-radial',
+        'bg-gradient-to-br',
       ])
       setCurrentContext(createContext({
         appType: 'uni-app-vite',
@@ -3803,12 +3819,19 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
             },
           },
         },
+        jsHandler: createJsHandler({
+          escapeMap: MappingChars2String,
+          tailwindcssMajorVersion: 4,
+          generateMap: false,
+        }),
       }))
 
       const plugins = WeappTailwindcss()
       const servePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+      const serveJsPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:js:serve') as Plugin
       const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
       expect(servePlugin).toBeTruthy()
+      expect(serveJsPlugin).toBeTruthy()
       expect(postPlugin).toBeTruthy()
 
       const resolvedConfig = {
@@ -3830,6 +3853,21 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       const transformedCss = typeof transformed === 'object' && transformed != null && 'code' in transformed
         ? transformed.code
         : String(transformed ?? rawCss)
+      const jsTransform = getTransformHandler(serveJsPlugin)
+      const transformedJsResult = await jsTransform?.call(
+        serveJsPlugin,
+        'function render(){return "template-corpus-card bg-white/70 text-[45rpx] text-slate-700 dark:bg-zinc-950"}',
+        path.join(root, 'src/pages/index/index.vue'),
+      )
+      const transformedJs = typeof transformedJsResult === 'object' && transformedJsResult != null && 'code' in transformedJsResult
+        ? transformedJsResult.code
+        : String(transformedJsResult ?? '')
+      expect(transformedJs).toContain('bg-white_f70')
+      expect(transformedJs).toContain('text-_b45rpx_B')
+      expect(transformedJs).toContain('text-slate-700')
+      expect(transformedJs).toContain('dark_cbg-zinc-950')
+      expect(transformedJs).not.toContain('bg-white/70')
+      expect(transformedJs).not.toContain('text-[45rpx]')
       const bundle = {
         'main.css': {
           ...createRollupAsset(transformedCss),
@@ -3841,7 +3879,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           fileName: 'app.css',
         },
         'app-service.js': {
-          ...createRollupChunk('function render(){return "template-corpus-card text-[45rpx] space-y-2 bg-radial"}'),
+          ...createRollupChunk('function render(){return "template-corpus-card text-[45rpx] space-y-2 bg-radial bg-gradient-to-br"}'),
           fileName: 'app-service.js',
         },
       }
@@ -3852,10 +3890,17 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       expect(generateMock.mock.calls.at(-1)?.[0].target).toBe('web')
       expect(bundle['main.wxss']).toBeUndefined()
       expect(appCss).toContain('.template-corpus-card')
-      expect(appCss).toContain('.text-\\[45rpx\\]')
+      expect(appCss).toContain('.bg-emerald-500{background-color:rgb(')
+      expect(appCss).toContain('.bg-white_f70{background-color:rgba(255, 255, 255, 0.7)')
+      expect(appCss).toContain('.theme-dark .dark_cbg-zinc-950{background-color:rgb(')
+      expect(appCss).toContain('.text-slate-700{color:rgb(49, 65, 88)}')
+      expect(appCss).not.toContain('background-color:var(--color-')
+      expect(appCss).not.toContain('oklch(')
+      expect(appCss).toContain('.text-_b45rpx_B')
       expect(appCss).toContain('.space-y-2')
       expect(appCss).toContain('radial-gradient')
-      expect(appCss).not.toContain('.text-_b45rpx_B')
+      expect(appCss).toContain('--tw-gradient-position:to bottom right')
+      expect(appCss).not.toContain('to bottom right in oklab')
     }
     finally {
       if (previousPlatform === undefined) {

@@ -38,6 +38,7 @@ interface ProcessRememberedCssReplayOptions {
   defaultStyleOutputExtension: string
   emitOrReplayCssAsset: (fileName: string, source: string) => OutputAsset | undefined
   generatorRuntime: Set<string>
+  generatorPlatform?: string | undefined
   getCssHandlerOptions: (file: string) => ReturnType<ReturnType<typeof import('./css-handler-options').createCssHandlerOptionsCache>['getCssHandlerOptions']>
   getCssUserHandlerOptions: (file: string) => ReturnType<ReturnType<typeof import('./css-handler-options').createCssHandlerOptionsCache>['getCssUserHandlerOptions']>
   getRememberedCssSignature?: ((file: string) => string | undefined) | undefined
@@ -84,6 +85,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     defaultStyleOutputExtension,
     emitOrReplayCssAsset,
     generatorRuntime,
+    generatorPlatform,
     getCssHandlerOptions,
     getCssUserHandlerOptions,
     getRememberedCssSignature,
@@ -194,6 +196,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
         cssHandlerOptions,
         cssUserHandlerOptions: getCssUserHandlerOptions(sourceFile),
         getSourceCandidatesForEntries: scopedSourceCandidateGetter,
+        generatorPlatform,
         styleHandler,
         debug,
         previousCss,

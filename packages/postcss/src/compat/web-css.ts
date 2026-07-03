@@ -1,9 +1,12 @@
 import type { WebCssCompatFeatures, WebCssCompatOptions, WebCssCompatUserOptions } from '../types'
 import postcss from 'postcss'
 import postcssPresetEnv from 'postcss-preset-env'
+import selectorParser from 'postcss-selector-parser'
 import valueParser from 'postcss-value-parser'
+import { internalCssSelectorReplacer } from '../shared'
 import { normalizeModernColorValue } from './color-mix'
 import { removeUnsupportedCascadeLayers } from './mini-program-css/at-rules'
+import { normalizeTailwindcssV4GradientPosition, normalizeTailwindcssV4InfinityCalcValue } from './tailwindcss-v4'
 
 export interface NormalizedWebCssCompatOptions {
   preset: 'off' | 'legacy-web'
@@ -199,19 +202,26 @@ function resolveCustomPropertyVarValue(
   return changed ? parsed.toString() : value
 }
 
-function insertModernColorFallbackDeclaration(
-  decl: postcss.Declaration,
-  fallbackValue: string,
+function usesResolvableTailwindColorVariable(
+  value: string,
+  customPropertyValues: ReadonlyMap<string, string>,
 ) {
-  if (decl.prev()?.type === 'decl'
-    && (decl.prev() as postcss.Declaration).prop === decl.prop
-    && (decl.prev() as postcss.Declaration).value === fallbackValue) {
-    return
+  if (!value.includes('var(')) {
+    return false
   }
 
-  decl.cloneBefore({
-    value: fallbackValue,
+  const parsed = valueParser(value)
+  let usesColorVariable = false
+  parsed.walk((node) => {
+    if (node.type !== 'function' || node.value.toLowerCase() !== 'var') {
+      return
+    }
+    const propertyNode = node.nodes.find(child => child.type === 'word' && child.value.startsWith('--color-'))
+    if (propertyNode && customPropertyValues.has(propertyNode.value)) {
+      usesColorVariable = true
+    }
   })
+  return usesColorVariable
 }
 
 function normalizeModernColorDeclarations(root: postcss.Root, features: Required<WebCssCompatFeatures>) {
@@ -223,12 +233,15 @@ function normalizeModernColorDeclarations(root: postcss.Root, features: Required
     const value = resolveCustomPropertyVarValue(decl.value, customPropertyValues)
     const normalized = normalizeModernColorValue(value, customPropertyValues)
     if (!normalized.changed) {
+      if (value !== decl.value && usesResolvableTailwindColorVariable(decl.value, customPropertyValues)) {
+        decl.value = value
+      }
       return
     }
-    if (!features.colorFunctions && !/oklch|oklab/i.test(decl.value)) {
+    if (!features.colorFunctions && !/oklch|oklab/i.test(value)) {
       return
     }
-    insertModernColorFallbackDeclaration(decl, normalized.value)
+    decl.value = normalized.value
   })
 }
 
@@ -242,6 +255,48 @@ function removeModernColorSupports(root: postcss.Root) {
     }
     else {
       atRule.remove()
+    }
+  })
+}
+
+function normalizeTailwindcssV4GradientPositionDeclarations(root: postcss.Root) {
+  root.walkDecls('--tw-gradient-position', (decl) => {
+    const normalized = normalizeTailwindcssV4GradientPosition(decl.value)
+    if (normalized) {
+      decl.value = normalized
+      return
+    }
+
+    if (normalized === decl.value.trim()) {
+      return
+    }
+
+    const parent = decl.parent
+    if (parent?.type !== 'rule') {
+      decl.value = 'to bottom'
+      return
+    }
+
+    const backgroundImageDecl = parent.nodes.find((node): node is postcss.Declaration => {
+      return node.type === 'decl' && node.prop === 'background-image'
+    })
+    if (/^radial-gradient\(/i.test(backgroundImageDecl?.value ?? '')) {
+      decl.value = 'at center'
+      return
+    }
+    if (/^conic-gradient\(/i.test(backgroundImageDecl?.value ?? '')) {
+      decl.value = 'from 0deg'
+      return
+    }
+    decl.value = 'to bottom'
+  })
+}
+
+function normalizeTailwindcssV4InfinityCalcDeclarations(root: postcss.Root) {
+  root.walkDecls((decl) => {
+    const normalized = normalizeTailwindcssV4InfinityCalcValue(decl.value)
+    if (normalized !== decl.value) {
+      decl.value = normalized
     }
   })
 }
@@ -296,8 +351,33 @@ export function transformWebCssCompat(
     if (normalized.features.nesting) {
       transformCssNesting(root)
     }
+    normalizeTailwindcssV4GradientPositionDeclarations(root)
+    normalizeTailwindcssV4InfinityCalcDeclarations(root)
     normalizeModernColorDeclarations(root, normalized.features)
     removeEmptyAtRules(root)
+    return root.toString()
+  }
+  catch {
+    return css
+  }
+}
+
+export function transformWebCssSafeSelectors(
+  css: string,
+  options?: { escapeMap?: Record<string, string> | undefined } | undefined,
+) {
+  try {
+    const root = postcss.parse(css)
+    root.walkRules((rule) => {
+      if (!rule.selector.includes('.')) {
+        return
+      }
+      rule.selector = selectorParser((selectors) => {
+        selectors.walkClasses((node) => {
+          node.value = internalCssSelectorReplacer(node.value, options)
+        })
+      }).processSync(rule.selector)
+    })
     return root.toString()
   }
   catch {

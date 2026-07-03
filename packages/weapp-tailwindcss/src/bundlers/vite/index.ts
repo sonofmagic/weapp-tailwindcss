@@ -8,7 +8,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
-import { compileCssMacroConditionalComments, removeTailwindPostcssPlugins, resolveFilteredPostcssConfig, unwrapUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
+import { compileCssMacroConditionalComments, removeTailwindPostcssPlugins, resolveFilteredPostcssConfig, transformWebCssCompat, transformWebCssSafeSelectors, unwrapUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
 import { LRUCache } from 'lru-cache'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { normalizeEmptyTailwindCustomVariants } from '@/bundlers/shared/generator-css/user-css'
@@ -125,6 +125,21 @@ function isWebOrNativeAppPlatform(platform: string | undefined) {
     || platform?.startsWith('app-') === true
 }
 
+function isUniAppViteWebviewStylePlatform(platform: string | undefined) {
+  return platform === 'app' || platform === 'app-plus'
+}
+
+function applyUniAppViteWebviewCssCompat(css: string, options: {
+  compat: Parameters<typeof transformWebCssCompat>[1]
+  escapeMap?: Record<string, string> | undefined
+  safeSelectors: boolean
+}) {
+  const compatCss = transformWebCssCompat(css, options.compat)
+  return options.safeSelectors
+    ? transformWebCssSafeSelectors(compatCss, { escapeMap: options.escapeMap })
+    : compatCss
+}
+
 export interface WeappTailwindcssVitePlugin {
   name: string
   [hook: string]: any
@@ -187,18 +202,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   }
   const shouldOwnTailwindGeneration = !disabledOptions.plugin
   const shouldRewriteCssImports = opts.rewriteCssImports === true
-  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
-    appType: opts.appType,
-    platform: opts.cssOptions?.platform ?? opts.platform,
-    tailwindcssMajorVersion,
-    uniAppX,
-  })
-  const generatorBranch = resolveGeneratorRuntimeBranch(generatorOptions, {
-    appType: opts.appType,
-    platform: opts.cssOptions?.platform ?? opts.platform,
-    tailwindcssMajorVersion,
-    uniAppX,
-  })
+  let resolvedConfig: ResolvedConfig | undefined
   const resolveViteStylePlatform = () => {
     const explicit = normalizeViteStylePlatform(opts.cssOptions?.platform ?? opts.platform, opts.appType)
     if (explicit) {
@@ -212,9 +216,25 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     return inferPlatformFromOutDir(resolvedConfig?.build?.outDir)
   }
+  const resolveGeneratorPlatform = () => opts.cssOptions?.platform
+    ?? opts.platform
+    ?? resolveViteStylePlatform()
+  const resolveCurrentGeneratorOptions = () => normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
+    appType: opts.appType,
+    platform: resolveGeneratorPlatform(),
+    tailwindcssMajorVersion,
+    uniAppX,
+  })
+  const resolveCurrentGeneratorBranch = () => resolveGeneratorRuntimeBranch(resolveCurrentGeneratorOptions(), {
+    appType: opts.appType,
+    platform: resolveGeneratorPlatform(),
+    tailwindcssMajorVersion,
+    uniAppX,
+  })
+  const initialGeneratorBranch = resolveCurrentGeneratorBranch()
   const transformEarlyMiniProgramCss = (code: string) => {
     const platform = resolveViteStylePlatform()
-    if (!shouldOwnTailwindGeneration || (platform ? isWebOrNativeAppPlatform(platform) : generatorBranch.isWeb)) {
+    if (!shouldOwnTailwindGeneration || (platform ? isWebOrNativeAppPlatform(platform) : resolveCurrentGeneratorBranch().isWeb)) {
       return code
     }
     let transformedCode = code
@@ -230,12 +250,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   }
   const finalizeViteMiniProgramCss = (css: string) => {
     const platform = resolveViteStylePlatform()
-    if (!shouldOwnTailwindGeneration || (platform ? isWebOrNativeAppPlatform(platform) : generatorBranch.isWeb)) {
+    if (!shouldOwnTailwindGeneration || (platform ? isWebOrNativeAppPlatform(platform) : resolveCurrentGeneratorBranch().isWeb)) {
       return css
     }
     return unwrapUnsupportedCascadeLayers(css)
   }
-  const shouldInferAppType = !hasExplicitAppType && !generatorBranch.isWeb
+  const shouldInferAppType = !hasExplicitAppType && !initialGeneratorBranch.isWeb
   const hasInitialTailwindCssRoots = hasConfiguredTailwindV4CssRoots({
     ...options,
     cssEntries: opts.cssEntries ?? options.cssEntries,
@@ -354,7 +374,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     await refreshRuntimeStateForAutoCssSources?.(true)
   }
   const customAttributesEntities = toCustomAttributesEntities(customAttributes)
-  let resolvedConfig: ResolvedConfig | undefined
   let recordedGeneratorCandidates: Set<string> | undefined
   const sourceCandidateCollector = createSourceCandidateCollector({
     bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
@@ -437,7 +456,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     || process.env['WEAPP_TW_HMR_TIMING'] === '1'
   const isCurrentWebLikeStylePlatform = () => {
     const platform = resolveViteStylePlatform()
-    return platform ? isWebOrNativeAppPlatform(platform) : generatorBranch.isWeb
+    return platform ? isWebOrNativeAppPlatform(platform) : resolveCurrentGeneratorBranch().isWeb
   }
   const isNuxtPageMacroHotModule = (id: string | null | undefined) => {
     if (typeof id !== 'string' || !/[?&]macro=true(?:&|$)/.test(id)) {
@@ -764,7 +783,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     const isNativeAppStyleTarget = opts.appType === 'uni-app-x'
       && (resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget)
     const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
-    const outputFile = resolveViteCssPipelineOutputFile(requestFile, opts, rootDir, generatorBranch.isWeb, isNativeAppStyleTarget, sourceRoot)
+    const currentGeneratorOptions = resolveCurrentGeneratorOptions()
+    const currentGeneratorBranch = resolveCurrentGeneratorBranch()
+    const outputFile = resolveViteCssPipelineOutputFile(requestFile, opts, rootDir, currentGeneratorBranch.isWeb, isNativeAppStyleTarget, sourceRoot)
     const runtime = getRecordedGeneratorCandidates()
       ?? getSourceCandidates()
       ?? await ensureRuntimeClassSet()
@@ -775,8 +796,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     const transientCssSource = transientAutoCssSources.get(file)
       ?? (
-        hasTailwindRootDirectives(generatorCode, { importFallback: generatorOptions.importFallback })
-        || hasTailwindSourceDirectives(generatorCode, { importFallback: generatorOptions.importFallback })
+        hasTailwindRootDirectives(generatorCode, { importFallback: currentGeneratorOptions.importFallback })
+        || hasTailwindSourceDirectives(generatorCode, { importFallback: currentGeneratorOptions.importFallback })
         || hasTailwindApplyDirective(generatorCode)
           ? {
               base: path.dirname(path.resolve(file)),
@@ -803,16 +824,29 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
         ? [transientCssSource]
         : undefined,
       getSourceCandidatesForEntries,
+      generatorPlatform: resolveGeneratorPlatform(),
       styleHandler,
       debug,
       previousCss: viteGeneratedCssByFile.get(file),
       deferEmptyScopedCssSource: shouldDeferEmptyScopedCssSource,
-      restoreLocalCssImports: !generatorBranch.isWeb,
+      restoreLocalCssImports: !currentGeneratorBranch.isWeb,
     })
     if (!generated) {
       return undefined
     }
-    const outputCss = removeScopedTailwindPreflightCss(finalizeViteMiniProgramCss(generated.css))
+    const finalizedCss = finalizeViteMiniProgramCss(generated.css)
+    const isUniAppViteWebviewPlatform = opts.appType === 'uni-app-vite'
+      && isUniAppViteWebviewStylePlatform(resolveViteStylePlatform())
+    const shouldApplyWebviewCssCompat = currentGeneratorBranch.isWeb || isUniAppViteWebviewPlatform
+    const outputCss = removeScopedTailwindPreflightCss(
+      shouldApplyWebviewCssCompat
+        ? applyUniAppViteWebviewCssCompat(finalizedCss, {
+            compat: currentGeneratorOptions.webCompat ?? true,
+            escapeMap: opts.escapeMap,
+            safeSelectors: isUniAppViteWebviewPlatform,
+          })
+        : finalizedCss,
+    )
     const tracedCss = annotateCssSourceTrace(outputCss, {
       opts,
       tokenSources: createCssTokenSourceMap(getSourceCandidateSourcesForEntries(undefined), opts),
@@ -823,7 +857,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     viteGeneratedCssByFile.set(file, tracedCss)
     const shouldInjectGeneratedCssIntoMain = mainCssChunkMatcher(outputFile, opts.appType)
       || (
-        hasTailwindRootDirectives(generatorCode, { importFallback: generatorOptions.importFallback })
+        hasTailwindRootDirectives(generatorCode, { importFallback: currentGeneratorOptions.importFallback })
         && !normalizeOutputPathKey(outputFile).includes('/')
       )
     // 这里保留 undefined，让主样式入口走注入判断；Tailwind 入口样式在 uni-app dev 中需要同步回主样式产物。
@@ -865,7 +899,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     onCssSourceTransform: (id, code) => cssMemory.refreshRememberedCssSourceBySourceFile(id, code),
     shouldGenerateCss: (_id, code) => hasVitePipelineTailwindGenerationDirective(code),
     shouldDeferGeneration: (_id, code) => !shouldRewriteCssImports
-      && hasTailwindRootDirectives(code, { importFallback: generatorOptions.importFallback }),
+      && hasTailwindRootDirectives(code, { importFallback: resolveCurrentGeneratorOptions().importFallback }),
     shouldOwnTailwindGeneration,
     shouldRewrite: shouldRewriteCssImports,
     weappTailwindcssDirPosix,
@@ -987,7 +1021,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
           let transformedCode = code
           if (
             shouldOwnTailwindGeneration
-            && !generatorBranch.isWeb
+            && !resolveCurrentGeneratorBranch().isWeb
             && isCSSRequest(id)
           ) {
             transformedCode = transformEarlyMiniProgramCss(code)
@@ -1102,10 +1136,15 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       shouldGenerate: () => shouldOwnTailwindGeneration,
     }),
     createViteServeJsTransformPlugin({
-      createHandlerOptions: serveJsHandlerOptions,
+      createHandlerOptions: file => serveJsHandlerOptions(file, (opts.appType === 'uni-app-vite' && isUniAppViteWebviewStylePlatform(resolveViteStylePlatform())
+        ? { needEscaped: true }
+        : undefined)),
       getCommand: () => resolvedConfig?.command,
       jsHandler,
-      shouldTransform: () => shouldOwnTailwindGeneration && !generatorBranch.isWeb,
+      shouldTransform: () => shouldOwnTailwindGeneration && (
+        !resolveCurrentGeneratorBranch().isWeb
+        || (opts.appType === 'uni-app-vite' && isUniAppViteWebviewStylePlatform(resolveViteStylePlatform()))
+      ),
       transformRuntime: ensureRuntimeClassSet,
     }),
     {

@@ -6,7 +6,7 @@ import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
-import { transformWebCssCompat } from '@weapp-tailwindcss/postcss'
+import { transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
@@ -57,6 +57,25 @@ interface CssFinalizerContext {
 
 interface CssFinalizerThis {
   addWatchFile?: (id: string) => void
+}
+
+function inferPlatformFromViteOutDir(outDir: string | undefined) {
+  const segment = outDir ? path.basename(path.normalize(outDir)) : undefined
+  if (!segment) {
+    return undefined
+  }
+  const normalized = segment.trim().toLowerCase()
+  if (
+    normalized === 'h5'
+    || normalized === 'web'
+    || normalized === 'app'
+    || normalized === 'app-plus'
+    || normalized.startsWith('app-')
+    || normalized.startsWith('mp-')
+    || normalized.startsWith('quickapp-webview')
+  ) {
+    return normalized
+  }
 }
 
 function isAddWatchFileInvalidRollupPhaseError(error: unknown) {
@@ -143,8 +162,21 @@ function collectViteProcessedCssSources(
     .map(([, record]) => typeof record === 'string' ? record : record.css)
 }
 
-function finalizeWebCss(css: string, enabled: boolean, webCompat: ReturnType<typeof normalizeWeappTailwindcssGeneratorOptions>['webCompat']) {
-  return enabled ? transformWebCssCompat(css, webCompat) : css
+function isUniAppViteWebviewOutDir(outDir: string | undefined) {
+  const normalized = outDir ? path.basename(path.normalize(outDir)).trim().toLowerCase() : undefined
+  return normalized === 'app' || normalized === 'app-plus'
+}
+
+function finalizeWebCss(
+  css: string,
+  enabled: boolean,
+  webCompat: ReturnType<typeof normalizeWeappTailwindcssGeneratorOptions>['webCompat'],
+  options: { escapeMap?: Record<string, string> | undefined, safeSelectors?: boolean | undefined } = {},
+) {
+  const compatCss = enabled ? transformWebCssCompat(css, webCompat) : css
+  return options.safeSelectors
+    ? transformWebCssSafeSelectors(compatCss, { escapeMap: options.escapeMap })
+    : compatCss
 }
 
 export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext): Plugin {
@@ -176,21 +208,26 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         } = context
         const resolvedConfig = getResolvedConfig()
         const uniUtsPlatform = resolveUniUtsPlatform()
+        const generatorPlatform = opts.cssOptions?.platform
+          ?? opts.platform
+          ?? inferPlatformFromViteOutDir(resolvedConfig?.build?.outDir)
         const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
           appType: opts.appType,
-          platform: opts.cssOptions?.platform ?? opts.platform,
+          platform: generatorPlatform,
           tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
           uniAppX: opts.uniAppX,
           uniUtsPlatform,
         })
         const generatorBranch = resolveGeneratorRuntimeBranch(generatorOptions, {
           appType: opts.appType,
-          platform: opts.cssOptions?.platform ?? opts.platform,
+          platform: generatorPlatform,
           tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
           uniAppX: opts.uniAppX,
           uniUtsPlatform,
         })
         const isWebGeneratorTarget = generatorBranch.isWeb
+        const shouldApplyWebviewSafeSelectors = opts.appType === 'uni-app-vite'
+          && isUniAppViteWebviewOutDir(resolvedConfig?.build?.outDir)
         const isUniAppXStyleTarget = opts.appType === 'uni-app-x'
         const canInferHarmonyAppStyleTarget = isUniAppXStyleTarget && (!uniUtsPlatform.normalized || uniUtsPlatform.isApp)
         const isHarmonyAppStyleTarget = isUniAppXStyleTarget && (uniUtsPlatform.isAppHarmony || (
@@ -222,7 +259,10 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget, sourceRoot, resolveMiniProgramStyleOutputExtension({
               files: Object.keys(bundle),
             }), Object.keys(bundle)),
-            transformCss: css => finalizeWebCss(css, generatorBranch.isWeb, generatorOptions.webCompat),
+            transformCss: css => finalizeWebCss(css, generatorBranch.isWeb, generatorOptions.webCompat, {
+              escapeMap: opts.escapeMap,
+              safeSelectors: shouldApplyWebviewSafeSelectors,
+            }),
             debug,
           })
         }
@@ -233,6 +273,10 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             getViteProcessedCssAssetResults,
             markCssAssetProcessed,
             recordCssAssetResult,
+            transformCss: css => finalizeWebCss(css, generatorBranch.isWeb, generatorOptions.webCompat, {
+              escapeMap: opts.escapeMap,
+              safeSelectors: shouldApplyWebviewSafeSelectors,
+            }),
             debug,
             onUpdate: opts.onUpdate,
           })
@@ -265,6 +309,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
               isMainChunk: false,
             },
             getSourceCandidatesForEntries,
+            generatorPlatform,
             styleHandler: opts.styleHandler,
             debug,
           })
@@ -335,6 +380,10 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
               stripBundlerGeneratedCssMarkers(rawSource),
               generatorBranch.isWeb,
               generatorOptions.webCompat,
+              {
+                escapeMap: opts.escapeMap,
+                safeSelectors: shouldApplyWebviewSafeSelectors,
+              },
             ))
             output.source = nextCss
             markCssAssetProcessed(output, file)
@@ -381,13 +430,17 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
                 cssHandlerOptions: generatorCssHandlerOptions,
                 cssUserHandlerOptions: generatorCssUserHandlerOptions,
                 getSourceCandidatesForEntries,
+                generatorPlatform,
                 styleHandler: opts.styleHandler,
                 debug,
               })
             : undefined
           const nextCss = annotateCss(generated?.css ?? (
             generatorBranch.isWeb
-              ? finalizeWebCss(rawSource, true, generatorOptions.webCompat)
+              ? finalizeWebCss(rawSource, true, generatorOptions.webCompat, {
+                  escapeMap: opts.escapeMap,
+                  safeSelectors: shouldApplyWebviewSafeSelectors,
+                })
               : (await opts.styleHandler(rawSource, cssHandlerOptions)).css
           ))
           if (generated) {

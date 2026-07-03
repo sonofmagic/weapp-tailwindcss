@@ -297,6 +297,7 @@ function normalizeCssValue(value: string) {
     .replace(/, /g, ',')
     .replace(/\b0px\b/g, '0')
     .replace(/-?\d+\.\d+/g, match => Number(match).toFixed(5).replace(/\.?0+$/, ''))
+    .replace(/\b(?:\d+(?:\.\d+)?e\+\d+|\d{5,})px\b/gi, '9999px')
     .trim()
 }
 
@@ -409,7 +410,8 @@ describe('Tailwind CSS v4 web compat computed parity', () => {
     expect(compatCss).not.toContain('@layer')
     expect(compatCss).not.toContain('@property')
     expect(compatCss).toContain('rgba(')
-    expect(compatCss).toContain('oklch(')
+    expect(compatCss).not.toContain('oklch(')
+    expect(compatCss).not.toContain('var(--color-')
     expect(compatCss).toContain('.bg-gradient-to-br')
     expect(compatCss).toContain('.i-\\[tst--home\\]')
     expect(compatCss).toContain('.icon-\\[tst--wide\\]')

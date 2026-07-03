@@ -34,6 +34,7 @@ export {
   type NormalizedWebCssCompatOptions,
   normalizeWebCssCompatOptions,
   transformWebCssCompat,
+  transformWebCssSafeSelectors,
 } from './compat/web-css'
 export {
   compileCssMacroConditionalComments,

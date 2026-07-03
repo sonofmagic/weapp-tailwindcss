@@ -55,6 +55,7 @@ interface InjectViteProcessedCssAssetOptions {
   markCssAssetProcessed?: CssAssetProcessedMarker | undefined
   recordCssAssetResult?: CssAssetResultRecorder | undefined
   shouldRemoveInjectedSourceAsset?: ((file: string, record: { file: string, css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }) => boolean) | undefined
+  transformCss?: ((css: string, file: string) => string) | undefined
   debug?: ((format: string, ...args: unknown[]) => void) | undefined
   onUpdate?: ((file: string, original: string, generated: string) => void) | undefined
 }
@@ -1270,13 +1271,19 @@ export function injectViteProcessedCssIntoMainCssAssets(
   bundle: OutputBundle,
   options: InjectViteProcessedCssAssetOptions,
 ) {
+  const transformCss = (css: string, file: string) => options.transformCss?.(css, file) ?? css
   const viteCssResults = dedupeViteCssResults(
     [...(options.getViteProcessedCssAssetResults?.() ?? [])].map(([file, record]) => {
       return typeof record === 'string'
         ? { file, css: record, injectIntoMain: undefined }
         : { file, css: record.css, injectIntoMain: record.injectIntoMain, outputFile: record.outputFile }
     }),
-  ).filter(record => record.css.length > 0)
+  )
+    .map(record => ({
+      ...record,
+      css: transformCss(record.css, record.outputFile ?? record.file),
+    }))
+    .filter(record => record.css.length > 0)
   let injected = 0
   for (const [bundleFile, bundleOutput] of Object.entries(bundle)) {
     let output = bundleOutput
@@ -1318,7 +1325,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
     }
     const fileKey = normalizeOutputPathKey(file)
     const mainFileKey = normalizeOutputPathKey(file)
-    let nextCss = removeTailwindEntryDirectivesFromCss(originalSource)
+    let nextCss = transformCss(removeTailwindEntryDirectivesFromCss(originalSource), file)
     const importedStyleFiles = collectImportedStyleFiles(nextCss, file)
     const importedBundleCssSources = collectImportedBundleCssSources(bundle, importedStyleFiles)
     nextCss = removeCssCoveredByImportedViteResults(
@@ -1401,6 +1408,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
       }
       nextCss = appendCss(nextCss, missingCss)
     }
+    nextCss = transformCss(nextCss, file)
     if (nextCss !== originalSource) {
       output.source = nextCss
       options.markCssAssetProcessed?.(output, file)
