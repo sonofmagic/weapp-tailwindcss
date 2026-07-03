@@ -13,11 +13,14 @@ const taroPlugins = [
 ]
 
 const taroPlatform = resolveTaroPlatform()
+const webCompat = taroPlatform.isWeb
+  ? process.env.WEAPP_TW_WEB_COMPAT !== '0'
+  : undefined
 const generator = {
   target: taroPlatform.isWeb || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
     ? 'web'
     : 'weapp',
-  webCompat: taroPlatform.isWeb ? true : undefined,
+  webCompat,
   styleOptions: {
     px2rpx: true,
   },

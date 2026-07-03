@@ -28,6 +28,28 @@
     }
   }
 }
+
+@layer base {
+  button::after,
+  wx-button::after {
+    display: none;
+    border: none;
+    content: "";
+  }
+
+  wx-button {
+    background: #000;
+  }
+}
+
+wx-button {
+  background: #444;
+}
+
+abc {
+  background: #222;
+}
+
 .template-corpus-apply {
   @apply inline-flex items-center gap-2 rounded-[20rpx] bg-gradient-to-r from-[#9e58e9] to-blue-500 px-[18rpx] py-[10rpx] text-[26rpx] font-semibold text-white;
 }

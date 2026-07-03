@@ -592,3 +592,10 @@ wx-root-portal-content {
     transform: translate(0);
   }
 }
+@font-face {
+  font-family: nutui-iconfont;
+  src:
+    url(data:font/woff2;base64,<stable>) format('woff2'),
+    url(data:font/woff;base64,<stable>) format('woff'),
+    url(data:font/ttf;base64,<stable>) format('truetype');
+}

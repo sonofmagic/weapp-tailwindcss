@@ -32,6 +32,7 @@ import { applyWebpackLinkedJsResults, createWebpackJsAssetModuleGraph } from './
 import {
   addRuntimeTransformCandidates,
   collectGeneratedCssRuntimeCandidates,
+  collectWebpackBareSelectorUserCss,
   collectWebpackJsRuntimeCandidatesFromAssets,
   collectWebpackJsRuntimeTokenSignature,
   createWebpackCssSourceTraceTokenSources,
@@ -508,7 +509,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             return rawSource
           }
           const chunkHash = assetHashByChunk.get(file)
-          const cssHandlerOptionsForProcessedAsset = getCssHandlerOptions(file)
+          const cssHandlerOptionsForProcessedAsset = getCssHandlerOptions(file, readRawSource())
           const processedCssAssetMetadata = {
             isMainCssChunk: cssHandlerOptionsForProcessedAsset.isMainChunk,
           }
@@ -597,6 +598,12 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               })),
               readCurrentProcessedRawSource(),
             ) !== undefined
+          const hasProcessedLoaderGeneratedUserCss = cachedSkipProcessedCssAsset === undefined
+            && processedLoaderGeneratedCss !== undefined
+            && hasAdditionalWebpackAssetUserCssMarkers(
+              processedLoaderGeneratedCss.css,
+              readCurrentProcessedRawSource(),
+            )
           const shouldFinalizeProcessedWebCssAsset = isWebGeneratorTarget
             && !shouldForceConfiguredMainCssGeneration
             && !shouldRegenerateProcessedTailwindV4SourceCss
@@ -613,6 +620,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               || isWebpackProcessedCssAsset?.(file, readCurrentProcessedRawSource(), processedCssAssetMetadata)
             )
             && !hasProcessedMainAssetUserCss
+            && !hasProcessedLoaderGeneratedUserCss
             && (!cssHandlerOptionsForProcessedAsset.isMainChunk || hasGeneratedCssMarker || hasTailwindGeneratedAssetCss)
           const shouldSkipProcessedCssAsset = (
             cachedSkipProcessedCssAsset
@@ -649,6 +657,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 },
                 transform: async () => {
                   const source = readCurrentProcessedRawSource()
+                  const processedBareSelectorSourceCss = processedSourceCss
+                    ?? (hasTailwindGeneratedAssetCss ? removeWebpackTailwindGeneratedAssetCss(source) : undefined)
                   const shouldTransformGeneratedAssetCss = hasTailwindGeneratedAssetCss && !hasGeneratedCssMarker
                   const handledCss = shouldTransformGeneratedAssetCss
                     ? isWebGeneratorTarget
@@ -662,9 +672,36 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     cssPreflight: cssHandlerOptionsForProcessedAsset.isMainChunk,
                     generatedCss: hasGeneratedCssMarker || hasTailwindGeneratedAssetCss,
                   }))
+                  const processedSourceBareUserCss = isWebGeneratorTarget || processedBareSelectorSourceCss === undefined
+                    ? undefined
+                    : createWebpackGeneratorUserCssSourceAppend({
+                        css: collectWebpackBareSelectorUserCss(processedBareSelectorSourceCss),
+                        processed: false,
+                      })
+                  const finalizedProcessedSourceBareUserCss = processedSourceBareUserCss === undefined
+                    ? ''
+                    : finalizeCssAssetSource(processedSourceBareUserCss.css, {
+                        cssPreflight: false,
+                        generatedCss: false,
+                      })
+                  const missingProcessedSourceBareUserCss = finalizedProcessedSourceBareUserCss.trim().length === 0
+                    ? ''
+                    : filterExistingCssRules(nextCss, finalizedProcessedSourceBareUserCss)
+                  const css = missingProcessedSourceBareUserCss.trim().length === 0
+                    ? nextCss
+                    : createWebpackGeneratorUserCssSourceAppend(
+                      {
+                        css: nextCss,
+                        processed: true,
+                      },
+                      {
+                        css: missingProcessedSourceBareUserCss,
+                        processed: true,
+                      },
+                    )!.css
                   debug('css skip webpack-loader-pipeline asset: %s', file)
                   return {
-                    result: new ConcatSource(finalizeTracedCss(nextCss, cssHandlerOptionsForProcessedAsset)),
+                    result: new ConcatSource(finalizeTracedCss(css, cssHandlerOptionsForProcessedAsset)),
                   }
                 },
               })
@@ -793,20 +830,74 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     ? loaderGeneratedCss.css
                     : (createWebpackGeneratorUserCssSourceAppend(
                         {
-                          css: currentAssetHasProcessedUrl
-                            ? removeGeneratedSelectorCompatCss(loaderGeneratedCss.css, currentAssetUserCss)
-                            : filterExistingCssRules(currentAssetUserCss, loaderGeneratedCss.css),
+                          css: currentAssetUserCss === undefined
+                            ? loaderGeneratedCss.css
+                            : currentAssetHasProcessedUrl
+                              ? removeGeneratedSelectorCompatCss(loaderGeneratedCss.css, currentAssetUserCss)
+                              : filterExistingCssRules(currentAssetUserCss, loaderGeneratedCss.css),
+                          processed: true,
+                        },
+                        currentAssetUserCss === undefined
+                          ? undefined
+                          : {
+                              css: currentAssetUserCss,
+                              processed: true,
+                            },
+                      )!.css)
+                  const finalizedLoaderCss = finalizeCssAssetSource(mergedLoaderCss, {
+                    cssPreflight: cssHandlerOptions.isMainChunk,
+                    generatedCss: true,
+                  })
+                  const loaderSourceBareUserCss = isWebGeneratorTarget
+                    ? undefined
+                    : createWebpackGeneratorUserCssSourceAppend(
+                        ...[
+                          currentAssetUserCss === undefined
+                            ? undefined
+                            : {
+                                css: currentAssetUserCss,
+                                processed: true,
+                              },
+                          sourceCss === undefined
+                            ? undefined
+                            : {
+                                css: sourceCss,
+                                processed: false,
+                              },
+                        ].map((source) => {
+                          if (source === undefined) {
+                            return undefined
+                          }
+                          return {
+                            css: collectWebpackBareSelectorUserCss(source.css),
+                            processed: source.processed,
+                          }
+                        }),
+                      )
+                  const finalizedLoaderSourceBareUserCss = loaderSourceBareUserCss === undefined
+                    ? ''
+                    : finalizeCssAssetSource(loaderSourceBareUserCss.css, {
+                        cssPreflight: false,
+                        generatedCss: false,
+                      })
+                  const missingLoaderSourceBareUserCss = finalizedLoaderSourceBareUserCss.trim().length === 0
+                    ? ''
+                    : filterExistingCssRules(finalizedLoaderCss, finalizedLoaderSourceBareUserCss)
+                  const css = finalizeTracedCss(
+                    missingLoaderSourceBareUserCss.trim().length === 0
+                      ? finalizedLoaderCss
+                      : createWebpackGeneratorUserCssSourceAppend(
+                        {
+                          css: finalizedLoaderCss,
                           processed: true,
                         },
                         {
-                          css: currentAssetUserCss,
+                          css: missingLoaderSourceBareUserCss,
                           processed: true,
                         },
-                      )!.css)
-                  const css = finalizeTracedCss(finalizeCssAssetSource(mergedLoaderCss, {
-                    cssPreflight: cssHandlerOptions.isMainChunk,
-                    generatedCss: true,
-                  }), cssHandlerOptions)
+                      )!.css,
+                    cssHandlerOptions,
+                  )
                   debug('css consume webpack loader generation: %s <- %s', file, sourceFile)
                   return {
                     result: new ConcatSource(css),
@@ -969,7 +1060,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 else {
                   debug('css generator skipped for unmatched webpack main css asset: %s', file)
                 }
-                const css = finalizeTracedCss(generated
+                const finalizedGeneratedCss = generated
                   ? finalizeCssAssetSource(
                       isWebGeneratorTarget && currentRawSource.includes('tailwindcss v4.')
                         ? createWebpackGeneratorUserCssSourceAppend(
@@ -987,7 +1078,56 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     : finalizeCssAssetSource(
                         (await compilerOptions.styleHandler(generatorRawSource, cssHandlerOptions)).css,
                         { generatedCss: false },
-                      ), cssHandlerOptions)
+                      )
+                const sourceBareUserCss = isWebGeneratorTarget
+                  ? undefined
+                  : createWebpackGeneratorUserCssSourceAppend(
+                      ...[
+                        userRawSource,
+                        sourceCss === undefined
+                          ? undefined
+                          : {
+                              css: sourceCss,
+                              processed: sourceCssProcessed,
+                            },
+                        {
+                          css: generatorRawSource,
+                          processed: false,
+                        },
+                      ].map((source) => {
+                        if (source === undefined) {
+                          return undefined
+                        }
+                        return {
+                          css: collectWebpackBareSelectorUserCss(source.css),
+                          processed: source.processed,
+                        }
+                      }),
+                    )
+                const finalizedSourceBareUserCss = sourceBareUserCss === undefined
+                  ? ''
+                  : finalizeCssAssetSource(sourceBareUserCss.css, {
+                      cssPreflight: false,
+                      generatedCss: false,
+                    })
+                const missingSourceBareUserCss = finalizedSourceBareUserCss.trim().length === 0
+                  ? ''
+                  : filterExistingCssRules(finalizedGeneratedCss, finalizedSourceBareUserCss)
+                const css = finalizeTracedCss(
+                  missingSourceBareUserCss.trim().length === 0
+                    ? finalizedGeneratedCss
+                    : createWebpackGeneratorUserCssSourceAppend(
+                      {
+                        css: finalizedGeneratedCss,
+                        processed: true,
+                      },
+                      {
+                        css: missingSourceBareUserCss,
+                        processed: true,
+                      },
+                    )!.css,
+                  cssHandlerOptions,
+                )
                 const source = new ConcatSource(css)
 
                 if (generated) {

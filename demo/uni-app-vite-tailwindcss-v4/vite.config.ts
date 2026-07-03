@@ -16,6 +16,9 @@ const uniMpVueDir = dirname(uniMpVueRuntimePath);
 // https://vitejs.dev/config/
 export default defineConfig(async () => {
   const uniPlatform = resolveUniPlatform()
+  const webCompat = uniPlatform.isWeb
+    ? process.env.WEAPP_TW_WEB_COMPAT !== '0'
+    : undefined
   return {
     plugins: [
       // 改成 mts，则爆 uni is not a function
@@ -32,7 +35,7 @@ export default defineConfig(async () => {
         rem2rpx: true,
         styleInjector: false,
         generator: {
-          webCompat: uniPlatform.isWeb ? true : undefined,
+          webCompat,
         },
       }),
     ],

@@ -189,6 +189,32 @@ describe('generator user css helpers', () => {
       cssRemoveHoverPseudoClass: true,
     }))
 
+    const droppingBareSelectorStyleHandler = vi.fn(async () => ({
+      css: '.card{color:red}',
+    }))
+    await expect(transformGeneratorUserCss([
+      '@layer base{wx-button{background:#000}}',
+      'abc{background:#222}',
+      '.card{color:red}',
+    ].join('\n'), {
+      generatorTarget: 'weapp',
+      generatorStyleOptions: {},
+      cssUserHandlerOptions: {} as any,
+      styleHandler: droppingBareSelectorStyleHandler,
+      importFallback: true,
+    })).resolves.toContain('wx-button{background:#000}')
+    await expect(transformGeneratorUserCss([
+      '@layer base{wx-button{background:#000}}',
+      'abc{background:#222}',
+      '.card{color:red}',
+    ].join('\n'), {
+      generatorTarget: 'weapp',
+      generatorStyleOptions: {},
+      cssUserHandlerOptions: {} as any,
+      styleHandler: droppingBareSelectorStyleHandler,
+      importFallback: true,
+    })).resolves.toContain('abc{background:#222}')
+
     await expect(transformGeneratorUserCss('.btn:hover{color:red}.btn{color:blue}', {
       generatorTarget: 'weapp',
       generatorStyleOptions: { cssRemoveHoverPseudoClass: true },

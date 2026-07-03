@@ -20,6 +20,7 @@ import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../../s
 import { normalizeTailwindConfigDirectives } from '../../shared/generator-css/directives'
 import { isWatchFileInRuntimeDependencies } from './shared'
 import { setupWebpackV5ProcessAssetsHook } from './v5-assets'
+import { collectWebpackAssetUserCssMarkers } from './v5-assets/pipeline-helpers'
 import { setupWebpackV5Loaders } from './v5-loaders'
 
 const debug = createDebug()
@@ -31,6 +32,28 @@ const outputIgnoredPredicatePath = Symbol('weapp-tailwindcss.outputIgnoredPredic
 
 type OutputIgnoredPredicate = ((file: string) => boolean) & {
   [outputIgnoredPredicatePath]?: string
+}
+
+function shouldKeepPreviousWebpackCssSource(
+  previous: { css: string | undefined, processed?: boolean | undefined },
+  next: { css: string | undefined, processed?: boolean | undefined },
+) {
+  if (next.processed === true && previous.processed === false) {
+    return true
+  }
+  if (
+    previous.processed === true
+    || next.processed === true
+    || !previous.css
+    || !next.css
+    || previous.css === next.css
+  ) {
+    return false
+  }
+  const previousMarkers = collectWebpackAssetUserCssMarkers(previous.css)
+  const nextMarkers = collectWebpackAssetUserCssMarkers(next.css)
+  return previousMarkers.size > nextMarkers.size
+    && [...nextMarkers].every(marker => previousMarkers.has(marker))
 }
 
 function normalizeIgnoredList(ignored: WebpackWatchOptions['ignored']): WebpackWatchIgnoredItem[] {
@@ -332,16 +355,17 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const registerWebpackCssSourceFile = (source: WebpackCssSourceRegistration) => {
       const file = path.resolve(source.file)
       const previous = webpackCssSources.get(file)
-      if (source.processed === true && previous?.processed === false) {
-        currentWebpackCssSourceFiles.add(file)
-        return
-      }
-      webpackCssSources.set(file, {
+      const next = {
         css: typeof source.css === 'string'
           ? normalizeTailwindConfigDirectives(source.css, path.dirname(file))
           : source.css,
         processed: source.processed,
-      })
+      }
+      if (previous && shouldKeepPreviousWebpackCssSource(previous, next)) {
+        currentWebpackCssSourceFiles.add(file)
+        return
+      }
+      webpackCssSources.set(file, next)
       currentWebpackCssSourceFiles.add(file)
     }
     const registerWebpackGeneratedCss = (source: WebpackGeneratedCssRegistration) => {

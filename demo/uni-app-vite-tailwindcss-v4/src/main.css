@@ -28,6 +28,27 @@
   }
 }
 
+@layer base {
+  button::after,
+  wx-button::after {
+    display: none;
+    border: none;
+    content: "";
+  }
+
+  wx-button {
+    background: #000;
+  }
+}
+
+wx-button {
+  background: #444;
+}
+
+abc {
+  background: #222;
+}
+
 @theme {
   --color-neutral-1B: #1b1b1b;
   --color-neutral-66: #666;

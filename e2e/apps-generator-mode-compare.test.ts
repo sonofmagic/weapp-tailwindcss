@@ -25,6 +25,10 @@ interface CompareProject {
   cssFile: string
   cssPath: string
   requiredCssFiles: string[]
+  buildScript: string
+  buildEnv?: Record<string, string> | undefined
+  cssSnapshotMode: 'entry' | 'directory'
+  cssPattern: string
 }
 
 interface CreateProjectReportOptions {
@@ -56,6 +60,8 @@ const localHBuilderXProjectNames = new Set(
 )
 
 const MINI_PROGRAM_CSS_PATTERN = '**/*.{wx,ac,jx,tt,q,c,ty}ss'
+const WEB_CSS_PATTERN = '**/*.css'
+const RAW_TAILWIND_ENTRY_DIRECTIVE_RE = /@(import\s+["']tailwindcss|tailwind|theme|source)\b/
 const USER_IMPORTED_UI_CSS_MARKERS = [
   '.weapp-tw-user-ui-card',
   '.weapp-tw-user-ui-loading',
@@ -73,10 +79,13 @@ function filterCompareProjects(projects: CompareProject[]) {
   return projects.filter(project => pattern.test(project.name))
 }
 
+const miniProgramProjects = E2E_PROJECTS
+  .filter(entry => !localHBuilderXProjectNames.has(entry.name))
+  .map(entry => createCompareProject(entry, '../demo'))
+
 const projects: CompareProject[] = filterCompareProjects([
-  ...E2E_PROJECTS
-    .filter(entry => !localHBuilderXProjectNames.has(entry.name))
-    .map(entry => createCompareProject(entry, '../demo')),
+  ...miniProgramProjects,
+  ...miniProgramProjects.flatMap(createH5CompareProjects),
 ])
 const projectFilterEnabled = Boolean(process.env['E2E_PROJECT_FILTER'])
 
@@ -232,6 +241,61 @@ function createCompareProject(entry: ProjectEntry, fixturesDir: '../demo'): Comp
     cssFile: outputCssPath,
     cssPath,
     requiredCssFiles,
+    buildScript: 'build',
+    cssSnapshotMode: 'entry',
+    cssPattern: MINI_PROGRAM_CSS_PATTERN,
+  }
+}
+
+function createH5CompareProjects(project: CompareProject): CompareProject[] {
+  if (!project.allowedPlatforms.includes('h5')) {
+    return []
+  }
+  const cssPath = resolveH5OutputCssPath(project)
+  if (!cssPath) {
+    return []
+  }
+  return [
+    createH5CompareProject(project, {
+      platform: 'web',
+      buildEnv: {
+        WEAPP_TW_WEB_COMPAT: '0',
+      },
+    }),
+    createH5CompareProject(project, {
+      platform: 'web-compact',
+      buildEnv: {
+        WEAPP_TW_WEB_COMPAT: '1',
+      },
+    }),
+  ].map(item => ({
+    ...item,
+    cssPath,
+    cssFile: path.join(item.rootDir, cssPath),
+  }))
+}
+
+function createH5CompareProject(project: CompareProject, options: {
+  platform: string
+  buildEnv: Record<string, string>
+}): CompareProject {
+  return {
+    ...project,
+    platform: options.platform,
+    buildScript: 'build:h5',
+    buildEnv: options.buildEnv,
+    cssSnapshotMode: 'directory',
+    cssPattern: WEB_CSS_PATTERN,
+    requiredCssFiles: [],
+  }
+}
+
+function resolveH5OutputCssPath(project: CompareProject) {
+  if (project.name.startsWith('taro-')) {
+    return 'dist'
+  }
+  if (project.name.startsWith('uni-app-')) {
+    return 'dist/build/h5'
   }
 }
 
@@ -294,11 +358,12 @@ async function buildProject(project: CompareProject) {
   await cleanProject(root)
   await twPatch(root)
 
-  await execa('pnpm', ['run', 'build'], {
+  await execa('pnpm', ['run', project.buildScript], {
     cwd: root,
     stdio: process.env.E2E_DEBUG_BUILD === '1' ? 'inherit' : 'pipe',
     env: {
       ...process.env,
+      ...project.buildEnv,
       NODE_ENV: 'production',
       BROWSERSLIST_ENV: 'production',
       TARO_BUILD_STRICT: '1',
@@ -310,7 +375,7 @@ async function buildProject(project: CompareProject) {
   })
 
   const classList = await readBuildClassList(root)
-  const snapshots = await collectOutputCssSnapshots(projectRoot, project.cssPath, classList)
+  const snapshots = await collectOutputCssSnapshots(projectRoot, project, classList)
   return {
     css: snapshots.map(snapshot => snapshot.content).join('\n'),
     cssFiles: snapshots.map(snapshot => snapshot.fileName),
@@ -332,12 +397,14 @@ async function readBuildClassList(root: string) {
   }
 }
 
-async function collectOutputCssSnapshots(projectRoot: string, cssPath: string, classList?: string[]) {
+async function collectOutputCssSnapshots(projectRoot: string, project: CompareProject, classList?: string[]) {
+  const cssPath = project.cssPath
+  if (project.cssSnapshotMode === 'directory') {
+    return collectOutputDirectoryCssSnapshots(projectRoot, project, classList)
+  }
   const entrySnapshots = await collectCssSnapshots(projectRoot, cssPath, {
     classList,
-    normalizeTailwindV4RootVariableNoise:
-      projectRoot.endsWith(`${path.sep}taro-vite-react-tailwindcss-v4`)
-      || projectRoot.endsWith(`${path.sep}taro-vite-vue3-tailwindcss-v4`),
+    normalizeTailwindV4RootVariableNoise: shouldNormalizeTailwindV4RootVariableNoise(projectRoot),
   })
   const outputRoot = path.dirname(path.resolve(projectRoot, cssPath))
   const entryRelativePath = normalizeOutputCssFileName(path.relative(outputRoot, path.resolve(projectRoot, cssPath)))
@@ -359,9 +426,7 @@ async function collectOutputCssSnapshots(projectRoot: string, cssPath: string, c
         const snapshots = await collectCssSnapshots(outputRoot, file, {
           classList,
           rootSnapshotName: normalizeOutputCssFileName(file),
-          normalizeTailwindV4RootVariableNoise:
-            projectRoot.endsWith(`${path.sep}taro-vite-react-tailwindcss-v4`)
-            || projectRoot.endsWith(`${path.sep}taro-vite-vue3-tailwindcss-v4`),
+          normalizeTailwindV4RootVariableNoise: shouldNormalizeTailwindV4RootVariableNoise(projectRoot),
         })
         return snapshots.map((snapshot, index): GeneratorCssSnapshot => ({
           ...snapshot,
@@ -378,23 +443,63 @@ async function collectOutputCssSnapshots(projectRoot: string, cssPath: string, c
   ].filter(snapshot => snapshot.content.trim().length > 0)
 }
 
+async function collectOutputDirectoryCssSnapshots(projectRoot: string, project: CompareProject, classList?: string[]) {
+  const outputRoot = path.resolve(projectRoot, project.cssPath)
+  const allCssFiles = await fg(project.cssPattern, {
+    absolute: false,
+    cwd: outputRoot,
+    onlyFiles: true,
+  })
+  const snapshots = await Promise.all(
+    allCssFiles
+      .sort(compareCssOutputFile)
+      .map(async (file) => {
+        const entries = await collectCssSnapshots(outputRoot, file, {
+          classList,
+          rootSnapshotName: normalizeOutputCssFileName(file),
+          normalizeTailwindV4RootVariableNoise: shouldNormalizeTailwindV4RootVariableNoise(projectRoot),
+        })
+        return entries.map((snapshot, index): GeneratorCssSnapshot => ({
+          ...snapshot,
+          fileName: index === 0
+            ? normalizeOutputCssFileName(file)
+            : normalizeOutputCssFileName(snapshot.fileName),
+        }))
+      }),
+  )
+  return snapshots.flat().sort(compareCssSnapshotEntry).filter(snapshot => snapshot.content.trim().length > 0)
+}
+
+function shouldNormalizeTailwindV4RootVariableNoise(projectRoot: string) {
+  return projectRoot.endsWith(`${path.sep}taro-vite-react-tailwindcss-v4`)
+    || projectRoot.endsWith(`${path.sep}taro-vite-vue3-tailwindcss-v4`)
+}
+
 function normalizeOutputCssFileName(fileName: string) {
   return fileName.replace(/\\/g, '/')
 }
 
 function normalizeCssSnapshotFileKey(fileName: string) {
-  return path.normalize(normalizeSnapshotName(normalizeOutputCssFileName(fileName)) ?? normalizeOutputCssFileName(fileName))
+  return path.normalize(normalizeCssOutputSnapshotName(fileName))
+}
+
+function normalizeCssOutputSnapshotName(fileName: string) {
+  const normalized = normalizeOutputCssFileName(fileName)
+    .replace(/[.-][\w-]{8,}(?=\.css$)/g, '')
+    .replace(/(^|\/)\d+(?=\.css$)/g, '$1chunk')
+  return normalizeSnapshotName(normalized) ?? normalized
 }
 
 function compareCssOutputFile(a: string, b: string) {
-  return compareText(normalizeSnapshotName(a) ?? a, normalizeSnapshotName(b) ?? b) || compareText(a, b)
+  return compareText(normalizeCssOutputSnapshotName(a), normalizeCssOutputSnapshotName(b))
+    || compareText(a, b)
 }
 
 function compareCssSnapshotEntry(
   a: { fileName: string, content: string },
   b: { fileName: string, content: string },
 ) {
-  return compareText(normalizeSnapshotName(a.fileName) ?? a.fileName, normalizeSnapshotName(b.fileName) ?? b.fileName)
+  return compareText(normalizeCssOutputSnapshotName(a.fileName), normalizeCssOutputSnapshotName(b.fileName))
     || compareText(a.content, b.content)
     || compareText(a.fileName, b.fileName)
 }
@@ -417,7 +522,7 @@ function createStableCssSnapshots(
   const entries = cssSnapshots.map((snapshot, index) => ({
     index,
     snapshot,
-    fileName: normalizeSnapshotName(snapshot.fileName) ?? snapshot.fileName,
+    fileName: normalizeCssOutputSnapshotName(snapshot.fileName),
   }))
   const groups = new Map<string, typeof entries>()
   for (const entry of entries) {
@@ -475,6 +580,14 @@ function createReportItem(
     status: 'passed',
     generator,
   }
+}
+
+function isH5WebProject(project: CompareProject) {
+  return project.cssSnapshotMode === 'directory' && (project.platform === 'web' || project.platform === 'web-compact')
+}
+
+function isMiniProgramProject(project: CompareProject) {
+  return !isH5WebProject(project)
 }
 
 function expectWeappViteTailwindV4CssIsolation(project: CompareProject, generatorResult: GeneratorBuildResult) {
@@ -601,6 +714,9 @@ function expectSubpackageCssFiles(project: CompareProject, generatorResult: Gene
 }
 
 function expectNoMiniProgramSpecificityPlaceholders(project: CompareProject, generatorResult: GeneratorBuildResult) {
+  if (!isMiniProgramProject(project)) {
+    return
+  }
   const snapshots = generatorResult.cssSnapshots.length > 0
     ? generatorResult.cssSnapshots
     : [{ fileName: project.cssFile, content: generatorResult.css }]
@@ -614,6 +730,15 @@ function expectNoMiniProgramSpecificityPlaceholders(project: CompareProject, gen
     generatorResult.css,
     `${project.name} generated css should not include cascade layer specificity placeholders`,
   ).not.toMatch(/:not\(#(?:\\#|n)\)/)
+}
+
+function expectH5WebCss(project: CompareProject, generatorResult: GeneratorBuildResult) {
+  if (!isH5WebProject(project)) {
+    return
+  }
+  expect(generatorResult.cssFiles.length, `${project.name} ${project.platform} should emit css files`).toBeGreaterThan(0)
+  expect(generatorResult.css, `${project.name} ${project.platform} should not leave raw Tailwind entry directives`).not.toMatch(RAW_TAILWIND_ENTRY_DIRECTIVE_RE)
+  expect(generatorResult.cssFiles.every(file => file.endsWith('.css')), `${project.name} ${project.platform} should only collect css outputs`).toBe(true)
 }
 
 function normalizeError(error: unknown) {
@@ -871,6 +996,9 @@ describe('demo generator mode output', () => {
       cssFile: 'fixture-app/dist/app.wxss',
       cssPath: 'dist/app.wxss',
       requiredCssFiles: ['fixture-app/dist/app.wxss'],
+      buildScript: 'build',
+      cssSnapshotMode: 'entry',
+      cssPattern: MINI_PROGRAM_CSS_PATTERN,
     }, {
       css: '.generator { color: blue; }\n.shared { display: block; }\n',
       cssFiles: ['app.wxss', 'pages/index/index.wxss'],
@@ -910,7 +1038,19 @@ describe('demo generator mode output', () => {
     await fs.writeFile(path.join(outputRoot, 'styles/app3b4a1ac6.wxss'), '.from-mpx{color:red}\n')
 
     try {
-      const snapshots = await collectOutputCssSnapshots(root, 'dist/wx/app.wxss')
+      const snapshots = await collectOutputCssSnapshots(root, {
+        name: 'fixture-app',
+        fixturesDir: '../demo',
+        rootDir: 'fixture-app',
+        platform: 'wx',
+        allowedPlatforms: ['wx'],
+        cssFile: 'dist/wx/app.wxss',
+        cssPath: 'dist/wx/app.wxss',
+        requiredCssFiles: ['dist/wx/app.wxss'],
+        buildScript: 'build',
+        cssSnapshotMode: 'entry',
+        cssPattern: MINI_PROGRAM_CSS_PATTERN,
+      })
       expect(snapshots.map(snapshot => snapshot.fileName)).toEqual([
         'app.wxss',
         'styles/app.wxss',
@@ -943,9 +1083,23 @@ describe('demo generator mode output', () => {
       { fileName: 'index.wxss', content: '.a{}' },
       { fileName: 'index.wxss', content: '.b{}' },
     ])
+
+    expect(createStableCssSnapshots({
+      css: '',
+      cssFiles: ['css/471.css', 'css/539.css', 'css/app.css'],
+      cssSnapshots: [
+        { fileName: 'css/471.css', content: '.b{}' },
+        { fileName: 'css/539.css', content: '.a{}' },
+        { fileName: 'css/app.css', content: '.app{}' },
+      ],
+    }, 'dist')).toEqual([
+      { fileName: 'css/chunk.2.css', content: '.b{}' },
+      { fileName: 'css/chunk.1.css', content: '.a{}' },
+      { fileName: 'css/app.css', content: '.app{}' },
+    ])
   })
 
-  it('builds retained demos with generator mini-program css output', async () => {
+  it('builds retained demos with generator mini-program and H5 web css output', async () => {
     const report: AppsGeneratorCompareReportItem[] = []
 
     for (const project of projects) {
@@ -960,22 +1114,27 @@ describe('demo generator mode output', () => {
         continue
       }
 
-      expect(item.generator.bytes, `${project.name} generator css should not be empty`).toBeGreaterThan(0)
-      expect(item.generator.hasSupports, `${project.name} generator css should remove unsupported @supports`).toBe(false)
-      expect(item.generator.hasHoverPseudo, `${project.name} generator css should remove unsupported :hover`).toBe(false)
-      expect(item.generator.hasTailwindBanner, `${project.name} generator css should not keep raw Tailwind banner`).toBe(false)
-      expect(item.generator.hasSystemDarkModeMedia, `${project.name} generator css should include system dark mode`).toBe(true)
-      expect(item.generator.hasManualDarkModeSelector, `${project.name} generator css should include manual theme-dark class mode`).toBe(true)
-      expect(item.generator.hasUnsupportedThemeAttributeSelector, `${project.name} generator css should not include theme attribute selectors`).toBe(false)
-      expect(item.generator.hasUnsupportedThemeComplexSelector, `${project.name} generator css should not include theme :where/:not selectors`).toBe(false)
-      expect(item.generator.hasWeappEscapedArbitrarySelector || !item.generator.hasRawArbitrarySelector).toBe(true)
+      expect(item.generator.bytes, `${project.name} ${project.platform} generator css should not be empty`).toBeGreaterThan(0)
+      if (isMiniProgramProject(project)) {
+        expect(item.generator.hasTailwindBanner, `${project.name} generator css should not keep raw Tailwind banner`).toBe(false)
+        expect(item.generator.hasSupports, `${project.name} generator css should remove unsupported @supports`).toBe(false)
+        expect(item.generator.hasHoverPseudo, `${project.name} generator css should remove unsupported :hover`).toBe(false)
+        expect(item.generator.hasSystemDarkModeMedia, `${project.name} generator css should include system dark mode`).toBe(true)
+        expect(item.generator.hasManualDarkModeSelector, `${project.name} generator css should include manual theme-dark class mode`).toBe(true)
+        expect(item.generator.hasUnsupportedThemeAttributeSelector, `${project.name} generator css should not include theme attribute selectors`).toBe(false)
+        expect(item.generator.hasUnsupportedThemeComplexSelector, `${project.name} generator css should not include theme :where/:not selectors`).toBe(false)
+        expect(item.generator.hasWeappEscapedArbitrarySelector || !item.generator.hasRawArbitrarySelector).toBe(true)
+      }
       if (generatorResult) {
-        expectWeappViteTailwindV4CssIsolation(project, generatorResult)
-        expectSubpackageCssFiles(project, generatorResult)
-        expectSubpackageMarkersInGeneratedCss(project, generatorResult)
-        expectPackageCssIsolation(project, generatorResult)
-        expectWeappViteAppCssInlined(project, generatorResult)
-        expectUserImportedUiCssMarkers(project, generatorResult)
+        if (isMiniProgramProject(project)) {
+          expectWeappViteTailwindV4CssIsolation(project, generatorResult)
+          expectSubpackageCssFiles(project, generatorResult)
+          expectSubpackageMarkersInGeneratedCss(project, generatorResult)
+          expectPackageCssIsolation(project, generatorResult)
+          expectWeappViteAppCssInlined(project, generatorResult)
+          expectUserImportedUiCssMarkers(project, generatorResult)
+        }
+        expectH5WebCss(project, generatorResult)
         await expectCssOutputSnapshot(project, generatorResult)
       }
     }

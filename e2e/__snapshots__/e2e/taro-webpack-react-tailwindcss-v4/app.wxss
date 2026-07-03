@@ -795,6 +795,12 @@ wx-root-portal-content {
   transform: skew(-20deg);
   width: 100rpx;
 }
+.h5-button::after,
+wx-button::after {
+  border: none;
+  content: '';
+  display: none;
+}
 /* tokens: absolute <= src/pages/issue-909/index.tsx */
 .absolute {
   position: absolute;
@@ -10311,6 +10317,30 @@ view {
     transform: scale(0.96);
   }
 }
+.h5-button::after,
+wx-button::after {
+  border: none;
+  content: '';
+  display: none;
+}
 .issue-940-style-class {
   color: #010203;
+}
+wx-button {
+  background: #000;
+}
+wx-button {
+  background: #444;
+}
+abc {
+  background: #222;
+}
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
 }

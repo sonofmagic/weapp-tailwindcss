@@ -52,6 +52,15 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
+}
 /* tokens: mt-2 <= pages/index/index.wxml */
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);
@@ -397,6 +406,21 @@ wx-root-portal-content {
 }
 /* Main style shell. Tailwind v4 source directives live in tailwind.css. */
 /* Tailwind v4 root entry intentionally uses plain CSS. */
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
+}
+wx-button {
+  background: #444;
+}
+abc {
+  background: #222;
+}
 .weapp-tw-user-ui-card {
   display: inline-flex;
   align-items: center;
@@ -422,4 +446,7 @@ wx-root-portal-content {
     transform: scale(0.96);
   }
 }
+/*$vite$:1*/
+/* Main style shell. Tailwind v4 source directives live in tailwind.css. */
+/* Tailwind v4 root entry intentionally uses plain CSS. */
 /*$vite$:1*/

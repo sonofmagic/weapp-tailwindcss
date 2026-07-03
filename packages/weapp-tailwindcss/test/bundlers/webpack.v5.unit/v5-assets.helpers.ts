@@ -7,6 +7,7 @@ import {
   collectWebpackJsRuntimeTokenSignature,
   collectRuntimeTokenSignatureParts,
   collectWebpackAssetUserCssMarkers,
+  collectWebpackBareSelectorUserCss,
   collectWebpackCssRuleIdentityMarkers,
   createWebpackGeneratorCssSource,
   createWebpackGeneratorUserCssSourceAppend,
@@ -25,6 +26,7 @@ import {
   isRuntimeTransformCandidate,
   isWebpackCssSourceRepresentedInAsset,
   isWebpackTailwindImportRequest,
+  normalizeWebpackUserCssFallbackSource,
   normalizeWebpackGeneratorCssSources,
   parseWebpackCssLayerNames,
   pruneMapToMaxSize,
@@ -32,6 +34,7 @@ import {
   removeTailwindV4StandaloneHostPreflightRule,
   removeWebpackGeneratorNonTailwindImports,
   removeWebpackTailwindGeneratedAssetCss,
+  removeWebpackUserCssFallbackImports,
   resolveGeneratedCssRuntimeCandidates,
   resolveWebpackCssAssetModuleResource,
   resolveWebpackGeneratorRawSource,
@@ -279,6 +282,8 @@ describe('bundlers/webpack v5-assets helpers', () => {
     expect(hasProcessedCssAssetUrl('.icon{background:url(data:image/svg+xml,a)}')).toBe(true)
     expect(hasProcessedCssAssetUrl('.icon{background:url("/a.svg")}')).toBe(false)
     expect(shouldUseWebpackAssetAsGeneratorUserCss('.card{color:red}', '.generated{}')).toBe(true)
+    expect(shouldUseWebpackAssetAsGeneratorUserCss('wx-button{background:#444}', '.generated{}')).toBe(true)
+    expect(shouldUseWebpackAssetAsGeneratorUserCss('button::after{display:none;border:none;content:""}', '.generated{}')).toBe(true)
     expect(shouldUseWebpackAssetAsGeneratorUserCss('.card{background:url(data:image/svg+xml,a)}', '.generated{}')).toBe(false)
     expect(shouldUseWebpackAssetAsGeneratorUserCss('.card{background:url(data:image/svg+xml,a)}', '.generated{}', { processed: true })).toBe(true)
     expect(shouldUseWebpackAssetAsGeneratorUserCss('@tailwind utilities;', '.generated{}')).toBe(false)
@@ -302,7 +307,32 @@ describe('bundlers/webpack v5-assets helpers', () => {
       'keyframes:spin',
       'font-face:"Icon Font"',
     ]))
+    expect(collectWebpackAssetUserCssMarkers('@layer base{button::after,wx-button::after{display:none;border:none;content:""}wx-button{background:#000}}')).toEqual(new Set([
+      'selector:button::after',
+      'selector:wx-button::after',
+      'selector:wx-button',
+    ]))
     expect(collectWebpackAssetUserCssMarkers('.card{')).toEqual(new Set(['class:card']))
+  })
+
+  it('collects bare selector user css without class rules and keyframes', () => {
+    expect(collectWebpackBareSelectorUserCss([
+      '@import "./theme.css";',
+      '@config "../tailwind.config.js";',
+      '@source "../src";',
+      '@custom-variant wx { @slot; }',
+      '.card{color:red}',
+      '.issue-941-bg-image{background-image:url("./issue-941-asset.svg")}',
+      'button::after,wx-button::after{display:none;border:none;content:""}',
+      'wx-button{background:#000}',
+      'abc{background:#222}',
+      '@font-face{font-family:"Icon Font";src:url(icon.woff2)}',
+      '@keyframes spin{to{transform:rotate(360deg)}}',
+    ].join('\n'))).toBe([
+      'button::after,wx-button::after{display:none;border:none;content:""}',
+      'wx-button{background:#000}',
+      'abc{background:#222}',
+    ].join('\n'))
   })
 
   it('parses and removes webpack Tailwind generated layer css', () => {
@@ -310,6 +340,7 @@ describe('bundlers/webpack v5-assets helpers', () => {
     expect(parseWebpackCssLayerNames(' , base , ')).toEqual(['base'])
     expect(removeWebpackTailwindGeneratedAssetCss('@layer theme, utilities;\n@layer components{.btn{color:red}}')).toBe('@layer components{.btn{color:red}}')
     expect(removeWebpackTailwindGeneratedAssetCss('@layer theme{.bg-red-500{color:red}}\n@layer components{.btn{color:red}}')).toBe('@layer components{.btn{color:red}}')
+    expect(removeWebpackTailwindGeneratedAssetCss('@layer base{button::after,wx-button::after{display:none;border:none;content:""}wx-button{background:#000}}')).toBe('@layer base{button::after,wx-button::after{display:none;border:none;content:""}wx-button{background:#000}}')
     expect(removeWebpackTailwindGeneratedAssetCss('@layer utilities{.bg-\\[\\#222222\\]{color:red}.text-\\[\\#fff\\]{color:white}}\n.site-shell{display:grid}\n:root{--site-shell-gap:16px}')).toBe('.site-shell{display:grid}\n:root{--site-shell-gap:16px}')
     expect(removeWebpackTailwindGeneratedAssetCss('/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */\n.bg-\\[\\#111111\\]{background-color:#111111}.text-\\[\\#fff\\]{color:#fff}\n.site-shell{display:grid}\n:root{--site-shell-gap:16px}')).toBe('.site-shell{display:grid}\n:root{--site-shell-gap:16px}')
     expect(removeWebpackTailwindGeneratedAssetCss('@supports (display:grid){}')).toBe('')
@@ -369,6 +400,17 @@ describe('bundlers/webpack v5-assets helpers', () => {
       '.card{color:red}',
     ].join('\n'))
     expect(removeWebpackGeneratorNonTailwindImports('@import "')).toBe('@import "')
+  })
+
+  it('removes imports from registered user css loader fallback source', () => {
+    expect(removeWebpackUserCssFallbackImports([
+      '@import "./theme.css";',
+      '@import "tailwindcss";',
+      'wx-button{background:#444}',
+    ].join('\n'))).toBe('wx-button{background:#444}')
+    expect(removeWebpackUserCssFallbackImports('abc{background:#222}')).toBe('abc{background:#222}')
+    expect(removeWebpackUserCssFallbackImports('@import "')).toBe('@import "')
+    expect(normalizeWebpackUserCssFallbackSource('@import "tailwindcss";\n@layer base{wx-button{background:#000}}')).toBe('wx-button{background:#000}')
   })
 
   it('checks whether source css is represented in webpack asset css', () => {

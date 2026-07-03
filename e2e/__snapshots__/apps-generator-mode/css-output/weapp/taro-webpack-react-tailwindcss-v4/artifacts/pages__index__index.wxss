@@ -10036,3 +10036,9 @@ view {
     transform: translate(0);
   }
 }
+@keyframes nutBounce {
+  80% {
+    transform: translateZ(0) scaleY(0.95);
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+}

@@ -9,6 +9,34 @@ import { scoreTailwindV4CssSourceFileMatch } from '../../../shared/generator-css
 import { inferWebpackMainCssFiles, resolveSingleActiveWebpackCssResource } from '../shared'
 import { createWebpackGeneratorCssSource, isSameWebpackCssSourceScope, isWebpackCssSourceRepresentedInAsset, removeWebpackGeneratorNonTailwindImports } from './pipeline-helpers'
 
+function normalizeWebpackCssSourceRef(file: string) {
+  return file.replaceAll('\\', '/')
+}
+
+function collectWebpackCssTokenSourceRefs(source: string) {
+  const refs = new Set<string>()
+  for (const line of source.split('\n')) {
+    if (!line.includes('/* tokens:') || !line.includes('<=')) {
+      continue
+    }
+    const traceStart = line.indexOf('<=')
+    const traceEnd = line.indexOf('*/', traceStart)
+    const trace = line.slice(traceStart + 2, traceEnd >= 0 ? traceEnd : undefined)
+    for (const segment of trace.split('|')) {
+      const sourceList = segment
+        .replace(/^[^<]*<=\s*/, '')
+        .split(',')
+      for (const ref of sourceList) {
+        const normalizedRef = ref.trim()
+        if (normalizedRef) {
+          refs.add(normalizeWebpackCssSourceRef(normalizedRef))
+        }
+      }
+    }
+  }
+  return refs
+}
+
 export function createWebpackCssSourceResolvers(options: {
   activeWebpackAssetResourceFiles: ReadonlySet<string>
   appType: SetupWebpackV5ProcessAssetsHookOptions['appType']
@@ -146,6 +174,21 @@ export function createWebpackCssSourceResolvers(options: {
       return activeAssetResource
     }
     if (rawSource) {
+      const tokenSourceRefs = collectWebpackCssTokenSourceRefs(rawSource)
+      if (tokenSourceRefs.size > 0) {
+        const tokenSourceMatches = [...cssSources.keys()]
+          .filter((sourceFile) => {
+            const relativeSourceFile = normalizeWebpackCssSourceRef(path.relative(compilerOptions.tailwindcssBasedir, sourceFile))
+            const absoluteSourceFile = normalizeWebpackCssSourceRef(path.resolve(sourceFile))
+            return tokenSourceRefs.has(relativeSourceFile) || tokenSourceRefs.has(absoluteSourceFile)
+          })
+          .sort()
+        if (tokenSourceMatches.length === 1) {
+          const sourceFile = tokenSourceMatches[0]!
+          activeWebpackCssSourceFiles.add(sourceFile)
+          return sourceFile
+        }
+      }
       const representedTailwindSourceMatches = [...cssSources.entries()]
         .filter(([, source]) => isWebpackCssSourceRepresentedInAsset(rawSource, source.css))
         .map(([sourceFile]) => ({
