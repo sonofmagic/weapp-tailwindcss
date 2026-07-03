@@ -44,6 +44,16 @@
 - `pnpm e2e`
 - `pnpm run:watch`
 
+## uni-app / uni-app x 多端运行经验
+- 先区分项目入口：普通 `uni-app Vite` demo 优先用项目 `package.json` 里的 `pnpm run dev:*` / `build:*` 脚本；`uni-app x`、`uni-app HBuilderX` 模板、App Android/iOS/Harmony 真机或模拟器链路优先通过 HBuilderX CLI（仓库脚本里通常是 `pnpm exec hbuilderx ...`）运行。
+- Web/H5：普通 `uni-app Vite` 使用 CLI 跑 `uni` / `uni build` 即可，验证重点是浏览器页面、HMR、最终 CSS 中 Tailwind v4 由 `weapp-tailwindcss` 生成；不要为 H5/Web 问题临时接入 `@tailwindcss/vite` 或 `@tailwindcss/postcss` 兜底。
+- 小程序：普通 `uni-app Vite` 优先用 CLI 跑 `uni -p mp-*` 或对应 npm script；HBuilderX 模板小程序用 HBuilderX 工作流。验证不要只看 `app.wxss` 这类固定文件名，应检查真实平台后缀和输出目录，例如 `dist/dev/mp-weixin`、`unpackage/dist/dev/mp-weixin`、`app.acss`、`app.ttss`、`main.wxss`、分包样式文件等。
+- Android / iOS App：普通 `uni-app Vite` 的 App 产物常见输出为 `dist/dev/app-plus` 或 `dist/build/app`；HBuilderX 模板常见输出为 `unpackage/dist/dev/app-plus`。用 HBuilderX 运行到 Android/iOS 前，默认先停止当前运行任务，再重新 launch 目标平台；尤其是 Android 与 iOS 之间切换时，避免旧运行基座、旧 WebView、旧日志或旧输出目录残留误导验证。运行到设备时必须记录实际命中的输出目录，不要假设目录名。截图脚本可能把 HBuilder 启动页误判为 ready，必要时结合 logcat、iOS simulator log、WebView CDP、页面可视探针或运行时面板确认真实页面已渲染。
+- Harmony App：通常走 HBuilderX / uni-app x 链路，输出目录可能是 `unpackage/dist/dev/app-harmony`、`.uvue/app-harmony` 或 Harmony 打包中间目录；验证时同时检查 JS/UTS/UVUE 产物、样式产物和设备截图。不要把 Android/iOS 的 `app-plus` 路径硬套到 Harmony。
+- CLI 与 HBuilderX 的边界：CLI 适合普通 Vite 构建、H5/Web、常规小程序静态产物检查；HBuilderX 适合 App Android/iOS/Harmony、uni-app x、以及需要 IDE 编译器或运行基座参与的链路。两者输出目录、日志来源、HMR 行为和运行时 WebView 都可能不同，问题复现必须写清楚用的是 CLI 还是 HBuilderX。
+- App WebView 兼容结论要来自真实运行时：Android 记录 System WebView/Chromium 版本，iOS 记录 WKWebView/WebKit/Safari bundle 版本，Harmony 记录设备与 HBuilderX/DevEco 相关版本。不要只凭构建通过判断运行端 CSS 兼容。
+- Tailwind 特殊类名在 App 端排查时要分清两层：WebView/view 层是否能保留并匹配 raw class，以及 `weapp-tailwindcss` 构建链是否把 JS class 与 CSS selector 同步转成 safe class。最终产物断言优先看 safe class（如 `dark_cbg-*`、`text-_b..._B`），raw class 只作为兼容探针或第三方透传场景验证。
+
 ## 目录规则路由
 - `packages/*`：`packages/AGENTS.md`
 - `packages-runtime/*`：`packages-runtime/AGENTS.md`
