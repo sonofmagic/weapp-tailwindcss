@@ -78,6 +78,17 @@ wx-root-portal-content {
   --window-right: 0px;
   --window-magin: 0px;
 }
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+
+wx-button {
+  background: #000;
+}
+
 .layer-card-v4 {
   display: flex;
   align-items: center;
@@ -735,6 +746,21 @@ wx-root-portal-content {
   font-weight: var(--font-weight-semibold);
   font-size: 26rpx;
   color: var(--color-white);
+}
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
+}
+wx-button {
+  background: #444;
+}
+abc {
+  background: #222;
 }
 .layer-card-v4 {
   display: flex;

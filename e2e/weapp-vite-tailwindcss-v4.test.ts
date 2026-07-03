@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest'
 import { replaceWxml } from '../packages/weapp-tailwindcss/src/wxml'
 import { getE2EProject } from './projectEntries'
 import { defineProjectTest, ensureProjectBuilt } from './projectTest'
+import { defineTaroBareSelectorRegression } from './taroBareSelectorRegression'
 
 const project = getE2EProject('weapp-vite-tailwindcss-v4')
 
@@ -13,6 +14,8 @@ defineProjectTest(project, {
   fixturesDir: '../demo',
   allowExtractionFailure: true,
 })
+
+defineTaroBareSelectorRegression(project)
 
 describe('e2e', () => {
   it('keeps non-class WXML expression strings unescaped in weapp-vite v4 output', async () => {

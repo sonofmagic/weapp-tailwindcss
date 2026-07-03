@@ -5,6 +5,7 @@ import { Buffer } from 'node:buffer'
 import path from 'node:path'
 import process from 'node:process'
 import { inspect } from 'node:util'
+import { filterExistingCssRules } from '@weapp-tailwindcss/postcss'
 import { ensurePosix } from '@weapp-tailwindcss/shared'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
@@ -17,6 +18,7 @@ import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
+import { collectWebpackBareSelectorUserCss, finalizeMiniProgramUserCssAssetSource, finalizeWebpackCssAssetSource } from '../BaseUnifiedPlugin/v5-assets/pipeline-helpers'
 import { getWebpackLoaderRuntime } from './runtime-registry'
 import { registerWebpackWatchFile } from './watch-dependencies'
 
@@ -194,16 +196,32 @@ async function generateCssForWebpackPipeline(
     return undefined
   }
   rewriteOptions.markGeneratedCssSource?.(file)
-  rewriteOptions.registerGeneratedCss?.({
-    classSet: generated.classSet,
-    css: generated.css,
-    dependencies: generated.dependencies,
-    file,
-  })
   for (const dependency of generated.dependencies) {
     registerWebpackWatchFile(loaderContext, dependency)
   }
-  const css = removeTailwindSourceDirectives(generated.css, { importFallback: true })
+  const generatedCss = removeTailwindSourceDirectives(generated.css, { importFallback: true })
+  const finalizedGeneratedCss = finalizeWebpackCssAssetSource(generatedCss, compilerOptions, generatorTarget === 'web', {
+    cssPreflight: cssHandlerOptions.isMainChunk,
+    generatedCss: true,
+  })
+  const bareUserCss = collectWebpackBareSelectorUserCss(normalizedSource)
+  const finalizedBareUserCss = bareUserCss.trim().length === 0
+    ? ''
+    : finalizeMiniProgramUserCssAssetSource(bareUserCss, compilerOptions, generatorTarget === 'web', {
+        cssPreflight: false,
+      })
+  const missingBareUserCss = finalizedBareUserCss.trim().length === 0
+    ? ''
+    : filterExistingCssRules(finalizedGeneratedCss, finalizedBareUserCss)
+  const css = missingBareUserCss.trim().length === 0
+    ? generatedCss
+    : `${generatedCss}\n${missingBareUserCss}`
+  rewriteOptions.registerGeneratedCss?.({
+    classSet: generated.classSet,
+    css,
+    dependencies: generated.dependencies,
+    file,
+  })
   return `${createBundlerGeneratedCssMarker('webpack', file)}\n${css}`
 }
 

@@ -318,6 +318,9 @@ describe('bundlers/webpack v5-assets helpers', () => {
   it('collects bare selector user css without class rules and keyframes', () => {
     expect(collectWebpackBareSelectorUserCss([
       '@import "./theme.css";',
+      '@config "../tailwind.config.js";',
+      '@source "../src";',
+      '@custom-variant wx { @slot; }',
       '.card{color:red}',
       '.issue-941-bg-image{background-image:url("./issue-941-asset.svg")}',
       'button::after,wx-button::after{display:none;border:none;content:""}',

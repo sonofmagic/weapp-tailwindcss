@@ -14,3 +14,24 @@
 @source "./pages/**/*.{wxml,html,js,ts,jsx,tsx,vue}";
 @source not "./sub-normal/**/*";
 @source not "./sub-independent/**/*";
+
+@layer base {
+  button::after,
+  wx-button::after {
+    display: none;
+    border: none;
+    content: "";
+  }
+
+  wx-button {
+    background: #000;
+  }
+}
+
+wx-button {
+  background: #444;
+}
+
+abc {
+  background: #222;
+}

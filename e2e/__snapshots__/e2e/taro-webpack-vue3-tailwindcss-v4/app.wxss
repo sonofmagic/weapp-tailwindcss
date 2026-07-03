@@ -9174,6 +9174,12 @@ wx-button::after {
     transform: scale(0.96);
   }
 }
+.h5-button::after,
+wx-button::after {
+  border: none;
+  content: '';
+  display: none;
+}
 wx-button {
   background: #000;
 }
@@ -9182,4 +9188,13 @@ wx-button {
 }
 abc {
   background: #222;
+}
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
 }

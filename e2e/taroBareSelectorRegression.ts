@@ -4,6 +4,7 @@ import process from 'node:process'
 import path from 'pathe'
 import { expect, it } from 'vitest'
 import { ensureProjectBuilt } from './projectTest'
+import { getProjectCssFiles } from './shared'
 
 function compactCss(css: string) {
   return css.replace(/\s+/g, '')
@@ -44,7 +45,7 @@ async function readCssWithLocalImports(projectPath: string, file: string, seen =
   return `${css}\n${importedCss.join('\n')}`
 }
 
-export function defineTaroBareSelectorRegression(project: ProjectEntry) {
+export function defineBareSelectorRegression(project: ProjectEntry) {
   it('keeps bare element selectors from app css user layers', async () => {
     const projectBase = path.resolve(__dirname, '../demo')
     const root = path.resolve(projectBase, project.name)
@@ -54,16 +55,34 @@ export function defineTaroBareSelectorRegression(project: ProjectEntry) {
       await ensureProjectBuilt(root)
     }
 
-    const css = await readCssWithLocalImports(projectPath, 'dist/app.wxss')
-    const normalizedCss = compactCss(css)
-    const buttonAfterBlocks = compactCss(collectCssRuleBlocks(css, 'wx-button::after'))
+    const cssOutputs = await Promise.all(getProjectCssFiles(project).map(async (cssFile) => {
+      const css = await readCssWithLocalImports(projectPath, cssFile)
+      const buttonAfterBlocks = compactCss(collectCssRuleBlocks(css, 'wx-button::after'))
+      const wxButtonBlocks = compactCss(collectCssRuleBlocks(css, 'wx-button'))
+      const customElementBlocks = compactCss(collectCssRuleBlocks(css, 'abc'))
+      return {
+        cssFile,
+        buttonAfterBlocks,
+        wxButtonBlocks,
+        customElementBlocks,
+      }
+    }))
 
-    expect(buttonAfterBlocks).toContain('wx-button::after')
-    expect(buttonAfterBlocks).toContain('display:none')
-    expect(buttonAfterBlocks).toContain('border:none')
-    expect(buttonAfterBlocks).toContain('content:""')
-    expect(normalizedCss).toContain('wx-button{background:#000}')
-    expect(normalizedCss).toContain('wx-button{background:#444}')
-    expect(normalizedCss).toContain('abc{background:#222}')
+    const matched = cssOutputs.find(({ buttonAfterBlocks, wxButtonBlocks, customElementBlocks }) => {
+      return buttonAfterBlocks.includes('wx-button::after')
+        && buttonAfterBlocks.includes('display:none')
+        && buttonAfterBlocks.includes('border:none')
+        && buttonAfterBlocks.includes('content:""')
+        && wxButtonBlocks.includes('background:#000')
+        && wxButtonBlocks.includes('background:#444')
+        && customElementBlocks.includes('background:#222')
+    })
+
+    expect(
+      matched,
+      `Expected ${project.name} to keep bare selector user CSS in one of: ${cssOutputs.map(item => item.cssFile).join(', ')}`,
+    ).toBeTruthy()
   })
 }
+
+export const defineTaroBareSelectorRegression = defineBareSelectorRegression
