@@ -19,6 +19,9 @@
         <text :class="safeTextProbeClass" class="block">
           safe text class
         </text>
+        <view class="css-variable-visual-probe rounded px-3 py-2 text-white">
+          css variable class
+        </view>
       </view>
     </view>
     <view class="template-corpus-card flex flex-col gap-3 rounded-[28rpx] border border-slate-200/80 bg-gradient-to-br from-slate-900/95 to-slate-700/95 p-4 text-white shadow-xl wx:bg-blue-500 not-wx:bg-red-500 any-hover:bg-slate-800">
@@ -306,6 +309,7 @@ function createSpecialClassProbeStyle(documentRef: Document) {
     `.${rawTextClass.replace('[', '\\[').replace(']', '\\]')} { font-size: 45px; }`,
     `.dark .${safeDarkClass} { background-color: rgb(252, 165, 165); }`,
     `.${safeTextClass} { font-size: 45px; }`,
+    '.css-variable-probe { --probe-bg: rgb(16, 185, 129); --probe-size: 45px; background-color: var(--probe-bg); font-size: var(--probe-size); }',
   ].join('\n')
   return style
 }
@@ -337,20 +341,25 @@ function refreshSpecialClassProbe() {
     const rawTextElement = createSpecialClassProbeElement(document, rawTextClass, 'raw text-[45rpx]')
     const safeDarkElement = createSpecialClassProbeElement(document, 'dark_cbg-red-300', 'safe dark_cbg-red-300')
     const safeTextElement = createSpecialClassProbeElement(document, 'text-_b45rpx_B', 'safe text-_b45rpx_B')
+    const cssVariableElement = createSpecialClassProbeElement(document, 'css-variable-probe', 'css variable probe')
     host.appendChild(rawDarkElement)
     host.appendChild(rawTextElement)
     host.appendChild(safeDarkElement)
     host.appendChild(safeTextElement)
+    host.appendChild(cssVariableElement)
     document.body.appendChild(host)
 
     const rawDarkBackground = readCssValue(rawDarkElement, 'backgroundColor')
     const rawTextFontSize = readCssValue(rawTextElement, 'fontSize')
     const safeDarkBackground = readCssValue(safeDarkElement, 'backgroundColor')
     const safeTextFontSize = readCssValue(safeTextElement, 'fontSize')
+    const cssVariableBackground = readCssValue(cssVariableElement, 'backgroundColor')
+    const cssVariableFontSize = readCssValue(cssVariableElement, 'fontSize')
     const rawDarkMatched = colorIncludes(rawDarkBackground, 'rgb(252,165,165)')
     const rawTextMatched = rawTextFontSize === '45px'
     const safeDarkMatched = colorIncludes(safeDarkBackground, 'rgb(252,165,165)')
     const safeTextMatched = safeTextFontSize === '45px'
+    const cssVariableMatched = colorIncludes(cssVariableBackground, 'rgb(16,185,129)') && cssVariableFontSize === '45px'
 
     pushInfoRow(rows, 'raw.dark:bg-red-300.matched', rawDarkMatched)
     pushInfoRow(rows, 'raw.dark:bg-red-300.backgroundColor', rawDarkBackground)
@@ -360,12 +369,15 @@ function refreshSpecialClassProbe() {
     pushInfoRow(rows, 'safe.dark_cbg-red-300.backgroundColor', safeDarkBackground)
     pushInfoRow(rows, 'safe.text-_b45rpx_B.matched', safeTextMatched)
     pushInfoRow(rows, 'safe.text-_b45rpx_B.fontSize', safeTextFontSize)
+    pushInfoRow(rows, 'css-var.backgroundColor', cssVariableBackground)
+    pushInfoRow(rows, 'css-var.fontSize', cssVariableFontSize)
+    pushInfoRow(rows, 'css-var.matched', cssVariableMatched)
     pushInfoRow(rows, 'conclusion', rawDarkMatched && rawTextMatched
       ? 'raw special class names are accepted by this WebView when CSS selectors are escaped'
       : 'raw special class names did not fully match in this WebView')
 
     specialClassProbeRows.value = rows
-    specialClassProbeSummary.value = `raw=${rawDarkMatched && rawTextMatched ? 'pass' : 'fail'}, safe=${safeDarkMatched && safeTextMatched ? 'pass' : 'fail'}`
+    specialClassProbeSummary.value = `raw=${rawDarkMatched && rawTextMatched ? 'pass' : 'fail'}, safe=${safeDarkMatched && safeTextMatched ? 'pass' : 'fail'}, cssVar=${cssVariableMatched ? 'pass' : 'fail'}`
     console.log('[uni-app-vite] Special Class Probe', Object.fromEntries(rows.map(item => [item.label, item.value])))
   }
   catch (error) {
@@ -414,6 +426,14 @@ const goOrder = () => {
 .special-class-visual-probe .text-_b45rpx_B {
   color: #0f172a;
   font-size: 45px;
+  line-height: 1;
+}
+
+.special-class-visual-probe .css-variable-visual-probe {
+  --visual-probe-bg: rgb(16, 185, 129);
+  --visual-probe-size: 45px;
+  background-color: var(--visual-probe-bg);
+  font-size: var(--visual-probe-size);
   line-height: 1;
 }
 </style>
