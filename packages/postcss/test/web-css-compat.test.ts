@@ -177,6 +177,51 @@ describe('web css compatibility transform', () => {
     expect(result).not.toContain('infinity')
   })
 
+  it('targets Chrome 91 and AppleWebKit 537.36 with legacy-web compat output', () => {
+    const css = [
+      '@theme {',
+      '  --color-slate-700: oklch(37.2% 0.044 257.287);',
+      '  --color-emerald-500: oklch(69.6% 0.17 162.48);',
+      '  --color-zinc-950: oklch(14.1% 0.005 285.823);',
+      '  --color-red-300: oklch(80.8% 0.114 19.571);',
+      '}',
+      '.rounded-full { border-radius: calc(infinity * 1px); }',
+      '.bg-white\\/70 { background-color: rgb(255 255 255 / 70%); }',
+      '.text-slate-700 { color: var(--color-slate-700); }',
+      '.bg-emerald-500 { background-color: var(--color-emerald-500); }',
+      '.theme-dark .dark\\:bg-zinc-950 { background-color: var(--color-zinc-950); }',
+      '.dark\\:bg-red-300.theme-dark { background-color: var(--color-red-300); }',
+      '.text-\\[45rpx\\] { font-size: 45rpx; }',
+      '.bg-\\[radial-gradient\\(circle_at_center\\,_#fff\\,_#000\\)\\] {',
+      '  background-image: radial-gradient(circle at center, #fff, #000);',
+      '}',
+      '.modern-hsl { color: hsl(210 40% 96% / 75%); }',
+    ].join('\n')
+    const compat = transformWebCssCompat(css, true)
+    const safe = transformWebCssSafeSelectors(compat)
+
+    expect(compat).not.toContain('oklch(')
+    expect(compat).not.toContain('color-mix(')
+    expect(compat).not.toContain('calc(infinity')
+    expect(compat).toContain('border-radius: 9999px')
+    expect(compat).toMatch(/\.bg-white\\\/70 \{ background-color: rgba?\(255, 255, 255, 0\.7\); \}/)
+    expect(compat).not.toContain('rgb(255 255 255 / 70%)')
+    expect(compat).toContain('.text-slate-700 { color: rgb(')
+    expect(compat).toContain('.bg-emerald-500 { background-color: rgb(')
+    expect(compat).toContain('.theme-dark .dark\\:bg-zinc-950 { background-color: rgb(')
+    expect(compat).toContain('.dark\\:bg-red-300.theme-dark { background-color: rgb(')
+    expect(compat).toContain('.text-\\[45rpx\\] { font-size: 45rpx; }')
+    expect(compat).toContain('background-image: radial-gradient(circle at center, #fff, #000)')
+    expect(compat).toMatch(/\.modern-hsl \{ color: rgba?\(/)
+    expect(compat).not.toContain('hsl(210 40% 96% / 75%)')
+
+    expect(safe).toContain('.bg-white_f70')
+    expect(safe).toContain('.text-_b45rpx_B')
+    expect(safe).toContain('.theme-dark .dark_cbg-zinc-950')
+    expect(safe).toContain('.dark_cbg-red-300.theme-dark')
+    expect(safe).toContain('background-image: radial-gradient(circle at center, #fff, #000)')
+  })
+
   it('preserves Tailwind registered property initial values as web compat fallbacks', () => {
     const css = [
       '@property --tw-border-style { syntax: "*"; inherits: false; initial-value: solid; }',

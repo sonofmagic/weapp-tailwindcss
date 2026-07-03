@@ -2,7 +2,7 @@ import type { Node } from 'postcss-value-parser'
 import postcss from 'postcss'
 import valueParser from 'postcss-value-parser'
 import { COLOR_MIX_NAME, MODERN_COLOR_FUNCTION_NAMES, PLACEHOLDER_PREFIX } from './color-mix/constants'
-import { hasUnsupportedModernColorFunction, isDisplayP3ColorFunction } from './color-mix/modern'
+import { hasUnsupportedModernColorFunction, isDisplayP3ColorFunction, isModernColorSyntaxFunction } from './color-mix/modern'
 import { normalizeStandaloneColorFunction } from './color-mix/parse'
 import { tryResolveColorMix } from './color-mix/resolve'
 
@@ -44,7 +44,11 @@ export function normalizeModernColorValue(
     const name = node.value.toLowerCase()
     const source = valueParser.stringify(node)
     let normalized: string | undefined
-    if (MODERN_COLOR_FUNCTION_NAMES.has(name) || (name === 'color' && isDisplayP3ColorFunction(source))) {
+    if (
+      MODERN_COLOR_FUNCTION_NAMES.has(name)
+      || (name === 'color' && isDisplayP3ColorFunction(source))
+      || isModernColorSyntaxFunction(source)
+    ) {
       normalized = normalizeStandaloneColorFunction(source)
     }
     else if (name === COLOR_MIX_NAME) {

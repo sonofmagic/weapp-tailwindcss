@@ -104,6 +104,12 @@ export interface CssAtRules {
   media?: boolean | undefined
 }
 
+/**
+ * Web 兼容预设。
+ *
+ * `legacy-web` 面向 Web Compact 输出，兼容基线为 Chrome/91.0.4472.114 与
+ * AppleWebKit/537.36；`off` 表示关闭降级。
+ */
 export type WebCssCompatPreset = 'off' | 'legacy-web'
 
 /**
@@ -142,7 +148,7 @@ export interface WebCssCompatFeatures {
 
 export interface WebCssCompatOptions {
   /**
-   * 兼容预设。`legacy-web` 面向旧 Android/iOS WebView，`off` 表示关闭降级。
+   * 兼容预设。`legacy-web` 面向 Chrome 91 / AppleWebKit 537.36 WebView 基线，`off` 表示关闭降级。
    */
   preset?: WebCssCompatPreset | undefined
   /**

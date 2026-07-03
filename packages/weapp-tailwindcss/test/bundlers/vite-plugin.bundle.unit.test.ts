@@ -3734,7 +3734,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           ':root{--color-emerald-500:oklch(69.6% 0.17 162.48);--color-zinc-950:oklch(14.1% 0.005 285.823)}',
           '.template-corpus-card{display:block}',
           '.bg-emerald-500{background-color:var(--color-emerald-500)}',
-          '.bg-white\\/70{background-color:rgba(255, 255, 255, 0.7)}',
+          '.bg-white\\/70{background-color:rgb(255 255 255 / 70%)}',
           '.theme-dark .dark\\:bg-zinc-950{background-color:var(--color-zinc-950)}',
           '.text-slate-700{color:rgb(49, 65, 88)}',
           '.text-\\[45rpx\\]{font-size:45rpx}',
@@ -3892,6 +3892,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       expect(appCss).toContain('.template-corpus-card')
       expect(appCss).toContain('.bg-emerald-500{background-color:rgb(')
       expect(appCss).toContain('.bg-white_f70{background-color:rgba(255, 255, 255, 0.7)')
+      expect(appCss).not.toContain('rgb(255 255 255 / 70%)')
       expect(appCss).toContain('.theme-dark .dark_cbg-zinc-950{background-color:rgb(')
       expect(appCss).toContain('.text-slate-700{color:rgb(49, 65, 88)}')
       expect(appCss).not.toContain('background-color:var(--color-')

@@ -140,10 +140,12 @@ describe('get options', () => {
   it('infers web generator target from plain uni-app App WebView env', () => {
     withGeneratorTargetEnv({ UNI_PLATFORM: 'app' }, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions(undefined).target).toBe('web')
+      expect(normalizeWeappTailwindcssGeneratorOptions(undefined).webCompat).toBe(true)
     })
 
     withGeneratorTargetEnv({ UNI_PLATFORM: 'app-plus' }, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('web')
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).webCompat).toBe(true)
     })
   })
 

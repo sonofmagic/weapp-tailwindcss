@@ -1,5 +1,6 @@
 export const COLOR_MIX_NAME = 'color-mix'
 export const MODERN_COLOR_FUNCTION_NAMES = new Set(['oklch', 'oklab', 'lch', 'lab'])
+export const MODERN_COLOR_SYNTAX_FUNCTION_NAMES = new Set(['rgb', 'rgba', 'hsl', 'hsla', 'hwb'])
 export const PLACEHOLDER_PREFIX = '__weapp_tw_color_mix_'
 export const DYNAMIC_ALPHA_RE = /\b(?:var|env)\(|--[\w-]+\b/
 export const INTERNAL_TAILWIND_ALPHA_RE = /var\(\s*--tw-[^)]+-alpha\s*\)/

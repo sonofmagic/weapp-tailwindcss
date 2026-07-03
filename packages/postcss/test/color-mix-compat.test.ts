@@ -49,15 +49,16 @@ describe('color-mix compatibility helpers', () => {
     expect(normalizeStandaloneColorFunction('not-a-color')).toBeUndefined()
   })
 
-  it('detects and normalizes modern color functions without touching supported values', () => {
+  it('detects and normalizes modern color functions without touching legacy values', () => {
     expect(isDisplayP3ColorFunction(' color(display-p3 1 0 0)')).toBe(true)
-    expect(hasUnsupportedModernColorFunction('rgb(1 2 3 / .5)')).toBe(false)
+    expect(hasUnsupportedModernColorFunction('rgb(1 2 3 / .5)')).toBe(true)
+    expect(hasUnsupportedModernColorFunction('rgb(1, 2, 3)')).toBe(false)
 
     expect(normalizeModernColorValue('oklch(62.3% 0.214 259.815)').value).toContain('rgb(')
     expect(normalizeModernColorValue('color(display-p3 0.26642 0.49122 0.98862)').value).toContain('rgb(')
-    expect(normalizeModernColorValue('rgb(1 2 3 / .5)')).toEqual({
-      value: 'rgb(1 2 3 / .5)',
-      changed: false,
+    expect(normalizeModernColorValue('rgb(1 2 3 / .5)')).toMatchObject({
+      value: 'rgba(1, 2, 3, 0.5)',
+      changed: true,
       hasUnsupported: false,
     })
     expect(normalizeModernColorValue('color-mix(in oklab, currentColor 50%, transparent)')).toEqual({
