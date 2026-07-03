@@ -1,5 +1,11 @@
 # weapp-style-injector
 
+## 1.0.1
+
+### Patch Changes
+
+- 🐛 **修复样式注入去重时 raw `@import` 与 `url()` 写法识别不一致的问题，避免等价导入被重复插入。** [#960](https://github.com/sonofmagic/weapp-tailwindcss/pull/960) by @sonofmagic
+
 ## 1.0.0
 
 ### Major Changes

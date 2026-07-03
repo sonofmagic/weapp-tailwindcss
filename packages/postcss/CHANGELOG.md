@@ -1,5 +1,13 @@
 # @weapp-tailwindcss/postcss
 
+## 3.1.6
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v4 小程序与 generator 产物中 `--tw-gradient-position` 仍保留 `in oklab` 等现代插值语法的问题，统一降级为小程序/WebView 兼容的渐变方向值。** [`ed75e33`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ed75e33c4342c98b198d60107c1bca13cbb8b607) by @sonofmagic
+
+- 🐛 **将 `legacy-web` Web 兼容预设明确收敛到 Chrome 91 / AppleWebKit 537.36 基线，并补充现代 `rgb()` / `hsl()` 空格斜杠颜色语法降级，确保 `webCompat` 与 uni-app App WebView safe selector 产物保持可用。** [`abbcdf7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/abbcdf72edc5615965e46be0b3d8af3ac78887d1) by @sonofmagic
+
 ## 3.1.5
 
 ### Patch Changes
