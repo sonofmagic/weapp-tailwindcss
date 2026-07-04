@@ -35,7 +35,41 @@ describe('framework plugin composition profiles', () => {
     )
 
     expect(sharedSource).not.toContain("from '@/uni-app-x/vite'")
+    expect(sharedSource).not.toContain("frameworkName === 'uni-app-x'")
     expect(uniAppXSource).toContain("from '@/uni-app-x/vite'")
+    expect(uniAppXSource).toContain('uniAppXRuntimeEnabled: true')
+  })
+
+  it('keeps Vite style injector delegate selection inside framework branches', async () => {
+    const root = path.resolve(__dirname, '../..')
+    const sharedSource = await readFile(
+      path.join(root, 'src/bundlers/vite/shared/create-framework-plugins.ts'),
+      'utf8',
+    )
+    const genericSource = await readFile(
+      path.join(root, 'src/bundlers/vite/frameworks/generic/index.ts'),
+      'utf8',
+    )
+    const taroSource = await readFile(
+      path.join(root, 'src/bundlers/vite/frameworks/taro/index.ts'),
+      'utf8',
+    )
+    const uniAppSource = await readFile(
+      path.join(root, 'src/bundlers/vite/frameworks/uni-app/index.ts'),
+      'utf8',
+    )
+    const uniAppXSource = await readFile(
+      path.join(root, 'src/bundlers/vite/frameworks/uni-app-x/index.ts'),
+      'utf8',
+    )
+
+    expect(sharedSource).not.toContain('resolveViteStyleInjectorDelegate')
+    expect(sharedSource).not.toContain('viteStyleInjectorDelegates.')
+    expect(genericSource).toContain('viteStyleInjectorDelegates.generic')
+    expect(taroSource).toContain('viteStyleInjectorDelegates.taro')
+    expect(uniAppSource).toContain('viteStyleInjectorDelegates.uniApp')
+    expect(uniAppXSource).toContain('viteStyleInjectorDelegates.uniApp')
+    expect(taroSource).not.toContain("from '@/uni-app-x/vite'")
   })
 
   it('routes Webpack public class to framework classes', async () => {
@@ -71,6 +105,42 @@ describe('framework plugin composition profiles', () => {
       'mpx',
       'uni-app',
     ])
+  })
+
+  it('keeps Webpack mpx and style injector choices inside framework branches', async () => {
+    const root = path.resolve(__dirname, '../..')
+    const sharedSource = await readFile(
+      path.join(root, 'src/bundlers/webpack/shared/create-framework-plugin.ts'),
+      'utf8',
+    )
+    const loaderSource = await readFile(
+      path.join(root, 'src/bundlers/webpack/BaseUnifiedPlugin/v5-loaders.ts'),
+      'utf8',
+    )
+    const mpxSource = await readFile(
+      path.join(root, 'src/bundlers/webpack/frameworks/mpx/index.ts'),
+      'utf8',
+    )
+    const taroSource = await readFile(
+      path.join(root, 'src/bundlers/webpack/frameworks/taro/index.ts'),
+      'utf8',
+    )
+    const uniAppSource = await readFile(
+      path.join(root, 'src/bundlers/webpack/frameworks/uni-app/index.ts'),
+      'utf8',
+    )
+
+    expect(sharedSource).not.toContain('resolveWebpackStyleInjectorDelegate')
+    expect(sharedSource).not.toContain('setupMpxTailwindcssRedirect')
+    expect(sharedSource).not.toContain('isMpx(')
+    expect(loaderSource).not.toContain('isMpx(')
+    expect(mpxSource).toContain('setupMpxTailwindcssRedirect')
+    expect(mpxSource).toContain('createMpxLoaderAnchorFinders')
+    expect(mpxSource).toContain('webpackStyleInjectorDelegates.mpx')
+    expect(taroSource).toContain('webpackStyleInjectorDelegates.taro')
+    expect(uniAppSource).toContain('webpackStyleInjectorDelegates.uniApp')
+    expect(taroSource).not.toContain('setupMpxTailwindcssRedirect')
+    expect(uniAppSource).not.toContain('setupMpxTailwindcssRedirect')
   })
 
   it('routes Gulp public entry to native framework factory', async () => {

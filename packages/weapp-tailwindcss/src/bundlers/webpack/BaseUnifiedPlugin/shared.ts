@@ -1,8 +1,5 @@
-import type { AppType } from '@/types'
 import path from 'node:path'
 import { isSourceStyleRequest, stripRequestQuery } from '@/bundlers/shared/style-requests'
-
-const MPX_STYLE_RESOURCE_QUERY_RE = /(?:\?|&)type=styles\b/
 
 export function getCacheKey(filename: string) {
   return filename
@@ -18,7 +15,6 @@ export function stripResourceQuery(resource?: string): string | undefined {
 export function isCssLikeModuleResource(
   resource: string | undefined,
   cssMatcher: (file: string) => boolean,
-  appType?: AppType,
 ) {
   if (typeof resource !== 'string') {
     return false
@@ -29,9 +25,6 @@ export function isCssLikeModuleResource(
   }
   if (isSourceStyleRequest(resource)) {
     return true
-  }
-  if (appType === 'mpx') {
-    return MPX_STYLE_RESOURCE_QUERY_RE.test(resource)
   }
   return false
 }

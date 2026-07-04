@@ -9160,6 +9160,29 @@ describe('bundlers/shared generator css', () => {
     })
   })
 
+  it('disables generator preflight mode for Vite scoped Vue style ids', async () => {
+    const { resolveMiniProgramPreflightModeForGeneratorCss } = await import('@/bundlers/shared/generator-css/generation-helpers')
+    const mode = resolveMiniProgramPreflightModeForGeneratorCss({
+      cssPreflight: 'view',
+    } as any, {
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: '/workspace/src/components/HelloWorld.vue?vue&type=style&index=0&scoped=04bcf89b&lang.scss',
+          },
+        },
+      } as any,
+      isolateCurrentCssCandidates: false,
+      primaryCssSource: true,
+    })
+
+    expect(mode).toEqual({
+      inject: false,
+      preserve: false,
+    })
+  })
+
   it('removes preflight style options for scoped Vue style sources', async () => {
     const { resolveGeneratorStyleOptions } = await import('@/bundlers/shared/generator-css/generation-helpers')
     const styleOptions = resolveGeneratorStyleOptions({

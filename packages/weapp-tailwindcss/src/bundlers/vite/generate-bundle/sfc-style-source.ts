@@ -9,21 +9,100 @@ import { CSS_SOURCE_OUTPUT_EXT_RE } from './css-output'
 import { scoreMatchingStyleFileBase } from './style-matching'
 
 const SFC_STYLE_SOURCE_EXTENSIONS = ['.vue', '.uvue', '.nvue', '.svelte', '.mpx'] as const
-const SFC_STYLE_BLOCK_RE = /<style\b[^>]*>([\s\S]*?)<\/style>/gi
+const SFC_STYLE_BLOCK_RE = /<style\b([^>]*)>([\s\S]*?)<\/style>/gi
+const SFC_SCOPED_STYLE_ATTR_RE = /(?:^|\s)scoped(?:\s|=|$)/i
+const SFC_LANG_STYLE_ATTR_RE = /(?:^|\s)lang(?:=(?:"([^"]+)"|'([^']+)'|([^\s"'=<>`]+)))?/i
 
-export function extractSfcStyleSources(source: string) {
-  const styleSources: string[] = []
+export interface SfcStyleBlock {
+  attrs: string
+  index: number
+  scoped: boolean
+  source: string
+}
+
+export function extractSfcStyleBlocks(source: string) {
+  const styleSources: SfcStyleBlock[] = []
   SFC_STYLE_BLOCK_RE.lastIndex = 0
+  let index = 0
   let match = SFC_STYLE_BLOCK_RE.exec(source)
   while (match !== null) {
-    styleSources.push(match[1] ?? '')
+    const attrs = match[1] ?? ''
+    styleSources.push({
+      attrs,
+      index,
+      scoped: SFC_SCOPED_STYLE_ATTR_RE.test(attrs),
+      source: match[2] ?? '',
+    })
+    index += 1
     match = SFC_STYLE_BLOCK_RE.exec(source)
   }
   return styleSources
 }
 
+export function extractSfcStyleSources(source: string) {
+  return extractSfcStyleBlocks(source).map(style => style.source)
+}
+
 export function hasSfcStyleSources(source: string) {
   return extractSfcStyleSources(source).length > 0
+}
+
+function resolveSfcStyleHandlerSourceFile(sourceFile: string, styleBlocks: SfcStyleBlock[]) {
+  const scopedStyleBlock = styleBlocks.find(style => style.scoped)
+  return scopedStyleBlock
+    ? `${sourceFile}?vue&type=style&index=${scopedStyleBlock.index}&scoped=true`
+    : sourceFile
+}
+
+function normalizeSfcStyleSourceForCompare(source: string) {
+  return source.replace(/\r\n?/g, '\n').trim()
+}
+
+function resolveSfcStyleBlockLang(attrs: string) {
+  const match = SFC_LANG_STYLE_ATTR_RE.exec(attrs)
+  return match?.[1] ?? match?.[2] ?? match?.[3]
+}
+
+function createSfcStyleRequest(sourceFile: string, styleBlock: SfcStyleBlock) {
+  const params = new URLSearchParams()
+  params.set('vue', '')
+  params.set('type', 'style')
+  params.set('index', String(styleBlock.index))
+  if (styleBlock.scoped) {
+    params.set('scoped', 'true')
+  }
+  const lang = resolveSfcStyleBlockLang(styleBlock.attrs)
+  if (lang) {
+    params.set('lang', lang)
+  }
+  return `${sourceFile}?${params.toString()}`
+}
+
+export function resolveSfcStyleRequestFromKnownSource(
+  sourceFile: string,
+  sfcSource: string | undefined,
+  styleSource: string,
+) {
+  if (!sfcSource) {
+    return sourceFile
+  }
+  const styleBlocks = extractSfcStyleBlocks(sfcSource)
+  if (styleBlocks.length === 0) {
+    return sourceFile
+  }
+  const normalizedStyleSource = normalizeSfcStyleSourceForCompare(styleSource)
+  const matchedBlocks = styleBlocks.filter((styleBlock) => {
+    const normalizedBlockSource = normalizeSfcStyleSourceForCompare(styleBlock.source)
+    return normalizedBlockSource === normalizedStyleSource
+      || normalizedBlockSource.includes(normalizedStyleSource)
+      || normalizedStyleSource.includes(normalizedBlockSource)
+  })
+  const styleBlock = matchedBlocks.length === 1
+    ? matchedBlocks[0]
+    : styleBlocks.length === 1
+      ? styleBlocks[0]
+      : undefined
+  return styleBlock ? createSfcStyleRequest(sourceFile, styleBlock) : sourceFile
 }
 
 export function hasTailwindGenerationSource(
@@ -63,7 +142,8 @@ export async function resolveSfcStyleSourceFromOutputFile(
     debug('sfc style source infer skipped: missing known source for %s -> %s', outputFile, sourceFile)
     return undefined
   }
-  const rawSource = extractSfcStyleSources(source).join('\n')
+  const styleBlocks = extractSfcStyleBlocks(source)
+  const rawSource = styleBlocks.map(style => style.source).join('\n')
   if (!rawSource || !hasTailwindGenerationSourceForFile(sourceFile, rawSource)) {
     debug('sfc style source infer skipped: no tailwind generation source for %s -> %s', outputFile, sourceFile)
     return undefined
@@ -72,7 +152,7 @@ export async function resolveSfcStyleSourceFromOutputFile(
   return {
     outputFile,
     rawSource,
-    sourceFile,
+    sourceFile: resolveSfcStyleHandlerSourceFile(sourceFile, styleBlocks),
   }
 }
 

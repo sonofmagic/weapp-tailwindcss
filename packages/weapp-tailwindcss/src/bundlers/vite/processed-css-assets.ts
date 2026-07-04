@@ -369,17 +369,21 @@ export function removeDuplicateUnlinkedRootCssAssetsReferencedByHtml(
 }
 
 const VUE_SCOPED_ATTR_RE = /\[data-v-[^\]]+\]/gi
+const VUE_SCOPED_CLASS_RE = /\.data-v-[\w-]+/gi
 
 function hasVueScopedAttr(value: string) {
   VUE_SCOPED_ATTR_RE.lastIndex = 0
-  const matched = VUE_SCOPED_ATTR_RE.test(value)
+  VUE_SCOPED_CLASS_RE.lastIndex = 0
+  const matched = VUE_SCOPED_ATTR_RE.test(value) || VUE_SCOPED_CLASS_RE.test(value)
   VUE_SCOPED_ATTR_RE.lastIndex = 0
+  VUE_SCOPED_CLASS_RE.lastIndex = 0
   return matched
 }
 
 function normalizeCssSignatureValue(value: string) {
   return value
     .replace(VUE_SCOPED_ATTR_RE, '')
+    .replace(VUE_SCOPED_CLASS_RE, '')
     .replace(/\s+/g, ' ')
     .replace(/\s*([>+~])\s*/g, '$1')
     .replace(/\(\s+/g, '(')
@@ -427,6 +431,32 @@ function isLikelyTailwindGlobalRule(rule: postcss.Rule) {
 function isLikelyTailwindPropertyAtRule(atRule: postcss.AtRule) {
   return atRule.name.toLowerCase() === 'property'
     && normalizeCssSignatureValue(atRule.params).startsWith('--tw-')
+}
+
+const MINI_PROGRAM_PREFLIGHT_SELECTORS = new Set(['view', 'text', '::after', '::before'])
+const MINI_PROGRAM_PREFLIGHT_DECLARATIONS = new Set(['box-sizing', 'margin', 'padding', 'border'])
+
+function isMiniProgramTailwindPreflightDeclaration(decl: postcss.Declaration) {
+  return decl.prop.startsWith('--tw-') || MINI_PROGRAM_PREFLIGHT_DECLARATIONS.has(decl.prop)
+}
+
+function isUnscopedMiniProgramTailwindPreflightRule(rule: postcss.Rule) {
+  const selectors = rule.selectors ?? [rule.selector]
+  if (
+    selectors.length === 0
+    || !selectors.every((selector) => {
+      const normalized = normalizeCssSignatureValue(selector)
+      return !hasVueScopedAttr(selector) && MINI_PROGRAM_PREFLIGHT_SELECTORS.has(normalized)
+    })
+  ) {
+    return false
+  }
+  const declarations = rule.nodes?.filter((node): node is postcss.Declaration => node.type === 'decl') ?? []
+  return declarations.length > 0 && declarations.every(isMiniProgramTailwindPreflightDeclaration)
+}
+
+function hasUnscopedMiniProgramTailwindPreflightRule(css: string) {
+  return /(?:^|[{}])\s*view\s*,\s*text\s*,\s*::after\s*,\s*::before\s*\{/.test(css)
 }
 
 function collectRootScopedComparableCssCoverage(cssSources: string[]) {
@@ -484,8 +514,9 @@ function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: stri
     return css
   }
   const hasScopedTailwindGeneratedCss = /tailwindcss v\d/i.test(css)
+  const hasUnscopedMiniProgramPreflight = hasUnscopedMiniProgramTailwindPreflightRule(css)
   const coverage = collectRootScopedComparableCssCoverage(rootSources)
-  if (coverage.rules.size === 0 && coverage.atRules.size === 0 && !hasScopedTailwindGeneratedCss) {
+  if (coverage.rules.size === 0 && coverage.atRules.size === 0 && !hasScopedTailwindGeneratedCss && !hasUnscopedMiniProgramPreflight) {
     return css
   }
   try {
@@ -504,6 +535,7 @@ function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: stri
           hasScopedTailwindGeneratedCss
           && isLikelyTailwindGlobalRule(rule)
         )
+        || isUnscopedMiniProgramTailwindPreflightRule(rule)
       ) {
         rule.remove()
         changed = true

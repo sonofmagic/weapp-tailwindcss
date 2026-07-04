@@ -1,6 +1,8 @@
 import type { Plugin, ResolvedConfig } from 'vite'
+import type { ViteFrameworkName } from '../../framework-selector'
 import type { SourceCandidateScanRoot } from '../source-candidate-scan-signature'
 import type { SourceCandidateCollectorSnapshot, SourceCandidateFilterOptions } from '../source-candidates'
+import type { ViteStyleInjectorDelegateFactory } from '@/style-injector/internal'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
@@ -19,7 +21,7 @@ import { createDebug } from '@/debug'
 import { normalizeFrameworkStylePlatform } from '@/framework/platform'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
-import { createBuiltinViteStyleInjectorPlugins, resolveViteStyleInjectorDelegate } from '@/style-injector/internal'
+import { createBuiltinViteStyleInjectorPlugins } from '@/style-injector/internal'
 import { isTailwindV4CssEntry, normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
@@ -28,7 +30,6 @@ import { withUniAppXWebPreflightReset } from '@/uni-app-x/web-preflight-reset'
 import { resolveUniUtsPlatform } from '@/utils'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
-import { createViteFrameworkProfileState } from '../../framework-selector'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
 import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '../../shared/generated-css-marker'
 import { createHmrTimingRecorder } from '../../shared/hmr-timing'
@@ -40,6 +41,7 @@ import { createViteCssMemory, shouldCollectTransformedSourceCandidates } from '.
 import { createGenerateBundleHook, resolveViteCssPipelineOutputFile } from '../generate-bundle'
 import { createCssHandlerOptionsCache, resolveViteCssHandlerExtraOptions } from '../generate-bundle/css-handler-options'
 import { createJsHandlerOptionsFactory } from '../generate-bundle/js-handler-options'
+import { resolveSfcStyleRequestFromKnownSource } from '../generate-bundle/sfc-style-source'
 import { hasSelfAcceptingNonStyleHotModule, resolveHotSourceModules, resolveHotTailwindCssModules, sendFullReloadForUnresolvedHotUpdate, sendSupplementalCssHotUpdates } from '../hot-css-modules'
 import { touchMapEntry } from '../map-cache'
 import { disableAndRemoveTailwindVitePlugins, removeTailwindVitePlugins } from '../official-tailwind-plugins'
@@ -154,8 +156,10 @@ export interface WeappTailwindcssVitePlugin {
 }
 
 export interface ViteFrameworkBranchContext {
-  frameworkName: string
+  frameworkName: ViteFrameworkName
   createExtraPlugins?: (context: ViteFrameworkExtraPluginContext) => Plugin[]
+  styleInjectorDelegate: ViteStyleInjectorDelegateFactory
+  uniAppXRuntimeEnabled?: boolean | undefined
 }
 
 export interface ViteFrameworkExtraPluginContext {
@@ -229,19 +233,8 @@ export function createViteFrameworkPlugins(
   } = opts
   const initialTailwindRuntime = tailwindRuntime
   const refreshTailwindRuntime = refreshTailwindcssRuntime
-  const frameworkProfileState = createViteFrameworkProfileState({
-    appType: opts.appType,
-    detectEnv: true,
-    env: process.env,
-    root: opts.tailwindcssBasedir,
-    uniAppX,
-  })
-  const resolveCurrentFrameworkProfile = () => frameworkProfileState.refresh({
-    appType: opts.appType,
-    uniAppX,
-  })
-  const uniAppXEnabled = isUniAppXEnabled(uniAppX) || resolveCurrentFrameworkProfile().frameworkName === 'uni-app-x'
-  const shouldEnableUniAppXPlugins = () => resolveCurrentFrameworkProfile().frameworkName === 'uni-app-x'
+  const uniAppXEnabled = isUniAppXEnabled(uniAppX) || frameworkBranch.uniAppXRuntimeEnabled === true
+  const shouldEnableFrameworkExtraPlugins = () => frameworkBranch.createExtraPlugins !== undefined
 
   const disabledOptions = resolvePluginDisabledState(disabled)
   const tailwindcssMajorVersion = initialTailwindRuntime.majorVersion ?? 0
@@ -821,7 +814,11 @@ export function createViteFrameworkPlugins(
     await runtimeState.readyPromise
     await waitForSourceCandidateSyncs()
     const file = cleanUrl(id)
-    const requestFile = isCSSRequest(id) ? id : file
+    const requestFile = isCSSRequest(id)
+      ? id === file
+        ? resolveSfcStyleRequestFromKnownSource(file, cssMemory.getKnownSfcSource(file), code)
+        : id
+      : file
     if (!isCSSRequest(requestFile) || opts.htmlMatcher(file) || isHTMLRequest(file)) {
       return undefined
     }
@@ -837,9 +834,10 @@ export function createViteFrameworkPlugins(
     const runtime = getRecordedGeneratorCandidates()
       ?? getSourceCandidates()
       ?? await ensureRuntimeClassSet()
+    const sourceCssHandlerOptions = transformCssHandlerOptions.getCssHandlerOptions(requestFile)
     const outputCssHandlerOptions = transformCssHandlerOptions.getCssHandlerOptions(outputFile)
     const cssHandlerOptions = {
-      ...transformCssHandlerOptions.getCssHandlerOptions(file),
+      ...sourceCssHandlerOptions,
       isMainChunk: outputCssHandlerOptions.isMainChunk,
     }
     const transientCssSource = transientAutoCssSources.get(file)
@@ -867,7 +865,7 @@ export function createViteFrameworkPlugins(
       file,
       outputFile,
       cssHandlerOptions,
-      cssUserHandlerOptions: transformCssHandlerOptions.getCssUserHandlerOptions(file),
+      cssUserHandlerOptions: transformCssHandlerOptions.getCssUserHandlerOptions(requestFile),
       cssSources: transientCssSource
         ? [transientCssSource]
         : undefined,
@@ -932,9 +930,9 @@ export function createViteFrameworkPlugins(
     cssMemory.rememberCssSource({
       outputFile,
       rawSource: code,
-      sourceFile: id,
+      sourceFile: requestFile,
     })
-    debug('css generated for vite postcss pipeline: %s bytes=%d', file, tracedCss.length)
+    debug('css generated for vite postcss pipeline: %s bytes=%d', requestFile, tracedCss.length)
     return `${createBundlerGeneratedCssMarker('vite', normalizeViteProcessedCssFile(file))}\n${tracedCss}`
   }
   const rewritePlugins = createRewriteCssImportsPlugins({
@@ -1026,7 +1024,7 @@ export function createViteFrameworkPlugins(
     ensureRuntimeClassSet,
     generateCss: generateTailwindCssForVitePipeline,
     getResolvedConfig,
-    isEnabled: shouldEnableUniAppXPlugins,
+    isEnabled: shouldEnableFrameworkExtraPlugins,
     isIosPlatform,
     jsHandler,
     mainCssChunkMatcher,
@@ -1287,11 +1285,6 @@ export function createViteFrameworkPlugins(
               shouldRefreshRuntime = true
             }
           }
-          frameworkProfileState.refresh({
-            appType: opts.appType,
-            root: resolvedRoot,
-            uniAppX,
-          })
           if (shouldRefreshRuntime) {
             await refreshRuntimeState(true)
           }
@@ -1314,6 +1307,6 @@ export function createViteFrameworkPlugins(
   ]
   plugins.push(...extraPlugins)
   plugins.push(cssFinalizerOutputPlugin)
-  plugins.push(...createBuiltinViteStyleInjectorPlugins(styleInjector, () => resolveViteStyleInjectorDelegate(resolveCurrentFrameworkProfile().frameworkName)))
+  plugins.push(...createBuiltinViteStyleInjectorPlugins(styleInjector, () => frameworkBranch.styleInjectorDelegate))
   return plugins
 }

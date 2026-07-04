@@ -28,7 +28,7 @@ function isVueScopedStyleSource(from: string | undefined) {
   }
   const query = from.slice(queryIndex + 1)
   return /(?:^|&)type=style(?:&|$)/.test(query)
-    && /(?:^|&)scoped(?:=(?:true|1))?(?:&|$)/.test(query)
+    && /(?:^|&)scoped(?:=[^&]*)?(?:&|$)/.test(query)
 }
 
 export function hasMiniProgramTailwindV4PreflightReset(css: string) {

@@ -1,4 +1,3 @@
-/* tokens: tw-root <= src/custom-tab-bar/index.mpx */
 view,
 text,
 ::after,
@@ -7,39 +6,32 @@ text,
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  --tw-space-y-reverse: 0;
+  --tw-border-style: solid;
+  --tw-divide-x-reverse: 0;
+  --tw-gradient-position: initial;
+  --tw-gradient-from: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-to-position: 100%;
+  --tw-font-weight:;
+  --tw-leading:;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-color: initial;
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-ring-color:;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-inset:;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-content: '';
 }
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
-  --tw-content: '';
-  --tw-gradient-position: initial;
-  --tw-gradient-from: transparent;
-  --tw-gradient-via: transparent;
-  --tw-gradient-to: transparent;
-  --tw-gradient-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-via-position: 50%;
-  --tw-gradient-to-position: 100%;
-  --tw-space-y-reverse: 0;
-  --tw-divide-x-reverse: 0;
-  --tw-border-style: solid;
-  --tw-leading: initial;
-  --tw-font-weight: initial;
-  --tw-shadow: 0 0 transparent;
-  --tw-shadow-color: initial;
-  --tw-shadow-alpha: 100%;
-  --tw-inset-shadow: 0 0 transparent;
-  --tw-inset-shadow-color: initial;
-  --tw-inset-shadow-alpha: 100%;
-  --tw-ring-color: initial;
-  --tw-ring-shadow: 0 0 transparent;
-  --tw-inset-ring-color: initial;
-  --tw-inset-ring-shadow: 0 0 transparent;
-  --tw-ring-inset: initial;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-offset-shadow: 0 0 transparent;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
@@ -77,6 +69,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
+/* tokens: tw-root <= src/custom-tab-bar/index.mpx */
 /* tokens: -mt-2 <= src/pages/index.mpx */
 .-mt-2 {
   margin-top: calc(var(--spacing) * -2);

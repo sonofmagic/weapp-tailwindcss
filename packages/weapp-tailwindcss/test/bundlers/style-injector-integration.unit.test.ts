@@ -63,7 +63,7 @@ describe('bundlers/vite builtin styleInjector', () => {
     expect(plugins.at(-1)?.name).toBe('weapp-tailwindcss:style-injector')
   })
 
-  it('uses the inferred appType when selecting vite styleInjector preset', async () => {
+  it('uses the selected uni-app Vite framework styleInjector preset', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-style-injector-'))
     await mkdir(path.join(root, 'sub'), { recursive: true })
     await writeFile(path.join(root, 'pages.json'), JSON.stringify({
@@ -78,7 +78,7 @@ describe('bundlers/vite builtin styleInjector', () => {
 
     resetVitePluginTestContext()
     const context = createContext({
-      appType: undefined,
+      appType: 'uni-app-vite',
       styleInjector: {
         subPackages: {
           pagesJsonPath: path.join(root, 'pages.json'),
@@ -96,7 +96,6 @@ describe('bundlers/vite builtin styleInjector', () => {
       'sub/index.wxss': asset('sub/index.wxss', '.sub{}'),
     }
 
-    context.appType = 'uni-app-vite'
     await styleInjectorPrePlugin.configResolved?.call(styleInjectorPrePlugin, {
       root: process.cwd(),
       plugins,

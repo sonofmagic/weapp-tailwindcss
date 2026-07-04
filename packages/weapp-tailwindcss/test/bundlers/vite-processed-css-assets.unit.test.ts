@@ -769,6 +769,22 @@ describe('vite processed css assets', () => {
     expect(nextCss).not.toContain('@property --tw-space-y-reverse')
   })
 
+  it('removes unscoped mini-program preflight from scoped generated css without a Tailwind banner', () => {
+    const css = [
+      'view,text,::after,::before{--tw-content:""}',
+      '.hello-world-shell{display:flex}',
+      'view.data-v-04bcf89b{text-align:left}',
+      '.hello-world-shell.data-v-04bcf89b{display:flex}',
+    ].join('\n')
+
+    const nextCss = removeScopedTailwindPreflightCss(css)
+
+    expect(nextCss).not.toContain('view,text,::after,::before')
+    expect(nextCss).toContain('.hello-world-shell{display:flex}')
+    expect(nextCss).toContain('view.data-v-04bcf89b{text-align:left}')
+    expect(nextCss).toContain('.hello-world-shell.data-v-04bcf89b{display:flex}')
+  })
+
   it('moves taro import shell injection to the imported root css asset', () => {
     const bundle: OutputBundle = {
       'app.wxss': asset('app.wxss', ''),

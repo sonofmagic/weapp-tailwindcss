@@ -1,6 +1,7 @@
 import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { Compiler } from 'webpack'
 import type { WebpackCssSourceRegistration, WebpackGeneratedCssRegistration } from '../loaders/runtime-registry'
+import type { LoaderAnchorFinders } from '../shared/loader-anchors'
 import type { TailwindRuntimeState } from '@/tailwindcss/runtime'
 import type { AppType, InternalUserDefinedOptions } from '@/types'
 import fs from 'node:fs'
@@ -9,9 +10,9 @@ import process from 'node:process'
 import { pluginName } from '@/constants'
 import { resolveRuntimeBranch } from '@/runtime-branch'
 import { inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
-import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, isMpx, patchMpxLoaderResolve } from '@/shared/mpx'
+import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, patchMpxLoaderResolve } from '@/shared/mpx'
 import { deleteWebpackLoaderRuntime, setWebpackLoaderRuntime } from '../loaders/runtime-registry'
-import { createLoaderAnchorFinders } from '../shared/loader-anchors'
+import { createDefaultLoaderAnchorFinders } from '../shared/loader-anchors'
 import { hasLoaderEntry, isCssLikeModuleResource } from './shared'
 
 interface SetupWebpackV5LoadersOptions {
@@ -33,6 +34,8 @@ interface SetupWebpackV5LoadersOptions {
     files: ReadonlySet<string>
     contexts: ReadonlySet<string>
   }
+  loaderAnchorFinders?: LoaderAnchorFinders | undefined
+  mpxCssImportRewrite?: boolean | undefined
   runtimeRegistryKey?: string | undefined
   debug: (format: string, ...args: unknown[]) => void
 }
@@ -54,10 +57,11 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     registerWebpackGeneratedCss,
     registerWebpackCssSourceFile,
     getRuntimeWatchDependencies,
+    loaderAnchorFinders = createDefaultLoaderAnchorFinders(),
+    mpxCssImportRewrite = false,
     runtimeRegistryKey = `weapp-tailwindcss-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     debug,
   } = options
-  const isMpxApp = isMpx(appType)
   const generatorTarget = compilerOptions.generator?.target ?? inferGeneratorTargetFromEnv()
   const generatorBranch = resolveRuntimeBranch({
     appType: compilerOptions.appType,
@@ -67,7 +71,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     uniAppX: compilerOptions.uniAppX,
   })
 
-  if (shouldRewriteCssImports && isMpxApp) {
+  if (shouldRewriteCssImports && mpxCssImportRewrite) {
     ensureMpxTailwindcssAliases(compiler, weappTailwindcssPackageDir)
   }
 
@@ -111,14 +115,14 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   }
   compiler.hooks.watchClose?.tap?.(pluginName, cleanupWebpackLoaderRuntime)
   compiler.hooks.shutdown?.tap?.(pluginName, cleanupWebpackLoaderRuntime)
-  const { findRewriteAnchor, findClassSetAnchor } = createLoaderAnchorFinders(appType)
+  const { findRewriteAnchor, findClassSetAnchor } = loaderAnchorFinders
   const cssImportRewriteLoaderOptions = runtimeLoaderRewriteOptions
     ? {
         tailwindcssImportRewriteRuntimeKey: runtimeRegistryKey,
       }
     : undefined
 
-  if (runtimeCssImportRewriteLoader && shouldRewriteCssImports && cssImportRewriteLoaderOptions && isMpxApp) {
+  if (runtimeCssImportRewriteLoader && shouldRewriteCssImports && cssImportRewriteLoaderOptions && mpxCssImportRewrite) {
     // Ensure CSS files enter postcss-import after rewriting.
     injectMpxCssRewritePreRules(compiler, runtimeCssImportRewriteLoader, cssImportRewriteLoaderOptions)
   }
@@ -151,7 +155,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
       if (!hasRuntimeLoader) {
         return
       }
-      patchMpxLoaderResolve(_loaderContext, weappTailwindcssPackageDir, shouldRewriteCssImports && isMpxApp)
+      patchMpxLoaderResolve(_loaderContext, weappTailwindcssPackageDir, shouldRewriteCssImports && mpxCssImportRewrite)
       const loaderEntries = module.loaders || []
       let rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
       const classSetAnchorIdx = findClassSetAnchor(loaderEntries)

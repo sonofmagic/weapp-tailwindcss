@@ -3,6 +3,8 @@ import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { Compiler } from 'webpack'
 import type { WebpackFrameworkName } from '../../framework-selector'
 import type { WebpackCssSourceRegistration, WebpackGeneratedCssRegistration } from '../loaders/runtime-registry'
+import type { LoaderAnchorFinders } from '../shared/loader-anchors'
+import type { WebpackStyleInjectorDelegateFactory } from '@/style-injector/internal'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -10,8 +12,7 @@ import micromatch from 'micromatch'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { isMpx, setupMpxTailwindcssRedirect } from '@/shared/mpx'
-import { createBuiltinWebpackStyleInjectorPlugin, resolveWebpackStyleInjectorDelegate } from '@/style-injector/internal'
+import { createBuiltinWebpackStyleInjectorPlugin } from '@/style-injector/internal'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
@@ -179,6 +180,10 @@ function isInternalUserDefinedOptions(options: UserDefinedOptions | InternalUser
 
 export interface WebpackFrameworkBranchContext {
   frameworkName: WebpackFrameworkName
+  loaderAnchorFinders: LoaderAnchorFinders
+  mpxCssImportRewrite?: boolean | undefined
+  setupCssImportRewriteRedirect?: ((packageDir: string) => void) | undefined
+  styleInjectorDelegate: WebpackStyleInjectorDelegateFactory
 }
 
 export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
@@ -223,9 +228,8 @@ export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
       uniAppX: this.options.uniAppX,
     })
     this.appType = (frameworkProfile.appType as AppType | undefined) ?? this.appType
-    const isMpxApp = this.frameworkBranch.frameworkName === 'mpx' || frameworkProfile.frameworkName === 'mpx' || isMpx(this.appType)
     if (shouldRewriteCssImports) {
-      setupMpxTailwindcssRedirect(weappTailwindcssPackageDir, isMpxApp)
+      this.frameworkBranch.setupCssImportRewriteRedirect?.(weappTailwindcssPackageDir)
     }
     if (disabledOptions.plugin) {
       return
@@ -540,6 +544,8 @@ export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
           contexts: runtimeWatchDependencyContexts,
         }
       },
+      loaderAnchorFinders: this.frameworkBranch.loaderAnchorFinders,
+      mpxCssImportRewrite: this.frameworkBranch.mpxCssImportRewrite,
       debug,
     })
 
@@ -573,6 +579,6 @@ export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
       prepareWebpackCssSources,
       debug,
     })
-    createBuiltinWebpackStyleInjectorPlugin(styleInjector, resolveWebpackStyleInjectorDelegate(frameworkProfile.frameworkName))?.apply(compiler)
+    createBuiltinWebpackStyleInjectorPlugin(styleInjector, this.frameworkBranch.styleInjectorDelegate)?.apply(compiler)
   }
 }

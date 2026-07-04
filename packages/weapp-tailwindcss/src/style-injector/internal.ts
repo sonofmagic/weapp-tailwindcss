@@ -1,7 +1,6 @@
 import type { Plugin } from 'vite'
 import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } from 'weapp-style-injector/webpack'
 import type { WeappTailwindcssStyleInjectorUserOptions } from './options'
-import type { ViteFrameworkName, WebpackFrameworkName } from '@/bundlers/framework-selector'
 import { weappStyleInjector } from 'weapp-style-injector/vite'
 import { StyleInjector as TaroViteStyleInjector } from 'weapp-style-injector/vite/taro'
 import { StyleInjector as UniAppViteStyleInjector } from 'weapp-style-injector/vite/uni-app'
@@ -89,29 +88,6 @@ export const webpackStyleInjectorDelegates = {
   mpx: (options => MpxWebpackStyleInjector(options)) satisfies WebpackStyleInjectorDelegateFactory,
   taro: (options => TaroWebpackStyleInjector(options)) satisfies WebpackStyleInjectorDelegateFactory,
   uniApp: (options => UniAppWebpackStyleInjector(options)) satisfies WebpackStyleInjectorDelegateFactory,
-}
-
-export function resolveViteStyleInjectorDelegate(frameworkName: ViteFrameworkName): ViteStyleInjectorDelegateFactory {
-  if (frameworkName === 'taro') {
-    return viteStyleInjectorDelegates.taro
-  }
-  if (frameworkName === 'uni-app' || frameworkName === 'uni-app-x') {
-    return viteStyleInjectorDelegates.uniApp
-  }
-  return viteStyleInjectorDelegates.generic
-}
-
-export function resolveWebpackStyleInjectorDelegate(frameworkName: WebpackFrameworkName): WebpackStyleInjectorDelegateFactory {
-  if (frameworkName === 'mpx') {
-    return webpackStyleInjectorDelegates.mpx
-  }
-  if (frameworkName === 'taro') {
-    return webpackStyleInjectorDelegates.taro
-  }
-  if (frameworkName === 'uni-app') {
-    return webpackStyleInjectorDelegates.uniApp
-  }
-  return webpackStyleInjectorDelegates.generic
 }
 
 export function createBuiltinViteStyleInjectorPlugins(
