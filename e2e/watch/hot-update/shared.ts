@@ -1282,8 +1282,12 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       if (!subPackageMetric.style) {
         continue
       }
+      const expectedStyleOutputs = [
+        ...subPackageMetric.globalStyleOutputs,
+        ...(configuredSubPackageMutation?.outputStyleCandidates ?? []),
+      ]
       expect(subPackageMetric.style.sourceFile).toContain(subPackageMetric.root)
-      expect(subPackageMetric.globalStyleOutputs).toContain(subPackageMetric.style.outputStyle)
+      expect(expectedStyleOutputs).toContain(subPackageMetric.style.outputStyle)
       expect(subPackageMetric.style.styleNeedle).toContain('.tw-watch-style-')
       if (!noApplyValidationCases.has(baseCaseName)) {
         expect(subPackageMetric.style.applyUtilities.length).toBeGreaterThan(0)
