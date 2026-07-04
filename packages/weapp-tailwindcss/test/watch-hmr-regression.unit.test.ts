@@ -2818,6 +2818,24 @@ describe('watch-hmr regression cases', () => {
     expect(demoExtendedCases.find(watchCase => watchCase.name === 'taro-webpack-vue3-tailwindcss-v4')?.requireInitialCompileSuccess).toBe(true)
   })
 
+  it('keeps Taro webpack Vue3 subpackage added-class HMR focused on transformed JS output', () => {
+    const demoExtendedCases = buildDemoExtendedCases('/repo')
+    const taroWebpackVue3V4Case = demoExtendedCases.find(watchCase => watchCase.name === 'taro-webpack-vue3-tailwindcss-v4')
+    const taroViteVue3V4Case = demoExtendedCases.find(watchCase => watchCase.name === 'taro-vite-vue3-tailwindcss-v4')
+
+    expect(taroWebpackVue3V4Case?.subPackageMutations).toHaveLength(2)
+    for (const subPackageMutation of taroWebpackVue3V4Case?.subPackageMutations ?? []) {
+      expect(subPackageMutation.templateMutation.skipExtendedHmr).toBeUndefined()
+      expect(subPackageMutation.templateMutation.verifyEscapedIn).toEqual(['js'])
+      expect(subPackageMutation.templateMutation.verifyClassLiteralIn).toEqual(['js'])
+      expect(subPackageMutation.templateMutation.verifyAllClassLiterals).toBe(false)
+    }
+
+    for (const subPackageMutation of taroViteVue3V4Case?.subPackageMutations ?? []) {
+      expect(subPackageMutation.templateMutation.verifyAllClassLiterals).toBeUndefined()
+    }
+  })
+
   it('prebuilds the weapp-vite demo before watch so dev hot updates start from complete outputs', () => {
     const demoBaseCases = buildDemoBaseCases('/repo')
 

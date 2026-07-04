@@ -232,6 +232,7 @@ function createSubPackageMutations(
     skipStyleMutation?: boolean
     templateVerifyEscapedIn?: Array<'wxml' | 'js'>
     templateVerifyClassLiteralIn?: Array<'wxml' | 'js'>
+    templateVerifyAllClassLiterals?: boolean
   },
 ): SubPackageMutationConfig[] {
   const styleExtension = options.styleExtension ?? normalizeExtension(options.version)
@@ -262,6 +263,9 @@ function createSubPackageMutations(
           ?? (options.pageKind === 'tsx' ? ['js'] : ['wxml']),
         verifyClassLiteralIn: options.templateVerifyClassLiteralIn
           ?? (options.pageKind === 'tsx' ? ['js'] : []),
+        ...(options.templateVerifyAllClassLiterals === undefined
+          ? {}
+          : { verifyAllClassLiterals: options.templateVerifyAllClassLiterals }),
         roundConfigs,
         mutate(source, payload) {
           if (options.pageKind === 'tsx') {
@@ -955,6 +959,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       pageKind: 'vue',
       templateVerifyEscapedIn: ['js'],
       templateVerifyClassLiteralIn: ['js'],
+      templateVerifyAllClassLiterals: false,
       globalStyleCandidates(subPackage) {
         return [
           path.resolve(baseCwd, `demo/taro-webpack-vue3-tailwindcss-v4/dist/${subPackage}/pages/index.wxss`),

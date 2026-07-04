@@ -10,7 +10,6 @@ import type {
 import process from 'node:process'
 import { replaceWxml } from '../../../core/replace-wxml'
 import {
-  assertContains,
   assertContainsOneOf,
   getMtime,
   readFileIfExists,
@@ -46,6 +45,54 @@ interface RunAddedClassMutationOptions {
 
 interface OutputSnapshot { wxml: string, js: string, globalStyle: string }
 
+function htmlEscapeClassToken(value: string) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+}
+
+function createClassTokenExpectedValues(classToken: string, escapedToken: string | undefined) {
+  const values = new Set<string>()
+  values.add(classToken)
+  values.add(htmlEscapeClassToken(classToken))
+  if (escapedToken) {
+    values.add(escapedToken)
+  }
+  return [...values]
+}
+
+function assertExpectedClassOutput(
+  output: string,
+  watchCase: WatchCase,
+  mutationKind: 'template' | 'script',
+  target: 'wxml' | 'js',
+  label: string,
+  requireAll: boolean,
+  classTokens: string[],
+  escapedClasses: string[],
+) {
+  const expectedValueGroups = classTokens.map((classToken, index) => {
+    return createClassTokenExpectedValues(classToken, escapedClasses[index])
+  })
+
+  if (requireAll) {
+    for (const expectedValues of expectedValueGroups) {
+      assertContainsOneOf(output, expectedValues, `[${watchCase.label}] added-class ${mutationKind} ${target} ${label}`)
+    }
+    return
+  }
+
+  const matched = expectedValueGroups.some((expectedValues) => {
+    return expectedValues.some(value => output.includes(value))
+  })
+
+  if (!matched) {
+    throw new Error(`[${watchCase.label}] added-class ${mutationKind} ${target} ${label}: expected at least one added class token`)
+  }
+}
+
 async function readOutputs(watchCase: WatchCase, globalStyleOutputs: string[]): Promise<OutputSnapshot> {
   const [wxml, js, globalStyle] = await Promise.all([
     readFileIfExists(watchCase.outputWxml),
@@ -74,24 +121,54 @@ function assertClassOutputs(
     throw new Error(`[${watchCase.label}] added-class ${mutationKind} marker missing: ${marker}`)
   }
 
-  for (const escaped of escapedClasses) {
-    if (mutation.verifyEscapedIn.includes('wxml')) {
-      assertContains(outputs.wxml, escaped, `[${watchCase.label}] added-class ${mutationKind} wxml`)
-    }
-    if (mutation.verifyEscapedIn.includes('js')) {
-      assertContains(outputs.js, escaped, `[${watchCase.label}] added-class ${mutationKind} js`)
-    }
+  if (mutation.verifyEscapedIn.includes('wxml')) {
+    assertExpectedClassOutput(
+      outputs.wxml,
+      watchCase,
+      mutationKind,
+      'wxml',
+      'transformed token',
+      mutation.verifyAllEscapedClasses !== false,
+      classTokens,
+      escapedClasses,
+    )
+  }
+  if (mutation.verifyEscapedIn.includes('js')) {
+    assertExpectedClassOutput(
+      outputs.js,
+      watchCase,
+      mutationKind,
+      'js',
+      'transformed token',
+      mutation.verifyAllEscapedClasses !== false,
+      classTokens,
+      escapedClasses,
+    )
   }
 
-  for (const [index, classToken] of classTokens.entries()) {
-    const escapedToken = escapedClasses[index]
-    const expectedValues = escapedToken ? [classToken, escapedToken] : [classToken]
-    if (verifyClassLiteralIn.includes('wxml')) {
-      assertContainsOneOf(outputs.wxml, expectedValues, `[${watchCase.label}] added-class ${mutationKind} wxml literal`)
-    }
-    if (verifyClassLiteralIn.includes('js')) {
-      assertContainsOneOf(outputs.js, expectedValues, `[${watchCase.label}] added-class ${mutationKind} js literal`)
-    }
+  if (verifyClassLiteralIn.includes('wxml')) {
+    assertExpectedClassOutput(
+      outputs.wxml,
+      watchCase,
+      mutationKind,
+      'wxml',
+      'literal',
+      mutation.verifyAllClassLiterals !== false,
+      classTokens,
+      escapedClasses,
+    )
+  }
+  if (verifyClassLiteralIn.includes('js')) {
+    assertExpectedClassOutput(
+      outputs.js,
+      watchCase,
+      mutationKind,
+      'js',
+      'literal',
+      mutation.verifyAllClassLiterals !== false,
+      classTokens,
+      escapedClasses,
+    )
   }
 
   const verifiedEscapedClasses = escapedClasses.filter(escaped => outputs.globalStyle.includes(escaped))
