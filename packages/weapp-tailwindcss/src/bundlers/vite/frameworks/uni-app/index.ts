@@ -1,4 +1,4 @@
-import type { ViteFrameworkCssPipelineStrategy } from '../../shared/framework-strategy'
+import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from '../../shared/framework-strategy'
 import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import { transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
@@ -7,6 +7,16 @@ import { createViteFrameworkPlugins } from '../../shared/create-framework-plugin
 
 function isUniAppWebviewStylePlatform(platform: string | undefined) {
   return platform === 'app' || platform === 'app-plus'
+}
+
+function isUniAppH5StylePlatform(platform: string | undefined) {
+  const normalized = platform?.trim().toLowerCase()
+  return normalized === 'h5' || normalized?.startsWith('web') === true
+}
+
+function isUniAppSafeSelectorStyleTarget(context: ViteFrameworkCssPipelineContext) {
+  return isUniAppH5StylePlatform(context.resolveStylePlatform())
+    || isUniAppWebviewStylePlatform(context.resolveStylePlatform())
 }
 
 function isUniAppWebviewAppBundle(bundleFiles: string[]) {
@@ -20,12 +30,12 @@ function isUniAppWebviewOutDir(outDir: string | undefined) {
 
 const uniAppCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
   getServeJsHandlerOptions(context) {
-    return isUniAppWebviewStylePlatform(context.resolveStylePlatform())
+    return isUniAppSafeSelectorStyleTarget(context)
       ? { needEscaped: true }
       : undefined
   },
   shouldApplyWebCssCompat(context) {
-    return isUniAppWebviewStylePlatform(context.resolveStylePlatform())
+    return isUniAppSafeSelectorStyleTarget(context)
   },
   includeTailwindGeneratedCssAssetsInRootCoverage(context) {
     return context.isWebGeneratorTarget && isUniAppWebviewAppBundle(context.bundleFiles)
@@ -84,7 +94,7 @@ const uniAppCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
   },
   shouldTransformServeJs(context) {
     return !context.currentGeneratorBranch.isWeb
-      || isUniAppWebviewStylePlatform(context.resolveStylePlatform())
+      || isUniAppSafeSelectorStyleTarget(context)
   },
   transformGeneratedCss(css, context) {
     const webCss = context.shouldApplyWebCssCompat
@@ -95,7 +105,7 @@ const uniAppCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
             : context.currentGeneratorOptions.webCompat ?? true,
         )
       : css
-    const safeCss = isUniAppWebviewStylePlatform(context.resolveStylePlatform())
+    const safeCss = isUniAppSafeSelectorStyleTarget(context)
       ? transformWebCssSafeSelectors(webCss, { escapeMap: context.opts.escapeMap })
       : webCss
     return context.removeScopedPreflight(safeCss)

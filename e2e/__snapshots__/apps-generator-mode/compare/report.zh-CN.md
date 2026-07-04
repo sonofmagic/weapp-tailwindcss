@@ -17,13 +17,13 @@
 | taro-webpack-react-tailwindcss-v4 | demo | web | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-react-tailwindcss-v4/dist` (+3) | 419078 | 2261 | 是 | 否 | 否 | 是 | 是 | 否 | 否 | 是 | 否 |
 | taro-webpack-react-tailwindcss-v4 | demo | web-compact | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-react-tailwindcss-v4/dist` (+3) | 419339 | 2261 | 是 | 否 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
 | taro-vite-react-tailwindcss-v4 | demo | web | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-react-tailwindcss-v4/dist` (+4) | 614299 | 2310 | 是 | 是 | 否 | 是 | 是 | 否 | 否 | 是 | 否 |
-| taro-vite-react-tailwindcss-v4 | demo | web-compact | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-react-tailwindcss-v4/dist` (+4) | 606427 | 2305 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
+| taro-vite-react-tailwindcss-v4 | demo | web-compact | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-react-tailwindcss-v4/dist` (+4) | 606775 | 2305 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
 | taro-webpack-vue3-tailwindcss-v4 | demo | web | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist` (+3) | 579138 | 1791 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
 | taro-webpack-vue3-tailwindcss-v4 | demo | web-compact | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist` (+3) | 570817 | 1788 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
 | taro-vite-vue3-tailwindcss-v4 | demo | web | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-vue3-tailwindcss-v4/dist` (+3) | 476130 | 1754 | 是 | 是 | 否 | 是 | 是 | 否 | 否 | 是 | 否 |
 | taro-vite-vue3-tailwindcss-v4 | demo | web-compact | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-vue3-tailwindcss-v4/dist` (+3) | 473163 | 1754 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
-| uni-app-vite-tailwindcss-v4 | demo | web | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/h5` (+5) | 97095 | 311 | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 |
-| uni-app-vite-tailwindcss-v4 | demo | web-compact | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/h5` (+5) | 84713 | 308 | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 |
+| uni-app-vite-tailwindcss-v4 | demo | web | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/h5` (+5) | 101121 | 311 | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 |
+| uni-app-vite-tailwindcss-v4 | demo | web-compact | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/h5` (+5) | 88691 | 308 | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 |
 
 ## 说明
 
@@ -123,7 +123,7 @@
 ### uni-app-vite-tailwindcss-v4
 
 - CSS 文件：`assets/index.1.css`, `assets/index.2.css`, `assets/index.3.css`, `assets/index.4.css`, `assets/index.5.css`, `assets/uni.css`
-- 选择器：`#app`, `&.theme-dark`, `&:active`, `&:after`, `&:before`, `&:hover`, `*`, `.\!bg-\[gray\]`, `.active\:bg-emerald-50`, `.active\:bg-emerald-600`, `.active\:bg-emerald-700`, `.active\:bg-slate-700`, `.after\:\!content-\[\'good_work\!\'\]`, `.any-hover\:bg-slate-800`, `.aspect-\(--my-aspect-ratio\)`, `.aspect-\[calc\(4\*3\+1\)\/3\]`, `.before\:content-\[\'independent_subpackage_uni-app-vite-tailwindcss-v4\'\]`, `.before\:content-\[\'normal_subpackage_uni-app-vite-tailwindcss-v4\'\]`, `.bg-\[\#0000ff\]`, `.bg-\[\#123498\]`
+- 选择器：`#app`, `&.theme-dark`, `&:active`, `&:after`, `&:before`, `&:hover`, `*`, `._ebg-_bgray_B`, `.active_cbg-emerald-50`, `.active_cbg-emerald-600`, `.active_cbg-emerald-700`, `.active_cbg-slate-700`, `.after_c_econtent-_b_agood_work_e_a_B`, `.any-hover_cbg-slate-800`, `.aspect-_bcalc_p4_x3_u1_P_f3_B`, `.aspect-_p--my-aspect-ratio_P`, `.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B`, `.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B`, `.bg-_b_h0000ff_B`, `.bg-_b_h123498_B`
 
 ### uni-app-vite-tailwindcss-v4
 

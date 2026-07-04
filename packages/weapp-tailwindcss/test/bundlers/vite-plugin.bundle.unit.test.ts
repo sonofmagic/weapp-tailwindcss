@@ -8913,6 +8913,101 @@ const trace = "at App.vue:4"
     expect(styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
+  it('applies uni-app H5 web safe selectors and js escaping inside the uni-app Vite strategy', async () => {
+    const rawClass = 'bg-[#0000ff]'
+    const safeClass = replaceWxml(rawClass)
+    const runtimeSet = new Set([rawClass])
+    const rawTailwindCss = `/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */\n.bg-\\[\\#0000ff\\]{background-color:#0000ff}`
+    const generateMock = vi.fn(async () => ({
+      css: rawTailwindCss,
+      rawCss: rawTailwindCss,
+      target: 'web',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);',
+        dependencies: [],
+      })),
+    }))
+
+    setCurrentContext(createContext({
+      appType: 'uni-app-vite',
+      generator: {
+        target: 'web',
+      },
+      jsHandler: createJsHandler({
+        escapeMap: MappingChars2String,
+      }),
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      appType: 'uni-app-vite',
+      generator: {
+        target: 'web',
+      },
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      plugins: [{ name: 'vite:uni' }],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/build/h5' },
+    } as ResolvedConfig)
+
+    await getTransformHandler(sourcePlugin)?.call(sourcePlugin, `export const cls = "${rawClass}"`, '/project/src/pages/index.ts')
+
+    const bundle = {
+      'assets/index.css': {
+        ...createRollupAsset(rawTailwindCss),
+        fileName: 'assets/index.css',
+      },
+      'assets/index.js': {
+        ...createRollupChunk(`const cls = "${rawClass}"`),
+        fileName: 'assets/index.js',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const cssSource = (bundle['assets/index.css'] as OutputAsset).source.toString()
+    const jsSource = (bundle['assets/index.js'] as OutputChunk).code
+    expect(cssSource).toContain(`.${safeClass}`)
+    expect(cssSource).not.toContain('.bg-\\[\\#0000ff\\]')
+    expect(jsSource).toContain(safeClass)
+    expect(jsSource).not.toContain(rawClass)
+  }, TEST_TIMEOUT_MS)
+
   it('generates raw Tailwind v4 directives for Vite build web css', async () => {
     const runtimeSet = new Set(['i-mdi-home', 'hover:bg-blue-500'])
     const rawTailwindCss = '@import "tailwindcss" source(none);\n@source "./src/**/*.{vue,ts}";'

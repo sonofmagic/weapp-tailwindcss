@@ -201,6 +201,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
+ /*tokens: before:content-['normal_subpackage_uni-app-vite-tailwindcss-v4'] <= src/sub-normal/pages/index.vue */
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
 }

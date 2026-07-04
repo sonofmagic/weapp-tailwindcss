@@ -201,6 +201,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
+ /*tokens: before:content-['independent_subpackage_uni-app-vite-tailwindcss-v4'] <= src/sub-independent/pages/index.vue */
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }
