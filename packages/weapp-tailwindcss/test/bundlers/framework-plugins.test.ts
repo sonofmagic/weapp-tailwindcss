@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
-describe('framework plugin composition branches', () => {
+describe('framework plugin composition profiles', () => {
   afterEach(() => {
     vi.doUnmock('@/bundlers/vite/shared/create-framework-plugins')
     vi.doUnmock('@/bundlers/webpack/shared/create-framework-plugin')
@@ -12,14 +12,14 @@ describe('framework plugin composition branches', () => {
 
   it('routes Vite public entry to framework factories', async () => {
     vi.doMock('@/bundlers/vite/shared/create-framework-plugins', () => ({
-      createViteFrameworkPlugins: vi.fn((_options, branch) => [{ name: branch.branchName }]),
+      createViteFrameworkPlugins: vi.fn((_options, framework) => [{ name: framework.frameworkName }]),
     }))
 
     const { WeappTailwindcss } = await import('@/bundlers/vite')
 
-    expect(WeappTailwindcss({ appType: 'taro' })?.[0]?.name).toBe('taro-vite')
-    expect(WeappTailwindcss({ appType: 'uni-app-vite' })?.[0]?.name).toBe('uni-app-vite')
-    expect(WeappTailwindcss({ appType: 'uni-app-x' })?.[0]?.name).toBe('uni-app-x-vite')
+    expect(WeappTailwindcss({ appType: 'taro' })?.[0]?.name).toBe('taro')
+    expect(WeappTailwindcss({ appType: 'uni-app-vite' })?.[0]?.name).toBe('uni-app')
+    expect(WeappTailwindcss({ appType: 'uni-app-x' })?.[0]?.name).toBe('uni-app-x')
     expect(WeappTailwindcss({ appType: 'weapp-vite' })?.[0]?.name).toBe('weapp-vite')
   })
 
@@ -39,23 +39,23 @@ describe('framework plugin composition branches', () => {
   })
 
   it('routes Webpack public class to framework classes', async () => {
-    const appliedBranches: string[] = []
+    const appliedFrameworks: string[] = []
 
     vi.doMock('@/bundlers/webpack/shared/create-framework-plugin', () => ({
       weappTailwindcssPackageDir: '/mock/weapp-tailwindcss',
       WebpackFrameworkPlugin: class {
         appType: string | undefined
         options: Record<string, unknown>
-        private branchName: string
+        private frameworkName: string
 
-        constructor(options: Record<string, unknown> = {}, branch: { branchName: string }) {
+        constructor(options: Record<string, unknown> = {}, framework: { frameworkName: string }) {
           this.options = options
           this.appType = options.appType as string | undefined
-          this.branchName = branch.branchName
+          this.frameworkName = framework.frameworkName
         }
 
         apply() {
-          appliedBranches.push(this.branchName)
+          appliedFrameworks.push(this.frameworkName)
         }
       },
     }))
@@ -66,21 +66,21 @@ describe('framework plugin composition branches', () => {
     new WeappTailwindcss({ appType: 'mpx' }).apply({ options: {}, context: process.cwd() } as any)
     new WeappTailwindcss({ appType: 'uni-app' }).apply({ options: {}, context: process.cwd() } as any)
 
-    expect(appliedBranches).toEqual([
-      'taro-webpack',
-      'mpx-webpack',
-      'uni-app-webpack',
+    expect(appliedFrameworks).toEqual([
+      'taro',
+      'mpx',
+      'uni-app',
     ])
   })
 
   it('routes Gulp public entry to native framework factory', async () => {
     vi.doMock('@/bundlers/gulp/shared/create-native-framework-plugins', () => ({
-      createNativeGulpPlugins: vi.fn(options => [`native-gulp:${options.appType ?? 'native'}`]),
+      createNativeGulpPlugins: vi.fn(options => [`native:${options.appType ?? 'native'}`]),
     }))
 
     const { createPlugins } = await import('@/bundlers/gulp')
 
-    expect(createPlugins()).toEqual(['native-gulp:native'])
-    expect(createPlugins({ appType: 'native' })).toEqual(['native-gulp:native'])
+    expect(createPlugins()).toEqual(['native:native'])
+    expect(createPlugins({ appType: 'native' })).toEqual(['native:native'])
   })
 })

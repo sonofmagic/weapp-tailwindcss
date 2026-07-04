@@ -3,6 +3,6 @@ import { createViteFrameworkPlugins } from '../../shared/create-framework-plugin
 
 export function createWeappVitePlugins(options: UserDefinedOptions | InternalUserDefinedOptions = {}) {
   return createViteFrameworkPlugins(options, {
-    branchName: 'weapp-vite',
+    frameworkName: 'weapp-vite',
   })
 }

@@ -3,6 +3,6 @@ import { createViteFrameworkPlugins } from '../../shared/create-framework-plugin
 
 export function createGenericVitePlugins(options: UserDefinedOptions | InternalUserDefinedOptions = {}) {
   return createViteFrameworkPlugins(options, {
-    branchName: 'generic-vite',
+    frameworkName: 'generic',
   })
 }

@@ -3,7 +3,7 @@ import type { Compiler } from 'webpack'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import process from 'node:process'
 import { getCompilerContext } from '@/context'
-import { resolveBundlerAppBranch } from '../../branches'
+import { resolveWebpackFrameworkProfile } from '../../framework-selector'
 import { createWebpackFrameworkPlugin } from '../frameworks'
 
 export { weappTailwindcssPackageDir } from '../shared/create-framework-plugin'
@@ -26,15 +26,14 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
   }
 
   apply(compiler: Compiler) {
-    const branch = resolveBundlerAppBranch({
+    const profile = resolveWebpackFrameworkProfile({
       appType: this.appType,
-      bundler: 'webpack',
       detectEnv: true,
       env: process.env,
       root: compiler.options?.context ?? compiler.context,
       uniAppX: this.options.uniAppX,
     })
-    const plugin = createWebpackFrameworkPlugin(branch.branch, this.options)
+    const plugin = createWebpackFrameworkPlugin(profile.frameworkName, this.options)
     plugin.apply(compiler)
     this.options = plugin.options
     this.appType = plugin.appType

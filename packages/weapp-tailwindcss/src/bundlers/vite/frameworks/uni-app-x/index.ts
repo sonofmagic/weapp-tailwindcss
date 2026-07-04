@@ -4,7 +4,7 @@ import { createViteFrameworkPlugins } from '../../shared/create-framework-plugin
 
 export function createUniAppXVitePlugins(options: UserDefinedOptions | InternalUserDefinedOptions = {}) {
   return createViteFrameworkPlugins(options, {
-    branchName: 'uni-app-x-vite',
+    frameworkName: 'uni-app-x',
     createExtraPlugins: context => createUniAppXPlugins({
       appType: 'uni-app-x',
       customAttributesEntities: context.customAttributesEntities,

@@ -3,6 +3,6 @@ import { createViteFrameworkPlugins } from '../../shared/create-framework-plugin
 
 export function createUniAppVitePlugins(options: UserDefinedOptions | InternalUserDefinedOptions = {}) {
   return createViteFrameworkPlugins(options, {
-    branchName: 'uni-app-vite',
+    frameworkName: 'uni-app',
   })
 }

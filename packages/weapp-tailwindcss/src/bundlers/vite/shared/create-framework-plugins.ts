@@ -19,7 +19,7 @@ import { createDebug } from '@/debug'
 import { normalizeFrameworkStylePlatform } from '@/framework/platform'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
-import { createBuiltinViteStyleInjectorPlugins } from '@/style-injector/internal'
+import { createBuiltinViteStyleInjectorPlugins, resolveViteStyleInjectorDelegate } from '@/style-injector/internal'
 import { isTailwindV4CssEntry, normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
@@ -28,7 +28,7 @@ import { withUniAppXWebPreflightReset } from '@/uni-app-x/web-preflight-reset'
 import { resolveUniUtsPlatform } from '@/utils'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
-import { createBundlerAppBranchState } from '../../branches'
+import { createViteFrameworkProfileState } from '../../framework-selector'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
 import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '../../shared/generated-css-marker'
 import { createHmrTimingRecorder } from '../../shared/hmr-timing'
@@ -154,7 +154,7 @@ export interface WeappTailwindcssVitePlugin {
 }
 
 export interface ViteFrameworkBranchContext {
-  branchName: string
+  frameworkName: string
   createExtraPlugins?: (context: ViteFrameworkExtraPluginContext) => Plugin[]
 }
 
@@ -180,7 +180,7 @@ export function createViteFrameworkPlugins(
   options: UserDefinedOptions | InternalUserDefinedOptions = {},
   frameworkBranch: ViteFrameworkBranchContext,
 ): WeappTailwindcssVitePlugin[] | undefined {
-  debug('create vite framework plugins branch=%s', frameworkBranch.branchName)
+  debug('create vite framework plugins framework=%s', frameworkBranch.frameworkName)
   const rawOptions = ((options as any).__internalViteRawOptions ?? options) as UserDefinedOptions
   const hasExplicitAppType = typeof (options as any).__internalViteRawExplicitAppType === 'boolean'
     ? (options as any).__internalViteRawExplicitAppType
@@ -229,17 +229,19 @@ export function createViteFrameworkPlugins(
   } = opts
   const initialTailwindRuntime = tailwindRuntime
   const refreshTailwindRuntime = refreshTailwindcssRuntime
-  const bundlerAppBranchState = createBundlerAppBranchState({
+  const frameworkProfileState = createViteFrameworkProfileState({
     appType: opts.appType,
-    bundler: 'vite',
     detectEnv: true,
     env: process.env,
     root: opts.tailwindcssBasedir,
     uniAppX,
   })
-  const resolveCurrentBundlerBranch = () => bundlerAppBranchState.current()
-  const uniAppXEnabled = isUniAppXEnabled(uniAppX) || resolveCurrentBundlerBranch().isUniAppX
-  const shouldEnableUniAppXPlugins = () => resolveCurrentBundlerBranch().isUniAppX
+  const resolveCurrentFrameworkProfile = () => frameworkProfileState.refresh({
+    appType: opts.appType,
+    uniAppX,
+  })
+  const uniAppXEnabled = isUniAppXEnabled(uniAppX) || resolveCurrentFrameworkProfile().frameworkName === 'uni-app-x'
+  const shouldEnableUniAppXPlugins = () => resolveCurrentFrameworkProfile().frameworkName === 'uni-app-x'
 
   const disabledOptions = resolvePluginDisabledState(disabled)
   const tailwindcssMajorVersion = initialTailwindRuntime.majorVersion ?? 0
@@ -1285,7 +1287,7 @@ export function createViteFrameworkPlugins(
               shouldRefreshRuntime = true
             }
           }
-          bundlerAppBranchState.refresh({
+          frameworkProfileState.refresh({
             appType: opts.appType,
             root: resolvedRoot,
             uniAppX,
@@ -1312,6 +1314,6 @@ export function createViteFrameworkPlugins(
   ]
   plugins.push(...extraPlugins)
   plugins.push(cssFinalizerOutputPlugin)
-  plugins.push(...createBuiltinViteStyleInjectorPlugins(styleInjector, () => opts.appType))
+  plugins.push(...createBuiltinViteStyleInjectorPlugins(styleInjector, () => resolveViteStyleInjectorDelegate(resolveCurrentFrameworkProfile().frameworkName)))
   return plugins
 }

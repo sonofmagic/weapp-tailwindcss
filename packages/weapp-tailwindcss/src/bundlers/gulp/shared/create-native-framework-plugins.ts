@@ -14,7 +14,6 @@ import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tail
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
-import { resolveBundlerAppBranch } from '../../branches'
 import { processCachedTask } from '../../shared/cache'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap } from '../../shared/css-source-trace'
 import { generateCssByGenerator } from '../../shared/generator-css'
@@ -118,7 +117,7 @@ function resolveGulpMemoryDebugStats(context: {
 
 /**
  * @name weapp-tw-gulp
- * @description native-gulp 分支的插件组合实现
+ * @description native framework 的插件组合实现
  * @link https://tw.icebreaker.top/docs/quick-start/frameworks/native
  */
 export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
@@ -127,17 +126,6 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
     ...options,
     __internalDeferMissingCssEntriesWarning: true,
   } as UserDefinedOptions)
-  const bundlerAppBranch = resolveBundlerAppBranch({
-    appType: opts.appType,
-    bundler: 'gulp',
-    detectEnv: true,
-    env: process.env,
-    root: opts.tailwindcssBasedir ?? process.cwd(),
-    uniAppX: opts.uniAppX,
-  })
-  if (bundlerAppBranch.branch !== 'native-gulp') {
-    opts.appType ??= bundlerAppBranch.appType
-  }
 
   const { templateHandler, styleHandler, jsHandler, cache } = opts
   const initialTailwindRuntime = opts.tailwindRuntime

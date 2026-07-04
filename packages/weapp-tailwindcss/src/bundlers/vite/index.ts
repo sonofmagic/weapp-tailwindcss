@@ -2,7 +2,7 @@ import type { WeappTailwindcssVitePlugin } from './shared/create-framework-plugi
 import type { UserDefinedOptions } from '@/types'
 import process from 'node:process'
 import { getCompilerContext } from '@/context'
-import { resolveBundlerAppBranch } from '../branches'
+import { resolveViteFrameworkProfile } from '../framework-selector'
 import { createGenericVitePlugins } from './frameworks/generic'
 import { createTaroVitePlugins } from './frameworks/taro'
 import { createUniAppVitePlugins } from './frameworks/uni-app'
@@ -27,25 +27,24 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   ;(opts as any).__internalViteRawOptions = options
   ;(opts as any).__internalViteRawExplicitAppType = hasExplicitAppType
   ;(opts as any).__internalViteRawExplicitTailwindcssBasedir = hasExplicitTailwindcssBasedir
-  const branch = resolveBundlerAppBranch({
+  const profile = resolveViteFrameworkProfile({
     appType: opts.appType,
-    bundler: 'vite',
     detectEnv: true,
     env: process.env,
     root: opts.tailwindcssBasedir ?? process.cwd(),
     uniAppX: opts.uniAppX,
   })
 
-  switch (branch.branch) {
-    case 'taro-vite':
+  switch (profile.frameworkName) {
+    case 'taro':
       return createTaroVitePlugins(opts)
-    case 'uni-app-vite':
+    case 'uni-app':
       return createUniAppVitePlugins(opts)
-    case 'uni-app-x-vite':
+    case 'uni-app-x':
       return createUniAppXVitePlugins(opts)
     case 'weapp-vite':
       return createWeappVitePlugins(opts)
-    case 'generic-vite':
+    case 'generic':
     default:
       return createGenericVitePlugins(opts)
   }

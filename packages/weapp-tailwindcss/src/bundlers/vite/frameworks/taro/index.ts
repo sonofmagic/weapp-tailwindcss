@@ -3,6 +3,6 @@ import { createViteFrameworkPlugins } from '../../shared/create-framework-plugin
 
 export function createTaroVitePlugins(options: UserDefinedOptions | InternalUserDefinedOptions = {}) {
   return createViteFrameworkPlugins(options, {
-    branchName: 'taro-vite',
+    frameworkName: 'taro',
   })
 }

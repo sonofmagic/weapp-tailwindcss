@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite'
 import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } from 'weapp-style-injector/webpack'
 import type { WeappTailwindcssStyleInjectorUserOptions } from './options'
-import type { AppType } from '@/types/shared'
+import type { ViteFrameworkName, WebpackFrameworkName } from '@/bundlers/framework-selector'
 import { weappStyleInjector } from 'weapp-style-injector/vite'
 import { StyleInjector as TaroViteStyleInjector } from 'weapp-style-injector/vite/taro'
 import { StyleInjector as UniAppViteStyleInjector } from 'weapp-style-injector/vite/uni-app'
@@ -13,17 +13,13 @@ import { normalizeStyleInjectorOptions } from './options'
 
 type VitePluginResult = Plugin | Plugin[]
 type ViteHookContext = ThisParameterType<NonNullable<Plugin['buildStart']>>
+export type ViteStyleInjectorDelegateFactory = (options: NonNullable<ReturnType<typeof normalizeStyleInjectorOptions>>) => Plugin[]
+export type WebpackStyleInjectorDelegateFactory = (
+  options: NonNullable<ReturnType<typeof normalizeWebpackStyleInjectorOptions>>,
+) => WebpackObjectPluginInstance
 
 function toPluginArray(pluginOrPlugins: VitePluginResult): Plugin[] {
   return Array.isArray(pluginOrPlugins) ? pluginOrPlugins : [pluginOrPlugins]
-}
-
-function isUniAppViteStyleInjectorApp(appType: AppType | undefined) {
-  return appType === 'uni-app-vite' || appType === 'uni-app-x'
-}
-
-function isUniAppWebpackStyleInjectorApp(appType: AppType | undefined) {
-  return appType === 'uni-app' || appType === 'uni-app-vite' || appType === 'uni-app-x'
 }
 
 function normalizeWebpackStyleInjectorOptions(
@@ -82,9 +78,45 @@ function getGenerateBundleHandler(hook: Plugin['generateBundle'] | undefined) {
   return undefined
 }
 
+export const viteStyleInjectorDelegates = {
+  generic: (options => [weappStyleInjector(options)]) satisfies ViteStyleInjectorDelegateFactory,
+  taro: (options => toPluginArray(TaroViteStyleInjector(options))) satisfies ViteStyleInjectorDelegateFactory,
+  uniApp: (options => toPluginArray(UniAppViteStyleInjector(options))) satisfies ViteStyleInjectorDelegateFactory,
+}
+
+export const webpackStyleInjectorDelegates = {
+  generic: (options => weappStyleInjectorWebpack(options)) satisfies WebpackStyleInjectorDelegateFactory,
+  mpx: (options => MpxWebpackStyleInjector(options)) satisfies WebpackStyleInjectorDelegateFactory,
+  taro: (options => TaroWebpackStyleInjector(options)) satisfies WebpackStyleInjectorDelegateFactory,
+  uniApp: (options => UniAppWebpackStyleInjector(options)) satisfies WebpackStyleInjectorDelegateFactory,
+}
+
+export function resolveViteStyleInjectorDelegate(frameworkName: ViteFrameworkName): ViteStyleInjectorDelegateFactory {
+  if (frameworkName === 'taro') {
+    return viteStyleInjectorDelegates.taro
+  }
+  if (frameworkName === 'uni-app' || frameworkName === 'uni-app-x') {
+    return viteStyleInjectorDelegates.uniApp
+  }
+  return viteStyleInjectorDelegates.generic
+}
+
+export function resolveWebpackStyleInjectorDelegate(frameworkName: WebpackFrameworkName): WebpackStyleInjectorDelegateFactory {
+  if (frameworkName === 'mpx') {
+    return webpackStyleInjectorDelegates.mpx
+  }
+  if (frameworkName === 'taro') {
+    return webpackStyleInjectorDelegates.taro
+  }
+  if (frameworkName === 'uni-app') {
+    return webpackStyleInjectorDelegates.uniApp
+  }
+  return webpackStyleInjectorDelegates.generic
+}
+
 export function createBuiltinViteStyleInjectorPlugins(
   options: WeappTailwindcssStyleInjectorUserOptions | undefined,
-  getAppType: () => AppType | undefined,
+  getDelegateFactory: () => ViteStyleInjectorDelegateFactory,
 ): Plugin[] {
   const normalized = normalizeStyleInjectorOptions(options)
   if (!normalized) {
@@ -100,16 +132,7 @@ export function createBuiltinViteStyleInjectorPlugins(
     if (delegates) {
       return delegates
     }
-    const appType = getAppType()
-    if (isUniAppViteStyleInjectorApp(appType)) {
-      delegates = toPluginArray(UniAppViteStyleInjector(normalized))
-    }
-    else if (appType === 'taro') {
-      delegates = toPluginArray(TaroViteStyleInjector(normalized))
-    }
-    else {
-      delegates = [weappStyleInjector(normalized)]
-    }
+    delegates = getDelegateFactory()(normalized)
     return delegates
   }
 
@@ -214,22 +237,13 @@ export function createBuiltinViteStyleInjectorPlugins(
 
 export function createBuiltinWebpackStyleInjectorPlugin(
   options: WeappTailwindcssStyleInjectorUserOptions | undefined,
-  appType: AppType | undefined,
+  delegateFactory: WebpackStyleInjectorDelegateFactory,
 ): WebpackObjectPluginInstance | undefined {
   const normalized = normalizeWebpackStyleInjectorOptions(options)
   if (!normalized) {
     return undefined
   }
-  if (isUniAppWebpackStyleInjectorApp(appType)) {
-    return UniAppWebpackStyleInjector(normalized)
-  }
-  if (appType === 'taro') {
-    return TaroWebpackStyleInjector(normalized)
-  }
-  if (appType === 'mpx') {
-    return MpxWebpackStyleInjector(normalized)
-  }
-  return weappStyleInjectorWebpack(normalized)
+  return delegateFactory(normalized)
 }
 
 export type { WeappTailwindcssStyleInjectorOptions, WeappTailwindcssStyleInjectorUserOptions } from './options'
