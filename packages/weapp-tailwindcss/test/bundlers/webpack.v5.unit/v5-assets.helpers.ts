@@ -22,6 +22,7 @@ import {
   hasMissingRuntimeCandidates,
   hasProcessedCssAssetUrl,
   hasUsableWebpackGeneratorCssSources,
+  hasStaleRuntimeCandidates,
   hasWebpackTailwindSourceDirectives,
   isRuntimeTransformCandidate,
   isWebpackCssSourceRepresentedInAsset,
@@ -82,6 +83,11 @@ describe('bundlers/webpack v5-assets helpers', () => {
     expect(hasMissingRuntimeCandidates(new Set(['bg-red-500']), new Set(['bg-red-500']))).toBe(false)
     expect(hasMissingRuntimeCandidates(new Set(['bg-red-500']), new Set(['bg-blue-500']))).toBe(true)
     expect(hasMissingRuntimeCandidates(new Set<string>(), new Set(['foo=bar']))).toBe(false)
+    expect(hasStaleRuntimeCandidates(undefined, new Set(['bg-red-500']))).toBe(false)
+    expect(hasStaleRuntimeCandidates(new Set(['bg-red-500']), undefined)).toBe(false)
+    expect(hasStaleRuntimeCandidates(new Set(['bg-red-500']), new Set(['bg-red-500']))).toBe(false)
+    expect(hasStaleRuntimeCandidates(new Set(['bg-red-500', 'text-[102.43rpx]']), new Set(['bg-red-500']))).toBe(true)
+    expect(hasStaleRuntimeCandidates(new Set(['foo=bar']), new Set<string>())).toBe(false)
   })
 
   it('collects runtime token signatures and generated css runtime candidates', () => {
@@ -228,6 +234,13 @@ describe('bundlers/webpack v5-assets helpers', () => {
       hasBundlerGeneratedCssMarker: true,
       loaderGeneratedClassSet: new Set(['bg-red-500']),
       sourceCandidates: new Set(['bg-red-500', 'text-[102.43rpx]']),
+      shouldRegenerateExplicitTailwindV4CssSource: true,
+      watchMode: true,
+    })).toBe(false)
+    expect(shouldConsumeWebpackLoaderGeneratedCss({
+      hasBundlerGeneratedCssMarker: true,
+      loaderGeneratedClassSet: new Set(['bg-red-500', 'tw-watch-style-mpx-tailwindcss-v4-rollback']),
+      sourceCandidates: new Set(['bg-red-500']),
       shouldRegenerateExplicitTailwindV4CssSource: true,
       watchMode: true,
     })).toBe(false)
