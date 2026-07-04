@@ -4,6 +4,7 @@ import type { Compiler } from 'webpack'
 import type { WebpackCssSourceRegistration, WebpackGeneratedCssRegistration } from '../loaders/runtime-registry'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
+import process from 'node:process'
 import micromatch from 'micromatch'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
@@ -16,6 +17,7 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
+import { createBundlerAppBranchState } from '../../branches'
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../../shared/generator-css'
 import { normalizeTailwindConfigDirectives } from '../../shared/generator-css/directives'
 import { isWatchFileInRuntimeDependencies } from './shared'
@@ -198,7 +200,17 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
 
     const disabledOptions = resolvePluginDisabledState(disabled)
     const shouldRewriteCssImports = this.options.rewriteCssImports === true
-    const isMpxApp = isMpx(this.appType)
+    const bundlerAppBranchState = createBundlerAppBranchState({
+      appType: this.appType,
+      bundler: 'webpack',
+      detectEnv: true,
+      env: process.env,
+      root: compiler.options.context ?? compiler.context,
+      uniAppX: this.options.uniAppX,
+    })
+    const bundlerAppBranch = bundlerAppBranchState.current()
+    this.appType = (bundlerAppBranch.appType as AppType | undefined) ?? this.appType
+    const isMpxApp = bundlerAppBranch.isMpx || isMpx(this.appType)
     if (shouldRewriteCssImports) {
       setupMpxTailwindcssRedirect(weappTailwindcssPackageDir, isMpxApp)
     }

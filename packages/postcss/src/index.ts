@@ -1,5 +1,13 @@
 // 统一导出入口，供外部调用端按需引用核心能力
 export {
+  type PostcssAppType,
+  type PostcssStyleBranch,
+  resolvePostcssStyleBranch,
+  type ResolvePostcssStyleBranchOptions,
+  shouldApplyUniAppXBaseCompatibility,
+  shouldApplyUniAppXUvueCompatibility,
+} from './branches'
+export {
   type DynamicColorMixAlphaProtection,
   type DynamicColorMixAlphaProtectionOptions,
   type ModernColorValueNormalization,

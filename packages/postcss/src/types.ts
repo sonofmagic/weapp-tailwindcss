@@ -6,6 +6,7 @@ import type pxtrans from 'postcss-pxtrans'
 import type { UserDefinedOptions as Rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { GlobalUnitTransform, UserDefinedOptions as UnitConverterOptions, UnitMap } from 'postcss-rule-unit-converter'
 import type { WeappAutoprefixerOptions } from './autoprefixer'
+import type { PostcssAppType } from './branches'
 import type { StyleProcessingPipeline } from './pipeline'
 import type { IContext as PostcssContext } from './plugins/ctx'
 import type { InjectPreflight } from './preflight'
@@ -183,6 +184,7 @@ export interface CssOptions {
 }
 
 export type IStyleHandlerOptions = {
+  appType?: PostcssAppType | undefined
   ctx?: PostcssContext | undefined
   /**
    * @deprecated 请使用 `cssOptions.platform`。

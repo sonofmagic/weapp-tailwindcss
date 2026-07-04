@@ -29,6 +29,7 @@ import { withUniAppXWebPreflightReset } from '@/uni-app-x/web-preflight-reset'
 import { resolveUniUtsPlatform } from '@/utils'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
+import { createBundlerAppBranchState } from '../branches'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../shared/css-source-trace'
 import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '../shared/generated-css-marker'
 import { createHmrTimingRecorder } from '../shared/hmr-timing'
@@ -194,8 +195,17 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   } = opts
   const initialTailwindRuntime = tailwindRuntime
   const refreshTailwindRuntime = refreshTailwindcssRuntime
-  const uniAppXEnabled = isUniAppXEnabled(uniAppX)
-  const shouldEnableUniAppXPlugins = opts.appType === 'uni-app-x' || uniAppXEnabled
+  const bundlerAppBranchState = createBundlerAppBranchState({
+    appType: opts.appType,
+    bundler: 'vite',
+    detectEnv: true,
+    env: process.env,
+    root: opts.tailwindcssBasedir,
+    uniAppX,
+  })
+  const resolveCurrentBundlerBranch = () => bundlerAppBranchState.current()
+  const uniAppXEnabled = isUniAppXEnabled(uniAppX) || resolveCurrentBundlerBranch().isUniAppX
+  const shouldEnableUniAppXPlugins = () => resolveCurrentBundlerBranch().isUniAppX
 
   const disabledOptions = resolvePluginDisabledState(disabled)
   const tailwindcssMajorVersion = initialTailwindRuntime.majorVersion ?? 0
@@ -974,22 +984,21 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     await syncSourceCandidateScan()
   }
-  const uniAppXPlugins = shouldEnableUniAppXPlugins
-    ? createUniAppXPlugins({
-        appType: opts.appType ?? 'uni-app-x',
-        customAttributesEntities,
-        disabledDefaultTemplateHandler,
-        isIosPlatform,
-        mainCssChunkMatcher,
-        runtimeState,
-        styleHandler,
-        generateCss: generateTailwindCssForVitePipeline,
-        jsHandler,
-        ensureRuntimeClassSet,
-        getResolvedConfig,
-        uniAppX,
-      })
-    : undefined
+  const uniAppXPlugins = createUniAppXPlugins({
+    appType: opts.appType ?? 'uni-app-x',
+    customAttributesEntities,
+    disabledDefaultTemplateHandler,
+    isIosPlatform,
+    mainCssChunkMatcher,
+    runtimeState,
+    styleHandler,
+    generateCss: generateTailwindCssForVitePipeline,
+    jsHandler,
+    ensureRuntimeClassSet,
+    getResolvedConfig,
+    isEnabled: shouldEnableUniAppXPlugins,
+    uniAppX,
+  })
 
   const plugins: Plugin[] = [
     ...rewritePlugins,
@@ -1239,6 +1248,11 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
               shouldRefreshRuntime = true
             }
           }
+          bundlerAppBranchState.refresh({
+            appType: opts.appType,
+            root: resolvedRoot,
+            uniAppX,
+          })
           if (shouldRefreshRuntime) {
             await refreshRuntimeState(true)
           }
@@ -1259,9 +1273,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       },
     },
   ]
-  if (uniAppXPlugins) {
-    plugins.push(...uniAppXPlugins)
-  }
+  plugins.push(...uniAppXPlugins)
   plugins.push(cssFinalizerOutputPlugin)
   plugins.push(...createBuiltinViteStyleInjectorPlugins(styleInjector, () => opts.appType))
   return plugins
