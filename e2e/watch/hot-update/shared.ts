@@ -50,6 +50,23 @@ function normalizePathLike(value: string) {
   return value.replace(PATH_SEPARATOR_RE, '/')
 }
 
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function outputMatchesCandidate(output: string, candidate: string) {
+  const normalizedOutput = normalizePathLike(output)
+  const normalizedCandidate = normalizePathLike(candidate)
+  if (normalizedOutput === normalizedCandidate) {
+    return true
+  }
+  if (!normalizedCandidate.includes('*')) {
+    return false
+  }
+  const pattern = `^${normalizedCandidate.split('*').map(escapeRegExp).join('[^/]*')}$`
+  return new RegExp(pattern).test(normalizedOutput)
+}
+
 interface MutationRoundReport {
   roundName: MutationRoundName
   marker: string
@@ -1279,23 +1296,27 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       expect(subPackageMetric.template.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(subPackageMetric.template.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
       expect(subPackageMetric.template.rollbackEffectiveMs).toBeGreaterThan(0)
-      if (!subPackageMetric.style) {
+      const subPackageStyle = subPackageMetric.style
+      if (!subPackageStyle) {
         continue
       }
       const expectedStyleOutputs = [
         ...subPackageMetric.globalStyleOutputs,
         ...(configuredSubPackageMutation?.outputStyleCandidates ?? []),
       ]
-      expect(subPackageMetric.style.sourceFile).toContain(subPackageMetric.root)
-      expect(expectedStyleOutputs).toContain(subPackageMetric.style.outputStyle)
-      expect(subPackageMetric.style.styleNeedle).toContain('.tw-watch-style-')
+      expect(subPackageStyle.sourceFile).toContain(subPackageMetric.root)
+      expect(
+        expectedStyleOutputs.some(candidate => outputMatchesCandidate(subPackageStyle.outputStyle, candidate)),
+        `[${item.project}/${subPackageMetric.root}] style output should match configured candidates: ${subPackageStyle.outputStyle}`,
+      ).toBe(true)
+      expect(subPackageStyle.styleNeedle).toContain('.tw-watch-style-')
       if (!noApplyValidationCases.has(baseCaseName)) {
-        expect(subPackageMetric.style.applyUtilities.length).toBeGreaterThan(0)
-        expect(subPackageMetric.style.expectedApplyDeclarations.length).toBeGreaterThan(0)
+        expect(subPackageStyle.applyUtilities.length).toBeGreaterThan(0)
+        expect(subPackageStyle.expectedApplyDeclarations.length).toBeGreaterThan(0)
       }
-      expect(subPackageMetric.style.hotUpdateEffectiveMs).toBeGreaterThan(0)
-      expect(subPackageMetric.style.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
-      expectStyleRollbackMetric(subPackageMetric.style, `[${item.name}/${subPackageMetric.root}] subpackage style`)
+      expect(subPackageStyle.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(subPackageStyle.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+      expectStyleRollbackMetric(subPackageStyle, `[${item.name}/${subPackageMetric.root}] subpackage style`)
       if (subPackageMetric.independent) {
         expect(subPackageMetric.root).toBe('sub-independent')
       }
