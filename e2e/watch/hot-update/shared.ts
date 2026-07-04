@@ -1264,12 +1264,16 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     }
 
     for (const subPackageMetric of subPackageMutationMetrics) {
+      const configuredSubPackageMutation = configuredWatchCase?.subPackageMutations?.find(item => item.root === subPackageMetric.root)
+      const expectedTemplateRoundCount = configuredSubPackageMutation?.templateMutation.skipExtendedHmr
+        ? 1
+        : requiredMutationRounds.length
       expect(subPackageMetric.outputWxml).toContain(subPackageMetric.root)
       expect(subPackageMetric.outputJs).toContain(subPackageMetric.root)
       expect(subPackageMetric.globalStyleOutputs.length).toBeGreaterThan(0)
       expect(subPackageMetric.template.sourceFile).toContain(subPackageMetric.root)
       expect(subPackageMetric.template.marker).toContain('tw-watch-subpackage-')
-      expect(subPackageMetric.template.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)
+      expect(subPackageMetric.template.rounds.length).toBeGreaterThanOrEqual(expectedTemplateRoundCount)
       expect(subPackageMetric.template.verifyEscapedIn.length + subPackageMetric.template.verifyClassLiteralIn.length).toBeGreaterThan(0)
       expect(subPackageMetric.template.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(subPackageMetric.template.minRequiredGlobalStyleEscapedClasses)
       expect(subPackageMetric.template.hotUpdateEffectiveMs).toBeGreaterThan(0)
