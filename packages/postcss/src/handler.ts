@@ -5,11 +5,11 @@ import type { IStyleHandlerOptions, StyleHandler } from './types'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { LRUCache } from 'lru-cache'
 import postcss from 'postcss'
-import { resolvePostcssStyleBranchProfile } from './branches'
 import { protectDynamicColorMixAlpha } from './compat/color-mix'
 import { probeFeatures, signalToCacheKey } from './content-probe'
 import { getDefaultOptions } from './defaults'
 import { fingerprintOptions } from './fingerprint'
+import { resolvePostcssFrameworkProfile } from './frameworks'
 import { createOptionsResolver } from './options-resolver'
 import { createInjectPreflight } from './preflight'
 import { StyleProcessorCache } from './processor-cache'
@@ -111,7 +111,7 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
       source,
       processOptions,
     ).async().then((result) => {
-      const styleBranch = resolvePostcssStyleBranchProfile(resolvedOptions)
+      const styleBranch = resolvePostcssFrameworkProfile(resolvedOptions)
       let finalResult = styleBranch.postprocess(result, resolvedOptions)
       if (protectedColorMix) {
         const restoredCss = protectedColorMix.restore(finalResult.css)
