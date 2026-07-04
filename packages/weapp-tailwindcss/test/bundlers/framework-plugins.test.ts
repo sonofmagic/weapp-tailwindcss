@@ -35,9 +35,40 @@ describe('framework plugin composition profiles', () => {
     )
 
     expect(sharedSource).not.toContain("from '@/uni-app-x/vite'")
+    expect(sharedSource).not.toContain("from '@/uni-app-x/")
     expect(sharedSource).not.toContain("frameworkName === 'uni-app-x'")
+    expect(sharedSource).not.toContain("opts.appType === 'uni-app-x'")
+    expect(sharedSource).not.toContain("opts.appType === 'uni-app-vite'")
+    expect(sharedSource).toContain('cssPipelineStrategy')
     expect(uniAppXSource).toContain("from '@/uni-app-x/vite'")
-    expect(uniAppXSource).toContain('uniAppXRuntimeEnabled: true')
+    expect(uniAppXSource).toContain('uniAppXCssPipelineStrategy')
+    expect(uniAppXSource).toContain('resolveUniAppXNativeCssHandlerOptions')
+    expect(uniAppXSource).toContain('withUniAppXWebPreflightReset')
+    expect(uniAppXSource).toContain('isRuntimeClassSetFeatureEnabled: () => true')
+  })
+
+  it('keeps uni-app Vite webview css strategy inside its framework branch', async () => {
+    const root = path.resolve(__dirname, '../..')
+    const sharedSource = await readFile(
+      path.join(root, 'src/bundlers/vite/shared/create-framework-plugins.ts'),
+      'utf8',
+    )
+    const uniAppSource = await readFile(
+      path.join(root, 'src/bundlers/vite/frameworks/uni-app/index.ts'),
+      'utf8',
+    )
+    const taroSource = await readFile(
+      path.join(root, 'src/bundlers/vite/frameworks/taro/index.ts'),
+      'utf8',
+    )
+
+    expect(sharedSource).not.toContain('isUniAppViteWebviewStylePlatform')
+    expect(sharedSource).not.toContain('transformWebCssSafeSelectors')
+    expect(uniAppSource).toContain('uniAppCssPipelineStrategy')
+    expect(uniAppSource).toContain('transformWebCssSafeSelectors')
+    expect(uniAppSource).toContain('needEscaped: true')
+    expect(taroSource).not.toContain('transformWebCssSafeSelectors')
+    expect(taroSource).not.toContain('needEscaped: true')
   })
 
   it('keeps Vite style injector delegate selection inside framework branches', async () => {

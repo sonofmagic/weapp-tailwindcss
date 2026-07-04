@@ -4,13 +4,13 @@ import type { SourceCandidateScanRoot } from '../source-candidate-scan-signature
 import type { SourceCandidateCollectorSnapshot, SourceCandidateFilterOptions } from '../source-candidates'
 import type { ViteStyleInjectorDelegateFactory } from '@/style-injector/internal'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
-import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
+import type { CreateJsHandlerOptions, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
-import { compileCssMacroConditionalComments, removeTailwindPostcssPlugins, resolveFilteredPostcssConfig, transformWebCssCompat, transformWebCssSafeSelectors, unwrapUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
+import { compileCssMacroConditionalComments, removeTailwindPostcssPlugins, resolveFilteredPostcssConfig, transformWebCssCompat, unwrapUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
 import { LRUCache } from 'lru-cache'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { normalizeEmptyTailwindCustomVariants } from '@/bundlers/shared/generator-css/user-css'
@@ -24,10 +24,6 @@ import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { createBuiltinViteStyleInjectorPlugins } from '@/style-injector/internal'
 import { isTailwindV4CssEntry, normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
-import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
-import { isUniAppXEnabled } from '@/uni-app-x/options'
-import { withUniAppXWebPreflightReset } from '@/uni-app-x/web-preflight-reset'
-import { resolveUniUtsPlatform } from '@/utils'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
@@ -56,7 +52,6 @@ import { createSourceCandidateScanSignature } from '../source-candidate-scan-sig
 import { createSourceCandidateCollector, isSourceCandidateRequest } from '../source-candidates'
 import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from '../source-scan'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from '../tailwind-basedir'
-import { resolveUniAppXNativeCssHandlerOptions } from '../uni-app-x-css-options'
 import { cleanUrl, isCSSRequest, isHTMLRequest, slash } from '../utils'
 import { resolveWeappViteSourceRoot } from '../weapp-vite-config'
 
@@ -128,19 +123,10 @@ function isWebOrNativeAppPlatform(platform: string | undefined) {
     || platform?.startsWith('app-') === true
 }
 
-function isUniAppViteWebviewStylePlatform(platform: string | undefined) {
-  return platform === 'app' || platform === 'app-plus'
-}
-
-function applyUniAppViteWebviewCssCompat(css: string, options: {
+function applyViteWebCssCompat(css: string, options: {
   compat: Parameters<typeof transformWebCssCompat>[1]
-  escapeMap?: Record<string, string> | undefined
-  safeSelectors: boolean
 }) {
-  const compatCss = transformWebCssCompat(css, options.compat)
-  return options.safeSelectors
-    ? transformWebCssSafeSelectors(compatCss, { escapeMap: options.escapeMap })
-    : compatCss
+  return transformWebCssCompat(css, options.compat)
 }
 
 function isInternalUserDefinedOptions(options: UserDefinedOptions | InternalUserDefinedOptions): options is InternalUserDefinedOptions {
@@ -158,8 +144,43 @@ export interface WeappTailwindcssVitePlugin {
 export interface ViteFrameworkBranchContext {
   frameworkName: ViteFrameworkName
   createExtraPlugins?: (context: ViteFrameworkExtraPluginContext) => Plugin[]
+  cssPipelineStrategy?: ViteFrameworkCssPipelineStrategy | undefined
+  getExtraPluginPlatform?: () => ViteFrameworkExtraPluginPlatform
   styleInjectorDelegate: ViteStyleInjectorDelegateFactory
-  uniAppXRuntimeEnabled?: boolean | undefined
+  isRuntimeClassSetFeatureEnabled?: (context: ViteFrameworkRuntimeFeatureContext) => boolean
+}
+
+export interface ViteFrameworkExtraPluginPlatform {
+  isIosPlatform?: boolean | undefined
+}
+
+export interface ViteFrameworkRuntimeFeatureContext {
+  uniAppX: ReturnType<typeof getCompilerContext>['uniAppX']
+}
+
+export interface ViteFrameworkCssPipelineContext {
+  currentGeneratorBranch: ReturnType<typeof resolveGeneratorRuntimeBranch>
+  currentGeneratorOptions: ReturnType<typeof normalizeWeappTailwindcssGeneratorOptions>
+  opts: InternalUserDefinedOptions
+  resolvedConfig: ResolvedConfig | undefined
+  resolveStylePlatform: () => string | undefined
+}
+
+export interface ViteFrameworkCssPipelineStrategy {
+  getCssHandlerExtraOptions?: (context: ViteFrameworkCssPipelineContext & { file: string }) => Record<string, unknown>
+  getServeJsHandlerOptions?: (context: ViteFrameworkCssPipelineContext & { file: string }) => CreateJsHandlerOptions | undefined
+  isNativeAppStyleTarget?: (context: ViteFrameworkCssPipelineContext) => boolean
+  shouldApplyWebCssCompat?: (context: ViteFrameworkCssPipelineContext) => boolean
+  shouldDeferEmptyScopedCssSource?: (context: ViteFrameworkCssPipelineContext & {
+    cssHandlerOptions: { isMainChunk?: boolean | undefined }
+    generatorCode: string
+  }) => boolean
+  shouldTransformServeJs?: (context: ViteFrameworkCssPipelineContext) => boolean
+  transformGeneratedCss?: (css: string, context: ViteFrameworkCssPipelineContext & {
+    defaultWebCssCompat: (css: string) => string
+    removeScopedPreflight: (css: string) => string
+    shouldApplyWebCssCompat: boolean
+  }) => string
 }
 
 export interface ViteFrameworkExtraPluginContext {
@@ -233,7 +254,8 @@ export function createViteFrameworkPlugins(
   } = opts
   const initialTailwindRuntime = tailwindRuntime
   const refreshTailwindRuntime = refreshTailwindcssRuntime
-  const uniAppXEnabled = isUniAppXEnabled(uniAppX) || frameworkBranch.uniAppXRuntimeEnabled === true
+  const frameworkCssPipelineStrategy = frameworkBranch.cssPipelineStrategy
+  const uniAppXEnabled = frameworkBranch.isRuntimeClassSetFeatureEnabled?.({ uniAppX }) === true
   const shouldEnableFrameworkExtraPlugins = () => frameworkBranch.createExtraPlugins !== undefined
 
   const disabledOptions = resolvePluginDisabledState(disabled)
@@ -271,6 +293,14 @@ export function createViteFrameworkPlugins(
     platform: resolveGeneratorPlatform(),
     tailwindcssMajorVersion,
     uniAppX,
+  })
+  const createCssPipelineContext = (overrides: Partial<ViteFrameworkCssPipelineContext> = {}): ViteFrameworkCssPipelineContext => ({
+    currentGeneratorBranch: resolveCurrentGeneratorBranch(),
+    currentGeneratorOptions: resolveCurrentGeneratorOptions(),
+    opts,
+    resolvedConfig,
+    resolveStylePlatform: resolveViteStylePlatform,
+    ...overrides,
   })
   const initialGeneratorBranch = resolveCurrentGeneratorBranch()
   const transformEarlyMiniProgramCss = (code: string) => {
@@ -760,12 +790,6 @@ export function createViteFrameworkPlugins(
   const isUniViteProject = () => {
     return resolvedConfig?.plugins?.some(plugin => plugin.name.includes('uni')) ?? false
   }
-  const isHarmonyAppBuildTarget = () => {
-    if (resolveUniUtsPlatform().isAppHarmony) {
-      return true
-    }
-    return isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir)
-  }
   const matchesViteProcessedCssSource = (candidate: string) => {
     const normalized = normalizeViteProcessedCssFile(candidate)
     return viteProcessedCssSourceFiles.has(normalized)
@@ -790,7 +814,10 @@ export function createViteFrameworkPlugins(
       : resolvedConfig?.root,
     getExtraOptions: file => ({
       ...resolveViteCssHandlerExtraOptions(file),
-      ...resolveUniAppXNativeCssHandlerOptions(opts),
+      ...(frameworkCssPipelineStrategy?.getCssHandlerExtraOptions?.({
+        ...createCssPipelineContext(),
+        file,
+      }) ?? {}),
     }),
     getDynamicCssOptions: () => ({
       cssPreflight: opts.cssPreflight,
@@ -824,12 +851,14 @@ export function createViteFrameworkPlugins(
     }
     const generatorCode = normalizeEmptyTailwindCustomVariants(code)
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
-    const isHarmonyAppStyleTarget = isHarmonyAppBuildTarget()
-    const isNativeAppStyleTarget = opts.appType === 'uni-app-x'
-      && (resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget)
-    const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
     const currentGeneratorOptions = resolveCurrentGeneratorOptions()
     const currentGeneratorBranch = resolveCurrentGeneratorBranch()
+    const cssPipelineContext = createCssPipelineContext({
+      currentGeneratorBranch,
+      currentGeneratorOptions,
+    })
+    const isNativeAppStyleTarget = frameworkCssPipelineStrategy?.isNativeAppStyleTarget?.(cssPipelineContext) === true
+    const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
     const outputFile = resolveViteCssPipelineOutputFile(requestFile, opts, rootDir, currentGeneratorBranch.isWeb, isNativeAppStyleTarget, sourceRoot)
     const runtime = getRecordedGeneratorCandidates()
       ?? getSourceCandidates()
@@ -852,10 +881,12 @@ export function createViteFrameworkPlugins(
             }
           : undefined
       )
-    const shouldDeferEmptyScopedCssSource = transientCssSource == null && !(
-      opts.appType === 'uni-app-x'
-      && !cssHandlerOptions.isMainChunk
-      && hasTailwindApplyDirective(generatorCode)
+    const shouldDeferEmptyScopedCssSource = transientCssSource == null && (
+      frameworkCssPipelineStrategy?.shouldDeferEmptyScopedCssSource?.({
+        ...cssPipelineContext,
+        cssHandlerOptions,
+        generatorCode,
+      }) ?? true
     )
     const generated = await generateTailwindV4Css({
       opts,
@@ -881,18 +912,22 @@ export function createViteFrameworkPlugins(
       return undefined
     }
     const finalizedCss = finalizeViteMiniProgramCss(generated.css)
-    const isUniAppViteWebviewPlatform = opts.appType === 'uni-app-vite'
-      && isUniAppViteWebviewStylePlatform(resolveViteStylePlatform())
-    const shouldApplyWebviewCssCompat = currentGeneratorBranch.isWeb || isUniAppViteWebviewPlatform
-    const outputCss = withUniAppXWebPreflightReset(removeScopedTailwindPreflightCss(
-      shouldApplyWebviewCssCompat
-        ? applyUniAppViteWebviewCssCompat(finalizedCss, {
+    const shouldApplyWebCssCompat = currentGeneratorBranch.isWeb
+      || frameworkCssPipelineStrategy?.shouldApplyWebCssCompat?.(cssPipelineContext) === true
+    const outputCss = frameworkCssPipelineStrategy?.transformGeneratedCss?.(finalizedCss, {
+      ...cssPipelineContext,
+      defaultWebCssCompat: css => applyViteWebCssCompat(css, {
+        compat: currentGeneratorOptions.webCompat ?? true,
+      }),
+      removeScopedPreflight: removeScopedTailwindPreflightCss,
+      shouldApplyWebCssCompat,
+    }) ?? removeScopedTailwindPreflightCss(
+      shouldApplyWebCssCompat
+        ? applyViteWebCssCompat(finalizedCss, {
             compat: currentGeneratorOptions.webCompat ?? true,
-            escapeMap: opts.escapeMap,
-            safeSelectors: isUniAppViteWebviewPlatform,
           })
         : finalizedCss,
-    ), opts.appType === 'uni-app-x' && currentGeneratorBranch.isWeb)
+    )
     const tracedCss = annotateCssSourceTrace(outputCss, {
       opts,
       tokenSources: createCssTokenSourceMap(getSourceCandidateSourcesForEntries(undefined), opts),
@@ -1010,8 +1045,7 @@ export function createViteFrameworkPlugins(
     }),
     getRememberedMainCssSource: cssMemory.getRememberedCssSourceEntry,
   })
-  const utsPlatform = resolveUniUtsPlatform()
-  const isIosPlatform = utsPlatform.isAppIos
+  const extraPluginPlatform = frameworkBranch.getExtraPluginPlatform?.() ?? {}
   const prepareTailwindGeneration = async () => {
     if (shouldDiscoverAutoCssSources()) {
       await discoverAndRegisterAutoCssSources()
@@ -1025,7 +1059,7 @@ export function createViteFrameworkPlugins(
     generateCss: generateTailwindCssForVitePipeline,
     getResolvedConfig,
     isEnabled: shouldEnableFrameworkExtraPlugins,
-    isIosPlatform,
+    isIosPlatform: extraPluginPlatform.isIosPlatform === true,
     jsHandler,
     mainCssChunkMatcher,
     runtimeState,
@@ -1184,14 +1218,14 @@ export function createViteFrameworkPlugins(
       shouldGenerate: () => shouldOwnTailwindGeneration,
     }),
     createViteServeJsTransformPlugin({
-      createHandlerOptions: file => serveJsHandlerOptions(file, (opts.appType === 'uni-app-vite' && isUniAppViteWebviewStylePlatform(resolveViteStylePlatform())
-        ? { needEscaped: true }
-        : undefined)),
+      createHandlerOptions: file => serveJsHandlerOptions(file, frameworkCssPipelineStrategy?.getServeJsHandlerOptions?.({
+        ...createCssPipelineContext(),
+        file,
+      })),
       getCommand: () => resolvedConfig?.command,
       jsHandler,
       shouldTransform: () => shouldOwnTailwindGeneration && (
-        !resolveCurrentGeneratorBranch().isWeb
-        || (opts.appType === 'uni-app-vite' && isUniAppViteWebviewStylePlatform(resolveViteStylePlatform()))
+        frameworkCssPipelineStrategy?.shouldTransformServeJs?.(createCssPipelineContext()) ?? !resolveCurrentGeneratorBranch().isWeb
       ),
       transformRuntime: ensureRuntimeClassSet,
     }),
