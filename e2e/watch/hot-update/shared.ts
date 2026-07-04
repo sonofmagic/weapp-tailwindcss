@@ -30,7 +30,7 @@ const INVALID_BG_UNTERMINATED_RE = /\bbg-\[[^\]]*$/gm
 const INVALID_PX_UNTERMINATED_RE = /\bpx-\[[^\]]*$/gm
 const INVALID_BG_INNER_SPACE_RE = /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g
 const INVALID_PX_INNER_SPACE_RE = /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g
-const MINI_PROGRAM_STYLE_OUTPUT_RE = /\.(?:wxss|acss|ttss)(?:$|[*?])/
+const MINI_PROGRAM_STYLE_OUTPUT_RE = /\.(?:wxss|acss|ttss|qss)(?:$|[*?])/
 const WEB_HMR_CASES = new Set<ConcreteWatchCaseName>([
   'taro-webpack-react-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
