@@ -849,10 +849,6 @@ function shouldNormalizeTaroWebpackV4IndependentNutuiNoise(project: CompareProje
     && normalizeOutputCssFileName(fileName) === 'sub-independent/pages/index.wxss'
 }
 
-function shouldNormalizeTaroWebpackReactWebCompactContainerNoise(project: CompareProject) {
-  return project.name === 'taro-webpack-react-tailwindcss-v4' && project.platform === 'web-compact'
-}
-
 function shouldNormalizeProjectCssSnapshots(project: CompareProject) {
   return project.name === 'taro-webpack-react-tailwindcss-v4'
 }
@@ -886,33 +882,10 @@ function removeTaroWebpackV4IndependentNutuiNoise(css: string) {
   }
 }
 
-function removeTaroWebpackReactWebCompactContainerNoise(css: string) {
-  try {
-    const root = postcss.parse(css)
-    root.walkRules((rule) => {
-      if ((rule.selectors ?? [rule.selector]).every(selector => selector === '.container')) {
-        rule.remove()
-      }
-    })
-    root.walkAtRules((rule) => {
-      if (rule.nodes?.length === 0) {
-        rule.remove()
-      }
-    })
-    return normalizeCssSnapshot(root.toString())
-  }
-  catch {
-    return css
-  }
-}
-
 function normalizeProjectCssSnapshot(project: CompareProject, snapshot: GeneratorCssSnapshot) {
   let normalized = normalizeCssSnapshot(snapshot.content)
   if (shouldNormalizeTaroWebpackV4IndependentNutuiNoise(project, snapshot.fileName)) {
     normalized = removeTaroWebpackV4IndependentNutuiNoise(normalized)
-  }
-  if (shouldNormalizeTaroWebpackReactWebCompactContainerNoise(project)) {
-    normalized = removeTaroWebpackReactWebCompactContainerNoise(normalized)
   }
   return normalized
 }
