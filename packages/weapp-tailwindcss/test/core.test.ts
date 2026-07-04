@@ -14,7 +14,10 @@ describe('core', () => {
     expect(wxss).toBe(`.after_cml-0_d5::after {
       content: var(--tw-content);
       margin-left: 0.125rem;
-    }`)
+    }
+view,text,::after,::before {
+      --tw-content: "";
+}`)
     expect(cssMap).toMatchSnapshot()
     const content = `const className = 'mb-[1.5rem]'`
 
@@ -36,7 +39,10 @@ describe('core', () => {
     expect(css).toBe(`.after_cml-0_d5::after {
       content: var(--tw-content);
       margin-left: 0.125rem;
-    }`)
+    }
+view,text,::after,::before {
+      --tw-content: "";
+}`)
     expect(cssMap).toMatchSnapshot()
     const content = `const className = 'mb-[1.5rem]'`
     const runtimeSet = new Set<string>()

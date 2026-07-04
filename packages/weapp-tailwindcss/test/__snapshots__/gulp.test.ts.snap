@@ -6,10 +6,8 @@ exports[`gulp > common build > css 1`] = `
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-    }
-:host,page,.tw-root,wx-root-portal-content {
       --tw-border-style: solid;
-}
+    }
 .m-_b20px_B {
   margin: 20px;
 }

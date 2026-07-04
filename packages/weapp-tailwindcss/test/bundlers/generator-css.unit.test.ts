@@ -8971,15 +8971,15 @@ describe('bundlers/shared generator css', () => {
     })
 
     const css = result?.css ?? ''
-    expect(css).not.toContain('view,text,::after,::before{--tw-gradient-from:#0000}')
-    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-gradient-from:#0000}')
+    expect(css).toContain('view,text,::after,::before{--tw-gradient-from:#0000}')
+    expect(css).not.toContain(':host,page,.tw-root,wx-root-portal-content{--tw-gradient-from:#0000}')
     expect(css).toContain('.from-_b_h2f73f1_B{--tw-gradient-from:#2f73f1}')
     expect(css).toContain('.custom{color:red}')
     expect(css.indexOf('.from-_b_h2f73f1_B')).toBeLessThan(css.indexOf('.custom{color:red}'))
     expect(css.match(/from-_b_h2f73f1_B/g)).toHaveLength(1)
   })
 
-  it('keeps Tailwind v4 gradient runtime variables on mini-program root scope', async () => {
+  it('keeps Tailwind v4 gradient runtime variables on mini-program element scope', async () => {
     const runtimeSet = new Set(['bg-linear-to-r', 'from-amber-200', 'to-orange-200'])
     const rawTailwindCss = [
       '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */',
@@ -9056,12 +9056,12 @@ describe('bundlers/shared generator css', () => {
     })
 
     const css = result?.css ?? ''
-    expect(css).not.toContain('view,text,::after,::before{--tw-gradient-position:initial')
+    expect(css).toContain('view,text,::after,::before{--tw-gradient-position:initial')
     expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{')
-    expect(css).toContain('--tw-gradient-position:initial')
+    expect(css).not.toContain(':host,page,.tw-root,wx-root-portal-content{--tw-gradient-position:initial')
     expect(css).toContain(':host')
-    expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')
-    expect(css).toContain('--tw-gradient-to:rgba(0,0,0,0)')
+    expect(css).toContain('--tw-gradient-from:#0000')
+    expect(css).toContain('--tw-gradient-to:#0000')
     expect(css).toContain('--color-amber-200:#fde68a')
     expect(css).toContain('--color-orange-200:#fed7aa')
     expect(css).toContain('.from-amber-200{--tw-gradient-from:var(--color-amber-200)')
@@ -9103,16 +9103,16 @@ describe('bundlers/shared generator css', () => {
     expect(css).toContain('.flex')
   })
 
-  it('drops Tailwind v4 mini-program preflight reset when cssPreflight is disabled', async () => {
+  it('drops Tailwind v4 mini-program reset but keeps runtime defaults when cssPreflight is disabled', async () => {
     const { finalizeMiniProgramGeneratorCss } = await import('@/bundlers/shared/generator-css/generation-helpers')
     const css = finalizeMiniProgramGeneratorCss([
       'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-border-style:solid}',
       '.border{border-style:var(--tw-border-style);border-width:1px}',
     ].join('\n'), 'weapp', 4, false)
 
-    expect(css).not.toContain('view,text,::after,::before')
+    expect(css).toContain('view,text,::after,::before{--tw-border-style:solid}')
     expect(css).not.toContain('box-sizing:border-box')
-    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-border-style:solid}')
+    expect(css).not.toContain(':host,page,.tw-root,wx-root-portal-content{--tw-border-style:solid}')
     expect(css).toContain('.border{border-style:var(--tw-border-style);border-width:1px}')
   })
 

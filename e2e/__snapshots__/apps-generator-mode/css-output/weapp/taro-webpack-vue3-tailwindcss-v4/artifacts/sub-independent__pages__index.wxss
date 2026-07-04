@@ -6,12 +6,12 @@ text,
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  --tw-content: '';
 }
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
-  --tw-content: '';
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';

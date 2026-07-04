@@ -6,14 +6,15 @@ exports[`vite > v4-vite-plugin > css 1`] = `
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-  }
-:host,page,.tw-root,wx-root-portal-content {
     --tw-gradient-position: initial;
     --tw-gradient-from: #0000;
     --tw-gradient-to: #0000;
     --tw-gradient-stops: initial;
     --tw-gradient-from-position: 0%;
     --tw-gradient-to-position: 100%;
+    --tw-content: "";
+  }
+:host,page,.tw-root,wx-root-portal-content {
     --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
@@ -109,6 +110,7 @@ exports[`vite > v4-vite-postcss > css 1`] = `
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    --tw-content: "";
   }
 :host,page,.tw-root,wx-root-portal-content {
     --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",

@@ -439,10 +439,10 @@ wx-root-portal-content,
 .text-_b_hfff_B {
   color: #fff;
 }
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
+view,
+text,
+::after,
+::before {
   --tw-gradient-position: initial;
   --tw-gradient-from: #0000;
   --tw-gradient-to: #0000;
