@@ -162,7 +162,7 @@ describe('hmr full run report', () => {
       expect(renderHmrFullRunMarkdown(report)).toContain('52000ms')
       expect(renderHmrFullRunMarkdown(report)).toContain('node taro build --watch')
       expect(renderHmrFullRunMarkdown(report)).toContain('4/7')
-      expect(renderHmrFullRunMarkdown(report)).toContain('| taro-webpack-react-tailwindcss-v4 | weapp | 1024MB | 8 | 14 | 512MB |')
+      expect(renderHmrFullRunMarkdown(report)).toContain('| taro-webpack-react-tailwindcss-v4 | h5 | 1024MB | 8 | 14 | 512MB |')
     }
     finally {
       await rm(root, { force: true, recursive: true })
@@ -198,6 +198,41 @@ describe('hmr full run report', () => {
 
       expect(report.cases[0]?.platform).toBe('mp-weixin')
       expect(report.byApp['uni-app-vite-tailwindcss-v4']?.platforms['mp-weixin']).toEqual(report.summary)
+    }
+    finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('keeps explicit platform watch cases grouped by their case suffix', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tailwindcss-hmr-report-'))
+    try {
+      const reportFile = path.join(root, 'uni-app-vite-tailwindcss-v4-mp-qq.json')
+      await writeFile(reportFile, JSON.stringify({
+        hmrDurations: {
+          byProject: {
+            'uni-app-vite-tailwindcss-v4': {
+              name: 'uni-app-vite-tailwindcss-v4:mp-qq',
+              label: 'uni-app vite Tailwind v4:mp-qq',
+              project: 'uni-app-vite-tailwindcss-v4',
+              projectGroup: 'demo',
+              initialReadyMs: 1000,
+              totalMs: 3000,
+              timings: [{ surface: 'template:preferred-round', hotUpdateEffectiveMs: 120 }],
+            },
+          },
+        },
+      }), 'utf8')
+
+      const report = await buildHmrFullRunReport({
+        generatedAt: '2026-06-15T00:00:00.000Z',
+        repositoryRoot: root,
+        targetNames: ['demo'],
+        reports: [{ caseName: 'uni-app-vite-tailwindcss-v4:mp-qq', reportFile }],
+      })
+
+      expect(report.cases[0]?.platform).toBe('mp-qq')
+      expect(report.byApp['uni-app-vite-tailwindcss-v4']?.platforms['mp-qq']).toEqual(report.summary)
     }
     finally {
       await rm(root, { force: true, recursive: true })
