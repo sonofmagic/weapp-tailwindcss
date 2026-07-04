@@ -221,6 +221,7 @@ export type IStyleHandlerOptions = {
    */
   cssCalc?: boolean | CssCalcOptions | (string | RegExp)[] | undefined
   uniAppX?: boolean | undefined
+  /** uni-app x 的 CSS 输出目标；`uvue` 表示原生 uvue/nvue 样式链路，未设置时按 WebView CSS 处理。 */
   uniAppXCssTarget?: UniAppXCssTarget | undefined
   uniAppXUnsupported?: UniAppXUnsupportedMode | undefined
   majorVersion?: 4 | undefined
@@ -296,6 +297,7 @@ export interface UserDefinedPostcssOptions {
    */
   tailwindcssV4GradientFallback?: boolean | undefined
   uniAppX?: boolean | undefined
+  /** uni-app x 的 CSS 输出目标；`uvue` 表示原生 uvue/nvue 样式链路，未设置时按 WebView CSS 处理。 */
   uniAppXCssTarget?: UniAppXCssTarget | undefined
   uniAppXUnsupported?: UniAppXUnsupportedMode | undefined
 }

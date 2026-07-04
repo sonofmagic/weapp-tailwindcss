@@ -2496,8 +2496,13 @@ describe('watch-hmr regression cases', () => {
       path.resolve(__dirname, '../src/bundlers/webpack/BaseUnifiedPlugin/v5.ts'),
       'utf8',
     )
-    expect(webpackV5PluginSource).toContain('setupWebpackWatchOutputIgnore')
-    expect(webpackV5PluginSource).toContain('compiler.outputPath || compiler.options?.output?.path')
+    expect(webpackV5PluginSource).toContain('createWebpackFrameworkPlugin')
+    const webpackFrameworkPluginSource = await readFile(
+      path.resolve(__dirname, '../src/bundlers/webpack/shared/create-framework-plugin.ts'),
+      'utf8',
+    )
+    expect(webpackFrameworkPluginSource).toContain('setupWebpackWatchOutputIgnore')
+    expect(webpackFrameworkPluginSource).toContain('compiler.outputPath || compiler.options?.output?.path')
 
     const taroWebpackStyles = [
       'demo/taro-webpack-react-tailwindcss-v4/src/app.css',

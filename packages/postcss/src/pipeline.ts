@@ -4,6 +4,7 @@ import type { FeatureSignal } from './content-probe'
 import type { IStyleHandlerOptions } from './types'
 import postcssPresetEnv from 'postcss-preset-env'
 import { isAutoprefixerPlugin, resolveAutoprefixerPlugin } from './autoprefixer'
+import { resolvePostcssStyleBranch } from './branches'
 import { createColorFunctionalFallback } from './plugins/colorFunctionalFallback'
 import { createContext } from './plugins/ctx'
 import { getCalcDuplicateCleaner } from './plugins/getCalcDuplicateCleaner'
@@ -61,6 +62,7 @@ export interface ResolvedPipelineNode extends PipelineNodeCursor {
 }
 
 export interface StyleProcessingPipeline {
+  branch: ReturnType<typeof resolvePostcssStyleBranch>
   nodes: ResolvedPipelineNode[]
   plugins: AcceptedPlugin[]
 }
@@ -192,6 +194,7 @@ export function createStylePipeline(options: IStyleHandlerOptions, signal?: Feat
 
   if (preparedNodes.length === 0) {
     return {
+      branch: resolvePostcssStyleBranch(options),
       nodes: [],
       plugins: [],
     }
@@ -248,6 +251,7 @@ export function createStylePipeline(options: IStyleHandlerOptions, signal?: Feat
   })
 
   return {
+    branch: resolvePostcssStyleBranch(options),
     nodes,
     plugins: nodes.map(node => node.plugin),
   }

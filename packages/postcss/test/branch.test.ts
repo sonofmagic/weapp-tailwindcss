@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { resolvePostcssStyleBranch, shouldApplyUniAppXBaseCompatibility, shouldApplyUniAppXUvueCompatibility } from '@/branches'
+import { resolvePostcssStyleBranch, resolvePostcssStyleBranchProfile } from '@/branches'
 
 describe('postcss style branch resolver', () => {
   it('separates mini-program framework css from generic css', () => {
@@ -33,11 +33,29 @@ describe('postcss style branch resolver', () => {
       uniAppXCssTarget: 'uvue',
     })
 
-    expect(webview).toBe('uni-app-x-webview')
-    expect(uvue).toBe('uni-app-x-uvue')
-    expect(shouldApplyUniAppXBaseCompatibility(webview)).toBe(true)
-    expect(shouldApplyUniAppXBaseCompatibility(uvue)).toBe(true)
-    expect(shouldApplyUniAppXUvueCompatibility(webview)).toBe(false)
-    expect(shouldApplyUniAppXUvueCompatibility(uvue)).toBe(true)
+    expect(webview).toBe('uni-app-x-css-webview')
+    expect(uvue).toBe('uni-app-x-css-uvue')
+  })
+
+  it('resolves concrete css target branch profiles', () => {
+    expect(resolvePostcssStyleBranchProfile({
+      appType: 'uni-app-x',
+      uniAppX: true,
+    }).branch).toBe('uni-app-x-css-webview')
+
+    expect(resolvePostcssStyleBranchProfile({
+      appType: 'uni-app-x',
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+    }).branch).toBe('uni-app-x-css-uvue')
+  })
+
+  it('exposes branch on created style pipelines', async () => {
+    const { createStyleHandler } = await import('@/handler')
+
+    expect(createStyleHandler({
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+    }).getPipeline().branch).toBe('uni-app-x-css-uvue')
   })
 })

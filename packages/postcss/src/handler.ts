@@ -5,10 +5,8 @@ import type { IStyleHandlerOptions, StyleHandler } from './types'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { LRUCache } from 'lru-cache'
 import postcss from 'postcss'
-import { resolvePostcssStyleBranch, shouldApplyUniAppXBaseCompatibility, shouldApplyUniAppXUvueCompatibility } from './branches'
+import { resolvePostcssStyleBranchProfile } from './branches'
 import { protectDynamicColorMixAlpha } from './compat/color-mix'
-import { applyUniAppXBaseCompatibility } from './compat/uni-app-x'
-import { applyUniAppXUvueCompatibility } from './compat/uni-app-x-uvue'
 import { probeFeatures, signalToCacheKey } from './content-probe'
 import { getDefaultOptions } from './defaults'
 import { fingerprintOptions } from './fingerprint'
@@ -113,13 +111,8 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
       source,
       processOptions,
     ).async().then((result) => {
-      const styleBranch = resolvePostcssStyleBranch(resolvedOptions)
-      const baseCompatible = shouldApplyUniAppXBaseCompatibility(styleBranch)
-        ? applyUniAppXBaseCompatibility(result, resolvedOptions)
-        : result
-      let finalResult = shouldApplyUniAppXUvueCompatibility(styleBranch)
-        ? applyUniAppXUvueCompatibility(baseCompatible, resolvedOptions)
-        : baseCompatible
+      const styleBranch = resolvePostcssStyleBranchProfile(resolvedOptions)
+      let finalResult = styleBranch.postprocess(result, resolvedOptions)
       if (protectedColorMix) {
         const restoredCss = protectedColorMix.restore(finalResult.css)
         if (restoredCss !== finalResult.css) {

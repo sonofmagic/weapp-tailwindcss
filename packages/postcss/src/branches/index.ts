@@ -1,8 +1,8 @@
 export {
   type PostcssAppType,
   type PostcssStyleBranch,
+  type PostcssStyleBranchProfile,
   resolvePostcssStyleBranch,
   type ResolvePostcssStyleBranchOptions,
-  shouldApplyUniAppXBaseCompatibility,
-  shouldApplyUniAppXUvueCompatibility,
+  resolvePostcssStyleBranchProfile,
 } from './style'
