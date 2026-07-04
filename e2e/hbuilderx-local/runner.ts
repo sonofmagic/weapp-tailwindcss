@@ -9,6 +9,7 @@ import {
   assertAndroidToolchain,
   assertHarmonyToolchain,
   assertIosSimulatorToolchain,
+  classifyHBuilderXOutput,
   collectProcessOutput,
   fileExists,
   hbuilderxAppTimeoutMs,
@@ -51,6 +52,14 @@ function hasContent(source: string, entries: Array<string | RegExp>) {
     }
     return entry.test(source)
   })
+}
+
+function formatHBuilderXIssueDetails(output: string) {
+  const issue = classifyHBuilderXOutput(output)
+  return [
+    `issue=${issue.kind}: ${issue.message}`,
+    issue.hint ? `hint=${issue.hint}` : '',
+  ].filter(Boolean).join('\n')
 }
 
 async function waitForFile(file: string, timeoutMs: number) {
@@ -384,7 +393,8 @@ export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
     logs = collectProcessOutput(child)
     await assertMiniProgramOutput(item, () => {
       if (child?.exitCode != null) {
-        throw new Error(`${item.name} dev:mp-weixin 提前退出，exit=${child.exitCode}\n${logs.join('')}`)
+        const output = logs.join('')
+        throw new Error(`${item.name} dev:mp-weixin 提前退出，exit=${child.exitCode}\n${formatHBuilderXIssueDetails(output)}\n${output}`)
       }
     }, () => logs.join(''))
   }
@@ -444,7 +454,8 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     const startedAt = Date.now()
     const ensureLaunchRunning = () => {
       if (exit && exit.code !== 0) {
-        throw new Error(`命令失败：pnpm exec hbuilderx launch ${item.platform} exit=${exit.signal ?? exit.code}\n${logs.join('')}`)
+        const output = logs.join('')
+        throw new Error(`命令失败：pnpm exec hbuilderx launch ${item.platform} exit=${exit.signal ?? exit.code}\n${formatHBuilderXIssueDetails(output)}\n${output}`)
       }
     }
     let initialOutputRoot: string | undefined
