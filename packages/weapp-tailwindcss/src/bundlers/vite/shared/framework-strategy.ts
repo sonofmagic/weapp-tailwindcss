@@ -25,14 +25,58 @@ export interface ViteFrameworkCssPipelineContext {
 export interface ViteFrameworkCssPipelineStrategy {
   getCssHandlerExtraOptions?: (context: ViteFrameworkCssPipelineContext & { file: string }) => Record<string, unknown>
   getServeJsHandlerOptions?: (context: ViteFrameworkCssPipelineContext & { file: string }) => CreateJsHandlerOptions | undefined
+  includeTailwindGeneratedCssAssetsInRootCoverage?: (context: ViteFrameworkCssPipelineContext & {
+    bundleFiles: string[]
+    isWebGeneratorTarget: boolean
+    outDir: string
+  }) => boolean
   isHarmonyAppStyleTarget?: (context: ViteFrameworkCssPipelineContext) => boolean
   isNativeAppStyleTarget?: (context: ViteFrameworkCssPipelineContext) => boolean
+  resolveConfiguredCssEntryRootInjectionTarget?: (context: ViteFrameworkCssPipelineContext & {
+    bundle: OutputBundle
+    isConfiguredCssEntryFile: (file: string | undefined) => boolean
+    isMiniProgramStyleOutputFile: (file: string) => boolean
+    isRootStyleOutputFile: (file: string) => boolean
+    outputFile: string
+    sourceFile: string | undefined
+  }) => string | undefined
+  shouldApplyFinalWebviewCssCompat?: (context: ViteFrameworkCssPipelineContext & {
+    bundleFiles: string[]
+    isWebGeneratorTarget: boolean
+    outDir: string
+  }) => boolean
   shouldApplyWebCssCompat?: (context: ViteFrameworkCssPipelineContext) => boolean
   shouldDeferEmptyScopedCssSource?: (context: ViteFrameworkCssPipelineContext & {
     cssHandlerOptions: { isMainChunk?: boolean | undefined }
     generatorCode: string
   }) => boolean
+  shouldKeepRootMiniProgramStyleAsImportShell?: (context: ViteFrameworkCssPipelineContext & {
+    css: string
+    file: string
+  }) => boolean
+  shouldMoveRootMiniProgramStyleToImportShellOrigin?: (context: ViteFrameworkCssPipelineContext & {
+    file: string
+  }) => boolean
+  shouldNormalizeRootMiniProgramImportShell?: (context: ViteFrameworkCssPipelineContext) => boolean
+  shouldPreferExplicitWebCssTargets?: (context: ViteFrameworkCssPipelineContext & {
+    explicitRootTargets: string[]
+    explicitWebCssTargets: string[]
+    file: string
+  }) => boolean
+  shouldPreferMatchedRootWebOutputTarget?: (context: ViteFrameworkCssPipelineContext & {
+    file: string
+    matchedRootWebOutputTargets: string[]
+  }) => boolean
   shouldPreserveStyleOutputExtension?: (context: ViteFrameworkCssPipelineContext) => boolean
+  shouldSelectConfiguredCssEntryRootSource?: (context: ViteFrameworkCssPipelineContext & {
+    isRootStyleOutputFile: (file: string) => boolean
+    outputFile: string
+  }) => boolean
+  shouldRemoveDuplicateUnlinkedRootCssAssetsReferencedByHtml?: (context: ViteFrameworkCssPipelineContext & {
+    bundleFiles: string[]
+    isWebGeneratorTarget: boolean
+    outDir: string
+  }) => boolean
   shouldTransformServeJs?: (context: ViteFrameworkCssPipelineContext) => boolean
   transformGeneratedCss?: (css: string, context: ViteFrameworkCssPipelineContext & {
     defaultWebCssCompat: (css: string) => string

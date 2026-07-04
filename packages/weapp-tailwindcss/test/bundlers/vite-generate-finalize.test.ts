@@ -1,6 +1,6 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import { describe, expect, it, vi } from 'vitest'
-import { normalizeTaroRootImportShellAssets } from '@/bundlers/vite/generate-bundle/finalize'
+import { normalizeRootMiniProgramImportShellAssets } from '@/bundlers/vite/generate-bundle/finalize'
 
 function asset(fileName: string, source: string): OutputAsset {
   return {
@@ -22,9 +22,9 @@ describe('vite generate bundle finalize helpers', () => {
     const onUpdate = vi.fn()
     const record = vi.fn()
 
-    expect(normalizeTaroRootImportShellAssets(bundle, {
-      appType: 'taro',
+    expect(normalizeRootMiniProgramImportShellAssets(bundle, {
       cssMatcher: (file: string) => file.endsWith('.wxss'),
+      enabled: true,
       onUpdate,
       recordCssAssetResult: record,
       debug: vi.fn(),
@@ -38,28 +38,28 @@ describe('vite generate bundle finalize helpers', () => {
 
   it('skips taro root normalization when origin is not compatible', () => {
     const baseOptions = {
-      appType: 'taro',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
+      enabled: true,
       onUpdate: vi.fn(),
       recordCssAssetResult: vi.fn(),
       debug: vi.fn(),
     }
 
-    expect(normalizeTaroRootImportShellAssets({
+    expect(normalizeRootMiniProgramImportShellAssets({
       'app.wxss': asset('app.wxss', '@import "./app-origin.wxss";\n'),
       'app-origin.wxss': asset('app-origin.wxss', '.root{color:red}'),
     }, baseOptions)).toBe(0)
-    expect(normalizeTaroRootImportShellAssets({
+    expect(normalizeRootMiniProgramImportShellAssets({
       'app.wxss': asset('app.wxss', '.root{color:red}'),
       'app-origin.wxss': asset('app-origin.wxss', '@import "./other.wxss";\n'),
     }, baseOptions)).toBe(0)
-    expect(normalizeTaroRootImportShellAssets({
+    expect(normalizeRootMiniProgramImportShellAssets({
       'app.wxss': asset('app.wxss', '.root{color:red}'),
       'app-origin.wxss': asset('app-origin.wxss', '.other{color:blue}'),
     }, baseOptions)).toBe(0)
-    expect(normalizeTaroRootImportShellAssets({
+    expect(normalizeRootMiniProgramImportShellAssets({
       'app.css': asset('app.css', '.root{color:red}'),
       'app-origin.css': asset('app-origin.css', '.root{color:red}'),
-    }, { ...baseOptions, appType: 'weapp-vite' })).toBe(0)
+    }, { ...baseOptions, enabled: false })).toBe(0)
   })
 })

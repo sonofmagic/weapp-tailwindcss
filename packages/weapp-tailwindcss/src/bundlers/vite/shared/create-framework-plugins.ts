@@ -995,6 +995,7 @@ export function createViteFrameworkPlugins(
     opts,
     runtimeState,
     ensureRuntimeClassSet,
+    cssPipelineStrategy: frameworkCssPipelineStrategy,
     debug,
     getResolvedConfig,
     markCssAssetProcessed,

@@ -40,6 +40,9 @@ const uniAppXCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
     return isUniAppXNativeAppStyleTarget()
       || isUniAppXHarmonyAppStyleTarget(context)
   },
+  shouldKeepRootMiniProgramStyleAsImportShell() {
+    return true
+  },
   shouldDeferEmptyScopedCssSource(context) {
     if (!context.cssHandlerOptions.isMainChunk && hasTailwindApplyDirective(context.generatorCode)) {
       return false

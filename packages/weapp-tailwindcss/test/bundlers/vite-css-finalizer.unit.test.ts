@@ -2,7 +2,7 @@ import type { OutputAsset, OutputBundle } from 'rollup'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
 import { createViteCssFinalizerOutputPlugin } from '@/bundlers/vite/css-finalizer'
-import { UNI_APP_X_WEB_PREFLIGHT_RESET_MARKER } from '@/uni-app-x/web-preflight-reset'
+import { UNI_APP_X_WEB_PREFLIGHT_RESET_MARKER, withUniAppXWebPreflightReset } from '@/uni-app-x/web-preflight-reset'
 
 const mocks = vi.hoisted(() => ({
   generateTailwindV4Css: vi.fn(),
@@ -79,6 +79,16 @@ function createContext(overrides: Record<string, any> = {}) {
   }
 }
 
+const uniAppXFinalizerStrategy = {
+  isHarmonyAppStyleTarget: () => true,
+  transformGeneratedCss(css: string, context: any) {
+    const webCss = context.shouldApplyWebCssCompat
+      ? context.defaultWebCssCompat(css)
+      : css
+    return withUniAppXWebPreflightReset(webCss, context.currentGeneratorBranch.isWeb)
+  },
+}
+
 describe('vite css finalizer output plugin', () => {
   beforeEach(() => {
     mocks.generateTailwindV4Css.mockReset()
@@ -153,6 +163,7 @@ describe('vite css finalizer output plugin', () => {
     opts.generator = {
       target: 'web',
     }
+    context.cssPipelineStrategy = uniAppXFinalizerStrategy
     const plugin = createViteCssFinalizerOutputPlugin(context as any)
     const output = asset('app.css', '*,::before{border:0 solid;}.border{border-width:1px;}')
     const bundle: OutputBundle = {
@@ -351,6 +362,7 @@ describe('vite css finalizer output plugin', () => {
       },
       getSourceCandidates: vi.fn(() => new Set(['flex'])),
       getViteProcessedCssAssetResults: vi.fn(() => []),
+      cssPipelineStrategy: uniAppXFinalizerStrategy,
     })
     const plugin = createViteCssFinalizerOutputPlugin(context as any)
     const bundle: OutputBundle = {

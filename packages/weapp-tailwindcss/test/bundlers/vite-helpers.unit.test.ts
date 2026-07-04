@@ -83,12 +83,11 @@ describe('bundlers/vite helper modules', () => {
     expect(createCssImportShell('pages/index.wxss', 'common/app.wxss')).toBe('@import "../common/app.wxss";\n')
     expect(createRootMiniProgramOriginStyleOutputFile('app.wxss')).toBe('app-origin.wxss')
     expect(createRootMiniProgramOriginStyleOutputFile('app-origin.wxss')).toBe('app-origin.wxss')
-    expect(shouldKeepRootMiniProgramStyleAsImportShell('uni-app-vite')).toBe(true)
-    expect(shouldKeepRootMiniProgramStyleAsImportShell('uni-app-x')).toBe(true)
-    expect(shouldKeepRootMiniProgramStyleAsImportShell('taro')).toBe(true)
-    expect(shouldKeepRootMiniProgramStyleAsImportShell('native')).toBe(false)
-    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin('taro')).toBe(true)
-    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin('uni-app-vite')).toBe(false)
+    expect(shouldKeepRootMiniProgramStyleAsImportShell(true)).toBe(true)
+    expect(shouldKeepRootMiniProgramStyleAsImportShell(false)).toBe(false)
+    expect(shouldKeepRootMiniProgramStyleAsImportShell(undefined)).toBe(false)
+    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin(true)).toBe(true)
+    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin(false)).toBe(false)
   })
 
   it('resolves current source candidate source by explicit and scored candidates', () => {
@@ -308,20 +307,29 @@ describe('bundlers/vite helper modules', () => {
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       platform: 'weapp',
     } as any
+    const pipelineContext = {} as any
+    const taroRootStyleStrategy = {
+      shouldKeepRootMiniProgramStyleAsImportShell: () => true,
+      shouldMoveRootMiniProgramStyleToImportShellOrigin: () => true,
+    }
     expect(resolveCssBundleOutputFile({
       bundleFiles: ['app.wxss'],
+      cssPipelineStrategy: taroRootStyleStrategy,
       defaultStyleOutputExtension: '.wxss',
       file: 'app.scss',
       isWebGeneratorTarget: false,
       opts,
+      pipelineContext,
       shouldPreserveAppCssExtension: false,
     })).toBe('app.wxss')
     expect(resolveCssBundleOutputFile({
       bundleFiles: ['app.wxss'],
+      cssPipelineStrategy: taroRootStyleStrategy,
       defaultStyleOutputExtension: '.wxss',
       file: 'app.wxss',
       isWebGeneratorTarget: false,
       opts,
+      pipelineContext,
       shouldPreserveAppCssExtension: false,
     })).toBe('app-origin.wxss')
     expect(resolveOutputFileFromMatchedCssSource({
@@ -451,13 +459,14 @@ describe('bundlers/vite helper modules', () => {
     const original = createAsset('old', ['/repo/src/app.css'])
     const existing = createAsset('existing')
     applyCssResultToBundle({
-      appType: 'uni-app-vite',
       assetSourceFile: '/repo/src/app.css',
       bundle: { 'app.wxss': original, 'app-origin.wxss': existing },
+      cssPipelineStrategy: taroRootStyleStrategy,
       emitOrReplayCssAsset: vi.fn(),
       file: 'app.wxss',
       originalSource: original,
       outputFile: 'app-origin.wxss',
+      pipelineContext,
       source: 'generated',
       viteProcessedCssAsset: false,
     })
@@ -467,13 +476,14 @@ describe('bundlers/vite helper modules', () => {
     const emittedOrigin = createAsset('old', ['/repo/src/app.css'])
     const emitOrigin = vi.fn()
     applyCssResultToBundle({
-      appType: 'uni-app-vite',
       assetSourceFile: '/repo/src/app.css',
       bundle: { 'app.wxss': emittedOrigin },
+      cssPipelineStrategy: taroRootStyleStrategy,
       emitOrReplayCssAsset: emitOrigin,
       file: 'app.wxss',
       originalSource: emittedOrigin,
       outputFile: 'app-origin.wxss',
+      pipelineContext,
       source: 'generated',
       viteProcessedCssAsset: false,
     })

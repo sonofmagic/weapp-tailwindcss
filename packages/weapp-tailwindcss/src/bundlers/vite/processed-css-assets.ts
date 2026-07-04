@@ -1,4 +1,5 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
+import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from './shared/framework-strategy'
 import type { InternalUserDefinedOptions } from '@/types'
 import {
   containsCssAfterMinify,
@@ -39,6 +40,8 @@ interface CssAssetResultsGetter {
 
 interface CollectViteProcessedCssAssetOptions {
   opts?: InternalUserDefinedOptions | undefined
+  cssPipelineStrategy?: ViteFrameworkCssPipelineStrategy | undefined
+  createCssPipelineContext?: ((file: string) => ViteFrameworkCssPipelineContext) | undefined
   isViteProcessedCssAsset?: CssAssetMarkerMatcher | undefined
   markCssAssetProcessed?: CssAssetProcessedMarker | undefined
   recordCssAssetResult?: CssAssetResultRecorder | undefined
@@ -51,6 +54,8 @@ interface CollectViteProcessedCssAssetOptions {
 
 interface InjectViteProcessedCssAssetOptions {
   opts: InternalUserDefinedOptions
+  cssPipelineStrategy?: ViteFrameworkCssPipelineStrategy | undefined
+  createCssPipelineContext?: ((file: string) => ViteFrameworkCssPipelineContext) | undefined
   getViteProcessedCssAssetResults?: CssAssetResultsGetter | undefined
   markCssAssetProcessed?: CssAssetProcessedMarker | undefined
   recordCssAssetResult?: CssAssetResultRecorder | undefined
@@ -61,6 +66,15 @@ interface InjectViteProcessedCssAssetOptions {
 }
 
 const CSS_OUTPUT_FILE_RE = /\.(?:css|wxss|acss|ttss|qss|jxss|tyss)(?:$|[?#])/i
+
+function createCssAssetPipelineContext(
+  options: Pick<CollectViteProcessedCssAssetOptions & InjectViteProcessedCssAssetOptions, 'createCssPipelineContext'>,
+  file: string,
+  bundle: OutputBundle,
+) {
+  const context = options.createCssPipelineContext?.(file)
+  return context ? { ...context, bundle } : undefined
+}
 
 function isCssOutputFile(file: string) {
   return CSS_OUTPUT_FILE_RE.test(file)
@@ -759,20 +773,35 @@ function isMiniProgramStyleOutputFile(file: string) {
   return /\.(?:wxss|acss|ttss|qss|jxss|tyss)(?:$|[?#])/i.test(file)
 }
 
-function shouldPreserveMiniProgramImportShell(opts: InternalUserDefinedOptions, file: string, css: string) {
-  return (opts.appType === 'taro' || opts.appType === 'uni-app-vite' || opts.appType === 'uni-app-x')
-    && isMiniProgramStyleOutputFile(file)
-    && opts.cssMatcher(file)
-    && isPureLocalCssImportWrapper(css)
-}
-
-function resolvePreservedImportShellInjectionTarget(
-  opts: InternalUserDefinedOptions,
+function shouldPreserveMiniProgramImportShell(
+  options: Pick<InjectViteProcessedCssAssetOptions, 'cssPipelineStrategy' | 'createCssPipelineContext' | 'opts'>,
   bundle: OutputBundle,
   file: string,
   css: string,
 ) {
-  if (opts.appType !== 'taro') {
+  const context = createCssAssetPipelineContext(options, file, bundle)
+  return context !== undefined
+    && options.cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
+      ...context,
+      css,
+      file,
+    }) === true
+    && isMiniProgramStyleOutputFile(file)
+    && options.opts.cssMatcher(file)
+    && isPureLocalCssImportWrapper(css)
+}
+
+function resolvePreservedImportShellInjectionTarget(
+  options: Pick<InjectViteProcessedCssAssetOptions, 'cssPipelineStrategy' | 'createCssPipelineContext'>,
+  bundle: OutputBundle,
+  file: string,
+  css: string,
+) {
+  const context = createCssAssetPipelineContext(options, file, bundle)
+  if (
+    context === undefined
+    || options.cssPipelineStrategy?.shouldNormalizeRootMiniProgramImportShell?.(context) !== true
+  ) {
     return
   }
   const importedStyleFiles = collectImportedStyleFiles(css, file)
@@ -801,7 +830,10 @@ function shouldUseCssAssetAsMainInjectionTarget(
   opts: InternalUserDefinedOptions,
   file: string,
   records: Array<{ injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>,
+  options: Pick<InjectViteProcessedCssAssetOptions, 'cssPipelineStrategy' | 'createCssPipelineContext'>,
+  bundle: OutputBundle,
 ) {
+  const context = createCssAssetPipelineContext(options, file, bundle)
   const fileKey = normalizeOutputPathKey(file)
   if (
     !isRootStyleOutputFile(file)
@@ -830,7 +862,12 @@ function shouldUseCssAssetAsMainInjectionTarget(
     opts.mainCssChunkMatcher(outputFile, opts.appType),
   )
   if (
-    opts.appType === 'uni-app-vite'
+    context !== undefined
+    && options.cssPipelineStrategy?.shouldPreferMatchedRootWebOutputTarget?.({
+      ...context,
+      file,
+      matchedRootWebOutputTargets,
+    }) === true
     && !isMiniProgramStyleOutputFile(file)
     && matchedRootWebOutputTargets.length > 0
   ) {
@@ -853,7 +890,13 @@ function shouldUseCssAssetAsMainInjectionTarget(
       && !isMiniProgramStyleOutputFile(outputFile),
     )
   if (
-    opts.appType === 'uni-app-vite'
+    context !== undefined
+    && options.cssPipelineStrategy?.shouldPreferExplicitWebCssTargets?.({
+      ...context,
+      explicitRootTargets,
+      explicitWebCssTargets,
+      file,
+    }) === true
     && !isMiniProgramStyleOutputFile(file)
     && explicitWebCssTargets.length > 0
   ) {
@@ -1048,17 +1091,37 @@ function isConfiguredTailwindV4CssEntryFile(opts: InternalUserDefinedOptions, fi
   )
 }
 
-function resolveUniAppViteWebviewRootCssInjectionTarget(
+function resolveConfiguredCssEntryRootInjectionTarget(
   bundle: OutputBundle,
-  opts: InternalUserDefinedOptions,
+  options: Pick<CollectViteProcessedCssAssetOptions, 'cssPipelineStrategy' | 'createCssPipelineContext' | 'opts'>,
   sourceFile: string | undefined,
   outputFile: string,
 ) {
+  const opts = options.opts
   if (
-    opts.appType !== 'uni-app-vite'
+    opts === undefined
     || isMiniProgramStyleOutputFile(outputFile)
     || !isConfiguredTailwindV4CssEntryFile(opts, sourceFile)
   ) {
+    return
+  }
+  const context = createCssAssetPipelineContext(options, outputFile, bundle)
+  if (context === undefined) {
+    return
+  }
+  const resolvedByStrategy = options.cssPipelineStrategy?.resolveConfiguredCssEntryRootInjectionTarget?.({
+    ...context,
+    bundle,
+    isConfiguredCssEntryFile: file => isConfiguredTailwindV4CssEntryFile(opts, file),
+    isMiniProgramStyleOutputFile,
+    isRootStyleOutputFile,
+    outputFile,
+    sourceFile,
+  })
+  if (resolvedByStrategy !== undefined) {
+    return resolvedByStrategy
+  }
+  if (options.cssPipelineStrategy?.resolveConfiguredCssEntryRootInjectionTarget == null) {
     return
   }
   const rootCssFiles: string[] = []
@@ -1207,9 +1270,9 @@ export function collectViteProcessedCssAssetResults(
       options.resolveViteProcessedCssOutputFile,
     )
     const webviewRootCssInjectionTarget = options.opts
-      ? resolveUniAppViteWebviewRootCssInjectionTarget(
+      ? resolveConfiguredCssEntryRootInjectionTarget(
           bundle,
-          options.opts,
+          options,
           singleMarkerFile ?? file,
           resolvedOutputFile,
         )
@@ -1328,13 +1391,13 @@ export function injectViteProcessedCssIntoMainCssAssets(
     let file = getAssetFile(bundleFile, output)
     if (
       !options.opts.cssMatcher(file)
-      || !shouldUseCssAssetAsMainInjectionTarget(options.opts, file, viteCssResults)
+      || !shouldUseCssAssetAsMainInjectionTarget(options.opts, file, viteCssResults, options, bundle)
     ) {
       continue
     }
     let originalSource = readAssetSource(output)
-    if (shouldPreserveMiniProgramImportShell(options.opts, file, originalSource)) {
-      const importedTargetFile = resolvePreservedImportShellInjectionTarget(options.opts, bundle, file, originalSource)
+    if (shouldPreserveMiniProgramImportShell(options, bundle, file, originalSource)) {
+      const importedTargetFile = resolvePreservedImportShellInjectionTarget(options, bundle, file, originalSource)
       if (typeof importedTargetFile === 'string') {
         options.debug?.('preserve mini-program css import shell asset: %s -> %s', file, importedTargetFile)
         const importedOutput = Object.entries(bundle).find(([candidateFile, candidate]) =>

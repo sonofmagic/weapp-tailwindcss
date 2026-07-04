@@ -1,19 +1,18 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { OutputAsset, OutputBundle, OutputChunk } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
+import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from './shared/framework-strategy'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
-import { transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
+import { transformWebCssCompat } from '@weapp-tailwindcss/postcss'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
-import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
-import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtilities, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles, isUniAppXHarmonyBundle } from '@/uni-app-x/style-asset'
-import { withUniAppXWebPreflightReset } from '@/uni-app-x/web-preflight-reset'
+import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtilities, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles } from '@/uni-app-x/style-asset'
 import { resolveUniUtsPlatform } from '@/utils'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../shared/css-source-trace'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
@@ -21,9 +20,8 @@ import { hasTailwindGeneratedCssMarkers } from '../shared/generator-css'
 import { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindRootDirectives } from '../shared/generator-css/directives'
 import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from './generate-bundle'
-import { normalizeTaroRootImportShellAssets } from './generate-bundle/finalize'
+import { normalizeRootMiniProgramImportShellAssets } from './generate-bundle/finalize'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
-import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
 import { isHTMLRequest } from './utils'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from './weapp-vite-config'
 
@@ -39,6 +37,7 @@ interface CssFinalizerContext {
     readyPromise: Promise<void>
   }
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
+  cssPipelineStrategy?: ViteFrameworkCssPipelineStrategy | undefined
   isCssAssetProcessed: (asset: OutputAsset, file?: string) => boolean
   markCssAssetProcessed: (asset: OutputAsset, file?: string) => void
   debug: (format: string, ...args: unknown[]) => void
@@ -108,9 +107,10 @@ function createCssHandlerOptions(
   opts: InternalUserDefinedOptions,
   majorVersion: number | undefined,
   file: string,
+  extraOptions: Record<string, unknown> = {},
 ): IStyleHandlerOptions {
   return {
-    ...resolveUniAppXNativeCssHandlerOptions(opts),
+    ...extraOptions,
     cssPreflight: opts.cssPreflight,
     isMainChunk: opts.mainCssChunkMatcher(file, opts.appType),
     postcssOptions: {
@@ -163,22 +163,24 @@ function collectViteProcessedCssSources(
     .map(([, record]) => typeof record === 'string' ? record : record.css)
 }
 
-function isUniAppViteWebviewOutDir(outDir: string | undefined) {
-  const normalized = outDir ? path.basename(path.normalize(outDir)).trim().toLowerCase() : undefined
-  return normalized === 'app' || normalized === 'app-plus'
-}
-
 function finalizeWebCss(
   css: string,
-  enabled: boolean,
-  webCompat: ReturnType<typeof normalizeWeappTailwindcssGeneratorOptions>['webCompat'],
-  options: { escapeMap?: Record<string, string> | undefined, safeSelectors?: boolean | undefined, uniAppXWebPreflightReset?: boolean | undefined } = {},
+  context: ViteFrameworkCssPipelineContext & { file: string },
+  cssPipelineStrategy?: ViteFrameworkCssPipelineStrategy | undefined,
 ) {
-  const compatCss = enabled ? transformWebCssCompat(css, webCompat) : css
-  const webCss = options.safeSelectors
-    ? transformWebCssSafeSelectors(compatCss, { escapeMap: options.escapeMap })
-    : compatCss
-  return withUniAppXWebPreflightReset(webCss, options.uniAppXWebPreflightReset === true)
+  const shouldApplyWebCssCompat = cssPipelineStrategy?.shouldApplyWebCssCompat?.(context) === true
+  const defaultWebCssCompat = (value: string) => transformWebCssCompat(
+    value,
+    context.currentGeneratorBranch.isWeb
+      ? context.currentGeneratorOptions.webCompat
+      : context.currentGeneratorOptions.webCompat ?? true,
+  )
+  return cssPipelineStrategy?.transformGeneratedCss?.(css, {
+    ...context,
+    defaultWebCssCompat,
+    removeScopedPreflight: value => value,
+    shouldApplyWebCssCompat,
+  }) ?? (shouldApplyWebCssCompat ? defaultWebCssCompat(css) : css)
 }
 
 export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext): Plugin {
@@ -192,6 +194,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           opts,
           runtimeState,
           ensureRuntimeClassSet,
+          cssPipelineStrategy,
           isCssAssetProcessed,
           markCssAssetProcessed,
           debug,
@@ -228,15 +231,16 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           uniUtsPlatform,
         })
         const isWebGeneratorTarget = generatorBranch.isWeb
-        const shouldApplyWebviewSafeSelectors = opts.appType === 'uni-app-vite'
-          && isUniAppViteWebviewOutDir(resolvedConfig?.build?.outDir)
-        const isUniAppXStyleTarget = opts.appType === 'uni-app-x'
-        const canInferHarmonyAppStyleTarget = isUniAppXStyleTarget && (!uniUtsPlatform.normalized || uniUtsPlatform.isApp)
-        const isHarmonyAppStyleTarget = isUniAppXStyleTarget && (uniUtsPlatform.isAppHarmony || (
-          canInferHarmonyAppStyleTarget
-          && (isUniAppXHarmonyBundle(bundle) || isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir))
-        ))
-        const isNativeAppStyleTarget = isUniAppXStyleTarget && (uniUtsPlatform.isApp || isHarmonyAppStyleTarget)
+        const createCssPipelineContext = (_file: string): ViteFrameworkCssPipelineContext => ({
+          bundle,
+          currentGeneratorBranch: generatorBranch,
+          currentGeneratorOptions: generatorOptions,
+          opts,
+          resolvedConfig,
+          resolveStylePlatform: () => generatorPlatform,
+        })
+        const isHarmonyAppStyleTarget = cssPipelineStrategy?.isHarmonyAppStyleTarget?.(createCssPipelineContext('')) === true
+        const isNativeAppStyleTarget = cssPipelineStrategy?.isNativeAppStyleTarget?.(createCssPipelineContext('')) === true
         if (resolvedConfig?.command !== 'build' && !isNativeAppStyleTarget) {
           return
         }
@@ -254,6 +258,8 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         const collectViteProcessedCssAssets = () => {
           collectViteProcessedCssAssetResults(bundle, {
             opts,
+            cssPipelineStrategy,
+            createCssPipelineContext,
             isViteProcessedCssAsset,
             markCssAssetProcessed,
             recordCssAssetResult,
@@ -261,11 +267,10 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget, sourceRoot, resolveMiniProgramStyleOutputExtension({
               files: Object.keys(bundle),
             }), Object.keys(bundle)),
-            transformCss: css => finalizeWebCss(css, generatorBranch.isWeb, generatorOptions.webCompat, {
-              escapeMap: opts.escapeMap,
-              safeSelectors: shouldApplyWebviewSafeSelectors,
-              uniAppXWebPreflightReset: opts.appType === 'uni-app-x' && generatorBranch.isWeb,
-            }),
+            transformCss: (css, file) => finalizeWebCss(css, {
+              ...createCssPipelineContext(file),
+              file,
+            }, cssPipelineStrategy),
             debug,
           })
         }
@@ -273,14 +278,15 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         const injectViteProcessedCssIntoMainCss = () => {
           return injectViteProcessedCssIntoMainCssAssets(bundle, {
             opts,
+            cssPipelineStrategy,
+            createCssPipelineContext,
             getViteProcessedCssAssetResults,
             markCssAssetProcessed,
             recordCssAssetResult,
-            transformCss: css => finalizeWebCss(css, generatorBranch.isWeb, generatorOptions.webCompat, {
-              escapeMap: opts.escapeMap,
-              safeSelectors: shouldApplyWebviewSafeSelectors,
-              uniAppXWebPreflightReset: opts.appType === 'uni-app-x' && generatorBranch.isWeb,
-            }),
+            transformCss: (css, file) => finalizeWebCss(css, {
+              ...createCssPipelineContext(file),
+              file,
+            }, cssPipelineStrategy),
             debug,
             onUpdate: opts.onUpdate,
           })
@@ -299,7 +305,15 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             ...runtime,
             ...applyUtilities,
           ])
-          const harmonyCssHandlerOptions = createCssHandlerOptions(opts, runtimeState.tailwindRuntime.majorVersion, 'uni-app-x-harmony-apply.css')
+          const harmonyCssHandlerOptions = createCssHandlerOptions(
+            opts,
+            runtimeState.tailwindRuntime.majorVersion,
+            'uni-app-x-harmony-apply.css',
+            cssPipelineStrategy?.getCssHandlerExtraOptions?.({
+              ...createCssPipelineContext('uni-app-x-harmony-apply.css'),
+              file: 'uni-app-x-harmony-apply.css',
+            }) ?? {},
+          )
           const generated = await generateTailwindV4Css({
             opts,
             runtimeState,
@@ -356,10 +370,10 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           await injectHarmonyBundleStyles(runtime)
           collectViteProcessedCssAssets()
           injectViteProcessedCssIntoMainCss()
-          normalizeTaroRootImportShellAssets(bundle, {
-            appType: opts.appType,
+          normalizeRootMiniProgramImportShellAssets(bundle, {
             cssMatcher: opts.cssMatcher,
             debug,
+            enabled: cssPipelineStrategy?.shouldNormalizeRootMiniProgramImportShell?.(createCssPipelineContext('')) === true,
             onUpdate: opts.onUpdate,
             recordCssAssetResult,
           })
@@ -382,13 +396,11 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           if (isViteProcessedCssAsset?.(output, file)) {
             const nextCss = annotateCss(finalizeWebCss(
               stripBundlerGeneratedCssMarkers(rawSource),
-              generatorBranch.isWeb,
-              generatorOptions.webCompat,
               {
-                escapeMap: opts.escapeMap,
-                safeSelectors: shouldApplyWebviewSafeSelectors,
-                uniAppXWebPreflightReset: opts.appType === 'uni-app-x' && generatorBranch.isWeb,
+                ...createCssPipelineContext(file),
+                file,
               },
+              cssPipelineStrategy,
             ))
             output.source = nextCss
             markCssAssetProcessed(output, file)
@@ -400,6 +412,10 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             opts,
             runtimeState.tailwindRuntime.majorVersion,
             file,
+            cssPipelineStrategy?.getCssHandlerExtraOptions?.({
+              ...createCssPipelineContext(file),
+              file,
+            }) ?? {},
           )
           const cssUserHandlerOptions = {
             ...cssHandlerOptions,
@@ -416,6 +432,10 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
                 opts,
                 runtimeState.tailwindRuntime.majorVersion,
                 generatorSourceFile,
+                cssPipelineStrategy?.getCssHandlerExtraOptions?.({
+                  ...createCssPipelineContext(generatorSourceFile),
+                  file: generatorSourceFile,
+                }) ?? {},
               )
             : cssHandlerOptions
           const generatorCssUserHandlerOptions = rememberedMainCssSource
@@ -442,11 +462,10 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             : undefined
           const nextCss = annotateCss(generated?.css ?? (
             generatorBranch.isWeb
-              ? finalizeWebCss(rawSource, true, generatorOptions.webCompat, {
-                  escapeMap: opts.escapeMap,
-                  safeSelectors: shouldApplyWebviewSafeSelectors,
-                  uniAppXWebPreflightReset: opts.appType === 'uni-app-x' && generatorBranch.isWeb,
-                })
+              ? finalizeWebCss(rawSource, {
+                  ...createCssPipelineContext(file),
+                  file,
+                }, cssPipelineStrategy)
               : (await opts.styleHandler(rawSource, cssHandlerOptions)).css
           ))
           if (generated) {
@@ -465,10 +484,10 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         await injectHarmonyBundleStyles(generatorRuntime)
         collectViteProcessedCssAssets()
         injectViteProcessedCssIntoMainCss()
-        normalizeTaroRootImportShellAssets(bundle, {
-          appType: opts.appType,
+        normalizeRootMiniProgramImportShellAssets(bundle, {
           cssMatcher: opts.cssMatcher,
           debug,
+          enabled: cssPipelineStrategy?.shouldNormalizeRootMiniProgramImportShell?.(createCssPipelineContext('')) === true,
           onUpdate: opts.onUpdate,
           recordCssAssetResult,
         })

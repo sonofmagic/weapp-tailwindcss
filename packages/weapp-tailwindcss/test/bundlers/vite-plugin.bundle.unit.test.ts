@@ -3030,11 +3030,10 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       cssMatcher: file => file.endsWith('.acss') || file.endsWith('.ttss') || file.endsWith('.mss'),
       files: ['app.acss', 'pages/index/index.ttss'],
     })).toBe('.css')
-    expect(shouldKeepRootMiniProgramStyleAsImportShell('taro')).toBe(true)
-    expect(shouldKeepRootMiniProgramStyleAsImportShell('uni-app-vite')).toBe(true)
-    expect(shouldKeepRootMiniProgramStyleAsImportShell('native')).toBe(false)
-    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin('taro')).toBe(true)
-    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin('uni-app-vite')).toBe(false)
+    expect(shouldKeepRootMiniProgramStyleAsImportShell(true)).toBe(true)
+    expect(shouldKeepRootMiniProgramStyleAsImportShell(false)).toBe(false)
+    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin(true)).toBe(true)
+    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin(false)).toBe(false)
   }, TEST_TIMEOUT_MS)
 
   it('keeps css extension for uni-app x native app vite css pipeline output', async () => {
@@ -6339,9 +6338,17 @@ module.exports = {
       },
     }
     const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>()
+    const uniAppRootInjectionStrategy = {
+      resolveConfiguredCssEntryRootInjectionTarget: () => 'app.css',
+      shouldPreferExplicitWebCssTargets: () => true,
+      shouldPreferMatchedRootWebOutputTarget: () => true,
+    }
+    const createCssPipelineContext = () => ({}) as any
 
     collectViteProcessedCssAssetResults(bundle, {
       opts: context as any,
+      cssPipelineStrategy: uniAppRootInjectionStrategy,
+      createCssPipelineContext,
       isViteProcessedCssAsset: vi.fn((_asset: OutputAsset, file: string) => file === 'src/main.css'),
       markCssAssetProcessed: vi.fn(),
       recordCssAssetResult: vi.fn(),
@@ -6356,6 +6363,8 @@ module.exports = {
     })
     injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: context as any,
+      cssPipelineStrategy: uniAppRootInjectionStrategy,
+      createCssPipelineContext,
       getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
       markCssAssetProcessed: vi.fn(),
       recordCssAssetResult: vi.fn(),
@@ -6570,6 +6579,11 @@ module.exports = {
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
       recordGeneratorCandidates: vi.fn(),
+      cssPipelineStrategy: {
+        shouldKeepRootMiniProgramStyleAsImportShell: () => true,
+        shouldMoveRootMiniProgramStyleToImportShellOrigin: () => true,
+        shouldNormalizeRootMiniProgramImportShell: () => true,
+      },
     })
     const bundle = {
       'app-origin.wxss': {

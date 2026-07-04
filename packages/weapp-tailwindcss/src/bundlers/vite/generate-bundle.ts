@@ -204,8 +204,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       resolveStylePlatform: () => generatorPlatform,
     }
     const isWebGeneratorTarget = generatorBranch.isWeb
-    const shouldApplyWebCssCompat = isWebGeneratorTarget
-      || context.cssPipelineStrategy?.shouldApplyWebCssCompat?.(cssPipelineContext) === true
+    const shouldApplyWebCssCompat = context.cssPipelineStrategy?.shouldApplyWebCssCompat?.(cssPipelineContext) === true
     const transformWebTargetCss = (css: string) => {
       return context.cssPipelineStrategy?.transformGeneratedCss?.(css, {
         ...cssPipelineContext,
@@ -250,6 +249,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     collectViteProcessedCssAssetResults(bundle, {
       opts,
+      cssPipelineStrategy: context.cssPipelineStrategy,
+      createCssPipelineContext: () => cssPipelineContext,
       isViteProcessedCssAsset,
       markCssAssetProcessed,
       recordCssAssetResult,
@@ -338,41 +339,60 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         .filter((file): file is string => typeof file === 'string' && file.length > 0)
         .map(normalizeConfiguredTailwindV4CssEntryFileKey),
     )
-    const resolveUniAppViteWebviewRootCssInjectionTarget = (sourceFile: string | undefined, outputFile: string) => {
+    const isRootStyleOutputFile = (file: string) => {
+      const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+      return normalized.endsWith('.css') && !normalized.includes('/')
+    }
+    const isMiniProgramStyleOutputFile = (file: string) => /\.(?:wxss|acss|ttss|qss|jxss|tyss)(?:$|[?#])/i.test(file)
+    const resolveConfiguredCssEntryRootInjectionTarget = (sourceFile: string | undefined, outputFile: string) => {
       if (
-        opts.appType !== 'uni-app-vite'
-        || !outputFile.replace(/[?#].*$/, '').endsWith('.css')
+        !outputFile.replace(/[?#].*$/, '').endsWith('.css')
         || typeof sourceFile !== 'string'
         || !configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(sourceFile))
       ) {
         return
       }
-      const rootCssFiles = bundleFiles.filter((file) => {
-        const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
-        return opts.cssMatcher(file)
-          && normalized.endsWith('.css')
-          && !normalized.includes('/')
+      return context.cssPipelineStrategy?.resolveConfiguredCssEntryRootInjectionTarget?.({
+        ...cssPipelineContext,
+        bundle,
+        isConfiguredCssEntryFile: file => typeof file === 'string'
+          && configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(file)),
+        isMiniProgramStyleOutputFile,
+        isRootStyleOutputFile,
+        outputFile,
+        sourceFile,
       })
-      const matchedRootCssFiles = rootCssFiles.filter(file => getCssHandlerOptions(file).isMainChunk)
-      if (matchedRootCssFiles.length === 1) {
-        return matchedRootCssFiles[0]
-      }
-      if (matchedRootCssFiles.length > 1) {
-        return
-      }
-      return rootCssFiles.length === 1 ? rootCssFiles[0] : undefined
     }
     const resolveConfiguredTailwindV4CssEntryOutputFile = (sourceFile: string) =>
       resolveViteCssPipelineOutputFile(sourceFile, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension, bundleFiles)
-    const selectUniAppViteWebviewRootCssSourceEntry = (
+    const selectConfiguredRootCssSourceEntry = (
       outputFile: string,
       entries: ReturnType<typeof getConfiguredTailwindV4CssSourceEntries>,
+      originalFileNames: string[] | undefined,
     ) => {
+      const matchedOriginalEntry = entries.find(entry =>
+        originalFileNames?.some(originalFile =>
+          normalizeConfiguredTailwindV4CssEntryFileKey(originalFile) === normalizeConfiguredTailwindV4CssEntryFileKey(entry.file),
+        ) === true,
+      )
+      if (matchedOriginalEntry && outputFile.replace(/[?#].*$/, '').endsWith('.css')) {
+        return matchedOriginalEntry
+      }
       if (
-        opts.appType !== 'uni-app-vite'
-        || !isWebGeneratorTarget
-        || !opts.cssMatcher(outputFile)
-        || normalizeOutputPathKey(outputFile.replace(/[?#].*$/, '')).includes('/')
+        !(
+          (
+            context.cssPipelineStrategy?.shouldSelectConfiguredCssEntryRootSource?.({
+              ...cssPipelineContext,
+              isRootStyleOutputFile,
+              outputFile,
+            }) === true
+          )
+          || (
+            cssPipelineContext.currentGeneratorBranch.isWeb
+            && opts.cssMatcher(outputFile)
+            && isRootStyleOutputFile(outputFile)
+          )
+        )
       ) {
         return undefined
       }
@@ -716,12 +736,18 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const assetSourceFile = resolveAssetSourceFile(originalSource, file)
         const rawSource = normalizeRelativeCssConfigDirectives(originalEntrySource, assetSourceFile, outDir, opts)
+        const cssPipelineContext = {
+          ...createInitialCssPipelineContext(file),
+          bundle,
+        }
         let outputFile = resolveCssBundleOutputFile({
           bundleFiles,
+          cssPipelineStrategy: context.cssPipelineStrategy,
           defaultStyleOutputExtension,
           file,
           isWebGeneratorTarget,
           opts,
+          pipelineContext: cssPipelineContext,
           shouldPreserveAppCssExtension,
         })
         const resolveMatchedOutputFileForCurrentAsset = createMatchedCssSourceOutputResolver({
@@ -730,6 +756,21 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           originalFileNames: originalSource.originalFileNames,
           resolveOutputFileFromMatchedCssSource: resolveMatchedCssSourceOutputFile,
         })
+        const configuredOriginalSourceEntry = outputFile.replace(/[?#].*$/, '').endsWith('.css')
+          ? getConfiguredTailwindV4CssSourceEntries().find(entry =>
+              originalSource.originalFileNames?.some(originalFile =>
+                normalizeConfiguredTailwindV4CssEntryFileKey(originalFile) === normalizeConfiguredTailwindV4CssEntryFileKey(entry.file),
+              ) === true,
+            )
+          : undefined
+        const configuredOriginalOutputFile = configuredOriginalSourceEntry
+          ? resolveMatchedOutputFileForCurrentAsset(configuredOriginalSourceEntry.file)
+          : undefined
+        let resolvedFromConfiguredOriginalCssEntry = false
+        if (configuredOriginalOutputFile && normalizeOutputPathKey(configuredOriginalOutputFile) !== normalizeOutputPathKey(outputFile)) {
+          outputFile = configuredOriginalOutputFile
+          resolvedFromConfiguredOriginalCssEntry = true
+        }
         activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
         if (shouldSkipRawSourceStyleAsset(outputFile, file, rawSource, assetSourceFile, opts.cssMatcher)) {
           delete bundle[file]
@@ -741,13 +782,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         let resolvedFromTemporaryCssAsset = false
         const applyCssResult = (source: string) => {
           applyCssResultToBundle({
-            appType: opts.appType,
             assetSourceFile,
             bundle,
+            cssPipelineStrategy: context.cssPipelineStrategy,
             emitOrReplayCssAsset,
             file,
             originalSource,
             outputFile,
+            pipelineContext: cssPipelineContext,
             source,
             viteProcessedCssAsset,
           })
@@ -859,7 +901,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           )
           const inferredWebviewRootSourceEntry = inferredSourceStyle
             ? undefined
-            : selectUniAppViteWebviewRootCssSourceEntry(outputFile, configuredTailwindV4CssSourceEntries)
+            : selectConfiguredRootCssSourceEntry(outputFile, configuredTailwindV4CssSourceEntries, originalSource.originalFileNames)
           const inferredWebviewRootSourceStyle = inferredWebviewRootSourceEntry
             ? {
                 outputFile,
@@ -1005,7 +1047,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           ? rememberedCssSource?.sourceFile ?? assetSourceFile
           : assetSourceFile
         const webviewRootCssInjectionTarget = vitePipelineCssAsset
-          ? resolveUniAppViteWebviewRootCssInjectionTarget(generatorSourceFile, outputFile)
+          ? resolveConfiguredCssEntryRootInjectionTarget(generatorSourceFile, outputFile)
           : undefined
         const usesConfiguredTailwindV4FallbackSource = rememberedCssSource != null
           && normalizeOutputPathKey(rememberedCssSource.outputFile) === normalizeOutputPathKey(outputFile)
@@ -1084,6 +1126,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const vitePipelineCssInjectionOutputFile = webviewRootCssInjectionTarget ?? outputFile
         const shouldRecordVitePipelineCssByOutput = normalizeOutputPathKey(vitePipelineCssInjectionOutputFile) === normalizeOutputPathKey(outputFile)
         const shouldInjectVitePipelineCssIntoMain = vitePipelineCssAsset
+          && !resolvedFromConfiguredOriginalCssEntry
           && outputCssHandlerOptions.isMainChunk !== true
           && (
             webviewRootCssInjectionTarget != null
@@ -1419,6 +1462,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       bundleFiles,
       cache,
       cssTaskFactories,
+      cssPipelineStrategy: context.cssPipelineStrategy,
+      createCssPipelineContext: () => cssPipelineContext,
       debug,
       defaultStyleOutputExtension,
       formatIteration: useIncrementalMode ? state.iteration : 0,

@@ -33,6 +33,14 @@ describe('framework plugin composition profiles', () => {
       path.join(root, 'src/bundlers/vite/generate-bundle.ts'),
       'utf8',
     )
+    const cssFinalizerSource = await readFile(
+      path.join(root, 'src/bundlers/vite/css-finalizer.ts'),
+      'utf8',
+    )
+    const processedCssAssetsSource = await readFile(
+      path.join(root, 'src/bundlers/vite/processed-css-assets.ts'),
+      'utf8',
+    )
     const uniAppXSource = await readFile(
       path.join(root, 'src/bundlers/vite/frameworks/uni-app-x/index.ts'),
       'utf8',
@@ -46,8 +54,14 @@ describe('framework plugin composition profiles', () => {
     expect(generateBundleSource).not.toContain("from '@/uni-app-x/")
     expect(generateBundleSource).not.toContain("opts.appType === 'uni-app-x'")
     expect(generateBundleSource).not.toContain("opts.appType === 'uni-app-vite'")
+    expect(cssFinalizerSource).not.toContain("opts.appType === 'uni-app-x'")
+    expect(cssFinalizerSource).not.toContain("opts.appType === 'uni-app-vite'")
+    expect(processedCssAssetsSource).not.toContain("opts.appType === 'uni-app-x'")
+    expect(processedCssAssetsSource).not.toContain("opts.appType === 'uni-app-vite'")
     expect(sharedSource).toContain('cssPipelineStrategy')
     expect(generateBundleSource).toContain('cssPipelineStrategy')
+    expect(cssFinalizerSource).toContain('cssPipelineStrategy')
+    expect(processedCssAssetsSource).toContain('cssPipelineStrategy')
     expect(uniAppXSource).toContain("from '@/uni-app-x/vite'")
     expect(uniAppXSource).toContain('uniAppXCssPipelineStrategy')
     expect(uniAppXSource).toContain('resolveUniAppXNativeCssHandlerOptions')
@@ -81,6 +95,8 @@ describe('framework plugin composition profiles', () => {
     expect(uniAppSource).toContain('uniAppCssPipelineStrategy')
     expect(uniAppSource).toContain('transformWebCssSafeSelectors')
     expect(uniAppSource).toContain('needEscaped: true')
+    expect(uniAppSource).toContain('shouldApplyFinalWebviewCssCompat')
+    expect(uniAppSource).toContain('resolveConfiguredCssEntryRootInjectionTarget')
     expect(taroSource).not.toContain('transformWebCssSafeSelectors')
     expect(taroSource).not.toContain('needEscaped: true')
   })
