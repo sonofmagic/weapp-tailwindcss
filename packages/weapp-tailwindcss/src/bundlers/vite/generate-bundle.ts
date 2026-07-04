@@ -3,15 +3,12 @@ import type { GenerateBundleContext, GenerateBundleThis } from './generate-bundl
 import { Buffer } from 'node:buffer'
 import path from 'node:path'
 import process from 'node:process'
-import { transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
+import { transformWebCssCompat } from '@weapp-tailwindcss/postcss'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
-import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
-import { isUniAppXHarmonyBundle } from '@/uni-app-x/style-asset'
-import { withUniAppXWebPreflightReset } from '@/uni-app-x/web-preflight-reset'
 import { resolveUniUtsPlatform } from '@/utils'
 import { processCachedTask } from '../shared/cache'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap } from '../shared/css-source-trace'
@@ -57,7 +54,6 @@ import { createTransformFilter, createTransformFilterSignature, shouldSkipViteAs
 import { getLastCssResult, normalizeViteCssCacheKey, rememberLastCssResult } from './generate-bundle/vite-css-cache'
 import { collectViteProcessedCssAssetResults, isCssImportOnlyBundleAsset, removeCssCoveredByRootStyleBundleSources } from './processed-css-assets'
 import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
-import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from './weapp-vite-config'
 
 export { normalizeBundleFileNameKeysForTest } from './generate-bundle/bundle-file-names'
@@ -86,17 +82,38 @@ function inferPlatformFromViteOutDir(outDir: string | undefined) {
   }
 }
 
-function isUniAppViteWebviewOutDir(outDir: string | undefined) {
-  const normalized = outDir ? path.basename(path.normalize(outDir)).trim().toLowerCase() : undefined
-  return normalized === 'app' || normalized === 'app-plus'
-}
-
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
   const lastCssResultByFile = new Map<string, string>()
   const lastCssSourceHashByFile = new Map<string, string>()
   let currentOutDir: string | undefined
   let currentSubpackageRoots: Set<string> | undefined
+  const createInitialCssPipelineContext = (file: string) => {
+    const resolvedConfig = context.getResolvedConfig()
+    const platform = context.opts.cssOptions?.platform
+      ?? context.opts.platform
+      ?? inferPlatformFromViteOutDir(resolvedConfig?.build?.outDir)
+    const currentGeneratorOptions = normalizeWeappTailwindcssGeneratorOptions(context.opts.generator, {
+      appType: context.opts.appType,
+      platform,
+      tailwindcssMajorVersion: context.runtimeState.tailwindRuntime.majorVersion,
+      uniAppX: context.opts.uniAppX,
+    })
+    const currentGeneratorBranch = resolveGeneratorRuntimeBranch(currentGeneratorOptions, {
+      appType: context.opts.appType,
+      platform,
+      tailwindcssMajorVersion: context.runtimeState.tailwindRuntime.majorVersion,
+      uniAppX: context.opts.uniAppX,
+    })
+    return {
+      currentGeneratorBranch,
+      currentGeneratorOptions,
+      file,
+      opts: context.opts,
+      resolvedConfig,
+      resolveStylePlatform: () => platform,
+    }
+  }
   const cssHandlerOptions = createCssHandlerOptionsCache({
     getAppType: () => context.opts.appType,
     mainCssChunkMatcher: context.opts.mainCssChunkMatcher,
@@ -104,7 +121,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     getOutputRoot: () => currentOutDir,
     getExtraOptions: file => ({
       ...resolveViteCssHandlerExtraOptions(file),
-      ...resolveUniAppXNativeCssHandlerOptions(context.opts),
+      ...(context.cssPipelineStrategy?.getCssHandlerExtraOptions?.(createInitialCssPipelineContext(file)) ?? {}),
       ...(currentSubpackageRoots && isSubpackageOutputFile(file, currentSubpackageRoots)
         ? { isMainChunk: false }
         : {}),
@@ -178,29 +195,35 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       uniAppX,
       uniUtsPlatform,
     })
-    const isWebGeneratorTarget = generatorBranch.isWeb
-    const shouldApplyWebviewSafeSelectors = opts.appType === 'uni-app-vite'
-      && isUniAppViteWebviewOutDir(resolvedConfig?.build?.outDir)
-    const shouldApplyWebviewCssCompat = isWebGeneratorTarget || shouldApplyWebviewSafeSelectors
-    const transformWebTargetCss = (css: string) => {
-      const compatCss = isWebGeneratorTarget
-        ? transformWebCssCompat(css, generatorOptions.webCompat)
-        : shouldApplyWebviewCssCompat
-          ? transformWebCssCompat(css, generatorOptions.webCompat ?? true)
-          : css
-      const webCss = shouldApplyWebviewSafeSelectors
-        ? transformWebCssSafeSelectors(compatCss, { escapeMap: opts.escapeMap })
-        : compatCss
-      return withUniAppXWebPreflightReset(webCss, opts.appType === 'uni-app-x' && isWebGeneratorTarget)
+    const cssPipelineContext = {
+      bundle,
+      currentGeneratorBranch: generatorBranch,
+      currentGeneratorOptions: generatorOptions,
+      opts,
+      resolvedConfig,
+      resolveStylePlatform: () => generatorPlatform,
     }
-    const isUniAppXStyleTarget = opts.appType === 'uni-app-x'
-    const isNativeAppStyleTarget = isUniAppXStyleTarget && uniUtsPlatform.isApp
-    const canInferHarmonyAppStyleTarget = isUniAppXStyleTarget && (!uniUtsPlatform.normalized || uniUtsPlatform.isApp)
-    const isHarmonyAppStyleTarget = isUniAppXStyleTarget && (uniUtsPlatform.isAppHarmony || (
-      canInferHarmonyAppStyleTarget
-      && (isUniAppXHarmonyBundle(bundle) || isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir))
-    ))
-    const shouldPreserveAppCssExtension = isNativeAppStyleTarget || isHarmonyAppStyleTarget
+    const isWebGeneratorTarget = generatorBranch.isWeb
+    const shouldApplyWebCssCompat = isWebGeneratorTarget
+      || context.cssPipelineStrategy?.shouldApplyWebCssCompat?.(cssPipelineContext) === true
+    const transformWebTargetCss = (css: string) => {
+      return context.cssPipelineStrategy?.transformGeneratedCss?.(css, {
+        ...cssPipelineContext,
+        defaultWebCssCompat: value => transformWebCssCompat(value, isWebGeneratorTarget
+          ? generatorOptions.webCompat
+          : generatorOptions.webCompat ?? true),
+        removeScopedPreflight: value => value,
+        shouldApplyWebCssCompat,
+      }) ?? (
+        shouldApplyWebCssCompat
+          ? transformWebCssCompat(css, isWebGeneratorTarget ? generatorOptions.webCompat : generatorOptions.webCompat ?? true)
+          : css
+      )
+    }
+    const isNativeAppStyleTarget = context.cssPipelineStrategy?.isNativeAppStyleTarget?.(cssPipelineContext) === true
+    const isHarmonyAppStyleTarget = context.cssPipelineStrategy?.isHarmonyAppStyleTarget?.(cssPipelineContext) === true
+    const shouldPreserveAppCssExtension = context.cssPipelineStrategy?.shouldPreserveStyleOutputExtension?.(cssPipelineContext)
+      ?? (isNativeAppStyleTarget || isHarmonyAppStyleTarget)
     const shouldGenerateWebCssByGenerator = isWebGeneratorTarget
     const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
@@ -610,15 +633,24 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion,
       moduleGraph: moduleGraphOptions,
     })
-    const createHandlerOptions = (absoluteFilename: string, extra?: Parameters<typeof createBaseHandlerOptions>[1]) => createBaseHandlerOptions(
-      absoluteFilename,
-      shouldApplyWebviewSafeSelectors
-        ? {
-            needEscaped: true,
-            ...extra,
-          }
-        : extra,
-    )
+    const resolveFrameworkJsHandlerOptions = (absoluteFilename: string) => context.cssPipelineStrategy?.getServeJsHandlerOptions?.({
+      ...cssPipelineContext,
+      file: absoluteFilename,
+    })
+    const createHandlerOptions = (absoluteFilename: string, extra?: Parameters<typeof createBaseHandlerOptions>[1]) => {
+      const frameworkExtra = resolveFrameworkJsHandlerOptions(absoluteFilename)
+      return createBaseHandlerOptions(
+        absoluteFilename,
+        frameworkExtra || extra
+          ? {
+              ...frameworkExtra,
+              ...extra,
+            }
+          : undefined,
+      )
+    }
+    const shouldTransformJsBundle = !isWebGeneratorTarget
+      || context.cssPipelineStrategy?.shouldTransformServeJs?.(cssPipelineContext) === true
 
     const linkedByEntry = useIncrementalMode ? new Map<string, Set<string>>() : undefined
     const sharedCssResultCache = new Map<string, Promise<string>>()
@@ -1299,7 +1331,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         continue
       }
 
-      if (isWebGeneratorTarget && !shouldApplyWebviewSafeSelectors) {
+      if (!shouldTransformJsBundle) {
         debug('js skip web target: %s', file)
         continue
       }

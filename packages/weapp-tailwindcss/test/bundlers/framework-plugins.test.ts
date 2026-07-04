@@ -29,6 +29,10 @@ describe('framework plugin composition profiles', () => {
       path.join(root, 'src/bundlers/vite/shared/create-framework-plugins.ts'),
       'utf8',
     )
+    const generateBundleSource = await readFile(
+      path.join(root, 'src/bundlers/vite/generate-bundle.ts'),
+      'utf8',
+    )
     const uniAppXSource = await readFile(
       path.join(root, 'src/bundlers/vite/frameworks/uni-app-x/index.ts'),
       'utf8',
@@ -39,11 +43,16 @@ describe('framework plugin composition profiles', () => {
     expect(sharedSource).not.toContain("frameworkName === 'uni-app-x'")
     expect(sharedSource).not.toContain("opts.appType === 'uni-app-x'")
     expect(sharedSource).not.toContain("opts.appType === 'uni-app-vite'")
+    expect(generateBundleSource).not.toContain("from '@/uni-app-x/")
+    expect(generateBundleSource).not.toContain("opts.appType === 'uni-app-x'")
+    expect(generateBundleSource).not.toContain("opts.appType === 'uni-app-vite'")
     expect(sharedSource).toContain('cssPipelineStrategy')
+    expect(generateBundleSource).toContain('cssPipelineStrategy')
     expect(uniAppXSource).toContain("from '@/uni-app-x/vite'")
     expect(uniAppXSource).toContain('uniAppXCssPipelineStrategy')
     expect(uniAppXSource).toContain('resolveUniAppXNativeCssHandlerOptions')
     expect(uniAppXSource).toContain('withUniAppXWebPreflightReset')
+    expect(uniAppXSource).toContain('isUniAppXHarmonyBundle')
     expect(uniAppXSource).toContain('isRuntimeClassSetFeatureEnabled: () => true')
   })
 
@@ -51,6 +60,10 @@ describe('framework plugin composition profiles', () => {
     const root = path.resolve(__dirname, '../..')
     const sharedSource = await readFile(
       path.join(root, 'src/bundlers/vite/shared/create-framework-plugins.ts'),
+      'utf8',
+    )
+    const generateBundleSource = await readFile(
+      path.join(root, 'src/bundlers/vite/generate-bundle.ts'),
       'utf8',
     )
     const uniAppSource = await readFile(
@@ -64,6 +77,7 @@ describe('framework plugin composition profiles', () => {
 
     expect(sharedSource).not.toContain('isUniAppViteWebviewStylePlatform')
     expect(sharedSource).not.toContain('transformWebCssSafeSelectors')
+    expect(generateBundleSource).not.toContain('transformWebCssSafeSelectors')
     expect(uniAppSource).toContain('uniAppCssPipelineStrategy')
     expect(uniAppSource).toContain('transformWebCssSafeSelectors')
     expect(uniAppSource).toContain('needEscaped: true')

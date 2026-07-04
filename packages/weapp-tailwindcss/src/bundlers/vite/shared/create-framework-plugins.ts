@@ -2,9 +2,10 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import type { ViteFrameworkName } from '../../framework-selector'
 import type { SourceCandidateScanRoot } from '../source-candidate-scan-signature'
 import type { SourceCandidateCollectorSnapshot, SourceCandidateFilterOptions } from '../source-candidates'
+import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy, ViteFrameworkExtraPluginPlatform, ViteFrameworkRuntimeFeatureContext } from './framework-strategy'
 import type { ViteStyleInjectorDelegateFactory } from '@/style-injector/internal'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
-import type { CreateJsHandlerOptions, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
+import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -148,39 +149,6 @@ export interface ViteFrameworkBranchContext {
   getExtraPluginPlatform?: () => ViteFrameworkExtraPluginPlatform
   styleInjectorDelegate: ViteStyleInjectorDelegateFactory
   isRuntimeClassSetFeatureEnabled?: (context: ViteFrameworkRuntimeFeatureContext) => boolean
-}
-
-export interface ViteFrameworkExtraPluginPlatform {
-  isIosPlatform?: boolean | undefined
-}
-
-export interface ViteFrameworkRuntimeFeatureContext {
-  uniAppX: ReturnType<typeof getCompilerContext>['uniAppX']
-}
-
-export interface ViteFrameworkCssPipelineContext {
-  currentGeneratorBranch: ReturnType<typeof resolveGeneratorRuntimeBranch>
-  currentGeneratorOptions: ReturnType<typeof normalizeWeappTailwindcssGeneratorOptions>
-  opts: InternalUserDefinedOptions
-  resolvedConfig: ResolvedConfig | undefined
-  resolveStylePlatform: () => string | undefined
-}
-
-export interface ViteFrameworkCssPipelineStrategy {
-  getCssHandlerExtraOptions?: (context: ViteFrameworkCssPipelineContext & { file: string }) => Record<string, unknown>
-  getServeJsHandlerOptions?: (context: ViteFrameworkCssPipelineContext & { file: string }) => CreateJsHandlerOptions | undefined
-  isNativeAppStyleTarget?: (context: ViteFrameworkCssPipelineContext) => boolean
-  shouldApplyWebCssCompat?: (context: ViteFrameworkCssPipelineContext) => boolean
-  shouldDeferEmptyScopedCssSource?: (context: ViteFrameworkCssPipelineContext & {
-    cssHandlerOptions: { isMainChunk?: boolean | undefined }
-    generatorCode: string
-  }) => boolean
-  shouldTransformServeJs?: (context: ViteFrameworkCssPipelineContext) => boolean
-  transformGeneratedCss?: (css: string, context: ViteFrameworkCssPipelineContext & {
-    defaultWebCssCompat: (css: string) => string
-    removeScopedPreflight: (css: string) => string
-    shouldApplyWebCssCompat: boolean
-  }) => string
 }
 
 export interface ViteFrameworkExtraPluginContext {
@@ -857,9 +825,10 @@ export function createViteFrameworkPlugins(
       currentGeneratorBranch,
       currentGeneratorOptions,
     })
-    const isNativeAppStyleTarget = frameworkCssPipelineStrategy?.isNativeAppStyleTarget?.(cssPipelineContext) === true
+    const shouldPreserveStyleOutputExtension = frameworkCssPipelineStrategy?.shouldPreserveStyleOutputExtension?.(cssPipelineContext)
+      ?? frameworkCssPipelineStrategy?.isNativeAppStyleTarget?.(cssPipelineContext) === true
     const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
-    const outputFile = resolveViteCssPipelineOutputFile(requestFile, opts, rootDir, currentGeneratorBranch.isWeb, isNativeAppStyleTarget, sourceRoot)
+    const outputFile = resolveViteCssPipelineOutputFile(requestFile, opts, rootDir, currentGeneratorBranch.isWeb, shouldPreserveStyleOutputExtension, sourceRoot)
     const runtime = getRecordedGeneratorCandidates()
       ?? getSourceCandidates()
       ?? await ensureRuntimeClassSet()
@@ -952,7 +921,7 @@ export function createViteFrameworkPlugins(
         outputFile,
       })
     }
-    if (isNativeAppStyleTarget && outputFile.endsWith('.css')) {
+    if (shouldPreserveStyleOutputExtension && outputFile.endsWith('.css')) {
       hookContext?.emitFile?.({
         type: 'asset',
         fileName: outputFile,
@@ -1020,6 +989,7 @@ export function createViteFrameworkPlugins(
     pruneViteCssCaches,
     getViteCssCacheStats,
     hmrTimingRecorder,
+    cssPipelineStrategy: frameworkCssPipelineStrategy,
   })
   const cssFinalizerOutputPlugin = createViteCssFinalizerOutputPlugin({
     opts,
