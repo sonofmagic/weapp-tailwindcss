@@ -1011,7 +1011,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
           subPackage.mainStyleHotUpdate,
           `[${item.project}:${subPackage.root}]`,
           maxHotUpdateMs,
-          configuredSubPackageMutation?.templateMutation,
+          configuredSubPackageMutation?.mainStyleMutation ?? configuredSubPackageMutation?.templateMutation,
         )
       }
     }
