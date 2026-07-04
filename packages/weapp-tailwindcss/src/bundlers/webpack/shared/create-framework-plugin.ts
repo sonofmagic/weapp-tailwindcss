@@ -24,7 +24,6 @@ import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../../s
 import { normalizeTailwindConfigDirectives } from '../../shared/generator-css/directives'
 import { isWatchFileInRuntimeDependencies } from '../BaseUnifiedPlugin/shared'
 import { setupWebpackV5ProcessAssetsHook } from '../BaseUnifiedPlugin/v5-assets'
-import { collectWebpackAssetUserCssMarkers } from '../BaseUnifiedPlugin/v5-assets/pipeline-helpers'
 import { setupWebpackV5Loaders } from '../BaseUnifiedPlugin/v5-loaders'
 
 const debug = createDebug()
@@ -42,22 +41,7 @@ function shouldKeepPreviousWebpackCssSource(
   previous: { css: string | undefined, processed?: boolean | undefined },
   next: { css: string | undefined, processed?: boolean | undefined },
 ) {
-  if (next.processed === true && previous.processed === false) {
-    return true
-  }
-  if (
-    previous.processed === true
-    || next.processed === true
-    || !previous.css
-    || !next.css
-    || previous.css === next.css
-  ) {
-    return false
-  }
-  const previousMarkers = collectWebpackAssetUserCssMarkers(previous.css)
-  const nextMarkers = collectWebpackAssetUserCssMarkers(next.css)
-  return previousMarkers.size > nextMarkers.size
-    && [...nextMarkers].every(marker => previousMarkers.has(marker))
+  return next.processed === true && previous.processed === false
 }
 
 function normalizeIgnoredList(ignored: WebpackWatchOptions['ignored']): WebpackWatchIgnoredItem[] {
