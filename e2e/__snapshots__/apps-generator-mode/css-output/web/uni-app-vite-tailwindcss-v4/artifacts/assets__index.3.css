@@ -290,12 +290,10 @@
   .flex {
     display: flex;
   }
- /*tokens: aspect-(--my-aspect-ratio) <= src/pages/index/index.vue */
-  .aspect-_p--my-aspect-ratio_P {
+  .aspect-\(--my-aspect-ratio\) {
     aspect-ratio: var(--my-aspect-ratio);
   }
- /*tokens: aspect-[calc(4*3+1)/3] <= src/pages/index/index.vue */
-  .aspect-_bcalc_p4_x3_u1_P_f3_B {
+  .aspect-\[calc\(4\*3\+1\)\/3\] {
     aspect-ratio: calc(4 * 3 + 1) / 3;
   }
  /*tokens: h-12 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
@@ -310,8 +308,7 @@
   .h-20 {
     height: calc(var(--spacing) * 20);
   }
- /*tokens: h-[45px] <= src/pages/index/index.vue */
-  .h-_b45px_B {
+  .h-\[45px\] {
     height: 45px;
   }
  /*tokens: min-h-screen <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
@@ -330,8 +327,7 @@
   .w-32 {
     width: calc(var(--spacing) * 32);
   }
- /*tokens: w-[323px] <= src/pages/index/index.vue */
-  .w-_b323px_B {
+  .w-\[323px\] {
     width: 323px;
   }
  /*tokens: flex-1 <= src/pages-order/pages/user/user.vue */
@@ -449,14 +445,12 @@
       border-style: double;
     }
   }
- /*tokens: divide-[#41eb04] <= src/pages/index/index.vue */
-  .divide-_b_h41eb04_B {
+  .divide-\[\#41eb04\] {
     :where(& > :not(:last-child)) {
       border-color: #41eb04;
     }
   }
- /*tokens: divide-[#d80c0c] <= src/pages/index/index.vue */
-  .divide-_b_hd80c0c_B {
+  .divide-\[\#d80c0c\] {
     :where(& > :not(:last-child)) {
       border-color: #d80c0c;
     }
@@ -465,12 +459,10 @@
   .rounded {
     border-radius: 0.25rem;
   }
- /*tokens: rounded-[20rpx] <= src/components/HelloWorld.vue, src/main.css, src/pages/index/index.vue */
-  .rounded-_b20rpx_B {
+  .rounded-\[20rpx\] {
     border-radius: 0.625rem;
   }
- /*tokens: rounded-[28rpx] <= src/pages/index/index.vue */
-  .rounded-_b28rpx_B {
+  .rounded-\[28rpx\] {
     border-radius: 0.875rem;
   }
  /*tokens: rounded-full <= src/pages/index/index.vue */
@@ -504,30 +496,25 @@
     border-color: var(--color-slate-200);
   }
  /*tokens: border-slate-200/80 <= src/pages/index/index.vue */
-  .border-slate-200_f80 {
+  .border-slate-200\/80 {
     border-color: color-mix(in srgb, oklch(92.9% 0.013 255.508) 80%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--color-slate-200) 80%, transparent);
     }
   }
- /*tokens: !bg-[gray] <= src/pages/index/index.vue */
-  ._ebg-_bgray_B {
+  .\!bg-\[gray\] {
     background-color: gray !important;
   }
- /*tokens: bg-[#0000ff] <= src/pages/index/index.vue */
-  .bg-_b_h0000ff_B {
+  .bg-\[\#0000ff\] {
     background-color: #0000ff;
   }
- /*tokens: bg-[#68c828] <= src/pages/index/index.vue */
-  .bg-_b_h68c828_B {
+  .bg-\[\#68c828\] {
     background-color: #68c828;
   }
- /*tokens: bg-[#123498] <= src/pages/index/index.vue */
-  .bg-_b_h123498_B {
+  .bg-\[\#123498\] {
     background-color: #123498;
   }
- /*tokens: bg-[#f8fafc] <= src/components/HelloWorld.vue */
-  .bg-_b_hf8fafc_B {
+  .bg-\[\#f8fafc\] {
     background-color: #f8fafc;
   }
  /*tokens: bg-emerald-50 <= src/pages/index/index.vue */
@@ -547,7 +534,7 @@
     background-color: var(--color-emerald-600);
   }
  /*tokens: bg-green-200/70 <= src/pages/index/index.vue */
-  .bg-green-200_f70 {
+  .bg-green-200\/70 {
     background-color: color-mix(in srgb, oklch(92.5% 0.084 155.995) 70%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-green-200) 70%, transparent);
@@ -578,7 +565,7 @@
     background-color: var(--color-white);
   }
  /*tokens: bg-white/70 <= src/pages/index/index.vue */
-  .bg-white_f70 {
+  .bg-white\/70 {
     background-color: color-mix(in srgb, #fff 70%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-white) 70%, transparent);
@@ -589,12 +576,11 @@
     --tw-gradient-position: to bottom right in oklab;
     background-image: linear-gradient(var(--tw-gradient-stops));
   }
- /*tokens: bg-[radial-gradient(circle_at_18%_20%,#e0f2fe,#fdf4ff_70%)] <= src/pages/index/index.vue */
-  .bg-_bradial-gradient_pcircle_at_18_v_20_v_m_he0f2fe_m_hfdf4ff_70_v_P_B {
+  .bg-\[radial-gradient\(circle_at_18\%_20\%\,\#e0f2fe\,\#fdf4ff_70\%\)\] {
     background-image: radial-gradient(circle at 18% 20%, #e0f2fe, #fdf4ff 70%);
   }
  /*tokens: from-slate-900/95 <= src/pages/index/index.vue */
-  .from-slate-900_f95 {
+  .from-slate-900\/95 {
     --tw-gradient-from: color-mix(in srgb, oklch(20.8% 0.042 265.755) 95%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       --tw-gradient-from: color-mix(in oklab, var(--color-slate-900) 95%, transparent);
@@ -607,7 +593,7 @@
     );
   }
  /*tokens: to-slate-700/95 <= src/pages/index/index.vue */
-  .to-slate-700_f95 {
+  .to-slate-700\/95 {
     --tw-gradient-to: color-mix(in srgb, oklch(37.2% 0.044 257.287) 95%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       --tw-gradient-to: color-mix(in oklab, var(--color-slate-700) 95%, transparent);
@@ -643,8 +629,7 @@
   .px-4 {
     padding-inline: calc(var(--spacing) * 4);
   }
- /*tokens: px-[48px] <= src/pages/index/index.vue */
-  .px-_b48px_B {
+  .px-\[48px\] {
     padding-inline: 48px;
   }
  /*tokens: py-1 <= src/pages/index/index.vue */
@@ -663,8 +648,7 @@
   .py-6 {
     padding-block: calc(var(--spacing) * 6);
   }
- /*tokens: py-[24rpx] <= src/pages/index/index.vue */
-  .py-_b24rpx_B {
+  .py-\[24rpx\] {
     padding-block: 0.75rem;
   }
  /*tokens: pt-2 <= src/pages/index/index.vue */
@@ -696,29 +680,24 @@
     line-height: var(--tw-leading, var(--text-xl--line-height));
   }
  /*tokens: text-xs <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-  .text-xs {
-    font-size: var(--text-xs);
-    line-height: var(--tw-leading, var(--text-xs--line-height));
-  }
- /*tokens: text-[24rpx] <= src/pages/index/index.vue */
-  .text-_b24rpx_B {
-    font-size: 0.75rem;
-  }
- /*tokens: text-[26rpx] <= src/main.css, src/pages/index/index.vue */
-  .text-_b26rpx_B {
-    font-size: 0.8125rem;
-  }
- /*tokens: text-[45rpx] <= src/pages/index/index.vue */
-  .text-_b45rpx_B {
-    font-size: 1.40625rem;
-  }
- /*tokens: text-[100rpx] <= src/pages/index/index.vue */
-  .text-_b100rpx_B {
+  .text-\[100rpx\] {
     font-size: 3.125rem;
   }
- /*tokens: text-[102.43rpx] <= src/pages/index/index.vue */
-  .text-_b102_d43rpx_B {
+.text-\[102\.43rpx\] {
     font-size: 3.20094rem;
+  }
+.text-\[24rpx\] {
+    font-size: 0.75rem;
+  }
+.text-\[26rpx\] {
+    font-size: 0.8125rem;
+  }
+.text-\[45rpx\] {
+    font-size: 1.40625rem;
+  }
+.text-xs {
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
   }
  /*tokens: leading-5 <= src/pages/index/index.vue */
   .leading-5 {
@@ -749,37 +728,29 @@
   .break-all {
     word-break: break-all;
   }
- /*tokens: text-[#00f285] <= src/pages/index/index.vue */
-  .text-_b_h00f285_B {
-    color: #00f285;
-  }
- /*tokens: text-[#123456] <= src/pages/index/index.vue */
-  .text-_b_h123456_B {
-    color: #123456;
-  }
- /*tokens: text-[#929292] <= src/pages-order/pages/home/home.vue */
-  .text-_b_h929292_B {
-    color: #929292;
-  }
- /*tokens: text-[24rpx] <= src/pages/index/index.vue */
-  .text-_b24rpx_B {
-    font-size: 0.75rem;
-  }
- /*tokens: text-[26rpx] <= src/main.css, src/pages/index/index.vue */
-  .text-_b26rpx_B {
-    font-size: 0.8125rem;
-  }
- /*tokens: text-[45rpx] <= src/pages/index/index.vue */
-  .text-_b45rpx_B {
-    font-size: 1.40625rem;
-  }
- /*tokens: text-[100rpx] <= src/pages/index/index.vue */
-  .text-_b100rpx_B {
+  .text-\[100rpx\] {
     font-size: 3.125rem;
   }
- /*tokens: text-[102.43rpx] <= src/pages/index/index.vue */
-  .text-_b102_d43rpx_B {
+.text-\[102\.43rpx\] {
     font-size: 3.20094rem;
+  }
+.text-\[24rpx\] {
+    font-size: 0.75rem;
+  }
+.text-\[26rpx\] {
+    font-size: 0.8125rem;
+  }
+.text-\[45rpx\] {
+    font-size: 1.40625rem;
+  }
+.text-\[\#00f285\] {
+    color: #00f285;
+  }
+.text-\[\#123456\] {
+    color: #123456;
+  }
+.text-\[\#929292\] {
+    color: #929292;
   }
  /*tokens: text-emerald-600 <= src/pages-order/pages/user/user.vue */
   .text-emerald-600 {
@@ -842,8 +813,7 @@
       --tw-divide-x-reverse: 1;
     }
   }
- /*tokens: after:!content-['good_work!'] <= src/pages/index/index.vue */
-  .after_c_econtent-_b_agood_work_e_a_B {
+  .after\:\!content-\[\'good_work\!\'\] {
     &::after {
       content: var(--tw-content);
       --tw-content: 'good work!' !important;
@@ -851,31 +821,31 @@
     }
   }
  /*tokens: active:bg-emerald-50 <= src/pages-order/pages/user/user.vue */
-  .active_cbg-emerald-50 {
+  .active\:bg-emerald-50 {
     &:active {
       background-color: var(--color-emerald-50);
     }
   }
  /*tokens: active:bg-emerald-600 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
-  .active_cbg-emerald-600 {
+  .active\:bg-emerald-600 {
     &:active {
       background-color: var(--color-emerald-600);
     }
   }
  /*tokens: active:bg-emerald-700 <= src/pages/index/index.vue */
-  .active_cbg-emerald-700 {
+  .active\:bg-emerald-700 {
     &:active {
       background-color: var(--color-emerald-700);
     }
   }
  /*tokens: active:bg-slate-700 <= src/pages/index/index.vue */
-  .active_cbg-slate-700 {
+  .active\:bg-slate-700 {
     &:active {
       background-color: var(--color-slate-700);
     }
   }
  /*tokens: dark:bg-red-300 <= src/pages/index/index.vue */
-  .dark_cbg-red-300 {
+  .dark\:bg-red-300 {
  /*tokens: theme-dark <= src/pages/index/index.vue */
     &.theme-dark {
       background-color: var(--color-red-300);
@@ -885,7 +855,7 @@
     }
   }
  /*tokens: dark:bg-zinc-900 <= src/pages/index/index.vue */
-  .dark_cbg-zinc-900 {
+  .dark\:bg-zinc-900 {
  /*tokens: theme-dark <= src/pages/index/index.vue */
     &.theme-dark {
       background-color: var(--color-zinc-900);
@@ -895,7 +865,7 @@
     }
   }
  /*tokens: dark:bg-zinc-950 <= src/pages/index/index.vue */
-  .dark_cbg-zinc-950 {
+  .dark\:bg-zinc-950 {
  /*tokens: theme-dark <= src/pages/index/index.vue */
     &.theme-dark {
       background-color: var(--color-zinc-950);
@@ -905,7 +875,7 @@
     }
   }
  /*tokens: dark:text-zinc-50 <= src/pages/index/index.vue */
-  .dark_ctext-zinc-50 {
+  .dark\:text-zinc-50 {
  /*tokens: theme-dark <= src/pages/index/index.vue */
     &.theme-dark {
       color: var(--color-zinc-50);
@@ -915,23 +885,23 @@
     }
   }
  /*tokens: system-dark:bg-slate-900 <= src/pages/index/index.vue */
-  .system-dark_cbg-slate-900 {
+  .system-dark\:bg-slate-900 {
     @media (prefers-color-scheme: dark) {
       background-color: var(--color-slate-900);
     }
   }
  /*tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
-  .system-dark_ctext-slate-100 {
+  .system-dark\:text-slate-100 {
     @media (prefers-color-scheme: dark) {
       color: var(--color-slate-100);
     }
   }
  /*tokens: not-wx:bg-red-500 <= src/pages/index/index.vue */
-  .not-wx_cbg-red-500 {
+  .not-wx\:bg-red-500 {
     background-color: var(--color-red-500);
   }
  /*tokens: any-hover:bg-slate-800 <= src/pages/index/index.vue */
-  .any-hover_cbg-slate-800 {
+  .any-hover\:bg-slate-800 {
     @media (any-hover: hover) {
       &:hover {
         background-color: var(--color-slate-800);

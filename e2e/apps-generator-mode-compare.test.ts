@@ -69,6 +69,9 @@ const USER_IMPORTED_UI_CSS_MARKERS = [
   '@keyframes weappTwUserUiRotation',
   '@keyframes weappTwUserUiBreathe',
 ] as const
+const APP_STYLE_COMPARE_PROJECT_NAMES = new Set([
+  'uni-app-vite-tailwindcss-v4',
+])
 
 function filterCompareProjects(projects: CompareProject[]) {
   const filter = process.env['E2E_PROJECT_FILTER']
@@ -105,6 +108,7 @@ const miniProgramProjects = E2E_PROJECTS
 const projects: CompareProject[] = filterCompareProjects([
   ...miniProgramProjects,
   ...miniProgramProjects.flatMap(createH5CompareProjects),
+  ...miniProgramProjects.flatMap(createAppCompareProjects),
 ])
 const projectFilterEnabled = Boolean(process.env['E2E_PROJECT_FILTER'])
 
@@ -303,6 +307,32 @@ function createH5CompareProject(project: CompareProject, options: {
     platform: options.platform,
     buildScript: 'build:h5',
     buildEnv: options.buildEnv,
+    cssSnapshotMode: 'directory',
+    cssPattern: WEB_CSS_PATTERN,
+    requiredCssFiles: [],
+  }
+}
+
+function createAppCompareProjects(project: CompareProject): CompareProject[] {
+  if (!APP_STYLE_COMPARE_PROJECT_NAMES.has(project.name)) {
+    return []
+  }
+  return ['app-android', 'app-ios']
+    .filter(platform => project.allowedPlatforms.includes(platform))
+    .map(platform => createAppCompareProject(project, platform))
+}
+
+function createAppCompareProject(project: CompareProject, platform: string): CompareProject {
+  const cssPath = 'dist/build/app'
+  return {
+    ...project,
+    platform,
+    buildScript: 'build:app',
+    buildEnv: {
+      UNI_UTS_PLATFORM: platform,
+    },
+    cssPath,
+    cssFile: path.join(project.rootDir, cssPath),
     cssSnapshotMode: 'directory',
     cssPattern: WEB_CSS_PATTERN,
     requiredCssFiles: [],
@@ -605,8 +635,16 @@ function isH5WebProject(project: CompareProject) {
   return project.cssSnapshotMode === 'directory' && (project.platform === 'web' || project.platform === 'web-compact')
 }
 
+function isAppStyleProject(project: CompareProject) {
+  return project.cssSnapshotMode === 'directory' && (project.platform === 'app-android' || project.platform === 'app-ios')
+}
+
+function isWebStyleDirectoryProject(project: CompareProject) {
+  return isH5WebProject(project) || isAppStyleProject(project)
+}
+
 function isMiniProgramProject(project: CompareProject) {
-  return !isH5WebProject(project)
+  return !isWebStyleDirectoryProject(project)
 }
 
 function expectWeappViteTailwindV4CssIsolation(project: CompareProject, generatorResult: GeneratorBuildResult) {
@@ -751,8 +789,8 @@ function expectNoMiniProgramSpecificityPlaceholders(project: CompareProject, gen
   ).not.toMatch(/:not\(#(?:\\#|n)\)/)
 }
 
-function expectH5WebCss(project: CompareProject, generatorResult: GeneratorBuildResult) {
-  if (!isH5WebProject(project)) {
+function expectWebStyleDirectoryCss(project: CompareProject, generatorResult: GeneratorBuildResult) {
+  if (!isWebStyleDirectoryProject(project)) {
     return
   }
   expect(generatorResult.cssFiles.length, `${project.name} ${project.platform} should emit css files`).toBeGreaterThan(0)
@@ -1121,7 +1159,7 @@ describe('demo generator mode output', () => {
     ])
   })
 
-  it('builds retained demos with generator mini-program and H5 web css output', async () => {
+  it('builds retained demos with generator mini-program, H5 web, and App style css output', async () => {
     const report: AppsGeneratorCompareReportItem[] = []
 
     for (const project of projects) {
@@ -1156,7 +1194,7 @@ describe('demo generator mode output', () => {
           expectWeappViteAppCssInlined(project, generatorResult)
           expectUserImportedUiCssMarkers(project, generatorResult)
         }
-        expectH5WebCss(project, generatorResult)
+        expectWebStyleDirectoryCss(project, generatorResult)
         await expectCssOutputSnapshot(project, generatorResult)
       }
     }

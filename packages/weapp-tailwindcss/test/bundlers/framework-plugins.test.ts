@@ -93,7 +93,6 @@ describe('framework plugin composition profiles', () => {
     expect(sharedSource).not.toContain('transformWebCssSafeSelectors')
     expect(generateBundleSource).not.toContain('transformWebCssSafeSelectors')
     expect(uniAppSource).toContain('uniAppCssPipelineStrategy')
-    expect(uniAppSource).toContain('isUniAppH5StylePlatform')
     expect(uniAppSource).toContain('transformWebCssSafeSelectors')
     expect(uniAppSource).toContain('needEscaped: true')
     expect(uniAppSource).toContain('shouldApplyFinalWebviewCssCompat')

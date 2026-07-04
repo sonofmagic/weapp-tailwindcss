@@ -8913,7 +8913,7 @@ const trace = "at App.vue:4"
     expect(styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
-  it('applies uni-app H5 web safe selectors and js escaping inside the uni-app Vite strategy', async () => {
+  it('keeps uni-app H5 web css and js raw while App WebView owns safe transforms', async () => {
     const rawClass = 'bg-[#0000ff]'
     const safeClass = replaceWxml(rawClass)
     const runtimeSet = new Set([rawClass])
@@ -9002,10 +9002,10 @@ const trace = "at App.vue:4"
 
     const cssSource = (bundle['assets/index.css'] as OutputAsset).source.toString()
     const jsSource = (bundle['assets/index.js'] as OutputChunk).code
-    expect(cssSource).toContain(`.${safeClass}`)
-    expect(cssSource).not.toContain('.bg-\\[\\#0000ff\\]')
-    expect(jsSource).toContain(safeClass)
-    expect(jsSource).not.toContain(rawClass)
+    expect(cssSource).toContain('.bg-\\[\\#0000ff\\]')
+    expect(cssSource).not.toContain(`.${safeClass}`)
+    expect(jsSource).toContain(rawClass)
+    expect(jsSource).not.toContain(safeClass)
   }, TEST_TIMEOUT_MS)
 
   it('generates raw Tailwind v4 directives for Vite build web css', async () => {
