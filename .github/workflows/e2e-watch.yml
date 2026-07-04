@@ -59,6 +59,46 @@ jobs:
             watch_command_timeout_ms: '1500000'
           - os: macos-latest
             runner_label: macos
+            watch_case: demo-core
+            round_profile: default
+            watch_save_snapshots: '1'
+            timeout_minutes: 55
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '40'
+            watch_max_plugin_process_ms: '60000'
+            watch_command_timeout_ms: '2400000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: demo-taro-react
+            round_profile: default
+            watch_save_snapshots: '1'
+            timeout_minutes: 70
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '40'
+            watch_max_plugin_process_ms: '60000'
+            watch_command_timeout_ms: '3300000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: demo-taro-vue3
+            round_profile: default
+            watch_save_snapshots: '1'
+            timeout_minutes: 75
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '40'
+            watch_max_plugin_process_ms: '60000'
+            watch_command_timeout_ms: '3600000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: demo-uni
+            round_profile: default
+            watch_save_snapshots: '1'
+            timeout_minutes: 45
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '40'
+            watch_max_plugin_process_ms: '60000'
+            watch_command_timeout_ms: '1800000'
+          - os: macos-latest
+            runner_label: macos
             watch_case: taro-vite-react-tailwindcss-v4
             round_profile: default
             watch_save_snapshots: '1'
@@ -81,6 +121,28 @@ jobs:
             runner_label: macos
             watch_case: taro-vite-react-tailwindcss-v4:alipay
             artifact_case: taro-vite-react-tailwindcss-v4-alipay
+            round_profile: default
+            watch_save_snapshots: '1'
+            timeout_minutes: 55
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '40'
+            watch_max_plugin_process_ms: '9000'
+            watch_command_timeout_ms: '1500000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: taro-vite-react-tailwindcss-v4:tt
+            artifact_case: taro-vite-react-tailwindcss-v4-tt
+            round_profile: default
+            watch_save_snapshots: '1'
+            timeout_minutes: 55
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '40'
+            watch_max_plugin_process_ms: '9000'
+            watch_command_timeout_ms: '1500000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: taro-vite-vue3-tailwindcss-v4:alipay
+            artifact_case: taro-vite-vue3-tailwindcss-v4-alipay
             round_profile: default
             watch_save_snapshots: '1'
             timeout_minutes: 55
@@ -114,6 +176,28 @@ jobs:
             runner_label: macos
             watch_case: uni-app-vite-tailwindcss-v4:mp-alipay
             artifact_case: uni-app-vite-tailwindcss-v4-mp-alipay
+            round_profile: default
+            watch_save_snapshots: '1'
+            timeout_minutes: 60
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '40'
+            watch_max_plugin_process_ms: '9000'
+            watch_command_timeout_ms: '1500000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: uni-app-vite-tailwindcss-v4:mp-qq
+            artifact_case: uni-app-vite-tailwindcss-v4-mp-qq
+            round_profile: default
+            watch_save_snapshots: '1'
+            timeout_minutes: 60
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '40'
+            watch_max_plugin_process_ms: '9000'
+            watch_command_timeout_ms: '1500000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: uni-app-vite-tailwindcss-v4:mp-toutiao
+            artifact_case: uni-app-vite-tailwindcss-v4-mp-toutiao
             round_profile: default
             watch_save_snapshots: '1'
             timeout_minutes: 60

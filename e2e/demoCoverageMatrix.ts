@@ -141,7 +141,15 @@ function mpxPlatforms(name: string): DemoPlatformCoverage[] {
         ? `E2E_PROJECT_FILTER=${name} pnpm e2e:static && E2E_HOT_UPDATE_CASE_NAME=${name} pnpm e2e:hot-update:demo`
         : `E2E_MULTIPLATFORM_BUILD_CASE="${name} ${platform}" pnpm e2e:multiplatform-build`,
     }
-    return automated(platform, platform === 'wx' ? { ...base, devScript: 'dev' } : base)
+    if (platform === 'wx') {
+      return automated(platform, { ...base, devScript: 'dev' })
+    }
+    return local(platform, {
+      ...base,
+      reason: 'Mpx demo 当前只有 wx serve 开发脚本；其它 mode 通过多平台构建产物断言覆盖。',
+      staticCoverage: 'automated',
+      hmrCoverage: 'exempt',
+    })
   })
 }
 
@@ -153,8 +161,16 @@ function taroPlatforms(name: string, platforms: string[]): DemoPlatformCoverage[
       return automated(platform, {
         buildScript,
         devScript,
-        evidence: 'e2e static project test + watch-hmr case',
-        command: `E2E_PROJECT_FILTER=${name} pnpm e2e:static && E2E_HOT_UPDATE_CASE_NAME=${name} pnpm e2e:hot-update:demo`,
+        evidence: 'watch-HMR mini-program case + IDE visual HMR',
+        command: `E2E_WATCH_CASE=${name} pnpm e2e:watch && E2E_PROJECT_FILTER=${name} pnpm e2e:ide:visual`,
+      })
+    }
+    if (platform === 'alipay' || platform === 'tt') {
+      return automated(platform, {
+        buildScript,
+        devScript,
+        evidence: 'watch-HMR mini-program platform case',
+        command: `E2E_WATCH_CASE=${name}:${platform} pnpm e2e:watch`,
       })
     }
     if (platform === 'h5') {
@@ -169,9 +185,10 @@ function taroPlatforms(name: string, platforms: string[]): DemoPlatformCoverage[
       buildScript,
       devScript,
       evidence: 'multiplatform target matrix',
-      command: demoCommand(name, buildScript),
-      reason: 'Taro 非 weapp 目标已登记为全平台本地候选；默认 CI 只对稳定目标做专项产物断言。',
-      hmrCoverage: 'exempt',
+      command: demoCommand(name, devScript),
+      reason: 'Taro 该目标有开发脚本，但 watch-HMR 产物断言尚未建成稳定 CI case；默认 CI 先覆盖构建产物。',
+      staticCoverage: 'automated',
+      hmrCoverage: 'local',
     })
   })
 }
@@ -208,12 +225,20 @@ function uniAppPlatforms(name: string, platforms: string[]): DemoPlatformCoverag
   return platforms.map((platform) => {
     const buildScript = `build:${platform}`
     const devScript = `dev:${platform}`
-    if (platform === 'mp-weixin') {
+    if (platform === 'mp-weixin' || platform === 'mp-alipay' || platform === 'mp-qq' || platform === 'mp-toutiao') {
       return automated(platform, {
         buildScript,
         devScript,
-        evidence: 'e2e static project test + watch-hmr case',
-        command: `E2E_PROJECT_FILTER=${name} pnpm e2e:static && E2E_HOT_UPDATE_CASE_NAME=${name} pnpm e2e:hot-update:demo`,
+        evidence: 'watch-HMR mini-program platform case',
+        command: `E2E_WATCH_CASE=${name}:${platform} pnpm e2e:watch`,
+      })
+    }
+    if (platform === 'h5') {
+      return automated(platform, {
+        buildScript,
+        devScript,
+        evidence: 'uni-app H5 browser source HMR',
+        command: `E2E_WATCH_CASE=${name} E2E_WATCH_WEB_ONLY=1 pnpm e2e:watch`,
       })
     }
     if (platform === 'app-android' || platform === 'app-ios') {
@@ -227,11 +252,14 @@ function uniAppPlatforms(name: string, platforms: string[]): DemoPlatformCoverag
           : 'iOS 调试依赖 macOS Simulator 与 HBuilderX。',
       })
     }
-    return automated(platform, {
+    return local(platform, {
       buildScript,
       devScript,
       evidence: 'multiplatform build output',
       command: `E2E_MULTIPLATFORM_BUILD_CASE="${name} ${platform}" pnpm e2e:multiplatform-build`,
+      staticCoverage: 'automated',
+      hmrCoverage: 'local',
+      reason: '该 uni-app 目标有 dev 脚本，但普通 CI 当前只执行构建产物断言；开发态 HMR 需用本地目标链路补跑。',
     })
   })
 }

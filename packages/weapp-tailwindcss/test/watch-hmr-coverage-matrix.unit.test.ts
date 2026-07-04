@@ -1,11 +1,12 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { parse } from 'yaml'
 import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_COVERED_PROJECTS } from '../../../e2e/e2eMatrix'
 import { getFrameworkIdeCases, getFrameworkIdeExemptCases } from '../../../e2e/frameworkSupportMatrix'
 import { shouldRequireIdeLivePageVisibility } from '../../../e2e/frameworkIdeClassHotUpdate'
 import { frameworkIdeWatchCaseNames } from '../../../e2e/frameworkIdeHotUpdate'
-import { buildCases, getBaseWatchCaseName } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import { buildCases, demoWatchShardCases, getBaseWatchCaseName } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { buildDemoBaseCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
 import { buildDemoExtendedCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
 import { createStyleMutationPayload } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/shared'
@@ -31,6 +32,7 @@ const defaultWatchCoveredCaseNames = new Set(automatedWatchCases.map(item => ite
 const automatedWatchCasesByName = new Map(automatedWatchCases.map(item => [item.name, item]))
 const ideWatchCasesByName = new Map(ideWatchCases.map(item => [item.name, item]))
 const repoRoot = join(import.meta.dirname, '../../..')
+const workflowRoot = join(repoRoot, '.github/workflows')
 const demoPackageProjects = readdirSync(join(repoRoot, 'demo'), { withFileTypes: true })
   .filter(item => item.isDirectory())
   .map(item => item.name)
@@ -86,6 +88,48 @@ const templateCarrierPayload = {
 
 function toRealRepoPath(sourceFile: string) {
   return toRepoPath(sourceFile).replace('/repo/', `${toSlashPath(repoRoot)}/`)
+}
+
+function readWorkflowMatrixRows(filename: string, jobName: string): Array<Record<string, unknown>> {
+  const workflow = parse(readFileSync(join(workflowRoot, filename), 'utf8')) as {
+    jobs: Record<string, {
+      strategy?: {
+        matrix?: {
+          include?: Array<Record<string, unknown>>
+        }
+      }
+    }>
+  }
+  return workflow.jobs[jobName]?.strategy?.matrix?.include ?? []
+}
+
+function getWorkflowWatchCases(filename: string, jobName: string) {
+  return readWorkflowMatrixRows(filename, jobName)
+    .map(row => row.watch_case)
+    .filter((item): item is string => typeof item === 'string')
+}
+
+function expandWorkflowWatchCases(watchCases: string[]) {
+  const expanded = new Set<string>()
+  for (const watchCase of watchCases) {
+    const shardCases = demoWatchShardCases[watchCase as keyof typeof demoWatchShardCases]
+    if (shardCases) {
+      for (const shardCase of shardCases) {
+        expanded.add(shardCase)
+      }
+      continue
+    }
+    expanded.add(watchCase)
+  }
+  return expanded
+}
+
+function isWatchCaseCoveredByWorkflow(watchCaseName: string, workflowCases: Set<string>) {
+  if (workflowCases.has(watchCaseName)) {
+    return true
+  }
+  const baseName = getBaseWatchCaseName(watchCaseName)
+  return Boolean(baseName && watchCaseName.endsWith(':weapp') && workflowCases.has(baseName))
 }
 
 function expectTemplateCarrierMutation(
@@ -193,6 +237,39 @@ describe('watch-hmr coverage matrix', () => {
         expect(watchCase.contentMutation.verifyClassLiteralIn).toContain(expectedCarrier)
       }
     }
+  })
+
+  it('keeps PR e2e-watch covering every CI-stable demo development HMR surface', () => {
+    const rawWatchCases = getWorkflowWatchCases('e2e-watch.yml', 'pr-quick-gate')
+    const workflowCases = expandWorkflowWatchCases(rawWatchCases)
+    const missing = [...watchCoveredCaseNames]
+      .filter(name => !isWatchCaseCoveredByWorkflow(name, workflowCases))
+      .sort()
+
+    expect(rawWatchCases).toEqual(expect.arrayContaining([
+      'demo-core',
+      'demo-taro-react',
+      'demo-taro-vue3',
+      'demo-uni',
+      'taro-vite-react-tailwindcss-v4:alipay',
+      'taro-vite-react-tailwindcss-v4:tt',
+      'taro-vite-vue3-tailwindcss-v4:alipay',
+      'taro-vite-vue3-tailwindcss-v4:tt',
+      'uni-app-vite-tailwindcss-v4:mp-weixin',
+      'uni-app-vite-tailwindcss-v4:mp-alipay',
+      'uni-app-vite-tailwindcss-v4:mp-qq',
+      'uni-app-vite-tailwindcss-v4:mp-toutiao',
+    ]))
+    expect(missing).toEqual([])
+  })
+
+  it('keeps nightly e2e-watch covering the full automated development HMR matrix', () => {
+    const workflowCases = expandWorkflowWatchCases(getWorkflowWatchCases('e2e-watch.yml', 'nightly-full-regression'))
+    const missing = [...watchCoveredCaseNames]
+      .filter(name => !workflowCases.has(name))
+      .sort()
+
+    expect(missing).toEqual([])
   })
 
   it('keeps continuous main-style HMR guards on template carriers', () => {
