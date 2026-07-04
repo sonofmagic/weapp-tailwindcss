@@ -124,6 +124,7 @@
       "app.wxss",
       "styles/app.wxss",
       "styles/third-party-ui.wxss",
+      "pages/component/index.wxss",
       "sub-independent/pages/index.wxss",
       "sub-independent/styles/index.1.wxss",
       "sub-independent/styles/index.2.wxss",
@@ -133,7 +134,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 27443,
+      "bytes": 49414,
       "selectors": [
         ".-mt-2",
         "._2xl_ctext-base",
@@ -176,6 +177,7 @@
         ".border-slate-200_f80",
         ".border-solid",
         ".border-t-_b4px_B",
+        ".component-page",
         ".dark_cbg-green-500.theme-dark",
         ".dark_cbg-zinc-800.theme-dark",
         ".dark_cbg-zinc-900.theme-dark",
