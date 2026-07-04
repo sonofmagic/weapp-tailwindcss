@@ -3,10 +3,10 @@
 exports[`all > common important handle 1`] = `
 "
     view,text,::before,::after {
+      border: 0 solid;
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      border: 0 solid;
       --tw-border-spacing-x: 0;
       --tw-border-spacing-y: 0;
       --tw-translate-x: 0;
@@ -86,7 +86,6 @@ exports[`all > common important handle 1`] = `
       --tw-contain-layout: initial;
       --tw-contain-paint: initial;
       --tw-contain-style: initial;
-      --tw-content: "";
     }
 view,text,::after,::before {
     box-sizing: border-box;
@@ -4294,5 +4293,87 @@ view,text,::after,::before {
       }
 .app .ring-inset {
       --tw-ring-inset: inset;
-    }"
+    }
+:host,page,.tw-root,wx-root-portal-content {
+      --tw-border-spacing-x: 0;
+      --tw-border-spacing-y: 0;
+      --tw-translate-x: 0;
+      --tw-translate-y: 0;
+      --tw-translate-z: 0;
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-scale-z: 1;
+      --tw-rotate-x: ;
+      --tw-rotate-y: ;
+      --tw-rotate-z: ;
+      --tw-skew-x: ;
+      --tw-skew-y: ;
+      --tw-pan-x: ;
+      --tw-pan-y: ;
+      --tw-pinch-zoom: ;
+      --tw-scroll-snap-strictness: proximity;
+      --tw-space-x-reverse: 0;
+      --tw-space-y-reverse: 0;
+      --tw-border-style: solid;
+      --tw-divide-x-reverse: 0;
+      --tw-divide-y-reverse: 0;
+      --tw-gradient-position: initial;
+      --tw-gradient-from: #0000;
+      --tw-gradient-via: #0000;
+      --tw-gradient-to: #0000;
+      --tw-gradient-stops: initial;
+      --tw-gradient-from-position: 0%;
+      --tw-gradient-via-position: 50%;
+      --tw-gradient-to-position: 100%;
+      --tw-blur: ;
+      --tw-brightness: ;
+      --tw-contrast: ;
+      --tw-grayscale: ;
+      --tw-hue-rotate: ;
+      --tw-invert: ;
+      --tw-opacity: ;
+      --tw-saturate: ;
+      --tw-sepia: ;
+      --tw-drop-shadow: ;
+      --tw-drop-shadow-color: ;
+      --tw-drop-shadow-alpha: 100%;
+      --tw-drop-shadow-size: ;
+      --tw-backdrop-blur: ;
+      --tw-backdrop-brightness: ;
+      --tw-backdrop-contrast: ;
+      --tw-backdrop-grayscale: ;
+      --tw-backdrop-hue-rotate: ;
+      --tw-backdrop-invert: ;
+      --tw-backdrop-opacity: ;
+      --tw-backdrop-saturate: ;
+      --tw-backdrop-sepia: ;
+      --tw-duration: initial;
+      --tw-ease: initial;
+      --tw-content: "";
+      --tw-contain-size: ;
+      --tw-contain-layout: ;
+      --tw-contain-paint: ;
+      --tw-contain-style: ;
+      --tw-leading: ;
+      --tw-ordinal: ;
+      --tw-slashed-zero: ;
+      --tw-numeric-figure: ;
+      --tw-numeric-spacing: ;
+      --tw-numeric-fraction: ;
+      --tw-outline-style: solid;
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-color: initial;
+      --tw-shadow-alpha: 100%;
+      --tw-inset-shadow: 0 0 #0000;
+      --tw-inset-shadow-color: initial;
+      --tw-inset-shadow-alpha: 100%;
+      --tw-ring-color: ;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-inset-ring-color: ;
+      --tw-inset-ring-shadow: 0 0 #0000;
+      --tw-ring-inset: ;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-offset-shadow: 0 0 #0000;
+}"
 `;

@@ -1156,7 +1156,11 @@ export function createViteFrameworkPlugins(
             return []
           }
           sendSupplementalCssHotUpdates(ctx, cssModules)
-          if (isWebLikeHotUpdate && isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)) {
+          if (
+            isWebLikeHotUpdate
+            && isSourceCandidateHotUpdate
+            && !isSourceStyleRequest(ctx.file)
+          ) {
             return undefined
           }
           if (isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file) && cssModules.length > 0) {

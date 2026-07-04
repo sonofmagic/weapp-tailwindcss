@@ -924,7 +924,7 @@ function removeCoveredInjectedSourceAssets(
       if (candidateIsRootWebStyle && !targetIsRootWebStyle) {
         continue
       }
-      if (candidateIsRootWebStyle && !isRecordFile) {
+      if (candidateIsRootWebStyle && !isRecordFile && !isProcessedSource) {
         continue
       }
       if (candidateIsRootWebStyle) {

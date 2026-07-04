@@ -2,12 +2,14 @@
 
 exports[`gulp > common build > css 1`] = `
 "view,text,::after,::before {
+      border: 0 solid;
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      border: 0 solid;
-      --tw-border-style: solid;
     }
+:host,page,.tw-root,wx-root-portal-content {
+      --tw-border-style: solid;
+}
 .m-_b20px_B {
   margin: 20px;
 }

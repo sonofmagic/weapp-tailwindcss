@@ -56,10 +56,10 @@ exports[`vite test > vite common build 2`] = `
 text,
 ::after,
 ::before {
+  border: 0 solid;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border: 0 solid;
 }
 :host,
 page,
@@ -156,10 +156,10 @@ exports[`vite test > vite common build twice for cache 2`] = `
 text,
 ::after,
 ::before {
+  border: 0 solid;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border: 0 solid;
 }
 :host,
 page,
@@ -256,10 +256,10 @@ exports[`vite test > vite common build twice for cache 5`] = `
 text,
 ::after,
 ::before {
+  border: 0 solid;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border: 0 solid;
 }
 :host,
 page,
@@ -356,10 +356,10 @@ exports[`vite test > vite common build with rem2rpx 2`] = `
 text,
 ::after,
 ::before {
+  border: 0 solid;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border: 0 solid;
 }
 :host,
 page,

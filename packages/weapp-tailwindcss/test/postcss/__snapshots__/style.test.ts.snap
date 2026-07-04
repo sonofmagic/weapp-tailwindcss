@@ -20,7 +20,7 @@ exports[`styleHandler > :hover remove case 1 1`] = `".b{color:red;}"`;
 exports[`styleHandler > :hover remove case 1 revert 1`] = `".b,.a:hover{color:red;}"`;
 
 exports[`styleHandler > add postcss plugins case 0 1`] = `
-"/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */
+"/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
 page,.tw-root,wx-root-portal-content,:host {
   --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -296,10 +296,10 @@ exports[`styleHandler > global variables scope matched case 1`] = `"::before,::a
 
 exports[`styleHandler > guess css var scoped 1`] = `
 "view,text,::before,::after {
+      border: 0 solid;
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      border: 0 solid;
       --tw-border-spacing-x: 0;
       --tw-border-spacing-y: 0;
       --tw-translate-x: 0;
@@ -369,10 +369,10 @@ exports[`styleHandler > injectAdditionalCssVarScope option true isMainChunk fals
 
 exports[`styleHandler > main chunk build error 1`] = `
 "view,text,::before,::after {
+  border: 0 solid;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border: 0 solid;
   --tw-translate-x: 0;
   --tw-translate-y: 0;
   --tw-rotate: 0;
@@ -603,15 +603,15 @@ exports[`styleHandler > remove zero selector 1`] = `".b,.a:hover{color:red;}"`;
 
 exports[`styleHandler > tailwindcss v2 jit should append view selector 1`] = `"::before,::after{--tw-border-opacity: 1;}"`;
 
-exports[`styleHandler > use with weapp-pandacss case 0  1`] = `"view,text,::before,::after{box-sizing: border-box;margin: 0;padding: 0;border: 0 solid;--tw-border-opacity: 1;}"`;
+exports[`styleHandler > use with weapp-pandacss case 0  1`] = `"view,text,::before,::after{border: 0 solid;box-sizing: border-box;margin: 0;padding: 0;--tw-border-opacity: 1;}"`;
 
-exports[`styleHandler > use with weapp-pandacss case 1  1`] = `"view,text,::before,::after{box-sizing: border-box;margin: 0;padding: 0;border: 0 solid;--tw-border-opacity: 1;}"`;
+exports[`styleHandler > use with weapp-pandacss case 1  1`] = `"view,text,::before,::after{border: 0 solid;box-sizing: border-box;margin: 0;padding: 0;--tw-border-opacity: 1;}"`;
 
-exports[`styleHandler > use with weapp-pandacss case 2  1`] = `"view,text,::before,::after{box-sizing: border-box;margin: 0;padding: 0;border: 0 solid;--tw-border-opacity: 1;}"`;
+exports[`styleHandler > use with weapp-pandacss case 2  1`] = `"view,text,::before,::after{border: 0 solid;box-sizing: border-box;margin: 0;padding: 0;--tw-border-opacity: 1;}"`;
 
-exports[`styleHandler > use with weapp-pandacss case 2.1  1`] = `"view,text,::before,::after{box-sizing: border-box;margin: 0;padding: 0;border: 0 solid;--tw-border-opacity: 1;}"`;
+exports[`styleHandler > use with weapp-pandacss case 2.1  1`] = `"view,text,::before,::after{border: 0 solid;box-sizing: border-box;margin: 0;padding: 0;--tw-border-opacity: 1;}"`;
 
-exports[`styleHandler > use with weapp-pandacss case 3  1`] = `"view,text,::before,::after{box-sizing: border-box;margin: 0;padding: 0;border: 0 solid;--tw-border-opacity: 1;}"`;
+exports[`styleHandler > use with weapp-pandacss case 3  1`] = `"view,text,::before,::after{border: 0 solid;box-sizing: border-box;margin: 0;padding: 0;--tw-border-opacity: 1;}"`;
 
 exports[`styleHandler > use with weapp-pandacss case 4  1`] = `".space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text{--tw-border-opacity: 1;}"`;
 

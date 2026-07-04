@@ -191,10 +191,10 @@ exports[`tailwind complex syntax output > generates wxss selectors for complex s
 exports[`tailwind complex syntax output > generates wxss selectors for complex syntax corpus > wxss 1`] = `
 "
     view,text,::before,::after {
+      border: 0 solid;
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      border: 0 solid;
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -278,5 +278,22 @@ view,text,::after,::before {
 ._b_tsupports_pdisplay_cgrid_P_B_cgrid {
     display: grid;
 }
-  }"
+  }
+:host,page,.tw-root,wx-root-portal-content {
+      --tw-content: "";
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-color: initial;
+      --tw-shadow-alpha: 100%;
+      --tw-inset-shadow: 0 0 #0000;
+      --tw-inset-shadow-color: initial;
+      --tw-inset-shadow-alpha: 100%;
+      --tw-ring-color: ;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-inset-ring-color: ;
+      --tw-inset-ring-shadow: 0 0 #0000;
+      --tw-ring-inset: ;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-offset-shadow: 0 0 #0000;
+}"
 `;

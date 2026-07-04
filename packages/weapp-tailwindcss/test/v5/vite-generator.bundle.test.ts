@@ -2015,9 +2015,7 @@ describe('v5 vite generator bundle', () => {
 
     expect(invalidateModule).toHaveBeenCalledWith(cssModule)
     expect(invalidateModule).not.toHaveBeenCalledWith(vueMainModule)
-    expect(hotModules).toContain(pageModule)
-    expect(hotModules).toContain(cssModule)
-    expect(hotModules).not.toContain(vueMainModule)
+    expect(hotModules).toBeUndefined()
 
     await cssTransform?.call(
       rewritePlugin,
