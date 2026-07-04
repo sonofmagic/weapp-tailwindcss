@@ -13,6 +13,7 @@ export { ensureProjectBuilt } from './projectBuild'
 
 const EPERM_RE = /EPERM/i
 const automator = new Launcher()
+const cleanedProjectSnapshotDirs = new Set<string>()
 
 interface ProjectTestOptions {
   suite: string
@@ -58,6 +59,24 @@ async function safeRm(target: string) {
       throw error
     }
   }
+}
+
+function isUpdatingSnapshots() {
+  return expect.getState().snapshotState?.snapshotUpdateState === 'all'
+}
+
+async function clearProjectSnapshotDirOnUpdate(suite: string, projectName: string) {
+  if (!isUpdatingSnapshots()) {
+    return
+  }
+
+  const snapshotDir = path.resolve(__dirname, '__snapshots__', suite, projectName)
+  if (cleanedProjectSnapshotDirs.has(snapshotDir)) {
+    return
+  }
+
+  cleanedProjectSnapshotDirs.add(snapshotDir)
+  await safeRm(snapshotDir)
 }
 
 async function clearTailwindPatchCaches(root: string, options: { includeBuildOutputs?: boolean } = {}) {
@@ -272,6 +291,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   const shouldResetPatchCaches = !entry.name.startsWith('taro-')
 
   await clearProjectBuildState(root)
+  await clearProjectSnapshotDirOnUpdate(options.suite, entry.name)
 
   await twPatch(root)
 

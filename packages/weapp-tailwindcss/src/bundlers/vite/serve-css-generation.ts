@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite'
 import { vitePluginName } from '@/constants'
-import { hasTailwindRootDirectives } from '../shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { isSourceStyleRequest } from '../shared/style-requests'
 
 const SPECIAL_QUERY_RE = /[?&](?:worker|sharedworker|raw|url)\b/
@@ -72,6 +72,16 @@ function isViteCssHmrModule(code: string, id: string, command: string | undefine
     && /[?&](?:direct|vue)(?:&|$)/.test(id)
 }
 
+function hasViteServeCssGenerationDirective(code: string) {
+  return hasTailwindRootDirectives(code)
+    || hasTailwindSourceDirectives(code, { importFallback: true })
+    || hasTailwindApplyDirective(code)
+}
+
+function hasViteServeCssRootDirective(code: string) {
+  return hasTailwindRootDirectives(code)
+}
+
 export function createViteServeCssGenerationPlugins(options: ViteServeCssGenerationOptions): Plugin[] {
   return [{
     name: `${vitePluginName}:generate:serve`,
@@ -106,7 +116,12 @@ export function createViteServeCssGenerationPlugins(options: ViteServeCssGenerat
       if (!extracted) {
         return
       }
-      await options.onTailwindRootCss?.(id, extracted.css)
+      if (!hasViteServeCssGenerationDirective(extracted.css)) {
+        return
+      }
+      if (hasViteServeCssRootDirective(extracted.css)) {
+        await options.onTailwindRootCss?.(id, extracted.css)
+      }
       const generatedCss = await options.generateCss(id, extracted.css, this)
       if (generatedCss === undefined || generatedCss === extracted.css) {
         return

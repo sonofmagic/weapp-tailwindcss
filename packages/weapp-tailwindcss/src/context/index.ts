@@ -25,7 +25,8 @@ interface ClearTailwindcssRuntimeCacheOptions {
 function resolveContextCssPreflight(opts: UserDefinedOptions | undefined, ctx: InternalUserDefinedOptions, majorVersion: number | undefined): CssPreflightOptions {
   const userCssPreflight = opts?.cssOptions?.cssPreflight ?? opts?.cssPreflight
   const cssPreflight = resolveDefaultCssPreflight(userCssPreflight, majorVersion)
-  if (cssPreflight === false || !resolveUniAppXOptions(ctx.uniAppX).enabled) {
+  const shouldUseUniAppXPreflight = ctx.appType === 'uni-app-x' || resolveUniAppXOptions(ctx.uniAppX).enabled
+  if (cssPreflight === false || !shouldUseUniAppXPreflight) {
     return cssPreflight
   }
   const userCssPreflightObject = userCssPreflight && typeof userCssPreflight === 'object'

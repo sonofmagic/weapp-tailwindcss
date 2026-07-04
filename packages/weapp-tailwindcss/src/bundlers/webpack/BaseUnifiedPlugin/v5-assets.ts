@@ -15,6 +15,7 @@ import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '.
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives, isPureLocalCssImportWrapper } from '../../shared/generator-css'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, removeTailwindSourceDirectives } from '../../shared/generator-css/directives'
 import { removeGeneratedSelectorCompatCss } from '../../shared/generator-css/legacy-selectors'
+import { isCommentOnlyCss } from '../../shared/generator-css/user-css'
 import { emitHmrTiming } from '../../shared/hmr-timing'
 import { toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories, resolveTaskConcurrency } from '../../shared/run-tasks'
@@ -24,6 +25,7 @@ import { createScopedGeneratorRuntime } from '../../vite/generate-bundle/scoped-
 import { createCandidateSignature } from '../../vite/generate-bundle/signatures'
 import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
 import { collectStrictEscapedRuntimeCandidates, createEscapeFragments } from '../../vite/incremental-runtime-class-set/escaped-candidates'
+import { resolveTailwindV4EntriesFromCssCached } from '../../vite/source-scan'
 import { isWebpackCssLoaderRuntimeSource } from '../shared/css-loader-runtime'
 import { createAssetHashByChunkMap, createRuntimeAwareCssHash, createWebpackCssAssetResourceMap, getCacheKey } from './shared'
 import { createWebpackCssSourceResolvers } from './v5-assets/css-source-resolvers'
@@ -57,6 +59,7 @@ import {
   resolveWebpackMemoryDebugStats,
   scopeWebpackGeneratorOptionsToCssSource,
   shouldAppendCurrentWebpackAssetUserCss,
+  shouldConsumeWebpackLoaderGeneratedCss,
   shouldFallbackToWebpackUserCssOnGeneratorError,
   shouldUseWebpackAssetAsGeneratorUserCss,
   stringifyOptionalWebpackSourceValue,
@@ -799,12 +802,24 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     hasTailwindSourceDirectives(sourceCss, { importFallback: true })
                     || sourceCss.includes('@config')
                   )
+                const explicitTailwindV4SourceCandidates = shouldRegenerateExplicitTailwindV4CssSource
+                  && sourceCss
+                  && sourceFile
+                  && webpackSourceCandidates?.getSourceCandidatesForEntries
+                  ? await resolveTailwindV4EntriesFromCssCached(sourceCss, path.dirname(sourceFile))
+                      .then(resolved => resolved?.entries
+                        ? webpackSourceCandidates.getSourceCandidatesForEntries(resolved.entries)
+                        : undefined)
+                  : undefined
                 if (
                   loaderGeneratedCss
-                  && (
-                    !shouldRegenerateExplicitTailwindV4CssSource
-                    || hasBundlerGeneratedCssMarker(currentRawSource)
-                  )
+                  && shouldConsumeWebpackLoaderGeneratedCss({
+                    hasBundlerGeneratedCssMarker: hasBundlerGeneratedCssMarker(currentRawSource),
+                    loaderGeneratedClassSet: loaderGeneratedCss.classSet,
+                    sourceCandidates: explicitTailwindV4SourceCandidates,
+                    shouldRegenerateExplicitTailwindV4CssSource,
+                    watchMode,
+                  })
                 ) {
                   for (const className of loaderGeneratedCss.classSet) {
                     generatorRuntimeSet.add(className)
@@ -826,6 +841,29 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                           loaderGeneratedCss.css,
                         )
                       : undefined
+                  const isConfiguredMainCssSource = configuredMainCssEntryFiles.some(entry => path.resolve(entry) === path.resolve(sourceFile))
+                  const loaderGeneratedCssWithoutMarkers = stripBundlerGeneratedCssMarkers(loaderGeneratedCss.css)
+                  const currentAssetUserCssWithoutMarkers = currentAssetUserCss === undefined
+                    ? ''
+                    : stripBundlerGeneratedCssMarkers(currentAssetUserCss)
+                  const currentAssetUserCssHasRules = currentAssetUserCssWithoutMarkers.trim().length > 0
+                    && !isCommentOnlyCss(currentAssetUserCssWithoutMarkers)
+                  const currentAssetMissingUserCss = !currentAssetUserCssHasRules
+                    ? ''
+                    : filterExistingCssRules(currentAssetUserCssWithoutMarkers, loaderGeneratedCssWithoutMarkers)
+                  if (
+                    isConfiguredMainCssSource
+                    && !cssHandlerOptions.isMainChunk
+                    && (
+                      currentAssetMissingUserCss.trim().length === 0
+                      || isCommentOnlyCss(currentAssetMissingUserCss)
+                    )
+                  ) {
+                    debug('css skip duplicate webpack loader main generation: %s <- %s', file, sourceFile)
+                    return {
+                      result: new ConcatSource(finalizeTracedCss('', cssHandlerOptions)),
+                    }
+                  }
                   const mergedLoaderCss = currentAssetUserCss === undefined
                     ? loaderGeneratedCss.css
                     : (createWebpackGeneratorUserCssSourceAppend(

@@ -178,4 +178,65 @@ describe('tailwindcss/v4 runtime integration with @config + cssEntries', () => {
       await fs.rm(fixtureRoot, { force: true, recursive: true })
     }
   })
+
+  it('collects uni-app x uvue candidates from issue #964 css entry sources', async () => {
+    const workspaceRoot = path.resolve(__dirname, '../../../../..')
+    const fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tw-issue-964-'))
+    const cssEntry = path.resolve(fixtureRoot, 'main.css')
+    const page = path.resolve(fixtureRoot, 'pages/index/index.uvue')
+
+    try {
+      await fs.mkdir(path.dirname(page), { recursive: true })
+      await fs.writeFile(
+        cssEntry,
+        [
+          '@import "tailwindcss" source(none);',
+          '@source "./App.uvue";',
+          '@source "./pages/**/*.{uts,uvue}";',
+          '@source "./components/**/*.{uts,uvue}";',
+          '@source "./stores/**/*.{uts,uvue}";',
+          '@source not "./uni_modules/**/*";',
+          '@source not "./unpackage/**/*";',
+        ].join('\n'),
+        'utf8',
+      )
+      await fs.writeFile(
+        page,
+        [
+          '<template>',
+          '  <view class="p-4 mt-50">',
+          '    <text class="text-xl text-[#f7fbff] bg-[#102938] w-[173px]">Hello Tailwind on uni-app x</text>',
+          '  </view>',
+          '</template>',
+        ].join('\n'),
+        'utf8',
+      )
+
+      const runtime = createTailwindcssRuntimeForBase(fixtureRoot, [cssEntry], {
+        tailwindcss: {
+          packageName: 'tailwindcss4',
+          version: 4,
+          resolve: {
+            paths: [path.resolve(workspaceRoot, 'node_modules')],
+          },
+        },
+        tailwindcssRuntimeOptions: undefined,
+        supportCustomLengthUnits: true,
+        appType: 'uni-app-x',
+      } as any)
+
+      const classSet = await collectRuntimeClassSet(runtime, {
+        clearCache: true,
+        force: true,
+      })
+
+      expect(classSet.has('text-xl')).toBe(true)
+      expect(classSet.has('text-[#f7fbff]')).toBe(true)
+      expect(classSet.has('bg-[#102938]')).toBe(true)
+      expect(classSet.has('w-[173px]')).toBe(true)
+    }
+    finally {
+      await fs.rm(fixtureRoot, { force: true, recursive: true })
+    }
+  })
 })

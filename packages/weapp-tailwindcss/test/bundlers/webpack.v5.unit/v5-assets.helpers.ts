@@ -42,6 +42,7 @@ import {
   isSameWebpackCssSourceScope,
   shouldFallbackToWebpackUserCssOnGeneratorError,
   shouldAppendCurrentWebpackAssetUserCss,
+  shouldConsumeWebpackLoaderGeneratedCss,
   shouldUseWebpackAssetAsGeneratorUserCss,
   shouldInjectWebpackCssTracePreflight,
   stringifyOptionalWebpackSourceValue,
@@ -196,6 +197,40 @@ describe('bundlers/webpack v5-assets helpers', () => {
         sourceCss: '/*! tailwindcss v4.0.0 */ .bg-red-500{color:red}',
       },
     })).toBe('/*! tailwindcss v4.0.0 */ .bg-red-500{color:red}')
+  })
+
+  it('regenerates explicit Tailwind v4 source css in watch when loader output misses fresh candidates', () => {
+    expect(shouldConsumeWebpackLoaderGeneratedCss({
+      hasBundlerGeneratedCssMarker: false,
+      shouldRegenerateExplicitTailwindV4CssSource: false,
+    })).toBe(true)
+    expect(shouldConsumeWebpackLoaderGeneratedCss({
+      hasBundlerGeneratedCssMarker: true,
+      shouldRegenerateExplicitTailwindV4CssSource: false,
+    })).toBe(true)
+    expect(shouldConsumeWebpackLoaderGeneratedCss({
+      hasBundlerGeneratedCssMarker: true,
+      shouldRegenerateExplicitTailwindV4CssSource: true,
+    })).toBe(true)
+    expect(shouldConsumeWebpackLoaderGeneratedCss({
+      hasBundlerGeneratedCssMarker: true,
+      loaderGeneratedClassSet: new Set(['bg-red-500']),
+      sourceCandidates: new Set(['bg-red-500']),
+      shouldRegenerateExplicitTailwindV4CssSource: true,
+    })).toBe(true)
+    expect(shouldConsumeWebpackLoaderGeneratedCss({
+      hasBundlerGeneratedCssMarker: true,
+      loaderGeneratedClassSet: new Set(['bg-red-500']),
+      sourceCandidates: new Set(['bg-red-500', 'text-[102.43rpx]']),
+      shouldRegenerateExplicitTailwindV4CssSource: true,
+    })).toBe(true)
+    expect(shouldConsumeWebpackLoaderGeneratedCss({
+      hasBundlerGeneratedCssMarker: true,
+      loaderGeneratedClassSet: new Set(['bg-red-500']),
+      sourceCandidates: new Set(['bg-red-500', 'text-[102.43rpx]']),
+      shouldRegenerateExplicitTailwindV4CssSource: true,
+      watchMode: true,
+    })).toBe(false)
   })
 
   it('scopes webpack generator cssEntries to the current css source file', () => {

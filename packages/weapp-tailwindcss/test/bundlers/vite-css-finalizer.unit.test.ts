@@ -2,6 +2,7 @@ import type { OutputAsset, OutputBundle } from 'rollup'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
 import { createViteCssFinalizerOutputPlugin } from '@/bundlers/vite/css-finalizer'
+import { UNI_APP_X_WEB_PREFLIGHT_RESET_MARKER } from '@/uni-app-x/web-preflight-reset'
 
 const mocks = vi.hoisted(() => ({
   generateTailwindV4Css: vi.fn(),
@@ -143,6 +144,28 @@ describe('vite css finalizer output plugin', () => {
     expect(String((bundle['pages/index.wxss'] as OutputAsset).source)).toBe('.page{color:red}')
     expect(context.recordCssAssetResult).toHaveBeenCalledWith('pages/index.wxss', '.page{color:red}')
     expect(context.debug).toHaveBeenCalledWith('collect vite-processed css asset: %s bytes=%d', 'pages/index.wxss', 16)
+  })
+
+  it('prepends uni-app x Web border reset before Tailwind border utilities', async () => {
+    const { context, opts } = createContext()
+    opts.appType = 'uni-app-x'
+    opts.cssMatcher = (file: string) => file.endsWith('.css')
+    opts.generator = {
+      target: 'web',
+    }
+    const plugin = createViteCssFinalizerOutputPlugin(context as any)
+    const output = asset('app.css', '*,::before{border:0 solid;}.border{border-width:1px;}')
+    const bundle: OutputBundle = {
+      'app.css': output,
+    }
+
+    await getHandler(plugin).call(plugin, {}, bundle)
+
+    const css = String(output.source)
+    expect(css).toContain(UNI_APP_X_WEB_PREFLIGHT_RESET_MARKER)
+    expect(css).toContain('uni-app uni-view')
+    expect(css.indexOf(UNI_APP_X_WEB_PREFLIGHT_RESET_MARKER)).toBeLessThan(css.indexOf('.border'))
+    expect(opts.styleHandler).not.toHaveBeenCalled()
   })
 
   it('generates Tailwind css for root directive assets, records dependencies, and remembers main source', async () => {

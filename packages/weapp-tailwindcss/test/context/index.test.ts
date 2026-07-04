@@ -167,6 +167,31 @@ describe('getCompilerContext', () => {
     expect((createHandlersFromContext.mock.calls[0] as any)?.[0]?.cssPreflight).toEqual(ctx.cssPreflight)
   })
 
+  it('uses lightweight border preflight for uni-app x Web output when native app branch is disabled', async () => {
+    createTailwindcssRuntimeFromContext.mockReturnValue({
+      packageInfo: { version: '4.1.0' },
+      majorVersion: 4,
+    })
+
+    const { getCompilerContext } = await import('@/context')
+    const ctx = getCompilerContext({
+      appType: 'uni-app-x',
+      uniAppX: {
+        enabled: false,
+      },
+    })
+
+    expect(ctx.cssPreflight).toEqual({
+      'box-sizing': 'border-box',
+      margin: '0',
+      padding: '0',
+      border: false,
+      'border-width': '0',
+      'border-style': false,
+    })
+    expect((createHandlersFromContext.mock.calls[0] as any)?.[0]?.cssPreflight).toEqual(ctx.cssPreflight)
+  })
+
   it('keeps explicit uni-app x border preflight overrides', async () => {
     createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '4.1.0' },

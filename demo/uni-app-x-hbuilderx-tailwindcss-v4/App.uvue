@@ -1,3 +1,9 @@
+<script setup lang="uts">
+defineOptions({
+	styleIsolation: 'app',
+})
+</script>
+
 <script lang="uts">
 
 	let firstBackTime = 0

@@ -172,6 +172,27 @@ export function resolveWebpackGeneratorRawSource(
   return rawSource
 }
 
+export function shouldConsumeWebpackLoaderGeneratedCss(options: {
+  hasBundlerGeneratedCssMarker: boolean
+  loaderGeneratedClassSet?: Set<string> | undefined
+  sourceCandidates?: Set<string> | undefined
+  shouldRegenerateExplicitTailwindV4CssSource: boolean
+  watchMode?: boolean | undefined
+}) {
+  if (!options.shouldRegenerateExplicitTailwindV4CssSource) {
+    return true
+  }
+  if (
+    options.watchMode === true
+    && options.loaderGeneratedClassSet
+    && options.sourceCandidates
+    && hasMissingRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
+  ) {
+    return false
+  }
+  return options.hasBundlerGeneratedCssMarker
+}
+
 export interface WebpackGeneratorUserCssSource {
   css: string
   processed: boolean

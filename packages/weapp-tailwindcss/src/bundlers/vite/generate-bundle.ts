@@ -11,6 +11,7 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { isUniAppXHarmonyBundle } from '@/uni-app-x/style-asset'
+import { withUniAppXWebPreflightReset } from '@/uni-app-x/web-preflight-reset'
 import { resolveUniUtsPlatform } from '@/utils'
 import { processCachedTask } from '../shared/cache'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap } from '../shared/css-source-trace'
@@ -187,9 +188,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         : shouldApplyWebviewCssCompat
           ? transformWebCssCompat(css, generatorOptions.webCompat ?? true)
           : css
-      return shouldApplyWebviewSafeSelectors
+      const webCss = shouldApplyWebviewSafeSelectors
         ? transformWebCssSafeSelectors(compatCss, { escapeMap: opts.escapeMap })
         : compatCss
+      return withUniAppXWebPreflightReset(webCss, opts.appType === 'uni-app-x' && isWebGeneratorTarget)
     }
     const isUniAppXStyleTarget = opts.appType === 'uni-app-x'
     const isNativeAppStyleTarget = isUniAppXStyleTarget && uniUtsPlatform.isApp

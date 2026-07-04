@@ -1,5 +1,7 @@
-<script lang="uts">
-	export default {}
+<script setup lang="uts">
+defineOptions({
+	styleIsolation: 'app',
+})
 </script>
 
 <template>

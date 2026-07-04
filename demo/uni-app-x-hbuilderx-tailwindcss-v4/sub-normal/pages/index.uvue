@@ -1,3 +1,9 @@
+<script setup lang="uts">
+defineOptions({
+	styleIsolation: 'app',
+})
+</script>
+
 <template>
 	<view class="bg-normal-subpackage-marker">普通分包</view>
 </template>
