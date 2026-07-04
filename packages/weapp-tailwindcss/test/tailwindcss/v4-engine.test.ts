@@ -1067,6 +1067,42 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('.bg-blue-500')
   })
 
+  it('ignores Tailwind config files during source scanning', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-config-scan-'))
+    const srcDir = path.join(root, 'src')
+    await linkTailwindcssPackage(root)
+    await mkdir(srcDir, { recursive: true })
+    await writeFile(path.join(srcDir, 'page.html'), '<view class="bg-red-500"></view>', 'utf8')
+    await writeFile(path.join(root, 'tailwind.config.js'), [
+      'module.exports = {',
+      '  content: ["./**/*.{html,js,ts,jsx,tsx}"],',
+      '  corePlugins: { container: false },',
+      '}',
+    ].join('\n'), 'utf8')
+    const cssEntry = path.join(root, 'app.css')
+    await writeFile(cssEntry, `
+      @theme default {
+        --color-red-500: oklch(63.7% 0.237 25.331);
+      }
+      @import "tailwindcss" source(none);
+      @config "./tailwind.config.js";
+      @source "./**/*.{html,js,ts,jsx,tsx}";
+      @tailwind utilities;
+    `, 'utf8')
+    const source = await resolveTailwindV4Source({
+      projectRoot: root,
+      cssEntries: [cssEntry],
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({ target: 'web' })
+
+    expect(result.classSet).toEqual(new Set(['bg-red-500']))
+    expect(result.classSet.has('container')).toBe(false)
+    expect(result.rawCss).toContain('.bg-red-500')
+    expect(result.rawCss).not.toContain('.container')
+  })
+
   it('supports official source detection directives in generator mode', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-source-detection-'))
     const srcDir = path.join(root, 'src')
