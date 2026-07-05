@@ -20,6 +20,7 @@ const taroViteDemoConfigs = [
 const taroViteTemplateConfigs = [
   'taro-vite-tailwindcss-v4',
 ] as const
+const taroWatchCaseEnv = 'TARO_E2E_WATCH_NATIVE=0 E2E_WATCH_MINI_PROGRAM_ONLY=1 E2E_WATCH_MAX_PLUGIN_PROCESS_MS=8000 E2E_WATCH_COMMAND_TIMEOUT_MS=900000'
 
 const requiredScripts = ['build:weapp', 'dev:weapp', 'build:h5', 'dev:h5'] as const
 const forbiddenTailwindGeneratorPlugins = [
@@ -85,9 +86,14 @@ describe('Taro CI coverage matrix', () => {
     expect(rootScripts['e2e:taro']).toBe('pnpm e2e:taro:mp && pnpm e2e:taro:h5')
     expect(rootScripts['e2e:taro:mp']).toContain('E2E_PROJECT_FILTER="^taro-(vite|webpack)-(react|vue3)-tailwindcss-v4$"')
     expect(rootScripts['e2e:taro:mp']).toContain('TARO_E2E_WATCH_NATIVE=0')
+    expect(rootScripts['e2e:taro:mp']).toContain('E2E_WATCH_MINI_PROGRAM_ONLY=1')
     expect(rootScripts['e2e:taro:mp']).toContain('E2E_WATCH_MAX_PLUGIN_PROCESS_MS=8000')
-    expect(rootScripts['e2e:taro:mp']).toContain('E2E_WATCH_CASE=demo-taro-react')
-    expect(rootScripts['e2e:taro:mp']).toContain('E2E_WATCH_CASE=demo-taro-vue3')
+    expect(rootScripts['e2e:taro:mp']).toContain('E2E_WATCH_COMMAND_TIMEOUT_MS=900000')
+    expect(rootScripts['e2e:taro:mp']).not.toContain('E2E_WATCH_CASE=demo-taro-react')
+    expect(rootScripts['e2e:taro:mp']).not.toContain('E2E_WATCH_CASE=demo-taro-vue3')
+    for (const name of coreTaroDemos) {
+      expect(rootScripts['e2e:taro:mp'], `${name} should run as a standalone watch-HMR step`).toContain(`${taroWatchCaseEnv} E2E_WATCH_CASE=${name} pnpm e2e:watch`)
+    }
     expect(rootScripts['e2e:taro:h5']).toBe('pnpm e2e:taro:h5-build && pnpm e2e:taro:web-hmr')
 
     const staticMiniProgramProjects = new Set(E2E_PROJECTS.map(item => item.name))

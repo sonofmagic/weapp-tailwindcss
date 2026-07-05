@@ -37,6 +37,7 @@ export interface CliOptions {
   skipBuild: boolean
   quietSass: boolean
   webOnly: boolean
+  miniProgramOnly: boolean
   styleOnly: boolean
   mainStyleOnly: boolean
   mainStyleSubPackageLimit?: number
@@ -687,6 +688,7 @@ export interface WatchReport {
     skipBuild: boolean
     quietSass: boolean
     webOnly: boolean
+    miniProgramOnly: boolean
     styleOnly: boolean
     mainStyleOnly: boolean
     mainStyleSubPackageLimit?: number

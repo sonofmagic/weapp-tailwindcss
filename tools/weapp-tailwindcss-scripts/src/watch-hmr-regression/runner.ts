@@ -290,7 +290,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       }
     }
 
-    const shouldRunWebHmr = watchCase.webHmr && !watchCase.skipWebHmrInFullRun
+    const shouldRunWebHmr = watchCase.webHmr && !watchCase.skipWebHmrInFullRun && !options.miniProgramOnly
     if (shouldRunWebHmr) {
       await session.stop()
       sessionStopped = true

@@ -42,6 +42,11 @@ function parseBooleanFlag(flag: string, argv: string[]) {
   return argv.includes(flag)
 }
 
+function parseBooleanEnv(name: string) {
+  const value = process.env[name]
+  return value === '1' || value === 'true'
+}
+
 export function resolveOptions(): CliOptions {
   const argv = process.argv.slice(2)
   return {
@@ -51,6 +56,7 @@ export function resolveOptions(): CliOptions {
     skipBuild: parseBooleanFlag('--skip-build', argv),
     quietSass: parseBooleanFlag('--quiet-sass', argv),
     webOnly: parseBooleanFlag('--web-only', argv),
+    miniProgramOnly: parseBooleanFlag('--mini-program-only', argv) || parseBooleanEnv('E2E_WATCH_MINI_PROGRAM_ONLY'),
     styleOnly: parseBooleanFlag('--style-only', argv),
     mainStyleOnly: parseBooleanFlag('--main-style-only', argv),
     mainStyleSubPackageLimit: parseOptionalNumber(parseArg('--main-style-subpackage-limit', argv))

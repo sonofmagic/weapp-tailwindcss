@@ -320,6 +320,7 @@ interface ProjectHmrDurationReport {
 interface HotUpdateReport {
   options?: {
     webOnly?: boolean
+    miniProgramOnly?: boolean
     mainStyleOnly?: boolean
     mainStyleSubPackageLimit?: number
   }
@@ -958,6 +959,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
 
   const requiredMutationRounds = resolveRequiredMutationRounds()
   const issue33RoundProfile = isIssue33RoundProfile()
+  const miniProgramOnly = report.options?.miniProgramOnly === true
   assertAllHotUpdateSamplesWithinBudget(report, maxHotUpdateMs)
   expect(report.summary.count).toBeGreaterThan(0)
   expect(report.cases.length).toBe(report.summary.count)
@@ -1121,7 +1123,10 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       }
     }
 
-    if (shouldHaveWebHmr(item)) {
+    if (miniProgramOnly) {
+      expect(item.webHmr, `[${item.project}] mini-program-only report should not include web HMR metrics`).toBeUndefined()
+    }
+    else if (shouldHaveWebHmr(item)) {
       assertWebHmrCase(item, maxHotUpdateMs)
     }
     else {
@@ -1381,6 +1386,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
   const commandTimeoutMs = toNumberEnv('E2E_WATCH_COMMAND_TIMEOUT_MS', resolveDefaultWatchCommandTimeoutMs(runTarget, timeoutMs))
   const skipBuild = toBoolEnv('E2E_WATCH_SKIP_BUILD', true)
   const quietSass = toBoolEnv('E2E_WATCH_QUIET_SASS', true)
+  const miniProgramOnly = toBoolEnv('E2E_WATCH_MINI_PROGRAM_ONLY', false)
   const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
   const mainStyleSubPackageLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
   const reportFile = createReportFilePath(cwd, runTarget)
@@ -1414,6 +1420,10 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
 
   if (isWebOnlyProfile()) {
     args.push('--web-only')
+  }
+
+  if (miniProgramOnly) {
+    args.push('--mini-program-only')
   }
 
   if (mainStyleOnly) {
