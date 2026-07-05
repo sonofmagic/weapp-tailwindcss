@@ -1,5 +1,6 @@
 import type { Buffer } from 'node:buffer'
 import { describe, expect, it } from 'vitest'
+import { demoWatchShardCases, isDemoWatchShardName } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import {
   createLineCollector,
   createSpawnEnv,
@@ -11,14 +12,14 @@ import {
 import { resolveCaseName, shouldRunTarget } from './hot-update/shared'
 
 const TARO_WATCH_READY_RE = /→ Watching|watching for file changes/i
-const TARO_COMPILED_RE = /Compiled successfully/i
+const TARO_COMPILED_RE = /Compiled successfully|built in \d+(?:\.\d+)?m?s\.?|\d+ modules transformed/i
 const ROOT = process.cwd()
 const TARGETS = [
-  'taro-webpack-react-tailwindcss-v4',
-  'taro-webpack-react-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-vite-vue3-tailwindcss-v4',
   'taro-webpack-vue3-tailwindcss-v4',
-  'taro-webpack-vue3-tailwindcss-v4',
-]
+  'taro-webpack-react-tailwindcss-v4',
+] as const
 const STABLE_AFTER_READY_MS = 8_000
 const DEFAULT_READY_TIMEOUT_MS = 180_000
 const DEFAULT_TEST_TIMEOUT_MS = 240_000
@@ -88,22 +89,32 @@ async function expectDemoDevWatchReady(project: string) {
   })
   let ready = false
   let readyAt = 0
+  let sawWatchReady = false
   let lastReadyCompiledCount = 0
   let compiledCount = 0
   let closeResult:
     | { code: number | null, signal: NodeJS.Signals | null }
     | undefined
 
+  const markReadyIfCompiledAndWatching = () => {
+    if (!sawWatchReady || compiledCount === 0) {
+      return
+    }
+    ready = true
+    readyAt = Date.now()
+    lastReadyCompiledCount = compiledCount
+  }
+
   const onData = (chunk: Buffer | string) => {
     const text = chunk.toString()
     collect(chunk)
     if (TARO_COMPILED_RE.test(text)) {
       compiledCount += 1
+      markReadyIfCompiledAndWatching()
     }
     if (TARO_WATCH_READY_RE.test(text)) {
-      ready = true
-      readyAt = Date.now()
-      lastReadyCompiledCount = compiledCount
+      sawWatchReady = true
+      markReadyIfCompiledAndWatching()
     }
   }
 
@@ -163,14 +174,22 @@ describe('e2e watch taro demo dev entry', () => {
   const caseName = resolveCaseName()
 
   if (isWebOnlyWatchProfile()) {
-    it.skip('skips taro webpack pnpm dev smoke for web-only watch profile', () => {})
+    it.skip('skips taro pnpm dev smoke for web-only watch profile', () => {})
     return
   }
 
-  const targets = TARGETS.filter(project => caseName === 'all' || caseName === 'demo' || shouldRunTarget(caseName, project))
+  const targets = TARGETS.filter((project) => {
+    if (caseName === 'all' || caseName === 'demo') {
+      return true
+    }
+    if (isDemoWatchShardName(caseName)) {
+      return demoWatchShardCases[caseName].includes(project)
+    }
+    return shouldRunTarget(caseName, project)
+  })
 
   if (targets.length === 0) {
-    it.skip('skips taro webpack pnpm dev smoke for current E2E_WATCH_CASE filter', () => {})
+    it.skip('skips taro pnpm dev smoke for current E2E_WATCH_CASE filter', () => {})
     return
   }
 
