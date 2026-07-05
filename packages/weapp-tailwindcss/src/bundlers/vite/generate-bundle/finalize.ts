@@ -1,5 +1,6 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { BundleBuildState, BundleSnapshot } from '../bundle-state'
+import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from '../shared/framework-strategy'
 import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext } from './types'
 import path from 'node:path'
@@ -28,6 +29,8 @@ interface FinalizeGenerateBundleOptions {
   bundleFiles: string[]
   cache: GenerateBundleContext['opts']['cache']
   cssTaskFactories: Array<() => Promise<void>>
+  cssPipelineStrategy?: ViteFrameworkCssPipelineStrategy | undefined
+  createCssPipelineContext?: ((file: string) => ViteFrameworkCssPipelineContext) | undefined
   debug: GenerateBundleContext['debug']
   defaultStyleOutputExtension: string
   formatIteration: number
@@ -80,20 +83,11 @@ function readAssetSource(asset: OutputAsset) {
   return typeof asset.source === 'string' ? asset.source : asset.source.toString()
 }
 
-function isUniAppViteWebviewAppBundle(bundleFiles: string[]) {
-  return bundleFiles.some(file => path.basename(file.replace(/[?#].*$/, '')) === 'app-service.js')
-}
-
-function isUniAppViteWebviewOutDir(outDir: string | undefined) {
-  const normalized = outDir ? path.basename(path.normalize(outDir)).trim().toLowerCase() : undefined
-  return normalized === 'app' || normalized === 'app-plus'
-}
-
 function getAssetFile(bundleFile: string, asset: OutputAsset) {
   return asset.fileName || bundleFile
 }
 
-function finalizeUniAppViteWebviewCssCompat(
+function finalizeWebviewCssCompat(
   bundle: Record<string, OutputAsset | OutputChunk>,
   options: Pick<FinalizeGenerateBundleOptions, 'debug' | 'onUpdate' | 'opts' | 'recordCssAssetResult'>,
 ) {
@@ -120,7 +114,7 @@ function finalizeUniAppViteWebviewCssCompat(
     output.source = nextCss
     options.recordCssAssetResult?.(file, nextCss)
     options.onUpdate(file, rawSource, nextCss)
-    options.debug('finalize uni-app vite webview css compat: %s bytes=%d', file, nextCss.length)
+    options.debug('finalize webview css compat: %s bytes=%d', file, nextCss.length)
     transformed++
   }
   return transformed
@@ -181,15 +175,16 @@ function resolveSingleCssImportOutputFile(targetFile: string, css: string) {
   return importedFile
 }
 
-export function normalizeTaroRootImportShellAssets(
+export function normalizeRootMiniProgramImportShellAssets(
   bundle: Record<string, OutputAsset | OutputChunk>,
-  options: Pick<GenerateBundleContext['opts'], 'appType' | 'cssMatcher'> & {
+  options: Pick<GenerateBundleContext['opts'], 'cssMatcher'> & {
     debug: GenerateBundleContext['debug']
+    enabled: boolean
     onUpdate: GenerateBundleContext['opts']['onUpdate']
     recordCssAssetResult: GenerateBundleContext['recordCssAssetResult']
   },
 ) {
-  if (options.appType !== 'taro') {
+  if (!options.enabled) {
     return 0
   }
   let updated = 0
@@ -213,6 +208,19 @@ export function normalizeTaroRootImportShellAssets(
       continue
     }
     const rootSource = readAssetSource(rootOutput)
+    const importedRootFile = resolveSingleCssImportOutputFile(rootFile, rootSource)
+    if (importedRootFile && normalizeOutputPathKey(importedRootFile) === normalizeOutputPathKey(originFile)) {
+      const nextRootSource = createCssImportShell(rootFile, originFile)
+      if (rootSource === nextRootSource) {
+        continue
+      }
+      rootOutput.source = nextRootSource
+      options.recordCssAssetResult?.(rootFile, nextRootSource)
+      options.onUpdate?.(rootFile, rootSource, nextRootSource)
+      options.debug('normalize root css import shell request: %s -> %s', rootFile, originFile)
+      updated++
+      continue
+    }
     if (isPureLocalCssImportWrapper(rootSource)) {
       continue
     }
@@ -236,7 +244,7 @@ export function normalizeTaroRootImportShellAssets(
     options.recordCssAssetResult?.(originFile, rootSource)
     options.onUpdate?.(rootFile, rootSource, nextRootSource)
     options.onUpdate?.(originFile, originSource, rootSource)
-    options.debug('normalize taro root css import shell: %s -> %s', rootFile, originFile)
+    options.debug('normalize root css import shell: %s -> %s', rootFile, originFile)
     updated++
   }
   return updated
@@ -251,6 +259,8 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     bundleFiles,
     cache,
     cssTaskFactories,
+    cssPipelineStrategy,
+    createCssPipelineContext,
     debug,
     defaultStyleOutputExtension,
     formatIteration,
@@ -335,6 +345,8 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
   const syncViteProcessedCssIntoMainCssAssets = () => {
     collectViteProcessedCssAssetResults(bundle, {
       opts,
+      cssPipelineStrategy,
+      createCssPipelineContext,
       isViteProcessedCssAsset,
       markCssAssetProcessed,
       recordCssAssetResult,
@@ -346,6 +358,8 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     })
     return injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts,
+      cssPipelineStrategy,
+      createCssPipelineContext,
       getViteProcessedCssAssetResults,
       markCssAssetProcessed,
       recordCssAssetResult,
@@ -371,10 +385,13 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     }
     syncViteProcessedCssIntoMainCssAssets()
   }
-  normalizeTaroRootImportShellAssets(bundle, {
-    appType: opts.appType,
+  const createFinalizeCssPipelineContext = (file = ''): ViteFrameworkCssPipelineContext | undefined => createCssPipelineContext?.(file)
+  const finalizeCssPipelineContext = createFinalizeCssPipelineContext()
+  normalizeRootMiniProgramImportShellAssets(bundle, {
     cssMatcher: opts.cssMatcher,
     debug,
+    enabled: finalizeCssPipelineContext !== undefined
+      && cssPipelineStrategy?.shouldNormalizeRootMiniProgramImportShell?.(finalizeCssPipelineContext) === true,
     onUpdate,
     recordCssAssetResult,
   })
@@ -382,15 +399,27 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
   removeCssCoveredByRootStyleAssets(bundle, {
     cssMatcher: opts.cssMatcher,
     debug,
-    includeTailwindGeneratedCssAssets: opts.appType === 'uni-app-vite'
-      && isWebGeneratorTarget
-      && isUniAppViteWebviewAppBundle(bundleFiles),
+    includeTailwindGeneratedCssAssets: finalizeCssPipelineContext !== undefined
+      && cssPipelineStrategy?.includeTailwindGeneratedCssAssetsInRootCoverage?.({
+        ...finalizeCssPipelineContext,
+        bundleFiles,
+        isWebGeneratorTarget,
+        outDir,
+      }) === true,
     isViteProcessedCssAsset,
     onUpdate,
     recordCssAssetResult,
     subpackageRoots: collectMiniProgramSubpackageRoots(bundle),
   })
-  if (opts.appType === 'uni-app-vite' && isWebGeneratorTarget && isUniAppViteWebviewAppBundle(Object.keys(bundle))) {
+  if (
+    finalizeCssPipelineContext !== undefined
+    && cssPipelineStrategy?.shouldRemoveDuplicateUnlinkedRootCssAssetsReferencedByHtml?.({
+      ...finalizeCssPipelineContext,
+      bundleFiles: Object.keys(bundle),
+      isWebGeneratorTarget,
+      outDir,
+    }) === true
+  ) {
     removeDuplicateUnlinkedRootCssAssetsReferencedByHtml(bundle, { debug })
   }
   await finalizeMiniProgramCssAssets(bundle, {
@@ -404,14 +433,15 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     styleHandler,
   })
   if (
-    opts.appType === 'uni-app-vite'
-    && (
-      isWebGeneratorTarget
-      || isUniAppViteWebviewAppBundle(Object.keys(bundle))
-      || isUniAppViteWebviewOutDir(outDir)
-    )
+    finalizeCssPipelineContext !== undefined
+    && cssPipelineStrategy?.shouldApplyFinalWebviewCssCompat?.({
+      ...finalizeCssPipelineContext,
+      bundleFiles: Object.keys(bundle),
+      isWebGeneratorTarget,
+      outDir,
+    }) === true
   ) {
-    finalizeUniAppViteWebviewCssCompat(bundle, {
+    finalizeWebviewCssCompat(bundle, {
       debug,
       onUpdate,
       opts,

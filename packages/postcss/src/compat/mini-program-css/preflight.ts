@@ -8,7 +8,6 @@ import {
   getRuleSelectors,
   MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR,
   MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS,
-  normalizeMiniProgramThemeScopeSelector,
 } from './selectors'
 
 const MINI_PROGRAM_PSEUDO_CONTENT_SELECTORS = new Set(['::before', '::after'])
@@ -49,21 +48,8 @@ function applyConfiguredPreflightDeclarations(
   rule.append([...configuredNodes, ...remainingNodes])
 }
 
-function collectTailwindRuntimeDeclarations(rule: postcss.Rule) {
-  const declarations: postcss.Declaration[] = []
-  rule.walkDecls((decl) => {
-    if (!decl.prop.startsWith('--tw-') || isEmptyTwContentDeclaration(decl)) {
-      return
-    }
-    declarations.push(decl.clone())
-    decl.remove()
-  })
-  return declarations
-}
-
 export function collectPreflightRules(root: postcss.Root, options: { cssPreflight?: CssPreflightOptions | undefined, cssSelectorReplacement?: CssSelectorReplacement | undefined } = {}) {
   const preflightNodes: postcss.Rule[] = []
-  const themeScopeSelector = normalizeMiniProgramThemeScopeSelector(options.cssSelectorReplacement?.root)
 
   for (const node of root.nodes ?? []) {
     if (isMiniProgramPreflightRule(node)) {
@@ -75,7 +61,6 @@ export function collectPreflightRules(root: postcss.Root, options: { cssPrefligh
     return []
   }
 
-  const runtimeRules: postcss.Rule[] = []
   const clonedPreflightRules = preflightNodes.map((node) => {
     const rule = node.clone()
     rule.walkDecls('--tw-content', (decl) => {
@@ -94,13 +79,6 @@ export function collectPreflightRules(root: postcss.Root, options: { cssPrefligh
       rule.remove()
     }
     else if (hasElementSelector && selectors.every(selector => MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS.has(selector))) {
-      const runtimeDeclarations = collectTailwindRuntimeDeclarations(rule)
-      if (runtimeDeclarations.length > 0) {
-        runtimeRules.push(postcss.rule({
-          selector: themeScopeSelector,
-          nodes: runtimeDeclarations,
-        }))
-      }
       if (options.cssPreflight === false) {
         rule.removeAll()
         continue
@@ -111,7 +89,6 @@ export function collectPreflightRules(root: postcss.Root, options: { cssPrefligh
   }
   const nonEmptyPreflightRules = [
     ...clonedPreflightRules.filter(rule => (rule.nodes?.length ?? 0) > 0),
-    ...runtimeRules,
   ]
   for (const node of preflightNodes) {
     node.remove()

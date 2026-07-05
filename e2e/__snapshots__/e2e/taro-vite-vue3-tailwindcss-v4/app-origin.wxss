@@ -6,6 +6,13 @@ text,
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  --tw-gradient-position: initial;
+  --tw-gradient-from: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-to-position: 100%;
+  --tw-content: '';
 }
 :host,
 page,

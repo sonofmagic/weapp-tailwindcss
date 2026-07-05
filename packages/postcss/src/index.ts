@@ -1,5 +1,13 @@
 // 统一导出入口，供外部调用端按需引用核心能力
 export {
+  type PostcssAppType,
+  type PostcssStyleBranch,
+  type PostcssStyleBranchProfile,
+  resolvePostcssStyleBranch,
+  type ResolvePostcssStyleBranchOptions,
+  resolvePostcssStyleBranchProfile,
+} from './branches'
+export {
   type DynamicColorMixAlphaProtection,
   type DynamicColorMixAlphaProtectionOptions,
   type ModernColorValueNormalization,
@@ -49,6 +57,15 @@ export {
   withCssMacroStyleOptions,
 } from './css-macro/auto'
 export { CSS_MACRO_POSTCSS_PLUGIN_NAME, default as cssMacroPostcssPlugin } from './css-macro/postcss'
+export {
+  type PostcssFrameworkProfile,
+  type PostcssFrameworkStrategy,
+  type PostcssFrameworkType,
+  type ResolvePostcssFrameworkOptions,
+  resolvePostcssFrameworkProfile,
+  resolvePostcssFrameworkStrategy,
+  resolvePostcssStyleTarget,
+} from './frameworks'
 export { createWeappTailwindcssPostcssPlugin } from './generator-plugin'
 export type {
   NormalizedWeappTailwindcssPostcssGeneratorOptions,
@@ -156,6 +173,11 @@ export {
   type TailwindSourceEntry,
   toPosixPath,
 } from './source-scan'
+export {
+  createPostcssStyleTargetProfile,
+  type PostcssStyleTarget,
+  type PostcssStyleTargetProfile,
+} from './style-targets'
 export * from './types'
 export {
   containsCssAfterMinify,

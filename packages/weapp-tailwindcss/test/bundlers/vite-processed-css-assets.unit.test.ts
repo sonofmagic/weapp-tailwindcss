@@ -30,6 +30,19 @@ function opts() {
   } as any
 }
 
+const createCssPipelineContext = () => ({}) as any
+
+const uniAppWebviewCssStrategy = {
+  resolveConfiguredCssEntryRootInjectionTarget: () => 'app.css',
+  shouldPreferExplicitWebCssTargets: () => true,
+  shouldPreferMatchedRootWebOutputTarget: () => true,
+}
+
+const taroImportShellStrategy = {
+  shouldKeepRootMiniProgramStyleAsImportShell: () => true,
+  shouldNormalizeRootMiniProgramImportShell: () => true,
+}
+
 describe('vite processed css assets', () => {
   it('collects marker scoped css and removes covered generated source assets', () => {
     const bundle: OutputBundle = {
@@ -170,6 +183,8 @@ describe('vite processed css assets', () => {
         cssMatcher: (file: string) => file.endsWith('.css'),
         mainCssChunkMatcher: (file: string) => file === 'app.css',
       },
+      cssPipelineStrategy: uniAppWebviewCssStrategy,
+      createCssPipelineContext,
       getViteProcessedCssAssetResults: () => records.entries(),
       markCssAssetProcessed: vi.fn(),
       shouldRemoveInjectedSourceAsset: (targetFile, record) =>
@@ -210,6 +225,8 @@ describe('vite processed css assets', () => {
         cssMatcher: (file: string) => file.endsWith('.css'),
         mainCssChunkMatcher: (file: string) => file === 'app.css',
       },
+      cssPipelineStrategy: uniAppWebviewCssStrategy,
+      createCssPipelineContext,
       getViteProcessedCssAssetResults: () => records.entries(),
       markCssAssetProcessed: vi.fn(),
       shouldRemoveInjectedSourceAsset: (targetFile, record) =>
@@ -238,6 +255,8 @@ describe('vite processed css assets', () => {
         cssMatcher: (file: string) => file.endsWith('.css'),
         mainCssChunkMatcher: (file: string) => file === 'app.css',
       },
+      cssPipelineStrategy: uniAppWebviewCssStrategy,
+      createCssPipelineContext,
       getViteProcessedCssAssetResults: () => records.entries(),
       markCssAssetProcessed: vi.fn(),
       shouldRemoveInjectedSourceAsset: (targetFile, record) =>
@@ -378,6 +397,8 @@ describe('vite processed css assets', () => {
     }
     expect(injectViteProcessedCssIntoMainCssAssets(scopedImportBundle, {
       opts: { ...opts(), mainCssChunkMatcher: (file: string) => file === 'pages/index.wxss' },
+      cssPipelineStrategy: taroImportShellStrategy,
+      createCssPipelineContext,
       getViteProcessedCssAssetResults: () => records.entries(),
       debug,
     })).toBe(0)
@@ -489,6 +510,8 @@ describe('vite processed css assets', () => {
         },
         mainCssChunkMatcher: () => false,
       },
+      cssPipelineStrategy: uniAppWebviewCssStrategy,
+      createCssPipelineContext,
       isViteProcessedCssAsset: (_asset, file) => file === 'src/main.css',
       recordViteProcessedCssAssetResult(file, css, options) {
         records.set(file, { css, ...options })
@@ -503,6 +526,8 @@ describe('vite processed css assets', () => {
         cssMatcher: (file: string) => file.endsWith('.css'),
         mainCssChunkMatcher: () => false,
       },
+      cssPipelineStrategy: uniAppWebviewCssStrategy,
+      createCssPipelineContext,
       getViteProcessedCssAssetResults: () => records.entries(),
       debug: vi.fn(),
     })
@@ -769,6 +794,22 @@ describe('vite processed css assets', () => {
     expect(nextCss).not.toContain('@property --tw-space-y-reverse')
   })
 
+  it('removes unscoped mini-program preflight from scoped generated css without a Tailwind banner', () => {
+    const css = [
+      'view,text,::after,::before{--tw-content:""}',
+      '.hello-world-shell{display:flex}',
+      'view.data-v-04bcf89b{text-align:left}',
+      '.hello-world-shell.data-v-04bcf89b{display:flex}',
+    ].join('\n')
+
+    const nextCss = removeScopedTailwindPreflightCss(css)
+
+    expect(nextCss).not.toContain('view,text,::after,::before')
+    expect(nextCss).toContain('.hello-world-shell{display:flex}')
+    expect(nextCss).toContain('view.data-v-04bcf89b{text-align:left}')
+    expect(nextCss).toContain('.hello-world-shell.data-v-04bcf89b{display:flex}')
+  })
+
   it('moves taro import shell injection to the imported root css asset', () => {
     const bundle: OutputBundle = {
       'app.wxss': asset('app.wxss', ''),
@@ -834,6 +875,8 @@ describe('vite processed css assets', () => {
         ...opts(),
         mainCssChunkMatcher: (file: string) => file === 'app.wxss',
       },
+      cssPipelineStrategy: taroImportShellStrategy,
+      createCssPipelineContext,
       getViteProcessedCssAssetResults: () => records.entries(),
       debug,
     })).toBe(0)
@@ -846,6 +889,8 @@ describe('vite processed css assets', () => {
         ...opts(),
         mainCssChunkMatcher: (file: string) => file === 'app.wxss',
       },
+      cssPipelineStrategy: taroImportShellStrategy,
+      createCssPipelineContext,
       getViteProcessedCssAssetResults: () => records.entries(),
       debug,
     })).toBe(0)

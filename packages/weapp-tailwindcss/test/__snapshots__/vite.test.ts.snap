@@ -2,16 +2,17 @@
 
 exports[`vite > v4-vite-plugin > css 1`] = `
 "view,text,::after,::before {
+    border: 0 solid;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    border: 0 solid;
     --tw-gradient-position: initial;
     --tw-gradient-from: #0000;
     --tw-gradient-to: #0000;
     --tw-gradient-stops: initial;
     --tw-gradient-from-position: 0%;
     --tw-gradient-to-position: 100%;
+    --tw-content: "";
   }
 :host,page,.tw-root,wx-root-portal-content {
     --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
@@ -105,10 +106,11 @@ console.log("bg-_b_h123456_B text-_b_h123456_B first-letter_cmarker_ctext-clip")
 
 exports[`vite > v4-vite-postcss > css 1`] = `
 "view,text,::after,::before {
+    border: 0 solid;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    border: 0 solid;
+    --tw-content: "";
   }
 :host,page,.tw-root,wx-root-portal-content {
     --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",

@@ -1,7 +1,9 @@
-import type { AppType } from '@/types'
-import { isMpx } from '@/shared/mpx'
-
 export interface LoaderEntry { loader?: string }
+
+export interface LoaderAnchorFinders {
+  findRewriteAnchor: (entries: LoaderEntry[]) => number
+  findClassSetAnchor: (entries: LoaderEntry[]) => number
+}
 
 const MPX_STRIP_CONDITIONAL_LOADER = '@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader'
 const MPX_STYLE_COMPILER_LOADER = '@mpxjs/webpack-plugin/lib/style-compiler/index'
@@ -28,16 +30,16 @@ function createPrioritizedFinder(targets: string[]) {
   }
 }
 
-export function createLoaderAnchorFinders(appType?: AppType) {
-  if (isMpx(appType)) {
-    // Rewrite should run before style-compiler (and strip-conditional as fallback);
-    // class-set should still run after style-compiler.
-    return {
-      findRewriteAnchor: createPrioritizedFinder(MPX_REWRITE_PRECEDENCE_LOADERS),
-      findClassSetAnchor: createFinder([MPX_STYLE_COMPILER_LOADER]),
-    }
+export function createMpxLoaderAnchorFinders(): LoaderAnchorFinders {
+  // Rewrite should run before style-compiler (and strip-conditional as fallback);
+  // class-set should still run after style-compiler.
+  return {
+    findRewriteAnchor: createPrioritizedFinder(MPX_REWRITE_PRECEDENCE_LOADERS),
+    findClassSetAnchor: createFinder([MPX_STYLE_COMPILER_LOADER]),
   }
+}
 
+export function createDefaultLoaderAnchorFinders(): LoaderAnchorFinders {
   const fallbackFinder = createFinder(['postcss-loader'])
   return {
     findRewriteAnchor: fallbackFinder,

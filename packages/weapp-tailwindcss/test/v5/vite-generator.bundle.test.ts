@@ -1882,8 +1882,8 @@ describe('v5 vite generator bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect(generateMock).toHaveBeenCalledTimes(3)
     const generatedCandidateSets = generateMock.mock.calls.map(call => [...call[0].candidates])
+    expect(generateMock).toHaveBeenCalledTimes(2)
     expect(generatedCandidateSets).toContainEqual(['vite-normal-only'])
     expect(generatedCandidateSets).toContainEqual(['vite-independent-only'])
     expect((bundle['app.css'] as OutputAsset).source).toBe('')
@@ -2015,9 +2015,7 @@ describe('v5 vite generator bundle', () => {
 
     expect(invalidateModule).toHaveBeenCalledWith(cssModule)
     expect(invalidateModule).not.toHaveBeenCalledWith(vueMainModule)
-    expect(hotModules).toContain(pageModule)
-    expect(hotModules).toContain(cssModule)
-    expect(hotModules).not.toContain(vueMainModule)
+    expect(hotModules).toBeUndefined()
 
     await cssTransform?.call(
       rewritePlugin,

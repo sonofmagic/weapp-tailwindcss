@@ -58,6 +58,7 @@ interface CreateUniAppXPluginsOptions {
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
   getResolvedConfig: () => ResolvedConfig | undefined
   isIosPlatform?: boolean
+  isEnabled?: (() => boolean) | undefined
   uniAppX?: InternalUserDefinedOptions['uniAppX']
 }
 
@@ -107,6 +108,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     jsHandler,
     ensureRuntimeClassSet,
     getResolvedConfig,
+    isEnabled = () => true,
     uniAppX,
   } = options
   const resolvedUniAppXOptions = resolveUniAppXOptions(uniAppX)
@@ -233,6 +235,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     name: 'weapp-tailwindcss:uni-app-x:css:pre',
     enforce: 'pre',
     async transform(code, id) {
+      if (!isEnabled()) {
+        return
+      }
       await runtimeState.readyPromise
       const { query } = parseVueRequest(id)
       const lang = query.lang
@@ -246,6 +251,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   const cssPlugin: Plugin = {
     name: 'weapp-tailwindcss:uni-app-x:css',
     async transform(code, id) {
+      if (!isEnabled()) {
+        return
+      }
       await runtimeState.readyPromise
       return transformStyle(code, id, undefined, this)
     },
@@ -257,9 +265,15 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     name: 'weapp-tailwindcss:uni-app-x:nvue',
     enforce: 'pre',
     async buildStart() {
+      if (!isEnabled()) {
+        return
+      }
       await ensureRuntimeClassSet(true)
     },
     async transform(code, id) {
+      if (!isEnabled()) {
+        return
+      }
       if (!UVUE_NVUE_QUERY_RE.test(id)) {
         return
       }
@@ -290,6 +304,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       return transformUVue(code, id, jsHandler, currentRuntimeSet)
     },
     async handleHotUpdate(ctx) {
+      if (!isEnabled()) {
+        return
+      }
       const resolvedConfig = getResolvedConfig()
       if (resolvedConfig?.command !== 'serve') {
         return
@@ -301,6 +318,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       await ensureRuntimeClassSet(true)
     },
     async watchChange(id) {
+      if (!isEnabled()) {
+        return
+      }
       const resolvedConfig = getResolvedConfig()
       if (resolvedConfig?.command !== 'build' || !resolvedConfig.build?.watch) {
         return
@@ -319,6 +339,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     generateBundle: {
       order: 'post',
       async handler(_options, bundle) {
+        if (!isEnabled()) {
+          return
+        }
         const currentUtsPlatform = resolveUniUtsPlatform()
         const canInferHarmonyTarget = !currentUtsPlatform.normalized || currentUtsPlatform.isApp
         const isHarmonyTarget = currentUtsPlatform.isAppHarmony || (canInferHarmonyTarget && isHarmonyBuildTarget())

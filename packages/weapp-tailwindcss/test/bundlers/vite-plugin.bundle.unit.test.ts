@@ -3030,11 +3030,10 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       cssMatcher: file => file.endsWith('.acss') || file.endsWith('.ttss') || file.endsWith('.mss'),
       files: ['app.acss', 'pages/index/index.ttss'],
     })).toBe('.css')
-    expect(shouldKeepRootMiniProgramStyleAsImportShell('taro')).toBe(true)
-    expect(shouldKeepRootMiniProgramStyleAsImportShell('uni-app-vite')).toBe(true)
-    expect(shouldKeepRootMiniProgramStyleAsImportShell('native')).toBe(false)
-    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin('taro')).toBe(true)
-    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin('uni-app-vite')).toBe(false)
+    expect(shouldKeepRootMiniProgramStyleAsImportShell(true)).toBe(true)
+    expect(shouldKeepRootMiniProgramStyleAsImportShell(false)).toBe(false)
+    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin(true)).toBe(true)
+    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin(false)).toBe(false)
   }, TEST_TIMEOUT_MS)
 
   it('keeps css extension for uni-app x native app vite css pipeline output', async () => {
@@ -6339,9 +6338,17 @@ module.exports = {
       },
     }
     const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>()
+    const uniAppRootInjectionStrategy = {
+      resolveConfiguredCssEntryRootInjectionTarget: () => 'app.css',
+      shouldPreferExplicitWebCssTargets: () => true,
+      shouldPreferMatchedRootWebOutputTarget: () => true,
+    }
+    const createCssPipelineContext = () => ({}) as any
 
     collectViteProcessedCssAssetResults(bundle, {
       opts: context as any,
+      cssPipelineStrategy: uniAppRootInjectionStrategy,
+      createCssPipelineContext,
       isViteProcessedCssAsset: vi.fn((_asset: OutputAsset, file: string) => file === 'src/main.css'),
       markCssAssetProcessed: vi.fn(),
       recordCssAssetResult: vi.fn(),
@@ -6356,6 +6363,8 @@ module.exports = {
     })
     injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: context as any,
+      cssPipelineStrategy: uniAppRootInjectionStrategy,
+      createCssPipelineContext,
       getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
       markCssAssetProcessed: vi.fn(),
       recordCssAssetResult: vi.fn(),
@@ -6570,6 +6579,11 @@ module.exports = {
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
       recordGeneratorCandidates: vi.fn(),
+      cssPipelineStrategy: {
+        shouldKeepRootMiniProgramStyleAsImportShell: () => true,
+        shouldMoveRootMiniProgramStyleToImportShellOrigin: () => true,
+        shouldNormalizeRootMiniProgramImportShell: () => true,
+      },
     })
     const bundle = {
       'app-origin.wxss': {
@@ -8897,6 +8911,101 @@ const trace = "at App.vue:4"
     expect(source).toContain('html{font-family:Inter,ui-sans-serif}')
     expect(source).toContain('.site-card{display:grid;color:#0f172a}')
     expect(styleHandler).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps uni-app H5 web css and js raw while App WebView owns safe transforms', async () => {
+    const rawClass = 'bg-[#0000ff]'
+    const safeClass = replaceWxml(rawClass)
+    const runtimeSet = new Set([rawClass])
+    const rawTailwindCss = `/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */\n.bg-\\[\\#0000ff\\]{background-color:#0000ff}`
+    const generateMock = vi.fn(async () => ({
+      css: rawTailwindCss,
+      rawCss: rawTailwindCss,
+      target: 'web',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);',
+        dependencies: [],
+      })),
+    }))
+
+    setCurrentContext(createContext({
+      appType: 'uni-app-vite',
+      generator: {
+        target: 'web',
+      },
+      jsHandler: createJsHandler({
+        escapeMap: MappingChars2String,
+      }),
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      appType: 'uni-app-vite',
+      generator: {
+        target: 'web',
+      },
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      plugins: [{ name: 'vite:uni' }],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/build/h5' },
+    } as ResolvedConfig)
+
+    await getTransformHandler(sourcePlugin)?.call(sourcePlugin, `export const cls = "${rawClass}"`, '/project/src/pages/index.ts')
+
+    const bundle = {
+      'assets/index.css': {
+        ...createRollupAsset(rawTailwindCss),
+        fileName: 'assets/index.css',
+      },
+      'assets/index.js': {
+        ...createRollupChunk(`const cls = "${rawClass}"`),
+        fileName: 'assets/index.js',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const cssSource = (bundle['assets/index.css'] as OutputAsset).source.toString()
+    const jsSource = (bundle['assets/index.js'] as OutputChunk).code
+    expect(cssSource).toContain('.bg-\\[\\#0000ff\\]')
+    expect(cssSource).not.toContain(`.${safeClass}`)
+    expect(jsSource).toContain(rawClass)
+    expect(jsSource).not.toContain(safeClass)
   }, TEST_TIMEOUT_MS)
 
   it('generates raw Tailwind v4 directives for Vite build web css', async () => {

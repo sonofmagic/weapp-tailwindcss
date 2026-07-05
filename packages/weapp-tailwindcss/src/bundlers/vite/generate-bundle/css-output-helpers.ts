@@ -1,4 +1,5 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
+import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from '../shared/framework-strategy'
 import type { InternalUserDefinedOptions } from '@/types'
 import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
 import { isSourceStyleRequest } from '../../shared/style-requests'
@@ -11,6 +12,8 @@ export function resolveCssBundleOutputFile(options: {
   file: string
   isWebGeneratorTarget: boolean
   opts: InternalUserDefinedOptions
+  pipelineContext: ViteFrameworkCssPipelineContext
+  cssPipelineStrategy?: ViteFrameworkCssPipelineStrategy | undefined
   shouldPreserveAppCssExtension: boolean
 }) {
   const {
@@ -19,13 +22,20 @@ export function resolveCssBundleOutputFile(options: {
     file,
     isWebGeneratorTarget,
     opts,
+    pipelineContext,
+    cssPipelineStrategy,
     shouldPreserveAppCssExtension,
   } = options
   let outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget, shouldPreserveAppCssExtension, defaultStyleOutputExtension, bundleFiles)
   if (
     outputFile === file
     && isRootMiniProgramStyleOutputFile(file)
-    && shouldMoveRootMiniProgramStyleToImportShellOrigin(opts.appType)
+    && shouldMoveRootMiniProgramStyleToImportShellOrigin(
+      cssPipelineStrategy?.shouldMoveRootMiniProgramStyleToImportShellOrigin?.({
+        ...pipelineContext,
+        file,
+      }),
+    )
   ) {
     outputFile = createRootMiniProgramOriginStyleOutputFile(file)
   }
@@ -153,16 +163,18 @@ export function applyCssResultToBundle(options: {
   outputFile: string
   source: string
   viteProcessedCssAsset: boolean
-  appType: unknown
+  pipelineContext: ViteFrameworkCssPipelineContext
+  cssPipelineStrategy?: ViteFrameworkCssPipelineStrategy | undefined
 }) {
   const {
-    appType,
     assetSourceFile,
     bundle,
+    cssPipelineStrategy,
     emitOrReplayCssAsset,
     file,
     originalSource,
     outputFile,
+    pipelineContext,
     source,
     viteProcessedCssAsset,
   } = options
@@ -172,7 +184,13 @@ export function applyCssResultToBundle(options: {
   }
   const shouldKeepSourceAsImportShell = isRootMiniProgramStyleOutputFile(file)
     && isRootMiniProgramStyleOutputFile(outputFile)
-    && shouldKeepRootMiniProgramStyleAsImportShell(appType)
+    && shouldKeepRootMiniProgramStyleAsImportShell(
+      cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
+        ...pipelineContext,
+        css: source,
+        file,
+      }),
+    )
   const importShellSource = shouldKeepSourceAsImportShell
     ? createCssImportShell(file, outputFile)
     : undefined

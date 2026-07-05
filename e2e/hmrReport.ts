@@ -177,21 +177,44 @@ export function summarizeHmrTimingSamples(samples: Array<Pick<HmrTimingSample, '
   }
 }
 
-function automatedHotUpdatePlatforms(entry: DemoCoverageEntry) {
+function automatedHmrPlatforms(entry: DemoCoverageEntry) {
   return entry.platforms
     .filter(platform => platform.hmrCoverage === 'automated')
-    .filter(platform => platform.command.includes('e2e:hot-update:demo') || platform.command.includes('e2e:taro:web-hmr') || platform.command.includes('web-vite-demo-hmr.test.ts'))
     .map(platform => platform.platform)
 }
 
-function resolveHmrPlatform(entry: DemoCoverageEntry | undefined) {
+function resolvePlatformFromCaseName(caseName: string) {
+  const platform = caseName.split(':')[1]?.trim()
+  return platform || undefined
+}
+
+function hasWebTiming(timings: HmrTimingSample[]) {
+  return timings.some(timing => timing.surface === 'web' || timing.surface.startsWith('web:'))
+}
+
+function resolveHmrPlatform(entry: DemoCoverageEntry | undefined, caseName: string, timings: HmrTimingSample[]) {
+  const explicitPlatform = resolvePlatformFromCaseName(caseName)
+  if (explicitPlatform) {
+    return explicitPlatform
+  }
+
   if (!entry) {
     return 'unknown'
   }
 
-  const platforms = automatedHotUpdatePlatforms(entry)
+  const platforms = automatedHmrPlatforms(entry)
   if (entry.name.startsWith('web/')) {
     return platforms.includes('web') ? 'web' : (platforms[0] ?? 'web')
+  }
+
+  if (hasWebTiming(timings)) {
+    return platforms.includes('h5') ? 'h5' : (platforms.includes('web') ? 'web' : (platforms[0] ?? 'web'))
+  }
+
+  for (const platform of ['weapp', 'mp-weixin', 'wx']) {
+    if (platforms.includes(platform)) {
+      return platform
+    }
   }
 
   const miniProgramPlatform = platforms.find(platform => platform !== 'h5' && platform !== 'web')
@@ -409,7 +432,7 @@ export async function buildHmrFullRunReport(options: {
         caseName: item.caseName,
         project,
         label: projectReport.label || item.caseName,
-        platform: resolveHmrPlatform(entry),
+        platform: resolveHmrPlatform(entry, item.caseName, timings),
         ...(entry ? { framework: entry.framework, builder: entry.builder, tailwindcss: entry.tailwindcss, sourceShape: entry.sourceShape } : {}),
         reportFile: path.relative(options.repositoryRoot, item.reportFile).split(path.sep).join('/'),
         initialReadyMs: projectReport.initialReadyMs,

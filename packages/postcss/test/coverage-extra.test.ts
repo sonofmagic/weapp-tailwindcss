@@ -281,7 +281,7 @@ describe('compat helpers', () => {
           --tw-gradient-from-position: 10%;
         }
       }
-      :root,:host {
+      view,text,::after,::before {
         --tw-gradient-to-position: 90%;
       }
       page {

@@ -11,7 +11,7 @@ import {
   usesTwContentVariable,
 } from './predicates'
 import { removeSpecificityPlaceholders, removeTailwindContainerMaxWidthMediaRules, removeTailwindContainerWidthRules, removeUnsupportedModernColorDeclarations } from './root-cleanups'
-import { getRuleSelectors, isMiniProgramNativeElementSelector, isUnsupportedBrowserPreflightSelector, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR, MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS, MINI_PROGRAM_THEME_SCOPE_SELECTOR } from './selectors'
+import { getRuleSelectors, isMiniProgramNativeElementSelector, isUnsupportedBrowserPreflightSelector, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR, MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS } from './selectors'
 
 const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
 const MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR = '::before,\n::after'
@@ -80,6 +80,49 @@ function isMiniProgramElementContentInitRule(rule: postcss.Rule) {
   return hasElementSelector && hasPseudoSelector && isOnlyTwContentDeclarations(rule)
 }
 
+function hasMiniProgramElementContentInit(root: postcss.Root) {
+  let found = false
+  root.walkRules((rule) => {
+    if (!isMiniProgramElementVariableScopeRule(rule)) {
+      return
+    }
+    rule.walkDecls('--tw-content', (decl) => {
+      if (isEmptyTwContentDeclaration(decl)) {
+        found = true
+      }
+    })
+  })
+  return found
+}
+
+function ensureMiniProgramElementContentInit(root: postcss.Root) {
+  if (hasMiniProgramElementContentInit(root)) {
+    return
+  }
+
+  let defaultScopeRule: postcss.Rule | undefined
+  root.walkRules((rule) => {
+    if (rule.selector === MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR) {
+      defaultScopeRule = rule
+      return false
+    }
+  })
+
+  const declaration = postcss.decl({
+    prop: '--tw-content',
+    value: '""',
+  })
+  if (defaultScopeRule) {
+    defaultScopeRule.append(declaration)
+    return
+  }
+
+  root.prepend(postcss.rule({
+    selector: MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR,
+    nodes: [declaration],
+  }))
+}
+
 function isTailwindV4GradientRuntimeDeclaration(decl: postcss.Declaration) {
   return decl.prop.startsWith('--tw-gradient-')
 }
@@ -96,7 +139,7 @@ function moveTailwindV4GradientRuntimeDeclarations(rule: postcss.Rule) {
 
   if (gradientDeclarations.length > 0) {
     rule.before(new postcss.Rule({
-      selector: MINI_PROGRAM_THEME_SCOPE_SELECTOR,
+      selector: MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR,
       nodes: gradientDeclarations,
     }))
   }
@@ -226,6 +269,10 @@ export function pruneMiniProgramGeneratedCss(
 
     rule.remove()
   })
+
+  if (shouldPreserveContentInit) {
+    ensureMiniProgramElementContentInit(root)
+  }
 
   root.walkAtRules((atRule) => {
     if (!atRule.nodes || atRule.nodes.length === 0) {

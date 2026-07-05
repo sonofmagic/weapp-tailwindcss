@@ -2,10 +2,10 @@
 
 exports[`tailwindcss v4 > mpx handles tailwindcss v4.1.17 css bundle 1`] = `
 "view,text,::before,::after {
+      border: 0 solid;
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      border: 0 solid;
       --tw-space-y-reverse: 0;
       --tw-divide-x-reverse: 0;
       --tw-border-style: solid;
@@ -55,6 +55,26 @@ view,text,::after,::before {
   border: 0 solid;
   margin: 0;
   padding: 0;
+  --tw-space-y-reverse: 0;
+  --tw-border-style: solid;
+  --tw-divide-x-reverse: 0;
+  --tw-font-weight: ;
+  --tw-content: "";
+  --tw-leading: ;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-color: initial;
+  --tw-shadow-alpha: 100%;
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-inset-shadow-color: initial;
+  --tw-inset-shadow-alpha: 100%;
+  --tw-ring-color: ;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-color: ;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-inset: ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-offset-shadow: 0 0 #0000;
 }
 .-m-_b20px_B {
   margin: -20px;
@@ -1211,10 +1231,10 @@ exports[`tailwindcss v4 > weapp-tailwindcss default > tailwindcss 1`] = `
 exports[`tailwindcss v4 > weapp-tailwindcss default 1`] = `
 "
     view,text,::before,::after {
+      border: 0 solid;
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      border: 0 solid;
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -1254,6 +1274,34 @@ view,text,::after,::before {
   border: 0 solid;
   margin: 0;
   padding: 0;
+  --tw-blur: ;
+  --tw-brightness: ;
+  --tw-contrast: ;
+  --tw-grayscale: ;
+  --tw-hue-rotate: ;
+  --tw-invert: ;
+  --tw-opacity: ;
+  --tw-saturate: ;
+  --tw-sepia: ;
+  --tw-drop-shadow: ;
+  --tw-drop-shadow-color: ;
+  --tw-drop-shadow-alpha: 100%;
+  --tw-drop-shadow-size: ;
+  --tw-content: "";
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-color: initial;
+  --tw-shadow-alpha: 100%;
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-inset-shadow-color: initial;
+  --tw-inset-shadow-alpha: 100%;
+  --tw-ring-color: ;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-color: ;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-inset: ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-offset-shadow: 0 0 #0000;
 }
 .w-_b100px_B {
   width: 100px;
@@ -1517,10 +1565,10 @@ exports[`tailwindcss v4 > weapp-tailwindcss default with layer > tailwindcss 1`]
 exports[`tailwindcss v4 > weapp-tailwindcss default with layer 1`] = `
 "
     view,text,::before,::after {
+      border: 0 solid;
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      border: 0 solid;
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -1560,6 +1608,34 @@ view,text,::after,::before {
     border: 0 solid;
     margin: 0;
     padding: 0;
+    --tw-blur: ;
+    --tw-brightness: ;
+    --tw-contrast: ;
+    --tw-grayscale: ;
+    --tw-hue-rotate: ;
+    --tw-invert: ;
+    --tw-opacity: ;
+    --tw-saturate: ;
+    --tw-sepia: ;
+    --tw-drop-shadow: ;
+    --tw-drop-shadow-color: ;
+    --tw-drop-shadow-alpha: 100%;
+    --tw-drop-shadow-size: ;
+    --tw-content: "";
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-color: initial;
+    --tw-shadow-alpha: 100%;
+    --tw-inset-shadow: 0 0 #0000;
+    --tw-inset-shadow-color: initial;
+    --tw-inset-shadow-alpha: 100%;
+    --tw-ring-color: ;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-inset-ring-color: ;
+    --tw-inset-ring-shadow: 0 0 #0000;
+    --tw-ring-inset: ;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-offset-shadow: 0 0 #0000;
   }
 .w-_b100px_B {
     width: 100px;

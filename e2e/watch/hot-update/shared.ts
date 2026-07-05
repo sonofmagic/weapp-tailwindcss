@@ -30,7 +30,7 @@ const INVALID_BG_UNTERMINATED_RE = /\bbg-\[[^\]]*$/gm
 const INVALID_PX_UNTERMINATED_RE = /\bpx-\[[^\]]*$/gm
 const INVALID_BG_INNER_SPACE_RE = /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g
 const INVALID_PX_INNER_SPACE_RE = /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g
-const MINI_PROGRAM_STYLE_OUTPUT_RE = /\.(?:wxss|acss|ttss)(?:$|[*?])/
+const MINI_PROGRAM_STYLE_OUTPUT_RE = /\.(?:wxss|acss|ttss|qss)(?:$|[*?])/
 const WEB_HMR_CASES = new Set<ConcreteWatchCaseName>([
   'taro-webpack-react-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
@@ -48,6 +48,23 @@ const SUBPACKAGE_HMR_CASES = new Set(
 
 function normalizePathLike(value: string) {
   return value.replace(PATH_SEPARATOR_RE, '/')
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function outputMatchesCandidate(output: string, candidate: string) {
+  const normalizedOutput = normalizePathLike(output)
+  const normalizedCandidate = normalizePathLike(candidate)
+  if (normalizedOutput === normalizedCandidate) {
+    return true
+  }
+  if (!normalizedCandidate.includes('*')) {
+    return false
+  }
+  const pattern = `^${normalizedCandidate.split('*').map(escapeRegExp).join('[^/]*')}$`
+  return new RegExp(pattern).test(normalizedOutput)
 }
 
 interface MutationRoundReport {
@@ -1011,7 +1028,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
           subPackage.mainStyleHotUpdate,
           `[${item.project}:${subPackage.root}]`,
           maxHotUpdateMs,
-          configuredSubPackageMutation?.templateMutation,
+          configuredSubPackageMutation?.mainStyleMutation ?? configuredSubPackageMutation?.templateMutation,
         )
       }
     }
@@ -1264,30 +1281,42 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     }
 
     for (const subPackageMetric of subPackageMutationMetrics) {
+      const configuredSubPackageMutation = configuredWatchCase?.subPackageMutations?.find(item => item.root === subPackageMetric.root)
+      const expectedTemplateRoundCount = configuredSubPackageMutation?.templateMutation.skipExtendedHmr
+        ? 1
+        : requiredMutationRounds.length
       expect(subPackageMetric.outputWxml).toContain(subPackageMetric.root)
       expect(subPackageMetric.outputJs).toContain(subPackageMetric.root)
       expect(subPackageMetric.globalStyleOutputs.length).toBeGreaterThan(0)
       expect(subPackageMetric.template.sourceFile).toContain(subPackageMetric.root)
       expect(subPackageMetric.template.marker).toContain('tw-watch-subpackage-')
-      expect(subPackageMetric.template.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)
+      expect(subPackageMetric.template.rounds.length).toBeGreaterThanOrEqual(expectedTemplateRoundCount)
       expect(subPackageMetric.template.verifyEscapedIn.length + subPackageMetric.template.verifyClassLiteralIn.length).toBeGreaterThan(0)
       expect(subPackageMetric.template.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(subPackageMetric.template.minRequiredGlobalStyleEscapedClasses)
       expect(subPackageMetric.template.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(subPackageMetric.template.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
       expect(subPackageMetric.template.rollbackEffectiveMs).toBeGreaterThan(0)
-      if (!subPackageMetric.style) {
+      const subPackageStyle = subPackageMetric.style
+      if (!subPackageStyle) {
         continue
       }
-      expect(subPackageMetric.style.sourceFile).toContain(subPackageMetric.root)
-      expect(subPackageMetric.globalStyleOutputs).toContain(subPackageMetric.style.outputStyle)
-      expect(subPackageMetric.style.styleNeedle).toContain('.tw-watch-style-')
+      const expectedStyleOutputs = [
+        ...subPackageMetric.globalStyleOutputs,
+        ...(configuredSubPackageMutation?.outputStyleCandidates ?? []),
+      ]
+      expect(subPackageStyle.sourceFile).toContain(subPackageMetric.root)
+      expect(
+        expectedStyleOutputs.some(candidate => outputMatchesCandidate(subPackageStyle.outputStyle, candidate)),
+        `[${item.project}/${subPackageMetric.root}] style output should match configured candidates: ${subPackageStyle.outputStyle}`,
+      ).toBe(true)
+      expect(subPackageStyle.styleNeedle).toContain('.tw-watch-style-')
       if (!noApplyValidationCases.has(baseCaseName)) {
-        expect(subPackageMetric.style.applyUtilities.length).toBeGreaterThan(0)
-        expect(subPackageMetric.style.expectedApplyDeclarations.length).toBeGreaterThan(0)
+        expect(subPackageStyle.applyUtilities.length).toBeGreaterThan(0)
+        expect(subPackageStyle.expectedApplyDeclarations.length).toBeGreaterThan(0)
       }
-      expect(subPackageMetric.style.hotUpdateEffectiveMs).toBeGreaterThan(0)
-      expect(subPackageMetric.style.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
-      expectStyleRollbackMetric(subPackageMetric.style, `[${item.name}/${subPackageMetric.root}] subpackage style`)
+      expect(subPackageStyle.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(subPackageStyle.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+      expectStyleRollbackMetric(subPackageStyle, `[${item.name}/${subPackageMetric.root}] subpackage style`)
       if (subPackageMetric.independent) {
         expect(subPackageMetric.root).toBe('sub-independent')
       }

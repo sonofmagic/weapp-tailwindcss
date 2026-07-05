@@ -39,11 +39,6 @@ const UNSUPPORTED_CUSTOM_PROPERTY_DEFAULT_PROPS = new Set([
 ])
 const DEFAULT_VARIABLE_SCOPE_SELECTORS = new Set([
   '*',
-  ':root',
-  ':host',
-  'page',
-  '.tw-root',
-  'wx-root-portal-content',
   'view',
   'text',
   ':before',
@@ -124,7 +119,11 @@ function isInsideAtRule(decl: PostcssDeclaration, name: string) {
 }
 
 function isDefaultVariableScopeRule(rule: Rule) {
-  if (!rule.selectors.every(selector => DEFAULT_VARIABLE_SCOPE_SELECTORS.has(selector.trim()))) {
+  const selectors = rule.selectors.map(selector => selector.trim())
+  if (!selectors.every(selector => DEFAULT_VARIABLE_SCOPE_SELECTORS.has(selector))) {
+    return false
+  }
+  if (!selectors.some(selector => selector === '*' || selector === 'view' || selector === 'text')) {
     return false
   }
   let hasDeclaration = false

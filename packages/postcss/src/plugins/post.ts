@@ -2,10 +2,10 @@
 import type { Declaration, Plugin, PluginCreator, Root, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
-import { MINI_PROGRAM_THEME_SCOPE_SELECTOR, normalizeMiniProgramThemeScopeSelector } from '../compat/mini-program-css/selectors'
+import { getRuleSelectors, isMiniProgramThemeScopeSelector, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR } from '../compat/mini-program-css/selectors'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../compat/mini-program-prefixes'
 import { normalizeTailwindcssRpxDeclaration } from '../compat/tailwindcss-rpx'
-import { appendTailwindcssV4MiniProgramGradientRules, collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, mergeTailwindcssV4GradientDirectionRules, normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
+import { appendTailwindcssV4MiniProgramGradientRules, collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, mergeTailwindcssV4GradientDirectionRules, normalizeTailwindcssV4Declaration, usesTailwindcssV4ContentVariable } from '../compat/tailwindcss-v4'
 import { shouldRemoveEmptyRuleForUniAppX } from '../compat/uni-app-x'
 import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
@@ -75,15 +75,31 @@ function removeLegacyFlexboxPrefix(decl: Declaration) {
   }
 }
 
-function injectMissingTailwindcssV4Defaults(root: Root, options: IStyleHandlerOptions) {
+function removeThemeScopeTailwindcssV4Defaults(root: Root, injectedProps: ReadonlySet<string>) {
+  root.walkRules((rule) => {
+    if (!isMiniProgramThemeScopeSelector(getRuleSelectors(rule))) {
+      return
+    }
+    rule.walkDecls((decl) => {
+      if (injectedProps.has(decl.prop)) {
+        decl.remove()
+      }
+    })
+    if ((rule.nodes?.length ?? 0) === 0) {
+      rule.remove()
+    }
+  })
+}
+
+function injectMissingTailwindcssV4Defaults(root: Root) {
   const nodes = createMissingCssVarsV4Nodes(root, collectUsedTailwindcssV4Variables(root))
   if (nodes.length === 0) {
     return
   }
-  const themeScopeSelector = normalizeMiniProgramThemeScopeSelector(options.cssSelectorReplacement?.root)
+  const injectedProps = new Set(nodes.map(node => node.prop))
   let defaultScopeRule: Rule | undefined
   root.walkRules((rule) => {
-    if (rule.selector === MINI_PROGRAM_THEME_SCOPE_SELECTOR || rule.selector === themeScopeSelector) {
+    if (rule.selector === MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR) {
       defaultScopeRule = rule
       return false
     }
@@ -101,12 +117,14 @@ function injectMissingTailwindcssV4Defaults(root: Root, options: IStyleHandlerOp
       defaultScopeRule.append(node)
     }
     defaultScopeRule.raws.semicolon = true
+    removeThemeScopeTailwindcssV4Defaults(root, injectedProps)
     return
   }
   root.append({
-    selector: themeScopeSelector,
+    selector: MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR,
     nodes,
   })
+  removeThemeScopeTailwindcssV4Defaults(root, injectedProps)
 }
 
 function hasTailwindcssV4GradientRuntime(root: Root) {
@@ -183,8 +201,8 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
     }
   }
 
-  if (enableMainChunkTransforms) {
-    p.OnceExit = (root) => {
+  p.OnceExit = (root) => {
+    if (enableMainChunkTransforms) {
       root.walkDecls((decl) => {
         normalizeMiniProgramPrefixedDeclaration(decl)
       })
@@ -200,11 +218,14 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
       root.walkAtRules((atRule) => {
         removeUnsupportedMiniProgramPrefixedAtRule(atRule)
       })
-      if (shouldInjectTailwindcssV4Defaults) {
-        injectMissingTailwindcssV4Defaults(root, opts)
-      }
     }
 
+    if (shouldInjectTailwindcssV4Defaults || (opts.majorVersion === 4 && usesTailwindcssV4ContentVariable(root))) {
+      injectMissingTailwindcssV4Defaults(root)
+    }
+  }
+
+  if (enableMainChunkTransforms) {
     p.AtRuleExit = (atRule) => {
       removeUnsupportedMiniProgramPrefixedAtRule(atRule)
       /**

@@ -8,3 +8,9 @@
 
 
 </script>
+
+<style>
+.component-page {
+  color: #111;
+}
+</style>

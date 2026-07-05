@@ -6,11 +6,6 @@ text,
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
   --tw-space-x-reverse: 0;
   --tw-space-y-reverse: 0;
   --tw-border-style: solid;
@@ -22,6 +17,12 @@ wx-root-portal-content {
   --tw-gradient-to-position: 100%;
   --tw-duration: initial;
   --tw-ease: initial;
+  --tw-content: '';
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';

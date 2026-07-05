@@ -23,6 +23,9 @@ export function collectThemeVariableRule(root: postcss.Root, options: FinalizeMi
       if (isDisplayP3Declaration(decl)) {
         return
       }
+      if (decl.prop.startsWith('--tw-')) {
+        return
+      }
       if (!shouldPreserveContentInit && isEmptyTwContentDeclaration(decl)) {
         return
       }

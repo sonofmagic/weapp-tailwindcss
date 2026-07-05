@@ -91,6 +91,21 @@ export function hasMissingRuntimeCandidates(
   return false
 }
 
+export function hasStaleRuntimeCandidates(
+  classSet: ReadonlySet<string> | undefined,
+  candidates: ReadonlySet<string> | undefined,
+) {
+  if (!classSet || !candidates) {
+    return false
+  }
+  for (const candidate of classSet) {
+    if (isRuntimeTransformCandidate(candidate) && !candidates.has(candidate)) {
+      return true
+    }
+  }
+  return false
+}
+
 export function resolveGeneratedCssRuntimeCandidates(
   source: string,
   fallbackClassSet?: ReadonlySet<string> | undefined,
@@ -186,7 +201,10 @@ export function shouldConsumeWebpackLoaderGeneratedCss(options: {
     options.watchMode === true
     && options.loaderGeneratedClassSet
     && options.sourceCandidates
-    && hasMissingRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
+    && (
+      hasMissingRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
+      || hasStaleRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
+    )
   ) {
     return false
   }

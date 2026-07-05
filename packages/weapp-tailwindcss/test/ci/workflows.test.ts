@@ -156,6 +156,7 @@ describe('ci workflows', () => {
       'web-hmr',
       'demo-user-workflow',
       'demo-platform-output-matrix',
+      'watch-hmr-coverage-contract',
     ])
     expect(focusedRows.map(row => row.command)).toEqual([
       'pnpm e2e:generator-parity',
@@ -166,6 +167,7 @@ describe('ci workflows', () => {
       'pnpm e2e:web:hmr',
       'pnpm e2e:demo-user-workflow',
       'pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts',
+      'pnpm --filter weapp-tailwindcss exec vitest run test/watch-hmr-coverage-matrix.unit.test.ts --coverage.enabled=false',
     ])
     expect(hasStepRunCommand(stepRuns(workflow, 'e2e-focused'), '${{ matrix.command }}')).toBe(true)
 

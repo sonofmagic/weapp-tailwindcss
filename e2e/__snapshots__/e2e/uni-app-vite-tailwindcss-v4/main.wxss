@@ -6,11 +6,6 @@ text,
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
   --tw-space-x-reverse: 0;
   --tw-space-y-reverse: 0;
   --tw-border-style: solid;
@@ -18,19 +13,33 @@ wx-root-portal-content {
   --tw-divide-y-reverse: 0;
   --tw-gradient-position: initial;
   --tw-gradient-from: #0000;
+  --tw-gradient-via: #0000;
   --tw-gradient-to: #0000;
   --tw-gradient-stops: initial;
   --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
   --tw-font-weight: ;
-  --tw-content: '';
   --tw-leading: ;
   --tw-shadow: 0 0 #0000;
   --tw-shadow-color: initial;
+  --tw-shadow-alpha: 100%;
   --tw-inset-shadow: 0 0 #0000;
+  --tw-inset-shadow-color: initial;
+  --tw-inset-shadow-alpha: 100%;
+  --tw-ring-color: ;
   --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-color: ;
   --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-inset: ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 #0000;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';

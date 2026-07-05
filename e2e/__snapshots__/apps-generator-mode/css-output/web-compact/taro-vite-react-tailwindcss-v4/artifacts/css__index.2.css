@@ -285,9 +285,11 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .border-slate-200\/80 {
   border-color: rgba(226, 232, 240, 0.8);
 }
+@supports (color: color-mix(in lch, red, blue)) {
  /*tokens: border-slate-200/80 <= src/pages/index/index.tsx */
-.border-slate-200\/80 {
-  border-color: rgba(226, 232, 240, 0.8);
+  .border-slate-200\/80 {
+    border-color: rgba(226, 232, 240, 0.8);
+  }
 }
 .\!bg-\[gray\] {
   background-color: gray !important;
@@ -305,9 +307,11 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .bg-green-200\/70 {
   background-color: rgba(185, 248, 207, 0.7);
 }
+@supports (color: color-mix(in lch, red, blue)) {
  /*tokens: bg-green-200/70 <= src/pages/index/index.tsx */
-.bg-green-200\/70 {
-  background-color: rgba(185, 248, 207, 0.7);
+  .bg-green-200\/70 {
+    background-color: rgba(185, 248, 207, 0.7);
+  }
 }
  /*tokens: bg-purple-300 <= src/pages/index/index.tsx */
 .bg-purple-300 {
@@ -321,9 +325,11 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .bg-white\/70 {
   background-color: rgba(255, 255, 255, 0.7);
 }
+@supports (color: color-mix(in lch, red, blue)) {
  /*tokens: bg-white/70 <= src/pages/index/index.tsx */
-.bg-white\/70 {
-  background-color: rgba(255, 255, 255, 0.7);
+  .bg-white\/70 {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
 }
  /*tokens: bg-linear-to-r <= src/pages/index/index.tsx */
 .bg-linear-to-r {
@@ -363,9 +369,11 @@ input:where([type='button'], [type='reset'], [type='submit']),
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+@supports (color: color-mix(in lch, red, blue)) {
  /*tokens: from-slate-900/95 <= src/pages/index/index.tsx */
-.from-slate-900\/95 {
-  --tw-gradient-from: rgba(15, 23, 43, 0.95);
+  .from-slate-900\/95 {
+    --tw-gradient-from: rgba(15, 23, 43, 0.95);
+  }
 }
  /*tokens: to-blue-500 <= src/app.css, src/pages/index/index.tsx */
 .to-blue-500 {
@@ -387,9 +395,11 @@ input:where([type='button'], [type='reset'], [type='submit']),
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+@supports (color: color-mix(in lch, red, blue)) {
  /*tokens: to-slate-700/95 <= src/pages/index/index.tsx */
-.to-slate-700\/95 {
-  --tw-gradient-to: rgba(49, 65, 88, 0.95);
+  .to-slate-700\/95 {
+    --tw-gradient-to: rgba(49, 65, 88, 0.95);
+  }
 }
  /*tokens: p-4 <= src/pages/index/index.tsx */
 .p-4 {

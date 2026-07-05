@@ -147,6 +147,150 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
     }
   })
 
+  it('replaces webpack registered source css when style hot rollback removes markers', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-source-css-rollback-'))
+    const sourceCssFile = path.join(root, 'src/pages/component/index.css')
+    const firstSourceCss = [
+      '.tw-watch-style-rollback { color: red; }',
+      '.component-root { display: flex; }',
+    ].join('\n')
+    const rollbackSourceCss = '.component-root { display: flex; }'
+
+    vi.resetModules()
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+          target: 'weapp',
+          importFallback: true,
+          styleOptions: {},
+        })),
+      }
+    })
+
+    try {
+      await mkdir(path.dirname(sourceCssFile), { recursive: true })
+      const { WeappTailwindcss: MockedWeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
+      testState.currentContext = createContext({
+        appType: 'mpx',
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        mainCssChunkMatcher: vi.fn(() => false),
+        styleHandler: vi.fn(async (_code: string, options: any) => ({
+          css: options?.sourceOptions?.sourceCss ?? '',
+        })),
+        tailwindcssBasedir: root,
+      } as any)
+
+      const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+      let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
+      let assetStore: Record<string, string> = {
+        'pages/component/index.wxss': firstSourceCss,
+      }
+      const compilation = {
+        compiler: { outputPath: path.join(root, 'dist/wx') },
+        chunks: [{ id: 'page', hash: 'hash-1', files: ['pages/component/index.wxss'] }],
+        chunkGraph: {
+          getChunkModulesIterable: () => [{
+            resource: sourceCssFile,
+          }],
+        },
+        hooks: {
+          processAssets: {
+            tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+              processAssetsCallbacks.push(handler)
+            },
+          },
+        },
+        updateAsset: vi.fn((file: string, source: FakeConcatSource) => {
+          assetStore[file] = source.toString()
+        }),
+        getAsset(file: string) {
+          const content = assetStore[file]
+          if (content === undefined) {
+            return undefined
+          }
+          return {
+            source: {
+              source: () => content,
+            },
+          }
+        },
+      }
+      const compiler = {
+        outputPath: path.join(root, 'dist/wx'),
+        options: {
+          watch: true,
+        },
+        webpack: {
+          Compilation: {
+            PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+          },
+          sources: {
+            ConcatSource: FakeConcatSource,
+          },
+          NormalModule: {
+            getCompilationHooks: vi.fn(() => ({
+              loader: {
+                tap: (_name: string, handler: (loaderContext: any, module: LoaderModule) => void) => {
+                  loaderHandler = handler
+                },
+              },
+            })),
+          },
+        },
+        hooks: {
+          normalModuleFactory: {
+            tap: vi.fn(() => {}),
+          },
+          compilation: {
+            tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+              handler(compilation)
+            }),
+          },
+        },
+      }
+
+      new MockedWeappTailwindcss().apply(compiler as any)
+      const sourceCssModule: LoaderModule = {
+        loaders: [{ loader: '/path/postcss-loader.js' }],
+        resource: sourceCssFile,
+      }
+      loaderHandler?.({}, sourceCssModule)
+      const classSetLoaderEntry = sourceCssModule.loaders.find(entry => entry.loader === testState.currentContext.runtimeLoaderPath)
+      const loaderRuntime = getWebpackLoaderRuntime(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey)
+      loaderRuntime?.classSet?.registerCssSourceFile?.({
+        file: sourceCssFile,
+        css: firstSourceCss,
+      })
+
+      await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
+
+      assetStore = {
+        'pages/component/index.wxss': rollbackSourceCss,
+      }
+      compilation.chunks[0] = { id: 'page', hash: 'hash-2', files: ['pages/component/index.wxss'] }
+      loaderRuntime?.classSet?.registerCssSourceFile?.({
+        file: sourceCssFile,
+        css: rollbackSourceCss,
+      })
+      await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
+
+      expect(testState.currentContext.styleHandler).toHaveBeenCalledTimes(2)
+      expect(testState.currentContext.styleHandler.mock.calls.at(-1)?.[1]?.sourceOptions?.sourceCss).toBe(rollbackSourceCss)
+      expect(assetStore['pages/component/index.wxss']).toBe(rollbackSourceCss)
+      expect(assetStore['pages/component/index.wxss']).not.toContain('tw-watch-style-rollback')
+    }
+    finally {
+      vi.doUnmock('@/generator')
+      vi.resetModules()
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   it('uses configured main source css for Taro webpack v4 main wxss hot updates', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-main-source-css-hot-'))
     const sourceCssFile = path.join(root, 'src/app.css')

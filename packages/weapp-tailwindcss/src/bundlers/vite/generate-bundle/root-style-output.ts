@@ -28,10 +28,10 @@ export function createRootMiniProgramOriginStyleOutputFile(file: string) {
   return normalized.replace(/(\.[^.]+)$/, '-origin$1')
 }
 
-export function shouldKeepRootMiniProgramStyleAsImportShell(appType: unknown) {
-  return appType === 'uni-app-vite' || appType === 'uni-app-x' || appType === 'taro'
+export function shouldKeepRootMiniProgramStyleAsImportShell(enabled: boolean | undefined) {
+  return enabled === true
 }
 
-export function shouldMoveRootMiniProgramStyleToImportShellOrigin(appType: unknown) {
-  return appType === 'taro'
+export function shouldMoveRootMiniProgramStyleToImportShellOrigin(enabled: boolean | undefined) {
+  return enabled === true
 }
