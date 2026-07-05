@@ -2,17 +2,23 @@ import type { OutputAsset, OutputBundle } from 'rollup'
 import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from './shared/framework-strategy'
 import type { InternalUserDefinedOptions } from '@/types'
 import {
+  collectCssImportRequestsRoot,
   containsCssAfterMinify,
   filterExistingCssRules,
+  isMiniProgramLocalCssImportRequest,
   mergeCoveredCssRuleDeclarations,
   mergeMiniProgramPreflightRuleDeclarations,
   mergeMiniProgramThemeScopeRuleDeclarations,
+  parseTailwindCssDirectiveRequest,
   postcss,
+  removeTailwindSourceDirectivesRoot,
+  removeUnsupportedMiniProgramCssImportsRoot,
 } from '@weapp-tailwindcss/postcss'
 import path from 'pathe'
 import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
-import { parseImportRequest, removeTailwindSourceDirectives } from '../shared/generator-css/directives'
+import { removeTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { isPureLocalCssImportWrapper } from '../shared/generator-css/local-imports'
+import { stripGeneratorPlaceholderMarkers } from '../shared/generator-css/markers'
 import { extractMarkedUserLayerComponentsCss, mergeMarkedUserLayerComponentsCss } from '../shared/generator-css/user-layer-order'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { isSubpackageOutputFile } from './generate-bundle/subpackages'
@@ -124,88 +130,104 @@ function dedupeViteCssResults<T extends { css: string, outputFile?: string | und
   })
 }
 
-function removeTailwindSourceMediaWrappers(css: string) {
-  if (!css.includes('@media source(')) {
-    return css
-  }
-  try {
-    const root = postcss.parse(css)
-    let changed = false
-    root.walkAtRules('media', (atRule) => {
-      if (!atRule.params.startsWith('source(')) {
-        return
-      }
-      if (atRule.nodes && atRule.nodes.length > 0) {
-        atRule.replaceWith(...atRule.nodes)
-      }
-      else {
-        atRule.remove()
-      }
-      changed = true
-    })
+function removeTailwindSourceMediaWrappersRoot(root: ReturnType<typeof postcss.parse>) {
+  let changed = false
+  root.walkAtRules('media', (atRule) => {
+    if (!atRule.params.startsWith('source(')) {
+      return
+    }
+    if (atRule.nodes && atRule.nodes.length > 0) {
+      atRule.replaceWith(...atRule.nodes)
+    }
+    else {
+      atRule.remove()
+    }
+    changed = true
+  })
+  if (changed) {
     root.walkAtRules((atRule) => {
       if (atRule.nodes && atRule.nodes.length === 0) {
         atRule.remove()
-        changed = true
       }
     })
-    return changed ? root.toString() : css
   }
-  catch {
-    return css
-      .replace(/@media\s+source\([^)]*\)\s*\{\s*\/\*!\s*weapp-tailwindcss generator-placeholder\s*\*\/?\s*\}/gi, '')
-      .replace(/@media\s+source\([^)]*\)\s*\{\s*\}/gi, '')
-  }
+  return changed
+}
+
+function removeTailwindSourceMediaWrappersFallback(css: string) {
+  return css
+    .replace(/@media\s+source\([^)]*\)\s*\{\s*\/\*!\s*weapp-tailwindcss generator-placeholder\s*\*\/?\s*\}/gi, '')
+    .replace(/@media\s+source\([^)]*\)\s*\{\s*\}/gi, '')
 }
 
 function removeTailwindEntryDirectivesFromCss(css: string) {
-  return removeTailwindSourceDirectives(removeTailwindSourceMediaWrappers(css))
+  try {
+    const source = stripGeneratorPlaceholderMarkers(css)
+    const root = postcss.parse(source)
+    const removedMediaWrappers = removeTailwindSourceMediaWrappersRoot(root)
+    const removedTailwindDirectives = removeTailwindSourceDirectivesRoot(root)
+    return removedMediaWrappers || removedTailwindDirectives ? root.toString() : source
+  }
+  catch {
+    return removeTailwindSourceDirectives(removeTailwindSourceMediaWrappersFallback(css))
+  }
 }
 
-function isLocalMiniProgramCssImportRequest(request: string | undefined) {
-  return typeof request === 'string'
-    && (request.startsWith('.') || request.startsWith('/'))
+interface NormalizeInjectableCssResult {
+  css: string
+  importedStyleFiles: Set<string>
 }
 
-function removeUnsupportedMiniProgramCssImports(css: string, file: string) {
+function removeUnsupportedMiniProgramCssImportsFallback(css: string, file: string) {
   if (!isMiniProgramStyleOutputFile(file) || !css.includes('@import')) {
     return css
   }
-  try {
-    const root = postcss.parse(css)
-    let changed = false
-    root.walkAtRules('import', (atRule) => {
-      const request = parseImportRequest(atRule.params)
-      if (request === undefined || isLocalMiniProgramCssImportRequest(request)) {
-        return
+  return css
+    .split(/\r?\n/)
+    .filter((line) => {
+      const trimmed = line.trim()
+      if (!trimmed.startsWith('@import')) {
+        return true
       }
-      atRule.remove()
-      changed = true
+      const params = trimmed
+        .slice('@import'.length)
+        .trim()
+        .replace(/;$/, '')
+        .trim()
+      const request = parseTailwindCssDirectiveRequest(params)
+      return request === undefined || isMiniProgramLocalCssImportRequest(request)
     })
-    return changed ? root.toString() : css
-  }
-  catch {
-    return css
-      .split(/\r?\n/)
-      .filter((line) => {
-        const trimmed = line.trim()
-        if (!trimmed.startsWith('@import')) {
-          return true
-        }
-        const params = trimmed
-          .slice('@import'.length)
-          .trim()
-          .replace(/;$/, '')
-          .trim()
-        const request = parseImportRequest(params)
-        return request === undefined || isLocalMiniProgramCssImportRequest(request)
-      })
-      .join('\n')
-  }
+    .join('\n')
 }
 
 function normalizeInjectableCssForTarget(css: string, file: string) {
-  return removeUnsupportedMiniProgramCssImports(css, file)
+  return normalizeInjectableCssForTargetWithImports(css, file).css
+}
+
+function normalizeInjectableCssForTargetWithImports(css: string, file: string): NormalizeInjectableCssResult {
+  if (!css.includes('@import')) {
+    return {
+      css,
+      importedStyleFiles: new Set(),
+    }
+  }
+  try {
+    const root = postcss.parse(css)
+    const changed = isMiniProgramStyleOutputFile(file)
+      ? removeUnsupportedMiniProgramCssImportsRoot(root)
+      : false
+    return {
+      css: changed ? root.toString() : css,
+      importedStyleFiles: collectImportedStyleFilesRoot(root, file),
+    }
+  }
+  catch {
+    const fallbackCss = removeUnsupportedMiniProgramCssImportsFallback(css, file)
+    return {
+      css: fallbackCss,
+      importedStyleFiles: collectImportedStyleFiles(fallbackCss, file),
+    }
+  }
 }
 
 function stripStyleExtension(file: string) {
@@ -231,20 +253,31 @@ function resolveImportedStyleFile(targetFile: string, request: string | undefine
   return normalizeOutputPathKey(path.posix.join(targetDir === '.' ? '' : targetDir, cleanRequest))
 }
 
-function collectImportedStyleFiles(css: string, targetFile: string) {
+function collectImportedStyleFilesFromRequests(requests: Iterable<string>, targetFile: string) {
   const imports = new Set<string>()
+  for (const request of requests) {
+    const importedFile = resolveImportedStyleFile(targetFile, request)
+    if (importedFile) {
+      imports.add(importedFile)
+    }
+  }
+  return imports
+}
+
+function collectImportedStyleFilesRoot(root: ReturnType<typeof postcss.parse>, targetFile: string) {
+  return collectImportedStyleFilesFromRequests(collectCssImportRequestsRoot(root), targetFile)
+}
+
+function collectImportedStyleFiles(css: string, targetFile: string) {
+  if (!css.includes('@import')) {
+    return new Set<string>()
+  }
   try {
-    const root = postcss.parse(css)
-    root.walkAtRules('import', (atRule) => {
-      const importedFile = resolveImportedStyleFile(targetFile, parseImportRequest(atRule.params))
-      if (importedFile) {
-        imports.add(importedFile)
-      }
-    })
+    return collectImportedStyleFilesRoot(postcss.parse(css), targetFile)
   }
   catch {
   }
-  return imports
+  return new Set<string>()
 }
 
 function normalizeMarkerOutputFile(
@@ -1466,8 +1499,12 @@ export function injectViteProcessedCssIntoMainCssAssets(
     }
     const fileKey = normalizeOutputPathKey(file)
     const mainFileKey = normalizeOutputPathKey(file)
-    let nextCss = normalizeInjectableCssForTarget(transformCss(removeTailwindEntryDirectivesFromCss(originalSource), file), file)
-    const importedStyleFiles = collectImportedStyleFiles(nextCss, file)
+    const normalizedOriginalCss = normalizeInjectableCssForTargetWithImports(
+      transformCss(removeTailwindEntryDirectivesFromCss(originalSource), file),
+      file,
+    )
+    let nextCss = normalizedOriginalCss.css
+    const importedStyleFiles = normalizedOriginalCss.importedStyleFiles
     const importedBundleCssSources = collectImportedBundleCssSources(bundle, importedStyleFiles)
     nextCss = removeCssCoveredByImportedViteResults(
       nextCss,

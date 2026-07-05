@@ -1,8 +1,10 @@
 import {
   cleanLocalCssImportWrapperTailwindDirectives,
   cleanLocalCssImportWrapperTailwindDirectivesRoot,
+  collectCssImportRequestsRoot,
   createCssSourceOrderAppend,
   isLocalCssImportRequest,
+  isMiniProgramLocalCssImportRequest,
   isPureLocalCssImportWrapper,
   isPureLocalCssImportWrapperRoot,
   normalizeOutputImportRequest,
@@ -10,6 +12,7 @@ import {
   postcss,
   restoreLocalCssImports,
   removeTailwindSourceDirectivesRoot,
+  removeUnsupportedMiniProgramCssImportsRoot,
   rewriteLocalCssImportRequestsForOutput,
   rewriteLocalCssImportRequestsForOutputRoot,
   splitLocalCssImports,
@@ -44,10 +47,55 @@ describe('local css import helpers', () => {
     expect(isLocalCssImportRequest('https://example.com/app.css')).toBe(false)
     expect(isLocalCssImportRequest('//example.com/app.css')).toBe(false)
 
+    expect(isMiniProgramLocalCssImportRequest('./index.css')).toBe(true)
+    expect(isMiniProgramLocalCssImportRequest('/app.wxss')).toBe(true)
+    expect(isMiniProgramLocalCssImportRequest('@nutui/nutui-react-taro/dist/style.css')).toBe(false)
+    expect(isMiniProgramLocalCssImportRequest('third-party-ui/dist/theme.css')).toBe(false)
+    expect(isMiniProgramLocalCssImportRequest('https://example.com/app.css')).toBe(false)
+
     expect(isPureLocalCssImportWrapper('@import "tailwindcss";')).toBe(false)
     expect(isPureLocalCssImportWrapper('@import "./index.css";\n.btn{color:red}')).toBe(false)
     expect(isPureLocalCssImportWrapper('@import "./index.css"')).toBe(true)
     expect(isPureLocalCssImportWrapperRoot(postcss.root())).toBe(false)
+  })
+
+  it('removes unsupported mini-program imports from an existing root', () => {
+    const root = postcss.parse([
+      '@import "./local.wxss";',
+      '@import "/app.wxss";',
+      '@import "@nutui/nutui-react-taro/dist/style.css";',
+      '@import url("https://example.com/theme.css");',
+      '.btn { color: red; }',
+    ].join('\n'))
+
+    expect(removeUnsupportedMiniProgramCssImportsRoot(root)).toBe(true)
+    expect(root.toString()).toContain('@import "./local.wxss";')
+    expect(root.toString()).toContain('@import "/app.wxss";')
+    expect(root.toString()).toContain('.btn')
+    expect(root.toString()).not.toContain('@nutui')
+    expect(root.toString()).not.toContain('https://example.com')
+  })
+
+  it('collects import requests from an existing root with optional filtering', () => {
+    const root = postcss.parse([
+      '@import "./local.wxss";',
+      '@import url("../theme.acss?inline");',
+      '@import "third-party-ui/dist/theme.css";',
+      '@import "https://example.com/theme.css";',
+    ].join('\n'))
+
+    expect([...collectCssImportRequestsRoot(root)]).toEqual([
+      './local.wxss',
+      '../theme.acss?inline',
+      'third-party-ui/dist/theme.css',
+      'https://example.com/theme.css',
+    ])
+    expect([...collectCssImportRequestsRoot(root, {
+      isSupportedImportRequest: isMiniProgramLocalCssImportRequest,
+    })]).toEqual([
+      './local.wxss',
+      '../theme.acss?inline',
+    ])
   })
 
   it('removes Tailwind source directives while preserving non-empty user layers', () => {

@@ -32,6 +32,10 @@ export interface RestoreLocalCssImportOptions {
   outputFile?: string | undefined
 }
 
+export interface CollectCssImportRequestsRootOptions {
+  isSupportedImportRequest?: ((request: string) => boolean) | undefined
+}
+
 export function createCssSourceOrderAppend(base: string, extra: string) {
   if (!base) {
     return extra
@@ -52,6 +56,11 @@ export function isLocalCssImportRequest(request: string) {
     && !request.startsWith('weapp-tailwindcss')
     && !request.startsWith('data:')
     && !REMOTE_IMPORT_RE.test(request)
+}
+
+export function isMiniProgramLocalCssImportRequest(request: string) {
+  return request.length > 0
+    && (request.startsWith('.') || request.startsWith('/'))
 }
 
 function parseImportRequest(params: string) {
@@ -103,6 +112,34 @@ export function isPureLocalCssImportWrapperRoot(root: Root) {
     hasImport = true
   }
   return hasImport
+}
+
+export function collectCssImportRequestsRoot(root: Root, options: CollectCssImportRequestsRootOptions = {}) {
+  const requests = new Set<string>()
+  root.walkAtRules('import', (atRule) => {
+    const request = parseImportRequest(atRule.params)
+    if (request === undefined) {
+      return
+    }
+    if (options.isSupportedImportRequest && !options.isSupportedImportRequest(request)) {
+      return
+    }
+    requests.add(request)
+  })
+  return requests
+}
+
+export function removeUnsupportedMiniProgramCssImportsRoot(root: Root) {
+  let changed = false
+  root.walkAtRules('import', (atRule) => {
+    const request = parseImportRequest(atRule.params)
+    if (request === undefined || isMiniProgramLocalCssImportRequest(request)) {
+      return
+    }
+    atRule.remove()
+    changed = true
+  })
+  return changed
 }
 
 export function isPureLocalCssImportWrapper(css: string) {
