@@ -37,8 +37,8 @@
     "typescript": "catalog:typescript59",
     "weapp-tailwindcss": "workspace:*",
     "webpack": "5.105.4",
-    "webpack-cli": "^7.1.0",
-    "webpack-dev-server": "^5.2.5"
+    "webpack-cli": "^7.2.1",
+    "webpack-dev-server": "^5.2.6"
   },
   "repository": {
     "type": "git",
