@@ -37,19 +37,6 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     compiler: {
       type: 'vite',
       vitePlugins: [
-        {
-          name: 'taro-cjs-stability',
-          enforce: 'post',
-          config() {
-            return {
-              build: {
-                commonjsOptions: {
-                  transformMixedEsModules: false,
-                },
-              },
-            }
-          },
-        },
         WeappTailwindcss({
           tailwindcssBasedir: process.cwd(),
           rem2rpx: true,

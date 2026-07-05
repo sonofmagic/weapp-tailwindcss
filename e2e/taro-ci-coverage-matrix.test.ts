@@ -12,11 +12,27 @@ const coreTaroDemos = [
   'taro-webpack-react-tailwindcss-v4',
   'taro-webpack-vue3-tailwindcss-v4',
 ] as const
+const taroViteDemoConfigs = [
+  'taro-vite-react-tailwindcss-v4',
+  'taro-vite-vue3-tailwindcss-v4',
+  'issue-951-taro-vite-react-tailwindcss-v4',
+] as const
+const taroViteTemplateConfigs = [
+  'taro-vite-tailwindcss-v4',
+] as const
 
 const requiredScripts = ['build:weapp', 'dev:weapp', 'build:h5', 'dev:h5'] as const
 const forbiddenTailwindGeneratorPlugins = [
   '@tailwindcss/postcss',
   '@tailwindcss/vite',
+] as const
+const forbiddenTaroViteConfigCompatSnippets = [
+  'taroAlipayBrowserslistAssetPlugin',
+  'taro-alipay-browserslist-asset',
+  'taro-cjs-stability',
+  'transformMixedEsModules',
+  'bundle[\'.browserslistrc\']',
+  'fileName: \'.browserslistrc\'',
 ] as const
 
 function readJson(file: string) {
@@ -95,6 +111,27 @@ describe('Taro CI coverage matrix', () => {
       expect(config, `${name} should declare cssEntries for Tailwind v4`).toContain('cssEntries')
       for (const plugin of forbiddenTailwindGeneratorPlugins) {
         expect(config, `${name} should not use ${plugin}`).not.toContain(plugin)
+      }
+    }
+  })
+
+  it('keeps Taro Vite demo and template configs free of compatibility plugins', () => {
+    const configTargets = [
+      ...taroViteDemoConfigs.map(name => ({
+        name,
+        files: configFiles(name),
+      })),
+      ...taroViteTemplateConfigs.map(name => ({
+        name: `template:${name}`,
+        files: configFiles(path.join('..', 'templates', name)),
+      })),
+    ]
+
+    for (const target of configTargets) {
+      const config = target.files.map(readText).join('\n')
+      expect(config, `${target.name} should register WeappTailwindcss`).toContain('WeappTailwindcss')
+      for (const snippet of forbiddenTaroViteConfigCompatSnippets) {
+        expect(config, `${target.name} should rely on built-in Taro Vite compatibility instead of ${snippet}`).not.toContain(snippet)
       }
     }
   })

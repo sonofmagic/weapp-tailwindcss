@@ -17,10 +17,49 @@ describe('framework plugin composition profiles', () => {
 
     const { WeappTailwindcss } = await import('@/bundlers/vite')
 
-    expect(WeappTailwindcss({ appType: 'taro' })?.[0]?.name).toBe('taro')
+    expect(WeappTailwindcss({ appType: 'taro' })?.map(plugin => plugin.name)).toEqual([
+      'weapp-tailwindcss:taro-alipay-browserslist-asset',
+      'taro',
+    ])
     expect(WeappTailwindcss({ appType: 'uni-app-vite' })?.[0]?.name).toBe('uni-app')
     expect(WeappTailwindcss({ appType: 'uni-app-x' })?.[0]?.name).toBe('uni-app-x')
     expect(WeappTailwindcss({ appType: 'weapp-vite' })?.[0]?.name).toBe('weapp-vite')
+  })
+
+  it('pre-registers Taro Alipay browserslist asset inside the Vite bundle graph', async () => {
+    const { WeappTailwindcss } = await import('@/bundlers/vite')
+    const plugins = WeappTailwindcss({ appType: 'taro' }) ?? []
+    const browserslistAssetPlugin = plugins.find(plugin => plugin.name === 'weapp-tailwindcss:taro-alipay-browserslist-asset')
+
+    expect(browserslistAssetPlugin?.enforce).toBe('pre')
+    expect(plugins.some(plugin => plugin.name === 'weapp-tailwindcss:taro-cjs-stability')).toBe(false)
+
+    const previousTaroEnv = process.env.TARO_ENV
+    try {
+      delete process.env.TARO_ENV
+      const weappBundle = {}
+      await (browserslistAssetPlugin?.generateBundle as any)?.({}, weappBundle)
+      expect(weappBundle).not.toHaveProperty('.browserslistrc')
+
+      process.env.TARO_ENV = 'alipay'
+      const alipayBundle = {}
+      await (browserslistAssetPlugin?.generateBundle as any)?.({}, alipayBundle)
+      expect(alipayBundle).toMatchObject({
+        '.browserslistrc': {
+          type: 'asset',
+          fileName: '.browserslistrc',
+          source: 'defaults and fully supports es6-module',
+        },
+      })
+    }
+    finally {
+      if (previousTaroEnv === undefined) {
+        delete process.env.TARO_ENV
+      }
+      else {
+        process.env.TARO_ENV = previousTaroEnv
+      }
+    }
   })
 
   it('keeps uni-app-x Vite plugin composition inside its framework branch', async () => {

@@ -2,7 +2,6 @@ import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 
 import devConfig from './dev'
 import prodConfig from './prod'
-import type { Plugin } from 'vite'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { resolveTaroPlatform } from 'weapp-tailwindcss/framework'
 import path from 'node:path'
@@ -26,23 +25,6 @@ const taroPlugins = [
   ...(process.env.WEAPP_TW_TARO_PLUGIN_HTML === '0' ? [] : ['@tarojs/plugin-html']),
   // '@tarojs/plugin-platform-harmony-hybrid',
 ]
-
-function taroAlipayBrowserslistAssetPlugin(): Plugin {
-  return {
-    name: 'taro-alipay-browserslist-asset',
-    enforce: 'pre',
-    generateBundle(_options, bundle) {
-      if (process.env.TARO_ENV !== 'alipay') {
-        return
-      }
-      bundle['.browserslistrc'] = {
-        type: 'asset',
-        fileName: '.browserslistrc',
-        source: 'defaults and fully supports es6-module',
-      }
-    },
-  }
-}
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'vite'>(async (merge, { command, mode }) => {
@@ -75,21 +57,6 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     compiler: {
       type: 'vite',
       vitePlugins: [
-        taroAlipayBrowserslistAssetPlugin(),
-        {
-          name: 'taro-cjs-stability',
-          enforce: 'post',
-          config() {
-            // Taro mini runner 默认启用该选项，关闭后可避免 node_modules 中的 ESM 模块被强制转为 CommonJS。
-            return {
-              build: {
-                commonjsOptions: {
-                  transformMixedEsModules: false,
-                },
-              },
-            }
-          },
-        },
         WeappTailwindcss({
           tailwindcssBasedir: projectRoot,
           cssEntries: [
