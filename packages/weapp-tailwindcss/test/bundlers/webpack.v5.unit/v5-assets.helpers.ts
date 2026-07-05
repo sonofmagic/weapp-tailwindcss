@@ -328,8 +328,12 @@ describe('bundlers/webpack v5-assets helpers', () => {
 
   it('detects processed css asset urls and generator user css eligibility', () => {
     expect(hasProcessedCssAssetUrl('.icon{background:url(data:image/svg+xml,a)}')).toBe(true)
+    expect(hasProcessedCssAssetUrl('.icon{background:url("data:image/svg+xml,%3Csvg%3E")}')).toBe(true)
+    expect(hasProcessedCssAssetUrl('.icon{background:url(  \'data:image/png;base64,AAAA\'  )}')).toBe(true)
     expect(hasProcessedCssAssetUrl('.icon{background:url("/a.svg")}')).toBe(false)
+    expect(hasProcessedCssAssetUrl('.icon{background:url(https://example.com/a.svg)}')).toBe(false)
     expect(shouldUseWebpackAssetAsGeneratorUserCss('.card{color:red}', '.generated{}')).toBe(true)
+    expect(shouldUseWebpackAssetAsGeneratorUserCss('abc{background:#222}', '.generated{}')).toBe(true)
     expect(shouldUseWebpackAssetAsGeneratorUserCss('wx-button{background:#444}', '.generated{}')).toBe(true)
     expect(shouldUseWebpackAssetAsGeneratorUserCss('button::after{display:none;border:none;content:""}', '.generated{}')).toBe(true)
     expect(shouldUseWebpackAssetAsGeneratorUserCss('.card{background:url(data:image/svg+xml,a)}', '.generated{}')).toBe(false)
@@ -381,6 +385,7 @@ describe('bundlers/webpack v5-assets helpers', () => {
       'wx-button{background:#000}',
       'abc{background:#222}',
     ].join('\n'))
+    expect(collectWebpackBareSelectorUserCss('@layer base{wx-button{background:#444}abc{background:#222}button::after{content:""}}@layer components{.card{color:red}}')).toBe('@layer base{wx-button{background:#444}abc{background:#222}button::after{content:""}}')
   })
 
   it('parses and removes webpack Tailwind generated layer css', () => {

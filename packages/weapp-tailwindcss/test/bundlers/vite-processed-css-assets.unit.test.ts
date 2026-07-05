@@ -794,6 +794,29 @@ describe('vite processed css assets', () => {
     expect(nextCss).not.toContain('@property --tw-space-y-reverse')
   })
 
+  it('preserves mixed user scoped css while removing scoped Tailwind theme and element preflight', () => {
+    const css = [
+      '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+      '[data-v-04bcf89b]:root,[data-v-04bcf89b]:host{--spacing:.25rem}',
+      '*[data-v-04bcf89b],[data-v-04bcf89b]::after,[data-v-04bcf89b]::before{box-sizing:border-box;margin:0;padding:0}',
+      'uni-button[data-v-04bcf89b]{font:inherit}',
+      'view[data-v-04bcf89b]{color:red}',
+      '.card[data-v-04bcf89b]{padding:16px}',
+      '@media (min-width: 640px){text[data-v-04bcf89b]{display:block}.card[data-v-04bcf89b]{display:flex}}',
+    ].join('\n')
+
+    const nextCss = removeScopedTailwindPreflightCss(css)
+
+    expect(nextCss).toContain('view[data-v-04bcf89b]{color:red}')
+    expect(nextCss).toContain('uni-button[data-v-04bcf89b]{font:inherit}')
+    expect(nextCss).toContain('.card[data-v-04bcf89b]{padding:16px}')
+    expect(nextCss).toContain('@media (min-width: 640px)')
+    expect(nextCss).toContain('text[data-v-04bcf89b]{display:block}')
+    expect(nextCss).not.toContain('tailwindcss v4.3.2')
+    expect(nextCss).not.toContain(':host')
+    expect(nextCss).not.toContain('box-sizing:border-box')
+  })
+
   it('removes unscoped mini-program preflight from scoped generated css without a Tailwind banner', () => {
     const css = [
       'view,text,::after,::before{--tw-content:""}',

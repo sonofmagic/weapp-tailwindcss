@@ -217,14 +217,13 @@ describe('jsHandler', () => {
     expect(code).toBe(source)
   })
 
-  it('still transforms plain literals even when a tagged template skips them', async () => {
+  it('keeps plain slash literals unchanged even when runtime set contains the same value', async () => {
     const runtimeSet = new Set(['text/event-stream'])
     const source = `const header = weappTwIgnore\`text/event-stream\`
 const duplicated = 'text/event-stream'`
 
     const { code } = await defaultJsHandler(source, runtimeSet)
-    expect(code).toContain('weappTwIgnore`text/event-stream`')
-    expect(code).toContain('\'text_fevent-stream\'')
+    expect(code).toBe(source)
   })
 
   it.each(testTable)('$name img url case', async () => {

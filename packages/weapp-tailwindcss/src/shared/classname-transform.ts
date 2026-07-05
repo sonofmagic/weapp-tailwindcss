@@ -36,6 +36,25 @@ function isUrlLikeCandidate(candidate: string) {
     || candidate.startsWith('https://')
 }
 
+function isPlainSlashPathCandidate(candidate: string) {
+  const slashIndex = candidate.indexOf('/')
+  if (slashIndex <= 0) {
+    return false
+  }
+
+  if (isUrlLikeCandidate(candidate)) {
+    return true
+  }
+
+  if (candidate.includes('[') || candidate.includes(']') || candidate.includes(':')) {
+    return false
+  }
+
+  // Tailwind 斜杠语义通常出现在带 utility 前缀的 token 中，例如 w-1/2、bg-red-500/50。
+  // 没有前缀分隔符的 slash token 更像业务 API、页面路由、文件路径或 MIME。
+  return !candidate.slice(0, slashIndex).includes('-')
+}
+
 function isArbitraryValueCandidate(candidate: string) {
   let hasOpenBracket = false
   let hasCloseBracket = false
@@ -156,6 +175,10 @@ export function resolveClassNameTransformWithResult(
   }
 
   if (jsPreserveClass?.(candidate)) {
+    return SKIP_RESULT
+  }
+
+  if (!classContext && isPlainSlashPathCandidate(candidate)) {
     return SKIP_RESULT
   }
 

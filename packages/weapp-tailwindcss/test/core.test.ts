@@ -101,6 +101,30 @@ describe('core transform functions', () => {
     expect(code).toBe(rawJs)
   })
 
+  it('transforms real classes while keeping polluted API, route and asset paths unchanged', async () => {
+    const ctx = createContext()
+    const rawJs = [
+      `const className = "text-[12px] w-1/2"`,
+      `call_api("order/get_order_amount", {}, "POST")`,
+      `const route = "pages/order/detail"`,
+      `const asset = "static/icon-home.svg"`,
+    ].join('\n')
+    const runtimeSet = new Set([
+      'text-[12px]',
+      'w-1/2',
+      'order/get_order_amount',
+      'pages/order/detail',
+      'static/icon-home.svg',
+    ])
+
+    const { code } = await ctx.transformJs(rawJs, { runtimeSet })
+
+    expect(code).toContain(`const className = "text-_b12px_B w-1_f2"`)
+    expect(code).toContain(`call_api("order/get_order_amount", {}, "POST")`)
+    expect(code).toContain(`const route = "pages/order/detail"`)
+    expect(code).toContain(`const asset = "static/icon-home.svg"`)
+  })
+
   it('should handle empty runtimeSet', async () => {
     const ctx = createContext()
     const rawWxml = '<view class="mt-[8px]" wx:if="{{ xxx.length > 0 }}">'
