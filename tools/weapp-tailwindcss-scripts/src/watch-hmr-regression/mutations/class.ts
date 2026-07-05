@@ -28,6 +28,7 @@ import { runAddedClassMutation } from './class/added-class'
 import { runCommentCarrierMutation } from './class/comment-carrier'
 import { runSameClassLiteralMutation } from './class/same-literal'
 import {
+  assertNoUnsupportedMiniProgramCssImport,
   buildRoundComparison,
   collectPluginProcessMetrics,
   createClassMutationScenario,
@@ -387,6 +388,8 @@ function assertRoundOutputs(
   escapedClasses: string[],
   outputs: RoundOutputs,
 ) {
+  assertNoUnsupportedMiniProgramCssImport(watchCase, outputs.globalStyle, `mutation=${mutationKind} phase=${phase}`)
+
   if (mutation.verifyAllEscapedClasses !== false) {
     for (const escaped of escapedClasses) {
       const classToken = classTokens[escapedClasses.indexOf(escaped)]

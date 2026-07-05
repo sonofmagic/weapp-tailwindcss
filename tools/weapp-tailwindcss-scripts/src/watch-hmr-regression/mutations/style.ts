@@ -11,7 +11,7 @@ import {
   waitFor,
   writeFilePreserveEol,
 } from '../text'
-import { collectPluginProcessMetrics, createStyleMutationPayload, expandOutputFileEntries, waitForCompileSettled } from './shared'
+import { assertNoUnsupportedMiniProgramCssImport, collectPluginProcessMetrics, createStyleMutationPayload, expandOutputFileEntries, waitForCompileSettled } from './shared'
 
 async function touchImporterFiles(files: string[]) {
   for (const file of files) {
@@ -127,6 +127,7 @@ export async function runStyleMutation(
   const hotUpdatePluginMetrics = collectPluginProcessMetrics(session, hotUpdateStartedAt)
 
   const updatedStyle = await fs.readFile(resolvedOutputStyle, 'utf8')
+  assertNoUnsupportedMiniProgramCssImport(watchCase, updatedStyle, 'mutation=style phase=hot-update', formatPath(resolvedOutputStyle))
   for (const needle of outputNeedles) {
     assertContains(updatedStyle, needle, `[${watchCase.label}] updated style output (${formatPath(resolvedOutputStyle)})`)
   }

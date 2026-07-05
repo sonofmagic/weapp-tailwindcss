@@ -856,6 +856,111 @@ describe('vite processed css assets', () => {
     expect(debug).toHaveBeenCalledWith('inject vite-processed css into main css asset: %s bytes=%d', 'app.wxss', 22)
   })
 
+  it('removes bare package imports when replaying taro app css into the origin shell target', () => {
+    const bundle: OutputBundle = {
+      'app.wxss': asset('app.wxss', '@import "./app-origin.wxss";'),
+      'app-origin.wxss': asset('app-origin.wxss', '.nut-button{color:red}'),
+    }
+    const records = new Map<string, any>([
+      ['src/app.css', {
+        css: [
+          '@import "@nutui/nutui-react-taro/dist/styles/themes/default.css";',
+          '@import "@nutui/nutui-react-taro/dist/style.css";',
+          '.generated{color:blue}',
+        ].join('\n'),
+        injectIntoMain: true,
+        outputFile: 'app.wxss',
+      }],
+    ])
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: opts(),
+      cssPipelineStrategy: taroImportShellStrategy,
+      createCssPipelineContext,
+      getViteProcessedCssAssetResults: () => records.entries(),
+      markCssAssetProcessed: vi.fn(),
+      debug: vi.fn(),
+    })
+
+    const originCss = String((bundle['app-origin.wxss'] as OutputAsset).source)
+    expect(injected).toBe(1)
+    expect(String((bundle['app.wxss'] as OutputAsset).source)).toBe('@import "./app-origin.wxss";')
+    expect(originCss).toContain('.nut-button{color:red}')
+    expect(originCss).toContain('.generated{color:blue}')
+    expect(originCss).not.toContain('@nutui/nutui-react-taro')
+  })
+
+  it('removes bare package imports from mini-program css assets before injection', () => {
+    const bundle: OutputBundle = {
+      'vendors.wxss': asset('vendors.wxss', [
+        '@import "@nutui/nutui-react-taro/dist/styles/themes/default.css";',
+        '.vendor{color:red}',
+      ].join('\n')),
+    }
+    const records = new Map<string, any>([
+      ['src/vendor.css', { css: '.generated{color:blue}', injectIntoMain: true, outputFile: 'vendors.wxss' }],
+    ])
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        ...opts(),
+        mainCssChunkMatcher: (file: string) => file === 'vendors.wxss',
+      },
+      getViteProcessedCssAssetResults: () => records.entries(),
+      markCssAssetProcessed: vi.fn(),
+      debug: vi.fn(),
+    })
+
+    const vendorsCss = String((bundle['vendors.wxss'] as OutputAsset).source)
+    expect(injected).toBe(1)
+    expect(vendorsCss).toContain('.vendor{color:red}')
+    expect(vendorsCss).toContain('.generated{color:blue}')
+    expect(vendorsCss).not.toContain('@nutui/nutui-react-taro')
+  })
+
+  it('removes unsupported imports from non-wechat mini-program css assets while preserving local imports', () => {
+    const bundle: OutputBundle = {
+      'main.acss': asset('main.acss', [
+        '@import "./local-theme.acss";',
+        '@import "third-party-ui/dist/theme.css";',
+        '@import url("https://example.com/remote.css");',
+        '.main{color:red}',
+      ].join('\n')),
+    }
+    const records = new Map<string, any>([
+      ['src/main.css', {
+        css: [
+          '@import "./component.acss";',
+          '@import "another-package/styles.css";',
+          '.generated{color:blue}',
+        ].join('\n'),
+        injectIntoMain: true,
+        outputFile: 'main.acss',
+      }],
+    ])
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        ...opts(),
+        cssMatcher: (file: string) => /\.(?:css|acss)$/.test(file),
+        mainCssChunkMatcher: (file: string) => file === 'main.acss',
+      },
+      getViteProcessedCssAssetResults: () => records.entries(),
+      markCssAssetProcessed: vi.fn(),
+      debug: vi.fn(),
+    })
+
+    const mainCss = String((bundle['main.acss'] as OutputAsset).source)
+    expect(injected).toBe(1)
+    expect(mainCss).toContain('@import "./local-theme.acss";')
+    expect(mainCss).toContain('@import "./component.acss";')
+    expect(mainCss).toContain('.main{color:red}')
+    expect(mainCss).toContain('.generated{color:blue}')
+    expect(mainCss).not.toContain('third-party-ui')
+    expect(mainCss).not.toContain('another-package')
+    expect(mainCss).not.toContain('https://example.com')
+  })
+
   it('cleans parsed source media wrappers and empty nested at-rules before injection', () => {
     const bundle: OutputBundle = {
       'app.wxss': asset('app.wxss', [

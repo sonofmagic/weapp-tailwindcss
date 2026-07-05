@@ -13,6 +13,7 @@ import {
   writeFilePreserveEol,
 } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
 import {
+  assertNoUnsupportedMiniProgramCssImport,
   collectArtifactMtimes,
   countChangedArtifacts,
   hasAnyNeedle,
@@ -111,6 +112,7 @@ export async function runIdeStyleHotUpdate(
       for (const artifact of styleArtifacts) {
         assertStyleOutput(watchCase, artifact.content, payload)
       }
+      assertNoUnsupportedMiniProgramCssImport(watchCase, currentArtifacts, 'IDE style HMR')
       changedArtifacts = summarizeChangedArtifacts(baselineArtifacts, currentArtifacts)
       return true
     },

@@ -67,6 +67,62 @@ export function hasAnyNeedle(artifacts: ArtifactSnapshot[], needles: string[]) {
   return artifacts.some(artifact => needles.some(needle => artifact.content.includes(needle)))
 }
 
+function unquoteCssImportRequest(request: string) {
+  const trimmed = request.trim()
+  if (
+    (trimmed.startsWith('"') && trimmed.endsWith('"'))
+    || (trimmed.startsWith('\'') && trimmed.endsWith('\''))
+  ) {
+    return trimmed.slice(1, -1)
+  }
+  return trimmed
+}
+
+function parseCssImportRequest(line: string) {
+  const trimmed = line.trim()
+  if (!trimmed.startsWith('@import')) {
+    return undefined
+  }
+  const params = trimmed
+    .slice('@import'.length)
+    .trim()
+    .replace(/;$/, '')
+    .trim()
+  if (params.startsWith('url(')) {
+    const endIndex = params.indexOf(')')
+    return endIndex === -1 ? undefined : unquoteCssImportRequest(params.slice(4, endIndex))
+  }
+  const quote = params[0]
+  if (quote === '"' || quote === '\'') {
+    const endIndex = params.indexOf(quote, 1)
+    return endIndex === -1 ? undefined : params.slice(1, endIndex)
+  }
+  return params.split(/\s+/, 1)[0]
+}
+
+function findUnsupportedMiniProgramCssImport(css: string) {
+  for (const line of css.split(/\r?\n/)) {
+    const request = parseCssImportRequest(line)
+    if (request && !request.startsWith('.') && !request.startsWith('/')) {
+      return line.trim()
+    }
+  }
+  return undefined
+}
+
+export function assertNoUnsupportedMiniProgramCssImport(watchCase: Pick<WatchCase, 'label'>, artifacts: ArtifactSnapshot[], phase: string) {
+  for (const artifact of artifacts) {
+    if (artifact.kind !== 'style') {
+      continue
+    }
+    const unsupportedImport = findUnsupportedMiniProgramCssImport(artifact.content)
+    if (!unsupportedImport) {
+      continue
+    }
+    throw new Error(`[${watchCase.label}] ${phase} emitted unsupported mini-program CSS import in ${artifact.file}: ${unsupportedImport}`)
+  }
+}
+
 export function summarizeChangedArtifacts(before: ArtifactSnapshot[], after: ArtifactSnapshot[]) {
   const beforeByFile = new Map(before.map(item => [item.file, item.content]))
   return after

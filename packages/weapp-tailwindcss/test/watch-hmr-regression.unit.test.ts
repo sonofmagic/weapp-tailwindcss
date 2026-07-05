@@ -60,6 +60,7 @@ import {
 import {
   createStyleMutationPayload,
   expandOutputFileEntries,
+  assertNoUnsupportedMiniProgramCssImport,
   createClassMutationScenario,
   collectPluginProcessMetrics,
   hasResolvedOutputFiles,
@@ -404,6 +405,29 @@ afterEach(async () => {
 })
 
 describe('watch-hmr regression text helpers', () => {
+  it('rejects unsupported mini-program css imports while allowing local imports', () => {
+    expect(() => assertNoUnsupportedMiniProgramCssImport(
+      { label: 'unit-case' },
+      [
+        '@import "./local.wxss";',
+        '@import "../shared.wxss";',
+        '@import "/absolute.wxss";',
+        '.safe{color:red}',
+      ].join('\n'),
+      'unit',
+    )).not.toThrow()
+
+    for (const css of [
+      '@import "tailwindcss" source(none);',
+      '@import "third-party-ui/dist/theme.css";',
+      '@import url("https://example.com/theme.css");',
+    ]) {
+      expect(() => assertNoUnsupportedMiniProgramCssImport({ label: 'unit-case' }, css, 'unit')).toThrow(
+        /unsupported mini-program CSS import/,
+      )
+    }
+  })
+
   it('aligns EOLs to match the source file', () => {
     expect(alignContentEol('a\nb\n', 'first\r\nsecond\r\n')).toBe('a\r\nb\r\n')
     expect(alignContentEol('a\r\nb\r\n', 'first\nsecond\n')).toBe('a\nb\n')

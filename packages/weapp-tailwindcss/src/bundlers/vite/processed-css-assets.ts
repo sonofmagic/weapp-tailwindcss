@@ -162,6 +162,52 @@ function removeTailwindEntryDirectivesFromCss(css: string) {
   return removeTailwindSourceDirectives(removeTailwindSourceMediaWrappers(css))
 }
 
+function isLocalMiniProgramCssImportRequest(request: string | undefined) {
+  return typeof request === 'string'
+    && (request.startsWith('.') || request.startsWith('/'))
+}
+
+function removeUnsupportedMiniProgramCssImports(css: string, file: string) {
+  if (!isMiniProgramStyleOutputFile(file) || !css.includes('@import')) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    let changed = false
+    root.walkAtRules('import', (atRule) => {
+      const request = parseImportRequest(atRule.params)
+      if (request === undefined || isLocalMiniProgramCssImportRequest(request)) {
+        return
+      }
+      atRule.remove()
+      changed = true
+    })
+    return changed ? root.toString() : css
+  }
+  catch {
+    return css
+      .split(/\r?\n/)
+      .filter((line) => {
+        const trimmed = line.trim()
+        if (!trimmed.startsWith('@import')) {
+          return true
+        }
+        const params = trimmed
+          .slice('@import'.length)
+          .trim()
+          .replace(/;$/, '')
+          .trim()
+        const request = parseImportRequest(params)
+        return request === undefined || isLocalMiniProgramCssImportRequest(request)
+      })
+      .join('\n')
+  }
+}
+
+function normalizeInjectableCssForTarget(css: string, file: string) {
+  return removeUnsupportedMiniProgramCssImports(css, file)
+}
+
 function stripStyleExtension(file: string) {
   return file.replace(/[?#].*$/, '').replace(/\.(?:css|wxss|acss|ttss|qss|jxss|tyss|scss|sass|less|styl|stylus|pcss|postcss)$/i, '')
 }
@@ -1420,7 +1466,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
     }
     const fileKey = normalizeOutputPathKey(file)
     const mainFileKey = normalizeOutputPathKey(file)
-    let nextCss = transformCss(removeTailwindEntryDirectivesFromCss(originalSource), file)
+    let nextCss = normalizeInjectableCssForTarget(transformCss(removeTailwindEntryDirectivesFromCss(originalSource), file), file)
     const importedStyleFiles = collectImportedStyleFiles(nextCss, file)
     const importedBundleCssSources = collectImportedBundleCssSources(bundle, importedStyleFiles)
     nextCss = removeCssCoveredByImportedViteResults(
@@ -1454,7 +1500,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
         continue
       }
       targetViteCssResults.push(record)
-      let css = stripBundlerGeneratedCssMarkers(record.css).trim()
+      let css = normalizeInjectableCssForTarget(stripBundlerGeneratedCssMarkers(record.css).trim(), file).trim()
       css = removeCssCoveredByImportedViteResults(css, importedCssSources).trim()
       if (css.length === 0) {
         continue

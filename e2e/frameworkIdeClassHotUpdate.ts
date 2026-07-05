@@ -11,6 +11,7 @@ import {
 } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations'
 import { waitFor, writeFilePreserveEol } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
 import {
+  assertNoUnsupportedMiniProgramCssImport,
   collectArtifactMtimes,
   countChangedArtifacts,
   hasAnyNeedle,
@@ -189,6 +190,7 @@ export async function runIdeClassHotUpdate(
   if (!hasAnyNeedle(afterArtifacts, scenario.freshEscapedClasses)) {
     throw new Error(`[${watchCase.label}] IDE ${mutationKind} HMR artifacts missed transformed classes`)
   }
+  assertNoUnsupportedMiniProgramCssImport(watchCase, afterArtifacts, `IDE ${mutationKind} HMR`)
 
   await miniProgram.clearCache?.({ clean: 'compile' }).catch(() => undefined)
   await miniProgram.compile({ force: true }).catch(() => undefined)
