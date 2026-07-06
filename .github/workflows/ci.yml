@@ -468,6 +468,8 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: ${{ matrix.pnpm-version }}
+          # Node 20 兼容矩阵需要 pnpm 10，不能读取根 packageManager 的 pnpm 11。
+          package_json_file: .github/pnpm-action-package.json
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
