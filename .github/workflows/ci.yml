@@ -484,7 +484,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build core package dependency closure
-        run: pnpm build:ci
+        run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build
 
       - name: Run core compatibility regression tests
         run: >
