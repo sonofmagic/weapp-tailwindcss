@@ -453,7 +453,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: ${{ fromJSON(github.event_name == 'workflow_dispatch' && '[{"os":"ubuntu-latest","node-version":20,"scenario":"node20-core"},{"os":"ubuntu-latest","node-version":24,"scenario":"node24-core"},{"os":"windows-latest","node-version":20,"scenario":"windows-node20-core"},{"os":"windows-latest","node-version":22,"scenario":"windows-node22-core"},{"os":"windows-latest","node-version":24,"scenario":"windows-node24-core"},{"os":"macos-latest","node-version":22,"scenario":"macos-node22-core"}]' || '[{"os":"windows-latest","node-version":22,"scenario":"windows-node22-core"}]') }}
+        include: ${{ fromJSON(github.event_name == 'workflow_dispatch' && '[{"os":"ubuntu-latest","node-version":20,"pnpm-version":"10.23.0","scenario":"node20-core"},{"os":"ubuntu-latest","node-version":24,"pnpm-version":"11.9.0","scenario":"node24-core"},{"os":"windows-latest","node-version":20,"pnpm-version":"10.23.0","scenario":"windows-node20-core"},{"os":"windows-latest","node-version":22,"pnpm-version":"11.9.0","scenario":"windows-node22-core"},{"os":"windows-latest","node-version":24,"pnpm-version":"11.9.0","scenario":"windows-node24-core"},{"os":"macos-latest","node-version":22,"pnpm-version":"11.9.0","scenario":"macos-node22-core"}]' || '[{"os":"windows-latest","node-version":22,"pnpm-version":"11.9.0","scenario":"windows-node22-core"}]') }}
     runs-on: ${{ matrix.os }}
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -466,6 +466,8 @@ jobs:
           fetch-depth: 2
 
       - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ matrix.pnpm-version }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
@@ -500,6 +502,7 @@ jobs:
             echo "## Compatibility Gate"
             echo "- os: ${{ matrix.os }}"
             echo "- node: ${{ matrix.node-version }}"
+            echo "- pnpm: ${{ matrix.pnpm-version }}"
             echo "- scenario: ${{ matrix.scenario }}"
             echo "- 覆盖重点：Windows/跨平台路径归一、Vite bundle graph、Tailwind patch resolve、watch HMR 覆盖矩阵。"
           } >> "$GITHUB_STEP_SUMMARY"
