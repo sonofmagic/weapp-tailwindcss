@@ -1,84 +1,42 @@
-import { readFile, readdir } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import postcss, { type AcceptedPlugin } from 'postcss'
+import { type AcceptedPlugin } from 'postcss'
 import tailwindcssPostcss from '@tailwindcss/postcss'
 import tailwindcssVite from '@tailwindcss/vite'
-import { build, type InlineConfig, type PluginOption } from 'vite'
 import { createWeappTailwindcssGenerator, resolveTailwindV4Source } from 'weapp-tailwindcss/generator'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
-import type { BenchmarkCaseResult, BenchmarkFixtureInfo } from './types'
+import { createViteHmrCase, runPostcss, runViteBuild } from './css-runners'
+import type { BenchmarkCase, BenchmarkFixtureInfo } from './types'
 
-export interface CaseRunResult {
-  css: string
-  classSetSize?: number
-  selectorCount?: number
-  details?: Record<string, unknown>
+interface CreateBenchmarkCasesOptions {
+  includeHmr: boolean
+  scenarioId: string
+  scenarioName: string
 }
 
-export interface BenchmarkCase {
-  id: string
-  name: string
-  mode: BenchmarkCaseResult['mode']
-  plugin: string
-  run: () => Promise<CaseRunResult>
-}
-
-export function countSelectors(css: string) {
-  const matches = css.match(/(^|})\s*[^@{}][^{]*\{/g)
-  return matches?.length ?? 0
-}
-
-async function runPostcss(css: string, from: string) {
-  const result = await postcss([tailwindcssPostcss()]).process(css, {
-    from,
-  })
+function withScenario(
+  options: Pick<CreateBenchmarkCasesOptions, 'scenarioId' | 'scenarioName'>,
+  testCase: Omit<BenchmarkCase, 'scenarioId' | 'scenarioName'>,
+): BenchmarkCase
+function withScenario<T extends object>(
+  options: Pick<CreateBenchmarkCasesOptions, 'scenarioId' | 'scenarioName'>,
+  testCase: T,
+): T & Pick<BenchmarkCase, 'scenarioId' | 'scenarioName'>
+function withScenario<T extends object>(
+  options: Pick<CreateBenchmarkCasesOptions, 'scenarioId' | 'scenarioName'>,
+  testCase: T,
+) {
   return {
-    css: result.css,
-    selectorCount: countSelectors(result.css),
+    ...testCase,
+    scenarioId: options.scenarioId,
+    scenarioName: options.scenarioName,
   }
 }
 
-async function runViteBuild(root: string, plugins: PluginOption[], cssPostcssPlugins?: AcceptedPlugin[]) {
-  const outDir = path.join(root, 'dist', `case-${Date.now()}-${Math.random().toString(36).slice(2)}`)
-  const config: InlineConfig = {
-    root,
-    logLevel: 'silent',
-    plugins,
-    build: {
-      emptyOutDir: true,
-      outDir,
-      sourcemap: false,
-      minify: false,
-      rollupOptions: {
-        input: path.join(root, 'index.html'),
-      },
-    },
-  }
-  if (cssPostcssPlugins) {
-    config.css = {
-      postcss: {
-        plugins: cssPostcssPlugins,
-      },
-    }
-  }
-  await build(config)
-  const cssDir = path.join(outDir, 'assets')
-  let css = ''
-  try {
-    const files = await readdir(cssDir)
-    const cssFiles = files.filter(file => file.endsWith('.css'))
-    css = (await Promise.all(cssFiles.map(file => readFile(path.join(cssDir, file), 'utf8')))).join('\n')
-  }
-  catch {
-    css = ''
-  }
-  return {
-    css,
-    selectorCount: countSelectors(css),
-  }
-}
-
-export async function createBenchmarkCases(fixture: BenchmarkFixtureInfo): Promise<BenchmarkCase[]> {
+export async function createBenchmarkCases(
+  fixture: BenchmarkFixtureInfo,
+  options: CreateBenchmarkCasesOptions,
+): Promise<BenchmarkCase[]> {
   const css = await readFile(fixture.cssEntry, 'utf8')
   const source = await resolveTailwindV4Source({
     css,
@@ -107,8 +65,8 @@ export async function createBenchmarkCases(fixture: BenchmarkFixtureInfo): Promi
     },
   }) ?? []
 
-  return [
-    {
+  const cases: BenchmarkCase[] = [
+    withScenario(options, {
       id: 'weapp-generator-scan-weapp',
       name: 'weapp-tailwindcss generator target=weapp scanSources=true',
       mode: 'generator',
@@ -117,8 +75,8 @@ export async function createBenchmarkCases(fixture: BenchmarkFixtureInfo): Promi
         const result = await generator.generate({ target: 'weapp', scanSources: true })
         return { css: result.css, classSetSize: result.classSet.size }
       },
-    },
-    {
+    }),
+    withScenario(options, {
       id: 'weapp-generator-scan-web',
       name: 'weapp-tailwindcss generator target=web scanSources=true',
       mode: 'generator',
@@ -127,8 +85,8 @@ export async function createBenchmarkCases(fixture: BenchmarkFixtureInfo): Promi
         const result = await generator.generate({ target: 'web', scanSources: true })
         return { css: result.css, classSetSize: result.classSet.size }
       },
-    },
-    {
+    }),
+    withScenario(options, {
       id: 'weapp-generator-candidates-weapp',
       name: 'weapp-tailwindcss generator target=weapp scanSources=false candidates',
       mode: 'generator',
@@ -137,8 +95,8 @@ export async function createBenchmarkCases(fixture: BenchmarkFixtureInfo): Promi
         const result = await generator.generate({ target: 'weapp', scanSources: false, candidates: directCandidates })
         return { css: result.css, classSetSize: result.classSet.size }
       },
-    },
-    {
+    }),
+    withScenario(options, {
       id: 'weapp-generator-candidates-web',
       name: 'weapp-tailwindcss generator target=web scanSources=false candidates',
       mode: 'generator',
@@ -147,8 +105,8 @@ export async function createBenchmarkCases(fixture: BenchmarkFixtureInfo): Promi
         const result = await generator.generate({ target: 'web', scanSources: false, candidates: directCandidates })
         return { css: result.css, classSetSize: result.classSet.size }
       },
-    },
-    {
+    }),
+    withScenario(options, {
       id: 'weapp-generator-incremental-cold',
       name: 'weapp-tailwindcss generator incrementalCache cold',
       mode: 'generator',
@@ -162,8 +120,8 @@ export async function createBenchmarkCases(fixture: BenchmarkFixtureInfo): Promi
         })
         return { css: result.css, classSetSize: result.classSet.size }
       },
-    },
-    {
+    }),
+    withScenario(options, {
       id: 'weapp-generator-incremental-hit',
       name: 'weapp-tailwindcss generator incrementalCache hit',
       mode: 'generator',
@@ -183,8 +141,8 @@ export async function createBenchmarkCases(fixture: BenchmarkFixtureInfo): Promi
         })
         return { css: result.css, classSetSize: result.classSet.size }
       },
-    },
-    {
+    }),
+    withScenario(options, {
       id: 'weapp-generator-incremental-append',
       name: 'weapp-tailwindcss generator incrementalCache append',
       mode: 'generator',
@@ -210,41 +168,89 @@ export async function createBenchmarkCases(fixture: BenchmarkFixtureInfo): Promi
           },
         }
       },
-    },
-    {
+    }),
+    withScenario(options, {
       id: 'official-postcss-core',
       name: '@tailwindcss/postcss direct postcss process',
       mode: 'generator',
       plugin: '@tailwindcss/postcss',
-      run: () => runPostcss(css, fixture.cssEntry),
-    },
-    {
+      run: () => runPostcss(css, fixture.cssEntry, tailwindcssPostcss()),
+    }),
+    withScenario(options, {
       id: 'vite-official-postcss',
       name: 'Vite build + @tailwindcss/postcss',
       mode: 'vite-build',
       plugin: '@tailwindcss/postcss',
       run: () => runViteBuild(fixture.root, [], officialPostcssPlugins),
-    },
-    {
+    }),
+    withScenario(options, {
       id: 'vite-official-vite',
       name: 'Vite build + @tailwindcss/vite',
       mode: 'vite-build',
       plugin: '@tailwindcss/vite',
       run: () => runViteBuild(fixture.root, [tailwindcssVite()]),
-    },
-    {
+    }),
+    withScenario(options, {
       id: 'vite-weapp-target-weapp',
       name: "Vite build + weapp-tailwindcss/vite generator.target='weapp'",
       mode: 'vite-build',
       plugin: 'weapp-tailwindcss/vite',
       run: () => runViteBuild(fixture.root, viteWeappPlugins),
-    },
-    {
+    }),
+    withScenario(options, {
       id: 'vite-weapp-target-web',
       name: "Vite build + weapp-tailwindcss/vite generator.target='web'",
       mode: 'vite-build',
       plugin: 'weapp-tailwindcss/vite',
       run: () => runViteBuild(fixture.root, viteWebPlugins),
-    },
+    }),
   ]
+
+  if (options.includeHmr) {
+    cases.push(
+      createViteHmrCase({
+        base: withScenario(options, {
+          id: 'hmr-official-postcss',
+          name: 'Vite dev HMR + @tailwindcss/postcss',
+          mode: 'vite-hmr',
+          plugin: '@tailwindcss/postcss',
+        }),
+        fixture,
+        plugins: [],
+        cssPostcssPlugins: officialPostcssPlugins,
+      }),
+      createViteHmrCase({
+        base: withScenario(options, {
+          id: 'hmr-official-vite',
+          name: 'Vite dev HMR + @tailwindcss/vite',
+          mode: 'vite-hmr',
+          plugin: '@tailwindcss/vite',
+        }),
+        fixture,
+        plugins: [tailwindcssVite()],
+      }),
+      createViteHmrCase({
+        base: withScenario(options, {
+          id: 'hmr-weapp-target-weapp',
+          name: "Vite dev HMR + weapp-tailwindcss/vite generator.target='weapp'",
+          mode: 'vite-hmr',
+          plugin: 'weapp-tailwindcss/vite',
+        }),
+        fixture,
+        plugins: viteWeappPlugins,
+      }),
+      createViteHmrCase({
+        base: withScenario(options, {
+          id: 'hmr-weapp-target-web',
+          name: "Vite dev HMR + weapp-tailwindcss/vite generator.target='web'",
+          mode: 'vite-hmr',
+          plugin: 'weapp-tailwindcss/vite',
+        }),
+        fixture,
+        plugins: viteWebPlugins,
+      }),
+    )
+  }
+
+  return cases
 }

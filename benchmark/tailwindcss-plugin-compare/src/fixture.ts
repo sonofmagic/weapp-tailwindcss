@@ -109,6 +109,7 @@ export function createCandidateCorpus(classCount: number) {
   for (let index = 0; index < Math.max(1, classCount); index += 1) {
     const base = baseCandidates[index % baseCandidates.length]!
     candidates.push(base)
+    candidates.push(`top-[${index + 1}rpx]`)
     if (index % 5 === 0) {
       candidates.push(`p-[${index + 1}rpx]`)
     }
@@ -120,6 +121,12 @@ export function createCandidateCorpus(classCount: number) {
     }
   }
   return [...new Set(candidates)].slice(0, Math.max(1, classCount))
+}
+
+function createHmrCandidateCorpus(classCount: number) {
+  return Array.from({ length: Math.max(32, Math.ceil(classCount / 20)) }, (_, index) => (
+    index % 2 === 0 ? `left-[${index + 1001}rpx]` : `hover:top-[${index + 1001}rpx]`
+  ))
 }
 
 export function createBenchmarkCss(sourceGlob: string) {
@@ -158,7 +165,9 @@ export async function createBenchmarkFixture(options: {
   const appendedCandidates = createCandidateCorpus(Math.max(12, Math.floor(options.classCount / 5)))
     .map(candidate => candidate.startsWith('hover:') ? candidate : `hover:${candidate}`)
     .slice(0, 24)
+  const hmrCandidates = createHmrCandidateCorpus(options.classCount)
 
+  const hmrSourceFile = path.join(sourcesDir, 'hmr.html')
   const chunks = distribute(candidates, options.sourceFiles)
   await Promise.all(chunks.map((chunk, index) => {
     const body = chunk.map((className, itemIndex) => (
@@ -166,6 +175,7 @@ export async function createBenchmarkFixture(options: {
     )).join('\n')
     return writeFile(path.join(sourcesDir, `fixture-${index}.html`), body, 'utf8')
   }))
+  await writeFile(hmrSourceFile, '<div class="top-[1000rpx]">hmr</div>\n', 'utf8')
 
   const cssEntry = path.join(srcDir, 'style.css')
   const mainEntry = path.join(srcDir, 'main.ts')
@@ -190,7 +200,9 @@ export async function createBenchmarkFixture(options: {
     htmlEntry,
     mainEntry,
     sourcesDir,
+    hmrSourceFile,
     candidates,
     appendedCandidates,
+    hmrCandidates,
   }
 }

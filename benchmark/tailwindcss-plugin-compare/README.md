@@ -1,8 +1,8 @@
-# Tailwind CSS v4 Plugin Benchmark
+# Tailwind CSS v4 插件性能 Benchmark
 
-This workspace package compares `weapp-tailwindcss`, `@tailwindcss/postcss`, and `@tailwindcss/vite` under the same generated Tailwind CSS v4 input.
+该 workspace 包用于在同一份 Tailwind CSS v4 输入下，对比 `weapp-tailwindcss`、`@tailwindcss/postcss` 和 `@tailwindcss/vite` 的性能。
 
-The benchmark is intentionally isolated. Official Tailwind plugins are installed and used only inside this benchmark package, not in normal demo/app build configuration.
+benchmark 是隔离的。官方 Tailwind 插件只安装并使用在该 benchmark 包内，不接入正常 demo/app 构建配置。
 
 ## Commands
 
@@ -12,39 +12,59 @@ pnpm run bench:tailwindcss-plugin -- --runs 3 --warmups 1
 pnpm run bench:tailwindcss-plugin:report
 ```
 
-Default outputs:
+默认输出：
 
 - `benchmark/tailwindcss-plugin-compare/data/latest.json`
 - `benchmark/tailwindcss-plugin-compare/report.md`
 
-## Parameters
+## 参数
 
-- `--runs`: measured iterations per case. Default: `5`.
-- `--warmups`: warmup iterations before measurement. Default: `1`.
-- `--class-count`: generated Tailwind candidate count. Default: `600`.
-- `--source-files`: generated source file count. Default: `12`.
-- `--out`: JSON output path.
-- `--report`: Markdown report path.
-- `--keep-temp`: keep the temporary fixture directory for inspection.
+- `--runs`：每个 case 的正式测量轮数。默认：`5`。
+- `--warmups`：正式测量前的预热轮数。默认：`1`。
+- `--class-count`：默认规模场景的 Tailwind candidate 数量。默认：`600`。
+- `--source-files`：默认规模场景的源码文件数量。默认：`12`。
+- `--large-class-count`：大数量级选择器场景的 Tailwind candidate 数量。默认：`5000`。
+- `--large-source-files`：大数量级选择器场景的源码文件数量。默认：`48`。
+- `--skip-large`：跳过大数量级选择器场景。
+- `--skip-hmr`：跳过 Vite dev/HMR 场景。
+- `--out`：JSON 输出路径。
+- `--report`：Markdown 报告输出路径。
+- `--keep-temp`：保留临时 fixture 目录，便于检查生成输入。
 
-## Cases
+## 场景
 
-Generation core:
+每次 benchmark 默认包含两种规模：
 
-- `weapp-tailwindcss/generator` with `target=weapp`, `scanSources=true`.
-- `weapp-tailwindcss/generator` with `target=web`, `scanSources=true`.
-- `weapp-tailwindcss/generator` with `target=weapp`, `scanSources=false`, explicit candidates.
-- `weapp-tailwindcss/generator` with `target=web`, `scanSources=false`, explicit candidates.
-- `weapp-tailwindcss/generator` incremental cache cold, hit, and append paths.
-- `@tailwindcss/postcss` through direct `postcss([tailwindcss()]).process(...)`.
+- 默认规模：用于常规对比。
+- 大数量级选择器：用于观察 selector 数量上升后的生成、构建与 HMR 变化。
 
-Full Vite build:
+生成核心：
 
-- Vite with `@tailwindcss/postcss` through `css.postcss.plugins`.
-- Vite with `@tailwindcss/vite`.
-- Vite with `weapp-tailwindcss/vite` and `generator.target='weapp'`.
-- Vite with `weapp-tailwindcss/vite` and `generator.target='web'`.
+- `weapp-tailwindcss/generator`：`target=weapp`、`scanSources=true`。
+- `weapp-tailwindcss/generator`：`target=web`、`scanSources=true`。
+- `weapp-tailwindcss/generator`：`target=weapp`、`scanSources=false`、显式 candidates。
+- `weapp-tailwindcss/generator`：`target=web`、`scanSources=false`、显式 candidates。
+- `weapp-tailwindcss/generator`：incremental cache cold、hit、append 路径。
+- `@tailwindcss/postcss`：直接 `postcss([tailwindcss()]).process(...)`。
 
-## Reading Results
+完整 Vite build：
 
-Generation core cases isolate CSS generation cost and are the preferred comparison for plugin generation behavior. Vite build cases include bundler startup, Rollup output, and plugin integration overhead, so use them as end-to-end reference rather than pure generator timing.
+- Vite + `@tailwindcss/postcss`，通过 `css.postcss.plugins` 接入。
+- Vite + `@tailwindcss/vite`。
+- Vite + `weapp-tailwindcss/vite`，`generator.target='weapp'`。
+- Vite + `weapp-tailwindcss/vite`，`generator.target='web'`。
+
+Vite HMR：
+
+- Vite dev server + `@tailwindcss/postcss`。
+- Vite dev server + `@tailwindcss/vite`。
+- Vite dev server + `weapp-tailwindcss/vite`，`generator.target='weapp'`。
+- Vite dev server + `weapp-tailwindcss/vite`，`generator.target='web'`。
+
+## 结果解读
+
+生成核心用例隔离 CSS 生成成本，更适合对比插件生成性能。Vite build 用例包含 bundler 启动、Rollup 输出和插件集成开销，适合作为端到端参考。
+
+Vite HMR 用例统计 Vite dev server 已启动后，临时源码文件写入、watcher change、module graph invalidation 与重新请求 CSS transform 的耗时；不包含浏览器 WebSocket 传输和页面应用样式的耗时。
+
+内存数据来自同一 Node 进程的 `process.memoryUsage()`，记录每个 case 执行前后的 RSS/heap、采样峰值和增量。由于同一进程会复用模块缓存，且 V8 GC 时机不可控，RSS 增量适合看局部变化，RSS 峰值更适合判断占用上界。

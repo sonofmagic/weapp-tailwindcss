@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-06T06:47:34.747Z",
+  "generatedAt": "2026-07-06T07:07:26.113Z",
   "environment": {
     "node": "v24.18.0",
     "pnpm": "11.9.0",
@@ -22,138 +22,216 @@
     "runs": 3,
     "warmups": 1,
     "classCount": 600,
-    "sourceFiles": 12
-  },
-  "fixture": {
-    "classCount": 600,
     "sourceFiles": 12,
-    "candidateCount": 349,
-    "appendedCandidateCount": 24
+    "largeClassCount": 5000,
+    "largeSourceFiles": 48,
+    "includeLarge": true,
+    "includeHmr": true
   },
+  "scenarios": [
+    {
+      "id": "default",
+      "name": "默认规模",
+      "classCount": 600,
+      "sourceFiles": 12,
+      "candidateCount": 600,
+      "appendedCandidateCount": 24,
+      "hmrCandidateCount": 32
+    },
+    {
+      "id": "large-selectors",
+      "name": "大数量级选择器",
+      "classCount": 5000,
+      "sourceFiles": 48,
+      "candidateCount": 5000,
+      "appendedCandidateCount": 24,
+      "hmrCandidateCount": 250
+    }
+  ],
   "results": [
     {
       "id": "weapp-generator-scan-weapp",
       "name": "weapp-tailwindcss generator target=weapp scanSources=true",
       "mode": "generator",
       "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
       "warmupMs": [
-        177.753375
+        253.34754099999998
       ],
       "runsMs": [
-        18.77541700000006,
-        16.913167000000044,
-        13.900333000000046
+        21.465625000000045,
+        20.953499999999963,
+        18.97108300000002
       ],
       "stats": {
-        "mean": 16.52963900000005,
-        "median": 16.913167000000044,
-        "min": 13.900333000000046,
-        "max": 18.77541700000006,
-        "p75": 18.77541700000006,
-        "p95": 18.77541700000006
+        "mean": 20.463402666666678,
+        "median": 20.953499999999963,
+        "min": 18.97108300000002,
+        "max": 21.465625000000045,
+        "p75": 21.465625000000045,
+        "p95": 21.465625000000045
       },
-      "outputCssBytes": 18362,
-      "selectorCount": 295,
-      "classSetSize": 349
+      "outputCssBytes": 28215,
+      "memory": {
+        "rssBeforeBytes": 397328384,
+        "rssAfterBytes": 449216512,
+        "rssPeakBytes": 449216512,
+        "rssDeltaBytes": 51888128,
+        "heapBeforeBytes": 164157208,
+        "heapAfterBytes": 177078464,
+        "heapPeakBytes": 221698032,
+        "heapDeltaBytes": 12921256
+      },
+      "selectorCount": 569,
+      "classSetSize": 601
     },
     {
       "id": "weapp-generator-scan-web",
       "name": "weapp-tailwindcss generator target=web scanSources=true",
       "mode": "generator",
       "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
       "warmupMs": [
-        10.068125000000009
+        10.808958000000075
       ],
       "runsMs": [
-        7.4401659999999765,
-        9.330165999999963,
-        6.864832999999976
+        8.55295799999999,
+        8.281957999999918,
+        9.445958000000019
       ],
       "stats": {
-        "mean": 7.878388333333305,
-        "median": 7.4401659999999765,
-        "min": 6.864832999999976,
-        "max": 9.330165999999963,
-        "p75": 9.330165999999963,
-        "p95": 9.330165999999963
+        "mean": 8.760291333333308,
+        "median": 8.55295799999999,
+        "min": 8.281957999999918,
+        "max": 9.445958000000019,
+        "p75": 9.445958000000019,
+        "p95": 9.445958000000019
       },
-      "outputCssBytes": 36243,
-      "selectorCount": 415,
-      "classSetSize": 349
+      "outputCssBytes": 42354,
+      "memory": {
+        "rssBeforeBytes": 449216512,
+        "rssAfterBytes": 456196096,
+        "rssPeakBytes": 456196096,
+        "rssDeltaBytes": 6979584,
+        "heapBeforeBytes": 177128216,
+        "heapAfterBytes": 194922200,
+        "heapPeakBytes": 229883760,
+        "heapDeltaBytes": 17793984
+      },
+      "selectorCount": 667,
+      "classSetSize": 601
     },
     {
       "id": "weapp-generator-candidates-weapp",
       "name": "weapp-tailwindcss generator target=weapp scanSources=false candidates",
       "mode": "generator",
       "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
       "warmupMs": [
-        11.178625000000011
+        173.686375
       ],
       "runsMs": [
-        13.247000000000071,
-        11.348416999999927,
-        10.84287500000005
+        14.850417000000107,
+        15.698583000000099,
+        16.34699999999998
       ],
       "stats": {
-        "mean": 11.812764000000016,
-        "median": 11.348416999999927,
-        "min": 10.84287500000005,
-        "max": 13.247000000000071,
-        "p75": 13.247000000000071,
-        "p95": 13.247000000000071
+        "mean": 15.632000000000062,
+        "median": 15.698583000000099,
+        "min": 14.850417000000107,
+        "max": 16.34699999999998,
+        "p75": 16.34699999999998,
+        "p95": 16.34699999999998
       },
-      "outputCssBytes": 18362,
-      "selectorCount": 295,
-      "classSetSize": 349
+      "outputCssBytes": 28174,
+      "memory": {
+        "rssBeforeBytes": 456196096,
+        "rssAfterBytes": 470663168,
+        "rssPeakBytes": 470663168,
+        "rssDeltaBytes": 14467072,
+        "heapBeforeBytes": 194967280,
+        "heapAfterBytes": 225497064,
+        "heapPeakBytes": 225497064,
+        "heapDeltaBytes": 30529784
+      },
+      "selectorCount": 568,
+      "classSetSize": 600
     },
     {
       "id": "weapp-generator-candidates-web",
       "name": "weapp-tailwindcss generator target=web scanSources=false candidates",
       "mode": "generator",
       "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
       "warmupMs": [
-        6.87112500000012
+        7.027499999999918
       ],
       "runsMs": [
-        5.017000000000053,
-        5.011375000000044,
-        4.956707999999935
+        6.631542000000081,
+        8.029583000000002,
+        6.280459000000064
       ],
       "stats": {
-        "mean": 4.995027666666677,
-        "median": 5.011375000000044,
-        "min": 4.956707999999935,
-        "max": 5.017000000000053,
-        "p75": 5.017000000000053,
-        "p95": 5.017000000000053
+        "mean": 6.980528000000049,
+        "median": 6.631542000000081,
+        "min": 6.280459000000064,
+        "max": 8.029583000000002,
+        "p75": 8.029583000000002,
+        "p95": 8.029583000000002
       },
-      "outputCssBytes": 36243,
-      "selectorCount": 415,
-      "classSetSize": 349
+      "outputCssBytes": 42311,
+      "memory": {
+        "rssBeforeBytes": 470663168,
+        "rssAfterBytes": 476725248,
+        "rssPeakBytes": 476725248,
+        "rssDeltaBytes": 6062080,
+        "heapBeforeBytes": 225538168,
+        "heapAfterBytes": 225707408,
+        "heapPeakBytes": 254772120,
+        "heapDeltaBytes": 169240
+      },
+      "selectorCount": 666,
+      "classSetSize": 600
     },
     {
       "id": "weapp-generator-incremental-cold",
       "name": "weapp-tailwindcss generator incrementalCache cold",
       "mode": "generator",
       "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
       "warmupMs": [
-        26.926124999999956
+        25.527458000000024
       ],
       "runsMs": [
-        0.09170799999992596,
-        0.05741699999998673,
-        0.04658300000005511
+        0.09529199999997218,
+        0.05416600000012295,
+        0.05458299999986593
       ],
       "stats": {
-        "mean": 0.06523599999998926,
-        "median": 0.05741699999998673,
-        "min": 0.04658300000005511,
-        "max": 0.09170799999992596,
-        "p75": 0.09170799999992596,
-        "p95": 0.09170799999992596
+        "mean": 0.06801366666665369,
+        "median": 0.05458299999986593,
+        "min": 0.05416600000012295,
+        "max": 0.09529199999997218,
+        "p75": 0.09529199999997218,
+        "p95": 0.09529199999997218
       },
-      "outputCssBytes": 7094,
-      "selectorCount": 93,
+      "outputCssBytes": 4913,
+      "memory": {
+        "rssBeforeBytes": 476725248,
+        "rssAfterBytes": 477544448,
+        "rssPeakBytes": 477544448,
+        "rssDeltaBytes": 819200,
+        "heapBeforeBytes": 225752448,
+        "heapAfterBytes": 253892440,
+        "heapPeakBytes": 254191112,
+        "heapDeltaBytes": 28139992
+      },
+      "selectorCount": 95,
       "classSetSize": 96
     },
     {
@@ -161,24 +239,36 @@
       "name": "weapp-tailwindcss generator incrementalCache hit",
       "mode": "generator",
       "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
       "warmupMs": [
-        0.10358300000007148
+        0.10683399999993526
       ],
       "runsMs": [
-        0.09654199999999946,
-        0.10129200000005767,
-        0.09033399999998437
+        0.10304199999995944,
+        0.10416699999996126,
+        0.09116599999993014
       ],
       "stats": {
-        "mean": 0.09605600000001384,
-        "median": 0.09654199999999946,
-        "min": 0.09033399999998437,
-        "max": 0.10129200000005767,
-        "p75": 0.10129200000005767,
-        "p95": 0.10129200000005767
+        "mean": 0.09945833333328362,
+        "median": 0.10304199999995944,
+        "min": 0.09116599999993014,
+        "max": 0.10416699999996126,
+        "p75": 0.10416699999996126,
+        "p95": 0.10416699999996126
       },
-      "outputCssBytes": 7094,
-      "selectorCount": 93,
+      "outputCssBytes": 4913,
+      "memory": {
+        "rssBeforeBytes": 477544448,
+        "rssAfterBytes": 477544448,
+        "rssPeakBytes": 477544448,
+        "rssDeltaBytes": 0,
+        "heapBeforeBytes": 253900000,
+        "heapAfterBytes": 255118488,
+        "heapPeakBytes": 255118488,
+        "heapDeltaBytes": 1218488
+      },
+      "selectorCount": 95,
       "classSetSize": 96
     },
     {
@@ -186,26 +276,38 @@
       "name": "weapp-tailwindcss generator incrementalCache append",
       "mode": "generator",
       "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
       "warmupMs": [
-        7.544208000000026
+        4.4892909999998665
       ],
       "runsMs": [
-        7.088375000000042,
-        6.702833000000055,
-        6.309167000000116
+        11.990291999999954,
+        8.504208000000062,
+        5.9623330000001715
       ],
       "stats": {
-        "mean": 6.700125000000071,
-        "median": 6.702833000000055,
-        "min": 6.309167000000116,
-        "max": 7.088375000000042,
-        "p75": 7.088375000000042,
-        "p95": 7.088375000000042
+        "mean": 8.818944333333397,
+        "median": 8.504208000000062,
+        "min": 5.9623330000001715,
+        "max": 11.990291999999954,
+        "p75": 11.990291999999954,
+        "p95": 11.990291999999954
       },
-      "outputCssBytes": 10499,
-      "selectorCount": 131,
+      "outputCssBytes": 6289,
+      "memory": {
+        "rssBeforeBytes": 477544448,
+        "rssAfterBytes": 482050048,
+        "rssPeakBytes": 483622912,
+        "rssDeltaBytes": 4505600,
+        "heapBeforeBytes": 255125888,
+        "heapAfterBytes": 127115240,
+        "heapPeakBytes": 257687240,
+        "heapDeltaBytes": -128010648
+      },
+      "selectorCount": 121,
       "details": {
-        "incrementalCssBytes": 3404
+        "incrementalCssBytes": 1375
       },
       "classSetSize": 120
     },
@@ -214,120 +316,942 @@
       "name": "@tailwindcss/postcss direct postcss process",
       "mode": "generator",
       "plugin": "@tailwindcss/postcss",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
       "warmupMs": [
-        27.740958999999975
+        27.510332999999946
       ],
       "runsMs": [
-        8.264916000000085,
-        6.241833999999926,
-        5.389290999999957
+        7.475292000000081,
+        5.996415999999954,
+        6.049208000000135
       ],
       "stats": {
-        "mean": 6.632013666666656,
-        "median": 6.241833999999926,
-        "min": 5.389290999999957,
-        "max": 8.264916000000085,
-        "p75": 8.264916000000085,
-        "p95": 8.264916000000085
+        "mean": 6.506972000000057,
+        "median": 6.049208000000135,
+        "min": 5.996415999999954,
+        "max": 7.475292000000081,
+        "p75": 7.475292000000081,
+        "p95": 7.475292000000081
       },
-      "outputCssBytes": 36367,
-      "selectorCount": 416
+      "outputCssBytes": 43132,
+      "memory": {
+        "rssBeforeBytes": 482050048,
+        "rssAfterBytes": 484081664,
+        "rssPeakBytes": 484081664,
+        "rssDeltaBytes": 2031616,
+        "heapBeforeBytes": 127124720,
+        "heapAfterBytes": 153022656,
+        "heapPeakBytes": 153022656,
+        "heapDeltaBytes": 25897936
+      },
+      "selectorCount": 674
     },
     {
       "id": "vite-official-postcss",
       "name": "Vite build + @tailwindcss/postcss",
       "mode": "vite-build",
       "plugin": "@tailwindcss/postcss",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
       "warmupMs": [
-        118.25195800000006
+        120.07600000000002
       ],
       "runsMs": [
-        14.544916999999941,
-        14.602082999999993,
-        15.149874999999838
+        18.34004099999993,
+        14.181290999999874,
+        15.01566600000001
       ],
       "stats": {
-        "mean": 14.765624999999924,
-        "median": 14.602082999999993,
-        "min": 14.544916999999941,
-        "max": 15.149874999999838,
-        "p75": 15.149874999999838,
-        "p95": 15.149874999999838
+        "mean": 15.845665999999937,
+        "median": 15.01566600000001,
+        "min": 14.181290999999874,
+        "max": 18.34004099999993,
+        "p75": 18.34004099999993,
+        "p95": 18.34004099999993
       },
-      "outputCssBytes": 36367,
-      "selectorCount": 416
+      "outputCssBytes": 43132,
+      "memory": {
+        "rssBeforeBytes": 484081664,
+        "rssAfterBytes": 509739008,
+        "rssPeakBytes": 516620288,
+        "rssDeltaBytes": 25657344,
+        "heapBeforeBytes": 153024336,
+        "heapAfterBytes": 192747976,
+        "heapPeakBytes": 199263576,
+        "heapDeltaBytes": 39723640
+      },
+      "selectorCount": 674
     },
     {
       "id": "vite-official-vite",
       "name": "Vite build + @tailwindcss/vite",
       "mode": "vite-build",
       "plugin": "@tailwindcss/vite",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
       "warmupMs": [
-        21.78599999999983
+        22.597041999999874
       ],
       "runsMs": [
-        17.517082999999957,
-        21.647290999999996,
-        16.579999999999927
+        17.640124999999898,
+        19.12912499999993,
+        17.375625000000127
       ],
       "stats": {
-        "mean": 18.58145799999996,
-        "median": 17.517082999999957,
-        "min": 16.579999999999927,
-        "max": 21.647290999999996,
-        "p75": 21.647290999999996,
-        "p95": 21.647290999999996
+        "mean": 18.048291666666653,
+        "median": 17.640124999999898,
+        "min": 17.375625000000127,
+        "max": 19.12912499999993,
+        "p75": 19.12912499999993,
+        "p95": 19.12912499999993
       },
-      "outputCssBytes": 34130,
-      "selectorCount": 428
+      "outputCssBytes": 41637,
+      "memory": {
+        "rssBeforeBytes": 509739008,
+        "rssAfterBytes": 519897088,
+        "rssPeakBytes": 519897088,
+        "rssDeltaBytes": 10158080,
+        "heapBeforeBytes": 192784248,
+        "heapAfterBytes": 204696368,
+        "heapPeakBytes": 220666256,
+        "heapDeltaBytes": 11912120
+      },
+      "selectorCount": 680
     },
     {
       "id": "vite-weapp-target-weapp",
       "name": "Vite build + weapp-tailwindcss/vite generator.target='weapp'",
       "mode": "vite-build",
       "plugin": "weapp-tailwindcss/vite",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
       "warmupMs": [
-        187.36850000000004
+        231.50704100000007
       ],
       "runsMs": [
-        30.520500000000084,
-        27.758332999999993,
-        25.559124999999995
+        33.18016699999998,
+        30.709458999999924,
+        31.508624999999938
       ],
       "stats": {
-        "mean": 27.945986000000023,
-        "median": 27.758332999999993,
-        "min": 25.559124999999995,
-        "max": 30.520500000000084,
-        "p75": 30.520500000000084,
-        "p95": 30.520500000000084
+        "mean": 31.79941699999995,
+        "median": 31.508624999999938,
+        "min": 30.709458999999924,
+        "max": 33.18016699999998,
+        "p75": 33.18016699999998,
+        "p95": 33.18016699999998
       },
-      "outputCssBytes": 17876,
-      "selectorCount": 294
+      "outputCssBytes": 27729,
+      "memory": {
+        "rssBeforeBytes": 519897088,
+        "rssAfterBytes": 563789824,
+        "rssPeakBytes": 563789824,
+        "rssDeltaBytes": 43892736,
+        "heapBeforeBytes": 204697840,
+        "heapAfterBytes": 273301656,
+        "heapPeakBytes": 300684968,
+        "heapDeltaBytes": 68603816
+      },
+      "selectorCount": 568
     },
     {
       "id": "vite-weapp-target-web",
       "name": "Vite build + weapp-tailwindcss/vite generator.target='web'",
       "mode": "vite-build",
       "plugin": "weapp-tailwindcss/vite",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
       "warmupMs": [
-        53.49370799999997
+        53.372292000000016
       ],
       "runsMs": [
-        30.824332999999797,
-        32.64479200000005,
-        30.4245420000002
+        33.23591699999997,
+        30.93074999999999,
+        32.809749999999894
       ],
       "stats": {
-        "mean": 31.297889000000016,
-        "median": 30.824332999999797,
-        "min": 30.4245420000002,
-        "max": 32.64479200000005,
-        "p75": 32.64479200000005,
-        "p95": 32.64479200000005
+        "mean": 32.32547233333329,
+        "median": 32.809749999999894,
+        "min": 30.93074999999999,
+        "max": 33.23591699999997,
+        "p75": 33.23591699999997,
+        "p95": 33.23591699999997
       },
-      "outputCssBytes": 36181,
-      "selectorCount": 415
+      "outputCssBytes": 42292,
+      "memory": {
+        "rssBeforeBytes": 563789824,
+        "rssAfterBytes": 572162048,
+        "rssPeakBytes": 572162048,
+        "rssDeltaBytes": 8372224,
+        "heapBeforeBytes": 273303376,
+        "heapAfterBytes": 308594336,
+        "heapPeakBytes": 314695320,
+        "heapDeltaBytes": 35290960
+      },
+      "selectorCount": 667
+    },
+    {
+      "id": "hmr-official-postcss",
+      "name": "Vite dev HMR + @tailwindcss/postcss",
+      "mode": "vite-hmr",
+      "plugin": "@tailwindcss/postcss",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
+      "warmupMs": [
+        47.639250000000175
+      ],
+      "runsMs": [
+        14.986249999999927,
+        15.614583999999923,
+        17.931292000000212
+      ],
+      "stats": {
+        "mean": 16.177375333333355,
+        "median": 15.614583999999923,
+        "min": 14.986249999999927,
+        "max": 17.931292000000212,
+        "p75": 17.931292000000212,
+        "p95": 17.931292000000212
+      },
+      "outputCssBytes": 47493,
+      "memory": {
+        "rssBeforeBytes": 572162048,
+        "rssAfterBytes": 582975488,
+        "rssPeakBytes": 582975488,
+        "rssDeltaBytes": 10813440,
+        "heapBeforeBytes": 308595824,
+        "heapAfterBytes": 302613544,
+        "heapPeakBytes": 327878672,
+        "heapDeltaBytes": -5982280
+      },
+      "selectorCount": 676,
+      "details": {
+        "hmrCandidate": "hover:top-[1004rpx]",
+        "hmrSourceFile": "src/sources/hmr.html"
+      }
+    },
+    {
+      "id": "hmr-official-vite",
+      "name": "Vite dev HMR + @tailwindcss/vite",
+      "mode": "vite-hmr",
+      "plugin": "@tailwindcss/vite",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
+      "warmupMs": [
+        27.92058300000008
+      ],
+      "runsMs": [
+        10.754500000000007,
+        15.11954199999991,
+        10.602624999999989
+      ],
+      "stats": {
+        "mean": 12.158888999999968,
+        "median": 10.754500000000007,
+        "min": 10.602624999999989,
+        "max": 15.11954199999991,
+        "p75": 15.11954199999991,
+        "p95": 15.11954199999991
+      },
+      "outputCssBytes": 46610,
+      "memory": {
+        "rssBeforeBytes": 583024640,
+        "rssAfterBytes": 598294528,
+        "rssPeakBytes": 598294528,
+        "rssDeltaBytes": 15269888,
+        "heapBeforeBytes": 302678672,
+        "heapAfterBytes": 319607088,
+        "heapPeakBytes": 338257592,
+        "heapDeltaBytes": 16928416
+      },
+      "selectorCount": 669,
+      "details": {
+        "hmrCandidate": "hover:top-[1004rpx]",
+        "hmrSourceFile": "src/sources/hmr.html"
+      }
+    },
+    {
+      "id": "hmr-weapp-target-weapp",
+      "name": "Vite dev HMR + weapp-tailwindcss/vite generator.target='weapp'",
+      "mode": "vite-hmr",
+      "plugin": "weapp-tailwindcss/vite",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
+      "warmupMs": [
+        191.09874999999965
+      ],
+      "runsMs": [
+        88.1083749999998,
+        86.95383400000037,
+        85.03170900000032
+      ],
+      "stats": {
+        "mean": 86.69797266666683,
+        "median": 86.95383400000037,
+        "min": 85.03170900000032,
+        "max": 88.1083749999998,
+        "p75": 88.1083749999998,
+        "p95": 88.1083749999998
+      },
+      "outputCssBytes": 30185,
+      "memory": {
+        "rssBeforeBytes": 598294528,
+        "rssAfterBytes": 637583360,
+        "rssPeakBytes": 637583360,
+        "rssDeltaBytes": 39288832,
+        "heapBeforeBytes": 319643128,
+        "heapAfterBytes": 384842384,
+        "heapPeakBytes": 384842384,
+        "heapDeltaBytes": 65199256
+      },
+      "selectorCount": 569,
+      "details": {
+        "hmrCandidate": "hover:top-[1004rpx]",
+        "hmrSourceFile": "src/sources/hmr.html"
+      }
+    },
+    {
+      "id": "hmr-weapp-target-web",
+      "name": "Vite dev HMR + weapp-tailwindcss/vite generator.target='web'",
+      "mode": "vite-hmr",
+      "plugin": "weapp-tailwindcss/vite",
+      "scenarioId": "default",
+      "scenarioName": "默认规模",
+      "warmupMs": [
+        71.48862499999996
+      ],
+      "runsMs": [
+        31.428917000000183,
+        32.130499999999756,
+        31.997084000000086
+      ],
+      "stats": {
+        "mean": 31.85216700000001,
+        "median": 31.997084000000086,
+        "min": 31.428917000000183,
+        "max": 32.130499999999756,
+        "p75": 32.130499999999756,
+        "p95": 32.130499999999756
+      },
+      "outputCssBytes": 42043,
+      "memory": {
+        "rssBeforeBytes": 637583360,
+        "rssAfterBytes": 652984320,
+        "rssPeakBytes": 652984320,
+        "rssDeltaBytes": 15400960,
+        "heapBeforeBytes": 384880056,
+        "heapAfterBytes": 359079048,
+        "heapPeakBytes": 384881080,
+        "heapDeltaBytes": -25801008
+      },
+      "selectorCount": 642,
+      "details": {
+        "hmrCandidate": "hover:top-[1004rpx]",
+        "hmrSourceFile": "src/sources/hmr.html"
+      }
+    },
+    {
+      "id": "weapp-generator-scan-weapp",
+      "name": "weapp-tailwindcss generator target=weapp scanSources=true",
+      "mode": "generator",
+      "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        9860.018291
+      ],
+      "runsMs": [
+        123.39045799999985,
+        116.74645800000144,
+        145.9031249999989
+      ],
+      "stats": {
+        "mean": 128.68001366666672,
+        "median": 123.39045799999985,
+        "min": 116.74645800000144,
+        "max": 145.9031249999989,
+        "p75": 145.9031249999989,
+        "p95": 145.9031249999989
+      },
+      "outputCssBytes": 202528,
+      "memory": {
+        "rssBeforeBytes": 653443072,
+        "rssAfterBytes": 739147776,
+        "rssPeakBytes": 739147776,
+        "rssDeltaBytes": 85704704,
+        "heapBeforeBytes": 365450488,
+        "heapAfterBytes": 294818168,
+        "heapPeakBytes": 441743752,
+        "heapDeltaBytes": -70632320
+      },
+      "selectorCount": 4689,
+      "classSetSize": 5000
+    },
+    {
+      "id": "weapp-generator-scan-web",
+      "name": "weapp-tailwindcss generator target=web scanSources=true",
+      "mode": "generator",
+      "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        66.76699999999983
+      ],
+      "runsMs": [
+        56.94779099999869,
+        58.54108400000041,
+        56.680083999999624
+      ],
+      "stats": {
+        "mean": 57.389652999999576,
+        "median": 56.94779099999869,
+        "min": 56.680083999999624,
+        "max": 58.54108400000041,
+        "p75": 58.54108400000041,
+        "p95": 58.54108400000041
+      },
+      "outputCssBytes": 279754,
+      "memory": {
+        "rssBeforeBytes": 739147776,
+        "rssAfterBytes": 748093440,
+        "rssPeakBytes": 748093440,
+        "rssDeltaBytes": 8945664,
+        "heapBeforeBytes": 295177472,
+        "heapAfterBytes": 352748216,
+        "heapPeakBytes": 352748216,
+        "heapDeltaBytes": 57570744
+      },
+      "selectorCount": 5066,
+      "classSetSize": 5000
+    },
+    {
+      "id": "weapp-generator-candidates-weapp",
+      "name": "weapp-tailwindcss generator target=weapp scanSources=false candidates",
+      "mode": "generator",
+      "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        137.1219999999994
+      ],
+      "runsMs": [
+        138.03299999999945,
+        139.426958,
+        145.82362499999908
+      ],
+      "stats": {
+        "mean": 141.09452766666618,
+        "median": 139.426958,
+        "min": 138.03299999999945,
+        "max": 145.82362499999908,
+        "p75": 145.82362499999908,
+        "p95": 145.82362499999908
+      },
+      "outputCssBytes": 202528,
+      "memory": {
+        "rssBeforeBytes": 748093440,
+        "rssAfterBytes": 762855424,
+        "rssPeakBytes": 762855424,
+        "rssDeltaBytes": 14761984,
+        "heapBeforeBytes": 353098024,
+        "heapAfterBytes": 398193088,
+        "heapPeakBytes": 420895848,
+        "heapDeltaBytes": 45095064
+      },
+      "selectorCount": 4689,
+      "classSetSize": 5000
+    },
+    {
+      "id": "weapp-generator-candidates-web",
+      "name": "weapp-tailwindcss generator target=web scanSources=false candidates",
+      "mode": "generator",
+      "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        90.15029200000026
+      ],
+      "runsMs": [
+        88.86954199999855,
+        86.54562499999884,
+        83.01020800000151
+      ],
+      "stats": {
+        "mean": 86.1417916666663,
+        "median": 86.54562499999884,
+        "min": 83.01020800000151,
+        "max": 88.86954199999855,
+        "p75": 88.86954199999855,
+        "p95": 88.86954199999855
+      },
+      "outputCssBytes": 279754,
+      "memory": {
+        "rssBeforeBytes": 762855424,
+        "rssAfterBytes": 771080192,
+        "rssPeakBytes": 771080192,
+        "rssDeltaBytes": 8224768,
+        "heapBeforeBytes": 398546928,
+        "heapAfterBytes": 469239328,
+        "heapPeakBytes": 469239328,
+        "heapDeltaBytes": 70692400
+      },
+      "selectorCount": 5066,
+      "classSetSize": 5000
+    },
+    {
+      "id": "weapp-generator-incremental-cold",
+      "name": "weapp-tailwindcss generator incrementalCache cold",
+      "mode": "generator",
+      "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        5.074292000001151
+      ],
+      "runsMs": [
+        0.07208399999944959,
+        0.04495899999892572,
+        0.04233299999941664
+      ],
+      "stats": {
+        "mean": 0.053125333332597315,
+        "median": 0.04495899999892572,
+        "min": 0.04233299999941664,
+        "max": 0.07208399999944959,
+        "p75": 0.07208399999944959,
+        "p95": 0.07208399999944959
+      },
+      "outputCssBytes": 4913,
+      "memory": {
+        "rssBeforeBytes": 771080192,
+        "rssAfterBytes": 771080192,
+        "rssPeakBytes": 771080192,
+        "rssDeltaBytes": 0,
+        "heapBeforeBytes": 469596416,
+        "heapAfterBytes": 480433616,
+        "heapPeakBytes": 480433616,
+        "heapDeltaBytes": 10837200
+      },
+      "selectorCount": 95,
+      "classSetSize": 96
+    },
+    {
+      "id": "weapp-generator-incremental-hit",
+      "name": "weapp-tailwindcss generator incrementalCache hit",
+      "mode": "generator",
+      "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        0.0820000000003347
+      ],
+      "runsMs": [
+        0.07879200000024866,
+        0.07899999999972351,
+        0.08229200000096171
+      ],
+      "stats": {
+        "mean": 0.0800280000003113,
+        "median": 0.07899999999972351,
+        "min": 0.07879200000024866,
+        "max": 0.08229200000096171,
+        "p75": 0.08229200000096171,
+        "p95": 0.08229200000096171
+      },
+      "outputCssBytes": 4913,
+      "memory": {
+        "rssBeforeBytes": 771080192,
+        "rssAfterBytes": 771080192,
+        "rssPeakBytes": 771080192,
+        "rssDeltaBytes": 0,
+        "heapBeforeBytes": 480441032,
+        "heapAfterBytes": 481654560,
+        "heapPeakBytes": 481654560,
+        "heapDeltaBytes": 1213528
+      },
+      "selectorCount": 95,
+      "classSetSize": 96
+    },
+    {
+      "id": "weapp-generator-incremental-append",
+      "name": "weapp-tailwindcss generator incrementalCache append",
+      "mode": "generator",
+      "plugin": "weapp-tailwindcss/generator",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        0.6225419999991573
+      ],
+      "runsMs": [
+        8.066208999998707,
+        5.778874999999971,
+        5.944874999999229
+      ],
+      "stats": {
+        "mean": 6.596652999999303,
+        "median": 5.944874999999229,
+        "min": 5.778874999999971,
+        "max": 8.066208999998707,
+        "p75": 8.066208999998707,
+        "p95": 8.066208999998707
+      },
+      "outputCssBytes": 6289,
+      "memory": {
+        "rssBeforeBytes": 771080192,
+        "rssAfterBytes": 769867776,
+        "rssPeakBytes": 771080192,
+        "rssDeltaBytes": -1212416,
+        "heapBeforeBytes": 481661976,
+        "heapAfterBytes": 462943224,
+        "heapPeakBytes": 482707280,
+        "heapDeltaBytes": -18718752
+      },
+      "selectorCount": 121,
+      "details": {
+        "incrementalCssBytes": 1375
+      },
+      "classSetSize": 120
+    },
+    {
+      "id": "official-postcss-core",
+      "name": "@tailwindcss/postcss direct postcss process",
+      "mode": "generator",
+      "plugin": "@tailwindcss/postcss",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        76.56920799999898
+      ],
+      "runsMs": [
+        15.280249999999796,
+        13.639291999999841,
+        8.295042000001558
+      ],
+      "stats": {
+        "mean": 12.404861333333733,
+        "median": 13.639291999999841,
+        "min": 8.295042000001558,
+        "max": 15.280249999999796,
+        "p75": 15.280249999999796,
+        "p95": 15.280249999999796
+      },
+      "outputCssBytes": 187910,
+      "memory": {
+        "rssBeforeBytes": 769867776,
+        "rssAfterBytes": 784449536,
+        "rssPeakBytes": 784449536,
+        "rssDeltaBytes": 14581760,
+        "heapBeforeBytes": 462952072,
+        "heapAfterBytes": 472357816,
+        "heapPeakBytes": 503455168,
+        "heapDeltaBytes": 9405744
+      },
+      "selectorCount": 5043
+    },
+    {
+      "id": "vite-official-postcss",
+      "name": "Vite build + @tailwindcss/postcss",
+      "mode": "vite-build",
+      "plugin": "@tailwindcss/postcss",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        19.79516599999988
+      ],
+      "runsMs": [
+        19.917875000001004,
+        18.200791999999637,
+        17.944875000001048
+      ],
+      "stats": {
+        "mean": 18.687847333333895,
+        "median": 18.200791999999637,
+        "min": 17.944875000001048,
+        "max": 19.917875000001004,
+        "p75": 19.917875000001004,
+        "p95": 19.917875000001004
+      },
+      "outputCssBytes": 187910,
+      "memory": {
+        "rssBeforeBytes": 784449536,
+        "rssAfterBytes": 794099712,
+        "rssPeakBytes": 794099712,
+        "rssDeltaBytes": 9650176,
+        "heapBeforeBytes": 472359304,
+        "heapAfterBytes": 490753304,
+        "heapPeakBytes": 490753304,
+        "heapDeltaBytes": 18394000
+      },
+      "selectorCount": 5043
+    },
+    {
+      "id": "vite-official-vite",
+      "name": "Vite build + @tailwindcss/vite",
+      "mode": "vite-build",
+      "plugin": "@tailwindcss/vite",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        66.84675000000061
+      ],
+      "runsMs": [
+        65.22020899999916,
+        66.82012500000019,
+        64.1219170000004
+      ],
+      "stats": {
+        "mean": 65.38741699999991,
+        "median": 65.22020899999916,
+        "min": 64.1219170000004,
+        "max": 66.82012500000019,
+        "p75": 66.82012500000019,
+        "p95": 66.82012500000019
+      },
+      "outputCssBytes": 268928,
+      "memory": {
+        "rssBeforeBytes": 794099712,
+        "rssAfterBytes": 850755584,
+        "rssPeakBytes": 850755584,
+        "rssDeltaBytes": 56655872,
+        "heapBeforeBytes": 490754792,
+        "heapAfterBytes": 516163448,
+        "heapPeakBytes": 516163448,
+        "heapDeltaBytes": 25408656
+      },
+      "selectorCount": 5079
+    },
+    {
+      "id": "vite-weapp-target-weapp",
+      "name": "Vite build + weapp-tailwindcss/vite generator.target='weapp'",
+      "mode": "vite-build",
+      "plugin": "weapp-tailwindcss/vite",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        3903.848167
+      ],
+      "runsMs": [
+        199.24804199999926,
+        194.0776659999974,
+        194.14429200000086
+      ],
+      "stats": {
+        "mean": 195.8233333333325,
+        "median": 194.14429200000086,
+        "min": 194.0776659999974,
+        "max": 199.24804199999926,
+        "p75": 199.24804199999926,
+        "p95": 199.24804199999926
+      },
+      "outputCssBytes": 202042,
+      "memory": {
+        "rssBeforeBytes": 850755584,
+        "rssAfterBytes": 982728704,
+        "rssPeakBytes": 982728704,
+        "rssDeltaBytes": 131973120,
+        "heapBeforeBytes": 516164936,
+        "heapAfterBytes": 684533640,
+        "heapPeakBytes": 684533640,
+        "heapDeltaBytes": 168368704
+      },
+      "selectorCount": 4688
+    },
+    {
+      "id": "vite-weapp-target-web",
+      "name": "Vite build + weapp-tailwindcss/vite generator.target='web'",
+      "mode": "vite-build",
+      "plugin": "weapp-tailwindcss/vite",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        323.50837500000125
+      ],
+      "runsMs": [
+        204.14329100000032,
+        205.5024999999987,
+        207.71441600000253
+      ],
+      "stats": {
+        "mean": 205.78673566666717,
+        "median": 205.5024999999987,
+        "min": 204.14329100000032,
+        "max": 207.71441600000253,
+        "p75": 207.71441600000253,
+        "p95": 207.71441600000253
+      },
+      "outputCssBytes": 279692,
+      "memory": {
+        "rssBeforeBytes": 982728704,
+        "rssAfterBytes": 1071251456,
+        "rssPeakBytes": 1071251456,
+        "rssDeltaBytes": 88522752,
+        "heapBeforeBytes": 684535128,
+        "heapAfterBytes": 772660368,
+        "heapPeakBytes": 772660368,
+        "heapDeltaBytes": 88125240
+      },
+      "selectorCount": 5066
+    },
+    {
+      "id": "hmr-official-postcss",
+      "name": "Vite dev HMR + @tailwindcss/postcss",
+      "mode": "vite-hmr",
+      "plugin": "@tailwindcss/postcss",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        155.96300000000338
+      ],
+      "runsMs": [
+        78.23404200000004,
+        73.3804170000003,
+        72.73724999999831
+      ],
+      "stats": {
+        "mean": 74.78390299999955,
+        "median": 73.3804170000003,
+        "min": 72.73724999999831,
+        "max": 78.23404200000004,
+        "p75": 78.23404200000004,
+        "p95": 78.23404200000004
+      },
+      "outputCssBytes": 199237,
+      "memory": {
+        "rssBeforeBytes": 1071251456,
+        "rssAfterBytes": 1180352512,
+        "rssPeakBytes": 1180352512,
+        "rssDeltaBytes": 109101056,
+        "heapBeforeBytes": 772661856,
+        "heapAfterBytes": 876145400,
+        "heapPeakBytes": 876145400,
+        "heapDeltaBytes": 103483544
+      },
+      "selectorCount": 5045,
+      "details": {
+        "hmrCandidate": "hover:top-[1004rpx]",
+        "hmrSourceFile": "src/sources/hmr.html"
+      }
+    },
+    {
+      "id": "hmr-official-vite",
+      "name": "Vite dev HMR + @tailwindcss/vite",
+      "mode": "vite-hmr",
+      "plugin": "@tailwindcss/vite",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        76.03950000000259
+      ],
+      "runsMs": [
+        36.70300000000134,
+        38.679917000001296,
+        39.1828749999986
+      ],
+      "stats": {
+        "mean": 38.188597333333746,
+        "median": 38.679917000001296,
+        "min": 36.70300000000134,
+        "max": 39.1828749999986,
+        "p75": 39.1828749999986,
+        "p95": 39.1828749999986
+      },
+      "outputCssBytes": 308166,
+      "memory": {
+        "rssBeforeBytes": 1273151488,
+        "rssAfterBytes": 1322680320,
+        "rssPeakBytes": 1322680320,
+        "rssDeltaBytes": 49528832,
+        "heapBeforeBytes": 904149024,
+        "heapAfterBytes": 1000039832,
+        "heapPeakBytes": 1000039832,
+        "heapDeltaBytes": 95890808
+      },
+      "selectorCount": 5069,
+      "details": {
+        "hmrCandidate": "hover:top-[1004rpx]",
+        "hmrSourceFile": "src/sources/hmr.html"
+      }
+    },
+    {
+      "id": "hmr-weapp-target-weapp",
+      "name": "Vite dev HMR + weapp-tailwindcss/vite generator.target='weapp'",
+      "mode": "vite-hmr",
+      "plugin": "weapp-tailwindcss/vite",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        7048.174500000001
+      ],
+      "runsMs": [
+        3625.606208000001,
+        3636.984457999999,
+        3554.688540999996
+      ],
+      "stats": {
+        "mean": 3605.759735666665,
+        "median": 3625.606208000001,
+        "min": 3554.688540999996,
+        "max": 3636.984457999999,
+        "p75": 3636.984457999999,
+        "p95": 3636.984457999999
+      },
+      "outputCssBytes": 216902,
+      "memory": {
+        "rssBeforeBytes": 1357479936,
+        "rssAfterBytes": 1331822592,
+        "rssPeakBytes": 1435107328,
+        "rssDeltaBytes": -25657344,
+        "heapBeforeBytes": 988360688,
+        "heapAfterBytes": 681783256,
+        "heapPeakBytes": 1081779872,
+        "heapDeltaBytes": -306577432
+      },
+      "selectorCount": 4690,
+      "details": {
+        "hmrCandidate": "hover:top-[1004rpx]",
+        "hmrSourceFile": "src/sources/hmr.html"
+      }
+    },
+    {
+      "id": "hmr-weapp-target-web",
+      "name": "Vite dev HMR + weapp-tailwindcss/vite generator.target='web'",
+      "mode": "vite-hmr",
+      "plugin": "weapp-tailwindcss/vite",
+      "scenarioId": "large-selectors",
+      "scenarioName": "大数量级选择器",
+      "warmupMs": [
+        466.0907089999964
+      ],
+      "runsMs": [
+        245.26291599999968,
+        226.74433300000237,
+        230.22579200000473
+      ],
+      "stats": {
+        "mean": 234.0776803333356,
+        "median": 230.22579200000473,
+        "min": 226.74433300000237,
+        "max": 245.26291599999968,
+        "p75": 245.26291599999968,
+        "p95": 245.26291599999968
+      },
+      "outputCssBytes": 289219,
+      "memory": {
+        "rssBeforeBytes": 1339506688,
+        "rssAfterBytes": 1325481984,
+        "rssPeakBytes": 1348894720,
+        "rssDeltaBytes": -14024704,
+        "heapBeforeBytes": 693042472,
+        "heapAfterBytes": 665722400,
+        "heapPeakBytes": 753803176,
+        "heapDeltaBytes": -27320072
+      },
+      "selectorCount": 5042,
+      "details": {
+        "hmrCandidate": "hover:top-[1004rpx]",
+        "hmrSourceFile": "src/sources/hmr.html"
+      }
     }
   ]
 }

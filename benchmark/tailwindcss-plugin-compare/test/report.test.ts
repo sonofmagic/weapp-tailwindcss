@@ -28,19 +28,30 @@ function createFixtureReport(): BenchmarkReport {
       warmups: 0,
       classCount: 12,
       sourceFiles: 2,
+      largeClassCount: 1200,
+      largeSourceFiles: 12,
+      includeLarge: true,
+      includeHmr: true,
     },
-    fixture: {
-      classCount: 12,
-      sourceFiles: 2,
-      candidateCount: 12,
-      appendedCandidateCount: 4,
-    },
+    scenarios: [
+      {
+        id: 'default',
+        name: '默认规模',
+        classCount: 12,
+        sourceFiles: 2,
+        candidateCount: 12,
+        appendedCandidateCount: 4,
+        hmrCandidateCount: 32,
+      },
+    ],
     results: [
       {
         id: 'weapp-generator-scan-weapp',
         name: 'weapp-tailwindcss generator target=weapp scanSources=true',
         mode: 'generator',
         plugin: 'weapp-tailwindcss/generator',
+        scenarioId: 'default',
+        scenarioName: '默认规模',
         warmupMs: [],
         runsMs: [10],
         stats: {
@@ -60,6 +71,8 @@ function createFixtureReport(): BenchmarkReport {
         name: '@tailwindcss/postcss direct postcss process',
         mode: 'generator',
         plugin: '@tailwindcss/postcss',
+        scenarioId: 'default',
+        scenarioName: '默认规模',
         warmupMs: [],
         runsMs: [12],
         stats: {
@@ -78,6 +91,8 @@ function createFixtureReport(): BenchmarkReport {
         name: 'Vite build + @tailwindcss/vite',
         mode: 'vite-build',
         plugin: '@tailwindcss/vite',
+        scenarioId: 'default',
+        scenarioName: '默认规模',
         warmupMs: [],
         runsMs: [30],
         stats: {
@@ -96,6 +111,8 @@ function createFixtureReport(): BenchmarkReport {
         name: "Vite build + weapp-tailwindcss/vite generator.target='web'",
         mode: 'vite-build',
         plugin: 'weapp-tailwindcss/vite',
+        scenarioId: 'default',
+        scenarioName: '默认规模',
         warmupMs: [],
         runsMs: [40],
         stats: {
@@ -109,6 +126,26 @@ function createFixtureReport(): BenchmarkReport {
         outputCssBytes: 4096,
         selectorCount: 12,
       },
+      {
+        id: 'hmr-official-vite',
+        name: 'Vite dev HMR + @tailwindcss/vite',
+        mode: 'vite-hmr',
+        plugin: '@tailwindcss/vite',
+        scenarioId: 'default',
+        scenarioName: '默认规模',
+        warmupMs: [],
+        runsMs: [8],
+        stats: {
+          mean: 8,
+          median: 8,
+          min: 8,
+          max: 8,
+          p75: 8,
+          p95: 8,
+        },
+        outputCssBytes: 2048,
+        selectorCount: 12,
+      },
     ],
   }
 }
@@ -120,6 +157,9 @@ describe('report', () => {
     expect(markdown).toContain('@tailwindcss/vite')
     expect(markdown).toContain('weapp-tailwindcss 生成器 target=weapp')
     expect(markdown).toContain("generator.target='web'")
+    expect(markdown).toContain('Vite dev/HMR')
+    expect(markdown).toContain('## 详细解读')
+    expect(markdown).toContain('### 内存占用')
   })
 
   it('writes markdown from a custom input path', async () => {

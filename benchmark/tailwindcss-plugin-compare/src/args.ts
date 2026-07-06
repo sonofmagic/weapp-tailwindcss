@@ -21,6 +21,10 @@ export function parseBenchmarkArgs(argv: string[]): BenchmarkOptions {
     warmups: 1,
     classCount: 600,
     sourceFiles: 12,
+    largeClassCount: 5000,
+    largeSourceFiles: 48,
+    includeLarge: true,
+    includeHmr: true,
     out: defaultDataPath,
     report: defaultReportPath,
     keepTemp: false,
@@ -42,6 +46,18 @@ export function parseBenchmarkArgs(argv: string[]): BenchmarkOptions {
     }
     else if (arg === '--source-files') {
       options.sourceFiles = readNumber(argv[++index], options.sourceFiles, '--source-files')
+    }
+    else if (arg === '--large-class-count') {
+      options.largeClassCount = readNumber(argv[++index], options.largeClassCount, '--large-class-count')
+    }
+    else if (arg === '--large-source-files') {
+      options.largeSourceFiles = readNumber(argv[++index], options.largeSourceFiles, '--large-source-files')
+    }
+    else if (arg === '--skip-large') {
+      options.includeLarge = false
+    }
+    else if (arg === '--skip-hmr') {
+      options.includeHmr = false
     }
     else if (arg === '--out') {
       options.out = path.resolve(argv[++index] ?? defaultDataPath)

@@ -52,11 +52,13 @@ export function formatMs(value: number) {
 }
 
 export function formatBytes(value: number) {
-  if (value < 1024) {
-    return `${value} B`
+  const sign = value < 0 ? '-' : ''
+  const absolute = Math.abs(value)
+  if (absolute < 1024) {
+    return `${sign}${absolute} B`
   }
-  if (value < 1024 * 1024) {
-    return `${(value / 1024).toFixed(1)} KiB`
+  if (absolute < 1024 * 1024) {
+    return `${sign}${(absolute / 1024).toFixed(1)} KiB`
   }
-  return `${(value / 1024 / 1024).toFixed(2)} MiB`
+  return `${sign}${(absolute / 1024 / 1024).toFixed(2)} MiB`
 }

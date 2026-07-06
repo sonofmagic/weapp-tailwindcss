@@ -13,6 +13,10 @@ describe('runBenchmark', () => {
       warmups: 0,
       classCount: 8,
       sourceFiles: 2,
+      largeClassCount: 12,
+      largeSourceFiles: 2,
+      includeLarge: true,
+      includeHmr: true,
       out,
       report: path.join(root, 'report.md'),
       keepTemp: false,
@@ -20,6 +24,8 @@ describe('runBenchmark', () => {
     const parsed = JSON.parse(await readFile(out, 'utf8')) as BenchmarkReport
     expect(parsed.schemaVersion).toBe(1)
     expect(parsed.results.length).toBeGreaterThanOrEqual(8)
-    expect(report.fixture.candidateCount).toBeGreaterThan(0)
+    expect(parsed.scenarios.length).toBe(2)
+    expect(parsed.results.some(result => result.mode === 'vite-hmr')).toBe(true)
+    expect(report.scenarios[0]?.candidateCount).toBeGreaterThan(0)
   }, 120_000)
 })
