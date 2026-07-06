@@ -174,8 +174,8 @@
   },
   "scripts": {
     "dev": "tsdown --watch --sourcemap",
-    "build": "tsdown && pnpm run build:types && pnpm --filter @weapp-tailwindcss/scripts ensure-escape-dts",
-    "build:types": "tsc -p tsconfig.build.json --declaration --emitDeclarationOnly --declarationDir dist --noEmit false && pnpm --filter @weapp-tailwindcss/scripts build:types",
+    "build": "tsdown && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly --declarationDir dist --noEmit false && tsx ../../tools/weapp-tailwindcss-scripts/src/rewrite-dts-aliases.ts && tsx ../../tools/weapp-tailwindcss-scripts/src/create-entry-dts.ts && tsx ../../tools/weapp-tailwindcss-scripts/src/ensure-escape-dts.ts",
+    "build:types": "tsc -p tsconfig.build.json --declaration --emitDeclarationOnly --declarationDir dist --noEmit false && tsx ../../tools/weapp-tailwindcss-scripts/src/rewrite-dts-aliases.ts && tsx ../../tools/weapp-tailwindcss-scripts/src/create-entry-dts.ts",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "build:cli": "cd plugins/cli && pnpm run build",
     "build:css": "pnpm --filter @weapp-tailwindcss/scripts build:css",

@@ -37,7 +37,7 @@
   },
   "scripts": {
     "dev": "tsdown --watch --sourcemap",
-    "build": "tsdown && pnpm run build:types",
+    "build": "tsdown && tsc -p tsconfig.build.json",
     "build:types": "tsc -p tsconfig.build.json",
     "test": "vitest run",
     "test:dev": "vitest",
