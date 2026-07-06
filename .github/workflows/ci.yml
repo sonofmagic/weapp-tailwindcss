@@ -458,6 +458,8 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      # Node 20 兼容矩阵会使用 pnpm 10，避免 pnpm 因根 packageManager=pnpm@11 拒绝运行。
+      COREPACK_ENABLE_STRICT: '0'
 
     steps:
       - name: Check out code
