@@ -947,6 +947,39 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
 
+  benchmark/tailwindcss-plugin-compare:
+    devDependencies:
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
+      '@tailwindcss/vite':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2(vite@7.3.6(@types/node@26.1.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))
+      '@types/node':
+        specifier: catalog:typesNode2410
+        version: 26.1.0
+      postcss:
+        specifier: catalog:postcss85
+        version: 8.5.16
+      tailwindcss:
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
+      tsx:
+        specifier: catalog:tsx
+        version: 4.23.0
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      vite:
+        specifier: catalog:vite724
+        version: 7.3.6(@types/node@26.1.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)
+      vitest:
+        specifier: ^4.0.16
+        version: 4.1.9(@types/node@26.1.0)(@vitest/coverage-v8@4.1.9)(@vitest/ui@4.1.9)(jsdom@29.1.1)(vite@7.3.6(@types/node@26.1.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../packages/weapp-tailwindcss
+
   benchmark/tailwindcss4:
     dependencies:
       '@weapp-tailwindcss/cva':

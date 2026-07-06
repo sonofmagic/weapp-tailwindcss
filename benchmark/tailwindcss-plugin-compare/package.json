@@ -1,0 +1,36 @@
+{
+  "name": "benchmark-tailwindcss-plugin-compare",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Compare Tailwind CSS v4 plugin performance across weapp-tailwindcss and official plugins.",
+  "author": "ice breaker <1324318532@qq.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "benchmark/tailwindcss-plugin-compare"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "bench": "tsx ./scripts/bench.mts",
+    "report": "tsx ./scripts/report.mts",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "catalog:tailwindcss4",
+    "@tailwindcss/vite": "catalog:tailwindcss4",
+    "@types/node": "catalog:typesNode2410",
+    "postcss": "catalog:postcss85",
+    "tailwindcss": "catalog:tailwindcss4",
+    "tsx": "catalog:tsx",
+    "typescript": "catalog:typescript59",
+    "vite": "catalog:vite724",
+    "vitest": "^4.0.16",
+    "weapp-tailwindcss": "workspace:*"
+  }
+}

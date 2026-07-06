@@ -68,6 +68,8 @@
     "bench:framework:matrix": "node benchmark/framework-compare/scripts/run-matrix.mjs",
     "bench:framework:sanitize": "node benchmark/framework-compare/scripts/sanitize-results.mjs",
     "bench:framework:report": "node benchmark/framework-compare/scripts/generate-report.mjs",
+    "bench:tailwindcss-plugin": "pnpm --filter benchmark-tailwindcss-plugin-compare bench",
+    "bench:tailwindcss-plugin:report": "pnpm --filter benchmark-tailwindcss-plugin-compare report",
     "test:plugins": "vitest run --coverage.enabled --coverage.all=false --project=@weapp-tailwindcss/*",
     "test:typography": "vitest run --coverage.enabled --coverage.all=false --project=@weapp-tailwindcss/typography",
     "test:core": "vitest run --coverage.enabled --coverage.all=false --project=weapp-tailwindcss",
