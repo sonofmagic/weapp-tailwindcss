@@ -673,6 +673,7 @@ export interface WebHmrSourceDomReplacementMetrics {
   from: string
   to: string
   expectedText: string
+  expectedStyle: Partial<Record<'color' | 'backgroundColor' | 'width' | 'height', string | undefined>>
   verifiedCssIncludes: string[]
   computedStyle: Partial<Record<'color' | 'backgroundColor' | 'width' | 'height', string>>
   hotUpdateEffectiveMs: number

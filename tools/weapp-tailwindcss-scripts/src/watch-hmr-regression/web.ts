@@ -516,6 +516,7 @@ async function runSourceDomReplacementSequence(
       from: mutation.from,
       to: mutation.to,
       expectedText: item.expectedText,
+      expectedStyle: normalizeDomExpectedStyle(item.expectedStyle),
       verifiedCssIncludes,
       computedStyle: computedStyle ?? {},
       hotUpdateEffectiveMs,

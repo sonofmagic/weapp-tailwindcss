@@ -269,6 +269,7 @@ interface WebHmrMetric {
     from: string
     to: string
     expectedText: string
+    expectedStyle?: Partial<Record<'color' | 'backgroundColor' | 'width' | 'height', string | undefined>>
     verifiedCssIncludes: string[]
     computedStyle: Partial<Record<'color' | 'backgroundColor' | 'width' | 'height', string>>
     hotUpdateEffectiveMs: number
@@ -784,7 +785,16 @@ function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
     expect(sourceDomReplacementSequence.length, `[${item.project}] should verify source DOM H5 HMR`).toBeGreaterThanOrEqual(1)
     for (const metric of sourceDomReplacementSequence) {
       expect(metric.expectedText, `[${item.project}] source DOM HMR should record expected text`).toContain('H5-HMR')
-      expect(metric.computedStyle.color, `[${item.project}] source DOM HMR should verify red text color`).toBe('rgb(255, 0, 0)')
+      const expectedStyle = metric.expectedStyle ?? { color: 'rgb(255, 0, 0)' }
+      for (const [styleName, expectedValue] of Object.entries(expectedStyle)) {
+        if (expectedValue == null) {
+          continue
+        }
+        expect(
+          metric.computedStyle[styleName as keyof typeof metric.computedStyle],
+          `[${item.project}] source DOM HMR should verify expected ${styleName}`,
+        ).toBe(expectedValue)
+      }
       expect(metric.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(metric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
     }

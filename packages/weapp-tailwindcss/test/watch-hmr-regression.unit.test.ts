@@ -2901,6 +2901,7 @@ describe('watch-hmr regression cases', () => {
     const uniAppCase = demoExtendedCases.find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v4')
 
     expect(uniAppCase?.webHmr?.sourceDomReplacementSequence?.[0]?.beforeSelector).toBe('.text-\\[\\#00f285\\]')
+    expect(uniAppCase?.webHmr?.sourceDomReplacementSequence?.[0]?.expectedStyle?.color).toBe('rgb(18, 52, 86)')
   })
 
   it('filters platform-specific unstable watch cases from grouped runs', () => {
