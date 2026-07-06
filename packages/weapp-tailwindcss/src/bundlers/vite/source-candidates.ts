@@ -17,6 +17,7 @@ export interface SourceCandidateStore {
   syncCss: (id: string, source: string) => Promise<void>
   merge: (id: string, source: string) => Promise<void>
   syncFile: (id: string) => Promise<void>
+  syncCurrentSource: (id: string, source: string) => Promise<SourceCandidateChange>
   syncCurrentFile: (id: string) => Promise<SourceCandidateChange>
   scanRoot: (options: ScanSourceCandidateRootOptions) => Promise<void>
   syncInline: (inlineCandidates: TailwindInlineSourceCandidates | undefined) => void
@@ -232,13 +233,32 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     }
   }
 
-  async function syncCurrentFile(id: string) {
+  async function syncCurrentSource(id: string, source: string) {
     const normalizedId = cleanUrl(id)
-    const previousCandidates = values()
     transformCandidatesById.delete(normalizedId)
     cssCandidatesById.delete(normalizedId)
-    await syncFile(normalizedId)
+    transformSourceById.delete(normalizedId)
+    cssSourceById.delete(normalizedId)
+    recompute(normalizedId)
+    const previousCandidates = values()
+    await sync(normalizedId, source)
     return diffCandidateSets(previousCandidates, values())
+  }
+
+  async function syncCurrentFile(id: string) {
+    const normalizedId = cleanUrl(id)
+    try {
+      return await syncCurrentSource(normalizedId, await readFile(normalizedId, 'utf8'))
+    }
+    catch (error) {
+      const code = typeof error === 'object' && error !== null && 'code' in error
+        ? (error as { code?: unknown }).code
+        : undefined
+      if (code === 'ENOENT') {
+        return remove(normalizedId)
+      }
+      throw error
+    }
   }
 
   async function scanRoot({ entries, explicit, root, outDir }: ScanSourceCandidateRootOptions) {
@@ -520,6 +540,7 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     syncCss,
     merge,
     syncFile,
+    syncCurrentSource,
     syncCurrentFile,
     scanRoot,
     syncInline,

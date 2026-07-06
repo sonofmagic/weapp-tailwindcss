@@ -265,7 +265,7 @@ async function waitForInitialRender(page: Page, item: WebViteHmrCase, baseUrl: s
   throw new Error(`${item.name} Web HMR 初始页面未渲染：${lastError}\nbody=${body}`)
 }
 
-async function waitForDomHmr(page: Page, item: WebViteHmrCase) {
+async function waitForDomHmr(page: Page, item: WebViteHmrCase, messages?: ViteHmrMessage[], fromIndex = 0) {
   let lastError = ''
   const startedAt = Date.now()
   const targetSelector = item.targetSelector ?? 'h1'
@@ -297,7 +297,8 @@ async function waitForDomHmr(page: Page, item: WebViteHmrCase) {
   }
 
   const body = await page.locator('body').textContent().catch(error => String(error))
-  throw new Error(`${item.name} Web HMR DOM 未更新：${lastError}\nbody=${body}`)
+  const hmr = messages ? `\nhmr=${JSON.stringify(messages.slice(fromIndex))}` : ''
+  throw new Error(`${item.name} Web HMR DOM 未更新：${lastError}\nbody=${body}${hmr}`)
 }
 
 async function waitForTitleHmr(page: Page, item: WebViteHmrCase) {
@@ -571,8 +572,9 @@ describe('demo/web source HMR', () => {
       return
     }
 
+    const messageStart = hmrMessages.length
     await mutateSource(item, sourceFile)
-    await waitForDomHmr(page, item)
+    await waitForDomHmr(page, item, hmrMessages, messageStart)
   }, serverTimeoutMs + 30_000)
 
   it.each(webViteHmrCases)('adds modifies and removes Tailwind classes for $name', async (item) => {

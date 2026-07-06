@@ -741,7 +741,7 @@ export function createViteFrameworkPlugins(
       await Promise.all(pendingSourceCandidateSyncs)
     }
   }
-  const syncChangedSourceCandidateFile = (id: string) => {
+  const syncChangedSourceCandidateFile = (id: string, sourceOverride?: string | undefined) => {
     if (!shouldOwnTailwindGeneration || !isSourceCandidateRequest(id)) {
       return Promise.resolve(undefined)
     }
@@ -770,7 +770,9 @@ export function createViteFrameworkPlugins(
       return cssMemory.refreshRememberedCssSourceByCurrentFile(file)
         .then(() => applySourceCandidateHmrState(createViteSourceCandidateChange(file, change, { runtimeAffecting: true })))
     }
-    const existingTask = pendingSourceCandidateSyncByFile.get(file)
+    const existingTask = sourceOverride === undefined
+      ? pendingSourceCandidateSyncByFile.get(file)
+      : undefined
     if (existingTask) {
       return existingTask
         .then(async (change) => {
@@ -778,7 +780,11 @@ export function createViteFrameworkPlugins(
           return change
         })
     }
-    const task = sourceCandidateCollector.syncCurrentFile(id)
+    const task = (
+      sourceOverride === undefined
+        ? sourceCandidateCollector.syncCurrentFile(id)
+        : sourceCandidateCollector.syncCurrentSource(id, sourceOverride)
+    )
       .catch((error) => {
         debug('source candidate watch sync failed: %s %O', id, error)
         return undefined
@@ -875,6 +881,10 @@ export function createViteFrameworkPlugins(
     }
     tailwindRootCssModuleIds.add(id)
     tailwindRootCssModuleIds.add(cleanUrl(id))
+  }
+  const registerTailwindRootCss = (id: string, code: string) => {
+    registerAutoCssSource(id, code)
+    rememberTailwindRootCssModule(id)
   }
   const isUniViteProject = () => {
     return resolvedConfig?.plugins?.some(plugin => plugin.name.includes('uni')) ?? false
@@ -1104,7 +1114,7 @@ export function createViteFrameworkPlugins(
     rootImport: shouldOwnTailwindGeneration
       ? `${weappTailwindcssDirPosix}/generator-placeholder.css`
       : undefined,
-    onTailwindRootCss: (id, code) => registerAutoCssSource(id, code),
+    onTailwindRootCss: registerTailwindRootCss,
     onCssSourceTransform: (id, code) => cssMemory.refreshRememberedCssSourceBySourceFile(id, code),
     shouldGenerateCss: (_id, code) => hasVitePipelineTailwindGenerationDirective(code),
     shouldDeferGeneration: (_id, code) => !shouldRewriteCssImports
@@ -1237,6 +1247,9 @@ export function createViteFrameworkPlugins(
           const shouldReturnTransformedCode = transformedCode !== code
           if (shouldOwnTailwindGeneration) {
             cssMemory.rememberKnownSfcSource(id, transformedCode)
+            if (isCSSRequest(id) && hasTailwindRootDirectives(transformedCode, { importFallback: resolveCurrentGeneratorOptions().importFallback })) {
+              rememberTailwindRootCssModule(id)
+            }
           }
           if (!shouldOwnTailwindGeneration || !isSourceCandidateRequest(id) || !shouldCollectTransformedSourceCandidates(id)) {
             if (shouldReturnTransformedCode) {
@@ -1289,7 +1302,10 @@ export function createViteFrameworkPlugins(
       async handleHotUpdate(ctx) {
         return hmrTimingRecorder.measure('sourceCandidates.handleHotUpdate', async () => {
           const isSourceCandidateHotUpdate = shouldOwnTailwindGeneration && isSourceCandidateRequest(ctx.file)
-          const sourceCandidateChange = await syncChangedSourceCandidateFile(ctx.file)
+          const hotSource = isSourceCandidateHotUpdate
+            ? await ctx.read().catch(() => undefined)
+            : undefined
+          const sourceCandidateChange = await syncChangedSourceCandidateFile(ctx.file, hotSource)
           const isWebLikeHotUpdate = isCurrentWebLikeStylePlatform()
           let canUseHmrCandidateAppend = false
           if (isSourceCandidateHotUpdate) {
@@ -1349,9 +1365,13 @@ export function createViteFrameworkPlugins(
             && sourceCandidateChange !== undefined
             && !sourceCandidateChange.runtimeAffecting
             && sourceCandidateChange.addedCandidates.size === 0
+            && sourceCandidateChange.removedCandidates.size > 0
           )
           if (shouldSendSupplementalCssHotUpdates) {
-            sendSupplementalCssHotUpdates(ctx, cssModules)
+            sendSupplementalCssHotUpdates(ctx, cssModules, new Set([
+              ...tailwindRootCssModuleIds,
+              ...viteProcessedCssSourceFiles,
+            ]))
           }
           if (
             isWebLikeHotUpdate
@@ -1377,7 +1397,7 @@ export function createViteFrameworkPlugins(
     ...createViteServeCssGenerationPlugins({
       generateCss: generateTailwindCssForVitePipeline,
       getCommand: () => resolvedConfig?.command,
-      onTailwindRootCss: (id, code) => registerAutoCssSource(id, code),
+      onTailwindRootCss: registerTailwindRootCss,
       shouldGenerate: () => shouldOwnTailwindGeneration,
     }),
     createViteServeJsTransformPlugin({

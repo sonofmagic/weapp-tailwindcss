@@ -36,7 +36,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "pnpm run build:parser && tsdown",
+    "build": "jison ./parser.jison -o src/parser.cjs && tsdown",
     "build:parser": "jison ./parser.jison -o src/parser.cjs",
     "build:types": "tsdown --dts-only",
     "lint": "eslint . && tsc --noEmit",

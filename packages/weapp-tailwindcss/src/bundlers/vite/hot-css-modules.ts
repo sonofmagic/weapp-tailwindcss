@@ -1,6 +1,7 @@
 import type { HmrContext, ModuleNode } from 'vite'
+import path from 'node:path'
 import { isSourceStyleRequest } from '../shared/style-requests'
-import { cleanUrl } from './utils'
+import { cleanUrl, slash } from './utils'
 
 export function resolveHotTailwindCssModules(ctx: HmrContext, tailwindRootCssModuleIds: Set<string>) {
   const modules: ModuleNode[] = []
@@ -71,6 +72,19 @@ function resolveModuleHotUrl(mod: ModuleNode) {
   return undefined
 }
 
+function resolveCssHotUrl(id: string, root: string) {
+  const file = cleanUrl(id)
+  if (/^\/(?![A-Z]:)/i.test(file) && !file.startsWith(slash(root))) {
+    return file
+  }
+  const normalizedRoot = slash(path.resolve(root))
+  const normalizedFile = slash(path.resolve(file))
+  if (!normalizedFile.startsWith(`${normalizedRoot}/`)) {
+    return undefined
+  }
+  return `/${slash(path.relative(normalizedRoot, normalizedFile))}`
+}
+
 function includesHotModule(modules: ModuleNode[], target: ModuleNode) {
   const targetUrl = resolveModuleHotUrl(target)
   const targetId = target.id
@@ -96,24 +110,37 @@ export function hasSelfAcceptingNonStyleHotModule(modules: ModuleNode[]) {
   })
 }
 
-export function sendSupplementalCssHotUpdates(ctx: HmrContext, cssModules: ModuleNode[]) {
+export function sendSupplementalCssHotUpdates(ctx: HmrContext, cssModules: ModuleNode[], fallbackCssIds: Iterable<string> = []) {
+  const seenUrls = new Set<string>()
   const updates = cssModules
     .filter(mod => !includesHotModule(ctx.modules, mod))
     .map((mod) => {
       const hotUrl = resolveModuleHotUrl(mod)
-      if (!hotUrl) {
+      if (!hotUrl || seenUrls.has(hotUrl)) {
         return undefined
       }
+      seenUrls.add(hotUrl)
       return {
-        type: 'js-update' as const,
+        type: 'css-update' as const,
         timestamp: ctx.timestamp,
         path: hotUrl,
         acceptedPath: hotUrl,
-        explicitImportRequired: false,
-        isWithinCircularImport: false,
       }
     })
     .filter((update): update is NonNullable<typeof update> => update !== undefined)
+  for (const id of fallbackCssIds) {
+    const hotUrl = resolveCssHotUrl(id, ctx.server.config.root)
+    if (!hotUrl || seenUrls.has(hotUrl)) {
+      continue
+    }
+    seenUrls.add(hotUrl)
+    updates.push({
+      type: 'css-update',
+      timestamp: ctx.timestamp,
+      path: hotUrl,
+      acceptedPath: hotUrl,
+    })
+  }
   if (updates.length === 0) {
     return
   }
