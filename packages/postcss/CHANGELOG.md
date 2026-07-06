@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 3.1.8
+
+### Patch Changes
+
+- 🐛 **将小程序样式中不支持的非本地 `@import` 清理逻辑下沉到 PostCSS Root 级工具，并在 Vite HMR 注入路径复用同一次 CSS AST 解析来完成 import 清理和依赖收集，减少重复 parse。** [`b2cbe21`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b2cbe214e3958cb5febf3a46ba0c4b14af76c27b) by @sonofmagic
+
 ## 3.1.7
 
 ### Patch Changes
