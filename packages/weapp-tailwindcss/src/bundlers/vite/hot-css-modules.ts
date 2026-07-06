@@ -73,16 +73,17 @@ function resolveModuleHotUrl(mod: ModuleNode) {
 }
 
 function resolveCssHotUrl(id: string, root: string) {
+  const suffix = /[?#]/.test(id) ? id.slice(id.search(/[?#]/)) : ''
   const file = cleanUrl(id)
   if (/^\/(?![A-Z]:)/i.test(file) && !file.startsWith(slash(root))) {
-    return file
+    return `${file}${suffix}`
   }
   const normalizedRoot = slash(path.resolve(root))
   const normalizedFile = slash(path.resolve(file))
   if (!normalizedFile.startsWith(`${normalizedRoot}/`)) {
     return undefined
   }
-  return `/${slash(path.relative(normalizedRoot, normalizedFile))}`
+  return `/${slash(path.relative(normalizedRoot, normalizedFile))}${suffix}`
 }
 
 function includesHotModule(modules: ModuleNode[], target: ModuleNode) {
@@ -112,24 +113,30 @@ export function hasSelfAcceptingNonStyleHotModule(modules: ModuleNode[]) {
 
 export function sendSupplementalCssHotUpdates(ctx: HmrContext, cssModules: ModuleNode[], fallbackCssIds: Iterable<string> = []) {
   const seenUrls = new Set<string>()
-  const updates = cssModules
-    .filter(mod => !includesHotModule(ctx.modules, mod))
-    .map((mod) => {
-      const hotUrl = resolveModuleHotUrl(mod)
-      if (!hotUrl || seenUrls.has(hotUrl)) {
-        return undefined
-      }
-      seenUrls.add(hotUrl)
-      return {
-        type: 'css-update' as const,
-        timestamp: ctx.timestamp,
-        path: hotUrl,
-        acceptedPath: hotUrl,
-      }
-    })
-    .filter((update): update is NonNullable<typeof update> => update !== undefined)
+  const updates: Array<{
+    type: 'css-update'
+    timestamp: number
+    path: string
+    acceptedPath: string
+  }> = []
   for (const id of fallbackCssIds) {
     const hotUrl = resolveCssHotUrl(id, ctx.server.config.root)
+    if (!hotUrl || seenUrls.has(hotUrl)) {
+      continue
+    }
+    seenUrls.add(hotUrl)
+    updates.push({
+      type: 'css-update',
+      timestamp: ctx.timestamp,
+      path: hotUrl,
+      acceptedPath: hotUrl,
+    })
+  }
+  for (const mod of cssModules) {
+    if (includesHotModule(ctx.modules, mod)) {
+      continue
+    }
+    const hotUrl = resolveModuleHotUrl(mod)
     if (!hotUrl || seenUrls.has(hotUrl)) {
       continue
     }

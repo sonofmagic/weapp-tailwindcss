@@ -395,18 +395,18 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
       sourceDomReplacementSequence: [
         {
-          label: 'title and color text-[#00f285] to text-[red]',
+          label: 'title and color text-[#00f285] to text-[#123456]',
           beforeSelector: '.text-\\[\\#00f285\\]',
           mutate(source) {
             return replaceWebDomSnippet(
               source,
               `<text class="text-[#00f285] text-[102.43rpx] font-bold underline">{{ title }}</text>`,
-              `<text ${webDomMarkerAttr} class="text-[red] text-[102.43rpx] font-bold underline">H5-HMR-UNI-V4</text>`,
+              `<text ${webDomMarkerAttr} class="text-[#123456] text-[102.43rpx] font-bold underline">H5-HMR-UNI-V4</text>`,
             )
           },
           expectedText: 'H5-HMR-UNI-V4',
           expectedStyle: {
-            color: 'rgb(255, 0, 0)',
+            color: 'rgb(18, 52, 86)',
           },
         },
       ],

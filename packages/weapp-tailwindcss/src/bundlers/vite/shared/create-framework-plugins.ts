@@ -1,4 +1,4 @@
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { ModuleNode, Plugin, ResolvedConfig } from 'vite'
 import type { ViteFrameworkName } from '../../framework-selector'
 import type { SourceCandidateScanRoot } from '../source-candidate-scan-signature'
 import type { SourceCandidateChange, SourceCandidateCollectorSnapshot, SourceCandidateFilterOptions } from '../source-candidates'
@@ -521,7 +521,37 @@ export function createViteFrameworkPlugins(
   const hasWebHmrRuntimeAffectingDirectives = (source: string | undefined) =>
     typeof source === 'string' && WEB_HMR_RUNTIME_AFFECTING_DIRECTIVE_RE.test(source)
   let pendingHmrCandidateChange: ViteSourceCandidateChange | undefined
+  let pendingHmrCssTargetFiles: Set<string> | undefined
   let pendingFullHmrCssRegeneration = false
+  const normalizeHmrCssTargetFile = (file: string) => normalizeVitePersistentCacheKey(cleanUrl(file))
+  const collectPendingHmrCssTargetFiles = (cssModules: ModuleNode[], fallbackCssIds: Iterable<string>) => {
+    const targets = new Set<string>()
+    const addTarget = (file: string | null | undefined) => {
+      if (typeof file !== 'string' || file.length === 0) {
+        return
+      }
+      const key = normalizeHmrCssTargetFile(file)
+      if (cleanGeneratedCssByFile.has(key)) {
+        targets.add(key)
+      }
+    }
+    for (const mod of cssModules) {
+      addTarget(mod.id)
+      addTarget(mod.file)
+      addTarget(mod.url)
+    }
+    for (const id of fallbackCssIds) {
+      addTarget(id)
+    }
+    return targets.size > 0 ? targets : undefined
+  }
+  const armPendingHmrCssTargetFiles = (cssModules: ModuleNode[], fallbackCssIds: Iterable<string>) => {
+    if (!pendingHmrCandidateChange) {
+      pendingHmrCssTargetFiles = undefined
+      return
+    }
+    pendingHmrCssTargetFiles = collectPendingHmrCssTargetFiles(cssModules, fallbackCssIds)
+  }
   const createViteSourceCandidateChange = (
     file: string,
     change: SourceCandidateChange,
@@ -535,6 +565,7 @@ export function createViteFrameworkPlugins(
   })
   const clearPendingHmrCandidateChange = () => {
     pendingHmrCandidateChange = undefined
+    pendingHmrCssTargetFiles = undefined
     pendingFullHmrCssRegeneration = false
   }
   const queueHmrCandidateChange = (change: ViteSourceCandidateChange) => {
@@ -562,6 +593,7 @@ export function createViteFrameworkPlugins(
   }
   const queueFullHmrCssRegeneration = () => {
     pendingHmrCandidateChange = undefined
+    pendingHmrCssTargetFiles = undefined
     pendingFullHmrCssRegeneration = true
   }
   const applySourceCandidateHmrState = (change: ViteSourceCandidateChange) => {
@@ -597,10 +629,24 @@ export function createViteFrameworkPlugins(
       || (resolveCurrentGeneratorOptions().target === 'weapp' && hasUserCssLayerBlocks(generatorCode))
       || !cleanGeneratedCssByFile.has(file)
       || !generatedClassSetByFile.has(file)
+      || (pendingHmrCssTargetFiles !== undefined && !pendingHmrCssTargetFiles.has(normalizeHmrCssTargetFile(file)))
     ) {
       return undefined
     }
     return pendingHmrCandidateChange
+  }
+  const finishPendingHmrCssTargetFile = (file: string) => {
+    if (!pendingHmrCandidateChange) {
+      return
+    }
+    if (!pendingHmrCssTargetFiles) {
+      clearPendingHmrCandidateChange()
+      return
+    }
+    pendingHmrCssTargetFiles.delete(normalizeHmrCssTargetFile(file))
+    if (pendingHmrCssTargetFiles.size === 0) {
+      clearPendingHmrCandidateChange()
+    }
   }
   const hasSourceCandidateScanState = () => sourceCandidateScanSignature !== undefined
   const normalizeSourceScanDependency = (file: string) => path.normalize(path.resolve(cleanUrl(file)))
@@ -980,7 +1026,7 @@ export function createViteFrameworkPlugins(
     ) {
       const previousTracedCss = tracedGeneratedCssByFile.get(file)
       if (previousTracedCss !== undefined) {
-        clearPendingHmrCandidateChange()
+        finishPendingHmrCssTargetFile(file)
         return `${createBundlerGeneratedCssMarker('vite', normalizeViteProcessedCssFile(file))}\n${previousTracedCss}`
       }
     }
@@ -1040,13 +1086,17 @@ export function createViteFrameworkPlugins(
         cleanCacheHit: cleanGeneratedCssByFile.has(file),
         forceFullHmrCssRegeneration,
         pendingAddedCandidates: pendingHmrCandidateChange?.addedCandidates.size ?? 0,
+        pendingCssTargets: pendingHmrCssTargetFiles?.size ?? 0,
         pendingResolved: pendingHmrChange !== undefined,
         runtimeCandidates: runtime.size,
         target: currentGeneratorOptions.target,
       },
     })
     if (!generated) {
-      if (!pendingHmrChange) {
+      if (pendingHmrChange) {
+        finishPendingHmrCssTargetFile(file)
+      }
+      else if (!pendingHmrCandidateChange) {
         clearPendingHmrCandidateChange()
       }
       return undefined
@@ -1099,7 +1149,12 @@ export function createViteFrameworkPlugins(
     markViteProcessedCssSource(file)
     rememberTailwindRootCssModule(id)
     recordGeneratorCandidates(fullRuntime)
-    clearPendingHmrCandidateChange()
+    if (pendingHmrChange) {
+      finishPendingHmrCssTargetFile(file)
+    }
+    else if (!pendingHmrCandidateChange) {
+      clearPendingHmrCandidateChange()
+    }
     cssMemory.rememberCssSource({
       outputFile,
       rawSource: code,
@@ -1332,9 +1387,12 @@ export function createViteFrameworkPlugins(
           const sourceModules = isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)
             ? resolveHotSourceModules(ctx)
             : ctx.modules
-          const hasHmrCandidateAppend = canUseHmrCandidateAppend
+          const hasQueuedHmrCandidateAppend = pendingHmrCandidateChange !== undefined
+            && !pendingHmrCandidateChange.runtimeAffecting
+            && pendingHmrCandidateChange.addedCandidates.size > 0
+          const hasHmrCandidateAppend = hasQueuedHmrCandidateAppend || (canUseHmrCandidateAppend
             && sourceCandidateChange !== undefined
-            && sourceCandidateChange.addedCandidates.size > 0
+            && sourceCandidateChange.addedCandidates.size > 0)
           if (
             isSourceCandidateHotUpdate
             && !isSourceStyleRequest(ctx.file)
@@ -1367,11 +1425,15 @@ export function createViteFrameworkPlugins(
             && sourceCandidateChange.addedCandidates.size === 0
             && sourceCandidateChange.removedCandidates.size > 0
           )
+          const supplementalCssFallbackIds = new Set([
+            ...tailwindRootCssModuleIds,
+            ...viteProcessedCssSourceFiles,
+          ])
+          if (hasHmrCandidateAppend) {
+            armPendingHmrCssTargetFiles(cssModules, supplementalCssFallbackIds)
+          }
           if (shouldSendSupplementalCssHotUpdates) {
-            sendSupplementalCssHotUpdates(ctx, cssModules, new Set([
-              ...tailwindRootCssModuleIds,
-              ...viteProcessedCssSourceFiles,
-            ]))
+            sendSupplementalCssHotUpdates(ctx, cssModules, supplementalCssFallbackIds)
           }
           if (
             isWebLikeHotUpdate
