@@ -26,6 +26,8 @@ describe('runBenchmark', () => {
     expect(parsed.results.length).toBeGreaterThanOrEqual(8)
     expect(parsed.scenarios.length).toBe(2)
     expect(parsed.results.some(result => result.mode === 'vite-hmr')).toBe(true)
+    expect(parsed.results.some(result => result.id === 'vite-weapp-target-web-compact')).toBe(true)
+    expect(parsed.results.some(result => result.id === 'hmr-weapp-target-web-compact')).toBe(true)
     expect(report.scenarios[0]?.candidateCount).toBeGreaterThan(0)
   }, 120_000)
 })

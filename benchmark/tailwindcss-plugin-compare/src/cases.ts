@@ -64,6 +64,14 @@ export async function createBenchmarkCases(
       target: 'web',
     },
   }) ?? []
+  const viteWebCompactPlugins = WeappTailwindcss({
+    tailwindcssBasedir: fixture.root,
+    cssEntries: [fixture.cssEntry],
+    generator: {
+      target: 'web',
+      webCompat: true,
+    },
+  }) ?? []
 
   const cases: BenchmarkCase[] = [
     withScenario(options, {
@@ -204,6 +212,13 @@ export async function createBenchmarkCases(
       plugin: 'weapp-tailwindcss/vite',
       run: () => runViteBuild(fixture.root, viteWebPlugins),
     }),
+    withScenario(options, {
+      id: 'vite-weapp-target-web-compact',
+      name: "Vite build + weapp-tailwindcss/vite generator.target='web' webCompat=true",
+      mode: 'vite-build',
+      plugin: 'weapp-tailwindcss/vite',
+      run: () => runViteBuild(fixture.root, viteWebCompactPlugins),
+    }),
   ]
 
   if (options.includeHmr) {
@@ -248,6 +263,16 @@ export async function createBenchmarkCases(
         }),
         fixture,
         plugins: viteWebPlugins,
+      }),
+      createViteHmrCase({
+        base: withScenario(options, {
+          id: 'hmr-weapp-target-web-compact',
+          name: "Vite dev HMR + weapp-tailwindcss/vite generator.target='web' webCompat=true",
+          mode: 'vite-hmr',
+          plugin: 'weapp-tailwindcss/vite',
+        }),
+        fixture,
+        plugins: viteWebCompactPlugins,
       }),
     )
   }

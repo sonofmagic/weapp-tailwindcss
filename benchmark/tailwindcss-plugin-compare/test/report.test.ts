@@ -87,6 +87,26 @@ function createFixtureReport(): BenchmarkReport {
         selectorCount: 12,
       },
       {
+        id: 'vite-official-postcss',
+        name: 'Vite build + @tailwindcss/postcss',
+        mode: 'vite-build',
+        plugin: '@tailwindcss/postcss',
+        scenarioId: 'default',
+        scenarioName: '默认规模',
+        warmupMs: [],
+        runsMs: [35],
+        stats: {
+          mean: 35,
+          median: 35,
+          min: 35,
+          max: 35,
+          p75: 35,
+          p95: 35,
+        },
+        outputCssBytes: 4096,
+        selectorCount: 12,
+      },
+      {
         id: 'vite-official-vite',
         name: 'Vite build + @tailwindcss/vite',
         mode: 'vite-build',
@@ -127,6 +147,56 @@ function createFixtureReport(): BenchmarkReport {
         selectorCount: 12,
       },
       {
+        id: 'vite-weapp-target-web-compact',
+        name: "Vite build + weapp-tailwindcss/vite generator.target='web' webCompat=true",
+        mode: 'vite-build',
+        plugin: 'weapp-tailwindcss/vite',
+        scenarioId: 'default',
+        scenarioName: '默认规模',
+        warmupMs: [],
+        runsMs: [44],
+        stats: {
+          mean: 44,
+          median: 44,
+          min: 44,
+          max: 44,
+          p75: 44,
+          p95: 44,
+        },
+        outputCssBytes: 4608,
+        selectorCount: 14,
+        memory: {
+          rssBeforeBytes: 1024,
+          rssAfterBytes: 2048,
+          rssPeakBytes: 4096,
+          rssDeltaBytes: 1024,
+          heapBeforeBytes: 512,
+          heapAfterBytes: 1024,
+          heapPeakBytes: 2048,
+          heapDeltaBytes: 512,
+        },
+      },
+      {
+        id: 'hmr-official-postcss',
+        name: 'Vite dev HMR + @tailwindcss/postcss',
+        mode: 'vite-hmr',
+        plugin: '@tailwindcss/postcss',
+        scenarioId: 'default',
+        scenarioName: '默认规模',
+        warmupMs: [],
+        runsMs: [9],
+        stats: {
+          mean: 9,
+          median: 9,
+          min: 9,
+          max: 9,
+          p75: 9,
+          p95: 9,
+        },
+        outputCssBytes: 2048,
+        selectorCount: 12,
+      },
+      {
         id: 'hmr-official-vite',
         name: 'Vite dev HMR + @tailwindcss/vite',
         mode: 'vite-hmr',
@@ -146,6 +216,46 @@ function createFixtureReport(): BenchmarkReport {
         outputCssBytes: 2048,
         selectorCount: 12,
       },
+      {
+        id: 'hmr-weapp-target-web',
+        name: "Vite dev HMR + weapp-tailwindcss/vite generator.target='web'",
+        mode: 'vite-hmr',
+        plugin: 'weapp-tailwindcss/vite',
+        scenarioId: 'default',
+        scenarioName: '默认规模',
+        warmupMs: [],
+        runsMs: [18],
+        stats: {
+          mean: 18,
+          median: 18,
+          min: 18,
+          max: 18,
+          p75: 18,
+          p95: 18,
+        },
+        outputCssBytes: 2048,
+        selectorCount: 12,
+      },
+      {
+        id: 'hmr-weapp-target-web-compact',
+        name: "Vite dev HMR + weapp-tailwindcss/vite generator.target='web' webCompat=true",
+        mode: 'vite-hmr',
+        plugin: 'weapp-tailwindcss/vite',
+        scenarioId: 'default',
+        scenarioName: '默认规模',
+        warmupMs: [],
+        runsMs: [20],
+        stats: {
+          mean: 20,
+          median: 20,
+          min: 20,
+          max: 20,
+          p75: 20,
+          p95: 20,
+        },
+        outputCssBytes: 2304,
+        selectorCount: 14,
+      },
     ],
   }
 }
@@ -157,6 +267,9 @@ describe('report', () => {
     expect(markdown).toContain('@tailwindcss/vite')
     expect(markdown).toContain('weapp-tailwindcss 生成器 target=weapp')
     expect(markdown).toContain("generator.target='web'")
+    expect(markdown).toContain('web-compact')
+    expect(markdown).toContain('## Web target 与官方插件对比')
+    expect(markdown).toContain('相对 @tailwindcss/vite')
     expect(markdown).toContain('Vite dev/HMR')
     expect(markdown).toContain('## 详细解读')
     expect(markdown).toContain('### 内存占用')

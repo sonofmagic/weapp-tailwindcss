@@ -53,6 +53,7 @@ pnpm run bench:tailwindcss-plugin:report
 - Vite + `@tailwindcss/vite`。
 - Vite + `weapp-tailwindcss/vite`，`generator.target='weapp'`。
 - Vite + `weapp-tailwindcss/vite`，`generator.target='web'`。
+- Vite + `weapp-tailwindcss/vite`，`generator.target='web'` 且 `webCompat=true`，报告中记为 `web-compact`。
 
 Vite HMR：
 
@@ -60,6 +61,7 @@ Vite HMR：
 - Vite dev server + `@tailwindcss/vite`。
 - Vite dev server + `weapp-tailwindcss/vite`，`generator.target='weapp'`。
 - Vite dev server + `weapp-tailwindcss/vite`，`generator.target='web'`。
+- Vite dev server + `weapp-tailwindcss/vite`，`generator.target='web'` 且 `webCompat=true`，报告中记为 `web-compact`。
 
 ## 结果解读
 
@@ -68,3 +70,5 @@ Vite HMR：
 Vite HMR 用例统计 Vite dev server 已启动后，临时源码文件写入、watcher change、module graph invalidation 与重新请求 CSS transform 的耗时；不包含浏览器 WebSocket 传输和页面应用样式的耗时。
 
 内存数据来自同一 Node 进程的 `process.memoryUsage()`，记录每个 case 执行前后的 RSS/heap、采样峰值和增量。由于同一进程会复用模块缓存，且 V8 GC 时机不可控，RSS 增量适合看局部变化，RSS 峰值更适合判断占用上界。
+
+`web` 与 `web-compact` 会在报告中单独和 `@tailwindcss/vite`、`@tailwindcss/postcss` 对比。`web` 保留 Tailwind CSS 官方 Web 输出形态；`web-compact` 开启 `webCompat=true`，用于观察 legacy WebView 兼容降级后的耗时、CSS 体积、选择器数量和内存占用。

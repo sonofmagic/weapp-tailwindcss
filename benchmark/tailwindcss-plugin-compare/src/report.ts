@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
+import { renderWebTargetComparison } from './report-web-comparison'
 import { formatBytes, formatMs } from './stats'
 import type { BenchmarkCaseResult, BenchmarkReport } from './types'
 
@@ -15,7 +16,7 @@ function table(headers: string[], rows: unknown[][]) {
   ].join('\n')
 }
 
-function caseName(result: BenchmarkCaseResult) {
+export function caseName(result: BenchmarkCaseResult) {
   const names: Record<string, string> = {
     'weapp-generator-scan-weapp': 'weapp-tailwindcss 生成器 target=weapp scanSources=true',
     'weapp-generator-scan-web': 'weapp-tailwindcss 生成器 target=web scanSources=true',
@@ -29,10 +30,12 @@ function caseName(result: BenchmarkCaseResult) {
     'vite-official-vite': 'Vite 构建 + @tailwindcss/vite',
     'vite-weapp-target-weapp': "Vite 构建 + weapp-tailwindcss/vite generator.target='weapp'",
     'vite-weapp-target-web': "Vite 构建 + weapp-tailwindcss/vite generator.target='web'",
+    'vite-weapp-target-web-compact': "Vite 构建 + weapp-tailwindcss/vite generator.target='web' web-compact",
     'hmr-official-postcss': 'Vite dev/HMR + @tailwindcss/postcss',
     'hmr-official-vite': 'Vite dev/HMR + @tailwindcss/vite',
     'hmr-weapp-target-weapp': "Vite dev/HMR + weapp-tailwindcss/vite generator.target='weapp'",
     'hmr-weapp-target-web': "Vite dev/HMR + weapp-tailwindcss/vite generator.target='web'",
+    'hmr-weapp-target-web-compact': "Vite dev/HMR + weapp-tailwindcss/vite generator.target='web' web-compact",
   }
   return names[result.id] ?? result.name
 }
@@ -231,6 +234,7 @@ export function renderMarkdown(report: BenchmarkReport) {
     ),
     '',
     ...renderInsights(report),
+    ...renderWebTargetComparison(report, caseName),
   ]
 
   for (const scenario of report.scenarios) {
@@ -263,7 +267,7 @@ export function renderMarkdown(report: BenchmarkReport) {
   lines.push('- “Vite dev/HMR”用例统计 Vite dev server 已启动后，临时源码文件写入、watcher change、module graph invalidation 与重新请求 CSS transform 的耗时；不包含浏览器 WebSocket 传输和页面应用样式的耗时。')
   lines.push('- “大数量级选择器”场景用于观察 selector 数量上升后的生成、构建与 HMR 变化。')
   lines.push('- 内存数据来自同一 Node 进程的 `process.memoryUsage()`，记录每个 case 的执行前后值、采样峰值和增量；RSS 增量会受 V8 GC 与前序 case 缓存影响，RSS 峰值更适合判断占用上界。')
-  lines.push('- `weapp` target 包含小程序选择器和 CSS 兼容转换；`web` target 保留浏览器 CSS 形态。')
+  lines.push("- `weapp` target 包含小程序选择器和 CSS 兼容转换；`web` target 保留浏览器 CSS 形态；`web-compact` 表示 `target='web'` 且开启 `webCompat=true` 的 legacy WebView 兼容降级输出。")
 
   return `${lines.join('\n')}\n`
 }
