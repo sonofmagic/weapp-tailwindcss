@@ -460,6 +460,8 @@ jobs:
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
       # Node 20 兼容矩阵会使用 pnpm 10，避免 pnpm 因根 packageManager=pnpm@11 拒绝运行。
       COREPACK_ENABLE_STRICT: '0'
+      npm_config_package_manager_strict: 'false'
+      npm_config_manage_package_manager_versions: 'false'
 
     steps:
       - name: Check out code
@@ -477,8 +479,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
