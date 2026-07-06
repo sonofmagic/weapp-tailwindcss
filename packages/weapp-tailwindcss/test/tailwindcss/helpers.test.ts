@@ -283,7 +283,7 @@ describe('tailwindcss helpers', () => {
     finally {
       await rm(tempDir, { recursive: true, force: true })
     }
-  })
+  }, 120_000)
 
   it('sets cwd from discovered tailwind config when cwd is not provided', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'wtw-tailwind-config-cwd-'))

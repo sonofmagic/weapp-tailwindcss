@@ -431,6 +431,7 @@ export function createViteFrameworkPlugins(
   const pendingSourceCandidateSyncs = new Set<Promise<unknown>>()
   const pendingSourceCandidateSyncByFile = new Map<string, Promise<ViteSourceCandidateChange | undefined>>()
   const processedCssAssets = new WeakSet<object>()
+  const processedCssAssetSourceByFile = new Map<string, string>()
   const viteProcessedCssSourceFiles = new Set<string>()
   const cleanGeneratedCssByFile = new Map<string, string>()
   const tracedGeneratedCssByFile = new Map<string, string>()
@@ -459,8 +460,18 @@ export function createViteFrameworkPlugins(
   refreshRuntimeStateForAutoCssSources = refreshRuntimeState
   onLoad()
   const getResolvedConfig = () => resolvedConfig
-  const markCssAssetProcessed = (asset: { source: unknown }, _file?: string) => {
+  const readCssAssetSource = (asset: { source: unknown }) => {
+    return typeof asset.source === 'string'
+      ? asset.source
+      : asset.source instanceof Uint8Array
+        ? Buffer.from(asset.source).toString()
+        : String(asset.source ?? '')
+  }
+  const markCssAssetProcessed = (asset: { source: unknown }, file?: string) => {
     processedCssAssets.add(asset)
+    if (file) {
+      processedCssAssetSourceByFile.set(normalizeOutputPathKey(file), readCssAssetSource(asset))
+    }
   }
   const isCssAssetProcessed = (asset: { source: unknown }, file?: string) => {
     if (processedCssAssets.has(asset)) {
@@ -469,15 +480,14 @@ export function createViteFrameworkPlugins(
     if (!file) {
       return false
     }
+    const source = readCssAssetSource(asset)
+    if (processedCssAssetSourceByFile.get(normalizeOutputPathKey(file)) === source) {
+      return true
+    }
     const record = viteProcessedCssAssetResults.get(normalizeOutputPathKey(file))
     if (!record) {
       return false
     }
-    const source = typeof asset.source === 'string'
-      ? asset.source
-      : asset.source instanceof Uint8Array
-        ? Buffer.from(asset.source).toString()
-        : String(asset.source ?? '')
     return source === record.css
   }
   const recordGeneratorCandidates = (candidates: Set<string>) => {
@@ -1005,10 +1015,12 @@ export function createViteFrameworkPlugins(
       generatorPlatform: resolveGeneratorPlatform(),
       styleHandler,
       debug,
-      previousCss: forceFullHmrCssRegeneration
-        ? undefined
-        : cleanGeneratedCssByFile.get(file),
-      previousClassSet: generatedClassSetByFile.get(file),
+      previousCss: pendingHmrChange && !forceFullHmrCssRegeneration
+        ? cleanGeneratedCssByFile.get(file)
+        : undefined,
+      previousClassSet: pendingHmrChange && !forceFullHmrCssRegeneration
+        ? generatedClassSetByFile.get(file)
+        : undefined,
       deferEmptyScopedCssSource: shouldDeferEmptyScopedCssSource,
       disableSourceScan: pendingHmrChange !== undefined,
       restoreLocalCssImports: !currentGeneratorBranch.isWeb,

@@ -143,6 +143,54 @@ describe('legacy compat css helpers', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
+  it('checks external @config container compat on non-weapp container paths', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'weapp-tw-legacy-config-container-'))
+    await mkdir(path.join(cwd, 'src'), { recursive: true })
+    await writeFile(
+      path.join(cwd, 'src/tailwind.config.js'),
+      'export default { theme: { container: { center: true } } }',
+    )
+    const styleHandler = vi.fn(async (css: string) => ({ css }))
+    const css = '.generated{color:blue}'
+
+    await expect(appendLegacyContainerCompatCss(
+      css,
+      '@config "./tailwind.config.js";\n@import "tailwindcss";',
+      path.join(cwd, 'src/app.css'),
+      new Set(),
+      false,
+      'web',
+      styleHandler as any,
+      {
+        postcssOptions: {
+          options: {
+            from: path.join(cwd, 'src/app.css'),
+          },
+        },
+      } as any,
+      {},
+    )).resolves.toBe(css)
+
+    await expect(appendLegacyContainerCompatCss(
+      css,
+      '@config "./missing.config.js";\n@import "tailwindcss";',
+      path.join(cwd, 'src/app.css'),
+      new Set(),
+      false,
+      'web',
+      styleHandler as any,
+      {
+        postcssOptions: {
+          options: {
+            from: path.join(cwd, 'src/app.css'),
+          },
+        },
+      } as any,
+      {},
+    )).resolves.toBe(css)
+    expect(styleHandler).not.toHaveBeenCalled()
+  })
+
   it('skips empty compat css and strips mini-program container rules before transforming', async () => {
     const emptyStyleHandler = vi.fn(async (css: string) => ({ css }))
     const generatedCss = '.legacy{color:red}'

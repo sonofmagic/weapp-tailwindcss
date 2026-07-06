@@ -544,6 +544,49 @@ describe('vite processed css assets', () => {
     expect(appCss).toContain('radial-gradient')
   })
 
+  it('falls back to the matched root css asset for configured css entry injection targets', () => {
+    const root = '/project'
+    const sourceFile = `${root}/src/main.css`
+    const generatedCss = '.template-corpus-card{display:block}'
+    const bundle: OutputBundle = {
+      'app.css': asset('app.css', ''),
+      'main.css': asset('main.css', '.legacy{color:red}'),
+      'src/main.css': asset('src/main.css', `${createBundlerGeneratedCssMarker('vite', sourceFile)}\n${generatedCss}`),
+      'chunk.js': {
+        type: 'chunk',
+        fileName: 'chunk.js',
+        name: 'chunk',
+        code: 'export default {}',
+      } as any,
+    }
+    const records = new Map<string, any>()
+
+    collectViteProcessedCssAssetResults(bundle, {
+      opts: {
+        ...opts(),
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        cssEntries: [sourceFile],
+        mainCssChunkMatcher: (file: string) => file === 'app.css',
+      },
+      cssPipelineStrategy: {
+        resolveConfiguredCssEntryRootInjectionTarget: () => undefined,
+      },
+      createCssPipelineContext,
+      isViteProcessedCssAsset: (_asset, file) => file === 'src/main.css',
+      recordViteProcessedCssAssetResult(file, css, options) {
+        records.set(file, { css, ...options })
+      },
+      resolveViteProcessedCssOutputFile: file => file.startsWith(`${root}/`) ? file.slice(root.length + 1) : file,
+      debug: vi.fn(),
+    })
+
+    expect(records.get('src/main.css')).toMatchObject({
+      injectIntoMain: true,
+      outputFile: 'app.css',
+    })
+  })
+
   it('dedupes aliased uni-app vite app webview css records before root injection', () => {
     const generatedCss = [
       '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
@@ -598,6 +641,36 @@ describe('vite processed css assets', () => {
     expect(bundle['main.css']).toBeUndefined()
     expect(bundle['pages/index/index.css']).toBeDefined()
     expect(debug).toHaveBeenCalledWith('remove duplicate unlinked root css asset referenced by html: %s', 'main.css')
+  })
+
+  it('handles absolute html css links and ignores unresolved duplicate candidates', () => {
+    const generatedCss = '.template-corpus-card{display:block}'
+    const bundleWithoutLinkedCss: OutputBundle = {
+      '__uniappview.html': asset('__uniappview.html', '<link rel="stylesheet" href="/app.css" /><link rel="stylesheet" href="https://cdn.example.com/theme.css" />'),
+      'main.css': asset('main.css', generatedCss),
+    }
+
+    expect(removeDuplicateUnlinkedRootCssAssetsReferencedByHtml(bundleWithoutLinkedCss)).toBe(0)
+    expect(bundleWithoutLinkedCss['main.css']).toBeDefined()
+
+    const bundle: OutputBundle = {
+      '__uniappview.html': asset('__uniappview.html', '<link rel="stylesheet" href="/app.css" /><link rel="stylesheet" href="./pages/index.css" />'),
+      'app.css': asset('app.css', generatedCss),
+      'main.css': asset('main.css', generatedCss),
+      'chunk.js': {
+        type: 'chunk',
+        fileName: 'chunk.js',
+        name: 'chunk',
+        code: 'export default {}',
+      } as any,
+      'pages/index.css': asset('pages/index.css', '.page{color:black}'),
+    }
+
+    expect(removeDuplicateUnlinkedRootCssAssetsReferencedByHtml(bundle)).toBe(1)
+    expect(bundle['app.css']).toBeDefined()
+    expect(bundle['main.css']).toBeUndefined()
+    expect(bundle['chunk.js']).toBeDefined()
+    expect(bundle['pages/index.css']).toBeDefined()
   })
 
   it('does not append comment-only vite processed leftovers into root css', () => {
@@ -959,6 +1032,46 @@ describe('vite processed css assets', () => {
     expect(mainCss).not.toContain('third-party-ui')
     expect(mainCss).not.toContain('another-package')
     expect(mainCss).not.toContain('https://example.com')
+  })
+
+  it('uses fallback import cleanup when mini-program css cannot be parsed', () => {
+    const bundle: OutputBundle = {
+      'main.acss': asset('main.acss', [
+        '@import "./local-theme.acss";',
+        '@import "third-party-ui/dist/theme.css";',
+        '.main{color:red',
+      ].join('\n')),
+    }
+    const records = new Map<string, any>([
+      ['src/main.css', {
+        css: [
+          '@import "./component.acss";',
+          '@import "another-package/styles.css";',
+          '.generated{color:blue}',
+        ].join('\n'),
+        injectIntoMain: true,
+        outputFile: 'main.acss',
+      }],
+    ])
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        ...opts(),
+        cssMatcher: (file: string) => /\.(?:css|acss)$/.test(file),
+        mainCssChunkMatcher: (file: string) => file === 'main.acss',
+      },
+      getViteProcessedCssAssetResults: () => records.entries(),
+      markCssAssetProcessed: vi.fn(),
+      debug: vi.fn(),
+    })
+
+    const mainCss = String((bundle['main.acss'] as OutputAsset).source)
+    expect(injected).toBe(1)
+    expect(mainCss).toContain('@import "./local-theme.acss";')
+    expect(mainCss).toContain('@import "./component.acss";')
+    expect(mainCss).toContain('.generated{color:blue}')
+    expect(mainCss).not.toContain('third-party-ui')
+    expect(mainCss).not.toContain('another-package')
   })
 
   it('cleans parsed source media wrappers and empty nested at-rules before injection', () => {

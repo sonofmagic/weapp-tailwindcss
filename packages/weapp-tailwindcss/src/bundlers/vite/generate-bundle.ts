@@ -87,6 +87,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
   const lastCssResultByFile = new Map<string, string>()
   const lastCssSourceHashByFile = new Map<string, string>()
+  const lastCssRawSourceHashByFile = new Map<string, string>()
   let currentOutDir: string | undefined
   let currentSubpackageRoots: Set<string> | undefined
   const createInitialCssPipelineContext = (file: string) => {
@@ -1416,6 +1417,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         bundle,
         bundleFiles,
         cache,
+        changedCssFiles: snapshot.changedByType.css,
         cssTaskFactories,
         createScopedGeneratorRuntime,
         createScopedSourceCandidateGetter,
@@ -1431,6 +1433,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         getRememberedCssSources,
         isNativeAppStyleTarget,
         isWebGeneratorTarget,
+        lastCssRawSourceHashByFile,
         lastCssResultByFile,
         lastCssSourceHashByFile,
         markCssAssetProcessed,

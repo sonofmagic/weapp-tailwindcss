@@ -48,6 +48,7 @@ describe('generator user css helpers', () => {
     expect(removeTailwindV4GeneratorAtRules('.keep{color:red}')).toBe('.keep{color:red}')
     expect(removeTailwindV4GeneratorAtRules('@source url("./{src}") @theme{--a:1}\n.keep{color:red')).toContain('.keep')
     expect(removeTailwindV4GeneratorAtRules('@media source("./src") {')).toBe('')
+    expect(removeTailwindV4GeneratorAtRules('@source "src"; .keep{color:red')).toBe('')
   })
 
   it('strips source media fragments and unmatched close fragments', () => {
@@ -71,6 +72,8 @@ describe('generator user css helpers', () => {
     expect(stripTailwindSourceMediaFragments('@source url("./src") @utility btn { color: red }\n.keep{display:block}')).toBe('\n.keep{display:block}')
     expect(stripTailwindSourceMediaFragments('@source url("./src") { .hidden{display:none} }\n.keep{display:block}')).toBe('\n.keep{display:block}')
     expect(stripTailwindSourceMediaFragments('@source "@x";\n.keep{display:block}')).toBe('@source "@x";\n.keep{display:block}')
+    expect(stripTailwindSourceMediaFragments('@media source(none) {\n.hidden{display:none}')).toBe('.hidden{display:none}')
+    expect(stripTailwindSourceMediaFragments('} /* source(none) */\n.keep{display:block}')).toBe('.keep{display:block}')
     expect(stripUnmatchedTailwindSourceMediaCloseFragments('}\n.keep{display:block}')).toBe('.keep{display:block')
     expect(stripUnmatchedTailwindSourceMediaCloseFragments('}\n.keep{display:block}\n}')).toBe('.keep{display:block}')
     expect(stripUnmatchedTailwindSourceMediaCloseFragments('.keep{display:block')).toBe('.keep{display:block')
@@ -135,6 +138,9 @@ describe('generator user css helpers', () => {
     expect(scopedFiltered).not.toContain('.flex{display:flex}')
     expect(filterApplyOnlyGeneratedCss('.broken{', '.card{@apply flex}')).toBe('.broken{')
     expect(filterApplyOnlyGeneratedCss('.card{display:flex}', '.card{color:red}')).toBe('.card{display:flex}')
+    expect(filterApplyOnlyGeneratedCss(':root{--x:1}.card{display:flex}', '.card{@apply flex}', {
+      preserveVariables: false,
+    })).toBe('.card{display:flex}')
     expect(shouldFilterApplyOnlyGeneratedCss(4, 'weapp', '.card{@apply flex}', {
       hasGeneratedCss: false,
       hasGeneratedMarkers: false,
@@ -214,6 +220,24 @@ describe('generator user css helpers', () => {
       styleHandler: droppingBareSelectorStyleHandler,
       importFallback: true,
     })).resolves.toContain('abc{background:#222}')
+    await expect(transformGeneratorUserCss([
+      '@import "./dep.css";',
+      '@media screen { .card{color:red} }',
+      'wx-button{background:#000}',
+    ].join('\n'), {
+      generatorTarget: 'weapp',
+      generatorStyleOptions: {},
+      cssUserHandlerOptions: {} as any,
+      styleHandler: droppingBareSelectorStyleHandler,
+      importFallback: true,
+    })).resolves.toContain('wx-button{background:#000}')
+    await expect(transformGeneratorUserCss('@layer base { .broken{', {
+      generatorTarget: 'weapp',
+      generatorStyleOptions: {},
+      cssUserHandlerOptions: {} as any,
+      styleHandler: vi.fn(async (css: string) => ({ css })),
+      importFallback: true,
+    })).resolves.toContain('@layer base')
 
     await expect(transformGeneratorUserCss('.btn:hover{color:red}.btn{color:blue}', {
       generatorTarget: 'weapp',

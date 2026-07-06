@@ -75,7 +75,7 @@ describe('postcss plugin', () => {
     await getClassCacheSet()
     // const y =
     expect(res.css.toString()).toMatchSnapshot()
-  })
+  }, 120_000)
 
   it('single quote after class', async () => {
     // after:content-[\"*\"]

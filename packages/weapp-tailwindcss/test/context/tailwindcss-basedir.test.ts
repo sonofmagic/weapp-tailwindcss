@@ -1,4 +1,6 @@
 import path from 'node:path'
+import { mkdir, mkdtemp, realpath, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { resolveTailwindcssBasedir } from '@/context/tailwindcss/basedir'
 import { logger } from '@/logger'
@@ -22,6 +24,7 @@ const ENV_KEYS = [
 
 describe('resolveTailwindcssBasedir', () => {
   const originalEnv = { ...process.env }
+  const createdDirs: string[] = []
 
   beforeEach(() => {
     for (const key of ENV_KEYS) {
@@ -33,6 +36,7 @@ describe('resolveTailwindcssBasedir', () => {
   afterEach(() => {
     process.env = { ...originalEnv }
     vi.restoreAllMocks()
+    return Promise.all(createdDirs.splice(0).map(dir => rm(dir, { recursive: true, force: true })))
   })
 
   it('resolves explicit and environment basedirs', () => {
@@ -71,5 +75,40 @@ describe('resolveTailwindcssBasedir', () => {
 
     expect(path.isAbsolute(resolved)).toBe(true)
     expect(logger.debug).toHaveBeenCalled()
+  })
+
+  it('resolves PNPM package basedir through package resolution and workspace fallback', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-basedir-pnpm-'))
+    createdDirs.push(root)
+    const nodeModulePackageDir = path.join(root, 'node_modules/@scope/pkg')
+    await mkdir(nodeModulePackageDir, { recursive: true })
+    await writeFile(path.join(nodeModulePackageDir, 'package.json'), JSON.stringify({
+      name: '@scope/pkg',
+      version: '0.0.0-test',
+    }))
+    process.env.INIT_CWD = root
+    process.env.PNPM_PACKAGE_NAME = '@scope/pkg'
+    process.env.WEAPP_TW_DEBUG_STACK = '1'
+
+    const realNodeModulePackageDir = await realpath(nodeModulePackageDir)
+    expect(resolveTailwindcssBasedir()).toBe(path.normalize(realNodeModulePackageDir))
+    expect(logger.debug).toHaveBeenCalledWith(
+      'package basedir resolved from PNPM_PACKAGE_NAME: %s',
+      path.join(realNodeModulePackageDir, 'package.json'),
+    )
+
+    const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'weapp-tw-basedir-workspace-'))
+    createdDirs.push(workspaceRoot)
+    const workspacePackageDir = path.join(workspaceRoot, 'packages/pkg')
+    await mkdir(workspacePackageDir, { recursive: true })
+    await writeFile(path.join(workspaceRoot, 'pnpm-workspace.yaml'), 'packages:\n  - packages/*\n')
+    await writeFile(path.join(workspacePackageDir, 'package.json'), JSON.stringify({
+      name: '@scope/workspace-pkg',
+      version: '0.0.0-test',
+    }))
+    process.env.INIT_CWD = workspaceRoot
+    process.env.PNPM_PACKAGE_NAME = '@scope/workspace-pkg'
+
+    expect(resolveTailwindcssBasedir()).toBe(path.normalize(workspacePackageDir))
   })
 })

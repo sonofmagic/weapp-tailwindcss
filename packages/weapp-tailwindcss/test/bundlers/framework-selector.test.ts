@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { resolveGulpFrameworkProfile, resolveViteFrameworkProfile, resolveWebpackFrameworkProfile } from '@/bundlers/framework-selector'
+import { createViteFrameworkProfileState, resolveGulpFrameworkProfile, resolveViteFrameworkProfile, resolveWebpackFrameworkProfile } from '@/bundlers/framework-selector'
 
 describe('bundler framework selector', () => {
   it('keeps explicit appType ahead of package detection', () => {
@@ -68,6 +68,13 @@ describe('bundler framework selector', () => {
         },
       },
     }).frameworkName).toBe('uni-app')
+
+    expect(resolveWebpackFrameworkProfile({
+      appType: 'weapp-vite',
+    })).toMatchObject({
+      appType: 'weapp-vite',
+      frameworkName: 'weapp-vite',
+    })
   })
 
   it('keeps uni-app x as a Vite framework profile and maps Webpack opt-in to uni-app', () => {
@@ -95,6 +102,26 @@ describe('bundler framework selector', () => {
       },
     })).toMatchObject({
       frameworkName: 'native',
+    })
+  })
+
+  it('refreshes cached vite framework profile state with merged options', () => {
+    const state = createViteFrameworkProfileState({
+      appType: 'taro',
+      packageJson: {
+        dependencies: {
+          'weapp-vite': 'latest',
+        },
+      },
+    })
+
+    expect(state.current()).toMatchObject({
+      appType: 'taro',
+      frameworkName: 'taro',
+    })
+    expect(state.refresh({ appType: undefined })).toMatchObject({
+      appType: 'weapp-vite',
+      frameworkName: 'weapp-vite',
     })
   })
 })

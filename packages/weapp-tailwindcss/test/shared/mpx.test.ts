@@ -121,6 +121,27 @@ describe('mpx integration helpers', () => {
     expect((normalize.lib as any).__weappTwOriginal).toBe(originalLib)
   })
 
+  it('returns false when mpx normalize module does not expose lib', async () => {
+    const noLibRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-mpx-plugin-no-lib-'))
+    createdDirs.push(noLibRoot)
+    const noLibPluginDir = path.join(noLibRoot, 'node_modules/@mpxjs/webpack-plugin')
+    const noLibNormalizeDir = path.join(noLibPluginDir, 'lib/utils')
+    await mkdir(noLibNormalizeDir, { recursive: true })
+    await writeFile(path.join(noLibPluginDir, 'package.json'), JSON.stringify({
+      name: '@mpxjs/webpack-plugin',
+      version: '0.0.0-test',
+      main: 'index.js',
+    }))
+    await writeFile(path.join(noLibPluginDir, 'index.js'), 'module.exports = {}\n')
+    await writeFile(path.join(noLibNormalizeDir, 'normalize.js'), 'exports.lib = "not-a-function"\n')
+    await writeFile(path.join(noLibRoot, 'package.json'), JSON.stringify({ private: true }))
+
+    expect(patchMpxWebpackPluginNormalizeLib({
+      context: noLibRoot,
+      options: { context: noLibRoot },
+    }, noLibPluginDir)).toBe(false)
+  })
+
   it('adds object and array aliases for a project-local mpx webpack plugin fixture', async () => {
     const { pluginDir, root } = await createMpxWebpackPluginFixture()
     const compiler = {

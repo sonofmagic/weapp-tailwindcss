@@ -1192,8 +1192,36 @@ function collectCssImportAtRuleCss(css: string) {
   }
 }
 
-function restoreCssImportAtRules(source: string, filtered: string) {
+function parseCssImportRequest(importCss: string) {
+  const trimmed = importCss.trim()
+  if (!trimmed.startsWith('@import')) {
+    return
+  }
+  const params = trimmed
+    .slice('@import'.length)
+    .trim()
+    .replace(/;$/, '')
+    .trim()
+  return parseTailwindCssDirectiveRequest(params)
+}
+
+function shouldRestoreCssImportAtRule(importCss: string, file?: string) {
+  if (file === undefined || !isMiniProgramStyleOutputFile(file)) {
+    return true
+  }
+  const request = parseCssImportRequest(importCss)
+  if (request === undefined) {
+    return false
+  }
+  if (isMiniProgramLocalCssImportRequest(request)) {
+    return true
+  }
+  return isStyleImportRequest(request) && !request.includes('/')
+}
+
+function restoreCssImportAtRules(source: string, filtered: string, file?: string) {
   const imports = collectCssImportAtRuleCss(source)
+    .filter(importCss => shouldRestoreCssImportAtRule(importCss, file))
   if (imports.length === 0) {
     return filtered
   }
@@ -1710,6 +1738,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
         restoreCssImportAtRules(
           originalSource,
           removeCssRulesCoveredBySources(nextCss, finalImportedCssSources, { exactOnly: true }).trim(),
+          file,
         ),
       ),
       file,

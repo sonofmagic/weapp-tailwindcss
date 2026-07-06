@@ -53,6 +53,76 @@ function getGenerateBundleHandler(plugin: Plugin | undefined) {
 }
 
 describe('uni-app-x vite plugins', () => {
+  it('skips plugin lifecycle work when disabled and ignores unrelated updates', async () => {
+    let enabled = false
+    let currentConfig: ResolvedConfig = { command: 'serve', build: { watch: false } } as ResolvedConfig
+    const styleHandler = vi.fn()
+    const ensureRuntimeClassSet = vi.fn(async () => new Set<string>())
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      mainCssChunkMatcher: vi.fn(() => true),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler,
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet,
+      getResolvedConfig: () => currentConfig,
+      isEnabled: () => enabled,
+    })
+    const cssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css')
+    const preCssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
+    const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
+    const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
+
+    await preCssPlugin!.transform?.('.a{}', '/foo.css')
+    await cssPlugin!.transform?.('.a{}', '/foo.css')
+    await nvuePlugin!.buildStart?.()
+    await nvuePlugin!.transform?.('<template/>', '/foo.uvue')
+    await nvuePlugin!.handleHotUpdate?.({ file: '/foo.uvue' } as HmrContext)
+    await nvuePlugin!.watchChange?.('/foo.uvue')
+    await getGenerateBundleHandler(placeholderPlugin)?.({} as any, {
+      'App.uvue.ts': createAsset('const GenAppStyles = []'),
+    } as any, false)
+
+    expect(styleHandler).not.toHaveBeenCalled()
+    expect(ensureRuntimeClassSet).not.toHaveBeenCalled()
+    expect(transformUVueMock).not.toHaveBeenCalled()
+
+    enabled = true
+    await nvuePlugin!.transform?.('<template/>', '/foo.ts')
+    currentConfig = { command: 'build', build: { watch: false } } as ResolvedConfig
+    await nvuePlugin!.handleHotUpdate?.({ file: '/foo.uvue' } as HmrContext)
+    await nvuePlugin!.watchChange?.('/foo.uvue')
+    currentConfig = { command: 'build', build: { watch: true } } as ResolvedConfig
+    await nvuePlugin!.watchChange?.('/foo.ts')
+
+    expect(ensureRuntimeClassSet).not.toHaveBeenCalled()
+    expect(transformUVueMock).not.toHaveBeenCalled()
+  })
+
+  it('detects iOS preprocessor requests from inline lang markers and extensions', async () => {
+    const styleHandler = vi.fn()
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      isIosPlatform: true,
+      mainCssChunkMatcher: vi.fn(() => true),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler,
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
+    })
+    const preCssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
+
+    await preCssPlugin!.transform?.('$color: red;', '/pages/index/index.lang.less.css')
+    await preCssPlugin!.transform?.('$color: red;', '/pages/index/theme.less?direct')
+
+    expect(styleHandler).not.toHaveBeenCalled()
+  })
+
   it('processes css requests and forwards map options', async () => {
     const styleHandler = vi.fn(async (code: string, options?: Record<string, unknown>) => ({
       css: `css:${code}`,

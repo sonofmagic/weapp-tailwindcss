@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
+import { filterTailwindV4CssSourceRoots, hasConfiguredTailwindV4CssRoots, hasCssSourcesValue, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 
 describe('tailwindcss/v4/css-sources', () => {
   it('normalizes auto css source base so @source paths stay relative to the css file', () => {
@@ -52,5 +52,62 @@ describe('tailwindcss/v4/css-sources', () => {
         },
       },
     })).toBe(false)
+  })
+
+  it('detects, filters, updates, and dedupes configured css source roots', () => {
+    expect(hasConfiguredTailwindV4CssRoots({
+      cssEntries: '/project/src/app.css',
+    })).toBe(true)
+    expect(hasConfiguredTailwindV4CssRoots({
+      tailwindcssRuntimeOptions: {
+        tailwindcss: {
+          v4: {
+            cssSources: [{
+              file: '/project/src/app.css',
+              css: '@import "tailwindcss";',
+            }],
+          },
+        },
+      } as any,
+    })).toBe(true)
+    expect(hasCssSourcesValue([{ file: '/project/src/app.css', css: '   ' }])).toBe(false)
+    expect(filterTailwindV4CssSourceRoots(undefined)).toBeUndefined()
+    expect(filterTailwindV4CssSourceRoots([
+      { file: '/project/src/app.vue', css: '<style />' } as any,
+      { file: '/project/src/app.css', css: '@import "tailwindcss";' },
+    ])).toEqual([
+      { file: '/project/src/app.css', css: '@import "tailwindcss";' },
+    ])
+
+    const options = {
+      tailwindcss: {
+        v4: {
+          cssSources: [{
+            file: '/project/src/app.css',
+            base: '/project/src',
+            css: '@import "tailwindcss";',
+            dependencies: ['/project/src/tailwind.config.js', ''],
+          }],
+        },
+      },
+    } as any
+
+    expect(upsertTailwindV4CssSource(options, {
+      file: '/project/src/app.css',
+      base: '/project/src',
+      css: '@import "tailwindcss";',
+      dependencies: ['/project/src/tailwind.config.js'],
+    })).toBe(false)
+    expect(upsertTailwindV4CssSource(options, {
+      file: '/project/src/app.css',
+      css: '@import "tailwindcss";\n@source "./pages/**/*";',
+      dependencies: ['/project/src/other.config.js', ''],
+    })).toBe(true)
+    expect(options.tailwindcss.v4.cssSources).toEqual([{
+      file: '/project/src/app.css',
+      base: path.resolve('/project/src'),
+      css: '@import "tailwindcss";\n@source "./pages/**/*";',
+      dependencies: ['/project/src/other.config.js'],
+    }])
   })
 })

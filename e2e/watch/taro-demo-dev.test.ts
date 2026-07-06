@@ -174,7 +174,7 @@ describe('e2e watch taro demo dev entry', () => {
   const caseName = resolveCaseName()
 
   if (isWebOnlyWatchProfile()) {
-    it.skip('skips taro pnpm dev smoke for web-only watch profile', () => {})
+    it.skip('skips taro webpack pnpm dev smoke for web-only watch profile', () => {})
     return
   }
 

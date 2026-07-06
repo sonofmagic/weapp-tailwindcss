@@ -18,6 +18,7 @@ interface ProcessRememberedCssReplayOptions {
   bundle: Record<string, OutputAsset | OutputChunk>
   bundleFiles: string[]
   cache: GenerateBundleContext['opts']['cache']
+  changedCssFiles: Set<string>
   createScopedGeneratorRuntime: (
     outputFile: string,
     cssHandlerOptions: { isMainChunk?: boolean | undefined },
@@ -45,6 +46,7 @@ interface ProcessRememberedCssReplayOptions {
   getRememberedCssSources?: (() => Iterable<[string, RememberedCssSource]>) | undefined
   isNativeAppStyleTarget: boolean
   isWebGeneratorTarget: boolean
+  lastCssRawSourceHashByFile: Map<string, string>
   lastCssResultByFile: Map<string, string>
   lastCssSourceHashByFile: Map<string, string>
   markCssAssetProcessed: GenerateBundleContext['markCssAssetProcessed']
@@ -77,6 +79,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     activeViteCssCacheFiles,
     bundleFiles,
     cache,
+    changedCssFiles = new Set<string>(),
     createScopedGeneratorRuntime,
     createScopedSourceCandidateGetter,
     createScopedSourceCandidateSourceGetter,
@@ -92,6 +95,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     getRememberedCssSources,
     isNativeAppStyleTarget,
     isWebGeneratorTarget,
+    lastCssRawSourceHashByFile = new Map<string, string>(),
     lastCssResultByFile,
     lastCssSourceHashByFile,
     markCssAssetProcessed,
@@ -164,7 +168,12 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     )
     const cssRuntimeAffectingHash = cache.computeHash(createRuntimeAffectingSourceSignature(rawSource, 'css'))
     const rememberedCssRuntimeSignature = createRememberedCssRuntimeSignature(cssRuntimeSignature, cssRuntimeAffectingHash)
-    const previousCss = useIncrementalMode && getLastCssSourceHash(lastCssSourceHashByFile, outputFile) === cssRuntimeAffectingHash
+    const rawSourceHash = cache.computeHash(rawSource)
+    const previousRawSourceHash = lastCssRawSourceHashByFile.get(outputFile)
+    const cssSourceChanged = changedCssFiles.has(outputFile)
+      || changedCssFiles.has(sourceFile)
+      || (previousRawSourceHash != null && previousRawSourceHash !== rawSourceHash)
+    const previousCss = useIncrementalMode && !cssSourceChanged && getLastCssSourceHash(lastCssSourceHashByFile, outputFile) === cssRuntimeAffectingHash
       ? getLastCssResult(lastCssResultByFile, outputFile)
       : undefined
     const allRememberedSignaturesFresh = rememberedKeys.length > 0
@@ -202,6 +211,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
         previousCss,
       })
       const css = annotateCss(generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css)
+      lastCssRawSourceHashByFile.set(outputFile, rawSourceHash)
       rememberLastCssResult(lastCssResultByFile, lastCssSourceHashByFile, outputFile, css, cssRuntimeAffectingHash)
       for (const key of rememberedKeys) {
         setRememberedCssSignature?.(key, rememberedCssRuntimeSignature)
@@ -216,6 +226,14 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
             : shouldInjectReplayCssIntoMain,
           outputFile,
         })
+        if (outputFile !== sourceFile) {
+          recordViteProcessedCssAssetResult?.(outputFile, css, {
+            injectIntoMain: outputCssHandlerOptions.isMainChunk
+              ? false
+              : shouldInjectReplayCssIntoMain,
+            outputFile,
+          })
+        }
         debug('css replay generated result: %s bytes=%d', outputFile, css.length)
       }
       if (shouldEmitRememberedReplayCssAsset) {

@@ -3,7 +3,11 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { mkdir, mkdtemp, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+import {
+  createBuiltinViteStyleInjectorPlugins,
+  createBuiltinWebpackStyleInjectorPlugin,
+} from '@/style-injector/internal'
 import { createContext, resetVitePluginTestContext, setCurrentContext } from './vite-plugin.testkit'
 
 async function loadViteWeappTailwindcssPlugin() {
@@ -30,6 +34,81 @@ function asset(fileName: string, source: string): OutputAsset {
 }
 
 describe('bundlers/vite builtin styleInjector', () => {
+  it('delegates Vite style injector lifecycle hooks in order', async () => {
+    const configResolved = vi.fn()
+    const buildStart = vi.fn()
+    const loadA = vi.fn()
+    const loadB = vi.fn(() => 'loaded')
+    const transformA = vi.fn((code: string) => `${code}:a`)
+    const transformB = vi.fn((code: string) => ({ code: `${code}:b` }))
+    const generateBundleA = vi.fn()
+    const generateBundleB = vi.fn()
+    const delegateFactory = vi.fn(() => [
+      {
+        name: 'delegate-a',
+        configResolved,
+        buildStart,
+        load: loadA,
+        transform: transformA,
+        generateBundle: generateBundleA,
+      },
+      {
+        name: 'delegate-b',
+        load: loadB,
+        transform: { handler: transformB },
+        generateBundle: { handler: generateBundleB },
+      },
+    ] as Plugin[])
+    const plugins = createBuiltinViteStyleInjectorPlugins(true, () => delegateFactory)
+    const prePlugin = plugins[0]!
+    const postPlugin = plugins[1]!
+    const config = { root: process.cwd(), plugins, css: {} } as ResolvedConfig
+    const hookContext = { addWatchFile: vi.fn() } as any
+
+    await prePlugin.configResolved?.call(prePlugin, config)
+    await prePlugin.buildStart?.call(hookContext, {} as any)
+    await prePlugin.buildStart?.call(hookContext, {} as any)
+    await expect(prePlugin.load?.call(hookContext, 'virtual.css', {} as any)).resolves.toBe('loaded')
+    await expect(prePlugin.transform?.call(hookContext, 'code', 'virtual.css', {} as any)).resolves.toEqual({
+      code: 'code:a:b',
+      map: null,
+    })
+    await postPlugin.configResolved?.call(postPlugin, config)
+    await getGenerateBundleHandler(postPlugin)?.call(hookContext, {} as any, {}, false)
+
+    expect(delegateFactory).toHaveBeenCalledTimes(1)
+    expect(configResolved).toHaveBeenCalledTimes(1)
+    expect(buildStart).toHaveBeenCalledTimes(1)
+    expect(loadA).toHaveBeenCalled()
+    expect(loadB).toHaveBeenCalled()
+    expect(generateBundleA).toHaveBeenCalled()
+    expect(generateBundleB).toHaveBeenCalled()
+  })
+
+  it('normalizes builtin style injector disabled and webpack options', () => {
+    expect(createBuiltinViteStyleInjectorPlugins(undefined, vi.fn())).toEqual([])
+    const delegateFactory = vi.fn(() => ({ name: 'webpack-style-injector' }) as any)
+    expect(createBuiltinWebpackStyleInjectorPlugin(undefined, delegateFactory)).toBeUndefined()
+
+    const webpackPlugin = createBuiltinWebpackStyleInjectorPlugin({
+      generateSubpackageStyle: () => 'sub{}',
+      loadSubpackageTargetStyle: () => Buffer.from('target{}'),
+    }, delegateFactory)
+    const webpackOptions = delegateFactory.mock.calls[0]?.[0] as any
+
+    expect(webpackPlugin).toEqual({ name: 'webpack-style-injector' })
+    expect(webpackOptions.generateSubpackageStyle({})).toBe('sub{}')
+    expect(String(webpackOptions.loadSubpackageTargetStyle('a.wxss', '/repo/a.wxss'))).toBe('target{}')
+
+    createBuiltinWebpackStyleInjectorPlugin({
+      generateSubpackageStyle: async () => 'sub{}',
+      loadSubpackageTargetStyle: async () => 'target{}',
+    }, delegateFactory)
+    const asyncWebpackOptions = delegateFactory.mock.calls[1]?.[0] as any
+    expect(() => asyncWebpackOptions.generateSubpackageStyle({})).toThrow('must return synchronously')
+    expect(() => asyncWebpackOptions.loadSubpackageTargetStyle('a.wxss', '/repo/a.wxss')).toThrow('must return synchronously')
+  })
+
   it('injects configured imports after the main vite plugin output hooks', async () => {
     resetVitePluginTestContext()
     setCurrentContext(createContext({

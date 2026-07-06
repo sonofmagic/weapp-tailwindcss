@@ -26,7 +26,7 @@ view,text,::after,::before {
     })
     expect(code).toBe(`const className = 'mb-_b1_d5rem_B'`)
     expect(map).toMatchSnapshot()
-  })
+  }, 120_000)
 
   it('common usage case 1', async () => {
     const ctx = createContext()

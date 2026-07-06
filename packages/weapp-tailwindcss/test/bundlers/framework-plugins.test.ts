@@ -199,11 +199,13 @@ describe('framework plugin composition profiles', () => {
     new WeappTailwindcss({ appType: 'taro' }).apply({ options: {}, context: process.cwd() } as any)
     new WeappTailwindcss({ appType: 'mpx' }).apply({ options: {}, context: process.cwd() } as any)
     new WeappTailwindcss({ appType: 'uni-app' }).apply({ options: {}, context: process.cwd() } as any)
+    new WeappTailwindcss({ appType: 'weapp-vite' }).apply({ options: {}, context: process.cwd() } as any)
 
     expect(appliedFrameworks).toEqual([
       'taro',
       'mpx',
       'uni-app',
+      'weapp-vite',
     ])
   })
 

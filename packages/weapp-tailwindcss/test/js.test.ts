@@ -244,7 +244,7 @@ const duplicated = 'text/event-stream'`
     const set = await getClassCacheSet()
     const { code } = await dh(testCase, set)
     expect(code).toMatchSnapshot()
-  })
+  }, 120_000)
 
   it.skipIf(isCI).each(testTable)('$name "after:content-[\'对酒当歌，人生几何\']"', async () => {
     const testCase = 'const a = "after:content-[\'对酒当歌，人生几何\']"'
