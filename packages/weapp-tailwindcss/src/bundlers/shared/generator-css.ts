@@ -9,7 +9,7 @@ import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/
 import { includesTailwindV4PreflightDirective } from '@/tailwindcss/v4/preflight'
 import { removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 import { collectGeneratedRawSourceCandidates } from './generator-css/class-selectors'
-import { hasTailwindApplyDirective, hasTailwindSourceDirectives, normalizeTailwindSourceDirectives } from './generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindSourceDirectives, normalizeTailwindSourceDirectives, removeTailwindSourceDirectives } from './generator-css/directives'
 import { createCssSourceOrderAppend, createRuntimeWithCurrentCssCandidates, finalizeMiniProgramGeneratorCss, isEmptyCssSourceOrderParts, mergeGeneratorResults, mergeScopedRuntimeWithCurrentRuntime, resolveGeneratorStyleOptions, resolveMiniProgramPreflightModeForGeneratorCss, shouldAppendWebBundleCssFallback, shouldFinalizeMarkedUserLayerComponentsCss, shouldIsolateCurrentTailwindV4CssCandidates, shouldIsolateScopedCssSource, shouldScanTailwindV4Sources, shouldUseGeneratorForCurrentCss, splitRawSourceByGeneratedCssOrder } from './generator-css/generation-helpers'
 import { appendLegacyCompatCss, appendLegacyContainerCompatCss, hasConfiguredContainerCompatSources } from './generator-css/legacy-compat'
 import { inheritLegacyUnitConvertedDeclarations } from './generator-css/legacy-units'
@@ -172,6 +172,23 @@ function mergeGeneratedCssClassSet(classSet: Set<string>, candidates: Iterable<s
   return merged
 }
 
+function resolveGeneratedCssClassSet(
+  target: string,
+  classSet: Set<string>,
+  candidates: Iterable<string>,
+  css: string,
+  escapeMap: Record<string, string> | undefined,
+  previousClassSet?: Set<string> | undefined,
+) {
+  if (target === 'web') {
+    return new Set([
+      ...(previousClassSet ?? []),
+      ...classSet,
+    ])
+  }
+  return mergeGeneratedCssClassSet(classSet, candidates, css, escapeMap)
+}
+
 function finalizeWebGeneratorCss(
   css: string,
   target: string,
@@ -180,6 +197,22 @@ function finalizeWebGeneratorCss(
   return target === 'web'
     ? transformWebCssCompat(css, webCompat)
     : css
+}
+
+function finalizeIncrementalGeneratorCss(
+  previousCss: string,
+  incrementalCss: string,
+  target: string,
+  majorVersion: number | undefined,
+  cssPreflight: Parameters<typeof finalizeMiniProgramGeneratorCss>[3],
+  options: Parameters<typeof finalizeMiniProgramGeneratorCss>[4],
+  webCompat: ReturnType<typeof normalizeWeappTailwindcssGeneratorOptions>['webCompat'],
+) {
+  const finalizedIncrementalCss = finalizeMiniProgramGeneratorCss(incrementalCss, target, majorVersion, cssPreflight, options)
+  if (target === 'web') {
+    return createCssAppend(previousCss, finalizeWebGeneratorCss(finalizedIncrementalCss, target, webCompat))
+  }
+  return createCssAppend(previousCss, finalizedIncrementalCss)
 }
 
 export async function generateCssByGenerator(
@@ -285,6 +318,8 @@ export async function generateCssByGenerator(
     : splitLocalCssImports(rawUserSource)
   const userSource = userLocalImportParts?.source ?? rawUserSource
   const userCssRawSource = removeTailwindV4GeneratorAtRules(userSource)
+  const hasWebUserCssFallbackSource = userCssRawSource.trim().length > 0
+    && !isCommentOnlyCss(userCssRawSource)
   const generatedUserCssOrderSource = hasTailwindGeneratedCss(userSource)
     ? splitTailwindV4GeneratedCssBySourceOrder(userSource, generatorRawSource)
     : undefined
@@ -364,7 +399,15 @@ export async function generateCssByGenerator(
     const configuredContainerCompat = hasConfiguredContainerCompatSources(sources)
     const sourceConcurrency = resolveGeneratorSourceConcurrency()
     const generatedResultsWithDeferred = await runWithConcurrency(sources.map(source => async () => {
-      const generator = createWeappTailwindcssGenerator(source)
+      const generatorSource = options.disableSourceScan === true
+        ? {
+            ...source,
+            css: removeTailwindSourceDirectives(source.css, {
+              importFallback: generatorOptions.importFallback,
+            }),
+          }
+        : source
+      const generator = createWeappTailwindcssGenerator(generatorSource)
       const sourceEntries = getSourceCandidatesForEntries
         ? await resolveGeneratorSourceEntries(source, runtimeState)
         : undefined
@@ -406,12 +449,14 @@ export async function generateCssByGenerator(
         bareArbitraryValues: generatorOptions.bareArbitraryValues,
         candidates: generatorRuntime,
         incrementalCache: true,
-        scanSources: shouldScanTailwindV4Sources(
-          majorVersion,
-          generatorOptions.target,
-          generatorRuntime,
-          isolateCssSource,
-        ),
+        scanSources: options.disableSourceScan === true
+          ? false
+          : shouldScanTailwindV4Sources(
+              majorVersion,
+              generatorOptions.target,
+              generatorRuntime,
+              isolateCssSource,
+            ),
         styleOptions: generatorStyleOptions,
         target: generatorOptions.target,
       })
@@ -432,15 +477,17 @@ export async function generateCssByGenerator(
     if (canAppendIncrementalCss && typeof options.previousCss === 'string' && typeof generated.incrementalCss === 'string') {
       const incrementalCss = stripTailwindBanner(generated.incrementalCss)
       const css = incrementalCss.trim().length > 0
-        ? createCssAppend(options.previousCss, finalizeMiniProgramGeneratorCss(incrementalCss, generated.target, majorVersion, opts.cssPreflight, {
+        ? finalizeIncrementalGeneratorCss(options.previousCss, incrementalCss, generated.target, majorVersion, opts.cssPreflight, {
             injectPreflight: false,
             styleOptions: generatorStyleOptions,
-          }))
+          }, generatorOptions.webCompat)
         : options.previousCss
-      const finalCss = finalizeWebGeneratorCss(restoreLocalCssImports(css, localImports, { outputFile: file }), generated.target, generatorOptions.webCompat)
+      const finalCss = generated.target === 'web'
+        ? restoreLocalCssImports(css, localImports, { outputFile: file })
+        : finalizeWebGeneratorCss(restoreLocalCssImports(css, localImports, { outputFile: file }), generated.target, generatorOptions.webCompat)
       return {
         css: finalCss,
-        classSet: mergeGeneratedCssClassSet(generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap),
+        classSet: resolveGeneratedCssClassSet(generated.target, generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap, options.previousClassSet),
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
@@ -531,14 +578,18 @@ export async function generateCssByGenerator(
         ),
         afterUserCss,
       )
-      if (isEmptyCssSourceOrderParts(orderedExtraCss) && shouldAppendWebBundleCssFallback(generated.target, {
-        hasSourceDirectives,
-        hasMatchedCssSourceFile,
-      })) {
+      if (
+        hasWebUserCssFallbackSource
+        && isEmptyCssSourceOrderParts(orderedExtraCss)
+        && shouldAppendWebBundleCssFallback(generated.target, {
+          hasSourceDirectives,
+          hasMatchedCssSourceFile,
+        })
+      ) {
         const userCss = await transformGeneratorUserCss(userCssRawSource, userCssOptions)
         css = createCssSourceOrderAppend(css, userCss)
       }
-      if (generated.target === 'web') {
+      if (generated.target === 'web' && hasWebUserCssFallbackSource) {
         const userCss = await transformGeneratorUserCss(userCssRawSource, userCssOptions)
         const missingUserCss = isCommentOnlyCss(userCss) ? '' : filterExistingCssRules(css, userCss)
         css = createCssSourceOrderAppend(css, missingUserCss)
@@ -600,7 +651,7 @@ export async function generateCssByGenerator(
       })
       return {
         css: finalCss,
-        classSet: mergeGeneratedCssClassSet(generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap),
+        classSet: resolveGeneratedCssClassSet(generated.target, generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap, options.previousClassSet),
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
@@ -731,10 +782,13 @@ export async function generateCssByGenerator(
           )
         }
       }
-      if (shouldAppendWebBundleCssFallback(generated.target, {
-        hasSourceDirectives,
-        hasMatchedCssSourceFile,
-      })) {
+      if (
+        hasWebUserCssFallbackSource
+        && shouldAppendWebBundleCssFallback(generated.target, {
+          hasSourceDirectives,
+          hasMatchedCssSourceFile,
+        })
+      ) {
         const userCss = await transformGeneratorUserCss(generatedUserCssRawSource, {
           generatorTarget: generated.target,
           generatorStyleOptions,
@@ -753,7 +807,7 @@ export async function generateCssByGenerator(
       })
       return {
         css: finalCss,
-        classSet: mergeGeneratedCssClassSet(generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap),
+        classSet: resolveGeneratedCssClassSet(generated.target, generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap, options.previousClassSet),
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
@@ -817,7 +871,7 @@ export async function generateCssByGenerator(
     })
     return {
       css: finalCss,
-      classSet: mergeGeneratedCssClassSet(generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap),
+      classSet: resolveGeneratedCssClassSet(generated.target, generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap, options.previousClassSet),
       target: generated.target,
       source: 'generator',
       dependencies: generated.dependencies,

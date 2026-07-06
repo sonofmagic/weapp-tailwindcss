@@ -7,6 +7,7 @@ const SPECIAL_QUERY_RE = /[?&](?:worker|sharedworker|raw|url)\b/
 const COMMON_JS_PROXY_RE = /\?commonjs-proxy/
 const VITE_CSS_HMR_MODULE_RE = /\b__vite__updateStyle\s*\(/
 const VITE_CSS_CONST_RE = /\bconst\s+__vite__css\s*=\s*("(?:\\[\s\S]|[^"])*")/
+const DEFERRED_CSS_HMR_QUERY_RE = /[?&](?:hmr(?:[=&]|$)|t=\d+)/
 
 interface ViteServeCssGenerationOptions {
   generateCss: (id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void, emitFile?: (emittedFile: { type: 'asset', fileName: string, source: string }) => string }) => Promise<string | undefined> | string | undefined
@@ -69,7 +70,10 @@ function isViteServeCssRootRequest(id: string, command: string | undefined) {
 function isViteCssHmrModule(code: string, id: string, command: string | undefined) {
   return isViteServeStyleRequest(id, command)
     && VITE_CSS_HMR_MODULE_RE.test(code)
-    && /[?&](?:direct|vue)(?:&|$)/.test(id)
+    && (
+      /[?&](?:direct|vue)(?:&|$)/.test(id)
+      || DEFERRED_CSS_HMR_QUERY_RE.test(id)
+    )
 }
 
 function hasViteServeCssGenerationDirective(code: string) {
@@ -92,6 +96,9 @@ export function createViteServeCssGenerationPlugins(options: ViteServeCssGenerat
         return
       }
       if (!hasTailwindRootDirectives(code)) {
+        return
+      }
+      if (DEFERRED_CSS_HMR_QUERY_RE.test(id)) {
         return
       }
       await options.onTailwindRootCss?.(id, code)

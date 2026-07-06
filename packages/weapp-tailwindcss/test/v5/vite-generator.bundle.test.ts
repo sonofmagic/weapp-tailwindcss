@@ -1912,6 +1912,7 @@ describe('v5 vite generator bundle', () => {
     const runtimeSet = new Set<string>()
     const generateMock = vi.fn(async ({ candidates, target }: { candidates: Set<string>, target: string }) => ({
       css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      incrementalCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
       rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
       target,
       classSet: new Set(candidates),
@@ -2023,10 +2024,349 @@ describe('v5 vite generator bundle', () => {
       cssFile,
     )
     generateMock.mockClear()
-    await serveTransform?.call(serveGenerationPlugin, '@import "tailwindcss";', cssFile)
+    const secondResult = await serveTransform?.call(serveGenerationPlugin, '@import "tailwindcss";', cssFile)
     const secondCandidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
     expect(secondCandidates.has('bg-[red]')).toBe(true)
     expect(secondCandidates.has('text-[blue]')).toBe(true)
+    expect(secondCandidates.has('text-slate-800')).toBe(false)
+    const secondCss = String((secondResult as any)?.code)
+    expect(secondCss).toContain('.text-slate-800{}')
+    expect(secondCss).toContain('.bg-[red]{}')
+    expect(secondCss).toContain('.text-[blue]{}')
+  }, TEST_TIMEOUT_MS)
+
+  it('appends incremental css for weapp target dev hmr by default', async () => {
+    const tempDir = await path.join(os.tmpdir(), `weapp-tw-vite-dev-hmr-weapp-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    createdDirs.push(tempDir)
+    await mkdir(path.join(tempDir, 'src/pages/index'), { recursive: true })
+    const sourceFile = path.join(tempDir, 'src/pages/index/index.vue')
+    const cssFile = path.join(tempDir, 'src/app.css')
+    await writeFile(sourceFile, '<template><view class="text-slate-800"></view></template>', 'utf8')
+
+    const runtimeSet = new Set<string>()
+    const generateMock = vi.fn(async ({ candidates, target }: { candidates: Set<string>, target: string }) => ({
+      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      incrementalCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target,
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          css: '@tailwind utilities;',
+          dependencies: [],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      generator: {
+        target: 'weapp',
+      },
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+        options: {
+          projectRoot: tempDir,
+          tailwindcss: {
+            cwd: tempDir,
+          },
+        },
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const serveGenerationPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(serveGenerationPlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: tempDir,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const serveTransform = getTransformHandler(serveGenerationPlugin)
+    const firstResult = await serveTransform?.call(serveGenerationPlugin, '@tailwind utilities;', cssFile)
+    expect(String((firstResult as any)?.code)).toContain('.text-slate-800{}')
+
+    await writeFile(sourceFile, '<template><view class="bg-red-500"></view></template>', 'utf8')
+    const cssModule = { id: cssFile }
+    await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+      file: sourceFile,
+      modules: [{ id: sourceFile, isSelfAccepting: true }],
+      server: {
+        moduleGraph: {
+          getModuleById: vi.fn((id: string) => id === cssFile ? cssModule : undefined),
+          getModulesByFile: vi.fn(() => undefined),
+          invalidateModule: vi.fn(),
+        },
+      },
+    })
+
+    generateMock.mockClear()
+    const secondResult = await serveTransform?.call(serveGenerationPlugin, '@tailwind utilities;', cssFile)
+    const secondCandidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
+    expect(generateMock.mock.calls.at(-1)?.[0]?.scanSources).toBe(false)
+    expect([...secondCandidates]).toEqual(['bg-red-500'])
+    const secondCss = String((secondResult as any)?.code)
+    expect(secondCss).toContain('.text-slate-800{}')
+    expect(secondCss).toContain('.bg-red-500{}')
+  }, TEST_TIMEOUT_MS)
+
+  it('falls back to full weapp target dev hmr generation when user layer css cannot append incrementally', async () => {
+    const tempDir = await path.join(os.tmpdir(), `weapp-tw-vite-dev-hmr-weapp-layer-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    createdDirs.push(tempDir)
+    await mkdir(path.join(tempDir, 'src/pages/index'), { recursive: true })
+    await mkdir(path.join(tempDir, 'src/pages/about'), { recursive: true })
+    const sourceFile = path.join(tempDir, 'src/pages/index/index.vue')
+    const retainedSourceFile = path.join(tempDir, 'src/pages/about/index.vue')
+    const cssFile = path.join(tempDir, 'src/app.css')
+    await writeFile(sourceFile, '<template><view class="text-slate-800"></view></template>', 'utf8')
+    await writeFile(retainedSourceFile, '<template><view class="p-4"></view></template>', 'utf8')
+
+    const runtimeSet = new Set<string>()
+    const generateMock = vi.fn(async ({ candidates, target }: { candidates: Set<string>, target: string }) => ({
+      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      incrementalCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target,
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          css: '@tailwind utilities;',
+          dependencies: [],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      generator: {
+        target: 'weapp',
+      },
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+        options: {
+          projectRoot: tempDir,
+          tailwindcss: {
+            cwd: tempDir,
+          },
+        },
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const serveGenerationPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(serveGenerationPlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: tempDir,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const serveTransform = getTransformHandler(serveGenerationPlugin)
+    await serveTransform?.call(serveGenerationPlugin, [
+      '@tailwind utilities;',
+      '@layer components { .card { @apply p-4; } }',
+    ].join('\n'), cssFile)
+
+    await writeFile(sourceFile, '<template><view class="bg-red-500"></view></template>', 'utf8')
+    const cssModule = { id: cssFile }
+    await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+      file: sourceFile,
+      modules: [{ id: sourceFile, isSelfAccepting: true }],
+      server: {
+        moduleGraph: {
+          getModuleById: vi.fn((id: string) => id === cssFile ? cssModule : undefined),
+          getModulesByFile: vi.fn(() => undefined),
+          invalidateModule: vi.fn(),
+        },
+      },
+    })
+
+    generateMock.mockClear()
+    const secondResult = await serveTransform?.call(serveGenerationPlugin, [
+      '@tailwind utilities;',
+      '@layer components { .card { @apply p-4; } }',
+    ].join('\n'), cssFile)
+    const secondCandidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
+    expect([...secondCandidates].sort()).toEqual(['bg-red-500', 'p-4'])
+    const secondCss = String((secondResult as any)?.code)
+    expect(secondCss).not.toContain('.text-slate-800{}')
+    expect(secondCss).toContain('.bg-red-500{}')
+    expect(secondCss).toContain('.p-4{}')
+  }, TEST_TIMEOUT_MS)
+
+  it('fully regenerates weapp target dev hmr css when preserveDeletedCss is disabled', async () => {
+    const tempDir = await path.join(os.tmpdir(), `weapp-tw-vite-dev-hmr-weapp-precise-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    createdDirs.push(tempDir)
+    await mkdir(path.join(tempDir, 'src/pages/index'), { recursive: true })
+    const sourceFile = path.join(tempDir, 'src/pages/index/index.vue')
+    const cssFile = path.join(tempDir, 'src/app.css')
+    await writeFile(sourceFile, '<template><view class="text-slate-800"></view></template>', 'utf8')
+
+    const runtimeSet = new Set<string>()
+    const generateMock = vi.fn(async ({ candidates, target }: { candidates: Set<string>, target: string }) => ({
+      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      incrementalCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target,
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          css: '@tailwind utilities;',
+          dependencies: [],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      generator: {
+        target: 'weapp',
+        hmr: {
+          preserveDeletedCss: false,
+        },
+      },
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+        options: {
+          projectRoot: tempDir,
+          tailwindcss: {
+            cwd: tempDir,
+          },
+        },
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      generator: {
+        target: 'weapp',
+        hmr: {
+          preserveDeletedCss: false,
+        },
+      },
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const serveGenerationPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(serveGenerationPlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: tempDir,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const serveTransform = getTransformHandler(serveGenerationPlugin)
+    await serveTransform?.call(serveGenerationPlugin, '@tailwind utilities;', cssFile)
+
+    await writeFile(sourceFile, '<template><view class="bg-red-500"></view></template>', 'utf8')
+    const cssModule = { id: cssFile }
+    await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+      file: sourceFile,
+      modules: [{ id: sourceFile, isSelfAccepting: true }],
+      server: {
+        moduleGraph: {
+          getModuleById: vi.fn((id: string) => id === cssFile ? cssModule : undefined),
+          getModulesByFile: vi.fn(() => undefined),
+          invalidateModule: vi.fn(),
+        },
+      },
+    })
+
+    generateMock.mockClear()
+    const secondResult = await serveTransform?.call(serveGenerationPlugin, '@tailwind utilities;', cssFile)
+    const secondCandidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
+    expect([...secondCandidates]).toEqual(['bg-red-500'])
+    const secondCss = String((secondResult as any)?.code)
+    expect(secondCss).not.toContain('.text-slate-800{}')
+    expect(secondCss).toContain('.bg-red-500{}')
   }, TEST_TIMEOUT_MS)
 
   it('honors Tailwind v4 @config content negation when scanning vite source candidates', async () => {

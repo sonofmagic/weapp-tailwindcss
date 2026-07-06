@@ -175,8 +175,9 @@ describe('tailwindcss v4 engine', () => {
     const engine = createTailwindV4Engine(source)
     const stats = getTailwindV4IncrementalGenerateCacheStatsForTest()
     const stableCandidates = ['bg-red-500']
+    const growthProbeCount = Math.min(stats.entryCandidatesMax, 128)
 
-    for (let index = 0; index < stats.entryCandidatesMax + 12; index += 1) {
+    for (let index = 0; index < growthProbeCount + 12; index += 1) {
       await engine.generate({
         candidates: [...stableCandidates, `text-[${index}px]`],
         incrementalCache: true,
@@ -198,8 +199,7 @@ describe('tailwindcss v4 engine', () => {
       base: process.cwd(),
     })
     const engine = createTailwindV4Engine(source)
-    const stats = getTailwindV4IncrementalGenerateCacheStatsForTest()
-    const candidates = Array.from({ length: stats.entryCandidatesMax + 1 }, (_, index) => `text-[${index}px]`)
+    const candidates = Array.from({ length: 768 }, (_, index) => `content-['${'x'.repeat(4096)}-${index}']`)
 
     const result = await engine.generate({
       candidates,

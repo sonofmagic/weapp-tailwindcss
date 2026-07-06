@@ -17,10 +17,10 @@ export interface SourceCandidateStore {
   syncCss: (id: string, source: string) => Promise<void>
   merge: (id: string, source: string) => Promise<void>
   syncFile: (id: string) => Promise<void>
-  syncCurrentFile: (id: string) => Promise<void>
+  syncCurrentFile: (id: string) => Promise<SourceCandidateChange>
   scanRoot: (options: ScanSourceCandidateRootOptions) => Promise<void>
   syncInline: (inlineCandidates: TailwindInlineSourceCandidates | undefined) => void
-  remove: (id: string) => void
+  remove: (id: string) => SourceCandidateChange
   source: (id: string) => string | undefined
   sources: () => IterableIterator<[string, string]>
   values: () => Set<string>
@@ -34,6 +34,11 @@ export interface SourceCandidateStore {
 }
 
 export interface SourceCandidateCollector extends SourceCandidateStore {}
+
+export interface SourceCandidateChange {
+  addedCandidates: Set<string>
+  removedCandidates: Set<string>
+}
 
 export interface SourceCandidateCollectorSnapshot {
   candidatesById: Array<[string, string[]]>
@@ -130,6 +135,25 @@ function addCandidateSet(
   }
 }
 
+function diffCandidateSets(previous: Set<string>, next: Set<string>): SourceCandidateChange {
+  const addedCandidates = new Set<string>()
+  const removedCandidates = new Set<string>()
+  for (const candidate of next) {
+    if (!previous.has(candidate)) {
+      addedCandidates.add(candidate)
+    }
+  }
+  for (const candidate of previous) {
+    if (!next.has(candidate)) {
+      removedCandidates.add(candidate)
+    }
+  }
+  return {
+    addedCandidates,
+    removedCandidates,
+  }
+}
+
 export function createSourceCandidateStore(options: SourceCandidateCollectorOptions = {}): SourceCandidateStore {
   const candidatesById = new Map<string, Set<string>>()
   const scanCandidatesById = new Map<string, Set<string>>()
@@ -210,9 +234,11 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
 
   async function syncCurrentFile(id: string) {
     const normalizedId = cleanUrl(id)
+    const previousCandidates = values()
     transformCandidatesById.delete(normalizedId)
     cssCandidatesById.delete(normalizedId)
     await syncFile(normalizedId)
+    return diffCandidateSets(previousCandidates, values())
   }
 
   async function scanRoot({ entries, explicit, root, outDir }: ScanSourceCandidateRootOptions) {
@@ -290,6 +316,7 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
 
   function remove(id: string) {
     const normalizedId = cleanUrl(id)
+    const previousValues = values()
     scanCandidatesById.delete(normalizedId)
     transformCandidatesById.delete(normalizedId)
     cssCandidatesById.delete(normalizedId)
@@ -298,10 +325,11 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     cssSourceById.delete(normalizedId)
     const previousCandidates = candidatesById.get(normalizedId)
     if (!previousCandidates) {
-      return
+      return diffCandidateSets(previousValues, values())
     }
     removeCandidateSet(candidateCount, previousCandidates)
     candidatesById.delete(normalizedId)
+    return diffCandidateSets(previousValues, values())
   }
 
   function source(id: string) {

@@ -95,6 +95,12 @@ describe('get options', () => {
     expect(normalizeWeappTailwindcssGeneratorOptions({ importFallback: true }).importFallback).toBe(true)
   })
 
+  it('uses high-performance dev HMR css append mode by default', () => {
+    expect(normalizeWeappTailwindcssGeneratorOptions(undefined).hmr.preserveDeletedCss).toBe(true)
+    expect(normalizeWeappTailwindcssGeneratorOptions({}).hmr.preserveDeletedCss).toBe(true)
+    expect(normalizeWeappTailwindcssGeneratorOptions({ hmr: { preserveDeletedCss: false } }).hmr.preserveDeletedCss).toBe(false)
+  })
+
   it('keeps explicit web generator output official-compatible unless web compatibility is requested', () => {
     expect(normalizeWeappTailwindcssGeneratorOptions(undefined).webCompat).toBeUndefined()
     expect(normalizeWeappTailwindcssGeneratorOptions({}).webCompat).toBeUndefined()

@@ -24,7 +24,9 @@ export interface GenerateCssByGeneratorOptions {
   userRawSourceProcessed?: boolean | undefined
   forceGenerator?: boolean | undefined
   previousCss?: string | undefined
+  previousClassSet?: Set<string> | undefined
   deferEmptyScopedCssSource?: boolean | undefined
+  disableSourceScan?: boolean | undefined
   restoreLocalCssImports?: boolean | undefined
 }
 

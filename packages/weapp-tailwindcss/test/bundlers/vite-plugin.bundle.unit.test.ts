@@ -83,6 +83,9 @@ function normalizeGeneratorOptions(options: any) {
         isMiniProgram: target !== 'web',
         isNativeApp: false,
       },
+      hmr: {
+        preserveDeletedCss: true,
+      },
     }
   }
   return {
@@ -99,6 +102,10 @@ function normalizeGeneratorOptions(options: any) {
       isNativeApp: false,
     },
     styleOptions: options.styleOptions,
+    webCompat: options.webCompat,
+    hmr: {
+      preserveDeletedCss: options.hmr?.preserveDeletedCss ?? true,
+    },
   }
 }
 
@@ -1158,6 +1165,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const pageFile = path.join(root, 'src/pages/index/index.vue')
     const styleId = '/src/App.vue?vue&type=style&index=0&lang.scss&direct'
     const generatedCss = '.bg-\\[\\#134543\\]{background-color:#134543}'
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await writeFile(pageFile, '<template><view class="bg-[#134543]"></view></template>', 'utf8')
     vi.doMock('@/generator', async (importOriginal) => {
       const actual = await importOriginal<typeof import('@/generator')>()
       return {
@@ -2274,6 +2283,162 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(resultCode).toContain('.bg-midnight')
     expect(resultCode).not.toContain('@import "tailwindcss"')
     expect(addWatchFile).toHaveBeenCalledWith(configFile)
+  }, TEST_TIMEOUT_MS)
+
+  it('defers root css hmr query generation until after Vite wraps the css module', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-serve-root-hmr-query-'))
+    createdDirs.push(root)
+    const configFile = path.join(root, 'tailwind.config.js')
+    await writeFile(configFile, 'module.exports = { content: ["./src/**/*.{vue,ts}"] }\n', 'utf8')
+    const generatedCss = '.flex{display:flex}.bg-midnight{background-color:#121063}'
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(async (options: { candidates: Set<string> }) => ({
+            css: generatedCss,
+            rawCss: generatedCss,
+            target: 'weapp',
+            classSet: new Set(options.candidates),
+            dependencies: [configFile],
+            sources: [],
+            root: null,
+            version: 4,
+          })),
+          validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
+        })),
+      }
+    })
+
+    const runtimeSet = new Set(['flex', 'bg-midnight'])
+    setCurrentContext(createContext({
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        options: {
+          projectRoot: root,
+          tailwindcss: {
+            cwd: root,
+            config: configFile,
+          },
+        },
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
+    const servePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+    const cssHmrPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve-hmr') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(servePlugin).toBeTruthy()
+    expect(cssHmrPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const css = [
+      '@import "tailwindcss" source(none);',
+      '@config "./tailwind.config.js";',
+      '@source "./src/**/*.{vue,ts}";',
+    ].join('\n')
+    const id = path.join(root, 'src/main.css?hmr=1')
+    const serveTransform = getTransformHandler(servePlugin)
+    await expect(serveTransform?.call(servePlugin, css, id)).resolves.toBeUndefined()
+
+    const code = [
+      'import {updateStyle as __vite__updateStyle} from "/@vite/client"',
+      'const __vite__id = "/src/main.css"',
+      `const __vite__css = ${JSON.stringify(css)}`,
+      '__vite__updateStyle(__vite__id, __vite__css)',
+    ].join('\n')
+    const addWatchFile = vi.fn()
+    const hmrTransform = getTransformHandler(cssHmrPlugin)
+    const result = await hmrTransform?.call({ ...cssHmrPlugin, addWatchFile }, code, id)
+    const resultCode = String((result as any)?.code)
+
+    expect(resultCode).toContain('weapp-tailwindcss vite-generated-css')
+    expect(resultCode).toContain('.flex{display:flex}')
+    expect(resultCode).toContain('.bg-midnight')
+    expect(resultCode).not.toContain('@import "tailwindcss"')
+    expect(addWatchFile).toHaveBeenCalledWith(configFile)
+  }, TEST_TIMEOUT_MS)
+
+  it('does not apply legacy web compat by default for explicit web target in vite serve', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-serve-web-no-compat-'))
+    createdDirs.push(root)
+    const generatedCss = [
+      '@theme { --color-brand: #123456; }',
+      '.text-brand{color:var(--color-brand)}',
+    ].join('\n')
+
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(async (options: { candidates: Set<string> }) => ({
+            css: generatedCss,
+            rawCss: generatedCss,
+            target: 'web',
+            classSet: new Set(options.candidates),
+            dependencies: [],
+            sources: [],
+            root: null,
+            version: 4,
+          })),
+          validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+
+    const runtimeSet = new Set(['text-brand'])
+    setCurrentContext(createContext({
+      generator: {
+        target: 'web',
+      },
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      generator: {
+        target: 'web',
+      },
+    })
+    const servePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(servePlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const transform = getTransformHandler(servePlugin)
+    const result = await transform?.call(
+      servePlugin,
+      '@import "tailwindcss";',
+      path.join(root, 'src/main.css?direct'),
+    )
+    const resultCode = String((result as any)?.code)
+
+    expect(resultCode).toContain('@theme { --color-brand: #123456; }')
+    expect(resultCode).toContain('.text-brand{color:var(--color-brand)}')
   }, TEST_TIMEOUT_MS)
 
   it('discovers omitted Tailwind v4 css sources before vite buildStart scans candidates', async () => {

@@ -24,6 +24,7 @@ import { normalizeRootMiniProgramImportShellAssets } from './generate-bundle/fin
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 import { isHTMLRequest } from './utils'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from './weapp-vite-config'
+import { resolveViteWebCssCompatOptions, shouldApplyViteWebCssCompat } from './web-css-compat'
 
 interface RememberedMainCssSource {
   rawSource: string
@@ -168,12 +169,10 @@ function finalizeWebCss(
   context: ViteFrameworkCssPipelineContext & { file: string },
   cssPipelineStrategy?: ViteFrameworkCssPipelineStrategy | undefined,
 ) {
-  const shouldApplyWebCssCompat = cssPipelineStrategy?.shouldApplyWebCssCompat?.(context) === true
+  const shouldApplyWebCssCompat = shouldApplyViteWebCssCompat(context, cssPipelineStrategy)
   const defaultWebCssCompat = (value: string) => transformWebCssCompat(
     value,
-    context.currentGeneratorBranch.isWeb
-      ? context.currentGeneratorOptions.webCompat
-      : context.currentGeneratorOptions.webCompat ?? true,
+    resolveViteWebCssCompatOptions(context),
   )
   return cssPipelineStrategy?.transformGeneratedCss?.(css, {
     ...context,

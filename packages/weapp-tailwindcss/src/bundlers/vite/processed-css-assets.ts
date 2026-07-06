@@ -216,9 +216,12 @@ function normalizeInjectableCssForTargetWithImports(css: string, file: string): 
     const changed = isMiniProgramStyleOutputFile(file)
       ? removeUnsupportedMiniProgramCssImportsRoot(root)
       : false
+    const importedStyleFiles = collectImportedStyleFilesRoot(root, file)
     return {
       css: changed ? root.toString() : css,
-      importedStyleFiles: collectImportedStyleFilesRoot(root, file),
+      importedStyleFiles: importedStyleFiles.size > 0
+        ? importedStyleFiles
+        : collectImportedStyleFilesFallback(css, file),
     }
   }
   catch {
@@ -268,16 +271,24 @@ function collectImportedStyleFilesRoot(root: ReturnType<typeof postcss.parse>, t
   return collectImportedStyleFilesFromRequests(collectCssImportRequestsRoot(root), targetFile)
 }
 
+function collectImportedStyleFilesFallback(css: string, targetFile: string) {
+  const requests = [...css.matchAll(/@import\s+(?:url\(\s*)?(?:"([^"]+)"|'([^']+)'|([^\s;)]+))/g)]
+    .map(match => match[1] ?? match[2] ?? match[3])
+    .filter((request): request is string => typeof request === 'string' && request.length > 0)
+  return collectImportedStyleFilesFromRequests(requests, targetFile)
+}
+
 function collectImportedStyleFiles(css: string, targetFile: string) {
   if (!css.includes('@import')) {
     return new Set<string>()
   }
   try {
-    return collectImportedStyleFilesRoot(postcss.parse(css), targetFile)
+    const imports = collectImportedStyleFilesRoot(postcss.parse(css), targetFile)
+    return imports.size > 0 ? imports : collectImportedStyleFilesFallback(css, targetFile)
   }
   catch {
   }
-  return new Set<string>()
+  return collectImportedStyleFilesFallback(css, targetFile)
 }
 
 function normalizeMarkerOutputFile(
@@ -1108,7 +1119,114 @@ function removeCssCoveredByImportedViteResults(
   if (importedCss.length === 0) {
     return css
   }
-  return filterExistingCssRules(importedCss, css)
+  return restoreCssImportAtRules(
+    css,
+    removeCssRulesCoveredBySources(filterExistingCssRules(importedCss, css), [importedCss], { exactOnly: true }),
+  )
+}
+
+function removeCssRulesCoveredBySources(css: string, sources: string[], options: { exactOnly?: boolean | undefined } = {}) {
+  if (sources.length === 0 || css.trim().length === 0) {
+    return css
+  }
+  const coverage = collectRootScopedComparableCssCoverage(sources)
+  const coveredRuleCss = collectNormalizedRuleCss(sources)
+  if (coverage.rules.size === 0 && coverage.declarationsBySelector.size === 0 && coveredRuleCss.size === 0) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    let changed = false
+    root.walkRules((rule) => {
+      if (
+        !coveredRuleCss.has(normalizeCssSignatureValue(rule.toString()))
+        && (options.exactOnly === true || !isRuleCoveredByRootCss(rule, coverage))
+      ) {
+        return
+      }
+      rule.remove()
+      changed = true
+    })
+    return changed ? root.toString() : css
+  }
+  catch {
+    return css
+  }
+}
+
+function collectNormalizedRuleCss(sources: string[]) {
+  const rules = new Set<string>()
+  for (const source of sources) {
+    try {
+      const root = postcss.parse(source)
+      root.walkRules((rule) => {
+        rules.add(normalizeCssSignatureValue(rule.toString()))
+      })
+    }
+    catch {
+    }
+  }
+  return rules
+}
+
+function collectCssImportAtRuleCss(css: string) {
+  if (!css.includes('@import')) {
+    return []
+  }
+  const fallbackImports = [...css.matchAll(/@import\s[^;]+;?/g)].map(match => match[0])
+  if (fallbackImports.length > 0) {
+    return fallbackImports
+  }
+  try {
+    const root = postcss.parse(css)
+    const imports: string[] = []
+    root.each((node) => {
+      if (node.type === 'atrule' && node.name === 'import') {
+        imports.push(node.toString())
+      }
+    })
+    return imports
+  }
+  catch {
+    return []
+  }
+}
+
+function restoreCssImportAtRules(source: string, filtered: string) {
+  const imports = collectCssImportAtRuleCss(source)
+  if (imports.length === 0) {
+    return filtered
+  }
+  const missingImports = imports.filter(importCss => !filtered.includes(importCss))
+  if (missingImports.length === 0) {
+    return filtered
+  }
+  return appendCss(missingImports.join('\n'), filtered)
+}
+
+function removeCommentOnlyAtRules(css: string) {
+  if (!css.includes('@')) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    let changed = false
+    root.walkAtRules((atRule) => {
+      if (!atRule.nodes || atRule.nodes.length === 0) {
+        return
+      }
+      const hasCss = atRule.nodes.some(node => node.type !== 'comment')
+      if (hasCss) {
+        return
+      }
+      atRule.remove()
+      changed = true
+    })
+    return changed ? root.toString() : css
+  }
+  catch {
+    return css
+  }
 }
 
 function collectImportedBundleCssSources(bundle: OutputBundle, importedStyleFiles: Set<string>) {
@@ -1586,7 +1704,19 @@ export function injectViteProcessedCssIntoMainCssAssets(
       }
       nextCss = appendCss(nextCss, missingCss)
     }
-    nextCss = transformCss(nextCss, file)
+    const finalImportedCssSources = collectImportedBundleCssSources(bundle, collectImportedStyleFiles(originalSource, file))
+    nextCss = transformCss(
+      removeCommentOnlyAtRules(
+        restoreCssImportAtRules(
+          originalSource,
+          removeCssRulesCoveredBySources(nextCss, finalImportedCssSources, { exactOnly: true }).trim(),
+        ),
+      ),
+      file,
+    )
+    if (nextCss.trim() === originalSource.trim()) {
+      nextCss = originalSource
+    }
     if (nextCss !== originalSource) {
       output.source = nextCss
       options.markCssAssetProcessed?.(output, file)

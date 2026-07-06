@@ -35,6 +35,22 @@ export interface WeappTailwindcssGeneratorOptions {
    */
   webCompat?: WebCssCompatUserOptions | undefined
   /**
+   * 开发态 HMR 生成策略。
+   */
+  hmr?: {
+    /**
+     * 源码 HMR 删除 class 时是否暂时保留旧 CSS。
+     *
+     * @default true
+     *
+     * @remarks
+     * 默认保留旧 CSS 可让 Vite dev HMR 只追加新增 candidates，避免每次源码变更全量重建 CSS。
+     * 该行为仅影响开发态 HMR；正式 build 仍按当前源码精确输出。
+     * 如果需要开发态也立即移除已删除 class 的 CSS，可设置为 `false`。
+     */
+    preserveDeletedCss?: boolean | undefined
+  } | undefined
+  /**
    * 将 `@import "weapp-tailwindcss"` 作为 Tailwind CSS v4 生成入口的兜底别名。
    *
    * 适用于旧项目仍使用 `@import "weapp-tailwindcss"` 作为入口的兼容场景，默认关闭。
@@ -56,6 +72,9 @@ export interface NormalizedWeappTailwindcssGeneratorOptions {
   config?: string | undefined
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
   webCompat: WebCssCompatUserOptions | undefined
+  hmr: {
+    preserveDeletedCss: boolean
+  }
   importFallback: boolean
   bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined
 }
@@ -80,6 +99,9 @@ export function normalizeWeappTailwindcssGeneratorOptions(
       target,
       branch,
       webCompat,
+      hmr: {
+        preserveDeletedCss: true,
+      },
       importFallback: false,
       bareArbitraryValues: undefined,
     }
@@ -91,6 +113,9 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     config: options.config,
     styleOptions: options.styleOptions,
     webCompat,
+    hmr: {
+      preserveDeletedCss: options.hmr?.preserveDeletedCss ?? true,
+    },
     importFallback: options.importFallback ?? false,
     bareArbitraryValues: options.bareArbitraryValues,
   }

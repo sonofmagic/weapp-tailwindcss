@@ -1,7 +1,7 @@
 import type { ViteFrameworkCssPipelineStrategy } from '../../shared/framework-strategy'
 import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
-import { transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
+import { transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
 import { viteStyleInjectorDelegates } from '@/style-injector/internal'
 import { createViteFrameworkPlugins } from '../../shared/create-framework-plugins'
 
@@ -88,12 +88,7 @@ const uniAppCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
   },
   transformGeneratedCss(css, context) {
     const webCss = context.shouldApplyWebCssCompat
-      ? transformWebCssCompat(
-          css,
-          context.currentGeneratorBranch.isWeb
-            ? context.currentGeneratorOptions.webCompat
-            : context.currentGeneratorOptions.webCompat ?? true,
-        )
+      ? context.defaultWebCssCompat(css)
       : css
     const safeCss = isUniAppWebviewStylePlatform(context.resolveStylePlatform())
       ? transformWebCssSafeSelectors(webCss, { escapeMap: context.opts.escapeMap })

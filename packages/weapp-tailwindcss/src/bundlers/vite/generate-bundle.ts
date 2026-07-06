@@ -55,6 +55,7 @@ import { getLastCssResult, normalizeViteCssCacheKey, rememberLastCssResult } fro
 import { collectViteProcessedCssAssetResults, isCssImportOnlyBundleAsset, removeCssCoveredByRootStyleBundleSources } from './processed-css-assets'
 import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from './weapp-vite-config'
+import { resolveViteWebCssCompatOptions, shouldApplyViteWebCssCompat } from './web-css-compat'
 
 export { normalizeBundleFileNameKeysForTest } from './generate-bundle/bundle-file-names'
 export { resolveMiniProgramStyleOutputExtension, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile, resolveViteCssPipelineOutputFileFromSourceFile } from './generate-bundle/css-output'
@@ -204,18 +205,16 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       resolveStylePlatform: () => generatorPlatform,
     }
     const isWebGeneratorTarget = generatorBranch.isWeb
-    const shouldApplyWebCssCompat = context.cssPipelineStrategy?.shouldApplyWebCssCompat?.(cssPipelineContext) === true
+    const shouldApplyWebCssCompat = shouldApplyViteWebCssCompat(cssPipelineContext, context.cssPipelineStrategy)
     const transformWebTargetCss = (css: string) => {
       return context.cssPipelineStrategy?.transformGeneratedCss?.(css, {
         ...cssPipelineContext,
-        defaultWebCssCompat: value => transformWebCssCompat(value, isWebGeneratorTarget
-          ? generatorOptions.webCompat
-          : generatorOptions.webCompat ?? true),
+        defaultWebCssCompat: value => transformWebCssCompat(value, resolveViteWebCssCompatOptions(cssPipelineContext)),
         removeScopedPreflight: value => value,
         shouldApplyWebCssCompat,
       }) ?? (
         shouldApplyWebCssCompat
-          ? transformWebCssCompat(css, isWebGeneratorTarget ? generatorOptions.webCompat : generatorOptions.webCompat ?? true)
+          ? transformWebCssCompat(css, resolveViteWebCssCompatOptions(cssPipelineContext))
           : css
       )
     }

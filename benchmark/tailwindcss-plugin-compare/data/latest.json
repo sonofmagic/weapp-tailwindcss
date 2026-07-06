@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-06T08:21:56.217Z",
+  "generatedAt": "2026-07-06T11:26:02.351Z",
   "environment": {
     "node": "v24.18.0",
     "pnpm": "11.9.0",
@@ -57,31 +57,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        228.15920799999992
+        231.87800000000004
       ],
       "runsMs": [
-        22.718166999999994,
-        21.379249999999956,
-        18.55662499999994
+        31.898083000000042,
+        23.987042000000088,
+        19.263000000000034
       ],
       "stats": {
-        "mean": 20.88468066666663,
-        "median": 21.379249999999956,
-        "min": 18.55662499999994,
-        "max": 22.718166999999994,
-        "p75": 22.718166999999994,
-        "p95": 22.718166999999994
+        "mean": 25.049375000000055,
+        "median": 23.987042000000088,
+        "min": 19.263000000000034,
+        "max": 31.898083000000042,
+        "p75": 31.898083000000042,
+        "p95": 31.898083000000042
       },
       "outputCssBytes": 28215,
       "memory": {
-        "rssBeforeBytes": 418365440,
-        "rssAfterBytes": 470188032,
-        "rssPeakBytes": 470188032,
-        "rssDeltaBytes": 51822592,
-        "heapBeforeBytes": 190127184,
-        "heapAfterBytes": 228457256,
-        "heapPeakBytes": 244451024,
-        "heapDeltaBytes": 38330072
+        "rssBeforeBytes": 342310912,
+        "rssAfterBytes": 383270912,
+        "rssPeakBytes": 383270912,
+        "rssDeltaBytes": 40960000,
+        "heapBeforeBytes": 126881784,
+        "heapAfterBytes": 124932200,
+        "heapPeakBytes": 152520224,
+        "heapDeltaBytes": -1949584
       },
       "selectorCount": 569,
       "classSetSize": 601
@@ -94,31 +94,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        12.655666999999994
+        11.25745900000004
       ],
       "runsMs": [
-        11.164374999999836,
-        8.418165999999928,
-        9.209625000000187
+        8.855833000000075,
+        8.97670800000003,
+        10.227750000000015
       ],
       "stats": {
-        "mean": 9.597388666666651,
-        "median": 9.209625000000187,
-        "min": 8.418165999999928,
-        "max": 11.164374999999836,
-        "p75": 11.164374999999836,
-        "p95": 11.164374999999836
+        "mean": 9.353430333333373,
+        "median": 8.97670800000003,
+        "min": 8.855833000000075,
+        "max": 10.227750000000015,
+        "p75": 10.227750000000015,
+        "p95": 10.227750000000015
       },
       "outputCssBytes": 42354,
       "memory": {
-        "rssBeforeBytes": 470188032,
-        "rssAfterBytes": 475742208,
-        "rssPeakBytes": 475742208,
-        "rssDeltaBytes": 5554176,
-        "heapBeforeBytes": 228507008,
-        "heapAfterBytes": 241161128,
-        "heapPeakBytes": 250926200,
-        "heapDeltaBytes": 12654120
+        "rssBeforeBytes": 383270912,
+        "rssAfterBytes": 388546560,
+        "rssPeakBytes": 388546560,
+        "rssDeltaBytes": 5275648,
+        "heapBeforeBytes": 124982704,
+        "heapAfterBytes": 145812944,
+        "heapPeakBytes": 177744248,
+        "heapDeltaBytes": 20830240
       },
       "selectorCount": 667,
       "classSetSize": 601
@@ -131,31 +131,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        169.04708400000004
+        175.49362499999995
       ],
       "runsMs": [
-        25.47374999999988,
-        21.14658300000019,
-        16.11824999999999
+        15.977165999999897,
+        15.84270800000013,
+        15.395833000000039
       ],
       "stats": {
-        "mean": 20.91286100000002,
-        "median": 21.14658300000019,
-        "min": 16.11824999999999,
-        "max": 25.47374999999988,
-        "p75": 25.47374999999988,
-        "p95": 25.47374999999988
+        "mean": 15.738569000000021,
+        "median": 15.84270800000013,
+        "min": 15.395833000000039,
+        "max": 15.977165999999897,
+        "p75": 15.977165999999897,
+        "p95": 15.977165999999897
       },
       "outputCssBytes": 28174,
       "memory": {
-        "rssBeforeBytes": 475742208,
-        "rssAfterBytes": 504823808,
-        "rssPeakBytes": 505675776,
-        "rssDeltaBytes": 29081600,
-        "heapBeforeBytes": 241206208,
-        "heapAfterBytes": 183371064,
-        "heapPeakBytes": 286856808,
-        "heapDeltaBytes": -57835144
+        "rssBeforeBytes": 388546560,
+        "rssAfterBytes": 409665536,
+        "rssPeakBytes": 409665536,
+        "rssDeltaBytes": 21118976,
+        "heapBeforeBytes": 145858024,
+        "heapAfterBytes": 177598472,
+        "heapPeakBytes": 177598472,
+        "heapDeltaBytes": 31740448
       },
       "selectorCount": 568,
       "classSetSize": 600
@@ -168,31 +168,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        9.639124999999922
+        6.697750000000042
       ],
       "runsMs": [
-        7.123125000000073,
-        7.130666000000019,
-        6.4184999999999945
+        7.778500000000122,
+        6.398916999999983,
+        6.576458999999886
       ],
       "stats": {
-        "mean": 6.890763666666696,
-        "median": 7.123125000000073,
-        "min": 6.4184999999999945,
-        "max": 7.130666000000019,
-        "p75": 7.130666000000019,
-        "p95": 7.130666000000019
+        "mean": 6.917958666666664,
+        "median": 6.576458999999886,
+        "min": 6.398916999999983,
+        "max": 7.778500000000122,
+        "p75": 7.778500000000122,
+        "p95": 7.778500000000122
       },
       "outputCssBytes": 42311,
       "memory": {
-        "rssBeforeBytes": 504823808,
-        "rssAfterBytes": 505004032,
-        "rssPeakBytes": 505004032,
-        "rssDeltaBytes": 180224,
-        "heapBeforeBytes": 183412168,
-        "heapAfterBytes": 181860344,
-        "heapPeakBytes": 183413368,
-        "heapDeltaBytes": -1551824
+        "rssBeforeBytes": 409665536,
+        "rssAfterBytes": 415170560,
+        "rssPeakBytes": 415170560,
+        "rssDeltaBytes": 5505024,
+        "heapBeforeBytes": 177639576,
+        "heapAfterBytes": 177475240,
+        "heapPeakBytes": 192301232,
+        "heapDeltaBytes": -164336
       },
       "selectorCount": 666,
       "classSetSize": 600
@@ -205,31 +205,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        27.851957999999968
+        25.208791999999903
       ],
       "runsMs": [
-        0.09841600000004291,
-        0.05537500000014006,
-        0.056166999999959444
+        0.09183399999983521,
+        0.058291999999937616,
+        0.07616600000005747
       ],
       "stats": {
-        "mean": 0.06998600000004747,
-        "median": 0.056166999999959444,
-        "min": 0.05537500000014006,
-        "max": 0.09841600000004291,
-        "p75": 0.09841600000004291,
-        "p95": 0.09841600000004291
+        "mean": 0.0754306666666101,
+        "median": 0.07616600000005747,
+        "min": 0.058291999999937616,
+        "max": 0.09183399999983521,
+        "p75": 0.09183399999983521,
+        "p95": 0.09183399999983521
       },
-      "outputCssBytes": 4913,
+      "outputCssBytes": 4937,
       "memory": {
-        "rssBeforeBytes": 505004032,
-        "rssAfterBytes": 505085952,
-        "rssPeakBytes": 505085952,
-        "rssDeltaBytes": 81920,
-        "heapBeforeBytes": 181905528,
-        "heapAfterBytes": 159038968,
-        "heapPeakBytes": 181906568,
-        "heapDeltaBytes": -22866560
+        "rssBeforeBytes": 415170560,
+        "rssAfterBytes": 415858688,
+        "rssPeakBytes": 415858688,
+        "rssDeltaBytes": 688128,
+        "heapBeforeBytes": 177520288,
+        "heapAfterBytes": 205764280,
+        "heapPeakBytes": 205799200,
+        "heapDeltaBytes": 28243992
       },
       "selectorCount": 95,
       "classSetSize": 96
@@ -242,31 +242,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        0.11166600000001381
+        0.10625000000004547
       ],
       "runsMs": [
-        0.10345800000004601,
-        0.10312499999986358,
-        0.09325000000012551
+        0.10041700000010678,
+        0.09537499999987631,
+        0.09908399999994799
       ],
       "stats": {
-        "mean": 0.09994433333334503,
-        "median": 0.10312499999986358,
-        "min": 0.09325000000012551,
-        "max": 0.10345800000004601,
-        "p75": 0.10345800000004601,
-        "p95": 0.10345800000004601
+        "mean": 0.09829199999997702,
+        "median": 0.09908399999994799,
+        "min": 0.09537499999987631,
+        "max": 0.10041700000010678,
+        "p75": 0.10041700000010678,
+        "p95": 0.10041700000010678
       },
-      "outputCssBytes": 4913,
+      "outputCssBytes": 4937,
       "memory": {
-        "rssBeforeBytes": 505085952,
-        "rssAfterBytes": 505085952,
-        "rssPeakBytes": 505085952,
-        "rssDeltaBytes": 0,
-        "heapBeforeBytes": 159046528,
-        "heapAfterBytes": 160276984,
-        "heapPeakBytes": 160276984,
-        "heapDeltaBytes": 1230456
+        "rssBeforeBytes": 415858688,
+        "rssAfterBytes": 415875072,
+        "rssPeakBytes": 415875072,
+        "rssDeltaBytes": 16384,
+        "heapBeforeBytes": 205771840,
+        "heapAfterBytes": 207000616,
+        "heapPeakBytes": 207000616,
+        "heapDeltaBytes": 1228776
       },
       "selectorCount": 95,
       "classSetSize": 96
@@ -279,35 +279,35 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        5.631458000000066
+        5.670000000000073
       ],
       "runsMs": [
-        6.013582999999926,
-        6.493041999999832,
-        7.599124999999958
+        7.284249999999929,
+        6.0429169999999885,
+        6.032916999999998
       ],
       "stats": {
-        "mean": 6.701916666666572,
-        "median": 6.493041999999832,
-        "min": 6.013582999999926,
-        "max": 7.599124999999958,
-        "p75": 7.599124999999958,
-        "p95": 7.599124999999958
+        "mean": 6.453361333333305,
+        "median": 6.0429169999999885,
+        "min": 6.032916999999998,
+        "max": 7.284249999999929,
+        "p75": 7.284249999999929,
+        "p95": 7.284249999999929
       },
-      "outputCssBytes": 6289,
+      "outputCssBytes": 6365,
       "memory": {
-        "rssBeforeBytes": 505085952,
-        "rssAfterBytes": 505102336,
-        "rssPeakBytes": 505102336,
-        "rssDeltaBytes": 16384,
-        "heapBeforeBytes": 160284384,
-        "heapAfterBytes": 147851064,
-        "heapPeakBytes": 185868400,
-        "heapDeltaBytes": -12433320
+        "rssBeforeBytes": 415875072,
+        "rssAfterBytes": 421380096,
+        "rssPeakBytes": 421380096,
+        "rssDeltaBytes": 5505024,
+        "heapBeforeBytes": 207008016,
+        "heapAfterBytes": 188208968,
+        "heapPeakBytes": 209705104,
+        "heapDeltaBytes": -18799048
       },
-      "selectorCount": 121,
+      "selectorCount": 122,
       "details": {
-        "incrementalCssBytes": 1375
+        "incrementalCssBytes": 1427
       },
       "classSetSize": 120
     },
@@ -319,31 +319,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        28.97849999999994
+        27.17079200000012
       ],
       "runsMs": [
-        8.76949999999988,
-        5.889333000000079,
-        5.239790999999968
+        7.259875000000193,
+        7.353791999999885,
+        5.824415999999928
       ],
       "stats": {
-        "mean": 6.632874666666642,
-        "median": 5.889333000000079,
-        "min": 5.239790999999968,
-        "max": 8.76949999999988,
-        "p75": 8.76949999999988,
-        "p95": 8.76949999999988
+        "mean": 6.812694333333336,
+        "median": 7.259875000000193,
+        "min": 5.824415999999928,
+        "max": 7.353791999999885,
+        "p75": 7.353791999999885,
+        "p95": 7.353791999999885
       },
       "outputCssBytes": 43132,
       "memory": {
-        "rssBeforeBytes": 505102336,
-        "rssAfterBytes": 506134528,
-        "rssPeakBytes": 506134528,
-        "rssDeltaBytes": 1032192,
-        "heapBeforeBytes": 147860688,
-        "heapAfterBytes": 173615600,
-        "heapPeakBytes": 173615600,
-        "heapDeltaBytes": 25754912
+        "rssBeforeBytes": 421380096,
+        "rssAfterBytes": 424607744,
+        "rssPeakBytes": 424607744,
+        "rssDeltaBytes": 3227648,
+        "heapBeforeBytes": 188218632,
+        "heapAfterBytes": 213981920,
+        "heapPeakBytes": 213981920,
+        "heapDeltaBytes": 25763288
       },
       "selectorCount": 674
     },
@@ -355,31 +355,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        148.55366600000002
+        119.46791699999994
       ],
       "runsMs": [
-        19.848792000000003,
-        19.29491699999994,
-        15.634333999999853
+        15.904749999999922,
+        14.386083000000099,
+        13.514208000000053
       ],
       "stats": {
-        "mean": 18.2593476666666,
-        "median": 19.29491699999994,
-        "min": 15.634333999999853,
-        "max": 19.848792000000003,
-        "p75": 19.848792000000003,
-        "p95": 19.848792000000003
+        "mean": 14.601680333333357,
+        "median": 14.386083000000099,
+        "min": 13.514208000000053,
+        "max": 15.904749999999922,
+        "p75": 15.904749999999922,
+        "p95": 15.904749999999922
       },
       "outputCssBytes": 43132,
       "memory": {
-        "rssBeforeBytes": 506134528,
-        "rssAfterBytes": 535691264,
-        "rssPeakBytes": 541507584,
-        "rssDeltaBytes": 29556736,
-        "heapBeforeBytes": 173617328,
-        "heapAfterBytes": 217500184,
-        "heapPeakBytes": 234402976,
-        "heapDeltaBytes": 43882856
+        "rssBeforeBytes": 424607744,
+        "rssAfterBytes": 497106944,
+        "rssPeakBytes": 497106944,
+        "rssDeltaBytes": 72499200,
+        "heapBeforeBytes": 213983648,
+        "heapAfterBytes": 254536880,
+        "heapPeakBytes": 254536880,
+        "heapDeltaBytes": 40553232
       },
       "selectorCount": 674
     },
@@ -391,31 +391,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        32.677832999999964
+        22.22566699999993
       ],
       "runsMs": [
-        19.42583300000001,
-        18.90295900000001,
-        20.526875000000018
+        20.71566599999983,
+        18.188417000000072,
+        18.934582999999975
       ],
       "stats": {
-        "mean": 19.61855566666668,
-        "median": 19.42583300000001,
-        "min": 18.90295900000001,
-        "max": 20.526875000000018,
-        "p75": 20.526875000000018,
-        "p95": 20.526875000000018
+        "mean": 19.279555333333292,
+        "median": 18.934582999999975,
+        "min": 18.188417000000072,
+        "max": 20.71566599999983,
+        "p75": 20.71566599999983,
+        "p95": 20.71566599999983
       },
       "outputCssBytes": 41637,
       "memory": {
-        "rssBeforeBytes": 535691264,
-        "rssAfterBytes": 546848768,
-        "rssPeakBytes": 546848768,
-        "rssDeltaBytes": 11157504,
-        "heapBeforeBytes": 217502000,
-        "heapAfterBytes": 234014136,
-        "heapPeakBytes": 258843520,
-        "heapDeltaBytes": 16512136
+        "rssBeforeBytes": 497106944,
+        "rssAfterBytes": 519028736,
+        "rssPeakBytes": 519028736,
+        "rssDeltaBytes": 21921792,
+        "heapBeforeBytes": 254850784,
+        "heapAfterBytes": 265422096,
+        "heapPeakBytes": 268685152,
+        "heapDeltaBytes": 10571312
       },
       "selectorCount": 680
     },
@@ -427,31 +427,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        242.9597080000001
+        248.189666
       ],
       "runsMs": [
-        36.69866699999989,
-        43.736667000000125,
-        34.85029200000008
+        36.663791000000174,
+        34.33583300000009,
+        32.074125000000095
       ],
       "stats": {
-        "mean": 38.42854200000003,
-        "median": 36.69866699999989,
-        "min": 34.85029200000008,
-        "max": 43.736667000000125,
-        "p75": 43.736667000000125,
-        "p95": 43.736667000000125
+        "mean": 34.357916333333456,
+        "median": 34.33583300000009,
+        "min": 32.074125000000095,
+        "max": 36.663791000000174,
+        "p75": 36.663791000000174,
+        "p95": 36.663791000000174
       },
-      "outputCssBytes": 27729,
+      "outputCssBytes": 27976,
       "memory": {
-        "rssBeforeBytes": 546848768,
-        "rssAfterBytes": 597622784,
-        "rssPeakBytes": 597622784,
-        "rssDeltaBytes": 50774016,
-        "heapBeforeBytes": 234015608,
-        "heapAfterBytes": 288991488,
-        "heapPeakBytes": 338861616,
-        "heapDeltaBytes": 54975880
+        "rssBeforeBytes": 519028736,
+        "rssAfterBytes": 598654976,
+        "rssPeakBytes": 598654976,
+        "rssDeltaBytes": 79626240,
+        "heapBeforeBytes": 265423568,
+        "heapAfterBytes": 350195008,
+        "heapPeakBytes": 353629392,
+        "heapDeltaBytes": 84771440
       },
       "selectorCount": 568
     },
@@ -463,31 +463,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        58.064082999999755
+        48.19770799999992
       ],
       "runsMs": [
-        37.38475000000017,
-        34.89241700000002,
-        38.12170900000001
+        35.87975000000006,
+        36.72741599999995,
+        33.89862499999981
       ],
       "stats": {
-        "mean": 36.7996253333334,
-        "median": 37.38475000000017,
-        "min": 34.89241700000002,
-        "max": 38.12170900000001,
-        "p75": 38.12170900000001,
-        "p95": 38.12170900000001
+        "mean": 35.50193033333327,
+        "median": 35.87975000000006,
+        "min": 33.89862499999981,
+        "max": 36.72741599999995,
+        "p75": 36.72741599999995,
+        "p95": 36.72741599999995
       },
-      "outputCssBytes": 42292,
+      "outputCssBytes": 42291,
       "memory": {
-        "rssBeforeBytes": 597622784,
-        "rssAfterBytes": 605519872,
-        "rssPeakBytes": 605519872,
-        "rssDeltaBytes": 7897088,
-        "heapBeforeBytes": 288993208,
-        "heapAfterBytes": 321609872,
-        "heapPeakBytes": 342912464,
-        "heapDeltaBytes": 32616664
+        "rssBeforeBytes": 598654976,
+        "rssAfterBytes": 606666752,
+        "rssPeakBytes": 606666752,
+        "rssDeltaBytes": 8011776,
+        "heapBeforeBytes": 350196728,
+        "heapAfterBytes": 364197672,
+        "heapPeakBytes": 364197672,
+        "heapDeltaBytes": 14000944
       },
       "selectorCount": 667
     },
@@ -499,31 +499,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        149.53049999999985
+        57.296542000000045
       ],
       "runsMs": [
-        66.93325000000004,
-        69.16254200000003,
-        64.49170800000002
+        34.53899999999976,
+        32.37504099999978,
+        32.66966599999978
       ],
       "stats": {
-        "mean": 66.86250000000003,
-        "median": 66.93325000000004,
-        "min": 64.49170800000002,
-        "max": 69.16254200000003,
-        "p75": 69.16254200000003,
-        "p95": 69.16254200000003
+        "mean": 33.194568999999774,
+        "median": 32.66966599999978,
+        "min": 32.37504099999978,
+        "max": 34.53899999999976,
+        "p75": 34.53899999999976,
+        "p95": 34.53899999999976
       },
       "outputCssBytes": 37920,
       "memory": {
-        "rssBeforeBytes": 605519872,
-        "rssAfterBytes": 626180096,
-        "rssPeakBytes": 626180096,
-        "rssDeltaBytes": 20660224,
-        "heapBeforeBytes": 321611360,
-        "heapAfterBytes": 334760040,
-        "heapPeakBytes": 356635608,
-        "heapDeltaBytes": 13148680
+        "rssBeforeBytes": 606666752,
+        "rssAfterBytes": 616431616,
+        "rssPeakBytes": 616431616,
+        "rssDeltaBytes": 9764864,
+        "heapBeforeBytes": 364199160,
+        "heapAfterBytes": 329219432,
+        "heapPeakBytes": 371490464,
+        "heapDeltaBytes": -34979728
       },
       "selectorCount": 640
     },
@@ -535,31 +535,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        65.90183300000035
+        47.070958000000246
       ],
       "runsMs": [
-        41.94179200000008,
-        18.418333000000075,
-        23.107916999999816
+        15.573624999999993,
+        18.27341699999988,
+        15.16754200000014
       ],
       "stats": {
-        "mean": 27.822680666666656,
-        "median": 23.107916999999816,
-        "min": 18.418333000000075,
-        "max": 41.94179200000008,
-        "p75": 41.94179200000008,
-        "p95": 41.94179200000008
+        "mean": 16.33819466666667,
+        "median": 15.573624999999993,
+        "min": 15.16754200000014,
+        "max": 18.27341699999988,
+        "p75": 18.27341699999988,
+        "p95": 18.27341699999988
       },
       "outputCssBytes": 47493,
       "memory": {
-        "rssBeforeBytes": 626180096,
-        "rssAfterBytes": 632799232,
-        "rssPeakBytes": 632799232,
-        "rssDeltaBytes": 6619136,
-        "heapBeforeBytes": 334761528,
-        "heapAfterBytes": 383061328,
-        "heapPeakBytes": 383061328,
-        "heapDeltaBytes": 48299800
+        "rssBeforeBytes": 616431616,
+        "rssAfterBytes": 622247936,
+        "rssPeakBytes": 622247936,
+        "rssDeltaBytes": 5816320,
+        "heapBeforeBytes": 329220920,
+        "heapAfterBytes": 376264496,
+        "heapPeakBytes": 386885672,
+        "heapDeltaBytes": 47043576
       },
       "selectorCount": 676,
       "details": {
@@ -575,31 +575,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        41.23833400000012
+        32.330625000000055
       ],
       "runsMs": [
-        13.385749999999916,
-        14.627374999999574,
-        22.04300000000012
+        11.096500000000106,
+        11.780874999999924,
+        11.666875000000346
       ],
       "stats": {
-        "mean": 16.68537499999987,
-        "median": 14.627374999999574,
-        "min": 13.385749999999916,
-        "max": 22.04300000000012,
-        "p75": 22.04300000000012,
-        "p95": 22.04300000000012
+        "mean": 11.514750000000125,
+        "median": 11.666875000000346,
+        "min": 11.096500000000106,
+        "max": 11.780874999999924,
+        "p75": 11.780874999999924,
+        "p95": 11.780874999999924
       },
       "outputCssBytes": 46610,
       "memory": {
-        "rssBeforeBytes": 632864768,
-        "rssAfterBytes": 656883712,
-        "rssPeakBytes": 656883712,
-        "rssDeltaBytes": 24018944,
-        "heapBeforeBytes": 383126592,
-        "heapAfterBytes": 361711384,
-        "heapPeakBytes": 387352696,
-        "heapDeltaBytes": -21415208
+        "rssBeforeBytes": 622329856,
+        "rssAfterBytes": 638517248,
+        "rssPeakBytes": 638517248,
+        "rssDeltaBytes": 16187392,
+        "heapBeforeBytes": 376329696,
+        "heapAfterBytes": 396420616,
+        "heapPeakBytes": 396420616,
+        "heapDeltaBytes": 20090920
       },
       "selectorCount": 669,
       "details": {
@@ -615,31 +615,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        210.38495899999998
+        202.74337500000001
       ],
       "runsMs": [
-        95.34474999999975,
-        121.53200000000015,
-        99.48700000000008
+        91.3527079999999,
+        88.24354099999982,
+        89.60750000000007
       ],
       "stats": {
-        "mean": 105.45458333333333,
-        "median": 99.48700000000008,
-        "min": 95.34474999999975,
-        "max": 121.53200000000015,
-        "p75": 121.53200000000015,
-        "p95": 121.53200000000015
+        "mean": 89.73458299999993,
+        "median": 89.60750000000007,
+        "min": 88.24354099999982,
+        "max": 91.3527079999999,
+        "p75": 91.3527079999999,
+        "p95": 91.3527079999999
       },
-      "outputCssBytes": 30185,
+      "outputCssBytes": 30438,
       "memory": {
-        "rssBeforeBytes": 656883712,
-        "rssAfterBytes": 692715520,
-        "rssPeakBytes": 692715520,
-        "rssDeltaBytes": 35831808,
-        "heapBeforeBytes": 361747296,
-        "heapAfterBytes": 418642080,
-        "heapPeakBytes": 424813768,
-        "heapDeltaBytes": 56894784
+        "rssBeforeBytes": 638517248,
+        "rssAfterBytes": 684408832,
+        "rssPeakBytes": 684408832,
+        "rssDeltaBytes": 45891584,
+        "heapBeforeBytes": 396456624,
+        "heapAfterBytes": 437516400,
+        "heapPeakBytes": 437516400,
+        "heapDeltaBytes": 41059776
       },
       "selectorCount": 569,
       "details": {
@@ -655,33 +655,33 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        95.2048749999999
+        48.71379200000001
       ],
       "runsMs": [
-        31.842959000000064,
-        32.766083999999864,
-        34.13366599999972
+        16.005874999999833,
+        13.667707999999948,
+        15.954375000000255
       ],
       "stats": {
-        "mean": 32.914236333333214,
-        "median": 32.766083999999864,
-        "min": 31.842959000000064,
-        "max": 34.13366599999972,
-        "p75": 34.13366599999972,
-        "p95": 34.13366599999972
+        "mean": 15.209319333333346,
+        "median": 15.954375000000255,
+        "min": 13.667707999999948,
+        "max": 16.005874999999833,
+        "p75": 16.005874999999833,
+        "p95": 16.005874999999833
       },
-      "outputCssBytes": 42043,
+      "outputCssBytes": 46773,
       "memory": {
-        "rssBeforeBytes": 692715520,
-        "rssAfterBytes": 706510848,
-        "rssPeakBytes": 706510848,
-        "rssDeltaBytes": 13795328,
-        "heapBeforeBytes": 418679720,
-        "heapAfterBytes": 437367880,
-        "heapPeakBytes": 445993744,
-        "heapDeltaBytes": 18688160
+        "rssBeforeBytes": 684425216,
+        "rssAfterBytes": 695615488,
+        "rssPeakBytes": 695615488,
+        "rssDeltaBytes": 11190272,
+        "heapBeforeBytes": 437555240,
+        "heapAfterBytes": 424040224,
+        "heapPeakBytes": 454730960,
+        "heapDeltaBytes": -13515016
       },
-      "selectorCount": 642,
+      "selectorCount": 669,
       "details": {
         "hmrCandidate": "hover:top-[1004rpx]",
         "hmrSourceFile": "src/sources/hmr.html"
@@ -695,31 +695,31 @@
       "scenarioId": "default",
       "scenarioName": "默认规模",
       "warmupMs": [
-        77.91374999999971
+        58.33295799999996
       ],
       "runsMs": [
-        37.67058399999996,
-        37.85395799999969,
-        36.164458000000195
+        24.337916000000405,
+        20.847957999999835,
+        21.67620799999986
       ],
       "stats": {
-        "mean": 37.22966666666662,
-        "median": 37.67058399999996,
-        "min": 36.164458000000195,
-        "max": 37.85395799999969,
-        "p75": 37.85395799999969,
-        "p95": 37.85395799999969
+        "mean": 22.2873606666667,
+        "median": 21.67620799999986,
+        "min": 20.847957999999835,
+        "max": 24.337916000000405,
+        "p75": 24.337916000000405,
+        "p95": 24.337916000000405
       },
       "outputCssBytes": 42043,
       "memory": {
-        "rssBeforeBytes": 706510848,
-        "rssAfterBytes": 722747392,
-        "rssPeakBytes": 722747392,
-        "rssDeltaBytes": 16236544,
-        "heapBeforeBytes": 437404080,
-        "heapAfterBytes": 468932752,
-        "heapPeakBytes": 468932752,
-        "heapDeltaBytes": 31528672
+        "rssBeforeBytes": 695615488,
+        "rssAfterBytes": 710868992,
+        "rssPeakBytes": 710868992,
+        "rssDeltaBytes": 15253504,
+        "heapBeforeBytes": 424077488,
+        "heapAfterBytes": 431732976,
+        "heapPeakBytes": 456177864,
+        "heapDeltaBytes": 7655488
       },
       "selectorCount": 642,
       "details": {
@@ -735,31 +735,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        12801.897167
+        9688.675874999999
       ],
       "runsMs": [
-        154.35829100000046,
-        175.78150000000096,
-        149.3502499999995
+        149.83829200000037,
+        115.63187500000095,
+        117.67070799999965
       ],
       "stats": {
-        "mean": 159.83001366666699,
-        "median": 154.35829100000046,
-        "min": 149.3502499999995,
-        "max": 175.78150000000096,
-        "p75": 175.78150000000096,
-        "p95": 175.78150000000096
+        "mean": 127.71362500000032,
+        "median": 117.67070799999965,
+        "min": 115.63187500000095,
+        "max": 149.83829200000037,
+        "p75": 149.83829200000037,
+        "p95": 149.83829200000037
       },
       "outputCssBytes": 202528,
       "memory": {
-        "rssBeforeBytes": 725352448,
-        "rssAfterBytes": 812777472,
-        "rssPeakBytes": 812777472,
-        "rssDeltaBytes": 87425024,
-        "heapBeforeBytes": 417998072,
-        "heapAfterBytes": 335405448,
-        "heapPeakBytes": 523386176,
-        "heapDeltaBytes": -82592624
+        "rssBeforeBytes": 711327744,
+        "rssAfterBytes": 775405568,
+        "rssPeakBytes": 775405568,
+        "rssDeltaBytes": 64077824,
+        "heapBeforeBytes": 439193680,
+        "heapAfterBytes": 364596176,
+        "heapPeakBytes": 516495888,
+        "heapDeltaBytes": -74597504
       },
       "selectorCount": 4689,
       "classSetSize": 5000
@@ -772,31 +772,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        90.14674999999988
+        67.15587500000038
       ],
       "runsMs": [
-        82.91745900000024,
-        71.22699999999895,
-        71.30258400000093
+        59.53529200000048,
+        57.05491699999948,
+        57.064291999999114
       ],
       "stats": {
-        "mean": 75.14901433333337,
-        "median": 71.30258400000093,
-        "min": 71.22699999999895,
-        "max": 82.91745900000024,
-        "p75": 82.91745900000024,
-        "p95": 82.91745900000024
+        "mean": 57.88483366666636,
+        "median": 57.064291999999114,
+        "min": 57.05491699999948,
+        "max": 59.53529200000048,
+        "p75": 59.53529200000048,
+        "p95": 59.53529200000048
       },
       "outputCssBytes": 279754,
       "memory": {
-        "rssBeforeBytes": 812777472,
-        "rssAfterBytes": 820903936,
-        "rssPeakBytes": 820903936,
-        "rssDeltaBytes": 8126464,
-        "heapBeforeBytes": 335744336,
-        "heapAfterBytes": 358627552,
-        "heapPeakBytes": 370840408,
-        "heapDeltaBytes": 22883216
+        "rssBeforeBytes": 775405568,
+        "rssAfterBytes": 783007744,
+        "rssPeakBytes": 783007744,
+        "rssDeltaBytes": 7602176,
+        "heapBeforeBytes": 364955304,
+        "heapAfterBytes": 381860784,
+        "heapPeakBytes": 394126928,
+        "heapDeltaBytes": 16905480
       },
       "selectorCount": 5066,
       "classSetSize": 5000
@@ -809,31 +809,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        160.54550000000017
+        136.05345800000032
       ],
       "runsMs": [
-        164.0203330000004,
-        157.9291250000024,
-        162.27516599999944
+        163.00825000000077,
+        160.42833299999984,
+        149.96220899999935
       ],
       "stats": {
-        "mean": 161.40820800000074,
-        "median": 162.27516599999944,
-        "min": 157.9291250000024,
-        "max": 164.0203330000004,
-        "p75": 164.0203330000004,
-        "p95": 164.0203330000004
+        "mean": 157.7995973333333,
+        "median": 160.42833299999984,
+        "min": 149.96220899999935,
+        "max": 163.00825000000077,
+        "p75": 163.00825000000077,
+        "p95": 163.00825000000077
       },
       "outputCssBytes": 202528,
       "memory": {
-        "rssBeforeBytes": 820903936,
-        "rssAfterBytes": 834732032,
-        "rssPeakBytes": 834732032,
-        "rssDeltaBytes": 13828096,
-        "heapBeforeBytes": 358995824,
-        "heapAfterBytes": 445355088,
-        "heapPeakBytes": 445355088,
-        "heapDeltaBytes": 86359264
+        "rssBeforeBytes": 783007744,
+        "rssAfterBytes": 768393216,
+        "rssPeakBytes": 787365888,
+        "rssDeltaBytes": -14614528,
+        "heapBeforeBytes": 382247632,
+        "heapAfterBytes": 316040344,
+        "heapPeakBytes": 419871352,
+        "heapDeltaBytes": -66207288
       },
       "selectorCount": 4689,
       "classSetSize": 5000
@@ -846,31 +846,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        96.66179099999863
+        81.37149999999929
       ],
       "runsMs": [
-        111.562582999999,
-        100.29100000000108,
-        111.00400000000081
+        88.53087499999856,
+        81.13174999999865,
+        80.1840000000011
       ],
       "stats": {
-        "mean": 107.61919433333362,
-        "median": 111.00400000000081,
-        "min": 100.29100000000108,
-        "max": 111.562582999999,
-        "p75": 111.562582999999,
-        "p95": 111.562582999999
+        "mean": 83.28220833333278,
+        "median": 81.13174999999865,
+        "min": 80.1840000000011,
+        "max": 88.53087499999856,
+        "p75": 88.53087499999856,
+        "p95": 88.53087499999856
       },
       "outputCssBytes": 279754,
       "memory": {
-        "rssBeforeBytes": 834732032,
-        "rssAfterBytes": 841433088,
-        "rssPeakBytes": 841433088,
-        "rssDeltaBytes": 6701056,
-        "heapBeforeBytes": 445704320,
-        "heapAfterBytes": 454136344,
-        "heapPeakBytes": 482242168,
-        "heapDeltaBytes": 8432024
+        "rssBeforeBytes": 768393216,
+        "rssAfterBytes": 775208960,
+        "rssPeakBytes": 775208960,
+        "rssDeltaBytes": 6815744,
+        "heapBeforeBytes": 316399632,
+        "heapAfterBytes": 379539552,
+        "heapPeakBytes": 379539552,
+        "heapDeltaBytes": 63139920
       },
       "selectorCount": 5066,
       "classSetSize": 5000
@@ -883,31 +883,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        6.953625000001921
+        5.458167000000685
       ],
       "runsMs": [
-        0.09454099999857135,
-        0.05820800000219606,
-        0.05233299999963492
+        0.06450000000040745,
+        0.04787500000020373,
+        0.04283399999985704
       ],
       "stats": {
-        "mean": 0.06836066666680078,
-        "median": 0.05820800000219606,
-        "min": 0.05233299999963492,
-        "max": 0.09454099999857135,
-        "p75": 0.09454099999857135,
-        "p95": 0.09454099999857135
+        "mean": 0.051736333333489405,
+        "median": 0.04787500000020373,
+        "min": 0.04283399999985704,
+        "max": 0.06450000000040745,
+        "p75": 0.06450000000040745,
+        "p95": 0.06450000000040745
       },
-      "outputCssBytes": 4913,
+      "outputCssBytes": 4937,
       "memory": {
-        "rssBeforeBytes": 841433088,
-        "rssAfterBytes": 841449472,
-        "rssPeakBytes": 841449472,
-        "rssDeltaBytes": 16384,
-        "heapBeforeBytes": 454486816,
-        "heapAfterBytes": 465366680,
-        "heapPeakBytes": 465366680,
-        "heapDeltaBytes": 10879864
+        "rssBeforeBytes": 775208960,
+        "rssAfterBytes": 775208960,
+        "rssPeakBytes": 775208960,
+        "rssDeltaBytes": 0,
+        "heapBeforeBytes": 379890160,
+        "heapAfterBytes": 390843560,
+        "heapPeakBytes": 390843560,
+        "heapDeltaBytes": 10953400
       },
       "selectorCount": 95,
       "classSetSize": 96
@@ -920,31 +920,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        0.12199999999938882
+        0.08449999999902502
       ],
       "runsMs": [
-        0.10766599999988102,
-        0.09979200000088895,
-        0.0994170000012673
+        0.08133300000008603,
+        0.07945800000015879,
+        0.07875000000058208
       ],
       "stats": {
-        "mean": 0.10229166666734575,
-        "median": 0.09979200000088895,
-        "min": 0.0994170000012673,
-        "max": 0.10766599999988102,
-        "p75": 0.10766599999988102,
-        "p95": 0.10766599999988102
+        "mean": 0.07984700000027563,
+        "median": 0.07945800000015879,
+        "min": 0.07875000000058208,
+        "max": 0.08133300000008603,
+        "p75": 0.08133300000008603,
+        "p95": 0.08133300000008603
       },
-      "outputCssBytes": 4913,
+      "outputCssBytes": 4937,
       "memory": {
-        "rssBeforeBytes": 841449472,
-        "rssAfterBytes": 841449472,
-        "rssPeakBytes": 841449472,
+        "rssBeforeBytes": 775208960,
+        "rssAfterBytes": 775208960,
+        "rssPeakBytes": 775208960,
         "rssDeltaBytes": 0,
-        "heapBeforeBytes": 465374096,
-        "heapAfterBytes": 466583832,
-        "heapPeakBytes": 466583832,
-        "heapDeltaBytes": 1209736
+        "heapBeforeBytes": 390850976,
+        "heapAfterBytes": 392055024,
+        "heapPeakBytes": 392055024,
+        "heapDeltaBytes": 1204048
       },
       "selectorCount": 95,
       "classSetSize": 96
@@ -957,35 +957,35 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        0.7669159999968542
+        0.6112909999992553
       ],
       "runsMs": [
-        8.064875000000029,
-        7.0133329999989655,
-        8.543958000002021
+        6.593957999999475,
+        5.215625000000728,
+        5.226249999999709
       ],
       "stats": {
-        "mean": 7.874055333333672,
-        "median": 8.064875000000029,
-        "min": 7.0133329999989655,
-        "max": 8.543958000002021,
-        "p75": 8.543958000002021,
-        "p95": 8.543958000002021
+        "mean": 5.678610999999971,
+        "median": 5.226249999999709,
+        "min": 5.215625000000728,
+        "max": 6.593957999999475,
+        "p75": 6.593957999999475,
+        "p95": 6.593957999999475
       },
-      "outputCssBytes": 6289,
+      "outputCssBytes": 6365,
       "memory": {
-        "rssBeforeBytes": 841449472,
-        "rssAfterBytes": 841203712,
-        "rssPeakBytes": 841449472,
-        "rssDeltaBytes": -245760,
-        "heapBeforeBytes": 466591248,
-        "heapAfterBytes": 450583584,
-        "heapPeakBytes": 490271880,
-        "heapDeltaBytes": -16007664
+        "rssBeforeBytes": 775208960,
+        "rssAfterBytes": 773996544,
+        "rssPeakBytes": 775208960,
+        "rssDeltaBytes": -1212416,
+        "heapBeforeBytes": 392062440,
+        "heapAfterBytes": 369737520,
+        "heapPeakBytes": 393143608,
+        "heapDeltaBytes": -22324920
       },
-      "selectorCount": 121,
+      "selectorCount": 122,
       "details": {
-        "incrementalCssBytes": 1375
+        "incrementalCssBytes": 1427
       },
       "classSetSize": 120
     },
@@ -997,31 +997,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        99.8249590000014
+        78.05325000000084
       ],
       "runsMs": [
-        25.980165999997553,
-        12.050708000002487,
-        14.768917000001238
+        16.40312499999891,
+        10.358457999998791,
+        9.186459000000468
       ],
       "stats": {
-        "mean": 17.59993033333376,
-        "median": 14.768917000001238,
-        "min": 12.050708000002487,
-        "max": 25.980165999997553,
-        "p75": 25.980165999997553,
-        "p95": 25.980165999997553
+        "mean": 11.982680666666056,
+        "median": 10.358457999998791,
+        "min": 9.186459000000468,
+        "max": 16.40312499999891,
+        "p75": 16.40312499999891,
+        "p95": 16.40312499999891
       },
       "outputCssBytes": 187910,
       "memory": {
-        "rssBeforeBytes": 841203712,
-        "rssAfterBytes": 855900160,
-        "rssPeakBytes": 855900160,
-        "rssDeltaBytes": 14696448,
-        "heapBeforeBytes": 450592432,
-        "heapAfterBytes": 509308000,
-        "heapPeakBytes": 509308000,
-        "heapDeltaBytes": 58715568
+        "rssBeforeBytes": 773996544,
+        "rssAfterBytes": 788365312,
+        "rssPeakBytes": 788365312,
+        "rssDeltaBytes": 14368768,
+        "heapBeforeBytes": 369746408,
+        "heapAfterBytes": 380049416,
+        "heapPeakBytes": 402246056,
+        "heapDeltaBytes": 10303008
       },
       "selectorCount": 5043
     },
@@ -1033,31 +1033,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        39.28862500000105
+        20.678499999999985
       ],
       "runsMs": [
-        27.61854200000016,
-        45.995083999998315,
-        46.929707999999664
+        20.69379200000003,
+        18.102375000000393,
+        18.35858300000109
       ],
       "stats": {
-        "mean": 40.181111333332716,
-        "median": 45.995083999998315,
-        "min": 27.61854200000016,
-        "max": 46.929707999999664,
-        "p75": 46.929707999999664,
-        "p95": 46.929707999999664
+        "mean": 19.051583333333838,
+        "median": 18.35858300000109,
+        "min": 18.102375000000393,
+        "max": 20.69379200000003,
+        "p75": 20.69379200000003,
+        "p95": 20.69379200000003
       },
       "outputCssBytes": 187910,
       "memory": {
-        "rssBeforeBytes": 855900160,
-        "rssAfterBytes": 857538560,
-        "rssPeakBytes": 857538560,
-        "rssDeltaBytes": 1638400,
-        "heapBeforeBytes": 509309488,
-        "heapAfterBytes": 468252960,
-        "heapPeakBytes": 509310440,
-        "heapDeltaBytes": -41056528
+        "rssBeforeBytes": 788365312,
+        "rssAfterBytes": 790462464,
+        "rssPeakBytes": 790462464,
+        "rssDeltaBytes": 2097152,
+        "heapBeforeBytes": 380050904,
+        "heapAfterBytes": 394699800,
+        "heapPeakBytes": 395260656,
+        "heapDeltaBytes": 14648896
       },
       "selectorCount": 5043
     },
@@ -1069,31 +1069,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        94.34649999999965
+        65.1802090000001
       ],
       "runsMs": [
-        83.16429199999766,
-        83.052249999997,
-        80.06595899999957
+        61.696749999999156,
+        62.718957999999475,
+        64.24645799999962
       ],
       "stats": {
-        "mean": 82.09416699999808,
-        "median": 83.052249999997,
-        "min": 80.06595899999957,
-        "max": 83.16429199999766,
-        "p75": 83.16429199999766,
-        "p95": 83.16429199999766
+        "mean": 62.887388666666084,
+        "median": 62.718957999999475,
+        "min": 61.696749999999156,
+        "max": 64.24645799999962,
+        "p75": 64.24645799999962,
+        "p95": 64.24645799999962
       },
       "outputCssBytes": 268928,
       "memory": {
-        "rssBeforeBytes": 857538560,
-        "rssAfterBytes": 872677376,
-        "rssPeakBytes": 872677376,
-        "rssDeltaBytes": 15138816,
-        "heapBeforeBytes": 468254448,
-        "heapAfterBytes": 520376512,
-        "heapPeakBytes": 520376512,
-        "heapDeltaBytes": 52122064
+        "rssBeforeBytes": 790462464,
+        "rssAfterBytes": 806371328,
+        "rssPeakBytes": 806371328,
+        "rssDeltaBytes": 15908864,
+        "heapBeforeBytes": 394701288,
+        "heapAfterBytes": 420128888,
+        "heapPeakBytes": 420128888,
+        "heapDeltaBytes": 25427600
       },
       "selectorCount": 5079
     },
@@ -1105,31 +1105,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        4116.5170419999995
+        3871.242416000001
       ],
       "runsMs": [
-        191.3481670000001,
-        190.4847090000003,
-        226.68904099999781
+        196.71558300000106,
+        190.99241699999766,
+        195.0980410000011
       ],
       "stats": {
-        "mean": 202.8406389999994,
-        "median": 191.3481670000001,
-        "min": 190.4847090000003,
-        "max": 226.68904099999781,
-        "p75": 226.68904099999781,
-        "p95": 226.68904099999781
+        "mean": 194.26868033333326,
+        "median": 195.0980410000011,
+        "min": 190.99241699999766,
+        "max": 196.71558300000106,
+        "p75": 196.71558300000106,
+        "p95": 196.71558300000106
       },
-      "outputCssBytes": 202042,
+      "outputCssBytes": 202289,
       "memory": {
-        "rssBeforeBytes": 872677376,
-        "rssAfterBytes": 988119040,
-        "rssPeakBytes": 988119040,
-        "rssDeltaBytes": 115441664,
-        "heapBeforeBytes": 520378000,
-        "heapAfterBytes": 688665088,
-        "heapPeakBytes": 688665088,
-        "heapDeltaBytes": 168287088
+        "rssBeforeBytes": 806371328,
+        "rssAfterBytes": 867352576,
+        "rssPeakBytes": 867352576,
+        "rssDeltaBytes": 60981248,
+        "heapBeforeBytes": 420130376,
+        "heapAfterBytes": 540900872,
+        "heapPeakBytes": 571633096,
+        "heapDeltaBytes": 120770496
       },
       "selectorCount": 4688
     },
@@ -1141,31 +1141,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        320.94329199999993
+        274.0223330000008
       ],
       "runsMs": [
-        203.9765830000033,
-        217.49016699999993,
-        201.9173750000009
+        208.29833300000246,
+        206.69695800000045,
+        201.78041700000176
       ],
       "stats": {
-        "mean": 207.7947083333347,
-        "median": 203.9765830000033,
-        "min": 201.9173750000009,
-        "max": 217.49016699999993,
-        "p75": 217.49016699999993,
-        "p95": 217.49016699999993
+        "mean": 205.59190266666823,
+        "median": 206.69695800000045,
+        "min": 201.78041700000176,
+        "max": 208.29833300000246,
+        "p75": 208.29833300000246,
+        "p95": 208.29833300000246
       },
-      "outputCssBytes": 279692,
+      "outputCssBytes": 279691,
       "memory": {
-        "rssBeforeBytes": 988119040,
-        "rssAfterBytes": 1076297728,
-        "rssPeakBytes": 1076297728,
-        "rssDeltaBytes": 88178688,
-        "heapBeforeBytes": 688666576,
-        "heapAfterBytes": 776084728,
-        "heapPeakBytes": 776084728,
-        "heapDeltaBytes": 87418152
+        "rssBeforeBytes": 867352576,
+        "rssAfterBytes": 950075392,
+        "rssPeakBytes": 950075392,
+        "rssDeltaBytes": 82722816,
+        "heapBeforeBytes": 540902360,
+        "heapAfterBytes": 672280952,
+        "heapPeakBytes": 672280952,
+        "heapDeltaBytes": 131378592
       },
       "selectorCount": 5066
     },
@@ -1177,31 +1177,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        600.5818330000002
+        318.92025000000285
       ],
       "runsMs": [
-        410.775958000002,
-        457.0098340000004,
-        459.23154200000135
+        205.69387500000084,
+        206.50129200000083,
+        202.61512500000026
       ],
       "stats": {
-        "mean": 442.3391113333346,
-        "median": 457.0098340000004,
-        "min": 410.775958000002,
-        "max": 459.23154200000135,
-        "p75": 459.23154200000135,
-        "p95": 459.23154200000135
+        "mean": 204.93676400000064,
+        "median": 205.69387500000084,
+        "min": 202.61512500000026,
+        "max": 206.50129200000083,
+        "p75": 206.50129200000083,
+        "p95": 206.50129200000083
       },
       "outputCssBytes": 261500,
       "memory": {
-        "rssBeforeBytes": 1076297728,
-        "rssAfterBytes": 1093976064,
-        "rssPeakBytes": 1222885376,
-        "rssDeltaBytes": 17678336,
-        "heapBeforeBytes": 776088128,
-        "heapAfterBytes": 353510800,
-        "heapPeakBytes": 903248448,
-        "heapDeltaBytes": -422577328
+        "rssBeforeBytes": 950075392,
+        "rssAfterBytes": 1032962048,
+        "rssPeakBytes": 1032962048,
+        "rssDeltaBytes": 82886656,
+        "heapBeforeBytes": 672284352,
+        "heapAfterBytes": 716691968,
+        "heapPeakBytes": 742993240,
+        "heapDeltaBytes": 44407616
       },
       "selectorCount": 5039
     },
@@ -1213,31 +1213,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        170.21045799999774
+        153.98612499999945
       ],
       "runsMs": [
-        78.15658299999996,
-        85.00608300000022,
-        78.19204199999876
+        79.59091700000135,
+        72.93487499999901,
+        79.55629100000078
       ],
       "stats": {
-        "mean": 80.45156933333298,
-        "median": 78.19204199999876,
-        "min": 78.15658299999996,
-        "max": 85.00608300000022,
-        "p75": 85.00608300000022,
-        "p95": 85.00608300000022
+        "mean": 77.36069433333371,
+        "median": 79.55629100000078,
+        "min": 72.93487499999901,
+        "max": 79.59091700000135,
+        "p75": 79.59091700000135,
+        "p95": 79.59091700000135
       },
       "outputCssBytes": 199237,
       "memory": {
-        "rssBeforeBytes": 1093976064,
-        "rssAfterBytes": 1119059968,
-        "rssPeakBytes": 1119059968,
-        "rssDeltaBytes": 25083904,
-        "heapBeforeBytes": 353512256,
-        "heapAfterBytes": 464459808,
-        "heapPeakBytes": 464459808,
-        "heapDeltaBytes": 110947552
+        "rssBeforeBytes": 1032962048,
+        "rssAfterBytes": 1138163712,
+        "rssPeakBytes": 1138163712,
+        "rssDeltaBytes": 105201664,
+        "heapBeforeBytes": 716693520,
+        "heapAfterBytes": 826311120,
+        "heapPeakBytes": 826311120,
+        "heapDeltaBytes": 109617600
       },
       "selectorCount": 5045,
       "details": {
@@ -1253,31 +1253,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        92.8260420000006
+        76.5603749999973
       ],
       "runsMs": [
-        41.08333399999901,
-        44.28662500000064,
-        37.426665999999386
+        38.823457999998936,
+        40.0054999999993,
+        39.011749999997846
       ],
       "stats": {
-        "mean": 40.932208333333016,
-        "median": 41.08333399999901,
-        "min": 37.426665999999386,
-        "max": 44.28662500000064,
-        "p75": 44.28662500000064,
-        "p95": 44.28662500000064
+        "mean": 39.280235999998695,
+        "median": 39.011749999997846,
+        "min": 38.823457999998936,
+        "max": 40.0054999999993,
+        "p75": 40.0054999999993,
+        "p95": 40.0054999999993
       },
       "outputCssBytes": 308166,
       "memory": {
-        "rssBeforeBytes": 1131855872,
-        "rssAfterBytes": 1142013952,
-        "rssPeakBytes": 1142013952,
-        "rssDeltaBytes": 10158080,
-        "heapBeforeBytes": 499794096,
-        "heapAfterBytes": 597217856,
-        "heapPeakBytes": 597217856,
-        "heapDeltaBytes": 97423760
+        "rssBeforeBytes": 1232814080,
+        "rssAfterBytes": 1276674048,
+        "rssPeakBytes": 1276674048,
+        "rssDeltaBytes": 43859968,
+        "heapBeforeBytes": 905807088,
+        "heapAfterBytes": 978812240,
+        "heapPeakBytes": 978812240,
+        "heapDeltaBytes": 73005152
       },
       "selectorCount": 5069,
       "details": {
@@ -1293,31 +1293,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        8129.797291999999
+        7071.005541000002
       ],
       "runsMs": [
-        5124.100958000003,
-        4798.056333,
-        3476.191082999998
+        3601.803667,
+        3567.7360409999965,
+        3525.039874999995
       ],
       "stats": {
-        "mean": 4466.116124666667,
-        "median": 4798.056333,
-        "min": 3476.191082999998,
-        "max": 5124.100958000003,
-        "p75": 5124.100958000003,
-        "p95": 5124.100958000003
+        "mean": 3564.859860999997,
+        "median": 3567.7360409999965,
+        "min": 3525.039874999995,
+        "max": 3601.803667,
+        "p75": 3601.803667,
+        "p95": 3601.803667
       },
-      "outputCssBytes": 216902,
+      "outputCssBytes": 217155,
       "memory": {
-        "rssBeforeBytes": 1167802368,
-        "rssAfterBytes": 1189068800,
-        "rssPeakBytes": 1189068800,
-        "rssDeltaBytes": 21266432,
-        "heapBeforeBytes": 589750528,
-        "heapAfterBytes": 831149360,
-        "heapPeakBytes": 831149360,
-        "heapDeltaBytes": 241398832
+        "rssBeforeBytes": 1311096832,
+        "rssAfterBytes": 1322598400,
+        "rssPeakBytes": 1408696320,
+        "rssDeltaBytes": 11501568,
+        "heapBeforeBytes": 967008024,
+        "heapAfterBytes": 724710088,
+        "heapPeakBytes": 1115590960,
+        "heapDeltaBytes": -242297936
       },
       "selectorCount": 4690,
       "details": {
@@ -1333,33 +1333,33 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        448.3043749999997
+        313.62866600000416
       ],
       "runsMs": [
-        221.04104099999677,
-        224.09954100000323,
-        226.4952919999996
+        115.21216700000514,
+        118.58629199999996,
+        121.17170800000167
       ],
       "stats": {
-        "mean": 223.87862466666652,
-        "median": 224.09954100000323,
-        "min": 221.04104099999677,
-        "max": 226.4952919999996,
-        "p75": 226.4952919999996,
-        "p95": 226.4952919999996
+        "mean": 118.32338900000225,
+        "median": 118.58629199999996,
+        "min": 115.21216700000514,
+        "max": 121.17170800000167,
+        "p75": 121.17170800000167,
+        "p95": 121.17170800000167
       },
-      "outputCssBytes": 289219,
+      "outputCssBytes": 308329,
       "memory": {
-        "rssBeforeBytes": 1230192640,
-        "rssAfterBytes": 1276788736,
-        "rssPeakBytes": 1276788736,
-        "rssDeltaBytes": 46596096,
-        "heapBeforeBytes": 839125912,
-        "heapAfterBytes": 956362432,
-        "heapPeakBytes": 956362432,
-        "heapDeltaBytes": 117236520
+        "rssBeforeBytes": 1322614784,
+        "rssAfterBytes": 1317126144,
+        "rssPeakBytes": 1333346304,
+        "rssDeltaBytes": -5488640,
+        "heapBeforeBytes": 724760336,
+        "heapAfterBytes": 670478472,
+        "heapPeakBytes": 731192640,
+        "heapDeltaBytes": -54281864
       },
-      "selectorCount": 5042,
+      "selectorCount": 5069,
       "details": {
         "hmrCandidate": "hover:top-[1004rpx]",
         "hmrSourceFile": "src/sources/hmr.html"
@@ -1373,31 +1373,31 @@
       "scenarioId": "large-selectors",
       "scenarioName": "大数量级选择器",
       "warmupMs": [
-        526.4995840000047
+        382.10679099999834
       ],
       "runsMs": [
-        281.2506249999933,
-        265.6828749999986,
-        253.689833000004
+        166.29120800000237,
+        168.59358300000167,
+        166.94733299999643
       ],
       "stats": {
-        "mean": 266.87444433333195,
-        "median": 265.6828749999986,
-        "min": 253.689833000004,
-        "max": 281.2506249999933,
-        "p75": 281.2506249999933,
-        "p95": 281.2506249999933
+        "mean": 167.27737466666682,
+        "median": 166.94733299999643,
+        "min": 166.29120800000237,
+        "max": 168.59358300000167,
+        "p75": 168.59358300000167,
+        "p95": 168.59358300000167
       },
       "outputCssBytes": 289219,
       "memory": {
-        "rssBeforeBytes": 1276821504,
-        "rssAfterBytes": 1412235264,
-        "rssPeakBytes": 1412235264,
-        "rssDeltaBytes": 135413760,
-        "heapBeforeBytes": 956680072,
-        "heapAfterBytes": 1090964528,
-        "heapPeakBytes": 1090964528,
-        "heapDeltaBytes": 134284456
+        "rssBeforeBytes": 1317158912,
+        "rssAfterBytes": 1350893568,
+        "rssPeakBytes": 1350893568,
+        "rssDeltaBytes": 33734656,
+        "heapBeforeBytes": 670564072,
+        "heapAfterBytes": 785370152,
+        "heapPeakBytes": 785370152,
+        "heapDeltaBytes": 114806080
       },
       "selectorCount": 5042,
       "details": {
