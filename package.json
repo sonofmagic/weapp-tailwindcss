@@ -162,6 +162,7 @@
     "e2e:apps-generator": "vitest run -c ./e2e/vitest.e2e.config.ts e2e/apps-generator-mode-compare.test.ts",
     "e2e:apps-generator:u": "vitest run -u -c ./e2e/vitest.e2e.config.ts e2e/apps-generator-mode-compare.test.ts",
     "e2e:generator-parity": "vitest run -c ./e2e/vitest.e2e.config.ts e2e/generator-tailwind-parity.test.ts",
+    "e2e:demo-postcss-parity": "vitest run -c ./e2e/vitest.e2e.config.ts e2e/demo-official-postcss-parity.test.ts",
     "e2e:taro:web-hmr": "vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/taro-web-demo-hmr.test.ts",
     "e2e:taro:h5-build": "vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/taro-h5-build-smoke.test.ts",
     "e2e:web-css-preservation": "vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/web-css-preservation.test.ts",

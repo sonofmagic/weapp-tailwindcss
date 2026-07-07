@@ -31,13 +31,14 @@ export function withWebCompatGeneratorDefaults<T extends { generator?: UserDefin
   options: T,
   enabled = shouldEnableWebCompatFromEnv(),
 ): T {
-  if (!enabled) {
+  if (!enabled || options.generator === false) {
     return options
   }
+  const generatorOptions = (options.generator ?? {}) as Exclude<NonNullable<UserDefinedOptions['generator']>, false>
   return {
     ...options,
-    generator: defuOverrideArray<UserDefinedOptions['generator'], NonNullable<UserDefinedOptions['generator']>[]>(
-      options.generator ?? {},
+    generator: defuOverrideArray<typeof generatorOptions, typeof generatorOptions[]>(
+      generatorOptions,
       {
         target: 'web',
         webCompat: true,

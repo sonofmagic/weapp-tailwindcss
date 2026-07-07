@@ -3,6 +3,7 @@ import { dirname } from 'node:path'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import uni from '@dcloudio/vite-plugin-uni'
+import parity from '../official-postcss-parity-plugin.cjs'
 import { defineConfig, type Plugin } from 'vite'
 import { resolveUniPlatform } from 'weapp-tailwindcss/framework'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
@@ -12,6 +13,7 @@ const projectRoot = dirname(fileURLToPath(import.meta.url))
 const uniMpVueRuntimePath = require.resolve('@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js')
 const uniMpVueDir = dirname(uniMpVueRuntimePath)
 const cssMode = process.env.E2E_TW_CSS_ENTRY_MODE === 'single' ? 'single' : 'isolated'
+const officialPostcssParity = process.env.WEAPP_TW_OFFICIAL_POSTCSS_PARITY === '1'
 const cssEntries = cssMode === 'single'
   ? [path.resolve(projectRoot, 'src/main.single.css')]
   : [
@@ -48,12 +50,19 @@ export default defineConfig(() => {
         cssEntries,
         cssSourceTrace: true,
         rem2rpx: true,
-        generator: {
-          webCompat: uniPlatform.isWeb ? true : undefined,
-        },
+        generator: officialPostcssParity
+          ? false
+          : {
+              webCompat: uniPlatform.isWeb ? true : undefined,
+            },
         styleInjector: false,
       }),
     ],
+    css: {
+      postcss: {
+        plugins: parity.createOfficialPostcssParityPlugins(),
+      },
+    },
     resolve: {
       alias: {
         '@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js': uniMpVueRuntimePath,

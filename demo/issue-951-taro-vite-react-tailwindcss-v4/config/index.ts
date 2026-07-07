@@ -8,7 +8,8 @@ import path from 'node:path'
 
 const taroPlatform = resolveTaroPlatform()
 const projectRoot = path.resolve(__dirname, '..')
-const generator = {
+const officialPostcssParity = process.env.WEAPP_TW_OFFICIAL_POSTCSS_PARITY === '1'
+const generator = officialPostcssParity ? false : {
   target: taroPlatform.isWeb || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
     ? 'web'
     : 'weapp',

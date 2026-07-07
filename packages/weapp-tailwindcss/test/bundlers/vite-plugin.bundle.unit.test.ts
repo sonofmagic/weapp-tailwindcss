@@ -69,8 +69,10 @@ function getOutputOptionsHandler(plugin: Plugin) {
 function normalizeGeneratorOptions(options: any) {
   const target = options?.target ?? 'weapp'
   const platformFamily = target === 'web' ? 'web' : 'mini-program'
-  if (options == null) {
+  const enabled = options !== false
+  if (options == null || options === false) {
     return {
+      enabled,
       importFallback: false,
       target,
       branch: {
@@ -89,6 +91,7 @@ function normalizeGeneratorOptions(options: any) {
     }
   }
   return {
+    enabled,
     importFallback: options.importFallback ?? false,
     target,
     branch: {

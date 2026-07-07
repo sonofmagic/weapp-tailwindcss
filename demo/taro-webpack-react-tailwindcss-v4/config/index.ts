@@ -5,6 +5,7 @@ import devConfig from './dev'
 import prodConfig from './prod'
 import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 import { resolveTaroPlatform } from 'weapp-tailwindcss/framework'
+import parity from '../../official-postcss-parity-plugin.cjs'
 
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
 const tailwindcssV4GradientFallback = process.env.WEAPP_TW_V4_GRADIENT_FALLBACK === '1'
@@ -27,7 +28,8 @@ const taroPlatform = resolveTaroPlatform()
 const webCompat = taroPlatform.isWeb
   ? process.env.WEAPP_TW_WEB_COMPAT !== '0'
   : undefined
-const generator = {
+const officialPostcssParity = process.env.WEAPP_TW_OFFICIAL_POSTCSS_PARITY === '1'
+const generator = (officialPostcssParity ? false : {
   target: taroPlatform.isWeb || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
     ? 'web'
     : 'weapp',
@@ -35,7 +37,7 @@ const generator = {
   styleOptions: {
     cssOptions,
   },
-} satisfies UserDefinedOptions['generator']
+}) satisfies UserDefinedOptions['generator']
 
 function disableWebpackDevServerClientOverlay(chain: any) {
   chain.devServer.set('client', {
@@ -127,6 +129,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                   cssEntries,
                   cssOptions,
                   generator,
+                  postcssOptions: parity.createOfficialPostcssParityPostcssOptions(),
                   styleInjector: false,
                   // before 2248
                   // after 309
@@ -179,6 +182,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                   cssEntries,
                   cssOptions,
                   generator,
+                  postcssOptions: parity.createOfficialPostcssParityPostcssOptions(),
                   styleInjector: false,
                 } satisfies UserDefinedOptions
               ]

@@ -64,9 +64,10 @@ export interface WeappTailwindcssGeneratorOptions {
   bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined
 }
 
-export type WeappTailwindcssGeneratorUserOptions = WeappTailwindcssGeneratorOptions
+export type WeappTailwindcssGeneratorUserOptions = WeappTailwindcssGeneratorOptions | false
 
 export interface NormalizedWeappTailwindcssGeneratorOptions {
+  enabled: boolean
   target: WeappTailwindcssGeneratorTarget
   branch: RuntimeBranch
   config?: string | undefined
@@ -83,7 +84,9 @@ export function normalizeWeappTailwindcssGeneratorOptions(
   options: WeappTailwindcssGeneratorUserOptions | undefined,
   context: Omit<RuntimeBranchContext, 'generatorTarget'> = {},
 ): NormalizedWeappTailwindcssGeneratorOptions {
-  const target = options?.target
+  const enabled = options !== false
+  const objectOptions = enabled ? options : undefined
+  const target = objectOptions?.target
     ?? (shouldUseUniAppViteWebViewGeneratorTarget(context.appType, context.platform)
       ? 'web'
       : inferGeneratorTargetFromEnv())
@@ -91,11 +94,12 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     ...context,
     generatorTarget: target,
   })
-  const hasExplicitTarget = options !== undefined && Object.hasOwn(options, 'target')
-  const webCompat = options?.webCompat ?? (!hasExplicitTarget && branch.isWeb ? true : undefined)
+  const hasExplicitTarget = objectOptions !== undefined && Object.hasOwn(objectOptions, 'target')
+  const webCompat = objectOptions?.webCompat ?? (!hasExplicitTarget && branch.isWeb ? true : undefined)
 
-  if (options == null) {
+  if (objectOptions == null) {
     return {
+      enabled,
       target,
       branch,
       webCompat,
@@ -108,15 +112,16 @@ export function normalizeWeappTailwindcssGeneratorOptions(
   }
 
   return {
+    enabled,
     target,
     branch,
-    config: options.config,
-    styleOptions: options.styleOptions,
+    config: objectOptions.config,
+    styleOptions: objectOptions.styleOptions,
     webCompat,
     hmr: {
-      preserveDeletedCss: options.hmr?.preserveDeletedCss ?? true,
+      preserveDeletedCss: objectOptions.hmr?.preserveDeletedCss ?? true,
     },
-    importFallback: options.importFallback ?? false,
-    bareArbitraryValues: options.bareArbitraryValues,
+    importFallback: objectOptions.importFallback ?? false,
+    bareArbitraryValues: objectOptions.bareArbitraryValues,
   }
 }

@@ -2,6 +2,7 @@ import type { TailwindcssRuntimeFactoryOptions } from '@/tailwindcss/v4'
 import type { InternalUserDefinedOptions } from '@/types'
 import { logger } from '@weapp-tailwindcss/logger'
 import { findWorkspaceRoot } from '@/context/workspace'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import {
   createTailwindcssRuntimeForBase,
   groupCssEntriesByBase,
@@ -22,7 +23,12 @@ export function createTailwindcssRuntimeFromContext(ctx: InternalUserDefinedOpti
     appType,
     arbitraryValues,
   } = ctx
-  const effectiveSupportCustomLengthUnits = ctx.generator?.target === 'web'
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(ctx.generator, {
+    appType,
+    platform: ctx.cssOptions?.platform ?? ctx.platform,
+    uniAppX: ctx.uniAppX,
+  })
+  const effectiveSupportCustomLengthUnits = generatorOptions.target === 'web'
     ? false
     : supportCustomLengthUnits
 

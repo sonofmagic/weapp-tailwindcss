@@ -15,12 +15,14 @@ import ts from 'gulp-typescript'
 import gutil from 'gulp-util'
 import dartSass from 'sass'
 import { createPlugins } from 'weapp-tailwindcss/gulp'
+import parity from '../official-postcss-parity-plugin.cjs'
 
 const isDebug = Boolean(process.env.DEBUG)
 const isWatch = Boolean(process.env.WATCH)
 // const isLocal = Boolean(process.env.LOCAL)
 const useBabel = Boolean(process.env.BABEL)
 const projectRoot = path.dirname(fileURLToPath(import.meta.url))
+const officialPostcssParity = process.env.WEAPP_TW_OFFICIAL_POSTCSS_PARITY === '1'
 
 const platformMap = {
   weapp: {
@@ -60,7 +62,8 @@ const { transformJs, transformWxml, transformWxss } = createPlugins({
   ],
   cssSourceTrace: true,
   rem2rpx: true,
-  generator,
+  generator: officialPostcssParity ? false : generator,
+  postcssOptions: parity.createOfficialPostcssParityPostcssOptions(),
   tailwindcss: {
     version: 4,
     packageName: 'tailwindcss',

@@ -52,6 +52,7 @@ export function resolveStyleOptionsFromContext(
 
   return {
     appType: ctx.appType,
+    postcssOptions: ctx.postcssOptions,
     cssPreflight: cssOptions.cssPreflight,
     cssPreflightRange: cssOptions.cssPreflightRange,
     cssChildCombinatorReplaceValue: cssOptions.cssChildCombinatorReplaceValue,

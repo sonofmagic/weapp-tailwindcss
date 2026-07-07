@@ -95,6 +95,15 @@ describe('get options', () => {
     expect(normalizeWeappTailwindcssGeneratorOptions({ importFallback: true }).importFallback).toBe(true)
   })
 
+  it('allows disabling Tailwind generation without disabling transform options', () => {
+    const options = normalizeWeappTailwindcssGeneratorOptions(false)
+
+    expect(options.enabled).toBe(false)
+    expect(options.target).toBe('weapp')
+    expect(options.importFallback).toBe(false)
+    expect(options.hmr.preserveDeletedCss).toBe(true)
+  })
+
   it('uses high-performance dev HMR css append mode by default', () => {
     expect(normalizeWeappTailwindcssGeneratorOptions(undefined).hmr.preserveDeletedCss).toBe(true)
     expect(normalizeWeappTailwindcssGeneratorOptions({}).hmr.preserveDeletedCss).toBe(true)

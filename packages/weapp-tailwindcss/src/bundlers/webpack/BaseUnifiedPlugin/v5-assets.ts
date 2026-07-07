@@ -5,6 +5,7 @@ import process from 'node:process'
 import { MappingChars2String } from '@weapp-core/escape'
 import { filterExistingCssRules } from '@weapp-tailwindcss/postcss'
 import { pluginName } from '@/constants'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
@@ -93,8 +94,13 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
   } = options
   const { Compilation, sources } = compiler.webpack
   const { ConcatSource } = sources
-  const generatorOptions = compilerOptions.generator
-  const isWebGeneratorTarget = generatorOptions?.target === 'web'
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(compilerOptions.generator, {
+    appType: compilerOptions.appType,
+    platform: compilerOptions.cssOptions?.platform ?? compilerOptions.platform,
+    tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
+    uniAppX: compilerOptions.uniAppX,
+  })
+  const isWebGeneratorTarget = generatorOptions.target === 'web'
   const cssHandlerOptionsCache = new Map<string, WebpackCssHandlerOptions>()
   const cssUserHandlerOptionsCache = new Map<string, WebpackCssHandlerOptions>()
   const webpackSourceCandidateScanCache = createWebpackSourceCandidateScanCache()

@@ -68,6 +68,22 @@ function resolveGeneratorSourceConcurrency() {
   return 1
 }
 
+function hasPostcssUserPlugins(options: GenerateCssByGeneratorOptions['cssHandlerOptions']) {
+  const plugins = options.postcssOptions?.plugins
+  if (Array.isArray(plugins)) {
+    return plugins.length > 0
+  }
+  return typeof plugins === 'object' && plugins !== null && Object.keys(plugins).length > 0
+}
+
+function shouldProcessDisabledGeneratorCss(rawSource: string, options: GenerateCssByGeneratorOptions['cssHandlerOptions']) {
+  if (!hasPostcssUserPlugins(options)) {
+    return false
+  }
+  return /@import\s+(?:url\(\s*)?["']tailwindcss(?:\/[^"')\s]*)?["']/.test(rawSource)
+    || hasTailwindApplyDirective(rawSource)
+}
+
 function intersectCandidateSets(left: Set<string>, right: Set<string>) {
   if (left.size === 0 || right.size === 0) {
     return new Set<string>()
@@ -252,6 +268,32 @@ export async function generateCssByGenerator(
   const majorVersion = runtimeState.tailwindRuntime.majorVersion
   if (majorVersion !== 4) {
     throw new Error('weapp-tailwindcss 生成管线仅支持 Tailwind CSS v4。')
+  }
+  if (!generatorOptions.enabled) {
+    debug('tailwind direct css generation disabled: %s', file)
+    if (shouldProcessDisabledGeneratorCss(rawSource, cssHandlerOptions)) {
+      const handled = await styleHandler(rawSource, cssHandlerOptions)
+      return {
+        css: finalizeWebGeneratorCss(handled.css, generatorOptions.target, generatorOptions.webCompat),
+        classSet: resolveGeneratedCssClassSet(
+          generatorOptions.target,
+          new Set(),
+          runtime,
+          handled.css,
+          opts.escapeMap,
+          options.previousClassSet,
+        ),
+        target: generatorOptions.target,
+        source: 'generator',
+        dependencies: [],
+        metadata: {
+          file,
+          majorVersion,
+          rawCss: rawSource,
+        },
+      }
+    }
+    return undefined
   }
   const effectiveRawSource = stripUnmatchedTailwindSourceMediaCloseFragments(
     stripTailwindSourceMediaFragments(

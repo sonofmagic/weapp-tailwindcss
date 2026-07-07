@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 // dynamic require of is not supported
 // const uni = require("@dcloudio/vite-plugin-uni");
 import uni from "@dcloudio/vite-plugin-uni";
+import parity from '../official-postcss-parity-plugin.cjs'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { resolveUniPlatform } from 'weapp-tailwindcss/framework'
 
@@ -12,6 +13,7 @@ const require = createRequire(import.meta.url);
 const projectRoot = dirname(fileURLToPath(import.meta.url));
 const uniMpVueRuntimePath = require.resolve("@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js");
 const uniMpVueDir = dirname(uniMpVueRuntimePath);
+const officialPostcssParity = process.env.WEAPP_TW_OFFICIAL_POSTCSS_PARITY === '1'
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => {
@@ -34,11 +36,19 @@ export default defineConfig(async () => {
         cssSourceTrace: true,
         rem2rpx: true,
         styleInjector: false,
-        generator: {
-          webCompat,
-        },
+        postcssOptions: parity.createOfficialPostcssParityPostcssOptions(),
+        generator: officialPostcssParity
+          ? false
+          : {
+              webCompat,
+            },
       }),
     ],
+    css: {
+      postcss: {
+        plugins: [],
+      },
+    },
     resolve: {
       alias: {
         // Force uni-app runtime to use the v3 build that still exports findComponentPropsData

@@ -233,7 +233,6 @@ export function createViteFrameworkPlugins(
   if (!disabledOptions.plugin && tailwindcssMajorVersion !== 4) {
     throw new Error('weapp-tailwindcss/vite 新生成管线仅支持 Tailwind CSS v4，请升级 tailwindcss 或停留在旧版 weapp-tailwindcss。')
   }
-  const shouldOwnTailwindGeneration = !disabledOptions.plugin
   const shouldRewriteCssImports = opts.rewriteCssImports === true
   let resolvedConfig: ResolvedConfig | undefined
   const resolveViteStylePlatform = () => {
@@ -258,6 +257,7 @@ export function createViteFrameworkPlugins(
     tailwindcssMajorVersion,
     uniAppX,
   })
+  const shouldOwnTailwindGeneration = !disabledOptions.plugin && resolveCurrentGeneratorOptions().enabled
   const resolveCurrentGeneratorBranch = () => resolveGeneratorRuntimeBranch(resolveCurrentGeneratorOptions(), {
     appType: opts.appType,
     platform: resolveGeneratorPlatform(),
