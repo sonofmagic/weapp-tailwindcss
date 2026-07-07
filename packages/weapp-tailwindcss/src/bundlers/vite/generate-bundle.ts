@@ -365,6 +365,17 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     const resolveConfiguredTailwindV4CssEntryOutputFile = (sourceFile: string) =>
       resolveViteCssPipelineOutputFile(sourceFile, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension, bundleFiles)
+    const shouldSelectConfiguredRootCssOutput = (outputFile: string) => {
+      if (!opts.cssMatcher(outputFile) || !isRootStyleOutputFile(outputFile)) {
+        return false
+      }
+      return context.cssPipelineStrategy?.shouldSelectConfiguredCssEntryRootSource?.({
+        ...cssPipelineContext,
+        isRootStyleOutputFile,
+        outputFile,
+      }) === true
+      || cssPipelineContext.currentGeneratorBranch.isWeb
+    }
     const selectConfiguredRootCssSourceEntry = (
       outputFile: string,
       entries: ReturnType<typeof getConfiguredTailwindV4CssSourceEntries>,
@@ -378,27 +389,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       if (matchedOriginalEntry && outputFile.replace(/[?#].*$/, '').endsWith('.css')) {
         return matchedOriginalEntry
       }
-      if (
-        !(
-          (
-            context.cssPipelineStrategy?.shouldSelectConfiguredCssEntryRootSource?.({
-              ...cssPipelineContext,
-              isRootStyleOutputFile,
-              outputFile,
-            }) === true
-          )
-          || (
-            cssPipelineContext.currentGeneratorBranch.isWeb
-            && opts.cssMatcher(outputFile)
-            && isRootStyleOutputFile(outputFile)
-          )
-          || (
-            !cssPipelineContext.currentGeneratorBranch.isWeb
-            && opts.cssMatcher(outputFile)
-            && isRootStyleOutputFile(outputFile)
-          )
-        )
-      ) {
+      if (!shouldSelectConfiguredRootCssOutput(outputFile)) {
         return undefined
       }
       const shouldRequireExplicitConfiguredEntry = !cssPipelineContext.currentGeneratorBranch.isWeb
@@ -458,6 +449,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         cssPipelineContext.currentGeneratorBranch.isWeb
         || !opts.cssMatcher(outputFile)
         || !isRootStyleOutputFile(outputFile)
+        || !shouldSelectConfiguredRootCssOutput(outputFile)
       ) {
         return false
       }
@@ -602,6 +594,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       return normalizeOutputPathKey(outputFile).includes('/')
         || (
           typeof sourceFile === 'string'
+          && shouldSelectConfiguredRootCssOutput(outputFile)
           && configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(sourceFile))
         )
     }
@@ -660,7 +653,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           .map((entry) => {
             const outputFile = resolveMatchedCssSourceOutputFile(entry.file)
             const isExplicitConfiguredEntry = configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(entry.file))
-            return outputFile && (normalizeOutputPathKey(outputFile).includes('/') || isExplicitConfiguredEntry)
+            return outputFile && (normalizeOutputPathKey(outputFile).includes('/') || (isExplicitConfiguredEntry && shouldSelectConfiguredRootCssOutput(outputFile)))
               ? {
                   file: entry.file,
                   outputFile,

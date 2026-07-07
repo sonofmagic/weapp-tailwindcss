@@ -14777,6 +14777,9 @@ const fallback = "bg-[#434332] px-[32px]"
       },
       ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
       ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      cssPipelineStrategy: {
+        shouldSelectConfiguredCssEntryRootSource: ({ isRootStyleOutputFile, outputFile }) => isRootStyleOutputFile(outputFile),
+      },
       debug: vi.fn(),
       getResolvedConfig: () => ({
         command: 'build',

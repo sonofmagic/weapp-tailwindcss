@@ -37,11 +37,79 @@ function collectWebpackCssTokenSourceRefs(source: string) {
   return refs
 }
 
+function readWebpackCompilationAssetSource(
+  compilation: {
+    getAsset?: ((file: string) => { source?: { source?: (() => string | { toString: () => string }) } } | undefined) | undefined
+  },
+  file: string,
+) {
+  const source = compilation.getAsset?.(file)?.source?.source?.()
+  if (source === undefined) {
+    return undefined
+  }
+  return typeof source === 'string' ? source : source.toString()
+}
+
+function resolveWebpackCssImportFile(file: string, request: string) {
+  if (/^(?:https?:)?\/\//i.test(request) || request.startsWith('/')) {
+    return undefined
+  }
+  if (!/\.(?:css|wxss|acss|ttss|qss|jxss|tyss)(?:$|[?#])/i.test(request)) {
+    return undefined
+  }
+  const cleanRequest = request.replace(/[?#].*$/, '')
+  return normalizeWebpackCssSourceRef(path.posix.join(path.posix.dirname(normalizeWebpackCssSourceRef(file)), cleanRequest))
+}
+
+function collectCssImportRequests(source: string) {
+  return [...source.matchAll(/@import\s+(?:url\(\s*)?(?:"([^"]+)"|'([^']+)'|([^\s;)]+))/g)]
+    .map(match => match[1] ?? match[2] ?? match[3])
+    .filter((request): request is string => typeof request === 'string' && request.length > 0)
+}
+
+function collectMainImportedCssFiles(
+  compilation: {
+    chunks: Iterable<{ files?: Iterable<string> | string[] | undefined }>
+    getAsset?: ((file: string) => { source?: { source?: (() => string | { toString: () => string }) } } | undefined) | undefined
+  },
+  cssAssetFiles: Iterable<string>,
+  cssMatcher: (file: string) => boolean,
+  isMainCssFile: (file: string) => boolean,
+) {
+  const files = new Set<string>()
+  const candidates = new Set<string>(cssAssetFiles)
+  for (const chunk of compilation.chunks) {
+    for (const file of chunk.files ?? []) {
+      candidates.add(file)
+    }
+  }
+  for (const file of candidates) {
+    if (!cssMatcher(file) || !isMainCssFile(file)) {
+      continue
+    }
+    const source = readWebpackCompilationAssetSource(compilation, file)
+    if (!source?.includes('@import')) {
+      continue
+    }
+    for (const request of collectCssImportRequests(source)) {
+      const importedFile = resolveWebpackCssImportFile(file, request)
+      if (importedFile) {
+        files.add(importedFile)
+      }
+    }
+  }
+  return files
+}
+
 export function createWebpackCssSourceResolvers(options: {
   activeWebpackAssetResourceFiles: ReadonlySet<string>
   appType: SetupWebpackV5ProcessAssetsHookOptions['appType']
   compilerOptions: SetupWebpackV5ProcessAssetsHookOptions['options']
-  compilation: { chunks: Iterable<{ files?: Iterable<string> | string[] | undefined, hasRuntime?: () => boolean, name?: string | undefined }> }
+  compilation: {
+    chunks: Iterable<{ files?: Iterable<string> | string[] | undefined, hasRuntime?: () => boolean, name?: string | undefined }>
+    getAsset?: ((file: string) => { source?: { source?: (() => string | { toString: () => string }) } } | undefined) | undefined
+  }
+  cssAssetFiles: Iterable<string>
   cssAssetResources: ReadonlyMap<string, ReadonlySet<string>>
   cssHandlerOptionsCache: Map<string, WebpackCssHandlerOptions>
   cssSources: Map<string, { css: string | undefined, processed?: boolean | undefined }>
@@ -57,6 +125,7 @@ export function createWebpackCssSourceResolvers(options: {
     appType,
     compilerOptions,
     compilation,
+    cssAssetFiles,
     cssAssetResources,
     cssHandlerOptionsCache,
     cssSources,
@@ -91,6 +160,8 @@ export function createWebpackCssSourceResolvers(options: {
       resourcesByAsset: cssAssetResources,
     },
   )
+  const mainImportedCssFiles = collectMainImportedCssFiles(compilation, cssAssetFiles, compilerOptions.cssMatcher, file =>
+    compilerOptions.mainCssChunkMatcher(file, appType) || inferredMainCssFiles.has(file))
   const singleConfiguredCssAsset = isWebGeneratorTarget
     && configuredMainCssEntryFiles.length > 0
     && groupedCssEntriesLength === 1
@@ -111,6 +182,7 @@ export function createWebpackCssSourceResolvers(options: {
     }
     return compilerOptions.mainCssChunkMatcher(file, appType)
       || inferredMainCssFiles.has(file)
+      || mainImportedCssFiles.has(normalizeWebpackCssSourceRef(file))
       || file === singleConfiguredCssAsset
   }
   const activeWebpackCssSourceFiles = new Set<string>()

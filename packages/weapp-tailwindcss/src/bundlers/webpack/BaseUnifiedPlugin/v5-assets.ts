@@ -196,6 +196,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           appType,
           compilerOptions,
           compilation: compilation as any,
+          cssAssetFiles: entries.map(([file]) => file),
           cssAssetResources,
           cssHandlerOptionsCache,
           cssSources,

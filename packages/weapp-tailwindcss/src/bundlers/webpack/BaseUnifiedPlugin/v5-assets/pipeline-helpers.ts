@@ -9,6 +9,7 @@ import process from 'node:process'
 import { MappingChars2String } from '@weapp-core/escape'
 import { filterExistingCssRules, postcss, removeUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
 import { resolveStyleOptionsFromContext } from '@/context/style-options'
+import { getDefaultCssPreflight } from '@/defaults'
 import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
 import { finalizeMiniProgramCss, pruneMiniProgramGeneratedCss, stripMiniProgramCssSpecificityPlaceholders } from '../../../shared/css-cleanup'
 import { createCssTokenSourceMap, isCssSourceTraceEnabled } from '../../../shared/css-source-trace'
@@ -33,6 +34,81 @@ export interface WebpackCssHandlerOptions {
 }
 
 const WEBPACK_CSS_HANDLER_OPTIONS_CACHE_MAX = 128
+
+function resolveConfiguredWebpackCssPreflight(
+  compilerOptions: SetupWebpackV5ProcessAssetsHookOptions['options'],
+  styleOptions: ReturnType<typeof resolveStyleOptionsFromContext>,
+) {
+  return styleOptions.cssPreflight ?? compilerOptions.cssPreflight ?? getDefaultCssPreflight()
+}
+
+function resolveExistingWebpackCssPreflight(
+  compilerOptions: SetupWebpackV5ProcessAssetsHookOptions['options'],
+  styleOptions: ReturnType<typeof resolveStyleOptionsFromContext>,
+  source: string,
+) {
+  return hasMiniProgramPreflightSelector(source)
+    ? resolveConfiguredWebpackCssPreflight(compilerOptions, styleOptions)
+    : undefined
+}
+
+function hasMiniProgramPreflightSelector(source: string) {
+  try {
+    let found = false
+    postcss.parse(source).walkRules((rule) => {
+      const selectors = new Set((rule.selectors ?? [rule.selector])
+        .map(selector => selector.trim().replace(/^:before$/, '::before').replace(/^:after$/, '::after')))
+      if (
+        selectors.has('view')
+        && selectors.has('text')
+        && selectors.has('::before')
+        && selectors.has('::after')
+      ) {
+        found = true
+        return false
+      }
+    })
+    return found
+  }
+  catch {
+    return /(?:^|[},])\s*view\s*,\s*text\s*,\s*::after\s*,\s*::before\s*\{/.test(source)
+  }
+}
+
+function ensureWebpackMiniProgramTwContentInit(source: string) {
+  if (!source.includes('var(--tw-content)')) {
+    return source
+  }
+  try {
+    const root = postcss.parse(source)
+    let changed = false
+    root.walkRules((rule) => {
+      const selectors = new Set((rule.selectors ?? [rule.selector])
+        .map(selector => selector.trim().replace(/^:before$/, '::before').replace(/^:after$/, '::after')))
+      if (
+        !selectors.has('view')
+        || !selectors.has('text')
+        || !selectors.has('::before')
+        || !selectors.has('::after')
+      ) {
+        return
+      }
+      let hasContentInit = false
+      rule.walkDecls('--tw-content', () => {
+        hasContentInit = true
+      })
+      if (!hasContentInit) {
+        rule.append(postcss.decl({ prop: '--tw-content', value: '\'\'' }))
+        changed = true
+      }
+      return false
+    })
+    return changed ? root.toString() : source
+  }
+  catch {
+    return source
+  }
+}
 
 export function removeTailwindV4StandaloneHostPreflightRule(source: string) {
   if (!source.includes('--theme(')) {
@@ -980,7 +1056,7 @@ export function finalizeMiniProgramUserCssAssetSource(
     cssPreflight: options.cssPreflight === false
       ? false
       : !hasMiniProgramTailwindV4PreflightReset(source)
-          ? compilerOptions.cssPreflight
+          ? resolveConfiguredWebpackCssPreflight(compilerOptions, styleOptions)
           : undefined,
     isTailwindcssV4: true,
     tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
@@ -1192,6 +1268,11 @@ export function finalizeWebpackCssAssetSource(
     { importFallback: true },
   )
   if (options.generatedCss !== true) {
+    finalized = finalizeMiniProgramCss(finalized, {
+      cssPreflight: false,
+      isTailwindcssV4: true,
+      tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
+    })
     return stripMiniProgramCssSpecificityPlaceholders(removeMiniProgramHoverSelectors(finalized, styleOptions.cssRemoveHoverPseudoClass))
   }
   try {
@@ -1201,15 +1282,17 @@ export function finalizeWebpackCssAssetSource(
   }
   catch {
   }
+  const hasExistingMiniProgramPreflight = hasMiniProgramPreflightSelector(source)
   finalized = finalizeMiniProgramCss(finalized, {
-    cssPreflight: options.cssPreflight === false
+    cssPreflight: options.cssPreflight === false && !hasExistingMiniProgramPreflight
       ? false
       : !hasMiniProgramTailwindV4PreflightReset(finalized)
-          ? compilerOptions.cssPreflight
+          ? resolveExistingWebpackCssPreflight(compilerOptions, styleOptions, source)
           : undefined,
     isTailwindcssV4: true,
     tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
   })
+  finalized = ensureWebpackMiniProgramTwContentInit(finalized)
   return stripMiniProgramCssSpecificityPlaceholders(removeMiniProgramHoverSelectors(finalized, styleOptions.cssRemoveHoverPseudoClass))
 }
 

@@ -330,6 +330,7 @@ describe('bundlers/vite helper modules', () => {
       rawSource: '@import "tailwindcss"; @source "./index.css"; .issue-951-page-local { color: #111827; }',
       sourceFile: '/repo/src/pages/index/index.css',
     })
+    expect(outOfOrderResolver.resolve('vendors.css', '.nut-icon{display:inline-block}')).toBeUndefined()
   })
 
   it('resolves page css output from the single css module imported by its sibling chunk', () => {

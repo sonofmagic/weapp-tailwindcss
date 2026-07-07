@@ -7,7 +7,7 @@ Entry: taro-vite-react-tailwindcss-v4/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 558520 | 2312 | false | false | false | true | true | false | true |
+| 564209 | 2312 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -18,6 +18,7 @@ Entry: taro-vite-react-tailwindcss-v4/dist/app.wxss
 | 3 | `pages/index/index.wxss` | [artifacts/pages__index__index.wxss](artifacts/pages__index__index.wxss) |
 | 4 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) |
 | 5 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) |
+| 6 | `vendors.wxss` | [artifacts/vendors.wxss](artifacts/vendors.wxss) |
 
 ## Generator CSS Summary
 
@@ -27,4 +28,5 @@ Entry: taro-vite-react-tailwindcss-v4/dist/app.wxss
 | `app-origin.wxss` | [artifacts/app-origin.wxss](artifacts/app-origin.wxss) | 548296 | 2267 | false | false | false | true | true | false | true |
 | `pages/index/index.wxss` | [artifacts/pages__index__index.wxss](artifacts/pages__index__index.wxss) | 50 | 1 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) | 1059 | 6 | false | false | false | false | false | false | true |
-| `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) | 9086 | 62 | false | false | false | false | false | false | true |
+| `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) | 5250 | 29 | false | false | false | false | false | false | true |
+| `vendors.wxss` | [artifacts/vendors.wxss](artifacts/vendors.wxss) | 9525 | 36 | false | false | false | false | false | false | false |

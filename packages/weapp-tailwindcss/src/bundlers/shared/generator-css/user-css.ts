@@ -806,10 +806,12 @@ export async function transformGeneratorUserCss(
   if (options.processed) {
     const cleanedSource = options.generatorTarget === 'weapp'
       ? removeTailwindV4GeneratedUserCssArtifacts(
-          removeProcessedMiniProgramUnsupportedCss(source, {
-            ...options.generatorStyleOptions,
-            ...options.cssUserHandlerOptions,
-          }),
+          unwrapMiniProgramCascadeLayers(
+            removeProcessedMiniProgramUnsupportedCss(source, {
+              ...options.generatorStyleOptions,
+              ...options.cssUserHandlerOptions,
+            }),
+          ),
         )
       : source
     return stripUnmatchedTailwindSourceMediaCloseFragments(

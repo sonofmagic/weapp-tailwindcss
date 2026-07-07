@@ -485,8 +485,8 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       expect(assetStore['sub-normal/pages/index.wxss']).toContain('.bg-normal-subpackage-marker')
       expect(assetStore['sub-normal/pages/index.wxss']).toContain('.sub-only')
       expect(assetStore['sub-normal/pages/index.wxss']).not.toContain('.main-only')
-      expect(assetStore['sub-normal/pages/index.wxss']).not.toContain('view,text,::after,::before')
-      expect(assetStore['sub-normal/pages/index.wxss']).not.toContain('box-sizing:border-box')
+      expect(assetStore['sub-normal/pages/index.wxss']).toContain('view,text,::after,::before')
+      expect(assetStore['sub-normal/pages/index.wxss']).toContain('box-sizing: border-box')
     }
     finally {
       vi.doUnmock('@/generator')

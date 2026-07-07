@@ -78,8 +78,7 @@ const uniAppCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
     return context.isWebGeneratorTarget && isUniAppWebviewAppBundle(context.bundleFiles)
   },
   shouldSelectConfiguredCssEntryRootSource(context) {
-    return context.currentGeneratorBranch.isWeb
-      && context.opts.cssMatcher(context.outputFile)
+    return context.opts.cssMatcher(context.outputFile)
       && context.isRootStyleOutputFile(context.outputFile)
   },
   shouldTransformServeJs(context) {

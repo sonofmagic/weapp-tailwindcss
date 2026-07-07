@@ -813,6 +813,10 @@ describe('bundlers/webpack v5-assets helpers', () => {
       generatedCss: true,
     })).toContain('.card')
     expect(finalizeWebpackCssAssetSource('.card:hover{color:red}', baseContext as any, false)).not.toContain(':hover')
+    const layeredUserCss = finalizeWebpackCssAssetSource('@layer base{wx-button{background:#000}}abc{background:#222}', baseContext as any, false)
+    expect(layeredUserCss).not.toContain('@layer')
+    expect(layeredUserCss).toContain('wx-button{background:#000}')
+    expect(layeredUserCss).toContain('abc{background:#222}')
     expect(finalizeWebpackCssAssetSource('@media {', baseContext as any, false, {
       generatedCss: true,
     })).toContain('@media')
@@ -829,5 +833,24 @@ describe('bundlers/webpack v5-assets helpers', () => {
     })
     expect(gradientCss).toContain('--tw-gradient-position:to right')
     expect(gradientCss).not.toContain('in oklab')
+
+    const defaultPreflightContext = createContext({
+      cssRemoveHoverPseudoClass: true,
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
+        majorVersion: 4,
+      },
+    } as any)
+    const defaultPreflightCss = finalizeWebpackCssAssetSource([
+      'view,text,::after,::before{--tw-content:""}',
+      '.before_ccontent-test::before{--tw-content:"test";content:var(--tw-content)}',
+    ].join(''), defaultPreflightContext as any, false, {
+      generatedCss: true,
+    })
+    expect(defaultPreflightCss).toContain('border:0 solid')
+    expect(defaultPreflightCss).toContain('box-sizing:border-box')
+    expect(defaultPreflightCss).toContain('margin:0')
+    expect(defaultPreflightCss).toContain('padding:0')
+    expect(defaultPreflightCss).toContain('--tw-content:')
   })
 })
