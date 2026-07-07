@@ -34,6 +34,9 @@ describe('bundlers/vite source scan', () => {
     expect(matcher?.('/project/src/index.js')).toBe(true)
     expect(matcher?.('/project/src/index.html')).toBe(true)
     expect(matcher?.('/project/other/index.js')).toBe(false)
+
+    const explicitEmptyMatcher = createViteSourceScanMatcher([])
+    expect(explicitEmptyMatcher?.('/project/src/index.js')).toBe(false)
   })
 
   it('resolves Tailwind v4 source candidates from cssSources before fallback source resolution', async () => {
@@ -110,6 +113,43 @@ describe('bundlers/vite source scan', () => {
 
     expect(resolved).toBeUndefined()
     expect(fallbackResolve).not.toHaveBeenCalled()
+  })
+
+  it('keeps explicit Tailwind v4 cssSources with only negated sources from expanding to workspace scans', async () => {
+    const fallbackResolve = vi.fn(async () => {
+      throw new Error('explicit source(none) with only @source not should not fall back to full Tailwind v4 source resolution')
+    })
+    vi.doMock('@/tailwindcss/v4-engine', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
+      return {
+        ...actual,
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+          projectRoot: '/project',
+          base: '/project',
+          baseFallbacks: [],
+          cssSources: [{
+            file: '/project/src/app.css',
+            base: '/project/src',
+            css: [
+              '@import "tailwindcss" source(none);',
+              '@source not "./generated/**";',
+            ].join('\n'),
+          }],
+          packageName: 'tailwindcss4',
+        })),
+        resolveTailwindV4SourceFromRuntime: fallbackResolve,
+      }
+    })
+
+    const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
+    const resolved = await resolveViteSourceScanEntries({}, {
+      majorVersion: 4,
+    } as TailwindcssRuntimeLike)
+
+    expect(fallbackResolve).not.toHaveBeenCalled()
+    expect(resolved?.explicit).toBe(true)
+    expect(resolved?.entries).toEqual([])
+    expect(resolved?.dependencies).toEqual(['/project/src/app.css'])
   })
 
   it('resolves Tailwind v4 cssSources @config relative to their source file directory', async () => {

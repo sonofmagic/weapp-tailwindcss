@@ -147,6 +147,9 @@ function createDefaultIgnoredSources(
 
 export function resolveSourceCandidateScanFiles(options: ResolveSourceCandidateScanFilesOptions) {
   const resolvedRoot = path.resolve(options.root)
+  if (options.explicit && options.entries?.length && options.entries.every(entry => entry.negated)) {
+    return Promise.resolve([])
+  }
   const outDirIgnore = resolveOutDirIgnorePattern(resolvedRoot, options.outDir)
   const scanEntries = normalizeScanEntries(resolvedRoot, options.entries, outDirIgnore)
   const ignoredSources = createDefaultIgnoredSources(resolvedRoot, outDirIgnore, options.entries, options.explicit)
