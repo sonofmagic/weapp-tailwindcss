@@ -999,6 +999,13 @@ function shouldUseCssAssetAsMainInjectionTarget(
       && isCssOutputFile(outputFile)
       && !isMiniProgramStyleOutputFile(outputFile),
     )
+  const explicitStyleOutputTargets = records
+    .filter(record => record.injectIntoMain === true)
+    .map(record => typeof record.outputFile === 'string' ? normalizeOutputPathKey(record.outputFile) : undefined)
+    .filter((outputFile): outputFile is string =>
+      typeof outputFile === 'string'
+      && isRootStyleOutputFile(outputFile),
+    )
   if (
     context !== undefined
     && options.cssPipelineStrategy?.shouldPreferExplicitWebCssTargets?.({
@@ -1019,6 +1026,18 @@ function shouldUseCssAssetAsMainInjectionTarget(
     if (record.injectIntoMain !== true) {
       return false
     }
+    if (explicitStyleOutputTargets.length > 0) {
+      return explicitStyleOutputTargets.includes(fileKey)
+        || (
+          isRootStyleOutputFile(file)
+          && isViteProcessedRootStyleImportingTargets(bundle, file, explicitStyleOutputTargets)
+        )
+        || (
+          isRootStyleOutputFile(file)
+          && opts.mainCssChunkMatcher(file, opts.appType)
+          && explicitStyleOutputTargets.some(outputFile => opts.mainCssChunkMatcher(outputFile, opts.appType))
+        )
+    }
     return isRootStyleOutputFile(file)
       || (
         typeof record.outputFile === 'string'
@@ -1029,13 +1048,36 @@ function shouldUseCssAssetAsMainInjectionTarget(
     return true
   }
   if (records.some(record => record.injectIntoMain === true)) {
-    return false
+    const matchedExplicitMiniProgramTargets = explicitStyleOutputTargets.filter(outputFile =>
+      isMiniProgramStyleOutputFile(outputFile)
+      && opts.mainCssChunkMatcher(outputFile, opts.appType),
+    )
+    if (matchedExplicitMiniProgramTargets.length > 0) {
+      return matchedExplicitMiniProgramTargets.includes(fileKey)
+    }
+    return isRootStyleOutputFile(file) && isMiniProgramStyleOutputFile(file)
   }
   if (opts.mainCssChunkMatcher(file, opts.appType)) {
     return true
   }
   return isRootStyleOutputFile(file)
     && records.some(record => record.injectIntoMain === true)
+}
+
+function isViteProcessedRootStyleImportingTargets(
+  bundle: OutputBundle,
+  file: string,
+  targetFiles: string[],
+) {
+  const targetFileSet = new Set(targetFiles.map(normalizeOutputPathKey))
+  for (const [bundleFile, output] of Object.entries(bundle)) {
+    if (output.type !== 'asset' || normalizeOutputPathKey(getAssetFile(bundleFile, output)) !== normalizeOutputPathKey(file)) {
+      continue
+    }
+    const importedStyleFiles = collectImportedStyleFiles(readAssetSource(output), file)
+    return [...importedStyleFiles].some(importedFile => targetFileSet.has(normalizeOutputPathKey(importedFile)))
+  }
+  return false
 }
 
 function isViteProcessedCssResultImported(record: { file: string, outputFile?: string | undefined }, importedStyleFiles: Set<string>) {

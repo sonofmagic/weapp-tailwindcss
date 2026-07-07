@@ -104,6 +104,36 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('not-a-tailwind-class')
   })
 
+  it('generates utilities from a standalone @tailwind utilities directive', async () => {
+    const source = await resolveTailwindV4Source({
+      css: [
+        '@theme default {',
+        '  --color-red-500: oklch(63.7% 0.237 25.331);',
+        '  --spacing: 0.25rem;',
+        '}',
+        '@tailwind utilities;',
+      ].join('\n'),
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['bg-red-500', 'p-4', 'w-[100px]'],
+    })
+
+    expect(result.classSet).toEqual(new Set(['bg-red-500', 'p-4', 'w-[100px]']))
+    expect(result.rawCss).toContain('.bg-red-500')
+    expect(result.rawCss).toContain('background-color: var(--color-red-500)')
+    expect(result.rawCss).toContain('.p-4')
+    expect(result.rawCss).toContain('padding: calc(var(--spacing) * 4)')
+    expect(result.rawCss).toContain('.w-\\[100px\\]')
+    expect(result.rawCss).toContain('width: 100px')
+    expect(result.css).toContain('.bg-red-500')
+    expect(result.css).toContain('.p-4')
+    expect(result.css).toContain('.w-_b100px_B')
+    expect(result.css).not.toContain('.w-\\[100px\\]')
+  })
+
   it('incrementally generates mini-program css for hex arbitrary candidates', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
@@ -269,6 +299,52 @@ describe('tailwindcss v4 engine', () => {
     expect(transformed).toContain('.text-_b55rpx_B')
     expect(transformed).toContain('font-size: 55rpx')
     expect(transformed).not.toContain('color: 55rpx')
+  })
+
+  it('keeps raw candidates and mini-program css transform boundaries aligned after Tailwind generation', async () => {
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: [
+        'text-[22rpx]',
+        'hover:text-[22rpx]',
+        'bg-[color:#123456]',
+      ],
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    const expectedClassSet = new Set([
+      'text-[22rpx]',
+      'hover:text-[22rpx]',
+      'bg-[color:#123456]',
+    ])
+    expect(result.classSet).toEqual(expectedClassSet)
+    expect(result.rawCandidates).toEqual(expectedClassSet)
+
+    expect(result.rawCss).toContain('.text-\\[22rpx\\]')
+    expect(result.rawCss).toContain('.hover\\:text-\\[22rpx\\]')
+    expect(result.rawCss).toContain('.bg-\\[color\\:\\#123456\\]')
+    expect(result.rawCss).toContain('font-size: 22rpx')
+    expect(result.rawCss).toContain('background-color: #123456')
+    expect(result.rawCss).not.toContain('color: 22rpx')
+    expect(result.rawCss).not.toContain('text-\\[length\\:')
+
+    expect(result.css).toContain('.text-_b22rpx_B')
+    expect(result.css).toContain('.bg-_bcolor_c_h123456_B')
+    expect(result.css).toContain('font-size: 22rpx')
+    expect(result.css).toContain('background-color: #123456')
+    expect(result.css).not.toContain('.text-\\[22rpx\\]')
+    expect(result.css).not.toContain('.hover\\:text-\\[22rpx\\]')
+    expect(result.css).not.toContain('.hover_ctext-_b22rpx_B')
+    expect(result.css).not.toContain('.bg-\\[color\\:\\#123456\\]')
+    expect(result.css).not.toContain('color: 22rpx')
+    expect(result.css).not.toContain('text-\\[length\\:')
   })
 
   it('treats rpx arbitrary values as lengths in generated uni-app web css', async () => {
@@ -679,6 +755,47 @@ describe('tailwindcss v4 engine', () => {
     expect(second.css.match(/\.text-_b88rpx_B/g) ?? []).toHaveLength(1)
   })
 
+  it('reuses css-macro style options when seeding the v4 incremental cache from a source scan', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme default {
+          --color-blue-500: oklch(62.3% 0.214 259.815);
+          --color-red-500: oklch(63.7% 0.237 25.331);
+        }
+        @custom-variant wx {
+          /* #ifdef MP-WEIXIN */
+          @slot;
+          /* #endif */
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    await engine.generate({
+      candidates: ['wx:bg-blue-500'],
+      incrementalCache: true,
+      scanSources: true,
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+    const second = await engine.generate({
+      candidates: ['wx:bg-blue-500', 'wx:bg-red-500'],
+      incrementalCache: true,
+      scanSources: false,
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(second.css).toContain('.wx_cbg-blue-500')
+    expect(second.css).toContain('.wx_cbg-red-500')
+    expect(second.incrementalCss).toContain('.wx_cbg-red-500')
+    expect(second.incrementalCss).not.toContain('.wx_cbg-blue-500')
+  })
+
   it('dedupes concurrent v4 incremental generation for identical requests', async () => {
     vi.resetModules()
     const generate = vi.fn(async () => {
@@ -1054,13 +1171,18 @@ describe('tailwindcss v4 engine', () => {
     const result = await engine.generate()
 
     expect(result.classSet).toEqual(new Set(['bg-red-500']))
-    expect(result.sources).toEqual([
+    expect(result.sources).toEqual(expect.arrayContaining([
       {
-        base: root,
-        pattern: './src/**/*.html',
+        base: srcDir,
+        pattern: '**/*.html',
         negated: false,
       },
-    ])
+      {
+        base: root,
+        pattern: '**/node_modules/**',
+        negated: true,
+      },
+    ]))
     expect(result.rawCss).toContain('.bg-red-500')
     expect(result.rawCss).not.toContain('.bg-blue-500')
     expect(result.css).toContain('.bg-red-500')

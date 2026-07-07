@@ -59,13 +59,24 @@ function createMergedCssEntrySourceScanEntries(
   return positiveEntries.length > 0 ? positiveEntries : entries
 }
 
+function resolveExplicitSourceScanEntries(
+  entries: TailwindSourceEntry[],
+  explicit: boolean,
+) {
+  if (!explicit) {
+    return entries.length > 0 ? entries : undefined
+  }
+
+  return entries.some(entry => !entry.negated) ? entries : []
+}
+
 function createResolvedV4CssScanInput(
   entries: TailwindSourceEntry[],
   inlineCandidates: TailwindInlineSourceCandidates | undefined,
   explicit: boolean,
 ): Pick<ResolvedViteSourceScan, 'entries' | 'explicit' | 'inlineCandidates'> {
   return {
-    entries: explicit ? entries : entries.length > 0 ? entries : undefined,
+    entries: resolveExplicitSourceScanEntries(entries, explicit),
     explicit,
     inlineCandidates,
   }
@@ -119,7 +130,7 @@ export async function resolveViteSourceScanEntries(
   })
   if (scanEntries.length > 0 || inlineCandidates || explicit || readableCssEntryCount > 0) {
     return createResolvedViteSourceScan({
-      entries: explicit ? scanEntries : scanEntries.length > 0 ? scanEntries : undefined,
+      entries: resolveExplicitSourceScanEntries(scanEntries, explicit),
       explicit,
       inlineCandidates,
     }, dependencies)
@@ -164,7 +175,7 @@ export async function resolveViteSourceScanEntries(
   })
   if (cssSourceScanEntries.length > 0 || cssSourceInlineCandidates || explicit) {
     return createResolvedViteSourceScan({
-      entries: explicit ? cssSourceScanEntries : cssSourceScanEntries.length > 0 ? cssSourceScanEntries : undefined,
+      entries: resolveExplicitSourceScanEntries(cssSourceScanEntries, explicit),
       explicit,
       inlineCandidates: cssSourceInlineCandidates,
     }, dependencies)
@@ -191,7 +202,7 @@ export async function resolveViteSourceScanEntries(
 
 export function createViteSourceScanMatcher(entries: TailwindSourceEntry[] | undefined) {
   if (entries?.length === 0) {
-    return undefined
+    return () => false
   }
   return createTailwindSourceEntryMatcher(entries)
 }

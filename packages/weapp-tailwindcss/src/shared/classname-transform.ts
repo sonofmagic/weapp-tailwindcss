@@ -170,12 +170,12 @@ export function resolveClassNameTransformWithResult(
     classContext,
   }: ResolveClassNameTransformOptions,
 ): ClassNameTransformResult {
-  if (alwaysEscape) {
-    return DIRECT_RESULT
-  }
-
   if (jsPreserveClass?.(candidate)) {
     return SKIP_RESULT
+  }
+
+  if (alwaysEscape) {
+    return DIRECT_RESULT
   }
 
   if (!classContext && isPlainSlashPathCandidate(candidate)) {

@@ -216,8 +216,8 @@ catalogs:
       version: 4.3.2
   tailwindcssMangleEngine:
     '@tailwindcss-mangle/engine':
-      specifier: 0.1.2
-      version: 0.1.2
+      specifier: 0.1.3
+      version: 0.1.3
   tailwindcssPatch:
     tailwindcss-patch:
       specifier: 9.5.1
@@ -3781,7 +3781,7 @@ importers:
     dependencies:
       '@tailwindcss-mangle/engine':
         specifier: catalog:tailwindcssMangleEngine
-        version: 0.1.2(tailwindcss@4.3.2)
+        version: 0.1.3(tailwindcss@4.3.2)
       '@weapp-core/escape':
         specifier: ~8.0.0
         version: 8.0.0
@@ -3980,7 +3980,7 @@ importers:
         version: 7.29.7
       '@tailwindcss-mangle/engine':
         specifier: catalog:tailwindcssMangleEngine
-        version: 0.1.2(tailwindcss@4.3.2)
+        version: 0.1.3(tailwindcss@4.3.2)
       '@vue/compiler-dom':
         specifier: catalog:vue3
         version: 3.5.39
@@ -13775,8 +13775,8 @@ packages:
       tailwindcss:
         optional: true
 
-  '@tailwindcss-mangle/engine@0.1.2':
-    resolution: {integrity: sha512-njrAQmrh5NPs6yViYkxkImbLIylo566c7Gk/qsN9oWQz9QKCfpave/LElpYUPjAaYh60GwFR7Y2pOhV7Hehsyw==}
+  '@tailwindcss-mangle/engine@0.1.3':
+    resolution: {integrity: sha512-ChEDnwpMgeNKN7fekKkPfJ1rcmdY9MiqmGtKjIA+ULj4iTt7cOJqLlh0oHXaZc4m5rtC8rVv0hEern2snVvdYA==}
     engines: {node: '>=18.20.0'}
     peerDependencies:
       tailwindcss: '>=2.0.0'
@@ -44662,7 +44662,7 @@ snapshots:
     optionalDependencies:
       tailwindcss: 4.3.2
 
-  '@tailwindcss-mangle/engine@0.1.2(tailwindcss@4.3.2)':
+  '@tailwindcss-mangle/engine@0.1.3(tailwindcss@4.3.2)':
     dependencies:
       '@tailwindcss/node': 4.3.2
       '@tailwindcss/oxide': 4.3.2

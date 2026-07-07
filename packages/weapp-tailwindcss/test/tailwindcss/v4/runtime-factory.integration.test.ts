@@ -1,10 +1,12 @@
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
+import { MappingChars2String } from '@weapp-core/escape'
 import { describe, expect, it } from 'vitest'
 import { transformLiteralText } from '@/js'
 import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
 import { createTailwindcssRuntimeForBase } from '@/tailwindcss/v4'
+import { createTemplateHandler } from '@/wxml'
 
 describe('tailwindcss/v4 runtime integration with @config + cssEntries', () => {
   it('preserves entry base, collects class set, and escapes runtime literals', async () => {
@@ -50,6 +52,89 @@ describe('tailwindcss/v4 runtime integration with @config + cssEntries', () => {
 
     expect(transformed).toContain('px-_b48rpx_B')
     expect(transformed).not.toContain('px-[48rpx]')
+  })
+
+  it('keeps generated v4 class set aligned with JS and WXML escaping after mini-program adaptation', async () => {
+    const workspaceRoot = path.resolve(__dirname, '../../../../..')
+    const fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tw-v4-post-tailwind-sync-'))
+    const cssEntry = path.resolve(fixtureRoot, 'src/app.css')
+    const template = path.resolve(fixtureRoot, 'src/pages/index/index.wxml')
+
+    try {
+      await fs.mkdir(path.dirname(template), { recursive: true })
+      await fs.writeFile(
+        cssEntry,
+        [
+          '@import "tailwindcss" source(none);',
+          '@source "./pages/**/*.{wxml,html,js,ts}";',
+        ].join('\n'),
+        'utf8',
+      )
+      await fs.writeFile(
+        template,
+        [
+          '<view class="text-[22rpx] hover:text-[22rpx] bg-[color:#123456] ',
+          '{{ active ? \'text-[22rpx]\' : \'bg-[color:#123456]\' }}">post tailwind sync</view>',
+        ].join(''),
+        'utf8',
+      )
+
+      const runtime = createTailwindcssRuntimeForBase(fixtureRoot, [cssEntry], {
+        tailwindcss: {
+          packageName: 'tailwindcss4',
+          version: 4,
+          resolve: {
+            paths: [path.resolve(workspaceRoot, 'node_modules')],
+          },
+        },
+        tailwindcssRuntimeOptions: undefined,
+        supportCustomLengthUnits: true,
+        appType: 'native',
+      } as any)
+
+      const classSet = await collectRuntimeClassSet(runtime, {
+        clearCache: true,
+        force: true,
+      })
+
+      expect(classSet.has('text-[22rpx]')).toBe(true)
+      expect(classSet.has('hover:text-[22rpx]')).toBe(true)
+      expect(classSet.has('bg-[color:#123456]')).toBe(true)
+
+      const transformedJs = transformLiteralText(
+        'text-[22rpx] hover:text-[22rpx] bg-[color:#123456]',
+        {
+          classNameSet: classSet,
+          arbitraryValues: { allowDoubleQuotes: true },
+          alwaysEscape: false,
+          escapeMap: MappingChars2String,
+          unescapeUnicode: true,
+        } as any,
+      )
+      expect(transformedJs).toContain('text-_b22rpx_B')
+      expect(transformedJs).toContain('hover_ctext-_b22rpx_B')
+      expect(transformedJs).toContain('bg-_bcolor_c_h123456_B')
+      expect(transformedJs).not.toContain('text-[22rpx]')
+      expect(transformedJs).not.toContain('hover:text-[22rpx]')
+      expect(transformedJs).not.toContain('bg-[color:#123456]')
+
+      const templateHandler = createTemplateHandler({
+        escapeMap: MappingChars2String,
+      })
+      const transformedWxml = await templateHandler(await fs.readFile(template, 'utf8'), {
+        runtimeSet: classSet,
+      })
+
+      expect(transformedWxml).toContain('text-_b22rpx_B')
+      expect(transformedWxml).toContain('hover_ctext-_b22rpx_B')
+      expect(transformedWxml).toContain('bg-_bcolor_c_h123456_B')
+      expect(transformedWxml).not.toContain('text-[22rpx]')
+      expect(transformedWxml).not.toContain('hover:text-[22rpx]')
+      expect(transformedWxml).not.toContain('bg-[color:#123456]')
+    }
+    finally {
+      await fs.rm(fixtureRoot, { force: true, recursive: true })
+    }
   })
 
   it('falls back to generator source scan when runtime extract returns an empty class set', async () => {
