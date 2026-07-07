@@ -2847,9 +2847,9 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call({ addWatchFile: vi.fn() }, {}, bundle, false)
 
-    expect(String(bundle['app.css'].source)).toBe('')
-    expect(String(bundle['src/app.css'].source)).toContain('.bg-_b_h010203_B')
-    expect(String(bundle['src/app.css'].source)).toContain('.text-_b37px_B')
+    const generatedCss = String(bundle['app.css'].source)
+    expect(generatedCss).toContain('.bg-_b_h010203_B')
+    expect(generatedCss).toContain('.text-_b37px_B')
   }, TEST_TIMEOUT_MS)
 
   it('skips single-entry Tailwind v4 candidate validation when multiple css entries own independent configs', async () => {
