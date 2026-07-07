@@ -24,6 +24,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
           generate: vi.fn(),
         })),
         normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+          enabled: true,
           target: 'weapp',
           importFallback: true,
           styleOptions: {},
@@ -165,6 +166,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
           generate: vi.fn(),
         })),
         normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+          enabled: true,
           target: 'weapp',
           importFallback: true,
           styleOptions: {},
@@ -325,6 +327,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
         }
       }),
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        enabled: true,
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
@@ -531,6 +534,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
         generate: vi.fn(),
       })),
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        enabled: true,
         target: 'weapp',
         importFallback: true,
         styleOptions: {},

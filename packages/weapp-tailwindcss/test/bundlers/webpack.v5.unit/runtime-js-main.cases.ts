@@ -24,6 +24,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js main updates', () => {
           generate: generateMock,
         })),
         normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+          enabled: true,
           target: 'weapp',
           importFallback: true,
         })),

@@ -77,6 +77,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
         }),
       })),
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        enabled: true,
         target: 'weapp',
         styleOptions: {},
       })),
@@ -322,6 +323,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
         }),
       })),
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        enabled: true,
         target: 'weapp',
         styleOptions: {},
       })),
@@ -542,6 +544,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
         }),
       })),
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        enabled: true,
         target: 'weapp',
         styleOptions: {},
       })),
