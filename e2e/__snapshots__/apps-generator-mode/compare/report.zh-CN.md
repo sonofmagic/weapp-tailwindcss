@@ -12,7 +12,7 @@
 | taro-vite-react-tailwindcss-v4 | demo | weapp | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+4) | 558877 | 2312 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-webpack-vue3-tailwindcss-v4 | demo | weapp | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 496203 | 1782 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-vite-vue3-tailwindcss-v4 | demo | weapp | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 466944 | 1736 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| uni-app-vite-tailwindcss-v4 | demo | mp-weixin | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+7) | 43882 | 193 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| uni-app-vite-tailwindcss-v4 | demo | mp-weixin | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+7) | 44000 | 197 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | weapp-vite-tailwindcss-v4 | demo | weapp | `weapp` | 通过 | `weapp-vite-tailwindcss-v4/dist/app.wxss` (+4) | 31437 | 91 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-webpack-react-tailwindcss-v4 | demo | web | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-react-tailwindcss-v4/dist` (+3) | 419078 | 2261 | 是 | 否 | 否 | 是 | 是 | 否 | 否 | 是 | 否 |
 | taro-webpack-react-tailwindcss-v4 | demo | web-compact | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-react-tailwindcss-v4/dist` (+3) | 419339 | 2261 | 是 | 否 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
@@ -24,8 +24,8 @@
 | taro-vite-vue3-tailwindcss-v4 | demo | web-compact | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-vue3-tailwindcss-v4/dist` (+3) | 473163 | 1754 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
 | uni-app-vite-tailwindcss-v4 | demo | web | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/h5` (+5) | 97095 | 311 | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 |
 | uni-app-vite-tailwindcss-v4 | demo | web-compact | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/h5` (+5) | 85293 | 308 | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 |
-| uni-app-vite-tailwindcss-v4 | demo | app-android | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/app` (+1) | 31768 | 163 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 否 | 是 |
-| uni-app-vite-tailwindcss-v4 | demo | app-ios | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/app` (+1) | 31768 | 163 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 否 | 是 |
+| uni-app-vite-tailwindcss-v4 | demo | app-android | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/app` (+2) | 44992 | 163 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 否 | 是 |
+| uni-app-vite-tailwindcss-v4 | demo | app-ios | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/app` (+2) | 44992 | 163 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 否 | 是 |
 
 ## 说明
 
@@ -134,10 +134,10 @@
 
 ### uni-app-vite-tailwindcss-v4
 
-- CSS 文件：`app.css`, `pages/index/index.css`
+- CSS 文件：`app.css`, `pages-order/pages/user/user.css`, `pages/index/index.css`
 - 选择器：`*`, `._ebg-_bgray_B`, `.active_cbg-emerald-50:active`, `.active_cbg-emerald-600:active`, `.active_cbg-emerald-700:active`, `.active_cbg-slate-700:active`, `.after_c_econtent-_b_agood_work_e_a_B:after`, `.any-hover_cbg-slate-800:hover`, `.aspect-_bcalc_p4_x3_u1_P_f3_B`, `.aspect-_p--my-aspect-ratio_P`, `.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before`, `.bg-_b_h0000ff_B`, `.bg-_b_h123498_B`, `.bg-_b_h68c828_B`, `.bg-_b_hf8fafc_B`, `.bg-_bradial-gradient_pcircle_at_18_v_20_v_m_he0f2fe_m_hfdf4ff_70_v_P_B`, `.bg-emerald-100`, `.bg-emerald-50`, `.bg-emerald-500`
 
 ### uni-app-vite-tailwindcss-v4
 
-- CSS 文件：`app.css`, `pages/index/index.css`
+- CSS 文件：`app.css`, `pages-order/pages/user/user.css`, `pages/index/index.css`
 - 选择器：`*`, `._ebg-_bgray_B`, `.active_cbg-emerald-50:active`, `.active_cbg-emerald-600:active`, `.active_cbg-emerald-700:active`, `.active_cbg-slate-700:active`, `.after_c_econtent-_b_agood_work_e_a_B:after`, `.any-hover_cbg-slate-800:hover`, `.aspect-_bcalc_p4_x3_u1_P_f3_B`, `.aspect-_p--my-aspect-ratio_P`, `.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before`, `.bg-_b_h0000ff_B`, `.bg-_b_h123498_B`, `.bg-_b_h68c828_B`, `.bg-_b_hf8fafc_B`, `.bg-_bradial-gradient_pcircle_at_18_v_20_v_m_he0f2fe_m_hfdf4ff_70_v_P_B`, `.bg-emerald-100`, `.bg-emerald-50`, `.bg-emerald-500`

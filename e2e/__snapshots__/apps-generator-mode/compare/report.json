@@ -8638,7 +8638,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 43882,
+      "bytes": 44000,
       "selectors": [
         "._ebg-_bgray_B",
         ".active_cbg-emerald-600:active",
@@ -8679,6 +8679,8 @@
         ".dark_cbg-zinc-900.theme-dark",
         ".dark_cbg-zinc-950.theme-dark",
         ".dark_ctext-zinc-50.theme-dark",
+        ".data-v-04bcf89b:after",
+        ".data-v-04bcf89b:before",
         ".divide-_b_h41eb04_B > text + text",
         ".divide-_b_h41eb04_B > text + view",
         ".divide-_b_h41eb04_B > view + text",
@@ -8829,7 +8831,9 @@
         "abc",
         "button:after",
         "page",
+        "text.data-v-04bcf89b",
         "to",
+        "view.data-v-04bcf89b",
         "wx-button",
         "wx-button:after",
         "wx-root-portal-content"
@@ -26235,11 +26239,12 @@
     "cssFile": "uni-app-vite-tailwindcss-v4/dist/build/app",
     "cssFiles": [
       "app.css",
+      "pages-order/pages/user/user.css",
       "pages/index/index.css"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 31768,
+      "bytes": 44992,
       "selectors": [
         "*",
         "._ebg-_bgray_B",
@@ -26441,11 +26446,12 @@
     "cssFile": "uni-app-vite-tailwindcss-v4/dist/build/app",
     "cssFiles": [
       "app.css",
+      "pages-order/pages/user/user.css",
       "pages/index/index.css"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 31768,
+      "bytes": 44992,
       "selectors": [
         "*",
         "._ebg-_bgray_B",

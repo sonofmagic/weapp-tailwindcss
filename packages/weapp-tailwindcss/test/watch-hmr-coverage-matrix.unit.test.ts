@@ -51,7 +51,12 @@ const localOnlyDemoProjects = new Set([
   'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
   'demo/uni-app-x-hbuilderx-tailwindcss-v4',
 ])
+function isIssueRegressionDemoProject(project: string) {
+  return /^demo\/issue-/.test(project)
+}
+
 const automatedWatchDemoPackageProjects = demoPackageProjects
+  .filter(project => !isIssueRegressionDemoProject(project))
   .filter(project => !localOnlyDemoProjects.has(project))
 
 function toSlashPath(filePath: string) {
@@ -186,6 +191,15 @@ describe('watch-hmr coverage matrix', () => {
     for (const project of localOnlyDemoProjects) {
       expect(demoPackageProjects, `${project} should remain a real demo package`).toContain(project)
       expect(watchCoveredProjects.has(project), `${project} should stay out of CI watch regression cases`).toBe(false)
+    }
+  })
+
+  it('keeps issue regression demo projects out of the general watch matrix', () => {
+    const issueRegressionProjects = demoPackageProjects.filter(isIssueRegressionDemoProject)
+
+    expect(issueRegressionProjects.length).toBeGreaterThan(0)
+    for (const project of issueRegressionProjects) {
+      expect(watchCoveredProjects.has(project), `${project} should use a dedicated regression instead of the general watch matrix`).toBe(false)
     }
   })
 

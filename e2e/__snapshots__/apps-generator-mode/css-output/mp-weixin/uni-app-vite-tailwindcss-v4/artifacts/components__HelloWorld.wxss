@@ -11,6 +11,12 @@
   padding-bottom: calc(var(--spacing, 0.25rem) * 3);
   color: var(--color-slate-700);
 }
+view.data-v-04bcf89b,
+text.data-v-04bcf89b,
+.data-v-04bcf89b::after,
+.data-v-04bcf89b::before {
+  --tw-content: '';
+}
  /* tokens: hello-world-shell <= src/components/HelloWorld.vue */
 .hello-world-shell.data-v-04bcf89b {
   display: flex;
