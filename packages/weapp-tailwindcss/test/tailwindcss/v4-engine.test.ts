@@ -104,6 +104,36 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('not-a-tailwind-class')
   })
 
+  it('generates utilities from a standalone @tailwind utilities directive', async () => {
+    const source = await resolveTailwindV4Source({
+      css: [
+        '@theme default {',
+        '  --color-red-500: oklch(63.7% 0.237 25.331);',
+        '  --spacing: 0.25rem;',
+        '}',
+        '@tailwind utilities;',
+      ].join('\n'),
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['bg-red-500', 'p-4', 'w-[100px]'],
+    })
+
+    expect(result.classSet).toEqual(new Set(['bg-red-500', 'p-4', 'w-[100px]']))
+    expect(result.rawCss).toContain('.bg-red-500')
+    expect(result.rawCss).toContain('background-color: var(--color-red-500)')
+    expect(result.rawCss).toContain('.p-4')
+    expect(result.rawCss).toContain('padding: calc(var(--spacing) * 4)')
+    expect(result.rawCss).toContain('.w-\\[100px\\]')
+    expect(result.rawCss).toContain('width: 100px')
+    expect(result.css).toContain('.bg-red-500')
+    expect(result.css).toContain('.p-4')
+    expect(result.css).toContain('.w-_b100px_B')
+    expect(result.css).not.toContain('.w-\\[100px\\]')
+  })
+
   it('incrementally generates mini-program css for hex arbitrary candidates', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
