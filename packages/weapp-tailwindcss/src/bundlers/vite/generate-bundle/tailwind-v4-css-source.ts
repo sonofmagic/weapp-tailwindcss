@@ -23,52 +23,173 @@ function createStableTextSignature(input: string) {
   return (hash >>> 0).toString(36)
 }
 
+function parseQuotedRequest(params: string) {
+  const input = params.trim()
+  const quote = input[0]
+  if (quote !== '"' && quote !== '\'') {
+    return
+  }
+
+  let escaped = false
+  for (let index = 1; index < input.length; index++) {
+    const char = input[index]
+    if (escaped) {
+      escaped = false
+      continue
+    }
+    if (char === '\\') {
+      escaped = true
+      continue
+    }
+    if (char === quote) {
+      return input.slice(1, index)
+    }
+  }
+}
+
+function parseSourceParams(params: string) {
+  let input = params.trim()
+  let negated = false
+  if (input.startsWith('not ')) {
+    negated = true
+    input = input.slice(4).trim()
+  }
+
+  if (input.startsWith('inline(') && input.endsWith(')')) {
+    return {
+      prefix: negated ? 'source:inline:not' : 'source:inline',
+      value: input.slice(7, -1).trim(),
+    }
+  }
+
+  const request = parseQuotedRequest(input)
+  if (!request) {
+    return
+  }
+
+  return {
+    prefix: negated ? 'source:not' : 'source',
+    value: request,
+  }
+}
+
+function parseTailwindImportSource(params: string) {
+  const request = parseQuotedRequest(params)
+  if (request !== 'tailwindcss') {
+    return
+  }
+  const sourceMatch = /\bsource\(([^)]*)\)/.exec(params)
+  return sourceMatch?.[1]?.trim()
+}
+
+function hasExplicitTailwindV4Directive(source: string) {
+  try {
+    let found = false
+    postcss.parse(source).walkAtRules((rule) => {
+      if (
+        rule.name === 'config'
+        || rule.name === 'source'
+        || rule.name === 'plugin'
+        || rule.name === 'custom-variant'
+        || rule.name === 'theme'
+        || rule.name === 'utility'
+        || rule.name === 'variant'
+        || rule.name === 'apply'
+      ) {
+        found = true
+        return false
+      }
+    })
+    return found
+  }
+  catch {
+    return false
+  }
+}
+
 export function collectTailwindV4SourceFingerprint(source: string) {
   const tokens = new Set<string>()
   const add = (prefix: string, value: string) => {
     tokens.add(`${prefix}:${value.trim()}`)
   }
-  for (const match of source.matchAll(/@config\s+(["'])(.+?)\1\s*;?/g)) {
-    const configRequest = match[2]!
-    add('config', path.basename(configRequest))
-    add('config-request', configRequest.replace(/\\/g, '/'))
-  }
-  for (const match of source.matchAll(/@source\s+(not\s+)?(["'])(.+?)\2\s*;?/g)) {
-    add(match[1] ? 'source:not' : 'source', match[3]!)
-  }
-  for (const match of source.matchAll(/@plugin\s+(["'])(.+?)\1\s*(?:\{([\s\S]*?)\}|;)/g)) {
-    const request = match[2]!
-    const optionBlock = match[3]
-    add('plugin', request)
-    add('plugin-request', request.replace(/\\/g, '/'))
-    if (optionBlock !== undefined) {
-      add('plugin-options', `${request}:${createStableTextSignature(optionBlock)}`)
-    }
-  }
+
   try {
-    postcss.parse(source).walkAtRules('plugin', (rule) => {
-      const request = /^(['"])(.+?)\1/.exec(rule.params.trim())?.[2]
-      if (!request || !rule.nodes?.length) {
+    const root = postcss.parse(source)
+
+    root.walkAtRules((rule) => {
+      if (rule.name === 'import') {
+        const sourceMode = parseTailwindImportSource(rule.params)
+        if (sourceMode) {
+          add('import-source', sourceMode)
+        }
         return
       }
-      rule.walkDecls((decl) => {
-        add('plugin-option', `${request}:${decl.prop}:${decl.value}`)
-      })
+
+      if (rule.name === 'config') {
+        const configRequest = parseQuotedRequest(rule.params)
+        if (configRequest) {
+          add('config', path.basename(configRequest))
+          add('config-request', configRequest.replace(/\\/g, '/'))
+        }
+        return
+      }
+
+      if (rule.name === 'source') {
+        const parsed = parseSourceParams(rule.params)
+        if (parsed) {
+          add(parsed.prefix, parsed.value)
+        }
+        return
+      }
+
+      if (rule.name === 'plugin') {
+        const request = parseQuotedRequest(rule.params)
+        if (!request) {
+          return
+        }
+        add('plugin', request)
+        add('plugin-request', request.replace(/\\/g, '/'))
+        if (rule.nodes?.length) {
+          add('plugin-options', `${request}:${createStableTextSignature(rule.toString())}`)
+          rule.walkDecls((decl) => {
+            add('plugin-option', `${request}:${decl.prop}:${decl.value}`)
+          })
+        }
+        return
+      }
+
+      if (rule.name === 'custom-variant') {
+        const [name] = rule.params.trim().split(/\s+/, 1)
+        if (name) {
+          add('custom-variant', name)
+        }
+        return
+      }
+
+      if (rule.name === 'theme' || rule.name === 'utility' || rule.name === 'variant' || rule.name === 'layer') {
+        const [name] = rule.params.trim().split(/\s+/, 1)
+        if (name) {
+          add('directive', name)
+        }
+      }
+    })
+
+    root.walkDecls((decl) => {
+      if (decl.prop.startsWith('--')) {
+        add('theme-token', decl.prop)
+      }
+    })
+
+    root.walkRules((rule) => {
+      for (const selector of rule.selectors ?? []) {
+        const match = /\.([_a-z][\w-]*)/i.exec(selector)
+        if (match?.[1]) {
+          add('selector', match[1])
+        }
+      }
     })
   }
   catch {
-  }
-  for (const match of source.matchAll(/@custom-variant\s+([^{\s]+)/g)) {
-    add('custom-variant', match[1]!)
-  }
-  for (const match of source.matchAll(/@(?:theme|utility|variant|layer)\s+([^{;\s]+)/g)) {
-    add('directive', match[1]!)
-  }
-  for (const match of source.matchAll(/--[\w-]+(?=\s*:)/g)) {
-    add('theme-token', match[0])
-  }
-  for (const match of source.matchAll(/\.([_a-z][\w-]*)\s*[{,]/gi)) {
-    add('selector', match[1]!)
   }
   return tokens
 }
@@ -137,9 +258,7 @@ export function selectTailwindV4GenerationCssSourceForOutput<T extends TailwindV
   if (rawSourceMatched) {
     return rawSourceMatched
   }
-  const explicitSources = generationSources.filter(entry =>
-    /@(?:config|source|plugin|custom-variant|theme|utility|variant|apply)\b/.test(entry.source),
-  )
+  const explicitSources = generationSources.filter(entry => hasExplicitTailwindV4Directive(entry.source))
   const candidates = explicitSources.length === 1 ? explicitSources : generationSources
   const outputPathMatched = selectByOutputPath(candidates)
   if (outputPathMatched) {
