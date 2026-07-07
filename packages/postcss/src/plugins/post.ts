@@ -204,6 +204,9 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   p.OnceExit = (root) => {
     if (enableMainChunkTransforms) {
       root.walkDecls((decl) => {
+        normalizeTailwindcssV4Declaration(decl)
+      })
+      root.walkDecls((decl) => {
         normalizeMiniProgramPrefixedDeclaration(decl)
       })
       root.walkRules((rule) => {

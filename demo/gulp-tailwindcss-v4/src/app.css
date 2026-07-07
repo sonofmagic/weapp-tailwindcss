@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 @import "./third-party-ui.css";
 @config "../tailwind.config.js";
 @source "./**/*.{html,js,ts,wxml,ttml}";

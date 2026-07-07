@@ -129,6 +129,7 @@
     "@babel/preset-typescript": "^7.29.7",
     "@babel/runtime-corejs3": "^7.29.7",
     "@react-native/metro-config": "catalog:reactNativeMetroConfig073",
+    "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@tarojs/cli": "catalog:taro4",
     "@tarojs/rn-runner": "catalog:taro4rn",
     "@tarojs/rn-supporter": "catalog:taro4rn",

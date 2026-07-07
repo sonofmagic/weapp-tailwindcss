@@ -16,7 +16,8 @@ const taroPlatform = resolveTaroPlatform()
 const webCompat = taroPlatform.isWeb
   ? process.env.WEAPP_TW_WEB_COMPAT !== '0'
   : undefined
-const generator = {
+const officialPostcssParity = process.env.WEAPP_TW_OFFICIAL_POSTCSS_PARITY === '1'
+const generator = (officialPostcssParity ? false : {
   target: taroPlatform.isWeb || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
     ? 'web'
     : 'weapp',
@@ -24,7 +25,7 @@ const generator = {
   styleOptions: {
     px2rpx: true,
   },
-} satisfies UserDefinedOptions['generator']
+}) satisfies UserDefinedOptions['generator']
 const projectRoot = resolve(__dirname, '..')
 const cssEntries = [
   resolve(projectRoot, 'src/app.css'),

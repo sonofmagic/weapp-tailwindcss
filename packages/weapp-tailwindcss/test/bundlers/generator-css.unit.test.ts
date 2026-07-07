@@ -4,10 +4,14 @@ import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 function normalizeGeneratorOptions(options: any) {
+  if (options === false) {
+    return { enabled: false, target: 'weapp', importFallback: false }
+  }
   if (options == null) {
-    return { target: 'weapp', importFallback: false }
+    return { enabled: true, target: 'weapp', importFallback: false }
   }
   return {
+    enabled: true,
     target: options.target ?? 'weapp',
     config: options.config,
     styleOptions: options.styleOptions,
@@ -58,6 +62,97 @@ describe('bundlers/shared generator css', () => {
     vi.doUnmock('@/generator')
     vi.doUnmock('node:fs')
     vi.resetModules()
+  })
+
+  it('skips Tailwind generation when generator is disabled', async () => {
+    const createWeappTailwindcssGenerator = vi.fn()
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      createWeappTailwindcssGenerator,
+    }))
+
+    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    const result = await generateTailwindV4Css({
+      opts: {
+        cssPreflight: 'view',
+        generator: false,
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['text-[24rpx]']),
+      rawSource: '@import "tailwindcss";',
+      file: '/workspace/src/app.css',
+      outputFile: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: '/workspace/src/app.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: '/workspace/src/app.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+    })
+
+    expect(result).toBeUndefined()
+    expect(createWeappTailwindcssGenerator).not.toHaveBeenCalled()
+  })
+
+  it('keeps classSet validation from generated CSS when generator is disabled', async () => {
+    const createWeappTailwindcssGenerator = vi.fn()
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      createWeappTailwindcssGenerator,
+    }))
+
+    const { validateCandidatesByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await validateCandidatesByGenerator({
+      opts: {
+        generator: false,
+        escapeMap: {
+          '[': '_b',
+          ']': '_B',
+        },
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      candidates: new Set(['text-[24rpx]', 'bg-red-500']),
+      rawSource: '.text-_b24rpx_B{font-size:24rpx}',
+      file: '/workspace/src/app.css',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: '/workspace/src/app.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {} as any,
+      styleHandler: vi.fn(),
+      debug: vi.fn(),
+    })
+
+    expect(result).toEqual(new Set(['text-[24rpx]']))
+    expect(createWeappTailwindcssGenerator).not.toHaveBeenCalled()
   })
 
   it('returns standardized Tailwind v4 generation metadata and exact class set', async () => {

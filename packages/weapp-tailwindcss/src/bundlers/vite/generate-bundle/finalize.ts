@@ -5,6 +5,7 @@ import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext } from './types'
 import path from 'node:path'
 import { postcss, transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { injectUniAppXHarmonyBundleStyles } from '@/uni-app-x/style-asset'
 import { parseImportRequest } from '../../shared/generator-css/directives'
 import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
@@ -91,7 +92,8 @@ function finalizeWebviewCssCompat(
   bundle: Record<string, OutputAsset | OutputChunk>,
   options: Pick<FinalizeGenerateBundleOptions, 'debug' | 'onUpdate' | 'opts' | 'recordCssAssetResult'>,
 ) {
-  if (options.opts.generator?.webCompat === false) {
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(options.opts.generator)
+  if (generatorOptions.webCompat === false) {
     return 0
   }
   let transformed = 0
@@ -105,7 +107,7 @@ function finalizeWebviewCssCompat(
     }
     const rawSource = readAssetSource(output)
     const nextCss = transformWebCssSafeSelectors(
-      transformWebCssCompat(rawSource, options.opts.generator?.webCompat ?? true),
+      transformWebCssCompat(rawSource, generatorOptions.webCompat ?? true),
       { escapeMap: options.opts.escapeMap },
     )
     if (nextCss === rawSource) {

@@ -136,6 +136,9 @@ function shouldGenerateCssByGenerator(
     tailwindcssMajorVersion: majorVersion,
     uniAppX: opts.uniAppX,
   })
+  if (!generatorOptions.enabled) {
+    return false
+  }
   if (hasLocalCssImport(rawSource)) {
     return false
   }

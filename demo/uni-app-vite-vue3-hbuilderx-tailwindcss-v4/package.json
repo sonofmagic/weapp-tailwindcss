@@ -42,6 +42,7 @@
     "@dcloudio/uni-mp-vue": "3.0.0-5000320260312001",
     "@dcloudio/uni-stacktracey": "3.0.0-5000720260410001",
     "@dcloudio/vite-plugin-uni": "3.0.0-5000720260410001",
+    "@tailwindcss/postcss": "catalog:tailwindcss4",
     "cross-env": "catalog:crossEnv",
     "tailwindcss": "catalog:tailwindcss4",
     "typescript": "catalog:typescript59",

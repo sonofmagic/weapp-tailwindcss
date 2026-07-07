@@ -23,6 +23,8 @@ import { taroWebHmrCaseNames } from './taro-web-demo-hmr-cases'
 import { webViteHmrCoverageCaseNames } from './web-vite-demo-hmr-cases'
 
 interface DemoPackageJson {
+  dependencies?: Record<string, string>
+  devDependencies?: Record<string, string>
   scripts?: Record<string, string>
 }
 
@@ -272,6 +274,31 @@ describe('e2e matrix', () => {
       expect(code, `${relative} should not resolve cssEntries from process.cwd()`).not.toContain('resolve(process.cwd()')
       expect(code, `${relative} should not resolve cssEntries from process.cwd()`).not.toContain('path.resolve(process.cwd()')
     }
+  })
+
+  it('requires Tailwind CSS v4 demos to declare official PostCSS parity dependency', () => {
+    const demoRoot = path.resolve(__dirname, '../demo')
+    const missing: string[] = []
+
+    for (const name of fs.readdirSync(demoRoot)) {
+      const packageJson = path.join(demoRoot, name, 'package.json')
+      if (!fs.existsSync(packageJson)) {
+        continue
+      }
+      const pkg = readDemoPackageJson(path.relative(path.resolve(__dirname, '..'), packageJson))
+      const dependencies = {
+        ...(pkg.dependencies ?? {}),
+        ...(pkg.devDependencies ?? {}),
+      }
+      if (dependencies.tailwindcss !== 'catalog:tailwindcss4' || !dependencies['weapp-tailwindcss']) {
+        continue
+      }
+      if (dependencies['@tailwindcss/postcss'] !== 'catalog:tailwindcss4') {
+        missing.push(name)
+      }
+    }
+
+    expect(missing.sort()).toEqual([])
   })
 
   it('wires automated demo hot-update coverage to known watch cases', () => {

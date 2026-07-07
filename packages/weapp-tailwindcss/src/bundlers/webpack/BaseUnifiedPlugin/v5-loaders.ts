@@ -8,8 +8,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { pluginName } from '@/constants'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveRuntimeBranch } from '@/runtime-branch'
-import { inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
 import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, patchMpxLoaderResolve } from '@/shared/mpx'
 import { deleteWebpackLoaderRuntime, setWebpackLoaderRuntime } from '../loaders/runtime-registry'
 import { createDefaultLoaderAnchorFinders } from '../shared/loader-anchors'
@@ -62,7 +62,13 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     runtimeRegistryKey = `weapp-tailwindcss-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     debug,
   } = options
-  const generatorTarget = compilerOptions.generator?.target ?? inferGeneratorTargetFromEnv()
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(compilerOptions.generator, {
+    appType: compilerOptions.appType,
+    platform: compilerOptions.cssOptions?.platform ?? compilerOptions.platform,
+    tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
+    uniAppX: compilerOptions.uniAppX,
+  })
+  const generatorTarget = generatorOptions.target
   const generatorBranch = resolveRuntimeBranch({
     appType: compilerOptions.appType,
     generatorTarget,
@@ -79,8 +85,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.js')
   const shouldInjectRuntimeClassSetLoader = !generatorBranch.isWeb
   const shouldInjectCssImportRewriteLoader = shouldRewriteCssImports
-    || !generatorBranch.isWeb
-    || runtimeState.tailwindRuntime.majorVersion === 4
+    || (generatorOptions.enabled && (!generatorBranch.isWeb || runtimeState.tailwindRuntime.majorVersion === 4))
   const runtimeCssImportRewriteLoader = shouldInjectCssImportRewriteLoader
     ? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.js')
     : undefined

@@ -112,6 +112,7 @@
     "@egoist/tailwindcss-icons": "catalog:egoistTailwindcssIcons",
     "@iconify-json/lucide": "catalog:iconifyJson",
     "@iconify-json/mdi": "catalog:iconifyJson",
+    "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@vue/runtime-core": "^3.5.39",
     "@vue/tsconfig": "^0.9.1",
     "@weapp-tailwindcss/merge": "workspace:*",

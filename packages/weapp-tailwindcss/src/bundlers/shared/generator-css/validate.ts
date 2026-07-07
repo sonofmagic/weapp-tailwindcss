@@ -31,27 +31,29 @@ export async function validateCandidatesByGenerator(
       ...normalizeWeappTailwindcssGeneratorOptions(opts.generator),
       bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
     }
-    const sources = await resolveGeneratorSources(
-      majorVersion,
-      runtimeState,
-      rawSource,
-      file,
-      cssHandlerOptions,
-      generatorOptions,
-      {
-        cssEntries: opts.cssEntries,
-        runtime: candidates,
-      },
-    )
-    const classSets = await Promise.all(sources.map(async (source) => {
-      const generator = createWeappTailwindcssGenerator(source)
-      if (typeof generator.validateCandidates !== 'function') {
-        return new Set<string>()
+    if (generatorOptions.enabled) {
+      const sources = await resolveGeneratorSources(
+        majorVersion,
+        runtimeState,
+        rawSource,
+        file,
+        cssHandlerOptions,
+        generatorOptions,
+        {
+          cssEntries: opts.cssEntries,
+          runtime: candidates,
+        },
+      )
+      const classSets = await Promise.all(sources.map(async (source) => {
+        const generator = createWeappTailwindcssGenerator(source)
+        if (typeof generator.validateCandidates !== 'function') {
+          return new Set<string>()
+        }
+        return generator.validateCandidates(candidates)
+      }))
+      for (const candidate of classSets.flatMap(item => [...item])) {
+        classSet.add(candidate)
       }
-      return generator.validateCandidates(candidates)
-    }))
-    for (const candidate of classSets.flatMap(item => [...item])) {
-      classSet.add(candidate)
     }
   }
   catch {

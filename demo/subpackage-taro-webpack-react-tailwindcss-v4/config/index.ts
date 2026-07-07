@@ -19,13 +19,14 @@ const cssEntries = cssMode === 'single'
       path.resolve(projectRoot, 'src/sub-independent/index.css'),
     ]
 
-const generator = {
+const officialPostcssParity = process.env.WEAPP_TW_OFFICIAL_POSTCSS_PARITY === '1'
+const generator = (officialPostcssParity ? false : {
   target: taroPlatform.isWeb ? 'web' : 'weapp',
   webCompat: taroPlatform.isWeb ? true : undefined,
   styleOptions: {
     px2rpx: true,
   },
-} satisfies UserDefinedOptions['generator']
+}) satisfies UserDefinedOptions['generator']
 
 function installWeappTailwindcss(chain: any) {
   chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)

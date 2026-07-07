@@ -5,12 +5,14 @@ import devConfig from './dev'
 import prodConfig from './prod'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { resolveTaroPlatform } from 'weapp-tailwindcss/framework'
+import parity from '../../official-postcss-parity-plugin.cjs'
 
 const taroPlatform = resolveTaroPlatform()
 const webCompat = taroPlatform.isWeb
   ? process.env.WEAPP_TW_WEB_COMPAT !== '0'
   : undefined
-const generator = {
+const officialPostcssParity = process.env.WEAPP_TW_OFFICIAL_POSTCSS_PARITY === '1'
+const generator = officialPostcssParity ? false : {
   target: taroPlatform.isWeb || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
     ? 'web'
     : 'weapp',
@@ -73,6 +75,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           rem2rpx: true,
           styleInjector: false,
           generator,
+          postcssOptions: parity.createOfficialPostcssParityPostcssOptions(),
           disabled: isNativeTarget,
           // injectAdditionalCssVarScope: true,
         })

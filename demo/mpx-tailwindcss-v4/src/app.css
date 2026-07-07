@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 @config "../tailwind.config.js";
 @source "../src";
 @custom-variant system-dark {

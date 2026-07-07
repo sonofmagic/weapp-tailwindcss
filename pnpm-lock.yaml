@@ -1020,6 +1020,9 @@ importers:
       '@iconify-json/mdi':
         specifier: catalog:iconifyJson
         version: 1.2.3
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
       '@types/gulp':
         specifier: ^4.0.18
         version: 4.0.18
@@ -1285,6 +1288,9 @@ importers:
       '@react-native/metro-config':
         specifier: catalog:reactNativeMetroConfig073
         version: 0.73.5(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
       '@tarojs/cli':
         specifier: catalog:taro4
         version: 4.2.0(@swc/helpers@0.5.23)(@types/node@26.1.0)(debug@4.4.3)
@@ -1439,6 +1445,9 @@ importers:
       '@mpxjs/webpack-plugin':
         specifier: ^2.10.24
         version: 2.10.24(@mpxjs/core@2.10.24)(vue@2.7.16)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.16))
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
       '@vue/cli-service':
         specifier: ~5.0.0
         version: 5.0.9(@rspack/core@2.1.2(@swc/helpers@0.5.23))(@swc/core@1.15.43(@swc/helpers@0.5.23))(@vue/compiler-sfc@3.5.39)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.28.1)(handlebars@4.7.9)(lightningcss@1.32.0)(lodash@4.18.1)(prettier@3.9.4)(react@18.2.0)(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.5.0)
@@ -1879,6 +1888,9 @@ importers:
       '@react-native/metro-config':
         specifier: catalog:reactNativeMetroConfig073
         version: 0.73.5(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
       '@tarojs/cli':
         specifier: catalog:taro4
         version: 4.2.0(@swc/helpers@0.5.23)(@types/node@26.1.0)(debug@4.4.3)
@@ -1967,6 +1979,9 @@ importers:
       '@dcloudio/vite-plugin-uni':
         specifier: 3.0.0-5000720260410001
         version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.16)(rollup@4.62.2)(vite@5.4.21(@types/node@26.1.0)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
       '@vue/runtime-core':
         specifier: ^3.5.39
         version: 3.5.39
@@ -2133,6 +2148,9 @@ importers:
       '@react-native/metro-config':
         specifier: catalog:reactNativeMetroConfig073
         version: 0.73.5(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
       '@tarojs/cli':
         specifier: catalog:taro4
         version: 4.2.0(@swc/helpers@0.5.23)(@types/node@26.1.0)(debug@4.4.3)
@@ -2356,6 +2374,9 @@ importers:
       '@react-native/metro-config':
         specifier: catalog:reactNativeMetroConfig073
         version: 0.73.5(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
       '@tarojs/cli':
         specifier: catalog:taro4
         version: 4.2.0(@swc/helpers@0.5.23)(@types/node@26.1.0)(debug@4.4.3)
@@ -2564,6 +2585,9 @@ importers:
       '@react-native/metro-config':
         specifier: catalog:reactNativeMetroConfig073
         version: 0.73.5(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
       '@tarojs/cli':
         specifier: catalog:taro4
         version: 4.2.0(@swc/helpers@0.5.23)(@types/node@26.1.0)(debug@4.4.3)
@@ -2763,6 +2787,9 @@ importers:
       '@react-native/metro-config':
         specifier: catalog:reactNativeMetroConfig073
         version: 0.73.5(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
       '@tarojs/cli':
         specifier: catalog:taro4
         version: 4.2.0(@swc/helpers@0.5.23)(@types/node@26.1.0)(debug@4.4.3)
@@ -2941,6 +2968,9 @@ importers:
       '@iconify-json/mdi':
         specifier: catalog:iconifyJson
         version: 1.2.3
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
       '@vue/runtime-core':
         specifier: ^3.5.39
         version: 3.5.39
@@ -3011,6 +3041,9 @@ importers:
       '@dcloudio/vite-plugin-uni':
         specifier: 3.0.0-5000720260410001
         version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.16)(rollup@4.62.2)(vite@5.4.21(@types/node@26.1.0)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
       cross-env:
         specifier: catalog:crossEnv
         version: 10.1.0
@@ -3051,6 +3084,9 @@ importers:
       '@dcloudio/vite-plugin-uni':
         specifier: 3.0.0-5000720260410001
         version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.16)(rollup@4.62.2)(vite@5.4.21(@types/node@26.1.0)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
       '@weapp-tailwindcss/debug-uni-app-x':
         specifier: workspace:*
         version: link:../../packages/debug-uni-app-x
@@ -3088,6 +3124,9 @@ importers:
       '@iconify/tailwind4':
         specifier: ^1.2.3
         version: 1.2.3(tailwindcss@4.3.2)
+      '@tailwindcss/postcss':
+        specifier: catalog:tailwindcss4
+        version: 4.3.2
       '@weapp-tailwindcss/variants':
         specifier: workspace:*
         version: link:../../packages-runtime/variants
@@ -36467,7 +36506,7 @@ snapshots:
       schema-dts: 1.1.5
       tslib: 2.8.1
       utility-types: 3.11.0
-      webpack: 5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.16))(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.16)
+      webpack: 5.108.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.16)
     transitivePeerDependencies:
       - '@docusaurus/faster'
       - '@mdx-js/react'
@@ -47399,7 +47438,7 @@ snapshots:
 
   '@types/serve-index@1.9.4':
     dependencies:
-      '@types/express': 4.17.25
+      '@types/express': 5.0.6
 
   '@types/serve-static@1.15.10':
     dependencies:

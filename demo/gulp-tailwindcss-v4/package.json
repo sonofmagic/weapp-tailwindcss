@@ -53,6 +53,7 @@
   "devDependencies": {
     "@egoist/tailwindcss-icons": "catalog:egoistTailwindcssIcons",
     "@iconify-json/mdi": "catalog:iconifyJson",
+    "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@types/gulp": "^4.0.18",
     "@types/gulp-debug": "^2.0.36",
     "@types/gulp-if": "^3.0.4",

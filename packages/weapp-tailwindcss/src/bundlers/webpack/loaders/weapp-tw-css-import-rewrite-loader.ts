@@ -15,7 +15,7 @@ import { createSourceCandidateStore, isSourceCandidateRequest } from '@/bundlers
 import { resolveSourceCandidateScanFiles } from '@/bundlers/vite/source-candidates/scan-root'
 import { resolveTailwindV4EntriesFromCssCached } from '@/bundlers/vite/source-scan'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
-import { inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
 import { collectWebpackBareSelectorUserCss, finalizeMiniProgramUserCssAssetSource, finalizeWebpackCssAssetSource } from '../BaseUnifiedPlugin/v5-assets/pipeline-helpers'
@@ -162,7 +162,16 @@ async function generateCssForWebpackPipeline(
   }
   await runtimeState.readyPromise
   const runtime = await getRuntimeSet()
-  const generatorTarget = compilerOptions.generator?.target ?? inferGeneratorTargetFromEnv()
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(compilerOptions.generator, {
+    appType: compilerOptions.appType,
+    platform: compilerOptions.cssOptions?.platform ?? compilerOptions.platform,
+    tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
+    uniAppX: compilerOptions.uniAppX,
+  })
+  if (!generatorOptions.enabled) {
+    return undefined
+  }
+  const generatorTarget = generatorOptions.target
   if (generatorTarget !== 'web' && generatorTarget !== 'weapp') {
     return undefined
   }
