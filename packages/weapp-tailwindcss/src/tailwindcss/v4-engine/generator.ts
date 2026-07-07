@@ -307,6 +307,13 @@ function normalizeTargetRpxLengthCandidates(
       }
 }
 
+function resolveGeneratedSourcePatterns(
+  generatedSources: TailwindV4SourcePattern[],
+  scanSources: TailwindV4GenerateOptions['scanSources'],
+) {
+  return Array.isArray(scanSources) ? scanSources : generatedSources
+}
+
 export function createTailwindV4Engine(source: TailwindV4ResolvedSource): TailwindV4Engine {
   async function generateOnce(
     generateSource: TailwindV4ResolvedSource,
@@ -339,11 +346,13 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       ...patchOptions,
       candidates: normalizedCandidates.candidates,
     }))
+    const sources = resolveGeneratedSourcePatterns(result.sources, resolvedScanSources)
     const rawCss = restoreRpxLengthCssSelectors(result.css, normalizedCandidates.restoreCandidates)
     const css = await transformTailwindV4CssByTarget(rawCss, target, resolvedStyleOptions)
 
     return {
       ...result,
+      sources,
       classSet: restoreRpxLengthCandidates(result.classSet, normalizedCandidates.restoreCandidates),
       rawCandidates: restoreRpxLengthCandidates(result.rawCandidates, normalizedCandidates.restoreCandidates),
       css,

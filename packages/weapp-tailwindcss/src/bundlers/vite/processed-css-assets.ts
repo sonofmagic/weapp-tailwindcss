@@ -1028,7 +1028,14 @@ function shouldUseCssAssetAsMainInjectionTarget(
     return true
   }
   if (records.some(record => record.injectIntoMain === true)) {
-    return false
+    const matchedExplicitMiniProgramTargets = explicitStyleOutputTargets.filter(outputFile =>
+      isMiniProgramStyleOutputFile(outputFile)
+      && opts.mainCssChunkMatcher(outputFile, opts.appType),
+    )
+    if (matchedExplicitMiniProgramTargets.length > 0) {
+      return matchedExplicitMiniProgramTargets.includes(fileKey)
+    }
+    return isRootStyleOutputFile(file) && isMiniProgramStyleOutputFile(file)
   }
   if (opts.mainCssChunkMatcher(file, opts.appType)) {
     return true

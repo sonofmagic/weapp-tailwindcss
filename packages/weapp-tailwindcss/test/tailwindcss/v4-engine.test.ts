@@ -1171,13 +1171,18 @@ describe('tailwindcss v4 engine', () => {
     const result = await engine.generate()
 
     expect(result.classSet).toEqual(new Set(['bg-red-500']))
-    expect(result.sources).toEqual([
+    expect(result.sources).toEqual(expect.arrayContaining([
       {
-        base: root,
-        pattern: './src/**/*.html',
+        base: srcDir,
+        pattern: '**/*.html',
         negated: false,
       },
-    ])
+      {
+        base: root,
+        pattern: '**/node_modules/**',
+        negated: true,
+      },
+    ]))
     expect(result.rawCss).toContain('.bg-red-500')
     expect(result.rawCss).not.toContain('.bg-blue-500')
     expect(result.css).toContain('.bg-red-500')

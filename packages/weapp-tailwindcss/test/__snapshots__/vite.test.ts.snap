@@ -126,24 +126,6 @@ exports[`vite > v4-vite-postcss > css 1`] = `
 .text-_b_h123456_B {
     color: #123456;
   }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::marker {
-        text-overflow: clip;
-      }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::marker {
-        text-overflow: clip;
-      }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::marker {
-        text-overflow: clip;
-      }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::-webkit-details-marker {
-        text-overflow: clip;
-      }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::-webkit-details-marker {
-        text-overflow: clip;
-      }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::-webkit-details-marker {
-        text-overflow: clip;
-      }
 "
 `;
 
