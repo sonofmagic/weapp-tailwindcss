@@ -1,41 +1,24 @@
 .weapp-tw-user-ui-card {
   align-items: center;
-  -webkit-animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
   animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
   color: var(--weapp-tw-user-ui-color, #175e75);
   display: inline-flex;
   gap: 8rpx;
 }
 .weapp-tw-user-ui-loading {
-  -webkit-animation: weappTwUserUiRotation 1s linear infinite;
   animation: weappTwUserUiRotation 1s linear infinite;
   display: inline-block;
   height: 32rpx;
   width: 32rpx;
 }
-@-webkit-keyframes weappTwUserUiRotation {
-  to {
-    -webkit-transform: rotate(1turn);
-    transform: rotate(1turn);
-  }
-}
 @keyframes weappTwUserUiRotation {
   to {
-    -webkit-transform: rotate(1turn);
     transform: rotate(1turn);
-  }
-}
-@-webkit-keyframes weappTwUserUiBreathe {
-  50% {
-    opacity: 0.65;
-    -webkit-transform: scale(0.96);
-    transform: scale(0.96);
   }
 }
 @keyframes weappTwUserUiBreathe {
   50% {
     opacity: 0.65;
-    -webkit-transform: scale(0.96);
     transform: scale(0.96);
   }
 }

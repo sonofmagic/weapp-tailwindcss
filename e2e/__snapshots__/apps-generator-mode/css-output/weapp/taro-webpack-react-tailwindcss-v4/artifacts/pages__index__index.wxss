@@ -2,6 +2,10 @@ view,
 text,
 ::after,
 ::before {
+  border: 0 solid;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
   --tw-rotate-x:;
   --tw-rotate-y:;
   --tw-rotate-z:;
@@ -10046,20 +10050,4 @@ view {
     transform: translateZ(0) scaleY(0.95);
     transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
   }
-}
-:root {
-  --nut-icon-height: 32rpx;
-  --nut-icon-width: 32rpx;
-  --nut-icon-line-height: 32rpx;
-  --nut-icon-color: #171a26;
-  --animate-duration: 1s;
-  --animate-delay: 0s;
-}
-page {
-  --nut-icon-height: 32rpx;
-  --nut-icon-width: 32rpx;
-  --nut-icon-line-height: 32rpx;
-  --nut-icon-color: #171a26;
-  --animate-duration: 1s;
-  --animate-delay: 0s;
 }

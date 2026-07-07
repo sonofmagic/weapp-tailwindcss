@@ -2,6 +2,10 @@ view,
 text,
 ::after,
 ::before {
+  border: 0 solid;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
   --tw-space-y-reverse: 0;
   --tw-border-style: solid;
   --tw-divide-x-reverse: 0;
@@ -22,6 +26,7 @@ text,
   --tw-ring-inset:;
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-content: '';
 }
  /* tokens: tw-root <= src/custom-tab-bar/index.mpx */
 :host,
