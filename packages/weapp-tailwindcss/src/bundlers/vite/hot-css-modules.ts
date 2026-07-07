@@ -1,5 +1,6 @@
 import type { HmrContext, ModuleNode } from 'vite'
 import path from 'node:path'
+import process from 'node:process'
 import { isSourceStyleRequest } from '../shared/style-requests'
 import { cleanUrl, slash } from './utils'
 
@@ -104,6 +105,25 @@ function includesHotModule(modules: ModuleNode[], target: ModuleNode) {
   })
 }
 
+function createSupplementalHotUpdate(hotUrl: string, timestamp: number) {
+  if (/[?&](?:direct|vue)(?:&|$)/.test(hotUrl)) {
+    return {
+      type: 'js-update' as const,
+      timestamp,
+      path: hotUrl,
+      acceptedPath: hotUrl,
+      explicitImportRequired: false,
+      isWithinCircularImport: false,
+    }
+  }
+  return {
+    type: 'css-update' as const,
+    timestamp,
+    path: hotUrl,
+    acceptedPath: hotUrl,
+  }
+}
+
 export function hasSelfAcceptingNonStyleHotModule(modules: ModuleNode[]) {
   return modules.some((mod) => {
     const modId = mod.id ?? mod.url
@@ -113,24 +133,18 @@ export function hasSelfAcceptingNonStyleHotModule(modules: ModuleNode[]) {
 
 export function sendSupplementalCssHotUpdates(ctx: HmrContext, cssModules: ModuleNode[], fallbackCssIds: Iterable<string> = []) {
   const seenUrls = new Set<string>()
-  const updates: Array<{
-    type: 'css-update'
-    timestamp: number
-    path: string
-    acceptedPath: string
-  }> = []
+  const root = ctx.server.config?.root ?? process.cwd()
+  const updates: Array<ReturnType<typeof createSupplementalHotUpdate>> = []
   for (const id of fallbackCssIds) {
-    const hotUrl = resolveCssHotUrl(id, ctx.server.config.root)
+    if (!isSourceStyleRequest(id)) {
+      continue
+    }
+    const hotUrl = resolveCssHotUrl(id, root)
     if (!hotUrl || seenUrls.has(hotUrl)) {
       continue
     }
     seenUrls.add(hotUrl)
-    updates.push({
-      type: 'css-update',
-      timestamp: ctx.timestamp,
-      path: hotUrl,
-      acceptedPath: hotUrl,
-    })
+    updates.push(createSupplementalHotUpdate(hotUrl, ctx.timestamp))
   }
   for (const mod of cssModules) {
     if (includesHotModule(ctx.modules, mod)) {
@@ -141,12 +155,7 @@ export function sendSupplementalCssHotUpdates(ctx: HmrContext, cssModules: Modul
       continue
     }
     seenUrls.add(hotUrl)
-    updates.push({
-      type: 'css-update',
-      timestamp: ctx.timestamp,
-      path: hotUrl,
-      acceptedPath: hotUrl,
-    })
+    updates.push(createSupplementalHotUpdate(hotUrl, ctx.timestamp))
   }
   if (updates.length === 0) {
     return

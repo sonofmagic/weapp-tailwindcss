@@ -76,7 +76,7 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
           ? normalizeTailwindConfigDirectives(code, path.dirname(file))
           : code
         await options.onCssSourceTransform?.(id, normalizedCode)
-        const hasTailwindRoot = hasTailwindRootDirectives(normalizedCode)
+        const hasTailwindRoot = hasTailwindRootDirectives(normalizedCode, { importFallback: true })
         if (hasTailwindRoot) {
           await options.onTailwindRootCss?.(id, normalizedCode)
         }

@@ -821,9 +821,8 @@ export function createViteFrameworkPlugins(
       : undefined
     if (existingTask) {
       return existingTask
-        .then(async (change) => {
-          await cssMemory.refreshRememberedCssSourceByCurrentFile(file)
-          return change
+        .then(async () => {
+          return await syncChangedSourceCandidateFile(id)
         })
     }
     const task = (
@@ -926,11 +925,14 @@ export function createViteFrameworkPlugins(
       return
     }
     tailwindRootCssModuleIds.add(id)
-    tailwindRootCssModuleIds.add(cleanUrl(id))
+    const cleanId = cleanUrl(id)
+    if (isSourceStyleRequest(cleanId)) {
+      tailwindRootCssModuleIds.add(cleanId)
+    }
   }
-  const registerTailwindRootCss = (id: string, code: string) => {
-    registerAutoCssSource(id, code)
+  const registerTailwindRootCss = async (id: string, code: string) => {
     rememberTailwindRootCssModule(id)
+    await registerAutoCssSource(id, code)
   }
   const isUniViteProject = () => {
     return resolvedConfig?.plugins?.some(plugin => plugin.name.includes('uni')) ?? false
@@ -1357,7 +1359,21 @@ export function createViteFrameworkPlugins(
       async handleHotUpdate(ctx) {
         return hmrTimingRecorder.measure('sourceCandidates.handleHotUpdate', async () => {
           const isSourceCandidateHotUpdate = shouldOwnTailwindGeneration && isSourceCandidateRequest(ctx.file)
-          const hotSource = isSourceCandidateHotUpdate
+          if (isSourceCandidateHotUpdate && isSourceStyleRequest(ctx.file)) {
+            for (const mod of ctx.modules) {
+              if (mod.id) {
+                rememberTailwindRootCssModule(mod.id)
+              }
+              if (mod.url) {
+                rememberTailwindRootCssModule(mod.url)
+              }
+              if (mod.file) {
+                rememberTailwindRootCssModule(mod.file)
+              }
+            }
+          }
+          const canReadHotSource = typeof ctx.read === 'function'
+          const hotSource = isSourceCandidateHotUpdate && canReadHotSource
             ? await ctx.read().catch(() => undefined)
             : undefined
           const sourceCandidateChange = await syncChangedSourceCandidateFile(ctx.file, hotSource)
@@ -1382,6 +1398,9 @@ export function createViteFrameworkPlugins(
                 await syncSourceCandidateScan({ force: true })
               }
             }
+          }
+          if (isSourceCandidateHotUpdate) {
+            await waitForSourceCandidateSyncs()
           }
           const cssModules = resolveHotTailwindCssModules(ctx, tailwindRootCssModuleIds)
           const sourceModules = isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)

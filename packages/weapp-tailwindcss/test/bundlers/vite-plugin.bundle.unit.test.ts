@@ -1283,6 +1283,330 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     })
   }, TEST_TIMEOUT_MS)
 
+  it('replays latest source candidate sync for rapid Vite serve watch changes on the same file', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-hmr-source-sync-'))
+    createdDirs.push(root)
+    const pageFile = path.join(root, 'src/pages/index/index.tsx')
+    const cssFile = path.join(root, 'src/app.css')
+    const css = [
+      '@import "tailwindcss" source(none);',
+      '@source "./pages/**/*.{ts,tsx}";',
+      '@tailwind utilities;',
+    ].join('\n')
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await writeFile(pageFile, '<View className="bg-[red]">Hello world!</View>\n', 'utf8')
+    await writeFile(cssFile, css, 'utf8')
+
+    let releaseGreenExtraction!: () => void
+    let resolveGreenExtractionStarted!: () => void
+    const greenExtractionStarted = new Promise<void>((resolve) => {
+      resolveGreenExtractionStarted = resolve
+    })
+    const greenExtractionRelease = new Promise<void>((resolve) => {
+      releaseGreenExtraction = resolve
+    })
+    vi.doMock('@/tailwindcss/candidates', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/tailwindcss/candidates')>()
+      return {
+        ...actual,
+        extractCandidatesFromSource: vi.fn(async (...args: Parameters<typeof actual.extractCandidatesFromSource>) => {
+          const [source] = args
+          if (typeof source === 'string' && source.includes('bg-[#00ff00]')) {
+            resolveGreenExtractionStarted()
+            await greenExtractionRelease
+          }
+          return actual.extractCandidatesFromSource(...args)
+        }),
+      }
+    })
+
+    const generatedCandidateBatches: string[][] = []
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      const resolveMockTailwindV4Source = createMockTailwindV4SourceResolver({
+        base: path.dirname(cssFile),
+        css,
+      })
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(async (options: { candidates: Set<string> }) => {
+            const candidates = [...options.candidates]
+            generatedCandidateBatches.push(candidates)
+            const generatedCss = candidates
+              .map(candidate => `/* ${candidate} */`)
+              .join('\n')
+            return {
+              css: generatedCss,
+              rawCss: generatedCss,
+              target: 'web',
+              classSet: new Set(options.candidates),
+              dependencies: [],
+              sources: [],
+              root: null,
+              version: 4,
+            }
+          }),
+          validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        resolveTailwindV4Source: resolveMockTailwindV4Source,
+        resolveTailwindV4SourceFromRuntime: resolveMockTailwindV4Source,
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+          projectRoot: root,
+          base: path.dirname(cssFile),
+          baseFallbacks: [],
+          packageName: 'tailwindcss',
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      generator: {
+        target: 'web',
+      },
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        options: {
+          projectRoot: root,
+          tailwindcss: {
+            cwd: root,
+          },
+        },
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      generator: {
+        target: 'web',
+      },
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const servePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(servePlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const transform = getTransformHandler(servePlugin)
+    await transform?.call(servePlugin, css, cssFile)
+
+    await writeFile(pageFile, '<View className="bg-[#00ff00]">Hello world!</View>\n', 'utf8')
+    const watchChange = sourcePlugin.watchChange as any
+    const firstSync = watchChange.call(sourcePlugin, pageFile, { event: 'update' })
+    await greenExtractionStarted
+    await writeFile(pageFile, '<View className="bg-[#0000ff]">Hello world!</View>\n', 'utf8')
+    const secondSync = watchChange.call(sourcePlugin, pageFile, { event: 'update' })
+    releaseGreenExtraction()
+    await Promise.all([firstSync, secondSync])
+
+    await transform?.call(servePlugin, css, cssFile)
+
+    const lastCandidates = generatedCandidateBatches.at(-1) ?? []
+    expect(lastCandidates).toContain('bg-[#0000ff]')
+    expect(lastCandidates).not.toContain('bg-[#00ff00]')
+  }, TEST_TIMEOUT_MS)
+
+  it('waits for pending source candidate watch sync before deciding Vite serve css HMR updates', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-hmr-source-race-'))
+    createdDirs.push(root)
+    const pageFile = path.join(root, 'src/pages/index/index.tsx')
+    const cssFile = path.join(root, 'src/app.css')
+    const css = [
+      '@import "tailwindcss" source(none);',
+      '@source "./pages/**/*.{ts,tsx}";',
+      '@tailwind utilities;',
+    ].join('\n')
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await writeFile(pageFile, '<View className="bg-[red]">Hello world!</View>\n', 'utf8')
+    await writeFile(cssFile, css, 'utf8')
+
+    let releaseGreenExtraction!: () => void
+    let resolveGreenExtractionStarted!: () => void
+    const greenExtractionStarted = new Promise<void>((resolve) => {
+      resolveGreenExtractionStarted = resolve
+    })
+    const greenExtractionRelease = new Promise<void>((resolve) => {
+      releaseGreenExtraction = resolve
+    })
+    vi.doMock('@/tailwindcss/candidates', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/tailwindcss/candidates')>()
+      return {
+        ...actual,
+        extractCandidatesFromSource: vi.fn(async (...args: Parameters<typeof actual.extractCandidatesFromSource>) => {
+          const [source] = args
+          if (typeof source === 'string' && source.includes('bg-[#00ff00]')) {
+            resolveGreenExtractionStarted()
+            await greenExtractionRelease
+          }
+          return actual.extractCandidatesFromSource(...args)
+        }),
+      }
+    })
+
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      const resolveMockTailwindV4Source = createMockTailwindV4SourceResolver({
+        base: path.dirname(cssFile),
+        css,
+      })
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(async (options: { candidates: Set<string> }) => {
+            const generatedCss = [...options.candidates]
+              .map(candidate => `/* ${candidate} */`)
+              .join('\n')
+            return {
+              css: generatedCss,
+              rawCss: generatedCss,
+              target: 'web',
+              classSet: new Set(options.candidates),
+              dependencies: [],
+              sources: [],
+              root: null,
+              version: 4,
+            }
+          }),
+          validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        resolveTailwindV4Source: resolveMockTailwindV4Source,
+        resolveTailwindV4SourceFromRuntime: resolveMockTailwindV4Source,
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+          projectRoot: root,
+          base: path.dirname(cssFile),
+          baseFallbacks: [],
+          packageName: 'tailwindcss',
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      generator: {
+        target: 'web',
+      },
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        options: {
+          projectRoot: root,
+          tailwindcss: {
+            cwd: root,
+          },
+        },
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      generator: {
+        target: 'web',
+      },
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const servePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(servePlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const transform = getTransformHandler(servePlugin)
+    await transform?.call(servePlugin, css, cssFile)
+    const handleHotUpdate = sourcePlugin.handleHotUpdate as any
+    await handleHotUpdate.call(sourcePlugin, {
+      file: cssFile,
+      modules: [{
+        file: cssFile,
+        id: cssFile,
+        url: '/app.css',
+      } as ModuleNode],
+      read: vi.fn(async () => css),
+      timestamp: 123455,
+      server: {
+        config: {
+          root,
+        },
+        ws: {
+          send: vi.fn(),
+        },
+        moduleGraph: {
+          getModuleById: vi.fn(() => undefined),
+          getModulesByFile: vi.fn(() => undefined),
+          invalidateModule: vi.fn(),
+        },
+      },
+    } as HmrContext)
+
+    await writeFile(pageFile, '<View className="bg-[#00ff00]">Hello world!</View>\n', 'utf8')
+    const watchChange = sourcePlugin.watchChange as any
+    const watchSync = watchChange.call(sourcePlugin, pageFile, { event: 'update' })
+    await greenExtractionStarted
+
+    const wsSend = vi.fn()
+    const hotUpdate = handleHotUpdate.call(sourcePlugin, {
+      file: pageFile,
+      modules: [{
+        id: pageFile,
+        isSelfAccepting: true,
+        url: '/src/pages/index/index.tsx',
+      } as ModuleNode],
+      read: vi.fn(async () => '<View className="bg-[red]">Hello world!</View>\n'),
+      timestamp: 123456,
+      server: {
+        config: {
+          root,
+        },
+        ws: {
+          send: wsSend,
+        },
+        moduleGraph: {
+          getModuleById: vi.fn(id => (id === cssFile || id === '/app.css') ? ({
+            id: cssFile,
+            url: '/app.css',
+          } as ModuleNode) : undefined),
+          getModulesByFile: vi.fn(() => undefined),
+          invalidateModule: vi.fn(),
+        },
+      },
+    } as HmrContext)
+
+    await Promise.resolve()
+    expect(wsSend).not.toHaveBeenCalled()
+    releaseGreenExtraction()
+    await Promise.all([watchSync, hotUpdate])
+    await Promise.resolve()
+
+    expect(wsSend).toHaveBeenCalledWith({
+      type: 'update',
+      updates: expect.arrayContaining([
+        expect.objectContaining({
+          acceptedPath: '/app.css',
+          path: '/app.css',
+          type: 'css-update',
+        }),
+      ]),
+    })
+  }, TEST_TIMEOUT_MS)
+
   it('lets uni-app H5 vue source hot updates continue while sending supplemental Tailwind css updates', async () => {
     const previousUniPlatform = process.env.UNI_PLATFORM
     process.env.UNI_PLATFORM = 'h5'
@@ -3073,7 +3397,16 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     const transform = getTransformHandler(rewritePlugin)
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: path.dirname(entry),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+    refreshTailwindcssRuntime.mockClear()
 
     await transform?.call(rewritePlugin, '@import "tailwindcss";\n@source inline("w-4");', entry)
     await transform?.call(rewritePlugin, '@import "tailwindcss";\n@source inline("h-4");', entry)

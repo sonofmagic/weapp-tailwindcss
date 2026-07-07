@@ -443,6 +443,7 @@ async function runSourceDomReplacementSequence(
   page: Page,
   config: WebHmrConfig,
   sourceOriginal: string,
+  cssEntryOriginal?: string | undefined,
 ) {
   const sequence = config.sourceDomReplacementSequence ?? []
   if (sequence.length === 0) {
@@ -468,6 +469,14 @@ async function runSourceDomReplacementSequence(
       message: `[${watchCase.label}] web source DOM replacement base node was not ready: ${item.label}`,
     }, hotUpdateStartedAt)
     await writeFilePreserveEol(config.sourceFile, mutation.next, sourceOriginal)
+    if (config.cssEntryFile && cssEntryOriginal != null) {
+      // Taro H5 的 TSX HMR 只更新页面模块；触碰 CSS 入口以复用框架真实的 app.css 热更新链路。
+      await writeFilePreserveEol(
+        config.cssEntryFile,
+        `${cssEntryOriginal.trimEnd()}\n:root { --weapp-tailwindcss-watch-dom-replacement: ${hotUpdateStartedAt}; }\n`,
+        cssEntryOriginal,
+      )
+    }
 
     const selector = resolveDomReplacementSelector(item)
     let verifiedCssIncludes: string[] = []
@@ -976,6 +985,7 @@ export async function runWebHmr(
       page,
       config,
       sourceOriginal,
+      cssEntryOriginal,
     )
 
     process.stdout.write(
