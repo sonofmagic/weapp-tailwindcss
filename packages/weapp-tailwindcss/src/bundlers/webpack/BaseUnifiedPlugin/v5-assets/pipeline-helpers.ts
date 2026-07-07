@@ -52,6 +52,70 @@ function resolveExistingWebpackCssPreflight(
     : undefined
 }
 
+function removeMiniProgramPreflightSelectorRule(source: string) {
+  try {
+    const root = postcss.parse(source)
+    let changed = false
+    root.walkRules((rule) => {
+      const selectors = new Set((rule.selectors ?? [rule.selector])
+        .map(selector => selector.trim().replace(/^:before$/, '::before').replace(/^:after$/, '::after')))
+      if (
+        selectors.has('view')
+        && selectors.has('text')
+        && selectors.has('::before')
+        && selectors.has('::after')
+      ) {
+        rule.remove()
+        changed = true
+      }
+    })
+    return changed ? root.toString() : source
+  }
+  catch {
+    return source.replace(/(?:^|[}\s])\s*view\s*,\s*text\s*,\s*::after\s*,\s*::before\s*\{[^}]*\}/g, '')
+  }
+}
+
+function dedupeMiniProgramPreflightSelectorRules(source: string) {
+  try {
+    const root = postcss.parse(source)
+    let firstRule: postcss.Rule | undefined
+    let changed = false
+    root.walkRules((rule) => {
+      const selectors = new Set((rule.selectors ?? [rule.selector])
+        .map(selector => selector.trim().replace(/^:before$/, '::before').replace(/^:after$/, '::after')))
+      if (
+        !selectors.has('view')
+        || !selectors.has('text')
+        || !selectors.has('::before')
+        || !selectors.has('::after')
+      ) {
+        return
+      }
+      if (!firstRule) {
+        firstRule = rule
+        return
+      }
+      const existingProps = new Set<string>()
+      firstRule.walkDecls((decl) => {
+        existingProps.add(decl.prop)
+      })
+      rule.walkDecls((decl) => {
+        if (!existingProps.has(decl.prop)) {
+          firstRule?.append(decl.clone())
+          existingProps.add(decl.prop)
+        }
+      })
+      rule.remove()
+      changed = true
+    })
+    return changed ? root.toString() : source
+  }
+  catch {
+    return source
+  }
+}
+
 function hasMiniProgramPreflightSelector(source: string) {
   try {
     let found = false
@@ -1238,7 +1302,7 @@ export function finalizeWebpackCssAssetSource(
   source: string,
   compilerOptions: SetupWebpackV5ProcessAssetsHookOptions['options'],
   isWebGeneratorTarget: boolean,
-  options: { cssPreflight?: boolean | undefined, generatedCss?: boolean } = {},
+  options: { cssPreflight?: boolean | undefined, generatedCss?: boolean, preserveExistingPreflight?: boolean | undefined } = {},
 ) {
   const styleOptions = resolveStyleOptionsFromContext(compilerOptions)
   if (isWebGeneratorTarget) {
@@ -1273,6 +1337,7 @@ export function finalizeWebpackCssAssetSource(
       isTailwindcssV4: true,
       tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
     })
+    finalized = dedupeMiniProgramPreflightSelectorRules(finalized)
     return stripMiniProgramCssSpecificityPlaceholders(removeMiniProgramHoverSelectors(finalized, styleOptions.cssRemoveHoverPseudoClass))
   }
   try {
@@ -1282,7 +1347,12 @@ export function finalizeWebpackCssAssetSource(
   }
   catch {
   }
-  const hasExistingMiniProgramPreflight = hasMiniProgramPreflightSelector(source)
+  const shouldRemoveExistingPreflight = options.cssPreflight === false && options.preserveExistingPreflight === false
+  if (shouldRemoveExistingPreflight) {
+    finalized = removeMiniProgramPreflightSelectorRule(finalized)
+  }
+  const hasExistingMiniProgramPreflight = options.preserveExistingPreflight !== false
+    && hasMiniProgramPreflightSelector(source)
   finalized = finalizeMiniProgramCss(finalized, {
     cssPreflight: options.cssPreflight === false && !hasExistingMiniProgramPreflight
       ? false
@@ -1293,7 +1363,30 @@ export function finalizeWebpackCssAssetSource(
     tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
   })
   finalized = ensureWebpackMiniProgramTwContentInit(finalized)
+  if (shouldRemoveExistingPreflight) {
+    finalized = removeMiniProgramPreflightSelectorRule(finalized)
+  }
+  else {
+    finalized = dedupeMiniProgramPreflightSelectorRules(finalized)
+  }
   return stripMiniProgramCssSpecificityPlaceholders(removeMiniProgramHoverSelectors(finalized, styleOptions.cssRemoveHoverPseudoClass))
+}
+
+export function finalizeWebpackCssAssetOutputSource(
+  source: string,
+  compilerOptions: SetupWebpackV5ProcessAssetsHookOptions['options'],
+  isWebGeneratorTarget: boolean,
+) {
+  if (isWebGeneratorTarget) {
+    return source
+  }
+  const styleOptions = resolveStyleOptionsFromContext(compilerOptions)
+  return stripMiniProgramCssSpecificityPlaceholders(
+    removeMiniProgramHoverSelectors(
+      dedupeMiniProgramPreflightSelectorRules(source),
+      styleOptions.cssRemoveHoverPseudoClass,
+    ),
+  )
 }
 
 export function collectWebpackJsRuntimeCandidatesFromAssets(options: {

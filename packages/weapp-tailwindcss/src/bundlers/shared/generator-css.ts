@@ -561,14 +561,21 @@ export async function generateCssByGenerator(
     const hasMatchedCssSourceFile = sources.some(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile)
     const hasExplicitCssSource = sources.some((source) => {
       const metadata = (source as GeneratorResolvedSource).__weappTailwindcssMeta
-      return metadata?.cssEntryIndex !== undefined || metadata?.cssSourceIndex !== undefined
+      return metadata?.candidateMatchedCssSource !== true
+        && (metadata?.cssEntryIndex !== undefined || metadata?.cssSourceIndex !== undefined)
     })
-    const hasPreflightCssSource = sources.some(source =>
-      (source as GeneratorResolvedSource).__weappTailwindcssMeta?.includesPreflight === true,
-    )
+    const hasPreflightCssSource = sources.some((source) => {
+      const metadata = (source as GeneratorResolvedSource).__weappTailwindcssMeta
+      return metadata?.candidateMatchedCssSource !== true
+        && metadata?.includesPreflight === true
+    })
     const hasPreflightRawSource = includesTailwindV4PreflightDirective(generatorRawSource)
     const hasOnlyPrimaryCssSource = sources.length > 0
-      && sources.every(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.primaryCssSource === true)
+      && sources.every((source) => {
+        const metadata = (source as GeneratorResolvedSource).__weappTailwindcssMeta
+        return metadata?.candidateMatchedCssSource !== true
+          && metadata?.primaryCssSource === true
+      })
     const preflightMode = resolveMiniProgramPreflightModeForGeneratorCss(opts, {
       cssHandlerOptions,
       isolateCurrentCssCandidates,

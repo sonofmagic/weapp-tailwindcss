@@ -152,14 +152,31 @@ export function createWebpackCssSourceResolvers(options: {
     return [...new Set(entries)]
   })()
   const configuredMainCssEntryFiles = configuredCssEntryFiles.slice(0, 1)
-  const inferredMainCssFiles = inferWebpackMainCssFiles(
+  const scoreCssSourceOutputMatch = (file: string, sourceFile: string) => scoreTailwindV4CssSourceFileMatch(file, sourceFile, {
+    outputRoot: outputDir,
+    projectRoot: compilerOptions.tailwindcssBasedir,
+    cwd: compilerOptions.tailwindcssBasedir,
+  })
+  const isConfiguredMainCssEntryFile = (sourceFile: string) =>
+    configuredMainCssEntryFiles.some(entry => path.resolve(entry) === path.resolve(sourceFile))
+  const isCssSourceAllowedForOutput = (file: string, sourceFile: string) =>
+    !isConfiguredMainCssEntryFile(sourceFile) || scoreCssSourceOutputMatch(file, sourceFile) > 0
+  const inferredMainCssFiles = new Set([...inferWebpackMainCssFiles(
     compilation.chunks as Iterable<{ files?: Iterable<string> | string[] | undefined, hasRuntime?: () => boolean, name?: string | undefined }>,
     compilerOptions.cssMatcher,
     {
       mainSourceFiles: new Set(configuredMainCssEntryFiles),
       resourcesByAsset: cssAssetResources,
     },
-  )
+  )].filter((file) => {
+    if (configuredMainCssEntryFiles.length === 0) {
+      return true
+    }
+    const resources = cssAssetResources.get(file)
+    return [...(resources ?? [])].some(resource =>
+      isConfiguredMainCssEntryFile(resource) && isCssSourceAllowedForOutput(file, resource),
+    )
+  }))
   const mainImportedCssFiles = collectMainImportedCssFiles(compilation, cssAssetFiles, compilerOptions.cssMatcher, file =>
     compilerOptions.mainCssChunkMatcher(file, appType) || inferredMainCssFiles.has(file))
   const singleConfiguredCssAsset = isWebGeneratorTarget
@@ -208,7 +225,7 @@ export function createWebpackCssSourceResolvers(options: {
     const assetResources = cssAssetResources.get(file)
     const activeAssetResource = resolveSingleActiveWebpackCssResource(assetResources, activeWebpackAssetResourceFiles)
     if (cssSources.size === 0) {
-      if (activeAssetResource) {
+      if (activeAssetResource && isCssSourceAllowedForOutput(file, activeAssetResource)) {
         activeWebpackCssSourceFiles.add(activeAssetResource)
         return activeAssetResource
       }
@@ -219,6 +236,7 @@ export function createWebpackCssSourceResolvers(options: {
     }
     const resourceMatches = [...(assetResources ?? [])]
       .filter(sourceFile => cssSources.has(sourceFile))
+      .filter(sourceFile => isCssSourceAllowedForOutput(file, sourceFile))
       .sort()
     if (resourceMatches.length === 1) {
       const sourceFile = resourceMatches[0]
@@ -241,7 +259,7 @@ export function createWebpackCssSourceResolvers(options: {
       activeWebpackCssSourceFiles.add(sourceFile!)
       return sourceFile
     }
-    if (activeAssetResource) {
+    if (activeAssetResource && isCssSourceAllowedForOutput(file, activeAssetResource)) {
       activeWebpackCssSourceFiles.add(activeAssetResource)
       return activeAssetResource
     }
@@ -313,8 +331,12 @@ export function createWebpackCssSourceResolvers(options: {
     })
   const getCssHandlerOptions = (file: string, rawSource?: string | undefined) => {
     const majorVersion = runtimeState.tailwindRuntime.majorVersion
-    const isMainChunk = isMainCssChunk(file)
+    const isMainCssAsset = isMainCssChunk(file)
     const sourceFile = resolveWebpackCssSourceFile(file, rawSource)
+    const sourceMatchedMainCssEntry = sourceFile !== undefined
+      && isConfiguredMainCssEntryFile(sourceFile)
+      && isCssSourceAllowedForOutput(file, sourceFile)
+    const isMainChunk = isMainCssAsset || sourceMatchedMainCssEntry
     const sourceCss = sourceFile ? cssSources.get(sourceFile)?.css : undefined
     const generatorSourceCss = removeWebpackGeneratorNonTailwindImports(sourceCss)
     const generatorCssSource = createWebpackGeneratorCssSource(sourceFile, generatorSourceCss)
@@ -376,6 +398,7 @@ export function createWebpackCssSourceResolvers(options: {
 
   return {
     activeWebpackCssSourceFiles,
+    configuredCssEntryFiles,
     configuredMainCssEntryFiles,
     getCssHandlerOptions,
     getCssUserHandlerOptions,

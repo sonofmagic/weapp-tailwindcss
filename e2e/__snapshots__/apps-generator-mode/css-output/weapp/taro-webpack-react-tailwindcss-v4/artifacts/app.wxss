@@ -10316,24 +10316,6 @@ wx-button::after {
 .issue-940-style-class {
   color: #010203;
 }
-view,
-text,
-::after,
-::before {
-  --tw-rotate-x:;
-  --tw-rotate-y:;
-  --tw-rotate-z:;
-  --tw-skew-x:;
-  --tw-skew-y:;
-  --tw-gradient-position: initial;
-  --tw-gradient-from: #0000;
-  --tw-gradient-via: #0000;
-  --tw-gradient-to: #0000;
-  --tw-gradient-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-via-position: 50%;
-  --tw-gradient-to-position: 100%;
-}
 wx-button {
   background: #000;
 }

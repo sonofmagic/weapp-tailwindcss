@@ -9165,36 +9165,6 @@ wx-button::after {
   content: '';
   display: none;
 }
-view,
-text,
-::after,
-::before {
-  --tw-space-y-reverse: 0;
-  --tw-border-style: solid;
-  --tw-gradient-position: initial;
-  --tw-gradient-from: #0000;
-  --tw-gradient-via: #0000;
-  --tw-gradient-to: #0000;
-  --tw-gradient-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-via-position: 50%;
-  --tw-gradient-to-position: 100%;
-  --tw-font-weight:;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-color: initial;
-  --tw-shadow-alpha: 100%;
-  --tw-inset-shadow: 0 0 #0000;
-  --tw-inset-shadow-color: initial;
-  --tw-inset-shadow-alpha: 100%;
-  --tw-ring-color:;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-inset-ring-color:;
-  --tw-inset-ring-shadow: 0 0 #0000;
-  --tw-ring-inset:;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-offset-shadow: 0 0 #0000;
-}
 wx-button {
   background: #000;
 }

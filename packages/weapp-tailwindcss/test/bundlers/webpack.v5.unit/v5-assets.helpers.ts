@@ -823,6 +823,34 @@ describe('bundlers/webpack v5-assets helpers', () => {
     expect(finalizeWebpackCssAssetSource('view,text,::after,::before{border:0 solid}.card{color:red', baseContext as any, false, {
       generatedCss: true,
     })).toContain('.card')
+    const withoutExistingPreflight = finalizeWebpackCssAssetSource(
+      'view,text,::after,::before{border:0 solid;box-sizing:border-box;margin:0;padding:0;--tw-gradient-from:#0000}.card{color:red}',
+      baseContext as any,
+      false,
+      {
+        cssPreflight: false,
+        generatedCss: true,
+        preserveExistingPreflight: false,
+      },
+    )
+    expect(withoutExistingPreflight).not.toContain('view,text,::after,::before')
+    expect(withoutExistingPreflight).not.toContain('box-sizing:border-box')
+    expect(withoutExistingPreflight).toContain('.card{color:red}')
+    const dedupedPreflight = finalizeWebpackCssAssetSource(
+      [
+        'view,text,::after,::before{border:0 solid;box-sizing:border-box;margin:0;padding:0}',
+        '.card{color:red}',
+        'view,text,::after,::before{--tw-gradient-from:#0000}',
+      ].join('\n'),
+      baseContext as any,
+      false,
+      {
+        cssPreflight: true,
+        generatedCss: true,
+      },
+    )
+    expect(dedupedPreflight.match(/view,text,::after,::before/g)).toHaveLength(1)
+    expect(dedupedPreflight).toContain('--tw-gradient-from:#0000')
     const gradientCss = finalizeWebpackCssAssetSource([
       '.bg-gradient-to-r{',
       'background-image:linear-gradient(var(--tw-gradient-stops));',
