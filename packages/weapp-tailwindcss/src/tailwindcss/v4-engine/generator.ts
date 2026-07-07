@@ -376,7 +376,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           compatibleSource,
           generated,
           requestedCandidates,
-          styleOptions: options.styleOptions,
+          styleOptions,
           target,
         })
         if (!admitted) {

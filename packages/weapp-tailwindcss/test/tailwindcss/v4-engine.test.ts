@@ -679,6 +679,47 @@ describe('tailwindcss v4 engine', () => {
     expect(second.css.match(/\.text-_b88rpx_B/g) ?? []).toHaveLength(1)
   })
 
+  it('reuses css-macro style options when seeding the v4 incremental cache from a source scan', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme default {
+          --color-blue-500: oklch(62.3% 0.214 259.815);
+          --color-red-500: oklch(63.7% 0.237 25.331);
+        }
+        @custom-variant wx {
+          /* #ifdef MP-WEIXIN */
+          @slot;
+          /* #endif */
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    await engine.generate({
+      candidates: ['wx:bg-blue-500'],
+      incrementalCache: true,
+      scanSources: true,
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+    const second = await engine.generate({
+      candidates: ['wx:bg-blue-500', 'wx:bg-red-500'],
+      incrementalCache: true,
+      scanSources: false,
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(second.css).toContain('.wx_cbg-blue-500')
+    expect(second.css).toContain('.wx_cbg-red-500')
+    expect(second.incrementalCss).toContain('.wx_cbg-red-500')
+    expect(second.incrementalCss).not.toContain('.wx_cbg-blue-500')
+  })
+
   it('dedupes concurrent v4 incremental generation for identical requests', async () => {
     vi.resetModules()
     const generate = vi.fn(async () => {
