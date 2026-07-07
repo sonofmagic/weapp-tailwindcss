@@ -183,9 +183,12 @@ describe('bundlers/vite helper modules', () => {
     }
     const empty = { file: 'plain.css', source: '.plain{}' }
 
-    const fingerprint = collectTailwindV4SourceFingerprint(`${main.source} @source not "./legacy"; @plugin '@iconify/tailwind4' { prefix: 'i'; scale: 1.2; } @custom-variant hocus { &:hover { @slot; } } @utility content-auto { content-visibility:auto; }`)
+    const fingerprint = collectTailwindV4SourceFingerprint(`${main.source} @source not "./legacy"; @source inline("{hover:,focus:,}bg-red-500"); @source not inline("legacy-token"); @import "tailwindcss" source(none); @plugin '@iconify/tailwind4' { prefix: 'i'; scale: 1.2; } @custom-variant hocus { &:hover { @slot; } } @utility content-auto { content-visibility:auto; }`)
     expect([...fingerprint]).toContain('config:tailwind.config.js')
     expect([...fingerprint]).toContain('source:not:./legacy')
+    expect([...fingerprint]).toContain('source:inline:"{hover:,focus:,}bg-red-500"')
+    expect([...fingerprint]).toContain('source:inline:not:"legacy-token"')
+    expect([...fingerprint]).toContain('import-source:none')
     expect([...fingerprint]).toContain('plugin:@iconify/tailwind4')
     expect([...fingerprint]).toContain('plugin-option:@iconify/tailwind4:prefix:\'i\'')
     expect([...fingerprint]).toContain('plugin-option:@iconify/tailwind4:scale:1.2')
