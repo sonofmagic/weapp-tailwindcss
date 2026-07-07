@@ -60,6 +60,17 @@ describe('classname transform caching', () => {
     expect(spy).toHaveBeenCalledTimes(2)
   })
 
+  it('honors explicit preserve rules before alwaysEscape', () => {
+    const result = classNameTransform.resolveClassNameTransformWithResult('third-party-[token]', {
+      alwaysEscape: true,
+      jsPreserveClass: candidate => candidate.startsWith('third-party-'),
+    })
+
+    expect(result).toEqual({
+      decision: 'skip',
+    })
+  })
+
   it('keeps whitespace-wrapped arbitrary candidates eligible for controlled fallback', () => {
     const result = classNameTransform.resolveClassNameTransformWithResult('  bg-[length:200rpx_100rpx]  ', {
       classContext: true,
