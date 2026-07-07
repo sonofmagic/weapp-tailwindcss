@@ -14812,6 +14812,136 @@ const fallback = "bg-[#434332] px-[32px]"
     }), expect.any(String))
   }, TEST_TIMEOUT_MS)
 
+  it('keeps uni-app root mini-program css shell while generating configured css entry output', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v4-root-shell-'))
+    createdDirs.push(root)
+    const mainCssFile = path.join(root, 'src/main.css')
+    await mkdir(path.dirname(mainCssFile), { recursive: true })
+    const mainCssSource = '@import "tailwindcss" source(none);\n@source "./pages/**/*.{vue,js,ts}";'
+    const generateCssByGeneratorMock = vi.fn(async (options: {
+      file: string
+      rawSource: string
+    }) => {
+      return {
+        css: '.from-main{color:red}',
+        rawCss: options.rawSource,
+        target: 'weapp',
+        source: 'generator',
+        classSet: new Set(['from-main']),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateCssByGeneratorMock,
+      }
+    })
+    const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
+    const runtimeSet = new Set(['from-main'])
+    const cssSources = [{
+      file: mainCssFile,
+      base: path.dirname(mainCssFile),
+      css: mainCssSource,
+      dependencies: [],
+    }]
+    const context = createContext({
+      appType: 'uni-app-vite',
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      tailwindcssBasedir: root,
+      cssEntries: [mainCssFile],
+      tailwindcss: {
+        v4: {
+          cssEntries: [mainCssFile],
+          cssSources,
+        },
+      },
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        options: {
+          projectRoot: root,
+          tailwindcss: {
+            cwd: root,
+            v4: {
+              cssEntries: [mainCssFile],
+              cssSources,
+            },
+          },
+        },
+      },
+    })
+    const generateBundle = createGenerateBundleHookWithMock({
+      opts: context as any,
+      runtimeState: {
+        tailwindRuntime: context.tailwindRuntime as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      cssPipelineStrategy: {
+        shouldKeepRootMiniProgramStyleAsImportShell: () => true,
+      },
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'build',
+        plugins: [],
+        root,
+        weapp: {
+          srcRoot: 'src',
+        },
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/build/mp-weixin' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => runtimeSet,
+      getSourceCandidatesForEntries: () => runtimeSet,
+      getSourceCandidateSource: () => undefined,
+      getSourceCandidateSources: () => [],
+      getSourceCandidateSourcesForEntries: () => [],
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      refreshRememberedCssSource: vi.fn(),
+      getRememberedCssSources: () => new Map(),
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      recordGeneratorCandidates: vi.fn(),
+    })
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset(mainCssSource),
+        fileName: 'app.wxss',
+        originalFileNames: [],
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
+
+    expect(String((bundle['app.wxss'] as OutputAsset).source)).toBe('@import "./main.wxss";\n')
+    expect(String((bundle['main.wxss'] as OutputAsset).source)).toContain('.from-main')
+    expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
+      file: mainCssFile,
+      outputFile: 'main.wxss',
+      rawSource: mainCssSource,
+    }))
+    expect(generateCssByGeneratorMock).not.toHaveBeenCalledWith(expect.objectContaining({
+      file: 'app.wxss',
+    }))
+  }, TEST_TIMEOUT_MS)
+
   it('uses configured tailwind v4 css root for mini-program root css output', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v4-root-css-mini-'))
     createdDirs.push(root)

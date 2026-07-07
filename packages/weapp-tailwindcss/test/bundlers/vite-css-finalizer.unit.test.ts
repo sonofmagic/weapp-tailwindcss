@@ -186,6 +186,21 @@ describe('vite css finalizer output plugin', () => {
     expect(context.debug).toHaveBeenCalledWith('collect vite-processed css asset: %s bytes=%d', 'pages/index.wxss', 16)
   })
 
+  it('strips Vite internal marker-only css assets', async () => {
+    const { context, opts } = createContext()
+    const plugin = createViteCssFinalizerOutputPlugin(context as any)
+    const bundle: OutputBundle = {
+      'packageB/pages/apple.wxss': asset('packageB/pages/apple.wxss', '/*$vite$:1*/'),
+    }
+
+    await getHandler(plugin).call(plugin, {}, bundle)
+
+    expect(String((bundle['packageB/pages/apple.wxss'] as OutputAsset).source)).toBe('')
+    expect(opts.styleHandler).not.toHaveBeenCalled()
+    expect(context.recordCssAssetResult).toHaveBeenCalledWith('packageB/pages/apple.wxss', '')
+    expect(context.debug).toHaveBeenCalledWith('css finalizer strip empty marker asset: %s', 'packageB/pages/apple.wxss')
+  })
+
   it('prepends uni-app x Web border reset before Tailwind border utilities', async () => {
     const { context, opts } = createContext()
     opts.appType = 'uni-app-x'

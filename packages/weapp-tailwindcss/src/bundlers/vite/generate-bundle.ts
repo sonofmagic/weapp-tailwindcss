@@ -39,6 +39,7 @@ import { logBundleProcessPlan } from './generate-bundle/process-plan'
 import { createRememberedCssRuntimeSignature, findRememberedCssSources, mergeRememberedCssSources } from './generate-bundle/remembered-css'
 import { processRememberedCssReplay } from './generate-bundle/remembered-css-replay'
 import { registerGeneratorDependencies } from './generate-bundle/rollup-assets'
+import { shouldKeepRootMiniProgramStyleAsImportShell } from './generate-bundle/root-style-output'
 import { collectCssExtensionByStem, collectJsImportedCssFiles, collectRuntimeLinkedCssFiles } from './generate-bundle/runtime-linked-css'
 import { rememberRuntimeLinkedCssSources } from './generate-bundle/runtime-linked-source-memory'
 import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTraceMap, createScopedGeneratorRuntime as resolveScopedGeneratorRuntime } from './generate-bundle/scoped-generator'
@@ -437,6 +438,19 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           }
         : undefined
     }
+    const shouldKeepCurrentRootMiniProgramStyleOutputAsImportShell = (outputFile: string, css?: string | undefined) => {
+      const normalizedOutputFile = normalizeOutputPathKey(outputFile.replace(/[?#].*$/, ''))
+      return opts.cssMatcher(outputFile)
+        && isMiniProgramStyleOutputFile(outputFile)
+        && !normalizedOutputFile.includes('/')
+        && shouldKeepRootMiniProgramStyleAsImportShell(
+          context.cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
+            ...cssPipelineContext,
+            css,
+            file: outputFile,
+          }),
+        )
+    }
     const shouldKeepCurrentRootCssOutputForConfiguredSource = (sourceFile: string | undefined, outputFile: string) => {
       const normalizedOutputFile = normalizeOutputPathKey(outputFile.replace(/[?#].*$/, ''))
       const isRootConfiguredStyleOutput = normalizedOutputFile.endsWith('.css')
@@ -445,6 +459,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       return typeof sourceFile === 'string'
         && opts.cssMatcher(outputFile)
         && isRootConfiguredStyleOutput
+        && !shouldKeepCurrentRootMiniProgramStyleOutputAsImportShell(outputFile)
         && configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(sourceFile))
     }
     const hasExplicitConfiguredRootCssEntryForOutput = (outputFile: string) => {
@@ -977,7 +992,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               projectRoot: sourceRoot ?? rootDir,
             })
             const configuredGenerationOutputFile = configuredGenerationSource
-              ? outputFile
+              ? shouldKeepCurrentRootMiniProgramStyleOutputAsImportShell(outputFile, rawSource)
+                ? resolveMatchedOutputFileForCurrentAsset(configuredGenerationSource.file) ?? outputFile
+                : outputFile
               : undefined
             const hasConfiguredGenerationSourceAlreadyUsed = configuredGenerationSource
               ? usedConfiguredTailwindV4CssSourceFiles.has(normalizeOutputPathKey(configuredGenerationSource.file))

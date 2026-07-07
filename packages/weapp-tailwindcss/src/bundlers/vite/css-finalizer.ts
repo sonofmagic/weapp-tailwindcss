@@ -435,11 +435,20 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             ...cssHandlerOptions,
             isMainChunk: false,
           }
+          const cleanRawSource = stripBundlerGeneratedCssMarkers(rawSource)
+          if (cleanRawSource !== rawSource && cleanRawSource.trim().length === 0) {
+            output.source = cleanRawSource
+            markCssAssetProcessed(output, file)
+            recordCssAssetResult?.(file, cleanRawSource)
+            opts.onUpdate(file, rawSource, cleanRawSource)
+            debug('css finalizer strip empty marker asset: %s', file)
+            return
+          }
           const processed = isCssAssetProcessed(output, file)
           const rememberedMainCssSource = processed && cssHandlerOptions.isMainChunk
             ? getRememberedMainCssSource?.(file)
             : undefined
-          const generatorRawSource = rememberedMainCssSource?.rawSource ?? rawSource
+          const generatorRawSource = rememberedMainCssSource?.rawSource ?? cleanRawSource
           const generatorSourceFile = rememberedMainCssSource?.sourceFile ?? file
           const generatorCssHandlerOptions = rememberedMainCssSource
             ? createCssHandlerOptions(
@@ -475,19 +484,23 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
                 debug,
               })
             : undefined
-          if (!generated && !generatorBranch.isWeb && isPureLocalCssImportWrapper(rawSource)) {
+          if (!generated && !generatorBranch.isWeb && isPureLocalCssImportWrapper(cleanRawSource)) {
+            if (cleanRawSource !== rawSource) {
+              output.source = cleanRawSource
+              opts.onUpdate(file, rawSource, cleanRawSource)
+            }
             markCssAssetProcessed(output, file)
-            recordCssAssetResult?.(file, rawSource)
+            recordCssAssetResult?.(file, cleanRawSource)
             debug('css finalizer preserve mini-program import shell: %s', file)
             return
           }
           const nextCss = annotateCss(generated?.css ?? (
             generatorBranch.isWeb
-              ? finalizeWebCss(rawSource, {
+              ? finalizeWebCss(cleanRawSource, {
                   ...createCssPipelineContext(file),
                   file,
                 }, cssPipelineStrategy)
-              : (await opts.styleHandler(rawSource, cssHandlerOptions)).css
+              : (await opts.styleHandler(cleanRawSource, cssHandlerOptions)).css
           ))
           if (generated) {
             registerGeneratorDependencies(this, generated.dependencies)

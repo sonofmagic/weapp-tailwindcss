@@ -8849,12 +8849,11 @@
       "app.wxss",
       "pages/index/index.wxss",
       "sub-independent/pages/index.wxss",
-      "sub-normal/pages/index.wxss",
-      "tailwind.wxss"
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 31685,
+      "bytes": 17067,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
