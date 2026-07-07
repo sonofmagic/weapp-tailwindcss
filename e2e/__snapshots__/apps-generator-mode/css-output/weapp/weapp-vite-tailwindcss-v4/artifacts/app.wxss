@@ -27,24 +27,24 @@ wx-root-portal-content {
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --color-emerald-600: #009966;
-  --color-blue-500: #2b7fff;
+  --color-red-700: rgb(191, 0, 15);
+  --color-amber-300: rgb(255, 210, 55);
+  --color-emerald-600: rgb(0, 150, 105);
+  --color-sky-600: rgb(0, 132, 199);
+  --color-blue-500: rgb(50, 128, 255);
+  --color-violet-600: rgb(127, 34, 254);
+  --color-pink-300: rgb(253, 165, 213);
+  --color-rose-600: rgb(230, 0, 69);
+  --color-slate-100: rgb(241, 245, 249);
   --color-slate-200: rgb(226, 232, 240);
-  --color-slate-800: #1d293d;
-  --color-slate-900: #0f172b;
-  --color-white: #fff;
-  --color-red-700: #c10007;
-  --color-amber-300: #ffd230;
-  --color-pink-300: #fda5d5;
+  --color-slate-700: rgb(49, 65, 88);
+  --color-slate-800: rgb(29, 41, 61);
+  --color-slate-900: rgb(15, 23, 43);
+  --color-gray-900: rgb(16, 24, 40);
   --color-zinc-50: rgb(250, 250, 250);
   --color-zinc-900: rgb(24, 24, 27);
-  --color-sky-600: #0084d1;
-  --color-violet-600: #7f22fe;
-  --color-rose-600: #ec003f;
-  --color-slate-100: #f1f5f9;
-  --color-slate-700: #314158;
-  --color-gray-900: #101828;
-  --color-zinc-950: #09090b;
+  --color-zinc-950: rgb(9, 9, 11);
+  --color-white: #fff;
   --spacing: 8rpx;
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -231,7 +231,7 @@ wx-button {
 }
  /* tokens: bg-blue-500/30 <= pages/index/index.wxml */
 .bg-blue-500_f30 {
-  background-color: rgba(43, 127, 255, 0.3);
+  background-color: rgba(50, 128, 255, 0.3);
 }
  /* tokens: bg-gray-900 <= pages/index/index.wxml */
 .bg-gray-900 {

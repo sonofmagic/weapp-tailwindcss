@@ -9,7 +9,7 @@
   padding-right: calc(var(--spacing, 0.25rem) * 4);
   padding-top: calc(var(--spacing, 0.25rem) * 3);
   padding-bottom: calc(var(--spacing, 0.25rem) * 3);
-  color: var(--color-slate-700);
+  color: var(--color-slate-700, rgb(49, 65, 88));
 }
  /* tokens: hello-world-shell <= src/components/HelloWorld.vue */
 .hello-world-shell.data-v-04bcf89b {
@@ -22,5 +22,5 @@
   padding-right: calc(var(--spacing, 0.25rem) * 4);
   padding-top: calc(var(--spacing, 0.25rem) * 3);
   padding-bottom: calc(var(--spacing, 0.25rem) * 3);
-  color: var(--color-slate-700);
+  color: var(--color-slate-700, rgb(49, 65, 88));
 }

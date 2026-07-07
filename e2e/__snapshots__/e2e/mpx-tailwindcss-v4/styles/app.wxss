@@ -37,13 +37,13 @@ wx-root-portal-content {
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --color-red-400: #ff6467;
+  --color-red-400: #ff6568;
   --color-red-500: #fb2c36;
-  --color-yellow-400: #fdc700;
+  --color-yellow-400: #f7c900;
   --color-green-200: #b9f8cf;
-  --color-green-500: #00c950;
-  --color-sky-500: #00a6f4;
-  --color-blue-500: #2b7fff;
+  --color-green-500: #00c65a;
+  --color-sky-500: #00a5ea;
+  --color-blue-500: #3280ff;
   --color-purple-600: #9810fa;
   --color-pink-300: #fda5d5;
   --color-pink-500: #f6339a;
@@ -351,7 +351,7 @@ wx-root-portal-content {
 }
 /* tokens: bg-blue-500/50 <= src/pages/index.mpx */
 .bg-blue-500_f50 {
-  background-color: rgba(43, 127, 255, 0.5);
+  background-color: rgba(50, 128, 255, 0.5);
 }
 /* tokens: bg-gray-100 <= src/pages/index.mpx */
 .bg-gray-100 {

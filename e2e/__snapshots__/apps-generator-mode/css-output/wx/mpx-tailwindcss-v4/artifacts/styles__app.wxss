@@ -38,18 +38,18 @@ wx-root-portal-content {
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-red-500: #fb2c36;
-  --color-green-500: #00c950;
-  --color-blue-500: #2b7fff;
+  --color-green-500: #00c65a;
+  --color-blue-500: #3280ff;
   --color-slate-900: #0f172b;
   --color-gray-100: rgb(243, 244, 246);
   --color-zinc-800: rgb(39, 39, 42);
   --color-white: #fff;
   --color-zinc-50: rgb(250, 250, 250);
   --color-zinc-900: rgb(24, 24, 27);
-  --color-red-400: #ff6467;
-  --color-yellow-400: #fdc700;
+  --color-red-400: #ff6568;
+  --color-yellow-400: #f7c900;
   --color-green-200: #b9f8cf;
-  --color-sky-500: #00a6f4;
+  --color-sky-500: #00a5ea;
   --color-purple-600: #9810fa;
   --color-pink-500: #f6339a;
   --color-slate-100: #f1f5f9;
@@ -344,7 +344,7 @@ wx-root-portal-content {
 }
  /* tokens: bg-blue-500/50 <= src/pages/index.mpx */
 .bg-blue-500_f50 {
-  background-color: rgba(43, 127, 255, 0.5);
+  background-color: rgba(50, 128, 255, 0.5);
 }
  /* tokens: bg-gray-100 <= src/pages/index.mpx */
 .bg-gray-100 {
