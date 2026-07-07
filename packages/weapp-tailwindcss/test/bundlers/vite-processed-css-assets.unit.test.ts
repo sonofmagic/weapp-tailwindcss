@@ -109,6 +109,36 @@ describe('vite processed css assets', () => {
     expect(onUpdate).toHaveBeenCalled()
   })
 
+  it('uses explicit nonstandard root style targets instead of @layer or app/main filenames', () => {
+    const bundle: OutputBundle = {
+      'theme.acss': asset('theme.acss', '@layer utilities;\n.theme-root{color:red}'),
+      'vendor.acss': asset('vendor.acss', '@layer utilities;\n.vendor-root{color:black}'),
+    }
+    const records = new Map<string, any>([
+      ['src/styles/theme.css', {
+        css: '.generated-theme{color:blue}',
+        injectIntoMain: true,
+        outputFile: 'theme.acss',
+      }],
+    ])
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        ...opts(),
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => /\.(?:css|acss)$/.test(file),
+        mainCssChunkMatcher: (file: string) => file === 'theme.acss',
+      },
+      getViteProcessedCssAssetResults: () => records.entries(),
+      markCssAssetProcessed: vi.fn(),
+      debug: vi.fn(),
+    })
+
+    expect(injected).toBe(1)
+    expect(String((bundle['theme.acss'] as OutputAsset).source)).toContain('.generated-theme{color:blue}')
+    expect(String((bundle['vendor.acss'] as OutputAsset).source)).toBe('@layer utilities;\n.vendor-root{color:black}')
+  })
+
   it('detects import-only assets and removes scoped css covered by root styles', () => {
     const bundle: OutputBundle = {
       'app.wxss': asset('app.wxss', '.dup{color:red}\n.keep{color:blue}'),
