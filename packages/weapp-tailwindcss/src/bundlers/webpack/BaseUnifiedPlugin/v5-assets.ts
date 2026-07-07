@@ -232,10 +232,15 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           opts: compilerOptions,
           tokenSources: cssSourceTraceTokenSources,
         })
-        const finalizeTracedCss = (css: string, cssHandlerOptions: WebpackCssHandlerOptions) =>
+        const finalizeTracedCss = (
+          css: string,
+          cssHandlerOptions: WebpackCssHandlerOptions,
+          options: { finalized?: boolean | undefined } = {},
+        ) =>
           finalizeTracedWebpackCssAsset(css, cssHandlerOptions, {
             annotateCss,
             compilerOptions,
+            ...options,
             isWebGeneratorTarget,
           })
         const hasRuntimeTransformAssets = Boolean(
@@ -704,7 +709,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     )!.css
                   debug('css skip webpack-loader-pipeline asset: %s', file)
                   return {
-                    result: new ConcatSource(finalizeTracedCss(css, cssHandlerOptionsForProcessedAsset)),
+                    result: new ConcatSource(finalizeTracedCss(css, cssHandlerOptionsForProcessedAsset, { finalized: true })),
                   }
                 },
               })
@@ -935,6 +940,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                         },
                       )!.css,
                     cssHandlerOptions,
+                    { finalized: true },
                   )
                   debug('css consume webpack loader generation: %s <- %s', file, sourceFile)
                   return {
@@ -1165,6 +1171,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                       },
                     )!.css,
                   cssHandlerOptions,
+                  { finalized: true },
                 )
                 const source = new ConcatSource(css)
 

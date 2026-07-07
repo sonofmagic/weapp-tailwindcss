@@ -7,7 +7,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 44000 | 197 | false | false | false | true | true | false | true |
+| 37329 | 211 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -16,21 +16,19 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 | 1 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) |
 | 2 | `main.wxss` | [artifacts/main.wxss](artifacts/main.wxss) |
 | 3 | `components/HelloWorld.wxss` | [artifacts/components__HelloWorld.wxss](artifacts/components__HelloWorld.wxss) |
-| 4 | `pages-order/pages/home/home.wxss` | [artifacts/pages-order__pages__home__home.wxss](artifacts/pages-order__pages__home__home.wxss) |
-| 5 | `pages-order/pages/user/user.wxss` | [artifacts/pages-order__pages__user__user.wxss](artifacts/pages-order__pages__user__user.wxss) |
-| 6 | `pages/index/index.wxss` | [artifacts/pages__index__index.wxss](artifacts/pages__index__index.wxss) |
-| 7 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) |
-| 8 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) |
+| 4 | `pages-order/index.wxss` | [artifacts/pages-order__index.wxss](artifacts/pages-order__index.wxss) |
+| 5 | `pages/index/index.wxss` | [artifacts/pages__index__index.wxss](artifacts/pages__index__index.wxss) |
+| 6 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) |
+| 7 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) |
 
 ## Generator CSS Summary
 
 | File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) | 23 | 0 | false | false | false | false | false | false | false |
-| `main.wxss` | [artifacts/main.wxss](artifacts/main.wxss) | 26285 | 182 | false | false | false | true | true | false | true |
-| `components/HelloWorld.wxss` | [artifacts/components__HelloWorld.wxss](artifacts/components__HelloWorld.wxss) | 1060 | 6 | false | false | false | false | false | false | false |
-| `pages-order/pages/home/home.wxss` | [artifacts/pages-order__pages__home__home.wxss](artifacts/pages-order__pages__home__home.wxss) | 6639 | 35 | false | false | false | false | false | false | false |
-| `pages-order/pages/user/user.wxss` | [artifacts/pages-order__pages__user__user.wxss](artifacts/pages-order__pages__user__user.wxss) | 6639 | 35 | false | false | false | false | false | false | false |
+| `main.wxss` | [artifacts/main.wxss](artifacts/main.wxss) | 24494 | 182 | false | false | false | true | true | false | true |
+| `components/HelloWorld.wxss` | [artifacts/components__HelloWorld.wxss](artifacts/components__HelloWorld.wxss) | 942 | 2 | false | false | false | false | false | false | false |
+| `pages-order/index.wxss` | [artifacts/pages-order__index.wxss](artifacts/pages-order__index.wxss) | 8574 | 51 | false | false | false | false | false | false | true |
 | `pages/index/index.wxss` | [artifacts/pages__index__index.wxss](artifacts/pages__index__index.wxss) | 1231 | 5 | false | false | false | false | false | false | true |
 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) | 1050 | 6 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) | 1015 | 6 | false | false | false | false | false | false | true |

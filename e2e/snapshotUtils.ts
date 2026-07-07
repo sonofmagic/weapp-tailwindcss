@@ -518,27 +518,55 @@ function sortSubpackageMarkerChunks(container: postcss.Container) {
     }
   }
 
-  const slots: number[] = []
-  const markerNodes: postcss.Rule[] = []
-  for (const [index, node] of nodes.entries()) {
-    if (node.type === 'rule' && SUBPACKAGE_MARKER_SELECTOR_RE.test(node.selector)) {
-      slots.push(index)
-      markerNodes.push(node)
+  const chunks: Array<{ end: number, nodes: postcss.ChildNode[], rule: postcss.Rule, start: number }> = []
+  let index = 0
+  while (index < nodes.length) {
+    const node = nodes[index]
+    const next = nodes[index + 1]
+    if (
+      node?.type === 'comment'
+      && /^\s*tokens:\s?/.test(node.text)
+      && next?.type === 'rule'
+      && SUBPACKAGE_MARKER_SELECTOR_RE.test(next.selector)
+    ) {
+      chunks.push({
+        start: index,
+        end: index + 2,
+        nodes: [node, next],
+        rule: next,
+      })
+      index += 2
+      continue
     }
+    if (node?.type === 'rule' && SUBPACKAGE_MARKER_SELECTOR_RE.test(node.selector)) {
+      chunks.push({
+        start: index,
+        end: index + 1,
+        nodes: [node],
+        rule: node,
+      })
+    }
+    index += 1
   }
 
-  if (slots.length <= 1) {
+  if (chunks.length <= 1) {
     return
   }
 
-  const sortedMarkerNodes = [...markerNodes].sort(compareUtilityRules)
-  for (const [slotIndex, nodeIndex] of slots.entries()) {
-    const original = markerNodes[slotIndex]
-    const replacement = sortedMarkerNodes[slotIndex]
-    if (original && replacement) {
-      replacement.raws.before = original.raws.before
-      nodes[nodeIndex] = replacement
+  const sortedChunks = [...chunks].sort((a, b) => compareUtilityRules(a.rule, b.rule))
+  let offset = 0
+  for (const [slotIndex, chunk] of chunks.entries()) {
+    const replacement = sortedChunks[slotIndex]
+    if (!replacement) {
+      continue
     }
+    const replacementNodes = replacement.nodes.map(node => node.clone())
+    const firstNode = replacementNodes[0]
+    if (firstNode) {
+      firstNode.raws.before = chunk.nodes[0]?.raws.before
+    }
+    nodes.splice(chunk.start + offset, chunk.end - chunk.start, ...replacementNodes)
+    offset += replacementNodes.length - (chunk.end - chunk.start)
   }
 }
 

@@ -329,7 +329,7 @@
     --tw-gradient-position: to bottom right in oklab;
     background-image: linear-gradient(var(--tw-gradient-stops));
   }
- /*tokens: bg-gradient-to-r <= src/app.css, src/pages/index/index.tsx */
+ /*tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
   .bg-gradient-to-r {
     --tw-gradient-position: to right in oklab;
     background-image: linear-gradient(var(--tw-gradient-stops));
@@ -360,7 +360,7 @@
       var(--tw-gradient-to) var(--tw-gradient-to-position)
     );
   }
- /*tokens: to-blue-500 <= src/app.css, src/pages/index/index.tsx */
+ /*tokens: to-blue-500 <= src/pages/index/index.tsx */
   .to-blue-500 {
     --tw-gradient-to: var(--color-blue-500);
     --tw-gradient-stops: var(
@@ -448,7 +448,7 @@
   .text-slate-900 {
     color: var(--color-slate-900);
   }
- /*tokens: text-white <= src/app.css, src/pages/index/index.tsx */
+ /*tokens: text-white <= src/pages/index/index.tsx */
   .text-white {
     color: var(--color-white);
   }

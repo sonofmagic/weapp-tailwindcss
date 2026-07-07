@@ -9073,6 +9073,25 @@ describe('bundlers/shared generator css', () => {
     expect(css.match(/from-_b_h2f73f1_B/g)).toHaveLength(1)
   })
 
+  it('deduplicates identical rules when merging multiple Tailwind v4 sources', async () => {
+    const { deduplicateGeneratedCssRules } = await import('@/bundlers/shared/generator-css/generation-helpers')
+    const css = deduplicateGeneratedCssRules([
+      'view,text,::after,::before{border:0 solid;box-sizing:border-box}',
+      '.before_ccontent-_b_aindependent_a_B::before{--tw-content:"independent";content:var(--tw-content)}',
+      '.before_ccontent-_b_aindependent_a_B::before{--tw-content:"independent";content:var(--tw-content)}',
+      '.before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B::before{--tw-content:\'independent subpackage mpx-tailwindcss-v4\';content:var(--tw-content)}',
+      '.before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B:before{--tw-content:"independent subpackage mpx-tailwindcss-v4";content:var(--tw-content)}',
+      '.bg-independent-subpackage-marker{background-color:#dc2626}',
+      '.bg-independent-subpackage-marker{background-color:#dc2626}',
+      '.bg-independent-subpackage-marker{color:#fff}',
+    ].join('\n'))
+
+    expect(css.match(/before_ccontent-_b_aindependent_a_B/g)).toHaveLength(1)
+    expect(css.match(/before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B/g)).toHaveLength(1)
+    expect(css.match(/background-color:#dc2626/g)).toHaveLength(1)
+    expect(css).toContain('.bg-independent-subpackage-marker{color:#fff}')
+  })
+
   it('keeps Tailwind v4 gradient runtime variables on mini-program element scope', async () => {
     const runtimeSet = new Set(['bg-linear-to-r', 'from-amber-200', 'to-orange-200'])
     const rawTailwindCss = [

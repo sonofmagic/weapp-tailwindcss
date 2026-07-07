@@ -346,7 +346,7 @@
   .flex-row-reverse {
     flex-direction: row-reverse;
   }
- /*tokens: items-center <= src/components/HelloWorld.vue, src/main.css, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: items-center <= src/components/HelloWorld.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
   .items-center {
     align-items: center;
   }
@@ -362,7 +362,7 @@
   .gap-1 {
     gap: var(--spacing);
   }
- /*tokens: gap-2 <= src/components/HelloWorld.vue, src/main.css, src/pages/index/index.vue */
+ /*tokens: gap-2 <= src/components/HelloWorld.vue, src/pages/index/index.vue */
   .gap-2 {
     gap: calc(var(--spacing) * 2);
   }
@@ -719,7 +719,7 @@
     --tw-font-weight: var(--font-weight-medium);
     font-weight: var(--font-weight-medium);
   }
- /*tokens: font-semibold <= src/main.css, src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: font-semibold <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
   .font-semibold {
     --tw-font-weight: var(--font-weight-semibold);
     font-weight: var(--font-weight-semibold);
@@ -784,7 +784,7 @@
   .text-tahiti {
     color: var(--color-tahiti);
   }
- /*tokens: text-white <= src/main.css, src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+ /*tokens: text-white <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
   .text-white {
     color: var(--color-white);
   }

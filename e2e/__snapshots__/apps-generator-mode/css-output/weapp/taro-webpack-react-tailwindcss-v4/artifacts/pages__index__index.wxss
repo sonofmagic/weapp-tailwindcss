@@ -1,3 +1,21 @@
+view,
+text,
+::after,
+::before {
+  --tw-rotate-x:;
+  --tw-rotate-y:;
+  --tw-rotate-z:;
+  --tw-skew-x:;
+  --tw-skew-y:;
+  --tw-gradient-position: initial;
+  --tw-gradient-from: #0000;
+  --tw-gradient-via: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+}
 :host,
 page,
 .tw-root,
@@ -10028,4 +10046,20 @@ view {
     transform: translateZ(0) scaleY(0.95);
     transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
   }
+}
+:root {
+  --nut-icon-height: 32rpx;
+  --nut-icon-width: 32rpx;
+  --nut-icon-line-height: 32rpx;
+  --nut-icon-color: #171a26;
+  --animate-duration: 1s;
+  --animate-delay: 0s;
+}
+page {
+  --nut-icon-height: 32rpx;
+  --nut-icon-width: 32rpx;
+  --nut-icon-line-height: 32rpx;
+  --nut-icon-color: #171a26;
+  --animate-duration: 1s;
+  --animate-delay: 0s;
 }

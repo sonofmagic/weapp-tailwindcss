@@ -9,7 +9,7 @@ import { createCssRuntimeSignature } from './css-share-scope'
 import { measureElapsed } from './metrics'
 import { collectRememberedCssReplayGroups, createRememberedCssRuntimeSignature, mergeRememberedCssSources } from './remembered-css'
 import { registerGeneratorDependencies } from './rollup-assets'
-import { createScopedGeneratorCandidateSignature } from './scoped-generator'
+import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTraceMap } from './scoped-generator'
 import { createCandidateSignature } from './signatures'
 import { getLastCssResult, getLastCssSourceHash, rememberLastCssResult } from './vite-css-cache'
 
@@ -181,8 +181,11 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     if (bundleFiles.includes(outputFile) || bundleFiles.includes(sourceFile) || allRememberedSignaturesFresh) {
       continue
     }
-    const sourceTraceTokenSources = scopedSourceCandidateSourceGetter
-      ? createCssTokenSourceMap(scopedSourceCandidateSourceGetter(undefined), opts)
+    const sourceTraceSources = scopedSourceCandidateSourceGetter
+      ? await createScopedGeneratorSourceTraceMap(rawSource, sourceFile, scopedSourceCandidateSourceGetter)
+      : undefined
+    const sourceTraceTokenSources = sourceTraceSources
+      ? createCssTokenSourceMap(sourceTraceSources, opts)
       : undefined
     const annotateCss = (css: string) => annotateCssSourceTrace(css, {
       opts,

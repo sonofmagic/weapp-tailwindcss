@@ -906,6 +906,24 @@ describe('vite processed css assets', () => {
     expect(nextCss).toContain('.hello-world-shell.data-v-04bcf89b{display:flex}')
   })
 
+  it('removes scoped mini-program content init from local @reference output', () => {
+    const css = [
+      '.hello-world-shell{display:flex}',
+      'view.data-v-04bcf89b,text.data-v-04bcf89b,.data-v-04bcf89b::after,.data-v-04bcf89b::before{--tw-content:""}',
+      'view.data-v-04bcf89b{text-align:left}',
+      '.hello-world-shell.data-v-04bcf89b{display:flex}',
+      '.before_ccontent-_bhello_B.data-v-04bcf89b::before{--tw-content:"hello";content:var(--tw-content)}',
+    ].join('\n')
+
+    const nextCss = removeScopedTailwindPreflightCss(css)
+
+    expect(nextCss).not.toContain('view.data-v-04bcf89b,text.data-v-04bcf89b')
+    expect(nextCss).not.toContain('.data-v-04bcf89b::after')
+    expect(nextCss).toContain('view.data-v-04bcf89b{text-align:left}')
+    expect(nextCss).toContain('.hello-world-shell.data-v-04bcf89b{display:flex}')
+    expect(nextCss).toContain('.before_ccontent-_bhello_B.data-v-04bcf89b::before')
+  })
+
   it('moves taro import shell injection to the imported root css asset', () => {
     const bundle: OutputBundle = {
       'app.wxss': asset('app.wxss', ''),

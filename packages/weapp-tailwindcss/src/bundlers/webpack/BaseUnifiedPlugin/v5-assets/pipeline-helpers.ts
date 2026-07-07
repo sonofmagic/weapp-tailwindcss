@@ -1137,21 +1137,25 @@ export function finalizeTracedWebpackCssAsset(
   options: {
     annotateCss: (css: string) => string
     compilerOptions: SetupWebpackV5ProcessAssetsHookOptions['options']
+    finalized?: boolean | undefined
     isWebGeneratorTarget: boolean
   },
 ) {
-  const traced = options.annotateCss(css)
-  if (options.isWebGeneratorTarget || !isCssSourceTraceEnabled(options.compilerOptions)) {
-    return traced
+  if (options.finalized === true) {
+    return options.annotateCss(css)
   }
-  return finalizeMiniProgramUserCssAssetSource(
-    traced,
+  if (options.isWebGeneratorTarget || !isCssSourceTraceEnabled(options.compilerOptions)) {
+    return options.annotateCss(css)
+  }
+  const finalized = finalizeMiniProgramUserCssAssetSource(
+    css,
     options.compilerOptions,
     options.isWebGeneratorTarget,
     {
       cssPreflight: shouldInjectWebpackCssTracePreflight(options.compilerOptions.appType, cssHandlerOptions),
     },
   )
+  return options.annotateCss(finalized)
 }
 
 export function finalizeWebpackCssAssetSource(

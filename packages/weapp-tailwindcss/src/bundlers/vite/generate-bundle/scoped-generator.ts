@@ -28,6 +28,19 @@ function intersectCandidates(first: Set<string>, second: Set<string>) {
   return scoped
 }
 
+function intersectCandidateSourceMaps(first: Map<string, Set<string>>, second: Map<string, Set<string>>) {
+  if (first.size === 0 || second.size === 0) {
+    return new Map<string, Set<string>>()
+  }
+  const scoped = new Map<string, Set<string>>()
+  for (const [candidate, sources] of first) {
+    if (second.has(candidate)) {
+      scoped.set(candidate, sources)
+    }
+  }
+  return scoped
+}
+
 function mergeCandidates(first: Set<string>, second: Set<string>) {
   return new Set([...first, ...second])
 }
@@ -50,6 +63,20 @@ function resolveExplicitSourceCandidates(
   return intersectExplicitSourceCandidates(scopedCandidates, localCandidates)
 }
 
+function resolveExplicitSourceMaps(
+  scopedSources: Map<string, Set<string>>,
+  localSources: Map<string, Set<string>>,
+  fallbackSources?: Map<string, Set<string>> | undefined,
+) {
+  if (scopedSources.size === 0 && localSources.size === 0 && fallbackSources?.size) {
+    return fallbackSources
+  }
+  if (localSources.size === 0 && scopedSources.size > 0) {
+    return scopedSources
+  }
+  return intersectCandidateSourceMaps(scopedSources, localSources)
+}
+
 function resolveScopedSourceEntries(rawSource: string, sourceFile: string, resolvedEntries: TailwindSourceEntry[] | undefined) {
   if (!hasOwnSourceDirectives(rawSource)) {
     return {
@@ -70,6 +97,12 @@ function resolveScopedSourceEntries(rawSource: string, sourceFile: string, resol
   }
 }
 
+async function resolveScopedGeneratorSourceEntries(rawSource: string, sourceFile: string) {
+  const sourceBase = path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, '')))
+  const resolved = await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
+  return resolveScopedSourceEntries(rawSource, sourceFile, resolved?.entries)
+}
+
 export async function createScopedGeneratorCandidateSignature(
   rawSource: string,
   sourceFile: string,
@@ -80,9 +113,7 @@ export async function createScopedGeneratorCandidateSignature(
   if (!getSourceCandidatesForEntries || !hasOwnSourceDirectives(rawSource)) {
     return fallbackSignature
   }
-  const sourceBase = path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, '')))
-  const resolved = await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
-  const { entries, localEntries } = resolveScopedSourceEntries(rawSource, sourceFile, resolved?.entries)
+  const { entries, localEntries } = await resolveScopedGeneratorSourceEntries(rawSource, sourceFile)
   if (entries === undefined) {
     return fallbackSignature
   }
@@ -94,6 +125,24 @@ export async function createScopedGeneratorCandidateSignature(
   return options.includeFallbackSignature === true
     ? `${scopedSignature}:${fallbackSignature}`
     : scopedSignature
+}
+
+export async function createScopedGeneratorSourceTraceMap(
+  rawSource: string,
+  sourceFile: string,
+  getSourceCandidateSourcesForEntries: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Map<string, Set<string>>) | undefined,
+) {
+  if (!getSourceCandidateSourcesForEntries || !hasOwnSourceDirectives(rawSource)) {
+    return getSourceCandidateSourcesForEntries?.(undefined)
+  }
+  const { entries, localEntries } = await resolveScopedGeneratorSourceEntries(rawSource, sourceFile)
+  if (entries === undefined) {
+    return getSourceCandidateSourcesForEntries(undefined)
+  }
+  const scopedSources = getSourceCandidateSourcesForEntries(entries)
+  return localEntries
+    ? resolveExplicitSourceMaps(scopedSources, getSourceCandidateSourcesForEntries(localEntries), getSourceCandidateSourcesForEntries(undefined))
+    : scopedSources
 }
 
 export async function createScopedGeneratorRuntime(options: {
@@ -118,9 +167,7 @@ export async function createScopedGeneratorRuntime(options: {
     scopedSourceCandidateGetter,
   } = options
   if (getSourceCandidatesForEntries && rawSource && sourceFile) {
-    const sourceBase = path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, '')))
-    const resolved = await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
-    const { entries, localEntries } = resolveScopedSourceEntries(rawSource, sourceFile, resolved?.entries)
+    const { entries, localEntries } = await resolveScopedGeneratorSourceEntries(rawSource, sourceFile)
     if (entries !== undefined && (entries.length > 0 || hasOwnSourceDirectives(rawSource))) {
       const scopedCandidates = scopedSourceCandidateGetter?.(entries)
         ?? getSourceCandidatesForEntries(entries)

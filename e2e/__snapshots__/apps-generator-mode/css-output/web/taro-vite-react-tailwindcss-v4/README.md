@@ -7,7 +7,7 @@ Entry: taro-vite-react-tailwindcss-v4/dist
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 614299 | 2310 | true | true | false | true | true | true | false |
+| 614260 | 2310 | true | true | false | true | true | true | false |
 
 ## Generator CSS Files
 
@@ -25,6 +25,6 @@ Entry: taro-vite-react-tailwindcss-v4/dist
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `css/index.1.css` | [artifacts/css__index.1.css](artifacts/css__index.1.css) | 50 | 1 | false | false | false | false | false | false | false |
 | `css/index.2.css` | [artifacts/css__index.2.css](artifacts/css__index.2.css) | 11439 | 36 | true | false | false | false | false | true | false |
-| `css/index.3.css` | [artifacts/css__index.3.css](artifacts/css__index.3.css) | 583379 | 2240 | true | true | false | true | true | true | false |
+| `css/index.3.css` | [artifacts/css__index.3.css](artifacts/css__index.3.css) | 583340 | 2240 | true | true | false | true | true | true | false |
 | `css/index.4.css` | [artifacts/css__index.4.css](artifacts/css__index.4.css) | 5125 | 10 | true | false | false | false | false | true | false |
 | `css/vendors.css` | [artifacts/css__vendors.css](artifacts/css__vendors.css) | 14306 | 59 | false | false | false | false | false | false | false |

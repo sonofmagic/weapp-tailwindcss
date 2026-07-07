@@ -41,7 +41,7 @@ import { processRememberedCssReplay } from './generate-bundle/remembered-css-rep
 import { registerGeneratorDependencies } from './generate-bundle/rollup-assets'
 import { collectCssExtensionByStem, collectJsImportedCssFiles, collectRuntimeLinkedCssFiles } from './generate-bundle/runtime-linked-css'
 import { rememberRuntimeLinkedCssSources } from './generate-bundle/runtime-linked-source-memory'
-import { createScopedGeneratorCandidateSignature, createScopedGeneratorRuntime as resolveScopedGeneratorRuntime } from './generate-bundle/scoped-generator'
+import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTraceMap, createScopedGeneratorRuntime as resolveScopedGeneratorRuntime } from './generate-bundle/scoped-generator'
 import { hasSfcStyleSources, hasTailwindGenerationSource, normalizeSfcSourceFileForCompare, resolveSfcStyleSourceFromOutputFile, resolveSourceStyleSourceFromOutputFile } from './generate-bundle/sfc-style-source'
 import { createCandidateSignature, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { createSubpackageSourceCandidateScope } from './generate-bundle/source-candidate-scope'
@@ -1066,7 +1066,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               isMainChunk: resolvedFromTemporaryCssAsset ? false : outputCssHandlerOptions.isMainChunk,
             }
           : getCssHandlerOptions(file)
-        const generatorCssEntries = configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(generatorSourceFile))
+        const generatorSourceFileKey = normalizeConfiguredTailwindV4CssEntryFileKey(generatorSourceFile)
+        const isExplicitGeneratorCssEntry = configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(generatorSourceFileKey)
+        const shouldUsePipelineSourceAsCssEntry = !isExplicitGeneratorCssEntry
+          && vitePipelineCssAsset
+          && opts.cssMatcher(generatorSourceFile)
+          && hasTailwindGenerationSource(generatorRawSource)
+        const generatorCssEntries = isExplicitGeneratorCssEntry || shouldUsePipelineSourceAsCssEntry
           ? [generatorSourceFile]
           : opts.cssEntries
         const generatorCssHandlerOptions = {
@@ -1079,8 +1085,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         }
         const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, generatorCssHandlerOptions)
         const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, generatorCssHandlerOptions)
-        const sourceTraceTokenSources = scopedSourceCandidateSourceGetter
-          ? createCssTokenSourceMap(scopedSourceCandidateSourceGetter(undefined), opts)
+        const sourceTraceSources = scopedSourceCandidateSourceGetter
+          ? await createScopedGeneratorSourceTraceMap(generatorRawSource, generatorSourceFile, scopedSourceCandidateSourceGetter)
+          : undefined
+        const sourceTraceTokenSources = sourceTraceSources
+          ? createCssTokenSourceMap(sourceTraceSources, opts)
           : undefined
         const sourceTraceSignature = createCssSourceTraceCacheSignature(sourceTraceTokenSources, opts)
         const scopedGeneratorRuntime = await createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, generatorRawSource, generatorSourceFile)

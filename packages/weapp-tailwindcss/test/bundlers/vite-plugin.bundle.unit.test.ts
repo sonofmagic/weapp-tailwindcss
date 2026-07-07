@@ -3923,6 +3923,164 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(independent?.rawSource).not.toContain('tailwind.config.sub-normal.js')
   }, TEST_TIMEOUT_MS)
 
+  it('matches app style assets to configured directory index Tailwind v4 css sources', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-configured-directory-css-'))
+    createdDirs.push(root)
+    const mainSource = '@import "tailwindcss" source(none);\n@config "../tailwind.config.js";\n@source "../src/**/*.{vue,js,ts}";'
+    const pageOrderSource = '@import "tailwindcss" source(none);\n@config "../../tailwind.config.order.js";\n@source "./**/*.{vue,js,ts}";'
+    const entries = [
+      [path.join(root, 'src/main.css'), mainSource],
+      [path.join(root, 'src/pages-order/index.css'), pageOrderSource],
+    ] satisfies Array<[string, string]>
+
+    const matched = resolveSourceStyleSourceFromOutputFile(
+      'pages-order/pages/user/user.css',
+      { entries: [] } as any,
+      path.join(root, 'dist/build/app'),
+      root,
+      undefined,
+      undefined,
+      entries,
+      () => {},
+    )
+
+    expect(matched?.sourceFile).toBe(path.join(root, 'src/pages-order/index.css'))
+    expect(matched?.rawSource).toContain('tailwind.config.order.js')
+    expect(matched?.rawSource).not.toContain('tailwind.config.js')
+  }, TEST_TIMEOUT_MS)
+
+  it('generates imported App page Tailwind v4 css from the matched source file', async () => {
+    const generateCssByGeneratorMock = vi.fn(async (options: {
+      cssHandlerOptions: { sourceOptions?: { cssEntries?: string[] | undefined } | undefined }
+      file: string
+      rawSource: string
+      sourceCandidates?: Set<string> | undefined
+    }) => {
+      const css = [...(options.sourceCandidates ?? [])].sort().map(candidate => `.${candidate}{display:block}`).join('')
+      return createMockGeneratorCssResult(css, 4)
+    })
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateCssByGeneratorMock,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-app-imported-css-'))
+    createdDirs.push(root)
+    const mainCssFile = path.join(root, 'src/main.css')
+    const orderCssFile = path.join(root, 'src/pages-order/order-shared.css')
+    const mainVueFile = path.join(root, 'src/pages/index/index.vue')
+    const orderVueFile = path.join(root, 'src/pages-order/pages/user/user.vue')
+    const mainRawSource = '@import "tailwindcss" source(none);\n@source "../src/**/*.{vue,js,ts}";'
+    const orderRawSource = '@import "tailwindcss" source(none);\n@config "../../tailwind.config.order.js";\n@source "./**/*.{vue,js,ts}";'
+    await mkdir(path.dirname(mainCssFile), { recursive: true })
+    await mkdir(path.dirname(orderCssFile), { recursive: true })
+    await mkdir(path.dirname(mainVueFile), { recursive: true })
+    await mkdir(path.dirname(orderVueFile), { recursive: true })
+    await writeFile(mainCssFile, mainRawSource, 'utf8')
+    await writeFile(orderCssFile, orderRawSource, 'utf8')
+    await writeFile(mainVueFile, '<template><view class="main-only" /></template>', 'utf8')
+    await writeFile(orderVueFile, '<template><view class="order-only" /></template>', 'utf8')
+    const candidatesByFile = new Map([
+      [mainVueFile, new Set(['main-only'])],
+      [orderVueFile, new Set(['order-only'])],
+    ])
+    const getSourceCandidatesForEntries = vi.fn((entries: any[] | undefined) => {
+      const candidates = new Set<string>()
+      for (const [file, fileCandidates] of candidatesByFile) {
+        if (entries !== undefined && !isFileMatchedByTailwindSourceEntries(file, entries)) {
+          continue
+        }
+        for (const candidate of fileCandidates) {
+          candidates.add(candidate)
+        }
+      }
+      return candidates
+    })
+    const runtimeSet = new Set(['main-only', 'order-only'])
+    const context = createContext({
+      cssEntries: [mainCssFile],
+      cssMatcher: (file: string) => file.endsWith('.css'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.css'),
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+      },
+    })
+    const rememberedCssSources = new Map([
+      ['pages-order/pages/user/user.css', {
+        outputFile: 'pages-order/pages/user/user.css',
+        rawSource: orderRawSource,
+        sourceFile: orderCssFile,
+      }],
+    ])
+    const generateBundle = createGenerateBundleHookWithMock({
+      opts: context as any,
+      runtimeState: {
+        tailwindRuntime: context.tailwindRuntime as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'build',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/build/app' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => true),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => runtimeSet,
+      getSourceCandidatesForEntries,
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      getRememberedCssSources: () => rememberedCssSources,
+      recordGeneratorCandidates: vi.fn(),
+    })
+    const bundle = {
+      'pages-order/pages/user/user.css': {
+        ...createRollupAsset('.vite-placeholder{}'),
+        fileName: 'pages-order/pages/user/user.css',
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {} as any, bundle)
+
+    expect(generateCssByGeneratorMock).toHaveBeenCalledTimes(1)
+    expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
+      file: orderCssFile,
+      rawSource: orderRawSource,
+      cssHandlerOptions: expect.objectContaining({
+        sourceOptions: expect.objectContaining({
+          cssEntries: [orderCssFile],
+        }),
+      }),
+      sourceCandidates: new Set(['order-only']),
+    }))
+    const outputCss = String((bundle['pages-order/pages/user/user.css'] as OutputAsset).source)
+    expect(outputCss).toContain('.order-only')
+    expect(outputCss).not.toContain('.main-only')
+  }, TEST_TIMEOUT_MS)
+
   it('does not infer Tailwind v4 root css from Vue SFC style blocks', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-sfc-root-css-'))
     createdDirs.push(root)
@@ -13926,6 +14084,9 @@ page {
   }, TEST_TIMEOUT_MS)
 
   it('keeps template transform stable on script-only incremental updates', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-script-only-incremental-'))
+    createdDirs.push(root)
+
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const htmlFile = 'dist/pages/index/index.wxml'
     const jsFile = 'dist/pages/index/index.js'
@@ -13942,10 +14103,25 @@ page {
         .replaceAll('bg-[#0000]', escapedColorB)
 
     setCurrentContext(createContext({
+      tailwindcssBasedir: root,
+      cssEntries: [],
       cssMatcher: (file: string) => file.endsWith('.css') || file.endsWith('.wxss'),
       templateHandler: vi.fn(async (code: string) => replaceKnownClasses(code)),
       jsHandler: vi.fn((code: string) => ({ code: replaceKnownClasses(code) })),
       styleHandler: vi.fn(async (code: string) => ({ css: replaceKnownClasses(code) })),
+      tailwindRuntime: {
+        options: {
+          projectRoot: root,
+          tailwindcss: {
+            cwd: root,
+            v4: {
+              base: root,
+              cssEntries: [],
+              cssSources: [],
+            },
+          },
+        },
+      },
     }))
     const currentContext = getCurrentContext()
     const plugins = WeappTailwindcss()
@@ -13954,7 +14130,7 @@ page {
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'serve',
-      root: process.cwd(),
+      root,
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist' },
     } as ResolvedConfig)

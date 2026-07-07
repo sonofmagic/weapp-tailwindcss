@@ -559,8 +559,27 @@ function isUnscopedMiniProgramTailwindPreflightRule(rule: postcss.Rule) {
   return declarations.length > 0 && declarations.every(isMiniProgramTailwindPreflightDeclaration)
 }
 
+function isScopedMiniProgramTailwindContentInitRule(rule: postcss.Rule) {
+  const selectors = rule.selectors ?? [rule.selector]
+  if (
+    selectors.length === 0
+    || !selectors.every((selector) => {
+      const normalized = normalizeCssSignatureValue(selector)
+      return hasVueScopedAttr(selector) && MINI_PROGRAM_PREFLIGHT_SELECTORS.has(normalized)
+    })
+  ) {
+    return false
+  }
+  const declarations = rule.nodes?.filter((node): node is postcss.Declaration => node.type === 'decl') ?? []
+  return declarations.length > 0 && declarations.every(decl => decl.prop === '--tw-content')
+}
+
 function hasUnscopedMiniProgramTailwindPreflightRule(css: string) {
   return /(?:^|[{}])\s*view\s*,\s*text\s*,\s*::after\s*,\s*::before\s*\{/.test(css)
+}
+
+function hasScopedMiniProgramTailwindContentInitRule(css: string) {
+  return /(?:^|[{}])[^{}]*\.data-v-[\w-][^{}]*\{\s*--tw-content\s*:/.test(css)
 }
 
 function collectRootScopedComparableCssCoverage(cssSources: string[]) {
@@ -618,8 +637,9 @@ function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: stri
   }
   const hasScopedTailwindGeneratedCss = /tailwindcss v\d/i.test(css)
   const hasUnscopedMiniProgramPreflight = hasUnscopedMiniProgramTailwindPreflightRule(css)
+  const hasScopedMiniProgramContentInit = hasScopedMiniProgramTailwindContentInitRule(css)
   const coverage = collectRootScopedComparableCssCoverage(rootSources)
-  if (coverage.rules.size === 0 && coverage.atRules.size === 0 && !hasScopedTailwindGeneratedCss && !hasUnscopedMiniProgramPreflight) {
+  if (coverage.rules.size === 0 && coverage.atRules.size === 0 && !hasScopedTailwindGeneratedCss && !hasUnscopedMiniProgramPreflight && !hasScopedMiniProgramContentInit) {
     return css
   }
   try {
@@ -639,6 +659,7 @@ function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: stri
           && isLikelyTailwindGlobalRule(rule)
         )
         || isUnscopedMiniProgramTailwindPreflightRule(rule)
+        || isScopedMiniProgramTailwindContentInitRule(rule)
       ) {
         rule.remove()
         changed = true

@@ -31,7 +31,6 @@ text,
   --tw-ring-offset-width: 0rpx;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-content: '';
 }
 :host,
 page,
@@ -9165,6 +9164,48 @@ wx-button::after {
   content: '';
   display: none;
 }
+:root,
+page {
+  --nut-icon-height: 40rpx;
+  --nut-icon-width: 40rpx;
+  --nut-icon-line-height: 40rpx;
+  --animate-duration: 1s;
+  --animate-delay: 0s;
+}
+::after,
+::before,
+text,
+view {
+  border: 0 solid;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  --tw-space-y-reverse: 0;
+  --tw-border-style: solid;
+  --tw-gradient-position: initial;
+  --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
+  --tw-gradient-to: rgba(0, 0, 0, 0);
+  --tw-gradient-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+  --tw-font-weight: initial;
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-color: initial;
+  --tw-shadow-alpha: 100%;
+  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-inset-shadow-color: initial;
+  --tw-inset-shadow-alpha: 100%;
+  --tw-ring-color: initial;
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-inset-ring-color: initial;
+  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-inset: initial;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+}
 wx-button {
   background: #000;
 }
@@ -9174,12 +9215,14 @@ wx-button {
 abc {
   background: #222;
 }
-button::after,
-wx-button::after {
-  display: none;
-  border: none;
-  content: '';
-}
+@layer base {
+  button::after,
+  wx-button::after {
+    display: none;
+    border: none;
+    content: '';
+  }
 wx-button {
-  background: #000;
+    background: #000;
+  }
 }

@@ -772,6 +772,28 @@ describe('bundlers/webpack v5-assets helpers', () => {
     })
     expect(finalized).toContain('tokens:')
     expect(finalized).toContain('.card')
+    let annotatedCss = ''
+    finalizeTracedWebpackCssAsset('.card:hover,.card{color:red}', cssHandlerOptions, {
+      annotateCss: (css) => {
+        annotatedCss = css
+        return css
+      },
+      compilerOptions: traceContext as any,
+      isWebGeneratorTarget: false,
+    })
+    expect(annotatedCss).toContain('.card')
+    expect(annotatedCss).not.toContain(':hover')
+    annotatedCss = ''
+    finalizeTracedWebpackCssAsset('.card:hover,.card{color:red}', cssHandlerOptions, {
+      annotateCss: (css) => {
+        annotatedCss = css
+        return css
+      },
+      compilerOptions: traceContext as any,
+      finalized: true,
+      isWebGeneratorTarget: false,
+    })
+    expect(annotatedCss).toContain(':hover')
   })
 
   it('finalizes webpack css asset sources for web and mini-program targets', () => {

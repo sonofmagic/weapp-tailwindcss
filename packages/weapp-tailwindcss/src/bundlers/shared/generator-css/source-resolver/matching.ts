@@ -27,9 +27,29 @@ function getMatchBasename(file: string) {
   return stripBundlerContentHash(path.basename(getOutputFileWithoutExtension(file.replace(/[?#].*$/, ''))))
 }
 
+function getMatchDirname(file: string) {
+  const normalized = normalizeMatchPath(file)
+  const dirname = path.posix.dirname(normalized)
+  return dirname === '.' ? '' : dirname
+}
+
 function isPathWithinRoot(file: string, root: string) {
   const relative = path.relative(root, file)
   return Boolean(relative) && !relative.startsWith('..') && !path.isAbsolute(relative)
+}
+
+function collectParentDirectories(file: string) {
+  const directories: string[] = []
+  let current = path.dirname(path.resolve(file.replace(/[?#].*$/, '')))
+  while (true) {
+    directories.push(current)
+    const parent = path.dirname(current)
+    if (parent === current) {
+      break
+    }
+    current = parent
+  }
+  return directories
 }
 
 function collectCssSourceMatchBases(
@@ -78,6 +98,7 @@ export function scoreTailwindV4CssSourceFileMatch(
     sourceOptions.projectRoot,
     sourceOptions.cwd,
   ])
+  const sourceDirectoryIndexBases = collectCssSourceMatchBases(cssSourceFile, collectParentDirectories(cssSourceFile))
   const outputBasename = getMatchBasename(file)
   const sourceBasename = getMatchBasename(cssSourceFile)
   let bestScore = 0
@@ -92,9 +113,25 @@ export function scoreTailwindV4CssSourceFileMatch(
       else if (sourceBase.endsWith(`/${outputBase}`)) {
         bestScore = Math.max(bestScore, 1000 + outputBase.length)
       }
+      else if (
+        getMatchBasename(sourceBase) === 'index'
+        && getMatchDirname(sourceBase).length > 0
+        && outputBase.startsWith(`${getMatchDirname(sourceBase)}/`)
+      ) {
+        bestScore = Math.max(bestScore, 25000 + getMatchDirname(sourceBase).length)
+      }
+    }
+    for (const sourceBase of sourceDirectoryIndexBases) {
+      if (
+        getMatchBasename(sourceBase) === 'index'
+        && getMatchDirname(sourceBase).length > 0
+        && outputBase.startsWith(`${getMatchDirname(sourceBase)}/`)
+      ) {
+        bestScore = Math.max(bestScore, 25000 + getMatchDirname(sourceBase).length)
+      }
     }
   }
-  if (outputBasename && outputBasename === sourceBasename) {
+  if (outputBasename && outputBasename === sourceBasename && outputBasename !== 'index') {
     bestScore = Math.max(bestScore, 100 + outputBasename.length)
   }
   return bestScore

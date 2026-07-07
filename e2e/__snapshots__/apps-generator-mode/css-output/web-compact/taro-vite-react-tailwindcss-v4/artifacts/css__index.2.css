@@ -341,7 +341,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
   --tw-gradient-position: to bottom right;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
- /*tokens: bg-gradient-to-r <= src/app.css, src/pages/index/index.tsx */
+ /*tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
 .bg-gradient-to-r {
   --tw-gradient-position: to right;
   background-image: linear-gradient(var(--tw-gradient-stops));
@@ -375,7 +375,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
     --tw-gradient-from: rgba(15, 23, 43, 0.95);
   }
 }
- /*tokens: to-blue-500 <= src/app.css, src/pages/index/index.tsx */
+ /*tokens: to-blue-500 <= src/pages/index/index.tsx */
 .to-blue-500 {
   --tw-gradient-to: rgb(50, 128, 255);
   --tw-gradient-stops: var(
@@ -466,7 +466,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .text-slate-900 {
   color: rgb(15, 23, 43);
 }
- /*tokens: text-white <= src/app.css, src/pages/index/index.tsx */
+ /*tokens: text-white <= src/pages/index/index.tsx */
 .text-white {
   color: #fff;
 }

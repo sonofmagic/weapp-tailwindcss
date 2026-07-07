@@ -19,6 +19,8 @@ import {
   shouldMoveRootMiniProgramStyleToImportShellOrigin,
 } from '@/bundlers/vite/generate-bundle/root-style-output'
 import { resolveCurrentSourceCandidateSource } from '@/bundlers/vite/generate-bundle/source-candidate-source'
+import { scoreTailwindV4CssSourceFileMatch } from '@/bundlers/shared/generator-css/source-resolver/matching'
+import { resolveSourceStyleSourceFromOutputFile } from '@/bundlers/vite/generate-bundle/sfc-style-source'
 import {
   collectTailwindV4SourceFingerprint,
   scoreConfiguredTailwindV4SourceForRawSource,
@@ -238,6 +240,32 @@ describe('bundlers/vite helper modules', () => {
         projectRoot: path.join(root, 'src'),
       },
     )).toBe(normalEntry)
+    const mainEntry = {
+      file: path.join(root, 'src/main.css'),
+      source: '@import "tailwindcss" source(none); @source "../src/**/*.{vue,js,ts}";',
+    }
+    const pageOrderEntry = {
+      file: path.join(root, 'src/pages-order/index.css'),
+      source: '@import "tailwindcss" source(none); @source "./**/*.{vue,js,ts}";',
+    }
+    expect(selectTailwindV4GenerationCssSourceForOutput(
+      'pages-order/pages/user/user.css',
+      [mainEntry, pageOrderEntry],
+      undefined,
+      {
+        outputRoot: path.join(root, 'dist/build/app'),
+        projectRoot: root,
+      },
+    )).toBe(pageOrderEntry)
+    expect(selectTailwindV4GenerationCssSourceForOutput(
+      'pages-order/pages/user/user.css',
+      [mainEntry, pageOrderEntry],
+      `${mainEntry.source}\n${pageOrderEntry.source}\n@theme { --color-main-only: red; }`,
+      {
+        outputRoot: path.join(root, 'dist/build/app'),
+        projectRoot: root,
+      },
+    )).toBe(pageOrderEntry)
   })
 
   it('resolves temporary root css assets to remaining scoped Tailwind v4 css entries', () => {
@@ -299,6 +327,91 @@ describe('bundlers/vite helper modules', () => {
       rawSource: '@import "tailwindcss"; @source "./index.css"; .issue-951-page-local { color: #111827; }',
       sourceFile: '/repo/src/pages/index/index.css',
     })
+  })
+
+  it('resolves page css output from the single css module imported by its sibling chunk', () => {
+    const root = '/repo/demo'
+    const sourceFile = path.join(root, 'src/pages-order/order-shared.css')
+    const source = '@import "tailwindcss" source(none);\n@config "../../tailwind.config.order.js";\n@source "./**/*.{vue,js,ts}";'
+    const snapshot = {
+      entries: [
+        {
+          type: 'js',
+          file: 'pages-order/pages/user/user.js',
+          output: {
+            type: 'chunk',
+            facadeModuleId: path.join(root, 'src/pages-order/pages/user/user.vue'),
+            moduleIds: [
+              path.join(root, 'src/pages-order/pages/user/user.vue'),
+              sourceFile,
+            ],
+            modules: {},
+          },
+        },
+      ],
+    } as any
+
+    expect(resolveSourceStyleSourceFromOutputFile(
+      'pages-order/pages/user/user.css',
+      snapshot,
+      path.join(root, 'dist/build/app'),
+      path.join(root, 'src'),
+      file => (file === sourceFile ? source : undefined),
+      undefined,
+      undefined,
+      vi.fn(),
+    )).toEqual({
+      outputFile: 'pages-order/pages/user/user.css',
+      rawSource: source,
+      sourceFile,
+    })
+  })
+
+  it('matches app style assets to cached directory index Tailwind v4 css sources', () => {
+    const root = '/repo/demo'
+    const mainSource = '@import "tailwindcss" source(none);\n@source "../src/**/*.{vue,js,ts}";'
+    const pageOrderSource = '@import "tailwindcss" source(none);\n@config "../../tailwind.config.order.js";\n@source "./**/*.{vue,js,ts}";'
+
+    expect(resolveSourceStyleSourceFromOutputFile(
+      'pages-order/pages/user/user.css',
+      { entries: [] } as any,
+      path.join(root, 'dist/build/app'),
+      path.join(root, 'src'),
+      undefined,
+      () => new Map([
+        [path.join(root, 'src/main.css'), mainSource],
+        [path.join(root, 'src/pages-order/index.css'), pageOrderSource],
+      ]),
+      undefined,
+      vi.fn(),
+    )).toEqual({
+      outputFile: 'pages-order/pages/user/user.css',
+      rawSource: pageOrderSource,
+      sourceFile: path.join(root, 'src/pages-order/index.css'),
+    })
+  })
+
+  it('does not match flat hashed index assets to arbitrary directory index css sources', () => {
+    const root = '/repo/demo'
+
+    expect(scoreTailwindV4CssSourceFileMatch(
+      'assets/index-A1B2C3.css',
+      path.join(root, 'src/sub/index.css'),
+      {
+        outputRoot: path.join(root, 'dist/build/h5'),
+        projectRoot: root,
+        cwd: root,
+      },
+    )).toBe(0)
+    expect(scoreTailwindV4CssSourceFileMatch(
+      'pages-order/pages/user/user.css',
+      path.join(root, 'src/pages-order/index.css'),
+      {
+        outputRoot: path.join(root, 'dist/build/app'),
+        projectRoot: root,
+        cwd: root,
+      },
+    )).toBeGreaterThan(0)
   })
 
   it('resolves matched css outputs and applies css results back to bundle assets', () => {
