@@ -605,12 +605,11 @@ function isRuleCoveredByRootCss(rule: postcss.Rule, coverage: ReturnType<typeof 
     return true
   }
   const declarationKeys = createDeclarationKeys(rule)
-  return (declarationKeys.length > 0
+  return declarationKeys.length > 0
     && selectors.every((selector) => {
       const rootDeclarations = coverage.declarationsBySelector.get(normalizeCssSignatureValue(selector))
       return rootDeclarations != null && declarationKeys.every(declaration => rootDeclarations.has(declaration))
-    }))
-    || selectors.every(selector => coverage.declarationsBySelector.has(normalizeCssSignatureValue(selector)))
+    })
 }
 
 function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: string[]) {
@@ -1121,7 +1120,7 @@ function removeCssCoveredByImportedViteResults(
   }
   return restoreCssImportAtRules(
     css,
-    removeCssRulesCoveredBySources(filterExistingCssRules(importedCss, css), [importedCss], { exactOnly: true }),
+    removeCssRulesCoveredBySources(css, [importedCss], { exactOnly: true }),
   )
 }
 

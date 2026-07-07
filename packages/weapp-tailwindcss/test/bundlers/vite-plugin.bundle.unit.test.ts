@@ -4135,6 +4135,87 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(appCss).toContain(processedCss)
   }, TEST_TIMEOUT_MS)
 
+  it('preserves vite-processed third-party css assets when cssEntries are configured', async () => {
+    mockTailwindV4GeneratorCss('.bg-sky-500{background-color:#0ea5e9}')
+    vi.doMock('weapp-style-injector/vite', () => ({ weappStyleInjector: vi.fn(() => []) }))
+    vi.doMock('weapp-style-injector/vite/taro', () => ({ StyleInjector: vi.fn(() => []) }))
+    vi.doMock('weapp-style-injector/vite/uni-app', () => ({ StyleInjector: vi.fn(() => []) }))
+    vi.doMock('weapp-style-injector/webpack', () => ({ weappStyleInjectorWebpack: vi.fn(() => ({})) }))
+    vi.doMock('weapp-style-injector/webpack/mpx', () => ({ StyleInjector: vi.fn(() => ({})) }))
+    vi.doMock('weapp-style-injector/webpack/taro', () => ({ StyleInjector: vi.fn(() => ({})) }))
+    vi.doMock('weapp-style-injector/webpack/uni-app', () => ({ StyleInjector: vi.fn(() => ({})) }))
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-third-party-cssentries-'))
+    createdDirs.push(root)
+    const cssEntry = path.join(root, 'src/styles/tailwindcss.css')
+    const uviewStyle = path.join(root, 'node_modules/uview-plus/index.scss')
+    await mkdir(path.dirname(cssEntry), { recursive: true })
+    await mkdir(path.dirname(uviewStyle), { recursive: true })
+    await writeFile(cssEntry, '@import "tailwindcss";\n@source "../pages/**/*.{vue,ts}";', 'utf8')
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    setCurrentContext(createContext({
+      appType: 'uni-app-vite',
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      tailwindcssBasedir: root,
+      tailwindRuntime: {
+        majorVersion: 4,
+      },
+      styleHandler: vi.fn(async (code: string) => ({
+        css: code
+          .replace(/\/\*# sourceMappingURL=.*?\*\//g, '')
+          .replace(/:hover/g, ''),
+      })),
+    }))
+    const plugins = WeappTailwindcss({
+      cssEntries: [cssEntry],
+      cssOptions: {
+        rem2rpx: true,
+      },
+    })
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const uviewCss = [
+      '.u-cell{display:flex;color:var(--u-cell-color,#303133)}',
+      '.u-cell--clickable:hover{background-color:var(--u-cell-active-color,#f5f7fa)}',
+      '.u-loading-icon{animation:u-rotate 1s linear infinite}',
+      '@keyframes u-rotate{to{transform:rotate(360deg)}}',
+    ].join('\n')
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('.app{color:red}'),
+        fileName: 'app.wxss',
+      },
+      'node-modules/uview-plus/index.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', uviewStyle)}\n${uviewCss}`),
+        fileName: 'node-modules/uview-plus/index.wxss',
+        originalFileNames: [uviewStyle],
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const css = [
+      (bundle['app.wxss'] as OutputAsset).source.toString(),
+      (bundle['node-modules/uview-plus/index.wxss'] as OutputAsset).source.toString(),
+    ].join('\n')
+    expect(css).toContain('.u-cell')
+    expect(css).toContain('--u-cell-color')
+    expect(css).toContain('.u-cell--clickable')
+    expect(css).not.toContain(':hover')
+    expect(css).toContain('.u-loading-icon')
+    expect(css).toContain('@keyframes u-rotate')
+  }, TEST_TIMEOUT_MS)
+
   it('keeps uni-app x native app vite css pipeline output as main.css during bundle processing', async () => {
     const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
     process.env.UNI_UTS_PLATFORM = 'app-android'

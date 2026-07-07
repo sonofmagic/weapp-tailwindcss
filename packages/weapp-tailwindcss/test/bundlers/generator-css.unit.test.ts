@@ -499,6 +499,100 @@ describe('bundlers/shared generator css', () => {
     expect(css).toMatch(/color:\s*var\(--color-midnight\)/)
   })
 
+  it('keeps third-party css from matched Tailwind v4 cssEntries even when candidates do not reference it', async () => {
+    const rawSource = [
+      '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */',
+      ':host,page,.tw-root,wx-root-portal-content{--color-sky-500:#0ea5e9}',
+      '.bg-sky-500{background-color:var(--color-sky-500)}',
+      '.u-cell{display:flex;color:var(--u-cell-color,#303133)}',
+      '.u-cell--clickable:active{background-color:var(--u-cell-active-color,#f5f7fa)}',
+      '.u-loading-icon{animation:u-rotate 1s linear infinite}',
+      '@keyframes u-rotate{to{transform:rotate(360deg)}}',
+    ].join('\n')
+
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: vi.fn(async () => ({
+          css: '.bg-sky-500{background-color:var(--color-sky-500)}',
+          rawCss: [
+            '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */',
+            ':host,page,.tw-root,wx-root-portal-content{--color-sky-500:#0ea5e9}',
+            '.bg-sky-500{background-color:var(--color-sky-500)}',
+          ].join('\n'),
+          target: 'weapp',
+          classSet: new Set(['bg-sky-500']),
+          dependencies: [],
+          sources: [
+            {
+              __weappTailwindcssMeta: {
+                matchedCssSourceFile: true,
+              },
+            },
+          ],
+          root: null,
+        })),
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        cssPreflight: 'view',
+        generator: {
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['bg-sky-500']),
+      sourceCandidates: new Set(['bg-sky-500']),
+      rawSource,
+      cssSources: [
+        {
+          base: process.cwd(),
+          css: rawSource,
+          file: 'app.wxss',
+        },
+      ],
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    const css = result?.css ?? ''
+    expect(css).toContain('.bg-sky-500')
+    expect(css).toContain('.u-cell')
+    expect(css).toContain('--u-cell-color')
+    expect(css).toContain('.u-cell--clickable:active')
+    expect(css).toContain('.u-loading-icon')
+    expect(css).toContain('@keyframes u-rotate')
+    expect(css.match(/\.bg-sky-500/g)).toHaveLength(1)
+  })
+
   it('generates mini-program css and skips legacy style handler for matching Tailwind v4 output', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'

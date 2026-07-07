@@ -991,6 +991,56 @@ describe('vite processed css assets', () => {
     expect(vendorsCss).not.toContain('@nutui/nutui-react-taro')
   })
 
+  it('keeps extra declarations for existing third-party selectors during main css injection', () => {
+    const bundle: OutputBundle = {
+      'app.wxss': asset('app.wxss', '.u-cell{display:flex}'),
+    }
+    const records = new Map<string, any>([
+      ['node_modules/uview-plus/index.scss', {
+        css: [
+          '.u-cell{display:flex;color:var(--u-cell-color,#303133)}',
+          '.u-cell--clickable{background-color:var(--u-cell-active-color,#f5f7fa)}',
+        ].join('\n'),
+        injectIntoMain: true,
+        outputFile: 'app.wxss',
+      }],
+    ])
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: opts(),
+      getViteProcessedCssAssetResults: () => records.entries(),
+      markCssAssetProcessed: vi.fn(),
+      debug: vi.fn(),
+    })
+
+    const appCss = String((bundle['app.wxss'] as OutputAsset).source)
+    expect(injected).toBe(1)
+    expect(appCss).toContain('.u-cell')
+    expect(appCss).toContain('display:flex')
+    expect(appCss).toContain('--u-cell-color')
+    expect(appCss).toContain('.u-cell--clickable')
+  })
+
+  it('keeps scoped third-party declarations that are not covered by root css', async () => {
+    const { removeCssCoveredByRootStyleBundleSources } = await import('@/bundlers/vite/processed-css-assets')
+    const bundle: OutputBundle = {
+      'app.wxss': asset('app.wxss', '.u-cell{display:flex}'),
+      'node-modules/uview-plus/components/u-cell/u-cell.wxss': asset(
+        'node-modules/uview-plus/components/u-cell/u-cell.wxss',
+        '.u-cell.data-v-uview{display:flex;color:var(--u-cell-color,#303133)}',
+      ),
+    }
+
+    const css = removeCssCoveredByRootStyleBundleSources(
+      bundle,
+      'node-modules/uview-plus/components/u-cell/u-cell.wxss',
+      String((bundle['node-modules/uview-plus/components/u-cell/u-cell.wxss'] as OutputAsset).source),
+    )
+
+    expect(css).toContain('.u-cell.data-v-uview')
+    expect(css).toContain('--u-cell-color')
+  })
+
   it('removes unsupported imports from non-wechat mini-program css assets while preserving local imports', () => {
     const bundle: OutputBundle = {
       'main.acss': asset('main.acss', [

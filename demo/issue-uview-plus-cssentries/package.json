@@ -1,0 +1,45 @@
+{
+  "name": "@weapp-tailwindcss-demo/issue-uview-plus-cssentries",
+  "private": true,
+  "version": "0.0.0",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "build": "pnpm run build:mp-weixin",
+    "dev:mp-weixin": "uni -p mp-weixin",
+    "dev:mp-alipay": "uni -p mp-alipay",
+    "build:mp-weixin": "node ../../scripts/uni-build-guard.mjs build -p mp-weixin",
+    "build:mp-alipay": "uni build -p mp-alipay",
+    "type-check": "vue-tsc --noEmit",
+    "predev:mp-weixin": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:mp-alipay": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:mp-weixin": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:mp-alipay": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "3.0.0-5000720260410001",
+    "@dcloudio/uni-components": "3.0.0-5000720260410001",
+    "@dcloudio/uni-mp-alipay": "3.0.0-5000720260410001",
+    "@dcloudio/uni-mp-weixin": "3.0.0-5000720260410001",
+    "uview-plus": "catalog:uviewPlus",
+    "vue": "^3.5.39"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "^3.4.8",
+    "@dcloudio/uni-cli-shared": "3.0.0-5000720260410001",
+    "@dcloudio/uni-stacktracey": "3.0.0-5000720260410001",
+    "@dcloudio/vite-plugin-uni": "3.0.0-5000720260410001",
+    "@types/node": "catalog:typesNode2410",
+    "@vue/runtime-core": "^3.5.39",
+    "@vue/tsconfig": "^0.9.1",
+    "sass": "catalog:sass195",
+    "tailwindcss": "catalog:tailwindcss4",
+    "tailwindcss-patch": "catalog:tailwindcssPatch",
+    "typescript": "catalog:typescript59",
+    "vite": "catalog:vite724",
+    "vue-tsc": "catalog:vueTsc318",
+    "weapp-tailwindcss": "workspace:*"
+  }
+}
