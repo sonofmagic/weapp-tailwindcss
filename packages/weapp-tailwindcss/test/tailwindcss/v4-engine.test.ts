@@ -271,6 +271,52 @@ describe('tailwindcss v4 engine', () => {
     expect(transformed).not.toContain('color: 55rpx')
   })
 
+  it('keeps raw candidates and mini-program css transform boundaries aligned after Tailwind generation', async () => {
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: [
+        'text-[22rpx]',
+        'hover:text-[22rpx]',
+        'bg-[color:#123456]',
+      ],
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    const expectedClassSet = new Set([
+      'text-[22rpx]',
+      'hover:text-[22rpx]',
+      'bg-[color:#123456]',
+    ])
+    expect(result.classSet).toEqual(expectedClassSet)
+    expect(result.rawCandidates).toEqual(expectedClassSet)
+
+    expect(result.rawCss).toContain('.text-\\[22rpx\\]')
+    expect(result.rawCss).toContain('.hover\\:text-\\[22rpx\\]')
+    expect(result.rawCss).toContain('.bg-\\[color\\:\\#123456\\]')
+    expect(result.rawCss).toContain('font-size: 22rpx')
+    expect(result.rawCss).toContain('background-color: #123456')
+    expect(result.rawCss).not.toContain('color: 22rpx')
+    expect(result.rawCss).not.toContain('text-\\[length\\:')
+
+    expect(result.css).toContain('.text-_b22rpx_B')
+    expect(result.css).toContain('.bg-_bcolor_c_h123456_B')
+    expect(result.css).toContain('font-size: 22rpx')
+    expect(result.css).toContain('background-color: #123456')
+    expect(result.css).not.toContain('.text-\\[22rpx\\]')
+    expect(result.css).not.toContain('.hover\\:text-\\[22rpx\\]')
+    expect(result.css).not.toContain('.hover_ctext-_b22rpx_B')
+    expect(result.css).not.toContain('.bg-\\[color\\:\\#123456\\]')
+    expect(result.css).not.toContain('color: 22rpx')
+    expect(result.css).not.toContain('text-\\[length\\:')
+  })
+
   it('treats rpx arbitrary values as lengths in generated uni-app web css', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
