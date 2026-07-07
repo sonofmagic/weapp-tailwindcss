@@ -1,4 +1,5 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
+import path from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
 import { createViteCssFinalizerOutputPlugin } from '@/bundlers/vite/css-finalizer'
@@ -125,7 +126,7 @@ describe('vite css finalizer output plugin', () => {
       majorVersion: 4,
       postcssOptions: {
         options: {
-          from: 'app.wxss',
+          from: path.resolve(process.cwd(), 'dist/app.wxss'),
         },
       },
     }))
@@ -135,6 +136,35 @@ describe('vite css finalizer output plugin', () => {
       '.root{color:red}',
       expect.stringContaining('.handled{color:green}'),
     )
+  })
+
+  it('preserves mini-program import shell assets without resolving output imports', async () => {
+    const { context, opts } = createContext({
+      opts: {
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        htmlMatcher: (file: string) => file.endsWith('.wxml'),
+        mainCssChunkMatcher: (file: string) => file === 'main.wxss',
+        styleHandler: vi.fn(async () => {
+          throw new Error('styleHandler should not process import shell')
+        }),
+        onUpdate: vi.fn(),
+        generator: {
+          target: 'weapp',
+        },
+      },
+    })
+    const plugin = createViteCssFinalizerOutputPlugin(context as any)
+    const bundle: OutputBundle = {
+      'main.wxss': asset('main.wxss', '@import "app.wxss";\n'),
+    }
+
+    await getHandler(plugin).call(plugin, {}, bundle)
+
+    expect(String((bundle['main.wxss'] as OutputAsset).source)).toBe('@import "app.wxss";\n')
+    expect(opts.styleHandler).not.toHaveBeenCalled()
+    expect(context.markCssAssetProcessed).toHaveBeenCalledWith(bundle['main.wxss'], 'main.wxss')
+    expect(context.recordCssAssetResult).toHaveBeenCalledWith('main.wxss', '@import "app.wxss";\n')
   })
 
   it('strips Vite generated markers from already processed css assets', async () => {

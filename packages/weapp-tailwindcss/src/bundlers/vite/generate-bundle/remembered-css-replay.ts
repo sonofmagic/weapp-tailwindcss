@@ -2,6 +2,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext, RememberedCssSource } from './types'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
+import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { createRuntimeAffectingSourceSignature } from '../runtime-affecting-signature'
 import { isHTMLRequest } from '../utils'
@@ -12,6 +13,8 @@ import { registerGeneratorDependencies } from './rollup-assets'
 import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTraceMap } from './scoped-generator'
 import { createCandidateSignature } from './signatures'
 import { getLastCssResult, getLastCssSourceHash, rememberLastCssResult } from './vite-css-cache'
+
+const MINI_PROGRAM_OUTPUT_IMPORT_RE = /(@import\s+(?:url\(\s*)?)(["'])([^"']+\.(?:wxss|acss|ttss|qss|jxss|tyss)(?:[?#][^"']*)?)\2([^;]*;)/gi
 
 interface ProcessRememberedCssReplayOptions {
   addWatchFile: (id: string) => void
@@ -71,6 +74,23 @@ interface ProcessRememberedCssReplayOptions {
   timeTask: (name: string, task: () => Promise<void>) => Promise<void>
   useIncrementalMode: boolean
   activeViteCssCacheFiles: Set<string>
+}
+
+function normalizeMiniProgramOutputImportRequest(request: string) {
+  if (
+    request.startsWith('.')
+    || request.startsWith('/')
+    || /^(?:[a-z][a-z\d+.-]*:|#)/i.test(request)
+  ) {
+    return request
+  }
+  return `./${request}`
+}
+
+function normalizeMiniProgramImportShell(css: string) {
+  return css.replace(MINI_PROGRAM_OUTPUT_IMPORT_RE, (_match, prefix: string, quote: string, request: string, suffix: string) => {
+    return `${prefix}${quote}${normalizeMiniProgramOutputImportRequest(request)}${quote}${suffix}`
+  })
 }
 
 export async function processRememberedCssReplay(options: ProcessRememberedCssReplayOptions) {
@@ -194,6 +214,29 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     const shouldRecordRememberedReplayCss = useIncrementalMode || isNativeAppStyleTarget
     const shouldEmitRememberedReplayCssAsset = shouldRecordRememberedReplayCss
     if (!shouldRecordRememberedReplayCss) {
+      continue
+    }
+    if (!isWebGeneratorTarget && isPureLocalCssImportWrapper(rawSource)) {
+      cssTaskFactories.push(() => timeTask('css.replay', async () => {
+        const start = performance.now()
+        const css = annotateCss(normalizeMiniProgramImportShell(rawSource))
+        lastCssRawSourceHashByFile.set(outputFile, rawSourceHash)
+        rememberLastCssResult(lastCssResultByFile, lastCssSourceHashByFile, outputFile, css, cssRuntimeAffectingHash)
+        for (const key of rememberedKeys) {
+          setRememberedCssSignature?.(key, rememberedCssRuntimeSignature)
+        }
+        recordCssAssetResult?.(outputFile, css)
+        if (shouldEmitRememberedReplayCssAsset) {
+          const replayAsset = emitOrReplayCssAsset(outputFile, css)
+          if (replayAsset) {
+            markCssAssetProcessed?.(replayAsset, outputFile)
+          }
+        }
+        metrics.css.elapsed += measureElapsed(start)
+        metrics.css.transformed++
+        onUpdate(outputFile, rawSource, css)
+        debug('css replay preserve local import shell: %s', outputFile)
+      }))
       continue
     }
     cssTaskFactories.push(() => timeTask('css.replay', async () => {

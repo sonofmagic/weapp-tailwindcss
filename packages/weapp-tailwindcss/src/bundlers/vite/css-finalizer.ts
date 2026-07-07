@@ -18,6 +18,7 @@ import { annotateCssSourceTrace, createCssTokenSourceMap } from '../shared/css-s
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { hasTailwindGeneratedCssMarkers } from '../shared/generator-css'
 import { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindRootDirectives } from '../shared/generator-css/directives'
+import { isPureLocalCssImportWrapper } from '../shared/generator-css/local-imports'
 import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { normalizeRootMiniProgramImportShellAssets } from './generate-bundle/finalize'
@@ -108,15 +109,21 @@ function createCssHandlerOptions(
   opts: InternalUserDefinedOptions,
   majorVersion: number | undefined,
   file: string,
+  outputRoot: string | undefined,
   extraOptions: Record<string, unknown> = {},
 ): IStyleHandlerOptions {
+  const from = path.isAbsolute(file)
+    ? file
+    : outputRoot
+      ? path.resolve(outputRoot, file)
+      : file
   return {
     ...extraOptions,
     cssPreflight: opts.cssPreflight,
     isMainChunk: opts.mainCssChunkMatcher(file, opts.appType),
     postcssOptions: {
       options: {
-        from: file,
+        from,
       },
     },
     ...(normalizeStyleHandlerMajorVersion(majorVersion) === undefined ? {} : { majorVersion: 4 as const }),
@@ -247,6 +254,9 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           return
         }
         const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
+        const outDir = resolvedConfig?.build?.outDir
+          ? path.resolve(rootDir, resolvedConfig.build.outDir)
+          : rootDir
         const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
           ?? resolveSourceRootFromBundleGraph(resolvedConfig, bundle)
         const sourceTraceTokenSources = getSourceCandidateSourcesForEntries
@@ -311,6 +321,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             opts,
             runtimeState.tailwindRuntime.majorVersion,
             'uni-app-x-harmony-apply.css',
+            outDir,
             cssPipelineStrategy?.getCssHandlerExtraOptions?.({
               ...createCssPipelineContext('uni-app-x-harmony-apply.css'),
               file: 'uni-app-x-harmony-apply.css',
@@ -414,6 +425,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             opts,
             runtimeState.tailwindRuntime.majorVersion,
             file,
+            outDir,
             cssPipelineStrategy?.getCssHandlerExtraOptions?.({
               ...createCssPipelineContext(file),
               file,
@@ -434,6 +446,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
                 opts,
                 runtimeState.tailwindRuntime.majorVersion,
                 generatorSourceFile,
+                outDir,
                 cssPipelineStrategy?.getCssHandlerExtraOptions?.({
                   ...createCssPipelineContext(generatorSourceFile),
                   file: generatorSourceFile,
@@ -462,6 +475,12 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
                 debug,
               })
             : undefined
+          if (!generated && !generatorBranch.isWeb && isPureLocalCssImportWrapper(rawSource)) {
+            markCssAssetProcessed(output, file)
+            recordCssAssetResult?.(file, rawSource)
+            debug('css finalizer preserve mini-program import shell: %s', file)
+            return
+          }
           const nextCss = annotateCss(generated?.css ?? (
             generatorBranch.isWeb
               ? finalizeWebCss(rawSource, {

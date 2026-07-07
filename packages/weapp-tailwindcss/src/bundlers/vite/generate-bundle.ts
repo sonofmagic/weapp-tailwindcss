@@ -438,10 +438,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         : undefined
     }
     const shouldKeepCurrentRootCssOutputForConfiguredSource = (sourceFile: string | undefined, outputFile: string) => {
+      const normalizedOutputFile = normalizeOutputPathKey(outputFile.replace(/[?#].*$/, ''))
+      const isRootConfiguredStyleOutput = normalizedOutputFile.endsWith('.css')
+        ? isRootStyleOutputFile(outputFile)
+        : isMiniProgramStyleOutputFile(outputFile) && !normalizedOutputFile.includes('/')
       return typeof sourceFile === 'string'
-        && outputFile.replace(/[?#].*$/, '').endsWith('.css')
         && opts.cssMatcher(outputFile)
-        && isRootStyleOutputFile(outputFile)
+        && isRootConfiguredStyleOutput
         && configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(sourceFile))
     }
     const hasExplicitConfiguredRootCssEntryForOutput = (outputFile: string) => {
@@ -964,95 +967,31 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         }
         if (!hasUsableRememberedTailwindSource) {
           const configuredTailwindV4CssSourceEntries = getConfiguredTailwindV4CssSourceEntries()
-          const inferredSourceStyle = resolveSourceStyleSourceFromOutputFile(
-            outputFile,
-            snapshot,
-            outDir,
-            sourceRoot,
-            getCssSource,
-            getSourceCandidateSources,
-            configuredTailwindV4CssSourceEntries.map(entry => [entry.file, entry.source] as [string, string]),
-            debug,
-          )
-          const inferredWebviewRootSourceEntry = inferredSourceStyle
-            ? undefined
-            : selectConfiguredRootCssSourceEntry(outputFile, configuredTailwindV4CssSourceEntries, originalSource.originalFileNames)
-          const inferredWebviewRootSourceStyle = inferredWebviewRootSourceEntry
-            ? {
-                outputFile,
-                rawSource: inferredWebviewRootSourceEntry.source,
-                sourceFile: inferredWebviewRootSourceEntry.file,
-              }
-            : undefined
-          const inferredOriginalSourceStyle = inferredSourceStyle
-            ?? (
-              outputFile === file
-                ? undefined
-                : resolveSourceStyleSourceFromOutputFile(
-                    file,
-                    snapshot,
-                    outDir,
-                    sourceRoot,
-                    getCssSource,
-                    getSourceCandidateSources,
-                    configuredTailwindV4CssSourceEntries.map(entry => [entry.file, entry.source] as [string, string]),
-                    debug,
-                  )
-            )
-            ?? inferredWebviewRootSourceStyle
-          if (inferredOriginalSourceStyle) {
-            const matchedOutputFile = normalizeOutputPathKey(inferredOriginalSourceStyle.outputFile) === normalizeOutputPathKey(outputFile)
-              ? outputFile
-              : resolveMatchedOutputFileForCurrentAsset(inferredOriginalSourceStyle.sourceFile) ?? outputFile
-            debug('source style output resolved: %s -> %s from %s', outputFile, matchedOutputFile, inferredOriginalSourceStyle.sourceFile)
-            outputFile = matchedOutputFile
-            activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
-            outputCssHandlerOptions = getCssHandlerOptions(outputFile)
-            rememberedCssSources = [{
-              ...inferredOriginalSourceStyle,
-              outputFile,
-            }]
-          }
-          else if (
-            isTemporaryCssAssetFile(outputFile)
-            && configuredTailwindV4CssSourceEntries.length > 1
-          ) {
-            const resolvedTemporarySource = temporaryCssAssetSourceResolver.resolve(outputFile, rawSource)
-            if (resolvedTemporarySource) {
-              outputFile = shouldKeepCurrentRootCssOutputForConfiguredSource(resolvedTemporarySource.sourceFile, outputFile)
-                ? outputFile
-                : resolveMatchedOutputFileForCurrentAsset(resolvedTemporarySource.sourceFile)
-                  ?? resolvedTemporarySource.outputFile
-              activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
-              outputCssHandlerOptions = getCssHandlerOptions(outputFile)
-              outputCssHandlerOptions = {
-                ...outputCssHandlerOptions,
-                isMainChunk: false,
-              }
-              resolvedFromTemporaryCssAsset = true
-              usedConfiguredTailwindV4CssSourceFiles.add(normalizeOutputPathKey(resolvedTemporarySource.sourceFile))
-              rememberedCssSources = [{
-                outputFile,
-                rawSource: resolvedTemporarySource.rawSource,
-                sourceFile: resolvedTemporarySource.sourceFile,
-              }]
-              debug('source style source inferred from temporary configured tailwind v4 css source: %s -> %s', outputFile, resolvedTemporarySource.sourceFile)
-            }
-          }
-          else if (
-            hasTailwindGenerationSource(rawSource)
-            && (originalSource.originalFileNames?.length ?? 0) === 0
-          ) {
-            const availableConfiguredTailwindV4CssSourceEntries = configuredTailwindV4CssSourceEntries.filter(entry =>
-              !usedConfiguredTailwindV4CssSourceFiles.has(normalizeOutputPathKey(entry.file)),
-            )
-            const configuredGenerationSource = selectTailwindV4GenerationCssSourceForOutput(outputFile, availableConfiguredTailwindV4CssSourceEntries, rawSource, {
+          const isCurrentRootMiniProgramStyleOutput = opts.cssMatcher(outputFile)
+            && isMiniProgramStyleOutputFile(outputFile)
+            && !normalizeOutputPathKey(outputFile.replace(/[?#].*$/, '')).includes('/')
+          if (isCurrentRootMiniProgramStyleOutput && hasTailwindGenerationSource(rawSource)) {
+            const configuredGenerationSource = selectTailwindV4GenerationCssSourceForOutput(outputFile, configuredTailwindV4CssSourceEntries, rawSource, {
               cwd: opts.tailwindcssBasedir,
               outputRoot: outDir,
               projectRoot: sourceRoot ?? rootDir,
             })
-            if (configuredGenerationSource && !hasViteProcessedCssResultForSource(configuredGenerationSource.file, getViteProcessedCssAssetResults)) {
-              outputFile = resolveMatchedOutputFileForCurrentAsset(configuredGenerationSource.file) ?? outputFile
+            const configuredGenerationOutputFile = configuredGenerationSource
+              ? outputFile
+              : undefined
+            const hasConfiguredGenerationSourceAlreadyUsed = configuredGenerationSource
+              ? usedConfiguredTailwindV4CssSourceFiles.has(normalizeOutputPathKey(configuredGenerationSource.file))
+              : false
+            const hasConfiguredGenerationSourceAlreadyProcessed = configuredGenerationSource
+              ? hasViteProcessedCssResultForSource(configuredGenerationSource.file, getViteProcessedCssAssetResults)
+              : false
+            const shouldUseConfiguredGenerationSource = configuredGenerationSource
+              && (
+                (!hasConfiguredGenerationSourceAlreadyUsed && !hasConfiguredGenerationSourceAlreadyProcessed)
+                || normalizeOutputPathKey(configuredGenerationOutputFile ?? outputFile) === normalizeOutputPathKey(outputFile)
+              )
+            if (configuredGenerationSource && shouldUseConfiguredGenerationSource) {
+              outputFile = configuredGenerationOutputFile ?? outputFile
               activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
               outputCssHandlerOptions = getCssHandlerOptions(outputFile)
               usedConfiguredTailwindV4CssSourceFiles.add(normalizeOutputPathKey(configuredGenerationSource.file))
@@ -1061,7 +1000,112 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 rawSource: configuredGenerationSource.source,
                 sourceFile: configuredGenerationSource.file,
               }]
+              hasUsableRememberedTailwindSource = true
               debug('source style source inferred from scoped configured tailwind v4 css source: %s -> %s', outputFile, configuredGenerationSource.file)
+            }
+          }
+          if (!hasUsableRememberedTailwindSource) {
+            const inferredSourceStyle = resolveSourceStyleSourceFromOutputFile(
+              outputFile,
+              snapshot,
+              outDir,
+              sourceRoot,
+              getCssSource,
+              getSourceCandidateSources,
+              configuredTailwindV4CssSourceEntries.map(entry => [entry.file, entry.source] as [string, string]),
+              debug,
+            )
+            const inferredWebviewRootSourceEntry = inferredSourceStyle
+              ? undefined
+              : selectConfiguredRootCssSourceEntry(outputFile, configuredTailwindV4CssSourceEntries, originalSource.originalFileNames)
+            const inferredWebviewRootSourceStyle = inferredWebviewRootSourceEntry
+              ? {
+                  outputFile,
+                  rawSource: inferredWebviewRootSourceEntry.source,
+                  sourceFile: inferredWebviewRootSourceEntry.file,
+                }
+              : undefined
+            const inferredOriginalSourceStyle = inferredSourceStyle
+              ?? (
+                outputFile === file
+                  ? undefined
+                  : resolveSourceStyleSourceFromOutputFile(
+                      file,
+                      snapshot,
+                      outDir,
+                      sourceRoot,
+                      getCssSource,
+                      getSourceCandidateSources,
+                      configuredTailwindV4CssSourceEntries.map(entry => [entry.file, entry.source] as [string, string]),
+                      debug,
+                    )
+              )
+              ?? inferredWebviewRootSourceStyle
+            if (inferredOriginalSourceStyle) {
+              const matchedOutputFile = normalizeOutputPathKey(inferredOriginalSourceStyle.outputFile) === normalizeOutputPathKey(outputFile)
+                ? outputFile
+                : resolveMatchedOutputFileForCurrentAsset(inferredOriginalSourceStyle.sourceFile) ?? outputFile
+              debug('source style output resolved: %s -> %s from %s', outputFile, matchedOutputFile, inferredOriginalSourceStyle.sourceFile)
+              outputFile = matchedOutputFile
+              activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
+              outputCssHandlerOptions = getCssHandlerOptions(outputFile)
+              rememberedCssSources = [{
+                ...inferredOriginalSourceStyle,
+                outputFile,
+              }]
+            }
+            else if (
+              isTemporaryCssAssetFile(outputFile)
+              && configuredTailwindV4CssSourceEntries.length > 1
+            ) {
+              const resolvedTemporarySource = temporaryCssAssetSourceResolver.resolve(outputFile, rawSource)
+              if (resolvedTemporarySource) {
+                outputFile = shouldKeepCurrentRootCssOutputForConfiguredSource(resolvedTemporarySource.sourceFile, outputFile)
+                  ? outputFile
+                  : resolveMatchedOutputFileForCurrentAsset(resolvedTemporarySource.sourceFile)
+                    ?? resolvedTemporarySource.outputFile
+                activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
+                outputCssHandlerOptions = getCssHandlerOptions(outputFile)
+                outputCssHandlerOptions = {
+                  ...outputCssHandlerOptions,
+                  isMainChunk: false,
+                }
+                resolvedFromTemporaryCssAsset = true
+                usedConfiguredTailwindV4CssSourceFiles.add(normalizeOutputPathKey(resolvedTemporarySource.sourceFile))
+                rememberedCssSources = [{
+                  outputFile,
+                  rawSource: resolvedTemporarySource.rawSource,
+                  sourceFile: resolvedTemporarySource.sourceFile,
+                }]
+                debug('source style source inferred from temporary configured tailwind v4 css source: %s -> %s', outputFile, resolvedTemporarySource.sourceFile)
+              }
+            }
+            else if (
+              !isCurrentRootMiniProgramStyleOutput
+              && hasTailwindGenerationSource(rawSource)
+              && (originalSource.originalFileNames?.length ?? 0) === 0
+            ) {
+              const availableConfiguredTailwindV4CssSourceEntries = configuredTailwindV4CssSourceEntries.filter(entry =>
+                !usedConfiguredTailwindV4CssSourceFiles.has(normalizeOutputPathKey(entry.file)),
+              )
+              const configuredGenerationSource = selectTailwindV4GenerationCssSourceForOutput(outputFile, availableConfiguredTailwindV4CssSourceEntries, rawSource, {
+                cwd: opts.tailwindcssBasedir,
+                outputRoot: outDir,
+                projectRoot: sourceRoot ?? rootDir,
+              })
+              if (configuredGenerationSource && !hasViteProcessedCssResultForSource(configuredGenerationSource.file, getViteProcessedCssAssetResults)) {
+                outputFile = resolveMatchedOutputFileForCurrentAsset(configuredGenerationSource.file) ?? outputFile
+                activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
+                outputCssHandlerOptions = getCssHandlerOptions(outputFile)
+                usedConfiguredTailwindV4CssSourceFiles.add(normalizeOutputPathKey(configuredGenerationSource.file))
+                rememberedCssSources = [{
+                  outputFile,
+                  rawSource: configuredGenerationSource.source,
+                  sourceFile: configuredGenerationSource.file,
+                }]
+                hasUsableRememberedTailwindSource = true
+                debug('source style source inferred from scoped configured tailwind v4 css source: %s -> %s', outputFile, configuredGenerationSource.file)
+              }
             }
           }
         }

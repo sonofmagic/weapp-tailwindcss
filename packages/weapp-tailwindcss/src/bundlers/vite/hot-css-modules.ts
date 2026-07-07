@@ -7,12 +7,32 @@ import { cleanUrl, slash } from './utils'
 export function resolveHotTailwindCssModules(ctx: HmrContext, tailwindRootCssModuleIds: Set<string>) {
   const modules: ModuleNode[] = []
   const seenModules = new Set<ModuleNode>()
+  const root = ctx.server.config?.root ?? process.cwd()
+  const outDir = ctx.server.config?.build?.outDir
+    ? normalizeAbsoluteFilePath(path.resolve(root, ctx.server.config.build.outDir))
+    : undefined
+  const isHotSourceStyleModule = (id: string | null | undefined) => {
+    if (!isSourceStyleRequest(id)) {
+      return false
+    }
+    const file = cleanUrl(id!)
+    if (isRootMiniProgramStyleUrl(file) || (!isAbsoluteFilePath(file) && !file.startsWith('/'))) {
+      return false
+    }
+    if (outDir && isAbsoluteFilePath(file)) {
+      const normalizedFile = normalizeAbsoluteFilePath(file)
+      if (normalizedFile === outDir || normalizedFile.startsWith(`${outDir}/`)) {
+        return false
+      }
+    }
+    return true
+  }
   const collectModule = (mod: ModuleNode | undefined) => {
     if (mod == null || seenModules.has(mod)) {
       return
     }
     const modId = mod.id ?? mod.url
-    if (!isSourceStyleRequest(modId)) {
+    if (!isHotSourceStyleModule(modId)) {
       return
     }
     seenModules.add(mod)
@@ -73,14 +93,37 @@ function resolveModuleHotUrl(mod: ModuleNode) {
   return undefined
 }
 
+function isAbsoluteFilePath(file: string) {
+  return path.isAbsolute(file)
+    || /^[A-Z]:[\\/]/i.test(file)
+    || file.startsWith('\\\\')
+}
+
+function normalizeAbsoluteFilePath(file: string) {
+  if (/^[A-Z]:[\\/]/i.test(file) || file.startsWith('\\\\')) {
+    return slash(path.win32.resolve(file))
+  }
+  return slash(path.resolve(file))
+}
+
+function isRootMiniProgramStyleUrl(file: string) {
+  return /^\/[^/]+\.(?:wxss|acss|ttss|qss|jxss|tyss)(?:$|[?#])/i.test(file)
+}
+
 function resolveCssHotUrl(id: string, root: string) {
   const suffix = /[?#]/.test(id) ? id.slice(id.search(/[?#]/)) : ''
   const file = cleanUrl(id)
   if (/^\/(?![A-Z]:)/i.test(file) && !file.startsWith(slash(root))) {
+    if (isRootMiniProgramStyleUrl(file)) {
+      return undefined
+    }
     return `${file}${suffix}`
   }
-  const normalizedRoot = slash(path.resolve(root))
-  const normalizedFile = slash(path.resolve(file))
+  if (!isAbsoluteFilePath(file)) {
+    return undefined
+  }
+  const normalizedRoot = normalizeAbsoluteFilePath(root)
+  const normalizedFile = normalizeAbsoluteFilePath(file)
   if (!normalizedFile.startsWith(`${normalizedRoot}/`)) {
     return undefined
   }
@@ -150,7 +193,8 @@ export function sendSupplementalCssHotUpdates(ctx: HmrContext, cssModules: Modul
     if (includesHotModule(ctx.modules, mod)) {
       continue
     }
-    const hotUrl = resolveModuleHotUrl(mod)
+    const moduleHotUrl = resolveModuleHotUrl(mod)
+    const hotUrl = moduleHotUrl ? resolveCssHotUrl(moduleHotUrl, root) : undefined
     if (!hotUrl || seenUrls.has(hotUrl)) {
       continue
     }
