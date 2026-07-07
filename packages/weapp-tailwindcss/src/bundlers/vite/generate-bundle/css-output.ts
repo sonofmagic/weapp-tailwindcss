@@ -188,13 +188,13 @@ export function resolveViteCssOutputFile(
     isWebGeneratorTarget
     || preserveCssExtension
     || opts.cssMatcher(file)
-    || !SOURCE_STYLE_OUTPUT_EXT_RE.test(file)
+    || !CSS_SOURCE_OUTPUT_EXT_RE.test(file)
     || !isCSSRequest(file)
   ) {
     return file
   }
-  const stem = file.replace(/[?#].*$/, '').replace(SOURCE_STYLE_OUTPUT_EXT_RE, '')
-  return file.replace(SOURCE_STYLE_OUTPUT_EXT_RE, resolveMiniProgramStyleOutputExtension({
+  const stem = file.replace(/[?#].*$/, '').replace(CSS_SOURCE_OUTPUT_EXT_RE, '')
+  return file.replace(CSS_SOURCE_OUTPUT_EXT_RE, resolveMiniProgramStyleOutputExtension({
     cssMatcher: opts.cssMatcher,
     fallback: styleOutputExtension,
     files: styleOutputFiles,

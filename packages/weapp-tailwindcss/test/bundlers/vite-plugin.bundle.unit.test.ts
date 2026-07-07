@@ -14680,6 +14680,156 @@ const fallback = "bg-[#434332] px-[32px]"
     }))
   }, TEST_TIMEOUT_MS)
 
+  it('uses configured tailwind v4 css root for mini-program root css output', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v4-root-css-mini-'))
+    createdDirs.push(root)
+    await mkdir(path.join(root, 'src/components'), { recursive: true })
+    const mainCssFile = path.join(root, 'src/main.css')
+    const normalCssFile = path.join(root, 'src/sub-normal/pages/index.css')
+    const independentCssFile = path.join(root, 'src/sub-independent/pages/index.css')
+    const componentStyleFile = `${path.join(root, 'src/components/HelloWorld.vue')}?vue&type=style&index=0&scoped=true`
+    const generateCssByGeneratorMock = vi.fn(async (options: {
+      file: string
+      rawSource: string
+    }) => {
+      return {
+        css: `.from-${path.basename(options.file).replace(/\W+/g, '-')}{color:red}`,
+        rawCss: options.rawSource,
+        target: 'weapp',
+        source: 'generator',
+        classSet: new Set(['bg-[#0000ff]']),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateCssByGeneratorMock,
+      }
+    })
+    const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
+    const runtimeSet = new Set(['bg-[#0000ff]'])
+    const cssSources = [
+      {
+        file: mainCssFile,
+        base: root,
+        css: '@import "tailwindcss" source(none);\n@source "../src/**/*.{vue,js,ts}";',
+        dependencies: [],
+      },
+      {
+        file: normalCssFile,
+        base: path.dirname(normalCssFile),
+        css: '@import "tailwindcss" source(none);\n@source "./**/*.{vue,js,ts}";',
+        dependencies: [],
+      },
+      {
+        file: independentCssFile,
+        base: path.dirname(independentCssFile),
+        css: '@import "tailwindcss" source(none);\n@source "./**/*.{vue,js,ts}";',
+        dependencies: [],
+      },
+    ]
+    const context = createContext({
+      appType: 'uni-app-vite',
+      cssMatcher: (file: string) => file.endsWith('.css'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.css'),
+      tailwindcssBasedir: root,
+      cssEntries: [mainCssFile, normalCssFile, independentCssFile],
+      tailwindcss: {
+        v4: {
+          cssEntries: [mainCssFile, normalCssFile, independentCssFile],
+          cssSources,
+        },
+      },
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        options: {
+          projectRoot: root,
+          tailwindcss: {
+            cwd: root,
+            v4: {
+              cssEntries: [mainCssFile, normalCssFile, independentCssFile],
+              cssSources,
+            },
+          },
+        },
+      },
+    })
+    const rememberedCssSources = new Map([
+      ['component-style', {
+        outputFile: 'app.css',
+        rawSource: '@import "tailwindcss" source(none);\n@source "./HelloWorld.vue";',
+        sourceFile: componentStyleFile,
+      }],
+    ])
+    const generateBundle = createGenerateBundleHookWithMock({
+      opts: context as any,
+      runtimeState: {
+        tailwindRuntime: context.tailwindRuntime as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'build',
+        plugins: [],
+        root,
+        weapp: {
+          srcRoot: 'src',
+        },
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/build/mp-baidu' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => runtimeSet,
+      getSourceCandidatesForEntries: () => runtimeSet,
+      getSourceCandidateSource: () => undefined,
+      getSourceCandidateSources: () => [],
+      getSourceCandidateSourcesForEntries: () => [],
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      refreshRememberedCssSource: vi.fn(),
+      getRememberedCssSources: () => rememberedCssSources,
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      recordGeneratorCandidates: vi.fn(),
+    })
+
+    const bundle = {
+      'app.css': {
+        ...createRollupAsset('@import "tailwindcss" source(none);'),
+        fileName: 'app.css',
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
+
+    const appCss = String((bundle['app.css'] as OutputAsset).source)
+    expect(appCss).toContain('.from-main-css')
+    expect(appCss).not.toContain('.from-HelloWorld-vue')
+    expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
+      file: mainCssFile,
+      rawSource: expect.stringContaining('@source "../src/**/*'),
+    }))
+    expect(generateCssByGeneratorMock).not.toHaveBeenCalledWith(expect.objectContaining({
+      file: normalCssFile,
+    }))
+  }, TEST_TIMEOUT_MS)
+
   it('skips web-target html assets and transform-filtered css assets in generateBundle', async () => {
     const rootDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-generate-skip-'))
     createdDirs.push(rootDir)

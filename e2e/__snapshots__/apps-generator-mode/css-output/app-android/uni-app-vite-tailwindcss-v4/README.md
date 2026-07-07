@@ -7,7 +7,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/app
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 23105 | 64 | true | false | true | false | false | false | true |
+| 87643 | 574 | true | true | true | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -22,7 +22,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/app
 
 | File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.css` | [artifacts/app.css](artifacts/app.css) | 5142 | 11 | true | false | true | false | false | false | true |
-| `pages-order/pages/home/home.css` | [artifacts/pages-order__pages__home__home.css](artifacts/pages-order__pages__home__home.css) | 8487 | 51 | true | false | true | false | false | false | true |
-| `pages-order/pages/user/user.css` | [artifacts/pages-order__pages__user__user.css](artifacts/pages-order__pages__user__user.css) | 8487 | 51 | true | false | true | false | false | false | true |
+| `app.css` | [artifacts/app.css](artifacts/app.css) | 76130 | 568 | true | true | true | true | true | false | true |
+| `pages-order/pages/home/home.css` | [artifacts/pages-order__pages__home__home.css](artifacts/pages-order__pages__home__home.css) | 5262 | 4 | true | false | true | false | false | false | false |
+| `pages-order/pages/user/user.css` | [artifacts/pages-order__pages__user__user.css](artifacts/pages-order__pages__user__user.css) | 5262 | 4 | true | false | true | false | false | false | false |
 | `pages/index/index.css` | [artifacts/pages__index__index.css](artifacts/pages__index__index.css) | 989 | 6 | false | false | false | false | false | false | true |

@@ -27,7 +27,6 @@ export function createTemporaryCssAssetSourceResolver(
     const outputFile = normalizeCssSourceKey(entry.outputFile)
     if (
       outputFile === entryFile
-      || !outputFile.includes('/')
       || seenEntryFiles.has(entryFile)
     ) {
       return false
@@ -49,7 +48,12 @@ export function createTemporaryCssAssetSourceResolver(
       if (!isTemporaryCssAssetFile(outputFile)) {
         return
       }
-      const availableEntries = queuedEntries.filter(item => !usedEntryFiles.has(normalizeCssSourceKey(item.file)))
+      const outputFileKey = normalizeCssSourceKey(outputFile)
+      const unusedEntries = queuedEntries.filter(item => !usedEntryFiles.has(normalizeCssSourceKey(item.file)))
+      const matchedOutputEntries = unusedEntries.filter(item => normalizeCssSourceKey(item.outputFile) === outputFileKey)
+      const availableEntries = matchedOutputEntries.length > 0
+        ? matchedOutputEntries
+        : unusedEntries.filter(item => normalizeCssSourceKey(item.outputFile).includes('/'))
       const scoredEntries = rawSource
         ? availableEntries
             .map(entry => ({

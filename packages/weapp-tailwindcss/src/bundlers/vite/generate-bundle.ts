@@ -392,11 +392,25 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             && opts.cssMatcher(outputFile)
             && isRootStyleOutputFile(outputFile)
           )
+          || (
+            !cssPipelineContext.currentGeneratorBranch.isWeb
+            && opts.cssMatcher(outputFile)
+            && isRootStyleOutputFile(outputFile)
+          )
         )
       ) {
         return undefined
       }
-      const generationEntries = entries.filter(entry => hasTailwindGenerationSource(entry.source))
+      const shouldRequireExplicitConfiguredEntry = !cssPipelineContext.currentGeneratorBranch.isWeb
+        && opts.cssMatcher(outputFile)
+        && isRootStyleOutputFile(outputFile)
+      const generationEntries = entries.filter(entry =>
+        hasTailwindGenerationSource(entry.source)
+        && (
+          !shouldRequireExplicitConfiguredEntry
+          || configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(entry.file))
+        ),
+      )
       if (generationEntries.length <= 1) {
         return generationEntries[0]
       }
@@ -417,6 +431,44 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         }
       }
       return undefined
+    }
+    const resolveConfiguredRootCssSourceStyle = (
+      outputFile: string,
+      entries: ReturnType<typeof getConfiguredTailwindV4CssSourceEntries>,
+      originalFileNames: string[] | undefined,
+    ) => {
+      const entry = selectConfiguredRootCssSourceEntry(outputFile, entries, originalFileNames)
+      return entry
+        ? {
+            outputFile,
+            rawSource: entry.source,
+            sourceFile: entry.file,
+          }
+        : undefined
+    }
+    const shouldKeepCurrentRootCssOutputForConfiguredSource = (sourceFile: string | undefined, outputFile: string) => {
+      return typeof sourceFile === 'string'
+        && outputFile.replace(/[?#].*$/, '').endsWith('.css')
+        && opts.cssMatcher(outputFile)
+        && isRootStyleOutputFile(outputFile)
+        && configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(sourceFile))
+    }
+    const hasExplicitConfiguredRootCssEntryForOutput = (outputFile: string) => {
+      if (
+        cssPipelineContext.currentGeneratorBranch.isWeb
+        || !opts.cssMatcher(outputFile)
+        || !isRootStyleOutputFile(outputFile)
+      ) {
+        return false
+      }
+      return configuredTailwindV4CssSourceEntriesForScope.some((entry) => {
+        if (!configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(entry.file))) {
+          return false
+        }
+        const entryOutputFile = resolveConfiguredTailwindV4CssEntryOutputFile(entry.file)
+        return !normalizeOutputPathKey(entryOutputFile.replace(/[?#].*$/, '')).includes('/')
+          || (currentSubpackageRoots != null && !isSubpackageOutputFile(entryOutputFile, currentSubpackageRoots))
+      })
     }
     const {
       createScopedSourceCandidateGetter,
@@ -546,6 +598,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       ...collectRuntimeLinkedCssFiles(snapshot, cssExtensionByStem, defaultStyleOutputExtension),
       ...jsImportedCssFiles,
     ])
+    const shouldQueueTemporaryCssSourceEntry = (sourceFile: string | undefined, outputFile: string) => {
+      return normalizeOutputPathKey(outputFile).includes('/')
+        || (
+          typeof sourceFile === 'string'
+          && configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(sourceFile))
+        )
+    }
     rememberRuntimeLinkedCssSources({
       bundleFiles,
       debug,
@@ -580,6 +639,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         )
         return inferredSourceStyle
           && currentSubpackageRoots
+          && shouldQueueTemporaryCssSourceEntry(inferredSourceStyle.sourceFile, outputFile)
           ? {
               file: inferredSourceStyle.sourceFile,
               outputFile,
@@ -595,11 +655,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           file: remembered.sourceFile,
           outputFile: remembered.outputFile,
           source: remembered.rawSource,
-        })),
+        })).filter(entry => shouldQueueTemporaryCssSourceEntry(entry.file, entry.outputFile)),
         ...getConfiguredTailwindV4CssSourceEntries()
           .map((entry) => {
             const outputFile = resolveMatchedCssSourceOutputFile(entry.file)
-            return outputFile
+            const isExplicitConfiguredEntry = configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(entry.file))
+            return outputFile && (normalizeOutputPathKey(outputFile).includes('/') || isExplicitConfiguredEntry)
               ? {
                   file: entry.file,
                   outputFile,
@@ -826,6 +887,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           }))
         }
         rememberedCssSources = rememberedCssSources.filter((remembered) => {
+          if (
+            hasExplicitConfiguredRootCssEntryForOutput(outputFile)
+            && !configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(remembered.sourceFile))
+          ) {
+            return false
+          }
           if (!configuredTailwindV4CssSourceFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(remembered.sourceFile))) {
             return true
           }
@@ -865,11 +932,26 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           hasUsableRememberedTailwindSource = false
         }
         let outputCssHandlerOptions = getCssHandlerOptions(outputFile)
-        if (isTemporaryCssAssetFile(outputFile) && hasTailwindGenerationSource(rawSource)) {
+        const configuredRootSourceStyle = resolveConfiguredRootCssSourceStyle(
+          outputFile,
+          getConfiguredTailwindV4CssSourceEntries(),
+          originalSource.originalFileNames,
+        )
+        const hasExplicitRememberedRootSource = rememberedCssSources.some(remembered =>
+          configuredTailwindV4ExplicitCssEntryFileKeysForScope.has(normalizeConfiguredTailwindV4CssEntryFileKey(remembered.sourceFile)),
+        )
+        if (configuredRootSourceStyle && (!hasUsableRememberedTailwindSource || !hasExplicitRememberedRootSource)) {
+          rememberedCssSources = [configuredRootSourceStyle]
+          hasUsableRememberedTailwindSource = true
+          debug('source style source inferred from configured root tailwind v4 css source: %s -> %s', outputFile, configuredRootSourceStyle.sourceFile)
+        }
+        if (!hasUsableRememberedTailwindSource && isTemporaryCssAssetFile(outputFile) && hasTailwindGenerationSource(rawSource)) {
           const resolvedTemporarySource = temporaryCssAssetSourceResolver.resolve(outputFile, rawSource)
           if (resolvedTemporarySource) {
-            outputFile = resolveMatchedOutputFileForCurrentAsset(resolvedTemporarySource.sourceFile)
-              ?? resolvedTemporarySource.outputFile
+            outputFile = shouldKeepCurrentRootCssOutputForConfiguredSource(resolvedTemporarySource.sourceFile, outputFile)
+              ? outputFile
+              : resolveMatchedOutputFileForCurrentAsset(resolvedTemporarySource.sourceFile)
+                ?? resolvedTemporarySource.outputFile
             activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
             outputCssHandlerOptions = getCssHandlerOptions(outputFile)
             outputCssHandlerOptions = {
@@ -926,7 +1008,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             )
             ?? inferredWebviewRootSourceStyle
           if (inferredOriginalSourceStyle) {
-            outputFile = resolveMatchedOutputFileForCurrentAsset(inferredOriginalSourceStyle.sourceFile) ?? outputFile
+            const matchedOutputFile = normalizeOutputPathKey(inferredOriginalSourceStyle.outputFile) === normalizeOutputPathKey(outputFile)
+              ? outputFile
+              : resolveMatchedOutputFileForCurrentAsset(inferredOriginalSourceStyle.sourceFile) ?? outputFile
+            debug('source style output resolved: %s -> %s from %s', outputFile, matchedOutputFile, inferredOriginalSourceStyle.sourceFile)
+            outputFile = matchedOutputFile
             activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
             outputCssHandlerOptions = getCssHandlerOptions(outputFile)
             rememberedCssSources = [{
@@ -940,8 +1026,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           ) {
             const resolvedTemporarySource = temporaryCssAssetSourceResolver.resolve(outputFile, rawSource)
             if (resolvedTemporarySource) {
-              outputFile = resolveMatchedOutputFileForCurrentAsset(resolvedTemporarySource.sourceFile)
-                ?? resolvedTemporarySource.outputFile
+              outputFile = shouldKeepCurrentRootCssOutputForConfiguredSource(resolvedTemporarySource.sourceFile, outputFile)
+                ? outputFile
+                : resolveMatchedOutputFileForCurrentAsset(resolvedTemporarySource.sourceFile)
+                  ?? resolvedTemporarySource.outputFile
               activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
               outputCssHandlerOptions = getCssHandlerOptions(outputFile)
               outputCssHandlerOptions = {
