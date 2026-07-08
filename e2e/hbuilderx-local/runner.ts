@@ -363,8 +363,6 @@ async function writeAppMarker(
 export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
   const outputDirs = item.outputDirCandidates ?? [item.outputDir]
-  let child: ReturnType<typeof spawnPnpm> | undefined
-  let logs: string[] = []
 
   await Promise.all(
     [...new Set(outputDirs)].map(async (outputDir) => {
@@ -385,24 +383,12 @@ export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
     return
   }
 
-  try {
-    child = spawnPnpm(projectRoot, ['run', 'dev:mp-weixin'], {
-      HBUILDERX_CLI_PATH: await resolveHBuilderXCli(),
-      WEAPP_TW_HMR_TIMING: '1',
-    })
-    logs = collectProcessOutput(child)
-    await assertMiniProgramOutput(item, () => {
-      if (child?.exitCode != null) {
-        const output = logs.join('')
-        throw new Error(`${item.name} dev:mp-weixin 提前退出，exit=${child.exitCode}\n${formatHBuilderXIssueDetails(output)}\n${output}`)
-      }
-    }, () => logs.join(''))
-  }
-  finally {
-    if (child) {
-      killProcessTree(child)
-    }
-  }
+  await runPnpm(projectRoot, ['run', 'dev:mp-weixin'], hbuilderxTimeoutMs, {
+    HBUILDERX_CLI_PATH: await resolveHBuilderXCli(),
+    HBUILDERX_COMPILE_ONLY: '1',
+    WEAPP_TW_HMR_TIMING: '1',
+  })
+  await assertMiniProgramOutput(item)
 }
 
 export async function verifyAppHmrWithHBuilderX(item: AppCase) {

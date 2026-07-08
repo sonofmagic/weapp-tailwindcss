@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process'
 import { rm } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { basename, resolve } from 'node:path'
 import process from 'node:process'
 
 function runPnpm(args, options = {}) {
@@ -39,6 +39,8 @@ function spawnPnpm(args) {
 
 async function main() {
   const projectRoot = process.cwd()
+  const projectName = process.env.HBUILDERX_PROJECT_NAME || basename(projectRoot)
+  const compileOnly = process.env.HBUILDERX_COMPILE_ONLY === '1'
   await rm(resolve(projectRoot, 'unpackage/dist/dev/mp-weixin'), {
     recursive: true,
     force: true,
@@ -53,7 +55,8 @@ async function main() {
   })
   await runPnpm(['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot])
 
-  const child = spawnPnpm(['exec', 'hbuilderx', 'launch', 'mp-weixin', '--project', projectRoot, '--compile', 'false', '--runtime-log', 'true'])
+  // HBuilderX 5.14 在 launch 阶段用绝对路径可能误判根目录项目类型，导入后用项目名更稳定。
+  const child = spawnPnpm(['exec', 'hbuilderx', 'launch', 'mp-weixin', '--project', projectName, '--compile', compileOnly ? 'true' : 'false', '--runtime-log', 'true'])
 
   for (const signal of ['SIGINT', 'SIGTERM']) {
     process.once(signal, () => {
