@@ -52,6 +52,7 @@ const allWebViteHmrCases: WebViteHmrCase[] = [
     expectedViteHmrPath: '/src/App.vue',
     styleRequired: false,
     classFlowRequired: false,
+    titleHmrRetry: true,
   },
   {
     name: 'web vue vite7 Tailwind v4',
@@ -66,6 +67,7 @@ const allWebViteHmrCases: WebViteHmrCase[] = [
     expectedViteHmrPath: '/src/App.vue',
     styleRequired: false,
     classFlowRequired: false,
+    titleHmrRetry: true,
   },
   {
     name: 'web nuxt vite Tailwind v4',
