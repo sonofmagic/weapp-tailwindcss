@@ -3,6 +3,7 @@ import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext, RememberedCssSource } from './types'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
 import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
+import { normalizeMiniProgramGeneratorCssSource, normalizeMiniProgramImportShell } from '../../shared/generator-css/output-import-shell'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { createRuntimeAffectingSourceSignature } from '../runtime-affecting-signature'
 import { isHTMLRequest } from '../utils'
@@ -13,8 +14,6 @@ import { registerGeneratorDependencies } from './rollup-assets'
 import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTraceMap } from './scoped-generator'
 import { createCandidateSignature } from './signatures'
 import { getLastCssResult, getLastCssSourceHash, rememberLastCssResult } from './vite-css-cache'
-
-const MINI_PROGRAM_OUTPUT_IMPORT_RE = /(@import\s+(?:url\(\s*)?)(["'])([^"']+\.(?:wxss|acss|ttss|qss|jxss|tyss)(?:[?#][^"']*)?)\2([^;]*;)/gi
 
 interface ProcessRememberedCssReplayOptions {
   addWatchFile: (id: string) => void
@@ -74,23 +73,6 @@ interface ProcessRememberedCssReplayOptions {
   timeTask: (name: string, task: () => Promise<void>) => Promise<void>
   useIncrementalMode: boolean
   activeViteCssCacheFiles: Set<string>
-}
-
-function normalizeMiniProgramOutputImportRequest(request: string) {
-  if (
-    request.startsWith('.')
-    || request.startsWith('/')
-    || /^(?:[a-z][a-z\d+.-]*:|#)/i.test(request)
-  ) {
-    return request
-  }
-  return `./${request}`
-}
-
-function normalizeMiniProgramImportShell(css: string) {
-  return css.replace(MINI_PROGRAM_OUTPUT_IMPORT_RE, (_match, prefix: string, quote: string, request: string, suffix: string) => {
-    return `${prefix}${quote}${normalizeMiniProgramOutputImportRequest(request)}${quote}${suffix}`
-  })
 }
 
 export async function processRememberedCssReplay(options: ProcessRememberedCssReplayOptions) {
@@ -163,6 +145,9 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       continue
     }
     const { rawSource, sourceFile } = rememberedCssSource
+    const generatorRawSource = isWebGeneratorTarget
+      ? rawSource
+      : normalizeMiniProgramGeneratorCssSource(rawSource, outputFile)
     activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
     activeViteCssCacheFiles.add(normalizeViteCssCacheKey(sourceFile))
     const outputCssHandlerOptions = getCssHandlerOptions(outputFile)
@@ -172,11 +157,11 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     }
     const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)
     const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, cssHandlerOptions)
-    const scopedGeneratorRuntime = await createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, rawSource, sourceFile)
+    const scopedGeneratorRuntime = await createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, generatorRawSource, sourceFile)
     const cssRuntimeSignature = createCssRuntimeSignature(
       createCandidateSignature(scopedGeneratorRuntime),
       await createScopedGeneratorCandidateSignature(
-        rawSource,
+        generatorRawSource,
         sourceFile,
         createCandidateSignature(scopedGeneratorRuntime),
         scopedSourceCandidateGetter,
@@ -202,7 +187,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       continue
     }
     const sourceTraceSources = scopedSourceCandidateSourceGetter
-      ? await createScopedGeneratorSourceTraceMap(rawSource, sourceFile, scopedSourceCandidateSourceGetter)
+      ? await createScopedGeneratorSourceTraceMap(generatorRawSource, sourceFile, scopedSourceCandidateSourceGetter)
       : undefined
     const sourceTraceTokenSources = sourceTraceSources
       ? createCssTokenSourceMap(sourceTraceSources, opts)
@@ -245,7 +230,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
         opts,
         runtimeState,
         runtime: scopedGeneratorRuntime,
-        rawSource,
+        rawSource: generatorRawSource,
         file: sourceFile,
         outputFile,
         cssHandlerOptions,
@@ -256,7 +241,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
         debug,
         previousCss,
       })
-      const css = annotateCss(generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css)
+      const css = annotateCss(generated?.css ?? (await styleHandler(generatorRawSource, cssHandlerOptions)).css)
       lastCssRawSourceHashByFile.set(outputFile, rawSourceHash)
       rememberLastCssResult(lastCssResultByFile, lastCssSourceHashByFile, outputFile, css, cssRuntimeAffectingHash)
       for (const key of rememberedKeys) {

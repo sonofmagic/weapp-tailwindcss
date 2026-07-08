@@ -30,6 +30,7 @@ import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
 import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '../../shared/generated-css-marker'
+import { normalizeMiniProgramGeneratorCssSource } from '../../shared/generator-css/output-import-shell'
 import { createHmrTimingRecorder } from '../../shared/hmr-timing'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { isSourceStyleRequest } from '../../shared/style-requests'
@@ -1008,6 +1009,9 @@ export function createViteFrameworkPlugins(
       ?? frameworkCssPipelineStrategy?.isNativeAppStyleTarget?.(cssPipelineContext) === true
     const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
     const outputFile = resolveViteCssPipelineOutputFile(requestFile, opts, rootDir, currentGeneratorBranch.isWeb, shouldPreserveStyleOutputExtension, sourceRoot)
+    const generatorTransformCode = currentGeneratorBranch.isWeb
+      ? generatorCode
+      : normalizeMiniProgramGeneratorCssSource(generatorCode, outputFile)
     const fullRuntime = getSourceCandidates()
       ?? getRecordedGeneratorCandidates()
       ?? await ensureRuntimeClassSet()
@@ -1040,12 +1044,12 @@ export function createViteFrameworkPlugins(
     }
     const transientCssSource = transientAutoCssSources.get(file)
       ?? (
-        hasTailwindRootDirectives(generatorCode, { importFallback: currentGeneratorOptions.importFallback })
-        || hasTailwindSourceDirectives(generatorCode, { importFallback: currentGeneratorOptions.importFallback })
-        || hasTailwindApplyDirective(generatorCode)
+        hasTailwindRootDirectives(generatorTransformCode, { importFallback: currentGeneratorOptions.importFallback })
+        || hasTailwindSourceDirectives(generatorTransformCode, { importFallback: currentGeneratorOptions.importFallback })
+        || hasTailwindApplyDirective(generatorTransformCode)
           ? {
               base: path.dirname(path.resolve(file)),
-              css: generatorCode,
+              css: generatorTransformCode,
               file: path.resolve(file),
             }
           : undefined
@@ -1054,14 +1058,20 @@ export function createViteFrameworkPlugins(
       frameworkCssPipelineStrategy?.shouldDeferEmptyScopedCssSource?.({
         ...cssPipelineContext,
         cssHandlerOptions,
-        generatorCode,
+        generatorCode: generatorTransformCode,
       }) ?? true
     )
+    const previousCss = pendingHmrChange && !forceFullHmrCssRegeneration
+      ? cleanGeneratedCssByFile.get(file)
+      : undefined
+    const previousGeneratorCss = previousCss && !currentGeneratorBranch.isWeb
+      ? normalizeMiniProgramGeneratorCssSource(previousCss, outputFile)
+      : previousCss
     const generated = await hmrTimingRecorder.measure('generateCss.serve', () => generateTailwindV4Css({
       opts,
       runtimeState,
       runtime,
-      rawSource: generatorCode,
+      rawSource: generatorTransformCode,
       file,
       outputFile,
       cssHandlerOptions,
@@ -1073,9 +1083,7 @@ export function createViteFrameworkPlugins(
       generatorPlatform: resolveGeneratorPlatform(),
       styleHandler,
       debug,
-      previousCss: pendingHmrChange && !forceFullHmrCssRegeneration
-        ? cleanGeneratedCssByFile.get(file)
-        : undefined,
+      previousCss: previousGeneratorCss,
       previousClassSet: pendingHmrChange && !forceFullHmrCssRegeneration
         ? generatedClassSetByFile.get(file)
         : undefined,
@@ -1127,7 +1135,7 @@ export function createViteFrameworkPlugins(
     generatedClassSetByFile.set(file, new Set(generated.classSet))
     const shouldInjectGeneratedCssIntoMain = mainCssChunkMatcher(outputFile, opts.appType)
       || (
-        hasTailwindRootDirectives(generatorCode, { importFallback: currentGeneratorOptions.importFallback })
+        hasTailwindRootDirectives(generatorTransformCode, { importFallback: currentGeneratorOptions.importFallback })
         && !normalizeOutputPathKey(outputFile).includes('/')
       )
     // 这里保留 undefined，让主样式入口走注入判断；Tailwind 入口样式在 uni-app dev 中需要同步回主样式产物。

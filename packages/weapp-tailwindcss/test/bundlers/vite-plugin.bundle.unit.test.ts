@@ -10814,8 +10814,8 @@ const cls = "rounded-[92rpx]"
       recordViteProcessedCssAssetResult: vi.fn(),
       getViteProcessedCssAssetResults: () => [],
       getViteProcessedCssAssetResult: () => undefined,
-      getSourceCandidates: () => new Set<string>(),
-      getSourceCandidatesForEntries: () => new Set<string>(),
+      getSourceCandidates: () => new Set<string>(['text-red-500']),
+      getSourceCandidatesForEntries: () => new Set<string>(['text-red-500']),
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
       refreshRememberedCssSource: vi.fn(),
@@ -12791,6 +12791,180 @@ ${utilities}
     },
     TEST_TIMEOUT_MS,
   )
+
+  it('preserves remembered mini-program import shell during css entry processing', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-import-shell-'))
+    createdDirs.push(root)
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'main.wxss'),
+      styleHandler: vi.fn(async () => {
+        throw new Error('styleHandler should not resolve output import shell')
+      }),
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: [] },
+          tailwindConfig: { content: [] },
+        }]),
+      },
+    })
+    const rememberedCssSources = new Map([
+      ['main.wxss', {
+        outputFile: 'main.wxss',
+        rawSource: '@import "app.wxss";\n',
+        sourceFile: path.join(root, 'src/main.css'),
+      }],
+    ])
+    const recordCssAssetResult = vi.fn()
+    const rememberCssSource = vi.fn()
+    const generateBundle = createGenerateBundleHook({
+      opts: context as any,
+      runtimeState: {
+        tailwindRuntime: context.tailwindRuntime as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      ensureBundleRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'serve',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/mp-weixin' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult,
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => new Set<string>(),
+      getSourceCandidatesForEntries: () => new Set<string>(),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource,
+      getRememberedCssSources: () => rememberedCssSources,
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      recordGeneratorCandidates: vi.fn(),
+    })
+    const bundle = {
+      'main.wxss': {
+        ...createRollupAsset('.processed{color:red}'),
+        fileName: 'main.wxss',
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {} as any, bundle)
+
+    expect((bundle['main.wxss'] as OutputAsset).source.toString()).toBe('@import "./app.wxss";\n')
+    expect(context.styleHandler).not.toHaveBeenCalled()
+    expect(recordCssAssetResult).toHaveBeenCalledWith('main.wxss', '@import "./app.wxss";\n')
+    expect(rememberCssSource).toHaveBeenCalledWith(expect.objectContaining({
+      outputFile: 'main.wxss',
+      rawSource: '@import "./app.wxss";\n',
+      sourceFile: path.join(root, 'src/main.css'),
+    }), expect.any(String))
+  }, TEST_TIMEOUT_MS)
+
+  it('removes self mini-program output imports before Tailwind generation', async () => {
+    const generateCssByGeneratorMock = vi.fn(async (options: {
+      rawSource: string
+    }) => createMockGeneratorCssResult(`/* generated */\n${options.rawSource}`))
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateCssByGeneratorMock,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-self-output-import-'))
+    createdDirs.push(root)
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: [] },
+          tailwindConfig: { content: [] },
+        }]),
+      },
+    })
+    const generateBundle = createGenerateBundleHookWithMock({
+      opts: context as any,
+      runtimeState: {
+        tailwindRuntime: context.tailwindRuntime as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      ensureBundleRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'serve',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/mp-weixin' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => new Set<string>(),
+      getSourceCandidatesForEntries: () => new Set<string>(),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      getRememberedCssSources: () => [],
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      recordGeneratorCandidates: vi.fn(),
+    })
+    const rawSource = [
+      '@import "app.wxss";',
+      '@import "tailwindcss" source(none);',
+      '@source "../src/**/*.vue";',
+    ].join('\n')
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset(rawSource),
+        fileName: 'app.wxss',
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {} as any, bundle)
+
+    const generatedRawSources = generateCssByGeneratorMock.mock.calls.map(call => call[0]?.rawSource)
+    expect(generatedRawSources.length).toBeGreaterThan(0)
+    expect(generatedRawSources.every(source => !source.includes('@import "app.wxss"'))).toBe(true)
+    const generatedRawSource = generatedRawSources.at(-1)
+    expect(generatedRawSource).toContain('@import "tailwindcss" source(none)')
+    expect((bundle['app.wxss'] as OutputAsset).source.toString()).toContain('/* generated */')
+  }, TEST_TIMEOUT_MS)
 
   it('refreshes remembered sfc style source from watch cache before replaying stale vite pipeline css', async () => {
     const generateCssByGeneratorMock = vi.fn(async (options: {

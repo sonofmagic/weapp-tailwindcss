@@ -15,6 +15,8 @@ import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTo
 import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { validateCandidatesByGenerator } from '../shared/generator-css'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../shared/generator-css/directives'
+import { isPureLocalCssImportWrapper } from '../shared/generator-css/local-imports'
+import { normalizeMiniProgramGeneratorCssSource } from '../shared/generator-css/output-import-shell'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { createBundleModuleGraphOptions } from './bundle-entries'
@@ -235,6 +237,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const defaultStyleOutputExtension = resolveMiniProgramStyleOutputExtension({
       files: Object.keys(bundle),
     })
+    const normalizeMiniProgramGeneratorRawSource = (source: string, outputFile?: string | undefined) => {
+      return isWebGeneratorTarget
+        ? source
+        : normalizeMiniProgramGeneratorCssSource(source, outputFile)
+    }
 
     await runtimeState.readyPromise
     debug('start')
@@ -267,7 +274,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       timingDetails[name] = (timingDetails[name] ?? 0) + Math.max(0, performance.now() - startedAt)
     }
     const timeTask = createBundleTaskTimer(recordTimingDetail)
-    const emitOrReplayCssAsset = createCssAssetEmitter(this)
+    const emitOrReplayCssAsset = createCssAssetEmitter(this, bundle)
 
     const metrics = createEmptyMetrics()
     const envFlags = resolveGenerateBundleEnvFlags()
@@ -570,6 +577,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           : Buffer.from(mainCssEntry.output.source).toString()
         const shouldValidateSourceRuntime = !hasTailwindApplyDirective(mainCssRawSource)
         if (shouldValidateSourceRuntime) {
+          const validationRawSource = normalizeMiniProgramGeneratorRawSource(mainCssRawSource, mainCssEntry.file)
           const generatedCssSources = new Set<string>()
           for (const [, record] of getViteProcessedCssAssetResults?.() ?? []) {
             if (typeof record === 'string') {
@@ -583,7 +591,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             opts,
             runtimeState,
             candidates: filteredSourceCandidates,
-            rawSource: mainCssRawSource,
+            rawSource: validationRawSource,
             generatedCssSources,
             file: mainCssEntry.file,
             cssHandlerOptions: getCssHandlerOptions(mainCssEntry.file),
@@ -1152,9 +1160,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             || (!hasTailwindGenerationSource(rawSource) && hasTailwindGenerationSource(rememberedCssSource.rawSource))
           )
         const vitePipelineCssAsset = viteProcessedCssAsset || useRememberedCssSource
-        const generatorRawSource = vitePipelineCssAsset
+        const resolvedGeneratorRawSource = vitePipelineCssAsset
           ? rememberedCssSource?.rawSource ?? rawSource
           : rawSource
+        const generatorRawSource = normalizeMiniProgramGeneratorRawSource(resolvedGeneratorRawSource, outputFile)
         const hasRememberedApplySource = vitePipelineCssAsset
           && rememberedCssSource != null
           && hasTailwindApplyDirective(generatorRawSource)
@@ -1430,14 +1439,18 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 const previousCss = !vitePipelineCssAsset && useIncrementalMode && !hasRuntimeAffectingChanges && !snapshot.changedByType.css.has(file)
                   ? getLastCssResult(lastCssResultByFile, outputFile, file)
                   : undefined
-                const shouldGenerateCssWithCore = hasTailwindGenerationSource(generatorRawSource)
+                const generatorTransformRawSource = generatorRawSource
+                const previousGeneratorCss = previousCss && !isWebGeneratorTarget
+                  ? normalizeMiniProgramGeneratorRawSource(previousCss, outputFile)
+                  : previousCss
+                const shouldGenerateCssWithCore = hasTailwindGenerationSource(generatorTransformRawSource)
                   || hasBundlerGeneratedCssMarker(rawSource)
                 const generated = shouldGenerateCssWithCore
                   ? await generateTailwindV4Css({
                       opts,
                       runtimeState,
                       runtime: scopedGeneratorRuntime,
-                      rawSource: generatorRawSource,
+                      rawSource: generatorTransformRawSource,
                       file: generatorSourceFile,
                       outputFile,
                       cssHandlerOptions: generatorCssHandlerOptions,
@@ -1447,9 +1460,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                       generatorPlatform,
                       styleHandler,
                       debug,
-                      previousCss,
+                      previousCss: previousGeneratorCss,
                       ...(vitePipelineCssAsset && !hasBundlerGeneratedCssMarker(rawSource) && normalizeCssSourceForCompare(rawSource) !== normalizeCssSourceForCompare(generatorRawSource)
-                        ? { userRawSource: normalizeGeneratorUserRawSource(rawSource, generatorSourceFile, assetSourceFile) }
+                        ? { userRawSource: normalizeMiniProgramGeneratorRawSource(normalizeGeneratorUserRawSource(rawSource, generatorSourceFile, assetSourceFile), outputFile) }
                         : {}),
                       ...(usesConfiguredTailwindV4FallbackSource
                         ? { restoreLocalCssImports: false }
@@ -1492,10 +1505,18 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   debug('css preserve web target: %s', outputFile)
                   return annotateCss(outputCss)
                 }
-                const { css } = await styleHandler(generatorRawSource, cssHandlerOptions)
+                if (isPureLocalCssImportWrapper(generatorTransformRawSource)) {
+                  const tracedCss = annotateCss(generatorTransformRawSource)
+                  recordCssAssetResult?.(outputFile, tracedCss)
+                  metrics.css.elapsed += measureElapsed(start)
+                  metrics.css.transformed++
+                  debug('css preserve mini-program import shell: %s', outputFile)
+                  return tracedCss
+                }
+                const { css } = await styleHandler(generatorTransformRawSource, cssHandlerOptions)
                 const tracedCss = annotateCss(css)
                 if (envFlags.debugCssDiff) {
-                  debug('css diff %s: %s', generatorSourceFile, summarizeStringDiff(generatorRawSource, tracedCss))
+                  debug('css diff %s: %s', generatorSourceFile, summarizeStringDiff(generatorTransformRawSource, tracedCss))
                 }
                 metrics.css.elapsed += measureElapsed(start)
                 metrics.css.transformed++

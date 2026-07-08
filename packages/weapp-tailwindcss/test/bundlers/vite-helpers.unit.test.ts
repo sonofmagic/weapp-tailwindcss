@@ -2,6 +2,7 @@ import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { createCssAssetEmitter } from '@/bundlers/vite/generate-bundle/css-assets'
 import {
   applyCssResultToBundle,
   createMatchedCssSourceOutputResolver,
@@ -669,5 +670,27 @@ describe('bundlers/vite helper modules', () => {
       viteProcessedCssAsset: true,
     })
     expect(kept.source).toBe('')
+  })
+
+  it('replays css assets into current bundle instead of emitting duplicate names', () => {
+    const emitFile = vi.fn()
+    const existing = createAsset('old')
+    const bundle: Record<string, ReturnType<typeof createAsset>> = {
+      'main.wxss': existing,
+    }
+    const emitOrReplayCssAsset = createCssAssetEmitter({ emitFile }, bundle)
+
+    expect(emitOrReplayCssAsset('main.wxss', 'updated')).toBe(existing)
+    expect(existing.source).toBe('updated')
+    expect(emitFile).not.toHaveBeenCalled()
+
+    const replayed = emitOrReplayCssAsset('app.wxss', 'generated')
+    expect(replayed).toBeUndefined()
+    expect(bundle['app.wxss']).toBeUndefined()
+    expect(emitFile).toHaveBeenCalledWith({
+      type: 'asset',
+      fileName: 'app.wxss',
+      source: 'generated',
+    })
   })
 })

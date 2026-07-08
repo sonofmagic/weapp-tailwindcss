@@ -19,6 +19,7 @@ import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { hasTailwindGeneratedCssMarkers } from '../shared/generator-css'
 import { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindRootDirectives } from '../shared/generator-css/directives'
 import { isPureLocalCssImportWrapper } from '../shared/generator-css/local-imports'
+import { normalizeMiniProgramGeneratorCssSource } from '../shared/generator-css/output-import-shell'
 import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { normalizeRootMiniProgramImportShellAssets } from './generate-bundle/finalize'
@@ -448,7 +449,10 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           const rememberedMainCssSource = processed && cssHandlerOptions.isMainChunk
             ? getRememberedMainCssSource?.(file)
             : undefined
-          const generatorRawSource = rememberedMainCssSource?.rawSource ?? cleanRawSource
+          const resolvedGeneratorRawSource = rememberedMainCssSource?.rawSource ?? cleanRawSource
+          const generatorRawSource = generatorBranch.isWeb
+            ? resolvedGeneratorRawSource
+            : normalizeMiniProgramGeneratorCssSource(resolvedGeneratorRawSource, file)
           const generatorSourceFile = rememberedMainCssSource?.sourceFile ?? file
           const generatorCssHandlerOptions = rememberedMainCssSource
             ? createCssHandlerOptions(
@@ -468,12 +472,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
                 isMainChunk: false,
               }
             : cssUserHandlerOptions
-          const generated = shouldGenerateCssByGenerator(opts, runtimeState.tailwindRuntime.majorVersion, file, generatorRawSource, processed)
+          const generatorTransformRawSource = generatorRawSource
+          const generated = shouldGenerateCssByGenerator(opts, runtimeState.tailwindRuntime.majorVersion, file, generatorTransformRawSource, processed)
             ? await generateTailwindV4Css({
                 opts,
                 runtimeState,
                 runtime: generatorRuntime,
-                rawSource: generatorRawSource,
+                rawSource: generatorTransformRawSource,
                 file: generatorSourceFile,
                 outputFile: file,
                 cssHandlerOptions: generatorCssHandlerOptions,
@@ -484,13 +489,14 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
                 debug,
               })
             : undefined
-          if (!generated && !generatorBranch.isWeb && isPureLocalCssImportWrapper(cleanRawSource)) {
-            if (cleanRawSource !== rawSource) {
-              output.source = cleanRawSource
-              opts.onUpdate(file, rawSource, cleanRawSource)
+          if (!generated && !generatorBranch.isWeb && isPureLocalCssImportWrapper(generatorTransformRawSource)) {
+            const nextCss = generatorTransformRawSource
+            if (nextCss !== rawSource) {
+              output.source = nextCss
+              opts.onUpdate(file, rawSource, nextCss)
             }
             markCssAssetProcessed(output, file)
-            recordCssAssetResult?.(file, cleanRawSource)
+            recordCssAssetResult?.(file, nextCss)
             debug('css finalizer preserve mini-program import shell: %s', file)
             return
           }
@@ -500,7 +506,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
                   ...createCssPipelineContext(file),
                   file,
                 }, cssPipelineStrategy)
-              : (await opts.styleHandler(cleanRawSource, cssHandlerOptions)).css
+              : (await opts.styleHandler(generatorTransformRawSource, cssHandlerOptions)).css
           ))
           if (generated) {
             registerGeneratorDependencies(this, generated.dependencies)

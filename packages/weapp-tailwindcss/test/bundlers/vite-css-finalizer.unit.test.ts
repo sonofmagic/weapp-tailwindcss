@@ -139,7 +139,7 @@ describe('vite css finalizer output plugin', () => {
   })
 
   it('preserves mini-program import shell assets without resolving output imports', async () => {
-    const { context, opts } = createContext({
+    const { context } = createContext({
       opts: {
         appType: 'uni-app-vite',
         cssMatcher: (file: string) => file.endsWith('.wxss'),
@@ -161,10 +161,48 @@ describe('vite css finalizer output plugin', () => {
 
     await getHandler(plugin).call(plugin, {}, bundle)
 
-    expect(String((bundle['main.wxss'] as OutputAsset).source)).toBe('@import "app.wxss";\n')
-    expect(opts.styleHandler).not.toHaveBeenCalled()
+    expect(String((bundle['main.wxss'] as OutputAsset).source)).toBe('@import "./app.wxss";\n')
+    expect(context.opts.styleHandler).not.toHaveBeenCalled()
     expect(context.markCssAssetProcessed).toHaveBeenCalledWith(bundle['main.wxss'], 'main.wxss')
-    expect(context.recordCssAssetResult).toHaveBeenCalledWith('main.wxss', '@import "app.wxss";\n')
+    expect(context.recordCssAssetResult).toHaveBeenCalledWith('main.wxss', '@import "./app.wxss";\n')
+  })
+
+  it('preserves remembered mini-program main import shell without resolving it from project root', async () => {
+    const { context } = createContext({
+      opts: {
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        htmlMatcher: (file: string) => file.endsWith('.wxml'),
+        mainCssChunkMatcher: (file: string) => file === 'main.wxss',
+        styleHandler: vi.fn(async () => {
+          throw new Error('styleHandler should not process remembered import shell')
+        }),
+        onUpdate: vi.fn(),
+        generator: {
+          target: 'weapp',
+        },
+      },
+      getRememberedMainCssSource: vi.fn(() => ({
+        rawSource: '@import "app.wxss";\n',
+        sourceFile: 'main.wxss',
+      })),
+      isCssAssetProcessed: vi.fn()
+        .mockReturnValueOnce(false)
+        .mockReturnValue(true),
+    })
+    const plugin = createViteCssFinalizerOutputPlugin(context as any)
+    const output = asset('main.wxss', '.processed{color:red}')
+    const bundle: OutputBundle = {
+      'main.wxss': output,
+    }
+
+    await getHandler(plugin).call(plugin, {}, bundle)
+
+    expect(String(output.source)).toBe('@import "./app.wxss";\n')
+    expect(context.opts.styleHandler).not.toHaveBeenCalled()
+    expect(mocks.generateTailwindV4Css).not.toHaveBeenCalled()
+    expect(context.recordCssAssetResult).toHaveBeenCalledWith('main.wxss', '@import "./app.wxss";\n')
+    expect(context.opts.onUpdate).toHaveBeenCalledWith('main.wxss', '.processed{color:red}', '@import "./app.wxss";\n')
   })
 
   it('strips Vite generated markers from already processed css assets', async () => {

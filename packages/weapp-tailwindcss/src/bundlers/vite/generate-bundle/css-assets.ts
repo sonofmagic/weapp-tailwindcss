@@ -4,8 +4,14 @@ import { createReplayCssAsset } from './rollup-assets'
 
 export function createCssAssetEmitter(
   context: Pick<GenerateBundleThis, 'emitFile'>,
+  bundle?: Record<string, OutputAsset | unknown> | undefined,
 ) {
   return (fileName: string, source: string) => {
+    const existing = bundle?.[fileName]
+    if (existing && typeof existing === 'object' && 'type' in existing && existing.type === 'asset') {
+      existing.source = source
+      return existing as OutputAsset
+    }
     if (context.emitFile) {
       context.emitFile({
         type: 'asset',
