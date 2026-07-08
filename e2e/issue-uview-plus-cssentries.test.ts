@@ -6,6 +6,16 @@ import { describe, expect, it } from 'vitest'
 import { ensureProjectBuilt } from './projectBuild'
 
 const demoRoot = path.resolve(__dirname, '../demo/issue-uview-plus-cssentries')
+const expectedUviewCssTokens = [
+  '.u-button--primary',
+  '.u-button--success',
+  '.u-button--plain',
+  '.u-button--hairline',
+  'var(--up-primary',
+  'var(--up-success',
+  '.u-loading-icon__spinner',
+  '.u-loading-icon__spinner--spinner',
+]
 
 interface CssAsset {
   file: string
@@ -110,6 +120,9 @@ async function expectUviewCssEvidence(platform: 'mp-weixin' | 'mp-alipay') {
   expect(css).toContain('.u-button')
   expect(css).toContain('var(--up-primary')
   expect(css).toContain('.u-loading-icon')
+  for (const token of expectedUviewCssTokens) {
+    expect(css, `${platform} should keep uview-plus compiled CSS token ${token}`).toContain(token)
+  }
 
   const evidence = collectUviewEvidence(assets)
   expect(evidence).toContain('.u-button')
