@@ -176,6 +176,10 @@ function expectTemplateCarrierMutation(
   }
 }
 
+function getWebHmrCases() {
+  return automatedWatchCases.filter(watchCase => watchCase.webHmr && !watchCase.name.includes(':'))
+}
+
 function collectTemplateCarrierExtension(
   extensions: Set<string>,
   mutation: ClassMutationConfig,
@@ -253,6 +257,50 @@ describe('watch-hmr coverage matrix', () => {
     }
   })
 
+  it('keeps every Web/H5 watch case verifying source DOM class HMR in a real browser', () => {
+    const webHmrCases = getWebHmrCases()
+
+    expect(webHmrCases.map(item => item.name).sort()).toEqual([
+      'taro-vite-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v4',
+      'uni-app-vite-tailwindcss-v4',
+    ])
+
+    for (const watchCase of webHmrCases) {
+      const sequence = watchCase.webHmr?.sourceDomReplacementSequence ?? []
+      expect(sequence.length, `${watchCase.name} should verify source DOM H5 HMR`).toBeGreaterThanOrEqual(1)
+      for (const item of sequence) {
+        expect(item.expectedText, `${watchCase.name} source DOM HMR should assert rendered text`).toBeTruthy()
+        expect(Object.keys(item.expectedStyle ?? {}).length, `${watchCase.name} source DOM HMR should assert computed style`).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  it('keeps Web/H5 source DOM HMR spanning TSX, Vue template, and Vue script class edits', () => {
+    const byName = new Map(getWebHmrCases().map(item => [item.name, item]))
+    const uniDomLabels = byName.get('uni-app-vite-tailwindcss-v4')?.webHmr?.sourceDomReplacementSequence?.map(item => item.label) ?? []
+
+    expect(byName.get('taro-vite-react-tailwindcss-v4')?.webHmr?.sourceFile).toContain('index.tsx')
+    expect(byName.get('taro-webpack-react-tailwindcss-v4')?.webHmr?.sourceFile).toContain('index.tsx')
+    expect(byName.get('taro-vite-vue3-tailwindcss-v4')?.webHmr?.sourceFile).toContain('index.vue')
+    expect(byName.get('taro-webpack-vue3-tailwindcss-v4')?.webHmr?.sourceFile).toContain('index.vue')
+    expect(uniDomLabels).toEqual(expect.arrayContaining([
+      'title and color text-[#00f285] to text-[#123456]',
+      'vue script className bg-[#0000ff] to bg-[#55cc00]',
+    ]))
+
+    const expectedCssIncludes = byName
+      .get('uni-app-vite-tailwindcss-v4')
+      ?.webHmr
+      ?.sourceDomReplacementSequence
+      ?.find(item => item.label.includes('className'))
+      ?.expectedCssIncludes
+
+    expect(expectedCssIncludes).toContain('.bg-\\[\\#55cc00\\]')
+  })
+
   it('keeps PR e2e-watch covering every CI-stable demo development HMR surface', () => {
     const rawWatchCases = getWorkflowWatchCases('e2e-watch.yml', 'pr-quick-gate')
     const workflowCases = expandWorkflowWatchCases(rawWatchCases)
@@ -274,6 +322,17 @@ describe('watch-hmr coverage matrix', () => {
       'uni-app-vite-tailwindcss-v4:mp-qq',
       'uni-app-vite-tailwindcss-v4:mp-toutiao',
     ]))
+    expect(missing).toEqual([])
+  })
+
+  it('keeps PR e2e-watch covering every CI-stable Web/H5 browser HMR case', () => {
+    const rawWatchCases = getWorkflowWatchCases('e2e-watch.yml', 'pr-quick-gate')
+    const workflowCases = expandWorkflowWatchCases(rawWatchCases)
+    const missing = getWebHmrCases()
+      .map(item => item.name)
+      .filter(name => !isWatchCaseCoveredByWorkflow(name, workflowCases))
+      .sort()
+
     expect(missing).toEqual([])
   })
 

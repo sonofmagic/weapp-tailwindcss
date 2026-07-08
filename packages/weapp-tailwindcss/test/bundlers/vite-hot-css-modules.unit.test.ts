@@ -78,7 +78,7 @@ describe('bundlers/vite hot css modules', () => {
     expect(ctx.server.ws.send).not.toHaveBeenCalled()
   })
 
-  it('sends supplemental css updates for absolute source files and vite urls', async () => {
+  it('sends supplemental js updates for absolute source files and vite urls', async () => {
     const root = path.resolve('/project')
     const ctx = createHmrContext(root)
 
@@ -92,16 +92,20 @@ describe('bundlers/vite hot css modules', () => {
       type: 'update',
       updates: [
         {
-          type: 'css-update',
+          type: 'js-update',
           timestamp: 123,
           path: '/src/main.css',
           acceptedPath: '/src/main.css',
+          explicitImportRequired: false,
+          isWithinCircularImport: false,
         },
         {
-          type: 'css-update',
+          type: 'js-update',
           timestamp: 123,
           path: '/src/theme.css?t=123',
           acceptedPath: '/src/theme.css?t=123',
+          explicitImportRequired: false,
+          isWithinCircularImport: false,
         },
       ],
     })

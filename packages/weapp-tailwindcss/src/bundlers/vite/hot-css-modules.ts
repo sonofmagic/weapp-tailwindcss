@@ -149,21 +149,13 @@ function includesHotModule(modules: ModuleNode[], target: ModuleNode) {
 }
 
 function createSupplementalHotUpdate(hotUrl: string, timestamp: number) {
-  if (/[?&](?:direct|vue)(?:&|$)/.test(hotUrl)) {
-    return {
-      type: 'js-update' as const,
-      timestamp,
-      path: hotUrl,
-      acceptedPath: hotUrl,
-      explicitImportRequired: false,
-      isWithinCircularImport: false,
-    }
-  }
   return {
-    type: 'css-update' as const,
+    type: 'js-update' as const,
     timestamp,
     path: hotUrl,
     acceptedPath: hotUrl,
+    explicitImportRequired: false,
+    isWithinCircularImport: false,
   }
 }
 

@@ -7,8 +7,8 @@
   },
   "scripts": {
     "build": "pnpm run build:mp-weixin",
-    "dev:mp-weixin": "uni -p mp-weixin",
-    "dev:mp-alipay": "uni -p mp-alipay",
+    "dev:mp-weixin": "cross-env WEAPP_TW_HMR_TIMING=1 uni -p mp-weixin",
+    "dev:mp-alipay": "cross-env WEAPP_TW_HMR_TIMING=1 uni -p mp-alipay",
     "build:mp-weixin": "node ../../scripts/uni-build-guard.mjs build -p mp-weixin",
     "build:mp-alipay": "uni build -p mp-alipay",
     "type-check": "vue-tsc --noEmit",

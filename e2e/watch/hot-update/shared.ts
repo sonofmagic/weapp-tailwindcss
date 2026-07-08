@@ -39,7 +39,14 @@ const WEB_HMR_CASES = new Set<ConcreteWatchCaseName>([
   'uni-app-vite-tailwindcss-v4',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
 ])
-const WEB_SOURCE_DOM_HMR_CASES = new Set<ConcreteWatchCaseName>(['uni-app-vite-tailwindcss-v4', 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'])
+const WEB_SOURCE_DOM_HMR_CASES = new Set<ConcreteWatchCaseName>([
+  'taro-webpack-react-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-vue3-tailwindcss-v4',
+  'taro-vite-vue3-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+])
 const SUBPACKAGE_HMR_CASES = new Set(
   buildCases(path.resolve(import.meta.dirname, '../../..'))
     .filter(item => (item.subPackageMutations?.length ?? 0) > 0)
@@ -791,7 +798,7 @@ function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
     const sourceDomReplacementSequence = webHmr.sourceDomReplacementSequence ?? []
     expect(sourceDomReplacementSequence.length, `[${item.project}] should verify source DOM H5 HMR`).toBeGreaterThanOrEqual(1)
     for (const metric of sourceDomReplacementSequence) {
-      expect(metric.expectedText, `[${item.project}] source DOM HMR should record expected text`).toContain('H5-HMR')
+      expect(metric.expectedText, `[${item.project}] source DOM HMR should record expected text`).toBeTruthy()
       const expectedStyle = metric.expectedStyle ?? { color: 'rgb(255, 0, 0)' }
       for (const [styleName, expectedValue] of Object.entries(expectedStyle)) {
         if (expectedValue == null) {

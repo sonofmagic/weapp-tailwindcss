@@ -409,6 +409,31 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
             color: 'rgb(18, 52, 86)',
           },
         },
+        {
+          label: 'vue script className bg-[#0000ff] to bg-[#55cc00]',
+          selector: '[data-tw-watch-web-dom="script-class"]',
+          mutate(source) {
+            const mutation = replaceWebDomSnippet(
+              source,
+              `<view :class="className" class="aspect-[calc(4*3+1)/3]">`,
+              `<view data-tw-watch-web-dom="script-class" :class="className" class="aspect-[calc(4*3+1)/3]">`,
+            )
+            return {
+              ...mutation,
+              next: replaceExactSnippet(
+                mutation.next,
+                `const className = ref('bg-[#0000ff] text-[45rpx] text-white')`,
+                `const className = ref('bg-[#55cc00] text-[45rpx] text-white')`,
+                'uni-app-vite-tailwindcss-v4 web script className anchor',
+              ),
+            }
+          },
+          expectedText: 'bg-[#55cc00] text-[45rpx] text-white',
+          expectedStyle: {
+            backgroundColor: 'rgb(85, 204, 0)',
+          },
+          expectedCssIncludes: ['.bg-\\[\\#55cc00\\]'],
+        },
       ],
     },
   }
@@ -889,6 +914,22 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->\n`
       },
+      sourceDomReplacementSequence: [
+        {
+          label: 'vue template bg-[#123456] to bg-[#00ff00]',
+          mutate(source) {
+            return replaceWebDomSnippet(
+              source,
+              `    <view class="h-[300px] text-[#c31d6b] bg-[#123456]">Taro Vite Vue3 Tailwind CSS v4</view>`,
+              `    <view ${webDomMarkerAttr} class="h-[300px] text-[#c31d6b] bg-[#00ff00]">Taro Vite Vue3 Tailwind CSS v4</view>`,
+            )
+          },
+          expectedText: 'Taro Vite Vue3 Tailwind CSS v4',
+          expectedStyle: {
+            backgroundColor: 'rgb(0, 255, 0)',
+          },
+        },
+      ],
     },
   }
 
@@ -982,6 +1023,22 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->\n`
       },
+      sourceDomReplacementSequence: [
+        {
+          label: 'vue template bg-purple-800 to bg-[#00ff00]',
+          mutate(source) {
+            return replaceWebDomSnippet(
+              source,
+              `    <view class="bg-purple-800 text-pink-200">Taro Webpack Vue3 Tailwind CSS v4</view>`,
+              `    <view ${webDomMarkerAttr} class="bg-[#00ff00] text-pink-200">Taro Webpack Vue3 Tailwind CSS v4</view>`,
+            )
+          },
+          expectedText: 'Taro Webpack Vue3 Tailwind CSS v4',
+          expectedStyle: {
+            backgroundColor: 'rgb(0, 255, 0)',
+          },
+        },
+      ],
     },
   }
 
