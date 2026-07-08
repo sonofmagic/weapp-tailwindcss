@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 5.1.12
+
+### Patch Changes
+
+- 🐛 **修复 Vite H5 dev 热更新新增 Tailwind 候选时只生成增量候选 CSS，导致已有 Iconify 任意值图标样式在 CSS HMR 后丢失的问题。** [`058ff7d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/058ff7dddcfaa2c7173e1038ab89b37a754a621a) by @sonofmagic
+
 ## 5.1.11
 
 ### Patch Changes
