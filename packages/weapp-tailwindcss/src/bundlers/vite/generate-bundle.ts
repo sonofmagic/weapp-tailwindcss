@@ -86,6 +86,10 @@ function inferPlatformFromViteOutDir(outDir: string | undefined) {
   }
 }
 
+function hasTailwindPluginDirective(source: string) {
+  return /@plugin\b/.test(source)
+}
+
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
   const lastCssResultByFile = new Map<string, string>()
@@ -993,8 +997,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           const isCurrentRootMiniProgramStyleOutput = opts.cssMatcher(outputFile)
             && isMiniProgramStyleOutputFile(outputFile)
             && !normalizeOutputPathKey(outputFile.replace(/[?#].*$/, '')).includes('/')
-          if (isCurrentRootMiniProgramStyleOutput && hasTailwindGenerationSource(rawSource)) {
-            const configuredGenerationSource = selectTailwindV4GenerationCssSourceForOutput(outputFile, configuredTailwindV4CssSourceEntries, rawSource, {
+          const configuredEntriesForCurrentRootMiniProgramStyle = isCurrentRootMiniProgramStyleOutput
+            && !hasTailwindGenerationSource(rawSource)
+            ? configuredTailwindV4CssSourceEntries.filter(entry => hasTailwindPluginDirective(entry.source))
+            : configuredTailwindV4CssSourceEntries
+          if (isCurrentRootMiniProgramStyleOutput && (hasTailwindGenerationSource(rawSource) || configuredEntriesForCurrentRootMiniProgramStyle.length > 0)) {
+            const configuredGenerationSource = selectTailwindV4GenerationCssSourceForOutput(outputFile, configuredEntriesForCurrentRootMiniProgramStyle, rawSource, {
               cwd: opts.tailwindcssBasedir,
               outputRoot: outDir,
               projectRoot: sourceRoot ?? rootDir,
@@ -1436,7 +1444,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               const runTransform = async () => {
                 const start = performance.now()
                 await runtimeState.readyPromise
-                const previousCss = !vitePipelineCssAsset && useIncrementalMode && !hasRuntimeAffectingChanges && !snapshot.changedByType.css.has(file)
+                const previousCss = !vitePipelineCssAsset && useIncrementalMode && !generatorCandidatesChanged && !hasRuntimeAffectingChanges && !snapshot.changedByType.css.has(file)
                   ? getLastCssResult(lastCssResultByFile, outputFile, file)
                   : undefined
                 const generatorTransformRawSource = generatorRawSource

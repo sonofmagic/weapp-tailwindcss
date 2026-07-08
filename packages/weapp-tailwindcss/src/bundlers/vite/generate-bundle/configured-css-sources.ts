@@ -29,6 +29,10 @@ function collectExplicitTailwindV4CssEntries(opts: InternalUserDefinedOptions) {
   ))]
 }
 
+function shouldKeepSingleExplicitCssEntrySource(source: string) {
+  return /@plugin\b/.test(source)
+}
+
 export function collectConfiguredTailwindV4CssSourceEntries(
   opts: InternalUserDefinedOptions,
   fallbackBase: string,
@@ -37,8 +41,10 @@ export function collectConfiguredTailwindV4CssSourceEntries(
   const seen = new Set<string>()
 
   // 显式多入口需要保留入口 CSS 原文，用于把临时样式资产重新匹配回分包输出。
+  // 单入口通常可由上游 bundle 产物承载；但带 @plugin 等生成器插件上下文时，
+  // uni-app 小程序 HMR 可能只回传 app.wxss 占位内容，必须保留原入口以恢复生成上下文。
   const explicitCssEntries = collectExplicitTailwindV4CssEntries(opts)
-  for (const cssEntry of explicitCssEntries.length > 1 ? explicitCssEntries : []) {
+  for (const cssEntry of explicitCssEntries) {
     if (typeof cssEntry !== 'string' || cssEntry.length === 0) {
       continue
     }
@@ -49,6 +55,9 @@ export function collectConfiguredTailwindV4CssSourceEntries(
       continue
     }
     const source = readFileSync(resolvedFile, 'utf8')
+    if (explicitCssEntries.length <= 1 && !shouldKeepSingleExplicitCssEntrySource(source)) {
+      continue
+    }
     const key = `${resolvedFile}\0${source}`
     if (seen.has(key)) {
       continue

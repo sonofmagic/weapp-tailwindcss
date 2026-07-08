@@ -1022,10 +1022,7 @@ export function createViteFrameworkPlugins(
         && pendingHmrCandidateChange !== undefined
         && pendingHmrChange === undefined
       )
-    const canUsePendingHmrCandidatesOnly = pendingHmrChange && !currentGeneratorBranch.isWeb
-    const runtime = canUsePendingHmrCandidatesOnly
-      ? new Set(pendingHmrChange.addedCandidates)
-      : fullRuntime
+    const runtime = fullRuntime
     if (
       pendingHmrChange
       && currentGeneratorOptions.target === 'weapp'
@@ -1062,12 +1059,6 @@ export function createViteFrameworkPlugins(
         generatorCode: generatorTransformCode,
       }) ?? true
     )
-    const previousCss = pendingHmrChange && !forceFullHmrCssRegeneration
-      ? cleanGeneratedCssByFile.get(file)
-      : undefined
-    const previousGeneratorCss = previousCss && !currentGeneratorBranch.isWeb
-      ? normalizeMiniProgramGeneratorCssSource(previousCss, outputFile)
-      : previousCss
     const generated = await hmrTimingRecorder.measure('generateCss.serve', () => generateTailwindV4Css({
       opts,
       runtimeState,
@@ -1084,12 +1075,8 @@ export function createViteFrameworkPlugins(
       generatorPlatform: resolveGeneratorPlatform(),
       styleHandler,
       debug,
-      previousCss: previousGeneratorCss,
-      previousClassSet: pendingHmrChange && !forceFullHmrCssRegeneration
-        ? generatedClassSetByFile.get(file)
-        : undefined,
       deferEmptyScopedCssSource: shouldDeferEmptyScopedCssSource,
-      disableSourceScan: pendingHmrChange !== undefined && !currentGeneratorBranch.isWeb,
+      disableSourceScan: false,
       restoreLocalCssImports: !currentGeneratorBranch.isWeb,
     }), {
       file,
