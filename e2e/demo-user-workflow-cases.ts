@@ -35,13 +35,13 @@ function workflowCase(
 const rawTailwindDirectiveRE = /@(import\s+["']tailwindcss|tailwind|apply|theme|source)\b/
 const uniV4MiniStyle = [
   '.bg-_b_h0000ff_B',
-  '.i-mdi-home',
+  '.i-_bmdi--home_B',
   '.layer-card-v4',
   '.before_ccontent',
 ]
 const uniV4Template = [
   'bg-_b_h0000ff_B',
-  'i-mdi-home',
+  'i-_bmdi--home_B',
   'layer-card-v4',
   'bg-independent-subpackage-marker',
 ]
@@ -76,7 +76,7 @@ export const DEMO_USER_WORKFLOW_CORE_CASES: DemoUserWorkflowCase[] = [
   workflowCase(
     uniAppH5Case({
       project: 'uni-app-vite-tailwindcss-v4',
-      styleContains: ['.i-mdi-home', '.layer-card-v4', '.rounded-full'],
+      styleContains: ['.i-\\[mdi--home\\]', '.layer-card-v4', '.rounded-full'],
     }),
     {
       surfaces: ['h5', 'vue-sfc-template', 'vue-sfc-script-class', 'ordinary-css', 'tailwind-layer', 'iconify'],
@@ -90,7 +90,7 @@ export const DEMO_USER_WORKFLOW_CORE_CASES: DemoUserWorkflowCase[] = [
         {
           label: 'Vue SFC、脚本动态类、普通 CSS 和图标样式进入 H5 CSS',
           files: ['dist/build/h5'],
-          contains: ['.i-mdi-home', '.layer-card-v4', '.bg-\\[\\#0000ff\\]', '.rounded-full'],
+          contains: ['.i-\\[mdi--home\\]', '.layer-card-v4', '.bg-\\[\\#0000ff\\]', '.rounded-full'],
           notContains: [rawTailwindDirectiveRE],
         },
       ],
@@ -262,7 +262,7 @@ export const DEMO_USER_WORKFLOW_CORE_CASES: DemoUserWorkflowCase[] = [
       styleContains: [
         '.bg-_b_hfff_B',
         '.text-_b_h123456_B',
-        '.i-mdi-ab-testing',
+        '.i-_bmdi--ab-testing_B',
         '.bg-normal-subpackage-marker',
         '.before_ccontent',
       ],
@@ -284,7 +284,7 @@ export const DEMO_USER_WORKFLOW_CORE_CASES: DemoUserWorkflowCase[] = [
           contains: [
             '.bg-_b_hfff_B',
             '.text-_b_h123456_B',
-            '.i-mdi-ab-testing',
+            '.i-_bmdi--ab-testing_B',
             '.bg-normal-subpackage-marker',
             'bg-_burl',
             'text-_b_h123456_B',

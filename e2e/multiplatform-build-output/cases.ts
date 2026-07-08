@@ -22,8 +22,8 @@ import {
 import { createLocalTargetCase, uniqueTargetKey } from './helpers'
 import { MULTIPLATFORM_TARGETS } from './targets'
 
-const uniAppV4StyleContains = ['.bg-_b_h0000ff_B', '.i-mdi-home', '.before_ccontent']
-const gulpV4StyleContains = ['.text-_b_h123456_B', '.i-mdi-ab-testing', '.bg-normal-subpackage-marker', '.before_ccontent']
+const uniAppV4StyleContains = ['.bg-_b_h0000ff_B', '.i-_bmdi--home_B', '.before_ccontent']
+const gulpV4StyleContains = ['.text-_b_h123456_B', '.i-_bmdi--ab-testing_B', '.bg-normal-subpackage-marker', '.before_ccontent']
 const gulpTextContains = ['bg-_burl', 'text-_b_h123456_B', 'bg-normal-subpackage-marker']
 const taroSubpackageMarkers = {
   main: 'bg-twv4-taro-main',
@@ -54,11 +54,11 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
   ),
   uniAppH5Case({
     project: 'uni-app-vite-tailwindcss-v4',
-    styleContains: ['.i-mdi-home', 'box-sizing'],
+    styleContains: ['.i-\\[mdi--home\\]', 'box-sizing'],
   }),
   uniAppH5SsrCase({
     project: 'uni-app-vite-tailwindcss-v4',
-    styleContains: ['.i-mdi-home', 'box-sizing'],
+    styleContains: ['.i-\\[mdi--home\\]', 'box-sizing'],
   }),
   ...(['mp-weixin', 'mp-alipay', 'mp-toutiao'] as const).flatMap(platform =>
     (['isolated', 'single'] as const).map(mode =>

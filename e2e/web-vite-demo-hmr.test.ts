@@ -35,6 +35,18 @@ const localUrlRE = /Local:\s*(https?:\/\/\S+)/i
 const reloadMarker = 'web-vite-hmr-marker'
 const serverTimeoutMs = Number(process.env['E2E_WEB_VITE_HMR_TIMEOUT_MS'] ?? 120_000)
 const pollIntervalMs = 100
+const iconifyClassTokens = [
+  'i-[mdi--github-circle]',
+  'i-[mdi--star]',
+  'i-[svg-spinners--180-ring-with-bg]',
+] as const
+const iconifyCssSelectors = [
+  '.i-\\[mdi--github-circle\\]',
+  '.i-\\[mdi--star\\]',
+  '.i-\\[svg-spinners--180-ring-with-bg\\]',
+] as const
+const iconifyBeforeContentClass = 'before:content-[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\']'
+const iconifyAfterContentClass = 'before:content-[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\']'
 
 let devProcess: ChildProcess | undefined
 let browser: Browser | undefined
@@ -185,6 +197,67 @@ async function mutateSource(item: WebViteHmrCase, sourceFile: string, kind: Sour
     throw new Error(`${item.name} Web HMR 源码替换没有产生变化`)
   }
   await fs.writeFile(sourceFile, next, 'utf8')
+}
+
+function createIconifyProbeSource(source: string, item: WebViteHmrCase) {
+  const marker = `web-iconify-hmr-${item.markerAttr}`
+  const classLiteral = [...iconifyClassTokens, iconifyBeforeContentClass].join(' ')
+  const sourceProbe = item.sourceFile.endsWith('.tsx')
+    ? `\n// ${marker} ${classLiteral}\n`
+    : `\n<!-- ${marker} ${classLiteral} -->\n`
+  return `${source}${sourceProbe}`
+}
+
+async function collectPageCss(page: Page) {
+  return await page.evaluate(async () => {
+    const texts: string[] = []
+    for (const style of Array.from(document.querySelectorAll('style'))) {
+      texts.push(style.textContent ?? '')
+    }
+    for (const link of Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"][href]'))) {
+      try {
+        texts.push(await fetch(link.href).then(response => response.text()))
+      }
+      catch {}
+    }
+    for (const sheet of Array.from(document.styleSheets)) {
+      try {
+        texts.push(Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n'))
+      }
+      catch {}
+    }
+    return texts.join('\n')
+  })
+}
+
+async function waitForIconifyCss(page: Page, item: WebViteHmrCase, contentClass: string) {
+  let lastCssSample = ''
+  const startedAt = Date.now()
+  while (Date.now() - startedAt < serverTimeoutMs) {
+    const css = await collectPageCss(page)
+    lastCssSample = css.slice(-2_000)
+    const hasIcons = iconifyCssSelectors.every(selector => css.includes(selector))
+    const hasContent = css.includes(contentClass.replace(/[[\]]/g, '\\$&'))
+      || css.includes('before\\:content')
+      || css.includes('before\\3A content')
+    if (hasIcons && hasContent) {
+      return
+    }
+    await wait(pollIntervalMs)
+  }
+  throw new Error(`${item.name} Web Iconify HMR CSS 未更新或图标丢失：${lastCssSample}`)
+}
+
+async function runWebIconifyHmr(page: Page, item: WebViteHmrCase, sourceFile: string, original: string) {
+  const sourceWithProbe = createIconifyProbeSource(original, item)
+  if (!sourceWithProbe.includes(iconifyBeforeContentClass)) {
+    throw new Error(`${item.name} Web Iconify HMR probe 缺少 before content class`)
+  }
+  const sourceWithUpdatedContent = sourceWithProbe.replace(iconifyBeforeContentClass, iconifyAfterContentClass)
+  await fs.writeFile(sourceFile, sourceWithProbe, 'utf8')
+  await waitForIconifyCss(page, item, iconifyBeforeContentClass)
+  await fs.writeFile(sourceFile, sourceWithUpdatedContent, 'utf8')
+  await waitForIconifyCss(page, item, iconifyAfterContentClass)
 }
 
 function createTailwindClassFlowMutation(item: WebViteHmrCase, original: string): TailwindClassFlowMutation {
@@ -546,6 +619,10 @@ describe('demo/web source HMR', () => {
     })
     await waitForInitialRender(page, item, baseUrl)
     await markPageSession(page)
+    if (item.matrixCoverage !== false) {
+      await runWebIconifyHmr(page, item, sourceFile, original)
+      await expectPageSessionPreserved(page, item)
+    }
 
     if (item.expectedViteHmrPath || item.expectedViteHmrPathIncludes) {
       const titleMessageStart = hmrMessages.length

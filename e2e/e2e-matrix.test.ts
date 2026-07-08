@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
+import { buildCases } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import {
   DEMO_COVERAGE_MATRIX,
   discoverDemoPackageNames,
@@ -38,11 +39,71 @@ const DEMO_MANUAL_DARK_TOKENS = {
   v3: ['theme-dark:bg-zinc-950'],
   v4: ['dark:bg-zinc-950', 'dark:bg-[#09090b]'],
 } as const
+const ICONIFY_REGRESSION_DEPS = [
+  '@iconify/tailwind4',
+  '@iconify-json/mdi',
+  '@iconify-json/svg-spinners',
+] as const
+const ICONIFY_REGRESSION_SOURCE_TOKENS = [
+  'i-[mdi--github-circle]',
+  'i-[mdi--star]',
+  'i-[svg-spinners--180-ring-with-bg]',
+  'before:content-[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\']',
+  'before:content-[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\']',
+] as const
 
 function readDemoPackageJson(packageJson: string) {
   return JSON.parse(
     fs.readFileSync(path.resolve(__dirname, '..', packageJson), 'utf8'),
   ) as DemoPackageJson
+}
+
+function discoverAllDemoPackageJsonFiles() {
+  const demoRoot = path.resolve(__dirname, '../demo')
+  const packageJsonFiles: string[] = []
+  const visit = (dir: string) => {
+    for (const dirent of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (dirent.name === 'node_modules' || dirent.name === 'dist' || dirent.name === 'unpackage' || dirent.name === '.output') {
+        continue
+      }
+      const file = path.join(dir, dirent.name)
+      if (dirent.isDirectory()) {
+        visit(file)
+        continue
+      }
+      if (dirent.name === 'package.json') {
+        packageJsonFiles.push(path.relative(path.resolve(__dirname, '..'), file).split(path.sep).join('/'))
+      }
+    }
+  }
+  visit(demoRoot)
+  return packageJsonFiles.sort()
+}
+
+function collectDemoIconifyCssEntries() {
+  const demoRoot = path.resolve(__dirname, '../demo')
+  const cssFiles: string[] = []
+  const visit = (dir: string) => {
+    for (const dirent of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (dirent.name === 'node_modules' || dirent.name === 'dist' || dirent.name === 'unpackage' || dirent.name === '.output') {
+        continue
+      }
+      const file = path.join(dir, dirent.name)
+      if (dirent.isDirectory()) {
+        visit(file)
+        continue
+      }
+      if (!/\.(?:css|scss|less)$/.test(dirent.name)) {
+        continue
+      }
+      const source = fs.readFileSync(file, 'utf8')
+      if (source.includes('@plugin "@iconify/tailwind4"') || source.includes('@plugin \'@iconify/tailwind4\'')) {
+        cssFiles.push(path.relative(path.resolve(__dirname, '..'), file).split(path.sep).join('/'))
+      }
+    }
+  }
+  visit(demoRoot)
+  return cssFiles.sort()
 }
 
 function scriptName(value: string) {
@@ -177,6 +238,31 @@ describe('e2e matrix', () => {
     expect(DEMO_COVERAGE_MATRIX.map(item => item.name).sort()).toEqual(discoverDemoPackageNames())
   })
 
+  it('requires every demo package to install the Iconify HMR regression dependencies', () => {
+    for (const packageJson of discoverAllDemoPackageJsonFiles()) {
+      const pkg = readDemoPackageJson(packageJson)
+      const dependencies = {
+        ...(pkg.dependencies ?? {}),
+        ...(pkg.devDependencies ?? {}),
+      }
+      for (const dep of ICONIFY_REGRESSION_DEPS) {
+        expect(dependencies[dep], `${packageJson} should install ${dep}`).toBeDefined()
+      }
+    }
+  })
+
+  it('keeps every Iconify Tailwind entry wired to bracket icon and content build fixtures', () => {
+    const cssEntries = collectDemoIconifyCssEntries()
+    expect(cssEntries.length, 'demo Iconify Tailwind entries should be discovered').toBeGreaterThan(0)
+    for (const cssEntry of cssEntries) {
+      const source = fs.readFileSync(path.resolve(__dirname, '..', cssEntry), 'utf8')
+      expect(source, `${cssEntry} should declare @source inline for Iconify build regression`).toContain('@source inline(')
+      for (const token of ICONIFY_REGRESSION_SOURCE_TOKENS) {
+        expect(source, `${cssEntry} should include ${token}`).toContain(token)
+      }
+    }
+  })
+
   it('keeps every demo coverage entry backed by package.json and platform evidence', () => {
     for (const entry of DEMO_COVERAGE_MATRIX) {
       expect(entry.packageJson, `${entry.name} should point at its package.json`).toBe(`demo/${entry.name}/package.json`)
@@ -303,6 +389,31 @@ describe('e2e matrix', () => {
 
   it('wires automated demo hot-update coverage to known watch cases', () => {
     expect(getAutomatedHotUpdateDemoNames()).toEqual(getDefaultHotUpdateDemoNames())
+  })
+
+  it('runs Iconify bracket icon probes in every automated mini-program and H5 watch-HMR case', () => {
+    const watchCases = new Map(
+      buildCases(path.resolve(__dirname, '..'), { includeLocalOnly: true }).map(item => [item.name, item]),
+    )
+
+    for (const entry of DEMO_COVERAGE_MATRIX) {
+      if (entry.name.startsWith('web/') || entry.framework === 'style-injector') {
+        continue
+      }
+      for (const platform of entry.platforms.filter(platform => platform.hmrCoverage === 'automated')) {
+        const caseName = platform.platform === 'h5'
+          ? entry.name
+          : (watchCases.has(`${entry.name}:${platform.platform}`) ? `${entry.name}:${platform.platform}` : entry.name)
+        const watchCase = watchCases.get(caseName)
+        expect(watchCase, `${entry.name} ${platform.platform} should have a watch-HMR case`).toBeDefined()
+        if (platform.platform === 'h5') {
+          expect(watchCase?.webHmr?.iconifyHmr, `${entry.name} H5 watch-HMR should enable Iconify probe`).toBeDefined()
+        }
+        else {
+          expect(watchCase?.iconifyHmr, `${entry.name} ${platform.platform} watch-HMR should enable Iconify probe`).toBeDefined()
+        }
+      }
+    }
   })
 
   it('requires every mini-program demo to run IDE class HMR and visual HMR screenshots', () => {

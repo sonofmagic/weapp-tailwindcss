@@ -9,6 +9,17 @@ import { clearProjectBuildState } from '../projectTest'
 
 const styleExtensions = /\.(?:css|wxss|acss|jxss|qss|ttss)$/i
 const textExtensions = /\.(?:js|json|html|css|wxss|acss|jxss|qss|ttss|wxml|axml|qml|swan|ttml|uvue)$/i
+const iconifyBuildSourceNeedle = 'i-[mdi--github-circle]'
+const iconifyMiniStyleSelectors = [
+  '.i-_bmdi--github-circle_B',
+  '.i-_bmdi--star_B',
+  '.i-_bsvg-spinners--180-ring-with-bg_B',
+] as const
+const iconifyWebStyleSelectors = [
+  '.i-\\[mdi--github-circle\\]',
+  '.i-\\[mdi--star\\]',
+  '.i-\\[svg-spinners--180-ring-with-bg\\]',
+] as const
 
 interface ReadOutputResult {
   files: string[]
@@ -57,6 +68,35 @@ async function readMaybeDirectory(
     files: files.sort(),
     text: texts.join('\n'),
   }
+}
+
+async function hasIconifyBuildFixture(projectRoot: string) {
+  const files = await fg('**/*.{css,scss,less}', {
+    absolute: true,
+    cwd: projectRoot,
+    ignore: [
+      'dist/**',
+      'node_modules/**',
+      'unpackage/**',
+      '.output/**',
+    ],
+    onlyFiles: true,
+  })
+
+  for (const file of files) {
+    const content = await fs.readFile(file, 'utf8')
+    if (content.includes(iconifyBuildSourceNeedle)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+function iconifyStyleSelectorsForPlatform(platform: string) {
+  return platform === 'h5' || platform === 'h5:ssr' || platform === 'web'
+    ? iconifyWebStyleSelectors
+    : iconifyMiniStyleSelectors
 }
 
 function expectNeedle(content: string, needle: string | RegExp, label: string) {
@@ -120,6 +160,14 @@ export async function verifyBuildOutputCase(item: BuildOutputCase) {
   }
   for (const needle of item.styleContains) {
     expectNeedle(styles, needle, `${item.name} style output should contain ${String(needle)}`)
+  }
+  if (await hasIconifyBuildFixture(projectRoot)) {
+    for (const selector of iconifyStyleSelectorsForPlatform(item.platform)) {
+      expect(
+        styles,
+        `${item.name} style output should keep Iconify bracket selector ${selector}`,
+      ).toContain(selector)
+    }
   }
 
   const texts = item.textFiles

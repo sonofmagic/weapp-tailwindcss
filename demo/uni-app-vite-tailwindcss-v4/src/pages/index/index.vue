@@ -44,7 +44,7 @@
     <view :class="className" class="aspect-[calc(4*3+1)/3]">
       {{ className }}
     </view>
-    <view class="i-mdi-home"></view>
+    <view class="i-[mdi--home]"></view>
     <view class="bg-midnight text-tahiti fill-bermuda">
       bg-midnight text-tahiti fill-bermuda
     </view>

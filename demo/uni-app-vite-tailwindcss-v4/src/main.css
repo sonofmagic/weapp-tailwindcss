@@ -79,3 +79,4 @@ abc {
 }
 
 /* Core plugin extractor sources are intentionally not loaded here. */
+@source inline("i-[mdi--github-circle] i-[mdi--star] i-[svg-spinners--180-ring-with-bg] before:content-['现在，让我们开始神奇的_tailwindcss_开发之旅吧！'] before:content-['现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！']");

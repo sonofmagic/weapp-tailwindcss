@@ -194,7 +194,7 @@ export function uniAppSubpackageMiniCase(options: {
   const extension = appStyleFile.slice(appStyleFile.lastIndexOf('.'))
   const entryExtension = extension
   const singleEntry = options.mode === 'single'
-  const mainStyleFile = singleEntry ? appStyleFile : `main${entryExtension}`
+  const mainStyleFile = singleEntry ? `main.single${entryExtension}` : `main${entryExtension}`
   return {
     name: `${options.project} ${options.platform} ${options.mode}`,
     framework: 'uni-app',
