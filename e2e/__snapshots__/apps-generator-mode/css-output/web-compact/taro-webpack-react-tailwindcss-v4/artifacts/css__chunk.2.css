@@ -204,6 +204,14 @@ input:where([type='button'], [type='reset'], [type='submit']),
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }
+.before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\]::before {
+  --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
+  content: var(--tw-content);
+}
+.before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\]::before {
+  --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
+  content: var(--tw-content);
+}
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   *,
   ::before,

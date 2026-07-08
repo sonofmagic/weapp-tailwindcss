@@ -8,13 +8,20 @@ text,
   padding: 0;
   --tw-border-style: solid;
   --tw-font-weight:;
-  --tw-content: '';
   --tw-leading:;
   --tw-shadow: 0 0 #0000;
   --tw-shadow-color: initial;
+  --tw-shadow-alpha: 100%;
   --tw-inset-shadow: 0 0 #0000;
+  --tw-inset-shadow-color: initial;
+  --tw-inset-shadow-alpha: 100%;
+  --tw-ring-color:;
   --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-color:;
   --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-inset:;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 #0000;
 }
 :host,
@@ -246,6 +253,16 @@ wx-root-portal-content {
 .shadow-sm {
   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+ /* tokens: before:content-['现在，让我们开始神奇的_tailwindcss_开发之旅吧！'] <= <tailwind generated> */
+.before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x5f00_u_x59cb_u_x795e_u_x5947_u_x7684__tailwindcss_u_x5f00_u_x53d1_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B::before {
+  --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
+  content: var(--tw-content);
+}
+ /* tokens: before:content-['现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！'] <= <tailwind generated> */
+.before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x7ee7_u_x7eed_u_x795e_u_x5947_u_x7684__tailwindcss_HMR_u_x56de_u_x5f52_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B::before {
+  --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
+  content: var(--tw-content);
 }
  /* tokens: active:bg-emerald-50 <= src/pages-order/pages/user/user.vue */
 .active_cbg-emerald-50:active {

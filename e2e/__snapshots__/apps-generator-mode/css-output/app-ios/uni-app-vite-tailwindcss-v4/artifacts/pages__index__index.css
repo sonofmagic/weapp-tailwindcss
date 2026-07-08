@@ -1,3 +1,9 @@
+*[data-v-04bcf89b],
+[data-v-04bcf89b]::before,
+[data-v-04bcf89b]::after,
+[data-v-04bcf89b]::backdrop {
+  --tw-content: '';
+}
 .hello-world-shell[data-v-04bcf89b] {
   display: flex;
   align-items: center;
