@@ -1,5 +1,42 @@
 # weapp-tailwindcss
 
+## 5.1.10
+
+### Patch Changes
+
+- 🐛 **升级 `@tailwindcss-mangle/engine` 到 0.1.3，并适配 Tailwind v4 生成结果中 source metadata 的返回行为变化。** [`c0565ad`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c0565ad2dad6adf2420348e5a490a763e853721c) by @sonofmagic
+  - `weapp-tailwindcss` 现在会在自身的 v4 扫描层回填已解析的 `@source` 扫描规则，避免依赖底层 engine 继续透传 compiled sources；同时修正 Vite 已处理 CSS replay 到小程序根样式资产时的显式目标 fallback 边界。
+
+- 🐛 **修复 Vite 小程序 watch HMR 在回放 `app.wxss`/`main.wxss` 等样式输出壳时，可能把输出文件自引用 `@import` 再次交给 Tailwind 解析的问题，避免增量编译时报 `Can't resolve 'app.wxss'`。** [#973](https://github.com/sonofmagic/weapp-tailwindcss/pull/973) by @sonofmagic
+  - 同时在 generateBundle 回放已有同名 CSS asset 时复用当前 bundle 产物，避免 `main.wxss` 等小程序样式文件重复发射警告。
+
+- 🐛 **新增 Tailwind v4 demo 的官方 PostCSS parity 验证链路，并支持 `generator: false` 关闭内置生成器但保留小程序 CSS、模板和 JS 转译。** [`a300a00`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a300a000b094ca138d2348568c9dd378b4779f4e) by @sonofmagic
+  - 同时让小程序端 Tailwind v4 主题颜色跟随当前安装的 Tailwind 包解析，避免内置静态颜色表与官方输出漂移。
+
+- 🐛 **修复 Vite serve 下快速连续源码变更可能丢失最新 Tailwind v4 class 候选的问题，并稳定 Taro H5 watch-HMR 回归中的源码 DOM 替换校验。** [`969229f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/969229f2935ef3c081628eb63ff68467766a9869) by @sonofmagic
+
+- 🐛 **修复 Vite 小程序样式注入在显式 root `outputFile` 存在时，误把其它根样式文件也当作主样式注入目标的问题，避免 `@layer` 或非标准根样式文件干扰输出归属。** [`382b628`](https://github.com/sonofmagic/weapp-tailwindcss/commit/382b628b9df02dd8a8942706ca73c62b20b456f2) by @sonofmagic
+
+- 🐛 **修复 Vite 开发模式下 source candidate 追加式 HMR 在多个 CSS module 同时更新时，新增样式可能被非主样式模块提前消费的问题，并让 watch 回归用例避开对 uni-app H5 supplemental CSS 注入时序的误判。** [`09c0523`](https://github.com/sonofmagic/weapp-tailwindcss/commit/09c052385cd6b60f39e64ab1b7b2394ffdd49297) by @sonofmagic
+
+- 🐛 **修复 `jsPreserveClass` 在 `alwaysEscape` 模式下不生效的问题，确保用户显式保留的业务或第三方 class 不会被 JS 转译改写。** [`38c207c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/38c207c2a78603ebb16040c74c729241f14a9879) by @sonofmagic
+
+- 🐛 **修复 Vite `cssEntries` 与 `rem2rpx` 场景下，uview-plus 等第三方库已编译样式可能因 root/scoped 去重误判而丢失实际使用声明的问题。** [#973](https://github.com/sonofmagic/weapp-tailwindcss/pull/973) by @sonofmagic
+  - 同时修复 uni-app Vite watch 增量构建中根小程序样式输出可能被当作源码入口解析，导致 `app.wxss` 等输出样式无法正确重放的问题。
+
+- 🐛 **修复 Tailwind CSS v4 显式 `source(none)` 入口仅包含 `@source not ...` 时，Vite source scan 误退化为全仓扫描的问题，避免生成范围超出入口声明。** [`e708e92`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e708e92524b18a42a67fa14c2dcf57ed213508e7) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 CSS macro 入口在初次 source scan 后无法复用增量生成缓存的问题，避免后续新增 candidate 时退回全量生成。** [`1227395`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1227395cf94a696ac4a51da72d79ddaa7225da9a) by @sonofmagic
+
+- 🐛 **修复 Webpack/Taro/Mpx 的 Tailwind CSS v4 `cssEntries` 输出归属判断，避免页面样式误保留主入口 preflight，同时保留主入口哈希样式产物的小程序 preflight。** [#973](https://github.com/sonofmagic/weapp-tailwindcss/pull/973) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 入口样式的 `@source inline(...)`、`@source not inline(...)` 与 `@import "tailwindcss" source(none)` 识别，提升多入口/分包样式生成时的源文件匹配稳定性。** [`f02b3a7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f02b3a783515b00f5f93d908f18453f1551cdb3e) by @sonofmagic
+
+- 🐛 **优化 Vite Web/WebCompat 生成性能：显式 `target: "web"` 不再在开发态额外默认执行 WebCompat，HMR 默认支持所有 target 的新增候选增量追加，WebCompat 增量路径只转换新增 CSS 片段，并减少 Web target 下不必要的 classSet 与用户 CSS 规则扫描。** [`2e19348`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2e193482712b7fb245ec03e9a22044fa2e728008) by @sonofmagic
+  - 新增 `generator.hmr.preserveDeletedCss` 配置，默认 `true` 以启用高性能 HMR；设置为 `false` 时开发态源码 HMR 会全量再生成 CSS，从而不保留已删除 class 的旧 CSS。正式 build 始终保持精确输出。
+- 📦 **Dependencies** [`c0565ad`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c0565ad2dad6adf2420348e5a490a763e853721c)
+  → `@weapp-tailwindcss/postcss@3.1.9`
+
 ## 5.1.9
 
 ### Patch Changes
