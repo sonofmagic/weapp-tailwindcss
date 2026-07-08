@@ -77,6 +77,12 @@ function expectPlaywrightInstallRetry(run: string, command: string) {
   expect(run.trimEnd()).toContain(command)
 }
 
+function expectNoIdeOnlyRuntime(runText: string, label: string) {
+  expect(runText, `${label} should not require HBuilderX`).not.toMatch(/hbuilderx|E2E_HBUILDERX/i)
+  expect(runText, `${label} should not require WeChat DevTools or mini-program automator`).not.toMatch(/miniprogram-automator|weapp-ide|wechat-devtools|微信开发者工具/i)
+  expect(runText, `${label} should not require IDE runtime`).not.toMatch(/E2E_IDE|e2e:ide/i)
+}
+
 function extractJsonArrays(source: string) {
   return [...source.matchAll(/\[\{.*?\}\]/g)].map((match) => {
     return JSON.parse(match[0]) as Array<Record<string, unknown>>
@@ -169,6 +175,7 @@ describe('ci workflows', () => {
       'pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts',
       'pnpm --filter weapp-tailwindcss exec vitest run test/watch-hmr-coverage-matrix.unit.test.ts --coverage.enabled=false',
     ])
+    expectNoIdeOnlyRuntime(focusedRows.map(row => row.command).join('\n'), 'e2e-focused')
     expect(hasStepRunCommand(stepRuns(workflow, 'e2e-focused'), '${{ matrix.command }}')).toBe(true)
 
     expect(workflow.jobs['e2e-multiplatform'].strategy['fail-fast']).toBe(false)
@@ -212,10 +219,15 @@ describe('ci workflows', () => {
     expect(packageJson.scripts['e2e:demo-user-workflow']).toContain('e2e/demo-user-workflow-output.test.ts')
     expect(packageJson.scripts['e2e:demo-user-workflow']).toContain('e2e/demo-user-dev-workflow.test.ts')
     expect(packageJson.scripts['e2e:demo-user-workflow:dev']).toBe('cross-env E2E_WATCH_CASE=demo pnpm e2e:watch')
-    expect(workflow.jobs['e2e-focused'].strategy.matrix.include).toEqual(expect.arrayContaining([
+    const focusedRows: Array<Record<string, unknown>> = workflow.jobs['e2e-focused'].strategy.matrix.include
+    expect(focusedRows).toEqual(expect.arrayContaining([
       expect.objectContaining({ command: 'pnpm e2e:preprocessor' }),
       expect.objectContaining({ command: 'pnpm e2e:demo-user-workflow' }),
     ]))
+    expect(
+      focusedRows.find(row => row.case_name === 'demo-user-workflow')?.command,
+      'demo user workflow should run in CI focused gate without opening IDE runtimes',
+    ).toBe('pnpm e2e:demo-user-workflow')
     expect(readText('e2e/preprocessor-source.test.ts')).toContain('@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4')
     expect(readText('demo/weapp-vite-tailwindcss-v4/app.css')).not.toContain('@import "tailwindcss";')
     expect(readText('demo/weapp-vite-tailwindcss-v4/tailwind.css')).toContain('@import "tailwindcss" source(none);')
@@ -628,6 +640,8 @@ describe('e2e watch workflow', () => {
         `${watchCase} should run as a real demo development workflow in PR e2e-watch`,
       ).toBe(true)
     }
+    expect(rows.some(row => String(row.watch_case).includes('hbuilderx') || String(row.watch_case).includes('uni-app-x'))).toBe(false)
+    expectNoIdeOnlyRuntime(stepRuns(workflow, 'pr-quick-gate').join('\n'), 'e2e-watch pr quick gate')
     expect(stepRuns(workflow, 'pr-quick-gate')).toContain('pnpm e2e:watch')
     expectPlaywrightInstallRetry(
       stepRuns(workflow, 'pr-quick-gate').find(run => run.includes('playwright install chromium'))!,
