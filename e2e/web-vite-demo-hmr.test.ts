@@ -208,26 +208,39 @@ function createIconifyProbeSource(source: string, item: WebViteHmrCase) {
   return `${source}${sourceProbe}`
 }
 
+function isTransientPageEvaluationError(error: unknown) {
+  return error instanceof Error
+    && /Execution context was destroyed|Cannot find context with specified id|Target page, context or browser has been closed/.test(error.message)
+}
+
 async function collectPageCss(page: Page) {
-  return await page.evaluate(async () => {
-    const texts: string[] = []
-    for (const style of Array.from(document.querySelectorAll('style'))) {
-      texts.push(style.textContent ?? '')
-    }
-    for (const link of Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"][href]'))) {
-      try {
-        texts.push(await fetch(link.href).then(response => response.text()))
+  try {
+    return await page.evaluate(async () => {
+      const texts: string[] = []
+      for (const style of Array.from(document.querySelectorAll('style'))) {
+        texts.push(style.textContent ?? '')
       }
-      catch {}
-    }
-    for (const sheet of Array.from(document.styleSheets)) {
-      try {
-        texts.push(Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n'))
+      for (const link of Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"][href]'))) {
+        try {
+          texts.push(await fetch(link.href).then(response => response.text()))
+        }
+        catch {}
       }
-      catch {}
+      for (const sheet of Array.from(document.styleSheets)) {
+        try {
+          texts.push(Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n'))
+        }
+        catch {}
+      }
+      return texts.join('\n')
+    })
+  }
+  catch (error) {
+    if (isTransientPageEvaluationError(error)) {
+      return ''
     }
-    return texts.join('\n')
-  })
+    throw error
+  }
 }
 
 async function waitForIconifyCss(page: Page, item: WebViteHmrCase, contentClass: string) {
