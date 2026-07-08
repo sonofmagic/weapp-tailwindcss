@@ -43,8 +43,8 @@ wx-root-portal-content {
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-red-500: #fb2c36;
   --color-green-200: #b9f8cf;
-  --color-cyan-500: #00b8db;
-  --color-blue-500: #2b7fff;
+  --color-cyan-500: #00b6d4;
+  --color-blue-500: #3280ff;
   --color-purple-800: #6e11b0;
   --color-pink-200: #fccee8;
   --color-slate-100: #f1f5f9;

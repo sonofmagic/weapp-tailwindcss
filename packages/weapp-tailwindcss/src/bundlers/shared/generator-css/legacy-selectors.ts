@@ -6,6 +6,7 @@ const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([':host', 'page', '.tw-root', 'wx-root-portal-content'])
 const SPECIFICITY_PLACEHOLDER_RE = /:not\(#(?:\\#|n)\)/g
 const SELECTOR_CACHE_LIMIT = 64
+const LEGACY_PSEUDO_ELEMENTS = ['before', 'after', 'first-letter', 'first-line'] as const
 const generatedSelectorCache = new Map<string, Set<string>>()
 
 function setGeneratedSelectorCache(css: string, selectors: Set<string>) {
@@ -23,6 +24,76 @@ function normalizeCompatSelector(selector: string) {
     .replace(SPECIFICITY_PLACEHOLDER_RE, '')
     .replace(/\s+/g, ' ')
     .trim()
+}
+
+function isLegacyPseudoElementAt(selector: string, index: number) {
+  for (const name of LEGACY_PSEUDO_ELEMENTS) {
+    if (!selector.startsWith(name, index)) {
+      continue
+    }
+    const next = selector[index + name.length]
+    if (next === undefined || !/[\w-]/.test(next)) {
+      return name
+    }
+  }
+  return undefined
+}
+
+function normalizeLegacyPseudoElements(selector: string) {
+  let result = ''
+  let quote: string | undefined
+  let bracketDepth = 0
+  let index = 0
+  while (index < selector.length) {
+    const char = selector[index]
+    if (char === '\\') {
+      result += selector.slice(index, index + 2)
+      index += 2
+      continue
+    }
+    if (quote !== undefined) {
+      result += char
+      if (char === quote) {
+        quote = undefined
+      }
+      index += 1
+      continue
+    }
+    if (char === '"' || char === '\'') {
+      quote = char
+      result += char
+      index += 1
+      continue
+    }
+    if (char === '[') {
+      bracketDepth++
+      result += char
+      index += 1
+      continue
+    }
+    if (char === ']') {
+      bracketDepth = Math.max(0, bracketDepth - 1)
+      result += char
+      index += 1
+      continue
+    }
+    if (bracketDepth === 0 && char === ':' && selector[index + 1] === ':') {
+      result += '::'
+      index += 2
+      continue
+    }
+    if (bracketDepth === 0 && char === ':') {
+      const name = isLegacyPseudoElementAt(selector, index + 1)
+      if (name) {
+        result += `::${name}`
+        index += name.length + 1
+        continue
+      }
+    }
+    result += char
+    index += 1
+  }
+  return result
 }
 
 function isClassSelectorTerminator(char: string) {
@@ -94,7 +165,7 @@ export function normalizeCompatSelectors(selector: string) {
 }
 
 function normalizeCssSelector(selector: string) {
-  return selector.trim().replace(/\s+/g, '')
+  return normalizeLegacyPseudoElements(selector).trim().replace(/\s+/g, '')
 }
 
 function getCompatSelectorKeys(selector: string) {

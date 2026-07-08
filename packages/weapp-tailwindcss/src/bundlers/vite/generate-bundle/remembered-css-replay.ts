@@ -2,6 +2,8 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext, RememberedCssSource } from './types'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
+import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
+import { normalizeMiniProgramGeneratorCssSource, normalizeMiniProgramImportShell } from '../../shared/generator-css/output-import-shell'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { createRuntimeAffectingSourceSignature } from '../runtime-affecting-signature'
 import { isHTMLRequest } from '../utils'
@@ -9,7 +11,7 @@ import { createCssRuntimeSignature } from './css-share-scope'
 import { measureElapsed } from './metrics'
 import { collectRememberedCssReplayGroups, createRememberedCssRuntimeSignature, mergeRememberedCssSources } from './remembered-css'
 import { registerGeneratorDependencies } from './rollup-assets'
-import { createScopedGeneratorCandidateSignature } from './scoped-generator'
+import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTraceMap } from './scoped-generator'
 import { createCandidateSignature } from './signatures'
 import { getLastCssResult, getLastCssSourceHash, rememberLastCssResult } from './vite-css-cache'
 
@@ -143,6 +145,9 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       continue
     }
     const { rawSource, sourceFile } = rememberedCssSource
+    const generatorRawSource = isWebGeneratorTarget
+      ? rawSource
+      : normalizeMiniProgramGeneratorCssSource(rawSource, outputFile)
     activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
     activeViteCssCacheFiles.add(normalizeViteCssCacheKey(sourceFile))
     const outputCssHandlerOptions = getCssHandlerOptions(outputFile)
@@ -152,11 +157,11 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     }
     const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)
     const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, cssHandlerOptions)
-    const scopedGeneratorRuntime = await createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, rawSource, sourceFile)
+    const scopedGeneratorRuntime = await createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, generatorRawSource, sourceFile)
     const cssRuntimeSignature = createCssRuntimeSignature(
       createCandidateSignature(scopedGeneratorRuntime),
       await createScopedGeneratorCandidateSignature(
-        rawSource,
+        generatorRawSource,
         sourceFile,
         createCandidateSignature(scopedGeneratorRuntime),
         scopedSourceCandidateGetter,
@@ -181,8 +186,11 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     if (bundleFiles.includes(outputFile) || bundleFiles.includes(sourceFile) || allRememberedSignaturesFresh) {
       continue
     }
-    const sourceTraceTokenSources = scopedSourceCandidateSourceGetter
-      ? createCssTokenSourceMap(scopedSourceCandidateSourceGetter(undefined), opts)
+    const sourceTraceSources = scopedSourceCandidateSourceGetter
+      ? await createScopedGeneratorSourceTraceMap(generatorRawSource, sourceFile, scopedSourceCandidateSourceGetter)
+      : undefined
+    const sourceTraceTokenSources = sourceTraceSources
+      ? createCssTokenSourceMap(sourceTraceSources, opts)
       : undefined
     const annotateCss = (css: string) => annotateCssSourceTrace(css, {
       opts,
@@ -193,13 +201,36 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     if (!shouldRecordRememberedReplayCss) {
       continue
     }
+    if (!isWebGeneratorTarget && isPureLocalCssImportWrapper(rawSource)) {
+      cssTaskFactories.push(() => timeTask('css.replay', async () => {
+        const start = performance.now()
+        const css = annotateCss(normalizeMiniProgramImportShell(rawSource))
+        lastCssRawSourceHashByFile.set(outputFile, rawSourceHash)
+        rememberLastCssResult(lastCssResultByFile, lastCssSourceHashByFile, outputFile, css, cssRuntimeAffectingHash)
+        for (const key of rememberedKeys) {
+          setRememberedCssSignature?.(key, rememberedCssRuntimeSignature)
+        }
+        recordCssAssetResult?.(outputFile, css)
+        if (shouldEmitRememberedReplayCssAsset) {
+          const replayAsset = emitOrReplayCssAsset(outputFile, css)
+          if (replayAsset) {
+            markCssAssetProcessed?.(replayAsset, outputFile)
+          }
+        }
+        metrics.css.elapsed += measureElapsed(start)
+        metrics.css.transformed++
+        onUpdate(outputFile, rawSource, css)
+        debug('css replay preserve local import shell: %s', outputFile)
+      }))
+      continue
+    }
     cssTaskFactories.push(() => timeTask('css.replay', async () => {
       const start = performance.now()
       const generated = await generateTailwindV4Css({
         opts,
         runtimeState,
         runtime: scopedGeneratorRuntime,
-        rawSource,
+        rawSource: generatorRawSource,
         file: sourceFile,
         outputFile,
         cssHandlerOptions,
@@ -210,7 +241,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
         debug,
         previousCss,
       })
-      const css = annotateCss(generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css)
+      const css = annotateCss(generated?.css ?? (await styleHandler(generatorRawSource, cssHandlerOptions)).css)
       lastCssRawSourceHashByFile.set(outputFile, rawSourceHash)
       rememberLastCssResult(lastCssResultByFile, lastCssSourceHashByFile, outputFile, css, cssRuntimeAffectingHash)
       for (const key of rememberedKeys) {

@@ -1,6 +1,7 @@
 const BUNDLER_GENERATED_CSS_MARKER_RE = /\/\*!?\s*weapp-tailwindcss (?:vite|webpack)-generated-css(?:\s*:\s*[^\s*]+)?\s*\*\/\s*/i
 const BUNDLER_GENERATED_CSS_MARKER_GLOBAL_RE = /\/\*!?\s*weapp-tailwindcss (?:vite|webpack)-generated-css(?:\s*:\s*[^\s*]+)?\s*\*\/\s*/gi
 const BUNDLER_GENERATED_CSS_MARKER_CAPTURE_RE = /\/\*!?\s*weapp-tailwindcss (vite|webpack)-generated-css(?:\s*:\s*([^\s*]+))?\s*\*\/\s*/gi
+const VITE_INTERNAL_CSS_MARKER_GLOBAL_RE = /\/\*\$vite\$:\d+\*\/\s*/g
 
 export interface BundlerGeneratedCssMarkerBlock {
   bundler: 'vite' | 'webpack'
@@ -17,7 +18,9 @@ export function hasBundlerGeneratedCssMarker(source: unknown) {
 }
 
 export function stripBundlerGeneratedCssMarkers(source: string) {
-  return source.replace(BUNDLER_GENERATED_CSS_MARKER_GLOBAL_RE, '')
+  return source
+    .replace(BUNDLER_GENERATED_CSS_MARKER_GLOBAL_RE, '')
+    .replace(VITE_INTERNAL_CSS_MARKER_GLOBAL_RE, '')
 }
 
 export function parseBundlerGeneratedCssMarkerBlocks(source: string): BundlerGeneratedCssMarkerBlock[] {

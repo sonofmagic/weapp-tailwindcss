@@ -244,7 +244,7 @@
   .mt-1 {
     margin-top: var(--spacing);
   }
- /*tokens: mt-2 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: mt-2 <= src/pages/index/index.vue */
   .mt-2 {
     margin-top: calc(var(--spacing) * 2);
   }
@@ -252,15 +252,14 @@
   .mt-3 {
     margin-top: calc(var(--spacing) * 3);
   }
- /*tokens: mt-4 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+ /*tokens: mt-4 <= src/pages/index/index.vue */
   .mt-4 {
     margin-top: calc(var(--spacing) * 4);
   }
- /*tokens: mt-6 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: mt-6 <= src/pages/index/index.vue */
   .mt-6 {
     margin-top: calc(var(--spacing) * 6);
   }
- /*tokens: mt-8 <= src/pages-order/pages/user/user.vue */
   .mt-8 {
     margin-top: calc(var(--spacing) * 8);
   }
@@ -282,11 +281,11 @@
     mask-size: 100% 100%;
     --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
   }
- /*tokens: block <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: block <= src/pages/index/index.vue */
   .block {
     display: block;
   }
- /*tokens: flex <= src/components/HelloWorld.vue, src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: flex <= src/components/HelloWorld.vue, src/pages/index/index.vue */
   .flex {
     display: flex;
   }
@@ -296,7 +295,7 @@
   .aspect-\[calc\(4\*3\+1\)\/3\] {
     aspect-ratio: calc(4 * 3 + 1) / 3;
   }
- /*tokens: h-12 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: h-12 <= src/pages/index/index.vue */
   .h-12 {
     height: calc(var(--spacing) * 12);
   }
@@ -311,11 +310,10 @@
   .h-\[45px\] {
     height: 45px;
   }
- /*tokens: min-h-screen <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
   .min-h-screen {
     min-height: 100vh;
   }
- /*tokens: w-12 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: w-12 <= src/pages/index/index.vue */
   .w-12 {
     width: calc(var(--spacing) * 12);
   }
@@ -330,11 +328,10 @@
   .w-\[323px\] {
     width: 323px;
   }
- /*tokens: flex-1 <= src/pages-order/pages/user/user.vue */
   .flex-1 {
     flex: 1;
   }
- /*tokens: flex-col <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: flex-col <= src/pages/index/index.vue */
   .flex-col {
     flex-direction: column;
   }
@@ -346,7 +343,7 @@
   .flex-row-reverse {
     flex-direction: row-reverse;
   }
- /*tokens: items-center <= src/components/HelloWorld.vue, src/main.css, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: items-center <= src/components/HelloWorld.vue, src/pages/index/index.vue */
   .items-center {
     align-items: center;
   }
@@ -354,19 +351,17 @@
   .justify-between {
     justify-content: space-between;
   }
- /*tokens: justify-center <= src/pages-order/pages/user/user.vue */
   .justify-center {
     justify-content: center;
   }
- /*tokens: gap-1 <= src/pages-order/pages/user/user.vue */
   .gap-1 {
     gap: var(--spacing);
   }
- /*tokens: gap-2 <= src/components/HelloWorld.vue, src/main.css, src/pages/index/index.vue */
+ /*tokens: gap-2 <= src/components/HelloWorld.vue, src/pages/index/index.vue */
   .gap-2 {
     gap: calc(var(--spacing) * 2);
   }
- /*tokens: gap-3 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: gap-3 <= src/pages/index/index.vue */
   .gap-3 {
     gap: calc(var(--spacing) * 3);
   }
@@ -469,11 +464,11 @@
   .rounded-full {
     border-radius: calc(infinity * 1px);
   }
- /*tokens: rounded-xl <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: rounded-xl <= src/pages/index/index.vue */
   .rounded-xl {
     border-radius: 0.5rem;
   }
- /*tokens: border <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: border <= src/pages/index/index.vue */
   .border {
     border-style: var(--tw-border-style);
     border-width: 1px;
@@ -487,11 +482,10 @@
   .border-emerald-200 {
     border-color: var(--color-emerald-200);
   }
- /*tokens: border-emerald-500 <= src/pages-order/pages/user/user.vue */
-  .border-emerald-500 {
+.border-emerald-500 {
     border-color: var(--color-emerald-500);
   }
- /*tokens: border-slate-200 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: border-slate-200 <= src/pages/index/index.vue */
   .border-slate-200 {
     border-color: var(--color-slate-200);
   }
@@ -521,11 +515,10 @@
   .bg-emerald-50 {
     background-color: var(--color-emerald-50);
   }
- /*tokens: bg-emerald-100 <= src/pages-order/pages/user/user.vue */
   .bg-emerald-100 {
     background-color: var(--color-emerald-100);
   }
- /*tokens: bg-emerald-500 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+ /*tokens: bg-emerald-500 <= src/pages/index/index.vue */
   .bg-emerald-500 {
     background-color: var(--color-emerald-500);
   }
@@ -552,7 +545,6 @@
   .bg-red-300 {
     background-color: var(--color-red-300);
   }
- /*tokens: bg-slate-50 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
   .bg-slate-50 {
     background-color: var(--color-slate-50);
   }
@@ -560,7 +552,7 @@
   .bg-slate-900 {
     background-color: var(--color-slate-900);
   }
- /*tokens: bg-white <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: bg-white <= src/pages/index/index.vue */
   .bg-white {
     background-color: var(--color-white);
   }
@@ -617,7 +609,6 @@
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
- /*tokens: p-5 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
   .p-5 {
     padding: calc(var(--spacing) * 5);
   }
@@ -625,7 +616,7 @@
   .px-3 {
     padding-inline: calc(var(--spacing) * 3);
   }
- /*tokens: px-4 <= src/components/HelloWorld.vue, src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: px-4 <= src/components/HelloWorld.vue, src/pages/index/index.vue */
   .px-4 {
     padding-inline: calc(var(--spacing) * 4);
   }
@@ -636,7 +627,7 @@
   .py-1 {
     padding-block: var(--spacing);
   }
- /*tokens: py-2 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: py-2 <= src/pages/index/index.vue */
   .py-2 {
     padding-block: calc(var(--spacing) * 2);
   }
@@ -644,7 +635,6 @@
   .py-3 {
     padding-block: calc(var(--spacing) * 3);
   }
- /*tokens: py-6 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
   .py-6 {
     padding-block: calc(var(--spacing) * 6);
   }
@@ -655,31 +645,29 @@
   .pt-2 {
     padding-top: calc(var(--spacing) * 2);
   }
- /*tokens: text-center <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+ /*tokens: text-center <= src/pages/index/index.vue */
   .text-center {
     text-align: center;
   }
- /*tokens: text-base <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: text-base <= src/pages/index/index.vue */
   .text-base {
     font-size: var(--text-base);
     line-height: var(--tw-leading, var(--text-base--line-height));
   }
- /*tokens: text-lg <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
-  .text-lg {
+.text-lg {
     font-size: var(--text-lg);
     line-height: var(--tw-leading, var(--text-lg--line-height));
   }
- /*tokens: text-sm <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: text-sm <= src/pages/index/index.vue */
   .text-sm {
     font-size: var(--text-sm);
     line-height: var(--tw-leading, var(--text-sm--line-height));
   }
- /*tokens: text-xl <= src/pages-order/pages/user/user.vue */
-  .text-xl {
+.text-xl {
     font-size: var(--text-xl);
     line-height: var(--tw-leading, var(--text-xl--line-height));
   }
- /*tokens: text-xs <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: text-xs <= src/pages/index/index.vue */
   .text-\[100rpx\] {
     font-size: 3.125rem;
   }
@@ -704,22 +692,20 @@
     --tw-leading: calc(var(--spacing) * 5);
     line-height: calc(var(--spacing) * 5);
   }
- /*tokens: leading-6 <= src/pages-order/pages/user/user.vue */
-  .leading-6 {
+.leading-6 {
     --tw-leading: calc(var(--spacing) * 6);
     line-height: calc(var(--spacing) * 6);
   }
- /*tokens: font-bold <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: font-bold <= src/pages/index/index.vue */
   .font-bold {
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
   }
- /*tokens: font-medium <= src/pages-order/pages/user/user.vue */
-  .font-medium {
+.font-medium {
     --tw-font-weight: var(--font-weight-medium);
     font-weight: var(--font-weight-medium);
   }
- /*tokens: font-semibold <= src/main.css, src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: font-semibold <= src/pages/index/index.vue */
   .font-semibold {
     --tw-font-weight: var(--font-weight-semibold);
     font-weight: var(--font-weight-semibold);
@@ -752,8 +738,7 @@
 .text-\[\#929292\] {
     color: #929292;
   }
- /*tokens: text-emerald-600 <= src/pages-order/pages/user/user.vue */
-  .text-emerald-600 {
+.text-emerald-600 {
     color: var(--color-emerald-600);
   }
  /*tokens: text-emerald-700 <= src/pages/index/index.vue */
@@ -764,7 +749,7 @@
   .text-neutral-66 {
     color: var(--color-neutral-66);
   }
- /*tokens: text-slate-500 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: text-slate-500 <= src/pages/index/index.vue */
   .text-slate-500 {
     color: var(--color-slate-500);
   }
@@ -772,11 +757,11 @@
   .text-slate-700 {
     color: var(--color-slate-700);
   }
- /*tokens: text-slate-800 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: text-slate-800 <= src/pages/index/index.vue */
   .text-slate-800 {
     color: var(--color-slate-800);
   }
- /*tokens: text-slate-900 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+ /*tokens: text-slate-900 <= src/pages/index/index.vue */
   .text-slate-900 {
     color: var(--color-slate-900);
   }
@@ -784,7 +769,7 @@
   .text-tahiti {
     color: var(--color-tahiti);
   }
- /*tokens: text-white <= src/main.css, src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+ /*tokens: text-white <= src/pages/index/index.vue */
   .text-white {
     color: var(--color-white);
   }
@@ -792,12 +777,11 @@
   .underline {
     text-decoration-line: underline;
   }
- /*tokens: shadow <= src/pages-order/pages/home/home.vue */
   .shadow {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
- /*tokens: shadow-sm <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+ /*tokens: shadow-sm <= src/pages/index/index.vue */
   .shadow-sm {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -820,13 +804,12 @@
       content: var(--tw-content) !important;
     }
   }
- /*tokens: active:bg-emerald-50 <= src/pages-order/pages/user/user.vue */
   .active\:bg-emerald-50 {
     &:active {
       background-color: var(--color-emerald-50);
     }
   }
- /*tokens: active:bg-emerald-600 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+ /*tokens: active:bg-emerald-600 <= src/pages/index/index.vue */
   .active\:bg-emerald-600 {
     &:active {
       background-color: var(--color-emerald-600);

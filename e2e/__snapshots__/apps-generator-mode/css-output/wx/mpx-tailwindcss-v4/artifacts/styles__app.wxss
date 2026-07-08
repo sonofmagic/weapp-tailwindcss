@@ -7,27 +7,35 @@ text,
   margin: 0;
   padding: 0;
   --tw-space-y-reverse: 0;
-  --tw-border-style: solid;
   --tw-divide-x-reverse: 0;
+  --tw-border-style: solid;
   --tw-gradient-position: initial;
-  --tw-gradient-from: #0000;
-  --tw-gradient-to: #0000;
+  --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
+  --tw-gradient-to: rgba(0, 0, 0, 0);
   --tw-gradient-stops: initial;
   --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
-  --tw-font-weight:;
-  --tw-leading:;
-  --tw-shadow: 0 0 #0000;
+  --tw-leading: initial;
+  --tw-font-weight: initial;
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-shadow-color: initial;
-  --tw-inset-shadow: 0 0 #0000;
-  --tw-ring-color:;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-inset-ring-shadow: 0 0 #0000;
-  --tw-ring-inset:;
+  --tw-shadow-alpha: 100%;
+  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-inset-shadow-color: initial;
+  --tw-inset-shadow-alpha: 100%;
+  --tw-ring-color: initial;
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-inset-ring-color: initial;
+  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-inset: initial;
   --tw-ring-offset-width: 0px;
-  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
   --tw-content: '';
 }
+ /* tokens: tw-root <= src/custom-tab-bar/index.mpx */
 :host,
 page,
 .tw-root,
@@ -37,18 +45,18 @@ wx-root-portal-content {
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-red-500: #fb2c36;
-  --color-green-500: #00c950;
-  --color-blue-500: #2b7fff;
+  --color-green-500: #00c65a;
+  --color-blue-500: #3280ff;
   --color-slate-900: #0f172b;
   --color-gray-100: rgb(243, 244, 246);
   --color-zinc-800: rgb(39, 39, 42);
   --color-white: #fff;
   --color-zinc-50: rgb(250, 250, 250);
   --color-zinc-900: rgb(24, 24, 27);
-  --color-red-400: #ff6467;
-  --color-yellow-400: #fdc700;
+  --color-red-400: #ff6568;
+  --color-yellow-400: #f7c900;
   --color-green-200: #b9f8cf;
-  --color-sky-500: #00a6f4;
+  --color-sky-500: #00a5ea;
   --color-purple-600: #9810fa;
   --color-pink-500: #f6339a;
   --color-slate-100: #f1f5f9;
@@ -66,7 +74,6 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
- /* tokens: tw-root <= src/custom-tab-bar/index.mpx */
  /* tokens: -mt-2 <= src/pages/index.mpx */
 .-mt-2 {
   margin-top: calc(var(--spacing) * -2);
@@ -344,7 +351,7 @@ wx-root-portal-content {
 }
  /* tokens: bg-blue-500/50 <= src/pages/index.mpx */
 .bg-blue-500_f50 {
-  background-color: rgba(43, 127, 255, 0.5);
+  background-color: rgba(50, 128, 255, 0.5);
 }
  /* tokens: bg-gray-100 <= src/pages/index.mpx */
 .bg-gray-100 {
@@ -617,6 +624,12 @@ wx-root-portal-content {
   --tw-content: 'Festivus';
   content: var(--tw-content);
 }
+ /* tokens: after:border-none <= src/pages/index.mpx */
+.after_cborder-none::after {
+  content: var(--tw-content);
+  --tw-border-style: none;
+  border-style: none;
+}
  /* tokens: after:!content-['good_work!'] <= src/pages/index.mpx */
 .after_c_econtent-_b_agood_work_e_a_B::after {
   content: var(--tw-content);
@@ -722,29 +735,6 @@ wx-root-portal-content {
   font-weight: var(--font-weight-semibold);
   font-size: 26rpx;
   color: var(--color-white);
-}
- /* tokens: before:content-['Festivus'] <= src/pages/index.mpx */
-.before_ccontent-_b_aFestivus_a_B::before {
-  --tw-content: 'Festivus';
-  content: var(--tw-content);
-}
- /* tokens: after:border-none <= src/pages/index.mpx */
-.after_cborder-none::after {
-  --tw-border-style: none;
-  border-style: none;
-  content: var(--tw-content);
-}
- /* tokens: after:!content-['good_work!'] <= src/pages/index.mpx */
-.after_c_econtent-_b_agood_work_e_a_B::after {
-  --tw-content: 'good work!' !important;
-  content: var(--tw-content);
-  content: var(--tw-content) !important;
-}
-button::after,
-wx-button::after {
-  border: none;
-  content: '';
-  display: none;
 }
 button::after,
 wx-button::after {

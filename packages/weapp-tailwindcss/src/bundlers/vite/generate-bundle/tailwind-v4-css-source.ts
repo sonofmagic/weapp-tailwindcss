@@ -223,7 +223,10 @@ export function selectTailwindV4GenerationCssSourceForOutput<T extends TailwindV
     return generationSources[0]
   }
   const canMatchByOutputPath = Boolean(options.cwd || options.outputRoot || options.projectRoot)
-  const selectByOutputPath = (candidates: typeof generationSources) => {
+  const selectByOutputPath = (
+    candidates: typeof generationSources,
+    shouldUseScore: (score: number) => boolean = score => score > 0,
+  ) => {
     if (!canMatchByOutputPath) {
       return undefined
     }
@@ -236,7 +239,7 @@ export function selectTailwindV4GenerationCssSourceForOutput<T extends TailwindV
           projectRoot: options.projectRoot,
         }),
       }))
-      .filter(item => item.score > 0)
+      .filter(item => shouldUseScore(item.score))
       .sort((a, b) => b.score - a.score)
     const bestScore = scoredSources[0]?.score
     const bestSources = bestScore ? scoredSources.filter(item => item.score === bestScore) : []
@@ -254,12 +257,16 @@ export function selectTailwindV4GenerationCssSourceForOutput<T extends TailwindV
     const bestSources = bestScore ? scoredSources.filter(item => item.score === bestScore) : []
     return bestSources.length === 1 ? bestSources[0]?.entry : undefined
   }
+  const explicitSources = generationSources.filter(entry => hasExplicitTailwindV4Directive(entry.source))
+  const candidates = explicitSources.length === 1 ? explicitSources : generationSources
+  const directoryIndexOutputPathMatched = selectByOutputPath(candidates, score => score >= 25000 && score < 50000)
+  if (directoryIndexOutputPathMatched) {
+    return directoryIndexOutputPathMatched
+  }
   const rawSourceMatched = selectByRawSourceFingerprint(generationSources)
   if (rawSourceMatched) {
     return rawSourceMatched
   }
-  const explicitSources = generationSources.filter(entry => hasExplicitTailwindV4Directive(entry.source))
-  const candidates = explicitSources.length === 1 ? explicitSources : generationSources
   const outputPathMatched = selectByOutputPath(candidates)
   if (outputPathMatched) {
     return outputPathMatched

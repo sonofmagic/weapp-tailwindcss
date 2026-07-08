@@ -4,6 +4,7 @@ import type { RememberedCssSource } from './types'
 import path from 'node:path'
 import { isTailwindV4CssEntry } from '@/tailwindcss/v4/css-entries'
 import { hasTailwindApplyDirective, hasTailwindNonRootGenerationDirectives, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../../shared/generator-css/directives'
+import { scoreTailwindV4CssSourceFileMatch } from '../../shared/generator-css/source-resolver/matching'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { CSS_SOURCE_OUTPUT_EXT_RE } from './css-output'
 import { scoreMatchingStyleFileBase } from './style-matching'
@@ -282,6 +283,10 @@ function resolveSourceStyleFileFromSiblingChunk(
     debug('source style sibling chunk skipped: no source style modules for %s -> %s', outputFile, siblingJsFile)
     return undefined
   }
+  if (sourceFiles.length === 1) {
+    debug('source style sibling chunk inferred from single css module: %s -> %s', outputFile, sourceFiles[0])
+    return sourceFiles[0]
+  }
   const scoredSources = sourceFiles
     .map(sourceFile => ({
       sourceFile,
@@ -315,16 +320,30 @@ export function resolveSourceStyleSourceFromOutputFile(
   let sourceFile = resolveSourceStyleFileFromSiblingChunk(outputFile, snapshot, outputRoot, sourceRoot, debug)
   let rawSource = sourceFile ? getSourceStyleSource?.(sourceFile) : undefined
   if (!sourceFile || !rawSource || !hasTailwindGenerationSourceForFile(sourceFile, rawSource)) {
-    const scoredSources = [
-      ...(getSourceStyleSources?.() ?? []),
-      ...(configuredSourceEntries ?? []),
-    ]
+    const cachedSources = [...(getSourceStyleSources?.() ?? [])]
       .filter(([file, source]) => CSS_SOURCE_OUTPUT_EXT_RE.test(file) && hasTailwindGenerationSourceForFile(file, source))
       .map(([file, source]) => ({
         file,
         source,
-        score: scoreMatchingStyleFileBase(outputFile, file, outputRoot, sourceRoot),
+        score: scoreTailwindV4CssSourceFileMatch(outputFile, file, {
+          outputRoot,
+          projectRoot: sourceRoot,
+        }),
       }))
+    const configuredSources = [...(configuredSourceEntries ?? [])]
+      .filter(([file, source]) => CSS_SOURCE_OUTPUT_EXT_RE.test(file) && hasTailwindGenerationSourceForFile(file, source))
+      .map(([file, source]) => ({
+        file,
+        source,
+        score: scoreTailwindV4CssSourceFileMatch(outputFile, file, {
+          outputRoot,
+          projectRoot: sourceRoot,
+        }),
+      }))
+    const scoredSources = [
+      ...cachedSources,
+      ...configuredSources,
+    ]
       .filter(item => item.score > 0)
       .sort((a, b) => b.score - a.score)
     const bestScore = scoredSources[0]?.score

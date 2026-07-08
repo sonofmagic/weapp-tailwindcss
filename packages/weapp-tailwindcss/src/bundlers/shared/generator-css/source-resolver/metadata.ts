@@ -3,6 +3,7 @@ import type { TailwindResolvedSource } from '@/generator'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 
 export interface GeneratorSourceMetadata {
+  candidateMatchedCssSource?: boolean | undefined
   cssEntryIndex?: number | undefined
   cssSourceIndex?: number | undefined
   includesPreflight?: boolean | undefined

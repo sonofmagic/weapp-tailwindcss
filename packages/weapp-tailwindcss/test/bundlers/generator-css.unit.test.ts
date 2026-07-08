@@ -594,6 +594,254 @@ describe('bundlers/shared generator css', () => {
     expect(css).toMatch(/color:\s*var\(--color-midnight\)/)
   })
 
+  it('keeps third-party css from matched Tailwind v4 cssEntries even when candidates do not reference it', async () => {
+    const rawSource = [
+      '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */',
+      ':host,page,.tw-root,wx-root-portal-content{--color-sky-500:#0ea5e9}',
+      '.bg-sky-500{background-color:var(--color-sky-500)}',
+      '.u-cell{display:flex;color:var(--u-cell-color,#303133)}',
+      '.u-cell--clickable:active{background-color:var(--u-cell-active-color,#f5f7fa)}',
+      '.u-loading-icon{animation:u-rotate 1s linear infinite}',
+      '@keyframes u-rotate{to{transform:rotate(360deg)}}',
+    ].join('\n')
+
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: vi.fn(async () => ({
+          css: '.bg-sky-500{background-color:var(--color-sky-500)}',
+          rawCss: [
+            '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */',
+            ':host,page,.tw-root,wx-root-portal-content{--color-sky-500:#0ea5e9}',
+            '.bg-sky-500{background-color:var(--color-sky-500)}',
+          ].join('\n'),
+          target: 'weapp',
+          classSet: new Set(['bg-sky-500']),
+          dependencies: [],
+          sources: [
+            {
+              __weappTailwindcssMeta: {
+                matchedCssSourceFile: true,
+              },
+            },
+          ],
+          root: null,
+        })),
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        cssPreflight: 'view',
+        generator: {
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['bg-sky-500']),
+      sourceCandidates: new Set(['bg-sky-500']),
+      rawSource,
+      cssSources: [
+        {
+          base: process.cwd(),
+          css: rawSource,
+          file: 'app.wxss',
+        },
+      ],
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    const css = result?.css ?? ''
+    expect(css).toContain('.bg-sky-500')
+    expect(css).toContain('.u-cell')
+    expect(css).toContain('--u-cell-color')
+    expect(css).toContain('.u-cell--clickable:active')
+    expect(css).toContain('.u-loading-icon')
+    expect(css).toContain('@keyframes u-rotate')
+    expect(css.match(/\.bg-sky-500/g)).toHaveLength(1)
+  })
+
+  it('does not preserve app-entry preflight for non-entry assets matched only by candidates', async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), 'weapp-tw-candidate-preflight-'))
+    try {
+      const srcDir = path.join(dir, 'src')
+      const appCss = path.join(srcDir, 'app.css')
+      const pageCssFile = path.join(srcDir, 'pages/index/index.css')
+      await mkdir(path.dirname(pageCssFile), { recursive: true })
+      await writeFile(appCss, [
+        '@import "tailwindcss" source(none);',
+        '@source "./pages/**/*.{tsx,ts}";',
+      ].join('\n'))
+      await writeFile(pageCssFile, '.tw-page-style-watch-anchor{color:inherit}')
+
+      const generatedCss = [
+        'view,text,::after,::before{border:0 solid;box-sizing:border-box;margin:0;padding:0}',
+        '.page-only{display:flex}',
+      ].join('\n')
+      const rawGeneratedCss = [
+        '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */',
+        generatedCss,
+      ].join('\n')
+      const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+        css: [
+          'view,text,::after,::before{border:0 solid;box-sizing:border-box;margin:0;padding:0}',
+          ...[...candidates].sort().map(candidate => `.${candidate}{display:flex}`),
+        ].join('\n'),
+        rawCss: rawGeneratedCss,
+        target: 'weapp',
+        classSet: new Set(candidates),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }))
+
+      vi.doMock('@/generator', () => createDefaultGeneratorMock({
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4Source: vi.fn(async (options: any = {}) => ({
+          projectRoot: dir,
+          base: options.base ?? dir,
+          baseFallbacks: [],
+          css: options.css ?? '@import "tailwindcss";',
+          dependencies: options.cssEntries ?? [],
+        })),
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+          projectRoot: dir,
+          base: dir,
+          baseFallbacks: [],
+          css: '@import "tailwindcss";',
+          dependencies: [],
+        })),
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+          projectRoot: dir,
+          base: dir,
+          baseFallbacks: [],
+          cssEntries: [appCss],
+        })),
+      }))
+
+      const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+      const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+      const baseOptions = {
+        opts: {
+          cssPreflight: {
+            border: '0 solid',
+          },
+          generator: {
+            target: 'weapp',
+          },
+          styleHandler,
+        } as any,
+        runtimeState: {
+          tailwindRuntime: {
+            majorVersion: 4,
+          } as any,
+          readyPromise: Promise.resolve(),
+        },
+        runtime: new Set(['page-only']),
+        cssUserHandlerOptions: {
+          isMainChunk: false,
+          majorVersion: 4,
+        } as any,
+        styleHandler,
+        debug: vi.fn(),
+        getSourceCandidatesForEntries: () => new Set(['page-only']),
+      }
+
+      const pageResult = await generateCssByGenerator({
+        ...baseOptions,
+        rawSource: rawGeneratedCss,
+        file: path.join(dir, 'dist/pages/index/index.wxss'),
+        cssHandlerOptions: {
+          isMainChunk: false,
+          postcssOptions: {
+            options: {
+              from: path.join(dir, 'dist/pages/index/index.wxss'),
+            },
+          },
+          majorVersion: 4,
+        } as any,
+      })
+
+      const pageCss = pageResult?.css ?? ''
+      expect(pageCss).toContain('.page-only')
+      expect(pageCss).not.toContain('view,text,::after,::before')
+      expect(pageCss).not.toContain('box-sizing:border-box')
+
+      const pageLocalResult = await generateCssByGenerator({
+        ...baseOptions,
+        forceGenerator: true,
+        rawSource: '.tw-page-style-watch-anchor{color:inherit}',
+        file: path.join(dir, 'dist/pages/index/index.wxss'),
+        cssHandlerOptions: {
+          isMainChunk: false,
+          postcssOptions: {
+            options: {
+              from: path.join(dir, 'dist/pages/index/index.wxss'),
+            },
+          },
+          sourceOptions: {
+            sourceFile: pageCssFile,
+          },
+          majorVersion: 4,
+        } as any,
+      })
+
+      const pageLocalCss = pageLocalResult?.css ?? ''
+      expect(pageLocalCss).toContain('.page-only')
+      expect(pageLocalCss).not.toContain('view,text,::after,::before')
+      expect(pageLocalCss).not.toContain('box-sizing:border-box')
+
+      const appResult = await generateCssByGenerator({
+        ...baseOptions,
+        rawSource: '@import "tailwindcss" source(none);',
+        file: path.join(dir, 'dist/app.wxss'),
+        cssHandlerOptions: {
+          isMainChunk: true,
+          postcssOptions: {
+            options: {
+              from: path.join(dir, 'dist/app.wxss'),
+            },
+          },
+          majorVersion: 4,
+        } as any,
+      })
+
+      expectMiniProgramPreflight(appResult?.css)
+    }
+    finally {
+      await rm(dir, { force: true, recursive: true })
+    }
+  })
+
   it('generates mini-program css and skips legacy style handler for matching Tailwind v4 output', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'
@@ -9072,6 +9320,25 @@ describe('bundlers/shared generator css', () => {
     expect(css).toContain('.custom{color:red}')
     expect(css.indexOf('.from-_b_h2f73f1_B')).toBeLessThan(css.indexOf('.custom{color:red}'))
     expect(css.match(/from-_b_h2f73f1_B/g)).toHaveLength(1)
+  })
+
+  it('deduplicates identical rules when merging multiple Tailwind v4 sources', async () => {
+    const { deduplicateGeneratedCssRules } = await import('@/bundlers/shared/generator-css/generation-helpers')
+    const css = deduplicateGeneratedCssRules([
+      'view,text,::after,::before{border:0 solid;box-sizing:border-box}',
+      '.before_ccontent-_b_aindependent_a_B::before{--tw-content:"independent";content:var(--tw-content)}',
+      '.before_ccontent-_b_aindependent_a_B::before{--tw-content:"independent";content:var(--tw-content)}',
+      '.before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B::before{--tw-content:\'independent subpackage mpx-tailwindcss-v4\';content:var(--tw-content)}',
+      '.before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B:before{--tw-content:"independent subpackage mpx-tailwindcss-v4";content:var(--tw-content)}',
+      '.bg-independent-subpackage-marker{background-color:#dc2626}',
+      '.bg-independent-subpackage-marker{background-color:#dc2626}',
+      '.bg-independent-subpackage-marker{color:#fff}',
+    ].join('\n'))
+
+    expect(css.match(/before_ccontent-_b_aindependent_a_B/g)).toHaveLength(1)
+    expect(css.match(/before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B/g)).toHaveLength(1)
+    expect(css.match(/background-color:#dc2626/g)).toHaveLength(1)
+    expect(css).toContain('.bg-independent-subpackage-marker{color:#fff}')
   })
 
   it('keeps Tailwind v4 gradient runtime variables on mini-program element scope', async () => {

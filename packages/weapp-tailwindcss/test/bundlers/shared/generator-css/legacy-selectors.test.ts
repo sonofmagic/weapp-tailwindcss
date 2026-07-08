@@ -68,6 +68,15 @@ describe('legacy selector compatibility helpers', () => {
     expect(collectDedupedPostTransformCompatCss('.broken{', '.keep{color:red}')).toBe('.broken{')
   })
 
+  it('dedupes post-transform compat rules with legacy pseudo-element selectors', () => {
+    const css = collectDedupedPostTransformCompatCss(
+      '.before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B:before{--tw-content:"independent subpackage mpx-tailwindcss-v4";content:var(--tw-content)}',
+      '.before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B::before{--tw-content:\'independent subpackage mpx-tailwindcss-v4\';content:var(--tw-content)}',
+    )
+
+    expect(css).toBe('')
+  })
+
   it('preserves only uncovered custom property declarations for duplicated selectors', () => {
     const css = collectDedupedPostTransformCompatCss([
       '.token{--tw-a:1;--tw-b:2;--tw-c:3}',

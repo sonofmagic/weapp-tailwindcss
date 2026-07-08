@@ -772,6 +772,28 @@ describe('bundlers/webpack v5-assets helpers', () => {
     })
     expect(finalized).toContain('tokens:')
     expect(finalized).toContain('.card')
+    let annotatedCss = ''
+    finalizeTracedWebpackCssAsset('.card:hover,.card{color:red}', cssHandlerOptions, {
+      annotateCss: (css) => {
+        annotatedCss = css
+        return css
+      },
+      compilerOptions: traceContext as any,
+      isWebGeneratorTarget: false,
+    })
+    expect(annotatedCss).toContain('.card')
+    expect(annotatedCss).not.toContain(':hover')
+    annotatedCss = ''
+    finalizeTracedWebpackCssAsset('.card:hover,.card{color:red}', cssHandlerOptions, {
+      annotateCss: (css) => {
+        annotatedCss = css
+        return css
+      },
+      compilerOptions: traceContext as any,
+      finalized: true,
+      isWebGeneratorTarget: false,
+    })
+    expect(annotatedCss).toContain(':hover')
   })
 
   it('finalizes webpack css asset sources for web and mini-program targets', () => {
@@ -791,12 +813,44 @@ describe('bundlers/webpack v5-assets helpers', () => {
       generatedCss: true,
     })).toContain('.card')
     expect(finalizeWebpackCssAssetSource('.card:hover{color:red}', baseContext as any, false)).not.toContain(':hover')
+    const layeredUserCss = finalizeWebpackCssAssetSource('@layer base{wx-button{background:#000}}abc{background:#222}', baseContext as any, false)
+    expect(layeredUserCss).not.toContain('@layer')
+    expect(layeredUserCss).toContain('wx-button{background:#000}')
+    expect(layeredUserCss).toContain('abc{background:#222}')
     expect(finalizeWebpackCssAssetSource('@media {', baseContext as any, false, {
       generatedCss: true,
     })).toContain('@media')
     expect(finalizeWebpackCssAssetSource('view,text,::after,::before{border:0 solid}.card{color:red', baseContext as any, false, {
       generatedCss: true,
     })).toContain('.card')
+    const withoutExistingPreflight = finalizeWebpackCssAssetSource(
+      'view,text,::after,::before{border:0 solid;box-sizing:border-box;margin:0;padding:0;--tw-gradient-from:#0000}.card{color:red}',
+      baseContext as any,
+      false,
+      {
+        cssPreflight: false,
+        generatedCss: true,
+        preserveExistingPreflight: false,
+      },
+    )
+    expect(withoutExistingPreflight).not.toContain('view,text,::after,::before')
+    expect(withoutExistingPreflight).not.toContain('box-sizing:border-box')
+    expect(withoutExistingPreflight).toContain('.card{color:red}')
+    const dedupedPreflight = finalizeWebpackCssAssetSource(
+      [
+        'view,text,::after,::before{border:0 solid;box-sizing:border-box;margin:0;padding:0}',
+        '.card{color:red}',
+        'view,text,::after,::before{--tw-gradient-from:#0000}',
+      ].join('\n'),
+      baseContext as any,
+      false,
+      {
+        cssPreflight: true,
+        generatedCss: true,
+      },
+    )
+    expect(dedupedPreflight.match(/view,text,::after,::before/g)).toHaveLength(1)
+    expect(dedupedPreflight).toContain('--tw-gradient-from:#0000')
     const gradientCss = finalizeWebpackCssAssetSource([
       '.bg-gradient-to-r{',
       'background-image:linear-gradient(var(--tw-gradient-stops));',
@@ -807,5 +861,24 @@ describe('bundlers/webpack v5-assets helpers', () => {
     })
     expect(gradientCss).toContain('--tw-gradient-position:to right')
     expect(gradientCss).not.toContain('in oklab')
+
+    const defaultPreflightContext = createContext({
+      cssRemoveHoverPseudoClass: true,
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
+        majorVersion: 4,
+      },
+    } as any)
+    const defaultPreflightCss = finalizeWebpackCssAssetSource([
+      'view,text,::after,::before{--tw-content:""}',
+      '.before_ccontent-test::before{--tw-content:"test";content:var(--tw-content)}',
+    ].join(''), defaultPreflightContext as any, false, {
+      generatedCss: true,
+    })
+    expect(defaultPreflightCss).toContain('border:0 solid')
+    expect(defaultPreflightCss).toContain('box-sizing:border-box')
+    expect(defaultPreflightCss).toContain('margin:0')
+    expect(defaultPreflightCss).toContain('padding:0')
+    expect(defaultPreflightCss).toContain('--tw-content:')
   })
 })

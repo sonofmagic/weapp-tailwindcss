@@ -936,6 +936,24 @@ describe('vite processed css assets', () => {
     expect(nextCss).toContain('.hello-world-shell.data-v-04bcf89b{display:flex}')
   })
 
+  it('removes scoped mini-program content init from local @reference output', () => {
+    const css = [
+      '.hello-world-shell{display:flex}',
+      'view.data-v-04bcf89b,text.data-v-04bcf89b,.data-v-04bcf89b::after,.data-v-04bcf89b::before{--tw-content:""}',
+      'view.data-v-04bcf89b{text-align:left}',
+      '.hello-world-shell.data-v-04bcf89b{display:flex}',
+      '.before_ccontent-_bhello_B.data-v-04bcf89b::before{--tw-content:"hello";content:var(--tw-content)}',
+    ].join('\n')
+
+    const nextCss = removeScopedTailwindPreflightCss(css)
+
+    expect(nextCss).not.toContain('view.data-v-04bcf89b,text.data-v-04bcf89b')
+    expect(nextCss).not.toContain('.data-v-04bcf89b::after')
+    expect(nextCss).toContain('view.data-v-04bcf89b{text-align:left}')
+    expect(nextCss).toContain('.hello-world-shell.data-v-04bcf89b{display:flex}')
+    expect(nextCss).toContain('.before_ccontent-_bhello_B.data-v-04bcf89b::before')
+  })
+
   it('moves taro import shell injection to the imported root css asset', () => {
     const bundle: OutputBundle = {
       'app.wxss': asset('app.wxss', ''),
@@ -1019,6 +1037,56 @@ describe('vite processed css assets', () => {
     expect(vendorsCss).toContain('.vendor{color:red}')
     expect(vendorsCss).toContain('.generated{color:blue}')
     expect(vendorsCss).not.toContain('@nutui/nutui-react-taro')
+  })
+
+  it('keeps extra declarations for existing third-party selectors during main css injection', () => {
+    const bundle: OutputBundle = {
+      'app.wxss': asset('app.wxss', '.u-cell{display:flex}'),
+    }
+    const records = new Map<string, any>([
+      ['node_modules/uview-plus/index.scss', {
+        css: [
+          '.u-cell{display:flex;color:var(--u-cell-color,#303133)}',
+          '.u-cell--clickable{background-color:var(--u-cell-active-color,#f5f7fa)}',
+        ].join('\n'),
+        injectIntoMain: true,
+        outputFile: 'app.wxss',
+      }],
+    ])
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: opts(),
+      getViteProcessedCssAssetResults: () => records.entries(),
+      markCssAssetProcessed: vi.fn(),
+      debug: vi.fn(),
+    })
+
+    const appCss = String((bundle['app.wxss'] as OutputAsset).source)
+    expect(injected).toBe(1)
+    expect(appCss).toContain('.u-cell')
+    expect(appCss).toContain('display:flex')
+    expect(appCss).toContain('--u-cell-color')
+    expect(appCss).toContain('.u-cell--clickable')
+  })
+
+  it('keeps scoped third-party declarations that are not covered by root css', async () => {
+    const { removeCssCoveredByRootStyleBundleSources } = await import('@/bundlers/vite/processed-css-assets')
+    const bundle: OutputBundle = {
+      'app.wxss': asset('app.wxss', '.u-cell{display:flex}'),
+      'node-modules/uview-plus/components/u-cell/u-cell.wxss': asset(
+        'node-modules/uview-plus/components/u-cell/u-cell.wxss',
+        '.u-cell.data-v-uview{display:flex;color:var(--u-cell-color,#303133)}',
+      ),
+    }
+
+    const css = removeCssCoveredByRootStyleBundleSources(
+      bundle,
+      'node-modules/uview-plus/components/u-cell/u-cell.wxss',
+      String((bundle['node-modules/uview-plus/components/u-cell/u-cell.wxss'] as OutputAsset).source),
+    )
+
+    expect(css).toContain('.u-cell.data-v-uview')
+    expect(css).toContain('--u-cell-color')
   })
 
   it('removes unsupported imports from non-wechat mini-program css assets while preserving local imports', () => {

@@ -120,6 +120,7 @@ async function resolveTailwindV4CssEntrySource(
   cssEntry: string,
   sourceOptions: TailwindV4SourceOptions,
   options: {
+    candidateMatched?: boolean | undefined
     includesPreflight?: boolean | undefined
     index?: number | undefined
   } = {},
@@ -132,6 +133,7 @@ async function resolveTailwindV4CssEntrySource(
         cssEntries: [cssEntry],
       }),
       {
+        candidateMatchedCssSource: options.candidateMatched,
         cssEntryIndex: options.index,
         includesPreflight: options.includesPreflight,
         primaryCssSource: options.index === 0,
@@ -160,6 +162,7 @@ async function resolveTailwindV4CssEntrySource(
       cssEntries: [cssEntry],
     }),
     {
+      candidateMatchedCssSource: options.candidateMatched,
       cssEntryIndex: options.index,
       includesPreflight: options.includesPreflight,
       matchedCssSourceFile: cssEntry,
@@ -630,6 +633,7 @@ async function resolveCandidateMatchedTailwindV4CssEntry(
     return undefined
   }
   return resolveTailwindV4CssEntrySource(best.cssEntry, sourceOptions, {
+    candidateMatched: true,
     includesPreflight: best.includesPreflight,
     index: best.index,
   })
@@ -680,22 +684,26 @@ async function resolveTailwindV4SourceSideEntrySource(
     css,
     cssEntries: [resolvedEntrySource.file],
   }))
-  const cssEntryIndex = sourceOptions.cssEntries?.findIndex(cssEntry =>
+  const matchedCssEntryIndex = sourceOptions.cssEntries?.findIndex(cssEntry =>
     typeof resolvedEntrySource.file === 'string'
     && path.resolve(cssEntry.replace(/[?#].*$/, '')) === path.resolve(resolvedEntrySource.file),
   )
-  const cssSourceIndex = sourceOptions.cssSources?.findIndex(cssSource =>
+  const matchedCssSourceIndex = sourceOptions.cssSources?.findIndex(cssSource =>
     typeof cssSource.file === 'string'
     && typeof resolvedEntrySource.file === 'string'
     && path.resolve(cssSource.file.replace(/[?#].*$/, '')) === path.resolve(resolvedEntrySource.file),
   )
   const resolvedEntries = await resolveTailwindV4EntriesFromCss(resolvedEntrySource.css, resolvedEntrySource.base)
   return withMatchedSourceSideMetadata(source, resolvedEntrySource, {
-    cssEntryIndex,
-    cssSourceIndex,
+    cssEntryIndex: matchedCssEntryIndex !== undefined && matchedCssEntryIndex >= 0
+      ? matchedCssEntryIndex
+      : undefined,
+    cssSourceIndex: matchedCssSourceIndex !== undefined && matchedCssSourceIndex >= 0
+      ? matchedCssSourceIndex
+      : undefined,
     includesPreflight: resolvedEntries?.includesPreflight,
-    primaryCssSource: cssEntryIndex === 0
-      || (!sourceOptions.cssEntries?.length && cssSourceIndex === 0),
+    primaryCssSource: matchedCssEntryIndex === 0
+      || (!sourceOptions.cssEntries?.length && matchedCssSourceIndex === 0),
   })
 }
 

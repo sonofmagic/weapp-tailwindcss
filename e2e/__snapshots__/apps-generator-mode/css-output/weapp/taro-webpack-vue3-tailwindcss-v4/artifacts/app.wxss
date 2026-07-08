@@ -41,7 +41,7 @@ wx-root-portal-content {
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --color-blue-500: #2b7fff;
+  --color-blue-500: #3280ff;
   --color-slate-900: #0f172b;
   --color-white: #fff;
   --color-purple-800: #6e11b0;

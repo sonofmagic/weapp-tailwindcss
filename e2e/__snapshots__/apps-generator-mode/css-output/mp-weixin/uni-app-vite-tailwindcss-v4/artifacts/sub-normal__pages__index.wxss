@@ -19,12 +19,12 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
- /* tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.vue */
+ /* tokens: before:content-['normal_subpackage_uni-app-vite-tailwindcss-v4'] <= src/sub-normal/pages/index.vue */
 .before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
- /* tokens: before:content-['normal_subpackage_uni-app-vite-tailwindcss-v4'] <= src/sub-normal/pages/index.vue */
+ /* tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.vue */
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
 }

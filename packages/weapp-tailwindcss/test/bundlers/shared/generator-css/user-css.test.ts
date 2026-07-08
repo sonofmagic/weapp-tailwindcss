@@ -248,6 +248,25 @@ describe('generator user css helpers', () => {
       processed: true,
     })).resolves.not.toContain(':hover')
 
+    const processedLayerCss = await transformGeneratorUserCss([
+      '@layer base {',
+      '  button::after, wx-button::after { display:none; border:none; content:""; }',
+      '  wx-button { background:#000; }',
+      '}',
+      'abc{background:#222}',
+    ].join('\n'), {
+      generatorTarget: 'weapp',
+      generatorStyleOptions: {},
+      cssUserHandlerOptions: {} as any,
+      styleHandler,
+      importFallback: true,
+      processed: true,
+    })
+    expect(processedLayerCss).not.toContain('@layer')
+    expect(processedLayerCss).toContain('button::after, wx-button::after')
+    expect(processedLayerCss).toContain('wx-button { background:#000; }')
+    expect(processedLayerCss).toContain('abc{background:#222}')
+
     await expect(transformGeneratorUserCss('@media source("./src") { .hidden{color:red} }\n.web{color:blue}', {
       generatorTarget: 'web',
       generatorStyleOptions: { cssRemoveHoverPseudoClass: true },

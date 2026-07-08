@@ -7,7 +7,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/h5
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 85293 | 308 | true | true | true | true | true | true | true |
+| 82468 | 308 | true | true | true | true | true | true | true |
 
 ## Generator CSS Files
 
@@ -26,7 +26,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/h5
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `assets/index.1.css` | [artifacts/assets__index.1.css](artifacts/assets__index.1.css) | 4524 | 9 | true | false | true | false | false | true | false |
 | `assets/index.2.css` | [artifacts/assets__index.2.css](artifacts/assets__index.2.css) | 4499 | 9 | true | false | true | false | false | true | false |
-| `assets/index.3.css` | [artifacts/assets__index.3.css](artifacts/assets__index.3.css) | 28173 | 153 | true | true | true | true | true | true | false |
-| `assets/index.4.css` | [artifacts/assets__index.4.css](artifacts/assets__index.4.css) | 37923 | 215 | true | true | true | true | true | true | false |
+| `assets/index.3.css` | [artifacts/assets__index.3.css](artifacts/assets__index.3.css) | 28117 | 153 | true | true | true | true | true | true | false |
+| `assets/index.4.css` | [artifacts/assets__index.4.css](artifacts/assets__index.4.css) | 35154 | 215 | true | true | true | true | true | true | false |
 | `assets/index.5.css` | [artifacts/assets__index.5.css](artifacts/assets__index.5.css) | 1074 | 6 | false | false | false | false | false | false | true |
 | `assets/uni.css` | [artifacts/assets__uni.css](artifacts/assets__uni.css) | 9100 | 86 | false | false | false | false | false | false | false |

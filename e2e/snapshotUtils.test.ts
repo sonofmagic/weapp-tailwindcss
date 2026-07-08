@@ -673,6 +673,34 @@ describe('normalizeCssSnapshot', () => {
     ].join('\n'))
   })
 
+  it('keeps subpackage marker token comments attached while sorting chunks', () => {
+    expect(normalizeCssSnapshot([
+      ':host, page, .tw-root, wx-root-portal-content {',
+      '  --spacing: 8rpx;',
+      '}',
+      '/* tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.mpx */',
+      '.bg-independent-subpackage-marker {',
+      '  background-color: #dc2626;',
+      '}',
+      '/* tokens: before:content-[\'independent_subpackage_demo\'] <= src/sub-independent/pages/index.mpx */',
+      '.before_ccontent-_b_aindependent_subpackage_demo_a_B::before {',
+      '  --tw-content: "independent";',
+      '}',
+    ].join('\n'))).toBe([
+      ':host, page, .tw-root, wx-root-portal-content {',
+      '  --spacing: 8rpx;',
+      '}',
+      '/* tokens: before:content-[\'independent_subpackage_demo\'] <= src/sub-independent/pages/index.mpx */',
+      '.before_ccontent-_b_aindependent_subpackage_demo_a_B::before {',
+      '  --tw-content: "independent";',
+      '}',
+      '/* tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.mpx */',
+      '.bg-independent-subpackage-marker {',
+      '  background-color: #dc2626;',
+      '}',
+    ].join('\n'))
+  })
+
   it('keeps mini-program preflight reset when normalizing Taro webpack app split noise', () => {
     const css = normalizeCssSnapshot([
       '@font-face { font-family: "JDZH-Regular"; src: url(data:font/ttf;base64,abc) format("truetype"); }',
