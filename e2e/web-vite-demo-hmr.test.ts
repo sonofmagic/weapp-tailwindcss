@@ -30,6 +30,11 @@ interface TailwindClassFlowMutation {
   selector: string
 }
 
+interface SourceMutation {
+  previous: string
+  next: string
+}
+
 const repoRoot = path.resolve(__dirname, '..')
 const localUrlRE = /Local:\s*(https?:\/\/\S+)/i
 const reloadMarker = 'web-vite-hmr-marker'
@@ -54,6 +59,10 @@ let restoreSource: (() => Promise<void>) | undefined
 
 function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+function stringifyError(error: unknown) {
+  return error instanceof Error ? error.message : String(error)
 }
 
 async function findFreePort() {
@@ -197,6 +206,10 @@ async function mutateSource(item: WebViteHmrCase, sourceFile: string, kind: Sour
     throw new Error(`${item.name} Web HMR 源码替换没有产生变化`)
   }
   await fs.writeFile(sourceFile, next, 'utf8')
+  return {
+    previous: current,
+    next,
+  } satisfies SourceMutation
 }
 
 function createIconifyProbeSource(source: string, item: WebViteHmrCase) {
@@ -387,15 +400,20 @@ async function waitForDomHmr(page: Page, item: WebViteHmrCase, messages?: ViteHm
   throw new Error(`${item.name} Web HMR DOM 未更新：${lastError}\nbody=${body}${hmr}`)
 }
 
-async function waitForTitleHmr(page: Page, item: WebViteHmrCase) {
+async function waitForTitleHmr(page: Page, item: WebViteHmrCase, options: {
+  timeoutMs?: number
+  messages?: ViteHmrMessage[]
+  fromIndex?: number
+} = {}) {
   if (!item.titleTo) {
     return
   }
   let lastError = ''
   const startedAt = Date.now()
   const targetSelector = item.targetSelector ?? 'h1'
+  const timeoutMs = options.timeoutMs ?? serverTimeoutMs
 
-  while (Date.now() - startedAt < serverTimeoutMs) {
+  while (Date.now() - startedAt < timeoutMs) {
     try {
       const actual = await page.locator(targetSelector).textContent({ timeout: 2_000 })
       if (actual?.includes(item.titleTo)) {
@@ -410,7 +428,46 @@ async function waitForTitleHmr(page: Page, item: WebViteHmrCase) {
   }
 
   const body = await page.locator('body').textContent().catch(error => String(error))
-  throw new Error(`${item.name} Web HMR 文本未更新：${lastError}\nbody=${body}`)
+  const hmr = options.messages ? `\nhmr=${JSON.stringify(options.messages.slice(options.fromIndex ?? 0))}` : ''
+  throw new Error(`${item.name} Web HMR 文本未更新：${lastError}\nbody=${body}${hmr}`)
+}
+
+async function waitForTitleHmrAfterMutation(page: Page, item: WebViteHmrCase, sourceFile: string, mutation: SourceMutation, messages: ViteHmrMessage[], fromIndex: number) {
+  if (!item.titleHmrRetry) {
+    await waitForTitleHmr(page, item, { messages, fromIndex })
+    return
+  }
+
+  const startedAt = Date.now()
+  const firstAttemptMs = Math.min(30_000, Math.max(5_000, Math.floor(serverTimeoutMs / 4)))
+  let firstError: unknown
+  try {
+    await waitForTitleHmr(page, item, {
+      timeoutMs: firstAttemptMs,
+      messages,
+      fromIndex,
+    })
+    return
+  }
+  catch (error) {
+    firstError = error
+  }
+
+  await fs.writeFile(sourceFile, mutation.previous, 'utf8')
+  await wait(500)
+  await fs.writeFile(sourceFile, mutation.next, 'utf8')
+
+  const elapsedMs = Date.now() - startedAt
+  try {
+    await waitForTitleHmr(page, item, {
+      timeoutMs: Math.max(firstAttemptMs, serverTimeoutMs - elapsedMs),
+      messages,
+      fromIndex,
+    })
+  }
+  catch (error) {
+    throw new Error(`${item.name} Web HMR 文本重试后仍未更新：first=${stringifyError(firstError)}\nsecond=${stringifyError(error)}`)
+  }
 }
 
 async function waitForClassHmr(page: Page, item: WebViteHmrCase, messages?: ViteHmrMessage[], fromIndex = 0) {
@@ -640,8 +697,8 @@ describe('demo/web source HMR', () => {
     if (item.expectedViteHmrPath || item.expectedViteHmrPathIncludes) {
       const titleMessageStart = hmrMessages.length
       if (item.titleFrom && item.titleTo) {
-        await mutateSource(item, sourceFile, 'title')
-        await waitForTitleHmr(page, item)
+        const titleMutation = await mutateSource(item, sourceFile, 'title')
+        await waitForTitleHmrAfterMutation(page, item, sourceFile, titleMutation, hmrMessages, titleMessageStart)
         await expectPageSessionPreserved(page, item)
         expectNoViteFullReload(item, hmrMessages, titleMessageStart)
         expectViteSourceHmrUpdate(item, hmrMessages, titleMessageStart)

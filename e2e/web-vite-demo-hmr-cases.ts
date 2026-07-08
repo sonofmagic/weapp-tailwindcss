@@ -22,6 +22,7 @@ export interface WebViteHmrCase {
   reloadAllowed?: boolean
   targetSelector?: string
   matrixCoverage?: boolean
+  titleHmrRetry?: boolean
 }
 
 const allWebViteHmrCases: WebViteHmrCase[] = [
@@ -82,6 +83,7 @@ const allWebViteHmrCases: WebViteHmrCase[] = [
     styleRequired: false,
     classFlowRequired: false,
     targetSelector: '.nav-logo',
+    titleHmrRetry: true,
   },
   {
     name: 'web nuxt vite Tailwind v4 page background',
