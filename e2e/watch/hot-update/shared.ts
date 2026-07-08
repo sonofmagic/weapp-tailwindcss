@@ -355,7 +355,14 @@ const criticalDemoProjectsByShard = Object.fromEntries(
 ) as Record<DemoWatchShardName, string[]>
 
 const bothCases = new Set<ConcreteWatchCaseName>(['taro-webpack-react-tailwindcss-v4', 'uni-app-vite-tailwindcss-v4'])
-const noApplyValidationCases = new Set<ConcreteWatchCaseName>(['mpx-tailwindcss-v4', 'uni-app-vite-tailwindcss-v4', 'taro-vite-react-tailwindcss-v4', 'taro-webpack-react-tailwindcss-v4', 'weapp-vite-tailwindcss-v4'])
+const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
+  'mpx-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-react-tailwindcss-v4',
+  'weapp-vite-tailwindcss-v4',
+])
 const noFunctionValidationCases = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
   'uni-app-x-hbuilderx-tailwindcss-v4',

@@ -114,6 +114,25 @@ describe('e2e', () => {
     expect(countCssSelector(css, '.issue-940-app-class')).toBe(1)
   })
 
+  it('keeps NutUI third-party app wxss when cssEntries and px2rpx are configured', async () => {
+    const projectBase = path.resolve(__dirname, '../demo')
+    const root = path.resolve(projectBase, project.name)
+    const projectPath = path.resolve(projectBase, project.projectPath)
+
+    if (process.env.E2E_SKIP_BUILD !== '1') {
+      await ensureProjectBuilt(root)
+    }
+
+    const css = await fs.readFile(
+      path.resolve(projectPath, 'dist/app.wxss'),
+      'utf8',
+    )
+
+    expect(css).toContain('--nutui-color-primary')
+    expect(css).toContain('.nut-button')
+    expect(css).toContain('.nut-button-primary')
+  })
+
   defineTaroBareSelectorRegression(project)
 
   it('keeps webpack processed static asset urls in app wxss', async () => {

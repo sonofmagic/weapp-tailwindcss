@@ -22,6 +22,14 @@ const ordinaryProjectCssREByName = new Map<string, RegExp>([
   ['taro webpack vue3 Tailwind v4', /\.(?:aspect-w-16|xxx)\b/],
   ['taro webpack vue3 Tailwind v4', /\.tw-page-style-watch-anchor\b/],
 ])
+const thirdPartyCssTokensByName = new Map<string, string[]>([
+  ['taro webpack react Tailwind v4', [
+    '--nutui-color-primary',
+    '.nut-icon',
+    '.nut-button',
+    '.nut-button-primary',
+  ]],
+])
 
 function shouldAssertTaroRuntimeCss(name: string) {
   return name.includes('vite')
@@ -102,6 +110,9 @@ describe('demo Taro H5 build smoke', () => {
     const ordinaryProjectCssRE = ordinaryProjectCssREByName.get(item.name)
     if (ordinaryProjectCssRE) {
       expect(css, `${item.name} should preserve ordinary project CSS`).toMatch(ordinaryProjectCssRE)
+    }
+    for (const token of thirdPartyCssTokensByName.get(item.name) ?? []) {
+      expect(css, `${item.name} should preserve third-party CSS token ${token}`).toContain(token)
     }
   }, 1_200_000)
 })
