@@ -209,8 +209,12 @@ describe('ci workflows', () => {
       expect(script).toContain('--exclude e2e/uni-app-vite-tailwindcss-dev-h5.test.ts')
     }
     expect(packageJson.scripts['e2e:preprocessor']).toBe('vitest run -c ./e2e/vitest.e2e.config.ts e2e/preprocessor-source.test.ts')
+    expect(packageJson.scripts['e2e:demo-user-workflow']).toContain('e2e/demo-user-workflow-output.test.ts')
+    expect(packageJson.scripts['e2e:demo-user-workflow']).toContain('e2e/demo-user-dev-workflow.test.ts')
+    expect(packageJson.scripts['e2e:demo-user-workflow:dev']).toBe('cross-env E2E_WATCH_CASE=demo pnpm e2e:watch')
     expect(workflow.jobs['e2e-focused'].strategy.matrix.include).toEqual(expect.arrayContaining([
       expect.objectContaining({ command: 'pnpm e2e:preprocessor' }),
+      expect.objectContaining({ command: 'pnpm e2e:demo-user-workflow' }),
     ]))
     expect(readText('e2e/preprocessor-source.test.ts')).toContain('@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4')
     expect(readText('demo/weapp-vite-tailwindcss-v4/app.css')).not.toContain('@import "tailwindcss";')
@@ -598,6 +602,10 @@ describe('e2e watch workflow', () => {
 
     expect(workflow.jobs['pr-quick-gate'].strategy['fail-fast']).toBe(false)
     expect(cases).toEqual(expect.arrayContaining([
+      'macos:22:demo-core:default',
+      'macos:22:demo-taro-react:default',
+      'macos:22:demo-taro-vue3:default',
+      'macos:22:demo-uni:default',
       'macos:22:uni-app-vite-tailwindcss-v4:default',
       'macos:22:uni-app-vite-tailwindcss-v4:issue33',
       'macos:22:taro-vite-react-tailwindcss-v4:default',
@@ -614,6 +622,12 @@ describe('e2e watch workflow', () => {
     ]))
     expect(cases.some(item => item.includes(':weapp-vite-tailwindcss-'))).toBe(false)
     expect(cases).not.toContain('macos:22:taro-webpack-react-tailwindcss-v4:issue33')
+    for (const watchCase of ['demo-core', 'demo-taro-react', 'demo-taro-vue3', 'demo-uni']) {
+      expect(
+        rows.some(row => row.watch_case === watchCase && row.watch_save_snapshots === '1'),
+        `${watchCase} should run as a real demo development workflow in PR e2e-watch`,
+      ).toBe(true)
+    }
     expect(stepRuns(workflow, 'pr-quick-gate')).toContain('pnpm e2e:watch')
     expectPlaywrightInstallRetry(
       stepRuns(workflow, 'pr-quick-gate').find(run => run.includes('playwright install chromium'))!,
