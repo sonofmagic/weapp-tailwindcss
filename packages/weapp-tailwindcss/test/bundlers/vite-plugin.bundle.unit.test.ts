@@ -1286,6 +1286,183 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     })
   }, TEST_TIMEOUT_MS)
 
+  it('keeps the full web runtime when Vite serve HMR adds a Tailwind candidate', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-web-hmr-full-runtime-'))
+    createdDirs.push(root)
+    const pageFile = path.join(root, 'src/components/WeappTailwindcss.vue')
+    const cssFile = path.join(root, 'src/tailwind.css')
+    const css = [
+      '@import "tailwindcss" source(none);',
+      '@plugin "@iconify/tailwind4" { prefix: "i"; }',
+      '@source "./**/*.{html,js,ts,jsx,tsx,vue}";',
+    ].join('\n')
+    const initialSource = [
+      '<template>',
+      '  <view class="i-[mdi--github-circle] mx-2 text-[32px] text-black" />',
+      '  <view class="i-[mdi--star] mx-2 text-[32px] text-yellow-400" />',
+      '  <view class="before:content-[\'开始_tailwindcss_开发之旅吧！\']"></view>',
+      '</template>',
+    ].join('\n')
+    const updatedContentClass = 'before:content-[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\']'
+    const updatedSource = initialSource.replace(
+      'before:content-[\'开始_tailwindcss_开发之旅吧！\']',
+      updatedContentClass,
+    )
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await writeFile(pageFile, initialSource, 'utf8')
+    await mkdir(path.dirname(cssFile), { recursive: true })
+    await writeFile(cssFile, css, 'utf8')
+
+    const generatedOptions: Array<{ candidates: Set<string>, scanSources?: boolean | unknown }> = []
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(async (options: { candidates: Set<string>, scanSources?: boolean | unknown }) => {
+            generatedOptions.push(options)
+            const css = [...options.candidates].sort().map(candidate => `.${candidate.replace(/[^\w-]/g, '_')}{display:block}`).join('\n')
+            return {
+              css,
+              rawCss: css,
+              target: 'web',
+              classSet: new Set(options.candidates),
+              dependencies: [],
+              sources: [],
+              root: null,
+              version: 4,
+            }
+          }),
+          validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        resolveTailwindV4Source: createMockTailwindV4SourceResolver({ projectRoot: root, base: path.dirname(cssFile) }),
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+          projectRoot: root,
+          base: path.dirname(cssFile),
+          baseFallbacks: [],
+          css,
+          dependencies: [cssFile],
+        })),
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+          projectRoot: root,
+          base: path.dirname(cssFile),
+          baseFallbacks: [],
+          packageName: 'tailwindcss',
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      appType: 'uni-app-vite',
+      generator: {
+        target: 'web',
+      },
+      styleHandler: vi.fn(async () => {
+        throw new Error('web target should not use mini-program styleHandler')
+      }),
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        options: {
+          projectRoot: root,
+          tailwindcss: {
+            cwd: root,
+            v4: {
+              cssSources: [
+                {
+                  file: cssFile,
+                  base: path.dirname(cssFile),
+                  css,
+                  dependencies: [cssFile],
+                },
+              ],
+            },
+          },
+        },
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      appType: 'uni-app-vite',
+      generator: {
+        target: 'web',
+      },
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const servePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+    const cssHmrPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve-hmr') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(servePlugin).toBeTruthy()
+    expect(cssHmrPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+      plugins: [{ name: 'vite:uni' }],
+    } as ResolvedConfig)
+
+    await getTransformHandler(sourcePlugin)?.call(sourcePlugin, initialSource, pageFile)
+    await getTransformHandler(servePlugin)?.call(servePlugin, css, cssFile)
+    generatedOptions.length = 0
+
+    await writeFile(pageFile, updatedSource, 'utf8')
+    const cssModule = {
+      id: cssFile,
+      file: cssFile,
+      url: cssFile,
+    } as ModuleNode
+    await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+      file: pageFile,
+      modules: [{
+        id: pageFile,
+        isSelfAccepting: true,
+        url: '/src/components/WeappTailwindcss.vue',
+      } as ModuleNode],
+      read: vi.fn(async () => updatedSource),
+      timestamp: 123456,
+      server: {
+        config: {
+          root,
+          build: { outDir: 'dist' },
+        },
+        ws: {
+          send: vi.fn(),
+        },
+        moduleGraph: {
+          getModuleById: vi.fn(id => id === cssFile ? cssModule : undefined),
+          getModulesByFile: vi.fn(() => undefined),
+          invalidateModule: vi.fn(),
+        },
+      },
+    } as HmrContext)
+
+    await getTransformHandler(cssHmrPlugin)?.call(
+      cssHmrPlugin,
+      [
+        'import {updateStyle as __vite__updateStyle} from "/@vite/client"',
+        `const __vite__id = ${JSON.stringify(`${cssFile}?direct`)}`,
+        `const __vite__css = ${JSON.stringify(css)}`,
+        '__vite__updateStyle(__vite__id, __vite__css)',
+      ].join('\n'),
+      `${cssFile}?direct&t=123456`,
+    )
+
+    const hmrOptions = generatedOptions.at(-1)
+    expect(hmrOptions?.scanSources).toBe(true)
+    expect([...(hmrOptions?.candidates ?? new Set<string>())]).toEqual(expect.arrayContaining([
+      'i-[mdi--github-circle]',
+      'i-[mdi--star]',
+      updatedContentClass,
+    ]))
+  }, TEST_TIMEOUT_MS)
+
   it('replays latest source candidate sync for rapid Vite serve watch changes on the same file', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-hmr-source-sync-'))
     createdDirs.push(root)

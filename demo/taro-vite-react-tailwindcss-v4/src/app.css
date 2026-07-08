@@ -2,6 +2,9 @@
 @import "@nutui/nutui-react-taro/dist/styles/themes/default.css";
 @import "@nutui/nutui-react-taro/dist/style.css";
 @config "../tailwind.config.js";
+@plugin "@iconify/tailwind4" {
+  prefix: "i";
+}
 @source "./app.ts";
 @source "./pages/index/**/*.{ts,tsx,jsx,js}";
 @source not "./sub-normal/**/*";

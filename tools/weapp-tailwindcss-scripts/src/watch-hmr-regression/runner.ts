@@ -17,6 +17,7 @@ import { summarizeMemoryDebugSamples, summarizeMemorySamples } from './memory-re
 import {
   createSubPackageWatchCase,
   runClassMutation,
+  runIconifyHotUpdate,
   runMainStyleHotUpdate,
   runStyleMutation,
   runSubPackageMutation,
@@ -72,6 +73,7 @@ interface SubPackageMutationRunResult {
 function resolveCaseSourceFiles(watchCase: WatchCase) {
   return [...new Set([
     watchCase.contentMutation?.sourceFile,
+    watchCase.iconifyHmr?.sourceFile,
     watchCase.userReportedHotUpdate?.sourceFile,
     watchCase.templateMutation.sourceFile,
     watchCase.scriptMutation.sourceFile,
@@ -250,6 +252,23 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       )
     }
 
+    let iconifyHmrMetrics
+    if (watchCase.iconifyHmr) {
+      const iconifySourceOriginal = sourceOriginals.get(watchCase.iconifyHmr.sourceFile)
+      if (iconifySourceOriginal == null) {
+        throw new Error(`[${watchCase.label}] missing iconify HMR source original`)
+      }
+
+      iconifyHmrMetrics = await runIconifyHotUpdate(
+        watchCase,
+        options,
+        session,
+        watchCase.iconifyHmr,
+        iconifySourceOriginal,
+        globalStyleOutputs,
+      )
+    }
+
     const mainStyleHotUpdateMetrics = await runMainStyleHotUpdate(
       watchCase,
       options,
@@ -338,6 +357,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       mutationMetrics,
       mainStyleHotUpdate: mainStyleHotUpdateMetrics,
       ...(userReportedHotUpdateMetrics ? { userReportedHotUpdate: userReportedHotUpdateMetrics } : {}),
+      ...(iconifyHmrMetrics ? { iconifyHmr: iconifyHmrMetrics } : {}),
       ...(webHmrMetrics ? { webHmr: webHmrMetrics } : {}),
       subPackageMutationMetrics,
       summaryByMutationKind: summarizeMutationMetricsByKind(mutationMetrics),

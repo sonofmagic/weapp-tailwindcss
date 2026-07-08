@@ -1,6 +1,9 @@
 @import "tailwindcss" source(none);
 @import "./third-party-ui.css";
 @config "../tailwind.config.js";
+@plugin "@iconify/tailwind4" {
+  prefix: "i";
+}
 @source "./**/*.{html,js,ts,wxml,ttml}";
 @source not "./sub-normal/**/*";
 @source not "./sub-independent/**/*";

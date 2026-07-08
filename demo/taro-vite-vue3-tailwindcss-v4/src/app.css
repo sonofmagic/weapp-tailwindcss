@@ -1,6 +1,9 @@
 @import "tailwindcss" source(none);
 @import "@nutui/nutui-taro/dist/style.css";
 @config "../tailwind.config.js";
+@plugin "@iconify/tailwind4" {
+  prefix: "i";
+}
 @source "./app.ts";
 @source "./App.vue";
 @source "./pages/index/**/*.{ts,js,vue}";

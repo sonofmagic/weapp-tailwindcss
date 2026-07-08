@@ -209,6 +209,22 @@ interface UserReportedHotUpdateMetric {
   rollbackEffectiveMs: number
 }
 
+interface IconifyHotUpdateMetric {
+  sourceFile: string
+  marker: string
+  beforeContentClass: string
+  afterContentClass: string
+  iconClassTokens: string[]
+  contentClassTokens: string[]
+  preservedIconEscapedClasses: string[]
+  verifiedContentEscapedClasses: string[]
+  globalStyleOutputs: string[]
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+}
+
 interface MainStyleHotUpdateMetric {
   label: string
   mutationKind: 'template' | 'script' | 'content'
@@ -281,6 +297,16 @@ interface WebHmrMetric {
     computedStyle: Partial<Record<'color' | 'backgroundColor' | 'width' | 'height', string>>
     hotUpdateEffectiveMs: number
   }>
+  iconifyHmr?: {
+    marker: string
+    beforeContentClass: string
+    afterContentClass: string
+    iconClassTokens: string[]
+    contentClassTokens: string[]
+    preservedIconCssIncludes: string[]
+    verifiedContentCssIncludes: string[]
+    hotUpdateEffectiveMs: number
+  }
   totalMs: number
 }
 
@@ -303,6 +329,7 @@ interface HotUpdateCaseReport {
   mainStyleHotUpdate?: MainStyleHotUpdateMetric
   subPackageMainStyleHotUpdates?: SubPackageMainStyleHotUpdateMetric[]
   userReportedHotUpdate?: UserReportedHotUpdateMetric
+  iconifyHmr?: IconifyHotUpdateMetric
   webHmr?: WebHmrMetric
   subPackageMutationMetrics?: SubPackageMutationMetric[]
   summaryByMutationKind: Partial<Record<MutationKind, HotUpdateSummary>>
@@ -664,6 +691,12 @@ function collectReportBudgetSamples(report: HotUpdateReport) {
           hotUpdateEffectiveMs: metric.hotUpdateEffectiveMs,
         })
       }
+      if (oneCase.webHmr.iconifyHmr) {
+        samples.push({
+          label: `${oneCase.project}:web-iconify-hmr`,
+          hotUpdateEffectiveMs: oneCase.webHmr.iconifyHmr.hotUpdateEffectiveMs,
+        })
+      }
     }
 
     for (const mutation of oneCase.mutationMetrics) {
@@ -706,6 +739,13 @@ function collectReportBudgetSamples(report: HotUpdateReport) {
       samples.push({
         label: `${oneCase.project}:user-reported:${oneCase.userReportedHotUpdate.label}`,
         hotUpdateEffectiveMs: oneCase.userReportedHotUpdate.hotUpdateEffectiveMs,
+      })
+    }
+
+    if (oneCase.iconifyHmr) {
+      samples.push({
+        label: `${oneCase.project}:iconify-hmr`,
+        hotUpdateEffectiveMs: oneCase.iconifyHmr.hotUpdateEffectiveMs,
       })
     }
 
@@ -762,6 +802,56 @@ function expectedWebHmrDevScript(item: HotUpdateCaseReport) {
   return item.name.startsWith('taro-') ? 'build:h5' : 'dev:h5'
 }
 
+function assertIconifyHotUpdateMetric(
+  item: HotUpdateCaseReport,
+  metric: IconifyHotUpdateMetric | undefined,
+  maxHotUpdateMs: number,
+) {
+  expect(metric, `[${item.project}] should include Iconify arbitrary icon content HMR metrics`).toBeDefined()
+  if (!metric) {
+    throw new Error(`[${item.project}] missing Iconify HMR metric`)
+  }
+  expect(metric.marker).toContain(`tw-watch-iconify-${item.name}`)
+  expect(metric.iconClassTokens).toEqual(expect.arrayContaining([
+    'i-[mdi--github-circle]',
+    'i-[mdi--star]',
+    'i-[svg-spinners--180-ring-with-bg]',
+  ]))
+  expect(metric.beforeContentClass).toContain('现在，让我们开始神奇的_tailwindcss_开发之旅吧！')
+  expect(metric.afterContentClass).toContain('现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！')
+  expect(metric.contentClassTokens).toEqual(expect.arrayContaining([metric.beforeContentClass, metric.afterContentClass]))
+  expect(metric.preservedIconEscapedClasses.length).toBe(metric.iconClassTokens.length)
+  expect(metric.verifiedContentEscapedClasses.length).toBeGreaterThanOrEqual(1)
+  assertHasWxssOutput(metric.globalStyleOutputs, `[${item.project}] Iconify HMR global style outputs`)
+  expect(metric.hotUpdateEffectiveMs).toBeGreaterThan(0)
+  expect(metric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+  expect(metric.rollbackEffectiveMs).toBeGreaterThan(0)
+}
+
+function assertWebIconifyHotUpdateMetric(
+  item: HotUpdateCaseReport,
+  webHmr: WebHmrMetric,
+  maxHotUpdateMs: number,
+) {
+  const metric = webHmr.iconifyHmr
+  expect(metric, `[${item.project}] should include Web/H5 Iconify arbitrary icon content HMR metrics`).toBeDefined()
+  if (!metric) {
+    throw new Error(`[${item.project}] missing Web/H5 Iconify HMR metric`)
+  }
+  expect(metric.marker).toContain(`tw-watch-web-iconify-${item.name}`)
+  expect(metric.iconClassTokens).toEqual(expect.arrayContaining([
+    'i-[mdi--github-circle]',
+    'i-[mdi--star]',
+    'i-[svg-spinners--180-ring-with-bg]',
+  ]))
+  expect(metric.beforeContentClass).toContain('现在，让我们开始神奇的_tailwindcss_开发之旅吧！')
+  expect(metric.afterContentClass).toContain('现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！')
+  expect(metric.preservedIconCssIncludes.length).toBe(metric.iconClassTokens.length)
+  expect(metric.verifiedContentCssIncludes.length).toBeGreaterThanOrEqual(1)
+  expect(metric.hotUpdateEffectiveMs).toBeGreaterThan(0)
+  expect(metric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+}
+
 function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
   const webHmr = item.webHmr
   expect(webHmr, `[${item.project}] should include web Tailwind HMR Playwright metrics`).toBeDefined()
@@ -784,6 +874,7 @@ function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
   expect(webHmr.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
   expect(webHmr.rollbackEffectiveMs).toBeGreaterThan(0)
   expect(webHmr.totalMs).toBeGreaterThanOrEqual(webHmr.hotUpdateEffectiveMs)
+  assertWebIconifyHotUpdateMetric(item, webHmr, maxHotUpdateMs)
   const sourceClassReplacementSequence = webHmr.sourceClassReplacementSequence ?? []
   if (sourceClassReplacementSequence.length > 0) {
     expect(sourceClassReplacementSequence.map(metric => metric.label)).toEqual(['bgObj bg-[#999999] to bg-[#134543]', 'bgObj bg-[#134543] to bg-[#256789]'])
@@ -846,6 +937,12 @@ function assertHmrDurationReport(report: HotUpdateReport, item: HotUpdateCaseRep
   }
   if (item.webHmr) {
     expect(surfaces).toContain('web')
+    if (item.webHmr.iconifyHmr) {
+      expect(surfaces).toContain('web:iconify-hmr')
+    }
+  }
+  if (item.iconifyHmr) {
+    expect(surfaces).toContain('iconify-hmr')
   }
   for (const subPackage of item.subPackageMainStyleHotUpdates ?? []) {
     expect(surfaces).toContain(`subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`)
@@ -1046,6 +1143,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     expect(item.summaryByMutationKind.content?.count ?? 0).toBe(hasContentMutation ? 1 : 0)
     assertHmrDurationReport(report, item, maxHotUpdateMs)
     assertHasWxssOutput(normalizeGlobalStyleOutputs(item.globalStyleOutputs ?? item.globalStyleOutput), `[${item.project}] case global style outputs`)
+    assertIconifyHotUpdateMetric(item, item.iconifyHmr, maxHotUpdateMs)
     assertMainStyleHotUpdateMetric(item.mainStyleHotUpdate, `[${item.project}]`, maxHotUpdateMs, configuredWatchCase?.templateMutation)
     for (const subPackage of subPackageMutationMetrics) {
       const configuredSubPackageMutation = configuredWatchCase?.subPackageMutations?.find(item => item.root === subPackage.root)

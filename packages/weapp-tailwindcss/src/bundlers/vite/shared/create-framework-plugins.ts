@@ -1022,7 +1022,8 @@ export function createViteFrameworkPlugins(
         && pendingHmrCandidateChange !== undefined
         && pendingHmrChange === undefined
       )
-    const runtime = pendingHmrChange
+    const canUsePendingHmrCandidatesOnly = pendingHmrChange && !currentGeneratorBranch.isWeb
+    const runtime = canUsePendingHmrCandidatesOnly
       ? new Set(pendingHmrChange.addedCandidates)
       : fullRuntime
     if (
@@ -1088,7 +1089,7 @@ export function createViteFrameworkPlugins(
         ? generatedClassSetByFile.get(file)
         : undefined,
       deferEmptyScopedCssSource: shouldDeferEmptyScopedCssSource,
-      disableSourceScan: pendingHmrChange !== undefined,
+      disableSourceScan: pendingHmrChange !== undefined && !currentGeneratorBranch.isWeb,
       restoreLocalCssImports: !currentGeneratorBranch.isWeb,
     }), {
       file,

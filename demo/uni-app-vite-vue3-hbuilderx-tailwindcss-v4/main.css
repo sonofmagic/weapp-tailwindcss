@@ -1,5 +1,8 @@
 @import "tailwindcss" source(none);
 @config "./tailwind.config.js";
+@plugin "@iconify/tailwind4" {
+  prefix: "i";
+}
 @source "./App.vue";
 @source "./pages/**/*.{vue,js,ts}";
 @source not "./uni_modules/**/*";

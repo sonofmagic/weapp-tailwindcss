@@ -24,6 +24,9 @@
     "react-dom": "catalog:react19"
   },
   "devDependencies": {
+    "@iconify-json/mdi": "catalog:iconifyJson",
+    "@iconify-json/svg-spinners": "catalog:iconifyJson",
+    "@iconify/tailwind4": "^1.2.3",
     "@rsbuild/core": "catalog:rsbuild2",
     "@rsbuild/plugin-react": "catalog:rsbuild2",
     "@types/react": "catalog:react19",

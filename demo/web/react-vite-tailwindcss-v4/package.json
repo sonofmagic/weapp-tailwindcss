@@ -24,9 +24,12 @@
     "react-dom": "catalog:react19"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "catalog:vitePluginReact6",
+    "@iconify-json/mdi": "catalog:iconifyJson",
+    "@iconify-json/svg-spinners": "catalog:iconifyJson",
+    "@iconify/tailwind4": "^1.2.3",
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
+    "@vitejs/plugin-react": "catalog:vitePluginReact6",
     "cross-env": "catalog:crossEnv",
     "tailwindcss": "catalog:tailwindcss4",
     "typescript": "catalog:typescript59",

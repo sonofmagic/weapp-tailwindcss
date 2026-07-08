@@ -2,6 +2,9 @@
 @import "@nutui/nutui-taro/dist/style.css";
 
 @config "../tailwind.config.js";
+@plugin "@iconify/tailwind4" {
+  prefix: "i";
+}
 @source "../src";
 @source not "../src/sub-normal/**/*";
 @source not "../src/sub-independent/**/*";

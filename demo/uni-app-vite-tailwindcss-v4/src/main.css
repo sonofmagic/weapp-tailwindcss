@@ -1,6 +1,9 @@
 /* stylelint-disable custom-property-pattern */
 @import "tailwindcss" source(none);
 @config "../tailwind.config.js";
+@plugin "@iconify/tailwind4" {
+  prefix: "i";
+}
 @source "../src/**/*.{vue,js,ts,jsx,tsx,html}";
 @source not "../src/uni_modules/**/*";
 @source not "../src/sub-normal/**/*";

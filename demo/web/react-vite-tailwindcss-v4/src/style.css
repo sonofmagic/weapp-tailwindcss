@@ -4,6 +4,9 @@
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
 
 @config "../tailwind.config.cjs";
+@plugin "@iconify/tailwind4" {
+  prefix: "i";
+}
 @source "../index.html";
 @source "./**/*.{ts,tsx}";
 @custom-variant system-dark {

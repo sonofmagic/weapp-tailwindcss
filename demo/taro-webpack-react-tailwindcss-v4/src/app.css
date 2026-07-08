@@ -3,6 +3,9 @@
 @import "@nutui/nutui-react-taro/dist/style.css";
 
 @config "../tailwind.config.js";
+@plugin "@iconify/tailwind4" {
+  prefix: "i";
+}
 @source "../src/pages/issue-909";
 @source not "../src/sub-normal/**/*";
 @source not "../src/sub-independent/**/*";

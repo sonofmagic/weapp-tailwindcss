@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
 @config "../tailwind.config.cjs";
+@plugin "@iconify/tailwind4" {
+  prefix: "i";
+}
 @source "../index.html";
 @source "./**/*.{vue,ts}";
 @custom-variant system-dark {

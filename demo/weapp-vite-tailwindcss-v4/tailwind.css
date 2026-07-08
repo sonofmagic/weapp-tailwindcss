@@ -7,6 +7,9 @@
 }
 @plugin "@iconify/tailwind4";
 @plugin "@iconify/tailwind4" {
+  prefix: "i";
+}
+@plugin "@iconify/tailwind4" {
   prefix: "iconify";
   scale: 1.2;
 }

@@ -1,6 +1,7 @@
 import type { Buffer } from 'node:buffer'
 import type { ChildProcess } from 'node:child_process'
 import { spawn, spawnSync } from 'node:child_process'
+import { readFile, writeFile } from 'node:fs/promises'
 import net from 'node:net'
 import process from 'node:process'
 import path from 'pathe'
@@ -12,6 +13,20 @@ const localUrlRE = /Local:\s*(https?:\/\/\S+)/i
 const pollIntervalMs = 500
 const serverTimeoutMs = 180_000
 const cssBlockCommentRE = /\/\*[\s\S]*?\*\//g
+const h5IconHmrCssModulePath = '/src/main.css?direct'
+const h5IconHmrInitialContent = '现在，让我们开始神奇的_tailwindcss_开发之旅吧！'
+const h5IconHmrUpdatedContent = '现在，让我们开始神奇的_tailwindcss_HMR_回归之旅吧！'
+const h5IconGithubSelectorRE = /\.i-\\\[mdi--github-circle\\\]/
+const h5IconStarSelectorRE = /\.i-\\\[mdi--star\\\]/
+const h5IconHmrProbeAnchor = '<view class="i-mdi-home"></view>'
+const h5IconHmrInitialProbe = [
+  h5IconHmrProbeAnchor,
+  '    <view class="mt-3 flex items-center gap-3">',
+  '      <view class="i-[mdi--github-circle] text-[32px] text-slate-950"></view>',
+  '      <view class="i-[mdi--star] text-[32px] text-yellow-400"></view>',
+  `      <view class="h5-content-hmr-probe before:content-['${h5IconHmrInitialContent}']"></view>`,
+  '    </view>',
+].join('\n')
 
 interface CssModuleExpectation {
   label: string
@@ -45,8 +60,8 @@ const cases: DevH5Case[] = [
     modules: [
       {
         label: 'main.css direct module',
-        path: '/src/main.css?direct',
-        contains: ['.flex', '.bg-midnight', '--color-midnight', '.i-mdi-home'],
+        path: h5IconHmrCssModulePath,
+        contains: ['.flex', '.bg-midnight', '--color-midnight'],
       },
       {
         label: 'normal subpackage css direct module',
@@ -111,7 +126,7 @@ function killProcessTree(child: ChildProcess) {
   }
 }
 
-function createDevServer(projectRoot: string, port: number) {
+function createDevServer(projectRoot: string, port: number, env: NodeJS.ProcessEnv = {}) {
   const child = spawn('pnpm', ['run', 'dev:h5'], {
     cwd: projectRoot,
     detached: process.platform !== 'win32',
@@ -119,6 +134,7 @@ function createDevServer(projectRoot: string, port: number) {
     stdio: ['ignore', 'pipe', 'pipe'],
     env: {
       ...process.env,
+      ...env,
       BROWSER: 'none',
       WEAPP_TW_WATCH_REGRESSION: '1',
       VITE_WEAPP_TW_WATCH_REGRESSION: '1',
@@ -230,6 +246,49 @@ async function waitForCssModule(
   throw new Error(`等待 dev:h5 CSS 模块超时：${requestPath}\nlastFetch=${errorText}\n${logs.join('')}`)
 }
 
+async function waitForCssModuleMatch(
+  requestPath: string,
+  child: ChildProcess,
+  logs: string[],
+  fallbackBaseUrl: string,
+  matches: (source: string) => boolean,
+  label: string,
+) {
+  const startedAt = Date.now()
+  let lastSource = ''
+  let lastFetchError: unknown
+
+  while (Date.now() - startedAt < serverTimeoutMs) {
+    if (child.exitCode != null) {
+      throw new Error(`dev:h5 提前退出，exit=${child.exitCode}\n${logs.join('')}`)
+    }
+
+    for (const baseUrl of resolveBaseUrls(logs, fallbackBaseUrl)) {
+      try {
+        const response = await fetch(joinUrl(baseUrl, requestPath))
+        if (response.ok) {
+          const source = await response.text()
+          lastSource = source
+          if (matches(source)) {
+            return source
+          }
+        }
+        else {
+          lastFetchError = new Error(`${baseUrl} -> HTTP ${response.status} ${response.statusText}`)
+        }
+      }
+      catch (error) {
+        lastFetchError = error
+      }
+    }
+
+    await wait(pollIntervalMs)
+  }
+
+  const errorText = lastFetchError instanceof Error ? lastFetchError.message : String(lastFetchError)
+  throw new Error(`等待 dev:h5 CSS 模块匹配超时：${label}\npath=${requestPath}\nlastFetch=${errorText}\nlastSource=${lastSource.slice(0, 2000)}\n${logs.join('')}`)
+}
+
 function expectCssModule(source: string, expectation: CssModuleExpectation) {
   const sourceWithoutComments = source.replace(cssBlockCommentRE, '')
   expect(sourceWithoutComments, `${expectation.label} 不应保留 Tailwind 原始指令`).not.toMatch(rawTailwindDirectiveRE)
@@ -247,6 +306,12 @@ function expectCssModule(source: string, expectation: CssModuleExpectation) {
       expect(source, `${expectation.label} 应匹配 ${item}`).toMatch(item)
     }
   }
+}
+
+function hasH5IconHmrCss(source: string, content: string) {
+  return h5IconGithubSelectorRE.test(source)
+    && h5IconStarSelectorRE.test(source)
+    && source.includes(content)
 }
 
 describe('uni-app vite Tailwind dev H5 css hmr', () => {
@@ -269,4 +334,52 @@ describe('uni-app vite Tailwind dev H5 css hmr', () => {
       expectCssModule(source, cssModule)
     }
   }, serverTimeoutMs + 30_000)
+
+  it('keeps iconify bracket icons after content class HMR', async () => {
+    const port = await findFreePort()
+    const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vite-tailwindcss-v4')
+    const pageFile = path.resolve(projectRoot, 'src/pages/index/index.vue')
+    const original = await readFile(pageFile, 'utf8')
+    const initial = original.replace(h5IconHmrProbeAnchor, h5IconHmrInitialProbe)
+    if (initial === original) {
+      throw new Error(`H5 icon HMR probe anchor not found: ${h5IconHmrProbeAnchor}`)
+    }
+    const updated = initial.replace(h5IconHmrInitialContent, h5IconHmrUpdatedContent)
+
+    await writeFile(pageFile, initial, 'utf8')
+    let child: ChildProcess | undefined
+    let logs: string[] = []
+
+    try {
+      child = createDevServer(projectRoot, port, {
+        WEAPP_TW_DISABLE_EGOIST_ICONS: '1',
+      })
+      logs = collectProcessOutput(child)
+      const fallbackBaseUrl = `http://127.0.0.1:${port}/`
+
+      await waitForCssModuleMatch(
+        h5IconHmrCssModulePath,
+        child,
+        logs,
+        fallbackBaseUrl,
+        source => hasH5IconHmrCss(source, h5IconHmrInitialContent),
+        'initial iconify bracket icon css',
+      )
+
+      await writeFile(pageFile, updated, 'utf8')
+
+      const source = await waitForCssModuleMatch(
+        h5IconHmrCssModulePath,
+        child,
+        logs,
+        fallbackBaseUrl,
+        nextSource => hasH5IconHmrCss(nextSource, h5IconHmrUpdatedContent),
+        'updated content css should preserve iconify bracket icons',
+      )
+      expect(source).not.toContain(h5IconHmrInitialContent)
+    }
+    finally {
+      await writeFile(pageFile, original, 'utf8')
+    }
+  }, serverTimeoutMs + 60_000)
 })

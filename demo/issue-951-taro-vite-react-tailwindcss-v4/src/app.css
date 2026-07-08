@@ -1,5 +1,8 @@
 @import "tailwindcss" source(none);
 @config "../tailwind.config.js";
+@plugin "@iconify/tailwind4" {
+  prefix: "i";
+}
 @source "./pages/**/*.{ts,tsx}";
 @source not "./sub-normal/**/*";
 @source not "./sub-independent/**/*";

@@ -170,6 +170,18 @@ export function collectCaseDurationTimings(item: WatchCaseMetrics) {
     }))
   }
 
+  if (item.iconifyHmr) {
+    pushTiming(timings, createTiming({
+      surface: 'iconify-hmr',
+      sourceFile: item.iconifyHmr.sourceFile,
+      hotUpdateEffectiveMs: item.iconifyHmr.hotUpdateEffectiveMs,
+      rollbackEffectiveMs: item.iconifyHmr.rollbackEffectiveMs,
+      hotUpdatePluginProcessMs: item.iconifyHmr.hotUpdatePluginProcessMs,
+      hotUpdateOutputDiagnostics: item.iconifyHmr.hotUpdateOutputDiagnostics,
+      rollbackOutputDiagnostics: item.iconifyHmr.rollbackOutputDiagnostics,
+    }))
+  }
+
   if (item.mainStyleHotUpdate) {
     pushTiming(timings, createTiming({
       surface: `main-style:${item.mainStyleHotUpdate.label}`,
@@ -202,6 +214,13 @@ export function collectCaseDurationTimings(item: WatchCaseMetrics) {
         surface: `web:source-dom:${sequence.label}`,
         sourceFile: item.webHmr.sourceFile,
         hotUpdateEffectiveMs: sequence.hotUpdateEffectiveMs,
+      }))
+    }
+    if (item.webHmr.iconifyHmr) {
+      pushTiming(timings, createTiming({
+        surface: 'web:iconify-hmr',
+        sourceFile: item.webHmr.sourceFile,
+        hotUpdateEffectiveMs: item.webHmr.iconifyHmr.hotUpdateEffectiveMs,
       }))
     }
   }

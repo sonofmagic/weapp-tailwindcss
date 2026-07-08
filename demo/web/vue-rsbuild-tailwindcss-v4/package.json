@@ -23,6 +23,9 @@
     "vue": "catalog:vue3"
   },
   "devDependencies": {
+    "@iconify-json/mdi": "catalog:iconifyJson",
+    "@iconify-json/svg-spinners": "catalog:iconifyJson",
+    "@iconify/tailwind4": "^1.2.3",
     "@rsbuild/core": "catalog:rsbuild2",
     "@rsbuild/plugin-vue": "catalog:rsbuild2",
     "@vue/compiler-sfc": "catalog:vue3",

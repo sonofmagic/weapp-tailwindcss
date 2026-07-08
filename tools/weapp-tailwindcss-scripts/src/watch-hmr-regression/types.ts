@@ -228,6 +228,22 @@ export interface UserReportedHotUpdateConfig {
   minRequiredGlobalStyleEscapedClasses?: number
 }
 
+export interface IconifyHotUpdateConfig {
+  sourceFile: string
+  beforeContentClass?: string
+  afterContentClass?: string
+  iconClassTokens?: string[]
+  mutate?: (source: string, payload: IconifyHotUpdatePayload) => string
+}
+
+export interface IconifyHotUpdatePayload {
+  marker: string
+  classLiteral: string
+  iconClassTokens: string[]
+  beforeContentClass: string
+  afterContentClass: string
+}
+
 export interface WatchCase {
   name: ConcreteOrPlatformWatchCaseName
   label: string
@@ -247,6 +263,7 @@ export interface WatchCase {
   outputStyleCandidates: string[]
   globalStyleCandidates: string[]
   contentMutation?: ClassMutationConfig
+  iconifyHmr?: IconifyHotUpdateConfig
   userReportedHotUpdate?: UserReportedHotUpdateConfig
   templateMutation: ClassMutationConfig
   scriptMutation: ClassMutationConfig
@@ -292,6 +309,14 @@ export interface WebHmrConfig {
   rollbackExpectedStyle?: Partial<Record<'backgroundColor' | 'width' | 'height', string>>
   sourceClassReplacementSequence?: WebHmrSourceClassReplacement[]
   sourceDomReplacementSequence?: WebHmrSourceDomReplacement[]
+  iconifyHmr?: WebIconifyHmrConfig
+}
+
+export interface WebIconifyHmrConfig {
+  beforeContentClass?: string
+  afterContentClass?: string
+  iconClassTokens?: string[]
+  mutate?: (source: string, payload: IconifyHotUpdatePayload) => string
 }
 
 export interface WebHmrSourceClassReplacement {
@@ -512,6 +537,28 @@ export interface UserReportedHotUpdateMetrics {
   rollbackPluginProcessSamples: PluginProcessSample[]
 }
 
+export interface IconifyHotUpdateMetrics {
+  sourceFile: string
+  marker: string
+  beforeContentClass: string
+  afterContentClass: string
+  iconClassTokens: string[]
+  contentClassTokens: string[]
+  preservedIconEscapedClasses: string[]
+  verifiedContentEscapedClasses: string[]
+  globalStyleOutputs: string[]
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
+  hotUpdatePluginProcessMs: number
+  hotUpdatePluginProcessSamples: PluginProcessSample[]
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
+  rollbackPluginProcessMs: number
+  rollbackPluginProcessSamples: PluginProcessSample[]
+}
+
 export interface MainStyleHotUpdateMetrics {
   label: string
   mutationKind: ClassMutationKind
@@ -612,6 +659,7 @@ export interface WatchCaseMetrics {
   mainStyleHotUpdate?: MainStyleHotUpdateMetrics
   subPackageMainStyleHotUpdates?: SubPackageMainStyleHotUpdateMetrics[]
   userReportedHotUpdate?: UserReportedHotUpdateMetrics
+  iconifyHmr?: IconifyHotUpdateMetrics
   webHmr?: WebHmrMetrics
   subPackageMutationMetrics: SubPackageMutationMetrics[]
   summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>>
@@ -654,9 +702,21 @@ export interface WebHmrMetrics {
   rollbackPluginProcessSamples: PluginProcessSample[]
   sourceClassReplacementSequence?: WebHmrSourceClassReplacementMetrics[]
   sourceDomReplacementSequence?: WebHmrSourceDomReplacementMetrics[]
+  iconifyHmr?: WebIconifyHmrMetrics
   memorySamples: MemoryUsageSample[]
   memoryDebugSamples?: HmrMemoryDebugSample[]
   totalMs: number
+}
+
+export interface WebIconifyHmrMetrics {
+  marker: string
+  beforeContentClass: string
+  afterContentClass: string
+  iconClassTokens: string[]
+  contentClassTokens: string[]
+  preservedIconCssIncludes: string[]
+  verifiedContentCssIncludes: string[]
+  hotUpdateEffectiveMs: number
 }
 
 export interface WebHmrSourceClassReplacementMetrics {

@@ -116,6 +116,16 @@ describeFrameworkCi('framework support matrix ci', () => {
         item.minGlobalStyleEscapedClasses ?? 1,
         `${item.name} should require generated escaped classes in wxss outputs`,
       ).toBeGreaterThan(0)
+      expect(
+        item.iconifyHmr?.sourceFile,
+        `${item.name} should verify Iconify arbitrary icon preservation during content HMR`,
+      ).toBeTruthy()
+      if (item.webHmr) {
+        expect(
+          item.webHmr.iconifyHmr,
+          `${item.name} should verify Web/H5 Iconify arbitrary icon preservation during content HMR`,
+        ).toBeDefined()
+      }
 
       if (item.contentMutation) {
         const contentVerifiedTargets = new Set([
