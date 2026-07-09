@@ -616,6 +616,53 @@ export interface WatchSummary {
   rollbackMinMs: number
 }
 
+export interface WatchArtifactEntry {
+  file: string
+  absoluteFile: string
+  exists: boolean
+  size: number
+  sha256?: string
+  kind?: 'text' | 'binary'
+  content?: string
+  contentOmittedReason?: 'binary' | 'large-text'
+}
+
+export interface WatchArtifactSnapshot {
+  phase: 'dev' | 'hmr'
+  capturedAt: string
+  requestedHmrCount?: number
+  capturedAfterHmrCount?: number
+  files: WatchArtifactEntry[]
+}
+
+export interface WatchArtifactDiffEntry {
+  file: string
+  status: 'added' | 'removed' | 'changed' | 'unchanged'
+  beforeSha256?: string
+  afterSha256?: string
+  beforeSize?: number
+  afterSize?: number
+  diff?: string
+}
+
+export interface WatchArtifactDiff {
+  from: 'dev'
+  to: 'hmr'
+  requestedHmrCount: number
+  capturedAfterHmrCount: number
+  changedFileCount: number
+  files: WatchArtifactDiffEntry[]
+  text: string
+}
+
+export interface WatchCaseArtifacts {
+  requestedHmrCount: number
+  capturedAfterHmrCount: number
+  dev: WatchArtifactSnapshot
+  hmr: WatchArtifactSnapshot
+  diff: WatchArtifactDiff
+}
+
 export interface HmrDurationTiming {
   surface: string
   sourceFile?: string
@@ -680,6 +727,7 @@ export interface WatchCaseMetrics {
   memoryDebugSummary: HmrMemoryDebugSummary
   memoryPeakRssMb: number
   memoryRssDeltaMb: number
+  artifacts?: WatchCaseArtifacts
 }
 
 export interface WebHmrMetrics {

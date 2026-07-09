@@ -13,6 +13,17 @@ import type {
 } from './types'
 import { promises as fs } from 'node:fs'
 import process from 'node:process'
+import {
+  collectWatchArtifactSnapshot,
+  countClassMutationHmr,
+  countIconifyHmr,
+  countMainStyleHmr,
+  countStyleMutationHmr,
+  countSubPackageMutationHmr,
+  countUserReportedHmr,
+  createWatchCaseArtifacts,
+  HMR_ARTIFACT_COUNT,
+} from './artifacts'
 import { summarizeMemoryDebugSamples, summarizeMemorySamples } from './memory-report'
 import {
   createSubPackageWatchCase,
@@ -167,6 +178,19 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     }
 
     const globalStyleOutputs = watchCase.globalStyleCandidates
+    const devArtifactSnapshot = await collectWatchArtifactSnapshot(watchCase, 'dev')
+    let hmrArtifactSnapshot: typeof devArtifactSnapshot | undefined
+    let completedHmrCount = 0
+    const recordCompletedHmr = async (count: number) => {
+      completedHmrCount += count
+      if (hmrArtifactSnapshot || completedHmrCount < HMR_ARTIFACT_COUNT) {
+        return
+      }
+      hmrArtifactSnapshot = await collectWatchArtifactSnapshot(watchCase, 'hmr', {
+        requestedHmrCount: HMR_ARTIFACT_COUNT,
+        capturedAfterHmrCount: completedHmrCount,
+      })
+    }
 
     const templateSourceOriginal = sourceOriginals.get(watchCase.templateMutation.sourceFile)
     if (templateSourceOriginal == null) {
@@ -194,6 +218,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       templateSourceOriginal,
       globalStyleOutputs,
     )
+    await recordCompletedHmr(countClassMutationHmr(templateMetrics))
 
     const scriptMetrics = await runClassMutation(
       watchCase,
@@ -204,6 +229,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       scriptSourceOriginal,
       globalStyleOutputs,
     )
+    await recordCompletedHmr(countClassMutationHmr(scriptMetrics))
 
     const styleMetrics = watchCase.skipStyleMutation
       ? undefined
@@ -215,6 +241,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
           styleSourceOriginal!,
           watchCase.outputStyleCandidates,
         )
+    await recordCompletedHmr(countStyleMutationHmr(styleMetrics))
 
     let contentMetrics: WatchCaseMutationMetrics | undefined
     if (watchCase.contentMutation) {
@@ -233,6 +260,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
         contentSourceOriginal,
         globalStyleOutputs,
       )
+      await recordCompletedHmr(countClassMutationHmr(contentMetrics))
     }
 
     let userReportedHotUpdateMetrics
@@ -250,6 +278,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
         userReportedSourceOriginal,
         globalStyleOutputs,
       )
+      await recordCompletedHmr(countUserReportedHmr(userReportedHotUpdateMetrics))
     }
 
     let iconifyHmrMetrics
@@ -267,6 +296,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
         iconifySourceOriginal,
         globalStyleOutputs,
       )
+      await recordCompletedHmr(countIconifyHmr(iconifyHmrMetrics))
     }
 
     const mainStyleHotUpdateMetrics = await runMainStyleHotUpdate(
@@ -278,6 +308,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       templateSourceOriginal,
       globalStyleOutputs,
     )
+    await recordCompletedHmr(countMainStyleHmr(mainStyleHotUpdateMetrics))
 
     const splitSubPackageMemorySamples = []
     const splitSubPackageMemoryDebugSamples = []
@@ -293,19 +324,22 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
           sourceOriginals,
         )
         subPackageMutationMetrics.push(result.metric)
+        await recordCompletedHmr(countSubPackageMutationHmr(result.metric))
         splitSubPackageMemorySamples.push(...result.memorySamples)
         splitSubPackageMemoryDebugSamples.push(...result.memoryDebugSamples)
       }
     }
     else {
       for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
-        subPackageMutationMetrics.push(await runSubPackageMutation(
+        const metric = await runSubPackageMutation(
           watchCase,
           options,
           session,
           subPackageMutation,
           sourceOriginals,
-        ))
+        )
+        subPackageMutationMetrics.push(metric)
+        await recordCompletedHmr(countSubPackageMutationHmr(metric))
       }
     }
 
@@ -320,6 +354,16 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     if (!preferredRound) {
       throw new Error(`[${watchCase.label}] no preferred round produced for template mutation`)
     }
+    hmrArtifactSnapshot ??= await collectWatchArtifactSnapshot(watchCase, 'hmr', {
+      requestedHmrCount: HMR_ARTIFACT_COUNT,
+      capturedAfterHmrCount: completedHmrCount,
+    })
+    const artifacts = await createWatchCaseArtifacts(
+      devArtifactSnapshot,
+      hmrArtifactSnapshot,
+      completedHmrCount,
+      HMR_ARTIFACT_COUNT,
+    )
 
     const mutationMetrics: WatchCaseMutationMetrics[] = [
       templateMetrics,
@@ -378,6 +422,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       memoryDebugSummary,
       memoryPeakRssMb: memorySummary.peakRssMb,
       memoryRssDeltaMb: memorySummary.rssDeltaMb,
+      artifacts,
     }
 
     process.stdout.write(

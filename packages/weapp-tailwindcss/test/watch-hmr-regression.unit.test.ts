@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readFile, rm, stat } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { parse } from 'yaml'
@@ -6,6 +6,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   buildDemoBaseCases,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
+import {
+  collectWatchArtifactSnapshot,
+  createWatchCaseArtifacts,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/artifacts'
 import {
   buildDemoExtendedCases,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
@@ -1413,6 +1417,70 @@ describe('watch-hmr regression summary helpers', () => {
     expect(styleOutputs).toContain(
       '/repo/demo/mpx-tailwindcss-v4/dist/wx/styles/*.wxss',
     )
+  })
+
+  it('collects dev and hmr artifact snapshots with a diff for static gateway reports', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-artifacts-'))
+    tempDirs.push(tempDir)
+    const distDir = path.join(tempDir, 'dist')
+    await mkdir(distDir, { recursive: true })
+    const outputWxml = path.join(distDir, 'index.wxml')
+    const outputJs = path.join(distDir, 'index.js')
+    const outputStyle = path.join(distDir, 'index.wxss')
+    const globalStyle = path.join(distDir, 'app.wxss')
+    await writeFile(outputWxml, '<view class="text-red-500"></view>\n', 'utf8')
+    await writeFile(outputJs, 'Page({})\n', 'utf8')
+    await writeFile(outputStyle, '.text-red-500{color:red}\n', 'utf8')
+    await writeFile(globalStyle, '@import "./index.wxss";\n', 'utf8')
+
+    const watchCase: WatchCase = {
+      name: 'weapp-vite-tailwindcss-v4',
+      label: 'demo/weapp-vite-tailwindcss-v4',
+      project: 'demo/weapp-vite-tailwindcss-v4',
+      group: 'demo',
+      cwd: tempDir,
+      devScript: 'dev:e2e-watch',
+      outputWxml,
+      outputJs,
+      outputStyleCandidates: [outputStyle],
+      globalStyleCandidates: [globalStyle],
+      templateMutation: {
+        sourceFile: path.join(tempDir, 'src/index.wxml'),
+        verifyEscapedIn: ['wxml'],
+        mutate: source => source,
+      },
+      scriptMutation: {
+        sourceFile: path.join(tempDir, 'src/index.js'),
+        verifyEscapedIn: ['js'],
+        mutate: source => source,
+      },
+      styleMutation: {
+        sourceFile: path.join(tempDir, 'src/index.wxss'),
+        mutate: source => source,
+      },
+    }
+
+    const dev = await collectWatchArtifactSnapshot(watchCase, 'dev')
+    await writeFile(outputStyle, '.text-red-500{color:red}\n.bg-blue-500{background-color:blue}\n', 'utf8')
+    const hmr = await collectWatchArtifactSnapshot(watchCase, 'hmr', {
+      requestedHmrCount: 5,
+      capturedAfterHmrCount: 5,
+    })
+    const artifacts = await createWatchCaseArtifacts(dev, hmr, 5)
+
+    expect(dev.files.map(file => file.file).sort()).toEqual([
+      'dist/app.wxss',
+      'dist/index.js',
+      'dist/index.wxml',
+      'dist/index.wxss',
+    ])
+    expect(hmr.capturedAfterHmrCount).toBe(5)
+    expect(artifacts.diff.changedFileCount).toBe(1)
+    expect(artifacts.diff.files[0]).toMatchObject({
+      file: 'dist/index.wxss',
+      status: 'changed',
+    })
+    expect(artifacts.diff.text).toContain('+.bg-blue-500{background-color:blue}')
   })
 
   it('resolves report paths and writes report files', async () => {
