@@ -355,11 +355,10 @@ describe('watch-hmr coverage matrix', () => {
     for (const watchCase of cases) {
       collectTemplateCarrierExtension(templateCarrierExtensions, watchCase.templateMutation)
       expectTemplateCarrierMutation(watchCase.templateMutation, `${watchCase.name} main package`)
-      expect(watchCase.templateMutation.roundConfigs?.map(item => item.name), watchCase.name).toEqual([
-        'baseline-arbitrary',
-        'complex-corpus',
-        'hex-arbitrary',
-      ])
+      const expectedMainPackageRounds = watchCase.name.startsWith('uni-app-vite-tailwindcss-v4')
+        ? ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary', 'named-arbitrary-colors']
+        : ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary']
+      expect(watchCase.templateMutation.roundConfigs?.map(item => item.name), watchCase.name).toEqual(expectedMainPackageRounds)
 
       for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
         collectTemplateCarrierExtension(templateCarrierExtensions, subPackageMutation.templateMutation)
