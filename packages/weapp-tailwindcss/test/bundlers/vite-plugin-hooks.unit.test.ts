@@ -473,6 +473,93 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     expect(context.jsHandler).not.toHaveBeenCalled()
   })
 
+  it('regenerates uni-app-vite root css after vue template hmr adds named arbitrary colors', async () => {
+    mocks.generateTailwindV4Css.mockImplementation(async (options: any) => ({
+      css: [...options.runtime].sort().map((candidate: string) => `.${candidate}{display:block}`).join('\n'),
+      dependencies: [],
+      classSet: new Set(options.runtime),
+      target: 'weapp',
+    }))
+    const context = createContext({
+      appType: 'uni-app-vite',
+      cssEntries: ['/project/src/tailwind.css'],
+      tailwindcssBasedir: '/project',
+      mainCssChunkMatcher: vi.fn((file: string) => file.endsWith('tailwind.css')),
+    })
+    setCurrentContext(context)
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()!
+    const postPlugin = getPlugin(plugins, 'post')
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: '/project',
+      plugins: [{ name: 'vite:uni' }],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/dev/mp-weixin' },
+    } as any)
+
+    const serveCssPlugin = getPlugin(plugins, 'generate:serve')
+    await getTransformHandler(serveCssPlugin)?.call(
+      { addWatchFile: vi.fn() },
+      '@import "tailwindcss";\n@source "./pages/**/*.vue";',
+      '/project/src/tailwind.css',
+    )
+
+    mocks.generateTailwindV4Css.mockClear()
+    const sourcePlugin = getPlugin(plugins, 'source-candidates')
+    const send = vi.fn()
+    const hotResult = await sourcePlugin.handleHotUpdate?.({
+      file: '/project/src/pages/index.vue',
+      modules: [{ id: '/project/src/pages/index.vue', isSelfAccepting: true }],
+      read: vi.fn(async () => '<template><view class="text-[yellow] bg-[blue]">hmr</view></template>'),
+      timestamp: 1000,
+      server: {
+        config: {
+          root: '/project',
+          build: { outDir: 'dist/dev/mp-weixin' },
+        },
+        moduleGraph: {
+          getModuleById: vi.fn(),
+          getModulesByFile: vi.fn(() => []),
+          invalidateModule: vi.fn(),
+        },
+        ws: {
+          send,
+        },
+      },
+    } as any)
+    await Promise.resolve()
+
+    expect(hotResult).toBeUndefined()
+    expect(send).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'full-reload' }))
+    expect(send).toHaveBeenCalledWith({
+      type: 'update',
+      updates: [expect.objectContaining({
+        path: '/src/tailwind.css',
+        acceptedPath: '/src/tailwind.css',
+      })],
+    })
+
+    const serveCssHmrPlugin = getPlugin(plugins, 'generate:serve-hmr')
+    const hmrCode = 'const __vite__css = "@import \\"tailwindcss\\";\\n@source \\"./pages/**/*.vue\\";";\n__vite__updateStyle(__vite__id, __vite__css)'
+    const hmrResult = await getTransformHandler(serveCssHmrPlugin)?.call(
+      { addWatchFile: vi.fn() },
+      hmrCode,
+      '/project/src/tailwind.css?direct&t=1000',
+    )
+
+    expect(hmrResult?.code).toContain('.text-[yellow]{display:block}')
+    expect(hmrResult?.code).toContain('.bg-[blue]{display:block}')
+    expect(mocks.generateTailwindV4Css).toHaveBeenLastCalledWith(expect.objectContaining({
+      runtime: expect.objectContaining({
+        has: expect.any(Function),
+      }),
+    }))
+    const lastRuntime = mocks.generateTailwindV4Css.mock.calls.at(-1)?.[0]?.runtime as Set<string>
+    expect(lastRuntime.has('text-[yellow]')).toBe(true)
+    expect(lastRuntime.has('bg-[blue]')).toBe(true)
+  })
+
   it('keeps vite serve css unchanged when generator returns no css', async () => {
     mocks.generateTailwindV4Css.mockResolvedValueOnce(undefined)
     const context = createContext({

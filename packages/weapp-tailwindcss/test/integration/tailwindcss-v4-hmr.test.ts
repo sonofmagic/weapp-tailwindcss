@@ -364,4 +364,53 @@ describe.sequential('tailwindcss v4 source hmr regression', () => {
       }
     })
   }
+
+  it('demo/uni-app-vite-tailwindcss-v4 template add named arbitrary colors', async () => {
+    const projectRoot = await createUniAppViteV4DemoCopy()
+    const entryPath = path.resolve(projectRoot, 'src/pages/index/index.vue')
+    const original = await fs.readFile(entryPath, 'utf8')
+    const classLiteral = 'text-[yellow] bg-[blue]'
+    const options: UserDefinedOptions = {
+      tailwindcssBasedir: projectRoot,
+      appType: 'uni-app-vite',
+      cssEntries: [
+        path.resolve(projectRoot, 'src/main.css'),
+        path.resolve(projectRoot, 'src/sub-normal/pages/index.css'),
+        path.resolve(projectRoot, 'src/sub-independent/pages/index.css'),
+      ],
+      tailwindcss: {
+        v4: {
+          cssSources: [
+            {
+              file: path.resolve(projectRoot, 'src/main.css'),
+              css: readFileSync(path.resolve(projectRoot, 'src/main.css'), 'utf8'),
+            },
+            {
+              file: path.resolve(projectRoot, 'src/common.css'),
+              css: readFileSync(path.resolve(projectRoot, 'src/common.css'), 'utf8'),
+            },
+          ],
+        },
+      },
+    }
+
+    try {
+      const baseline = await refreshRuntimeClassSet(options)
+      assertMissingAllTokens(baseline.classSet, classLiteral, 'demo/uni-app-vite-tailwindcss-v4 named arbitrary baseline')
+
+      const mutated = insertBeforeClosingTag(
+        original,
+        '</template>',
+        `  <view class="${classLiteral}">named-arbitrary-hmr</view>\n`,
+      )
+      await fs.writeFile(entryPath, mutated, 'utf8')
+
+      const added = await refreshRuntimeClassSet(options)
+      assertHasAllTokens(added.classSet, classLiteral, 'demo/uni-app-vite-tailwindcss-v4 named arbitrary add')
+    }
+    finally {
+      await fs.writeFile(entryPath, original, 'utf8').catch(() => {})
+      await fs.rm(projectRoot, { recursive: true, force: true })
+    }
+  })
 })

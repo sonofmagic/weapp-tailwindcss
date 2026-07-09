@@ -524,7 +524,8 @@ export function createViteFrameworkPlugins(
   let pendingHmrCandidateChange: ViteSourceCandidateChange | undefined
   let pendingHmrCssTargetFiles: Set<string> | undefined
   let pendingFullHmrCssRegeneration = false
-  const normalizeHmrCssTargetFile = (file: string) => normalizeVitePersistentCacheKey(cleanUrl(file))
+  const normalizeGeneratedCssCacheFile = (file: string) => normalizeVitePersistentCacheKey(cleanUrl(file))
+  const normalizeHmrCssTargetFile = normalizeGeneratedCssCacheFile
   const collectPendingHmrCssTargetFiles = (cssModules: ModuleNode[], fallbackCssIds: Iterable<string>) => {
     const targets = new Set<string>()
     const addTarget = (file: string | null | undefined) => {
@@ -622,15 +623,16 @@ export function createViteFrameworkPlugins(
     generatorCode: string,
     file: string,
   ) => {
+    const fileKey = normalizeGeneratedCssCacheFile(file)
     if (
       resolvedConfig?.command !== 'serve'
       || !pendingHmrCandidateChange
       || pendingHmrCandidateChange.runtimeAffecting
       || pendingHmrCandidateChange.addedCandidates.size === 0
       || (resolveCurrentGeneratorOptions().target === 'weapp' && hasUserCssLayerBlocks(generatorCode))
-      || !cleanGeneratedCssByFile.has(file)
-      || !generatedClassSetByFile.has(file)
-      || (pendingHmrCssTargetFiles !== undefined && !pendingHmrCssTargetFiles.has(normalizeHmrCssTargetFile(file)))
+      || !cleanGeneratedCssByFile.has(fileKey)
+      || !generatedClassSetByFile.has(fileKey)
+      || (pendingHmrCssTargetFiles !== undefined && !pendingHmrCssTargetFiles.has(fileKey))
     ) {
       return undefined
     }
@@ -1012,6 +1014,7 @@ export function createViteFrameworkPlugins(
     const generatorTransformCode = currentGeneratorBranch.isWeb
       ? generatorCode
       : normalizeMiniProgramGeneratorCssSource(generatorCode, outputFile)
+    const fileKey = normalizeGeneratedCssCacheFile(file)
     const fullRuntime = getSourceCandidates()
       ?? getRecordedGeneratorCandidates()
       ?? await ensureRuntimeClassSet()
@@ -1028,7 +1031,7 @@ export function createViteFrameworkPlugins(
       && currentGeneratorOptions.target === 'weapp'
       && filterUnsupportedMiniProgramTailwindV4Candidates(pendingHmrChange.addedCandidates).size === 0
     ) {
-      const previousTracedCss = tracedGeneratedCssByFile.get(file)
+      const previousTracedCss = tracedGeneratedCssByFile.get(fileKey)
       if (previousTracedCss !== undefined) {
         finishPendingHmrCssTargetFile(file)
         return `${createBundlerGeneratedCssMarker('vite', normalizeViteProcessedCssFile(file))}\n${previousTracedCss}`
@@ -1081,7 +1084,7 @@ export function createViteFrameworkPlugins(
     }), {
       file,
       memoryDebug: {
-        cleanCacheHit: cleanGeneratedCssByFile.has(file),
+        cleanCacheHit: cleanGeneratedCssByFile.has(fileKey),
         forceFullHmrCssRegeneration,
         pendingAddedCandidates: pendingHmrCandidateChange?.addedCandidates.size ?? 0,
         pendingCssTargets: pendingHmrCssTargetFiles?.size ?? 0,
@@ -1118,9 +1121,9 @@ export function createViteFrameworkPlugins(
     for (const dependency of generated.dependencies) {
       hookContext?.addWatchFile?.(dependency)
     }
-    cleanGeneratedCssByFile.set(file, outputCss)
-    tracedGeneratedCssByFile.set(file, tracedCss)
-    generatedClassSetByFile.set(file, new Set(generated.classSet))
+    cleanGeneratedCssByFile.set(fileKey, outputCss)
+    tracedGeneratedCssByFile.set(fileKey, tracedCss)
+    generatedClassSetByFile.set(fileKey, new Set(generated.classSet))
     const shouldInjectGeneratedCssIntoMain = mainCssChunkMatcher(outputFile, opts.appType)
       || (
         hasTailwindRootDirectives(generatorTransformCode, { importFallback: currentGeneratorOptions.importFallback })

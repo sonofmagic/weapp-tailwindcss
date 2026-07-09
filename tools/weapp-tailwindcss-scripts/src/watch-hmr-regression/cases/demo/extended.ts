@@ -340,7 +340,16 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/pages/index/index.vue'),
       verifyEscapedIn: ['wxml'],
       verifyClassLiteralIn: [],
-      roundConfigs: buildHexScriptRoundConfigs(),
+      roundConfigs: [
+        ...buildHexScriptRoundConfigs(),
+        {
+          name: 'named-arbitrary-colors',
+          buildClassTokens(seed: string) {
+            const numericSeed = seed.replace(/\D/g, '').padEnd(2, '0')
+            return ['text-[yellow]', 'bg-[blue]', `h-[${Number(numericSeed.slice(0, 2)) + 31}px]`]
+          },
+        },
+      ],
       mutate(source, payload) {
         const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
         return insertIntoVueTemplateRoot(source, snippet)
