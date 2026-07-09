@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 5.1.13
+
+### Patch Changes
+
+- 🐛 **修复 uni-app Vite 开发热更新中，Vue 模板新增 `text-[yellow]`、`bg-[blue]` 等任意值类后，根样式产物可能未稳定重新生成的问题。** [`948a299`](https://github.com/sonofmagic/weapp-tailwindcss/commit/948a299380ef57b474c4ec395b35992aec897a90) by @sonofmagic
+
 ## 5.1.12
 
 ### Patch Changes
