@@ -246,6 +246,8 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
     }
     const collector = createSourceCandidateCollector({
       bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+      customAttributesEntities: opts.customAttributesEntities,
+      disabledDefaultTemplateHandler: opts.disabledDefaultTemplateHandler,
     })
     await collector.scanRoot({
       entries: sourceScan?.entries,

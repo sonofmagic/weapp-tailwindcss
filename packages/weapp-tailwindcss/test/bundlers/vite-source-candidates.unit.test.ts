@@ -50,6 +50,47 @@ describe('bundlers/vite source candidates', () => {
     expect(store.source('/project/pages/index.wxml')).toBe('<view class="text-[24rpx]"></view>')
   })
 
+  it('collects configured custom template attributes as Tailwind v4 source candidates', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const collector = createSourceCandidateCollector({
+      customAttributesEntities: [['*', [/^t-class(?:-.+)?$/]]],
+    })
+
+    await collector.sync('/project/pages/index.wxml', [
+      '<t-button',
+      '  t-class="bg-[#1677ff] text-[28rpx]"',
+      '  t-class-content="px-[24rpx]"',
+      '  data-other="ignored-token"',
+      '></t-button>',
+    ].join('\n'))
+
+    const values = collector.values()
+    expect(values.has('bg-[#1677ff]')).toBe(true)
+    expect(values.has('text-[28rpx]')).toBe(true)
+    expect(values.has('px-[24rpx]')).toBe(true)
+  })
+
+  it('separates source candidate cache entries by custom template attributes', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const source = '<t-button t-class="issue-977-token" data-other="ignored-token"></t-button>'
+    const extractor = (value: string) => value === 'issue-977-token' || value === 'ignored-token'
+      ? [value]
+      : []
+    const defaultCollector = createSourceCandidateCollector({
+      extractor,
+    })
+    const customCollector = createSourceCandidateCollector({
+      customAttributesEntities: [['*', ['t-class']]],
+      extractor,
+    })
+
+    await defaultCollector.sync('/project/pages/index.wxml', source)
+    await customCollector.sync('/project/pages/index.wxml', source)
+
+    expect(defaultCollector.values()).toEqual(new Set())
+    expect(customCollector.values()).toEqual(new Set(['issue-977-token']))
+  })
+
   it('bounds extracted candidate cache without retaining full hmr source text in keys', async () => {
     const {
       clearSourceCandidateContentCacheForTest,

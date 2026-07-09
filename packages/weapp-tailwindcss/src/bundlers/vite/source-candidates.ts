@@ -1,4 +1,5 @@
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
+import type { ICustomAttributesEntities } from '@/types'
 import type { IArbitraryValues } from '@/types/shared'
 import { readFile } from 'node:fs/promises'
 import { LRUCache } from 'lru-cache'
@@ -70,6 +71,8 @@ export interface SourceCandidateCollectorOptions {
    * 是否补充 UnoCSS 风格裸任意值候选。
    */
   bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined
+  customAttributesEntities?: ICustomAttributesEntities | undefined
+  disabledDefaultTemplateHandler?: boolean | undefined
   extractor?: ((source: string, extension: string) => Promise<Iterable<string>> | Iterable<string>) | undefined
 }
 
@@ -93,9 +96,35 @@ function createSourceCandidateContentCacheKey(
   extension: string,
   source: string,
   bareArbitraryValues: IArbitraryValues['bareArbitraryValues'] | undefined,
+  customAttributesEntities: ICustomAttributesEntities | undefined,
+  disabledDefaultTemplateHandler: boolean | undefined,
   extractor: SourceCandidateCollectorOptions['extractor'],
 ) {
-  return `${extension}\0${JSON.stringify(bareArbitraryValues ?? false)}\0${extractor ? 'custom' : 'default'}\0${md5Hash(source)}`
+  return [
+    extension,
+    JSON.stringify(bareArbitraryValues ?? false),
+    createCustomAttributesCacheSignature(customAttributesEntities),
+    disabledDefaultTemplateHandler === true ? 'default-template:off' : 'default-template:on',
+    extractor ? 'custom' : 'default',
+    md5Hash(source),
+  ].join('\0')
+}
+
+function createCustomAttributesCacheSignature(customAttributesEntities: ICustomAttributesEntities | undefined) {
+  return JSON.stringify(
+    (customAttributesEntities ?? []).map(([selector, props]) => [
+      stringifyCustomAttributeToken(selector),
+      Array.isArray(props)
+        ? props.map(stringifyCustomAttributeToken)
+        : stringifyCustomAttributeToken(props),
+    ]),
+  )
+}
+
+function stringifyCustomAttributeToken(token: string | RegExp) {
+  return typeof token === 'string'
+    ? `s:${token}`
+    : `r:${token.source}/${token.flags}`
 }
 
 async function extractCandidates(
@@ -171,7 +200,14 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     const normalizedId = cleanUrl(id)
     scanSourceById.set(normalizedId, source)
     const extension = resolveSourceCandidateExtension(normalizedId)
-    const contentCacheKey = createSourceCandidateContentCacheKey(extension, source, options.bareArbitraryValues, options.extractor)
+    const contentCacheKey = createSourceCandidateContentCacheKey(
+      extension,
+      source,
+      options.bareArbitraryValues,
+      options.customAttributesEntities,
+      options.disabledDefaultTemplateHandler,
+      options.extractor,
+    )
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     if (cachedCandidates) {
       replaceScanLayer(normalizedId, new Set(cachedCandidates))
@@ -187,7 +223,14 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
   async function syncCss(id: string, source: string) {
     const normalizedId = cleanUrl(id)
     cssSourceById.set(normalizedId, source)
-    const contentCacheKey = createSourceCandidateContentCacheKey('css', source, options.bareArbitraryValues, options.extractor)
+    const contentCacheKey = createSourceCandidateContentCacheKey(
+      'css',
+      source,
+      options.bareArbitraryValues,
+      options.customAttributesEntities,
+      options.disabledDefaultTemplateHandler,
+      options.extractor,
+    )
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     if (cachedCandidates) {
       replaceCssLayer(normalizedId, new Set(cachedCandidates))
@@ -204,7 +247,14 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     const normalizedId = cleanUrl(id)
     transformSourceById.set(normalizedId, source)
     const extension = resolveSourceCandidateExtension(normalizedId)
-    const contentCacheKey = createSourceCandidateContentCacheKey(extension, source, options.bareArbitraryValues, options.extractor)
+    const contentCacheKey = createSourceCandidateContentCacheKey(
+      extension,
+      source,
+      options.bareArbitraryValues,
+      options.customAttributesEntities,
+      options.disabledDefaultTemplateHandler,
+      options.extractor,
+    )
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     const extractedCandidates = cachedCandidates
       ? new Set(cachedCandidates)
