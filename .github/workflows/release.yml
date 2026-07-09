@@ -12,9 +12,11 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 env:
+  CHANGESETS_RELEASE_TOKEN_SET: ${{ secrets.CHANGESETS_RELEASE_TOKEN != '' }}
   HUSKY: 0
 
 permissions:
+  actions: write # to dispatch CI workflows for release PRs created by GITHUB_TOKEN
   contents: write # to create release (changesets/action)
   issues: write # to post issue comments (changesets/action)
   pull-requests: write # to create pull request (changesets/action)
@@ -73,13 +75,37 @@ jobs:
         uses: changesets/action@v1
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
+          # A PAT or GitHub App token avoids GitHub's GITHUB_TOKEN recursion guard,
+          # so pull_request workflows run automatically for Version Packages PRs.
+          # The fallback keeps publishing working even before the secret is configured.
+          github-token: ${{ secrets.CHANGESETS_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
           publish: pnpm publish-packages
           version: pnpm publish-packages -- --phase version
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CHANGESETS_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
           npm_config_registry: https://registry.npmjs.org
           # https://github.com/changesets/changesets/pull/1659
           NPM_CONFIG_PROVENANCE: true
+
+      - name: Trigger release PR checks
+        if: steps.changesets.outputs.hasChangesets == 'true' && steps.changesets.outputs.published != 'true' && env.CHANGESETS_RELEASE_TOKEN_SET != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_PR_BRANCH: changeset-release/${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          echo "Dispatching release PR checks for ${RELEASE_PR_BRANCH}"
+
+          gh workflow run ci.yml --ref "${RELEASE_PR_BRANCH}"
+          gh workflow run release-gate.yml --ref "${RELEASE_PR_BRANCH}"
+          gh workflow run benchmark.yml --ref "${RELEASE_PR_BRANCH}" \
+            -f baseline=auto \
+            -f build_runs=1 \
+            -f hmr_runs=1 \
+            -f only=demo-weapp-vite-tailwindcss-v4__mp-weixin,demo-uni-app-vite-tailwindcss-v4__mp-weixin,demo-web-vue-vite-tailwindcss-v4__web
+          gh workflow run e2e-watch.yml --ref "${RELEASE_PR_BRANCH}" \
+            -f run_pr_quick_gate=true
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5

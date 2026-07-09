@@ -19,6 +19,12 @@ on:
       - '!**/*.md'
       - '!.changeset/**'
   workflow_dispatch:
+    inputs:
+      run_pr_quick_gate:
+        description: Run the pull request quick gate matrix instead of the nightly matrix
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: '0 18 * * *'
 
@@ -32,7 +38,7 @@ permissions:
 jobs:
   pr-quick-gate:
     name: e2e-watch-pr (${{ matrix.runner_label }}-node${{ matrix['node-version'] || 22 }}-${{ matrix.watch_case }}-${{ matrix.round_profile }})
-    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    if: (github.event_name == 'pull_request' && github.event.pull_request.draft == false) || (github.event_name == 'workflow_dispatch' && inputs.run_pr_quick_gate == true)
     strategy:
       fail-fast: false
       matrix:
@@ -373,7 +379,7 @@ jobs:
 
   nightly-full-regression:
     name: e2e-watch-nightly (${{ matrix.runner_label }}-node${{ matrix['node-version'] || 22 }}-${{ matrix.watch_case }}-${{ matrix.round_profile }})
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.run_pr_quick_gate != true)
     strategy:
       fail-fast: false
       matrix:
