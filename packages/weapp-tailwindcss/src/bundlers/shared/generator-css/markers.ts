@@ -1,7 +1,7 @@
 export const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
-export const TAILWIND_GENERATED_CSS_MARKER_RE = /\/\*!\s*tailwindcss v|@property\s+--tw-|--tw-|:not\(#\\#\)|\.[^,{]*(?:\\:|\\\[|\\#)|(?::host|page|\.tw-root|wx-root-portal-content)[^{]*\{[^}]*--(?:color|spacing|text|font-weight|radius)-/
+export const TAILWIND_GENERATED_CSS_MARKER_RE = /\/\*!\s*tailwindcss v|@property\s+--tw-|--tw-|:not\(#\\#\)|\.[^,{]*(?:\\:|\\\[|\\#)|(?::host|page|\.tw-root|wx-root-portal-content)[^{]*\{[^}]*(?:--spacing\b|--text-(?:xs|sm|base|lg|xl|[2-9]xl)\b|--font-weight-(?:thin|extralight|light|normal|medium|semibold|bold|extrabold|black)\b|--radius-(?:xs|sm|md|lg|xl|[2-4]xl|full)\b|--color-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b|--color-(?:black|white|transparent|current)\b)/
 const TAILWIND_ESCAPED_UTILITY_MARKER_RE = /\.[^,{]{0,512}(?:\\:|\\\[|\\#)/
-const TAILWIND_ROOT_THEME_MARKER_RE = /(?::host|page|\.tw-root|wx-root-portal-content)[^{]{0,256}\{[^}]{0,4096}--(?:color|spacing|text|font-weight|radius)-/
+const TAILWIND_ROOT_THEME_MARKER_RE = /(?::host|page|\.tw-root|wx-root-portal-content)[^{]{0,256}\{[^}]{0,4096}(?:--spacing\b|--text-(?:xs|sm|base|lg|xl|[2-9]xl)\b|--font-weight-(?:thin|extralight|light|normal|medium|semibold|bold|extrabold|black)\b|--radius-(?:xs|sm|md|lg|xl|[2-4]xl|full)\b|--color-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b|--color-(?:black|white|transparent|current)\b)/
 export const GENERATOR_PLACEHOLDER_MARKER_RE = /\/\*!\s*weapp-tailwindcss generator-placeholder\s*\*\//i
 export const GENERATOR_PLACEHOLDER_MARKER_GLOBAL_RE = /\/\*!\s*weapp-tailwindcss generator-placeholder\s*\*\/\s*/gi
 export const TAILWIND_BANNER_PREFIX_RE = /^\/\*!\s*tailwindcss v[^*]*\*\/\s*/i
@@ -134,7 +134,7 @@ export function hasTailwindGeneratedCssMarkers(rawSource: string) {
     && !rawSource.includes('\\[')
     && !rawSource.includes('\\#')
     && !rawSource.includes('--color-')
-    && !rawSource.includes('--spacing-')
+    && !rawSource.includes('--spacing')
     && !rawSource.includes('--text-')
     && !rawSource.includes('--font-weight-')
     && !rawSource.includes('--radius-')

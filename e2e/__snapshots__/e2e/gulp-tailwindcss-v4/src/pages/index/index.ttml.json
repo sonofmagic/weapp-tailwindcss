@@ -1,7 +1,8 @@
 {
   "file": "src/pages/index/index.ttml",
-  "count": 24,
+  "count": 27,
   "tokens": [
+    "bg-[#0977ee]",
     "bg-[length:100%_100%]",
     "bg-[url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg)]",
     "bg-no-repeat",
@@ -18,9 +19,11 @@
     "mt-[33px]",
     "pb-[10px]",
     "pl-[15px]",
+    "px-[29rpx]",
     "space-y-4",
     "text-[#5ba4e5]",
     "text-[14px]",
+    "text-[31rpx]",
     "text-base",
     "text-center",
     "text-left",

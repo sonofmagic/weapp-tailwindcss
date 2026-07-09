@@ -1,6 +1,7 @@
 [
   "before:content-['independent_subpackage_gulp-tailwindcss-v4']",
   "before:content-['normal_subpackage_gulp-tailwindcss-v4']",
+  "bg-[#0977ee]",
   "bg-[#fff]",
   "bg-[length:100%_100%]",
   "bg-[red]",
@@ -30,6 +31,7 @@
   "pl-[15px]",
   "px-3",
   "px-4",
+  "px-[29rpx]",
   "py-2",
   "py-3",
   "rounded",
@@ -39,6 +41,7 @@
   "text-[#123456]",
   "text-[#5ba4e5]",
   "text-[14px]",
+  "text-[31rpx]",
   "text-[50px]",
   "text-base",
   "text-center",

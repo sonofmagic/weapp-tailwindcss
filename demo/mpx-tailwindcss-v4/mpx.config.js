@@ -56,6 +56,9 @@ module.exports = defineConfig({
         tailwindcssBasedir: projectRoot,
         cssSourceTrace: true,
         rem2rpx: true,
+        customAttributes: {
+          '*': [/^t-class(?:-.+)?$/],
+        },
         generator: officialPostcssParity ? false : undefined,
         postcssOptions: createOfficialPostcssParityPostcssOptions(),
         cssEntries: [

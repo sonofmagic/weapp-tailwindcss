@@ -23,6 +23,7 @@ export default function Index() {
         <View className='template-corpus-hover h-16 w-32 rounded-[20rpx] bg-green-200/70' hoverClass="!bg-[gray] after:!content-['good_work!']">
           hover corpus
         </View>
+        <View t-class='bg-[#0977ee] text-[31rpx]' t-class-content='px-[29rpx]'>issue 977 t-class</View>
       </View>
       <div className='h-[300px] text-[#c31d6b] bg-[#123456]'>短斤少两快点撒</div>
       <Text className='text-[55rpx] text-[#fff] bg-purple-300'>Hello world!</Text>

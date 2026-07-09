@@ -33,6 +33,9 @@ wx-root-portal-content {
   --spacing: 8rpx;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
+  --test-issue-978-color: #102938;
+  --color-issue-978: #006241;
+  --font-issue-978: 'Issue 978', sans-serif;
 }
 button::after,
 wx-button::after {
@@ -105,6 +108,10 @@ wx-button {
 .rounded {
   border-radius: 8rpx;
 }
+/* tokens: bg-[#0977ee] <= src/pages/index/index.vue */
+.bg-_b_h0977ee_B {
+  background-color: #0977ee;
+}
 /* tokens: bg-[#123456] <= src/pages/index/index.vue */
 .bg-_b_h123456_B {
   background-color: #123456;
@@ -149,6 +156,11 @@ wx-button {
   padding-left: calc(var(--spacing) * 4);
   padding-right: calc(var(--spacing) * 4);
 }
+/* tokens: px-[29rpx] <= src/pages/index/index.vue */
+.px-_b29rpx_B {
+  padding-left: 29rpx;
+  padding-right: 29rpx;
+}
 /* tokens: py-2 <= src/pages/index/index.vue */
 .py-2 {
   padding-top: calc(var(--spacing) * 2);
@@ -158,6 +170,10 @@ wx-button {
 .py-3 {
   padding-top: calc(var(--spacing) * 3);
   padding-bottom: calc(var(--spacing) * 3);
+}
+/* tokens: text-[31rpx] <= src/pages/index/index.vue */
+.text-_b31rpx_B {
+  font-size: 31rpx;
 }
 /* tokens: text-[55rpx] <= src/pages/index/index.vue */
 .text-_b55rpx_B {

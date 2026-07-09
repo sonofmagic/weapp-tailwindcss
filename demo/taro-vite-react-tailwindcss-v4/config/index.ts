@@ -74,6 +74,9 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           cssEntries,
           rem2rpx: true,
           styleInjector: false,
+          customAttributes: {
+            '*': [/^t-class(?:-.+)?$/],
+          },
           generator,
           postcssOptions: parity.createOfficialPostcssParityPostcssOptions(),
           disabled: isNativeTarget,

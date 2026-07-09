@@ -26,6 +26,7 @@
         Taro Webpack Vue3 Tailwind CSS v4 manual dark
       </view>
     </view>
+    <t-button t-class="bg-[#0977ee] text-[31rpx]" t-class-content="px-[29rpx]">issue 977 t-class</t-button>
     <view class="h-14 bg-gradient-to-r from-cyan-500 to-blue-500" />
     <view class="rounded-[24rpx] bg-[#123456] px-[32px] py-[18px] text-[#ffffff]">
       Share

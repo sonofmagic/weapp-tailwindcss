@@ -15,4 +15,10 @@ onHide(() => {
 .reset-button {
   display: block;
 }
+
+page {
+  --test-issue-978-color: #102938;
+  --color-issue-978: #006241;
+  --font-issue-978: "Issue 978", sans-serif;
+}
 </style>

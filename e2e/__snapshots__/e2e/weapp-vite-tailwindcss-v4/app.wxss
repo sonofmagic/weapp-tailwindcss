@@ -53,6 +53,9 @@ wx-root-portal-content {
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
+  --test-issue-978-color: #102938;
+  --color-issue-978: #006241;
+  --font-issue-978: 'Issue 978', sans-serif;
 }
 button::after,
 wx-button::after {
@@ -266,6 +269,10 @@ wx-button {
 .bg-_b_h68c828_B {
   background-color: #68c828;
 }
+/* tokens: bg-[#0977ee] <= pages/index/index.wxml */
+.bg-_b_h0977ee_B {
+  background-color: #0977ee;
+}
 /* tokens: bg-[#111111] <= pages/index/index.wxml */
 .bg-_b_h111111_B {
   background-color: #111111;
@@ -331,6 +338,11 @@ wx-button {
   padding-left: calc(var(--spacing) * 4);
   padding-right: calc(var(--spacing) * 4);
 }
+/* tokens: px-[29rpx] <= pages/index/index.wxml */
+.px-_b29rpx_B {
+  padding-left: 29rpx;
+  padding-right: 29rpx;
+}
 /* tokens: py-2 <= pages/index/index.wxml */
 .py-2 {
   padding-top: calc(var(--spacing) * 2);
@@ -344,6 +356,10 @@ wx-button {
 /* tokens: text-[100px] <= pages/index/index.wxml */
 .text-_b100px_B {
   font-size: 100px;
+}
+/* tokens: text-[31rpx] <= pages/index/index.wxml */
+.text-_b31rpx_B {
+  font-size: 31rpx;
 }
 /* tokens: text-[55rpx] <= pages/index/index.wxml */
 .text-_b55rpx_B {

@@ -37,6 +37,9 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
+  --test-issue-978-color: #102938;
+  --color-issue-978: #006241;
+  --font-issue-978: 'Issue 978', sans-serif;
 }
 /* tokens: m-[20px] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .m-_b20px_B {
@@ -206,6 +209,10 @@ wx-root-portal-content {
 .border-_b_hEEEEEE_B {
   border-color: #eeeeee;
 }
+/* tokens: bg-[#0977ee] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
+.bg-_b_h0977ee_B {
+  background-color: #0977ee;
+}
 /* tokens: bg-[#fff] <= src/pages/index/index.ts */
 .bg-_b_hfff_B {
   background-color: #fff;
@@ -247,6 +254,11 @@ wx-root-portal-content {
 .px-4 {
   padding-left: calc(var(--spacing) * 4);
   padding-right: calc(var(--spacing) * 4);
+}
+/* tokens: px-[29rpx] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
+.px-_b29rpx_B {
+  padding-left: 29rpx;
+  padding-right: 29rpx;
 }
 /* tokens: py-2 <= src/pages/index/index.wxml */
 .py-2 {
@@ -296,6 +308,10 @@ wx-root-portal-content {
 /* tokens: text-[50px] <= src/pages/index/index.ts */
 .text-_b50px_B {
   font-size: 100rpx;
+}
+/* tokens: text-[31rpx] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
+.text-_b31rpx_B {
+  font-size: 31rpx;
 }
 /* tokens: font-bold <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .font-bold {

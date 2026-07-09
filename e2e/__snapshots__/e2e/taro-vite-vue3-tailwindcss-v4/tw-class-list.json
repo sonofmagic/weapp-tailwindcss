@@ -1,6 +1,7 @@
 [
   "before:content-['independent_subpackage_taro-vite-vue3-tailwindcss-v4']",
   "before:content-['normal_subpackage_taro-vite-vue3-tailwindcss-v4']",
+  "bg-[#0977ee]",
   "bg-[#123456]",
   "bg-gradient-to-r",
   "bg-linear-to-r",
@@ -17,12 +18,14 @@
   "mt-4",
   "px-3",
   "px-4",
+  "px-[29rpx]",
   "py-2",
   "py-3",
   "rounded",
   "static",
   "text-[#c31d6b]",
   "text-[#fff]",
+  "text-[31rpx]",
   "text-[55rpx]",
   "text-slate-900",
   "to-blue-500"

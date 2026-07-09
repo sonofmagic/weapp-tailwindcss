@@ -160,8 +160,11 @@ describe('ci workflows', () => {
       'taro-h5-build',
       'web-css-preservation',
       'web-hmr',
+      'uni-h5-dev-hmr',
       'demo-user-workflow',
       'demo-platform-output-matrix',
+      'issues-977-978',
+      'vite-web-hmr-unit',
       'watch-hmr-coverage-contract',
     ])
     expect(focusedRows.map(row => row.command)).toEqual([
@@ -171,8 +174,11 @@ describe('ci workflows', () => {
       'pnpm e2e:taro:h5-build',
       'pnpm e2e:web-css-preservation',
       'pnpm e2e:web:hmr',
+      'pnpm e2e:uni:h5-dev',
       'pnpm e2e:demo-user-workflow',
       'pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts',
+      'pnpm e2e:issues-977-978',
+      'pnpm --filter weapp-tailwindcss exec vitest run test/bundlers/vite-plugin.bundle.unit.test.ts -t "keeps the full web runtime" --coverage.enabled=false',
       'pnpm --filter weapp-tailwindcss exec vitest run test/watch-hmr-coverage-matrix.unit.test.ts --coverage.enabled=false',
     ])
     expectNoIdeOnlyRuntime(focusedRows.map(row => row.command).join('\n'), 'e2e-focused')

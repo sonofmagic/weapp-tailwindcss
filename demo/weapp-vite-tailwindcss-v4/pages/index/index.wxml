@@ -32,6 +32,7 @@
         Weapp Vite Tailwind CSS v4 manual dark
       </view>
     </view>
+    <t-button t-class="bg-[#0977ee] text-[31rpx]" t-class-content="px-[29rpx]">issue 977 t-class</t-button>
     <view class="hover:border-blue-200/20">111</view>
     <view class='size-12 bg-blue-500/30 text-pink-300'>BLUE BLOCK</view>
     <view class="min-h-screen flex flex-col p-4 bg-zinc-50 dark:bg-zinc-900">

@@ -52,6 +52,9 @@ function installWeappTailwindcss(chain: any) {
             cssSourceTrace: true,
             generator,
             styleInjector: false,
+            customAttributes: {
+              '*': [/^t-class(?:-.+)?$/],
+            },
           } satisfies UserDefinedOptions,
         ],
       },

@@ -23,6 +23,7 @@
 				uni-app HBuilderX Tailwind CSS v4 manual dark
 			</view>
 		</view>
+		<t-button t-class="bg-[#0977ee] text-[31rpx]" t-class-content="px-[29rpx]">issue 977 t-class</t-button>
 	</view>
 </template>
 

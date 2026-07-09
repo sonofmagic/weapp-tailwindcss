@@ -272,6 +272,9 @@ wx-root-portal-content {
   --nutui-radius-xl: var(--nutui-radius-12);
   --nutui-radius-xxl: var(--nutui-radius-14);
   --nutui-radius-xxxl: var(--nutui-radius-16);
+  --test-issue-978-color: #102938;
+  --color-issue-978: #006241;
+  --font-issue-978: 'Issue 978', sans-serif;
 }
 @font-face {
   font-family: JDZH-Regular;
@@ -909,6 +912,10 @@ wx-button::after {
 .rounded {
   border-radius: 0.25rem;
 }
+/* tokens: bg-[#0977ee] <= src/pages/index/index.tsx */
+.bg-_b_h0977ee_B {
+  background-color: #0977ee;
+}
 /* tokens: bg-[#534312] <= src/pages/index/index.tsx */
 .bg-_b_h534312_B {
   background-color: #534312;
@@ -1166,6 +1173,11 @@ wx-button::after {
   padding-left: calc(var(--spacing) * 4);
   padding-right: calc(var(--spacing) * 4);
 }
+/* tokens: px-[29rpx] <= src/pages/index/index.tsx */
+.px-_b29rpx_B {
+  padding-left: 29rpx;
+  padding-right: 29rpx;
+}
 /* tokens: py-2 <= src/pages/index/index.tsx */
 .py-2 {
   padding-bottom: calc(var(--spacing) * 2);
@@ -1175,6 +1187,10 @@ wx-button::after {
 .py-3 {
   padding-bottom: calc(var(--spacing) * 3);
   padding-top: calc(var(--spacing) * 3);
+}
+/* tokens: text-[31rpx] <= src/pages/index/index.tsx */
+.text-_b31rpx_B {
+  font-size: 31rpx;
 }
 /* tokens: text-[100rpx] <= src/pages/index/index.tsx */
 .text-_b100rpx_B {

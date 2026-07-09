@@ -19,6 +19,9 @@ export default defineConfig({
         rem2rpx: true,
       },
       styleInjector: false,
+      customAttributes: {
+        "*": [/^t-class(?:-.+)?$/],
+      },
     }),
   ],
   css: {

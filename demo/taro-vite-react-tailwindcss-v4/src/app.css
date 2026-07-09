@@ -57,3 +57,9 @@ abc {
   @apply inline-flex items-center gap-2 rounded-[20rpx] bg-gradient-to-r from-[#9e58e9] to-blue-500 px-[18rpx] py-[10rpx] text-[26rpx] font-semibold text-white;
 }
 @source inline("i-[mdi--github-circle] i-[mdi--star] i-[svg-spinners--180-ring-with-bg] before:content-['现在，让我们开始神奇的_tailwindcss_开发之旅吧！'] before:content-['现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！']");
+
+page {
+  --test-issue-978-color: #102938;
+  --color-issue-978: #006241;
+  --font-issue-978: "Issue 978", sans-serif;
+}

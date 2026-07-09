@@ -63,6 +63,9 @@ const { transformJs, transformWxml, transformWxss } = createPlugins({
   cssSourceTrace: true,
   rem2rpx: true,
   generator: officialPostcssParity ? false : generator,
+  customAttributes: {
+    '*': [/^t-class(?:-.+)?$/],
+  },
   postcssOptions: parity.createOfficialPostcssParityPostcssOptions(),
   tailwindcss: {
     version: 4,

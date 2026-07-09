@@ -56,4 +56,17 @@ describe('generator css markers', () => {
     expect(hasTailwindGeneratedCssMarkers('/*! weapp-tailwindcss generator-placeholder */')).toBe(true)
     expect(hasTailwindGeneratedCssMarkers('.plain{color:red}')).toBe(false)
   })
+
+  it('does not treat user page custom properties as generated Tailwind theme css', () => {
+    expect(hasTailwindGeneratedCssMarkers([
+      'page {',
+      '  --test-color: #006241;',
+      '  --color-issue-978: #006241;',
+      '  --font-issue-978: "Issue 978", sans-serif;',
+      '}',
+    ].join('\n'))).toBe(false)
+    expect(hasTailwindGeneratedCssMarkers(':host,page,.tw-root{--spacing:.25rem}')).toBe(true)
+    expect(hasTailwindGeneratedCssMarkers('page{--color-red-500:red}')).toBe(true)
+    expect(hasTailwindGeneratedCssMarkers('page{--font-weight-bold:700}')).toBe(true)
+  })
 })

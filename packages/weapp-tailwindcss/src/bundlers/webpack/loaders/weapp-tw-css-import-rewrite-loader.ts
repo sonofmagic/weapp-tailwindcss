@@ -121,6 +121,8 @@ async function resolveWebpackLoaderSourceCandidates(
   }
   const collector = createSourceCandidateStore({
     bareArbitraryValues: compilerOptions.arbitraryValues?.bareArbitraryValues,
+    customAttributesEntities: compilerOptions.customAttributesEntities,
+    disabledDefaultTemplateHandler: compilerOptions.disabledDefaultTemplateHandler,
   })
   collector.syncInline(resolved.inlineCandidates)
   const outDir = loaderContext.rootContext

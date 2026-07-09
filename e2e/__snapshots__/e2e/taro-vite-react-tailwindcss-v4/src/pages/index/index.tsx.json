@@ -1,9 +1,10 @@
 {
   "file": "src/pages/index/index.tsx",
-  "count": 55,
+  "count": 58,
   "tokens": [
     "!bg-[gray]",
     "after:!content-['good_work!']",
+    "bg-[#0977ee]",
     "bg-[#123456]",
     "bg-[#68c828]",
     "bg-[radial-gradient(circle_at_18%_20%,#e0f2fe,#fdf4ff_70%)]",
@@ -34,6 +35,7 @@
     "p-4",
     "px-3",
     "px-4",
+    "px-[29rpx]",
     "px-[48px]",
     "py-1",
     "py-2",
@@ -49,6 +51,7 @@
     "text-[#fff]",
     "text-[100rpx]",
     "text-[26rpx]",
+    "text-[31rpx]",
     "text-[55rpx]",
     "text-slate-700",
     "text-slate-900",

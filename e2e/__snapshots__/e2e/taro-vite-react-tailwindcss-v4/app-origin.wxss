@@ -279,6 +279,9 @@ wx-root-portal-content {
   --nutui-radius-xl: var(--nutui-radius-12);
   --nutui-radius-xxl: var(--nutui-radius-14);
   --nutui-radius-xxxl: var(--nutui-radius-16);
+  --test-issue-978-color: #102938;
+  --color-issue-978: #006241;
+  --font-issue-978: 'Issue 978', sans-serif;
 }
 button::after,
 wx-button::after {
@@ -424,6 +427,10 @@ wx-button {
 .bg-_b_h68c828_B {
   background-color: #68c828;
 }
+/* tokens: bg-[#0977ee] <= src/pages/index/index.tsx */
+.bg-_b_h0977ee_B {
+  background-color: #0977ee;
+}
 /* tokens: bg-[#123456] <= src/pages/index/index.tsx */
 .bg-_b_h123456_B {
   background-color: #123456;
@@ -520,6 +527,11 @@ wx-button {
   padding-left: 18rpx;
   padding-right: 18rpx;
 }
+/* tokens: px-[29rpx] <= src/pages/index/index.tsx */
+.px-_b29rpx_B {
+  padding-left: 29rpx;
+  padding-right: 29rpx;
+}
 /* tokens: px-[48px] <= src/pages/index/index.tsx */
 .px-_b48px_B {
   padding-left: 48rpx;
@@ -552,6 +564,10 @@ wx-button {
 /* tokens: text-[26rpx] <= src/pages/index/index.tsx */
 .text-_b26rpx_B {
   font-size: 26rpx;
+}
+/* tokens: text-[31rpx] <= src/pages/index/index.tsx */
+.text-_b31rpx_B {
+  font-size: 31rpx;
 }
 /* tokens: text-[55rpx] <= src/pages/index/index.tsx */
 .text-_b55rpx_B {

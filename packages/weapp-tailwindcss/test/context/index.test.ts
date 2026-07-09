@@ -248,6 +248,26 @@ describe('getCompilerContext', () => {
     expect(ctx.cssCalc).toEqual(['--gap'])
   })
 
+  it('stores normalized custom attribute entities on the compiler context', async () => {
+    createTailwindcssRuntimeFromContext.mockReturnValue({
+      packageInfo: { version: '4.1.0' },
+      majorVersion: 4,
+    })
+    const entities = [['*', [/^t-class(?:-.+)?$/]]]
+    const { toCustomAttributesEntities } = await import('@/context/custom-attributes')
+    vi.mocked(toCustomAttributesEntities).mockReturnValueOnce(entities as any)
+
+    const { getCompilerContext } = await import('@/context')
+    const ctx = getCompilerContext({
+      customAttributes: {
+        '*': [/^t-class(?:-.+)?$/],
+      },
+    })
+
+    expect(ctx.customAttributesEntities).toBe(entities)
+    expect((createHandlersFromContext.mock.calls[0] as any)?.[1]).toBe(entities)
+  })
+
   it('keeps user objects intact when spacing is already covered', async () => {
     const includeCustomProperties = [/^--spacing$/]
     const originalOptions = {

@@ -36,6 +36,9 @@ export default defineConfig(async () => {
         cssSourceTrace: true,
         rem2rpx: true,
         styleInjector: false,
+        customAttributes: {
+          '*': [/^t-class(?:-.+)?$/],
+        },
         postcssOptions: parity.createOfficialPostcssParityPostcssOptions(),
         generator: officialPostcssParity
           ? false

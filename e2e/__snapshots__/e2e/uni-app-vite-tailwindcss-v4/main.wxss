@@ -79,6 +79,9 @@ wx-root-portal-content {
   --color-midnight: #121063;
   --color-tahiti: #3ab7bf;
   --color-bermuda: #78dcca;
+  --test-issue-978-color: #102938;
+  --color-issue-978: #006241;
+  --font-issue-978: 'Issue 978', sans-serif;
   --status-bar-height: 25px;
   --top-window-height: 0px;
   --window-top: 0px;
@@ -429,6 +432,10 @@ wx-button {
 .bg-_b_h68c828_B {
   background-color: #68c828;
 }
+/* tokens: bg-[#0977ee] <= src/pages/index/index.vue */
+.bg-_b_h0977ee_B {
+  background-color: #0977ee;
+}
 /* tokens: bg-[#123498] <= src/pages/index/index.vue */
 .bg-_b_h123498_B {
   background-color: #123498;
@@ -544,6 +551,11 @@ wx-button {
   padding-left: 18rpx;
   padding-right: 18rpx;
 }
+/* tokens: px-[29rpx] <= src/pages/index/index.vue */
+.px-_b29rpx_B {
+  padding-left: 29rpx;
+  padding-right: 29rpx;
+}
 /* tokens: px-[48px] <= src/pages/index/index.vue */
 .px-_b48px_B {
   padding-left: 48px;
@@ -603,6 +615,10 @@ wx-button {
 /* tokens: text-[26rpx] <= src/pages/index/index.vue */
 .text-_b26rpx_B {
   font-size: 26rpx;
+}
+/* tokens: text-[31rpx] <= src/pages/index/index.vue */
+.text-_b31rpx_B {
+  font-size: 31rpx;
 }
 /* tokens: text-[45rpx] <= src/pages/index/index.vue */
 .text-_b45rpx_B {

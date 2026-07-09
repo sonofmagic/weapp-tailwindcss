@@ -100,6 +100,9 @@ defineOptions({
 					<text>uni-app x Tailwind CSS v4 manual dark</text>
 				</view>
 			</view>
+			<t-button t-class="bg-[#0977ee] text-[31rpx]" t-class-content="px-[29rpx]">
+				<text>issue 977 t-class</text>
+			</t-button>
 		</view>
 		<BindClass />
 	</view>

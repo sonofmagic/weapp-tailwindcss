@@ -70,6 +70,36 @@ describe('bundlers/vite source candidates', () => {
     expect(values.has('px-[24rpx]')).toBe(true)
   })
 
+  it('collects configured t-class candidates during explicit Tailwind v4 @source scanning', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const root = await createTempDir('weapp-tw-vite-source-t-class')
+    await writeTempFile(path.join(root, 'pages/index.wxml'), [
+      '<t-button',
+      '  t-class="bg-[#0977ee] text-[31rpx]"',
+      '  t-class-content="px-[29rpx]"',
+      '  data-other="ignored-token"',
+      '></t-button>',
+    ].join('\n'))
+
+    const collector = createSourceCandidateCollector({
+      customAttributesEntities: [['*', [/^t-class(?:-.+)?$/]]],
+    })
+    await collector.scanRoot({
+      root,
+      explicit: true,
+      entries: [{
+        base: root,
+        negated: false,
+        pattern: 'pages/**/*.wxml',
+      }],
+    })
+
+    const values = collector.values()
+    expect(values.has('bg-[#0977ee]')).toBe(true)
+    expect(values.has('text-[31rpx]')).toBe(true)
+    expect(values.has('px-[29rpx]')).toBe(true)
+  })
+
   it('separates source candidate cache entries by custom template attributes', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const source = '<t-button t-class="issue-977-token" data-other="ignored-token"></t-button>'
