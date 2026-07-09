@@ -68,7 +68,8 @@ jobs:
             watch_case: demo-core
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 55
+            # 覆盖 2 次 40 分钟 watch attempt，并给安装、构建和报告上传预留时间。
+            timeout_minutes: 95
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'

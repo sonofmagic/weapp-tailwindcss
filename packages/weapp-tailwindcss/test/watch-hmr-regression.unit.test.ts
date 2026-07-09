@@ -70,6 +70,7 @@ import {
   hasResolvedOutputFiles,
   isOutputFileCandidate,
   readJoinedOutputFiles,
+  resolveCompileSettleTimeoutMs,
   waitForCompileSettled,
   waitForInitialWarmup,
   waitForOutputsReady,
@@ -746,6 +747,12 @@ describe('watch-hmr regression text helpers', () => {
 
     expect(elapsed).toBeGreaterThanOrEqual(0)
     expect(lastCompileSuccessAt).toBeGreaterThan(phaseStartedAt)
+  })
+
+  it('scales compile settle timeout for slow CI watch cases', () => {
+    expect(resolveCompileSettleTimeoutMs({ timeoutMs: 2_000 })).toBe(2_000)
+    expect(resolveCompileSettleTimeoutMs({ timeoutMs: 240_000 })).toBe(60_000)
+    expect(resolveCompileSettleTimeoutMs({ timeoutMs: 600_000 })).toBe(90_000)
   })
 
   it('recognizes gulp build complete output as a compile success line', () => {
