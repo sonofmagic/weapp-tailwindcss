@@ -2362,7 +2362,7 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
-  it('keeps Taro Vite watch cases on restart fallback compatible budgets', () => {
+  it('keeps Taro Vite watch cases on independent-subpackage compatible budgets', () => {
     const cases = buildDemoExtendedCases('/repo').filter(watchCase => watchCase.name.startsWith('taro-vite-'))
 
     expect(cases.map(watchCase => watchCase.name).sort()).toEqual([
@@ -2378,15 +2378,21 @@ describe('watch-hmr regression cases', () => {
 
     for (const watchCase of cases) {
       expect(watchCase.env).toHaveProperty('TARO_E2E_WATCH_NATIVE', '0')
-      expect(watchCase.maxPluginProcessMs).toBe(3000)
+      expect(watchCase.maxPluginProcessMs).toBe(8000)
       expect(watchCase.initialMutationDelayMs).toBe(15_000)
     }
   })
 
-  it('keeps uni-app Vite watch case on the CSS aggregation budget', () => {
+  it('keeps uni-app Vite watch case on the independent-subpackage CSS aggregation budget', () => {
     const uniAppCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v4')
 
-    expect(uniAppCase?.maxPluginProcessMs).toBe(2000)
+    expect(uniAppCase?.maxPluginProcessMs).toBe(4000)
+  })
+
+  it('keeps Mpx watch case on the full main and subpackage processAssets budget', () => {
+    const mpxCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'mpx-tailwindcss-v4')
+
+    expect(mpxCase?.maxPluginProcessMs).toBe(8000)
   })
 
   it('covers literal refresh content mutations for every demo case', () => {

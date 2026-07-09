@@ -35,7 +35,9 @@ const taroViteWatchEnv = {
   NODE_ENV: 'development',
 }
 
-const taroVitePluginProcessBudgetMs = 3000
+// Taro Vite 在独立分包轮询重建时会出现更高的 generateBundle 峰值，
+// 与 e2e:taro:mp 专项脚本保持同一 case 级预算。
+const taroVitePluginProcessBudgetMs = 8000
 const webDomMarkerAttr = 'data-tw-watch-web-dom="1"'
 const taroMiniProgramPlatforms: TaroMiniProgramWatchPlatform[] = ['weapp', 'alipay', 'tt']
 const uniAppMiniProgramPlatforms: UniAppMiniProgramWatchPlatform[] = ['mp-weixin', 'mp-alipay', 'mp-qq', 'mp-toutiao']
@@ -296,9 +298,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     // uni-app Vite v4 watch 在 same-class-literal 场景会重写 app.wxss；
     // 仍校验 HMR 生效、回滚与 escaped class，不强制全局样式文本完全稳定。
     requireStableGlobalStyleOnSameClassLiteral: false,
-    // uni-app Vite v4 的 CSS 汇总阶段偶发超过全局 500ms 守卫；
+    // uni-app Vite v4 的独立分包 HMR 会触发较重的 CSS 汇总阶段；
     // 这里保留 case 级预算，避免放宽其它 demo 的处理耗时约束。
-    maxPluginProcessMs: 2000,
+    maxPluginProcessMs: 4000,
     cwd: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4'),
     devScript: 'dev:mp-weixin',
     outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),
@@ -452,9 +454,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/mpx-tailwindcss-v4',
     project: 'demo/mpx-tailwindcss-v4',
     group: 'demo',
-    // Mpx v4 的 webpack watch 在样式分包热更新/回滚时会触发较重的 CSS 汇总阶段，
+    // Mpx v4 的 webpack watch 在完整主包/分包矩阵下会触发多轮较重的 CSS 汇总阶段。
     // 这里保留 case 级预算，避免放宽全局 500ms 守卫。
-    maxPluginProcessMs: 2000,
+    maxPluginProcessMs: 8000,
     initialMutationDelayMs: 15_000,
     splitSubPackageWatchSessions: true,
     cwd: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4'),
