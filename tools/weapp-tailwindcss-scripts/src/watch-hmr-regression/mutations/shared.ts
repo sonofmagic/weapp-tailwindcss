@@ -249,7 +249,7 @@ export async function waitForCompileSettled(
   phaseStartedAt: number,
 ) {
   const stableWindowMs = Math.min(Math.max(options.pollMs * 2, 600), 1500)
-  const timeoutMs = Math.min(options.timeoutMs, 30_000)
+  const timeoutMs = resolveCompileSettleTimeoutMs(options)
   return waitFor(
     async () => {
       const lastCompileSuccessAt = session.lastCompileSuccessAt()
@@ -272,6 +272,13 @@ export async function waitForCompileSettled(
       onTick: session.ensureRunning,
     },
   )
+}
+
+export function resolveCompileSettleTimeoutMs(options: Pick<CliOptions, 'timeoutMs'>) {
+  if (options.timeoutMs <= 30_000) {
+    return options.timeoutMs
+  }
+  return Math.min(Math.max(30_000, Math.ceil(options.timeoutMs / 4)), 90_000)
 }
 
 export function collectPluginProcessMetrics(session: WatchSession, startedAt: number) {
