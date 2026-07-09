@@ -420,6 +420,8 @@ export function createViteFrameworkPlugins(
   let recordedGeneratorCandidates: Set<string> | undefined
   const sourceCandidateCollector = createSourceCandidateCollector({
     bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+    customAttributesEntities,
+    disabledDefaultTemplateHandler,
   })
   const sourceCandidateScanCache = new LRUCache<string, SourceCandidateCollectorSnapshot>({
     max: SOURCE_CANDIDATE_SCAN_CACHE_MAX,

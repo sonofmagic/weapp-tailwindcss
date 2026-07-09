@@ -32,6 +32,8 @@ export async function refreshWebpackSourceCandidates(options: {
     changedFiles: options.watchChangedFiles,
     collector: createSourceCandidateStore({
       bareArbitraryValues: options.compilerOptions.arbitraryValues?.bareArbitraryValues,
+      customAttributesEntities: options.compilerOptions.customAttributesEntities,
+      disabledDefaultTemplateHandler: options.compilerOptions.disabledDefaultTemplateHandler,
     }),
     outDir: options.outputDir,
     root,
