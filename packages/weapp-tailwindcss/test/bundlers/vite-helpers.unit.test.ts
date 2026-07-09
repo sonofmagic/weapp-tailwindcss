@@ -38,6 +38,10 @@ import {
   summarizeViteProcessedCssResults,
   toMb,
 } from '@/bundlers/vite/plugin-cache'
+import { taroCssPipelineStrategy } from '@/bundlers/vite/frameworks/taro'
+import { uniAppCssPipelineStrategy } from '@/bundlers/vite/frameworks/uni-app'
+import { uniAppXCssPipelineStrategy } from '@/bundlers/vite/frameworks/uni-app-x'
+import { resolveViteServeRootMiniProgramImportShell } from '@/bundlers/vite/serve-root-import-shell'
 
 let tempRoots: string[] = []
 
@@ -91,6 +95,66 @@ describe('bundlers/vite helper modules', () => {
     expect(shouldKeepRootMiniProgramStyleAsImportShell(undefined)).toBe(false)
     expect(shouldMoveRootMiniProgramStyleToImportShellOrigin(true)).toBe(true)
     expect(shouldMoveRootMiniProgramStyleToImportShellOrigin(false)).toBe(false)
+  })
+
+  it('preserves vite serve root mini-program import shells for framework-owned shell policies only', () => {
+    const frameworkStrategies = {
+      'taro': taroCssPipelineStrategy,
+      'uni-app-vite': uniAppCssPipelineStrategy,
+      'uni-app-x': uniAppXCssPipelineStrategy,
+    }
+    const preservedShells = Object.fromEntries(Object.entries(frameworkStrategies).map(([framework, cssPipelineStrategy]) => [
+      framework,
+      resolveViteServeRootMiniProgramImportShell({
+        css: '@import "tailwind.wxss";',
+        cssPipelineContext: {} as any,
+        cssPipelineStrategy,
+        isWebGeneratorTarget: false,
+        outputFile: 'app.wxss',
+      }),
+    ]))
+
+    expect(preservedShells).toMatchInlineSnapshot(`
+      {
+        "taro": "@import "./tailwind.wxss";",
+        "uni-app-vite": "@import "./tailwind.wxss";",
+        "uni-app-x": "@import "./tailwind.wxss";",
+      }
+    `)
+
+    const baseOptions = {
+      css: '@import "tailwind.wxss";',
+      cssPipelineContext: {} as any,
+      cssPipelineStrategy: {
+        shouldKeepRootMiniProgramStyleAsImportShell: vi.fn(() => true),
+      },
+      isWebGeneratorTarget: false,
+      outputFile: 'app.wxss',
+    }
+
+    expect(resolveViteServeRootMiniProgramImportShell(baseOptions)).toBe('@import "./tailwind.wxss";')
+    expect(baseOptions.cssPipelineStrategy.shouldKeepRootMiniProgramStyleAsImportShell).toHaveBeenCalledWith(expect.objectContaining({
+      css: '@import "tailwind.wxss";',
+      file: 'app.wxss',
+    }))
+    expect(resolveViteServeRootMiniProgramImportShell({
+      ...baseOptions,
+      css: '@import "tailwind.wxss";\n.root{}',
+    })).toBeUndefined()
+    expect(resolveViteServeRootMiniProgramImportShell({
+      ...baseOptions,
+      isWebGeneratorTarget: true,
+    })).toBeUndefined()
+    expect(resolveViteServeRootMiniProgramImportShell({
+      ...baseOptions,
+      outputFile: 'pages/index.wxss',
+    })).toBeUndefined()
+    expect(resolveViteServeRootMiniProgramImportShell({
+      ...baseOptions,
+      cssPipelineStrategy: {
+        shouldKeepRootMiniProgramStyleAsImportShell: () => false,
+      },
+    })).toBeUndefined()
   })
 
   it('resolves current source candidate source by explicit and scored candidates', () => {

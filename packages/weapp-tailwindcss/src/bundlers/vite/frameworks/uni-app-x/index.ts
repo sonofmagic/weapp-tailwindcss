@@ -26,7 +26,7 @@ function isUniAppXHarmonyAppStyleTarget(context: Parameters<NonNullable<ViteFram
   )
 }
 
-const uniAppXCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
+export const uniAppXCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
   getCssHandlerExtraOptions(context) {
     return resolveUniAppXNativeCssHandlerOptions(context.opts)
   },

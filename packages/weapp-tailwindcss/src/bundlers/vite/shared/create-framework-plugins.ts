@@ -51,6 +51,7 @@ import { createRewriteCssImportsPlugins, hasVitePipelineTailwindGenerationDirect
 import { createViteRuntimeClassSet } from '../runtime-class-set'
 import { createViteServeCssGenerationPlugins } from '../serve-css-generation'
 import { createViteServeJsTransformPlugin } from '../serve-js-transform'
+import { resolveViteServeRootMiniProgramImportShell } from '../serve-root-import-shell'
 import { createSourceCandidateScanSignature } from '../source-candidate-scan-signature'
 import { createSourceCandidateCollector, isSourceCandidateRequest } from '../source-candidates'
 import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from '../source-scan'
@@ -1026,6 +1027,38 @@ export function createViteFrameworkPlugins(
         && pendingHmrChange === undefined
       )
     const runtime = fullRuntime
+    const importShellCss = resolveViteServeRootMiniProgramImportShell({
+      css: generatorTransformCode,
+      cssPipelineContext,
+      cssPipelineStrategy: frameworkCssPipelineStrategy,
+      isWebGeneratorTarget: currentGeneratorBranch.isWeb,
+      outputFile,
+    })
+    if (importShellCss !== undefined) {
+      cleanGeneratedCssByFile.set(fileKey, importShellCss)
+      tracedGeneratedCssByFile.set(fileKey, importShellCss)
+      generatedClassSetByFile.set(fileKey, new Set())
+      recordViteProcessedCssAssetResult(file, importShellCss, {
+        injectIntoMain: false,
+        outputFile,
+      })
+      markViteProcessedCssSource(file)
+      rememberTailwindRootCssModule(id)
+      recordGeneratorCandidates(fullRuntime)
+      if (pendingHmrChange) {
+        finishPendingHmrCssTargetFile(file)
+      }
+      else if (!pendingHmrCandidateChange) {
+        clearPendingHmrCandidateChange()
+      }
+      cssMemory.rememberCssSource({
+        outputFile,
+        rawSource: code,
+        sourceFile: requestFile,
+      })
+      debug('css preserved root mini-program import shell for vite postcss pipeline: %s bytes=%d', requestFile, importShellCss.length)
+      return importShellCss
+    }
     if (
       pendingHmrChange
       && currentGeneratorOptions.target === 'weapp'

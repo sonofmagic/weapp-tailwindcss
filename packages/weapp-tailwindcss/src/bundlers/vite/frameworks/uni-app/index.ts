@@ -18,7 +18,7 @@ function isUniAppWebviewOutDir(outDir: string | undefined) {
   return normalized === 'app' || normalized === 'app-plus'
 }
 
-const uniAppCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
+export const uniAppCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
   getServeJsHandlerOptions(context) {
     return isUniAppWebviewStylePlatform(context.resolveStylePlatform())
       ? { needEscaped: true }

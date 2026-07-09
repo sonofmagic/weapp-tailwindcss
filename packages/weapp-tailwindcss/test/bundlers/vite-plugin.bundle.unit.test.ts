@@ -12139,6 +12139,102 @@ const cls = "w-[1.5px]"
     }
   }, TEST_TIMEOUT_MS)
 
+  it('keeps framework-owned serve root mini-program style import shells while generating Tailwind entries', async () => {
+    const generateCssByGeneratorMock = vi.fn(async (options: { outputFile?: string, runtime: Set<string>, rawSource: string }) => ({
+      css: '.tw-entry{display:flex}',
+      rawCss: options.rawSource,
+      target: 'weapp',
+      classSet: new Set(options.runtime),
+      rawCandidates: new Set(options.runtime),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 4,
+      metadata: {
+        outputFile: options.outputFile,
+      },
+    }))
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateCssByGeneratorMock,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        resolveTailwindV4Source: createMockTailwindV4SourceResolver(),
+        resolveTailwindV4SourceFromRuntime: createMockTailwindV4SourceResolver(),
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+          projectRoot: process.cwd(),
+          base: process.cwd(),
+          baseFallbacks: [],
+          packageName: 'tailwindcss',
+        })),
+      }
+    })
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const frameworkCases = [
+      { appType: 'uni-app-vite', vitePluginName: 'vite:uni' },
+      { appType: 'taro', vitePluginName: 'taro:vite' },
+      { appType: 'uni-app-x', vitePluginName: 'vite:uni-app-x' },
+    ] as const
+
+    expect(generateCssByGeneratorMock).not.toHaveBeenCalled()
+
+    for (const frameworkCase of frameworkCases) {
+      const root = await mkdtemp(path.join(os.tmpdir(), `weapp-tw-vite-${frameworkCase.appType}-root-shell-serve-`))
+      createdDirs.push(root)
+      await mkdir(path.join(root, 'src'), { recursive: true })
+      setCurrentContext(createContext({
+        appType: frameworkCase.appType,
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+        tailwindRuntime: {
+          getClassSet: vi.fn(async () => new Set(['tw-entry'])),
+          getClassSetSync: vi.fn(() => new Set(['tw-entry'])),
+          majorVersion: 4,
+          extract: vi.fn(async () => ({ classSet: new Set(['tw-entry']) })),
+        },
+      }))
+      const plugins = WeappTailwindcss({ appType: frameworkCase.appType })
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+      const serveGeneratePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+      expect(postPlugin, frameworkCase.appType).toBeTruthy()
+      expect(rewritePlugin, frameworkCase.appType).toBeTruthy()
+      expect(serveGeneratePlugin, frameworkCase.appType).toBeTruthy()
+
+      const config = {
+        command: 'serve',
+        root,
+        weapp: { srcRoot: 'src' },
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/mp-weixin' },
+        plugins: [{ name: frameworkCase.vitePluginName }],
+      } as unknown as ResolvedConfig
+      await (postPlugin.configResolved as any)?.call(postPlugin, config)
+      await (serveGeneratePlugin.configResolved as any)?.call(serveGeneratePlugin, config)
+
+      const tailwindEntryFile = path.join(root, 'src/tailwind.css')
+      const tailwindEntryResult = await getTransformHandler(serveGeneratePlugin)?.call(
+        { addWatchFile: vi.fn() } as any,
+        '@import "tailwindcss" source(none);',
+        tailwindEntryFile,
+      )
+      expect(tailwindEntryResult?.code, frameworkCase.appType).toContain('.tw-entry{display:flex}')
+      expect(tailwindEntryResult?.code, frameworkCase.appType).toContain(createBundlerGeneratedCssMarker('vite', tailwindEntryFile))
+    }
+    expect(generateCssByGeneratorMock).toHaveBeenCalledTimes(frameworkCases.length)
+    expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
+      rawSource: '@import "tailwindcss" source(none);',
+    }))
+  }, TEST_TIMEOUT_MS)
+
   it('refreshes uni-app dev app.wxss from script-only escaped v4 hmr candidates without force refresh env', async () => {
     const localCandidates = (candidates: Set<string>) =>
       new Set([...candidates].filter(candidate => /^text-\[\d+\.\d+rpx\]$/.test(candidate)))

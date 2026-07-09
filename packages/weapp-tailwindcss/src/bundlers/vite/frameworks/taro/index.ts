@@ -5,7 +5,7 @@ import process from 'node:process'
 import { viteStyleInjectorDelegates } from '@/style-injector/internal'
 import { createViteFrameworkPlugins } from '../../shared/create-framework-plugins'
 
-const taroCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
+export const taroCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
   shouldKeepRootMiniProgramStyleAsImportShell() {
     return true
   },
