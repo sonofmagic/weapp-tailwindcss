@@ -107,8 +107,41 @@ function isTailwindGeneratedPreflightComment(text: string) {
     || text.includes('Correct the cursor style of increment and decrement buttons')
 }
 
+const TAILWIND_GENERATED_THEME_SCOPE_SELECTORS = new Set([
+  ':host',
+  ':root',
+  'page',
+  '.tw-root',
+  'wx-root-portal-content',
+])
+
+function isTailwindGeneratedThemeScopeSelector(selector: string) {
+  const selectors = selector
+    .split(',')
+    .map(item => item.trim())
+    .filter(Boolean)
+  const selectorSet = new Set(selectors)
+  if (selectorSet.size !== selectors.length) {
+    return false
+  }
+  if (!selectors.every(item => TAILWIND_GENERATED_THEME_SCOPE_SELECTORS.has(item))) {
+    return false
+  }
+  return (
+    selectorSet.size === 2
+    && selectorSet.has(':root')
+    && selectorSet.has(':host')
+  ) || (
+    selectorSet.size === 4
+    && selectorSet.has(':host')
+    && selectorSet.has('page')
+    && selectorSet.has('.tw-root')
+    && selectorSet.has('wx-root-portal-content')
+  )
+}
+
 function isTailwindGeneratedThemeRule(selector: string, node: { nodes?: any[] | undefined }) {
-  if (!/(?:^|,)\s*(?::host|page|\.tw-root|wx-root-portal-content)\b/.test(selector)) {
+  if (!isTailwindGeneratedThemeScopeSelector(selector)) {
     return false
   }
   return node.nodes?.some(child => child.type === 'decl' && /^--(?:color|spacing|text|font|default|radius|tw-)/.test(child.prop)) ?? false

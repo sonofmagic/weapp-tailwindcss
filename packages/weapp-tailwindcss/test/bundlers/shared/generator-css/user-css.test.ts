@@ -172,12 +172,20 @@ describe('generator user css helpers', () => {
     expect(isCommentOnlyCss('.broken{')).toBe(false)
     expect(removeTailwindV4GeneratedUserCssArtifacts('/* Deprecated */\n.keep{color:red}')).toBe('.keep{color:red}')
     expect(removeTailwindV4GeneratedUserCssArtifacts([
-      'page{--color-red-500:red}',
+      ':host,page,.tw-root,wx-root-portal-content{--color-red-500:red}',
       '[hidden]:not([hidden="until-found"]){display:none}',
       'abbr[title]{text-decoration:underline}',
       'button,input[type="button"],input[type="reset"],input[type="submit"]{appearance:button}',
       '.keep{color:red}',
     ].join('\n'))).toBe('.keep{color:red}')
+    expect(removeTailwindV4GeneratedUserCssArtifacts([
+      'page{',
+      '--test-color:#006241;',
+      '--color-test:#006241;',
+      '--font-test:sans-serif;',
+      '}',
+    ].join(''))).toContain('--color-test:#006241')
+    expect(removeTailwindV4GeneratedUserCssArtifacts(':host,page{--color-test:#006241}')).toContain('--color-test:#006241')
     expect(removeTailwindV4GeneratedUserCssArtifacts('.broken{')).toBe('.broken{')
 
     const styleHandler = vi.fn(async (css: string) => ({ css: `${css}.handled{color:green}` }))

@@ -91,6 +91,24 @@ describe('mini-program generated css cleanup', () => {
     expect(css).not.toContain('box-sizing:border-box')
   })
 
+  it('preserves user page custom properties that use Tailwind v4 theme namespaces', async () => {
+    const styleHandler = createStyleHandler({
+      majorVersion: 4,
+    })
+    const { css } = await styleHandler([
+      'page{',
+      '--test-color:#006241;',
+      '--color-test:#006241;',
+      '--font-test:sans-serif;',
+      '}',
+    ].join(''))
+
+    expect(css).toContain('page{')
+    expect(css).toContain('--test-color:#006241')
+    expect(css).toContain('--color-test:#006241')
+    expect(css).toContain('--font-test:sans-serif')
+  })
+
   it('keeps pseudo scoped content init before element variable scope pruning', () => {
     const css = pruneMiniProgramGeneratedCss([
       '::before,::after{--tw-content:""}',
