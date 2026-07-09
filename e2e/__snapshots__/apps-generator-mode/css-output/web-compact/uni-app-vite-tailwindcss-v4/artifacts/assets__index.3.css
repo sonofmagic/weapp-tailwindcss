@@ -534,6 +534,9 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .bg-\[\#68c828\] {
   background-color: #68c828;
 }
+.bg-\[\#0977ee\] {
+  background-color: #0977ee;
+}
 .bg-\[\#123498\] {
   background-color: #123498;
 }
@@ -664,6 +667,9 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .px-4 {
   padding-inline: calc(var(--spacing) * 4);
 }
+.px-\[29rpx\] {
+  padding-inline: 0.90625rem;
+}
 .px-\[48px\] {
   padding-inline: 48px;
 }
@@ -727,6 +733,9 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .text-\[26rpx\] {
   font-size: 0.8125rem;
 }
+.text-\[31rpx\] {
+  font-size: 0.96875rem;
+}
 .text-\[45rpx\] {
   font-size: 1.40625rem;
 }
@@ -774,6 +783,9 @@ input:where([type='button'], [type='reset'], [type='submit']),
 }
 .text-\[26rpx\] {
   font-size: 0.8125rem;
+}
+.text-\[31rpx\] {
+  font-size: 0.96875rem;
 }
 .text-\[45rpx\] {
   font-size: 1.40625rem;

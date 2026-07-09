@@ -56,8 +56,20 @@ const ISSUE_977_978_DEMO_SOURCE_TOKENS = [
   'bg-[#0977ee]',
   'text-[31rpx]',
   'px-[29rpx]',
-  '--color-issue-978',
-  '--font-issue-978',
+  '--test-color',
+  '--color-test',
+  '--font-test',
+  '--font-sans',
+  '--font-serif',
+  '--font-mono',
+  '--color-red-500',
+  '--color-blue-500',
+  '--color-slate-900',
+  '--spacing',
+  '--text-base',
+  '--font-weight-bold',
+  '--radius-lg',
+  '--default-font-family',
 ] as const
 
 function readDemoPackageJson(packageJson: string) {

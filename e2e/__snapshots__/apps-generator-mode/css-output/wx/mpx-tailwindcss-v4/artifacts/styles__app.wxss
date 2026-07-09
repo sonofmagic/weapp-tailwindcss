@@ -40,13 +40,11 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --font-sans: 'inter', 'inter Fallback', system-ui;
+  --font-mono: var(--font-plex-mono), monospace;
   --color-red-500: #fb2c36;
-  --color-green-500: #00c65a;
-  --color-blue-500: #3280ff;
+  --color-green-500: #00c758;
+  --color-blue-500: #3080ff;
   --color-slate-900: #0f172b;
   --color-gray-100: rgb(243, 244, 246);
   --color-zinc-800: rgb(39, 39, 42);
@@ -56,23 +54,41 @@ wx-root-portal-content {
   --color-red-400: #ff6568;
   --color-yellow-400: #f7c900;
   --color-green-200: #b9f8cf;
-  --color-sky-500: #00a5ea;
+  --color-sky-500: #00a5ef;
   --color-purple-600: #9810fa;
   --color-pink-500: #f6339a;
   --color-slate-100: #f1f5f9;
   --color-slate-700: #314158;
   --color-zinc-950: #09090b;
   --color-black: #000;
-  --spacing: 8rpx;
-  --text-base: 32rpx;
+  --spacing: 0.25rem;
+  --text-base: 1rem;
   --text-base--line-height: 1.5;
   --text-2xl: 48rpx;
   --text-2xl--line-height: 1.33333;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --radius-md: 12rpx;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
+  --default-font-family: var(--font-inter), system-ui;
+  --default-mono-font-family: var(--font-plex-mono), monospace;
+  --test-color: #006241;
+  --color-test: #006241;
+  --font-test: 'Issue 978', sans-serif;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --color-red-50: #fef2f2;
+  --color-red-950: #460809;
+  --color-orange-500: #fe6e00;
+  --color-amber-500: #f99c00;
+  --color-yellow-500: #edb200;
+  --color-lime-500: #80cd00;
+  --color-teal-500: #00baa7;
+  --color-indigo-500: #625fff;
+  --color-violet-500: #8d54ff;
+  --color-purple-500: #ac4bff;
+  --color-gray-900: #101828;
+  --color-neutral-900: #171717;
+  --color-stone-900: #1c1917;
+  --radius-lg: 0.5rem;
 }
  /* tokens: -mt-2 <= src/pages/index.mpx */
 .-mt-2 {
@@ -369,6 +385,10 @@ wx-root-portal-content {
 .bg-_b_h68c828_B {
   background-color: #68c828;
 }
+ /* tokens: bg-[#0977ee] <= src/pages/index.mpx */
+.bg-_b_h0977ee_B {
+  background-color: #0977ee;
+}
  /* tokens: bg-[#010101] <= src/components/list.mpx, src/custom-tab-bar/index.mpx */
 .bg-_b_h010101_B {
   background-color: #010101;
@@ -485,6 +505,11 @@ wx-root-portal-content {
   padding-left: 18rpx;
   padding-right: 18rpx;
 }
+ /* tokens: px-[29rpx] <= src/pages/index.mpx */
+.px-_b29rpx_B {
+  padding-left: 29rpx;
+  padding-right: 29rpx;
+}
  /* tokens: px-[34.54rpx] <= src/pages/index.mpx */
 .px-_b34_d54rpx_B {
   padding-left: 34.54rpx;
@@ -540,6 +565,10 @@ wx-root-portal-content {
  /* tokens: text-[26rpx] <= src/app.css, src/pages/index.mpx */
 .text-_b26rpx_B {
   font-size: 26rpx;
+}
+ /* tokens: text-[31rpx] <= src/pages/index.mpx */
+.text-_b31rpx_B {
+  font-size: 31rpx;
 }
  /* tokens: text-[32.4rpx] <= src/pages/index.mpx */
 .text-_b32_d4rpx_B {

@@ -52,7 +52,8 @@ describe('generator css markers', () => {
     expect(hasTailwindGeneratedCss('/*! tailwindcss v4.0.0 */')).toBe(true)
     expect(hasTailwindGeneratedCss('.plain{}')).toBe(false)
     expect(hasTailwindGeneratedCssMarkers('.hover\\:text-red-500{}')).toBe(true)
-    expect(hasTailwindGeneratedCssMarkers('page{--color-red-500:red}')).toBe(true)
+    expect(hasTailwindGeneratedCssMarkers(':host,page,.tw-root,wx-root-portal-content{--color-red-500:red}')).toBe(true)
+    expect(hasTailwindGeneratedCssMarkers(':root,:host{--font-sans:ui-sans-serif}')).toBe(true)
     expect(hasTailwindGeneratedCssMarkers('/*! weapp-tailwindcss generator-placeholder */')).toBe(true)
     expect(hasTailwindGeneratedCssMarkers('.plain{color:red}')).toBe(false)
   })
@@ -61,12 +62,26 @@ describe('generator css markers', () => {
     expect(hasTailwindGeneratedCssMarkers([
       'page {',
       '  --test-color: #006241;',
-      '  --color-issue-978: #006241;',
-      '  --font-issue-978: "Issue 978", sans-serif;',
+      '  --color-test: #006241;',
+      '  --font-test: "Issue 978", sans-serif;',
+      '  --font-sans: "inter", "inter Fallback", system-ui;',
+      '  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;',
+      '  --font-mono: var(--font-plex-mono), monospace;',
+      '  --color-red-50: #fef2f2;',
+      '  --color-red-500: #fb2c36;',
+      '  --color-red-950: #460809;',
+      '  --color-blue-500: #3080ff;',
+      '  --color-slate-900: #0f172b;',
+      '  --spacing: .25rem;',
+      '  --text-base: 1rem;',
+      '  --font-weight-bold: 700;',
+      '  --radius-lg: .5rem;',
+      '  --default-font-family: var(--font-inter), system-ui;',
+      '  --default-mono-font-family: var(--font-plex-mono), monospace;',
       '}',
     ].join('\n'))).toBe(false)
-    expect(hasTailwindGeneratedCssMarkers(':host,page,.tw-root{--spacing:.25rem}')).toBe(true)
-    expect(hasTailwindGeneratedCssMarkers('page{--color-red-500:red}')).toBe(true)
-    expect(hasTailwindGeneratedCssMarkers('page{--font-weight-bold:700}')).toBe(true)
+    expect(hasTailwindGeneratedCssMarkers(':host,page,.tw-root,wx-root-portal-content{--spacing:.25rem}')).toBe(true)
+    expect(hasTailwindGeneratedCssMarkers(':host,page,.tw-root,wx-root-portal-content{--color-red-500:red}')).toBe(true)
+    expect(hasTailwindGeneratedCssMarkers(':host,page,.tw-root,wx-root-portal-content{--font-sans:ui-sans-serif}')).toBe(true)
   })
 })

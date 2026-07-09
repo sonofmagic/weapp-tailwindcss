@@ -54,9 +54,15 @@
  /*tokens: rounded-xl <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
  /*tokens: border <= src/pages-order/pages/user/user.vue */
  /*tokens: border-emerald-500 <= src/pages-order/pages/user/user.vue */
+.border-emerald-500 {
+  border-color: rgb(0, 185, 129);
+}
  /*tokens: border-slate-200 <= src/pages-order/pages/user/user.vue */
  /*tokens: bg-emerald-100 <= src/pages-order/pages/user/user.vue */
  /*tokens: bg-emerald-500 <= src/pages-order/pages/home/home.vue */
+.bg-emerald-500 {
+  background-color: rgb(0, 185, 129);
+}
  /*tokens: bg-slate-50 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
  /*tokens: bg-white <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
  /*tokens: p-5 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
@@ -78,6 +84,9 @@
  /*tokens: text-slate-500 <= src/pages-order/pages/user/user.vue */
  /*tokens: text-slate-800 <= src/pages-order/pages/user/user.vue */
  /*tokens: text-slate-900 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
+.text-slate-900 {
+  color: rgb(15, 23, 43);
+}
  /*tokens: text-white <= src/pages-order/pages/home/home.vue */
  /*tokens: shadow <= src/pages-order/pages/home/home.vue */
  /*tokens: shadow-sm <= src/pages-order/pages/home/home.vue */

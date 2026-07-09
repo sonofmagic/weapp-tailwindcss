@@ -18,8 +18,43 @@ onHide(() => {
 @import "./main.css";
 
 page {
-  --test-issue-978-color: #102938;
-  --color-issue-978: #006241;
-  --font-issue-978: "Issue 978", sans-serif;
+  --test-color: #006241;
+  --color-test: #006241;
+  --font-test: "Issue 978", sans-serif;
+  --font-sans: "inter", "inter Fallback", system-ui;
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: var(--font-plex-mono), monospace;
+  --color-red-50: #fef2f2;
+  --color-red-500: #fb2c36;
+  --color-red-950: #460809;
+  --color-orange-500: #fe6e00;
+  --color-amber-500: #f99c00;
+  --color-yellow-500: #edb200;
+  --color-lime-500: #80cd00;
+  --color-green-500: #00c758;
+  --color-emerald-500: #00bb7f;
+  --color-teal-500: #00baa7;
+  --color-cyan-500: #00b7d7;
+  --color-sky-500: #00a5ef;
+  --color-blue-500: #3080ff;
+  --color-indigo-500: #625fff;
+  --color-violet-500: #8d54ff;
+  --color-purple-500: #ac4bff;
+  --color-fuchsia-500: #e12afb;
+  --color-pink-500: #f6339a;
+  --color-rose-500: #ff2357;
+  --color-slate-900: #0f172b;
+  --color-gray-900: #101828;
+  --color-zinc-900: #18181b;
+  --color-neutral-900: #171717;
+  --color-stone-900: #1c1917;
+  --color-black: #000;
+  --color-white: #fff;
+  --spacing: .25rem;
+  --text-base: 1rem;
+  --font-weight-bold: 700;
+  --radius-lg: .5rem;
+  --default-font-family: var(--font-inter), system-ui;
+  --default-mono-font-family: var(--font-plex-mono), monospace;
 }
 </style>

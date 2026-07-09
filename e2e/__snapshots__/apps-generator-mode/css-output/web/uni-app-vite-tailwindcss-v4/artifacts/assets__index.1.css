@@ -13,25 +13,25 @@
   initial-value: '';
   inherits: false;
 }
-.special-class-visual-probe.dark [class~='dark:bg-red-300'][data-v-8a786e1f] {
+.special-class-visual-probe.dark [class~='dark:bg-red-300'][data-v-86001868] {
   background-color: #fca5a5;
   color: #7f1d1d;
 }
-.special-class-visual-probe [class~='text-[45rpx]'][data-v-8a786e1f] {
+.special-class-visual-probe [class~='text-[45rpx]'][data-v-86001868] {
   color: #0f172a;
   font-size: 45px;
   line-height: 1;
 }
-.special-class-visual-probe.dark .dark_cbg-red-300[data-v-8a786e1f] {
+.special-class-visual-probe.dark .dark_cbg-red-300[data-v-86001868] {
   background-color: #fca5a5;
   color: #7f1d1d;
 }
-.special-class-visual-probe .text-_b45rpx_B[data-v-8a786e1f] {
+.special-class-visual-probe .text-_b45rpx_B[data-v-86001868] {
   color: #0f172a;
   font-size: 45px;
   line-height: 1;
 }
-.special-class-visual-probe .css-variable-visual-probe[data-v-8a786e1f] {
+.special-class-visual-probe .css-variable-visual-probe[data-v-86001868] {
   --visual-probe-bg: rgb(16, 185, 129);
   --visual-probe-size: 45px;
   background-color: var(--visual-probe-bg);

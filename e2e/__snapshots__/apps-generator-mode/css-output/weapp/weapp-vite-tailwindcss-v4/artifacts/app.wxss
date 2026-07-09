@@ -24,33 +24,53 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --font-sans: 'inter', 'inter Fallback', system-ui;
+  --font-mono: var(--font-plex-mono), monospace;
+  --color-emerald-600: rgb(0, 150, 105);
+  --color-blue-500: #3080ff;
+  --color-slate-200: rgb(226, 232, 240);
+  --color-slate-800: rgb(29, 41, 61);
+  --color-slate-900: #0f172b;
+  --color-white: #fff;
   --color-red-700: rgb(191, 0, 15);
   --color-amber-300: rgb(255, 210, 55);
-  --color-emerald-600: rgb(0, 150, 105);
-  --color-sky-600: rgb(0, 132, 199);
-  --color-blue-500: rgb(50, 128, 255);
-  --color-violet-600: rgb(127, 34, 254);
   --color-pink-300: rgb(253, 165, 213);
-  --color-rose-600: rgb(230, 0, 69);
-  --color-slate-100: rgb(241, 245, 249);
-  --color-slate-200: rgb(226, 232, 240);
-  --color-slate-700: rgb(49, 65, 88);
-  --color-slate-800: rgb(29, 41, 61);
-  --color-slate-900: rgb(15, 23, 43);
-  --color-gray-900: rgb(16, 24, 40);
   --color-zinc-50: rgb(250, 250, 250);
   --color-zinc-900: rgb(24, 24, 27);
+  --color-sky-600: rgb(0, 132, 199);
+  --color-violet-600: rgb(127, 34, 254);
+  --color-rose-600: rgb(230, 0, 69);
+  --color-slate-100: rgb(241, 245, 249);
+  --color-slate-700: rgb(49, 65, 88);
+  --color-gray-900: #101828;
   --color-zinc-950: rgb(9, 9, 11);
-  --color-white: #fff;
-  --spacing: 8rpx;
+  --spacing: 0.25rem;
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
+  --default-font-family: var(--font-inter), system-ui;
+  --default-mono-font-family: var(--font-plex-mono), monospace;
+  --test-color: #006241;
+  --color-test: #006241;
+  --font-test: 'Issue 978', sans-serif;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --color-red-50: #fef2f2;
+  --color-red-950: #460809;
+  --color-orange-500: #fe6e00;
+  --color-amber-500: #f99c00;
+  --color-yellow-500: #edb200;
+  --color-lime-500: #80cd00;
+  --color-teal-500: #00baa7;
+  --color-sky-500: #00a5ef;
+  --color-indigo-500: #625fff;
+  --color-violet-500: #8d54ff;
+  --color-purple-500: #ac4bff;
+  --color-pink-500: #f6339a;
+  --color-neutral-900: #171717;
+  --color-stone-900: #1c1917;
+  --color-black: #000;
+  --text-base: 1rem;
+  --font-weight-bold: 700;
+  --radius-lg: 0.5rem;
 }
 button::after,
 wx-button::after {
@@ -264,6 +284,10 @@ wx-button {
 .bg-_b_h68c828_B {
   background-color: #68c828;
 }
+ /* tokens: bg-[#0977ee] <= pages/index/index.wxml */
+.bg-_b_h0977ee_B {
+  background-color: #0977ee;
+}
  /* tokens: bg-[#111111] <= pages/index/index.wxml */
 .bg-_b_h111111_B {
   background-color: #111111;
@@ -329,6 +353,11 @@ wx-button {
   padding-left: calc(var(--spacing) * 4);
   padding-right: calc(var(--spacing) * 4);
 }
+ /* tokens: px-[29rpx] <= pages/index/index.wxml */
+.px-_b29rpx_B {
+  padding-left: 29rpx;
+  padding-right: 29rpx;
+}
  /* tokens: py-2 <= pages/index/index.wxml */
 .py-2 {
   padding-top: calc(var(--spacing) * 2);
@@ -342,6 +371,10 @@ wx-button {
  /* tokens: text-[100px] <= pages/index/index.wxml */
 .text-_b100px_B {
   font-size: 100px;
+}
+ /* tokens: text-[31rpx] <= pages/index/index.wxml */
+.text-_b31rpx_B {
+  font-size: 31rpx;
 }
  /* tokens: text-[55rpx] <= pages/index/index.wxml */
 .text-_b55rpx_B {
