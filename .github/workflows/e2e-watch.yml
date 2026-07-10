@@ -145,7 +145,8 @@ jobs:
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '10000'
-            watch_command_timeout_ms: '1800000'
+            # TT 全量轮次包含主包与两个分包，macOS runner 实测会超过 30 分钟。
+            watch_command_timeout_ms: '3300000'
           - os: macos-latest
             runner_label: macos
             watch_case: taro-vite-vue3-tailwindcss-v4:alipay
