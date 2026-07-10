@@ -27,6 +27,7 @@ export interface DemoPlatformCoverage {
   devScript?: string
   staticCoverage: DemoCoverageStatus
   hmrCoverage: DemoCoverageStatus
+  devHmrSnapshotCoverage: DemoCoverageStatus
   rootStyleShellHmrCoverage?: DemoCoverageStatus
   evidence: string
   command: string
@@ -57,6 +58,7 @@ function automated(platform: string, options: {
     platform,
     staticCoverage: 'automated',
     hmrCoverage: 'automated',
+    devHmrSnapshotCoverage: 'automated',
     ...(options.buildScript ? { buildScript: options.buildScript } : {}),
     ...(options.devScript ? { devScript: options.devScript } : {}),
     evidence: options.evidence,
@@ -77,6 +79,7 @@ function local(platform: string, options: {
     platform,
     staticCoverage: options.staticCoverage ?? 'local',
     hmrCoverage: options.hmrCoverage ?? 'local',
+    devHmrSnapshotCoverage: options.hmrCoverage ?? 'local',
     ...(options.buildScript ? { buildScript: options.buildScript } : {}),
     ...(options.devScript ? { devScript: options.devScript } : {}),
     evidence: options.evidence,

@@ -342,6 +342,10 @@ describe('e2e matrix', () => {
       for (const platform of entry.platforms) {
         expect(platform.command.length, `${entry.name} ${platform.platform} should document a validation command`).toBeGreaterThan(0)
         expect(platform.evidence.length, `${entry.name} ${platform.platform} should document validation evidence`).toBeGreaterThan(0)
+        expect(
+          platform.devHmrSnapshotCoverage,
+          `${entry.name} ${platform.platform} dev/HMR snapshot coverage should match its HMR execution status`,
+        ).toBe(platform.hmrCoverage)
         if (platform.buildScript) {
           expect(
             pkg.scripts?.[scriptName(platform.buildScript)],
