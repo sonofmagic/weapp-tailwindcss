@@ -43,6 +43,7 @@ exports[`get options > default options 1`] = `
   },
   "cssSourceTrace": false,
   "customAttributes": {},
+  "customAttributesEntities": [],
   "customReplaceDictionary": {
     "!": "_e",
     """: "_q",

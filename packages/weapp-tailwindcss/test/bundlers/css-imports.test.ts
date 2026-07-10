@@ -430,6 +430,15 @@ describe('bundlers/shared css-imports', () => {
       ].join('\n'),
       'utf8',
     )
+    await writeFile(
+      path.join(pageDir, 'index.vue'),
+      [
+        '<template>',
+        '  <t-button t-class="bg-[#0977ee] text-[31rpx]" t-class-content="px-[29rpx]">issue 977</t-button>',
+        '</template>',
+      ].join('\n'),
+      'utf8',
+    )
 
     const generateTailwindV4Css = vi.fn(async (options: any) => ({
       css: '.bg-\\[\\#123\\]{background-color:#112233}',
@@ -462,6 +471,7 @@ describe('bundlers/shared css-imports', () => {
           compilerOptions: {
             appType: 'taro',
             generator: { target: 'web' },
+            customAttributesEntities: [['*', [/^t-class(?:-.+)?$/]]],
             mainCssChunkMatcher: () => true,
             outputDir: 'dist',
             tailwindcssBasedir: projectRoot,
@@ -482,6 +492,9 @@ describe('bundlers/shared css-imports', () => {
     expect(options.sourceCandidates).toEqual(expect.any(Set))
     expect(options.sourceCandidates.has('bg-[#123]')).toBe(true)
     expect(options.sourceCandidates.has('text-pink-200')).toBe(true)
+    expect(options.sourceCandidates.has('bg-[#0977ee]')).toBe(true)
+    expect(options.sourceCandidates.has('text-[31rpx]')).toBe(true)
+    expect(options.sourceCandidates.has('px-[29rpx]')).toBe(true)
     expect(options.getSourceCandidatesForEntries).toEqual(expect.any(Function))
     const scopedCandidates = options.getSourceCandidatesForEntries([
       {
@@ -492,7 +505,11 @@ describe('bundlers/shared css-imports', () => {
     ])
     expect(scopedCandidates).toEqual(expect.any(Set))
     expect(scopedCandidates.has('bg-[#123]')).toBe(true)
+    expect(scopedCandidates.has('bg-[#0977ee]')).toBe(true)
+    expect(scopedCandidates.has('text-[31rpx]')).toBe(true)
+    expect(scopedCandidates.has('px-[29rpx]')).toBe(true)
     expect(addDependency).toHaveBeenCalledWith(await realpath(path.join(pageDir, 'index.tsx')))
+    expect(addDependency).toHaveBeenCalledWith(await realpath(path.join(pageDir, 'index.vue')))
   })
 
   it('generates webpack H5 css for apply-only entries', async () => {

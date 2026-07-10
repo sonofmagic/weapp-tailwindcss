@@ -123,6 +123,9 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                   rem2rpx: true,
                   generator,
                   styleInjector: false,
+                  customAttributes: {
+                    '*': [/^t-class(?:-.+)?$/],
+                  },
                   // before 2248
                   // after 309
                   // cssCalc: ['--nutui']
@@ -175,6 +178,9 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                   rem2rpx: true,
                   generator,
                   styleInjector: false,
+                  customAttributes: {
+                    '*': [/^t-class(?:-.+)?$/],
+                  },
                 } satisfies UserDefinedOptions
               ]
             }

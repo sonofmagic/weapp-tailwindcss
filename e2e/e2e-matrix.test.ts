@@ -51,6 +51,26 @@ const ICONIFY_REGRESSION_SOURCE_TOKENS = [
   'before:content-[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\']',
   'before:content-[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\']',
 ] as const
+const ISSUE_977_978_DEMO_SOURCE_TOKENS = [
+  't-class',
+  'bg-[#0977ee]',
+  'text-[31rpx]',
+  'px-[29rpx]',
+  '--test-color',
+  '--color-test',
+  '--font-test',
+  '--font-sans',
+  '--font-serif',
+  '--font-mono',
+  '--color-red-500',
+  '--color-blue-500',
+  '--color-slate-900',
+  '--spacing',
+  '--text-base',
+  '--font-weight-bold',
+  '--radius-lg',
+  '--default-font-family',
+] as const
 
 function readDemoPackageJson(packageJson: string) {
   return JSON.parse(
@@ -311,6 +331,27 @@ describe('e2e matrix', () => {
         manualDarkTokens.some(token => source.includes(token)),
         `${entry.name} should include one manual dark variant: ${manualDarkTokens.join(', ')}`,
       ).toBe(true)
+    }
+  })
+
+  it('keeps every Tailwind CSS v4 demo wired to issues 977 and 978 source regressions', () => {
+    for (const entry of DEMO_COVERAGE_MATRIX) {
+      if (entry.name.startsWith('web/')) {
+        continue
+      }
+      const pkg = readDemoPackageJson(entry.packageJson)
+      const dependencies = {
+        ...(pkg.dependencies ?? {}),
+        ...(pkg.devDependencies ?? {}),
+      }
+      if (dependencies.tailwindcss !== 'catalog:tailwindcss4' || !dependencies['weapp-tailwindcss']) {
+        continue
+      }
+
+      const source = readDemoSource(entry)
+      for (const token of ISSUE_977_978_DEMO_SOURCE_TOKENS) {
+        expect(source, `${entry.name} should include issue 977/978 regression token ${token}`).toContain(token)
+      }
     }
   })
 

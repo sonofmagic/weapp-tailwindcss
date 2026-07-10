@@ -4,6 +4,7 @@ export default function Index() {
   return (
     <View className="bg-twv4-taro-main text-white theme-mode-demo theme-dark dark:bg-zinc-950 system-dark:text-[#010203]">
       taro main package
+      <View t-class="bg-[#0977ee] text-[31rpx]" t-class-content="px-[29rpx]">issue 977 t-class</View>
     </View>
   )
 }

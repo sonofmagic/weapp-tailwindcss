@@ -12,6 +12,7 @@
     <view class="template-corpus-hover h-16 w-32 rounded-[20rpx] bg-green-200/70" hover-class="!bg-[gray] after:!content-['good_work!']">
       hover corpus
     </view>
+    <t-button t-class="bg-[#0977ee] text-[31rpx]" t-class-content="px-[29rpx]">issue 977 t-class</t-button>
   </view>
   <view :class="numClassObj">2xl:text-[red]</view>
   <view class="space-y-4 flex flex-col bg-red-400">

@@ -56,6 +56,9 @@ export default defineConfig(() => {
               webCompat: uniPlatform.isWeb ? true : undefined,
             },
         styleInjector: false,
+        customAttributes: {
+          '*': [/^t-class(?:-.+)?$/],
+        },
       }),
     ],
     css: {

@@ -263,6 +263,9 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .rounded {
   border-radius: 0.25rem;
 }
+.bg-\[\#0977ee\] {
+  background-color: #0977ee;
+}
 .bg-\[\#123456\] {
   background-color: #123456;
 }
@@ -286,7 +289,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 }
  /*tokens: from-cyan-500 <= src/pages/index/index.vue */
 .from-cyan-500 {
-  --tw-gradient-from: rgb(0, 182, 212);
+  --tw-gradient-from: #00b7d7;
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
@@ -296,7 +299,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 }
  /*tokens: to-blue-500 <= src/pages/index/index.vue */
 .to-blue-500 {
-  --tw-gradient-to: rgb(50, 128, 255);
+  --tw-gradient-to: #3080ff;
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
@@ -312,6 +315,9 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .px-4 {
   padding-inline: calc(var(--spacing) * 4);
 }
+.px-\[29rpx\] {
+  padding-inline: 0.90625rem;
+}
  /*tokens: py-2 <= src/pages/index/index.vue */
 .py-2 {
   padding-block: calc(var(--spacing) * 2);
@@ -319,6 +325,12 @@ input:where([type='button'], [type='reset'], [type='submit']),
  /*tokens: py-3 <= src/pages/index/index.vue */
 .py-3 {
   padding-block: calc(var(--spacing) * 3);
+}
+.text-\[31rpx\] {
+  font-size: 0.96875rem;
+}
+.text-\[31rpx\] {
+  font-size: 0.96875rem;
 }
 .text-\[55rpx\] {
   font-size: 1.71875rem;
@@ -334,7 +346,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 }
  /*tokens: text-slate-900 <= src/pages/index/index.vue */
 .text-slate-900 {
-  color: rgb(15, 23, 43);
+  color: #0f172b;
 }
 .before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\]::before {
   --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
@@ -346,11 +358,11 @@ input:where([type='button'], [type='reset'], [type='submit']),
 }
  /*tokens: dark:bg-zinc-900 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
 .dark\:bg-zinc-900.theme-dark {
-  background-color: rgb(24, 24, 27);
+  background-color: #18181b;
 }
  /*tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-900 <= src/pages/index/index.vue */
 .theme-dark .dark\:bg-zinc-900 {
-  background-color: rgb(24, 24, 27);
+  background-color: #18181b;
 }
  /*tokens: dark:bg-zinc-950 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
 .dark\:bg-zinc-950.theme-dark {
@@ -371,7 +383,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 @media (prefers-color-scheme: dark) {
  /*tokens: system-dark:bg-slate-900 <= src/pages/index/index.vue */
   .system-dark\:bg-slate-900 {
-    background-color: rgb(15, 23, 43);
+    background-color: #0f172b;
   }
 }
 @media (prefers-color-scheme: dark) {
@@ -8007,6 +8019,36 @@ wx-button {
 }
 abc {
   background: #222;
+}
+page {
+  --test-color: #006241;
+  --color-test: #006241;
+  --font-test: 'Issue 978', sans-serif;
+  --font-sans: 'inter', 'inter Fallback', system-ui;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-mono: var(--font-plex-mono), monospace;
+  --color-red-50: #fef2f2;
+  --color-red-950: #460809;
+  --color-orange-500: #fe6e00;
+  --color-amber-500: #f99c00;
+  --color-yellow-500: #edb200;
+  --color-lime-500: #80cd00;
+  --color-teal-500: #00baa7;
+  --color-sky-500: #00a5ef;
+  --color-indigo-500: #625fff;
+  --color-violet-500: #8d54ff;
+  --color-purple-500: #ac4bff;
+  --color-pink-500: #f6339a;
+  --color-gray-900: #101828;
+  --color-neutral-900: #171717;
+  --color-stone-900: #1c1917;
+  --color-black: #000;
+  --spacing: 0.25rem;
+  --text-base: 1rem;
+  --font-weight-bold: 700;
+  --radius-lg: 0.5rem;
+  --default-font-family: var(--font-inter), system-ui;
+  --default-mono-font-family: var(--font-plex-mono), monospace;
 }
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   *,

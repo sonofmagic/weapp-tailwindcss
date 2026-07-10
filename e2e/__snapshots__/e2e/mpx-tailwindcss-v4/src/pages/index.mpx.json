@@ -1,6 +1,6 @@
 {
   "file": "src/pages/index.mpx",
-  "count": 119,
+  "count": 122,
   "tokens": [
     "!bg-[gray]",
     "!bg-green-500",
@@ -11,6 +11,7 @@
     "after:!content-['good_work!']",
     "after:border-none",
     "before:content-['Festivus']",
+    "bg-[#0977ee]",
     "bg-[#123456]",
     "bg-[#68c828]",
     "bg-[radial-gradient(circle_at_18%_20%,#e0f2fe,#fdf4ff_70%)]",
@@ -73,6 +74,7 @@
     "p-[20px]",
     "px-3",
     "px-4",
+    "px-[29rpx]",
     "px-[34.54rpx]",
     "px-[48px]",
     "py-1",
@@ -101,6 +103,7 @@
     "text-[20px]",
     "text-[22px]",
     "text-[26rpx]",
+    "text-[31rpx]",
     "text-[32.4rpx]",
     "text-[32px]",
     "text-[32rpx]",

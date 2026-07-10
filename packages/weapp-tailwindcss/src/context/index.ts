@@ -197,6 +197,7 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
   syncLegacyFieldsToCssOptions(ctx)
 
   const customAttributesEntities = toCustomAttributesEntities(ctx.customAttributes)
+  ctx.customAttributesEntities = customAttributesEntities
 
   const { styleHandler, jsHandler, templateHandler } = createHandlersFromContext(
     ctx,

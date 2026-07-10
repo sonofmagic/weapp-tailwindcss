@@ -1,7 +1,7 @@
 export const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
-export const TAILWIND_GENERATED_CSS_MARKER_RE = /\/\*!\s*tailwindcss v|@property\s+--tw-|--tw-|:not\(#\\#\)|\.[^,{]*(?:\\:|\\\[|\\#)|(?::host|page|\.tw-root|wx-root-portal-content)[^{]*\{[^}]*--(?:color|spacing|text|font-weight|radius)-/
+export const TAILWIND_GENERATED_CSS_MARKER_RE = /\/\*!\s*tailwindcss v|@property\s+--tw-|--tw-|:not\(#\\#\)|\.[^,{]*(?:\\:|\\\[|\\#)|(?::root\s*,\s*:host|:host\s*,\s*page\s*,\s*\.tw-root\s*,\s*wx-root-portal-content)[^{]*\{[^}]*(?:--spacing\b|--(?:color|text|font|default|radius)-)/
 const TAILWIND_ESCAPED_UTILITY_MARKER_RE = /\.[^,{]{0,512}(?:\\:|\\\[|\\#)/
-const TAILWIND_ROOT_THEME_MARKER_RE = /(?::host|page|\.tw-root|wx-root-portal-content)[^{]{0,256}\{[^}]{0,4096}--(?:color|spacing|text|font-weight|radius)-/
+const TAILWIND_ROOT_THEME_MARKER_RE = /(?::root\s*,\s*:host|:host\s*,\s*page\s*,\s*\.tw-root\s*,\s*wx-root-portal-content)[^{]{0,256}\{[^}]{0,4096}(?:--spacing\b|--(?:color|text|font|default|radius)-)/
 export const GENERATOR_PLACEHOLDER_MARKER_RE = /\/\*!\s*weapp-tailwindcss generator-placeholder\s*\*\//i
 export const GENERATOR_PLACEHOLDER_MARKER_GLOBAL_RE = /\/\*!\s*weapp-tailwindcss generator-placeholder\s*\*\/\s*/gi
 export const TAILWIND_BANNER_PREFIX_RE = /^\/\*!\s*tailwindcss v[^*]*\*\/\s*/i
@@ -134,9 +134,11 @@ export function hasTailwindGeneratedCssMarkers(rawSource: string) {
     && !rawSource.includes('\\[')
     && !rawSource.includes('\\#')
     && !rawSource.includes('--color-')
-    && !rawSource.includes('--spacing-')
+    && !rawSource.includes('--spacing')
     && !rawSource.includes('--text-')
+    && !rawSource.includes('--font-')
     && !rawSource.includes('--font-weight-')
+    && !rawSource.includes('--default-')
     && !rawSource.includes('--radius-')
   ) {
     return false

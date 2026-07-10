@@ -20,6 +20,7 @@ export default function Index() {
           Taro Webpack React Tailwind CSS v4 manual dark
         </View>
       </View>
+      <View t-class='bg-[#0977ee] text-[31rpx]' t-class-content='px-[29rpx]'>issue 977 t-class</View>
       <View className='h-14 bg-gradient-to-r from-cyan-500 to-blue-500'></View>
       <NutButton>Share</NutButton>
     </>

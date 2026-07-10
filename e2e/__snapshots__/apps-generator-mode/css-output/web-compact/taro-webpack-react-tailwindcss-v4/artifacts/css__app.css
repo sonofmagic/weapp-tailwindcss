@@ -317,6 +317,9 @@ input:where([type='button'], [type='reset'], [type='submit']),
   border-style: var(--tw-border-style);
   border-width: 1px;
 }
+.bg-\[\#0977ee\] {
+  background-color: #0977ee;
+}
 .bg-\[\#534312\] {
   background-color: #534312;
 }
@@ -467,7 +470,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 }
  /*tokens: from-cyan-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
 .from-cyan-500 {
-  --tw-gradient-from: rgb(0, 182, 212);
+  --tw-gradient-from: #00b7d7;
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
@@ -487,7 +490,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 }
  /*tokens: from-red-500 <= src/pages/issue-928/index.tsx */
 .from-red-500 {
-  --tw-gradient-from: rgb(251, 44, 54);
+  --tw-gradient-from: #fb2c36;
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
@@ -507,7 +510,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 }
  /*tokens: via-purple-500 <= src/pages/issue-928/index.tsx */
 .via-purple-500 {
-  --tw-gradient-via: rgb(171, 78, 255);
+  --tw-gradient-via: #ac4bff;
   --tw-gradient-via-stops:
     var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position),
     var(--tw-gradient-to) var(--tw-gradient-to-position);
@@ -544,7 +547,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 }
  /*tokens: to-blue-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
 .to-blue-500 {
-  --tw-gradient-to: rgb(50, 128, 255);
+  --tw-gradient-to: #3080ff;
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
@@ -554,7 +557,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 }
  /*tokens: to-rose-500 <= src/pages/issue-928/index.tsx */
 .to-rose-500 {
-  --tw-gradient-to: rgb(255, 35, 87);
+  --tw-gradient-to: #ff2357;
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
@@ -573,6 +576,9 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .px-4 {
   padding-inline: calc(var(--spacing) * 4);
 }
+.px-\[29rpx\] {
+  padding-inline: 0.90625rem;
+}
  /*tokens: py-2 <= src/pages/index/index.tsx */
 .py-2 {
   padding-block: calc(var(--spacing) * 2);
@@ -587,6 +593,12 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .text-\[100rpx\] {
   font-size: 3.125rem;
 }
+.text-\[31rpx\] {
+  font-size: 0.96875rem;
+}
+.text-\[31rpx\] {
+  font-size: 0.96875rem;
+}
 .text-\[\#fff\] {
   color: #fff;
 }
@@ -596,7 +608,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 }
  /*tokens: text-slate-900 <= src/pages/index/index.tsx */
 .text-slate-900 {
-  color: rgb(15, 23, 43);
+  color: #0f172b;
 }
 .before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\]::before {
   --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
@@ -608,11 +620,11 @@ input:where([type='button'], [type='reset'], [type='submit']),
 }
  /*tokens: dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
 .dark\:bg-zinc-900.theme-dark {
-  background-color: rgb(24, 24, 27);
+  background-color: #18181b;
 }
  /*tokens: theme-dark <= src/pages/index/index.tsx | dark:bg-zinc-900 <= src/pages/index/index.tsx */
 .theme-dark .dark\:bg-zinc-900 {
-  background-color: rgb(24, 24, 27);
+  background-color: #18181b;
 }
  /*tokens: dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
 .dark\:bg-zinc-950.theme-dark {
@@ -633,7 +645,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
 @media (prefers-color-scheme: dark) {
  /*tokens: system-dark:bg-slate-900 <= src/pages/index/index.tsx */
   .system-dark\:bg-slate-900 {
-    background-color: rgb(15, 23, 43);
+    background-color: #0f172b;
   }
 }
 @media (prefers-color-scheme: dark) {
@@ -689,6 +701,36 @@ abc {
 }
 .issue-941-bg-image {
   background-image: url('./issue-941-asset.svg');
+}
+page {
+  --test-color: #006241;
+  --color-test: #006241;
+  --font-test: 'Issue 978', sans-serif;
+  --font-sans: 'inter', 'inter Fallback', system-ui;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-mono: var(--font-plex-mono), monospace;
+  --color-red-50: #fef2f2;
+  --color-red-950: #460809;
+  --color-orange-500: #fe6e00;
+  --color-amber-500: #f99c00;
+  --color-yellow-500: #edb200;
+  --color-lime-500: #80cd00;
+  --color-teal-500: #00baa7;
+  --color-sky-500: #00a5ef;
+  --color-indigo-500: #625fff;
+  --color-violet-500: #8d54ff;
+  --color-purple-500: #ac4bff;
+  --color-pink-500: #f6339a;
+  --color-gray-900: #101828;
+  --color-neutral-900: #171717;
+  --color-stone-900: #1c1917;
+  --color-black: #000;
+  --spacing: 0.25rem;
+  --text-base: 1rem;
+  --font-weight-bold: 700;
+  --radius-lg: 0.5rem;
+  --default-font-family: var(--font-inter), system-ui;
+  --default-mono-font-family: var(--font-plex-mono), monospace;
 }
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   *,
@@ -1102,16 +1144,6 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']) {
   background-image: -webkit-radial-gradient(var(--tw-gradient-stops, var(--issue-928-radial)));
   background-image: radial-gradient(var(--tw-gradient-stops, var(--issue-928-radial)));
 }
- /*tokens: from-cyan-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
-.from-cyan-500 {
-  --tw-gradient-from: #00b6d4;
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
-}
  /*tokens: from-emerald-400 <= src/pages/issue-928/index.tsx */
 .from-emerald-400 {
   --tw-gradient-from: #00d294;
@@ -1122,24 +1154,6 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']) {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
- /*tokens: from-red-500 <= src/pages/issue-928/index.tsx */
-.from-red-500 {
-  --tw-gradient-from: #fb2c36;
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
-}
- /*tokens: via-purple-500 <= src/pages/issue-928/index.tsx */
-.via-purple-500 {
-  --tw-gradient-via: #ab4eff;
-  --tw-gradient-via-stops:
-    var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position);
-  --tw-gradient-stops: var(--tw-gradient-via-stops);
-}
  /*tokens: via-yellow-300 <= src/pages/issue-928/index.tsx */
 .via-yellow-300 {
   --tw-gradient-via: #ffe02e;
@@ -1147,26 +1161,6 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']) {
     var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position),
     var(--tw-gradient-to) var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-via-stops);
-}
- /*tokens: to-blue-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
-.to-blue-500 {
-  --tw-gradient-to: #3280ff;
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
-}
- /*tokens: to-rose-500 <= src/pages/issue-928/index.tsx */
-.to-rose-500 {
-  --tw-gradient-to: #ff2357;
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
 }
  /*tokens: px-3 <= src/pages/index/index.tsx */
 .px-3 {
@@ -1187,10 +1181,6 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']) {
  /*tokens: text-pink-200 <= src/pages/index/index.tsx */
 .text-pink-200 {
   color: #fccee8;
-}
- /*tokens: text-slate-900 <= src/pages/index/index.tsx */
-.text-slate-900 {
-  color: #0f172b;
 }
 @font-face {
   font-display: swap;

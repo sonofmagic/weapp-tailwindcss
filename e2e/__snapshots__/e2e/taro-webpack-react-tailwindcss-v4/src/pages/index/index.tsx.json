@@ -1,7 +1,8 @@
 {
   "file": "src/pages/index/index.tsx",
-  "count": 21,
+  "count": 24,
   "tokens": [
+    "bg-[#0977ee]",
     "bg-[#534312]",
     "bg-gradient-to-r",
     "bg-purple-800",
@@ -15,11 +16,13 @@
     "mt-4",
     "px-3",
     "px-4",
+    "px-[29rpx]",
     "py-2",
     "py-3",
     "rounded",
     "text-[#fff]",
     "text-[100rpx]",
+    "text-[31rpx]",
     "text-pink-200",
     "text-slate-900",
     "to-blue-500"

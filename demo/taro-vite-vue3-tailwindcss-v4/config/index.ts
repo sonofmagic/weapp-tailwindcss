@@ -73,6 +73,9 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           cssEntries,
           rem2rpx: true,
           styleInjector: false,
+          customAttributes: {
+            '*': [/^t-class(?:-.+)?$/],
+          },
           generator,
           disabled: isNativeTarget,
           // injectAdditionalCssVarScope: true,

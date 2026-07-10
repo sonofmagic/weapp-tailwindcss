@@ -19,6 +19,9 @@ const weappTailwindcssPlugins = WeappTailwindcss(
     ],
     cssSourceTrace: true,
     rem2rpx: true,
+    customAttributes: {
+      '*': [/^t-class(?:-.+)?$/],
+    },
     generator: officialPostcssParity ? false : undefined,
   }),
 ) ?? []

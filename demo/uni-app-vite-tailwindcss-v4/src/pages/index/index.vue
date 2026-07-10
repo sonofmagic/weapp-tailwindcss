@@ -65,6 +65,7 @@
         uni-app Vite Tailwind CSS v4 manual dark
       </view>
     </view>
+    <t-button t-class="bg-[#0977ee] text-[31rpx]" t-class-content="px-[29rpx]">issue 977 t-class</t-button>
     <view class="mt-4 rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm">
       <view class="flex items-center justify-between gap-3">
         <text class="text-base font-semibold text-slate-900">App WebView Runtime</text>
