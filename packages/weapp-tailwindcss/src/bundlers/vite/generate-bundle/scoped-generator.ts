@@ -35,6 +35,12 @@ function mergeCandidates(first: Set<string>, second: Set<string>) {
   return new Set([...first, ...second])
 }
 
+function canFallbackToOutputCandidates(rawSource: string, entries: TailwindSourceEntry[]) {
+  return rawSource.includes('@source')
+    && entries.length > 0
+    && entries.every(entry => !entry.negated)
+}
+
 function resolveScopedSourceEntries(rawSource: string, sourceFile: string, resolvedEntries: TailwindSourceEntry[] | undefined) {
   if (!hasOwnSourceDirectives(rawSource)) {
     return {
@@ -121,7 +127,9 @@ export async function createScopedGeneratorRuntime(options: {
       const explicitCandidates = getSourceCandidatesForEntries(entries)
       const outputCandidates = scopedSourceCandidateGetter?.(undefined)
       const scopedCandidates = outputCandidates
-        ? intersectCandidates(explicitCandidates, outputCandidates)
+        ? explicitCandidates.size === 0 && canFallbackToOutputCandidates(rawSource, entries)
+          ? outputCandidates
+          : intersectCandidates(explicitCandidates, outputCandidates)
         : explicitCandidates
       const shouldMergeFallbackRuntime = hasCssMacroTailwindV4CustomVariantConditionalComments(rawSource)
       return shouldMergeFallbackRuntime ? mergeCandidates(scopedCandidates, fallbackRuntime) : scopedCandidates

@@ -1098,6 +1098,12 @@ export function createViteFrameworkPlugins(
         generatorCode: generatorTransformCode,
       }) ?? true
     )
+    const previousCss = pendingHmrChange && !forceFullHmrCssRegeneration
+      ? cleanGeneratedCssByFile.get(fileKey)
+      : undefined
+    const previousGeneratorCss = previousCss && !currentGeneratorBranch.isWeb
+      ? normalizeMiniProgramGeneratorCssSource(previousCss, outputFile)
+      : previousCss
     const generated = await hmrTimingRecorder.measure('generateCss.serve', () => generateTailwindV4Css({
       opts,
       runtimeState,
@@ -1114,6 +1120,10 @@ export function createViteFrameworkPlugins(
       generatorPlatform: resolveGeneratorPlatform(),
       styleHandler,
       debug,
+      previousCss: previousGeneratorCss,
+      previousClassSet: pendingHmrChange && !forceFullHmrCssRegeneration
+        ? generatedClassSetByFile.get(fileKey)
+        : undefined,
       deferEmptyScopedCssSource: shouldDeferEmptyScopedCssSource,
       disableSourceScan: false,
       restoreLocalCssImports: !currentGeneratorBranch.isWeb,

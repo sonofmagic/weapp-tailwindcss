@@ -145,4 +145,31 @@ describe('bundlers/vite scoped generator runtime', () => {
 
     expect(runtime).toEqual(new Set([packageCandidate]))
   })
+
+  it('uses the current output scope when positive @source entries resolve no candidates', async () => {
+    const outputCandidates = new Set([
+      'bg-explicit-entry',
+      "before:content-['explicit_entry']",
+    ])
+    const runtime = await createScopedGeneratorRuntime({
+      cssHandlerOptions: {
+        isMainChunk: false,
+      },
+      fallbackRuntime: new Set(['global-entry']),
+      getSourceCandidatesForEntries: entries => entries === undefined
+        ? outputCandidates
+        : new Set<string>(),
+      majorVersion: 4,
+      outputFile: 'features/entry.wxss',
+      rawSource: '@import "tailwindcss" source(none);\n@source "./**/*.{wxml,js,ts}";',
+      scopedSourceCandidateGetter: entries => entries === undefined
+        ? outputCandidates
+        : new Set<string>(),
+      shouldExcludeSubpackageSourceCandidates: () => false,
+      sourceFile: '/project/dist/features/entry.wxss',
+    })
+
+    expect(runtime).toEqual(outputCandidates)
+    expect(runtime).not.toContain('global-entry')
+  })
 })
