@@ -14,7 +14,7 @@ import { logger } from '@weapp-tailwindcss/logger'
 import { compileCssMacroConditionalComments, removeTailwindPostcssPlugins, resolveFilteredPostcssConfig, transformWebCssCompat, unwrapUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
 import { LRUCache } from 'lru-cache'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
-import { hasUserCssLayerBlocks, normalizeEmptyTailwindCustomVariants } from '@/bundlers/shared/generator-css/user-css'
+import { hasUserCssLayerBlocks, normalizeEmptyTailwindCustomVariants, splitUserCssLayerBlocks } from '@/bundlers/shared/generator-css/user-css'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
@@ -424,6 +424,18 @@ export function createViteFrameworkPlugins(
     customAttributesEntities,
     disabledDefaultTemplateHandler,
   })
+  const originalCssLayerSourceByFile = new LRUCache<string, string>({ max: 128 })
+  const rememberOriginalCssLayerSource = (id: string, code: string) => {
+    const file = cleanUrl(id)
+    if (!isCSSRequest(file)) {
+      return
+    }
+    if (!hasUserCssLayerBlocks(code)) {
+      originalCssLayerSourceByFile.delete(file)
+      return
+    }
+    originalCssLayerSourceByFile.set(file, splitUserCssLayerBlocks(code).layer)
+  }
   const sourceCandidateScanCache = new LRUCache<string, SourceCandidateCollectorSnapshot>({
     max: SOURCE_CANDIDATE_SCAN_CACHE_MAX,
   })
@@ -1256,6 +1268,7 @@ export function createViteFrameworkPlugins(
     setRememberedCssSignature: cssMemory.setRememberedCssSignature,
     getKnownCssSource: cssMemory.getKnownCssSource,
     getKnownSfcSource: cssMemory.getKnownSfcSource,
+    getOriginalCssLayerSource: file => originalCssLayerSourceByFile.get(cleanUrl(file)),
     recordGeneratorCandidates,
     pruneViteCssCaches,
     getViteCssCacheStats,
@@ -1330,6 +1343,7 @@ export function createViteFrameworkPlugins(
         if (typeof rawCode !== 'string') {
           return
         }
+        rememberOriginalCssLayerSource(id, rawCode)
         const transformedCode = transformEarlyMiniProgramCss(rawCode)
         if (transformedCode === rawCode) {
           return
@@ -1340,6 +1354,9 @@ export function createViteFrameworkPlugins(
       transform: {
         order: 'pre',
         async handler(code, id) {
+          if (hasUserCssLayerBlocks(code)) {
+            rememberOriginalCssLayerSource(id, code)
+          }
           let transformedCode = code
           if (
             shouldOwnTailwindGeneration
@@ -1423,6 +1440,9 @@ export function createViteFrameworkPlugins(
           const hotSource = isSourceCandidateHotUpdate && canReadHotSource
             ? await ctx.read().catch(() => undefined)
             : undefined
+          if (typeof hotSource === 'string' && isCSSRequest(ctx.file)) {
+            rememberOriginalCssLayerSource(ctx.file, hotSource)
+          }
           const sourceCandidateChange = await syncChangedSourceCandidateFile(ctx.file, hotSource)
           const isWebLikeHotUpdate = isCurrentWebLikeStylePlatform()
           let canUseHmrCandidateAppend = false

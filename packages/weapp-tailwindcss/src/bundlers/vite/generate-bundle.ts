@@ -17,6 +17,7 @@ import { validateCandidatesByGenerator } from '../shared/generator-css'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { isPureLocalCssImportWrapper } from '../shared/generator-css/local-imports'
 import { normalizeMiniProgramGeneratorCssSource } from '../shared/generator-css/output-import-shell'
+import { hasUserCssLayerBlocks } from '../shared/generator-css/user-css'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { createBundleModuleGraphOptions } from './bundle-entries'
@@ -165,6 +166,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       setRememberedCssSignature,
       getKnownCssSource,
       getKnownSfcSource,
+      getOriginalCssLayerSource,
       recordGeneratorCandidates,
       pruneViteCssCaches,
       getViteCssCacheStats,
@@ -1369,6 +1371,21 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const generatorSourceFile = vitePipelineCssAsset
           ? rememberedCssSource?.sourceFile ?? assetSourceFile
           : assetSourceFile
+        const originalGeneratorLayerSource = vitePipelineCssAsset
+          ? getOriginalCssLayerSource?.(generatorSourceFile)
+          : undefined
+        const generatorUserLayerRawSource = originalGeneratorLayerSource
+          && normalizeCssSourceForCompare(originalGeneratorLayerSource) !== normalizeCssSourceForCompare(generatorRawSource)
+          && hasUserCssLayerBlocks(originalGeneratorLayerSource)
+          ? normalizeMiniProgramGeneratorRawSource(
+              normalizeGeneratorUserRawSource(
+                originalGeneratorLayerSource,
+                generatorSourceFile,
+                assetSourceFile,
+              ),
+              outputFile,
+            )
+          : undefined
         const webviewRootCssInjectionTarget = vitePipelineCssAsset
           ? resolveConfiguredCssEntryRootInjectionTarget(generatorSourceFile, outputFile)
           : undefined
@@ -1617,6 +1634,17 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   : previousCss
                 const shouldGenerateCssWithCore = hasTailwindGenerationSource(generatorTransformRawSource)
                   || hasBundlerGeneratedCssMarker(rawSource)
+                const bundleUserRawSource = vitePipelineCssAsset
+                  && !hasBundlerGeneratedCssMarker(rawSource)
+                  && normalizeCssSourceForCompare(rawSource) !== normalizeCssSourceForCompare(generatorRawSource)
+                  ? normalizeMiniProgramGeneratorRawSource(
+                      normalizeGeneratorUserRawSource(rawSource, generatorSourceFile, assetSourceFile),
+                      outputFile,
+                    )
+                  : undefined
+                const generatorUserRawSource = [generatorUserLayerRawSource, bundleUserRawSource]
+                  .filter((source): source is string => typeof source === 'string' && source.trim().length > 0)
+                  .join('\n')
                 const generated = shouldGenerateCssWithCore
                   ? await generateTailwindV4Css({
                       opts,
@@ -1633,9 +1661,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                       styleHandler,
                       debug,
                       previousCss: previousGeneratorCss,
-                      ...(vitePipelineCssAsset && !hasBundlerGeneratedCssMarker(rawSource) && normalizeCssSourceForCompare(rawSource) !== normalizeCssSourceForCompare(generatorRawSource)
-                        ? { userRawSource: normalizeMiniProgramGeneratorRawSource(normalizeGeneratorUserRawSource(rawSource, generatorSourceFile, assetSourceFile), outputFile) }
-                        : {}),
+                      ...(generatorUserRawSource ? { userRawSource: generatorUserRawSource } : {}),
                       ...(usesConfiguredTailwindV4FallbackSource
                         ? { restoreLocalCssImports: false }
                         : {}),
