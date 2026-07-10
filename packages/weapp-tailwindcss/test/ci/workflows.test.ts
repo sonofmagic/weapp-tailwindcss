@@ -757,6 +757,14 @@ describe('e2e watch workflow', () => {
       watch_max_plugin_process_ms: '60000',
       watch_command_timeout_ms: '3600000',
     }
+    const slowMacosTaroReactTtPrBudget = {
+      watch_case: 'taro-vite-react-tailwindcss-v4:tt',
+      round_profile: 'default',
+      timeout_minutes: 70,
+      watch_timeout_ms: '600000',
+      watch_max_plugin_process_ms: '10000',
+      watch_command_timeout_ms: '3300000',
+    }
     const macosMpxPrBudget = {
       watch_case: 'mpx-tailwindcss-v4',
       round_profile: 'default',
@@ -845,6 +853,11 @@ describe('e2e watch workflow', () => {
       os: 'macos-latest',
       runner_label: 'macos',
       ...slowMacosTaroReactPrBudget,
+    }))
+    expect(prRows).toContainEqual(expect.objectContaining({
+      os: 'macos-latest',
+      runner_label: 'macos',
+      ...slowMacosTaroReactTtPrBudget,
     }))
     for (const budget of slowWindowsPrBudgets) {
       expect(prRows).toContainEqual(expect.objectContaining({

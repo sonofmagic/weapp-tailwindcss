@@ -6,8 +6,20 @@ exports[`gulp > common build > css 1`] = `
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      --tw-space-y-reverse: 0;
       --tw-border-style: solid;
+      --tw-font-weight: initial;
+      --tw-leading: ;
     }
+:host,page,.tw-root,wx-root-portal-content {
+  --spacing: 0.25rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.33333;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+}
 .m-_b20px_B {
   margin: 20px;
 }
@@ -29,6 +41,11 @@ exports[`gulp > common build > css 1`] = `
 .w-screen {
   width: 100vw;
 }
+.space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text {
+    --tw-space-y-reverse: 0;
+    margin-bottom: calc((var(--spacing)*4)*var(--tw-space-y-reverse));
+    margin-top: calc((var(--spacing)*4)*(1 - var(--tw-space-y-reverse)));
+  }
 .border-b {
   border-bottom-style: var(--tw-border-style);
   border-bottom-width: 1px;
@@ -63,11 +80,27 @@ exports[`gulp > common build > css 1`] = `
 .text-left {
   text-align: left;
 }
+.text-base {
+  font-size: var(--text-base);
+  line-height: var(--tw-leading, var(--text-base--line-height));
+}
+.text-xs {
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+}
 .text-_b14px_B {
   font-size: 14px;
 }
 .text-_b50px_B {
   font-size: 50px;
+}
+.font-bold {
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+}
+.font-medium {
+  --tw-font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
 }
 .text-_b_h5ba4e5_B {
   color: #5ba4e5;

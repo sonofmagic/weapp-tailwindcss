@@ -1,5 +1,5 @@
-import { createRequire } from 'node:module'
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import tailwindcss from '@tailwindcss/postcss'
 import twv from '@tailwindcss/vite'
 import { isCI } from 'ci-info'
@@ -17,6 +17,21 @@ function normalizeTailwindcssBanner(content: string) {
     tailwindcssBannerPattern,
     '/*! tailwindcss v<version> | MIT License | https://tailwindcss.com */',
   )
+}
+
+async function readBuiltStyle(root: string) {
+  const dist = path.resolve(root, 'dist')
+  const entries = await fs.readdir(dist, { withFileTypes: true })
+  const styleEntry = entries.find((entry) => {
+    if (!entry.isFile() || path.parse(entry.name).name !== 'index') {
+      return false
+    }
+    return !['.html', '.js', '.map'].includes(path.extname(entry.name))
+  })
+  if (!styleEntry) {
+    throw new Error(`Vite build did not emit an index style asset: ${entries.map(entry => entry.name).join(', ')}`)
+  }
+  return fs.readFile(path.join(dist, styleEntry.name), 'utf-8')
 }
 
 const require = createRequire(import.meta.url)
@@ -80,7 +95,7 @@ describe.skipIf(isCI)('vite', () => {
         },
       })
 
-      const css = await fs.readFile(path.resolve(root, 'dist/index.wxss'), 'utf-8')
+      const css = await readBuiltStyle(root)
       expect(css).toContain('.w-_b100px_B')
       expect(css).toContain('width: 100px')
       expect(css).toContain('.text-_b_h123456_B')
@@ -123,7 +138,7 @@ describe.skipIf(isCI)('vite', () => {
     })
     expect(
       normalizeTailwindcssBanner(
-        await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-plugin/dist/index.wxss'), 'utf-8'),
+        await readBuiltStyle(root),
       ),
     ).toMatchSnapshot('css')
     expect(await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-plugin/dist/index.js'), 'utf-8')).toMatchSnapshot('js')
@@ -163,7 +178,7 @@ describe.skipIf(isCI)('vite', () => {
     })
     expect(
       normalizeTailwindcssBanner(
-        await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-postcss/dist/index.wxss'), 'utf-8'),
+        await readBuiltStyle(root),
       ),
     ).toMatchSnapshot('css')
     expect(await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-postcss/dist/index.js'), 'utf-8')).toMatchSnapshot('js')
@@ -215,7 +230,7 @@ describe.skipIf(isCI)('vite', () => {
         },
       })
 
-      const css = await fs.readFile(path.resolve(root, 'dist/index.wxss'), 'utf-8')
+      const css = await readBuiltStyle(root)
       expect(css).toContain('.bg-clip-text')
       expect(css).toContain('-webkit-background-clip: text')
       expect(css).toContain('background-clip: text')

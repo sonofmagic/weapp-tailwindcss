@@ -1,9 +1,10 @@
 import { readFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import { createTailwindV4Engine, resolveTailwindV4Source } from '@/tailwindcss/v4-engine'
 
-const repoRoot = path.resolve(process.cwd(), '../..')
-const tailwindcssPackageRoot = path.join(repoRoot, 'demo/mpx-tailwindcss-v4/node_modules/tailwindcss')
+const require = createRequire(import.meta.url)
+const tailwindcssPackageRoot = path.dirname(require.resolve('tailwindcss4/package.json'))
 
 const PACKAGE_CSS_ENTRIES = [
   'index.css',
@@ -117,8 +118,8 @@ describe('Tailwind v4 package CSS entry outputs', () => {
     const weappCss = compactCss(weappResult.css)
     const webCss = compactCss(webResult.css)
 
-    expect(weappResult.css).toContain('--color-red-500: #fb2c36')
-    expect(weappResult.css).toContain('--color-blue-500: #2b7fff')
+    expect(weappResult.css).toContain('--color-red-500: rgb(251, 44, 54)')
+    expect(weappResult.css).toContain('--color-blue-500: rgb(50, 128, 255)')
     expect(weappResult.css).toContain('.w-_b100px_B')
     expect(weappResult.css).toContain('box-sizing: border-box')
     expect(weappResult.css).not.toContain('@layer')

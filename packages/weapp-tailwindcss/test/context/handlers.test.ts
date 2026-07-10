@@ -270,11 +270,11 @@ describe('resolveStyleOptionsFromContext', () => {
       cssPresetEnv: ctx.cssPresetEnv,
       autoprefixer: ctx.autoprefixer,
       cssCalc: ctx.cssCalc,
+      postcssOptions: ctx.postcssOptions,
       uniAppX: false,
       platform: ctx.platform,
     }))
     expect(styleOptions).not.toHaveProperty('escapeMap')
-    expect(styleOptions).not.toHaveProperty('postcssOptions')
     expect(styleOptions).not.toHaveProperty('injectAdditionalCssVarScope')
     expect(styleOptions).not.toHaveProperty('majorVersion')
   })

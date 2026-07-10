@@ -2,8 +2,8 @@ import { mkdir, mkdtemp, symlink } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import postcss from 'postcss'
 import tailwindcssPostcss from '@tailwindcss/postcss'
+import postcss from 'postcss'
 import weappTailwindcss from '@/postcss'
 
 const require = createRequire(import.meta.url)
@@ -47,28 +47,28 @@ const UPGRADE_DEFAULTS_CANDIDATES = [
 const UPGRADE_DEFAULTS_SOURCE_CSS = `${UPGRADE_DEFAULTS_CSS}@source inline("${UPGRADE_DEFAULTS_CANDIDATES.join(' ')}");`
 
 const TAILWIND_V4_COLOR_CASES = [
-  ['bg-slate-50', '--color-slate-50: #f8fafc'],
-  ['bg-gray-950', '--color-gray-950: #030712'],
-  ['bg-zinc-500', '--color-zinc-500: #71717b'],
-  ['bg-neutral-700', '--color-neutral-700: #404040'],
-  ['bg-stone-400', '--color-stone-400: #a6a09b'],
-  ['bg-red-500', '--color-red-500: #fb2c36'],
-  ['bg-orange-600', '--color-orange-600: #f54900'],
-  ['bg-amber-300', '--color-amber-300: #ffd230'],
-  ['bg-yellow-800', '--color-yellow-800: #894b00'],
-  ['bg-lime-200', '--color-lime-200: #d8f999'],
-  ['bg-green-900', '--color-green-900: #0d542b'],
-  ['bg-emerald-100', '--color-emerald-100: #d0fae5'],
-  ['bg-teal-950', '--color-teal-950: #022f2e'],
-  ['bg-cyan-400', '--color-cyan-400: #00d3f2'],
-  ['bg-sky-700', '--color-sky-700: #0069a8'],
-  ['bg-blue-500', '--color-blue-500: #2b7fff'],
-  ['bg-indigo-300', '--color-indigo-300: #a3b3ff'],
-  ['bg-violet-800', '--color-violet-800: #5d0ec0'],
-  ['bg-purple-600', '--color-purple-600: #9810fa'],
-  ['bg-fuchsia-200', '--color-fuchsia-200: #f6cfff'],
-  ['bg-pink-900', '--color-pink-900: #861043'],
-  ['bg-rose-50', '--color-rose-50: #fff1f2'],
+  ['bg-slate-50', '--color-slate-50: rgb(248, 250, 252)'],
+  ['bg-gray-950', '--color-gray-950: rgb(3, 7, 18)'],
+  ['bg-zinc-500', '--color-zinc-500: rgb(113, 113, 123)'],
+  ['bg-neutral-700', '--color-neutral-700: rgb(64, 64, 64)'],
+  ['bg-stone-400', '--color-stone-400: rgb(166, 160, 155)'],
+  ['bg-red-500', '--color-red-500: rgb(251, 44, 54)'],
+  ['bg-orange-600', '--color-orange-600: rgb(236, 86, 0)'],
+  ['bg-amber-300', '--color-amber-300: rgb(255, 210, 55)'],
+  ['bg-yellow-800', '--color-yellow-800: rgb(135, 76, 0)'],
+  ['bg-lime-200', '--color-lime-200: rgb(216, 249, 153)'],
+  ['bg-green-900', '--color-green-900: rgb(13, 84, 43)'],
+  ['bg-emerald-100', '--color-emerald-100: rgb(208, 250, 229)'],
+  ['bg-teal-950', '--color-teal-950: rgb(2, 47, 46)'],
+  ['bg-cyan-400', '--color-cyan-400: rgb(0, 209, 236)'],
+  ['bg-sky-700', '--color-sky-700: rgb(0, 105, 162)'],
+  ['bg-blue-500', '--color-blue-500: rgb(50, 128, 255)'],
+  ['bg-indigo-300', '--color-indigo-300: rgb(164, 180, 255)'],
+  ['bg-violet-800', '--color-violet-800: rgb(93, 14, 192)'],
+  ['bg-purple-600', '--color-purple-600: rgb(152, 16, 250)'],
+  ['bg-fuchsia-200', '--color-fuchsia-200: rgb(246, 207, 255)'],
+  ['bg-pink-900', '--color-pink-900: rgb(134, 16, 67)'],
+  ['bg-rose-50', '--color-rose-50: rgb(255, 241, 242)'],
 ] as const
 
 function normalizeCss(css: string) {
@@ -181,8 +181,8 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(result.css).toContain('var(--tw-ring-color, currentcolor)')
     expect(result.css).toContain('outline-width: 1px')
     expect(result.css).toContain('--tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.05))')
-    expect(result.css).toContain('--color-red-500: #fb2c36')
-    expect(result.css).toContain('--color-slate-700: #314158')
+    expect(result.css).toContain('--color-red-500: rgb(251, 44, 54)')
+    expect(result.css).toContain('--color-slate-700: rgb(49, 65, 88)')
     expect(result.css).toContain('background-color: var(--color-red-500)')
     expect(result.css).toContain('color: var(--color-slate-700)')
     expect(result.css).toContain('border-color: var(--color-gray-200)')
@@ -266,11 +266,11 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(weappResult.css).toContain('color: rgba(255, 255, 255, 0.1)')
     expect(weappResult.css).not.toContain('color-mix(in oklab, var(--color-white) 10%, transparent)')
     expect(weappResult.css).toContain('color: var(--color-blue-600)')
-    expect(weappResult.css).toContain('background-color: rgba(0, 166, 244, 0.5)')
+    expect(weappResult.css).toContain('background-color: rgba(0, 165, 234, 0.5)')
     expect(weappResult.css).toContain('color: var(--color-blue-600)')
-    expect(weappResult.css).toContain('background-color: rgba(0, 166, 244, 0.75)')
-    expect(weappResult.css).toContain('background-color: rgba(0, 166, 244, 0.33)')
-    expect(weappResult.css).toContain('background-color: rgba(0, 166, 244, var(--my-alpha-value))')
+    expect(weappResult.css).toContain('background-color: rgba(0, 165, 234, 0.75)')
+    expect(weappResult.css).toContain('background-color: rgba(0, 165, 234, 0.33)')
+    expect(weappResult.css).toContain('background-color: rgba(0, 165, 234, var(--my-alpha-value))')
     expect(weappResult.css).not.toContain('color-mix')
     expect(weappResult.css).not.toContain('oklab')
     expect(weappResult.css).toContain('border-color: var(--color-pink-400)')
@@ -281,8 +281,8 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(weappResult.css).toContain('caret-color: var(--color-rose-500)')
     expect(weappResult.css).toContain('fill: var(--color-bermuda)')
     expect(weappResult.css).toContain('stroke: var(--color-cyan-400)')
-    expect(weappResult.css).toContain('--tw-shadow-color: rgba(43, 127, 255, 0.5)')
-    expect(weappResult.css).toContain('--tw-inset-shadow-color: #615fff')
+    expect(weappResult.css).toContain('--tw-shadow-color: rgba(50, 128, 255, 0.5)')
+    expect(weappResult.css).toContain('--tw-inset-shadow-color: rgb(98, 96, 255)')
     expect(weappResult.css).toContain('--tw-ring-color: var(--color-fuchsia-500)')
     expect(weappResult.css).toContain('color: var(--color-zinc-500)')
     expect(weappResult.css).toContain('color: var(--brand-color)')
@@ -679,8 +679,8 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(result.css).toContain('calc(1px + var(--tw-ring-offset-width))')
     expect(result.css).toContain('var(--tw-ring-color, currentcolor)')
     expect(result.css).toContain('outline-width: 1px')
-    expect(result.css).toContain('--color-red-500: #fb2c36')
-    expect(result.css).toContain('--color-slate-700: #314158')
+    expect(result.css).toContain('--color-red-500: rgb(251, 44, 54)')
+    expect(result.css).toContain('--color-slate-700: rgb(49, 65, 88)')
     expect(result.css).toContain('--tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1))')
     expect(result.css).toContain('border-radius: var(--radius-sm)')
     expect(result.css).toContain('--tw-blur: blur(var(--blur-sm))')
@@ -702,7 +702,7 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     })
 
     expect(result.css).toContain('--color-red-500: #123456')
-    expect(result.css).toContain('--color-blue-500: #2b7fff')
+    expect(result.css).toContain('--color-blue-500: rgb(50, 128, 255)')
     expect(result.css).toContain('background-color: var(--color-red-500)')
     expect(result.css).toContain('color: var(--color-blue-500)')
     expect(result.css).not.toContain('oklch(')

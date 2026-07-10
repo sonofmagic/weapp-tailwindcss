@@ -76,6 +76,7 @@ describe('color-mix compatibility helpers', () => {
   it('resolves static, dynamic, currentColor, and unresolved color-mix values', () => {
     const customProperties = new Map([
       ['--brand', '#0ea5e9'],
+      ['--modern-brand', 'oklch(68.5% 0.169 237.323)'],
     ])
 
     function resolve(source: string) {
@@ -90,6 +91,10 @@ describe('color-mix compatibility helpers', () => {
     })
     expect(resolve('color-mix(in oklab, var(--brand) var(--alpha), transparent)')).toEqual({
       value: 'rgba(14, 165, 233, var(--alpha))',
+      deferred: true,
+    })
+    expect(resolve('color-mix(in oklab, var(--modern-brand) var(--alpha), transparent)')).toEqual({
+      value: 'rgba(0, 165, 234, var(--alpha))',
       deferred: true,
     })
     expect(resolve('color-mix(in oklab, var(--missing) var(--alpha), transparent)')).toEqual({
