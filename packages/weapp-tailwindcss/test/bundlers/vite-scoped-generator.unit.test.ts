@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { createScopedGeneratorRuntime } from '@/bundlers/vite/generate-bundle/scoped-generator'
+import {
+  createScopedGeneratorCandidateSignature,
+  createScopedGeneratorRuntime,
+  createScopedGeneratorSourceTraceMap,
+} from '@/bundlers/vite/generate-bundle/scoped-generator'
+import { createCandidateSignature } from '@/bundlers/vite/generate-bundle/signatures'
+import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 
 describe('bundlers/vite scoped generator runtime', () => {
   it('keeps runtime-confirmed custom variant conditional comment candidates when css has @source', async () => {
@@ -53,5 +59,64 @@ describe('bundlers/vite scoped generator runtime', () => {
 
     expect(runtime.has('text-white')).toBe(true)
     expect(runtime.has('wx:bg-blue-500')).toBe(true)
+  })
+
+  it('preserves candidates from every explicit Tailwind source root', async () => {
+    const rawSource = [
+      '@import "tailwindcss";',
+      '@source "./**/*.{wxml,ts,js,vue}";',
+      '@source "../../../packages/ui/src/**/*.{wxml,ts,js,vue}";',
+      '@source not "../dist/**";',
+    ].join('\n')
+    const sourceFile = '/project/apps/template/src/app.css'
+    const appCandidate = 'bg-[#123457]'
+    const packageCandidate = 'text-[#456789]'
+    const allCandidates = new Set([appCandidate, packageCandidate])
+    const appCandidates = new Set([appCandidate])
+    const packageSource = '/project/packages/ui/src/button.wxml'
+    const getSourceCandidatesForEntries = vi.fn((entries: TailwindSourceEntry[] | undefined) => {
+      return entries?.some(entry => entry.base === '/project/packages/ui/src')
+        ? allCandidates
+        : appCandidates
+    })
+    const getSourceCandidateSourcesForEntries = vi.fn((entries: TailwindSourceEntry[] | undefined) => {
+      return entries?.some(entry => entry.base === '/project/packages/ui/src')
+        ? new Map([
+            [appCandidate, new Set(['/project/apps/template/src/page.wxml'])],
+            [packageCandidate, new Set([packageSource])],
+          ])
+        : new Map([
+            [appCandidate, new Set(['/project/apps/template/src/page.wxml'])],
+          ])
+    })
+
+    const runtime = await createScopedGeneratorRuntime({
+      cssHandlerOptions: {
+        isMainChunk: true,
+      },
+      fallbackRuntime: allCandidates,
+      getSourceCandidatesForEntries,
+      majorVersion: 4,
+      outputFile: 'app.wxss',
+      rawSource,
+      scopedSourceCandidateGetter: undefined,
+      shouldExcludeSubpackageSourceCandidates: () => false,
+      sourceFile,
+    })
+    const signature = await createScopedGeneratorCandidateSignature(
+      rawSource,
+      sourceFile,
+      'fallback',
+      getSourceCandidatesForEntries,
+    )
+    const sourceTrace = await createScopedGeneratorSourceTraceMap(
+      rawSource,
+      sourceFile,
+      getSourceCandidateSourcesForEntries,
+    )
+
+    expect(runtime).toEqual(allCandidates)
+    expect(signature).toBe(createCandidateSignature(allCandidates))
+    expect(sourceTrace?.get(packageCandidate)).toEqual(new Set([packageSource]))
   })
 })
