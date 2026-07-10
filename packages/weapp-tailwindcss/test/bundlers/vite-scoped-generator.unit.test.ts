@@ -119,4 +119,57 @@ describe('bundlers/vite scoped generator runtime', () => {
     expect(signature).toBe(createCandidateSignature(allCandidates))
     expect(sourceTrace?.get(packageCandidate)).toEqual(new Set([packageSource]))
   })
+
+  it('intersects explicit Tailwind source roots with the current output scope', async () => {
+    const appCandidate = 'bg-[#123457]'
+    const packageCandidate = 'text-[#456789]'
+    const runtime = await createScopedGeneratorRuntime({
+      cssHandlerOptions: {
+        isMainChunk: false,
+      },
+      fallbackRuntime: new Set([appCandidate, packageCandidate]),
+      getSourceCandidatesForEntries: () => new Set([appCandidate, packageCandidate]),
+      majorVersion: 4,
+      outputFile: 'sub-package/app.wxss',
+      rawSource: [
+        '@import "tailwindcss";',
+        '@source "./pages/**/*.{wxml,ts}";',
+        '@source "../../../packages/ui/src/**/*.{wxml,ts}";',
+      ].join('\n'),
+      scopedSourceCandidateGetter: entries => entries === undefined
+        ? new Set([packageCandidate])
+        : new Set([appCandidate, packageCandidate]),
+      shouldExcludeSubpackageSourceCandidates: () => false,
+      sourceFile: '/project/apps/template/src/app.css',
+    })
+
+    expect(runtime).toEqual(new Set([packageCandidate]))
+  })
+
+  it('uses the current output scope when positive @source entries resolve no candidates', async () => {
+    const outputCandidates = new Set([
+      'bg-explicit-entry',
+      "before:content-['explicit_entry']",
+    ])
+    const runtime = await createScopedGeneratorRuntime({
+      cssHandlerOptions: {
+        isMainChunk: false,
+      },
+      fallbackRuntime: new Set(['global-entry']),
+      getSourceCandidatesForEntries: entries => entries === undefined
+        ? outputCandidates
+        : new Set<string>(),
+      majorVersion: 4,
+      outputFile: 'features/entry.wxss',
+      rawSource: '@import "tailwindcss" source(none);\n@source "./**/*.{wxml,js,ts}";',
+      scopedSourceCandidateGetter: entries => entries === undefined
+        ? outputCandidates
+        : new Set<string>(),
+      shouldExcludeSubpackageSourceCandidates: () => false,
+      sourceFile: '/project/dist/features/entry.wxss',
+    })
+
+    expect(runtime).toEqual(outputCandidates)
+    expect(runtime).not.toContain('global-entry')
+  })
 })

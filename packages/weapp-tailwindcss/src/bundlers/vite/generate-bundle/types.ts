@@ -46,6 +46,7 @@ export interface GenerateBundleContext {
   setRememberedCssSignature?: (file: string, cssRuntimeSignature: string) => void
   getKnownCssSource?: (file: string) => string | undefined
   getKnownSfcSource?: (file: string) => string | undefined
+  getOriginalCssLayerSource?: (file: string) => string | undefined
   recordGeneratorCandidates?: (candidates: Set<string>) => void
   pruneViteCssCaches?: (options: {
     activeFiles: Set<string>

@@ -798,10 +798,15 @@ export async function resolveGeneratorSource(
   const singleConfiguredCssSource = normalizedSourceOptions?.cssSources?.length === 1
     ? await resolveSingleTailwindV4CssSource(normalizedSourceOptions.cssSources[0]!, normalizedSourceOptions, { index: 0, matched: true })
     : undefined
+  const canResolveCombinedConfiguredCssSources = (normalizedSourceOptions?.cssSources?.length ?? 0) <= 1
+    || hasTailwindGeneratedCss(rawSource)
   const configuredCssSource = normalizedSourceOptions
     && hasConfiguredTailwindV4CssSource(normalizedSourceOptions)
     && hasTailwindGeneratedCssMarkers(rawSource)
-    ? matchedCssSource ?? candidateMatchedCssSource ?? singleConfiguredCssSource ?? await resolveTailwindV4Source(normalizedSourceOptions)
+    ? matchedCssSource
+    ?? candidateMatchedCssSource
+    ?? singleConfiguredCssSource
+    ?? (canResolveCombinedConfiguredCssSources ? await resolveTailwindV4Source(normalizedSourceOptions) : undefined)
     : undefined
   if (configuredCssSource) {
     return generatorOptions?.config

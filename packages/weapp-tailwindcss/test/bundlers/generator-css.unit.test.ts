@@ -5044,6 +5044,81 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
+  it('preserves distinct user layer css once on forced prefix mismatch', async () => {
+    const runtimeSet = new Set(['bg-blue-500'])
+    const generatorRawSource = [
+      '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */',
+      '.stale-generated{display:block}',
+      '@config "./tailwind.config.js";',
+      '@source "./src/**/*.{tsx,ts}";',
+    ].join('\n')
+    const userRawSource = [
+      '@layer base { button::after, wx-button::after { display: none; border: none; content: ""; } }',
+      '@layer components { .layer-card-v4 { display: flex; } }',
+    ].join('\n')
+    const generatedCss = '.bg-blue-500{background-color:var(--color-blue-500)}'
+    const generateMock = vi.fn(async () => ({
+      css: generatedCss,
+      rawCss: '.bg-blue-500{background-color:var(--color-blue-500)}',
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock(),
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: generatorRawSource,
+      userRawSource,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css.match(/(?:^|[,{])\s*button::after/g)).toHaveLength(1)
+    expect(result?.css.match(/wx-button::after/g)).toHaveLength(1)
+    expect(result?.css.match(/\.layer-card-v4/g)).toHaveLength(1)
+    expect(result?.css).not.toContain('@layer')
+    expect(result?.css).toContain('.bg-blue-500')
+  })
+
   it('removes Tailwind display-p3 supports from forced legacy compat css', async () => {
     const runtimeSet = new Set(['bg-blue-500'])
     const rawSource = [

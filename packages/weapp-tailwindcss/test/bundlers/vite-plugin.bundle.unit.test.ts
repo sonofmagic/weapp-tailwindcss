@@ -15719,12 +15719,14 @@ const fallback = "bg-[#434332] px-[32px]"
     createdDirs.push(root)
     const mainCssFile = path.join(root, 'src/main.css')
     const mainCssSource = '@import "tailwindcss" source(none);\n@source "./pages/**/*.{vue,js,ts}";'
+    const originalMainCssLayerSource = '@layer base { button::after { display: none; } }'
     const generateCssByGeneratorMock = vi.fn(async (options: {
       file: string
       rawSource: string
+      userRawSource?: string | undefined
     }) => {
       return {
-        css: '.from-main{color:red}',
+        css: ['.from-main{color:red}', options.userRawSource].filter(Boolean).join('\n'),
         rawCss: options.rawSource,
         target: 'weapp',
         source: 'generator',
@@ -15807,7 +15809,7 @@ const fallback = "bg-[#434332] px-[32px]"
       getViteProcessedCssAssetResult: () => undefined,
       getSourceCandidates: () => runtimeSet,
       getSourceCandidatesForEntries: () => runtimeSet,
-      getSourceCandidateSource: () => undefined,
+      getSourceCandidateSource: () => mainCssSource,
       getSourceCandidateSources: () => [],
       getSourceCandidateSourcesForEntries: () => [],
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
@@ -15816,6 +15818,8 @@ const fallback = "bg-[#434332] px-[32px]"
       getRememberedCssSources: () => new Map(),
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
+      getKnownCssSource: () => mainCssSource,
+      getOriginalCssLayerSource: () => originalMainCssLayerSource,
       recordGeneratorCandidates: vi.fn(),
     })
     const bundle = {
@@ -15829,11 +15833,13 @@ const fallback = "bg-[#434332] px-[32px]"
     await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
 
     const appCss = String((bundle['app.wxss'] as OutputAsset).source)
-    expect(appCss).toContain('.from-main')
     expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
       file: mainCssFile,
       rawSource: mainCssSource,
+      userRawSource: expect.stringContaining('@layer base'),
     }))
+    expect(appCss).toContain('.from-main')
+    expect(appCss).toContain('button::after')
     expect(generateCssByGeneratorMock).not.toHaveBeenCalledWith(expect.objectContaining({
       file: 'app.wxss',
     }))
