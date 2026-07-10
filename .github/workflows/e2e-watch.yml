@@ -409,8 +409,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build weapp-tailwindcss
-        run: pnpm --filter weapp-tailwindcss build
+      - name: Build watch suite package dependencies
+        run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build
 
       - name: Run root style import shell HMR regression
         env:
