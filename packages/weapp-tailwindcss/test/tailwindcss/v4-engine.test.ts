@@ -1,10 +1,10 @@
+import type { TailwindCssRuntimeOptions } from '@/tailwindcss/runtime-types'
 import { mkdir, mkdtemp, symlink, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, vi } from 'vitest'
 import { getCompilerContext } from '@/context'
-import type { TailwindCssRuntimeOptions } from '@/tailwindcss/runtime-types'
 import { clearTailwindV4IncrementalGenerateCacheForTest, createTailwindV4Engine, getTailwindV4IncrementalGenerateCacheStatsForTest, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromRuntime, transformTailwindV4CssToWeapp } from '@/tailwindcss/v4-engine'
 import { resolveTailwindV4SourceFromRuntimeOptions } from '@/tailwindcss/v4-engine/source'
 
@@ -872,8 +872,8 @@ describe('tailwindcss v4 engine', () => {
       candidates: ['bg-blue-500', 'text-red-500'],
     })
 
-    expect(result.css).toContain('--color-blue-500: #2b7fff')
-    expect(result.css).toContain('--color-red-500: #fb2c36')
+    expect(result.css).toContain('--color-blue-500: rgb(50, 128, 255)')
+    expect(result.css).toContain('--color-red-500: rgb(251, 44, 54)')
     expect(result.css).toContain('--font-sans:')
     expect(result.css).toContain('--default-font-family: var(--font-sans)')
     expect(result.css).toContain('background-color: var(--color-blue-500)')

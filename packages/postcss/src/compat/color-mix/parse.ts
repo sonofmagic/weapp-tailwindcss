@@ -151,6 +151,21 @@ export function normalizeColorFunctionName(
   return serializeRGB(resolvedColor).toString()
 }
 
+export function normalizeColorFunctionWithDynamicAlpha(
+  colorSource: string,
+  alphaSource: string,
+  customPropertyValues: ReadonlyMap<string, string>,
+) {
+  const resolvedColor = resolveColorData(colorSource, customPropertyValues)
+  const alphaColor = getParsedColorData(`rgb(0 0 0 / ${alphaSource})`)
+  if (!resolvedColor || !alphaColor || typeof alphaColor.alpha === 'number') {
+    return undefined
+  }
+
+  resolvedColor.alpha = alphaColor.alpha
+  return serializeRGB(resolvedColor).toString()
+}
+
 export function normalizeStandaloneColorFunction(colorSource: string) {
   const resolvedColor = getParsedColorData(colorSource)
   return resolvedColor ? serializeRGB(resolvedColor).toString() : undefined

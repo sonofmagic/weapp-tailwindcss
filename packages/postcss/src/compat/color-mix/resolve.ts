@@ -8,25 +8,17 @@ import {
 } from './constants'
 import {
   normalizeColorFunctionName,
+  normalizeColorFunctionWithDynamicAlpha,
   parseAlphaValue,
-  resolveColorData,
   splitArguments,
   splitStopSegments,
   trimNodes,
 } from './parse'
 
 function createRgbaWithAlpha(colorSource: string, alphaSource: string, customPropertyValues: ReadonlyMap<string, string>) {
-  const resolvedColor = resolveColorData(colorSource, customPropertyValues)
-  if (!resolvedColor) {
-    return undefined
-  }
-
-  const [red, green, blue] = resolvedColor.channels
-    .map(channel => Math.round(Math.min(1, Math.max(0, channel)) * 255))
   const alpha = alphaSource.trim()
   const normalizedAlpha = CUSTOM_PROPERTY_RE.test(alpha) ? `var(${alpha})` : alpha
-
-  return `rgba(${red}, ${green}, ${blue}, ${normalizedAlpha})`
+  return normalizeColorFunctionWithDynamicAlpha(colorSource, normalizedAlpha, customPropertyValues)
 }
 
 export function tryResolveColorMix(

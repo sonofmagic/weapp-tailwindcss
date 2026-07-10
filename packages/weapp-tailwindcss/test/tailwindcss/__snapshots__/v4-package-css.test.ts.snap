@@ -10,12 +10,12 @@ exports[`Tailwind v4 package CSS entry outputs > generates stable index.css outp
     "hover:bg-red-500",
   ],
   "css": "page,.tw-root,wx-root-portal-content,:host {
-  --color-red-500: #fb2c36;
-  --color-blue-500: #2b7fff;
   --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
+  --color-red-500: rgb(251, 44, 54);
+  --color-blue-500: rgb(50, 128, 255);
   --spacing: 0.25rem;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
@@ -55,12 +55,12 @@ exports[`Tailwind v4 package CSS entry outputs > generates stable index.css outp
     "hover:bg-red-500",
   ],
   "css": "page,.tw-root,wx-root-portal-content,:host {
-  --color-red-500: #fb2c36;
-  --color-blue-500: #2b7fff;
   --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
+  --color-red-500: rgb(251, 44, 54);
+  --color-blue-500: rgb(50, 128, 255);
   --spacing: 0.25rem;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
@@ -294,10 +294,19 @@ exports[`Tailwind v4 package CSS entry outputs > generates stable preflight.css 
   "classSet": [
     "bg-red-500",
     "text-blue-500",
+    "p-4",
     "w-[100px]",
     "hover:bg-red-500",
   ],
-  "css": "view,text,::after,::before {
+  "css": "page,.tw-root,wx-root-portal-content,:host {
+  --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+}
+view,text,::after,::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -315,10 +324,19 @@ exports[`Tailwind v4 package CSS entry outputs > generates stable preflight.css 
   "classSet": [
     "bg-red-500",
     "text-blue-500",
+    "p-4",
     "w-[100px]",
     "hover:bg-red-500",
   ],
-  "css": "view,text,::after,::before {
+  "css": "page,.tw-root,wx-root-portal-content,:host {
+  --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+}
+view,text,::after,::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -546,6 +564,7 @@ exports[`Tailwind v4 package CSS entry outputs > generates stable utilities.css 
   "classSet": [
     "bg-red-500",
     "text-blue-500",
+    "p-4",
     "w-[100px]",
     "hover:bg-red-500",
   ],
@@ -553,14 +572,18 @@ exports[`Tailwind v4 package CSS entry outputs > generates stable utilities.css 
   --tw-content: "";
 }
 page,.tw-root,wx-root-portal-content,:host {
-  --color-red-500: #fb2c36;
-  --color-blue-500: #2b7fff;
+  --color-red-500: rgb(251, 44, 54);
+  --color-blue-500: rgb(50, 128, 255);
+  --spacing: 0.25rem;
 }
 .w-_b100px_B {
   width: 100px;
 }
 .bg-red-500 {
   background-color: var(--color-red-500);
+}
+.p-4 {
+  padding: calc(var(--spacing) * 4);
 }
 .text-blue-500 {
   color: var(--color-blue-500);
@@ -576,6 +599,7 @@ exports[`Tailwind v4 package CSS entry outputs > generates stable utilities.css 
   "classSet": [
     "bg-red-500",
     "text-blue-500",
+    "p-4",
     "w-[100px]",
     "hover:bg-red-500",
   ],
@@ -583,14 +607,18 @@ exports[`Tailwind v4 package CSS entry outputs > generates stable utilities.css 
   --tw-content: "";
 }
 page,.tw-root,wx-root-portal-content,:host {
-  --color-red-500: #fb2c36;
-  --color-blue-500: #2b7fff;
+  --color-red-500: rgb(251, 44, 54);
+  --color-blue-500: rgb(50, 128, 255);
+  --spacing: 0.25rem;
 }
 .w-_b100px_B {
   width: 100px;
 }
 .bg-red-500 {
   background-color: var(--color-red-500);
+}
+.p-4 {
+  padding: calc(var(--spacing) * 4);
 }
 .text-blue-500 {
   color: var(--color-blue-500);

@@ -65,8 +65,8 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --color-red-300: #ffa2a2;
-  --color-yellow-300: #ffdf20;
+  --color-red-300: rgb(255, 163, 164);
+  --color-yellow-300: rgb(255, 224, 46);
 }
 .flex {
   display: flex;
@@ -99,7 +99,7 @@ wx-root-portal-content {
   background-color: red;
 }
 .bg-yellow-300_f30 {
-  background-color: rgba(255, 223, 32, 0.3);
+  background-color: rgba(255, 224, 46, 0.3);
 }
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url("https://xxx.com/xx.webp");
@@ -108,7 +108,7 @@ wx-root-portal-content {
   background-image: url("https://yyy.com/xx.webp");
 }
 .text-red-300_f30 {
-  color: rgba(255, 162, 162, 0.3);
+  color: rgba(255, 163, 164, 0.3);
 }
 "
 `;
@@ -165,8 +165,8 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --color-red-300: #ffa2a2;
-  --color-yellow-300: #ffdf20;
+  --color-red-300: rgb(255, 163, 164);
+  --color-yellow-300: rgb(255, 224, 46);
 }
 .flex {
   display: flex;
@@ -199,7 +199,7 @@ wx-root-portal-content {
   background-color: red;
 }
 .bg-yellow-300_f30 {
-  background-color: rgba(255, 223, 32, 0.3);
+  background-color: rgba(255, 224, 46, 0.3);
 }
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url("https://xxx.com/xx.webp");
@@ -208,7 +208,7 @@ wx-root-portal-content {
   background-image: url("https://yyy.com/xx.webp");
 }
 .text-red-300_f30 {
-  color: rgba(255, 162, 162, 0.3);
+  color: rgba(255, 163, 164, 0.3);
 }
 "
 `;
@@ -265,8 +265,8 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --color-red-300: #ffa2a2;
-  --color-yellow-300: #ffdf20;
+  --color-red-300: rgb(255, 163, 164);
+  --color-yellow-300: rgb(255, 224, 46);
 }
 .flex {
   display: flex;
@@ -299,7 +299,7 @@ wx-root-portal-content {
   background-color: red;
 }
 .bg-yellow-300_f30 {
-  background-color: rgba(255, 223, 32, 0.3);
+  background-color: rgba(255, 224, 46, 0.3);
 }
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url("https://xxx.com/xx.webp");
@@ -308,7 +308,7 @@ wx-root-portal-content {
   background-image: url("https://yyy.com/xx.webp");
 }
 .text-red-300_f30 {
-  color: rgba(255, 162, 162, 0.3);
+  color: rgba(255, 163, 164, 0.3);
 }
 "
 `;
@@ -365,8 +365,8 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --color-red-300: #ffa2a2;
-  --color-yellow-300: #ffdf20;
+  --color-red-300: rgb(255, 163, 164);
+  --color-yellow-300: rgb(255, 224, 46);
 }
 .flex {
   display: flex;
@@ -399,7 +399,7 @@ wx-root-portal-content {
   background-color: red;
 }
 .bg-yellow-300_f30 {
-  background-color: rgba(255, 223, 32, 0.3);
+  background-color: rgba(255, 224, 46, 0.3);
 }
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url("https://xxx.com/xx.webp");
@@ -408,7 +408,7 @@ wx-root-portal-content {
   background-image: url("https://yyy.com/xx.webp");
 }
 .text-red-300_f30 {
-  color: rgba(255, 162, 162, 0.3);
+  color: rgba(255, 163, 164, 0.3);
 }
 "
 `;

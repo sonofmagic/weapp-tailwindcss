@@ -1,10 +1,10 @@
 import type { Transform } from 'node:stream'
 import { Buffer } from 'node:buffer'
 import fs from 'node:fs'
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
-import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import Vinyl from 'vinyl'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPlugins } from '@/bundlers/gulp'
@@ -263,6 +263,8 @@ describe('bundlers/gulp createPlugins', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        enabled: true,
+        importFallback: false,
         target: 'weapp',
         styleOptions: {},
       })),
@@ -373,6 +375,8 @@ describe('bundlers/gulp createPlugins', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        enabled: true,
+        importFallback: false,
         target: 'weapp',
         styleOptions: {},
       })),
@@ -477,6 +481,8 @@ describe('bundlers/gulp createPlugins', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        enabled: true,
+        importFallback: false,
         target: 'weapp',
         styleOptions: {},
       })),
