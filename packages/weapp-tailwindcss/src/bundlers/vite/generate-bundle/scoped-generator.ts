@@ -17,17 +17,22 @@ function createLocalSourceEntries(sourceFile: string): TailwindSourceEntry[] {
   }]
 }
 
-function mergeCandidates(first: Set<string>, second: Set<string>) {
-  return new Set([...first, ...second])
+function intersectCandidates(first: Set<string>, second: Set<string>) {
+  if (first.size === 0 || second.size === 0) {
+    return new Set<string>()
+  }
+  const [small, large] = first.size <= second.size ? [first, second] : [second, first]
+  const scoped = new Set<string>()
+  for (const candidate of small) {
+    if (large.has(candidate)) {
+      scoped.add(candidate)
+    }
+  }
+  return scoped
 }
 
-// 输出侧 sourceFile 可能无法还原显式 entries，仅在显式与本地范围都为空时复用已收集作用域。
-function resolveScopedCandidates<T extends Set<string> | Map<string, Set<string>>>(
-  scoped: T,
-  local: T | undefined,
-  fallback: T | undefined,
-) {
-  return scoped.size === 0 && local?.size === 0 && fallback?.size ? fallback : scoped
+function mergeCandidates(first: Set<string>, second: Set<string>) {
+  return new Set([...first, ...second])
 }
 
 function resolveScopedSourceEntries(rawSource: string, sourceFile: string, resolvedEntries: TailwindSourceEntry[] | undefined) {
@@ -37,15 +42,13 @@ function resolveScopedSourceEntries(rawSource: string, sourceFile: string, resol
       localEntries: undefined,
     }
   }
-  if (resolvedEntries?.length) {
+  if (resolvedEntries !== undefined) {
     return {
       entries: resolvedEntries,
-      localEntries: createLocalSourceEntries(sourceFile),
     }
   }
   return {
     entries: createLocalSourceEntries(sourceFile),
-    localEntries: undefined,
   }
 }
 
@@ -65,15 +68,11 @@ export async function createScopedGeneratorCandidateSignature(
   if (!getSourceCandidatesForEntries || !hasOwnSourceDirectives(rawSource)) {
     return fallbackSignature
   }
-  const { entries, localEntries } = await resolveScopedGeneratorSourceEntries(rawSource, sourceFile)
+  const { entries } = await resolveScopedGeneratorSourceEntries(rawSource, sourceFile)
   if (entries === undefined) {
     return fallbackSignature
   }
-  const scopedCandidates = resolveScopedCandidates(
-    getSourceCandidatesForEntries(entries),
-    localEntries ? getSourceCandidatesForEntries(localEntries) : undefined,
-    localEntries ? getSourceCandidatesForEntries(undefined) : undefined,
-  )
+  const scopedCandidates = getSourceCandidatesForEntries(entries)
   const scopedSignature = createCandidateSignature(scopedCandidates)
   return options.includeFallbackSignature === true
     ? `${scopedSignature}:${fallbackSignature}`
@@ -88,15 +87,11 @@ export async function createScopedGeneratorSourceTraceMap(
   if (!getSourceCandidateSourcesForEntries || !hasOwnSourceDirectives(rawSource)) {
     return getSourceCandidateSourcesForEntries?.(undefined)
   }
-  const { entries, localEntries } = await resolveScopedGeneratorSourceEntries(rawSource, sourceFile)
+  const { entries } = await resolveScopedGeneratorSourceEntries(rawSource, sourceFile)
   if (entries === undefined) {
     return getSourceCandidateSourcesForEntries(undefined)
   }
-  return resolveScopedCandidates(
-    getSourceCandidateSourcesForEntries(entries),
-    localEntries ? getSourceCandidateSourcesForEntries(localEntries) : undefined,
-    localEntries ? getSourceCandidateSourcesForEntries(undefined) : undefined,
-  )
+  return getSourceCandidateSourcesForEntries(entries)
 }
 
 export async function createScopedGeneratorRuntime(options: {
@@ -121,15 +116,13 @@ export async function createScopedGeneratorRuntime(options: {
     scopedSourceCandidateGetter,
   } = options
   if (getSourceCandidatesForEntries && rawSource && sourceFile) {
-    const { entries, localEntries } = await resolveScopedGeneratorSourceEntries(rawSource, sourceFile)
+    const { entries } = await resolveScopedGeneratorSourceEntries(rawSource, sourceFile)
     if (entries !== undefined && (entries.length > 0 || hasOwnSourceDirectives(rawSource))) {
-      const scopedCandidates = resolveScopedCandidates(
-        scopedSourceCandidateGetter?.(entries) ?? getSourceCandidatesForEntries(entries),
-        localEntries
-          ? scopedSourceCandidateGetter?.(localEntries) ?? getSourceCandidatesForEntries(localEntries)
-          : undefined,
-        localEntries ? scopedSourceCandidateGetter?.(undefined) : undefined,
-      )
+      const explicitCandidates = getSourceCandidatesForEntries(entries)
+      const outputCandidates = scopedSourceCandidateGetter?.(undefined)
+      const scopedCandidates = outputCandidates
+        ? intersectCandidates(explicitCandidates, outputCandidates)
+        : explicitCandidates
       const shouldMergeFallbackRuntime = hasCssMacroTailwindV4CustomVariantConditionalComments(rawSource)
       return shouldMergeFallbackRuntime ? mergeCandidates(scopedCandidates, fallbackRuntime) : scopedCandidates
     }
