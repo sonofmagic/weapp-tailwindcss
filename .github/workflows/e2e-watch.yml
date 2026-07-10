@@ -378,6 +378,46 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+  root-style-import-shell-hmr:
+    name: root-style-shell-hmr (${{ matrix.project }})
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - uni-app-vite-tailwindcss-v4
+          - subpackage-uni-app-vite-tailwindcss-v4
+    runs-on: macos-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build weapp-tailwindcss
+        run: pnpm --filter weapp-tailwindcss build
+
+      - name: Run root style import shell HMR regression
+        env:
+          E2E_ROOT_STYLE_SHELL_CASE: ${{ matrix.project }}
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: pnpm e2e:root-style-shell-hmr
+
   nightly-full-regression:
     name: e2e-watch-nightly (${{ matrix.runner_label }}-node${{ matrix['node-version'] || 22 }}-${{ matrix.watch_case }}-${{ matrix.round_profile }})
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.run_pr_quick_gate != true)
