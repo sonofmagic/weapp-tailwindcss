@@ -2899,14 +2899,14 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
-  it('opts out same-class global-style stability for platform-variant watch cases', () => {
+  it('keeps same-class global-style stability enabled for uni-app watch cases', () => {
     const demoBaseCases = buildDemoBaseCases('/repo')
     const demoExtendedCases = buildDemoExtendedCases('/repo')
     const weappViteCase = demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v4')
     const uniAppVue3ViteCase = demoExtendedCases.find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v4')
 
     expect(weappViteCase?.requireStableGlobalStyleOnSameClassLiteral).toBe(false)
-    expect(uniAppVue3ViteCase?.requireStableGlobalStyleOnSameClassLiteral).toBe(false)
+    expect(uniAppVue3ViteCase?.requireStableGlobalStyleOnSameClassLiteral).toBeUndefined()
   })
 
   it('does not require initial compile success for weapp-vite powered watch cases with unstable ready logs', () => {

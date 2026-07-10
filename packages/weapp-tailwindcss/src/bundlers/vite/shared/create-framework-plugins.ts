@@ -304,6 +304,7 @@ export function createViteFrameworkPlugins(
     cssEntries: opts.cssEntries ?? rawOptions.cssEntries,
   })
   const autoCssSourceContent = new Map<string, string>()
+  const frameworkRootImportShellTargetByFile = new Map<string, string>()
   const transientAutoCssSources = new Map<string, { file: string, base: string, css: string, dependencies: string[] }>()
   let refreshRuntimeStateForAutoCssSources: ((force: boolean) => Promise<void>) | undefined
   let autoCssSourcesRefresh: Promise<void> | undefined
@@ -1250,6 +1251,7 @@ export function createViteFrameworkPlugins(
     getViteCssCacheStats,
     hmrTimingRecorder,
     cssPipelineStrategy: frameworkCssPipelineStrategy,
+    frameworkRootImportShellTargetByFile,
   })
   const cssFinalizerOutputPlugin = createViteCssFinalizerOutputPlugin({
     opts,
@@ -1269,6 +1271,7 @@ export function createViteFrameworkPlugins(
     getSourceCandidatesForEntries,
     getSourceCandidateSourcesForEntries,
     waitForSourceCandidateSyncs,
+    frameworkRootImportShellTargetByFile,
     rememberMainCssSource: (file, rawSource) => cssMemory.rememberCssSource({
       outputFile: file,
       rawSource,

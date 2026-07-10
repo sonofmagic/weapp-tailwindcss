@@ -54,6 +54,7 @@ export interface GenerateBundleContext {
   getViteCssCacheStats?: () => Record<string, unknown>
   hmrTimingRecorder?: HmrTimingRecorder
   cssPipelineStrategy?: ViteFrameworkCssPipelineStrategy | undefined
+  frameworkRootImportShellTargetByFile?: Map<string, string> | undefined
 }
 
 export interface RememberedCssSource {

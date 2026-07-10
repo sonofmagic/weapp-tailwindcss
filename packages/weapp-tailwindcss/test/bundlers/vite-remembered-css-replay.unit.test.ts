@@ -53,6 +53,7 @@ describe('bundlers/vite remembered css replay', () => {
       createScopedSourceCandidateGetter: vi.fn(() => undefined),
       createScopedSourceCandidateSourceGetter: vi.fn(() => () => new Map()),
       cssTaskFactories,
+      cssPipelineContext: { opts: { cssMatcher: (file: string) => file.endsWith('.wxss') } } as any,
       debug: vi.fn(),
       defaultStyleOutputExtension: '.wxss',
       emitOrReplayCssAsset: vi.fn(),
@@ -135,6 +136,10 @@ describe('bundlers/vite remembered css replay', () => {
       createScopedSourceCandidateGetter: vi.fn(() => undefined),
       createScopedSourceCandidateSourceGetter: vi.fn(() => () => new Map()),
       cssTaskFactories,
+      cssPipelineContext: { opts: { cssMatcher: (file: string) => file.endsWith('.wxss') } } as any,
+      cssPipelineStrategy: {
+        shouldKeepRootMiniProgramStyleAsImportShell: () => true,
+      },
       debug: vi.fn(),
       defaultStyleOutputExtension: '.wxss',
       emitOrReplayCssAsset,

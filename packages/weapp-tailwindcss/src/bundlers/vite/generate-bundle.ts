@@ -25,7 +25,7 @@ import { collectConfiguredTailwindV4CssSourceEntries } from './generate-bundle/c
 import { createCssAssetEmitter, resolveAssetSourceFile } from './generate-bundle/css-assets'
 import { normalizeRelativeCssConfigDirectives } from './generate-bundle/css-config-directives'
 import { createCssHandlerOptionsCache, resolveViteCssHandlerExtraOptions } from './generate-bundle/css-handler-options'
-import { normalizeCssSourceForCompare, resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
+import { normalizeCssSourceForCompare, resolveMiniProgramStyleOutputExtension, resolveReplayCssOutputFile, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
 import { applyCssResultToBundle, createMatchedCssSourceOutputResolver, hasViteProcessedCssResultForSource, resolveCssBundleOutputFile, resolveOutputFileFromMatchedCssSource, shouldSkipRawSourceStyleAsset } from './generate-bundle/css-output-helpers'
 import { createCssRuntimeSignature, createCssTransformShareScopeKey } from './generate-bundle/css-share-scope'
 import { hasOmittedKnownBundleFiles } from './generate-bundle/dirty-state'
@@ -41,7 +41,7 @@ import { logBundleProcessPlan } from './generate-bundle/process-plan'
 import { createRememberedCssRuntimeSignature, findRememberedCssSources, mergeRememberedCssSources } from './generate-bundle/remembered-css'
 import { processRememberedCssReplay } from './generate-bundle/remembered-css-replay'
 import { registerGeneratorDependencies } from './generate-bundle/rollup-assets'
-import { shouldKeepRootMiniProgramStyleAsImportShell } from './generate-bundle/root-style-output'
+import { isRootMiniProgramStyleOutputFile, resolveSingleCssImportOutputFile, shouldKeepRootMiniProgramStyleAsImportShell, shouldPreserveFrameworkRootMiniProgramImportShell } from './generate-bundle/root-style-output'
 import { collectCssExtensionByStem, collectJsImportedCssFiles, collectRuntimeLinkedCssFiles } from './generate-bundle/runtime-linked-css'
 import { rememberRuntimeLinkedCssSources } from './generate-bundle/runtime-linked-source-memory'
 import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTraceMap, createScopedGeneratorRuntime as resolveScopedGeneratorRuntime } from './generate-bundle/scoped-generator'
@@ -95,6 +95,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
   const lastCssResultByFile = new Map<string, string>()
   const lastCssSourceHashByFile = new Map<string, string>()
   const lastCssRawSourceHashByFile = new Map<string, string>()
+  const frameworkRootImportShellTargetByFile = context.frameworkRootImportShellTargetByFile ?? new Map<string, string>()
   let currentOutDir: string | undefined
   let currentSubpackageRoots: Set<string> | undefined
   const createInitialCssPipelineContext = (file: string) => {
@@ -824,6 +825,83 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           ...createInitialCssPipelineContext(file),
           bundle,
         }
+        const rootImportShellOutputFile = resolveReplayCssOutputFile(
+          outDir,
+          originalSource.fileName || file,
+        )
+        let rememberedFrameworkRootImportTarget = frameworkRootImportShellTargetByFile.get(rootImportShellOutputFile)
+        const isCurrentFrameworkRootImportShell = shouldPreserveFrameworkRootMiniProgramImportShell({
+          css: rawSource,
+          file: rootImportShellOutputFile,
+          isWebGeneratorTarget,
+          matchesCss: opts.cssMatcher(rootImportShellOutputFile) || opts.cssMatcher(file),
+          shouldKeep: () => context.cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
+            ...cssPipelineContext,
+            css: rawSource,
+            file: rootImportShellOutputFile,
+          }),
+        })
+        if (isCurrentFrameworkRootImportShell) {
+          const importedFile = resolveSingleCssImportOutputFile(rootImportShellOutputFile, rawSource)
+          if (importedFile && isRootMiniProgramStyleOutputFile(importedFile)) {
+            frameworkRootImportShellTargetByFile.set(rootImportShellOutputFile, importedFile)
+          }
+        }
+        if (
+          !rememberedFrameworkRootImportTarget
+          && !isCurrentFrameworkRootImportShell
+          && !isWebGeneratorTarget
+          && isRootMiniProgramStyleOutputFile(rootImportShellOutputFile)
+          && normalizeOutputPathKey(assetSourceFile) === normalizeOutputPathKey(file)
+          && shouldKeepRootMiniProgramStyleAsImportShell(
+            context.cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
+              ...cssPipelineContext,
+              css: rawSource,
+              file: rootImportShellOutputFile,
+            }),
+          )
+        ) {
+          const rootGeneratedTargets = new Set<string>()
+          for (const entry of getConfiguredTailwindV4CssSourceEntries()) {
+            const targetFile = resolveMatchedCssSourceOutputFile(entry.file)
+            if (
+              targetFile
+              && isRootMiniProgramStyleOutputFile(targetFile)
+              && normalizeOutputPathKey(targetFile) !== normalizeOutputPathKey(rootImportShellOutputFile)
+            ) {
+              rootGeneratedTargets.add(targetFile)
+            }
+          }
+          for (const [, record] of getViteProcessedCssAssetResults?.() ?? []) {
+            if (typeof record === 'string' || record.injectIntoMain !== true || !record.outputFile) {
+              continue
+            }
+            const targetFile = resolveViteCssPipelineOutputFile(
+              record.outputFile,
+              opts,
+              rootDir,
+              isWebGeneratorTarget,
+              shouldPreserveAppCssExtension,
+              sourceRoot,
+              defaultStyleOutputExtension,
+              bundleFiles,
+            )
+            if (
+              isRootMiniProgramStyleOutputFile(targetFile)
+              && normalizeOutputPathKey(targetFile) !== normalizeOutputPathKey(rootImportShellOutputFile)
+            ) {
+              rootGeneratedTargets.add(targetFile)
+            }
+          }
+          if (rootGeneratedTargets.size === 1) {
+            const [targetFile] = rootGeneratedTargets
+            if (targetFile) {
+              rememberedFrameworkRootImportTarget = targetFile
+              frameworkRootImportShellTargetByFile.set(rootImportShellOutputFile, targetFile)
+              debug('css remember framework root generated target: %s -> %s', rootImportShellOutputFile, targetFile)
+            }
+          }
+        }
         let outputFile = resolveCssBundleOutputFile({
           bundleFiles,
           cssPipelineStrategy: context.cssPipelineStrategy,
@@ -834,6 +912,21 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           pipelineContext: cssPipelineContext,
           shouldPreserveAppCssExtension,
         })
+        if (
+          rememberedFrameworkRootImportTarget
+          && !isWebGeneratorTarget
+          && (opts.cssMatcher(rootImportShellOutputFile) || opts.cssMatcher(file))
+          && shouldKeepRootMiniProgramStyleAsImportShell(
+            context.cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
+              ...cssPipelineContext,
+              css: rawSource,
+              file: rootImportShellOutputFile,
+            }),
+          )
+        ) {
+          outputFile = rememberedFrameworkRootImportTarget
+          debug('css reuse framework root import shell target: %s -> %s', rootImportShellOutputFile, outputFile)
+        }
         const resolveMatchedOutputFileForCurrentAsset = createMatchedCssSourceOutputResolver({
           assetSourceFile,
           file,
@@ -1159,6 +1252,22 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               outputFile,
             }
           }
+        }
+        if (
+          !isWebGeneratorTarget
+          && isRootMiniProgramStyleOutputFile(rootImportShellOutputFile)
+          && isRootMiniProgramStyleOutputFile(outputFile)
+          && normalizeOutputPathKey(rootImportShellOutputFile) !== normalizeOutputPathKey(outputFile)
+          && shouldKeepRootMiniProgramStyleAsImportShell(
+            context.cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
+              ...cssPipelineContext,
+              css: rawSource,
+              file: rootImportShellOutputFile,
+            }),
+          )
+        ) {
+          frameworkRootImportShellTargetByFile.set(rootImportShellOutputFile, outputFile)
+          debug('css remember framework root import shell target: %s -> %s', rootImportShellOutputFile, outputFile)
         }
         const shouldKeepImportedCssShell = isCssImportOnlyBundleAsset(bundle, file, rawSource)
         const useRememberedCssSource = !shouldKeepImportedCssShell
@@ -1599,6 +1708,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         cache,
         changedCssFiles: snapshot.changedByType.css,
         cssTaskFactories,
+        cssPipelineContext,
+        cssPipelineStrategy: context.cssPipelineStrategy,
         createScopedGeneratorRuntime,
         createScopedSourceCandidateGetter,
         createScopedSourceCandidateSourceGetter,

@@ -295,9 +295,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/uni-app-vite-tailwindcss-v4',
     project: 'demo/uni-app-vite-tailwindcss-v4',
     group: 'demo',
-    // uni-app Vite v4 watch 在 same-class-literal 场景会重写 app.wxss；
-    // 仍校验 HMR 生效、回滚与 escaped class，不强制全局样式文本完全稳定。
-    requireStableGlobalStyleOnSameClassLiteral: false,
     // uni-app Vite v4 的独立分包 HMR 会触发较重的 CSS 汇总阶段；
     // 这里保留 case 级预算，避免放宽其它 demo 的处理耗时约束。
     maxPluginProcessMs: 4000,

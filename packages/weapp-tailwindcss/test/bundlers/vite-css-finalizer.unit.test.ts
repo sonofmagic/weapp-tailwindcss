@@ -423,6 +423,44 @@ describe('vite css finalizer output plugin', () => {
     expect(opts.onUpdate).toHaveBeenCalled()
   })
 
+  it('restores a cached framework root import shell before final css injection', async () => {
+    const records = new Map<string, any>([
+      ['src/components/card.vue', { css: '.card{color:blue}', injectIntoMain: true, outputFile: 'components/card.wxss' }],
+    ])
+    const { context } = createContext({
+      opts: {
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        htmlMatcher: (file: string) => file.endsWith('.wxml'),
+        mainCssChunkMatcher: (file: string) => file === 'app.wxss' || file === 'main.wxss',
+        styleHandler: vi.fn(async (css: string) => ({ css })),
+        onUpdate: vi.fn(),
+        generator: {
+          target: 'weapp',
+        },
+      },
+      cssPipelineStrategy: {
+        shouldKeepRootMiniProgramStyleAsImportShell: () => true,
+      },
+      frameworkRootImportShellTargetByFile: new Map([
+        ['app.wxss', 'main.wxss'],
+      ]),
+      getViteProcessedCssAssetResults: vi.fn(() => records.entries()),
+      isCssAssetProcessed: vi.fn(() => true),
+    })
+    const plugin = createViteCssFinalizerOutputPlugin(context as any)
+    const bundle: OutputBundle = {
+      'app.wxss': asset('app.wxss', '.generated-root{display:flex}'),
+      'main.wxss': asset('main.wxss', '.tailwind{display:block}'),
+    }
+
+    await getHandler(plugin).call(plugin, {}, bundle)
+
+    expect(String((bundle['app.wxss'] as OutputAsset).source)).toBe('@import "./main.wxss";\n')
+    expect(String((bundle['main.wxss'] as OutputAsset).source)).toContain('.card{color:blue}')
+    expect(context.debug).toHaveBeenCalledWith('restore framework root css import shell: %s -> %s', 'app.wxss', 'main.wxss')
+  })
+
   it('injects uni-app-x harmony apply styles when finalizer has no css assets', async () => {
     mocks.generateTailwindV4Css.mockResolvedValue({
       css: '.flex{display:flex}',

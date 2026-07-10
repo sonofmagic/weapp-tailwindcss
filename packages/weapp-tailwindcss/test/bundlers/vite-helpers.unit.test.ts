@@ -18,6 +18,7 @@ import {
   isRootMiniProgramStyleOutputFile,
   shouldKeepRootMiniProgramStyleAsImportShell,
   shouldMoveRootMiniProgramStyleToImportShellOrigin,
+  shouldPreserveFrameworkRootMiniProgramImportShell,
 } from '@/bundlers/vite/generate-bundle/root-style-output'
 import { resolveCurrentSourceCandidateSource } from '@/bundlers/vite/generate-bundle/source-candidate-source'
 import { scoreTailwindV4CssSourceFileMatch } from '@/bundlers/shared/generator-css/source-resolver/matching'
@@ -95,6 +96,27 @@ describe('bundlers/vite helper modules', () => {
     expect(shouldKeepRootMiniProgramStyleAsImportShell(undefined)).toBe(false)
     expect(shouldMoveRootMiniProgramStyleToImportShellOrigin(true)).toBe(true)
     expect(shouldMoveRootMiniProgramStyleToImportShellOrigin(false)).toBe(false)
+    expect(shouldPreserveFrameworkRootMiniProgramImportShell({
+      css: '@import "./main.acss";',
+      file: 'app.acss',
+      isWebGeneratorTarget: false,
+      matchesCss: true,
+      shouldKeep: () => true,
+    })).toBe(true)
+    expect(shouldPreserveFrameworkRootMiniProgramImportShell({
+      css: '@import "./main.acss";',
+      file: 'pages/app.acss',
+      isWebGeneratorTarget: false,
+      matchesCss: true,
+      shouldKeep: () => true,
+    })).toBe(false)
+    expect(shouldPreserveFrameworkRootMiniProgramImportShell({
+      css: '@import "./main.acss";\npage{}',
+      file: 'app.acss',
+      isWebGeneratorTarget: false,
+      matchesCss: true,
+      shouldKeep: () => true,
+    })).toBe(false)
   })
 
   it('preserves vite serve root mini-program import shells for framework-owned shell policies only', () => {

@@ -1,4 +1,5 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
+import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from '../shared/framework-strategy'
 import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext, RememberedCssSource } from './types'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
@@ -11,6 +12,7 @@ import { createCssRuntimeSignature } from './css-share-scope'
 import { measureElapsed } from './metrics'
 import { collectRememberedCssReplayGroups, createRememberedCssRuntimeSignature, mergeRememberedCssSources } from './remembered-css'
 import { registerGeneratorDependencies } from './rollup-assets'
+import { isRootMiniProgramStyleOutputFile, shouldPreserveFrameworkRootMiniProgramImportShell } from './root-style-output'
 import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTraceMap } from './scoped-generator'
 import { createCandidateSignature } from './signatures'
 import { getLastCssResult, getLastCssSourceHash, rememberLastCssResult } from './vite-css-cache'
@@ -37,6 +39,8 @@ interface ProcessRememberedCssReplayOptions {
     cssHandlerOptions: { isMainChunk?: boolean | undefined },
   ) => GenerateBundleContext['getSourceCandidateSourcesForEntries']
   cssTaskFactories: Array<() => Promise<void>>
+  cssPipelineContext: ViteFrameworkCssPipelineContext
+  cssPipelineStrategy?: ViteFrameworkCssPipelineStrategy | undefined
   debug: GenerateBundleContext['debug']
   defaultStyleOutputExtension: string
   emitOrReplayCssAsset: (fileName: string, source: string) => OutputAsset | undefined
@@ -86,6 +90,8 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     createScopedSourceCandidateGetter,
     createScopedSourceCandidateSourceGetter,
     cssTaskFactories,
+    cssPipelineContext,
+    cssPipelineStrategy,
     debug,
     defaultStyleOutputExtension,
     emitOrReplayCssAsset,
@@ -201,7 +207,20 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     if (!shouldRecordRememberedReplayCss) {
       continue
     }
-    if (!isWebGeneratorTarget && isPureLocalCssImportWrapper(rawSource)) {
+    const shouldPreserveFrameworkRootImportShell = shouldPreserveFrameworkRootMiniProgramImportShell({
+      css: rawSource,
+      file: outputFile,
+      isWebGeneratorTarget,
+      matchesCss: opts.cssMatcher(outputFile),
+      shouldKeep: () => cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
+        ...cssPipelineContext,
+        css: rawSource,
+        file: outputFile,
+      }),
+    })
+    const shouldPreserveLocalImportWrapper = shouldPreserveFrameworkRootImportShell
+      || (!isRootMiniProgramStyleOutputFile(outputFile) && !isWebGeneratorTarget && isPureLocalCssImportWrapper(rawSource))
+    if (shouldPreserveLocalImportWrapper) {
       cssTaskFactories.push(() => timeTask('css.replay', async () => {
         const start = performance.now()
         const css = annotateCss(normalizeMiniProgramImportShell(rawSource))
