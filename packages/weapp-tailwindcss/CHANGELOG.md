@@ -1,5 +1,21 @@
 # weapp-tailwindcss
 
+## 5.1.14
+
+### Patch Changes
+
+- 🐛 **修复 Vite 与 weapp-vite 项目配置多个 Tailwind CSS v4 `@source` 扫描根时的候选作用域合并问题，确保 monorepo 外部包、`@source not`、`@config` content 排除规则以及主包/分包样式隔离同时生效；同时恢复 Vite dev HMR 的增量 CSS 回放，在保留完整当前候选集的同时继续保留默认不删除的旧 CSS。** [#985](https://github.com/sonofmagic/weapp-tailwindcss/pull/985) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 现代颜色配合动态透明度变量时的 RGB 通道转换，避免 OKLCH 等颜色被错误地直接当作 RGB 通道输出。** [#987](https://github.com/sonofmagic/weapp-tailwindcss/pull/987) by @sonofmagic
+
+- 🐛 **修复 Vite/Tailwind CSS v4 生成链路中误删 `page` 自定义 CSS 变量的问题。用户在 `App.vue` 等全局样式里声明 `--color-*`、`--font-*` 等变量时，不再因为命中 Tailwind v4 theme namespace 而被当作生成变量清理。** [#981](https://github.com/sonofmagic/weapp-tailwindcss/pull/981) by @sonofmagic
+
+- 🐛 **修复 Vite serve/HMR 下小程序根样式产物的处理策略，保留框架原生生成的本地 `@import` shell，避免 `app.wxss` 等根样式文件被 Tailwind 生成 CSS 覆盖；Tailwind 生成内容继续写入配置的样式入口产物。** [`2d0e5dc`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2d0e5dcd100e98eb57a3101a597e636563e0c5f1) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 `@source` 扫描路径未复用 `customAttributes` 的问题，使 `t-class` 等自定义模板类名属性中的工具类可以参与 CSS 生成。** [#980](https://github.com/sonofmagic/weapp-tailwindcss/pull/980) by @sonofmagic
+- 📦 **Dependencies** [`fb32eae`](https://github.com/sonofmagic/weapp-tailwindcss/commit/fb32eaeef309c0f129a60214b389d8615e6b669d)
+  → `@weapp-tailwindcss/postcss@3.1.10`
+
 ## 5.1.13
 
 ### Patch Changes
