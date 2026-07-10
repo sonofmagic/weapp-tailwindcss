@@ -41,7 +41,7 @@ import { logBundleProcessPlan } from './generate-bundle/process-plan'
 import { createRememberedCssRuntimeSignature, findRememberedCssSources, mergeRememberedCssSources } from './generate-bundle/remembered-css'
 import { processRememberedCssReplay } from './generate-bundle/remembered-css-replay'
 import { registerGeneratorDependencies } from './generate-bundle/rollup-assets'
-import { isRootMiniProgramStyleOutputFile, resolveSingleCssImportOutputFile, shouldKeepRootMiniProgramStyleAsImportShell, shouldPreserveFrameworkRootMiniProgramImportShell } from './generate-bundle/root-style-output'
+import { isRootMiniProgramStyleOutputFile, resolveSingleCssImportOutputFile, shouldKeepRootMiniProgramStyleAsImportShell, shouldMoveRootMiniProgramStyleToImportShellOrigin, shouldPreserveFrameworkRootMiniProgramImportShell } from './generate-bundle/root-style-output'
 import { collectCssExtensionByStem, collectJsImportedCssFiles, collectRuntimeLinkedCssFiles } from './generate-bundle/runtime-linked-css'
 import { rememberRuntimeLinkedCssSources } from './generate-bundle/runtime-linked-source-memory'
 import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTraceMap, createScopedGeneratorRuntime as resolveScopedGeneratorRuntime } from './generate-bundle/scoped-generator'
@@ -853,10 +853,17 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && !isWebGeneratorTarget
           && isRootMiniProgramStyleOutputFile(rootImportShellOutputFile)
           && normalizeOutputPathKey(assetSourceFile) === normalizeOutputPathKey(file)
+          && opts.mainCssChunkMatcher(rootImportShellOutputFile, opts.appType)
           && shouldKeepRootMiniProgramStyleAsImportShell(
             context.cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
               ...cssPipelineContext,
               css: rawSource,
+              file: rootImportShellOutputFile,
+            }),
+          )
+          && !shouldMoveRootMiniProgramStyleToImportShellOrigin(
+            context.cssPipelineStrategy?.shouldMoveRootMiniProgramStyleToImportShellOrigin?.({
+              ...cssPipelineContext,
               file: rootImportShellOutputFile,
             }),
           )
@@ -1262,6 +1269,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             context.cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
               ...cssPipelineContext,
               css: rawSource,
+              file: rootImportShellOutputFile,
+            }),
+          )
+          && !shouldMoveRootMiniProgramStyleToImportShellOrigin(
+            context.cssPipelineStrategy?.shouldMoveRootMiniProgramStyleToImportShellOrigin?.({
+              ...cssPipelineContext,
               file: rootImportShellOutputFile,
             }),
           )

@@ -7779,6 +7779,16 @@ module.exports = {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-taro-app-origin-shell-'))
     createdDirs.push(root)
     const sourceFile = path.join(root, 'src/app.css')
+    const sourceCss = '@import "tailwindcss" source(none);'
+    await mkdir(path.dirname(sourceFile), { recursive: true })
+    await writeFile(sourceFile, sourceCss, 'utf8')
+    const cssSources = [{
+      file: sourceFile,
+      base: path.dirname(sourceFile),
+      css: sourceCss,
+      dependencies: [],
+    }]
+    const frameworkRootImportShellTargetByFile = new Map<string, string>()
     const records = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>()
     const generateBundle = createGenerateBundleHook({
       opts: createContext({
@@ -7786,6 +7796,14 @@ module.exports = {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
         mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
+        tailwindcssBasedir: root,
+        cssEntries: [sourceFile],
+        tailwindcss: {
+          v4: {
+            cssEntries: [sourceFile],
+            cssSources,
+          },
+        },
         tailwindRuntime: {
           getClassSet: vi.fn(async () => new Set(['tw-app-entry'])),
           getClassSetSync: vi.fn(() => new Set(['tw-app-entry'])),
@@ -7822,7 +7840,7 @@ module.exports = {
       getViteProcessedCssAssetResults: () => records.entries(),
       getViteProcessedCssAssetResult: file => records.get(file),
       getSourceCandidates: () => new Set(['tw-app-entry']),
-      getSourceCandidateSource: file => file === sourceFile ? '@import "tailwindcss" source(none);' : undefined,
+      getSourceCandidateSource: file => file === sourceFile ? sourceCss : undefined,
       getSourceCandidatesForEntries: () => new Set(['tw-app-entry']),
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
@@ -7830,13 +7848,14 @@ module.exports = {
       getRememberedCssSources: () => new Map([
         ['app-origin.wxss', {
           outputFile: 'app-origin.wxss',
-          rawSource: '@import "tailwindcss" source(none);',
+          rawSource: sourceCss,
           sourceFile,
         }],
       ]),
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
       recordGeneratorCandidates: vi.fn(),
+      frameworkRootImportShellTargetByFile,
       cssPipelineStrategy: {
         shouldKeepRootMiniProgramStyleAsImportShell: () => true,
         shouldMoveRootMiniProgramStyleToImportShellOrigin: () => true,
@@ -7858,7 +7877,9 @@ module.exports = {
     await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
 
     expect((bundle['app.wxss'] as OutputAsset).source.toString()).toBe('@import "./app-origin.wxss";\n')
+    expect((bundle['app-origin.wxss'] as OutputAsset).source.toString()).toContain('.tw-app-entry')
     expect((bundle['app-origin.wxss'] as OutputAsset).source.toString()).not.toContain('weapp-tailwindcss generated css')
+    expect(frameworkRootImportShellTargetByFile.has('app-origin.wxss')).toBe(false)
   }, TEST_TIMEOUT_MS)
 
   it('does not match plain taro temporary css assets to remembered subpackage css', async () => {
