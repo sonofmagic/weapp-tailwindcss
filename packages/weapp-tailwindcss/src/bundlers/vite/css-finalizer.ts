@@ -23,6 +23,7 @@ import { normalizeMiniProgramGeneratorCssSource } from '../shared/generator-css/
 import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { normalizeRootMiniProgramImportShellAssets } from './generate-bundle/finalize'
+import { restoreFrameworkRootMiniProgramImportShellAssets } from './generate-bundle/root-style-output'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 import { isHTMLRequest } from './utils'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from './weapp-vite-config'
@@ -56,6 +57,7 @@ interface CssFinalizerContext {
   rememberMainCssSource?: (file: string, rawSource: string) => void
   getRememberedMainCssSource?: (file: string) => RememberedMainCssSource | undefined
   isViteProcessedCssAsset?: (asset: OutputAsset, file?: string) => boolean
+  frameworkRootImportShellTargetByFile?: ReadonlyMap<string, string> | undefined
 }
 
 interface CssFinalizerThis {
@@ -220,6 +222,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           rememberMainCssSource,
           getRememberedMainCssSource,
           isViteProcessedCssAsset,
+          frameworkRootImportShellTargetByFile,
         } = context
         const resolvedConfig = getResolvedConfig()
         const uniUtsPlatform = resolveUniUtsPlatform()
@@ -260,6 +263,19 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           : rootDir
         const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
           ?? resolveSourceRootFromBundleGraph(resolvedConfig, bundle)
+        restoreFrameworkRootMiniProgramImportShellAssets(bundle, {
+          debug,
+          isWebGeneratorTarget,
+          matchesCss: opts.cssMatcher,
+          onUpdate: opts.onUpdate,
+          recordCssAssetResult,
+          shouldKeep: (file, css) => cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
+            ...createCssPipelineContext(file),
+            css,
+            file,
+          }),
+          targetByFile: frameworkRootImportShellTargetByFile ?? new Map(),
+        })
         const sourceTraceTokenSources = getSourceCandidateSourcesForEntries
           ? createCssTokenSourceMap(getSourceCandidateSourcesForEntries(undefined), opts)
           : undefined

@@ -1,4 +1,4 @@
-import type { ConcreteOrPlatformWatchCaseName } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
+import type { ConcreteOrPlatformWatchCaseName, WatchCaseArtifacts } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { execa } from 'execa'
@@ -6,6 +6,7 @@ import path from 'pathe'
 import { expect } from 'vitest'
 import { buildCases, demoWatchShardCases, getBaseWatchCaseName, isDemoWatchShardName, isLocalOnlyWatchCase } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
+import { assertDevHmrArtifactSnapshotGate } from '../../watchArtifactSnapshotGate'
 
 export type WatchProjectGroup = 'demo'
 export type DemoWatchShardName
@@ -339,6 +340,7 @@ interface HotUpdateCaseReport {
   rollbackOutputMs: number
   rollbackEffectiveMs: number
   totalMs: number
+  artifacts?: WatchCaseArtifacts
 }
 
 interface HmrDurationTiming {
@@ -1122,6 +1124,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     expect(item.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(item.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
     expect(item.rollbackEffectiveMs).toBeGreaterThan(0)
+    assertDevHmrArtifactSnapshotGate(item.project, item.artifacts)
     expect(item.classTokens.length).toBeGreaterThan(0)
     expect(item.escapedClasses.length).toBe(item.classTokens.length)
     expect(item.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)

@@ -17,10 +17,10 @@ import {
 import path from 'pathe'
 import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { removeTailwindSourceDirectives } from '../shared/generator-css/directives'
-import { isPureLocalCssImportWrapper } from '../shared/generator-css/local-imports'
 import { stripGeneratorPlaceholderMarkers } from '../shared/generator-css/markers'
 import { extractMarkedUserLayerComponentsCss, mergeMarkedUserLayerComponentsCss } from '../shared/generator-css/user-layer-order'
 import { normalizeOutputPathKey } from '../shared/module-graph'
+import { shouldPreserveFrameworkRootMiniProgramImportShell } from './generate-bundle/root-style-output'
 import { isSubpackageOutputFile } from './generate-bundle/subpackages'
 
 interface CssAssetMarkerMatcher {
@@ -891,14 +891,17 @@ function shouldPreserveMiniProgramImportShell(
 ) {
   const context = createCssAssetPipelineContext(options, file, bundle)
   return context !== undefined
-    && options.cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
-      ...context,
+    && shouldPreserveFrameworkRootMiniProgramImportShell({
       css,
       file,
-    }) === true
-    && isMiniProgramStyleOutputFile(file)
-    && options.opts.cssMatcher(file)
-    && isPureLocalCssImportWrapper(css)
+      isWebGeneratorTarget: context.currentGeneratorBranch?.isWeb === true,
+      matchesCss: options.opts.cssMatcher(file),
+      shouldKeep: () => options.cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
+        ...context,
+        css,
+        file,
+      }),
+    })
 }
 
 function resolvePreservedImportShellInjectionTarget(

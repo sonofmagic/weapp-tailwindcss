@@ -20,6 +20,10 @@ import { miniProgramCases, uniAppAppCases, uniAppXAppCases, webCases } from './h
 import { MULTIPLATFORM_BUILD_OUTPUT_CASES } from './multiplatform-build-output/cases'
 import { MULTIPLATFORM_TARGETS } from './multiplatform-build-output/targets'
 import { E2E_PROJECTS } from './projectEntries'
+import {
+  createRootStyleImportShellHmrCases,
+  ROOT_STYLE_IMPORT_SHELL_HMR_EXEMPTIONS,
+} from './rootStyleImportShellHmr'
 import { taroWebHmrCaseNames } from './taro-web-demo-hmr-cases'
 import { webViteHmrCoverageCaseNames } from './web-vite-demo-hmr-cases'
 
@@ -254,6 +258,49 @@ function hasBuildOutputEvidence(name: string, platform: string, cases: Map<strin
 }
 
 describe('e2e matrix', () => {
+  it('covers every CI-compatible uni-app Vite root import shell demo and platform', () => {
+    const cases = createRootStyleImportShellHmrCases('/repo')
+    const casesByProject = new Map<string, typeof cases>()
+    for (const item of cases) {
+      const projectCases = casesByProject.get(item.project) ?? []
+      projectCases.push(item)
+      casesByProject.set(item.project, projectCases)
+    }
+
+    expect([...casesByProject.keys()].sort()).toEqual([
+      'subpackage-uni-app-vite-tailwindcss-v4',
+      'uni-app-vite-tailwindcss-v4',
+    ])
+    expect(casesByProject.get('uni-app-vite-tailwindcss-v4')?.map(item => item.platform)).toEqual([
+      'mp-weixin',
+      'mp-alipay',
+      'mp-qq',
+      'mp-toutiao',
+    ])
+    expect(casesByProject.get('subpackage-uni-app-vite-tailwindcss-v4')?.map(item => item.platform)).toEqual([
+      'mp-weixin',
+      'mp-alipay',
+      'mp-toutiao',
+    ])
+    for (const project of ['uni-app-vite-tailwindcss-v4', 'subpackage-uni-app-vite-tailwindcss-v4']) {
+      const entry = DEMO_COVERAGE_MATRIX.find(item => item.name === project)
+      for (const testCase of casesByProject.get(project) ?? []) {
+        expect(
+          entry?.platforms.find(item => item.platform === testCase.platform)?.rootStyleShellHmrCoverage,
+          `${testCase.name} should declare root style shell HMR coverage`,
+        ).toBe('automated')
+      }
+    }
+
+    expect(ROOT_STYLE_IMPORT_SHELL_HMR_EXEMPTIONS.map(item => item.project)).toEqual(expect.arrayContaining([
+      'taro-vite-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4',
+      'issue-uview-plus-cssentries',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+      'uni-app-x-hbuilderx-tailwindcss-v4',
+    ]))
+  })
+
   it('keeps every demo package explicit in the demo coverage matrix', () => {
     expect(DEMO_COVERAGE_MATRIX.map(item => item.name).sort()).toEqual(discoverDemoPackageNames())
   })
@@ -295,6 +342,10 @@ describe('e2e matrix', () => {
       for (const platform of entry.platforms) {
         expect(platform.command.length, `${entry.name} ${platform.platform} should document a validation command`).toBeGreaterThan(0)
         expect(platform.evidence.length, `${entry.name} ${platform.platform} should document validation evidence`).toBeGreaterThan(0)
+        expect(
+          platform.devHmrSnapshotCoverage,
+          `${entry.name} ${platform.platform} dev/HMR snapshot coverage should match its HMR execution status`,
+        ).toBe(platform.hmrCoverage)
         if (platform.buildScript) {
           expect(
             pkg.scripts?.[scriptName(platform.buildScript)],

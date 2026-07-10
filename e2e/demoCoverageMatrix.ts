@@ -27,6 +27,8 @@ export interface DemoPlatformCoverage {
   devScript?: string
   staticCoverage: DemoCoverageStatus
   hmrCoverage: DemoCoverageStatus
+  devHmrSnapshotCoverage: DemoCoverageStatus
+  rootStyleShellHmrCoverage?: DemoCoverageStatus
   evidence: string
   command: string
   reason?: string
@@ -56,6 +58,7 @@ function automated(platform: string, options: {
     platform,
     staticCoverage: 'automated',
     hmrCoverage: 'automated',
+    devHmrSnapshotCoverage: 'automated',
     ...(options.buildScript ? { buildScript: options.buildScript } : {}),
     ...(options.devScript ? { devScript: options.devScript } : {}),
     evidence: options.evidence,
@@ -76,6 +79,7 @@ function local(platform: string, options: {
     platform,
     staticCoverage: options.staticCoverage ?? 'local',
     hmrCoverage: options.hmrCoverage ?? 'local',
+    devHmrSnapshotCoverage: options.hmrCoverage ?? 'local',
     ...(options.buildScript ? { buildScript: options.buildScript } : {}),
     ...(options.devScript ? { devScript: options.devScript } : {}),
     evidence: options.evidence,
@@ -226,12 +230,15 @@ function uniAppPlatforms(name: string, platforms: string[]): DemoPlatformCoverag
     const buildScript = `build:${platform}`
     const devScript = `dev:${platform}`
     if (platform === 'mp-weixin' || platform === 'mp-alipay' || platform === 'mp-qq' || platform === 'mp-toutiao') {
-      return automated(platform, {
-        buildScript,
-        devScript,
-        evidence: 'watch-HMR mini-program platform case',
-        command: `E2E_WATCH_CASE=${name}:${platform} pnpm e2e:watch`,
-      })
+      return {
+        ...automated(platform, {
+          buildScript,
+          devScript,
+          evidence: 'watch-HMR mini-program platform case',
+          command: `E2E_WATCH_CASE=${name}:${platform} pnpm e2e:watch`,
+        }),
+        rootStyleShellHmrCoverage: 'automated',
+      }
     }
     if (platform === 'h5') {
       return automated(platform, {
@@ -280,7 +287,7 @@ function subpackageUniAppPlatforms(name: string): DemoPlatformCoverage[] {
         hmrCoverage: 'exempt',
       })
     }
-    return local(platform, {
+    const coverage = local(platform, {
       buildScript,
       devScript,
       evidence: 'multiplatform build output',
@@ -289,6 +296,15 @@ function subpackageUniAppPlatforms(name: string): DemoPlatformCoverage[] {
       staticCoverage: 'automated',
       hmrCoverage: 'exempt',
     })
+    if (platform === 'mp-weixin' || platform === 'mp-alipay' || platform === 'mp-toutiao') {
+      return {
+        ...coverage,
+        rootStyleShellHmrCoverage: 'automated',
+        evidence: 'multiplatform build output + root style import shell HMR matrix',
+        command: `E2E_ROOT_STYLE_SHELL_CASE=${name}:${platform} pnpm e2e:root-style-shell-hmr`,
+      }
+    }
+    return coverage
   })
 }
 

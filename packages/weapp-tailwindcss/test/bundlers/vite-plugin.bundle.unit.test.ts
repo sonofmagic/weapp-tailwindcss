@@ -7779,6 +7779,16 @@ module.exports = {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-taro-app-origin-shell-'))
     createdDirs.push(root)
     const sourceFile = path.join(root, 'src/app.css')
+    const sourceCss = '@import "tailwindcss" source(none);'
+    await mkdir(path.dirname(sourceFile), { recursive: true })
+    await writeFile(sourceFile, sourceCss, 'utf8')
+    const cssSources = [{
+      file: sourceFile,
+      base: path.dirname(sourceFile),
+      css: sourceCss,
+      dependencies: [],
+    }]
+    const frameworkRootImportShellTargetByFile = new Map<string, string>()
     const records = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>()
     const generateBundle = createGenerateBundleHook({
       opts: createContext({
@@ -7786,6 +7796,14 @@ module.exports = {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
         mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
+        tailwindcssBasedir: root,
+        cssEntries: [sourceFile],
+        tailwindcss: {
+          v4: {
+            cssEntries: [sourceFile],
+            cssSources,
+          },
+        },
         tailwindRuntime: {
           getClassSet: vi.fn(async () => new Set(['tw-app-entry'])),
           getClassSetSync: vi.fn(() => new Set(['tw-app-entry'])),
@@ -7822,7 +7840,7 @@ module.exports = {
       getViteProcessedCssAssetResults: () => records.entries(),
       getViteProcessedCssAssetResult: file => records.get(file),
       getSourceCandidates: () => new Set(['tw-app-entry']),
-      getSourceCandidateSource: file => file === sourceFile ? '@import "tailwindcss" source(none);' : undefined,
+      getSourceCandidateSource: file => file === sourceFile ? sourceCss : undefined,
       getSourceCandidatesForEntries: () => new Set(['tw-app-entry']),
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
@@ -7830,13 +7848,14 @@ module.exports = {
       getRememberedCssSources: () => new Map([
         ['app-origin.wxss', {
           outputFile: 'app-origin.wxss',
-          rawSource: '@import "tailwindcss" source(none);',
+          rawSource: sourceCss,
           sourceFile,
         }],
       ]),
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
       recordGeneratorCandidates: vi.fn(),
+      frameworkRootImportShellTargetByFile,
       cssPipelineStrategy: {
         shouldKeepRootMiniProgramStyleAsImportShell: () => true,
         shouldMoveRootMiniProgramStyleToImportShellOrigin: () => true,
@@ -7858,7 +7877,9 @@ module.exports = {
     await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
 
     expect((bundle['app.wxss'] as OutputAsset).source.toString()).toBe('@import "./app-origin.wxss";\n')
+    expect((bundle['app-origin.wxss'] as OutputAsset).source.toString()).toContain('.tw-app-entry')
     expect((bundle['app-origin.wxss'] as OutputAsset).source.toString()).not.toContain('weapp-tailwindcss generated css')
+    expect(frameworkRootImportShellTargetByFile.has('app-origin.wxss')).toBe(false)
   }, TEST_TIMEOUT_MS)
 
   it('does not match plain taro temporary css assets to remembered subpackage css', async () => {
@@ -11966,7 +11987,7 @@ const cls = "w-[1.5px]"
     expect(nextAppOriginCss).not.toContain('text-[#111111]')
   }, TEST_TIMEOUT_MS)
 
-  it('replays updated vite pipeline main css into uni-app dev app.wxss', async () => {
+  it('keeps uni-app dev app.wxss as an import shell when the incremental bundle omits main.wxss', async () => {
     const localCandidates = (candidates: Set<string>) =>
       new Set([...candidates].filter(candidate => /^text-\[\d+\.\d+rpx\]$/.test(candidate)))
     const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
@@ -12017,6 +12038,14 @@ const cls = "w-[1.5px]"
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-app-wxss-replay-'))
     createdDirs.push(root)
+    const cssSourceFile = path.resolve(root, 'src/main.css')
+    const cssSource = '@import "tailwindcss" source(none);\n@source "../src/**/*.{vue,js,ts}";'
+    const cssSources = [{
+      file: cssSourceFile,
+      base: path.dirname(cssSourceFile),
+      css: cssSource,
+      dependencies: [],
+    }]
     const runtimeSet = new Set<string>()
     const forceRuntimeRefresh = process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH']
     process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] = '1'
@@ -12024,11 +12053,29 @@ const cls = "w-[1.5px]"
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
+      tailwindcssBasedir: root,
+      cssEntries: [cssSourceFile],
+      tailwindcss: {
+        v4: {
+          cssEntries: [cssSourceFile],
+          cssSources,
+        },
+      },
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
         majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(runtimeSet) })),
+        options: {
+          projectRoot: root,
+          tailwindcss: {
+            cwd: root,
+            v4: {
+              cssEntries: [cssSourceFile],
+              cssSources,
+            },
+          },
+        },
       },
     }))
     const plugins = WeappTailwindcss()
@@ -12042,6 +12089,7 @@ const cls = "w-[1.5px]"
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'serve',
       root,
+      weapp: { srcRoot: 'src' },
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist/dev/mp-weixin' },
       plugins: [{ name: 'vite:uni' }],
@@ -12049,6 +12097,7 @@ const cls = "w-[1.5px]"
     await (serveGeneratePlugin.configResolved as any)?.call(serveGeneratePlugin, {
       command: 'serve',
       root,
+      weapp: { srcRoot: 'src' },
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist/dev/mp-weixin' },
       plugins: [{ name: 'vite:uni' }],
@@ -12056,28 +12105,29 @@ const cls = "w-[1.5px]"
 
     const transform = getTransformHandler(serveGeneratePlugin)
     const generateBundle = getGenerateBundleHandler(postPlugin)
-    const cssSourceFile = path.resolve(root, 'src/main.css')
-    const cssSource = '@import "tailwindcss" source(none);\n@source "../src/**/*.{vue,js,ts}";'
+    const importShell = '@import "./main.wxss";\n'
 
     try {
       runtimeSet.add('text-[102.43rpx]')
       await transform?.call({ addWatchFile: vi.fn() } as any, cssSource, cssSourceFile)
 
       const firstBundle = {
-        'src/main.wxss': {
+        'main.wxss': {
           ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', cssSourceFile)}\n.${replaceWxml('text-[102.43rpx]')}{font-size:102.43rpx}`),
-          fileName: 'src/main.wxss',
+          fileName: 'main.wxss',
           originalFileNames: [cssSourceFile],
         },
         'app.wxss': {
-          ...createRollupAsset(''),
+          ...createRollupAsset(importShell),
           fileName: 'app.wxss',
         },
       }
       await generateBundle?.call(postPlugin, {} as any, firstBundle)
       const firstAppCss = (firstBundle['app.wxss'] as OutputAsset).source.toString()
-      expect(firstAppCss).toContain(replaceWxml('text-[102.43rpx]'))
-      expect(firstAppCss).toContain('102.43rpx')
+      const firstMainCss = (firstBundle['main.wxss'] as OutputAsset).source.toString()
+      expect(firstAppCss).toBe(importShell)
+      expect(firstMainCss).toContain(replaceWxml('text-[102.43rpx]'))
+      expect(firstMainCss).toContain('102.43rpx')
 
       runtimeSet.clear()
       runtimeSet.add('text-[103.43rpx]')
@@ -12101,33 +12151,21 @@ const cls = "w-[1.5px]"
           fileName: 'pages/index/index.wxml',
         },
         'app.wxss': {
-          ...createRollupAsset(firstAppCss),
+          ...createRollupAsset(importShell),
           fileName: 'app.wxss',
         },
       }
-      await generateBundle?.call(postPlugin, {} as any, secondBundle)
+      const emittedAssets: Array<{ fileName?: string, source?: string | Uint8Array }> = []
+      await generateBundle?.call({
+        ...postPlugin,
+        emitFile(asset: { fileName?: string, source?: string | Uint8Array }) {
+          emittedAssets.push(asset)
+          return asset.fileName ?? ''
+        },
+      }, {} as any, secondBundle)
       const secondAppCss = (secondBundle['app.wxss'] as OutputAsset).source.toString()
-      expect(secondAppCss).toContain(replaceWxml('text-[103.43rpx]'))
-      expect(secondAppCss).toContain('103.43rpx')
-      expect(secondAppCss).not.toContain(replaceWxml('text-[104.43rpx]'))
-
-      runtimeSet.clear()
-      runtimeSet.add('text-[104.43rpx]')
-      const thirdBundle = {
-        'pages/index/index.wxml': {
-          ...createRollupAsset(`<view class="${replaceWxml('text-[104.43rpx]')}"></view>`),
-          fileName: 'pages/index/index.wxml',
-        },
-        'app.wxss': {
-          ...createRollupAsset(firstAppCss),
-          fileName: 'app.wxss',
-        },
-      }
-      await generateBundle?.call(postPlugin, {} as any, thirdBundle)
-      const thirdAppCss = (thirdBundle['app.wxss'] as OutputAsset).source.toString()
-      expect(thirdAppCss).toContain(replaceWxml('text-[104.43rpx]'))
-      expect(thirdAppCss).toContain('104.43rpx')
-      expect(thirdAppCss).not.toContain(replaceWxml('text-[103.43rpx]'))
+      expect(secondAppCss).toBe(importShell)
+      expect(emittedAssets.some(asset => asset.fileName === 'main.wxss')).toBe(true)
     }
     finally {
       if (forceRuntimeRefresh === undefined) {
@@ -12232,6 +12270,211 @@ const cls = "w-[1.5px]"
     expect(generateCssByGeneratorMock).toHaveBeenCalledTimes(frameworkCases.length)
     expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
       rawSource: '@import "tailwindcss" source(none);',
+    }))
+  }, TEST_TIMEOUT_MS)
+
+  it.each([
+    { extension: 'wxss', markupExtension: 'wxml', platform: 'mp-weixin' },
+    { extension: 'acss', markupExtension: 'axml', platform: 'mp-alipay' },
+  ])('keeps uni-app root .$extension import shell when incremental css bundle omits the imported asset', async ({
+    extension,
+    markupExtension,
+    platform,
+  }) => {
+    const generateCssByGeneratorMock = vi.fn(async (options: { runtime: Set<string>, rawSource: string }) => ({
+      css: [...options.runtime].sort().map(candidate => `.${replaceWxml(candidate)}{font-size:${candidate.match(/^text-\[(.+)\]$/)?.[1] ?? '0rpx'}}`).join('\n'),
+      rawCss: options.rawSource,
+      target: 'weapp',
+      classSet: new Set(options.runtime),
+      rawCandidates: new Set(options.runtime),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 4,
+    }))
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateCssByGeneratorMock,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+
+    const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
+    const root = await mkdtemp(path.join(os.tmpdir(), `weapp-tw-vite-uni-root-shell-${extension}-`))
+    createdDirs.push(root)
+    await mkdir(path.join(root, 'src'), { recursive: true })
+    const cssSourceFile = path.join(root, 'src/main.css')
+    const cssSource = '@import "tailwindcss" source(none);\n@source "../src/**/*.{vue,js,ts}";'
+    const cssSources = [{
+      file: cssSourceFile,
+      base: path.dirname(cssSourceFile),
+      css: cssSource,
+      dependencies: [],
+    }]
+    const runtimeSet = new Set(['text-[102.43rpx]'])
+    const context = createContext({
+      appType: 'uni-app-vite',
+      cssMatcher: (file: string) => file.endsWith(`.${extension}`),
+      htmlMatcher: (file: string) => file.endsWith(`.${markupExtension}`),
+      mainCssChunkMatcher: vi.fn((file: string) => file === `app.${extension}`),
+      tailwindcssBasedir: root,
+      cssEntries: [cssSourceFile],
+      tailwindcss: {
+        v4: {
+          cssEntries: [cssSourceFile],
+          cssSources,
+        },
+      },
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => new Set(runtimeSet)),
+        getClassSetSync: vi.fn(() => new Set(runtimeSet)),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(runtimeSet) })),
+        options: {
+          projectRoot: root,
+          tailwindcss: {
+            cwd: root,
+            v4: {
+              cssEntries: [cssSourceFile],
+              cssSources,
+            },
+          },
+        },
+      },
+    })
+    const appStyleFile = `app.${extension}`
+    const mainStyleFile = `main.${extension}`
+    const markupFile = `pages/index/index.${markupExtension}`
+    const importShell = `@import "./${mainStyleFile}";\n`
+    const rememberedCssSources = new Map<string, {
+      outputFile: string
+      rawSource: string
+      sourceFile: string
+    }>()
+    const rememberedCssSignatures = new Map<string, string>()
+    const viteProcessedCssResults = new Map<string, {
+      css: string
+      injectIntoMain?: boolean
+      outputFile?: string
+    }>()
+    const generateBundle = createGenerateBundleHookWithMock({
+      opts: context as any,
+      runtimeState: {
+        tailwindRuntime: context.tailwindRuntime as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => new Set(runtimeSet)),
+      ensureBundleRuntimeClassSet: vi.fn(async () => new Set(runtimeSet)),
+      cssPipelineStrategy: {
+        shouldKeepRootMiniProgramStyleAsImportShell: () => true,
+      },
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'serve',
+        plugins: [{ name: 'vite:uni' }],
+        root,
+        weapp: { srcRoot: 'src' },
+        css: { postcss: { plugins: [] } },
+        build: { outDir: `dist/dev/${platform}` },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult(file, css, options) {
+        viteProcessedCssResults.set(file, {
+          css,
+          injectIntoMain: options?.injectIntoMain,
+          outputFile: options?.outputFile,
+        })
+      },
+      getViteProcessedCssAssetResults: () => viteProcessedCssResults.entries(),
+      getViteProcessedCssAssetResult: file => viteProcessedCssResults.get(file),
+      getSourceCandidates: () => new Set(runtimeSet),
+      getSourceCandidatesForEntries: () => new Set(runtimeSet),
+      getSourceCandidateSource: () => undefined,
+      getSourceCandidateSources: () => [],
+      getSourceCandidateSourcesForEntries: () => [],
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource(source, signature) {
+        rememberedCssSources.set(source.sourceFile, source)
+        if (signature) {
+          rememberedCssSignatures.set(source.sourceFile, signature)
+        }
+      },
+      refreshRememberedCssSource: vi.fn(async source => source),
+      getRememberedCssSources: () => rememberedCssSources,
+      getRememberedCssSignature: file => rememberedCssSignatures.get(file),
+      setRememberedCssSignature: (file, signature) => rememberedCssSignatures.set(file, signature),
+      recordGeneratorCandidates: vi.fn(),
+    })
+    const firstBundle = {
+      [markupFile]: {
+        ...createRollupAsset(`<view class="${replaceWxml('text-[102.43rpx]')}"></view>`),
+        fileName: markupFile,
+      },
+      [appStyleFile]: {
+        ...createRollupAsset(cssSource),
+        fileName: appStyleFile,
+      },
+    }
+    await generateBundle.call({ addWatchFile: vi.fn() }, {} as any, firstBundle)
+
+    expect((firstBundle[appStyleFile] as OutputAsset).source.toString()).toBe(importShell)
+    expect((firstBundle[mainStyleFile] as OutputAsset).source.toString()).toContain(replaceWxml('text-[102.43rpx]'))
+
+    runtimeSet.clear()
+    runtimeSet.add('text-[103.43rpx]')
+    rememberedCssSources.clear()
+    rememberedCssSignatures.clear()
+    rememberedCssSources.set(appStyleFile, {
+      outputFile: appStyleFile,
+      rawSource: cssSource,
+      sourceFile: cssSourceFile,
+    })
+    rememberedCssSources.set(mainStyleFile, {
+      outputFile: mainStyleFile,
+      rawSource: cssSource,
+      sourceFile: `${cssSourceFile}?replay`,
+    })
+    generateCssByGeneratorMock.mockClear()
+    const emittedAssets: Array<{ fileName?: string, source?: string | Uint8Array }> = []
+    const secondBundle = {
+      [markupFile]: {
+        ...createRollupAsset(`<view class="${replaceWxml('text-[103.43rpx]')}"></view>`),
+        fileName: markupFile,
+      },
+      [appStyleFile]: {
+        ...createRollupAsset(importShell),
+        fileName: appStyleFile,
+      },
+    }
+    await generateBundle.call({
+      addWatchFile: vi.fn(),
+      emitFile: vi.fn((asset: { fileName?: string, source?: string | Uint8Array }) => {
+        emittedAssets.push(asset)
+        return asset.fileName ?? ''
+      }),
+    }, {} as any, secondBundle)
+
+    const replayedMainStyle = emittedAssets.filter(asset => asset.fileName === mainStyleFile).at(-1)?.source?.toString()
+    expect((secondBundle[appStyleFile] as OutputAsset).source.toString()).toBe(importShell)
+    expect(replayedMainStyle).toContain(replaceWxml('text-[103.43rpx]'))
+    expect(replayedMainStyle).not.toContain(replaceWxml('text-[102.43rpx]'))
+    expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
+      outputFile: mainStyleFile,
+      runtime: expect.objectContaining({
+        has: expect.any(Function),
+      }),
     }))
   }, TEST_TIMEOUT_MS)
 

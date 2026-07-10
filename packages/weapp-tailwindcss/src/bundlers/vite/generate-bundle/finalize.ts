@@ -4,10 +4,9 @@ import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy 
 import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext } from './types'
 import path from 'node:path'
-import { postcss, transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
+import { transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { injectUniAppXHarmonyBundleStyles } from '@/uni-app-x/style-asset'
-import { parseImportRequest } from '../../shared/generator-css/directives'
 import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { runWithConcurrency } from '../../shared/run-tasks'
@@ -18,6 +17,7 @@ import { resolveViteCssPipelineOutputFile } from './css-output'
 import { finalizeMiniProgramCssAssets } from './final-css-assets'
 import { resolveViteMemoryDebugStats } from './memory-debug'
 import { formatCacheHitRate, formatMs } from './metrics'
+import { resolveSingleCssImportOutputFile } from './root-style-output'
 import { collectMiniProgramSubpackageRoots } from './subpackages'
 import { handleUniAppXPostCssTasks } from './uni-app-x-postprocess'
 import { pruneLastCssResults, resolveViteCssTaskConcurrency } from './vite-css-cache'
@@ -150,31 +150,6 @@ function resolveRootMiniProgramOriginStyleFile(file: string) {
     return
   }
   return normalized.replace(/(\.[^.]+)$/, '-origin$1')
-}
-
-function resolveSingleCssImportOutputFile(targetFile: string, css: string) {
-  let importedFile: string | undefined
-  try {
-    const root = postcss.parse(css)
-    root.walkAtRules('import', (atRule) => {
-      if (importedFile !== undefined) {
-        return
-      }
-      const request = parseImportRequest(atRule.params)
-      if (!request || /^(?:https?:)?\/\//i.test(request) || request.startsWith('data:')) {
-        return
-      }
-      const cleanRequest = request.replace(/[?#].*$/, '')
-      if (!/\.(?:css|wxss|acss|ttss|qss|jxss|tyss)$/i.test(cleanRequest)) {
-        return
-      }
-      const targetDir = path.posix.dirname(normalizeOutputPathKey(targetFile))
-      importedFile = normalizeOutputPathKey(path.posix.join(targetDir === '.' ? '' : targetDir, cleanRequest))
-    })
-  }
-  catch {
-  }
-  return importedFile
 }
 
 export function normalizeRootMiniProgramImportShellAssets(

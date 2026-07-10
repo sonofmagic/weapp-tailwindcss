@@ -415,7 +415,7 @@ describe('vite processed css assets', () => {
     expect(pageCss).not.toContain('.duplicate')
   })
 
-  it('skips preserved mini-program import shells without a single root target', () => {
+  it('limits framework-owned import shell protection to root mini-program styles', () => {
     const records = new Map<string, any>([
       ['src/app.css', { css: '.generated{color:blue}', injectIntoMain: true, outputFile: 'pages/index.wxss' }],
     ])
@@ -431,8 +431,8 @@ describe('vite processed css assets', () => {
       createCssPipelineContext,
       getViteProcessedCssAssetResults: () => records.entries(),
       debug,
-    })).toBe(0)
-    expect(String((scopedImportBundle['pages/index.wxss'] as OutputAsset).source)).toBe('@import "./dep.wxss";')
+    })).toBe(1)
+    expect(String((scopedImportBundle['pages/index.wxss'] as OutputAsset).source)).toContain('.generated{color:blue}')
 
     debug.mockClear()
     const twoImportBundle: OutputBundle = {
