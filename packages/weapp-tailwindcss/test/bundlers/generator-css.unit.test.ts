@@ -227,7 +227,9 @@ describe('bundlers/shared generator css', () => {
         rawCss: [
           'html:not(#\\#){line-height:1.5}',
           '@layer utilities {',
-          '  .space-y-4:not(#\\#)>:not([hidden])~:not([hidden]){margin-top:calc((var(--spacing)*4)*(1 - var(--tw-space-y-reverse)))}',
+          '  .space-y-4:not(#\\#){&>:not([hidden])~:not([hidden]){margin-top:calc((var(--spacing)*4)*(1 - var(--tw-space-y-reverse)))}}',
+          '  .wx\\:bg-blue{@weapp-tw-ifdef "MP-WEIXIN"{&{background:blue}}}',
+          '  .not-wx\\:bg-red{@weapp-tw-ifndef "MP-WEIXIN"{&{background:red}}}',
           '}',
         ].join('\n'),
         target: 'weapp',
@@ -253,6 +255,7 @@ describe('bundlers/shared generator css', () => {
         cssPreflight: {
           border: '0 solid',
         },
+        platform: 'mp-weixin',
         generator: {
           target: 'weapp',
         },
@@ -274,14 +277,19 @@ describe('bundlers/shared generator css', () => {
       styleHandler,
       debug: vi.fn(),
       deferCssAdaptation: true,
+      generatorPlatform: 'mp-weixin',
     })
 
     expect(result?.css).toContain('@import "./vendor.css";')
-    expect(result?.css).toContain(':not([hidden])~:not([hidden])')
+    expect(result?.css).toMatch(/:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/)
     expect(result?.css).not.toContain(':not(#\\#)')
     expect(result?.css).not.toContain('@layer')
+    expect(result?.css).not.toContain('@weapp-tw-')
+    expect(result?.css).not.toContain('&')
     expect(result?.css).not.toContain('html')
     expect(result?.css).not.toContain('margin-top:adapted')
+    expect(result?.css).toContain('.wx\\:bg-blue')
+    expect(result?.css).not.toContain('.not-wx\\:bg-red')
     expect(result?.metadata?.preflightMode).toEqual({
       inject: true,
       preserve: true,

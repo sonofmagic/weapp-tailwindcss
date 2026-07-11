@@ -905,7 +905,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                               processed: true,
                             },
                       )!.css)
-                  const finalizedLoaderCss = finalizeCssAssetSource(mergedLoaderCss, {
+                  const handledLoaderCss = isWebGeneratorTarget
+                    ? mergedLoaderCss
+                    : (await compilerOptions.styleHandler(mergedLoaderCss, cssHandlerOptions)).css
+                  const finalizedLoaderCss = finalizeCssAssetSource(handledLoaderCss, {
                     cssPreflight: cssHandlerOptions.isMainChunk,
                     generatedCss: true,
                     preserveExistingPreflight: shouldPreserveExistingPreflight,

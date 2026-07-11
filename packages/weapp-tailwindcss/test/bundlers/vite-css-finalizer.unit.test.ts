@@ -380,8 +380,8 @@ describe('vite css finalizer output plugin', () => {
     expect(context.markCssAssetProcessed).toHaveBeenCalledWith(output, 'style.css')
   })
 
-  it('normalizes vite-processed css assets inside finalizer entries', async () => {
-    const { context } = createContext()
+  it('adapts vite-processed mini-program css after the framework postcss pipeline', async () => {
+    const { context, opts } = createContext()
     const plugin = createViteCssFinalizerOutputPlugin(context as any)
     const output = asset('app.wxss', [
       createBundlerGeneratedCssMarker('vite', 'src/app.css'),
@@ -395,9 +395,13 @@ describe('vite css finalizer output plugin', () => {
 
     await getHandler(plugin).call(plugin, {}, bundle)
 
-    expect(String(output.source)).toBe('.processed{color:red}')
+    expect(opts.styleHandler).toHaveBeenCalledWith('.processed{color:red}', expect.objectContaining({
+      isMainChunk: true,
+      majorVersion: 4,
+    }))
+    expect(String(output.source)).toBe('.processed{color:red}\n.handled{color:green}')
     expect(context.markCssAssetProcessed).toHaveBeenCalledWith(output, 'app.wxss')
-    expect(context.recordCssAssetResult).toHaveBeenCalledWith('app.wxss', '.processed{color:red}')
+    expect(context.recordCssAssetResult).toHaveBeenCalledWith('app.wxss', '.processed{color:red}\n.handled{color:green}')
     expect(context.debug).toHaveBeenCalledWith('css finalizer skip vite-processed css: %s', 'app.wxss')
   })
 

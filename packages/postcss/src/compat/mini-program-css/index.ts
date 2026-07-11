@@ -10,6 +10,7 @@ export {
   hoistTailwindPreflightBase,
 } from './finalize'
 export {
+  normalizeMiniProgramGeneratedCssForPostcss,
   pruneMiniProgramGeneratedCss,
   type PruneMiniProgramGeneratedCssOptions,
 } from './prune-generated'

@@ -18,6 +18,7 @@ export {
   finalizeMiniProgramCss,
   hasMiniProgramCssSpecificityPlaceholders,
   hoistTailwindPreflightBase,
+  normalizeMiniProgramGeneratedCssForPostcss,
   pruneMiniProgramGeneratedCss,
   removeUnsupportedAtSupports,
   removeUnsupportedCascadeLayers,

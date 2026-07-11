@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createStyleHandler, finalizeMiniProgramCss, pruneMiniProgramGeneratedCss } from '../src'
+import { createStyleHandler, finalizeMiniProgramCss, normalizeMiniProgramGeneratedCssForPostcss, pruneMiniProgramGeneratedCss } from '../src'
 
 describe('mini-program generated css cleanup', () => {
   it('preserves statement at-rules while removing empty block at-rules', () => {
@@ -483,6 +483,25 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('.space-y-4{')
     expect(css).toContain(':where(& > :not(:last-child))')
     expect(css).toContain('margin-top:calc(var(--spacing)*4)')
+  })
+
+  it('flattens Tailwind nested variants before handing generated css to framework postcss', async () => {
+    const css = await normalizeMiniProgramGeneratedCssForPostcss([
+      '@layer utilities {',
+      '.dark\\:bg-zinc-900:not(#\\#){&.theme-dark,.theme-dark &{background:black}}',
+      '.system-dark\\:bg-slate-900:not(#\\#){@media (prefers-color-scheme: dark){&{background:navy}}}',
+      '}',
+    ].join(''), {
+      preserveRawClassRules: true,
+    })
+
+    expect(css).not.toContain('@layer')
+    expect(css).not.toContain(':not(#\\#)')
+    expect(css).not.toContain('&')
+    expect(css).toContain('.dark\\:bg-zinc-900.theme-dark')
+    expect(css).toContain('.theme-dark .dark\\:bg-zinc-900')
+    expect(css).toContain('@media (prefers-color-scheme: dark)')
+    expect(css).toContain('.system-dark\\:bg-slate-900')
   })
 
   it('removes Tailwind container max-width media rules from pruned generated css', () => {

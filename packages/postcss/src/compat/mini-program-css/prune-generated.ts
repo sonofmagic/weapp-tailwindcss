@@ -1,4 +1,5 @@
 import postcss from 'postcss'
+import postcssPresetEnv from 'postcss-preset-env'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../mini-program-prefixes'
 import { removeUnsupportedCascadeLayers } from './at-rules'
 import {
@@ -21,6 +22,25 @@ export interface PruneMiniProgramGeneratedCssOptions {
   preservePreflight?: boolean
   preserveConditionalComments?: boolean
   preserveRawClassRules?: boolean
+}
+
+/**
+ * 在交给框架 PostCSS 前展开 Tailwind 生成的嵌套规则，并裁剪 Web-only 结构。
+ */
+export async function normalizeMiniProgramGeneratedCssForPostcss(
+  css: string,
+  options: PruneMiniProgramGeneratedCssOptions = {},
+) {
+  const result = await postcss([
+    postcssPresetEnv({
+      stage: false,
+      features: {
+        'nesting-rules': true,
+      },
+      autoprefixer: false,
+    }),
+  ]).process(css, { from: undefined })
+  return pruneMiniProgramGeneratedCss(result.css, options)
 }
 
 function isConditionalCompilationComment(text: string) {

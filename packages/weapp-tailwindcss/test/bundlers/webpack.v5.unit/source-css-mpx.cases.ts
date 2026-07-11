@@ -275,7 +275,10 @@ describe('bundlers/webpack WeappTailwindcss / registered source css mpx main', (
 
     expect(assetStore['app.wxss']?.match(/\.test-class/g)).toHaveLength(1)
     expect(assetStore['pages/component/index.wxss']).not.toContain('.test-class')
-    expect(testState.currentContext.styleHandler).not.toHaveBeenCalled()
+    expect(testState.currentContext.styleHandler).toHaveBeenCalledWith(
+      expect.stringContaining('.test-class'),
+      expect.objectContaining({ isMainChunk: true, majorVersion: 4 }),
+    )
   })
 
   it('does not treat mpx page css assets as main css when runtime resources include the app css entry', async () => {

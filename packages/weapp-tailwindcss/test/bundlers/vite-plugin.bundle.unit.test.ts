@@ -831,7 +831,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       },
     ])
     expect(refreshTailwindcssRuntime).toHaveBeenCalledTimes(2)
-    expect(String((result as any)?.code)).toContain('/* generated */')
+    expect(String((result as any)?.code)).toContain('weapp-tailwindcss vite-generated-css')
   })
 
   it('normalizes relative @config directives for css assets that lost their source directory in generateBundle', async () => {

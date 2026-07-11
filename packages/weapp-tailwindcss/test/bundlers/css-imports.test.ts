@@ -304,6 +304,7 @@ describe('bundlers/shared css-imports', () => {
       rawSource: expect.stringContaining('@import "tailwindcss" source(none);'),
       file: '/repo/website/src/css/custom.css',
       outputFile: '/repo/website/src/css/custom.css',
+      deferCssAdaptation: true,
       cssHandlerOptions: expect.objectContaining({
         isMainChunk: true,
       }),

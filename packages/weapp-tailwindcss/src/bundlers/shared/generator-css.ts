@@ -2,12 +2,13 @@ import type { GeneratorResolvedSource } from './generator-css/source-resolver'
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css/types'
 import process from 'node:process'
 import { extractSourceCandidates } from '@tailwindcss-mangle/engine'
-import { filterExistingCssRules, postcss, transformWebCssCompat } from '@weapp-tailwindcss/postcss'
+import { filterExistingCssRules, normalizeMiniProgramGeneratedCssForPostcss, postcss, transformWebCssCompat } from '@weapp-tailwindcss/postcss'
+import { hasCssMacroStyleOptions, hasCssMacroTailwindV4InternalAtRules, transformCssMacroCss } from '@/css-macro/auto'
 import { createWeappTailwindcssGenerator, normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { includesTailwindV4PreflightDirective } from '@/tailwindcss/v4/preflight'
-import { pruneMiniProgramGeneratedCss, removeUnsupportedMiniProgramAtRules } from './css-cleanup'
+import { removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 import { collectGeneratedRawSourceCandidates } from './generator-css/class-selectors'
 import { hasTailwindApplyDirective, hasTailwindSourceDirectives, normalizeTailwindSourceDirectives, removeTailwindSourceDirectives } from './generator-css/directives'
 import { createCssSourceOrderAppend, createRuntimeWithCurrentCssCandidates, finalizeMiniProgramGeneratorCss, isEmptyCssSourceOrderParts, mergeGeneratorResults, mergeScopedRuntimeWithCurrentRuntime, resolveGeneratorStyleOptions, resolveMiniProgramPreflightModeForGeneratorCss, shouldAppendWebBundleCssFallback, shouldFinalizeMarkedUserLayerComponentsCss, shouldIsolateCurrentTailwindV4CssCandidates, shouldIsolateScopedCssSource, shouldScanTailwindV4Sources, shouldUseGeneratorForCurrentCss, splitRawSourceByGeneratedCssOrder } from './generator-css/generation-helpers'
@@ -580,13 +581,29 @@ export async function generateCssByGenerator(
       primaryCssSource: hasOnlyPrimaryCssSource || hasPreflightCssSource || hasPreflightRawSource,
     })
     if (options.deferCssAdaptation) {
-      const rawGeneratedCss = stripTailwindBanner(generated.rawCss)
-      const intermediateCss = generated.target === 'weapp'
-        ? pruneMiniProgramGeneratedCss(rawGeneratedCss, {
-            preservePreflight: true,
-            preserveRawClassRules: true,
-          })
-        : rawGeneratedCss
+      const normalizeDeferredGeneratedCss = async (css: string) => {
+        const rawCss = stripTailwindBanner(css)
+        const generationCss = generated.target === 'weapp'
+          && (hasCssMacroStyleOptions(generatorStyleOptions) || hasCssMacroTailwindV4InternalAtRules(rawCss))
+          ? await transformCssMacroCss(rawCss, generatorStyleOptions)
+          : rawCss
+        return generated.target === 'weapp'
+          ? normalizeMiniProgramGeneratedCssForPostcss(generationCss, {
+              preservePreflight: true,
+              preserveRawClassRules: true,
+            })
+          : generationCss
+      }
+      const canAppendIncrementalCss = generated.target !== 'weapp' || !hasUserCssLayerBlocks(generatorRawSource)
+      const incrementalRawCss = generated.incrementalRawCss ?? generated.incrementalCss
+      const shouldAppendIncrementalCss = canAppendIncrementalCss
+        && typeof options.previousCss === 'string'
+        && typeof incrementalRawCss === 'string'
+      const intermediateCss = shouldAppendIncrementalCss
+        ? incrementalRawCss.trim().length > 0
+          ? createCssAppend(options.previousCss, await normalizeDeferredGeneratedCss(incrementalRawCss))
+          : options.previousCss
+        : await normalizeDeferredGeneratedCss(generated.rawCss ?? generated.css)
       const css = restoreLocalCssImports(
         intermediateCss,
         localImports,
@@ -605,6 +622,7 @@ export async function generateCssByGenerator(
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
+        incremental: shouldAppendIncrementalCss,
         metadata: {
           file,
           majorVersion,

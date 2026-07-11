@@ -1137,6 +1137,7 @@ export function createViteFrameworkPlugins(
         ? generatedClassSetByFile.get(fileKey)
         : undefined,
       deferEmptyScopedCssSource: shouldDeferEmptyScopedCssSource,
+      deferCssAdaptation: !currentGeneratorBranch.isWeb,
       disableSourceScan: false,
       restoreLocalCssImports: !currentGeneratorBranch.isWeb,
     }), {

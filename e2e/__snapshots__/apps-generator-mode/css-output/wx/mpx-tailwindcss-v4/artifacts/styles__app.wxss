@@ -7,32 +7,25 @@ text,
   margin: 0;
   padding: 0;
   --tw-space-y-reverse: 0;
-  --tw-divide-x-reverse: 0;
   --tw-border-style: solid;
+  --tw-divide-x-reverse: 0;
   --tw-gradient-position: initial;
-  --tw-gradient-from: transparent;
-  --tw-gradient-via: transparent;
-  --tw-gradient-to: transparent;
+  --tw-gradient-from: #0000;
+  --tw-gradient-to: #0000;
   --tw-gradient-stops: initial;
   --tw-gradient-from-position: 0%;
-  --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
-  --tw-leading: initial;
-  --tw-font-weight: initial;
-  --tw-shadow: 0 0 transparent;
+  --tw-font-weight:;
+  --tw-leading:;
+  --tw-shadow: 0 0 #0000;
   --tw-shadow-color: initial;
-  --tw-shadow-alpha: 100%;
-  --tw-inset-shadow: 0 0 transparent;
-  --tw-inset-shadow-color: initial;
-  --tw-inset-shadow-alpha: 100%;
-  --tw-ring-color: initial;
-  --tw-ring-shadow: 0 0 transparent;
-  --tw-inset-ring-color: initial;
-  --tw-inset-ring-shadow: 0 0 transparent;
-  --tw-ring-inset: initial;
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-ring-color:;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-inset:;
   --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-offset-shadow: 0 0 transparent;
+  --tw-ring-offset-shadow: 0 0 #0000;
   --tw-content: '';
 }
  /* tokens: tw-root <= src/custom-tab-bar/index.mpx */
@@ -40,7 +33,7 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --font-sans: 'inter', 'inter Fallback', system-ui;
+  --font-sans: 'inter', 'inter Fallback', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
   --font-mono: var(--font-plex-mono), monospace;
   --color-red-500: #fb2c36;
   --color-green-500: #00c758;
@@ -61,15 +54,15 @@ wx-root-portal-content {
   --color-slate-700: #314158;
   --color-zinc-950: #09090b;
   --color-black: #000;
-  --spacing: 0.25rem;
-  --text-base: 1rem;
+  --spacing: 8rpx;
+  --text-base: 32rpx;
   --text-base--line-height: 1.5;
   --text-2xl: 48rpx;
   --text-2xl--line-height: 1.33333;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --radius-md: 12rpx;
-  --default-font-family: var(--font-inter), system-ui;
+  --default-font-family: var(--font-inter), system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
   --default-mono-font-family: var(--font-plex-mono), monospace;
   --test-color: #006241;
   --color-test: #006241;
@@ -88,7 +81,7 @@ wx-root-portal-content {
   --color-gray-900: #101828;
   --color-neutral-900: #171717;
   --color-stone-900: #1c1917;
-  --radius-lg: 0.5rem;
+  --radius-lg: 16rpx;
 }
  /* tokens: -mt-2 <= src/pages/index.mpx */
 .-mt-2 {
@@ -267,56 +260,60 @@ wx-root-portal-content {
   gap: calc(var(--spacing) * 3);
 }
  /* tokens: space-y-2 <= src/pages/index.mpx */
-.space-y-2 > text + text,
-.space-y-2 > text + view,
+.space-y-2 > view + view,
 .space-y-2 > view + text,
-.space-y-2 > view + view {
+.space-y-2 > text + view,
+.space-y-2 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc((var(--spacing) * 2) * var(--tw-space-y-reverse));
-  margin-top: calc((var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(var(--spacing) * 2 * 1);
+  margin-top: calc(var(--spacing) * 2 * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(var(--spacing) * 2 * 0);
+  margin-bottom: calc(var(--spacing) * 2 * var(--tw-space-y-reverse));
 }
  /* tokens: space-y-4 <= src/pages/index.mpx */
-.space-y-4 > text + text,
-.space-y-4 > text + view,
+.space-y-4 > view + view,
 .space-y-4 > view + text,
-.space-y-4 > view + view {
+.space-y-4 > text + view,
+.space-y-4 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
-  margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(var(--spacing) * 4 * 1);
+  margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(var(--spacing) * 4 * 0);
+  margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
 }
  /* tokens: space-y-[1.6rem] <= src/pages/index.mpx */
-.space-y-_b1_d6rem_B > text + text,
-.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > view + view,
 .space-y-_b1_d6rem_B > view + text,
-.space-y-_b1_d6rem_B > view + view {
+.space-y-_b1_d6rem_B > text + view,
+.space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
  /* tokens: divide-x-[10px] <= src/pages/index.mpx */
-.divide-x-_b10px_B > text + text,
-.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > view + view,
 .divide-x-_b10px_B > view + text,
-.divide-x-_b10px_B > view + view {
+.divide-x-_b10px_B > text + view,
+.divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
-  border-left-style: var(--tw-border-style);
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
-  border-right-style: var(--tw-border-style);
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
+  border-left-style: var(--tw-border-style);
+  border-right-style: var(--tw-border-style);
 }
  /* tokens: divide-solid <= src/pages/index.mpx */
-.divide-solid > text + text,
-.divide-solid > text + view,
+.divide-solid > view + view,
 .divide-solid > view + text,
-.divide-solid > view + view {
+.divide-solid > text + view,
+.divide-solid > text + text {
   --tw-border-style: solid;
   border-style: solid;
 }
  /* tokens: divide-[#010101] <= src/pages/index.mpx */
-.divide-_b_h010101_B > text + text,
-.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > view + view,
 .divide-_b_h010101_B > view + text,
-.divide-_b_h010101_B > view + view {
+.divide-_b_h010101_B > text + view,
+.divide-_b_h010101_B > text + text {
   border-color: #010101;
 }
  /* tokens: rounded <= src/pages/index.mpx */
@@ -522,28 +519,28 @@ wx-root-portal-content {
 }
  /* tokens: py-1 <= src/pages/index.mpx */
 .py-1 {
-  padding-bottom: var(--spacing);
   padding-top: var(--spacing);
+  padding-bottom: var(--spacing);
 }
  /* tokens: py-2 <= src/pages/index.mpx */
 .py-2 {
-  padding-bottom: calc(var(--spacing) * 2);
   padding-top: calc(var(--spacing) * 2);
+  padding-bottom: calc(var(--spacing) * 2);
 }
  /* tokens: py-3 <= src/pages/index.mpx */
 .py-3 {
-  padding-bottom: calc(var(--spacing) * 3);
   padding-top: calc(var(--spacing) * 3);
+  padding-bottom: calc(var(--spacing) * 3);
 }
  /* tokens: py-[10rpx] <= src/app.css */
 .py-_b10rpx_B {
-  padding-bottom: 10rpx;
   padding-top: 10rpx;
+  padding-bottom: 10rpx;
 }
  /* tokens: py-[24rpx] <= src/pages/index.mpx */
 .py-_b24rpx_B {
-  padding-bottom: 24rpx;
   padding-top: 24rpx;
+  padding-bottom: 24rpx;
 }
  /* tokens: text-2xl <= src/pages/index.mpx */
 .text-2xl {
@@ -781,12 +778,55 @@ wx-root-portal-content {
   align-items: center;
   background-image: linear-gradient(var(--tw-gradient-stops));
   border-radius: 20rpx;
+  font-size: 26rpx;
   color: var(--color-white);
   display: inline-flex;
-  font-size: 26rpx;
   font-weight: var(--font-weight-semibold);
   gap: calc(var(--spacing) * 2);
-  padding: 10rpx 18rpx;
+  padding-top: 10rpx;
+  padding-bottom: 10rpx;
+  padding-left: 18rpx;
+  padding-right: 18rpx;
+}
+ /* tokens: tw-root <= src/custom-tab-bar/index.mpx */
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --test-color: #006241;
+  --color-test: #006241;
+  --font-test: 'Issue 978', sans-serif;
+  --font-sans: 'inter', 'inter Fallback', system-ui;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-mono: var(--font-plex-mono), monospace;
+  --color-red-500: #fb2c36;
+  --color-green-500: #00c758;
+  --color-blue-500: #3080ff;
+  --color-slate-900: #0f172b;
+  --color-white: #fff;
+  --color-zinc-900: rgb(24, 24, 27);
+  --color-red-50: #fef2f2;
+  --color-red-950: #460809;
+  --color-orange-500: #fe6e00;
+  --color-amber-500: #f99c00;
+  --color-yellow-500: #edb200;
+  --color-lime-500: #80cd00;
+  --color-teal-500: #00baa7;
+  --color-sky-500: #00a5ef;
+  --color-indigo-500: #625fff;
+  --color-violet-500: #8d54ff;
+  --color-purple-500: #ac4bff;
+  --color-pink-500: #f6339a;
+  --color-gray-900: #101828;
+  --color-neutral-900: #171717;
+  --color-stone-900: #1c1917;
+  --color-black: #000;
+  --spacing: 0.25rem;
+  --text-base: 1rem;
+  --font-weight-bold: 700;
+  --radius-lg: 0.5rem;
+  --default-font-family: var(--font-inter), system-ui;
+  --default-mono-font-family: var(--font-plex-mono), monospace;
 }
 button::after,
 wx-button::after {

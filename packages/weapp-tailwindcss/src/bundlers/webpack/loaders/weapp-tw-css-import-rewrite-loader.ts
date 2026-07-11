@@ -18,7 +18,7 @@ import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
-import { collectWebpackBareSelectorUserCss, finalizeMiniProgramUserCssAssetSource, finalizeWebpackCssAssetSource } from '../BaseUnifiedPlugin/v5-assets/pipeline-helpers'
+import { collectWebpackBareSelectorUserCss } from '../BaseUnifiedPlugin/v5-assets/pipeline-helpers'
 import { getWebpackLoaderRuntime } from './runtime-registry'
 import { registerWebpackWatchFile } from './watch-dependencies'
 
@@ -202,6 +202,7 @@ export async function generateCssForWebpackPipeline(
     },
     styleHandler: compilerOptions.styleHandler,
     debug: () => undefined,
+    deferCssAdaptation: generatorTarget !== 'web',
   })
   if (!generated) {
     return undefined
@@ -211,19 +212,10 @@ export async function generateCssForWebpackPipeline(
     registerWebpackWatchFile(loaderContext, dependency)
   }
   const generatedCss = removeTailwindSourceDirectives(generated.css, { importFallback: true })
-  const finalizedGeneratedCss = finalizeWebpackCssAssetSource(generatedCss, compilerOptions, generatorTarget === 'web', {
-    cssPreflight: cssHandlerOptions.isMainChunk,
-    generatedCss: true,
-  })
   const bareUserCss = generatorTarget === 'web' ? '' : collectWebpackBareSelectorUserCss(normalizedSource)
-  const finalizedBareUserCss = bareUserCss.trim().length === 0
+  const missingBareUserCss = bareUserCss.trim().length === 0
     ? ''
-    : finalizeMiniProgramUserCssAssetSource(bareUserCss, compilerOptions, generatorTarget === 'web', {
-        cssPreflight: false,
-      })
-  const missingBareUserCss = finalizedBareUserCss.trim().length === 0
-    ? ''
-    : filterExistingCssRules(finalizedGeneratedCss, finalizedBareUserCss)
+    : filterExistingCssRules(generatedCss, bareUserCss)
   const css = missingBareUserCss.trim().length === 0
     ? generatedCss
     : `${generatedCss}\n${missingBareUserCss}`

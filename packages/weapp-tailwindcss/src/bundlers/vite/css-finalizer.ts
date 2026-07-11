@@ -424,14 +424,27 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           const file = output.fileName || bundleFile
           const rawSource = output.source.toString()
           if (isViteProcessedCssAsset?.(output, file)) {
-            const nextCss = annotateCss(finalizeWebCss(
-              stripBundlerGeneratedCssMarkers(rawSource),
-              {
+            const cleanRawSource = stripBundlerGeneratedCssMarkers(rawSource)
+            const cssHandlerOptions = createCssHandlerOptions(
+              opts,
+              runtimeState.tailwindRuntime.majorVersion,
+              file,
+              outDir,
+              cssPipelineStrategy?.getCssHandlerExtraOptions?.({
                 ...createCssPipelineContext(file),
                 file,
-              },
-              cssPipelineStrategy,
-            ))
+              }) ?? {},
+            )
+            const nextCss = annotateCss(generatorBranch.isWeb
+              ? finalizeWebCss(
+                  cleanRawSource,
+                  {
+                    ...createCssPipelineContext(file),
+                    file,
+                  },
+                  cssPipelineStrategy,
+                )
+              : (await opts.styleHandler(cleanRawSource, cssHandlerOptions)).css)
             output.source = nextCss
             markCssAssetProcessed(output, file)
             recordCssAssetResult?.(file, nextCss)
