@@ -7,7 +7,7 @@ import type { InternalUserDefinedOptions, TailwindcssRuntimeLike } from '@/types
 import path from 'node:path'
 import process from 'node:process'
 import { MappingChars2String } from '@weapp-core/escape'
-import { filterExistingCssRules, postcss, removeUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
+import { dedupeCoveredCssRules, filterExistingCssRules, mergeCoveredCssRuleDeclarations, postcss, removeUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
 import { resolveStyleOptionsFromContext } from '@/context/style-options'
 import { getDefaultCssPreflight } from '@/defaults'
 import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
@@ -1001,8 +1001,14 @@ export function createWebpackGeneratorUserCssSourceAppend(
   let css = ''
   const usedParts: WebpackGeneratorUserCssSource[] = []
   for (const source of parts) {
+    const merged = css.trim().length > 0
+      ? mergeCoveredCssRuleDeclarations(css, source.css)
+      : undefined
+    if (merged?.changed) {
+      css = merged.baseCss
+    }
     const nextCss = css.trim().length > 0
-      ? filterExistingCssRules(css, source.css)
+      ? filterExistingCssRules(css, merged?.css ?? source.css)
       : source.css
     const hasNextCss = nextCss.trim().length > 0
     if (!hasNextCss) {
@@ -1384,7 +1390,7 @@ export function finalizeWebpackCssAssetOutputSource(
   const styleOptions = resolveStyleOptionsFromContext(compilerOptions)
   return stripMiniProgramCssSpecificityPlaceholders(
     removeMiniProgramHoverSelectors(
-      dedupeMiniProgramPreflightSelectorRules(source),
+      dedupeCoveredCssRules(dedupeMiniProgramPreflightSelectorRules(source)),
       styleOptions.cssRemoveHoverPseudoClass,
     ),
   )

@@ -55,6 +55,13 @@ describe('e2e', () => {
     expect(subNormalCss).not.toContain('.bg-independent-subpackage-marker')
     expect(subIndependentCss).toContain('.bg-independent-subpackage-marker')
     expect(subIndependentCss).not.toContain('.bg-normal-subpackage-marker')
+    const independentContentSelector = '.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B::before'
+    expect(subIndependentCss.split(independentContentSelector)).toHaveLength(2)
+    const contentRuleStart = subIndependentCss.indexOf(independentContentSelector)
+    const contentRule = subIndependentCss.slice(contentRuleStart, subIndependentCss.indexOf('}', contentRuleStart))
+    const literalContent = 'content: \'independent subpackage taro-webpack-vue3-tailwindcss-v4\';'
+    expect(contentRule).toContain(literalContent)
+    expect(contentRule.indexOf(literalContent)).toBeLessThan(contentRule.indexOf('content: var(--tw-content)'))
   })
 
   it('does not emit Tailwind CSS v4 empty content init for v4 output', async () => {

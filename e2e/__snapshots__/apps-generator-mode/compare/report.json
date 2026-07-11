@@ -141,7 +141,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 30771,
+      "bytes": 30687,
       "selectors": [
         ".-mt-2",
         "._2xl_ctext-base",
@@ -364,7 +364,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 303010,
+      "bytes": 302680,
       "selectors": [
         ".-bg-conic-180",
         ".-bg-linear-65",
@@ -4985,7 +4985,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 244358,
+      "bytes": 244031,
       "selectors": [
         "._ebg-_bgray_B",
         ".after_c_econtent-_b_agood_work_e_a_B:after",
@@ -11258,7 +11258,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 422373,
+      "bytes": 421477,
       "selectors": [
         "*",
         ".-bg-conic-180",
@@ -18238,7 +18238,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 588706,
+      "bytes": 588617,
       "selectors": [
         "&.theme-dark",
         "&:after",
@@ -20075,7 +20075,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 578860,
+      "bytes": 578685,
       "selectors": [
         "*",
         ".\\!bg-\\[gray\\]",

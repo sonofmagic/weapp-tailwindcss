@@ -295,10 +295,14 @@ input:where([type='button'], [type='reset'], [type='submit']),
  /*tokens: flex-col <= src/pages/index/index.vue */
 .flex-col {
   flex-direction: column;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
 }
  /*tokens: items-center <= src/app.css */
 .items-center {
   align-items: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
 }
  /*tokens: gap-2 <= src/app.css */
 .gap-2 {
@@ -1737,18 +1741,6 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']) {
  /*tokens: w-32 <= src/pages/index/index.vue */
 .w-32 {
   width: calc(var(--spacing) * 32);
-}
- /*tokens: flex-col <= src/pages/index/index.vue */
-.flex-col {
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-}
- /*tokens: items-center <= src/app.css */
-.items-center {
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
 }
  /*tokens: gap-2 <= src/app.css */
 .gap-2 {

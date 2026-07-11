@@ -809,12 +809,6 @@ wx-root-portal-content {
   padding-left: 18rpx;
   padding-right: 18rpx;
 }
-button::after,
-wx-button::after {
-  border: none;
-  content: '';
-  display: none;
-}
 wx-button {
   background: #000;
   background: #444;

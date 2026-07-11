@@ -188,6 +188,7 @@ export {
 export * from './types'
 export {
   containsCssAfterMinify,
+  dedupeCoveredCssRules,
   filterExistingCssRules,
   mergeCoveredCssRuleDeclarations,
   mergeMiniProgramPreflightRuleDeclarations,

@@ -288,6 +288,8 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .rotate-x-45 {
   --tw-rotate-x: rotateX(45deg);
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+  -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
  /*tokens: -rotate-y-45 <= src/pages/issue-909/index.tsx */
 .-rotate-y-45 {
@@ -298,16 +300,22 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .rotate-y-45 {
   --tw-rotate-y: rotateY(45deg);
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+  -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
  /*tokens: rotate-y-90 <= src/pages/issue-909/index.tsx */
 .rotate-y-90 {
   --tw-rotate-y: rotateY(90deg);
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+  -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
  /*tokens: rotate-z-45 <= src/pages/issue-909/index.tsx */
 .rotate-z-45 {
   --tw-rotate-z: rotateZ(45deg);
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+  -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
  /*tokens: rounded <= src/pages/index/index.tsx */
 .rounded {
@@ -1009,37 +1017,9 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']) {
 .w-28 {
   width: calc(var(--spacing) * 28);
 }
- /*tokens: rotate-x-45 <= src/pages/issue-909/index.tsx */
-.rotate-x-45 {
-  --tw-rotate-x: rotateX(45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
-  -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
-  transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
-}
  /*tokens: -rotate-y-45 <= src/pages/issue-909/index.tsx */
 .-rotate-y-45 {
   --tw-rotate-y: rotateY(-45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
-  -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
-  transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
-}
- /*tokens: rotate-y-45 <= src/pages/issue-909/index.tsx */
-.rotate-y-45 {
-  --tw-rotate-y: rotateY(45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
-  -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
-  transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
-}
- /*tokens: rotate-y-90 <= src/pages/issue-909/index.tsx */
-.rotate-y-90 {
-  --tw-rotate-y: rotateY(90deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
-  -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
-  transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
-}
- /*tokens: rotate-z-45 <= src/pages/issue-909/index.tsx */
-.rotate-z-45 {
-  --tw-rotate-z: rotateZ(45deg);
   -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
