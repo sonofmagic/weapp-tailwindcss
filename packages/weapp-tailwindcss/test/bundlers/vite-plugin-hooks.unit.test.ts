@@ -475,7 +475,10 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
 
   it('generates build css in a pre transform before Vite PostCSS and asset finalization', async () => {
     const context = createContext({
-      appType: 'uni-app',
+      appType: 'h5',
+      generator: {
+        target: 'web',
+      },
       tailwindcssBasedir: '/project',
     })
     setCurrentContext(context)
@@ -487,7 +490,7 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
       root: '/project',
       plugins: [{ name: 'vite:css' }],
       css: { postcss: { plugins: [] } },
-      build: { outDir: 'dist/dev/mp-weixin' },
+      build: { outDir: 'dist/web' },
     } as ResolvedConfig)
 
     const sourcePluginIndex = plugins.findIndex(plugin => plugin.name === `${vitePluginName}:source-candidates`)
@@ -536,6 +539,33 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
 
     expect(mocks.generateTailwindV4Css).toHaveBeenCalledTimes(1)
     expect(output.source).not.toContain('weapp-tailwindcss vite-generated-css')
+  })
+
+  it('keeps mini-program build css generation in the final asset pipeline', async () => {
+    setCurrentContext(createContext({
+      appType: 'uni-app',
+      tailwindcssBasedir: '/project',
+    }))
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()!
+    const postPlugin = getPlugin(plugins, 'post')
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: '/project',
+      plugins: [{ name: 'vite:css' }],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/dev/mp-weixin' },
+    } as ResolvedConfig)
+
+    const buildPlugin = getPlugin(plugins, 'generate:build')
+    const result = await getTransformHandler(buildPlugin)?.call(
+      { addWatchFile: vi.fn() },
+      '.card { @apply flex; }',
+      '/project/src/card.css',
+    )
+
+    expect(result).toBeUndefined()
+    expect(mocks.generateTailwindV4Css).not.toHaveBeenCalled()
   })
 
   it('regenerates uni-app-vite root css after vue template hmr adds named arbitrary colors', async () => {

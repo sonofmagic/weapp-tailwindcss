@@ -11,12 +11,13 @@ text,
   --tw-border-style: solid;
   --tw-font-weight:;
   --tw-leading:;
+  --tw-content: '';
 }
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
-  --font-sans: 'inter', 'inter Fallback', system-ui;
+  --font-sans: 'inter', 'inter Fallback', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
   --font-mono: var(--font-plex-mono), monospace;
   --color-slate-900: #0f172b;
   --color-white: #fff;
@@ -24,16 +25,16 @@ wx-root-portal-content {
   --color-zinc-900: rgb(24, 24, 27);
   --color-slate-100: rgb(241, 245, 249);
   --color-zinc-950: rgb(9, 9, 11);
-  --spacing: 0.25rem;
+  --spacing: 8rpx;
   --text-xs: 24rpx;
   --text-xs--line-height: 1.33333;
-  --text-base: 1rem;
+  --text-base: 32rpx;
   --text-base--line-height: 1.5;
   --text-lg: 36rpx;
   --text-lg--line-height: 1.55556;
   --font-weight-medium: 500;
   --font-weight-bold: 700;
-  --default-font-family: var(--font-inter), system-ui;
+  --default-font-family: var(--font-inter), system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
   --default-mono-font-family: var(--font-plex-mono), monospace;
   --test-color: #006241;
   --color-test: #006241;
@@ -55,7 +56,7 @@ wx-root-portal-content {
   --color-neutral-900: #171717;
   --color-stone-900: #1c1917;
   --color-black: #000;
-  --radius-lg: 0.5rem;
+  --radius-lg: 16rpx;
 }
  /* tokens: m-[20px] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .m-_b20px_B {
@@ -187,7 +188,9 @@ wx-root-portal-content {
 .space-y-1 > text + view,
 .space-y-1 > text + text {
   --tw-space-y-reverse: 0;
+  margin-bottom: calc(var(--spacing) * 0);
   margin-bottom: calc(var(--spacing) * var(--tw-space-y-reverse));
+  margin-top: calc(var(--spacing) * 1);
   margin-top: calc(var(--spacing) * (1 - var(--tw-space-y-reverse)));
 }
  /* tokens: space-y-4 <= src/pages/index/index.ttml, src/pages/index/index.wxml */
@@ -196,9 +199,13 @@ wx-root-portal-content {
 .space-y-4 > text + view,
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
+  margin-bottom: calc((var(--spacing) * 4) * 0);
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
+  margin-bottom: calc(var(--spacing) * 4 * 0);
   margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
+  margin-top: calc((var(--spacing) * 4) * 1);
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(var(--spacing) * 4 * 1);
   margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
 }
  /* tokens: space-y-[2rem] <= src/pages/more/more.ttml */
@@ -400,22 +407,39 @@ wx-root-portal-content {
   align-items: center;
   gap: 8rpx;
   color: var(--weapp-tw-user-ui-color, #175e75);
+  -webkit-animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
   animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
 }
 .weapp-tw-user-ui-loading {
   display: inline-block;
   width: 32rpx;
   height: 32rpx;
+  -webkit-animation: weappTwUserUiRotation 1s linear infinite;
   animation: weappTwUserUiRotation 1s linear infinite;
+}
+@-webkit-keyframes weappTwUserUiRotation {
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }
 @keyframes weappTwUserUiRotation {
   to {
+    -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    -webkit-transform: scale(0.96);
+    transform: scale(0.96);
   }
 }
 @keyframes weappTwUserUiBreathe {
   50% {
     opacity: 0.65;
+    -webkit-transform: scale(0.96);
     transform: scale(0.96);
   }
 }

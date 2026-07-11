@@ -426,8 +426,11 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
     }
   }
 
-  const transformWxss = (options: Partial<IStyleHandlerOptions> = {}) =>
-    createVinylTransform('css', async (file) => {
+  function createWxssTransform(
+    options: Partial<IStyleHandlerOptions>,
+    stage: 'generate' | 'transform',
+  ) {
+    return createVinylTransform(`css:${stage}`, async (file) => {
       if (!file.contents) {
         return
       }
@@ -452,8 +455,8 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
         : undefined
       const styleOutputExtension = resolveGulpStyleOutputExtension(file)
       const outputSignature = styleOutputExtension
-        ? `gulp-output:1:${styleOutputExtension}`
-        : 'gulp-output:0'
+        ? `gulp-output:1:${stage}:${styleOutputExtension}`
+        : `gulp-output:0:${stage}`
       await processCachedTask<string>({
         cache,
         cacheKey: file.path,
@@ -485,9 +488,11 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
             opts,
             tokenSources: sourceTraceTokenSources,
           })
-          const outputCss = rewriteLocalCssImportRequestsForOutput(css, {
-            styleOutputExtension,
-          })
+          const outputCss = stage === 'generate'
+            ? css
+            : rewriteLocalCssImportRequestsForOutput(css, {
+                styleOutputExtension,
+              })
           debug('css handle: %s', file.path)
           return {
             result: outputCss,
@@ -496,7 +501,26 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
       })
       rememberGulpProcessCacheKey(gulpProcessCacheKeys, file.path)
       pruneGulpProcessCache(cache, gulpProcessCacheKeys)
-    }, () => resolveGulpTransformTimingDetails('css'))
+    }, () => resolveGulpTransformTimingDetails(`css:${stage}`))
+  }
+
+  // 显式生成阶段保留源码 import，交给后续 gulp-postcss 解析。
+  const generateWxss = (options: Partial<IStyleHandlerOptions> = {}) => createWxssTransform(options, 'generate')
+  const transformWxss = (options: Partial<IStyleHandlerOptions> = {}) => createWxssTransform(options, 'transform')
+  const adaptWxss = (options: Partial<IStyleHandlerOptions> = {}) =>
+    createVinylTransform('css:adapt', async (file) => {
+      if (!file.contents) {
+        return
+      }
+      const rawSource = file.contents.toString()
+      const styleOutputExtension = resolveGulpStyleOutputExtension(file)
+      const cssHandlerOptions = resolveWxssFileHandlerOptions(file, rawSource, options)
+      const handled = await styleHandler(rawSource, cssHandlerOptions)
+      file.contents = Buffer.from(rewriteLocalCssImportRequestsForOutput(handled.css, {
+        styleOutputExtension,
+      }))
+      debug('css adapt: %s', file.path)
+    }, () => resolveGulpTransformTimingDetails('css:adapt'))
 
   const transformJs = (options: Partial<CreateJsHandlerOptions> = {}) =>
     createVinylTransform('js', async (file) => {
@@ -583,6 +607,8 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
     }, () => resolveGulpTransformTimingDetails('html'))
 
   return {
+    adaptWxss,
+    generateWxss,
     transformWxss,
     transformWxml,
     transformJs,

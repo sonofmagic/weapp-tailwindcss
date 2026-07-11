@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { LoaderModule } from './shared'
-import { setupWebpackV5UnitTest, FakeConcatSource, createCompilerWithLoaderTracking, createContext, getCompilerContextMock, getWebpackLoaderRuntime, isCssImportRewriteLoader, path, testState, WeappTailwindcss } from './shared'
+import { setupWebpackV5UnitTest, FakeConcatSource, createCompilerWithLoaderTracking, createContext, getCompilerContextMock, getWebpackLoaderRuntime, isCssGenerationLoader, isCssImportRewriteLoader, path, testState, WeappTailwindcss } from './shared'
 import RuntimeClassSetLoader from '@/bundlers/webpack/loaders/weapp-tw-runtime-classset-loader'
 describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
   setupWebpackV5UnitTest()
-  it('injects css import generation loader by default for tailwindcss v4 mini-program targets', () => {
+  it('injects a dedicated css generation loader before postcss-loader execution', () => {
     testState.currentContext = createContext({
       generator: { target: 'weapp' },
       tailwindRuntime: {
@@ -21,12 +21,16 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
     }
     getLoaderHandler()?.({}, module)
 
+    const generationLoaderEntry = module.loaders.find(entry => isCssGenerationLoader(entry))
     const rewriteLoaderEntry = module.loaders.find(entry => isCssImportRewriteLoader(entry))
     const classSetLoaderEntry = module.loaders.find(entry => entry.loader === testState.currentContext.runtimeLoaderPath)
+    expect(generationLoaderEntry).toBeDefined()
     expect(rewriteLoaderEntry).toBeDefined()
     expect(classSetLoaderEntry).toBeDefined()
     const postcssIndex = module.loaders.findIndex(entry => entry.loader.includes('postcss-loader'))
+    expect(module.loaders.indexOf(generationLoaderEntry!)).toBeGreaterThan(module.loaders.indexOf(rewriteLoaderEntry!))
     expect(module.loaders.indexOf(rewriteLoaderEntry!)).toBeGreaterThan(postcssIndex)
+    expect(module.loaders.indexOf(generationLoaderEntry!)).toBeGreaterThan(postcssIndex)
     expect(module.loaders.indexOf(classSetLoaderEntry!)).toBeLessThan(postcssIndex)
   })
 
@@ -97,17 +101,25 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
     loaderHandler?.({}, module)
     const classSetLoaderEntry = module.loaders.find(entry => entry.loader === testState.currentContext.runtimeLoaderPath)
     const rewriteLoaderEntry = module.loaders.find(entry => isCssImportRewriteLoader(entry))
+    const generationLoaderEntry = module.loaders.find(entry => isCssGenerationLoader(entry))
     expect(classSetLoaderEntry).toBeDefined()
     expect(rewriteLoaderEntry).toBeDefined()
-    expect(rewriteLoaderEntry?.options?.tailwindcssImportRewriteRuntimeKey).toEqual(expect.any(String))
+    expect(generationLoaderEntry).toBeDefined()
+    expect(rewriteLoaderEntry?.options).toEqual({
+      generateCss: false,
+      tailwindcssImportRewriteRuntimeKey: expect.any(String),
+    })
     expect(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey).toBe(rewriteLoaderEntry?.options?.tailwindcssImportRewriteRuntimeKey)
+    expect(generationLoaderEntry?.options?.tailwindcssImportRewriteRuntimeKey).toBe(rewriteLoaderEntry?.options?.tailwindcssImportRewriteRuntimeKey)
     expect(classSetLoaderEntry?.ident).toBeNull()
     expect(rewriteLoaderEntry?.ident).toBeNull()
     const classSetIndex = module.loaders.indexOf(classSetLoaderEntry!)
     const postcssIndex = module.loaders.findIndex(entry => entry.loader.includes('postcss-loader'))
     const rewriteIndex = module.loaders.indexOf(rewriteLoaderEntry!)
+    const generationIndex = module.loaders.indexOf(generationLoaderEntry!)
     expect(classSetIndex).toBeLessThan(postcssIndex)
     expect(rewriteIndex).toBeGreaterThan(postcssIndex)
+    expect(generationIndex).toBeGreaterThan(rewriteIndex)
   })
 
   it('uses safe runtime keys so runtime options are not serialized into webpack requests', () => {
@@ -134,6 +146,7 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
     const rewriteLoaderEntry = module.loaders.find(isCssImportRewriteLoader)
     const serializedRequest = `${rewriteLoaderEntry?.loader}?${JSON.stringify(rewriteLoaderEntry?.options)}`
     expect(rewriteLoaderEntry?.options).toEqual({
+      generateCss: false,
       tailwindcssImportRewriteRuntimeKey: expect.any(String),
     })
     expect(serializedRequest).not.toContain('customReplaceDictionary')

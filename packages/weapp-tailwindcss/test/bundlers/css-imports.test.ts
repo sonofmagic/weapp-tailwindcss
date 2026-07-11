@@ -2,6 +2,7 @@ import { Buffer } from 'node:buffer'
 import { mkdtemp, mkdir, realpath, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
+import postcss from 'postcss'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
@@ -252,7 +253,7 @@ describe('bundlers/shared css-imports', () => {
     vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
       generateTailwindV4Css,
     }))
-    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
+    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-generation-loader')
     const registerCssSource = vi.fn()
     const registerCssSourceFile = vi.fn()
     const registerGeneratedCss = vi.fn()
@@ -335,6 +336,16 @@ describe('bundlers/shared css-imports', () => {
       dependencies: ['/repo/tailwind.config.ts'],
       file: '/repo/website/src/css/custom.css',
     })
+    let sawGeneratedCss = false
+    await postcss([{
+      postcssPlugin: 'webpack-downstream-postcss-observer',
+      Once(root) {
+        root.walkRules('.bg-brand', () => {
+          sawGeneratedCss = true
+        })
+      },
+    }]).process(String(result), { from: undefined })
+    expect(sawGeneratedCss).toBe(true)
   })
 
   it('removes Tailwind source directives from generated webpack H5 css', async () => {
@@ -359,7 +370,7 @@ describe('bundlers/shared css-imports', () => {
     vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
       generateTailwindV4Css,
     }))
-    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
+    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-generation-loader')
     const registerCssSource = vi.fn()
     const registerCssSourceFile = vi.fn()
     const markGeneratedCssSource = vi.fn()
@@ -455,7 +466,7 @@ describe('bundlers/shared css-imports', () => {
     vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
       generateTailwindV4Css,
     }))
-    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
+    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-generation-loader')
     const addDependency = vi.fn()
     const source = [
       '@import "tailwindcss" source(none);',
@@ -535,7 +546,7 @@ describe('bundlers/shared css-imports', () => {
     vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
       generateTailwindV4Css,
     }))
-    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
+    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-generation-loader')
     const registerCssSource = vi.fn()
     const registerCssSourceFile = vi.fn()
     const markGeneratedCssSource = vi.fn()

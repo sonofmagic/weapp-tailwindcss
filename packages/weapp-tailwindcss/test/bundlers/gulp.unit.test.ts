@@ -5,6 +5,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
+import postcss from 'postcss'
 import Vinyl from 'vinyl'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPlugins } from '@/bundlers/gulp'
@@ -159,6 +160,24 @@ describe('bundlers/gulp createPlugins', () => {
     expect(templateHandler).toHaveBeenCalledTimes(1)
   })
 
+  it('runs final css adaptation independently from generation', async () => {
+    const plugins = createPlugins()
+    const adapted = await runTransform(
+      plugins.adaptWxss(),
+      createFile('/src/app.wxss', '.postcss-output { display: flex; }'),
+    )
+
+    expect(adapted.contents?.toString()).toBe('css:.postcss-output { display: flex; }')
+    expect(styleHandler).toHaveBeenCalledWith(
+      '.postcss-output { display: flex; }',
+      expect.objectContaining({
+        isMainChunk: true,
+        majorVersion: 4,
+      }),
+    )
+    expect(tailwindRuntime.extract).not.toHaveBeenCalled()
+  })
+
   it('refreshes gulp runtime candidates before transforming changed js sources', async () => {
     let currentRuntimeSet = new Set(['w-[1px]'])
     tailwindRuntime.getClassSetSync.mockImplementation(() => currentRuntimeSet)
@@ -300,7 +319,13 @@ describe('bundlers/gulp createPlugins', () => {
         '@source inline("w-4");',
       ].join('\n')
       const cssFile = createFile('/src/app.css', source)
-      const processed = await runTransform(plugins.transformWxss(), cssFile)
+      const processed = await runTransform(plugins.generateWxss(), cssFile)
+      const downstream = await postcss([{
+        postcssPlugin: 'gulp-downstream-postcss-observer',
+        OnceExit(root) {
+          root.append({ selector: '.gulp-postcss-saw-generated-css', nodes: [] })
+        },
+      }]).process(processed.contents?.toString() ?? '', { from: undefined })
 
       expect(currentContext.tailwindcss?.v4?.cssSources).toEqual([
         {
@@ -312,11 +337,11 @@ describe('bundlers/gulp createPlugins', () => {
           ].join('\n'),
         },
       ])
-      expect(processed.contents?.toString()).toContain('@import "./third-party-ui.css";')
-      expect(processed.contents?.toString()).not.toContain('./src/third-party-ui.css')
+      expect(processed.contents?.toString()).toContain('@import "./src/third-party-ui.css";')
       expect(processed.contents?.toString()).not.toContain('.weapp-tw-user-ui-card')
       expect(generateMock).toHaveBeenCalled()
       expect(tailwindRuntime.extract).toHaveBeenCalled()
+      expect(downstream.css).toContain('.gulp-postcss-saw-generated-css')
     }
     finally {
       vi.doUnmock('@/generator')

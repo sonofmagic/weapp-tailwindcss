@@ -1547,6 +1547,7 @@ export function createViteFrameworkPlugins(
       getCommand: () => resolvedConfig?.command,
       onTailwindRootCss: registerTailwindRootCss,
       shouldGenerate: () => shouldOwnTailwindGeneration,
+      shouldGenerateBuild: () => resolveCurrentGeneratorBranch().isWeb,
     }),
     createViteServeJsTransformPlugin({
       createHandlerOptions: file => serveJsHandlerOptions(file, frameworkCssPipelineStrategy?.getServeJsHandlerOptions?.({
