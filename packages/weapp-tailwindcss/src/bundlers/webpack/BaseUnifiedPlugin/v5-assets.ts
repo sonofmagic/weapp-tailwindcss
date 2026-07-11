@@ -939,9 +939,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                           }
                         }),
                       )
-                  const finalizedLoaderSourceBareUserCss = loaderSourceBareUserCss === undefined
+                  const handledLoaderSourceBareUserCss = loaderSourceBareUserCss === undefined
                     ? ''
-                    : finalizeCssAssetSource(loaderSourceBareUserCss.css, {
+                    : loaderSourceBareUserCss.processed
+                      ? loaderSourceBareUserCss.css
+                      : (await compilerOptions.styleHandler(loaderSourceBareUserCss.css, cssHandlerOptions)).css
+                  const finalizedLoaderSourceBareUserCss = handledLoaderSourceBareUserCss.trim().length === 0
+                    ? ''
+                    : finalizeCssAssetSource(handledLoaderSourceBareUserCss, {
                         cssPreflight: false,
                         generatedCss: false,
                       })
@@ -1198,9 +1203,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                         }
                       }),
                     )
-                const finalizedSourceBareUserCss = sourceBareUserCss === undefined
+                const handledSourceBareUserCss = sourceBareUserCss === undefined
                   ? ''
-                  : finalizeCssAssetSource(sourceBareUserCss.css, {
+                  : sourceBareUserCss.processed
+                    ? sourceBareUserCss.css
+                    : (await compilerOptions.styleHandler(sourceBareUserCss.css, cssHandlerOptions)).css
+                const finalizedSourceBareUserCss = handledSourceBareUserCss.trim().length === 0
+                  ? ''
+                  : finalizeCssAssetSource(handledSourceBareUserCss, {
                       cssPreflight: false,
                       generatedCss: false,
                     })

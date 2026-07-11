@@ -13,8 +13,7 @@
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-content: '';
-}
-/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+} /*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
 :root,
 :host {
   --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -25,7 +24,7 @@
   --text-sm: 0.875rem;
   --text-sm--line-height: calc(1.25 / 0.875);
   --text-base: 1rem;
-  --text-base--line-height: calc(1.5 / 1);
+  --text-base--line-height: 1.5;
   --text-lg: 1.125rem;
   --text-lg--line-height: calc(1.75 / 1.125);
   --text-xl: 1.25rem;
@@ -36,64 +35,6 @@
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
- /*tokens: mt-2 <= src/pages-order/pages/user/user.vue */
- /*tokens: mt-4 <= src/pages-order/pages/home/home.vue */
- /*tokens: mt-6 <= src/pages-order/pages/user/user.vue */
- /*tokens: mt-8 <= src/pages-order/pages/user/user.vue */
- /*tokens: block <= src/pages-order/pages/user/user.vue */
- /*tokens: flex <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: h-12 <= src/pages-order/pages/user/user.vue */
- /*tokens: min-h-screen <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: w-12 <= src/pages-order/pages/user/user.vue */
- /*tokens: flex-1 <= src/pages-order/pages/user/user.vue */
- /*tokens: flex-col <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: items-center <= src/pages-order/pages/user/user.vue */
- /*tokens: justify-center <= src/pages-order/pages/user/user.vue */
- /*tokens: gap-1 <= src/pages-order/pages/user/user.vue */
- /*tokens: gap-3 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: rounded-xl <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: border <= src/pages-order/pages/user/user.vue */
- /*tokens: border-emerald-500 <= src/pages-order/pages/user/user.vue */
-.border-emerald-500 {
-  border-color: rgb(0, 185, 129);
-}
- /*tokens: border-slate-200 <= src/pages-order/pages/user/user.vue */
- /*tokens: bg-emerald-100 <= src/pages-order/pages/user/user.vue */
- /*tokens: bg-emerald-500 <= src/pages-order/pages/home/home.vue */
-.bg-emerald-500 {
-  background-color: rgb(0, 185, 129);
-}
- /*tokens: bg-slate-50 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: bg-white <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: p-5 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: px-4 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: py-2 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: py-6 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: text-center <= src/pages-order/pages/home/home.vue */
- /*tokens: text-base <= src/pages-order/pages/user/user.vue */
- /*tokens: text-lg <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: text-sm <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: text-xl <= src/pages-order/pages/user/user.vue */
- /*tokens: text-xs <= src/pages-order/pages/user/user.vue */
- /*tokens: leading-6 <= src/pages-order/pages/user/user.vue */
- /*tokens: font-bold <= src/pages-order/pages/user/user.vue */
- /*tokens: font-medium <= src/pages-order/pages/user/user.vue */
- /*tokens: font-semibold <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
- /*tokens: text-[#929292] <= src/pages-order/pages/home/home.vue */
- /*tokens: text-emerald-600 <= src/pages-order/pages/user/user.vue */
- /*tokens: text-slate-500 <= src/pages-order/pages/user/user.vue */
- /*tokens: text-slate-800 <= src/pages-order/pages/user/user.vue */
- /*tokens: text-slate-900 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
-.text-slate-900 {
-  color: rgb(15, 23, 43);
-}
- /*tokens: text-white <= src/pages-order/pages/home/home.vue */
- /*tokens: shadow <= src/pages-order/pages/home/home.vue */
- /*tokens: shadow-sm <= src/pages-order/pages/home/home.vue */
- /*tokens: before:content-['现在，让我们开始神奇的_tailwindcss_开发之旅吧！'] <= <tailwind generated> */
- /*tokens: before:content-['现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！'] <= <tailwind generated> */
- /*tokens: active:bg-emerald-50 <= src/pages-order/pages/user/user.vue */
- /*tokens: active:bg-emerald-600 <= src/pages-order/pages/home/home.vue */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   *,
   ::before,

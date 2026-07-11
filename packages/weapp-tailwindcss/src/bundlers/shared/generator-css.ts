@@ -610,9 +610,7 @@ export async function generateCssByGenerator(
               preserveRawClassRules: true,
             })
           : generationCss
-        return generated.target === 'weapp'
-          ? filterGeneratedApplyOnlyCss(normalizedCss)
-          : normalizedCss
+        return filterGeneratedApplyOnlyCss(normalizedCss)
       }
       const canAppendIncrementalCss = generated.target !== 'weapp' || !hasUserCssLayerBlocks(generatorRawSource)
       const incrementalRawCss = generated.incrementalRawCss ?? generated.incrementalCss

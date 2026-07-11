@@ -224,7 +224,12 @@ export function normalizeRawCssSnapshotText(source: string, options: CssSnapshot
 
 export async function formatRawCssSnapshotText(source: string, options: CssSnapshotOptions = {}) {
   const normalizedSource = normalizeFontDataUrlsForSnapshot(source.replace(/\r\n/g, '\n'))
-  return normalizeRawCssSnapshotText(await formatCss(normalizedSource), options)
+  try {
+    return normalizeRawCssSnapshotText(await formatCss(normalizedSource), options)
+  }
+  catch {
+    return `${normalizeCssTextSnapshot(normalizedSource, options)}\n`
+  }
 }
 
 const SCANNER_NOISE_SELECTORS = new Set([
