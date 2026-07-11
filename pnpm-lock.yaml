@@ -3196,7 +3196,7 @@ importers:
         specifier: catalog:typescript59
         version: 6.0.3
       vite:
-        specifier: ^5.2.8
+        specifier: 5.2.8
         version: 5.2.8(@types/node@26.1.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
       vue-tsc:
         specifier: catalog:vueTsc318
