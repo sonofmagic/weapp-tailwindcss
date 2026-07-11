@@ -112,6 +112,8 @@ export {
   isPureLocalCssImportWrapperRoot,
   normalizeOutputImportRequest,
   prefixLocalCssImportsWithWebpackIgnoreRoot,
+  removeMatchingLocalCssImports,
+  removeMatchingLocalCssImportsRoot,
   removeTailwindSourceDirectivesRoot,
   removeUnsupportedMiniProgramCssImportsRoot,
   restoreLocalCssImports,

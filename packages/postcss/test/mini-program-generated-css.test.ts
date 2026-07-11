@@ -2,6 +2,22 @@ import { describe, expect, it } from 'vitest'
 import { createStyleHandler, finalizeMiniProgramCss, pruneMiniProgramGeneratedCss } from '../src'
 
 describe('mini-program generated css cleanup', () => {
+  it('preserves statement at-rules while removing empty block at-rules', () => {
+    const css = finalizeMiniProgramCss([
+      '@charset "UTF-8";',
+      '@import "./third-party-ui.wxss";',
+      '@supports (display:grid) { /* empty */ }',
+      '.card{display:flex}',
+    ].join('\n'), {
+      isTailwindcssV4: true,
+    })
+
+    expect(css).toContain('@charset "UTF-8";')
+    expect(css).toContain('@import "./third-party-ui.wxss";')
+    expect(css).not.toContain('@supports')
+    expect(css).toContain('.card{display:flex}')
+  })
+
   it('removes cascade layer declarations and unwraps layer blocks in final mini-program css', () => {
     const css = finalizeMiniProgramCss([
       '@layer theme, base, components, utilities;',
@@ -447,6 +463,26 @@ describe('mini-program generated css cleanup', () => {
     expect(css).not.toContain('@layer')
     expect(css).toContain('page,.tw-root,wx-root-portal-content,:host{--color-red-500:red}')
     expect(css).toContain('.text-red-500{color:var(--color-red-500)}')
+  })
+
+  it('keeps raw Tailwind class selectors while removing Web-only generation structure', () => {
+    const css = pruneMiniProgramGeneratedCss([
+      'html:not(#\\#){line-height:1.5}',
+      '@layer utilities {',
+      '.space-y-4:not(#\\#){',
+      '  :where(& > :not(:last-child)){margin-top:calc(var(--spacing)*4)}',
+      '}',
+      '}',
+    ].join('\n'), {
+      preserveRawClassRules: true,
+    })
+
+    expect(css).not.toContain('html')
+    expect(css).not.toContain('@layer')
+    expect(css).not.toContain(':not(#\\#)')
+    expect(css).toContain('.space-y-4{')
+    expect(css).toContain(':where(& > :not(:last-child))')
+    expect(css).toContain('margin-top:calc(var(--spacing)*4)')
   })
 
   it('removes Tailwind container max-width media rules from pruned generated css', () => {

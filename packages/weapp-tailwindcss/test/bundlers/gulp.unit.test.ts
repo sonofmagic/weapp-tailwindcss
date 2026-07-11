@@ -268,8 +268,8 @@ describe('bundlers/gulp createPlugins', () => {
     tailwindRuntime.majorVersion = 4
     currentContext.cssMatcher = vi.fn((id: string) => id.endsWith('.wxss'))
     const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
-      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      css: [...candidates].sort().map(candidate => `.adapted-${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.raw-${candidate}{}`).join('\n'),
       target: 'weapp',
       classSet: new Set(candidates),
       dependencies: [],
@@ -338,8 +338,12 @@ describe('bundlers/gulp createPlugins', () => {
         },
       ])
       expect(processed.contents?.toString()).toContain('@import "./src/third-party-ui.css";')
+      expect(processed.contents?.toString()).toContain('.raw-foo{}')
+      expect(processed.contents?.toString()).not.toContain('.adapted-foo{}')
       expect(processed.contents?.toString()).not.toContain('.weapp-tw-user-ui-card')
-      expect(generateMock).toHaveBeenCalled()
+      expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+        target: 'weapp',
+      }))
       expect(tailwindRuntime.extract).toHaveBeenCalled()
       expect(downstream.css).toContain('.gulp-postcss-saw-generated-css')
     }

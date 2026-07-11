@@ -20,6 +20,7 @@ const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 export interface PruneMiniProgramGeneratedCssOptions {
   preservePreflight?: boolean
   preserveConditionalComments?: boolean
+  preserveRawClassRules?: boolean
 }
 
 function isConditionalCompilationComment(text: string) {
@@ -28,6 +29,17 @@ function isConditionalCompilationComment(text: string) {
 
 function hasClassSelector(selector: string) {
   return CLASS_SELECTOR_RE.test(selector)
+}
+
+function hasClassRuleAncestor(rule: postcss.Rule) {
+  let parent = rule.parent
+  while (parent) {
+    if (parent.type === 'rule' && hasClassSelector(parent.selector)) {
+      return true
+    }
+    parent = parent.parent
+  }
+  return false
 }
 
 function removeEmptyContentInitDeclarations(rule: postcss.Rule) {
@@ -216,6 +228,10 @@ export function pruneMiniProgramGeneratedCss(
 
     if (isCustomPropertyRule(rule) && isMiniProgramElementVariableScopeRule(rule)) {
       rule.selector = MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR
+      return
+    }
+
+    if (options.preserveRawClassRules && (hasClassSelector(rule.selector) || hasClassRuleAncestor(rule))) {
       return
     }
 

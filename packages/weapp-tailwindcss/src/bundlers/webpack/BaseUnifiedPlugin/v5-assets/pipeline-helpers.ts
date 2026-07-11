@@ -507,12 +507,13 @@ function isWebpackKeyframesRule(rule: postcss.Rule) {
 
 export function collectWebpackBareSelectorUserCss(source: string) {
   try {
-    const root = postcss.parse(removeTailwindSourceDirectives(
+    const normalizedSource = removeTailwindSourceDirectives(
       stripTailwindSourceMediaFragments(
         removeTailwindV4GeneratorAtRules(source),
       ),
       { importFallback: true },
-    ))
+    )
+    const root = postcss.parse(normalizedSource)
     let changed = false
     root.walkAtRules((rule) => {
       if (rule.name === 'import' || rule.name === 'font-face' || rule.name.endsWith('keyframes')) {
@@ -535,7 +536,7 @@ export function collectWebpackBareSelectorUserCss(source: string) {
         changed = true
       }
     })
-    return changed ? root.toString() : source
+    return changed ? root.toString() : normalizedSource
   }
   catch {
     return ''

@@ -219,6 +219,80 @@ describe('bundlers/shared generator css', () => {
     })
   })
 
+  it('defers mini-program css adaptation while preserving generated source imports', async () => {
+    const styleHandler = vi.fn(async (code: string) => ({ css: `adapted:${code}` }))
+    const createWeappTailwindcssGenerator = vi.fn(() => ({
+      generate: vi.fn(async () => ({
+        css: '.space-y-4>view+view{margin-top:adapted}',
+        rawCss: [
+          'html:not(#\\#){line-height:1.5}',
+          '@layer utilities {',
+          '  .space-y-4:not(#\\#)>:not([hidden])~:not([hidden]){margin-top:calc((var(--spacing)*4)*(1 - var(--tw-space-y-reverse)))}',
+          '}',
+        ].join('\n'),
+        target: 'weapp',
+        classSet: new Set(['space-y-4']),
+        dependencies: [],
+        root: null,
+      })),
+    }))
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      createWeappTailwindcssGenerator,
+      resolveTailwindV4Source: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "./vendor.css";\n@import "./tailwind-internal.css";\n@layer utilities;',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await generateCssByGenerator({
+      opts: {
+        cssPreflight: {
+          border: '0 solid',
+        },
+        generator: {
+          target: 'weapp',
+        },
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['space-y-4']),
+      rawSource: '@import "tailwindcss";\n@import "./vendor.css";',
+      file: '/workspace/src/app.css',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {} as any,
+      styleHandler,
+      debug: vi.fn(),
+      deferCssAdaptation: true,
+    })
+
+    expect(result?.css).toContain('@import "./vendor.css";')
+    expect(result?.css).toContain(':not([hidden])~:not([hidden])')
+    expect(result?.css).not.toContain(':not(#\\#)')
+    expect(result?.css).not.toContain('@layer')
+    expect(result?.css).not.toContain('html')
+    expect(result?.css).not.toContain('margin-top:adapted')
+    expect(result?.metadata?.preflightMode).toEqual({
+      inject: true,
+      preserve: true,
+    })
+    expect(createWeappTailwindcssGenerator).toHaveBeenCalledWith(expect.objectContaining({
+      css: '@import "./tailwind-internal.css";\n@layer utilities;',
+    }))
+    expect(createWeappTailwindcssGenerator.mock.calls[0]?.[0]?.css).not.toContain('./vendor.css')
+    expect(styleHandler).not.toHaveBeenCalled()
+  })
+
   it('matches hashed css assets back to their Tailwind v4 source css file', async () => {
     const { scoreTailwindV4CssSourceFileMatch } = await import('@/bundlers/shared/generator-css/source-resolver/matching')
     const score = scoreTailwindV4CssSourceFileMatch(

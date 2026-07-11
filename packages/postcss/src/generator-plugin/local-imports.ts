@@ -234,6 +234,40 @@ export function splitLocalCssImports(source: string) {
   }
 }
 
+export function removeMatchingLocalCssImportsRoot(root: Root, importsRoot: Root) {
+  const requests = collectCssImportRequestsRoot(importsRoot, {
+    isSupportedImportRequest: isLocalCssImportRequest,
+  })
+  if (requests.size === 0) {
+    return false
+  }
+
+  let changed = false
+  root.walkAtRules('import', (atRule) => {
+    const request = parseImportRequest(atRule.params)
+    if (!request || !requests.has(request)) {
+      return
+    }
+    atRule.remove()
+    changed = true
+  })
+  return changed
+}
+
+export function removeMatchingLocalCssImports(source: string, imports: string | undefined) {
+  if (!imports?.includes('@import') || !source.includes('@import')) {
+    return source
+  }
+  try {
+    const root = postcss.parse(source)
+    const importsRoot = postcss.parse(imports)
+    return removeMatchingLocalCssImportsRoot(root, importsRoot) ? root.toString() : source
+  }
+  catch {
+    return source
+  }
+}
+
 function normalizeOutputPath(file: string) {
   const segments: string[] = []
   for (const segment of file.replace(/\\/g, '/').replace(/^\/+/, '').split('/')) {

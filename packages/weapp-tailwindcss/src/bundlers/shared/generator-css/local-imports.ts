@@ -6,6 +6,8 @@ export {
   isPureLocalCssImportWrapper,
   isPureLocalCssImportWrapperRoot,
   normalizeOutputImportRequest,
+  removeMatchingLocalCssImports,
+  removeMatchingLocalCssImportsRoot,
   restoreLocalCssImports,
   rewriteLocalCssImportRequestsForOutput,
   rewriteLocalCssImportRequestsForOutputRoot,

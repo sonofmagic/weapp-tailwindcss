@@ -1,15 +1,15 @@
-const BUNDLER_GENERATED_CSS_MARKER_RE = /\/\*!?\s*weapp-tailwindcss (?:vite|webpack)-generated-css(?:\s*:\s*[^\s*]+)?\s*\*\/\s*/i
-const BUNDLER_GENERATED_CSS_MARKER_GLOBAL_RE = /\/\*!?\s*weapp-tailwindcss (?:vite|webpack)-generated-css(?:\s*:\s*[^\s*]+)?\s*\*\/\s*/gi
-const BUNDLER_GENERATED_CSS_MARKER_CAPTURE_RE = /\/\*!?\s*weapp-tailwindcss (vite|webpack)-generated-css(?:\s*:\s*([^\s*]+))?\s*\*\/\s*/gi
+const BUNDLER_GENERATED_CSS_MARKER_RE = /\/\*!?\s*weapp-tailwindcss (?:gulp|vite|webpack)-generated-css(?:\s*:\s*[^\s*]+)?\s*\*\/\s*/i
+const BUNDLER_GENERATED_CSS_MARKER_GLOBAL_RE = /\/\*!?\s*weapp-tailwindcss (?:gulp|vite|webpack)-generated-css(?:\s*:\s*[^\s*]+)?\s*\*\/\s*/gi
+const BUNDLER_GENERATED_CSS_MARKER_CAPTURE_RE = /\/\*!?\s*weapp-tailwindcss (gulp|vite|webpack)-generated-css(?:\s*:\s*([^\s*]+))?\s*\*\/\s*/gi
 const VITE_INTERNAL_CSS_MARKER_GLOBAL_RE = /\/\*\$vite\$:\d+\*\/\s*/g
 
 export interface BundlerGeneratedCssMarkerBlock {
-  bundler: 'vite' | 'webpack'
+  bundler: 'gulp' | 'vite' | 'webpack'
   file?: string | undefined
   css: string
 }
 
-export function createBundlerGeneratedCssMarker(bundler: 'vite' | 'webpack', file: string) {
+export function createBundlerGeneratedCssMarker(bundler: 'gulp' | 'vite' | 'webpack', file: string) {
   return `/*! weapp-tailwindcss ${bundler}-generated-css:${encodeURIComponent(file)} */`
 }
 
@@ -33,7 +33,7 @@ export function parseBundlerGeneratedCssMarkerBlocks(source: string): BundlerGen
     const cssEnd = nextMatch?.index ?? source.length
     const file = match[2] ? decodeURIComponent(match[2]) : undefined
     blocks.push({
-      bundler: match[1] as 'vite' | 'webpack',
+      bundler: match[1] as 'gulp' | 'vite' | 'webpack',
       file,
       css: source.slice(cssStart, cssEnd),
     })

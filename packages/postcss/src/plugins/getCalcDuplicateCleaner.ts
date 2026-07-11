@@ -2,28 +2,39 @@
 import type { AcceptedPlugin } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 
+const MULTIPLICATION_GROUP_RE = /\((var\([^()]+\)(?:\s*\*\s*-?(?:\d+(?:\.\d+)?|\.\d+|[a-z_][\w-]*))+)\)/gi
+
+function normalizeCalcValue(value: string) {
+  if (!value.includes('calc(')) {
+    return value
+  }
+  let normalized = value.replace(/\s+/g, '')
+  let previous: string
+  do {
+    previous = normalized
+    normalized = normalized.replace(MULTIPLICATION_GROUP_RE, '$1')
+  } while (normalized !== previous)
+  return normalized
+}
+
 const calcDuplicateCleanerPlugin: AcceptedPlugin = {
   postcssPlugin: 'postcss-calc-duplicate-cleaner',
-  Rule(rule) {
-    rule.walkDecls((decl) => {
-      const prev = decl.prev()
-      if (!prev || prev.type !== 'decl') {
-        return
+  OnceExit(root) {
+    root.walkRules((rule) => {
+      const declarations = new Set<string>()
+      for (const node of [...rule.nodes]) {
+        if (node.type !== 'decl') {
+          continue
+        }
+        const decl = node
+        const key = `${decl.prop}\0${decl.important ? '1' : '0'}\0${normalizeCalcValue(decl.value)}`
+        if (declarations.has(key)) {
+          decl.remove()
+        }
+        else {
+          declarations.add(key)
+        }
       }
-
-      if (prev.prop !== decl.prop) {
-        return
-      }
-
-      if (prev.important !== decl.important) {
-        return
-      }
-
-      if (prev.value !== decl.value) {
-        return
-      }
-
-      decl.remove()
     })
   },
 }
