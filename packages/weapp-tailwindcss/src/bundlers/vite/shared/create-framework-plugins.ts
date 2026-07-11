@@ -49,7 +49,7 @@ import { removeScopedTailwindPreflightCss } from '../processed-css-assets'
 import { resolveImplicitAppTypeFromViteRoot } from '../resolve-app-type'
 import { createRewriteCssImportsPlugins, hasVitePipelineTailwindGenerationDirective } from '../rewrite-css-imports'
 import { createViteRuntimeClassSet } from '../runtime-class-set'
-import { createViteServeCssGenerationPlugins } from '../serve-css-generation'
+import { createViteCssGenerationPlugins } from '../serve-css-generation'
 import { createViteServeJsTransformPlugin } from '../serve-js-transform'
 import { resolveViteServeRootMiniProgramImportShell } from '../serve-root-import-shell'
 import { createSourceCandidateScanSignature } from '../source-candidate-scan-signature'
@@ -1116,7 +1116,7 @@ export function createViteFrameworkPlugins(
     const previousGeneratorCss = previousCss && !currentGeneratorBranch.isWeb
       ? normalizeMiniProgramGeneratorCssSource(previousCss, outputFile)
       : previousCss
-    const generated = await hmrTimingRecorder.measure('generateCss.serve', () => generateTailwindV4Css({
+    const generated = await hmrTimingRecorder.measure(`generateCss.${resolvedConfig?.command ?? 'unknown'}`, () => generateTailwindV4Css({
       opts,
       runtimeState,
       runtime,
@@ -1542,7 +1542,7 @@ export function createViteFrameworkPlugins(
         }, { emit: false })
       },
     },
-    ...createViteServeCssGenerationPlugins({
+    ...createViteCssGenerationPlugins({
       generateCss: generateTailwindCssForVitePipeline,
       getCommand: () => resolvedConfig?.command,
       onTailwindRootCss: registerTailwindRootCss,
@@ -1570,6 +1570,7 @@ export function createViteFrameworkPlugins(
         if (Array.isArray(config.plugins)) {
           const removed = disableAndRemoveTailwindVitePlugins(config.plugins)
           if (removed > 0) {
+            logger.warn('检测到 @tailwindcss/vite，生成模式下已移除该插件以避免 Tailwind CSS 重复生成。')
             debug('disable official tailwind vite plugins in generator mode: %d', removed)
           }
         }
@@ -1658,6 +1659,7 @@ export function createViteFrameworkPlugins(
             if (shouldOwnTailwindGeneration) {
               const removed = removeTailwindPostcssPlugins(postcssPlugins)
               if (removed > 0) {
+                logger.warn('检测到 @tailwindcss/postcss，生成模式下已移除该插件以避免 Tailwind CSS 重复生成。')
                 debug('remove official tailwind postcss plugins in generator mode: %d', removed)
               }
             }

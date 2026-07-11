@@ -1,6 +1,6 @@
 import type { WeappTailwindcssPostcssPluginAdapters } from '@/generator-plugin'
 import path from 'node:path'
-import postcss from 'postcss'
+import postcss, { type Root } from 'postcss'
 import { createWeappTailwindcssPostcssPlugin } from '@/generator-plugin'
 import { prependConfigDirective } from '../src/generator-plugin/config-directive'
 import {
@@ -40,6 +40,38 @@ function createAdapters(overrides: Partial<WeappTailwindcssPostcssPluginAdapters
 }
 
 describe('generator postcss plugin factory', () => {
+  it('keeps generation ordered between user PostCSS plugins', async () => {
+    const { adapters } = createAdapters()
+    const plugin = createWeappTailwindcssPostcssPlugin(adapters)
+    const before = {
+      postcssPlugin: 'before-generator',
+      Once(root: Root) {
+        root.append({ prop: '--before-generator', value: '1' })
+      },
+    }
+    const after = {
+      postcssPlugin: 'after-generator',
+      OnceExit(root: Root) {
+        root.append({ prop: '--after-generator', value: '1' })
+      },
+    }
+
+    const result = await postcss([
+      before,
+      plugin(),
+      after,
+    ]).process('@import "tailwindcss";', {
+      from: undefined,
+    })
+
+    expect(adapters.resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+      css: expect.stringContaining('--before-generator: 1'),
+    }))
+    expect(result.css).toContain('.generated')
+    expect(result.css).toContain('--after-generator: 1')
+    expect(result.css).not.toContain('--before-generator: 1')
+  })
+
   it('handles context helpers and config directive escaping', async () => {
     const result = await postcss().process('.a{color:red}', {
       from: 'src/app.css',

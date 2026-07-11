@@ -9,7 +9,7 @@ const VITE_CSS_HMR_MODULE_RE = /\b__vite__updateStyle\s*\(/
 const VITE_CSS_CONST_RE = /\bconst\s+__vite__css\s*=\s*("(?:\\[\s\S]|[^"])*")/
 const DEFERRED_CSS_HMR_QUERY_RE = /[?&](?:hmr(?:[=&]|$)|t=\d+)/
 
-interface ViteServeCssGenerationOptions {
+interface ViteCssGenerationOptions {
   generateCss: (id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void, emitFile?: (emittedFile: { type: 'asset', fileName: string, source: string }) => string }) => Promise<string | undefined> | string | undefined
   getCommand: () => string | undefined
   onTailwindRootCss?: ((id: string, code: string) => Promise<void> | void) | undefined
@@ -67,6 +67,13 @@ function isViteServeCssRootRequest(id: string, command: string | undefined) {
     && !COMMON_JS_PROXY_RE.test(id)
 }
 
+function isViteBuildStyleRequest(id: string, command: string | undefined) {
+  return command === 'build'
+    && isSourceStyleRequest(id)
+    && !SPECIAL_QUERY_RE.test(id)
+    && !COMMON_JS_PROXY_RE.test(id)
+}
+
 function isViteCssHmrModule(code: string, id: string, command: string | undefined) {
   return isViteServeStyleRequest(id, command)
     && VITE_CSS_HMR_MODULE_RE.test(code)
@@ -76,7 +83,7 @@ function isViteCssHmrModule(code: string, id: string, command: string | undefine
     )
 }
 
-function hasViteServeCssGenerationDirective(code: string) {
+function hasViteCssGenerationDirective(code: string) {
   return hasTailwindRootDirectives(code)
     || hasTailwindSourceDirectives(code, { importFallback: true })
     || hasTailwindApplyDirective(code)
@@ -86,7 +93,7 @@ function hasViteServeCssRootDirective(code: string) {
   return hasTailwindRootDirectives(code)
 }
 
-export function createViteServeCssGenerationPlugins(options: ViteServeCssGenerationOptions): Plugin[] {
+export function createViteCssGenerationPlugins(options: ViteCssGenerationOptions): Plugin[] {
   return [{
     name: `${vitePluginName}:generate:serve`,
     apply: 'serve',
@@ -112,6 +119,29 @@ export function createViteServeCssGenerationPlugins(options: ViteServeCssGenerat
       }
     },
   }, {
+    name: `${vitePluginName}:generate:build`,
+    apply: 'build',
+    enforce: 'pre',
+    async transform(code, id) {
+      if (!options.shouldGenerate() || !isViteBuildStyleRequest(id, options.getCommand())) {
+        return
+      }
+      if (!hasViteCssGenerationDirective(code)) {
+        return
+      }
+      if (hasViteServeCssRootDirective(code)) {
+        await options.onTailwindRootCss?.(id, code)
+      }
+      const generatedCss = await options.generateCss(id, code, this)
+      if (generatedCss === undefined || generatedCss === code) {
+        return
+      }
+      return {
+        code: generatedCss,
+        map: null,
+      }
+    },
+  }, {
     name: `${vitePluginName}:generate:serve-hmr`,
     apply: 'serve',
     enforce: 'post',
@@ -123,7 +153,7 @@ export function createViteServeCssGenerationPlugins(options: ViteServeCssGenerat
       if (!extracted) {
         return
       }
-      if (!hasViteServeCssGenerationDirective(extracted.css)) {
+      if (!hasViteCssGenerationDirective(extracted.css)) {
         return
       }
       if (hasViteServeCssRootDirective(extracted.css)) {
