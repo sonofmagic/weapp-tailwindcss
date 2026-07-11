@@ -53,28 +53,6 @@
   mask-size: 100% 100%;
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z' opacity='.25'/%3E%3Cpath fill='black' d='M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z'%3E%3CanimateTransform attributeName='transform' dur='0.75s' repeatCount='indefinite' type='rotate' values='0 12 12;360 12 12'/%3E%3C/path%3E%3C/svg%3E");
 }
- /* tokens: gap-2 <= src/components/HelloWorld.vue, src/main.css, src/pages/index/index.vue */
-.gap-2.data-v-04bcf89b {
-  gap: calc(var(--spacing, 0.25rem) * 2);
-}
- /* tokens: px-4 <= src/components/HelloWorld.vue, src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-.px-4.data-v-04bcf89b {
-  padding-left: 32rpx;
-  padding-right: 32rpx;
-  padding-left: calc(var(--spacing, 0.25rem) * 4);
-  padding-right: calc(var(--spacing, 0.25rem) * 4);
-}
- /* tokens: py-3 <= src/components/HelloWorld.vue, src/pages/index/index.vue */
-.py-3.data-v-04bcf89b {
-  padding-top: 24rpx;
-  padding-bottom: 24rpx;
-  padding-top: calc(var(--spacing, 0.25rem) * 3);
-  padding-bottom: calc(var(--spacing, 0.25rem) * 3);
-}
- /* tokens: text-slate-700 <= src/components/HelloWorld.vue, src/pages/index/index.vue */
-.text-slate-700.data-v-04bcf89b {
-  color: var(--color-slate-700, rgb(49, 65, 88));
-}
  /* tokens: before:content-['现在，让我们开始神奇的_tailwindcss_开发之旅吧！'] <= <tailwind generated> */
 .before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x5f00_u_x59cb_u_x795e_u_x5947_u_x7684__tailwindcss_u_x5f00_u_x53d1_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B.data-v-04bcf89b::before {
   --tw-content: '\73b0\5728\ff0c\8ba9\6211\4eec\5f00\59cb\795e\5947\7684  tailwindcss \5f00\53d1\4e4b\65c5\5427\ff01';

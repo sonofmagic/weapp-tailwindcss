@@ -573,6 +573,23 @@ export async function generateCssByGenerator(
         return metadata?.candidateMatchedCssSource !== true
           && metadata?.primaryCssSource === true
       })
+    const shouldFilterApplyOnlyCss = shouldFilterApplyOnlyGeneratedCss(
+      majorVersion,
+      generated.target,
+      generatorRawSource,
+      {
+        hasGeneratedCss,
+        hasGeneratedMarkers,
+      },
+    )
+    const filterGeneratedApplyOnlyCss = (css: string) => {
+      if (!shouldFilterApplyOnlyCss) {
+        return css
+      }
+      return filterApplyOnlyGeneratedCss(css, generatorRawSource, {
+        preserveVariables: generated.target !== 'web',
+      })
+    }
     const preflightMode = resolveMiniProgramPreflightModeForGeneratorCss(opts, {
       cssHandlerOptions,
       isolateCurrentCssCandidates,
@@ -587,12 +604,15 @@ export async function generateCssByGenerator(
           && (hasCssMacroStyleOptions(generatorStyleOptions) || hasCssMacroTailwindV4InternalAtRules(rawCss))
           ? await transformCssMacroCss(rawCss, generatorStyleOptions)
           : rawCss
-        return generated.target === 'weapp'
-          ? normalizeMiniProgramGeneratedCssForPostcss(generationCss, {
+        const normalizedCss = generated.target === 'weapp'
+          ? await normalizeMiniProgramGeneratedCssForPostcss(generationCss, {
               preservePreflight: true,
               preserveRawClassRules: true,
             })
           : generationCss
+        return generated.target === 'weapp'
+          ? filterGeneratedApplyOnlyCss(normalizedCss)
+          : normalizedCss
       }
       const canAppendIncrementalCss = generated.target !== 'weapp' || !hasUserCssLayerBlocks(generatorRawSource)
       const incrementalRawCss = generated.incrementalRawCss ?? generated.incrementalCss
@@ -657,23 +677,10 @@ export async function generateCssByGenerator(
         },
       }
     }
-    const shouldFilterApplyOnlyCss = shouldFilterApplyOnlyGeneratedCss(
-      majorVersion,
-      generated.target,
-      generatorRawSource,
-      {
-        hasGeneratedCss,
-        hasGeneratedMarkers,
-      },
-    )
     const generatedCssSource = generated.target === 'web'
       ? generated.css
       : stripTailwindBanner(generated.css)
-    const generatedCss = shouldFilterApplyOnlyCss
-      ? filterApplyOnlyGeneratedCss(generatedCssSource, generatorRawSource, {
-          preserveVariables: generated.target !== 'web',
-        })
-      : generatedCssSource
+    const generatedCss = filterGeneratedApplyOnlyCss(generatedCssSource)
     const placeholderOrderedExtraCss = splitGeneratorPlaceholderCssBySourceOrder(userCssOrderSource, generated.rawCss)
     const orderedExtraCss = placeholderOrderedExtraCss ?? (hasMatchedCssSourceFile
       ? splitTailwindV4GeneratedCssBySourceOrder(userCssOrderSource, generated.rawCss)

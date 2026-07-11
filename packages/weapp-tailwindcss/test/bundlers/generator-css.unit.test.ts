@@ -301,6 +301,63 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
+  it('filters standalone utilities from deferred apply-only component css', async () => {
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: vi.fn(async () => ({
+          css: '',
+          rawCss: [
+            ':root{--spacing:0.25rem}',
+            '.gap-2{gap:calc(var(--spacing)*2)}',
+            '.px-4{padding-left:calc(var(--spacing)*4);padding-right:calc(var(--spacing)*4)}',
+            '.hello-world-shell{display:flex;gap:calc(var(--spacing)*2);padding-left:calc(var(--spacing)*4);padding-right:calc(var(--spacing)*4)}',
+          ].join('\n'),
+          target: 'weapp',
+          classSet: new Set(['flex', 'gap-2', 'px-4']),
+          dependencies: [],
+          root: null,
+        })),
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          target: 'weapp',
+        },
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['flex', 'gap-2', 'px-4']),
+      rawSource: [
+        '@reference "tailwindcss";',
+        '.hello-world-shell {',
+        '  @apply flex gap-2 px-4;',
+        '}',
+      ].join('\n'),
+      file: '/workspace/src/components/HelloWorld.scss',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {} as any,
+      styleHandler: vi.fn(),
+      debug: vi.fn(),
+      deferCssAdaptation: true,
+      generatorPlatform: 'mp-weixin',
+    })
+
+    expect(result?.css).toContain('--spacing:0.25rem')
+    expect(result?.css).toContain('.hello-world-shell')
+    expect(result?.css).not.toContain('.gap-2{')
+    expect(result?.css).not.toContain('.px-4{')
+  })
+
   it('matches hashed css assets back to their Tailwind v4 source css file', async () => {
     const { scoreTailwindV4CssSourceFileMatch } = await import('@/bundlers/shared/generator-css/source-resolver/matching')
     const score = scoreTailwindV4CssSourceFileMatch(
