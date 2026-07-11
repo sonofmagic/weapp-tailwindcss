@@ -23,8 +23,8 @@ Entry: taro-vite-react-tailwindcss-v4/dist
 
 | File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `css/index.1.css` | [artifacts/css__index.1.css](artifacts/css__index.1.css) | 50 | 1 | false | false | false | false | false | false | false |
-| `css/index.2.css` | [artifacts/css__index.2.css](artifacts/css__index.2.css) | 382588 | 2232 | true | true | true | true | true | true | false |
-| `css/index.3.css` | [artifacts/css__index.3.css](artifacts/css__index.3.css) | 16611 | 52 | true | false | false | false | false | true | false |
-| `css/index.4.css` | [artifacts/css__index.4.css](artifacts/css__index.4.css) | 8056 | 26 | true | false | false | false | false | true | false |
+| `css/index.1.css` | [artifacts/css__index.1.css](artifacts/css__index.1.css) | 382588 | 2232 | true | true | true | true | true | true | false |
+| `css/index.2.css` | [artifacts/css__index.2.css](artifacts/css__index.2.css) | 16611 | 52 | true | false | false | false | false | true | false |
+| `css/index.3.css` | [artifacts/css__index.3.css](artifacts/css__index.3.css) | 8056 | 26 | true | false | false | false | false | true | false |
+| `css/index.4.css` | [artifacts/css__index.4.css](artifacts/css__index.4.css) | 50 | 1 | false | false | false | false | false | false | false |
 | `css/vendors.css` | [artifacts/css__vendors.css](artifacts/css__vendors.css) | 14306 | 59 | false | false | false | false | false | false | false |
