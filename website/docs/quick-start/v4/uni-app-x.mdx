@@ -55,19 +55,18 @@ import { uniAppX } from 'weapp-tailwindcss/presets'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 const projectRoot = dirname(fileURLToPath(import.meta.url))
+const weappTailwindcssPlugins = WeappTailwindcss(
+  uniAppX({
+    base: projectRoot,
+    cssEntries: [resolve(projectRoot, 'main.css')],
+    rem2rpx: true,
+  }),
+) ?? []
 
 export default defineConfig({
   plugins: [
     uni(),
-    WeappTailwindcss(
-      uniAppX({
-        base: projectRoot,
-        cssEntries: [
-          resolve(projectRoot, 'main.css'),
-        ],
-        rem2rpx: true,
-      }),
-    ),
+    ...weappTailwindcssPlugins,
   ],
 })
 ```
@@ -94,6 +93,18 @@ export default defineConfig({
 
 `@source` 要覆盖页面、组件和可能产出类名的脚本目录。不要把 `unpackage` 放进扫描范围，否则 HBuilderX 产物会反过来干扰开发构建。
 
+## 在 App.uvue 中引入入口
+
+`cssEntries` 不会把 CSS 自动加入 HBuilderX / Vite 模块图，必须在全局样式中实际导入：
+
+```html title="App.uvue"
+<style>
+@import './main.css';
+</style>
+```
+
+缺少这个导入时，候选扫描仍可能成功，但 Web、小程序和 App 页面不会加载生成样式。
+
 ## 验证任意值类名
 
 在任意页面写一段最小用例：
@@ -104,7 +115,7 @@ export default defineConfig({
 </view>
 ```
 
-运行到微信小程序、Android 或 iOS 后，检查元素样式是否生效。仓库里的 App E2E 也会向页面追加 `bg-[#102938] text-[#f7fbff] w-[173px]`，再检查 HBuilderX 产物里是否出现转译后的类名。
+依次运行到 Web、微信小程序和目标 App 平台后，检查元素样式是否生效。仓库里的 App E2E 也会向页面追加 `bg-[#102938] text-[#f7fbff] w-[173px]`，再检查 HBuilderX 产物里是否出现转译后的类名。
 
 ## 布局限制
 
@@ -115,5 +126,4 @@ export default defineConfig({
 
 ## 参考模板
 
-- [uni-app-x-hbuilderx 模板](https://github.com/icebreaker-template/uni-app-x-hbuilderx)
 - [仓库内 Tailwind CSS v4 demo](https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v4)

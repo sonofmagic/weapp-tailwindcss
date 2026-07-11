@@ -126,6 +126,16 @@ const buildTargets = [
     ],
   },
   {
+    filter: '@weapp-tailwindcss/debug-uni-app-x',
+    label: '@weapp-tailwindcss/debug-uni-app-x',
+    packageRoot: path.join(repoRoot, 'packages/debug-uni-app-x'),
+    stamps: [
+      'dist/index.cjs',
+      'dist/index.mjs',
+      'dist/index.d.ts',
+    ],
+  },
+  {
     filter: 'weapp-tailwindcss',
     label: '核心包',
     packageRoot: path.join(repoRoot, 'packages/weapp-tailwindcss'),

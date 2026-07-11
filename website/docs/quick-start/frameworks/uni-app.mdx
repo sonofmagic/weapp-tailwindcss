@@ -73,3 +73,5 @@ module.exports = config
 ```
 
 扫描范围写在 CSS 入口的 `@source` 里。生成模式下不要再在 PostCSS 中注册 Tailwind 官方生成插件。
+
+`cssEntries` 只负责入口识别，存量项目仍要在 `src/App.vue` 的全局样式中 `@import './app.css';`，否则生成 CSS 不会进入 Webpack 模块图。

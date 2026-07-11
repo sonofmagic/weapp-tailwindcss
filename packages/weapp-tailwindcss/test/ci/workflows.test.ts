@@ -565,6 +565,7 @@ describe('ci workflows', () => {
     expect(ensureScript).toContain('\'@weapp-tailwindcss/logger\'')
     expect(ensureScript).toContain('\'@weapp-tailwindcss/postcss-calc\'')
     expect(ensureScript).toContain('\'@weapp-tailwindcss/reset\'')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/debug-uni-app-x\'')
     expect(ensureScript).toContain('\'@weapp-tailwindcss/merge\'')
     expect(ensureScript).toContain('\'@weapp-tailwindcss/cva\'')
     expect(ensureScript).toContain('\'@weapp-tailwindcss/variants\'')
