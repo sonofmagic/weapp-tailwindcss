@@ -40,7 +40,7 @@ import { processJsBundleEntry } from './generate-bundle/js-processing'
 import { createEmptyMetrics, measureElapsed } from './generate-bundle/metrics'
 import { logBundleProcessPlan } from './generate-bundle/process-plan'
 import { createRememberedCssRuntimeSignature, findRememberedCssSources, mergeRememberedCssSources } from './generate-bundle/remembered-css'
-import { processRememberedCssReplay } from './generate-bundle/remembered-css-replay'
+import { processRememberedCssReplay, shouldSkipRawRememberedCssSource } from './generate-bundle/remembered-css-replay'
 import { registerGeneratorDependencies } from './generate-bundle/rollup-assets'
 import { isRootMiniProgramStyleOutputFile, resolveSingleCssImportOutputFile, shouldKeepRootMiniProgramStyleAsImportShell, shouldMoveRootMiniProgramStyleToImportShellOrigin, shouldPreserveFrameworkRootMiniProgramImportShell } from './generate-bundle/root-style-output'
 import { collectCssExtensionByStem, collectJsImportedCssFiles, collectRuntimeLinkedCssFiles } from './generate-bundle/runtime-linked-css'
@@ -139,6 +139,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }),
   })
   return async function generateBundle(this: GenerateBundleThis, _opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
+    const processMarkupAndScripts = context.processMarkupAndScripts !== false
+    const processStyles = context.processStyles !== false
     const addWatchFile = (id: string) => this.addWatchFile?.(id)
     const {
       opts,
@@ -798,7 +800,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     for (const entry of snapshot.entries) {
       const { file, output: originalSource, source: originalEntrySource, type } = entry
 
-      if (type === 'html' && originalSource.type === 'asset') {
+      if (processMarkupAndScripts && type === 'html' && originalSource.type === 'asset') {
         metrics.html.total++
         if (isWebGeneratorTarget) {
           debug('html skip web target: %s', file)
@@ -840,7 +842,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         continue
       }
 
-      if (type === 'css' && originalSource.type === 'asset') {
+      if (processStyles && type === 'css' && originalSource.type === 'asset') {
         metrics.css.total++
         // uni-app dev/watch 会在每轮产物阶段重写主样式产物。
         // 即便本轮 CSS 原文 hash 未变化，也必须回填缓存中的转译结果，
@@ -1286,6 +1288,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             remembered.rawSource.includes('@source') || remembered.rawSource.includes('@config'),
           )
         }
+        rememberedCssSources = rememberedCssSources.filter((remembered) => {
+          const shouldSkip = shouldSkipRawRememberedCssSource(remembered.rawSource, remembered.sourceFile)
+          if (shouldSkip) {
+            debug('css skip raw remembered source style: %s -> %s', remembered.sourceFile, outputFile)
+          }
+          return !shouldSkip
+        })
         let rememberedCssSource = mergeRememberedCssSources(rememberedCssSources, outputFile)
         if (
           rememberedCssSource
@@ -1744,6 +1753,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         continue
       }
 
+      if (!processMarkupAndScripts) {
+        continue
+      }
+
       if (!shouldTransformJsBundle) {
         debug('js skip web target: %s', file)
         continue
@@ -1780,7 +1793,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       })
     }
 
-    if (shouldProcessTailwindGeneration || useIncrementalMode || isNativeAppStyleTarget) {
+    if (processStyles && (shouldProcessTailwindGeneration || useIncrementalMode || isNativeAppStyleTarget)) {
       await processRememberedCssReplay({
         addWatchFile,
         activeViteCssCacheFiles,

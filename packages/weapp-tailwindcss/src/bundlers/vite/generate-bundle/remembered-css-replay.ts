@@ -80,7 +80,7 @@ interface ProcessRememberedCssReplayOptions {
   activeViteCssCacheFiles: Set<string>
 }
 
-export function shouldSkipRememberedCssReplaySource(rawSource: string, sourceFile: string) {
+export function shouldSkipRawRememberedCssSource(rawSource: string, sourceFile: string) {
   const cleanSourceFile = sourceFile.replace(/[?#].*$/, '')
   return SOURCE_STYLE_OUTPUT_EXT_RE.test(cleanSourceFile)
     && !canProcessViteSourceStyleAsCss(rawSource, sourceFile)
@@ -150,7 +150,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       remembered: await refreshRememberedCssSource?.(item.remembered) ?? item.remembered,
     })))
     const replayableRememberedGroup = refreshedRememberedGroup.filter(({ remembered }) => {
-      const shouldSkip = shouldSkipRememberedCssReplaySource(remembered.rawSource, remembered.sourceFile)
+      const shouldSkip = shouldSkipRawRememberedCssSource(remembered.rawSource, remembered.sourceFile)
       if (shouldSkip) {
         debug('css replay skip raw source style: %s -> %s', remembered.sourceFile, outputFile)
       }

@@ -1242,7 +1242,7 @@ export function createViteFrameworkPlugins(
   if (disabledOptions.plugin) {
     return rewritePlugins.length ? rewritePlugins : undefined
   }
-  const generateBundleHook = createGenerateBundleHook({
+  const generateBundleContext = {
     opts,
     runtimeState,
     ensureRuntimeClassSet,
@@ -1276,6 +1276,14 @@ export function createViteFrameworkPlugins(
     hmrTimingRecorder,
     cssPipelineStrategy: frameworkCssPipelineStrategy,
     frameworkRootImportShellTargetByFile,
+  }
+  const preGenerateBundleHook = createGenerateBundleHook({
+    ...generateBundleContext,
+    processMarkupAndScripts: false,
+  })
+  const generateBundleHook = createGenerateBundleHook({
+    ...generateBundleContext,
+    processStyles: false,
   })
   const cssFinalizerOutputPlugin = createViteCssFinalizerOutputPlugin({
     opts,
@@ -1542,6 +1550,7 @@ export function createViteFrameworkPlugins(
           await prepareTailwindGeneration()
         }, { emit: false })
       },
+      generateBundle: preGenerateBundleHook,
     },
     ...createViteCssGenerationPlugins({
       generateCss: generateTailwindCssForVitePipeline,

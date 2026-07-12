@@ -776,6 +776,13 @@ describe('bundlers/vite helper modules', () => {
     expect(existing.source).toBe('updated')
     expect(emitFile).not.toHaveBeenCalled()
 
+    const aliased = createAsset('stale')
+    aliased.fileName = 'aliased.wxss'
+    bundle['internal.css'] = aliased
+    expect(emitOrReplayCssAsset('aliased.wxss', 'refreshed')).toBe(aliased)
+    expect(aliased.source).toBe('refreshed')
+    expect(emitFile).not.toHaveBeenCalled()
+
     const replayed = emitOrReplayCssAsset('app.wxss', 'generated')
     expect(replayed).toBeUndefined()
     expect(bundle['app.wxss']).toBeUndefined()

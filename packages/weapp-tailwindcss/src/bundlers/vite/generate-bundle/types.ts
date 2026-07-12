@@ -8,6 +8,8 @@ import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 
 export interface GenerateBundleContext {
+  processMarkupAndScripts?: boolean | undefined
+  processStyles?: boolean | undefined
   opts: InternalUserDefinedOptions
   runtimeState: {
     tailwindRuntime: InternalUserDefinedOptions['tailwindRuntime']

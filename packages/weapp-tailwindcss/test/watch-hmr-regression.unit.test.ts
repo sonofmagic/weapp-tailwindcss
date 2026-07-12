@@ -2226,6 +2226,7 @@ describe('watch-hmr regression cases', () => {
     expect(complexRound?.buildClassTokens('123456').some(token => token.startsWith('w-[calc(100%_-_'))).toBe(true)
     expect(complexRound?.buildClassTokens('123456').some(token => token.startsWith('grid-cols-[200rpx_minmax(900rpx,_1fr)_'))).toBe(true)
     expect(hexRound?.buildClassTokens('12345678').some(token => token.startsWith('shadow-[0_'))).toBe(true)
+    expect(hexRound?.buildClassTokens('000029')).not.toEqual(hexRound?.buildClassTokens('000049'))
   })
 
   it('keeps tailwind v4 js content rounds to tokens that produce css from script scanning', () => {

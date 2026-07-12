@@ -30,14 +30,14 @@ describe('bundlers/vite remembered css replay', () => {
   })
 
   it('skips uncompiled preprocessor sources but accepts compiled css content', async () => {
-    const { shouldSkipRememberedCssReplaySource } = await import('@/bundlers/vite/generate-bundle/remembered-css-replay')
+    const { shouldSkipRawRememberedCssSource } = await import('@/bundlers/vite/generate-bundle/remembered-css-replay')
     const sourceFile = '/repo/pages/index/index.scss?direct'
 
-    expect(shouldSkipRememberedCssReplaySource(
+    expect(shouldSkipRawRememberedCssSource(
       '// https://sass-lang.com/documentation\n.a { color: turquoise; }',
       sourceFile,
     )).toBe(true)
-    expect(shouldSkipRememberedCssReplaySource('.a { color: turquoise; }', sourceFile)).toBe(false)
+    expect(shouldSkipRawRememberedCssSource('.a { color: turquoise; }', sourceFile)).toBe(false)
   })
 
   it('skips source trace preparation when remembered replay signature is fresh', async () => {

@@ -56,16 +56,17 @@ const NON_DIGIT_RE = /\D/g
 
 export function buildHexArbitraryClassTokens(seed: string) {
   const numericSeed = seed.replace(NON_DIGIT_RE, '').padEnd(8, '0')
-  const hex6 = `${numericSeed.slice(0, 4)}${numericSeed.slice(6, 8) || '5a'}`
-  const hex4 = `${numericSeed.slice(2, 4) || '5a'}f7`
-  const ringPx = Number(numericSeed.slice(2, 4)) + 1
-  const spacePx = Number(numericSeed.slice(4, 6)) + 8
+  const variableSeed = Number(numericSeed.slice(4, 6))
+  const hex6 = numericSeed.slice(2, 8)
+  const hex4 = `${numericSeed.slice(4, 6)}f7`
+  const ringPx = variableSeed + 1
+  const spacePx = variableSeed + 8
 
   return [
-    `bg-[#${hex4}]`,
-    `text-[${Number(numericSeed.slice(0, 2)) + 28}px]`,
-    `h-[${Number(numericSeed.slice(2, 4)) + 16}px]`,
+    `text-[${variableSeed + 28}px]`,
+    `h-[${variableSeed + 16}px]`,
     `ring-[${ringPx}.5px]`,
+    `bg-[#${hex4}]`,
     `shadow-[0_${spacePx}px_${spacePx + 2}px_#${hex6}]`,
   ]
 }
