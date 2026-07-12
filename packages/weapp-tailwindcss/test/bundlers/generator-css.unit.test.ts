@@ -301,6 +301,68 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
+  it('preserves user native pseudo selectors in deferred mini-program css adaptation', async () => {
+    const userCss = '@layer base { button::after, wx-button::after { display:none; border:none; content:""; } }'
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: vi.fn(async () => ({
+          css: '.bg-blue-500{background-color:blue}',
+          rawCss: [
+            'html:not(#\\#){line-height:1.5}',
+            userCss,
+            '@layer utilities { .bg-blue-500:not(#\\#){background-color:blue} }',
+          ].join('\n'),
+          target: 'weapp',
+          classSet: new Set(['bg-blue-500']),
+          dependencies: [],
+          root: null,
+        })),
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          target: 'weapp',
+        },
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['bg-blue-500']),
+      rawSource: ['@import "tailwindcss";', userCss].join('\n'),
+      file: '/workspace/src/app.css',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+      deferCssAdaptation: true,
+      generatorPlatform: 'mp-weixin',
+    })
+
+    expect(result?.css).toContain('button::after')
+    expect(result?.css).toContain('wx-button::after')
+    expect(result?.css).toContain('border:none')
+    expect(result?.css).not.toContain('__workaround_weapp_tailwind')
+    expect(result?.css).not.toContain('@layer')
+    expect((result?.css.replace(/\s+/g, '').match(/button::after,wx-button::after/g) ?? [])).toHaveLength(1)
+    expect(result?.css.indexOf('button::after')).toBeLessThan(result?.css.indexOf('.bg-blue-500'))
+    expect(styleHandler).toHaveBeenCalledWith(expect.stringContaining('button::after'), expect.objectContaining({
+      isMainChunk: false,
+    }))
+  })
+
   it('filters standalone utilities from deferred apply-only component css', async () => {
     vi.doMock('@/generator', () => createDefaultGeneratorMock({
       createWeappTailwindcssGenerator: vi.fn(() => ({
