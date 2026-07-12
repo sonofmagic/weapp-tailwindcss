@@ -7,6 +7,35 @@ import { installTailwindcssCssRedirect } from './tailwindcss-css-redirect'
 const localRequire = createRequire(import.meta.url)
 const MPX_STYLE_RESOURCE_QUERY_RE = /(?:^|[?&])type=styles(?:&|$)/
 const MPX_WEBPACK_PLUGIN_PACKAGE_RE = /@mpxjs[\\/]webpack-plugin[\\/]package\.json$/
+const MPX_WEBPACK_PLUGIN_LIB_RE = /^(.*[\\/]@mpxjs[\\/]webpack-plugin)[\\/]lib[\\/]/
+const MPX_WEBPACK_PLUGIN_REQUEST_RE = /@mpxjs\/webpack-plugin\/([^!?]+)/g
+
+function findMpxWebpackPluginDirFromRules(rules: any): string | undefined {
+  const visit = (value: any): string | undefined => {
+    if (typeof value === 'string') {
+      return value.match(MPX_WEBPACK_PLUGIN_LIB_RE)?.[1]
+    }
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        const result = visit(item)
+        if (result) {
+          return result
+        }
+      }
+      return undefined
+    }
+    if (value && typeof value === 'object') {
+      for (const key of ['loader', 'use', 'rules', 'oneOf']) {
+        const result = visit(value[key])
+        if (result) {
+          return result
+        }
+      }
+    }
+    return undefined
+  }
+  return visit(rules)
+}
 
 function isMpxStyleResourceQuery(query?: string) {
   if (typeof query !== 'string') {
@@ -24,6 +53,10 @@ export function getTailwindcssCssEntry(pkgDir: string) {
 }
 
 function resolveMpxWebpackPluginDir(compiler: any) {
+  const rulePluginDir = findMpxWebpackPluginDirFromRules(compiler?.options?.module?.rules)
+  if (rulePluginDir) {
+    return rulePluginDir
+  }
   const candidates = [
     compiler?.context,
     compiler?.options?.context,
@@ -50,6 +83,30 @@ function resolveMpxWebpackPluginDir(compiler: any) {
   catch {
     return undefined
   }
+}
+
+export function rewriteMpxWebpackPluginRequests(
+  request: string,
+  mpxWebpackPluginDir: string,
+  pathImpl: Pick<typeof path, 'join'> = path,
+) {
+  return request.replace(MPX_WEBPACK_PLUGIN_REQUEST_RE, (_full, subpath: string) => {
+    return pathImpl.join(mpxWebpackPluginDir, ...subpath.split('/'))
+  })
+}
+
+export function patchMpxWebpackPluginRequests(compiler: any, mpxWebpackPluginDir: string | undefined) {
+  if (!mpxWebpackPluginDir || !compiler?.hooks?.normalModuleFactory?.tap) {
+    return false
+  }
+  compiler.hooks.normalModuleFactory.tap('weapp-tailwindcss-mpx-loader-resolve', (normalModuleFactory: any) => {
+    normalModuleFactory.hooks.beforeResolve.tap('weapp-tailwindcss-mpx-loader-resolve', (resolveData: any) => {
+      if (typeof resolveData?.request === 'string') {
+        resolveData.request = rewriteMpxWebpackPluginRequests(resolveData.request, mpxWebpackPluginDir)
+      }
+    })
+  })
+  return true
 }
 
 function isMpxWebpackPluginRequest(request: string | undefined) {
@@ -152,6 +209,7 @@ export function ensureMpxTailwindcssAliases(compiler: any, pkgDir: string) {
   compiler.options.resolve = compiler.options.resolve || {}
   const mpxWebpackPluginDir = resolveMpxWebpackPluginDir(compiler)
   patchMpxWebpackPluginNormalizeLib(compiler, mpxWebpackPluginDir)
+  patchMpxWebpackPluginRequests(compiler, mpxWebpackPluginDir)
   if (mpxWebpackPluginDir) {
     ensureResolveLoaderAlias(compiler, mpxWebpackPluginDir)
   }

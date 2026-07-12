@@ -47,6 +47,7 @@ import {
   finalizeWebpackCssAssetSource,
   getRuntimeClassSetSync,
   hasAdditionalWebpackAssetUserCssMarkers,
+  hasDeferredWebpackGeneratedCss,
   hasMissingRuntimeCandidates,
   hasProcessedCssAssetUrl,
   hasUsableWebpackGeneratorCssSources,
@@ -684,17 +685,39 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 },
                 transform: async () => {
                   const source = readCurrentProcessedRawSource()
+                  const missingProcessedLoaderGeneratedCss = isWebGeneratorTarget && processedLoaderGeneratedCss
+                    ? filterExistingCssRules(
+                        source,
+                        stripBundlerGeneratedCssMarkers(processedLoaderGeneratedCss.css),
+                      )
+                    : ''
+                  const sourceWithLoaderGeneratedCss = missingProcessedLoaderGeneratedCss.trim().length === 0
+                    ? source
+                    : createWebpackGeneratorUserCssSourceAppend(
+                      { css: source, processed: true },
+                      { css: missingProcessedLoaderGeneratedCss, processed: true },
+                    )!.css
                   const processedBareSelectorSourceCss = processedSourceCss
-                    ?? (hasTailwindGeneratedAssetCss ? removeWebpackTailwindGeneratedAssetCss(source) : undefined)
-                  const shouldTransformGeneratedAssetCss = hasTailwindGeneratedAssetCss && !hasGeneratedCssMarker
+                    ?? (hasTailwindGeneratedAssetCss ? removeWebpackTailwindGeneratedAssetCss(sourceWithLoaderGeneratedCss) : undefined)
+                  const shouldTransformGeneratedAssetCss = hasTailwindGeneratedAssetCss
+                    && (
+                      !hasGeneratedCssMarker
+                      || (
+                        !isWebGeneratorTarget
+                        && hasDeferredWebpackGeneratedCss(
+                          source,
+                          [...generatedCssSources.values()].map(item => item.classSet),
+                        )
+                      )
+                    )
                   const handledCss = shouldTransformGeneratedAssetCss
                     ? isWebGeneratorTarget
-                      ? source
+                      ? sourceWithLoaderGeneratedCss
                       : (await compilerOptions.styleHandler(
-                          source,
+                          sourceWithLoaderGeneratedCss,
                           cssHandlerOptionsForProcessedAsset,
                         )).css
-                    : source
+                    : sourceWithLoaderGeneratedCss
                   const nextCss = stripTrailingLineWhitespace(finalizeCssAssetSource(handledCss, {
                     cssPreflight: cssHandlerOptionsForProcessedAsset.isMainChunk,
                     generatedCss: hasGeneratedCssMarker || hasTailwindGeneratedAssetCss,
@@ -826,7 +849,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 const shouldPreserveExistingPreflight = cssHandlerOptions.isMainChunk
                   || (!isConfiguredMainCssSource && (isConfiguredCssSource || sourceCssHasTailwindRoot))
                 const loaderGeneratedCss = sourceFile
-                  && !isWebGeneratorTarget
                   ? generatedCssSources.get(path.resolve(sourceFile))
                   : undefined
                 const shouldRegenerateExplicitTailwindV4CssSource = sourceCss !== undefined

@@ -10,7 +10,9 @@ import {
   injectMpxCssRewritePreRules,
   isMpx,
   patchMpxLoaderResolve,
+  patchMpxWebpackPluginRequests,
   patchMpxWebpackPluginNormalizeLib,
+  rewriteMpxWebpackPluginRequests,
   setupMpxTailwindcssRedirect,
 } from '@/shared/mpx'
 
@@ -119,6 +121,46 @@ describe('mpx integration helpers', () => {
     expect(normalize.lib('record-loader')).toBe(path.join(pluginDir, 'lib/record-loader'))
     expect((normalize.lib as any).__weappTwPatched).toBe(true)
     expect((normalize.lib as any).__weappTwOriginal).toBe(originalLib)
+  })
+
+  it('rewrites generated mpx inline loader requests to compiler-owned absolute paths', () => {
+    const request = '@mpxjs/webpack-plugin/lib/extractor!@mpxjs/webpack-plugin/lib/style-compiler/index!/tailwind/index.css?type=styles'
+
+    expect(rewriteMpxWebpackPluginRequests(request, 'D:\\repo\\node_modules\\@mpxjs\\webpack-plugin', path.win32)).toBe(
+      'D:\\repo\\node_modules\\@mpxjs\\webpack-plugin\\lib\\extractor!D:\\repo\\node_modules\\@mpxjs\\webpack-plugin\\lib\\style-compiler\\index!/tailwind/index.css?type=styles',
+    )
+  })
+
+  it('patches normal module requests before webpack resolves generated loaders', () => {
+    let normalModuleFactoryHandler: ((factory: any) => void) | undefined
+    let beforeResolveHandler: ((data: any) => void) | undefined
+    const compiler = {
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn((_name, handler) => {
+            normalModuleFactoryHandler = handler
+          }),
+        },
+      },
+    }
+
+    expect(patchMpxWebpackPluginRequests(compiler, '/project/node_modules/@mpxjs/webpack-plugin')).toBe(true)
+    normalModuleFactoryHandler?.({
+      hooks: {
+        beforeResolve: {
+          tap: vi.fn((_name, handler) => {
+            beforeResolveHandler = handler
+          }),
+        },
+      },
+    })
+    const resolveData = {
+      request: '@mpxjs/webpack-plugin/lib/record-loader!/tailwind/index.css?type=styles',
+    }
+    beforeResolveHandler?.(resolveData)
+
+    expect(resolveData.request).toBe('/project/node_modules/@mpxjs/webpack-plugin/lib/record-loader!/tailwind/index.css?type=styles')
+    expect(patchMpxWebpackPluginRequests({}, undefined)).toBe(false)
   })
 
   it('returns false when mpx normalize module does not expose lib', async () => {

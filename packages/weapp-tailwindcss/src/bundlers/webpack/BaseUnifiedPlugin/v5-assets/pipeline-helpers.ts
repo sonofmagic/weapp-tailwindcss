@@ -15,6 +15,7 @@ import { finalizeMiniProgramCss, pruneMiniProgramGeneratedCss, stripMiniProgramC
 import { createCssTokenSourceMap, isCssSourceTraceEnabled } from '../../../shared/css-source-trace'
 import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../../../shared/generated-css-marker'
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives } from '../../../shared/generator-css'
+import { collectRawSourceClassSelectors } from '../../../shared/generator-css/class-selectors'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, parseImportRequest, removeTailwindSourceDirectives } from '../../../shared/generator-css/directives'
 import { createCssSourceOrderAppend, hasMiniProgramTailwindV4PreflightReset } from '../../../shared/generator-css/generation-helpers'
 import { removeMiniProgramHoverSelectors, removeTailwindV4GeneratedUserCssArtifacts, removeTailwindV4GeneratorAtRules, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments } from '../../../shared/generator-css/user-css'
@@ -342,15 +343,20 @@ export function shouldConsumeWebpackLoaderGeneratedCss(options: {
     options.watchMode === true
     && options.loaderGeneratedClassSet
     && options.sourceCandidates
-    && (
-      hasMissingRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
-      || hasStaleRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
-    )
+    && hasStaleRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
   ) {
     return false
   }
   if (options.hasBundlerGeneratedCssMarker) {
     return true
+  }
+  if (
+    options.watchMode === true
+    && options.loaderGeneratedClassSet
+    && options.sourceCandidates
+    && hasMissingRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
+  ) {
+    return false
   }
   return Boolean(
     options.allowMarkerlessRegistryMatch
@@ -359,6 +365,21 @@ export function shouldConsumeWebpackLoaderGeneratedCss(options: {
     && !hasMissingRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
     && !hasStaleRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates),
   )
+}
+
+export function hasDeferredWebpackGeneratedCss(
+  source: string,
+  generatedClassSets: Iterable<ReadonlySet<string>>,
+) {
+  const selectors = collectRawSourceClassSelectors(source)
+  for (const classSet of generatedClassSets) {
+    for (const candidate of classSet) {
+      if (selectors.has(candidate)) {
+        return true
+      }
+    }
+  }
+  return false
 }
 
 export interface WebpackGeneratorUserCssSource {

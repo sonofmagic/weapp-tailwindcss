@@ -158,6 +158,7 @@ const allWebViteHmrCases: WebViteHmrCase[] = [
     classFrom: '<h1 class="m-0 text-[32px] leading-[38px] font-semibold">',
     classTo: '<h1 data-web-vite-hmr="vue-webpack-v4" class="m-0 text-[#ff0000] leading-[38px] font-semibold">',
     markerAttr: 'vue-webpack-v4',
+    reloadAllowed: true,
     styleRequired: false,
     classFlowRequired: false,
   },

@@ -3,6 +3,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
+import { createPnpmCommand } from './pnpm-command.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
@@ -258,13 +259,15 @@ if (staleTargets.length === 0) {
 
 for (const target of staleTargets) {
   console.log(`[weapp-tailwindcss] ${target.label} dist 已过期，正在构建供 demo 使用...`)
+  const command = createPnpmCommand(['--filter', target.filter, 'build'])
   const result = spawnSync(
-    process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
-    ['--filter', target.filter, 'build'],
+    command.command,
+    command.args,
     {
       cwd: repoRoot,
       stdio: 'inherit',
       env: process.env,
+      shell: command.shell,
     },
   )
 

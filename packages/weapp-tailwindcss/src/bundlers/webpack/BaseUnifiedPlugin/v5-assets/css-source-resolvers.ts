@@ -242,6 +242,14 @@ export function createWebpackCssSourceResolvers(options: {
       .filter(sourceFile => cssSources.has(sourceFile))
       .filter(sourceFile => isCssSourceAllowedForOutput(file, sourceFile))
       .sort()
+    const configuredResourceMatches = resourceMatches.filter(sourceFile =>
+      configuredCssEntryFiles.some(entry => path.resolve(entry) === path.resolve(sourceFile)),
+    )
+    if (configuredResourceMatches.length === 1) {
+      const sourceFile = configuredResourceMatches[0]!
+      activeWebpackCssSourceFiles.add(sourceFile)
+      return sourceFile
+    }
     if (resourceMatches.length === 1) {
       const sourceFile = resourceMatches[0]
       activeWebpackCssSourceFiles.add(sourceFile!)
