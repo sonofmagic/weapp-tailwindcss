@@ -5,6 +5,14 @@
   --tw-content: '';
 }
 /*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
+  *,
+  ::before,
+  ::after,
+  ::backdrop {
+    --tw-content: '';
+  }
+}
 :root,
 :host {
   --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -203,14 +211,6 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .before\:content-\[\'independent_subpackage_taro-webpack-react-tailwindcss-v4\'\]::before {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
-}
-@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
-  *,
-  ::before,
-  ::after,
-  ::backdrop {
-    --tw-content: '';
-  }
 }
 /*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
 :host,
