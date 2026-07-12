@@ -31,6 +31,7 @@ text,
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-content: '';
 }
 :host,
 page,
@@ -638,12 +639,9 @@ wx-button {
 }
 /* tokens: after:!content-['good_work!'] <= src/pages/index/index.tsx */
 .after_c_econtent-_b_agood_work_e_a_B::after {
+  content: var(--tw-content);
   --tw-content: 'good work!' !important;
   content: var(--tw-content) !important;
-}
-/* tokens: after:!content-['good_work!'] <= src/pages/index/index.tsx */
-.after_c_econtent-_b_agood_work_e_a_B::after {
-  content: var(--tw-content);
 }
 /* tokens: dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
 .dark_cbg-zinc-900.theme-dark {
@@ -1057,12 +1055,10 @@ wx-button {
 }
 .nut-uploader-input {
   position: absolute !important;
-  width: 100% !important;
-  height: 100% !important;
-}
-.nut-uploader-input {
   top: 0;
   left: 0;
+  width: 100% !important;
+  height: 100% !important;
   overflow: hidden;
   cursor: pointer;
   opacity: 0;
@@ -1925,12 +1921,10 @@ wx-button {
   transform: rotate(320deg);
 }
 .nut-tabs-vertical .nut-tabs-horizontal .nut-tabs-titles {
-  padding: 0 !important;
-}
-.nut-tabs-vertical .nut-tabs-horizontal .nut-tabs-titles {
   flex-direction: row;
   height: var(--nutui-tabs-titles-height, 44rpx);
   width: 100%;
+  padding: 0 !important;
 }
 .nut-tabs-vertical .nut-tabs-horizontal .nut-tabs-titles .nut-tabs-list {
   flex-direction: row;
@@ -3924,11 +3918,9 @@ wx-button {
   position: relative;
 }
 .nut-rate-item-half {
-  width: 50% !important;
-}
-.nut-rate-item-half {
   position: absolute;
   height: 100%;
+  width: 50% !important;
   left: 0;
   top: 0;
   overflow: hidden;
@@ -6195,12 +6187,10 @@ wx-button {
   text-align: center;
 }
 .nut-imagepreview-pop {
-  max-width: 100% !important;
-  background: transparent !important;
-}
-.nut-imagepreview-pop {
   width: 100%;
   height: 100%;
+  max-width: 100% !important;
+  background: transparent !important;
   display: flex;
   align-items: center;
 }
@@ -6957,10 +6947,8 @@ wx-button {
   left: var(--nutui-elevator-bars-right, 16rpx);
 }
 .nut-drag {
-  z-index: 9997 !important;
-}
-.nut-drag {
   position: fixed;
+  z-index: 9997 !important;
   width: 0;
   height: 0;
   touch-action: none;
@@ -7109,8 +7097,6 @@ wx-button {
 }
 .nut-dialog-close {
   position: absolute !important;
-}
-.nut-dialog-close {
   z-index: 1;
   cursor: pointer;
   width: var(--nutui-dialog-close-width, 16rpx);
@@ -8563,10 +8549,8 @@ wx-button {
   bottom: 5rpx;
 }
 .nut-calendar-day-active {
-  color: #fff !important;
-}
-.nut-calendar-day-active {
   background-color: var(--nutui-calendar-active-background-color, var(--nutui-color-primary, #ff0f23));
+  color: #fff !important;
   border-radius: var(--nutui-calendar-day-active-border-radius, 4rpx);
 }
 .nut-calendar-day-active.active-start {
@@ -8593,10 +8577,8 @@ wx-button {
   color: var(--nutui-calendar-choose-color, var(--nutui-color-primary, #ff0f23));
 }
 .nut-calendar-day-choose-disabled {
-  color: var(--nutui-calendar-disable-color, var(--nutui-color-text-disabled, #c2c4cc)) !important;
-}
-.nut-calendar-day-choose-disabled {
   background-color: var(--nutui-calendar-choose-disable-background-color, rgba(191, 191, 191, 0.09));
+  color: var(--nutui-calendar-disable-color, var(--nutui-color-text-disabled, #c2c4cc)) !important;
 }
 .nut-calendar-day-choose-disabled .nut-calendar-day-info-curr {
   display: none;
@@ -9729,9 +9711,6 @@ wx-button {
 .nut-actionsheet-cancel-disabled,
 .nut-actionsheet-item-disabled {
   color: var(--nutui-color-text-disabled, #c2c4cc) !important;
-}
-.nut-actionsheet-cancel-disabled,
-.nut-actionsheet-item-disabled {
   cursor: not-allowed;
 }
 .nut-actionsheet-cancel {
