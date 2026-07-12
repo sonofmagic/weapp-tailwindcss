@@ -10,6 +10,20 @@
 ::backdrop {
   --tw-content: '';
 } /*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
+  ::-webkit-backdrop {
+    --tw-content: '';
+  }
+  ::-ms-backdrop {
+    --tw-content: '';
+  }
+  *,
+  ::before,
+  ::after,
+  ::backdrop {
+    --tw-content: '';
+  }
+}
 :root,
 :host {
   --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -289,18 +303,4 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
 .before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\]::before {
   --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
   content: var(--tw-content);
-}
-@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
-  ::-webkit-backdrop {
-    --tw-content: '';
-  }
-  ::-ms-backdrop {
-    --tw-content: '';
-  }
-  *,
-  ::before,
-  ::after,
-  ::backdrop {
-    --tw-content: '';
-  }
 }
