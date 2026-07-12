@@ -105,6 +105,7 @@ export function patchMpxWebpackPluginRequests(compiler: any, mpxWebpackPluginDir
   }
   const pluginName = 'weapp-tailwindcss-mpx-loader-resolve'
   const patchedCompilers = new WeakSet<object>()
+  const patchedLoaderResolvers = new WeakSet<object>()
   const patchedResolverFactories = new WeakSet<object>()
   const install = (targetCompiler: any) => {
     if (!targetCompiler || typeof targetCompiler !== 'object' || patchedCompilers.has(targetCompiler)) {
@@ -118,6 +119,11 @@ export function patchMpxWebpackPluginRequests(compiler: any, mpxWebpackPluginDir
       installMpxResolveLoaderAlias(targetCompiler, mpxWebpackPluginDir)
     }
     targetCompiler.hooks?.normalModuleFactory?.tap?.(pluginName, (normalModuleFactory: any) => {
+      const loaderResolver = normalModuleFactory.getResolver?.('loader')
+      if (loaderResolver && typeof loaderResolver === 'object' && !patchedLoaderResolvers.has(loaderResolver)) {
+        patchedLoaderResolvers.add(loaderResolver)
+        patchMpxLoaderResolver(loaderResolver, mpxWebpackPluginDir)
+      }
       normalModuleFactory.hooks.beforeResolve.tap(pluginName, (resolveData: any) => {
         if (typeof resolveData?.request === 'string') {
           resolveData.request = rewriteMpxWebpackPluginRequests(resolveData.request, mpxWebpackPluginDir)
@@ -194,6 +200,24 @@ function installMpxResolveLoaderAlias(compiler: any, mpxWebpackPluginDir: string
       }
     },
   )
+}
+
+function patchMpxLoaderResolver(resolver: any, mpxWebpackPluginDir: string) {
+  const originalResolve = resolver?.resolve
+  if (typeof originalResolve !== 'function' || (originalResolve as any).__weappTwPatched) {
+    return
+  }
+  const wrappedResolve = function (this: any, ...args: any[]) {
+    const requestIndex = typeof args[0] === 'string' ? 1 : 2
+    const request = args[requestIndex]
+    if (typeof request === 'string' && isMpxWebpackPluginRequest(request)) {
+      args[requestIndex] = resolveMpxWebpackPluginRequest(request, mpxWebpackPluginDir)
+    }
+    return originalResolve.apply(this, args)
+  }
+  ;(wrappedResolve as any).__weappTwPatched = true
+  ;(wrappedResolve as any).__weappTwOriginal = originalResolve
+  resolver.resolve = wrappedResolve
 }
 
 export function patchMpxWebpackPluginNormalizeLib(_compiler: any, mpxWebpackPluginDir: string | undefined) {

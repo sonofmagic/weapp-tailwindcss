@@ -221,17 +221,20 @@ describe('mpx integration helpers', () => {
       context: packageContext,
       entry: './index.css',
       mode: 'development',
-      plugins: [
-        {
-          apply(compiler) {
-            patchMpxWebpackPluginRequests(compiler, pluginDir)
-          },
-        },
-      ],
     })
+    const loaderResolver = compiler.resolverFactory.get('loader')
+    patchMpxWebpackPluginRequests(compiler, pluginDir)
+    compiler.hooks.normalModuleFactory.call({
+      getResolver: () => loaderResolver,
+      hooks: {
+        beforeResolve: {
+          tap: vi.fn(),
+        },
+      },
+    } as any)
 
     const resolvedLoader = await new Promise<string>((resolve, reject) => {
-      compiler.resolverFactory.get('loader').resolve(
+      loaderResolver.resolve(
         {},
         packageContext,
         '@mpxjs/webpack-plugin/lib/record-loader',
