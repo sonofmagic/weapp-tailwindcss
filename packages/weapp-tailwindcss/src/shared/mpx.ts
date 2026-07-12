@@ -166,39 +166,14 @@ function ensureResolveLoaderAlias(compiler: any, mpxWebpackPluginDir: string) {
   addMpxWebpackPluginAlias(alias, mpxWebpackPluginDir)
 }
 
-function resolveMpxWebpackPluginRequire(compiler: any) {
-  const candidates = [
-    compiler?.context,
-    compiler?.options?.context,
-    process.cwd(),
-  ].filter((item): item is string => typeof item === 'string' && item.length > 0)
-
-  for (const candidate of candidates) {
-    try {
-      const projectRequire = createRequire(path.join(candidate, 'package.json'))
-      projectRequire.resolve('@mpxjs/webpack-plugin/package.json')
-      return projectRequire
-    }
-    catch {
-    }
-  }
-
-  const cachedPackageJson = Object.keys(localRequire.cache).find(file => MPX_WEBPACK_PLUGIN_PACKAGE_RE.test(file))
-  if (cachedPackageJson) {
-    return createRequire(cachedPackageJson)
-  }
-
-  return localRequire
-}
-
-export function patchMpxWebpackPluginNormalizeLib(compiler: any, mpxWebpackPluginDir: string | undefined) {
+export function patchMpxWebpackPluginNormalizeLib(_compiler: any, mpxWebpackPluginDir: string | undefined) {
   if (!mpxWebpackPluginDir) {
     return false
   }
-  const projectRequire = resolveMpxWebpackPluginRequire(compiler)
   let normalize: { lib?: (file: string) => string }
   try {
-    normalize = projectRequire('@mpxjs/webpack-plugin/lib/utils/normalize')
+    const pluginRequire = createRequire(path.join(mpxWebpackPluginDir, 'package.json'))
+    normalize = pluginRequire(path.join(mpxWebpackPluginDir, 'lib/utils/normalize'))
   }
   catch {
     return false

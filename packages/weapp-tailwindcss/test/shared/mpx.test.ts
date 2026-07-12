@@ -105,11 +105,11 @@ describe('mpx integration helpers', () => {
     })
   })
 
-  it('patches normalize.lib from a project-local mpx webpack plugin fixture once', async () => {
+  it('patches normalize.lib from the compiler-owned mpx plugin instance once', async () => {
     const { pluginDir, root } = await createMpxWebpackPluginFixture()
     const compiler = {
-      context: root,
-      options: { context: root },
+      context: process.cwd(),
+      options: { context: process.cwd() },
     }
     const projectRequire = createRequire(path.join(root, 'package.json'))
     const normalize = projectRequire('@mpxjs/webpack-plugin/lib/utils/normalize')
