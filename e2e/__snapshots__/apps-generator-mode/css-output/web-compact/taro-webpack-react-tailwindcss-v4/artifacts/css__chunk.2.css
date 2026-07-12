@@ -204,14 +204,6 @@ input:where([type='button'], [type='reset'], [type='submit']),
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\]::before {
-  --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
-  content: var(--tw-content);
-}
-.before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\]::before {
-  --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
-  content: var(--tw-content);
-}
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   *,
   ::before,
@@ -220,17 +212,13 @@ input:where([type='button'], [type='reset'], [type='submit']),
     --tw-content: '';
   }
 }
-::-webkit-backdrop {
-  --tw-content: '';
-}
-::-ms-backdrop {
-  --tw-content: '';
-}
-*,
-::after,
-::backdrop,
-::before {
-  --tw-content: '';
+/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+:host,
+:root {
+  --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
 }
 ::-webkit-backdrop {
   border: 0 solid;
@@ -251,76 +239,10 @@ input:where([type='button'], [type='reset'], [type='submit']),
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-*,
-::after,
-::backdrop,
-::before,
-::file-selector-button {
-  border: 0 solid;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-:host,
-html {
-  line-height: 1.5;
-  -webkit-text-size-adjust: 100%;
-  font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
-  -webkit-font-feature-settings: var(--default-font-feature-settings, normal);
-  font-feature-settings: var(--default-font-feature-settings, normal);
-  font-variation-settings: var(--default-font-variation-settings, normal);
-  -moz-tab-size: 4;
-  -o-tab-size: 4;
-  tab-size: 4;
-  -webkit-tap-highlight-color: transparent;
-}
-hr {
-  border-top-width: 0.025rem;
-  color: inherit;
-  height: 0;
-}
-code,
-kbd,
-pre,
-samp {
-  font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
-  -webkit-font-feature-settings: var(--default-mono-font-feature-settings, normal);
-  font-feature-settings: var(--default-mono-font-feature-settings, normal);
-  font-size: 1em;
-  font-variation-settings: var(--default-mono-font-variation-settings, normal);
-}
-sub {
-  bottom: -0.25em;
-}
-sup {
-  top: -0.5em;
 }
 taro-progress-core {
   vertical-align: baseline;
 }
-menu,
-ol,
-ul {
-  list-style: none;
-}
-embed,
-iframe,
-img,
-object,
-svg,
-taro-audio-core,
-taro-canvas-core,
-taro-video-core {
-  display: block;
-  vertical-align: middle;
-}
-img,
-taro-video-core {
-  height: auto;
-  max-width: 100%;
-}
 ::-webkit-file-upload-button {
   background-color: transparent;
   border-radius: 0;
@@ -332,31 +254,7 @@ taro-video-core {
   letter-spacing: inherit;
   opacity: 1;
 }
-::file-selector-button,
-optgroup,
-select,
-taro-button-core,
-taro-input-core,
-taro-textarea-core {
-  background-color: transparent;
-  border-radius: 0;
-  color: inherit;
-  font: inherit;
-  -webkit-font-feature-settings: inherit;
-  font-feature-settings: inherit;
-  font-variation-settings: inherit;
-  letter-spacing: inherit;
-  opacity: 1;
-}
-:where(select:is([multiple], [size])) optgroup option {
-  -webkit-padding-start: 0.5rem;
-  padding-inline-start: 0.5rem;
-}
 ::-webkit-file-upload-button {
-  -webkit-margin-end: 0.1rem;
-  margin-inline-end: 0.1rem;
-}
-::file-selector-button {
   -webkit-margin-end: 0.1rem;
   margin-inline-end: 0.1rem;
 }
@@ -385,50 +283,11 @@ taro-textarea-core {
   ::-ms-input-placeholder {
     color: currentcolor;
   }
-  ::placeholder {
-    color: currentcolor;
-  }
 }
 taro-textarea-core {
   resize: vertical;
 }
-::-webkit-datetime-edit {
-  display: -webkit-inline-flex;
-  display: inline-flex;
-}
-::-webkit-datetime-edit,
-::-webkit-datetime-edit-day-field,
-::-webkit-datetime-edit-hour-field,
-::-webkit-datetime-edit-meridiem-field,
-::-webkit-datetime-edit-millisecond-field,
-::-webkit-datetime-edit-minute-field,
-::-webkit-datetime-edit-month-field,
-::-webkit-datetime-edit-second-field,
-::-webkit-datetime-edit-year-field {
-  padding-block: 0;
-}
 ::-webkit-file-upload-button {
   -webkit-appearance: button;
   appearance: button;
-}
-::file-selector-button,
-taro-button-core,
-taro-input-core:where([type='button'], [type='reset'], [type='submit']) {
-  -webkit-appearance: button;
-  -moz-appearance: button;
-  appearance: button;
-}
-@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
-  ::-webkit-backdrop {
-    --tw-content: '';
-  }
-  ::-ms-backdrop {
-    --tw-content: '';
-  }
-  *,
-  ::after,
-  ::backdrop,
-  ::before {
-    --tw-content: '';
-  }
 }
