@@ -535,7 +535,6 @@ abc {
     transform: scale(0.96);
   }
 }
-/*$vite$:1*/
+
 /* Main style shell. Tailwind v4 source directives live in tailwind.css. */
 /* Tailwind v4 root entry intentionally uses plain CSS. */
-/*$vite$:1*/

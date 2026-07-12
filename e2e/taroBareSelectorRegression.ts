@@ -2,6 +2,7 @@ import type { ProjectEntry } from './shared'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import path from 'pathe'
+import postcss from 'postcss'
 import { expect, it } from 'vitest'
 import { ensureProjectBuilt } from './projectTest'
 import { getProjectCssFiles } from './shared'
@@ -12,16 +13,15 @@ function compactCss(css: string) {
 
 function collectCssRuleBlocks(css: string, selector: string) {
   const blocks: string[] = []
-  const rulePattern = /([^{}]+)\{([^{}]*)\}/g
-  for (const match of css.matchAll(rulePattern)) {
-    const selectorText = match[1]?.trim() ?? ''
-    if (selectorText.startsWith('@')) {
-      continue
-    }
-    const selectorList = selectorText.split(',').map(item => item.trim())
-    if (selectorList.includes(selector)) {
-      blocks.push(`${selectorText}{${match[2]}}`)
-    }
+  try {
+    postcss.parse(css).walkRules((rule) => {
+      if (rule.selectors.map(item => item.trim()).includes(selector)) {
+        blocks.push(rule.toString())
+      }
+    })
+  }
+  catch {
+    return ''
   }
   return blocks.join('\n')
 }

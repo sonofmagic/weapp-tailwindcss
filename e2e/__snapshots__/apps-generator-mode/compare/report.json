@@ -141,7 +141,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 30687,
+      "bytes": 32049,
       "selectors": [
         ".-mt-2",
         "._2xl_ctext-base",
@@ -364,7 +364,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 302680,
+      "bytes": 302646,
       "selectors": [
         ".-bg-conic-180",
         ".-bg-linear-65",
@@ -4985,7 +4985,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 244031,
+      "bytes": 243997,
       "selectors": [
         "._ebg-_bgray_B",
         ".after_c_econtent-_b_agood_work_e_a_B:after",
@@ -8814,7 +8814,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 23649,
+      "bytes": 22508,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before",

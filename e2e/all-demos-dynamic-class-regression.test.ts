@@ -67,6 +67,7 @@ const nativeElementRegressionVars = [
   '--weapp-tw-native-button-regression',
   '--weapp-tw-native-input-regression',
 ] as const
+const nativeButtonAfterRegressionVar = '--weapp-tw-native-button-after-regression'
 const localHBuilderXProjectNames = new Set(
   DEMO_COVERAGE_MATRIX
     .filter(item => item.hbuilderxLocal)
@@ -338,7 +339,7 @@ function createUniAppPatch(entry: ProjectEntry): ProjectPatch {
 }
 
 function createApplyStyle(_entry: ProjectEntry) {
-  return `.${markerClass} {\n  min-width: 0;\n}\nview {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[0]}: 1;\n}\ntext {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[1]}: 1;\n}\nbutton {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[2]}: 1;\n}\ninput {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[3]}: 1;\n}\n`
+  return `.${markerClass} {\n  min-width: 0;\n}\nview {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[0]}: 1;\n}\ntext {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[1]}: 1;\n}\nbutton {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[2]}: 1;\n}\nbutton::after {\n  border: none;\n  ${nativeButtonAfterRegressionVar}: 1;\n}\ninput {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[3]}: 1;\n}\n`
 }
 
 function prependOrAppendUserStyle(entry: ProjectEntry, source: string) {
@@ -432,6 +433,12 @@ function expectBuiltRegression(entry: ProjectEntry, outputs: Array<{ name: strin
   for (const nativeElementRegressionVar of nativeElementRegressionVars) {
     expect(styles, `${entry.name} should preserve user-authored native element style ${nativeElementRegressionVar}`).toContain(nativeElementRegressionVar)
   }
+  const nativeButtonAfterRule = [...styles.matchAll(/button::after\s*\{[^}]*\}/gi)]
+    .map(match => match[0])
+    .find(rule => rule.includes(nativeButtonAfterRegressionVar))
+  expect(nativeButtonAfterRule, `${entry.name} should preserve the user-authored button::after selector`).toBeTruthy()
+  expect(nativeButtonAfterRule, `${entry.name} button::after should preserve border:none`).toMatch(/border\s*:\s*none/i)
+  expect(nativeButtonAfterRule, `${entry.name} button::after should preserve its regression marker`).toContain(nativeButtonAfterRegressionVar)
 
   for (const raw of rawClasses) {
     const escaped = replaceWxml(raw)

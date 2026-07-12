@@ -9710,9 +9710,6 @@ wx-button::after {
   display: none;
 }
 wx-button {
-  background: #000;
-}
-wx-button {
   background: #444;
 }
 abc {
