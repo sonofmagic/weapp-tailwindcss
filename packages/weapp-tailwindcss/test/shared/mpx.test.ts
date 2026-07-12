@@ -339,6 +339,31 @@ describe('mpx integration helpers', () => {
     expect(originalResolve).toHaveBeenCalledTimes(1)
   })
 
+  it('rewrites mpx loaders created dynamically through loader importModule', () => {
+    const activePluginDir = path.join('/project', 'node_modules/@mpxjs/webpack-plugin')
+    const originalImportModule = vi.fn((request: string, options?: any) => Promise.resolve({ request, options }))
+    const loaderContext = {
+      context: process.cwd(),
+      _module: {
+        loaders: [
+          { loader: path.join(activePluginDir, 'lib/extractor') },
+        ],
+      },
+      importModule: originalImportModule,
+    }
+
+    patchMpxLoaderResolve(loaderContext, '/tailwind', true)
+    patchMpxLoaderResolve(loaderContext, '/tailwind', true)
+    const options = { layer: 'mpx' }
+    loaderContext.importModule('!!@mpxjs/webpack-plugin/lib/record-loader!/tailwind/index.css', options)
+
+    expect(originalImportModule).toHaveBeenCalledOnce()
+    expect(originalImportModule).toHaveBeenCalledWith(
+      `!!${path.join(activePluginDir, 'lib/record-loader')}!/tailwind/index.css`,
+      options,
+    )
+  })
+
   it('skips loader resolve and normalize patches when inputs are unavailable', () => {
     const loaderContext = { resolve: vi.fn() }
 
