@@ -96,16 +96,31 @@ export function rewriteMpxWebpackPluginRequests(
 }
 
 export function patchMpxWebpackPluginRequests(compiler: any, mpxWebpackPluginDir: string | undefined) {
-  if (!mpxWebpackPluginDir || !compiler?.hooks?.normalModuleFactory?.tap) {
+  if (!mpxWebpackPluginDir || !compiler) {
     return false
   }
-  compiler.hooks.normalModuleFactory.tap('weapp-tailwindcss-mpx-loader-resolve', (normalModuleFactory: any) => {
-    normalModuleFactory.hooks.beforeResolve.tap('weapp-tailwindcss-mpx-loader-resolve', (resolveData: any) => {
-      if (typeof resolveData?.request === 'string') {
-        resolveData.request = rewriteMpxWebpackPluginRequests(resolveData.request, mpxWebpackPluginDir)
-      }
+  const pluginName = 'weapp-tailwindcss-mpx-loader-resolve'
+  const patchedCompilers = new WeakSet<object>()
+  const install = (targetCompiler: any) => {
+    if (!targetCompiler || typeof targetCompiler !== 'object' || patchedCompilers.has(targetCompiler)) {
+      return
+    }
+    patchedCompilers.add(targetCompiler)
+    ensureResolveLoaderAlias(targetCompiler, mpxWebpackPluginDir)
+    targetCompiler.hooks?.normalModuleFactory?.tap?.(pluginName, (normalModuleFactory: any) => {
+      normalModuleFactory.hooks.beforeResolve.tap(pluginName, (resolveData: any) => {
+        if (typeof resolveData?.request === 'string') {
+          resolveData.request = rewriteMpxWebpackPluginRequests(resolveData.request, mpxWebpackPluginDir)
+        }
+      })
     })
-  })
+    targetCompiler.hooks?.compilation?.tap?.(pluginName, (compilation: any) => {
+      compilation.hooks?.childCompiler?.tap?.(pluginName, (childCompiler: any) => {
+        install(childCompiler)
+      })
+    })
+  }
+  install(compiler)
   return true
 }
 

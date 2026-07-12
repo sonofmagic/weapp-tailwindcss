@@ -131,11 +131,19 @@ describe('mpx integration helpers', () => {
     )
   })
 
-  it('patches normal module requests before webpack resolves generated loaders', () => {
+  it('patches parent and child compiler requests before webpack resolves generated loaders', () => {
     let normalModuleFactoryHandler: ((factory: any) => void) | undefined
     let beforeResolveHandler: ((data: any) => void) | undefined
+    let compilationHandler: ((compilation: any) => void) | undefined
+    let childCompilerHandler: ((compiler: any) => void) | undefined
     const compiler = {
+      options: {},
       hooks: {
+        compilation: {
+          tap: vi.fn((_name, handler) => {
+            compilationHandler = handler
+          }),
+        },
         normalModuleFactory: {
           tap: vi.fn((_name, handler) => {
             normalModuleFactoryHandler = handler
@@ -160,6 +168,47 @@ describe('mpx integration helpers', () => {
     beforeResolveHandler?.(resolveData)
 
     expect(resolveData.request).toBe('/project/node_modules/@mpxjs/webpack-plugin/lib/record-loader!/tailwind/index.css?type=styles')
+
+    compilationHandler?.({
+      hooks: {
+        childCompiler: {
+          tap: vi.fn((_name, handler) => {
+            childCompilerHandler = handler
+          }),
+        },
+      },
+    })
+    let childNormalModuleFactoryHandler: ((factory: any) => void) | undefined
+    let childBeforeResolveHandler: ((data: any) => void) | undefined
+    const childCompiler = {
+      options: {},
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn((_name, handler) => {
+            childNormalModuleFactoryHandler = handler
+          }),
+        },
+      },
+    }
+    childCompilerHandler?.(childCompiler)
+    childNormalModuleFactoryHandler?.({
+      hooks: {
+        beforeResolve: {
+          tap: vi.fn((_name, handler) => {
+            childBeforeResolveHandler = handler
+          }),
+        },
+      },
+    })
+    const childResolveData = {
+      request: '@mpxjs/webpack-plugin/lib/record-loader!D:\\repo\\index.css?type=styles',
+    }
+    childBeforeResolveHandler?.(childResolveData)
+
+    expect(childResolveData.request).toBe('/project/node_modules/@mpxjs/webpack-plugin/lib/record-loader!D:\\repo\\index.css?type=styles')
+    expect(childCompiler.options.resolveLoader.alias).toMatchObject({
+      '@mpxjs/webpack-plugin/lib/record-loader': '/project/node_modules/@mpxjs/webpack-plugin/lib/record-loader',
+    })
     expect(patchMpxWebpackPluginRequests({}, undefined)).toBe(false)
   })
 
