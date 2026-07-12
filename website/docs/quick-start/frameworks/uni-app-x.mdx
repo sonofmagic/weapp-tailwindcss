@@ -47,18 +47,17 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { uniAppX } from 'weapp-tailwindcss/presets'
 
 const projectRoot = dirname(fileURLToPath(import.meta.url))
-const weappTailwindcssPlugins = WeappTailwindcss(
-  uniAppX({
-    base: projectRoot,
-    cssEntries: [resolve(projectRoot, 'main.css')],
-    rem2rpx: true,
-  }),
-) ?? []
 
 export default defineConfig({
   plugins: [
     uni(),
-    ...weappTailwindcssPlugins,
+    WeappTailwindcss(
+      uniAppX({
+        base: projectRoot,
+        cssEntries: [resolve(projectRoot, 'main.css')],
+        rem2rpx: true,
+      }),
+    ),
   ],
 })
 ```
