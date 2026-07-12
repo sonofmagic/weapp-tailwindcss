@@ -260,9 +260,7 @@ wx-button {
 .space-y-2_d5 > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
-  margin-bottom: calc(var(--spacing) * 2.5 * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(var(--spacing) * 2.5 * (1 - var(--tw-space-y-reverse)));
 }
 /* tokens: space-x-2.5 <= pages/index/index.wxml */
 .space-x-2_d5 > view + view,
@@ -271,9 +269,7 @@ wx-button {
 .space-x-2_d5 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc((var(--spacing) * 2.5) * var(--tw-space-x-reverse));
-  margin-right: calc(var(--spacing) * 2.5 * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));
-  margin-left: calc(var(--spacing) * 2.5 * (1 - var(--tw-space-x-reverse)));
 }
 /* tokens: rounded <= pages/index/index.wxml */
 .rounded {

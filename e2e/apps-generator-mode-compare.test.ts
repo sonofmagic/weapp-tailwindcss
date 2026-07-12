@@ -48,6 +48,10 @@ interface GeneratorCssSnapshot {
   content: string
 }
 
+interface StableCssSnapshotOptions {
+  structureIdentity?: boolean
+}
+
 const SUBPACKAGE_MARKER_PATTERNS = [
   /normal[-_]subpackage/i,
   /independent[-_]subpackage/i,
@@ -561,9 +565,40 @@ function withDuplicateCssFileSuffix(fileName: string, index: number) {
   return `${fileName.slice(0, -extension.length)}.${index}${extension}`
 }
 
+function createCssSnapshotStructureIdentity(css: string) {
+  try {
+    const root = postcss.parse(css)
+    const selectors = new Set<string>()
+    const atRules = new Set<string>()
+    const declarationProps = new Set<string>()
+
+    root.walkRules((rule) => {
+      for (const selector of rule.selectors) {
+        selectors.add(normalizeSelector(selector))
+      }
+    })
+    root.walkAtRules((rule) => {
+      atRules.add(`${rule.name}:${rule.params.replace(/\s+/g, ' ').trim()}`)
+    })
+    root.walkDecls((decl) => {
+      declarationProps.add(decl.prop.trim())
+    })
+
+    return JSON.stringify([
+      [...selectors].sort(compareText),
+      [...atRules].sort(compareText),
+      [...declarationProps].sort(compareText),
+    ])
+  }
+  catch {
+    return css
+  }
+}
+
 function createStableCssSnapshots(
   generatorResult: Pick<GeneratorBuildResult, 'css' | 'cssFiles'> & Partial<Pick<GeneratorBuildResult, 'cssSnapshots'>>,
   fallbackFileName: string,
+  options: StableCssSnapshotOptions = {},
 ) {
   const cssSnapshots = generatorResult.cssSnapshots && generatorResult.cssSnapshots.length > 0
     ? generatorResult.cssSnapshots
@@ -591,20 +626,31 @@ function createStableCssSnapshots(
       continue
     }
 
-    const sortedGroup = [...group].sort((a, b) => (
-      compareText(a.snapshot.content, b.snapshot.content)
-      || compareText(a.snapshot.fileName, b.snapshot.fileName)
-    ))
+    const sortedGroup = group
+      .map(entry => ({
+        ...entry,
+        structureIdentity: options.structureIdentity
+          ? createCssSnapshotStructureIdentity(entry.snapshot.content)
+          : undefined,
+      }))
+      .sort((a, b) => (
+        compareText(a.structureIdentity ?? a.snapshot.content, b.structureIdentity ?? b.snapshot.content)
+        || compareText(a.snapshot.content, b.snapshot.content)
+        || compareText(a.snapshot.fileName, b.snapshot.fileName)
+      ))
     sortedGroup.forEach((entry, index) => {
       stableFileNames.set(entry.index, withDuplicateCssFileSuffix(fileName, index + 1))
     })
   }
 
-  return entries
+  const snapshots = entries
     .map(({ index, snapshot }) => ({
       ...snapshot,
       fileName: stableFileNames.get(index) ?? snapshot.fileName,
     }))
+  return options.structureIdentity
+    ? snapshots.sort((a, b) => compareText(a.fileName, b.fileName))
+    : snapshots
 }
 
 function createReportItem(
@@ -612,12 +658,16 @@ function createReportItem(
   generatorResult: GeneratorBuildResult,
 ): CompareReportItem {
   const generatorCss = shouldNormalizeProjectCssSnapshots(project)
-    ? `${createStableCssSnapshots(generatorResult, project.cssFile)
+    ? `${createStableCssSnapshots(generatorResult, project.cssFile, {
+      structureIdentity: isWebStyleDirectoryProject(project),
+    })
       .map(snapshot => normalizeProjectCssSnapshot(project, snapshot))
       .join('\n')}\n`
     : `${normalizeCssSnapshot(generatorResult.css)}\n`
   const generator = summarizeCss(generatorCss)
-  const cssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile)
+  const cssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile, {
+    structureIdentity: isWebStyleDirectoryProject(project),
+  })
 
   return {
     name: project.name,
@@ -954,7 +1004,9 @@ function createCssOutputSnapshot(
   project: CompareProject,
   generatorResult: Pick<GeneratorBuildResult, 'css' | 'cssFiles'> & Partial<Pick<GeneratorBuildResult, 'cssSnapshots'>>,
 ) {
-  const stableCssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile)
+  const stableCssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile, {
+    structureIdentity: isWebStyleDirectoryProject(project),
+  })
   const generatorCss = shouldNormalizeProjectCssSnapshots(project)
     ? stableCssSnapshots.map(snapshot => normalizeProjectCssSnapshot(project, snapshot)).join('\n')
     : normalizeCssSnapshot(generatorResult.css)
@@ -1003,7 +1055,9 @@ async function expectCssOutputSnapshot(
   await clearSnapshotDirOnUpdate('apps-generator-mode', 'css-output', project.platform, project.name)
   const snapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'css-output', path.join(project.platform, project.name, 'README.md'))
   await expectNormalizedReportSnapshot(snapshotPath, createCssOutputSnapshot(project, generatorResult))
-  for (const snapshot of createStableCssSnapshots(generatorResult, project.cssFile)) {
+  for (const snapshot of createStableCssSnapshots(generatorResult, project.cssFile, {
+    structureIdentity: isWebStyleDirectoryProject(project),
+  })) {
     const artifactPath = await resolveSnapshotFile(
       __dirname,
       'apps-generator-mode',
@@ -1157,6 +1211,24 @@ describe('demo generator mode output', () => {
       { fileName: 'css/chunk.1.css', content: '.a{}' },
       { fileName: 'css/app.css', content: '.app{}' },
     ])
+  })
+
+  it('keeps hashed web css snapshot names stable across declaration value changes', () => {
+    const createSnapshots = (pageColor: string) => createStableCssSnapshots({
+      css: '',
+      cssFiles: ['css/index.page-hash.css', 'css/index.admin-hash.css'],
+      cssSnapshots: [
+        { fileName: 'css/index.page-hash.css', content: `.shared{color:${pageColor}}.page{display:block}` },
+        { fileName: 'css/index.admin-hash.css', content: '.shared{color:blue}.admin{display:block}' },
+      ],
+    }, 'dist', { structureIdentity: true })
+
+    const before = createSnapshots('red')
+    const after = createSnapshots('aqua')
+    const findPageFile = (snapshots: GeneratorCssSnapshot[]) => snapshots.find(snapshot => snapshot.content.includes('.page{'))?.fileName
+
+    expect(findPageFile(before)).toBe('css/index.2.css')
+    expect(findPageFile(after)).toBe(findPageFile(before))
   })
 
   it('builds retained demos with generator mini-program, H5 web, and App style css output', async () => {

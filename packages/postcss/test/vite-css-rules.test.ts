@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  dedupeCoveredCssRules,
   containsCssAfterMinify,
   filterExistingCssRules,
   mergeCoveredCssRuleDeclarations,
@@ -159,6 +160,41 @@ describe('vite css rule helpers', () => {
     expect(result.changed).toBe(true)
     expect(result.baseCss).toBe('.btn{display:flex;gap:12px}')
     expect(result.css).toBe('')
+  })
+
+  it('merges literal custom property fallbacks before covered var declarations', () => {
+    const result = mergeCoveredCssRuleDeclarations(
+      '.before{--tw-content:"hello";content:var(--tw-content)}',
+      '.before{--tw-content:"hello";content:"hello";content:var(--tw-content)}',
+    )
+
+    expect(result).toEqual({
+      baseCss: '.before{--tw-content:"hello";content:"hello";content:var(--tw-content)}',
+      css: '',
+      changed: true,
+    })
+  })
+
+  it('dedupes covered rules while preserving their later cascade position', () => {
+    expect(dedupeCoveredCssRules([
+      '/* tokens: before */.before{--tw-content:"hello";content:var(--tw-content)}',
+      '.other{content:"other"}',
+      '/* tokens: before */.before{--tw-content:"hello";content:"hello";content:var(--tw-content)}',
+      '.card{color:red}',
+      '.card{color:red}',
+      '.card{background:blue}',
+      '.cascade{color:red}',
+      '.cascade{color:blue}',
+      '.cascade{color:red}',
+    ].join(''))).toBe([
+      '.other{content:"other"}',
+      '/* tokens: before */.before{--tw-content:"hello";content:"hello";content:var(--tw-content)}',
+      '.card{color:red}',
+      '.card{background:blue}',
+      '.cascade{color:red}',
+      '.cascade{color:blue}',
+      '.cascade{color:red}',
+    ].join(''))
   })
 
   it('keeps partially covered rules when missing declarations conflict by property', () => {

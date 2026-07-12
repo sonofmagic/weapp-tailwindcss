@@ -68,7 +68,7 @@ exports[`calc > rpx + root 变量运算 1`] = `"page,.tw-root,wx-root-portal-con
 
 exports[`calc > rpx + root 变量运算去除 1`] = `"page,.tw-root,wx-root-portal-content,:host{--ch:2}; .a{ width: 2rpx;}"`;
 
-exports[`calc > rpx 运算 1`] = `".a{ width: 200rpx; height: 10000rpx;width: 272rpx;height: 68rpx;width: 272rpx;height: 68rpx;}"`;
+exports[`calc > rpx 运算 1`] = `".a{ width: 200rpx; height: 10000rpx;width: 272rpx;height: 68rpx;}"`;
 
 exports[`calc > 传入 cssCalc 配置 1`] = `
 "page,.tw-root,wx-root-portal-content,:host {

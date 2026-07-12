@@ -109,6 +109,9 @@ async function waitForPath(baseUrl: string, requestPath: string, child: ChildPro
       }
       catch (error) {
         lastError = error
+        if (child.exitCode != null) {
+          throw error
+        }
       }
     }
     await wait(pollIntervalMs)

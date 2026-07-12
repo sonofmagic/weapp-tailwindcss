@@ -451,6 +451,7 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
       file: '/project/src/app.css',
       outputFile: 'src/app.css',
       cssSources: expect.any(Array),
+      deferCssAdaptation: true,
     }))
 
     const hmrCode = 'const __vite__css = "@import \\"tailwindcss\\";\\n.page{}";\n__vite__updateStyle(__vite__id, __vite__css)'
@@ -471,6 +472,101 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     )
     expect(jsResult).toBeUndefined()
     expect(context.jsHandler).not.toHaveBeenCalled()
+  })
+
+  it('generates build css in a pre transform before Vite PostCSS and asset finalization', async () => {
+    const context = createContext({
+      appType: 'h5',
+      generator: {
+        target: 'web',
+      },
+      tailwindcssBasedir: '/project',
+    })
+    setCurrentContext(context)
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()!
+    const postPlugin = getPlugin(plugins, 'post')
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: '/project',
+      plugins: [{ name: 'vite:css' }],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/web' },
+    } as ResolvedConfig)
+
+    const sourcePluginIndex = plugins.findIndex(plugin => plugin.name === `${vitePluginName}:source-candidates`)
+    const buildPluginIndex = plugins.findIndex(plugin => plugin.name === `${vitePluginName}:generate:build`)
+    const finalizerPluginIndex = plugins.findIndex(plugin => plugin.name === 'weapp-tailwindcss:adaptor:css-finalizer')
+    const buildPlugin = plugins[buildPluginIndex] as Plugin
+
+    expect(buildPlugin).toMatchObject({
+      apply: 'build',
+      enforce: 'pre',
+    })
+    expect(sourcePluginIndex).toBeLessThan(buildPluginIndex)
+    expect(buildPluginIndex).toBeLessThan(finalizerPluginIndex)
+
+    const addWatchFile = vi.fn()
+    const result = await getTransformHandler(buildPlugin)?.call(
+      { addWatchFile },
+      '.card { @apply flex; }',
+      '/project/src/card.css',
+    )
+
+    expect(result).toMatchObject({
+      code: expect.stringContaining('.generated{color:red}'),
+      map: null,
+    })
+    expect(addWatchFile).toHaveBeenCalledWith('/project/tailwind.config.ts')
+    expect(mocks.generateTailwindV4Css).toHaveBeenCalledTimes(1)
+    expect(mocks.generateTailwindV4Css).toHaveBeenCalledWith(expect.objectContaining({
+      file: '/project/src/card.css',
+      outputFile: 'src/card.css',
+    }))
+
+    const finalizerPlugin = plugins[finalizerPluginIndex] as Plugin
+    const finalizerHook = finalizerPlugin.generateBundle as any
+    const finalize = typeof finalizerHook === 'function' ? finalizerHook : finalizerHook?.handler
+    const output = {
+      type: 'asset',
+      fileName: 'card.css',
+      names: [],
+      originalFileNames: ['/project/src/card.css'],
+      source: result?.code ?? '',
+    }
+    await finalize?.call(finalizerPlugin, {}, {
+      'card.css': output,
+    })
+
+    expect(mocks.generateTailwindV4Css).toHaveBeenCalledTimes(1)
+    expect(output.source).not.toContain('weapp-tailwindcss vite-generated-css')
+  })
+
+  it('keeps mini-program build css generation in the final asset pipeline', async () => {
+    setCurrentContext(createContext({
+      appType: 'uni-app',
+      tailwindcssBasedir: '/project',
+    }))
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()!
+    const postPlugin = getPlugin(plugins, 'post')
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: '/project',
+      plugins: [{ name: 'vite:css' }],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/dev/mp-weixin' },
+    } as ResolvedConfig)
+
+    const buildPlugin = getPlugin(plugins, 'generate:build')
+    const result = await getTransformHandler(buildPlugin)?.call(
+      { addWatchFile: vi.fn() },
+      '.card { @apply flex; }',
+      '/project/src/card.css',
+    )
+
+    expect(result).toBeUndefined()
+    expect(mocks.generateTailwindV4Css).not.toHaveBeenCalled()
   })
 
   it('regenerates uni-app-vite root css after vue template hmr adds named arbitrary colors', async () => {

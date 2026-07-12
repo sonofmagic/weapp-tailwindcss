@@ -43,4 +43,4 @@
     font-size: 26px;
   }
 }
-@source inline("i-[mdi--github-circle] i-[mdi--star] i-[svg-spinners--180-ring-with-bg] before:content-['现在，让我们开始神奇的_tailwindcss_开发之旅吧！'] before:content-['现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！']");
+@source inline("bg-[#102938] text-[#f7fbff] w-[173px] bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px] i-[mdi--github-circle] i-[mdi--star] i-[svg-spinners--180-ring-with-bg] before:content-['现在，让我们开始神奇的_tailwindcss_开发之旅吧！'] before:content-['现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！']");

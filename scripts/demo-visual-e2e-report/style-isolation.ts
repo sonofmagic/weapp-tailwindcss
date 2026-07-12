@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises'
+import process from 'node:process'
 import path from 'pathe'
 import { readUtf8 } from '../../e2e/hbuilderx-local/process.ts'
 
@@ -11,10 +12,12 @@ export function resolveStyleIsolationVariants(projectDir: string): StyleIsolatio
   if (!projectDir.includes('uni-app-x-')) {
     return [{}]
   }
-  return [
+  const variants = [
     { key: 'style-isolation-default' },
     { key: 'style-isolation-v2', styleIsolationVersion: '2' },
-  ]
+  ] satisfies StyleIsolationVariant[]
+  const selectedVariant = process.env['DEMO_VISUAL_STYLE_ISOLATION_VARIANT']
+  return selectedVariant ? variants.filter(item => item.key === selectedVariant) : variants
 }
 
 export async function readManifest(projectRoot: string) {

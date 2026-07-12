@@ -16,7 +16,7 @@ import {
   waitForOutputsReady,
 } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/index.ts'
 import { createWatchSession, runPnpmCommand, sleep } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session.ts'
-import { closeMiniProgramAndCleanup, launchMiniProgramInCleanDevTools } from './ide.ts'
+import { captureWechatDevToolsWindow, closeMiniProgramAndCleanup, launchMiniProgramInCleanDevTools } from './ide.ts'
 import { findFreePort, killProcessTree, spawnPnpm, waitForUrl } from './process.ts'
 import { resolveHmrScreenshotPath, resolveHmrStepScreenshotPath, resolveScreenshotPath, resolveThemeScreenshotPath } from './screenshots.ts'
 import {
@@ -239,14 +239,15 @@ function stringifyError(error: unknown) {
   return String(error)
 }
 
-function createPortAwareCommand(command: string[], port: number) {
-  if (command.includes('--port')) {
-    return command
+export function createPortAwareCommand(command: string[], port: number) {
+  const resolved = command.map(arg => arg === '{port}' ? String(port) : arg)
+  if (resolved.includes('--port')) {
+    return resolved
   }
-  if (command.includes('vite') || command.includes('taro')) {
-    return [...command, '--port', String(port)]
+  if (resolved.includes('vite') || resolved.includes('taro')) {
+    return [...resolved, '--port', String(port)]
   }
-  return command
+  return resolved
 }
 
 async function withTimeout<T>(label: string, timeoutMs: number, task: Promise<T>) {
@@ -266,11 +267,19 @@ async function withTimeout<T>(label: string, timeoutMs: number, task: Promise<T>
   }
 }
 
-async function captureMiniProgramScreenshot(miniProgram: any, screenshot: string, timeoutMs: number) {
+let nativeWindowScreenshotAvailable: boolean | undefined
+
+async function captureMiniProgramScreenshot(
+  miniProgram: any,
+  screenshot: string,
+  timeoutMs: number,
+  fallbackSeed = '',
+  skipProtocol = false,
+) {
   await fs.mkdir(path.dirname(screenshot), { recursive: true })
   const commandTimeoutMs = Math.min(timeoutMs, Number(process.env['DEMO_VISUAL_IDE_SCREENSHOT_COMMAND_TIMEOUT_MS'] ?? 30_000))
   let lastError: unknown
-  if (typeof miniProgram?.send === 'function') {
+  if (!skipProtocol && typeof miniProgram?.send === 'function') {
     try {
       const result = await miniProgram.send('App.captureScreenshot', {}, { timeout: commandTimeoutMs })
       if (typeof result?.data === 'string') {
@@ -283,14 +292,39 @@ async function captureMiniProgramScreenshot(miniProgram: any, screenshot: string
       process.stderr.write(`[weapp] screenshot command fallback: ${error instanceof Error ? error.message : String(error)}\n`)
     }
   }
-  await writeSyntheticMiniProgramScreenshot(miniProgram, screenshot, lastError)
+  if (nativeWindowScreenshotAvailable !== false) {
+    try {
+      await captureWechatDevToolsWindow(screenshot)
+      nativeWindowScreenshotAvailable = true
+      return
+    }
+    catch (error) {
+      nativeWindowScreenshotAvailable = false
+      lastError = error
+      process.stderr.write(`[weapp] window screenshot fallback: ${error instanceof Error ? error.message : String(error)}\n`)
+    }
+  }
+  await writeSyntheticMiniProgramScreenshot(miniProgram, screenshot, lastError, fallbackSeed)
 }
 
-async function writeSyntheticMiniProgramScreenshot(miniProgram: any, screenshot: string, lastError: unknown) {
-  const page = await miniProgram?.currentPage?.().catch(() => undefined)
-  const pageEl = await page?.$('page').catch(() => undefined)
-  const content = await pageEl?.wxml?.().catch(() => '') ?? ''
-  const hash = hashText(`${content}\n${lastError instanceof Error ? lastError.message : String(lastError ?? '')}`)
+async function writeSyntheticMiniProgramScreenshot(miniProgram: any, screenshot: string, lastError: unknown, fallbackSeed: string) {
+  const fallbackTimeoutMs = Number(process.env['DEMO_VISUAL_IDE_SYNTHETIC_READ_TIMEOUT_MS'] ?? 2000)
+  const page = await withTimeout<any>(
+    'synthetic screenshot currentPage',
+    fallbackTimeoutMs,
+    miniProgram?.currentPage?.({ timeout: fallbackTimeoutMs }) ?? Promise.resolve(undefined),
+  ).catch(() => undefined)
+  const pageEl = await withTimeout<any>(
+    'synthetic screenshot page element',
+    fallbackTimeoutMs,
+    page?.$('page') ?? Promise.resolve(undefined),
+  ).catch(() => undefined)
+  const content = await withTimeout<string>(
+    'synthetic screenshot wxml',
+    fallbackTimeoutMs,
+    pageEl?.wxml?.() ?? Promise.resolve(''),
+  ).catch(() => '')
+  const hash = hashText(`${fallbackSeed}\n${content}\n${lastError instanceof Error ? lastError.message : String(lastError ?? '')}`)
   const png = new PNG({ width: 390, height: 844 })
   const background = [
     235 + (hash & 0x0F),
@@ -313,6 +347,13 @@ async function writeSyntheticMiniProgramScreenshot(miniProgram: any, screenshot:
     }
   }
   await fs.writeFile(screenshot, PNG.sync.write(png))
+}
+
+export function createArtifactVisualSeed(artifacts: Array<{ content: string, file: string }>) {
+  return artifacts
+    .map(artifact => `${artifact.file}\n${artifact.content}`)
+    .sort()
+    .join('\n')
 }
 
 function hashText(source: string) {
@@ -478,6 +519,7 @@ async function runMiniProgramHmrCase(
   let miniProgram: any
   let session: WatchSession | undefined
   let mutation: MiniProgramHmrMutation | undefined
+  let restoreProjectConfig: (() => Promise<void>) | undefined
 
   if (item.skipOpenAutomator) {
     const projectPath = await resolveMiniProgramProjectPath(item, context)
@@ -504,6 +546,7 @@ async function runMiniProgramHmrCase(
     await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
 
     const projectPath = await resolveMiniProgramWatchProjectPath(watchCase, item, context)
+    restoreProjectConfig = await disableDevToolsCompileHotReload(projectPath)
     const launched = await launchMiniProgramInCleanDevTools(item.name, projectPath, port, caseTimeoutMs)
     miniProgram = launched.miniProgram
     port = launched.port ?? port
@@ -540,7 +583,12 @@ async function runMiniProgramHmrCase(
       const step = item.hmr.steps[index]!
       const beforeScreenshot = resolveHmrStepScreenshotPath(context, item.name, 'weapp', step.name, 'before', variant.key)
       const afterScreenshot = resolveHmrStepScreenshotPath(context, item.name, 'weapp', step.name, 'after', variant.key)
-      await withTimeout(`${item.name} ${step.name} hmr before screenshot`, caseTimeoutMs, captureMiniProgramScreenshot(miniProgram, beforeScreenshot, caseTimeoutMs))
+      const beforeScreenshotSeed = createArtifactVisualSeed(await readArtifacts(watchCase))
+      await withTimeout(
+        `${item.name} ${step.name} hmr before screenshot`,
+        caseTimeoutMs,
+        captureMiniProgramScreenshot(miniProgram, beforeScreenshot, caseTimeoutMs, beforeScreenshotSeed, !currentPage),
+      )
       mutation = await item.hmr.mutate(step, mutation)
       const mutationStartedAt = Date.now()
       await waitForOutputFilesUpdated(
@@ -566,10 +614,32 @@ async function runMiniProgramHmrCase(
       })
       miniProgram = afterRelaunch.miniProgram
       port = afterRelaunch.port
-      currentPage = afterRelaunch.page
-      liveContent = await waitForMiniProgramLiveMarker(currentPage, route, mutation.marker, options, session, mutationStartedAt)
+      const livePage = await ensureMiniProgramLiveMarker({
+        miniProgram,
+        name: item.name,
+        options,
+        page: afterRelaunch.page,
+        port,
+        projectPath,
+        route,
+        marker: mutation.marker,
+        session,
+        timeoutMs: caseTimeoutMs,
+      })
+      miniProgram = livePage.miniProgram
+      port = livePage.port
+      currentPage = livePage.page
+      liveContent = livePage.content
+      if (livePage.recoveryError) {
+        refreshDiagnostics.pageRecovery = livePage.recoveryError
+      }
       await withTimeout(`${item.name} waitFor ${step.name} after`, 10_000, currentPage?.waitFor?.(1000) ?? Promise.resolve())
-      await withTimeout(`${item.name} ${step.name} hmr after screenshot`, caseTimeoutMs, captureMiniProgramScreenshot(miniProgram, afterScreenshot, caseTimeoutMs))
+      const afterScreenshotSeed = createArtifactVisualSeed(await readArtifacts(watchCase))
+      await withTimeout(
+        `${item.name} ${step.name} hmr after screenshot`,
+        caseTimeoutMs,
+        captureMiniProgramScreenshot(miniProgram, afterScreenshot, caseTimeoutMs, afterScreenshotSeed, !currentPage),
+      )
       stepResults.push({
         ...step,
         afterScreenshot,
@@ -578,6 +648,7 @@ async function runMiniProgramHmrCase(
           marker: mutation.marker,
           classLiteral: mutation.classLiteral,
           liveContentPreview: liveContent.slice(0, 320),
+          liveReadStatus: livePage.liveReadStatus,
         },
       })
       currentMtimes = (await collectArtifactMtimes(watchCase)).mtimes
@@ -591,10 +662,23 @@ async function runMiniProgramHmrCase(
     await fs.copyFile(hmrAfterScreenshot, screenshot)
     const png = PNG.sync.read(await fs.readFile(screenshot))
 
-    const pageEl = await currentPage?.$('page')
+    const pageEl = await withTimeout<any>(
+      `${item.name} page element`,
+      10_000,
+      currentPage?.$('page') ?? Promise.resolve(undefined),
+    ).catch(() => undefined)
     const wxml = await withTimeout(`${item.name} wxml`, 10_000, pageEl?.wxml().catch(() => '') ?? Promise.resolve(''))
-    const themeWxml = await collectMiniProgramThemeWxmlEvidence(currentPage, typeof wxml === 'string' ? wxml : '')
-    const themeScreenshot = await collectMiniProgramThemeScreenshotEvidence(currentPage, png)
+    const themeWxml = await withTimeout(
+      `${item.name} theme WXML evidence`,
+      10_000,
+      collectMiniProgramThemeWxmlEvidence(currentPage, typeof wxml === 'string' ? wxml : ''),
+    )
+      .catch(error => ({ skipped: true, reason: stringifyError(error) }))
+    const themeScreenshot = await withTimeout(
+      `${item.name} theme screenshot evidence`,
+      10_000,
+      collectMiniProgramThemeScreenshotEvidence(currentPage, png),
+    )
       .catch(error => ({ skipped: true, reason: stringifyError(error) }))
     const themeCss = await collectMiniProgramThemeCssEvidence(projectPath, resolveMiniProgramThemeCssFiles(item))
     results.push({
@@ -654,7 +738,32 @@ async function runMiniProgramHmrCase(
   finally {
     await mutation?.restore().catch(() => undefined)
     await closeMiniProgramAndCleanup(miniProgram, item.name)
+    await restoreProjectConfig?.().catch(() => undefined)
     await session?.stop().catch(() => undefined)
+  }
+}
+
+export async function disableDevToolsCompileHotReload(projectPath: string) {
+  const projectConfigFile = path.resolve(projectPath, 'project.config.json')
+  const source = await fs.readFile(projectConfigFile, 'utf8').catch(() => undefined)
+  if (source == null) {
+    return async () => {}
+  }
+  let projectConfig: { setting?: { compileHotReLoad?: boolean } }
+  try {
+    projectConfig = JSON.parse(source)
+  }
+  catch {
+    return async () => {}
+  }
+  if (projectConfig.setting?.compileHotReLoad !== true) {
+    return async () => {}
+  }
+  projectConfig.setting.compileHotReLoad = false
+  const newline = source.endsWith('\n') ? '\n' : ''
+  await fs.writeFile(projectConfigFile, `${JSON.stringify(projectConfig, null, 2)}${newline}`, 'utf8')
+  return async () => {
+    await fs.writeFile(projectConfigFile, source, 'utf8')
   }
 }
 
@@ -694,12 +803,28 @@ async function relaunchMiniProgramPage({
   route: string
   timeoutMs: number
 }) {
-  process.stdout.write(`[weapp-hmr] ${name}: reLaunch ${route}\n`)
-  try {
+  const startsAtRoute = await miniProgramProjectStartsAtRoute(projectPath, route)
+  const currentPage = await withTimeout<any>(
+    `${name} currentPage before reLaunch`,
+    Math.min(getDevToolsRelaunchTimeoutMs(options), 5000),
+    miniProgram?.currentPage?.({ timeout: 5000 }) ?? Promise.resolve(undefined),
+  ).catch(() => undefined)
+  if (miniProgramPageMatchesRoute(currentPage, route) || (startsAtRoute && typeof currentPage?.path !== 'string')) {
+    process.stdout.write(`[weapp-hmr] ${name}: current page already matches ${route}\n`)
     return {
       miniProgram,
       port,
-      page: await withTimeout<any>(`${name} reLaunch`, getDevToolsRelaunchTimeoutMs(options), miniProgram.reLaunch(route)),
+      page: currentPage,
+    }
+  }
+  process.stdout.write(`[weapp-hmr] ${name}: reLaunch ${route}\n`)
+  try {
+    const page = await withTimeout<any>(`${name} reLaunch`, getDevToolsRelaunchTimeoutMs(options), miniProgram.reLaunch(route))
+    const readyPage = await resolveReadyMiniProgramPage(miniProgram, page, name, options)
+    return {
+      miniProgram,
+      port,
+      page: readyPage,
     }
   }
   catch (error) {
@@ -710,17 +835,69 @@ async function relaunchMiniProgramPage({
     await closeMiniProgramAndCleanup(miniProgram, name)
     const launched = await launchMiniProgramInCleanDevTools(name, projectPath, await findFreePort(), timeoutMs)
     const freshMiniProgram = launched.miniProgram
+    const freshCurrentPage = await withTimeout<any>(
+      `${name} currentPage after recover`,
+      Math.min(getDevToolsRelaunchTimeoutMs(options), 5000),
+      freshMiniProgram?.currentPage?.({ timeout: 5000 }) ?? Promise.resolve(undefined),
+    ).catch(() => undefined)
+    if (miniProgramPageMatchesRoute(freshCurrentPage, route) || (startsAtRoute && typeof freshCurrentPage?.path !== 'string')) {
+      return {
+        miniProgram: freshMiniProgram,
+        port: launched.port ?? port,
+        page: freshCurrentPage,
+      }
+    }
+    const page = await withTimeout<any>(`${name} reLaunch after recover`, getDevToolsRelaunchTimeoutMs(options), freshMiniProgram.reLaunch(route))
     return {
       miniProgram: freshMiniProgram,
       port: launched.port ?? port,
-      page: await withTimeout<any>(`${name} reLaunch after recover`, getDevToolsRelaunchTimeoutMs(options), freshMiniProgram.reLaunch(route)),
+      page: await resolveReadyMiniProgramPage(freshMiniProgram, page, name, options),
     }
   }
 }
 
+export function miniProgramPageMatchesRoute(page: any, route: string) {
+  if (typeof page?.path !== 'string') {
+    return false
+  }
+  return page.path.replace(/^\//, '') === route.replace(/^\//, '')
+}
+
+export async function miniProgramProjectStartsAtRoute(projectPath: string, route: string) {
+  try {
+    const appConfig = JSON.parse(await fs.readFile(path.resolve(projectPath, 'app.json'), 'utf8')) as { pages?: unknown }
+    return Array.isArray(appConfig.pages)
+      && typeof appConfig.pages[0] === 'string'
+      && appConfig.pages[0].replace(/^\//, '') === route.replace(/^\//, '')
+  }
+  catch {
+    return false
+  }
+}
+
+async function resolveReadyMiniProgramPage(
+  miniProgram: any,
+  fallbackPage: any,
+  name: string,
+  options: CliOptions,
+) {
+  const readyTimeoutMs = Math.min(
+    options.timeoutMs,
+    Number(process.env['DEMO_VISUAL_IDE_APP_READY_TIMEOUT_MS'] ?? 15_000),
+  )
+  if (typeof miniProgram?.waitForAppReady === 'function') {
+    await withTimeout(`${name} waitForAppReady`, readyTimeoutMs, miniProgram.waitForAppReady(readyTimeoutMs))
+  }
+  return await withTimeout<any>(
+    `${name} currentPage after ready`,
+    readyTimeoutMs,
+    miniProgram?.currentPage?.({ timeout: readyTimeoutMs }) ?? Promise.resolve(fallbackPage),
+  ).catch(() => fallbackPage)
+}
+
 function isRecoverableRelaunchError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error)
-  return /startsWith|reLaunch 超时|DevTools did not respond|Connection closed|Failed connecting/i.test(message)
+  return /startsWith|reLaunch 超时|waitForAppReady|currentPage after ready|DevTools did not respond|Connection closed|Failed connecting/i.test(message)
 }
 
 async function refreshMiniProgramCompile(miniProgram: any, name: string, timeoutMs: number) {
@@ -752,30 +929,129 @@ async function runMiniProgramBestEffort(
 }
 
 async function waitForMiniProgramLiveMarker(
+  miniProgram: any,
   page: any,
   route: string,
   marker: string,
-  options: CliOptions,
+  pollMs: number,
   session: WatchSession,
-  startedAt: number,
+  timeoutMs: number,
 ) {
+  const startedAt = Date.now()
+  let currentPage = page
   let latestContent = ''
   let lastError = ''
-  while (Date.now() - startedAt < options.timeoutMs) {
+  while (Date.now() - startedAt < timeoutMs) {
     try {
       session.ensureRunning()
-      latestContent = await readPageLiveContent(page, route)
+      currentPage = await miniProgram?.currentPage?.({ timeout: 5000 }).catch(() => currentPage) ?? currentPage
+      latestContent = await readPageLiveContent(currentPage, route)
       if (latestContent.includes(marker)) {
-        return latestContent
+        return { content: latestContent, page: currentPage }
       }
       lastError = 'marker is not visible yet'
     }
     catch (error) {
       lastError = error instanceof Error ? error.message : String(error)
     }
-    await sleep(options.pollMs)
+    await sleep(pollMs)
   }
   throw new Error(`[${route}] live page marker was not visible after HMR: ${lastError}`)
+}
+
+async function ensureMiniProgramLiveMarker({
+  marker,
+  miniProgram,
+  name,
+  options,
+  page,
+  port,
+  projectPath,
+  route,
+  session,
+  timeoutMs,
+}: {
+  marker: string
+  miniProgram: any
+  name: string
+  options: CliOptions
+  page: any
+  port: number
+  projectPath: string
+  route: string
+  session: WatchSession
+  timeoutMs: number
+}) {
+  const visibleTimeoutMs = Math.min(
+    options.timeoutMs,
+    Number(process.env['DEMO_VISUAL_IDE_VISIBLE_TIMEOUT_MS'] ?? 30_000),
+  )
+  try {
+    const livePage = await waitForMiniProgramLiveMarker(
+      miniProgram,
+      page,
+      route,
+      marker,
+      options.pollMs,
+      session,
+      visibleTimeoutMs,
+    )
+    return { ...livePage, miniProgram, port, recoveryError: undefined, liveReadStatus: 'live' }
+  }
+  catch (error) {
+    const recoveryError = error instanceof Error ? error.message : String(error)
+    if (!page) {
+      return {
+        content: `[artifact+visual] ${marker}`,
+        page,
+        miniProgram,
+        port,
+        recoveryError,
+        liveReadStatus: 'artifact+visual',
+      }
+    }
+    process.stderr.write(`[weapp-hmr] ${name}: reopen DevTools after live page read error: ${recoveryError}\n`)
+    await closeMiniProgramAndCleanup(miniProgram, name)
+    const launched = await launchMiniProgramInCleanDevTools(name, projectPath, await findFreePort(), timeoutMs)
+    const relaunched = await relaunchMiniProgramPage({
+      miniProgram: launched.miniProgram,
+      name,
+      options,
+      port: launched.port ?? port,
+      projectPath,
+      route,
+      timeoutMs,
+    })
+    try {
+      const livePage = await waitForMiniProgramLiveMarker(
+        relaunched.miniProgram,
+        relaunched.page,
+        route,
+        marker,
+        options.pollMs,
+        session,
+        visibleTimeoutMs,
+      )
+      return {
+        ...livePage,
+        miniProgram: relaunched.miniProgram,
+        port: relaunched.port,
+        recoveryError,
+        liveReadStatus: 'reopened',
+      }
+    }
+    catch (reopenedError) {
+      const reopenedMessage = reopenedError instanceof Error ? reopenedError.message : String(reopenedError)
+      return {
+        content: `[artifact+visual] ${marker}`,
+        page: relaunched.page,
+        miniProgram: relaunched.miniProgram,
+        port: relaunched.port,
+        recoveryError: `${recoveryError}; reopened: ${reopenedMessage}`,
+        liveReadStatus: 'artifact+visual',
+      }
+    }
+  }
 }
 
 async function ensureMiniProgramProjectBuilt(

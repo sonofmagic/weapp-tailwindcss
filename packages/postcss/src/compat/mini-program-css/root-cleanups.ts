@@ -76,7 +76,7 @@ export function removeRootSpecificityPlaceholders(root: postcss.Root) {
 }
 
 function isEffectivelyEmptyContainer(container: postcss.Container) {
-  return !container.nodes || container.nodes.every(node => node.type === 'comment')
+  return container.nodes !== undefined && container.nodes.every(node => node.type === 'comment')
 }
 
 export function removeEmptyAtRules(root: postcss.Root) {

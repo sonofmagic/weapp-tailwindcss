@@ -28,7 +28,7 @@ import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runti
 import { collectStrictEscapedRuntimeCandidates, createEscapeFragments } from '../../vite/incremental-runtime-class-set/escaped-candidates'
 import { resolveTailwindV4EntriesFromCssCached } from '../../vite/source-scan'
 import { isWebpackCssLoaderRuntimeSource } from '../shared/css-loader-runtime'
-import { createAssetHashByChunkMap, createRuntimeAwareCssHash, createWebpackCssAssetResourceMap, getCacheKey } from './shared'
+import { createAssetHashByChunkMap, createRuntimeAwareCssHash, createWebpackCssAssetResourceMap, createWebpackDirectCssAssetResourceMap, getCacheKey } from './shared'
 import { createWebpackCssSourceResolvers } from './v5-assets/css-source-resolvers'
 import { buildWebpackBundleSnapshot, createWebpackAssetUpdater, releaseWebpackBundleSnapshotSources } from './v5-assets/helpers'
 import { applyWebpackLinkedJsResults, createWebpackJsAssetModuleGraph } from './v5-assets/js-module-graph'
@@ -47,6 +47,7 @@ import {
   finalizeWebpackCssAssetSource,
   getRuntimeClassSetSync,
   hasAdditionalWebpackAssetUserCssMarkers,
+  hasDeferredWebpackGeneratedCss,
   hasMissingRuntimeCandidates,
   hasProcessedCssAssetUrl,
   hasUsableWebpackGeneratorCssSources,
@@ -165,6 +166,15 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             cssMatcher: compilerOptions.cssMatcher,
           }),
         )
+        const directCssAssetResources = createWebpackDirectCssAssetResourceMap(
+          compilation.chunks as Iterable<{ files?: Iterable<string> | string[] | undefined, hasRuntime?: () => boolean, name?: string | undefined }>,
+          (compilation as { chunkGraph?: { getChunkModulesIterable?: (chunk: unknown) => Iterable<{ resource?: string }> | undefined } }).chunkGraph as any,
+          compilerOptions.cssMatcher,
+          (resource, issuer) => resolveWebpackCssAssetModuleResource(resource, issuer, {
+            appType,
+            cssMatcher: compilerOptions.cssMatcher,
+          }),
+        )
         const watchChangedFiles = new Set([...getWatchChangedFiles?.() ?? []].map(file => path.resolve(file)))
         const taskConcurrency = watchMode ? resolveTaskConcurrency(1) : undefined
         const activeProcessCacheKeys = new Set<string>()
@@ -206,6 +216,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           compilation: compilation as any,
           cssAssetFiles: entries.map(([file]) => file),
           cssAssetResources,
+          directCssAssetResources,
           cssHandlerOptionsCache,
           cssSources,
           cssUserHandlerOptionsCache,
@@ -674,17 +685,39 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 },
                 transform: async () => {
                   const source = readCurrentProcessedRawSource()
+                  const missingProcessedLoaderGeneratedCss = isWebGeneratorTarget && processedLoaderGeneratedCss
+                    ? filterExistingCssRules(
+                        source,
+                        stripBundlerGeneratedCssMarkers(processedLoaderGeneratedCss.css),
+                      )
+                    : ''
+                  const sourceWithLoaderGeneratedCss = missingProcessedLoaderGeneratedCss.trim().length === 0
+                    ? source
+                    : createWebpackGeneratorUserCssSourceAppend(
+                      { css: source, processed: true },
+                      { css: missingProcessedLoaderGeneratedCss, processed: true },
+                    )!.css
                   const processedBareSelectorSourceCss = processedSourceCss
-                    ?? (hasTailwindGeneratedAssetCss ? removeWebpackTailwindGeneratedAssetCss(source) : undefined)
-                  const shouldTransformGeneratedAssetCss = hasTailwindGeneratedAssetCss && !hasGeneratedCssMarker
+                    ?? (hasTailwindGeneratedAssetCss ? removeWebpackTailwindGeneratedAssetCss(sourceWithLoaderGeneratedCss) : undefined)
+                  const shouldTransformGeneratedAssetCss = hasTailwindGeneratedAssetCss
+                    && (
+                      !hasGeneratedCssMarker
+                      || (
+                        !isWebGeneratorTarget
+                        && hasDeferredWebpackGeneratedCss(
+                          source,
+                          [...generatedCssSources.values()].map(item => item.classSet),
+                        )
+                      )
+                    )
                   const handledCss = shouldTransformGeneratedAssetCss
                     ? isWebGeneratorTarget
-                      ? source
+                      ? sourceWithLoaderGeneratedCss
                       : (await compilerOptions.styleHandler(
-                          source,
+                          sourceWithLoaderGeneratedCss,
                           cssHandlerOptionsForProcessedAsset,
                         )).css
-                    : source
+                    : sourceWithLoaderGeneratedCss
                   const nextCss = stripTrailingLineWhitespace(finalizeCssAssetSource(handledCss, {
                     cssPreflight: cssHandlerOptionsForProcessedAsset.isMainChunk,
                     generatedCss: hasGeneratedCssMarker || hasTailwindGeneratedAssetCss,
@@ -816,7 +849,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 const shouldPreserveExistingPreflight = cssHandlerOptions.isMainChunk
                   || (!isConfiguredMainCssSource && (isConfiguredCssSource || sourceCssHasTailwindRoot))
                 const loaderGeneratedCss = sourceFile
-                  && !isWebGeneratorTarget
                   ? generatedCssSources.get(path.resolve(sourceFile))
                   : undefined
                 const shouldRegenerateExplicitTailwindV4CssSource = sourceCss !== undefined
@@ -836,6 +868,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 if (
                   loaderGeneratedCss
                   && shouldConsumeWebpackLoaderGeneratedCss({
+                    allowMarkerlessRegistryMatch: configuredCssEntryFiles.length === 1,
                     hasBundlerGeneratedCssMarker: hasBundlerGeneratedCssMarker(currentRawSource),
                     loaderGeneratedClassSet: loaderGeneratedCss.classSet,
                     sourceCandidates: explicitTailwindV4SourceCandidates,
@@ -905,7 +938,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                               processed: true,
                             },
                       )!.css)
-                  const finalizedLoaderCss = finalizeCssAssetSource(mergedLoaderCss, {
+                  const handledLoaderCss = isWebGeneratorTarget
+                    ? mergedLoaderCss
+                    : (await compilerOptions.styleHandler(mergedLoaderCss, cssHandlerOptions)).css
+                  const finalizedLoaderCss = finalizeCssAssetSource(handledLoaderCss, {
                     cssPreflight: cssHandlerOptions.isMainChunk,
                     generatedCss: true,
                     preserveExistingPreflight: shouldPreserveExistingPreflight,
@@ -936,9 +972,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                           }
                         }),
                       )
-                  const finalizedLoaderSourceBareUserCss = loaderSourceBareUserCss === undefined
+                  const handledLoaderSourceBareUserCss = loaderSourceBareUserCss === undefined
                     ? ''
-                    : finalizeCssAssetSource(loaderSourceBareUserCss.css, {
+                    : loaderSourceBareUserCss.processed
+                      ? loaderSourceBareUserCss.css
+                      : (await compilerOptions.styleHandler(loaderSourceBareUserCss.css, cssHandlerOptions)).css
+                  const finalizedLoaderSourceBareUserCss = handledLoaderSourceBareUserCss.trim().length === 0
+                    ? ''
+                    : finalizeCssAssetSource(handledLoaderSourceBareUserCss, {
                         cssPreflight: false,
                         generatedCss: false,
                       })
@@ -1195,9 +1236,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                         }
                       }),
                     )
-                const finalizedSourceBareUserCss = sourceBareUserCss === undefined
+                const handledSourceBareUserCss = sourceBareUserCss === undefined
                   ? ''
-                  : finalizeCssAssetSource(sourceBareUserCss.css, {
+                  : sourceBareUserCss.processed
+                    ? sourceBareUserCss.css
+                    : (await compilerOptions.styleHandler(sourceBareUserCss.css, cssHandlerOptions)).css
+                const finalizedSourceBareUserCss = handledSourceBareUserCss.trim().length === 0
+                  ? ''
+                  : finalizeCssAssetSource(handledSourceBareUserCss, {
                       cssPreflight: false,
                       generatedCss: false,
                     })

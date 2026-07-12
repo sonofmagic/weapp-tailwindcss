@@ -50,11 +50,13 @@ interface ChunkLike {
 interface ModuleLike {
   context?: string
   dependencies?: Array<unknown> | Iterable<unknown>
+  identifier?: () => string
   modules?: ModuleLike[] | Iterable<ModuleLike>
   request?: string
   resource?: string
   rootModule?: ModuleLike
   userRequest?: string
+  type?: string
 }
 
 interface DependencyLike {
@@ -142,11 +144,25 @@ export function resolveSingleActiveWebpackCssResource(
     : undefined
 }
 
-export function createWebpackCssAssetResourceMap(
+function resolveWebpackCssModuleIdentifierResource(module: ModuleLike) {
+  if (!module.type?.startsWith('css/') || typeof module.identifier !== 'function') {
+    return undefined
+  }
+  const identifier = module.identifier()
+  const request = identifier.startsWith('css|') ? identifier.slice(4) : identifier
+  const resourceWithMetadata = request.slice(request.lastIndexOf('!') + 1)
+  const metadataIndex = resourceWithMetadata.indexOf('|')
+  return metadataIndex === -1
+    ? resourceWithMetadata
+    : resourceWithMetadata.slice(0, metadataIndex)
+}
+
+function createWebpackCssAssetResourceMapInternal(
   chunks: Iterable<ChunkLike>,
   chunkGraph: ChunkGraphLike | undefined,
   cssMatcher: (file: string) => boolean,
   normalizeResource: (resource: string, issuer?: { context?: string, resource?: string }) => string | undefined,
+  onlyUnambiguousCssAssets: boolean,
 ) {
   const resourcesByAsset = new Map<string, Set<string>>()
   if (!chunkGraph?.getChunkModulesIterable) {
@@ -157,7 +173,15 @@ export function createWebpackCssAssetResourceMap(
       return
     }
     seen.add(module)
-    for (const candidate of [module.resource, module.request, module.userRequest]) {
+    const candidates = [
+      module.resource,
+      module.request,
+      module.userRequest,
+    ]
+    if (onlyUnambiguousCssAssets) {
+      candidates.push(resolveWebpackCssModuleIdentifierResource(module))
+    }
+    for (const candidate of candidates) {
       if (typeof candidate !== 'string') {
         continue
       }
@@ -193,7 +217,7 @@ export function createWebpackCssAssetResourceMap(
   }
   for (const chunk of chunks) {
     const cssFiles = toChunkFiles(chunk.files).filter(file => cssMatcher(file))
-    if (cssFiles.length === 0) {
+    if (cssFiles.length === 0 || (onlyUnambiguousCssAssets && cssFiles.length !== 1)) {
       continue
     }
     const modules = chunkGraph.getChunkModulesIterable(chunk)
@@ -212,6 +236,24 @@ export function createWebpackCssAssetResourceMap(
     }
   }
   return resourcesByAsset
+}
+
+export function createWebpackCssAssetResourceMap(
+  chunks: Iterable<ChunkLike>,
+  chunkGraph: ChunkGraphLike | undefined,
+  cssMatcher: (file: string) => boolean,
+  normalizeResource: (resource: string, issuer?: { context?: string, resource?: string }) => string | undefined,
+) {
+  return createWebpackCssAssetResourceMapInternal(chunks, chunkGraph, cssMatcher, normalizeResource, false)
+}
+
+export function createWebpackDirectCssAssetResourceMap(
+  chunks: Iterable<ChunkLike>,
+  chunkGraph: ChunkGraphLike | undefined,
+  cssMatcher: (file: string) => boolean,
+  normalizeResource: (resource: string, issuer?: { context?: string, resource?: string }) => string | undefined,
+) {
+  return createWebpackCssAssetResourceMapInternal(chunks, chunkGraph, cssMatcher, normalizeResource, true)
 }
 
 export function createAssetHashByChunkMap(chunks: Iterable<ChunkLike>) {

@@ -442,5 +442,8 @@ uni-toast .uni-mask {
   vertical-align: baseline;
 }
 .uni-toast__content {
-  margin: 0 0 15px;
+  margin: 0 auto 15px;
+  width: 86%;
+  overflow: hidden;
+  white-space: nowrap;
 }

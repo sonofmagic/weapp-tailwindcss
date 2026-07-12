@@ -7,6 +7,35 @@ import { installTailwindcssCssRedirect } from './tailwindcss-css-redirect'
 const localRequire = createRequire(import.meta.url)
 const MPX_STYLE_RESOURCE_QUERY_RE = /(?:^|[?&])type=styles(?:&|$)/
 const MPX_WEBPACK_PLUGIN_PACKAGE_RE = /@mpxjs[\\/]webpack-plugin[\\/]package\.json$/
+const MPX_WEBPACK_PLUGIN_LIB_RE = /^(.*[\\/]@mpxjs[\\/]webpack-plugin)[\\/]lib[\\/]/
+const MPX_WEBPACK_PLUGIN_REQUEST_RE = /@mpxjs\/webpack-plugin\/([^!?]+)/g
+
+function findMpxWebpackPluginDirFromRules(rules: any): string | undefined {
+  const visit = (value: any): string | undefined => {
+    if (typeof value === 'string') {
+      return value.match(MPX_WEBPACK_PLUGIN_LIB_RE)?.[1]
+    }
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        const result = visit(item)
+        if (result) {
+          return result
+        }
+      }
+      return undefined
+    }
+    if (value && typeof value === 'object') {
+      for (const key of ['loader', 'use', 'rules', 'oneOf']) {
+        const result = visit(value[key])
+        if (result) {
+          return result
+        }
+      }
+    }
+    return undefined
+  }
+  return visit(rules)
+}
 
 function isMpxStyleResourceQuery(query?: string) {
   if (typeof query !== 'string') {
@@ -24,6 +53,14 @@ export function getTailwindcssCssEntry(pkgDir: string) {
 }
 
 function resolveMpxWebpackPluginDir(compiler: any) {
+  const rulePluginDir = findMpxWebpackPluginDirFromRules([
+    compiler?._module?.loaders,
+    compiler?.loaders,
+    compiler?.options?.module?.rules,
+  ])
+  if (rulePluginDir) {
+    return rulePluginDir
+  }
   const candidates = [
     compiler?.context,
     compiler?.options?.context,
@@ -50,6 +87,57 @@ function resolveMpxWebpackPluginDir(compiler: any) {
   catch {
     return undefined
   }
+}
+
+export function rewriteMpxWebpackPluginRequests(
+  request: string,
+  mpxWebpackPluginDir: string,
+  pathImpl: Pick<typeof path, 'join'> = path,
+) {
+  return request.replace(MPX_WEBPACK_PLUGIN_REQUEST_RE, (_full, subpath: string) => {
+    return pathImpl.join(mpxWebpackPluginDir, ...subpath.split('/'))
+  })
+}
+
+export function patchMpxWebpackPluginRequests(compiler: any, mpxWebpackPluginDir: string | undefined) {
+  if (!mpxWebpackPluginDir || !compiler) {
+    return false
+  }
+  const pluginName = 'weapp-tailwindcss-mpx-loader-resolve'
+  const patchedCompilers = new WeakSet<object>()
+  const patchedLoaderResolvers = new WeakSet<object>()
+  const patchedResolverFactories = new WeakSet<object>()
+  const install = (targetCompiler: any) => {
+    if (!targetCompiler || typeof targetCompiler !== 'object' || patchedCompilers.has(targetCompiler)) {
+      return
+    }
+    patchedCompilers.add(targetCompiler)
+    ensureResolveLoaderAlias(targetCompiler, mpxWebpackPluginDir)
+    const resolverFactory = targetCompiler.resolverFactory
+    if (resolverFactory && typeof resolverFactory === 'object' && !patchedResolverFactories.has(resolverFactory)) {
+      patchedResolverFactories.add(resolverFactory)
+      installMpxResolveLoaderAlias(targetCompiler, mpxWebpackPluginDir)
+    }
+    targetCompiler.hooks?.normalModuleFactory?.tap?.(pluginName, (normalModuleFactory: any) => {
+      const loaderResolver = normalModuleFactory.getResolver?.('loader')
+      if (loaderResolver && typeof loaderResolver === 'object' && !patchedLoaderResolvers.has(loaderResolver)) {
+        patchedLoaderResolvers.add(loaderResolver)
+        patchMpxLoaderResolver(loaderResolver, mpxWebpackPluginDir)
+      }
+      normalModuleFactory.hooks.beforeResolve.tap(pluginName, (resolveData: any) => {
+        if (typeof resolveData?.request === 'string') {
+          resolveData.request = rewriteMpxWebpackPluginRequests(resolveData.request, mpxWebpackPluginDir)
+        }
+      })
+    })
+    targetCompiler.hooks?.compilation?.tap?.(pluginName, (compilation: any) => {
+      compilation.hooks?.childCompiler?.tap?.(pluginName, (childCompiler: any) => {
+        install(childCompiler)
+      })
+    })
+  }
+  install(compiler)
+  return true
 }
 
 function isMpxWebpackPluginRequest(request: string | undefined) {
@@ -94,39 +182,52 @@ function ensureResolveLoaderAlias(compiler: any, mpxWebpackPluginDir: string) {
   addMpxWebpackPluginAlias(alias, mpxWebpackPluginDir)
 }
 
-function resolveMpxWebpackPluginRequire(compiler: any) {
-  const candidates = [
-    compiler?.context,
-    compiler?.options?.context,
-    process.cwd(),
-  ].filter((item): item is string => typeof item === 'string' && item.length > 0)
-
-  for (const candidate of candidates) {
-    try {
-      const projectRequire = createRequire(path.join(candidate, 'package.json'))
-      projectRequire.resolve('@mpxjs/webpack-plugin/package.json')
-      return projectRequire
-    }
-    catch {
-    }
+function installMpxResolveLoaderAlias(compiler: any, mpxWebpackPluginDir: string) {
+  const resolveOptionsHook = compiler?.resolverFactory?.hooks?.resolveOptions?.for?.('loader')
+  if (!resolveOptionsHook?.tap) {
+    return
   }
-
-  const cachedPackageJson = Object.keys(localRequire.cache).find(file => MPX_WEBPACK_PLUGIN_PACKAGE_RE.test(file))
-  if (cachedPackageJson) {
-    return createRequire(cachedPackageJson)
-  }
-
-  return localRequire
+  resolveOptionsHook.tap(
+    { name: 'weapp-tailwindcss-mpx-loader-resolve', stage: 100 },
+    (resolveOptions: any) => {
+      const alias = Array.isArray(resolveOptions.alias)
+        ? [...resolveOptions.alias]
+        : { ...resolveOptions.alias }
+      addMpxWebpackPluginAlias(alias, mpxWebpackPluginDir)
+      return {
+        ...resolveOptions,
+        alias,
+      }
+    },
+  )
 }
 
-export function patchMpxWebpackPluginNormalizeLib(compiler: any, mpxWebpackPluginDir: string | undefined) {
+function patchMpxLoaderResolver(resolver: any, mpxWebpackPluginDir: string) {
+  const originalResolve = resolver?.resolve
+  if (typeof originalResolve !== 'function' || (originalResolve as any).__weappTwPatched) {
+    return
+  }
+  const wrappedResolve = function (this: any, ...args: any[]) {
+    const requestIndex = typeof args[0] === 'string' ? 1 : 2
+    const request = args[requestIndex]
+    if (typeof request === 'string' && isMpxWebpackPluginRequest(request)) {
+      args[requestIndex] = resolveMpxWebpackPluginRequest(request, mpxWebpackPluginDir)
+    }
+    return originalResolve.apply(this, args)
+  }
+  ;(wrappedResolve as any).__weappTwPatched = true
+  ;(wrappedResolve as any).__weappTwOriginal = originalResolve
+  resolver.resolve = wrappedResolve
+}
+
+export function patchMpxWebpackPluginNormalizeLib(_compiler: any, mpxWebpackPluginDir: string | undefined) {
   if (!mpxWebpackPluginDir) {
     return false
   }
-  const projectRequire = resolveMpxWebpackPluginRequire(compiler)
   let normalize: { lib?: (file: string) => string }
   try {
-    normalize = projectRequire('@mpxjs/webpack-plugin/lib/utils/normalize')
+    const pluginRequire = createRequire(path.join(mpxWebpackPluginDir, 'package.json'))
+    normalize = pluginRequire(path.join(mpxWebpackPluginDir, 'lib/utils/normalize'))
   }
   catch {
     return false
@@ -152,6 +253,7 @@ export function ensureMpxTailwindcssAliases(compiler: any, pkgDir: string) {
   compiler.options.resolve = compiler.options.resolve || {}
   const mpxWebpackPluginDir = resolveMpxWebpackPluginDir(compiler)
   patchMpxWebpackPluginNormalizeLib(compiler, mpxWebpackPluginDir)
+  patchMpxWebpackPluginRequests(compiler, mpxWebpackPluginDir)
   if (mpxWebpackPluginDir) {
     ensureResolveLoaderAlias(compiler, mpxWebpackPluginDir)
   }
@@ -178,29 +280,40 @@ export function patchMpxLoaderResolve(
   pkgDir: string,
   enabled: boolean,
 ) {
-  if (!enabled || typeof loaderContext.resolve !== 'function') {
-    return
-  }
-  const originalResolve = loaderContext.resolve
-  if ((originalResolve as any).__weappTwPatched) {
+  if (!enabled) {
     return
   }
   const tailwindcssCssEntry = getTailwindcssCssEntry(pkgDir)
   const mpxWebpackPluginDir = resolveMpxWebpackPluginDir(loaderContext)
-  const wrappedResolve = function (this: any, context: any, request: string, callback: any) {
-    if (request === 'tailwindcss' || request === 'tailwindcss$') {
-      return callback(null, tailwindcssCssEntry)
+  const originalResolve = loaderContext.resolve
+  if (typeof originalResolve === 'function' && !(originalResolve as any).__weappTwPatched) {
+    const wrappedResolve = function (this: any, context: any, request: string, callback: any) {
+      if (request === 'tailwindcss' || request === 'tailwindcss$') {
+        return callback(null, tailwindcssCssEntry)
+      }
+      if (request?.startsWith('tailwindcss/')) {
+        return callback(null, path.join(pkgDir, request.slice('tailwindcss/'.length)))
+      }
+      if (mpxWebpackPluginDir && isMpxWebpackPluginRequest(request)) {
+        return callback(null, resolveMpxWebpackPluginRequest(request, mpxWebpackPluginDir))
+      }
+      return originalResolve.call(this, context, request, callback)
     }
-    if (request?.startsWith('tailwindcss/')) {
-      return callback(null, path.join(pkgDir, request.slice('tailwindcss/'.length)))
-    }
-    if (mpxWebpackPluginDir && isMpxWebpackPluginRequest(request)) {
-      return callback(null, resolveMpxWebpackPluginRequest(request, mpxWebpackPluginDir))
-    }
-    return originalResolve.call(this, context, request, callback)
+    ;(wrappedResolve as any).__weappTwPatched = true
+    loaderContext.resolve = wrappedResolve as any
   }
-  ;(wrappedResolve as any).__weappTwPatched = true
-  loaderContext.resolve = wrappedResolve as any
+
+  const originalImportModule = loaderContext.importModule
+  if (mpxWebpackPluginDir && typeof originalImportModule === 'function' && !(originalImportModule as any).__weappTwPatched) {
+    const wrappedImportModule = function (this: any, request: string, ...args: any[]) {
+      const resolvedRequest = typeof request === 'string'
+        ? rewriteMpxWebpackPluginRequests(request, mpxWebpackPluginDir)
+        : request
+      return originalImportModule.call(this, resolvedRequest, ...args)
+    }
+    ;(wrappedImportModule as any).__weappTwPatched = true
+    loaderContext.importModule = wrappedImportModule as any
+  }
 }
 
 export function setupMpxTailwindcssRedirect(

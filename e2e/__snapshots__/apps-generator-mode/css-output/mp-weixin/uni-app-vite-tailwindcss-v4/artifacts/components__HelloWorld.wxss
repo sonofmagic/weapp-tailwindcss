@@ -70,8 +70,12 @@
   gap: calc(var(--spacing, 0.25rem) * 2);
   border-radius: 20rpx;
   background-color: #f8fafc;
+  padding-left: 32rpx;
+  padding-right: 32rpx;
   padding-left: calc(var(--spacing, 0.25rem) * 4);
   padding-right: calc(var(--spacing, 0.25rem) * 4);
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
   padding-top: calc(var(--spacing, 0.25rem) * 3);
   padding-bottom: calc(var(--spacing, 0.25rem) * 3);
   color: var(--color-slate-700, rgb(49, 65, 88));

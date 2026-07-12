@@ -18,6 +18,7 @@ export {
   finalizeMiniProgramCss,
   hasMiniProgramCssSpecificityPlaceholders,
   hoistTailwindPreflightBase,
+  normalizeMiniProgramGeneratedCssForPostcss,
   pruneMiniProgramGeneratedCss,
   removeUnsupportedAtSupports,
   removeUnsupportedCascadeLayers,
@@ -112,6 +113,8 @@ export {
   isPureLocalCssImportWrapperRoot,
   normalizeOutputImportRequest,
   prefixLocalCssImportsWithWebpackIgnoreRoot,
+  removeMatchingLocalCssImports,
+  removeMatchingLocalCssImportsRoot,
   removeTailwindSourceDirectivesRoot,
   removeUnsupportedMiniProgramCssImportsRoot,
   restoreLocalCssImports,
@@ -185,6 +188,7 @@ export {
 export * from './types'
 export {
   containsCssAfterMinify,
+  dedupeCoveredCssRules,
   filterExistingCssRules,
   mergeCoveredCssRuleDeclarations,
   mergeMiniProgramPreflightRuleDeclarations,

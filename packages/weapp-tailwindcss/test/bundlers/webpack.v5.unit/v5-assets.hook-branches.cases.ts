@@ -864,7 +864,10 @@ describe('bundlers/webpack v5-assets hook branch coverage', () => {
     await harness.processAssets()
 
     expect(harness.assetStore['generated.css']).toContain('.bg-red-500')
-    expect(context.styleHandler).not.toHaveBeenCalled()
+    expect(context.styleHandler).toHaveBeenCalledWith(
+      expect.stringContaining('.bg-red-500{color:red}'),
+      expect.objectContaining({ isMainChunk: false, majorVersion: 4 }),
+    )
     expect(harness.compilation.fileDependencies.add).toHaveBeenCalledWith(sourceFile)
   })
 

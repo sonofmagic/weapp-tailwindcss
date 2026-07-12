@@ -231,7 +231,10 @@ describe('bundlers/webpack WeappTailwindcss / registered source css taro main', 
 
     expect(assetStore['app.wxss']).toContain('.style-class')
     expect(assetStore['app.wxss']?.match(/\.test-class/g)).toHaveLength(1)
-    expect(testState.currentContext.styleHandler).not.toHaveBeenCalled()
+    expect(testState.currentContext.styleHandler).toHaveBeenCalledWith(
+      expect.stringContaining('.test-class'),
+      expect.objectContaining({ isMainChunk: true, majorVersion: 4 }),
+    )
   })
 
   it('keeps webpack processed asset urls when merging loader generated css', async () => {
@@ -362,7 +365,10 @@ describe('bundlers/webpack WeappTailwindcss / registered source css taro main', 
     expect(assetStore['app.wxss']).toContain('background-image: url(data:image/svg+xml;base64,PHN2Zy8+);')
     expect(assetStore['app.wxss']).not.toContain('url("./issue-941-asset.svg")')
     expect(assetStore['app.wxss']?.match(/\.test-class/g)).toHaveLength(1)
-    expect(testState.currentContext.styleHandler).not.toHaveBeenCalled()
+    expect(testState.currentContext.styleHandler).toHaveBeenCalledWith(
+      expect.stringContaining('url(data:image/svg+xml;base64,PHN2Zy8+)'),
+      expect.objectContaining({ isMainChunk: true, majorVersion: 4 }),
+    )
   })
 
 })

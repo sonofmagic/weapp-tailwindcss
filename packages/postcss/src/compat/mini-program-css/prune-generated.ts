@@ -1,4 +1,5 @@
 import postcss from 'postcss'
+import postcssPresetEnv from 'postcss-preset-env'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../mini-program-prefixes'
 import { removeUnsupportedCascadeLayers } from './at-rules'
 import {
@@ -20,6 +21,26 @@ const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 export interface PruneMiniProgramGeneratedCssOptions {
   preservePreflight?: boolean
   preserveConditionalComments?: boolean
+  preserveRawClassRules?: boolean
+}
+
+/**
+ * 在交给框架 PostCSS 前展开 Tailwind 生成的嵌套规则，并裁剪 Web-only 结构。
+ */
+export async function normalizeMiniProgramGeneratedCssForPostcss(
+  css: string,
+  options: PruneMiniProgramGeneratedCssOptions = {},
+) {
+  const result = await postcss([
+    postcssPresetEnv({
+      stage: false,
+      features: {
+        'nesting-rules': true,
+      },
+      autoprefixer: false,
+    }),
+  ]).process(css, { from: undefined })
+  return pruneMiniProgramGeneratedCss(result.css, options)
 }
 
 function isConditionalCompilationComment(text: string) {
@@ -28,6 +49,17 @@ function isConditionalCompilationComment(text: string) {
 
 function hasClassSelector(selector: string) {
   return CLASS_SELECTOR_RE.test(selector)
+}
+
+function hasClassRuleAncestor(rule: postcss.Rule) {
+  let parent = rule.parent
+  while (parent) {
+    if (parent.type === 'rule' && hasClassSelector(parent.selector)) {
+      return true
+    }
+    parent = parent.parent
+  }
+  return false
 }
 
 function removeEmptyContentInitDeclarations(rule: postcss.Rule) {
@@ -216,6 +248,10 @@ export function pruneMiniProgramGeneratedCss(
 
     if (isCustomPropertyRule(rule) && isMiniProgramElementVariableScopeRule(rule)) {
       rule.selector = MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR
+      return
+    }
+
+    if (options.preserveRawClassRules && (hasClassSelector(rule.selector) || hasClassRuleAncestor(rule))) {
       return
     }
 

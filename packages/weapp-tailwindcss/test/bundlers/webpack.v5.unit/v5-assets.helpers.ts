@@ -19,6 +19,7 @@ import {
   finalizeWebpackCssAssetSource,
   getRuntimeClassSetSync,
   hasAdditionalWebpackAssetUserCssMarkers,
+  hasDeferredWebpackGeneratedCss,
   hasMissingRuntimeCandidates,
   hasProcessedCssAssetUrl,
   hasUsableWebpackGeneratorCssSources,
@@ -219,6 +220,14 @@ describe('bundlers/webpack v5-assets helpers', () => {
       shouldRegenerateExplicitTailwindV4CssSource: true,
     })).toBe(true)
     expect(shouldConsumeWebpackLoaderGeneratedCss({
+      allowMarkerlessRegistryMatch: true,
+      hasBundlerGeneratedCssMarker: false,
+      loaderGeneratedClassSet: new Set(['i-[mdi--github-circle]']),
+      sourceCandidates: new Set(['i-[mdi--github-circle]']),
+      shouldRegenerateExplicitTailwindV4CssSource: true,
+      watchMode: false,
+    })).toBe(true)
+    expect(shouldConsumeWebpackLoaderGeneratedCss({
       hasBundlerGeneratedCssMarker: true,
       loaderGeneratedClassSet: new Set(['bg-red-500']),
       sourceCandidates: new Set(['bg-red-500']),
@@ -236,7 +245,7 @@ describe('bundlers/webpack v5-assets helpers', () => {
       sourceCandidates: new Set(['bg-red-500', 'text-[102.43rpx]']),
       shouldRegenerateExplicitTailwindV4CssSource: true,
       watchMode: true,
-    })).toBe(false)
+    })).toBe(true)
     expect(shouldConsumeWebpackLoaderGeneratedCss({
       hasBundlerGeneratedCssMarker: true,
       loaderGeneratedClassSet: new Set(['bg-red-500', 'tw-watch-style-mpx-tailwindcss-v4-rollback']),
@@ -244,6 +253,18 @@ describe('bundlers/webpack v5-assets helpers', () => {
       shouldRegenerateExplicitTailwindV4CssSource: true,
       watchMode: true,
     })).toBe(false)
+  })
+
+  it('detects deferred generated css through registered raw selectors', () => {
+    const classSets = [new Set(['i-[mdi--github-circle]', 'bg-red-500'])]
+    expect(hasDeferredWebpackGeneratedCss(
+      '/*! weapp-tailwindcss webpack-generated-css:%2Fapp.css */ .i-\\[mdi--github-circle\\]{color:red}',
+      classSets,
+    )).toBe(true)
+    expect(hasDeferredWebpackGeneratedCss(
+      '.i-_bmdi--github-circle_B{color:red}',
+      classSets,
+    )).toBe(false)
   })
 
   it('scopes webpack generator cssEntries to the current css source file', () => {

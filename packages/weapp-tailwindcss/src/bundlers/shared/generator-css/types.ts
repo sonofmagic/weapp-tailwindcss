@@ -26,6 +26,7 @@ export interface GenerateCssByGeneratorOptions {
   previousCss?: string | undefined
   previousClassSet?: Set<string> | undefined
   deferEmptyScopedCssSource?: boolean | undefined
+  deferCssAdaptation?: boolean | undefined
   disableSourceScan?: boolean | undefined
   restoreLocalCssImports?: boolean | undefined
 }
@@ -41,6 +42,10 @@ export interface GenerateCssByGeneratorResult {
     file: string
     majorVersion?: number | undefined
     outputFile?: string | undefined
+    preflightMode?: {
+      inject: boolean
+      preserve: boolean
+    } | undefined
     rawCss?: string | undefined
   } | undefined
 }

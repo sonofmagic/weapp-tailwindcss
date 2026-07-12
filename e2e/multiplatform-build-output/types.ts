@@ -23,6 +23,7 @@ export interface BuildOutputCase {
   }>
   notContains?: Array<string | RegExp>
   env?: Record<string, string>
+  verifySourceFixtures?: boolean
   status: BuildOutputCaseStatus
   reason?: string
 }

@@ -1,4 +1,5 @@
 import type { OutputChunk, SourceMap } from 'rollup'
+import path from 'node:path'
 import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { replaceWxml } from '@/wxml'
@@ -261,12 +262,42 @@ export function createStyleValueFromApplySources(sources: string[], utilityStyle
   return Object.keys(result).length > 0 ? result : undefined
 }
 
-export function collectUniAppXHarmonyApplyStyleSourcesFromSource(source: string) {
+function resolveReferencePaths(styleSource: string, sourceId?: string) {
+  if (!sourceId || !styleSource.includes('@reference')) {
+    return styleSource
+  }
+  let root: postcss.Root
+  try {
+    root = postcss.parse(styleSource)
+  }
+  catch {
+    return styleSource
+  }
+  const cleanSourceId = sourceId.replace(/\?.*$/, '')
+  root.walkAtRules('reference', (rule) => {
+    const quote = rule.params[0]
+    if (quote !== '"' && quote !== '\'') {
+      return
+    }
+    const closingQuoteIndex = rule.params.indexOf(quote, 1)
+    if (closingQuoteIndex <= 1) {
+      return
+    }
+    const referencePath = rule.params.slice(1, closingQuoteIndex)
+    if (!referencePath.startsWith('.')) {
+      return
+    }
+    rule.params = `${quote}${path.resolve(path.dirname(cleanSourceId), referencePath)}${quote}${rule.params.slice(closingQuoteIndex + 1)}`
+  })
+  return root.toString()
+}
+
+export function collectUniAppXHarmonyApplyStyleSourcesFromSource(source: string, sourceId?: string) {
   const styleSources = source.includes('<style')
     ? [...source.matchAll(SFC_STYLE_BLOCK_RE)].map(styleBlock => styleBlock[1] ?? '')
     : [source]
   return styleSources
-    .map(styleSource => styleSource.trim())
+    .map(styleSource => resolveReferencePaths(styleSource.trim(), sourceId))
     .filter(styleSource => styleSource.length > 0 && styleSource.includes('@apply'))
 }
 

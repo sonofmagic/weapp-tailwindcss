@@ -11,6 +11,8 @@ import {
   prefixLocalCssImportsWithWebpackIgnoreRoot,
   postcss,
   restoreLocalCssImports,
+  removeMatchingLocalCssImports,
+  removeMatchingLocalCssImportsRoot,
   removeTailwindSourceDirectivesRoot,
   removeUnsupportedMiniProgramCssImportsRoot,
   rewriteLocalCssImportRequestsForOutput,
@@ -148,6 +150,27 @@ describe('local css import helpers', () => {
         '.btn { color: red; }',
       ].join('\n'),
     })
+  })
+
+  it('removes only local imports declared by the original user source', () => {
+    const source = [
+      '@import "./vendor.css";',
+      '@import "./tailwind-internal.css" layer(utilities);',
+      '@import "tailwindcss/theme";',
+      '.btn { color: red; }',
+    ].join('\n')
+    const imports = '@import "./vendor.css";'
+
+    expect(removeMatchingLocalCssImports(source, imports)).toBe([
+      '@import "./tailwind-internal.css" layer(utilities);',
+      '@import "tailwindcss/theme";',
+      '.btn { color: red; }',
+    ].join('\n'))
+
+    const root = postcss.parse(source)
+    expect(removeMatchingLocalCssImportsRoot(root, postcss.parse(imports))).toBe(true)
+    expect(root.toString()).toContain('./tailwind-internal.css')
+    expect(root.toString()).not.toContain('./vendor.css')
   })
 
   it('restores local imports before generated css', () => {

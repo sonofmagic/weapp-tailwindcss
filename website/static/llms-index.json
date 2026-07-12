@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-07-03T04:16:10.342Z",
+  "generatedAt": "2026-07-11T21:13:05.244Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 165,
@@ -3732,6 +3732,7 @@
       "headings": [
         "注册插件",
         "Tailwind CSS 入口",
+        "在 App.uvue 中引入入口",
         "验证任意值类名",
         "参考模板"
       ],
@@ -4394,6 +4395,7 @@
         "安装",
         "注册插件",
         "添加 CSS 入口",
+        "在 App.uvue 中引入入口",
         "验证任意值类名",
         "布局限制",
         "参考模板"

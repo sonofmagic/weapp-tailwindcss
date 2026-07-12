@@ -6,6 +6,7 @@
 
 - `vite.config.ts` 直接注册 `WeappTailwindcss(uniAppX(...))`
 - `main.css` 使用 `@import "tailwindcss"` 与 `@source`
+- `App.uvue` 的全局 `<style>` 使用 `@import './main.css'`，把生成入口加入 HBuilderX 构建图
 - 显式配置 `cssEntries`，使用项目根目录解析到 `main.css` 的绝对路径
 - 不注册 `@tailwindcss/postcss`，也不注册 `@tailwindcss/vite`
 
@@ -13,6 +14,7 @@
 
 ```bash
 pnpm install
+pnpm dev:h5
 pnpm dev:mp-weixin
 pnpm dev:android:emulator
 pnpm dev:ios:simulator

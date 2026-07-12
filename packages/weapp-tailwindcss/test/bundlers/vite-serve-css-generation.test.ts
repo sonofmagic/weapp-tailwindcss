@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createViteServeCssGenerationPlugins } from '@/bundlers/vite/serve-css-generation'
+import { createViteCssGenerationPlugins } from '@/bundlers/vite/serve-css-generation'
 
 function createPlugins(overrides: Record<string, any> = {}) {
   const options = {
@@ -11,7 +11,7 @@ function createPlugins(overrides: Record<string, any> = {}) {
   }
   return {
     options,
-    plugins: createViteServeCssGenerationPlugins(options),
+    plugins: createViteCssGenerationPlugins(options),
   }
 }
 
@@ -39,7 +39,7 @@ describe('vite serve css generation plugins', () => {
     const { options, plugins } = createPlugins({
       generateCss: vi.fn((_id: string, code: string) => `${code}\n.next{color:blue}`),
     })
-    const hmrPlugin = plugins[1]!
+    const hmrPlugin = plugins[2]!
     const plainCode = [
       'const __vite__css = ".root{color:red}"',
       '__vite__updateStyle(__vite__id, __vite__css)',
@@ -83,12 +83,24 @@ describe('vite serve css generation plugins', () => {
     await expect(hmrPlugin.transform?.call({} as any, rootCode, '/src/app.css?direct' as any)).resolves.toBeUndefined()
   })
 
-  it('skips both transforms when generation is disabled or command is not serve', async () => {
+  it('scopes serve, build and hmr transforms to their command and generation settings', async () => {
     const disabled = createPlugins({ shouldGenerate: vi.fn(() => false) })
     await expect(disabled.plugins[0]!.transform?.call({} as any, '@import "tailwindcss";', '/src/app.css' as any)).resolves.toBeUndefined()
     await expect(disabled.plugins[1]!.transform?.call({} as any, '__vite__updateStyle(id, css)', '/src/app.css?direct' as any)).resolves.toBeUndefined()
+    await expect(disabled.plugins[2]!.transform?.call({} as any, '__vite__updateStyle(id, css)', '/src/app.css?direct' as any)).resolves.toBeUndefined()
 
     const build = createPlugins({ getCommand: vi.fn(() => 'build') })
     await expect(build.plugins[0]!.transform?.call({} as any, '@import "tailwindcss";', '/src/app.css' as any)).resolves.toBeUndefined()
+    await expect(build.plugins[1]!.transform?.call({} as any, '@import "tailwindcss";', '/src/app.css' as any)).resolves.toEqual({
+      code: '@import "tailwindcss";\n/* /src/app.css */',
+      map: null,
+    })
+    await expect(build.plugins[2]!.transform?.call({} as any, '__vite__updateStyle(id, css)', '/src/app.css?direct' as any)).resolves.toBeUndefined()
+
+    const buildDisabled = createPlugins({
+      getCommand: vi.fn(() => 'build'),
+      shouldGenerateBuild: vi.fn(() => false),
+    })
+    await expect(buildDisabled.plugins[1]!.transform?.call({} as any, '@import "tailwindcss";', '/src/app.css' as any)).resolves.toBeUndefined()
   })
 })

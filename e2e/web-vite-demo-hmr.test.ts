@@ -366,6 +366,7 @@ async function waitForInitialRender(page: Page, item: WebViteHmrCase, baseUrl: s
 
 async function waitForDomHmr(page: Page, item: WebViteHmrCase, messages?: ViteHmrMessage[], fromIndex = 0) {
   let lastError = ''
+  let reloadAttempted = false
   const startedAt = Date.now()
   const targetSelector = item.targetSelector ?? 'h1'
 
@@ -391,6 +392,15 @@ async function waitForDomHmr(page: Page, item: WebViteHmrCase, messages?: ViteHm
     }
     catch (error) {
       lastError = error instanceof Error ? error.message : String(error)
+    }
+    if (item.reloadAllowed && !reloadAttempted && Date.now() - startedAt >= 1_000) {
+      reloadAttempted = true
+      await page.reload({
+        waitUntil: 'domcontentloaded',
+        timeout: Math.min(serverTimeoutMs, 60_000),
+      }).catch((error) => {
+        lastError = error instanceof Error ? error.message : String(error)
+      })
     }
     await wait(pollIntervalMs)
   }

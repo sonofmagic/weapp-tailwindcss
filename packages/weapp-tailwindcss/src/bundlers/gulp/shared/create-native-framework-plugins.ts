@@ -16,7 +16,9 @@ import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-eng
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { processCachedTask } from '../../shared/cache'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap } from '../../shared/css-source-trace'
+import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
 import { generateCssByGenerator } from '../../shared/generator-css'
+import { finalizeMiniProgramGeneratorCss } from '../../shared/generator-css/generation-helpers'
 import { rewriteLocalCssImportRequestsForOutput, splitLocalCssImports } from '../../shared/generator-css/local-imports'
 import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
 import { createSourceCandidateCollector } from '../../vite/source-candidates'
@@ -150,6 +152,7 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
   let runtimeSetDirty = false
   const runtimeSourceHashByFile = new Map<string, string>()
   const runtimeSourcesByFile = new Map<string, { source: string, type: 'html' | 'js' }>()
+  const generatedCssPreflightModeByFile = new Map<string, { inject: boolean, preserve: boolean }>()
   let cachedGulpSourceCandidateSignature: string | undefined
   const gulpProcessCacheKeys = new Set<string>()
   const bundleRuntimeClassSetManager: BundleRuntimeClassSetManager
@@ -426,8 +429,11 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
     }
   }
 
-  const transformWxss = (options: Partial<IStyleHandlerOptions> = {}) =>
-    createVinylTransform('css', async (file) => {
+  function createWxssTransform(
+    options: Partial<IStyleHandlerOptions>,
+    stage: 'generate' | 'transform',
+  ) {
+    return createVinylTransform(`css:${stage}`, async (file) => {
       if (!file.contents) {
         return
       }
@@ -452,8 +458,8 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
         : undefined
       const styleOutputExtension = resolveGulpStyleOutputExtension(file)
       const outputSignature = styleOutputExtension
-        ? `gulp-output:1:${styleOutputExtension}`
-        : 'gulp-output:0'
+        ? `gulp-output:1:${stage}:${styleOutputExtension}`
+        : `gulp-output:0:${stage}`
       await processCachedTask<string>({
         cache,
         cacheKey: file.path,
@@ -479,15 +485,33 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
                 getSourceCandidatesForEntries: gulpSourceCandidateGetter,
                 styleHandler,
                 debug,
+                deferCssAdaptation: stage === 'generate',
               })
             : undefined
-          const css = annotateCssSourceTrace(generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css, {
+          const transformedCss = generated?.css ?? (stage === 'generate'
+            ? rawSource
+            : (await styleHandler(rawSource, cssHandlerOptions)).css)
+          if (stage === 'generate') {
+            const preflightMode = generated?.metadata?.preflightMode
+            if (preflightMode) {
+              generatedCssPreflightModeByFile.set(file.path, preflightMode)
+            }
+            else {
+              generatedCssPreflightModeByFile.delete(file.path)
+            }
+          }
+          const css = annotateCssSourceTrace(transformedCss, {
             opts,
             tokenSources: sourceTraceTokenSources,
           })
-          const outputCss = rewriteLocalCssImportRequestsForOutput(css, {
-            styleOutputExtension,
-          })
+          const generatedCss = stage === 'generate' && generated
+            ? `${createBundlerGeneratedCssMarker('gulp', file.path)}\n${css}`
+            : css
+          const outputCss = stage === 'generate'
+            ? generatedCss
+            : rewriteLocalCssImportRequestsForOutput(generatedCss, {
+                styleOutputExtension,
+              })
           debug('css handle: %s', file.path)
           return {
             result: outputCss,
@@ -496,7 +520,42 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
       })
       rememberGulpProcessCacheKey(gulpProcessCacheKeys, file.path)
       pruneGulpProcessCache(cache, gulpProcessCacheKeys)
-    }, () => resolveGulpTransformTimingDetails('css'))
+    }, () => resolveGulpTransformTimingDetails(`css:${stage}`))
+  }
+
+  // 显式生成阶段保留源码 import，交给后续 gulp-postcss 解析。
+  const generateWxss = (options: Partial<IStyleHandlerOptions> = {}) => createWxssTransform(options, 'generate')
+  const transformWxss = (options: Partial<IStyleHandlerOptions> = {}) => createWxssTransform(options, 'transform')
+  const adaptWxss = (options: Partial<IStyleHandlerOptions> = {}) =>
+    createVinylTransform('css:adapt', async (file) => {
+      if (!file.contents) {
+        return
+      }
+      const rawSource = file.contents.toString()
+      const generatedCss = hasBundlerGeneratedCssMarker(rawSource)
+      const source = generatedCss ? stripBundlerGeneratedCssMarkers(rawSource) : rawSource
+      const styleOutputExtension = resolveGulpStyleOutputExtension(file)
+      const cssHandlerOptions = resolveWxssFileHandlerOptions(file, source, options)
+      const handled = await styleHandler(source, cssHandlerOptions)
+      const preflightMode = generatedCssPreflightModeByFile.get(file.path)
+      const finalized = generatedCss
+        ? finalizeMiniProgramGeneratorCss(
+            handled.css,
+            'weapp',
+            runtimeState.tailwindRuntime.majorVersion,
+            opts.cssPreflight,
+            {
+              injectPreflight: preflightMode?.inject ?? cssHandlerOptions.isMainChunk,
+              preservePreflight: preflightMode?.preserve ?? cssHandlerOptions.isMainChunk,
+              styleOptions: cssHandlerOptions,
+            },
+          )
+        : handled.css
+      file.contents = Buffer.from(rewriteLocalCssImportRequestsForOutput(finalized, {
+        styleOutputExtension,
+      }))
+      debug('css adapt: %s', file.path)
+    }, () => resolveGulpTransformTimingDetails('css:adapt'))
 
   const transformJs = (options: Partial<CreateJsHandlerOptions> = {}) =>
     createVinylTransform('js', async (file) => {
@@ -583,6 +642,8 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
     }, () => resolveGulpTransformTimingDetails('html'))
 
   return {
+    adaptWxss,
+    generateWxss,
     transformWxss,
     transformWxml,
     transformJs,

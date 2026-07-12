@@ -254,7 +254,11 @@ async function collectRuntimeStyle(page: Page, selector: string) {
     return {
       alignItems: style.alignItems,
       backgroundColor: style.backgroundColor.replace(/\s+/g, ' '),
+      borderBottomWidth: style.borderBottomWidth,
+      borderLeftWidth: style.borderLeftWidth,
       borderRadius: style.borderRadius,
+      borderRightWidth: style.borderRightWidth,
+      borderTopWidth: style.borderTopWidth,
       color: style.color.replace(/\s+/g, ' '),
       display: style.display,
       flexDirection: style.flexDirection,

@@ -149,6 +149,14 @@ describe('generator user css helpers', () => {
       hasGeneratedCss: false,
       hasGeneratedMarkers: false,
     })).toBe(true)
+    expect(shouldFilterApplyOnlyGeneratedCss(4, 'weapp', '@reference "tailwindcss";\n.card{@apply flex}', {
+      hasGeneratedCss: false,
+      hasGeneratedMarkers: false,
+    })).toBe(true)
+    expect(filterApplyOnlyGeneratedCss(
+      '.flex{display:flex}.card{display:flex}',
+      '@reference "tailwindcss";\n.card{@apply flex}',
+    )).toBe('.card{display:flex}')
     expect(shouldFilterApplyOnlyGeneratedCss(4, 'weapp', '@tailwind utilities;\n.card{@apply flex}', {
       hasGeneratedCss: false,
       hasGeneratedMarkers: false,

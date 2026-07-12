@@ -119,14 +119,24 @@ export function resolveHdcCommand(env: NodeJS.ProcessEnv = process.env) {
   ].join('\n'))
 }
 
-export function assertHarmonyToolchain(env: NodeJS.ProcessEnv = process.env) {
+export function parseHdcTargets(output: string) {
+  return output
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(line => line.length > 0 && !/^\[empty\]$/i.test(line))
+}
+
+export function assertHarmonyToolchain(env: NodeJS.ProcessEnv = process.env, deviceId?: string) {
   const hdc = resolveHdcCommand(env)
   const result = runTool(hdc, ['list', 'targets'])
-  if (!result.ok) {
+  const targets = result.ok ? parseHdcTargets(result.output) : []
+  if (!result.ok || targets.length === 0 || (deviceId && !targets.includes(deviceId))) {
     const issue = classifyHBuilderXOutput(result.output)
     throw new Error([
       '当前 Harmony hdc 无法列出设备，无法运行 HBuilderX app-harmony E2E。',
-      result.output || `exit=${result.status} signal=${result.signal ?? 'none'}`,
+      result.output || `targets=empty exit=${result.status} signal=${result.signal ?? 'none'}`,
+      `requestedDevice=${deviceId ?? '任意已连接设备'}`,
+      `detectedTargets=${targets.join(', ') || 'empty'}`,
       `issue=${issue.kind}: ${issue.message}`,
       '请确认 Harmony 模拟器或真机已连接。',
     ].join('\n'))

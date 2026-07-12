@@ -52,8 +52,8 @@ const generator = {
   },
 }
 
-// 在 Gulp 里使用时，Tailwind CSS 生成由 transformWxss 的生成模式接管，PostCSS 只保留后处理插件
-const { transformJs, transformWxml, transformWxss } = createPlugins({
+// Tailwind CSS 先由 generateWxss 生成，再交给 Gulp 原有 PostCSS 流程继续处理。
+const { adaptWxss, generateWxss, transformJs, transformWxml } = createPlugins({
   tailwindcssBasedir: projectRoot,
   cssEntries: [
     path.resolve(projectRoot, 'src/app.css'),
@@ -158,8 +158,9 @@ function styleCompile() {
       }).on('error', sass.logError),
     ))
     .pipe(gulpif(isDebug, debug({ title: '`styleCompile` Debug:' })))
+    .pipe(generateWxss())
     .pipe(postcss())
-    .pipe(transformWxss())
+    .pipe(adaptWxss())
     .pipe(
       rename({
         extname: `.${platformHit.css}`,

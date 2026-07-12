@@ -40,6 +40,12 @@ describe('normalizeCssSnapshot', () => {
     ].join('\n'))).resolves.toContain('url(data:font/woff2;base64,<stable>) format(\'truetype\')')
   })
 
+  it('falls back to PostCSS normalization for unsupported nested declaration blocks', async () => {
+    const css = '@supports (color: color-mix(in lab,red,red)){{color:red}}'
+
+    await expect(formatRawCssSnapshotText(css)).resolves.toBe(`${css}\n`)
+  })
+
   it('applies webpack app split noise options to raw snapshots', () => {
     expect(normalizeRawCssSnapshotText([
       ':host,page,.tw-root,wx-root-portal-content{--font-sans:ui-sans-serif;--nut-icon-height:16rpx;--animate-duration:1s}',

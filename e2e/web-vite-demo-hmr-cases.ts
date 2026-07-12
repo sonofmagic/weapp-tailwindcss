@@ -2,6 +2,7 @@ import process from 'node:process'
 
 export interface WebViteHmrCase {
   name: string
+  visualName?: string
   projectDir: string
   devCommand: string[]
   readyLog?: RegExp
@@ -89,6 +90,7 @@ const allWebViteHmrCases: WebViteHmrCase[] = [
   },
   {
     name: 'web nuxt vite Tailwind v4 page background',
+    visualName: 'web/nuxt-vite-tailwindcss-v4/page-background',
     projectDir: 'demo/web/nuxt-vite-tailwindcss-v4',
     devCommand: ['exec', 'nuxt', 'dev', '--host', '127.0.0.1', '--port', '{port}'],
     sourceFile: 'app/pages/index.vue',
@@ -156,6 +158,7 @@ const allWebViteHmrCases: WebViteHmrCase[] = [
     classFrom: '<h1 class="m-0 text-[32px] leading-[38px] font-semibold">',
     classTo: '<h1 data-web-vite-hmr="vue-webpack-v4" class="m-0 text-[#ff0000] leading-[38px] font-semibold">',
     markerAttr: 'vue-webpack-v4',
+    reloadAllowed: true,
     styleRequired: false,
     classFlowRequired: false,
   },

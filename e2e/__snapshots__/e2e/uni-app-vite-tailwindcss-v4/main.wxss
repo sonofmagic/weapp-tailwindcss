@@ -297,9 +297,7 @@ wx-button {
 .space-y-2 > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing) * 2) * var(--tw-space-y-reverse));
-  margin-bottom: calc(var(--spacing) * 2 * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(var(--spacing) * 2 * (1 - var(--tw-space-y-reverse)));
 }
 /* tokens: space-y-4 <= src/pages/index/index.vue */
 .space-y-4 > view + view,
@@ -308,9 +306,7 @@ wx-button {
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
-  margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
 }
 /* tokens: space-y-reverse <= src/pages/index/index.vue */
 .space-y-reverse > view + view,
@@ -326,9 +322,7 @@ wx-button {
 .space-x-4 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
-  margin-right: calc(var(--spacing) * 4 * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
-  margin-left: calc(var(--spacing) * 4 * (1 - var(--tw-space-x-reverse)));
 }
 /* tokens: space-x-reverse <= src/pages/index/index.vue */
 .space-x-reverse > view + view,
@@ -347,7 +341,6 @@ wx-button {
   border-right-style: var(--tw-border-style);
   border-right-width: calc(4px * var(--tw-divide-x-reverse));
   border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
-  border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
 }
 /* tokens: divide-y-4 <= src/pages/index/index.vue */
 .divide-y-4 > view + view,
@@ -358,7 +351,6 @@ wx-button {
   border-bottom-style: var(--tw-border-style);
   border-top-style: var(--tw-border-style);
   border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
-  border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
   border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
 }
 /* tokens: divide-y-reverse <= src/pages/index/index.vue */

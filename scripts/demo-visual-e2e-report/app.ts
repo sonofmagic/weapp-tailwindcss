@@ -24,6 +24,7 @@ import {
   spawnPnpm,
   wait,
 } from '../../e2e/hbuilderx-local/process.ts'
+import { createHBuilderXProjectAlias } from '../hbuilderx-project-alias.mjs'
 import { finalizeHarmonyAppOutput } from './harmony-output.ts'
 import { resolveHmrScreenshotPath, resolveScreenshotPath } from './screenshots.ts'
 import {
@@ -47,6 +48,11 @@ function resolveAppDemoName(item: AppCase) {
 
 function resolveAppMarkerAnchors(item: AppCase) {
   return item.markerAnchorCandidates?.length ? item.markerAnchorCandidates : [item.markerAnchor]
+}
+
+function resolveLaunchArg(item: AppCase, name: string) {
+  const index = item.launchArgs?.indexOf(name) ?? -1
+  return index >= 0 ? item.launchArgs?.[index + 1] : undefined
 }
 
 function resolveAppOutputDirCandidates(item: AppCase) {
@@ -242,6 +248,24 @@ function resolveAdbCommand(env: Record<string, string | undefined>) {
     }
   }
   return 'adb'
+}
+
+function cleanupAndroidAppRuntime(env: Record<string, string | undefined>, deviceId?: string) {
+  const adb = resolveAdbCommand(env)
+  spawnSync(adb, [...createAndroidAdbArgs(deviceId), 'reverse', '--remove-all'], {
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+  })
+  if (process.platform !== 'darwin') {
+    return
+  }
+  const listeners = spawnSync('lsof', ['-tiTCP:8000-8099', '-sTCP:LISTEN'], { encoding: 'utf8' })
+  for (const pid of (listeners.stdout ?? '').split(/\s+/).filter(Boolean)) {
+    const command = spawnSync('ps', ['-p', pid, '-o', 'command='], { encoding: 'utf8' }).stdout
+    if (command.includes('/HBuilderX.app/Contents/HBuilderX/plugins/node/node')) {
+      process.kill(Number(pid), 'SIGTERM')
+    }
+  }
 }
 
 async function captureAndroidScreenshot(screenshot: string, env: Record<string, string | undefined>, deviceId?: string) {
@@ -466,7 +490,7 @@ async function analyzeScreenshotColorPresence(
 }
 
 function isAndroidDebugShell(uiHierarchy: string) {
-  return /Connect to HBuilderX successfully|io\.dcloud\.uniappx:id\/pull_msg|io\.dcloud\.HBuilder\/io\.dcloud\.PandoraEntryActivity/.test(uiHierarchy)
+  return /Connect to HBuilderX successfully|Failed to connect to \/127\.0\.0\.1|io\.dcloud\.uniappx:id\/pull_msg|io\.dcloud\.HBuilder\/io\.dcloud\.PandoraEntryActivity/.test(uiHierarchy)
 }
 
 async function collectAppScreenshotEvidence(
@@ -557,6 +581,7 @@ function createProcessExitTracker(child: ChildProcess) {
 function startAppLaunch(
   item: AppCase,
   projectRoot: string,
+  projectName: string,
   hbuilderxCliPath: string,
   toolEnv: Record<string, string | undefined>,
 ) {
@@ -564,7 +589,7 @@ function startAppLaunch(
   if (item.platform !== 'app-harmony' && !launchArgs.includes('--pagePath')) {
     launchArgs.push('--pagePath', 'pages/index/index')
   }
-  const child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectRoot, ...launchArgs], {
+  const child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectName, ...launchArgs], {
     HBUILDERX_CLI_PATH: hbuilderxCliPath,
     WEAPP_TW_HMR_TIMING: '1',
     ...toolEnv,
@@ -602,7 +627,9 @@ async function runAppCaseVariant(
   const hmrAfterScreenshot = resolveHmrScreenshotPath(context, name, platform, 'after', variant.key)
   const projectRoot = path.resolve(context.repoRoot, item.projectDir)
   const sourceFile = path.resolve(projectRoot, item.sourceFile)
+  let activeSourceFile = sourceFile
   let launch: ReturnType<typeof startAppLaunch> | undefined
+  let projectAlias: Awaited<ReturnType<typeof createHBuilderXProjectAlias>> | undefined
   let beforeScreenshotEvidence: Record<string, unknown> | undefined
   let afterScreenshotEvidence: Record<string, unknown> | undefined
 
@@ -611,15 +638,19 @@ async function runAppCaseVariant(
     let toolEnv = shared?.toolEnv ?? {}
     if (item.platform === 'app-android') {
       toolEnv = shared?.toolEnv ?? assertAndroidToolchain()
+      cleanupAndroidAppRuntime(toolEnv, resolveAndroidScreenshotDeviceId(item))
+      await wait(1500)
     }
     else if (item.platform === 'app-ios') {
       assertIosSimulatorToolchain()
     }
     else {
-      assertHarmonyToolchain()
+      assertHarmonyToolchain(process.env, resolveLaunchArg(item, '--deviceId'))
     }
 
     const hbuilderxCliPath = shared?.hbuilderxCliPath ?? await resolveHBuilderXCli()
+    projectAlias = await createHBuilderXProjectAlias(projectRoot)
+    activeSourceFile = path.resolve(projectAlias.projectPath, item.sourceFile)
     const originalSource = shared?.originalSource ?? (await readUtf8(sourceFile)).replace(appMarkerRE, '')
     const originalManifest = shared?.originalManifest ?? await readManifest(projectRoot).catch(() => undefined)
     const restoreVariantManifest = async () => {
@@ -631,11 +662,11 @@ async function runAppCaseVariant(
         await writeStyleIsolationVariantManifest(projectRoot, variant)
       }
     }
-    await fs.writeFile(sourceFile, originalSource, 'utf8')
+    await fs.writeFile(activeSourceFile, originalSource, 'utf8')
     await restoreVariantManifest()
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write initial marker\n`)
-    await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
+    await writeAppMarker(activeSourceFile, resolveAppMarkerAnchors(item), {
       className: item.markerClass,
       text: item.markerText,
     })
@@ -643,13 +674,17 @@ async function runAppCaseVariant(
     await cleanAppOutput(item, projectRoot)
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: open project ${projectRoot}\n`)
-    await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot], hbuilderxAppTimeoutMs, {
+    await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'close', '--path', projectAlias.projectPath], hbuilderxAppTimeoutMs, {
+      HBUILDERX_CLI_PATH: hbuilderxCliPath,
+      ...toolEnv,
+    }).catch(() => undefined)
+    await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectAlias.projectPath], hbuilderxAppTimeoutMs, {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       ...toolEnv,
     })
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: launch ${item.platform}\n`)
-    launch = startAppLaunch(item, projectRoot, hbuilderxCliPath, toolEnv)
+    launch = startAppLaunch(item, projectRoot, projectAlias.projectName, hbuilderxCliPath, toolEnv)
     const ensureInitialRunning = () => launch?.tracker.ensureRunning(launch.logs)
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait initial output\n`)
@@ -660,7 +695,7 @@ async function runAppCaseVariant(
     beforeScreenshotEvidence = await waitForAppScreenshotReady(item, hmrBeforeScreenshot, toolEnv, `${item.name} HMR 前`, ensureInitialRunning, item.markerClass)
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write hmr marker\n`)
-    await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
+    await writeAppMarker(activeSourceFile, resolveAppMarkerAnchors(item), {
       className: item.hmrMarkerClass,
       text: item.hmrMarkerText,
     })
@@ -701,12 +736,15 @@ async function runAppCaseVariant(
     launch = undefined
   }
   catch (error) {
+    const launchLog = launch?.logs.join('').trim()
     results.push({
       name,
       platform,
       styleIsolationVariant: variant.key,
       status: 'failed',
-      error: error instanceof Error ? error.message : String(error),
+      error: [error instanceof Error ? error.message : String(error), launchLog ? `HBuilderX launch log:\n${launchLog}` : '']
+        .filter(Boolean)
+        .join('\n'),
       diagnostics: {
         launchArgs: item.launchArgs,
         projectRoot,
@@ -715,6 +753,16 @@ async function runAppCaseVariant(
   }
   finally {
     await stopAppLaunch(launch)
+    if (item.platform === 'app-android') {
+      cleanupAndroidAppRuntime(shared?.toolEnv ?? {}, resolveAndroidScreenshotDeviceId(item))
+    }
+    if (projectAlias) {
+      await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'close', '--path', projectAlias.projectPath], hbuilderxAppTimeoutMs, {
+        HBUILDERX_CLI_PATH: shared?.hbuilderxCliPath,
+        ...shared?.toolEnv,
+      }).catch(() => undefined)
+      await projectAlias.cleanup().catch(() => undefined)
+    }
     if (shared?.originalSource) {
       await fs.writeFile(sourceFile, shared.originalSource, 'utf8').catch(() => undefined)
     }

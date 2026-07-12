@@ -84,16 +84,25 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   const runtimeClassSetLoader = runtimeLoaderPath
     ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.js')
   const shouldInjectRuntimeClassSetLoader = !generatorBranch.isWeb
+  const shouldInjectCssGenerationLoader = generatorOptions.enabled
+    && runtimeState.tailwindRuntime.majorVersion === 4
+    && (generatorTarget === 'web' || generatorTarget === 'weapp')
   const shouldInjectCssImportRewriteLoader = shouldRewriteCssImports
-    || (generatorOptions.enabled && (!generatorBranch.isWeb || runtimeState.tailwindRuntime.majorVersion === 4))
+    || shouldInjectCssGenerationLoader
+  const runtimeCssGenerationLoader = shouldInjectCssGenerationLoader
+    ? path.resolve(__dirname, './weapp-tw-css-generation-loader.js')
+    : undefined
   const runtimeCssImportRewriteLoader = shouldInjectCssImportRewriteLoader
     ? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.js')
     : undefined
   const runtimeClassSetLoaderExists = fs.existsSync(runtimeClassSetLoader)
+  const runtimeCssGenerationLoaderExists = runtimeCssGenerationLoader
+    ? fs.existsSync(runtimeCssGenerationLoader)
+    : false
   const runtimeCssImportRewriteLoaderExists = runtimeCssImportRewriteLoader
     ? fs.existsSync(runtimeCssImportRewriteLoader)
     : false
-  const runtimeLoaderRewriteOptions = shouldInjectCssImportRewriteLoader
+  const runtimeLoaderRewriteOptions = shouldInjectCssImportRewriteLoader || shouldInjectCssGenerationLoader
     ? {
         pkgDir: weappTailwindcssPackageDir,
         compilerOptions,
@@ -121,7 +130,13 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   compiler.hooks.watchClose?.tap?.(pluginName, cleanupWebpackLoaderRuntime)
   compiler.hooks.shutdown?.tap?.(pluginName, cleanupWebpackLoaderRuntime)
   const { findRewriteAnchor, findClassSetAnchor } = loaderAnchorFinders
-  const cssImportRewriteLoaderOptions = runtimeLoaderRewriteOptions
+  const cssImportRewriteLoaderOptions = runtimeLoaderRewriteOptions && shouldInjectCssImportRewriteLoader
+    ? {
+        generateCss: false,
+        tailwindcssImportRewriteRuntimeKey: runtimeRegistryKey,
+      }
+    : undefined
+  const cssGenerationLoaderOptions = runtimeLoaderRewriteOptions && shouldInjectCssGenerationLoader
     ? {
         tailwindcssImportRewriteRuntimeKey: runtimeRegistryKey,
       }
@@ -151,12 +166,25 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
       type: null,
     }
   }
+  const createCssGenerationLoaderEntry = () => {
+    if (!runtimeCssGenerationLoader || !cssGenerationLoaderOptions) {
+      return null
+    }
+    return {
+      loader: runtimeCssGenerationLoader,
+      options: cssGenerationLoaderOptions,
+      ident: null,
+      type: null,
+    }
+  }
 
   const { NormalModule } = compiler.webpack
 
   compiler.hooks.compilation.tap(pluginName, (compilation) => {
-    NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (_loaderContext, module) => {
-      const hasRuntimeLoader = runtimeClassSetLoaderExists || runtimeCssImportRewriteLoaderExists
+    NormalModule.getCompilationHooks(compilation).loader.tap({ name: pluginName, stage: 100 }, (_loaderContext, module) => {
+      const hasRuntimeLoader = runtimeClassSetLoaderExists
+        || runtimeCssGenerationLoaderExists
+        || runtimeCssImportRewriteLoaderExists
       if (!hasRuntimeLoader) {
         return
       }
@@ -183,6 +211,24 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
         }
         else {
           loaderEntries.unshift(entry)
+        }
+      }
+      if (
+        cssGenerationLoaderOptions
+        && runtimeCssGenerationLoaderExists
+        && runtimeCssGenerationLoader
+        && isCssModule
+        && !hasLoaderEntry(loaderEntries, runtimeCssGenerationLoader)
+      ) {
+        const generationLoaderEntry = createCssGenerationLoaderEntry()
+        const anchorIndex = findRewriteAnchor(loaderEntries)
+        if (generationLoaderEntry) {
+          if (anchorIndex === -1) {
+            anchorlessInsert(generationLoaderEntry, 'after')
+          }
+          else {
+            loaderEntries.splice(anchorIndex + 1, 0, generationLoaderEntry)
+          }
         }
       }
       if (

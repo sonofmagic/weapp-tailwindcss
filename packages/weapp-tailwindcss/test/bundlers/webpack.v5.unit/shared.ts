@@ -59,6 +59,10 @@ export function isCssImportRewriteLoader(entry: { loader?: string }) {
   return entry.loader?.includes('weapp-tw-css-import-rewrite-loader.js') ?? false
 }
 
+export function isCssGenerationLoader(entry: { loader?: string }) {
+  return entry.loader?.includes('weapp-tw-css-generation-loader.js') ?? false
+}
+
 interface TestContext {
   disabled: boolean
   rewriteCssImports?: boolean

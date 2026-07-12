@@ -134,8 +134,8 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   const harmonyApplyStyleSources = new Set<string>()
   const harmonyApplyUtilities = new Set<string>()
 
-  function rememberHarmonyApplySource(code: string) {
-    const styleSources = collectUniAppXHarmonyApplyStyleSourcesFromSource(code)
+  function rememberHarmonyApplySource(code: string, id: string) {
+    const styleSources = collectUniAppXHarmonyApplyStyleSourcesFromSource(code, id)
     if (styleSources.length === 0) {
       return
     }
@@ -183,7 +183,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       }
       const shouldGenerateCss = hasTailwindSourceDirectives(code, { importFallback: true })
         || hasTailwindApplyDirective(code)
-      rememberHarmonyApplySource(code)
+      rememberHarmonyApplySource(code, id)
       const generatedCss = (
         shouldGenerateCss
       )
@@ -277,7 +277,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (!UVUE_NVUE_QUERY_RE.test(id)) {
         return
       }
-      rememberHarmonyApplySource(code)
+      rememberHarmonyApplySource(code, id)
       const resolvedConfig = getResolvedConfig()
       const isServeCommand = resolvedConfig?.command === 'serve'
       const isWatchBuild = resolvedConfig?.command === 'build' && !!resolvedConfig.build?.watch
@@ -294,14 +294,22 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         || enableComponentLocalStyle
         || enablePageLocalStyle
       if (shouldPassOptions) {
-        return transformUVue(code, id, jsHandler, currentRuntimeSet, omitUndefined({
+        const result = transformUVue(code, id, jsHandler, currentRuntimeSet, omitUndefined({
           ...(customAttributesEntities.length > 0 ? { customAttributesEntities } : {}),
           ...(disabledDefaultTemplateHandler ? { disabledDefaultTemplateHandler } : {}),
           ...(enableComponentLocalStyle ? { enableComponentLocalStyle } : {}),
           ...(enablePageLocalStyle ? { enablePageLocalStyle } : {}),
         }))
+        if (result?.code) {
+          rememberHarmonyApplySource(result.code, id)
+        }
+        return result
       }
-      return transformUVue(code, id, jsHandler, currentRuntimeSet)
+      const result = transformUVue(code, id, jsHandler, currentRuntimeSet)
+      if (result?.code) {
+        rememberHarmonyApplySource(result.code, id)
+      }
+      return result
     },
     async handleHotUpdate(ctx) {
       if (!isEnabled()) {
@@ -351,10 +359,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         const getAssetSource = createUniAppXBundleAssetSourceGetter(bundle)
         if (isHarmonyTarget) {
           const cssSources: string[] = []
-          const applyStyleSources = [
-            ...harmonyApplyStyleSources,
-            ...collectUniAppXHarmonyApplyStyleSources(bundle),
-          ]
+          const applyStyleSources = harmonyApplyStyleSources.size > 0
+            ? [...harmonyApplyStyleSources]
+            : collectUniAppXHarmonyApplyStyleSources(bundle)
           const applyUtilities = new Set([
             ...harmonyApplyUtilities,
             ...collectUniAppXHarmonyApplyUtilities(bundle),

@@ -7,7 +7,7 @@ import type { InternalUserDefinedOptions, TailwindcssRuntimeLike } from '@/types
 import path from 'node:path'
 import process from 'node:process'
 import { MappingChars2String } from '@weapp-core/escape'
-import { filterExistingCssRules, postcss, removeUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
+import { dedupeCoveredCssRules, filterExistingCssRules, mergeCoveredCssRuleDeclarations, postcss, removeUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
 import { resolveStyleOptionsFromContext } from '@/context/style-options'
 import { getDefaultCssPreflight } from '@/defaults'
 import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
@@ -15,6 +15,7 @@ import { finalizeMiniProgramCss, pruneMiniProgramGeneratedCss, stripMiniProgramC
 import { createCssTokenSourceMap, isCssSourceTraceEnabled } from '../../../shared/css-source-trace'
 import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../../../shared/generated-css-marker'
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives } from '../../../shared/generator-css'
+import { collectRawSourceClassSelectors } from '../../../shared/generator-css/class-selectors'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, parseImportRequest, removeTailwindSourceDirectives } from '../../../shared/generator-css/directives'
 import { createCssSourceOrderAppend, hasMiniProgramTailwindV4PreflightReset } from '../../../shared/generator-css/generation-helpers'
 import { removeMiniProgramHoverSelectors, removeTailwindV4GeneratedUserCssArtifacts, removeTailwindV4GeneratorAtRules, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments } from '../../../shared/generator-css/user-css'
@@ -328,6 +329,7 @@ export function resolveWebpackGeneratorRawSource(
 }
 
 export function shouldConsumeWebpackLoaderGeneratedCss(options: {
+  allowMarkerlessRegistryMatch?: boolean | undefined
   hasBundlerGeneratedCssMarker: boolean
   loaderGeneratedClassSet?: Set<string> | undefined
   sourceCandidates?: Set<string> | undefined
@@ -341,14 +343,43 @@ export function shouldConsumeWebpackLoaderGeneratedCss(options: {
     options.watchMode === true
     && options.loaderGeneratedClassSet
     && options.sourceCandidates
-    && (
-      hasMissingRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
-      || hasStaleRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
-    )
+    && hasStaleRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
   ) {
     return false
   }
-  return options.hasBundlerGeneratedCssMarker
+  if (options.hasBundlerGeneratedCssMarker) {
+    return true
+  }
+  if (
+    options.watchMode === true
+    && options.loaderGeneratedClassSet
+    && options.sourceCandidates
+    && hasMissingRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
+  ) {
+    return false
+  }
+  return Boolean(
+    options.allowMarkerlessRegistryMatch
+    && options.loaderGeneratedClassSet
+    && options.sourceCandidates
+    && !hasMissingRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
+    && !hasStaleRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates),
+  )
+}
+
+export function hasDeferredWebpackGeneratedCss(
+  source: string,
+  generatedClassSets: Iterable<ReadonlySet<string>>,
+) {
+  const selectors = collectRawSourceClassSelectors(source)
+  for (const classSet of generatedClassSets) {
+    for (const candidate of classSet) {
+      if (selectors.has(candidate)) {
+        return true
+      }
+    }
+  }
+  return false
 }
 
 export interface WebpackGeneratorUserCssSource {
@@ -507,12 +538,13 @@ function isWebpackKeyframesRule(rule: postcss.Rule) {
 
 export function collectWebpackBareSelectorUserCss(source: string) {
   try {
-    const root = postcss.parse(removeTailwindSourceDirectives(
+    const normalizedSource = removeTailwindSourceDirectives(
       stripTailwindSourceMediaFragments(
         removeTailwindV4GeneratorAtRules(source),
       ),
       { importFallback: true },
-    ))
+    )
+    const root = postcss.parse(normalizedSource)
     let changed = false
     root.walkAtRules((rule) => {
       if (rule.name === 'import' || rule.name === 'font-face' || rule.name.endsWith('keyframes')) {
@@ -535,7 +567,7 @@ export function collectWebpackBareSelectorUserCss(source: string) {
         changed = true
       }
     })
-    return changed ? root.toString() : source
+    return changed ? root.toString() : normalizedSource
   }
   catch {
     return ''
@@ -1000,8 +1032,14 @@ export function createWebpackGeneratorUserCssSourceAppend(
   let css = ''
   const usedParts: WebpackGeneratorUserCssSource[] = []
   for (const source of parts) {
+    const merged = css.trim().length > 0
+      ? mergeCoveredCssRuleDeclarations(css, source.css)
+      : undefined
+    if (merged?.changed) {
+      css = merged.baseCss
+    }
     const nextCss = css.trim().length > 0
-      ? filterExistingCssRules(css, source.css)
+      ? filterExistingCssRules(css, merged?.css ?? source.css)
       : source.css
     const hasNextCss = nextCss.trim().length > 0
     if (!hasNextCss) {
@@ -1383,7 +1421,7 @@ export function finalizeWebpackCssAssetOutputSource(
   const styleOptions = resolveStyleOptionsFromContext(compilerOptions)
   return stripMiniProgramCssSpecificityPlaceholders(
     removeMiniProgramHoverSelectors(
-      dedupeMiniProgramPreflightSelectorRules(source),
+      dedupeCoveredCssRules(dedupeMiniProgramPreflightSelectorRules(source)),
       styleOptions.cssRemoveHoverPseudoClass,
     ),
   )

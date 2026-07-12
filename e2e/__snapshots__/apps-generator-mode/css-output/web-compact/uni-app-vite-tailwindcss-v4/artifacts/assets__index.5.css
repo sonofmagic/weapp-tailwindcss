@@ -1,41 +1,104 @@
-*[data-v-04bcf89b],
-[data-v-04bcf89b]::before,
-[data-v-04bcf89b]::after,
-[data-v-04bcf89b]::backdrop {
+*[data-v-b12531e8],
+[data-v-b12531e8]::before,
+[data-v-b12531e8]::after,
+[data-v-b12531e8]::backdrop {
   --tw-content: '';
 }
-.hello-world-shell[data-v-04bcf89b] {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--spacing, 0.25rem) * 2);
-  border-radius: 0.625rem;
-  background-color: #f8fafc;
-  padding-inline: calc(var(--spacing, 0.25rem) * 4);
-  padding-block: calc(var(--spacing, 0.25rem) * 3);
-  color: var(--color-slate-700, rgb(49, 65, 88));
+*[data-v-b12531e8],
+[data-v-b12531e8]::after,
+[data-v-b12531e8]::before,
+[data-v-b12531e8]::backdrop,
+[data-v-b12531e8]::file-selector-button {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
 }
-.special-class-visual-probe.dark [class~='dark:bg-red-300'][data-v-86001868] {
-  background-color: #fca5a5;
-  color: #7f1d1d;
+code[data-v-b12531e8],
+kbd[data-v-b12531e8],
+samp[data-v-b12531e8],
+pre[data-v-b12531e8] {
+  font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
+  font-feature-settings: var(--default-mono-font-feature-settings, normal);
+  font-variation-settings: var(--default-mono-font-variation-settings, normal);
+  font-size: 1em;
 }
-.special-class-visual-probe [class~='text-[45rpx]'][data-v-86001868] {
-  color: #0f172a;
-  font-size: 45px;
-  line-height: 1;
+[data-v-b12531e8]:-moz-focusring {
+  outline: auto;
 }
-.special-class-visual-probe.dark .dark_cbg-red-300[data-v-86001868] {
-  background-color: #fca5a5;
-  color: #7f1d1d;
+img[data-v-b12531e8],
+svg[data-v-b12531e8],
+uni-video[data-v-b12531e8],
+uni-canvas[data-v-b12531e8],
+uni-audio[data-v-b12531e8],
+iframe[data-v-b12531e8],
+embed[data-v-b12531e8],
+object[data-v-b12531e8] {
+  display: block;
+  vertical-align: middle;
 }
-.special-class-visual-probe .text-_b45rpx_B[data-v-86001868] {
-  color: #0f172a;
-  font-size: 45px;
-  line-height: 1;
+img[data-v-b12531e8],
+uni-video[data-v-b12531e8] {
+  max-width: 100%;
+  height: auto;
 }
-.special-class-visual-probe .css-variable-visual-probe[data-v-86001868] {
-  --visual-probe-bg: rgb(16, 185, 129);
-  --visual-probe-size: 45px;
-  background-color: var(--visual-probe-bg);
-  font-size: var(--visual-probe-size);
-  line-height: 1;
+uni-button[data-v-b12531e8],
+uni-input[data-v-b12531e8],
+select[data-v-b12531e8],
+optgroup[data-v-b12531e8],
+uni-textarea[data-v-b12531e8],
+[data-v-b12531e8]::file-selector-button {
+  font: inherit;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  border-radius: 0;
+  background-color: transparent;
+  opacity: 1;
+}
+:where(select:is([multiple], [size])) optgroup[data-v-b12531e8] {
+  font-weight: bolder;
+}
+:where(select:is([multiple], [size])) optgroup option[data-v-b12531e8] {
+  padding-inline-start: 20px;
+}
+uni-textarea[data-v-b12531e8] {
+  resize: vertical;
+}
+[data-v-b12531e8]:-moz-ui-invalid {
+  box-shadow: none;
+}
+uni-button[data-v-b12531e8],
+uni-input:where([type='button'][data-v-b12531e8], [type='reset'][data-v-b12531e8], [type='submit'][data-v-b12531e8]),
+[data-v-b12531e8]::file-selector-button {
+  -webkit-appearance: button;
+  -moz-appearance: button;
+  appearance: button;
+}
+[hidden]:where([data-v-b12531e8]:not([hidden='until-found'])) {
+  display: none !important;
+}
+.bg-independent-subpackage-marker[data-v-b12531e8] {
+  background-color: #dc2626;
+}
+.before\:content-\[\'independent_subpackage_uni-app-vite-tailwindcss-v4\'\][data-v-b12531e8]::before {
+  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
+  content: var(--tw-content);
+}
+.before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\][data-v-b12531e8]::before {
+  --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
+  content: var(--tw-content);
+}
+.before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\][data-v-b12531e8]::before {
+  --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
+  content: var(--tw-content);
+}
+@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
+  *[data-v-b12531e8],
+  [data-v-b12531e8]::before,
+  [data-v-b12531e8]::after,
+  [data-v-b12531e8]::backdrop {
+    --tw-content: '';
+  }
 }

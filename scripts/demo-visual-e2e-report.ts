@@ -155,7 +155,7 @@ async function collectTargetDemoNames(platforms: VisualPlatform[]) {
       names.add(item.projectDir.replace(/^demo\//, ''))
     }
     for (const item of webViteHmrCases) {
-      names.add(item.projectDir.replace(/^demo\//, ''))
+      names.add(item.visualName ?? item.projectDir.replace(/^demo\//, ''))
     }
     for (const item of uniH5Cases) {
       names.add(item.name)
@@ -242,14 +242,14 @@ async function main() {
         }, context, results)
       }
       for (const item of webViteHmrCases) {
-        const name = item.projectDir.replace(/^demo\//, '')
+        const name = item.visualName ?? item.projectDir.replace(/^demo\//, '')
         if (!matchesFilter(name)) {
           continue
         }
         await runH5Case(browser, {
           name,
           projectDir: item.projectDir,
-          command: ['exec', 'vite', '--host', '127.0.0.1', '--strictPort'],
+          command: item.devCommand,
           hmr: createWebViteHmrVisualConfig(item),
         }, context, results)
       }

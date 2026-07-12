@@ -1,5 +1,6 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { StyleValue } from './style-asset/style-value'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import {
   collectChunkMapSourcesContent,
   collectUniAppXHarmonyApplyStyleSourcesFromSource,
@@ -62,7 +63,22 @@ export function createUniAppXHarmonyApplyGeneratorSource(
   applyStyleSources: string[],
   _applyUtilities: Iterable<string>,
 ) {
-  return applyStyleSources.join('\n')
+  return applyStyleSources.map((source) => {
+    let root: postcss.Root
+    try {
+      root = postcss.parse(source)
+    }
+    catch {
+      return source
+    }
+    root.walkAtRules('reference', (rule) => {
+      const match = rule.params.match(/^(['"])(.+?)\1/)
+      if (match?.[2]?.startsWith('.')) {
+        rule.remove()
+      }
+    })
+    return root.toString()
+  }).join('\n')
 }
 
 export function collectUniAppXHarmonyApplyUtilities(bundle: Record<string, BundleItem>) {

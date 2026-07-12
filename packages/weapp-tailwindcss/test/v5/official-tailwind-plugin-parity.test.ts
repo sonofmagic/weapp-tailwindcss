@@ -1,11 +1,11 @@
 import postcss, { type Root } from 'postcss'
-import { mkdir, mkdtemp, realpath, rm, symlink, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, realpath, readdir, rm, symlink, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import tailwindcssPostcss from '@tailwindcss/postcss'
 import tailwindcssVite from '@tailwindcss/vite'
-import { createServer } from 'vite'
+import { build, createServer } from 'vite'
 import weappTailwindcss from '@/postcss'
 import { WeappTailwindcss as weappTailwindcssVite } from '@/vite'
 
@@ -213,6 +213,45 @@ async function withPostcssCssImportFixture(
   }
 }
 
+async function withViteBuildPostcssFixture(
+  css: string,
+  postcssPlugins: any[],
+  run: (result: { code: string }) => Promise<void> | void,
+) {
+  const root = await realpath(await mkdtemp(path.join(tmpdir(), 'weapp-tw-vite-postcss-order-')))
+  try {
+    await mkdir(path.join(root, 'src'), { recursive: true })
+    await mkdir(path.join(root, 'node_modules'), { recursive: true })
+    await symlink(tailwindcssPackageRoot, path.join(root, 'node_modules/tailwindcss'), 'dir')
+    await writeFile(path.join(root, 'src/main.css'), css, 'utf8')
+    await writeFile(path.join(root, 'src/main.ts'), 'import "./main.css"\n', 'utf8')
+    await writeFile(path.join(root, 'index.html'), '<script type="module" src="/src/main.ts"></script>', 'utf8')
+    await build({
+      root,
+      logLevel: 'silent',
+      plugins: [weappTailwindcssVite({
+        generator: {
+          target: 'web',
+        },
+      })],
+      css: {
+        postcss: {
+          plugins: postcssPlugins,
+        },
+      },
+    })
+    const assetDir = path.join(root, 'dist/assets')
+    const cssFile = (await readdir(assetDir)).find(file => file.endsWith('.css'))
+    expect(cssFile).toBeDefined()
+    await run({
+      code: await readFile(path.join(assetDir, cssFile!), 'utf8'),
+    })
+  }
+  finally {
+    await rm(root, { recursive: true, force: true })
+  }
+}
+
 describe('v5 official tailwind plugin parity', () => {
   it('keeps target web output aligned with @tailwindcss/postcss for the same CSS-first input', async () => {
     const [officialResult, generatorResult] = await Promise.all([
@@ -313,6 +352,30 @@ describe('v5 official tailwind plugin parity', () => {
         expect(code).not.toContain('@import "./theme.css"')
         expect(code).toContain('--brand')
         expect(code).toContain('display: flex')
+      },
+    )
+  })
+
+  it('passes Vite build generation through user PostCSS plugins', async () => {
+    const postcssObserver = {
+      postcssPlugin: 'observe-weapp-tailwindcss-generation',
+      OnceExit(root: Root) {
+        let sawGeneratedRule = false
+        root.walkRules('.flex', () => {
+          sawGeneratedRule = true
+        })
+        if (sawGeneratedRule) {
+          root.append({ selector: '.postcss-saw-generated-css', nodes: [{ prop: 'display', value: 'block' }] })
+        }
+      },
+    }
+
+    await withViteBuildPostcssFixture(
+      '@import "tailwindcss" source(none);\n@source inline("flex");',
+      [postcssObserver],
+      ({ code }) => {
+        expect(code).toContain('.flex')
+        expect(code).toContain('.postcss-saw-generated-css')
       },
     )
   })

@@ -39,6 +39,7 @@ export interface WebpackCssImportRewriteRuntimeOptions {
 }
 
 export interface WebpackCssImportRewriteLoaderOptions {
+  generateCss?: boolean | undefined
   tailwindcssImportRewrite?: WebpackCssImportRewriteRuntimeOptions
   tailwindcssImportRewriteRuntimeKey?: string
 }

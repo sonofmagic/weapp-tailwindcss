@@ -1,5 +1,7 @@
 import path from 'pathe'
 import { createStyleHandler } from '@/handler'
+import { postcss } from '@/index'
+import { getCalcDuplicateCleaner } from '@/plugins/getCalcDuplicateCleaner'
 import { generateCss } from './utils'
 
 const MARGIN_LEFT_32RPX_RE = /margin-left: 32rpx;/g
@@ -209,6 +211,55 @@ describe('calc', () => {
     })
     const count = css.match(MARGIN_TOP_8RPX_RE)?.length ?? 0
     expect(count).toBe(1)
+  })
+
+  it('removes equivalent Tailwind space calc declarations across fallback groups', async () => {
+    const code = `page { --spacing: 8rpx; }
+.space-y-4 {
+  --tw-space-y-reverse: 0;
+  margin-bottom: 0rpx;
+  margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
+  margin-bottom: 0rpx;
+  margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
+  margin-top: 32rpx;
+  margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
+  margin-top: 32rpx;
+  margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
+}`
+
+    const styleHandler = createStyleHandler({
+      isMainChunk: false,
+      cssCalc: true,
+    })
+    const { css } = await styleHandler(code, {
+      isMainChunk: false,
+    })
+
+    expect(css.match(/margin-bottom:\s*0rpx;/g)).toHaveLength(1)
+    expect(css.match(/margin-bottom:\s*calc\(/g)).toHaveLength(2)
+    expect(css.match(/margin-top:\s*32rpx;/g)).toHaveLength(1)
+    expect(css.match(/margin-top:\s*calc\(/g)).toHaveLength(2)
+    expect(css).not.toContain('calc(var(--spacing)*4*0)')
+    expect(css).not.toContain('calc(var(--spacing)*4*var(--tw-space-y-reverse))')
+    expect(css).not.toContain('calc(var(--spacing)*4*1)')
+    expect(css).not.toContain('calc(var(--spacing)*4*(1 - var(--tw-space-y-reverse)))')
+  })
+
+  it('keeps equivalent declarations scoped to different nested rules', async () => {
+    const cleaner = getCalcDuplicateCleaner({ cssCalc: true } as any)
+    const { css } = await postcss([cleaner!]).process(`.parent {
+  & .first {
+    margin-top: calc((var(--spacing) * 4) * 1);
+    margin-top: calc(var(--spacing) * 4 * 1);
+  }
+  & .second {
+    margin-top: calc(var(--spacing) * 4 * 1);
+  }
+}`, { from: undefined })
+
+    expect(css.match(/margin-top:/g)).toHaveLength(2)
+    expect(css).toContain('& .first')
+    expect(css).toContain('& .second')
   })
 
   it('cssCalc 传入 --spacing 示例', async () => {

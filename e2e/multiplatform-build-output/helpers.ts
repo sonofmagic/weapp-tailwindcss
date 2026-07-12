@@ -19,6 +19,7 @@ export function createLocalTargetCase(options: {
     requiredFiles: ['package.json'],
     styleFiles: ['package.json'],
     styleContains: [],
+    verifySourceFixtures: false,
     status: 'local',
     reason: options.reason,
   }

@@ -1,20 +1,20 @@
-## 最简单：直接用模板项目
+## 最简单：直接用已验证 demo
 
-模板项目已经配好 HBuilderX、uni-app x 和 `weapp-tailwindcss`：
+仓库内 demo 与当前版本一起维护，并提供 HBuilderX Web、微信小程序、Android、iOS 和鸿蒙本地 E2E 用例：
 
 <div className="not-prose mt-2">
   <a
     className="docs-cta-primary"
-    href="https://github.com/icebreaker-template/uni-app-x-hbuilderx"
+    href="https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v4"
     target="_blank"
     rel="noopener noreferrer"
   >
     <i className="icon-[mdi--rocket-launch] text-lg" />
-    使用模板开始
+    查看已验证 demo
   </a>
 </div>
 
-导入 HBuilderX 后，运行到 Android 模拟器、iOS 模拟器或微信小程序即可检查效果。
+不要使用旧的 `icebreaker-template/uni-app-x-hbuilderx` 作为 Tailwind CSS 4 起点；它仍是 `tailwindcss@3 + weapp-tailwindcss@4` 配置。
 
 ---
 
@@ -62,12 +62,8 @@ export default defineConfig({
     WeappTailwindcss(
       uniAppX({
         base: projectRoot,
-        cssEntries: [
-          resolve(projectRoot, 'main.css'),
-        ],
-        cssOptions: {
-          rem2rpx: true,
-        },
+        cssEntries: [resolve(projectRoot, 'main.css')],
+        rem2rpx: true,
       }),
     ),
   ],
@@ -88,11 +84,23 @@ Tailwind CSS 4 使用 CSS-first 入口。入口文件应放在项目根目录或
 @source not "./unpackage/**/*";
 ```
 
-### 5) 运行与验证
+### 5) 把入口 CSS 加入 HBuilderX 构建图
+
+`cssEntries` 只告诉 `weapp-tailwindcss` 从哪里生成 Tailwind CSS，不会替代 HBuilderX / Vite 引入样式。在 `App.uvue` 的全局样式中导入入口：
+
+```html title="App.uvue"
+<style>
+@import './main.css';
+</style>
+```
+
+缺少这一步时，候选类可以被扫描到，但 Web、小程序和 App 页面都不会加载生成后的 CSS。这正是 issue #964 中“构建不报错但所有端样式都没有反应”的核心原因。
+
+### 6) 运行与验证
 
 import run from './assets/run.png'
 
-在 HBuilderX 中选择目标平台运行。先用一个任意值类名验证生成和转译是否生效：
+在 HBuilderX 中依次运行到 Web、微信小程序和计划支持的 App 平台。先用一个任意值类名验证生成和转译是否生效：
 
 ```html
 <view class="p-4">
@@ -106,14 +114,17 @@ import run from './assets/run.png'
 
 ```bash npm2yarn
 npm run e2e:hbuilderx:local
-npm run e2e:hbuilderx:local:app
-npm run e2e:hbuilderx:local:android
-npm run e2e:hbuilderx:local:ios
+pnpm e2e:hbuilderx:local:web
+pnpm e2e:hbuilderx:local:mp
+pnpm e2e:hbuilderx:local:app
+pnpm e2e:hbuilderx:local:android
+pnpm e2e:hbuilderx:local:ios
+pnpm e2e:hbuilderx:local:harmony
 ```
 
 这些命令依赖本机 HBuilderX、模拟器和 Xcode，不放进 CI/CD。
 
-### 6) 编辑器智能提示
+### 7) 编辑器智能提示
 
 VS Code 默认不认识 `uvue` / `uts`。可以给 Tailwind 扩展加语言映射：
 

@@ -2,6 +2,7 @@ import path from 'node:path'
 import { createRequire } from 'node:module'
 import { mkdir, mkdtemp, realpath, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
+import webpack from 'webpack'
 import { afterEach } from 'vitest'
 import { describe, expect, it, vi } from 'vitest'
 import {
@@ -10,7 +11,9 @@ import {
   injectMpxCssRewritePreRules,
   isMpx,
   patchMpxLoaderResolve,
+  patchMpxWebpackPluginRequests,
   patchMpxWebpackPluginNormalizeLib,
+  rewriteMpxWebpackPluginRequests,
   setupMpxTailwindcssRedirect,
 } from '@/shared/mpx'
 
@@ -78,7 +81,7 @@ describe('mpx integration helpers', () => {
   })
 
   it('adds mpx webpack plugin aliases when the plugin can be resolved from project context', () => {
-    const require = createRequire(import.meta.url)
+    const require = createRequire(path.join(process.cwd(), 'package.json'))
     const pluginPackageJson = require.resolve('@mpxjs/webpack-plugin/package.json')
     const pluginDir = path.dirname(pluginPackageJson)
     const compiler = {
@@ -103,11 +106,11 @@ describe('mpx integration helpers', () => {
     })
   })
 
-  it('patches normalize.lib from a project-local mpx webpack plugin fixture once', async () => {
+  it('patches normalize.lib from the compiler-owned mpx plugin instance once', async () => {
     const { pluginDir, root } = await createMpxWebpackPluginFixture()
     const compiler = {
-      context: root,
-      options: { context: root },
+      context: process.cwd(),
+      options: { context: process.cwd() },
     }
     const projectRequire = createRequire(path.join(root, 'package.json'))
     const normalize = projectRequire('@mpxjs/webpack-plugin/lib/utils/normalize')
@@ -119,6 +122,136 @@ describe('mpx integration helpers', () => {
     expect(normalize.lib('record-loader')).toBe(path.join(pluginDir, 'lib/record-loader'))
     expect((normalize.lib as any).__weappTwPatched).toBe(true)
     expect((normalize.lib as any).__weappTwOriginal).toBe(originalLib)
+  })
+
+  it('rewrites generated mpx inline loader requests to compiler-owned absolute paths', () => {
+    const request = '@mpxjs/webpack-plugin/lib/extractor!@mpxjs/webpack-plugin/lib/style-compiler/index!/tailwind/index.css?type=styles'
+
+    expect(rewriteMpxWebpackPluginRequests(request, 'D:\\repo\\node_modules\\@mpxjs\\webpack-plugin', path.win32)).toBe(
+      'D:\\repo\\node_modules\\@mpxjs\\webpack-plugin\\lib\\extractor!D:\\repo\\node_modules\\@mpxjs\\webpack-plugin\\lib\\style-compiler\\index!/tailwind/index.css?type=styles',
+    )
+  })
+
+  it('patches parent and child compiler requests before webpack resolves generated loaders', () => {
+    let normalModuleFactoryHandler: ((factory: any) => void) | undefined
+    let beforeResolveHandler: ((data: any) => void) | undefined
+    let compilationHandler: ((compilation: any) => void) | undefined
+    let childCompilerHandler: ((compiler: any) => void) | undefined
+    const compiler = {
+      options: {},
+      hooks: {
+        compilation: {
+          tap: vi.fn((_name, handler) => {
+            compilationHandler = handler
+          }),
+        },
+        normalModuleFactory: {
+          tap: vi.fn((_name, handler) => {
+            normalModuleFactoryHandler = handler
+          }),
+        },
+      },
+    }
+
+    expect(patchMpxWebpackPluginRequests(compiler, '/project/node_modules/@mpxjs/webpack-plugin')).toBe(true)
+    normalModuleFactoryHandler?.({
+      hooks: {
+        beforeResolve: {
+          tap: vi.fn((_name, handler) => {
+            beforeResolveHandler = handler
+          }),
+        },
+      },
+    })
+    const resolveData = {
+      request: '@mpxjs/webpack-plugin/lib/record-loader!/tailwind/index.css?type=styles',
+    }
+    beforeResolveHandler?.(resolveData)
+
+    expect(resolveData.request).toBe('/project/node_modules/@mpxjs/webpack-plugin/lib/record-loader!/tailwind/index.css?type=styles')
+
+    compilationHandler?.({
+      hooks: {
+        childCompiler: {
+          tap: vi.fn((_name, handler) => {
+            childCompilerHandler = handler
+          }),
+        },
+      },
+    })
+    let childNormalModuleFactoryHandler: ((factory: any) => void) | undefined
+    let childBeforeResolveHandler: ((data: any) => void) | undefined
+    const childCompiler = {
+      options: {},
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn((_name, handler) => {
+            childNormalModuleFactoryHandler = handler
+          }),
+        },
+      },
+    }
+    childCompilerHandler?.(childCompiler)
+    childNormalModuleFactoryHandler?.({
+      hooks: {
+        beforeResolve: {
+          tap: vi.fn((_name, handler) => {
+            childBeforeResolveHandler = handler
+          }),
+        },
+      },
+    })
+    const childResolveData = {
+      request: '@mpxjs/webpack-plugin/lib/record-loader!D:\\repo\\index.css?type=styles',
+    }
+    childBeforeResolveHandler?.(childResolveData)
+
+    expect(childResolveData.request).toBe('/project/node_modules/@mpxjs/webpack-plugin/lib/record-loader!D:\\repo\\index.css?type=styles')
+    expect(childCompiler.options.resolveLoader.alias).toMatchObject({
+      '@mpxjs/webpack-plugin/lib/record-loader': '/project/node_modules/@mpxjs/webpack-plugin/lib/record-loader',
+    })
+    expect(patchMpxWebpackPluginRequests({}, undefined)).toBe(false)
+  })
+
+  it('resolves generated mpx loaders from the weapp-tailwindcss package context', async () => {
+    const require = createRequire(import.meta.url)
+    const pluginDir = path.dirname(require.resolve('@mpxjs/webpack-plugin/package.json'))
+    const packageContext = path.resolve(__dirname, '../..')
+    const compiler = webpack({
+      context: packageContext,
+      entry: './index.css',
+      mode: 'development',
+    })
+    const loaderResolver = compiler.resolverFactory.get('loader')
+    const resolveRecordLoader = () => new Promise<string>((resolve, reject) => {
+      loaderResolver.resolve(
+        {},
+        packageContext,
+        '@mpxjs/webpack-plugin/lib/record-loader',
+        {},
+        (error, result) => {
+          if (error) {
+            reject(error)
+            return
+          }
+          resolve(result as string)
+        },
+      )
+    })
+
+    expect(await resolveRecordLoader()).toBe(path.join(pluginDir, 'lib/record-loader.js'))
+
+    patchMpxWebpackPluginRequests(compiler, pluginDir)
+    compiler.hooks.normalModuleFactory.call({
+      getResolver: () => loaderResolver,
+      hooks: {
+        beforeResolve: {
+          tap: vi.fn(),
+        },
+      },
+    } as any)
+
+    expect(await resolveRecordLoader()).toBe(path.join(pluginDir, 'lib/record-loader.js'))
   })
 
   it('returns false when mpx normalize module does not expose lib', async () => {
@@ -204,7 +337,7 @@ describe('mpx integration helpers', () => {
   })
 
   it('patches loader resolve for mpx webpack plugin requests when resolvable', () => {
-    const require = createRequire(import.meta.url)
+    const require = createRequire(path.join(process.cwd(), 'package.json'))
     const pluginDir = path.dirname(require.resolve('@mpxjs/webpack-plugin/package.json'))
     const originalResolve = vi.fn((_context, request, callback) => callback(null, `origin:${request}`))
     const loaderContext = {
@@ -246,6 +379,31 @@ describe('mpx integration helpers', () => {
     expect(callback).toHaveBeenNthCalledWith(2, null, path.join(pluginDir, 'lib/style-compiler/index'))
     expect(callback).toHaveBeenNthCalledWith(3, null, 'origin:@mpxjs/webpack-plugin-extra')
     expect(originalResolve).toHaveBeenCalledTimes(1)
+  })
+
+  it('rewrites mpx loaders created dynamically through loader importModule', () => {
+    const activePluginDir = path.join('/project', 'node_modules/@mpxjs/webpack-plugin')
+    const originalImportModule = vi.fn((request: string, options?: any) => Promise.resolve({ request, options }))
+    const loaderContext = {
+      context: process.cwd(),
+      _module: {
+        loaders: [
+          { loader: path.join(activePluginDir, 'lib/extractor') },
+        ],
+      },
+      importModule: originalImportModule,
+    }
+
+    patchMpxLoaderResolve(loaderContext, '/tailwind', true)
+    patchMpxLoaderResolve(loaderContext, '/tailwind', true)
+    const options = { layer: 'mpx' }
+    loaderContext.importModule('!!@mpxjs/webpack-plugin/lib/record-loader!/tailwind/index.css', options)
+
+    expect(originalImportModule).toHaveBeenCalledOnce()
+    expect(originalImportModule).toHaveBeenCalledWith(
+      `!!${path.join(activePluginDir, 'lib/record-loader')}!/tailwind/index.css`,
+      options,
+    )
   })
 
   it('skips loader resolve and normalize patches when inputs are unavailable', () => {
