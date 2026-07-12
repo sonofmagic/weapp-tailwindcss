@@ -15,6 +15,7 @@ export {
   protectDynamicColorMixAlpha,
 } from './compat/color-mix'
 export {
+  consumeCascadeLayers,
   finalizeMiniProgramCss,
   hasMiniProgramCssSpecificityPlaceholders,
   hoistTailwindPreflightBase,

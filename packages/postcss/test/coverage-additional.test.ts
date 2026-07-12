@@ -640,19 +640,21 @@ describe('pre plugin edge cases', () => {
     expect(root.nodes?.length).toBe(0)
   })
 
-  it('drops empty layer rules and tracks properties layers', () => {
+  it('keeps layer declarations until the unified consumer runs', () => {
     const pre = postcssWeappTailwindcssPrePlugin({})
     const handler = (pre as Plugin).AtRule as ((node: AtRule) => void) | undefined
+    const once = (pre as Plugin).Once as ((root: postcss.Root) => void) | undefined
     const root = postcss.root()
     const layer = new AtRule({ name: 'layer', params: 'utilities', nodes: [] })
     root.append(layer)
     handler?.(layer)
+    expect(root.nodes?.length).toBe(1)
+    once?.(root)
     expect(root.nodes?.length).toBe(0)
 
-    const once = (pre as Plugin).Once as ((root: postcss.Root) => void) | undefined
     const propertiesRoot = postcss.parse('@layer properties {}')
     once?.(propertiesRoot)
-    expect(propertiesRoot.first?.name).toBe('layer')
+    expect(propertiesRoot.nodes).toHaveLength(0)
   })
 })
 

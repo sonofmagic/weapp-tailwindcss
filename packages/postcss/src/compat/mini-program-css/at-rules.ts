@@ -1,4 +1,5 @@
 import postcss from 'postcss'
+import { consumeCascadeLayers } from './cascade-layers'
 
 const MINI_PROGRAM_UNSUPPORTED_AT_RULES = new Set([
   'property',
@@ -75,14 +76,7 @@ export function removeUnsupportedAtSupports(css: string) {
  * 移除小程序不支持的 cascade layer 语法，同时保留 layer 内的实际规则。
  */
 export function removeUnsupportedCascadeLayers(root: postcss.Root) {
-  root.walkAtRules('layer', (atRule) => {
-    if (!atRule.nodes || atRule.nodes.length === 0) {
-      atRule.remove()
-      return
-    }
-
-    atRule.replaceWith(...atRule.nodes)
-  })
+  consumeCascadeLayers(root)
 }
 
 export function unwrapUnsupportedCascadeLayers(css: string) {
