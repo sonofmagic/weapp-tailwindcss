@@ -28,7 +28,7 @@ import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runti
 import { collectStrictEscapedRuntimeCandidates, createEscapeFragments } from '../../vite/incremental-runtime-class-set/escaped-candidates'
 import { resolveTailwindV4EntriesFromCssCached } from '../../vite/source-scan'
 import { isWebpackCssLoaderRuntimeSource } from '../shared/css-loader-runtime'
-import { createAssetHashByChunkMap, createRuntimeAwareCssHash, createWebpackCssAssetResourceMap, getCacheKey } from './shared'
+import { createAssetHashByChunkMap, createRuntimeAwareCssHash, createWebpackCssAssetResourceMap, createWebpackDirectCssAssetResourceMap, getCacheKey } from './shared'
 import { createWebpackCssSourceResolvers } from './v5-assets/css-source-resolvers'
 import { buildWebpackBundleSnapshot, createWebpackAssetUpdater, releaseWebpackBundleSnapshotSources } from './v5-assets/helpers'
 import { applyWebpackLinkedJsResults, createWebpackJsAssetModuleGraph } from './v5-assets/js-module-graph'
@@ -165,6 +165,15 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             cssMatcher: compilerOptions.cssMatcher,
           }),
         )
+        const directCssAssetResources = createWebpackDirectCssAssetResourceMap(
+          compilation.chunks as Iterable<{ files?: Iterable<string> | string[] | undefined, hasRuntime?: () => boolean, name?: string | undefined }>,
+          (compilation as { chunkGraph?: { getChunkModulesIterable?: (chunk: unknown) => Iterable<{ resource?: string }> | undefined } }).chunkGraph as any,
+          compilerOptions.cssMatcher,
+          (resource, issuer) => resolveWebpackCssAssetModuleResource(resource, issuer, {
+            appType,
+            cssMatcher: compilerOptions.cssMatcher,
+          }),
+        )
         const watchChangedFiles = new Set([...getWatchChangedFiles?.() ?? []].map(file => path.resolve(file)))
         const taskConcurrency = watchMode ? resolveTaskConcurrency(1) : undefined
         const activeProcessCacheKeys = new Set<string>()
@@ -206,6 +215,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           compilation: compilation as any,
           cssAssetFiles: entries.map(([file]) => file),
           cssAssetResources,
+          directCssAssetResources,
           cssHandlerOptionsCache,
           cssSources,
           cssUserHandlerOptionsCache,
@@ -836,6 +846,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 if (
                   loaderGeneratedCss
                   && shouldConsumeWebpackLoaderGeneratedCss({
+                    allowMarkerlessRegistryMatch: configuredCssEntryFiles.length === 1,
                     hasBundlerGeneratedCssMarker: hasBundlerGeneratedCssMarker(currentRawSource),
                     loaderGeneratedClassSet: loaderGeneratedCss.classSet,
                     sourceCandidates: explicitTailwindV4SourceCandidates,

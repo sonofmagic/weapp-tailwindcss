@@ -1,5 +1,7 @@
 import type { CaseResult, RuntimeContext } from './types.ts'
+import { existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
+import process from 'node:process'
 import path from 'pathe'
 import { compareImages } from './compare.ts'
 
@@ -15,7 +17,7 @@ export function createCrossPlatformComparisons(results: CaseResult[], context: R
     const h5 = entries.find(item => item.platform === 'h5' && item.screenshot)
     for (const platform of ['weapp', 'app-android', 'app-ios', 'app-harmony'] as const) {
       const target = entries.find(item => item.platform === platform && item.screenshot)
-      if (!h5?.screenshot || !target?.screenshot) {
+      if (!h5?.screenshot || !target?.screenshot || !imagePairExists(h5.screenshot, target.screenshot)) {
         continue
       }
       const comparisonName = `${key.replace(/[^\w.-]+/g, '-')}-${platform}`
@@ -29,9 +31,13 @@ export function createCrossPlatformComparisons(results: CaseResult[], context: R
 }
 
 export async function writeReport(results: CaseResult[], context: RuntimeContext) {
+  const reportJson = path.join(context.artifactRoot, 'report.json')
+  const previousResults = process.env['DEMO_VISUAL_REPORT_RESET'] === '1'
+    ? []
+    : await readPreviousResults(reportJson)
+  results = mergeCaseResults(previousResults, results)
   createHmrComparisons(results, context)
   createCrossPlatformComparisons(results, context)
-  const reportJson = path.join(context.artifactRoot, 'report.json')
   const reportMd = path.join(context.artifactRoot, 'report.md')
   await fs.writeFile(reportJson, JSON.stringify({ generatedAt: new Date().toISOString(), results }, null, 2))
   const summary = countResults(results)
@@ -93,10 +99,33 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
   ].join('\n'))
 }
 
-function createHmrComparisons(results: CaseResult[], context: RuntimeContext) {
+async function readPreviousResults(reportJson: string) {
+  try {
+    const report = JSON.parse(await fs.readFile(reportJson, 'utf8')) as { results?: CaseResult[] }
+    return Array.isArray(report.results) ? report.results : []
+  }
+  catch {
+    return []
+  }
+}
+
+export function mergeCaseResults(previous: CaseResult[], current: CaseResult[]) {
+  const byKey = new Map<string, CaseResult>()
+  for (const item of [...previous, ...current]) {
+    const key = [item.name, item.platform, item.styleIsolationVariant ?? ''].join('::')
+    byKey.set(key, item)
+  }
+  return [...byKey.values()].sort((left, right) => {
+    return left.name.localeCompare(right.name)
+      || left.platform.localeCompare(right.platform)
+      || (left.styleIsolationVariant ?? '').localeCompare(right.styleIsolationVariant ?? '')
+  })
+}
+
+export function createHmrComparisons(results: CaseResult[], context: RuntimeContext) {
   for (const item of results) {
     for (const step of item.hmrSteps ?? []) {
-      if (!step.beforeScreenshot || !step.afterScreenshot) {
+      if (!step.beforeScreenshot || !step.afterScreenshot || !imagePairExists(step.beforeScreenshot, step.afterScreenshot)) {
         continue
       }
       const compared = compareImages(
@@ -118,7 +147,7 @@ function createHmrComparisons(results: CaseResult[], context: RuntimeContext) {
         item.error = `${step.name} HMR 前后截图没有可见像素差异`
       }
     }
-    if (!item.hmrBeforeScreenshot || !item.hmrAfterScreenshot) {
+    if (!item.hmrBeforeScreenshot || !item.hmrAfterScreenshot || !imagePairExists(item.hmrBeforeScreenshot, item.hmrAfterScreenshot)) {
       continue
     }
     const compared = compareImages(
@@ -140,6 +169,10 @@ function createHmrComparisons(results: CaseResult[], context: RuntimeContext) {
       item.error = 'HMR 前后截图没有可见像素差异'
     }
   }
+}
+
+function imagePairExists(left: string, right: string) {
+  return existsSync(left) && existsSync(right)
 }
 
 function countResults(results: CaseResult[]) {

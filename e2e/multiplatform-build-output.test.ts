@@ -33,6 +33,13 @@ describe('multiplatform build output smoke', () => {
       expect(item.reason?.length, `${item.name} should document why it is not in CI`).toBeGreaterThan(0)
     }
 
+    for (const target of MULTIPLATFORM_TARGETS.filter(item => item.coverage === 'local')) {
+      const item = casesByKey.get(uniqueTargetKey(target))
+      if (item?.command[0] === 'node' && item.command.includes('process.exit(0)')) {
+        expect(item.verifySourceFixtures, `${item.name} documented-only case should not verify source fixtures`).toBe(false)
+      }
+    }
+
     for (const item of MULTIPLATFORM_BUILD_OUTPUT_CASES.filter(item => item.status === 'ci')) {
       expect(item.styleFileExtensions?.length, `${item.name} should declare expected style output suffixes`).toBeGreaterThan(0)
     }

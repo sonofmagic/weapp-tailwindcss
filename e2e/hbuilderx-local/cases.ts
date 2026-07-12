@@ -277,7 +277,8 @@ export const miniProgramCases: MiniProgramCase[] = [
 
 const defaultAndroidLaunchArgs = ['--deviceId', process.env['E2E_HBUILDERX_ANDROID_DEVICE_ID'] ?? 'emulator-5554']
 const defaultIosLaunchArgs = ['--iosTarget', process.env['E2E_HBUILDERX_IOS_TARGET'] ?? 'simulator']
-const defaultHarmonyLaunchArgs = ['--deviceId', process.env['E2E_HBUILDERX_HARMONY_DEVICE_ID'] ?? process.env['DEMO_VISUAL_HARMONY_DEVICE_ID'] ?? '127.0.0.1:5559']
+const harmonyDeviceId = process.env['E2E_HBUILDERX_HARMONY_DEVICE_ID'] ?? process.env['DEMO_VISUAL_HARMONY_DEVICE_ID']
+const defaultHarmonyLaunchArgs = harmonyDeviceId ? ['--deviceId', harmonyDeviceId] : []
 const harmonyInitialTransformedContains = [
   '"backgroundColor":"rgba(16,41,56,1)"',
   '"color":"rgba(247,251,255,1)"',
@@ -288,17 +289,6 @@ const harmonyHmrTransformedContains = [
   '"color":"rgba(254,240,138,1)"',
   '"height":41',
   '"marginTop":19',
-]
-const uniAppXAndroidInitialTransformedContains = [
-  'bg-_b_h102938_B',
-  'text-_b_hf7fbff_B',
-  'w-_b173px_B',
-]
-const uniAppXAndroidHmrTransformedContains = [
-  'bg-_b_h3b0764_B',
-  'text-_b_hfef08a_B',
-  'h-_b41px_B',
-  'mt-_b19px_B',
 ]
 function createUniAppAppCases(options: {
   name: string
@@ -447,32 +437,32 @@ export const uniAppXAppCases: AppCase[] = [
       'unpackage/dist/dev/.uvue/app-android',
       'unpackage/dist/dev/app-android',
     ],
-    sourceFile: 'pages/index/index.uvue',
-    markerAnchor: '<BindClass />',
-    markerClass: 'bg-[#102938] text-[#f7fbff] w-[173px]',
+    sourceFile: 'components/BindClass.uvue',
+    markerAnchor: '<text :class="flag',
+    markerClass: 'bg-[#102938] text-[#f7fbff] h-[41px] w-[173px]',
     markerText: 'hbuilderx-app-dynamic-v4-android',
     hmrMarkerClass: 'bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]',
     hmrMarkerText: 'hbuilderx-app-hmr-v4-android',
     launchArgs: defaultAndroidLaunchArgs,
     requiredFiles: [
-      'App.uvue',
-      'pages/index/index.uvue.ts',
+      'App.uvue.ts',
+      'components/BindClass.uvue.ts',
     ],
     transformedOutputFiles: [
-      'App.uvue',
-      'pages/index/index.uvue.ts',
+      'App.uvue.ts',
+      'components/BindClass.uvue.ts',
     ],
-    transformedContains: uniAppXAndroidInitialTransformedContains,
-    hmrTransformedContains: uniAppXAndroidHmrTransformedContains,
+    transformedContains: ['hbuilderx-app-dynamic-v4-android'],
+    hmrTransformedContains: ['hbuilderx-app-hmr-v4-android'],
   },
   {
     name: 'uni-app-x-hbuilderx-tailwindcss-v4 ios',
     platform: 'app-ios',
     projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
     outputDir: 'unpackage/dist/dev/app-ios',
-    sourceFile: 'pages/index/index.uvue',
-    markerAnchor: '<BindClass />',
-    markerClass: 'bg-[#102938] text-[#f7fbff] w-[173px]',
+    sourceFile: 'components/BindClass.uvue',
+    markerAnchor: '<text :class="flag',
+    markerClass: 'bg-[#102938] text-[#f7fbff] h-[41px] w-[173px]',
     markerText: 'hbuilderx-app-dynamic-v4-ios',
     hmrMarkerClass: 'bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]',
     hmrMarkerText: 'hbuilderx-app-hmr-v4-ios',

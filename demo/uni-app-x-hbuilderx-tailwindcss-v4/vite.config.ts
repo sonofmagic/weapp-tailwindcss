@@ -13,6 +13,10 @@ const officialPostcssParity = process.env.WEAPP_TW_OFFICIAL_POSTCSS_PARITY === '
 const weappTailwindcssPlugins = WeappTailwindcss(
   uniAppX({
     base: projectRoot,
+    componentLocalStyles: {
+      enabled: true,
+      onlyWhenStyleIsolationVersion2: false,
+    },
     cssEntries: [
       resolve(projectRoot, 'main.css'),
     ],

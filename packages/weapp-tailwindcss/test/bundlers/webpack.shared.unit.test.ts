@@ -3,6 +3,7 @@ import {
   createAssetHashByChunkMap,
   createRuntimeAwareCssHash,
   createWebpackCssAssetResourceMap,
+  createWebpackDirectCssAssetResourceMap,
   getCacheKey,
   hasLoaderEntry,
   inferWebpackMainCssFiles,
@@ -147,6 +148,74 @@ describe('bundlers/webpack shared helpers', () => {
       '/workspace/src/styles/root-entry.css',
       '/workspace/src/pages/index.tsx',
     ]))
+  })
+
+  it('maps mini-css-extract identifiers to their replacement css resource', () => {
+    const cssMatcher = (file: string) => file.endsWith('.acss')
+    const result = createWebpackDirectCssAssetResourceMap(
+      [
+        {
+          id: 'entry-runtime',
+          files: ['entry/root-style.bundle.acss', 'entry/runtime.js'],
+        },
+      ],
+      {
+        getChunkModulesIterable: () => [
+          {
+            identifier: () => 'css|/loaders/css-loader.js!/loaders/postcss-loader.js!/workspace/src/styles/replacement.css|0|||}}',
+            type: 'css/mini-extract',
+          },
+        ],
+      },
+      cssMatcher,
+      resource => stripResourceQuery(resource),
+    )
+
+    expect(result.get('entry/root-style.bundle.acss')).toEqual(new Set([
+      '/workspace/src/styles/replacement.css',
+    ]))
+  })
+
+  it('keeps mini-css-extract identifiers out of the transitive css resource map', () => {
+    const result = createWebpackCssAssetResourceMap(
+      [{ id: 'entry-runtime', files: ['app.acss'] }],
+      {
+        getChunkModulesIterable: () => [
+          {
+            identifier: () => 'css|/loaders/css-loader.js!/workspace/src/app.single.css|0|||}}',
+            type: 'css/mini-extract',
+          },
+        ],
+      },
+      file => file.endsWith('.acss'),
+      resource => stripResourceQuery(resource),
+    )
+
+    expect(result).toEqual(new Map())
+  })
+
+  it('does not claim direct css ownership when one webpack chunk emits multiple css assets', () => {
+    const cssMatcher = (file: string) => file.endsWith('.wxss')
+    const result = createWebpackDirectCssAssetResourceMap(
+      [
+        {
+          id: 'runtime-entry',
+          files: ['app.wxss', 'styles/app-hash.wxss', 'pages/index.wxss'],
+        },
+      ],
+      {
+        getChunkModulesIterable: () => [
+          {
+            identifier: () => 'css|/loaders/css-loader.js!/workspace/src/app.css|0|||}}',
+            type: 'css/mini-extract',
+          },
+        ],
+      },
+      cssMatcher,
+      resource => stripResourceQuery(resource),
+    )
+
+    expect(result).toEqual(new Map())
   })
 
   it('resolves the only active webpack css module resource for generated web css assets', () => {

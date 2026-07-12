@@ -1905,7 +1905,7 @@ describe('watch-hmr regression summary helpers', () => {
     expect(metrics.samples).toHaveLength(2)
   })
 
-  it('lets Taro Vite cases override the plugin processing budget for restart fallback runs', () => {
+  it('lets Taro polling-build cases use a full-build plugin processing budget', () => {
     const metrics = createCase('taro-vite-react-tailwindcss-v4', 'demo', 30, 40)
     metrics.maxPluginProcessMs = 3000
     const templateMetric = metrics.mutationMetrics.find(
@@ -1957,6 +1957,20 @@ describe('watch-hmr regression summary helpers', () => {
 describe('watch-hmr regression cases', () => {
   it('runs Web/H5 browser checks in headless Chromium mode', () => {
     expect(resolveChromiumLaunchOptions()).toMatchObject({ headless: true })
+  })
+
+  it('uses the full-build plugin budget for Taro polling-build cases', () => {
+    const cases = buildDemoExtendedCases('/repo')
+    for (const caseName of [
+      'taro-vite-react-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v4',
+    ]) {
+      const watchCase = cases.find(item => item.name === caseName)
+      expect(watchCase?.env).toHaveProperty('TARO_E2E_WATCH_NATIVE', '0')
+      expect(watchCase?.maxPluginProcessMs).toBe(8000)
+    }
   })
 
   it('keeps Web/H5 HMR marker attach checks above a single poll tick', () => {

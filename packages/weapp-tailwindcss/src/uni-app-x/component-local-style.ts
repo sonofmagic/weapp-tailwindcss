@@ -49,6 +49,53 @@ function isRuntimeCandidate(candidate: string, runtimeSet?: Set<string>) {
   return runtimeSet.has(candidate) || runtimeSet.has(replaceWxml(candidate))
 }
 
+export function hasTopLevelVariant(candidate: string) {
+  let bracketDepth = 0
+  let parenthesisDepth = 0
+  let quote = ''
+  let escaped = false
+  for (const char of candidate) {
+    if (escaped) {
+      escaped = false
+      continue
+    }
+    if (char === '\\') {
+      escaped = true
+      continue
+    }
+    if (quote) {
+      if (char === quote) {
+        quote = ''
+      }
+      continue
+    }
+    if (char === '"' || char === '\'') {
+      quote = char
+      continue
+    }
+    if (char === '[') {
+      bracketDepth += 1
+      continue
+    }
+    if (char === ']') {
+      bracketDepth = Math.max(0, bracketDepth - 1)
+      continue
+    }
+    if (char === '(') {
+      parenthesisDepth += 1
+      continue
+    }
+    if (char === ')') {
+      parenthesisDepth = Math.max(0, parenthesisDepth - 1)
+      continue
+    }
+    if (char === ':' && bracketDepth === 0 && parenthesisDepth === 0) {
+      return true
+    }
+  }
+  return false
+}
+
 export function shouldEnableComponentLocalStyle(id: string) {
   return COMPONENT_RE.test(id)
 }
@@ -78,23 +125,26 @@ export class UniAppXComponentLocalStyleCollector {
     return alias
   }
 
-  private rewriteLiteral(literal: string, shouldInclude: (candidate: string) => boolean) {
+  private rewriteLiteral(literal: string) {
     const candidates = splitCandidateTokens(literal)
     if (candidates.length === 0) {
       return literal
     }
     let rewritten = literal
     for (const candidate of candidates) {
-      if (!shouldInclude(candidate)) {
+      if (!isRuntimeCandidate(candidate, this.runtimeSet)) {
         continue
       }
-      rewritten = rewritten.replace(candidate, this.ensureAlias(candidate))
+      rewritten = rewritten.replace(
+        candidate,
+        hasTopLevelVariant(candidate) ? replaceWxml(candidate) : this.ensureAlias(candidate),
+      )
     }
     return rewritten
   }
 
   collectAndRewriteStaticClass(literal: string) {
-    return this.rewriteLiteral(literal, candidate => isRuntimeCandidate(candidate, this.runtimeSet))
+    return this.rewriteLiteral(literal)
   }
 
   collectRuntimeClasses(rawSource: string, options: RewriteCodeOptions = {}) {
@@ -116,7 +166,7 @@ export class UniAppXComponentLocalStyleCollector {
           if (!candidate || (!classContext && !isRuntimeCandidate(candidate, this.runtimeSet))) {
             continue
           }
-          if (isRuntimeCandidate(candidate, this.runtimeSet)) {
+          if (isRuntimeCandidate(candidate, this.runtimeSet) && !hasTopLevelVariant(candidate)) {
             this.ensureAlias(candidate)
           }
         }

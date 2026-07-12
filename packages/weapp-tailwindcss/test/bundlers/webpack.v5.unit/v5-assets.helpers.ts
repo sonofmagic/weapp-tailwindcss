@@ -219,6 +219,14 @@ describe('bundlers/webpack v5-assets helpers', () => {
       shouldRegenerateExplicitTailwindV4CssSource: true,
     })).toBe(true)
     expect(shouldConsumeWebpackLoaderGeneratedCss({
+      allowMarkerlessRegistryMatch: true,
+      hasBundlerGeneratedCssMarker: false,
+      loaderGeneratedClassSet: new Set(['i-[mdi--github-circle]']),
+      sourceCandidates: new Set(['i-[mdi--github-circle]']),
+      shouldRegenerateExplicitTailwindV4CssSource: true,
+      watchMode: false,
+    })).toBe(true)
+    expect(shouldConsumeWebpackLoaderGeneratedCss({
       hasBundlerGeneratedCssMarker: true,
       loaderGeneratedClassSet: new Set(['bg-red-500']),
       sourceCandidates: new Set(['bg-red-500']),

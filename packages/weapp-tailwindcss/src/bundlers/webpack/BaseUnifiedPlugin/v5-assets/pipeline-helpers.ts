@@ -328,6 +328,7 @@ export function resolveWebpackGeneratorRawSource(
 }
 
 export function shouldConsumeWebpackLoaderGeneratedCss(options: {
+  allowMarkerlessRegistryMatch?: boolean | undefined
   hasBundlerGeneratedCssMarker: boolean
   loaderGeneratedClassSet?: Set<string> | undefined
   sourceCandidates?: Set<string> | undefined
@@ -348,7 +349,16 @@ export function shouldConsumeWebpackLoaderGeneratedCss(options: {
   ) {
     return false
   }
-  return options.hasBundlerGeneratedCssMarker
+  if (options.hasBundlerGeneratedCssMarker) {
+    return true
+  }
+  return Boolean(
+    options.allowMarkerlessRegistryMatch
+    && options.loaderGeneratedClassSet
+    && options.sourceCandidates
+    && !hasMissingRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates)
+    && !hasStaleRuntimeCandidates(options.loaderGeneratedClassSet, options.sourceCandidates),
+  )
 }
 
 export interface WebpackGeneratorUserCssSource {

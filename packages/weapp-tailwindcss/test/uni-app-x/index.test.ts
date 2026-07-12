@@ -384,6 +384,37 @@ const active = true
     expect(styleBlock).toContain('@apply text-[#ff0000];')
   })
 
+  it('keeps variant utilities on the global platform pipeline for app-harmony pages', () => {
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    const { jsHandler } = getCompilerContext({
+      uniAppX: true,
+    })
+    const runtimeSet = new Set<string>([
+      'wx:bg-blue-500',
+      'not-wx:bg-red-500',
+      'bg-[url(http://example.com/a:b)]',
+    ])
+    const code = `
+<template>
+  <view class="wx:bg-blue-500 not-wx:bg-red-500 bg-[url(http://example.com/a:b)]">hello</view>
+</template>
+`
+    const result = transformUVue(
+      code,
+      '/src/pages/index/index.uvue',
+      jsHandler,
+      runtimeSet,
+      { enablePageLocalStyle: true },
+    )
+
+    const styleBlock = extractInjectedStyle(result!.code)
+    expect(result?.code).toContain(replaceWxml('wx:bg-blue-500'))
+    expect(result?.code).toContain(replaceWxml('not-wx:bg-red-500'))
+    expect(styleBlock).not.toContain('@apply wx:bg-blue-500;')
+    expect(styleBlock).not.toContain('@apply not-wx:bg-red-500;')
+    expect(styleBlock).toContain('@apply bg-[url(http://example.com/a:b)];')
+  })
+
   it('keeps custom scoped classes out of component local @apply output on app-android', async () => {
     process.env.UNI_UTS_PLATFORM = 'app-android'
     const { jsHandler } = getCompilerContext({

@@ -161,7 +161,7 @@ export async function verifyBuildOutputCase(item: BuildOutputCase) {
   for (const needle of item.styleContains) {
     expectNeedle(styles, needle, `${item.name} style output should contain ${String(needle)}`)
   }
-  if (await hasIconifyBuildFixture(projectRoot)) {
+  if (item.verifySourceFixtures !== false && await hasIconifyBuildFixture(projectRoot)) {
     for (const selector of iconifyStyleSelectorsForPlatform(item.platform)) {
       expect(
         styles,

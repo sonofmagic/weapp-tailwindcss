@@ -35,9 +35,9 @@ const taroViteWatchEnv = {
   NODE_ENV: 'development',
 }
 
-// Taro Vite 在独立分包轮询重建时会出现更高的 generateBundle 峰值，
-// 与 e2e:taro:mp 专项脚本保持同一 case 级预算。
-const taroVitePluginProcessBudgetMs = 8000
+// Taro polling-build 每次变更都会启动新的完整构建，采样覆盖冷态 CSS 生成与转译，
+// 不等同于同一 compiler 内的增量插件耗时；与 e2e:taro:mp 专项脚本保持一致。
+const taroPollingBuildPluginProcessBudgetMs = 8000
 const webDomMarkerAttr = 'data-tw-watch-web-dom="1"'
 const taroMiniProgramPlatforms: TaroMiniProgramWatchPlatform[] = ['weapp', 'alipay', 'tt']
 const uniAppMiniProgramPlatforms: UniAppMiniProgramWatchPlatform[] = ['mp-weixin', 'mp-alipay', 'mp-qq', 'mp-toutiao']
@@ -574,7 +574,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/taro-vite-react-tailwindcss-v4',
     project: 'demo/taro-vite-react-tailwindcss-v4',
     group: 'demo',
-    maxPluginProcessMs: taroVitePluginProcessBudgetMs,
+    maxPluginProcessMs: taroPollingBuildPluginProcessBudgetMs,
     initialMutationDelayMs: 15_000,
     cwd: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
@@ -698,7 +698,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/taro-webpack-react-tailwindcss-v4',
     project: 'demo/taro-webpack-react-tailwindcss-v4',
     group: 'demo',
-    maxPluginProcessMs: 1500,
+    maxPluginProcessMs: taroPollingBuildPluginProcessBudgetMs,
     // Taro webpack React v4 watch 在 e2e 轮询重建时会重写全局 wxss；
     // same-class-literal 仍校验 HMR 生效、回滚与 escaped class，不强制全局样式文本完全稳定。
     requireStableGlobalStyleOnSameClassLiteral: false,

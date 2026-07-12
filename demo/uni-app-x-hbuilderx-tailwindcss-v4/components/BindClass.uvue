@@ -1,12 +1,6 @@
-<script setup lang="uts">
-defineOptions({
-  styleIsolation: 'app',
-})
-</script>
-
 <template>
   <view class="p-[20.32px] bg-[#87add3] border-[#111111] border-solid">
-    <text :class="flag ? 'bg-[#123456] mb-[12.32px]' : 'bg-[#d7700a]'">
+		<text :class="flag ? 'bg-[#123456] mb-[12.32px]' : 'bg-[#d7700a]'">
       simple
     </text>
     <text :class="[
@@ -22,6 +16,7 @@ defineOptions({
 </template>
 <script lang="uts">
   export default {
+    styleIsolation: 'app',
     data() {
       return {
         condition: true,

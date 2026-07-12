@@ -13,7 +13,7 @@ function readNumberEnv(name: string, fallback: number) {
 function getDevToolsReadTimeoutMs() {
   return readNumberEnv(
     'E2E_IDE_DEVTOOLS_READ_TIMEOUT_MS',
-    Math.min(readNumberEnv('E2E_AUTOMATOR_TIMEOUT_MS', 20_000), 5000),
+    Math.min(readNumberEnv('E2E_AUTOMATOR_TIMEOUT_MS', 20_000), 15_000),
   )
 }
 
@@ -64,9 +64,12 @@ async function readElementContent(element: any, label: string) {
   if (!element) {
     return ''
   }
+  const text = await element.text().catch(() => undefined)
+  if (text != null && text !== '') {
+    return `[${label}:text] ${stringifyLiveValue(text)}`
+  }
   const parts: string[] = []
   const reads: Array<[string, () => Promise<unknown>]> = [
-    ['text', () => element.text()],
     ['class', () => element.attribute('class')],
     ['outerWxml', () => element.outerWxml()],
   ]
@@ -95,10 +98,18 @@ async function readSelectorContent(page: any, selector: string, limit: number) {
   return parts.join('\n')
 }
 
-async function readPageLiveContentRaw(page: any) {
+export async function readPageLiveContentRaw(page: any) {
   const selectorLimit = readNumberEnv('E2E_IDE_LIVE_SELECTOR_LIMIT', 80)
-  const selectors = ['page', 'view', 'text', 'button']
+  const selectors = ['view', 'text', 'button']
   const parts: string[] = []
+
+  const pageContent = await readSelectorContent(page, 'page', 1)
+  if (pageContent) {
+    const pageData = await page.data().catch(() => undefined)
+    return pageData == null
+      ? pageContent
+      : `${pageContent}\n[page:data] ${stringifyLiveValue(pageData)}`
+  }
 
   for (const selector of selectors) {
     const content = await readSelectorContent(page, selector, selectorLimit)

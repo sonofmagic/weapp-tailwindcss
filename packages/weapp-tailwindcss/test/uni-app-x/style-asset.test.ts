@@ -80,6 +80,21 @@ describe('uni-app-x style asset helpers', () => {
 
   it('creates generator source from apply style sources', () => {
     expect(createUniAppXHarmonyApplyGeneratorSource(['.a{@apply flex}', '.b{@apply block}'], ['flex'])).toBe('.a{@apply flex}\n.b{@apply block}')
+    expect(createUniAppXHarmonyApplyGeneratorSource([
+      '@reference "../../main.css"; .a{@apply flex}',
+      '@reference "/project/main.css"; .b{@apply block}',
+    ], ['flex', 'block'])).toBe('.a{@apply flex}\n@reference "/project/main.css"; .b{@apply block}')
+  })
+
+  it('resolves apply references against the original uvue module', () => {
+    expect(collectUniAppXHarmonyApplyStyleSourcesFromSource(`
+<style scoped>
+@reference "../../main.css";
+.card { @apply px-4; }
+</style>
+`, '/project/pages/index/index.uvue')).toEqual([
+      '@reference "/project/main.css";\n.card { @apply px-4; }',
+    ])
   })
 
   it('injects style placeholders from app styles or fallback css assets', () => {

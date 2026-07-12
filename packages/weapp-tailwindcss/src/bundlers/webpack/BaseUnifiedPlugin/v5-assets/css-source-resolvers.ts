@@ -111,6 +111,7 @@ export function createWebpackCssSourceResolvers(options: {
   }
   cssAssetFiles: Iterable<string>
   cssAssetResources: ReadonlyMap<string, ReadonlySet<string>>
+  directCssAssetResources: ReadonlyMap<string, ReadonlySet<string>>
   cssHandlerOptionsCache: Map<string, WebpackCssHandlerOptions>
   cssSources: Map<string, { css: string | undefined, processed?: boolean | undefined }>
   cssUserHandlerOptionsCache: Map<string, WebpackCssHandlerOptions>
@@ -127,6 +128,7 @@ export function createWebpackCssSourceResolvers(options: {
     compilation,
     cssAssetFiles,
     cssAssetResources,
+    directCssAssetResources,
     cssHandlerOptionsCache,
     cssSources,
     cssUserHandlerOptionsCache,
@@ -160,7 +162,9 @@ export function createWebpackCssSourceResolvers(options: {
   const isConfiguredMainCssEntryFile = (sourceFile: string) =>
     configuredMainCssEntryFiles.some(entry => path.resolve(entry) === path.resolve(sourceFile))
   const isCssSourceAllowedForOutput = (file: string, sourceFile: string) =>
-    !isConfiguredMainCssEntryFile(sourceFile) || scoreCssSourceOutputMatch(file, sourceFile) > 0
+    !isConfiguredMainCssEntryFile(sourceFile)
+    || directCssAssetResources.get(file)?.has(sourceFile) === true
+    || scoreCssSourceOutputMatch(file, sourceFile) > 0
   const inferredMainCssFiles = new Set([...inferWebpackMainCssFiles(
     compilation.chunks as Iterable<{ files?: Iterable<string> | string[] | undefined, hasRuntime?: () => boolean, name?: string | undefined }>,
     compilerOptions.cssMatcher,

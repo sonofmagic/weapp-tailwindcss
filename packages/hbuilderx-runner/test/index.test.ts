@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process'
 import { mkdtemp, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
@@ -8,12 +9,31 @@ import {
   createLaunchArgs,
   createLogBuffer,
   extractHBuilderXExecutableFromProcessOutput,
+  parseHdcTargets,
   resolveHBuilderXCli,
   resolveHBuilderXCliInfo,
   runCommand,
 } from '../src'
 
 describe('hbuilderx-runner', () => {
+  it('exposes named source exports through the Node tsx loader', () => {
+    const repoRoot = path.resolve(import.meta.dirname, '../../..')
+    const result = spawnSync(process.execPath, [
+      '--import',
+      'tsx',
+      '--input-type=module',
+      '--eval',
+      'import { assertAndroidToolchain } from "./packages/hbuilderx-runner/src/index.ts"; console.log(typeof assertAndroidToolchain)',
+    ], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+    })
+
+    expect(result.stderr).toBe('')
+    expect(result.status).toBe(0)
+    expect(result.stdout.trim()).toBe('function')
+  })
+
   it('classifies common HBuilderX project recognition failures', () => {
     expect(classifyHBuilderXOutput('项目 /demo 不是 uni-app 项目，暂不支持').kind).toBe('project-not-uni-app')
     expect(classifyHBuilderXOutput('项目 /demo 项目类型为Web，暂不支持').kind).toBe('project-type-unsupported')
@@ -21,6 +41,14 @@ describe('hbuilderx-runner', () => {
     expect(classifyHBuilderXOutput('adb: command not found').kind).toBe('android-toolchain-missing')
     expect(classifyHBuilderXOutput('xcrun: error: unable to find utility "simctl"').kind).toBe('ios-toolchain-missing')
     expect(classifyHBuilderXOutput('hdc list targets failed').kind).toBe('harmony-toolchain-missing')
+  })
+
+  it('parses connected Harmony targets without accepting an empty sentinel', () => {
+    expect(parseHdcTargets('127.0.0.1:5559\nemulator-1\n')).toEqual([
+      '127.0.0.1:5559',
+      'emulator-1',
+    ])
+    expect(parseHdcTargets('\n[Empty]\n')).toEqual([])
   })
 
   it('keeps a bounded recent log buffer', () => {
