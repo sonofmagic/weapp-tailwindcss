@@ -81,7 +81,7 @@ describe('mpx integration helpers', () => {
   })
 
   it('adds mpx webpack plugin aliases when the plugin can be resolved from project context', () => {
-    const require = createRequire(import.meta.url)
+    const require = createRequire(path.join(process.cwd(), 'package.json'))
     const pluginPackageJson = require.resolve('@mpxjs/webpack-plugin/package.json')
     const pluginDir = path.dirname(pluginPackageJson)
     const compiler = {
@@ -223,17 +223,7 @@ describe('mpx integration helpers', () => {
       mode: 'development',
     })
     const loaderResolver = compiler.resolverFactory.get('loader')
-    patchMpxWebpackPluginRequests(compiler, pluginDir)
-    compiler.hooks.normalModuleFactory.call({
-      getResolver: () => loaderResolver,
-      hooks: {
-        beforeResolve: {
-          tap: vi.fn(),
-        },
-      },
-    } as any)
-
-    const resolvedLoader = await new Promise<string>((resolve, reject) => {
+    const resolveRecordLoader = () => new Promise<string>((resolve, reject) => {
       loaderResolver.resolve(
         {},
         packageContext,
@@ -249,7 +239,19 @@ describe('mpx integration helpers', () => {
       )
     })
 
-    expect(resolvedLoader).toBe(path.join(pluginDir, 'lib/record-loader.js'))
+    expect(await resolveRecordLoader()).toBe(path.join(pluginDir, 'lib/record-loader.js'))
+
+    patchMpxWebpackPluginRequests(compiler, pluginDir)
+    compiler.hooks.normalModuleFactory.call({
+      getResolver: () => loaderResolver,
+      hooks: {
+        beforeResolve: {
+          tap: vi.fn(),
+        },
+      },
+    } as any)
+
+    expect(await resolveRecordLoader()).toBe(path.join(pluginDir, 'lib/record-loader.js'))
   })
 
   it('returns false when mpx normalize module does not expose lib', async () => {
@@ -335,7 +337,7 @@ describe('mpx integration helpers', () => {
   })
 
   it('patches loader resolve for mpx webpack plugin requests when resolvable', () => {
-    const require = createRequire(import.meta.url)
+    const require = createRequire(path.join(process.cwd(), 'package.json'))
     const pluginDir = path.dirname(require.resolve('@mpxjs/webpack-plugin/package.json'))
     const originalResolve = vi.fn((_context, request, callback) => callback(null, `origin:${request}`))
     const loaderContext = {
