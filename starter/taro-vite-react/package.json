@@ -41,7 +41,7 @@
     "babel-preset-taro": "catalog:taro4",
     "postcss": "catalog:postcss85",
     "tailwindcss": "catalog:tailwindcss4",
-    "terser": "^5.48.0",
+    "terser": "^5.49.0",
     "typescript": "catalog:typescript59",
     "vite": "catalog:vite5421",
     "weapp-tailwindcss": "workspace:*"

@@ -53,7 +53,7 @@ catalogs:
   babelRuntime7284tilde:
     '@babel/runtime': ^7.29.2
   baselineBrowserMapping:
-    baseline-browser-mapping: ^2.10.42
+    baseline-browser-mapping: ^2.10.43
   classVarianceAuthority:
     class-variance-authority: ^0.7.1
   clsx:
@@ -63,7 +63,7 @@ catalogs:
   egoistTailwindcssIcons:
     '@egoist/tailwindcss-icons': ^1.9.2
   eslint10:
-    eslint: ^10.6.0
+    eslint: ^10.7.0
   eslintPluginReact:
     eslint-plugin-react: ^7.37.5
   eslintPluginReactHooks:
@@ -84,9 +84,9 @@ catalogs:
   miniApiTypings:
     miniprogram-api-typings: ^5.2.1
   postcss85:
-    postcss: ^8.5.16
+    postcss: ^8.5.17
   postcss85tilde:
-    postcss: ^8.5.16
+    postcss: ^8.5.17
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem:
@@ -94,7 +94,7 @@ catalogs:
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
   prettier371:
-    prettier: ^3.9.4
+    prettier: ^3.9.5
   react18:
     '@types/react': ^19.2.17
     '@types/react-dom': 18.2.7
@@ -211,7 +211,7 @@ catalogs:
   vite724:
     vite: ^7.3.6
   vite8:
-    vite: ^8.1.3
+    vite: ^8.1.4
   vitePluginInspect:
     vite-plugin-inspect: ^11.4.1
   vitePluginReact4:
@@ -235,8 +235,8 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.4.10
+    weapp-ide-cli: ^5.4.12
   weappVite:
-    weapp-vite: ^6.17.8
+    weapp-vite: ^6.18.1
   wrangler:
-    wrangler: ^4.108.0
+    wrangler: ^4.110.0

@@ -1,3 +1,6 @@
 [submodule "submodules/tailwindcss-v4"]
 	path = submodules/tailwindcss-v4
 	url = https://github.com/tailwindlabs/tailwindcss.git
+[submodule "submodules/tailwindcss-v3"]
+	path = submodules/tailwindcss-v3
+	url = https://github.com/tailwindlabs/tailwindcss.git

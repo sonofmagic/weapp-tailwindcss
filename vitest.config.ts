@@ -1,4 +1,5 @@
 import fs from 'node:fs'
+import { availableParallelism } from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
@@ -109,10 +110,12 @@ function resolveProjects(): string[] {
 }
 
 const projects = resolveProjects()
+const maxWorkers = Math.min(4, availableParallelism())
 
 export default defineConfig(() => {
   return {
     test: {
+      maxWorkers,
       projects,
       coverage: {
         enabled: false,

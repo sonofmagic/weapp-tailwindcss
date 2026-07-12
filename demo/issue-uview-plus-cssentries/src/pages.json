@@ -7,6 +7,25 @@
       }
     }
   ],
+  "subPackages": [
+    {
+      "root": "sub-normal",
+      "pages": [
+        {
+          "path": "pages/index"
+        }
+      ]
+    },
+    {
+      "root": "sub-independent",
+      "pages": [
+        {
+          "path": "pages/index"
+        }
+      ],
+      "independent": true
+    }
+  ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uview cssEntries",
