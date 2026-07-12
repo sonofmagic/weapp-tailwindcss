@@ -181,7 +181,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   const { NormalModule } = compiler.webpack
 
   compiler.hooks.compilation.tap(pluginName, (compilation) => {
-    NormalModule.getCompilationHooks(compilation).loader.tap(pluginName, (_loaderContext, module) => {
+    NormalModule.getCompilationHooks(compilation).loader.tap({ name: pluginName, stage: 100 }, (_loaderContext, module) => {
       const hasRuntimeLoader = runtimeClassSetLoaderExists
         || runtimeCssGenerationLoaderExists
         || runtimeCssImportRewriteLoaderExists

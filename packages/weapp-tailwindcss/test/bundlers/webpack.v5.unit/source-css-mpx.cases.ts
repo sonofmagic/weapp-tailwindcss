@@ -41,6 +41,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css mpx main', (
 
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
+    let loaderTapOptions: { name: string, stage: number } | undefined
     let assetStore: Record<string, string> = {
       'app.wxss': '@import "./styles/app-hash.wxss";',
       'styles/app-hash.wxss': generatedCss,
@@ -88,7 +89,8 @@ describe('bundlers/webpack WeappTailwindcss / registered source css mpx main', (
         NormalModule: {
           getCompilationHooks: vi.fn(() => ({
             loader: {
-              tap: (_name: string, handler: (loaderContext: any, module: LoaderModule) => void) => {
+              tap: (options: { name: string, stage: number }, handler: (loaderContext: any, module: LoaderModule) => void) => {
+                loaderTapOptions = options
                 loaderHandler = handler
               },
             },
@@ -108,6 +110,11 @@ describe('bundlers/webpack WeappTailwindcss / registered source css mpx main', (
     }
 
     new WeappTailwindcss().apply(compiler as any)
+    expect(loaderTapOptions).toMatchObject({
+      name: 'weapp-tailwindcss',
+      stage: expect.any(Number),
+    })
+    expect(loaderTapOptions?.stage).toBeGreaterThan(0)
     const sourceCssModule: LoaderModule = {
       loaders: [{ loader: '/path/postcss-loader.js' }],
       resource: sourceCssFile,
