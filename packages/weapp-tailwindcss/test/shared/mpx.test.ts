@@ -2,6 +2,7 @@ import path from 'node:path'
 import { createRequire } from 'node:module'
 import { mkdir, mkdtemp, realpath, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
+import webpack from 'webpack'
 import { afterEach } from 'vitest'
 import { describe, expect, it, vi } from 'vitest'
 import {
@@ -210,6 +211,42 @@ describe('mpx integration helpers', () => {
       '@mpxjs/webpack-plugin/lib/record-loader': '/project/node_modules/@mpxjs/webpack-plugin/lib/record-loader',
     })
     expect(patchMpxWebpackPluginRequests({}, undefined)).toBe(false)
+  })
+
+  it('resolves generated mpx loaders from the weapp-tailwindcss package context', async () => {
+    const require = createRequire(import.meta.url)
+    const pluginDir = path.dirname(require.resolve('@mpxjs/webpack-plugin/package.json'))
+    const packageContext = path.resolve(__dirname, '../..')
+    const compiler = webpack({
+      context: packageContext,
+      entry: './index.css',
+      mode: 'development',
+      plugins: [
+        {
+          apply(compiler) {
+            patchMpxWebpackPluginRequests(compiler, pluginDir)
+          },
+        },
+      ],
+    })
+
+    const resolvedLoader = await new Promise<string>((resolve, reject) => {
+      compiler.resolverFactory.get('loader').resolve(
+        {},
+        packageContext,
+        '@mpxjs/webpack-plugin/lib/record-loader',
+        {},
+        (error, result) => {
+          if (error) {
+            reject(error)
+            return
+          }
+          resolve(result as string)
+        },
+      )
+    })
+
+    expect(resolvedLoader).toBe(path.join(pluginDir, 'lib/record-loader.js'))
   })
 
   it('returns false when mpx normalize module does not expose lib', async () => {

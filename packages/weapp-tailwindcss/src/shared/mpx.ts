@@ -105,12 +105,18 @@ export function patchMpxWebpackPluginRequests(compiler: any, mpxWebpackPluginDir
   }
   const pluginName = 'weapp-tailwindcss-mpx-loader-resolve'
   const patchedCompilers = new WeakSet<object>()
+  const patchedResolverFactories = new WeakSet<object>()
   const install = (targetCompiler: any) => {
     if (!targetCompiler || typeof targetCompiler !== 'object' || patchedCompilers.has(targetCompiler)) {
       return
     }
     patchedCompilers.add(targetCompiler)
     ensureResolveLoaderAlias(targetCompiler, mpxWebpackPluginDir)
+    const resolverFactory = targetCompiler.resolverFactory
+    if (resolverFactory && typeof resolverFactory === 'object' && !patchedResolverFactories.has(resolverFactory)) {
+      patchedResolverFactories.add(resolverFactory)
+      installMpxResolveLoaderAlias(targetCompiler, mpxWebpackPluginDir)
+    }
     targetCompiler.hooks?.normalModuleFactory?.tap?.(pluginName, (normalModuleFactory: any) => {
       normalModuleFactory.hooks.beforeResolve.tap(pluginName, (resolveData: any) => {
         if (typeof resolveData?.request === 'string') {
@@ -168,6 +174,26 @@ function ensureResolveLoaderAlias(compiler: any, mpxWebpackPluginDir: string) {
   const alias = compiler.options.resolveLoader.alias ?? {}
   compiler.options.resolveLoader.alias = alias
   addMpxWebpackPluginAlias(alias, mpxWebpackPluginDir)
+}
+
+function installMpxResolveLoaderAlias(compiler: any, mpxWebpackPluginDir: string) {
+  const resolveOptionsHook = compiler?.resolverFactory?.hooks?.resolveOptions?.for?.('loader')
+  if (!resolveOptionsHook?.tap) {
+    return
+  }
+  resolveOptionsHook.tap(
+    { name: 'weapp-tailwindcss-mpx-loader-resolve', stage: 100 },
+    (resolveOptions: any) => {
+      const alias = Array.isArray(resolveOptions.alias)
+        ? [...resolveOptions.alias]
+        : { ...resolveOptions.alias }
+      addMpxWebpackPluginAlias(alias, mpxWebpackPluginDir)
+      return {
+        ...resolveOptions,
+        alias,
+      }
+    },
+  )
 }
 
 export function patchMpxWebpackPluginNormalizeLib(_compiler: any, mpxWebpackPluginDir: string | undefined) {
