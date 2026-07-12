@@ -8,6 +8,7 @@ import { normalizeMiniProgramGeneratorCssSource, normalizeMiniProgramImportShell
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { createRuntimeAffectingSourceSignature } from '../runtime-affecting-signature'
 import { isHTMLRequest } from '../utils'
+import { canProcessViteSourceStyleAsCss, SOURCE_STYLE_OUTPUT_EXT_RE } from './css-output'
 import { createCssRuntimeSignature } from './css-share-scope'
 import { measureElapsed } from './metrics'
 import { collectRememberedCssReplayGroups, createRememberedCssRuntimeSignature, mergeRememberedCssSources } from './remembered-css'
@@ -79,6 +80,12 @@ interface ProcessRememberedCssReplayOptions {
   activeViteCssCacheFiles: Set<string>
 }
 
+export function shouldSkipRememberedCssReplaySource(rawSource: string, sourceFile: string) {
+  const cleanSourceFile = sourceFile.replace(/[?#].*$/, '')
+  return SOURCE_STYLE_OUTPUT_EXT_RE.test(cleanSourceFile)
+    && !canProcessViteSourceStyleAsCss(rawSource, sourceFile)
+}
+
 export async function processRememberedCssReplay(options: ProcessRememberedCssReplayOptions) {
   const {
     addWatchFile,
@@ -142,9 +149,16 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       key: item.key,
       remembered: await refreshRememberedCssSource?.(item.remembered) ?? item.remembered,
     })))
-    const rememberedKeys = refreshedRememberedGroup.map(item => item.key)
+    const replayableRememberedGroup = refreshedRememberedGroup.filter(({ remembered }) => {
+      const shouldSkip = shouldSkipRememberedCssReplaySource(remembered.rawSource, remembered.sourceFile)
+      if (shouldSkip) {
+        debug('css replay skip raw source style: %s -> %s', remembered.sourceFile, outputFile)
+      }
+      return !shouldSkip
+    })
+    const rememberedKeys = replayableRememberedGroup.map(item => item.key)
     const rememberedCssSource = mergeRememberedCssSources(
-      refreshedRememberedGroup.map(item => item.remembered),
+      replayableRememberedGroup.map(item => item.remembered),
       outputFile,
     )
     if (!rememberedCssSource) {
