@@ -1,5 +1,6 @@
 const SOURCE_STYLE_EXT_RE = /\.(?:css|scss|sass|less|styl|stylus|pcss|postcss)$/i
 const STYLE_QUERY_RE = /(?:^|&)type=styles?(?:&|$)/
+const VUE_STYLE_QUERY_RE = /(?:^|&)type=style(?:&|$)/
 const STYLE_LANG_QUERY_RE = /(?:^|&)lang(?:[.=](?:css|scss|sass|less|styl|stylus|pcss|postcss))?(?:&|$)/
 
 function stripHash(request: string) {
@@ -28,4 +29,18 @@ export function isSourceStyleRequest(request: string | undefined) {
   }
   const query = normalized.slice(queryIndex + 1)
   return STYLE_QUERY_RE.test(query) || STYLE_LANG_QUERY_RE.test(query)
+}
+
+export function isVueScopedStyleRequest(request: string | undefined) {
+  if (typeof request !== 'string' || request.length === 0) {
+    return false
+  }
+  const normalized = stripHash(request)
+  const queryIndex = normalized.indexOf('?')
+  if (queryIndex === -1) {
+    return false
+  }
+  const query = normalized.slice(queryIndex + 1)
+  return VUE_STYLE_QUERY_RE.test(query)
+    && /(?:^|&)scoped(?:=[^&]*)?(?:&|$)/.test(query)
 }

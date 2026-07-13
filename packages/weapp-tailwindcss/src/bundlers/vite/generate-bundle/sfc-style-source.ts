@@ -14,6 +14,11 @@ const SFC_STYLE_BLOCK_RE = /<style\b([^>]*)>([\s\S]*?)<\/style>/gi
 const SFC_SCOPED_STYLE_ATTR_RE = /(?:^|\s)scoped(?:\s|=|$)/i
 const SFC_LANG_STYLE_ATTR_RE = /(?:^|\s)lang(?:=(?:"([^"]+)"|'([^']+)'|([^\s"'=<>`]+)))?/i
 
+export function isSfcStyleSourceFile(file: string) {
+  const normalizedFile = file.replace(/[?#].*$/, '')
+  return SFC_STYLE_SOURCE_EXTENSIONS.some(extension => normalizedFile.endsWith(extension))
+}
+
 export interface SfcStyleBlock {
   attrs: string
   index: number
@@ -83,6 +88,7 @@ export function resolveSfcStyleRequestFromKnownSource(
   sourceFile: string,
   sfcSource: string | undefined,
   styleSource: string,
+  currentRequest?: string,
 ) {
   if (!sfcSource) {
     return sourceFile
@@ -98,11 +104,17 @@ export function resolveSfcStyleRequestFromKnownSource(
       || normalizedBlockSource.includes(normalizedStyleSource)
       || normalizedStyleSource.includes(normalizedBlockSource)
   })
-  const styleBlock = matchedBlocks.length === 1
+  const requestIndex = currentRequest
+    ? Number.parseInt(new URLSearchParams(currentRequest.split('?', 2)[1] ?? '').get('index') ?? '', 10)
+    : Number.NaN
+  const indexedBlock = Number.isInteger(requestIndex)
+    ? styleBlocks.find(styleBlock => styleBlock.index === requestIndex)
+    : undefined
+  const styleBlock = indexedBlock ?? (matchedBlocks.length === 1
     ? matchedBlocks[0]
     : styleBlocks.length === 1
       ? styleBlocks[0]
-      : undefined
+      : undefined)
   return styleBlock ? createSfcStyleRequest(sourceFile, styleBlock) : sourceFile
 }
 
@@ -195,7 +207,7 @@ function resolveSiblingJsChunkFile(outputFile: string, cssMatcher: ((file: strin
 
 function normalizeSfcModuleId(id: string) {
   const file = id.replace(/[?#].*$/, '')
-  if (!SFC_STYLE_SOURCE_EXTENSIONS.some(extension => file.endsWith(extension))) {
+  if (!isSfcStyleSourceFile(file)) {
     return undefined
   }
   if (!path.isAbsolute(file)) {

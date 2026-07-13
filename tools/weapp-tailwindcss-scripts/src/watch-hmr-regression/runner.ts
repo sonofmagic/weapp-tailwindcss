@@ -37,6 +37,7 @@ import {
   waitForOutputsReady,
 } from './mutations'
 import { resolvePreferredRound } from './mutations/shared'
+import { createOutputIntegrityMonitor } from './output-integrity'
 import { createWatchSession, runPnpmCommand, sleep } from './session'
 import { summarizeMutationMetricsByKind } from './summary'
 import { writeFilePreserveEol } from './text'
@@ -159,6 +160,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
   }
 
   const sessionStartedAt = Date.now()
+  let outputIntegrityMonitor: ReturnType<typeof createOutputIntegrityMonitor>
   const session = createWatchSession(watchCase.cwd, watchCase.devScript, {
     quietSass: options.quietSass,
   }, watchCase.env)
@@ -168,6 +170,8 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     const outputsReadyMs = await waitForOutputsReady(watchCase, options, session, sessionStartedAt)
     const warmupMs = await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
     const initialReadyMs = Math.max(outputsReadyMs, warmupMs)
+    outputIntegrityMonitor = createOutputIntegrityMonitor(watchCase.outputIntegrityGuards)
+    await outputIntegrityMonitor?.assertClean('initial compile')
 
     if ((watchCase.initialMutationDelayMs ?? 0) > 0) {
       process.stdout.write(
@@ -183,6 +187,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     let completedHmrCount = 0
     const recordCompletedHmr = async (count: number) => {
       completedHmrCount += count
+      await outputIntegrityMonitor?.assertClean(`after ${completedHmrCount} HMR updates`)
       if (hmrArtifactSnapshot || completedHmrCount < HMR_ARTIFACT_COUNT) {
         return
       }
@@ -364,6 +369,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       completedHmrCount,
       HMR_ARTIFACT_COUNT,
     )
+    await outputIntegrityMonitor?.assertClean('watch/HMR updates')
 
     const mutationMetrics: WatchCaseMutationMetrics[] = [
       templateMetrics,
@@ -433,17 +439,31 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
   }
   catch (error) {
     const message = error instanceof Error ? error.message : String(error)
+    let integrityMessage = ''
+    try {
+      await outputIntegrityMonitor?.assertClean('watch/HMR updates')
+    }
+    catch (integrityError) {
+      const nextIntegrityMessage = integrityError instanceof Error ? integrityError.message : String(integrityError)
+      if (!message.includes(nextIntegrityMessage)) {
+        integrityMessage = `${nextIntegrityMessage}\n`
+      }
+    }
     const logs = session.logs()
-    throw new Error(`${message}\n[${watchCase.label}] recent watch logs:\n${logs}`)
+    throw new Error(`${integrityMessage}${message}\n[${watchCase.label}] recent watch logs:\n${logs}`)
   }
   finally {
     for (const [sourcePath, original] of sourceOriginals.entries()) {
       try {
-        await writeFilePreserveEol(sourcePath, original, original)
+        const current = await fs.readFile(sourcePath, 'utf8')
+        if (current !== original) {
+          await writeFilePreserveEol(sourcePath, original, original)
+        }
       }
       catch {
       }
     }
+    await outputIntegrityMonitor?.stop()
     if (!sessionStopped) {
       await session.stop()
     }

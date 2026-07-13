@@ -216,6 +216,11 @@ export interface StyleMutationConfig {
   mutate: (source: string, payload: StyleMutationPayload) => string
 }
 
+export interface OutputIntegrityGuard {
+  file: string
+  forbiddenFragments: string[]
+}
+
 export interface UserReportedHotUpdateConfig {
   label: string
   sourceFile: string
@@ -262,6 +267,7 @@ export interface WatchCase {
   outputJs: string
   outputStyleCandidates: string[]
   globalStyleCandidates: string[]
+  outputIntegrityGuards?: OutputIntegrityGuard[]
   contentMutation?: ClassMutationConfig
   iconifyHmr?: IconifyHotUpdateConfig
   userReportedHotUpdate?: UserReportedHotUpdateConfig

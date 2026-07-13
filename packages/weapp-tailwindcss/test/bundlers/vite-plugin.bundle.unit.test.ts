@@ -61,6 +61,11 @@ function getTransformHandler(plugin: Plugin) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
+function getConfigResolvedHandler(plugin: Plugin) {
+  const hook = plugin.configResolved as any
+  return typeof hook === 'object' ? hook.handler : hook
+}
+
 function getOutputOptionsHandler(plugin: Plugin) {
   const hook = plugin.outputOptions as any
   return typeof hook === 'object' ? hook.handler : hook
@@ -1070,6 +1075,149 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(resultCode).toContain('.flex{display:flex}')
     expect(resultCode).not.toContain('@tailwind utilities')
     expect(resultCode).not.toContain('@apply flex')
+  }, TEST_TIMEOUT_MS)
+
+  it('adapts scoped Tailwind v4 css before uni-app watch writes component styles', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-uni-scoped-watch-'))
+    createdDirs.push(root)
+    const rawCss = '.fixture{--selector-adaptation:raw}'
+    const adaptedCss = '.fixture{--selector-adaptation:complete}'
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(async (options: { candidates: Set<string> }) => ({
+            css: adaptedCss,
+            rawCss,
+            target: 'weapp',
+            classSet: new Set(options.candidates),
+            dependencies: [],
+            sources: [],
+            root: null,
+            version: 4,
+          })),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+
+    const runtimeSet = new Set(['i-[mdi--github-circle]'])
+    const cssEntry = path.join(root, 'src/main.css')
+    const context = createContext({
+      appType: 'uni-app-vite',
+      cssEntries: [cssEntry],
+      cssMatcher: (file: string) => file.endsWith('.css') || file.endsWith('.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({
+        css: code.replace('.i-\\[mdi--github-circle\\]', '.i-_bmdi--github-circle_B'),
+      })),
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        options: {
+          projectRoot: root,
+          tailwindcss: {
+            cwd: root,
+            v4: {
+              cssSources: [{
+                file: cssEntry,
+                base: path.dirname(cssEntry),
+                css: '@import "tailwindcss" source(none);',
+                dependencies: [],
+              }],
+            },
+          },
+        },
+      },
+    })
+    setCurrentContext(context)
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      appType: 'uni-app-vite',
+      cssEntries: [cssEntry],
+      tailwindcssBasedir: root,
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const watchCssCachePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:watch-css-cache') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(rewritePlugin).toBeTruthy()
+    expect(watchCssCachePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    const cssPostTransform = vi.fn(async (css: string) => ({
+      code: css,
+      map: { mappings: '' },
+    }))
+    const cssPostPlugin = {
+      name: 'vite:css-post',
+      transform: {
+        order: 'post',
+        handler: cssPostTransform,
+      },
+    } as Plugin
+
+    const resolvedConfig = {
+      command: 'build',
+      root,
+      plugins: [{ name: 'vite:uni' }, cssPostPlugin],
+      css: { postcss: { plugins: [] } },
+      build: {
+        outDir: 'dist/dev/mp-weixin',
+        watch: {},
+      },
+    } as ResolvedConfig
+    await (postPlugin.configResolved as any)?.call(postPlugin, resolvedConfig)
+    await getConfigResolvedHandler(watchCssCachePlugin)?.call(watchCssCachePlugin, resolvedConfig)
+    expect((watchCssCachePlugin.configResolved as any).order).toBe('post')
+
+    const cssPostHandler = getTransformHandler(cssPostPlugin)
+    await cssPostHandler?.call(cssPostPlugin, 'export const fixture = true', path.join(root, 'src/main.ts'))
+    expect(context.styleHandler).not.toHaveBeenCalled()
+
+    const sfcFile = path.join(root, 'src/components/HelloWorld.vue')
+    const scopedStyleSource = '@reference "../../main.css";\n.fixture { @apply i-[mdi--github-circle]; }'
+    await getTransformHandler(sourcePlugin)?.call(
+      sourcePlugin,
+      [
+        '<template><view class="i-[mdi--github-circle]" /></template>',
+        '<style>.plain { color: red; }</style>',
+        `<style lang="scss" scoped>${scopedStyleSource}</style>`,
+      ].join('\n'),
+      sfcFile,
+    )
+    const styleId = `${sfcFile}?vue&type=style&index=1&lang.scss`
+    const result = await getTransformHandler(rewritePlugin)?.call(
+      rewritePlugin,
+      scopedStyleSource,
+      styleId,
+    )
+    expect(result).toBeTruthy()
+    expect(String((result as any).code)).toContain(adaptedCss)
+    expect(String((result as any).code)).not.toContain(rawCss)
+
+    context.styleHandler.mockClear()
+    const rawScopedCss = '.i-\\[mdi--github-circle\\].data-v-fixture{display:inline-block}'
+    const cssPostResult = await cssPostHandler?.call(cssPostPlugin, rawScopedCss, styleId)
+
+    expect(context.styleHandler).toHaveBeenCalledTimes(1)
+    expect(context.styleHandler).toHaveBeenCalledWith(rawScopedCss, expect.objectContaining({
+      postcssOptions: {
+        options: {
+          from: expect.stringContaining('scoped=true'),
+        },
+      },
+    }))
+    expect(cssPostTransform).toHaveBeenCalledWith(
+      '.i-_bmdi--github-circle_B.data-v-fixture{display:inline-block}',
+      styleId,
+    )
+    expect((cssPostPlugin.transform as any).order).toBe('post')
+    expect((cssPostResult as any)?.code).not.toContain('.i-\\[')
   }, TEST_TIMEOUT_MS)
 
   it.each([

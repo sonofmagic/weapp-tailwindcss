@@ -49,6 +49,9 @@ export async function collectWatchArtifactFiles(watchCase: WatchCase) {
   for (const file of watchCase.globalStyleCandidates) {
     addOutputFile(candidates, file)
   }
+  for (const guard of watchCase.outputIntegrityGuards ?? []) {
+    addOutputFile(candidates, guard.file)
+  }
   for (const mutation of watchCase.subPackageMutations ?? []) {
     addOutputFile(candidates, mutation.outputWxml)
     addOutputFile(candidates, mutation.outputJs)

@@ -77,4 +77,23 @@ describe('bundlers/vite sfc style source resolver', () => {
 
     expect(request).toBe(`${sourceFile}?vue=&type=style&index=1&scoped=true`)
   })
+
+  it('uses the current request index when compiled css no longer matches the scoped source block', () => {
+    const sourceFile = '/project/src/pages/index.vue'
+    const request = resolveSfcStyleRequestFromKnownSource(
+      sourceFile,
+      [
+        '<style>',
+        '.plain { color: red; }',
+        '</style>',
+        '<style lang="scss" scoped>',
+        '.scoped { @apply i-[mdi--github-circle]; }',
+        '</style>',
+      ].join('\n'),
+      '.i-\\[mdi--github-circle\\].data-v-fixture { display: inline-block; }',
+      `${sourceFile}?vue&type=style&index=1&lang.scss`,
+    )
+
+    expect(request).toBe(`${sourceFile}?vue=&type=style&index=1&scoped=true&lang=scss`)
+  })
 })

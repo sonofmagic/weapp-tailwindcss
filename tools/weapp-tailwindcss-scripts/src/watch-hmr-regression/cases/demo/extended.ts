@@ -173,6 +173,10 @@ function createUniAppPlatformCase(
     outputJs: replacePlatformPath(watchCase.outputJs),
     outputStyleCandidates: buildGlobalStyleCandidates,
     globalStyleCandidates: buildGlobalStyleCandidates,
+    outputIntegrityGuards: watchCase.outputIntegrityGuards?.map(guard => ({
+      ...guard,
+      file: replaceOutputFile(guard.file),
+    })),
     subPackageMutations: watchCase.subPackageMutations?.map(mutation => ({
       ...mutation,
       outputWxml: replaceOutputFile(mutation.outputWxml),
@@ -298,6 +302,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     // uni-app Vite v4 的独立分包 HMR 会触发较重的 CSS 汇总阶段；
     // 这里保留 case 级预算，避免放宽其它 demo 的处理耗时约束。
     maxPluginProcessMs: 4000,
+    requireInitialCompileSuccess: true,
     cwd: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4'),
     devScript: 'dev:mp-weixin',
     outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),
@@ -311,6 +316,13 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/main.wxss'),
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ],
+    outputIntegrityGuards: [{
+      file: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/components/HelloWorld.wxss'),
+      forbiddenFragments: [
+        '.i-\\[',
+        '.before\\:',
+      ],
+    }],
     userReportedHotUpdate: {
       label: 'index text-[102.43rpx] to text-[103.43rpx]',
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/pages/index/index.vue'),
