@@ -44,4 +44,30 @@ describe('e2e', () => {
     expect(pageWxml).not.toContain('index_dts_c120_c3')
     expect(pageWxml).not.toContain('not-generated_q_B')
   })
+
+  it('preserves native dynamic layout branches in final weapp-vite WXML output', async () => {
+    const projectBase = path.resolve(__dirname, '../demo')
+    const root = path.resolve(projectBase, project.name)
+    const projectPath = path.resolve(projectBase, project.projectPath)
+
+    if (process.env.E2E_SKIP_BUILD !== '1') {
+      await ensureProjectBuilt(root)
+    }
+
+    const [pageWxml, pageJs, pageJson] = await Promise.all([
+      fs.readFile(path.resolve(projectPath, 'dist/pages/index/index.wxml'), 'utf8'),
+      fs.readFile(path.resolve(projectPath, 'dist/pages/index/index.js'), 'utf8'),
+      fs.readFile(path.resolve(projectPath, 'dist/pages/index/index.json'), 'utf8'),
+    ])
+
+    expect(pageWxml).toContain('weapp-layout-default')
+    expect(pageWxml).toContain('weapp-layout-admin')
+    expect(pageWxml).toContain('__wv_page_layout_name')
+    expect(pageWxml).toContain(replaceWxml('tracking-[0.2em]'))
+    expect(pageJs).toContain('__wv_page_layout_name')
+    expect(pageJs).toContain('__wevuSetPageLayout')
+    expect(pageJs).toContain('setPageLayout("admin")')
+    expect(pageJson).toContain('weapp-layout-default')
+    expect(pageJson).toContain('weapp-layout-admin')
+  })
 })

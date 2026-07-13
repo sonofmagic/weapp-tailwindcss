@@ -19,6 +19,7 @@ text,
   --tw-gradient-to-position: 100%;
   --tw-duration: initial;
   --tw-ease: initial;
+  --tw-tracking:;
   --tw-content: '';
 }
 :host,
@@ -380,6 +381,11 @@ wx-button {
  /* tokens: text-[100rpx] <= pages/index/index.wxml */
 .text-_b100rpx_B {
   font-size: 100rpx;
+}
+ /* tokens: tracking-[0.2em] <= pages/index/index.wxml */
+.tracking-_b0_d2em_B {
+  --tw-tracking: 0.2em;
+  letter-spacing: 0.2em;
 }
  /* tokens: text-[#123456] <= pages/index/index.wxml */
 .text-_b_h123456_B {

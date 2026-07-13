@@ -2910,7 +2910,6 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     )
 
     const rollbackBundle = createBundle()
-    rollbackBundle['pages/index/index.wxml'].source = '<view class="min-h-screen {{ mode === \'light\'?\'bg-[#f40909] text-slate-800\':\'bg-gray-900 text-slate-200\' }} transition-colors duration-500"></view>'
     await generateBundle?.call({ addWatchFile: vi.fn() }, {} as any, rollbackBundle)
     const rollbackCss = (rollbackBundle['app.wxss'] as OutputAsset).source.toString()
     const rollbackWxml = (rollbackBundle['pages/index/index.wxml'] as OutputAsset).source.toString()

@@ -1,6 +1,6 @@
 {
   "file": "pages/index/index.wxml",
-  "count": 63,
+  "count": 64,
   "tokens": [
     "bg-[#0977ee]",
     "bg-[#111111]",
@@ -62,6 +62,7 @@
     "text-slate-900",
     "text-violet-600",
     "to-[#4bcefd]",
+    "tracking-[0.2em]",
     "transition-colors",
     "w-[323px]",
     "w-[50px]"

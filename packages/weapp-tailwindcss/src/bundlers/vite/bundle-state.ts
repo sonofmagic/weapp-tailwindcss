@@ -1,6 +1,7 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { OutputEntry } from './bundle-entries'
 import type { InternalUserDefinedOptions } from '@/types'
+import { Buffer } from 'node:buffer'
 import { toAbsoluteOutputPath } from '../shared/module-graph'
 import { isJavaScriptEntry } from './bundle-entries'
 import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
@@ -45,6 +46,7 @@ export interface BundleBuildState {
   runtimeAffectingHashByFile: Map<string, string>
   linkedByEntry: Map<string, Set<string>>
   dependentsByLinkedFile: Map<string, Set<string>>
+  bundleMarkupCandidatesByFile: Map<string, Set<string>>
   generatorCandidateSignature?: string | undefined
 }
 
@@ -64,6 +66,7 @@ export function createBundleBuildState(): BundleBuildState {
     runtimeAffectingHashByFile: new Map<string, string>(),
     linkedByEntry: new Map<string, Set<string>>(),
     dependentsByLinkedFile: new Map<string, Set<string>>(),
+    bundleMarkupCandidatesByFile: new Map<string, Set<string>>(),
     generatorCandidateSignature: undefined,
   }
 }
@@ -89,7 +92,9 @@ function readEntrySource(output: OutputAsset | OutputChunk) {
   if (output.type === 'chunk') {
     return output.code
   }
-  return output.source.toString()
+  return typeof output.source === 'string'
+    ? output.source
+    : Buffer.from(output.source).toString()
 }
 
 export function classifyBundleEntry(file: string, opts: InternalUserDefinedOptions): EntryType {
