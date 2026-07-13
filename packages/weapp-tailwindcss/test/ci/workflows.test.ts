@@ -396,14 +396,17 @@ describe('ci workflows', () => {
   it('keeps PR benchmark coverage on the smoke demo matrix', () => {
     const { workflow } = readWorkflow('benchmark.yml')
     const job = workflow.jobs['current-vs-published']
-    const runCommand = stepRuns(workflow, 'current-vs-published').find(run => run.includes('pnpm bench:ci'))
+    const runCommand = stepRuns(workflow, 'current-vs-published').find(run => run.includes('pnpm perf:guard'))
 
     expect(job['timeout-minutes']).toContain("github.event_name == 'pull_request' && 35")
     expect(job['timeout-minutes']).toContain('|| 90')
     expect(job.env.BENCH_ONLY).toContain('demo-weapp-vite-tailwindcss-v4__mp-weixin')
-    expect(job.env.BENCH_ONLY).toContain('demo-uni-app-vite-tailwindcss-v4__mp-weixin')
-    expect(job.env.BENCH_ONLY).toContain('demo-web-vue-vite-tailwindcss-v4__web')
+    expect(job.env.BENCH_ONLY).toContain('demo-taro-vite-react-tailwindcss-v4__mp-weixin')
+    expect(job.env.BENCH_ONLY).toContain('demo-taro-webpack-react-tailwindcss-v4__mp-weixin')
     expect(job.env.BENCH_ONLY).toContain("github.event.inputs.only || ''")
+    expect(job.env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '3'")
+    expect(job.env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '4'")
+    expect(runCommand).toContain('--baseline-ref')
     expect(runCommand).toContain('--only "$BENCH_ONLY"')
   })
 
@@ -432,12 +435,13 @@ describe('ci workflows', () => {
     expect(prereleaseVersionBranch).toContain('runChangesetVersion(options)')
   })
 
-  it('runs current vs published benchmark on every ci/cd trigger', () => {
+  it('runs base-ref performance guards on pull requests and published trends elsewhere', () => {
     const { workflow } = readWorkflow('benchmark.yml')
     const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
     const runs = stepRuns(workflow, 'current-vs-published').join('\n')
 
     expect(packageJson.scripts['bench:ci']).toBe('node benchmark/version-compare/scripts/run-ci.mjs')
+    expect(packageJson.scripts['perf:guard']).toBe('node benchmark/version-compare/scripts/run-ci.mjs --guard')
     expect(workflow.on.pull_request.types).toEqual([
       'opened',
       'synchronize',
@@ -455,17 +459,19 @@ describe('ci workflows', () => {
     expect(workflow.jobs['current-vs-published']['timeout-minutes']).toContain("github.event_name == 'pull_request' && 35")
     expect(workflow.jobs['current-vs-published']['timeout-minutes']).toContain('|| 90')
     expect(workflow.jobs['current-vs-published'].env.WEAPP_TW_BENCH_BASELINE).toContain('auto')
-    expect(workflow.jobs['current-vs-published'].env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '1'")
-    expect(workflow.jobs['current-vs-published'].env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '1'")
+    expect(workflow.jobs['current-vs-published'].env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '3'")
+    expect(workflow.jobs['current-vs-published'].env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '4'")
     expect(workflow.jobs['current-vs-published'].env.BENCH_ONLY).toContain("github.event_name == 'pull_request'")
     expect(workflow.jobs['current-vs-published'].env.BENCH_ONLY).toContain("github.event.inputs.only || ''")
     expect(runs).toContain('pnpm install --frozen-lockfile')
+    expect(runs).toContain('pnpm perf:guard --')
+    expect(runs).toContain('--baseline-ref')
     expect(runs).toContain('pnpm bench:ci --')
     expect(runs).toContain('--result-dir .tmp/benchmark-ci/result')
     expect(workflow.jobs['current-vs-published'].steps.some((step: Record<string, unknown>) => {
       const withConfig = step.with as Record<string, unknown> | undefined
       return step.uses === 'actions/upload-artifact@v4'
-        && withConfig?.name === 'benchmark-current-vs-published'
+        && withConfig?.name === 'benchmark-performance'
     })).toBe(true)
   })
 

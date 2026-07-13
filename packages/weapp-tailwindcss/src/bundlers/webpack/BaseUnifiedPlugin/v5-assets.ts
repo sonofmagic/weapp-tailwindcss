@@ -131,6 +131,11 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         debug('start')
         await runtimeState.readyPromise
         const hmrTimingStartedAt = performance.now()
+        const timingDetails: Record<string, number> = {}
+        const recordTimingDetail = (name: string, startedAt: number) => {
+          timingDetails[name] = (timingDetails[name] ?? 0) + Math.max(0, performance.now() - startedAt)
+        }
+        const setupStartedAt = performance.now()
 
         // Initial pass marks cache state.
         for (const chunk of compilation.chunks) {
@@ -232,6 +237,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           || cssSources.size > 0
           || generatedCssSources.size > 0
           || isCssSourceTraceEnabled(compilerOptions)
+        recordTimingDetail('setup', setupStartedAt)
+        const sourceCandidatesStartedAt = performance.now()
         const webpackSourceCandidates = shouldRefreshWebpackSourceCandidates
           ? await refreshWebpackSourceCandidates({
               compilerOptions,
@@ -246,6 +253,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         const webpackSourceCandidateValueSignature = webpackSourceCandidates
           ? createCandidateSignature(webpackSourceCandidates.getSourceCandidatesForEntries(undefined))
           : 'source-candidates:0'
+        recordTimingDetail('sourceCandidates', sourceCandidatesStartedAt)
         const cssSourceTraceTokenSources = createWebpackCssSourceTraceTokenSources(compilerOptions, webpackSourceCandidates)
         const cssSourceTraceSignature = createCssSourceTraceCacheSignature(cssSourceTraceTokenSources, compilerOptions)
         const annotateCss = (css: string) => annotateCssSourceTrace(css, {
@@ -267,6 +275,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           !isWebGeneratorTarget
           && ((groupedEntries.html?.length ?? 0) > 0 || (groupedEntries.js?.length ?? 0) > 0),
         )
+        const runtimeStartedAt = performance.now()
         const forceRuntimeRefresh = getRuntimeRefreshRequirement()
         debug('processAssets ensure runtime set forceRefresh=%s major=%s', forceRuntimeRefresh, runtimeState.tailwindRuntime.majorVersion ?? 'unknown')
         let runtimeSet: Set<string>
@@ -320,6 +329,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         }
         await refreshRuntimeMetadata(forceRuntimeRefresh)
         consumeRuntimeRefreshRequirement()
+        recordTimingDetail('runtime', runtimeStartedAt)
         const webpackSourceCandidateSet = webpackSourceCandidates?.getSourceCandidatesForEntries(undefined)
         const generatorRuntimeSet = new Set(runtimeSet)
         addRuntimeTransformCandidates(generatorRuntimeSet, webpackSourceCandidateSet)
@@ -402,12 +412,22 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         const enqueueTask = async (
           factory: () => Promise<void>,
           target: Array<() => Promise<void>>,
+          phase: string,
         ) => {
+          const timedFactory = async () => {
+            const startedAt = performance.now()
+            try {
+              await factory()
+            }
+            finally {
+              recordTimingDetail(phase, startedAt)
+            }
+          }
           if (watchMode) {
-            await factory()
+            await timedFactory()
             return
           }
-          target.push(factory)
+          target.push(timedFactory)
         }
         if (!isWebGeneratorTarget && Array.isArray(groupedEntries.html)) {
           for (const element of groupedEntries.html) {
@@ -448,13 +468,13 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   }
                 },
               })
-            }, htmlTaskFactories)
+            }, htmlTaskFactories, 'tasks.html')
           }
         }
 
         const jsTaskFactories: Array<() => Promise<void>> = []
         const enqueueJsTask = async (factory: () => Promise<void>) => {
-          await enqueueTask(factory, jsTaskFactories)
+          await enqueueTask(factory, jsTaskFactories, 'tasks.js')
         }
 
         if (!isWebGeneratorTarget && Array.isArray(groupedEntries.js)) {
@@ -755,7 +775,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   }
                 },
               })
-            }, cssTaskFactories)
+            }, cssTaskFactories, 'tasks.css')
             continue
           }
           const currentRawSource = readRawSource()
@@ -786,7 +806,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   result: new ConcatSource(currentRawSource),
                 }),
               })
-            }, cssTaskFactories)
+            }, cssTaskFactories, 'tasks.css')
             continue
           }
           const cacheKey = file
@@ -1283,7 +1303,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 }
               },
             })
-          }, cssTaskFactories)
+          }, cssTaskFactories, 'tasks.css')
         }
         if (!watchMode) {
           pushConcurrentTaskFactories(tasks, htmlTaskFactories, taskConcurrency)
@@ -1295,7 +1315,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           pushConcurrentTaskFactories(tasks, cssTaskFactories, taskConcurrency)
         }
 
+        const taskWaitStartedAt = performance.now()
         await Promise.all(tasks)
+        recordTimingDetail('tasks.wait', taskWaitStartedAt)
+        const pruneStartedAt = performance.now()
         compilerOptions.cache.prune?.({
           cacheKeys: activeProcessCacheKeys,
           hashKeys: activeProcessHashKeys,
@@ -1313,8 +1336,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             ...[...cssAssetResources.values()].flatMap(resources => [...resources]),
           ]), { watchMode })
         }
+        recordTimingDetail('cache.prune', pruneStartedAt)
         debug('end')
         emitHmrTiming('webpack', 'processAssets', performance.now() - hmrTimingStartedAt, {
+          ...timingDetails,
           memoryDebug: resolveWebpackMemoryDebugStats({
             activeAssetFiles: entries.length,
             activeCssFiles: activeCssFiles.size,

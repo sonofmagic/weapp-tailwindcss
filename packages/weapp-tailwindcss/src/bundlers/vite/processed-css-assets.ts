@@ -69,6 +69,7 @@ interface InjectViteProcessedCssAssetOptions {
   transformCss?: ((css: string, file: string) => string) | undefined
   debug?: ((format: string, ...args: unknown[]) => void) | undefined
   onUpdate?: ((file: string, original: string, generated: string) => void) | undefined
+  recordTimingDetail?: ((name: string, startedAt: number) => void) | undefined
 }
 
 const CSS_OUTPUT_FILE_RE = /\.(?:css|wxss|acss|ttss|qss|jxss|tyss)(?:$|[?#])/i
@@ -1131,30 +1132,37 @@ function removeCoveredInjectedSourceAssets(
         continue
       }
       const candidateKey = normalizeOutputPathKey(getAssetFile(candidateFile, candidateOutput))
-      if (candidateKey === targetFileKey) {
+      if (candidateKey === targetFileKey || !isCssOutputFile(candidateKey)) {
         continue
       }
       const isRecordFile = candidateKey === recordFileKey
       const candidateIsRootWebStyle = isRootStyleOutputFile(candidateKey) && !isMiniProgramStyleOutputFile(candidateKey)
-      const candidateSource = readAssetSource(candidateOutput).trim()
-      const uncoveredCandidateSource = candidateSource.length > 0
-        ? filterExistingCssRules(targetCss, candidateSource).trim()
-        : candidateSource
-      const isProcessedSource = candidateSource === record.css.trim()
-        || (candidateSource.length > 0 && containsCssAfterMinify(targetCss, candidateSource))
-        || (
-          targetIsRootWebStyle
-          && candidateIsRootWebStyle
-          && candidateSource.length > 0
-          && !hasNonCommentCss(uncoveredCandidateSource)
-        )
-      if (!isRecordFile && !isProcessedSource) {
-        continue
-      }
       if (candidateIsRootWebStyle && !targetIsRootWebStyle) {
         continue
       }
-      if (candidateIsRootWebStyle && !isRecordFile && !isProcessedSource) {
+      if (isRecordFile) {
+        if (candidateIsRootWebStyle) {
+          delete bundle[candidateFile]
+        }
+        else {
+          clearAssetSource(candidateOutput)
+        }
+        options.debug?.('remove injected vite-processed source css asset: %s -> %s', candidateKey, targetFile)
+        removed++
+        continue
+      }
+      const candidateSource = readAssetSource(candidateOutput).trim()
+      if (candidateSource.length === 0) {
+        continue
+      }
+      const isProcessedSource = candidateSource === record.css.trim()
+        || containsCssAfterMinify(targetCss, candidateSource)
+        || (
+          targetIsRootWebStyle
+          && candidateIsRootWebStyle
+          && !hasNonCommentCss(filterExistingCssRules(targetCss, candidateSource).trim())
+        )
+      if (!isProcessedSource) {
         continue
       }
       if (candidateIsRootWebStyle) {
@@ -1656,8 +1664,14 @@ export function injectViteProcessedCssIntoMainCssAssets(
   bundle: OutputBundle,
   options: InjectViteProcessedCssAssetOptions,
 ) {
+  const measure = <T>(name: string, task: () => T) => {
+    const startedAt = performance.now()
+    const result = task()
+    options.recordTimingDetail?.(`finalize.processedCss.inject.${name}`, startedAt)
+    return result
+  }
   const transformCss = (css: string, file: string) => options.transformCss?.(css, file) ?? css
-  const viteCssResults = dedupeViteCssResults(
+  const viteCssResults = measure('prepareResults', () => dedupeViteCssResults(
     [...(options.getViteProcessedCssAssetResults?.() ?? [])].map(([file, record]) => {
       return typeof record === 'string'
         ? { file, css: record, injectIntoMain: undefined }
@@ -1668,7 +1682,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
       ...record,
       css: transformCss(record.css, record.outputFile ?? record.file),
     }))
-    .filter(record => record.css.length > 0)
+    .filter(record => record.css.length > 0))
   let injected = 0
   for (const [bundleFile, bundleOutput] of Object.entries(bundle)) {
     let output = bundleOutput
@@ -1710,10 +1724,10 @@ export function injectViteProcessedCssIntoMainCssAssets(
     }
     const fileKey = normalizeOutputPathKey(file)
     const mainFileKey = normalizeOutputPathKey(file)
-    const normalizedOriginalCss = normalizeInjectableCssForTargetWithImports(
+    const normalizedOriginalCss = measure('normalizeTarget', () => normalizeInjectableCssForTargetWithImports(
       transformCss(removeTailwindEntryDirectivesFromCss(originalSource), file),
       file,
-    )
+    ))
     let nextCss = normalizedOriginalCss.css
     const importedStyleFiles = normalizedOriginalCss.importedStyleFiles
     const importedBundleCssSources = collectImportedBundleCssSources(bundle, importedStyleFiles)
@@ -1748,12 +1762,12 @@ export function injectViteProcessedCssIntoMainCssAssets(
         continue
       }
       targetViteCssResults.push(record)
-      let css = normalizeInjectableCssForTarget(stripBundlerGeneratedCssMarkers(record.css).trim(), file).trim()
-      css = removeCssCoveredByImportedViteResults(css, importedCssSources).trim()
+      let css = measure('normalizeRecord', () => normalizeInjectableCssForTarget(stripBundlerGeneratedCssMarkers(record.css).trim(), file).trim())
+      css = measure('importCoverage', () => removeCssCoveredByImportedViteResults(css, importedCssSources).trim())
       if (css.length === 0) {
         continue
       }
-      const mergedLayerCss = mergeMarkedUserLayerComponentsCss(nextCss, css)
+      const mergedLayerCss = measure('mergeLayers', () => mergeMarkedUserLayerComponentsCss(nextCss, css))
       if (mergedLayerCss.merged) {
         nextCss = mergedLayerCss.css
         css = extractMarkedUserLayerComponentsCss(css).rest.trim()
@@ -1761,13 +1775,10 @@ export function injectViteProcessedCssIntoMainCssAssets(
           continue
         }
       }
-      if (containsCssAfterMinify(nextCss, css) || filterExistingCssRules(nextCss, css).length === 0) {
+      if (measure('contains', () => containsCssAfterMinify(nextCss, css))) {
         continue
       }
-      if (containsCssAfterMinify(nextCss, css)) {
-        continue
-      }
-      const mergedPreflightDeclarations = mergeMiniProgramPreflightRuleDeclarations(nextCss, css)
+      const mergedPreflightDeclarations = measure('mergePreflight', () => mergeMiniProgramPreflightRuleDeclarations(nextCss, css))
       if (mergedPreflightDeclarations.changed) {
         nextCss = mergedPreflightDeclarations.baseCss
         css = mergedPreflightDeclarations.css.trim()
@@ -1775,7 +1786,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
           continue
         }
       }
-      const mergedThemeScopeDeclarations = mergeMiniProgramThemeScopeRuleDeclarations(nextCss, css)
+      const mergedThemeScopeDeclarations = measure('mergeTheme', () => mergeMiniProgramThemeScopeRuleDeclarations(nextCss, css))
       if (mergedThemeScopeDeclarations.changed) {
         nextCss = mergedThemeScopeDeclarations.baseCss
         css = mergedThemeScopeDeclarations.css.trim()
@@ -1783,7 +1794,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
           continue
         }
       }
-      const mergedRuleDeclarations = mergeCoveredCssRuleDeclarations(nextCss, css)
+      const mergedRuleDeclarations = measure('mergeDeclarations', () => mergeCoveredCssRuleDeclarations(nextCss, css))
       if (mergedRuleDeclarations.changed) {
         nextCss = mergedRuleDeclarations.baseCss
         css = mergedRuleDeclarations.css.trim()
@@ -1791,14 +1802,14 @@ export function injectViteProcessedCssIntoMainCssAssets(
           continue
         }
       }
-      const missingCss = filterExistingCssRules(nextCss, css)
-      if (missingCss.length === 0 || !hasNonCommentCss(missingCss) || containsCssAfterMinify(nextCss, missingCss)) {
+      const missingCss = measure('filterRules', () => filterExistingCssRules(nextCss, css))
+      if (missingCss.length === 0 || !hasNonCommentCss(missingCss) || measure('containsMissing', () => containsCssAfterMinify(nextCss, missingCss))) {
         continue
       }
       nextCss = appendCss(nextCss, missingCss)
     }
     const finalImportedCssSources = collectImportedBundleCssSources(bundle, collectImportedStyleFiles(originalSource, file))
-    nextCss = transformCss(
+    nextCss = measure('finalizeTarget', () => transformCss(
       removeCommentOnlyAtRules(
         restoreCssImportAtRules(
           originalSource,
@@ -1807,7 +1818,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
         ),
       ),
       file,
-    )
+    ))
     if (nextCss.trim() === originalSource.trim()) {
       nextCss = originalSource
     }
@@ -1818,7 +1829,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
       options.onUpdate?.(file, originalSource, nextCss)
       options.debug?.('inject vite-processed css into main css asset: %s bytes=%d', file, nextCss.length)
     }
-    const removedSources = removeCoveredInjectedSourceAssets(bundle, file, nextCss, targetViteCssResults, options)
+    const removedSources = measure('removeSources', () => removeCoveredInjectedSourceAssets(bundle, file, nextCss, targetViteCssResults, options))
     if (nextCss === originalSource && removedSources === 0) {
       continue
     }

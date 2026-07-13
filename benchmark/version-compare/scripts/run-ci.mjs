@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
-import { buildSummary, toMarkdown } from './ci-report.mjs'
+import { buildSummary, evaluatePerformanceGuard, toMarkdown } from './ci-report.mjs'
 import { benchmarkProjectDirs } from './projects.mjs'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -137,6 +137,40 @@ async function copyRepo(target) {
   })
 }
 
+async function copyRepoAtRef(target, ref) {
+  await fs.rm(target, { recursive: true, force: true })
+  await fs.mkdir(target, { recursive: true })
+  const archive = spawn('git', ['archive', '--format=tar', ref], {
+    cwd: repoRoot,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  })
+  const extract = spawn('tar', ['-xf', '-', '-C', target], {
+    stdio: ['pipe', 'inherit', 'pipe'],
+  })
+  archive.stdout.pipe(extract.stdin)
+  let archiveError = ''
+  let extractError = ''
+  archive.stderr.on('data', (chunk) => {
+    archiveError += chunk.toString('utf8')
+  })
+  extract.stderr.on('data', (chunk) => {
+    extractError += chunk.toString('utf8')
+  })
+  const [archiveCode, extractCode] = await Promise.all([
+    new Promise((resolve, reject) => {
+      archive.once('error', reject)
+      archive.once('close', code => resolve(code ?? 1))
+    }),
+    new Promise((resolve, reject) => {
+      extract.once('error', reject)
+      extract.once('close', code => resolve(code ?? 1))
+    }),
+  ])
+  if (archiveCode !== 0 || extractCode !== 0) {
+    throw new Error(`unable to prepare git baseline ${ref}: git=${archiveCode} tar=${extractCode}\n${archiveError}\n${extractError}`)
+  }
+}
+
 function pickPublishedResolverDependencies(dependencies = {}) {
   return Object.fromEntries(publishedResolverDependencyNames.flatMap((name) => {
     const spec = dependencies[name]
@@ -220,13 +254,18 @@ async function patchPublishedRootOverrides(root) {
   await fs.writeFile(file, `${JSON.stringify(json, null, 2)}\n`, 'utf8')
 }
 
-async function prepareRoot({ root, role, baseline, resolverDependencies }) {
-  await copyRepo(root)
+async function prepareRoot({ root, role, baseline, baselineRef, resolverDependencies }) {
+  if (role === 'base') {
+    await copyRepoAtRef(root, baselineRef)
+  }
+  else {
+    await copyRepo(root)
+  }
   if (role === 'published') {
     const patched = await patchPublishedRoot(root, baseline, resolverDependencies)
     process.stdout.write(`[benchmark] published baseline ${normalizePackageSpec(baseline)} patched projects: ${patched.join(', ')}\n`)
   }
-  await run(root, 'pnpm', ['install', role === 'current' ? '--frozen-lockfile' : '--no-frozen-lockfile'])
+  await run(root, 'pnpm', ['install', role === 'published' ? '--no-frozen-lockfile' : '--frozen-lockfile'])
   await run(root, 'pnpm', ['build:pkgs'])
 }
 
@@ -238,15 +277,60 @@ async function appendStepSummary(reportPath) {
   await fs.appendFile(process.env.GITHUB_STEP_SUMMARY, `${markdown}\n`, 'utf8')
 }
 
+async function runSourceCandidateHotUpdateBenchmark(root) {
+  const sourceFile = path.join(root, 'packages/weapp-tailwindcss/src/bundlers/vite/source-candidates.ts')
+  const tsconfig = path.join(root, 'packages/weapp-tailwindcss/tsconfig.json')
+  const script = path.join(repoRoot, 'benchmark/version-compare/scripts/source-candidate-hot-update.mts')
+  const stdout = await runCapture(root, 'pnpm', [
+    'exec',
+    'tsx',
+    '--tsconfig',
+    tsconfig,
+    script,
+    sourceFile,
+  ])
+  const outputLine = stdout.trim().split(/\r?\n/).at(-1)
+  if (!outputLine) {
+    throw new Error(`source candidate benchmark did not produce output for ${root}`)
+  }
+  return JSON.parse(outputLine)
+}
+
+function createSourceCandidateBenchmarkRow(version, root, result) {
+  return {
+    version,
+    root,
+    key: 'core-source-candidate-hot-update',
+    project: 'packages/weapp-tailwindcss',
+    target: 'core',
+    buildMode: 'unsupported',
+    buildNote: 'internal hot-update micro benchmark',
+    hmrMode: 'watch',
+    hmrNote: 'plugin-only source candidate hot-update micro benchmark',
+    buildMs: [],
+    buildPluginMs: [],
+    hmrMs: [],
+    hmrPluginMs: result.samples,
+    summary: {
+      hmrPlugin: result.summary,
+      hmrPluginSteady: result.summary,
+    },
+  }
+}
+
 async function main() {
   const pkg = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'))
+  const guardMode = process.argv.includes('--guard')
+  const baselineRef = parseArg('--baseline-ref', process.env.WEAPP_TW_BENCH_BASE_REF ?? (guardMode ? 'origin/main' : ''))
   const baseline = inferBaseline(pkg.version)
-  const publishedDependencies = await readPublishedDependencies(baseline, pkg.dependencies ?? {})
+  const publishedDependencies = baselineRef
+    ? pkg.dependencies ?? {}
+    : await readPublishedDependencies(baseline, pkg.dependencies ?? {})
   const resolverDependencies = pickPublishedResolverDependencies(publishedDependencies)
   const outputRoot = path.resolve(parseArg('--work-root', path.join(os.tmpdir(), `weapp-tailwindcss-benchmark-${process.pid}`)))
   const resultDir = path.resolve(parseArg('--result-dir', path.join(outputRoot, 'result')))
   const currentRoot = path.join(outputRoot, 'current')
-  const publishedRoot = path.join(outputRoot, 'published')
+  const baselineRoot = path.join(outputRoot, baselineRef ? 'base' : 'published')
   const rawPath = path.resolve(parseArg('--out', path.join(resultDir, 'matrix-raw.json')))
   const reportPath = path.resolve(parseArg('--report', path.join(resultDir, 'report.md')))
   const summaryPath = path.resolve(parseArg('--summary', path.join(resultDir, 'summary.json')))
@@ -255,15 +339,23 @@ async function main() {
   const timeoutMs = parseNumber('--timeout', 180000)
   const pollIntervalMs = parseNumber('--poll-interval', 120)
   const only = parseArg('--only', '')
-  const baselineLabel = `published:${normalizePackageSpec(baseline)}`
+  const baselineLabel = baselineRef
+    ? `base:${baselineRef}`
+    : `published:${normalizePackageSpec(baseline)}`
   const currentLabel = `current:${pkg.version}`
   const versionsPath = path.join(resultDir, 'versions.json')
 
   await fs.mkdir(resultDir, { recursive: true })
-  await prepareRoot({ root: currentRoot, role: 'current', baseline, resolverDependencies })
-  await prepareRoot({ root: publishedRoot, role: 'published', baseline, resolverDependencies })
+  await prepareRoot({ root: currentRoot, role: 'current', baseline, baselineRef, resolverDependencies })
+  await prepareRoot({
+    root: baselineRoot,
+    role: baselineRef ? 'base' : 'published',
+    baseline,
+    baselineRef,
+    resolverDependencies,
+  })
   await fs.writeFile(versionsPath, JSON.stringify([
-    { version: baselineLabel, root: publishedRoot },
+    { version: baselineLabel, root: baselineRoot },
     { version: currentLabel, root: currentRoot },
   ], null, 2), 'utf8')
 
@@ -288,8 +380,24 @@ async function main() {
   await run(repoRoot, process.execPath, matrixArgs)
 
   const raw = JSON.parse(await fs.readFile(rawPath, 'utf8'))
+  if (baselineRef && !process.argv.includes('--skip-core-metrics')) {
+    const baselineCore = await runSourceCandidateHotUpdateBenchmark(baselineRoot)
+    const currentCore = await runSourceCandidateHotUpdateBenchmark(currentRoot)
+    raw.rows.push(
+      createSourceCandidateBenchmarkRow(baselineLabel, baselineRoot, baselineCore),
+      createSourceCandidateBenchmarkRow(currentLabel, currentRoot, currentCore),
+    )
+    await fs.writeFile(rawPath, `${JSON.stringify(raw, null, 2)}\n`, 'utf8')
+  }
   const summary = buildSummary(raw, baselineLabel, currentLabel)
-  const markdown = toMarkdown(summary, baseline)
+  if (baselineRef) {
+    summary.performanceGuard = evaluatePerformanceGuard(summary, {
+      pluginRegressionPercent: parseNumber('--plugin-regression-percent', 10),
+      endToEndRegressionPercent: parseNumber('--end-to-end-regression-percent', 15),
+      endToEndAbsoluteMs: parseNumber('--end-to-end-absolute-ms', 50),
+    })
+  }
+  const markdown = toMarkdown(summary, baselineRef || baseline)
   await fs.writeFile(summaryPath, `${JSON.stringify(summary, null, 2)}\n`, 'utf8')
   await fs.writeFile(reportPath, markdown, 'utf8')
   await appendStepSummary(reportPath)
@@ -298,6 +406,9 @@ async function main() {
 
   if (summary.currentOnlyErrors.length > 0 && !process.argv.includes('--allow-errors')) {
     throw new Error(`benchmark current matrix has ${summary.currentOnlyErrors.length} current-only failed row(s)`)
+  }
+  if (summary.performanceGuard && !summary.performanceGuard.passed && !process.argv.includes('--allow-regressions')) {
+    throw new Error(`performance guard detected ${summary.performanceGuard.violations.length} regression(s)`)
   }
 }
 

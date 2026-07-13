@@ -4,6 +4,7 @@ import net from 'node:net'
 import path from 'node:path'
 import process from 'node:process'
 import { benchmarkProjects as projects } from './projects.mjs'
+import { resolvePluginTimingSample } from './timing.mjs'
 
 const defaultVersions = [
   { version: '4.9.8', root: '/tmp/weapp-tailwindcss-4.9.8' },
@@ -76,26 +77,20 @@ function summarize(values) {
     return undefined
   }
   const sorted = [...values].sort((a, b) => a - b)
+  const p95Index = Math.min(sorted.length - 1, Math.ceil(sorted.length * 0.95) - 1)
   return {
+    count: values.length,
     mean: mean(values),
     median: median(values),
     min: sorted[0],
     max: sorted[sorted.length - 1],
+    p95: sorted[p95Index],
     stddev: stddev(values),
   }
 }
 
 function summarizeSteady(values) {
   return summarize(values.slice(1)) ?? summarize(values)
-}
-
-function spawnPnpm(cwd, args, stdio = 'pipe') {
-  return spawn(process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm', args, {
-    cwd,
-    stdio,
-    detached: process.platform !== 'win32',
-    env: { ...process.env },
-  })
 }
 
 function spawnPnpmWithEnv(cwd, args, env = {}, stdio = 'pipe') {
@@ -108,7 +103,7 @@ function spawnPnpmWithEnv(cwd, args, env = {}, stdio = 'pipe') {
 }
 
 const localUrlRE = /(?:Local|Loopback|Listening at):\s*(https?:\/\/\S+)/i
-const devReadyLogRE = /compiled successfully|Compiled successfully|built in [\d.]+m?s?|Build complete|Watching for changes|ready in \d+/i
+const devReadyLogRE = /compiled successfully|built in [\d.]+m?s?|Build complete|Watching for changes|ready in \d+/i
 
 async function readText(file) {
   try {
@@ -304,7 +299,11 @@ function stopChild(child) {
 
 async function runBuildOnce(cwd, buildScript, timeoutMs, buildEnv = {}) {
   const start = now()
-  const child = spawnPnpmWithEnv(cwd, ['run', buildScript], buildEnv, 'pipe')
+  const child = spawnPnpmWithEnv(cwd, ['run', buildScript], {
+    WEAPP_TW_HMR_TIMING: '1',
+    WEAPP_TW_HMR_TIMING_LOG: '0',
+    ...buildEnv,
+  }, 'pipe')
   let logs = ''
   child.stdout.on('data', (chunk) => {
     logs += chunk.toString('utf8')
@@ -341,7 +340,12 @@ async function runBuildOnce(cwd, buildScript, timeoutMs, buildEnv = {}) {
     throw new Error(`build skipped by uni-build-guard; set project buildEnv.UNI_BUILD_STRICT=1 for benchmark builds\n${logs.slice(-4000)}`)
   }
 
-  return now() - start
+  const pluginTiming = resolvePluginTimingSample(logs.split(/\r?\n/))
+  return {
+    durationMs: now() - start,
+    pluginProcessMs: pluginTiming?.durationMs,
+    pluginTiming,
+  }
 }
 
 function injectContent(original, marker, injectType) {
@@ -390,7 +394,11 @@ async function runHmrRounds({
   const original = await fs.readFile(sourcePath, 'utf8')
   const initialOutputMtime = await statMtimeMs(outputPath)
 
-  const child = spawnPnpmWithEnv(cwd, ['run', devScript], devEnv, 'pipe')
+  const child = spawnPnpmWithEnv(cwd, ['run', devScript], {
+    WEAPP_TW_HMR_TIMING: '1',
+    WEAPP_TW_HMR_TIMING_LOG: '0',
+    ...devEnv,
+  }, 'pipe')
   const logs = []
   const collect = (buf) => {
     const text = buf.toString('utf8')
@@ -431,6 +439,7 @@ async function runHmrRounds({
     for (let i = 0; i < rounds; i += 1) {
       const marker = `twbench${Date.now()}${i}`
       const next = injectContent(original, marker, injectType)
+      const timingLogStart = logs.length
       const start = now()
       await fs.writeFile(sourcePath, next, 'utf8')
 
@@ -451,7 +460,12 @@ async function runHmrRounds({
         throw new Error(`hmr round ${i + 1} timeout ${timeoutMs}ms marker=${marker}\n${logs.slice(-120).join('\n')}`)
       }
 
-      times.push(now() - start)
+      const pluginTiming = resolvePluginTimingSample(logs.slice(timingLogStart))
+      times.push({
+        durationMs: now() - start,
+        pluginProcessMs: pluginTiming?.durationMs,
+        pluginTiming,
+      })
 
       await fs.writeFile(sourcePath, original, 'utf8')
       await new Promise(resolve => setTimeout(resolve, injectType === 'wxml-class' ? 900 : 260))
@@ -478,6 +492,8 @@ async function runDevServerHmrRounds({
   const port = await findFreePort()
   const child = spawnPnpmWithEnv(cwd, resolveDevServerCommand(projectMeta, port), {
     BROWSER: 'none',
+    WEAPP_TW_HMR_TIMING: '1',
+    WEAPP_TW_HMR_TIMING_LOG: '0',
     ...projectMeta.devEnv,
   }, 'pipe')
   const logs = []
@@ -525,6 +541,7 @@ async function runDevServerHmrRounds({
       const marker = `twbench${Date.now()}${i}`
       const next = injectContent(original, marker, projectMeta.injectType)
       const probeUrls = resolveServerProbeUrls(projectMeta, baseUrl, marker)
+      const timingLogStart = logs.length
       const start = now()
       await fs.writeFile(sourcePath, next, 'utf8')
 
@@ -552,7 +569,12 @@ async function runDevServerHmrRounds({
         throw new Error(`dev server hmr round ${i + 1} timeout ${timeoutMs}ms marker=${marker}\n${lastError}\n${logs.slice(-120).join('\n')}`)
       }
 
-      times.push(now() - start)
+      const pluginTiming = resolvePluginTimingSample(logs.slice(timingLogStart))
+      times.push({
+        durationMs: now() - start,
+        pluginProcessMs: pluginTiming?.durationMs,
+        pluginTiming,
+      })
 
       await fs.writeFile(sourcePath, original, 'utf8')
       await new Promise(resolve => setTimeout(resolve, 260))
@@ -570,6 +592,8 @@ async function runDevServerHmrRounds({
 async function runCase(versionMeta, projectMeta, options) {
   const cwd = path.join(versionMeta.root, projectMeta.project)
   const buildMs = []
+  const buildPluginMs = []
+  const buildPluginTimings = []
 
   const buildMode = projectMeta.buildMode ?? 'build'
   if (buildMode === 'unsupported') {
@@ -577,29 +601,41 @@ async function runCase(versionMeta, projectMeta, options) {
   }
   else {
     for (let i = 0; i < options.buildRuns; i += 1) {
-      const ms = await runBuildOnce(cwd, projectMeta.buildScript, options.timeoutMs, projectMeta.buildEnv)
-      buildMs.push(ms)
-      process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] build ${i + 1}/${options.buildRuns}: ${ms.toFixed(2)}ms\n`)
+      const sample = await runBuildOnce(cwd, projectMeta.buildScript, options.timeoutMs, projectMeta.buildEnv)
+      buildMs.push(sample.durationMs)
+      if (typeof sample.pluginProcessMs === 'number') {
+        buildPluginMs.push(sample.pluginProcessMs)
+      }
+      if (sample.pluginTiming) {
+        buildPluginTimings.push(sample.pluginTiming)
+      }
+      const pluginSuffix = typeof sample.pluginProcessMs === 'number' ? ` plugin=${sample.pluginProcessMs.toFixed(2)}ms` : ''
+      process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] build ${i + 1}/${options.buildRuns}: ${sample.durationMs.toFixed(2)}ms${pluginSuffix}\n`)
     }
   }
 
   const hmrMode = projectMeta.hmrMode ?? 'watch'
   const hmrMs = []
+  const hmrPluginMs = []
+  const hmrPluginTimings = []
   if (hmrMode === 'unsupported' || hmrMode === 'fallback-build') {
     process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] hmr skipped: ${projectMeta.hmrNote}\n`)
   }
   else {
     if (projectMeta.hmrDriver === 'dev-server') {
-      hmrMs.push(...await runDevServerHmrRounds({
+      const samples = await runDevServerHmrRounds({
         cwd,
         projectMeta,
         rounds: options.hmrRuns,
         timeoutMs: options.timeoutMs,
         pollIntervalMs: options.pollIntervalMs,
-      }))
+      })
+      hmrMs.push(...samples.map(sample => sample.durationMs))
+      hmrPluginMs.push(...samples.flatMap(sample => typeof sample.pluginProcessMs === 'number' ? [sample.pluginProcessMs] : []))
+      hmrPluginTimings.push(...samples.flatMap(sample => sample.pluginTiming ? [sample.pluginTiming] : []))
     }
     else {
-      hmrMs.push(...await runHmrRounds({
+      const samples = await runHmrRounds({
         cwd,
         sourceFile: projectMeta.sourceFile,
         outputTemplate: projectMeta.outputTemplate,
@@ -610,11 +646,16 @@ async function runCase(versionMeta, projectMeta, options) {
         rounds: options.hmrRuns,
         timeoutMs: options.timeoutMs,
         pollIntervalMs: options.pollIntervalMs,
-      }))
+      })
+      hmrMs.push(...samples.map(sample => sample.durationMs))
+      hmrPluginMs.push(...samples.flatMap(sample => typeof sample.pluginProcessMs === 'number' ? [sample.pluginProcessMs] : []))
+      hmrPluginTimings.push(...samples.flatMap(sample => sample.pluginTiming ? [sample.pluginTiming] : []))
     }
 
     hmrMs.forEach((ms, idx) => {
-      process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] hmr ${idx + 1}/${options.hmrRuns} mode=${hmrMode}: ${ms.toFixed(2)}ms\n`)
+      const pluginMs = hmrPluginMs[idx]
+      const pluginSuffix = typeof pluginMs === 'number' ? ` plugin=${pluginMs.toFixed(2)}ms` : ''
+      process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] hmr ${idx + 1}/${options.hmrRuns} mode=${hmrMode}: ${ms.toFixed(2)}ms${pluginSuffix}\n`)
     })
   }
 
@@ -623,14 +664,22 @@ async function runCase(versionMeta, projectMeta, options) {
     root: versionMeta.root,
     ...projectMeta,
     buildMs,
+    buildPluginMs,
+    buildPluginTimings,
     hmrMs,
+    hmrPluginMs,
+    hmrPluginTimings,
     buildMode,
     hmrMode,
     summary: {
       build: summarize(buildMs),
       hmr: summarize(hmrMs),
       buildSteady: summarizeSteady(buildMs),
+      buildPlugin: summarize(buildPluginMs),
+      buildPluginSteady: summarizeSteady(buildPluginMs),
       hmrSteady: summarizeSteady(hmrMs),
+      hmrPlugin: summarize(hmrPluginMs),
+      hmrPluginSteady: summarizeSteady(hmrPluginMs),
     },
   }
 }

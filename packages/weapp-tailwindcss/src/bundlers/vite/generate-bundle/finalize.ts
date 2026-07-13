@@ -304,6 +304,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
   for (const apply of pendingLinkedUpdates) {
     apply()
   }
+  const uniAppXPostCssStartedAt = performance.now()
   const applyStyleSources = await handleUniAppXPostCssTasks({
     bundle,
     debug,
@@ -319,7 +320,9 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     runtimeState,
     styleHandler,
   })
+  recordTimingDetail('finalize.uniAppXPostCss', uniAppXPostCssStartedAt)
   const syncViteProcessedCssIntoMainCssAssets = () => {
+    const collectStartedAt = performance.now()
     collectViteProcessedCssAssetResults(bundle, {
       opts,
       cssPipelineStrategy,
@@ -333,7 +336,9 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
       transformCss: transformWebTargetCss,
       debug,
     })
-    return injectViteProcessedCssIntoMainCssAssets(bundle, {
+    recordTimingDetail('finalize.processedCss.collect', collectStartedAt)
+    const injectStartedAt = performance.now()
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts,
       cssPipelineStrategy,
       createCssPipelineContext,
@@ -351,8 +356,12 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
       },
       debug,
       onUpdate,
+      recordTimingDetail,
     })
+    recordTimingDetail('finalize.processedCss.inject', injectStartedAt)
+    return injected
   }
+  const processedCssStartedAt = performance.now()
   syncViteProcessedCssIntoMainCssAssets()
   if (isHarmonyAppStyleTarget && applyStyleSources.length > 0) {
     const viteProcessedCssSources = [...(getViteProcessedCssAssetResults?.() ?? [])]
@@ -362,8 +371,10 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     }
     syncViteProcessedCssIntoMainCssAssets()
   }
+  recordTimingDetail('finalize.processedCss', processedCssStartedAt)
   const createFinalizeCssPipelineContext = (file = ''): ViteFrameworkCssPipelineContext | undefined => createCssPipelineContext?.(file)
   const finalizeCssPipelineContext = createFinalizeCssPipelineContext()
+  const rootCssStartedAt = performance.now()
   normalizeRootMiniProgramImportShellAssets(bundle, {
     cssMatcher: opts.cssMatcher,
     debug,
@@ -399,6 +410,8 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
   ) {
     removeDuplicateUnlinkedRootCssAssetsReferencedByHtml(bundle, { debug })
   }
+  recordTimingDetail('finalize.rootCss', rootCssStartedAt)
+  const finalCssAssetsStartedAt = performance.now()
   await finalizeMiniProgramCssAssets(bundle, {
     cssMatcher: opts.cssMatcher,
     debug,
@@ -409,6 +422,8 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     recordCssAssetResult,
     styleHandler,
   })
+  recordTimingDetail('finalize.cssAssets', finalCssAssetsStartedAt)
+  const webCompatStartedAt = performance.now()
   if (
     finalizeCssPipelineContext !== undefined
     && cssPipelineStrategy?.shouldApplyFinalWebviewCssCompat?.({
@@ -425,6 +440,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
       recordCssAssetResult,
     })
   }
+  recordTimingDetail('finalize.webCompat', webCompatStartedAt)
 
   const stateUpdateStart = performance.now()
   updateBundleBuildState(

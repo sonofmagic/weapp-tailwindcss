@@ -56,6 +56,112 @@ describe('benchmark ci report', () => {
     const source = fs.readFileSync(path.resolve(__dirname, '../../../../benchmark/version-compare/scripts/run-ci.mjs'), 'utf8')
 
     expect(source).toContain("part === 'dist'")
+    expect(source).toContain('runSourceCandidateHotUpdateBenchmark')
+    expect(source).toContain('core-source-candidate-hot-update')
+  })
+
+  it('extracts plugin processing time from structured Vite and Webpack timing logs', async () => {
+    const { resolvePluginProcessMs, resolvePluginTimingSample } = await import('../../../../benchmark/version-compare/scripts/timing.mjs')
+    const lines = [
+      '[weapp-tailwindcss:hmr] {"bundler":"vite","phase":"generateBundle","durationMs":82}',
+      '[weapp-tailwindcss:hmr] {"bundler":"vite","phase":"total","durationMs":91,"metric":"total"}',
+      '[weapp-tailwindcss:hmr] {"bundler":"webpack","phase":"processAssets","durationMs":126}',
+      'unrelated output',
+    ]
+
+    expect(resolvePluginProcessMs(lines.slice(0, 2))).toBe(91)
+    expect(resolvePluginTimingSample(lines.slice(0, 2))).toMatchObject({
+      bundler: 'vite',
+      durationMs: 91,
+      details: {
+        phase: 'generateBundle',
+        durationMs: 82,
+      },
+    })
+    expect(resolvePluginProcessMs(lines.slice(2))).toBe(126)
+    expect(resolvePluginProcessMs(['unrelated output'])).toBeUndefined()
+  })
+
+  it('fails layered performance guards only after relative and absolute thresholds are exceeded', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-14T00:00:00.000Z',
+      options: {
+        buildRuns: 3,
+        hmrRuns: 5,
+        timeoutMs: 180000,
+      },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
+          hmrMode: 'watch',
+          summary: {
+            buildSteady: { median: 1000 },
+            hmrSteady: { median: 500 },
+            buildPluginSteady: { median: 200 },
+            hmrPluginSteady: { median: 100 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
+          hmrMode: 'watch',
+          summary: {
+            buildSteady: { median: 1170 },
+            hmrSteady: { median: 560 },
+            buildPluginSteady: { median: 225 },
+            hmrPluginSteady: { median: 109 },
+          },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    const result = evaluatePerformanceGuard(summary)
+
+    expect(result.violations.map(item => item.metric)).toEqual([
+      'build',
+      'buildPlugin',
+    ])
+    expect(result.passed).toBe(false)
+  })
+
+  it('fails the performance guard when watch HMR plugin timing samples are incomplete', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-14T00:00:00.000Z',
+      options: { buildRuns: 1, hmrRuns: 3, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
+          hmrMode: 'watch',
+          hmrMs: [100, 90, 80],
+          hmrPluginMs: [50, 40, 30],
+          summary: { hmrSteady: { median: 85 }, hmrPluginSteady: { median: 35 } },
+        },
+        {
+          version: currentLabel,
+          key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
+          hmrMode: 'watch',
+          hmrMs: [100, 90, 80],
+          hmrPluginMs: [50, 40],
+          summary: { hmrSteady: { median: 85 }, hmrPluginSteady: { median: 45 } },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    const result = evaluatePerformanceGuard(summary)
+
+    expect(result.passed).toBe(false)
+    expect(result.violations).toContainEqual(expect.objectContaining({
+      metric: 'currentHmrPluginSamples',
+      message: 'current HMR plugin timing samples 2/3',
+    }))
   })
 
   it('keeps dev server HMR measured through fixed-port development servers', async () => {
