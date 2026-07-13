@@ -336,7 +336,7 @@
     "gulp-postcss": "^10.0.0",
     "html-loader": "^5.1.0",
     "husky": "^9.1.7",
-    "js-beautify": "^1.15.4",
+    "js-beautify": "^2.0.3",
     "jsdom": "^29.1.1",
     "klaw": "^4.1.0",
     "lightningcss": "^1.32.0",

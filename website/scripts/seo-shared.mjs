@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import matter from 'gray-matter'
-import yaml from 'js-yaml'
+import { load } from 'js-yaml'
 
 const docExtensions = ['.md', '.mdx']
 
@@ -322,7 +322,7 @@ export function readMatterFile(absPath) {
     }
     const yamlBlock = lines.slice(0, endIndex).join('\n')
     try {
-      const data = yaml.load(yamlBlock)
+      const data = load(yamlBlock)
       if (data && typeof data === 'object' && !Array.isArray(data)) {
         const contentStart = endIndex < lines.length ? endIndex + 1 : endIndex
         return {
