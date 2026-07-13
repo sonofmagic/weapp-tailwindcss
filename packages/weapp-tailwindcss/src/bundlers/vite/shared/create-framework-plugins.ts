@@ -1277,13 +1277,16 @@ export function createViteFrameworkPlugins(
     cssPipelineStrategy: frameworkCssPipelineStrategy,
     frameworkRootImportShellTargetByFile,
   }
+  const shouldSplitGenerateBundlePhases = () =>
+    opts.appType === 'weapp-vite' && getResolvedConfig()?.mode !== 'production'
   const preGenerateBundleHook = createGenerateBundleHook({
     ...generateBundleContext,
     processMarkupAndScripts: false,
+    shouldProcessBundle: shouldSplitGenerateBundlePhases,
   })
   const generateBundleHook = createGenerateBundleHook({
     ...generateBundleContext,
-    processStyles: false,
+    shouldProcessStyles: () => !shouldSplitGenerateBundlePhases(),
   })
   const cssFinalizerOutputPlugin = createViteCssFinalizerOutputPlugin({
     opts,

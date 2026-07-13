@@ -139,8 +139,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }),
   })
   return async function generateBundle(this: GenerateBundleThis, _opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
+    if (context.shouldProcessBundle?.() === false) {
+      return
+    }
     const processMarkupAndScripts = context.processMarkupAndScripts !== false
-    const processStyles = context.processStyles !== false
+    const processStyles = context.shouldProcessStyles?.() ?? context.processStyles !== false
     const addWatchFile = (id: string) => this.addWatchFile?.(id)
     const {
       opts,
