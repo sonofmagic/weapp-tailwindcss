@@ -106,6 +106,38 @@ describe('mpx integration helpers', () => {
     })
   })
 
+  it('prefers the project mpx plugin over a secondary peer instance in configured rules', async () => {
+    const projectPlugin = await createMpxWebpackPluginFixture()
+    const secondaryPlugin = await createMpxWebpackPluginFixture()
+    const compiler = {
+      context: projectPlugin.root,
+      options: {
+        context: projectPlugin.root,
+        module: {
+          rules: [
+            {
+              use: [
+                { loader: path.join(secondaryPlugin.pluginDir, 'lib/record-loader') },
+              ],
+            },
+          ],
+        },
+        resolve: { alias: {} },
+      },
+    }
+
+    ensureMpxTailwindcssAliases(compiler, '/tailwind')
+
+    expect(compiler.options.resolveLoader.alias).toMatchObject({
+      '@mpxjs/webpack-plugin': projectPlugin.pluginDir,
+      '@mpxjs/webpack-plugin/lib/record-loader': path.join(projectPlugin.pluginDir, 'lib/record-loader'),
+    })
+    expect(compiler.options.resolve.alias).toMatchObject({
+      '@mpxjs/webpack-plugin': projectPlugin.pluginDir,
+      '@mpxjs/webpack-plugin/lib/style-compiler/index': path.join(projectPlugin.pluginDir, 'lib/style-compiler/index'),
+    })
+  })
+
   it('patches normalize.lib from the compiler-owned mpx plugin instance once', async () => {
     const { pluginDir, root } = await createMpxWebpackPluginFixture()
     const compiler = {
