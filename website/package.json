@@ -43,6 +43,7 @@
     "seo:quality:strict": "node scripts/seo-quality-check.mjs --strict",
     "seo:quality:report": "node scripts/seo-quality-report.mjs",
     "geo:index": "node scripts/generate-geo-index.mjs",
+    "verify:deployment": "tsx scripts/verify-deployment-assets.ts",
     "e2e": "playwright test",
     "e2e:u": "playwright test -u",
     "exportRoutes": "tsx scripts/exportRoutes.ts"

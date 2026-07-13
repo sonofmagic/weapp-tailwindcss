@@ -44,6 +44,10 @@ jobs:
         if: env.CLOUDFLARE_API_TOKEN != ''
         run: pnpm exec wrangler deploy --config wrangler.jsonc
         working-directory: ./website
+      - name: Verify deployed assets
+        if: env.CLOUDFLARE_API_TOKEN != ''
+        run: pnpm run verify:deployment -- https://tw.icebreaker.top
+        working-directory: ./website
         # uses: cloudflare/wrangler-action@v3
         # with:
         #   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -85,3 +89,6 @@ jobs:
       - name: Deploy next docs
         if: env.CLOUDFLARE_API_TOKEN != ''
         run: pnpm --filter @weapp-tailwindcss/website deploy:next
+      - name: Verify next deployed assets
+        if: env.CLOUDFLARE_API_TOKEN != ''
+        run: pnpm --filter @weapp-tailwindcss/website verify:deployment -- https://next.tw.icebreaker.top
