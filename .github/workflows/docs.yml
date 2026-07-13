@@ -32,14 +32,16 @@ jobs:
         run: pnpm install
       - name: Build
         run: pnpm run build:docs
-      - name: Skip deploy without Cloudflare token
+      - name: Require Cloudflare token
         if: env.CLOUDFLARE_API_TOKEN == ''
         run: |
           {
-            echo "## Deploy skipped"
+            echo "## Deploy blocked"
             echo "- \`CLOUDFLARE_API_TOKEN\` is not configured for this repository."
-            echo "- Docs build completed successfully; deployment was skipped."
+            echo "- Docs build completed successfully, but production deployment cannot continue."
           } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error::CLOUDFLARE_API_TOKEN is required to deploy production docs."
+          exit 1
       - name: Deploy
         if: env.CLOUDFLARE_API_TOKEN != ''
         run: pnpm exec wrangler deploy --config wrangler.jsonc
@@ -78,14 +80,16 @@ jobs:
         run: pnpm --filter @weapp-tailwindcss/website... --filter '!@weapp-tailwindcss/website' build
       - name: Build next docs
         run: pnpm --filter @weapp-tailwindcss/website build:next
-      - name: Skip next deploy without Cloudflare token
+      - name: Require next Cloudflare token
         if: env.CLOUDFLARE_API_TOKEN == ''
         run: |
           {
-            echo "## Deploy skipped"
+            echo "## Deploy blocked"
             echo "- \`CLOUDFLARE_API_TOKEN\` is not configured for this repository."
-            echo "- Next docs build completed successfully; deployment was skipped."
+            echo "- Next docs build completed successfully, but deployment cannot continue."
           } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error::CLOUDFLARE_API_TOKEN is required to deploy next docs."
+          exit 1
       - name: Deploy next docs
         if: env.CLOUDFLARE_API_TOKEN != ''
         run: pnpm --filter @weapp-tailwindcss/website deploy:next
