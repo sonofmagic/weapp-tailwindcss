@@ -785,9 +785,13 @@ describe('e2e watch workflow', () => {
       watch_command_timeout_ms: '3300000',
     }))
     const slowCrossPlatformTaroAlipayPrBudgets = [
-      { watchCase: 'taro-vite-react-tailwindcss-v4:alipay', pluginBudget: '10000' },
-      { watchCase: 'taro-vite-vue3-tailwindcss-v4:alipay', pluginBudget: '9000' },
-    ].map(({ watchCase, pluginBudget }) => ({
+      { os: 'ubuntu-latest', runner_label: 'linux', watchCase: 'taro-vite-react-tailwindcss-v4:alipay', pluginBudget: '10000' },
+      { os: 'ubuntu-latest', runner_label: 'linux', watchCase: 'taro-vite-vue3-tailwindcss-v4:alipay', pluginBudget: '9000' },
+      { os: 'windows-latest', runner_label: 'windows', watchCase: 'taro-vite-react-tailwindcss-v4:alipay', pluginBudget: '10000' },
+      { os: 'windows-latest', runner_label: 'windows', watchCase: 'taro-vite-vue3-tailwindcss-v4:alipay', pluginBudget: '10000' },
+    ].map(({ os, runner_label, watchCase, pluginBudget }) => ({
+      os,
+      runner_label,
       watch_case: watchCase,
       round_profile: 'default',
       timeout_minutes: 55,
@@ -798,8 +802,6 @@ describe('e2e watch workflow', () => {
     const windowsSplitDemoPrBudgets = [
       'gulp-tailwindcss-v4',
       'weapp-vite-tailwindcss-v4',
-      'mpx-tailwindcss-v4',
-      'taro-vite-react-tailwindcss-v4',
       'taro-webpack-react-tailwindcss-v4',
       'taro-vite-vue3-tailwindcss-v4',
       'taro-webpack-vue3-tailwindcss-v4',
@@ -811,6 +813,22 @@ describe('e2e watch workflow', () => {
       watch_max_plugin_process_ms: '60000',
       watch_command_timeout_ms: '3000000',
     }))
+    const slowWindowsMpxPrBudget = {
+      watch_case: 'mpx-tailwindcss-v4',
+      round_profile: 'default',
+      timeout_minutes: 120,
+      watch_timeout_ms: '420000',
+      watch_max_plugin_process_ms: '60000',
+      watch_command_timeout_ms: '6300000',
+    }
+    const slowWindowsTaroViteReactPrBudget = {
+      watch_case: 'taro-vite-react-tailwindcss-v4',
+      round_profile: 'default',
+      timeout_minutes: 80,
+      watch_timeout_ms: '420000',
+      watch_max_plugin_process_ms: '60000',
+      watch_command_timeout_ms: '4200000',
+    }
     const slowNightlyBudgets = [
       {
         os: 'macos-latest',
@@ -903,6 +921,16 @@ describe('e2e watch workflow', () => {
         ...budget,
       }))
     }
+    expect(prRows).toContainEqual(expect.objectContaining({
+      os: 'windows-latest',
+      runner_label: 'windows',
+      ...slowWindowsMpxPrBudget,
+    }))
+    expect(prRows).toContainEqual(expect.objectContaining({
+      os: 'windows-latest',
+      runner_label: 'windows',
+      ...slowWindowsTaroViteReactPrBudget,
+    }))
     for (const runner of [
       { os: 'ubuntu-latest', runner_label: 'linux' },
       { os: 'windows-latest', runner_label: 'windows' },
@@ -913,12 +941,9 @@ describe('e2e watch workflow', () => {
           ...budget,
         }))
       }
-      for (const budget of slowCrossPlatformTaroAlipayPrBudgets) {
-        expect(prRows).toContainEqual(expect.objectContaining({
-          ...runner,
-          ...budget,
-        }))
-      }
+    }
+    for (const budget of slowCrossPlatformTaroAlipayPrBudgets) {
+      expect(prRows).toContainEqual(expect.objectContaining(budget))
     }
     for (const budget of slowWindowsPrBudgets) {
       expect(prRows).toContainEqual(expect.objectContaining({
