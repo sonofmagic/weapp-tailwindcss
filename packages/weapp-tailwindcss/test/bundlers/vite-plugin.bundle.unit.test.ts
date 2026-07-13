@@ -4071,6 +4071,10 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-replay-'))
     createdDirs.push(root)
     expect(resolveReplayCssOutputFile(root, path.join(root, 'sub-independent', 'pages', 'index.css'))).toBe('sub-independent/pages/index.css')
+    expect(resolveReplayCssOutputFile(
+      root,
+      `${path.join(root, 'src/pages/index.vue')}?vue=&type=style&index=0&scoped=true&lang=scss`,
+    )).toBe('src/pages/index.vue')
     expect(resolveReplayCssOutputFile(root, '/private/tmp/elsewhere/index.css')).toBe('index.css')
     expect(resolveReplayCssOutputFileFromSourceRoot(root, path.join(root, 'miniprogram/app.scss'), 'miniprogram')).toBe('app.scss')
     expect(resolveReplayCssOutputFileFromSourceRoot(root, 'miniprogram/sub-independent/pages/index.scss', './miniprogram')).toBe('sub-independent/pages/index.scss')
@@ -4101,6 +4105,28 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       'miniprogram',
       '.ttss',
     )).toBe('pages/index.ttss')
+    expect(resolveViteCssPipelineOutputFile(
+      `${path.join(root, 'src/pages/demonstration/index.vue')}?vue=&type=style&index=0&scoped=true&lang=scss`,
+      createContext({
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+      }) as any,
+      root,
+      false,
+      false,
+      'src',
+    )).toBe('pages/demonstration/index.wxss')
+    expect(resolveViteCssPipelineOutputFileFromSourceFile(
+      `${path.join(root, 'src/pages/demonstration/index.vue')}?vue=&type=style&index=0&scoped=true&lang=scss`,
+      createContext({
+        cssMatcher: (file: string) => file.endsWith('.acss'),
+      }) as any,
+      root,
+      false,
+      false,
+      'src',
+      undefined,
+      ['pages/demonstration/index.acss'],
+    )).toBe('pages/demonstration/index.acss')
     expect(resolveViteCssPipelineOutputFile(
       path.join(root, 'miniprogram/pages/index.scss'),
       createContext() as any,
