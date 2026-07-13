@@ -416,6 +416,7 @@ export async function runAddedClassMutation(
     },
   )
   const rollbackEffectiveMs = rollbackOutputMs
+  await waitForCompileSettled(watchCase, cliOptions, session, rollbackStartedAt)
   const rollbackPluginMetrics = collectPluginProcessMetrics(session, rollbackStartedAt)
 
   return {

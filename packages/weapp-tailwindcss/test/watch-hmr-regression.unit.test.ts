@@ -84,6 +84,9 @@ import {
   ISSUE33_MODIFY_CLASS_TOKENS,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/tokens'
 import {
+  runAddedClassMutation,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/class/added-class'
+import {
   alignContentEol,
   appendTrailingSnippet,
   assertContains,
@@ -855,6 +858,106 @@ describe('watch-hmr regression text helpers', () => {
     )
 
     expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
+  it('waits for added-class rollback compilation to settle before returning', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-added-class-rollback-'))
+    tempDirs.push(tempDir)
+    const sourceFile = path.join(tempDir, 'index.ts')
+    const outputWxml = path.join(tempDir, 'index.wxml')
+    const outputJs = path.join(tempDir, 'index.js')
+    const outputStyle = path.join(tempDir, 'app.wxss')
+    const sourceOriginal = 'Page({ data: {} })'
+    await Promise.all([
+      writeFile(sourceFile, sourceOriginal),
+      writeFile(outputWxml, '<view />'),
+      writeFile(outputJs, sourceOriginal),
+      writeFile(outputStyle, '.baseline {}'),
+    ])
+
+    let compiling = false
+    let lastSource = sourceOriginal
+    let lastCompileSuccessAt = 0
+    let rollbackObservedAt = 0
+    const pendingCompileTimers = new Set<ReturnType<typeof setTimeout>>()
+    const compiler = setInterval(async () => {
+      if (compiling) {
+        return
+      }
+      compiling = true
+      try {
+        const source = await readFile(sourceFile, 'utf8')
+        if (source === lastSource) {
+          return
+        }
+        lastSource = source
+        await writeFile(outputJs, source)
+        const isRollback = source.includes('tw-watch-added-class-rollback-')
+        if (isRollback) {
+          rollbackObservedAt = Date.now()
+        }
+        const timer = setTimeout(() => {
+          lastCompileSuccessAt = Date.now()
+          pendingCompileTimers.delete(timer)
+        }, isRollback ? 80 : 10)
+        pendingCompileTimers.add(timer)
+      }
+      finally {
+        compiling = false
+      }
+    }, 5)
+
+    try {
+      const roundConfig = buildHexScriptRoundConfigs()[0]!
+      const baselineMtime = {
+        wxml: await getMtime(outputWxml),
+        js: await getMtime(outputJs),
+      }
+      await runAddedClassMutation({
+        watchCase: {
+          name: 'rollback-settle',
+          label: 'rollback-settle',
+          outputWxml,
+          outputJs,
+        } as WatchCase,
+        options: {
+          timeoutMs: 3_000,
+          pollMs: 5,
+        } as CliOptions,
+        session: {
+          ensureRunning() {},
+          lastCompileSuccessAt: () => lastCompileSuccessAt,
+          pluginProcessSamplesSince: () => [],
+        } as any,
+        mutationKind: 'script',
+        mutation: {
+          sourceFile,
+          verifyEscapedIn: ['js'],
+          verifyClassLiteralIn: ['js'],
+          roundConfigs: [roundConfig],
+          mutate(source, mutationPayload) {
+            return `${source}\n${mutationPayload.marker}\n${mutationPayload.classLiteral}`
+          },
+        },
+        sourceOriginal,
+        sourcePath: sourceFile,
+        classVariableName: '__twWatchClass',
+        globalStyleOutputs: [outputStyle],
+        minRequiredGlobalStyleEscapedClasses: 0,
+        roundConfig,
+        baselineMtime,
+        verifyClassLiteralIn: ['js'],
+      })
+
+      expect(rollbackObservedAt).toBeGreaterThan(0)
+      expect(Date.now() - rollbackObservedAt).toBeGreaterThanOrEqual(550)
+    }
+    finally {
+      clearInterval(compiler)
+      for (const timer of pendingCompileTimers) {
+        clearTimeout(timer)
+      }
+    }
   })
 
   it('does not treat stale pre-start outputs as initially ready', async () => {
