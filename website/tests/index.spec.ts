@@ -213,6 +213,43 @@ test.describe('homepage hero layout', () => {
   })
 })
 
+test.describe('mobile navbar sidebar', () => {
+  test.use(mobileUse(devices['iPhone 12']))
+
+  test.skip(
+    ({ browserName }) => browserName !== 'chromium',
+    'Only run on chromium to keep the suite fast',
+  )
+
+  test('keeps the document menu visible and navigable', async ({ page }) => {
+    await page.goto(new URL('/docs/intro', baseURL).toString(), {
+      waitUntil: 'networkidle',
+    })
+
+    await page.locator('.navbar__toggle').tap()
+
+    const sidebar = page.locator('.navbar-sidebar')
+    const activePanel = sidebar.locator('.navbar-sidebar__item:not([inert])')
+    const backButton = activePanel.getByRole('button', { name: '回到主菜单' })
+
+    await expect(sidebar).toBeVisible()
+    await expect(activePanel.getByRole('link', { name: '简介', exact: true })).toBeVisible()
+    await expect(backButton).toBeVisible()
+
+    await expect.poll(() => backButton.evaluate((element) => {
+      const rect = element.getBoundingClientRect()
+      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2)
+      return target === element || element.contains(target)
+    })).toBe(true)
+
+    await backButton.tap()
+    await expect(sidebar.getByRole('link', { name: '指南', exact: true })).toBeVisible()
+
+    await sidebar.getByRole('button', { name: '关闭导航栏' }).tap()
+    await expect(sidebar).toBeHidden()
+  })
+})
+
 test.describe('color mode transition strategy', () => {
   test('desktop uses a short view transition for theme changes', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 })

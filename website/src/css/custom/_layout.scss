@@ -297,7 +297,6 @@ html[data-ui-homepage-frameworks-card='hidden'] .ui-homepage-frameworks-card {
     height: calc(100dvh - var(--ifm-navbar-height));
     min-height: 0;
     flex: 1 1 auto;
-    overflow: hidden;
   }
 
   .navbar-sidebar .navbar__items {
