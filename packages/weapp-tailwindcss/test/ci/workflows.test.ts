@@ -619,6 +619,15 @@ describe('e2e watch workflow', () => {
     const rows: Array<Record<string, unknown>> = workflow.jobs['pr-quick-gate'].strategy.matrix.include
     const cases = matrixCases(rows)
     const demoShards = ['demo-core', 'demo-taro-react', 'demo-taro-vue3', 'demo-uni']
+    const windowsSplitDemoCases = [
+      'gulp-tailwindcss-v4',
+      'weapp-vite-tailwindcss-v4',
+      'mpx-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v4',
+    ]
     const completeMiniProgramCases = [
       'taro-vite-react-tailwindcss-v4:alipay',
       'taro-vite-react-tailwindcss-v4:tt',
@@ -631,10 +640,14 @@ describe('e2e watch workflow', () => {
     ]
 
     expect(workflow.jobs['pr-quick-gate'].strategy['fail-fast']).toBe(false)
-    for (const runner of ['macos', 'linux', 'windows']) {
+    for (const runner of ['macos', 'linux']) {
       for (const watchCase of demoShards) {
         expect(cases, `${runner} should cover ${watchCase}`).toContain(`${runner}:22:${watchCase}:default`)
       }
+    }
+    expect(cases).toContain('windows:22:demo-uni:default')
+    for (const watchCase of windowsSplitDemoCases) {
+      expect(cases, `windows should split ${watchCase}`).toContain(`windows:22:${watchCase}:default`)
     }
     for (const runner of ['linux', 'windows']) {
       for (const watchCase of completeMiniProgramCases) {
@@ -647,8 +660,10 @@ describe('e2e watch workflow', () => {
     expect(macosPlatformCases).toEqual(['uni-app-vite-tailwindcss-v4:mp-weixin'])
     expect(rows.filter(row => row.runner_label === 'macos')).toHaveLength(9)
     expect(rows.filter(row => row.runner_label === 'linux')).toHaveLength(12)
-    expect(rows.filter(row => row.runner_label === 'windows')).toHaveLength(13)
-    expect(cases.some(item => item.includes(':weapp-vite-tailwindcss-'))).toBe(false)
+    expect(rows.filter(row => row.runner_label === 'windows')).toHaveLength(17)
+    expect(cases.filter(item => item.includes(':weapp-vite-tailwindcss-'))).toEqual([
+      'windows:22:weapp-vite-tailwindcss-v4:default',
+    ])
     expect(cases).not.toContain('macos:22:taro-webpack-react-tailwindcss-v4:issue33')
     expect(rows.some(row => String(row.watch_case).includes('hbuilderx') || String(row.watch_case).includes('uni-app-x'))).toBe(false)
     expect(workflow.jobs['root-style-import-shell-hmr']['runs-on']).toBe('ubuntu-latest')
@@ -780,6 +795,22 @@ describe('e2e watch workflow', () => {
       watch_max_plugin_process_ms: pluginBudget,
       watch_command_timeout_ms: '2700000',
     }))
+    const windowsSplitDemoPrBudgets = [
+      'gulp-tailwindcss-v4',
+      'weapp-vite-tailwindcss-v4',
+      'mpx-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v4',
+    ].map(watchCase => ({
+      watch_case: watchCase,
+      round_profile: 'default',
+      timeout_minutes: 60,
+      watch_timeout_ms: '420000',
+      watch_max_plugin_process_ms: '60000',
+      watch_command_timeout_ms: '3000000',
+    }))
     const slowNightlyBudgets = [
       {
         os: 'macos-latest',
@@ -853,7 +884,6 @@ describe('e2e watch workflow', () => {
     for (const runner of [
       { os: 'macos-latest', runner_label: 'macos' },
       { os: 'ubuntu-latest', runner_label: 'linux' },
-      { os: 'windows-latest', runner_label: 'windows' },
     ]) {
       expect(prRows).toContainEqual(expect.objectContaining({
         ...runner,
@@ -865,6 +895,13 @@ describe('e2e watch workflow', () => {
           ...budget,
         }))
       }
+    }
+    for (const budget of windowsSplitDemoPrBudgets) {
+      expect(prRows).toContainEqual(expect.objectContaining({
+        os: 'windows-latest',
+        runner_label: 'windows',
+        ...budget,
+      }))
     }
     for (const runner of [
       { os: 'ubuntu-latest', runner_label: 'linux' },
