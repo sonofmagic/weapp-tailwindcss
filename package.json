@@ -175,6 +175,7 @@
     "e2e:hot-update:apps": "echo \"apps hot-update target has moved to demo\"",
     "e2e:watch": "vitest run -c ./e2e/vitest.e2e.watch.config.ts",
     "e2e:root-style-shell-hmr": "cross-env E2E_ROOT_STYLE_SHELL_HMR=1 vitest run --bail=1 -c ./e2e/vitest.e2e.watch.config.ts e2e/watch/root-style-import-shell-hmr.test.ts",
+    "e2e:uni-app-css-post-hmr": "cross-env E2E_UNI_APP_CSS_POST_HMR=1 vitest run --bail=1 -c ./e2e/vitest.e2e.watch.config.ts e2e/watch/uni-app-css-post-hmr.test.ts",
     "e2e:watch:full": "cross-env E2E_WATCH_SKIP_BUILD=0 pnpm e2e:watch",
     "e2e:watch:dev": "vitest -c ./e2e/vitest.e2e.watch.config.ts",
     "e2e:watch:demo": "cross-env E2E_WATCH_CASE=demo pnpm e2e:watch",

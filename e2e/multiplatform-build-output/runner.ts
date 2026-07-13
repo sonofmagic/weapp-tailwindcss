@@ -20,6 +20,11 @@ const iconifyWebStyleSelectors = [
   '.i-\\[mdi--star\\]',
   '.i-\\[svg-spinners--180-ring-with-bg\\]',
 ] as const
+const unsafeMiniProgramSelectorFragments = [
+  '.i-\\[',
+  '.before\\:',
+] as const
+const safeMiniProgramContentSelector = '.before_ccontent-'
 
 interface ReadOutputResult {
   files: string[]
@@ -167,6 +172,18 @@ export async function verifyBuildOutputCase(item: BuildOutputCase) {
         styles,
         `${item.name} style output should keep Iconify bracket selector ${selector}`,
       ).toContain(selector)
+    }
+    if (item.platform !== 'h5' && item.platform !== 'h5:ssr' && item.platform !== 'web') {
+      expect(
+        styles,
+        `${item.name} style output should keep mini-program-safe content selectors`,
+      ).toContain(safeMiniProgramContentSelector)
+      for (const fragment of unsafeMiniProgramSelectorFragments) {
+        expect(
+          styles,
+          `${item.name} style output should not contain raw CSS selector escape ${fragment}`,
+        ).not.toContain(fragment)
+      }
     }
   }
 

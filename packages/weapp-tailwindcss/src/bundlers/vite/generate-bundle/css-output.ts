@@ -136,9 +136,10 @@ export function resolveMiniProgramStyleOutputExtension(options: {
 }
 
 export function resolveReplayCssOutputFile(rootDir: string, file: string) {
-  const nextFile = path.isAbsolute(file)
-    ? path.relative(resolveCssOutputRealPath(rootDir), resolveCssOutputRealPath(file))
-    : file
+  const cleanFile = file.replace(/[?#].*$/, '')
+  const nextFile = path.isAbsolute(cleanFile)
+    ? path.relative(resolveCssOutputRealPath(rootDir), resolveCssOutputRealPath(cleanFile))
+    : cleanFile
   const normalizedFile = normalizeOutputPathKey(nextFile)
   if (
     normalizedFile.length === 0
@@ -146,7 +147,7 @@ export function resolveReplayCssOutputFile(rootDir: string, file: string) {
     || normalizedFile === '..'
     || normalizedFile.startsWith('../')
   ) {
-    return normalizeOutputPathKey(path.basename(file))
+    return normalizeOutputPathKey(path.basename(cleanFile))
   }
   return normalizedFile
 }
@@ -184,17 +185,18 @@ export function resolveViteCssOutputFile(
   styleOutputExtension?: string | undefined,
   styleOutputFiles?: Iterable<string> | undefined,
 ) {
+  const cleanFile = file.replace(/[?#].*$/, '')
   if (
     isWebGeneratorTarget
     || preserveCssExtension
-    || opts.cssMatcher(file)
-    || !CSS_SOURCE_OUTPUT_EXT_RE.test(file)
+    || opts.cssMatcher(cleanFile)
+    || !CSS_SOURCE_OUTPUT_EXT_RE.test(cleanFile)
     || !isCSSRequest(file)
   ) {
-    return file
+    return cleanFile
   }
-  const stem = file.replace(/[?#].*$/, '').replace(CSS_SOURCE_OUTPUT_EXT_RE, '')
-  return file.replace(CSS_SOURCE_OUTPUT_EXT_RE, resolveMiniProgramStyleOutputExtension({
+  const stem = cleanFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, '')
+  return cleanFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, resolveMiniProgramStyleOutputExtension({
     cssMatcher: opts.cssMatcher,
     fallback: styleOutputExtension,
     files: styleOutputFiles,
@@ -212,29 +214,46 @@ export function resolveViteCssPipelineOutputFile(
   styleOutputExtension?: string | undefined,
   styleOutputFiles?: Iterable<string> | undefined,
 ) {
+  const sourceStyleRequest = isCSSRequest(file)
   const normalizedFile = resolveReplayCssOutputFileFromSourceRoot(rootDir, file, sourceRoot)
   const cleanFile = normalizedFile.replace(/[?#].*$/, '')
+  const sourceExtension = path.extname(cleanFile)
+  if (
+    sourceStyleRequest
+    && !isWebGeneratorTarget
+    && !preserveCssExtension
+    && sourceExtension.length > 0
+    && !CSS_SOURCE_OUTPUT_EXT_RE.test(cleanFile)
+  ) {
+    const stem = cleanFile.slice(0, -sourceExtension.length)
+    return `${stem}${resolveMiniProgramStyleOutputExtension({
+      cssMatcher: opts.cssMatcher,
+      fallback: styleOutputExtension,
+      files: styleOutputFiles,
+      stem,
+    })}`
+  }
   const stem = cleanFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, '')
   const matchedStyleExtension = !isWebGeneratorTarget && !preserveCssExtension
     ? resolveStyleOutputExtensionFromFiles(styleOutputFiles, opts.cssMatcher, stem)
     : undefined
-  if (matchedStyleExtension && CSS_SOURCE_OUTPUT_EXT_RE.test(cleanFile) && isCSSRequest(normalizedFile)) {
-    return normalizedFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, matchedStyleExtension)
+  if (matchedStyleExtension && CSS_SOURCE_OUTPUT_EXT_RE.test(cleanFile) && sourceStyleRequest) {
+    return cleanFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, matchedStyleExtension)
   }
   if (
     isWebGeneratorTarget
     || preserveCssExtension
-    || opts.cssMatcher(normalizedFile)
-    || !CSS_SOURCE_OUTPUT_EXT_RE.test(normalizedFile)
-    || !isCSSRequest(normalizedFile)
+    || opts.cssMatcher(cleanFile)
+    || !CSS_SOURCE_OUTPUT_EXT_RE.test(cleanFile)
+    || !sourceStyleRequest
   ) {
-    return normalizedFile
+    return cleanFile
   }
   const fallbackExtension = normalizeStyleOutputExtension(styleOutputExtension)
-  if (!fallbackExtension && !SOURCE_STYLE_OUTPUT_EXT_RE.test(normalizedFile)) {
-    return normalizedFile
+  if (!fallbackExtension && !SOURCE_STYLE_OUTPUT_EXT_RE.test(cleanFile)) {
+    return cleanFile
   }
-  return normalizedFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, fallbackExtension ?? FALLBACK_STYLE_OUTPUT_EXTENSION)
+  return cleanFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, fallbackExtension ?? FALLBACK_STYLE_OUTPUT_EXTENSION)
 }
 
 export function resolveViteCssPipelineOutputFileFromSourceFile(
@@ -247,15 +266,33 @@ export function resolveViteCssPipelineOutputFileFromSourceFile(
   styleOutputExtension?: string | undefined,
   styleOutputFiles?: Iterable<string> | undefined,
 ) {
+  const sourceStyleRequest = isCSSRequest(sourceFile)
   const normalizedFile = resolveReplayCssOutputFileFromSourceRoot(rootDir, sourceFile, sourceRoot)
   const cleanFile = normalizedFile.replace(/[?#].*$/, '')
+  const sourceExtension = path.extname(cleanFile)
+  if (
+    sourceStyleRequest
+    && !isWebGeneratorTarget
+    && !preserveCssExtension
+    && sourceExtension.length > 0
+    && !CSS_SOURCE_OUTPUT_EXT_RE.test(cleanFile)
+  ) {
+    const stem = cleanFile.slice(0, -sourceExtension.length)
+    return resolveStyleOutputFileFromFiles(styleOutputFiles, opts.cssMatcher, stem)
+      ?? `${stem}${resolveMiniProgramStyleOutputExtension({
+        cssMatcher: opts.cssMatcher,
+        fallback: styleOutputExtension,
+        files: styleOutputFiles,
+        stem,
+      })}`
+  }
   if (
     isWebGeneratorTarget
     || preserveCssExtension
     || !CSS_SOURCE_OUTPUT_EXT_RE.test(cleanFile)
-    || !isCSSRequest(normalizedFile)
+    || !sourceStyleRequest
   ) {
-    return normalizedFile
+    return cleanFile
   }
   const stem = cleanFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, '')
   const matchedStyleFile = resolveStyleOutputFileFromFiles(styleOutputFiles, opts.cssMatcher, stem)
@@ -270,7 +307,7 @@ export function resolveViteCssPipelineOutputFileFromSourceFile(
       stem,
     })
     ?? normalizeStyleOutputExtension(styleOutputExtension)
-  return normalizedFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, styleExtension)
+  return cleanFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, styleExtension)
 }
 
 export function canProcessViteSourceStyleAsCss(source: string, file: string) {

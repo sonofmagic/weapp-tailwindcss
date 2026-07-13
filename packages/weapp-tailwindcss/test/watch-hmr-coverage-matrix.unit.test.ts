@@ -325,6 +325,45 @@ describe('watch-hmr coverage matrix', () => {
     expect(missing).toEqual([])
   })
 
+  it('keeps complete demo platform coverage on Linux and Windows while macOS stays WeChat-only', () => {
+    const rows = readWorkflowMatrixRows('e2e-watch.yml', 'pr-quick-gate')
+    const expectedMacosOmissions = [
+      'taro-vite-react-tailwindcss-v4:alipay',
+      'taro-vite-react-tailwindcss-v4:tt',
+      'taro-vite-vue3-tailwindcss-v4:alipay',
+      'taro-vite-vue3-tailwindcss-v4:tt',
+      'uni-app-vite-tailwindcss-v4:mp-alipay',
+      'uni-app-vite-tailwindcss-v4:mp-qq',
+      'uni-app-vite-tailwindcss-v4:mp-toutiao',
+    ]
+
+    for (const runnerLabel of ['linux', 'windows']) {
+      const workflowCases = expandWorkflowWatchCases(
+        rows
+          .filter(row => row.runner_label === runnerLabel)
+          .map(row => row.watch_case)
+          .filter((item): item is string => typeof item === 'string'),
+      )
+      const missing = [...watchCoveredCaseNames]
+        .filter(name => !isWatchCaseCoveredByWorkflow(name, workflowCases))
+        .sort()
+
+      expect(missing, `${runnerLabel} should cover every automated demo platform`).toEqual([])
+    }
+
+    const macosWorkflowCases = expandWorkflowWatchCases(
+      rows
+        .filter(row => row.runner_label === 'macos')
+        .map(row => row.watch_case)
+        .filter((item): item is string => typeof item === 'string'),
+    )
+    const macosMissing = [...watchCoveredCaseNames]
+      .filter(name => !isWatchCaseCoveredByWorkflow(name, macosWorkflowCases))
+      .sort()
+
+    expect(macosMissing).toEqual(expectedMacosOmissions.sort())
+  })
+
   it('keeps PR e2e-watch covering every CI-stable Web/H5 browser HMR case', () => {
     const rawWatchCases = getWorkflowWatchCases('e2e-watch.yml', 'pr-quick-gate')
     const workflowCases = expandWorkflowWatchCases(rawWatchCases)

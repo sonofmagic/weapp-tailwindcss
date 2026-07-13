@@ -4,6 +4,7 @@ import process from 'node:process'
 import { summarizeMemoryDebugSamples, summarizeMemorySamples } from './memory-report'
 import { waitForInitialWarmup } from './mutations/shared'
 import { runStyleMutation } from './mutations/style'
+import { createOutputIntegrityMonitor } from './output-integrity'
 import { createWatchSession } from './session'
 import { summarizeMutationMetricsByKind } from './summary'
 import { writeFilePreserveEol } from './text'
@@ -76,6 +77,7 @@ export async function runStyleOnlyCase(
   const caseStartedAt = Date.now()
   const styleSourceOriginal = await fs.readFile(watchCase.styleMutation.sourceFile, 'utf8')
   const sessionStartedAt = Date.now()
+  let outputIntegrityMonitor: ReturnType<typeof createOutputIntegrityMonitor>
   const session = createWatchSession(
     watchCase.cwd,
     watchCase.devScript,
@@ -85,6 +87,8 @@ export async function runStyleOnlyCase(
 
   try {
     await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
+    outputIntegrityMonitor = createOutputIntegrityMonitor(watchCase.outputIntegrityGuards)
+    await outputIntegrityMonitor?.assertClean('initial compile')
     const initialReadyMs = Date.now() - sessionStartedAt
     const styleMetrics = await runStyleMutation(
       watchCase,
@@ -94,6 +98,7 @@ export async function runStyleOnlyCase(
       styleSourceOriginal,
       watchCase.outputStyleCandidates,
     )
+    await outputIntegrityMonitor?.assertClean('style mutation')
 
     process.stdout.write(
       `[watch-hmr:style] ${watchCase.label} passed (hotUpdate=${styleMetrics.hotUpdateEffectiveMs}ms, rollback=${styleMetrics.rollbackEffectiveMs}ms)\n`,
@@ -124,19 +129,33 @@ export async function runStyleOnlyCase(
   }
   catch (error) {
     const message = error instanceof Error ? error.message : String(error)
+    let integrityMessage = ''
+    try {
+      await outputIntegrityMonitor?.assertClean('style mutation')
+    }
+    catch (integrityError) {
+      const nextIntegrityMessage = integrityError instanceof Error ? integrityError.message : String(integrityError)
+      if (!message.includes(nextIntegrityMessage)) {
+        integrityMessage = `${nextIntegrityMessage}\n`
+      }
+    }
     const logs = session.logs()
-    throw new Error(`${message}\n[${watchCase.label}] recent watch logs:\n${logs}`)
+    throw new Error(`${integrityMessage}${message}\n[${watchCase.label}] recent watch logs:\n${logs}`)
   }
   finally {
     try {
-      await writeFilePreserveEol(
-        watchCase.styleMutation.sourceFile,
-        styleSourceOriginal,
-        styleSourceOriginal,
-      )
+      const current = await fs.readFile(watchCase.styleMutation.sourceFile, 'utf8')
+      if (current !== styleSourceOriginal) {
+        await writeFilePreserveEol(
+          watchCase.styleMutation.sourceFile,
+          styleSourceOriginal,
+          styleSourceOriginal,
+        )
+      }
     }
     catch {
     }
+    await outputIntegrityMonitor?.stop()
     await session.stop()
   }
 }

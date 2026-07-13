@@ -16,6 +16,13 @@ const expectedUviewCssTokens = [
   '.u-loading-icon__spinner',
   '.u-loading-icon__spinner--spinner',
 ]
+const expectedMiniProgramSafeSelectors = [
+  '.i-_bmdi--github-circle_B',
+  '.i-_bmdi--star_B',
+  '.i-_bsvg-spinners--180-ring-with-bg_B',
+  '.before_ccontent-',
+]
+const unsafeMiniProgramSelectorFragments = ['.i-\\[', '.before\\:']
 
 interface CssAsset {
   file: string
@@ -122,6 +129,12 @@ async function expectUviewCssEvidence(platform: 'mp-weixin' | 'mp-alipay') {
   expect(css).toContain('.u-loading-icon')
   for (const token of expectedUviewCssTokens) {
     expect(css, `${platform} should keep uview-plus compiled CSS token ${token}`).toContain(token)
+  }
+  for (const selector of expectedMiniProgramSafeSelectors) {
+    expect(css, `${platform} should keep mini-program-safe Tailwind selector ${selector}`).toContain(selector)
+  }
+  for (const fragment of unsafeMiniProgramSelectorFragments) {
+    expect(css, `${platform} should not contain raw CSS selector escape ${fragment}`).not.toContain(fragment)
   }
 
   const evidence = collectUviewEvidence(assets)
