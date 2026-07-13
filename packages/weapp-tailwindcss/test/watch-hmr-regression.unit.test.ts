@@ -3142,7 +3142,14 @@ describe('watch-hmr regression cases', () => {
       expect(matrixEntries).toContainEqual(expect.objectContaining(entry))
     }
     expect(String(workflowSource)).toContain('${{ matrix.artifact_case || matrix.watch_case }}')
-    expect(prMatrixEntries.some(entry => String(entry.watch_case).startsWith('weapp-vite-tailwindcss-'))).toBe(false)
+    expect(prMatrixEntries.filter(entry => String(entry.watch_case).startsWith('weapp-vite-tailwindcss-'))).toEqual([
+      expect.objectContaining({
+        os: 'windows-latest',
+        runner_label: 'windows',
+        watch_case: 'weapp-vite-tailwindcss-v4',
+        round_profile: 'default',
+      }),
+    ])
   })
 
   it('keeps watch plugin processing budget strict while retry settings stay explicit', async () => {
