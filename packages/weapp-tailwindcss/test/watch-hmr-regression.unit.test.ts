@@ -1,4 +1,5 @@
 import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises'
+import { promises as fs } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { parse } from 'yaml'
@@ -462,6 +463,38 @@ describe('watch-hmr regression text helpers', () => {
     const after = await stat(file)
 
     expect(after.mtimeMs).toBeGreaterThan(before.mtimeMs)
+  })
+
+  it('keeps the previous source readable until an atomic watch mutation is ready', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-atomic-'))
+    tempDirs.push(tempDir)
+    const file = path.join(tempDir, 'sample.vue')
+    const originalSource = '<template>\n  <view>original</view>\n</template>\n'
+    const updatedSource = '<template>\n  <view>updated</view>\n</template>\n'
+    await writeFile(file, originalSource, 'utf8')
+
+    let allowRename!: () => void
+    let notifyRenameStarted!: () => void
+    const renameStarted = new Promise<void>((resolve) => {
+      notifyRenameStarted = resolve
+    })
+    const renameAllowed = new Promise<void>((resolve) => {
+      allowRename = resolve
+    })
+    const originalRename = fs.rename.bind(fs)
+    vi.spyOn(fs, 'rename').mockImplementationOnce(async (source, destination) => {
+      notifyRenameStarted()
+      await renameAllowed
+      await originalRename(source, destination)
+    })
+
+    const mutation = writeFilePreserveEol(file, updatedSource, originalSource)
+    await renameStarted
+    expect(await readFile(file, 'utf8')).toBe(originalSource)
+
+    allowRename()
+    await mutation
+    expect(await readFile(file, 'utf8')).toBe(updatedSource)
   })
 
   it('expands wildcard output files so hashed style assets can be re-discovered', async () => {

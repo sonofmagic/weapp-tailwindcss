@@ -1,5 +1,8 @@
 import type { ClassMutationPayload, StyleMutationPayload } from './types'
+import { randomUUID } from 'node:crypto'
 import { promises as fs } from 'node:fs'
+import path from 'node:path'
+import process from 'node:process'
 import { sleep } from './session'
 
 const CRLF_RE = /\r\n/g
@@ -98,15 +101,26 @@ export async function writeFilePreserveEol(
   const alignedContent = alignContentEol(content, source)
 
   for (let attempt = 0; attempt <= retries; attempt += 1) {
+    const temporaryFile = path.join(
+      path.dirname(file),
+      `.${path.basename(file)}.${process.pid}.${randomUUID()}.tmp`,
+    )
     try {
       let previousMtime = 0
+      let previousMode: number | undefined
       try {
-        previousMtime = (await fs.stat(file)).mtimeMs
+        const previousStats = await fs.stat(file)
+        previousMtime = previousStats.mtimeMs
+        previousMode = previousStats.mode
       }
       catch {
       }
 
-      await fs.writeFile(file, alignedContent, 'utf8')
+      await fs.writeFile(temporaryFile, alignedContent, {
+        encoding: 'utf8',
+        ...(previousMode == null ? {} : { mode: previousMode }),
+      })
+      await fs.rename(temporaryFile, file)
       const currentStats = await fs.stat(file)
       if (currentStats.mtimeMs <= previousMtime) {
         const nextMtime = new Date(previousMtime + 10)
@@ -115,6 +129,7 @@ export async function writeFilePreserveEol(
       return
     }
     catch (error) {
+      await fs.rm(temporaryFile, { force: true }).catch(() => undefined)
       if (!isRetryableFsError(error) || attempt >= retries) {
         throw error
       }
