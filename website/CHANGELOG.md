@@ -1,5 +1,15 @@
 # website
 
+## 1.0.48
+
+### Patch Changes
+
+- 🐛 **修复移动端文档页菜单抽屉内容被裁剪的问题，确保文档目录、主菜单切换与关闭操作正常可用。** [`d4f5baa`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d4f5baa700863d7b5f7ee4326909f894d0c0f926) by @sonofmagic
+
+- 🐛 **稳定文档站部署期间的样式资源交付，为内容哈希静态资源启用长期不可变缓存，并在发布后校验线上 HTML 与 CSS 产物完整一致。** [`25253b3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/25253b3965a91d474ea28902f06e56db4113510f) by @sonofmagic
+- 📦 **Dependencies** [`a32d2cb`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a32d2cb9562dcffc3ad4d23503249706a8b240d6)
+  → `weapp-tailwindcss@5.1.15`
+
 ## 1.0.47
 
 ### Patch Changes
