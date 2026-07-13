@@ -18,7 +18,7 @@ import {
   splitTailwindGeneratedCssByBanner,
   splitTailwindV4GeneratedCssBySourceOrder,
 } from './markers'
-import { resolvePostcssFromOption } from './source-resolver/postcss-source'
+import { resolvePostcssRequestOption } from './source-resolver/postcss-source'
 
 export function hasMiniProgramTailwindV4PreflightReset(css: string) {
   return /(?:^|[},])\s*view\s*,\s*text\s*,\s*::after\s*,\s*::before\s*\{[^}]*\bborder\s*:\s*0\s+solid\b/.test(css)
@@ -38,7 +38,7 @@ export function finalizeMiniProgramGeneratorCss(
   if (!isMiniProgramGeneratorTarget(target)) {
     return css
   }
-  if (isVueScopedStyleRequest(options.styleOptions?.postcssOptions?.options?.from)) {
+  if (options.styleOptions && isVueScopedStyleRequest(resolvePostcssRequestOption(options.styleOptions))) {
     return finalizeMiniProgramCss(css, {
       cssPreflight: false,
       cssSelectorReplacement: options.styleOptions?.cssOptions?.cssSelectorReplacement
@@ -78,7 +78,7 @@ export function resolveMiniProgramPreflightModeForGeneratorCss(
     explicitCssSource?: boolean | undefined
   },
 ) {
-  if (isVueScopedStyleRequest(resolvePostcssFromOption(options.cssHandlerOptions))) {
+  if (isVueScopedStyleRequest(resolvePostcssRequestOption(options.cssHandlerOptions))) {
     return {
       inject: false,
       preserve: false,
@@ -249,7 +249,7 @@ export function resolveGeneratorStyleOptions(
   generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
 ): Partial<IStyleHandlerOptions> {
   const resolvedStyleOptions = resolveStyleOptionsFromContext(opts)
-  const scopedVueStyleSource = isVueScopedStyleRequest(resolvePostcssFromOption(cssHandlerOptions))
+  const scopedVueStyleSource = isVueScopedStyleRequest(resolvePostcssRequestOption(cssHandlerOptions))
   const preflightStyleOptions: Partial<IStyleHandlerOptions> = {
     cssPreflight: scopedVueStyleSource ? false : resolvedStyleOptions.cssPreflight,
     cssPreflightRange: scopedVueStyleSource ? undefined : resolvedStyleOptions.cssPreflightRange,

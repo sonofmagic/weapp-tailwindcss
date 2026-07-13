@@ -7,6 +7,11 @@ export function resolvePostcssFromOption(cssHandlerOptions: IStyleHandlerOptions
   return typeof from === 'string' && from.length > 0 ? from : undefined
 }
 
+export function resolvePostcssRequestOption(cssHandlerOptions: IStyleHandlerOptions) {
+  return resolveCssHandlerSourceOptions(cssHandlerOptions)?.requestFile
+    ?? resolvePostcssFromOption(cssHandlerOptions)
+}
+
 export function resolvePostcssSourceFile(cssHandlerOptions: IStyleHandlerOptions) {
   const from = resolvePostcssFromOption(cssHandlerOptions)
   if (!from || !path.isAbsolute(from)) {
@@ -19,6 +24,7 @@ export function resolveCssHandlerSourceOptions(cssHandlerOptions: IStyleHandlerO
   return (cssHandlerOptions as {
     sourceOptions?: {
       outputRoot?: string | undefined
+      requestFile?: string | undefined
       sourceFile?: string | undefined
       sourceCss?: string | undefined
       cssSources?: TailwindV4CssSource[] | undefined

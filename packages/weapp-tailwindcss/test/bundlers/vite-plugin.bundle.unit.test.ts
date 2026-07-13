@@ -1208,9 +1208,12 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(context.styleHandler).toHaveBeenCalledWith(rawScopedCss, expect.objectContaining({
       postcssOptions: {
         options: {
-          from: expect.stringContaining('scoped=true'),
+          from: sfcFile,
         },
       },
+      sourceOptions: expect.objectContaining({
+        requestFile: expect.stringContaining('scoped=true'),
+      }),
     }))
     expect(cssPostTransform).toHaveBeenCalledWith(
       '.i-_bmdi--github-circle_B.data-v-fixture{display:inline-block}',

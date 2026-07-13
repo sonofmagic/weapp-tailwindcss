@@ -2,6 +2,7 @@ import type { InternalUserDefinedOptions, IStyleHandlerOptions } from '@/types'
 import path from 'node:path'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
+import { stripRequestQuery } from '../../shared/style-requests'
 
 type CssHandlerOptions = IStyleHandlerOptions & {
   postcssOptions: {
@@ -12,6 +13,7 @@ type CssHandlerOptions = IStyleHandlerOptions & {
   majorVersion?: 4 | undefined
   sourceOptions?: {
     outputRoot?: string | undefined
+    requestFile?: string | undefined
   } | undefined
 }
 
@@ -45,11 +47,12 @@ export function createCssHandlerOptionsCache(options: CssHandlerOptionsCacheOpti
     const appType = options.getAppType()
     const isMainChunk = options.mainCssChunkMatcher(file, appType)
     const outputRoot = options.getOutputRoot?.()
-    const from = path.isAbsolute(file)
-      ? file
+    const sourceFile = stripRequestQuery(file)
+    const from = path.isAbsolute(sourceFile)
+      ? sourceFile
       : outputRoot
-        ? path.resolve(outputRoot, file)
-        : file
+        ? path.resolve(outputRoot, sourceFile)
+        : sourceFile
     const extraOptions = options.getExtraOptions?.(file) ?? {}
     const dynamicCssOptions = options.getDynamicCssOptions?.() ?? {}
     const cacheKey = `${majorVersion ?? 'unknown'}:${appType ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${outputRoot ?? ''}:${file}:${JSON.stringify(extraOptions)}:${JSON.stringify(dynamicCssOptions)}`
@@ -70,6 +73,7 @@ export function createCssHandlerOptionsCache(options: CssHandlerOptionsCacheOpti
       majorVersion: normalizeStyleHandlerMajorVersion(majorVersion),
       sourceOptions: {
         outputRoot,
+        ...(sourceFile === file ? {} : { requestFile: file }),
       },
     }
     cssHandlerOptionsCache.set(cacheKey, created)

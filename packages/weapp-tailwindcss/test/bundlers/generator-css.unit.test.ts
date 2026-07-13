@@ -9764,8 +9764,11 @@ describe('bundlers/shared generator css', () => {
       styleOptions: {
         postcssOptions: {
           options: {
-            from: '/workspace/src/pages/index.vue?vue&type=style&index=0&scoped=true&lang.css',
+            from: '/workspace/src/pages/index.vue',
           },
+        },
+        sourceOptions: {
+          requestFile: '/workspace/src/pages/index.vue?vue&type=style&index=0&scoped=true&lang.css',
         },
       },
     })
@@ -9784,8 +9787,11 @@ describe('bundlers/shared generator css', () => {
         isMainChunk: true,
         postcssOptions: {
           options: {
-            from: '/workspace/src/components/HelloWorld.vue?vue&type=style&index=0&lang=scss&scoped=1',
+            from: '/workspace/src/components/HelloWorld.vue',
           },
+        },
+        sourceOptions: {
+          requestFile: '/workspace/src/components/HelloWorld.vue?vue&type=style&index=0&lang=scss&scoped=1',
         },
       } as any,
       isolateCurrentCssCandidates: false,
@@ -9829,8 +9835,11 @@ describe('bundlers/shared generator css', () => {
     } as any, {
       postcssOptions: {
         options: {
-          from: '/workspace/src/components/HelloWorld.vue?vue&type=style&index=0&lang=scss&scoped',
+          from: '/workspace/src/components/HelloWorld.vue',
         },
+      },
+      sourceOptions: {
+        requestFile: '/workspace/src/components/HelloWorld.vue?vue&type=style&index=0&lang=scss&scoped',
       },
     } as any, undefined)
 
