@@ -14,22 +14,19 @@ function normalizeSourceCandidatePathKey(file: string) {
   return normalizeOutputPathKey(path.resolve(file))
 }
 
-export function resolveCurrentSourceCandidateSource(options: ResolveCurrentSourceCandidateSourceOptions) {
+function createSourceCandidateFiles(options: ResolveCurrentSourceCandidateSourceOptions) {
   const {
     file,
-    getSourceCandidateSource,
-    getSourceCandidateSources,
     outDir,
     rootDir,
     sourceRoot,
   } = options
   const cleanedFile = file.replace(/[?#].*$/, '')
-  const normalizedFile = normalizeOutputPathKey(cleanedFile)
   const absoluteFile = path.isAbsolute(cleanedFile)
     ? cleanedFile
     : path.resolve(rootDir, cleanedFile)
   const relativeFromOutDir = normalizeOutputPathKey(path.relative(outDir, absoluteFile))
-  const sourceCandidates = [
+  return [
     sourceRoot ? path.resolve(sourceRoot, file) : undefined,
     path.resolve(rootDir, file),
     path.resolve(path.dirname(outDir), file),
@@ -42,6 +39,50 @@ export function resolveCurrentSourceCandidateSource(options: ResolveCurrentSourc
       : undefined,
     file,
   ]
+}
+
+export function resolveCurrentSourceCandidateFile(options: ResolveCurrentSourceCandidateSourceOptions) {
+  const sourceCandidates = createSourceCandidateFiles(options)
+  for (const candidate of sourceCandidates) {
+    if (candidate && options.getSourceCandidateSource?.(candidate) !== undefined) {
+      return candidate
+    }
+  }
+
+  const normalizedFile = normalizeOutputPathKey(options.file.replace(/[?#].*$/, ''))
+  let bestMatch: { file: string, score: number } | undefined
+  const normalizedSourceCandidates = sourceCandidates
+    .filter((candidate): candidate is string => Boolean(candidate))
+    .map(candidate => ({
+      absolute: path.isAbsolute(candidate),
+      key: normalizeSourceCandidatePathKey(candidate),
+    }))
+  for (const [sourceFile] of options.getSourceCandidateSources?.() ?? []) {
+    const normalizedSourceFile = normalizeSourceCandidatePathKey(sourceFile)
+    let score = normalizedSourceCandidates.reduce((current, candidate) => {
+      return normalizedSourceFile === candidate.key
+        ? Math.max(current, candidate.absolute ? 100 : 80)
+        : current
+    }, 0)
+    if (normalizedSourceFile.endsWith(`/${normalizedFile}`)) {
+      score = Math.max(score, 20)
+    }
+    if (score > (bestMatch?.score ?? 0)) {
+      bestMatch = { file: sourceFile, score }
+    }
+  }
+  return bestMatch?.file
+}
+
+export function resolveCurrentSourceCandidateSource(options: ResolveCurrentSourceCandidateSourceOptions) {
+  const {
+    file,
+    getSourceCandidateSource,
+    getSourceCandidateSources,
+  } = options
+  const cleanedFile = file.replace(/[?#].*$/, '')
+  const normalizedFile = normalizeOutputPathKey(cleanedFile)
+  const sourceCandidates = createSourceCandidateFiles(options)
   const explicitSource = sourceCandidates.reduce<string | undefined>((source, candidate) => {
     if (source || !candidate) {
       return source

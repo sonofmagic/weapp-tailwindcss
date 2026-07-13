@@ -20,7 +20,7 @@ import {
   shouldMoveRootMiniProgramStyleToImportShellOrigin,
   shouldPreserveFrameworkRootMiniProgramImportShell,
 } from '@/bundlers/vite/generate-bundle/root-style-output'
-import { resolveCurrentSourceCandidateSource } from '@/bundlers/vite/generate-bundle/source-candidate-source'
+import { resolveCurrentSourceCandidateFile, resolveCurrentSourceCandidateSource } from '@/bundlers/vite/generate-bundle/source-candidate-source'
 import { scoreTailwindV4CssSourceFileMatch } from '@/bundlers/shared/generator-css/source-resolver/matching'
 import { resolveSourceStyleSourceFromOutputFile } from '@/bundlers/vite/generate-bundle/sfc-style-source'
 import {
@@ -191,6 +191,13 @@ describe('bundlers/vite helper modules', () => {
       getSourceCandidateSource: file => file === '/repo/src/pages/index/index.wxml?used' ? 'explicit' : undefined,
     })
     expect(explicit).toBe('explicit')
+    expect(resolveCurrentSourceCandidateFile({
+      file: 'pages/index/index.wxml?used',
+      rootDir,
+      outDir,
+      sourceRoot,
+      getSourceCandidateSource: file => file === '/repo/src/pages/index/index.wxml?used' ? 'explicit' : undefined,
+    })).toBe('/repo/src/pages/index/index.wxml?used')
 
     const scored = resolveCurrentSourceCandidateSource({
       file: 'pages/index/index.wxml',
@@ -202,6 +209,15 @@ describe('bundlers/vite helper modules', () => {
       ]),
     })
     expect(scored).toBe('exact')
+    expect(resolveCurrentSourceCandidateFile({
+      file: 'pages/index/index.wxml',
+      rootDir,
+      outDir,
+      getSourceCandidateSources: () => new Map([
+        ['/repo/other/pages/index/index.wxml', 'suffix'],
+        ['/repo/dist/pages/index/index.wxml', 'exact'],
+      ]),
+    })).toBe('/repo/dist/pages/index/index.wxml')
     const relativeExact = resolveCurrentSourceCandidateSource({
       file: 'relative.wxml',
       rootDir,

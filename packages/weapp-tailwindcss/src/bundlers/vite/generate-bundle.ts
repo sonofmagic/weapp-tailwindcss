@@ -22,6 +22,7 @@ import { normalizeOutputPathKey } from '../shared/module-graph'
 import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState } from './bundle-state'
+import { syncBundleMarkupCandidates } from './generate-bundle/bundle-markup-candidates'
 import { collectConfiguredTailwindV4CssSourceEntries } from './generate-bundle/configured-css-sources'
 import { createCssAssetEmitter, resolveAssetSourceFile } from './generate-bundle/css-assets'
 import { normalizeRelativeCssConfigDirectives } from './generate-bundle/css-config-directives'
@@ -49,7 +50,7 @@ import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTra
 import { hasSfcStyleSources, hasTailwindGenerationSource, normalizeSfcSourceFileForCompare, resolveSfcStyleSourceFromOutputFile, resolveSourceStyleSourceFromOutputFile } from './generate-bundle/sfc-style-source'
 import { createCandidateSignature, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { createSubpackageSourceCandidateScope } from './generate-bundle/source-candidate-scope'
-import { resolveCurrentSourceCandidateSource } from './generate-bundle/source-candidate-source'
+import { resolveCurrentSourceCandidateFile, resolveCurrentSourceCandidateSource } from './generate-bundle/source-candidate-source'
 import { collectMiniProgramSubpackageRoots, isSubpackageOutputFile } from './generate-bundle/subpackages'
 import { selectTailwindV4GenerationCssSourceForOutput } from './generate-bundle/tailwind-v4-css-source'
 import { createTemporaryCssAssetSourceResolver, isTemporaryCssAssetFile } from './generate-bundle/temporary-css-assets'
@@ -161,6 +162,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       getSourceCandidates,
       getSourceCandidateSource,
       getSourceCandidateSources,
+      mergeSourceCandidateSource,
       getSourceCandidatesForEntries,
       getSourceCandidateSourcesForEntries,
       waitForSourceCandidateSyncs,
@@ -554,6 +556,23 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const sourceCandidateWaitStart = performance.now()
     await waitForSourceCandidateSyncs?.()
     recordTimingDetail('sourceCandidates.wait', sourceCandidateWaitStart)
+    const transformFilter = createTransformFilter(opts.transform, rootDir)
+    if (processMarkupAndScripts && !isWebGeneratorTarget) {
+      await syncBundleMarkupCandidates({
+        mergeSourceCandidateSource,
+        resolveSourceCandidateFile: file => resolveCurrentSourceCandidateFile({
+          file,
+          getSourceCandidateSource,
+          getSourceCandidateSources,
+          outDir,
+          rootDir,
+          sourceRoot,
+        }),
+        rootDir,
+        snapshot,
+        transformFilter,
+      })
+    }
     const sourceCandidates = getSourceCandidates?.() ?? new Set<string>()
     const createScopedGeneratorRuntime = (
       outputFile: string,
@@ -574,7 +593,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     })
     const jsEntries = snapshot.jsEntries
     const getJsEntry = createJsEntryResolver(jsEntries)
-    const transformFilter = createTransformFilter(opts.transform, rootDir)
     const transformFilterSignature = createTransformFilterSignature(opts.transform)
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
     const hasRuntimeAffectingChanges = hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)

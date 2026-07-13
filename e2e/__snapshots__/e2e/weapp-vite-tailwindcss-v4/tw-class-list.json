@@ -11,6 +11,7 @@
   "bg-gradient-to-t",
   "bg-gradient-to-tr",
   "bg-gray-900",
+  "bg-slate-100",
   "bg-white",
   "bg-zinc-50",
   "border-4",
@@ -65,6 +66,7 @@
   "text-slate-900",
   "text-violet-600",
   "to-[#4bcefd]",
+  "tracking-[0.2em]",
   "transition-colors",
   "w-[323px]",
   "w-[50px]"

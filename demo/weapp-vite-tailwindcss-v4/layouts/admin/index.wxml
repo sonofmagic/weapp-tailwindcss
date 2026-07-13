@@ -1,0 +1,3 @@
+<view class="min-h-screen bg-slate-100">
+  <slot />
+</view>

@@ -1259,6 +1259,7 @@ export function createViteFrameworkPlugins(
     getSourceCandidates,
     getSourceCandidateSource: file => sourceCandidateCollector.source(file),
     getSourceCandidateSources: () => sourceCandidateCollector.sources(),
+    mergeSourceCandidateSource: (file, source) => sourceCandidateCollector.merge(file, source),
     getSourceCandidatesForEntries,
     getSourceCandidateSourcesForEntries,
     waitForSourceCandidateSyncs,

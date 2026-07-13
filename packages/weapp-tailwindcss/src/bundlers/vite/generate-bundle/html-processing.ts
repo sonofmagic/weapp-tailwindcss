@@ -47,10 +47,13 @@ export function processHtmlBundleEntry(options: ProcessHtmlBundleEntryOptions) {
     transformRuntime,
     transformRuntimeSignature,
   } = options
-  const rememberedSource = resolveCurrentSourceCandidateSource(file)
-  const rawSource = rememberedSource ?? originalEntrySource
-  const currentRawDynamicCandidates = collectUnescapedDynamicCandidates(rawSource)
-  const templateRuntime = currentRawDynamicCandidates.length > 0
+  const currentBundleSource = originalEntrySource
+  const candidateSource = resolveCurrentSourceCandidateSource(file) ?? currentBundleSource
+  const currentRawDynamicCandidates = new Set([
+    ...collectUnescapedDynamicCandidates(candidateSource),
+    ...collectUnescapedDynamicCandidates(currentBundleSource),
+  ])
+  const templateRuntime = currentRawDynamicCandidates.size > 0
     ? new Set([
         ...transformRuntime,
         ...currentRawDynamicCandidates,
@@ -59,7 +62,7 @@ export function processHtmlBundleEntry(options: ProcessHtmlBundleEntryOptions) {
   const templateRuntimeSignature = templateRuntime === transformRuntime
     ? transformRuntimeSignature
     : createCandidateSignature(templateRuntime)
-  const htmlProcessHash = `${cache.computeHash(rawSource)}:${cache.computeHash(createRuntimeAffectingSourceSignature(rawSource, 'html'))}:${templateRuntimeSignature}`
+  const htmlProcessHash = `${cache.computeHash(currentBundleSource)}:${cache.computeHash(createRuntimeAffectingSourceSignature(currentBundleSource, 'html'))}:${templateRuntimeSignature}`
   const cacheKey = `${file}:html:${htmlProcessHash}`
   const hashKey = cacheKey
   rememberProcessCacheKey(cacheKey, hashKey)
@@ -78,7 +81,7 @@ export function processHtmlBundleEntry(options: ProcessHtmlBundleEntryOptions) {
       },
       async transform() {
         const start = performance.now()
-        let transformed = await templateHandler(rawSource, {
+        let transformed = await templateHandler(currentBundleSource, {
           runtimeSet: templateRuntime,
         })
         let unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed)
@@ -102,7 +105,7 @@ export function processHtmlBundleEntry(options: ProcessHtmlBundleEntryOptions) {
             file,
             unresolvedDynamicCandidates,
           )
-          transformed = await templateHandler(rawSource, {
+          transformed = await templateHandler(currentBundleSource, {
             runtimeSet: retryRuntimeSet,
           })
           unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed, retryRuntimeSet)
@@ -116,7 +119,7 @@ export function processHtmlBundleEntry(options: ProcessHtmlBundleEntryOptions) {
         }
         metrics.html.elapsed += measureElapsed(start)
         metrics.html.transformed++
-        onUpdate(file, rawSource, transformed)
+        onUpdate(file, currentBundleSource, transformed)
         debug('html handle: %s', file)
         return {
           result: transformed,

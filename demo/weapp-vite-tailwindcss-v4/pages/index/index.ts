@@ -4,6 +4,7 @@
 // import { cva } from '@weapp-tailwindcss/cva'
 // const { formatTime } = require('../../utils/util')
 import { formatTime } from '../../utils/util'
+import { setPageLayout } from 'weapp-vite/runtime'
 
 // console.log(cva)
 
@@ -29,6 +30,9 @@ Page({
     wx.navigateTo({
       url: '../logs/logs',
     })
+  },
+  switchToAdminLayout() {
+    setPageLayout('admin')
   },
   onChooseAvatar(e) {
     const { avatarUrl } = e.detail

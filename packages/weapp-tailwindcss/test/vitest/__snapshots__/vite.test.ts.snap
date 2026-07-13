@@ -132,6 +132,8 @@ exports[`vite test > vite common build 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
+    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css" />
   </head>
 
   <body>
@@ -140,7 +142,6 @@ exports[`vite test > vite common build 3`] = `
     </div>
     <div class="w-_b55px_B bg-_bred_B">hello</div>
     <div class="w-_b1_d5rem_B bg-_b_h929292_B">world</div>
-    <script type="module" src="/index.js"></script>
   </body>
 </html>
 "
@@ -232,6 +233,8 @@ exports[`vite test > vite common build twice for cache 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
+    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css" />
   </head>
 
   <body>
@@ -240,7 +243,6 @@ exports[`vite test > vite common build twice for cache 3`] = `
     </div>
     <div class="w-_b55px_B bg-_bred_B">hello</div>
     <div class="w-_b1_d5rem_B bg-_b_h929292_B">world</div>
-    <script type="module" src="/index.js"></script>
   </body>
 </html>
 "
@@ -332,6 +334,8 @@ exports[`vite test > vite common build twice for cache 6`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
+    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css" />
   </head>
 
   <body>
@@ -340,7 +344,6 @@ exports[`vite test > vite common build twice for cache 6`] = `
     </div>
     <div class="w-_b55px_B bg-_bred_B">hello</div>
     <div class="w-_b1_d5rem_B bg-_b_h929292_B">world</div>
-    <script type="module" src="/index.js"></script>
   </body>
 </html>
 "
@@ -432,6 +435,8 @@ exports[`vite test > vite common build with rem2rpx 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
+    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css" />
   </head>
 
   <body>
@@ -440,7 +445,6 @@ exports[`vite test > vite common build with rem2rpx 3`] = `
     </div>
     <div class="w-_b55px_B bg-_bred_B">hello</div>
     <div class="w-_b1_d5rem_B bg-_b_h929292_B">world</div>
-    <script type="module" src="/index.js"></script>
   </body>
 </html>
 "
