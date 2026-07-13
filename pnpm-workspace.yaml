@@ -71,7 +71,7 @@ catalogs:
   iconifyJson:
     '@iconify-json/line-md': ^1.2.16
     '@iconify-json/logos': ^1.2.11
-    '@iconify-json/lucide': ^1.2.116
+    '@iconify-json/lucide': ^1.2.117
     '@iconify-json/mdi': ^1.2.3
     '@iconify-json/mdi-light': ^1.2.2
     '@iconify-json/svg-spinners': ^1.2.4
@@ -84,9 +84,9 @@ catalogs:
   miniApiTypings:
     miniprogram-api-typings: ^5.2.1
   postcss85:
-    postcss: ^8.5.17
+    postcss: ^8.5.19
   postcss85tilde:
-    postcss: ^8.5.17
+    postcss: ^8.5.19
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem:
@@ -189,7 +189,7 @@ catalogs:
   metroReactNativeBabelPreset077:
     metro-react-native-babel-preset: 0.77.0
   tsx:
-    tsx: ^4.23.0
+    tsx: ^4.23.1
   typesNode2410:
     '@types/node': ^26.1.1
   typescript59:
@@ -237,6 +237,6 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.4.12
   weappVite:
-    weapp-vite: ^6.18.1
+    weapp-vite: ^6.18.3
   wrangler:
     wrangler: ^4.110.0
