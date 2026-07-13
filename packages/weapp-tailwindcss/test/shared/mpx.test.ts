@@ -32,7 +32,9 @@ async function createMpxWebpackPluginFixture() {
   createdDirs.push(root)
   const pluginDir = path.join(root, 'node_modules/@mpxjs/webpack-plugin')
   const normalizeDir = path.join(pluginDir, 'lib/utils')
+  const dependencyDir = path.join(pluginDir, 'lib/dependencies')
   await mkdir(normalizeDir, { recursive: true })
+  await mkdir(dependencyDir, { recursive: true })
   await writeFile(path.join(pluginDir, 'package.json'), JSON.stringify({
     name: '@mpxjs/webpack-plugin',
     version: '0.0.0-test',
@@ -43,6 +45,11 @@ async function createMpxWebpackPluginFixture() {
     'exports.lib = function lib(file) {',
     '  return "original:" + file',
     '}',
+    '',
+  ].join('\n'))
+  await writeFile(path.join(dependencyDir, 'RecordResourceMapDependency.js'), [
+    'class RecordResourceMapDependency {}',
+    'module.exports = RecordResourceMapDependency',
     '',
   ].join('\n'))
   await writeFile(path.join(root, 'package.json'), JSON.stringify({ private: true }))
@@ -136,6 +143,46 @@ describe('mpx integration helpers', () => {
       '@mpxjs/webpack-plugin': projectPlugin.pluginDir,
       '@mpxjs/webpack-plugin/lib/style-compiler/index': path.join(projectPlugin.pluginDir, 'lib/style-compiler/index'),
     })
+  })
+
+  it('prefers the plugin instance that owns the compilation dependency template', async () => {
+    const compilationPlugin = await createMpxWebpackPluginFixture()
+    const secondaryPlugin = await createMpxWebpackPluginFixture()
+    const compilationRequire = createRequire(path.join(compilationPlugin.root, 'package.json'))
+    const RecordResourceMapDependency = compilationRequire(
+      path.join(compilationPlugin.pluginDir, 'lib/dependencies/RecordResourceMapDependency'),
+    )
+    const originalResolve = vi.fn((_context, request, callback) => callback(null, `origin:${request}`))
+    const originalImportModule = vi.fn((request: string) => Promise.resolve(request))
+    const loaderContext = {
+      context: secondaryPlugin.root,
+      _compilation: {
+        dependencyTemplates: {
+          get: (dependency: unknown) => dependency === RecordResourceMapDependency ? {} : undefined,
+        },
+      },
+      _module: {
+        loaders: [
+          { loader: path.join(secondaryPlugin.pluginDir, 'lib/style-compiler/index') },
+        ],
+      },
+      resolve: originalResolve,
+      importModule: originalImportModule,
+    }
+
+    patchMpxLoaderResolve(loaderContext, '/tailwind', true)
+
+    const callback = vi.fn()
+    loaderContext.resolve('/ctx', '@mpxjs/webpack-plugin/lib/record-loader', callback)
+    loaderContext.importModule('!!@mpxjs/webpack-plugin/lib/style-compiler/index!/tailwind/index.css')
+
+    expect(callback).toHaveBeenCalledWith(
+      null,
+      path.join(compilationPlugin.pluginDir, 'lib/record-loader'),
+    )
+    expect(originalImportModule).toHaveBeenCalledWith(
+      `!!${path.join(compilationPlugin.pluginDir, 'lib/style-compiler/index')}!/tailwind/index.css`,
+    )
   })
 
   it('patches normalize.lib from the compiler-owned mpx plugin instance once', async () => {
@@ -243,6 +290,125 @@ describe('mpx integration helpers', () => {
       '@mpxjs/webpack-plugin/lib/record-loader': '/project/node_modules/@mpxjs/webpack-plugin/lib/record-loader',
     })
     expect(patchMpxWebpackPluginRequests({}, undefined)).toBe(false)
+  })
+
+  it('refreshes compiler request rewriting from the compilation dependency owner', async () => {
+    const compilationPlugin = await createMpxWebpackPluginFixture()
+    const secondaryPlugin = await createMpxWebpackPluginFixture()
+    const compilationRequire = createRequire(path.join(compilationPlugin.root, 'package.json'))
+    const RecordResourceMapDependency = compilationRequire(
+      path.join(compilationPlugin.pluginDir, 'lib/dependencies/RecordResourceMapDependency'),
+    )
+    let normalModuleFactoryHandler: ((factory: any) => void) | undefined
+    let beforeResolveHandler: ((data: any) => void) | undefined
+    let compilationHandler: ((compilation: any) => void) | undefined
+    const compiler = {
+      options: {
+        resolve: { alias: {} },
+      },
+      hooks: {
+        compilation: {
+          tap: vi.fn((_name, handler) => {
+            compilationHandler = handler
+          }),
+        },
+        normalModuleFactory: {
+          tap: vi.fn((_name, handler) => {
+            normalModuleFactoryHandler = handler
+          }),
+        },
+      },
+    }
+
+    patchMpxWebpackPluginRequests(compiler, secondaryPlugin.pluginDir)
+    normalModuleFactoryHandler?.({
+      hooks: {
+        beforeResolve: {
+          tap: vi.fn((_name, handler) => {
+            beforeResolveHandler = handler
+          }),
+        },
+      },
+    })
+    compilationHandler?.({
+      dependencyTemplates: {
+        get: (dependency: unknown) => dependency === RecordResourceMapDependency ? {} : undefined,
+      },
+      hooks: {},
+    })
+
+    const resolveData = {
+      request: '@mpxjs/webpack-plugin/lib/record-loader!/tailwind/index.css?type=styles',
+    }
+    beforeResolveHandler?.(resolveData)
+
+    expect(resolveData.request).toBe(
+      `${path.join(compilationPlugin.pluginDir, 'lib/record-loader')}!/tailwind/index.css?type=styles`,
+    )
+    expect(compiler.options.resolve.alias).toMatchObject({
+      '@mpxjs/webpack-plugin/lib/style-compiler/index': path.join(compilationPlugin.pluginDir, 'lib/style-compiler/index'),
+    })
+    expect(compiler.options.resolveLoader.alias).toMatchObject({
+      '@mpxjs/webpack-plugin/lib/record-loader': path.join(compilationPlugin.pluginDir, 'lib/record-loader'),
+    })
+  })
+
+  it('refreshes array aliases in place with exact mpx requests before the fallback pattern', async () => {
+    const compilationPlugin = await createMpxWebpackPluginFixture()
+    const secondaryPlugin = await createMpxWebpackPluginFixture()
+    const compilationRequire = createRequire(path.join(compilationPlugin.root, 'package.json'))
+    const RecordResourceMapDependency = compilationRequire(
+      path.join(compilationPlugin.pluginDir, 'lib/dependencies/RecordResourceMapDependency'),
+    )
+    let compilationHandler: ((compilation: any) => void) | undefined
+    const alias = [
+      { name: 'custom-loader', alias: '/custom-loader' },
+      {
+        name: '@mpxjs/webpack-plugin/lib/record-loader',
+        alias: path.join(secondaryPlugin.pluginDir, 'lib/record-loader'),
+      },
+      { name: /^@mpxjs\/webpack-plugin\//, alias: secondaryPlugin.pluginDir },
+    ]
+    const compiler = {
+      options: {
+        resolve: { alias },
+        resolveLoader: { alias },
+      },
+      hooks: {
+        compilation: {
+          tap: vi.fn((_name, handler) => {
+            compilationHandler = handler
+          }),
+        },
+      },
+    }
+
+    patchMpxWebpackPluginRequests(compiler, secondaryPlugin.pluginDir)
+    compilationHandler?.({
+      dependencyTemplates: {
+        get: (dependency: unknown) => dependency === RecordResourceMapDependency ? {} : undefined,
+      },
+      hooks: {},
+    })
+
+    expect(compiler.options.resolve.alias).toBe(alias)
+    expect(alias.slice(0, 4)).toEqual([
+      {
+        name: '@mpxjs/webpack-plugin/lib/record-loader',
+        alias: path.join(compilationPlugin.pluginDir, 'lib/record-loader'),
+      },
+      {
+        name: '@mpxjs/webpack-plugin/lib/style-compiler/index',
+        alias: path.join(compilationPlugin.pluginDir, 'lib/style-compiler/index'),
+      },
+      {
+        name: '@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader',
+        alias: path.join(compilationPlugin.pluginDir, 'lib/style-compiler/strip-conditional-loader'),
+      },
+      { name: /^@mpxjs\/webpack-plugin\//, alias: compilationPlugin.pluginDir },
+    ])
+    expect(alias).toContainEqual({ name: 'custom-loader', alias: '/custom-loader' })
+    expect(alias.some(entry => entry.alias.includes(secondaryPlugin.pluginDir))).toBe(false)
   })
 
   it('resolves generated mpx loaders from the weapp-tailwindcss package context', async () => {

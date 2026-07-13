@@ -1,41 +1,14 @@
 import type { AppType } from '@/types'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import process from 'node:process'
+import {
+  resolveMpxWebpackPluginCompilationOwnerDir,
+  resolveMpxWebpackPluginDir,
+} from './mpx-plugin-owner'
 import { installTailwindcssCssRedirect } from './tailwindcss-css-redirect'
 
-const localRequire = createRequire(import.meta.url)
 const MPX_STYLE_RESOURCE_QUERY_RE = /(?:^|[?&])type=styles(?:&|$)/
-const MPX_WEBPACK_PLUGIN_PACKAGE_RE = /@mpxjs[\\/]webpack-plugin[\\/]package\.json$/
-const MPX_WEBPACK_PLUGIN_LIB_RE = /^(.*[\\/]@mpxjs[\\/]webpack-plugin)[\\/]lib[\\/]/
 const MPX_WEBPACK_PLUGIN_REQUEST_RE = /@mpxjs\/webpack-plugin\/([^!?]+)/g
-
-function findMpxWebpackPluginDirFromRules(rules: any): string | undefined {
-  const visit = (value: any): string | undefined => {
-    if (typeof value === 'string') {
-      return value.match(MPX_WEBPACK_PLUGIN_LIB_RE)?.[1]
-    }
-    if (Array.isArray(value)) {
-      for (const item of value) {
-        const result = visit(item)
-        if (result) {
-          return result
-        }
-      }
-      return undefined
-    }
-    if (value && typeof value === 'object') {
-      for (const key of ['loader', 'use', 'rules', 'oneOf']) {
-        const result = visit(value[key])
-        if (result) {
-          return result
-        }
-      }
-    }
-    return undefined
-  }
-  return visit(rules)
-}
 
 function isMpxStyleResourceQuery(query?: string) {
   if (typeof query !== 'string') {
@@ -50,47 +23,6 @@ export function isMpx(appType?: AppType) {
 
 export function getTailwindcssCssEntry(pkgDir: string) {
   return path.join(pkgDir, 'index.css')
-}
-
-function resolveMpxWebpackPluginDir(compiler: any) {
-  const activeLoaderPluginDir = findMpxWebpackPluginDirFromRules([
-    compiler?._module?.loaders,
-    compiler?.loaders,
-  ])
-  if (activeLoaderPluginDir) {
-    return activeLoaderPluginDir
-  }
-  const candidates = [
-    compiler?.context,
-    compiler?.options?.context,
-    process.cwd(),
-  ].filter((item): item is string => typeof item === 'string' && item.length > 0)
-
-  for (const candidate of candidates) {
-    try {
-      const projectRequire = createRequire(path.join(candidate, 'package.json'))
-      return path.dirname(projectRequire.resolve('@mpxjs/webpack-plugin/package.json'))
-    }
-    catch {
-    }
-  }
-
-  const configuredRulePluginDir = findMpxWebpackPluginDirFromRules(compiler?.options?.module?.rules)
-  if (configuredRulePluginDir) {
-    return configuredRulePluginDir
-  }
-
-  const cachedPackageJson = Object.keys(localRequire.cache).find(file => MPX_WEBPACK_PLUGIN_PACKAGE_RE.test(file))
-  if (cachedPackageJson) {
-    return path.dirname(cachedPackageJson)
-  }
-
-  try {
-    return path.dirname(localRequire.resolve('@mpxjs/webpack-plugin/package.json'))
-  }
-  catch {
-    return undefined
-  }
 }
 
 export function rewriteMpxWebpackPluginRequests(
@@ -111,30 +43,47 @@ export function patchMpxWebpackPluginRequests(compiler: any, mpxWebpackPluginDir
   const patchedCompilers = new WeakSet<object>()
   const patchedLoaderResolvers = new WeakSet<object>()
   const patchedResolverFactories = new WeakSet<object>()
+  let activePluginDir = mpxWebpackPluginDir
+  const getActivePluginDir = () => activePluginDir
   const install = (targetCompiler: any) => {
     if (!targetCompiler || typeof targetCompiler !== 'object' || patchedCompilers.has(targetCompiler)) {
       return
     }
     patchedCompilers.add(targetCompiler)
-    ensureResolveLoaderAlias(targetCompiler, mpxWebpackPluginDir)
+    ensureResolveLoaderAlias(targetCompiler, activePluginDir)
     const resolverFactory = targetCompiler.resolverFactory
     if (resolverFactory && typeof resolverFactory === 'object' && !patchedResolverFactories.has(resolverFactory)) {
       patchedResolverFactories.add(resolverFactory)
-      installMpxResolveLoaderAlias(targetCompiler, mpxWebpackPluginDir)
+      installMpxResolveLoaderAlias(targetCompiler, getActivePluginDir)
     }
     targetCompiler.hooks?.normalModuleFactory?.tap?.(pluginName, (normalModuleFactory: any) => {
       const loaderResolver = normalModuleFactory.getResolver?.('loader')
       if (loaderResolver && typeof loaderResolver === 'object' && !patchedLoaderResolvers.has(loaderResolver)) {
         patchedLoaderResolvers.add(loaderResolver)
-        patchMpxLoaderResolver(loaderResolver, mpxWebpackPluginDir)
+        patchMpxLoaderResolver(loaderResolver, getActivePluginDir)
       }
       normalModuleFactory.hooks.beforeResolve.tap(pluginName, (resolveData: any) => {
-        if (typeof resolveData?.request === 'string') {
-          resolveData.request = rewriteMpxWebpackPluginRequests(resolveData.request, mpxWebpackPluginDir)
+        const pluginDir = getActivePluginDir()
+        if (pluginDir && typeof resolveData?.request === 'string') {
+          resolveData.request = rewriteMpxWebpackPluginRequests(resolveData.request, pluginDir)
         }
       })
     })
     targetCompiler.hooks?.compilation?.tap?.(pluginName, (compilation: any) => {
+      const compilationPluginDir = resolveMpxWebpackPluginCompilationOwnerDir(
+        targetCompiler,
+        compilation,
+        activePluginDir,
+      )
+      if (compilationPluginDir) {
+        activePluginDir = compilationPluginDir
+        patchMpxWebpackPluginNormalizeLib(targetCompiler, compilationPluginDir)
+        ensureResolveLoaderAlias(targetCompiler, compilationPluginDir)
+        const alias = targetCompiler.options?.resolve?.alias
+        if (alias) {
+          addMpxWebpackPluginAlias(alias, compilationPluginDir)
+        }
+      }
       compilation.hooks?.childCompiler?.tap?.(pluginName, (childCompiler: any) => {
         install(childCompiler)
       })
@@ -160,7 +109,7 @@ function addMpxWebpackPluginAlias(alias: any, pkgDir: string) {
   const styleCompiler = path.join(pkgDir, 'lib/style-compiler/index')
   const stripConditionalLoader = path.join(pkgDir, 'lib/style-compiler/strip-conditional-loader')
   if (Array.isArray(alias)) {
-    alias.push(
+    const entries = [
       { name: '@mpxjs/webpack-plugin/lib/record-loader', alias: recordLoader },
       { name: '@mpxjs/webpack-plugin/lib/style-compiler/index', alias: styleCompiler },
       { name: '@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader', alias: stripConditionalLoader },
@@ -168,7 +117,21 @@ function addMpxWebpackPluginAlias(alias: any, pkgDir: string) {
         name: /^@mpxjs\/webpack-plugin\//,
         alias: pkgDir,
       },
-    )
+    ]
+    const managedNames = new Set(entries
+      .filter(entry => typeof entry.name === 'string')
+      .map(entry => entry.name))
+    const managedPatterns = new Set(entries
+      .filter(entry => entry.name instanceof RegExp)
+      .map(entry => `${entry.name.source}/${entry.name.flags}`))
+    for (let index = alias.length - 1; index >= 0; index--) {
+      const name = alias[index]?.name
+      if (managedNames.has(name)
+        || (name instanceof RegExp && managedPatterns.has(`${name.source}/${name.flags}`))) {
+        alias.splice(index, 1)
+      }
+    }
+    alias.unshift(...entries)
   }
   else {
     alias['@mpxjs/webpack-plugin'] = pkgDir
@@ -186,7 +149,7 @@ function ensureResolveLoaderAlias(compiler: any, mpxWebpackPluginDir: string) {
   addMpxWebpackPluginAlias(alias, mpxWebpackPluginDir)
 }
 
-function installMpxResolveLoaderAlias(compiler: any, mpxWebpackPluginDir: string) {
+function installMpxResolveLoaderAlias(compiler: any, getMpxWebpackPluginDir: () => string | undefined) {
   const resolveOptionsHook = compiler?.resolverFactory?.hooks?.resolveOptions?.for?.('loader')
   if (!resolveOptionsHook?.tap) {
     return
@@ -194,6 +157,10 @@ function installMpxResolveLoaderAlias(compiler: any, mpxWebpackPluginDir: string
   resolveOptionsHook.tap(
     { name: 'weapp-tailwindcss-mpx-loader-resolve', stage: 100 },
     (resolveOptions: any) => {
+      const mpxWebpackPluginDir = getMpxWebpackPluginDir()
+      if (!mpxWebpackPluginDir) {
+        return resolveOptions
+      }
       const alias = Array.isArray(resolveOptions.alias)
         ? [...resolveOptions.alias]
         : { ...resolveOptions.alias }
@@ -206,7 +173,7 @@ function installMpxResolveLoaderAlias(compiler: any, mpxWebpackPluginDir: string
   )
 }
 
-function patchMpxLoaderResolver(resolver: any, mpxWebpackPluginDir: string) {
+function patchMpxLoaderResolver(resolver: any, getMpxWebpackPluginDir: () => string | undefined) {
   const originalResolve = resolver?.resolve
   if (typeof originalResolve !== 'function' || (originalResolve as any).__weappTwPatched) {
     return
@@ -214,7 +181,8 @@ function patchMpxLoaderResolver(resolver: any, mpxWebpackPluginDir: string) {
   const wrappedResolve = function (this: any, ...args: any[]) {
     const requestIndex = typeof args[0] === 'string' ? 1 : 2
     const request = args[requestIndex]
-    if (typeof request === 'string' && isMpxWebpackPluginRequest(request)) {
+    const mpxWebpackPluginDir = getMpxWebpackPluginDir()
+    if (mpxWebpackPluginDir && typeof request === 'string' && isMpxWebpackPluginRequest(request)) {
       args[requestIndex] = resolveMpxWebpackPluginRequest(request, mpxWebpackPluginDir)
     }
     return originalResolve.apply(this, args)
@@ -288,7 +256,7 @@ export function patchMpxLoaderResolve(
     return
   }
   const tailwindcssCssEntry = getTailwindcssCssEntry(pkgDir)
-  const mpxWebpackPluginDir = resolveMpxWebpackPluginDir(loaderContext)
+  const getMpxWebpackPluginDir = () => resolveMpxWebpackPluginDir(loaderContext)
   const originalResolve = loaderContext.resolve
   if (typeof originalResolve === 'function' && !(originalResolve as any).__weappTwPatched) {
     const wrappedResolve = function (this: any, context: any, request: string, callback: any) {
@@ -298,6 +266,7 @@ export function patchMpxLoaderResolve(
       if (request?.startsWith('tailwindcss/')) {
         return callback(null, path.join(pkgDir, request.slice('tailwindcss/'.length)))
       }
+      const mpxWebpackPluginDir = getMpxWebpackPluginDir()
       if (mpxWebpackPluginDir && isMpxWebpackPluginRequest(request)) {
         return callback(null, resolveMpxWebpackPluginRequest(request, mpxWebpackPluginDir))
       }
@@ -308,9 +277,10 @@ export function patchMpxLoaderResolve(
   }
 
   const originalImportModule = loaderContext.importModule
-  if (mpxWebpackPluginDir && typeof originalImportModule === 'function' && !(originalImportModule as any).__weappTwPatched) {
+  if (typeof originalImportModule === 'function' && !(originalImportModule as any).__weappTwPatched) {
     const wrappedImportModule = function (this: any, request: string, ...args: any[]) {
-      const resolvedRequest = typeof request === 'string'
+      const mpxWebpackPluginDir = getMpxWebpackPluginDir()
+      const resolvedRequest = mpxWebpackPluginDir && typeof request === 'string'
         ? rewriteMpxWebpackPluginRequests(request, mpxWebpackPluginDir)
         : request
       return originalImportModule.call(this, resolvedRequest, ...args)
