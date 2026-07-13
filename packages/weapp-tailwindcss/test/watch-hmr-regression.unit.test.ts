@@ -755,9 +755,11 @@ describe('watch-hmr regression text helpers', () => {
     expect(resolveCompileSettleTimeoutMs({ timeoutMs: 600_000 })).toBe(90_000)
   })
 
-  it('recognizes gulp build complete output as a compile success line', () => {
+  it('recognizes gulp and DCloud build complete output as compile success lines', () => {
     expect(isCompileSuccessLine('[01:51:54] build complete')).toBe(true)
+    expect(isCompileSuccessLine('DONE  Build complete.')).toBe(true)
     expect(isCompileSuccessLine('[01:51:54] src/app.css changed handled')).toBe(false)
+    expect(isCompileSuccessLine('DONE  Build failed.')).toBe(false)
   })
 
   it('allows compile settle to fall back to stable output mtimes when success logs are missing', async () => {

@@ -100,7 +100,7 @@ const compileSuccessLinePatterns = [
   /UTS编译完毕/u,
   /已重新构建/u,
   /重新构建/u,
-  /^(?:\[\d{2}:\d{2}:\d{2}\]\s*)?build complete$/i,
+  /^(?:\[\d{2}:\d{2}:\d{2}\]\s*)?(?:DONE\s+)?build complete\.?$/i,
 ] as const
 
 const compileFailureLinePatterns = [
