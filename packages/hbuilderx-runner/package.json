@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/hbuilderx-runner",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Stable HBuilderX CLI runner utilities for weapp-tailwindcss local e2e workflows.",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",

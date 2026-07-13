@@ -1,5 +1,21 @@
 # weapp-tailwindcss
 
+## 5.1.15
+
+### Patch Changes
+
+- 🐛 **修复 Vite build watch 中 scoped Vue 组件样式在小程序选择器转义前被框架写入输出目录的问题，确保 uni-app 与 uni-app x 开发构建写入框架 CSS 缓存前已完成 Tailwind class 转换。同时将 Vue style request 元数据与 PostCSS 真实文件路径分离，避免 Windows 把带 Vite query 的模块 id 当作输出路径；开发者工具不再编译到包含反斜杠转义的临时样式，生产构建与 H5 样式生成行为保持不变。** [#992](https://github.com/sonofmagic/weapp-tailwindcss/pull/992) by @sonofmagic
+
+- 🐛 **由 weapp-tailwindcss 统一消费小程序与 Web Compact 产物中的 `@layer`，按照声明顺序重排样式块后移除 layer 语法，并阻止 postcss-preset-env 生成 `:not(#)` 权重占位选择器。现代 Web 产物继续保留原生 cascade layers。** [#990](https://github.com/sonofmagic/weapp-tailwindcss/pull/990) by @sonofmagic
+
+- 🐛 **统一 Vite、Webpack 与 Gulp 构建态的 Tailwind CSS 生成时机，在生成阶段展开必要的嵌套规则、编译平台条件并清理 `@layer`、Web preflight 与 specificity 占位选择器，同时保留工具类和本地 `@import` 交给框架原有的 PostCSS 流程；最终适配继续注入小程序 preflight，并清理等价的 calc fallback 声明，避免产物重复输出同一份样式，同时保留 Vite dev HMR 的增量样式。修复 scoped `@reference` + `@apply` 泄漏独立工具类，以及 Webpack 在拼接裸选择器用户样式时重复输出根变量、preflight 和同一产物内已被后规则覆盖的等价规则问题。为 MPX 2.x 声明可选 peer 依赖，使 pnpm 严格依赖模式下从生成样式上下文加载的 MPX loader 始终可解析，同时不影响非 MPX 项目的安装。** [#988](https://github.com/sonofmagic/weapp-tailwindcss/pull/988) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 小程序生成管线误删用户原生伪元素选择器的问题，确保 `button::after` 等无 class 规则按用户样式来源完成转换和合并，不再需要额外添加 workaround class，同时继续清理浏览器专用 preflight。** [`310267f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/310267ff4905b4beb593f8f75deece90beb3ae23) by @sonofmagic
+
+- 🐛 **修复 Vite 构建中源 WXML 覆盖已转换 bundle 模板的问题，保留其他插件注入的模板结构，同时维持 Tailwind class 的正常生成与转义。** [#991](https://github.com/sonofmagic/weapp-tailwindcss/pull/991) by @sonofmagic
+- 📦 **Dependencies** [`09bdcc7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/09bdcc7c47621ca88f526b57f544343885753ecc)
+  → `@weapp-tailwindcss/postcss@3.1.11`
+
 ## 5.1.14
 
 ### Patch Changes
