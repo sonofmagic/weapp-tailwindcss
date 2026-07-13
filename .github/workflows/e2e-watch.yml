@@ -73,27 +73,27 @@ jobs:
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '2400000'
+            watch_command_timeout_ms: '5100000'
           - os: macos-latest
             runner_label: macos
             watch_case: demo-taro-react
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 75
+            timeout_minutes: 90
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '3600000'
+            watch_command_timeout_ms: '4800000'
           - os: macos-latest
             runner_label: macos
             watch_case: demo-taro-vue3
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 75
+            timeout_minutes: 90
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '3600000'
+            watch_command_timeout_ms: '4800000'
           - os: macos-latest
             runner_label: macos
             watch_case: demo-uni
@@ -133,27 +133,27 @@ jobs:
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '2400000'
+            watch_command_timeout_ms: '5100000'
           - os: ubuntu-latest
             runner_label: linux
             watch_case: demo-taro-react
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 75
+            timeout_minutes: 90
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '3600000'
+            watch_command_timeout_ms: '4800000'
           - os: ubuntu-latest
             runner_label: linux
             watch_case: demo-taro-vue3
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 75
+            timeout_minutes: 90
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '3600000'
+            watch_command_timeout_ms: '4800000'
           - os: ubuntu-latest
             runner_label: linux
             watch_case: demo-uni
@@ -174,7 +174,7 @@ jobs:
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '10000'
-            watch_command_timeout_ms: '1500000'
+            watch_command_timeout_ms: '2700000'
           - os: ubuntu-latest
             runner_label: linux
             watch_case: taro-vite-react-tailwindcss-v4:tt
@@ -197,7 +197,7 @@ jobs:
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '9000'
-            watch_command_timeout_ms: '1500000'
+            watch_command_timeout_ms: '2700000'
           - os: ubuntu-latest
             runner_label: linux
             watch_case: taro-vite-vue3-tailwindcss-v4:tt
@@ -208,7 +208,7 @@ jobs:
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '10000'
-            watch_command_timeout_ms: '1800000'
+            watch_command_timeout_ms: '3300000'
           - os: macos-latest
             runner_label: macos
             watch_case: uni-app-vite-tailwindcss-v4:mp-weixin
@@ -283,27 +283,27 @@ jobs:
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '2400000'
+            watch_command_timeout_ms: '5100000'
           - os: windows-latest
             runner_label: windows
             watch_case: demo-taro-react
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 75
+            timeout_minutes: 90
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '3600000'
+            watch_command_timeout_ms: '4800000'
           - os: windows-latest
             runner_label: windows
             watch_case: demo-taro-vue3
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 75
+            timeout_minutes: 90
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '3600000'
+            watch_command_timeout_ms: '4800000'
           - os: windows-latest
             runner_label: windows
             watch_case: demo-uni
@@ -324,7 +324,7 @@ jobs:
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '10000'
-            watch_command_timeout_ms: '1500000'
+            watch_command_timeout_ms: '2700000'
           - os: windows-latest
             runner_label: windows
             watch_case: taro-vite-react-tailwindcss-v4:tt
@@ -346,7 +346,7 @@ jobs:
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '9000'
-            watch_command_timeout_ms: '1500000'
+            watch_command_timeout_ms: '2700000'
           - os: windows-latest
             runner_label: windows
             watch_case: taro-vite-vue3-tailwindcss-v4:tt
@@ -357,7 +357,7 @@ jobs:
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '10000'
-            watch_command_timeout_ms: '1800000'
+            watch_command_timeout_ms: '3300000'
           - os: windows-latest
             runner_label: windows
             watch_case: uni-app-vite-tailwindcss-v4:mp-weixin

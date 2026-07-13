@@ -739,22 +739,47 @@ describe('e2e watch workflow', () => {
         watch_command_timeout_ms: '1500000',
       },
     ]
-    const slowDemoTaroReactPrBudget = {
-      watch_case: 'demo-taro-react',
+    const slowDemoTaroPrBudgets = [
+      'demo-taro-react',
+      'demo-taro-vue3',
+    ].map(watchCase => ({
+      watch_case: watchCase,
       round_profile: 'default',
-      timeout_minutes: 75,
+      timeout_minutes: 90,
       watch_timeout_ms: '420000',
       watch_max_plugin_process_ms: '60000',
-      watch_command_timeout_ms: '3600000',
+      watch_command_timeout_ms: '4800000',
+    }))
+    const slowDemoCorePrBudget = {
+      watch_case: 'demo-core',
+      round_profile: 'default',
+      timeout_minutes: 95,
+      watch_timeout_ms: '420000',
+      watch_max_plugin_process_ms: '60000',
+      watch_command_timeout_ms: '5100000',
     }
-    const slowCrossPlatformTaroReactTtPrBudget = {
-      watch_case: 'taro-vite-react-tailwindcss-v4:tt',
+    const slowCrossPlatformTaroTtPrBudgets = [
+      'taro-vite-react-tailwindcss-v4:tt',
+      'taro-vite-vue3-tailwindcss-v4:tt',
+    ].map(watchCase => ({
+      watch_case: watchCase,
       round_profile: 'default',
       timeout_minutes: 70,
       watch_timeout_ms: '600000',
       watch_max_plugin_process_ms: '10000',
       watch_command_timeout_ms: '3300000',
-    }
+    }))
+    const slowCrossPlatformTaroAlipayPrBudgets = [
+      { watchCase: 'taro-vite-react-tailwindcss-v4:alipay', pluginBudget: '10000' },
+      { watchCase: 'taro-vite-vue3-tailwindcss-v4:alipay', pluginBudget: '9000' },
+    ].map(({ watchCase, pluginBudget }) => ({
+      watch_case: watchCase,
+      round_profile: 'default',
+      timeout_minutes: 55,
+      watch_timeout_ms: '420000',
+      watch_max_plugin_process_ms: pluginBudget,
+      watch_command_timeout_ms: '2700000',
+    }))
     const slowNightlyBudgets = [
       {
         os: 'macos-latest',
@@ -832,17 +857,31 @@ describe('e2e watch workflow', () => {
     ]) {
       expect(prRows).toContainEqual(expect.objectContaining({
         ...runner,
-        ...slowDemoTaroReactPrBudget,
+        ...slowDemoCorePrBudget,
       }))
+      for (const budget of slowDemoTaroPrBudgets) {
+        expect(prRows).toContainEqual(expect.objectContaining({
+          ...runner,
+          ...budget,
+        }))
+      }
     }
     for (const runner of [
       { os: 'ubuntu-latest', runner_label: 'linux' },
       { os: 'windows-latest', runner_label: 'windows' },
     ]) {
-      expect(prRows).toContainEqual(expect.objectContaining({
-        ...runner,
-        ...slowCrossPlatformTaroReactTtPrBudget,
-      }))
+      for (const budget of slowCrossPlatformTaroTtPrBudgets) {
+        expect(prRows).toContainEqual(expect.objectContaining({
+          ...runner,
+          ...budget,
+        }))
+      }
+      for (const budget of slowCrossPlatformTaroAlipayPrBudgets) {
+        expect(prRows).toContainEqual(expect.objectContaining({
+          ...runner,
+          ...budget,
+        }))
+      }
     }
     for (const budget of slowWindowsPrBudgets) {
       expect(prRows).toContainEqual(expect.objectContaining({
