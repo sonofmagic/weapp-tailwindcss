@@ -74,15 +74,6 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --radius-lg: 0.5rem;
 }
-button::after,
-wx-button::after {
-  display: none;
-  border: none;
-  content: '';
-}
-wx-button {
-  background: #000;
-}
  /* tokens: mt-2 <= pages/index/index.wxml */
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);
@@ -491,6 +482,15 @@ wx-button {
   .system-dark_ctext-slate-100 {
     color: var(--color-slate-100);
   }
+}
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
 }
 /* Main style shell. Tailwind v4 source directives live in tailwind.css. */
 /* Tailwind v4 root entry intentionally uses plain CSS. */

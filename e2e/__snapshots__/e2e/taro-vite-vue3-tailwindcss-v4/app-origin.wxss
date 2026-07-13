@@ -56,15 +56,6 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --radius-lg: 0.5rem;
 }
-button::after,
-wx-button::after {
-  display: none;
-  border: none;
-  content: '';
-}
-wx-button {
-  background: #000;
-}
 /* tokens: mt-2 <= src/pages/index/index.vue */
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);
@@ -7848,6 +7839,15 @@ wx-button {
 }
 .nut-cropper-popup__highlight .highlight__round {
   border-radius: 50%;
+}
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
 }
 .nut-theme-dark .nut-image .nut-img-loading,
 .nut-theme-dark .nut-image .nut-img-error {

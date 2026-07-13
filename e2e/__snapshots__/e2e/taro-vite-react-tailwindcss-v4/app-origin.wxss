@@ -302,15 +302,6 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --radius-lg: 0.5rem;
 }
-button::after,
-wx-button::after {
-  display: none;
-  border: none;
-  content: '';
-}
-wx-button {
-  background: #000;
-}
 /* tokens: mt-2 <= src/pages/index/index.tsx */
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);
@@ -9884,6 +9875,15 @@ wx-button {
   font-weight: var(--font-weight-semibold);
   font-size: 26rpx;
   color: var(--color-white);
+}
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
 }
 @charset "UTF-8";
 @font-face {

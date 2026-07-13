@@ -133,21 +133,6 @@ wx-root-portal-content {
   font-size: 26rpx;
   color: var(--color-white);
 }
-button::after,
-wx-button::after {
-  display: none;
-  border: none;
-  content: '';
-}
-wx-button {
-  background: #000;
-}
-.layer-card-v4 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-midnight);
-}
  /* tokens: m-3 <= src/pages/index/index.vue */
 .m-3 {
   margin: calc(var(--spacing) * 3);
@@ -820,6 +805,21 @@ wx-button {
  /* tokens: wx:bg-blue-500 <= src/pages/index/index.vue */
 .wx_cbg-blue-500 {
   background-color: var(--color-blue-500);
+}
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
+}
+.layer-card-v4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-midnight);
 }
 button::after,
 wx-button::after {

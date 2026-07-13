@@ -82,16 +82,6 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --radius-lg: 0.5rem;
 }
-button::after,
-wx-button::after {
-  display: none;
-  border: none;
-  content: '';
-}
-
-wx-button {
-  background: #000;
-}
 /* tokens: mt-2 <= pages/index/index.wxml */
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);
@@ -501,6 +491,16 @@ wx-button {
     color: var(--color-slate-100);
   }
 }
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+
+wx-button {
+  background: #000;
+}
 /* Main style shell. Tailwind v4 source directives live in tailwind.css. */
 /* Tailwind v4 root entry intentionally uses plain CSS. */
 button::after,
@@ -509,12 +509,15 @@ wx-button::after {
   border: none;
   content: '';
 }
+
 wx-button {
   background: #000;
 }
+
 wx-button {
   background: #444;
 }
+
 abc {
   background: #222;
 }
@@ -526,17 +529,20 @@ abc {
   color: var(--weapp-tw-user-ui-color, #175e75);
   animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
 }
+
 .weapp-tw-user-ui-loading {
   display: inline-block;
   width: 32rpx;
   height: 32rpx;
   animation: weappTwUserUiRotation 1s linear infinite;
 }
+
 @keyframes weappTwUserUiRotation {
   to {
     transform: rotate(360deg);
   }
 }
+
 @keyframes weappTwUserUiBreathe {
   50% {
     opacity: 0.65;
