@@ -56,6 +56,9 @@ export function shouldSkipRawSourceStyleAsset(
   if (canProcessViteSourceStyleAsCss(source, file)) {
     return false
   }
+  if (SOURCE_STYLE_OUTPUT_EXT_RE.test(assetSourceFile.replace(/[?#].*$/, ''))) {
+    return true
+  }
   const isKnownStyleSource = isSourceStyleRequest(assetSourceFile) || cssMatcher?.(assetSourceFile) === true
   return outputFile !== file || !isKnownStyleSource
 }

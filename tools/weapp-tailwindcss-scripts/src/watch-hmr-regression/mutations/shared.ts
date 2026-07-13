@@ -257,6 +257,17 @@ export async function waitForCompileSettled(
         return Date.now() - lastCompileSuccessAt >= stableWindowMs
       }
 
+      const pluginProcessSamples = session.pluginProcessSamplesSince?.(phaseStartedAt) ?? []
+      const latestPluginTotalAt = Math.max(
+        0,
+        ...pluginProcessSamples
+          .filter(sample => sample.metric === 'total' || sample.phase === 'total')
+          .map(sample => sample.at),
+      )
+      if (latestPluginTotalAt > phaseStartedAt) {
+        return Date.now() - latestPluginTotalAt >= stableWindowMs
+      }
+
       const [wxmlMtime, jsMtime] = await Promise.all([
         getMtime(watchCase.outputWxml),
         getMtime(watchCase.outputJs),

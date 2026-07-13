@@ -35,6 +35,7 @@ text,
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-content: '';
 }
 :host,
 page,
@@ -104,6 +105,33 @@ wx-root-portal-content {
   --window-left: 0px;
   --window-right: 0px;
   --window-magin: 0px;
+}
+.layer-card-v4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-midnight);
+}
+ /* tokens: template-corpus-apply <= src/pages/index/index.vue */
+.template-corpus-apply {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  border-radius: 20rpx;
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+  --tw-gradient-from: #9e58e9;
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
+  padding-left: 18rpx;
+  padding-right: 18rpx;
+  padding-top: 10rpx;
+  padding-bottom: 10rpx;
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+  font-size: 26rpx;
+  color: var(--color-white);
 }
 button::after,
 wx-button::after {
@@ -729,12 +757,9 @@ wx-button {
 }
  /* tokens: after:!content-['good_work!'] <= src/pages/index/index.vue */
 .after_c_econtent-_b_agood_work_e_a_B::after {
+  content: var(--tw-content);
   --tw-content: 'good work!' !important;
   content: var(--tw-content) !important;
-}
- /* tokens: after:!content-['good_work!'] <= src/pages/index/index.vue */
-.after_c_econtent-_b_agood_work_e_a_B::after {
-  content: var(--tw-content);
 }
  /* tokens: active:bg-emerald-600 <= src/pages/index/index.vue */
 .active_cbg-emerald-600:active {
@@ -795,33 +820,6 @@ wx-button {
  /* tokens: wx:bg-blue-500 <= src/pages/index/index.vue */
 .wx_cbg-blue-500 {
   background-color: var(--color-blue-500);
-}
-.layer-card-v4 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-midnight);
-}
- /* tokens: template-corpus-apply <= src/pages/index/index.vue */
-.template-corpus-apply {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--spacing) * 2);
-  border-radius: 20rpx;
-  --tw-gradient-position: to right;
-  background-image: linear-gradient(var(--tw-gradient-stops));
-  --tw-gradient-from: #9e58e9;
-  --tw-gradient-to: var(--color-blue-500);
-  --tw-gradient-stops:
-    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
-  padding-left: 18rpx;
-  padding-right: 18rpx;
-  padding-top: 10rpx;
-  padding-bottom: 10rpx;
-  --tw-font-weight: var(--font-weight-semibold);
-  font-weight: var(--font-weight-semibold);
-  font-size: 26rpx;
-  color: var(--color-white);
 }
 button::after,
 wx-button::after {

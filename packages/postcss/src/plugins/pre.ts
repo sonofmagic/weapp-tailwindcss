@@ -2,6 +2,7 @@
 import type { AtRule, Declaration, Plugin, PluginCreator, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
+import { consumeCascadeLayers } from '../compat/mini-program-css/cascade-layers'
 import {
   isTailwindcssV4DisplayP3Declaration,
   isTailwindcssV4DisplayP3Media,
@@ -137,11 +138,6 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
       else if (isTailwindcssV4DisplayP3Media(atRule)) {
         removeAtRuleAndEmptyAncestors(atRule)
       }
-      else if (atRule.name === 'layer') {
-        if (atRule.nodes === undefined || (Array.isArray(atRule.nodes) && atRule.nodes.length === 0)) {
-          atRule.remove()
-        }
-      }
     },
     Declaration(decl) {
       if (isTailwindcssV4DisplayP3Declaration(decl)) {
@@ -150,36 +146,24 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
     },
   }
   if (opts.isMainChunk) {
-    let layerProperties: AtRule
     p.Once = (root) => {
       root.walkAtRules((atRule) => {
         // 针对 Tailwindcss V4.1.2 的处理
         if (atRule.name === 'layer') {
           if (atRule.params === 'properties') {
-            if (atRule.nodes === undefined || atRule.nodes?.length === 0) {
-              layerProperties = atRule // 暂存空 properties 节
+            if (atRule.first?.type === 'atrule' && isTailwindcssV4ModernCheck(atRule.first)) {
+              atRule.first.replaceWith(atRule.first.nodes ?? [])
             }
-            else if (atRule.first?.type === 'atrule' && isTailwindcssV4ModernCheck(atRule.first)) {
-              if (layerProperties) {
-                layerProperties.replaceWith(atRule.first.nodes)
-                atRule.remove()
-              }
-              else {
-                atRule.replaceWith(atRule.first.nodes)
-              }
-            }
-          }
-          else {
-            atRule.replaceWith(atRule.nodes)
           }
         }
         // 针对 Tailwindcss V4.1.1 的处理
         else if (isTailwindcssV4ModernCheck(atRule)) {
           if (atRule.first?.type === 'atrule' && atRule.first.name === 'layer') {
-            atRule.replaceWith(atRule.first.nodes)
+            atRule.replaceWith(atRule.first)
           }
         }
       })
+      consumeCascadeLayers(root)
       root.walkRules((rule) => {
         commonChunkPreflight(rule, opts)
       })

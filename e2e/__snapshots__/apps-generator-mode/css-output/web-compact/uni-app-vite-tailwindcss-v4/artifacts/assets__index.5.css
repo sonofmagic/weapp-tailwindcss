@@ -4,6 +4,14 @@
 [data-v-b12531e8]::backdrop {
   --tw-content: '';
 }
+@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
+  *[data-v-b12531e8],
+  [data-v-b12531e8]::before,
+  [data-v-b12531e8]::after,
+  [data-v-b12531e8]::backdrop {
+    --tw-content: '';
+  }
+}
 *[data-v-b12531e8],
 [data-v-b12531e8]::after,
 [data-v-b12531e8]::before,
@@ -93,12 +101,4 @@ uni-input:where([type='button'][data-v-b12531e8], [type='reset'][data-v-b12531e8
 .before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\][data-v-b12531e8]::before {
   --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
   content: var(--tw-content);
-}
-@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
-  *[data-v-b12531e8],
-  [data-v-b12531e8]::before,
-  [data-v-b12531e8]::after,
-  [data-v-b12531e8]::backdrop {
-    --tw-content: '';
-  }
 }

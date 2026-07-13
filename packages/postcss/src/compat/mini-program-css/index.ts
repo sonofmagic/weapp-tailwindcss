@@ -4,6 +4,7 @@ export {
   removeUnsupportedMiniProgramAtRules,
   unwrapUnsupportedCascadeLayers,
 } from './at-rules'
+export { consumeCascadeLayers } from './cascade-layers'
 export {
   finalizeMiniProgramCss,
   type FinalizeMiniProgramCssOptions,

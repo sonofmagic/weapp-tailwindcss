@@ -192,6 +192,23 @@ describe('style processing pipeline', () => {
     expect(overridePipeline.nodes.some(node => node.id === 'normal:px-transform')).toBe(true)
     expect(overridePipeline.nodes.some(node => node.id === 'normal:custom-property-cleaner')).toBe(true)
   })
+
+  it('keeps cascade layers away from preset-env even when users enable the feature', async () => {
+    const handler = createStyleHandler({
+      majorVersion: 4,
+      cssPresetEnv: {
+        features: {
+          'cascade-layers': true,
+        },
+        autoprefixer: { add: false },
+      },
+    })
+
+    const result = await handler('@layer base, utilities;@layer utilities{.card{color:red}}')
+
+    expect(result.css).toBe('.card{color:red}')
+    expect(result.css).not.toMatch(/:not\(#(?:n|\\#)?\)/)
+  })
 })
 
 describe('signal-driven pipeline pruning', () => {

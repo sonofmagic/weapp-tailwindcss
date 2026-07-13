@@ -569,6 +569,12 @@ describe('bundlers/vite helper modules', () => {
     expect(shouldSkipRawSourceStyleAsset('app.wxss', 'app.scss', '')).toBe(false)
     expect(shouldSkipRawSourceStyleAsset('app.wxss', 'app.scss', 'div { color: red; }')).toBe(false)
     expect(shouldSkipRawSourceStyleAsset('app.wxss', 'app.scss', '$color: red; .a { color: $color; }')).toBe(true)
+    expect(shouldSkipRawSourceStyleAsset(
+      'pages/index.scss',
+      'pages/index.scss',
+      '// https://sass-lang.com/documentation\n.a { color: turquoise; }',
+      '/repo/pages/index.scss',
+    )).toBe(true)
     expect(shouldSkipRawSourceStyleAsset('pages/index.wxss', 'pages/index.wxss', '<template><view>// marker</view></template>', '/repo/src/pages/index.vue')).toBe(true)
     expect(shouldSkipRawSourceStyleAsset('pages/index.wxss', 'pages/index.wxss', '$color: red; .a { color: $color; }', '/repo/src/pages/index.wxss', file => file.endsWith('.wxss'))).toBe(false)
     const sfcSourceVariants = {
@@ -768,6 +774,13 @@ describe('bundlers/vite helper modules', () => {
 
     expect(emitOrReplayCssAsset('main.wxss', 'updated')).toBe(existing)
     expect(existing.source).toBe('updated')
+    expect(emitFile).not.toHaveBeenCalled()
+
+    const aliased = createAsset('stale')
+    aliased.fileName = 'aliased.wxss'
+    bundle['internal.css'] = aliased
+    expect(emitOrReplayCssAsset('aliased.wxss', 'refreshed')).toBe(aliased)
+    expect(aliased.source).toBe('refreshed')
     expect(emitFile).not.toHaveBeenCalled()
 
     const replayed = emitOrReplayCssAsset('app.wxss', 'generated')

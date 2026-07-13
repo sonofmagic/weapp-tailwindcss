@@ -17,7 +17,6 @@ exports[`v4 > --tw-gradient-position 1`] = `
 
 exports[`v4 > postcss 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
-
 page,.tw-root,wx-root-portal-content,:host {
     --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -395,14 +394,12 @@ page,.tw-root,wx-root-portal-content,:host {
       --font-mono--font-variation-settings
     );
   }
-
 view,text,::after,::before {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
     border: 0 solid;
   }
-
 html,:host {
     font-family: var( --default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
     font-variation-settings: var( --default-font-variation-settings, normal );
@@ -411,94 +408,75 @@ html,:host {
     tab-size: 4;
     text-size-adjust: 100%;
   }
-
 body {
     line-height: inherit;
   }
-
 hr {
     height: 0;
     color: inherit;
     border-top-width: 1px;
   }
-
 abbr[title] {
     text-decoration: underline;
     text-decoration: underline dotted;
   }
-
 h1,h2,h3,h4,h5,h6 {
     font-size: inherit;
     font-weight: inherit;
   }
-
 a {
     color: inherit;
     text-decoration: inherit;
   }
-
 b,strong {
     font-weight: bolder;
   }
-
 code,kbd,samp,pre {
     font-family: var( --default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace );
     font-size: 1em;
     font-variation-settings: var( --default-mono-font-variation-settings, normal );
     font-feature-settings: var( --default-mono-font-feature-settings, normal );
   }
-
 small {
     font-size: 80%;
   }
-
 sub,sup {
     position: relative;
     font-size: 75%;
     line-height: 0;
     vertical-align: baseline;
   }
-
 sub {
     bottom: -0.25em;
   }
-
 sup {
     top: -0.5em;
   }
-
 table {
     text-indent: 0;
     border-collapse: collapse;
     border-color: inherit;
   }
-
 :-moz-focusring {
     outline: auto;
   }
-
 progress {
     vertical-align: baseline;
   }
-
 summary {
     display: list-item;
   }
-
 ol,ul,menu {
     list-style: none;
   }
-
 img,svg,video,canvas,audio,iframe,embed,object {
     display: block;
     vertical-align: middle;
   }
-
 img,video {
     max-width: 100%;
     height: auto;
   }
-
 button,input,select,optgroup,textarea {
     font: inherit;
     font-variation-settings: inherit;
@@ -509,110 +487,83 @@ button,input,select,optgroup,textarea {
     border-radius: 0;
     opacity: 1;
   }
-
 select[multiple] optgroup,select[size] optgroup {
     font-weight: bolder;
   }
-
 select[multiple] optgroup option,select[size] optgroup option {
     padding-left: 20px;
   }
-
 ::placeholder {
     color: color-mix(in oklab, currentcolor 50%, transparent);
     opacity: 1;
   }
-
 textarea {
     resize: vertical;
   }
-
 ::-webkit-search-decoration {
     appearance: none;
   }
-
 ::-webkit-date-and-time-value {
     min-height: 1lh;
     text-align: inherit;
   }
-
 ::-webkit-datetime-edit {
     display: inline-flex;
   }
-
 ::-webkit-datetime-edit-fields-wrapper {
     padding: 0;
   }
-
 ::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field {
     padding-top: 0;
     padding-bottom: 0;
   }
-
 :-moz-ui-invalid {
     box-shadow: none;
   }
-
 button,input[type="button"],input[type="reset"],input[type="submit"] {
     appearance: button;
   }
-
 ::-webkit-inner-spin-button,::-webkit-outer-spin-button {
     height: auto;
   }
-
 .container {
     width: 100%;
   }
-
 @media (min-width: 40rem) {
-
 .container {
       max-width: 40rem;
   }
     }
-
 @media (min-width: 48rem) {
-
 .container {
       max-width: 48rem;
   }
     }
-
 @media (min-width: 64rem) {
-
 .container {
       max-width: 64rem;
   }
     }
-
 @media (min-width: 80rem) {
-
 .container {
       max-width: 80rem;
   }
     }
-
 @media (min-width: 96rem) {
-
 .container {
       max-width: 96rem;
   }
     }
-
 .m-_b3_d45rpx_B {
     margin: 3.45rpx;
   }
-
 .mx-auto {
     margin-left: auto;
     margin-right: auto;
   }
-
 .bg-_b_h377a6c90_B {
     background-color: rgba(55,122,108,0.56471);
   }
-
 .p-_b12_d34px_B {
     padding: 12.34px;
   }
@@ -651,7 +602,6 @@ button,input[type="button"],input[type="reset"],input[type="submit"] {
 
 exports[`v4 > postcss uni-app x 1`] = `
 "/*! tailwindcss v4.0.3 | MIT License | https://tailwindcss.com */
-
 page,.tw-root,wx-root-portal-content,:host {
     --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -1029,14 +979,12 @@ page,.tw-root,wx-root-portal-content,:host {
       --font-mono--font-variation-settings
     );
   }
-
 view,text {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
     border: 0 solid;
   }
-
 html,:host {
     font-family: var( --default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" );
     font-variation-settings: var( --default-font-variation-settings, normal );
@@ -1045,90 +993,72 @@ html,:host {
     tab-size: 4;
     text-size-adjust: 100%;
   }
-
 body {
     line-height: inherit;
   }
-
 hr {
     height: 0;
     color: inherit;
     border-top-width: 1px;
   }
-
 abbr {
     text-decoration: underline;
     text-decoration: underline dotted;
   }
-
 h1,h2,h3,h4,h5,h6 {
     font-size: inherit;
     font-weight: inherit;
   }
-
 a {
     color: inherit;
     text-decoration: inherit;
   }
-
 b,strong {
     font-weight: bolder;
   }
-
 code,kbd,samp,pre {
     font-family: var( --default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace );
     font-size: 1em;
     font-variation-settings: var( --default-mono-font-variation-settings, normal );
     font-feature-settings: var( --default-mono-font-feature-settings, normal );
   }
-
 small {
     font-size: 80%;
   }
-
 sub,sup {
     position: relative;
     font-size: 75%;
     line-height: 0;
     vertical-align: baseline;
   }
-
 sub {
     bottom: -0.25em;
   }
-
 sup {
     top: -0.5em;
   }
-
 table {
     text-indent: 0;
     border-collapse: collapse;
     border-color: inherit;
   }
-
 progress {
     vertical-align: baseline;
   }
-
 summary {
     display: list-item;
   }
-
 ol,ul,menu {
     list-style: none;
   }
-
 img,svg,video,canvas,audio,iframe,embed,object {
     display: block;
     vertical-align: middle;
   }
-
 img,video {
     max-width: 100%;
     height: auto;
   }
-
 button,input,select,optgroup,textarea {
     font: inherit;
     font-variation-settings: inherit;
@@ -1139,67 +1069,50 @@ button,input,select,optgroup,textarea {
     border-radius: 0;
     opacity: 1;
   }
-
 textarea {
     resize: vertical;
   }
-
 button {
     appearance: button;
   }
-
 .container {
     width: 100%;
   }
-
 @media (min-width: 40rem) {
-
 .container {
       max-width: 40rem;
   }
     }
-
 @media (min-width: 48rem) {
-
 .container {
       max-width: 48rem;
   }
     }
-
 @media (min-width: 64rem) {
-
 .container {
       max-width: 64rem;
   }
     }
-
 @media (min-width: 80rem) {
-
 .container {
       max-width: 80rem;
   }
     }
-
 @media (min-width: 96rem) {
-
 .container {
       max-width: 96rem;
   }
     }
-
 .m-_b3_d45rpx_B {
     margin: 3.45rpx;
   }
-
 .mx-auto {
     margin-left: auto;
     margin-right: auto;
   }
-
 .bg-_b_h377a6c90_B {
     background-color: rgba(55,122,108,0.56471);
   }
-
 .p-_b12_d34px_B {
     padding: 12.34px;
   }

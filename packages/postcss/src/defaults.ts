@@ -7,7 +7,6 @@ export function getDefaultOptions(options?: Partial<IStyleHandlerOptions>): Part
     // 参考：https://github.com/postcss/postcss-calc
     cssPresetEnv: {
       features: {
-        'cascade-layers': true,
         'is-pseudo-class': {
           specificityMatchingName: 'weapp-tw-ig',
         },

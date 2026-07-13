@@ -19,6 +19,7 @@ text,
   --tw-gradient-to-position: 100%;
   --tw-duration: initial;
   --tw-ease: initial;
+  --tw-content: '';
 }
 :host,
 page,
@@ -86,6 +87,7 @@ wx-button::after {
   border: none;
   content: '';
 }
+
 wx-button {
   background: #000;
 }

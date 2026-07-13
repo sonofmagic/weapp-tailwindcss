@@ -91,6 +91,65 @@ describe('mini-program css cleanup', () => {
     expect(root.toString()).toContain('.text-red-500{color:red}')
   })
 
+  it('orders cascade layer blocks before removing their wrappers', () => {
+    const root = postcss.parse([
+      '@layer reset, components, utilities;',
+      '@layer utilities{.utility{color:blue}}',
+      '@layer reset{.reset{color:red}}',
+      '@layer components{.component{color:green}}',
+      '@layer utilities{.utility-later{color:purple}}',
+      '.unlayered{color:black}',
+    ].join('\n'))
+
+    removeUnsupportedCascadeLayers(root)
+
+    const css = root.toString()
+    expect(css).not.toContain('@layer')
+    expect(css.indexOf('.reset')).toBeLessThan(css.indexOf('.component'))
+    expect(css.indexOf('.component')).toBeLessThan(css.indexOf('.utility'))
+    expect(css.indexOf('.utility')).toBeLessThan(css.indexOf('.utility-later'))
+    expect(css.indexOf('.utility-later')).toBeLessThan(css.indexOf('.unlayered'))
+  })
+
+  it('preserves generated css before the first layer anchor', () => {
+    const root = postcss.parse([
+      ':root{--color-brand:red}',
+      '@layer theme, base, utilities;',
+      '@layer base{view{box-sizing:border-box}}',
+      '@layer utilities{.block{display:block}}',
+    ].join('\n'))
+
+    removeUnsupportedCascadeLayers(root)
+
+    const css = root.toString()
+    expect(css.indexOf(':root')).toBeLessThan(css.indexOf('view'))
+    expect(css.indexOf('view')).toBeLessThan(css.indexOf('.block'))
+  })
+
+  it('preserves conditional wrappers and orders nested and anonymous layers', () => {
+    const root = postcss.parse([
+      '@layer shell, next;',
+      '@layer shell {',
+      '  .shell-direct{display:block}',
+      '  @layer first, second;',
+      '  @layer second{.shell-second{display:grid}}',
+      '  @media (min-width: 640px){@layer first{.shell-first{display:flex}}}',
+      '}',
+      '@layer {.anonymous{color:red}}',
+      '@layer next{.next{color:blue}}',
+    ].join('\n'))
+
+    removeUnsupportedCascadeLayers(root)
+
+    const css = root.toString()
+    expect(css).not.toContain('@layer')
+    expect(css).toContain('@media (min-width: 640px){.shell-first{display:flex}}')
+    expect(css.indexOf('.shell-first')).toBeLessThan(css.indexOf('.shell-second'))
+    expect(css.indexOf('.shell-second')).toBeLessThan(css.indexOf('.shell-direct'))
+    expect(css.indexOf('.shell-direct')).toBeLessThan(css.indexOf('.next'))
+    expect(css).toContain('.anonymous{color:red}')
+  })
+
   it('unwraps unsupported cascade layer blocks from css strings', () => {
     const css = unwrapUnsupportedCascadeLayers([
       '@layer base {',

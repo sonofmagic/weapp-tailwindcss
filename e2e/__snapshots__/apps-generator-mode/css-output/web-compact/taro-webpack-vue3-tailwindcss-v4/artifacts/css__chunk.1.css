@@ -22,6 +22,31 @@
   --tw-content: '';
 }
 /*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
+  *,
+  ::before,
+  ::after,
+  ::backdrop {
+    --tw-space-y-reverse: 0;
+    --tw-border-style: solid;
+    --tw-gradient-from: #0000;
+    --tw-gradient-via: #0000;
+    --tw-gradient-to: #0000;
+    --tw-gradient-from-position: 0%;
+    --tw-gradient-via-position: 50%;
+    --tw-gradient-to-position: 100%;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-alpha: 100%;
+    --tw-inset-shadow: 0 0 #0000;
+    --tw-inset-shadow-alpha: 100%;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-inset-ring-shadow: 0 0 #0000;
+    --tw-ring-offset-width: 0px;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-content: '';
+  }
+}
 :root,
 :host {
   --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -218,6 +243,38 @@ input:where([type='button'], [type='reset'], [type='submit']),
 }
 [hidden]:where(:not([hidden='until-found'])) {
   display: none !important;
+}
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
+}
+ /*tokens: template-corpus-apply <= src/pages/index/index.vue */
+.template-corpus-apply {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  border-radius: 0.625rem;
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+  --tw-gradient-from: #9e58e9;
+  --tw-gradient-to: #3080ff;
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+  padding-inline: 0.5625rem;
+  padding-block: 0.3125rem;
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+  font-size: 0.8125rem;
+  color: #fff;
 }
  /*tokens: mt-2 <= src/pages/index/index.vue */
 .mt-2 {
@@ -8229,43 +8286,11 @@ textarea {
 .nut-cropper-popup__highlight .highlight__round {
   border-radius: 50%;
 }
-button::after,
-wx-button::after {
-  display: none;
-  border: none;
-  content: '';
-}
-wx-button {
-  background: #000;
-}
 wx-button {
   background: #444;
 }
 abc {
   background: #222;
-}
- /*tokens: template-corpus-apply <= src/pages/index/index.vue */
-.template-corpus-apply {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--spacing) * 2);
-  border-radius: 0.625rem;
-  --tw-gradient-position: to right;
-  background-image: linear-gradient(var(--tw-gradient-stops));
-  --tw-gradient-from: #9e58e9;
-  --tw-gradient-to: #3080ff;
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
-  padding-inline: 0.5625rem;
-  padding-block: 0.3125rem;
-  --tw-font-weight: var(--font-weight-semibold);
-  font-weight: var(--font-weight-semibold);
-  font-size: 0.8125rem;
-  color: #fff;
 }
 .weapp-tw-user-ui-card {
   display: inline-flex;
@@ -8320,31 +8345,6 @@ page {
   --radius-lg: 0.5rem;
   --default-font-family: var(--font-inter), system-ui;
   --default-mono-font-family: var(--font-plex-mono), monospace;
-}
-@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
-  *,
-  ::before,
-  ::after,
-  ::backdrop {
-    --tw-space-y-reverse: 0;
-    --tw-border-style: solid;
-    --tw-gradient-from: #0000;
-    --tw-gradient-via: #0000;
-    --tw-gradient-to: #0000;
-    --tw-gradient-from-position: 0%;
-    --tw-gradient-via-position: 50%;
-    --tw-gradient-to-position: 100%;
-    --tw-shadow: 0 0 #0000;
-    --tw-shadow-alpha: 100%;
-    --tw-inset-shadow: 0 0 #0000;
-    --tw-inset-shadow-alpha: 100%;
-    --tw-ring-shadow: 0 0 #0000;
-    --tw-inset-ring-shadow: 0 0 #0000;
-    --tw-ring-offset-width: 0px;
-    --tw-ring-offset-color: #fff;
-    --tw-ring-offset-shadow: 0 0 #0000;
-    --tw-content: '';
-  }
 }
 .tw-page-style-watch-anchor {
   color: inherit;

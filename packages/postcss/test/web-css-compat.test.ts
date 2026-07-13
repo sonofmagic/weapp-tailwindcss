@@ -51,6 +51,24 @@ describe('web css compatibility transform', () => {
     expect(result).not.toContain('background-color: color-mix(')
   })
 
+  it('uses declared layer order in legacy web output without specificity placeholders', () => {
+    const css = [
+      '@layer base, components, utilities;',
+      '@layer utilities { .utility { color: blue; } }',
+      '@layer base { .base { color: red; } }',
+      '@layer components { .component { color: green; } }',
+      '.unlayered { color: black; }',
+    ].join('\n')
+
+    const result = transformWebCssCompat(css, true)
+
+    expect(result).not.toContain('@layer')
+    expect(result).not.toMatch(/:not\(#(?:n|\\#)?\)/)
+    expect(result.indexOf('.base')).toBeLessThan(result.indexOf('.component'))
+    expect(result.indexOf('.component')).toBeLessThan(result.indexOf('.utility'))
+    expect(result.indexOf('.utility')).toBeLessThan(result.indexOf('.unlayered'))
+  })
+
   it('resolves Tailwind CSS v4 color variables for legacy WebView background utilities', () => {
     const css = [
       '@theme {',

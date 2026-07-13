@@ -2627,7 +2627,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 570051,
+      "bytes": 569661,
       "selectors": [
         ".-translate-y-1",
         "._b--watch-hmr-offset_c000089px_B",
@@ -6767,7 +6767,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 478445,
+      "bytes": 477729,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
@@ -8560,7 +8560,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 57577,
+      "bytes": 57514,
       "selectors": [
         "._ebg-_bgray_B",
         ".active_cbg-emerald-50:active",
@@ -8814,7 +8814,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 22508,
+      "bytes": 22528,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before",

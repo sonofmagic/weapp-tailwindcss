@@ -182,7 +182,7 @@ function collectComparableRuleSignatures(snapshots: CssSnapshot[]) {
       const parentNames: string[] = []
       let parent = rule.parent
       while (parent && parent.type !== 'root') {
-        if (parent.type === 'atrule') {
+        if (parent.type === 'atrule' && parent.name !== 'layer') {
           parentNames.unshift(`@${parent.name} ${parent.params}`)
         }
         parent = parent.parent

@@ -126,7 +126,13 @@ function shouldUseDefaultAutoprefixer(options: IStyleHandlerOptions, userPlugins
 function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSignal): PipelinePreparedNode[] {
   const preparedNodes: PipelinePreparedNode[] = []
   const userPlugins = normalizeUserPlugins(options.postcssOptions?.plugins)
-  const presetEnvOptions = options.cssPresetEnv as Parameters<typeof postcssPresetEnv>[0]
+  const presetEnvOptions = {
+    ...options.cssPresetEnv,
+    features: {
+      ...options.cssPresetEnv?.features,
+      'cascade-layers': false,
+    },
+  } as Parameters<typeof postcssPresetEnv>[0]
   userPlugins.forEach((plugin, index) => {
     preparedNodes.push(createPreparedNode(`pre:user-${index}`, 'pre', () => plugin))
   })

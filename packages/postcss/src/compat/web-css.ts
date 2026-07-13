@@ -337,9 +337,6 @@ export function transformWebCssCompat(
     if (normalized.features.theme) {
       unwrapThemeAtRules(root)
     }
-    if (normalized.features.layer) {
-      removeUnsupportedCascadeLayers(root)
-    }
     if (normalized.features.property) {
       const registeredProperties = collectRegisteredCustomPropertyFallbacks(root)
       insertRegisteredCustomPropertyFallbackRule(root, registeredProperties)
@@ -354,6 +351,9 @@ export function transformWebCssCompat(
     normalizeTailwindcssV4GradientPositionDeclarations(root)
     normalizeTailwindcssV4InfinityCalcDeclarations(root)
     normalizeModernColorDeclarations(root, normalized.features)
+    if (normalized.features.layer) {
+      removeUnsupportedCascadeLayers(root)
+    }
     removeEmptyAtRules(root)
     return root.toString()
   }

@@ -9255,6 +9255,27 @@ wx-root-portal-content {
 .nut-cropper-popup__highlight .highlight__round {
   border-radius: 50%;
 }
+/* tokens: template-corpus-apply <= src/pages/index/index.vue */
+.template-corpus-apply {
+  align-items: center;
+  border-radius: 20rpx;
+  display: inline-flex;
+  gap: calc(var(--spacing) * 2);
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+  --tw-gradient-from: #9e58e9;
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
+  padding-top: 10rpx;
+  padding-bottom: 10rpx;
+  padding-left: 18rpx;
+  padding-right: 18rpx;
+  --tw-font-weight: var(--font-weight-semibold);
+  font-size: 26rpx;
+  color: var(--color-white);
+  font-weight: var(--font-weight-semibold);
+}
 /* tokens: mt-2 <= src/pages/index/index.vue */
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);
@@ -9656,27 +9677,6 @@ wx-root-portal-content {
 /* tokens: wx:bg-blue-500 <= src/pages/index/index.vue */
 .wx_cbg-blue-500 {
   background-color: var(--color-blue-500);
-}
-/* tokens: template-corpus-apply <= src/pages/index/index.vue */
-.template-corpus-apply {
-  align-items: center;
-  border-radius: 20rpx;
-  display: inline-flex;
-  gap: calc(var(--spacing) * 2);
-  --tw-gradient-position: to right;
-  background-image: linear-gradient(var(--tw-gradient-stops));
-  --tw-gradient-from: #9e58e9;
-  --tw-gradient-to: var(--color-blue-500);
-  --tw-gradient-stops:
-    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
-  padding-top: 10rpx;
-  padding-bottom: 10rpx;
-  padding-left: 18rpx;
-  padding-right: 18rpx;
-  --tw-font-weight: var(--font-weight-semibold);
-  font-size: 26rpx;
-  color: var(--color-white);
-  font-weight: var(--font-weight-semibold);
 }
 .weapp-tw-user-ui-card {
   align-items: center;
