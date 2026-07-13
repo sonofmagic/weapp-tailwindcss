@@ -53,13 +53,12 @@ export function getTailwindcssCssEntry(pkgDir: string) {
 }
 
 function resolveMpxWebpackPluginDir(compiler: any) {
-  const rulePluginDir = findMpxWebpackPluginDirFromRules([
+  const activeLoaderPluginDir = findMpxWebpackPluginDirFromRules([
     compiler?._module?.loaders,
     compiler?.loaders,
-    compiler?.options?.module?.rules,
   ])
-  if (rulePluginDir) {
-    return rulePluginDir
+  if (activeLoaderPluginDir) {
+    return activeLoaderPluginDir
   }
   const candidates = [
     compiler?.context,
@@ -74,6 +73,11 @@ function resolveMpxWebpackPluginDir(compiler: any) {
     }
     catch {
     }
+  }
+
+  const configuredRulePluginDir = findMpxWebpackPluginDirFromRules(compiler?.options?.module?.rules)
+  if (configuredRulePluginDir) {
+    return configuredRulePluginDir
   }
 
   const cachedPackageJson = Object.keys(localRequire.cache).find(file => MPX_WEBPACK_PLUGIN_PACKAGE_RE.test(file))
