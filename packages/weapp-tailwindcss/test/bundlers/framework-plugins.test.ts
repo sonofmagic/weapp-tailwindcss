@@ -11,8 +11,9 @@ describe('framework plugin composition profiles', () => {
   })
 
   it('routes Vite public entry to framework factories', async () => {
+    const createViteFrameworkPlugins = vi.fn((_options, framework) => [{ name: framework.frameworkName }])
     vi.doMock('@/bundlers/vite/shared/create-framework-plugins', () => ({
-      createViteFrameworkPlugins: vi.fn((_options, framework) => [{ name: framework.frameworkName }]),
+      createViteFrameworkPlugins,
     }))
 
     const { WeappTailwindcss } = await import('@/bundlers/vite')
@@ -24,6 +25,16 @@ describe('framework plugin composition profiles', () => {
     expect(WeappTailwindcss({ appType: 'uni-app-vite' })?.[0]?.name).toBe('uni-app')
     expect(WeappTailwindcss({ appType: 'uni-app-x' })?.[0]?.name).toBe('uni-app-x')
     expect(WeappTailwindcss({ appType: 'weapp-vite' })?.[0]?.name).toBe('weapp-vite')
+
+    const frameworkProfiles = createViteFrameworkPlugins.mock.calls.map(([, framework]) => framework)
+    expect(frameworkProfiles.find(framework => framework.frameworkName === 'uni-app')).toMatchObject({
+      adaptWatchCssBeforeFrameworkCache: true,
+    })
+    expect(frameworkProfiles.find(framework => framework.frameworkName === 'uni-app-x')).toMatchObject({
+      adaptWatchCssBeforeFrameworkCache: true,
+    })
+    expect(frameworkProfiles.find(framework => framework.frameworkName === 'taro')).not.toHaveProperty('adaptWatchCssBeforeFrameworkCache')
+    expect(frameworkProfiles.find(framework => framework.frameworkName === 'weapp-vite')).not.toHaveProperty('adaptWatchCssBeforeFrameworkCache')
   })
 
   it('pre-registers Taro Alipay browserslist asset inside the Vite bundle graph', async () => {

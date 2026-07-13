@@ -9,6 +9,34 @@ type TransformHandler = (
 
 const wrappedCssPostPlugins = new WeakSet<Plugin>()
 
+export interface FrameworkWatchCssAdaptationOptions {
+  enabled: boolean
+  isWatchBuild: boolean
+  isWebGeneratorBranch: boolean
+  ownsTailwindGeneration: boolean
+  platform?: string | undefined
+}
+
+function isWebOrNativeAppPlatform(platform: string | undefined) {
+  return platform === 'h5'
+    || platform === 'web'
+    || platform?.startsWith('web-') === true
+    || platform === 'app'
+    || platform === 'app-plus'
+    || platform?.startsWith('app-') === true
+}
+
+export function shouldAdaptFrameworkWatchCssBeforeCache(
+  options: FrameworkWatchCssAdaptationOptions,
+) {
+  return options.enabled
+    && options.ownsTailwindGeneration
+    && options.isWatchBuild
+    && (options.platform
+      ? !isWebOrNativeAppPlatform(options.platform)
+      : !options.isWebGeneratorBranch)
+}
+
 function resolveTransformHandler(plugin: Plugin) {
   const hook = plugin.transform
   if (typeof hook === 'function') {

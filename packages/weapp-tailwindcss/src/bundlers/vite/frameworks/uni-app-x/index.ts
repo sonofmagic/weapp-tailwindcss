@@ -63,6 +63,7 @@ export const uniAppXCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
 export function createUniAppXVitePlugins(options: UserDefinedOptions | InternalUserDefinedOptions = {}) {
   return createViteFrameworkPlugins(options, {
     frameworkName: 'uni-app-x',
+    adaptWatchCssBeforeFrameworkCache: true,
     cssPipelineStrategy: uniAppXCssPipelineStrategy,
     getExtraPluginPlatform: () => ({
       isIosPlatform: resolveUniUtsPlatform().isAppIos,

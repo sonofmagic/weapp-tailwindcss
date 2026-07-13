@@ -419,6 +419,39 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm e2e:root-style-shell-hmr
 
+  uni-app-css-post-hmr:
+    name: uni-app-css-post-hmr (issue-uview-plus-cssentries)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build watch suite package dependencies
+        run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build
+
+      - name: Run uni-app scoped CSS post HMR regression
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: pnpm e2e:uni-app-css-post-hmr
+
   nightly-full-regression:
     name: e2e-watch-nightly (${{ matrix.runner_label }}-node${{ matrix['node-version'] || 22 }}-${{ matrix.watch_case }}-${{ matrix.round_profile }})
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.run_pr_quick_gate != true)

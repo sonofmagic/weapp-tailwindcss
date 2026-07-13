@@ -1,6 +1,13 @@
 import process from 'node:process'
 
 export const rawTailwindDirectiveRE = /@(import\s+["']tailwindcss|tailwind|apply|theme|source)\b/
+const unsafeMiniProgramSelectorFragments = ['.i-\\[', '.before\\:'] as const
+const safeMiniProgramGeneratedSelectors = [
+  '.i-_bmdi--github-circle_B',
+  '.i-_bmdi--star_B',
+  '.i-_bsvg-spinners--180-ring-with-bg_B',
+  '.before_ccontent-',
+] as const
 
 export interface MiniProgramCase {
   name: string
@@ -181,6 +188,7 @@ function createUniAppHBuilderXMiniProgramCase(options: {
   const platformFiles = miniProgramPlatformFiles[options.platform]
   const isTailwindV4 = options.tailwindcss === 'v4'
   const tailwindV4CssContains = [
+    ...safeMiniProgramGeneratedSelectors,
     '.bg-_b_h123456_B',
     'background-color: #123456',
     '.bg-gradient-to-br',
@@ -211,7 +219,7 @@ function createUniAppHBuilderXMiniProgramCase(options: {
     cssContains: isTailwindV4
       ? tailwindV4CssContains
       : ['.bg-_b_h123456_B', /background-color:\s*rgba\(18,\s*52,\s*86/, /normal[-_]subpackage/i, /independent[-_]subpackage/i],
-    cssNotContains: [rawTailwindDirectiveRE],
+    cssNotContains: [rawTailwindDirectiveRE, ...unsafeMiniProgramSelectorFragments],
     outputContains: {
       'app.json': ['"root": "sub-normal"', '"root": "sub-independent"', '"independent": true'],
       [platformFiles.templateFiles.main]: [
@@ -252,8 +260,8 @@ function createUniAppXHBuilderXMiniProgramCase(options: {
     outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
     cssFiles: ['app.wxss', 'uvue.wxss', 'pages/index/index.wxss', 'components/BindClass.wxss', 'components/WeappTailwindcss.wxss', ...platformFiles.cssFiles.slice(1)],
     requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
-    cssContains: ['.bg-_b_h87add3_B', '.bg-_b_hd2e252_B', '.text-_b93_d54rpx_B', '.bg-_b_hf21903_B', '.text-_b_hda0e3c_B', '.w-64'],
-    cssNotContains: [rawTailwindDirectiveRE],
+    cssContains: [...safeMiniProgramGeneratedSelectors, '.bg-_b_h87add3_B', '.bg-_b_hd2e252_B', '.text-_b93_d54rpx_B', '.bg-_b_hf21903_B', '.text-_b_hda0e3c_B', '.w-64'],
+    cssNotContains: [rawTailwindDirectiveRE, ...unsafeMiniProgramSelectorFragments],
     outputContains: {
       'app.json': ['"root": "sub-normal"', '"root": "sub-independent"', '"independent": true'],
       [platformFiles.templateFiles.independent]: ['bg-independent-subpackage-marker'],

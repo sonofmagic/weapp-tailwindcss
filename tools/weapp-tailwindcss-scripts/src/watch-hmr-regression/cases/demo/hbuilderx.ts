@@ -53,6 +53,13 @@ function createUniAppHBuilderXVue3Case(baseCwd: string): WatchCase {
     globalStyleCandidates: [
       path.resolve(baseCwd, `${outputRoot}/app.wxss`),
     ],
+    outputIntegrityGuards: [
+      path.resolve(baseCwd, `${outputRoot}/main.wxss`),
+      path.resolve(baseCwd, `${outputRoot}/pages/index/index.wxss`),
+    ].map(file => ({
+      file,
+      forbiddenFragments: ['.i-\\[', '.before\\:'],
+    })),
     contentMutation: {
       sourceFile: path.resolve(baseCwd, `demo/${projectName}/pages/index/index.vue`),
       verifyEscapedIn: ['wxml'],
@@ -175,6 +182,13 @@ function createUniAppXHBuilderXCase(baseCwd: string): WatchCase {
       path.resolve(baseCwd, `${outputRoot}/app.wxss`),
       path.resolve(baseCwd, `${outputRoot}/pages/index/index.wxss`),
     ],
+    outputIntegrityGuards: [
+      path.resolve(baseCwd, `${outputRoot}/uvue.wxss`),
+      path.resolve(baseCwd, `${outputRoot}/pages/index/index.wxss`),
+    ].map(file => ({
+      file,
+      forbiddenFragments: ['.i-\\[', '.before\\:'],
+    })),
     templateMutation: {
       sourceFile: pageSource,
       verifyEscapedIn: ['wxml'],

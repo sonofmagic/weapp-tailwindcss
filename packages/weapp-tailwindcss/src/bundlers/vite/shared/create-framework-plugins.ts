@@ -58,7 +58,7 @@ import { createSourceCandidateCollector, isSourceCandidateRequest } from '../sou
 import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from '../source-scan'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from '../tailwind-basedir'
 import { cleanUrl, isCSSRequest, isHTMLRequest, slash } from '../utils'
-import { wrapViteCssPostTransform } from '../watch-css-post'
+import { shouldAdaptFrameworkWatchCssBeforeCache, wrapViteCssPostTransform } from '../watch-css-post'
 import { resolveWeappViteSourceRoot } from '../weapp-vite-config'
 import { resolveViteWebCssCompatOptions, shouldApplyViteWebCssCompat } from '../web-css-compat'
 
@@ -145,6 +145,7 @@ export interface WeappTailwindcssVitePlugin {
 
 export interface ViteFrameworkBranchContext {
   frameworkName: ViteFrameworkName
+  adaptWatchCssBeforeFrameworkCache?: boolean
   createExtraPlugins?: (context: ViteFrameworkExtraPluginContext) => Plugin[]
   cssPipelineStrategy?: ViteFrameworkCssPipelineStrategy | undefined
   getExtraPluginPlatform?: () => ViteFrameworkExtraPluginPlatform
@@ -997,10 +998,13 @@ export function createViteFrameworkPlugins(
   })
   const shouldAdaptFrameworkWatchCss = () => {
     const platform = resolveViteStylePlatform()
-    return shouldOwnTailwindGeneration
-      && frameworkBranch.frameworkName === 'uni-app'
-      && isWatchBuild()
-      && (platform ? !isWebOrNativeAppPlatform(platform) : !resolveCurrentGeneratorBranch().isWeb)
+    return shouldAdaptFrameworkWatchCssBeforeCache({
+      enabled: frameworkBranch.adaptWatchCssBeforeFrameworkCache === true,
+      ownsTailwindGeneration: shouldOwnTailwindGeneration,
+      isWatchBuild: isWatchBuild(),
+      isWebGeneratorBranch: resolveCurrentGeneratorBranch().isWeb,
+      platform,
+    })
   }
   const generateTailwindCssForVitePipeline = async (
     id: string,

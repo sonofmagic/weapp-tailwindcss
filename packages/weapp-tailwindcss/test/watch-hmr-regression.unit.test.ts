@@ -2799,6 +2799,24 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
+  it('guards DCloud mini-program watch outputs against raw CSS selector escapes', () => {
+    const cases = buildCases('/repo', { includeLocalOnly: true })
+    const guardedCases = [
+      'uni-app-vite-tailwindcss-v4',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+      'uni-app-x-hbuilderx-tailwindcss-v4',
+    ]
+
+    for (const caseName of guardedCases) {
+      const watchCase = cases.find(item => item.name === caseName)
+      expect(watchCase?.outputIntegrityGuards?.length, caseName).toBeGreaterThan(0)
+      for (const guard of watchCase?.outputIntegrityGuards ?? []) {
+        expect(guard.forbiddenFragments, guard.file).toContain('.i-\\[')
+        expect(guard.forbiddenFragments, guard.file).toContain('.before\\:')
+      }
+    }
+  })
+
   it('keeps script read-path HMR checks available for every demo case', () => {
     const cases = [
       ...buildDemoBaseCases('/repo'),

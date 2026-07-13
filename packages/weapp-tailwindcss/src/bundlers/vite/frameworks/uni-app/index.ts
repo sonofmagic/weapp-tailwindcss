@@ -99,6 +99,7 @@ export const uniAppCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
 export function createUniAppVitePlugins(options: UserDefinedOptions | InternalUserDefinedOptions = {}) {
   return createViteFrameworkPlugins(options, {
     frameworkName: 'uni-app',
+    adaptWatchCssBeforeFrameworkCache: true,
     cssPipelineStrategy: uniAppCssPipelineStrategy,
     styleInjectorDelegate: viteStyleInjectorDelegates.uniApp,
   })

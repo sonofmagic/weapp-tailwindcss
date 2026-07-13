@@ -1,6 +1,6 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 import { describe, expect, it, vi } from 'vitest'
-import { wrapViteCssPostTransform } from '@/bundlers/vite/watch-css-post'
+import { shouldAdaptFrameworkWatchCssBeforeCache, wrapViteCssPostTransform } from '@/bundlers/vite/watch-css-post'
 
 function createResolvedConfig(plugin: Plugin) {
   return {
@@ -14,6 +14,29 @@ function getTransformHandler(plugin: Plugin) {
 }
 
 describe('bundlers/vite watch css post', () => {
+  it.each([
+    ['uni-app mp-weixin watch', true, true, true, 'mp-weixin', false, true],
+    ['uni-app mp-alipay watch', true, true, true, 'mp-alipay', false, true],
+    ['uni-app x mini-program watch', true, true, true, undefined, false, true],
+    ['production build', true, true, false, 'mp-weixin', false, false],
+    ['generator disabled', true, false, true, 'mp-weixin', false, false],
+    ['framework without cache ownership', false, true, true, 'mp-weixin', false, false],
+    ['H5 watch', true, true, true, 'h5', false, false],
+    ['native app watch', true, true, true, 'app-android', false, false],
+    ['web generator fallback', true, true, true, undefined, true, false],
+  ] as const)(
+    'resolves the framework cache boundary for %s',
+    (_label, enabled, ownsTailwindGeneration, isWatchBuild, platform, isWebGeneratorBranch, expected) => {
+      expect(shouldAdaptFrameworkWatchCssBeforeCache({
+        enabled,
+        ownsTailwindGeneration,
+        isWatchBuild,
+        isWebGeneratorBranch,
+        platform,
+      })).toBe(expected)
+    },
+  )
+
   it('transforms css before the original framework cache hook runs', async () => {
     const hookContext = { marker: 'css-post' }
     const original = vi.fn(function (this: unknown, css: string, id: string) {

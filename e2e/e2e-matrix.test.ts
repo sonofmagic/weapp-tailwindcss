@@ -25,6 +25,7 @@ import {
   ROOT_STYLE_IMPORT_SHELL_HMR_EXEMPTIONS,
 } from './rootStyleImportShellHmr'
 import { taroWebHmrCaseNames } from './taro-web-demo-hmr-cases'
+import { createUniAppCssPostHmrCases } from './uniAppCssPostHmr'
 import { webViteHmrCoverageCaseNames } from './web-vite-demo-hmr-cases'
 
 interface DemoPackageJson {
@@ -282,6 +283,16 @@ describe('e2e matrix', () => {
       'mp-alipay',
       'mp-toutiao',
     ])
+    for (const testCase of casesByProject.get('uni-app-vite-tailwindcss-v4') ?? []) {
+      expect(testCase.watchStyleFiles).toEqual([
+        `/repo/demo/uni-app-vite-tailwindcss-v4/dist/dev/${testCase.platform}/components/HelloWorld.${testCase.rootStyleFile.split('.').pop()}`,
+      ])
+    }
+    for (const testCase of casesByProject.get('subpackage-uni-app-vite-tailwindcss-v4') ?? []) {
+      expect(testCase.watchStyleFiles).toEqual([
+        `/repo/demo/subpackage-uni-app-vite-tailwindcss-v4/dist/dev/${testCase.platform}/pages/index/index.${testCase.rootStyleFile.split('.').pop()}`,
+      ])
+    }
     for (const project of ['uni-app-vite-tailwindcss-v4', 'subpackage-uni-app-vite-tailwindcss-v4']) {
       const entry = DEMO_COVERAGE_MATRIX.find(item => item.name === project)
       for (const testCase of casesByProject.get(project) ?? []) {
@@ -299,6 +310,20 @@ describe('e2e matrix', () => {
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
       'uni-app-x-hbuilderx-tailwindcss-v4',
     ]))
+  })
+
+  it('covers scoped CSS post HMR for the DCloud Vite issue fixture', () => {
+    const cases = createUniAppCssPostHmrCases('/repo')
+
+    expect(cases.map(item => item.name)).toEqual([
+      'issue-uview-plus-cssentries:mp-weixin',
+      'issue-uview-plus-cssentries:mp-alipay',
+    ])
+    for (const testCase of cases) {
+      expect(testCase.sourceFile).toBe('/repo/demo/issue-uview-plus-cssentries/src/pages/demonstration/index.vue')
+      expect(testCase.outputStyleFile).toMatch(/dist\/dev\/mp-(?:weixin|alipay)\/pages\/demonstration\/index\.(?:wxss|acss)$/)
+      expect(testCase.generatedStyleFile).toMatch(/dist\/dev\/mp-(?:weixin|alipay)\/styles\/tailwindcss\.(?:wxss|acss)$/)
+    }
   })
 
   it('keeps every demo package explicit in the demo coverage matrix', () => {
@@ -642,6 +667,7 @@ describe('e2e matrix', () => {
 
     expect(scripts['e2e:demo:weapp-memory']).toBe('tsx scripts/demo-weapp-memory-report.ts --continue-on-error')
     expect(scripts['e2e:local:full-report']).toBe('tsx scripts/local-full-platform-report.ts')
+    expect(scripts['e2e:uni-app-css-post-hmr']).toContain('e2e/watch/uni-app-css-post-hmr.test.ts')
     expect(scripts['e2e:mp']).toBe('pnpm e2e:static && pnpm e2e:hot-update:demo')
     expect(scripts['e2e:mp:ide']).toBe('pnpm e2e:ide:full')
     expect(scripts['e2e:h5']).toBe('pnpm e2e:taro:h5-build && pnpm e2e:taro:web-hmr && pnpm e2e:web:hmr')

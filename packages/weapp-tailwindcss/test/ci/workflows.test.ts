@@ -682,6 +682,15 @@ describe('e2e watch workflow', () => {
     )
   })
 
+  it('runs the uni-app scoped CSS post regression in PR watch CI', () => {
+    const { workflow } = readWorkflow('e2e-watch.yml')
+    const runs = stepRuns(workflow, 'uni-app-css-post-hmr')
+
+    expect(runs).toContain('pnpm e2e:uni-app-css-post-hmr')
+    expect(runs).toContain('pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build')
+    expectNoIdeOnlyRuntime(runs.join('\n'), 'uni-app scoped CSS post HMR')
+  })
+
   it('keeps explicit plugin processing budgets for e2e watch rows while allowing longer startup timeouts', () => {
     const { workflow } = readWorkflow('e2e-watch.yml')
     const prRows: Array<Record<string, unknown>> = workflow.jobs['pr-quick-gate'].strategy.matrix.include

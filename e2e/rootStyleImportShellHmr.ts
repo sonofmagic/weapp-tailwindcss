@@ -10,6 +10,7 @@ export interface RootStyleImportShellHmrCase {
   devScript: string
   sourceFile: string
   rootStyleFile: string
+  watchStyleFiles: string[]
   probeClass: string
   probeValue: string
 }
@@ -26,16 +27,19 @@ const projectConfigs = [
     project: 'uni-app-vite-tailwindcss-v4',
     platforms: ['mp-weixin', 'mp-alipay', 'mp-qq', 'mp-toutiao'],
     sourceFile: 'src/App.vue',
+    watchStyleFile: 'components/HelloWorld',
   },
   {
     project: 'subpackage-uni-app-vite-tailwindcss-v4',
     platforms: ['mp-weixin', 'mp-alipay', 'mp-toutiao'],
     sourceFile: 'src/pages/index/index.vue',
+    watchStyleFile: 'pages/index/index',
   },
 ] as const satisfies ReadonlyArray<{
   project: string
   platforms: readonly RootStyleImportShellPlatform[]
   sourceFile?: string
+  watchStyleFile: string
 }>
 
 export const ROOT_STYLE_IMPORT_SHELL_HMR_EXEMPTIONS = [
@@ -64,7 +68,7 @@ export const ROOT_STYLE_IMPORT_SHELL_HMR_EXEMPTIONS = [
 export function createRootStyleImportShellHmrCases(repositoryRoot: string): RootStyleImportShellHmrCase[] {
   let probeIndex = 0
 
-  return projectConfigs.flatMap(({ project, platforms, sourceFile }) => {
+  return projectConfigs.flatMap(({ project, platforms, sourceFile, watchStyleFile }) => {
     const projectRoot = path.resolve(repositoryRoot, `demo/${project}`)
     return platforms.map((platform) => {
       probeIndex += 1
@@ -78,6 +82,7 @@ export function createRootStyleImportShellHmrCases(repositoryRoot: string): Root
         devScript: `dev:${platform}`,
         sourceFile: path.resolve(projectRoot, sourceFile),
         rootStyleFile: path.resolve(projectRoot, `dist/dev/${platform}/app.${extension}`),
+        watchStyleFiles: [path.resolve(projectRoot, `dist/dev/${platform}/${watchStyleFile}.${extension}`)],
         probeClass: `text-[${probeValue}]`,
         probeValue,
       }
