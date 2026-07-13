@@ -46,6 +46,7 @@ export interface BundleBuildState {
   runtimeAffectingHashByFile: Map<string, string>
   linkedByEntry: Map<string, Set<string>>
   dependentsByLinkedFile: Map<string, Set<string>>
+  bundleMarkupCandidatesByFile: Map<string, Set<string>>
   generatorCandidateSignature?: string | undefined
 }
 
@@ -65,6 +66,7 @@ export function createBundleBuildState(): BundleBuildState {
     runtimeAffectingHashByFile: new Map<string, string>(),
     linkedByEntry: new Map<string, Set<string>>(),
     dependentsByLinkedFile: new Map<string, Set<string>>(),
+    bundleMarkupCandidatesByFile: new Map<string, Set<string>>(),
     generatorCandidateSignature: undefined,
   }
 }

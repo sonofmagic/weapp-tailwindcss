@@ -40,7 +40,7 @@ export interface GenerateBundleContext {
   getSourceCandidates?: () => Set<string>
   getSourceCandidateSource?: (file: string) => string | undefined
   getSourceCandidateSources?: () => Iterable<[string, string]>
-  mergeSourceCandidateSource?: (file: string, source: string) => Promise<void>
+  extractSourceCandidates?: (file: string, source: string) => Promise<Set<string>>
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Set<string>) | undefined
   getSourceCandidateSourcesForEntries?: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Map<string, Set<string>>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>

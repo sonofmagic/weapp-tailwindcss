@@ -8814,7 +8814,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 22528,
+      "bytes": 22678,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
@@ -8899,6 +8899,7 @@
         ".theme-dark .dark_cbg-zinc-950",
         ".theme-dark .dark_ctext-zinc-50",
         ".to-_b_h4bcefd_B",
+        ".tracking-_b0_d2em_B",
         ".transition-colors",
         ".tw-root",
         ".user-motto",

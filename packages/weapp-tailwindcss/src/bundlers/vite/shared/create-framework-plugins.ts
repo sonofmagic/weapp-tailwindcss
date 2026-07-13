@@ -23,6 +23,7 @@ import { normalizeFrameworkStylePlatform } from '@/framework/platform'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { createBuiltinViteStyleInjectorPlugins } from '@/style-injector/internal'
+import { extractCandidatesFromSource } from '@/tailwindcss/candidates'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { isTailwindV4CssEntry, normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
@@ -1259,7 +1260,15 @@ export function createViteFrameworkPlugins(
     getSourceCandidates,
     getSourceCandidateSource: file => sourceCandidateCollector.source(file),
     getSourceCandidateSources: () => sourceCandidateCollector.sources(),
-    mergeSourceCandidateSource: (file, source) => sourceCandidateCollector.merge(file, source),
+    extractSourceCandidates: (file, source) => extractCandidatesFromSource(
+      source,
+      path.extname(cleanUrl(file)).slice(1) || 'html',
+      {
+        bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+        customAttributesEntities,
+        disabledDefaultTemplateHandler,
+      },
+    ),
     getSourceCandidatesForEntries,
     getSourceCandidateSourcesForEntries,
     waitForSourceCandidateSyncs,
