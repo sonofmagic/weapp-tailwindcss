@@ -106,6 +106,15 @@ wx-root-portal-content {
   --window-right: 0px;
   --window-magin: 0px;
 }
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+wx-button {
+  background: #000;
+}
 .layer-card-v4 {
   display: flex;
   align-items: center;
@@ -806,41 +815,11 @@ wx-root-portal-content {
 .wx_cbg-blue-500 {
   background-color: var(--color-blue-500);
 }
-button::after,
-wx-button::after {
-  display: none;
-  border: none;
-  content: '';
-}
-wx-button {
-  background: #000;
-}
-.layer-card-v4 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-midnight);
-}
-button::after,
-wx-button::after {
-  display: none;
-  border: none;
-  content: '';
-}
-wx-button {
-  background: #000;
-}
 wx-button {
   background: #444;
 }
 abc {
   background: #222;
-}
-.layer-card-v4 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-midnight);
 }
 .weapp-tw-user-ui-card {
   display: inline-flex;

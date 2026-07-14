@@ -17,8 +17,8 @@ describe('user layer order helpers', () => {
     expect(extracted.rest).toContain('.before')
     expect(reorderMarkedUserLayerComponentsCss('.plain{color:red}')).toBe('.plain{color:red}')
     const reordered = reorderMarkedUserLayerComponentsCss(css)
-    expect(reordered.indexOf('.before{color:red}')).toBeLessThan(reordered.indexOf('.card{display:flex}'))
-    expect(reordered.indexOf('.card{display:flex}')).toBeLessThan(reordered.indexOf('.flex{display:flex}'))
+    expect(reordered.indexOf('.card{display:flex}')).toBeLessThan(reordered.indexOf('.before{color:red}'))
+    expect(reordered.indexOf('.before{color:red}')).toBeLessThan(reordered.indexOf('.flex{display:flex}'))
   })
 
   it('merges marked layers while removing existing matching rules from base css', () => {
@@ -37,6 +37,32 @@ describe('user layer order helpers', () => {
     expect(merged.css).toContain('.card{display:grid}')
     expect(merged.css).not.toContain('.card{display:flex}')
     expect(merged.css).not.toContain('.card:hover')
+  })
+
+  it('uses css structure instead of indentation to place user layers before generated rules', () => {
+    const marked = wrapUserLayerComponentsCss([
+      'button::after,wx-button::after{display:none;border:none;content:""}',
+      'wx-button{background:#000}',
+      '.layer-card-v4{display:flex;color:var(--color-midnight)}',
+    ].join(''))
+    const css = [
+      ':host,page,.tw-root{--color-midnight:#121063}',
+      '  view,text,::after,::before{box-sizing:border-box;border:0 solid}',
+      '  .layer-card-v4{display:flex;color:var(--color-midnight)}',
+      '  .template-corpus-apply{display:inline-flex}',
+      marked,
+      '  .m-3{margin:12px}',
+      'wx-button{background:#444}',
+    ].join('\n')
+
+    const reordered = reorderMarkedUserLayerComponentsCss(css)
+
+    expect(reordered.indexOf('view,text')).toBeLessThan(reordered.indexOf('button::after'))
+    expect(reordered.indexOf('button::after')).toBeLessThan(reordered.indexOf('.layer-card-v4'))
+    expect(reordered.indexOf('.layer-card-v4')).toBeLessThan(reordered.indexOf('.template-corpus-apply'))
+    expect(reordered.indexOf('.template-corpus-apply')).toBeLessThan(reordered.indexOf('.m-3'))
+    expect(reordered.indexOf('.m-3')).toBeLessThan(reordered.indexOf('wx-button{background:#444}'))
+    expect(reordered.match(/\.layer-card-v4/g)).toHaveLength(1)
   })
 
   it('handles empty marked layers and missing base chunks without changing css', () => {

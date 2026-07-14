@@ -55,6 +55,18 @@ describe('uni-app vite vue3 Tailwind v4 cascade layer output', () => {
     expect(css, 'mp-weixin css should not keep unsupported @layer wrappers').not.toMatch(/@layer\b/)
     expect(css, 'mp-weixin css should keep custom Tailwind v4 layer rules').toMatch(/\.layer-card-v4\s*\{[\s\S]*?display:\s*flex/)
     expect(css, 'mp-weixin css should keep declarations inside custom Tailwind v4 layer rules').toMatch(/color:\s*var\(--color-midnight\)/)
+    const baseIndex = css.indexOf('button::after')
+    const componentIndex = css.indexOf('.layer-card-v4')
+    const utilityIndex = css.indexOf('.m-3')
+    const unlayeredIndex = css.search(/wx-button\s*\{\s*background:\s*#444/)
+    expect(baseIndex, 'mp-weixin css should emit base layer rules').toBeGreaterThanOrEqual(0)
+    expect(componentIndex, 'mp-weixin css should emit component layer rules').toBeGreaterThan(baseIndex)
+    expect(utilityIndex, 'mp-weixin css should emit utility layer rules after components').toBeGreaterThan(componentIndex)
+    expect(unlayeredIndex, 'mp-weixin css should keep unlayered overrides after utilities').toBeGreaterThan(utilityIndex)
+    expect(css.match(/(?:^|[\n,{])\s*button::after/g), 'mp-weixin css should not replay base layer rules').toHaveLength(1)
+    expect(css.match(/\.layer-card-v4/g), 'mp-weixin css should not replay component layer rules').toHaveLength(1)
+    expect(css.match(/wx-button\s*\{\s*background:\s*#000/g), 'mp-weixin css should not replay layer declarations').toHaveLength(1)
+    expect(css.match(/wx-button\s*\{\s*background:\s*#444/g), 'mp-weixin css should preserve the unlayered override').toHaveLength(1)
   }, 600_000)
 
   it('uses web compatibility output for H5 css by default', async () => {
