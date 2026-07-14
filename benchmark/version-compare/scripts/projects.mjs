@@ -139,13 +139,9 @@ export const benchmarkProjects = [
     },
     sourceFile: 'src/pages/index/index.vue',
     outputTemplate: 'dist/dev/mp-weixin/pages/index/index.wxml',
-    devScript: 'dev:e2e-watch',
+    devScript: 'dev:mp-weixin',
     injectType: 'vue',
-    hmrMode: 'fallback-build',
-    hmrNote: 'uni-app mp-weixin CI watch 通过 dev:e2e-watch 的 strict build fallback 验证产物，不能作为真实 watch HMR 样本',
-    devEnv: {
-      UNI_E2E_WATCH_NATIVE: '1',
-    },
+    hmrMode: 'watch',
   },
   {
     key: 'demo-uni-app-vite-tailwindcss-v4__h5',

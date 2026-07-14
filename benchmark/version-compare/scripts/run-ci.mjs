@@ -296,6 +296,44 @@ async function runSourceCandidateHotUpdateBenchmark(root) {
   return JSON.parse(outputLine)
 }
 
+async function runProcessedCssCoverageBenchmark(root) {
+  const sourceFile = path.join(root, 'packages/weapp-tailwindcss/src/bundlers/vite/processed-css-assets.ts')
+  const tsconfig = path.join(root, 'packages/weapp-tailwindcss/tsconfig.json')
+  const script = path.join(repoRoot, 'benchmark/version-compare/scripts/processed-css-coverage.mts')
+  const stdout = await runCapture(root, 'pnpm', [
+    'exec',
+    'tsx',
+    '--tsconfig',
+    tsconfig,
+    script,
+    sourceFile,
+  ])
+  const outputLine = stdout.trim().split(/\r?\n/).at(-1)
+  if (!outputLine) {
+    throw new Error(`processed css coverage benchmark did not produce output for ${root}`)
+  }
+  return JSON.parse(outputLine)
+}
+
+async function runProcessedCssInjectionBenchmark(root) {
+  const sourceFile = path.join(root, 'packages/weapp-tailwindcss/src/bundlers/vite/processed-css-assets.ts')
+  const tsconfig = path.join(root, 'packages/weapp-tailwindcss/tsconfig.json')
+  const script = path.join(repoRoot, 'benchmark/version-compare/scripts/processed-css-injection.mts')
+  const stdout = await runCapture(root, 'pnpm', [
+    'exec',
+    'tsx',
+    '--tsconfig',
+    tsconfig,
+    script,
+    sourceFile,
+  ])
+  const outputLine = stdout.trim().split(/\r?\n/).at(-1)
+  if (!outputLine) {
+    throw new Error(`processed css injection benchmark did not produce output for ${root}`)
+  }
+  return JSON.parse(outputLine)
+}
+
 function createSourceCandidateBenchmarkRow(version, root, result) {
   return {
     version,
@@ -307,6 +345,50 @@ function createSourceCandidateBenchmarkRow(version, root, result) {
     buildNote: 'internal hot-update micro benchmark',
     hmrMode: 'watch',
     hmrNote: 'plugin-only source candidate hot-update micro benchmark',
+    buildMs: [],
+    buildPluginMs: [],
+    hmrMs: [],
+    hmrPluginMs: result.samples,
+    summary: {
+      hmrPlugin: result.summary,
+      hmrPluginSteady: result.summary,
+    },
+  }
+}
+
+function createProcessedCssCoverageBenchmarkRow(version, root, result) {
+  return {
+    version,
+    root,
+    key: 'core-vite-processed-css-coverage',
+    project: 'packages/weapp-tailwindcss',
+    target: 'core',
+    buildMode: 'unsupported',
+    buildNote: 'internal processed css coverage micro benchmark',
+    hmrMode: 'watch',
+    hmrNote: 'plugin-only processed css coverage micro benchmark',
+    buildMs: [],
+    buildPluginMs: [],
+    hmrMs: [],
+    hmrPluginMs: result.samples,
+    summary: {
+      hmrPlugin: result.summary,
+      hmrPluginSteady: result.summary,
+    },
+  }
+}
+
+function createProcessedCssInjectionBenchmarkRow(version, root, result) {
+  return {
+    version,
+    root,
+    key: 'core-vite-processed-css-injection',
+    project: 'packages/weapp-tailwindcss',
+    target: 'core',
+    buildMode: 'unsupported',
+    buildNote: 'internal processed css injection micro benchmark',
+    hmrMode: 'watch',
+    hmrNote: 'plugin-only processed css injection micro benchmark',
     buildMs: [],
     buildPluginMs: [],
     hmrMs: [],
@@ -383,9 +465,17 @@ async function main() {
   if (baselineRef && !process.argv.includes('--skip-core-metrics')) {
     const baselineCore = await runSourceCandidateHotUpdateBenchmark(baselineRoot)
     const currentCore = await runSourceCandidateHotUpdateBenchmark(currentRoot)
+    const baselineProcessedCss = await runProcessedCssCoverageBenchmark(baselineRoot)
+    const currentProcessedCss = await runProcessedCssCoverageBenchmark(currentRoot)
+    const baselineProcessedCssInjection = await runProcessedCssInjectionBenchmark(baselineRoot)
+    const currentProcessedCssInjection = await runProcessedCssInjectionBenchmark(currentRoot)
     raw.rows.push(
       createSourceCandidateBenchmarkRow(baselineLabel, baselineRoot, baselineCore),
       createSourceCandidateBenchmarkRow(currentLabel, currentRoot, currentCore),
+      createProcessedCssCoverageBenchmarkRow(baselineLabel, baselineRoot, baselineProcessedCss),
+      createProcessedCssCoverageBenchmarkRow(currentLabel, currentRoot, currentProcessedCss),
+      createProcessedCssInjectionBenchmarkRow(baselineLabel, baselineRoot, baselineProcessedCssInjection),
+      createProcessedCssInjectionBenchmarkRow(currentLabel, currentRoot, currentProcessedCssInjection),
     )
     await fs.writeFile(rawPath, `${JSON.stringify(raw, null, 2)}\n`, 'utf8')
   }

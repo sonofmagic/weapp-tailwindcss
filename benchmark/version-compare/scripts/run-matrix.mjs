@@ -5,6 +5,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { benchmarkProjects as projects } from './projects.mjs'
 import { resolvePluginTimingSample } from './timing.mjs'
+import { createWatchLogBuffer } from './watch-log-buffer.mjs'
 
 const defaultVersions = [
   { version: '4.9.8', root: '/tmp/weapp-tailwindcss-4.9.8' },
@@ -408,21 +409,10 @@ async function runHmrRounds({
     WEAPP_TW_HMR_TIMING_LOG: '0',
     ...devEnv,
   }, 'pipe')
-  const logs = []
-  const collect = (buf) => {
-    const text = buf.toString('utf8')
-    for (const line of text.split(/\r?\n/)) {
-      if (!line) {
-        continue
-      }
-      logs.push(line)
-      if (logs.length > 600) {
-        logs.shift()
-      }
-    }
-  }
-  child.stdout.on('data', collect)
-  child.stderr.on('data', collect)
+  const logBuffer = createWatchLogBuffer()
+  const logs = logBuffer.lines
+  child.stdout.on('data', logBuffer.collect)
+  child.stderr.on('data', logBuffer.collect)
 
   try {
     const ready = await waitFor(async () => {
@@ -448,7 +438,7 @@ async function runHmrRounds({
     for (let i = 0; i < rounds; i += 1) {
       const marker = `twbench${Date.now()}${i}`
       const next = injectContent(original, marker, injectType)
-      const timingLogStart = logs.length
+      const roundLogs = logBuffer.beginRound()
       const start = now()
       await fs.writeFile(sourcePath, next, 'utf8')
 
@@ -469,7 +459,7 @@ async function runHmrRounds({
         throw new Error(`hmr round ${i + 1} timeout ${timeoutMs}ms marker=${marker}\n${logs.slice(-120).join('\n')}`)
       }
 
-      const pluginTiming = await waitForPluginTimingSample(logs, timingLogStart, timeoutMs, pollIntervalMs)
+      const pluginTiming = await waitForPluginTimingSample(roundLogs.lines, 0, timeoutMs, pollIntervalMs)
       times.push({
         durationMs: now() - start,
         pluginProcessMs: pluginTiming?.durationMs,
@@ -477,7 +467,18 @@ async function runHmrRounds({
       })
 
       await fs.writeFile(sourcePath, original, 'utf8')
-      await new Promise(resolve => setTimeout(resolve, injectType === 'wxml-class' ? 900 : 260))
+      const rolledBack = await waitFor(async () => {
+        for (const probePath of probePaths) {
+          if ((await readText(probePath)).includes(marker)) {
+            return false
+          }
+        }
+        return true
+      }, timeoutMs, pollIntervalMs)
+      roundLogs.close()
+      if (!rolledBack) {
+        throw new Error(`hmr rollback ${i + 1} timeout ${timeoutMs}ms marker=${marker}\n${logs.slice(-120).join('\n')}`)
+      }
     }
 
     await fs.writeFile(sourcePath, original, 'utf8')
@@ -505,21 +506,10 @@ async function runDevServerHmrRounds({
     WEAPP_TW_HMR_TIMING_LOG: '0',
     ...projectMeta.devEnv,
   }, 'pipe')
-  const logs = []
-  const collect = (buf) => {
-    const text = buf.toString('utf8')
-    for (const line of text.split(/\r?\n/)) {
-      if (!line) {
-        continue
-      }
-      logs.push(line)
-      if (logs.length > 600) {
-        logs.shift()
-      }
-    }
-  }
-  child.stdout.on('data', collect)
-  child.stderr.on('data', collect)
+  const logBuffer = createWatchLogBuffer()
+  const logs = logBuffer.lines
+  child.stdout.on('data', logBuffer.collect)
+  child.stderr.on('data', logBuffer.collect)
 
   try {
     let baseUrl = `http://127.0.0.1:${port}/`
@@ -550,7 +540,7 @@ async function runDevServerHmrRounds({
       const marker = `twbench${Date.now()}${i}`
       const next = injectContent(original, marker, projectMeta.injectType)
       const probeUrls = resolveServerProbeUrls(projectMeta, baseUrl, marker)
-      const timingLogStart = logs.length
+      const roundLogs = logBuffer.beginRound()
       const start = now()
       await fs.writeFile(sourcePath, next, 'utf8')
 
@@ -578,7 +568,7 @@ async function runDevServerHmrRounds({
         throw new Error(`dev server hmr round ${i + 1} timeout ${timeoutMs}ms marker=${marker}\n${lastError}\n${logs.slice(-120).join('\n')}`)
       }
 
-      const pluginTiming = await waitForPluginTimingSample(logs, timingLogStart, timeoutMs, pollIntervalMs)
+      const pluginTiming = await waitForPluginTimingSample(roundLogs.lines, 0, timeoutMs, pollIntervalMs)
       times.push({
         durationMs: now() - start,
         pluginProcessMs: pluginTiming?.durationMs,
@@ -586,7 +576,27 @@ async function runDevServerHmrRounds({
       })
 
       await fs.writeFile(sourcePath, original, 'utf8')
-      await new Promise(resolve => setTimeout(resolve, 260))
+      let rollbackError = ''
+      const rolledBack = await waitFor(async () => {
+        let successfulProbe = false
+        for (const url of probeUrls) {
+          try {
+            const text = await fetchProbeText(url)
+            successfulProbe = true
+            if (text.includes(marker)) {
+              return false
+            }
+          }
+          catch (error) {
+            rollbackError = error instanceof Error ? `${url} ${error.message}` : `${url} ${String(error)}`
+          }
+        }
+        return successfulProbe
+      }, timeoutMs, pollIntervalMs)
+      roundLogs.close()
+      if (!rolledBack) {
+        throw new Error(`dev server hmr rollback ${i + 1} timeout ${timeoutMs}ms marker=${marker}\n${rollbackError}\n${logs.slice(-120).join('\n')}`)
+      }
     }
 
     await fs.writeFile(sourcePath, original, 'utf8')

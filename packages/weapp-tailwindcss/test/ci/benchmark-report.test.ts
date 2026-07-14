@@ -38,11 +38,15 @@ describe('benchmark ci report', () => {
       'demo-web-vue-vite-tailwindcss-v4__web',
       'demo-uni-app-vite-tailwindcss-v4__mp-weixin',
       'demo-uni-app-vite-tailwindcss-v4__h5',
+      'demo-mpx-tailwindcss-v4__mp-weixin',
     ]))
     const uniMpWeixin = benchmarkProjects.find(project => project.key === 'demo-uni-app-vite-tailwindcss-v4__mp-weixin')
     expect(uniMpWeixin?.buildEnv).toMatchObject({ UNI_BUILD_STRICT: '1' })
-    expect(uniMpWeixin?.hmrMode).toBe('fallback-build')
-    expect(uniMpWeixin?.hmrNote).toContain('strict build fallback')
+    expect(uniMpWeixin?.devScript).toBe('dev:mp-weixin')
+    expect(uniMpWeixin?.hmrMode).toBe('watch')
+    const mpxMpWeixin = benchmarkProjects.find(project => project.key === 'demo-mpx-tailwindcss-v4__mp-weixin')
+    expect(mpxMpWeixin?.devScript).toBe('dev:e2e-watch')
+    expect(mpxMpWeixin?.hmrMode).toBe('watch')
     expect(benchmarkProjects.filter(project => project.key.includes('taro') && project.target === 'mp-weixin').every(project => project.hmrMode === 'watch')).toBe(true)
     const realDevServerTargets = benchmarkProjects.filter(project => (project.target === 'h5' || project.target === 'web') && !project.key.includes('hbuilderx'))
     expect(realDevServerTargets.every(project => project.hmrMode === 'watch')).toBe(true)
@@ -58,6 +62,10 @@ describe('benchmark ci report', () => {
     expect(source).toContain("part === 'dist'")
     expect(source).toContain('runSourceCandidateHotUpdateBenchmark')
     expect(source).toContain('core-source-candidate-hot-update')
+    expect(source).toContain('runProcessedCssCoverageBenchmark')
+    expect(source).toContain('core-vite-processed-css-coverage')
+    expect(source).toContain('runProcessedCssInjectionBenchmark')
+    expect(source).toContain('core-vite-processed-css-injection')
   })
 
   it('extracts plugin processing time from structured Vite and Webpack timing logs', async () => {
@@ -80,6 +88,28 @@ describe('benchmark ci report', () => {
     })
     expect(resolvePluginProcessMs(lines.slice(2))).toBe(126)
     expect(resolvePluginProcessMs(['unrelated output'])).toBeUndefined()
+  })
+
+  it('keeps round timing logs after the bounded diagnostic buffer rolls over', async () => {
+    const { createWatchLogBuffer } = await import('../../../../benchmark/version-compare/scripts/watch-log-buffer.mjs')
+    const buffer = createWatchLogBuffer(3)
+    buffer.collect(Buffer.from('startup-1\nstartup-2\nstartup-3\n'))
+    const round = buffer.beginRound()
+
+    buffer.collect(Buffer.from('verbose-1\nverbose-2\nverbose-3\n'))
+    buffer.collect(Buffer.from('[weapp-tailwindcss:hmr] {"bundler":"webpack","phase":"processAssets","durationMs":126}\n'))
+
+    expect(buffer.lines).toHaveLength(3)
+    expect(buffer.lines).not.toContain('startup-3')
+    expect(round.lines).toEqual([
+      'verbose-1',
+      'verbose-2',
+      'verbose-3',
+      '[weapp-tailwindcss:hmr] {"bundler":"webpack","phase":"processAssets","durationMs":126}',
+    ])
+    round.close()
+    buffer.collect(Buffer.from('after-round\n'))
+    expect(round.lines).not.toContain('after-round')
   })
 
   it('fails layered performance guards only after relative and absolute thresholds are exceeded', async () => {
@@ -175,7 +205,8 @@ describe('benchmark ci report', () => {
     expect(source).toContain("['exec', 'uni', '--host', '127.0.0.1', '--port', String(port), '--strictPort']")
     expect(source).toContain('resolveLoggedBaseUrls')
     expect(source).toContain('fetchProbeText')
-    expect(source).toContain('await waitForPluginTimingSample(logs, timingLogStart, timeoutMs, pollIntervalMs)')
+    expect(source).toContain('await waitForPluginTimingSample(roundLogs.lines, 0, timeoutMs, pollIntervalMs)')
+    expect(source).toContain('hmr rollback')
     expect(source).toContain("onlyItems.includes(item.key) || onlyItems.includes(item.project)")
     expect(source).toContain("className=(['\"])(.*?)\\1")
     expect(source).toContain('data-tw-bench')

@@ -587,10 +587,12 @@ function collectRootScopedComparableCssCoverage(cssSources: string[]) {
   const rules = new Set<string>()
   const atRules = new Set<string>()
   const declarationsBySelector = new Map<string, Set<string>>()
+  const normalizedRuleCss = new Set<string>()
   for (const source of cssSources) {
     try {
       const root = postcss.parse(source)
       root.walkRules((rule) => {
+        normalizedRuleCss.add(normalizeCssSignatureValue(rule.toString()))
         const declarations = createDeclarationSignature(rule)
         if (declarations.length === 0) {
           return
@@ -612,7 +614,22 @@ function collectRootScopedComparableCssCoverage(cssSources: string[]) {
     catch {
     }
   }
-  return { rules, atRules, declarationsBySelector }
+  return { rules, atRules, declarationsBySelector, normalizedRuleCss }
+}
+
+type ComparableCssCoverage = ReturnType<typeof collectRootScopedComparableCssCoverage>
+
+function prepareImportedCssCoverage(importedCssSources: string[]) {
+  const sources = importedCssSources
+    .map(source => stripBundlerGeneratedCssMarkers(source).trim())
+    .filter(Boolean)
+  if (sources.length === 0) {
+    return undefined
+  }
+  return {
+    coverage: collectRootScopedComparableCssCoverage(sources),
+    sources,
+  }
 }
 
 function isRuleCoveredByRootCss(rule: postcss.Rule, coverage: ReturnType<typeof collectRootScopedComparableCssCoverage>) {
@@ -726,11 +743,71 @@ export function removeCssCoveredByRootStyleBundleSources(
   css: string,
 ) {
   const rootSources = collectRootStyleBundleCssSources(bundle, file)
-  const withoutExactRootCss = removeDanglingCssSourceTraceComments(removeCssCoveredByImportedViteResults(
-    css,
-    rootSources,
-  ))
-  const nextCss = removeScopedCssCoveredByRootStyleSources(withoutExactRootCss, rootSources)
+  if (rootSources.length === 0 || css.trim().length === 0) {
+    return css
+  }
+  const coverage = collectRootScopedComparableCssCoverage(rootSources)
+  const hasScopedCss = hasVueScopedAttr(css)
+  const hasScopedTailwindGeneratedCss = hasScopedCss && /tailwindcss v\d/i.test(css)
+  let nextCss = css
+  try {
+    const root = postcss.parse(css)
+    let changed = false
+    root.walkRules((rule) => {
+      if (
+        coverage.normalizedRuleCss.has(normalizeCssSignatureValue(rule.toString()))
+        || (
+          hasScopedCss
+          && (
+            isRuleCoveredByRootCss(rule, coverage)
+            || (hasScopedTailwindGeneratedCss && isLikelyTailwindGlobalRule(rule))
+            || isUnscopedMiniProgramTailwindPreflightRule(rule)
+            || isScopedMiniProgramTailwindContentInitRule(rule)
+          )
+        )
+      ) {
+        rule.remove()
+        changed = true
+      }
+    })
+    if (hasScopedCss) {
+      root.walkAtRules((atRule) => {
+        if (
+          coverage.atRules.has(createAtRuleCoverageKey(atRule))
+          || (hasScopedTailwindGeneratedCss && isLikelyTailwindPropertyAtRule(atRule))
+        ) {
+          atRule.remove()
+          changed = true
+          return
+        }
+        if (atRule.nodes !== undefined && atRule.nodes.length === 0) {
+          atRule.remove()
+          changed = true
+        }
+      })
+    }
+    root.walkComments((comment) => {
+      if (hasScopedCss && /tailwindcss v\d/i.test(comment.text)) {
+        comment.remove()
+        changed = true
+        return
+      }
+      if (!comment.text.trim().startsWith('tokens:')) {
+        return
+      }
+      const next = comment.next()
+      if (next?.type === 'rule' || next?.type === 'atrule') {
+        return
+      }
+      comment.remove()
+      changed = true
+    })
+    if (changed) {
+      nextCss = root.toString().trim()
+    }
+  }
+  catch {
+  }
   return hasNonCommentCss(nextCss) ? nextCss : ''
 }
 
@@ -1172,30 +1249,28 @@ function removeCoveredInjectedSourceAssets(
 function removeCssCoveredByImportedViteResults(
   css: string,
   importedCssSources: string[],
+  prepared = prepareImportedCssCoverage(importedCssSources),
 ) {
-  if (importedCssSources.length === 0) {
-    return css
-  }
-  const importedCss = importedCssSources
-    .map(source => stripBundlerGeneratedCssMarkers(source).trim())
-    .filter(Boolean)
-    .join('\n')
-  if (importedCss.length === 0) {
+  if (!prepared) {
     return css
   }
   return restoreCssImportAtRules(
     css,
-    removeCssRulesCoveredBySources(css, [importedCss], { exactOnly: true }),
+    removeCssRulesCoveredBySources(css, prepared.sources, { exactOnly: true }, prepared.coverage),
   )
 }
 
-function removeCssRulesCoveredBySources(css: string, sources: string[], options: { exactOnly?: boolean | undefined } = {}) {
+function removeCssRulesCoveredBySources(
+  css: string,
+  sources: string[],
+  options: { exactOnly?: boolean | undefined } = {},
+  preparedCoverage?: ComparableCssCoverage | undefined,
+) {
   if (sources.length === 0 || css.trim().length === 0) {
     return css
   }
-  const coverage = collectRootScopedComparableCssCoverage(sources)
-  const coveredRuleCss = collectNormalizedRuleCss(sources)
-  if (coverage.rules.size === 0 && coverage.declarationsBySelector.size === 0 && coveredRuleCss.size === 0) {
+  const coverage = preparedCoverage ?? collectRootScopedComparableCssCoverage(sources)
+  if (coverage.rules.size === 0 && coverage.declarationsBySelector.size === 0 && coverage.normalizedRuleCss.size === 0) {
     return css
   }
   try {
@@ -1203,7 +1278,7 @@ function removeCssRulesCoveredBySources(css: string, sources: string[], options:
     let changed = false
     root.walkRules((rule) => {
       if (
-        !coveredRuleCss.has(normalizeCssSignatureValue(rule.toString()))
+        !coverage.normalizedRuleCss.has(normalizeCssSignatureValue(rule.toString()))
         && (options.exactOnly === true || !isRuleCoveredByRootCss(rule, coverage))
       ) {
         return
@@ -1216,21 +1291,6 @@ function removeCssRulesCoveredBySources(css: string, sources: string[], options:
   catch {
     return css
   }
-}
-
-function collectNormalizedRuleCss(sources: string[]) {
-  const rules = new Set<string>()
-  for (const source of sources) {
-    try {
-      const root = postcss.parse(source)
-      root.walkRules((rule) => {
-        rules.add(normalizeCssSignatureValue(rule.toString()))
-      })
-    }
-    catch {
-    }
-  }
-  return rules
 }
 
 function collectCssImportAtRuleCss(css: string) {
@@ -1722,9 +1782,11 @@ export function injectViteProcessedCssIntoMainCssAssets(
     let nextCss = normalizedOriginalCss.css
     const importedStyleFiles = normalizedOriginalCss.importedStyleFiles
     const importedBundleCssSources = collectImportedBundleCssSources(bundle, importedStyleFiles)
+    const importedBundleCssCoverage = prepareImportedCssCoverage(importedBundleCssSources)
     nextCss = removeCssCoveredByImportedViteResults(
       nextCss,
       importedBundleCssSources,
+      importedBundleCssCoverage,
     )
     const importedViteCssResults = viteCssResults.filter(record => isViteProcessedCssResultImported(record, importedStyleFiles))
     const bundleAssetFiles = collectBundleAssetFiles(bundle)
@@ -1735,7 +1797,13 @@ export function injectViteProcessedCssIntoMainCssAssets(
       ...importedBundleCssSources,
       ...uncoveredImportedViteCssResults.map(record => record.css),
     ]
-    nextCss = removeCssCoveredByImportedViteResults(nextCss, uncoveredImportedViteCssResults.map(record => record.css))
+    const uncoveredImportedCssSources = uncoveredImportedViteCssResults.map(record => record.css)
+    nextCss = removeCssCoveredByImportedViteResults(
+      nextCss,
+      uncoveredImportedCssSources,
+      prepareImportedCssCoverage(uncoveredImportedCssSources),
+    )
+    const importedCssCoverage = prepareImportedCssCoverage(importedCssSources)
     const targetViteCssResults: typeof viteCssResults = []
     for (const record of viteCssResults) {
       if (!isRootStyleOutputFile(file)) {
@@ -1754,7 +1822,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
       }
       targetViteCssResults.push(record)
       let css = measure('normalizeRecord', () => normalizeInjectableCssForTarget(stripBundlerGeneratedCssMarkers(record.css).trim(), file).trim())
-      css = measure('importCoverage', () => removeCssCoveredByImportedViteResults(css, importedCssSources).trim())
+      css = measure('importCoverage', () => removeCssCoveredByImportedViteResults(css, importedCssSources, importedCssCoverage).trim())
       if (css.length === 0) {
         continue
       }
@@ -1765,9 +1833,6 @@ export function injectViteProcessedCssIntoMainCssAssets(
         if (css.length === 0) {
           continue
         }
-      }
-      if (measure('contains', () => containsCssAfterMinify(nextCss, css))) {
-        continue
       }
       const mergedPreflightDeclarations = measure('mergePreflight', () => mergeMiniProgramPreflightRuleDeclarations(nextCss, css))
       if (mergedPreflightDeclarations.changed) {
@@ -1800,11 +1865,17 @@ export function injectViteProcessedCssIntoMainCssAssets(
       nextCss = appendCss(nextCss, missingCss)
     }
     const finalImportedCssSources = collectImportedBundleCssSources(bundle, collectImportedStyleFiles(originalSource, file))
+    const finalImportedCssCoverage = prepareImportedCssCoverage(finalImportedCssSources)
     nextCss = measure('finalizeTarget', () => transformCss(
       removeCommentOnlyAtRules(
         restoreCssImportAtRules(
           originalSource,
-          removeCssRulesCoveredBySources(nextCss, finalImportedCssSources, { exactOnly: true }).trim(),
+          removeCssRulesCoveredBySources(
+            nextCss,
+            finalImportedCssSources,
+            { exactOnly: true },
+            finalImportedCssCoverage?.coverage,
+          ).trim(),
           file,
         ),
       ),

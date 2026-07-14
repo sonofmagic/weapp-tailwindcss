@@ -398,11 +398,13 @@ describe('ci workflows', () => {
     const job = workflow.jobs['current-vs-published']
     const runCommand = stepRuns(workflow, 'current-vs-published').find(run => run.includes('pnpm perf:guard'))
 
-    expect(job['timeout-minutes']).toContain("github.event_name == 'pull_request' && 35")
+    expect(job['timeout-minutes']).toContain("github.event_name == 'pull_request' && 50")
     expect(job['timeout-minutes']).toContain('|| 90')
     expect(job.env.BENCH_ONLY).toContain('demo-weapp-vite-tailwindcss-v4__mp-weixin')
     expect(job.env.BENCH_ONLY).toContain('demo-taro-vite-react-tailwindcss-v4__mp-weixin')
     expect(job.env.BENCH_ONLY).toContain('demo-taro-webpack-react-tailwindcss-v4__mp-weixin')
+    expect(job.env.BENCH_ONLY).toContain('demo-uni-app-vite-tailwindcss-v4__mp-weixin')
+    expect(job.env.BENCH_ONLY).toContain('demo-mpx-tailwindcss-v4__mp-weixin')
     expect(job.env.BENCH_ONLY).toContain("github.event.inputs.only || ''")
     expect(job.env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '3'")
     expect(job.env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '4'")
@@ -456,7 +458,7 @@ describe('ci workflows', () => {
       'next',
     ])
     expect(workflow.on.workflow_dispatch.inputs.baseline.default).toBe('auto')
-    expect(workflow.jobs['current-vs-published']['timeout-minutes']).toContain("github.event_name == 'pull_request' && 35")
+    expect(workflow.jobs['current-vs-published']['timeout-minutes']).toContain("github.event_name == 'pull_request' && 50")
     expect(workflow.jobs['current-vs-published']['timeout-minutes']).toContain('|| 90')
     expect(workflow.jobs['current-vs-published'].env.WEAPP_TW_BENCH_BASELINE).toContain('auto')
     expect(workflow.jobs['current-vs-published'].env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '3'")
