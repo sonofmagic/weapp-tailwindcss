@@ -9785,6 +9785,10 @@ wx-root-portal-content {
 .to-90_v {
   --tw-gradient-to-position: 90%;
 }
+ /* tokens: p-4 <= src/pages/issue-998/index.tsx */
+.p-4 {
+  padding: calc(var(--spacing) * 4);
+}
  /* tokens: px-3 <= src/pages/index/index.tsx */
 .px-3 {
   padding-left: calc(var(--spacing) * 3);
