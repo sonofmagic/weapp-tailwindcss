@@ -7950,6 +7950,55 @@ module.exports = {
     expect((bundle['metadata.json'] as OutputAsset).source.toString()).toBe(generatedCss)
   })
 
+  it('removes multiple covered vite css source assets without touching unrelated css', () => {
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+    })
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset(''),
+        fileName: 'app.wxss',
+      },
+      'pages/a.wxss': {
+        ...createRollupAsset('.a{color:red}'),
+        fileName: 'pages/a.wxss',
+      },
+      'pages/b.wxss': {
+        ...createRollupAsset('.b{color:blue}'),
+        fileName: 'pages/b.wxss',
+      },
+      'pages/covered-copy.wxss': {
+        ...createRollupAsset('.a { color: red; }'),
+        fileName: 'pages/covered-copy.wxss',
+      },
+      'pages/unrelated.wxss': {
+        ...createRollupAsset('.unrelated{display:block}'),
+        fileName: 'pages/unrelated.wxss',
+      },
+    }
+    const records = new Map([
+      ['pages/a.wxss', { css: '.a{color:red}', injectIntoMain: true }],
+      ['pages/b.wxss', { css: '.b{color:blue}', injectIntoMain: true }],
+    ])
+
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => records.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+      shouldRemoveInjectedSourceAsset: () => true,
+    })
+
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    expect(appCss).toContain('.a{color:red}')
+    expect(appCss).toContain('.b{color:blue}')
+    expect((bundle['pages/a.wxss'] as OutputAsset).source).toBe('')
+    expect((bundle['pages/b.wxss'] as OutputAsset).source).toBe('')
+    expect((bundle['pages/covered-copy.wxss'] as OutputAsset).source).toBe('')
+    expect((bundle['pages/unrelated.wxss'] as OutputAsset).source).toBe('.unrelated{display:block}')
+  })
+
   it('does not treat same-basename vite css results as imported css', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),

@@ -1119,61 +1119,52 @@ function removeCoveredInjectedSourceAssets(
   records: Array<{ file: string, css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>,
   options: Pick<InjectViteProcessedCssAssetOptions, 'shouldRemoveInjectedSourceAsset' | 'debug'>,
 ) {
-  let removed = 0
   const targetFileKey = normalizeOutputPathKey(targetFile)
   const targetIsRootWebStyle = isRootStyleOutputFile(targetFileKey) && !isMiniProgramStyleOutputFile(targetFileKey)
-  for (const record of records) {
-    if (!options.shouldRemoveInjectedSourceAsset?.(targetFile, record)) {
+  const removableRecords = records.filter(record => options.shouldRemoveInjectedSourceAsset?.(targetFile, record) === true)
+  if (removableRecords.length === 0) {
+    return 0
+  }
+  const recordFileKeys = new Set(removableRecords.map(record => normalizeOutputPathKey(record.file)))
+  const recordCss = new Set(removableRecords.map(record => record.css.trim()))
+  let removed = 0
+  for (const [candidateFile, candidateOutput] of Object.entries(bundle)) {
+    if (candidateOutput.type !== 'asset') {
       continue
     }
-    const recordFileKey = normalizeOutputPathKey(record.file)
-    for (const [candidateFile, candidateOutput] of Object.entries(bundle)) {
-      if (candidateOutput.type !== 'asset') {
-        continue
-      }
-      const candidateKey = normalizeOutputPathKey(getAssetFile(candidateFile, candidateOutput))
-      if (candidateKey === targetFileKey || !isCssOutputFile(candidateKey)) {
-        continue
-      }
-      const isRecordFile = candidateKey === recordFileKey
-      const candidateIsRootWebStyle = isRootStyleOutputFile(candidateKey) && !isMiniProgramStyleOutputFile(candidateKey)
-      if (candidateIsRootWebStyle && !targetIsRootWebStyle) {
-        continue
-      }
-      if (isRecordFile) {
-        if (candidateIsRootWebStyle) {
-          delete bundle[candidateFile]
-        }
-        else {
-          clearAssetSource(candidateOutput)
-        }
-        options.debug?.('remove injected vite-processed source css asset: %s -> %s', candidateKey, targetFile)
-        removed++
-        continue
-      }
-      const candidateSource = readAssetSource(candidateOutput).trim()
-      if (candidateSource.length === 0) {
-        continue
-      }
-      const isProcessedSource = candidateSource === record.css.trim()
-        || containsCssAfterMinify(targetCss, candidateSource)
-        || (
-          targetIsRootWebStyle
-          && candidateIsRootWebStyle
-          && !hasNonCommentCss(filterExistingCssRules(targetCss, candidateSource).trim())
-        )
-      if (!isProcessedSource) {
-        continue
-      }
-      if (candidateIsRootWebStyle) {
-        delete bundle[candidateFile]
-      }
-      else {
-        clearAssetSource(candidateOutput)
-      }
-      options.debug?.('remove injected vite-processed source css asset: %s -> %s', candidateKey, targetFile)
-      removed++
+    const candidateKey = normalizeOutputPathKey(getAssetFile(candidateFile, candidateOutput))
+    if (candidateKey === targetFileKey || !isCssOutputFile(candidateKey)) {
+      continue
     }
+    const candidateIsRootWebStyle = isRootStyleOutputFile(candidateKey) && !isMiniProgramStyleOutputFile(candidateKey)
+    if (candidateIsRootWebStyle && !targetIsRootWebStyle) {
+      continue
+    }
+    const candidateSource = readAssetSource(candidateOutput).trim()
+    const isProcessedSource = recordFileKeys.has(candidateKey)
+      || (
+        candidateSource.length > 0
+        && (
+          recordCss.has(candidateSource)
+          || containsCssAfterMinify(targetCss, candidateSource)
+          || (
+            targetIsRootWebStyle
+            && candidateIsRootWebStyle
+            && !hasNonCommentCss(filterExistingCssRules(targetCss, candidateSource).trim())
+          )
+        )
+      )
+    if (!isProcessedSource) {
+      continue
+    }
+    if (candidateIsRootWebStyle) {
+      delete bundle[candidateFile]
+    }
+    else {
+      clearAssetSource(candidateOutput)
+    }
+    options.debug?.('remove injected vite-processed source css asset: %s -> %s', candidateKey, targetFile)
+    removed++
   }
   return removed
 }

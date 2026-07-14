@@ -144,6 +144,15 @@ async function waitFor(check, timeoutMs, intervalMs = 120) {
   return false
 }
 
+async function waitForPluginTimingSample(logs, startIndex, timeoutMs, intervalMs) {
+  let sample
+  await waitFor(() => {
+    sample = resolvePluginTimingSample(logs.slice(startIndex))
+    return sample !== undefined
+  }, Math.min(timeoutMs, 5000), Math.min(intervalMs, 50))
+  return sample
+}
+
 async function findFreePort() {
   return await new Promise((resolve, reject) => {
     const server = net.createServer()
@@ -460,7 +469,7 @@ async function runHmrRounds({
         throw new Error(`hmr round ${i + 1} timeout ${timeoutMs}ms marker=${marker}\n${logs.slice(-120).join('\n')}`)
       }
 
-      const pluginTiming = resolvePluginTimingSample(logs.slice(timingLogStart))
+      const pluginTiming = await waitForPluginTimingSample(logs, timingLogStart, timeoutMs, pollIntervalMs)
       times.push({
         durationMs: now() - start,
         pluginProcessMs: pluginTiming?.durationMs,
@@ -569,7 +578,7 @@ async function runDevServerHmrRounds({
         throw new Error(`dev server hmr round ${i + 1} timeout ${timeoutMs}ms marker=${marker}\n${lastError}\n${logs.slice(-120).join('\n')}`)
       }
 
-      const pluginTiming = resolvePluginTimingSample(logs.slice(timingLogStart))
+      const pluginTiming = await waitForPluginTimingSample(logs, timingLogStart, timeoutMs, pollIntervalMs)
       times.push({
         durationMs: now() - start,
         pluginProcessMs: pluginTiming?.durationMs,

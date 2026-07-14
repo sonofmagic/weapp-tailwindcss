@@ -175,6 +175,7 @@ describe('benchmark ci report', () => {
     expect(source).toContain("['exec', 'uni', '--host', '127.0.0.1', '--port', String(port), '--strictPort']")
     expect(source).toContain('resolveLoggedBaseUrls')
     expect(source).toContain('fetchProbeText')
+    expect(source).toContain('await waitForPluginTimingSample(logs, timingLogStart, timeoutMs, pollIntervalMs)')
     expect(source).toContain("onlyItems.includes(item.key) || onlyItems.includes(item.project)")
     expect(source).toContain("className=(['\"])(.*?)\\1")
     expect(source).toContain('data-tw-bench')
