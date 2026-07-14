@@ -34,7 +34,11 @@ function toNumberEnv(name: string, fallback: number) {
 }
 
 function resolveTaroDevReadyTimeoutMs() {
-  return Math.max(DEFAULT_READY_TIMEOUT_MS, toNumberEnv('E2E_WATCH_TIMEOUT_MS', DEFAULT_READY_TIMEOUT_MS))
+  const watchTimeoutMs = toNumberEnv('E2E_WATCH_TIMEOUT_MS', DEFAULT_READY_TIMEOUT_MS)
+  return Math.max(
+    DEFAULT_READY_TIMEOUT_MS,
+    toNumberEnv('E2E_TARO_DEV_READY_TIMEOUT_MS', watchTimeoutMs),
+  )
 }
 
 function resolveTaroDevTestTimeoutMs() {

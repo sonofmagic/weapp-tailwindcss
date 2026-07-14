@@ -105,6 +105,23 @@ describe('legacy compat css helpers', () => {
     expect(styleHandler).toHaveBeenCalledTimes(1)
   })
 
+  it('preserves unlayered selector overrides after layer css has been restored', async () => {
+    const styleHandler = vi.fn(async (css: string) => ({ css }))
+    const result = await appendLegacyCompatCss(
+      'wx-button{background:#000}.same{display:block}',
+      'wx-button{background:#444}.same{display:block}',
+      'weapp',
+      styleHandler as any,
+      { majorVersion: 4 } as any,
+      { isMainChunk: true },
+      { preserveSelectorOverrides: true },
+    )
+
+    expect(result.match(/wx-button\{background:#000\}/g)).toHaveLength(1)
+    expect(result.match(/wx-button\{background:#444\}/g)).toHaveLength(1)
+    expect(result.match(/\.same\{display:block\}/g)).toHaveLength(1)
+  })
+
   it('returns original css for container compat on weapp targets', async () => {
     const styleHandler = vi.fn(async (css: string) => ({ css }))
     const css = '.generated{color:blue}'
