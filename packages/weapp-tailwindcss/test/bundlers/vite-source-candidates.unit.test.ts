@@ -233,6 +233,46 @@ describe('bundlers/vite source candidates', () => {
     expect(collector.values().has('text-[123rpx]')).toBe(true)
   })
 
+  it('reports only globally visible candidate changes during source updates', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const collector = createSourceCandidateCollector({
+      extractor: source => source.split(/\s+/).filter(Boolean),
+    })
+
+    await collector.sync('/project/src/pages/a.ts', 'shared old-a')
+    await collector.sync('/project/src/pages/b.ts', 'shared keep-b')
+
+    const change = await collector.syncCurrentSource('/project/src/pages/a.ts', 'shared next-a')
+
+    expect(change).toEqual({
+      addedCandidates: new Set(['next-a']),
+      removedCandidates: new Set(['old-a']),
+    })
+    expect(collector.values()).toEqual(new Set(['shared', 'keep-b', 'next-a']))
+  })
+
+  it('keeps shared and inline candidates out of removal diffs', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const collector = createSourceCandidateCollector({
+      extractor: source => source.split(/\s+/).filter(Boolean),
+    })
+
+    await collector.sync('/project/src/pages/a.ts', 'shared inline-only old-a')
+    await collector.sync('/project/src/pages/b.ts', 'shared')
+    collector.syncInline({
+      included: ['inline-only'],
+      excluded: [],
+    })
+
+    const change = collector.remove('/project/src/pages/a.ts')
+
+    expect(change).toEqual({
+      addedCandidates: new Set(),
+      removedCandidates: new Set(['old-a']),
+    })
+    expect(collector.values()).toEqual(new Set(['shared', 'inline-only']))
+  })
+
   it('excludes candidates matched by source entries', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const root = await createTempDir('weapp-tw-vite-source-exclude')

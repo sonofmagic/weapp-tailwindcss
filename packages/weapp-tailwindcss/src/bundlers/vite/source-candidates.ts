@@ -196,10 +196,7 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
   let inlineIncludedCandidates = new Set<string>()
   let inlineExcludedCandidates = new Set<string>()
 
-  async function sync(id: string, source: string) {
-    const normalizedId = cleanUrl(id)
-    scanSourceById.set(normalizedId, source)
-    const extension = resolveSourceCandidateExtension(normalizedId)
+  async function resolveCandidates(source: string, extension: string) {
     const contentCacheKey = createSourceCandidateContentCacheKey(
       extension,
       source,
@@ -210,60 +207,49 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     )
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     if (cachedCandidates) {
-      replaceScanLayer(normalizedId, new Set(cachedCandidates))
-      return
+      return new Set(cachedCandidates)
     }
 
     const nextCandidates = await extractCandidates(source, extension, options)
     sourceCandidateContentCache.set(contentCacheKey, [...nextCandidates])
+    return nextCandidates
+  }
 
-    replaceScanLayer(normalizedId, nextCandidates)
+  function isCandidateVisible(candidate: string) {
+    if (inlineExcludedCandidates.has(candidate)) {
+      return false
+    }
+    return inlineIncludedCandidates.has(candidate) || candidateCount.has(candidate)
+  }
+
+  function collectVisibleCandidates(candidates: Iterable<string>) {
+    const visible = new Set<string>()
+    for (const candidate of candidates) {
+      if (isCandidateVisible(candidate)) {
+        visible.add(candidate)
+      }
+    }
+    return visible
+  }
+
+  async function sync(id: string, source: string) {
+    const normalizedId = cleanUrl(id)
+    scanSourceById.set(normalizedId, source)
+    const extension = resolveSourceCandidateExtension(normalizedId)
+    replaceScanLayer(normalizedId, await resolveCandidates(source, extension))
   }
 
   async function syncCss(id: string, source: string) {
     const normalizedId = cleanUrl(id)
     cssSourceById.set(normalizedId, source)
-    const contentCacheKey = createSourceCandidateContentCacheKey(
-      'css',
-      source,
-      options.bareArbitraryValues,
-      options.customAttributesEntities,
-      options.disabledDefaultTemplateHandler,
-      options.extractor,
-    )
-    const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
-    if (cachedCandidates) {
-      replaceCssLayer(normalizedId, new Set(cachedCandidates))
-      return
-    }
-
-    const nextCandidates = await extractCandidates(source, 'css', options)
-    sourceCandidateContentCache.set(contentCacheKey, [...nextCandidates])
-
-    replaceCssLayer(normalizedId, nextCandidates)
+    replaceCssLayer(normalizedId, await resolveCandidates(source, 'css'))
   }
 
   async function merge(id: string, source: string) {
     const normalizedId = cleanUrl(id)
     transformSourceById.set(normalizedId, source)
     const extension = resolveSourceCandidateExtension(normalizedId)
-    const contentCacheKey = createSourceCandidateContentCacheKey(
-      extension,
-      source,
-      options.bareArbitraryValues,
-      options.customAttributesEntities,
-      options.disabledDefaultTemplateHandler,
-      options.extractor,
-    )
-    const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
-    const extractedCandidates = cachedCandidates
-      ? new Set(cachedCandidates)
-      : await extractCandidates(source, extension, options)
-    if (!cachedCandidates) {
-      sourceCandidateContentCache.set(contentCacheKey, [...extractedCandidates])
-    }
-
-    replaceTransformLayer(normalizedId, extractedCandidates)
+    replaceTransformLayer(normalizedId, await resolveCandidates(source, extension))
   }
 
   async function syncFile(id: string) {
@@ -290,9 +276,22 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     transformSourceById.delete(normalizedId)
     cssSourceById.delete(normalizedId)
     recompute(normalizedId)
-    const previousCandidates = values()
-    await sync(normalizedId, source)
-    return diffCandidateSets(previousCandidates, values())
+    const previousFileCandidates = new Set(candidatesById.get(normalizedId) ?? [])
+    const extension = resolveSourceCandidateExtension(normalizedId)
+    const nextCandidates = await resolveCandidates(source, extension)
+    const affectedCandidates = new Set([
+      ...previousFileCandidates,
+      ...nextCandidates,
+    ])
+    const previousVisibleCandidates = collectVisibleCandidates(affectedCandidates)
+
+    scanSourceById.set(normalizedId, source)
+    replaceScanLayer(normalizedId, nextCandidates)
+
+    return diffCandidateSets(
+      previousVisibleCandidates,
+      collectVisibleCandidates(affectedCandidates),
+    )
   }
 
   async function syncCurrentFile(id: string) {
@@ -386,7 +385,8 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
 
   function remove(id: string) {
     const normalizedId = cleanUrl(id)
-    const previousValues = values()
+    const affectedCandidates = new Set(candidatesById.get(normalizedId) ?? [])
+    const previousVisibleCandidates = collectVisibleCandidates(affectedCandidates)
     scanCandidatesById.delete(normalizedId)
     transformCandidatesById.delete(normalizedId)
     cssCandidatesById.delete(normalizedId)
@@ -395,11 +395,14 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     cssSourceById.delete(normalizedId)
     const previousCandidates = candidatesById.get(normalizedId)
     if (!previousCandidates) {
-      return diffCandidateSets(previousValues, values())
+      return diffCandidateSets(previousVisibleCandidates, new Set())
     }
     removeCandidateSet(candidateCount, previousCandidates)
     candidatesById.delete(normalizedId)
-    return diffCandidateSets(previousValues, values())
+    return diffCandidateSets(
+      previousVisibleCandidates,
+      collectVisibleCandidates(affectedCandidates),
+    )
   }
 
   function source(id: string) {

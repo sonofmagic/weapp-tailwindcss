@@ -833,6 +833,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const cssTaskFactories: Array<() => Promise<void>> = []
     const jsTaskFactories: Array<() => Promise<void>> = []
 
+    const entryPlanningStartedAt = performance.now()
     for (const entry of snapshot.entries) {
       const { file, output: originalSource, source: originalEntrySource, type } = entry
 
@@ -1828,7 +1829,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         useIncrementalMode,
       })
     }
+    recordTimingDetail('entries.plan', entryPlanningStartedAt)
 
+    const rememberedCssStartedAt = performance.now()
     if (processStyles && (shouldProcessTailwindGeneration || useIncrementalMode || isNativeAppStyleTarget)) {
       await processRememberedCssReplay({
         addWatchFile,
@@ -1876,6 +1879,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         useIncrementalMode,
       })
     }
+    recordTimingDetail('rememberedCss.plan', rememberedCssStartedAt)
 
     await finalizeGenerateBundle({
       activeProcessCacheKeys,

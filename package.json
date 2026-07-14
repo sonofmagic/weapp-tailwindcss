@@ -64,6 +64,7 @@
     "test:frameworks:matrix": "vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-demo-ci-coverage-matrix.test.ts e2e/taro-ci-coverage-matrix.test.ts",
     "bench": "pnpm --filter benchmark-* bench",
     "bench:ci": "node benchmark/version-compare/scripts/run-ci.mjs",
+    "perf:guard": "node benchmark/version-compare/scripts/run-ci.mjs --guard",
     "bench:framework:prepare": "node benchmark/framework-compare/scripts/prepare-minimal-projects.mjs",
     "bench:framework:matrix": "node benchmark/framework-compare/scripts/run-matrix.mjs",
     "bench:framework:sanitize": "node benchmark/framework-compare/scripts/sanitize-results.mjs",

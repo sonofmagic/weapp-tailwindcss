@@ -728,8 +728,9 @@ export function createViteFrameworkPlugins(
   }
   const cacheCurrentSourceCandidateScan = () => {
     if (sourceCandidateScanSignature) {
-      sourceCandidateScanCache.set(sourceCandidateScanSignature, sourceCandidateCollector.snapshot())
-      sourceCandidateScanSnapshotCache.set(sourceCandidateScanSignature, sourceCandidateCollector.snapshot())
+      const snapshot = sourceCandidateCollector.snapshot()
+      sourceCandidateScanCache.set(sourceCandidateScanSignature, snapshot)
+      sourceCandidateScanSnapshotCache.set(sourceCandidateScanSignature, snapshot)
     }
   }
   const shouldDiscoverAutoCssSources = () => {
@@ -800,8 +801,9 @@ export function createViteFrameworkPlugins(
     sourceCandidateScanSignature = nextScanSignature
     sourceCandidateScanInvalidated = false
     if (isWatchLikeBuild()) {
-      sourceCandidateScanCache.set(nextScanSignature, sourceCandidateCollector.snapshot())
-      sourceCandidateScanSnapshotCache.set(nextScanSignature, sourceCandidateCollector.snapshot())
+      const snapshot = sourceCandidateCollector.snapshot()
+      sourceCandidateScanCache.set(nextScanSignature, snapshot)
+      sourceCandidateScanSnapshotCache.set(nextScanSignature, snapshot)
     }
   }
   const waitForSourceCandidateSyncs = async () => {

@@ -69,6 +69,7 @@ interface InjectViteProcessedCssAssetOptions {
   transformCss?: ((css: string, file: string) => string) | undefined
   debug?: ((format: string, ...args: unknown[]) => void) | undefined
   onUpdate?: ((file: string, original: string, generated: string) => void) | undefined
+  recordTimingDetail?: ((name: string, startedAt: number) => void) | undefined
 }
 
 const CSS_OUTPUT_FILE_RE = /\.(?:css|wxss|acss|ttss|qss|jxss|tyss)(?:$|[?#])/i
@@ -586,10 +587,12 @@ function collectRootScopedComparableCssCoverage(cssSources: string[]) {
   const rules = new Set<string>()
   const atRules = new Set<string>()
   const declarationsBySelector = new Map<string, Set<string>>()
+  const normalizedRuleCss = new Set<string>()
   for (const source of cssSources) {
     try {
       const root = postcss.parse(source)
       root.walkRules((rule) => {
+        normalizedRuleCss.add(normalizeCssSignatureValue(rule.toString()))
         const declarations = createDeclarationSignature(rule)
         if (declarations.length === 0) {
           return
@@ -611,7 +614,22 @@ function collectRootScopedComparableCssCoverage(cssSources: string[]) {
     catch {
     }
   }
-  return { rules, atRules, declarationsBySelector }
+  return { rules, atRules, declarationsBySelector, normalizedRuleCss }
+}
+
+type ComparableCssCoverage = ReturnType<typeof collectRootScopedComparableCssCoverage>
+
+function prepareImportedCssCoverage(importedCssSources: string[]) {
+  const sources = importedCssSources
+    .map(source => stripBundlerGeneratedCssMarkers(source).trim())
+    .filter(Boolean)
+  if (sources.length === 0) {
+    return undefined
+  }
+  return {
+    coverage: collectRootScopedComparableCssCoverage(sources),
+    sources,
+  }
 }
 
 function isRuleCoveredByRootCss(rule: postcss.Rule, coverage: ReturnType<typeof collectRootScopedComparableCssCoverage>) {
@@ -725,11 +743,81 @@ export function removeCssCoveredByRootStyleBundleSources(
   css: string,
 ) {
   const rootSources = collectRootStyleBundleCssSources(bundle, file)
-  const withoutExactRootCss = removeDanglingCssSourceTraceComments(removeCssCoveredByImportedViteResults(
-    css,
-    rootSources,
-  ))
-  const nextCss = removeScopedCssCoveredByRootStyleSources(withoutExactRootCss, rootSources)
+  if (css.trim().length === 0) {
+    return css
+  }
+  const hasScopedCss = hasVueScopedAttr(css)
+  const hasScopedTailwindGeneratedCss = hasScopedCss && /tailwindcss v\d/i.test(css)
+  const hasUnscopedMiniProgramPreflight = hasScopedCss && hasUnscopedMiniProgramTailwindPreflightRule(css)
+  const hasScopedMiniProgramContentInit = hasScopedCss && hasScopedMiniProgramTailwindContentInitRule(css)
+  if (
+    rootSources.length === 0
+    && !hasScopedTailwindGeneratedCss
+    && !hasUnscopedMiniProgramPreflight
+    && !hasScopedMiniProgramContentInit
+  ) {
+    return css
+  }
+  const coverage = collectRootScopedComparableCssCoverage(rootSources)
+  let nextCss = css
+  try {
+    const root = postcss.parse(css)
+    let changed = false
+    root.walkRules((rule) => {
+      if (
+        coverage.normalizedRuleCss.has(normalizeCssSignatureValue(rule.toString()))
+        || (
+          hasScopedCss
+          && (
+            isRuleCoveredByRootCss(rule, coverage)
+            || (hasScopedTailwindGeneratedCss && isLikelyTailwindGlobalRule(rule))
+            || isUnscopedMiniProgramTailwindPreflightRule(rule)
+            || isScopedMiniProgramTailwindContentInitRule(rule)
+          )
+        )
+      ) {
+        rule.remove()
+        changed = true
+      }
+    })
+    if (hasScopedCss) {
+      root.walkAtRules((atRule) => {
+        if (
+          coverage.atRules.has(createAtRuleCoverageKey(atRule))
+          || (hasScopedTailwindGeneratedCss && isLikelyTailwindPropertyAtRule(atRule))
+        ) {
+          atRule.remove()
+          changed = true
+          return
+        }
+        if (atRule.nodes !== undefined && atRule.nodes.length === 0) {
+          atRule.remove()
+          changed = true
+        }
+      })
+    }
+    root.walkComments((comment) => {
+      if (hasScopedCss && /tailwindcss v\d/i.test(comment.text)) {
+        comment.remove()
+        changed = true
+        return
+      }
+      if (!comment.text.trim().startsWith('tokens:')) {
+        return
+      }
+      const next = comment.next()
+      if (next?.type === 'rule' || next?.type === 'atrule') {
+        return
+      }
+      comment.remove()
+      changed = true
+    })
+    if (changed) {
+      nextCss = root.toString().trim()
+    }
+  }
+  catch {
+  }
   return hasNonCommentCss(nextCss) ? nextCss : ''
 }
 
@@ -1118,54 +1206,52 @@ function removeCoveredInjectedSourceAssets(
   records: Array<{ file: string, css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>,
   options: Pick<InjectViteProcessedCssAssetOptions, 'shouldRemoveInjectedSourceAsset' | 'debug'>,
 ) {
-  let removed = 0
   const targetFileKey = normalizeOutputPathKey(targetFile)
   const targetIsRootWebStyle = isRootStyleOutputFile(targetFileKey) && !isMiniProgramStyleOutputFile(targetFileKey)
-  for (const record of records) {
-    if (!options.shouldRemoveInjectedSourceAsset?.(targetFile, record)) {
+  const removableRecords = records.filter(record => options.shouldRemoveInjectedSourceAsset?.(targetFile, record) === true)
+  if (removableRecords.length === 0) {
+    return 0
+  }
+  const recordFileKeys = new Set(removableRecords.map(record => normalizeOutputPathKey(record.file)))
+  const recordCss = new Set(removableRecords.map(record => record.css.trim()))
+  let removed = 0
+  for (const [candidateFile, candidateOutput] of Object.entries(bundle)) {
+    if (candidateOutput.type !== 'asset') {
       continue
     }
-    const recordFileKey = normalizeOutputPathKey(record.file)
-    for (const [candidateFile, candidateOutput] of Object.entries(bundle)) {
-      if (candidateOutput.type !== 'asset') {
-        continue
-      }
-      const candidateKey = normalizeOutputPathKey(getAssetFile(candidateFile, candidateOutput))
-      if (candidateKey === targetFileKey) {
-        continue
-      }
-      const isRecordFile = candidateKey === recordFileKey
-      const candidateIsRootWebStyle = isRootStyleOutputFile(candidateKey) && !isMiniProgramStyleOutputFile(candidateKey)
-      const candidateSource = readAssetSource(candidateOutput).trim()
-      const uncoveredCandidateSource = candidateSource.length > 0
-        ? filterExistingCssRules(targetCss, candidateSource).trim()
-        : candidateSource
-      const isProcessedSource = candidateSource === record.css.trim()
-        || (candidateSource.length > 0 && containsCssAfterMinify(targetCss, candidateSource))
-        || (
-          targetIsRootWebStyle
-          && candidateIsRootWebStyle
-          && candidateSource.length > 0
-          && !hasNonCommentCss(uncoveredCandidateSource)
-        )
-      if (!isRecordFile && !isProcessedSource) {
-        continue
-      }
-      if (candidateIsRootWebStyle && !targetIsRootWebStyle) {
-        continue
-      }
-      if (candidateIsRootWebStyle && !isRecordFile && !isProcessedSource) {
-        continue
-      }
-      if (candidateIsRootWebStyle) {
-        delete bundle[candidateFile]
-      }
-      else {
-        clearAssetSource(candidateOutput)
-      }
-      options.debug?.('remove injected vite-processed source css asset: %s -> %s', candidateKey, targetFile)
-      removed++
+    const candidateKey = normalizeOutputPathKey(getAssetFile(candidateFile, candidateOutput))
+    if (candidateKey === targetFileKey || !isCssOutputFile(candidateKey)) {
+      continue
     }
+    const candidateIsRootWebStyle = isRootStyleOutputFile(candidateKey) && !isMiniProgramStyleOutputFile(candidateKey)
+    if (candidateIsRootWebStyle && !targetIsRootWebStyle) {
+      continue
+    }
+    const candidateSource = readAssetSource(candidateOutput).trim()
+    const isProcessedSource = recordFileKeys.has(candidateKey)
+      || (
+        candidateSource.length > 0
+        && (
+          recordCss.has(candidateSource)
+          || containsCssAfterMinify(targetCss, candidateSource)
+          || (
+            targetIsRootWebStyle
+            && candidateIsRootWebStyle
+            && !hasNonCommentCss(filterExistingCssRules(targetCss, candidateSource).trim())
+          )
+        )
+      )
+    if (!isProcessedSource) {
+      continue
+    }
+    if (candidateIsRootWebStyle) {
+      delete bundle[candidateFile]
+    }
+    else {
+      clearAssetSource(candidateOutput)
+    }
+    options.debug?.('remove injected vite-processed source css asset: %s -> %s', candidateKey, targetFile)
+    removed++
   }
   return removed
 }
@@ -1173,30 +1259,28 @@ function removeCoveredInjectedSourceAssets(
 function removeCssCoveredByImportedViteResults(
   css: string,
   importedCssSources: string[],
+  prepared = prepareImportedCssCoverage(importedCssSources),
 ) {
-  if (importedCssSources.length === 0) {
-    return css
-  }
-  const importedCss = importedCssSources
-    .map(source => stripBundlerGeneratedCssMarkers(source).trim())
-    .filter(Boolean)
-    .join('\n')
-  if (importedCss.length === 0) {
+  if (!prepared) {
     return css
   }
   return restoreCssImportAtRules(
     css,
-    removeCssRulesCoveredBySources(css, [importedCss], { exactOnly: true }),
+    removeCssRulesCoveredBySources(css, prepared.sources, { exactOnly: true }, prepared.coverage),
   )
 }
 
-function removeCssRulesCoveredBySources(css: string, sources: string[], options: { exactOnly?: boolean | undefined } = {}) {
+function removeCssRulesCoveredBySources(
+  css: string,
+  sources: string[],
+  options: { exactOnly?: boolean | undefined } = {},
+  preparedCoverage?: ComparableCssCoverage | undefined,
+) {
   if (sources.length === 0 || css.trim().length === 0) {
     return css
   }
-  const coverage = collectRootScopedComparableCssCoverage(sources)
-  const coveredRuleCss = collectNormalizedRuleCss(sources)
-  if (coverage.rules.size === 0 && coverage.declarationsBySelector.size === 0 && coveredRuleCss.size === 0) {
+  const coverage = preparedCoverage ?? collectRootScopedComparableCssCoverage(sources)
+  if (coverage.rules.size === 0 && coverage.declarationsBySelector.size === 0 && coverage.normalizedRuleCss.size === 0) {
     return css
   }
   try {
@@ -1204,7 +1288,7 @@ function removeCssRulesCoveredBySources(css: string, sources: string[], options:
     let changed = false
     root.walkRules((rule) => {
       if (
-        !coveredRuleCss.has(normalizeCssSignatureValue(rule.toString()))
+        !coverage.normalizedRuleCss.has(normalizeCssSignatureValue(rule.toString()))
         && (options.exactOnly === true || !isRuleCoveredByRootCss(rule, coverage))
       ) {
         return
@@ -1217,21 +1301,6 @@ function removeCssRulesCoveredBySources(css: string, sources: string[], options:
   catch {
     return css
   }
-}
-
-function collectNormalizedRuleCss(sources: string[]) {
-  const rules = new Set<string>()
-  for (const source of sources) {
-    try {
-      const root = postcss.parse(source)
-      root.walkRules((rule) => {
-        rules.add(normalizeCssSignatureValue(rule.toString()))
-      })
-    }
-    catch {
-    }
-  }
-  return rules
 }
 
 function collectCssImportAtRuleCss(css: string) {
@@ -1656,8 +1725,14 @@ export function injectViteProcessedCssIntoMainCssAssets(
   bundle: OutputBundle,
   options: InjectViteProcessedCssAssetOptions,
 ) {
+  const measure = <T>(name: string, task: () => T) => {
+    const startedAt = performance.now()
+    const result = task()
+    options.recordTimingDetail?.(`finalize.processedCss.inject.${name}`, startedAt)
+    return result
+  }
   const transformCss = (css: string, file: string) => options.transformCss?.(css, file) ?? css
-  const viteCssResults = dedupeViteCssResults(
+  const viteCssResults = measure('prepareResults', () => dedupeViteCssResults(
     [...(options.getViteProcessedCssAssetResults?.() ?? [])].map(([file, record]) => {
       return typeof record === 'string'
         ? { file, css: record, injectIntoMain: undefined }
@@ -1668,7 +1743,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
       ...record,
       css: transformCss(record.css, record.outputFile ?? record.file),
     }))
-    .filter(record => record.css.length > 0)
+    .filter(record => record.css.length > 0))
   let injected = 0
   for (const [bundleFile, bundleOutput] of Object.entries(bundle)) {
     let output = bundleOutput
@@ -1710,16 +1785,18 @@ export function injectViteProcessedCssIntoMainCssAssets(
     }
     const fileKey = normalizeOutputPathKey(file)
     const mainFileKey = normalizeOutputPathKey(file)
-    const normalizedOriginalCss = normalizeInjectableCssForTargetWithImports(
+    const normalizedOriginalCss = measure('normalizeTarget', () => normalizeInjectableCssForTargetWithImports(
       transformCss(removeTailwindEntryDirectivesFromCss(originalSource), file),
       file,
-    )
+    ))
     let nextCss = normalizedOriginalCss.css
     const importedStyleFiles = normalizedOriginalCss.importedStyleFiles
     const importedBundleCssSources = collectImportedBundleCssSources(bundle, importedStyleFiles)
+    const importedBundleCssCoverage = prepareImportedCssCoverage(importedBundleCssSources)
     nextCss = removeCssCoveredByImportedViteResults(
       nextCss,
       importedBundleCssSources,
+      importedBundleCssCoverage,
     )
     const importedViteCssResults = viteCssResults.filter(record => isViteProcessedCssResultImported(record, importedStyleFiles))
     const bundleAssetFiles = collectBundleAssetFiles(bundle)
@@ -1730,7 +1807,13 @@ export function injectViteProcessedCssIntoMainCssAssets(
       ...importedBundleCssSources,
       ...uncoveredImportedViteCssResults.map(record => record.css),
     ]
-    nextCss = removeCssCoveredByImportedViteResults(nextCss, uncoveredImportedViteCssResults.map(record => record.css))
+    const uncoveredImportedCssSources = uncoveredImportedViteCssResults.map(record => record.css)
+    nextCss = removeCssCoveredByImportedViteResults(
+      nextCss,
+      uncoveredImportedCssSources,
+      prepareImportedCssCoverage(uncoveredImportedCssSources),
+    )
+    const importedCssCoverage = prepareImportedCssCoverage(importedCssSources)
     const targetViteCssResults: typeof viteCssResults = []
     for (const record of viteCssResults) {
       if (!isRootStyleOutputFile(file)) {
@@ -1748,12 +1831,12 @@ export function injectViteProcessedCssIntoMainCssAssets(
         continue
       }
       targetViteCssResults.push(record)
-      let css = normalizeInjectableCssForTarget(stripBundlerGeneratedCssMarkers(record.css).trim(), file).trim()
-      css = removeCssCoveredByImportedViteResults(css, importedCssSources).trim()
+      let css = measure('normalizeRecord', () => normalizeInjectableCssForTarget(stripBundlerGeneratedCssMarkers(record.css).trim(), file).trim())
+      css = measure('importCoverage', () => removeCssCoveredByImportedViteResults(css, importedCssSources, importedCssCoverage).trim())
       if (css.length === 0) {
         continue
       }
-      const mergedLayerCss = mergeMarkedUserLayerComponentsCss(nextCss, css)
+      const mergedLayerCss = measure('mergeLayers', () => mergeMarkedUserLayerComponentsCss(nextCss, css))
       if (mergedLayerCss.merged) {
         nextCss = mergedLayerCss.css
         css = extractMarkedUserLayerComponentsCss(css).rest.trim()
@@ -1761,13 +1844,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
           continue
         }
       }
-      if (containsCssAfterMinify(nextCss, css) || filterExistingCssRules(nextCss, css).length === 0) {
-        continue
-      }
-      if (containsCssAfterMinify(nextCss, css)) {
-        continue
-      }
-      const mergedPreflightDeclarations = mergeMiniProgramPreflightRuleDeclarations(nextCss, css)
+      const mergedPreflightDeclarations = measure('mergePreflight', () => mergeMiniProgramPreflightRuleDeclarations(nextCss, css))
       if (mergedPreflightDeclarations.changed) {
         nextCss = mergedPreflightDeclarations.baseCss
         css = mergedPreflightDeclarations.css.trim()
@@ -1775,7 +1852,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
           continue
         }
       }
-      const mergedThemeScopeDeclarations = mergeMiniProgramThemeScopeRuleDeclarations(nextCss, css)
+      const mergedThemeScopeDeclarations = measure('mergeTheme', () => mergeMiniProgramThemeScopeRuleDeclarations(nextCss, css))
       if (mergedThemeScopeDeclarations.changed) {
         nextCss = mergedThemeScopeDeclarations.baseCss
         css = mergedThemeScopeDeclarations.css.trim()
@@ -1783,7 +1860,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
           continue
         }
       }
-      const mergedRuleDeclarations = mergeCoveredCssRuleDeclarations(nextCss, css)
+      const mergedRuleDeclarations = measure('mergeDeclarations', () => mergeCoveredCssRuleDeclarations(nextCss, css))
       if (mergedRuleDeclarations.changed) {
         nextCss = mergedRuleDeclarations.baseCss
         css = mergedRuleDeclarations.css.trim()
@@ -1791,23 +1868,29 @@ export function injectViteProcessedCssIntoMainCssAssets(
           continue
         }
       }
-      const missingCss = filterExistingCssRules(nextCss, css)
-      if (missingCss.length === 0 || !hasNonCommentCss(missingCss) || containsCssAfterMinify(nextCss, missingCss)) {
+      const missingCss = measure('filterRules', () => filterExistingCssRules(nextCss, css))
+      if (missingCss.length === 0 || !hasNonCommentCss(missingCss) || measure('containsMissing', () => containsCssAfterMinify(nextCss, missingCss))) {
         continue
       }
       nextCss = appendCss(nextCss, missingCss)
     }
     const finalImportedCssSources = collectImportedBundleCssSources(bundle, collectImportedStyleFiles(originalSource, file))
-    nextCss = transformCss(
+    const finalImportedCssCoverage = prepareImportedCssCoverage(finalImportedCssSources)
+    nextCss = measure('finalizeTarget', () => transformCss(
       removeCommentOnlyAtRules(
         restoreCssImportAtRules(
           originalSource,
-          removeCssRulesCoveredBySources(nextCss, finalImportedCssSources, { exactOnly: true }).trim(),
+          removeCssRulesCoveredBySources(
+            nextCss,
+            finalImportedCssSources,
+            { exactOnly: true },
+            finalImportedCssCoverage?.coverage,
+          ).trim(),
           file,
         ),
       ),
       file,
-    )
+    ))
     if (nextCss.trim() === originalSource.trim()) {
       nextCss = originalSource
     }
@@ -1818,7 +1901,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
       options.onUpdate?.(file, originalSource, nextCss)
       options.debug?.('inject vite-processed css into main css asset: %s bytes=%d', file, nextCss.length)
     }
-    const removedSources = removeCoveredInjectedSourceAssets(bundle, file, nextCss, targetViteCssResults, options)
+    const removedSources = measure('removeSources', () => removeCoveredInjectedSourceAssets(bundle, file, nextCss, targetViteCssResults, options))
     if (nextCss === originalSource && removedSources === 0) {
       continue
     }
