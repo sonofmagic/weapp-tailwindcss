@@ -1,44 +1,47 @@
 import type { InternalUserDefinedOptions } from '@/types'
-import { describe, expect, it } from 'vitest'
+import { postcss } from '@weapp-tailwindcss/postcss'
+import { describe, expect, it, vi } from 'vitest'
 import {
-  captureFrameworkPostcssPlugins,
-  collectFrameworkPostcssPluginsFromLoaderEntries,
-  resolveFrameworkPostcssPlugins,
-  transformGeneratedCssWithFrameworkPostcss,
+  adaptGeneratedCssWithFrameworkPipeline,
+  captureFrameworkPostcssOptions,
+  collectFrameworkPostcssOptionsFromLoaderEntries,
+  resolveFrameworkPostcssOptions,
 } from '@/bundlers/shared/framework-postcss'
 
-const owner = () => ({}) as InternalUserDefinedOptions
+const owner = () => ({ cssPreflight: false }) as InternalUserDefinedOptions
 
-function createPxTransformPlugin() {
+function createFrameworkPlugin(files: string[] = []) {
   return {
-    postcssPlugin: 'postcss-pxtransform',
-    Declaration(decl: { prop: string, value: string }) {
-      if (decl.prop.startsWith('--') && decl.value.includes('4px')) {
-        decl.value = decl.value.replaceAll('4px', '8rpx')
-      }
+    postcssPlugin: 'framework-token-transform',
+    Declaration(decl: { source?: { input?: { file?: string } }, value: string }) {
+      files.push(decl.source?.input?.file ?? '')
+      decl.value = decl.value.replaceAll('framework-token', 'processed-token')
     },
   }
 }
 
-describe('framework PostCSS bridge', () => {
-  it('selects and de-duplicates only pxtransform plugins', () => {
-    const px = createPxTransformPlugin()
-    const pxCreator = Object.assign(() => createPxTransformPlugin(), { postcss: true })
-    const other = { postcssPlugin: 'autoprefixer' }
-    expect(resolveFrameworkPostcssPlugins([px, px, pxCreator, other, null, false])).toEqual([px, pxCreator])
-    expect(resolveFrameworkPostcssPlugins({ px, other })).toEqual([px])
-    expect(resolveFrameworkPostcssPlugins('postcss-pxtransform')).toEqual([])
-    expect(resolveFrameworkPostcssPlugins(undefined)).toEqual([])
+describe('framework PostCSS pipeline', () => {
+  it('keeps the complete framework plugin chain except Tailwind generators', () => {
+    const frameworkPlugin = createFrameworkPlugin()
+    const tailwindPlugin = { postcssPlugin: '@tailwindcss/postcss' }
+    const result = resolveFrameworkPostcssOptions({
+      map: false,
+      plugins: [frameworkPlugin, frameworkPlugin, tailwindPlugin],
+    })
+
+    expect(result?.plugins).toEqual([frameworkPlugin])
+    expect(result?.options).toEqual({ map: false })
   })
 
-  it('collects pxtransform from nested webpack loader rules', () => {
-    const px = createPxTransformPlugin()
-    const result = collectFrameworkPostcssPluginsFromLoaderEntries([
+  it('collects and merges PostCSS options from nested webpack loader rules', () => {
+    const first = createFrameworkPlugin()
+    const second = { postcssPlugin: 'framework-second-transform' }
+    const result = collectFrameworkPostcssOptionsFromLoaderEntries([
       {
         oneOf: [{
           use: [{
             loader: '/node_modules/postcss-loader/index.js',
-            options: { postcssOptions: { plugins: { px } } },
+            options: { postcssOptions: { map: false, plugins: { first } } },
           }],
         }],
       },
@@ -46,64 +49,75 @@ describe('framework PostCSS bridge', () => {
         rules: {
           use: {
             loader: '/node_modules/postcss-loader/index.js',
-            options: { postcssOptions: { plugins: [px] } },
+            options: { postcssOptions: { parser: 'postcss-scss', plugins: [second] } },
           },
         },
       },
-      { loader: '/node_modules/postcss-loader/index.js' },
-      { loader: '/node_modules/postcss-loader/index.js', options: false },
-      { loader: 42, use: null },
       { loader: '/node_modules/css-loader/index.js' },
       null,
     ])
-    expect(result).toEqual([px])
-    expect(collectFrameworkPostcssPluginsFromLoaderEntries([{
+
+    expect(result?.plugins).toEqual([first, second])
+    expect(result?.options).toEqual({ map: false, parser: 'postcss-scss' })
+  })
+
+  it('resolves function-based postcss-loader options with the loader context', () => {
+    const plugin = createFrameworkPlugin()
+    const loaderContext = { resourcePath: '/workspace/src/app.css' }
+    const postcssOptions = vi.fn((context: typeof loaderContext) => ({
+      config: false,
+      from: context.resourcePath,
+      plugins: [plugin],
+    }))
+
+    const result = collectFrameworkPostcssOptionsFromLoaderEntries([{
       loader: '/node_modules/postcss-loader/index.js',
-      options: { postcssOptions: null },
-    }])).toEqual([])
-    expect(collectFrameworkPostcssPluginsFromLoaderEntries([{
-      loader: '/node_modules/postcss-loader/index.js',
-      options: { postcssOptions: {} },
-    }])).toEqual([])
+      options: { postcssOptions },
+    }], loaderContext)
+
+    expect(postcssOptions).toHaveBeenCalledWith(loaderContext)
+    expect(result?.plugins).toEqual([plugin])
+    expect(result?.options).toEqual({ from: '/workspace/src/app.css' })
   })
 
-  it('returns unchanged CSS when no captured plugin or px value exists', async () => {
-    const emptyOwner = owner()
-    expect(await transformGeneratedCssWithFrameworkPostcss(emptyOwner, '.a{color:red}', '/tmp/a.css')).toBe('.a{color:red}')
-    const noPxOwner = owner()
-    captureFrameworkPostcssPlugins(noPxOwner, createPxTransformPlugin())
-    expect(await transformGeneratedCssWithFrameworkPostcss(noPxOwner, '.a{--spacing:4rpx}', '/tmp/a.css')).toBe('.a{--spacing:4rpx}')
-  })
-
-  it('captures, transforms, and clears framework plugins by owner', async () => {
-    const currentOwner = owner()
-    const px = createPxTransformPlugin()
-    expect(captureFrameworkPostcssPlugins(currentOwner, [px])).toEqual([px])
-    expect(await transformGeneratedCssWithFrameworkPostcss(currentOwner, '.a{--spacing:4px}', '/tmp/a.css')).toBe('.a{--spacing:8rpx}')
-    expect(captureFrameworkPostcssPlugins(currentOwner, [])).toEqual([])
-    expect(await transformGeneratedCssWithFrameworkPostcss(currentOwner, '.a{--spacing:4px}', '/tmp/a.css')).toBe('.a{--spacing:4px}')
-  })
-
-  it('passes the real source file to framework PostCSS plugins', async () => {
+  it('adapts generated CSS through the captured framework pipeline', async () => {
     const currentOwner = owner()
     const files: string[] = []
-    const px = {
-      postcssPlugin: 'postcss-pxtransform',
-      Declaration(decl: { source?: { input?: { file?: string } }, value: string }) {
-        files.push(decl.source?.input?.file ?? '')
-        if (files.at(-1)?.includes('/pages/issue-998/')) {
-          decl.value = decl.value.replaceAll('4px', '8rpx')
-        }
-      },
-    }
-    captureFrameworkPostcssPlugins(currentOwner, [px])
+    captureFrameworkPostcssOptions(currentOwner, {
+      plugins: [createFrameworkPlugin(files)],
+    })
+    const styleHandler = vi.fn(async (css: string, options: any) => {
+      return postcss(options.postcssOptions.plugins).process(css, options.postcssOptions.options)
+    })
 
-    await expect(transformGeneratedCssWithFrameworkPostcss(
-      currentOwner,
-      ':root{--spacing:4px}',
-      '/workspace/src/pages/issue-998/index.css',
-    )).resolves.toBe(':root{--spacing:8rpx}')
-    expect(files.length).toBeGreaterThan(0)
-    expect(new Set(files)).toEqual(new Set(['/workspace/src/pages/issue-998/index.css']))
+    const css = await adaptGeneratedCssWithFrameworkPipeline(currentOwner, {
+      css: ':root{--theme-unit:framework-token}',
+      classSet: new Set(['theme-unit']),
+      dependencies: [],
+      source: 'generator',
+      target: 'weapp',
+      metadata: {
+        file: '/workspace/src/theme.css',
+        preflightMode: { inject: false, preserve: false },
+      },
+    }, {
+      cssHandlerOptions: { isMainChunk: false } as any,
+      file: '/workspace/src/theme.css',
+      majorVersion: 4,
+      styleHandler: styleHandler as any,
+    })
+
+    expect(css).toContain('--theme-unit:processed-token')
+    expect(css).not.toContain('framework-token')
+    expect(styleHandler).toHaveBeenCalledTimes(1)
+    expect(new Set(files)).toEqual(new Set(['/workspace/src/theme.css']))
+  })
+
+  it('clears the captured pipeline when the framework has no PostCSS config', () => {
+    const currentOwner = owner()
+    expect(captureFrameworkPostcssOptions(currentOwner, {
+      plugins: [createFrameworkPlugin()],
+    })).toBeDefined()
+    expect(captureFrameworkPostcssOptions(currentOwner, undefined)).toBeUndefined()
   })
 })

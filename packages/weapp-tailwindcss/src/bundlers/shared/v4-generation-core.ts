@@ -1,8 +1,11 @@
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css'
-import { transformGeneratedCssWithFrameworkPostcss } from './framework-postcss'
+import type { InternalUserDefinedOptions } from '@/types'
+import { adaptGeneratedCssWithFrameworkPipeline, hasFrameworkPostcssOptions } from './framework-postcss'
 import { generateCssByGenerator } from './generator-css'
 
 export interface TailwindV4GenerationCoreInput extends GenerateCssByGeneratorOptions {
+  frameworkPostcssOwner?: InternalUserDefinedOptions | undefined
+  frameworkPostcssStage?: 'complete' | 'pending' | undefined
   outputFile?: string | undefined
   sourceCandidates?: Set<string> | undefined
 }
@@ -20,12 +23,27 @@ export async function generateTailwindV4Css(
   if (majorVersion !== 4) {
     throw new Error('weapp-tailwindcss 生成管线仅支持 Tailwind CSS v4。')
   }
-  const generated = await generateCssByGenerator(options)
+  const frameworkPostcssOwner = options.frameworkPostcssOwner ?? options.opts
+  const shouldReplayFrameworkPostcss = options.frameworkPostcssStage === 'complete'
+    && hasFrameworkPostcssOptions(frameworkPostcssOwner)
+  const generated = await generateCssByGenerator(
+    shouldReplayFrameworkPostcss
+      ? {
+          ...options,
+          deferCssAdaptation: true,
+        }
+      : options,
+  )
   if (!generated) {
     return undefined
   }
-  const css = generated.target === 'weapp'
-    ? await transformGeneratedCssWithFrameworkPostcss(options.opts, generated.css, options.file)
+  const css = shouldReplayFrameworkPostcss
+    ? await adaptGeneratedCssWithFrameworkPipeline(frameworkPostcssOwner, generated, {
+        cssHandlerOptions: options.cssHandlerOptions,
+        file: options.file,
+        majorVersion,
+        styleHandler: options.styleHandler,
+      })
     : generated.css
   return {
     ...generated,

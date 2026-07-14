@@ -1178,6 +1178,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   file,
                   cssHandlerOptions: generatorCssHandlerOptions,
                   cssUserHandlerOptions: getCssUserHandlerOptions(file),
+                  frameworkPostcssOwner: compilerOptions,
+                  frameworkPostcssStage: 'complete',
                   getSourceCandidatesForEntries: webpackSourceCandidates?.getSourceCandidatesForEntries,
                   sourceCandidates: scopedGeneratorRuntimeSet,
                   restoreLocalCssImports: false,

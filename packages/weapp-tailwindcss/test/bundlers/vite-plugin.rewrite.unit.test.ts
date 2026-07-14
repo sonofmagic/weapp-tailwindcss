@@ -131,7 +131,8 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
 
     expect(result?.code).toBe('.bg-clip-text{background-clip:text}')
     expect(generateTailwindCss).toHaveBeenCalledWith('/project/src/app.css', source, expect.objectContaining({
-      addWatchFile,
+      addWatchFile: expect.any(Function),
+      frameworkPostcssStage: 'pending',
     }))
     expect(onTailwindRootCss).toHaveBeenCalledWith('/project/src/app.css', source)
     expect(addWatchFile).toHaveBeenCalledWith('/project/tailwind.config.ts')
@@ -186,7 +187,10 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(generateTailwindCss).toHaveBeenCalledWith(
       '/project/src/css/custom.css',
       expect.stringContaining('@config "/project/tailwind.config.ts";'),
-      expect.objectContaining({ addWatchFile }),
+      expect.objectContaining({
+        addWatchFile: expect.any(Function),
+        frameworkPostcssStage: 'pending',
+      }),
     )
     expect(addWatchFile).toHaveBeenCalledWith('/project/tailwind.config.ts')
   })

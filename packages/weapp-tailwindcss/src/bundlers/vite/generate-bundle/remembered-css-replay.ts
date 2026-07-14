@@ -268,6 +268,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
         outputFile,
         cssHandlerOptions,
         cssUserHandlerOptions: getCssUserHandlerOptions(sourceFile),
+        frameworkPostcssStage: 'complete',
         getSourceCandidatesForEntries: scopedSourceCandidateGetter,
         generatorPlatform,
         styleHandler,

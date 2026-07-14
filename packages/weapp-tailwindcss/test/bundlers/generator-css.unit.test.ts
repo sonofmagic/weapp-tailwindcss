@@ -1,8 +1,9 @@
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { captureFrameworkPostcssPlugins, transformGeneratedCssWithFrameworkPostcss } from '@/bundlers/shared/framework-postcss'
+import { captureFrameworkPostcssOptions } from '@/bundlers/shared/framework-postcss'
 
 function normalizeGeneratorOptions(options: any) {
   if (options === false) {
@@ -221,63 +222,71 @@ describe('bundlers/shared generator css', () => {
     })
   })
 
-  it('replays the framework pxtransform for generated mini-program CSS', async () => {
-    const pxTransformPlugin = {
-      postcssPlugin: 'postcss-pxtransform',
-      Declaration(decl: { prop: string, value: string }) {
-        if (decl.prop === '--spacing' && decl.value === '4px') {
-          decl.value = '8rpx'
-        }
+  it('adapts generated mini-program CSS through the complete framework PostCSS pipeline', async () => {
+    const frameworkPlugin = {
+      postcssPlugin: 'framework-token-transform',
+      Declaration(decl: { value: string }) {
+        decl.value = decl.value.replaceAll('framework-token', 'processed-token')
       },
     }
-    const createWeappTailwindcssGenerator = vi.fn(() => ({
-      generate: vi.fn(async () => ({
-        css: '.p-4{padding:calc(var(--spacing)*4)}:root{--spacing:4px}',
-        rawCss: '.p-4{padding:calc(var(--spacing)*4)}:root{--spacing:4px}',
-        target: 'weapp',
-        classSet: new Set(['p-4']),
-        dependencies: [],
-        root: null,
-      })),
+    vi.doMock('@/bundlers/shared/generator-css', () => ({
+      generateCssByGenerator: vi.fn(async (options: { deferCssAdaptation?: boolean }) => {
+        expect(options.deferCssAdaptation).toBe(true)
+        return {
+          css: '.theme-token{--value:framework-token}',
+          target: 'weapp',
+          classSet: new Set(['theme-token']),
+          dependencies: [],
+          source: 'generator',
+          metadata: {
+            file: '/workspace/src/theme.css',
+            preflightMode: { inject: false, preserve: false },
+          },
+        }
+      }),
     }))
-    vi.doMock('@/generator', () => createDefaultGeneratorMock({ createWeappTailwindcssGenerator }))
+    const styleHandler = vi.fn(async (css: string, options: any) => {
+      return postcss(options.postcssOptions.plugins).process(css, options.postcssOptions.options)
+    })
 
-    const opts = {
-      cssPreflight: 'view',
+    const frameworkPostcssOwner = {
+      cssPreflight: false,
       generator: { target: 'weapp' },
-      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      styleHandler,
     } as any
+    const opts = { ...frameworkPostcssOwner }
+    captureFrameworkPostcssOptions(frameworkPostcssOwner, { plugins: [frameworkPlugin] })
     const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
-    expect(captureFrameworkPostcssPlugins(opts, [pxTransformPlugin])).toEqual([pxTransformPlugin])
-    expect(await transformGeneratedCssWithFrameworkPostcss(opts, ':root{--spacing:4px}', '/workspace/src/pages/issue-998/index.css'))
-      .toBe(':root{--spacing:8rpx}')
-
     const result = await generateTailwindV4Css({
       opts,
       runtimeState: {
         tailwindRuntime: { majorVersion: 4 } as any,
         readyPromise: Promise.resolve(),
       },
-      runtime: new Set(['p-4']),
+      runtime: new Set(['theme-token']),
       rawSource: '@import "tailwindcss";',
-      file: '/workspace/src/pages/issue-998/index.css',
-      outputFile: 'pages/issue-998/index.wxss',
-      cssHandlerOptions: { majorVersion: 4 } as any,
+      file: '/workspace/src/theme.css',
+      outputFile: 'theme.wxss',
+      cssHandlerOptions: { isMainChunk: false, majorVersion: 4 } as any,
       cssUserHandlerOptions: {} as any,
-      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      styleHandler,
       debug: vi.fn(),
+      frameworkPostcssOwner,
+      frameworkPostcssStage: 'complete',
     })
 
     expect(result?.target).toBe('weapp')
-    expect(result?.css).toContain('--spacing:8rpx')
-    expect(result?.css).toContain('padding:calc(var(--spacing)*4)')
-    expect(result?.classSet).toEqual(new Set(['p-4']))
+    expect(result?.css).toBe('.theme-token{--value:processed-token}')
+    expect(result?.classSet).toEqual(new Set(['theme-token']))
+    expect(styleHandler).toHaveBeenCalledTimes(1)
   })
 
-  it('does not replay framework pxtransform for web generation and preserves generator metadata', async () => {
-    const pxTransformPlugin = {
-      postcssPlugin: 'postcss-pxtransform',
-      Declaration: vi.fn(),
+  it('adapts late web generation through the complete framework PostCSS pipeline', async () => {
+    const frameworkPlugin = {
+      postcssPlugin: 'framework-token-transform',
+      Declaration(decl: { value: string }) {
+        decl.value = decl.value.replaceAll('4px', 'processed-token')
+      },
     }
     vi.doMock('@/generator', () => createDefaultGeneratorMock({
       createWeappTailwindcssGenerator: vi.fn(() => ({
@@ -296,11 +305,14 @@ describe('bundlers/shared generator css', () => {
       })),
     }))
 
+    const styleHandler = vi.fn(async (css: string, options: any) => {
+      return postcss(options.postcssOptions.plugins).process(css, options.postcssOptions.options)
+    })
     const opts = {
       generator: { target: 'web' },
-      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      styleHandler,
     } as any
-    captureFrameworkPostcssPlugins(opts, [pxTransformPlugin])
+    captureFrameworkPostcssOptions(opts, { plugins: [frameworkPlugin] })
     const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
     const result = await generateTailwindV4Css({
       opts,
@@ -314,17 +326,18 @@ describe('bundlers/shared generator css', () => {
       outputFile: 'app.css',
       cssHandlerOptions: { majorVersion: 4 } as any,
       cssUserHandlerOptions: {} as any,
-      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      styleHandler,
       debug: vi.fn(),
+      frameworkPostcssStage: 'complete',
     })
 
-    expect(result?.css).toBe(':root{--spacing:4px}')
+    expect(result?.css).toBe(':root{--spacing:processed-token}')
     expect(result?.metadata).toMatchObject({
       file: '/workspace/src/app.css',
       majorVersion: 4,
       outputFile: 'app.css',
     })
-    expect(pxTransformPlugin.Declaration).not.toHaveBeenCalled()
+    expect(styleHandler).toHaveBeenCalledTimes(1)
   })
 
   it('rejects non-v4 Tailwind generation', async () => {

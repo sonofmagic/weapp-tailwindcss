@@ -30,10 +30,9 @@ text,
   --tw-inset-ring-color:;
   --tw-inset-ring-shadow: 0 0 #0000;
   --tw-ring-inset:;
-  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-content: '';
 }
 :host,
 page,
@@ -79,7 +78,9 @@ wx-root-portal-content {
 .space-y-2_d5 > text + view,
 .space-y-2_d5 > text + text {
   --tw-space-y-reverse: 0;
+  margin-bottom: calc((var(--spacing) * 2.5) * 0);
   margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
+  margin-top: calc((var(--spacing) * 2.5) * 1);
   margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
 }
 /* tokens: bg-[#000089] <= src/sub-normal/pages/index.tsx */
@@ -123,14 +124,6 @@ wx-root-portal-content {
 /* tokens: [--watch-hmr-offset:000089px] <= src/sub-normal/pages/index.tsx */
 ._b--watch-hmr-offset_c000089px_B {
   --watch-hmr-offset: 89rpx;
-}
-/* tokens: group-[:nth-of-type(3)_&]:block <= src/sub-normal/pages/index.tsx */
-:nth-of-type(3) .group view.group-_b_cnth-of-type_p3_P__n_B_cblock {
-  display: block;
-}
-/* tokens: group-[:nth-of-type(3)_&]:block <= src/sub-normal/pages/index.tsx */
-:nth-of-type(3) .group text.group-_b_cnth-of-type_p3_P__n_B_cblock {
-  display: block;
 }
 /* tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.tsx */
 .bg-normal-subpackage-marker {

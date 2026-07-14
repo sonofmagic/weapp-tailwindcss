@@ -1,101 +1,176 @@
 import type { AcceptedPlugin } from '@weapp-tailwindcss/postcss'
+import type { IStyleHandlerOptions, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
+import type { GenerateCssByGeneratorResult } from './generator-css'
 import type { InternalUserDefinedOptions } from '@/types'
-import { getPostcssPluginName, postcss } from '@weapp-tailwindcss/postcss'
+import { removeTailwindPostcssPlugins } from '@weapp-tailwindcss/postcss'
+import { finalizeMiniProgramGeneratorCss } from './generator-css/generation-helpers'
 
-const FRAMEWORK_UNIT_PLUGIN_NAMES = new Set(['postcss-pxtransform'])
-const FRAMEWORK_POSTCSS_REGISTRY = Symbol.for('weapp-tailwindcss.framework-postcss-plugins')
+const FRAMEWORK_POSTCSS_REGISTRY = Symbol.for('weapp-tailwindcss.framework-postcss-options')
 const registryHost = globalThis as typeof globalThis & Record<symbol, unknown>
-const frameworkPostcssPlugins = (
+const frameworkPostcssOptions = (
   registryHost[FRAMEWORK_POSTCSS_REGISTRY]
-    ??= new WeakMap<object, AcceptedPlugin[]>()
-) as WeakMap<object, AcceptedPlugin[]>
+    ??= new WeakMap<object, LoadedPostcssOptions>()
+) as WeakMap<object, LoadedPostcssOptions>
 
-function isPluginEntry(value: unknown): value is { loader?: unknown, options?: unknown } {
+function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
 }
 
-function readPostcssPlugins(value: unknown): unknown[] {
-  if (!value || typeof value !== 'object') {
-    return []
-  }
-  const plugins = (value as { plugins?: unknown }).plugins
-  return Array.isArray(plugins) ? plugins : Object.values(plugins as Record<string, unknown> ?? {})
-}
-
-export function resolveFrameworkPostcssPlugins(plugins: unknown): AcceptedPlugin[] {
+function normalizePlugins(plugins: unknown): AcceptedPlugin[] {
   const entries = Array.isArray(plugins)
     ? plugins
-    : plugins && typeof plugins === 'object'
-      ? Object.values(plugins as Record<string, unknown>)
+    : isObject(plugins)
+      ? Object.values(plugins)
       : []
-  const resolved: AcceptedPlugin[] = []
-  const seen = new Set<unknown>()
-  for (const plugin of entries) {
-    if (!plugin || seen.has(plugin)) {
-      continue
-    }
-    if (FRAMEWORK_UNIT_PLUGIN_NAMES.has(getPostcssPluginName(plugin) ?? '')) {
-      seen.add(plugin)
-      resolved.push(plugin as AcceptedPlugin)
-    }
-  }
+  const resolved = [...new Set(entries.filter(Boolean))] as AcceptedPlugin[]
+  removeTailwindPostcssPlugins(resolved)
   return resolved
 }
 
-export function collectFrameworkPostcssPluginsFromLoaderEntries(entries: unknown[]): AcceptedPlugin[] {
-  const plugins: unknown[] = []
+export function resolveFrameworkPostcssOptions(value: unknown): LoadedPostcssOptions | undefined {
+  if (!isObject(value)) {
+    return undefined
+  }
+  const plugins = normalizePlugins(value['plugins'])
+  const options = Object.fromEntries(
+    Object.entries(value).filter(([key]) => key !== 'plugins' && key !== 'config'),
+  )
+  if (plugins.length === 0 && Object.keys(options).length === 0) {
+    return undefined
+  }
+  return {
+    plugins: plugins as NonNullable<LoadedPostcssOptions['plugins']>,
+    options,
+  }
+}
+
+function mergeFrameworkPostcssOptions(
+  left: LoadedPostcssOptions | undefined,
+  right: LoadedPostcssOptions | undefined,
+): LoadedPostcssOptions | undefined {
+  if (!left) {
+    return right
+  }
+  if (!right) {
+    return left
+  }
+  return {
+    plugins: [...new Set([
+      ...normalizePlugins(left.plugins),
+      ...normalizePlugins(right.plugins),
+    ])] as NonNullable<LoadedPostcssOptions['plugins']>,
+    options: {
+      ...(left.options ?? {}),
+      ...(right.options ?? {}),
+    },
+  }
+}
+
+export function collectFrameworkPostcssOptionsFromLoaderEntries(
+  entries: unknown[],
+  loaderContext?: unknown,
+): LoadedPostcssOptions | undefined {
+  let resolved: LoadedPostcssOptions | undefined
   const visit = (value: unknown) => {
     if (Array.isArray(value)) {
       value.forEach(visit)
       return
     }
-    if (!isPluginEntry(value)) {
+    if (!isObject(value)) {
       return
     }
-    const entry = value
-    const loader = entry.loader
+    const loader = value['loader']
     if (typeof loader === 'string' && loader.includes('postcss-loader')) {
-      const options = entry.options
-      if (options && typeof options === 'object') {
-        const postcssOptions = (options as { postcssOptions?: unknown }).postcssOptions
-        plugins.push(...readPostcssPlugins(postcssOptions))
-      }
+      const loaderOptions = value['options']
+      const rawOptions = isObject(loaderOptions) ? loaderOptions['postcssOptions'] : undefined
+      const options = typeof rawOptions === 'function'
+        ? rawOptions(loaderContext)
+        : rawOptions
+      resolved = mergeFrameworkPostcssOptions(resolved, resolveFrameworkPostcssOptions(options))
       return
     }
-    visit((entry as { rules?: unknown }).rules)
-    visit((entry as { oneOf?: unknown }).oneOf)
-    visit((entry as { use?: unknown }).use)
+    visit(value['rules'])
+    visit(value['oneOf'])
+    visit(value['use'])
   }
-  for (const entry of entries) {
-    visit(entry)
-  }
-  return resolveFrameworkPostcssPlugins(plugins)
-}
-
-export function captureFrameworkPostcssPlugins(
-  owner: InternalUserDefinedOptions,
-  plugins: unknown,
-) {
-  const resolved = resolveFrameworkPostcssPlugins(plugins)
-  if (resolved.length === 0) {
-    frameworkPostcssPlugins.delete(owner)
-    return resolved
-  }
-  frameworkPostcssPlugins.set(owner, resolved)
+  entries.forEach(visit)
   return resolved
 }
 
-export async function transformGeneratedCssWithFrameworkPostcss(
+export function captureFrameworkPostcssOptions(
   owner: InternalUserDefinedOptions,
-  css: string,
+  options: unknown,
+): LoadedPostcssOptions | undefined {
+  const resolved = resolveFrameworkPostcssOptions(options)
+  if (!resolved) {
+    frameworkPostcssOptions.delete(owner)
+    return undefined
+  }
+  frameworkPostcssOptions.set(owner, resolved)
+  return resolved
+}
+
+export function captureResolvedFrameworkPostcssOptions(
+  owner: InternalUserDefinedOptions,
+  options: LoadedPostcssOptions | undefined,
+): LoadedPostcssOptions | undefined {
+  if (!options) {
+    frameworkPostcssOptions.delete(owner)
+    return undefined
+  }
+  frameworkPostcssOptions.set(owner, options)
+  return options
+}
+
+export function hasFrameworkPostcssOptions(owner: InternalUserDefinedOptions): boolean {
+  return frameworkPostcssOptions.has(owner)
+}
+
+function createGeneratedCssHandlerOptions(
+  owner: InternalUserDefinedOptions,
+  options: IStyleHandlerOptions,
   from: string,
-) {
-  if (!css.includes('px')) {
-    return css
+): IStyleHandlerOptions {
+  const frameworkOptions = frameworkPostcssOptions.get(owner)
+  const merged = mergeFrameworkPostcssOptions(options.postcssOptions, frameworkOptions)
+  return {
+    ...options,
+    postcssOptions: {
+      ...(merged ?? {}),
+      options: {
+        ...(merged?.options ?? {}),
+        from,
+      },
+    },
   }
-  const plugins = frameworkPostcssPlugins.get(owner)
-  if (!plugins || plugins.length === 0) {
-    return css
-  }
-  return (await postcss(plugins).process(css, { from })).css
+}
+
+export async function adaptGeneratedCssWithFrameworkPipeline(
+  owner: InternalUserDefinedOptions,
+  generated: GenerateCssByGeneratorResult,
+  options: {
+    cssHandlerOptions: IStyleHandlerOptions
+    file: string
+    majorVersion: number
+    styleHandler: InternalUserDefinedOptions['styleHandler']
+  },
+): Promise<string> {
+  const handled = await options.styleHandler(
+    generated.css,
+    createGeneratedCssHandlerOptions(owner, options.cssHandlerOptions, options.file),
+  )
+  const preflightMode = generated.metadata?.preflightMode
+  const injectPreflight = preflightMode?.inject ?? options.cssHandlerOptions.isMainChunk
+  const preservePreflight = preflightMode?.preserve ?? options.cssHandlerOptions.isMainChunk
+  return finalizeMiniProgramGeneratorCss(
+    handled.css,
+    generated.target,
+    options.majorVersion,
+    owner.cssPreflight,
+    {
+      ...(injectPreflight === undefined ? {} : { injectPreflight }),
+      ...(preservePreflight === undefined ? {} : { preservePreflight }),
+      styleOptions: options.cssHandlerOptions,
+    },
+  )
 }

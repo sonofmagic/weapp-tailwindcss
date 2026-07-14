@@ -200,6 +200,7 @@ export async function generateCssForWebpackPipeline(
       ...cssHandlerOptions,
       isMainChunk: false,
     },
+    frameworkPostcssStage: 'pending',
     styleHandler: compilerOptions.styleHandler,
     debug: () => undefined,
     deferCssAdaptation: generatorTarget !== 'web',

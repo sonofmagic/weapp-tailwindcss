@@ -10,7 +10,11 @@ const VITE_CSS_CONST_RE = /\bconst\s+__vite__css\s*=\s*("(?:\\[\s\S]|[^"])*")/
 const DEFERRED_CSS_HMR_QUERY_RE = /[?&](?:hmr(?:[=&]|$)|t=\d+)/
 
 interface ViteCssGenerationOptions {
-  generateCss: (id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void, emitFile?: (emittedFile: { type: 'asset', fileName: string, source: string }) => string }) => Promise<string | undefined> | string | undefined
+  generateCss: (id: string, code: string, hookContext?: {
+    addWatchFile?: (id: string) => void
+    emitFile?: (emittedFile: { type: 'asset', fileName: string, source: string }) => string
+    frameworkPostcssStage?: 'complete' | 'pending' | undefined
+  }) => Promise<string | undefined> | string | undefined
   getCommand: () => string | undefined
   onTailwindRootCss?: ((id: string, code: string) => Promise<void> | void) | undefined
   shouldGenerate: () => boolean
@@ -110,7 +114,11 @@ export function createViteCssGenerationPlugins(options: ViteCssGenerationOptions
         return
       }
       await options.onTailwindRootCss?.(id, code)
-      const generatedCss = await options.generateCss(id, code, this)
+      const generatedCss = await options.generateCss(id, code, {
+        ...(this.addWatchFile ? { addWatchFile: this.addWatchFile.bind(this) } : {}),
+        ...(this.emitFile ? { emitFile: this.emitFile.bind(this) } : {}),
+        frameworkPostcssStage: 'pending',
+      })
       if (generatedCss === undefined || generatedCss === code) {
         return
       }
@@ -137,7 +145,11 @@ export function createViteCssGenerationPlugins(options: ViteCssGenerationOptions
       if (hasViteServeCssRootDirective(code)) {
         await options.onTailwindRootCss?.(id, code)
       }
-      const generatedCss = await options.generateCss(id, code, this)
+      const generatedCss = await options.generateCss(id, code, {
+        ...(this.addWatchFile ? { addWatchFile: this.addWatchFile.bind(this) } : {}),
+        ...(this.emitFile ? { emitFile: this.emitFile.bind(this) } : {}),
+        frameworkPostcssStage: 'pending',
+      })
       if (generatedCss === undefined || generatedCss === code) {
         return
       }
@@ -164,7 +176,11 @@ export function createViteCssGenerationPlugins(options: ViteCssGenerationOptions
       if (hasViteServeCssRootDirective(extracted.css)) {
         await options.onTailwindRootCss?.(id, extracted.css)
       }
-      const generatedCss = await options.generateCss(id, extracted.css, this)
+      const generatedCss = await options.generateCss(id, extracted.css, {
+        ...(this.addWatchFile ? { addWatchFile: this.addWatchFile.bind(this) } : {}),
+        ...(this.emitFile ? { emitFile: this.emitFile.bind(this) } : {}),
+        frameworkPostcssStage: 'complete',
+      })
       if (generatedCss === undefined || generatedCss === extracted.css) {
         return
       }

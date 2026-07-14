@@ -11,7 +11,7 @@ import { pluginName } from '@/constants'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveRuntimeBranch } from '@/runtime-branch'
 import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, patchMpxLoaderResolve } from '@/shared/mpx'
-import { captureFrameworkPostcssPlugins, collectFrameworkPostcssPluginsFromLoaderEntries } from '../../shared/framework-postcss'
+import { captureResolvedFrameworkPostcssOptions, collectFrameworkPostcssOptionsFromLoaderEntries } from '../../shared/framework-postcss'
 import { deleteWebpackLoaderRuntime, setWebpackLoaderRuntime } from '../loaders/runtime-registry'
 import { createDefaultLoaderAnchorFinders } from '../shared/loader-anchors'
 import { hasLoaderEntry, isCssLikeModuleResource } from './shared'
@@ -30,6 +30,7 @@ interface SetupWebpackV5LoadersOptions {
   markWebpackProcessedCssSource?: ((file: string) => void) | undefined
   markWebpackCssSourceModule?: ((file: string) => void) | undefined
   registerWebpackGeneratedCss?: ((source: WebpackGeneratedCssRegistration) => void) | undefined
+  updateWebpackGeneratedCss?: ((source: { css: string, file: string }) => void) | undefined
   registerWebpackCssSourceFile?: ((source: WebpackCssSourceRegistration) => void) | undefined
   getRuntimeWatchDependencies: () => {
     files: ReadonlySet<string>
@@ -56,6 +57,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     markWebpackProcessedCssSource,
     markWebpackCssSourceModule,
     registerWebpackGeneratedCss,
+    updateWebpackGeneratedCss,
     registerWebpackCssSourceFile,
     getRuntimeWatchDependencies,
     loaderAnchorFinders = createDefaultLoaderAnchorFinders(),
@@ -120,6 +122,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     getClassSet: getClassSetInLoader,
     getWatchDependencies: getRuntimeWatchDependencies,
     ...(registerWebpackCssSourceFile === undefined ? {} : { registerCssSourceFile: registerWebpackCssSourceFile }),
+    ...(updateWebpackGeneratedCss === undefined ? {} : { updateGeneratedCss: updateWebpackGeneratedCss }),
   }
   setWebpackLoaderRuntime(runtimeRegistryKey, {
     classSet: classSetLoaderOptions,
@@ -195,10 +198,10 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
       const classSetAnchorIdx = findClassSetAnchor(loaderEntries)
       const isCssModule = isCssLikeModuleResource(module.resource, compilerOptions.cssMatcher, appType)
       if (isCssModule) {
-        captureFrameworkPostcssPlugins(
-          compilerOptions,
-          collectFrameworkPostcssPluginsFromLoaderEntries(loaderEntries),
-        )
+        const frameworkPostcssOptions = collectFrameworkPostcssOptionsFromLoaderEntries(loaderEntries, _loaderContext)
+        if (frameworkPostcssOptions) {
+          captureResolvedFrameworkPostcssOptions(compilerOptions, frameworkPostcssOptions)
+        }
       }
       if (isCssModule && typeof module.resource === 'string') {
         markWebpackCssSourceModule?.(module.resource)
