@@ -407,6 +407,9 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
 .\[mask-type\:luminance\] {
   mask-type: luminance;
 }
+.p-4 {
+  padding: calc(var(--spacing) * 4);
+}
 .text-\[23\.000089px\] {
   font-size: 0.575rem;
 }

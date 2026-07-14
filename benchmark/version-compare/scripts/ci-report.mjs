@@ -162,6 +162,7 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
 
 export function evaluatePerformanceGuard(summary, options = {}) {
   const pluginRegressionPercent = toNumber(options.pluginRegressionPercent) ?? 10
+  const pluginAbsoluteMs = toNumber(options.pluginAbsoluteMs) ?? 20
   const endToEndRegressionPercent = toNumber(options.endToEndRegressionPercent) ?? 15
   const endToEndAbsoluteMs = toNumber(options.endToEndAbsoluteMs) ?? 50
   const violations = summary.currentOnlyErrors.map(item => ({
@@ -172,8 +173,8 @@ export function evaluatePerformanceGuard(summary, options = {}) {
   const metrics = [
     { metric: 'build', baseline: 'baselineBuild', current: 'currentBuild', delta: 'buildDeltaPct', percent: endToEndRegressionPercent, absoluteMs: endToEndAbsoluteMs },
     { metric: 'hmr', baseline: 'baselineHmr', current: 'currentHmr', delta: 'hmrDeltaPct', percent: endToEndRegressionPercent, absoluteMs: endToEndAbsoluteMs, watchOnly: true },
-    { metric: 'buildPlugin', baseline: 'baselineBuildPlugin', current: 'currentBuildPlugin', delta: 'buildPluginDeltaPct', percent: pluginRegressionPercent, absoluteMs: 0 },
-    { metric: 'hmrPlugin', baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', percent: pluginRegressionPercent, absoluteMs: 0, watchOnly: true },
+    { metric: 'buildPlugin', baseline: 'baselineBuildPlugin', current: 'currentBuildPlugin', delta: 'buildPluginDeltaPct', percent: pluginRegressionPercent, absoluteMs: pluginAbsoluteMs },
+    { metric: 'hmrPlugin', baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', percent: pluginRegressionPercent, absoluteMs: pluginAbsoluteMs, watchOnly: true },
   ]
 
   for (const compare of summary.compares) {
@@ -226,6 +227,7 @@ export function evaluatePerformanceGuard(summary, options = {}) {
     passed: violations.length === 0,
     thresholds: {
       pluginRegressionPercent,
+      pluginAbsoluteMs,
       endToEndRegressionPercent,
       endToEndAbsoluteMs,
     },
@@ -263,7 +265,7 @@ export function toMarkdown(summary, baselineSpec) {
         '## 性能门禁',
         '',
         `- 结果：${guard.passed ? '通过' : '失败'}`,
-        `- 插件阶段阈值：${guard.thresholds.pluginRegressionPercent}%`,
+        `- 插件阶段阈值：${guard.thresholds.pluginRegressionPercent}% 且绝对增加超过 ${guard.thresholds.pluginAbsoluteMs}ms`,
         `- 端到端阈值：${guard.thresholds.endToEndRegressionPercent}% 且绝对增加超过 ${guard.thresholds.endToEndAbsoluteMs}ms`,
         `- 违规项：${guard.violations.length}`,
         ...guard.violations.map(item => `- ${item.key} / ${item.metric}: ${item.message ?? `${fmtMs(item.baseline)} -> ${fmtMs(item.current)} (${fmtPct(item.deltaPercent)})`}`),

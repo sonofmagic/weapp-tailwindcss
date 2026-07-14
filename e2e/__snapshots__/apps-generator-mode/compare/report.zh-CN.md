@@ -14,10 +14,10 @@
 | taro-vite-vue3-tailwindcss-v4 | demo | weapp | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-vue3-tailwindcss-v4/dist/app.wxss` (+4) | 395680 | 1744 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | uni-app-vite-tailwindcss-v4 | demo | mp-weixin | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+7) | 57190 | 224 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | weapp-vite-tailwindcss-v4 | demo | weapp | `weapp` | 通过 | `weapp-vite-tailwindcss-v4/dist/app.wxss` (+3) | 22560 | 100 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| taro-webpack-react-tailwindcss-v4 | demo | web | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-react-tailwindcss-v4/dist` (+3) | 428899 | 2296 | 是 | 否 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
-| taro-webpack-react-tailwindcss-v4 | demo | web-compact | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-react-tailwindcss-v4/dist` (+3) | 418778 | 2296 | 是 | 否 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
-| taro-vite-react-tailwindcss-v4 | demo | web | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-react-tailwindcss-v4/dist` (+4) | 421611 | 2300 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
-| taro-vite-react-tailwindcss-v4 | demo | web-compact | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-react-tailwindcss-v4/dist` (+4) | 411150 | 2295 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
+| taro-webpack-react-tailwindcss-v4 | demo | web | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-react-tailwindcss-v4/dist` (+4) | 436204 | 2298 | 是 | 否 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
+| taro-webpack-react-tailwindcss-v4 | demo | web-compact | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-react-tailwindcss-v4/dist` (+4) | 424792 | 2298 | 是 | 否 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
+| taro-vite-react-tailwindcss-v4 | demo | web | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-react-tailwindcss-v4/dist` (+5) | 429634 | 2301 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
+| taro-vite-react-tailwindcss-v4 | demo | web-compact | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-react-tailwindcss-v4/dist` (+5) | 417938 | 2296 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
 | taro-webpack-vue3-tailwindcss-v4 | demo | web | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist` (+3) | 580166 | 1799 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
 | taro-webpack-vue3-tailwindcss-v4 | demo | web-compact | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist` (+3) | 565776 | 1796 | 是 | 是 | 是 | 是 | 是 | 否 | 否 | 是 | 否 |
 | taro-vite-vue3-tailwindcss-v4 | demo | web | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-vue3-tailwindcss-v4/dist` (+3) | 330887 | 1755 | 是 | 是 | 否 | 是 | 是 | 否 | 否 | 是 | 否 |
@@ -54,12 +54,12 @@
 
 ### taro-webpack-react-tailwindcss-v4
 
-- CSS 文件：`app.wxss`, `pages/index/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`
+- CSS 文件：`app.wxss`, `pages/index/index.wxss`, `pages/issue-998/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`
 - 选择器：`.-bg-conic-180`, `.-bg-linear-65`, `.-rotate-y-45`, `.absolute`, `.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x5f00_u_x59cb_u_x795e_u_x5947_u_x7684__tailwindcss_u_x5f00_u_x53d1_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B:before`, `.before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x7ee7_u_x7eed_u_x795e_u_x5947_u_x7684__tailwindcss_HMR_u_x56de_u_x5f52_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B:before`, `.bg-_b_h0977ee_B`, `.bg-_b_h534312_B`, `.bg-_bimage_clinear-gradient_pto_right_m_h06b6d4_m_h3b82f6_P_B`, `.bg-_pimage_c--issue-928-image_P`, `.bg-conic`, `.bg-conic-180`, `.bg-conic-_bfrom_45deg_at_50_v_50_v_m_hef4444_m_heab308_m_h22c55e_B`, `.bg-conic-_p--issue-928-conic_P`, `.bg-conic_fdecreasing`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-linear-65`
 
 ### taro-vite-react-tailwindcss-v4
 
-- CSS 文件：`app.wxss`, `app-origin.wxss`, `pages/index/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`, `vendors.wxss`
+- CSS 文件：`app.wxss`, `app-origin.wxss`, `pages/index/index.wxss`, `pages/issue-998/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`, `vendors.wxss`
 - 选择器：`.-translate-y-1`, `._b--watch-hmr-offset_c000089px_B`, `._bmask-type_cluminance_B`, `._ebg-_bgray_B`, `._emt-2`, `.after_c_econtent-_b_agood_work_e_a_B:after`, `.after_cml-_b0_d000089px_B:after`, `.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x5f00_u_x59cb_u_x795e_u_x5947_u_x7684__tailwindcss_u_x5f00_u_x53d1_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B:before`, `.before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x7ee7_u_x7eed_u_x795e_u_x5947_u_x7684__tailwindcss_HMR_u_x56de_u_x5f52_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B:before`, `.bg-_b_h000089_B`, `.bg-_b_h0977ee_B`, `.bg-_b_h123456_B`, `.bg-_b_h68c828_B`, `.bg-_bradial-gradient_pcircle_at_18_v_20_v_m_he0f2fe_m_hfdf4ff_70_v_P_B`, `.bg-_bred_B`, `.bg-_brgb_p12_m34_m56_P_B`, `.bg-gradient-to-br`, `.bg-gradient-to-r`
 
 ### taro-webpack-vue3-tailwindcss-v4
@@ -84,22 +84,22 @@
 
 ### taro-webpack-react-tailwindcss-v4
 
-- CSS 文件：`css/app.css`, `css/chunk.1.css`, `css/chunk.2.css`, `css/chunk.3.css`
+- CSS 文件：`css/app.css`, `css/chunk.1.css`, `css/chunk.2.css`, `css/chunk.3.css`, `css/chunk.4.css`
 - 选择器：`&.theme-dark`, `&:before`, `*`, `.-bg-conic-180`, `.-bg-linear-65`, `.-rotate-y-45`, `.absolute`, `.before\:content-\[\'independent_subpackage_taro-webpack-react-tailwindcss-v4\'\]`, `.before\:content-\[\'normal_subpackage_taro-webpack-react-tailwindcss-v4\'\]`, `.before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\]`, `.before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\]`, `.bg-\(image\:--issue-928-image\)`, `.bg-\[\#0977ee\]`, `.bg-\[\#534312\]`, `.bg-\[image\:linear-gradient\(to_right\,\#06b6d4\,\#3b82f6\)\]`, `.bg-conic`, `.bg-conic-180`, `.bg-conic-\(--issue-928-conic\)`, `.bg-conic-\[from_45deg_at_50\%_50\%\,\#ef4444\,\#eab308\,\#22c55e\]`, `.bg-conic\/decreasing`
 
 ### taro-webpack-react-tailwindcss-v4
 
-- CSS 文件：`css/app.css`, `css/chunk.1.css`, `css/chunk.2.css`, `css/chunk.3.css`
+- CSS 文件：`css/app.css`, `css/chunk.1.css`, `css/chunk.2.css`, `css/chunk.3.css`, `css/chunk.4.css`
 - 选择器：`*`, `.-bg-conic-180`, `.-bg-linear-65`, `.-rotate-y-45`, `.absolute`, `.before\:content-\[\'independent_subpackage_taro-webpack-react-tailwindcss-v4\'\]:before`, `.before\:content-\[\'normal_subpackage_taro-webpack-react-tailwindcss-v4\'\]:before`, `.before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\]:before`, `.before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\]:before`, `.bg-\(image\:--issue-928-image\)`, `.bg-\[\#0977ee\]`, `.bg-\[\#534312\]`, `.bg-\[image\:linear-gradient\(to_right\,\#06b6d4\,\#3b82f6\)\]`, `.bg-conic`, `.bg-conic-180`, `.bg-conic-\(--issue-928-conic\)`, `.bg-conic-\[from_45deg_at_50\%_50\%\,\#ef4444\,\#eab308\,\#22c55e\]`, `.bg-conic\/decreasing`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`
 
 ### taro-vite-react-tailwindcss-v4
 
-- CSS 文件：`css/index.1.css`, `css/index.2.css`, `css/index.3.css`, `css/index.4.css`, `css/vendors.css`
+- CSS 文件：`css/index.1.css`, `css/index.2.css`, `css/index.3.css`, `css/index.4.css`, `css/index.5.css`, `css/vendors.css`
 - 选择器：`&.theme-dark`, `&:after`, `&:before`, `&:hover`, `&:is(:nth-of-type(3) :where(.group) *)`, `&[data-state='open']`, `*`, `.-translate-y-1`, `.\!bg-\[gray\]`, `.\!mt-2`, `.\[--watch-hmr-offset\:000089px\]`, `.\[\@supports\(display\:grid\)\]\:grid`, `.\[mask-type\:luminance\]`, `.after\:\!content-\[\'good_work\!\'\]`, `.after\:ml-\[0\.000089px\]`, `.any-hover\:bg-slate-800`, `.before\:content-\[\'independent_subpackage_taro-vite-react-tailwindcss-v4\'\]`, `.before\:content-\[\'normal_subpackage_taro-vite-react-tailwindcss-v4\'\]`, `.before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\]`, `.before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\]`
 
 ### taro-vite-react-tailwindcss-v4
 
-- CSS 文件：`css/index.1.css`, `css/index.2.css`, `css/index.3.css`, `css/index.4.css`, `css/vendors.css`
+- CSS 文件：`css/index.1.css`, `css/index.2.css`, `css/index.3.css`, `css/index.4.css`, `css/index.5.css`, `css/vendors.css`
 - 选择器：`*`, `.-translate-y-1`, `.\!bg-\[gray\]`, `.\!mt-2`, `.\[--watch-hmr-offset\:000089px\]`, `.\[\@supports\(display\:grid\)\]\:grid`, `.\[mask-type\:luminance\]`, `.after\:\!content-\[\'good_work\!\'\]:after`, `.after\:ml-\[0\.000089px\]:after`, `.any-hover\:bg-slate-800:hover`, `.before\:content-\[\'independent_subpackage_taro-vite-react-tailwindcss-v4\'\]:before`, `.before\:content-\[\'normal_subpackage_taro-vite-react-tailwindcss-v4\'\]:before`, `.before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\]:before`, `.before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\]:before`, `.bg-\[\#000089\]`, `.bg-\[\#0977ee\]`, `.bg-\[\#123456\]`, `.bg-\[\#68c828\]`, `.bg-\[radial-gradient\(circle_at_18\%_20\%\,\#e0f2fe\,\#fdf4ff_70\%\)\]`, `.bg-\[red\]`
 
 ### taro-webpack-vue3-tailwindcss-v4

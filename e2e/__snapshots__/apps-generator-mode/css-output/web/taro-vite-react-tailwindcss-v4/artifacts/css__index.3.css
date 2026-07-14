@@ -3,6 +3,7 @@
   :host {
     --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    --spacing: 0.25rem;
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
   }
@@ -285,6 +286,9 @@
 @layer utilities {
   .bg-independent-subpackage-marker {
     background-color: #dc2626;
+  }
+  .p-4 {
+    padding: calc(var(--spacing) * 4);
   }
   .before\:content-\[\'independent_subpackage_taro-vite-react-tailwindcss-v4\'\] {
     &::before {

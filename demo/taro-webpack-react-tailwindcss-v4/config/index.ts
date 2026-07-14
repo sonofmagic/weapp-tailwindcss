@@ -55,19 +55,21 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
   const baseConfig: UserConfigExport<'webpack5'> = {
     projectName: 'taro-webpack-react-tailwindcss-v4',
     date: '2025-2-23',
-    designWidth(input) {
-      const file = typeof input?.file === 'string' ? input.file.replace(/\\\\+/g, '/') : ''
-      if (file.includes('/pages/issue-998/')) {
-        return 375
-      }
-      // 配置 NutUI 375 尺寸
-      // @ts-ignore
-      if (input?.file?.replace(/\\+/g, '/').indexOf('@nutui') > -1) {
-        return 375
-      }
-      // 全局使用 Taro 默认的 750 尺寸
-      return 750
-    },
+    designWidth: taroPlatform.isWeb
+      ? 750
+      : (input) => {
+          const file = typeof input?.file === 'string' ? input.file.replace(/\\\\+/g, '/') : ''
+          if (file.includes('/pages/issue-998/')) {
+            return 375
+          }
+          // 配置 NutUI 375 尺寸
+          // @ts-ignore
+          if (input?.file?.replace(/\\+/g, '/').indexOf('@nutui') > -1) {
+            return 375
+          }
+          // 全局使用 Taro 默认的 750 尺寸
+          return 750
+        },
     deviceRatio: {
       640: 2.34 / 2,
       750: 1,

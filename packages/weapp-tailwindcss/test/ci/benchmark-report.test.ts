@@ -145,7 +145,7 @@ describe('benchmark ci report', () => {
             buildSteady: { median: 1170 },
             hmrSteady: { median: 560 },
             buildPluginSteady: { median: 225 },
-            hmrPluginSteady: { median: 109 },
+            hmrPluginSteady: { median: 115 },
           },
         },
       ],
@@ -157,6 +157,7 @@ describe('benchmark ci report', () => {
       'build',
       'buildPlugin',
     ])
+    expect(result.thresholds.pluginAbsoluteMs).toBe(20)
     expect(result.passed).toBe(false)
   })
 

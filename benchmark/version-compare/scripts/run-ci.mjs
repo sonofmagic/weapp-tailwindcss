@@ -483,6 +483,7 @@ async function main() {
   if (baselineRef) {
     summary.performanceGuard = evaluatePerformanceGuard(summary, {
       pluginRegressionPercent: parseNumber('--plugin-regression-percent', 10),
+      pluginAbsoluteMs: parseNumber('--plugin-absolute-ms', 20),
       endToEndRegressionPercent: parseNumber('--end-to-end-regression-percent', 15),
       endToEndAbsoluteMs: parseNumber('--end-to-end-absolute-ms', 50),
     })

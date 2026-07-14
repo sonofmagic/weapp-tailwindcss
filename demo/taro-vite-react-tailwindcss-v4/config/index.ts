@@ -43,10 +43,12 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
   const baseConfig: UserConfigExport<'vite'> = {
     projectName: 'taro-vite-react-tailwindcss-v4',
     date: '2025-2-23',
-    designWidth(input) {
-      const file = typeof input?.file === 'string' ? input.file.replace(/\\\\+/g, '/') : ''
-      return file.includes('/pages/issue-998/') ? 375 : 750
-    },
+    designWidth: taroPlatform.isWeb
+      ? 750
+      : (input) => {
+          const file = typeof input?.file === 'string' ? input.file.replace(/\\\\+/g, '/') : ''
+          return file.includes('/pages/issue-998/') ? 375 : 750
+        },
     deviceRatio: {
       640: 2.34 / 2,
       750: 1,
