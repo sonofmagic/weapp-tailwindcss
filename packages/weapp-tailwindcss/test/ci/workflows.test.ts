@@ -676,6 +676,10 @@ describe('e2e watch workflow', () => {
     expect(workflow.jobs['uni-app-css-post-hmr']['runs-on']).toBe('windows-latest')
     expectNoIdeOnlyRuntime(stepRuns(workflow, 'pr-quick-gate').join('\n'), 'e2e-watch pr quick gate')
     expect(stepRuns(workflow, 'pr-quick-gate')).toContain('pnpm e2e:watch')
+    const watchStep = workflow.jobs['pr-quick-gate'].steps.find((step: Record<string, unknown>) => step.run === 'pnpm e2e:watch')
+    expect(watchStep?.env).toMatchObject({
+      E2E_TARO_DEV_READY_TIMEOUT_MS: '${{ matrix.taro_dev_ready_timeout_ms || matrix.watch_timeout_ms }}',
+    })
     expectPlaywrightInstallRetry(
       stepRuns(workflow, 'pr-quick-gate').find(run => run.includes('playwright install chromium'))!,
       'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium',
@@ -779,7 +783,7 @@ describe('e2e watch workflow', () => {
       watch_max_plugin_process_ms: '60000',
       watch_command_timeout_ms: '5100000',
     }
-    const slowCrossPlatformTaroTtPrBudgets = [
+    const slowLinuxTaroTtPrBudgets = [
       'taro-vite-react-tailwindcss-v4:tt',
       'taro-vite-vue3-tailwindcss-v4:tt',
     ].map(watchCase => ({
@@ -788,6 +792,17 @@ describe('e2e watch workflow', () => {
       timeout_minutes: 70,
       watch_timeout_ms: '600000',
       watch_max_plugin_process_ms: '10000',
+      watch_command_timeout_ms: '3300000',
+    }))
+    const slowWindowsTaroTtPrBudgets = [
+      { watchCase: 'taro-vite-react-tailwindcss-v4:tt', pluginBudget: '18000' },
+      { watchCase: 'taro-vite-vue3-tailwindcss-v4:tt', pluginBudget: '10000' },
+    ].map(({ watchCase, pluginBudget }) => ({
+      watch_case: watchCase,
+      round_profile: 'default',
+      timeout_minutes: 70,
+      watch_timeout_ms: '600000',
+      watch_max_plugin_process_ms: pluginBudget,
       watch_command_timeout_ms: '3300000',
     }))
     const slowLinuxTaroAlipayPrBudgets = [
@@ -804,9 +819,8 @@ describe('e2e watch workflow', () => {
     const windowsSplitDemoPrBudgets = [
       'gulp-tailwindcss-v4',
       'weapp-vite-tailwindcss-v4',
-      'taro-webpack-react-tailwindcss-v4',
+      'mpx-tailwindcss-v4',
       'taro-vite-vue3-tailwindcss-v4',
-      'taro-webpack-vue3-tailwindcss-v4',
     ].map(watchCase => ({
       watch_case: watchCase,
       round_profile: 'default',
@@ -815,20 +829,32 @@ describe('e2e watch workflow', () => {
       watch_max_plugin_process_ms: '60000',
       watch_command_timeout_ms: '3000000',
     }))
-    const slowWindowsMpxPrBudget = {
-      watch_case: 'mpx-tailwindcss-v4',
-      round_profile: 'default',
-      timeout_minutes: 120,
-      watch_timeout_ms: '420000',
-      watch_max_plugin_process_ms: '60000',
-      watch_command_timeout_ms: '6300000',
-    }
-    const slowWindowsTaroViteReactPrBudget = {
-      watch_case: 'taro-vite-react-tailwindcss-v4',
+    const slowWindowsTaroReactPrBudgets = [
+      {
+        watch_case: 'taro-vite-react-tailwindcss-v4',
+        round_profile: 'default',
+        timeout_minutes: 80,
+        watch_timeout_ms: '420000',
+        watch_max_plugin_process_ms: '60000',
+        watch_command_timeout_ms: '4200000',
+      },
+      {
+        watch_case: 'taro-webpack-react-tailwindcss-v4',
+        round_profile: 'default',
+        timeout_minutes: 80,
+        watch_timeout_ms: '420000',
+        watch_max_plugin_process_ms: '60000',
+        taro_dev_ready_timeout_ms: '900000',
+        watch_command_timeout_ms: '4200000',
+      },
+    ]
+    const slowWindowsTaroWebpackVuePrBudget = {
+      watch_case: 'taro-webpack-vue3-tailwindcss-v4',
       round_profile: 'default',
       timeout_minutes: 80,
-      watch_timeout_ms: '420000',
+      watch_timeout_ms: '600000',
       watch_max_plugin_process_ms: '60000',
+      taro_dev_ready_timeout_ms: '900000',
       watch_command_timeout_ms: '4200000',
     }
     const slowWindowsTaroAlipayPrBudgets = [
@@ -934,26 +960,31 @@ describe('e2e watch workflow', () => {
         ...budget,
       }))
     }
+    for (const budget of slowWindowsTaroReactPrBudgets) {
+      expect(prRows).toContainEqual(expect.objectContaining({
+        os: 'windows-latest',
+        runner_label: 'windows',
+        ...budget,
+      }))
+    }
     expect(prRows).toContainEqual(expect.objectContaining({
       os: 'windows-latest',
       runner_label: 'windows',
-      ...slowWindowsMpxPrBudget,
+      ...slowWindowsTaroWebpackVuePrBudget,
     }))
-    expect(prRows).toContainEqual(expect.objectContaining({
-      os: 'windows-latest',
-      runner_label: 'windows',
-      ...slowWindowsTaroViteReactPrBudget,
-    }))
-    for (const runner of [
-      { os: 'ubuntu-latest', runner_label: 'linux' },
-      { os: 'windows-latest', runner_label: 'windows' },
-    ]) {
-      for (const budget of slowCrossPlatformTaroTtPrBudgets) {
-        expect(prRows).toContainEqual(expect.objectContaining({
-          ...runner,
-          ...budget,
-        }))
-      }
+    for (const budget of slowLinuxTaroTtPrBudgets) {
+      expect(prRows).toContainEqual(expect.objectContaining({
+        os: 'ubuntu-latest',
+        runner_label: 'linux',
+        ...budget,
+      }))
+    }
+    for (const budget of slowWindowsTaroTtPrBudgets) {
+      expect(prRows).toContainEqual(expect.objectContaining({
+        os: 'windows-latest',
+        runner_label: 'windows',
+        ...budget,
+      }))
     }
     for (const budget of slowLinuxTaroAlipayPrBudgets) {
       expect(prRows).toContainEqual(expect.objectContaining({

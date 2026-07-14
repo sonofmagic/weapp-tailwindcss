@@ -2,7 +2,7 @@ import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindResolvedSource } from '@/generator'
 import type { InternalUserDefinedOptions } from '@/types'
 import { readFileSync } from 'node:fs'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { filterExistingCssRules, postcss } from '@weapp-tailwindcss/postcss'
 import { removeUnsupportedMiniProgramAtRules } from '../css-cleanup'
 import { removeTailwindSourceDirectives, resolveCssEntrySource } from './directives'
 import { collectDedupedPostTransformCompatCss, collectGeneratedSelectors, removeDuplicatedViteMarkers, removeGeneratedSelectorCompatCss } from './legacy-selectors'
@@ -273,14 +273,15 @@ export async function appendLegacyCompatCss(
   styleHandler: InternalUserDefinedOptions['styleHandler'],
   cssHandlerOptions: IStyleHandlerOptions,
   generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
+  options: { preserveSelectorOverrides?: boolean | undefined } = {},
 ) {
   const resolvedCompatSource = resolveLegacyCompatCssSource(rawSource)
-  const compatSource = removeGeneratedSelectorCompatCss(
-    generatorTarget === 'weapp'
-      ? removeMiniProgramContainerCompatCss(resolvedCompatSource)
-      : resolvedCompatSource,
-    css,
-  )
+  const normalizedCompatSource = generatorTarget === 'weapp'
+    ? removeMiniProgramContainerCompatCss(resolvedCompatSource)
+    : resolvedCompatSource
+  const compatSource = options.preserveSelectorOverrides
+    ? normalizedCompatSource
+    : removeGeneratedSelectorCompatCss(normalizedCompatSource, css)
   if (compatSource.trim().length === 0) {
     return css
   }
@@ -299,10 +300,12 @@ export async function appendLegacyCompatCss(
     compatCss = handled.css
     setLimitedCacheValue(legacyCompatTransformCache, compatCssCacheKey, compatCss)
   }
-  const cleanedCompatCss = collectDedupedPostTransformCompatCss(
-    removeTailwindV4GeneratedUserCssArtifacts(removeDuplicatedViteMarkers(removeUnsupportedMiniProgramAtRules(compatCss), css)),
-    css,
+  const transformedCompatCss = removeTailwindV4GeneratedUserCssArtifacts(
+    removeDuplicatedViteMarkers(removeUnsupportedMiniProgramAtRules(compatCss), css),
   )
+  const cleanedCompatCss = options.preserveSelectorOverrides
+    ? filterExistingCssRules(css, transformedCompatCss)
+    : collectDedupedPostTransformCompatCss(transformedCompatCss, css)
   if (cleanedCompatCss.trim().length === 0) {
     return css
   }
