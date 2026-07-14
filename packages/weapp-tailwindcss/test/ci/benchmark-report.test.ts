@@ -47,6 +47,8 @@ describe('benchmark ci report', () => {
     const mpxMpWeixin = benchmarkProjects.find(project => project.key === 'demo-mpx-tailwindcss-v4__mp-weixin')
     expect(mpxMpWeixin?.devScript).toBe('dev:e2e-watch')
     expect(mpxMpWeixin?.hmrMode).toBe('watch')
+    expect(mpxMpWeixin?.hmrEndToEndGuard).toBe(false)
+    expect(mpxMpWeixin?.hmrGuardNote).toContain('processAssets timing remains guarded')
     expect(benchmarkProjects.filter(project => project.key.includes('taro') && project.target === 'mp-weixin').every(project => project.hmrMode === 'watch')).toBe(true)
     const realDevServerTargets = benchmarkProjects.filter(project => (project.target === 'h5' || project.target === 'web') && !project.key.includes('hbuilderx'))
     expect(realDevServerTargets.every(project => project.hmrMode === 'watch')).toBe(true)
@@ -192,6 +194,59 @@ describe('benchmark ci report', () => {
       metric: 'currentHmrPluginSamples',
       message: 'current HMR plugin timing samples 2/3',
     }))
+  })
+
+  it('uses every post-ready HMR sample and keeps noisy framework end-to-end timing informational', async () => {
+    const { buildSummary, evaluatePerformanceGuard, toMarkdown } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-14T00:00:00.000Z',
+      options: { buildRuns: 1, hmrRuns: 4, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'demo-mpx-tailwindcss-v4__mp-weixin',
+          hmrMode: 'watch',
+          hmrEndToEndGuard: false,
+          hmrGuardNote: 'framework output variance; plugin timing remains guarded',
+          hmrMs: [100, 100, 100, 100],
+          hmrPluginMs: [50, 50, 50, 50],
+          summary: {
+            hmr: { median: 100 },
+            hmrSteady: { median: 100 },
+            hmrPlugin: { median: 50 },
+            hmrPluginSteady: { median: 50 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'demo-mpx-tailwindcss-v4__mp-weixin',
+          hmrMode: 'watch',
+          hmrEndToEndGuard: false,
+          hmrGuardNote: 'framework output variance; plugin timing remains guarded',
+          hmrMs: [110, 110, 500, 500],
+          hmrPluginMs: [55, 55, 80, 80],
+          summary: {
+            hmr: { median: 305 },
+            hmrSteady: { median: 500 },
+            hmrPlugin: { median: 67.5 },
+            hmrPluginSteady: { median: 80 },
+          },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    expect(summary.compares[0]).toMatchObject({
+      baselineHmr: 100,
+      currentHmr: 305,
+      baselineHmrPlugin: 50,
+      currentHmrPlugin: 67.5,
+      hmrEndToEndGuard: false,
+    })
+    const result = evaluatePerformanceGuard(summary, { pluginRegressionPercent: 40 })
+    expect(result.passed).toBe(true)
+    expect(toMarkdown(summary, 'main')).toContain('HMR end-to-end informational: framework output variance; plugin timing remains guarded')
   })
 
   it('keeps dev server HMR measured through fixed-port development servers', async () => {
@@ -340,6 +395,6 @@ describe('benchmark ci report', () => {
     expect(markdown).toContain('| demo-web-react-vite-tailwindcss-v4__web | web |')
     expect(markdown).toContain('fallback-build')
     expect(markdown).toContain('unsupported')
-    expect(markdown).toContain('真实 watch HMR 稳态中位数平均变化：-50.00%（1 项；fallback-build/unsupported 不参与）')
+    expect(markdown).toContain('真实 watch HMR 中位数平均变化：-50.00%（1 项；fallback-build/unsupported 不参与）')
   })
 })

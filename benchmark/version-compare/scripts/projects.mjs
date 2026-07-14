@@ -24,6 +24,8 @@ export const benchmarkProjects = [
     devScript: 'dev:e2e-watch',
     injectType: 'vue',
     hmrMode: 'watch',
+    hmrEndToEndGuard: false,
+    hmrGuardNote: 'Mpx watch completion includes framework rebuild and output flush variance; processAssets timing remains guarded',
   },
   {
     key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',

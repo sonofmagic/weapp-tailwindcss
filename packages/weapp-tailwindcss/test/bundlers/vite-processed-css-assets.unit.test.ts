@@ -1089,6 +1089,26 @@ describe('vite processed css assets', () => {
     expect(css).toContain('--u-cell-color')
   })
 
+  it('removes scoped Tailwind global css without a root style bundle asset', async () => {
+    const { removeCssCoveredByRootStyleBundleSources } = await import('@/bundlers/vite/processed-css-assets')
+    const source = [
+      '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+      '@layer theme{[data-v-page]:root,[data-v-page]:host{--font-sans:ui-sans-serif}}',
+      '@layer base{*[data-v-page]{box-sizing:border-box}}',
+      '.page[data-v-page]{color:red}',
+    ].join('')
+    const bundle: OutputBundle = {
+      'assets/page.css': asset('assets/page.css', source),
+    }
+
+    const css = removeCssCoveredByRootStyleBundleSources(bundle, 'assets/page.css', source)
+
+    expect(css).not.toContain('tailwindcss v4.3.2')
+    expect(css).not.toContain('--font-sans')
+    expect(css).not.toContain('box-sizing:border-box')
+    expect(css).toContain('.page[data-v-page]{color:red}')
+  })
+
   it('removes unsupported imports from non-wechat mini-program css assets while preserving local imports', () => {
     const bundle: OutputBundle = {
       'main.acss': asset('main.acss', [

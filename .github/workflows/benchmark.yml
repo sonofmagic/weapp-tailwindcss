@@ -46,7 +46,7 @@ jobs:
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
       WEAPP_TW_BENCH_BASELINE: ${{ github.event.inputs.baseline || 'auto' }}
       BENCH_BUILD_RUNS: ${{ github.event_name == 'pull_request' && '3' || github.event.inputs.build_runs || '3' }}
-      BENCH_HMR_RUNS: ${{ github.event_name == 'pull_request' && '4' || github.event.inputs.hmr_runs || '5' }}
+      BENCH_HMR_RUNS: ${{ github.event_name == 'pull_request' && '6' || github.event.inputs.hmr_runs || '5' }}
       BENCH_ONLY: ${{ github.event_name == 'pull_request' && 'demo-weapp-vite-tailwindcss-v4__mp-weixin,demo-taro-vite-react-tailwindcss-v4__mp-weixin,demo-taro-webpack-react-tailwindcss-v4__mp-weixin,demo-uni-app-vite-tailwindcss-v4__mp-weixin,demo-mpx-tailwindcss-v4__mp-weixin' || github.event.inputs.only || '' }}
 
     steps:

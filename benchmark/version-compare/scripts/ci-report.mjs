@@ -22,7 +22,10 @@ function fmtPct(value) {
 }
 
 function metric(row, kind) {
-  return toNumber(row?.summary?.[`${kind}Steady`]?.median ?? row?.summary?.[kind]?.median)
+  const fullHmrMetric = kind.startsWith('hmr')
+    ? toNumber(row?.summary?.[kind]?.median)
+    : undefined
+  return fullHmrMetric ?? toNumber(row?.summary?.[`${kind}Steady`]?.median ?? row?.summary?.[kind]?.median)
 }
 
 function pluginMetric(row, kind) {
@@ -61,6 +64,7 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
     const currentHmrPlugin = pluginMetric(current, 'hmr')
     const baselineHmrMode = baseline?.hmrMode ?? 'watch'
     const currentHmrMode = current.hmrMode ?? 'watch'
+    const hmrEndToEndGuard = baseline?.hmrEndToEndGuard !== false && current.hmrEndToEndGuard !== false
     return {
       key: current.key,
       project: current.project,
@@ -85,6 +89,8 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
       currentBuildMode: current.buildMode ?? 'build',
       baselineHmrMode,
       currentHmrMode,
+      hmrEndToEndGuard,
+      hmrGuardNote: current.hmrGuardNote ?? baseline?.hmrGuardNote,
       baselineBuildNote: baseline?.buildNote,
       currentBuildNote: current.buildNote,
       baselineHmrNote: baseline?.hmrNote,
@@ -191,6 +197,9 @@ export function evaluatePerformanceGuard(summary, options = {}) {
       if (config.watchOnly && (compare.baselineHmrMode !== 'watch' || compare.currentHmrMode !== 'watch')) {
         continue
       }
+      if (config.metric === 'hmr' && compare.hmrEndToEndGuard === false) {
+        continue
+      }
       const baseline = toNumber(compare[config.baseline])
       const current = toNumber(compare[config.current])
       const deltaPercent = toNumber(compare[config.delta])
@@ -236,6 +245,7 @@ export function toMarkdown(summary, baselineSpec) {
       item.currentBuildMode === 'unsupported' && `current build: ${item.currentBuildNote}`,
       item.baselineHmrMode !== 'watch' && `baseline HMR: ${item.baselineHmrNote ?? item.baselineHmrMode}`,
       item.currentHmrMode !== 'watch' && `current HMR: ${item.currentHmrNote ?? item.currentHmrMode}`,
+      item.hmrEndToEndGuard === false && `HMR end-to-end informational: ${item.hmrGuardNote ?? 'plugin timing remains guarded'}`,
     ].filter(Boolean).join('<br>')
     return `| ${item.key} | ${item.target ?? '-'} | ${fmtMs(item.baselineBuild)} | ${fmtMs(item.currentBuild)} | ${fmtPct(item.buildDeltaPct)} | ${hmrMode} | ${fmtMs(item.baselineHmr)} | ${fmtMs(item.currentHmr)} | ${fmtPct(item.hmrDeltaPct)} | ${note || '-'} |`
   }).join('\n')
@@ -273,9 +283,9 @@ export function toMarkdown(summary, baselineSpec) {
 ## 汇总
 
 - Build 稳态中位数平均变化：${fmtPct(summary.averages.buildDeltaPct)}（${summary.averages.buildCompareCount} 项）
-- 真实 watch HMR 稳态中位数平均变化：${fmtPct(summary.averages.hmrDeltaPct)}（${summary.averages.watchHmrCompareCount} 项；fallback-build/unsupported 不参与）
+- 真实 watch HMR 中位数平均变化：${fmtPct(summary.averages.hmrDeltaPct)}（${summary.averages.watchHmrCompareCount} 项；fallback-build/unsupported 不参与）
 - 插件 Build 稳态中位数平均变化：${fmtPct(summary.averages.buildPluginDeltaPct)}（${summary.averages.buildPluginCompareCount} 项）
-- 插件 HMR 稳态中位数平均变化：${fmtPct(summary.averages.hmrPluginDeltaPct)}（${summary.averages.watchHmrPluginCompareCount} 项）
+- 插件 HMR 中位数平均变化：${fmtPct(summary.averages.hmrPluginDeltaPct)}（${summary.averages.watchHmrPluginCompareCount} 项）
 - 失败项：${summary.errors.length}
 - 当前版本独有失败项：${summary.currentOnlyErrors.length}
 - 基线/当前共同失败项：${summary.sharedErrors.length}

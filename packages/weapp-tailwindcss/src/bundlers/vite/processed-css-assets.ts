@@ -743,12 +743,22 @@ export function removeCssCoveredByRootStyleBundleSources(
   css: string,
 ) {
   const rootSources = collectRootStyleBundleCssSources(bundle, file)
-  if (rootSources.length === 0 || css.trim().length === 0) {
+  if (css.trim().length === 0) {
+    return css
+  }
+  const hasScopedCss = hasVueScopedAttr(css)
+  const hasScopedTailwindGeneratedCss = hasScopedCss && /tailwindcss v\d/i.test(css)
+  const hasUnscopedMiniProgramPreflight = hasScopedCss && hasUnscopedMiniProgramTailwindPreflightRule(css)
+  const hasScopedMiniProgramContentInit = hasScopedCss && hasScopedMiniProgramTailwindContentInitRule(css)
+  if (
+    rootSources.length === 0
+    && !hasScopedTailwindGeneratedCss
+    && !hasUnscopedMiniProgramPreflight
+    && !hasScopedMiniProgramContentInit
+  ) {
     return css
   }
   const coverage = collectRootScopedComparableCssCoverage(rootSources)
-  const hasScopedCss = hasVueScopedAttr(css)
-  const hasScopedTailwindGeneratedCss = hasScopedCss && /tailwindcss v\d/i.test(css)
   let nextCss = css
   try {
     const root = postcss.parse(css)
