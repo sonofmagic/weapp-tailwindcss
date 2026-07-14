@@ -323,6 +323,7 @@ jobs:
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
+            taro_dev_ready_timeout_ms: '900000'
             watch_command_timeout_ms: '4200000'
           - os: windows-latest
             runner_label: windows
@@ -343,6 +344,7 @@ jobs:
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
+            taro_dev_ready_timeout_ms: '900000'
             watch_command_timeout_ms: '4200000'
           - os: windows-latest
             runner_label: windows
@@ -495,6 +497,7 @@ jobs:
         env:
           E2E_WATCH_CASE: ${{ matrix.watch_case }}
           E2E_WATCH_TIMEOUT_MS: ${{ matrix.watch_timeout_ms }}
+          E2E_TARO_DEV_READY_TIMEOUT_MS: ${{ matrix.taro_dev_ready_timeout_ms || matrix.watch_timeout_ms }}
           E2E_WATCH_POLL_MS: ${{ matrix.watch_poll_ms }}
           E2E_WATCH_MAX_HOT_UPDATE_MS: ${{ matrix.watch_max_hot_update_ms || matrix.watch_timeout_ms }}
           E2E_WATCH_MAX_PLUGIN_PROCESS_MS: ${{ matrix.watch_max_plugin_process_ms || '6000' }}

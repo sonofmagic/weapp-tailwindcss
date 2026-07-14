@@ -670,6 +670,10 @@ describe('e2e watch workflow', () => {
     expect(workflow.jobs['uni-app-css-post-hmr']['runs-on']).toBe('windows-latest')
     expectNoIdeOnlyRuntime(stepRuns(workflow, 'pr-quick-gate').join('\n'), 'e2e-watch pr quick gate')
     expect(stepRuns(workflow, 'pr-quick-gate')).toContain('pnpm e2e:watch')
+    const watchStep = workflow.jobs['pr-quick-gate'].steps.find((step: Record<string, unknown>) => step.run === 'pnpm e2e:watch')
+    expect(watchStep?.env).toMatchObject({
+      E2E_TARO_DEV_READY_TIMEOUT_MS: '${{ matrix.taro_dev_ready_timeout_ms || matrix.watch_timeout_ms }}',
+    })
     expectPlaywrightInstallRetry(
       stepRuns(workflow, 'pr-quick-gate').find(run => run.includes('playwright install chromium'))!,
       'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium',
@@ -820,22 +824,31 @@ describe('e2e watch workflow', () => {
       watch_command_timeout_ms: '3000000',
     }))
     const slowWindowsTaroReactPrBudgets = [
-      'taro-vite-react-tailwindcss-v4',
-      'taro-webpack-react-tailwindcss-v4',
-    ].map(watchCase => ({
-      watch_case: watchCase,
-      round_profile: 'default',
-      timeout_minutes: 80,
-      watch_timeout_ms: '420000',
-      watch_max_plugin_process_ms: '60000',
-      watch_command_timeout_ms: '4200000',
-    }))
+      {
+        watch_case: 'taro-vite-react-tailwindcss-v4',
+        round_profile: 'default',
+        timeout_minutes: 80,
+        watch_timeout_ms: '420000',
+        watch_max_plugin_process_ms: '60000',
+        watch_command_timeout_ms: '4200000',
+      },
+      {
+        watch_case: 'taro-webpack-react-tailwindcss-v4',
+        round_profile: 'default',
+        timeout_minutes: 80,
+        watch_timeout_ms: '420000',
+        watch_max_plugin_process_ms: '60000',
+        taro_dev_ready_timeout_ms: '900000',
+        watch_command_timeout_ms: '4200000',
+      },
+    ]
     const slowWindowsTaroWebpackVuePrBudget = {
       watch_case: 'taro-webpack-vue3-tailwindcss-v4',
       round_profile: 'default',
       timeout_minutes: 80,
       watch_timeout_ms: '600000',
       watch_max_plugin_process_ms: '60000',
+      taro_dev_ready_timeout_ms: '900000',
       watch_command_timeout_ms: '4200000',
     }
     const slowWindowsTaroAlipayPrBudgets = [
