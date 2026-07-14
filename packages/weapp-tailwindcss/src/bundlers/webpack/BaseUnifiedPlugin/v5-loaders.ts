@@ -11,6 +11,7 @@ import { pluginName } from '@/constants'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveRuntimeBranch } from '@/runtime-branch'
 import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, patchMpxLoaderResolve } from '@/shared/mpx'
+import { captureFrameworkPostcssPlugins, collectFrameworkPostcssPluginsFromLoaderEntries } from '../../shared/framework-postcss'
 import { deleteWebpackLoaderRuntime, setWebpackLoaderRuntime } from '../loaders/runtime-registry'
 import { createDefaultLoaderAnchorFinders } from '../shared/loader-anchors'
 import { hasLoaderEntry, isCssLikeModuleResource } from './shared'
@@ -193,6 +194,12 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
       let rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
       const classSetAnchorIdx = findClassSetAnchor(loaderEntries)
       const isCssModule = isCssLikeModuleResource(module.resource, compilerOptions.cssMatcher, appType)
+      if (isCssModule) {
+        captureFrameworkPostcssPlugins(
+          compilerOptions,
+          collectFrameworkPostcssPluginsFromLoaderEntries(loaderEntries),
+        )
+      }
       if (isCssModule && typeof module.resource === 'string') {
         markWebpackCssSourceModule?.(module.resource)
       }

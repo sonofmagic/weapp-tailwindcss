@@ -1,4 +1,5 @@
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css'
+import { transformGeneratedCssWithFrameworkPostcss } from './framework-postcss'
 import { generateCssByGenerator } from './generator-css'
 
 export interface TailwindV4GenerationCoreInput extends GenerateCssByGeneratorOptions {
@@ -23,8 +24,12 @@ export async function generateTailwindV4Css(
   if (!generated) {
     return undefined
   }
+  const css = generated.target === 'weapp'
+    ? await transformGeneratedCssWithFrameworkPostcss(options.opts, generated.css, options.file)
+    : generated.css
   return {
     ...generated,
+    css,
     classSet: generated.classSet,
     dependencies: generated.dependencies,
     metadata: {

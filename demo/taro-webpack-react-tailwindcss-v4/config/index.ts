@@ -15,13 +15,13 @@ const taroPlugins = [
 ]
 const cssOptions = {
   tailwindcssV4GradientFallback,
-  px2rpx: true,
 } satisfies UserDefinedOptions['cssOptions']
 const projectRoot = resolve(__dirname, '..')
 const cssEntries = [
   resolve(projectRoot, 'src/app.css'),
   resolve(projectRoot, 'src/sub-normal/pages/index.css'),
   resolve(projectRoot, 'src/sub-independent/pages/index.css'),
+  resolve(projectRoot, 'src/pages/issue-998/index.css'),
 ]
 
 const taroPlatform = resolveTaroPlatform()
@@ -56,6 +56,10 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
     projectName: 'taro-webpack-react-tailwindcss-v4',
     date: '2025-2-23',
     designWidth(input) {
+      const file = typeof input?.file === 'string' ? input.file.replace(/\\\\+/g, '/') : ''
+      if (file.includes('/pages/issue-998/')) {
+        return 375
+      }
       // 配置 NutUI 375 尺寸
       // @ts-ignore
       if (input?.file?.replace(/\\+/g, '/').indexOf('@nutui') > -1) {

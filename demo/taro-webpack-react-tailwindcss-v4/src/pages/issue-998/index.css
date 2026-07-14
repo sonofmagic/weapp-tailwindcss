@@ -1,0 +1,12 @@
+@import "tailwindcss" source(none);
+
+@theme {
+  --spacing: 4px;
+}
+
+@source inline("p-4");
+@source "./index.tsx";
+
+.issue-998-page {
+  @apply p-4;
+}

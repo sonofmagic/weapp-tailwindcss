@@ -30,6 +30,7 @@ import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/ta
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
+import { captureFrameworkPostcssPlugins } from '../../shared/framework-postcss'
 import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '../../shared/generated-css-marker'
 import { normalizeMiniProgramGeneratorCssSource } from '../../shared/generator-css/output-import-shell'
 import { createHmrTimingRecorder } from '../../shared/hmr-timing'
@@ -1694,6 +1695,12 @@ export function createViteFrameworkPlugins(
       async configResolved(config) {
         await hmrTimingRecorder.measure('configResolved', async () => {
           resolvedConfig = config
+          captureFrameworkPostcssPlugins(
+            opts,
+            config.css?.postcss && typeof config.css.postcss === 'object'
+              ? config.css.postcss.plugins
+              : undefined,
+          )
           if (shouldOwnTailwindGeneration) {
             const removed = Array.isArray(config.plugins)
               ? removeTailwindVitePlugins(config.plugins)
