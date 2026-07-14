@@ -8,7 +8,7 @@ import {
 import { installTailwindcssCssRedirect } from './tailwindcss-css-redirect'
 
 const MPX_STYLE_RESOURCE_QUERY_RE = /(?:^|[?&])type=styles(?:&|$)/
-const MPX_WEBPACK_PLUGIN_REQUEST_RE = /@mpxjs\/webpack-plugin\/([^!?]+)/g
+const MPX_WEBPACK_PLUGIN_REQUEST_PATH_RE = /(?:^|[\\/])@mpxjs[\\/]webpack-plugin(?:[\\/](.+))?$/
 
 function isMpxStyleResourceQuery(query?: string) {
   if (typeof query !== 'string') {
@@ -30,9 +30,20 @@ export function rewriteMpxWebpackPluginRequests(
   mpxWebpackPluginDir: string,
   pathImpl: Pick<typeof path, 'join'> = path,
 ) {
-  return request.replace(MPX_WEBPACK_PLUGIN_REQUEST_RE, (_full, subpath: string) => {
-    return pathImpl.join(mpxWebpackPluginDir, ...subpath.split('/'))
-  })
+  return request.split('!').map((segment) => {
+    const queryIndex = segment.indexOf('?')
+    const requestPath = queryIndex === -1 ? segment : segment.slice(0, queryIndex)
+    const query = queryIndex === -1 ? '' : segment.slice(queryIndex)
+    const match = requestPath.match(MPX_WEBPACK_PLUGIN_REQUEST_PATH_RE)
+    if (!match) {
+      return segment
+    }
+    const subpath = match[1]
+    const resolved = subpath
+      ? pathImpl.join(mpxWebpackPluginDir, ...subpath.split(/[\\/]/))
+      : mpxWebpackPluginDir
+    return `${resolved}${query}`
+  }).join('!')
 }
 
 export function patchMpxWebpackPluginRequests(compiler: any, mpxWebpackPluginDir: string | undefined) {

@@ -211,6 +211,32 @@ describe('mpx integration helpers', () => {
     )
   })
 
+  it('replaces stale absolute mpx loader paths with the compilation owner on Windows', () => {
+    const stalePluginDir = 'D:\\repo\\node_modules\\.pnpm\\@mpxjs+webpack-plugin@2.10.24\\node_modules\\@mpxjs\\webpack-plugin'
+    const compilationPluginDir = 'D:\\repo\\node_modules\\.pnpm\\@mpxjs+webpack-plugin@2.11.0\\node_modules\\@mpxjs\\webpack-plugin'
+    const request = [
+      `${stalePluginDir}\\lib\\record-loader.js`,
+      `${stalePluginDir}\\lib\\style-compiler\\index.js?scoped=false`,
+      'D:\\repo\\src\\app.css?type=styles',
+    ].join('!')
+
+    expect(rewriteMpxWebpackPluginRequests(request, compilationPluginDir, path.win32)).toBe([
+      `${compilationPluginDir}\\lib\\record-loader.js`,
+      `${compilationPluginDir}\\lib\\style-compiler\\index.js?scoped=false`,
+      'D:\\repo\\src\\app.css?type=styles',
+    ].join('!'))
+  })
+
+  it('replaces stale absolute mpx loader paths with the compilation owner on POSIX', () => {
+    const stalePluginDir = '/repo/node_modules/.pnpm/@mpxjs+webpack-plugin@2.10.24/node_modules/@mpxjs/webpack-plugin'
+    const compilationPluginDir = '/repo/node_modules/.pnpm/@mpxjs+webpack-plugin@2.11.0/node_modules/@mpxjs/webpack-plugin'
+    const request = `${stalePluginDir}/lib/record-loader.js!${stalePluginDir}/lib/style-compiler/index.js!/repo/src/app.css?type=styles`
+
+    expect(rewriteMpxWebpackPluginRequests(request, compilationPluginDir, path.posix)).toBe(
+      `${compilationPluginDir}/lib/record-loader.js!${compilationPluginDir}/lib/style-compiler/index.js!/repo/src/app.css?type=styles`,
+    )
+  })
+
   it('patches parent and child compiler requests before webpack resolves generated loaders', () => {
     let normalModuleFactoryHandler: ((factory: any) => void) | undefined
     let beforeResolveHandler: ((data: any) => void) | undefined
