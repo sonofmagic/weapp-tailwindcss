@@ -15,8 +15,9 @@ Entry: taro-webpack-react-tailwindcss-v4/dist/app.wxss
 | ---: | --- | --- |
 | 1 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) |
 | 2 | `pages/index/index.wxss` | [artifacts/pages__index__index.wxss](artifacts/pages__index__index.wxss) |
-| 3 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) |
-| 4 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) |
+| 3 | `pages/issue-998/index.wxss` | [artifacts/pages__issue-998__index.wxss](artifacts/pages__issue-998__index.wxss) |
+| 4 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) |
+| 5 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) |
 
 ## Generator CSS Summary
 
@@ -24,5 +25,6 @@ Entry: taro-webpack-react-tailwindcss-v4/dist/app.wxss
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) | 295747 | 2201 | false | false | false | true | true | false | true |
 | `pages/index/index.wxss` | [artifacts/pages__index__index.wxss](artifacts/pages__index__index.wxss) | 3938 | 38 | false | false | false | false | false | false | false |
+| `pages/issue-998/index.wxss` | [artifacts/pages__issue-998__index.wxss](artifacts/pages__issue-998__index.wxss) | 801 | 6 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) | 1928 | 8 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) | 1033 | 6 | false | false | false | false | false | false | true |

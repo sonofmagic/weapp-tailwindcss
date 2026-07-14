@@ -16,8 +16,9 @@ Entry: taro-vite-react-tailwindcss-v4/dist/app.wxss
 | 1 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) |
 | 2 | `app-origin.wxss` | [artifacts/app-origin.wxss](artifacts/app-origin.wxss) |
 | 3 | `pages/index/index.wxss` | [artifacts/pages__index__index.wxss](artifacts/pages__index__index.wxss) |
-| 4 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) |
-| 5 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) |
+| 4 | `pages/issue-998/index.wxss` | [artifacts/pages__issue-998__index.wxss](artifacts/pages__issue-998__index.wxss) |
+| 5 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) |
+| 6 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) |
 | 6 | `vendors.wxss` | [artifacts/vendors.wxss](artifacts/vendors.wxss) |
 
 ## Generator CSS Summary
@@ -27,6 +28,7 @@ Entry: taro-vite-react-tailwindcss-v4/dist/app.wxss
 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) | 29 | 0 | false | false | false | false | false | false | false |
 | `app-origin.wxss` | [artifacts/app-origin.wxss](artifacts/app-origin.wxss) | 483890 | 2275 | false | false | false | true | true | false | true |
 | `pages/index/index.wxss` | [artifacts/pages__index__index.wxss](artifacts/pages__index__index.wxss) | 50 | 1 | false | false | false | false | false | false | false |
+| `pages/issue-998/index.wxss` | [artifacts/pages__issue-998__index.wxss](artifacts/pages__issue-998__index.wxss) | 723 | 5 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) | 1919 | 8 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) | 5981 | 31 | false | false | false | false | false | false | true |
 | `vendors.wxss` | [artifacts/vendors.wxss](artifacts/vendors.wxss) | 9525 | 36 | false | false | false | false | false | false | false |

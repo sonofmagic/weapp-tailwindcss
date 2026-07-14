@@ -359,12 +359,13 @@
     "cssFiles": [
       "app.wxss",
       "pages/index/index.wxss",
+      "pages/issue-998/index.wxss",
       "sub-independent/pages/index.wxss",
       "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 302646,
+      "bytes": 303665,
       "selectors": [
         ".-bg-conic-180",
         ".-bg-linear-65",
@@ -2621,13 +2622,14 @@
       "app.wxss",
       "app-origin.wxss",
       "pages/index/index.wxss",
+      "pages/issue-998/index.wxss",
       "sub-independent/pages/index.wxss",
       "sub-normal/pages/index.wxss",
       "vendors.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 501394,
+      "bytes": 522834,
       "selectors": [
         ".-translate-y-1",
         "._b--watch-hmr-offset_c000089px_B",
