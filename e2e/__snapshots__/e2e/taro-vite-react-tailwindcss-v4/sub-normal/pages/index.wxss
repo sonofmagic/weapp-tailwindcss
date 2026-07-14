@@ -30,7 +30,7 @@ text,
   --tw-inset-ring-color:;
   --tw-inset-ring-shadow: 0 0 #0000;
   --tw-ring-inset:;
-  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-width: 0rpx;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-content: '';
@@ -98,6 +98,10 @@ wx-root-portal-content {
 /* tokens: [mask-type:luminance] <= src/sub-normal/pages/index.tsx */
 ._bmask-type_cluminance_B {
   mask-type: luminance;
+}
+/* tokens: p-4 <= <tailwind generated> */
+.p-4 {
+  padding: calc(var(--spacing) * 4);
 }
 /* tokens: text-[23.000089px] <= src/sub-normal/pages/index.tsx */
 .text-_b23_d000089px_B {
