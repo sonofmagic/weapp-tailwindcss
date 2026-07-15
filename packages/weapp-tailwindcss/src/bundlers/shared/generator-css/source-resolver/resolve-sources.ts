@@ -9,10 +9,11 @@ import { prependConfigDirective } from '../config-directive'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives, resolveCssEntrySource } from '../directives'
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../markers'
 import { resolveSourceSideCssEntrySource } from '../source-files'
-import { canResolveSourceSideCssEntry, hasConfiguredTailwindV4CssSource, mergeCssSources, normalizeResolvedTailwindV4SourceConfig, normalizeTailwindV4CssSourceConfigs, resolveMatchingTailwindV4CssEntry, resolveMatchingTailwindV4CssSource, resolveTailwindV4CssEntrySource } from './configuration'
+import { canResolveSourceSideCssEntry, hasConfiguredTailwindV4CssSource, mergeCssSources, normalizeResolvedTailwindV4SourceConfig, normalizeTailwindV4CssSourceConfigs, resolveTailwindV4CssEntrySource } from './configuration'
 import { resolveCssHandlerSourceOptions, resolveCssSourceBase, resolvePostcssSourceFile } from './postcss-source'
 import { resolveGeneratorSource } from './resolve-source'
 import { createTailwindV4CssSourceResolver, resolveCandidateMatchedTailwindV4CssEntry, resolveCandidateMatchedTailwindV4CssSource, resolveTailwindV4SourceSideEntrySource } from './single-source'
+import { resolveMatchingTailwindV4CssEntry, resolveMatchingTailwindV4CssSource } from './source-matching'
 
 export async function resolveGeneratorSources(
   majorVersion: number | undefined,

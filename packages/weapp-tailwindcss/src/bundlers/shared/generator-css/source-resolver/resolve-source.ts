@@ -11,9 +11,10 @@ import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../mark
 import { resolveSourceSideCssEntrySource } from '../source-files'
 import { createTailwindV4ApplyReferenceSource, createTailwindV4SourceReferenceSource } from './apply-reference'
 import { resolveExistingConfigPath } from './config'
-import { canResolveSourceSideCssEntry, createCssEntrySources, createSingleTailwindV4SourceOptions, hasConfiguredTailwindV4CssSource, mergeCssSources, normalizeTailwindV4CssSourceConfigs, resolveMatchingTailwindV4CssEntry, resolveMatchingTailwindV4CssSource, resolveTailwindV4CssEntrySource, shouldResolveSourceSideCssEntry, tryResolveTailwindV4SourceOptions } from './configuration'
+import { canResolveSourceSideCssEntry, createCssEntrySources, createSingleTailwindV4SourceOptions, hasConfiguredTailwindV4CssSource, mergeCssSources, normalizeTailwindV4CssSourceConfigs, resolveTailwindV4CssEntrySource, shouldResolveSourceSideCssEntry, tryResolveTailwindV4SourceOptions } from './configuration'
 import { resolveCssHandlerSourceOptions, resolveCssSourceBase, resolvePostcssSourceFile } from './postcss-source'
 import { resolveCandidateMatchedTailwindV4CssEntry, resolveCandidateMatchedTailwindV4CssSource, resolveSingleTailwindV4CssSource, resolveTailwindV4SourceSideEntrySource } from './single-source'
+import { resolveMatchingTailwindV4CssEntry, resolveMatchingTailwindV4CssSource } from './source-matching'
 
 export async function resolveGeneratorSource(
   _majorVersion: number | undefined,
