@@ -17,7 +17,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 17853,
+      "bytes": 17860,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before",
@@ -141,7 +141,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 32049,
+      "bytes": 31867,
       "selectors": [
         ".-mt-2",
         "._2xl_ctext-base",
@@ -2645,7 +2645,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 565676,
+      "bytes": 536721,
       "selectors": [
         ".-translate-y-1",
         "._b--watch-hmr-offset_c000089px_B",
@@ -4947,7 +4947,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 244369,
+      "bytes": 244011,
       "selectors": [
         "._ebg-_bgray_B",
         ".after_c_econtent-_b_agood_work_e_a_B:after",
@@ -6738,7 +6738,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 465316,
+      "bytes": 440710,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
@@ -8501,7 +8501,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 56214,
+      "bytes": 54609,
       "selectors": [
         "._ebg-_bgray_B",
         ".active_cbg-emerald-50:active",
@@ -8601,7 +8601,6 @@
         ".h-16",
         ".h-20",
         ".h-_b45px_B",
-        ".hello-world-shell",
         ".hello-world-shell.data-v-04bcf89b",
         ".i-_bmdi--github-circle_B",
         ".i-_bmdi--home_B",
@@ -8752,7 +8751,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 22845,
+      "bytes": 22969,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before",

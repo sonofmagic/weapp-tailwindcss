@@ -66,14 +66,17 @@ jobs:
           - os: macos-latest
             runner_label: macos
             watch_case: demo-core
-            round_profile: default
+            round_profile: main-style
             watch_save_snapshots: '1'
-            # 覆盖 2 次 40 分钟 watch attempt，并给安装、构建和报告上传预留时间。
-            timeout_minutes: 95
+            # macOS 已有 Linux 全量轮次兜底，PR 仅验证三个核心 bundler 的主样式热更新，避免 Mpx 全量轮次耗尽 runner 内存。
+            watch_main_style_only: '1'
+            watch_main_style_subpackage_limit: '0'
+            watch_max_attempts: '1'
+            timeout_minutes: 35
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '5100000'
+            watch_command_timeout_ms: '1500000'
           - os: macos-latest
             runner_label: macos
             watch_case: demo-taro-react
@@ -297,13 +300,17 @@ jobs:
           - os: windows-latest
             runner_label: windows
             watch_case: mpx-tailwindcss-v4
-            round_profile: default
+            round_profile: main-style
             watch_save_snapshots: '1'
-            timeout_minutes: 80
+            # Windows Mpx 单次全量编译可超过两分钟；PR 只保留主样式 add/rollback，完整轮次由 Linux 与 nightly 覆盖。
+            watch_main_style_only: '1'
+            watch_main_style_subpackage_limit: '0'
+            watch_max_attempts: '1'
+            timeout_minutes: 35
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '4200000'
+            watch_command_timeout_ms: '1500000'
           - os: windows-latest
             runner_label: windows
             watch_case: taro-vite-react-tailwindcss-v4
@@ -360,14 +367,18 @@ jobs:
             runner_label: windows
             watch_case: taro-vite-react-tailwindcss-v4:alipay
             artifact_case: taro-vite-react-tailwindcss-v4-alipay
-            round_profile: default
+            round_profile: main-style
             watch_save_snapshots: '1'
-            timeout_minutes: 55
+            # Windows Alipay 的全量 template/script/多分包轮次会超过 PR job 预算；PR 保留真实主样式 add/rollback，nightly 继续跑全量。
+            watch_main_style_only: '1'
+            watch_main_style_subpackage_limit: '0'
+            watch_max_attempts: '1'
+            timeout_minutes: 35
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             # Windows Alipay 轮询构建会为每次变更启动完整构建，冷态 CSS 处理需要独立预算。
             watch_max_plugin_process_ms: '18000'
-            watch_command_timeout_ms: '2700000'
+            watch_command_timeout_ms: '1500000'
           - os: windows-latest
             runner_label: windows
             watch_case: taro-vite-react-tailwindcss-v4:tt
@@ -384,14 +395,18 @@ jobs:
             runner_label: windows
             watch_case: taro-vite-vue3-tailwindcss-v4:alipay
             artifact_case: taro-vite-vue3-tailwindcss-v4-alipay
-            round_profile: default
+            round_profile: main-style
             watch_save_snapshots: '1'
-            timeout_minutes: 55
+            # 与 React Alipay 保持同一 PR 最小门禁，完整平台轮次由 nightly 覆盖。
+            watch_main_style_only: '1'
+            watch_main_style_subpackage_limit: '0'
+            watch_max_attempts: '1'
+            timeout_minutes: 35
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             # Windows Alipay 轮询构建会为每次变更启动完整构建，冷态 CSS 处理需要独立预算。
             watch_max_plugin_process_ms: '18000'
-            watch_command_timeout_ms: '2700000'
+            watch_command_timeout_ms: '1500000'
           - os: windows-latest
             runner_label: windows
             watch_case: taro-vite-vue3-tailwindcss-v4:tt

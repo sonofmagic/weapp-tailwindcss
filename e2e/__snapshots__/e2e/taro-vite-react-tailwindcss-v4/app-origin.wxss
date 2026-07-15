@@ -415,10 +415,10 @@ wx-button {
 .space-y-2 > text + view,
 .space-y-2 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc((var(--spacing) * 2) * 0);
   margin-bottom: calc((var(--spacing) * 2) * var(--tw-space-y-reverse));
-  margin-top: calc((var(--spacing) * 2) * 1);
+  margin-bottom: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(calc(var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
 }
 /* tokens: rounded <= src/pages/index/index.tsx */
 .rounded {
@@ -634,13 +634,6 @@ wx-button {
 /* tokens: shadow-xl <= src/pages/index/index.tsx */
 .shadow-xl {
   --tw-shadow: 0 20rpx 25rpx -5rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 8rpx 10rpx -6rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
-  box-shadow:
-    var(--tw-inset-shadow),
-    var(--tw-inset-ring-shadow),
-    var(--tw-ring-offset-shadow),
-    var(--tw-ring-shadow),
-    0 20rpx 25rpx -5rpx rgba(0, 0, 0, 0.1),
-    0 8rpx 10rpx -6rpx rgba(0, 0, 0, 0.1);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 /* tokens: before:content-['现在，让我们开始神奇的_tailwindcss_开发之旅吧！'] <= <tailwind generated> */
@@ -1662,7 +1655,6 @@ wx-button {
   background: var(--nutui-tag-background-color, var(--nutui-color-title, #1a1a1a));
 }
 .nut-tag-primary {
-  background: -webkit-linear-gradient(315deg, #ff475d 0%, #ff0f23 100%);
   background: var(--nutui-tag-primary-background-color, linear-gradient(135deg, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%));
 }
 .nut-tag-info {
@@ -2045,8 +2037,6 @@ wx-button {
   left: 10rpx;
   width: var(--nutui-tabs-vertical-tab-line-width, 3rpx);
   height: var(--nutui-tabs-vertical-tab-line-height, 12rpx);
-  background: -webkit-gradient(linear, left top, left bottom, from(#ff475d), to(#ffd6e1));
-  background: -webkit-linear-gradient(top, #ff475d 0%, #ffd6e1 100%);
   background: var(
     --nutui-tabs-vertical-tab-line-color,
     linear-gradient(180deg, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-light-pressed, #ffebf1) 100%)
@@ -3495,7 +3485,6 @@ wx-button {
   color: var(--nutui-color-primary, #ff0f23);
 }
 .nut-shortpassword-footer-sure {
-  background: -webkit-linear-gradient(315deg, #ff0f23 0%, #ff0f23 100%);
   background: -webkit-linear-gradient(315deg, var(--nutui-color-primary, #ff0f23) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   background: linear-gradient(135deg, var(--nutui-color-primary, #ff0f23) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   border-radius: 15rpx;
@@ -3516,7 +3505,6 @@ wx-button {
 }
 [dir='rtl'] .nut-shortpassword-footer-sure,
 .nut-rtl .nut-shortpassword-footer-sure {
-  background: -webkit-linear-gradient(225deg, #ff0f23 0%, #ff0f23 100%);
   background: -webkit-linear-gradient(225deg, var(--nutui-color-primary, #ff0f23) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   background: linear-gradient(-135deg, var(--nutui-color-primary, #ff0f23) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
 }
@@ -4645,7 +4633,6 @@ wx-button {
   justify-content: center;
   transition: all 0.4s;
   border-radius: var(--nutui-progress-border-radius, 12rpx);
-  background: -webkit-linear-gradient(315deg, #ff475d 0%, #ff0f23 100%);
   background: var(--nutui-progress-color, linear-gradient(135deg, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%));
 }
 .nut-progress-text {
@@ -4754,7 +4741,6 @@ wx-button {
   font-size: var(--nutui-price-decimal-small-size, 12rpx);
 }
 .nut-price-line {
-  text-decoration: line-through;
   text-decoration: line-through var(--nutui-price-line-color, var(--nutui-color-text-help));
 }
 .nut-popup {
@@ -5412,12 +5398,6 @@ wx-button {
 .nut-pickerview-mask {
   top: 0;
   bottom: 0;
-  background-image:
-    -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.9)), to(rgba(255, 255, 255, 0.4))),
-    -webkit-gradient(linear, left bottom, left top, from(rgba(255, 255, 255, 0.9)), to(rgba(255, 255, 255, 0.4)));
-  background-image:
-    -webkit-linear-gradient(top, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.4)),
-    -webkit-linear-gradient(bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.4));
   background-image: var(
     --picker-mask-background,
     linear-gradient(180deg, var(--nutui-white-12), var(--nutui-white-7)),
@@ -6252,14 +6232,14 @@ wx-button {
 }
 .nut-menu-placeholder-element {
   position: fixed;
-  top: calc(var(--menu-bar-line-height) * -1);
+  top: calc(-1 * var(--menu-bar-line-height));
   left: 0;
   right: 0;
   z-index: var(--nutui-menu-bar-opened-z-index, 1000);
   background-color: transparent;
 }
 .nut-menu-placeholder-element.up {
-  bottom: calc(var(--menu-bar-line-height) * -1);
+  bottom: calc(-1 * var(--menu-bar-line-height));
 }
 .nut-menu-container-down-enter {
   opacity: 0;
@@ -6411,7 +6391,7 @@ wx-button {
   display: flex;
   display: -ms-inline-flexbox;
   display: inline-flex;
-  width: calc(var(--nutui-inputnumber-input-margin, 0rpx) * 2 + var(--nutui-inputnumber-button-width, 20rpx) * 2 + var(--nutui-inputnumber-input-width, 26rpx));
+  width: calc(2 * var(--nutui-inputnumber-input-margin, 0rpx) + 2 * var(--nutui-inputnumber-button-width, 20rpx) + var(--nutui-inputnumber-input-width, 26rpx));
   -ms-flex-direction: row;
   flex-direction: row;
   -ms-flex-align: center;
@@ -7582,8 +7562,6 @@ wx-button {
   position: absolute;
   right: var(--nutui-elevator-list-item-code-current-right, 60rpx);
   top: var(--nutui-elevator-list-item-code-current-top, 50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
   -ms-transform: var(--nutui-elevator-bars-transform, translateY(-50%));
   transform: var(--nutui-elevator-bars-transform, translateY(-50%));
   display: -ms-flexbox;
@@ -7603,8 +7581,6 @@ wx-button {
   position: absolute;
   right: var(--nutui-elevator-bars-right, 16rpx);
   top: var(--nutui-elevator-bars-top, 50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
   -ms-transform: var(--nutui-elevator-bars-transform, translateY(-50%));
   transform: var(--nutui-elevator-bars-transform, translateY(-50%));
   z-index: var(--nutui-elevator-bars-z-index, 1);
@@ -8098,7 +8074,6 @@ wx-button {
   font-weight: var(--nutui-font-weight-bold, 600);
 }
 .nut-countdown {
-  display: -ms-flexbox;
   display: var(--nutui-countdown-display, flex);
   -ms-flex-direction: row;
   flex-direction: row;
@@ -9495,8 +9470,6 @@ wx-button {
   margin: 6rpx 16rpx;
   text-align: center;
   border-radius: var(--nutui-radius-base, 8rpx);
-  background: -webkit-gradient(linear, left top, right top, from(#ff475d), to(#ff0f23));
-  background: -webkit-linear-gradient(left, #ff475d 0%, #ff0f23 100%);
   background: -webkit-linear-gradient(left, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   background: linear-gradient(90deg, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   color: #fff;
@@ -9726,8 +9699,6 @@ wx-button {
   color: var(--nutui-button-primary-color, #ffffff);
 }
 .nut-button-primary-solid {
-  background: -webkit-gradient(linear, left top, right top, from(#ff475d), to(#ff0f23));
-  background: -webkit-linear-gradient(left, #ff475d 0%, #ff0f23 100%);
   background: -webkit-linear-gradient(left, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   background: linear-gradient(90deg, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   color: var(--nutui-button-primary-color, #ffffff);
@@ -9952,8 +9923,6 @@ wx-button {
   white-space: pre;
   -ms-transform: translate(100%);
   transform: translate(100%);
-  background: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0.08)), to(rgba(0, 0, 0, 0)));
-  background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0));
   background: -webkit-linear-gradient(left, var(--nutui-black-3), var(--nutui-black-1));
   background: linear-gradient(to right, var(--nutui-black-3), var(--nutui-black-1));
   box-sizing: border-box;
@@ -9981,8 +9950,6 @@ wx-button {
 .nut-rtl .nut-barrage .barrage-item {
   -ms-transform: translate(-100%);
   transform: translate(-100%);
-  background: -webkit-gradient(linear, right top, left top, from(rgba(0, 0, 0, 0.08)), to(rgba(0, 0, 0, 0)));
-  background: -webkit-linear-gradient(right, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0));
   background: -webkit-linear-gradient(right, var(--nutui-black-3), var(--nutui-black-1));
   background: linear-gradient(to left, var(--nutui-black-3), var(--nutui-black-1));
 }
@@ -10072,8 +10039,6 @@ wx-button {
 }
 .nut-badge-content {
   position: absolute;
-  -ms-transform: translate(50%, -50%);
-  transform: translate(50%, -50%);
   -ms-transform: var(--nutui-badge-content-transform, translate(50%, -50%));
   transform: var(--nutui-badge-content-transform, translate(50%, -50%));
 }
@@ -10744,8 +10709,6 @@ wx-button {
   line-height: 42rpx;
   margin: auto;
   text-align: center;
-  background: -webkit-gradient(linear, left top, right top, from(#ff475d), to(#ff0f23));
-  background: -webkit-linear-gradient(left, #ff475d 0%, #ff0f23 100%);
   background: -webkit-linear-gradient(left, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   background: linear-gradient(90deg, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   border-radius: 21rpx;
@@ -11148,17 +11111,6 @@ wx-button {
   border: var(--nutui-uploader-image-border, 0rpx);
   border-radius: var(--nutui-uploader-image-border-radius, 4rpx);
 }
-.nut-uploader-icon {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -ms-flex-align: center;
-  align-items: center;
-  color: var(--nutui-uploader-image-color, var(--nutui-color-text-help, #888b94));
-}
 .nut-uploader-icon .h5-i,
 .nut-uploader-icon .nut-icon {
   color: var(--nutui-uploader-image-color, var(--nutui-color-text-help, #888b94));
@@ -11166,10 +11118,6 @@ wx-button {
 }
 .nut-uploader-icon-tip {
   font-size: var(--nutui-uploader-image-icon-tip-font-size, 12rpx);
-}
-.nut-uploader-upload-disabled {
-  background: var(--nutui-uploader-background-disabled, var(--nutui-color-background, #f2f3f5));
-  color: var(--nutui-uploader-image-disabled, var(--nutui-color-text-disabled, #c2c4cc));
 }
 .nut-uploader-upload-disabled .nut-uploader-icon .h5-i,
 .nut-uploader-upload-disabled .nut-uploader-icon .nut-icon {
@@ -11494,11 +11442,6 @@ wx-button {
   color: var(--nutui-color-text, #505259);
   font-size: var(--nutui-font-size-base, 14rpx);
 }
-.nut-timepannel.active {
-  background: var(--nutui-color-background-overlay, #ffffff);
-  color: var(--nutui-timeselect-date-active-color, var(--nutui-color-title, #1a1a1a));
-  font-weight: var(--nutui-font-weight-bold, 600);
-}
 .nut-timedetail {
   display: -ms-flexbox;
   display: flex;
@@ -11556,25 +11499,6 @@ wx-button {
 .nut-tag-text {
   font-size: var(--nutui-tag-font-size, var(--nutui-font-size-xxs, 10rpx));
   color: var(--nutui-tag-color, #ffffff);
-}
-.nut-tag-text-plain {
-  color: var(--nutui-color-title, #1a1a1a);
-}
-.nut-tag-default {
-  background: var(--nutui-tag-background-color, var(--nutui-color-title, #1a1a1a));
-}
-.nut-tag-primary {
-  background: -webkit-linear-gradient(315deg, #ff475d 0%, #ff0f23 100%);
-  background: var(--nutui-tag-primary-background-color, linear-gradient(135deg, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%));
-}
-.nut-tag-info {
-  background: var(--nutui-tag-info-background-color, var(--nutui-color-info, #0073ff));
-}
-.nut-tag-danger {
-  background: var(--nutui-tag-danger-background-color, var(--nutui-color-danger, #ff0f23));
-}
-.nut-tag-warning {
-  background: var(--nutui-tag-warning-background-color, var(--nutui-color-warning, #ffbf00));
 }
 .nut-tag-round {
   border-radius: var(--nutui-tag-round-border-radius, 8rpx);
@@ -11647,24 +11571,7 @@ wx-button {
   border: 0;
   resize: none;
 }
-.nut-textarea-textarea .taro-textarea {
-  color: var(--nutui-textarea-text-color, var(--nutui-color-title, #1a1a1a));
-  background-color: transparent;
-  resize: none;
-}
 .nut-textarea-textarea::-webkit-input-placeholder {
-  color: var(--nutui-color-text-help, #888b94);
-}
-.nut-textarea-textarea::-moz-placeholder {
-  color: var(--nutui-color-text-help, #888b94);
-}
-.nut-textarea-textarea:-ms-input-placeholder {
-  color: var(--nutui-color-text-help, #888b94);
-}
-.nut-textarea-textarea::-ms-input-placeholder {
-  color: var(--nutui-color-text-help, #888b94);
-}
-.nut-textarea-textarea::placeholder {
   color: var(--nutui-color-text-help, #888b94);
 }
 .nut-textarea-textarea-disabled::-webkit-input-placeholder {
@@ -11715,12 +11622,6 @@ wx-button {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.nut-tabs-titles-item .nut-icon {
-  color: var(--nutui-tabs-titles-item-color, var(--nutui-color-title, #1a1a1a));
-}
-.nut-tabs-titles-item-text {
-  color: var(--nutui-tabs-titles-item-color, var(--nutui-color-title, #1a1a1a));
-}
 .nut-tabs-titles-item-smile,
 .nut-tabs-titles-item-line {
   position: absolute;
@@ -11742,13 +11643,6 @@ wx-button {
   width: 100%;
   height: 100%;
 }
-.nut-tabs-titles-item-active .nut-icon {
-  color: var(--nutui-tabs-titles-item-active-color, var(--nutui-color-primary, #ff0f23));
-}
-.nut-tabs-titles-item-active .nut-tabs-titles-item-text {
-  color: var(--nutui-tabs-titles-item-active-color, var(--nutui-color-primary, #ff0f23));
-  font-weight: var(--nutui-tabs-titles-item-active-font-weight, var(--nutui-font-weight-bold, 600));
-}
 .nut-tabs-titles-item-active .nut-tabs-titles-item-line {
   overflow: visible;
   overflow: initial;
@@ -11762,9 +11656,6 @@ wx-button {
   overflow: initial;
   width: 40rpx;
   height: 20rpx;
-}
-.nut-tabs-titles-item-active .nut-tabs-titles-item-smile .nut-icon {
-  color: var(--nutui-tabs-titles-item-active-color, var(--nutui-color-primary, #ff0f23));
 }
 .nut-tabs-titles-simple .nut-tabs-titles-item-active .nut-tabs-titles-item-text,
 .nut-tabs-titles-simple .nut-tabs-titles-item-active .nut-icon {
@@ -11837,15 +11728,10 @@ wx-button {
   transform: translateY(-50%);
   transition: height 0.3s ease;
 }
-.nut-tabs-vertical .nut-tabs-titles-item-active {
-  background-color: var(--nutui-tabs-titles-item-active-background-color, var(--nutui-color-background-overlay, #ffffff));
-}
 .nut-tabs-vertical .nut-tabs-titles-item-active .nut-tabs-titles-item-line {
   left: 10rpx;
   width: var(--nutui-tabs-vertical-tab-line-width, 3rpx);
   height: var(--nutui-tabs-vertical-tab-line-height, 12rpx);
-  background: -webkit-gradient(linear, left top, left bottom, from(#ff475d), to(#ffd6e1));
-  background: -webkit-linear-gradient(top, #ff475d 0%, #ffd6e1 100%);
   background: var(
     --nutui-tabs-vertical-tab-line-color,
     linear-gradient(180deg, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-light-pressed, #ffebf1) 100%)
@@ -11958,12 +11844,6 @@ wx-button {
   table-layout: fixed;
   min-width: 100%;
   position: relative;
-}
-.nut-table-main-striped .nut-table-main-head-tr {
-  background-color: var(--nutui-table-tr-even-bg-color, var(--nutui-color-background, #f2f3f5));
-}
-.nut-table-main-striped .nut-table-main-body-tr:nth-child(2n) {
-  background-color: var(--nutui-table-tr-even-bg-color, var(--nutui-color-background, #f2f3f5));
 }
 .nut-table-main-head-tr-th,
 .nut-table-main-body-tr-th {
@@ -12109,14 +11989,6 @@ wx-button {
   line-height: var(--nutui-tabbar-text-large-font-size, var(--nutui-font-size-l, 15rpx));
   font-weight: var(--nutui-tabbar-text-large-font-weight, var(--nutui-font-weight, 400));
 }
-.nut-tabbar-item-active {
-  color: var(--nutui-tabbar-active-color, var(--nutui-color-primary, #ff0f23));
-}
-.nut-tabbar-item-active .nut-tabbar-item-text,
-.nut-tabbar-item-active .nut-icon {
-  color: var(--nutui-tabbar-active-color, var(--nutui-color-primary, #ff0f23));
-  color: inherit;
-}
 .nut-tabbar {
   border: 0rpx;
   box-shadow: var(--nutui-tabbar-box-shadow, none);
@@ -12201,9 +12073,6 @@ wx-button {
   height: calc((var(--nutui-switch-height, 28rpx) - var(--nutui-switch-border-width, 2rpx) * 2) / 2);
   color: var(--nutui-switch-active-disabled-background-color, var(--nutui-color-primary-disabled-special, #ffadbe));
 }
-.nut-switch-close {
-  background-color: var(--nutui-switch-inactive-background-color, var(--nutui-color-text-disabled, #c2c4cc));
-}
 .nut-switch-close-line {
   width: calc((var(--nutui-switch-height, 28rpx) - var(--nutui-switch-border-width, 2rpx) * 2) / 2);
   height: 2rpx;
@@ -12231,16 +12100,6 @@ wx-button {
 }
 .nut-switch-label-close-rtl {
   margin: 0 calc(var(--nutui-switch-height, 28rpx) - var(--nutui-switch-border-width, 2rpx) + 3rpx) 0 7rpx;
-}
-.nut-switch-label-close-disabled,
-.nut-switch-label-close-disabled .nut-icon {
-  color: var(--nutui-switch-inactive-disabled-label-text-color, var(--nutui-color-text-disabled, #c2c4cc));
-}
-.nut-switch-disabled {
-  background-color: var(--nutui-switch-active-disabled-background-color, var(--nutui-color-primary-disabled-special, #ffadbe));
-}
-.nut-switch-disabled-close {
-  background-color: var(--nutui-switch-inactive-disabled-background-color, var(--nutui-color-background, #f2f3f5));
 }
 .nut-swiper-indicator {
   display: -ms-flexbox;
@@ -12300,18 +12159,6 @@ wx-button {
 }
 .nut-steps-horizontal .nut-step-head-icon .nut-image .h5-img {
   vertical-align: top;
-}
-.nut-steps-horizontal .nut-step.nut-step-process .nut-step-title {
-  color: var(--nutui-steps-process-title-color, var(--nutui-color-primary, #ff0f23));
-}
-.nut-steps-horizontal .nut-step.nut-step-process .nut-step-description {
-  color: var(--nutui-steps-process-description-color, var(--nutui-color-primary, #ff0f23));
-}
-.nut-steps-horizontal .nut-step.nut-step-wait .nut-step-title {
-  color: var(--nutui-steps-wait-title-color, var(--nutui-color-title, #1a1a1a));
-}
-.nut-steps-horizontal .nut-step.nut-step-wait .nut-step-description {
-  color: var(--nutui-steps-wait-description-color, var(--nutui-color-text, #505259));
 }
 .nut-steps-horizontal-single .nut-step {
   padding-right: var(--nutui-steps-horizontal-item-padding-right, 28rpx);
@@ -12469,26 +12316,6 @@ wx-button {
 .nut-steps-vertical-text .nut-step-line {
   left: calc(var(--nutui-steps-base-head-text-size, 12rpx) / 2);
 }
-.nut-steps-horizontal-enhanced .nut-step-finish .nut-step-head-icon,
-.nut-steps-horizontal-enhanced .nut-step-finish .nut-step-head-text,
-.nut-steps-vertical-enhanced .nut-step-finish .nut-step-head-icon,
-.nut-steps-vertical-enhanced .nut-step-finish .nut-step-head-text {
-  background-color: var(--nutui-steps-enhanced-finish-head-background-color, var(--nutui-color-primary-light-pressed, #ffebf1));
-}
-.nut-steps-horizontal-enhanced .nut-step-finish .nut-step-head-icon .nut-icon,
-.nut-steps-horizontal-enhanced .nut-step-finish .nut-step-head-text .nut-icon,
-.nut-steps-vertical-enhanced .nut-step-finish .nut-step-head-icon .nut-icon,
-.nut-steps-vertical-enhanced .nut-step-finish .nut-step-head-text .nut-icon {
-  color: var(--nutui-steps-enhanced-finish-head-icon-color, var(--nutui-color-primary-stop-1, #ff475d));
-}
-.nut-steps-horizontal-enhanced .nut-step-finish .nut-step-head-text,
-.nut-steps-vertical-enhanced .nut-step-finish .nut-step-head-text {
-  color: var(--nutui-steps-enhanced-finish-head-text-color, var(--nutui-color-primary-stop-1, #ff475d));
-}
-.nut-steps-horizontal-enhanced .nut-step-finish .nut-step-head-dot,
-.nut-steps-vertical-enhanced .nut-step-finish .nut-step-head-dot {
-  background-color: var(--nutui-steps-enhanced-finish-head-dot-background-color, var(--nutui-color-primary-disabled-special, #ffadbe));
-}
 .nut-step-head {
   display: -ms-flexbox;
   display: flex;
@@ -12548,36 +12375,6 @@ wx-button {
   font-size: var(--nutui-steps-base-description-font-size, var(--nutui-font-size-xxs, 10rpx));
   color: var(--nutui-steps-base-description-color, var(--nutui-color-text-help, #888b94));
   overflow: hidden;
-}
-.nut-step.nut-step-process .nut-step-head-icon,
-.nut-step.nut-step-process .nut-step-head-text,
-.nut-step.nut-step-process .nut-step-head-dot {
-  background-color: var(--nutui-steps-process-head-background-color, var(--nutui-color-primary, #ff0f23));
-}
-.nut-step.nut-step-wait .nut-step-head-icon .nut-icon {
-  color: var(--nutui-steps-wait-icon-color, var(--nutui-color-text-help, #888b94));
-}
-.nut-step.nut-step-finish .nut-step-head-icon .nut-icon {
-  color: var(--nutui-steps-finish-icon-color, var(--nutui-color-text-help, #888b94));
-}
-.nut-step.nut-step-business .nut-step-head-text {
-  color: var(--nutui-steps-business-head-text-color, var(--nutui-color-service-pressed));
-}
-.nut-step.nut-step-business .nut-step-title {
-  color: var(--nutui-steps-business-title-color, var(--nutui-color-service-pressed));
-}
-.nut-step.nut-step-business .nut-step-description {
-  color: var(--nutui-steps-business-description-color, var(--nutui-color-service-pressed));
-}
-.nut-step.nut-step-business .nut-step-head-dot {
-  background-color: var(--nutui-steps-business-head-dot-background-color, var(--nutui-color-service-pressed));
-}
-.nut-step.nut-step-business .nut-step-head-icon,
-.nut-step.nut-step-business .nut-step-head-text {
-  background-color: var(--nutui-steps-business-head-background-color, var(--nutui-color-service));
-}
-.nut-step.nut-step-business .nut-step-head-icon .nut-icon {
-  color: var(--nutui-steps-business-head-icon-color, var(--nutui-color-service-pressed));
 }
 .nut-space-vertical-item {
   margin-bottom: var(--nutui-space-gap, 8rpx);
@@ -12671,7 +12468,6 @@ wx-button {
   justify-content: center;
   -ms-flex-align: center;
   align-items: center;
-  height: 320rpx;
   height: var(--nutui-signature-height, 10rem);
   border: var(--nutui-signature-border-width, 1rpx) solid var(--nutui-signature-border-color, var(--nutui-color-border, rgba(0, 0, 0, 0.06)));
   background-color: var(--nutui-signature-background-color, var(--nutui-color-background-overlay, #ffffff));
@@ -12834,7 +12630,6 @@ wx-button {
   color: var(--nutui-color-primary, #ff0f23);
 }
 .nut-shortpassword-footer-sure {
-  background: -webkit-linear-gradient(315deg, #ff0f23 0%, #ff0f23 100%);
   background: -webkit-linear-gradient(315deg, var(--nutui-color-primary, #ff0f23) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   background: linear-gradient(135deg, var(--nutui-color-primary, #ff0f23) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   border-radius: 15rpx;
@@ -12842,12 +12637,6 @@ wx-button {
   line-height: 1;
   font-size: var(--nutui-font-size-base, 14rpx);
   color: #fff;
-}
-[dir='rtl'] .nut-shortpassword-footer-sure,
-.nut-rtl .nut-shortpassword-footer-sure {
-  background: -webkit-linear-gradient(225deg, #ff0f23 0%, #ff0f23 100%);
-  background: -webkit-linear-gradient(225deg, var(--nutui-color-primary, #ff0f23) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
-  background: linear-gradient(-135deg, var(--nutui-color-primary, #ff0f23) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
 }
 .nut-segmented {
   display: -ms-flexbox;
@@ -12877,9 +12666,6 @@ wx-button {
   font-size: var(--nutui-segmented-item-fontsize, var(--nutui-font-size-s, 12rpx));
   line-height: 1;
   box-sizing: border-box;
-}
-.nut-segmented-item-active {
-  background: var(--nutui-segmented-active-background, var(--nutui-color-mask-part, rgba(0, 0, 0, 0.4)));
 }
 .nut-segmented-icon {
   height: 10rpx;
@@ -12933,9 +12719,6 @@ wx-button {
   font-size: 15rpx;
   font-weight: 500;
   color: var(--nutui-color-primary, #ff0f23);
-}
-.nut-searchbar-rightin.nut-searchbar-icon {
-  color: var(--nutui-black-5);
 }
 .nut-searchbar-input {
   border: 0;
@@ -13113,14 +12896,6 @@ wx-button {
   margin-left: 0;
   margin-right: var(--nutui-searchbar-gap, 12rpx);
 }
-.nut-safe-area-position-top {
-  padding-top: calc(constant(safe-area-inset-top) * var(--nutui-safe-area-multiple, 1));
-  padding-top: calc(env(safe-area-inset-top) * var(--nutui-safe-area-multiple, 1));
-}
-.nut-safe-area-position-bottom {
-  padding-bottom: calc(constant(safe-area-inset-bottom) * var(--nutui-safe-area-multiple, 1));
-  padding-bottom: calc(env(safe-area-inset-bottom) * var(--nutui-safe-area-multiple, 1));
-}
 .nut-resultpage-icon {
   display: -ms-flexbox;
   display: flex;
@@ -13291,9 +13066,6 @@ wx-button {
   border-radius: 6rpx;
   background: var(--nutui-range-inactive-color, var(--nutui-color-primary-light-pressed, #ffebf1));
 }
-.nut-range-tick-active {
-  background: var(--nutui-range-active-color, var(--nutui-color-primary, #ff0f23));
-}
 .nut-range-vertical-container {
   height: 100%;
   -ms-flex-direction: column;
@@ -13359,9 +13131,6 @@ wx-button {
   border-radius: 5rpx;
   background: var(--nutui-range-inactive-color, var(--nutui-color-primary-light-pressed, #ffebf1));
 }
-.nut-range-vertical-tick-active {
-  background: var(--nutui-range-active-color, var(--nutui-color-primary, #ff0f23));
-}
 [dir='rtl'] .nut-range-button-wrapper,
 [dir='rtl'] .nut-range-button-wrapper-right,
 .rtl-nut-range-button-wrapper,
@@ -13426,29 +13195,12 @@ wx-button {
   height: calc(var(--nutui-rate-icon-size, 12rpx) - 4rpx);
   width: calc(var(--nutui-rate-icon-size, 12rpx) - 4rpx);
 }
-.nut-rate-item-icon .nut-icon {
-  color: var(--nutui-rate-icon-color, var(--nutui-color-primary-icon, #ff3333));
-}
-.nut-rate-item-icon-disabled .nut-icon {
-  color: var(--nutui-rate-icon-inactive-color, var(--nutui-color-primary-icon-disabled, #dadce0));
-}
 .nut-rate-item-icon.nut-rate-item-icon::before {
   position: relative;
   top: auto;
   left: auto;
   -ms-transform: none;
   transform: none;
-}
-.nut-rate-score {
-  display: -ms-flexbox;
-  display: flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  -ms-flex-align: center;
-  align-items: center;
-  color: var(--nutui-rate-font-color, var(--nutui-color-primary-icon, #ff3333));
-  font-family: JDZH-Regular;
-  line-height: 1;
 }
 .nut-rate-score-normal {
   padding-left: var(--nutui-rate-item-margin, 4rpx);
@@ -13461,9 +13213,6 @@ wx-button {
 .nut-rate-score-small {
   font-size: calc(var(--nutui-rate-font-size, 12rpx) - 2rpx);
   padding-left: calc(var(--nutui-rate-item-margin, 4rpx) / 2);
-}
-.nut-rate-score-disabled {
-  color: var(--nutui-rate-icon-inactive-color, var(--nutui-color-primary-icon-disabled, #dadce0));
 }
 [dir='rtl'] .nut-rate-item-normal,
 .nut-rtl .nut-rate-item-normal {
@@ -13531,9 +13280,6 @@ wx-button {
   font-size: var(--nutui-radio-label-font-size, var(--nutui-font-size-s, 12rpx));
   color: var(--nutui-radio-label-color, var(--nutui-color-title, #1a1a1a));
 }
-.nut-radio-label-disabled {
-  color: var(--nutui-radio-label-disable-color, var(--nutui-color-text-disabled, #c2c4cc));
-}
 .nut-radio-icon {
   color: var(--nutui-color-text-disabled, #c2c4cc);
   background-color: #fff;
@@ -13593,28 +13339,10 @@ wx-button {
   position: relative;
   font-size: 12rpx;
 }
-.nut-pulltorefresh-head-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  color: var(--nutui-color-text-help, #888b94);
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
 .nut-pulltorefresh-head-content-icons {
   width: var(--nutui-pulltorefresh-icon-width, 36rpx);
   height: var(--nutui-pulltorefresh-icon-height, 26rpx);
   margin-bottom: 4rpx;
-}
-.nut-pulltorefresh-primary {
-  background: var(--nutui-pulltorefresh-color-primary, var(--nutui-color-primary, #ff0f23));
 }
 .nut-progress-outer {
   -ms-flex: 1;
@@ -13643,7 +13371,6 @@ wx-button {
   justify-content: center;
   transition: all 0.4s;
   border-radius: var(--nutui-progress-border-radius, 12rpx);
-  background: -webkit-linear-gradient(315deg, #ff475d 0%, #ff0f23 100%);
   background: var(--nutui-progress-color, linear-gradient(135deg, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%));
 }
 .nut-progress-text {
@@ -13685,25 +13412,6 @@ wx-button {
   flex-direction: row;
   -ms-flex-align: baseline;
   align-items: baseline;
-}
-.nut-price-symbol,
-.nut-price-integer,
-.nut-price-decimal {
-  color: var(--nutui-price-color, var(--nutui-color-text-help));
-  font-family: JDZH-Bold;
-  line-height: 1;
-}
-.nut-price-darkgray .nut-price-symbol,
-.nut-price-darkgray .nut-price-integer,
-.nut-price-darkgray .nut-price-decimal {
-  font-family: JDZH-Bold;
-  color: var(--nutui-price-darkgray-color, var(--nutui-gray-7));
-}
-.nut-price-primary .nut-price-symbol,
-.nut-price-primary .nut-price-integer,
-.nut-price-primary .nut-price-decimal {
-  font-family: JDZH-Bold;
-  color: var(--nutui-price-color, var(--nutui-color-primary, #ff0f23));
 }
 .nut-price-symbol {
   padding-right: var(--nutui-price-symbol-padding-right, 0rpx);
@@ -13752,7 +13460,6 @@ wx-button {
   font-size: var(--nutui-price-decimal-small-size, 12rpx);
 }
 .nut-price-line {
-  text-decoration: line-through;
   text-decoration: line-through var(--nutui-price-line-color, var(--nutui-color-text-help));
 }
 .nut-popup {
@@ -14142,10 +13849,6 @@ wx-button {
   color: var(--nutui-color-text, #505259);
   margin-left: var(--nutui-spacing-base, 8rpx);
 }
-.nut-popover .nut-popover-content .nut-popover-item.nut-popover-item-disabled {
-  color: var(--nutui-popover-disable-color, var(--nutui-color-text-disabled, #c2c4cc));
-  cursor: not-allowed;
-}
 .nut-popover .nut-popover-content-top .nut-popover-arrow-top {
   left: 50%;
   -ms-transform-origin: center left;
@@ -14179,17 +13882,6 @@ wx-button {
   left: 16rpx;
   -ms-transform: translate(0);
   transform: translate(0);
-}
-.nut-popover-dark {
-  background: var(--nutui-popover-text-color, var(--nutui-color-mask, rgba(0, 0, 0, 0.7)));
-  color: var(--nutui-popover-content-background-color, #ffffff);
-}
-.nut-popover-dark .nut-popover-arrow .nut-icon-ArrowRadius {
-  color: var(--nutui-popover-text-color, var(--nutui-color-mask, rgba(0, 0, 0, 0.7)));
-}
-.nut-popover-dark .nut-popover-content {
-  background: var(--nutui-popover-text-color, var(--nutui-color-mask, rgba(0, 0, 0, 0.7))) !important;
-  color: var(--nutui-popover-content-background-color, #ffffff) !important;
 }
 .nut-popover-dark .nut-popover-content .nut-popover-item-action-icon {
   color: rgba(255, 255, 255, 0.8);
@@ -14254,12 +13946,6 @@ wx-button {
 .nut-pickerview-mask {
   top: 0;
   bottom: 0;
-  background-image:
-    -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.9)), to(rgba(255, 255, 255, 0.4))),
-    -webkit-gradient(linear, left bottom, left top, from(rgba(255, 255, 255, 0.9)), to(rgba(255, 255, 255, 0.4)));
-  background-image:
-    -webkit-linear-gradient(top, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.4)),
-    -webkit-linear-gradient(bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.4));
   background-image: var(
     --picker-mask-background,
     linear-gradient(180deg, var(--nutui-white-12), var(--nutui-white-7)),
@@ -14380,13 +14066,6 @@ wx-button {
 .nut-pagination-next {
   padding: var(--nutui-pagination-prev-next-padding, 0 12rpx);
 }
-.nut-pagination-item-disabled,
-.nut-pagination-next-disabled,
-.nut-pagination-prev-disabled {
-  color: var(--nutui-pagination-disable-color, var(--nutui-color-text-disabled, #c2c4cc));
-  background-color: var(--nutui-pagination-disable-background-color, #f7f8fa);
-  cursor: not-allowed;
-}
 .nut-pagination-simple {
   height: 39rpx;
   width: 124rpx;
@@ -14416,16 +14095,6 @@ wx-button {
 .nut-pagination-lite-spliterator {
   font-size: var(--nutui-font-size-xs, 11rpx);
   color: var(--nutui-pagination-lite-color, #ffffff);
-}
-.nut-overlay {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--nutui-overlay-bg-color, var(--nutui-color-mask, rgba(0, 0, 0, 0.7)));
 }
 .nut-overlay-slide-enter-active,
 .nut-overlay-slide-appear-active {
@@ -14862,10 +14531,6 @@ wx-button {
   font-size: var(--nutui-font-size-base, 14rpx);
   padding: var(--nutui-menu-item-padding, 12rpx 0);
 }
-.nut-menu-container-item.active {
-  font-weight: var(--nutui-menu-item-active-font-weight, var(--nutui-font-weight-bold, 600));
-  color: var(--nutui-menu-item-active-color, var(--nutui-color-primary, #ff0f23));
-}
 .nut-menu-container-item .nut-icon {
   display: -ms-flexbox;
   display: flex;
@@ -14879,17 +14544,6 @@ wx-button {
 }
 .nut-menu-container-wrap-up {
   bottom: var(--nutui-menu-bar-line-height, 48rpx);
-}
-.nut-menu-placeholder-element {
-  position: fixed;
-  top: calc(var(--menu-bar-line-height) * -1);
-  left: 0;
-  right: 0;
-  z-index: var(--nutui-menu-bar-opened-z-index, 1000);
-  background-color: transparent;
-}
-.nut-menu-placeholder-element.up {
-  bottom: calc(var(--menu-bar-line-height) * -1);
 }
 .nut-menu-container-down-enter {
   opacity: 0;
@@ -14952,12 +14606,6 @@ wx-button {
   display: block;
   padding: var(--nutui-menu-title-padding, 0 8rpx);
 }
-.nut-menu-title.active {
-  color: var(--nutui-menu-item-active-color, var(--nutui-color-primary, #ff0f23));
-}
-.nut-menu-title.disabled {
-  color: var(--nutui-menu-item-disabled-color, var(--nutui-color-text-disabled, #c2c4cc));
-}
 .nut-menu-title.active .nut-menu-title-icon {
   -ms-transform: rotate(180deg);
   transform: rotate(180deg);
@@ -14992,7 +14640,7 @@ wx-button {
   display: flex;
   display: -ms-inline-flexbox;
   display: inline-flex;
-  width: calc(var(--nutui-inputnumber-input-margin, 0rpx) * 2 + var(--nutui-inputnumber-button-width, 20rpx) * 2 + var(--nutui-inputnumber-input-width, 26rpx));
+  width: calc(2 * var(--nutui-inputnumber-input-margin, 0rpx) + 2 * var(--nutui-inputnumber-button-width, 20rpx) + var(--nutui-inputnumber-input-width, 26rpx));
   -ms-flex-direction: row;
   flex-direction: row;
   -ms-flex-align: center;
@@ -15017,10 +14665,6 @@ wx-button {
 .nut-inputnumber-add .nut-icon {
   --nut-icon-width: 10rpx;
   --nut-icon-height: 10rpx;
-}
-.nut-inputnumber-icon {
-  color: var(--nutui-color-text, #505259);
-  cursor: pointer;
 }
 .nut-inputnumber-input {
   display: -ms-flexbox;
@@ -15158,9 +14802,6 @@ wx-button {
   outline: 0 none;
   text-decoration: none;
   background-color: transparent;
-}
-.nut-input-readonly .nut-input-native {
-  color: var(--nutui-color-text-help, #888b94);
 }
 .nut-input-disabled .h5-input:disabled {
   color: var(--nutui-color-text-disabled, #c2c4cc);
@@ -15339,10 +14980,6 @@ wx-button {
   height: 20rpx;
   font-size: 20rpx;
 }
-.nut-hoverbutton-item-container:active .nut-hoverbutton-item-icon {
-  color: var(--nutui-hoverbutton-item-icon-color-active, var(--nutui-color-title, #1a1a1a));
-  fill: var(--nutui-hoverbutton-item-icon-color-active, var(--nutui-color-title, #1a1a1a));
-}
 .nut-hoverbutton-item-text-icon {
   width: 14rpx;
   height: 5rpx;
@@ -15369,34 +15006,6 @@ wx-button {
 .nut-hoverbutton-container-rtl {
   right: auto;
   left: var(--nutui-hoverbutton-position-right, var(--nutui-spacing-base, 8rpx));
-}
-.nut-image-loading,
-.nut-image-error {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -ms-flex-align: center;
-  align-items: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  background: var(--nutui-color-background, #f2f3f5);
-  background-size: 100% 100%;
-}
-.nut-grid-item {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  position: relative;
-  box-sizing: border-box;
-  color: var(--nutui-grid-item-text-color, var(--nutui-color-title, #1a1a1a));
-  overflow: hidden;
 }
 .nut-grid-item-text {
   color: var(--nutui-grid-item-text-color, var(--nutui-color-title, #1a1a1a));
@@ -15474,17 +15083,6 @@ wx-button {
   right: 50%;
   -ms-transform: translate(50%, -50%);
   transform: translate(50%, -50%);
-}
-.nut-grid {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -ms-flex-align: stretch;
-  align-items: stretch;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  border: 0 solid var(--nutui-grid-border-color, var(--nutui-color-border, rgba(0, 0, 0, 0.06)));
 }
 .nut-grid-border {
   border-top-width: var(--nutui-grid-border-width, 0rpx);
@@ -15773,11 +15371,6 @@ wx-button {
   padding-right: 80rpx;
   padding-left: 20rpx;
 }
-.nut-ellipsis .nut-ellipsis-text {
-  cursor: pointer;
-  color: var(--nutui-ellipsis-expand-collapse-color, var(--nutui-color-info, #0073ff));
-  display: inline-block;
-}
 .nut-ellipsis-copy {
   position: absolute;
   top: -999999rpx;
@@ -15830,8 +15423,6 @@ wx-button {
   position: absolute;
   right: var(--nutui-elevator-list-item-code-current-right, 60rpx);
   top: var(--nutui-elevator-list-item-code-current-top, 50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
   -ms-transform: var(--nutui-elevator-bars-transform, translateY(-50%));
   transform: var(--nutui-elevator-bars-transform, translateY(-50%));
   display: -ms-flexbox;
@@ -15851,8 +15442,6 @@ wx-button {
   position: absolute;
   right: var(--nutui-elevator-bars-right, 16rpx);
   top: var(--nutui-elevator-bars-top, 50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
   -ms-transform: var(--nutui-elevator-bars-transform, translateY(-50%));
   transform: var(--nutui-elevator-bars-transform, translateY(-50%));
   z-index: var(--nutui-elevator-bars-z-index, 1);
@@ -16152,9 +15741,6 @@ wx-button {
   color: var(--nutui-button-default-color, var(--nutui-color-title, #1a1a1a));
   border-color: var(--nutui-button-default-border-color, transparent);
 }
-.nut-dialog-footer-cancel.nut-dialog-footer-cancel .nut-button-children {
-  color: var(--nutui-button-default-color, var(--nutui-color-title, #1a1a1a));
-}
 .nut-dialog-footer-ok-container .nut-dialog-footer-ok-badge {
   position: absolute;
   right: 0;
@@ -16263,7 +15849,6 @@ wx-button {
   font-weight: var(--nutui-font-weight-bold, 600);
 }
 .nut-countdown {
-  display: -ms-flexbox;
   display: var(--nutui-countdown-display, flex);
   -ms-flex-direction: row;
   flex-direction: row;
@@ -16310,41 +15895,16 @@ wx-button {
   transform: scale(0.5);
   border-radius: calc(var(--nutui-countdown-number-border-radius, var(--nutui-radius-xxs, 2rpx)) * 2);
 }
-.nut-countdown-number {
-  background-color: var(--nutui-countdown-number-background-color, var(--nutui-color-background-overlay, #ffffff));
-  color: var(--nutui-countdown-number-color, var(--nutui-color-primary, #ff0f23));
-}
 .nut-countdown-number::after {
   border: 1rpx solid var(--nutui-countdown-number-border-color, var(--nutui-color-primary-specialdisabled, #ffadbe));
 }
-.nut-countdown-number-primary {
-  background-color: var(--nutui-countdown-number-primary-background-color, var(--nutui-color-primary, #ff0f23));
-  color: var(--nutui-countdown-number-primary-color, #ffffff);
-}
 .nut-countdown-number-primary::after {
   border: 1rpx solid var(--nutui-countdown-number-primary-border-color, var(--nutui-color-primary, #ff0f23));
-}
-.nut-countdown-number-text {
-  border: 0;
-  background-color: transparent;
-  color: var(--nutui-countdown-number-color, var(--nutui-color-primary, #ff0f23));
-}
-.nut-countdown-unit {
-  color: var(--nutui-countdown-color, var(--nutui-color-primary, #ff0f23));
 }
 .nut-col {
   box-sizing: border-box;
   word-break: break-all;
   margin-bottom: var(--nutui-col-default-margin-bottom, 15rpx);
-}
-.nut-circleprogress-hover {
-  stroke: var(--nutui-circleprogress-primary-color, var(--nutui-color-primary, #ff0f23));
-  transition:
-    stroke-dasharray 0.2s ease-in-out 0s,
-    stroke 0.2s ease 0s;
-}
-.nut-circleprogress-path {
-  stroke: var(--nutui-circleprogress-path-color, var(--nutui-color-background, #f2f3f5));
 }
 .nut-circleprogress-text {
   position: absolute;
@@ -16396,13 +15956,6 @@ wx-button {
   -ms-transform: scaleY(0.5);
   transform: scaleY(0.5);
 }
-.nut-collapse-item-title {
-  color: var(--nutui-collapse-item-color, var(--nutui-color-title, #1a1a1a));
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-align: center;
-  align-items: center;
-}
 .nut-collapse-item-extra {
   -ms-flex: 1;
   flex: 1;
@@ -16437,11 +15990,6 @@ wx-button {
   transform-origin: center;
   transition: transform 0.3s;
 }
-.nut-collapse-item-header-disabled,
-.nut-collapse-item-header-disabled .nut-collapse-item-title,
-.nut-collapse-item-header-disabled .nut-collapse-item-icon {
-  color: var(--nutui-collapse-item-disabled-color, var(--nutui-color-text-disabled, #c2c4cc));
-}
 .nut-collapse-item-content {
   display: block;
   position: absolute;
@@ -16461,9 +16009,6 @@ wx-button {
 .nut-rtl .nut-collapse-item-icon {
   left: auto;
   right: 5rpx;
-}
-.nut-checkboxgroup .nut-checkbox-button {
-  background-color: var(--nutui-color-background, #f2f3f5);
 }
 .nut-checkboxgroup-vertical .nut-checkbox {
   margin-bottom: 5rpx;
@@ -16783,9 +16328,6 @@ wx-button {
   color: var(--nutui-cascader-item-color, var(--nutui-color-title, #1a1a1a));
   cursor: pointer;
 }
-.nut-cascader-item.active:not(.disabled) {
-  color: var(--nutui-cascader-item-active-color, var(--nutui-color-primary, #ff0f23));
-}
 .nut-cascader .nut-icon-checklist {
   margin-left: var(--nutui-cascader-icon-checklist-marginLeft, 10rpx);
   visibility: hidden;
@@ -16923,16 +16465,9 @@ wx-button {
   font-size: 12rpx;
   line-height: 12rpx;
 }
-.nut-calendarcard-day.weekend {
-  color: var(--nutui-calendar-choose-color, var(--nutui-color-primary, #ff0f23));
-}
 .nut-calendarcard-day.active {
   background-color: var(--nutui-calendar-active-background-color, var(--nutui-color-primary, #ff0f23));
   border-radius: var(--nutui-calendar-day-active-border-radius, 4rpx);
-}
-.nut-calendarcard-day.start,
-.nut-calendarcard-day.end {
-  background-color: var(--nutui-calendar-active-background-color, var(--nutui-color-primary, #ff0f23));
 }
 .nut-calendarcard-day.start {
   border-top-left-radius: var(--nutui-calendar-day-active-border-radius, 4rpx);
@@ -16941,25 +16476,6 @@ wx-button {
 .nut-calendarcard-day.end {
   border-top-right-radius: var(--nutui-calendar-day-active-border-radius, 4rpx);
   border-bottom-right-radius: var(--nutui-calendar-day-active-border-radius, 4rpx);
-}
-.nut-calendarcard-day.mid {
-  background-color: var(--nutui-calendar-choose-background-color, var(--nutui-color-primary-light-pressed, #ffebf1));
-}
-.nut-calendarcard-day.mid .nut-calendarcard-day-top,
-.nut-calendarcard-day.mid .nut-calendarcard-day-inner,
-.nut-calendarcard-day.mid .nut-calendarcard-day-bottom {
-  color: var(--nutui-calendar-choose-color, var(--nutui-color-primary, #ff0f23));
-}
-.nut-calendarcard-day.prev .nut-calendarcard-day-top,
-.nut-calendarcard-day.prev .nut-calendarcard-day-inner,
-.nut-calendarcard-day.prev .nut-calendarcard-day-bottom,
-.nut-calendarcard-day.next .nut-calendarcard-day-top,
-.nut-calendarcard-day.next .nut-calendarcard-day-inner,
-.nut-calendarcard-day.next .nut-calendarcard-day-bottom,
-.nut-calendarcard-day.disabled .nut-calendarcard-day-top,
-.nut-calendarcard-day.disabled .nut-calendarcard-day-inner,
-.nut-calendarcard-day.disabled .nut-calendarcard-day-bottom {
-  color: var(--nutui-calendar-disable-color, var(--nutui-color-text-disabled, #c2c4cc));
 }
 [dir='rtl'] .nut-calendarcard-header-left .left,
 [dir='rtl'] .nut-calendarcard-header-right .left,
@@ -17107,25 +16623,12 @@ wx-button {
   border-top-right-radius: var(--nutui-calendar-day-active-border-radius, 4rpx);
   border-bottom-right-radius: var(--nutui-calendar-day-active-border-radius, 4rpx);
 }
-.nut-calendar-day-disabled {
-  color: var(--nutui-calendar-disable-color, var(--nutui-color-text-disabled, #c2c4cc)) !important;
-}
-.nut-calendar-day-choose {
-  background-color: var(--nutui-calendar-choose-background-color, var(--nutui-color-primary-light-pressed, #ffebf1));
-  color: var(--nutui-calendar-choose-color, var(--nutui-color-primary, #ff0f23));
-}
-.nut-calendar-day-choose-disabled {
-  background-color: var(--nutui-calendar-choose-disable-background-color, rgba(191, 191, 191, 0.09));
-  color: var(--nutui-calendar-disable-color, var(--nutui-color-text-disabled, #c2c4cc)) !important;
-}
 .nut-calendar-footer .calendar-confirm-btn {
   height: 40rpx;
   line-height: 40rpx;
   margin: 6rpx 16rpx;
   text-align: center;
   border-radius: var(--nutui-radius-base, 8rpx);
-  background: -webkit-gradient(linear, left top, right top, from(#ff475d), to(#ff0f23));
-  background: -webkit-linear-gradient(left, #ff475d 0%, #ff0f23 100%);
   background: -webkit-linear-gradient(left, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   background: linear-gradient(90deg, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   color: #fff;
@@ -17235,21 +16738,6 @@ wx-button {
   border-style: solid;
   border-color: var(--nutui-button-default-border-color, var(--nutui-color-text-disabled, #c2c4cc));
 }
-.nut-button-default-disabled,
-.nut-button-default-solid-disabled {
-  color: var(--nutui-button-primary-color, #ffffff);
-  background: var(--nutui-button-default-disabled, var(--nutui-color-text-disabled, #c2c4cc));
-  border-color: var(--nutui-button-default-disabled, var(--nutui-color-text-disabled, #c2c4cc));
-}
-.nut-button-default-none-disabled {
-  color: var(--nutui-button-default-disabled-color, var(--nutui-color-text-help, #888b94));
-}
-.nut-button-default-outline-disabled,
-.nut-button-default-dashed-disabled {
-  background: transparent;
-  color: var(--nutui-button-default-disabled, var(--nutui-color-text-disabled, #c2c4cc));
-  border-color: var(--nutui-button-default-disabled, var(--nutui-color-text-disabled, #c2c4cc));
-}
 .nut-button-normal {
   padding: var(--nutui-button-normal-padding, 0rpx 12rpx);
 }
@@ -17321,153 +16809,6 @@ wx-button {
 .nut-button-mini-children {
   font-size: var(--nutui-button-mini-font-size, var(--nutui-font-size-xs, 11rpx));
 }
-.nut-button-primary-solid {
-  background: -webkit-gradient(linear, left top, right top, from(#ff475d), to(#ff0f23));
-  background: -webkit-linear-gradient(left, #ff475d 0%, #ff0f23 100%);
-  background: -webkit-linear-gradient(left, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
-  background: linear-gradient(90deg, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
-  color: var(--nutui-button-primary-color, #ffffff);
-  border-color: transparent;
-  font-weight: var(--nutui-font-weight-bold, 600);
-}
-.nut-button-primary-disabled,
-.nut-button-primary-disabled.nut-button-icononly,
-.nut-button-primary-solid-disabled {
-  color: var(--nutui-button-primary-color, #ffffff);
-  background: var(--nutui-button-primary-disabled, var(--nutui-color-primary-disabled-special, #ffadbe));
-  border-color: var(--nutui-button-primary-disabled, var(--nutui-color-primary-disabled-special, #ffadbe));
-}
-.nut-button-primary-none {
-  color: var(--nutui-button-primary-border-color, var(--nutui-color-primary, #ff0f23));
-}
-.nut-button-primary-none-disabled {
-  color: var(--nutui-button-primary-disabled, var(--nutui-color-primary-disabled-special, #ffadbe));
-}
-.nut-button-primary-outline {
-  color: var(--nutui-button-primary-border-color, var(--nutui-color-primary, #ff0f23));
-  border-color: var(--nutui-button-primary-border-color, var(--nutui-color-primary, #ff0f23));
-}
-.nut-button-primary-outline-disabled {
-  color: var(--nutui-button-primary-disabled, var(--nutui-color-primary-disabled-special, #ffadbe));
-  border-color: var(--nutui-button-primary-disabled, var(--nutui-color-primary-disabled-special, #ffadbe));
-}
-.nut-button-primary-dashed {
-  color: var(--nutui-button-primary-border-color, var(--nutui-color-primary, #ff0f23));
-  border-color: var(--nutui-button-primary-border-color, var(--nutui-color-primary, #ff0f23));
-}
-.nut-button-primary-dashed-disabled {
-  color: var(--nutui-button-primary-disabled, var(--nutui-color-primary-disabled-special, #ffadbe));
-  border-color: var(--nutui-button-primary-disabled, var(--nutui-color-primary-disabled-special, #ffadbe));
-}
-.nut-button-success {
-  color: var(--nutui-button-success-color, #ffffff);
-  background: var(--nutui-button-success-background-color, var(--nutui-color-success, #00d900));
-  background-origin: border-box;
-  border-color: transparent;
-}
-.nut-button-success-disabled,
-.nut-button-success-solid-disabled {
-  background: var(--nutui-button-success-disabled, var(--nutui-color-success-disabled, #b2f0ae));
-  border-color: var(--nutui-button-success-disabled, var(--nutui-color-success-disabled, #b2f0ae));
-}
-.nut-button-success-outline,
-.nut-button-success-dashed {
-  color: var(--nutui-button-success-border-color, var(--nutui-color-success, #00d900));
-  border-color: var(--nutui-button-success-border-color, var(--nutui-color-success, #00d900));
-}
-.nut-button-success-outline-disabled,
-.nut-button-success-dashed-disabled {
-  color: var(--nutui-button-primary-disabled, var(--nutui-color-primary-disabled-special, #ffadbe));
-  border-color: var(--nutui-button-primary-disabled, var(--nutui-color-primary-disabled-special, #ffadbe));
-}
-.nut-button-success-none {
-  color: var(--nutui-button-success-border-color, var(--nutui-color-success, #00d900));
-}
-.nut-button-success-none-disabled {
-  color: var(--nutui-button-success-disabled, var(--nutui-color-success-disabled, #b2f0ae));
-}
-.nut-button-info {
-  color: var(--nutui-button-info-color, #ffffff);
-  background: var(--nutui-button-info-background-color, var(--nutui-color-info-background, #0073ff));
-  background-origin: border-box;
-  border-color: transparent;
-}
-.nut-button-info-disabled,
-.nut-button-info-solid-disabled {
-  background: var(--nutui-button-info-disabled, var(--nutui-color-info-disabled, #89a6f8));
-  border-color: var(--nutui-button-info-disabled, var(--nutui-color-info-disabled, #89a6f8));
-}
-.nut-button-info-outline,
-.nut-button-info-dashed {
-  color: var(--nutui-button-info-border-color, var(--nutui-color-info, #0073ff));
-  border-color: var(--nutui-button-info-border-color, var(--nutui-color-info, #0073ff));
-}
-.nut-button-info-outline-disabled,
-.nut-button-info-dashed-disabled {
-  color: var(--nutui-button-info-disabled, var(--nutui-color-info-disabled, #89a6f8));
-  border-color: var(--nutui-button-info-disabled, var(--nutui-color-info-disabled, #89a6f8));
-}
-.nut-button-info-none {
-  color: var(--nutui-button-info-border-color, var(--nutui-color-info, #0073ff));
-}
-.nut-button-info-none-disabled {
-  color: var(--nutui-button-info-disabled, var(--nutui-color-info-disabled, #89a6f8));
-}
-.nut-button-danger {
-  color: var(--nutui-button-danger-color, #ffffff);
-  background: var(--nutui-button-danger-background-color, var(--nutui-color-danger, #ff0f23));
-  background-origin: border-box;
-  border-color: transparent;
-}
-.nut-button-danger-disabled,
-.nut-button-danger-solid-disabled {
-  background: var(--nutui-button-danger-disabled, var(--nutui-color-danger-disabled, var(--nutui-color-primary-disabled-special, #ffadbe)));
-  border-color: var(--nutui-button-danger-disabled, var(--nutui-color-danger-disabled, var(--nutui-color-primary-disabled-special, #ffadbe)));
-}
-.nut-button-danger-outline,
-.nut-button-danger-dashed {
-  color: var(--nutui-button-danger-border-color, var(--nutui-color-danger, #ff0f23));
-  border-color: var(--nutui-button-danger-border-color, var(--nutui-color-danger, #ff0f23));
-}
-.nut-button-danger-outline-disabled,
-.nut-button-danger-dashed-disabled {
-  color: var(--nutui-button-danger-disabled, var(--nutui-color-danger-disabled, var(--nutui-color-primary-disabled-special, #ffadbe)));
-  border-color: var(--nutui-button-danger-disabled, var(--nutui-color-danger-disabled, var(--nutui-color-primary-disabled-special, #ffadbe)));
-}
-.nut-button-danger-none {
-  color: var(--nutui-button-danger-border-color, var(--nutui-color-danger, #ff0f23));
-}
-.nut-button-danger-none-disabled {
-  color: var(--nutui-button-danger-disabled, var(--nutui-color-danger-disabled, var(--nutui-color-primary-disabled-special, #ffadbe)));
-}
-.nut-button-warning {
-  color: var(--nutui-button-warning-color, #ffffff);
-  background: var(--nutui-button-warning-background-color, var(--nutui-color-warning, #ffbf00));
-  background-origin: border-box;
-  border-color: transparent;
-}
-.nut-button-warning-disabled,
-.nut-button-warning-solid-disabled {
-  color: var(--nutui-button-warning-color, #ffffff);
-  background: var(--nutui-button-warning-disabled, var(--nutui-color-warning-disabled, #fdd3b9));
-  border-color: var(--nutui-button-warning-disabled, var(--nutui-color-warning-disabled, #fdd3b9));
-}
-.nut-button-warning-outline,
-.nut-button-warning-dashed {
-  color: var(--nutui-button-warning-border-color, var(--nutui-color-warning, #ffbf00));
-  border-color: var(--nutui-button-warning-border-color, var(--nutui-color-warning, #ffbf00));
-}
-.nut-button-warning-outline-disabled,
-.nut-button-warning-dashed-disabled {
-  color: var(--nutui-button-warning-disabled, var(--nutui-color-warning-disabled, #fdd3b9));
-  border-color: var(--nutui-button-warning-disabled, var(--nutui-color-warning-disabled, #fdd3b9));
-}
-.nut-button-warning-none {
-  color: var(--nutui-button-warning-border-color, var(--nutui-color-warning, #ffbf00));
-}
-.nut-button-warning-none-disabled {
-  color: var(--nutui-button-warning-disabled, var(--nutui-color-warning-disabled, #fdd3b9));
-}
 [dir='rtl'] .nut-button-text,
 .nut-rtl .nut-button-text {
   margin-left: 0;
@@ -17484,17 +16825,6 @@ wx-button {
   -ms-transform: translate(50%, -50%);
   transform: translate(50%, -50%);
 }
-.nut-barrage {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  box-sizing: border-box;
-  background-color: var(--nutui-color-background, #f2f3f5);
-  color: var(--nutui-color-title, #1a1a1a);
-}
 .nut-barrage .barrage-item {
   display: block;
   position: absolute;
@@ -17506,8 +16836,6 @@ wx-button {
   white-space: pre;
   -ms-transform: translate(100%);
   transform: translate(100%);
-  background: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0.08)), to(rgba(0, 0, 0, 0)));
-  background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0));
   background: -webkit-linear-gradient(left, var(--nutui-black-3), var(--nutui-black-1));
   background: linear-gradient(to right, var(--nutui-black-3), var(--nutui-black-1));
   box-sizing: border-box;
@@ -17530,8 +16858,6 @@ wx-button {
 .nut-rtl .nut-barrage .barrage-item {
   -ms-transform: translate(-100%);
   transform: translate(-100%);
-  background: -webkit-gradient(linear, right top, left top, from(rgba(0, 0, 0, 0.08)), to(rgba(0, 0, 0, 0)));
-  background: -webkit-linear-gradient(right, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0));
   background: -webkit-linear-gradient(right, var(--nutui-black-3), var(--nutui-black-1));
   background: linear-gradient(to left, var(--nutui-black-3), var(--nutui-black-1));
 }
@@ -17599,17 +16925,12 @@ wx-button {
   background: var(--nutui-badge-background-color, var(--nutui-color-primary, #ff0f23));
   z-index: 1;
 }
-.nut-badge-disabled {
-  background: var(--nutui-badge-background-disabled-color, var(--nutui-color-text-disabled, #c2c4cc));
-}
 .nut-badge-one {
   height: var(--nutui-badge-height, 14rpx);
   width: var(--nutui-badge-height, 14rpx);
 }
 .nut-badge-content {
   position: absolute;
-  -ms-transform: translate(50%, -50%);
-  transform: translate(50%, -50%);
   -ms-transform: var(--nutui-badge-content-transform, translate(50%, -50%));
   transform: var(--nutui-badge-content-transform, translate(50%, -50%));
 }
@@ -17631,10 +16952,6 @@ wx-button {
   min-width: var(--nutui-badge-dot-large-width, 8rpx);
   width: var(--nutui-badge-dot-large-width, 8rpx);
   height: var(--nutui-badge-dot-large-width, 8rpx);
-}
-.nut-badge-outline {
-  background: #fff;
-  color: var(--nutui-badge-outline-color, var(--nutui-color-primary, #ff0f23));
 }
 .nut-badge-outline::after {
   border: var(--nutui-badge-outline-border, 1rpx solid var(--nutui-color-primary, #ff0f23));
@@ -18022,10 +17339,6 @@ wx-button {
 .nut-animate .loop {
   animation-iteration-count: infinite;
 }
-.nut-actionsheet.nut-popup {
-  min-height: 10%;
-  background-color: var(--nutui-actionsheet-background-color, var(--nutui-color-background-overlay, #ffffff));
-}
 .nut-actionsheet .nut-popup-title {
   border-bottom: 1rpx solid var(--nutui-actionsheet-border-color, var(--nutui-color-border, rgba(0, 0, 0, 0.06)));
 }
@@ -18053,10 +17366,6 @@ wx-button {
   color: var(--nutui-color-text, #505259);
   text-align: var(--nutui-actionsheet-item-text-align, center);
   line-height: var(--nutui-actionsheet-item-line-height, 24rpx);
-}
-.nut-actionsheet-cancel-danger,
-.nut-actionsheet-item-danger {
-  color: var(--nutui-actionsheet-item-danger, var(--nutui-color-danger, #ff0f23));
 }
 .nut-actionsheet-cancel {
   margin-top: 5rpx;
@@ -18095,8 +17404,6 @@ wx-button {
   line-height: 42rpx;
   margin: auto;
   text-align: center;
-  background: -webkit-gradient(linear, left top, right top, from(#ff475d), to(#ff0f23));
-  background: -webkit-linear-gradient(left, #ff475d 0%, #ff0f23 100%);
   background: -webkit-linear-gradient(left, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   background: linear-gradient(90deg, var(--nutui-color-primary-stop-1, #ff475d) 0%, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   border-radius: 21rpx;
