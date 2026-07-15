@@ -662,7 +662,8 @@ describe('e2e watch workflow', () => {
     }
     for (const runner of ['linux', 'windows']) {
       for (const watchCase of completeMiniProgramCases) {
-        expect(cases, `${runner} should cover ${watchCase}`).toContain(`${runner}:22:${watchCase}:default`)
+        const profile = runner === 'windows' && watchCase.endsWith(':alipay') ? 'main-style' : 'default'
+        expect(cases, `${runner} should cover ${watchCase}`).toContain(`${runner}:22:${watchCase}:${profile}`)
       }
     }
     const macosPlatformCases = rows
@@ -675,6 +676,8 @@ describe('e2e watch workflow', () => {
     for (const row of [
       rows.find(row => row.runner_label === 'macos' && row.watch_case === 'demo-core'),
       rows.find(row => row.runner_label === 'windows' && row.watch_case === 'mpx-tailwindcss-v4'),
+      rows.find(row => row.runner_label === 'windows' && row.watch_case === 'taro-vite-react-tailwindcss-v4:alipay'),
+      rows.find(row => row.runner_label === 'windows' && row.watch_case === 'taro-vite-vue3-tailwindcss-v4:alipay'),
     ]) {
       expect(row).toMatchObject({
         round_profile: 'main-style',
@@ -903,11 +906,14 @@ describe('e2e watch workflow', () => {
       'taro-vite-vue3-tailwindcss-v4:alipay',
     ].map(watchCase => ({
       watch_case: watchCase,
-      round_profile: 'default',
-      timeout_minutes: 55,
+      round_profile: 'main-style',
+      watch_main_style_only: '1',
+      watch_main_style_subpackage_limit: '0',
+      watch_max_attempts: '1',
+      timeout_minutes: 35,
       watch_timeout_ms: '420000',
       watch_max_plugin_process_ms: '18000',
-      watch_command_timeout_ms: '2700000',
+      watch_command_timeout_ms: '1500000',
     }))
     const slowNightlyBudgets = [
       {
