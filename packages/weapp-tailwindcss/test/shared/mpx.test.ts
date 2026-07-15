@@ -66,6 +66,15 @@ describe('mpx integration helpers', () => {
     expect(getTailwindcssCssEntry('/pkg')).toBe(path.join('/pkg', 'index.css'))
   })
 
+  it('keeps the workspace mpx peer aligned with the demo plugin version', () => {
+    const packageRequire = createRequire(path.join(process.cwd(), 'package.json'))
+    const demoRequire = createRequire(path.resolve(process.cwd(), '../../demo/mpx-tailwindcss-v4/package.json'))
+    const packagePlugin = packageRequire('@mpxjs/webpack-plugin/package.json')
+    const demoPlugin = demoRequire('@mpxjs/webpack-plugin/package.json')
+
+    expect(packagePlugin.version).toBe(demoPlugin.version)
+  })
+
   it('adds resolve aliases for object and array alias forms', () => {
     const compiler = { options: { resolve: { alias: {} } } }
 
