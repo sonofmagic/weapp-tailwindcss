@@ -170,6 +170,42 @@ describe('benchmark ci report', () => {
     expect(result.passed).toBe(false)
   })
 
+  it('uses the full build plugin median so one steady-sample outlier cannot dominate the guard', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-15T00:00:00.000Z',
+      options: { buildRuns: 3, hmrRuns: 1, timeoutMs: 180000, pollIntervalMs: 30 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'demo-mpx-tailwindcss-v4__mp-weixin',
+          buildPluginMs: [1424, 1471, 1417],
+          summary: {
+            buildPlugin: { median: 1424 },
+            buildPluginSteady: { median: 1444 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'demo-mpx-tailwindcss-v4__mp-weixin',
+          buildPluginMs: [1412, 2029, 1477],
+          summary: {
+            buildPlugin: { median: 1477 },
+            buildPluginSteady: { median: 1753 },
+          },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    expect(summary.compares[0]).toMatchObject({
+      baselineBuildPlugin: 1424,
+      currentBuildPlugin: 1477,
+    })
+    expect(evaluatePerformanceGuard(summary).passed).toBe(true)
+  })
+
   it('fails the performance guard when watch HMR plugin timing samples are incomplete', async () => {
     const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
     const baselineLabel = 'base:main'

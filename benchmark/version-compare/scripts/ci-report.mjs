@@ -29,7 +29,7 @@ function metric(row, kind) {
 }
 
 function pluginMetric(row, kind) {
-  return metric(row, `${kind}Plugin`)
+  return toNumber(row?.summary?.[`${kind}Plugin`]?.median) ?? metric(row, `${kind}Plugin`)
 }
 
 function sampleCount(row, field) {
