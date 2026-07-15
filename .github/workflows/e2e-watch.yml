@@ -299,11 +299,11 @@ jobs:
             watch_case: mpx-tailwindcss-v4
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 60
+            timeout_minutes: 80
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '3000000'
+            watch_command_timeout_ms: '4200000'
           - os: windows-latest
             runner_label: windows
             watch_case: taro-vite-react-tailwindcss-v4
