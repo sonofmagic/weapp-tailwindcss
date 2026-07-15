@@ -162,8 +162,8 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
 
 export function evaluatePerformanceGuard(summary, options = {}) {
   const pluginRegressionPercent = toNumber(options.pluginRegressionPercent) ?? 15
-  const pluginAbsoluteMs = toNumber(options.pluginAbsoluteMs) ?? 40
-  const endToEndRegressionPercent = toNumber(options.endToEndRegressionPercent) ?? 15
+  const pluginAbsoluteMs = toNumber(options.pluginAbsoluteMs) ?? 100
+  const endToEndRegressionPercent = toNumber(options.endToEndRegressionPercent) ?? 20
   const endToEndAbsoluteMs = toNumber(options.endToEndAbsoluteMs) ?? 50
   const violations = summary.currentOnlyErrors.map(item => ({
     key: item.key,

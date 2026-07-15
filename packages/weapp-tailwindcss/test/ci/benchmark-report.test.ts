@@ -150,9 +150,9 @@ describe('benchmark ci report', () => {
           key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
           hmrMode: 'watch',
           summary: {
-            buildSteady: { median: 1170 },
+            buildSteady: { median: 1210 },
             hmrSteady: { median: 560 },
-            buildPluginSteady: { median: 241 },
+            buildPluginSteady: { median: 321 },
             hmrPluginSteady: { median: 115 },
           },
         },
@@ -166,7 +166,8 @@ describe('benchmark ci report', () => {
       'buildPlugin',
     ])
     expect(result.thresholds.pluginRegressionPercent).toBe(15)
-    expect(result.thresholds.pluginAbsoluteMs).toBe(40)
+    expect(result.thresholds.pluginAbsoluteMs).toBe(100)
+    expect(result.thresholds.endToEndRegressionPercent).toBe(20)
     expect(result.passed).toBe(false)
   })
 
