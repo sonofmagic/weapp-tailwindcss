@@ -24,47 +24,47 @@ exports[`vite > v4-vite-plugin > css 1`] = `
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
 }
-.bg-_b_h123456_B {
+  .bg-_b_h123456_B {
     background-color: #123456;
   }
-.bg-gradient-to-r {
+  .bg-gradient-to-r {
     --tw-gradient-position: to right;
     background-image: linear-gradient(var(--tw-gradient-stops));
   }
-.from-green-400 {
+  .from-green-400 {
     --tw-gradient-from: var(--color-green-400);
     --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
   }
-.to-sky-400 {
+  .to-sky-400 {
     --tw-gradient-to: var(--color-sky-400);
     --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
   }
-.bg-clip-text {
+  .bg-clip-text {
     -webkit-background-clip: text;
             background-clip: text;
   }
-.text-_b_h123456_B {
+  .text-_b_h123456_B {
     color: #123456;
   }
-.text-transparent {
+  .text-transparent {
     color: transparent;
   }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::marker {
+      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::marker {
         text-overflow: clip;
       }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::marker {
+      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::marker {
         text-overflow: clip;
       }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::marker {
+      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::marker {
         text-overflow: clip;
       }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::-webkit-details-marker {
+      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::-webkit-details-marker {
         text-overflow: clip;
       }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::-webkit-details-marker {
+      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::-webkit-details-marker {
         text-overflow: clip;
       }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::-webkit-details-marker {
+      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::-webkit-details-marker {
         text-overflow: clip;
       }
 "
@@ -120,28 +120,28 @@ exports[`vite > v4-vite-postcss > css 1`] = `
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
 }
-.bg-_b_h123456_B {
+  .bg-_b_h123456_B {
     background-color: #123456;
   }
-.text-_b_h123456_B {
+  .text-_b_h123456_B {
     color: #123456;
   }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::marker {
+      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::marker {
         text-overflow: clip;
       }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::marker {
+      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::marker {
         text-overflow: clip;
       }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::marker {
+      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::marker {
         text-overflow: clip;
       }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::-webkit-details-marker {
+      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::-webkit-details-marker {
         text-overflow: clip;
       }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::-webkit-details-marker {
+      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::-webkit-details-marker {
         text-overflow: clip;
       }
-.first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::-webkit-details-marker {
+      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::-webkit-details-marker {
         text-overflow: clip;
       }
 "

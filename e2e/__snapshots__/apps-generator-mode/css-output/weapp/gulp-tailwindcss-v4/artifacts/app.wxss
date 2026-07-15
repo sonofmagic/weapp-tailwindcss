@@ -26,11 +26,11 @@ wx-root-portal-content {
   --color-zinc-950: rgb(9, 9, 11);
   --spacing: 8rpx;
   --text-xs: 24rpx;
-  --text-xs--line-height: 1.33333;
+  --text-xs--line-height: calc(1 / 0.75);
   --text-base: 32rpx;
-  --text-base--line-height: 1.5;
+  --text-base--line-height: calc(1.5 / 1);
   --text-lg: 36rpx;
-  --text-lg--line-height: 1.55556;
+  --text-lg--line-height: calc(1.75 / 1.125);
   --font-weight-medium: 500;
   --font-weight-bold: 700;
   --default-font-family: var(--font-inter), system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
@@ -176,9 +176,7 @@ wx-root-portal-content {
 .space-y-1 > text + view,
 .space-y-1 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc(var(--spacing) * 0);
   margin-bottom: calc(var(--spacing) * var(--tw-space-y-reverse));
-  margin-top: calc(var(--spacing) * 1);
   margin-top: calc(var(--spacing) * (1 - var(--tw-space-y-reverse)));
 }
  /* tokens: space-y-4 <= src/pages/index/index.ttml, src/pages/index/index.wxml */
@@ -187,10 +185,10 @@ wx-root-portal-content {
 .space-y-4 > text + view,
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc((var(--spacing) * 4) * 0);
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
-  margin-top: calc((var(--spacing) * 4) * 1);
+  margin-bottom: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(calc(var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
 }
 .space-y-_b2rem_B > view + view,
 .space-y-_b2rem_B > view + text,

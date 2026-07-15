@@ -2,7 +2,6 @@
   display: inline-flex;
   align-items: center;
   gap: 8rpx;
-  color: #175e75;
   color: var(--weapp-tw-user-ui-color, #175e75);
   -webkit-animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
   animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;

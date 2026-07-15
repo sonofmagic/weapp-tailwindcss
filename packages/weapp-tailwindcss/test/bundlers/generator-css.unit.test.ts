@@ -544,7 +544,8 @@ describe('bundlers/shared generator css', () => {
             ':root{--spacing:0.25rem}',
             '.gap-2{gap:calc(var(--spacing)*2)}',
             '.px-4{padding-left:calc(var(--spacing)*4);padding-right:calc(var(--spacing)*4)}',
-            '.hello-world-shell{display:flex;gap:calc(var(--spacing)*2);padding-left:calc(var(--spacing)*4);padding-right:calc(var(--spacing)*4)}',
+            '.hello-world-shell{display:flex;gap:calc(var(--spacing, 0.25rem)*2);padding-left:calc(var(--spacing, 0.25rem)*4);padding-right:calc(var(--spacing, 0.25rem)*4)}',
+            '.hello-world-shell.data-v-04bcf89b{display:flex;gap:calc(var(--spacing, .25rem)*2);padding-left:calc(var(--spacing, .25rem)*4);padding-right:calc(var(--spacing, .25rem)*4)}',
           ].join('\n'),
           target: 'weapp',
           classSet: new Set(['flex', 'gap-2', 'px-4']),
@@ -554,8 +555,8 @@ describe('bundlers/shared generator css', () => {
       })),
     }))
 
-    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
-    const result = await generateCssByGenerator({
+    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    const result = await generateTailwindV4Css({
       opts: {
         generator: {
           target: 'weapp',
@@ -578,6 +579,9 @@ describe('bundlers/shared generator css', () => {
       cssHandlerOptions: {
         isMainChunk: false,
         majorVersion: 4,
+        sourceOptions: {
+          requestFile: '/workspace/src/components/HelloWorld.vue?vue&type=style&index=0&scoped=true&lang=scss',
+        },
       } as any,
       cssUserHandlerOptions: {} as any,
       styleHandler: vi.fn(),
@@ -587,7 +591,8 @@ describe('bundlers/shared generator css', () => {
     })
 
     expect(result?.css).toContain('--spacing:0.25rem')
-    expect(result?.css).toContain('.hello-world-shell')
+    expect(result?.css).toContain('.hello-world-shell.data-v-04bcf89b')
+    expect(result?.css).not.toMatch(/\.hello-world-shell\s*\{/)
     expect(result?.css).not.toContain('.gap-2{')
     expect(result?.css).not.toContain('.px-4{')
   })

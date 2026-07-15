@@ -252,7 +252,6 @@ view,text,::after,::before {
 }
 .shadow-_b0_35px_60px_-15px_rgba_p0_m0_m0_m0_d3_P_B {
   --tw-shadow: 0 35px 60px -15px var(--tw-shadow-color, rgba(0,0,0,0.3));
-  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), 0 35px 60px -15px rgba(0,0,0,0.3);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .ring-_b1_d7px_B {
@@ -273,12 +272,10 @@ view,text,::after,::before {
   }
 .before_ccontent-_b_ahello_world_a_B::before {
     --tw-content: 'hello world';
-    content: 'hello world';
     content: var(--tw-content);
   }
 .after_ccontent-_b_a_b_a_B::after {
     --tw-content: '[';
-    content: '[';
     content: var(--tw-content);
   }
 @media (min-width: 64rem) {

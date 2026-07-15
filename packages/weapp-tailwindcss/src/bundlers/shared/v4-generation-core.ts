@@ -3,6 +3,9 @@ import type { InternalUserDefinedOptions } from '@/types'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { adaptGeneratedCssWithFrameworkPipeline, hasFrameworkPostcssOptions } from './framework-postcss'
 import { generateCssByGenerator } from './generator-css'
+import { preferScopedGeneratedCssRules } from './generator-css/scoped-rules'
+import { resolvePostcssRequestOption } from './generator-css/source-resolver/postcss-source'
+import { isVueScopedStyleRequest } from './style-requests'
 
 export interface TailwindV4GenerationCoreInput extends GenerateCssByGeneratorOptions {
   frameworkPostcssOwner?: InternalUserDefinedOptions | undefined
@@ -44,7 +47,7 @@ export async function generateTailwindV4Css(
   if (!generated) {
     return undefined
   }
-  const css = shouldReplayFrameworkPostcss
+  const adaptedCss = shouldReplayFrameworkPostcss
     ? await adaptGeneratedCssWithFrameworkPipeline(frameworkPostcssOwner, generated, {
         cssHandlerOptions: options.cssHandlerOptions,
         file: options.file,
@@ -52,6 +55,9 @@ export async function generateTailwindV4Css(
         styleHandler: options.styleHandler,
       })
     : generated.css
+  const css = isVueScopedStyleRequest(resolvePostcssRequestOption(options.cssHandlerOptions))
+    ? preferScopedGeneratedCssRules(adaptedCss)
+    : adaptedCss
   return {
     ...generated,
     css,

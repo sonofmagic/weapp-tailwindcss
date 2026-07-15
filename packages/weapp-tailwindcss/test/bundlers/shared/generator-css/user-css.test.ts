@@ -136,6 +136,23 @@ describe('generator user css helpers', () => {
     expect(scopedFiltered).toContain('--spacing')
     expect(scopedFiltered).not.toContain('html{line-height')
     expect(scopedFiltered).not.toContain('.flex{display:flex}')
+    const duplicateScopedFiltered = filterApplyOnlyGeneratedCss([
+      '.hello-world-shell{display:flex;gap:calc(var(--spacing, 0.25rem) * 2)}',
+      '.hello-world-shell.data-v-abc{display:flex;gap:calc(var(--spacing, .25rem) * 2)}',
+      '@media (min-width: 640px){.hello-world-shell{gap:1rem}.hello-world-shell[data-v-abc]{gap:1rem}}',
+      '@supports (display:grid){.hello-world-shell{display:grid}}',
+    ].join(''), '.hello-world-shell{@apply flex}', {
+      preferScopedRules: true,
+    })
+    expect(duplicateScopedFiltered).not.toContain('.hello-world-shell{display:flex;gap:calc(var(--spacing, 0.25rem) * 2)}')
+    expect(duplicateScopedFiltered).not.toContain('@media (min-width: 640px){.hello-world-shell{gap:1rem}')
+    expect(duplicateScopedFiltered).toContain('.hello-world-shell.data-v-abc{display:flex;gap:calc(var(--spacing, .25rem) * 2)}')
+    expect(duplicateScopedFiltered).toContain('.hello-world-shell[data-v-abc]{gap:1rem}')
+    expect(duplicateScopedFiltered).toContain('@supports (display:grid){.hello-world-shell{display:grid}}')
+    expect(filterApplyOnlyGeneratedCss(
+      '.hello-world-shell{display:flex}.hello-world-shell.data-v-abc{display:flex}',
+      '.hello-world-shell{@apply flex}',
+    )).toContain('.hello-world-shell{display:flex}')
     expect(filterApplyOnlyGeneratedCss('.broken{', '.card{@apply flex}')).toBe('.broken{')
     expect(filterApplyOnlyGeneratedCss('.card{display:flex}', '.card{color:red}')).toBe('.card{display:flex}')
     expect(filterApplyOnlyGeneratedCss(':root{--x:1}.card{display:flex}', '.card{@apply flex}', {

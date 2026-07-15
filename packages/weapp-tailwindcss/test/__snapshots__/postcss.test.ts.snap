@@ -118,7 +118,6 @@ exports[`postcss plugin > dark mode class > css 1`] = `
 .tbody .tr {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
-    border-color: rgb(241, 245, 249);
     border-color: var(--color-slate-100, rgb(241, 245, 249));
   }
 .tbody .tr.dark view {
@@ -166,7 +165,6 @@ exports[`postcss plugin > dark mode media > css 1`] = `
 .tbody .tr {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
-    border-color: rgb(241, 245, 249);
     border-color: var(--color-slate-100, rgb(241, 245, 249));
   }
 @media (prefers-color-scheme: dark) {
@@ -213,7 +211,6 @@ exports[`postcss plugin > dark mode selector > css 1`] = `
 .tbody .tr {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
-    border-color: rgb(241, 245, 249);
     border-color: var(--color-slate-100, rgb(241, 245, 249));
   }
 .tbody .tr.dark,.tbody .tr.dark view,.tbody .tr.dark text {
@@ -258,7 +255,6 @@ exports[`postcss plugin > dark mode variant 1 > css 1`] = `
 .tbody .tr {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
-    border-color: rgb(241, 245, 249);
     border-color: var(--color-slate-100, rgb(241, 245, 249));
   }
 .tbody .tr:not(view):not(text) {
@@ -303,7 +299,6 @@ exports[`postcss plugin > dark mode variant 2 > css 1`] = `
 .tbody .tr {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
-    border-color: rgb(241, 245, 249);
     border-color: var(--color-slate-100, rgb(241, 245, 249));
   }
 .tbody .tr.dark view {
@@ -399,7 +394,6 @@ wx-root-portal-content,
   position: static;
 }
 .h-14 {
-  height: 3.5rem;
   height: calc(var(--spacing) * 14);
 }
 .h-_b300px_B {
@@ -409,7 +403,6 @@ wx-root-portal-content,
   background-color: #123456;
 }
 .bg-purple-300 {
-  background-color: rgb(216, 180, 255);
   background-color: var(--color-purple-300);
 }
 .bg-gradient-to-r {

@@ -124,7 +124,7 @@ export function applyV4CssCalcDefaults(
   cssCalc: InternalUserDefinedOptions['cssCalc'],
   tailwindRuntime: TailwindcssRuntimeLike | undefined,
 ): InternalUserDefinedOptions['cssCalc'] {
-  const cssCalcOptions = cssCalc ?? true
+  const cssCalcOptions = cssCalc ?? false
 
   if (tailwindRuntime && cssCalcOptions) {
     return ensureDefaultsIncluded(cssCalcOptions)

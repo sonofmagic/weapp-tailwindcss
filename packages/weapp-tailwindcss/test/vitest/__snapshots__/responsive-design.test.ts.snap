@@ -22,7 +22,7 @@ exports[`responsive-design > 2xl:text-sm 1`] = `
 exports[`responsive-design > 2xl:text-sm 2`] = `
 "page,.tw-root,wx-root-portal-content,:host {
   --text-sm: .875rem;
-  --text-sm--line-height: 1.42857;
+  --text-sm--line-height: calc(1.25/.875);
 }
 view,text,::after,::before {
   box-sizing: border-box;
@@ -32,9 +32,7 @@ view,text,::after,::before {
 }
 @media (min-width: 96rem) {
 ._2xl_ctext-sm {
-    font-size: .875rem;
     font-size: var(--text-sm);
-    line-height: 1.42857;
     line-height: var(--tw-leading, var(--text-sm--line-height));
 }
   }"
@@ -88,10 +86,8 @@ view,text,::after,::before {
 }
 .space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text {
     --tw-space-y-reverse: 0;
-    margin-bottom: 0rem;
-    margin-bottom: calc((var(--spacing)*4)*var(--tw-space-y-reverse));
-    margin-top: 1rem;
-    margin-top: calc((var(--spacing)*4)*(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
+    margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
   }"
 `;
 
@@ -143,10 +139,8 @@ view,text,::after,::before {
 }
 .space-y-4>view,text,button,input~view,text,button,input+view,text,button,input~view,text,button,input {
     --tw-space-y-reverse: 0;
-    margin-bottom: 0rem;
-    margin-bottom: calc((var(--spacing)*4)*var(--tw-space-y-reverse));
-    margin-top: 1rem;
-    margin-top: calc((var(--spacing)*4)*(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
+    margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
   }"
 `;
 
@@ -172,7 +166,7 @@ exports[`responsive-design > xl:text-sm 1`] = `
 exports[`responsive-design > xl:text-sm 2`] = `
 "page,.tw-root,wx-root-portal-content,:host {
   --text-sm: .875rem;
-  --text-sm--line-height: 1.42857;
+  --text-sm--line-height: calc(1.25/.875);
 }
 view,text,::after,::before {
   box-sizing: border-box;
@@ -182,9 +176,7 @@ view,text,::after,::before {
 }
 @media (min-width: 80rem) {
 .xl_ctext-sm {
-    font-size: .875rem;
     font-size: var(--text-sm);
-    line-height: 1.42857;
     line-height: var(--tw-leading, var(--text-sm--line-height));
 }
   }"

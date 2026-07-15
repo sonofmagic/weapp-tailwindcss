@@ -225,9 +225,19 @@ WeappTailwindcss({
 
 ## CSS 变量计算模式
 
-Tailwind CSS 4 下，如果没有显式配置 `cssOptions.cssCalc`，插件会默认启用 CSS 变量与 `calc()` 的预计算。
+Tailwind CSS 4 下，CSS 变量与 `calc()` 的预计算默认关闭。这样可以避免 `var()` 中的大体积值被展开后，再被 Autoprefixer 复制到兼容声明中。例如图标插件生成的 `--svg` data URI 默认只会保留一份。
 
-需要注意的是，默认模式只会补充一条预计算声明，不会删除后面的原始 `calc()` 声明。这样可以保持 CSS 级联兼容，但如果目标小程序运行时会优先采用后续 `calc()`，你需要显式指定要清理的 CSS 变量。
+需要解决部分机型对 `calc` 与 `rpx` 计算不一致的问题时，可以显式开启：
+
+```ts
+WeappTailwindcss({
+  cssOptions: {
+    cssCalc: true,
+  },
+})
+```
+
+启用后只会补充一条预计算声明，不会删除后面的原始 `calc()` 声明。这样可以保持 CSS 级联兼容，但如果目标小程序运行时会优先采用后续 `calc()`，你需要显式指定要清理的 CSS 变量。
 
 例如 Tailwind CSS 4 生成：
 
@@ -241,7 +251,7 @@ page,
 }
 ```
 
-启用默认 `cssOptions.cssCalc` 后会补出预计算结果，并保留原声明：
+显式启用 `cssOptions.cssCalc` 后会补出预计算结果，并保留原声明：
 
 ```css
 page,
@@ -293,7 +303,7 @@ WeappTailwindcss({
 })
 ```
 
-需要关闭 Tailwind CSS 4 默认的 `cssOptions.cssCalc` 时，传入：
+如果需要明确关闭，也可以传入：
 
 ```ts
 WeappTailwindcss({

@@ -87,7 +87,7 @@ exports[`all > common important handle 1`] = `
       --tw-contain-paint: initial;
       --tw-contain-style: initial;
     }
-view,text,::after,::before {
+  view,text,::after,::before {
     box-sizing: border-box;
     border: 0 solid;
     margin: 0;
@@ -173,22 +173,22 @@ view,text,::after,::before {
     --tw-ring-offset-color: #fff;
     --tw-ring-offset-shadow: 0 0 #0000;
   }
-#app .pointer-events-auto {
+  #app .pointer-events-auto {
       pointer-events: auto;
     }
-#app .pointer-events-none {
+  #app .pointer-events-none {
       pointer-events: none;
     }
-#app .collapse {
+  #app .collapse {
       visibility: collapse;
     }
-#app .invisible {
+  #app .invisible {
       visibility: hidden;
     }
-#app .visible {
+  #app .visible {
       visibility: visible;
     }
-#app .sr-only {
+  #app .sr-only {
       position: absolute;
       width: 1px;
       height: 1px;
@@ -199,7 +199,7 @@ view,text,::after,::before {
       white-space: nowrap;
       border-width: 0;
     }
-#app .not-sr-only {
+  #app .not-sr-only {
       position: static;
       width: auto;
       height: auto;
@@ -209,4169 +209,3956 @@ view,text,::after,::before {
               clip-path: none;
       white-space: normal;
     }
-#app .absolute {
+  #app .absolute {
       position: absolute;
     }
-#app .fixed {
+  #app .fixed {
       position: fixed;
     }
-#app .relative {
+  #app .relative {
       position: relative;
     }
-#app .static {
+  #app .static {
       position: static;
     }
-#app .sticky {
+  #app .sticky {
       position: sticky;
     }
-#app .inset-auto {
+  #app .inset-auto {
       top: auto;
       right: auto;
       bottom: auto;
       left: auto;
     }
-#app .inset-full {
+  #app .inset-full {
       top: 100%;
       right: 100%;
       bottom: 100%;
       left: 100%;
     }
-#app .inset-px {
+  #app .inset-px {
       top: 1px;
       right: 1px;
       bottom: 1px;
       left: 1px;
     }
-#app .inset-x-auto {
+  #app .inset-x-auto {
       left: auto;
       right: auto;
     }
-#app .inset-x-full {
+  #app .inset-x-full {
       left: 100%;
       right: 100%;
     }
-#app .inset-x-px {
+  #app .inset-x-px {
       left: 1px;
       right: 1px;
     }
-#app .inset-y-auto {
+  #app .inset-y-auto {
       top: auto;
       bottom: auto;
     }
-#app .inset-y-full {
+  #app .inset-y-full {
       top: 100%;
       bottom: 100%;
     }
-#app .inset-y-px {
+  #app .inset-y-px {
       top: 1px;
       bottom: 1px;
     }
-#app .start-auto {
+  #app .start-auto {
       left: auto;
     }
-#app .start-full {
+  #app .start-full {
       left: 100%;
     }
-#app .start-px {
+  #app .start-px {
       left: 1px;
     }
-#app .end-auto {
+  #app .end-auto {
       right: auto;
     }
-#app .end-full {
+  #app .end-full {
       right: 100%;
     }
-#app .end-px {
+  #app .end-px {
       right: 1px;
     }
-#app .top-auto {
+  #app .top-auto {
       top: auto;
     }
-#app .top-full {
+  #app .top-full {
       top: 100%;
     }
-#app .top-px {
+  #app .top-px {
       top: 1px;
     }
-#app .right-auto {
+  #app .right-auto {
       right: auto;
     }
-#app .right-full {
+  #app .right-full {
       right: 100%;
     }
-#app .right-px {
+  #app .right-px {
       right: 1px;
     }
-#app .bottom-auto {
+  #app .bottom-auto {
       bottom: auto;
     }
-#app .bottom-full {
+  #app .bottom-full {
       bottom: 100%;
     }
-#app .bottom-px {
+  #app .bottom-px {
       bottom: 1px;
     }
-#app .left-auto {
+  #app .left-auto {
       left: auto;
     }
-#app .left-full {
+  #app .left-full {
       left: 100%;
     }
-#app .left-px {
+  #app .left-px {
       left: 1px;
     }
-#app .isolate {
+  #app .isolate {
       isolation: isolate;
     }
-#app .isolation-auto {
+  #app .isolation-auto {
       isolation: auto;
     }
-#app .z-0 {
+  #app .z-0 {
       z-index: 0;
     }
-#app .z-10 {
+  #app .z-10 {
       z-index: 10;
     }
-#app .z-20 {
+  #app .z-20 {
       z-index: 20;
     }
-#app .z-30 {
+  #app .z-30 {
       z-index: 30;
     }
-#app .z-40 {
+  #app .z-40 {
       z-index: 40;
     }
-#app .z-50 {
+  #app .z-50 {
       z-index: 50;
     }
-#app .z-auto {
+  #app .z-auto {
       z-index: auto;
     }
-#app .order-1 {
+  #app .order-1 {
       order: 1;
     }
-#app .order-2 {
+  #app .order-2 {
       order: 2;
     }
-#app .order-3 {
+  #app .order-3 {
       order: 3;
     }
-#app .order-4 {
+  #app .order-4 {
       order: 4;
     }
-#app .order-5 {
+  #app .order-5 {
       order: 5;
     }
-#app .order-6 {
+  #app .order-6 {
       order: 6;
     }
-#app .order-7 {
+  #app .order-7 {
       order: 7;
     }
-#app .order-8 {
+  #app .order-8 {
       order: 8;
     }
-#app .order-9 {
+  #app .order-9 {
       order: 9;
     }
-#app .order-10 {
+  #app .order-10 {
       order: 10;
     }
-#app .order-11 {
+  #app .order-11 {
       order: 11;
     }
-#app .order-12 {
+  #app .order-12 {
       order: 12;
     }
-#app .order-first {
+  #app .order-first {
       order: -9999;
     }
-#app .order-last {
+  #app .order-last {
       order: 9999;
     }
-#app .order-none {
+  #app .order-none {
       order: 0;
     }
-#app .col-auto {
+  #app .col-auto {
       grid-column: auto;
     }
-#app .col-span-1 {
+  #app .col-span-1 {
       grid-column: span 1 / span 1;
     }
-#app .col-span-2 {
+  #app .col-span-2 {
       grid-column: span 2 / span 2;
     }
-#app .col-span-3 {
+  #app .col-span-3 {
       grid-column: span 3 / span 3;
     }
-#app .col-span-4 {
+  #app .col-span-4 {
       grid-column: span 4 / span 4;
     }
-#app .col-span-5 {
+  #app .col-span-5 {
       grid-column: span 5 / span 5;
     }
-#app .col-span-6 {
+  #app .col-span-6 {
       grid-column: span 6 / span 6;
     }
-#app .col-span-7 {
+  #app .col-span-7 {
       grid-column: span 7 / span 7;
     }
-#app .col-span-8 {
+  #app .col-span-8 {
       grid-column: span 8 / span 8;
     }
-#app .col-span-9 {
+  #app .col-span-9 {
       grid-column: span 9 / span 9;
     }
-#app .col-span-10 {
+  #app .col-span-10 {
       grid-column: span 10 / span 10;
     }
-#app .col-span-11 {
+  #app .col-span-11 {
       grid-column: span 11 / span 11;
     }
-#app .col-span-12 {
+  #app .col-span-12 {
       grid-column: span 12 / span 12;
     }
-#app .col-span-full {
+  #app .col-span-full {
       grid-column: 1 / -1;
     }
-#app .col-start-1 {
+  #app .col-start-1 {
       grid-column-start: 1;
     }
-#app .col-start-2 {
+  #app .col-start-2 {
       grid-column-start: 2;
     }
-#app .col-start-3 {
+  #app .col-start-3 {
       grid-column-start: 3;
     }
-#app .col-start-4 {
+  #app .col-start-4 {
       grid-column-start: 4;
     }
-#app .col-start-5 {
+  #app .col-start-5 {
       grid-column-start: 5;
     }
-#app .col-start-6 {
+  #app .col-start-6 {
       grid-column-start: 6;
     }
-#app .col-start-7 {
+  #app .col-start-7 {
       grid-column-start: 7;
     }
-#app .col-start-8 {
+  #app .col-start-8 {
       grid-column-start: 8;
     }
-#app .col-start-9 {
+  #app .col-start-9 {
       grid-column-start: 9;
     }
-#app .col-start-10 {
+  #app .col-start-10 {
       grid-column-start: 10;
     }
-#app .col-start-11 {
+  #app .col-start-11 {
       grid-column-start: 11;
     }
-#app .col-start-12 {
+  #app .col-start-12 {
       grid-column-start: 12;
     }
-#app .col-start-13 {
+  #app .col-start-13 {
       grid-column-start: 13;
     }
-#app .col-start-auto {
+  #app .col-start-auto {
       grid-column-start: auto;
     }
-#app .col-end-1 {
+  #app .col-end-1 {
       grid-column-end: 1;
     }
-#app .col-end-2 {
+  #app .col-end-2 {
       grid-column-end: 2;
     }
-#app .col-end-3 {
+  #app .col-end-3 {
       grid-column-end: 3;
     }
-#app .col-end-4 {
+  #app .col-end-4 {
       grid-column-end: 4;
     }
-#app .col-end-5 {
+  #app .col-end-5 {
       grid-column-end: 5;
     }
-#app .col-end-6 {
+  #app .col-end-6 {
       grid-column-end: 6;
     }
-#app .col-end-7 {
+  #app .col-end-7 {
       grid-column-end: 7;
     }
-#app .col-end-8 {
+  #app .col-end-8 {
       grid-column-end: 8;
     }
-#app .col-end-9 {
+  #app .col-end-9 {
       grid-column-end: 9;
     }
-#app .col-end-10 {
+  #app .col-end-10 {
       grid-column-end: 10;
     }
-#app .col-end-11 {
+  #app .col-end-11 {
       grid-column-end: 11;
     }
-#app .col-end-12 {
+  #app .col-end-12 {
       grid-column-end: 12;
     }
-#app .col-end-13 {
+  #app .col-end-13 {
       grid-column-end: 13;
     }
-#app .col-end-auto {
+  #app .col-end-auto {
       grid-column-end: auto;
     }
-#app .row-auto {
+  #app .row-auto {
       grid-row: auto;
     }
-#app .row-span-1 {
+  #app .row-span-1 {
       grid-row: span 1 / span 1;
     }
-#app .row-span-2 {
+  #app .row-span-2 {
       grid-row: span 2 / span 2;
     }
-#app .row-span-3 {
+  #app .row-span-3 {
       grid-row: span 3 / span 3;
     }
-#app .row-span-4 {
+  #app .row-span-4 {
       grid-row: span 4 / span 4;
     }
-#app .row-span-5 {
+  #app .row-span-5 {
       grid-row: span 5 / span 5;
     }
-#app .row-span-6 {
+  #app .row-span-6 {
       grid-row: span 6 / span 6;
     }
-#app .row-span-7 {
+  #app .row-span-7 {
       grid-row: span 7 / span 7;
     }
-#app .row-span-8 {
+  #app .row-span-8 {
       grid-row: span 8 / span 8;
     }
-#app .row-span-9 {
+  #app .row-span-9 {
       grid-row: span 9 / span 9;
     }
-#app .row-span-10 {
+  #app .row-span-10 {
       grid-row: span 10 / span 10;
     }
-#app .row-span-11 {
+  #app .row-span-11 {
       grid-row: span 11 / span 11;
     }
-#app .row-span-12 {
+  #app .row-span-12 {
       grid-row: span 12 / span 12;
     }
-#app .row-span-full {
+  #app .row-span-full {
       grid-row: 1 / -1;
     }
-#app .row-start-1 {
+  #app .row-start-1 {
       grid-row-start: 1;
     }
-#app .row-start-2 {
+  #app .row-start-2 {
       grid-row-start: 2;
     }
-#app .row-start-3 {
+  #app .row-start-3 {
       grid-row-start: 3;
     }
-#app .row-start-4 {
+  #app .row-start-4 {
       grid-row-start: 4;
     }
-#app .row-start-5 {
+  #app .row-start-5 {
       grid-row-start: 5;
     }
-#app .row-start-6 {
+  #app .row-start-6 {
       grid-row-start: 6;
     }
-#app .row-start-7 {
+  #app .row-start-7 {
       grid-row-start: 7;
     }
-#app .row-start-8 {
+  #app .row-start-8 {
       grid-row-start: 8;
     }
-#app .row-start-9 {
+  #app .row-start-9 {
       grid-row-start: 9;
     }
-#app .row-start-10 {
+  #app .row-start-10 {
       grid-row-start: 10;
     }
-#app .row-start-11 {
+  #app .row-start-11 {
       grid-row-start: 11;
     }
-#app .row-start-12 {
+  #app .row-start-12 {
       grid-row-start: 12;
     }
-#app .row-start-13 {
+  #app .row-start-13 {
       grid-row-start: 13;
     }
-#app .row-start-auto {
+  #app .row-start-auto {
       grid-row-start: auto;
     }
-#app .row-end-1 {
+  #app .row-end-1 {
       grid-row-end: 1;
     }
-#app .row-end-2 {
+  #app .row-end-2 {
       grid-row-end: 2;
     }
-#app .row-end-3 {
+  #app .row-end-3 {
       grid-row-end: 3;
     }
-#app .row-end-4 {
+  #app .row-end-4 {
       grid-row-end: 4;
     }
-#app .row-end-5 {
+  #app .row-end-5 {
       grid-row-end: 5;
     }
-#app .row-end-6 {
+  #app .row-end-6 {
       grid-row-end: 6;
     }
-#app .row-end-7 {
+  #app .row-end-7 {
       grid-row-end: 7;
     }
-#app .row-end-8 {
+  #app .row-end-8 {
       grid-row-end: 8;
     }
-#app .row-end-9 {
+  #app .row-end-9 {
       grid-row-end: 9;
     }
-#app .row-end-10 {
+  #app .row-end-10 {
       grid-row-end: 10;
     }
-#app .row-end-11 {
+  #app .row-end-11 {
       grid-row-end: 11;
     }
-#app .row-end-12 {
+  #app .row-end-12 {
       grid-row-end: 12;
     }
-#app .row-end-13 {
+  #app .row-end-13 {
       grid-row-end: 13;
     }
-#app .row-end-auto {
+  #app .row-end-auto {
       grid-row-end: auto;
     }
-#app .float-end {
+  #app .float-end {
       float: right;
     }
-#app .float-left {
+  #app .float-left {
       float: left;
     }
-#app .float-none {
+  #app .float-none {
       float: none;
     }
-#app .float-right {
+  #app .float-right {
       float: right;
     }
-#app .float-start {
+  #app .float-start {
       float: left;
     }
-#app .clear-both {
+  #app .clear-both {
       clear: both;
     }
-#app .clear-end {
+  #app .clear-end {
       clear: right;
     }
-#app .clear-left {
+  #app .clear-left {
       clear: left;
     }
-#app .clear-none {
+  #app .clear-none {
       clear: none;
     }
-#app .clear-right {
+  #app .clear-right {
       clear: right;
     }
-#app .clear-start {
+  #app .clear-start {
       clear: left;
     }
-#app .container {
+  #app .container {
       width: 100%;
     }
-#app .m-auto {
+  #app .m-auto {
       margin: auto;
     }
-#app .m-px {
+  #app .m-px {
       margin: 1px;
     }
-#app .mx-auto {
+  #app .mx-auto {
       margin-left: auto;
       margin-right: auto;
     }
-#app .mx-px {
+  #app .mx-px {
       margin-left: 1px;
       margin-right: 1px;
     }
-#app .my-auto {
+  #app .my-auto {
       margin-top: auto;
       margin-bottom: auto;
     }
-#app .my-px {
+  #app .my-px {
       margin-top: 1px;
       margin-bottom: 1px;
     }
-#app .ms-auto {
+  #app .ms-auto {
       margin-left: auto;
     }
-#app .ms-px {
+  #app .ms-px {
       margin-left: 1px;
     }
-#app .me-auto {
+  #app .me-auto {
       margin-right: auto;
     }
-#app .me-px {
+  #app .me-px {
       margin-right: 1px;
     }
-#app .mt-auto {
+  #app .mt-auto {
       margin-top: auto;
     }
-#app .mt-px {
+  #app .mt-px {
       margin-top: 1px;
     }
-#app .mr-auto {
+  #app .mr-auto {
       margin-right: auto;
     }
-#app .mr-px {
+  #app .mr-px {
       margin-right: 1px;
     }
-#app .mb-auto {
+  #app .mb-auto {
       margin-bottom: auto;
     }
-#app .mb-px {
+  #app .mb-px {
       margin-bottom: 1px;
     }
-#app .ml-auto {
+  #app .ml-auto {
       margin-left: auto;
     }
-#app .ml-px {
+  #app .ml-px {
       margin-left: 1px;
     }
-#app .box-border {
+  #app .box-border {
       box-sizing: border-box;
     }
-#app .box-content {
+  #app .box-content {
       box-sizing: content-box;
     }
-#app .line-clamp-1 {
+  #app .line-clamp-1 {
       overflow: hidden;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 1;
     }
-#app .line-clamp-2 {
+  #app .line-clamp-2 {
       overflow: hidden;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
     }
-#app .line-clamp-3 {
+  #app .line-clamp-3 {
       overflow: hidden;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 3;
     }
-#app .line-clamp-4 {
+  #app .line-clamp-4 {
       overflow: hidden;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 4;
     }
-#app .line-clamp-5 {
+  #app .line-clamp-5 {
       overflow: hidden;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 5;
     }
-#app .line-clamp-6 {
+  #app .line-clamp-6 {
       overflow: hidden;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 6;
     }
-#app .line-clamp-none {
+  #app .line-clamp-none {
       overflow: visible;
       display: block;
       -webkit-box-orient: horizontal;
       -webkit-line-clamp: unset;
     }
-#app .block {
+  #app .block {
       display: block;
     }
-#app .contents {
+  #app .contents {
       display: contents;
     }
-#app .flex {
+  #app .flex {
       display: flex;
     }
-#app .flow-root {
+  #app .flow-root {
       display: flow-root;
     }
-#app .grid {
+  #app .grid {
       display: grid;
     }
-#app .hidden {
+  #app .hidden {
       display: none;
     }
-#app .inline {
+  #app .inline {
       display: inline;
     }
-#app .inline-block {
+  #app .inline-block {
       display: inline-block;
     }
-#app .inline-flex {
+  #app .inline-flex {
       display: inline-flex;
     }
-#app .inline-grid {
+  #app .inline-grid {
       display: inline-grid;
     }
-#app .inline-table {
+  #app .inline-table {
       display: inline-table;
     }
-#app .list-item {
+  #app .list-item {
       display: list-item;
     }
-#app .table {
+  #app .table {
       display: table;
     }
-#app .table-caption {
+  #app .table-caption {
       display: table-caption;
     }
-#app .table-cell {
+  #app .table-cell {
       display: table-cell;
     }
-#app .table-column {
+  #app .table-column {
       display: table-column;
     }
-#app .table-column-group {
+  #app .table-column-group {
       display: table-column-group;
     }
-#app .table-footer-group {
+  #app .table-footer-group {
       display: table-footer-group;
     }
-#app .table-header-group {
+  #app .table-header-group {
       display: table-header-group;
     }
-#app .table-row {
+  #app .table-row {
       display: table-row;
     }
-#app .table-row-group {
+  #app .table-row-group {
       display: table-row-group;
     }
-#app .aspect-auto {
+  #app .aspect-auto {
       aspect-ratio: auto;
     }
-#app .aspect-square {
+  #app .aspect-square {
       aspect-ratio: 1 / 1;
     }
-#app .size-auto {
+  #app .size-auto {
       width: auto;
       height: auto;
     }
-#app .size-fit {
+  #app .size-fit {
       width: fit-content;
       height: fit-content;
     }
-#app .size-full {
+  #app .size-full {
       width: 100%;
       height: 100%;
     }
-#app .size-max {
+  #app .size-max {
       width: max-content;
       height: max-content;
     }
-#app .size-min {
+  #app .size-min {
       width: min-content;
       height: min-content;
     }
-#app .size-px {
+  #app .size-px {
       width: 1px;
       height: 1px;
     }
-#app .h-auto {
+  #app .h-auto {
       height: auto;
     }
-#app .h-dvh {
+  #app .h-dvh {
       height: 100dvh;
     }
-#app .h-fit {
+  #app .h-fit {
       height: fit-content;
     }
-#app .h-full {
+  #app .h-full {
       height: 100%;
     }
-#app .h-lvh {
+  #app .h-lvh {
       height: 100lvh;
     }
-#app .h-max {
+  #app .h-max {
       height: max-content;
     }
-#app .h-min {
+  #app .h-min {
       height: min-content;
     }
-#app .h-px {
+  #app .h-px {
       height: 1px;
     }
-#app .h-screen {
+  #app .h-screen {
       height: 100vh;
     }
-#app .h-svh {
+  #app .h-svh {
       height: 100svh;
     }
-#app .max-h-dvh {
+  #app .max-h-dvh {
       max-height: 100dvh;
     }
-#app .max-h-fit {
+  #app .max-h-fit {
       max-height: fit-content;
     }
-#app .max-h-full {
+  #app .max-h-full {
       max-height: 100%;
     }
-#app .max-h-lvh {
+  #app .max-h-lvh {
       max-height: 100lvh;
     }
-#app .max-h-max {
+  #app .max-h-max {
       max-height: max-content;
     }
-#app .max-h-min {
+  #app .max-h-min {
       max-height: min-content;
     }
-#app .max-h-none {
+  #app .max-h-none {
       max-height: none;
     }
-#app .max-h-px {
+  #app .max-h-px {
       max-height: 1px;
     }
-#app .max-h-screen {
+  #app .max-h-screen {
       max-height: 100vh;
     }
-#app .max-h-svh {
+  #app .max-h-svh {
       max-height: 100svh;
     }
-#app .min-h-dvh {
+  #app .min-h-dvh {
       min-height: 100dvh;
     }
-#app .min-h-fit {
+  #app .min-h-fit {
       min-height: fit-content;
     }
-#app .min-h-full {
+  #app .min-h-full {
       min-height: 100%;
     }
-#app .min-h-lvh {
+  #app .min-h-lvh {
       min-height: 100lvh;
     }
-#app .min-h-max {
+  #app .min-h-max {
       min-height: max-content;
     }
-#app .min-h-min {
+  #app .min-h-min {
       min-height: min-content;
     }
-#app .min-h-px {
+  #app .min-h-px {
       min-height: 1px;
     }
-#app .min-h-screen {
+  #app .min-h-screen {
       min-height: 100vh;
     }
-#app .min-h-svh {
+  #app .min-h-svh {
       min-height: 100svh;
     }
-#app .w-auto {
+  #app .w-auto {
       width: auto;
     }
-#app .w-dvw {
+  #app .w-dvw {
       width: 100dvw;
     }
-#app .w-fit {
+  #app .w-fit {
       width: fit-content;
     }
-#app .w-full {
+  #app .w-full {
       width: 100%;
     }
-#app .w-lvw {
+  #app .w-lvw {
       width: 100lvw;
     }
-#app .w-max {
+  #app .w-max {
       width: max-content;
     }
-#app .w-min {
+  #app .w-min {
       width: min-content;
     }
-#app .w-px {
+  #app .w-px {
       width: 1px;
     }
-#app .w-screen {
+  #app .w-screen {
       width: 100vw;
     }
-#app .w-svw {
+  #app .w-svw {
       width: 100svw;
     }
-#app .max-w-fit {
+  #app .max-w-fit {
       max-width: fit-content;
     }
-#app .max-w-full {
+  #app .max-w-full {
       max-width: 100%;
     }
-#app .max-w-max {
+  #app .max-w-max {
       max-width: max-content;
     }
-#app .max-w-min {
+  #app .max-w-min {
       max-width: min-content;
     }
-#app .max-w-none {
+  #app .max-w-none {
       max-width: none;
     }
-#app .max-w-px {
+  #app .max-w-px {
       max-width: 1px;
     }
-#app .min-w-fit {
+  #app .min-w-fit {
       min-width: fit-content;
     }
-#app .min-w-full {
+  #app .min-w-full {
       min-width: 100%;
     }
-#app .min-w-max {
+  #app .min-w-max {
       min-width: max-content;
     }
-#app .min-w-min {
+  #app .min-w-min {
       min-width: min-content;
     }
-#app .min-w-px {
+  #app .min-w-px {
       min-width: 1px;
     }
-#app .flex-1 {
+  #app .flex-1 {
       flex: 1;
     }
-#app .flex-auto {
+  #app .flex-auto {
       flex: auto;
     }
-#app .flex-initial {
+  #app .flex-initial {
       flex: 0 auto;
     }
-#app .flex-none {
+  #app .flex-none {
       flex: none;
     }
-#app .flex-shrink {
+  #app .flex-shrink {
       flex-shrink: 1;
     }
-#app .flex-shrink-0 {
+  #app .flex-shrink-0 {
       flex-shrink: 0;
     }
-#app .shrink {
+  #app .shrink {
       flex-shrink: 1;
     }
-#app .shrink-0 {
+  #app .shrink-0 {
       flex-shrink: 0;
     }
-#app .flex-grow {
+  #app .flex-grow {
       flex-grow: 1;
     }
-#app .flex-grow-0 {
+  #app .flex-grow-0 {
       flex-grow: 0;
     }
-#app .grow {
+  #app .grow {
       flex-grow: 1;
     }
-#app .grow-0 {
+  #app .grow-0 {
       flex-grow: 0;
     }
-#app .basis-auto {
+  #app .basis-auto {
       flex-basis: auto;
     }
-#app .basis-full {
+  #app .basis-full {
       flex-basis: 100%;
     }
-#app .basis-px {
+  #app .basis-px {
       flex-basis: 1px;
     }
-#app .table-auto {
+  #app .table-auto {
       table-layout: auto;
     }
-#app .table-fixed {
+  #app .table-fixed {
       table-layout: fixed;
     }
-#app .caption-bottom {
+  #app .caption-bottom {
       caption-side: bottom;
     }
-#app .caption-top {
+  #app .caption-top {
       caption-side: top;
     }
-#app .border-collapse {
+  #app .border-collapse {
       border-collapse: collapse;
     }
-#app .border-separate {
+  #app .border-separate {
       border-collapse: separate;
     }
-#app .border-spacing-px {
+  #app .border-spacing-px {
       --tw-border-spacing-x: 1px;
       --tw-border-spacing-y: 1px;
-      border-spacing: 1px 1px;
       border-spacing: var(--tw-border-spacing-x) var(--tw-border-spacing-y);
     }
-#app .border-spacing-x-px {
+  #app .border-spacing-x-px {
       --tw-border-spacing-x: 1px;
-      border-spacing: 1px var(--tw-border-spacing-y);
       border-spacing: var(--tw-border-spacing-x) var(--tw-border-spacing-y);
     }
-#app .border-spacing-y-px {
+  #app .border-spacing-y-px {
       --tw-border-spacing-y: 1px;
-      border-spacing: var(--tw-border-spacing-x) 1px;
       border-spacing: var(--tw-border-spacing-x) var(--tw-border-spacing-y);
     }
-#app .origin-bottom {
+  #app .origin-bottom {
               transform-origin: bottom;
     }
-#app .origin-bottom-left {
+  #app .origin-bottom-left {
               transform-origin: 0 100%;
     }
-#app .origin-bottom-right {
+  #app .origin-bottom-right {
               transform-origin: 100% 100%;
     }
-#app .origin-center {
+  #app .origin-center {
               transform-origin: center;
     }
-#app .origin-left {
+  #app .origin-left {
               transform-origin: 0;
     }
-#app .origin-right {
+  #app .origin-right {
               transform-origin: 100%;
     }
-#app .origin-top {
+  #app .origin-top {
               transform-origin: top;
     }
-#app .origin-top-left {
+  #app .origin-top-left {
               transform-origin: 0 0;
     }
-#app .origin-top-right {
+  #app .origin-top-right {
               transform-origin: 100% 0;
     }
-#app .translate-x-full {
+  #app .translate-x-full {
       --tw-translate-x: 100%;
-      translate: 100% var(--tw-translate-y);
       translate: var(--tw-translate-x) var(--tw-translate-y);
     }
-#app .translate-x-px {
+  #app .translate-x-px {
       --tw-translate-x: 1px;
-      translate: 1px var(--tw-translate-y);
       translate: var(--tw-translate-x) var(--tw-translate-y);
     }
-#app .translate-y-full {
+  #app .translate-y-full {
       --tw-translate-y: 100%;
-      translate: var(--tw-translate-x) 100%;
       translate: var(--tw-translate-x) var(--tw-translate-y);
     }
-#app .translate-y-px {
+  #app .translate-y-px {
       --tw-translate-y: 1px;
-      translate: var(--tw-translate-x) 1px;
       translate: var(--tw-translate-x) var(--tw-translate-y);
     }
-#app .scale-0 {
+  #app .scale-0 {
       --tw-scale-x: 0%;
       --tw-scale-y: 0%;
       --tw-scale-z: 0%;
-      scale: 0% 0%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-50 {
+  #app .scale-50 {
       --tw-scale-x: 50%;
       --tw-scale-y: 50%;
       --tw-scale-z: 50%;
-      scale: 50% 50%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-75 {
+  #app .scale-75 {
       --tw-scale-x: 75%;
       --tw-scale-y: 75%;
       --tw-scale-z: 75%;
-      scale: 75% 75%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-90 {
+  #app .scale-90 {
       --tw-scale-x: 90%;
       --tw-scale-y: 90%;
       --tw-scale-z: 90%;
-      scale: 90% 90%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-95 {
+  #app .scale-95 {
       --tw-scale-x: 95%;
       --tw-scale-y: 95%;
       --tw-scale-z: 95%;
-      scale: 95% 95%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-100 {
+  #app .scale-100 {
       --tw-scale-x: 100%;
       --tw-scale-y: 100%;
       --tw-scale-z: 100%;
-      scale: 100% 100%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-105 {
+  #app .scale-105 {
       --tw-scale-x: 105%;
       --tw-scale-y: 105%;
       --tw-scale-z: 105%;
-      scale: 105% 105%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-110 {
+  #app .scale-110 {
       --tw-scale-x: 110%;
       --tw-scale-y: 110%;
       --tw-scale-z: 110%;
-      scale: 110% 110%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-125 {
+  #app .scale-125 {
       --tw-scale-x: 125%;
       --tw-scale-y: 125%;
       --tw-scale-z: 125%;
-      scale: 125% 125%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-150 {
+  #app .scale-150 {
       --tw-scale-x: 150%;
       --tw-scale-y: 150%;
       --tw-scale-z: 150%;
-      scale: 150% 150%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-x-0 {
+  #app .scale-x-0 {
       --tw-scale-x: 0%;
-      scale: 0% var(--tw-scale-y);
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-x-50 {
+  #app .scale-x-50 {
       --tw-scale-x: 50%;
-      scale: 50% var(--tw-scale-y);
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-x-75 {
+  #app .scale-x-75 {
       --tw-scale-x: 75%;
-      scale: 75% var(--tw-scale-y);
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-x-90 {
+  #app .scale-x-90 {
       --tw-scale-x: 90%;
-      scale: 90% var(--tw-scale-y);
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-x-95 {
+  #app .scale-x-95 {
       --tw-scale-x: 95%;
-      scale: 95% var(--tw-scale-y);
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-x-100 {
+  #app .scale-x-100 {
       --tw-scale-x: 100%;
-      scale: 100% var(--tw-scale-y);
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-x-105 {
+  #app .scale-x-105 {
       --tw-scale-x: 105%;
-      scale: 105% var(--tw-scale-y);
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-x-110 {
+  #app .scale-x-110 {
       --tw-scale-x: 110%;
-      scale: 110% var(--tw-scale-y);
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-x-125 {
+  #app .scale-x-125 {
       --tw-scale-x: 125%;
-      scale: 125% var(--tw-scale-y);
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-x-150 {
+  #app .scale-x-150 {
       --tw-scale-x: 150%;
-      scale: 150% var(--tw-scale-y);
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-y-0 {
+  #app .scale-y-0 {
       --tw-scale-y: 0%;
-      scale: var(--tw-scale-x) 0%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-y-50 {
+  #app .scale-y-50 {
       --tw-scale-y: 50%;
-      scale: var(--tw-scale-x) 50%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-y-75 {
+  #app .scale-y-75 {
       --tw-scale-y: 75%;
-      scale: var(--tw-scale-x) 75%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-y-90 {
+  #app .scale-y-90 {
       --tw-scale-y: 90%;
-      scale: var(--tw-scale-x) 90%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-y-95 {
+  #app .scale-y-95 {
       --tw-scale-y: 95%;
-      scale: var(--tw-scale-x) 95%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-y-100 {
+  #app .scale-y-100 {
       --tw-scale-y: 100%;
-      scale: var(--tw-scale-x) 100%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-y-105 {
+  #app .scale-y-105 {
       --tw-scale-y: 105%;
-      scale: var(--tw-scale-x) 105%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-y-110 {
+  #app .scale-y-110 {
       --tw-scale-y: 110%;
-      scale: var(--tw-scale-x) 110%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-y-125 {
+  #app .scale-y-125 {
       --tw-scale-y: 125%;
-      scale: var(--tw-scale-x) 125%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .scale-y-150 {
+  #app .scale-y-150 {
       --tw-scale-y: 150%;
-      scale: var(--tw-scale-x) 150%;
       scale: var(--tw-scale-x) var(--tw-scale-y);
     }
-#app .rotate-0 {
+  #app .rotate-0 {
       rotate: 0deg;
     }
-#app .rotate-1 {
+  #app .rotate-1 {
       rotate: 1deg;
     }
-#app .rotate-2 {
+  #app .rotate-2 {
       rotate: 2deg;
     }
-#app .rotate-3 {
+  #app .rotate-3 {
       rotate: 3deg;
     }
-#app .rotate-6 {
+  #app .rotate-6 {
       rotate: 6deg;
     }
-#app .rotate-12 {
+  #app .rotate-12 {
       rotate: 12deg;
     }
-#app .rotate-45 {
+  #app .rotate-45 {
       rotate: 45deg;
     }
-#app .rotate-90 {
+  #app .rotate-90 {
       rotate: 90deg;
     }
-#app .rotate-180 {
+  #app .rotate-180 {
       rotate: 180deg;
     }
-#app .skew-x-0 {
+  #app .skew-x-0 {
       --tw-skew-x: skewX(0deg);
-              transform:       skewX(0deg)  ;
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .skew-x-1 {
+  #app .skew-x-1 {
       --tw-skew-x: skewX(1deg);
-              transform:       skewX(1deg)  ;
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .skew-x-2 {
+  #app .skew-x-2 {
       --tw-skew-x: skewX(2deg);
-              transform:       skewX(2deg)  ;
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .skew-x-3 {
+  #app .skew-x-3 {
       --tw-skew-x: skewX(3deg);
-              transform:       skewX(3deg)  ;
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .skew-x-6 {
+  #app .skew-x-6 {
       --tw-skew-x: skewX(6deg);
-              transform:       skewX(6deg)  ;
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .skew-x-12 {
+  #app .skew-x-12 {
       --tw-skew-x: skewX(12deg);
-              transform:       skewX(12deg)  ;
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .skew-y-0 {
+  #app .skew-y-0 {
       --tw-skew-y: skewY(0deg);
-              transform:         skewY(0deg);
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .skew-y-1 {
+  #app .skew-y-1 {
       --tw-skew-y: skewY(1deg);
-              transform:         skewY(1deg);
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .skew-y-2 {
+  #app .skew-y-2 {
       --tw-skew-y: skewY(2deg);
-              transform:         skewY(2deg);
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .skew-y-3 {
+  #app .skew-y-3 {
       --tw-skew-y: skewY(3deg);
-              transform:         skewY(3deg);
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .skew-y-6 {
+  #app .skew-y-6 {
       --tw-skew-y: skewY(6deg);
-              transform:         skewY(6deg);
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .skew-y-12 {
+  #app .skew-y-12 {
       --tw-skew-y: skewY(12deg);
-              transform:         skewY(12deg);
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .transform {
-              transform:          ;
+  #app .transform {
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .transform-cpu {
-              transform:          ;
+  #app .transform-cpu {
               transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .transform-gpu {
-              transform: translateZ(0)          ;
+  #app .transform-gpu {
               transform: translateZ(0) var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
     }
-#app .transform-none {
+  #app .transform-none {
               transform: none;
     }
-#app .animate-none {
+  #app .animate-none {
               animation: none;
     }
-#app .cursor-alias {
+  #app .cursor-alias {
       cursor: alias;
     }
-#app .cursor-all-scroll {
+  #app .cursor-all-scroll {
       cursor: all-scroll;
     }
-#app .cursor-auto {
+  #app .cursor-auto {
       cursor: auto;
     }
-#app .cursor-cell {
+  #app .cursor-cell {
       cursor: cell;
     }
-#app .cursor-col-resize {
+  #app .cursor-col-resize {
       cursor: col-resize;
     }
-#app .cursor-context-menu {
+  #app .cursor-context-menu {
       cursor: context-menu;
     }
-#app .cursor-copy {
+  #app .cursor-copy {
       cursor: copy;
     }
-#app .cursor-crosshair {
+  #app .cursor-crosshair {
       cursor: crosshair;
     }
-#app .cursor-default {
+  #app .cursor-default {
       cursor: default;
     }
-#app .cursor-e-resize {
+  #app .cursor-e-resize {
       cursor: e-resize;
     }
-#app .cursor-ew-resize {
+  #app .cursor-ew-resize {
       cursor: ew-resize;
     }
-#app .cursor-grab {
+  #app .cursor-grab {
       cursor: grab;
     }
-#app .cursor-grabbing {
+  #app .cursor-grabbing {
       cursor: grabbing;
     }
-#app .cursor-help {
+  #app .cursor-help {
       cursor: help;
     }
-#app .cursor-move {
+  #app .cursor-move {
       cursor: move;
     }
-#app .cursor-n-resize {
+  #app .cursor-n-resize {
       cursor: n-resize;
     }
-#app .cursor-ne-resize {
+  #app .cursor-ne-resize {
       cursor: ne-resize;
     }
-#app .cursor-nesw-resize {
+  #app .cursor-nesw-resize {
       cursor: nesw-resize;
     }
-#app .cursor-no-drop {
+  #app .cursor-no-drop {
       cursor: no-drop;
     }
-#app .cursor-none {
+  #app .cursor-none {
       cursor: none;
     }
-#app .cursor-not-allowed {
+  #app .cursor-not-allowed {
       cursor: not-allowed;
     }
-#app .cursor-ns-resize {
+  #app .cursor-ns-resize {
       cursor: ns-resize;
     }
-#app .cursor-nw-resize {
+  #app .cursor-nw-resize {
       cursor: nw-resize;
     }
-#app .cursor-nwse-resize {
+  #app .cursor-nwse-resize {
       cursor: nwse-resize;
     }
-#app .cursor-pointer {
+  #app .cursor-pointer {
       cursor: pointer;
     }
-#app .cursor-progress {
+  #app .cursor-progress {
       cursor: progress;
     }
-#app .cursor-row-resize {
+  #app .cursor-row-resize {
       cursor: row-resize;
     }
-#app .cursor-s-resize {
+  #app .cursor-s-resize {
       cursor: s-resize;
     }
-#app .cursor-se-resize {
+  #app .cursor-se-resize {
       cursor: se-resize;
     }
-#app .cursor-sw-resize {
+  #app .cursor-sw-resize {
       cursor: sw-resize;
     }
-#app .cursor-text {
+  #app .cursor-text {
       cursor: text;
     }
-#app .cursor-vertical-text {
+  #app .cursor-vertical-text {
       cursor: vertical-text;
     }
-#app .cursor-w-resize {
+  #app .cursor-w-resize {
       cursor: w-resize;
     }
-#app .cursor-wait {
+  #app .cursor-wait {
       cursor: wait;
     }
-#app .cursor-zoom-in {
+  #app .cursor-zoom-in {
       cursor: zoom-in;
     }
-#app .cursor-zoom-out {
+  #app .cursor-zoom-out {
       cursor: zoom-out;
     }
-#app .touch-pan-left {
+  #app .touch-pan-left {
       --tw-pan-x: pan-left;
-      touch-action: pan-left    ;
       touch-action: var(--tw-pan-x, ) var(--tw-pan-y, ) var(--tw-pinch-zoom, );
     }
-#app .touch-pan-right {
+  #app .touch-pan-right {
       --tw-pan-x: pan-right;
-      touch-action: pan-right    ;
       touch-action: var(--tw-pan-x, ) var(--tw-pan-y, ) var(--tw-pinch-zoom, );
     }
-#app .touch-pan-x {
+  #app .touch-pan-x {
       --tw-pan-x: pan-x;
-      touch-action: pan-x    ;
       touch-action: var(--tw-pan-x, ) var(--tw-pan-y, ) var(--tw-pinch-zoom, );
     }
-#app .touch-pan-down {
+  #app .touch-pan-down {
       --tw-pan-y: pan-down;
-      touch-action:   pan-down  ;
       touch-action: var(--tw-pan-x, ) var(--tw-pan-y, ) var(--tw-pinch-zoom, );
     }
-#app .touch-pan-up {
+  #app .touch-pan-up {
       --tw-pan-y: pan-up;
-      touch-action:   pan-up  ;
       touch-action: var(--tw-pan-x, ) var(--tw-pan-y, ) var(--tw-pinch-zoom, );
     }
-#app .touch-pan-y {
+  #app .touch-pan-y {
       --tw-pan-y: pan-y;
-      touch-action:   pan-y  ;
       touch-action: var(--tw-pan-x, ) var(--tw-pan-y, ) var(--tw-pinch-zoom, );
     }
-#app .touch-pinch-zoom {
+  #app .touch-pinch-zoom {
       --tw-pinch-zoom: pinch-zoom;
-      touch-action:     pinch-zoom;
       touch-action: var(--tw-pan-x, ) var(--tw-pan-y, ) var(--tw-pinch-zoom, );
     }
-#app .touch-auto {
+  #app .touch-auto {
       touch-action: auto;
     }
-#app .touch-manipulation {
+  #app .touch-manipulation {
       touch-action: manipulation;
     }
-#app .touch-none {
+  #app .touch-none {
       touch-action: none;
     }
-#app .resize {
+  #app .resize {
       resize: both;
     }
-#app .resize-none {
+  #app .resize-none {
       resize: none;
     }
-#app .resize-x {
+  #app .resize-x {
       resize: horizontal;
     }
-#app .resize-y {
+  #app .resize-y {
       resize: vertical;
     }
-#app .snap-both {
+  #app .snap-both {
               scroll-snap-type: both var(--tw-scroll-snap-strictness);
     }
-#app .snap-none {
+  #app .snap-none {
               scroll-snap-type: none;
     }
-#app .snap-x {
+  #app .snap-x {
               scroll-snap-type: x var(--tw-scroll-snap-strictness);
     }
-#app .snap-y {
+  #app .snap-y {
               scroll-snap-type: y var(--tw-scroll-snap-strictness);
     }
-#app .snap-mandatory {
+  #app .snap-mandatory {
       --tw-scroll-snap-strictness: mandatory;
     }
-#app .snap-proximity {
+  #app .snap-proximity {
       --tw-scroll-snap-strictness: proximity;
     }
-#app .snap-align-none {
+  #app .snap-align-none {
       scroll-snap-align: none;
     }
-#app .snap-center {
+  #app .snap-center {
       scroll-snap-align: center;
     }
-#app .snap-end {
+  #app .snap-end {
       scroll-snap-align: end;
     }
-#app .snap-start {
+  #app .snap-start {
       scroll-snap-align: start;
     }
-#app .snap-always {
+  #app .snap-always {
       scroll-snap-stop: always;
     }
-#app .snap-normal {
+  #app .snap-normal {
       scroll-snap-stop: normal;
     }
-#app .scroll-m-px {
+  #app .scroll-m-px {
       scroll-margin: 1px;
     }
-#app .scroll-mx-px {
+  #app .scroll-mx-px {
       scroll-margin-inline: 1px;
     }
-#app .scroll-my-px {
+  #app .scroll-my-px {
       scroll-margin-block: 1px;
     }
-#app .scroll-ms-px {
+  #app .scroll-ms-px {
       scroll-margin-inline-start: 1px;
     }
-#app .scroll-me-px {
+  #app .scroll-me-px {
       scroll-margin-inline-end: 1px;
     }
-#app .scroll-mt-px {
+  #app .scroll-mt-px {
       scroll-margin-top: 1px;
     }
-#app .scroll-mr-px {
+  #app .scroll-mr-px {
       scroll-margin-right: 1px;
     }
-#app .scroll-mb-px {
+  #app .scroll-mb-px {
       scroll-margin-bottom: 1px;
     }
-#app .scroll-ml-px {
+  #app .scroll-ml-px {
       scroll-margin-left: 1px;
     }
-#app .scroll-p-px {
+  #app .scroll-p-px {
       scroll-padding: 1px;
     }
-#app .scroll-px-px {
+  #app .scroll-px-px {
       scroll-padding-inline: 1px;
     }
-#app .scroll-py-px {
+  #app .scroll-py-px {
       scroll-padding-block: 1px;
     }
-#app .scroll-ps-px {
+  #app .scroll-ps-px {
       scroll-padding-inline-start: 1px;
     }
-#app .scroll-pe-px {
+  #app .scroll-pe-px {
       scroll-padding-inline-end: 1px;
     }
-#app .scroll-pt-px {
+  #app .scroll-pt-px {
       scroll-padding-top: 1px;
     }
-#app .scroll-pr-px {
+  #app .scroll-pr-px {
       scroll-padding-right: 1px;
     }
-#app .scroll-pb-px {
+  #app .scroll-pb-px {
       scroll-padding-bottom: 1px;
     }
-#app .scroll-pl-px {
+  #app .scroll-pl-px {
       scroll-padding-left: 1px;
     }
-#app .list-inside {
+  #app .list-inside {
       list-style-position: inside;
     }
-#app .list-outside {
+  #app .list-outside {
       list-style-position: outside;
     }
-#app .list-decimal {
+  #app .list-decimal {
       list-style-type: decimal;
     }
-#app .list-disc {
+  #app .list-disc {
       list-style-type: disc;
     }
-#app .list-none {
+  #app .list-none {
       list-style-type: none;
     }
-#app .list-image-none {
+  #app .list-image-none {
       list-style-image: none;
     }
-#app .appearance-auto {
+  #app .appearance-auto {
               appearance: auto;
     }
-#app .appearance-none {
+  #app .appearance-none {
               appearance: none;
     }
-#app .columns-1 {
+  #app .columns-1 {
               columns: 1;
     }
-#app .columns-2 {
+  #app .columns-2 {
               columns: 2;
     }
-#app .columns-3 {
+  #app .columns-3 {
               columns: 3;
     }
-#app .columns-4 {
+  #app .columns-4 {
               columns: 4;
     }
-#app .columns-5 {
+  #app .columns-5 {
               columns: 5;
     }
-#app .columns-6 {
+  #app .columns-6 {
               columns: 6;
     }
-#app .columns-7 {
+  #app .columns-7 {
               columns: 7;
     }
-#app .columns-8 {
+  #app .columns-8 {
               columns: 8;
     }
-#app .columns-9 {
+  #app .columns-9 {
               columns: 9;
     }
-#app .columns-10 {
+  #app .columns-10 {
               columns: 10;
     }
-#app .columns-11 {
+  #app .columns-11 {
               columns: 11;
     }
-#app .columns-12 {
+  #app .columns-12 {
               columns: 12;
     }
-#app .columns-auto {
+  #app .columns-auto {
               columns: auto;
     }
-#app .break-before-all {
+  #app .break-before-all {
       page-break-before: all;
               break-before: all;
     }
-#app .break-before-auto {
+  #app .break-before-auto {
       page-break-before: auto;
               break-before: auto;
     }
-#app .break-before-avoid {
+  #app .break-before-avoid {
       page-break-before: avoid;
               break-before: avoid;
     }
-#app .break-before-avoid-page {
+  #app .break-before-avoid-page {
       page-break-before: avoid;
               break-before: avoid-page;
     }
-#app .break-before-column {
+  #app .break-before-column {
               break-before: column;
     }
-#app .break-before-left {
+  #app .break-before-left {
       page-break-before: left;
               break-before: left;
     }
-#app .break-before-page {
+  #app .break-before-page {
       page-break-before: always;
               break-before: page;
     }
-#app .break-before-right {
+  #app .break-before-right {
       page-break-before: right;
               break-before: right;
     }
-#app .break-inside-auto {
+  #app .break-inside-auto {
       page-break-inside: auto;
               break-inside: auto;
     }
-#app .break-inside-avoid {
+  #app .break-inside-avoid {
       page-break-inside: avoid;
               break-inside: avoid;
     }
-#app .break-inside-avoid-column {
+  #app .break-inside-avoid-column {
               break-inside: avoid-column;
     }
-#app .break-inside-avoid-page {
+  #app .break-inside-avoid-page {
       page-break-inside: avoid;
       break-inside: avoid-page;
     }
-#app .break-after-all {
+  #app .break-after-all {
       page-break-after: all;
               break-after: all;
     }
-#app .break-after-auto {
+  #app .break-after-auto {
       page-break-after: auto;
               break-after: auto;
     }
-#app .break-after-avoid {
+  #app .break-after-avoid {
       page-break-after: avoid;
               break-after: avoid;
     }
-#app .break-after-avoid-page {
+  #app .break-after-avoid-page {
       page-break-after: avoid;
               break-after: avoid-page;
     }
-#app .break-after-column {
+  #app .break-after-column {
               break-after: column;
     }
-#app .break-after-left {
+  #app .break-after-left {
       page-break-after: left;
               break-after: left;
     }
-#app .break-after-page {
+  #app .break-after-page {
       page-break-after: always;
               break-after: page;
     }
-#app .break-after-right {
+  #app .break-after-right {
       page-break-after: right;
               break-after: right;
     }
-#app .auto-cols-auto {
+  #app .auto-cols-auto {
       grid-auto-columns: auto;
     }
-#app .auto-cols-fr {
+  #app .auto-cols-fr {
       grid-auto-columns: minmax(0, 1fr);
     }
-#app .auto-cols-max {
+  #app .auto-cols-max {
       grid-auto-columns: max-content;
     }
-#app .auto-cols-min {
+  #app .auto-cols-min {
       grid-auto-columns: min-content;
     }
-#app .grid-flow-col {
+  #app .grid-flow-col {
       grid-auto-flow: column;
     }
-#app .grid-flow-col-dense {
+  #app .grid-flow-col-dense {
       grid-auto-flow: column dense;
     }
-#app .grid-flow-dense {
+  #app .grid-flow-dense {
       grid-auto-flow: dense;
     }
-#app .grid-flow-row {
+  #app .grid-flow-row {
       grid-auto-flow: row;
     }
-#app .grid-flow-row-dense {
+  #app .grid-flow-row-dense {
       grid-auto-flow: row dense;
     }
-#app .auto-rows-auto {
+  #app .auto-rows-auto {
       grid-auto-rows: auto;
     }
-#app .auto-rows-fr {
+  #app .auto-rows-fr {
       grid-auto-rows: minmax(0, 1fr);
     }
-#app .auto-rows-max {
+  #app .auto-rows-max {
       grid-auto-rows: max-content;
     }
-#app .auto-rows-min {
+  #app .auto-rows-min {
       grid-auto-rows: min-content;
     }
-#app .grid-cols-1 {
+  #app .grid-cols-1 {
       grid-template-columns: repeat(1, minmax(0, 1fr));
     }
-#app .grid-cols-2 {
+  #app .grid-cols-2 {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-#app .grid-cols-3 {
+  #app .grid-cols-3 {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-#app .grid-cols-4 {
+  #app .grid-cols-4 {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
-#app .grid-cols-5 {
+  #app .grid-cols-5 {
       grid-template-columns: repeat(5, minmax(0, 1fr));
     }
-#app .grid-cols-6 {
+  #app .grid-cols-6 {
       grid-template-columns: repeat(6, minmax(0, 1fr));
     }
-#app .grid-cols-7 {
+  #app .grid-cols-7 {
       grid-template-columns: repeat(7, minmax(0, 1fr));
     }
-#app .grid-cols-8 {
+  #app .grid-cols-8 {
       grid-template-columns: repeat(8, minmax(0, 1fr));
     }
-#app .grid-cols-9 {
+  #app .grid-cols-9 {
       grid-template-columns: repeat(9, minmax(0, 1fr));
     }
-#app .grid-cols-10 {
+  #app .grid-cols-10 {
       grid-template-columns: repeat(10, minmax(0, 1fr));
     }
-#app .grid-cols-11 {
+  #app .grid-cols-11 {
       grid-template-columns: repeat(11, minmax(0, 1fr));
     }
-#app .grid-cols-12 {
+  #app .grid-cols-12 {
       grid-template-columns: repeat(12, minmax(0, 1fr));
     }
-#app .grid-cols-none {
+  #app .grid-cols-none {
       grid-template-columns: none;
     }
-#app .grid-cols-subgrid {
+  #app .grid-cols-subgrid {
       grid-template-columns: subgrid;
     }
-#app .grid-rows-1 {
+  #app .grid-rows-1 {
       grid-template-rows: repeat(1, minmax(0, 1fr));
     }
-#app .grid-rows-2 {
+  #app .grid-rows-2 {
       grid-template-rows: repeat(2, minmax(0, 1fr));
     }
-#app .grid-rows-3 {
+  #app .grid-rows-3 {
       grid-template-rows: repeat(3, minmax(0, 1fr));
     }
-#app .grid-rows-4 {
+  #app .grid-rows-4 {
       grid-template-rows: repeat(4, minmax(0, 1fr));
     }
-#app .grid-rows-5 {
+  #app .grid-rows-5 {
       grid-template-rows: repeat(5, minmax(0, 1fr));
     }
-#app .grid-rows-6 {
+  #app .grid-rows-6 {
       grid-template-rows: repeat(6, minmax(0, 1fr));
     }
-#app .grid-rows-7 {
+  #app .grid-rows-7 {
       grid-template-rows: repeat(7, minmax(0, 1fr));
     }
-#app .grid-rows-8 {
+  #app .grid-rows-8 {
       grid-template-rows: repeat(8, minmax(0, 1fr));
     }
-#app .grid-rows-9 {
+  #app .grid-rows-9 {
       grid-template-rows: repeat(9, minmax(0, 1fr));
     }
-#app .grid-rows-10 {
+  #app .grid-rows-10 {
       grid-template-rows: repeat(10, minmax(0, 1fr));
     }
-#app .grid-rows-11 {
+  #app .grid-rows-11 {
       grid-template-rows: repeat(11, minmax(0, 1fr));
     }
-#app .grid-rows-12 {
+  #app .grid-rows-12 {
       grid-template-rows: repeat(12, minmax(0, 1fr));
     }
-#app .grid-rows-none {
+  #app .grid-rows-none {
       grid-template-rows: none;
     }
-#app .grid-rows-subgrid {
+  #app .grid-rows-subgrid {
       grid-template-rows: subgrid;
     }
-#app .flex-col {
+  #app .flex-col {
       flex-direction: column;
     }
-#app .flex-col-reverse {
+  #app .flex-col-reverse {
       flex-direction: column-reverse;
     }
-#app .flex-row {
+  #app .flex-row {
       flex-direction: row;
     }
-#app .flex-row-reverse {
+  #app .flex-row-reverse {
       flex-direction: row-reverse;
     }
-#app .flex-nowrap {
+  #app .flex-nowrap {
       flex-wrap: nowrap;
     }
-#app .flex-wrap {
+  #app .flex-wrap {
       flex-wrap: wrap;
     }
-#app .flex-wrap-reverse {
+  #app .flex-wrap-reverse {
       flex-wrap: wrap-reverse;
     }
-#app .place-content-around {
+  #app .place-content-around {
       align-content: space-around;
       justify-content: space-around;
       place-content: space-around;
     }
-#app .place-content-baseline {
+  #app .place-content-baseline {
       align-content: baseline;
       justify-content: baseline;
       place-content: baseline;
     }
-#app .place-content-between {
+  #app .place-content-between {
       align-content: space-between;
       justify-content: space-between;
       place-content: space-between;
     }
-#app .place-content-center {
+  #app .place-content-center {
       align-content: center;
       justify-content: center;
       place-content: center;
     }
-#app .place-content-end {
+  #app .place-content-end {
       align-content: end;
       justify-content: end;
       place-content: end;
     }
-#app .place-content-evenly {
+  #app .place-content-evenly {
       align-content: space-evenly;
       justify-content: space-evenly;
       place-content: space-evenly;
     }
-#app .place-content-start {
+  #app .place-content-start {
       align-content: start;
       justify-content: start;
       place-content: start;
     }
-#app .place-content-stretch {
+  #app .place-content-stretch {
       align-content: stretch;
       justify-content: stretch;
       place-content: stretch;
     }
-#app .place-items-baseline {
+  #app .place-items-baseline {
       align-items: baseline;
       justify-items: baseline;
       place-items: baseline;
     }
-#app .place-items-center {
+  #app .place-items-center {
       align-items: center;
       justify-items: center;
       place-items: center;
     }
-#app .place-items-end {
+  #app .place-items-end {
       align-items: end;
       justify-items: end;
       place-items: end;
     }
-#app .place-items-start {
+  #app .place-items-start {
       align-items: start;
       justify-items: start;
       place-items: start;
     }
-#app .place-items-stretch {
+  #app .place-items-stretch {
       align-items: stretch;
       justify-items: stretch;
       place-items: stretch;
     }
-#app .content-around {
+  #app .content-around {
       align-content: space-around;
     }
-#app .content-baseline {
+  #app .content-baseline {
       align-content: baseline;
     }
-#app .content-between {
+  #app .content-between {
       align-content: space-between;
     }
-#app .content-center {
+  #app .content-center {
       align-content: center;
     }
-#app .content-end {
+  #app .content-end {
       align-content: flex-end;
     }
-#app .content-evenly {
+  #app .content-evenly {
       align-content: space-evenly;
     }
-#app .content-normal {
+  #app .content-normal {
       align-content: normal;
     }
-#app .content-start {
+  #app .content-start {
       align-content: flex-start;
     }
-#app .content-stretch {
+  #app .content-stretch {
       align-content: stretch;
     }
-#app .items-baseline {
+  #app .items-baseline {
       align-items: baseline;
     }
-#app .items-center {
+  #app .items-center {
       align-items: center;
     }
-#app .items-end {
+  #app .items-end {
       align-items: flex-end;
     }
-#app .items-start {
+  #app .items-start {
       align-items: flex-start;
     }
-#app .items-stretch {
+  #app .items-stretch {
       align-items: stretch;
     }
-#app .justify-around {
+  #app .justify-around {
       justify-content: space-around;
     }
-#app .justify-between {
+  #app .justify-between {
       justify-content: space-between;
     }
-#app .justify-center {
+  #app .justify-center {
       justify-content: center;
     }
-#app .justify-end {
+  #app .justify-end {
       justify-content: flex-end;
     }
-#app .justify-evenly {
+  #app .justify-evenly {
       justify-content: space-evenly;
     }
-#app .justify-normal {
+  #app .justify-normal {
       justify-content: normal;
     }
-#app .justify-start {
+  #app .justify-start {
       justify-content: flex-start;
     }
-#app .justify-stretch {
+  #app .justify-stretch {
       justify-content: stretch;
     }
-#app .justify-items-center {
+  #app .justify-items-center {
       justify-items: center;
     }
-#app .justify-items-end {
+  #app .justify-items-end {
       justify-items: end;
     }
-#app .justify-items-start {
+  #app .justify-items-start {
       justify-items: start;
     }
-#app .justify-items-stretch {
+  #app .justify-items-stretch {
       justify-items: stretch;
     }
-#app .gap-px {
+  #app .gap-px {
       gap: 1px;
     }
-#app .space-y-px>view+view {
+  #app .space-y-px>view+view {
         --tw-space-y-reverse: 0;
-        margin-bottom: 0px;
-        margin-bottom: calc(1px*var(--tw-space-y-reverse));
-        margin-top: 1px;
-        margin-top: calc(1px*(1 - var(--tw-space-y-reverse)));
+        margin-bottom: calc(1px * var(--tw-space-y-reverse));
+        margin-top: calc(1px * (1 - var(--tw-space-y-reverse)));
       }
-#app .space-y-reverse>view+view {
+  #app .space-y-reverse>view+view {
         --tw-space-y-reverse: 1;
       }
-#app .gap-x-px {
+  #app .gap-x-px {
               column-gap: 1px;
     }
-#app .space-x-px>view+view {
+  #app .space-x-px>view+view {
         --tw-space-x-reverse: 0;
-        margin-right: 0px;
-        margin-right: calc(1px*var(--tw-space-x-reverse));
-        margin-left: 1px;
-        margin-left: calc(1px*(1 - var(--tw-space-x-reverse)));
+        margin-right: calc(1px * var(--tw-space-x-reverse));
+        margin-left: calc(1px * (1 - var(--tw-space-x-reverse)));
       }
-#app .space-x-reverse>view+view {
+  #app .space-x-reverse>view+view {
         --tw-space-x-reverse: 1;
       }
-#app .gap-y-px {
+  #app .gap-y-px {
       row-gap: 1px;
     }
-#app .divide-x>view+view {
+  #app .divide-x>view+view {
         --tw-divide-x-reverse: 0;
         border-left-style: var(--tw-border-style);
         border-right-style: var(--tw-border-style);
-        border-right-width: 0px;
-        border-right-width: calc(1px*var(--tw-divide-x-reverse));
-        border-left-width: 1px;
-        border-left-width: calc(1px*(1 - var(--tw-divide-x-reverse)));
+        border-right-width: calc(1px * var(--tw-divide-x-reverse));
+        border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
       }
-#app .divide-x-0>view+view {
+  #app .divide-x-0>view+view {
         --tw-divide-x-reverse: 0;
         border-left-style: var(--tw-border-style);
         border-right-style: var(--tw-border-style);
-        border-right-width: 0px;
-        border-right-width: calc(0px*var(--tw-divide-x-reverse));
-        border-left-width: 0px;
-        border-left-width: calc(0px*(1 - var(--tw-divide-x-reverse)));
+        border-right-width: calc(0px * var(--tw-divide-x-reverse));
+        border-left-width: calc(0px * (1 - var(--tw-divide-x-reverse)));
       }
-#app .divide-x-2>view+view {
+  #app .divide-x-2>view+view {
         --tw-divide-x-reverse: 0;
         border-left-style: var(--tw-border-style);
         border-right-style: var(--tw-border-style);
-        border-right-width: 0px;
-        border-right-width: calc(2px*var(--tw-divide-x-reverse));
-        border-left-width: 2px;
-        border-left-width: calc(2px*(1 - var(--tw-divide-x-reverse)));
+        border-right-width: calc(2px * var(--tw-divide-x-reverse));
+        border-left-width: calc(2px * (1 - var(--tw-divide-x-reverse)));
       }
-#app .divide-x-4>view+view {
+  #app .divide-x-4>view+view {
         --tw-divide-x-reverse: 0;
         border-left-style: var(--tw-border-style);
         border-right-style: var(--tw-border-style);
-        border-right-width: 0px;
-        border-right-width: calc(4px*var(--tw-divide-x-reverse));
-        border-left-width: 4px;
-        border-left-width: calc(4px*(1 - var(--tw-divide-x-reverse)));
+        border-right-width: calc(4px * var(--tw-divide-x-reverse));
+        border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
       }
-#app .divide-x-8>view+view {
+  #app .divide-x-8>view+view {
         --tw-divide-x-reverse: 0;
         border-left-style: var(--tw-border-style);
         border-right-style: var(--tw-border-style);
-        border-right-width: 0px;
-        border-right-width: calc(8px*var(--tw-divide-x-reverse));
-        border-left-width: 8px;
-        border-left-width: calc(8px*(1 - var(--tw-divide-x-reverse)));
+        border-right-width: calc(8px * var(--tw-divide-x-reverse));
+        border-left-width: calc(8px * (1 - var(--tw-divide-x-reverse)));
       }
-#app .divide-y>view+view {
+  #app .divide-y>view+view {
         --tw-divide-y-reverse: 0;
         border-bottom-style: var(--tw-border-style);
         border-top-style: var(--tw-border-style);
-        border-bottom-width: 0px;
-        border-bottom-width: calc(1px*var(--tw-divide-y-reverse));
-        border-top-width: 1px;
-        border-top-width: calc(1px*(1 - var(--tw-divide-y-reverse)));
+        border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
+        border-top-width: calc(1px * (1 - var(--tw-divide-y-reverse)));
       }
-#app .divide-y-0>view+view {
+  #app .divide-y-0>view+view {
         --tw-divide-y-reverse: 0;
         border-bottom-style: var(--tw-border-style);
         border-top-style: var(--tw-border-style);
-        border-bottom-width: 0px;
-        border-bottom-width: calc(0px*var(--tw-divide-y-reverse));
-        border-top-width: 0px;
-        border-top-width: calc(0px*(1 - var(--tw-divide-y-reverse)));
+        border-bottom-width: calc(0px * var(--tw-divide-y-reverse));
+        border-top-width: calc(0px * (1 - var(--tw-divide-y-reverse)));
       }
-#app .divide-y-2>view+view {
+  #app .divide-y-2>view+view {
         --tw-divide-y-reverse: 0;
         border-bottom-style: var(--tw-border-style);
         border-top-style: var(--tw-border-style);
-        border-bottom-width: 0px;
-        border-bottom-width: calc(2px*var(--tw-divide-y-reverse));
-        border-top-width: 2px;
-        border-top-width: calc(2px*(1 - var(--tw-divide-y-reverse)));
+        border-bottom-width: calc(2px * var(--tw-divide-y-reverse));
+        border-top-width: calc(2px * (1 - var(--tw-divide-y-reverse)));
       }
-#app .divide-y-4>view+view {
+  #app .divide-y-4>view+view {
         --tw-divide-y-reverse: 0;
         border-bottom-style: var(--tw-border-style);
         border-top-style: var(--tw-border-style);
-        border-bottom-width: 0px;
-        border-bottom-width: calc(4px*var(--tw-divide-y-reverse));
-        border-top-width: 4px;
-        border-top-width: calc(4px*(1 - var(--tw-divide-y-reverse)));
+        border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
+        border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
       }
-#app .divide-y-8>view+view {
+  #app .divide-y-8>view+view {
         --tw-divide-y-reverse: 0;
         border-bottom-style: var(--tw-border-style);
         border-top-style: var(--tw-border-style);
-        border-bottom-width: 0px;
-        border-bottom-width: calc(8px*var(--tw-divide-y-reverse));
-        border-top-width: 8px;
-        border-top-width: calc(8px*(1 - var(--tw-divide-y-reverse)));
+        border-bottom-width: calc(8px * var(--tw-divide-y-reverse));
+        border-top-width: calc(8px * (1 - var(--tw-divide-y-reverse)));
       }
-#app .divide-y-reverse>view+view {
+  #app .divide-y-reverse>view+view {
         --tw-divide-y-reverse: 1;
       }
-#app .divide-dashed>view+view {
+  #app .divide-dashed>view+view {
         --tw-border-style: dashed;
         border-style: dashed;
       }
-#app .divide-dotted>view+view {
+  #app .divide-dotted>view+view {
         --tw-border-style: dotted;
         border-style: dotted;
       }
-#app .divide-double>view+view {
+  #app .divide-double>view+view {
         --tw-border-style: double;
         border-style: double;
       }
-#app .divide-none>view+view {
+  #app .divide-none>view+view {
         --tw-border-style: none;
         border-style: none;
       }
-#app .divide-solid>view+view {
+  #app .divide-solid>view+view {
         --tw-border-style: solid;
         border-style: solid;
       }
-#app .divide-current>view+view {
+  #app .divide-current>view+view {
         border-color: currentcolor;
       }
-#app .divide-inherit>view+view {
+  #app .divide-inherit>view+view {
         border-color: inherit;
       }
-#app .divide-transparent>view+view {
+  #app .divide-transparent>view+view {
         border-color: transparent;
       }
-#app .place-self-auto {
+  #app .place-self-auto {
       align-self: auto;
       justify-self: auto;
       place-self: auto;
     }
-#app .place-self-center {
+  #app .place-self-center {
       align-self: center;
       justify-self: center;
       place-self: center;
     }
-#app .place-self-end {
+  #app .place-self-end {
       align-self: end;
       justify-self: end;
       place-self: end;
     }
-#app .place-self-start {
+  #app .place-self-start {
       align-self: start;
       justify-self: start;
       place-self: start;
     }
-#app .place-self-stretch {
+  #app .place-self-stretch {
       align-self: stretch;
       justify-self: stretch;
       place-self: stretch;
     }
-#app .self-auto {
+  #app .self-auto {
       align-self: auto;
     }
-#app .self-baseline {
+  #app .self-baseline {
       align-self: baseline;
     }
-#app .self-center {
+  #app .self-center {
       align-self: center;
     }
-#app .self-end {
+  #app .self-end {
       align-self: flex-end;
     }
-#app .self-start {
+  #app .self-start {
       align-self: flex-start;
     }
-#app .self-stretch {
+  #app .self-stretch {
       align-self: stretch;
     }
-#app .justify-self-auto {
+  #app .justify-self-auto {
       justify-self: auto;
     }
-#app .justify-self-center {
+  #app .justify-self-center {
       justify-self: center;
     }
-#app .justify-self-end {
+  #app .justify-self-end {
       justify-self: flex-end;
     }
-#app .justify-self-start {
+  #app .justify-self-start {
       justify-self: flex-start;
     }
-#app .justify-self-stretch {
+  #app .justify-self-stretch {
       justify-self: stretch;
     }
-#app .truncate {
+  #app .truncate {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-#app .overflow-auto {
+  #app .overflow-auto {
       overflow: auto;
     }
-#app .overflow-clip {
+  #app .overflow-clip {
       overflow: clip;
     }
-#app .overflow-hidden {
+  #app .overflow-hidden {
       overflow: hidden;
     }
-#app .overflow-scroll {
+  #app .overflow-scroll {
       overflow: scroll;
     }
-#app .overflow-visible {
+  #app .overflow-visible {
       overflow: visible;
     }
-#app .overflow-x-auto {
+  #app .overflow-x-auto {
       overflow-x: auto;
     }
-#app .overflow-x-clip {
+  #app .overflow-x-clip {
       overflow-x: clip;
     }
-#app .overflow-x-hidden {
+  #app .overflow-x-hidden {
       overflow-x: hidden;
     }
-#app .overflow-x-scroll {
+  #app .overflow-x-scroll {
       overflow-x: scroll;
     }
-#app .overflow-x-visible {
+  #app .overflow-x-visible {
       overflow-x: visible;
     }
-#app .overflow-y-auto {
+  #app .overflow-y-auto {
       overflow-y: auto;
     }
-#app .overflow-y-clip {
+  #app .overflow-y-clip {
       overflow-y: clip;
     }
-#app .overflow-y-hidden {
+  #app .overflow-y-hidden {
       overflow-y: hidden;
     }
-#app .overflow-y-scroll {
+  #app .overflow-y-scroll {
       overflow-y: scroll;
     }
-#app .overflow-y-visible {
+  #app .overflow-y-visible {
       overflow-y: visible;
     }
-#app .overscroll-auto {
+  #app .overscroll-auto {
       overscroll-behavior: auto;
     }
-#app .overscroll-contain {
+  #app .overscroll-contain {
       overscroll-behavior: contain;
     }
-#app .overscroll-none {
+  #app .overscroll-none {
       overscroll-behavior: none;
     }
-#app .overscroll-x-auto {
+  #app .overscroll-x-auto {
       overscroll-behavior-x: auto;
     }
-#app .overscroll-x-contain {
+  #app .overscroll-x-contain {
       overscroll-behavior-x: contain;
     }
-#app .overscroll-x-none {
+  #app .overscroll-x-none {
       overscroll-behavior-x: none;
     }
-#app .overscroll-y-auto {
+  #app .overscroll-y-auto {
       overscroll-behavior-y: auto;
     }
-#app .overscroll-y-contain {
+  #app .overscroll-y-contain {
       overscroll-behavior-y: contain;
     }
-#app .overscroll-y-none {
+  #app .overscroll-y-none {
       overscroll-behavior-y: none;
     }
-#app .scroll-auto {
+  #app .scroll-auto {
       scroll-behavior: auto;
     }
-#app .scroll-smooth {
+  #app .scroll-smooth {
       scroll-behavior: smooth;
     }
-#app .rounded-full {
+  #app .rounded-full {
       border-radius: 9999px;
     }
-#app .rounded-none {
+  #app .rounded-none {
       border-radius: 0;
     }
-#app .rounded-s-full {
+  #app .rounded-s-full {
       border-top-left-radius: 9999px;
       border-bottom-left-radius: 9999px;
     }
-#app .rounded-s-none {
+  #app .rounded-s-none {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
-#app .rounded-ss-full {
+  #app .rounded-ss-full {
       border-top-left-radius: 9999px;
     }
-#app .rounded-ss-none {
+  #app .rounded-ss-none {
       border-top-left-radius: 0;
     }
-#app .rounded-e-full {
+  #app .rounded-e-full {
       border-top-right-radius: 9999px;
       border-bottom-right-radius: 9999px;
     }
-#app .rounded-e-none {
+  #app .rounded-e-none {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
     }
-#app .rounded-se-full {
+  #app .rounded-se-full {
       border-top-right-radius: 9999px;
     }
-#app .rounded-se-none {
+  #app .rounded-se-none {
       border-top-right-radius: 0;
     }
-#app .rounded-ee-full {
+  #app .rounded-ee-full {
       border-bottom-right-radius: 9999px;
     }
-#app .rounded-ee-none {
+  #app .rounded-ee-none {
       border-bottom-right-radius: 0;
     }
-#app .rounded-es-full {
+  #app .rounded-es-full {
       border-bottom-left-radius: 9999px;
     }
-#app .rounded-es-none {
+  #app .rounded-es-none {
       border-bottom-left-radius: 0;
     }
-#app .rounded-t-full {
+  #app .rounded-t-full {
       border-top-left-radius: 9999px;
       border-top-right-radius: 9999px;
     }
-#app .rounded-t-none {
+  #app .rounded-t-none {
       border-top-left-radius: 0;
       border-top-right-radius: 0;
     }
-#app .rounded-l-full {
+  #app .rounded-l-full {
       border-top-left-radius: 9999px;
       border-bottom-left-radius: 9999px;
     }
-#app .rounded-l-none {
+  #app .rounded-l-none {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
-#app .rounded-tl-full {
+  #app .rounded-tl-full {
       border-top-left-radius: 9999px;
     }
-#app .rounded-tl-none {
+  #app .rounded-tl-none {
       border-top-left-radius: 0;
     }
-#app .rounded-r-full {
+  #app .rounded-r-full {
       border-top-right-radius: 9999px;
       border-bottom-right-radius: 9999px;
     }
-#app .rounded-r-none {
+  #app .rounded-r-none {
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
     }
-#app .rounded-tr-full {
+  #app .rounded-tr-full {
       border-top-right-radius: 9999px;
     }
-#app .rounded-tr-none {
+  #app .rounded-tr-none {
       border-top-right-radius: 0;
     }
-#app .rounded-b-full {
+  #app .rounded-b-full {
       border-bottom-right-radius: 9999px;
       border-bottom-left-radius: 9999px;
     }
-#app .rounded-b-none {
+  #app .rounded-b-none {
       border-bottom-right-radius: 0;
       border-bottom-left-radius: 0;
     }
-#app .rounded-br-full {
+  #app .rounded-br-full {
       border-bottom-right-radius: 9999px;
     }
-#app .rounded-br-none {
+  #app .rounded-br-none {
       border-bottom-right-radius: 0;
     }
-#app .rounded-bl-full {
+  #app .rounded-bl-full {
       border-bottom-left-radius: 9999px;
     }
-#app .rounded-bl-none {
+  #app .rounded-bl-none {
       border-bottom-left-radius: 0;
     }
-#app .border {
+  #app .border {
       border-style: var(--tw-border-style);
       border-width: 1px;
     }
-#app .border-0 {
+  #app .border-0 {
       border-style: var(--tw-border-style);
       border-width: 0px;
     }
-#app .border-2 {
+  #app .border-2 {
       border-style: var(--tw-border-style);
       border-width: 2px;
     }
-#app .border-4 {
+  #app .border-4 {
       border-style: var(--tw-border-style);
       border-width: 4px;
     }
-#app .border-8 {
+  #app .border-8 {
       border-style: var(--tw-border-style);
       border-width: 8px;
     }
-#app .border-x {
+  #app .border-x {
       border-left-style: var(--tw-border-style);
       border-right-style: var(--tw-border-style);
       border-left-width: 1px;
       border-right-width: 1px;
     }
-#app .border-x-0 {
+  #app .border-x-0 {
       border-left-style: var(--tw-border-style);
       border-right-style: var(--tw-border-style);
       border-left-width: 0px;
       border-right-width: 0px;
     }
-#app .border-x-2 {
+  #app .border-x-2 {
       border-left-style: var(--tw-border-style);
       border-right-style: var(--tw-border-style);
       border-left-width: 2px;
       border-right-width: 2px;
     }
-#app .border-x-4 {
+  #app .border-x-4 {
       border-left-style: var(--tw-border-style);
       border-right-style: var(--tw-border-style);
       border-left-width: 4px;
       border-right-width: 4px;
     }
-#app .border-x-8 {
+  #app .border-x-8 {
       border-left-style: var(--tw-border-style);
       border-right-style: var(--tw-border-style);
       border-left-width: 8px;
       border-right-width: 8px;
     }
-#app .border-y {
+  #app .border-y {
       border-top-style: var(--tw-border-style);
       border-bottom-style: var(--tw-border-style);
       border-top-width: 1px;
       border-bottom-width: 1px;
     }
-#app .border-y-0 {
+  #app .border-y-0 {
       border-top-style: var(--tw-border-style);
       border-bottom-style: var(--tw-border-style);
       border-top-width: 0px;
       border-bottom-width: 0px;
     }
-#app .border-y-2 {
+  #app .border-y-2 {
       border-top-style: var(--tw-border-style);
       border-bottom-style: var(--tw-border-style);
       border-top-width: 2px;
       border-bottom-width: 2px;
     }
-#app .border-y-4 {
+  #app .border-y-4 {
       border-top-style: var(--tw-border-style);
       border-bottom-style: var(--tw-border-style);
       border-top-width: 4px;
       border-bottom-width: 4px;
     }
-#app .border-y-8 {
+  #app .border-y-8 {
       border-top-style: var(--tw-border-style);
       border-bottom-style: var(--tw-border-style);
       border-top-width: 8px;
       border-bottom-width: 8px;
     }
-#app .border-s {
+  #app .border-s {
       border-left-style: var(--tw-border-style);
       border-left-width: 1px;
     }
-#app .border-s-0 {
+  #app .border-s-0 {
       border-left-style: var(--tw-border-style);
       border-left-width: 0px;
     }
-#app .border-s-2 {
+  #app .border-s-2 {
       border-left-style: var(--tw-border-style);
       border-left-width: 2px;
     }
-#app .border-s-4 {
+  #app .border-s-4 {
       border-left-style: var(--tw-border-style);
       border-left-width: 4px;
     }
-#app .border-s-8 {
+  #app .border-s-8 {
       border-left-style: var(--tw-border-style);
       border-left-width: 8px;
     }
-#app .border-e {
+  #app .border-e {
       border-right-style: var(--tw-border-style);
       border-right-width: 1px;
     }
-#app .border-e-0 {
+  #app .border-e-0 {
       border-right-style: var(--tw-border-style);
       border-right-width: 0px;
     }
-#app .border-e-2 {
+  #app .border-e-2 {
       border-right-style: var(--tw-border-style);
       border-right-width: 2px;
     }
-#app .border-e-4 {
+  #app .border-e-4 {
       border-right-style: var(--tw-border-style);
       border-right-width: 4px;
     }
-#app .border-e-8 {
+  #app .border-e-8 {
       border-right-style: var(--tw-border-style);
       border-right-width: 8px;
     }
-#app .border-t {
+  #app .border-t {
       border-top-style: var(--tw-border-style);
       border-top-width: 1px;
     }
-#app .border-t-0 {
+  #app .border-t-0 {
       border-top-style: var(--tw-border-style);
       border-top-width: 0px;
     }
-#app .border-t-2 {
+  #app .border-t-2 {
       border-top-style: var(--tw-border-style);
       border-top-width: 2px;
     }
-#app .border-t-4 {
+  #app .border-t-4 {
       border-top-style: var(--tw-border-style);
       border-top-width: 4px;
     }
-#app .border-t-8 {
+  #app .border-t-8 {
       border-top-style: var(--tw-border-style);
       border-top-width: 8px;
     }
-#app .border-r {
+  #app .border-r {
       border-right-style: var(--tw-border-style);
       border-right-width: 1px;
     }
-#app .border-r-0 {
+  #app .border-r-0 {
       border-right-style: var(--tw-border-style);
       border-right-width: 0px;
     }
-#app .border-r-2 {
+  #app .border-r-2 {
       border-right-style: var(--tw-border-style);
       border-right-width: 2px;
     }
-#app .border-r-4 {
+  #app .border-r-4 {
       border-right-style: var(--tw-border-style);
       border-right-width: 4px;
     }
-#app .border-r-8 {
+  #app .border-r-8 {
       border-right-style: var(--tw-border-style);
       border-right-width: 8px;
     }
-#app .border-b {
+  #app .border-b {
       border-bottom-style: var(--tw-border-style);
       border-bottom-width: 1px;
     }
-#app .border-b-0 {
+  #app .border-b-0 {
       border-bottom-style: var(--tw-border-style);
       border-bottom-width: 0px;
     }
-#app .border-b-2 {
+  #app .border-b-2 {
       border-bottom-style: var(--tw-border-style);
       border-bottom-width: 2px;
     }
-#app .border-b-4 {
+  #app .border-b-4 {
       border-bottom-style: var(--tw-border-style);
       border-bottom-width: 4px;
     }
-#app .border-b-8 {
+  #app .border-b-8 {
       border-bottom-style: var(--tw-border-style);
       border-bottom-width: 8px;
     }
-#app .border-l {
+  #app .border-l {
       border-left-style: var(--tw-border-style);
       border-left-width: 1px;
     }
-#app .border-l-0 {
+  #app .border-l-0 {
       border-left-style: var(--tw-border-style);
       border-left-width: 0px;
     }
-#app .border-l-2 {
+  #app .border-l-2 {
       border-left-style: var(--tw-border-style);
       border-left-width: 2px;
     }
-#app .border-l-4 {
+  #app .border-l-4 {
       border-left-style: var(--tw-border-style);
       border-left-width: 4px;
     }
-#app .border-l-8 {
+  #app .border-l-8 {
       border-left-style: var(--tw-border-style);
       border-left-width: 8px;
     }
-#app .border-dashed {
+  #app .border-dashed {
       --tw-border-style: dashed;
       border-style: dashed;
     }
-#app .border-dotted {
+  #app .border-dotted {
       --tw-border-style: dotted;
       border-style: dotted;
     }
-#app .border-double {
+  #app .border-double {
       --tw-border-style: double;
       border-style: double;
     }
-#app .border-hidden {
+  #app .border-hidden {
       --tw-border-style: hidden;
       border-style: hidden;
     }
-#app .border-none {
+  #app .border-none {
       --tw-border-style: none;
       border-style: none;
     }
-#app .border-solid {
+  #app .border-solid {
       --tw-border-style: solid;
       border-style: solid;
     }
-#app .border-current {
+  #app .border-current {
       border-color: currentcolor;
     }
-#app .border-inherit {
+  #app .border-inherit {
       border-color: inherit;
     }
-#app .border-transparent {
+  #app .border-transparent {
       border-color: transparent;
     }
-#app .border-x-current {
+  #app .border-x-current {
       border-left-color: currentcolor;
       border-right-color: currentcolor;
     }
-#app .border-x-inherit {
+  #app .border-x-inherit {
       border-left-color: inherit;
       border-right-color: inherit;
     }
-#app .border-x-transparent {
+  #app .border-x-transparent {
       border-left-color: transparent;
       border-right-color: transparent;
     }
-#app .border-y-current {
+  #app .border-y-current {
       border-top-color: currentcolor;
       border-bottom-color: currentcolor;
     }
-#app .border-y-inherit {
+  #app .border-y-inherit {
       border-top-color: inherit;
       border-bottom-color: inherit;
     }
-#app .border-y-transparent {
+  #app .border-y-transparent {
       border-top-color: transparent;
       border-bottom-color: transparent;
     }
-#app .border-s-current {
+  #app .border-s-current {
       border-left-color: currentcolor;
     }
-#app .border-s-inherit {
+  #app .border-s-inherit {
       border-left-color: inherit;
     }
-#app .border-s-transparent {
+  #app .border-s-transparent {
       border-left-color: transparent;
     }
-#app .border-e-current {
+  #app .border-e-current {
       border-right-color: currentcolor;
     }
-#app .border-e-inherit {
+  #app .border-e-inherit {
       border-right-color: inherit;
     }
-#app .border-e-transparent {
+  #app .border-e-transparent {
       border-right-color: transparent;
     }
-#app .border-t-current {
+  #app .border-t-current {
       border-top-color: currentcolor;
     }
-#app .border-t-inherit {
+  #app .border-t-inherit {
       border-top-color: inherit;
     }
-#app .border-t-transparent {
+  #app .border-t-transparent {
       border-top-color: transparent;
     }
-#app .border-r-current {
+  #app .border-r-current {
       border-right-color: currentcolor;
     }
-#app .border-r-inherit {
+  #app .border-r-inherit {
       border-right-color: inherit;
     }
-#app .border-r-transparent {
+  #app .border-r-transparent {
       border-right-color: transparent;
     }
-#app .border-b-current {
+  #app .border-b-current {
       border-bottom-color: currentcolor;
     }
-#app .border-b-inherit {
+  #app .border-b-inherit {
       border-bottom-color: inherit;
     }
-#app .border-b-transparent {
+  #app .border-b-transparent {
       border-bottom-color: transparent;
     }
-#app .border-l-current {
+  #app .border-l-current {
       border-left-color: currentcolor;
     }
-#app .border-l-inherit {
+  #app .border-l-inherit {
       border-left-color: inherit;
     }
-#app .border-l-transparent {
+  #app .border-l-transparent {
       border-left-color: transparent;
     }
-#app .bg-current {
+  #app .bg-current {
       background-color: currentcolor;
     }
-#app .bg-inherit {
+  #app .bg-inherit {
       background-color: inherit;
     }
-#app .bg-transparent {
+  #app .bg-transparent {
       background-color: transparent;
     }
-#app .bg-gradient-to-b {
+  #app .bg-gradient-to-b {
       --tw-gradient-position: to bottom;
       background-image: linear-gradient(var(--tw-gradient-stops));
     }
-#app .bg-gradient-to-bl {
+  #app .bg-gradient-to-bl {
       --tw-gradient-position: to bottom left;
       background-image: linear-gradient(var(--tw-gradient-stops));
     }
-#app .bg-gradient-to-br {
+  #app .bg-gradient-to-br {
       --tw-gradient-position: to bottom right;
       background-image: linear-gradient(var(--tw-gradient-stops));
     }
-#app .bg-gradient-to-l {
+  #app .bg-gradient-to-l {
       --tw-gradient-position: to left;
       background-image: linear-gradient(var(--tw-gradient-stops));
     }
-#app .bg-gradient-to-r {
+  #app .bg-gradient-to-r {
       --tw-gradient-position: to right;
       background-image: linear-gradient(var(--tw-gradient-stops));
     }
-#app .bg-gradient-to-t {
+  #app .bg-gradient-to-t {
       --tw-gradient-position: to top;
       background-image: linear-gradient(var(--tw-gradient-stops));
     }
-#app .bg-gradient-to-tl {
+  #app .bg-gradient-to-tl {
       --tw-gradient-position: to top left;
       background-image: linear-gradient(var(--tw-gradient-stops));
     }
-#app .bg-gradient-to-tr {
+  #app .bg-gradient-to-tr {
       --tw-gradient-position: to top right;
       background-image: linear-gradient(var(--tw-gradient-stops));
     }
-#app .bg-none {
+  #app .bg-none {
       background-image: none;
     }
-#app .from-current {
+  #app .from-current {
       --tw-gradient-from: currentcolor;
       --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
     }
-#app .from-inherit {
+  #app .from-inherit {
       --tw-gradient-from: inherit;
       --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
     }
-#app .from-transparent {
+  #app .from-transparent {
       --tw-gradient-from: transparent;
       --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
     }
-#app .via-current {
+  #app .via-current {
       --tw-gradient-via: currentcolor;
       --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-via) var(--tw-gradient-via-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
       --tw-gradient-stops: var(--tw-gradient-via-stops);
     }
-#app .via-inherit {
+  #app .via-inherit {
       --tw-gradient-via: inherit;
       --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-via) var(--tw-gradient-via-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
       --tw-gradient-stops: var(--tw-gradient-via-stops);
     }
-#app .via-transparent {
+  #app .via-transparent {
       --tw-gradient-via: transparent;
       --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-via) var(--tw-gradient-via-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
       --tw-gradient-stops: var(--tw-gradient-via-stops);
     }
-#app .to-current {
+  #app .to-current {
       --tw-gradient-to: currentcolor;
       --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
     }
-#app .to-inherit {
+  #app .to-inherit {
       --tw-gradient-to: inherit;
       --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
     }
-#app .to-transparent {
+  #app .to-transparent {
       --tw-gradient-to: transparent;
       --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
     }
-#app .box-decoration-clone {
+  #app .box-decoration-clone {
               box-decoration-break: clone;
     }
-#app .box-decoration-slice {
+  #app .box-decoration-slice {
               box-decoration-break: slice;
     }
-#app .decoration-clone {
+  #app .decoration-clone {
               box-decoration-break: clone;
     }
-#app .decoration-slice {
+  #app .decoration-slice {
               box-decoration-break: slice;
     }
-#app .bg-auto {
+  #app .bg-auto {
       background-size: auto;
     }
-#app .bg-contain {
+  #app .bg-contain {
       background-size: contain;
     }
-#app .bg-cover {
+  #app .bg-cover {
       background-size: cover;
     }
-#app .bg-fixed {
+  #app .bg-fixed {
       background-attachment: fixed;
     }
-#app .bg-local {
+  #app .bg-local {
       background-attachment: local;
     }
-#app .bg-scroll {
+  #app .bg-scroll {
       background-attachment: scroll;
     }
-#app .bg-clip-border {
+  #app .bg-clip-border {
       background-clip: border-box;
     }
-#app .bg-clip-content {
+  #app .bg-clip-content {
       background-clip: content-box;
     }
-#app .bg-clip-padding {
+  #app .bg-clip-padding {
       background-clip: padding-box;
     }
-#app .bg-clip-text {
+  #app .bg-clip-text {
       -webkit-background-clip: text;
               background-clip: text;
     }
-#app .bg-bottom {
+  #app .bg-bottom {
       background-position: bottom;
     }
-#app .bg-center {
+  #app .bg-center {
       background-position: center;
     }
-#app .bg-left {
+  #app .bg-left {
       background-position: left;
     }
-#app .bg-left-bottom {
+  #app .bg-left-bottom {
       background-position: left bottom;
     }
-#app .bg-left-top {
+  #app .bg-left-top {
       background-position: left top;
     }
-#app .bg-right {
+  #app .bg-right {
       background-position: right;
     }
-#app .bg-right-bottom {
+  #app .bg-right-bottom {
       background-position: right bottom;
     }
-#app .bg-right-top {
+  #app .bg-right-top {
       background-position: right top;
     }
-#app .bg-top {
+  #app .bg-top {
       background-position: top;
     }
-#app .bg-no-repeat {
+  #app .bg-no-repeat {
       background-repeat: no-repeat;
     }
-#app .bg-repeat {
+  #app .bg-repeat {
       background-repeat: repeat;
     }
-#app .bg-repeat-round {
+  #app .bg-repeat-round {
       background-repeat: round;
     }
-#app .bg-repeat-space {
+  #app .bg-repeat-space {
       background-repeat: space;
     }
-#app .bg-repeat-x {
+  #app .bg-repeat-x {
       background-repeat: repeat-x;
     }
-#app .bg-repeat-y {
+  #app .bg-repeat-y {
       background-repeat: repeat-y;
     }
-#app .bg-origin-border {
+  #app .bg-origin-border {
       background-origin: border-box;
     }
-#app .bg-origin-content {
+  #app .bg-origin-content {
       background-origin: content-box;
     }
-#app .bg-origin-padding {
+  #app .bg-origin-padding {
       background-origin: padding-box;
     }
-#app .fill-current {
+  #app .fill-current {
       fill: currentcolor;
     }
-#app .fill-inherit {
+  #app .fill-inherit {
       fill: inherit;
     }
-#app .fill-none {
+  #app .fill-none {
       fill: none;
     }
-#app .fill-transparent {
+  #app .fill-transparent {
       fill: transparent;
     }
-#app .stroke-current {
+  #app .stroke-current {
       stroke: currentcolor;
     }
-#app .stroke-inherit {
+  #app .stroke-inherit {
       stroke: inherit;
     }
-#app .stroke-none {
+  #app .stroke-none {
       stroke: none;
     }
-#app .stroke-transparent {
+  #app .stroke-transparent {
       stroke: transparent;
     }
-#app .stroke-0 {
+  #app .stroke-0 {
       stroke-width: 0;
     }
-#app .stroke-1 {
+  #app .stroke-1 {
       stroke-width: 1;
     }
-#app .stroke-2 {
+  #app .stroke-2 {
       stroke-width: 2;
     }
-#app .object-contain {
+  #app .object-contain {
       object-fit: contain;
     }
-#app .object-cover {
+  #app .object-cover {
       object-fit: cover;
     }
-#app .object-fill {
+  #app .object-fill {
       object-fit: fill;
     }
-#app .object-none {
+  #app .object-none {
       object-fit: none;
     }
-#app .object-scale-down {
+  #app .object-scale-down {
       object-fit: scale-down;
     }
-#app .object-bottom {
+  #app .object-bottom {
       object-position: bottom;
     }
-#app .object-center {
+  #app .object-center {
       object-position: center;
     }
-#app .object-left {
+  #app .object-left {
       object-position: left;
     }
-#app .object-left-bottom {
+  #app .object-left-bottom {
       object-position: left bottom;
     }
-#app .object-left-top {
+  #app .object-left-top {
       object-position: left top;
     }
-#app .object-right {
+  #app .object-right {
       object-position: right;
     }
-#app .object-right-bottom {
+  #app .object-right-bottom {
       object-position: right bottom;
     }
-#app .object-right-top {
+  #app .object-right-top {
       object-position: right top;
     }
-#app .object-top {
+  #app .object-top {
       object-position: top;
     }
-#app .p-px {
+  #app .p-px {
       padding: 1px;
     }
-#app .px-px {
+  #app .px-px {
       padding-left: 1px;
       padding-right: 1px;
     }
-#app .py-px {
+  #app .py-px {
       padding-top: 1px;
       padding-bottom: 1px;
     }
-#app .ps-px {
+  #app .ps-px {
       padding-left: 1px;
     }
-#app .pe-px {
+  #app .pe-px {
       padding-right: 1px;
     }
-#app .pt-px {
+  #app .pt-px {
       padding-top: 1px;
     }
-#app .pr-px {
+  #app .pr-px {
       padding-right: 1px;
     }
-#app .pb-px {
+  #app .pb-px {
       padding-bottom: 1px;
     }
-#app .pl-px {
+  #app .pl-px {
       padding-left: 1px;
     }
-#app .text-center {
+  #app .text-center {
       text-align: center;
     }
-#app .text-end {
+  #app .text-end {
       text-align: right;
     }
-#app .text-justify {
+  #app .text-justify {
       text-align: justify;
     }
-#app .text-left {
+  #app .text-left {
       text-align: left;
     }
-#app .text-right {
+  #app .text-right {
       text-align: right;
     }
-#app .text-start {
+  #app .text-start {
       text-align: left;
     }
-#app .indent-px {
+  #app .indent-px {
       text-indent: 1px;
     }
-#app .align-baseline {
+  #app .align-baseline {
       vertical-align: baseline;
     }
-#app .align-bottom {
+  #app .align-bottom {
       vertical-align: bottom;
     }
-#app .align-middle {
+  #app .align-middle {
       vertical-align: middle;
     }
-#app .align-sub {
+  #app .align-sub {
       vertical-align: sub;
     }
-#app .align-super {
+  #app .align-super {
       vertical-align: super;
     }
-#app .align-text-bottom {
+  #app .align-text-bottom {
       vertical-align: text-bottom;
     }
-#app .align-text-top {
+  #app .align-text-top {
       vertical-align: text-top;
     }
-#app .align-top {
+  #app .align-top {
       vertical-align: top;
     }
-#app .leading-none {
+  #app .leading-none {
       --tw-leading: 1;
       line-height: 1;
     }
-#app .text-balance {
+  #app .text-balance {
       text-wrap: balance;
     }
-#app .text-nowrap {
+  #app .text-nowrap {
       text-wrap: nowrap;
     }
-#app .text-pretty {
+  #app .text-pretty {
       text-wrap: pretty;
     }
-#app .text-wrap {
+  #app .text-wrap {
       text-wrap: wrap;
     }
-#app .break-normal {
+  #app .break-normal {
       word-wrap: normal;
       word-break: normal;
     }
-#app .break-words {
+  #app .break-words {
       word-wrap: break-word;
     }
-#app .break-all {
+  #app .break-all {
       word-break: break-all;
     }
-#app .break-keep {
+  #app .break-keep {
       word-break: keep-all;
     }
-#app .overflow-ellipsis {
+  #app .overflow-ellipsis {
       text-overflow: ellipsis;
     }
-#app .text-clip {
+  #app .text-clip {
       text-overflow: clip;
     }
-#app .text-ellipsis {
+  #app .text-ellipsis {
       text-overflow: ellipsis;
     }
-#app .hyphens-auto {
+  #app .hyphens-auto {
               hyphens: auto;
     }
-#app .hyphens-manual {
+  #app .hyphens-manual {
               hyphens: manual;
     }
-#app .hyphens-none {
+  #app .hyphens-none {
               hyphens: none;
     }
-#app .whitespace-break-spaces {
+  #app .whitespace-break-spaces {
       white-space: break-spaces;
     }
-#app .whitespace-normal {
+  #app .whitespace-normal {
       white-space: normal;
     }
-#app .whitespace-nowrap {
+  #app .whitespace-nowrap {
       white-space: nowrap;
     }
-#app .whitespace-pre {
+  #app .whitespace-pre {
       white-space: pre;
     }
-#app .whitespace-pre-line {
+  #app .whitespace-pre-line {
       white-space: pre-line;
     }
-#app .whitespace-pre-wrap {
+  #app .whitespace-pre-wrap {
       white-space: pre-wrap;
     }
-#app .text-current {
+  #app .text-current {
       color: currentcolor;
     }
-#app .text-inherit {
+  #app .text-inherit {
       color: inherit;
     }
-#app .text-transparent {
+  #app .text-transparent {
       color: transparent;
     }
-#app .capitalize {
+  #app .capitalize {
       text-transform: capitalize;
     }
-#app .lowercase {
+  #app .lowercase {
       text-transform: lowercase;
     }
-#app .normal-case {
+  #app .normal-case {
       text-transform: none;
     }
-#app .uppercase {
+  #app .uppercase {
       text-transform: uppercase;
     }
-#app .italic {
+  #app .italic {
       font-style: italic;
     }
-#app .not-italic {
+  #app .not-italic {
       font-style: normal;
     }
-#app .diagonal-fractions {
+  #app .diagonal-fractions {
       --tw-numeric-fraction: diagonal-fractions;
-              font-feature-settings:         diagonal-fractions, normal,         diagonal-fractions;
               font-feature-settings: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, ), normal, var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
-      font-variant-numeric:         diagonal-fractions;
       font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
     }
-#app .lining-nums {
+  #app .lining-nums {
       --tw-numeric-figure: lining-nums;
-              font-feature-settings:     lining-nums    ;
               font-feature-settings: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
-      font-variant-numeric:     lining-nums    ;
       font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
     }
-#app .oldstyle-nums {
+  #app .oldstyle-nums {
       --tw-numeric-figure: oldstyle-nums;
-              font-feature-settings:     oldstyle-nums    ;
               font-feature-settings: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
-      font-variant-numeric:     oldstyle-nums    ;
       font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
     }
-#app .ordinal {
+  #app .ordinal {
       --tw-ordinal: ordinal;
-              font-feature-settings: ordinal        ;
               font-feature-settings: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
-      font-variant-numeric: ordinal        ;
       font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
     }
-#app .proportional-nums {
+  #app .proportional-nums {
       --tw-numeric-spacing: proportional-nums;
-              font-feature-settings:       proportional-nums  ;
               font-feature-settings: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
-      font-variant-numeric:       proportional-nums  ;
       font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
     }
-#app .slashed-zero {
+  #app .slashed-zero {
       --tw-slashed-zero: slashed-zero;
-              font-feature-settings:   slashed-zero      ;
               font-feature-settings: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
-      font-variant-numeric:   slashed-zero      ;
       font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
     }
-#app .stacked-fractions {
+  #app .stacked-fractions {
       --tw-numeric-fraction: stacked-fractions;
-              font-feature-settings:         stacked-fractions;
               font-feature-settings: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
-      font-variant-numeric:         stacked-fractions;
       font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
     }
-#app .tabular-nums {
+  #app .tabular-nums {
       --tw-numeric-spacing: tabular-nums;
-              font-feature-settings:       tabular-nums  ;
               font-feature-settings: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
-      font-variant-numeric:       tabular-nums  ;
       font-variant-numeric: var(--tw-ordinal, ) var(--tw-slashed-zero, ) var(--tw-numeric-figure, ) var(--tw-numeric-spacing, ) var(--tw-numeric-fraction, );
     }
-#app .normal-nums {
+  #app .normal-nums {
               font-feature-settings: normal;
       font-variant-numeric: normal;
     }
-#app .line-through {
+  #app .line-through {
               text-decoration-line: line-through;
     }
-#app .no-underline {
+  #app .no-underline {
               text-decoration-line: none;
     }
-#app .overline {
+  #app .overline {
               text-decoration-line: overline;
     }
-#app .underline {
+  #app .underline {
               text-decoration-line: underline;
     }
-#app .decoration-current {
+  #app .decoration-current {
               text-decoration-color: currentcolor;
     }
-#app .decoration-inherit {
+  #app .decoration-inherit {
               text-decoration-color: inherit;
     }
-#app .decoration-transparent {
+  #app .decoration-transparent {
               text-decoration-color: transparent;
     }
-#app .decoration-dashed {
+  #app .decoration-dashed {
               text-decoration-style: dashed;
     }
-#app .decoration-dotted {
+  #app .decoration-dotted {
               text-decoration-style: dotted;
     }
-#app .decoration-double {
+  #app .decoration-double {
               text-decoration-style: double;
     }
-#app .decoration-solid {
+  #app .decoration-solid {
               text-decoration-style: solid;
     }
-#app .decoration-wavy {
+  #app .decoration-wavy {
               text-decoration-style: wavy;
     }
-#app .decoration-0 {
+  #app .decoration-0 {
       text-decoration-thickness: 0px;
     }
-#app .decoration-1 {
+  #app .decoration-1 {
       text-decoration-thickness: 1px;
     }
-#app .decoration-2 {
+  #app .decoration-2 {
       text-decoration-thickness: 2px;
     }
-#app .decoration-4 {
+  #app .decoration-4 {
       text-decoration-thickness: 4px;
     }
-#app .decoration-8 {
+  #app .decoration-8 {
       text-decoration-thickness: 8px;
     }
-#app .decoration-auto {
+  #app .decoration-auto {
       text-decoration-thickness: auto;
     }
-#app .decoration-from-font {
+  #app .decoration-from-font {
       text-decoration-thickness: from-font;
     }
-#app .underline-offset-0 {
+  #app .underline-offset-0 {
       text-underline-offset: 0px;
     }
-#app .underline-offset-1 {
+  #app .underline-offset-1 {
       text-underline-offset: 1px;
     }
-#app .underline-offset-2 {
+  #app .underline-offset-2 {
       text-underline-offset: 2px;
     }
-#app .underline-offset-4 {
+  #app .underline-offset-4 {
       text-underline-offset: 4px;
     }
-#app .underline-offset-8 {
+  #app .underline-offset-8 {
       text-underline-offset: 8px;
     }
-#app .underline-offset-auto {
+  #app .underline-offset-auto {
       text-underline-offset: auto;
     }
-#app .antialiased {
+  #app .antialiased {
       -moz-osx-font-smoothing: grayscale;
     }
-#app .subpixel-antialiased {
+  #app .subpixel-antialiased {
       -moz-osx-font-smoothing: auto;
     }
-#app .caret-current {
+  #app .caret-current {
       caret-color: currentcolor;
     }
-#app .caret-inherit {
+  #app .caret-inherit {
       caret-color: inherit;
     }
-#app .caret-transparent {
+  #app .caret-transparent {
       caret-color: transparent;
     }
-#app .accent-auto {
+  #app .accent-auto {
       accent-color: auto;
     }
-#app .accent-current {
+  #app .accent-current {
       accent-color: currentcolor;
     }
-#app .accent-inherit {
+  #app .accent-inherit {
       accent-color: inherit;
     }
-#app .accent-transparent {
+  #app .accent-transparent {
       accent-color: transparent;
     }
-#app .opacity-0 {
+  #app .opacity-0 {
       opacity: 0;
     }
-#app .opacity-5 {
+  #app .opacity-5 {
       opacity: 0.05;
     }
-#app .opacity-10 {
+  #app .opacity-10 {
       opacity: 0.1;
     }
-#app .opacity-15 {
+  #app .opacity-15 {
       opacity: 0.15;
     }
-#app .opacity-20 {
+  #app .opacity-20 {
       opacity: 0.2;
     }
-#app .opacity-25 {
+  #app .opacity-25 {
       opacity: 0.25;
     }
-#app .opacity-30 {
+  #app .opacity-30 {
       opacity: 0.3;
     }
-#app .opacity-35 {
+  #app .opacity-35 {
       opacity: 0.35;
     }
-#app .opacity-40 {
+  #app .opacity-40 {
       opacity: 0.4;
     }
-#app .opacity-45 {
+  #app .opacity-45 {
       opacity: 0.45;
     }
-#app .opacity-50 {
+  #app .opacity-50 {
       opacity: 0.5;
     }
-#app .opacity-55 {
+  #app .opacity-55 {
       opacity: 0.55;
     }
-#app .opacity-60 {
+  #app .opacity-60 {
       opacity: 0.6;
     }
-#app .opacity-65 {
+  #app .opacity-65 {
       opacity: 0.65;
     }
-#app .opacity-70 {
+  #app .opacity-70 {
       opacity: 0.7;
     }
-#app .opacity-75 {
+  #app .opacity-75 {
       opacity: 0.75;
     }
-#app .opacity-80 {
+  #app .opacity-80 {
       opacity: 0.8;
     }
-#app .opacity-85 {
+  #app .opacity-85 {
       opacity: 0.85;
     }
-#app .opacity-90 {
+  #app .opacity-90 {
       opacity: 0.9;
     }
-#app .opacity-95 {
+  #app .opacity-95 {
       opacity: 0.95;
     }
-#app .opacity-100 {
+  #app .opacity-100 {
       opacity: 1;
     }
-#app .bg-blend-color {
+  #app .bg-blend-color {
       background-blend-mode: color;
     }
-#app .bg-blend-color-burn {
+  #app .bg-blend-color-burn {
       background-blend-mode: color-burn;
     }
-#app .bg-blend-color-dodge {
+  #app .bg-blend-color-dodge {
       background-blend-mode: color-dodge;
     }
-#app .bg-blend-darken {
+  #app .bg-blend-darken {
       background-blend-mode: darken;
     }
-#app .bg-blend-difference {
+  #app .bg-blend-difference {
       background-blend-mode: difference;
     }
-#app .bg-blend-exclusion {
+  #app .bg-blend-exclusion {
       background-blend-mode: exclusion;
     }
-#app .bg-blend-hard-light {
+  #app .bg-blend-hard-light {
       background-blend-mode: hard-light;
     }
-#app .bg-blend-hue {
+  #app .bg-blend-hue {
       background-blend-mode: hue;
     }
-#app .bg-blend-lighten {
+  #app .bg-blend-lighten {
       background-blend-mode: lighten;
     }
-#app .bg-blend-luminosity {
+  #app .bg-blend-luminosity {
       background-blend-mode: luminosity;
     }
-#app .bg-blend-multiply {
+  #app .bg-blend-multiply {
       background-blend-mode: multiply;
     }
-#app .bg-blend-normal {
+  #app .bg-blend-normal {
       background-blend-mode: normal;
     }
-#app .bg-blend-overlay {
+  #app .bg-blend-overlay {
       background-blend-mode: overlay;
     }
-#app .bg-blend-saturation {
+  #app .bg-blend-saturation {
       background-blend-mode: saturation;
     }
-#app .bg-blend-screen {
+  #app .bg-blend-screen {
       background-blend-mode: screen;
     }
-#app .bg-blend-soft-light {
+  #app .bg-blend-soft-light {
       background-blend-mode: soft-light;
     }
-#app .mix-blend-color {
+  #app .mix-blend-color {
       mix-blend-mode: color;
     }
-#app .mix-blend-color-burn {
+  #app .mix-blend-color-burn {
       mix-blend-mode: color-burn;
     }
-#app .mix-blend-color-dodge {
+  #app .mix-blend-color-dodge {
       mix-blend-mode: color-dodge;
     }
-#app .mix-blend-darken {
+  #app .mix-blend-darken {
       mix-blend-mode: darken;
     }
-#app .mix-blend-difference {
+  #app .mix-blend-difference {
       mix-blend-mode: difference;
     }
-#app .mix-blend-exclusion {
+  #app .mix-blend-exclusion {
       mix-blend-mode: exclusion;
     }
-#app .mix-blend-hard-light {
+  #app .mix-blend-hard-light {
       mix-blend-mode: hard-light;
     }
-#app .mix-blend-hue {
+  #app .mix-blend-hue {
       mix-blend-mode: hue;
     }
-#app .mix-blend-lighten {
+  #app .mix-blend-lighten {
       mix-blend-mode: lighten;
     }
-#app .mix-blend-luminosity {
+  #app .mix-blend-luminosity {
       mix-blend-mode: luminosity;
     }
-#app .mix-blend-multiply {
+  #app .mix-blend-multiply {
       mix-blend-mode: multiply;
     }
-#app .mix-blend-normal {
+  #app .mix-blend-normal {
       mix-blend-mode: normal;
     }
-#app .mix-blend-overlay {
+  #app .mix-blend-overlay {
       mix-blend-mode: overlay;
     }
-#app .mix-blend-plus-darker {
+  #app .mix-blend-plus-darker {
       mix-blend-mode: plus-darker;
     }
-#app .mix-blend-plus-lighter {
+  #app .mix-blend-plus-lighter {
       mix-blend-mode: plus-lighter;
     }
-#app .mix-blend-saturation {
+  #app .mix-blend-saturation {
       mix-blend-mode: saturation;
     }
-#app .mix-blend-screen {
+  #app .mix-blend-screen {
       mix-blend-mode: screen;
     }
-#app .mix-blend-soft-light {
+  #app .mix-blend-soft-light {
       mix-blend-mode: soft-light;
     }
-#app .shadow-none {
+  #app .shadow-none {
       --tw-shadow: 0 0 rgba(0,0,0,0);
-      box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), 0 0 rgba(0,0,0,0);
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     }
-#app .ring {
+  #app .ring {
       --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     }
-#app .ring-0 {
-      --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  #app .ring-0 {
+      --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     }
-#app .ring-1 {
+  #app .ring-1 {
       --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     }
-#app .ring-2 {
+  #app .ring-2 {
       --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     }
-#app .ring-4 {
+  #app .ring-4 {
       --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     }
-#app .ring-8 {
+  #app .ring-8 {
       --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(8px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     }
-#app .shadow-current {
+  #app .shadow-current {
       --tw-shadow-color: currentcolor;
     }
-#app .shadow-inherit {
+  #app .shadow-inherit {
       --tw-shadow-color: inherit;
     }
-#app .shadow-transparent {
+  #app .shadow-transparent {
       --tw-shadow-color: transparent;
     }
-#app .ring-current {
+  #app .ring-current {
       --tw-ring-color: currentcolor;
     }
-#app .ring-inherit {
+  #app .ring-inherit {
       --tw-ring-color: inherit;
     }
-#app .ring-transparent {
+  #app .ring-transparent {
       --tw-ring-color: transparent;
     }
-#app .ring-offset-0 {
+  #app .ring-offset-0 {
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-shadow: var(--tw-ring-inset, ) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
     }
-#app .ring-offset-1 {
+  #app .ring-offset-1 {
       --tw-ring-offset-width: 1px;
       --tw-ring-offset-shadow: var(--tw-ring-inset, ) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
     }
-#app .ring-offset-2 {
+  #app .ring-offset-2 {
       --tw-ring-offset-width: 2px;
       --tw-ring-offset-shadow: var(--tw-ring-inset, ) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
     }
-#app .ring-offset-4 {
+  #app .ring-offset-4 {
       --tw-ring-offset-width: 4px;
       --tw-ring-offset-shadow: var(--tw-ring-inset, ) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
     }
-#app .ring-offset-8 {
+  #app .ring-offset-8 {
       --tw-ring-offset-width: 8px;
       --tw-ring-offset-shadow: var(--tw-ring-inset, ) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
     }
-#app .ring-offset-current {
+  #app .ring-offset-current {
       --tw-ring-offset-color: currentcolor;
     }
-#app .ring-offset-inherit {
+  #app .ring-offset-inherit {
       --tw-ring-offset-color: inherit;
     }
-#app .ring-offset-transparent {
+  #app .ring-offset-transparent {
       --tw-ring-offset-color: transparent;
     }
-#app .outline {
+  #app .outline {
       outline-style: var(--tw-outline-style);
       outline-width: 1px;
     }
-#app .outline-0 {
+  #app .outline-0 {
       outline-style: var(--tw-outline-style);
       outline-width: 0px;
     }
-#app .outline-1 {
+  #app .outline-1 {
       outline-style: var(--tw-outline-style);
       outline-width: 1px;
     }
-#app .outline-2 {
+  #app .outline-2 {
       outline-style: var(--tw-outline-style);
       outline-width: 2px;
     }
-#app .outline-4 {
+  #app .outline-4 {
       outline-style: var(--tw-outline-style);
       outline-width: 4px;
     }
-#app .outline-8 {
+  #app .outline-8 {
       outline-style: var(--tw-outline-style);
       outline-width: 8px;
     }
-#app .outline-offset-0 {
+  #app .outline-offset-0 {
       outline-offset: 0px;
     }
-#app .outline-offset-1 {
+  #app .outline-offset-1 {
       outline-offset: 1px;
     }
-#app .outline-offset-2 {
+  #app .outline-offset-2 {
       outline-offset: 2px;
     }
-#app .outline-offset-4 {
+  #app .outline-offset-4 {
       outline-offset: 4px;
     }
-#app .outline-offset-8 {
+  #app .outline-offset-8 {
       outline-offset: 8px;
     }
-#app .outline-current {
+  #app .outline-current {
       outline-color: currentcolor;
     }
-#app .outline-inherit {
+  #app .outline-inherit {
       outline-color: inherit;
     }
-#app .outline-transparent {
+  #app .outline-transparent {
       outline-color: transparent;
     }
-#app .blur-none {
+  #app .blur-none {
       --tw-blur:  ;
-              filter:                   ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .brightness-0 {
+  #app .brightness-0 {
       --tw-brightness: brightness(0%);
-              filter:   brightness(0%)              ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .brightness-50 {
+  #app .brightness-50 {
       --tw-brightness: brightness(50%);
-              filter:   brightness(50%)              ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .brightness-75 {
+  #app .brightness-75 {
       --tw-brightness: brightness(75%);
-              filter:   brightness(75%)              ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .brightness-90 {
+  #app .brightness-90 {
       --tw-brightness: brightness(90%);
-              filter:   brightness(90%)              ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .brightness-95 {
+  #app .brightness-95 {
       --tw-brightness: brightness(95%);
-              filter:   brightness(95%)              ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .brightness-100 {
+  #app .brightness-100 {
       --tw-brightness: brightness(100%);
-              filter:   brightness(100%)              ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .brightness-105 {
+  #app .brightness-105 {
       --tw-brightness: brightness(105%);
-              filter:   brightness(105%)              ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .brightness-110 {
+  #app .brightness-110 {
       --tw-brightness: brightness(110%);
-              filter:   brightness(110%)              ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .brightness-125 {
+  #app .brightness-125 {
       --tw-brightness: brightness(125%);
-              filter:   brightness(125%)              ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .brightness-150 {
+  #app .brightness-150 {
       --tw-brightness: brightness(150%);
-              filter:   brightness(150%)              ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .brightness-200 {
+  #app .brightness-200 {
       --tw-brightness: brightness(200%);
-              filter:   brightness(200%)              ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .contrast-0 {
+  #app .contrast-0 {
       --tw-contrast: contrast(0%);
-              filter:     contrast(0%)            ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .contrast-50 {
+  #app .contrast-50 {
       --tw-contrast: contrast(50%);
-              filter:     contrast(50%)            ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .contrast-75 {
+  #app .contrast-75 {
       --tw-contrast: contrast(75%);
-              filter:     contrast(75%)            ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .contrast-100 {
+  #app .contrast-100 {
       --tw-contrast: contrast(100%);
-              filter:     contrast(100%)            ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .contrast-125 {
+  #app .contrast-125 {
       --tw-contrast: contrast(125%);
-              filter:     contrast(125%)            ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .contrast-150 {
+  #app .contrast-150 {
       --tw-contrast: contrast(150%);
-              filter:     contrast(150%)            ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .contrast-200 {
+  #app .contrast-200 {
       --tw-contrast: contrast(200%);
-              filter:     contrast(200%)            ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .drop-shadow-none {
+  #app .drop-shadow-none {
       --tw-drop-shadow:  ;
-              filter:                   ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .grayscale {
+  #app .grayscale {
       --tw-grayscale: grayscale(100%);
-              filter:       grayscale(100%)          ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .grayscale-0 {
+  #app .grayscale-0 {
       --tw-grayscale: grayscale(0%);
-              filter:       grayscale(0%)          ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .hue-rotate-0 {
+  #app .hue-rotate-0 {
       --tw-hue-rotate: hue-rotate(0deg);
-              filter:         hue-rotate(0deg)        ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .hue-rotate-15 {
+  #app .hue-rotate-15 {
       --tw-hue-rotate: hue-rotate(15deg);
-              filter:         hue-rotate(15deg)        ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .hue-rotate-30 {
+  #app .hue-rotate-30 {
       --tw-hue-rotate: hue-rotate(30deg);
-              filter:         hue-rotate(30deg)        ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .hue-rotate-60 {
+  #app .hue-rotate-60 {
       --tw-hue-rotate: hue-rotate(60deg);
-              filter:         hue-rotate(60deg)        ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .hue-rotate-90 {
+  #app .hue-rotate-90 {
       --tw-hue-rotate: hue-rotate(90deg);
-              filter:         hue-rotate(90deg)        ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .hue-rotate-180 {
+  #app .hue-rotate-180 {
       --tw-hue-rotate: hue-rotate(180deg);
-              filter:         hue-rotate(180deg)        ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .invert {
+  #app .invert {
       --tw-invert: invert(100%);
-              filter:           invert(100%)      ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .invert-0 {
+  #app .invert-0 {
       --tw-invert: invert(0%);
-              filter:           invert(0%)      ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .saturate-0 {
+  #app .saturate-0 {
       --tw-saturate: saturate(0%);
-              filter:             saturate(0%)    ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .saturate-50 {
+  #app .saturate-50 {
       --tw-saturate: saturate(50%);
-              filter:             saturate(50%)    ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .saturate-100 {
+  #app .saturate-100 {
       --tw-saturate: saturate(100%);
-              filter:             saturate(100%)    ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .saturate-150 {
+  #app .saturate-150 {
       --tw-saturate: saturate(150%);
-              filter:             saturate(150%)    ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .saturate-200 {
+  #app .saturate-200 {
       --tw-saturate: saturate(200%);
-              filter:             saturate(200%)    ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .sepia {
+  #app .sepia {
       --tw-sepia: sepia(100%);
-              filter:               sepia(100%)  ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .sepia-0 {
+  #app .sepia-0 {
       --tw-sepia: sepia(0%);
-              filter:               sepia(0%)  ;
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .filter {
-              filter:                  ;
+  #app .filter {
               filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
     }
-#app .filter-none {
+  #app .filter-none {
               filter: none;
     }
-#app .backdrop-blur-none {
+  #app .backdrop-blur-none {
       --tw-backdrop-blur:  ;
-              backdrop-filter:                   ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-brightness-0 {
+  #app .backdrop-brightness-0 {
       --tw-backdrop-brightness: brightness(0%);
-              backdrop-filter:   brightness(0%)              ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-brightness-50 {
+  #app .backdrop-brightness-50 {
       --tw-backdrop-brightness: brightness(50%);
-              backdrop-filter:   brightness(50%)              ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-brightness-75 {
+  #app .backdrop-brightness-75 {
       --tw-backdrop-brightness: brightness(75%);
-              backdrop-filter:   brightness(75%)              ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-brightness-90 {
+  #app .backdrop-brightness-90 {
       --tw-backdrop-brightness: brightness(90%);
-              backdrop-filter:   brightness(90%)              ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-brightness-95 {
+  #app .backdrop-brightness-95 {
       --tw-backdrop-brightness: brightness(95%);
-              backdrop-filter:   brightness(95%)              ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-brightness-100 {
+  #app .backdrop-brightness-100 {
       --tw-backdrop-brightness: brightness(100%);
-              backdrop-filter:   brightness(100%)              ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-brightness-105 {
+  #app .backdrop-brightness-105 {
       --tw-backdrop-brightness: brightness(105%);
-              backdrop-filter:   brightness(105%)              ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-brightness-110 {
+  #app .backdrop-brightness-110 {
       --tw-backdrop-brightness: brightness(110%);
-              backdrop-filter:   brightness(110%)              ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-brightness-125 {
+  #app .backdrop-brightness-125 {
       --tw-backdrop-brightness: brightness(125%);
-              backdrop-filter:   brightness(125%)              ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-brightness-150 {
+  #app .backdrop-brightness-150 {
       --tw-backdrop-brightness: brightness(150%);
-              backdrop-filter:   brightness(150%)              ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-brightness-200 {
+  #app .backdrop-brightness-200 {
       --tw-backdrop-brightness: brightness(200%);
-              backdrop-filter:   brightness(200%)              ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-contrast-0 {
+  #app .backdrop-contrast-0 {
       --tw-backdrop-contrast: contrast(0%);
-              backdrop-filter:     contrast(0%)            ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-contrast-50 {
+  #app .backdrop-contrast-50 {
       --tw-backdrop-contrast: contrast(50%);
-              backdrop-filter:     contrast(50%)            ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-contrast-75 {
+  #app .backdrop-contrast-75 {
       --tw-backdrop-contrast: contrast(75%);
-              backdrop-filter:     contrast(75%)            ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-contrast-100 {
+  #app .backdrop-contrast-100 {
       --tw-backdrop-contrast: contrast(100%);
-              backdrop-filter:     contrast(100%)            ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-contrast-125 {
+  #app .backdrop-contrast-125 {
       --tw-backdrop-contrast: contrast(125%);
-              backdrop-filter:     contrast(125%)            ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-contrast-150 {
+  #app .backdrop-contrast-150 {
       --tw-backdrop-contrast: contrast(150%);
-              backdrop-filter:     contrast(150%)            ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-contrast-200 {
+  #app .backdrop-contrast-200 {
       --tw-backdrop-contrast: contrast(200%);
-              backdrop-filter:     contrast(200%)            ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-grayscale {
+  #app .backdrop-grayscale {
       --tw-backdrop-grayscale: grayscale(100%);
-              backdrop-filter:       grayscale(100%)          ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-grayscale-0 {
+  #app .backdrop-grayscale-0 {
       --tw-backdrop-grayscale: grayscale(0%);
-              backdrop-filter:       grayscale(0%)          ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-hue-rotate-0 {
+  #app .backdrop-hue-rotate-0 {
       --tw-backdrop-hue-rotate: hue-rotate(0deg);
-              backdrop-filter:         hue-rotate(0deg)        ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-hue-rotate-15 {
+  #app .backdrop-hue-rotate-15 {
       --tw-backdrop-hue-rotate: hue-rotate(15deg);
-              backdrop-filter:         hue-rotate(15deg)        ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-hue-rotate-30 {
+  #app .backdrop-hue-rotate-30 {
       --tw-backdrop-hue-rotate: hue-rotate(30deg);
-              backdrop-filter:         hue-rotate(30deg)        ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-hue-rotate-60 {
+  #app .backdrop-hue-rotate-60 {
       --tw-backdrop-hue-rotate: hue-rotate(60deg);
-              backdrop-filter:         hue-rotate(60deg)        ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-hue-rotate-90 {
+  #app .backdrop-hue-rotate-90 {
       --tw-backdrop-hue-rotate: hue-rotate(90deg);
-              backdrop-filter:         hue-rotate(90deg)        ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-hue-rotate-180 {
+  #app .backdrop-hue-rotate-180 {
       --tw-backdrop-hue-rotate: hue-rotate(180deg);
-              backdrop-filter:         hue-rotate(180deg)        ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-invert {
+  #app .backdrop-invert {
       --tw-backdrop-invert: invert(100%);
-              backdrop-filter:           invert(100%)      ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-invert-0 {
+  #app .backdrop-invert-0 {
       --tw-backdrop-invert: invert(0%);
-              backdrop-filter:           invert(0%)      ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-0 {
+  #app .backdrop-opacity-0 {
       --tw-backdrop-opacity: opacity(0%);
-              backdrop-filter:             opacity(0%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-5 {
+  #app .backdrop-opacity-5 {
       --tw-backdrop-opacity: opacity(5%);
-              backdrop-filter:             opacity(5%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-10 {
+  #app .backdrop-opacity-10 {
       --tw-backdrop-opacity: opacity(10%);
-              backdrop-filter:             opacity(10%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-15 {
+  #app .backdrop-opacity-15 {
       --tw-backdrop-opacity: opacity(15%);
-              backdrop-filter:             opacity(15%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-20 {
+  #app .backdrop-opacity-20 {
       --tw-backdrop-opacity: opacity(20%);
-              backdrop-filter:             opacity(20%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-25 {
+  #app .backdrop-opacity-25 {
       --tw-backdrop-opacity: opacity(25%);
-              backdrop-filter:             opacity(25%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-30 {
+  #app .backdrop-opacity-30 {
       --tw-backdrop-opacity: opacity(30%);
-              backdrop-filter:             opacity(30%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-35 {
+  #app .backdrop-opacity-35 {
       --tw-backdrop-opacity: opacity(35%);
-              backdrop-filter:             opacity(35%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-40 {
+  #app .backdrop-opacity-40 {
       --tw-backdrop-opacity: opacity(40%);
-              backdrop-filter:             opacity(40%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-45 {
+  #app .backdrop-opacity-45 {
       --tw-backdrop-opacity: opacity(45%);
-              backdrop-filter:             opacity(45%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-50 {
+  #app .backdrop-opacity-50 {
       --tw-backdrop-opacity: opacity(50%);
-              backdrop-filter:             opacity(50%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-55 {
+  #app .backdrop-opacity-55 {
       --tw-backdrop-opacity: opacity(55%);
-              backdrop-filter:             opacity(55%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-60 {
+  #app .backdrop-opacity-60 {
       --tw-backdrop-opacity: opacity(60%);
-              backdrop-filter:             opacity(60%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-65 {
+  #app .backdrop-opacity-65 {
       --tw-backdrop-opacity: opacity(65%);
-              backdrop-filter:             opacity(65%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-70 {
+  #app .backdrop-opacity-70 {
       --tw-backdrop-opacity: opacity(70%);
-              backdrop-filter:             opacity(70%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-75 {
+  #app .backdrop-opacity-75 {
       --tw-backdrop-opacity: opacity(75%);
-              backdrop-filter:             opacity(75%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-80 {
+  #app .backdrop-opacity-80 {
       --tw-backdrop-opacity: opacity(80%);
-              backdrop-filter:             opacity(80%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-85 {
+  #app .backdrop-opacity-85 {
       --tw-backdrop-opacity: opacity(85%);
-              backdrop-filter:             opacity(85%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-90 {
+  #app .backdrop-opacity-90 {
       --tw-backdrop-opacity: opacity(90%);
-              backdrop-filter:             opacity(90%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-95 {
+  #app .backdrop-opacity-95 {
       --tw-backdrop-opacity: opacity(95%);
-              backdrop-filter:             opacity(95%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-opacity-100 {
+  #app .backdrop-opacity-100 {
       --tw-backdrop-opacity: opacity(100%);
-              backdrop-filter:             opacity(100%)    ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-saturate-0 {
+  #app .backdrop-saturate-0 {
       --tw-backdrop-saturate: saturate(0%);
-              backdrop-filter:               saturate(0%)  ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-saturate-50 {
+  #app .backdrop-saturate-50 {
       --tw-backdrop-saturate: saturate(50%);
-              backdrop-filter:               saturate(50%)  ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-saturate-100 {
+  #app .backdrop-saturate-100 {
       --tw-backdrop-saturate: saturate(100%);
-              backdrop-filter:               saturate(100%)  ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-saturate-150 {
+  #app .backdrop-saturate-150 {
       --tw-backdrop-saturate: saturate(150%);
-              backdrop-filter:               saturate(150%)  ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-saturate-200 {
+  #app .backdrop-saturate-200 {
       --tw-backdrop-saturate: saturate(200%);
-              backdrop-filter:               saturate(200%)  ;
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-sepia {
+  #app .backdrop-sepia {
       --tw-backdrop-sepia: sepia(100%);
-              backdrop-filter:                 sepia(100%);
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-sepia-0 {
+  #app .backdrop-sepia-0 {
       --tw-backdrop-sepia: sepia(0%);
-              backdrop-filter:                 sepia(0%);
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-filter {
-              backdrop-filter:                  ;
+  #app .backdrop-filter {
               backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
     }
-#app .backdrop-filter-none {
+  #app .backdrop-filter-none {
               backdrop-filter: none;
     }
-#app .transition {
+  #app .transition {
       transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
-      transition-timing-function: ease;
       transition-timing-function: var(--tw-ease, ease);
-      transition-duration: 0s;
       transition-duration: var(--tw-duration, 0s);
     }
-#app .transition-all {
+  #app .transition-all {
       transition-property: all;
-      transition-timing-function: ease;
       transition-timing-function: var(--tw-ease, ease);
-      transition-duration: 0s;
       transition-duration: var(--tw-duration, 0s);
     }
-#app .transition-colors {
+  #app .transition-colors {
       transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
-      transition-timing-function: ease;
       transition-timing-function: var(--tw-ease, ease);
-      transition-duration: 0s;
       transition-duration: var(--tw-duration, 0s);
     }
-#app .transition-opacity {
+  #app .transition-opacity {
       transition-property: opacity;
-      transition-timing-function: ease;
       transition-timing-function: var(--tw-ease, ease);
-      transition-duration: 0s;
       transition-duration: var(--tw-duration, 0s);
     }
-#app .transition-shadow {
+  #app .transition-shadow {
       transition-property: box-shadow;
-      transition-timing-function: ease;
       transition-timing-function: var(--tw-ease, ease);
-      transition-duration: 0s;
       transition-duration: var(--tw-duration, 0s);
     }
-#app .transition-transform {
+  #app .transition-transform {
       transition-property: transform, translate, scale, rotate;
-      transition-timing-function: ease;
       transition-timing-function: var(--tw-ease, ease);
-      transition-duration: 0s;
       transition-duration: var(--tw-duration, 0s);
     }
-#app .transition-none {
+  #app .transition-none {
       transition-property: none;
     }
-#app .delay-0 {
+  #app .delay-0 {
       transition-delay: 0ms;
     }
-#app .delay-75 {
+  #app .delay-75 {
       transition-delay: 75ms;
     }
-#app .delay-100 {
+  #app .delay-100 {
       transition-delay: 100ms;
     }
-#app .delay-150 {
+  #app .delay-150 {
       transition-delay: 150ms;
     }
-#app .delay-200 {
+  #app .delay-200 {
       transition-delay: 200ms;
     }
-#app .delay-300 {
+  #app .delay-300 {
       transition-delay: 300ms;
     }
-#app .delay-500 {
+  #app .delay-500 {
       transition-delay: 500ms;
     }
-#app .delay-700 {
+  #app .delay-700 {
       transition-delay: 700ms;
     }
-#app .delay-1000 {
+  #app .delay-1000 {
       transition-delay: 1000ms;
     }
-#app .duration-0 {
+  #app .duration-0 {
       --tw-duration: 0ms;
       transition-duration: 0ms;
     }
-#app .duration-75 {
+  #app .duration-75 {
       --tw-duration: 75ms;
       transition-duration: 75ms;
     }
-#app .duration-100 {
+  #app .duration-100 {
       --tw-duration: 100ms;
       transition-duration: 100ms;
     }
-#app .duration-150 {
+  #app .duration-150 {
       --tw-duration: 150ms;
       transition-duration: 150ms;
     }
-#app .duration-200 {
+  #app .duration-200 {
       --tw-duration: 200ms;
       transition-duration: 200ms;
     }
-#app .duration-300 {
+  #app .duration-300 {
       --tw-duration: 300ms;
       transition-duration: 300ms;
     }
-#app .duration-500 {
+  #app .duration-500 {
       --tw-duration: 500ms;
       transition-duration: 500ms;
     }
-#app .duration-700 {
+  #app .duration-700 {
       --tw-duration: 700ms;
       transition-duration: 700ms;
     }
-#app .duration-1000 {
+  #app .duration-1000 {
       --tw-duration: 1000ms;
       transition-duration: 1000ms;
     }
-#app .ease-linear {
+  #app .ease-linear {
       --tw-ease: linear;
       transition-timing-function: linear;
     }
-#app .will-change-auto {
+  #app .will-change-auto {
       will-change: auto;
     }
-#app .will-change-contents {
+  #app .will-change-contents {
       will-change: contents;
     }
-#app .will-change-scroll {
+  #app .will-change-scroll {
       will-change: scroll-position;
     }
-#app .will-change-transform {
+  #app .will-change-transform {
       will-change: transform;
     }
-#app .contain-inline-size {
+  #app .contain-inline-size {
       --tw-contain-size: inline-size;
-      contain: inline-size      ;
       contain: var(--tw-contain-size, ) var(--tw-contain-layout, ) var(--tw-contain-paint, ) var(--tw-contain-style, );
     }
-#app .contain-layout {
+  #app .contain-layout {
       --tw-contain-layout: layout;
-      contain:   layout    ;
       contain: var(--tw-contain-size, ) var(--tw-contain-layout, ) var(--tw-contain-paint, ) var(--tw-contain-style, );
     }
-#app .contain-paint {
+  #app .contain-paint {
       --tw-contain-paint: paint;
-      contain:     paint  ;
       contain: var(--tw-contain-size, ) var(--tw-contain-layout, ) var(--tw-contain-paint, ) var(--tw-contain-style, );
     }
-#app .contain-size {
+  #app .contain-size {
       --tw-contain-size: size;
-      contain: size      ;
       contain: var(--tw-contain-size, ) var(--tw-contain-layout, ) var(--tw-contain-paint, ) var(--tw-contain-style, );
     }
-#app .contain-style {
+  #app .contain-style {
       --tw-contain-style: style;
-      contain:       style;
       contain: var(--tw-contain-size, ) var(--tw-contain-layout, ) var(--tw-contain-paint, ) var(--tw-contain-style, );
     }
-#app .contain-content {
+  #app .contain-content {
       contain: content;
     }
-#app .contain-none {
+  #app .contain-none {
       contain: none;
     }
-#app .contain-strict {
+  #app .contain-strict {
       contain: strict;
     }
-#app .content-none {
+  #app .content-none {
       --tw-content: none;
       content: none;
     }
-#app .forced-color-adjust-auto {
+  #app .forced-color-adjust-auto {
       forced-color-adjust: auto;
     }
-#app .forced-color-adjust-none {
+  #app .forced-color-adjust-none {
       forced-color-adjust: none;
     }
-#app .outline-dashed {
+  #app .outline-dashed {
       --tw-outline-style: dashed;
       outline-style: dashed;
     }
-#app .outline-dotted {
+  #app .outline-dotted {
       --tw-outline-style: dotted;
       outline-style: dotted;
     }
-#app .outline-double {
+  #app .outline-double {
       --tw-outline-style: double;
       outline-style: double;
     }
-#app .outline-none {
+  #app .outline-none {
       --tw-outline-style: none;
       outline-style: none;
     }
-#app .select-all {
+  #app .select-all {
               user-select: all;
     }
-#app .select-auto {
+  #app .select-auto {
               user-select: auto;
     }
-#app .select-none {
+  #app .select-none {
               user-select: none;
     }
-#app .select-text {
+  #app .select-text {
               user-select: text;
     }
-#app .divide-x-reverse>view+view {
+  #app .divide-x-reverse>view+view {
         --tw-divide-x-reverse: 1;
       }
-#app .ring-inset {
+  #app .ring-inset {
       --tw-ring-inset: inset;
     }"
 `;

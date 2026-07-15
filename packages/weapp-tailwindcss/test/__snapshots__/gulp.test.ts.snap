@@ -14,9 +14,9 @@ exports[`gulp > common build > css 1`] = `
 :host,page,.tw-root,wx-root-portal-content {
   --spacing: 0.25rem;
   --text-xs: 0.75rem;
-  --text-xs--line-height: 1.33333;
+  --text-xs--line-height: calc(1 / 0.75);
   --text-base: 1rem;
-  --text-base--line-height: 1.5;
+  --text-base--line-height: calc(1.5 / 1);
   --font-weight-medium: 500;
   --font-weight-bold: 700;
 }
@@ -43,8 +43,8 @@ exports[`gulp > common build > css 1`] = `
 }
 .space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text {
     --tw-space-y-reverse: 0;
-    margin-bottom: calc((var(--spacing)*4)*var(--tw-space-y-reverse));
-    margin-top: calc((var(--spacing)*4)*(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
+    margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
   }
 .border-b {
   border-bottom-style: var(--tw-border-style);

@@ -3,10 +3,8 @@
 exports[`styleHandler > .steps @icestack/ui case 0 1`] = `
 ".steps .step-primary+.step-primary::before,.steps .step-primary::after {
       --tw-bg-opacity: 1;
-      background-color: rgba(var(--ice-primary) / 1);
       background-color: rgba(var(--ice-primary) / var(--tw-bg-opacity));
       --tw-text-opacity: 1;
-      color: rgba(var(--ice-primary-content) / 1);
       color: rgba(var(--ice-primary-content) / var(--tw-text-opacity));
     }"
 `;
@@ -38,12 +36,8 @@ view,text,::after,::before {
 html,:host {
   line-height: 1.5;
   tab-size: 4;
-  font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
-      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
-          font-feature-settings: normal;
           font-feature-settings: var(--default-font-feature-settings, normal);
-  font-variation-settings: normal;
   font-variation-settings: var(--default-font-variation-settings, normal);
 }
 hr {
@@ -67,12 +61,8 @@ b,strong {
   font-weight: bolder;
 }
 code,kbd,samp,pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-      "Courier New", monospace;
   font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
-          font-feature-settings: normal;
           font-feature-settings: var(--default-mono-font-feature-settings, normal);
-  font-variation-settings: normal;
   font-variation-settings: var(--default-mono-font-variation-settings, normal);
   font-size: 1em;
 }

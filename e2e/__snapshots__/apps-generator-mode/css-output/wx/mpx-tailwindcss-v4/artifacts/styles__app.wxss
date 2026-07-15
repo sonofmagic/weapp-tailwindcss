@@ -265,9 +265,7 @@ wx-root-portal-content {
 .space-y-2 > text + view,
 .space-y-2 > text + text {
   --tw-space-y-reverse: 0;
-  margin-top: calc(var(--spacing) * 2 * 1);
   margin-top: calc(var(--spacing) * 2 * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(var(--spacing) * 2 * 0);
   margin-bottom: calc(var(--spacing) * 2 * var(--tw-space-y-reverse));
 }
  /* tokens: space-y-4 <= src/pages/index.mpx */
@@ -276,9 +274,7 @@ wx-root-portal-content {
 .space-y-4 > text + view,
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
-  margin-top: calc(var(--spacing) * 4 * 1);
   margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(var(--spacing) * 4 * 0);
   margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
 }
  /* tokens: space-y-[1.6rem] <= src/pages/index.mpx */

@@ -1496,7 +1496,6 @@ wx-root-portal-content {
 .nut-tabbar-item_icon-box_nav-word {
   display: block;
   font-size: var(--nut-tabbar-item-text-font-size, var(--nut-font-size-0, 10rpx));
-  line-height: normal;
   line-height: var(--nut-tabbar-item-text-line-height, initial);
   margin-top: var(--nut-tabbar-word-margin-top, auto);
 }
@@ -4735,7 +4734,6 @@ wx-root-portal-content {
 .nut-countdown {
   color: var(--nut-countdown-color, inherit);
   display: var(--nut-countdown-display, flex);
-  font-size: medium;
   font-size: var(--nut-countdown-font-size, initial);
 }
 .nut-theme-dark .nut-badge.show {
@@ -8217,9 +8215,7 @@ wx-root-portal-content {
 .space-y-2 > text + view,
 .space-y-2 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc(var(--spacing) * 2 * 0);
   margin-bottom: calc(var(--spacing) * 2 * var(--tw-space-y-reverse));
-  margin-top: calc(var(--spacing) * 2 * 1);
   margin-top: calc(var(--spacing) * 2 * (1 - var(--tw-space-y-reverse)));
 }
  /* tokens: rounded <= src/pages/index/index.vue */
@@ -8445,13 +8441,6 @@ wx-root-portal-content {
  /* tokens: shadow-xl <= src/pages/index/index.vue */
 .shadow-xl {
   --tw-shadow: 0 20rpx 25rpx -5rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 8rpx 10rpx -6rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
-  box-shadow:
-    var(--tw-inset-shadow),
-    var(--tw-inset-ring-shadow),
-    var(--tw-ring-offset-shadow),
-    var(--tw-ring-shadow),
-    0 20rpx 25rpx -5rpx rgba(0, 0, 0, 0.1),
-    0 8rpx 10rpx -6rpx rgba(0, 0, 0, 0.1);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
  /* tokens: before:content-['现在，让我们开始神奇的_tailwindcss_开发之旅吧！'] <= <tailwind generated> */

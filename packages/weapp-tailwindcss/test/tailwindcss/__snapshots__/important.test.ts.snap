@@ -50,10 +50,8 @@ view,text,::after,::before {
 }
 #app-provider .space-x-4>view+view {
       --tw-space-x-reverse: 0;
-      margin-right: 0rem;
-      margin-right: calc((var(--spacing)*4)*var(--tw-space-x-reverse));
-      margin-left: 1rem;
-      margin-left: calc((var(--spacing)*4)*(1 - var(--tw-space-x-reverse)));
+      margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
+      margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
     }"
 `;
 
@@ -107,10 +105,8 @@ view,text,::after,::before {
 }
 .app-provider .space-x-4>view+view {
       --tw-space-x-reverse: 0;
-      margin-right: 0rem;
-      margin-right: calc((var(--spacing)*4)*var(--tw-space-x-reverse));
-      margin-left: 1rem;
-      margin-left: calc((var(--spacing)*4)*(1 - var(--tw-space-x-reverse)));
+      margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
+      margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
     }"
 `;
 
@@ -164,10 +160,8 @@ view,text,::after,::before {
 }
 .app-provider[data-v-hash] .space-x-4>view+view {
       --tw-space-x-reverse: 0;
-      margin-right: 0rem;
-      margin-right: calc((var(--spacing)*4)*var(--tw-space-x-reverse));
-      margin-left: 1rem;
-      margin-left: calc((var(--spacing)*4)*(1 - var(--tw-space-x-reverse)));
+      margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
+      margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
     }"
 `;
 
@@ -219,9 +213,7 @@ view,text,::after,::before {
 }
 .space-x-4>view+view {
     --tw-space-x-reverse: 0;
-    margin-right: 0rem;
-    margin-right: calc((var(--spacing)*4)*var(--tw-space-x-reverse));
-    margin-left: 1rem;
-    margin-left: calc((var(--spacing)*4)*(1 - var(--tw-space-x-reverse)));
+    margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
+    margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
   }"
 `;

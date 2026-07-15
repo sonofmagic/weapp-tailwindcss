@@ -1,7 +1,6 @@
 .weapp-tw-user-ui-card {
   align-items: center;
   animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
-  color: #175e75;
   color: var(--weapp-tw-user-ui-color, #175e75);
   display: inline-flex;
   gap: 8rpx;

@@ -134,9 +134,7 @@ wx-root-portal-content {
   background-color: currentColor;
   display: inline-block;
   height: 1em;
-  -webkit-mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M12 1a11 11 0 1 0 11 11A11 11 0 0 0 12 1Zm0 19a8 8 0 1 1 8-8 8 8 0 0 1-8 8Z' opacity='.25'/%3E%3Cpath d='M12 4a8 8 0 0 1 7.89 6.7 1.53 1.53 0 0 0 1.49 1.3 1.5 1.5 0 0 0 1.48-1.75 11 11 0 0 0-21.72 0A1.5 1.5 0 0 0 2.62 12a1.53 1.53 0 0 0 1.49-1.3A8 8 0 0 1 12 4Z'%3E%3CanimateTransform attributeName='transform' dur='0.75s' repeatCount='indefinite' type='rotate' values='0 12 12;360 12 12'/%3E%3C/path%3E%3C/svg%3E");
   -webkit-mask-image: var(--svg);
-  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M12 1a11 11 0 1 0 11 11A11 11 0 0 0 12 1Zm0 19a8 8 0 1 1 8-8 8 8 0 0 1-8 8Z' opacity='.25'/%3E%3Cpath d='M12 4a8 8 0 0 1 7.89 6.7 1.53 1.53 0 0 0 1.49 1.3 1.5 1.5 0 0 0 1.48-1.75 11 11 0 0 0-21.72 0A1.5 1.5 0 0 0 2.62 12a1.53 1.53 0 0 0 1.49-1.3A8 8 0 0 1 12 4Z'%3E%3CanimateTransform attributeName='transform' dur='0.75s' repeatCount='indefinite' type='rotate' values='0 12 12;360 12 12'/%3E%3C/path%3E%3C/svg%3E");
   mask-image: var(--svg);
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
@@ -274,9 +272,7 @@ wx-root-portal-content {
 .space-y-2 > text + view,
 .space-y-2 > text + text {
   --tw-space-y-reverse: 0;
-  margin-top: calc(var(--spacing) * 2 * 1);
   margin-top: calc(var(--spacing) * 2 * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(var(--spacing) * 2 * 0);
   margin-bottom: calc(var(--spacing) * 2 * var(--tw-space-y-reverse));
 }
 /* tokens: space-y-4 <= src/pages/index.mpx */
@@ -285,9 +281,7 @@ wx-root-portal-content {
 .space-y-4 > text + view,
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
-  margin-top: calc(var(--spacing) * 4 * 1);
   margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(var(--spacing) * 4 * 0);
   margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
 }
 /* tokens: space-y-[1.6rem] <= src/pages/index.mpx */
@@ -296,9 +290,7 @@ wx-root-portal-content {
 .space-y-_b1_d6rem_B > text + view,
 .space-y-_b1_d6rem_B > text + text {
   --tw-space-y-reverse: 0;
-  margin-top: 51.2rpx;
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: 0rpx;
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
 /* tokens: divide-x-[10px] <= src/pages/index.mpx */
@@ -307,9 +299,7 @@ wx-root-portal-content {
 .divide-x-_b10px_B > text + view,
 .divide-x-_b10px_B > text + text {
   --tw-divide-x-reverse: 0;
-  border-left-width: 10px;
   border-left-width: calc(10px * (1 - var(--tw-divide-x-reverse)));
-  border-right-width: 0px;
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
   border-left-style: var(--tw-border-style);
   border-right-style: var(--tw-border-style);
@@ -701,19 +691,16 @@ wx-root-portal-content {
 /* tokens: before:content-['Festivus'] <= src/pages/index.mpx */
 .before_ccontent-_b_aFestivus_a_B::before {
   --tw-content: 'Festivus';
-  content: 'Festivus';
   content: var(--tw-content);
 }
 /* tokens: before:content-['现在，让我们开始神奇的_tailwindcss_开发之旅吧！'] <= <tailwind generated> */
 .before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x5f00_u_x59cb_u_x795e_u_x5947_u_x7684__tailwindcss_u_x5f00_u_x53d1_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B::before {
   --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
-  content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
   content: var(--tw-content);
 }
 /* tokens: before:content-['现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！'] <= <tailwind generated> */
 .before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x7ee7_u_x7eed_u_x795e_u_x5947_u_x7684__tailwindcss_HMR_u_x56de_u_x5f52_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B::before {
   --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
-  content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
   content: var(--tw-content);
 }
 /* tokens: after:border-none <= src/pages/index.mpx */
@@ -725,7 +712,6 @@ wx-root-portal-content {
 /* tokens: after:!content-['good_work!'] <= src/pages/index.mpx */
 .after_c_econtent-_b_agood_work_e_a_B::after {
   --tw-content: 'good work!' !important;
-  content: 'good work!';
   content: var(--tw-content);
   content: var(--tw-content) !important;
 }

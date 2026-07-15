@@ -85,7 +85,7 @@ describe('getCompilerContext', () => {
     globalCacheHolder.__WEAPP_TW_COMPILER_CONTEXT_CACHE__?.clear?.()
   })
 
-  it('provides empty includeCustomProperties when tailwindcss v4 auto enables cssCalc', async () => {
+  it('keeps cssCalc disabled by default for tailwindcss v4', async () => {
     createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '4.0.0' },
       majorVersion: 4,
@@ -96,12 +96,8 @@ describe('getCompilerContext', () => {
 
     const forwardedCalcOptions = (createHandlersFromContext.mock.calls[0] as any)?.[2]
 
-    expect(forwardedCalcOptions).toEqual({
-      includeCustomProperties: [],
-    })
-    expect(ctx.cssCalc).toEqual({
-      includeCustomProperties: [],
-    })
+    expect(forwardedCalcOptions).toBe(false)
+    expect(ctx.cssCalc).toBe(false)
   })
 
   it('uses Tailwind v4 preflight defaults when the runtime is v4', async () => {

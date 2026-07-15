@@ -7,6 +7,7 @@ import {
   hasTailwindRootDirectives,
   removeTailwindSourceDirectives,
 } from './directives'
+import { preferScopedGeneratedCssRules } from './scoped-rules'
 
 const TAILWIND_V4_GENERATOR_AT_RULES = new Set([
   'config',
@@ -761,6 +762,7 @@ export function filterApplyOnlyGeneratedCss(
   source: string,
   options: {
     preserveVariables?: boolean | undefined
+    preferScopedRules?: boolean | undefined
   } = {},
 ) {
   const selectors = collectApplyOnlySourceSelectors(source)
@@ -797,7 +799,11 @@ export function filterApplyOnlyGeneratedCss(
         rule.remove()
       }
     })
-    return removeCssComments(root.toString()).trim()
+    const filteredCss = root.toString()
+    const preferredCss = options.preferScopedRules
+      ? preferScopedGeneratedCssRules(filteredCss)
+      : filteredCss
+    return removeCssComments(preferredCss).trim()
   }
   catch {
     return css

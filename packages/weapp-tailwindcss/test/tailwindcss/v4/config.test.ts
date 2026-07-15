@@ -228,11 +228,20 @@ describe('tailwindcss/v4/config', () => {
     expect(logger.warn).toHaveBeenCalledTimes(1)
   })
 
-  it('applies cssCalc defaults when tailwindcss@4 is detected', async () => {
+  it('keeps cssCalc disabled by default when tailwindcss@4 is detected', async () => {
     const runtime = createRuntime(4)
     const { applyV4CssCalcDefaults } = await loadModule()
 
     const result = applyV4CssCalcDefaults(undefined, runtime)
+
+    expect(result).toBe(false)
+  })
+
+  it('applies cssCalc defaults when users explicitly enable it', async () => {
+    const runtime = createRuntime(4)
+    const { applyV4CssCalcDefaults } = await loadModule()
+
+    const result = applyV4CssCalcDefaults(true, runtime)
 
     expect(result).toEqual({ includeCustomProperties: [] })
   })
