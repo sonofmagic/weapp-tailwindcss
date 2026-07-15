@@ -78,10 +78,10 @@ wx-root-portal-content {
 .space-y-2_d5 > text + view,
 .space-y-2_d5 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc((var(--spacing) * 2.5) * 0);
   margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
-  margin-top: calc((var(--spacing) * 2.5) * 1);
+  margin-bottom: calc(calc(var(--spacing) * 2.5) * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(calc(var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
 }
  /* tokens: bg-[#000089] <= src/sub-normal/pages/index.tsx */
 .bg-_b_h000089_B {

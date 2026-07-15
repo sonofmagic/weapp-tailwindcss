@@ -648,14 +648,17 @@ describe('e2e watch workflow', () => {
     ]
 
     expect(workflow.jobs['pr-quick-gate'].strategy['fail-fast']).toBe(false)
-    for (const runner of ['macos', 'linux']) {
-      for (const watchCase of demoShards) {
-        expect(cases, `${runner} should cover ${watchCase}`).toContain(`${runner}:22:${watchCase}:default`)
-      }
+    for (const watchCase of demoShards) {
+      expect(cases, `linux should cover ${watchCase}`).toContain(`linux:22:${watchCase}:default`)
     }
+    for (const watchCase of demoShards.filter(item => item !== 'demo-core')) {
+      expect(cases, `macos should cover ${watchCase}`).toContain(`macos:22:${watchCase}:default`)
+    }
+    expect(cases).toContain('macos:22:demo-core:main-style')
     expect(cases).toContain('windows:22:demo-uni:default')
     for (const watchCase of windowsSplitDemoCases) {
-      expect(cases, `windows should split ${watchCase}`).toContain(`windows:22:${watchCase}:default`)
+      const profile = watchCase === 'mpx-tailwindcss-v4' ? 'main-style' : 'default'
+      expect(cases, `windows should split ${watchCase}`).toContain(`windows:22:${watchCase}:${profile}`)
     }
     for (const runner of ['linux', 'windows']) {
       for (const watchCase of completeMiniProgramCases) {
@@ -669,6 +672,19 @@ describe('e2e watch workflow', () => {
     expect(rows.filter(row => row.runner_label === 'macos')).toHaveLength(9)
     expect(rows.filter(row => row.runner_label === 'linux')).toHaveLength(12)
     expect(rows.filter(row => row.runner_label === 'windows')).toHaveLength(17)
+    for (const row of [
+      rows.find(row => row.runner_label === 'macos' && row.watch_case === 'demo-core'),
+      rows.find(row => row.runner_label === 'windows' && row.watch_case === 'mpx-tailwindcss-v4'),
+    ]) {
+      expect(row).toMatchObject({
+        round_profile: 'main-style',
+        watch_main_style_only: '1',
+        watch_main_style_subpackage_limit: '0',
+        watch_max_attempts: '1',
+        timeout_minutes: 35,
+        watch_command_timeout_ms: '1500000',
+      })
+    }
     expect(cases.filter(item => item.includes(':weapp-vite-tailwindcss-'))).toEqual([
       'windows:22:weapp-vite-tailwindcss-v4:default',
     ])
@@ -681,6 +697,8 @@ describe('e2e watch workflow', () => {
     const watchStep = workflow.jobs['pr-quick-gate'].steps.find((step: Record<string, unknown>) => step.run === 'pnpm e2e:watch')
     expect(watchStep?.env).toMatchObject({
       E2E_TARO_DEV_READY_TIMEOUT_MS: '${{ matrix.taro_dev_ready_timeout_ms || matrix.watch_timeout_ms }}',
+      E2E_WATCH_MAIN_STYLE_ONLY: "${{ matrix.watch_main_style_only || '0' }}",
+      E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT: "${{ matrix.watch_main_style_subpackage_limit || '' }}",
     })
     expectPlaywrightInstallRetry(
       stepRuns(workflow, 'pr-quick-gate').find(run => run.includes('playwright install chromium'))!,
@@ -777,13 +795,35 @@ describe('e2e watch workflow', () => {
       watch_max_plugin_process_ms: '60000',
       watch_command_timeout_ms: '4800000',
     }))
-    const slowDemoCorePrBudget = {
+    const slowLinuxDemoCorePrBudget = {
       watch_case: 'demo-core',
       round_profile: 'default',
       timeout_minutes: 95,
       watch_timeout_ms: '420000',
       watch_max_plugin_process_ms: '60000',
       watch_command_timeout_ms: '5100000',
+    }
+    const minimalMacosDemoCorePrBudget = {
+      watch_case: 'demo-core',
+      round_profile: 'main-style',
+      watch_main_style_only: '1',
+      watch_main_style_subpackage_limit: '0',
+      watch_max_attempts: '1',
+      timeout_minutes: 35,
+      watch_timeout_ms: '420000',
+      watch_max_plugin_process_ms: '60000',
+      watch_command_timeout_ms: '1500000',
+    }
+    const minimalWindowsMpxPrBudget = {
+      watch_case: 'mpx-tailwindcss-v4',
+      round_profile: 'main-style',
+      watch_main_style_only: '1',
+      watch_main_style_subpackage_limit: '0',
+      watch_max_attempts: '1',
+      timeout_minutes: 35,
+      watch_timeout_ms: '420000',
+      watch_max_plugin_process_ms: '60000',
+      watch_command_timeout_ms: '1500000',
     }
     const slowLinuxTaroTtPrBudgets = [
       'taro-vite-react-tailwindcss-v4:tt',
@@ -821,7 +861,6 @@ describe('e2e watch workflow', () => {
     const windowsSplitDemoPrBudgets = [
       'gulp-tailwindcss-v4',
       'weapp-vite-tailwindcss-v4',
-      'mpx-tailwindcss-v4',
       'taro-vite-vue3-tailwindcss-v4',
     ].map(watchCase => ({
       watch_case: watchCase,
@@ -940,14 +979,25 @@ describe('e2e watch workflow', () => {
         ...budget,
       }))
     }
+    expect(prRows).toContainEqual(expect.objectContaining({
+      os: 'macos-latest',
+      runner_label: 'macos',
+      ...minimalMacosDemoCorePrBudget,
+    }))
+    expect(prRows).toContainEqual(expect.objectContaining({
+      os: 'ubuntu-latest',
+      runner_label: 'linux',
+      ...slowLinuxDemoCorePrBudget,
+    }))
+    expect(prRows).toContainEqual(expect.objectContaining({
+      os: 'windows-latest',
+      runner_label: 'windows',
+      ...minimalWindowsMpxPrBudget,
+    }))
     for (const runner of [
       { os: 'macos-latest', runner_label: 'macos' },
       { os: 'ubuntu-latest', runner_label: 'linux' },
     ]) {
-      expect(prRows).toContainEqual(expect.objectContaining({
-        ...runner,
-        ...slowDemoCorePrBudget,
-      }))
       for (const budget of slowDemoTaroPrBudgets) {
         expect(prRows).toContainEqual(expect.objectContaining({
           ...runner,
