@@ -183,6 +183,9 @@ describe('ci workflows', () => {
     ])
     expectNoIdeOnlyRuntime(focusedRows.map(row => row.command).join('\n'), 'e2e-focused')
     expect(hasStepRunCommand(stepRuns(workflow, 'e2e-focused'), '${{ matrix.command }}')).toBe(true)
+    expect(workflow.jobs['e2e-focused'].env).toMatchObject({
+      E2E_UNI_H5_DEV_TIMEOUT_MS: '300000',
+    })
 
     expect(workflow.jobs['e2e-multiplatform'].strategy['fail-fast']).toBe(false)
     expect(matrixCaseNames(multiplatformRows)).toEqual([
