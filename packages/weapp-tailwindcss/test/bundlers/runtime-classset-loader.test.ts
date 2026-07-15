@@ -3,6 +3,7 @@ import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import loader from '@/bundlers/webpack/loaders/weapp-tw-runtime-classset-loader'
+import { deleteWebpackLoaderRuntime, setWebpackLoaderRuntime } from '@/bundlers/webpack/loaders/runtime-registry'
 
 describe('bundlers/runtime classset loader', () => {
   const tempDirs: string[] = []
@@ -144,6 +145,29 @@ describe('bundlers/runtime classset loader', () => {
       file: sourceFile,
       css: originalSource,
     })
+  })
+
+  it('updates registered generated css with the framework PostCSS output', () => {
+    const runtimeKey = 'runtime-postcss-output'
+    const updateGeneratedCss = vi.fn()
+    setWebpackLoaderRuntime(runtimeKey, {
+      classSet: { updateGeneratedCss },
+    })
+    const source = '/* weapp-tailwindcss:generated:webpack */\n:root{--spacing:8rpx}'
+
+    try {
+      expect(loader.call({
+        getOptions: () => ({ weappTailwindcssRuntimeKey: runtimeKey }),
+        resourcePath: '/workspace/src/pages/index.css',
+      } as any, source)).toBe(source)
+      expect(updateGeneratedCss).toHaveBeenCalledWith({
+        file: '/workspace/src/pages/index.css',
+        css: source,
+      })
+    }
+    finally {
+      deleteWebpackLoaderRuntime(runtimeKey)
+    }
   })
 
   it('registers loader css input for preprocessor resources', async () => {

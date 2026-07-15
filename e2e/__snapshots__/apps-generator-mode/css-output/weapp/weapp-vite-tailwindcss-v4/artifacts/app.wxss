@@ -20,13 +20,12 @@ text,
   --tw-duration: initial;
   --tw-ease: initial;
   --tw-tracking:;
-  --tw-content: '';
 }
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
-  --font-sans: 'inter', 'inter Fallback', system-ui;
+  --font-sans: 'inter', 'inter Fallback', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
   --font-mono: var(--font-plex-mono), monospace;
   --color-emerald-600: rgb(0, 150, 105);
   --color-blue-500: #3080ff;
@@ -46,10 +45,10 @@ wx-root-portal-content {
   --color-slate-700: rgb(49, 65, 88);
   --color-gray-900: #101828;
   --color-zinc-950: rgb(9, 9, 11);
-  --spacing: 0.25rem;
+  --spacing: 8rpx;
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --default-font-family: var(--font-inter), system-ui;
+  --default-font-family: var(--font-inter), system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
   --default-mono-font-family: var(--font-plex-mono), monospace;
   --test-color: #006241;
   --color-test: #006241;
@@ -70,9 +69,9 @@ wx-root-portal-content {
   --color-neutral-900: #171717;
   --color-stone-900: #1c1917;
   --color-black: #000;
-  --text-base: 1rem;
+  --text-base: 32rpx;
   --font-weight-bold: 700;
-  --radius-lg: 0.5rem;
+  --radius-lg: 16rpx;
 }
 button::after,
 wx-button::after {
@@ -253,7 +252,9 @@ wx-button {
 .space-y-2_d5 > text + view,
 .space-y-2_d5 > text + text {
   --tw-space-y-reverse: 0;
+  margin-bottom: calc((var(--spacing) * 2.5) * 0);
   margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
+  margin-top: calc((var(--spacing) * 2.5) * 1);
   margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
 }
  /* tokens: space-x-2.5 <= pages/index/index.wxml */
@@ -262,7 +263,9 @@ wx-button {
 .space-x-2_d5 > text + view,
 .space-x-2_d5 > text + text {
   --tw-space-x-reverse: 0;
+  margin-right: calc((var(--spacing) * 2.5) * 0);
   margin-right: calc((var(--spacing) * 2.5) * var(--tw-space-x-reverse));
+  margin-left: calc((var(--spacing) * 2.5) * 1);
   margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));
 }
  /* tokens: rounded <= pages/index/index.wxml */

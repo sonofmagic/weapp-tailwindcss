@@ -66,6 +66,18 @@ describe('mpx integration helpers', () => {
     expect(getTailwindcssCssEntry('/pkg')).toBe(path.join('/pkg', 'index.css'))
   })
 
+  it('resolves the workspace and demo mpx peer to the same plugin instance', async () => {
+    const packageRequire = createRequire(path.join(process.cwd(), 'package.json'))
+    const demoRequire = createRequire(path.resolve(process.cwd(), '../../demo/mpx-tailwindcss-v4/package.json'))
+    const packagePluginPath = await realpath(packageRequire.resolve('@mpxjs/webpack-plugin/package.json'))
+    const demoPluginPath = await realpath(demoRequire.resolve('@mpxjs/webpack-plugin/package.json'))
+    const packagePlugin = packageRequire(packagePluginPath)
+    const demoPlugin = demoRequire(demoPluginPath)
+
+    expect(packagePlugin.version).toBe(demoPlugin.version)
+    expect(packagePluginPath).toBe(demoPluginPath)
+  })
+
   it('adds resolve aliases for object and array alias forms', () => {
     const compiler = { options: { resolve: { alias: {} } } }
 

@@ -84,14 +84,16 @@ describe('uni-app vite vue3 Tailwind v4 cascade layer output', () => {
   it('keeps scoped Vue component css free of injected mini-program preflight', async () => {
     await buildPlatform('mp-weixin')
 
-    const helloWorldCss = (await collectOutput(textOutputPattern, 'dist/build/mp-weixin'))
-      .find(entry => entry.file === 'components/HelloWorld.wxss')
+    const output = await collectOutput(textOutputPattern, 'dist/build/mp-weixin')
+    const helloWorldCss = output.find(entry => entry.file === 'components/HelloWorld.wxss')
+    const mainCss = output.find(entry => entry.file === 'main.wxss')
 
     expect(helloWorldCss?.text ?? '', 'HelloWorld scoped component css should be emitted').toContain('.hello-world-shell')
     expect(helloWorldCss?.text ?? '', 'HelloWorld scoped @apply should be expanded').toContain('display:flex')
     expect(helloWorldCss?.text ?? '', 'HelloWorld scoped @apply should keep rpx radius').toContain('border-radius:20rpx')
     expect(helloWorldCss?.text ?? '', 'HelloWorld scoped @apply should keep color output').toContain('background-color:#f8fafc')
-    expect(helloWorldCss?.text ?? '', 'HelloWorld scoped icon selectors should be mini-program safe').toContain('.i-_bmdi--github-circle_B')
+    expect(mainCss?.text ?? '', 'main css icon selectors should be mini-program safe').toContain('.i-_bmdi--github-circle_B')
+    expect(helloWorldCss?.text ?? '', 'HelloWorld scoped css should not replay unrelated global icon selectors').not.toContain('.i-_bmdi--github-circle_B')
     expect(helloWorldCss?.text ?? '', 'HelloWorld scoped content selectors should be mini-program safe').toContain('.before_ccontent-')
     expect(helloWorldCss?.text ?? '', 'HelloWorld scoped icon selectors should not keep CSS escapes').not.toContain('.i-\\[')
     expect(helloWorldCss?.text ?? '', 'HelloWorld scoped variants should not keep CSS escapes').not.toContain('.before\\:')

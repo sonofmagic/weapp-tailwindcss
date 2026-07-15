@@ -60,6 +60,7 @@ describe('benchmark ci report', () => {
     const fs = await import('node:fs')
     const path = await import('node:path')
     const source = fs.readFileSync(path.resolve(__dirname, '../../../../benchmark/version-compare/scripts/run-ci.mjs'), 'utf8')
+    const matrixSource = fs.readFileSync(path.resolve(__dirname, '../../../../benchmark/version-compare/scripts/run-matrix.mjs'), 'utf8')
 
     expect(source).toContain("part === 'dist'")
     expect(source).toContain('runSourceCandidateHotUpdateBenchmark')
@@ -68,6 +69,13 @@ describe('benchmark ci report', () => {
     expect(source).toContain('core-vite-processed-css-coverage')
     expect(source).toContain('runProcessedCssInjectionBenchmark')
     expect(source).toContain('core-vite-processed-css-injection')
+    expect(source).toContain("parseNumber('--poll-interval', 30)")
+    expect(matrixSource).toContain("parseNumber('--poll-interval', 30)")
+
+    const projectLoopIndex = matrixSource.indexOf('for (const projectMeta of selectedProjects)')
+    const versionLoopIndex = matrixSource.indexOf('for (const versionMeta of versions)', projectLoopIndex)
+    expect(projectLoopIndex).toBeGreaterThan(-1)
+    expect(versionLoopIndex).toBeGreaterThan(projectLoopIndex)
   })
 
   it('extracts plugin processing time from structured Vite and Webpack timing logs', async () => {
@@ -142,10 +150,10 @@ describe('benchmark ci report', () => {
           key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
           hmrMode: 'watch',
           summary: {
-            buildSteady: { median: 1170 },
+            buildSteady: { median: 1210 },
             hmrSteady: { median: 560 },
-            buildPluginSteady: { median: 225 },
-            hmrPluginSteady: { median: 109 },
+            buildPluginSteady: { median: 321 },
+            hmrPluginSteady: { median: 115 },
           },
         },
       ],
@@ -157,7 +165,46 @@ describe('benchmark ci report', () => {
       'build',
       'buildPlugin',
     ])
+    expect(result.thresholds.pluginRegressionPercent).toBe(15)
+    expect(result.thresholds.pluginAbsoluteMs).toBe(100)
+    expect(result.thresholds.endToEndRegressionPercent).toBe(20)
     expect(result.passed).toBe(false)
+  })
+
+  it('uses the full build plugin median so one steady-sample outlier cannot dominate the guard', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-15T00:00:00.000Z',
+      options: { buildRuns: 3, hmrRuns: 1, timeoutMs: 180000, pollIntervalMs: 30 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'demo-mpx-tailwindcss-v4__mp-weixin',
+          buildPluginMs: [1424, 1471, 1417],
+          summary: {
+            buildPlugin: { median: 1424 },
+            buildPluginSteady: { median: 1444 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'demo-mpx-tailwindcss-v4__mp-weixin',
+          buildPluginMs: [1412, 2029, 1477],
+          summary: {
+            buildPlugin: { median: 1477 },
+            buildPluginSteady: { median: 1753 },
+          },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    expect(summary.compares[0]).toMatchObject({
+      baselineBuildPlugin: 1424,
+      currentBuildPlugin: 1477,
+    })
+    expect(evaluatePerformanceGuard(summary).passed).toBe(true)
   })
 
   it('fails the performance guard when watch HMR plugin timing samples are incomplete', async () => {

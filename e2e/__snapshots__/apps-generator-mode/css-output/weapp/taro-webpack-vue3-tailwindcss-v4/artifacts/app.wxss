@@ -1,3 +1,18 @@
+.nut-grid-item__content--clickable {
+}
+.nut-calendarcard-day.header {
+}
+.nut-uploader__input:disabled,
+.nut-uploader__input.disabled {
+}
+.nut-action-sheet .nut-action-sheet__item--loading {
+}
+.nut-range-disabled .nut-range-button-wrapper,
+.nut-range-disabled .nut-range-button-wrapper-left,
+.nut-range-disabled .nut-range-button-wrapper-right {
+}
+.nut-cell--clickable {
+}
 view,
 text,
 ::after,

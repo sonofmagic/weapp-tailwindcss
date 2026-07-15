@@ -1,0 +1,25 @@
+view,
+text,
+::after,
+::before {
+  border: 0 solid;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --spacing: 8rpx;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+}
+ /* tokens: issue-998-page <= src/pages/issue-998/index.tsx */
+.issue-998-page {
+  padding: calc(var(--spacing) * 4);
+}

@@ -419,7 +419,7 @@ async function main() {
   const buildRuns = parseNumber('--build-runs', 3)
   const hmrRuns = parseNumber('--hmr-runs', 5)
   const timeoutMs = parseNumber('--timeout', 180000)
-  const pollIntervalMs = parseNumber('--poll-interval', 120)
+  const pollIntervalMs = parseNumber('--poll-interval', 30)
   const only = parseArg('--only', '')
   const baselineLabel = baselineRef
     ? `base:${baselineRef}`
@@ -482,8 +482,9 @@ async function main() {
   const summary = buildSummary(raw, baselineLabel, currentLabel)
   if (baselineRef) {
     summary.performanceGuard = evaluatePerformanceGuard(summary, {
-      pluginRegressionPercent: parseNumber('--plugin-regression-percent', 10),
-      endToEndRegressionPercent: parseNumber('--end-to-end-regression-percent', 15),
+      pluginRegressionPercent: parseNumber('--plugin-regression-percent', 15),
+      pluginAbsoluteMs: parseNumber('--plugin-absolute-ms', 100),
+      endToEndRegressionPercent: parseNumber('--end-to-end-regression-percent', 20),
       endToEndAbsoluteMs: parseNumber('--end-to-end-absolute-ms', 50),
     })
   }

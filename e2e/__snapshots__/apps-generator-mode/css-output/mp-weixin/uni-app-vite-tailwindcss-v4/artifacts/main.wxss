@@ -35,13 +35,12 @@ text,
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-content: '';
 }
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
-  --font-sans: 'inter', 'inter Fallback', system-ui;
+  --font-sans: 'inter', 'inter Fallback', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
   --font-mono: var(--font-plex-mono), monospace;
   --color-emerald-50: rgb(236, 253, 245);
   --color-emerald-500: #00bb7f;
@@ -61,16 +60,16 @@ wx-root-portal-content {
   --color-slate-100: rgb(241, 245, 249);
   --color-slate-700: rgb(49, 65, 88);
   --color-zinc-950: rgb(9, 9, 11);
-  --spacing: 0.25rem;
+  --spacing: 8rpx;
   --text-xs: 24rpx;
   --text-xs--line-height: 1.33333;
   --text-sm: 28rpx;
   --text-sm--line-height: 1.42857;
-  --text-base: 1rem;
+  --text-base: 32rpx;
   --text-base--line-height: 1.5;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  --default-font-family: var(--font-inter), system-ui;
+  --default-font-family: var(--font-inter), system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
   --default-mono-font-family: var(--font-plex-mono), monospace;
   --color-neutral-1B: #1b1b1b;
   --color-neutral-66: #666;
@@ -97,7 +96,7 @@ wx-root-portal-content {
   --color-neutral-900: #171717;
   --color-stone-900: #1c1917;
   --color-black: #000;
-  --radius-lg: 0.5rem;
+  --radius-lg: 16rpx;
   --status-bar-height: 25px;
   --top-window-height: 0px;
   --window-top: 0px;
@@ -311,7 +310,9 @@ wx-button {
 .space-y-2 > text + view,
 .space-y-2 > text + text {
   --tw-space-y-reverse: 0;
+  margin-bottom: calc((var(--spacing) * 2) * 0);
   margin-bottom: calc((var(--spacing) * 2) * var(--tw-space-y-reverse));
+  margin-top: calc((var(--spacing) * 2) * 1);
   margin-top: calc((var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
 }
  /* tokens: space-y-4 <= src/pages/index/index.vue */
@@ -320,7 +321,9 @@ wx-button {
 .space-y-4 > text + view,
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
+  margin-bottom: calc((var(--spacing) * 4) * 0);
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
+  margin-top: calc((var(--spacing) * 4) * 1);
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
 }
  /* tokens: space-y-reverse <= src/pages/index/index.vue */
@@ -336,7 +339,9 @@ wx-button {
 .space-x-4 > text + view,
 .space-x-4 > text + text {
   --tw-space-x-reverse: 0;
+  margin-right: calc((var(--spacing) * 4) * 0);
   margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
+  margin-left: calc((var(--spacing) * 4) * 1);
   margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
 }
  /* tokens: space-x-reverse <= src/pages/index/index.vue */
@@ -725,11 +730,25 @@ wx-button {
  /* tokens: shadow-sm <= src/pages/index/index.vue */
 .shadow-sm {
   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+  box-shadow:
+    var(--tw-inset-shadow),
+    var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow),
+    var(--tw-ring-shadow),
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
  /* tokens: shadow-xl <= src/pages/index/index.vue */
 .shadow-xl {
   --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+  box-shadow:
+    var(--tw-inset-shadow),
+    var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow),
+    var(--tw-ring-shadow),
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
  /* tokens: divide-x-reverse <= src/pages/index/index.vue */

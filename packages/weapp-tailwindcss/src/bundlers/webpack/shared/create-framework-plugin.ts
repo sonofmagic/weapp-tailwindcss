@@ -389,6 +389,17 @@ export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
       })
       currentWebpackCssSourceFiles.add(file)
     }
+    const updateWebpackGeneratedCss = (source: { css: string, file: string }) => {
+      const file = path.resolve(source.file)
+      const previous = webpackGeneratedCssSources.get(file)
+      if (!previous) {
+        return
+      }
+      webpackGeneratedCssSources.set(file, {
+        ...previous,
+        css: source.css,
+      })
+    }
     const pruneWebpackCssSources = (activeSourceFiles: ReadonlySet<string>, _options: { watchMode?: boolean | undefined } = {}) => {
       const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
       const configuredSourceFiles = new Set<string>()
@@ -522,6 +533,7 @@ export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
       markWebpackCssSourceModule,
       registerWebpackCssSourceFile,
       registerWebpackGeneratedCss,
+      updateWebpackGeneratedCss,
       getRuntimeWatchDependencies() {
         return {
           files: runtimeWatchDependencyFiles,

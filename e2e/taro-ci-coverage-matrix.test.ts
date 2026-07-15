@@ -121,6 +121,15 @@ describe('Taro CI coverage matrix', () => {
     }
   })
 
+  it('keeps H5 designWidth numeric while issue 998 uses file-aware mini-program sizing', () => {
+    for (const name of ['taro-vite-react-tailwindcss-v4', 'taro-webpack-react-tailwindcss-v4']) {
+      const config = configFiles(name).map(readText).join('\n')
+      expect(config, `${name} should preserve numeric designWidth for H5`).toContain('designWidth: taroPlatform.isWeb')
+      expect(config, `${name} should preserve the original H5 design width`).toContain('? 750')
+      expect(config, `${name} should retain the issue 998 file-aware mini-program branch`).toContain('file.includes(\'/pages/issue-998/\')')
+    }
+  })
+
   it('keeps Taro Vite demo and template configs free of compatibility plugins', () => {
     const configTargets = [
       ...taroViteDemoConfigs.map(name => ({

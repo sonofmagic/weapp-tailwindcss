@@ -25,6 +25,7 @@ export const E2E_PROJECTS = [
       'dist/app.wxss',
       'dist/sub-normal/pages/index.wxss',
       'dist/sub-independent/pages/index.wxss',
+      'dist/pages/issue-998/index.wxss',
     ],
     extraSnapshots: ['issue-909-transform'],
     url: '/pages/issue-909/index',
@@ -37,6 +38,7 @@ export const E2E_PROJECTS = [
       'dist/app.wxss',
       'dist/sub-normal/pages/index.wxss',
       'dist/sub-independent/pages/index.wxss',
+      'dist/pages/issue-998/index.wxss',
     ],
   },
   {

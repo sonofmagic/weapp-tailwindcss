@@ -11,7 +11,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
-import { compileCssMacroConditionalComments, removeTailwindPostcssPlugins, resolveFilteredPostcssConfig, transformWebCssCompat, unwrapUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
+import { compileCssMacroConditionalComments, removeTailwindPostcssPlugins, resolvePostcssConfig, transformWebCssCompat, unwrapUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
 import { LRUCache } from 'lru-cache'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { hasUserCssLayerBlocks, normalizeEmptyTailwindCustomVariants, splitUserCssLayerBlocks } from '@/bundlers/shared/generator-css/user-css'
@@ -30,6 +30,7 @@ import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/ta
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
+import { captureFrameworkPostcssOptions } from '../../shared/framework-postcss'
 import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '../../shared/generated-css-marker'
 import { normalizeMiniProgramGeneratorCssSource } from '../../shared/generator-css/output-import-shell'
 import { createHmrTimingRecorder } from '../../shared/hmr-timing'
@@ -1014,6 +1015,7 @@ export function createViteFrameworkPlugins(
     hookContext?: {
       addWatchFile?: (id: string) => void
       emitFile?: (emittedFile: { type: 'asset', fileName: string, source: string }) => string
+      frameworkPostcssStage?: 'complete' | 'pending' | undefined
     },
   ) => {
     if (!shouldOwnTailwindGeneration) {
@@ -1159,6 +1161,7 @@ export function createViteFrameworkPlugins(
       deferEmptyScopedCssSource: shouldDeferEmptyScopedCssSource,
       deferCssAdaptation: !currentGeneratorBranch.isWeb && !shouldAdaptFrameworkWatchCss(),
       disableSourceScan: false,
+      frameworkPostcssStage: hookContext?.frameworkPostcssStage,
       restoreLocalCssImports: !currentGeneratorBranch.isWeb,
     }), {
       file,
@@ -1675,17 +1678,21 @@ export function createViteFrameworkPlugins(
         if (config.css?.postcss !== undefined) {
           return baseConfig
         }
-        return resolveFilteredPostcssConfig(root).then((postcssConfig) => {
+        return resolvePostcssConfig(root).then((postcssConfig) => {
           if (!postcssConfig) {
             return baseConfig
           }
-          debug('inline filtered postcss config without official tailwind plugins in generator mode: %d', postcssConfig.removed)
+          const plugins = [...postcssConfig.plugins]
+          const removed = removeTailwindPostcssPlugins(plugins)
+          if (removed > 0) {
+            debug('inline filtered postcss config without official tailwind plugins in generator mode: %d', removed)
+          }
           return {
             ...baseConfig,
             css: {
               postcss: {
                 ...postcssConfig.options,
-                plugins: postcssConfig.plugins,
+                plugins,
               },
             },
           }
@@ -1751,6 +1758,12 @@ export function createViteFrameworkPlugins(
               }
             }
           }
+          captureFrameworkPostcssOptions(
+            opts,
+            config.css?.postcss && typeof config.css.postcss === 'object'
+              ? config.css.postcss
+              : undefined,
+          )
         }, { emit: false })
       },
       generateBundle: {

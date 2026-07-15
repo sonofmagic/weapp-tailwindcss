@@ -146,6 +146,16 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
     platform: 'alipay',
     styleContains: ['.bg-_b_h534312_B', '.text-_b_hfff_B'],
     textContains: ['bg-_b_h534312_B', 'text-_b_hfff_B'],
+    fileAssertions: [
+      {
+        file: 'dist/pages/issue-998/index.acss',
+        contains: [
+          /--spacing\s*:\s*8rpx/,
+          /padding\s*:\s*calc\(var\(--spacing\)\s*\*\s*4\)/,
+        ],
+        notContains: [/--spacing\s*:\s*4px/],
+      },
+    ],
     reason: 'Taro Alipay 通过 pnpm e2e:multiplatform-build:taro-alipay 做专项构建与只读断言；本地 Taro runner 可能因系统依赖挂起，不放入默认 vitest/execa 构建集合。',
   }),
   taroMiniCase({
@@ -154,6 +164,16 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
     platform: 'alipay',
     styleContains: ['.bg-_b_h123456_B', '.text-_b_hfff_B'],
     textContains: ['bg-_b_h123456_B', 'text-_b_hfff_B'],
+    fileAssertions: [
+      {
+        file: 'dist/pages/issue-998/index.acss',
+        contains: [
+          /--spacing\s*:\s*8rpx/,
+          /padding\s*:\s*calc\(var\(--spacing\)\s*\*\s*4\)/,
+        ],
+        notContains: [/--spacing\s*:\s*4px/],
+      },
+    ],
     status: 'ci',
   }),
   taroMiniCase({

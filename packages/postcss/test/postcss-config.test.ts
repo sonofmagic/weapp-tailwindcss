@@ -5,6 +5,7 @@ import {
   getPostcssPluginName,
   removeTailwindPostcssPlugins,
   resolveFilteredPostcssConfig,
+  resolvePostcssConfig,
 } from '@/index'
 
 describe('postcss config helpers', () => {
@@ -80,6 +81,9 @@ describe('postcss config helpers', () => {
       '}',
     ].join('\n'))
     await expect(resolveFilteredPostcssConfig(dir)).resolves.toBeUndefined()
+    await expect(resolvePostcssConfig(dir)).resolves.toMatchObject({
+      plugins: [{ postcssPlugin: 'autoprefixer' }],
+    })
   })
 
   it('handles non-array plugin configs and rethrows unexpected load errors', async () => {

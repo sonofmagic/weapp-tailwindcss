@@ -96,6 +96,10 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
   const runtime = getWebpackLoaderRuntime(rawOptions?.weappTailwindcssRuntimeKey)
   const opt = runtime?.classSet ?? rawOptions
   if (this.resourcePath) {
+    opt?.updateGeneratedCss?.({
+      file: this.resourcePath,
+      css: Buffer.isBuffer(source) ? source.toString('utf8') : source,
+    })
     opt?.registerCssSourceFile?.({
       file: this.resourcePath,
       css: resolveRegisteredCssSource(this.resourcePath, source),

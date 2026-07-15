@@ -25,7 +25,11 @@ function isCssLikeImporter(importer?: string | null) {
 interface RewriteCssImportsOptions {
   appType?: AppType | undefined
   getAppType?: (() => AppType | undefined) | undefined
-  generateTailwindCss?: ((id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void, emitFile?: (emittedFile: { type: 'asset', fileName: string, source: string }) => string }) => Promise<string | undefined> | string | undefined) | undefined
+  generateTailwindCss?: ((id: string, code: string, hookContext?: {
+    addWatchFile?: (id: string) => void
+    emitFile?: (emittedFile: { type: 'asset', fileName: string, source: string }) => string
+    frameworkPostcssStage?: 'complete' | 'pending' | undefined
+  }) => Promise<string | undefined> | string | undefined) | undefined
   shouldOwnTailwindGeneration?: boolean | undefined
   shouldRewrite: boolean
   rootImport?: string | undefined
@@ -83,7 +87,11 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
         const shouldGenerateInPreTransform = !options.shouldDeferGeneration?.(id, normalizedCode)
           && (hasTailwindRoot || options.shouldGenerateCss?.(id, normalizedCode))
         if (options.shouldOwnTailwindGeneration && shouldGenerateInPreTransform) {
-          const generatedCss = await options.generateTailwindCss?.(id, normalizedCode, this)
+          const generatedCss = await options.generateTailwindCss?.(id, normalizedCode, {
+            ...(this.addWatchFile ? { addWatchFile: this.addWatchFile.bind(this) } : {}),
+            ...(this.emitFile ? { emitFile: this.emitFile.bind(this) } : {}),
+            frameworkPostcssStage: 'pending',
+          })
           if (generatedCss !== undefined) {
             return {
               code: generatedCss,

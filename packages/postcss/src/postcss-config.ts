@@ -37,18 +37,12 @@ export function removeTailwindPostcssPlugins(plugins: unknown[]) {
   return removed
 }
 
-export async function resolveFilteredPostcssConfig(root: string) {
+export async function resolvePostcssConfig(root: string, ctx: Record<string, unknown> = {}) {
   try {
-    const loaded = await postcssrc({}, root)
-    const plugins = Array.isArray(loaded.plugins) ? [...loaded.plugins] : []
-    const removed = removeTailwindPostcssPlugins(plugins)
-    if (removed === 0) {
-      return
-    }
+    const loaded = await postcssrc(ctx, root)
     return {
       options: loaded.options,
-      plugins,
-      removed,
+      plugins: Array.isArray(loaded.plugins) ? [...loaded.plugins] : [],
     }
   }
   catch (error) {
@@ -57,5 +51,22 @@ export async function resolveFilteredPostcssConfig(root: string) {
       return
     }
     throw error
+  }
+}
+
+export async function resolveFilteredPostcssConfig(root: string) {
+  const loaded = await resolvePostcssConfig(root)
+  if (!loaded) {
+    return
+  }
+  const plugins = [...loaded.plugins]
+  const removed = removeTailwindPostcssPlugins(plugins)
+  if (removed === 0) {
+    return
+  }
+  return {
+    options: loaded.options,
+    plugins,
+    removed,
   }
 }

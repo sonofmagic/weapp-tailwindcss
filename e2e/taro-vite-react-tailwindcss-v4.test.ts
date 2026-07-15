@@ -47,6 +47,21 @@ async function readCssWithLocalImports(projectPath: string, file: string, seen =
 }
 
 describe('e2e', () => {
+  it('converts Tailwind v4 spacing variables with Taro designWidth in issue 998 page CSS', async () => {
+    const projectBase = path.resolve(__dirname, '../demo')
+    const root = path.resolve(projectBase, project.name)
+    const projectPath = path.resolve(projectBase, project.projectPath)
+
+    if (process.env.E2E_SKIP_BUILD !== '1') {
+      await ensureProjectBuilt(root)
+    }
+
+    const css = await fs.readFile(path.resolve(projectPath, 'dist/pages/issue-998/index.wxss'), 'utf8')
+    expect(css).toMatch(/--spacing\s*:\s*8rpx/)
+    expect(css).toMatch(/padding\s*:\s*calc\(var\(--spacing\)\s*\*\s*4\)/)
+    expect(css).not.toMatch(/--spacing\s*:\s*4px/)
+  })
+
   it('keeps non-class JSX and WXML text unescaped in Taro Vite React v4 output', async () => {
     const projectBase = path.resolve(__dirname, '../demo')
     const root = path.resolve(projectBase, project.name)

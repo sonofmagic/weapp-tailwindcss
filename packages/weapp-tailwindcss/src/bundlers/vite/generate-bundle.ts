@@ -1703,6 +1703,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                       cssUserHandlerOptions: generatorCssUserHandlerOptions,
                       getSourceCandidatesForEntries: scopedSourceCandidateGetter,
                       sourceCandidates: scopedGeneratorRuntime,
+                      frameworkPostcssStage: 'complete',
                       generatorPlatform,
                       styleHandler,
                       debug,

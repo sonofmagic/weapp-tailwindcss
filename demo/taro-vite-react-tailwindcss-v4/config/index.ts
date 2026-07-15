@@ -17,15 +17,13 @@ const generator = officialPostcssParity ? false : {
     ? 'web'
     : 'weapp',
   webCompat,
-  styleOptions: {
-    px2rpx: true,
-  },
 }
 const projectRoot = resolve(__dirname, '..')
 const cssEntries = [
   resolve(projectRoot, 'src/app.css'),
   resolve(projectRoot, 'src/sub-normal/pages/index.css'),
   resolve(projectRoot, 'src/sub-independent/pages/index.css'),
+  resolve(projectRoot, 'src/pages/issue-998/index.css'),
 ]
 
 const isNativeTarget = process.env.TARO_ENV === 'rn' || process.env.TARO_ENV === 'jdrn'
@@ -45,7 +43,12 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
   const baseConfig: UserConfigExport<'vite'> = {
     projectName: 'taro-vite-react-tailwindcss-v4',
     date: '2025-2-23',
-    designWidth: 750,
+    designWidth: taroPlatform.isWeb
+      ? 750
+      : (input) => {
+          const file = typeof input?.file === 'string' ? input.file.replace(/\\\\+/g, '/') : ''
+          return file.includes('/pages/issue-998/') ? 375 : 750
+        },
     deviceRatio: {
       640: 2.34 / 2,
       750: 1,

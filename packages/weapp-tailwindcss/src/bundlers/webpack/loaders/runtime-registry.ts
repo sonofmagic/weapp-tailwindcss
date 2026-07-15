@@ -6,6 +6,7 @@ export interface WebpackRuntimeClassSetLoaderOptions {
   getClassSet?: () => void | Promise<void>
   getWatchDependencies?: () => RuntimeLoaderWatchDependencies | Promise<RuntimeLoaderWatchDependencies | void> | void
   registerCssSourceFile?: (source: WebpackCssSourceRegistration) => void
+  updateGeneratedCss?: (source: WebpackGeneratedCssUpdate) => void
 }
 
 export interface RuntimeLoaderWatchDependencies {
@@ -23,6 +24,11 @@ export interface WebpackGeneratedCssRegistration {
   classSet: Set<string>
   css: string
   dependencies: string[]
+  file: string
+}
+
+export interface WebpackGeneratedCssUpdate {
+  css: string
   file: string
 }
 

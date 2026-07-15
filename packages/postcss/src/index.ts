@@ -140,6 +140,7 @@ export {
   getPostcssPluginName,
   removeTailwindPostcssPlugins,
   resolveFilteredPostcssConfig,
+  resolvePostcssConfig,
 } from './postcss-config'
 export { postcss } from './postcss-runtime'
 export type {
