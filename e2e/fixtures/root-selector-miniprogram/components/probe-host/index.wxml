@@ -1,0 +1,2 @@
+<view class="probe probe-host-global">global :host</view>
+<view class="probe probe-host-local">component :host</view>

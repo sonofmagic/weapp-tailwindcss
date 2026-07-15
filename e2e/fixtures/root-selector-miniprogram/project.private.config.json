@@ -1,0 +1,16 @@
+{
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "launchMode": "default",
+          "name": "pages/index/index",
+          "pathName": "pages/index/index",
+          "query": "",
+          "scene": null
+        }
+      ]
+    }
+  },
+  "description": "根选择器 IDE e2e 条件页配置。"
+}

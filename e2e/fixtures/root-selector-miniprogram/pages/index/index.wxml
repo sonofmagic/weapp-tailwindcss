@@ -1,0 +1,13 @@
+<view class="probe-list">
+  <view class="probe probe-root">:root</view>
+  <probe-host />
+  <view class="probe probe-page">page</view>
+  <view class="tw-root">
+    <view class="probe probe-tw-root">.tw-root</view>
+  </view>
+  <view class="probe probe-group-with-root">group with :root</view>
+  <view class="probe probe-group-without-root">group without :root</view>
+  <root-portal enable="{{portalEnabled}}">
+    <view class="probe probe-portal">wx-root-portal-content</view>
+  </root-portal>
+</view>

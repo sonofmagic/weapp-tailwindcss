@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "probe-host": "/components/probe-host/index"
+  }
+}

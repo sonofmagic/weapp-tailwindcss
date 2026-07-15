@@ -1,0 +1,19 @@
+:host {
+  --probe-host-local: rgb(101, 163, 13);
+  display: block;
+}
+
+.probe {
+  width: 520rpx;
+  height: 72rpx;
+  margin-bottom: 12rpx;
+  background-color: rgb(209, 213, 219);
+}
+
+.probe-host-global {
+  background-color: var(--probe-host-global, rgb(209, 213, 219));
+}
+
+.probe-host-local {
+  background-color: var(--probe-host-local, rgb(209, 213, 219));
+}

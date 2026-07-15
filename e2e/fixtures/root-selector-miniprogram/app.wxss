@@ -1,0 +1,74 @@
+:root {
+  --probe-root: rgb(197, 48, 48);
+}
+
+:host {
+  --probe-host-global: rgb(217, 119, 6);
+}
+
+page {
+  --probe-page: rgb(5, 150, 105);
+  min-height: 100%;
+  background: #ffffff;
+}
+
+.tw-root {
+  --probe-tw-root: rgb(37, 99, 235);
+}
+
+wx-root-portal-content {
+  --probe-portal: rgb(124, 58, 237);
+}
+
+:root,:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --probe-group-with-root: rgb(219, 39, 119);
+}
+
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --probe-group-without-root: rgb(8, 145, 178);
+}
+
+.probe-list {
+  padding: 24rpx;
+}
+
+.probe {
+  width: 520rpx;
+  height: 72rpx;
+  margin-bottom: 12rpx;
+  background-color: rgb(209, 213, 219);
+}
+
+.probe-root {
+  background-color: var(--probe-root, rgb(209, 213, 219));
+}
+
+.probe-page {
+  background-color: var(--probe-page, rgb(209, 213, 219));
+}
+
+.probe-tw-root {
+  background-color: var(--probe-tw-root, rgb(209, 213, 219));
+}
+
+.probe-portal {
+  position: fixed;
+  top: 720rpx;
+  left: 24rpx;
+  z-index: 999;
+  background-color: var(--probe-portal, rgb(209, 213, 219));
+}
+
+.probe-group-with-root {
+  background-color: var(--probe-group-with-root, rgb(209, 213, 219));
+}
+
+.probe-group-without-root {
+  background-color: var(--probe-group-without-root, rgb(209, 213, 219));
+}
