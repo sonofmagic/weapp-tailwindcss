@@ -4299,10 +4299,13 @@ importers:
     devDependencies:
       '@mpxjs/webpack-plugin':
         specifier: ^2.11.0
-        version: 2.11.0(@mpxjs/core@2.11.0)(vue@2.7.16)(webpack@5.108.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.19))
+        version: 2.11.0(@mpxjs/core@2.11.0)(vue@2.7.16)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.19))
       htmlparser2:
         specifier: 12.0.0
         version: 12.0.0
+      webpack:
+        specifier: 5.105.4
+        version: 5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(cssnano@5.1.15(postcss@8.5.19))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.19)
 
   packages/weapp-tw: {}
 
