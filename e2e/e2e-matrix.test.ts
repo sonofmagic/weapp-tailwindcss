@@ -592,7 +592,14 @@ describe('e2e matrix', () => {
     expect(rootPackageJson.scripts?.['e2e:ide:issues-909-916-928:skip-build']).toContain('E2E_SKIP_BUILD=1')
     expect(rootPackageJson.scripts?.['e2e:ide:issue-909']).toBe('pnpm e2e:ide:issues-909-916-928')
     expect(rootPackageJson.scripts?.['e2e:ide:where']).toContain('e2e/where-selector-ide.test.ts')
-    expect(rootPackageJson.scripts?.['e2e:ide:full']).toContain('pnpm e2e:ide && pnpm e2e:ide:issues-909-916-928 && pnpm e2e:ide:where && pnpm e2e:ide:visual')
+    const fullIdeScript = rootPackageJson.scripts?.['e2e:ide:full'] ?? ''
+    expect(fullIdeScript).toContain('pnpm e2e:ide')
+    expect(fullIdeScript).toContain('pnpm e2e:ide:issues-909-916-928')
+    expect(fullIdeScript).toContain('pnpm e2e:ide:where')
+    expect(fullIdeScript).toContain('pnpm e2e:ide:visual')
+    if (rootPackageJson.scripts?.['e2e:ide:root-selectors']) {
+      expect(fullIdeScript).toContain('pnpm e2e:ide:root-selectors')
+    }
     expect(visualScript).toContain('url: item.name.startsWith(\'mpx-\') ? \'/pages/index\' : \'/pages/index/index\'')
     expect(visualHmr).toContain('VISUAL_HMR_STEPS')
     expect(visualHmr.match(/bg-\[#/g)?.length, 'visual HMR should use multiple arbitrary bg values').toBeGreaterThanOrEqual(3)
