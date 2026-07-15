@@ -60,6 +60,7 @@ describe('benchmark ci report', () => {
     const fs = await import('node:fs')
     const path = await import('node:path')
     const source = fs.readFileSync(path.resolve(__dirname, '../../../../benchmark/version-compare/scripts/run-ci.mjs'), 'utf8')
+    const matrixSource = fs.readFileSync(path.resolve(__dirname, '../../../../benchmark/version-compare/scripts/run-matrix.mjs'), 'utf8')
 
     expect(source).toContain("part === 'dist'")
     expect(source).toContain('runSourceCandidateHotUpdateBenchmark')
@@ -68,6 +69,13 @@ describe('benchmark ci report', () => {
     expect(source).toContain('core-vite-processed-css-coverage')
     expect(source).toContain('runProcessedCssInjectionBenchmark')
     expect(source).toContain('core-vite-processed-css-injection')
+    expect(source).toContain("parseNumber('--poll-interval', 30)")
+    expect(matrixSource).toContain("parseNumber('--poll-interval', 30)")
+
+    const projectLoopIndex = matrixSource.indexOf('for (const projectMeta of selectedProjects)')
+    const versionLoopIndex = matrixSource.indexOf('for (const versionMeta of versions)', projectLoopIndex)
+    expect(projectLoopIndex).toBeGreaterThan(-1)
+    expect(versionLoopIndex).toBeGreaterThan(projectLoopIndex)
   })
 
   it('extracts plugin processing time from structured Vite and Webpack timing logs', async () => {
@@ -144,7 +152,7 @@ describe('benchmark ci report', () => {
           summary: {
             buildSteady: { median: 1170 },
             hmrSteady: { median: 560 },
-            buildPluginSteady: { median: 225 },
+            buildPluginSteady: { median: 241 },
             hmrPluginSteady: { median: 115 },
           },
         },
@@ -157,7 +165,8 @@ describe('benchmark ci report', () => {
       'build',
       'buildPlugin',
     ])
-    expect(result.thresholds.pluginAbsoluteMs).toBe(20)
+    expect(result.thresholds.pluginRegressionPercent).toBe(15)
+    expect(result.thresholds.pluginAbsoluteMs).toBe(40)
     expect(result.passed).toBe(false)
   })
 

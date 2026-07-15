@@ -46,14 +46,14 @@
 关键证据：
 
 - `demo/native-ts/tailwind.config.js:11` 额外扫描 `../../packages/tailwindcss-core-plugins-extractor/src/**/*.ts`
-- `benchmark/version-compare/scripts/run-matrix.mjs:164` 默认轮询间隔为 `120ms`，会放大接近阈值的差异
+- `benchmark/version-compare/scripts/run-matrix.mjs` 的主矩阵此前默认使用 `120ms` 轮询，会放大接近阈值的差异
 - `packages/weapp-tailwindcss/src/bundlers/vite/generate-bundle.ts:329` 附近新增增量脏检查与哈希流程，HMR 每轮固定成本更可见
 - `packages/weapp-tailwindcss/src/bundlers/vite/index.ts:104` 附近 runtime 刷新判定与缓存策略更严格
 
 ## 建议
 
 1. 对 `demo/native-ts`，避免在常规 HMR 场景扫描跨包 `extractor` 源码路径。
-2. benchmark 默认使用 `--poll-interval 20` 或 `30`，减少“档位化”误差。
+2. benchmark 默认使用 `--poll-interval 30`，减少“档位化”误差。
 3. 保留现有矩阵作为“真实用户默认体验”基线，同时增加一份“高精度采样”对照报告。
 
 ## 复现实验命令

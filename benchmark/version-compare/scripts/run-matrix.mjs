@@ -707,7 +707,7 @@ async function main() {
   const buildRuns = parseNumber('--build-runs', 3)
   const hmrRuns = parseNumber('--hmr-runs', 5)
   const timeoutMs = parseNumber('--timeout', 180000)
-  const pollIntervalMs = parseNumber('--poll-interval', 120)
+  const pollIntervalMs = parseNumber('--poll-interval', 30)
   const output = parseString('--out', 'benchmark/version-compare/data/matrix-raw.json')
   const only = parseString('--only', '')
   const versions = await parseVersions()
@@ -721,8 +721,8 @@ async function main() {
       })
     : projects
 
-  for (const versionMeta of versions) {
-    for (const projectMeta of selectedProjects) {
+  for (const projectMeta of selectedProjects) {
+    for (const versionMeta of versions) {
       try {
         const row = await runCase(versionMeta, projectMeta, options)
         rows.push(row)

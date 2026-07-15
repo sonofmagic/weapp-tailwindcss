@@ -75,7 +75,7 @@ jobs:
           --build-runs "$BENCH_BUILD_RUNS"
           --hmr-runs "$BENCH_HMR_RUNS"
           --timeout 180000
-          --poll-interval 120
+          --poll-interval 30
           --only "$BENCH_ONLY"
           --result-dir .tmp/benchmark-ci/result
 
@@ -86,7 +86,7 @@ jobs:
           --build-runs "$BENCH_BUILD_RUNS"
           --hmr-runs "$BENCH_HMR_RUNS"
           --timeout 180000
-          --poll-interval 120
+          --poll-interval 30
           --only "$BENCH_ONLY"
           --result-dir .tmp/benchmark-ci/result
 
