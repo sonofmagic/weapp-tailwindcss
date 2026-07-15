@@ -281,7 +281,7 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).toHaveBeenCalledTimes(1)
   })
 
-  it('adapts late web generation through the complete framework PostCSS pipeline', async () => {
+  it('keeps late web generation on the native framework PostCSS pipeline', async () => {
     const frameworkPlugin = {
       postcssPlugin: 'framework-token-transform',
       Declaration(decl: { value: string }) {
@@ -331,13 +331,13 @@ describe('bundlers/shared generator css', () => {
       frameworkPostcssStage: 'complete',
     })
 
-    expect(result?.css).toBe(':root{--spacing:processed-token}')
+    expect(result?.css).toBe(':root{--spacing:4px}')
     expect(result?.metadata).toMatchObject({
       file: '/workspace/src/app.css',
       majorVersion: 4,
       outputFile: 'app.css',
     })
-    expect(styleHandler).toHaveBeenCalledTimes(1)
+    expect(styleHandler).not.toHaveBeenCalled()
   })
 
   it('rejects non-v4 Tailwind generation', async () => {

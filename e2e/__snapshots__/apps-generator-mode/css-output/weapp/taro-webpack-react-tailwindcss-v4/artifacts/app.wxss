@@ -1,3 +1,17 @@
+@font-face {
+  font-family: JDZH-Regular;
+  src: url(data:font/ttf;base64,<stable>) format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: JDZH-Bold;
+  src: url(data:font/ttf;base64,<stable>) format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 view,
 text,
 ::after,
@@ -25,44 +39,6 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --font-sans: 'inter', 'inter Fallback', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
-  --font-mono: var(--font-plex-mono), monospace;
-  --color-slate-900: #0f172b;
-  --color-white: #fff;
-  --color-purple-800: #6e11b0;
-  --color-pink-200: #fccee8;
-  --color-zinc-50: rgb(250, 250, 250);
-  --color-zinc-900: rgb(24, 24, 27);
-  --color-yellow-300: #ffe02e;
-  --color-emerald-400: #00d294;
-  --color-purple-500: #ac4bff;
-  --color-slate-100: #f1f5f9;
-  --color-zinc-950: #09090b;
-  --spacing: 0.25rem;
-  --default-font-family: var(--font-inter), system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
-  --default-mono-font-family: var(--font-plex-mono), monospace;
-  --test-color: #006241;
-  --color-test: #006241;
-  --font-test: 'Issue 978', sans-serif;
-  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-  --color-red-50: #fef2f2;
-  --color-red-950: #460809;
-  --color-orange-500: #fe6e00;
-  --color-amber-500: #f99c00;
-  --color-yellow-500: #edb200;
-  --color-lime-500: #80cd00;
-  --color-teal-500: #00baa7;
-  --color-sky-500: #00a5ef;
-  --color-indigo-500: #625fff;
-  --color-violet-500: #8d54ff;
-  --color-pink-500: #f6339a;
-  --color-gray-900: #101828;
-  --color-neutral-900: #171717;
-  --color-stone-900: #1c1917;
-  --color-black: #000;
-  --text-base: 1rem;
-  --font-weight-bold: 700;
-  --radius-lg: 0.5rem;
   --nutui-brand-1: #ffebf1;
   --nutui-brand-2: #ffd6e1;
   --nutui-brand-3: #ffadbe;
@@ -288,6 +264,68 @@ wx-root-portal-content {
   --nutui-radius-xl: var(--nutui-radius-12);
   --nutui-radius-xxl: var(--nutui-radius-14);
   --nutui-radius-xxxl: var(--nutui-radius-16);
+  --font-sans: 'inter', 'inter Fallback', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+  --font-mono: var(--font-plex-mono), monospace;
+  --color-slate-900: #0f172b;
+  --color-white: #fff;
+  --color-purple-800: #6e11b0;
+  --color-pink-200: #fccee8;
+  --color-zinc-50: rgb(250, 250, 250);
+  --color-zinc-900: rgb(24, 24, 27);
+  --color-yellow-300: #ffe02e;
+  --color-emerald-400: #00d294;
+  --color-purple-500: #ac4bff;
+  --color-slate-100: #f1f5f9;
+  --color-zinc-950: #09090b;
+  --spacing: 0.25rem;
+  --default-font-family: var(--font-inter), system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+  --default-mono-font-family: var(--font-plex-mono), monospace;
+  --test-color: #006241;
+  --color-test: #006241;
+  --font-test: 'Issue 978', sans-serif;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --color-red-50: #fef2f2;
+  --color-red-950: #460809;
+  --color-orange-500: #fe6e00;
+  --color-amber-500: #f99c00;
+  --color-yellow-500: #edb200;
+  --color-lime-500: #80cd00;
+  --color-teal-500: #00baa7;
+  --color-sky-500: #00a5ef;
+  --color-indigo-500: #625fff;
+  --color-violet-500: #8d54ff;
+  --color-pink-500: #f6339a;
+  --color-gray-900: #101828;
+  --color-neutral-900: #171717;
+  --color-stone-900: #1c1917;
+  --color-black: #000;
+  --text-base: 1rem;
+  --font-weight-bold: 700;
+  --radius-lg: 0.5rem;
+}
+.nut-uploader-input:disabled {
+}
+.nut-tag-close {
+}
+.nut-searchbar-disabled {
+}
+.nut-range-disabled .nut-range-button-wrapper,
+.nut-range-disabled .nut-range-button-wrapper-left,
+.nut-range-disabled .nut-range-button-wrapper-right {
+}
+.nut-rate.disabled .nut-rate-item-icon {
+}
+.nut-rate.readonly .nut-rate-item-icon {
+}
+.nut-grid-item-content-clickable {
+}
+.nut-cell-clickable {
+}
+.nut-calendarcard-day.header {
+}
+.nut-calendarcard-day.prev,
+.nut-calendarcard-day.next,
+.nut-calendarcard-day.disabled {
 }
 @font-face {
   font-display: swap;

@@ -6,7 +6,6 @@ text,
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  --tw-content: '';
 }
 :host,
 page,

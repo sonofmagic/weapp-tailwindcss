@@ -1,5 +1,6 @@
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css'
 import type { InternalUserDefinedOptions } from '@/types'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { adaptGeneratedCssWithFrameworkPipeline, hasFrameworkPostcssOptions } from './framework-postcss'
 import { generateCssByGenerator } from './generator-css'
 
@@ -26,6 +27,12 @@ export async function generateTailwindV4Css(
   const frameworkPostcssOwner = options.frameworkPostcssOwner ?? options.opts
   const shouldReplayFrameworkPostcss = options.frameworkPostcssStage === 'complete'
     && hasFrameworkPostcssOptions(frameworkPostcssOwner)
+    && normalizeWeappTailwindcssGeneratorOptions(options.opts.generator, {
+      appType: options.opts.appType,
+      platform: options.generatorPlatform ?? options.opts.cssOptions?.platform ?? options.opts.platform,
+      tailwindcssMajorVersion: majorVersion,
+      uniAppX: options.opts.uniAppX,
+    }).target === 'weapp'
   const generated = await generateCssByGenerator(
     shouldReplayFrameworkPostcss
       ? {
