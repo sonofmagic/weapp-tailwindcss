@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 3.1.12
+
+### Patch Changes
+
+- 🐛 **修复绝对路径 source entry 在存在系统路径别名时无法匹配源文件的问题。** [`da88a42`](https://github.com/sonofmagic/weapp-tailwindcss/commit/da88a42f41ffa1ce0de365d7708526a963ab3165) by @sonofmagic
+
 ## 3.1.11
 
 ### Patch Changes
