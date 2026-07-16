@@ -43,7 +43,7 @@ overrides:
 
 catalogs:
   autoprefixer10:
-    autoprefixer: ^10.5.2
+    autoprefixer: ^10.5.3
   babelCore7285:
     '@babel/core': ^7.29.7
   babelPresetReact7285:
@@ -108,7 +108,7 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   rsbuild2:
-    '@rsbuild/core': ^2.1.5
+    '@rsbuild/core': ^2.1.6
     '@rsbuild/plugin-react': ^2.1.0
     '@rsbuild/plugin-vue': ^2.0.1
   sass195:
@@ -219,7 +219,7 @@ catalogs:
   vitePluginReact6:
     '@vitejs/plugin-react': ^6.0.3
   vitePluginVue6:
-    '@vitejs/plugin-vue': ^6.0.7
+    '@vitejs/plugin-vue': ^6.0.8
   vitest:
     vitest: ~4.1.10
   vue2:
@@ -239,4 +239,4 @@ catalogs:
   weappVite:
     weapp-vite: ^6.18.3
   wrangler:
-    wrangler: ^4.110.0
+    wrangler: ^4.111.0
