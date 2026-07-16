@@ -941,6 +941,27 @@ function shouldNormalizeProjectCssSnapshots(project: CompareProject) {
   return project.name === 'taro-webpack-react-tailwindcss-v4'
 }
 
+function shouldRemoveTaroWebpackV4WebSubpackageNoise(project: CompareProject, fileName: string) {
+  return project.name === 'taro-webpack-react-tailwindcss-v4'
+    && isH5WebProject(project)
+    && normalizeOutputCssFileName(fileName) === 'css/app.css'
+}
+
+function removeTaroWebpackV4WebSubpackageNoise(css: string) {
+  try {
+    const root = postcss.parse(css)
+    root.walkRules((rule) => {
+      if (rule.selectors.some(selector => /(?:normal|independent)_subpackage_taro-webpack-react-tailwindcss-v4/.test(selector))) {
+        rule.remove()
+      }
+    })
+    return normalizeCssSnapshot(root.toString())
+  }
+  catch {
+    return css
+  }
+}
+
 function removeTaroWebpackV4IndependentNutuiNoise(css: string) {
   try {
     const root = postcss.parse(css)
@@ -972,6 +993,9 @@ function removeTaroWebpackV4IndependentNutuiNoise(css: string) {
 
 function normalizeProjectCssSnapshot(project: CompareProject, snapshot: GeneratorCssSnapshot) {
   let normalized = normalizeCssSnapshot(snapshot.content)
+  if (shouldRemoveTaroWebpackV4WebSubpackageNoise(project, snapshot.fileName)) {
+    normalized = removeTaroWebpackV4WebSubpackageNoise(normalized)
+  }
   if (shouldNormalizeTaroWebpackV4IndependentNutuiNoise(project, snapshot.fileName)) {
     normalized = removeTaroWebpackV4IndependentNutuiNoise(normalized)
   }
@@ -1229,6 +1253,25 @@ describe('demo generator mode output', () => {
 
     expect(findPageFile(before)).toBe('css/index.2.css')
     expect(findPageFile(after)).toBe(findPageFile(before))
+  })
+
+  it('keeps Taro webpack web subpackage utilities out of the main css snapshot', () => {
+    const project = createH5CompareProject(
+      createCompareProject(E2E_PROJECTS.find(item => item.name === 'taro-webpack-react-tailwindcss-v4')!),
+      { platform: 'web', buildEnv: {} },
+    )
+    const normalized = normalizeProjectCssSnapshot(project, {
+      fileName: 'css/app.css',
+      content: [
+        '.main { color: red; }',
+        String.raw`.before\:content-\[\'normal_subpackage_taro-webpack-react-tailwindcss-v4\'\] { content: 'normal'; }`,
+        String.raw`.before\:content-\[\'independent_subpackage_taro-webpack-react-tailwindcss-v4\'\] { content: 'independent'; }`,
+      ].join('\n'),
+    })
+
+    expect(normalized).toContain('.main')
+    expect(normalized).not.toContain('normal_subpackage_taro-webpack-react-tailwindcss-v4')
+    expect(normalized).not.toContain('independent_subpackage_taro-webpack-react-tailwindcss-v4')
   })
 
   it('builds retained demos with generator mini-program, H5 web, and App style css output', async () => {
