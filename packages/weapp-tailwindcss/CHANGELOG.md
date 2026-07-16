@@ -1,5 +1,19 @@
 # weapp-tailwindcss
 
+## 5.1.16
+
+### Patch Changes
+
+- 🐛 **修复 Mpx 构建存在多个 peer 依赖实例时 loader 与依赖模板混用的问题，根据 Webpack compilation 已注册的模板锁定实际拥有编译图的 `@mpxjs/webpack-plugin`，避免构建报错并保持 Tailwind 样式转换正常。同时修复 Tailwind CSS v4 用户 `@layer` 规则因格式缩进未命中插入位置而被追加到 utilities 之后的问题，按 CSS 结构恢复 `base`、`components`、`utilities` 与未分层样式的层叠顺序，并避免兼容回放重复输出 layer 规则。** [#995](https://github.com/sonofmagic/weapp-tailwindcss/pull/995) by @sonofmagic
+
+- 🐛 **优化 Tailwind CSS v4 在 Vite 与 Webpack 构建、watch 和 HMR 场景下的候选增量更新与样式产物处理性能，并新增分层性能基准和回归门禁。** [#996](https://github.com/sonofmagic/weapp-tailwindcss/pull/996) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 后置生成样式绕过框架 PostCSS 管线的问题，确保 Vite、Webpack 等构建链能复用完整插件配置处理 CSS 变量与生成规则。** [#999](https://github.com/sonofmagic/weapp-tailwindcss/pull/999) by @sonofmagic
+
+- 🐛 **默认关闭 `cssCalc` 预计算，避免 SVG 等大体积 CSS 自定义属性在 Autoprefixer 处理后重复展开；需要预计算兼容能力时可显式开启。同时清理 Vue scoped 样式中 `@apply` 生成的等价未作用域规则，避免组件样式重复输出。** [`0cc5efc`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0cc5efc39b3aeffc97a3addddff4ef74065d1d31) by @sonofmagic
+- 📦 **Dependencies** [`da88a42`](https://github.com/sonofmagic/weapp-tailwindcss/commit/da88a42f41ffa1ce0de365d7708526a963ab3165)
+  → `@weapp-tailwindcss/postcss@3.1.12`
+
 ## 5.1.15
 
 ### Patch Changes
