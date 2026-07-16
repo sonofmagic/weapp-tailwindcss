@@ -124,7 +124,7 @@ describe('source scan helpers', () => {
     expect(isFileMatchedByTailwindSourceEntries(path.join(dir, 'outside.vue'), entries)).toBe(false)
 
     const absoluteEntry = { base: dir, negated: false, pattern: path.join(dir, 'src/index.vue') }
-    expect(isFileMatchedByTailwindSourceEntries(path.join(dir, 'src/index.vue'), [absoluteEntry])).toBe(false)
+    expect(isFileMatchedByTailwindSourceEntries(path.join(dir, 'src/index.vue'), [absoluteEntry])).toBe(true)
   })
 
   it('resolves css @source directives into source entries', async () => {

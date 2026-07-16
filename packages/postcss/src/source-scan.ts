@@ -105,7 +105,7 @@ export function resolveSourceScanPath(value: string) {
 
 function normalizeEntryPattern(entry: TailwindSourceEntry) {
   return path.isAbsolute(entry.pattern)
-    ? toPosixPath(path.relative(resolveSourceScanPath(entry.base), entry.pattern))
+    ? toPosixPath(path.relative(resolveSourceScanPath(entry.base), resolveSourceScanPath(entry.pattern)))
     : entry.pattern
 }
 
