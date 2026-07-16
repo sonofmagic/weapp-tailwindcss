@@ -785,6 +785,30 @@ describe('watch-hmr regression text helpers', () => {
     expect(lastCompileSuccessAt).toBeGreaterThan(phaseStartedAt)
   })
 
+  it('accepts compile success recorded in the same millisecond as the mutation', async () => {
+    const phaseStartedAt = Date.now() - 700
+
+    const elapsed = await waitForCompileSettled(
+      {
+        label: 'demo/uni-app-vite-tailwindcss-v4',
+        outputWxml: '/missing/index.wxml',
+        outputJs: '/missing/index.js',
+      } as any,
+      {
+        timeoutMs: 100,
+        pollMs: 5,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+        lastCompileSuccessAt: () => phaseStartedAt,
+        pluginProcessSamplesSince: () => [],
+      } as any,
+      phaseStartedAt,
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
   it('scales compile settle timeout for slow CI watch cases', () => {
     expect(resolveCompileSettleTimeoutMs({ timeoutMs: 2_000 })).toBe(2_000)
     expect(resolveCompileSettleTimeoutMs({ timeoutMs: 240_000 })).toBe(60_000)

@@ -253,7 +253,7 @@ export async function waitForCompileSettled(
   return waitFor(
     async () => {
       const lastCompileSuccessAt = session.lastCompileSuccessAt()
-      if (lastCompileSuccessAt > phaseStartedAt) {
+      if (lastCompileSuccessAt > 0 && lastCompileSuccessAt >= phaseStartedAt) {
         return Date.now() - lastCompileSuccessAt >= stableWindowMs
       }
 
@@ -264,7 +264,7 @@ export async function waitForCompileSettled(
           .filter(sample => sample.metric === 'total' || sample.phase === 'total')
           .map(sample => sample.at),
       )
-      if (latestPluginTotalAt > phaseStartedAt) {
+      if (latestPluginTotalAt > 0 && latestPluginTotalAt >= phaseStartedAt) {
         return Date.now() - latestPluginTotalAt >= stableWindowMs
       }
 
@@ -273,7 +273,8 @@ export async function waitForCompileSettled(
         getMtime(watchCase.outputJs),
       ])
       const latestOutputMtime = Math.max(wxmlMtime, jsMtime)
-      return latestOutputMtime > phaseStartedAt
+      return latestOutputMtime > 0
+        && latestOutputMtime >= phaseStartedAt
         && Date.now() - latestOutputMtime >= stableWindowMs
     },
     {
