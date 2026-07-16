@@ -3,7 +3,6 @@
   :host {
     --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-    --spacing: 4px;
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
   }
@@ -198,14 +197,31 @@
   }
 }
 @layer utilities {
- /*tokens: p-4 <= src/pages/issue-998/index.tsx */
-  .p-4 {
-    padding: calc(var(--spacing) * 4);
+ /*tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.tsx */
+  .bg-normal-subpackage-marker {
+    background-color: #2563eb;
+  }
+  .before\:content-\[\'normal_subpackage_taro-webpack-react-tailwindcss-v4\'\] {
+    &::before {
+      --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
+      content: var(--tw-content);
+    }
   }
 }
- /*tokens: issue-998-page <= src/pages/issue-998/index.tsx */
-.issue-998-page {
-  padding: calc(var(--spacing) * 4);
+@property --tw-content {
+  syntax: '*';
+  initial-value: '';
+  inherits: false;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
+    *,
+    ::before,
+    ::after,
+    ::backdrop {
+      --tw-content: '';
+    }
+  }
 }
 /*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
 @layer theme {
@@ -213,7 +229,6 @@
   :root {
     --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-    --spacing: 0.1rem;
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
   }
@@ -302,4 +317,11 @@
     -webkit-appearance: button;
     appearance: button;
   }
+}
+@property --tw-content {
+  syntax: '*';
+  initial-value: '';
+  inherits: false;
+}
+@layer properties {
 }

@@ -17,6 +17,7 @@ import {
 } from '../bundlers/vite-plugin.testkit'
 
 const TEST_TIMEOUT_MS = 30000
+const VIRTUAL_VITE_ROOT = '/virtual/weapp-tailwindcss-vite-test'
 const createdDirs: string[] = []
 
 async function loadWeappTailwindcssPlugin() {
@@ -49,7 +50,7 @@ async function resolvePostPlugin() {
 
   await (postPlugin.configResolved as any)?.call(postPlugin, {
     command: 'serve',
-    root: process.cwd(),
+    root: VIRTUAL_VITE_ROOT,
     css: { postcss: { plugins: [] } },
     build: { outDir: 'dist' },
   } as ResolvedConfig)
@@ -831,7 +832,7 @@ describe('v5 vite generator bundle', () => {
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'serve',
-      root: process.cwd(),
+      root: VIRTUAL_VITE_ROOT,
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist' },
     } as ResolvedConfig)
@@ -936,7 +937,7 @@ describe('v5 vite generator bundle', () => {
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'serve',
-      root: process.cwd(),
+      root: VIRTUAL_VITE_ROOT,
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist' },
     } as ResolvedConfig)
@@ -1024,7 +1025,7 @@ describe('v5 vite generator bundle', () => {
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'build',
-      root: process.cwd(),
+      root: VIRTUAL_VITE_ROOT,
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist' },
     } as ResolvedConfig)
@@ -1111,7 +1112,7 @@ describe('v5 vite generator bundle', () => {
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'build',
-      root: process.cwd(),
+      root: VIRTUAL_VITE_ROOT,
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist', watch: {} },
     } as ResolvedConfig)
@@ -1200,7 +1201,7 @@ describe('v5 vite generator bundle', () => {
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'build',
-      root: process.cwd(),
+      root: VIRTUAL_VITE_ROOT,
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist', watch: {} },
     } as ResolvedConfig)

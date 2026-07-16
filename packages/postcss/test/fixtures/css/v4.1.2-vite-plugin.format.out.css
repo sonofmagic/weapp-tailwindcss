@@ -1,5 +1,6 @@
 /*! tailwindcss v4.1.2 | MIT License | https://tailwindcss.com */
-view,text,::before,::after {
+
+    view,text,::before,::after {
       --tw-space-y-reverse: 0;
       --tw-space-x-reverse: 0;
       --tw-border-style: solid;

@@ -44,7 +44,7 @@ view,text,::after,::before {
   margin: 0;
   padding: 0;
 }
-.btn-primary {
+  .btn-primary {
     border-radius: var(--radius-sm);
     padding-top: calc(var(--spacing) * 4);
     padding-bottom: calc(var(--spacing) * 4);

@@ -2,7 +2,12 @@
 ::before,
 ::after,
 ::backdrop {
-  --tw-content: '';
+  --tw-gradient-from: #0000;
+  --tw-gradient-via: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
 }
 /*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
@@ -10,13 +15,23 @@
   ::before,
   ::after,
   ::backdrop {
-    --tw-content: '';
+    --tw-gradient-from: #0000;
+    --tw-gradient-via: #0000;
+    --tw-gradient-to: #0000;
+    --tw-gradient-from-position: 0%;
+    --tw-gradient-via-position: 50%;
+    --tw-gradient-to-position: 100%;
   }
 }
 :root,
 :host {
   --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --color-yellow-300: rgb(255, 224, 46);
+  --color-emerald-400: rgb(0, 210, 148);
+  --color-purple-500: rgb(171, 78, 255);
+  --color-zinc-950: rgb(9, 9, 11);
+  --spacing: 4px;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
@@ -204,19 +219,456 @@ input:where([type='button'], [type='reset'], [type='submit']),
 [hidden]:where(:not([hidden='until-found'])) {
   display: none !important;
 }
- /*tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.tsx */
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
+ /*tokens: absolute <= src/pages/issue-909/index.tsx */
+.absolute {
+  position: absolute;
 }
-.before\:content-\[\'independent_subpackage_taro-webpack-react-tailwindcss-v4\'\]::before {
-  --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
-  content: var(--tw-content);
+ /*tokens: relative <= src/pages/issue-909/index.tsx */
+.relative {
+  position: relative;
+}
+ /*tokens: mt-2 <= src/pages/index/index.tsx */
+.mt-2 {
+  margin-top: calc(var(--spacing) * 2);
+}
+ /*tokens: mt-4 <= src/pages/index/index.tsx */
+.mt-4 {
+  margin-top: calc(var(--spacing) * 4);
+}
+ /*tokens: flex <= src/pages/issue-909/index.tsx, src/pages/issue-928/index.tsx */
+.flex {
+  display: flex;
+}
+ /*tokens: h-8 <= src/pages/issue-909/index.tsx */
+.h-8 {
+  height: calc(var(--spacing) * 8);
+}
+ /*tokens: h-14 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
+.h-14 {
+  height: calc(var(--spacing) * 14);
+}
+ /*tokens: w-8 <= src/pages/issue-909/index.tsx */
+.w-8 {
+  width: calc(var(--spacing) * 8);
+}
+ /*tokens: w-28 <= src/pages/issue-928/index.tsx */
+.w-28 {
+  width: calc(var(--spacing) * 28);
+}
+ /*tokens: rotate-x-45 <= src/pages/issue-909/index.tsx */
+.rotate-x-45 {
+  --tw-rotate-x: rotateX(45deg);
+  transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+}
+ /*tokens: -rotate-y-45 <= src/pages/issue-909/index.tsx */
+.-rotate-y-45 {
+  --tw-rotate-y: rotateY(calc(45deg * -1));
+  transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+}
+ /*tokens: rotate-y-45 <= src/pages/issue-909/index.tsx */
+.rotate-y-45 {
+  --tw-rotate-y: rotateY(45deg);
+  transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+}
+ /*tokens: rotate-y-90 <= src/pages/issue-909/index.tsx */
+.rotate-y-90 {
+  --tw-rotate-y: rotateY(90deg);
+  transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+}
+ /*tokens: rotate-z-45 <= src/pages/issue-909/index.tsx */
+.rotate-z-45 {
+  --tw-rotate-z: rotateZ(45deg);
+  transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+}
+ /*tokens: rounded <= src/pages/index/index.tsx */
+.rounded {
+  border-radius: 0.25rem;
+}
+.bg-\[\#0977ee\] {
+  background-color: #0977ee;
+}
+.bg-\[\#534312\] {
+  background-color: #534312;
+}
+ /*tokens: bg-purple-800 <= src/pages/index/index.tsx */
+.bg-purple-800 {
+  background-color: rgb(110, 17, 176);
+}
+ /*tokens: bg-white <= src/pages/index/index.tsx */
+.bg-white {
+  background-color: #fff;
+}
+ /*tokens: -bg-linear-65 <= src/pages/issue-928/index.tsx */
+.-bg-linear-65 {
+  --tw-gradient-position: -65deg;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+ /*tokens: bg-linear-65 <= src/pages/issue-928/index.tsx */
+.bg-linear-65 {
+  --tw-gradient-position: 65deg;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+ /*tokens: bg-linear-to-r <= src/pages/issue-928/index.tsx */
+.bg-linear-to-r {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+ /*tokens: bg-linear-to-r/hsl <= src/pages/issue-928/index.tsx */
+.bg-linear-to-r\/hsl {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+ /*tokens: bg-linear-to-r/increasing <= src/pages/issue-928/index.tsx */
+.bg-linear-to-r\/increasing {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+ /*tokens: bg-linear-to-r/longer <= src/pages/issue-928/index.tsx */
+.bg-linear-to-r\/longer {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+ /*tokens: bg-linear-to-r/oklab <= src/pages/issue-928/index.tsx */
+.bg-linear-to-r\/oklab {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+ /*tokens: bg-linear-to-r/oklch <= src/pages/issue-928/index.tsx */
+.bg-linear-to-r\/oklch {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+ /*tokens: bg-linear-to-r/shorter <= src/pages/issue-928/index.tsx */
+.bg-linear-to-r\/shorter {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+ /*tokens: bg-linear-to-r/srgb <= src/pages/issue-928/index.tsx */
+.bg-linear-to-r\/srgb {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+ /*tokens: bg-linear-to-tr <= src/pages/issue-928/index.tsx */
+.bg-linear-to-tr {
+  --tw-gradient-position: to top right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+ /*tokens: -bg-conic-180 <= src/pages/issue-928/index.tsx */
+.-bg-conic-180 {
+  --tw-gradient-position: from -180deg;
+  background-image: conic-gradient(var(--tw-gradient-stops));
+}
+ /*tokens: bg-conic <= src/pages/issue-928/index.tsx */
+.bg-conic {
+  --tw-gradient-position: from 0deg;
+  background-image: conic-gradient(var(--tw-gradient-stops));
+}
+.bg-conic-\(--issue-928-conic\) {
+  --tw-gradient-position: var(--issue-928-conic);
+  background-image: conic-gradient(var(--tw-gradient-stops, var(--issue-928-conic)));
+}
+ /*tokens: bg-conic-180 <= src/pages/issue-928/index.tsx */
+.bg-conic-180 {
+  --tw-gradient-position: from 180deg;
+  background-image: conic-gradient(var(--tw-gradient-stops));
+}
+.bg-conic-\[from_45deg_at_50\%_50\%\,\#ef4444\,\#eab308\,\#22c55e\] {
+  --tw-gradient-position: from 45deg at 50% 50%, #ef4444, #eab308, #22c55e;
+  background-image: conic-gradient(var(--tw-gradient-stops, from 45deg at 50% 50%, #ef4444, #eab308, #22c55e));
+}
+ /*tokens: bg-conic/decreasing <= src/pages/issue-928/index.tsx */
+.bg-conic\/decreasing {
+  --tw-gradient-position: from 0deg;
+  background-image: conic-gradient(var(--tw-gradient-stops));
+}
+ /*tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
+.bg-gradient-to-r {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.bg-linear-\(--issue-928-linear\) {
+  --tw-gradient-position: var(--issue-928-linear);
+  background-image: linear-gradient(var(--tw-gradient-stops, var(--issue-928-linear)));
+}
+.bg-linear-\[25deg\,\#ef4444_5\%\,\#eab308_60\%\,\#22c55e_90\%\,\#14b8a6\] {
+  --tw-gradient-position: 25deg, #ef4444 5%, #eab308 60%, #22c55e 90%, #14b8a6;
+  background-image: linear-gradient(var(--tw-gradient-stops, 25deg, #ef4444 5%, #eab308 60%, #22c55e 90%, #14b8a6));
+}
+ /*tokens: bg-radial <= src/pages/issue-928/index.tsx */
+.bg-radial {
+  --tw-gradient-position: at center;
+  background-image: radial-gradient(var(--tw-gradient-stops));
+}
+.bg-radial-\(--issue-928-radial\) {
+  --tw-gradient-position: var(--issue-928-radial);
+  background-image: radial-gradient(var(--tw-gradient-stops, var(--issue-928-radial)));
+}
+.bg-radial-\[at_50\%_75\%\] {
+  --tw-gradient-position: at 50% 75%;
+  background-image: radial-gradient(var(--tw-gradient-stops, at 50% 75%));
+}
+.bg-\(image\:--issue-928-image\) {
+  background-image: var(--issue-928-image);
+}
+.bg-\[image\:linear-gradient\(to_right\,\#06b6d4\,\#3b82f6\)\] {
+  background-image: linear-gradient(to right, #06b6d4, #3b82f6);
+}
+ /*tokens: bg-none <= src/pages/issue-928/index.tsx */
+.bg-none {
+  background-image: none;
+}
+.from-\(--issue-928-from\) {
+  --tw-gradient-from: var(--issue-928-from);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.from-\[\#06b6d4\] {
+  --tw-gradient-from: #06b6d4;
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+ /*tokens: from-cyan-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
+.from-cyan-500 {
+  --tw-gradient-from: rgb(0, 182, 212);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+ /*tokens: from-emerald-400 <= src/pages/issue-928/index.tsx */
+.from-emerald-400 {
+  --tw-gradient-from: rgb(0, 210, 148);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+ /*tokens: from-red-500 <= src/pages/issue-928/index.tsx */
+.from-red-500 {
+  --tw-gradient-from: rgb(251, 44, 54);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.from-10\% {
+  --tw-gradient-from-position: 10%;
+}
+.via-\(--issue-928-via\) {
+  --tw-gradient-via: var(--issue-928-via);
+  --tw-gradient-via-stops:
+    var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-via-stops);
+}
+ /*tokens: via-purple-500 <= src/pages/issue-928/index.tsx */
+.via-purple-500 {
+  --tw-gradient-via: rgb(171, 78, 255);
+  --tw-gradient-via-stops:
+    var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-via-stops);
+}
+ /*tokens: via-yellow-300 <= src/pages/issue-928/index.tsx */
+.via-yellow-300 {
+  --tw-gradient-via: rgb(255, 224, 46);
+  --tw-gradient-via-stops:
+    var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-via-stops);
+}
+.via-30\% {
+  --tw-gradient-via-position: 30%;
+}
+.to-\(--issue-928-to\) {
+  --tw-gradient-to: var(--issue-928-to);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.to-\[\#3b82f6\] {
+  --tw-gradient-to: #3b82f6;
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+ /*tokens: to-blue-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
+.to-blue-500 {
+  --tw-gradient-to: rgb(50, 128, 255);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+ /*tokens: to-rose-500 <= src/pages/issue-928/index.tsx */
+.to-rose-500 {
+  --tw-gradient-to: rgb(255, 35, 87);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.to-90\% {
+  --tw-gradient-to-position: 90%;
+}
+ /*tokens: p-4 <= src/pages/issue-998/index.tsx */
+.p-4 {
+  padding: calc(var(--spacing) * 4);
+}
+ /*tokens: px-3 <= src/pages/index/index.tsx */
+.px-3 {
+  padding-inline: calc(var(--spacing) * 3);
+}
+ /*tokens: px-4 <= src/pages/index/index.tsx */
+.px-4 {
+  padding-inline: calc(var(--spacing) * 4);
+}
+.px-\[29rpx\] {
+  padding-inline: 0.90625rem;
+}
+ /*tokens: py-2 <= src/pages/index/index.tsx */
+.py-2 {
+  padding-block: calc(var(--spacing) * 2);
+}
+ /*tokens: py-3 <= src/pages/index/index.tsx */
+.py-3 {
+  padding-block: calc(var(--spacing) * 3);
+}
+.text-\[100rpx\] {
+  font-size: 3.125rem;
+}
+.text-\[31rpx\] {
+  font-size: 0.96875rem;
+}
+.text-\[\#fff\] {
+  color: #fff;
+}
+ /*tokens: text-pink-200 <= src/pages/index/index.tsx */
+.text-pink-200 {
+  color: rgb(252, 206, 232);
+}
+ /*tokens: text-slate-900 <= src/pages/index/index.tsx */
+.text-slate-900 {
+  color: rgb(15, 23, 43);
+}
+ /*tokens: dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.dark\:bg-zinc-900.theme-dark {
+  background-color: rgb(24, 24, 27);
+}
+ /*tokens: theme-dark <= src/pages/index/index.tsx | dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.theme-dark .dark\:bg-zinc-900 {
+  background-color: rgb(24, 24, 27);
+}
+ /*tokens: dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.dark\:bg-zinc-950.theme-dark {
+  background-color: rgb(9, 9, 11);
+}
+ /*tokens: theme-dark <= src/pages/index/index.tsx | dark:bg-zinc-950 <= src/pages/index/index.tsx */
+.theme-dark .dark\:bg-zinc-950 {
+  background-color: rgb(9, 9, 11);
+}
+ /*tokens: dark:text-zinc-50 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.dark\:text-zinc-50.theme-dark {
+  color: rgb(250, 250, 250);
+}
+ /*tokens: theme-dark <= src/pages/index/index.tsx | dark:text-zinc-50 <= src/pages/index/index.tsx */
+.theme-dark .dark\:text-zinc-50 {
+  color: rgb(250, 250, 250);
+}
+ /*tokens: issue-998-page <= src/pages/issue-998/index.tsx */
+.issue-998-page {
+  padding: calc(var(--spacing) * 4);
+}
+::-webkit-backdrop {
+  --tw-gradient-from: #0000;
+  --tw-gradient-via: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+}
+::-ms-backdrop {
+  --tw-gradient-from: #0000;
+  --tw-gradient-via: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+}
+*,
+::after,
+::backdrop,
+::before {
+  --tw-gradient-from: #0000;
+  --tw-gradient-via: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
 }
 /*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
+  ::-webkit-backdrop {
+    --tw-gradient-from: #0000;
+    --tw-gradient-via: #0000;
+    --tw-gradient-to: #0000;
+    --tw-gradient-from-position: 0%;
+    --tw-gradient-via-position: 50%;
+    --tw-gradient-to-position: 100%;
+  }
+  ::-ms-backdrop {
+    --tw-gradient-from: #0000;
+    --tw-gradient-via: #0000;
+    --tw-gradient-to: #0000;
+    --tw-gradient-from-position: 0%;
+    --tw-gradient-via-position: 50%;
+    --tw-gradient-to-position: 100%;
+  }
+  *,
+  ::after,
+  ::backdrop,
+  ::before {
+    --tw-gradient-from: #0000;
+    --tw-gradient-via: #0000;
+    --tw-gradient-to: #0000;
+    --tw-gradient-from-position: 0%;
+    --tw-gradient-via-position: 50%;
+    --tw-gradient-to-position: 100%;
+  }
+}
 :host,
 :root {
   --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --color-yellow-300: #ffe02e;
+  --color-emerald-400: #00d294;
+  --color-purple-500: #ab4eff;
+  --color-zinc-950: #09090b;
+  --spacing: 0.1rem;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }

@@ -197,13 +197,13 @@
   }
 }
 @layer utilities {
- /*tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.tsx */
-  .bg-normal-subpackage-marker {
-    background-color: #2563eb;
+ /*tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.tsx */
+  .bg-independent-subpackage-marker {
+    background-color: #dc2626;
   }
-  .before\:content-\[\'normal_subpackage_taro-webpack-react-tailwindcss-v4\'\] {
+  .before\:content-\[\'independent_subpackage_taro-webpack-react-tailwindcss-v4\'\] {
     &::before {
-      --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
+      --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
       content: var(--tw-content);
     }
   }

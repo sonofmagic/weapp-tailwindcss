@@ -198,6 +198,9 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     vi.doUnmock('@/bundlers/vite/source-scan')
     vi.doUnmock('@/bundlers/shared/generator-css')
     vi.doUnmock('@/generator')
+    vi.doMock('@/bundlers/vite/resolve-app-type', () => ({
+      resolveImplicitAppTypeFromViteRoot: vi.fn(() => undefined),
+    }))
     clearTailwindV4IncrementalGenerateCacheForTest()
     resetVitePluginTestContext()
     vi.restoreAllMocks()
@@ -9070,7 +9073,9 @@ const trace = "at App.vue:4"
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -9088,15 +9093,18 @@ const trace = "at App.vue:4"
       },
     }
 
-    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const sourceGenerateBundle = getGenerateBundleHandler(sourcePlugin)
+    const postGenerateBundle = getGenerateBundleHandler(postPlugin)
     const emitted: Array<{ type: 'asset', fileName: string, source: string }> = []
-    await generateBundle?.call({
+    const hookContext = {
       ...postPlugin,
       emitFile(file: { type: 'asset', fileName: string, source: string }) {
         emitted.push(file)
         return file.fileName
       },
-    }, {} as any, bundle)
+    }
+    await sourceGenerateBundle?.call(hookContext, {} as any, bundle)
+    await postGenerateBundle?.call(hookContext, {} as any, bundle)
 
     const emittedWxss = emitted.find(file => file.fileName === 'sub-normal/pages/index.wxss')
     expect(bundle['sub-normal/pages/index.scss']).toBeUndefined()
@@ -9483,7 +9491,9 @@ const trace = "at App.vue:4"
 
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -9510,8 +9520,10 @@ const trace = "at App.vue:4"
       },
     }
 
-    const generateBundle = getGenerateBundleHandler(postPlugin)
-    await generateBundle?.call(postPlugin, {} as any, bundle)
+    const sourceGenerateBundle = getGenerateBundleHandler(sourcePlugin)
+    const postGenerateBundle = getGenerateBundleHandler(postPlugin)
+    await sourceGenerateBundle?.call(sourcePlugin, {} as any, bundle)
+    await postGenerateBundle?.call(postPlugin, {} as any, bundle)
 
     expect(bundle['pages/index/index.scss']).toBeUndefined()
     expect((bundle['pages/index/index.wxss'] as OutputAsset).source).toBe('css:.s .a { color: turquoise; }')
@@ -15254,6 +15266,7 @@ page {
   }, TEST_TIMEOUT_MS)
 
   it('infers appType from vite root before generateBundle runs', async () => {
+    vi.doUnmock('@/bundlers/vite/resolve-app-type')
     const loggerModule = await import('@weapp-tailwindcss/logger')
     const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-root-'))
     createdDirs.push(projectRoot)
@@ -15299,6 +15312,7 @@ page {
   })
 
   it('does not infer mini-program appType for web generator target', async () => {
+    vi.doUnmock('@/bundlers/vite/resolve-app-type')
     const loggerModule = await import('@weapp-tailwindcss/logger')
     const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-web-root-'))
     createdDirs.push(projectRoot)
@@ -15336,6 +15350,7 @@ page {
   })
 
   it('defaults uni-app H5 serve mode to web generator target without mini-program appType inference', async () => {
+    vi.doUnmock('@/bundlers/vite/resolve-app-type')
     const previousUniPlatform = process.env.UNI_PLATFORM
     process.env.UNI_PLATFORM = 'h5'
     try {

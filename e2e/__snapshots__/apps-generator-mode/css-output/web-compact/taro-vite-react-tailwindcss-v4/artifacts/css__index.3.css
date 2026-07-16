@@ -1,26 +1,128 @@
 ::-webkit-backdrop {
+  --tw-space-y-reverse: 0;
+  --tw-border-style: solid;
+  --tw-gradient-from: #0000;
+  --tw-gradient-via: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-alpha: 100%;
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-inset-shadow-alpha: 100%;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-offset-width: 0rem;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-offset-shadow: 0 0 #0000;
   --tw-content: '';
 }
 ::-ms-backdrop {
+  --tw-space-y-reverse: 0;
+  --tw-border-style: solid;
+  --tw-gradient-from: #0000;
+  --tw-gradient-via: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-alpha: 100%;
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-inset-shadow-alpha: 100%;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-offset-width: 0rem;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-offset-shadow: 0 0 #0000;
   --tw-content: '';
 }
 *,
 ::before,
 ::after,
 ::backdrop {
+  --tw-space-y-reverse: 0;
+  --tw-border-style: solid;
+  --tw-gradient-from: #0000;
+  --tw-gradient-via: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-alpha: 100%;
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-inset-shadow-alpha: 100%;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-offset-width: 0rem;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-offset-shadow: 0 0 #0000;
   --tw-content: '';
 } /*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   ::-webkit-backdrop {
+    --tw-space-y-reverse: 0;
+    --tw-border-style: solid;
+    --tw-gradient-from: #0000;
+    --tw-gradient-via: #0000;
+    --tw-gradient-to: #0000;
+    --tw-gradient-from-position: 0%;
+    --tw-gradient-via-position: 50%;
+    --tw-gradient-to-position: 100%;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-alpha: 100%;
+    --tw-inset-shadow: 0 0 #0000;
+    --tw-inset-shadow-alpha: 100%;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-inset-ring-shadow: 0 0 #0000;
+    --tw-ring-offset-width: 0rem;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-offset-shadow: 0 0 #0000;
     --tw-content: '';
   }
   ::-ms-backdrop {
+    --tw-space-y-reverse: 0;
+    --tw-border-style: solid;
+    --tw-gradient-from: #0000;
+    --tw-gradient-via: #0000;
+    --tw-gradient-to: #0000;
+    --tw-gradient-from-position: 0%;
+    --tw-gradient-via-position: 50%;
+    --tw-gradient-to-position: 100%;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-alpha: 100%;
+    --tw-inset-shadow: 0 0 #0000;
+    --tw-inset-shadow-alpha: 100%;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-inset-ring-shadow: 0 0 #0000;
+    --tw-ring-offset-width: 0rem;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-offset-shadow: 0 0 #0000;
     --tw-content: '';
   }
   *,
   ::before,
   ::after,
   ::backdrop {
+    --tw-space-y-reverse: 0;
+    --tw-border-style: solid;
+    --tw-gradient-from: #0000;
+    --tw-gradient-via: #0000;
+    --tw-gradient-to: #0000;
+    --tw-gradient-from-position: 0%;
+    --tw-gradient-via-position: 50%;
+    --tw-gradient-to-position: 100%;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-alpha: 100%;
+    --tw-inset-shadow: 0 0 #0000;
+    --tw-inset-shadow-alpha: 100%;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-inset-ring-shadow: 0 0 #0000;
+    --tw-ring-offset-width: 0rem;
+    --tw-ring-offset-color: #fff;
+    --tw-ring-offset-shadow: 0 0 #0000;
     --tw-content: '';
   }
 }
@@ -28,7 +130,10 @@
 :host {
   --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --spacing: 0.25rem;
+  --color-green-200: rgb(185, 248, 207);
+  --color-slate-700: rgb(49, 65, 88);
+  --color-zinc-950: rgb(9, 9, 11);
+  --spacing: 0.1rem;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
@@ -290,15 +395,234 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
 [hidden]:where(:not([hidden='until-found'])) {
   display: none !important;
 }
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
+.mt-2 {
+  margin-top: calc(var(--spacing) * 2);
+}
+.mt-4 {
+  margin-top: calc(var(--spacing) * 4);
+}
+.flex {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+.h-14 {
+  height: calc(var(--spacing) * 14);
+}
+.h-16 {
+  height: calc(var(--spacing) * 16);
+}
+.h-\[45px\] {
+  height: 1.125rem;
+}
+.h-\[300px\] {
+  height: 7.5rem;
+}
+.w-32 {
+  width: calc(var(--spacing) * 32);
+}
+.w-\[323px\] {
+  width: 8.075rem;
+}
+.flex-col {
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+.gap-3 {
+  gap: calc(var(--spacing) * 3);
+}
+:where(.space-y-2 > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  -webkit-margin-before: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
+  margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
+  -webkit-margin-after: calc(calc(var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
+  margin-block-end: calc(calc(var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
+}
+.rounded {
+  border-radius: 0.25rem;
+}
+.rounded-\[20rpx\] {
+  border-radius: 0.625rem;
+}
+.rounded-\[28rpx\] {
+  border-radius: 0.875rem;
+}
+.border {
+  border-style: var(--tw-border-style);
+  border-width: 0.025rem;
+}
+.border-slate-200\/80 {
+  border-color: #e2e8f0cc;
+}
+@supports (color: color-mix(in lch, red, blue)) {
+  .border-slate-200\/80 {
+    border-color: #e2e8f0cc;
+  }
+}
+.\!bg-\[gray\] {
+  background-color: gray !important;
+}
+.bg-\[\#68c828\] {
+  background-color: #68c828;
+}
+.bg-\[\#0977ee\] {
+  background-color: #0977ee;
+}
+.bg-\[\#123456\] {
+  background-color: #123456;
+}
+.bg-\[red\] {
+  background-color: red;
+}
+.bg-green-200\/70 {
+  background-color: #b9f8cfb3;
+}
+@supports (color: color-mix(in lch, red, blue)) {
+  .bg-green-200\/70 {
+    background-color: #b9f8cfb3;
+  }
+}
+.bg-purple-300 {
+  background-color: #d8b4ff;
+}
+.bg-white {
+  background-color: #fff;
+}
+.bg-white\/70 {
+  background-color: #ffffffb3;
+}
+@supports (color: color-mix(in lch, red, blue)) {
+  .bg-white\/70 {
+    background-color: #ffffffb3;
+  }
+}
+.bg-linear-to-r {
+  --tw-gradient-position: to right;
+  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.bg-gradient-to-br {
+  --tw-gradient-position: to bottom right;
+  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.bg-gradient-to-r {
+  --tw-gradient-position: to right;
+  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.bg-\[radial-gradient\(circle_at_18\%_20\%\,\#e0f2fe\,\#fdf4ff_70\%\)\] {
+  background-image: -webkit-radial-gradient(18% 20%, circle, #e0f2fe, #fdf4ff 70%);
+  background-image: radial-gradient(circle at 18% 20%, #e0f2fe, #fdf4ff 70%);
+}
+.from-cyan-500 {
+  --tw-gradient-from: rgb(0, 182, 212);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.from-slate-900\/95 {
+  --tw-gradient-from: rgba(15, 23, 43, 0.95);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+@supports (color: color-mix(in lch, red, blue)) {
+  .from-slate-900\/95 {
+    --tw-gradient-from: rgba(15, 23, 43, 0.95);
+  }
+}
+.to-blue-500 {
+  --tw-gradient-to: rgb(50, 128, 255);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+.to-slate-700\/95 {
+  --tw-gradient-to: rgba(49, 65, 88, 0.95);
+  --tw-gradient-stops: var(
+    --tw-gradient-via-stops,
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position),
+    var(--tw-gradient-to) var(--tw-gradient-to-position)
+  );
+}
+@supports (color: color-mix(in lch, red, blue)) {
+  .to-slate-700\/95 {
+    --tw-gradient-to: rgba(49, 65, 88, 0.95);
+  }
 }
 .p-4 {
   padding: calc(var(--spacing) * 4);
 }
-.before\:content-\[\'independent_subpackage_taro-vite-react-tailwindcss-v4\'\]::before {
-  --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v4';
-  content: var(--tw-content);
+.px-3 {
+  padding-inline: calc(var(--spacing) * 3);
+}
+.px-4 {
+  padding-inline: calc(var(--spacing) * 4);
+}
+.px-\[29rpx\] {
+  padding-inline: 0.90625rem;
+}
+.px-\[48px\] {
+  padding-inline: 1.2rem;
+}
+.py-1 {
+  padding-block: var(--spacing);
+}
+.py-2 {
+  padding-block: calc(var(--spacing) * 2);
+}
+.py-3 {
+  padding-block: calc(var(--spacing) * 3);
+}
+.py-\[24rpx\] {
+  padding-block: 0.75rem;
+}
+.text-\[100rpx\] {
+  font-size: 3.125rem;
+}
+.text-\[26rpx\] {
+  font-size: 0.8125rem;
+}
+.text-\[31rpx\] {
+  font-size: 0.96875rem;
+}
+.text-\[55rpx\] {
+  font-size: 1.71875rem;
+}
+.text-\[\#123456\] {
+  color: #123456;
+}
+.text-\[\#c31d6b\] {
+  color: #c31d6b;
+}
+.text-\[\#fff\] {
+  color: #fff;
+}
+.text-slate-700 {
+  color: #314158;
+}
+.text-slate-900 {
+  color: #0f172b;
+}
+.text-white {
+  color: #fff;
+}
+.shadow-xl {
+  --tw-shadow: 0 0.5rem 0.625rem -0.125rem var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 0.2rem 0.25rem -0.15rem var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\]::before {
   --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
@@ -307,4 +631,24 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
 .before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\]::before {
   --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
   content: var(--tw-content);
+}
+.after\:\!content-\[\'good_work\!\'\]::after {
+  content: var(--tw-content);
+  --tw-content: 'good work!' !important;
+  content: var(--tw-content) !important;
+}
+.dark\:bg-zinc-900.theme-dark,
+.theme-dark .dark\:bg-zinc-900 {
+  background-color: #18181b;
+}
+.dark\:bg-zinc-950.theme-dark,
+.theme-dark .dark\:bg-zinc-950 {
+  background-color: #09090b;
+}
+.dark\:text-zinc-50.theme-dark,
+.theme-dark .dark\:text-zinc-50 {
+  color: #fafafa;
+}
+.issue-998-page {
+  padding: calc(var(--spacing) * 4);
 }

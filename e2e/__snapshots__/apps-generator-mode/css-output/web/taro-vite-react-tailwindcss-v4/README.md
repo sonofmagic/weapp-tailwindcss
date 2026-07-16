@@ -7,7 +7,7 @@ Entry: taro-vite-react-tailwindcss-v4/dist
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 429634 | 2301 | true | true | true | true | true | true | false |
+| 441949 | 2301 | true | true | true | true | true | true | false |
 
 ## Generator CSS Files
 
@@ -25,8 +25,8 @@ Entry: taro-vite-react-tailwindcss-v4/dist
 | File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `css/index.1.css` | [artifacts/css__index.1.css](artifacts/css__index.1.css) | 382588 | 2232 | true | true | true | true | true | true | false |
-| `css/index.2.css` | [artifacts/css__index.2.css](artifacts/css__index.2.css) | 16663 | 53 | true | false | false | false | false | true | false |
-| `css/index.3.css` | [artifacts/css__index.3.css](artifacts/css__index.3.css) | 8132 | 27 | true | false | false | false | false | true | false |
-| `css/index.4.css` | [artifacts/css__index.4.css](artifacts/css__index.4.css) | 7895 | 26 | true | false | false | false | false | true | false |
+| `css/index.2.css` | [artifacts/css__index.2.css](artifacts/css__index.2.css) | 20210 | 87 | true | false | false | false | true | true | false |
+| `css/index.3.css` | [artifacts/css__index.3.css](artifacts/css__index.3.css) | 16663 | 53 | true | false | false | false | false | true | false |
+| `css/index.4.css` | [artifacts/css__index.4.css](artifacts/css__index.4.css) | 8132 | 27 | true | false | false | false | false | true | false |
 | `css/index.5.css` | [artifacts/css__index.5.css](artifacts/css__index.5.css) | 50 | 1 | false | false | false | false | false | false | false |
 | `css/vendors.css` | [artifacts/css__vendors.css](artifacts/css__vendors.css) | 14306 | 59 | false | false | false | false | false | false | false |

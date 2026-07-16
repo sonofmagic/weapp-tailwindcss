@@ -57,8 +57,19 @@ jobs:
       - name: Build
         run: pnpm ci:memory --label quality-build --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm build:ci
 
-      - name: Test
-        run: pnpm ci:memory --label quality-test-release --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm test:release
+      - name: Install Playwright Chromium
+        run: |
+          for attempt in 1 2 3 4; do
+            if pnpm exec playwright install chromium; then
+              exit 0
+            fi
+            echo "Playwright Chromium install failed, retrying (${attempt}/4)"
+            sleep $((attempt * 10))
+          done
+          pnpm exec playwright install chromium
+
+      - name: Test full repository suite
+        run: pnpm ci:memory --label quality-test --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm test
 
       - name: CI Status Note
         if: always()

@@ -124,7 +124,12 @@ describe('ci workflows', () => {
       'pnpm lint',
     ]))
     expect(hasStepRunCommand(qualityRuns, 'pnpm build:ci')).toBe(true)
-    expect(hasStepRunCommand(qualityRuns, 'pnpm test:release')).toBe(true)
+    expectPlaywrightInstallRetry(
+      qualityRuns.find(run => run.includes('playwright install chromium'))!,
+      'pnpm exec playwright install chromium',
+    )
+    expect(hasStepRunCommand(qualityRuns, 'pnpm test')).toBe(true)
+    expect(hasStepRunCommand(qualityRuns, 'pnpm test:release')).toBe(false)
   })
 
   it('keeps heavyweight e2e checks parallel to the quality gate', () => {
@@ -356,7 +361,10 @@ describe('ci workflows', () => {
 
   it('keeps style injector enabled only in dedicated demo projects', () => {
     const demoRoot = path.join(repoRoot, 'demo')
-    const offenders = listFiles(demoRoot)
+    const demoProjects = fs.readdirSync(demoRoot, { withFileTypes: true })
+      .filter(entry => entry.isDirectory() && !entry.name.startsWith('.tmp-'))
+      .map(entry => path.join(demoRoot, entry.name))
+    const offenders = demoProjects.flatMap(projectRoot => listFiles(projectRoot))
       .filter(file => /\.(?:c?[jt]sx?|mjs|mts)$/.test(file))
       .filter((file) => {
         const project = path.relative(demoRoot, file).split(path.sep)[0]
