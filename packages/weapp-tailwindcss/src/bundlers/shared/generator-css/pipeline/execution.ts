@@ -1,7 +1,7 @@
 import type { GeneratorResolvedSource } from '../source-resolver'
 import process from 'node:process'
 import { extractSourceCandidates } from '@tailwindcss-mangle/engine'
-import { createWeappTailwindcssGenerator } from '@/generator'
+import { getTailwindGenerationSession } from '@/compiler/tailwind-generation-session'
 import { shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { includesTailwindV4PreflightDirective } from '@/tailwindcss/v4/preflight'
@@ -95,6 +95,7 @@ export async function executeGeneratorPipeline(context: any) {
   const generatorStyleOptions = resolveGeneratorStyleOptions(opts, cssHandlerOptions, generatorOptions.styleOptions)
   const configuredContainerCompat = hasConfiguredContainerCompatSources(generatorSources)
   const sourceConcurrency = resolveGeneratorSourceConcurrency()
+  const generationSession = getTailwindGenerationSession(runtimeState)
   const generatedResultsWithDeferred = await runWithConcurrency(generatorSources.map(source => async () => {
     const sourceCss = options.deferCssAdaptation
       ? removeMatchingLocalCssImports(source.css, localImports)
@@ -112,7 +113,6 @@ export async function executeGeneratorPipeline(context: any) {
             ...source,
             css: sourceCss,
           }
-    const generator = createWeappTailwindcssGenerator(generatorSource)
     const sourceEntries = getSourceCandidatesForEntries
       ? await resolveGeneratorSourceEntries(source, runtimeState)
       : undefined
@@ -150,7 +150,7 @@ export async function executeGeneratorPipeline(context: any) {
     const generatorRuntime = shouldUseMiniProgramCssBranch(generatorBranch)
       ? filterUnsupportedMiniProgramTailwindV4Candidates(sourceRuntime)
       : sourceRuntime
-    return generator.generate({
+    return generationSession.generate(generatorSource, {
       bareArbitraryValues: generatorOptions.bareArbitraryValues,
       candidates: generatorRuntime,
       incrementalCache: true,

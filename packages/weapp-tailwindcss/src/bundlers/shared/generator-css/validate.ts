@@ -1,5 +1,6 @@
 import type { GenerateCssByGeneratorOptions } from './types'
-import { createWeappTailwindcssGenerator, normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { getTailwindGenerationSession } from '@/compiler/tailwind-generation-session'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { collectGeneratedRawSourceCandidates } from './class-selectors'
 import { resolveGeneratorSources } from './source-resolver'
 
@@ -44,12 +45,9 @@ export async function validateCandidatesByGenerator(
           runtime: candidates,
         },
       )
+      const generationSession = getTailwindGenerationSession(runtimeState)
       const classSets = await Promise.all(sources.map(async (source) => {
-        const generator = createWeappTailwindcssGenerator(source)
-        if (typeof generator.validateCandidates !== 'function') {
-          return new Set<string>()
-        }
-        return generator.validateCandidates(candidates)
+        return generationSession.validateCandidates(source, candidates)
       }))
       for (const candidate of classSets.flatMap(item => [...item])) {
         classSet.add(candidate)

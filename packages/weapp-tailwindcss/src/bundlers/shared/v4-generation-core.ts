@@ -1,7 +1,9 @@
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css'
+import type { GenerationArtifact } from '@/compiler'
 import type { InternalUserDefinedOptions } from '@/types'
+import { areArtifactsSemanticallyEqual, createCssFragment, createGenerationArtifact, resolveCompilerMode } from '@/compiler'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
-import { adaptGeneratedCssWithFrameworkPipeline, hasFrameworkPostcssOptions } from './framework-postcss'
+import { adaptGeneratedCssWithFrameworkPipeline, adaptGeneratedCssWithFrameworkRootPipeline, hasFrameworkPostcssOptions } from './framework-postcss'
 import { generateCssByGenerator } from './generator-css'
 import { preferScopedGeneratedCssRules } from './generator-css/scoped-rules'
 import { resolvePostcssRequestOption } from './generator-css/source-resolver/postcss-source'
@@ -15,13 +17,47 @@ export interface TailwindV4GenerationCoreInput extends GenerateCssByGeneratorOpt
 }
 
 export interface TailwindV4GenerationCoreResult extends GenerateCssByGeneratorResult {
+  artifact?: GenerationArtifact | undefined
   classSet: Set<string>
   dependencies: string[]
   metadata: NonNullable<GenerateCssByGeneratorResult['metadata']>
 }
 
-export async function generateTailwindV4Css(
+interface GenerationImplementationOptions {
+  emitArtifact: boolean
+  frameworkAdapter: 'legacy' | 'graph'
+}
+
+function createCoreArtifact(
+  generated: GenerateCssByGeneratorResult,
+  css: string,
   options: TailwindV4GenerationCoreInput,
+): GenerationArtifact {
+  const sourceId = generated.metadata?.file ?? options.file
+  const scopeId = generated.metadata?.outputFile ?? options.outputFile ?? sourceId
+  return createGenerationArtifact([
+    createCssFragment({
+      id: `${scopeId}:generated`,
+      kind: 'tailwind',
+      css,
+      sourceId,
+      scope: {
+        id: scopeId,
+        kind: options.cssHandlerOptions.isMainChunk ? 'global' : 'component',
+      },
+      stage: 'adapted',
+    }),
+  ], {
+    classSet: generated.classSet,
+    rawCandidates: options.runtime,
+    dependencies: generated.dependencies,
+    sourceEntries: options.cssHandlerOptions.sourceOptions?.cssEntries ?? [],
+  })
+}
+
+async function generateTailwindV4CssWithImplementation(
+  options: TailwindV4GenerationCoreInput,
+  implementation: GenerationImplementationOptions,
 ): Promise<TailwindV4GenerationCoreResult | undefined> {
   const majorVersion = options.runtimeState.tailwindRuntime.majorVersion
   if (majorVersion !== 4) {
@@ -48,7 +84,9 @@ export async function generateTailwindV4Css(
     return undefined
   }
   const adaptedCss = shouldReplayFrameworkPostcss
-    ? await adaptGeneratedCssWithFrameworkPipeline(frameworkPostcssOwner, generated, {
+    ? await (implementation.frameworkAdapter === 'graph'
+        ? adaptGeneratedCssWithFrameworkRootPipeline
+        : adaptGeneratedCssWithFrameworkPipeline)(frameworkPostcssOwner, generated, {
         cssHandlerOptions: options.cssHandlerOptions,
         file: options.file,
         majorVersion,
@@ -58,8 +96,12 @@ export async function generateTailwindV4Css(
   const css = isVueScopedStyleRequest(resolvePostcssRequestOption(options.cssHandlerOptions))
     ? preferScopedGeneratedCssRules(adaptedCss)
     : adaptedCss
+  const artifact = implementation.emitArtifact
+    ? createCoreArtifact(generated, css, options)
+    : undefined
   return {
     ...generated,
+    ...(artifact ? { artifact } : {}),
     css,
     classSet: generated.classSet,
     dependencies: generated.dependencies,
@@ -70,4 +112,43 @@ export async function generateTailwindV4Css(
       ...(generated.metadata ?? {}),
     },
   }
+}
+
+export async function generateTailwindV4Css(
+  options: TailwindV4GenerationCoreInput,
+): Promise<TailwindV4GenerationCoreResult | undefined> {
+  const mode = resolveCompilerMode()
+  if (mode === 'legacy') {
+    return generateTailwindV4CssWithImplementation(options, {
+      emitArtifact: false,
+      frameworkAdapter: 'legacy',
+    })
+  }
+  if (mode === 'graph') {
+    return generateTailwindV4CssWithImplementation(options, {
+      emitArtifact: true,
+      frameworkAdapter: 'graph',
+    })
+  }
+
+  const legacy = await generateTailwindV4CssWithImplementation(options, {
+    emitArtifact: true,
+    frameworkAdapter: 'legacy',
+  })
+  const graph = await generateTailwindV4CssWithImplementation(options, {
+    emitArtifact: true,
+    frameworkAdapter: 'graph',
+  })
+  const matches = (legacy === undefined && graph === undefined)
+    || (
+      legacy !== undefined
+      && graph !== undefined
+      && legacy.artifact !== undefined
+      && graph.artifact !== undefined
+      && areArtifactsSemanticallyEqual(legacy.artifact, graph.artifact)
+    )
+  if (!matches) {
+    options.debug('compiler shadow semantic mismatch: %s', options.file)
+  }
+  return legacy
 }

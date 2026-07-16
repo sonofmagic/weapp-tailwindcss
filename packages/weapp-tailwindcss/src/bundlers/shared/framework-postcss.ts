@@ -2,7 +2,7 @@ import type { AcceptedPlugin } from '@weapp-tailwindcss/postcss'
 import type { IStyleHandlerOptions, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
 import type { GenerateCssByGeneratorResult } from './generator-css'
 import type { InternalUserDefinedOptions } from '@/types'
-import { removeTailwindPostcssPlugins } from '@weapp-tailwindcss/postcss'
+import { postcss, removeTailwindPostcssPlugins } from '@weapp-tailwindcss/postcss'
 import { finalizeMiniProgramGeneratorCss } from './generator-css/generation-helpers'
 
 const FRAMEWORK_POSTCSS_REGISTRY = Symbol.for('weapp-tailwindcss.framework-postcss-options')
@@ -159,6 +159,39 @@ export async function adaptGeneratedCssWithFrameworkPipeline(
     generated.css,
     createGeneratedCssHandlerOptions(owner, options.cssHandlerOptions, options.file),
   )
+  const preflightMode = generated.metadata?.preflightMode
+  const injectPreflight = preflightMode?.inject ?? options.cssHandlerOptions.isMainChunk
+  const preservePreflight = preflightMode?.preserve ?? options.cssHandlerOptions.isMainChunk
+  return finalizeMiniProgramGeneratorCss(
+    handled.css,
+    generated.target,
+    options.majorVersion,
+    owner.cssPreflight,
+    {
+      ...(injectPreflight === undefined ? {} : { injectPreflight }),
+      ...(preservePreflight === undefined ? {} : { preservePreflight }),
+      styleOptions: options.cssHandlerOptions,
+    },
+  )
+}
+
+export async function adaptGeneratedCssWithFrameworkRootPipeline(
+  owner: InternalUserDefinedOptions,
+  generated: GenerateCssByGeneratorResult,
+  options: {
+    cssHandlerOptions: IStyleHandlerOptions
+    file: string
+    majorVersion: number
+    styleHandler: InternalUserDefinedOptions['styleHandler']
+  },
+): Promise<string> {
+  const handlerOptions = createGeneratedCssHandlerOptions(owner, options.cssHandlerOptions, options.file)
+  const handled = typeof options.styleHandler.transformRoot === 'function'
+    ? await options.styleHandler.transformRoot(
+        postcss.parse(generated.css, handlerOptions.postcssOptions?.options),
+        handlerOptions,
+      )
+    : await options.styleHandler(generated.css, handlerOptions)
   const preflightMode = generated.metadata?.preflightMode
   const injectPreflight = preflightMode?.inject ?? options.cssHandlerOptions.isMainChunk
   const preservePreflight = preflightMode?.preserve ?? options.cssHandlerOptions.isMainChunk

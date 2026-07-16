@@ -1,6 +1,6 @@
 // 核心类型定义，描述样式处理流程所需的选项与工具类型
 import type { PostCssCalcOptions } from '@weapp-tailwindcss/postcss-calc'
-import type { Result as PostcssResult } from 'postcss'
+import type { Result as PostcssResult, Root } from 'postcss'
 import type { Result } from 'postcss-load-config'
 import type pxtrans from 'postcss-pxtrans'
 import type { UserDefinedOptions as Rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
@@ -311,6 +311,10 @@ export type {
 
 export interface StyleHandler {
   (rawSource: string, opt?: Partial<IStyleHandlerOptions>): Promise<PostcssResult>
+  /**
+   * 处理调用方持有的 CSS AST。输入 Root 不会被原地修改，返回结果也不会与内部缓存共享可变节点。
+   */
+  transformRoot: (root: Root, opt?: Partial<IStyleHandlerOptions>) => Promise<PostcssResult>
   // getPipeline 允许外部在不同配置下获取预组装的流水线信息
   getPipeline: (opt?: Partial<IStyleHandlerOptions>) => StyleProcessingPipeline
 }
