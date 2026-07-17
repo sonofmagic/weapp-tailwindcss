@@ -1,3 +1,5 @@
+import type { GenerateCssByGeneratorResult } from '../types'
+import type { GeneratorPipelineOutputContext } from './context'
 import { filterExistingCssRules, normalizeMiniProgramGeneratedCssForPostcss } from '@weapp-tailwindcss/postcss'
 import { hasCssMacroStyleOptions, hasCssMacroTailwindV4InternalAtRules, transformCssMacroCss } from '@/css-macro/auto'
 import { createCssSourceOrderAppend, splitRawSourceByGeneratedCssOrder } from '../generation-helpers'
@@ -7,7 +9,9 @@ import { resolveGeneratedCssClassSet } from '../result-helpers'
 import { hasUserCssLayerBlocks, splitUserCssLayerBlocks, transformGeneratorUserCss } from '../user-css'
 import { reorderMarkedUserLayerComponentsCss, wrapUserLayerComponentsCss } from '../user-layer-order'
 
-export async function finalizeDeferredGeneratorCss(context: any) {
+export async function finalizeDeferredGeneratorCss(
+  context: GeneratorPipelineOutputContext,
+): Promise<GenerateCssByGeneratorResult | undefined> {
   const { cssUserHandlerOptions, file, filterGeneratedApplyOnlyCss, generated, generatedUserCssRawSource, generatorOptions, generatorRawSource, generatorStyleOptions, hasMatchedCssSourceFile, localImports, majorVersion, options, opts, preflightMode, runtimeWithCurrentCss, styleHandler, userCssOrderSource, userRawSourceProcessed } = context
   if (options.deferCssAdaptation) {
     const normalizeDeferredGeneratedCss = async (css: string) => {

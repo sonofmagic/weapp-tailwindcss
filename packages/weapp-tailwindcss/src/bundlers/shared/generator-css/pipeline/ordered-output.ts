@@ -1,3 +1,5 @@
+import type { GenerateCssByGeneratorResult } from '../types'
+import type { GeneratorPipelineOutputContext } from './context'
 import { filterExistingCssRules } from '@weapp-tailwindcss/postcss'
 import { hasTailwindApplyDirective } from '../directives'
 import { createCssSourceOrderAppend, isEmptyCssSourceOrderParts, shouldAppendWebBundleCssFallback, shouldFinalizeMarkedUserLayerComponentsCss, splitRawSourceByGeneratedCssOrder } from '../generation-helpers'
@@ -9,7 +11,9 @@ import { finalizeIncrementalGeneratorCss, finalizeWebGeneratorCss, isCssAlreadyR
 import { hasUserCssLayerBlocks, isCommentOnlyCss, splitUserCssLayerBlocks, transformGeneratorUserCss } from '../user-css'
 import { reorderMarkedUserLayerComponentsCss, wrapUserLayerComponentsCss } from '../user-layer-order'
 
-export async function finalizeOrderedGeneratorCss(context: any) {
+export async function finalizeOrderedGeneratorCss(
+  context: GeneratorPipelineOutputContext,
+): Promise<GenerateCssByGeneratorResult | undefined> {
   const { configuredContainerCompat, cssHandlerOptions, cssUserHandlerOptions, file, filterGeneratedApplyOnlyCss, finalizeGeneratorCss, generated, generatedUserCssRawSource, generatorOptions, generatorRawSource, generatorStyleOptions, hasDistinctUserRawSource, hasGeneratedCss, hasGeneratedMarkers, hasMatchedCssSourceFile, hasSourceDirectives, hasWebUserCssFallbackSource, isolateCurrentCssCandidates, legacyCompatUserCssRawSource, localImports, majorVersion, options, opts, preflightMode, prepareFinalGeneratorCss, runtime, runtimeWithCurrentCss, shouldFilterApplyOnlyCss, shouldPreserveLegacyCompatSelectorOverrides, styleHandler, userCssOrderSource, userCssRawSource, userRawSourceProcessed } = context
   const canAppendIncrementalCss = generated.target !== 'weapp' || !hasUserCssLayerBlocks(generatorRawSource)
   if (canAppendIncrementalCss && typeof options.previousCss === 'string' && typeof generated.incrementalCss === 'string') {

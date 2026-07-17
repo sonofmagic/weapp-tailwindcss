@@ -1,4 +1,6 @@
 import type { GeneratorResolvedSource } from '../source-resolver'
+import type { GenerateCssByGeneratorResult } from '../types'
+import type { GeneratorPipelineExecutionContext, GeneratorPipelineOutputContext } from './context'
 import process from 'node:process'
 import { extractSourceCandidates } from '@tailwindcss-mangle/engine'
 import { getCompilationSessionPool } from '@/compiler'
@@ -44,7 +46,9 @@ function resolveCompilationSourceId(source: GeneratorResolvedSource, index: numb
   return `${sourceId}:tailwind-source:${index}`
 }
 
-export async function executeGeneratorPipeline(context: any) {
+export async function executeGeneratorPipeline(
+  context: GeneratorPipelineExecutionContext,
+): Promise<GenerateCssByGeneratorResult | undefined> {
   const {
     cssHandlerOptions,
     debug,
@@ -272,7 +276,7 @@ export async function executeGeneratorPipeline(context: any) {
     explicitCssSource: hasExplicitCssSource,
     primaryCssSource: hasOnlyPrimaryCssSource || hasPreflightCssSource || hasPreflightRawSource,
   })
-  const outputContext = {
+  const outputContext: GeneratorPipelineOutputContext = {
     ...context,
     configuredContainerCompat,
     filterGeneratedApplyOnlyCss,

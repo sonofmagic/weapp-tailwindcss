@@ -1,3 +1,5 @@
+import type { GenerateCssByGeneratorResult } from '../types'
+import type { GeneratorPipelineOutputContext } from './context'
 import { filterExistingCssRules } from '@weapp-tailwindcss/postcss'
 import { hasTailwindApplyDirective } from '../directives'
 import { createCssSourceOrderAppend, shouldAppendWebBundleCssFallback, shouldFinalizeMarkedUserLayerComponentsCss } from '../generation-helpers'
@@ -7,7 +9,9 @@ import { isCssAlreadyRepresentedByMarkers, resolveGeneratedCssClassSet } from '.
 import { extractGeneratedCssForUserLayerSelectors, hasUserCssLayerBlocks, isCommentOnlyCss, removeTailwindV4GeneratedUserCssArtifacts, splitUserCssLayerBlocks, transformGeneratorUserCss } from '../user-css'
 import { reorderMarkedUserLayerComponentsCss, wrapUserLayerComponentsCss } from '../user-layer-order'
 
-export async function finalizeFallbackGeneratorCss(context: any) {
+export async function finalizeFallbackGeneratorCss(
+  context: GeneratorPipelineOutputContext,
+): Promise<GenerateCssByGeneratorResult> {
   const { configuredContainerCompat, cssHandlerOptions, cssUserHandlerOptions, debug, file, finalizeGeneratorCss, generated, generatedCss, generatedUserCssRawSource, generatorOptions, generatorRawSource, generatorStyleOptions, hasDistinctUserRawSource, hasGeneratedCss, hasGeneratedMarkers, hasMatchedCssSourceFile, hasSourceDirectives, hasWebUserCssFallbackSource, isolateCurrentCssCandidates, legacyCompatUserCssRawSource, majorVersion, options, opts, preflightMode, prepareFinalGeneratorCss, runtime, runtimeWithCurrentCss, shouldFilterApplyOnlyCss, shouldPreserveLegacyCompatSelectorOverrides, styleHandler, userCssRawSource, userRawSourceProcessed } = context
   debug(
     'tailwind direct css generation prefix mismatch, append transformed bundle css %s',
