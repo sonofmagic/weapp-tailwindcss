@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import { setupWebpackV5ProcessAssetsHook } from '@/bundlers/webpack/BaseUnifiedPlugin/v5-assets'
 import { buildWebpackBundleSnapshot, createWebpackAssetUpdater, releaseWebpackBundleSnapshotSources } from '@/bundlers/webpack/BaseUnifiedPlugin/v5-assets/helpers'
-import { createBundleBuildState } from '@/bundlers/vite/bundle-state'
 import { createCache } from '@/cache'
+import { createRuntimeCompilationBuildState } from '@/compiler'
 
 function toPosixPath(value: string) {
   return value.replace(/\\/g, '/')
@@ -34,7 +34,7 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
       'assets/index.css': {
         source: () => '.foo{color:red}',
       },
-    }, createOptions(), createBundleBuildState())
+    }, createOptions(), createRuntimeCompilationBuildState())
 
     expect(snapshot.entries.map(entry => entry.file)).toEqual([
       'pages/index/index.wxml',
@@ -54,14 +54,14 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
       'assets/index.js': {
         source: () => 'const cls = "foo"',
       },
-    }, createOptions(), createBundleBuildState())
+    }, createOptions(), createRuntimeCompilationBuildState())
     const sourceHashByFile = new Map(snapshot.sourceHashByFile)
     const runtimeAffectingHashByFile = new Map(snapshot.runtimeAffectingHashByFile)
 
     releaseWebpackBundleSnapshotSources(snapshot)
 
     expect(snapshot.entries.map(entry => entry.source)).toEqual(['', ''])
-    expect(snapshot.entries.map(entry => entry.output.source)).toEqual(['', ''])
+    expect(snapshot.entries.every(entry => !('output' in entry))).toBe(true)
     expect(snapshot.sourceHashByFile).toEqual(sourceHashByFile)
     expect(snapshot.runtimeAffectingHashByFile).toEqual(runtimeAffectingHashByFile)
     expect(snapshot.processFiles.html.has('pages/index/index.wxml')).toBe(true)
@@ -73,7 +73,7 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
       'assets/index.js': {
         source: () => 'const cls = "stale-source"',
       },
-    }, createOptions(), createBundleBuildState(), {
+    }, createOptions(), createRuntimeCompilationBuildState(), {
       getAsset: vi.fn((file: string) => file === 'assets/index.js'
         ? {
             source: {
@@ -86,7 +86,7 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
 
     expect(snapshot.entries).toHaveLength(1)
     expect(snapshot.entries[0]?.source).toBe('const cls = "fresh-source"')
-    expect(snapshot.entries[0]?.output.source).toBe('const cls = "fresh-source"')
+    expect(snapshot.entries[0]).not.toHaveProperty('output')
   })
 
   it('can update cache-hit assets without stringifying sources for comparison', () => {

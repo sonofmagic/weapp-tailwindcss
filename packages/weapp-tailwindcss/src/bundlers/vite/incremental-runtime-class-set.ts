@@ -1,4 +1,4 @@
-import type { BundleSnapshot, BundleStateEntry } from './bundle-state'
+import type { RuntimeCompilationSnapshot, RuntimeSnapshotEntry } from '@/compiler'
 import type { TailwindV4DesignSystem, TailwindV4ResolvedSource } from '@/tailwindcss/v4-engine'
 import type { TailwindcssRuntimeLike } from '@/types'
 import type { IArbitraryValues } from '@/types/shared'
@@ -26,7 +26,7 @@ type ExtractRawCandidatesFn = (
 ) => Promise<ExtractRawCandidateResult>
 
 export interface BundleRuntimeClassSetManager {
-  sync: (runtime: TailwindcssRuntimeLike, snapshot: BundleSnapshot, options?: BundleRuntimeClassSetSyncOptions) => Promise<Set<string>>
+  sync: (runtime: TailwindcssRuntimeLike, snapshot: RuntimeCompilationSnapshot, options?: BundleRuntimeClassSetSyncOptions) => Promise<Set<string>>
   reset: () => Promise<void>
 }
 
@@ -194,7 +194,7 @@ export function createBundleRuntimeClassSetManager(
   }
 
   async function extractEntryRawCandidates(
-    entry: BundleStateEntry,
+    entry: RuntimeSnapshotEntry,
     _runtime: TailwindcssRuntimeLike,
     _knownSourceCandidates?: Set<string>,
   ) {
@@ -219,7 +219,7 @@ export function createBundleRuntimeClassSetManager(
 
   async function sync(
     runtime: TailwindcssRuntimeLike,
-    snapshot: BundleSnapshot,
+    snapshot: RuntimeCompilationSnapshot,
     options: BundleRuntimeClassSetSyncOptions = {},
   ) {
     const nextSignature = getRuntimeClassSetSignature(runtime) ?? 'runtime:missing'

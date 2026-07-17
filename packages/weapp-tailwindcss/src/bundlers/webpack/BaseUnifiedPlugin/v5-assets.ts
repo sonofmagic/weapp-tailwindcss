@@ -3,6 +3,7 @@ import type { WebpackCssHandlerOptions } from './v5-assets/pipeline-helpers'
 import path from 'node:path'
 import process from 'node:process'
 import { MappingChars2String } from '@weapp-core/escape'
+import { createRuntimeCompilationBuildState, updateRuntimeCompilationBuildState } from '@/compiler'
 import { pluginName } from '@/constants'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
@@ -10,7 +11,6 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { getGroupedEntries } from '@/utils'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, isCssSourceTraceEnabled } from '../../shared/css-source-trace'
 import { resolveTaskConcurrency } from '../../shared/run-tasks'
-import { createBundleBuildState, updateBundleBuildState } from '../../vite/bundle-state'
 import { createCandidateSignature } from '../../vite/generate-bundle/signatures'
 import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
 import { collectStrictEscapedRuntimeCandidates, createEscapeFragments } from '../../vite/incremental-runtime-class-set/escaped-candidates'
@@ -73,7 +73,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
   const cssHandlerOptionsCache = new Map<string, WebpackCssHandlerOptions>()
   const cssUserHandlerOptionsCache = new Map<string, WebpackCssHandlerOptions>()
   const webpackSourceCandidateScanCache = createWebpackSourceCandidateScanCache()
-  const bundleBuildState = createBundleBuildState()
+  const bundleBuildState = createRuntimeCompilationBuildState()
   const bundleRuntimeClassSetManager = runtimeClassSetManager ?? createBundleRuntimeClassSetManager()
   const escapeFragments = createEscapeFragments(MappingChars2String)
   const processedCssAssetSkipDecisionCache = new Map<string, boolean>()
@@ -274,7 +274,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             runtimeSet = getRuntimeClassSetSync(runtimeState.tailwindRuntime)
           }
           releaseWebpackBundleSnapshotSources(snapshot)
-          updateBundleBuildState(bundleBuildState, snapshot, new Map(), { incremental: true })
+          updateRuntimeCompilationBuildState(bundleBuildState, snapshot, new Map(), { incremental: true })
           webpackWatchRuntimeScanInitialized = true
         }
         else {

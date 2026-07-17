@@ -1,10 +1,10 @@
 import type { Compiler, sources as WebpackSources } from 'webpack'
-import type { BundleBuildState, BundleSnapshot, EntryType } from '../../../vite/bundle-state'
 import type { BundleRuntimeClassSetManager } from '../../../vite/incremental-runtime-class-set'
 import type { WebpackGeneratedCssRegistration } from '../../loaders/runtime-registry'
+import type { RuntimeCompilationBuildState, RuntimeCompilationSnapshot, RuntimeSnapshotEntry } from '@/compiler'
 import type { AppType, InternalUserDefinedOptions } from '@/types'
-import { classifyBundleEntry } from '../../../vite/bundle-state'
-import { createRuntimeAffectingSourceSignature } from '../../../vite/runtime-affecting-signature'
+import { buildRuntimeCompilationSnapshot, createRuntimeAffectingSourceSignature } from '@/compiler'
+import { classifyRuntimeEntry } from '../../../shared/runtime-entry-type'
 
 export interface SetupWebpackV5ProcessAssetsHookOptions {
   compiler: Compiler
@@ -36,130 +36,38 @@ interface WebpackAssetCompilationLike {
   updateAsset: Compiler['webpack']['Compilation']['prototype']['updateAsset']
 }
 
-function createChangedByType() {
-  return {
-    html: new Set<string>(),
-    js: new Set<string>(),
-    css: new Set<string>(),
-    other: new Set<string>(),
-  } satisfies Record<EntryType, Set<string>>
-}
-
-function createProcessFiles() {
-  return {
-    html: new Set<string>(),
-    js: new Set<string>(),
-    css: new Set<string>(),
-  }
-}
-
-function markProcessFile(
-  type: EntryType,
-  file: string,
-  processFiles: BundleSnapshot['processFiles'],
-) {
-  if (type === 'html' || type === 'js' || type === 'css') {
-    processFiles[type].add(file)
-  }
-}
-
 export function buildWebpackBundleSnapshot(
   assets: Record<string, { source: () => unknown }>,
   opts: InternalUserDefinedOptions,
-  state: BundleBuildState,
+  state: RuntimeCompilationBuildState,
   compilation?: WebpackAssetCompilationLike | undefined,
 ) {
-  const sourceHashByFile = new Map<string, string>()
-  const runtimeAffectingSignatureByFile = new Map<string, string>()
-  const runtimeAffectingHashByFile = new Map<string, string>()
-  const changedByType = createChangedByType()
-  const runtimeAffectingChangedByType = createChangedByType()
-  const processFiles = createProcessFiles()
-  const entries: BundleSnapshot['entries'] = []
-  const firstRun = state.iteration === 0 && state.sourceHashByFile.size === 0
+  const entries: RuntimeSnapshotEntry[] = []
 
   for (const [file, asset] of Object.entries(assets)) {
-    const type = classifyBundleEntry(file, opts)
+    const type = classifyRuntimeEntry(file, opts)
     if (type !== 'html' && type !== 'js') {
       continue
     }
     const rawSource = compilation?.getAsset(file)?.source.source() ?? asset.source()
     const source = stringifyWebpackSource(rawSource)
-    const hash = opts.cache.computeHash(source)
-    sourceHashByFile.set(file, hash)
-
-    const previousHash = state.sourceHashByFile.get(file)
-    const changed = previousHash == null || previousHash !== hash
-    const previousRuntimeAffectingHash = state.runtimeAffectingHashByFile.get(file)
-    const canReuseRuntimeAffectingHash = !changed && previousRuntimeAffectingHash != null
-    const runtimeAffectingHash = canReuseRuntimeAffectingHash
-      ? previousRuntimeAffectingHash
-      : (() => {
-          const runtimeAffectingSignature = createRuntimeAffectingSourceSignature(source, type)
-          runtimeAffectingSignatureByFile.set(file, runtimeAffectingSignature)
-          return opts.cache.computeHash(runtimeAffectingSignature)
-        })()
-    runtimeAffectingHashByFile.set(file, runtimeAffectingHash)
-
-    if (changed) {
-      changedByType[type].add(file)
-    }
-    const runtimeAffectingChanged
-      = previousRuntimeAffectingHash == null || previousRuntimeAffectingHash !== runtimeAffectingHash
-    if (runtimeAffectingChanged) {
-      runtimeAffectingChangedByType[type].add(file)
-    }
-
-    if (firstRun) {
-      markProcessFile(type, file, processFiles)
-    }
-    else if (type === 'html') {
-      processFiles.html.add(file)
-    }
-    else if (changed) {
-      processFiles.js.add(file)
-    }
-
     entries.push({
       file,
-      output: {
-        fileName: file,
-        name: undefined,
-        names: [],
-        needsCodeReference: false,
-        originalFileName: null,
-        originalFileNames: [],
-        source,
-        type: 'asset',
-      },
+      runtimeCandidate: true,
       source,
       type,
     })
   }
 
-  return {
-    entries,
-    jsEntries: new Map(),
-    sourceHashByFile,
-    runtimeAffectingSignatureByFile,
-    runtimeAffectingHashByFile,
-    hasOmittedKnownFiles: false,
-    changedByType,
-    runtimeAffectingChangedByType,
-    processFiles,
-    linkedImpactsByEntry: new Map(),
-  } satisfies BundleSnapshot
+  return buildRuntimeCompilationSnapshot(entries, state, {
+    computeHash: source => opts.cache.computeHash(source),
+    createRuntimeAffectingSignature: createRuntimeAffectingSourceSignature,
+  })
 }
 
-export function releaseWebpackBundleSnapshotSources(snapshot: BundleSnapshot) {
+export function releaseWebpackBundleSnapshotSources(snapshot: RuntimeCompilationSnapshot) {
   for (const entry of snapshot.entries) {
     entry.source = ''
-    if (entry.output.type === 'asset') {
-      entry.output.source = ''
-    }
-    else {
-      entry.output.code = ''
-    }
   }
 }
 
