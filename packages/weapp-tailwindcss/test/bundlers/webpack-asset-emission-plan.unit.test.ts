@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { applyWebpackAssetEmissionPlan } from '@/bundlers/webpack/BaseUnifiedPlugin/v5-assets/asset-emission-plan'
+import { applyWebpackLinkedJsResults } from '@/bundlers/webpack/BaseUnifiedPlugin/v5-assets/js-module-graph'
 import { AssetEmissionPlan } from '@/compiler'
 
 class ConcatSource {
@@ -50,5 +51,40 @@ describe('webpack asset emission plan', () => {
       value: '.generated{}',
     }))
     expect(deleteAsset).toHaveBeenCalledWith('stale.acss')
+  })
+
+  it('writes linked js results through the webpack emission executor', () => {
+    const updateAsset = vi.fn()
+    const onUpdate = vi.fn()
+    const debug = vi.fn()
+    const sources = new Map([
+      ['page.js', { source: () => 'const value = "old"' }],
+      ['same.js', { source: () => 'const value = "same"' }],
+    ])
+
+    applyWebpackLinkedJsResults({
+      compilation: {
+        getAsset: vi.fn(file => sources.has(file) ? { source: sources.get(file)! } : undefined),
+        updateAsset,
+      },
+      compilerOptions: { onUpdate } as any,
+      ConcatSource: ConcatSource as any,
+      debug,
+      jsAssets: new Map([
+        ['/output/page.js', 'page.js'],
+        ['/output/same.js', 'same.js'],
+      ]),
+      linked: {
+        '/output/page.js': { code: 'const value = "next"' },
+        '/output/same.js': { code: 'const value = "same"' },
+      } as any,
+    })
+
+    expect(updateAsset).toHaveBeenCalledTimes(1)
+    expect(updateAsset).toHaveBeenCalledWith('page.js', expect.objectContaining({
+      value: 'const value = "next"',
+    }))
+    expect(onUpdate).toHaveBeenCalledWith('page.js', 'const value = "old"', 'const value = "next"')
+    expect(debug).toHaveBeenCalledWith('js linked handle: %s', 'page.js')
   })
 })

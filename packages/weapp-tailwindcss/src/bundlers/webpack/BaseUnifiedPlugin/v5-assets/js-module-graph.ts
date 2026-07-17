@@ -1,7 +1,10 @@
 import type { sources as WebpackSources } from 'webpack'
+import type { WebpackAssetCompilationLike } from './asset-emission-plan'
 import type { SetupWebpackV5ProcessAssetsHookOptions } from './helpers'
 import type { LinkedJsModuleResult } from '@/types'
+import { AssetEmissionPlan } from '@/compiler'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../../shared/module-graph'
+import { applyWebpackAssetEmissionPlan } from './asset-emission-plan'
 
 export function createWebpackJsAssetModuleGraph(options: {
   compilation: {
@@ -46,10 +49,7 @@ export function createWebpackJsAssetModuleGraph(options: {
 
 export function applyWebpackLinkedJsResults(options: {
   ConcatSource: new (code: string) => WebpackSources.Source
-  compilation: {
-    getAsset: (file: string) => { source: { source: () => unknown } } | undefined
-    updateAsset: (file: string, source: WebpackSources.Source) => void
-  }
+  compilation: Pick<WebpackAssetCompilationLike, 'getAsset' | 'updateAsset'>
   compilerOptions: SetupWebpackV5ProcessAssetsHookOptions['options']
   debug: SetupWebpackV5ProcessAssetsHookOptions['debug']
   jsAssets: ReadonlyMap<string, string>
@@ -58,6 +58,8 @@ export function applyWebpackLinkedJsResults(options: {
   if (!options.linked) {
     return
   }
+  const plan = new AssetEmissionPlan()
+  const updates: Array<{ assetName: string, code: string, previous: string }> = []
   for (const [id, { code }] of Object.entries(options.linked)) {
     const assetName = options.jsAssets.get(id)
     if (!assetName) {
@@ -72,8 +74,18 @@ export function applyWebpackLinkedJsResults(options: {
     if (previous === code) {
       continue
     }
-    const source = new options.ConcatSource(code)
-    options.compilation.updateAsset(assetName, source)
+    plan.write(assetName, code)
+    updates.push({ assetName, code, previous })
+  }
+  if (updates.length === 0) {
+    return
+  }
+  applyWebpackAssetEmissionPlan(plan, {
+    compilation: options.compilation,
+    ConcatSource: options.ConcatSource,
+    writeMode: 'update',
+  })
+  for (const { assetName, code, previous } of updates) {
     options.compilerOptions.onUpdate(assetName, previous, code)
     options.debug('js linked handle: %s', assetName)
   }

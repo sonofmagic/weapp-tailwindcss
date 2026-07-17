@@ -17,4 +17,4 @@ Gulp 增量 runtime 刷新改为复用 compiler 的 runtime compilation build st
 
 Webpack watch 移除独立的首次扫描标记和 HTML/JS 原文 hash 汇总，改由 compiler build state 的 iteration、reset 与 semantic signature 统一驱动全量扫描和 CSS 缓存失效，避免无关格式变化触发重复生成。
 
-`AssetEmissionPlan` 支持 bundler-neutral 的泛型 source payload，Webpack 的 asset 覆盖、创建和删除统一通过 emission plan executor 调用 compilation API；缓存命中的 Webpack Source 对象保持原样，不会为写回计划被强制序列化。
+`AssetEmissionPlan` 支持 bundler-neutral 的泛型 source payload，Webpack 的 asset 覆盖、创建、删除和 linked JS 模块写回统一通过 emission plan executor 调用 compilation API；缓存命中的 Webpack Source 对象保持原样，不会为写回计划被强制序列化。
