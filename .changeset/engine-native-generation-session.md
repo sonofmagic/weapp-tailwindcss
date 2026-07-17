@@ -11,4 +11,4 @@
 
 将增量 runtime classSet manager、runtime entry 过滤、safe class 还原和 candidate signature 迁入 bundler shared。Webpack 与 Gulp 不再依赖 Vite runtime 实现，Vite 旧入口继续提供原有 `createBundleRuntimeClassSetManager` 与 signature API facade，保持 classSet 精确命中和既有测试注入方式兼容。
 
-扩展 `AssetEmissionPlan` 以记录 bundler-neutral 的 asset write/delete 操作，并将 Vite production CSS 的覆盖、创建、迁移、import shell、源 asset 删除、最终小程序 CSS 清理与 WebView 兼容转换统一改为先生成 emission plan，再通过 Rollup bundle/`emitFile` port 执行。compiler 只描述产物意图，不持有或修改 Rollup asset。
+扩展 `AssetEmissionPlan` 以记录 bundler-neutral 的 asset write/delete 操作，并将 Vite production CSS 的覆盖、创建、迁移、import shell、源 asset 删除、最终小程序 CSS 清理、WebView 兼容转换与独立 CSS finalizer 写回统一改为先生成 emission plan，再通过 Rollup bundle/`emitFile` port 执行。compiler 只描述产物意图，不持有或修改 Rollup asset。

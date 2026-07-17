@@ -4,6 +4,7 @@ import type { ViteFrameworkCssPipelineContext } from '../shared/framework-strate
 import type { CssFinalizerContext, CssFinalizerThis } from './options'
 import path from 'node:path'
 import process from 'node:process'
+import { AssetEmissionPlan } from '@/compiler'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
@@ -15,6 +16,7 @@ import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-im
 import { normalizeMiniProgramGeneratorCssSource } from '../../shared/generator-css/output-import-shell'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from '../generate-bundle'
+import { applyViteAssetEmissionPlan } from '../generate-bundle/asset-emission-plan'
 import { normalizeRootMiniProgramImportShellAssets } from '../generate-bundle/finalize'
 import { restoreFrameworkRootMiniProgramImportShellAssets } from '../generate-bundle/root-style-output'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '../processed-css-assets'
@@ -248,6 +250,12 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         const generatorRuntime = shouldUseMiniProgramCssBranch(generatorBranch)
           ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
           : collectedGeneratorCandidates
+        const emissionPlan = new AssetEmissionPlan()
+        const writeTargets = new Map<string, OutputAsset>()
+        const writeCssAsset = (file: string, output: OutputAsset, source: string) => {
+          emissionPlan.write(file, source)
+          writeTargets.set(file, output)
+        }
         await Promise.all(entries.map(async ([bundleFile, output]) => {
           const file = output.fileName || bundleFile
           const rawSource = output.source.toString()
@@ -273,7 +281,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
                   cssPipelineStrategy,
                 )
               : (await opts.styleHandler(cleanRawSource, cssHandlerOptions)).css)
-            output.source = nextCss
+            writeCssAsset(file, output, nextCss)
             markCssAssetProcessed(output, file)
             recordCssAssetResult?.(file, nextCss)
             debug('css finalizer skip vite-processed css: %s', file)
@@ -295,7 +303,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           }
           const cleanRawSource = stripBundlerGeneratedCssMarkers(rawSource)
           if (cleanRawSource !== rawSource && cleanRawSource.trim().length === 0) {
-            output.source = cleanRawSource
+            writeCssAsset(file, output, cleanRawSource)
             markCssAssetProcessed(output, file)
             recordCssAssetResult?.(file, cleanRawSource)
             opts.onUpdate(file, rawSource, cleanRawSource)
@@ -350,7 +358,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           if (!generated && !generatorBranch.isWeb && isPureLocalCssImportWrapper(generatorTransformRawSource)) {
             const nextCss = generatorTransformRawSource
             if (nextCss !== rawSource) {
-              output.source = nextCss
+              writeCssAsset(file, output, nextCss)
               opts.onUpdate(file, rawSource, nextCss)
             }
             markCssAssetProcessed(output, file)
@@ -374,11 +382,15 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
               rememberMainCssSource?.(file, generatorRawSource)
             }
           }
-          output.source = nextCss
+          writeCssAsset(file, output, nextCss)
           markCssAssetProcessed(output, file)
           opts.onUpdate(file, rawSource, nextCss)
           debug('css finalizer handle: %s', file)
         }))
+        applyViteAssetEmissionPlan(emissionPlan, {
+          bundle,
+          writeTargets,
+        })
         await injectHarmonyBundleStyles(generatorRuntime)
         collectViteProcessedCssAssets()
         injectViteProcessedCssIntoMainCss()

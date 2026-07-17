@@ -113,14 +113,16 @@ describe('vite css finalizer output plugin', () => {
   it('finalizes ordinary css assets through the configured style handler', async () => {
     const { context, opts } = createContext()
     const plugin = createViteCssFinalizerOutputPlugin(context as any)
+    const output = asset('app.wxss', '.root{color:red}')
     const bundle: OutputBundle = {
-      'app.wxss': asset('app.wxss', '.root{color:red}'),
+      'app-hash.wxss': output,
       'index.html': asset('index.html', '<html></html>'),
     }
 
     await getHandler(plugin).call(plugin, {}, bundle)
 
-    expect(String((bundle['app.wxss'] as OutputAsset).source)).toContain('.handled{color:green}')
+    expect(bundle['app-hash.wxss']).toBe(output)
+    expect(String(output.source)).toContain('.handled{color:green}')
     expect(opts.styleHandler).toHaveBeenCalledWith('.root{color:red}', expect.objectContaining({
       isMainChunk: true,
       majorVersion: 4,
@@ -130,7 +132,7 @@ describe('vite css finalizer output plugin', () => {
         },
       },
     }))
-    expect(context.markCssAssetProcessed).toHaveBeenCalledWith(bundle['app.wxss'], 'app.wxss')
+    expect(context.markCssAssetProcessed).toHaveBeenCalledWith(output, 'app.wxss')
     expect(opts.onUpdate).toHaveBeenCalledWith(
       'app.wxss',
       '.root{color:red}',
