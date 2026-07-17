@@ -2,7 +2,8 @@ import type { AcceptedPlugin } from '@weapp-tailwindcss/postcss'
 import type { IStyleHandlerOptions, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
 import type { GenerateCssByGeneratorResult } from './generator-css'
 import type { InternalUserDefinedOptions } from '@/types'
-import { postcss, removeTailwindPostcssPlugins } from '@weapp-tailwindcss/postcss'
+import { removeTailwindPostcssPlugins } from '@weapp-tailwindcss/postcss'
+import { composeGenerationArtifact, createCssFragment, createGenerationArtifact, createStylePlatformAdapter } from '@/compiler'
 import { finalizeMiniProgramGeneratorCss } from './generator-css/generation-helpers'
 
 const FRAMEWORK_POSTCSS_REGISTRY = Symbol.for('weapp-tailwindcss.framework-postcss-options')
@@ -145,6 +146,37 @@ function createGeneratedCssHandlerOptions(
   }
 }
 
+function createFrameworkReplayArtifact(
+  generated: GenerateCssByGeneratorResult,
+  options: {
+    cssHandlerOptions: IStyleHandlerOptions
+    file: string
+    rawCandidates: Iterable<string>
+  },
+) {
+  const sourceId = generated.metadata?.file ?? options.file
+  const scope = {
+    id: generated.metadata?.outputFile ?? sourceId,
+    kind: options.cssHandlerOptions.isMainChunk ? 'global' as const : 'component' as const,
+  }
+  return createGenerationArtifact([
+    createCssFragment({
+      id: `${scope.id}:framework-replay`,
+      kind: 'tailwind',
+      css: generated.css,
+      sourceId,
+      scope,
+      stage: 'raw',
+    }),
+  ], {
+    classSet: generated.classSet,
+    rawCandidates: new Set(options.rawCandidates),
+    dependencies: generated.dependencies,
+    sourceEntries: options.cssHandlerOptions.sourceOptions?.cssEntries ?? [],
+    ...(generated.metadata?.revision === undefined ? {} : { revision: generated.metadata.revision }),
+  })
+}
+
 export async function adaptGeneratedCssWithFrameworkPipeline(
   owner: InternalUserDefinedOptions,
   generated: GenerateCssByGeneratorResult,
@@ -182,15 +214,20 @@ export async function adaptGeneratedCssWithFrameworkRootPipeline(
     cssHandlerOptions: IStyleHandlerOptions
     file: string
     majorVersion: number
+    rawCandidates: Iterable<string>
     styleHandler: InternalUserDefinedOptions['styleHandler']
   },
 ): Promise<string> {
   const handlerOptions = createGeneratedCssHandlerOptions(owner, options.cssHandlerOptions, options.file)
   const handled = typeof options.styleHandler.transformRoot === 'function'
-    ? await options.styleHandler.transformRoot(
-        postcss.parse(generated.css, handlerOptions.postcssOptions?.options),
-        handlerOptions,
-      )
+    ? composeGenerationArtifact(await createStylePlatformAdapter({
+        id: generated.target === 'web' ? 'web' : 'mini-program',
+        styleHandler: options.styleHandler,
+        styleOptions: handlerOptions,
+      }).transform(
+        createFrameworkReplayArtifact(generated, options),
+        { stage: 'framework-processed' },
+      ))
     : await options.styleHandler(generated.css, handlerOptions)
   const preflightMode = generated.metadata?.preflightMode
   const injectPreflight = preflightMode?.inject ?? options.cssHandlerOptions.isMainChunk

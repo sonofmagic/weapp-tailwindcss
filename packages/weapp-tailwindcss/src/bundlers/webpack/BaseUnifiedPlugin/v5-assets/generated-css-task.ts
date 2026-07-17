@@ -408,7 +408,7 @@ export async function processWebpackGeneratedCssAsset(element: any, context: Web
           cssHandlerOptions: generatorCssHandlerOptions,
           cssUserHandlerOptions: getCssUserHandlerOptions(file),
           frameworkPostcssOwner: compilerOptions,
-          frameworkPostcssStage: 'complete',
+          cssStage: 'framework-processed',
           getSourceCandidatesForEntries: webpackSourceCandidates?.getSourceCandidatesForEntries,
           sourceCandidates: scopedGeneratorRuntimeSet,
           restoreLocalCssImports: false,

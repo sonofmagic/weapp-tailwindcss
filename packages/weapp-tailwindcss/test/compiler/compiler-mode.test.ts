@@ -97,13 +97,47 @@ describe('compiler mode', () => {
       ...createGenerationOptions(),
       opts: owner,
       frameworkPostcssOwner: owner,
-      frameworkPostcssStage: 'complete',
+      cssStage: 'framework-processed',
       styleHandler,
     })
 
     expect(transformRoot).toHaveBeenCalledTimes(1)
     expect(result?.css).toContain('processed-token')
     expect(result?.artifact.fragments[0]?.root.toString()).toContain('processed-token')
+  })
+
+  it('does not replay framework PostCSS for raw CSS stages', async () => {
+    process.env[COMPILER_MODE_ENV] = 'graph'
+    const generateCssByGenerator = vi.fn(async (options: { deferCssAdaptation?: boolean }) => {
+      expect(options.deferCssAdaptation).toBeUndefined()
+      return createGeneratedResult('.token { color: raw-token; }')
+    })
+    vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
+    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    const transformRoot = vi.fn()
+    const styleHandler = Object.assign(
+      vi.fn(async (css: string) => ({ css })),
+      { transformRoot },
+    )
+    const owner = {
+      generator: { target: 'weapp' },
+      styleHandler,
+    } as any
+    captureFrameworkPostcssOptions(owner, {
+      plugins: [{ postcssPlugin: 'framework-plugin' }],
+    })
+
+    const result = await generateTailwindV4Css({
+      ...createGenerationOptions(),
+      opts: owner,
+      frameworkPostcssOwner: owner,
+      cssStage: 'raw',
+      styleHandler,
+    })
+
+    expect(transformRoot).not.toHaveBeenCalled()
+    expect(result?.css).toContain('raw-token')
+    expect(result?.artifact.fragments[0]?.stage).toBe('adapted')
   })
 
   it('runs both implementations in shadow mode and returns legacy output', async () => {

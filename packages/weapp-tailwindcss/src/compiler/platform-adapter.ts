@@ -1,6 +1,5 @@
 import type { IStyleHandlerOptions, StyleHandler } from '@weapp-tailwindcss/postcss/types'
 import type { GenerationArtifact, PlatformAdapter, PlatformGenerationRequest } from './types'
-import { postcss } from '@weapp-tailwindcss/postcss'
 import { cloneGenerationArtifact } from './artifact'
 
 export interface CreateStylePlatformAdapterOptions {
@@ -39,7 +38,7 @@ export function createStylePlatformAdapter(options: CreateStylePlatformAdapterOp
       const transformed = cloneGenerationArtifact(artifact)
       for (const fragment of transformed.fragments) {
         const result = await options.styleHandler.transformRoot(fragment.root, options.styleOptions)
-        fragment.root = postcss.parse(result.css, result.opts)
+        fragment.root = result.root.clone()
         fragment.stage = context.stage
       }
       return transformed

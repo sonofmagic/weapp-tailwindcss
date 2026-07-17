@@ -1,4 +1,5 @@
 import type { Plugin } from 'vite'
+import type { CssStage } from '@/compiler'
 import { vitePluginName } from '@/constants'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { isSourceStyleRequest } from '../shared/style-requests'
@@ -13,7 +14,7 @@ interface ViteCssGenerationOptions {
   generateCss: (id: string, code: string, hookContext?: {
     addWatchFile?: (id: string) => void
     emitFile?: (emittedFile: { type: 'asset', fileName: string, source: string }) => string
-    frameworkPostcssStage?: 'complete' | 'pending' | undefined
+    cssStage?: CssStage | undefined
   }) => Promise<string | undefined> | string | undefined
   getCommand: () => string | undefined
   onTailwindRootCss?: ((id: string, code: string) => Promise<void> | void) | undefined
@@ -117,7 +118,7 @@ export function createViteCssGenerationPlugins(options: ViteCssGenerationOptions
       const generatedCss = await options.generateCss(id, code, {
         ...(this.addWatchFile ? { addWatchFile: this.addWatchFile.bind(this) } : {}),
         ...(this.emitFile ? { emitFile: this.emitFile.bind(this) } : {}),
-        frameworkPostcssStage: 'pending',
+        cssStage: 'raw',
       })
       if (generatedCss === undefined || generatedCss === code) {
         return
@@ -148,7 +149,7 @@ export function createViteCssGenerationPlugins(options: ViteCssGenerationOptions
       const generatedCss = await options.generateCss(id, code, {
         ...(this.addWatchFile ? { addWatchFile: this.addWatchFile.bind(this) } : {}),
         ...(this.emitFile ? { emitFile: this.emitFile.bind(this) } : {}),
-        frameworkPostcssStage: 'pending',
+        cssStage: 'raw',
       })
       if (generatedCss === undefined || generatedCss === code) {
         return
@@ -179,7 +180,7 @@ export function createViteCssGenerationPlugins(options: ViteCssGenerationOptions
       const generatedCss = await options.generateCss(id, extracted.css, {
         ...(this.addWatchFile ? { addWatchFile: this.addWatchFile.bind(this) } : {}),
         ...(this.emitFile ? { emitFile: this.emitFile.bind(this) } : {}),
-        frameworkPostcssStage: 'complete',
+        cssStage: 'framework-processed',
       })
       if (generatedCss === undefined || generatedCss === extracted.css) {
         return

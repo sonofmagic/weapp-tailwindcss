@@ -272,7 +272,7 @@ describe('bundlers/shared generator css', () => {
       styleHandler,
       debug: vi.fn(),
       frameworkPostcssOwner,
-      frameworkPostcssStage: 'complete',
+      cssStage: 'framework-processed',
     })
 
     expect(result?.target).toBe('weapp')
@@ -328,7 +328,7 @@ describe('bundlers/shared generator css', () => {
       cssUserHandlerOptions: {} as any,
       styleHandler,
       debug: vi.fn(),
-      frameworkPostcssStage: 'complete',
+      cssStage: 'framework-processed',
     })
 
     expect(result?.css).toBe(':root{--spacing:4px}')

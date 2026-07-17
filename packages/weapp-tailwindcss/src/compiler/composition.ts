@@ -10,7 +10,7 @@ export function composeGenerationArtifact(artifact: GenerationArtifact) {
   const cloned = cloneGenerationArtifact(artifact)
   const root = postcss.root()
   for (const fragment of orderCssFragments(cloned.fragments)) {
-    root.append(fragment.root.nodes)
+    root.append(fragment.root.nodes.map(node => node.clone()))
   }
   return {
     artifact: cloned,

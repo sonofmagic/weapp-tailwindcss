@@ -1,4 +1,5 @@
 import type { Plugin } from 'vite'
+import type { CssStage } from '@/compiler'
 import type { AppType } from '@/types'
 import path from 'node:path'
 import { vitePluginName } from '@/constants'
@@ -28,7 +29,7 @@ interface RewriteCssImportsOptions {
   generateTailwindCss?: ((id: string, code: string, hookContext?: {
     addWatchFile?: (id: string) => void
     emitFile?: (emittedFile: { type: 'asset', fileName: string, source: string }) => string
-    frameworkPostcssStage?: 'complete' | 'pending' | undefined
+    cssStage?: CssStage | undefined
   }) => Promise<string | undefined> | string | undefined) | undefined
   shouldOwnTailwindGeneration?: boolean | undefined
   shouldRewrite: boolean
@@ -90,7 +91,7 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
           const generatedCss = await options.generateTailwindCss?.(id, normalizedCode, {
             ...(this.addWatchFile ? { addWatchFile: this.addWatchFile.bind(this) } : {}),
             ...(this.emitFile ? { emitFile: this.emitFile.bind(this) } : {}),
-            frameworkPostcssStage: 'pending',
+            cssStage: 'raw',
           })
           if (generatedCss !== undefined) {
             return {

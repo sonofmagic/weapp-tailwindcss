@@ -1,5 +1,5 @@
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css'
-import type { GenerationArtifact, SourceScope } from '@/compiler'
+import type { CssStage, GenerationArtifact, SourceScope } from '@/compiler'
 import type { InternalUserDefinedOptions } from '@/types'
 import { areArtifactsSemanticallyEqual, createCssFragment, createGenerationArtifact, resolveCompilerMode } from '@/compiler'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
@@ -11,7 +11,7 @@ import { isVueScopedStyleRequest } from './style-requests'
 
 export interface TailwindV4GenerationCoreInput extends GenerateCssByGeneratorOptions {
   frameworkPostcssOwner?: InternalUserDefinedOptions | undefined
-  frameworkPostcssStage?: 'complete' | 'pending' | undefined
+  cssStage?: CssStage | undefined
   outputFile?: string | undefined
   scope?: SourceScope | undefined
   sourceCandidates?: Set<string> | undefined
@@ -73,7 +73,7 @@ async function generateTailwindV4CssWithImplementation(
     tailwindcssMajorVersion: majorVersion,
     uniAppX: options.opts.uniAppX,
   })
-  const shouldReplayFrameworkPostcss = options.frameworkPostcssStage === 'complete'
+  const shouldReplayFrameworkPostcss = options.cssStage === 'framework-processed'
     && hasFrameworkPostcssOptions(frameworkPostcssOwner)
     && normalizedGeneratorOptions.target === 'weapp'
   const scope = options.scope ?? {
@@ -106,6 +106,7 @@ async function generateTailwindV4CssWithImplementation(
         cssHandlerOptions: options.cssHandlerOptions,
         file: options.file,
         majorVersion,
+        rawCandidates: options.runtime,
         styleHandler: options.styleHandler,
       })
     : generated.css

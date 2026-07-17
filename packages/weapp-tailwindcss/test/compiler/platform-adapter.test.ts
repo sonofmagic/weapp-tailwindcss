@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { createStyleHandler } from '@weapp-tailwindcss/postcss'
+import { describe, expect, it, vi } from 'vitest'
+import { createStyleHandler, postcss } from '@weapp-tailwindcss/postcss'
 import { areArtifactsSemanticallyEqual, createCssFragment, createGenerationArtifact, createPassthroughPlatformAdapter, createStylePlatformAdapter } from '@/compiler'
 
 const scope = { id: 'global', kind: 'global' as const }
@@ -46,5 +46,28 @@ describe('compiler platform adapter', () => {
     const cloned = await adapter.transform(left, { stage: 'raw' })
 
     expect(areArtifactsSemanticallyEqual(cloned, right)).toBe(true)
+  })
+
+  it('takes ownership of a cloned handler result root', async () => {
+    let handlerResultRoot: ReturnType<typeof postcss.root> | undefined
+    const transformRoot = vi.fn(async (root: ReturnType<typeof postcss.root>) => {
+      const result = root.clone().toResult()
+      handlerResultRoot = result.root
+      return result
+    })
+    const styleHandler = Object.assign(
+      vi.fn(async (css: string) => postcss.parse(css).toResult()),
+      { transformRoot },
+    )
+    const adapter = createStylePlatformAdapter({
+      id: 'mini-program',
+      styleHandler,
+    })
+
+    const transformed = await adapter.transform(createArtifact(), { stage: 'framework-processed' })
+
+    expect(transformRoot).toHaveBeenCalledTimes(1)
+    expect(transformed.fragments[0]!.root).not.toBe(handlerResultRoot)
+    expect(transformed.fragments[0]!.stage).toBe('framework-processed')
   })
 })

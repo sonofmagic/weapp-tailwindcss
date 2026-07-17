@@ -102,7 +102,7 @@ export async function handleUniAppXPostCssTasks(options: HandleUniAppXPostCssOpt
         ...cssHandlerOptions,
         isMainChunk: false,
       },
-      frameworkPostcssStage: 'complete',
+      cssStage: 'framework-processed',
       getSourceCandidatesForEntries,
       styleHandler,
       debug,
