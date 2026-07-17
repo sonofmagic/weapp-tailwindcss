@@ -3,7 +3,7 @@ import type { GeneratorSourceRuntimeState } from './types'
 import type { TailwindResolvedSource } from '@/generator'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
-import { resolveTailwindV4EntriesFromCss } from '@/bundlers/vite/source-scan'
+import { resolveTailwindV4EntriesFromCss } from '@/bundlers/shared/source-scan'
 import { tryResolveTailwindV4SourceOptions } from './configuration'
 
 export async function resolveGeneratorSourceEntries(source: TailwindResolvedSource, runtimeState?: GeneratorSourceRuntimeState) {

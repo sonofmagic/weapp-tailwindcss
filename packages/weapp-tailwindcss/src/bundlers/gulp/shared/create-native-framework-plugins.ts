@@ -5,6 +5,8 @@ import path from 'node:path'
 import process from 'node:process'
 import { prependConfigDirective } from '@/bundlers/shared/generator-css/config-directive'
 import { hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
+import { createSourceCandidateCollector } from '@/bundlers/shared/source-candidates'
+import { resolveSourceScanEntries } from '@/bundlers/shared/source-scan'
 import { getCompilerContext } from '@/context'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { createDebug } from '@/debug'
@@ -13,8 +15,6 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { splitLocalCssImports } from '../../shared/generator-css/local-imports'
 import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
-import { createSourceCandidateCollector } from '../../vite/source-candidates'
-import { resolveViteSourceScanEntries } from '../../vite/source-scan'
 import { createGulpModuleGraphOptions } from '../module-graph'
 import { createGulpRuntimeSnapshot } from '../runtime-snapshot'
 import {
@@ -138,7 +138,7 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
 
   async function refreshGulpV4SourceCandidates(forceRefresh = false) {
     const root = opts.tailwindcssBasedir ?? process.cwd()
-    const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.tailwindRuntime, {
+    const sourceScan = await resolveSourceScanEntries(opts, runtimeState.tailwindRuntime, {
       root,
     })
     const nextSignature = cache.computeHash(JSON.stringify({

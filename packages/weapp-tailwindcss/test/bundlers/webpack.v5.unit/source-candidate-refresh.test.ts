@@ -2,13 +2,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 describe('bundlers/webpack source candidate refresh', () => {
   afterEach(() => {
-    vi.doUnmock('@/bundlers/vite/source-scan')
+    vi.doUnmock('@/bundlers/shared/source-scan')
     vi.resetModules()
     vi.restoreAllMocks()
   })
 
   function createRefreshOptions(sourceScan: unknown) {
-    const resolveViteSourceScanEntries = vi.fn(async () => sourceScan)
+    const resolveSourceScanEntries = vi.fn(async () => sourceScan)
     const scanCache = {
       resolve: vi.fn(async () => ({
         getSourceCandidatesForEntries: vi.fn(() => new Set<string>()),
@@ -17,9 +17,9 @@ describe('bundlers/webpack source candidate refresh', () => {
       })),
     }
 
-    vi.doMock('@/bundlers/vite/source-scan', async (importOriginal) => ({
-      ...(await importOriginal<typeof import('@/bundlers/vite/source-scan')>()),
-      resolveViteSourceScanEntries,
+    vi.doMock('@/bundlers/shared/source-scan', async (importOriginal) => ({
+      ...(await importOriginal<typeof import('@/bundlers/shared/source-scan')>()),
+      resolveSourceScanEntries,
     }))
 
     return {
@@ -41,20 +41,20 @@ describe('bundlers/webpack source candidate refresh', () => {
         watchChangedFiles: new Set<string>(),
         watchMode: false,
       },
-      resolveViteSourceScanEntries,
+      resolveSourceScanEntries,
       scanCache,
     }
   }
 
   it('skips demo dev/build source candidate refresh when cssSources have no effective scan input', async () => {
-    const { options, resolveViteSourceScanEntries, scanCache } = createRefreshOptions({
+    const { options, resolveSourceScanEntries, scanCache } = createRefreshOptions({
       explicit: false,
     })
     const { refreshWebpackSourceCandidates } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5-assets/source-candidate-refresh')
 
     await expect(refreshWebpackSourceCandidates(options as any)).resolves.toBeUndefined()
 
-    expect(resolveViteSourceScanEntries).toHaveBeenCalledWith(
+    expect(resolveSourceScanEntries).toHaveBeenCalledWith(
       options.compilerOptions,
       options.runtimeState.tailwindRuntime,
       {

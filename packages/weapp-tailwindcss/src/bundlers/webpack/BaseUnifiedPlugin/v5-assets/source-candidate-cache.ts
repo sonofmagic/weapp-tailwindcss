@@ -1,14 +1,14 @@
-import type { SourceCandidateScanRoot } from '../../../vite/source-candidate-scan-signature'
-import type { SourceCandidateCollectorSnapshot, SourceCandidateStore } from '../../../vite/source-candidates'
-import type { ResolvedViteSourceScan } from '../../../vite/source-scan'
+import type { SourceCandidateScanRoot } from '../../../shared/source-candidate-scan-signature'
+import type { SourceCandidateCollectorSnapshot, SourceCandidateStore } from '../../../shared/source-candidates'
+import type { ResolvedSourceScan } from '../../../shared/source-scan'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import { readFile, stat } from 'node:fs/promises'
 import path from 'node:path'
 import { md5Hash } from '@/cache/md5'
 import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
-import { createSourceCandidateScanSignature } from '../../../vite/source-candidate-scan-signature'
-import { isSourceCandidateRequest } from '../../../vite/source-candidates'
-import { resolveSourceCandidateScanFiles } from '../../../vite/source-candidates/scan-root'
+import { createSourceCandidateScanSignature } from '../../../shared/source-candidate-scan-signature'
+import { isSourceCandidateRequest } from '../../../shared/source-candidates'
+import { resolveSourceCandidateScanFiles } from '../../../shared/source-candidates/scan-root'
 
 export interface WebpackSourceCandidateCacheRecord {
   getSourceCandidatesForEntries: SourceCandidateStore['valuesForEntries']
@@ -40,7 +40,7 @@ interface ResolveWebpackSourceCandidateCacheOptions {
   collector: SourceCandidateStore
   outDir: string
   root: string
-  sourceScan: ResolvedViteSourceScan | undefined
+  sourceScan: ResolvedSourceScan | undefined
   watchMode: boolean
 }
 
@@ -106,7 +106,7 @@ function dedupeSourceEntries(entries: TailwindSourceEntry[] | undefined) {
 
 function createWebpackSourceCandidateCacheRecord(
   collector: SourceCandidateStore,
-  sourceScan: ResolvedViteSourceScan | undefined,
+  sourceScan: ResolvedSourceScan | undefined,
   signatureHash: string,
 ): WebpackSourceCandidateCacheRecord {
   return {

@@ -5,7 +5,7 @@ import type { NormalizedWeappTailwindcssGeneratorOptions, resolveTailwindV4Sourc
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { resolveTailwindV4EntriesFromCss } from '@/bundlers/vite/source-scan'
+import { resolveTailwindV4EntriesFromCss } from '@/bundlers/shared/source-scan'
 import { resolveTailwindV4Source } from '@/generator'
 import { resolveTailwindV4CssSourceBase } from '@/tailwindcss/source-scan'
 import { omitUndefined } from '@/utils/object'

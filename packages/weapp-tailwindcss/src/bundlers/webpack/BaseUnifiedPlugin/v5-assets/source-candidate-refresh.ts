@@ -1,8 +1,8 @@
 import type { SetupWebpackV5ProcessAssetsHookOptions } from './helpers'
 import type { createWebpackSourceCandidateScanCache } from './source-candidate-cache'
 import process from 'node:process'
-import { createSourceCandidateStore } from '../../../vite/source-candidates'
-import { resolveViteSourceScanEntries } from '../../../vite/source-scan'
+import { createSourceCandidateStore } from '../../../shared/source-candidates'
+import { resolveSourceScanEntries } from '../../../shared/source-scan'
 
 export async function refreshWebpackSourceCandidates(options: {
   compilerOptions: SetupWebpackV5ProcessAssetsHookOptions['options']
@@ -14,9 +14,9 @@ export async function refreshWebpackSourceCandidates(options: {
   watchMode: boolean
 }) {
   const root = options.compilerOptions.tailwindcssBasedir ?? process.cwd()
-  let sourceScan: Awaited<ReturnType<typeof resolveViteSourceScanEntries>>
+  let sourceScan: Awaited<ReturnType<typeof resolveSourceScanEntries>>
   try {
-    sourceScan = await resolveViteSourceScanEntries(options.compilerOptions, options.runtimeState.tailwindRuntime, {
+    sourceScan = await resolveSourceScanEntries(options.compilerOptions, options.runtimeState.tailwindRuntime, {
       root,
       outDir: options.outputDir,
     })
