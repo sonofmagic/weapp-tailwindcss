@@ -3,7 +3,7 @@ import type { AssetEmissionPlan } from '@/compiler'
 
 export interface ApplyViteAssetEmissionPlanOptions {
   bundle: Record<string, OutputAsset | OutputChunk>
-  emitOrReplayAsset: (file: string, source: string) => OutputAsset | undefined
+  emitOrReplayAsset?: ((file: string, source: string) => OutputAsset | undefined) | undefined
   writeTargets?: ReadonlyMap<string, OutputAsset> | undefined
 }
 
@@ -25,7 +25,7 @@ export function applyViteAssetEmissionPlan(
       continue
     }
 
-    const replayAsset = options.emitOrReplayAsset(operation.assetId, operation.source)
+    const replayAsset = options.emitOrReplayAsset?.(operation.assetId, operation.source)
     if (replayAsset) {
       options.bundle[operation.assetId] = replayAsset
     }

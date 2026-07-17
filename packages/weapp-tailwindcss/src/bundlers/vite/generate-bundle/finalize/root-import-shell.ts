@@ -5,9 +5,11 @@ import type { BundleMetrics } from '../metrics'
 import type { GenerateBundleContext } from '../types'
 import path from 'node:path'
 import { transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
+import { AssetEmissionPlan } from '@/compiler'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { isPureLocalCssImportWrapper } from '../../../shared/generator-css/local-imports'
 import { normalizeOutputPathKey } from '../../../shared/module-graph'
+import { applyViteAssetEmissionPlan } from '../asset-emission-plan'
 import { resolveSingleCssImportOutputFile } from '../root-style-output'
 
 export interface FinalizeGenerateBundleOptions {
@@ -84,6 +86,8 @@ export function finalizeWebviewCssCompat(
   if (generatorOptions.webCompat === false) {
     return 0
   }
+  const plan = new AssetEmissionPlan()
+  const writeTargets = new Map<string, OutputAsset>()
   let transformed = 0
   for (const [bundleFile, output] of Object.entries(bundle)) {
     if (output.type !== 'asset') {
@@ -101,12 +105,17 @@ export function finalizeWebviewCssCompat(
     if (nextCss === rawSource) {
       continue
     }
-    output.source = nextCss
+    plan.write(file, nextCss)
+    writeTargets.set(file, output)
     options.recordCssAssetResult?.(file, nextCss)
     options.onUpdate(file, rawSource, nextCss)
     options.debug('finalize webview css compat: %s bytes=%d', file, nextCss.length)
     transformed++
   }
+  applyViteAssetEmissionPlan(plan, {
+    bundle,
+    writeTargets,
+  })
   return transformed
 }
 
@@ -152,6 +161,8 @@ export function normalizeRootMiniProgramImportShellAssets(
   if (!options.enabled) {
     return 0
   }
+  const plan = new AssetEmissionPlan()
+  const writeTargets = new Map<string, OutputAsset>()
   let updated = 0
   for (const [rootBundleFile, rootOutput] of Object.entries(bundle)) {
     if (rootOutput.type !== 'asset') {
@@ -179,7 +190,8 @@ export function normalizeRootMiniProgramImportShellAssets(
       if (rootSource === nextRootSource) {
         continue
       }
-      rootOutput.source = nextRootSource
+      plan.write(rootFile, nextRootSource)
+      writeTargets.set(rootFile, rootOutput)
       options.recordCssAssetResult?.(rootFile, nextRootSource)
       options.onUpdate?.(rootFile, rootSource, nextRootSource)
       options.debug('normalize root css import shell request: %s -> %s', rootFile, originFile)
@@ -203,8 +215,10 @@ export function normalizeRootMiniProgramImportShellAssets(
     if (rootSource === nextRootSource) {
       continue
     }
-    rootOutput.source = nextRootSource
-    originOutput.source = rootSource
+    plan.write(rootFile, nextRootSource)
+    plan.write(originFile, rootSource)
+    writeTargets.set(rootFile, rootOutput)
+    writeTargets.set(originFile, originOutput)
     options.recordCssAssetResult?.(rootFile, nextRootSource)
     options.recordCssAssetResult?.(originFile, rootSource)
     options.onUpdate?.(rootFile, rootSource, nextRootSource)
@@ -212,5 +226,9 @@ export function normalizeRootMiniProgramImportShellAssets(
     options.debug('normalize root css import shell: %s -> %s', rootFile, originFile)
     updated++
   }
+  applyViteAssetEmissionPlan(plan, {
+    bundle,
+    writeTargets,
+  })
   return updated
 }

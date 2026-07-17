@@ -1,6 +1,7 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import { describe, expect, it, vi } from 'vitest'
 import { normalizeRootMiniProgramImportShellAssets } from '@/bundlers/vite/generate-bundle/finalize'
+import { finalizeWebviewCssCompat } from '@/bundlers/vite/generate-bundle/finalize/root-import-shell'
 
 function asset(fileName: string, source: string): OutputAsset {
   return {
@@ -13,6 +14,35 @@ function asset(fileName: string, source: string): OutputAsset {
 }
 
 describe('vite generate bundle finalize helpers', () => {
+  it('writes webview css compat results through the original output asset', () => {
+    const styleAsset = asset('assets/style.css', '@layer utilities { .rounded-\\[20rpx\\] { border-radius: 0.625rem; } }')
+    const bundle: OutputBundle = {
+      'assets/style-hash.css': styleAsset,
+      'chunk.js': { type: 'chunk', fileName: 'chunk.js' } as any,
+    }
+    const onUpdate = vi.fn()
+    const record = vi.fn()
+
+    expect(finalizeWebviewCssCompat(bundle, {
+      debug: vi.fn(),
+      onUpdate,
+      opts: {
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        generator: {
+          target: 'web',
+          webCompat: true,
+        },
+      } as any,
+      recordCssAssetResult: record,
+    })).toBe(1)
+
+    expect(bundle['assets/style-hash.css']).toBe(styleAsset)
+    expect(String(styleAsset.source)).toContain('.rounded-_b20rpx_B')
+    expect(String(styleAsset.source)).not.toContain('@layer')
+    expect(onUpdate).toHaveBeenCalledOnce()
+    expect(record).toHaveBeenCalledWith('assets/style.css', String(styleAsset.source))
+  })
+
   it('normalizes taro root css to import origin shell', () => {
     const bundle: OutputBundle = {
       'app.wxss': asset('app.wxss', '.root{color:red}'),

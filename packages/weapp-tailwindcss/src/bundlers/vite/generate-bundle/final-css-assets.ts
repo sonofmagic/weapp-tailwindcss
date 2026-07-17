@@ -5,6 +5,8 @@ import {
   hasMiniProgramCssSpecificityPlaceholders,
   stripMiniProgramCssSpecificityPlaceholders,
 } from '@/bundlers/shared/css-cleanup'
+import { AssetEmissionPlan } from '@/compiler'
+import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 
 function readAssetSource(output: OutputAsset) {
   return typeof output.source === 'string'
@@ -35,6 +37,8 @@ export async function finalizeMiniProgramCssAssets(
     return 0
   }
 
+  const plan = new AssetEmissionPlan()
+  const writeTargets = new Map<string, OutputAsset>()
   let updated = 0
   for (const [bundleFile, output] of Object.entries(bundle)) {
     if (output.type !== 'asset') {
@@ -52,7 +56,8 @@ export async function finalizeMiniProgramCssAssets(
     if (options.lastCssResultByFile?.has(file)) {
       const outputCss = stripMiniProgramCssSpecificityPlaceholders(rawSource)
       if (outputCss !== rawSource) {
-        output.source = outputCss
+        plan.write(file, outputCss)
+        writeTargets.set(file, output)
         options.recordCssAssetResult?.(file, outputCss)
         options.onUpdate(file, rawSource, outputCss)
         options.debug?.('strip mini-program css specificity placeholders: %s bytes=%d', file, outputCss.length)
@@ -80,11 +85,16 @@ export async function finalizeMiniProgramCssAssets(
       continue
     }
 
-    output.source = outputCss
+    plan.write(file, outputCss)
+    writeTargets.set(file, output)
     options.recordCssAssetResult?.(file, outputCss)
     options.onUpdate(file, rawSource, outputCss)
     options.debug?.('finalize mini-program css asset: %s bytes=%d', file, outputCss.length)
     updated++
   }
+  applyViteAssetEmissionPlan(plan, {
+    bundle,
+    writeTargets,
+  })
   return updated
 }
