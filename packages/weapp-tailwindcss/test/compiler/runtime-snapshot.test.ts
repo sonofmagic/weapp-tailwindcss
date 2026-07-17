@@ -4,6 +4,7 @@ import {
   createRuntimeAffectingSourceSignature,
   createRuntimeCompilationBuildState,
   createRuntimeCompilationSnapshot,
+  removeRuntimeCompilationBuildStateFiles,
   updateRuntimeCompilationBuildState,
 } from '@/compiler'
 import { createCache } from '@/cache'
@@ -62,5 +63,23 @@ describe('compiler runtime snapshot', () => {
     expect(second.processFiles.js).toEqual(new Set(['assets/shared.js', 'assets/entry.js']))
     expect(second.linkedImpactsByEntry.get('assets/entry.js')).toEqual(new Set(['assets/shared.js']))
     expect(second.runtimeAffectingSignatureByFile.has('assets/entry.js')).toBe(false)
+  })
+
+  it('removes evicted files and their linked state from the build state', () => {
+    const state = createRuntimeCompilationBuildState()
+    state.sourceHashByFile.set('entry.js', 'entry-hash')
+    state.sourceHashByFile.set('shared.js', 'shared-hash')
+    state.runtimeAffectingHashByFile.set('shared.js', 'runtime-hash')
+    state.bundleMarkupCandidatesByFile.set('shared.js', new Set(['flex']))
+    state.linkedByEntry.set('entry.js', new Set(['shared.js']))
+    state.dependentsByLinkedFile.set('shared.js', new Set(['entry.js']))
+
+    removeRuntimeCompilationBuildStateFiles(state, ['shared.js'])
+
+    expect(state.sourceHashByFile.has('shared.js')).toBe(false)
+    expect(state.runtimeAffectingHashByFile.has('shared.js')).toBe(false)
+    expect(state.bundleMarkupCandidatesByFile.has('shared.js')).toBe(false)
+    expect(state.linkedByEntry.get('entry.js')).toEqual(new Set())
+    expect(state.dependentsByLinkedFile.has('shared.js')).toBe(false)
   })
 })

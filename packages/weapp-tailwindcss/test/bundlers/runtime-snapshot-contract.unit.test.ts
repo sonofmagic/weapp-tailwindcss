@@ -7,6 +7,7 @@ import {
 } from '@/bundlers/vite/bundle-state'
 import { buildWebpackBundleSnapshot } from '@/bundlers/webpack/BaseUnifiedPlugin/v5-assets/helpers'
 import { createCache } from '@/cache'
+import { createRuntimeCompilationBuildState } from '@/compiler'
 import { createRollupAsset, createRollupChunk } from './vite-plugin.testkit'
 
 function createOptions() {
@@ -65,7 +66,7 @@ describe('bundler runtime snapshot contract', () => {
     const gulpSnapshot = createGulpRuntimeSnapshot(new Map([
       [htmlFile, { source: htmlSource, type: 'html' }],
       [jsFile, { source: jsSource, type: 'js' }],
-    ]), [htmlFile, jsFile])
+    ]), createRuntimeCompilationBuildState(), source => opts.cache.computeHash(source))
 
     expect(normalizeSnapshot(viteSnapshot)).toEqual(normalizeSnapshot(gulpSnapshot))
     expect(normalizeSnapshot(webpackSnapshot)).toEqual(normalizeSnapshot(gulpSnapshot))

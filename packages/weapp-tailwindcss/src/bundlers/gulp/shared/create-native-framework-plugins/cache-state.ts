@@ -16,17 +16,18 @@ export function touchMapEntry<Key, Value>(map: Map<Key, Value>, key: Key, value:
 }
 
 export function pruneGulpRuntimeSourceCaches(
-  sourceHashByFile: Map<string, string>,
   sourcesByFile: Map<string, { source: string, type: 'html' | 'js' }>,
 ) {
+  const removedFiles: string[] = []
   while (sourcesByFile.size > GULP_RUNTIME_SOURCE_CACHE_MAX) {
     const oldestKey = sourcesByFile.keys().next().value
     if (typeof oldestKey !== 'string') {
       break
     }
     sourcesByFile.delete(oldestKey)
-    sourceHashByFile.delete(oldestKey)
+    removedFiles.push(oldestKey)
   }
+  return removedFiles
 }
 
 export function rememberGulpProcessCacheKey(cacheKeys: Set<string>, key: string) {

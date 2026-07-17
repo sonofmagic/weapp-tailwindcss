@@ -7,6 +7,7 @@ import { prependConfigDirective } from '@/bundlers/shared/generator-css/config-d
 import { hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { createSourceCandidateCollector } from '@/bundlers/shared/source-candidates'
 import { resolveSourceScanEntries } from '@/bundlers/shared/source-scan'
+import { createRuntimeCompilationBuildState, removeRuntimeCompilationBuildStateFiles, updateRuntimeCompilationBuildState } from '@/compiler'
 import { getCompilerContext } from '@/context'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { createDebug } from '@/debug'
@@ -59,8 +60,8 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
 
   let runtimeSetInitialized = false
   let runtimeSetDirty = false
-  const runtimeSourceHashByFile = new Map<string, string>()
   const runtimeSourcesByFile = new Map<string, { source: string, type: 'html' | 'js' }>()
+  const runtimeSnapshotState = createRuntimeCompilationBuildState()
   const generatedCssPreflightModeByFile = new Map<string, { inject: boolean, preserve: boolean }>()
   let cachedGulpSourceCandidateSignature: string | undefined
   const gulpProcessCacheKeys = new Set<string>()
@@ -105,15 +106,21 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
 
   async function refreshRuntimeSetForSource(file: File, rawSource: string, type: 'html' | 'js') {
     const filename = path.resolve(file.path)
-    const hash = cache.computeHash(rawSource)
-    const changed = runtimeSourceHashByFile.get(filename) !== hash
-    runtimeSourceHashByFile.delete(filename)
-    runtimeSourceHashByFile.set(filename, hash)
     touchMapEntry(runtimeSourcesByFile, filename, {
       source: rawSource,
       type,
     })
-    pruneGulpRuntimeSourceCaches(runtimeSourceHashByFile, runtimeSourcesByFile)
+    removeRuntimeCompilationBuildStateFiles(
+      runtimeSnapshotState,
+      pruneGulpRuntimeSourceCaches(runtimeSourcesByFile),
+    )
+    const snapshot = createGulpRuntimeSnapshot(
+      runtimeSourcesByFile,
+      runtimeSnapshotState,
+      source => cache.computeHash(source),
+    )
+    const changed = snapshot.changedByType[type].has(filename)
+    updateRuntimeCompilationBuildState(runtimeSnapshotState, snapshot, new Map())
     if (changed) {
       invalidateGulpSourceCandidates()
     }
@@ -122,7 +129,7 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
     }
     if (!runtimeSetDirty) {
       try {
-        runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, createGulpRuntimeSnapshot(runtimeSourcesByFile, [filename]))
+        runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot)
         runtimeSetInitialized = true
         return runtimeSet
       }
@@ -332,7 +339,7 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
         gulpProcessCacheKeys,
         phase,
         runtimeSet,
-        runtimeSourceHashByFile,
+        runtimeSourceHashByFile: runtimeSnapshotState.sourceHashByFile,
         runtimeSourcesByFile,
       }),
     }

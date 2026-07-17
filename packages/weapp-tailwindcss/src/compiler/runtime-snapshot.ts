@@ -276,3 +276,26 @@ export function updateRuntimeCompilationBuildState(
     : replaceMapEntries(state.linkedByEntry, linkedByEntry)
   state.dependentsByLinkedFile = invertLinkedByEntry(state.linkedByEntry)
 }
+
+export function removeRuntimeCompilationBuildStateFiles(
+  state: RuntimeCompilationBuildState,
+  files: Iterable<string>,
+) {
+  const removedFiles = new Set(files)
+  if (removedFiles.size === 0) {
+    return
+  }
+  for (const file of removedFiles) {
+    state.sourceHashByFile.delete(file)
+    state.runtimeAffectingSignatureByFile.delete(file)
+    state.runtimeAffectingHashByFile.delete(file)
+    state.bundleMarkupCandidatesByFile.delete(file)
+    state.linkedByEntry.delete(file)
+  }
+  for (const linkedFiles of state.linkedByEntry.values()) {
+    for (const file of removedFiles) {
+      linkedFiles.delete(file)
+    }
+  }
+  state.dependentsByLinkedFile = invertLinkedByEntry(state.linkedByEntry)
+}
