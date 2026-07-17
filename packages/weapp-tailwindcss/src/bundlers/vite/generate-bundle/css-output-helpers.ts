@@ -2,7 +2,9 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from '../shared/framework-strategy'
 import type { InternalUserDefinedOptions } from '@/types'
 import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
+import { AssetEmissionPlan } from '@/compiler'
 import { isSourceStyleRequest } from '../../shared/style-requests'
+import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 import { canProcessViteSourceStyleAsCss, resolveViteCssOutputFile, resolveViteCssPipelineOutputFileFromSourceFile, SOURCE_STYLE_OUTPUT_EXT_RE } from './css-output'
 import { createCssImportShell, createRootMiniProgramOriginStyleOutputFile, isRootMiniProgramStyleOutputFile, shouldKeepRootMiniProgramStyleAsImportShell, shouldMoveRootMiniProgramStyleToImportShellOrigin } from './root-style-output'
 
@@ -181,8 +183,15 @@ export function applyCssResultToBundle(options: {
     source,
     viteProcessedCssAsset,
   } = options
+  const plan = new AssetEmissionPlan()
+  const writeTargets = new Map<string, OutputAsset>([[file, originalSource]])
   if (outputFile === file) {
-    originalSource.source = source
+    plan.write(file, source)
+    applyViteAssetEmissionPlan(plan, {
+      bundle,
+      emitOrReplayAsset: emitOrReplayCssAsset,
+      writeTargets,
+    })
     return
   }
   const shouldKeepSourceAsImportShell = isRootMiniProgramStyleOutputFile(file)
@@ -198,33 +207,25 @@ export function applyCssResultToBundle(options: {
     ? createCssImportShell(file, outputFile)
     : undefined
   if (bundle[file] === originalSource && originalSource.originalFileNames?.includes(assetSourceFile)) {
-    const existingOutput = bundle[outputFile]
-    if (existingOutput?.type === 'asset') {
-      existingOutput.source = source
-    }
-    else {
-      const replayAsset = emitOrReplayCssAsset(outputFile, source)
-      if (replayAsset) {
-        bundle[outputFile] = replayAsset
-      }
-    }
-    originalSource.source = importShellSource ?? ''
+    plan.write(outputFile, source)
+    plan.write(file, importShellSource ?? '')
+    applyViteAssetEmissionPlan(plan, {
+      bundle,
+      emitOrReplayAsset: emitOrReplayCssAsset,
+      writeTargets,
+    })
     return
   }
-  const existingOutput = bundle[outputFile]
-  if (existingOutput?.type === 'asset') {
-    existingOutput.source = source
-  }
-  else {
-    const replayAsset = emitOrReplayCssAsset(outputFile, source)
-    if (replayAsset) {
-      bundle[outputFile] = replayAsset
-    }
-  }
+  plan.write(outputFile, source)
   if (!viteProcessedCssAsset && SOURCE_STYLE_OUTPUT_EXT_RE.test(file)) {
-    delete bundle[file]
+    plan.remove(file)
   }
   else {
-    originalSource.source = importShellSource ?? ''
+    plan.write(file, importShellSource ?? '')
   }
+  applyViteAssetEmissionPlan(plan, {
+    bundle,
+    emitOrReplayAsset: emitOrReplayCssAsset,
+    writeTargets,
+  })
 }

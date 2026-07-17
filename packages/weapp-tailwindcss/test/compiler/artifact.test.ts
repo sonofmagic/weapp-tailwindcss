@@ -83,4 +83,28 @@ describe('compiler artifact', () => {
     expect(scopes[0]?.nodes).toHaveLength(2)
     expect(emissions.get('dist/app.css')?.fragments[0]?.root.toString()).toContain('.p-4')
   })
+
+  it('keeps bundler asset operations structured and isolated', () => {
+    const emissions = new AssetEmissionPlan()
+    emissions.write('dist/app.css', '.app{display:flex}')
+    emissions.remove('dist/legacy.css')
+
+    const operations = emissions.operations()
+    operations[0]!.assetId = 'mutated.css'
+
+    expect(emissions.operations()).toEqual([
+      {
+        assetId: 'dist/app.css',
+        kind: 'write',
+        source: '.app{display:flex}',
+      },
+      {
+        assetId: 'dist/legacy.css',
+        kind: 'delete',
+      },
+    ])
+
+    emissions.clear()
+    expect(emissions.operations()).toEqual([])
+  })
 })
