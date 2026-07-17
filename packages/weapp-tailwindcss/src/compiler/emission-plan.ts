@@ -6,10 +6,10 @@ export interface AssetEmission {
   artifact: GenerationArtifact
 }
 
-export interface AssetWriteOperation {
+export interface AssetWriteOperation<Source = string> {
   assetId: string
   kind: 'write'
-  source: string
+  source: Source
 }
 
 export interface AssetDeleteOperation {
@@ -17,11 +17,11 @@ export interface AssetDeleteOperation {
   kind: 'delete'
 }
 
-export type AssetEmissionOperation = AssetWriteOperation | AssetDeleteOperation
+export type AssetEmissionOperation<Source = string> = AssetWriteOperation<Source> | AssetDeleteOperation
 
-export class AssetEmissionPlan {
+export class AssetEmissionPlan<Source = string> {
   private readonly emissions = new Map<string, GenerationArtifact>()
-  private readonly assetOperations: AssetEmissionOperation[] = []
+  private readonly assetOperations: AssetEmissionOperation<Source>[] = []
 
   upsert(assetId: string, artifact: GenerationArtifact) {
     this.emissions.set(assetId, cloneGenerationArtifact(artifact))
@@ -39,7 +39,7 @@ export class AssetEmissionPlan {
     }))
   }
 
-  write(assetId: string, source: string) {
+  write(assetId: string, source: Source) {
     this.assetOperations.push({
       assetId,
       kind: 'write',
@@ -54,7 +54,7 @@ export class AssetEmissionPlan {
     })
   }
 
-  operations(): AssetEmissionOperation[] {
+  operations(): AssetEmissionOperation<Source>[] {
     return this.assetOperations.map(operation => ({ ...operation }))
   }
 

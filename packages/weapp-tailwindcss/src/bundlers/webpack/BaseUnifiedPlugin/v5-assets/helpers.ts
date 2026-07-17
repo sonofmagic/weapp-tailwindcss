@@ -1,10 +1,14 @@
 import type { Compiler, sources as WebpackSources } from 'webpack'
 import type { RuntimeClassSetManager } from '../../../shared/runtime-class-set'
 import type { WebpackGeneratedCssRegistration } from '../../loaders/runtime-registry'
+import type { WebpackAssetCompilationLike, WebpackSourceLike } from './asset-emission-plan'
 import type { RuntimeCompilationBuildState, RuntimeCompilationSnapshot, RuntimeSnapshotEntry } from '@/compiler'
 import type { AppType, InternalUserDefinedOptions } from '@/types'
-import { buildRuntimeCompilationSnapshot, createRuntimeAffectingSourceSignature } from '@/compiler'
+import { AssetEmissionPlan, buildRuntimeCompilationSnapshot, createRuntimeAffectingSourceSignature } from '@/compiler'
 import { classifyRuntimeEntry } from '../../../shared/runtime-entry-type'
+import { applyWebpackAssetEmissionPlan } from './asset-emission-plan'
+
+export type { WebpackAssetCompilationLike, WebpackSourceLike } from './asset-emission-plan'
 
 export interface SetupWebpackV5ProcessAssetsHookOptions {
   compiler: Compiler
@@ -27,13 +31,6 @@ export interface SetupWebpackV5ProcessAssetsHookOptions {
   pruneWebpackCssSources?: ((activeSourceFiles: ReadonlySet<string>, options?: { watchMode?: boolean | undefined }) => void) | undefined
   prepareWebpackCssSources?: ((activeAssetResources?: ReadonlySet<string>) => ReadonlySet<string>) | undefined
   debug: (format: string, ...args: unknown[]) => void
-}
-
-export type WebpackSourceLike = string | WebpackSources.Source
-
-interface WebpackAssetCompilationLike {
-  getAsset: (file: string) => { source: { source: () => unknown } } | undefined
-  updateAsset: Compiler['webpack']['Compilation']['prototype']['updateAsset']
 }
 
 export function buildWebpackBundleSnapshot(
@@ -102,8 +99,14 @@ export function createWebpackAssetUpdater(options: {
       notifyUpdate?: boolean | undefined
     } = {},
   ) => {
+    const plan = new AssetEmissionPlan<WebpackSourceLike>()
+    plan.write(file, source)
     if (!compare) {
-      options.compilation.updateAsset(file, typeof source === 'string' ? new options.ConcatSource(source) : source)
+      applyWebpackAssetEmissionPlan(plan, {
+        compilation: options.compilation,
+        ConcatSource: options.ConcatSource,
+        writeMode: 'update',
+      })
       return true
     }
     const nextSource = typeof source === 'string'
@@ -114,7 +117,11 @@ export function createWebpackAssetUpdater(options: {
       options.debug('asset unchanged, skip update: %s', file)
       return false
     }
-    options.compilation.updateAsset(file, typeof source === 'string' ? new options.ConcatSource(source) : source)
+    applyWebpackAssetEmissionPlan(plan, {
+      compilation: options.compilation,
+      ConcatSource: options.ConcatSource,
+      writeMode: 'update',
+    })
     if (notifyUpdate) {
       options.onUpdate(file, previousSource ?? '', nextSource)
     }
