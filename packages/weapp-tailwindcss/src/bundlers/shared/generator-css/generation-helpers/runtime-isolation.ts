@@ -5,6 +5,7 @@ import type { InternalUserDefinedOptions } from '@/types'
 import { resolveStyleOptionsFromContext } from '@/context/style-options'
 import { isVueScopedStyleRequest } from '../../style-requests'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '../directives'
+import { getGeneratorSourceMetadata } from '../source-resolver'
 import { resolvePostcssRequestOption } from '../source-resolver/postcss-source'
 
 export function mergeScopedRuntimeWithCurrentRuntime(
@@ -54,10 +55,11 @@ export function shouldIsolateScopedCssSource(
   if (options.target !== 'weapp') {
     return false
   }
-  if (source.__weappTailwindcssMeta?.isolateCssSource) {
+  const metadata = getGeneratorSourceMetadata(source)
+  if (metadata?.isolateCssSource) {
     return true
   }
-  if (source.__weappTailwindcssMeta?.matchedCssSourceFile && (sourceEntries?.length ?? 0) > 0) {
+  if (metadata?.matchedCssSourceFile && (sourceEntries?.length ?? 0) > 0) {
     return true
   }
   if (sourceEntries?.length === 0) {

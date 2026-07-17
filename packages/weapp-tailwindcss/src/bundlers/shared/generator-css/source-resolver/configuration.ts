@@ -1,5 +1,4 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import type { GeneratorResolvedSource } from './metadata'
 import type { GeneratorSourceRuntimeState, SourceStyleMatchOptions, TailwindV4CssSource, TailwindV4CssSourceRef, TailwindV4SourceOptions } from './types'
 import type { TailwindResolvedSource } from '@/generator'
 import { existsSync, readFileSync } from 'node:fs'
@@ -13,7 +12,7 @@ import { hasTailwindRootDirectives, hasTailwindSourceDirectives, resolveCssEntry
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../markers'
 import { resolveExistingConfigPath } from './config'
 import { normalizeCssSourceForCompare } from './matching'
-import { withGeneratorSourceMetadata } from './metadata'
+import { getGeneratorSourceMetadata, withGeneratorSourceMetadata } from './metadata'
 import { resolvePostcssFromOption } from './postcss-source'
 
 export function createCssEntrySources(cssEntries: string[] | undefined) {
@@ -183,7 +182,7 @@ export function normalizeResolvedTailwindV4SourceConfig<T extends TailwindResolv
   }
   const sourceFile = typeof file === 'string' && file.length > 0
     ? file
-    : (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile
+    : getGeneratorSourceMetadata(source)?.matchedCssSourceFile
   if (!sourceFile) {
     return source
   }

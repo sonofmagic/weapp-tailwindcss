@@ -1,13 +1,13 @@
-import type { GeneratorResolvedSource } from './metadata'
 import type { GeneratorSourceRuntimeState } from './types'
 import type { TailwindResolvedSource } from '@/generator'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { resolveTailwindV4EntriesFromCss } from '@/bundlers/shared/source-scan'
 import { tryResolveTailwindV4SourceOptions } from './configuration'
+import { getGeneratorSourceMetadata } from './metadata'
 
 export async function resolveGeneratorSourceEntries(source: TailwindResolvedSource, runtimeState?: GeneratorSourceRuntimeState) {
-  const sourceMetadata = (source as GeneratorResolvedSource).__weappTailwindcssMeta
+  const sourceMetadata = getGeneratorSourceMetadata(source)
   if (sourceMetadata?.sourceEntries) {
     return sourceMetadata.sourceEntries
   }

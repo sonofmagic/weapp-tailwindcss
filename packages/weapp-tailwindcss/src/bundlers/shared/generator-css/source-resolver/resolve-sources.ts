@@ -1,5 +1,4 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import type { GeneratorResolvedSource } from './metadata'
 import type { GeneratorSourceRuntimeState, GeneratorSourceSelectionOptions, SourceStyleMatchOptions, TailwindV4SourceOptions } from './types'
 import type { NormalizedWeappTailwindcssGeneratorOptions, TailwindResolvedSource } from '@/generator'
 import type { UndefinedOptional } from '@/utils/object'
@@ -10,6 +9,7 @@ import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSource
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../markers'
 import { resolveSourceSideCssEntrySource } from '../source-files'
 import { canResolveSourceSideCssEntry, hasConfiguredTailwindV4CssSource, mergeCssSources, normalizeResolvedTailwindV4SourceConfig, normalizeTailwindV4CssSourceConfigs, resolveTailwindV4CssEntrySource } from './configuration'
+import { getGeneratorSourceMetadata } from './metadata'
 import { resolveCssHandlerSourceOptions, resolveCssSourceBase, resolvePostcssSourceFile } from './postcss-source'
 import { resolveGeneratorSource } from './resolve-source'
 import { createTailwindV4CssSourceResolver, resolveCandidateMatchedTailwindV4CssEntry, resolveCandidateMatchedTailwindV4CssSource, resolveTailwindV4SourceSideEntrySource } from './single-source'
@@ -75,7 +75,7 @@ export async function resolveGeneratorSources(
     return [
       normalizeResolvedTailwindV4SourceConfig(
         source,
-        (matchedCssEntrySource as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile,
+        getGeneratorSourceMetadata(matchedCssEntrySource)?.matchedCssSourceFile,
         sourceOptions,
       ),
     ]
@@ -114,7 +114,7 @@ export async function resolveGeneratorSources(
     return [
       normalizeResolvedTailwindV4SourceConfig(
         source,
-        (preferredCssEntrySource as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile,
+        getGeneratorSourceMetadata(preferredCssEntrySource)?.matchedCssSourceFile,
         sourceOptions,
       ),
     ]

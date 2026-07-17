@@ -14,7 +14,7 @@ import { createRuntimeWithCurrentCssCandidates, mergeGeneratorResults, mergeScop
 import { hasConfiguredContainerCompatSources } from '../legacy-compat'
 import { removeMatchingLocalCssImports } from '../local-imports'
 import { stripTailwindBanner } from '../markers'
-import { resolveGeneratorSourceEntries, resolveGeneratorSources } from '../source-resolver'
+import { getGeneratorSourceMetadata, resolveGeneratorSourceEntries, resolveGeneratorSources } from '../source-resolver'
 import { filterApplyOnlyGeneratedCss, shouldFilterApplyOnlyGeneratedCss } from '../user-css'
 import { finalizeDeferredGeneratorCss } from './deferred-output'
 import { finalizeFallbackGeneratorCss } from './fallback-output'
@@ -40,7 +40,7 @@ function resolveScopedRuntimeCandidates(sourceCandidates: Set<string> | undefine
 }
 
 function resolveCompilationSourceId(source: GeneratorResolvedSource, index: number) {
-  const sourceId = source.__weappTailwindcssMeta?.matchedCssSourceFile
+  const sourceId = getGeneratorSourceMetadata(source)?.matchedCssSourceFile
     ?? source.dependencies[0]
     ?? source.base
   return `${sourceId}:tailwind-source:${index}`
@@ -136,7 +136,7 @@ export async function executeGeneratorPipeline(
       cssHandlerOptions,
       target: generatorOptions.target,
     })
-    const sourceMetadata = (source as GeneratorResolvedSource).__weappTailwindcssMeta
+    const sourceMetadata = getGeneratorSourceMetadata(source)
     const matchedCssSourceFile = Boolean(sourceMetadata?.matchedCssSourceFile)
     if (
       options.deferEmptyScopedCssSource
@@ -231,14 +231,14 @@ export async function executeGeneratorPipeline(
     generated.css.length,
     generated.classSet.size,
   )
-  const hasMatchedCssSourceFile = generatorSources.some(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile)
+  const hasMatchedCssSourceFile = generatorSources.some(source => getGeneratorSourceMetadata(source)?.matchedCssSourceFile)
   const hasExplicitCssSource = generatorSources.some((source) => {
-    const metadata = (source as GeneratorResolvedSource).__weappTailwindcssMeta
+    const metadata = getGeneratorSourceMetadata(source)
     return metadata?.candidateMatchedCssSource !== true
       && (metadata?.cssEntryIndex !== undefined || metadata?.cssSourceIndex !== undefined)
   })
   const hasPreflightCssSource = generatorSources.some((source) => {
-    const metadata = (source as GeneratorResolvedSource).__weappTailwindcssMeta
+    const metadata = getGeneratorSourceMetadata(source)
     const appEntryMatchedByCandidates = metadata?.candidateMatchedCssSource === true
       && metadata.cssEntryIndex === 0
       && metadata.cssSourceIndex === undefined
@@ -248,7 +248,7 @@ export async function executeGeneratorPipeline(
   const hasPreflightRawSource = includesTailwindV4PreflightDirective(generatorRawSource)
   const hasOnlyPrimaryCssSource = generatorSources.length > 0
     && generatorSources.every((source) => {
-      const metadata = (source as GeneratorResolvedSource).__weappTailwindcssMeta
+      const metadata = getGeneratorSourceMetadata(source)
       return metadata?.candidateMatchedCssSource !== true
         && metadata?.primaryCssSource === true
     })
