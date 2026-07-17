@@ -53,7 +53,7 @@ import {
   toMb,
   unescapeCssIdentifier,
 } from '@/bundlers/webpack/BaseUnifiedPlugin/v5-assets'
-import { createEscapeFragments } from '@/bundlers/vite/incremental-runtime-class-set/escaped-candidates'
+import { createEscapeFragments } from '@/bundlers/shared/runtime-class-set/escaped-candidates'
 import { createContext, path } from './shared'
 
 class TestWebpackSource {

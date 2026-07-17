@@ -1,4 +1,4 @@
-import type { createEscapeFragments } from '../../../../vite/incremental-runtime-class-set/escaped-candidates'
+import type { createEscapeFragments } from '../../../../shared/runtime-class-set/escaped-candidates'
 import type { SetupWebpackV5ProcessAssetsHookOptions, WebpackSourceLike } from '../helpers'
 import type { WebpackCssHandlerOptions, WebpackSourceCandidateCache } from './preflight-runtime'
 import { MappingChars2String } from '@weapp-core/escape'
@@ -10,7 +10,7 @@ import { stripBundlerGeneratedCssMarkers } from '../../../../shared/generated-cs
 import { removeTailwindSourceDirectives } from '../../../../shared/generator-css/directives'
 import { hasMiniProgramTailwindV4PreflightReset } from '../../../../shared/generator-css/generation-helpers'
 import { removeMiniProgramHoverSelectors, removeTailwindV4GeneratorAtRules, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments } from '../../../../shared/generator-css/user-css'
-import { collectStrictEscapedRuntimeCandidates } from '../../../../vite/incremental-runtime-class-set/escaped-candidates'
+import { collectStrictEscapedRuntimeCandidates } from '../../../../shared/runtime-class-set/escaped-candidates'
 import { finalizeMiniProgramUserCssAssetSource, shouldInjectWebpackCssTracePreflight } from './memory-trace'
 import { collectRuntimeTokenSignatureParts, dedupeMiniProgramPreflightSelectorRules, ensureWebpackMiniProgramTwContentInit, hasMiniProgramPreflightSelector, isRuntimeTransformCandidate, removeMiniProgramPreflightSelectorRule, resolveExistingWebpackCssPreflight, stripTrailingLineWhitespace } from './preflight-runtime'
 

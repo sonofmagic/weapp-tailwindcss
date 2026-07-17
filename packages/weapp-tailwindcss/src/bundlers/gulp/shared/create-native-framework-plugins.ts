@@ -1,5 +1,5 @@
 import type File from 'vinyl'
-import type { BundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
+import type { RuntimeClassSetManager } from '../../shared/runtime-class-set'
 import type { IStyleHandlerOptions, ITemplateHandlerOptions, JsModuleGraphOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -14,7 +14,7 @@ import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tail
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { splitLocalCssImports } from '../../shared/generator-css/local-imports'
-import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
+import { createRuntimeClassSetManager } from '../../shared/runtime-class-set'
 import { createGulpModuleGraphOptions } from '../module-graph'
 import { createGulpRuntimeSnapshot } from '../runtime-snapshot'
 import {
@@ -64,9 +64,9 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
   const generatedCssPreflightModeByFile = new Map<string, { inject: boolean, preserve: boolean }>()
   let cachedGulpSourceCandidateSignature: string | undefined
   const gulpProcessCacheKeys = new Set<string>()
-  const bundleRuntimeClassSetManager: BundleRuntimeClassSetManager
-    = (options as UserDefinedOptions & { __internalGulpRuntimeClassSetManager?: BundleRuntimeClassSetManager }).__internalGulpRuntimeClassSetManager
-      ?? createBundleRuntimeClassSetManager()
+  const bundleRuntimeClassSetManager: RuntimeClassSetManager
+    = (options as UserDefinedOptions & { __internalGulpRuntimeClassSetManager?: RuntimeClassSetManager }).__internalGulpRuntimeClassSetManager
+      ?? createRuntimeClassSetManager()
 
   function invalidateGulpSourceCandidates() {
     cachedGulpSourceCandidateSignature = undefined

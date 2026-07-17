@@ -1,5 +1,5 @@
 import type { Compiler, sources as WebpackSources } from 'webpack'
-import type { BundleRuntimeClassSetManager } from '../../../vite/incremental-runtime-class-set'
+import type { RuntimeClassSetManager } from '../../../shared/runtime-class-set'
 import type { WebpackGeneratedCssRegistration } from '../../loaders/runtime-registry'
 import type { RuntimeCompilationBuildState, RuntimeCompilationSnapshot, RuntimeSnapshotEntry } from '@/compiler'
 import type { AppType, InternalUserDefinedOptions } from '@/types'
@@ -21,7 +21,7 @@ export interface SetupWebpackV5ProcessAssetsHookOptions {
   consumeRuntimeRefreshRequirement: () => void
   isWatchMode?: (() => boolean) | undefined
   getWatchChangedFiles?: (() => Iterable<string>) | undefined
-  runtimeClassSetManager?: BundleRuntimeClassSetManager | undefined
+  runtimeClassSetManager?: RuntimeClassSetManager | undefined
   getWebpackCssSources?: (() => Iterable<[string, { css: string | undefined, processed?: boolean | undefined }]>) | undefined
   getWebpackGeneratedCssSources?: (() => Iterable<[string, WebpackGeneratedCssRegistration]>) | undefined
   pruneWebpackCssSources?: ((activeSourceFiles: ReadonlySet<string>, options?: { watchMode?: boolean | undefined }) => void) | undefined

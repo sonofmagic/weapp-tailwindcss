@@ -11,9 +11,9 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { getGroupedEntries } from '@/utils'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, isCssSourceTraceEnabled } from '../../shared/css-source-trace'
 import { resolveTaskConcurrency } from '../../shared/run-tasks'
-import { createCandidateSignature } from '../../vite/generate-bundle/signatures'
-import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
-import { collectStrictEscapedRuntimeCandidates, createEscapeFragments } from '../../vite/incremental-runtime-class-set/escaped-candidates'
+import { createRuntimeClassSetManager } from '../../shared/runtime-class-set'
+import { collectStrictEscapedRuntimeCandidates, createEscapeFragments } from '../../shared/runtime-class-set/escaped-candidates'
+import { createCandidateSignature } from '../../shared/runtime-signatures'
 import { createAssetHashByChunkMap, createWebpackCssAssetResourceMap, createWebpackDirectCssAssetResourceMap } from './shared'
 import { createWebpackCssSourceResolvers } from './v5-assets/css-source-resolvers'
 import { finalizeWebpackProcessAssets } from './v5-assets/finalize-assets'
@@ -74,7 +74,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
   const cssUserHandlerOptionsCache = new Map<string, WebpackCssHandlerOptions>()
   const webpackSourceCandidateScanCache = createWebpackSourceCandidateScanCache()
   const bundleBuildState = createRuntimeCompilationBuildState()
-  const bundleRuntimeClassSetManager = runtimeClassSetManager ?? createBundleRuntimeClassSetManager()
+  const bundleRuntimeClassSetManager = runtimeClassSetManager ?? createRuntimeClassSetManager()
   const escapeFragments = createEscapeFragments(MappingChars2String)
   const processedCssAssetSkipDecisionCache = new Map<string, boolean>()
   let webpackWatchRuntimeScanInitialized = false
