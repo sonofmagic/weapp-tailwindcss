@@ -32,6 +32,16 @@ export class CandidateIndex {
     return values
   }
 
+  get(sourceId: string) {
+    return new Set(this.candidatesBySource.get(sourceId) ?? [])
+  }
+
+  entries() {
+    return new Map(
+      [...this.candidatesBySource].map(([sourceId, candidates]) => [sourceId, new Set(candidates)]),
+    )
+  }
+
   clear() {
     this.candidatesBySource.clear()
   }

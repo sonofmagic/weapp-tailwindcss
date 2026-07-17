@@ -1,5 +1,5 @@
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css'
-import type { GenerationArtifact } from '@/compiler'
+import type { GenerationArtifact, SourceScope } from '@/compiler'
 import type { InternalUserDefinedOptions } from '@/types'
 import { areArtifactsSemanticallyEqual, createCssFragment, createGenerationArtifact, resolveCompilerMode } from '@/compiler'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
@@ -13,6 +13,7 @@ export interface TailwindV4GenerationCoreInput extends GenerateCssByGeneratorOpt
   frameworkPostcssOwner?: InternalUserDefinedOptions | undefined
   frameworkPostcssStage?: 'complete' | 'pending' | undefined
   outputFile?: string | undefined
+  scope?: SourceScope | undefined
   sourceCandidates?: Set<string> | undefined
 }
 
@@ -35,16 +36,17 @@ function createCoreArtifact(
 ): GenerationArtifact {
   const sourceId = generated.metadata?.file ?? options.file
   const scopeId = generated.metadata?.outputFile ?? options.outputFile ?? sourceId
+  const scope = options.scope ?? {
+    id: scopeId,
+    kind: options.cssHandlerOptions.isMainChunk ? 'global' : 'component',
+  }
   return createGenerationArtifact([
     createCssFragment({
       id: `${scopeId}:generated`,
       kind: 'tailwind',
       css,
       sourceId,
-      scope: {
-        id: scopeId,
-        kind: options.cssHandlerOptions.isMainChunk ? 'global' : 'component',
-      },
+      scope,
       stage: 'adapted',
     }),
   ], {
@@ -52,6 +54,7 @@ function createCoreArtifact(
     rawCandidates: options.runtime,
     dependencies: generated.dependencies,
     sourceEntries: options.cssHandlerOptions.sourceOptions?.cssEntries ?? [],
+    ...(generated.metadata?.revision === undefined ? {} : { revision: generated.metadata.revision }),
   })
 }
 
@@ -64,21 +67,34 @@ async function generateTailwindV4CssWithImplementation(
     throw new Error('weapp-tailwindcss 生成管线仅支持 Tailwind CSS v4。')
   }
   const frameworkPostcssOwner = options.frameworkPostcssOwner ?? options.opts
+  const normalizedGeneratorOptions = normalizeWeappTailwindcssGeneratorOptions(options.opts.generator, {
+    appType: options.opts.appType,
+    platform: options.generatorPlatform ?? options.opts.cssOptions?.platform ?? options.opts.platform,
+    tailwindcssMajorVersion: majorVersion,
+    uniAppX: options.opts.uniAppX,
+  })
   const shouldReplayFrameworkPostcss = options.frameworkPostcssStage === 'complete'
     && hasFrameworkPostcssOptions(frameworkPostcssOwner)
-    && normalizeWeappTailwindcssGeneratorOptions(options.opts.generator, {
-      appType: options.opts.appType,
-      platform: options.generatorPlatform ?? options.opts.cssOptions?.platform ?? options.opts.platform,
-      tailwindcssMajorVersion: majorVersion,
-      uniAppX: options.opts.uniAppX,
-    }).target === 'weapp'
+    && normalizedGeneratorOptions.target === 'weapp'
+  const scope = options.scope ?? {
+    id: options.outputFile ?? options.file,
+    kind: options.cssHandlerOptions.isMainChunk ? 'global' : 'component',
+  }
   const generated = await generateCssByGenerator(
     shouldReplayFrameworkPostcss
       ? {
           ...options,
+          compilation: implementation.frameworkAdapter === 'graph'
+            ? { enabled: true, preserveDeletedCss: normalizedGeneratorOptions.hmr?.preserveDeletedCss ?? true, scope }
+            : undefined,
           deferCssAdaptation: true,
         }
-      : options,
+      : {
+          ...options,
+          compilation: implementation.frameworkAdapter === 'graph'
+            ? { enabled: true, preserveDeletedCss: normalizedGeneratorOptions.hmr?.preserveDeletedCss ?? true, scope }
+            : undefined,
+        },
   )
   if (!generated) {
     return undefined

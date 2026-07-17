@@ -1,6 +1,7 @@
 import type { GeneratorResolvedSource } from '../source-resolver'
 import process from 'node:process'
 import { extractSourceCandidates } from '@tailwindcss-mangle/engine'
+import { getCompilationSessionPool } from '@/compiler'
 import { getTailwindGenerationSessionPool } from '@/compiler/tailwind-generation-session-pool'
 import { shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
@@ -34,6 +35,13 @@ function resolveScopedRuntimeCandidates(sourceCandidates: Set<string> | undefine
   }
   const [small, large] = sourceCandidates.size <= sourceScopedRuntime.size ? [sourceCandidates, sourceScopedRuntime] : [sourceScopedRuntime, sourceCandidates]
   return new Set([...small].filter(candidate => large.has(candidate)))
+}
+
+function resolveCompilationSourceId(source: GeneratorResolvedSource, index: number) {
+  const sourceId = source.__weappTailwindcssMeta?.matchedCssSourceFile
+    ?? source.dependencies[0]
+    ?? source.base
+  return `${sourceId}:tailwind-source:${index}`
 }
 
 export async function executeGeneratorPipeline(context: any) {
@@ -96,7 +104,7 @@ export async function executeGeneratorPipeline(context: any) {
   const configuredContainerCompat = hasConfiguredContainerCompatSources(generatorSources)
   const sourceConcurrency = resolveGeneratorSourceConcurrency()
   const generationSession = getTailwindGenerationSessionPool(runtimeState)
-  const generatedResultsWithDeferred = await runWithConcurrency(generatorSources.map(source => async () => {
+  const preparedGenerationInputs = (await runWithConcurrency(generatorSources.map((source, index) => async () => {
     const sourceCss = options.deferCssAdaptation
       ? removeMatchingLocalCssImports(source.css, localImports)
       : source.css
@@ -150,24 +158,65 @@ export async function executeGeneratorPipeline(context: any) {
     const generatorRuntime = shouldUseMiniProgramCssBranch(generatorBranch)
       ? filterUnsupportedMiniProgramTailwindV4Candidates(sourceRuntime)
       : sourceRuntime
-    return generationSession.generate(generatorSource, {
-      bareArbitraryValues: generatorOptions.bareArbitraryValues,
-      candidates: generatorRuntime,
-      incrementalCache: true,
-      scanSources: options.disableSourceScan === true
-        ? false
-        : shouldScanTailwindV4Sources(
-            majorVersion,
-            generatorOptions.target,
-            generatorRuntime,
-            isolateCssSource,
-          ),
-      styleOptions: generatorStyleOptions,
-      target: generatorOptions.target,
+    return {
+      generatorRuntime,
+      generatorSource,
+      isolateCssSource,
+      sourceId: resolveCompilationSourceId(source, index),
+    }
+  }), sourceConcurrency)).filter((item): item is NonNullable<typeof item> => Boolean(item))
+  const generatePreparedInputs = async (candidateSets?: Map<string, Set<string>>) => {
+    return runWithConcurrency(preparedGenerationInputs.map(input => async () => {
+      const currentCandidates = candidateSets?.get(input.sourceId) ?? input.generatorRuntime
+      return generationSession.generate(input.generatorSource, {
+        bareArbitraryValues: generatorOptions.bareArbitraryValues,
+        candidates: currentCandidates,
+        incrementalCache: true,
+        scanSources: options.disableSourceScan === true
+          ? false
+          : shouldScanTailwindV4Sources(
+              majorVersion,
+              generatorOptions.target,
+              currentCandidates,
+              input.isolateCssSource,
+            ),
+        styleOptions: generatorStyleOptions,
+        target: generatorOptions.target,
+      })
+    }), sourceConcurrency)
+  }
+  let compilationRevision: number | undefined
+  let generated
+  if (options.compilation?.enabled) {
+    const compilationPool = getCompilationSessionPool(runtimeState)
+    const execution = await compilationPool.run({
+      scope: options.compilation.scope,
+      outputId: options.outputFile ?? file,
+      sources: preparedGenerationInputs.map(input => ({
+        id: input.sourceId,
+        kind: 'css',
+        content: input.generatorSource.css,
+        candidates: input.generatorRuntime,
+      })),
+      preserveDeletedCss: options.compilation.preserveDeletedCss,
+    }, async (compilation) => {
+      const results = await generatePreparedInputs(compilation.candidatesBySource)
+      return mergeGeneratorResults(results)
     })
-  }), sourceConcurrency)
-  const generatedResults = generatedResultsWithDeferred.filter((item): item is NonNullable<typeof item> => Boolean(item))
-  const generated = mergeGeneratorResults(generatedResults)
+    if (!execution.committed) {
+      debug(
+        'discard stale graph compilation result: %s revision=%d',
+        file,
+        execution.compilation.revision,
+      )
+      return undefined
+    }
+    generated = execution.value
+    compilationRevision = execution.compilation.revision
+  }
+  else {
+    generated = mergeGeneratorResults(await generatePreparedInputs())
+  }
   if (!generated) {
     return undefined
   }
@@ -239,9 +288,21 @@ export async function executeGeneratorPipeline(context: any) {
     runtimeWithCurrentCss,
     shouldFilterApplyOnlyCss,
   }
+  const withCompilationMetadata = (result: typeof generated | undefined) => {
+    if (!result || compilationRevision === undefined) {
+      return result
+    }
+    return {
+      ...result,
+      metadata: {
+        ...result.metadata,
+        revision: compilationRevision,
+      },
+    }
+  }
   if (options.deferCssAdaptation) {
-    return finalizeDeferredGeneratorCss(outputContext)
+    return withCompilationMetadata(await finalizeDeferredGeneratorCss(outputContext))
   }
   const ordered = await finalizeOrderedGeneratorCss(outputContext)
-  return ordered ?? finalizeFallbackGeneratorCss(outputContext)
+  return withCompilationMetadata(ordered ?? await finalizeFallbackGeneratorCss(outputContext))
 }

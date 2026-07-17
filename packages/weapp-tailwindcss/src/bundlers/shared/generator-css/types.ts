@@ -1,5 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV4CssSource } from './source-resolver/types'
+import type { SourceScope } from '@/compiler'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 
@@ -17,6 +18,12 @@ export interface GenerateCssByGeneratorOptions {
   cssSources?: TailwindV4CssSource[] | undefined
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   sourceCandidates?: Set<string> | undefined
+  compilation?: {
+    enabled: boolean
+    preserveDeletedCss: boolean
+    scope: SourceScope
+  } | undefined
+  outputFile?: string | undefined
   styleHandler: InternalUserDefinedOptions['styleHandler']
   debug: (format: string, ...args: unknown[]) => void
   generatorPlatform?: string | undefined
@@ -47,5 +54,6 @@ export interface GenerateCssByGeneratorResult {
       preserve: boolean
     } | undefined
     rawCss?: string | undefined
+    revision?: number | undefined
   } | undefined
 }

@@ -8,15 +8,20 @@ export class DefaultCompilationSession implements CompilationSession {
   private readonly graph = new SourceGraph()
   private readonly retainedCandidates = new Set<string>()
   private validatedClassSet = new Set<string>()
+  private invalidatedScopes = new Set<string>()
   private revision = 0
 
   update(snapshot: CompilationSnapshot): CompilationResult {
-    const invalidatedScopes = resolveInvalidatedScopes(this.graph, snapshot.changes ?? [])
+    const changes = [...snapshot.changes ?? []]
+    const invalidatedScopes = resolveInvalidatedScopes(this.graph, changes)
     this.graph.replace(snapshot.nodes, snapshot.edges)
     for (const [sourceId, candidates] of snapshot.candidatesBySource ?? []) {
-      this.candidateIndex.sync(sourceId, candidates)
+      const change = this.candidateIndex.sync(sourceId, candidates)
+      if (change.addedCandidates.size > 0 || change.removedCandidates.size > 0) {
+        changes.push(change)
+      }
     }
-    for (const change of snapshot.changes ?? []) {
+    for (const change of changes) {
       if ('type' in change && change.type === 'source-removed') {
         this.candidateIndex.remove(change.sourceId)
       }
@@ -42,14 +47,28 @@ export class DefaultCompilationSession implements CompilationSession {
       )
     }
     this.revision += 1
-    for (const scopeId of resolveInvalidatedScopes(this.graph, snapshot.changes ?? [])) {
+    for (const scopeId of resolveInvalidatedScopes(this.graph, changes)) {
       invalidatedScopes.add(scopeId)
     }
+    this.invalidatedScopes = invalidatedScopes
+    return this.createResult()
+  }
+
+  commitValidation(revision: number, validatedClassSet: Iterable<string>): CompilationResult {
+    if (revision !== this.revision) {
+      throw new Error(`不能向编译 revision ${this.revision} 提交 revision ${revision} 的 classSet。`)
+    }
+    this.validatedClassSet = new Set(validatedClassSet)
+    return this.createResult()
+  }
+
+  private createResult(): CompilationResult {
     return {
       revision: this.revision,
       candidates: new Set(this.retainedCandidates),
+      candidatesBySource: this.candidateIndex.entries(),
       validatedClassSet: new Set(this.validatedClassSet),
-      invalidatedScopes,
+      invalidatedScopes: new Set(this.invalidatedScopes),
       graphNodes: this.graph.getNodes(),
     }
   }
@@ -59,6 +78,7 @@ export class DefaultCompilationSession implements CompilationSession {
     this.graph.clear()
     this.retainedCandidates.clear()
     this.validatedClassSet.clear()
+    this.invalidatedScopes.clear()
     this.revision = 0
   }
 }

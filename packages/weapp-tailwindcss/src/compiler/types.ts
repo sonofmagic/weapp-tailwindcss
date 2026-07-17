@@ -46,6 +46,7 @@ export interface GenerationArtifact {
   rawCandidates: Set<string>
   dependencies: string[]
   sourceEntries: string[]
+  revision?: number | undefined
 }
 
 export interface CandidateChange {
@@ -72,6 +73,7 @@ export interface CompilationSnapshot {
 export interface CompilationResult {
   revision: number
   candidates: Set<string>
+  candidatesBySource: Map<string, Set<string>>
   validatedClassSet: Set<string>
   invalidatedScopes: Set<string>
   graphNodes: SourceGraphNode[]
@@ -79,6 +81,7 @@ export interface CompilationResult {
 
 export interface CompilationSession {
   update: (snapshot: CompilationSnapshot) => CompilationResult | Promise<CompilationResult>
+  commitValidation: (revision: number, validatedClassSet: Iterable<string>) => CompilationResult | Promise<CompilationResult>
   dispose: () => void
 }
 

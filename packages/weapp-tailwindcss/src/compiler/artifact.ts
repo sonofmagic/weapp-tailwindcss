@@ -38,6 +38,7 @@ export function cloneGenerationArtifact(artifact: GenerationArtifact): Generatio
     rawCandidates: new Set(artifact.rawCandidates),
     dependencies: [...artifact.dependencies],
     sourceEntries: [...artifact.sourceEntries],
+    ...(artifact.revision === undefined ? {} : { revision: artifact.revision }),
   }
 }
 

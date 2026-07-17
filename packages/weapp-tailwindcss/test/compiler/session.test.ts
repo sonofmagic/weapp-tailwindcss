@@ -35,6 +35,7 @@ describe('compiler session', () => {
     expect(first.revision).toBe(1)
     expect(second.revision).toBe(2)
     expect(second.candidates).toEqual(new Set(['p-4', 'text-red-500']))
+    expect(second.candidatesBySource.get('page')).toEqual(new Set(['p-4', 'text-red-500']))
     expect(second.validatedClassSet).toEqual(new Set())
     expect(second.invalidatedScopes).toEqual(new Set(['global', 'page']))
   })
@@ -80,5 +81,19 @@ describe('compiler session', () => {
     expect(retained.candidates).toEqual(new Set(['p-4']))
     expect(retained.validatedClassSet).toEqual(new Set(['p-4']))
     expect(removed.candidates).toEqual(new Set())
+  })
+
+  it('commits validated class sets only to the active revision', () => {
+    const session = new DefaultCompilationSession()
+    const compilation = session.update({
+      nodes: [{ id: 'page', kind: 'template', scope: { id: 'page', kind: 'component' } }],
+      edges: [],
+      candidatesBySource: [['page', ['p-4']]],
+    })
+
+    const committed = session.commitValidation(compilation.revision, ['p-4'])
+    expect(committed.revision).toBe(compilation.revision)
+    expect(committed.validatedClassSet).toEqual(new Set(['p-4']))
+    expect(() => session.commitValidation(compilation.revision - 1, [])).toThrow('不能向编译 revision')
   })
 })
