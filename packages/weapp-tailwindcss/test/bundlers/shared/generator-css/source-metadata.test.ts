@@ -23,17 +23,13 @@ describe('generator source metadata', () => {
       matchedCssSourceFile: '/workspace/src/app.css',
       primaryCssSource: true,
     })
-    expect(Object.keys(cloned)).not.toContain('__weappTailwindcssMeta')
+    expect(Object.keys(cloned)).toEqual([
+      'base',
+      'baseFallbacks',
+      'css',
+      'dependencies',
+      'projectRoot',
+    ])
     expect(JSON.stringify(cloned)).not.toContain('matchedCssSourceFile')
-  })
-
-  it('reads legacy metadata from compatibility sources', () => {
-    expect(getGeneratorSourceMetadata({
-      __weappTailwindcssMeta: {
-        matchedCssSourceFile: '/workspace/src/legacy.css',
-      },
-    } as any)).toEqual({
-      matchedCssSourceFile: '/workspace/src/legacy.css',
-    })
   })
 })

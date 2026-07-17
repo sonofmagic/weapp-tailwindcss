@@ -15,7 +15,7 @@ export interface GeneratorSourceMetadata {
   sourceCss?: string | undefined
 }
 
-const generatorSourceMetadataKey = Symbol('weapp-tailwindcss.generator-source-metadata')
+const generatorSourceMetadataKey = Symbol.for('weapp-tailwindcss.generator-source-metadata')
 
 export type GeneratorResolvedSource = TailwindResolvedSource & {
   [generatorSourceMetadataKey]?: GeneratorSourceMetadata | undefined
@@ -25,9 +25,6 @@ export function getGeneratorSourceMetadata(
   source: TailwindResolvedSource,
 ): GeneratorSourceMetadata | undefined {
   return (source as GeneratorResolvedSource)[generatorSourceMetadataKey]
-    ?? (source as TailwindResolvedSource & {
-      __weappTailwindcssMeta?: GeneratorSourceMetadata | undefined
-    }).__weappTailwindcssMeta
 }
 
 export function withGeneratorSourceMetadata(

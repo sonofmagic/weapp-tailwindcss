@@ -4,6 +4,14 @@ import path from 'node:path'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { captureFrameworkPostcssOptions } from '@/bundlers/shared/framework-postcss'
+import { withGeneratorSourceMetadata } from '@/bundlers/shared/generator-css/source-resolver/metadata'
+
+function withTestGeneratorSourceMetadata<T extends object>(
+  source: T,
+  metadata: Parameters<typeof withGeneratorSourceMetadata>[1],
+) {
+  return withGeneratorSourceMetadata(source as any, metadata) as T
+}
 
 function normalizeGeneratorOptions(options: any) {
   if (options === false) {
@@ -907,11 +915,9 @@ describe('bundlers/shared generator css', () => {
           classSet: new Set(['flex']),
           dependencies: [],
           sources: [
-            {
-              __weappTailwindcssMeta: {
-                matchedCssSourceFile: true,
-              },
-            },
+            withTestGeneratorSourceMetadata({}, {
+              matchedCssSourceFile: 'app.wxss',
+            }),
           ],
           root: null,
         })),
@@ -996,11 +1002,9 @@ describe('bundlers/shared generator css', () => {
           classSet: new Set(['bg-sky-500']),
           dependencies: [],
           sources: [
-            {
-              __weappTailwindcssMeta: {
-                matchedCssSourceFile: true,
-              },
-            },
+            withTestGeneratorSourceMetadata({}, {
+              matchedCssSourceFile: 'app.wxss',
+            }),
           ],
           root: null,
         })),
@@ -3240,11 +3244,9 @@ describe('bundlers/shared generator css', () => {
       classSet: runtimeSet,
       dependencies: [],
       sources: [
-        {
-          __weappTailwindcssMeta: {
-            matchedCssSourceFile: true,
-          },
-        },
+        withTestGeneratorSourceMetadata({}, {
+          matchedCssSourceFile: 'app.wxss',
+        }),
       ],
       root: null,
     }))
@@ -3253,15 +3255,14 @@ describe('bundlers/shared generator css', () => {
       createWeappTailwindcssGenerator: vi.fn(() => ({
         generate: generateMock,
       })),
-      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+      resolveTailwindV4Source: vi.fn(async (options: any) => withTestGeneratorSourceMetadata({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: options.css,
         dependencies: [],
-        __weappTailwindcssMeta: {
-          matchedCssSourceFile: true,
-        },
+      }, {
+        matchedCssSourceFile: 'app.wxss',
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
@@ -4234,36 +4235,33 @@ describe('bundlers/shared generator css', () => {
       createWeappTailwindcssGenerator: vi.fn(() => ({
         generate: generateMock,
       })),
-      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+      resolveTailwindV4Source: vi.fn(async (options: any) => withTestGeneratorSourceMetadata({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: options.css ?? '@import "tailwindcss";',
         dependencies: [],
-        __weappTailwindcssMeta: {
-          sourceEntries: [{ pattern: 'pages/**/*', base: process.cwd() }],
-        },
+      }, {
+        sourceEntries: [{ pattern: 'pages/**/*', base: process.cwd() }],
       })),
-      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => withTestGeneratorSourceMetadata({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
-        __weappTailwindcssMeta: {
-          sourceEntries: [{ pattern: 'pages/**/*', base: process.cwd() }],
-        },
+      }, {
+        sourceEntries: [{ pattern: 'pages/**/*', base: process.cwd() }],
       })),
       resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         baseFallbacks: [],
-        cssSources: [{
+        cssSources: [withTestGeneratorSourceMetadata({
           css: '@source "./pages/**/*";\n@tailwind utilities;',
           base: process.cwd(),
-          __weappTailwindcssMeta: {
-            sourceEntries: [{ pattern: 'pages/**/*', base: process.cwd() }],
-          },
-        }],
+        }, {
+          sourceEntries: [{ pattern: 'pages/**/*', base: process.cwd() }],
+        })],
       })),
     }))
 
@@ -5121,15 +5119,14 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+      resolveTailwindV4Source: vi.fn(async (options: any) => withTestGeneratorSourceMetadata({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: options.css ?? '@import "tailwindcss";',
         dependencies: [],
-        __weappTailwindcssMeta: {
-          matchedCssSourceFile: 'app.wxss',
-        },
+      }, {
+        matchedCssSourceFile: 'app.wxss',
       })),
       resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
