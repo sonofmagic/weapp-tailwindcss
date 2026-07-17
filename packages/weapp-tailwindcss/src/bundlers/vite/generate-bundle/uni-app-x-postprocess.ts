@@ -1,9 +1,11 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { CssHandlerOptionsCache } from './css-handler-options'
 import type { GenerateBundleContext } from './types'
+import { AssetEmissionPlan } from '@/compiler'
 import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtilities, createUniAppXBundleAssetSourceGetter, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles, injectUniAppXStylePlaceholder } from '@/uni-app-x/style-asset'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
+import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 
 function appendCss(baseCss: string, css: string) {
   if (baseCss.length === 0) {
@@ -18,13 +20,31 @@ function appendCss(baseCss: string, css: string) {
 function injectHarmonyCssIntoMainAsset(
   bundle: Record<string, OutputAsset | OutputChunk>,
   cssSources: string[],
+  isMainCssAsset: (file: string) => boolean,
+  plan: AssetEmissionPlan,
+  writeTargets: Map<string, OutputAsset>,
   onUpdate: GenerateBundleContext['opts']['onUpdate'],
   debug: GenerateBundleContext['debug'],
 ) {
-  const output = bundle['main.css']
-  if (output?.type !== 'asset' || cssSources.length === 0) {
+  let mainEntry: [string, OutputAsset] | undefined
+  for (const [bundleFile, output] of Object.entries(bundle)) {
+    if (output.type !== 'asset') {
+      continue
+    }
+    const file = isMainCssAsset(bundleFile)
+      ? bundleFile
+      : output.fileName && isMainCssAsset(output.fileName)
+        ? output.fileName
+        : undefined
+    if (file) {
+      mainEntry = [file, output]
+      break
+    }
+  }
+  if (!mainEntry || cssSources.length === 0) {
     return false
   }
+  const [file, output] = mainEntry
   const currentSource = String(output.source)
   let nextSource = currentSource
   for (const css of cssSources) {
@@ -37,8 +57,9 @@ function injectHarmonyCssIntoMainAsset(
   if (nextSource === currentSource) {
     return false
   }
-  output.source = nextSource
-  onUpdate('main.css', currentSource, nextSource)
+  plan.write(file, nextSource)
+  writeTargets.set(file, output)
+  onUpdate(file, currentSource, nextSource)
   debug('uni-app-x harmony main css inject')
   return true
 }
@@ -80,6 +101,16 @@ export async function handleUniAppXPostCssTasks(options: HandleUniAppXPostCssOpt
     return applyStyleSources
   }
 
+  const emissionPlan = new AssetEmissionPlan()
+  const writeTargets = new Map<string, OutputAsset>()
+  const applyEmissionPlan = () => {
+    applyViteAssetEmissionPlan(emissionPlan, {
+      bundle,
+      writeTargets,
+    })
+    emissionPlan.clear()
+    writeTargets.clear()
+  }
   const getAssetSource = createUniAppXBundleAssetSourceGetter(bundle)
   const viteProcessedCssSources = [...(getViteProcessedCssAssetResults?.() ?? [])]
     .map(([, record]) => typeof record === 'string' ? record : record.css)
@@ -120,16 +151,33 @@ export async function handleUniAppXPostCssTasks(options: HandleUniAppXPostCssOpt
     debug('uni-app-x harmony bundle styles inject')
   }
   if (isHarmonyAppStyleTarget) {
-    injectHarmonyCssIntoMainAsset(bundle, viteProcessedCssSources, onUpdate, debug)
+    injectHarmonyCssIntoMainAsset(
+      bundle,
+      viteProcessedCssSources,
+      file => getCssHandlerOptions(file).isMainChunk === true,
+      emissionPlan,
+      writeTargets,
+      onUpdate,
+      debug,
+    )
+    applyEmissionPlan()
   }
-  for (const [file, item] of Object.entries(bundle)) {
-    if (item.type !== 'asset' || !file.endsWith('.uvue.ts')) {
+  for (const [bundleFile, item] of Object.entries(bundle)) {
+    if (item.type !== 'asset') {
+      continue
+    }
+    const file = bundleFile.endsWith('.uvue.ts')
+      ? bundleFile
+      : item.fileName || bundleFile
+    if (!file.endsWith('.uvue.ts')) {
       continue
     }
     const currentSource = String(item.source)
     const nextSource = injectUniAppXStylePlaceholder(file, currentSource, getAssetSource)
     if (nextSource !== currentSource) {
-      item.source = nextSource
+      emissionPlan.write(file, nextSource)
+      writeTargets.set(file, item)
+      applyEmissionPlan()
       onUpdate(file, currentSource, nextSource)
       debug('uni-app-x style placeholder inject: %s', file)
     }

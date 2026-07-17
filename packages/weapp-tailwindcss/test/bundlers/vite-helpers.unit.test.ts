@@ -16,6 +16,7 @@ import {
   createRelativeCssImportRequest,
   createRootMiniProgramOriginStyleOutputFile,
   isRootMiniProgramStyleOutputFile,
+  restoreFrameworkRootMiniProgramImportShellAssets,
   shouldKeepRootMiniProgramStyleAsImportShell,
   shouldMoveRootMiniProgramStyleToImportShellOrigin,
   shouldPreserveFrameworkRootMiniProgramImportShell,
@@ -117,6 +118,29 @@ describe('bundlers/vite helper modules', () => {
       matchesCss: true,
       shouldKeep: () => true,
     })).toBe(false)
+  })
+
+  it('restores framework root import shells through the real output asset', () => {
+    const output = {
+      type: 'asset' as const,
+      fileName: 'entry.acss',
+      source: '.root{color:red}',
+    }
+    const bundle = {
+      'entry-hash.acss': output,
+    }
+
+    expect(restoreFrameworkRootMiniProgramImportShellAssets(bundle as any, {
+      isWebGeneratorTarget: false,
+      matchesCss: file => file.endsWith('.acss'),
+      shouldKeep: () => true,
+      targetByFile: new Map([
+        ['entry.acss', 'generated.acss'],
+      ]),
+    })).toBe(1)
+
+    expect(bundle['entry-hash.acss']).toBe(output)
+    expect(output.source).toBe('@import "./generated.acss";\n')
   })
 
   it('preserves vite serve root mini-program import shells for framework-owned shell policies only', () => {

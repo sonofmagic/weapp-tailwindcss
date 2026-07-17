@@ -446,7 +446,14 @@ export function isUniAppXHarmonyBundle(bundle: Record<string, BundleItem>) {
 export function createUniAppXBundleAssetSourceGetter(bundle: Record<string, BundleItem>) {
   return (file: string) => {
     const item = bundle[file] ?? Object.entries(bundle).find(([key, value]) => {
-      return (value.type === 'asset' || value.type === 'chunk') && (key === file || key.endsWith(`/${file}`))
+      if (value.type !== 'asset' && value.type !== 'chunk') {
+        return false
+      }
+      const outputFile = (value as OutputAsset | OutputChunk).fileName || key
+      return key === file
+        || key.endsWith(`/${file}`)
+        || outputFile === file
+        || outputFile.endsWith(`/${file}`)
     })?.[1]
     if (!item) {
       return

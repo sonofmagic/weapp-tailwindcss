@@ -1,9 +1,11 @@
-import type { OutputBundle } from 'rollup'
+import type { OutputAsset, OutputBundle } from 'rollup'
 import path from 'node:path'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
+import { AssetEmissionPlan } from '@/compiler'
 import { parseImportRequest } from '../../shared/generator-css/directives'
 import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
+import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 
 export function isRootMiniProgramStyleOutputFile(file: string) {
   const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
@@ -90,6 +92,8 @@ export function restoreFrameworkRootMiniProgramImportShellAssets(
   if (options.isWebGeneratorTarget || options.targetByFile.size === 0) {
     return 0
   }
+  const plan = new AssetEmissionPlan()
+  const writeTargets = new Map<string, OutputAsset>()
   let restored = 0
   for (const [sourceFile, targetFile] of options.targetByFile) {
     if (
@@ -116,12 +120,17 @@ export function restoreFrameworkRootMiniProgramImportShellAssets(
     if (rawSource === nextSource) {
       continue
     }
-    output.source = nextSource
+    plan.write(sourceFile, nextSource)
+    writeTargets.set(sourceFile, output)
     options.recordCssAssetResult?.(sourceFile, nextSource)
     options.onUpdate?.(sourceFile, rawSource, nextSource)
     options.debug?.('restore framework root css import shell: %s -> %s', sourceFile, targetFile)
     restored++
   }
+  applyViteAssetEmissionPlan(plan, {
+    bundle,
+    writeTargets,
+  })
   return restored
 }
 

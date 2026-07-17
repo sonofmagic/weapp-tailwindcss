@@ -56,15 +56,21 @@ describe('bundlers/vite uni-app-x post css tasks', () => {
   it('injects harmony css into main asset and uvue placeholders', async () => {
     const onUpdate = vi.fn()
     const debug = vi.fn()
+    const mainCssAsset = asset('styles/root.css', '.base{}')
+    const pageStyleAsset = asset('pages/index.uvue', '.page{color:red}')
+    const pageCodeAsset = asset('pages/index.uvue.ts', 'const GenPageStyles = []')
     const bundle = {
-      'main.css': asset('main.css', '.base{}'),
-      'pages/index.uvue': asset('pages/index.uvue', '.page{color:red}'),
-      'pages/index.uvue.ts': asset('pages/index.uvue.ts', 'const GenPageStyles = []'),
+      'assets/root-hash.css': mainCssAsset,
+      'assets/page-style-hash': pageStyleAsset,
+      'assets/page-code-hash': pageCodeAsset,
     }
 
     await handleUniAppXPostCssTasks(createOptions({
       bundle,
       debug,
+      getCssHandlerOptions: vi.fn(file => ({
+        isMainChunk: file === 'styles/root.css',
+      })),
       getViteProcessedCssAssetResults: () => new Map([
         ['app.css', '.generated{color:blue}'],
       ]),
@@ -75,10 +81,12 @@ describe('bundlers/vite uni-app-x post css tasks', () => {
       } as any,
     }))
 
-    expect(String(bundle['main.css'].source)).toContain('.base{}')
-    expect(String(bundle['main.css'].source)).toContain('.generated{color:blue}')
-    expect(String(bundle['pages/index.uvue.ts'].source)).toContain('color')
-    expect(onUpdate).toHaveBeenCalledWith('main.css', '.base{}', expect.stringContaining('.generated{color:blue}'))
+    expect(bundle['assets/root-hash.css']).toBe(mainCssAsset)
+    expect(String(mainCssAsset.source)).toContain('.base{}')
+    expect(String(mainCssAsset.source)).toContain('.generated{color:blue}')
+    expect(bundle['assets/page-code-hash']).toBe(pageCodeAsset)
+    expect(String(pageCodeAsset.source)).toContain('color')
+    expect(onUpdate).toHaveBeenCalledWith('styles/root.css', '.base{}', expect.stringContaining('.generated{color:blue}'))
     expect(debug).toHaveBeenCalledWith('uni-app-x harmony main css inject')
     expect(debug).toHaveBeenCalledWith('uni-app-x style placeholder inject: %s', 'pages/index.uvue.ts')
   })
