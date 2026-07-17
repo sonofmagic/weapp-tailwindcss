@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import {
   buildRuntimeCompilationSnapshot,
+  createRuntimeCompilationAffectingSignature,
   createRuntimeAffectingSourceSignature,
   createRuntimeCompilationBuildState,
   createRuntimeCompilationSnapshot,
   removeRuntimeCompilationBuildStateFiles,
+  resetRuntimeCompilationBuildState,
   updateRuntimeCompilationBuildState,
 } from '@/compiler'
 import { createCache } from '@/cache'
@@ -81,5 +83,30 @@ describe('compiler runtime snapshot', () => {
     expect(state.bundleMarkupCandidatesByFile.has('shared.js')).toBe(false)
     expect(state.linkedByEntry.get('entry.js')).toEqual(new Set())
     expect(state.dependentsByLinkedFile.has('shared.js')).toBe(false)
+  })
+
+  it('creates stable semantic signatures and resets build state ownership', () => {
+    const cache = createCache()
+    const state = createRuntimeCompilationBuildState()
+    const build = (source: string) => buildRuntimeCompilationSnapshot([
+      createEntry('entry.js', source, 'js'),
+    ], state, {
+      computeHash: value => cache.computeHash(value),
+      createRuntimeAffectingSignature: createRuntimeAffectingSourceSignature,
+    })
+    const first = build('const cls = "card"\nexport { cls }')
+    const firstSignature = createRuntimeCompilationAffectingSignature(first, value => cache.computeHash(value))
+    updateRuntimeCompilationBuildState(state, first, new Map())
+    const sourceHashByFile = state.sourceHashByFile
+    const second = build('const cls = "card";\n\nexport { cls }\n')
+
+    expect(createRuntimeCompilationAffectingSignature(second, value => cache.computeHash(value))).toBe(firstSignature)
+
+    resetRuntimeCompilationBuildState(state)
+
+    expect(state.iteration).toBe(0)
+    expect(state.sourceHashByFile).toBe(sourceHashByFile)
+    expect(state.sourceHashByFile.size).toBe(0)
+    expect(state.runtimeAffectingHashByFile.size).toBe(0)
   })
 })

@@ -3,7 +3,7 @@ import type { WebpackCssHandlerOptions } from './v5-assets/pipeline-helpers'
 import path from 'node:path'
 import process from 'node:process'
 import { MappingChars2String } from '@weapp-core/escape'
-import { createRuntimeCompilationBuildState, updateRuntimeCompilationBuildState } from '@/compiler'
+import { createRuntimeCompilationAffectingSignature, createRuntimeCompilationBuildState, resetRuntimeCompilationBuildState, updateRuntimeCompilationBuildState } from '@/compiler'
 import { pluginName } from '@/constants'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
@@ -77,7 +77,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
   const bundleRuntimeClassSetManager = runtimeClassSetManager ?? createRuntimeClassSetManager()
   const escapeFragments = createEscapeFragments(MappingChars2String)
   const processedCssAssetSkipDecisionCache = new Map<string, boolean>()
-  let webpackWatchRuntimeScanInitialized = false
 
   compiler.hooks.compilation.tap(pluginName, (compilation) => {
     compilation.hooks.processAssets.tapPromise(
@@ -253,15 +252,15 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         else if (watchMode && !forceRuntimeRefresh) {
           const baseRuntimeSet = getRuntimeClassSetSync(runtimeState.tailwindRuntime)
           const snapshot = buildWebpackBundleSnapshot(assets as any, compilerOptions, bundleBuildState, compilation as any)
-          if (!webpackWatchRuntimeScanInitialized) {
+          if (bundleBuildState.iteration === 0) {
             for (const entry of snapshot.entries) {
               snapshot.runtimeAffectingChangedByType[entry.type].add(entry.file)
             }
           }
-          runtimeAffectingSourceHash = compilerOptions.cache.computeHash([
-            ...groupedEntries.html.map(([file, source]) => `${file}:${compilerOptions.cache.computeHash(source.source().toString())}`),
-            ...groupedEntries.js.map(([file, source]) => `${file}:${compilerOptions.cache.computeHash(source.source().toString())}`),
-          ].sort().join('\n\n'))
+          runtimeAffectingSourceHash = createRuntimeCompilationAffectingSignature(
+            snapshot,
+            source => compilerOptions.cache.computeHash(source),
+          )
           try {
             runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot, {
               baseClassSet: baseRuntimeSet,
@@ -275,12 +274,11 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
           releaseWebpackBundleSnapshotSources(snapshot)
           updateRuntimeCompilationBuildState(bundleBuildState, snapshot, new Map(), { incremental: true })
-          webpackWatchRuntimeScanInitialized = true
         }
         else {
           if (forceRuntimeRefresh) {
             await bundleRuntimeClassSetManager.reset()
-            webpackWatchRuntimeScanInitialized = false
+            resetRuntimeCompilationBuildState(bundleBuildState)
           }
           runtimeSet = await ensureRuntimeClassSet(runtimeState, {
             forceRefresh: forceRuntimeRefresh,
