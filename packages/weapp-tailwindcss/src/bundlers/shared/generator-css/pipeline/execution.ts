@@ -1,7 +1,7 @@
 import type { GeneratorResolvedSource } from '../source-resolver'
 import process from 'node:process'
 import { extractSourceCandidates } from '@tailwindcss-mangle/engine'
-import { getTailwindGenerationSession } from '@/compiler/tailwind-generation-session'
+import { getTailwindGenerationSessionPool } from '@/compiler/tailwind-generation-session-pool'
 import { shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { includesTailwindV4PreflightDirective } from '@/tailwindcss/v4/preflight'
@@ -95,7 +95,7 @@ export async function executeGeneratorPipeline(context: any) {
   const generatorStyleOptions = resolveGeneratorStyleOptions(opts, cssHandlerOptions, generatorOptions.styleOptions)
   const configuredContainerCompat = hasConfiguredContainerCompatSources(generatorSources)
   const sourceConcurrency = resolveGeneratorSourceConcurrency()
-  const generationSession = getTailwindGenerationSession(runtimeState)
+  const generationSession = getTailwindGenerationSessionPool(runtimeState)
   const generatedResultsWithDeferred = await runWithConcurrency(generatorSources.map(source => async () => {
     const sourceCss = options.deferCssAdaptation
       ? removeMatchingLocalCssImports(source.css, localImports)

@@ -259,8 +259,10 @@ describe('ci workflows', () => {
       }>
     }
     const catalogVersion = workspace.catalogs?.tailwindcssMangleEngine?.['@tailwindcss-mangle/engine']
+    const tailwindVersion = lockfile.catalogs?.tailwindcss4?.tailwindcss?.version
 
     expect(catalogVersion).toBeDefined()
+    expect(tailwindVersion).toBeDefined()
     expect(workspace.overrides?.['@tailwindcss-mangle/engine']).toBeUndefined()
     expect(lockfile.catalogs?.tailwindcssMangleEngine?.['@tailwindcss-mangle/engine']).toEqual({
       specifier: catalogVersion,
@@ -274,7 +276,7 @@ describe('ci workflows', () => {
       expect(packageJson.dependencies?.['@tailwindcss-mangle/engine'], importer)
         .toBe('catalog:tailwindcssMangleEngine')
       expect(dependency?.specifier, importer).toBe('catalog:tailwindcssMangleEngine')
-      expect(dependency?.version, importer).toBe(`${catalogVersion}(tailwindcss@4.3.2)`)
+      expect(dependency?.version, importer).toBe(`${catalogVersion}(tailwindcss@${tailwindVersion})`)
     }
   })
 

@@ -120,15 +120,15 @@ catalogs:
   tailwindMerge2:
     tailwind-merge: ^2.6.1
   tailwindcss4:
-    '@tailwindcss/postcss': ^4.3.2
-    '@tailwindcss/vite': ^4.3.2
-    tailwindcss: ^4.3.2
+    '@tailwindcss/postcss': ^4.3.3
+    '@tailwindcss/vite': ^4.3.3
+    tailwindcss: ^4.3.3
     tailwindcss-4: npm:tailwindcss@^4.3.1
-    tailwindcss4: npm:tailwindcss@^4.3.1
+    tailwindcss4: npm:tailwindcss@^4.3.3
   tailwindcssPatch:
     tailwindcss-patch: 10.0.1
   tailwindcssMangleEngine:
-    '@tailwindcss-mangle/engine': 0.1.3
+    '@tailwindcss-mangle/engine': 0.2.0
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:

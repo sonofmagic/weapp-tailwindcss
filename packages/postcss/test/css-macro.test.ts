@@ -294,6 +294,20 @@ describe('css macro helpers', () => {
     expect(result.css).toContain('.after')
   })
 
+  it('unwraps direct nesting selectors emitted inside conditional variants', async () => {
+    const result = await postcss([cssMacroPostcssPlugin()]).process(
+      `.variant { @${ifdefAtRule} "MP-WEIXIN" { & { color: blue; } } }`,
+      { from: undefined },
+    )
+
+    expect(result.css).toBe([
+      '/* #ifdef MP-WEIXIN */',
+      '.variant { color: blue }',
+      '/* #endif */',
+    ].join('\n'))
+    expect(result.css).not.toContain('&')
+  })
+
   it('keeps non-rule nested macro at-rules untouched and normalizes existing comments', async () => {
     const result = await postcss([cssMacroPostcssPlugin()]).process([
       '@media (min-width: 1px) {',

@@ -41,19 +41,15 @@ exports[`arbitrary groups > group case 0 1`] = `
 .items-center {
   align-items: center;
 }
-.space-y-3 {
-  :where(& > :not(:last-child)) {
-    --tw-space-y-reverse: 0;
-    margin-block-start: calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));
-    margin-block-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)));
-  }
+:where(.space-y-3 > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));
+  margin-block-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)));
 }
-.space-x-3 {
-  :where(& > :not(:last-child)) {
-    --tw-space-x-reverse: 0;
-    margin-inline-start: calc(calc(var(--spacing) * 3) * var(--tw-space-x-reverse));
-    margin-inline-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-x-reverse)));
-  }
+:where(.space-x-3 > :not(:last-child)) {
+  --tw-space-x-reverse: 0;
+  margin-inline-start: calc(calc(var(--spacing) * 3) * var(--tw-space-x-reverse));
+  margin-inline-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-x-reverse)));
 }
 .rounded-lg {
   border-radius: var(--radius-lg);
@@ -95,32 +91,18 @@ exports[`arbitrary groups > group case 0 1`] = `
     --tw-ring-color: color-mix(in oklab, var(--color-slate-900) 5%, transparent);
   }
 }
-.group-hover\\:stroke-white {
-  &:is(:where(.group):hover *) {
-    @media (hover: hover) {
-      stroke: var(--color-white);
-    }
+@media (hover: hover) {
+  .group-hover\\:stroke-white:is(:where(.group):hover *) {
+    stroke: var(--color-white);
   }
-}
-.group-hover\\:text-white {
-  &:is(:where(.group):hover *) {
-    @media (hover: hover) {
-      color: var(--color-white);
-    }
+  .group-hover\\:text-white:is(:where(.group):hover *) {
+    color: var(--color-white);
   }
-}
-.hover\\:bg-sky-500 {
-  &:hover {
-    @media (hover: hover) {
-      background-color: var(--color-sky-500);
-    }
+  .hover\\:bg-sky-500:hover {
+    background-color: var(--color-sky-500);
   }
-}
-.hover\\:ring-sky-500 {
-  &:hover {
-    @media (hover: hover) {
-      --tw-ring-color: var(--color-sky-500);
-    }
+  .hover\\:ring-sky-500:hover {
+    --tw-ring-color: var(--color-sky-500);
   }
 }
 @property --tw-space-y-reverse {
@@ -245,47 +227,25 @@ exports[`arbitrary groups > group case 1 1`] = `
 .invisible {
   visibility: hidden;
 }
-.group-hover\\/edit\\:translate-x-0\\.5 {
-  &:is(:where(.group\\/edit):hover *) {
-    @media (hover: hover) {
-      --tw-translate-x: calc(var(--spacing) * 0.5);
-      translate: var(--tw-translate-x) var(--tw-translate-y);
-    }
+@media (hover: hover) {
+  .group-hover\\/edit\\:translate-x-0\\.5:is(:where(.group\\/edit):hover *) {
+    --tw-translate-x: calc(var(--spacing) * 0.5);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
   }
-}
-.group-hover\\/edit\\:text-gray-700 {
-  &:is(:where(.group\\/edit):hover *) {
-    @media (hover: hover) {
-      color: var(--color-gray-700);
-    }
+  .group-hover\\/edit\\:text-gray-700:is(:where(.group\\/edit):hover *) {
+    color: var(--color-gray-700);
   }
-}
-.group-hover\\/edit\\:text-slate-500 {
-  &:is(:where(.group\\/edit):hover *) {
-    @media (hover: hover) {
-      color: var(--color-slate-500);
-    }
+  .group-hover\\/edit\\:text-slate-500:is(:where(.group\\/edit):hover *) {
+    color: var(--color-slate-500);
   }
-}
-.group-hover\\/item\\:visible {
-  &:is(:where(.group\\/item):hover *) {
-    @media (hover: hover) {
-      visibility: visible;
-    }
+  .group-hover\\/item\\:visible:is(:where(.group\\/item):hover *) {
+    visibility: visible;
   }
-}
-.hover\\:bg-slate-100 {
-  &:hover {
-    @media (hover: hover) {
-      background-color: var(--color-slate-100);
-    }
+  .hover\\:bg-slate-100:hover {
+    background-color: var(--color-slate-100);
   }
-}
-.hover\\:bg-slate-200 {
-  &:hover {
-    @media (hover: hover) {
-      background-color: var(--color-slate-200);
-    }
+  .hover\\:bg-slate-200:hover {
+    background-color: var(--color-slate-200);
   }
 }
 @property --tw-translate-x {
@@ -324,10 +284,8 @@ exports[`arbitrary groups > group case 2 1`] = `
 .hidden {
   display: none;
 }
-.group-\\[\\.is-published\\]\\:block {
-  &:is(:where(.group):is(.is-published) *) {
-    display: block;
-  }
+.group-\\[\\.is-published\\]\\:block:is(:where(.group):is(.is-published) *) {
+  display: block;
 }"
 `;
 
@@ -338,10 +296,8 @@ exports[`arbitrary groups > group case 3 1`] = `
   margin: 0;
   padding: 0;
 }
-.group-\\[\\:nth-of-type\\(3\\)_\\&\\]\\:block {
-  &:is(:nth-of-type(3) :where(.group) *) {
-    display: block;
-  }
+.group-\\[\\:nth-of-type\\(3\\)_\\&\\]\\:block:is(:nth-of-type(3) :where(.group) *) {
+  display: block;
 }"
 `;
 
@@ -384,10 +340,8 @@ exports[`arbitrary groups > peer case 0 1`] = `
 .text-slate-700 {
   color: var(--color-slate-700);
 }
-.peer-invalid\\:visible {
-  &:is(:where(.peer):invalid ~ *) {
-    visibility: visible;
-  }
+.peer-invalid\\:visible:is(:where(.peer):invalid ~ *) {
+  visibility: visible;
 }
 @property --tw-font-weight {
   syntax: "*";
@@ -418,25 +372,17 @@ exports[`arbitrary groups > peer case 1 1`] = `
 .hidden {
   display: none;
 }
-.peer-checked\\/draft\\:block {
-  &:is(:where(.peer\\/draft):checked ~ *) {
-    display: block;
-  }
+.peer-checked\\/draft\\:block:is(:where(.peer\\/draft):checked ~ *) {
+  display: block;
 }
-.peer-checked\\/draft\\:text-sky-500 {
-  &:is(:where(.peer\\/draft):checked ~ *) {
-    color: var(--color-sky-500);
-  }
+.peer-checked\\/draft\\:text-sky-500:is(:where(.peer\\/draft):checked ~ *) {
+  color: var(--color-sky-500);
 }
-.peer-checked\\/published\\:block {
-  &:is(:where(.peer\\/published):checked ~ *) {
-    display: block;
-  }
+.peer-checked\\/published\\:block:is(:where(.peer\\/published):checked ~ *) {
+  display: block;
 }
-.peer-checked\\/published\\:text-sky-500 {
-  &:is(:where(.peer\\/published):checked ~ *) {
-    color: var(--color-sky-500);
-  }
+.peer-checked\\/published\\:text-sky-500:is(:where(.peer\\/published):checked ~ *) {
+  color: var(--color-sky-500);
 }"
 `;
 
@@ -450,11 +396,7 @@ exports[`arbitrary groups > peer case 2 1`] = `
 .hidden {
   display: none;
 }
-.peer-\\[\\.is-dirty\\]\\:peer-required\\:block {
-  &:is(:where(.peer):is(.is-dirty) ~ *) {
-    &:is(:where(.peer):required ~ *) {
-      display: block;
-    }
-  }
+.peer-\\[\\.is-dirty\\]\\:peer-required\\:block:is(:where(.peer):is(.is-dirty) ~ *):is(:where(.peer):required ~ *) {
+  display: block;
 }"
 `;

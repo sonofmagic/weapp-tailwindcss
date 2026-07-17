@@ -11,8 +11,8 @@ exports[`responsive-design > 2xl:text-sm 1`] = `
   margin: 0;
   padding: 0;
 }
-.\\32 xl\\:text-sm {
-  @media (width >= 96rem) {
+@media (width >= 96rem) {
+  .\\32 xl\\:text-sm {
     font-size: var(--text-sm);
     line-height: var(--tw-leading, var(--text-sm--line-height));
   }
@@ -31,11 +31,11 @@ view,text,::after,::before {
   padding: 0;
 }
 @media (min-width: 96rem) {
-._2xl_ctext-sm {
+  ._2xl_ctext-sm {
     font-size: var(--text-sm);
     line-height: var(--tw-leading, var(--text-sm--line-height));
-}
-  }"
+  }
+}"
 `;
 
 exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string array type 1`] = `
@@ -49,12 +49,10 @@ exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string arr
   margin: 0;
   padding: 0;
 }
-.space-y-4 {
-  :where(& > :not(:last-child)) {
-    --tw-space-y-reverse: 0;
-    margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
-    margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
-  }
+:where(.space-y-4 > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
+  margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
 }
 @property --tw-space-y-reverse {
   syntax: "*";
@@ -85,10 +83,10 @@ view,text,::after,::before {
   padding: 0;
 }
 .space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text {
-    --tw-space-y-reverse: 0;
-    margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
-    margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
-  }"
+  --tw-space-y-reverse: 0;
+  margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
+  margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
+}"
 `;
 
 exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string type 1`] = `
@@ -102,12 +100,10 @@ exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string typ
   margin: 0;
   padding: 0;
 }
-.space-y-4 {
-  :where(& > :not(:last-child)) {
-    --tw-space-y-reverse: 0;
-    margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
-    margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
-  }
+:where(.space-y-4 > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
+  margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
 }
 @property --tw-space-y-reverse {
   syntax: "*";
@@ -138,10 +134,10 @@ view,text,::after,::before {
   padding: 0;
 }
 .space-y-4>view,text,button,input~view,text,button,input+view,text,button,input~view,text,button,input {
-    --tw-space-y-reverse: 0;
-    margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
-    margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
-  }"
+  --tw-space-y-reverse: 0;
+  margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
+  margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
+}"
 `;
 
 exports[`responsive-design > xl:text-sm 1`] = `
@@ -155,8 +151,8 @@ exports[`responsive-design > xl:text-sm 1`] = `
   margin: 0;
   padding: 0;
 }
-.xl\\:text-sm {
-  @media (width >= 80rem) {
+@media (width >= 80rem) {
+  .xl\\:text-sm {
     font-size: var(--text-sm);
     line-height: var(--tw-leading, var(--text-sm--line-height));
   }
@@ -175,9 +171,9 @@ view,text,::after,::before {
   padding: 0;
 }
 @media (min-width: 80rem) {
-.xl_ctext-sm {
+  .xl_ctext-sm {
     font-size: var(--text-sm);
     line-height: var(--tw-leading, var(--text-sm--line-height));
-}
-  }"
+  }
+}"
 `;

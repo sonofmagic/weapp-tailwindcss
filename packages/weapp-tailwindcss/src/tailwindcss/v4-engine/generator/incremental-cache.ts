@@ -85,17 +85,23 @@ function createDependencyFingerprint(files: string[]) {
   }).join('|')
 }
 
-export function createIncrementalGenerateCacheKey(
-  source: TailwindV4ResolvedSource,
-  target: TailwindV4GenerateTarget,
-  styleOptions: Partial<IStyleHandlerOptions> | undefined,
-) {
+export function createTailwindV4SourceCacheKey(source: TailwindV4ResolvedSource) {
   return [
     source.projectRoot,
     source.base,
     createStableJson(source.baseFallbacks),
     source.css,
     createDependencyFingerprint(source.dependencies),
+  ].join('\0')
+}
+
+export function createIncrementalGenerateCacheKey(
+  source: TailwindV4ResolvedSource,
+  target: TailwindV4GenerateTarget,
+  styleOptions: Partial<IStyleHandlerOptions> | undefined,
+) {
+  return [
+    createTailwindV4SourceCacheKey(source),
     target,
     createStableJson(styleOptions),
   ].join('\0')
@@ -162,13 +168,6 @@ function collectSeenCandidates(
   generated: Pick<Awaited<ReturnType<TailwindV4Engine['generate']>>, 'rawCandidates' | 'classSet'>,
 ) {
   return new Set(generated.classSet)
-}
-
-export function shouldDelegateWebSourceScanToTailwind(
-  target: TailwindV4GenerateTarget,
-  scanSources: TailwindV4GenerateOptions['scanSources'],
-) {
-  return target === 'web' && scanSources !== false
 }
 
 export function createIncrementalStyleOptions(
@@ -294,11 +293,4 @@ export function normalizeTargetRpxLengthCandidates(
         candidates: new Set(candidates),
         restoreCandidates: new Map<string, string>(),
       }
-}
-
-export function resolveGeneratedSourcePatterns(
-  generatedSources: TailwindV4SourcePattern[],
-  scanSources: TailwindV4GenerateOptions['scanSources'],
-) {
-  return Array.isArray(scanSources) ? scanSources : generatedSources
 }

@@ -4,7 +4,7 @@ import { createWeappTailwindcssGenerator } from '@/generator'
 
 const SESSION_ENGINE_CACHE_MAX = 32
 
-export type TailwindGenerationChange
+export type TailwindGenerationPoolChange
   = | { type: 'all' }
     | { type: 'source', source: TailwindResolvedSource }
 
@@ -18,7 +18,11 @@ function createSourceKey(source: TailwindResolvedSource) {
   ].join('\0'))
 }
 
-export class TailwindGenerationSession {
+function disposeGenerator(generator: WeappTailwindcssGenerator | undefined) {
+  generator?.dispose?.()
+}
+
+export class TailwindGenerationSessionPool {
   private readonly generators = new Map<string, WeappTailwindcssGenerator>()
   private disposed = false
 
@@ -33,15 +37,23 @@ export class TailwindGenerationSession {
     return this.getGenerator(source).validateCandidates(candidates)
   }
 
-  invalidate(change: TailwindGenerationChange) {
+  invalidate(change: TailwindGenerationPoolChange) {
     if (change.type === 'all') {
+      for (const generator of this.generators.values()) {
+        disposeGenerator(generator)
+      }
       this.generators.clear()
       return
     }
-    this.generators.delete(createSourceKey(change.source))
+    const key = createSourceKey(change.source)
+    disposeGenerator(this.generators.get(key))
+    this.generators.delete(key)
   }
 
   dispose() {
+    for (const generator of this.generators.values()) {
+      disposeGenerator(generator)
+    }
     this.generators.clear()
     this.disposed = true
   }
@@ -52,7 +64,7 @@ export class TailwindGenerationSession {
 
   private getGenerator(source: TailwindResolvedSource) {
     if (this.disposed) {
-      throw new Error('TailwindGenerationSession 已释放。')
+      throw new Error('TailwindGenerationSessionPool 已释放。')
     }
     const key = createSourceKey(source)
     const cached = this.generators.get(key)
@@ -68,19 +80,20 @@ export class TailwindGenerationSession {
       if (oldest === undefined) {
         break
       }
+      disposeGenerator(this.generators.get(oldest))
       this.generators.delete(oldest)
     }
     return generator
   }
 }
 
-const sessions = new WeakMap<object, TailwindGenerationSession>()
+const sessionPools = new WeakMap<object, TailwindGenerationSessionPool>()
 
-export function getTailwindGenerationSession(owner: object) {
-  let session = sessions.get(owner)
-  if (!session) {
-    session = new TailwindGenerationSession()
-    sessions.set(owner, session)
+export function getTailwindGenerationSessionPool(owner: object) {
+  let pool = sessionPools.get(owner)
+  if (!pool) {
+    pool = new TailwindGenerationSessionPool()
+    sessionPools.set(owner, pool)
   }
-  return session
+  return pool
 }

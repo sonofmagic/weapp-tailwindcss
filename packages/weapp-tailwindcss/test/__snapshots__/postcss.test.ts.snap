@@ -90,11 +90,9 @@ exports[`postcss plugin > before:content-['+'] 1`] = `
   margin: 0;
   padding: 0;
 }
-.before\\:content-\\[\\'\\+\\'\\] {
-  &::before {
-    --tw-content: '+';
-    content: var(--tw-content);
-  }
+.before\\:content-\\[\\'\\+\\'\\]::before {
+  --tw-content: '+';
+  content: var(--tw-content);
 }
 @property --tw-content {
   syntax: "*";
@@ -116,30 +114,28 @@ exports[`postcss plugin > dark mode class > css 1`] = `
       --tw-border-style: solid;
     }
 .tbody .tr {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 1px;
-    border-color: var(--color-slate-100, rgb(241, 245, 249));
-  }
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--color-slate-100, rgb(241, 245, 249));
+}
 .tbody .tr.dark view {
-      border-color: rgba(144, 161, 185, 0.1);
-    }
+    border-color: rgba(144, 161, 185, 0.1);
+  }
 .tbody .tr.dark text {
-      border-color: rgba(144, 161, 185, 0.1);
-    }"
+    border-color: rgba(144, 161, 185, 0.1);
+  }"
 `;
 
 exports[`postcss plugin > dark mode class 1`] = `
 "@layer properties;
-.tbody {
-  .tr {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 1px;
-    border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
-    &:is(.dark *) {
-      border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
-      @supports (color: color-mix(in lab, red, red)) {
-        border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
-      }
+.tbody .tr {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
+  &:is(.dark *) {
+    border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
     }
   }
 }
@@ -163,29 +159,27 @@ exports[`postcss plugin > dark mode media > css 1`] = `
       --tw-border-style: solid;
     }
 .tbody .tr {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 1px;
-    border-color: var(--color-slate-100, rgb(241, 245, 249));
-  }
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--color-slate-100, rgb(241, 245, 249));
+}
 @media (prefers-color-scheme: dark) {
 .tbody .tr {
-      border-color: rgba(144, 161, 185, 0.1);
-  }
-    }"
+    border-color: rgba(144, 161, 185, 0.1);
+}
+  }"
 `;
 
 exports[`postcss plugin > dark mode media 1`] = `
 "@layer properties;
-.tbody {
-  .tr {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 1px;
-    border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
-    @media (prefers-color-scheme: dark) {
-      border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
-      @supports (color: color-mix(in lab, red, red)) {
-        border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
-      }
+.tbody .tr {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
+  @media (prefers-color-scheme: dark) {
+    border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
     }
   }
 }
@@ -209,27 +203,25 @@ exports[`postcss plugin > dark mode selector > css 1`] = `
       --tw-border-style: solid;
     }
 .tbody .tr {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 1px;
-    border-color: var(--color-slate-100, rgb(241, 245, 249));
-  }
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--color-slate-100, rgb(241, 245, 249));
+}
 .tbody .tr.dark,.tbody .tr.dark view,.tbody .tr.dark text {
-      border-color: rgba(144, 161, 185, 0.1);
-    }"
+    border-color: rgba(144, 161, 185, 0.1);
+  }"
 `;
 
 exports[`postcss plugin > dark mode selector 1`] = `
 "@layer properties;
-.tbody {
-  .tr {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 1px;
-    border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
-    &:where(.dark, .dark *) {
-      border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
-      @supports (color: color-mix(in lab, red, red)) {
-        border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
-      }
+.tbody .tr {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
+  &:where(.dark, .dark *) {
+    border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
     }
   }
 }
@@ -253,27 +245,25 @@ exports[`postcss plugin > dark mode variant 1 > css 1`] = `
       --tw-border-style: solid;
     }
 .tbody .tr {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 1px;
-    border-color: var(--color-slate-100, rgb(241, 245, 249));
-  }
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--color-slate-100, rgb(241, 245, 249));
+}
 .tbody .tr:not(view):not(text) {
-      border-color: rgba(144, 161, 185, 0.1);
-    }"
+    border-color: rgba(144, 161, 185, 0.1);
+  }"
 `;
 
 exports[`postcss plugin > dark mode variant 1 1`] = `
 "@layer properties;
-.tbody {
-  .tr {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 1px;
-    border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
-    &:not(.light *) {
-      border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
-      @supports (color: color-mix(in lab, red, red)) {
-        border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
-      }
+.tbody .tr {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
+  &:not(.light *) {
+    border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
     }
   }
 }
@@ -297,42 +287,40 @@ exports[`postcss plugin > dark mode variant 2 > css 1`] = `
       --tw-border-style: solid;
     }
 .tbody .tr {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 1px;
-    border-color: var(--color-slate-100, rgb(241, 245, 249));
-  }
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--color-slate-100, rgb(241, 245, 249));
+}
 .tbody .tr.dark view {
-      border-color: rgba(144, 161, 185, 0.1);
-    }
+    border-color: rgba(144, 161, 185, 0.1);
+  }
 .tbody .tr.dark text {
+    border-color: rgba(144, 161, 185, 0.1);
+  }
+@media (prefers-color-scheme: dark) {
+    .tbody .tr:not(view):not(text) {
       border-color: rgba(144, 161, 185, 0.1);
     }
-@media (prefers-color-scheme: dark) {
-      .tbody .tr:not(view):not(text) {
-        border-color: rgba(144, 161, 185, 0.1);
-      }
-    }"
+  }"
 `;
 
 exports[`postcss plugin > dark mode variant 2 1`] = `
 "@layer properties;
-.tbody {
-  .tr {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 1px;
-    border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
-    &:is(.dark *) {
+.tbody .tr {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
+  &:is(.dark *) {
+    border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
+    }
+  }
+  @media (prefers-color-scheme: dark) {
+    &:not(.light *) {
       border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
       @supports (color: color-mix(in lab, red, red)) {
         border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
-      }
-    }
-    @media (prefers-color-scheme: dark) {
-      &:not(.light *) {
-        border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
-        @supports (color: color-mix(in lab, red, red)) {
-          border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
-        }
       }
     }
   }
@@ -359,11 +347,9 @@ exports[`postcss plugin > double quote after class 1`] = `
   margin: 0;
   padding: 0;
 }
-.after\\:content-\\[\\"对酒当歌，人生几何\\"\\] {
-  &::after {
-    --tw-content: "对酒当歌，人生几何";
-    content: var(--tw-content);
-  }
+.after\\:content-\\[\\"对酒当歌，人生几何\\"\\]::after {
+  --tw-content: "对酒当歌，人生几何";
+  content: var(--tw-content);
 }
 @property --tw-content {
   syntax: "*";
@@ -454,11 +440,9 @@ exports[`postcss plugin > single quote after class 1`] = `
   margin: 0;
   padding: 0;
 }
-.after\\:content-\\[\\'对酒当歌，人生几何\\'\\] {
-  &::after {
-    --tw-content: '对酒当歌，人生几何';
-    content: var(--tw-content);
-  }
+.after\\:content-\\[\\'对酒当歌，人生几何\\'\\]::after {
+  --tw-content: '对酒当歌，人生几何';
+  content: var(--tw-content);
 }
 @property --tw-content {
   syntax: "*";
@@ -482,11 +466,9 @@ exports[`postcss plugin > utf-8 compat after:content-['我是伪元素'] 1`] = `
   margin: 0;
   padding: 0;
 }
-.after\\:content-\\[\\'我是伪元素\\'\\] {
-  &::after {
-    --tw-content: '我是伪元素';
-    content: var(--tw-content);
-  }
+.after\\:content-\\[\\'我是伪元素\\'\\]::after {
+  --tw-content: '我是伪元素';
+  content: var(--tw-content);
 }
 @property --tw-content {
   syntax: "*";

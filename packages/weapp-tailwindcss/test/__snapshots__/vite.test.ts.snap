@@ -15,8 +15,8 @@ exports[`vite > v4-vite-plugin > css 1`] = `
     --tw-content: "";
   }
 :host,page,.tw-root,wx-root-portal-content {
-    --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
     monospace;
     --color-green-400: rgb(5, 223, 114);
@@ -49,24 +49,18 @@ exports[`vite > v4-vite-plugin > css 1`] = `
   .text-transparent {
     color: transparent;
   }
-      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::marker {
-        text-overflow: clip;
-      }
-      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::marker {
-        text-overflow: clip;
-      }
-      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::marker {
-        text-overflow: clip;
-      }
-      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::-webkit-details-marker {
-        text-overflow: clip;
-      }
-      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::-webkit-details-marker {
-        text-overflow: clip;
-      }
-      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::-webkit-details-marker {
-        text-overflow: clip;
-      }
+  .first-letter_cmarker_ctext-clip::first-letter ::marker {
+    text-overflow: clip;
+  }
+  .first-letter_cmarker_ctext-clip::first-letter::marker {
+    text-overflow: clip;
+  }
+  .first-letter_cmarker_ctext-clip::first-letter ::-webkit-details-marker {
+    text-overflow: clip;
+  }
+  .first-letter_cmarker_ctext-clip::first-letter::-webkit-details-marker {
+    text-overflow: clip;
+  }
 "
 `;
 
@@ -113,8 +107,8 @@ exports[`vite > v4-vite-postcss > css 1`] = `
     --tw-content: "";
   }
 :host,page,.tw-root,wx-root-portal-content {
-    --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
     monospace;
     --default-font-family: var(--font-sans);
@@ -126,24 +120,18 @@ exports[`vite > v4-vite-postcss > css 1`] = `
   .text-_b_h123456_B {
     color: #123456;
   }
-      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::marker {
-        text-overflow: clip;
-      }
-      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::marker {
-        text-overflow: clip;
-      }
-      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::marker {
-        text-overflow: clip;
-      }
-      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter view::-webkit-details-marker {
-        text-overflow: clip;
-      }
-      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter text::-webkit-details-marker {
-        text-overflow: clip;
-      }
-      .first-letter_cmarker_ctext-clip::-csstools-invalid-first-letter::-webkit-details-marker {
-        text-overflow: clip;
-      }
+  .first-letter_cmarker_ctext-clip::first-letter ::marker {
+    text-overflow: clip;
+  }
+  .first-letter_cmarker_ctext-clip::first-letter::marker {
+    text-overflow: clip;
+  }
+  .first-letter_cmarker_ctext-clip::first-letter ::-webkit-details-marker {
+    text-overflow: clip;
+  }
+  .first-letter_cmarker_ctext-clip::first-letter::-webkit-details-marker {
+    text-overflow: clip;
+  }
 "
 `;
 

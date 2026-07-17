@@ -1,15 +1,22 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV4Engine, TailwindV4GenerateOptions, TailwindV4ResolvedSource } from '../types'
 import { createTailwindV4Engine as createEngineTailwindV4Engine, extractRawCandidates } from '@tailwindcss-mangle/engine'
-import { omitUndefined } from '@/utils/object'
 import { resolveCssMacroTailwindV4Source } from '../css-macro-source'
 import { transformTailwindV4CssByTarget } from '../miniprogram'
 import { createCompatibleSource } from './css-compat'
-import { collectCandidates, createIncrementalGenerateCacheKey, createIncrementalStyleOptions, hasRemovedCandidates, incrementalGenerateCache, mergeCustomPropertyValues, normalizeTargetRpxLengthCandidates, resolveGeneratedSourcePatterns, resolveStyleOptions, resolveTargetCandidates, runIncrementalGenerateTask, seedIncrementalGenerateCache, shouldDelegateWebSourceScanToTailwind, shouldRebuildIncrementalEntry } from './incremental-cache'
+import { collectCandidates, createIncrementalGenerateCacheKey, createIncrementalStyleOptions, createTailwindV4SourceCacheKey, hasRemovedCandidates, incrementalGenerateCache, mergeCustomPropertyValues, normalizeTargetRpxLengthCandidates, resolveStyleOptions, resolveTargetCandidates, runIncrementalGenerateTask, seedIncrementalGenerateCache, shouldRebuildIncrementalEntry } from './incremental-cache'
+import { createEngineSourceEntries, serializeTailwindGenerationArtifact, TailwindV4NativeSessionPool } from './native-session'
 import { restoreRpxLengthCandidates, restoreRpxLengthCssSelectors } from './rpx-candidates'
-import { resolveScanSources } from './scan-sources'
+import { resolveCompiledSourceRoot, resolveScanSources } from './scan-sources'
+
+function isCssSyntaxError(error: unknown) {
+  return error instanceof Error && error.name === 'CssSyntaxError'
+}
 
 export function createTailwindV4Engine(source: TailwindV4ResolvedSource): TailwindV4Engine {
+  const generationSessions = new TailwindV4NativeSessionPool()
+  const validationEngine = createEngineTailwindV4Engine(source)
+
   async function generateOnce(
     generateSource: TailwindV4ResolvedSource,
     options: TailwindV4GenerateOptions = {},
@@ -23,10 +30,8 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     const resolvedStyleOptions = resolveStyleOptions(generateSource, styleOptions)
     const cssMacroSource = resolveCssMacroTailwindV4Source(generateSource)
     const compatibleSource = createCompatibleSource(cssMacroSource, target)
-    const engine = createEngineTailwindV4Engine(compatibleSource)
     const resolvedScanSources = await resolveScanSources(generateSource, scanSources)
-    const delegateSourceScan = shouldDelegateWebSourceScanToTailwind(target, resolvedScanSources)
-    const filesystemCandidates = !delegateSourceScan && Array.isArray(resolvedScanSources)
+    const filesystemCandidates = Array.isArray(resolvedScanSources)
       ? new Set(await extractRawCandidates(resolvedScanSources, {
           ...(patchOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: patchOptions.bareArbitraryValues }),
         }))
@@ -36,20 +41,58 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       ...(filesystemCandidates ?? []),
     ]), target)
     const normalizedCandidates = normalizeTargetRpxLengthCandidates(resolvedCandidates, target, resolvedStyleOptions)
-    const result = await engine.generate(omitUndefined({
-      scanSources: delegateSourceScan ? resolvedScanSources : false,
-      ...patchOptions,
+    const sourceId = compatibleSource.dependencies[0] ?? compatibleSource.base
+    const generationRequest = {
+      ...(patchOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: patchOptions.bareArbitraryValues }),
+      ...(patchOptions.sources === undefined
+        ? {}
+        : { sourceEntries: createEngineSourceEntries(patchOptions.sources, sourceId) }),
       candidates: normalizedCandidates.candidates,
-    }))
-    const sources = resolveGeneratedSourcePatterns(result.sources, resolvedScanSources)
-    const rawCss = restoreRpxLengthCssSelectors(result.css, normalizedCandidates.restoreCandidates)
+    }
+    let generatedCss: string
+    let classSet: Set<string>
+    let rawCandidates: Set<string>
+    let dependencies: string[]
+    try {
+      const artifact = await generationSessions.generate(
+        target,
+        createTailwindV4SourceCacheKey(compatibleSource),
+        compatibleSource,
+        generationRequest,
+      )
+      generatedCss = serializeTailwindGenerationArtifact(artifact)
+      classSet = artifact.classSet
+      rawCandidates = artifact.rawCandidates
+      dependencies = artifact.dependencies
+    }
+    catch (error) {
+      if (!isCssSyntaxError(error)) {
+        throw error
+      }
+      const legacyResult = await createEngineTailwindV4Engine(compatibleSource).generate({
+        ...(patchOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: patchOptions.bareArbitraryValues }),
+        ...(patchOptions.sources === undefined ? {} : { sources: patchOptions.sources }),
+        candidates: normalizedCandidates.candidates,
+        scanSources: false,
+      })
+      generatedCss = legacyResult.css
+      classSet = legacyResult.classSet
+      rawCandidates = legacyResult.rawCandidates
+      dependencies = legacyResult.dependencies
+    }
+    const sources = Array.isArray(resolvedScanSources) ? resolvedScanSources : []
+    const rawCss = restoreRpxLengthCssSelectors(
+      generatedCss,
+      normalizedCandidates.restoreCandidates,
+    )
     const css = await transformTailwindV4CssByTarget(rawCss, target, resolvedStyleOptions)
 
     return {
-      ...result,
+      classSet: restoreRpxLengthCandidates(classSet, normalizedCandidates.restoreCandidates),
+      rawCandidates: restoreRpxLengthCandidates(rawCandidates, normalizedCandidates.restoreCandidates),
+      dependencies,
+      root: resolveCompiledSourceRoot(compatibleSource),
       sources,
-      classSet: restoreRpxLengthCandidates(result.classSet, normalizedCandidates.restoreCandidates),
-      rawCandidates: restoreRpxLengthCandidates(result.rawCandidates, normalizedCandidates.restoreCandidates),
       css,
       rawCss,
       target,
@@ -208,10 +251,14 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       : generateOnce(source, options)
   }
 
-  return {
+  const engine = {
     source,
-    loadDesignSystem: createEngineTailwindV4Engine(source).loadDesignSystem,
-    validateCandidates: createEngineTailwindV4Engine(source).validateCandidates,
+    loadDesignSystem: validationEngine.loadDesignSystem,
+    validateCandidates: validationEngine.validateCandidates,
     generate,
+    dispose() {
+      generationSessions.dispose()
+    },
   }
+  return engine
 }

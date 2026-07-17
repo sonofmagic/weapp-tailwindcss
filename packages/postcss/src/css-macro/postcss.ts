@@ -7,6 +7,20 @@ export const CSS_MACRO_POSTCSS_PLUGIN_NAME = 'postcss-weapp-tw-css-macro-plugin'
 
 export interface Options {}
 
+function cloneConditionalNodes(atRule: AtRule) {
+  let nodes = (atRule.nodes ?? []).map(node => node.clone())
+
+  while (nodes.length === 1) {
+    const node = nodes[0]
+    if (node?.type !== 'rule' || node.selector.trim() !== '&') {
+      break
+    }
+    nodes = (node.nodes ?? []).map(child => child.clone())
+  }
+
+  return nodes
+}
+
 const creator: PluginCreator<Options> = () => {
   return {
     postcssPlugin: CSS_MACRO_POSTCSS_PLUGIN_NAME,
@@ -17,7 +31,7 @@ const creator: PluginCreator<Options> = () => {
         comment: ReturnType<typeof ifdef>,
       ) {
         const hasPreviousNode = Boolean(atRule.prev())
-        const clonedNodes = (atRule.nodes ?? []).map(node => node.clone())
+        const clonedNodes = cloneConditionalNodes(atRule)
         const startComment = helper.comment({
           raws: {
             left: CONDITIONAL_COMMENT_SPACING,
@@ -63,7 +77,7 @@ const creator: PluginCreator<Options> = () => {
         }
 
         const parentRule = atRule.parent as Rule
-        const clonedNodes = (atRule.nodes ?? []).map(node => node.clone())
+        const clonedNodes = cloneConditionalNodes(atRule)
         const conditionalRule = parentRule.clone()
         conditionalRule.removeAll()
         conditionalRule.append(...clonedNodes)

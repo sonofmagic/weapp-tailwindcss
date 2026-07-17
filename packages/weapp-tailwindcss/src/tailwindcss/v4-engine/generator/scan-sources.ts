@@ -171,3 +171,29 @@ export async function resolveScanSources(
   }
   return await resolveCssDefinedScanSources(source) ?? false
 }
+
+export function resolveCompiledSourceRoot(source: Pick<TailwindV4ResolvedSource, 'base' | 'css'>) {
+  let root: null | 'none' | { base: string, pattern: string } = null
+  try {
+    postcss.parse(source.css).walkAtRules('import', (rule) => {
+      if (!isTailwindCssImport(rule.params)) {
+        return
+      }
+      const sourceParam = parseImportSourceParam(rule.params)
+      if (sourceParam?.none) {
+        root = 'none'
+        return false
+      }
+      if (sourceParam?.sourcePath) {
+        root = {
+          base: source.base,
+          pattern: sourceParam.sourcePath,
+        }
+        return false
+      }
+    })
+  }
+  catch {
+  }
+  return root
+}

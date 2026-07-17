@@ -1831,170 +1831,124 @@ exports[`all > common 1`] = `
   .gap-px {
     gap: 1px;
   }
-  .space-y-px {
-    :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 0;
-      margin-block-start: calc(1px * var(--tw-space-y-reverse));
-      margin-block-end: calc(1px * calc(1 - var(--tw-space-y-reverse)));
-    }
+  :where(.space-y-px > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(1px * var(--tw-space-y-reverse));
+    margin-block-end: calc(1px * calc(1 - var(--tw-space-y-reverse)));
   }
-  .space-y-reverse {
-    :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 1;
-    }
+  :where(.space-y-reverse > :not(:last-child)) {
+    --tw-space-y-reverse: 1;
   }
   .gap-x-px {
     column-gap: 1px;
   }
-  .space-x-px {
-    :where(& > :not(:last-child)) {
-      --tw-space-x-reverse: 0;
-      margin-inline-start: calc(1px * var(--tw-space-x-reverse));
-      margin-inline-end: calc(1px * calc(1 - var(--tw-space-x-reverse)));
-    }
+  :where(.space-x-px > :not(:last-child)) {
+    --tw-space-x-reverse: 0;
+    margin-inline-start: calc(1px * var(--tw-space-x-reverse));
+    margin-inline-end: calc(1px * calc(1 - var(--tw-space-x-reverse)));
   }
-  .space-x-reverse {
-    :where(& > :not(:last-child)) {
-      --tw-space-x-reverse: 1;
-    }
+  :where(.space-x-reverse > :not(:last-child)) {
+    --tw-space-x-reverse: 1;
   }
   .gap-y-px {
     row-gap: 1px;
   }
-  .divide-x {
-    :where(& > :not(:last-child)) {
-      --tw-divide-x-reverse: 0;
-      border-inline-style: var(--tw-border-style);
-      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
-      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
-    }
+  :where(.divide-x > :not(:last-child)) {
+    --tw-divide-x-reverse: 0;
+    border-inline-style: var(--tw-border-style);
+    border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
+    border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
   }
-  .divide-x-0 {
-    :where(& > :not(:last-child)) {
-      --tw-divide-x-reverse: 0;
-      border-inline-style: var(--tw-border-style);
-      border-inline-start-width: calc(0px * var(--tw-divide-x-reverse));
-      border-inline-end-width: calc(0px * calc(1 - var(--tw-divide-x-reverse)));
-    }
+  :where(.divide-x-0 > :not(:last-child)) {
+    --tw-divide-x-reverse: 0;
+    border-inline-style: var(--tw-border-style);
+    border-inline-start-width: calc(0px * var(--tw-divide-x-reverse));
+    border-inline-end-width: calc(0px * calc(1 - var(--tw-divide-x-reverse)));
   }
-  .divide-x-2 {
-    :where(& > :not(:last-child)) {
-      --tw-divide-x-reverse: 0;
-      border-inline-style: var(--tw-border-style);
-      border-inline-start-width: calc(2px * var(--tw-divide-x-reverse));
-      border-inline-end-width: calc(2px * calc(1 - var(--tw-divide-x-reverse)));
-    }
+  :where(.divide-x-2 > :not(:last-child)) {
+    --tw-divide-x-reverse: 0;
+    border-inline-style: var(--tw-border-style);
+    border-inline-start-width: calc(2px * var(--tw-divide-x-reverse));
+    border-inline-end-width: calc(2px * calc(1 - var(--tw-divide-x-reverse)));
   }
-  .divide-x-4 {
-    :where(& > :not(:last-child)) {
-      --tw-divide-x-reverse: 0;
-      border-inline-style: var(--tw-border-style);
-      border-inline-start-width: calc(4px * var(--tw-divide-x-reverse));
-      border-inline-end-width: calc(4px * calc(1 - var(--tw-divide-x-reverse)));
-    }
+  :where(.divide-x-4 > :not(:last-child)) {
+    --tw-divide-x-reverse: 0;
+    border-inline-style: var(--tw-border-style);
+    border-inline-start-width: calc(4px * var(--tw-divide-x-reverse));
+    border-inline-end-width: calc(4px * calc(1 - var(--tw-divide-x-reverse)));
   }
-  .divide-x-8 {
-    :where(& > :not(:last-child)) {
-      --tw-divide-x-reverse: 0;
-      border-inline-style: var(--tw-border-style);
-      border-inline-start-width: calc(8px * var(--tw-divide-x-reverse));
-      border-inline-end-width: calc(8px * calc(1 - var(--tw-divide-x-reverse)));
-    }
+  :where(.divide-x-8 > :not(:last-child)) {
+    --tw-divide-x-reverse: 0;
+    border-inline-style: var(--tw-border-style);
+    border-inline-start-width: calc(8px * var(--tw-divide-x-reverse));
+    border-inline-end-width: calc(8px * calc(1 - var(--tw-divide-x-reverse)));
   }
-  .divide-y {
-    :where(& > :not(:last-child)) {
-      --tw-divide-y-reverse: 0;
-      border-bottom-style: var(--tw-border-style);
-      border-top-style: var(--tw-border-style);
-      border-top-width: calc(1px * var(--tw-divide-y-reverse));
-      border-bottom-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
-    }
+  :where(.divide-y > :not(:last-child)) {
+    --tw-divide-y-reverse: 0;
+    border-bottom-style: var(--tw-border-style);
+    border-top-style: var(--tw-border-style);
+    border-top-width: calc(1px * var(--tw-divide-y-reverse));
+    border-bottom-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
   }
-  .divide-y-0 {
-    :where(& > :not(:last-child)) {
-      --tw-divide-y-reverse: 0;
-      border-bottom-style: var(--tw-border-style);
-      border-top-style: var(--tw-border-style);
-      border-top-width: calc(0px * var(--tw-divide-y-reverse));
-      border-bottom-width: calc(0px * calc(1 - var(--tw-divide-y-reverse)));
-    }
+  :where(.divide-y-0 > :not(:last-child)) {
+    --tw-divide-y-reverse: 0;
+    border-bottom-style: var(--tw-border-style);
+    border-top-style: var(--tw-border-style);
+    border-top-width: calc(0px * var(--tw-divide-y-reverse));
+    border-bottom-width: calc(0px * calc(1 - var(--tw-divide-y-reverse)));
   }
-  .divide-y-2 {
-    :where(& > :not(:last-child)) {
-      --tw-divide-y-reverse: 0;
-      border-bottom-style: var(--tw-border-style);
-      border-top-style: var(--tw-border-style);
-      border-top-width: calc(2px * var(--tw-divide-y-reverse));
-      border-bottom-width: calc(2px * calc(1 - var(--tw-divide-y-reverse)));
-    }
+  :where(.divide-y-2 > :not(:last-child)) {
+    --tw-divide-y-reverse: 0;
+    border-bottom-style: var(--tw-border-style);
+    border-top-style: var(--tw-border-style);
+    border-top-width: calc(2px * var(--tw-divide-y-reverse));
+    border-bottom-width: calc(2px * calc(1 - var(--tw-divide-y-reverse)));
   }
-  .divide-y-4 {
-    :where(& > :not(:last-child)) {
-      --tw-divide-y-reverse: 0;
-      border-bottom-style: var(--tw-border-style);
-      border-top-style: var(--tw-border-style);
-      border-top-width: calc(4px * var(--tw-divide-y-reverse));
-      border-bottom-width: calc(4px * calc(1 - var(--tw-divide-y-reverse)));
-    }
+  :where(.divide-y-4 > :not(:last-child)) {
+    --tw-divide-y-reverse: 0;
+    border-bottom-style: var(--tw-border-style);
+    border-top-style: var(--tw-border-style);
+    border-top-width: calc(4px * var(--tw-divide-y-reverse));
+    border-bottom-width: calc(4px * calc(1 - var(--tw-divide-y-reverse)));
   }
-  .divide-y-8 {
-    :where(& > :not(:last-child)) {
-      --tw-divide-y-reverse: 0;
-      border-bottom-style: var(--tw-border-style);
-      border-top-style: var(--tw-border-style);
-      border-top-width: calc(8px * var(--tw-divide-y-reverse));
-      border-bottom-width: calc(8px * calc(1 - var(--tw-divide-y-reverse)));
-    }
+  :where(.divide-y-8 > :not(:last-child)) {
+    --tw-divide-y-reverse: 0;
+    border-bottom-style: var(--tw-border-style);
+    border-top-style: var(--tw-border-style);
+    border-top-width: calc(8px * var(--tw-divide-y-reverse));
+    border-bottom-width: calc(8px * calc(1 - var(--tw-divide-y-reverse)));
   }
-  .divide-y-reverse {
-    :where(& > :not(:last-child)) {
-      --tw-divide-y-reverse: 1;
-    }
+  :where(.divide-y-reverse > :not(:last-child)) {
+    --tw-divide-y-reverse: 1;
   }
-  .divide-dashed {
-    :where(& > :not(:last-child)) {
-      --tw-border-style: dashed;
-      border-style: dashed;
-    }
+  :where(.divide-dashed > :not(:last-child)) {
+    --tw-border-style: dashed;
+    border-style: dashed;
   }
-  .divide-dotted {
-    :where(& > :not(:last-child)) {
-      --tw-border-style: dotted;
-      border-style: dotted;
-    }
+  :where(.divide-dotted > :not(:last-child)) {
+    --tw-border-style: dotted;
+    border-style: dotted;
   }
-  .divide-double {
-    :where(& > :not(:last-child)) {
-      --tw-border-style: double;
-      border-style: double;
-    }
+  :where(.divide-double > :not(:last-child)) {
+    --tw-border-style: double;
+    border-style: double;
   }
-  .divide-none {
-    :where(& > :not(:last-child)) {
-      --tw-border-style: none;
-      border-style: none;
-    }
+  :where(.divide-none > :not(:last-child)) {
+    --tw-border-style: none;
+    border-style: none;
   }
-  .divide-solid {
-    :where(& > :not(:last-child)) {
-      --tw-border-style: solid;
-      border-style: solid;
-    }
+  :where(.divide-solid > :not(:last-child)) {
+    --tw-border-style: solid;
+    border-style: solid;
   }
-  .divide-current {
-    :where(& > :not(:last-child)) {
-      border-color: currentcolor;
-    }
+  :where(.divide-current > :not(:last-child)) {
+    border-color: currentcolor;
   }
-  .divide-inherit {
-    :where(& > :not(:last-child)) {
-      border-color: inherit;
-    }
+  :where(.divide-inherit > :not(:last-child)) {
+    border-color: inherit;
   }
-  .divide-transparent {
-    :where(& > :not(:last-child)) {
-      border-color: transparent;
-    }
+  :where(.divide-transparent > :not(:last-child)) {
+    border-color: transparent;
   }
   .place-self-auto {
     place-self: auto;
@@ -4002,10 +3956,8 @@ exports[`all > common 1`] = `
     -webkit-user-select: text;
     user-select: text;
   }
-  .divide-x-reverse {
-    :where(& > :not(:last-child)) {
-      --tw-divide-x-reverse: 1;
-    }
+  :where(.divide-x-reverse > :not(:last-child)) {
+    --tw-divide-x-reverse: 1;
   }
   .ring-inset {
     --tw-ring-inset: inset;

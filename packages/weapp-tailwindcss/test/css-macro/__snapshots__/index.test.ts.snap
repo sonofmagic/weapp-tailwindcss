@@ -3,12 +3,12 @@
 exports[`css-macro tailwindcss plugin > dynamic apply case 6 > postcss 1`] = `
 "/* #ifndef H5 || MP-WEIXIN */
 .apply-test {
-    background-color: var(--color-red-400, oklch(70.4% 0.191 22.216))
+      background-color: var(--color-red-400, oklch(70.4% 0.191 22.216))
 }
 /* #endif */
 /* #ifdef H5 || MP-WEIXIN */
 .apply-test {
-    background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624))
+      background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624))
 }
 /* #endif */"
 `;
@@ -16,10 +16,14 @@ exports[`css-macro tailwindcss plugin > dynamic apply case 6 > postcss 1`] = `
 exports[`css-macro tailwindcss plugin > dynamic apply case 6 > tw 1`] = `
 ".apply-test {
   @weapp-tw-ifdef "H5||MP-WEIXIN" {
-    background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624));
+    & {
+      background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624));
+    }
   }
   @weapp-tw-ifndef "H5||MP-WEIXIN" {
-    background-color: var(--color-red-400, oklch(70.4% 0.191 22.216));
+    & {
+      background-color: var(--color-red-400, oklch(70.4% 0.191 22.216));
+    }
   }
 }"
 `;
@@ -27,12 +31,12 @@ exports[`css-macro tailwindcss plugin > dynamic apply case 6 > tw 1`] = `
 exports[`css-macro tailwindcss plugin > dynamic apply case 7 > postcss 1`] = `
 "/* #ifndef H5 || MP-WEIXIN */
 .apply-test {
-    background-color: var(--color-red-400, oklch(70.4% 0.191 22.216))
+      background-color: var(--color-red-400, oklch(70.4% 0.191 22.216))
 }
 /* #endif */
 /* #ifdef H5 || MP-WEIXIN */
 .apply-test {
-    background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624))
+      background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624))
 }
 /* #endif */"
 `;
@@ -40,10 +44,14 @@ exports[`css-macro tailwindcss plugin > dynamic apply case 7 > postcss 1`] = `
 exports[`css-macro tailwindcss plugin > dynamic apply case 7 > tw 1`] = `
 ".apply-test {
   @weapp-tw-ifdef "H5 || MP-WEIXIN" {
-    background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624));
+    & {
+      background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624));
+    }
   }
   @weapp-tw-ifndef "H5 || MP-WEIXIN" {
-    background-color: var(--color-red-400, oklch(70.4% 0.191 22.216));
+    & {
+      background-color: var(--color-red-400, oklch(70.4% 0.191 22.216));
+    }
   }
 }"
 `;
@@ -51,12 +59,12 @@ exports[`css-macro tailwindcss plugin > dynamic apply case 7 > tw 1`] = `
 exports[`css-macro tailwindcss plugin > dynamic apply case 8 > postcss 1`] = `
 "/* #ifndef H5 || MP-WEIXIN */
 .apply-test {
-    background-color: var(--color-red-400, oklch(70.4% 0.191 22.216))
+      background-color: var(--color-red-400, oklch(70.4% 0.191 22.216))
 }
 /* #endif */
 /* #ifdef H5 || MP-WEIXIN */
 .apply-test {
-    background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624))
+      background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624))
 }
 /* #endif */"
 `;
@@ -64,10 +72,14 @@ exports[`css-macro tailwindcss plugin > dynamic apply case 8 > postcss 1`] = `
 exports[`css-macro tailwindcss plugin > dynamic apply case 8 > tw 1`] = `
 ".apply-test {
   @weapp-tw-ifdef "H5_||_MP-WEIXIN" {
-    background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624));
+    & {
+      background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624));
+    }
   }
   @weapp-tw-ifndef "H5_||_MP-WEIXIN" {
-    background-color: var(--color-red-400, oklch(70.4% 0.191 22.216));
+    & {
+      background-color: var(--color-red-400, oklch(70.4% 0.191 22.216));
+    }
   }
 }"
 `;
@@ -84,7 +96,7 @@ exports[`css-macro tailwindcss plugin > dynamic case 0 > postcss 1`] = `
 }
 /* #ifdef MP-WEIXIN */
 .ifdef-\\[MP-WEIXIN\\]\\:bg-blue-500 {
-    background-color: var(--color-blue-500)
+      background-color: var(--color-blue-500)
 }
 /* #endif */"
 `;
@@ -101,7 +113,9 @@ exports[`css-macro tailwindcss plugin > dynamic case 0 > tw 1`] = `
 }
 .ifdef-\\[MP-WEIXIN\\]\\:bg-blue-500 {
   @weapp-tw-ifdef "MP-WEIXIN" {
-    background-color: var(--color-blue-500);
+    & {
+      background-color: var(--color-blue-500);
+    }
   }
 }"
 `;
@@ -118,7 +132,7 @@ exports[`css-macro tailwindcss plugin > dynamic case 1 > postcss 1`] = `
 }
 /* #ifndef MP-WEIXIN */
 .ifndef-\\[MP-WEIXIN\\]\\:bg-blue-500 {
-    background-color: var(--color-blue-500)
+      background-color: var(--color-blue-500)
 }
 /* #endif */"
 `;
@@ -135,7 +149,9 @@ exports[`css-macro tailwindcss plugin > dynamic case 1 > tw 1`] = `
 }
 .ifndef-\\[MP-WEIXIN\\]\\:bg-blue-500 {
   @weapp-tw-ifndef "MP-WEIXIN" {
-    background-color: var(--color-blue-500);
+    & {
+      background-color: var(--color-blue-500);
+    }
   }
 }"
 `;
@@ -152,7 +168,7 @@ exports[`css-macro tailwindcss plugin > dynamic case 2 > postcss 1`] = `
 }
 /* #ifndef uniVersion>3.9 */
 .ifndef-\\[uniVersion\\>3\\.9\\]\\:bg-blue-500 {
-    background-color: var(--color-blue-500)
+      background-color: var(--color-blue-500)
 }
 /* #endif */"
 `;
@@ -169,7 +185,9 @@ exports[`css-macro tailwindcss plugin > dynamic case 2 > tw 1`] = `
 }
 .ifndef-\\[uniVersion\\>3\\.9\\]\\:bg-blue-500 {
   @weapp-tw-ifndef "uniVersion>3.9" {
-    background-color: var(--color-blue-500);
+    & {
+      background-color: var(--color-blue-500);
+    }
   }
 }"
 `;
@@ -186,7 +204,7 @@ exports[`css-macro tailwindcss plugin > dynamic case 3 > postcss 1`] = `
 }
 /* #ifndef uniVersion > 3.9 */
 .ifndef-\\[uniVersion_\\>_3\\.9\\]\\:bg-blue-500 {
-    background-color: var(--color-blue-500)
+      background-color: var(--color-blue-500)
 }
 /* #endif */"
 `;
@@ -203,7 +221,9 @@ exports[`css-macro tailwindcss plugin > dynamic case 3 > tw 1`] = `
 }
 .ifndef-\\[uniVersion_\\>_3\\.9\\]\\:bg-blue-500 {
   @weapp-tw-ifndef "uniVersion > 3.9" {
-    background-color: var(--color-blue-500);
+    & {
+      background-color: var(--color-blue-500);
+    }
   }
 }"
 `;
@@ -220,7 +240,7 @@ exports[`css-macro tailwindcss plugin > dynamic case 4 > postcss 1`] = `
 }
 /* #ifndef uni version > 3.9 */
 .ifndef-\\[uni\\\\_version_\\>_3\\.9\\]\\:bg-blue-500 {
-    background-color: var(--color-blue-500)
+      background-color: var(--color-blue-500)
 }
 /* #endif */"
 `;
@@ -237,7 +257,9 @@ exports[`css-macro tailwindcss plugin > dynamic case 4 > tw 1`] = `
 }
 .ifndef-\\[uni\\\\_version_\\>_3\\.9\\]\\:bg-blue-500 {
   @weapp-tw-ifndef "uni_version > 3.9" {
-    background-color: var(--color-blue-500);
+    & {
+      background-color: var(--color-blue-500);
+    }
   }
 }"
 `;
@@ -254,7 +276,7 @@ exports[`css-macro tailwindcss plugin > dynamic case 5 > postcss 1`] = `
 }
 /* #ifndef H5 || MP-WEIXIN */
 .ifndef-\\[H5\\|\\|MP-WEIXIN\\]\\:bg-blue-500 {
-    background-color: var(--color-blue-500)
+      background-color: var(--color-blue-500)
 }
 /* #endif */"
 `;
@@ -271,7 +293,9 @@ exports[`css-macro tailwindcss plugin > dynamic case 5 > tw 1`] = `
 }
 .ifndef-\\[H5\\|\\|MP-WEIXIN\\]\\:bg-blue-500 {
   @weapp-tw-ifndef "H5||MP-WEIXIN" {
-    background-color: var(--color-blue-500);
+    & {
+      background-color: var(--color-blue-500);
+    }
   }
 }"
 `;
@@ -288,7 +312,7 @@ exports[`css-macro tailwindcss plugin > dynamic case 5 ifdef with underscored sp
 }
 /* #ifdef H5 || MP-WEIXIN */
 .ifdef-\\[H5_\\|\\|_MP-WEIXIN\\]\\:bg-blue-500 {
-    background-color: var(--color-blue-500)
+      background-color: var(--color-blue-500)
 }
 /* #endif */"
 `;
@@ -305,7 +329,9 @@ exports[`css-macro tailwindcss plugin > dynamic case 5 ifdef with underscored sp
 }
 .ifdef-\\[H5_\\|\\|_MP-WEIXIN\\]\\:bg-blue-500 {
   @weapp-tw-ifdef "H5 || MP-WEIXIN" {
-    background-color: var(--color-blue-500);
+    & {
+      background-color: var(--color-blue-500);
+    }
   }
 }"
 `;
@@ -322,7 +348,7 @@ exports[`css-macro tailwindcss plugin > dynamic case 5 ifdef without spaces > po
 }
 /* #ifdef H5 || MP-WEIXIN */
 .ifdef-\\[H5\\|\\|MP-WEIXIN\\]\\:bg-blue-500 {
-    background-color: var(--color-blue-500)
+      background-color: var(--color-blue-500)
 }
 /* #endif */"
 `;
@@ -339,7 +365,9 @@ exports[`css-macro tailwindcss plugin > dynamic case 5 ifdef without spaces > tw
 }
 .ifdef-\\[H5\\|\\|MP-WEIXIN\\]\\:bg-blue-500 {
   @weapp-tw-ifdef "H5||MP-WEIXIN" {
-    background-color: var(--color-blue-500);
+    & {
+      background-color: var(--color-blue-500);
+    }
   }
 }"
 `;
@@ -384,7 +412,7 @@ exports[`css-macro tailwindcss plugin > static case 0 > postcss 1`] = `
 }
 /* #ifdef MP-WEIXIN */
 .wx\\:bg-blue-500 {
-    background-color: var(--color-blue-500)
+      background-color: var(--color-blue-500)
 }
 /* #endif */"
 `;
@@ -401,7 +429,9 @@ exports[`css-macro tailwindcss plugin > static case 0 > tw 1`] = `
 }
 .wx\\:bg-blue-500 {
   @weapp-tw-ifdef "MP-WEIXIN" {
-    background-color: var(--color-blue-500);
+    & {
+      background-color: var(--color-blue-500);
+    }
   }
 }"
 `;
@@ -418,7 +448,7 @@ exports[`css-macro tailwindcss plugin > static case 2 > postcss 1`] = `
 }
 /* #ifdef uniVersion > 3.9 */
 .hv\\:bg-blue-500 {
-    background-color: var(--color-blue-500)
+      background-color: var(--color-blue-500)
 }
 /* #endif */"
 `;
@@ -435,7 +465,9 @@ exports[`css-macro tailwindcss plugin > static case 2 > tw 1`] = `
 }
 .hv\\:bg-blue-500 {
   @weapp-tw-ifdef "uniVersion > 3.9" {
-    background-color: var(--color-blue-500);
+    & {
+      background-color: var(--color-blue-500);
+    }
   }
 }"
 `;
@@ -452,7 +484,7 @@ exports[`css-macro tailwindcss plugin > static case 3 > postcss 1`] = `
 }
 /* #ifdef H5 || MP-WEIXIN */
 .mv\\:bg-blue-500 {
-    background-color: var(--color-blue-500)
+      background-color: var(--color-blue-500)
 }
 /* #endif */"
 `;
@@ -469,7 +501,9 @@ exports[`css-macro tailwindcss plugin > static case 3 > tw 1`] = `
 }
 .mv\\:bg-blue-500 {
   @weapp-tw-ifdef "H5 || MP-WEIXIN" {
-    background-color: var(--color-blue-500);
+    & {
+      background-color: var(--color-blue-500);
+    }
   }
 }"
 `;
@@ -486,7 +520,7 @@ exports[`css-macro tailwindcss plugin > static negative case 1 > postcss 1`] = `
 }
 /* #ifndef MP-WEIXIN */
 .not-wx\\:bg-blue-500 {
-    background-color: var(--color-blue-500)
+      background-color: var(--color-blue-500)
 }
 /* #endif */"
 `;
@@ -503,7 +537,9 @@ exports[`css-macro tailwindcss plugin > static negative case 1 > tw 1`] = `
 }
 .not-wx\\:bg-blue-500 {
   @weapp-tw-ifndef "MP-WEIXIN" {
-    background-color: var(--color-blue-500);
+    & {
+      background-color: var(--color-blue-500);
+    }
   }
 }"
 `;

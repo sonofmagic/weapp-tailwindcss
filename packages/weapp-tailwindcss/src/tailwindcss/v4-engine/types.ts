@@ -117,6 +117,10 @@ export interface TailwindV4Engine extends Omit<EngineTailwindV4Engine, 'generate
    * 生成 CSS。
    */
   generate: (options?: TailwindV4GenerateOptions) => Promise<TailwindV4GenerateResult>
+  /**
+   * 释放生成会话及其缓存。
+   */
+  dispose?: () => void
 }
 
 export type {

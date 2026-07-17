@@ -90,15 +90,15 @@ view,text,::after,::before {
           filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
 }
 .before_ccontent-_b_a_u_a_B::before {
-    --tw-content: '+';
-    content: var(--tw-content);
-  }
-.before_ccontent-_b_r_ahello_r_a_B::before {
-    --tw-content: \'hello\';
-    content: var(--tw-content);
-  }
-@media (prefers-color-scheme: dark) {
-.dark_cbg-zinc-800 {
-    background-color: var(--color-zinc-800);
+  --tw-content: '+';
+  content: var(--tw-content);
 }
+.before_ccontent-_b_r_ahello_r_a_B::before {
+  --tw-content: \'hello\';
+  content: var(--tw-content);
+}
+@media (prefers-color-scheme: dark) {
+  .dark_cbg-zinc-800 {
+    background-color: var(--color-zinc-800);
   }
+}

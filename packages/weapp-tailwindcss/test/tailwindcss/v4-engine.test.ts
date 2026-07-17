@@ -3,6 +3,7 @@ import { mkdir, mkdtemp, symlink, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { afterEach, vi } from 'vitest'
 import { getCompilerContext } from '@/context'
 import { clearTailwindV4IncrementalGenerateCacheForTest, createTailwindV4Engine, getTailwindV4IncrementalGenerateCacheStatsForTest, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromRuntime, transformTailwindV4CssToWeapp } from '@/tailwindcss/v4-engine'
@@ -445,7 +446,7 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('border-width: 0.3125rem')
     expect(result.css).toContain('background-size: 0.3125rem')
     expect(result.css).toContain('outline-width: 0.15625rem')
-    expect(result.css).toContain('--tw-ring-offset-width: 0.25rem')
+    expect(result.css).toContain('initial-value: 0px')
     expect(result.css).not.toContain('color: 102.43rpx')
     expect(result.css).not.toContain('border-color: 10rpx')
     expect(result.css).not.toContain('background-color: 10rpx')
@@ -505,7 +506,7 @@ describe('tailwindcss v4 engine', () => {
       expect(result.css).toContain('border-width: 0.3125rem')
       expect(result.css).toContain('background-size: 0.3125rem')
       expect(result.css).toContain('outline-width: 0.15625rem')
-      expect(result.css).toContain('--tw-ring-offset-width: 0.25rem')
+      expect(result.css).toContain('initial-value: 0px')
       expect(result.css).not.toContain('color: 102.43rpx')
       expect(result.css).not.toContain('border-color: 10rpx')
       expect(result.css).not.toContain('background-color: 10rpx')
@@ -801,20 +802,31 @@ describe('tailwindcss v4 engine', () => {
     const generate = vi.fn(async () => {
       await new Promise(resolve => setTimeout(resolve, 10))
       return {
-        css: '.text-\\[88rpx\\] { font-size: 88rpx; }',
+        fragments: [{
+          id: 'mock:tailwind',
+          kind: 'tailwind' as const,
+          order: 0,
+          root: postcss.parse('.text-\\[88rpx\\] { font-size: 88rpx; }'),
+          sourceId: 'mock',
+        }],
         classSet: new Set(['text-[88rpx]']),
         rawCandidates: new Set(['text-[88rpx]']),
         dependencies: [],
-        sources: [],
-        root: null,
+        sourceEntries: [],
       }
     })
     vi.doMock('@tailwindcss-mangle/engine', async (importOriginal) => {
       const actual = await importOriginal<typeof import('@tailwindcss-mangle/engine')>()
       return {
         ...actual,
-        createTailwindV4Engine: vi.fn(() => ({
+        createTailwindGenerationSession: vi.fn(() => ({
+          dispose: vi.fn(),
           generate,
+          invalidate: vi.fn(),
+          source: {} as never,
+        })),
+        createTailwindV4Engine: vi.fn(() => ({
+          generate: vi.fn(),
           loadDesignSystem: vi.fn(),
           source: {} as never,
           validateCandidates: vi.fn(),

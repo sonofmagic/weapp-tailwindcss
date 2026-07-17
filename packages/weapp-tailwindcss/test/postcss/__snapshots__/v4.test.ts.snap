@@ -998,27 +998,21 @@ exports[`tailwindcss v4 > weapp-tailwindcss default > tailwindcss 1`] = `
   --tw-invert: invert(100%);
   filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
 }
-.before\\:content-\\[\\'\\+\\'\\] {
-  &::before {
-    --tw-content: '+';
-    content: var(--tw-content);
+.before\\:content-\\[\\'\\+\\'\\]::before {
+  --tw-content: '+';
+  content: var(--tw-content);
+}
+.before\\:content-\\[\\\\\\'hello\\\\\\'\\]::before {
+  --tw-content: \\'hello\\';
+  content: var(--tw-content);
+}
+@media (hover: hover) {
+  .hover\\:bg-blue-500:hover {
+    background-color: var(--color-blue-500);
   }
 }
-.before\\:content-\\[\\\\\\'hello\\\\\\'\\] {
-  &::before {
-    --tw-content: \\'hello\\';
-    content: var(--tw-content);
-  }
-}
-.hover\\:bg-blue-500 {
-  &:hover {
-    @media (hover: hover) {
-      background-color: var(--color-blue-500);
-    }
-  }
-}
-.dark\\:bg-zinc-800 {
-  @media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
+  .dark\\:bg-zinc-800 {
     background-color: var(--color-zinc-800);
   }
 }
@@ -1274,18 +1268,18 @@ view,text,::after,::before {
           filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
 }
 .before_ccontent-_b_a_u_a_B::before {
-    --tw-content: '+';
-    content: var(--tw-content);
-  }
-.before_ccontent-_b_r_ahello_r_a_B::before {
-    --tw-content: \\'hello\\';
-    content: var(--tw-content);
-  }
-@media (prefers-color-scheme: dark) {
-.dark_cbg-zinc-800 {
-    background-color: var(--color-zinc-800);
+  --tw-content: '+';
+  content: var(--tw-content);
 }
-  }"
+.before_ccontent-_b_r_ahello_r_a_B::before {
+  --tw-content: \\'hello\\';
+  content: var(--tw-content);
+}
+@media (prefers-color-scheme: dark) {
+  .dark_cbg-zinc-800 {
+    background-color: var(--color-zinc-800);
+  }
+}"
 `;
 
 exports[`tailwindcss v4 > weapp-tailwindcss default with layer > tailwindcss 1`] = `
@@ -1324,27 +1318,21 @@ exports[`tailwindcss v4 > weapp-tailwindcss default with layer > tailwindcss 1`]
     --tw-invert: invert(100%);
     filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
   }
-  .before\\:content-\\[\\'\\+\\'\\] {
-    &::before {
-      --tw-content: '+';
-      content: var(--tw-content);
+  .before\\:content-\\[\\'\\+\\'\\]::before {
+    --tw-content: '+';
+    content: var(--tw-content);
+  }
+  .before\\:content-\\[\\\\\\'hello\\\\\\'\\]::before {
+    --tw-content: \\'hello\\';
+    content: var(--tw-content);
+  }
+  @media (hover: hover) {
+    .hover\\:bg-blue-500:hover {
+      background-color: var(--color-blue-500);
     }
   }
-  .before\\:content-\\[\\\\\\'hello\\\\\\'\\] {
-    &::before {
-      --tw-content: \\'hello\\';
-      content: var(--tw-content);
-    }
-  }
-  .hover\\:bg-blue-500 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-blue-500);
-      }
-    }
-  }
-  .dark\\:bg-zinc-800 {
-    @media (prefers-color-scheme: dark) {
+  @media (prefers-color-scheme: dark) {
+    .dark\\:bg-zinc-800 {
       background-color: var(--color-zinc-800);
     }
   }
@@ -1601,16 +1589,16 @@ exports[`tailwindcss v4 > weapp-tailwindcss default with layer 1`] = `
             filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
   }
   .before_ccontent-_b_a_u_a_B::before {
-      --tw-content: '+';
-      content: var(--tw-content);
-    }
-  .before_ccontent-_b_r_ahello_r_a_B::before {
-      --tw-content: \\'hello\\';
-      content: var(--tw-content);
-    }
-  @media (prefers-color-scheme: dark) {
-  .dark_cbg-zinc-800 {
-      background-color: var(--color-zinc-800);
+    --tw-content: '+';
+    content: var(--tw-content);
   }
-    }"
+  .before_ccontent-_b_r_ahello_r_a_B::before {
+    --tw-content: \\'hello\\';
+    content: var(--tw-content);
+  }
+  @media (prefers-color-scheme: dark) {
+    .dark_cbg-zinc-800 {
+      background-color: var(--color-zinc-800);
+    }
+  }"
 `;

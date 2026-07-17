@@ -42,20 +42,16 @@ exports[`rpx > rpx case 0 1`] = `
 .gap-\\[2\\.75rpx\\] {
   gap: 2.75rpx;
 }
-.space-y-\\[12\\.0rpx\\] {
-  :where(& > :not(:last-child)) {
-    --tw-space-y-reverse: 0;
-    margin-block-start: calc(12.0rpx * var(--tw-space-y-reverse));
-    margin-block-end: calc(12.0rpx * calc(1 - var(--tw-space-y-reverse)));
-  }
+:where(.space-y-\\[12\\.0rpx\\] > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(12.0rpx * var(--tw-space-y-reverse));
+  margin-block-end: calc(12.0rpx * calc(1 - var(--tw-space-y-reverse)));
 }
-.divide-x-\\[3rpx\\] {
-  :where(& > :not(:last-child)) {
-    --tw-divide-x-reverse: 0;
-    border-inline-style: var(--tw-border-style);
-    border-inline-start-width: calc(3rpx * var(--tw-divide-x-reverse));
-    border-inline-end-width: calc(3rpx * calc(1 - var(--tw-divide-x-reverse)));
-  }
+:where(.divide-x-\\[3rpx\\] > :not(:last-child)) {
+  --tw-divide-x-reverse: 0;
+  border-inline-style: var(--tw-border-style);
+  border-inline-start-width: calc(3rpx * var(--tw-divide-x-reverse));
+  border-inline-end-width: calc(3rpx * calc(1 - var(--tw-divide-x-reverse)));
 }
 .rounded-\\[12rpx\\] {
   border-radius: 12rpx;

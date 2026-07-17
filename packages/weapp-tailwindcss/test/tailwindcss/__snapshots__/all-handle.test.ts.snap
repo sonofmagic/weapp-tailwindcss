@@ -2056,129 +2056,129 @@ exports[`all > common handle 1`] = `
     gap: 1px;
   }
   .space-y-px>view+view {
-      --tw-space-y-reverse: 0;
-      margin-bottom: calc(1px * var(--tw-space-y-reverse));
-      margin-top: calc(1px * (1 - var(--tw-space-y-reverse)));
-    }
+    --tw-space-y-reverse: 0;
+    margin-bottom: calc(1px * var(--tw-space-y-reverse));
+    margin-top: calc(1px * (1 - var(--tw-space-y-reverse)));
+  }
   .space-y-reverse>view+view {
-      --tw-space-y-reverse: 1;
-    }
+    --tw-space-y-reverse: 1;
+  }
   .gap-x-px {
             column-gap: 1px;
   }
   .space-x-px>view+view {
-      --tw-space-x-reverse: 0;
-      margin-right: calc(1px * var(--tw-space-x-reverse));
-      margin-left: calc(1px * (1 - var(--tw-space-x-reverse)));
-    }
+    --tw-space-x-reverse: 0;
+    margin-right: calc(1px * var(--tw-space-x-reverse));
+    margin-left: calc(1px * (1 - var(--tw-space-x-reverse)));
+  }
   .space-x-reverse>view+view {
-      --tw-space-x-reverse: 1;
-    }
+    --tw-space-x-reverse: 1;
+  }
   .gap-y-px {
     row-gap: 1px;
   }
   .divide-x>view+view {
-      --tw-divide-x-reverse: 0;
-      border-left-style: var(--tw-border-style);
-      border-right-style: var(--tw-border-style);
-      border-right-width: calc(1px * var(--tw-divide-x-reverse));
-      border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
-    }
+    --tw-divide-x-reverse: 0;
+    border-left-style: var(--tw-border-style);
+    border-right-style: var(--tw-border-style);
+    border-right-width: calc(1px * var(--tw-divide-x-reverse));
+    border-left-width: calc(1px * (1 - var(--tw-divide-x-reverse)));
+  }
   .divide-x-0>view+view {
-      --tw-divide-x-reverse: 0;
-      border-left-style: var(--tw-border-style);
-      border-right-style: var(--tw-border-style);
-      border-right-width: calc(0px * var(--tw-divide-x-reverse));
-      border-left-width: calc(0px * (1 - var(--tw-divide-x-reverse)));
-    }
+    --tw-divide-x-reverse: 0;
+    border-left-style: var(--tw-border-style);
+    border-right-style: var(--tw-border-style);
+    border-right-width: calc(0px * var(--tw-divide-x-reverse));
+    border-left-width: calc(0px * (1 - var(--tw-divide-x-reverse)));
+  }
   .divide-x-2>view+view {
-      --tw-divide-x-reverse: 0;
-      border-left-style: var(--tw-border-style);
-      border-right-style: var(--tw-border-style);
-      border-right-width: calc(2px * var(--tw-divide-x-reverse));
-      border-left-width: calc(2px * (1 - var(--tw-divide-x-reverse)));
-    }
+    --tw-divide-x-reverse: 0;
+    border-left-style: var(--tw-border-style);
+    border-right-style: var(--tw-border-style);
+    border-right-width: calc(2px * var(--tw-divide-x-reverse));
+    border-left-width: calc(2px * (1 - var(--tw-divide-x-reverse)));
+  }
   .divide-x-4>view+view {
-      --tw-divide-x-reverse: 0;
-      border-left-style: var(--tw-border-style);
-      border-right-style: var(--tw-border-style);
-      border-right-width: calc(4px * var(--tw-divide-x-reverse));
-      border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
-    }
+    --tw-divide-x-reverse: 0;
+    border-left-style: var(--tw-border-style);
+    border-right-style: var(--tw-border-style);
+    border-right-width: calc(4px * var(--tw-divide-x-reverse));
+    border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
+  }
   .divide-x-8>view+view {
-      --tw-divide-x-reverse: 0;
-      border-left-style: var(--tw-border-style);
-      border-right-style: var(--tw-border-style);
-      border-right-width: calc(8px * var(--tw-divide-x-reverse));
-      border-left-width: calc(8px * (1 - var(--tw-divide-x-reverse)));
-    }
+    --tw-divide-x-reverse: 0;
+    border-left-style: var(--tw-border-style);
+    border-right-style: var(--tw-border-style);
+    border-right-width: calc(8px * var(--tw-divide-x-reverse));
+    border-left-width: calc(8px * (1 - var(--tw-divide-x-reverse)));
+  }
   .divide-y>view+view {
-      --tw-divide-y-reverse: 0;
-      border-bottom-style: var(--tw-border-style);
-      border-top-style: var(--tw-border-style);
-      border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
-      border-top-width: calc(1px * (1 - var(--tw-divide-y-reverse)));
-    }
+    --tw-divide-y-reverse: 0;
+    border-bottom-style: var(--tw-border-style);
+    border-top-style: var(--tw-border-style);
+    border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
+    border-top-width: calc(1px * (1 - var(--tw-divide-y-reverse)));
+  }
   .divide-y-0>view+view {
-      --tw-divide-y-reverse: 0;
-      border-bottom-style: var(--tw-border-style);
-      border-top-style: var(--tw-border-style);
-      border-bottom-width: calc(0px * var(--tw-divide-y-reverse));
-      border-top-width: calc(0px * (1 - var(--tw-divide-y-reverse)));
-    }
+    --tw-divide-y-reverse: 0;
+    border-bottom-style: var(--tw-border-style);
+    border-top-style: var(--tw-border-style);
+    border-bottom-width: calc(0px * var(--tw-divide-y-reverse));
+    border-top-width: calc(0px * (1 - var(--tw-divide-y-reverse)));
+  }
   .divide-y-2>view+view {
-      --tw-divide-y-reverse: 0;
-      border-bottom-style: var(--tw-border-style);
-      border-top-style: var(--tw-border-style);
-      border-bottom-width: calc(2px * var(--tw-divide-y-reverse));
-      border-top-width: calc(2px * (1 - var(--tw-divide-y-reverse)));
-    }
+    --tw-divide-y-reverse: 0;
+    border-bottom-style: var(--tw-border-style);
+    border-top-style: var(--tw-border-style);
+    border-bottom-width: calc(2px * var(--tw-divide-y-reverse));
+    border-top-width: calc(2px * (1 - var(--tw-divide-y-reverse)));
+  }
   .divide-y-4>view+view {
-      --tw-divide-y-reverse: 0;
-      border-bottom-style: var(--tw-border-style);
-      border-top-style: var(--tw-border-style);
-      border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
-      border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
-    }
+    --tw-divide-y-reverse: 0;
+    border-bottom-style: var(--tw-border-style);
+    border-top-style: var(--tw-border-style);
+    border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
+    border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
+  }
   .divide-y-8>view+view {
-      --tw-divide-y-reverse: 0;
-      border-bottom-style: var(--tw-border-style);
-      border-top-style: var(--tw-border-style);
-      border-bottom-width: calc(8px * var(--tw-divide-y-reverse));
-      border-top-width: calc(8px * (1 - var(--tw-divide-y-reverse)));
-    }
+    --tw-divide-y-reverse: 0;
+    border-bottom-style: var(--tw-border-style);
+    border-top-style: var(--tw-border-style);
+    border-bottom-width: calc(8px * var(--tw-divide-y-reverse));
+    border-top-width: calc(8px * (1 - var(--tw-divide-y-reverse)));
+  }
   .divide-y-reverse>view+view {
-      --tw-divide-y-reverse: 1;
-    }
+    --tw-divide-y-reverse: 1;
+  }
   .divide-dashed>view+view {
-      --tw-border-style: dashed;
-      border-style: dashed;
-    }
+    --tw-border-style: dashed;
+    border-style: dashed;
+  }
   .divide-dotted>view+view {
-      --tw-border-style: dotted;
-      border-style: dotted;
-    }
+    --tw-border-style: dotted;
+    border-style: dotted;
+  }
   .divide-double>view+view {
-      --tw-border-style: double;
-      border-style: double;
-    }
+    --tw-border-style: double;
+    border-style: double;
+  }
   .divide-none>view+view {
-      --tw-border-style: none;
-      border-style: none;
-    }
+    --tw-border-style: none;
+    border-style: none;
+  }
   .divide-solid>view+view {
-      --tw-border-style: solid;
-      border-style: solid;
-    }
+    --tw-border-style: solid;
+    border-style: solid;
+  }
   .divide-current>view+view {
-      border-color: currentcolor;
-    }
+    border-color: currentcolor;
+  }
   .divide-inherit>view+view {
-      border-color: inherit;
-    }
+    border-color: inherit;
+  }
   .divide-transparent>view+view {
-      border-color: transparent;
-    }
+    border-color: transparent;
+  }
   .place-self-auto {
     align-self: auto;
     justify-self: auto;
@@ -4156,8 +4156,8 @@ exports[`all > common handle 1`] = `
             user-select: text;
   }
   .divide-x-reverse>view+view {
-      --tw-divide-x-reverse: 1;
-    }
+    --tw-divide-x-reverse: 1;
+  }
   .ring-inset {
     --tw-ring-inset: inset;
   }"
