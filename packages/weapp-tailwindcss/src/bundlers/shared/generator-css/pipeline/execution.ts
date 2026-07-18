@@ -48,8 +48,8 @@ function resolveCompilationSourceId(record: GeneratorSourceRecord, index: number
   return `${sourceId}:tailwind-source:${index}`
 }
 
-function resolveCompilationDependencies(record: GeneratorSourceRecord): CompilationScopeDependency[] {
-  return [...new Set(record.source.dependencies)].map(id => ({
+function resolveCompilationDependencies(dependencies: Iterable<string>): CompilationScopeDependency[] {
+  return [...new Set(dependencies)].map(id => ({
     id,
     kind: isSourceStyleRequest(id) ? 'css' : 'config',
   }))
@@ -179,7 +179,7 @@ export async function executeGeneratorPipeline(
     return {
       generatorRuntime,
       generatorSource,
-      dependencies: resolveCompilationDependencies(record),
+      dependencies: resolveCompilationDependencies(record.source.dependencies),
       isolateCssSource,
       sourceId: resolveCompilationSourceId(record, index),
     }
@@ -187,7 +187,7 @@ export async function executeGeneratorPipeline(
   const generatePreparedInputs = async (candidateSets?: Map<string, Set<string>>) => {
     return runWithConcurrency(preparedGenerationInputs.map(input => async () => {
       const currentCandidates = candidateSets?.get(input.sourceId) ?? input.generatorRuntime
-      return generationSession.generate(input.generatorSource, {
+      const generated = await generationSession.generate(input.generatorSource, {
         bareArbitraryValues: generatorOptions.bareArbitraryValues,
         candidates: currentCandidates,
         incrementalCache: true,
@@ -202,6 +202,10 @@ export async function executeGeneratorPipeline(
         styleOptions: generatorStyleOptions,
         target: generatorOptions.target,
       })
+      return {
+        generated,
+        sourceId: input.sourceId,
+      }
     }), sourceConcurrency)
   }
   let compilationRevision: number | undefined
@@ -221,7 +225,17 @@ export async function executeGeneratorPipeline(
       preserveDeletedCss: options.compilation.preserveDeletedCss,
     }, async (compilation) => {
       const results = await generatePreparedInputs(compilation.candidatesBySource)
-      return mergeGeneratorResults(results)
+      const merged = mergeGeneratorResults(results.map(result => result.generated))
+      return merged
+        ? {
+            classSet: merged.classSet,
+            dependenciesBySource: results.map(result => [
+              result.sourceId,
+              resolveCompilationDependencies(result.generated.dependencies),
+            ] as const),
+            generated: merged,
+          }
+        : undefined
     })
     if (!execution.committed) {
       debug(
@@ -231,11 +245,13 @@ export async function executeGeneratorPipeline(
       )
       return undefined
     }
-    generated = execution.value
+    generated = execution.value?.generated
     compilationRevision = execution.compilation.revision
   }
   else {
-    generated = mergeGeneratorResults(await generatePreparedInputs())
+    generated = mergeGeneratorResults(
+      (await generatePreparedInputs()).map(result => result.generated),
+    )
   }
   if (!generated) {
     return undefined

@@ -1,4 +1,4 @@
-import type { CompilationResult, CompilationSession, CompilationSnapshot } from './types'
+import type { CompilationGraphSnapshot, CompilationResult, CompilationSession, CompilationSnapshot } from './types'
 import { CandidateIndex } from './candidate-index'
 import { resolveInvalidatedScopes } from './invalidation'
 import { SourceGraph } from './source-graph'
@@ -54,9 +54,16 @@ export class DefaultCompilationSession implements CompilationSession {
     return this.createResult()
   }
 
-  commitValidation(revision: number, validatedClassSet: Iterable<string>): CompilationResult {
+  commitValidation(
+    revision: number,
+    validatedClassSet: Iterable<string>,
+    graph?: CompilationGraphSnapshot,
+  ): CompilationResult {
     if (revision !== this.revision) {
       throw new Error(`不能向编译 revision ${this.revision} 提交 revision ${revision} 的 classSet。`)
+    }
+    if (graph) {
+      this.graph.replace(graph.nodes, graph.edges)
     }
     this.validatedClassSet = new Set(validatedClassSet)
     return this.createResult()

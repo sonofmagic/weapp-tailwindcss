@@ -91,9 +91,22 @@ describe('compiler session', () => {
       candidatesBySource: [['page', ['p-4']]],
     })
 
-    const committed = session.commitValidation(compilation.revision, ['p-4'])
+    const committed = session.commitValidation(compilation.revision, ['p-4'], {
+      nodes: [
+        { id: 'page', kind: 'template', scope: { id: 'page', kind: 'component' } },
+        { id: 'config', kind: 'config', scope: { id: 'page', kind: 'component' } },
+      ],
+      edges: [{ from: 'page', to: 'config', kind: 'depends-on' }],
+    })
     expect(committed.revision).toBe(compilation.revision)
     expect(committed.validatedClassSet).toEqual(new Set(['p-4']))
+    expect(committed.graphEdges).toEqual([
+      { from: 'page', to: 'config', kind: 'depends-on' },
+    ])
+    committed.graphEdges[0]!.to = 'mutated'
+    expect(session.commitValidation(compilation.revision, ['p-4']).graphEdges).toEqual([
+      { from: 'page', to: 'config', kind: 'depends-on' },
+    ])
     expect(() => session.commitValidation(compilation.revision - 1, [])).toThrow('不能向编译 revision')
   })
 })

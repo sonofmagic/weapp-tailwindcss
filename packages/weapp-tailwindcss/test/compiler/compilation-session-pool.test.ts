@@ -41,9 +41,21 @@ describe('CompilationSessionPool', () => {
       sources: [{ id: '/src/app.css', kind: 'css', candidates: ['p-4'] }],
     }, async compilation => {
       await pending
-      return { classSet: compilation.candidates }
+      return {
+        classSet: compilation.candidates,
+        dependenciesBySource: [[
+          '/src/app.css',
+          [{ id: '/src/stale.config.js', kind: 'config' as const }],
+        ]] as const,
+      }
     })
-    const secondCompile = vi.fn(async compilation => ({ classSet: compilation.candidates }))
+    const secondCompile = vi.fn(async compilation => ({
+      classSet: compilation.candidates,
+      dependenciesBySource: [[
+        '/src/app.css',
+        [{ id: '/src/current.config.js', kind: 'config' as const }],
+      ]] as const,
+    }))
     const second = pool.run({
       scope: componentScope,
       outputId: 'pages/index.css',
@@ -63,6 +75,12 @@ describe('CompilationSessionPool', () => {
     const [firstResult, secondResult] = await Promise.all([first, second])
     expect(firstResult.committed).toBe(false)
     expect(secondResult.committed).toBe(true)
+    expect(secondResult.compilation.graphNodes).toContainEqual(expect.objectContaining({
+      id: 'dependency:/src/current.config.js',
+    }))
+    expect(secondResult.compilation.graphNodes).not.toContainEqual(expect.objectContaining({
+      id: 'dependency:/src/stale.config.js',
+    }))
   })
 
   it('retains deleted candidates only when the scope requests it', async () => {
@@ -138,5 +156,43 @@ describe('CompilationSessionPool', () => {
       },
     ]))
     expect(second.compilation.invalidatedScopes).toEqual(new Set([componentScope.id]))
+  })
+
+  it('commits generated dependencies to the active revision and replaces previous results', async () => {
+    const pool = new CompilationSessionPool()
+    const request = {
+      scope: componentScope,
+      outputId: 'pages/index.css',
+      sources: [{ id: '/src/app.css', kind: 'css' as const, candidates: ['p-4'] }],
+    }
+    const first = await pool.run(request, async compilation => ({
+      classSet: compilation.candidates,
+      dependenciesBySource: [[
+        '/src/app.css',
+        [{ id: '/src/plugin-a.js', kind: 'config' as const }],
+      ]] as const,
+    }))
+    const second = await pool.run(request, async compilation => ({
+      classSet: compilation.candidates,
+      dependenciesBySource: [[
+        '/src/app.css',
+        [{ id: '/src/plugin-b.js', kind: 'config' as const }],
+      ]] as const,
+    }))
+
+    expect(first.compilation.revision).toBe(1)
+    expect(first.compilation.graphEdges).toContainEqual({
+      from: 'source:/src/app.css',
+      to: 'dependency:/src/plugin-a.js',
+      kind: 'depends-on',
+    })
+    expect(second.compilation.revision).toBe(2)
+    expect(second.compilation.graphNodes).toContainEqual(expect.objectContaining({
+      id: 'dependency:/src/plugin-b.js',
+      kind: 'config',
+    }))
+    expect(second.compilation.graphNodes).not.toContainEqual(expect.objectContaining({
+      id: 'dependency:/src/plugin-a.js',
+    }))
   })
 })

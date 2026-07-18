@@ -1,19 +1,19 @@
+import type { CompilationScopeDependency, CompilationScopeGraphSource } from './compilation-scope-graph'
 import type { CompilationResult, SourceKind, SourceScope } from './types'
+import { createCompilationScopeGraph, dependencySignature, mergeCompilationScopeDependencies, sourceNodeId } from './compilation-scope-graph'
 import { DefaultCompilationSession } from './session'
 
 const COMPILATION_SCOPE_CACHE_MAX = 128
 
-export interface CompilationScopeDependency {
-  id: string
-  kind: SourceKind
-}
-
-export interface CompilationScopeSource {
+export interface CompilationScopeSource extends CompilationScopeGraphSource {
   id: string
   kind: SourceKind
   candidates: Iterable<string>
-  content?: string | undefined
-  dependencies?: CompilationScopeDependency[] | undefined
+}
+
+export interface CompilationScopeGenerationResult {
+  classSet: Iterable<string>
+  dependenciesBySource?: Iterable<readonly [string, Iterable<CompilationScopeDependency>]> | undefined
 }
 
 export interface CompilationScopeRequest {
@@ -45,26 +45,8 @@ interface CompilationScopeEntry {
   pending: Promise<void>
   scope: SourceScope
   session: DefaultCompilationSession
+  generatedDependencies: Map<string, CompilationScopeDependency[]>
   sources: Map<string, CompilationScopeSource>
-}
-
-function sourceNodeId(sourceId: string) {
-  return `source:${sourceId}`
-}
-
-function assetNodeId(outputId: string) {
-  return `asset:${outputId}`
-}
-
-function dependencyNodeId(dependencyId: string) {
-  return `dependency:${dependencyId}`
-}
-
-function dependencySignature(source: CompilationScopeSource) {
-  return [...source.dependencies ?? []]
-    .map(dependency => `${dependency.kind}\0${dependency.id}`)
-    .sort()
-    .join('\0')
 }
 
 function cloneScopeSource(source: CompilationScopeSource): CompilationScopeSource {
@@ -79,7 +61,7 @@ export class CompilationSessionPool {
   private readonly entries = new Map<string, CompilationScopeEntry>()
   private disposed = false
 
-  run<T extends { classSet: Iterable<string> } | undefined>(
+  run<T extends CompilationScopeGenerationResult | undefined>(
     request: CompilationScopeRequest,
     compile: (compilation: CompilationScopeState) => Promise<T>,
   ): Promise<CompilationScopeExecution<T>> {
@@ -128,6 +110,7 @@ export class CompilationSessionPool {
       pending: Promise.resolve(),
       scope: { ...scope },
       session: new DefaultCompilationSession(),
+      generatedDependencies: new Map(),
       sources: new Map(),
     }
     this.entries.set(scope.id, entry)
@@ -141,7 +124,7 @@ export class CompilationSessionPool {
     return entry
   }
 
-  private async runEntry<T extends { classSet: Iterable<string> } | undefined>(
+  private async runEntry<T extends CompilationScopeGenerationResult | undefined>(
     entry: CompilationScopeEntry,
     request: CompilationScopeRequest,
     compile: (compilation: CompilationScopeState) => Promise<T>,
@@ -151,15 +134,31 @@ export class CompilationSessionPool {
     const validatedClassSet = request.preserveDeletedCss
       ? new Set([...prepared.compilation.validatedClassSet, ...(value?.classSet ?? [])])
       : new Set(value?.classSet ?? [])
+    const generatedDependencies = value?.dependenciesBySource === undefined
+      ? undefined
+      : this.normalizeGeneratedDependencies(value.dependenciesBySource, prepared.sources)
     let committed = false
+    let committedCompilation: CompilationScopeState | undefined
     await this.enqueue(entry, () => {
       if (!entry.active || entry.latest?.revision !== prepared.compilation.revision) {
         return
       }
-      entry.latest = entry.session.commitValidation(prepared.compilation.revision, validatedClassSet)
+      if (generatedDependencies) {
+        entry.generatedDependencies = generatedDependencies
+      }
+      entry.latest = entry.session.commitValidation(
+        prepared.compilation.revision,
+        validatedClassSet,
+        createCompilationScopeGraph(
+          request.scope,
+          request.outputId,
+          this.createGraphSources(prepared.sources, entry.generatedDependencies),
+        ),
+      )
+      committedCompilation = this.toScopeState(entry.latest, prepared.sources)
       committed = true
     })
-    const compilation = {
+    const compilation = committedCompilation ?? {
       ...prepared.compilation,
       validatedClassSet,
     }
@@ -192,50 +191,16 @@ export class CompilationSessionPool {
       }
     }
     entry.sources = nextSources
-
-    const outputNodeId = assetNodeId(request.outputId)
-    const dependencies = new Map<string, CompilationScopeDependency>()
-    for (const source of nextSources.values()) {
-      for (const dependency of source.dependencies ?? []) {
-        const previous = dependencies.get(dependency.id)
-        if (previous && previous.kind !== dependency.kind) {
-          throw new Error(`同一个依赖不能对应不同类型：${dependency.id}`)
-        }
-        dependencies.set(dependency.id, { ...dependency })
-      }
-    }
-    const nodes = [
-      ...[...nextSources.values()].map(source => ({
-        id: sourceNodeId(source.id),
-        kind: source.kind,
-        scope: { ...request.scope },
-        ...(source.content === undefined ? {} : { content: source.content }),
-      })),
-      ...[...dependencies.values()].map(dependency => ({
-        id: dependencyNodeId(dependency.id),
-        kind: dependency.kind,
-        scope: { ...request.scope },
-      })),
-      {
-        id: outputNodeId,
-        kind: 'asset' as const,
-        scope: { ...request.scope },
-      },
-    ]
+    entry.generatedDependencies = new Map(
+      [...entry.generatedDependencies].filter(([sourceId]) => nextSources.has(sourceId)),
+    )
+    const graph = createCompilationScopeGraph(
+      request.scope,
+      request.outputId,
+      this.createGraphSources(nextSources, entry.generatedDependencies),
+    )
     entry.latest = entry.session.update({
-      nodes,
-      edges: [...nextSources.values()].flatMap(source => [
-        {
-          from: sourceNodeId(source.id),
-          to: outputNodeId,
-          kind: 'emits-to' as const,
-        },
-        ...[...source.dependencies ?? []].map(dependency => ({
-          from: sourceNodeId(source.id),
-          to: dependencyNodeId(dependency.id),
-          kind: 'depends-on' as const,
-        })),
-      ]),
+      ...graph,
       candidatesBySource: [...nextSources.values()].map(source => [
         sourceNodeId(source.id),
         source.candidates,
@@ -247,6 +212,36 @@ export class CompilationSessionPool {
       compilation: this.toScopeState(entry.latest, nextSources),
       sources: nextSources,
     }
+  }
+
+  private createGraphSources(
+    sources: Map<string, CompilationScopeSource>,
+    generatedDependencies: Map<string, CompilationScopeDependency[]>,
+  ): CompilationScopeGraphSource[] {
+    return [...sources.values()].map(source => ({
+      ...source,
+      dependencies: mergeCompilationScopeDependencies(
+        source.dependencies,
+        generatedDependencies.get(source.id),
+      ),
+    }))
+  }
+
+  private normalizeGeneratedDependencies(
+    dependenciesBySource: Iterable<readonly [string, Iterable<CompilationScopeDependency>]>,
+    sources: Map<string, CompilationScopeSource>,
+  ) {
+    const normalized = new Map<string, CompilationScopeDependency[]>()
+    for (const [sourceId, dependencies] of dependenciesBySource) {
+      if (!sources.has(sourceId)) {
+        throw new Error(`生成结果引用了未知 source：${sourceId}`)
+      }
+      normalized.set(sourceId, mergeCompilationScopeDependencies(
+        normalized.get(sourceId),
+        dependencies,
+      ))
+    }
+    return normalized
   }
 
   private enqueue<T>(entry: CompilationScopeEntry, task: () => T | Promise<T>) {

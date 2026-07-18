@@ -61,9 +61,12 @@ export type CompilationChange
     | { sourceId: string, type: 'dependency-changed' }
     | { sourceId: string, type: 'config-changed' }
 
-export interface CompilationSnapshot {
+export interface CompilationGraphSnapshot {
   nodes: SourceGraphNode[]
   edges: SourceGraphEdge[]
+}
+
+export interface CompilationSnapshot extends CompilationGraphSnapshot {
   candidatesBySource?: Iterable<readonly [string, Iterable<string>]> | undefined
   changes?: CompilationChange[] | undefined
   preserveDeletedCss?: boolean | undefined
@@ -82,7 +85,11 @@ export interface CompilationResult {
 
 export interface CompilationSession {
   update: (snapshot: CompilationSnapshot) => CompilationResult | Promise<CompilationResult>
-  commitValidation: (revision: number, validatedClassSet: Iterable<string>) => CompilationResult | Promise<CompilationResult>
+  commitValidation: (
+    revision: number,
+    validatedClassSet: Iterable<string>,
+    graph?: CompilationGraphSnapshot | undefined,
+  ) => CompilationResult | Promise<CompilationResult>
   dispose: () => void
 }
 

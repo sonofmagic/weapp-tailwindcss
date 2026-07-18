@@ -30,3 +30,5 @@ source resolver 的公开内部契约统一返回 source record，candidate vali
 CompilationSession scope source 支持显式依赖记录，SourceGraph 为 Tailwind CSS/config 依赖建立 `depends-on` 边并在依赖集合变化时失效对应 scope；编译结果同时暴露 clone 后的 graph edges，便于 bundler contract 与 shadow 差异校验。
 
 默认编译模式由 legacy 切换为 graph，使 Tailwind v4 生成默认使用 CompilationSession、结构化 artifact 与 AST adapter；仍可通过 `WEAPP_TAILWINDCSS_COMPILER=legacy` 紧急回退，或使用 `shadow` 继续比较新旧管线的 CSS 语义。
+
+Tailwind generation artifact 在生成后发现的 CSS、插件与配置依赖现在会按 source 提交到同一个 CompilationSession revision，并原子更新 SourceGraph；过期并发生成结果不能覆盖当前 revision 的 dependency edges。

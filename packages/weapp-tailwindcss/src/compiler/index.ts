@@ -1,5 +1,6 @@
 export * from './artifact'
 export * from './candidate-index'
+export * from './compilation-scope-graph'
 export * from './compilation-session-pool'
 export * from './composition'
 export * from './emission-plan'
