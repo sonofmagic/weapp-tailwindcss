@@ -1,8 +1,7 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import type { GeneratorResolvedSource } from '../source-resolver'
 import type { TailwindV4CssSource } from '../source-resolver/types'
 import type { GenerateCssByGeneratorOptions } from '../types'
-import type { NormalizedWeappTailwindcssGeneratorOptions, WeappTailwindcssGenerateResult } from '@/generator'
+import type { NormalizedWeappTailwindcssGeneratorOptions, TailwindResolvedSource, WeappTailwindcssGenerateResult } from '@/generator'
 import type { RuntimeBranch } from '@/runtime-branch'
 
 export interface GeneratorPipelineExecutionContext {
@@ -32,7 +31,7 @@ export interface GeneratorPipelineExecutionContext {
   legacyCompatUserCssRawSource: string
   localImports: string | undefined
   majorVersion: number
-  normalizeGeneratorSource: (source: GeneratorResolvedSource) => GeneratorResolvedSource
+  normalizeGeneratorSource: (source: TailwindResolvedSource) => TailwindResolvedSource
   normalizedCssSources: TailwindV4CssSource[] | undefined
   options: GenerateCssByGeneratorOptions
   opts: GenerateCssByGeneratorOptions['opts']
@@ -52,7 +51,6 @@ export interface GeneratorPipelineOutputContext extends GeneratorPipelineExecuti
   filterGeneratedApplyOnlyCss: (css: string) => string
   generated: WeappTailwindcssGenerateResult
   generatedCss: string
-  generatorSources: GeneratorResolvedSource[]
   generatorStyleOptions: Partial<IStyleHandlerOptions>
   hasMatchedCssSourceFile: boolean
   isolateCurrentCssCandidates: boolean

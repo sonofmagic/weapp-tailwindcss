@@ -21,6 +21,11 @@ export type GeneratorResolvedSource = TailwindResolvedSource & {
   [generatorSourceMetadataKey]?: GeneratorSourceMetadata | undefined
 }
 
+export interface GeneratorSourceRecord {
+  source: TailwindResolvedSource
+  metadata: GeneratorSourceMetadata
+}
+
 export function getGeneratorSourceMetadata(
   source: TailwindResolvedSource,
 ): GeneratorSourceMetadata | undefined {
@@ -34,6 +39,20 @@ export function withGeneratorSourceMetadata(
   return {
     ...source,
     [generatorSourceMetadataKey]: metadata,
+  }
+}
+
+export function createGeneratorSourceRecord(
+  source: TailwindResolvedSource,
+): GeneratorSourceRecord {
+  const resolvedSource = source as GeneratorResolvedSource
+  const {
+    [generatorSourceMetadataKey]: metadata,
+    ...plainSource
+  } = resolvedSource
+  return {
+    source: plainSource as TailwindResolvedSource,
+    metadata: { ...metadata },
   }
 }
 

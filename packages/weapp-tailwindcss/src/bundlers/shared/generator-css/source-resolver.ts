@@ -1,5 +1,5 @@
-export type { GeneratorResolvedSource, GeneratorSourceMetadata } from './source-resolver/metadata'
-export { getGeneratorSourceMetadata } from './source-resolver/metadata'
+export type { GeneratorResolvedSource, GeneratorSourceMetadata, GeneratorSourceRecord } from './source-resolver/metadata'
+export { createGeneratorSourceRecord, getGeneratorSourceMetadata } from './source-resolver/metadata'
 export { resolveCssSourceBase } from './source-resolver/postcss-source'
 export { resolveGeneratorSource } from './source-resolver/resolve-source'
 

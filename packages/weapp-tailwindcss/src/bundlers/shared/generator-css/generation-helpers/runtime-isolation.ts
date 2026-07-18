@@ -1,11 +1,10 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import type { GeneratorResolvedSource } from '../source-resolver'
+import type { GeneratorSourceRecord } from '../source-resolver'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 import { resolveStyleOptionsFromContext } from '@/context/style-options'
 import { isVueScopedStyleRequest } from '../../style-requests'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '../directives'
-import { getGeneratorSourceMetadata } from '../source-resolver'
 import { resolvePostcssRequestOption } from '../source-resolver/postcss-source'
 
 export function mergeScopedRuntimeWithCurrentRuntime(
@@ -45,7 +44,7 @@ export function mergeScopedRuntimeWithCurrentRuntime(
 
 export function shouldIsolateScopedCssSource(
   _majorVersion: number | undefined,
-  source: GeneratorResolvedSource,
+  record: GeneratorSourceRecord,
   sourceEntries: TailwindSourceEntry[] | undefined,
   options: {
     cssHandlerOptions?: IStyleHandlerOptions | undefined
@@ -55,7 +54,7 @@ export function shouldIsolateScopedCssSource(
   if (options.target !== 'weapp') {
     return false
   }
-  const metadata = getGeneratorSourceMetadata(source)
+  const { metadata } = record
   if (metadata?.isolateCssSource) {
     return true
   }
