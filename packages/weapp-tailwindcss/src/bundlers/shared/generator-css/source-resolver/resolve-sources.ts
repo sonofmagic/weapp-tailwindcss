@@ -1,4 +1,5 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
+import type { GeneratorSourceRecord } from './metadata'
 import type { GeneratorSourceRuntimeState, GeneratorSourceSelectionOptions, SourceStyleMatchOptions, TailwindV4SourceOptions } from './types'
 import type { NormalizedWeappTailwindcssGeneratorOptions, TailwindResolvedSource } from '@/generator'
 import type { UndefinedOptional } from '@/utils/object'
@@ -9,13 +10,13 @@ import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSource
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../markers'
 import { resolveSourceSideCssEntrySource } from '../source-files'
 import { canResolveSourceSideCssEntry, hasConfiguredTailwindV4CssSource, mergeCssSources, normalizeResolvedTailwindV4SourceConfig, normalizeTailwindV4CssSourceConfigs, resolveTailwindV4CssEntrySource } from './configuration'
-import { getGeneratorSourceMetadata } from './metadata'
+import { createGeneratorSourceRecord, getGeneratorSourceMetadata } from './metadata'
 import { resolveCssHandlerSourceOptions, resolveCssSourceBase, resolvePostcssSourceFile } from './postcss-source'
 import { resolveGeneratorSource } from './resolve-source'
 import { createTailwindV4CssSourceResolver, resolveCandidateMatchedTailwindV4CssEntry, resolveCandidateMatchedTailwindV4CssSource, resolveTailwindV4SourceSideEntrySource } from './single-source'
 import { resolveMatchingTailwindV4CssEntry, resolveMatchingTailwindV4CssSource } from './source-matching'
 
-export async function resolveGeneratorSources(
+async function resolveGeneratorResolvedSources(
   majorVersion: number | undefined,
   runtimeState: GeneratorSourceRuntimeState,
   rawSource: string,
@@ -179,4 +180,25 @@ export async function resolveGeneratorSources(
     ...cssEntrySources,
     ...cssSources,
   ]
+}
+
+export async function resolveGeneratorSources(
+  majorVersion: number | undefined,
+  runtimeState: GeneratorSourceRuntimeState,
+  rawSource: string,
+  file: string,
+  cssHandlerOptions: IStyleHandlerOptions,
+  generatorOptions?: NormalizedWeappTailwindcssGeneratorOptions,
+  selectionOptions?: GeneratorSourceSelectionOptions,
+): Promise<GeneratorSourceRecord[]> {
+  const sources = await resolveGeneratorResolvedSources(
+    majorVersion,
+    runtimeState,
+    rawSource,
+    file,
+    cssHandlerOptions,
+    generatorOptions,
+    selectionOptions,
+  )
+  return sources.map(createGeneratorSourceRecord)
 }

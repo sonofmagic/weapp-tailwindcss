@@ -33,7 +33,7 @@ export async function validateCandidatesByGenerator(
       bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
     }
     if (generatorOptions.enabled) {
-      const sources = await resolveGeneratorSources(
+      const sourceRecords = await resolveGeneratorSources(
         majorVersion,
         runtimeState,
         rawSource,
@@ -46,7 +46,7 @@ export async function validateCandidatesByGenerator(
         },
       )
       const generationSession = getTailwindGenerationSessionPool(runtimeState)
-      const classSets = await Promise.all(sources.map(async (source) => {
+      const classSets = await Promise.all(sourceRecords.map(async ({ source }) => {
         return generationSession.validateCandidates(source, candidates)
       }))
       for (const candidate of classSets.flatMap(item => [...item])) {

@@ -14,7 +14,7 @@ import { createRuntimeWithCurrentCssCandidates, mergeGeneratorResults, mergeScop
 import { hasConfiguredContainerCompatSources } from '../legacy-compat'
 import { removeMatchingLocalCssImports } from '../local-imports'
 import { stripTailwindBanner } from '../markers'
-import { createGeneratorSourceRecord, resolveGeneratorSourceEntries, resolveGeneratorSources } from '../source-resolver'
+import { resolveGeneratorSourceEntries, resolveGeneratorSources } from '../source-resolver'
 import { filterApplyOnlyGeneratedCss, shouldFilterApplyOnlyGeneratedCss } from '../user-css'
 import { finalizeDeferredGeneratorCss } from './deferred-output'
 import { finalizeFallbackGeneratorCss } from './fallback-output'
@@ -87,7 +87,7 @@ export async function executeGeneratorPipeline(
     currentCssCandidates,
     isolateCurrentCssCandidates,
   )
-  const sourceRecords = (await resolveGeneratorSources(
+  const sourceRecords = await resolveGeneratorSources(
     majorVersion,
     runtimeState,
     generatorRawSource,
@@ -100,7 +100,7 @@ export async function executeGeneratorPipeline(
       getSourceCandidatesForEntries,
       runtime: runtimeWithCurrentCss,
     },
-  )).map(createGeneratorSourceRecord)
+  )
   const generatorSourceRecords = useMiniProgramCssBranch
     ? sourceRecords.map(record => ({
         ...record,

@@ -24,3 +24,5 @@ Webpack watch 移除独立的首次扫描标记和 HTML/JS 原文 hash 汇总，
 generator source metadata 改由模块私有 Symbol 保存，并统一通过结构化访问器读取；metadata 在 source clone 时继续保留，但不再暴露 `__weappTailwindcssMeta` 字符串字段或进入序列化结果。
 
 generator pipeline 在进入生成与 compilation session 前将来源转换为显式 `{ source, metadata }` record，并从传给 Tailwind engine 的 source 中剥离内部 metadata，使 source identity、scope、preflight 与 candidate 隔离不再依赖生成器输入对象上的隐藏状态。
+
+source resolver 的公开内部契约统一返回 source record，candidate validation 与 CSS generation 共用同一结构化来源边界，调用方不再自行读取或转换 attached metadata。
