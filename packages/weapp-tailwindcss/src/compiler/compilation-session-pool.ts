@@ -3,11 +3,17 @@ import { DefaultCompilationSession } from './session'
 
 const COMPILATION_SCOPE_CACHE_MAX = 128
 
+export interface CompilationScopeDependency {
+  id: string
+  kind: SourceKind
+}
+
 export interface CompilationScopeSource {
   id: string
   kind: SourceKind
   candidates: Iterable<string>
   content?: string | undefined
+  dependencies?: CompilationScopeDependency[] | undefined
 }
 
 export interface CompilationScopeRequest {
@@ -50,10 +56,22 @@ function assetNodeId(outputId: string) {
   return `asset:${outputId}`
 }
 
+function dependencyNodeId(dependencyId: string) {
+  return `dependency:${dependencyId}`
+}
+
+function dependencySignature(source: CompilationScopeSource) {
+  return [...source.dependencies ?? []]
+    .map(dependency => `${dependency.kind}\0${dependency.id}`)
+    .sort()
+    .join('\0')
+}
+
 function cloneScopeSource(source: CompilationScopeSource): CompilationScopeSource {
   return {
     ...source,
     candidates: new Set(source.candidates),
+    dependencies: source.dependencies?.map(dependency => ({ ...dependency })),
   }
 }
 
@@ -163,19 +181,40 @@ export class CompilationSessionPool {
     }
     for (const [sourceId, source] of nextSources) {
       const previous = entry.sources.get(sourceId)
-      if (previous && previous.content !== source.content) {
+      if (
+        previous
+        && (
+          previous.content !== source.content
+          || dependencySignature(previous) !== dependencySignature(source)
+        )
+      ) {
         changes.push({ sourceId: sourceNodeId(sourceId), type: 'dependency-changed' as const })
       }
     }
     entry.sources = nextSources
 
     const outputNodeId = assetNodeId(request.outputId)
+    const dependencies = new Map<string, CompilationScopeDependency>()
+    for (const source of nextSources.values()) {
+      for (const dependency of source.dependencies ?? []) {
+        const previous = dependencies.get(dependency.id)
+        if (previous && previous.kind !== dependency.kind) {
+          throw new Error(`同一个依赖不能对应不同类型：${dependency.id}`)
+        }
+        dependencies.set(dependency.id, { ...dependency })
+      }
+    }
     const nodes = [
       ...[...nextSources.values()].map(source => ({
         id: sourceNodeId(source.id),
         kind: source.kind,
         scope: { ...request.scope },
         ...(source.content === undefined ? {} : { content: source.content }),
+      })),
+      ...[...dependencies.values()].map(dependency => ({
+        id: dependencyNodeId(dependency.id),
+        kind: dependency.kind,
+        scope: { ...request.scope },
       })),
       {
         id: outputNodeId,
@@ -185,11 +224,18 @@ export class CompilationSessionPool {
     ]
     entry.latest = entry.session.update({
       nodes,
-      edges: [...nextSources.values()].map(source => ({
-        from: sourceNodeId(source.id),
-        to: outputNodeId,
-        kind: 'emits-to' as const,
-      })),
+      edges: [...nextSources.values()].flatMap(source => [
+        {
+          from: sourceNodeId(source.id),
+          to: outputNodeId,
+          kind: 'emits-to' as const,
+        },
+        ...[...source.dependencies ?? []].map(dependency => ({
+          from: sourceNodeId(source.id),
+          to: dependencyNodeId(dependency.id),
+          kind: 'depends-on' as const,
+        })),
+      ]),
       candidatesBySource: [...nextSources.values()].map(source => [
         sourceNodeId(source.id),
         source.candidates,

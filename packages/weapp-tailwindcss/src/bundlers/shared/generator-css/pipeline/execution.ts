@@ -1,6 +1,7 @@
 import type { GeneratorSourceRecord } from '../source-resolver'
 import type { GenerateCssByGeneratorResult } from '../types'
 import type { GeneratorPipelineExecutionContext, GeneratorPipelineOutputContext } from './context'
+import type { CompilationScopeDependency } from '@/compiler'
 import process from 'node:process'
 import { extractSourceCandidates } from '@tailwindcss-mangle/engine'
 import { getCompilationSessionPool } from '@/compiler'
@@ -9,6 +10,7 @@ import { shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { includesTailwindV4PreflightDirective } from '@/tailwindcss/v4/preflight'
 import { runWithConcurrency } from '../../run-tasks'
+import { isSourceStyleRequest } from '../../style-requests'
 import { removeTailwindSourceDirectives } from '../directives'
 import { createRuntimeWithCurrentCssCandidates, mergeGeneratorResults, mergeScopedRuntimeWithCurrentRuntime, resolveGeneratorStyleOptions, resolveMiniProgramPreflightModeForGeneratorCss, shouldIsolateCurrentTailwindV4CssCandidates, shouldIsolateScopedCssSource, shouldScanTailwindV4Sources } from '../generation-helpers'
 import { hasConfiguredContainerCompatSources } from '../legacy-compat'
@@ -44,6 +46,13 @@ function resolveCompilationSourceId(record: GeneratorSourceRecord, index: number
     ?? record.source.dependencies[0]
     ?? record.source.base
   return `${sourceId}:tailwind-source:${index}`
+}
+
+function resolveCompilationDependencies(record: GeneratorSourceRecord): CompilationScopeDependency[] {
+  return [...new Set(record.source.dependencies)].map(id => ({
+    id,
+    kind: isSourceStyleRequest(id) ? 'css' : 'config',
+  }))
 }
 
 export async function executeGeneratorPipeline(
@@ -170,6 +179,7 @@ export async function executeGeneratorPipeline(
     return {
       generatorRuntime,
       generatorSource,
+      dependencies: resolveCompilationDependencies(record),
       isolateCssSource,
       sourceId: resolveCompilationSourceId(record, index),
     }
@@ -206,6 +216,7 @@ export async function executeGeneratorPipeline(
         kind: 'css',
         content: input.generatorSource.css,
         candidates: input.generatorRuntime,
+        dependencies: input.dependencies,
       })),
       preserveDeletedCss: options.compilation.preserveDeletedCss,
     }, async (compilation) => {

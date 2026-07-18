@@ -91,4 +91,52 @@ describe('CompilationSessionPool', () => {
     expect(removed.compilation.candidates).toEqual(new Set(['m-2']))
     expect(removed.compilation.validatedClassSet).toEqual(new Set(['m-2']))
   })
+
+  it('tracks explicit source dependencies and invalidates changed dependency sets', async () => {
+    const pool = new CompilationSessionPool()
+    const first = await pool.run({
+      scope: componentScope,
+      outputId: 'pages/index.css',
+      sources: [{
+        id: '/src/app.css',
+        kind: 'css',
+        candidates: ['p-4'],
+        dependencies: [
+          { id: '/src/theme.css', kind: 'css' },
+          { id: '/tailwind.config.js', kind: 'config' },
+        ],
+      }],
+    }, async compilation => ({ classSet: compilation.candidates }))
+    const second = await pool.run({
+      scope: componentScope,
+      outputId: 'pages/index.css',
+      sources: [{
+        id: '/src/app.css',
+        kind: 'css',
+        candidates: ['p-4'],
+        dependencies: [
+          { id: '/src/theme.css', kind: 'css' },
+          { id: '/tailwind.config.ts', kind: 'config' },
+        ],
+      }],
+    }, async compilation => ({ classSet: compilation.candidates }))
+
+    expect(first.compilation.graphNodes).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: 'dependency:/src/theme.css', kind: 'css' }),
+      expect.objectContaining({ id: 'dependency:/tailwind.config.js', kind: 'config' }),
+    ]))
+    expect(first.compilation.graphEdges).toEqual(expect.arrayContaining([
+      {
+        from: 'source:/src/app.css',
+        to: 'dependency:/src/theme.css',
+        kind: 'depends-on',
+      },
+      {
+        from: 'source:/src/app.css',
+        to: 'asset:pages/index.css',
+        kind: 'emits-to',
+      },
+    ]))
+    expect(second.compilation.invalidatedScopes).toEqual(new Set([componentScope.id]))
+  })
 })

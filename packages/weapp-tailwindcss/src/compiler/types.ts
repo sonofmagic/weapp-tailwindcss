@@ -76,6 +76,7 @@ export interface CompilationResult {
   candidatesBySource: Map<string, Set<string>>
   validatedClassSet: Set<string>
   invalidatedScopes: Set<string>
+  graphEdges: SourceGraphEdge[]
   graphNodes: SourceGraphNode[]
 }
 

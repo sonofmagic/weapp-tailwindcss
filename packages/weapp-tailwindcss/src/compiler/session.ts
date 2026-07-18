@@ -69,6 +69,7 @@ export class DefaultCompilationSession implements CompilationSession {
       candidatesBySource: this.candidateIndex.entries(),
       validatedClassSet: new Set(this.validatedClassSet),
       invalidatedScopes: new Set(this.invalidatedScopes),
+      graphEdges: this.graph.getEdges(),
       graphNodes: this.graph.getNodes(),
     }
   }
