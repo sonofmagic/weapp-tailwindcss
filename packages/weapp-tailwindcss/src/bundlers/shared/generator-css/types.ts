@@ -1,6 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV4CssSource } from './source-resolver/types'
-import type { SourceScope } from '@/compiler'
+import type { CompilationDependencyChange, SourceScope } from '@/compiler'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 
@@ -19,6 +19,7 @@ export interface GenerateCssByGeneratorOptions {
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   sourceCandidates?: Set<string> | undefined
   compilation?: {
+    changes?: CompilationDependencyChange[] | undefined
     enabled: boolean
     preserveDeletedCss: boolean
     scope: SourceScope

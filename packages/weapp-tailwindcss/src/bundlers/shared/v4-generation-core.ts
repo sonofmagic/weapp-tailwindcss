@@ -1,5 +1,5 @@
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css'
-import type { CssStage, GenerationArtifact, SourceScope } from '@/compiler'
+import type { CompilationDependencyChange, CssStage, GenerationArtifact, SourceScope } from '@/compiler'
 import type { InternalUserDefinedOptions } from '@/types'
 import { areArtifactsSemanticallyEqual, createCssFragment, createGenerationArtifact, resolveCompilerMode } from '@/compiler'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
@@ -10,6 +10,7 @@ import { resolvePostcssRequestOption } from './generator-css/source-resolver/pos
 import { isVueScopedStyleRequest } from './style-requests'
 
 export interface TailwindV4GenerationCoreInput extends GenerateCssByGeneratorOptions {
+  compilationChanges?: CompilationDependencyChange[] | undefined
   frameworkPostcssOwner?: InternalUserDefinedOptions | undefined
   cssStage?: CssStage | undefined
   outputFile?: string | undefined
@@ -85,14 +86,24 @@ async function generateTailwindV4CssWithImplementation(
       ? {
           ...options,
           compilation: implementation.frameworkAdapter === 'graph'
-            ? { enabled: true, preserveDeletedCss: normalizedGeneratorOptions.hmr?.preserveDeletedCss ?? true, scope }
+            ? {
+                enabled: true,
+                preserveDeletedCss: normalizedGeneratorOptions.hmr?.preserveDeletedCss ?? true,
+                scope,
+                ...(options.compilationChanges === undefined ? {} : { changes: options.compilationChanges }),
+              }
             : undefined,
           deferCssAdaptation: true,
         }
       : {
           ...options,
           compilation: implementation.frameworkAdapter === 'graph'
-            ? { enabled: true, preserveDeletedCss: normalizedGeneratorOptions.hmr?.preserveDeletedCss ?? true, scope }
+            ? {
+                enabled: true,
+                preserveDeletedCss: normalizedGeneratorOptions.hmr?.preserveDeletedCss ?? true,
+                scope,
+                ...(options.compilationChanges === undefined ? {} : { changes: options.compilationChanges }),
+              }
             : undefined,
         },
   )

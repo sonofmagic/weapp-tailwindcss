@@ -15,6 +15,7 @@ function isCssSyntaxError(error: unknown) {
 
 export function createTailwindV4Engine(source: TailwindV4ResolvedSource): TailwindV4Engine {
   const generationSessions = new TailwindV4NativeSessionPool()
+  const incrementalCacheKeys = new Set<string>()
   const validationEngine = createEngineTailwindV4Engine(source)
 
   async function generateOnce(
@@ -115,6 +116,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       target,
       styleOptions,
     )
+    incrementalCacheKeys.add(cacheKey)
 
     if (options.scanSources === true) {
       return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
@@ -258,6 +260,10 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     generate,
     dispose() {
       generationSessions.dispose()
+      for (const cacheKey of incrementalCacheKeys) {
+        incrementalGenerateCache.delete(cacheKey)
+      }
+      incrementalCacheKeys.clear()
     },
   }
   return engine

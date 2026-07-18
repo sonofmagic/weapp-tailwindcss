@@ -3,7 +3,7 @@ import type { WebpackCssHandlerOptions } from './v5-assets/pipeline-helpers'
 import path from 'node:path'
 import process from 'node:process'
 import { MappingChars2String } from '@weapp-core/escape'
-import { createRuntimeCompilationAffectingSignature, createRuntimeCompilationBuildState, resetRuntimeCompilationBuildState, updateRuntimeCompilationBuildState } from '@/compiler'
+import { createCompilationDependencyChanges, createRuntimeCompilationAffectingSignature, createRuntimeCompilationBuildState, getCompilationSessionPool, getTailwindGenerationSessionPool, resetRuntimeCompilationBuildState, updateRuntimeCompilationBuildState } from '@/compiler'
 import { pluginName } from '@/constants'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
@@ -147,6 +147,16 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }),
         )
         const watchChangedFiles = new Set([...getWatchChangedFiles?.() ?? []].map(file => path.resolve(file)))
+        const compilationChanges = createCompilationDependencyChanges(watchChangedFiles)
+        const compilationPool = getCompilationSessionPool(runtimeState)
+        const affectedCompilationScopes = compilationPool.recordDependencyChanges(compilationChanges)
+        const getCompilationDependencyRevision = (scopeId: string) => compilationPool.getScopeDependencyRevision(scopeId)
+        if (affectedCompilationScopes.size > 0) {
+          getTailwindGenerationSessionPool(runtimeState).invalidate({
+            type: 'dependencies',
+            paths: compilationChanges.map(change => change.id),
+          })
+        }
         const taskConcurrency = watchMode ? resolveTaskConcurrency(1) : undefined
         const activeProcessCacheKeys = new Set<string>()
         const activeProcessHashKeys = new Set<string | number>()
@@ -413,7 +423,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           transformRuntimeSet,
           updateAssetIfChanged,
         })
-        const cssTaskContext = { ConcatSource, assetHashByChunk, compilation, compilerOptions, configuredCssEntryFiles, configuredMainCssEntryFiles, createRuntimeSetHash, cssSourceTraceSignature, cssSources, cssTaskFactories, debug, enqueueTask, finalizeCssAssetSource, finalizeTracedCss, generatedCssSources, generatorRuntimeSet, getCssHandlerOptions, getCssUserHandlerOptions, getGeneratorRuntimeSet, hasConfiguredTailwindV4SourceRoots, isKnownWebpackProcessedCssAsset, isSameWebpackSourceScope, isWebGeneratorTarget, isWebpackProcessedCssAsset, processedCssAssetSkipDecisionCache, rememberProcessCacheKey, resolveWebpackCssSourceFile, runtimeAffectingSourceHash, runtimeState, transformRuntimeSet, updateAssetIfChanged, watchMode, webpackSourceCandidateSet, webpackSourceCandidateValueSignature, webpackSourceCandidates }
+        const cssTaskContext = { ConcatSource, affectedCompilationScopes, assetHashByChunk, compilation, compilationChanges, compilerOptions, configuredCssEntryFiles, configuredMainCssEntryFiles, createRuntimeSetHash, cssSourceTraceSignature, cssSources, cssTaskFactories, debug, enqueueTask, finalizeCssAssetSource, finalizeTracedCss, generatedCssSources, generatorRuntimeSet, getCompilationDependencyRevision, getCssHandlerOptions, getCssUserHandlerOptions, getGeneratorRuntimeSet, hasConfiguredTailwindV4SourceRoots, isKnownWebpackProcessedCssAsset, isSameWebpackSourceScope, isWebGeneratorTarget, isWebpackProcessedCssAsset, processedCssAssetSkipDecisionCache, rememberProcessCacheKey, resolveWebpackCssSourceFile, runtimeAffectingSourceHash, runtimeState, transformRuntimeSet, updateAssetIfChanged, watchMode, webpackSourceCandidateSet, webpackSourceCandidateValueSignature, webpackSourceCandidates }
         for (const element of groupedEntries.css) {
           if (await processWebpackProcessedCssAsset(element, cssTaskContext)) {
             continue

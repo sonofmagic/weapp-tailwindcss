@@ -5,6 +5,11 @@ export interface CompilationScopeDependency {
   kind: SourceKind
 }
 
+export interface CompilationDependencyChange {
+  id: string
+  type: 'dependency-changed' | 'config-changed'
+}
+
 export interface CompilationScopeGraphSource {
   id: string
   kind: SourceKind
@@ -14,6 +19,17 @@ export interface CompilationScopeGraphSource {
 
 export function sourceNodeId(sourceId: string) {
   return `source:${sourceId}`
+}
+
+export function dependencyNodeId(dependencyId: string) {
+  return `dependency:${dependencyId}`
+}
+
+export function createCompilationDependencyChanges(
+  dependencyIds: Iterable<string>,
+  type: CompilationDependencyChange['type'] = 'dependency-changed',
+): CompilationDependencyChange[] {
+  return [...new Set(dependencyIds)].map(id => ({ id, type }))
 }
 
 export function mergeCompilationScopeDependencies(
@@ -61,7 +77,7 @@ export function createCompilationScopeGraph(
         ...(source.content === undefined ? {} : { content: source.content }),
       })),
       ...dependencies.map(dependency => ({
-        id: `dependency:${dependency.id}`,
+        id: dependencyNodeId(dependency.id),
         kind: dependency.kind,
         scope: { ...scope },
       })),
@@ -79,7 +95,7 @@ export function createCompilationScopeGraph(
       },
       ...source.dependencies.map(dependency => ({
         from: sourceNodeId(source.id),
-        to: `dependency:${dependency.id}`,
+        to: dependencyNodeId(dependency.id),
         kind: 'depends-on' as const,
       })),
     ]),

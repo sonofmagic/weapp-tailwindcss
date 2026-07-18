@@ -1001,6 +1001,89 @@ describe('bundlers/webpack v5-assets hook branch coverage', () => {
     vi.doUnmock('@/bundlers/shared/v4-generation-core')
   })
 
+  it('regenerates dependency-affected scopes once and keeps the dependency revision stable', async () => {
+    vi.resetModules()
+    const dependency = path.resolve(process.cwd(), 'tailwind.plugin.ts')
+    const source = '@tailwind utilities;'
+    const generateTailwindV4Css = vi.fn(async (options: any) => ({
+      css: `.generated-${generateTailwindV4Css.mock.calls.length}{display:block}`,
+      target: 'weapp',
+      source: 'generator' as const,
+      classSet: new Set(['block']),
+      dependencies: [dependency],
+      metadata: {
+        file: options.file,
+        majorVersion: 4,
+        outputFile: options.outputFile,
+      },
+    }))
+    vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
+      generateTailwindV4Css,
+    }))
+    try {
+      const [
+        { setupWebpackV5ProcessAssetsHook: mockedSetupWebpackV5ProcessAssetsHook },
+        { getCompilationSessionPool },
+      ] = await Promise.all([
+        import('@/bundlers/webpack/BaseUnifiedPlugin/v5-assets'),
+        import('@/compiler'),
+      ])
+      const changedFiles = new Set<string>()
+      const context = createContext({
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        mainCssChunkMatcher: vi.fn(() => true),
+        tailwindRuntime: {
+          ...createContext().tailwindRuntime,
+          majorVersion: 4,
+          getClassSet: vi.fn(async () => new Set(['block'])),
+          getClassSetSync: vi.fn(() => new Set(['block'])),
+        },
+      })
+      const harness = createHookHarness({
+        assetStore: { 'explicit.css': source },
+        chunkFiles: ['explicit.css'],
+        context,
+        hookOptions: {
+          getWatchChangedFiles: () => changedFiles,
+        },
+        setupProcessAssetsHook: mockedSetupWebpackV5ProcessAssetsHook,
+        watchMode: true,
+      })
+      const compilationPool = getCompilationSessionPool(harness.hookOptions.runtimeState)
+      await compilationPool.run({
+        scope: { id: 'explicit.css', kind: 'global' },
+        outputId: 'explicit.css',
+        sources: [{ id: '/src/app.css', kind: 'css', candidates: ['block'] }],
+      }, async compilation => ({
+        classSet: compilation.candidates,
+        dependenciesBySource: [[
+          '/src/app.css',
+          [{ id: dependency, kind: 'config' as const }],
+        ]] as const,
+      }))
+
+      await harness.processAssets()
+      harness.assetStore['explicit.css'] = source
+      changedFiles.add(dependency)
+      await harness.processAssets()
+      harness.assetStore['explicit.css'] = source
+      changedFiles.clear()
+      await harness.processAssets()
+
+      expect(generateTailwindV4Css).toHaveBeenCalledTimes(2)
+      expect(generateTailwindV4Css).toHaveBeenLastCalledWith(expect.objectContaining({
+        compilationChanges: [{ id: dependency, type: 'dependency-changed' }],
+        scope: { id: 'explicit.css', kind: 'global' },
+      }))
+      expect(harness.compilation.fileDependencies.add).toHaveBeenCalledWith(dependency)
+      expect(compilationPool.getScopeDependencyRevision('explicit.css')).toBe(1)
+    }
+    finally {
+      vi.doUnmock('@/bundlers/shared/v4-generation-core')
+      vi.resetModules()
+    }
+  })
+
   it('chooses represented css sources by scored source file matches', async () => {
     const root = path.resolve(process.cwd(), 'represented-root')
     const exactSource = path.join(root, 'styles/page.css')

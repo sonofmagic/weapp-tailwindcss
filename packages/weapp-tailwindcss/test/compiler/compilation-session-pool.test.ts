@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { CompilationSessionPool } from '@/compiler'
+import { CompilationSessionPool, createCompilationDependencyChanges } from '@/compiler'
 
 const componentScope = { id: 'pages/index.css', kind: 'component' as const }
 
@@ -172,7 +172,12 @@ describe('CompilationSessionPool', () => {
         [{ id: '/src/plugin-a.js', kind: 'config' as const }],
       ]] as const,
     }))
-    const second = await pool.run(request, async compilation => ({
+    const changes = createCompilationDependencyChanges(['/src/plugin-a.js'])
+    expect(pool.getAffectedScopes(changes)).toEqual(new Set([componentScope.id]))
+    expect(pool.getScopeDependencyRevision(componentScope.id)).toBe(0)
+    expect(pool.recordDependencyChanges(changes)).toEqual(new Set([componentScope.id]))
+    expect(pool.getScopeDependencyRevision(componentScope.id)).toBe(1)
+    const second = await pool.run({ ...request, changes }, async compilation => ({
       classSet: compilation.candidates,
       dependenciesBySource: [[
         '/src/app.css',
@@ -187,6 +192,8 @@ describe('CompilationSessionPool', () => {
       kind: 'depends-on',
     })
     expect(second.compilation.revision).toBe(2)
+    expect(second.compilation.invalidatedScopes).toEqual(new Set([componentScope.id]))
+    expect(pool.getScopeDependencyRevision(componentScope.id)).toBe(1)
     expect(second.compilation.graphNodes).toContainEqual(expect.objectContaining({
       id: 'dependency:/src/plugin-b.js',
       kind: 'config',

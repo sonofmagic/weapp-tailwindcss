@@ -1,6 +1,7 @@
-import type { CompilationScopeDependency, CompilationScopeGraphSource } from './compilation-scope-graph'
-import type { CompilationResult, SourceKind, SourceScope } from './types'
-import { createCompilationScopeGraph, dependencySignature, mergeCompilationScopeDependencies, sourceNodeId } from './compilation-scope-graph'
+import type { CompilationDependencyChange, CompilationScopeDependency, CompilationScopeGraphSource } from './compilation-scope-graph'
+import type { CompilationChange, CompilationResult, SourceKind, SourceScope } from './types'
+import { CompilationDependencyState } from './compilation-dependency-state'
+import { createCompilationScopeGraph, dependencyNodeId, dependencySignature, mergeCompilationScopeDependencies, sourceNodeId } from './compilation-scope-graph'
 import { DefaultCompilationSession } from './session'
 
 const COMPILATION_SCOPE_CACHE_MAX = 128
@@ -20,6 +21,7 @@ export interface CompilationScopeRequest {
   scope: SourceScope
   outputId: string
   sources: CompilationScopeSource[]
+  changes?: CompilationDependencyChange[] | undefined
   preserveDeletedCss?: boolean | undefined
 }
 
@@ -58,6 +60,7 @@ function cloneScopeSource(source: CompilationScopeSource): CompilationScopeSourc
 }
 
 export class CompilationSessionPool {
+  private readonly dependencyState = new CompilationDependencyState()
   private readonly entries = new Map<string, CompilationScopeEntry>()
   private disposed = false
 
@@ -77,6 +80,7 @@ export class CompilationSessionPool {
     entry.active = false
     void entry.pending.then(() => entry.session.dispose())
     this.entries.delete(scopeId)
+    this.dependencyState.delete(scopeId)
   }
 
   dispose() {
@@ -85,11 +89,24 @@ export class CompilationSessionPool {
       void entry.pending.then(() => entry.session.dispose())
     }
     this.entries.clear()
+    this.dependencyState.clear()
     this.disposed = true
   }
 
   get size() {
     return this.entries.size
+  }
+
+  getAffectedScopes(changes: Iterable<CompilationDependencyChange>) {
+    return this.dependencyState.getAffectedScopes(this.entries.values(), changes)
+  }
+
+  recordDependencyChanges(changes: Iterable<CompilationDependencyChange>) {
+    return this.dependencyState.record(this.entries.values(), changes)
+  }
+
+  getScopeDependencyRevision(scopeId: string) {
+    return this.dependencyState.getRevision(scopeId)
   }
 
   private getEntry(scope: SourceScope) {
@@ -172,7 +189,10 @@ export class CompilationSessionPool {
     request: CompilationScopeRequest,
   ) {
     const nextSources = new Map(request.sources.map(source => [source.id, cloneScopeSource(source)]))
-    const changes = []
+    const changes: CompilationChange[] = [...request.changes ?? []].map(change => ({
+      sourceId: dependencyNodeId(change.id),
+      type: change.type,
+    }))
     for (const sourceId of entry.sources.keys()) {
       if (!nextSources.has(sourceId)) {
         changes.push({ sourceId: sourceNodeId(sourceId), type: 'source-removed' as const })

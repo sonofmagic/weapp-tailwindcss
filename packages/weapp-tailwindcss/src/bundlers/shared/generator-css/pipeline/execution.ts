@@ -215,6 +215,7 @@ export async function executeGeneratorPipeline(
     const execution = await compilationPool.run({
       scope: options.compilation.scope,
       outputId: options.outputFile ?? file,
+      changes: options.compilation.changes,
       sources: preparedGenerationInputs.map(input => ({
         id: input.sourceId,
         kind: 'css',

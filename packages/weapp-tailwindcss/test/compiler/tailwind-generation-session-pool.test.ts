@@ -32,6 +32,11 @@ describe('tailwind generation session pool', () => {
     expect(dispose).toHaveBeenCalledTimes(1)
     await pool.generate(source as any)
     expect(createGenerator).toHaveBeenCalledTimes(2)
+
+    pool.invalidate({ type: 'dependencies', paths: ['/workspace/tailwind.config.js'] })
+    expect(dispose).toHaveBeenCalledTimes(2)
+    await pool.generate(source as any)
+    expect(createGenerator).toHaveBeenCalledTimes(3)
   })
 
   it('rejects work and disposes generators after pool disposal', async () => {

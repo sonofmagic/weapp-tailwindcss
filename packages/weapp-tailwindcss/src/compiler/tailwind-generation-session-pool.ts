@@ -6,6 +6,7 @@ const SESSION_ENGINE_CACHE_MAX = 32
 
 export type TailwindGenerationPoolChange
   = | { type: 'all' }
+    | { type: 'dependencies', paths?: Iterable<string> | undefined }
     | { type: 'source', source: TailwindResolvedSource }
 
 function createSourceKey(source: TailwindResolvedSource) {
@@ -38,7 +39,7 @@ export class TailwindGenerationSessionPool {
   }
 
   invalidate(change: TailwindGenerationPoolChange) {
-    if (change.type === 'all') {
+    if (change.type === 'all' || change.type === 'dependencies') {
       for (const generator of this.generators.values()) {
         disposeGenerator(generator)
       }

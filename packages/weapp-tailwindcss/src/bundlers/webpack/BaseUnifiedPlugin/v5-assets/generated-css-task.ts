@@ -34,7 +34,7 @@ import {
 } from './pipeline-helpers'
 
 export async function processWebpackGeneratedCssAsset(element: any, context: WebpackCssAssetTaskContext) {
-  const { ConcatSource, assetHashByChunk, compilation, compilerOptions, configuredCssEntryFiles, configuredMainCssEntryFiles, createRuntimeSetHash, cssSourceTraceSignature, cssSources, cssTaskFactories, debug, enqueueTask, finalizeCssAssetSource, finalizeTracedCss, generatedCssSources, generatorRuntimeSet, getCssHandlerOptions, getCssUserHandlerOptions, getGeneratorRuntimeSet, hasConfiguredTailwindV4SourceRoots, isSameWebpackSourceScope, isWebGeneratorTarget, rememberProcessCacheKey, resolveWebpackCssSourceFile, runtimeAffectingSourceHash, runtimeState, transformRuntimeSet, updateAssetIfChanged, watchMode, webpackSourceCandidateValueSignature, webpackSourceCandidates } = context
+  const { ConcatSource, affectedCompilationScopes, assetHashByChunk, compilation, compilationChanges, compilerOptions, configuredCssEntryFiles, configuredMainCssEntryFiles, createRuntimeSetHash, cssSourceTraceSignature, cssSources, cssTaskFactories, debug, enqueueTask, finalizeCssAssetSource, finalizeTracedCss, generatedCssSources, generatorRuntimeSet, getCompilationDependencyRevision, getCssHandlerOptions, getCssUserHandlerOptions, getGeneratorRuntimeSet, hasConfiguredTailwindV4SourceRoots, isSameWebpackSourceScope, isWebGeneratorTarget, rememberProcessCacheKey, resolveWebpackCssSourceFile, runtimeAffectingSourceHash, runtimeState, transformRuntimeSet, updateAssetIfChanged, watchMode, webpackSourceCandidateValueSignature, webpackSourceCandidates } = context
   const [file, originalSource] = element
   const currentRawSource = originalSource.source().toString()
   const chunkHash = assetHashByChunk.get(file)
@@ -42,6 +42,14 @@ export async function processWebpackGeneratedCssAsset(element: any, context: Web
   const hashKey = `${file}:asset`
   rememberProcessCacheKey(cacheKey, hashKey)
   const cssHandlerOptionsForHash = getCssHandlerOptions(file, currentRawSource)
+  const compilationScope = {
+    id: file,
+    kind: cssHandlerOptionsForHash.isMainChunk ? 'global' as const : 'component' as const,
+  }
+  const scopeCompilationChanges = affectedCompilationScopes.has(compilationScope.id)
+    ? compilationChanges
+    : undefined
+  const compilationDependencyRevision = getCompilationDependencyRevision(compilationScope.id)
   const cssChunkHash = watchMode
     && cssHandlerOptionsForHash.isMainChunk
     ? undefined
@@ -60,7 +68,7 @@ export async function processWebpackGeneratedCssAsset(element: any, context: Web
   const runtimeAwareHash = createRuntimeAwareCssHash(
     cssChunkHash,
     compilerOptions.cache.computeHash(currentRawSource),
-    `${createRuntimeSetHash(getGeneratorRuntimeSet())}:${runtimeAffectingSourceHash}:${webpackSourceCandidates?.signatureHash ?? 'source-candidates:0'}:${webpackSourceCandidateValueSignature}:${cssSourceTraceSignature}:${cssSourceHash}`,
+    `${createRuntimeSetHash(getGeneratorRuntimeSet())}:${runtimeAffectingSourceHash}:${webpackSourceCandidates?.signatureHash ?? 'source-candidates:0'}:${webpackSourceCandidateValueSignature}:${cssSourceTraceSignature}:${cssSourceHash}:compiler-dependencies:${compilationDependencyRevision}`,
   )
   await enqueueTask(async () => {
     await processCachedTask({
@@ -407,11 +415,13 @@ export async function processWebpackGeneratedCssAsset(element: any, context: Web
           file,
           cssHandlerOptions: generatorCssHandlerOptions,
           cssUserHandlerOptions: getCssUserHandlerOptions(file),
+          compilationChanges: scopeCompilationChanges,
           frameworkPostcssOwner: compilerOptions,
           cssStage: 'framework-processed',
           getSourceCandidatesForEntries: webpackSourceCandidates?.getSourceCandidatesForEntries,
           sourceCandidates: scopedGeneratorRuntimeSet,
           restoreLocalCssImports: false,
+          scope: compilationScope,
           styleHandler: compilerOptions.styleHandler,
           debug,
         }
@@ -438,6 +448,9 @@ export async function processWebpackGeneratedCssAsset(element: any, context: Web
         }
         else {
           debug('css generator skipped for plain webpack css asset: %s', file)
+        }
+        for (const dependency of generated?.dependencies ?? []) {
+          compilation.fileDependencies?.add?.(dependency)
         }
         return finalizeWebpackGeneratedCssResult({
           ConcatSource,
