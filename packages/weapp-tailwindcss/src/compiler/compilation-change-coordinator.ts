@@ -62,6 +62,11 @@ export class CompilationChangeCoordinator {
     return [...pendingChanges.values()].map(change => ({ ...change }))
   }
 
+  invalidateScope(scopeId: string) {
+    this.pendingChangesByScope.delete(scopeId)
+    this.compilationPool.invalidateScope(scopeId)
+  }
+
   getScopeDependencyRevision(scopeId: string) {
     return this.compilationPool.getScopeDependencyRevision(scopeId)
   }
@@ -94,4 +99,8 @@ export function consumeCompilationScopeChanges(owner: object, scopeId: string) {
 
 export function getCompilationScopeDependencyRevision(owner: object, scopeId: string) {
   return getCompilationChangeCoordinator(owner).getScopeDependencyRevision(scopeId)
+}
+
+export function invalidateCompilationScope(owner: object, scopeId: string) {
+  getCompilationChangeCoordinator(owner).invalidateScope(scopeId)
 }

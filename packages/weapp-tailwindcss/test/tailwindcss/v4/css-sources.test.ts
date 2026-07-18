@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { filterTailwindV4CssSourceRoots, hasConfiguredTailwindV4CssRoots, hasCssSourcesValue, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
+import { filterTailwindV4CssSourceRoots, hasConfiguredTailwindV4CssRoots, hasCssSourcesValue, removeTailwindV4CssSource, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 
 describe('tailwindcss/v4/css-sources', () => {
   it('normalizes auto css source base so @source paths stay relative to the css file', () => {
@@ -109,5 +109,24 @@ describe('tailwindcss/v4/css-sources', () => {
       css: '@import "tailwindcss";\n@source "./pages/**/*";',
       dependencies: ['/project/src/other.config.js'],
     }])
+  })
+
+  it('removes an auto css source by its normalized file identity', () => {
+    const options = {
+      tailwindcss: {
+        v4: {
+          cssSources: [
+            { file: '/project/src/app.css', css: '@import "tailwindcss";' },
+            { file: '/project/src/page.css', css: '@import "tailwindcss" source(none);' },
+          ],
+        },
+      },
+    }
+
+    expect(removeTailwindV4CssSource(options, '/project/src/app.css')).toBe(true)
+    expect(removeTailwindV4CssSource(options, '/project/src/missing.css')).toBe(false)
+    expect(options.tailwindcss.v4.cssSources).toEqual([
+      { file: '/project/src/page.css', css: '@import "tailwindcss" source(none);' },
+    ])
   })
 })

@@ -8,9 +8,9 @@ import { shouldSkipJsTransform } from '@/js/precheck'
 import { processCachedTask } from '../../../shared/cache'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap } from '../../../shared/css-source-trace'
 import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../../../shared/generated-css-marker'
-import { generateCssByGenerator } from '../../../shared/generator-css'
 import { finalizeMiniProgramGeneratorCss } from '../../../shared/generator-css/generation-helpers'
 import { rewriteLocalCssImportRequestsForOutput } from '../../../shared/generator-css/local-imports'
+import { generateTailwindV4Css } from '../../../shared/v4-generation-core'
 import { createVinylTransform } from '../../vinyl-transform'
 import { pruneGulpProcessCache, rememberGulpProcessCacheKey } from './cache-state'
 
@@ -32,6 +32,7 @@ export interface GulpFileTransformContext {
   ) => string
   debug: DebugFunction
   generatedCssPreflightModeByFile: Map<string, { inject: boolean, preserve: boolean }>
+  getCompilationDependencyRevision: (scopeId: string) => number
   getSourceCandidateGetter: () => ((entries?: unknown) => Set<string>) | undefined
   getSourceCandidateSourceGetter: () => ((entries?: unknown) => Map<string, Set<string>>) | undefined
   getRuntimeSet: () => Set<string>
@@ -41,6 +42,7 @@ export interface GulpFileTransformContext {
   refreshRuntimeSet: (options?: RuntimeRefreshOptions) => Promise<Set<string>>
   refreshRuntimeSetForSource: (file: File, rawSource: string, type: 'html' | 'js') => Promise<Set<string>>
   registerAutoCssSource: (file: File, rawSource: string) => Promise<boolean>
+  rememberCompilationScope: (sourceFile: string, scopeId: string) => void
   resolveGulpStyleOutputExtension: (file: File) => string | undefined
   resolveGulpTransformTimingDetails: (phase: string) => unknown
   resolveModuleGraphOptions: (moduleGraph?: JsModuleGraphOptions) => JsModuleGraphOptions
@@ -56,6 +58,7 @@ export function createGulpFileTransforms(context: GulpFileTransformContext) {
     createRuntimeSetHash,
     debug,
     generatedCssPreflightModeByFile,
+    getCompilationDependencyRevision,
     getSourceCandidateGetter,
     getSourceCandidateSourceGetter,
     getRuntimeSet,
@@ -65,6 +68,7 @@ export function createGulpFileTransforms(context: GulpFileTransformContext) {
     refreshRuntimeSet,
     refreshRuntimeSetForSource,
     registerAutoCssSource,
+    rememberCompilationScope,
     resolveGulpStyleOutputExtension,
     resolveGulpTransformTimingDetails,
     resolveModuleGraphOptions,
@@ -104,9 +108,18 @@ export function createGulpFileTransforms(context: GulpFileTransformContext) {
         ? `gulp-source-candidates:1:${[...gulpSourceCandidateGetter(undefined)].sort().join('\n')}`
         : undefined
       const styleOutputExtension = resolveGulpStyleOutputExtension(file)
-      const outputSignature = styleOutputExtension
+      const cssHandlerOptions = resolveWxssFileHandlerOptions(file, rawSource, options)
+      const outputFile = (file.relative || path.basename(file.path)).replaceAll(path.sep, '/')
+      const compilationScope = {
+        id: outputFile,
+        kind: cssHandlerOptions.isMainChunk ? 'global' as const : 'component' as const,
+      }
+      rememberCompilationScope(file.path, compilationScope.id)
+      const compilationDependencyRevision = getCompilationDependencyRevision(compilationScope.id)
+      const outputSignatureBase = styleOutputExtension
         ? `gulp-output:1:${stage}:${styleOutputExtension}`
         : `gulp-output:0:${stage}`
+      const outputSignature = `${outputSignatureBase}:compiler-dependencies:${compilationDependencyRevision}`
       await processCachedTask<string>({
         cache,
         cacheKey: file.path,
@@ -119,14 +132,15 @@ export function createGulpFileTransforms(context: GulpFileTransformContext) {
         },
         async transform() {
           await runtimeState.readyPromise
-          const cssHandlerOptions = resolveWxssFileHandlerOptions(file, rawSource, options)
           const generated = shouldUseGenerator
-            ? await generateCssByGenerator({
+            ? await generateTailwindV4Css({
                 opts,
                 runtimeState,
                 runtime: nextRuntimeSet,
                 rawSource,
                 file: file.path,
+                outputFile,
+                scope: compilationScope,
                 cssHandlerOptions,
                 cssUserHandlerOptions: resolveWxssUserHandlerOptions(options),
                 getSourceCandidatesForEntries: gulpSourceCandidateGetter,

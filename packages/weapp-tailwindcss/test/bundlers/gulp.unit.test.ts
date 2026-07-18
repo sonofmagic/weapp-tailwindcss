@@ -105,6 +105,7 @@ describe('bundlers/gulp createPlugins', () => {
   afterEach(() => {
     delete process.env.WEAPP_TW_HMR_MEMORY_DEBUG
     delete process.env.WEAPP_TW_WATCH_REGRESSION
+    vi.unstubAllEnvs()
     vi.restoreAllMocks()
   })
 
@@ -571,6 +572,97 @@ describe('bundlers/gulp createPlugins', () => {
       vi.doUnmock('@/generator')
       vi.resetModules()
       await rm(dir, { force: true, recursive: true })
+    }
+  })
+
+  it('rebuilds graph css when gulp watch reports generation dependency updates and deletes', async () => {
+    vi.stubEnv('WEAPP_TAILWINDCSS_COMPILER', 'graph')
+    tailwindRuntime.majorVersion = 4
+    currentContext.cssMatcher = vi.fn((id: string) => id.endsWith('.css'))
+    currentContext.mainCssChunkMatcher = vi.fn((name: string) => name === 'styles/root.css')
+    const dependency = '/project/tailwind.config.ts'
+    let generation = 0
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => {
+      generation += 1
+      const css = `.generation-${generation}{display:block}`
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set(candidates),
+        dependencies: [dependency],
+        sources: [],
+        root: null,
+      }
+    })
+    const dispose = vi.fn()
+    const createGenerator = vi.fn(() => ({
+      dispose,
+      generate: generateMock,
+    }))
+    vi.resetModules()
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: createGenerator,
+      normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        enabled: true,
+        hmr: { preserveDeletedCss: false },
+        importFallback: false,
+        target: 'weapp',
+        styleOptions: {},
+      })),
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: '/project',
+        base: options.base ?? '/src/styles',
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: '/project',
+        base: '/src/styles',
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: '/project',
+        baseFallbacks: [],
+      })),
+    }))
+
+    try {
+      const { createPlugins: createMockedPlugins } = await import('@/bundlers/gulp')
+      const plugins = createMockedPlugins()
+      const createCssFile = () => createFile('/src/styles/root.css', '@import "tailwindcss";')
+
+      const first = await runTransform(plugins.generateWxss(), createCssFile())
+      const cached = await runTransform(plugins.generateWxss(), createCssFile())
+
+      expect(first.contents?.toString()).toContain('.generation-1{display:block}')
+      expect(cached.contents?.toString()).toBe(first.contents?.toString())
+      expect(generateMock).toHaveBeenCalledTimes(1)
+
+      await expect(plugins.watchChange(dependency)).resolves.toEqual(new Set(['styles/root.css']))
+      const updated = await runTransform(plugins.generateWxss(), createCssFile())
+      expect(updated.contents?.toString()).toContain('.generation-2{display:block}')
+      expect(generateMock).toHaveBeenCalledTimes(2)
+
+      await expect(plugins.watchChange(dependency, { event: 'delete' })).resolves.toEqual(new Set(['styles/root.css']))
+      const deleted = await runTransform(plugins.generateWxss(), createCssFile())
+      expect(deleted.contents?.toString()).toContain('.generation-3{display:block}')
+      expect(generateMock).toHaveBeenCalledTimes(3)
+      expect(createGenerator).toHaveBeenCalledTimes(3)
+      expect(dispose).toHaveBeenCalledTimes(2)
+
+      expect(currentContext.tailwindcss?.v4?.cssSources).toEqual([
+        expect.objectContaining({ file: '/src/styles/root.css' }),
+      ])
+      await plugins.watchChange('/src/styles/root.css', { event: 'delete' })
+      expect(currentContext.tailwindcss?.v4?.cssSources).toEqual([])
+    }
+    finally {
+      vi.doUnmock('@/generator')
+      vi.resetModules()
     }
   })
 

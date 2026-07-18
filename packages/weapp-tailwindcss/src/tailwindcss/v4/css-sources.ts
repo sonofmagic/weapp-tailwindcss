@@ -119,3 +119,30 @@ export function upsertTailwindV4CssSource(
   }
   return true
 }
+
+export function removeTailwindV4CssSource(
+  opts: UserDefinedOptions,
+  file: string,
+) {
+  const tailwindcss = opts.tailwindcss
+  const v4 = tailwindcss?.v4
+  const cssSources = v4?.cssSources
+  if (!cssSources || cssSources.length === 0) {
+    return false
+  }
+  const sourceFile = normalizeCssSourceFile(file)
+  const nextCssSources = cssSources.filter(
+    source => normalizeCssSourceFile(source.file) !== sourceFile,
+  )
+  if (nextCssSources.length === cssSources.length) {
+    return false
+  }
+  opts.tailwindcss = {
+    ...tailwindcss,
+    v4: {
+      ...v4,
+      cssSources: nextCssSources,
+    },
+  }
+  return true
+}

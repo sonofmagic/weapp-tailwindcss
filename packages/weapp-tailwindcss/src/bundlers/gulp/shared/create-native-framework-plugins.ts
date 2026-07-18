@@ -7,13 +7,13 @@ import { prependConfigDirective } from '@/bundlers/shared/generator-css/config-d
 import { hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { createSourceCandidateCollector } from '@/bundlers/shared/source-candidates'
 import { resolveSourceScanEntries } from '@/bundlers/shared/source-scan'
-import { createRuntimeCompilationBuildState, removeRuntimeCompilationBuildStateFiles, updateRuntimeCompilationBuildState } from '@/compiler'
+import { createCompilationDependencyChanges, createRuntimeCompilationBuildState, getCompilationScopeDependencyRevision, invalidateCompilationScope, recordCompilationDependencyChanges, removeRuntimeCompilationBuildStateFiles, updateRuntimeCompilationBuildState } from '@/compiler'
 import { getCompilerContext } from '@/context'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { createDebug } from '@/debug'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
-import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
+import { hasConfiguredTailwindV4CssRoots, removeTailwindV4CssSource, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { splitLocalCssImports } from '../../shared/generator-css/local-imports'
 import { createRuntimeClassSetManager } from '../../shared/runtime-class-set'
 import { createGulpModuleGraphOptions } from '../module-graph'
@@ -26,6 +26,7 @@ import {
 import { createGulpFileTransforms } from './create-native-framework-plugins/file-transforms'
 
 const debug = createDebug()
+const GULP_COMPILATION_SCOPE_CACHE_MAX = 512
 
 /**
  * @name weapp-tw-gulp
@@ -63,6 +64,7 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
   const runtimeSourcesByFile = new Map<string, { source: string, type: 'html' | 'js' }>()
   const runtimeSnapshotState = createRuntimeCompilationBuildState()
   const generatedCssPreflightModeByFile = new Map<string, { inject: boolean, preserve: boolean }>()
+  const compilationScopeBySourceFile = new Map<string, string>()
   let cachedGulpSourceCandidateSignature: string | undefined
   const gulpProcessCacheKeys = new Set<string>()
   const bundleRuntimeClassSetManager: RuntimeClassSetManager
@@ -345,11 +347,56 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
     }
   }
 
-  return createGulpFileTransforms({
+  function rememberCompilationScope(sourceFile: string, scopeId: string) {
+    touchMapEntry(compilationScopeBySourceFile, path.resolve(sourceFile), scopeId)
+    while (compilationScopeBySourceFile.size > GULP_COMPILATION_SCOPE_CACHE_MAX) {
+      const oldestSourceFile = compilationScopeBySourceFile.keys().next().value
+      if (typeof oldestSourceFile !== 'string') {
+        break
+      }
+      compilationScopeBySourceFile.delete(oldestSourceFile)
+    }
+  }
+
+  /** 记录 Gulp watcher 提交的源码或生成依赖变化。 */
+  async function watchChange(
+    id: string,
+    change: { event: 'update' | 'delete' } = { event: 'update' },
+  ) {
+    const file = path.resolve(id)
+    const affectedScopes = recordCompilationDependencyChanges(
+      runtimeState,
+      createCompilationDependencyChanges([file]),
+    )
+    invalidateGulpSourceCandidates()
+    if (change.event === 'delete') {
+      const removedRuntimeSource = runtimeSourcesByFile.delete(file)
+      const removedCssSource = removeTailwindV4CssSource(opts, file)
+      const removedScopeId = compilationScopeBySourceFile.get(file)
+      if (removedScopeId) {
+        invalidateCompilationScope(runtimeState, removedScopeId)
+        compilationScopeBySourceFile.delete(file)
+      }
+      removeRuntimeCompilationBuildStateFiles(runtimeSnapshotState, [file])
+      generatedCssPreflightModeByFile.delete(file)
+      gulpProcessCacheKeys.delete(file)
+      cache.instance.delete(file)
+      cache.hashMap.delete(file)
+      if (removedRuntimeSource || removedCssSource) {
+        runtimeSetInitialized = false
+        runtimeSetDirty = true
+        await bundleRuntimeClassSetManager.reset()
+      }
+    }
+    return affectedScopes
+  }
+
+  const transforms = createGulpFileTransforms({
     cache,
     createRuntimeSetHash,
     debug,
     generatedCssPreflightModeByFile,
+    getCompilationDependencyRevision: scopeId => getCompilationScopeDependencyRevision(runtimeState, scopeId),
     getSourceCandidateGetter: () => cachedGulpSourceCandidateGetter,
     getSourceCandidateSourceGetter: () => cachedGulpSourceCandidateSourceGetter,
     getRuntimeSet: () => runtimeSet,
@@ -359,6 +406,7 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
     refreshRuntimeSet,
     refreshRuntimeSetForSource,
     registerAutoCssSource,
+    rememberCompilationScope,
     resolveGulpStyleOutputExtension,
     resolveGulpTransformTimingDetails,
     resolveModuleGraphOptions,
@@ -367,4 +415,8 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
     resolveWxssUserHandlerOptions,
     runtimeState,
   })
+  return {
+    ...transforms,
+    watchChange,
+  }
 }

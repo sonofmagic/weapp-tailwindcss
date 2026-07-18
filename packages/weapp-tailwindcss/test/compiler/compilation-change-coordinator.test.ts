@@ -5,6 +5,7 @@ import {
   getCompilationSessionPool,
   getCompilationScopeDependencyRevision,
   getTailwindGenerationSessionPool,
+  invalidateCompilationScope,
   recordCompilationDependencyChanges,
 } from '@/compiler'
 
@@ -57,5 +58,10 @@ describe('CompilationChangeCoordinator', () => {
     recordCompilationDependencyChanges(owner, changes)
     expect(getCompilationScopeDependencyRevision(owner, scope.id)).toBe(2)
     expect(invalidate).toHaveBeenCalledTimes(3)
+
+    invalidateCompilationScope(owner, scope.id)
+    expect(getCompilationScopeDependencyRevision(owner, scope.id)).toBe(0)
+    expect(consumeCompilationScopeChanges(owner, scope.id)).toBeUndefined()
+    expect(recordCompilationDependencyChanges(owner, changes)).toEqual(new Set())
   })
 })
