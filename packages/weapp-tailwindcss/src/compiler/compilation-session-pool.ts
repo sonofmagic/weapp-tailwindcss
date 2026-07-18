@@ -101,8 +101,16 @@ export class CompilationSessionPool {
     return this.dependencyState.getAffectedScopes(this.entries.values(), changes)
   }
 
+  getAffectedScopeChanges(changes: Iterable<CompilationDependencyChange>) {
+    return this.dependencyState.getAffectedScopeChanges(this.entries.values(), changes)
+  }
+
   recordDependencyChanges(changes: Iterable<CompilationDependencyChange>) {
     return this.dependencyState.record(this.entries.values(), changes)
+  }
+
+  recordAffectedScopes(scopeIds: Iterable<string>) {
+    this.dependencyState.recordScopes(scopeIds)
   }
 
   getScopeDependencyRevision(scopeId: string) {

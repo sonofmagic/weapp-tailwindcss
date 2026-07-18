@@ -144,4 +144,47 @@ describe('graph generation compilation session', () => {
     expect(currentResult?.classSet).toEqual(new Set(['m-2']))
     await expect(staleResult).resolves.toBeUndefined()
   })
+
+  it('consumes dependency changes once and disables stale incremental css append', async () => {
+    vi.stubEnv('WEAPP_TAILWINDCSS_COMPILER', 'graph')
+    const dependency = '/workspace/tailwind.config.ts'
+    const generate = vi.fn(async (options: any) => {
+      const classSet = new Set<string>(options.candidates)
+      return {
+        css: '.fresh{display:block}',
+        rawCss: '.fresh{display:block}',
+        incrementalCss: '.incremental{display:block}',
+        target: 'web',
+        classSet,
+        rawCandidates: classSet,
+        dependencies: [dependency],
+        sources: [],
+        root: null,
+      }
+    })
+    vi.doMock('@/generator', () => createGeneratorModule(generate))
+    const compiler = await import('@/compiler')
+    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    const runtimeState = {
+      tailwindRuntime: { majorVersion: 4 },
+      readyPromise: Promise.resolve(),
+    }
+
+    await generateTailwindV4Css(createOptions(runtimeState, ['block']))
+    compiler.recordCompilationDependencyChanges(
+      runtimeState,
+      compiler.createCompilationDependencyChanges([dependency]),
+    )
+    const result = await generateTailwindV4Css({
+      ...createOptions(runtimeState, ['block']),
+      previousClassSet: new Set(['stale']),
+      previousCss: '.stale{display:none}',
+    })
+
+    expect(result?.css).toBe('.fresh{display:block}')
+    expect(result?.css).not.toContain('stale')
+    expect(result?.css).not.toContain('incremental')
+    expect(result?.metadata.revision).toBe(2)
+    expect(compiler.consumeCompilationScopeChanges(runtimeState, 'app.css')).toBeUndefined()
+  })
 })

@@ -656,6 +656,92 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     expect(lastRuntime.has('bg-[blue]')).toBe(true)
   })
 
+  it('merges duplicate vite dependency events into one compiler changeset', async () => {
+    const dependency = '/project/tailwind.config.ts'
+    const context = createContext({
+      appType: 'uni-app-vite',
+      cssEntries: ['/project/src/tailwind.css'],
+      tailwindcssBasedir: '/project',
+      mainCssChunkMatcher: vi.fn((file: string) => file.endsWith('tailwind.css')),
+    })
+    setCurrentContext(context)
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const compiler = await import('@/compiler')
+    let runtimeState: object | undefined
+    let scopeId: string | undefined
+    mocks.generateTailwindV4Css.mockImplementation(async (options: any) => {
+      runtimeState = options.runtimeState
+      scopeId = options.outputFile ?? options.file
+      const scope = {
+        id: scopeId!,
+        kind: options.cssHandlerOptions.isMainChunk ? 'global' as const : 'component' as const,
+      }
+      await compiler.getCompilationSessionPool(runtimeState!).run({
+        scope,
+        outputId: scope.id,
+        sources: [{
+          id: options.file,
+          kind: 'css',
+          candidates: options.runtime,
+        }],
+      }, async compilation => ({
+        classSet: compilation.candidates,
+        dependenciesBySource: [[
+          options.file,
+          [{ id: dependency, kind: 'config' as const }],
+        ]] as const,
+      }))
+      return {
+        css: '.generated{color:red}',
+        dependencies: [dependency],
+        classSet: new Set(['generated']),
+        target: 'weapp',
+      }
+    })
+    const plugins = WeappTailwindcss()!
+    const postPlugin = getPlugin(plugins, 'post')
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: '/project',
+      plugins: [{ name: 'vite:uni' }],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/dev/mp-weixin' },
+    } as any)
+    const serveCssPlugin = getPlugin(plugins, 'generate:serve')
+    await getTransformHandler(serveCssPlugin)?.call(
+      { addWatchFile: vi.fn() },
+      '@import "tailwindcss";',
+      '/project/src/tailwind.css',
+    )
+    expect(runtimeState).toBeDefined()
+    expect(scopeId).toBeDefined()
+    const generationPool = compiler.getTailwindGenerationSessionPool(runtimeState!)
+    const invalidate = vi.spyOn(generationPool, 'invalidate')
+    const sourcePlugin = getPlugin(plugins, 'source-candidates')
+
+    await sourcePlugin.watchChange?.(dependency, { event: 'update' } as any)
+    await sourcePlugin.handleHotUpdate?.({
+      file: dependency,
+      modules: [],
+      read: vi.fn(async () => 'export default {}'),
+      server: {
+        moduleGraph: {
+          getModuleById: vi.fn(),
+          getModulesByFile: vi.fn(() => []),
+          invalidateModule: vi.fn(),
+        },
+        ws: { send: vi.fn() },
+      },
+    } as any)
+
+    expect(compiler.getCompilationScopeDependencyRevision(runtimeState!, scopeId!)).toBe(1)
+    expect(invalidate).toHaveBeenCalledTimes(1)
+    expect(compiler.consumeCompilationScopeChanges(runtimeState!, scopeId!)).toEqual([
+      { id: dependency, type: 'dependency-changed' },
+    ])
+    expect(compiler.consumeCompilationScopeChanges(runtimeState!, scopeId!)).toBeUndefined()
+  })
+
   it('keeps vite serve css unchanged when generator returns no css', async () => {
     mocks.generateTailwindV4Css.mockResolvedValueOnce(undefined)
     const context = createContext({

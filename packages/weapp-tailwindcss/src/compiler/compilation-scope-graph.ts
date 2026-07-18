@@ -32,6 +32,22 @@ export function createCompilationDependencyChanges(
   return [...new Set(dependencyIds)].map(id => ({ id, type }))
 }
 
+export function mergeCompilationDependencyChanges(
+  ...groups: Array<Iterable<CompilationDependencyChange> | undefined>
+) {
+  const changes = new Map<string, CompilationDependencyChange>()
+  for (const group of groups) {
+    for (const change of group ?? []) {
+      const previous = changes.get(change.id)
+      changes.set(change.id, {
+        id: change.id,
+        type: previous?.type === 'config-changed' ? previous.type : change.type,
+      })
+    }
+  }
+  return [...changes.values()]
+}
+
 export function mergeCompilationScopeDependencies(
   ...groups: Array<Iterable<CompilationScopeDependency> | undefined>
 ) {

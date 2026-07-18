@@ -34,3 +34,5 @@ CompilationSession scope source 支持显式依赖记录，SourceGraph 为 Tailw
 Tailwind generation artifact 在生成后发现的 CSS、插件与配置依赖现在会按 source 提交到同一个 CompilationSession revision，并原子更新 SourceGraph；过期并发生成结果不能覆盖当前 revision 的 dependency edges。
 
 Webpack watch 现在把 `modifiedFiles` 与 `removedFiles` 转换为 compiler dependency ChangeSet，并依据 SourceGraph 精确判断受影响的 CSS scope；命中的 scope 通过稳定递增的 dependency revision 穿透 CSS cache，并使 Tailwind generation session 失效后重新生成，generation artifact 依赖也会注册到 Webpack `fileDependencies`。
+
+新增 bundler-neutral 的 `CompilationChangeCoordinator`，统一持有待消费的 dependency ChangeSet、scope dependency revision 与 generation session 失效状态。Webpack 改为复用该协调器；Vite 的 `watchChange` 与 `handleHotUpdate` 也会把依赖变化提交到同一契约，同一轮重复事件只递增一次 scope revision。graph 与 shadow 生成入口按 scope 原子消费 ChangeSet，依赖变化时会放弃旧 `previousCss` 与 `previousClassSet` 增量追加状态，避免 generation session 重建后把完整 CSS 重复追加到旧产物。

@@ -1,7 +1,7 @@
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css'
 import type { CompilationDependencyChange, CssStage, GenerationArtifact, SourceScope } from '@/compiler'
 import type { InternalUserDefinedOptions } from '@/types'
-import { areArtifactsSemanticallyEqual, createCssFragment, createGenerationArtifact, resolveCompilerMode } from '@/compiler'
+import { areArtifactsSemanticallyEqual, consumeCompilationScopeChanges, createCssFragment, createGenerationArtifact, mergeCompilationDependencyChanges, resolveCompilerMode } from '@/compiler'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { adaptGeneratedCssWithFrameworkPipeline, adaptGeneratedCssWithFrameworkRootPipeline, hasFrameworkPostcssOptions } from './framework-postcss'
 import { generateCssByGenerator } from './generator-css'
@@ -28,6 +28,29 @@ export interface TailwindV4GenerationCoreResult extends GenerateCssByGeneratorRe
 interface GenerationImplementationOptions {
   emitArtifact: boolean
   frameworkAdapter: 'legacy' | 'graph'
+}
+
+function resolveGenerationOptions(
+  options: TailwindV4GenerationCoreInput,
+  mode: ReturnType<typeof resolveCompilerMode>,
+) {
+  if (mode === 'legacy') {
+    return options
+  }
+  const scopeId = options.scope?.id ?? options.outputFile ?? options.file
+  const compilationChanges = mergeCompilationDependencyChanges(
+    options.compilationChanges,
+    consumeCompilationScopeChanges(options.runtimeState, scopeId),
+  )
+  if (compilationChanges.length === 0) {
+    return options
+  }
+  return {
+    ...options,
+    compilationChanges,
+    previousClassSet: undefined,
+    previousCss: undefined,
+  }
 }
 
 function createCoreArtifact(
@@ -146,24 +169,25 @@ export async function generateTailwindV4Css(
   options: TailwindV4GenerationCoreInput,
 ): Promise<TailwindV4GenerationCoreResult | undefined> {
   const mode = resolveCompilerMode()
+  const generationOptions = resolveGenerationOptions(options, mode)
   if (mode === 'legacy') {
-    return generateTailwindV4CssWithImplementation(options, {
+    return generateTailwindV4CssWithImplementation(generationOptions, {
       emitArtifact: false,
       frameworkAdapter: 'legacy',
     })
   }
   if (mode === 'graph') {
-    return generateTailwindV4CssWithImplementation(options, {
+    return generateTailwindV4CssWithImplementation(generationOptions, {
       emitArtifact: true,
       frameworkAdapter: 'graph',
     })
   }
 
-  const legacy = await generateTailwindV4CssWithImplementation(options, {
+  const legacy = await generateTailwindV4CssWithImplementation(generationOptions, {
     emitArtifact: true,
     frameworkAdapter: 'legacy',
   })
-  const graph = await generateTailwindV4CssWithImplementation(options, {
+  const graph = await generateTailwindV4CssWithImplementation(generationOptions, {
     emitArtifact: true,
     frameworkAdapter: 'graph',
   })
@@ -176,7 +200,7 @@ export async function generateTailwindV4Css(
       && areArtifactsSemanticallyEqual(legacy.artifact, graph.artifact)
     )
   if (!matches) {
-    options.debug('compiler shadow semantic mismatch: %s', options.file)
+    generationOptions.debug('compiler shadow semantic mismatch: %s', generationOptions.file)
   }
   return legacy
 }

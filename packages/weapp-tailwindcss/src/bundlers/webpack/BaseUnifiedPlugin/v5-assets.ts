@@ -3,7 +3,7 @@ import type { WebpackCssHandlerOptions } from './v5-assets/pipeline-helpers'
 import path from 'node:path'
 import process from 'node:process'
 import { MappingChars2String } from '@weapp-core/escape'
-import { createCompilationDependencyChanges, createRuntimeCompilationAffectingSignature, createRuntimeCompilationBuildState, getCompilationSessionPool, getTailwindGenerationSessionPool, resetRuntimeCompilationBuildState, updateRuntimeCompilationBuildState } from '@/compiler'
+import { createCompilationDependencyChanges, createRuntimeCompilationAffectingSignature, createRuntimeCompilationBuildState, getCompilationScopeDependencyRevision, recordCompilationDependencyChanges, resetRuntimeCompilationBuildState, updateRuntimeCompilationBuildState } from '@/compiler'
 import { pluginName } from '@/constants'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
@@ -148,15 +148,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         )
         const watchChangedFiles = new Set([...getWatchChangedFiles?.() ?? []].map(file => path.resolve(file)))
         const compilationChanges = createCompilationDependencyChanges(watchChangedFiles)
-        const compilationPool = getCompilationSessionPool(runtimeState)
-        const affectedCompilationScopes = compilationPool.recordDependencyChanges(compilationChanges)
-        const getCompilationDependencyRevision = (scopeId: string) => compilationPool.getScopeDependencyRevision(scopeId)
-        if (affectedCompilationScopes.size > 0) {
-          getTailwindGenerationSessionPool(runtimeState).invalidate({
-            type: 'dependencies',
-            paths: compilationChanges.map(change => change.id),
-          })
-        }
+        const affectedCompilationScopes = recordCompilationDependencyChanges(runtimeState, compilationChanges)
+        const getCompilationDependencyRevision = (scopeId: string) => getCompilationScopeDependencyRevision(runtimeState, scopeId)
         const taskConcurrency = watchMode ? resolveTaskConcurrency(1) : undefined
         const activeProcessCacheKeys = new Set<string>()
         const activeProcessHashKeys = new Set<string | number>()

@@ -14,14 +14,26 @@ export class CompilationDependencyState {
     entries: Iterable<CompilationDependencyScopeEntry>,
     changes: Iterable<CompilationDependencyChange>,
   ) {
-    const changedNodeIds = new Set([...changes].map(change => dependencyNodeId(change.id)))
-    const affectedScopes = new Set<string>()
+    return new Set(this.getAffectedScopeChanges(entries, changes).keys())
+  }
+
+  getAffectedScopeChanges(
+    entries: Iterable<CompilationDependencyScopeEntry>,
+    changes: Iterable<CompilationDependencyChange>,
+  ) {
+    const changesByNodeId = new Map(
+      [...changes].map(change => [dependencyNodeId(change.id), change]),
+    )
+    const affectedScopeChanges = new Map<string, CompilationDependencyChange[]>()
     for (const entry of entries) {
-      if (entry.latest?.graphNodes.some(node => changedNodeIds.has(node.id))) {
-        affectedScopes.add(entry.scope.id)
+      const scopeChanges = entry.latest?.graphNodes
+        .map(node => changesByNodeId.get(node.id))
+        .filter((change): change is CompilationDependencyChange => change !== undefined)
+      if (scopeChanges && scopeChanges.length > 0) {
+        affectedScopeChanges.set(entry.scope.id, scopeChanges.map(change => ({ ...change })))
       }
     }
-    return affectedScopes
+    return affectedScopeChanges
   }
 
   record(
@@ -29,10 +41,14 @@ export class CompilationDependencyState {
     changes: Iterable<CompilationDependencyChange>,
   ) {
     const affectedScopes = this.getAffectedScopes(entries, changes)
-    for (const scopeId of affectedScopes) {
+    this.recordScopes(affectedScopes)
+    return affectedScopes
+  }
+
+  recordScopes(scopeIds: Iterable<string>) {
+    for (const scopeId of scopeIds) {
       this.revisions.set(scopeId, (this.revisions.get(scopeId) ?? 0) + 1)
     }
-    return affectedScopes
   }
 
   getRevision(scopeId: string) {
