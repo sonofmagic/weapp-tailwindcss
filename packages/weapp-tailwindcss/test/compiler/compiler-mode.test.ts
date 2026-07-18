@@ -165,12 +165,21 @@ describe('compiler mode', () => {
     vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
     const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
     const debug = vi.fn()
+    const onCompilerShadowReport = vi.fn()
 
-    const result = await generateTailwindV4Css(createGenerationOptions(debug))
+    const result = await generateTailwindV4Css({
+      ...createGenerationOptions(debug),
+      onCompilerShadowReport,
+    })
 
     expect(generateCssByGenerator).toHaveBeenCalledTimes(2)
     expect(result?.css).toContain('padding')
     expect(result?.artifact.fragments).toHaveLength(1)
+    expect(onCompilerShadowReport).toHaveBeenCalledWith(expect.objectContaining({
+      file: '/workspace/src/app.css',
+      equal: true,
+      differences: [],
+    }))
     expect(debug).not.toHaveBeenCalledWith(expect.stringContaining('semantic mismatch'), expect.anything())
   })
 
@@ -182,10 +191,29 @@ describe('compiler mode', () => {
     vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
     const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
     const debug = vi.fn()
+    const onCompilerShadowReport = vi.fn()
 
-    const result = await generateTailwindV4Css(createGenerationOptions(debug))
+    const result = await generateTailwindV4Css({
+      ...createGenerationOptions(debug),
+      onCompilerShadowReport,
+    })
 
     expect(result?.css).toContain('1rem')
     expect(debug).toHaveBeenCalledWith('compiler shadow semantic mismatch: %s', '/workspace/src/app.css')
+    expect(debug).toHaveBeenCalledWith(
+      'compiler shadow semantic report: %O',
+      expect.objectContaining({ equal: false }),
+    )
+    expect(onCompilerShadowReport).toHaveBeenCalledWith(expect.objectContaining({
+      file: '/workspace/src/app.css',
+      equal: false,
+      differences: expect.arrayContaining([
+        expect.objectContaining({
+          path: '$.fragments[0].root[0].nodes[0].value',
+          left: '1rem',
+          right: '2rem',
+        }),
+      ]),
+    }))
   })
 })

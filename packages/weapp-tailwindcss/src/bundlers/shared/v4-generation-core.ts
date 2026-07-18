@@ -1,7 +1,7 @@
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css'
-import type { CompilationDependencyChange, CssStage, GenerationArtifact, SourceScope } from '@/compiler'
+import type { CompilationDependencyChange, CompilerShadowReport, CssStage, GenerationArtifact, SourceScope } from '@/compiler'
 import type { InternalUserDefinedOptions } from '@/types'
-import { areArtifactsSemanticallyEqual, consumeCompilationScopeChanges, createCssFragment, createGenerationArtifact, mergeCompilationDependencyChanges, resolveCompilerMode } from '@/compiler'
+import { consumeCompilationScopeChanges, createCompilerShadowReport, createCssFragment, createGenerationArtifact, mergeCompilationDependencyChanges, resolveCompilerMode } from '@/compiler'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { adaptGeneratedCssWithFrameworkPipeline, adaptGeneratedCssWithFrameworkRootPipeline, hasFrameworkPostcssOptions } from './framework-postcss'
 import { generateCssByGenerator } from './generator-css'
@@ -14,6 +14,7 @@ export interface TailwindV4GenerationCoreInput extends GenerateCssByGeneratorOpt
   frameworkPostcssOwner?: InternalUserDefinedOptions | undefined
   cssStage?: CssStage | undefined
   outputFile?: string | undefined
+  onCompilerShadowReport?: ((report: CompilerShadowReport) => void) | undefined
   scope?: SourceScope | undefined
   sourceCandidates?: Set<string> | undefined
 }
@@ -191,16 +192,15 @@ export async function generateTailwindV4Css(
     emitArtifact: true,
     frameworkAdapter: 'graph',
   })
-  const matches = (legacy === undefined && graph === undefined)
-    || (
-      legacy !== undefined
-      && graph !== undefined
-      && legacy.artifact !== undefined
-      && graph.artifact !== undefined
-      && areArtifactsSemanticallyEqual(legacy.artifact, graph.artifact)
-    )
-  if (!matches) {
+  const report = createCompilerShadowReport(
+    generationOptions.file,
+    legacy?.artifact,
+    graph?.artifact,
+  )
+  generationOptions.onCompilerShadowReport?.(report)
+  if (!report.equal) {
     generationOptions.debug('compiler shadow semantic mismatch: %s', generationOptions.file)
+    generationOptions.debug('compiler shadow semantic report: %O', report)
   }
   return legacy
 }
