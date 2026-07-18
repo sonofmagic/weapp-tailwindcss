@@ -48,15 +48,34 @@ describe('compiler mode', () => {
     vi.resetModules()
   })
 
-  it('defaults to legacy and accepts explicit modes', () => {
-    expect(resolveCompilerMode({})).toBe('legacy')
+  it('defaults to graph and accepts explicit modes', () => {
+    expect(resolveCompilerMode({})).toBe('graph')
     expect(resolveCompilerMode({ [COMPILER_MODE_ENV]: 'legacy' })).toBe('legacy')
     expect(resolveCompilerMode({ [COMPILER_MODE_ENV]: 'shadow' })).toBe('shadow')
+    expect(resolveCompilerMode({ [COMPILER_MODE_ENV]: 'graph' })).toBe('graph')
   })
 
-  it('keeps the default legacy path free of artifact parsing', async () => {
+  it('uses graph compilation by default', async () => {
     delete process.env[COMPILER_MODE_ENV]
-    const generateCssByGenerator = vi.fn(async () => createGeneratedResult('.p-4 { padding: 1rem; }'))
+    const generateCssByGenerator = vi.fn(async (options: { compilation?: { enabled: boolean } }) => {
+      expect(options.compilation?.enabled).toBe(true)
+      return createGeneratedResult('.p-4 { padding: 1rem; }')
+    })
+    vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
+    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+
+    const result = await generateTailwindV4Css(createGenerationOptions())
+
+    expect(generateCssByGenerator).toHaveBeenCalledTimes(1)
+    expect(result?.artifact).toBeDefined()
+  })
+
+  it('keeps the explicit legacy fallback free of graph artifacts', async () => {
+    process.env[COMPILER_MODE_ENV] = 'legacy'
+    const generateCssByGenerator = vi.fn(async (options: { compilation?: unknown }) => {
+      expect(options.compilation).toBeUndefined()
+      return createGeneratedResult('.p-4 { padding: 1rem; }')
+    })
     vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
     const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
 

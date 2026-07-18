@@ -7,5 +7,5 @@ export function resolveCompilerMode(env: NodeJS.ProcessEnv = process.env): Compi
   const value = env[COMPILER_MODE_ENV]
   return value === 'legacy' || value === 'shadow' || value === 'graph'
     ? value
-    : 'legacy'
+    : 'graph'
 }
