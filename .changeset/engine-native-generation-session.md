@@ -88,3 +88,5 @@ Vite CSS asset identity 改为优先依据 Rollup `originalFileNames`、真实 g
 Vite CSS transform 的 processed asset 复用、generator runtime 跟踪、last result replay 与缓存签名改由纯 decision/cache planner 统一计算；generateBundle 不再内联维护候选变化、stale CSS、runtime-linked source 和 cache key 的交叉判断。
 
 Vite 的 Tailwind generation、Web passthrough、mini-program import shell 与普通 style handler 改由结构化 CSS transform task 执行并返回 kind、classSet、dependencies 和 CSS；generateBundle 只消费结果登记候选、依赖与产物，不再内联四条转换分支。
+
+Vite CSS transform result 的依赖监听、classSet 合并、source diff、普通 CSS 记录与 pipeline injection 统一由 application 边界执行；transform task 不再直接修改 runtime 或 bundler port 状态。
