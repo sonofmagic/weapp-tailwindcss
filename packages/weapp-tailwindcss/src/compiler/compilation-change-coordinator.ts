@@ -3,6 +3,7 @@ import type { CompilationSessionPool } from './compilation-session-pool'
 import type { TailwindGenerationSessionPool } from './tailwind-generation-session-pool'
 import { mergeCompilationDependencyChanges } from './compilation-scope-graph'
 import { getCompilationSessionPool } from './compilation-session-pool'
+import { ensureCompilerOwnerActive } from './compiler-owner-state'
 import { getTailwindGenerationSessionPool } from './tailwind-generation-session-pool'
 
 export class CompilationChangeCoordinator {
@@ -91,6 +92,7 @@ export class CompilationChangeCoordinator {
 const compilationChangeCoordinators = new WeakMap<object, CompilationChangeCoordinator>()
 
 export function getCompilationChangeCoordinator(owner: object) {
+  ensureCompilerOwnerActive(owner)
   let coordinator = compilationChangeCoordinators.get(owner)
   if (!coordinator) {
     coordinator = new CompilationChangeCoordinator(

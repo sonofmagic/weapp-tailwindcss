@@ -1,4 +1,5 @@
 import type { CompilerShadowReport } from './shadow-report'
+import { ensureCompilerOwnerActive } from './compiler-owner-state'
 
 const COMPILER_SHADOW_REPORT_CACHE_MAX = 512
 
@@ -137,6 +138,7 @@ export class CompilerShadowReportSession {
 const compilerShadowReportSessions = new WeakMap<object, CompilerShadowReportSession>()
 
 export function getCompilerShadowReportSession(owner: object) {
+  ensureCompilerOwnerActive(owner)
   let session = compilerShadowReportSessions.get(owner)
   if (!session) {
     session = new CompilerShadowReportSession()

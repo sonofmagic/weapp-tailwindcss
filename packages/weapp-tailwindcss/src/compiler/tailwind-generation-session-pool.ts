@@ -1,6 +1,7 @@
 import type { TailwindResolvedSource, WeappTailwindcssGenerateOptions, WeappTailwindcssGenerateResult, WeappTailwindcssGenerator } from '@/generator'
 import { md5Hash } from '@/cache/md5'
 import { createWeappTailwindcssGenerator } from '@/generator'
+import { ensureCompilerOwnerActive } from './compiler-owner-state'
 
 const SESSION_ENGINE_CACHE_MAX = 32
 
@@ -91,6 +92,7 @@ export class TailwindGenerationSessionPool {
 const sessionPools = new WeakMap<object, TailwindGenerationSessionPool>()
 
 export function getTailwindGenerationSessionPool(owner: object) {
+  ensureCompilerOwnerActive(owner)
   let pool = sessionPools.get(owner)
   if (!pool) {
     pool = new TailwindGenerationSessionPool()

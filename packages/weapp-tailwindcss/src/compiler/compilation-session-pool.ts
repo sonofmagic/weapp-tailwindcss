@@ -2,6 +2,7 @@ import type { CompilationDependencyChange, CompilationScopeDependency, Compilati
 import type { CompilationChange, CompilationResult, SourceKind, SourceScope } from './types'
 import { CompilationDependencyState } from './compilation-dependency-state'
 import { createCompilationScopeGraph, dependencyNodeId, dependencySignature, mergeCompilationScopeDependencies, sourceNodeId } from './compilation-scope-graph'
+import { ensureCompilerOwnerActive } from './compiler-owner-state'
 import { DefaultCompilationSession } from './session'
 
 const COMPILATION_SCOPE_CACHE_MAX = 128
@@ -315,6 +316,7 @@ export class CompilationSessionPool {
 const compilationSessionPools = new WeakMap<object, CompilationSessionPool>()
 
 export function getCompilationSessionPool(owner: object) {
+  ensureCompilerOwnerActive(owner)
   let pool = compilationSessionPools.get(owner)
   if (!pool) {
     pool = new CompilationSessionPool()

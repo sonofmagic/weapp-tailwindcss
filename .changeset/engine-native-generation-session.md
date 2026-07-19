@@ -46,3 +46,5 @@ shadow 编译模式新增结构化 CSS 语义差异报告，按 JSONPath 定位 
 shadow report session 新增显式完成与封存语义，Vite CSS finalizer 和 Webpack `processAssets` 会在本轮所有 CSS 生成结束后自动完成，Gulp 插件提供 `completeCompilerShadowRun()` 供流任务声明结束。临时环境变量 `WEAPP_TAILWINDCSS_COMPILER_SHADOW_GATE=report|error` 可通过 `[weapp-tailwindcss:compiler-shadow]` 单行 JSON 输出门禁汇总，或在出现语义差异、截断报告、报告丢弃时中止构建；默认 `off` 不改变现有行为。
 
 新增统一 compiler owner 生命周期释放：Vite `closeBundle`、Webpack `watchClose`/`shutdown` 和 Gulp `dispose()` 会清理 CompilationSession、Tailwind generation engine、待消费 ChangeSet 与 shadow report。scope pool 会等待仍在执行的生成任务结束后再释放 session，避免 watch 关闭时出现旧生成结果写回已释放状态；同一 owner 的并发关闭会复用同一个释放任务，防止后触发的 hook 越过仍在运行的编译。
+
+compiler owner 进入释放窗口后会统一拒绝创建新的 CompilationSession、generation pool、ChangeSet coordinator 与 shadow report session，待释放完成后才允许同一 owner 开启下一轮构建，避免关闭期间出现新旧状态交叉持有。
