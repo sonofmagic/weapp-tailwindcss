@@ -1,6 +1,6 @@
 {
   "file": "src/sub-normal/pages/index.tsx",
-  "count": 23,
+  "count": 24,
   "tokens": [
     "!mt-2",
     "-translate-y-1",
@@ -11,6 +11,7 @@
     "before:content-['normal_subpackage_taro-vite-react-tailwindcss-v4']",
     "bg-[#000089]",
     "bg-[rgb(12,34,56)]",
+    "bg-normal-subpackage-marker",
     "data-[state=open]:opacity-100",
     "grid-cols-[200rpx_minmax(900rpx,_1fr)_000089px]",
     "grid-rows-[auto_minmax(0,_1fr)]",

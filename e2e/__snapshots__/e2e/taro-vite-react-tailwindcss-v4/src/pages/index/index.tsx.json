@@ -1,9 +1,10 @@
 {
   "file": "src/pages/index/index.tsx",
-  "count": 58,
+  "count": 63,
   "tokens": [
     "!bg-[gray]",
     "after:!content-['good_work!']",
+    "any-hover:bg-slate-800",
     "bg-[#0977ee]",
     "bg-[#123456]",
     "bg-[#68c828]",
@@ -32,6 +33,7 @@
     "h-[45px]",
     "mt-2",
     "mt-4",
+    "not-wx:bg-red-500",
     "p-4",
     "px-3",
     "px-4",
@@ -46,6 +48,8 @@
     "rounded-[28rpx]",
     "shadow-xl",
     "space-y-2",
+    "system-dark:bg-slate-900",
+    "system-dark:text-slate-100",
     "text-[#123456]",
     "text-[#c31d6b]",
     "text-[#fff]",
@@ -59,6 +63,7 @@
     "to-blue-500",
     "to-slate-700/95",
     "w-32",
-    "w-[323px]"
+    "w-[323px]",
+    "wx:bg-blue-500"
   ]
 }

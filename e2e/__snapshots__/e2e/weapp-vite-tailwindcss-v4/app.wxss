@@ -497,8 +497,6 @@ wx-button {
   .system-dark_cbg-slate-900 {
     background-color: var(--color-slate-900);
   }
-}
-@media (prefers-color-scheme: dark) {
   /* tokens: system-dark:text-slate-100 <= pages/index/index.wxml */
   .system-dark_ctext-slate-100 {
     color: var(--color-slate-100);

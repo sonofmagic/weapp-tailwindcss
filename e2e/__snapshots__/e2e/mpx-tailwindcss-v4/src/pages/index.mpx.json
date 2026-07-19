@@ -1,6 +1,6 @@
 {
   "file": "src/pages/index.mpx",
-  "count": 122,
+  "count": 127,
   "tokens": [
     "!bg-[gray]",
     "!bg-green-500",
@@ -10,6 +10,7 @@
     "2xl:text-base",
     "after:!content-['good_work!']",
     "after:border-none",
+    "any-hover:bg-slate-800",
     "before:content-['Festivus']",
     "bg-[#0977ee]",
     "bg-[#123456]",
@@ -69,6 +70,7 @@
     "min-w-[300rpx]",
     "mt-2",
     "mt-4",
+    "not-wx:bg-red-500",
     "opacity-50",
     "p-4",
     "p-[20px]",
@@ -94,6 +96,8 @@
     "space-y-2",
     "space-y-4",
     "space-y-[1.6rem]",
+    "system-dark:bg-slate-900",
+    "system-dark:text-slate-100",
     "text-2xl",
     "text-[#123456]",
     "text-[#5cdc34]",
@@ -123,6 +127,7 @@
     "w-[20px]",
     "w-[300rpx]",
     "w-[323px]",
-    "w-screen"
+    "w-screen",
+    "wx:bg-blue-500"
   ]
 }

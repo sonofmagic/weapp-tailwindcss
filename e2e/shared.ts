@@ -1,13 +1,17 @@
 import type { TailwindcssPatchOptions } from 'tailwindcss-patch'
+import type { TailwindCssRuntimeOptions } from '../packages/weapp-tailwindcss/src/tailwindcss/runtime-types'
 import { createRequire } from 'node:module'
 import process from 'node:process'
 import { format as formatMessage } from 'node:util'
 import { getConfig } from '@tailwindcss-mangle/config'
+import fg from 'fast-glob'
 import fs from 'fs-extra'
 import path from 'pathe'
 import prettier from 'prettier'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
+import { loadTailwindV4DesignSystem, resolveTailwindV4SourceFromRuntimeOptions, resolveValidTailwindV4Candidates } from '../packages/weapp-tailwindcss/src/tailwindcss/v4-engine'
 import { removeWxmlId } from '../packages/weapp-tailwindcss/test/util'
+import { collectProjectSourceCandidates } from './tokenSourceReports'
 
 export { collectCssSnapshots } from './snapshotUtils'
 export type { CssSnapshotEntry } from './snapshotUtils'
@@ -182,6 +186,7 @@ interface TailwindInfo {
 
 const extractionTasks = new Map<string, Promise<ExtractionResult | undefined>>()
 const patchTasks = new Map<string, Promise<void>>()
+const TAILWIND_CSS_DIRECTIVE_RE = /(?:@import\s+["']tailwindcss(?:\/[^"']*)?["']|@tailwind\s+(?:base|components|utilities))(?=\s|;|$)/
 
 export function clearTailwindPatchTaskCache(root: string) {
   const normalizedRoot = path.resolve(root)
@@ -195,6 +200,30 @@ function normalizePath(root: string, target: string) {
 
 function getWorkspaceRoot(root: string) {
   return path.resolve(root, '..', '..')
+}
+
+export async function discoverTailwindV4CssEntries(root: string) {
+  const files = await fg('**/*.{css,pcss,postcss,scss,sass,less,styl,stylus}', {
+    absolute: true,
+    cwd: root,
+    ignore: [
+      '**/.cache/**',
+      '**/.turbo/**',
+      '**/.vite/**',
+      '**/dist/**',
+      '**/node_modules/**',
+      '**/unpackage/**',
+    ],
+    onlyFiles: true,
+  })
+  const entries: string[] = []
+  for (const file of files.sort()) {
+    const source = await fs.readFile(file, 'utf8')
+    if (TAILWIND_CSS_DIRECTIVE_RE.test(source)) {
+      entries.push(file)
+    }
+  }
+  return entries
 }
 
 function resolveTailwindInfo(root: string, options: NormalizedPatchOptions): TailwindInfo | null {
@@ -374,6 +403,56 @@ async function readClassListFromFile(filename: string | undefined) {
   }
 }
 
+async function extractTailwindV4ClassList(
+  root: string,
+  patchOptions: NormalizedPatchOptions,
+) {
+  const runtimeOptions = patchOptions as unknown as TailwindCssRuntimeOptions
+  const tailwindcss = runtimeOptions.tailwindcss
+  const v4 = tailwindcss?.v4
+  const { cssEntries = [], cssSources = [], ...sharedV4Options } = v4 ?? {}
+  const sourceRoots = [
+    ...cssEntries.map(cssEntry => ({
+      ...sharedV4Options,
+      cssEntries: [cssEntry],
+    })),
+    ...cssSources.map(cssSource => ({
+      ...sharedV4Options,
+      cssSources: [cssSource],
+    })),
+  ]
+  if (sourceRoots.length === 0) {
+    sourceRoots.push(v4 ?? {})
+  }
+
+  const rawCandidates = await collectProjectSourceCandidates(root)
+  const classSet = new Set<string>()
+  for (const sourceOptions of sourceRoots) {
+    const source = await resolveTailwindV4SourceFromRuntimeOptions({
+      projectRoot: runtimeOptions.projectRoot ?? root,
+      tailwindcss: {
+        ...tailwindcss,
+        version: 4,
+        v4: sourceOptions,
+      },
+    })
+    const designSystem = await loadTailwindV4DesignSystem(source)
+    const validated = resolveValidTailwindV4Candidates(designSystem, rawCandidates, {
+      ...(v4?.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: v4.bareArbitraryValues }),
+    })
+    for (const candidate of validated) {
+      if (patchOptions.filter?.(candidate) !== false) {
+        classSet.add(candidate)
+      }
+    }
+  }
+
+  if (patchOptions.extract?.removeUniversalSelector) {
+    classSet.delete('*')
+  }
+  return [...classSet].sort()
+}
+
 interface ResolvedPatchRuntime {
   effectiveOutput: {
     filename?: string
@@ -393,6 +472,20 @@ async function resolvePatchRuntime(root: string): Promise<ResolvedPatchRuntime |
   const legacyConfig = config as { patch?: unknown, registry?: unknown }
   const rawPatchOptions = legacyConfig.registry ?? legacyConfig.patch ?? config
   const patchOptions = normalizePatchOptions(root, rawPatchOptions)
+  const tailwindOptions = patchOptions.tailwindcss
+  if (tailwindOptions?.version === 4) {
+    const v4 = tailwindOptions.v4 ?? {}
+    const hasExplicitCssSource = Boolean(v4.css || v4.cssEntries?.length)
+    if (!hasExplicitCssSource) {
+      patchOptions.tailwindcss = {
+        ...tailwindOptions,
+        v4: {
+          ...v4,
+          cssEntries: await discoverTailwindV4CssEntries(root),
+        },
+      }
+    }
+  }
   const outputOptions = patchOptions.extract
     ? {
         filename: patchOptions.extract.file,
@@ -506,7 +599,8 @@ async function runTwExtract(root: string): Promise<ExtractionResult | undefined>
     return undefined
   }
 
-  if (process.env.E2E_FORCE_EXTRACT !== 'true') {
+  const isTailwindV4 = runtime.patchOptions.tailwindcss?.version === 4
+  if (!isTailwindV4 && process.env.E2E_FORCE_EXTRACT !== 'true') {
     const cachedClassList = await readClassListFromFile(runtime.effectiveOutput?.filename)
     if (cachedClassList) {
       return {
@@ -522,6 +616,15 @@ async function runTwExtract(root: string): Promise<ExtractionResult | undefined>
   logE2EDebug('[e2e] Tailwind patch options for %s: %o', root, runtime.patchOptions.tailwindcss)
 
   return runWithProjectPackageEnv(root, runtime, async () => {
+    if (twPatcher.majorVersion >= 4) {
+      const classList = await extractTailwindV4ClassList(root, runtime.patchOptions)
+      logE2EDebug('[e2e] Engine class list for %s (%d): %o', root, classList.length, classList)
+      return {
+        classList,
+        output: runtime.effectiveOutput,
+      }
+    }
+
     const result = await twPatcher.extract({ write: false })
     return {
       classList: result?.classList,

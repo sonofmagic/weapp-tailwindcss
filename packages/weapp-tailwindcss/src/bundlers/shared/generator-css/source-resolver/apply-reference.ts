@@ -1,6 +1,5 @@
-import type { Root } from 'postcss'
-import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
 import { postcss } from '@weapp-tailwindcss/postcss'
+import { collectCssApplyCandidates } from '../candidates'
 import { hasTailwindApplyDirective, hasTailwindSourceDirectives, parseImportRequest } from '../directives'
 
 export function createTailwindV4ApplyReferenceSource(css: string, sourceOptions: { packageName?: string }) {
@@ -15,7 +14,7 @@ export function createTailwindV4SourceReferenceSource(css: string, sourceOptions
   if (!hasApplyDirective && !hasTailwindSourceDirectives(css, { importFallback: true })) {
     return css
   }
-  const utilities = hasApplyDirective ? collectTailwindApplyUtilities(css) : []
+  const utilities = hasApplyDirective ? collectCssApplyCandidates(css) : []
   return [
     `@import "${sourceOptions.packageName ?? 'tailwindcss'}" source(none);`,
     utilities.length > 0 ? `@source inline(${JSON.stringify(utilities.join(' '))});` : undefined,
@@ -53,21 +52,4 @@ function hasTailwindV4RootImport(css: string, sourceOptions: { packageName?: str
     return /@(?:import|use|forward|tailwind)(?:[\s"'(;]|$)/.test(css)
       && (css.includes('tailwindcss') || css.includes('tailwindcss4') || css.includes('weapp-tailwindcss'))
   }
-}
-
-function collectTailwindApplyUtilities(css: string) {
-  let root: Root
-  try {
-    root = postcss.parse(css)
-  }
-  catch {
-    return []
-  }
-  const utilities = new Set<string>()
-  root.walkAtRules('apply', (rule) => {
-    for (const utility of splitCandidateTokens(rule.params)) {
-      utilities.add(utility)
-    }
-  })
-  return [...utilities].sort()
 }

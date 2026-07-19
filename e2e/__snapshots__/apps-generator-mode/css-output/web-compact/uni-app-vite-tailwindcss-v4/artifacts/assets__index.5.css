@@ -1,3 +1,4 @@
+/*! weapp-tailwindcss vite-generated-css:%2FUsers%2Ficebreaker%2FProjects%2Fgithub%2Fweapp-tailwindcss%2Fdemo%2Funi-app-vite-tailwindcss-v4%2Fsrc%2Fsub-independent%2Fpages%2Findex.css */
 *[data-v-b12531e8],
 [data-v-b12531e8]::before,
 [data-v-b12531e8]::after,
@@ -31,7 +32,7 @@ pre[data-v-b12531e8] {
   font-variation-settings: var(--default-mono-font-variation-settings, normal);
   font-size: 1em;
 }
-[data-v-b12531e8]:-moz-focusring {
+:-moz-focusring:where([data-v-b12531e8]:not(iframe)) {
   outline: auto;
 }
 img[data-v-b12531e8],
@@ -87,6 +88,7 @@ uni-input:where([type='button'][data-v-b12531e8], [type='reset'][data-v-b12531e8
 [hidden]:where([data-v-b12531e8]:not([hidden='until-found'])) {
   display: none !important;
 }
+ /*tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.vue */
 .bg-independent-subpackage-marker[data-v-b12531e8] {
   background-color: #dc2626;
 }

@@ -196,11 +196,9 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
         .then(() => options.cssMemory.refreshRememberedCssSourceByCurrentFile(file))
         .then(() => options.hmrCandidateState.apply(options.hmrCandidateState.createChange(file, change, { runtimeAffecting: true })))
     }
-    const existingTask = sourceOverride === undefined
-      ? pendingSourceCandidateSyncByFile.get(file)
-      : undefined
+    const existingTask = pendingSourceCandidateSyncByFile.get(file)
     if (existingTask) {
-      return existingTask.then(() => syncChangedFile(id))
+      return existingTask.then(() => syncChangedFile(id, sourceOverride))
     }
     const task = (sourceOverride === undefined
       ? options.sourceCandidateCollector.syncCurrentFile(id)

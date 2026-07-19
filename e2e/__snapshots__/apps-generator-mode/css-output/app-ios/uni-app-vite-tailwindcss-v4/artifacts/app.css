@@ -24,7 +24,7 @@
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-content: '';
 }
-/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   *,
   ::before,
@@ -55,7 +55,9 @@
 }
 :root,
 :host {
-  --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-red-300: rgb(255, 163, 164);
   --color-green-200: rgb(185, 248, 207);
@@ -101,12 +103,24 @@ html,
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
   tab-size: 4;
-  font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
+  font-family: var(
+    --default-font-family,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    'Noto Sans',
+    Arial,
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji'
+  );
   font-feature-settings: var(--default-font-feature-settings, normal);
   font-variation-settings: var(--default-font-variation-settings, normal);
   -webkit-tap-highlight-color: transparent;
-  -moz-tab-size: 4;
-  -o-tab-size: 4;
 }
 hr {
   height: 0;
@@ -165,7 +179,7 @@ table {
   border-color: inherit;
   border-collapse: collapse;
 }
-:-moz-focusring {
+:-moz-focusring:where(:not(iframe)) {
   outline: auto;
 }
 progress {
@@ -855,30 +869,6 @@ wx-button {
 .text-_b_h929292_B {
   color: #929292;
 }
- /*tokens: text-[24rpx] <= src/pages/index/index.vue */
-.text-_b24rpx_B {
-  font-size: 0.75rem;
-}
- /*tokens: text-[26rpx] <= src/pages/index/index.vue */
-.text-_b26rpx_B {
-  font-size: 0.8125rem;
-}
- /*tokens: text-[31rpx] <= src/pages/index/index.vue */
-.text-_b31rpx_B {
-  font-size: 0.96875rem;
-}
- /*tokens: text-[45rpx] <= src/pages/index/index.vue */
-.text-_b45rpx_B {
-  font-size: 1.40625rem;
-}
- /*tokens: text-[100rpx] <= src/pages/index/index.vue */
-.text-_b100rpx_B {
-  font-size: 3.125rem;
-}
- /*tokens: text-[102.43rpx] <= src/pages/index/index.vue */
-.text-_b102_d43rpx_B {
-  font-size: 3.20094rem;
-}
 .text-emerald-600 {
   color: rgb(0, 150, 105);
 }
@@ -1004,8 +994,6 @@ wx-button {
   .system-dark_cbg-slate-900 {
     background-color: rgb(15, 23, 43);
   }
-}
-@media (prefers-color-scheme: dark) {
  /*tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
   .system-dark_ctext-slate-100 {
     color: rgb(241, 245, 249);
@@ -1027,88 +1015,23 @@ wx-button {
 abc {
   background: #222;
 }
-/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
-sub {
-  bottom: -0.25em;
-}
-sup {
-  top: -0.5em;
-}
-uni-progress {
-  vertical-align: baseline;
-}
-img,
-svg,
-uni-video,
-uni-canvas,
-uni-audio,
-iframe,
-embed,
-object {
-  display: block;
-  vertical-align: middle;
-}
-img,
-uni-video {
-  max-width: 100%;
-  height: auto;
-}
-uni-button,
-uni-input,
-select,
-optgroup,
-uni-textarea,
-::file-selector-button {
-  font: inherit;
-  font-feature-settings: inherit;
-  font-variation-settings: inherit;
-  letter-spacing: inherit;
-  color: inherit;
-  border-radius: 0;
-  background-color: transparent;
-  opacity: 1;
-}
-::-moz-placeholder {
-  opacity: 1;
-}
-@supports (not (-webkit-appearance: -apple-pay-button)) or (contain-intrinsic-size: 1px) {
-  ::-moz-placeholder {
-    color: currentcolor;
-  }
-}
-uni-textarea {
-  resize: vertical;
-}
-uni-button,
-uni-input:where([type='button'], [type='reset'], [type='submit']),
-::file-selector-button {
-  -webkit-appearance: button;
-  -moz-appearance: button;
-  appearance: button;
-}
-[hidden]:where(:not([hidden='until-found'])) {
-  display: none !important;
-}
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+ /*tokens: before:content-['independent_subpackage_uni-app-vite-tailwindcss-v4'] <= src/sub-independent/pages/index.vue */
 .before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
+ /*tokens: before:content-['normal_subpackage_uni-app-vite-tailwindcss-v4'] <= src/sub-normal/pages/index.vue */
 .before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x5f00_u_x59cb_u_x795e_u_x5947_u_x7684__tailwindcss_u_x5f00_u_x53d1_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B::before {
-  --tw-content: '\73b0\5728\ff0c\8ba9\6211\4eec\5f00\59cb\795e\5947\7684  tailwindcss \5f00\53d1\4e4b\65c5\5427\ff01';
-  content: var(--tw-content);
-}
-.before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x7ee7_u_x7eed_u_x795e_u_x5947_u_x7684__tailwindcss_HMR_u_x56de_u_x5f52_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B::before {
-  --tw-content: '\73b0\5728\ff0c\8ba9\6211\4eec\7ee7\7eed\795e\5947\7684  tailwindcss HMR \56de\5f52\4e4b\65c5\5427\ff01';
-  content: var(--tw-content);
-}
-/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+ /*tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.vue */
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }
+ /*tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.vue */
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
 }

@@ -1,3 +1,4 @@
+/*! weapp-tailwindcss vite-generated-css:%2FUsers%2Ficebreaker%2FProjects%2Fgithub%2Fweapp-tailwindcss%2Fdemo%2Ftaro-vite-react-tailwindcss-v4%2Fsrc%2Fpages%2Fissue-998%2Findex.css */
 ::-webkit-backdrop {
   --tw-space-y-reverse: 0;
   --tw-border-style: solid;
@@ -60,7 +61,7 @@
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-content: '';
-} /*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+} /*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   ::-webkit-backdrop {
     --tw-space-y-reverse: 0;
@@ -128,7 +129,9 @@
 }
 :root,
 :host {
-  --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-green-200: rgb(185, 248, 207);
   --color-slate-700: rgb(49, 65, 88);
@@ -175,7 +178,21 @@ html,
   -moz-tab-size: 4;
   -o-tab-size: 4;
   tab-size: 4;
-  font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
+  font-family: var(
+    --default-font-family,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    'Noto Sans',
+    Arial,
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji'
+  );
   -webkit-font-feature-settings: var(--default-font-feature-settings, normal);
   font-feature-settings: var(--default-font-feature-settings, normal);
   font-variation-settings: var(--default-font-variation-settings, normal);
@@ -239,7 +256,7 @@ table {
   border-color: inherit;
   border-collapse: collapse;
 }
-:-moz-focusring {
+:-moz-focusring:where(:not(iframe)) {
   outline: auto;
 }
 taro-progress-core {
@@ -395,20 +412,25 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
 [hidden]:where(:not([hidden='until-found'])) {
   display: none !important;
 }
+ /*tokens: mt-2 <= src/pages/index/index.tsx */
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);
 }
+ /*tokens: mt-4 <= src/pages/index/index.tsx */
 .mt-4 {
   margin-top: calc(var(--spacing) * 4);
 }
+ /*tokens: flex <= src/pages/index/index.tsx */
 .flex {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
 }
+ /*tokens: h-14 <= src/pages/index/index.tsx */
 .h-14 {
   height: calc(var(--spacing) * 14);
 }
+ /*tokens: h-16 <= src/pages/index/index.tsx */
 .h-16 {
   height: calc(var(--spacing) * 16);
 }
@@ -418,20 +440,24 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
 .h-\[300px\] {
   height: 7.5rem;
 }
+ /*tokens: w-32 <= src/pages/index/index.tsx */
 .w-32 {
   width: calc(var(--spacing) * 32);
 }
 .w-\[323px\] {
   width: 8.075rem;
 }
+ /*tokens: flex-col <= src/pages/index/index.tsx */
 .flex-col {
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
 }
+ /*tokens: gap-3 <= src/pages/index/index.tsx */
 .gap-3 {
   gap: calc(var(--spacing) * 3);
 }
+ /*tokens: space-y-2 <= src/pages/index/index.tsx */
 :where(.space-y-2 > :not(:last-child)) {
   --tw-space-y-reverse: 0;
   -webkit-margin-before: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
@@ -439,6 +465,7 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
   -webkit-margin-after: calc(calc(var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
   margin-block-end: calc(calc(var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
 }
+ /*tokens: rounded <= src/pages/index/index.tsx */
 .rounded {
   border-radius: 0.25rem;
 }
@@ -448,14 +475,17 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
 .rounded-\[28rpx\] {
   border-radius: 0.875rem;
 }
+ /*tokens: border <= src/pages/index/index.tsx */
 .border {
   border-style: var(--tw-border-style);
   border-width: 0.025rem;
 }
+ /*tokens: border-slate-200/80 <= src/pages/index/index.tsx */
 .border-slate-200\/80 {
   border-color: #e2e8f0cc;
 }
 @supports (color: color-mix(in lch, red, blue)) {
+ /*tokens: border-slate-200/80 <= src/pages/index/index.tsx */
   .border-slate-200\/80 {
     border-color: #e2e8f0cc;
   }
@@ -475,38 +505,47 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
 .bg-\[red\] {
   background-color: red;
 }
+ /*tokens: bg-green-200/70 <= src/pages/index/index.tsx */
 .bg-green-200\/70 {
   background-color: #b9f8cfb3;
 }
 @supports (color: color-mix(in lch, red, blue)) {
+ /*tokens: bg-green-200/70 <= src/pages/index/index.tsx */
   .bg-green-200\/70 {
     background-color: #b9f8cfb3;
   }
 }
+ /*tokens: bg-purple-300 <= src/pages/index/index.tsx */
 .bg-purple-300 {
   background-color: #d8b4ff;
 }
+ /*tokens: bg-white <= src/pages/index/index.tsx */
 .bg-white {
   background-color: #fff;
 }
+ /*tokens: bg-white/70 <= src/pages/index/index.tsx */
 .bg-white\/70 {
   background-color: #ffffffb3;
 }
 @supports (color: color-mix(in lch, red, blue)) {
+ /*tokens: bg-white/70 <= src/pages/index/index.tsx */
   .bg-white\/70 {
     background-color: #ffffffb3;
   }
 }
+ /*tokens: bg-linear-to-r <= src/pages/index/index.tsx */
 .bg-linear-to-r {
   --tw-gradient-position: to right;
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
+ /*tokens: bg-gradient-to-br <= src/pages/index/index.tsx */
 .bg-gradient-to-br {
   --tw-gradient-position: to bottom right;
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
+ /*tokens: bg-gradient-to-r <= src/app.css, src/pages/index/index.tsx */
 .bg-gradient-to-r {
   --tw-gradient-position: to right;
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
@@ -516,6 +555,7 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
   background-image: -webkit-radial-gradient(18% 20%, circle, #e0f2fe, #fdf4ff 70%);
   background-image: radial-gradient(circle at 18% 20%, #e0f2fe, #fdf4ff 70%);
 }
+ /*tokens: from-cyan-500 <= src/pages/index/index.tsx */
 .from-cyan-500 {
   --tw-gradient-from: rgb(0, 182, 212);
   --tw-gradient-stops: var(
@@ -525,6 +565,7 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+ /*tokens: from-slate-900/95 <= src/pages/index/index.tsx */
 .from-slate-900\/95 {
   --tw-gradient-from: rgba(15, 23, 43, 0.95);
   --tw-gradient-stops: var(
@@ -535,10 +576,12 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
   );
 }
 @supports (color: color-mix(in lch, red, blue)) {
+ /*tokens: from-slate-900/95 <= src/pages/index/index.tsx */
   .from-slate-900\/95 {
     --tw-gradient-from: rgba(15, 23, 43, 0.95);
   }
 }
+ /*tokens: to-blue-500 <= src/app.css, src/pages/index/index.tsx */
 .to-blue-500 {
   --tw-gradient-to: rgb(50, 128, 255);
   --tw-gradient-stops: var(
@@ -548,6 +591,7 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+ /*tokens: to-slate-700/95 <= src/pages/index/index.tsx */
 .to-slate-700\/95 {
   --tw-gradient-to: rgba(49, 65, 88, 0.95);
   --tw-gradient-stops: var(
@@ -558,16 +602,20 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
   );
 }
 @supports (color: color-mix(in lch, red, blue)) {
+ /*tokens: to-slate-700/95 <= src/pages/index/index.tsx */
   .to-slate-700\/95 {
     --tw-gradient-to: rgba(49, 65, 88, 0.95);
   }
 }
+ /*tokens: p-4 <= src/pages/index/index.tsx, src/pages/issue-998/index.css, src/pages/issue-998/index.tsx */
 .p-4 {
   padding: calc(var(--spacing) * 4);
 }
+ /*tokens: px-3 <= src/pages/index/index.tsx */
 .px-3 {
   padding-inline: calc(var(--spacing) * 3);
 }
+ /*tokens: px-4 <= src/pages/index/index.tsx */
 .px-4 {
   padding-inline: calc(var(--spacing) * 4);
 }
@@ -577,12 +625,15 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
 .px-\[48px\] {
   padding-inline: 1.2rem;
 }
+ /*tokens: py-1 <= src/pages/index/index.tsx */
 .py-1 {
   padding-block: var(--spacing);
 }
+ /*tokens: py-2 <= src/pages/index/index.tsx */
 .py-2 {
   padding-block: calc(var(--spacing) * 2);
 }
+ /*tokens: py-3 <= src/pages/index/index.tsx */
 .py-3 {
   padding-block: calc(var(--spacing) * 3);
 }
@@ -610,15 +661,19 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
 .text-\[\#fff\] {
   color: #fff;
 }
+ /*tokens: text-slate-700 <= src/pages/index/index.tsx */
 .text-slate-700 {
   color: #314158;
 }
+ /*tokens: text-slate-900 <= src/pages/index/index.tsx */
 .text-slate-900 {
   color: #0f172b;
 }
+ /*tokens: text-white <= src/app.css, src/pages/index/index.tsx */
 .text-white {
   color: #fff;
 }
+ /*tokens: shadow-xl <= src/pages/index/index.tsx */
 .shadow-xl {
   --tw-shadow: 0 0.5rem 0.625rem -0.125rem var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 0.2rem 0.25rem -0.15rem var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -637,18 +692,22 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
   --tw-content: 'good work!' !important;
   content: var(--tw-content) !important;
 }
+ /*tokens: dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
 .dark\:bg-zinc-900.theme-dark,
 .theme-dark .dark\:bg-zinc-900 {
   background-color: #18181b;
 }
+ /*tokens: dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
 .dark\:bg-zinc-950.theme-dark,
 .theme-dark .dark\:bg-zinc-950 {
   background-color: #09090b;
 }
+ /*tokens: dark:text-zinc-50 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
 .dark\:text-zinc-50.theme-dark,
 .theme-dark .dark\:text-zinc-50 {
   color: #fafafa;
 }
+ /*tokens: issue-998-page <= src/pages/issue-998/index.tsx */
 .issue-998-page {
   padding: calc(var(--spacing) * 4);
 }

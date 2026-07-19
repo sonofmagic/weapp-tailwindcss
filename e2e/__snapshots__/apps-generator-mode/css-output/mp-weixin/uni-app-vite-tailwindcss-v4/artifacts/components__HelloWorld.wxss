@@ -1,15 +1,5 @@
- /* tokens: before:content-['现在，让我们开始神奇的_tailwindcss_开发之旅吧！'] <= <tailwind generated> */
-.before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x5f00_u_x59cb_u_x795e_u_x5947_u_x7684__tailwindcss_u_x5f00_u_x53d1_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B.data-v-04bcf89b::before {
-  --tw-content: '\73b0\5728\ff0c\8ba9\6211\4eec\5f00\59cb\795e\5947\7684  tailwindcss \5f00\53d1\4e4b\65c5\5427\ff01';
-  content: var(--tw-content);
-}
- /* tokens: before:content-['现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！'] <= <tailwind generated> */
-.before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x7ee7_u_x7eed_u_x795e_u_x5947_u_x7684__tailwindcss_HMR_u_x56de_u_x5f52_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B.data-v-04bcf89b::before {
-  --tw-content: '\73b0\5728\ff0c\8ba9\6211\4eec\7ee7\7eed\795e\5947\7684  tailwindcss HMR \56de\5f52\4e4b\65c5\5427\ff01';
-  content: var(--tw-content);
-}
  /* tokens: hello-world-shell <= src/components/HelloWorld.vue */
-.hello-world-shell.data-v-04bcf89b {
+.hello-world-shell {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing, 0.25rem) * 2);

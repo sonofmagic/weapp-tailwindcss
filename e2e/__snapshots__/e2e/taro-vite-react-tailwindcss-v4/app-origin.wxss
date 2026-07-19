@@ -681,8 +681,6 @@ wx-button {
   .system-dark_cbg-slate-900 {
     background-color: var(--color-slate-900);
   }
-}
-@media (prefers-color-scheme: dark) {
   /* tokens: system-dark:text-slate-100 <= src/pages/index/index.tsx */
   .system-dark_ctext-slate-100 {
     color: var(--color-slate-100);
@@ -3050,8 +3048,6 @@ wx-button {
 .nut-step-title {
   position: relative;
   z-index: 1;
-}
-.nut-step-title {
   height: 14rpx;
   line-height: 14rpx;
   font-size: var(--nutui-steps-base-title-font-size, var(--nutui-font-size-s, 12rpx));

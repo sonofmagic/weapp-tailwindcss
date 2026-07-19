@@ -1,7 +1,8 @@
 {
   "file": "src/sub-normal/pages/index.vue",
-  "count": 1,
+  "count": 2,
   "tokens": [
-    "before:content-['normal_subpackage_taro-vite-vue3-tailwindcss-v4']"
+    "before:content-['normal_subpackage_taro-vite-vue3-tailwindcss-v4']",
+    "bg-normal-subpackage-marker"
   ]
 }

@@ -1,6 +1,6 @@
 {
   "file": "src/pages/index/index.wxml",
-  "count": 40,
+  "count": 46,
   "tokens": [
     "bg-[#0977ee]",
     "bg-[length:100%_100%]",
@@ -18,6 +18,10 @@
     "font-medium",
     "h-[41.54vw]",
     "h-full",
+    "i-[mdi--ab-testing]",
+    "i-[mdi--abacus]",
+    "i-[mdi--github-circle]",
+    "i-[mdi--typewriter]",
     "m-[20px]",
     "mb-[20px]",
     "mt-2",
@@ -33,6 +37,8 @@
     "py-3",
     "rounded",
     "space-y-4",
+    "system-dark:bg-slate-900",
+    "system-dark:text-slate-100",
     "text-[#5ba4e5]",
     "text-[14px]",
     "text-[31rpx]",

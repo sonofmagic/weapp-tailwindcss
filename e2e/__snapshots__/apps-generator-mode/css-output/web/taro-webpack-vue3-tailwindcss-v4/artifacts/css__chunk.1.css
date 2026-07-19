@@ -3,7 +3,9 @@
 @layer theme {
   :root,
   :host {
-    --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+      'Noto Color Emoji';
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-green-200: oklch(92.5% 0.084 155.995);
@@ -14,12 +16,13 @@
     --color-slate-700: oklch(37.2% 0.044 257.287);
     --color-slate-800: oklch(27.9% 0.041 260.031);
     --color-slate-900: oklch(20.8% 0.042 265.755);
-    --color-zinc-50: oklch(98.5% 0 0);
+    --color-zinc-50: oklch(98.5% 0 none);
     --color-zinc-900: oklch(21% 0.006 285.885);
     --color-zinc-950: oklch(14.1% 0.005 285.823);
     --color-white: #fff;
     --spacing: 0.25rem;
     --font-weight-semibold: 600;
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
   }
@@ -40,7 +43,21 @@
     line-height: 1.5;
     -webkit-text-size-adjust: 100%;
     tab-size: 4;
-    font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
+    font-family: var(
+      --default-font-family,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      'Noto Sans',
+      Arial,
+      sans-serif,
+      'Apple Color Emoji',
+      'Segoe UI Emoji',
+      'Segoe UI Symbol',
+      'Noto Color Emoji'
+    );
     font-feature-settings: var(--default-font-feature-settings, normal);
     font-variation-settings: var(--default-font-variation-settings, normal);
     -webkit-tap-highlight-color: transparent;
@@ -102,7 +119,7 @@
     border-color: inherit;
     border-collapse: collapse;
   }
-  :-moz-focusring {
+  :-moz-focusring:where(:not(iframe)) {
     outline: auto;
   }
   progress {
@@ -287,6 +304,9 @@
   .w-\[323px\] {
     width: 323px;
   }
+  .transform {
+    transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+  }
  /*tokens: flex-col <= src/pages/index/index.vue */
   .flex-col {
     flex-direction: column;
@@ -304,12 +324,10 @@
     gap: calc(var(--spacing) * 3);
   }
  /*tokens: space-y-2 <= src/pages/index/index.vue */
-  .space-y-2 {
-    :where(& > :not(:last-child)) {
-      --tw-space-y-reverse: 0;
-      margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
-      margin-block-end: calc(calc(var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
-    }
+  :where(.space-y-2 > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
   }
  /*tokens: rounded <= src/pages/index/index.vue */
   .rounded {
@@ -496,16 +514,7 @@
     font-size: 0.96875rem;
   }
  /*tokens: font-semibold <= src/app.css */
-  .text-\[100rpx\] {
-    font-size: 3.125rem;
-  }
-.text-\[26rpx\] {
-    font-size: 0.8125rem;
-  }
-.text-\[31rpx\] {
-    font-size: 0.96875rem;
-  }
-.font-semibold {
+  .font-semibold {
     --tw-font-weight: var(--font-weight-semibold);
     font-weight: var(--font-weight-semibold);
   }
@@ -539,64 +548,54 @@
     --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
-  .before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\] {
-    &::before {
-      --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
-      content: var(--tw-content);
-    }
+  .ease-in-out {
+    --tw-ease: var(--ease-in-out);
+    transition-timing-function: var(--ease-in-out);
   }
-  .before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\] {
-    &::before {
-      --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
-      content: var(--tw-content);
-    }
+  .before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\]::before {
+    --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
+    content: var(--tw-content);
   }
-  .after\:\!content-\[\'good_work\!\'\] {
-    &::after {
-      content: var(--tw-content);
-      --tw-content: 'good work!' !important;
-      content: var(--tw-content) !important;
-    }
+  .before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\]::before {
+    --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
+    content: var(--tw-content);
   }
- /*tokens: dark:bg-zinc-900 <= src/pages/index/index.vue */
-  .dark\:bg-zinc-900 {
- /*tokens: theme-dark <= src/pages/index/index.vue */
-    &.theme-dark {
-      background-color: var(--color-zinc-900);
-    }
- /*tokens: theme-dark <= src/pages/index/index.vue */
-    .theme-dark & {
-    }
+  .after\:\!content-\[\'good_work\!\'\]::after {
+    content: var(--tw-content);
+    --tw-content: 'good work!' !important;
+    content: var(--tw-content) !important;
   }
- /*tokens: dark:bg-zinc-950 <= src/pages/index/index.vue */
-  .dark\:bg-zinc-950 {
- /*tokens: theme-dark <= src/pages/index/index.vue */
-    &.theme-dark {
-      background-color: var(--color-zinc-950);
-    }
- /*tokens: theme-dark <= src/pages/index/index.vue */
-    .theme-dark & {
-    }
+ /*tokens: dark:bg-zinc-900 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+  .dark\:bg-zinc-900.theme-dark {
+    background-color: var(--color-zinc-900);
   }
- /*tokens: dark:text-zinc-50 <= src/pages/index/index.vue */
-  .dark\:text-zinc-50 {
- /*tokens: theme-dark <= src/pages/index/index.vue */
-    &.theme-dark {
-      color: var(--color-zinc-50);
-    }
- /*tokens: theme-dark <= src/pages/index/index.vue */
-    .theme-dark & {
-    }
+ /*tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-900 <= src/pages/index/index.vue */
+  .theme-dark .dark\:bg-zinc-900 {
+    background-color: var(--color-zinc-900);
   }
+ /*tokens: dark:bg-zinc-950 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+  .dark\:bg-zinc-950.theme-dark {
+    background-color: var(--color-zinc-950);
+  }
+ /*tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-950 <= src/pages/index/index.vue */
+  .theme-dark .dark\:bg-zinc-950 {
+    background-color: var(--color-zinc-950);
+  }
+ /*tokens: dark:text-zinc-50 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+  .dark\:text-zinc-50.theme-dark {
+    color: var(--color-zinc-50);
+  }
+ /*tokens: theme-dark <= src/pages/index/index.vue | dark:text-zinc-50 <= src/pages/index/index.vue */
+  .theme-dark .dark\:text-zinc-50 {
+    color: var(--color-zinc-50);
+  }
+  @media (prefers-color-scheme: dark) {
  /*tokens: system-dark:bg-slate-900 <= src/pages/index/index.vue */
-  .system-dark\:bg-slate-900 {
-    @media (prefers-color-scheme: dark) {
+    .system-dark\:bg-slate-900 {
       background-color: var(--color-slate-900);
     }
-  }
  /*tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
-  .system-dark\:text-slate-100 {
-    @media (prefers-color-scheme: dark) {
+    .system-dark\:text-slate-100 {
       color: var(--color-slate-100);
     }
   }
@@ -604,12 +603,10 @@
   .not-wx\:bg-red-500 {
     background-color: var(--color-red-500);
   }
+  @media (any-hover: hover) {
  /*tokens: any-hover:bg-slate-800 <= src/pages/index/index.vue */
-  .any-hover\:bg-slate-800 {
-    @media (any-hover: hover) {
-      &:hover {
-        background-color: var(--color-slate-800);
-      }
+    .any-hover\:bg-slate-800:hover {
+      background-color: var(--color-slate-800);
     }
   }
 }
@@ -8326,6 +8323,26 @@ page {
   --default-font-family: var(--font-inter), system-ui;
   --default-mono-font-family: var(--font-plex-mono), monospace;
 }
+@property --tw-rotate-x {
+  syntax: '*';
+  inherits: false;
+}
+@property --tw-rotate-y {
+  syntax: '*';
+  inherits: false;
+}
+@property --tw-rotate-z {
+  syntax: '*';
+  inherits: false;
+}
+@property --tw-skew-x {
+  syntax: '*';
+  inherits: false;
+}
+@property --tw-skew-y {
+  syntax: '*';
+  inherits: false;
+}
 @property --tw-space-y-reverse {
   syntax: '*';
   inherits: false;
@@ -8447,6 +8464,10 @@ page {
   inherits: false;
   initial-value: 0 0 #0000;
 }
+@property --tw-ease {
+  syntax: '*';
+  inherits: false;
+}
 @property --tw-content {
   syntax: '*';
   initial-value: '';
@@ -8458,6 +8479,11 @@ page {
     ::before,
     ::after,
     ::backdrop {
+      --tw-rotate-x: initial;
+      --tw-rotate-y: initial;
+      --tw-rotate-z: initial;
+      --tw-skew-x: initial;
+      --tw-skew-y: initial;
       --tw-space-y-reverse: 0;
       --tw-border-style: solid;
       --tw-gradient-position: initial;
@@ -8484,6 +8510,7 @@ page {
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-ease: initial;
       --tw-content: '';
     }
   }

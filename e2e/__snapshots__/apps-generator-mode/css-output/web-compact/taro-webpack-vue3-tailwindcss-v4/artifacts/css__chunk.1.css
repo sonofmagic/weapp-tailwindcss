@@ -21,7 +21,7 @@
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-content: '';
 }
-/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   *,
   ::before,
@@ -49,7 +49,9 @@
 }
 :root,
 :host {
-  --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-green-200: rgb(185, 248, 207);
   --color-slate-100: rgb(241, 245, 249);
@@ -57,6 +59,7 @@
   --color-zinc-950: rgb(9, 9, 11);
   --spacing: 0.25rem;
   --font-weight-semibold: 600;
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
@@ -75,7 +78,21 @@ html,
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
   tab-size: 4;
-  font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
+  font-family: var(
+    --default-font-family,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    'Noto Sans',
+    Arial,
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji'
+  );
   font-feature-settings: var(--default-font-feature-settings, normal);
   font-variation-settings: var(--default-font-variation-settings, normal);
   -webkit-tap-highlight-color: transparent;
@@ -137,7 +154,7 @@ table {
   border-color: inherit;
   border-collapse: collapse;
 }
-:-moz-focusring {
+:-moz-focusring:where(:not(iframe)) {
   outline: auto;
 }
 progress {
@@ -348,6 +365,9 @@ wx-button {
 }
 .w-\[323px\] {
   width: 323px;
+}
+.transform {
+  transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
  /*tokens: flex-col <= src/pages/index/index.vue */
 .flex-col {
@@ -571,15 +591,6 @@ wx-button {
   font-size: 0.96875rem;
 }
  /*tokens: font-semibold <= src/app.css */
-.text-\[100rpx\] {
-  font-size: 3.125rem;
-}
-.text-\[26rpx\] {
-  font-size: 0.8125rem;
-}
-.text-\[31rpx\] {
-  font-size: 0.96875rem;
-}
 .font-semibold {
   --tw-font-weight: var(--font-weight-semibold);
   font-weight: var(--font-weight-semibold);
@@ -613,6 +624,10 @@ wx-button {
 .shadow-xl {
   --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.ease-in-out {
+  --tw-ease: var(--ease-in-out);
+  transition-timing-function: var(--ease-in-out);
 }
 .before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\]::before {
   --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
@@ -656,8 +671,6 @@ wx-button {
   .system-dark\:bg-slate-900 {
     background-color: #0f172b;
   }
-}
-@media (prefers-color-scheme: dark) {
  /*tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
   .system-dark\:text-slate-100 {
     color: rgb(241, 245, 249);

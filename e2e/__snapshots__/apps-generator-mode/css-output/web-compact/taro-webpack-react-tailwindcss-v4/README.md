@@ -7,7 +7,7 @@ Entry: taro-webpack-react-tailwindcss-v4/dist
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 439907 | 2298 | true | false | true | true | true | true | false |
+| 441019 | 2299 | true | false | true | true | true | true | false |
 
 ## Generator CSS Files
 
@@ -23,8 +23,8 @@ Entry: taro-webpack-react-tailwindcss-v4/dist
 
 | File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `css/app.css` | [artifacts/css__app.css](artifacts/css__app.css) | 396868 | 2275 | true | false | true | true | true | true | false |
-| `css/chunk.1.css` | [artifacts/css__chunk.1.css](artifacts/css__chunk.1.css) | 21422 | 93 | true | false | true | false | true | true | false |
-| `css/chunk.2.css` | [artifacts/css__chunk.2.css](artifacts/css__chunk.2.css) | 6345 | 17 | true | false | true | false | false | true | false |
-| `css/chunk.3.css` | [artifacts/css__chunk.3.css](artifacts/css__chunk.3.css) | 6320 | 17 | true | false | true | false | false | true | false |
+| `css/app.css` | [artifacts/css__app.css](artifacts/css__app.css) | 397101 | 2276 | true | false | true | true | true | true | false |
+| `css/chunk.1.css` | [artifacts/css__chunk.1.css](artifacts/css__chunk.1.css) | 21715 | 94 | true | false | true | false | true | true | false |
+| `css/chunk.2.css` | [artifacts/css__chunk.2.css](artifacts/css__chunk.2.css) | 6638 | 18 | true | false | true | false | false | true | false |
+| `css/chunk.3.css` | [artifacts/css__chunk.3.css](artifacts/css__chunk.3.css) | 6613 | 18 | true | false | true | false | false | true | false |
 | `css/chunk.4.css` | [artifacts/css__chunk.4.css](artifacts/css__chunk.4.css) | 8952 | 36 | false | false | false | false | false | false | false |

@@ -1,7 +1,9 @@
 @layer theme {
   :root,
   :host {
-    --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+      'Noto Color Emoji';
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     --color-yellow-300: oklch(90.5% 0.182 98.111);
     --color-emerald-400: oklch(76.5% 0.177 163.223);
@@ -9,7 +11,7 @@
     --color-purple-800: oklch(43.8% 0.218 303.724);
     --color-pink-200: oklch(89.9% 0.061 343.231);
     --color-slate-900: oklch(20.8% 0.042 265.755);
-    --color-zinc-50: oklch(98.5% 0 0);
+    --color-zinc-50: oklch(98.5% 0 none);
     --color-zinc-900: oklch(21% 0.006 285.885);
     --color-zinc-950: oklch(14.1% 0.005 285.823);
     --color-white: #fff;
@@ -34,7 +36,21 @@
     line-height: 1.5;
     -webkit-text-size-adjust: 100%;
     tab-size: 4;
-    font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
+    font-family: var(
+      --default-font-family,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      'Noto Sans',
+      Arial,
+      sans-serif,
+      'Apple Color Emoji',
+      'Segoe UI Emoji',
+      'Segoe UI Symbol',
+      'Noto Color Emoji'
+    );
     font-feature-settings: var(--default-font-feature-settings, normal);
     font-variation-settings: var(--default-font-variation-settings, normal);
     -webkit-tap-highlight-color: transparent;
@@ -96,7 +112,7 @@
     border-color: inherit;
     border-collapse: collapse;
   }
-  :-moz-focusring {
+  :-moz-focusring:where(:not(iframe)) {
     outline: auto;
   }
   progress {
@@ -597,35 +613,29 @@
   .text-slate-900 {
     color: var(--color-slate-900);
   }
- /*tokens: dark:bg-zinc-900 <= src/pages/index/index.tsx */
-  .dark\:bg-zinc-900 {
- /*tokens: theme-dark <= src/pages/index/index.tsx */
-    &.theme-dark {
-      background-color: var(--color-zinc-900);
-    }
- /*tokens: theme-dark <= src/pages/index/index.tsx */
-    .theme-dark & {
-    }
+ /*tokens: dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+  .dark\:bg-zinc-900.theme-dark {
+    background-color: var(--color-zinc-900);
   }
- /*tokens: dark:bg-zinc-950 <= src/pages/index/index.tsx */
-  .dark\:bg-zinc-950 {
- /*tokens: theme-dark <= src/pages/index/index.tsx */
-    &.theme-dark {
-      background-color: var(--color-zinc-950);
-    }
- /*tokens: theme-dark <= src/pages/index/index.tsx */
-    .theme-dark & {
-    }
+ /*tokens: theme-dark <= src/pages/index/index.tsx | dark:bg-zinc-900 <= src/pages/index/index.tsx */
+  .theme-dark .dark\:bg-zinc-900 {
+    background-color: var(--color-zinc-900);
   }
- /*tokens: dark:text-zinc-50 <= src/pages/index/index.tsx */
-  .dark\:text-zinc-50 {
- /*tokens: theme-dark <= src/pages/index/index.tsx */
-    &.theme-dark {
-      color: var(--color-zinc-50);
-    }
- /*tokens: theme-dark <= src/pages/index/index.tsx */
-    .theme-dark & {
-    }
+ /*tokens: dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+  .dark\:bg-zinc-950.theme-dark {
+    background-color: var(--color-zinc-950);
+  }
+ /*tokens: theme-dark <= src/pages/index/index.tsx | dark:bg-zinc-950 <= src/pages/index/index.tsx */
+  .theme-dark .dark\:bg-zinc-950 {
+    background-color: var(--color-zinc-950);
+  }
+ /*tokens: dark:text-zinc-50 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+  .dark\:text-zinc-50.theme-dark {
+    color: var(--color-zinc-50);
+  }
+ /*tokens: theme-dark <= src/pages/index/index.tsx | dark:text-zinc-50 <= src/pages/index/index.tsx */
+  .theme-dark .dark\:text-zinc-50 {
+    color: var(--color-zinc-50);
   }
 }
  /*tokens: issue-998-page <= src/pages/issue-998/index.tsx */
@@ -717,11 +727,13 @@
     }
   }
 }
-/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @layer theme {
   :host,
   :root {
-    --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+      'Noto Color Emoji';
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
     --color-yellow-300: oklch(90.5% 0.182 98.111);
     --color-emerald-400: oklch(76.5% 0.177 163.223);
@@ -729,7 +741,7 @@
     --color-purple-800: oklch(43.8% 0.218 303.724);
     --color-pink-200: oklch(89.9% 0.061 343.231);
     --color-slate-900: oklch(20.8% 0.042 265.755);
-    --color-zinc-50: oklch(98.5% 0 0);
+    --color-zinc-50: oklch(98.5% 0 none);
     --color-zinc-900: oklch(21% 0.006 285.885);
     --color-zinc-950: oklch(14.1% 0.005 285.823);
     --color-white: #fff;

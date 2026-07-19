@@ -13,7 +13,7 @@
 }
 @import '@nutui/nutui-react-taro/dist/styles/themes/default.css';
 @import '@nutui/nutui-react-taro/dist/style.css';
-/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   *,
   ::before,
@@ -31,7 +31,9 @@
 }
 :root,
 :host {
-  --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-yellow-300: rgb(255, 224, 46);
   --color-emerald-400: rgb(0, 210, 148);
@@ -417,7 +419,7 @@ page {
   --tw-gradient-to-position: 100%;
   --tw-content: '';
 }
-/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   ::-webkit-backdrop {
     --tw-border-style: solid;
@@ -455,7 +457,9 @@ page {
 }
 :host,
 :root {
-  --font-sans: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-yellow-300: #ffe02e;
   --color-emerald-400: #00d294;
@@ -501,7 +505,21 @@ page {
 html {
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
-  font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
+  font-family: var(
+    --default-font-family,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    'Noto Sans',
+    Arial,
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji'
+  );
   -webkit-font-feature-settings: var(--default-font-feature-settings, normal);
   font-feature-settings: var(--default-font-feature-settings, normal);
   font-variation-settings: var(--default-font-variation-settings, normal);
@@ -568,7 +586,7 @@ table {
   border-color: inherit;
   text-indent: 0;
 }
-:-moz-focusring {
+:-moz-focusring:where(:not(iframe)) {
   outline: auto;
 }
 taro-progress-core {
@@ -1200,8 +1218,6 @@ wx-button {
   .system-dark\:bg-slate-900 {
     background-color: #0f172b;
   }
-}
-@media (prefers-color-scheme: dark) {
  /*tokens: system-dark:text-slate-100 <= src/pages/index/index.tsx */
   .system-dark\:text-slate-100 {
     color: #f1f5f9;
@@ -4267,16 +4283,14 @@ page {
   background-color: #fff;
 }
 .nut-step-title {
-  position: relative;
-  z-index: 1;
-}
-.nut-step-title {
   color: var(--nutui-steps-base-title-color, var(--nutui-color-title, #1a1a1a));
   font-size: var(--nutui-steps-base-title-font-size, var(--nutui-font-size-s, 0.3rem));
   height: 0.35rem;
   line-height: 0.35rem;
   overflow: hidden;
+  position: relative;
   white-space: nowrap;
+  z-index: 1;
 }
 .nut-step-description {
   color: var(--nutui-steps-base-description-color, var(--nutui-color-text-help, #888b94));

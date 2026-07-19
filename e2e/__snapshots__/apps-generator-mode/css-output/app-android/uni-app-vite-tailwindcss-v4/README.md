@@ -7,7 +7,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/app
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 37665 | 180 | true | true | true | true | true | false | true |
+| 36996 | 176 | true | true | true | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -22,7 +22,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/app
 
 | File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.css` | [artifacts/app.css](artifacts/app.css) | 33144 | 174 | true | true | true | true | true | false | true |
-| `pages-order/pages/home/home.css` | [artifacts/pages-order__pages__home__home.css](artifacts/pages-order__pages__home__home.css) | 1766 | 4 | true | false | true | false | false | false | false |
-| `pages-order/pages/user/user.css` | [artifacts/pages-order__pages__user__user.css](artifacts/pages-order__pages__user__user.css) | 1766 | 4 | true | false | true | false | false | false | false |
-| `pages/index/index.css` | [artifacts/pages__index__index.css](artifacts/pages__index__index.css) | 989 | 6 | false | false | false | false | false | false | true |
+| `app.css` | [artifacts/app.css](artifacts/app.css) | 31366 | 166 | true | true | true | true | true | false | true |
+| `pages-order/pages/home/home.css` | [artifacts/pages-order__pages__home__home.css](artifacts/pages-order__pages__home__home.css) | 1851 | 4 | true | false | true | false | false | false | false |
+| `pages-order/pages/user/user.css` | [artifacts/pages-order__pages__user__user.css](artifacts/pages-order__pages__user__user.css) | 1851 | 4 | true | false | true | false | false | false | false |
+| `pages/index/index.css` | [artifacts/pages__index__index.css](artifacts/pages__index__index.css) | 1928 | 10 | false | false | false | false | false | false | true |

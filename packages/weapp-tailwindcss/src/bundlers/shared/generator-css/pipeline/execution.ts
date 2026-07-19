@@ -3,7 +3,6 @@ import type { GenerateCssByGeneratorResult } from '../types'
 import type { GeneratorPipelineExecutionContext, GeneratorPipelineOutputContext } from './context'
 import type { CompilationScopeDependency } from '@/compiler'
 import process from 'node:process'
-import { extractSourceCandidates } from '@tailwindcss-mangle/engine'
 import { getCompilationSessionPool } from '@/compiler'
 import { getTailwindGenerationSessionPool } from '@/compiler/tailwind-generation-session-pool'
 import { shouldUseMiniProgramCssBranch } from '@/runtime-branch'
@@ -11,6 +10,7 @@ import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/
 import { includesTailwindV4PreflightDirective } from '@/tailwindcss/v4/preflight'
 import { runWithConcurrency } from '../../run-tasks'
 import { isSourceStyleRequest } from '../../style-requests'
+import { collectGeneratorCssCandidates } from '../candidates'
 import { removeTailwindSourceDirectives } from '../directives'
 import { createRuntimeWithCurrentCssCandidates, mergeGeneratorResults, mergeScopedRuntimeWithCurrentRuntime, resolveGeneratorStyleOptions, resolveMiniProgramPreflightModeForGeneratorCss, shouldIsolateCurrentTailwindV4CssCandidates, shouldIsolateScopedCssSource, shouldScanTailwindV4Sources } from '../generation-helpers'
 import { hasConfiguredContainerCompatSources } from '../legacy-compat'
@@ -79,9 +79,7 @@ export async function executeGeneratorPipeline(
     useMiniProgramCssBranch,
   } = context
   await runtimeState.readyPromise
-  const currentCssCandidates = await extractSourceCandidates(generatorRawSource, 'css', {
-    ...(generatorOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: generatorOptions.bareArbitraryValues }),
-  })
+  const currentCssCandidates = collectGeneratorCssCandidates(generatorRawSource)
   const isolateCurrentCssCandidates = shouldIsolateCurrentTailwindV4CssCandidates(
     majorVersion,
     cssHandlerOptions,

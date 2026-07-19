@@ -79,7 +79,7 @@ export async function executeViteCssTransformTask(
     ? options.normalizeMiniProgramGeneratorRawSource(options.previousCss, options.outputFile)
     : options.previousCss
   const shouldGenerateCssWithCore = hasTailwindGenerationSource(options.generatorRawSource)
-    || hasBundlerGeneratedCssMarker(options.rawSource)
+    || (!options.isWebGeneratorTarget && hasBundlerGeneratedCssMarker(options.rawSource))
 
   if (shouldGenerateCssWithCore) {
     const generatorUserRawSource = resolveGeneratorUserRawSource(options)

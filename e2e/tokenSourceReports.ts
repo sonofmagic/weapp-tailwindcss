@@ -1,3 +1,4 @@
+import type { SourceCandidateCollectorOptions } from '../packages/weapp-tailwindcss/src/bundlers/vite/source-candidates'
 import type { TailwindSourceEntry } from '../packages/weapp-tailwindcss/src/tailwindcss/source-scan'
 import type { CssTokenSource } from './snapshotUtils'
 import fs from 'node:fs/promises'
@@ -43,6 +44,10 @@ export const TOKEN_SOURCE_IGNORE_PATTERNS = [
   '**/vite.config.*',
   '**/webpack.config.*',
 ]
+
+const E2E_SOURCE_CANDIDATE_OPTIONS = {
+  customAttributesEntities: [['*', [/^t-class(?:-.+)?$/]]],
+} satisfies SourceCandidateCollectorOptions
 
 function toPosixPath(file: string) {
   return file.replace(/\\/g, '/')
@@ -219,6 +224,18 @@ async function collectScannedSourceFiles(projectRoot: string) {
     .sort()
 }
 
+export async function collectProjectSourceCandidates(projectRoot: string) {
+  const resolvedProjectRoot = await fs.realpath(projectRoot).catch(() => path.resolve(projectRoot))
+  const collector = createSourceCandidateCollector(E2E_SOURCE_CANDIDATE_OPTIONS)
+  const files = await collectScannedSourceFiles(resolvedProjectRoot)
+
+  for (const absolutePath of files) {
+    await collector.sync(absolutePath, await fs.readFile(absolutePath, 'utf8'))
+  }
+
+  return new Set(collector.values())
+}
+
 function createTokenSourceMap(classList: string[], sourceReports: TokenSourceFileReport[]) {
   const sourcesByToken = new Map<string, Set<string>>()
   for (const report of sourceReports) {
@@ -253,7 +270,7 @@ export async function collectTokenSourceReports(projectRoot: string, classList?:
 
   const resolvedProjectRoot = await fs.realpath(projectRoot).catch(() => path.resolve(projectRoot))
   const classSet = new Set(classList)
-  const collector = createSourceCandidateCollector()
+  const collector = createSourceCandidateCollector(E2E_SOURCE_CANDIDATE_OPTIONS)
   const files = await collectScannedSourceFiles(resolvedProjectRoot)
 
   const sourceReports: TokenSourceFileReport[] = []

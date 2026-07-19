@@ -1,6 +1,6 @@
 {
   "file": "pages/index/index.wxml",
-  "count": 64,
+  "count": 70,
   "tokens": [
     "bg-[#0977ee]",
     "bg-[#111111]",
@@ -29,6 +29,10 @@
     "h-[45px]",
     "hidden",
     "hover:border-blue-200/20",
+    "icon-[mdi--account]",
+    "icon-[mdi--home]",
+    "iconify-[lucide--bell]",
+    "iconify-[lucide--settings]",
     "inline-block",
     "items-center",
     "min-h-screen",
@@ -45,6 +49,8 @@
     "size-8",
     "space-x-2.5",
     "space-y-2.5",
+    "system-dark:bg-slate-900",
+    "system-dark:text-slate-100",
     "text-[#123456]",
     "text-[100px]",
     "text-[100rpx]",

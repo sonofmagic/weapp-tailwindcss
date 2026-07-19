@@ -1,11 +1,18 @@
 {
   "file": "src/app.css",
-  "count": 5,
+  "count": 12,
   "tokens": [
+    "bg-gradient-to-r",
     "font-semibold",
+    "from-[#9e58e9]",
+    "gap-2",
+    "inline-flex",
     "items-center",
+    "px-[18rpx]",
+    "py-[10rpx]",
     "rounded-[20rpx]",
     "text-[26rpx]",
-    "text-white"
+    "text-white",
+    "to-blue-500"
   ]
 }

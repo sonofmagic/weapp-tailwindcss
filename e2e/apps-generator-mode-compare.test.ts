@@ -951,8 +951,25 @@ function removeTaroWebpackV4WebSubpackageNoise(css: string) {
   try {
     const root = postcss.parse(css)
     root.walkRules((rule) => {
-      if (rule.selectors.some(selector => /(?:normal|independent)_subpackage_taro-webpack-react-tailwindcss-v4/.test(selector))) {
+      if (
+        rule.selectors.some(selector => /(?:normal|independent)_subpackage_taro-webpack-react-tailwindcss-v4/.test(selector))
+        || rule.selectors.every(selector => selector === '.transform' || selector === '.ease-in-out')
+      ) {
+        const previous = rule.prev()
+        if (previous?.type === 'comment' && previous.text.trim().startsWith('tokens:')) {
+          previous.remove()
+        }
         rule.remove()
+      }
+    })
+    root.walkAtRules('property', (rule) => {
+      if (rule.params.trim() === '--tw-ease') {
+        rule.remove()
+      }
+    })
+    root.walkDecls((decl) => {
+      if (decl.prop === '--tw-ease' || decl.prop === '--ease-in-out') {
+        decl.remove()
       }
     })
     return normalizeCssSnapshot(root.toString())
@@ -1264,12 +1281,27 @@ describe('demo generator mode output', () => {
       fileName: 'css/app.css',
       content: [
         '.main { color: red; }',
+        '/* tokens: transform <= src/app.css */',
+        '.transform { transform: translate(0); }',
+        '/* tokens: ease-in-out <= src/app.css */',
+        '.ease-in-out { transition-timing-function: ease-in-out; }',
+        '@property --tw-ease { syntax: "*"; inherits: false; }',
+        '*,::before,::after { --tw-ease: initial; color: inherit; }',
+        ':root { --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1); }',
         String.raw`.before\:content-\[\'normal_subpackage_taro-webpack-react-tailwindcss-v4\'\] { content: 'normal'; }`,
         String.raw`.before\:content-\[\'independent_subpackage_taro-webpack-react-tailwindcss-v4\'\] { content: 'independent'; }`,
       ].join('\n'),
     })
 
     expect(normalized).toContain('.main')
+    expect(normalized).not.toContain('.transform')
+    expect(normalized).not.toContain('.ease-in-out')
+    expect(normalized).not.toContain('tokens: transform')
+    expect(normalized).not.toContain('tokens: ease-in-out')
+    expect(normalized).not.toContain('@property --tw-ease')
+    expect(normalized).not.toContain('--tw-ease')
+    expect(normalized).not.toContain('--ease-in-out')
+    expect(normalized).toContain('color: inherit')
     expect(normalized).not.toContain('normal_subpackage_taro-webpack-react-tailwindcss-v4')
     expect(normalized).not.toContain('independent_subpackage_taro-webpack-react-tailwindcss-v4')
   })
