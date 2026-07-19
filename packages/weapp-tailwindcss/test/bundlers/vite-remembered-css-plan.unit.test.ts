@@ -1,5 +1,6 @@
 import type { OutputAsset } from 'rollup'
 import { describe, expect, it, vi } from 'vitest'
+import { resolveViteCssCompositionPlan } from '@/bundlers/vite/generate-bundle/css-composition-plan'
 import { resolveViteCssSourcePlan } from '@/bundlers/vite/generate-bundle/css-source-plan'
 import { resolveRememberedCssSourcePlan } from '@/bundlers/vite/generate-bundle/remembered-css-plan'
 
@@ -319,5 +320,76 @@ describe('vite css source plan', () => {
     expect(plan.resolution).toBe('inferred')
     expect(plan.hasUsableTailwindSource).toBe(false)
     expect(plan.sources).toEqual([])
+  })
+})
+
+describe('vite css composition plan', () => {
+  function createCompositionOptions(
+    overrides: Partial<Parameters<typeof resolveViteCssCompositionPlan>[0]> = {},
+  ) {
+    return {
+      assetSourceFile: 'pages/index/index.wxss',
+      configuredSourceFileKeys: new Set<string>(),
+      cssEntries: undefined,
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      explicitSourceFileKeys: new Set<string>(),
+      file: 'pages/index/index.wxss',
+      getCssHandlerOptions: () => ({ isMainChunk: false }),
+      getOriginalCssLayerSource: undefined,
+      isRootStyleOutputFile: (file: string) => !file.includes('/') && file.endsWith('.wxss'),
+      isWebGeneratorTarget: false,
+      normalizeConfiguredSourceFile: (file: string) => file,
+      normalizeGeneratorSource: (source: string) => source,
+      normalizeGeneratorUserSource: (source: string) => source,
+      outputCssHandlerOptions: { isMainChunk: false },
+      outputFile: 'pages/index/index.wxss',
+      rawSource: '.page{}',
+      rememberedSources: [],
+      resolveConfiguredRootInjectionTarget: () => undefined,
+      resolveMatchedOutputFile: () => undefined,
+      resolvedFromTemporarySource: false,
+      rootImportShellOutputFile: 'app.wxss',
+      shouldKeepImportedCssShell: false,
+      shouldKeepRootImportShell: false,
+      shouldMoveRootImportShellToOrigin: false,
+      shouldSkipRememberedSource: () => false,
+      viteProcessedCssAsset: false,
+      ...overrides,
+    }
+  }
+
+  it('preserves a pure imported css shell without entering generation', () => {
+    const plan = resolveViteCssCompositionPlan(createCompositionOptions({
+      rawSource: '@import "./shared.wxss";',
+      shouldKeepImportedCssShell: true,
+    }))
+
+    expect(plan.preserveImportedCssShell).toBe(true)
+    expect(plan.vitePipelineCssAsset).toBe(false)
+  })
+
+  it('composes remembered configured sources into one generator input', () => {
+    const sourceFile = '/repo/src/sub/app.css'
+    const plan = resolveViteCssCompositionPlan(createCompositionOptions({
+      configuredSourceFileKeys: new Set([sourceFile]),
+      explicitSourceFileKeys: new Set([sourceFile]),
+      getCssHandlerOptions: () => ({ isMainChunk: false }),
+      outputFile: 'temporary.css',
+      rememberedSources: [{
+        outputFile: 'temporary.css',
+        rawSource: '@import "tailwindcss";\n@source "./pages/**/*.vue";',
+        sourceFile,
+      }],
+      resolveMatchedOutputFile: () => 'sub/app.wxss',
+      viteProcessedCssAsset: true,
+    }))
+
+    expect(plan.outputFile).toBe('sub/app.wxss')
+    expect(plan.generatorSourceFile).toBe(sourceFile)
+    expect(plan.generatorCssHandlerOptions.sourceOptions).toEqual({
+      cssEntries: [sourceFile],
+      sourceFile,
+    })
+    expect(plan.usedConfiguredSourceFile).toBe(sourceFile)
   })
 })
