@@ -143,4 +143,35 @@ describe('vite source output relations', () => {
     expect(owner.removeSource(suffixSource)).toEqual(new Set())
     expect(consumer.consume([])).toEqual(['views/card.axml'])
   })
+
+  it('replaces dirty source ownership without retaining historical hashed outputs', () => {
+    const owner = createViteSourceOutputRelationOwner()
+    const consumerA = owner.createRemovalConsumer()
+    const consumerB = owner.createRemovalConsumer()
+    const sourceFile = '/workspace/source/views/card.axml'
+    owner.recordOwnedOutput(sourceFile, 'views/card-0.axml')
+
+    for (let revision = 1; revision <= 100; revision++) {
+      const outputFile = `views/card-${revision}.axml`
+      owner.observeSource(sourceFile)
+      owner.recordOwnedOutput(sourceFile, outputFile)
+      expect(consumerA.consume([outputFile])).toEqual([`views/card-${revision - 1}.axml`])
+      expect(consumerB.consume([outputFile])).toEqual([`views/card-${revision - 1}.axml`])
+      expect(owner.getStats()).toEqual({
+        consumers: 2,
+        dirtySources: 0,
+        outputs: 1,
+        pendingOutputs: 0,
+        sources: 1,
+      })
+    }
+  })
+
+  it('does not retain dirty revisions for sources without owned outputs', () => {
+    const owner = createViteSourceOutputRelationOwner()
+    for (let revision = 0; revision < 100; revision++) {
+      owner.observeSource(`/workspace/source/unowned-${revision}.axml`)
+    }
+    expect(owner.getStats().dirtySources).toBe(0)
+  })
 })

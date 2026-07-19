@@ -9,6 +9,13 @@ export interface ViteSourceOutputRemovalConsumer {
 export interface ViteSourceOutputRelationOwner {
   createRemovalConsumer: () => ViteSourceOutputRemovalConsumer
   dispose: () => void
+  getStats: () => {
+    consumers: number
+    dirtySources: number
+    outputs: number
+    pendingOutputs: number
+    sources: number
+  }
   observeSource: (sourceFile: string) => void
   recordBundle: (bundle: Record<string, OutputAsset | OutputChunk>) => void
   recordOwnedOutput: (sourceFile: string, outputFile: string) => void
@@ -43,6 +50,7 @@ export function createViteSourceOutputRelationOwner(): ViteSourceOutputRelationO
   const outputsBySource = new Map<string, Set<string>>()
   const sourcesByOutput = new Map<string, Set<string>>()
   const deletedSources = new Set<string>()
+  const dirtySources = new Set<string>()
   const consumers = new Set<{ pending: Set<string> }>()
   let disposed = false
 
@@ -59,6 +67,25 @@ export function createViteSourceOutputRelationOwner(): ViteSourceOutputRelationO
     }
   }
 
+  const unlinkSource = (sourceFile: string) => {
+    const outputs = [...(outputsBySource.get(sourceFile) ?? [])]
+    for (const outputFile of outputs) {
+      unlinkSourceFromOutput(sourceFile, outputFile)
+    }
+    return outputs
+  }
+
+  const queueRemovedOutputs = (outputFiles: Iterable<string>) => {
+    for (const outputFile of outputFiles) {
+      if (sourcesByOutput.has(outputFile)) {
+        continue
+      }
+      for (const consumer of consumers) {
+        consumer.pending.add(outputFile)
+      }
+    }
+  }
+
   const recordOwnedOutput = (sourceFile: string, outputFile: string) => {
     if (disposed) {
       return
@@ -67,6 +94,9 @@ export function createViteSourceOutputRelationOwner(): ViteSourceOutputRelationO
     const outputKey = normalizeOutputFile(outputFile)
     if (!sourceKey || !outputKey || deletedSources.has(sourceKey)) {
       return
+    }
+    if (dirtySources.delete(sourceKey)) {
+      queueRemovedOutputs(unlinkSource(sourceKey))
     }
     const outputs = outputsBySource.get(sourceKey) ?? new Set<string>()
     outputs.add(outputKey)
@@ -108,11 +138,25 @@ export function createViteSourceOutputRelationOwner(): ViteSourceOutputRelationO
       outputsBySource.clear()
       sourcesByOutput.clear()
       deletedSources.clear()
+      dirtySources.clear()
       consumers.clear()
+    },
+    getStats() {
+      return {
+        consumers: consumers.size,
+        dirtySources: dirtySources.size,
+        outputs: sourcesByOutput.size,
+        pendingOutputs: new Set([...consumers].flatMap(consumer => [...consumer.pending])).size,
+        sources: outputsBySource.size,
+      }
     },
     observeSource(sourceFile) {
       if (!disposed) {
-        deletedSources.delete(normalizeSourceFile(sourceFile))
+        const sourceKey = normalizeSourceFile(sourceFile)
+        deletedSources.delete(sourceKey)
+        if (outputsBySource.has(sourceKey)) {
+          dirtySources.add(sourceKey)
+        }
       }
     },
     recordBundle(bundle) {
@@ -133,16 +177,14 @@ export function createViteSourceOutputRelationOwner(): ViteSourceOutputRelationO
       }
       const sourceKey = normalizeSourceFile(sourceFile)
       deletedSources.add(sourceKey)
+      dirtySources.delete(sourceKey)
       const removedOutputs = new Set<string>()
-      for (const outputFile of [...(outputsBySource.get(sourceKey) ?? [])]) {
-        unlinkSourceFromOutput(sourceKey, outputFile)
+      for (const outputFile of unlinkSource(sourceKey)) {
         if (!sourcesByOutput.has(outputFile)) {
           removedOutputs.add(outputFile)
-          for (const consumer of consumers) {
-            consumer.pending.add(outputFile)
-          }
         }
       }
+      queueRemovedOutputs(removedOutputs)
       return removedOutputs
     },
   }
