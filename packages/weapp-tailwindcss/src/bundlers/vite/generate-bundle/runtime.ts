@@ -13,7 +13,6 @@ import { normalizeMiniProgramGeneratorCssSource } from '../../shared/generator-c
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { createBundleModuleGraphOptions } from '../bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState } from '../bundle-state'
-import { resolveLegacyViteCssAssetIdentity } from '../css-asset-identity'
 import { collectViteProcessedCssAssetResults, isCssImportOnlyBundleAsset, removeCssCoveredByRootStyleBundleSources } from '../processed-css-assets'
 import { createRuntimeAffectingSourceSignature } from '../runtime-affecting-signature'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from '../weapp-vite-config'
@@ -396,7 +395,6 @@ function createGenerateBundleHook(context): any {
           resolveCssAssetIdentity,
           resolveCssAssetOutputPlan,
           resolveFrameworkRootImportShellPlan,
-          resolveLegacyViteCssAssetIdentity,
           resolveMatchedCssSourceOutputFile,
           resolveReplayCssOutputFile,
           resolveViteCssCompositionPlan,

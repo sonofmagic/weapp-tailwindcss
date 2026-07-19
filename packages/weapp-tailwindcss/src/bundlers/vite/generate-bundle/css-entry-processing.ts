@@ -89,7 +89,6 @@ export async function processViteCssBundleEntry(options: any) {
     resolveCssAssetIdentity,
     resolveCssAssetOutputPlan,
     resolveFrameworkRootImportShellPlan,
-    resolveLegacyViteCssAssetIdentity,
     resolveMatchedCssSourceOutputFile,
     resolveReplayCssOutputFile,
     resolveViteCssCompositionPlan,
@@ -196,7 +195,9 @@ export async function processViteCssBundleEntry(options: any) {
   }
   const hasViteProcessedCssRecord = getViteProcessedCssAssetResult?.(file) != null
   const viteProcessedCssAsset = isViteProcessedCssAsset?.(originalSource, file) === true || hasViteProcessedCssRecord
-  const cssAssetIdentity = resolveCssAssetIdentity?.(originalSource, file) ?? resolveLegacyViteCssAssetIdentity(originalSource)
+  const cssAssetIdentity = resolveCssAssetIdentity?.(originalSource, file) ?? {
+    kind: viteProcessedCssAsset ? 'bundler-generated' : 'user',
+  }
   let resolvedFromTemporaryCssAsset = false
   const applyCssResult = (source) => {
     applyCssResultToBundle({

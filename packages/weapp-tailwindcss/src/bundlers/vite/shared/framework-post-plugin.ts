@@ -10,7 +10,7 @@ import { resolveImplicitAppTypeFromViteRoot } from '../resolve-app-type'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from '../tailwind-basedir'
 
 export function createFrameworkPostPlugin(options: any): Plugin {
-  return {
+  const plugin: Plugin & { api?: unknown } = {
     name: `${vitePluginName}:post`,
     enforce: 'post',
     config(config) {
@@ -110,4 +110,8 @@ export function createFrameworkPostPlugin(options: any): Plugin {
       handler: options.generateBundleHook,
     },
   }
+  if (options.api) {
+    plugin.api = options.api
+  }
+  return plugin
 }

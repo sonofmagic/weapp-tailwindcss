@@ -1,6 +1,5 @@
 import type { OutputAsset } from 'rollup'
 import path from 'node:path'
-import { hasBundlerGeneratedCssMarker } from '../shared/generated-css-marker'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 
 export type ViteCssAssetIdentityKind = 'user' | 'generator-placeholder' | 'bundler-generated'
@@ -13,31 +12,6 @@ export interface ViteCssAssetIdentity {
 export interface CreateViteCssAssetIdentityResolverOptions {
   generatorPlaceholderFile: string
   isKnownProcessedSource: (file: string) => boolean
-}
-
-function readAssetSource(asset: OutputAsset) {
-  return typeof asset.source === 'string' ? asset.source : asset.source.toString()
-}
-
-function isLegacyPlaceholderSource(source: string) {
-  return source.includes('weapp-tailwindcss generator-placeholder')
-    || source.includes('vite-placeholder')
-}
-
-export function resolveLegacyViteCssAssetIdentity(asset: OutputAsset): ViteCssAssetIdentity {
-  if (isLegacyPlaceholderSource(readAssetSource(asset))) {
-    return {
-      kind: 'generator-placeholder',
-    }
-  }
-  if (hasBundlerGeneratedCssMarker(asset.source)) {
-    return {
-      kind: 'bundler-generated',
-    }
-  }
-  return {
-    kind: 'user',
-  }
 }
 
 export function createViteCssAssetIdentityResolver(
@@ -66,12 +40,9 @@ export function createViteCssAssetIdentityResolver(
       }
     }
     else {
-      const legacyIdentity = resolveLegacyViteCssAssetIdentity(asset)
-      identity = legacyIdentity.kind === 'generator-placeholder'
-        ? legacyIdentity
-        : candidates.some(options.isKnownProcessedSource)
-          ? { kind: 'bundler-generated' }
-          : legacyIdentity
+      identity = candidates.some(options.isKnownProcessedSource)
+        ? { kind: 'bundler-generated' }
+        : { kind: 'user' }
     }
     identityByAsset.set(asset, identity)
     return identity

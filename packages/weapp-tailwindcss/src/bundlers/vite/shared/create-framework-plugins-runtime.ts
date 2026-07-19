@@ -36,7 +36,7 @@ import { createCssHandlerOptionsCache, resolveViteCssHandlerExtraOptions } from 
 import { createJsHandlerOptionsFactory } from '../generate-bundle/js-handler-options'
 import { isSfcStyleSourceFile, resolveSfcStyleRequestFromKnownSource } from '../generate-bundle/sfc-style-source'
 import { touchMapEntry } from '../map-cache'
-import { isMissingInternalCssSource, normalizeVitePersistentCacheKey, summarizeStringCache, summarizeViteProcessedCssResults } from '../plugin-cache'
+import { isMissingInternalCssSource, normalizeVitePersistentCacheKey, summarizeStringCache } from '../plugin-cache'
 import { removeScopedTailwindPreflightCss } from '../processed-css-assets'
 import { createRewriteCssImportsPlugins, hasVitePipelineTailwindGenerationDirective } from '../rewrite-css-imports'
 import { createViteRuntimeClassSet } from '../runtime-class-set'
@@ -51,6 +51,7 @@ import { resolveWeappViteSourceRoot } from '../weapp-vite-config'
 import { resolveViteWebCssCompatOptions, shouldApplyViteWebCssCompat } from '../web-css-compat'
 import { createViteHmrCandidateState } from './framework-hmr-candidate-state'
 import { createFrameworkPostPlugin } from './framework-post-plugin'
+import { createFrameworkProcessedCssRegistry } from './framework-processed-css-registry'
 import { createFrameworkSourceCandidatesPlugin } from './framework-source-candidates-plugin'
 import { createFrameworkSourceScanSession } from './framework-source-scan-session'
 
@@ -204,11 +205,10 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
   }
   const processedCssAssets = new WeakSet()
   const processedCssAssetSourceByFile = new Map()
-  const viteProcessedCssSourceFiles = new Set()
   const cleanGeneratedCssByFile = new Map()
   const tracedGeneratedCssByFile = new Map()
   const generatedClassSetByFile = new Map()
-  const viteProcessedCssAssetResults = new Map()
+  const processedCssRegistry = createFrameworkProcessedCssRegistry()
   const cssMemory = createViteCssMemory({ debug, getSourceCandidateSource: file => sourceCandidateCollector.source(file) })
   const tailwindRootCssModuleIds = new Set()
   const { runtimeState, refreshRuntimeState, ensureRuntimeClassSet, ensureBundleRuntimeClassSet } = createViteRuntimeClassSet({ opts, initialTailwindRuntime, refreshTailwindcssRuntime: refreshTailwindRuntime, uniAppXEnabled, customAttributesEntities, disabledDefaultTemplateHandler, debug })
@@ -229,7 +229,7 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
       return false
     } const source = readCssAssetSource(asset); if (processedCssAssetSourceByFile.get(normalizeOutputPathKey(file)) === source) {
       return true
-    } const record = viteProcessedCssAssetResults.get(normalizeOutputPathKey(file)); if (!record) {
+    } const record = processedCssRegistry.get(file); if (!record) {
       return false
     } return source === record.css
   }
@@ -268,10 +268,10 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
     sourceCandidateCollector,
   })
   const recordCssAssetResult = (file, css) => { touchMapEntry(cleanGeneratedCssByFile, normalizeVitePersistentCacheKey(file), css) }
-  const recordViteProcessedCssAssetResult = (file, css, options2 = {}) => { const key = normalizeVitePersistentCacheKey(file); const previous = viteProcessedCssAssetResults.get(key); const injectIntoMain = previous?.injectIntoMain === true ? true : options2.injectIntoMain ?? previous?.injectIntoMain; touchMapEntry(viteProcessedCssAssetResults, key, { css, injectIntoMain, outputFile: options2.outputFile ?? previous?.outputFile }) }
-  const getViteProcessedCssAssetResults = () => viteProcessedCssAssetResults.entries()
-  const getViteProcessedCssAssetResult = file => viteProcessedCssAssetResults.get(normalizeVitePersistentCacheKey(file))
-  const getViteCssCacheStats = () => ({ cleanGeneratedCssByFile: cleanGeneratedCssByFile.size, cleanGeneratedCssByFileRaw: summarizeStringCache(cleanGeneratedCssByFile), tracedGeneratedCssByFile: tracedGeneratedCssByFile.size, tracedGeneratedCssByFileRaw: summarizeStringCache(tracedGeneratedCssByFile), generatedClassSetByFile: generatedClassSetByFile.size, viteProcessedCssAssetResults: viteProcessedCssAssetResults.size, viteProcessedCssAssetResultsRaw: summarizeViteProcessedCssResults(viteProcessedCssAssetResults), ...cssMemory.getStats(), ...sourceScanSession.getStats() })
+  const recordViteProcessedCssAssetResult = processedCssRegistry.record
+  const getViteProcessedCssAssetResults = processedCssRegistry.entries
+  const getViteProcessedCssAssetResult = processedCssRegistry.get
+  const getViteCssCacheStats = () => ({ cleanGeneratedCssByFile: cleanGeneratedCssByFile.size, cleanGeneratedCssByFileRaw: summarizeStringCache(cleanGeneratedCssByFile), tracedGeneratedCssByFile: tracedGeneratedCssByFile.size, tracedGeneratedCssByFileRaw: summarizeStringCache(tracedGeneratedCssByFile), generatedClassSetByFile: generatedClassSetByFile.size, ...processedCssRegistry.getStats(), ...cssMemory.getStats(), ...sourceScanSession.getStats() })
   const pruneViteCssCaches = (options2) => {
     const activeFiles = new Set([...options2.activeFiles].map(normalizeVitePersistentCacheKey)); for (const key of cleanGeneratedCssByFile.keys()) {
       if (!activeFiles.has(key)) {
@@ -285,15 +285,10 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
       if (!activeFiles.has(key)) {
         generatedClassSetByFile.delete(key)
       }
-    } for (const [key, record] of viteProcessedCssAssetResults) {
-      const outputKey = typeof record.outputFile === 'string' ? normalizeVitePersistentCacheKey(record.outputFile) : void 0
-      if (!activeFiles.has(key) && (outputKey == null || !activeFiles.has(outputKey))) {
-        viteProcessedCssAssetResults.delete(key)
-      }
-    } cssMemory.prune(options2)
+    } processedCssRegistry.prune(activeFiles); cssMemory.prune(options2)
   }
   const normalizeViteProcessedCssFile = file => path.resolve(cleanUrl(file))
-  const markViteProcessedCssSource = (file) => { viteProcessedCssSourceFiles.add(normalizeViteProcessedCssFile(file)) }
+  const markViteProcessedCssSource = processedCssRegistry.markSource
   const rememberTailwindRootCssModule = (id) => {
     if (!shouldOwnTailwindGeneration) {
       return
@@ -303,8 +298,7 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
   }
   const registerTailwindRootCss = async (id, code) => { rememberTailwindRootCssModule(id); await registerAutoCssSource(id, code) }
   const isUniViteProject = () => { return resolvedConfig?.plugins?.some(plugin => plugin.name.includes('uni')) ?? false }
-  const matchesViteProcessedCssSource = (candidate) => { const normalized = normalizeViteProcessedCssFile(candidate); return viteProcessedCssSourceFiles.has(normalized) }
-  const resolveCssAssetIdentity = createViteCssAssetIdentityResolver({ generatorPlaceholderFile: generatorPlaceholderCssFile, isKnownProcessedSource: candidate => matchesViteProcessedCssSource(cleanUrl(candidate)) })
+  const resolveCssAssetIdentity = createViteCssAssetIdentityResolver({ generatorPlaceholderFile: generatorPlaceholderCssFile, isKnownProcessedSource: processedCssRegistry.matchesIdentity })
   const isViteProcessedCssAsset = (asset, file) => resolveCssAssetIdentity(asset, file).kind === 'bundler-generated'
   const transformCssHandlerOptions = createCssHandlerOptionsCache({ getAppType: () => opts.appType, mainCssChunkMatcher, getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion, getOutputRoot: () => resolvedConfig?.build?.outDir ? path.resolve(resolvedConfig.root, resolvedConfig.build.outDir) : resolvedConfig?.root, getExtraOptions: file => ({ ...resolveViteCssHandlerExtraOptions(file), ...frameworkCssPipelineStrategy?.getCssHandlerExtraOptions?.({ ...createCssPipelineContext(), file }) ?? {} }), getDynamicCssOptions: () => ({ cssPreflight: opts.cssPreflight }) })
   const serveJsHandlerOptions = createJsHandlerOptionsFactory({ getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion, moduleGraph: void 0 })
@@ -466,9 +460,23 @@ ${tracedCss}`
     sourceScanSession,
     tailwindRootCssModuleIds,
     transformEarlyMiniProgramCss,
-    viteProcessedCssSourceFiles,
+    viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles,
   })
   const postPlugin = createFrameworkPostPlugin({
+    api: {
+      registerProcessedCssAsset(entry: {
+        css: string
+        injectIntoMain?: boolean
+        outputFile: string
+        sourceFile: string
+      }) {
+        markViteProcessedCssSource(entry.sourceFile)
+        recordViteProcessedCssAssetResult(entry.sourceFile, entry.css, {
+          injectIntoMain: entry.injectIntoMain,
+          outputFile: entry.outputFile,
+        })
+      },
+    },
     debug,
     generateBundleHook,
     generatorPlaceholderCssFile,

@@ -72,7 +72,7 @@ function createAsset(source: string, originalFileNames?: string[]) {
 }
 
 describe('bundlers/vite helper modules', () => {
-  it('resolves css asset identity from ownership before legacy content fallback', () => {
+  it('resolves css asset identity only from structured ownership metadata', () => {
     const resolveIdentity = createViteCssAssetIdentityResolver({
       generatorPlaceholderFile: '/repo/pkg/generator-placeholder.css',
       isKnownProcessedSource: file => file === '/repo/src/generated.css',
@@ -89,7 +89,13 @@ describe('bundlers/vite helper modules', () => {
       kind: 'bundler-generated',
     })
     expect(resolveIdentity(createAsset('/* vite-placeholder */') as any)).toEqual({
-      kind: 'generator-placeholder',
+      kind: 'user',
+    })
+    expect(resolveIdentity(createAsset('/*! weapp-tailwindcss generator-placeholder */') as any)).toEqual({
+      kind: 'user',
+    })
+    expect(resolveIdentity(createAsset('/*! weapp-tailwindcss generated-css vite */') as any)).toEqual({
+      kind: 'user',
     })
     expect(resolveIdentity(createAsset('page{}') as any)).toEqual({
       kind: 'user',

@@ -56,6 +56,18 @@ function getGenerateBundleHandler(plugin: Plugin) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
+function registerProcessedCssAsset(
+  plugin: Plugin,
+  entry: { css: string, injectIntoMain?: boolean, outputFile: string, sourceFile: string },
+) {
+  const api = (plugin as Plugin & {
+    api?: {
+      registerProcessedCssAsset?: (entry: { css: string, injectIntoMain?: boolean, outputFile: string, sourceFile: string }) => void
+    }
+  }).api
+  api?.registerProcessedCssAsset?.(entry)
+}
+
 function getTransformHandler(plugin: Plugin) {
   const hook = plugin.transform as any
   return typeof hook === 'object' ? hook.handler : hook
@@ -4918,6 +4930,12 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       '.flex{display:-webkit-flex;display:flex}',
       '.bg-clip-text{-webkit-background-clip:text;background-clip:text}',
     ].join('\n')
+    registerProcessedCssAsset(postPlugin, {
+      css: processedCss,
+      injectIntoMain: true,
+      outputFile: 'src/main.css',
+      sourceFile: path.resolve(process.cwd(), 'src/main.css'),
+    })
     const bundle = {
       'app.wxss': {
         ...createRollupAsset('.app{color:red}'),
@@ -4926,6 +4944,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       'src/main.css': {
         ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.resolve(process.cwd(), 'src/main.css'))}\n${processedCss}`),
         fileName: 'src/main.css',
+        originalFileNames: [path.resolve(process.cwd(), 'src/main.css')],
       },
     }
 
@@ -4967,6 +4986,12 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     } as ResolvedConfig)
 
     const processedCss = '.graph-source-root{}'
+    registerProcessedCssAsset(postPlugin, {
+      css: processedCss,
+      injectIntoMain: true,
+      outputFile: 'src/app.wxss',
+      sourceFile: path.join(root, 'src/app.css'),
+    })
     const bundle = {
       'pages/index/index.js': {
         ...createRollupChunk(''),
@@ -6005,10 +6030,16 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     } as ResolvedConfig)
 
     const processedCss = '.independent-only{}'
+    registerProcessedCssAsset(postPlugin, {
+      css: processedCss,
+      outputFile: 'sub-independent/pages/index.wxss',
+      sourceFile: path.resolve(process.cwd(), 'sub-independent/pages/index.css'),
+    })
     const bundle = {
       'sub-independent/pages/index.wxss': {
         ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.resolve(process.cwd(), 'sub-independent/pages/index.css'))}\n${processedCss}`),
         fileName: 'sub-independent/pages/index.wxss',
+        originalFileNames: [path.resolve(process.cwd(), 'sub-independent/pages/index.css')],
       },
     }
 
@@ -6149,6 +6180,11 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     } as ResolvedConfig)
 
     const appSourceFile = path.join(root, 'src/tailwind.scss')
+    registerProcessedCssAsset(postPlugin, {
+      css: '.peer-local-only{color:blue}',
+      outputFile: 'pages/index/peer.wxss',
+      sourceFile: appSourceFile,
+    })
     const bundle = {
       'app.wxss': {
         ...createRollupAsset('.app-global-only{color:red}'),
@@ -6159,6 +6195,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 .app-global-only{color:red}
 .peer-local-only{color:blue}`),
         fileName: 'pages/index/peer.wxss',
+        originalFileNames: [appSourceFile],
       },
     }
     const generateBundle = getGenerateBundleHandler(postPlugin)
@@ -6747,6 +6784,16 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const normalCss = '.normal-only{}'
     const independentSource = path.join(root, 'sub-independent/pages/index.css')
     const normalSource = path.join(root, 'sub-normal/pages/index.css')
+    registerProcessedCssAsset(postPlugin, {
+      css: independentCss,
+      outputFile: 'sub-independent/pages/index.wxss',
+      sourceFile: independentSource,
+    })
+    registerProcessedCssAsset(postPlugin, {
+      css: normalCss,
+      outputFile: 'sub-normal/pages/index.wxss',
+      sourceFile: normalSource,
+    })
     const bundle = {
       'sub-independent/pages/index.wxss': {
         ...createRollupAsset([
@@ -6756,6 +6803,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           normalCss,
         ].join('\n')),
         fileName: 'sub-independent/pages/index.wxss',
+        originalFileNames: [independentSource],
       },
       'sub-normal/pages/index.wxss': {
         ...createRollupAsset([
@@ -6765,6 +6813,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           normalCss,
         ].join('\n')),
         fileName: 'sub-normal/pages/index.wxss',
+        originalFileNames: [normalSource],
       },
     }
 
@@ -7184,6 +7233,10 @@ module.exports = {
       markCssAssetProcessed: vi.fn(),
       isCssAssetProcessed: vi.fn(() => false),
       isViteProcessedCssAsset: vi.fn(() => true),
+      resolveCssAssetIdentity: (_asset, file) => ({
+        kind: 'generator-placeholder',
+        sourceFile: file,
+      }),
       recordCssAssetResult: vi.fn(),
       recordViteProcessedCssAssetResult: vi.fn(),
       getViteProcessedCssAssetResults: () => [],
@@ -12208,8 +12261,14 @@ const cls = "w-[1.5px]"
     const transform = getTransformHandler(postPlugin)
     const sourceCss = '@import "tailwindcss";'
     const sourceFile = path.resolve(process.cwd(), 'src/app.css')
+    const generatedBanner = '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */'
     const appOriginCss = `${createBundlerGeneratedCssMarker('vite', sourceFile)}
-/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */`
+${generatedBanner}`
+    registerProcessedCssAsset(postPlugin, {
+      css: generatedBanner,
+      outputFile: 'app-origin.wxss',
+      sourceFile,
+    })
     runtimeSet.add('text-[#111111]')
     await transform?.call({ addWatchFile: vi.fn() } as any, sourceCss, sourceFile)
     const firstBundle = {
@@ -13149,8 +13208,14 @@ ${utilities}
       'styles/tw-entry.wxss': {
         ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.join(root, 'src/styles/tw-entry.vue?vue&type=style&index=0&lang.scss'))}\n${firstEntryCss}`),
         fileName: 'styles/tw-entry.wxss',
+        originalFileNames: [path.join(root, 'src/styles/tw-entry.vue?vue&type=style&index=0&lang.scss')],
       },
     }
+    registerProcessedCssAsset(postPlugin, {
+      css: firstEntryCss,
+      outputFile: 'styles/tw-entry.wxss',
+      sourceFile: path.join(root, 'src/styles/tw-entry.vue?vue&type=style&index=0&lang.scss'),
+    })
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
     const secondEntryCss = (secondBundle['styles/tw-entry.wxss'] as OutputAsset).source.toString()
     expect(secondEntryCss).toContain('.text-2xl')
