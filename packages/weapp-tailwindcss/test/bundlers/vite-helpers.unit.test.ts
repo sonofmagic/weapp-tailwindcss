@@ -7,6 +7,7 @@ import {
   applyCssResultToBundle,
   createMatchedCssSourceOutputResolver,
   hasViteProcessedCssResultForSource,
+  resolveCssAssetOutputPlan,
   resolveCssBundleOutputFile,
   resolveOutputFileFromMatchedCssSource,
   shouldSkipRawSourceStyleAsset,
@@ -120,6 +121,54 @@ describe('bundlers/vite helper modules', () => {
       matchesCss: true,
       shouldKeep: () => true,
     })).toBe(false)
+  })
+
+  it('plans css asset output from root ownership and configured originals', () => {
+    const rootPlan = resolveCssAssetOutputPlan({
+      assetSourceFile: 'entry.acss',
+      bundleFiles: ['entry.acss', 'generated.acss'],
+      configuredEntries: [],
+      defaultStyleOutputExtension: '.acss',
+      file: 'entry.acss',
+      isWebGeneratorTarget: false,
+      normalizeConfiguredSourceFile: file => file,
+      opts: {
+        cssMatcher: file => file.endsWith('.acss'),
+      } as any,
+      originalFileNames: [],
+      pipelineContext: {} as any,
+      resolveOutputFileFromMatchedCssSource: () => undefined,
+      rootImportShellOutputFile: 'entry.acss',
+      rootImportShellTarget: 'generated.acss',
+      shouldPreserveAppCssExtension: false,
+      shouldReuseRootImportShell: () => true,
+    })
+    expect(rootPlan.outputFile).toBe('generated.acss')
+    expect(rootPlan.resolvedFromConfiguredOriginalCssEntry).toBe(false)
+    expect(rootPlan.reusedRootImportShellTarget).toBe(true)
+
+    const configuredPlan = resolveCssAssetOutputPlan({
+      assetSourceFile: '/repo/src/app.css',
+      bundleFiles: ['bundle.css'],
+      configuredEntries: [{ file: '/repo/src/app.css' }],
+      defaultStyleOutputExtension: '.css',
+      file: 'bundle.css',
+      isWebGeneratorTarget: false,
+      normalizeConfiguredSourceFile: file => file,
+      opts: {
+        cssMatcher: file => file.endsWith('.css'),
+      } as any,
+      originalFileNames: ['/repo/src/app.css'],
+      pipelineContext: {} as any,
+      resolveOutputFileFromMatchedCssSource: () => 'app.css',
+      rootImportShellOutputFile: 'bundle.css',
+      rootImportShellTarget: undefined,
+      shouldPreserveAppCssExtension: false,
+      shouldReuseRootImportShell: () => false,
+    })
+    expect(configuredPlan.outputFile).toBe('app.css')
+    expect(configuredPlan.resolvedFromConfiguredOriginalCssEntry).toBe(true)
+    expect(configuredPlan.reusedRootImportShellTarget).toBe(false)
   })
 
   it('restores framework root import shells through the real output asset', () => {

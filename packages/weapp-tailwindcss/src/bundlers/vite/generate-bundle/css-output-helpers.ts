@@ -146,6 +146,67 @@ export function createMatchedCssSourceOutputResolver(options: {
   }
 }
 
+export type ResolveCssAssetOutputPlanOptions = Parameters<typeof resolveCssBundleOutputFile>[0] & {
+  assetSourceFile: string
+  configuredEntries: Array<{ file: string }>
+  normalizeConfiguredSourceFile: (file: string) => string
+  originalFileNames: string[] | undefined
+  resolveOutputFileFromMatchedCssSource: (sourceFile: string | undefined) => string | undefined
+  rootImportShellOutputFile: string
+  rootImportShellTarget: string | undefined
+  shouldReuseRootImportShell: () => boolean
+}
+
+export interface CssAssetOutputPlan {
+  outputFile: string
+  resolveMatchedOutputFile: (sourceFile: string | undefined) => string | undefined
+  resolvedFromConfiguredOriginalCssEntry: boolean
+  reusedRootImportShellTarget: boolean
+}
+
+export function resolveCssAssetOutputPlan(
+  options: ResolveCssAssetOutputPlanOptions,
+): CssAssetOutputPlan {
+  let outputFile = resolveCssBundleOutputFile(options)
+  const reusedRootImportShellTarget = Boolean(
+    options.rootImportShellTarget
+    && !options.isWebGeneratorTarget
+    && (options.opts.cssMatcher(options.rootImportShellOutputFile) || options.opts.cssMatcher(options.file))
+    && options.shouldReuseRootImportShell(),
+  )
+  if (reusedRootImportShellTarget && options.rootImportShellTarget) {
+    outputFile = options.rootImportShellTarget
+  }
+  const resolveMatchedOutputFile = createMatchedCssSourceOutputResolver({
+    assetSourceFile: options.assetSourceFile,
+    file: options.file,
+    originalFileNames: options.originalFileNames,
+    resolveOutputFileFromMatchedCssSource: options.resolveOutputFileFromMatchedCssSource,
+  })
+  const configuredOriginalSourceEntry = outputFile.replace(/[?#].*$/, '').endsWith('.css')
+    ? options.configuredEntries.find(entry =>
+        options.originalFileNames?.some(originalFile =>
+          options.normalizeConfiguredSourceFile(originalFile)
+          === options.normalizeConfiguredSourceFile(entry.file),
+        ) === true,
+      )
+    : undefined
+  const configuredOriginalOutputFile = configuredOriginalSourceEntry
+    ? resolveMatchedOutputFile(configuredOriginalSourceEntry.file)
+    : undefined
+  const resolvedFromConfiguredOriginalCssEntry = configuredOriginalOutputFile != null
+    && normalizeOutputPathKey(configuredOriginalOutputFile) !== normalizeOutputPathKey(outputFile)
+  if (resolvedFromConfiguredOriginalCssEntry && configuredOriginalOutputFile) {
+    outputFile = configuredOriginalOutputFile
+  }
+  return {
+    outputFile,
+    resolveMatchedOutputFile,
+    resolvedFromConfiguredOriginalCssEntry,
+    reusedRootImportShellTarget,
+  }
+}
+
 export function hasViteProcessedCssResultForSource(
   sourceFile: string,
   getViteProcessedCssAssetResults?: (() => Iterable<[string, unknown]> | undefined) | undefined,
