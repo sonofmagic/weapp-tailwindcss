@@ -64,3 +64,5 @@ Vite source/output ownership 现在按 source update revision 原子替换：同
 新增真实 Vite watch 回归，覆盖没有 originalFileNames 的支付宝模板 asset：源码删除后下一轮构建不再保留该模板候选生成的安全类名，验证 watchChange、source-candidate 精确归属和 removedFiles 已贯通实际构建生命周期。
 
 Vite remembered CSS refresh 不再在 generateBundle/replay 阶段通过 readFile 补取源码。普通样式更新消费 source-candidate transform cache，扫描规则排除的样式由 watchChange 生命周期显式写入 CSS memory；缓存缺失时跳过 replay 刷新并保留已有状态。remembered replay 直接消费生命周期缓存的 source snapshot，产物写回统一通过 `AssetEmissionPlan` 执行。
+
+Vite generateBundle port 不再向内部 runtime 透传 remembered source refresh 能力；普通 CSS asset 与缺失 asset replay 统一只消费 load、transform、watchChange 和 handleHotUpdate 已提交的 source snapshot，后置阶段不能重新解析源码状态。

@@ -14096,7 +14096,7 @@ ${utilities}
     expect((bundle['app.wxss'] as OutputAsset).source.toString()).toContain('/* generated */')
   }, TEST_TIMEOUT_MS)
 
-  it('refreshes remembered sfc style source from watch cache before replaying stale vite pipeline css', async () => {
+  it('uses the latest sfc lifecycle snapshot without refreshing during generateBundle', async () => {
     const generateCssByGeneratorMock = vi.fn(async (options: {
       rawSource: string
     }) => {
@@ -14138,10 +14138,9 @@ ${utilities}
       }],
     ])
     let currentStyleSource = dirtyStyleSource
-    const refreshRememberedCssSource = vi.fn(async (remembered: { outputFile: string, rawSource: string, sourceFile: string }) => ({
-      ...remembered,
-      rawSource: currentStyleSource,
-    }))
+    const refreshRememberedCssSource = vi.fn(async () => {
+      throw new Error('generateBundle 不应刷新 remembered source')
+    })
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
@@ -14211,6 +14210,11 @@ ${utilities}
 
     await writeFile(sourceFile, `<template><view /></template>\n<style lang="scss">\n${cleanStyleSource}\n</style>\n`, 'utf8')
     currentStyleSource = cleanStyleSource
+    rememberedCssSources.set('pages/index/index.wxss', {
+      outputFile: 'pages/index/index.wxss',
+      rawSource: cleanStyleSource,
+      sourceFile: styleRequest,
+    })
     generateCssByGeneratorMock.mockClear()
     const secondBundle = {
       'pages/index/index.wxss': {
@@ -14228,7 +14232,7 @@ ${utilities}
     }, {} as any, secondBundle)
 
     const rolledBackCss = (secondBundle['pages/index/index.wxss'] as OutputAsset).source.toString()
-    expect(refreshRememberedCssSource).toHaveBeenCalled()
+    expect(refreshRememberedCssSource).not.toHaveBeenCalled()
     expect(generateCssByGeneratorMock).toHaveBeenCalled()
     const lastGeneratedOptions = generateCssByGeneratorMock.mock.calls.at(-1)?.[0]
     expect(lastGeneratedOptions.rawSource).toContain('.base-style { @apply flex; }')
