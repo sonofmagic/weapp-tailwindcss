@@ -1,4 +1,4 @@
-import type { CompilationGraphSnapshot, SourceKind, SourceScope } from './types'
+import type { CompilationChange, CompilationGraphSnapshot, CompilationSnapshot, SourceKind, SourceScope } from './types'
 
 export interface CompilationScopeDependency {
   id: string
@@ -15,6 +15,16 @@ export interface CompilationScopeGraphSource {
   kind: SourceKind
   content?: string | undefined
   dependencies?: CompilationScopeDependency[] | undefined
+}
+
+export interface CompilationScopeSnapshotSource extends CompilationScopeGraphSource {
+  candidates: Iterable<string>
+}
+
+export interface CreateCompilationScopeSnapshotOptions {
+  changes?: CompilationChange[] | undefined
+  preserveDeletedCss?: boolean | undefined
+  validatedClassSet?: Iterable<string> | undefined
 }
 
 export function sourceNodeId(sourceId: string) {
@@ -115,5 +125,24 @@ export function createCompilationScopeGraph(
         kind: 'depends-on' as const,
       })),
     ]),
+  }
+}
+
+export function createCompilationScopeSnapshot(
+  scope: SourceScope,
+  outputId: string,
+  sources: Iterable<CompilationScopeSnapshotSource>,
+  options: CreateCompilationScopeSnapshotOptions = {},
+): CompilationSnapshot {
+  const normalizedSources = [...sources]
+  return {
+    ...createCompilationScopeGraph(scope, outputId, normalizedSources),
+    candidatesBySource: normalizedSources.map(source => [
+      sourceNodeId(source.id),
+      source.candidates,
+    ] as const),
+    ...(options.changes === undefined ? {} : { changes: options.changes }),
+    ...(options.preserveDeletedCss === undefined ? {} : { preserveDeletedCss: options.preserveDeletedCss }),
+    ...(options.validatedClassSet === undefined ? {} : { validatedClassSet: options.validatedClassSet }),
   }
 }

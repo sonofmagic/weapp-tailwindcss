@@ -1,7 +1,7 @@
-import type { CompilationDependencyChange, CompilationScopeDependency, CompilationScopeGraphSource } from './compilation-scope-graph'
+import type { CompilationDependencyChange, CompilationScopeDependency, CompilationScopeSnapshotSource } from './compilation-scope-graph'
 import type { CompilationChange, CompilationResult, SourceKind, SourceScope } from './types'
 import { CompilationDependencyState } from './compilation-dependency-state'
-import { createCompilationScopeGraph, dependencyNodeId, dependencySignature, mergeCompilationScopeDependencies, sourceNodeId } from './compilation-scope-graph'
+import { createCompilationScopeGraph, createCompilationScopeSnapshot, dependencyNodeId, dependencySignature, mergeCompilationScopeDependencies, sourceNodeId } from './compilation-scope-graph'
 import { ensureCompilerOwnerActive } from './compiler-owner-state'
 import { DefaultCompilationSession } from './session'
 
@@ -241,20 +241,15 @@ export class CompilationSessionPool {
     entry.generatedDependencies = new Map(
       [...entry.generatedDependencies].filter(([sourceId]) => nextSources.has(sourceId)),
     )
-    const graph = createCompilationScopeGraph(
+    entry.latest = entry.session.update(createCompilationScopeSnapshot(
       request.scope,
       request.outputId,
       this.createGraphSources(nextSources, entry.generatedDependencies),
-    )
-    entry.latest = entry.session.update({
-      ...graph,
-      candidatesBySource: [...nextSources.values()].map(source => [
-        sourceNodeId(source.id),
-        source.candidates,
-      ] as const),
-      changes,
-      preserveDeletedCss: request.preserveDeletedCss,
-    })
+      {
+        changes,
+        preserveDeletedCss: request.preserveDeletedCss,
+      },
+    ))
     return {
       compilation: this.toScopeState(entry.latest, nextSources),
       sources: nextSources,
@@ -264,7 +259,7 @@ export class CompilationSessionPool {
   private createGraphSources(
     sources: Map<string, CompilationScopeSource>,
     generatedDependencies: Map<string, CompilationScopeDependency[]>,
-  ): CompilationScopeGraphSource[] {
+  ): CompilationScopeSnapshotSource[] {
     return [...sources.values()].map(source => ({
       ...source,
       dependencies: mergeCompilationScopeDependencies(

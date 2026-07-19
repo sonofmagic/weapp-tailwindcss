@@ -48,3 +48,7 @@ shadow report session 新增显式完成与封存语义，Vite CSS finalizer 和
 新增统一 compiler owner 生命周期释放：Vite `closeBundle`、Webpack `watchClose`/`shutdown` 和 Gulp `dispose()` 会清理 CompilationSession、Tailwind generation engine、待消费 ChangeSet 与 shadow report。scope pool 会等待仍在执行的生成任务结束后再释放 session，避免 watch 关闭时出现旧生成结果写回已释放状态；同一 owner 的并发关闭会复用同一个释放任务，防止后触发的 hook 越过仍在运行的编译。
 
 compiler owner 进入释放窗口后会统一拒绝创建新的 CompilationSession、generation pool、ChangeSet coordinator 与 shadow report session，待释放完成后才允许同一 owner 开启下一轮构建，避免关闭期间出现新旧状态交叉持有。
+
+新增 canonical compilation scope snapshot builder，CompilationSessionPool 与 bundler contract 共用 source graph、candidate source 和输出 asset 的构造规则；Vite、Webpack、Gulp 的相同初始与增量输入现在会统一校验 runtime snapshot 和 CompilationResult 等价性。
+
+Gulp 的 Vinyl 内容写回改为通过 AssetEmissionPlan executor 执行，并新增三端写回契约，确保 Vite bundle、Webpack compilation 和 Gulp stream 对更新、新建、删除操作得到等价产物。

@@ -2,7 +2,6 @@ import type File from 'vinyl'
 import type { getCompilerContext } from '@/context'
 import type { TailwindRuntimeState } from '@/tailwindcss/runtime'
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, JsModuleGraphOptions } from '@/types'
-import { Buffer } from 'node:buffer'
 import path from 'node:path'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { processCachedTask } from '../../../shared/cache'
@@ -11,6 +10,7 @@ import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker, stripBun
 import { finalizeMiniProgramGeneratorCss } from '../../../shared/generator-css/generation-helpers'
 import { rewriteLocalCssImportRequestsForOutput } from '../../../shared/generator-css/local-imports'
 import { generateTailwindV4Css } from '../../../shared/v4-generation-core'
+import { writeGulpFileAsset } from '../../asset-emission-plan'
 import { createVinylTransform } from '../../vinyl-transform'
 import { pruneGulpProcessCache, rememberGulpProcessCacheKey } from './cache-state'
 
@@ -125,7 +125,7 @@ export function createGulpFileTransforms(context: GulpFileTransformContext) {
         cacheKey: file.path,
         hash: createRuntimeSetHash(rawSource, nextRuntimeSet, sourceTraceSignature, sourceCandidateSignature, outputSignature),
         applyResult(source) {
-          file.contents = Buffer.from(source)
+          writeGulpFileAsset(file, source)
         },
         onCacheHit() {
           debug('css cache hit: %s', file.path)
@@ -209,7 +209,7 @@ export function createGulpFileTransforms(context: GulpFileTransformContext) {
             },
           )
         : handled.css
-      file.contents = Buffer.from(rewriteLocalCssImportRequestsForOutput(finalized, {
+      writeGulpFileAsset(file, rewriteLocalCssImportRequestsForOutput(finalized, {
         styleOutputExtension,
       }))
       debug('css adapt: %s', file.path)
@@ -243,7 +243,7 @@ export function createGulpFileTransforms(context: GulpFileTransformContext) {
         cacheKey: file.path,
         rawSource,
         applyResult(source) {
-          file.contents = Buffer.from(source)
+          writeGulpFileAsset(file, source)
         },
         onCacheHit() {
           debug('js cache hit: %s', file.path)
@@ -279,7 +279,7 @@ export function createGulpFileTransforms(context: GulpFileTransformContext) {
         cacheKey: file.path,
         rawSource,
         applyResult(source) {
-          file.contents = Buffer.from(source)
+          writeGulpFileAsset(file, source)
         },
         onCacheHit() {
           debug('html cache hit: %s', file.path)
