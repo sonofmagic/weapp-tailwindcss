@@ -8,6 +8,7 @@ import type {
   UpdateRuntimeCompilationBuildStateOptions,
 } from '@/compiler'
 import type { InternalUserDefinedOptions } from '@/types'
+import { AsyncLocalStorage } from 'node:async_hooks'
 import { Buffer } from 'node:buffer'
 import {
   buildRuntimeCompilationSnapshot,
@@ -36,6 +37,15 @@ export type BundleBuildState = RuntimeCompilationBuildState
 export interface BuildBundleSnapshotOptions {
   hasOmittedKnownFiles?: boolean | undefined
   removedFiles?: Iterable<string> | undefined
+}
+
+const removedBundleFilesStorage = new AsyncLocalStorage<Iterable<string>>()
+
+export function runWithRemovedBundleFiles<T>(
+  removedFiles: Iterable<string>,
+  run: () => Promise<T>,
+) {
+  return removedBundleFilesStorage.run(removedFiles, run)
 }
 
 export function createBundleBuildState(): BundleBuildState {
@@ -110,7 +120,7 @@ export function buildBundleSnapshot(
     createRuntimeAffectingSignature: createRuntimeAffectingSourceSignature,
     forceAll,
     hasOmittedKnownFiles: options.hasOmittedKnownFiles,
-    removedFiles: options.removedFiles,
+    removedFiles: options.removedFiles ?? removedBundleFilesStorage.getStore(),
   })
 
   return {

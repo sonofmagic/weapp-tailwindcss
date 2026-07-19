@@ -1,7 +1,9 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { GenerateBundleContext, GenerateBundleThis } from './generate-bundle/types'
 import { beginCompilerShadowRun } from '@/compiler'
+import { runWithRemovedBundleFiles } from './bundle-state'
 import { createGenerateBundleHook as createRuntimeGenerateBundleHook } from './generate-bundle-runtime'
+import { getActiveViteSourceOutputRelationOwner } from './source-output-relations'
 
 // cssPipelineStrategy 的阶段调度由内部 runtime 实现承担。
 
@@ -12,7 +14,18 @@ export { shouldKeepRootMiniProgramStyleAsImportShell, shouldMoveRootMiniProgramS
 export type { GenerateBundleContext, GenerateBundleThis, RememberedCssSource } from './generate-bundle/types'
 
 export function createGenerateBundleHook(context: GenerateBundleContext) {
-  const runtimeHandler = createRuntimeGenerateBundleHook(context) as (
+  const relationOwner = getActiveViteSourceOutputRelationOwner()
+  const removalConsumer = relationOwner?.createRemovalConsumer()
+  const rememberCssSource = context.rememberCssSource
+  const runtimeHandler = createRuntimeGenerateBundleHook({
+    ...context,
+    rememberCssSource: rememberCssSource
+      ? (entry, cssRuntimeSignature) => {
+          relationOwner?.recordOwnedOutput(entry.sourceFile, entry.outputFile)
+          rememberCssSource(entry, cssRuntimeSignature)
+        }
+      : undefined,
+  }) as (
     this: GenerateBundleThis,
     options: unknown,
     bundle: Record<string, OutputAsset | OutputChunk>,
@@ -22,7 +35,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     options: unknown,
     bundle: Record<string, OutputAsset | OutputChunk>,
   ) {
+    relationOwner?.recordBundle(bundle)
+    const removedFiles = removalConsumer?.consume(Object.keys(bundle)) ?? []
     beginCompilerShadowRun(context.runtimeState)
-    await runtimeHandler.call(this, options, bundle)
+    await runWithRemovedBundleFiles(removedFiles, () => runtimeHandler.call(this, options, bundle))
   }
 }

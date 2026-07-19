@@ -54,3 +54,5 @@ compiler owner 进入释放窗口后会统一拒绝创建新的 CompilationSessi
 Gulp 的 Vinyl 内容写回改为通过 AssetEmissionPlan executor 执行，并新增三端写回契约，确保 Vite bundle、Webpack compilation 和 Gulp stream 对更新、新建、删除操作得到等价产物。
 
 RuntimeCompilationSnapshot 新增显式 removedFiles：核心层不再把快照中缺席的文件猜测为删除；Webpack port 可依据完整 compilation asset 集合判断消失的输出，Vite partial snapshot 与 Gulp watcher 则消费 bundler 明确上报的删除。显式删除会清理 runtime candidate、source hash、linked dependency 和 CompilationSession candidate source，即使同一轮设置了 hasOmittedKnownFiles 也不会继续保留已删除文件状态。
+
+Vite production port 新增基于 Rollup facade、asset originalFileNames 与已缓存 CSS source/output 元数据的产物归属表。`watchChange` 删除事件会按真实归属向每个 generateBundle session 提交一次性 removedFiles；增量 bundle 中仅仅缺席的无关产物仍会保留，当前轮仍实际输出或由多个 source 共同拥有的产物不会被误删，并覆盖 `.acss`、`.ttss` 等非微信样式后缀。
