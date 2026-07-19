@@ -14,6 +14,14 @@ function createAsset(fileName: string, sourceFile: string): OutputAsset {
   }
 }
 
+function createAnonymousAsset(fileName: string): OutputAsset {
+  return {
+    ...createAsset(fileName, ''),
+    originalFileName: null,
+    originalFileNames: [],
+  }
+}
+
 describe('vite removed files port', () => {
   afterEach(() => {
     vi.doUnmock('@/bundlers/vite/generate-bundle-runtime')
@@ -22,18 +30,30 @@ describe('vite removed files port', () => {
     vi.resetModules()
   })
 
-  it('routes a watch deletion into the next production snapshot once', async () => {
+  it('routes CSS metadata and exact template source deletions into production snapshots once', async () => {
     const snapshots: Array<{ removedFiles: Set<string> }> = []
     const runtimeCloseBundle = vi.fn()
+    const sourceCandidates = new Map<string, string>()
     vi.doMock('@/bundlers/vite/generate-bundle-runtime', async () => {
       const {
         buildBundleSnapshot,
         createBundleBuildState,
       } = await import('@/bundlers/vite/bundle-state')
       return {
-        createGenerateBundleHook: vi.fn(() => {
+        createGenerateBundleHook: vi.fn((context: any) => {
           const state = createBundleBuildState()
           return async (_options: unknown, bundle: Record<string, OutputAsset>) => {
+            const { resolveCurrentSourceCandidateFile } = await import('@/bundlers/vite/generate-bundle/source-candidate-source')
+            for (const file of Object.keys(bundle)) {
+              resolveCurrentSourceCandidateFile({
+                file,
+                getSourceCandidateSource: context.getSourceCandidateSource,
+                getSourceCandidateSources: context.getSourceCandidateSources,
+                outDir: '/workspace/dist',
+                rootDir: '/workspace',
+                sourceRoot: '/workspace/source',
+              })
+            }
             snapshots.push(buildBundleSnapshot(bundle, {
               cache: {
                 computeHash: (source: string) => source,
@@ -54,6 +74,8 @@ describe('vite removed files port', () => {
         createViteFrameworkPlugins: vi.fn(() => [{
           name: 'mock-vite-port',
           generateBundle: createGenerateBundleHook({
+            getSourceCandidateSource: (file: string) => sourceCandidates.get(file),
+            getSourceCandidateSources: () => sourceCandidates,
             runtimeState: {
               tailwindRuntime: { majorVersion: 4 },
               readyPromise: Promise.resolve(),
@@ -74,18 +96,24 @@ describe('vite removed files port', () => {
     const generateBundle = plugin?.generateBundle as (this: object, options: unknown, bundle: Record<string, OutputAsset>) => Promise<void>
     const watchChange = plugin?.watchChange as (id: string, change: { event: string }) => Promise<void>
     const sourceFile = '/workspace/src/theme.css'
+    const templateSourceFile = '/workspace/source/views/card.axml'
+    sourceCandidates.set(templateSourceFile, '<view class="pt-2" />')
 
     await generateBundle.call({}, {}, {
       'styles/theme.acss': createAsset('styles/theme.acss', sourceFile),
       'styles/other.ttss': createAsset('styles/other.ttss', '/workspace/src/other.css'),
+      'views/card.axml': createAnonymousAsset('views/card.axml'),
     })
     await watchChange(sourceFile, { event: 'delete' })
+    await generateBundle.call({}, {}, {})
+    await watchChange(templateSourceFile, { event: 'delete' })
     await generateBundle.call({}, {}, {})
     await generateBundle.call({}, {}, {})
 
     expect(snapshots[0]?.removedFiles).toEqual(new Set())
     expect(snapshots[1]?.removedFiles).toEqual(new Set(['styles/theme.acss']))
-    expect(snapshots[2]?.removedFiles).toEqual(new Set())
+    expect(snapshots[2]?.removedFiles).toEqual(new Set(['views/card.axml']))
+    expect(snapshots[3]?.removedFiles).toEqual(new Set())
     await plugin?.closeBundle?.()
     expect(runtimeCloseBundle).toHaveBeenCalledOnce()
   })

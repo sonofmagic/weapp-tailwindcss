@@ -3,7 +3,10 @@ import type { GenerateBundleContext, GenerateBundleThis } from './generate-bundl
 import { beginCompilerShadowRun } from '@/compiler'
 import { runWithRemovedBundleFiles } from './bundle-state'
 import { createGenerateBundleHook as createRuntimeGenerateBundleHook } from './generate-bundle-runtime'
-import { getActiveViteSourceOutputRelationOwner } from './source-output-relations'
+import {
+  getActiveViteSourceOutputRelationOwner,
+  withViteSourceOutputRelationOwner,
+} from './source-output-relations'
 
 // cssPipelineStrategy 的阶段调度由内部 runtime 实现承担。
 
@@ -38,6 +41,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     relationOwner?.recordBundle(bundle)
     const removedFiles = removalConsumer?.consume(Object.keys(bundle)) ?? []
     beginCompilerShadowRun(context.runtimeState)
-    await runWithRemovedBundleFiles(removedFiles, () => runtimeHandler.call(this, options, bundle))
+    const runRuntime = () => runWithRemovedBundleFiles(
+      removedFiles,
+      () => runtimeHandler.call(this, options, bundle),
+    )
+    await (relationOwner
+      ? withViteSourceOutputRelationOwner(relationOwner, runRuntime)
+      : runRuntime())
   }
 }

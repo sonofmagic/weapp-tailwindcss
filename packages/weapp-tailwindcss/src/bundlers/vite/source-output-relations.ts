@@ -1,4 +1,5 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
+import { AsyncLocalStorage } from 'node:async_hooks'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 
 export interface ViteSourceOutputRemovalConsumer {
@@ -14,7 +15,7 @@ export interface ViteSourceOutputRelationOwner {
   removeSource: (sourceFile: string) => Set<string>
 }
 
-let activeRelationOwner: ViteSourceOutputRelationOwner | undefined
+const activeRelationOwnerStorage = new AsyncLocalStorage<ViteSourceOutputRelationOwner>()
 
 function normalizeSourceFile(sourceFile: string) {
   return normalizeOutputPathKey(sourceFile.replace(/[?#].*$/, ''))
@@ -148,19 +149,12 @@ export function createViteSourceOutputRelationOwner(): ViteSourceOutputRelationO
 }
 
 export function getActiveViteSourceOutputRelationOwner() {
-  return activeRelationOwner
+  return activeRelationOwnerStorage.getStore()
 }
 
 export function withViteSourceOutputRelationOwner<T>(
   owner: ViteSourceOutputRelationOwner,
   run: () => T,
 ): T {
-  const previousOwner = activeRelationOwner
-  activeRelationOwner = owner
-  try {
-    return run()
-  }
-  finally {
-    activeRelationOwner = previousOwner
-  }
+  return activeRelationOwnerStorage.run(owner, run)
 }

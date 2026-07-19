@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
+import { getActiveViteSourceOutputRelationOwner } from '../source-output-relations'
 
 export interface ResolveCurrentSourceCandidateSourceOptions {
   file: string
@@ -8,6 +9,11 @@ export interface ResolveCurrentSourceCandidateSourceOptions {
   outDir: string
   rootDir: string
   sourceRoot?: string | undefined
+}
+
+export interface CurrentSourceCandidateFileMatch {
+  confidence: 'exact' | 'suffix'
+  file: string
 }
 
 function normalizeSourceCandidatePathKey(file: string) {
@@ -41,16 +47,21 @@ function createSourceCandidateFiles(options: ResolveCurrentSourceCandidateSource
   ]
 }
 
-export function resolveCurrentSourceCandidateFile(options: ResolveCurrentSourceCandidateSourceOptions) {
+export function resolveCurrentSourceCandidateFileMatch(
+  options: ResolveCurrentSourceCandidateSourceOptions,
+): CurrentSourceCandidateFileMatch | undefined {
   const sourceCandidates = createSourceCandidateFiles(options)
   for (const candidate of sourceCandidates) {
     if (candidate && options.getSourceCandidateSource?.(candidate) !== undefined) {
-      return candidate
+      return {
+        confidence: 'exact',
+        file: candidate,
+      }
     }
   }
 
   const normalizedFile = normalizeOutputPathKey(options.file.replace(/[?#].*$/, ''))
-  let bestMatch: { file: string, score: number } | undefined
+  let bestMatch: { confidence: CurrentSourceCandidateFileMatch['confidence'], file: string, score: number } | undefined
   const normalizedSourceCandidates = sourceCandidates
     .filter((candidate): candidate is string => Boolean(candidate))
     .map(candidate => ({
@@ -68,10 +79,22 @@ export function resolveCurrentSourceCandidateFile(options: ResolveCurrentSourceC
       score = Math.max(score, 20)
     }
     if (score > (bestMatch?.score ?? 0)) {
-      bestMatch = { file: sourceFile, score }
+      bestMatch = {
+        confidence: score >= 80 ? 'exact' : 'suffix',
+        file: sourceFile,
+        score,
+      }
     }
   }
-  return bestMatch?.file
+  return bestMatch
+}
+
+export function resolveCurrentSourceCandidateFile(options: ResolveCurrentSourceCandidateSourceOptions) {
+  const match = resolveCurrentSourceCandidateFileMatch(options)
+  if (match?.confidence === 'exact') {
+    getActiveViteSourceOutputRelationOwner()?.recordOwnedOutput(match.file, options.file)
+  }
+  return match?.file
 }
 
 export function resolveCurrentSourceCandidateSource(options: ResolveCurrentSourceCandidateSourceOptions) {

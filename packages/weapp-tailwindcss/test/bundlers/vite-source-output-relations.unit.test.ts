@@ -1,6 +1,10 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import { describe, expect, it } from 'vitest'
-import { createViteSourceOutputRelationOwner } from '@/bundlers/vite/source-output-relations'
+import { resolveCurrentSourceCandidateFile } from '@/bundlers/vite/generate-bundle/source-candidate-source'
+import {
+  createViteSourceOutputRelationOwner,
+  withViteSourceOutputRelationOwner,
+} from '@/bundlers/vite/source-output-relations'
 
 function createAsset(fileName: string, originalFileNames: string[]): OutputAsset {
   return {
@@ -111,5 +115,32 @@ describe('vite source output relations', () => {
     expect(owner.removeSource('/workspace/src/a.ts')).toEqual(new Set())
     expect(owner.removeSource('/workspace/src/entry.ts')).toEqual(new Set(['entry.js']))
     expect(consumer.consume([])).toEqual(['entry.js'])
+  })
+
+  it('records exact source-candidate matches but rejects suffix-only ownership', () => {
+    const owner = createViteSourceOutputRelationOwner()
+    const consumer = owner.createRemovalConsumer()
+    const exactSource = '/workspace/source/views/card.axml'
+    const suffixSource = '/workspace/other/views/fallback.axml'
+
+    withViteSourceOutputRelationOwner(owner, () => {
+      expect(resolveCurrentSourceCandidateFile({
+        file: 'views/card.axml',
+        getSourceCandidateSource: file => file === exactSource ? '<view />' : undefined,
+        outDir: '/workspace/dist',
+        rootDir: '/workspace',
+        sourceRoot: '/workspace/source',
+      })).toBe(exactSource)
+      expect(resolveCurrentSourceCandidateFile({
+        file: 'views/fallback.axml',
+        getSourceCandidateSources: () => new Map([[suffixSource, '<view />']]),
+        outDir: '/workspace/dist',
+        rootDir: '/workspace',
+      })).toBe(suffixSource)
+    })
+
+    expect(owner.removeSource(exactSource)).toEqual(new Set(['views/card.axml']))
+    expect(owner.removeSource(suffixSource)).toEqual(new Set())
+    expect(consumer.consume([])).toEqual(['views/card.axml'])
   })
 })
