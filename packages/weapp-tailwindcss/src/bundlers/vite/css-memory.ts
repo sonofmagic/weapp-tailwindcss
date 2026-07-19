@@ -4,6 +4,7 @@ import { normalizeOutputPathKey } from '../shared/module-graph'
 import { isSourceStyleRequest, stripRequestQuery } from '../shared/style-requests'
 import { pruneMapToMaxSize, touchMapEntry } from './map-cache'
 import { parseVueRequest } from './query'
+import { getActiveViteSourceOutputRelationOwner } from './source-output-relations'
 import { cleanUrl } from './utils'
 
 const VITE_REMEMBERED_CSS_CACHE_MAX = 96
@@ -147,6 +148,7 @@ export function createViteCssMemory(options: {
   }
 
   const rememberCssSource = (entry: RememberedCssSource, cssRuntimeSignature?: string) => {
+    getActiveViteSourceOutputRelationOwner()?.recordOwnedOutput(entry.sourceFile, entry.outputFile)
     const outputKey = normalizeOutputPathKey(entry.outputFile)
     const normalizedSourceFile = normalizeCssSourceIdentity(entry.sourceFile)
     const previousOutputEntry = rememberedCssSources.get(outputKey)

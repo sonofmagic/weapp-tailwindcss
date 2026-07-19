@@ -100,3 +100,5 @@ Vite CSS process cache、shared transform cache、last result 与 remembered sou
 删除历史上机械压缩的 `shared/create-framework-plugins-runtime.ts` 实现形式，并将 HMR candidate 状态、source scan session、source-candidates Vite port 与 framework post plugin 拆为独立 owner；watch/HMR 不再通过主插件工厂直接共享 pending candidate、scan cache 和 dependency invalidation 变量。
 
 Vite CSS asset 身份不再通过 `generator-placeholder`、`vite-placeholder` 或 generated marker 文本猜测，改由 Rollup `originalFileNames`、生命周期登记的 source identity 与显式 placeholder metadata 决定。新增 processed CSS registry 统一持有 source/output 关系、处理结果和 prune 生命周期，增量 watch 中的 output 记录不再反向污染当前 asset 身份。
+
+Vite lifecycle CSS snapshot 写入时会同步登记 source/output ownership，缺席 CSS asset 的恢复只按 `originalFileNames`、精确 output identity 与 relation owner 查询来源；删除 generated marker 解析、文件名相似度评分和任意 remembered source fallback，避免同名分包或历史路径被错误重放。

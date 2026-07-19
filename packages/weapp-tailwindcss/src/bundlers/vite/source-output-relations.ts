@@ -16,6 +16,8 @@ export interface ViteSourceOutputRelationOwner {
     pendingOutputs: number
     sources: number
   }
+  getOutputSources: (outputFile: string) => Set<string>
+  getOwnedOutputs: (sourceFile: string) => Set<string>
   observeSource: (sourceFile: string) => void
   recordBundle: (bundle: Record<string, OutputAsset | OutputChunk>) => void
   recordOwnedOutput: (sourceFile: string, outputFile: string) => void
@@ -149,6 +151,12 @@ export function createViteSourceOutputRelationOwner(): ViteSourceOutputRelationO
         pendingOutputs: new Set([...consumers].flatMap(consumer => [...consumer.pending])).size,
         sources: outputsBySource.size,
       }
+    },
+    getOutputSources(outputFile) {
+      return new Set(sourcesByOutput.get(normalizeOutputFile(outputFile)) ?? [])
+    },
+    getOwnedOutputs(sourceFile) {
+      return new Set(outputsBySource.get(normalizeSourceFile(sourceFile)) ?? [])
     },
     observeSource(sourceFile) {
       if (!disposed) {

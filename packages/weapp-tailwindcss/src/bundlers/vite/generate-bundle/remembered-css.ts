@@ -1,11 +1,9 @@
 import type { OutputAsset } from 'rollup'
 import type { RememberedCssSource } from './types'
 import type { InternalUserDefinedOptions } from '@/types'
-import { hasBundlerGeneratedCssMarker, parseBundlerGeneratedCssMarkerBlocks } from '../../shared/generated-css-marker'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
+import { getActiveViteSourceOutputRelationOwner } from '../source-output-relations'
 import { CSS_SOURCE_OUTPUT_EXT_RE, resolveViteCssPipelineOutputFileFromSourceFile } from './css-output'
-import { hasTailwindGenerationSource } from './sfc-style-source'
-import { scoreMatchingStyleFileBase } from './style-matching'
 
 export function createRememberedCssRuntimeSignature(cssRuntimeSignature: string, cssRuntimeAffectingHash: string) {
   return `${cssRuntimeSignature}:${cssRuntimeAffectingHash}`
@@ -38,36 +36,6 @@ function normalizeRememberedSourceIdentity(file: string) {
   return normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
 }
 
-function selectBestRememberedCssSourceMatches(
-  sources: RememberedCssSource[],
-  outputFile: string,
-  outputRoot: string,
-  sourceRoot: string | undefined,
-  options: { minimumScore?: number | undefined, requirePositiveScore?: boolean | undefined } = {},
-) {
-  const minimumScore = options.minimumScore ?? (options.requirePositiveScore ? 1 : 0)
-  const scoredMatches = sources
-    .map(remembered => ({
-      remembered,
-      score: Math.max(
-        scoreMatchingStyleFileBase(outputFile, remembered.sourceFile, outputRoot, sourceRoot),
-        scoreMatchingStyleFileBase(outputFile, remembered.outputFile, outputRoot, sourceRoot),
-      ),
-    }))
-    .filter(match => match.score >= minimumScore && match.score > 0)
-    .sort((a, b) => b.score - a.score)
-  const bestScore = scoredMatches[0]?.score
-  if (!bestScore && minimumScore > 0) {
-    return []
-  }
-  if (sources.length <= 1) {
-    return sources
-  }
-  return bestScore
-    ? scoredMatches.filter(match => match.score === bestScore).map(match => match.remembered)
-    : sources
-}
-
 export function findRememberedCssSources(
   sources: Iterable<[string, RememberedCssSource]> | undefined,
   outputFile: string,
@@ -76,26 +44,15 @@ export function findRememberedCssSources(
   outputRoot: string,
   sourceRoot: string | undefined,
 ) {
+  void outputRoot
+  void sourceRoot
   if (!sources) {
     return []
   }
   const rememberedSources = [...sources].map(([, remembered]) => remembered)
-  const source = typeof originalSource.source === 'string'
-    ? originalSource.source
-    : originalSource.source.toString()
-  const markerFiles = new Set(parseBundlerGeneratedCssMarkerBlocks(source)
-    .filter(block => block.bundler === 'vite' && typeof block.file === 'string' && block.file.length > 0)
-    .map(block => normalizeOutputPathKey(block.file!)))
-  if (markerFiles.size > 0) {
-    const markerMatched = rememberedSources.filter(remembered =>
-      markerFiles.has(normalizeRememberedSourceIdentity(remembered.sourceFile)),
-    )
-    if (markerMatched.length > 0) {
-      return selectBestRememberedCssSourceMatches(markerMatched, outputFile, outputRoot, sourceRoot)
-    }
-  }
   const originalFiles = [
     file,
+    originalSource.fileName,
     originalSource.originalFileName,
     ...(originalSource.originalFileNames ?? []),
   ].filter((item): item is string => typeof item === 'string' && item.length > 0)
@@ -104,12 +61,7 @@ export function findRememberedCssSources(
     originalFiles.some(originalFile => normalizeRememberedSourceIdentity(remembered.sourceFile) === normalizeRememberedSourceIdentity(originalFile)),
   )
   if (sourceMatched.length > 0) {
-    const scoredSourceMatched = selectBestRememberedCssSourceMatches(sourceMatched, outputFile, outputRoot, sourceRoot, {
-      requirePositiveScore: true,
-    })
-    if (scoredSourceMatched.length > 0) {
-      return scoredSourceMatched
-    }
+    return sourceMatched
   }
 
   const outputMatched = rememberedSources.filter(remembered =>
@@ -118,21 +70,16 @@ export function findRememberedCssSources(
   if (outputMatched.length > 0) {
     return outputMatched
   }
-
-  const shouldUseRememberedFallback = !hasBundlerGeneratedCssMarker(source)
-    && !hasTailwindGenerationSource(source)
-  if (shouldUseRememberedFallback) {
+  const relationOwner = getActiveViteSourceOutputRelationOwner()
+  if (!relationOwner) {
     return []
   }
-
-  const scoredMatches = selectBestRememberedCssSourceMatches(rememberedSources, outputFile, outputRoot, sourceRoot)
-  const strongScoredMatches = selectBestRememberedCssSourceMatches(rememberedSources, outputFile, outputRoot, sourceRoot, {
-    minimumScore: 100000,
-  })
-  if (strongScoredMatches.length > 0 && strongScoredMatches.length < rememberedSources.length) {
-    return strongScoredMatches
-  }
-  return scoredMatches.length === rememberedSources.length ? [] : scoredMatches
+  const outputKeys = new Set([outputFile, file].map(normalizeOutputPathKey))
+  return rememberedSources.filter(remembered =>
+    [...relationOwner.getOwnedOutputs(remembered.sourceFile)].some(ownedOutput =>
+      outputKeys.has(normalizeOutputPathKey(ownedOutput)),
+    ),
+  )
 }
 
 export function mergeRememberedCssSources(

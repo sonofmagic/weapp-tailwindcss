@@ -1,5 +1,6 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import { describe, expect, it } from 'vitest'
+import { createViteCssMemory } from '@/bundlers/vite/css-memory'
 import { resolveCurrentSourceCandidateFile } from '@/bundlers/vite/generate-bundle/source-candidate-source'
 import {
   createViteSourceOutputRelationOwner,
@@ -81,6 +82,29 @@ describe('vite source output relations', () => {
     expect(consumer.consume([])).toEqual([])
     expect(owner.removeSource('/workspace/src/b.css')).toEqual(new Set(['styles/shared.css']))
     expect(consumer.consume([])).toEqual(['styles/shared.css'])
+  })
+
+  it('records lifecycle css snapshots as explicit source output ownership', () => {
+    const owner = createViteSourceOutputRelationOwner()
+    const cssMemory = createViteCssMemory({
+      debug: () => undefined,
+      getSourceCandidateSource: () => undefined,
+    })
+    withViteSourceOutputRelationOwner(owner, () => {
+      cssMemory.rememberCssSource({
+        outputFile: 'styles/theme.acss',
+        rawSource: '@import "tailwindcss";',
+        sourceFile: '/workspace/src/theme.css',
+      })
+    })
+
+    const outputs = owner.getOwnedOutputs('/workspace/src/theme.css')
+    const sources = owner.getOutputSources('styles/theme.acss')
+    outputs.clear()
+    sources.clear()
+
+    expect(owner.getOwnedOutputs('/workspace/src/theme.css')).toEqual(new Set(['styles/theme.acss']))
+    expect(owner.getOutputSources('styles/theme.acss')).toEqual(new Set(['/workspace/src/theme.css']))
   })
 
   it('normalizes SFC queries and blocks stale replay until the source is observed again', () => {
