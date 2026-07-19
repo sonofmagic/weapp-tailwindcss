@@ -1,0 +1,128 @@
+import type { ExecuteViteCssTransformTaskOptions } from '../../src/bundlers/vite/generate-bundle/css-transform-task'
+import { describe, expect, it, vi } from 'vitest'
+import { executeViteCssTransformTask } from '../../src/bundlers/vite/generate-bundle/css-transform-task'
+
+function createOptions(
+  overrides: Partial<ExecuteViteCssTransformTaskOptions> = {},
+): ExecuteViteCssTransformTaskOptions {
+  return {
+    annotateCss: css => `traced:${css}`,
+    cssUserHandlerOptions: {},
+    debug: vi.fn(),
+    file: 'pages/index.acss',
+    generatorCssHandlerOptions: {},
+    generatorRawSource: '.raw { color: red; }',
+    generatorSourceFile: '/project/src/pages/index.css',
+    getSourceCandidatesForEntries: undefined,
+    isWebGeneratorTarget: false,
+    normalizeGeneratorUserRawSource: source => `user:${source}`,
+    normalizeMiniProgramGeneratorRawSource: source => `mini:${source}`,
+    opts: {} as ExecuteViteCssTransformTaskOptions['opts'],
+    outputFile: 'pages/index.acss',
+    rawSource: '.raw { color: red; }',
+    removeRootCoveredCssFromScopedAsset: css => `scoped:${css}`,
+    runtime: new Set(['text-red-500']),
+    runtimeState: {
+      readyPromise: Promise.resolve(),
+      tailwindRuntime: {} as ExecuteViteCssTransformTaskOptions['runtimeState']['tailwindRuntime'],
+    },
+    styleHandler: vi.fn(async source => ({ css: `styled:${source}` })),
+    styleHandlerOptions: {},
+    transformWebTargetCss: css => `web:${css}`,
+    usesConfiguredTailwindV4FallbackSource: false,
+    vitePipelineCssAsset: false,
+    ...overrides,
+  }
+}
+
+describe('vite css transform task', () => {
+  it('returns a structured Tailwind generation result', async () => {
+    const generateCss = vi.fn(async () => ({
+      classSet: new Set(['text-red-500']),
+      css: '.generated { color: red; }',
+      dependencies: ['/project/tailwind.config.ts'],
+      metadata: {
+        file: '/project/src/pages/index.css',
+      },
+      source: 'generator' as const,
+      target: 'weapp',
+    }))
+    const result = await executeViteCssTransformTask(createOptions({
+      generateCss,
+      generatorRawSource: '@import "tailwindcss";',
+      previousCss: '.previous {}',
+    }))
+
+    expect(generateCss).toHaveBeenCalledWith(expect.objectContaining({
+      cssStage: 'framework-processed',
+      previousCss: 'mini:.previous {}',
+      rawSource: '@import "tailwindcss";',
+      restoreLocalCssImports: undefined,
+    }))
+    expect(result).toEqual({
+      classSet: new Set(['text-red-500']),
+      css: 'scoped:traced:web:.generated { color: red; }',
+      dependencies: ['/project/tailwind.config.ts'],
+      diffSource: '@import "tailwindcss";',
+      generatorTarget: 'weapp',
+      kind: 'tailwind',
+      shouldRecordCssAsset: true,
+    })
+  })
+
+  it('preserves web css through the web compatibility transform', async () => {
+    const styleHandler = vi.fn(async source => ({ css: source }))
+    const result = await executeViteCssTransformTask(createOptions({
+      isWebGeneratorTarget: true,
+      rawSource: '.web { display: flex; }',
+      styleHandler,
+    }))
+
+    expect(result.kind).toBe('web')
+    expect(result.css).toBe('traced:web:.web { display: flex; }')
+    expect(styleHandler).not.toHaveBeenCalled()
+  })
+
+  it('preserves pure local import shells without invoking the style handler', async () => {
+    const styleHandler = vi.fn(async source => ({ css: source }))
+    const result = await executeViteCssTransformTask(createOptions({
+      generatorRawSource: '@import "./shared.acss";',
+      styleHandler,
+    }))
+
+    expect(result.kind).toBe('import-shell')
+    expect(result.css).toBe('traced:@import "./shared.acss";')
+    expect(result.shouldRecordCssAsset).toBe(true)
+    expect(styleHandler).not.toHaveBeenCalled()
+  })
+
+  it('falls back to the style handler for ordinary mini-program css', async () => {
+    const result = await executeViteCssTransformTask(createOptions())
+
+    expect(result).toEqual({
+      css: 'traced:styled:.raw { color: red; }',
+      dependencies: [],
+      diffSource: '.raw { color: red; }',
+      kind: 'style',
+      shouldRecordCssAsset: false,
+    })
+  })
+
+  it('passes normalized user css and configured import policy to generation', async () => {
+    const generateCss = vi.fn(async () => undefined)
+    await executeViteCssTransformTask(createOptions({
+      assetSourceFile: '/project/src/app.css',
+      generateCss,
+      generatorRawSource: '@import "tailwindcss";',
+      generatorUserLayerRawSource: '.layer {}',
+      rawSource: '.user {}',
+      usesConfiguredTailwindV4FallbackSource: true,
+      vitePipelineCssAsset: true,
+    }))
+
+    expect(generateCss).toHaveBeenCalledWith(expect.objectContaining({
+      restoreLocalCssImports: false,
+      userRawSource: '.layer {}\nmini:user:.user {}',
+    }))
+  })
+})
