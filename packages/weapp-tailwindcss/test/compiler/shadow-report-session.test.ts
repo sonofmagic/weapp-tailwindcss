@@ -105,6 +105,19 @@ describe('CompilerShadowReportSession', () => {
     expect(session.snapshot().reports.map(report => report.file)).toEqual(['current.css'])
   })
 
+  it('seals completed runs and rejects late reports', () => {
+    const session = new CompilerShadowReportSession()
+    const revision = session.beginRun()
+    session.record(createReport('current.css'), revision)
+
+    expect(session.completeRun(revision)).toMatchObject({
+      revision,
+      completed: true,
+    })
+    expect(session.record(createReport('late.css'), revision)).toBe(false)
+    expect(session.snapshot().reports.map(report => report.file)).toEqual(['current.css'])
+  })
+
   it('rejects invalid capacities and access after disposal', () => {
     expect(() => new CompilerShadowReportSession(0)).toThrow('maxReports 必须是正整数')
     const session = new CompilerShadowReportSession()

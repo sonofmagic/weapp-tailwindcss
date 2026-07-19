@@ -1,8 +1,12 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { setupWebpackV5ProcessAssetsHook } from '@/bundlers/webpack/BaseUnifiedPlugin/v5-assets'
 import { buildWebpackBundleSnapshot, createWebpackAssetUpdater, releaseWebpackBundleSnapshotSources } from '@/bundlers/webpack/BaseUnifiedPlugin/v5-assets/helpers'
 import { createCache } from '@/cache'
-import { createRuntimeCompilationBuildState, getCompilerShadowRunSnapshot } from '@/compiler'
+import { COMPILER_MODE_ENV, createRuntimeCompilationBuildState, getCompilerShadowRunSnapshot } from '@/compiler'
+
+afterEach(() => {
+  vi.unstubAllEnvs()
+})
 
 function toPosixPath(value: string) {
   return value.replace(/\\/g, '/')
@@ -122,6 +126,7 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
   })
 
   it('does not read known webpack processed css asset sources on cache hit', async () => {
+    vi.stubEnv(COMPILER_MODE_ENV, 'shadow')
     const cache = createCache()
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     const updateAsset = vi.fn()
@@ -229,6 +234,7 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
       },
     })
     expect(getCompilerShadowRunSnapshot(runtimeState).revision).toBe(1)
+    expect(getCompilerShadowRunSnapshot(runtimeState).completed).toBe(true)
     expect(firstSource).toHaveBeenCalled()
 
     const secondSource = vi.fn(() => assetStore[processedAssetFile])
@@ -238,6 +244,7 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
       },
     })
     expect(getCompilerShadowRunSnapshot(runtimeState).revision).toBe(2)
+    expect(getCompilerShadowRunSnapshot(runtimeState).completed).toBe(true)
 
     expect(isWebpackProcessedCssAsset).not.toHaveBeenCalled()
   })

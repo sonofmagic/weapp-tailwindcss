@@ -4,7 +4,7 @@ import type { ViteFrameworkCssPipelineContext } from '../shared/framework-strate
 import type { CssFinalizerContext, CssFinalizerThis } from './options'
 import path from 'node:path'
 import process from 'node:process'
-import { AssetEmissionPlan } from '@/compiler'
+import { AssetEmissionPlan, finalizeCompilerShadowRun } from '@/compiler'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
@@ -237,6 +237,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             onUpdate: opts.onUpdate,
             recordCssAssetResult,
           })
+          finalizeCompilerShadowRun(runtimeState)
           return
         }
 
@@ -401,6 +402,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           onUpdate: opts.onUpdate,
           recordCssAssetResult,
         })
+        finalizeCompilerShadowRun(runtimeState)
       },
     },
   }

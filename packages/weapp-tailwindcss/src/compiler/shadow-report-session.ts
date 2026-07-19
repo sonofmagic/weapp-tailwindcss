@@ -12,6 +12,7 @@ export interface CompilerShadowRunSummary {
 
 export interface CompilerShadowRunSnapshot {
   revision: number
+  completed: boolean
   reports: CompilerShadowReport[]
   summary: CompilerShadowRunSummary
 }
@@ -49,6 +50,7 @@ export class CompilerShadowReportSession {
   private readonly reportsByScope = new Map<string, CompilerShadowReport>()
   private revision = 0
   private dropped = 0
+  private completed = false
   private disposed = false
 
   constructor(private readonly maxReports = COMPILER_SHADOW_REPORT_CACHE_MAX) {
@@ -62,12 +64,13 @@ export class CompilerShadowReportSession {
     this.revision += 1
     this.reportsByScope.clear()
     this.dropped = 0
+    this.completed = false
     return this.revision
   }
 
   record(report: CompilerShadowReport, revision = this.revision) {
     this.ensureActive()
-    if (revision !== this.revision) {
+    if (revision !== this.revision || this.completed) {
       return false
     }
     const cloned = cloneCompilerShadowReport(report)
@@ -89,6 +92,15 @@ export class CompilerShadowReportSession {
     return this.revision
   }
 
+  completeRun(revision = this.revision) {
+    this.ensureActive()
+    if (revision !== this.revision) {
+      return undefined
+    }
+    this.completed = true
+    return this.snapshot()
+  }
+
   snapshot(): CompilerShadowRunSnapshot {
     this.ensureActive()
     const reports = [...this.reportsByScope.values()]
@@ -96,6 +108,7 @@ export class CompilerShadowReportSession {
       .map(cloneCompilerShadowReport)
     return {
       revision: this.revision,
+      completed: this.completed,
       reports,
       summary: {
         total: reports.length,
@@ -110,6 +123,7 @@ export class CompilerShadowReportSession {
   dispose() {
     this.reportsByScope.clear()
     this.dropped = 0
+    this.completed = true
     this.disposed = true
   }
 
@@ -149,4 +163,8 @@ export function recordCompilerShadowReport(
 
 export function getCompilerShadowRunSnapshot(owner: object) {
   return getCompilerShadowReportSession(owner).snapshot()
+}
+
+export function completeCompilerShadowReportRun(owner: object, revision?: number | undefined) {
+  return getCompilerShadowReportSession(owner).completeRun(revision)
 }

@@ -637,6 +637,7 @@ describe('bundlers/gulp createPlugins', () => {
 
       expect(plugins.getCompilerShadowRunSnapshot().revision).toBe(0)
       expect(plugins.beginCompilerShadowRun()).toBe(1)
+      expect(plugins.completeCompilerShadowRun()).toBeUndefined()
 
       const first = await runTransform(plugins.generateWxss(), createCssFile())
       const cached = await runTransform(plugins.generateWxss(), createCssFile())
