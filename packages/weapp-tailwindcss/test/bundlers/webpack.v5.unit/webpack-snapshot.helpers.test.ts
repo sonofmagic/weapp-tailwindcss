@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { setupWebpackV5ProcessAssetsHook } from '@/bundlers/webpack/BaseUnifiedPlugin/v5-assets'
 import { buildWebpackBundleSnapshot, createWebpackAssetUpdater, releaseWebpackBundleSnapshotSources } from '@/bundlers/webpack/BaseUnifiedPlugin/v5-assets/helpers'
 import { createCache } from '@/cache'
-import { createRuntimeCompilationBuildState } from '@/compiler'
+import { createRuntimeCompilationBuildState, getCompilerShadowRunSnapshot } from '@/compiler'
 
 function toPosixPath(value: string) {
   return value.replace(/\\/g, '/')
@@ -185,6 +185,13 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
     const assetStore: Record<string, string> = {
       [processedAssetFile]: '/* weapp-tailwindcss webpack-generated-css: app.css */\n.beta{color:red}',
     }
+    const runtimeState = {
+      readyPromise: Promise.resolve(),
+      tailwindRuntime: {
+        majorVersion: 4,
+        options: {},
+      } as any,
+    }
     setupWebpackV5ProcessAssetsHook({
       compiler: compiler as any,
       options: {
@@ -203,13 +210,7 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
         tailwindcssBasedir: process.cwd(),
         templateHandler: vi.fn(),
       } as any,
-      runtimeState: {
-        readyPromise: Promise.resolve(),
-        tailwindRuntime: {
-          majorVersion: 4,
-          options: {},
-        } as any,
-      },
+      runtimeState,
       getRuntimeRefreshRequirement: () => false,
       refreshRuntimeMetadata: vi.fn(async () => undefined),
       consumeRuntimeRefreshRequirement: vi.fn(),
@@ -227,6 +228,7 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
         source: firstSource,
       },
     })
+    expect(getCompilerShadowRunSnapshot(runtimeState).revision).toBe(1)
     expect(firstSource).toHaveBeenCalled()
 
     const secondSource = vi.fn(() => assetStore[processedAssetFile])
@@ -235,6 +237,7 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
         source: secondSource,
       },
     })
+    expect(getCompilerShadowRunSnapshot(runtimeState).revision).toBe(2)
 
     expect(isWebpackProcessedCssAsset).not.toHaveBeenCalled()
   })

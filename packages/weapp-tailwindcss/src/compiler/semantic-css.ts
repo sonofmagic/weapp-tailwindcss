@@ -66,15 +66,6 @@ export interface ArtifactSemanticComparison {
   right: ArtifactSemanticSummary
 }
 
-export interface CompilerShadowReport {
-  file: string
-  equal: boolean
-  differences: ArtifactSemanticDifference[]
-  truncated: boolean
-  legacy: ArtifactSemanticSummary
-  graph: ArtifactSemanticSummary
-}
-
 export interface CompareArtifactSemanticsOptions {
   maxDifferences?: number | undefined
 }
@@ -275,23 +266,6 @@ export function compareArtifactSemantics(
     truncated: state.truncated,
     left: createArtifactSemanticSummary(leftSnapshot),
     right: createArtifactSemanticSummary(rightSnapshot),
-  }
-}
-
-export function createCompilerShadowReport(
-  file: string,
-  legacy: GenerationArtifact | undefined,
-  graph: GenerationArtifact | undefined,
-  options: CompareArtifactSemanticsOptions = {},
-): CompilerShadowReport {
-  const comparison = compareArtifactSemantics(legacy, graph, options)
-  return {
-    file,
-    equal: comparison.equal,
-    differences: comparison.differences,
-    truncated: comparison.truncated,
-    legacy: comparison.left,
-    graph: comparison.right,
   }
 }
 

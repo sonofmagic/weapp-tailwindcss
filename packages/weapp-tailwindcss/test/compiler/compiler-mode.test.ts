@@ -164,11 +164,13 @@ describe('compiler mode', () => {
     const generateCssByGenerator = vi.fn(async () => createGeneratedResult('.p-4 { padding: 1rem; }'))
     vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
     const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    const { getCompilerShadowRunSnapshot } = await import('@/compiler')
     const debug = vi.fn()
     const onCompilerShadowReport = vi.fn()
+    const generationOptions = createGenerationOptions(debug)
 
     const result = await generateTailwindV4Css({
-      ...createGenerationOptions(debug),
+      ...generationOptions,
       onCompilerShadowReport,
     })
 
@@ -180,6 +182,13 @@ describe('compiler mode', () => {
       equal: true,
       differences: [],
     }))
+    expect(getCompilerShadowRunSnapshot(generationOptions.runtimeState).summary).toEqual({
+      total: 1,
+      matched: 1,
+      mismatched: 0,
+      truncated: 0,
+      dropped: 0,
+    })
     expect(debug).not.toHaveBeenCalledWith(expect.stringContaining('semantic mismatch'), expect.anything())
   })
 

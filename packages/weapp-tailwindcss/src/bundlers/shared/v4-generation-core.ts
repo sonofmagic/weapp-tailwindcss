@@ -1,7 +1,7 @@
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css'
 import type { CompilationDependencyChange, CompilerShadowReport, CssStage, GenerationArtifact, SourceScope } from '@/compiler'
 import type { InternalUserDefinedOptions } from '@/types'
-import { consumeCompilationScopeChanges, createCompilerShadowReport, createCssFragment, createGenerationArtifact, mergeCompilationDependencyChanges, resolveCompilerMode } from '@/compiler'
+import { consumeCompilationScopeChanges, createCompilerShadowReport, createCssFragment, createGenerationArtifact, getCompilerShadowRunRevision, mergeCompilationDependencyChanges, recordCompilerShadowReport, resolveCompilerMode } from '@/compiler'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { adaptGeneratedCssWithFrameworkPipeline, adaptGeneratedCssWithFrameworkRootPipeline, hasFrameworkPostcssOptions } from './framework-postcss'
 import { generateCssByGenerator } from './generator-css'
@@ -184,6 +184,7 @@ export async function generateTailwindV4Css(
     })
   }
 
+  const shadowRunRevision = getCompilerShadowRunRevision(generationOptions.runtimeState)
   const legacy = await generateTailwindV4CssWithImplementation(generationOptions, {
     emitArtifact: true,
     frameworkAdapter: 'legacy',
@@ -196,7 +197,11 @@ export async function generateTailwindV4Css(
     generationOptions.file,
     legacy?.artifact,
     graph?.artifact,
+    {
+      scopeId: generationOptions.scope?.id ?? generationOptions.outputFile ?? generationOptions.file,
+    },
   )
+  recordCompilerShadowReport(generationOptions.runtimeState, report, shadowRunRevision)
   generationOptions.onCompilerShadowReport?.(report)
   if (!report.equal) {
     generationOptions.debug('compiler shadow semantic mismatch: %s', generationOptions.file)

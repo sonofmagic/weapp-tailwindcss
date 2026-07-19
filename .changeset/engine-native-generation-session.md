@@ -40,3 +40,5 @@ Webpack watch 现在把 `modifiedFiles` 与 `removedFiles` 转换为 compiler de
 Gulp 的 Tailwind v4 CSS 生成改为进入统一 v4 generation core，使 Vinyl CSS scope 也由 `CompilationSession` 持有候选、classSet、依赖和 revision。`createPlugins()` 新增 `watchChange(file, event)` 供 Gulp watcher 提交 update/delete 事件；命中的 generation dependency 会失效 session，并通过 scope dependency revision 穿透 CSS cache。删除事件还会清理 runtime source、自动发现的 CSS source 和对应 process cache，避免 watch 中继续使用已删除文件的状态。
 
 shadow 编译模式新增结构化 CSS 语义差异报告，按 JSONPath 定位 fragment、selector、声明顺序、scope、候选集合、依赖和 source entry 差异，并限制单次报告数量。内部生成入口可通过 `onCompilerShadowReport` 接收每次比较结果，诊断数据只包含可序列化快照，不再暴露 PostCSS AST。
+
+新增 bundler-neutral 的 shadow report session，按构建轮次和显式 output scope 聚合并隔离克隆最新比较结果，同一 source 的主包、分包或 scoped 输出不会互相覆盖；session 同时限制保留数量并汇总匹配、失败、截断和丢弃计数。Vite `generateBundle`、Webpack `processAssets` 与 Gulp `watchChange` 会在各自真实生命周期开始新轮次；异步生成只允许向启动时对应的 revision 提交报告，避免旧构建污染新结果。Gulp 插件额外提供显式轮次开始与快照读取方法，便于自定义流任务建立切流门禁。

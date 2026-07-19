@@ -7,7 +7,7 @@ import { prependConfigDirective } from '@/bundlers/shared/generator-css/config-d
 import { hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { createSourceCandidateCollector } from '@/bundlers/shared/source-candidates'
 import { resolveSourceScanEntries } from '@/bundlers/shared/source-scan'
-import { createCompilationDependencyChanges, createRuntimeCompilationBuildState, getCompilationScopeDependencyRevision, invalidateCompilationScope, recordCompilationDependencyChanges, removeRuntimeCompilationBuildStateFiles, updateRuntimeCompilationBuildState } from '@/compiler'
+import { beginCompilerShadowRun as beginShadowRun, createCompilationDependencyChanges, createRuntimeCompilationBuildState, getCompilationScopeDependencyRevision, getCompilerShadowRunSnapshot, invalidateCompilationScope, recordCompilationDependencyChanges, removeRuntimeCompilationBuildStateFiles, updateRuntimeCompilationBuildState } from '@/compiler'
 import { getCompilerContext } from '@/context'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { createDebug } from '@/debug'
@@ -363,6 +363,7 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
     id: string,
     change: { event: 'update' | 'delete' } = { event: 'update' },
   ) {
+    beginShadowRun(runtimeState)
     const file = path.resolve(id)
     const affectedScopes = recordCompilationDependencyChanges(
       runtimeState,
@@ -417,6 +418,8 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
   })
   return {
     ...transforms,
+    beginCompilerShadowRun: () => beginShadowRun(runtimeState),
+    getCompilerShadowRunSnapshot: () => getCompilerShadowRunSnapshot(runtimeState),
     watchChange,
   }
 }

@@ -635,6 +635,9 @@ describe('bundlers/gulp createPlugins', () => {
       const plugins = createMockedPlugins()
       const createCssFile = () => createFile('/src/styles/root.css', '@import "tailwindcss";')
 
+      expect(plugins.getCompilerShadowRunSnapshot().revision).toBe(0)
+      expect(plugins.beginCompilerShadowRun()).toBe(1)
+
       const first = await runTransform(plugins.generateWxss(), createCssFile())
       const cached = await runTransform(plugins.generateWxss(), createCssFile())
 
@@ -643,11 +646,13 @@ describe('bundlers/gulp createPlugins', () => {
       expect(generateMock).toHaveBeenCalledTimes(1)
 
       await expect(plugins.watchChange(dependency)).resolves.toEqual(new Set(['styles/root.css']))
+      expect(plugins.getCompilerShadowRunSnapshot().revision).toBe(2)
       const updated = await runTransform(plugins.generateWxss(), createCssFile())
       expect(updated.contents?.toString()).toContain('.generation-2{display:block}')
       expect(generateMock).toHaveBeenCalledTimes(2)
 
       await expect(plugins.watchChange(dependency, { event: 'delete' })).resolves.toEqual(new Set(['styles/root.css']))
+      expect(plugins.getCompilerShadowRunSnapshot().revision).toBe(3)
       const deleted = await runTransform(plugins.generateWxss(), createCssFile())
       expect(deleted.contents?.toString()).toContain('.generation-3{display:block}')
       expect(generateMock).toHaveBeenCalledTimes(3)
