@@ -85,6 +85,37 @@ describe('compiler runtime snapshot', () => {
     expect(state.dependentsByLinkedFile.has('shared.js')).toBe(false)
   })
 
+  it('applies explicit removals to partial snapshots and incremental state', () => {
+    const cache = createCache()
+    const state = createRuntimeCompilationBuildState()
+    const first = buildRuntimeCompilationSnapshot([
+      createEntry('entry.js', 'const cls = "grid"', 'js'),
+      createEntry('removed.js', 'const cls = "flex"', 'js'),
+    ], state, {
+      computeHash: value => cache.computeHash(value),
+      createRuntimeAffectingSignature: createRuntimeAffectingSourceSignature,
+    })
+    updateRuntimeCompilationBuildState(state, first, new Map([
+      ['entry.js', new Set(['removed.js'])],
+    ]))
+
+    const partial = buildRuntimeCompilationSnapshot([
+      createEntry('entry.js', 'const cls = "grid"', 'js'),
+    ], state, {
+      computeHash: value => cache.computeHash(value),
+      createRuntimeAffectingSignature: createRuntimeAffectingSourceSignature,
+      hasOmittedKnownFiles: true,
+      removedFiles: ['removed.js'],
+    })
+    expect(partial.removedFiles).toEqual(new Set(['removed.js']))
+
+    updateRuntimeCompilationBuildState(state, partial, new Map(), { incremental: true })
+    expect(state.sourceHashByFile.has('removed.js')).toBe(false)
+    expect(state.runtimeAffectingHashByFile.has('removed.js')).toBe(false)
+    expect(state.linkedByEntry.get('entry.js')).toEqual(new Set())
+    expect(state.dependentsByLinkedFile.has('removed.js')).toBe(false)
+  })
+
   it('creates stable semantic signatures and resets build state ownership', () => {
     const cache = createCache()
     const state = createRuntimeCompilationBuildState()

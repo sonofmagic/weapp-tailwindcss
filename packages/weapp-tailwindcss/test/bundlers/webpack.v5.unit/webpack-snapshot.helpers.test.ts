@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { setupWebpackV5ProcessAssetsHook } from '@/bundlers/webpack/BaseUnifiedPlugin/v5-assets'
 import { buildWebpackBundleSnapshot, createWebpackAssetUpdater, releaseWebpackBundleSnapshotSources } from '@/bundlers/webpack/BaseUnifiedPlugin/v5-assets/helpers'
 import { createCache } from '@/cache'
-import { COMPILER_MODE_ENV, createRuntimeCompilationBuildState, getCompilerShadowRunSnapshot } from '@/compiler'
+import { COMPILER_MODE_ENV, createRuntimeCompilationBuildState, getCompilerShadowRunSnapshot, updateRuntimeCompilationBuildState } from '@/compiler'
 
 afterEach(() => {
   vi.unstubAllEnvs()
@@ -70,6 +70,31 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
     expect(snapshot.runtimeAffectingHashByFile).toEqual(runtimeAffectingHashByFile)
     expect(snapshot.processFiles.html.has('pages/index/index.wxml')).toBe(true)
     expect(snapshot.processFiles.js.has('assets/index.js')).toBe(true)
+  })
+
+  it('reports removed runtime assets from the complete compilation asset set', () => {
+    const state = createRuntimeCompilationBuildState()
+    const options = createOptions()
+    const removedFile = 'pages/removed/index.wxml'
+    const first = buildWebpackBundleSnapshot({
+      [removedFile]: {
+        source: () => '<view class="old-only">removed</view>',
+      },
+      'assets/index.js': {
+        source: () => 'const cls = "stable"',
+      },
+    }, options, state)
+    updateRuntimeCompilationBuildState(state, first, new Map())
+
+    const next = buildWebpackBundleSnapshot({
+      'assets/index.js': {
+        source: () => 'const cls = "stable"',
+      },
+    }, options, state)
+
+    expect(next.removedFiles).toEqual(new Set([removedFile]))
+    updateRuntimeCompilationBuildState(state, next, new Map(), { incremental: true })
+    expect(state.sourceHashByFile.has(removedFile)).toBe(false)
   })
 
   it('prefers current compilation asset sources when snapshotting runtime entries', () => {

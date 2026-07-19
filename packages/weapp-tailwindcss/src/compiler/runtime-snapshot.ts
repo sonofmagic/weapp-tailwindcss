@@ -21,6 +21,7 @@ export interface RuntimeCompilationSnapshot<
   runtimeAffectingSignatureByFile: Map<string, string>
   runtimeAffectingHashByFile: Map<string, string>
   hasOmittedKnownFiles: boolean
+  removedFiles: Set<string>
   changedByType: Record<RuntimeEntryType, Set<string>>
   runtimeAffectingChangedByType: Record<RuntimeEntryType, Set<string>>
   processFiles: RuntimeProcessFileSets
@@ -47,6 +48,7 @@ export interface CreateRuntimeCompilationSnapshotOptions {
   runtimeAffectingChangedFiles?: Iterable<string> | undefined
   processFiles?: Iterable<string> | undefined
   hasOmittedKnownFiles?: boolean | undefined
+  removedFiles?: Iterable<string> | undefined
 }
 
 export interface BuildRuntimeCompilationSnapshotOptions {
@@ -54,6 +56,7 @@ export interface BuildRuntimeCompilationSnapshotOptions {
   createRuntimeAffectingSignature: (source: string, type: RuntimeEntryType) => string
   forceAll?: boolean | undefined
   hasOmittedKnownFiles?: boolean | undefined
+  removedFiles?: Iterable<string> | undefined
 }
 
 export interface UpdateRuntimeCompilationBuildStateOptions {
@@ -130,6 +133,9 @@ export function createRuntimeCompilationSnapshot<
     runtimeAffectingSignatureByFile: new Map<string, string>(),
     runtimeAffectingHashByFile: new Map<string, string>(),
     hasOmittedKnownFiles: options.hasOmittedKnownFiles === true,
+    removedFiles: new Set(
+      [...options.removedFiles ?? []].filter(file => !entriesByFile.has(file)),
+    ),
     changedByType,
     runtimeAffectingChangedByType,
     processFiles,
@@ -146,6 +152,7 @@ export function buildRuntimeCompilationSnapshot<
 ): RuntimeCompilationSnapshot<Entry> {
   const snapshot = createRuntimeCompilationSnapshot(entries, {
     hasOmittedKnownFiles: options.hasOmittedKnownFiles,
+    removedFiles: options.removedFiles,
   })
   const firstRun = state.iteration === 0 && state.sourceHashByFile.size === 0
 

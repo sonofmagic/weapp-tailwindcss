@@ -5,6 +5,7 @@ export function createGulpRuntimeSnapshot(
   runtimeSourcesByFile: Map<string, { source: string, type: 'html' | 'js' }>,
   state: RuntimeCompilationBuildState,
   computeHash: (source: string) => string,
+  options: { removedFiles?: Iterable<string> | undefined } = {},
 ): RuntimeCompilationSnapshot {
   const entries: RuntimeSnapshotEntry[] = [...runtimeSourcesByFile.entries()].map(([file, entry]) => ({
     file,
@@ -15,5 +16,6 @@ export function createGulpRuntimeSnapshot(
   return buildRuntimeCompilationSnapshot(entries, state, {
     computeHash,
     createRuntimeAffectingSignature: createRuntimeAffectingSourceSignature,
+    removedFiles: options.removedFiles,
   })
 }

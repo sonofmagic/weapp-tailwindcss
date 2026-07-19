@@ -21,6 +21,7 @@ function createSnapshot(file: string, sourceHash: string) {
     runtimeAffectingSignatureByFile: new Map(),
     runtimeAffectingHashByFile: new Map(),
     hasOmittedKnownFiles: false,
+    removedFiles: new Set(),
     changedByType: {
       html: new Set(),
       js: new Set(),

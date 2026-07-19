@@ -143,6 +143,55 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(extractCandidates.mock.calls[0]?.[0]?.sources).toBeUndefined()
   })
 
+  it('removes explicit deleted candidates from omitted incremental snapshots', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const runtime = createRuntime('/project')
+    const extractCandidates = vi.fn(async (options) => String(options?.content ?? '').split(/\s+/).filter(Boolean))
+    const extractRawCandidates = vi.fn(async (content: string) => {
+      if (content.includes('old-only')) {
+        return [{ rawCandidate: 'old-only' }]
+      }
+      if (content.includes('stable')) {
+        return [{ rawCandidate: 'stable' }]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractCandidates,
+      extractRawCandidates,
+    })
+    const removedFile = 'pages/removed/index.wxml'
+    const stableFile = 'assets/index.js'
+    const first = buildBundleSnapshot({
+      [removedFile]: {
+        ...createRollupAsset('<view class="old-only" />'),
+        fileName: removedFile,
+      },
+      [stableFile]: {
+        ...createRollupChunk('const cls = "stable"'),
+        fileName: stableFile,
+      },
+    }, opts, outDir, state)
+    await expect(manager.sync(runtime, first)).resolves.toEqual(new Set(['old-only', 'stable']))
+    updateBundleBuildState(state, first, new Map())
+
+    const partial = buildBundleSnapshot({
+      [stableFile]: {
+        ...createRollupChunk('const cls = "stable"'),
+        fileName: stableFile,
+      },
+    }, opts, outDir, state, false, {
+      hasOmittedKnownFiles: true,
+      removedFiles: [removedFile],
+    })
+
+    await expect(manager.sync(runtime, partial)).resolves.toEqual(new Set(['stable']))
+    updateBundleBuildState(state, partial, new Map(), { incremental: true })
+    expect(state.sourceHashByFile.has(removedFile)).toBe(false)
+  })
+
   it('passes bare arbitrary value options through runtime extraction', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'

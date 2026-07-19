@@ -52,3 +52,5 @@ compiler owner 进入释放窗口后会统一拒绝创建新的 CompilationSessi
 新增 canonical compilation scope snapshot builder，CompilationSessionPool 与 bundler contract 共用 source graph、candidate source 和输出 asset 的构造规则；Vite、Webpack、Gulp 的相同初始与增量输入现在会统一校验 runtime snapshot 和 CompilationResult 等价性。
 
 Gulp 的 Vinyl 内容写回改为通过 AssetEmissionPlan executor 执行，并新增三端写回契约，确保 Vite bundle、Webpack compilation 和 Gulp stream 对更新、新建、删除操作得到等价产物。
+
+RuntimeCompilationSnapshot 新增显式 removedFiles：核心层不再把快照中缺席的文件猜测为删除；Webpack port 可依据完整 compilation asset 集合判断消失的输出，Vite partial snapshot 与 Gulp watcher 则消费 bundler 明确上报的删除。显式删除会清理 runtime candidate、source hash、linked dependency 和 CompilationSession candidate source，即使同一轮设置了 hasOmittedKnownFiles 也不会继续保留已删除文件状态。

@@ -33,11 +33,16 @@ export interface SetupWebpackV5ProcessAssetsHookOptions {
   debug: (format: string, ...args: unknown[]) => void
 }
 
+export interface BuildWebpackBundleSnapshotOptions {
+  removedFiles?: Iterable<string> | undefined
+}
+
 export function buildWebpackBundleSnapshot(
   assets: Record<string, { source: () => unknown }>,
   opts: InternalUserDefinedOptions,
   state: RuntimeCompilationBuildState,
   compilation?: WebpackAssetCompilationLike | undefined,
+  options: BuildWebpackBundleSnapshotOptions = {},
 ) {
   const entries: RuntimeSnapshotEntry[] = []
 
@@ -55,10 +60,18 @@ export function buildWebpackBundleSnapshot(
       type,
     })
   }
+  const currentFiles = new Set(entries.map(entry => entry.file))
+  const removedFiles = new Set(options.removedFiles)
+  for (const file of state.sourceHashByFile.keys()) {
+    if (!currentFiles.has(file)) {
+      removedFiles.add(file)
+    }
+  }
 
   return buildRuntimeCompilationSnapshot(entries, state, {
     computeHash: source => opts.cache.computeHash(source),
     createRuntimeAffectingSignature: createRuntimeAffectingSourceSignature,
+    removedFiles,
   })
 }
 

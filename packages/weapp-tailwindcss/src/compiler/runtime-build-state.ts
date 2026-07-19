@@ -60,6 +60,7 @@ export function updateRuntimeCompilationBuildState(
   options: UpdateRuntimeCompilationBuildStateOptions = {},
 ) {
   const incremental = options.incremental === true
+  removeRuntimeCompilationBuildStateFiles(state, snapshot.removedFiles)
   state.iteration += 1
   state.sourceHashByFile = incremental
     ? mergeMapEntries(state.sourceHashByFile, snapshot.sourceHashByFile)

@@ -12,6 +12,7 @@ import {
   createCompilationScopeSnapshot,
   createRuntimeCompilationBuildState,
   DefaultCompilationSession,
+  sourceNodeId,
   updateRuntimeCompilationBuildState,
 } from '@/compiler'
 import { createRollupAsset, createRollupChunk } from './vite-plugin.testkit'
@@ -43,6 +44,7 @@ function normalizeSnapshot(snapshot: ReturnType<typeof createGulpRuntimeSnapshot
     processFiles: Object.fromEntries(
       Object.entries(snapshot.processFiles).map(([type, files]) => [type, [...files].sort()]),
     ),
+    removedFiles: [...snapshot.removedFiles].sort(),
   }
 }
 
@@ -59,6 +61,12 @@ function createCompilerSnapshot(
       candidates: candidatesByFile.get(entry.file) ?? [],
       content: entry.source,
     })),
+    {
+      changes: [...snapshot.removedFiles].map(file => ({
+        sourceId: sourceNodeId(file),
+        type: 'source-removed' as const,
+      })),
+    },
   )
 }
 
@@ -142,25 +150,44 @@ describe('bundler runtime snapshot contract', () => {
     const firstJsSource = 'const cls = "text-red-500"'
     const nextJsSource = 'const cls = "p-4"'
 
-    const buildSnapshots = (jsSource: string) => {
+    const buildSnapshots = (
+      jsSource: string,
+      options: { includeHtml?: boolean, removedFiles?: string[] } = {},
+    ) => {
+      const includeHtml = options.includeHtml !== false
+      const removedFiles = options.removedFiles ?? []
       const vite = buildBundleSnapshot({
-        [htmlFile]: {
-          ...createRollupAsset(htmlSource),
-          fileName: htmlFile,
-        },
+        ...(includeHtml
+          ? {
+              [htmlFile]: {
+                ...createRollupAsset(htmlSource),
+                fileName: htmlFile,
+              },
+            }
+          : {}),
         [jsFile]: {
           ...createRollupChunk(jsSource),
           fileName: jsFile,
         },
-      }, opts, path.resolve('/project/dist'), viteState)
+      }, opts, path.resolve('/project/dist'), viteState, false, {
+        hasOmittedKnownFiles: removedFiles.length > 0,
+        removedFiles,
+      })
       const webpack = buildWebpackBundleSnapshot({
-        [htmlFile]: { source: () => htmlSource },
+        ...(includeHtml ? { [htmlFile]: { source: () => htmlSource } } : {}),
         [jsFile]: { source: () => jsSource },
-      }, opts, webpackState)
-      const gulp = createGulpRuntimeSnapshot(new Map([
-        [htmlFile, { source: htmlSource, type: 'html' as const }],
-        [jsFile, { source: jsSource, type: 'js' as const }],
-      ]), gulpState, source => opts.cache.computeHash(source))
+      }, opts, webpackState, undefined, { removedFiles })
+      const gulpEntries = new Map<string, { source: string, type: 'html' | 'js' }>()
+      if (includeHtml) {
+        gulpEntries.set(htmlFile, { source: htmlSource, type: 'html' })
+      }
+      gulpEntries.set(jsFile, { source: jsSource, type: 'js' })
+      const gulp = createGulpRuntimeSnapshot(
+        gulpEntries,
+        gulpState,
+        source => opts.cache.computeHash(source),
+        { removedFiles },
+      )
       return { vite, webpack, gulp }
     }
 
@@ -192,6 +219,31 @@ describe('bundler runtime snapshot contract', () => {
     expect(gulpResult.candidates).toEqual(new Set(['text-red-500', 'p-4']))
     expect(gulpResult.invalidatedScopes).toEqual(new Set(['app']))
     expect(nextSnapshots.gulp.processFiles.js).toEqual(new Set([jsFile]))
+
+    updateRuntimeCompilationBuildState(viteState, nextSnapshots.vite, new Map(), { incremental: true })
+    updateRuntimeCompilationBuildState(webpackState, nextSnapshots.webpack, new Map(), { incremental: true })
+    updateRuntimeCompilationBuildState(gulpState, nextSnapshots.gulp, new Map(), { incremental: true })
+    const removedSnapshots = buildSnapshots(nextJsSource, {
+      includeHtml: false,
+      removedFiles: [htmlFile],
+    })
+    expect(normalizeSnapshot(removedSnapshots.vite)).toEqual(normalizeSnapshot(removedSnapshots.gulp))
+    expect(normalizeSnapshot(removedSnapshots.webpack)).toEqual(normalizeSnapshot(removedSnapshots.gulp))
+    const removedCandidates = new Map([[jsFile, ['p-4']]])
+    const viteRemoved = viteSession.update(createCompilerSnapshot(removedSnapshots.vite, removedCandidates))
+    const webpackRemoved = webpackSession.update(createCompilerSnapshot(removedSnapshots.webpack, removedCandidates))
+    const gulpRemoved = gulpSession.update(createCompilerSnapshot(removedSnapshots.gulp, removedCandidates))
+
+    expect(normalizeCompilationResult(viteRemoved)).toEqual(normalizeCompilationResult(gulpRemoved))
+    expect(normalizeCompilationResult(webpackRemoved)).toEqual(normalizeCompilationResult(gulpRemoved))
+    expect(gulpRemoved.candidates).toEqual(new Set(['p-4']))
+    expect(gulpRemoved.invalidatedScopes).toEqual(new Set(['app']))
+    updateRuntimeCompilationBuildState(viteState, removedSnapshots.vite, new Map(), { incremental: true })
+    updateRuntimeCompilationBuildState(webpackState, removedSnapshots.webpack, new Map(), { incremental: true })
+    updateRuntimeCompilationBuildState(gulpState, removedSnapshots.gulp, new Map(), { incremental: true })
+    expect(viteState.sourceHashByFile.has(htmlFile)).toBe(false)
+    expect(webpackState.sourceHashByFile.has(htmlFile)).toBe(false)
+    expect(gulpState.sourceHashByFile.has(htmlFile)).toBe(false)
   })
 
   it('preserves non-vendor JavaScript assets as runtime candidate sources', () => {

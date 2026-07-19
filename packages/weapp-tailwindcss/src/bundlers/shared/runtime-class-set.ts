@@ -243,7 +243,10 @@ export function createRuntimeClassSetManager(
       && nextBaseClassSet.size > 0)
 
     for (const [file, previousCandidates] of candidatesByFile) {
-      if (currentRuntimeFiles.has(file) || snapshot.hasOmittedKnownFiles) {
+      if (
+        !snapshot.removedFiles.has(file)
+        && (currentRuntimeFiles.has(file) || snapshot.hasOmittedKnownFiles)
+      ) {
         continue
       }
       removeCandidateSet(candidateCountByClass, previousCandidates)

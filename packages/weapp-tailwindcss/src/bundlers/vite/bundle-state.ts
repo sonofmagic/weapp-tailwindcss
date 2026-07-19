@@ -33,8 +33,9 @@ export interface BundleSnapshot extends RuntimeCompilationSnapshot<BundleStateEn
 
 export type BundleBuildState = RuntimeCompilationBuildState
 
-interface BuildBundleSnapshotOptions {
+export interface BuildBundleSnapshotOptions {
   hasOmittedKnownFiles?: boolean | undefined
+  removedFiles?: Iterable<string> | undefined
 }
 
 export function createBundleBuildState(): BundleBuildState {
@@ -109,6 +110,7 @@ export function buildBundleSnapshot(
     createRuntimeAffectingSignature: createRuntimeAffectingSourceSignature,
     forceAll,
     hasOmittedKnownFiles: options.hasOmittedKnownFiles,
+    removedFiles: options.removedFiles,
   })
 
   return {
