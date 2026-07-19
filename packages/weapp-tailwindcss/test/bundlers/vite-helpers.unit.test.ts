@@ -30,6 +30,7 @@ import {
   selectTailwindV4GenerationCssSourceForOutput,
 } from '@/bundlers/vite/generate-bundle/tailwind-v4-css-source'
 import {
+  collectTemporaryCssSourceEntries,
   createTemporaryCssAssetSourceResolver,
   isTemporaryCssAssetFile,
 } from '@/bundlers/vite/generate-bundle/temporary-css-assets'
@@ -458,6 +459,40 @@ describe('bundlers/vite helper modules', () => {
       sourceFile: '/repo/src/pages/index/index.css',
     })
     expect(outOfOrderResolver.resolve('vendors.css', '.nut-icon{display:inline-block}')).toBeUndefined()
+  })
+
+  it('collects temporary css sources from lifecycle and configured ownership', () => {
+    const entries = collectTemporaryCssSourceEntries({
+      configuredEntries: [
+        { file: '/repo/src/app.css', outputFile: 'app.acss', source: 'app' },
+        { file: '/repo/src/pages/a.css', outputFile: 'pages/a.acss', source: 'page' },
+      ],
+      configuredScopeEntries: [
+        { file: '/repo/src/sub/a.css', outputFile: 'sub/a.acss', source: 'sub' },
+      ],
+      currentSubpackageRoots: ['sub'],
+      explicitSourceFileKeys: new Set(['/repo/src/app.css']),
+      isSubpackageOutputFile: (file, roots) => roots.some(root => file.startsWith(`${root}/`)),
+      normalizeConfiguredSourceFile: file => file,
+      rememberedEntries: [
+        { file: '/repo/src/remembered.css', outputFile: 'pages/remembered.acss', source: 'remembered' },
+      ],
+      resolveRuntimeLinkedSource: file => ({
+        file: `/repo/src/${file}`,
+        outputFile: file,
+        source: 'runtime',
+      }),
+      runtimeLinkedCssFiles: ['pages/runtime.acss'],
+      shouldSelectConfiguredRootOutput: file => file === 'app.acss',
+    })
+
+    expect(entries.map(entry => entry.source)).toEqual([
+      'runtime',
+      'remembered',
+      'app',
+      'page',
+      'sub',
+    ])
   })
 
   it('resolves page css output from the single css module imported by its sibling chunk', () => {

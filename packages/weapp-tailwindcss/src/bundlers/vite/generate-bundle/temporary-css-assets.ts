@@ -9,6 +9,60 @@ export interface TemporaryCssSourceEntry {
   source: string
 }
 
+export interface CollectTemporaryCssSourceEntriesOptions {
+  configuredEntries: TemporaryCssSourceEntry[]
+  configuredScopeEntries: TemporaryCssSourceEntry[]
+  currentSubpackageRoots: string[] | undefined
+  explicitSourceFileKeys: ReadonlySet<string>
+  isSubpackageOutputFile: (file: string, roots: string[]) => boolean
+  normalizeConfiguredSourceFile: (file: string) => string
+  rememberedEntries: TemporaryCssSourceEntry[]
+  resolveRuntimeLinkedSource: (file: string) => TemporaryCssSourceEntry | undefined
+  runtimeLinkedCssFiles: Iterable<string>
+  shouldSelectConfiguredRootOutput: (outputFile: string) => boolean
+}
+
+function shouldQueueTemporarySource(
+  entry: TemporaryCssSourceEntry,
+  options: CollectTemporaryCssSourceEntriesOptions,
+) {
+  return normalizeOutputPathKey(entry.outputFile).includes('/')
+    || (
+      options.explicitSourceFileKeys.has(options.normalizeConfiguredSourceFile(entry.file))
+      && options.shouldSelectConfiguredRootOutput(entry.outputFile)
+    )
+}
+
+export function collectTemporaryCssSourceEntries(
+  options: CollectTemporaryCssSourceEntriesOptions,
+) {
+  const runtimeLinkedEntries = [...options.runtimeLinkedCssFiles]
+    .map(file => options.resolveRuntimeLinkedSource(file))
+    .filter((entry): entry is TemporaryCssSourceEntry =>
+      entry != null
+      && options.currentSubpackageRoots != null
+      && shouldQueueTemporarySource(entry, options),
+    )
+  const rememberedEntries = options.rememberedEntries.filter(entry =>
+    shouldQueueTemporarySource(entry, options),
+  )
+  const configuredEntries = options.configuredEntries.filter(entry =>
+    normalizeOutputPathKey(entry.outputFile).includes('/')
+    || shouldQueueTemporarySource(entry, options),
+  )
+  const scopedEntries = options.currentSubpackageRoots
+    ? options.configuredScopeEntries.filter(entry =>
+        options.isSubpackageOutputFile(entry.outputFile, options.currentSubpackageRoots!),
+      )
+    : []
+  return [
+    ...runtimeLinkedEntries,
+    ...rememberedEntries,
+    ...configuredEntries,
+    ...scopedEntries,
+  ]
+}
+
 export function isTemporaryCssAssetFile(file: string) {
   const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
   return /\.css$/i.test(normalized) && !normalized.includes('/')
