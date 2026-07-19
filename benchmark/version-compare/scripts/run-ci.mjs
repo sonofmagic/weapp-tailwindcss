@@ -281,14 +281,17 @@ async function runSourceCandidateHotUpdateBenchmark(root) {
   const sourceFile = path.join(root, 'packages/weapp-tailwindcss/src/bundlers/vite/source-candidates.ts')
   const tsconfig = path.join(root, 'packages/weapp-tailwindcss/tsconfig.json')
   const script = path.join(repoRoot, 'benchmark/version-compare/scripts/source-candidate-hot-update.mts')
-  const stdout = await runCapture(root, 'pnpm', [
-    'exec',
+  const stdout = await runCapture(root, process.execPath, [
+    '--expose-gc',
+    '--import',
     'tsx',
-    '--tsconfig',
-    tsconfig,
     script,
     sourceFile,
-  ])
+  ], {
+    env: {
+      TSX_TSCONFIG_PATH: tsconfig,
+    },
+  })
   const outputLine = stdout.trim().split(/\r?\n/).at(-1)
   if (!outputLine) {
     throw new Error(`source candidate benchmark did not produce output for ${root}`)
@@ -349,6 +352,7 @@ function createSourceCandidateBenchmarkRow(version, root, result) {
     buildPluginMs: [],
     hmrMs: [],
     hmrPluginMs: result.samples,
+    memoryStability: result.memoryStability,
     summary: {
       hmrPlugin: result.summary,
       hmrPluginSteady: result.summary,
@@ -482,10 +486,7 @@ async function main() {
   const summary = buildSummary(raw, baselineLabel, currentLabel)
   if (baselineRef) {
     summary.performanceGuard = evaluatePerformanceGuard(summary, {
-      pluginRegressionPercent: parseNumber('--plugin-regression-percent', 15),
-      pluginAbsoluteMs: parseNumber('--plugin-absolute-ms', 100),
-      endToEndRegressionPercent: parseNumber('--end-to-end-regression-percent', 20),
-      endToEndAbsoluteMs: parseNumber('--end-to-end-absolute-ms', 50),
+      regressionPercent: parseNumber('--regression-percent', 5),
     })
   }
   const markdown = toMarkdown(summary, baselineRef || baseline)

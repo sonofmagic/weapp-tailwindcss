@@ -102,3 +102,5 @@ Vite CSS process cache、shared transform cache、last result 与 remembered sou
 Vite CSS asset 身份不再通过 `generator-placeholder`、`vite-placeholder` 或 generated marker 文本猜测，改由 Rollup `originalFileNames`、生命周期登记的 source identity 与显式 placeholder metadata 决定。新增 processed CSS registry 统一持有 source/output 关系、处理结果和 prune 生命周期，增量 watch 中的 output 记录不再反向污染当前 asset 身份。
 
 Vite lifecycle CSS snapshot 写入时会同步登记 source/output ownership，缺席 CSS asset 的恢复只按 `originalFileNames`、精确 output identity 与 relation owner 查询来源；删除 generated marker 解析、文件名相似度评分和任意 remembered source fallback，避免同名分包或历史路径被错误重放。
+
+性能验收统一收紧为 5%：PR benchmark 现在按冷构建中位数、HMR P95、插件处理耗时以及 build/watch 子进程树的 peak/steady RSS 与基线逐项比较，不再使用 15%/20% 加绝对耗时豁免。source candidate 微基准同时验证连续 100 次 class 添加与删除后的稳态 heap，持续增长会直接阻断性能门禁；watch 与通用 CI 内存报告也会输出 steady RSS，并支持按同一 5% 阈值比较基线报告。

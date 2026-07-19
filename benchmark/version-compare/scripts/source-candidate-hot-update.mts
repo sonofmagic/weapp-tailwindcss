@@ -20,6 +20,14 @@ interface CreateSourceCandidateStore {
   (options: { extractor: (source: string) => string[] }): SourceCandidateStore
 }
 
+interface MemoryStabilityResult {
+  baselineHeapUsedMb: number
+  growthPct: number
+  samples: number[]
+  stable: boolean
+  steadyHeapUsedMb: number
+}
+
 function summarize(values: number[]): BenchmarkStats {
   const sorted = [...values].sort((a, b) => a - b)
   const mean = values.reduce((sum, value) => sum + value, 0) / values.length
@@ -57,6 +65,44 @@ async function runSample(createSourceCandidateStore: CreateSourceCandidateStore)
   return performance.now() - startedAt
 }
 
+function heapUsedMb() {
+  const runtimeGlobal = globalThis as typeof globalThis & { gc?: () => void }
+  runtimeGlobal.gc?.()
+  return process.memoryUsage().heapUsed / 1024 / 1024
+}
+
+async function runMemoryStability(createSourceCandidateStore: CreateSourceCandidateStore): Promise<MemoryStabilityResult> {
+  const store = createSourceCandidateStore({
+    extractor: (source: string) => source.split(/\s+/).filter(Boolean),
+  })
+  const sourceFile = '/project/memory-stability.ts'
+  for (let index = 0; index < 20; index++) {
+    await store.syncCurrentSource(sourceFile, `shared warm-${index}`)
+    await store.syncCurrentSource(sourceFile, '')
+  }
+
+  const samples: number[] = []
+  for (let index = 0; index < 100; index++) {
+    await store.syncCurrentSource(sourceFile, `shared class-${index}`)
+    await store.syncCurrentSource(sourceFile, '')
+    if ((index + 1) % 10 === 0) {
+      samples.push(heapUsedMb())
+    }
+  }
+  const baselineHeapUsedMb = summarize(samples.slice(0, 3)).median
+  const steadyHeapUsedMb = summarize(samples.slice(-3)).median
+  const growthPct = baselineHeapUsedMb === 0
+    ? 0
+    : ((steadyHeapUsedMb - baselineHeapUsedMb) / baselineHeapUsedMb) * 100
+  return {
+    baselineHeapUsedMb,
+    growthPct,
+    samples,
+    stable: growthPct <= 5,
+    steadyHeapUsedMb,
+  }
+}
+
 async function main() {
   const sourceFile = process.argv[2]
   if (!sourceFile) {
@@ -67,7 +113,9 @@ async function main() {
   for (let index = 0; index < 3; index++) {
     samples.push(await runSample(createSourceCandidateStore))
   }
+  const memoryStability = await runMemoryStability(createSourceCandidateStore)
   process.stdout.write(`${JSON.stringify({
+    memoryStability,
     samples,
     summary: summarize(samples),
   })}\n`)

@@ -3,6 +3,7 @@ import fs from 'node:fs/promises'
 import net from 'node:net'
 import path from 'node:path'
 import process from 'node:process'
+import { createProcessMemorySampler } from './process-memory.mjs'
 import { benchmarkProjects as projects } from './projects.mjs'
 import { resolvePluginTimingSample } from './timing.mjs'
 import { createWatchLogBuffer } from './watch-log-buffer.mjs'
@@ -314,6 +315,7 @@ async function runBuildOnce(cwd, buildScript, timeoutMs, buildEnv = {}) {
     WEAPP_TW_HMR_TIMING_LOG: '0',
     ...buildEnv,
   }, 'pipe')
+  const memorySampler = createProcessMemorySampler(child.pid)
   let logs = ''
   child.stdout.on('data', (chunk) => {
     logs += chunk.toString('utf8')
@@ -322,26 +324,33 @@ async function runBuildOnce(cwd, buildScript, timeoutMs, buildEnv = {}) {
     logs += chunk.toString('utf8')
   })
 
-  const code = await new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      try {
-        if (child.pid && process.platform !== 'win32') {
-          process.kill(-child.pid, 'SIGKILL')
+  let code
+  let memory
+  try {
+    code = await new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        try {
+          if (child.pid && process.platform !== 'win32') {
+            process.kill(-child.pid, 'SIGKILL')
+          }
+          else {
+            child.kill('SIGKILL')
+          }
         }
-        else {
-          child.kill('SIGKILL')
-        }
-      }
-      catch {}
-      reject(new Error(`build timeout ${timeoutMs}ms`))
-    }, timeoutMs)
+        catch {}
+        reject(new Error(`build timeout ${timeoutMs}ms`))
+      }, timeoutMs)
 
-    child.once('error', reject)
-    child.once('close', (exitCode) => {
-      clearTimeout(timer)
-      resolve(exitCode ?? 1)
+      child.once('error', reject)
+      child.once('close', (exitCode) => {
+        clearTimeout(timer)
+        resolve(exitCode ?? 1)
+      })
     })
-  })
+  }
+  finally {
+    memory = memorySampler.stop()
+  }
 
   if (code !== 0) {
     throw new Error(`build failed code=${code}\n${logs.slice(-4000)}`)
@@ -355,6 +364,7 @@ async function runBuildOnce(cwd, buildScript, timeoutMs, buildEnv = {}) {
     durationMs: now() - start,
     pluginProcessMs: pluginTiming?.durationMs,
     pluginTiming,
+    memory,
   }
 }
 
@@ -409,6 +419,7 @@ async function runHmrRounds({
     WEAPP_TW_HMR_TIMING_LOG: '0',
     ...devEnv,
   }, 'pipe')
+  const memorySampler = createProcessMemorySampler(child.pid)
   const logBuffer = createWatchLogBuffer()
   const logs = logBuffer.lines
   child.stdout.on('data', logBuffer.collect)
@@ -482,9 +493,13 @@ async function runHmrRounds({
     }
 
     await fs.writeFile(sourcePath, original, 'utf8')
-    return times
+    return {
+      samples: times,
+      memory: memorySampler.stop(),
+    }
   }
   finally {
+    memorySampler.stop()
     await stopChild(child)
     await fs.writeFile(sourcePath, original, 'utf8')
   }
@@ -506,6 +521,7 @@ async function runDevServerHmrRounds({
     WEAPP_TW_HMR_TIMING_LOG: '0',
     ...projectMeta.devEnv,
   }, 'pipe')
+  const memorySampler = createProcessMemorySampler(child.pid)
   const logBuffer = createWatchLogBuffer()
   const logs = logBuffer.lines
   child.stdout.on('data', logBuffer.collect)
@@ -600,9 +616,13 @@ async function runDevServerHmrRounds({
     }
 
     await fs.writeFile(sourcePath, original, 'utf8')
-    return times
+    return {
+      samples: times,
+      memory: memorySampler.stop(),
+    }
   }
   finally {
+    memorySampler.stop()
     await stopChild(child)
     await fs.writeFile(sourcePath, original, 'utf8')
   }
@@ -613,6 +633,8 @@ async function runCase(versionMeta, projectMeta, options) {
   const buildMs = []
   const buildPluginMs = []
   const buildPluginTimings = []
+  const buildPeakRssMb = []
+  const buildSteadyRssMb = []
 
   const buildMode = projectMeta.buildMode ?? 'build'
   if (buildMode === 'unsupported') {
@@ -628,6 +650,10 @@ async function runCase(versionMeta, projectMeta, options) {
       if (sample.pluginTiming) {
         buildPluginTimings.push(sample.pluginTiming)
       }
+      if (sample.memory.count > 0) {
+        buildPeakRssMb.push(sample.memory.peakRssMb)
+        buildSteadyRssMb.push(sample.memory.steadyRssMb)
+      }
       const pluginSuffix = typeof sample.pluginProcessMs === 'number' ? ` plugin=${sample.pluginProcessMs.toFixed(2)}ms` : ''
       process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] build ${i + 1}/${options.buildRuns}: ${sample.durationMs.toFixed(2)}ms${pluginSuffix}\n`)
     }
@@ -637,24 +663,26 @@ async function runCase(versionMeta, projectMeta, options) {
   const hmrMs = []
   const hmrPluginMs = []
   const hmrPluginTimings = []
+  let hmrMemory
   if (hmrMode === 'unsupported' || hmrMode === 'fallback-build') {
     process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] hmr skipped: ${projectMeta.hmrNote}\n`)
   }
   else {
     if (projectMeta.hmrDriver === 'dev-server') {
-      const samples = await runDevServerHmrRounds({
+      const result = await runDevServerHmrRounds({
         cwd,
         projectMeta,
         rounds: options.hmrRuns,
         timeoutMs: options.timeoutMs,
         pollIntervalMs: options.pollIntervalMs,
       })
-      hmrMs.push(...samples.map(sample => sample.durationMs))
-      hmrPluginMs.push(...samples.flatMap(sample => typeof sample.pluginProcessMs === 'number' ? [sample.pluginProcessMs] : []))
-      hmrPluginTimings.push(...samples.flatMap(sample => sample.pluginTiming ? [sample.pluginTiming] : []))
+      hmrMemory = result.memory
+      hmrMs.push(...result.samples.map(sample => sample.durationMs))
+      hmrPluginMs.push(...result.samples.flatMap(sample => typeof sample.pluginProcessMs === 'number' ? [sample.pluginProcessMs] : []))
+      hmrPluginTimings.push(...result.samples.flatMap(sample => sample.pluginTiming ? [sample.pluginTiming] : []))
     }
     else {
-      const samples = await runHmrRounds({
+      const result = await runHmrRounds({
         cwd,
         sourceFile: projectMeta.sourceFile,
         outputTemplate: projectMeta.outputTemplate,
@@ -666,9 +694,10 @@ async function runCase(versionMeta, projectMeta, options) {
         timeoutMs: options.timeoutMs,
         pollIntervalMs: options.pollIntervalMs,
       })
-      hmrMs.push(...samples.map(sample => sample.durationMs))
-      hmrPluginMs.push(...samples.flatMap(sample => typeof sample.pluginProcessMs === 'number' ? [sample.pluginProcessMs] : []))
-      hmrPluginTimings.push(...samples.flatMap(sample => sample.pluginTiming ? [sample.pluginTiming] : []))
+      hmrMemory = result.memory
+      hmrMs.push(...result.samples.map(sample => sample.durationMs))
+      hmrPluginMs.push(...result.samples.flatMap(sample => typeof sample.pluginProcessMs === 'number' ? [sample.pluginProcessMs] : []))
+      hmrPluginTimings.push(...result.samples.flatMap(sample => sample.pluginTiming ? [sample.pluginTiming] : []))
     }
 
     hmrMs.forEach((ms, idx) => {
@@ -685,9 +714,12 @@ async function runCase(versionMeta, projectMeta, options) {
     buildMs,
     buildPluginMs,
     buildPluginTimings,
+    buildPeakRssMb,
+    buildSteadyRssMb,
     hmrMs,
     hmrPluginMs,
     hmrPluginTimings,
+    hmrMemory,
     buildMode,
     hmrMode,
     summary: {
@@ -696,9 +728,13 @@ async function runCase(versionMeta, projectMeta, options) {
       buildSteady: summarizeSteady(buildMs),
       buildPlugin: summarize(buildPluginMs),
       buildPluginSteady: summarizeSteady(buildPluginMs),
+      buildPeakRssMb: summarize(buildPeakRssMb),
+      buildSteadyRssMb: summarize(buildSteadyRssMb),
       hmrSteady: summarizeSteady(hmrMs),
       hmrPlugin: summarize(hmrPluginMs),
       hmrPluginSteady: summarizeSteady(hmrPluginMs),
+      hmrPeakRssMb: summarize(hmrMemory?.count > 0 ? [hmrMemory.peakRssMb] : []),
+      hmrSteadyRssMb: summarize(hmrMemory?.count > 0 ? [hmrMemory.steadyRssMb] : []),
     },
   }
 }

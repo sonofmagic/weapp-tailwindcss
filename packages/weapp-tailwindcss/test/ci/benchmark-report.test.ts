@@ -122,7 +122,7 @@ describe('benchmark ci report', () => {
     expect(round.lines).not.toContain('after-round')
   })
 
-  it('fails layered performance guards only after relative and absolute thresholds are exceeded', async () => {
+  it('guards cold build median, HMR P95, plugin timing and memory with one 5% limit', async () => {
     const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
     const baselineLabel = 'base:main'
     const currentLabel = 'current:feature'
@@ -139,10 +139,14 @@ describe('benchmark ci report', () => {
           key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
           hmrMode: 'watch',
           summary: {
-            buildSteady: { median: 1000 },
-            hmrSteady: { median: 500 },
-            buildPluginSteady: { median: 200 },
-            hmrPluginSteady: { median: 100 },
+            build: { median: 1000 },
+            hmr: { p95: 500 },
+            buildPlugin: { median: 200 },
+            hmrPlugin: { p95: 100 },
+            buildPeakRssMb: { median: 1000 },
+            buildSteadyRssMb: { median: 800 },
+            hmrPeakRssMb: { median: 1200 },
+            hmrSteadyRssMb: { median: 900 },
           },
         },
         {
@@ -150,10 +154,14 @@ describe('benchmark ci report', () => {
           key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
           hmrMode: 'watch',
           summary: {
-            buildSteady: { median: 1210 },
-            hmrSteady: { median: 560 },
-            buildPluginSteady: { median: 321 },
-            hmrPluginSteady: { median: 115 },
+            build: { median: 1060 },
+            hmr: { p95: 525 },
+            buildPlugin: { median: 211 },
+            hmrPlugin: { p95: 105 },
+            buildPeakRssMb: { median: 1050 },
+            buildSteadyRssMb: { median: 841 },
+            hmrPeakRssMb: { median: 1261 },
+            hmrSteadyRssMb: { median: 945 },
           },
         },
       ],
@@ -162,12 +170,12 @@ describe('benchmark ci report', () => {
     const result = evaluatePerformanceGuard(summary)
 
     expect(result.violations.map(item => item.metric)).toEqual([
-      'build',
-      'buildPlugin',
+      'buildMedian',
+      'buildPluginMedian',
+      'buildSteadyRssMb',
+      'hmrPeakRssMb',
     ])
-    expect(result.thresholds.pluginRegressionPercent).toBe(15)
-    expect(result.thresholds.pluginAbsoluteMs).toBe(100)
-    expect(result.thresholds.endToEndRegressionPercent).toBe(20)
+    expect(result.thresholds.regressionPercent).toBe(5)
     expect(result.passed).toBe(false)
   })
 
@@ -221,7 +229,7 @@ describe('benchmark ci report', () => {
           hmrMode: 'watch',
           hmrMs: [100, 90, 80],
           hmrPluginMs: [50, 40, 30],
-          summary: { hmrSteady: { median: 85 }, hmrPluginSteady: { median: 35 } },
+          summary: { hmr: { p95: 100 }, hmrPlugin: { p95: 50 } },
         },
         {
           version: currentLabel,
@@ -229,7 +237,7 @@ describe('benchmark ci report', () => {
           hmrMode: 'watch',
           hmrMs: [100, 90, 80],
           hmrPluginMs: [50, 40],
-          summary: { hmrSteady: { median: 85 }, hmrPluginSteady: { median: 45 } },
+          summary: { hmr: { p95: 100 }, hmrPlugin: { p95: 50 } },
         },
       ],
     }, baselineLabel, currentLabel)
@@ -240,6 +248,9 @@ describe('benchmark ci report', () => {
     expect(result.violations).toContainEqual(expect.objectContaining({
       metric: 'currentHmrPluginSamples',
       message: 'current HMR plugin timing samples 2/3',
+    }))
+    expect(result.violations).toContainEqual(expect.objectContaining({
+      metric: 'hmrMemorySamples',
     }))
   })
 
@@ -260,10 +271,12 @@ describe('benchmark ci report', () => {
           hmrMs: [100, 100, 100, 100],
           hmrPluginMs: [50, 50, 50, 50],
           summary: {
-            hmr: { median: 100 },
+            hmr: { median: 100, p95: 100 },
             hmrSteady: { median: 100 },
-            hmrPlugin: { median: 50 },
+            hmrPlugin: { median: 50, p95: 50 },
             hmrPluginSteady: { median: 50 },
+            hmrPeakRssMb: { median: 800 },
+            hmrSteadyRssMb: { median: 700 },
           },
         },
         {
@@ -275,10 +288,12 @@ describe('benchmark ci report', () => {
           hmrMs: [110, 110, 500, 500],
           hmrPluginMs: [55, 55, 80, 80],
           summary: {
-            hmr: { median: 305 },
+            hmr: { median: 305, p95: 500 },
             hmrSteady: { median: 500 },
-            hmrPlugin: { median: 67.5 },
+            hmrPlugin: { median: 67.5, p95: 80 },
             hmrPluginSteady: { median: 80 },
+            hmrPeakRssMb: { median: 800 },
+            hmrSteadyRssMb: { median: 700 },
           },
         },
       ],
@@ -286,12 +301,12 @@ describe('benchmark ci report', () => {
 
     expect(summary.compares[0]).toMatchObject({
       baselineHmr: 100,
-      currentHmr: 305,
+      currentHmr: 500,
       baselineHmrPlugin: 50,
-      currentHmrPlugin: 67.5,
+      currentHmrPlugin: 80,
       hmrEndToEndGuard: false,
     })
-    const result = evaluatePerformanceGuard(summary, { pluginRegressionPercent: 40 })
+    const result = evaluatePerformanceGuard(summary, { regressionPercent: 70 })
     expect(result.passed).toBe(true)
     expect(toMarkdown(summary, 'main')).toContain('HMR end-to-end informational: framework output variance; plugin timing remains guarded')
   })
@@ -315,6 +330,56 @@ describe('benchmark ci report', () => {
     expect(source).toContain('outputProbeTemplates')
     expect(source).toContain('buildEnv.UNI_BUILD_STRICT=1')
     expect(source).toContain('build skipped by uni-build-guard')
+    expect(source).toContain('createProcessMemorySampler')
+  })
+
+  it('summarizes process memory using peak and tail-window steady RSS', async () => {
+    const { summarizeProcessMemory } = await import('../../../../benchmark/version-compare/scripts/process-memory.mjs')
+    const summary = summarizeProcessMemory([
+      { at: 1, rssMb: 100, processCount: 2 },
+      { at: 2, rssMb: 120, processCount: 2 },
+      { at: 3, rssMb: 140, processCount: 2 },
+      { at: 4, rssMb: 130, processCount: 2 },
+      { at: 5, rssMb: 132, processCount: 2 },
+    ])
+
+    expect(summary).toMatchObject({
+      baselineRssMb: 100,
+      peakRssMb: 140,
+      steadyRssMb: 132,
+      steadyGrowthPct: 32,
+    })
+  })
+
+  it('applies the same 5% limit to CI peak and steady RSS reports', async () => {
+    const { evaluateRelativeMemoryGuard } = await import('../../../../scripts/ci-memory-guard.mjs')
+    const result = evaluateRelativeMemoryGuard(
+      { peakRssMb: 1000, steadyRssMb: 800 },
+      { peakRssMb: 1050, steadyRssMb: 841 },
+    )
+
+    expect(result.thresholdPercent).toBe(5)
+    expect(result.violations).toEqual([
+      expect.objectContaining({ metric: 'steadyRssMb' }),
+    ])
+  })
+
+  it('fails when 100 class add-delete cycles keep growing heap usage', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-19T00:00:00.000Z',
+      options: { buildRuns: 0, hmrRuns: 0, timeoutMs: 180000 },
+      rows: [
+        { version: baselineLabel, key: 'core-source-candidate-hot-update', memoryStability: { stable: true, growthPct: 0 } },
+        { version: currentLabel, key: 'core-source-candidate-hot-update', memoryStability: { stable: false, growthPct: 6.25 } },
+      ],
+    }, baselineLabel, currentLabel)
+
+    expect(evaluatePerformanceGuard(summary).violations).toContainEqual(expect.objectContaining({
+      metric: 'memoryStability100Cycles',
+    }))
   })
 
   it('keeps published baseline failures non-blocking when current rows pass', async () => {
@@ -372,7 +437,7 @@ describe('benchmark ci report', () => {
           hmrMode: 'watch',
           summary: {
             build: { median: 100 },
-            hmr: { median: 20 },
+            hmr: { p95: 20 },
           },
         },
         {
@@ -383,7 +448,7 @@ describe('benchmark ci report', () => {
           hmrMode: 'watch',
           summary: {
             build: { median: 110 },
-            hmr: { median: 10 },
+            hmr: { p95: 10 },
           },
         },
         {
@@ -436,12 +501,12 @@ describe('benchmark ci report', () => {
     expect(summary.averages.watchHmrCompareCount).toBe(1)
     expect(summary.averages.hmrDeltaPct).toBe(-50)
     const markdown = toMarkdown(summary, 'next')
-    expect(markdown).toContain('| 项目 | 目标平台 | Baseline Build(ms) |')
+    expect(markdown).toContain('| 项目 | 目标平台 | Baseline Build median(ms) |')
     expect(markdown).toContain('| demo-uni-app-vite-tailwindcss-v4__mp-weixin | mp-weixin |')
     expect(markdown).toContain('| demo-uni-app-vite-tailwindcss-v4__mp-weixin | mp-weixin | 200.00 | 200.00 | +0.00% | fallback-build | - | - | - |')
     expect(markdown).toContain('| demo-web-react-vite-tailwindcss-v4__web | web |')
     expect(markdown).toContain('fallback-build')
     expect(markdown).toContain('unsupported')
-    expect(markdown).toContain('真实 watch HMR 中位数平均变化：-50.00%（1 项；fallback-build/unsupported 不参与）')
+    expect(markdown).toContain('真实 watch HMR P95 平均变化：-50.00%（1 项；fallback-build/unsupported 不参与）')
   })
 })

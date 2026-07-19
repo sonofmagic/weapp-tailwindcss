@@ -54,6 +54,8 @@ export function summarizeMemorySamples(samples: MemoryUsageSample[]): MemoryUsag
       count: 0,
       baselineRssMb: 0,
       peakRssMb: 0,
+      steadyRssMb: 0,
+      steadyGrowthPct: 0,
       rssDeltaMb: 0,
       peakMaxProcessRssMb: 0,
       peakProcessCount: 0,
@@ -73,6 +75,20 @@ export function summarizeMemorySamples(samples: MemoryUsageSample[]): MemoryUsag
     return current
   }, samples[0]!)
   const peakRssMb = peakSample.rssMb
+  const activeSamples = samples.filter(sample => sample.processCount > 0 && sample.rssMb > 0)
+  const windowSize = Math.max(1, Math.ceil(activeSamples.length * 0.2))
+  const warmupOffset = Math.min(activeSamples.length - 1, windowSize)
+  const steadyBaselineSamples = activeSamples.slice(warmupOffset, warmupOffset + windowSize)
+  const steadySamples = activeSamples.slice(-windowSize)
+  const median = (values: number[]) => {
+    const sorted = [...values].sort((a, b) => a - b)
+    const middle = Math.floor(sorted.length / 2)
+    return sorted.length % 2 === 0
+      ? ((sorted[middle - 1] ?? 0) + (sorted[middle] ?? 0)) / 2
+      : (sorted[middle] ?? 0)
+  }
+  const steadyBaselineRssMb = median(steadyBaselineSamples.map(sample => sample.rssMb))
+  const steadyRssMb = median(steadySamples.map(sample => sample.rssMb))
   const peakMaxProcessRssMb = Math.max(...samples.map(sample => sample.maxProcessRssMb))
   const peakProcessCount = Math.max(...samples.map(sample => sample.processCount))
   const uniqueProcessCount = new Set(
@@ -91,6 +107,8 @@ export function summarizeMemorySamples(samples: MemoryUsageSample[]): MemoryUsag
     count: samples.length,
     baselineRssMb: first.rssMb,
     peakRssMb,
+    steadyRssMb,
+    steadyGrowthPct: steadyBaselineRssMb === 0 ? 0 : ((steadyRssMb - steadyBaselineRssMb) / steadyBaselineRssMb) * 100,
     rssDeltaMb: Math.max(0, peakRssMb - first.rssMb),
     peakMaxProcessRssMb,
     peakProcessCount,
@@ -237,6 +255,8 @@ function createProjectMemoryReport(item: WatchCaseMetrics): HmrMemoryProjectRepo
     debugSampleCount: item.memoryDebugSummary.count,
     baselineRssMb: item.memorySummary.baselineRssMb,
     peakRssMb,
+    steadyRssMb: item.memorySummary.steadyRssMb,
+    steadyGrowthPct: item.memorySummary.steadyGrowthPct,
     rssDeltaMb: Math.max(0, peakRssMb - item.memorySummary.baselineRssMb),
     peakMaxProcessRssMb,
     peakProcessCount: item.memorySummary.peakProcessCount,
@@ -264,6 +284,8 @@ export function summarizeHmrMemoryReport(cases: WatchCaseMetrics[]): HmrMemoryRe
       sampleCount,
       debugSampleCount,
       peakRssMb: Math.max(0, ...projects.map(item => item.peakRssMb)),
+      peakSteadyRssMb: Math.max(0, ...projects.map(item => item.steadyRssMb)),
+      maxSteadyGrowthPct: Math.max(0, ...projects.map(item => item.steadyGrowthPct)),
       maxRssDeltaMb: Math.max(0, ...projects.map(item => item.rssDeltaMb)),
       peakHeapUsedMb: Math.max(0, ...projects.map(item => item.peakHeapUsedMb)),
     },

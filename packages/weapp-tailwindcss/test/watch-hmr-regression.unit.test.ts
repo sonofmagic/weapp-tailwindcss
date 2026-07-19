@@ -1732,10 +1732,14 @@ describe('watch-hmr regression summary helpers', () => {
       projectCount: 1,
       sampleCount: 2,
       peakRssMb: 132,
+      peakSteadyRssMb: 132,
+      maxSteadyGrowthPct: 0,
       maxRssDeltaMb: 0,
     })
     expect(report.memoryReport.byProject['demo-weapp-vite-tailwindcss-v4']).toMatchObject({
       peakRssMb: 132,
+      steadyRssMb: 132,
+      steadyGrowthPct: 0,
       rssDeltaMb: 0,
       peakProcessCount: 2,
       uniqueProcessCount: 2,
@@ -1960,7 +1964,7 @@ describe('watch-hmr regression summary helpers', () => {
     metrics.memoryPeakRssMb = summary.peakRssMb
     metrics.memoryRssDeltaMb = summary.rssDeltaMb
 
-    expect(summary).toMatchObject({ baselineRssMb: 640, peakRssMb: 702, rssDeltaMb: 62, peakProcessCount: 2, uniqueProcessCount: 0 })
+    expect(summary).toMatchObject({ baselineRssMb: 640, peakRssMb: 702, steadyRssMb: 690, rssDeltaMb: 62, peakProcessCount: 2, uniqueProcessCount: 0 })
     metrics.memorySummary = summary
     metrics.memoryPeakRssMb = summary.peakRssMb
     metrics.memoryRssDeltaMb = summary.rssDeltaMb
@@ -2081,7 +2085,7 @@ describe('watch-hmr regression summary helpers', () => {
       { at: 3, rssMb: 742, maxProcessRssMb: 698, processCount: 3 },
     ])
 
-    expect(summary).toMatchObject({ baselineRssMb: 684, peakRssMb: 742, rssDeltaMb: 58, peakProcessCount: 3, uniqueProcessCount: 0 })
+    expect(summary).toMatchObject({ baselineRssMb: 684, peakRssMb: 742, steadyRssMb: 742, rssDeltaMb: 58, peakProcessCount: 3, uniqueProcessCount: 0 })
   })
 
   it('prefers total timing samples when collecting plugin processing metrics', () => {

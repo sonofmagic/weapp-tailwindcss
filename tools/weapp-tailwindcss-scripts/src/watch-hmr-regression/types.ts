@@ -95,6 +95,8 @@ export interface MemoryUsageSummary {
   count: number
   baselineRssMb: number
   peakRssMb: number
+  steadyRssMb: number
+  steadyGrowthPct: number
   rssDeltaMb: number
   peakMaxProcessRssMb: number
   peakProcessCount: number
@@ -834,6 +836,8 @@ export interface HmrMemoryProjectReport {
   debugSampleCount: number
   baselineRssMb: number
   peakRssMb: number
+  steadyRssMb: number
+  steadyGrowthPct: number
   rssDeltaMb: number
   peakMaxProcessRssMb: number
   peakProcessCount: number
@@ -852,6 +856,8 @@ export interface HmrMemoryReport {
     sampleCount: number
     debugSampleCount: number
     peakRssMb: number
+    peakSteadyRssMb: number
+    maxSteadyGrowthPct: number
     maxRssDeltaMb: number
     peakHeapUsedMb: number
   }

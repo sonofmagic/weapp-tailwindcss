@@ -21,15 +21,12 @@ function fmtPct(value) {
   return `${n >= 0 ? '+' : ''}${n.toFixed(2)}%`
 }
 
-function metric(row, kind) {
-  const fullHmrMetric = kind.startsWith('hmr')
-    ? toNumber(row?.summary?.[kind]?.median)
-    : undefined
-  return fullHmrMetric ?? toNumber(row?.summary?.[`${kind}Steady`]?.median ?? row?.summary?.[kind]?.median)
+function summaryMetric(row, kind, statistic = 'median') {
+  return toNumber(row?.summary?.[kind]?.[statistic])
 }
 
-function pluginMetric(row, kind) {
-  return toNumber(row?.summary?.[`${kind}Plugin`]?.median) ?? metric(row, `${kind}Plugin`)
+function memoryMetric(row, kind) {
+  return summaryMetric(row, kind, 'median')
 }
 
 function sampleCount(row, field) {
@@ -54,14 +51,22 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
   const currentRows = rows.filter(row => row.version === currentLabel)
   const compares = currentRows.map((current) => {
     const baseline = byKey.get(`${baselineLabel}::${current.key}`)
-    const baselineBuild = metric(baseline, 'build')
-    const currentBuild = metric(current, 'build')
-    const baselineHmr = metric(baseline, 'hmr')
-    const currentHmr = metric(current, 'hmr')
-    const baselineBuildPlugin = pluginMetric(baseline, 'build')
-    const currentBuildPlugin = pluginMetric(current, 'build')
-    const baselineHmrPlugin = pluginMetric(baseline, 'hmr')
-    const currentHmrPlugin = pluginMetric(current, 'hmr')
+    const baselineBuild = summaryMetric(baseline, 'build')
+    const currentBuild = summaryMetric(current, 'build')
+    const baselineHmr = summaryMetric(baseline, 'hmr', 'p95')
+    const currentHmr = summaryMetric(current, 'hmr', 'p95')
+    const baselineBuildPlugin = summaryMetric(baseline, 'buildPlugin')
+    const currentBuildPlugin = summaryMetric(current, 'buildPlugin')
+    const baselineHmrPlugin = summaryMetric(baseline, 'hmrPlugin', 'p95')
+    const currentHmrPlugin = summaryMetric(current, 'hmrPlugin', 'p95')
+    const baselineBuildPeakRssMb = memoryMetric(baseline, 'buildPeakRssMb')
+    const currentBuildPeakRssMb = memoryMetric(current, 'buildPeakRssMb')
+    const baselineBuildSteadyRssMb = memoryMetric(baseline, 'buildSteadyRssMb')
+    const currentBuildSteadyRssMb = memoryMetric(current, 'buildSteadyRssMb')
+    const baselineHmrPeakRssMb = memoryMetric(baseline, 'hmrPeakRssMb')
+    const currentHmrPeakRssMb = memoryMetric(current, 'hmrPeakRssMb')
+    const baselineHmrSteadyRssMb = memoryMetric(baseline, 'hmrSteadyRssMb')
+    const currentHmrSteadyRssMb = memoryMetric(current, 'hmrSteadyRssMb')
     const baselineHmrMode = baseline?.hmrMode ?? 'watch'
     const currentHmrMode = current.hmrMode ?? 'watch'
     const hmrEndToEndGuard = baseline?.hmrEndToEndGuard !== false && current.hmrEndToEndGuard !== false
@@ -81,10 +86,24 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
       baselineHmrPlugin,
       currentHmrPlugin,
       hmrPluginDeltaPct: pct(baselineHmrPlugin, currentHmrPlugin),
+      baselineBuildPeakRssMb,
+      currentBuildPeakRssMb,
+      buildPeakRssDeltaPct: pct(baselineBuildPeakRssMb, currentBuildPeakRssMb),
+      baselineBuildSteadyRssMb,
+      currentBuildSteadyRssMb,
+      buildSteadyRssDeltaPct: pct(baselineBuildSteadyRssMb, currentBuildSteadyRssMb),
+      baselineHmrPeakRssMb,
+      currentHmrPeakRssMb,
+      hmrPeakRssDeltaPct: pct(baselineHmrPeakRssMb, currentHmrPeakRssMb),
+      baselineHmrSteadyRssMb,
+      currentHmrSteadyRssMb,
+      hmrSteadyRssDeltaPct: pct(baselineHmrSteadyRssMb, currentHmrSteadyRssMb),
       baselineHmrSampleCount: sampleCount(baseline, 'hmrMs'),
       currentHmrSampleCount: sampleCount(current, 'hmrMs'),
       baselineHmrPluginSampleCount: sampleCount(baseline, 'hmrPluginMs'),
       currentHmrPluginSampleCount: sampleCount(current, 'hmrPluginMs'),
+      baselineMemoryStability: baseline?.memoryStability,
+      currentMemoryStability: current.memoryStability,
       baselineBuildMode: baseline?.buildMode ?? 'build',
       currentBuildMode: current.buildMode ?? 'build',
       baselineHmrMode,
@@ -161,25 +180,67 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
 }
 
 export function evaluatePerformanceGuard(summary, options = {}) {
-  const pluginRegressionPercent = toNumber(options.pluginRegressionPercent) ?? 15
-  const pluginAbsoluteMs = toNumber(options.pluginAbsoluteMs) ?? 100
-  const endToEndRegressionPercent = toNumber(options.endToEndRegressionPercent) ?? 20
-  const endToEndAbsoluteMs = toNumber(options.endToEndAbsoluteMs) ?? 50
+  const regressionPercent = toNumber(options.regressionPercent) ?? 5
   const violations = summary.currentOnlyErrors.map(item => ({
     key: item.key,
     metric: 'error',
     message: String(item.error).split('\n')[0],
   }))
   const metrics = [
-    { metric: 'build', baseline: 'baselineBuild', current: 'currentBuild', delta: 'buildDeltaPct', percent: endToEndRegressionPercent, absoluteMs: endToEndAbsoluteMs },
-    { metric: 'hmr', baseline: 'baselineHmr', current: 'currentHmr', delta: 'hmrDeltaPct', percent: endToEndRegressionPercent, absoluteMs: endToEndAbsoluteMs, watchOnly: true },
-    { metric: 'buildPlugin', baseline: 'baselineBuildPlugin', current: 'currentBuildPlugin', delta: 'buildPluginDeltaPct', percent: pluginRegressionPercent, absoluteMs: pluginAbsoluteMs },
-    { metric: 'hmrPlugin', baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', percent: pluginRegressionPercent, absoluteMs: pluginAbsoluteMs, watchOnly: true },
+    { metric: 'buildMedian', baseline: 'baselineBuild', current: 'currentBuild', delta: 'buildDeltaPct' },
+    { metric: 'hmrP95', baseline: 'baselineHmr', current: 'currentHmr', delta: 'hmrDeltaPct', watchOnly: true },
+    { metric: 'buildPluginMedian', baseline: 'baselineBuildPlugin', current: 'currentBuildPlugin', delta: 'buildPluginDeltaPct' },
+    { metric: 'hmrPluginP95', baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', watchOnly: true },
+    { metric: 'buildPeakRssMb', baseline: 'baselineBuildPeakRssMb', current: 'currentBuildPeakRssMb', delta: 'buildPeakRssDeltaPct' },
+    { metric: 'buildSteadyRssMb', baseline: 'baselineBuildSteadyRssMb', current: 'currentBuildSteadyRssMb', delta: 'buildSteadyRssDeltaPct' },
+    { metric: 'hmrPeakRssMb', baseline: 'baselineHmrPeakRssMb', current: 'currentHmrPeakRssMb', delta: 'hmrPeakRssDeltaPct', watchOnly: true },
+    { metric: 'hmrSteadyRssMb', baseline: 'baselineHmrSteadyRssMb', current: 'currentHmrSteadyRssMb', delta: 'hmrSteadyRssDeltaPct', watchOnly: true },
   ]
 
   for (const compare of summary.compares) {
     if (compare.baselineError || compare.currentError) {
       continue
+    }
+    if (compare.currentMemoryStability?.stable === false) {
+      violations.push({
+        key: compare.key,
+        metric: 'memoryStability100Cycles',
+        message: `100 次 class 增删后的稳态 heap 增长 ${fmtPct(compare.currentMemoryStability.growthPct)}`,
+      })
+    }
+    if (
+      typeof compare.baselineBuild === 'number'
+      && typeof compare.currentBuild === 'number'
+      && [
+        compare.baselineBuildPeakRssMb,
+        compare.currentBuildPeakRssMb,
+        compare.baselineBuildSteadyRssMb,
+        compare.currentBuildSteadyRssMb,
+      ].some(value => typeof value !== 'number')
+    ) {
+      violations.push({
+        key: compare.key,
+        metric: 'buildMemorySamples',
+        message: 'build peak/steady RSS samples are incomplete',
+      })
+    }
+    if (
+      compare.baselineHmrMode === 'watch'
+      && compare.currentHmrMode === 'watch'
+      && typeof compare.baselineHmr === 'number'
+      && typeof compare.currentHmr === 'number'
+      && [
+        compare.baselineHmrPeakRssMb,
+        compare.currentHmrPeakRssMb,
+        compare.baselineHmrSteadyRssMb,
+        compare.currentHmrSteadyRssMb,
+      ].some(value => typeof value !== 'number')
+    ) {
+      violations.push({
+        key: compare.key,
+        metric: 'hmrMemorySamples',
+        message: 'HMR peak/steady RSS samples are incomplete',
+      })
     }
     if (compare.baselineHmrMode === 'watch' && compare.currentHmrMode === 'watch') {
       for (const side of ['baseline', 'current']) {
@@ -198,7 +259,7 @@ export function evaluatePerformanceGuard(summary, options = {}) {
       if (config.watchOnly && (compare.baselineHmrMode !== 'watch' || compare.currentHmrMode !== 'watch')) {
         continue
       }
-      if (config.metric === 'hmr' && compare.hmrEndToEndGuard === false) {
+      if (config.metric === 'hmrP95' && compare.hmrEndToEndGuard === false) {
         continue
       }
       const baseline = toNumber(compare[config.baseline])
@@ -207,17 +268,16 @@ export function evaluatePerformanceGuard(summary, options = {}) {
       if (baseline === undefined || current === undefined || deltaPercent === undefined) {
         continue
       }
-      const absoluteDeltaMs = current - baseline
-      if (deltaPercent > config.percent && absoluteDeltaMs > config.absoluteMs) {
+      const absoluteDelta = current - baseline
+      if (deltaPercent > regressionPercent) {
         violations.push({
           key: compare.key,
           metric: config.metric,
           baseline,
           current,
           deltaPercent,
-          absoluteDeltaMs,
-          thresholdPercent: config.percent,
-          thresholdAbsoluteMs: config.absoluteMs,
+          absoluteDelta,
+          thresholdPercent: regressionPercent,
         })
       }
     }
@@ -226,10 +286,7 @@ export function evaluatePerformanceGuard(summary, options = {}) {
   return {
     passed: violations.length === 0,
     thresholds: {
-      pluginRegressionPercent,
-      pluginAbsoluteMs,
-      endToEndRegressionPercent,
-      endToEndAbsoluteMs,
+      regressionPercent,
     },
     violations,
   }
@@ -255,6 +312,7 @@ export function toMarkdown(summary, baselineSpec) {
     ? summary.errors.map(item => `- ${item.version} / ${item.key}: ${String(item.error).split('\n')[0]}`).join('\n')
     : '- 无'
   const pluginRows = summary.compares.map(item => `| ${item.key} | ${fmtMs(item.baselineBuildPlugin)} | ${fmtMs(item.currentBuildPlugin)} | ${fmtPct(item.buildPluginDeltaPct)} | ${fmtMs(item.baselineHmrPlugin)} | ${fmtMs(item.currentHmrPlugin)} | ${fmtPct(item.hmrPluginDeltaPct)} |`).join('\n')
+  const memoryRows = summary.compares.map(item => `| ${item.key} | ${fmtMs(item.baselineBuildPeakRssMb)} | ${fmtMs(item.currentBuildPeakRssMb)} | ${fmtPct(item.buildPeakRssDeltaPct)} | ${fmtMs(item.baselineBuildSteadyRssMb)} | ${fmtMs(item.currentBuildSteadyRssMb)} | ${fmtPct(item.buildSteadyRssDeltaPct)} | ${fmtMs(item.baselineHmrPeakRssMb)} | ${fmtMs(item.currentHmrPeakRssMb)} | ${fmtPct(item.hmrPeakRssDeltaPct)} | ${fmtMs(item.baselineHmrSteadyRssMb)} | ${fmtMs(item.currentHmrSteadyRssMb)} | ${fmtPct(item.hmrSteadyRssDeltaPct)} |`).join('\n')
   const baselineDisplay = summary.baseline.startsWith('base:')
     ? baselineSpec
     : normalizePackageSpec(baselineSpec)
@@ -265,8 +323,7 @@ export function toMarkdown(summary, baselineSpec) {
         '## 性能门禁',
         '',
         `- 结果：${guard.passed ? '通过' : '失败'}`,
-        `- 插件阶段阈值：${guard.thresholds.pluginRegressionPercent}% 且绝对增加超过 ${guard.thresholds.pluginAbsoluteMs}ms`,
-        `- 端到端阈值：${guard.thresholds.endToEndRegressionPercent}% 且绝对增加超过 ${guard.thresholds.endToEndAbsoluteMs}ms`,
+        `- 统一退化阈值：${guard.thresholds.regressionPercent}%`,
         `- 违规项：${guard.violations.length}`,
         ...guard.violations.map(item => `- ${item.key} / ${item.metric}: ${item.message ?? `${fmtMs(item.baseline)} -> ${fmtMs(item.current)} (${fmtPct(item.deltaPercent)})`}`),
       ].join('\n')
@@ -284,25 +341,31 @@ export function toMarkdown(summary, baselineSpec) {
 
 ## 汇总
 
-- Build 稳态中位数平均变化：${fmtPct(summary.averages.buildDeltaPct)}（${summary.averages.buildCompareCount} 项）
-- 真实 watch HMR 中位数平均变化：${fmtPct(summary.averages.hmrDeltaPct)}（${summary.averages.watchHmrCompareCount} 项；fallback-build/unsupported 不参与）
-- 插件 Build 稳态中位数平均变化：${fmtPct(summary.averages.buildPluginDeltaPct)}（${summary.averages.buildPluginCompareCount} 项）
-- 插件 HMR 中位数平均变化：${fmtPct(summary.averages.hmrPluginDeltaPct)}（${summary.averages.watchHmrPluginCompareCount} 项）
+- 冷构建中位数平均变化：${fmtPct(summary.averages.buildDeltaPct)}（${summary.averages.buildCompareCount} 项）
+- 真实 watch HMR P95 平均变化：${fmtPct(summary.averages.hmrDeltaPct)}（${summary.averages.watchHmrCompareCount} 项；fallback-build/unsupported 不参与）
+- 插件 Build 中位数平均变化：${fmtPct(summary.averages.buildPluginDeltaPct)}（${summary.averages.buildPluginCompareCount} 项）
+- 插件 HMR P95 平均变化：${fmtPct(summary.averages.hmrPluginDeltaPct)}（${summary.averages.watchHmrPluginCompareCount} 项）
 - 失败项：${summary.errors.length}
 - 当前版本独有失败项：${summary.currentOnlyErrors.length}
 - 基线/当前共同失败项：${summary.sharedErrors.length}
 
 ## 项目矩阵
 
-| 项目 | 目标平台 | Baseline Build(ms) | Current Build(ms) | Build 变化 | HMR 模式 | Baseline HMR(ms) | Current HMR(ms) | HMR 变化 | 备注 |
+| 项目 | 目标平台 | Baseline Build median(ms) | Current Build median(ms) | Build 变化 | HMR 模式 | Baseline HMR P95(ms) | Current HMR P95(ms) | HMR 变化 | 备注 |
 | --- | --- | ---: | ---: | ---: | --- | ---: | ---: | ---: | --- |
 ${rows}
 
 ## 插件处理阶段
 
-| 项目 | Baseline Build Plugin(ms) | Current Build Plugin(ms) | Build Plugin 变化 | Baseline HMR Plugin(ms) | Current HMR Plugin(ms) | HMR Plugin 变化 |
+| 项目 | Baseline Build Plugin median(ms) | Current Build Plugin median(ms) | Build Plugin 变化 | Baseline HMR Plugin P95(ms) | Current HMR Plugin P95(ms) | HMR Plugin 变化 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 ${pluginRows}
+
+## 内存
+
+| 项目 | Baseline Build peak(MB) | Current Build peak(MB) | 变化 | Baseline Build steady(MB) | Current Build steady(MB) | 变化 | Baseline HMR peak(MB) | Current HMR peak(MB) | 变化 | Baseline HMR steady(MB) | Current HMR steady(MB) | 变化 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+${memoryRows}
 ${guardLines}
 
 ## 失败项
