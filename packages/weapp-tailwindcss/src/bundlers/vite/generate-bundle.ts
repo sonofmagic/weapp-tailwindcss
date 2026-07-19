@@ -2,7 +2,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { GenerateBundleContext, GenerateBundleThis } from './generate-bundle/types'
 import { beginCompilerShadowRun } from '@/compiler'
 import { runWithRemovedBundleFiles } from './bundle-state'
-import { createGenerateBundleHook as createRuntimeGenerateBundleHook } from './generate-bundle-runtime'
+import { createGenerateBundleHook as createRuntimeGenerateBundleHook } from './generate-bundle/runtime'
 import {
   getActiveViteSourceOutputRelationOwner,
   withViteSourceOutputRelationOwner,

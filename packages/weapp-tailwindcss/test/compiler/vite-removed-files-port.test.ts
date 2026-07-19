@@ -24,7 +24,7 @@ function createAnonymousAsset(fileName: string): OutputAsset {
 
 describe('vite removed files port', () => {
   afterEach(() => {
-    vi.doUnmock('@/bundlers/vite/generate-bundle-runtime')
+    vi.doUnmock('@/bundlers/vite/generate-bundle/runtime')
     vi.doUnmock('@/bundlers/vite/shared/create-framework-plugins-runtime')
     vi.restoreAllMocks()
     vi.resetModules()
@@ -34,7 +34,7 @@ describe('vite removed files port', () => {
     const snapshots: Array<{ removedFiles: Set<string> }> = []
     const runtimeCloseBundle = vi.fn()
     const sourceCandidates = new Map<string, string>()
-    vi.doMock('@/bundlers/vite/generate-bundle-runtime', async () => {
+    vi.doMock('@/bundlers/vite/generate-bundle/runtime', async () => {
       const {
         buildBundleSnapshot,
         createBundleBuildState,

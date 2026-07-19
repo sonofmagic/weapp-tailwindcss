@@ -3,7 +3,7 @@ import process from 'node:process'
 
 describe('vite compiler shadow run boundary', () => {
   afterEach(() => {
-    vi.doUnmock('@/bundlers/vite/generate-bundle-runtime')
+    vi.doUnmock('@/bundlers/vite/generate-bundle/runtime')
     vi.restoreAllMocks()
     vi.unstubAllEnvs()
     vi.resetModules()
@@ -11,7 +11,7 @@ describe('vite compiler shadow run boundary', () => {
 
   it('starts one report run for every generateBundle execution', async () => {
     const runtimeHandler = vi.fn(async () => undefined)
-    vi.doMock('@/bundlers/vite/generate-bundle-runtime', () => ({
+    vi.doMock('@/bundlers/vite/generate-bundle/runtime', () => ({
       createGenerateBundleHook: vi.fn(() => runtimeHandler),
     }))
     const { createGenerateBundleHook } = await import('@/bundlers/vite/generate-bundle')
