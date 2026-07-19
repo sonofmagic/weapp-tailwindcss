@@ -82,3 +82,5 @@ Vite root import shell 的识别、唯一生成目标推断和跨轮次复用改
 Vite CSS asset 的初始 output、root shell 复用、`originalFileNames` configured entry 匹配和 matched source resolver 统一由 `CssAssetOutputPlan` 计算；后续 source composition 共享同一个输出归属结果，避免 handler 内重复改写 output identity。
 
 Vite CSS source composition 改由独立 planner 合并 remembered fragments、选择 generator source、计算用户 layer、configured entry、root injection 与 handler options，并以结构化副作用意图返回 root shell target 和 configured source owner；generateBundle 不再直接维护这组嵌套状态。
+
+Vite CSS asset identity 改为优先依据 Rollup `originalFileNames`、真实 generator placeholder source 和生命周期 processed source 生成结构化 kind；generateBundle 不再直接搜索 placeholder 文本，旧 marker 识别仅保留在 port 兼容 resolver。

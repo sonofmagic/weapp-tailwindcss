@@ -3,6 +3,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createCssAssetEmitter } from '@/bundlers/vite/generate-bundle/css-assets'
+import { createViteCssAssetIdentityResolver } from '@/bundlers/vite/css-asset-identity'
 import {
   applyCssResultToBundle,
   createMatchedCssSourceOutputResolver,
@@ -71,6 +72,29 @@ function createAsset(source: string, originalFileNames?: string[]) {
 }
 
 describe('bundlers/vite helper modules', () => {
+  it('resolves css asset identity from ownership before legacy content fallback', () => {
+    const resolveIdentity = createViteCssAssetIdentityResolver({
+      generatorPlaceholderFile: '/repo/pkg/generator-placeholder.css',
+      isKnownProcessedSource: file => file === '/repo/src/generated.css',
+    })
+    expect(resolveIdentity(createAsset('page{}', [
+      '/repo/pkg/generator-placeholder.css?used',
+    ]) as any)).toEqual({
+      kind: 'generator-placeholder',
+      sourceFile: '/repo/pkg/generator-placeholder.css?used',
+    })
+    expect(resolveIdentity(createAsset('page{}', [
+      '/repo/src/generated.css',
+    ]) as any)).toEqual({
+      kind: 'bundler-generated',
+    })
+    expect(resolveIdentity(createAsset('/* vite-placeholder */') as any)).toEqual({
+      kind: 'generator-placeholder',
+    })
+    expect(resolveIdentity(createAsset('page{}') as any)).toEqual({
+      kind: 'user',
+    })
+  })
   it('summarizes vite cache state and detects missing internal css sources', async () => {
     const root = await createTempRoot()
     const pkg = path.join(root, 'pkg')

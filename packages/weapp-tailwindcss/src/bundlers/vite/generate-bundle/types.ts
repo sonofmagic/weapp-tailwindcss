@@ -2,6 +2,7 @@ import type { OutputAsset } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import type { HmrTimingRecorder } from '../../shared/hmr-timing'
 import type { BundleSnapshot } from '../bundle-state'
+import type { ViteCssAssetIdentity } from '../css-asset-identity'
 import type { ViteFrameworkCssPipelineStrategy } from '../shared/framework-strategy'
 import type { SourceCandidateFilterOptions } from '../source-candidates'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
@@ -33,6 +34,7 @@ export interface GenerateBundleContext {
   markCssAssetProcessed?: (asset: OutputAsset, file?: string) => void
   isCssAssetProcessed?: (asset: OutputAsset, file?: string) => boolean
   isViteProcessedCssAsset?: (asset: OutputAsset, file?: string) => boolean
+  resolveCssAssetIdentity?: (asset: OutputAsset, file?: string) => ViteCssAssetIdentity
   recordCssAssetResult?: (file: string, css: string) => void
   recordViteProcessedCssAssetResult?: (file: string, css: string, options?: { injectIntoMain?: boolean | undefined, outputFile?: string | undefined }) => void
   getViteProcessedCssAssetResults?: () => Iterable<[string, string | { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }]>
