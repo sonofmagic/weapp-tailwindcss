@@ -51,6 +51,9 @@ describe('bundlers/vite remembered css replay', () => {
       createCssRuntimeSignature(runtimeSignature, runtimeSignature),
       `hash:${createRuntimeAffectingSourceSignature(rawSource, 'css')}`,
     )
+    const refreshRememberedCssSource = vi.fn(async () => {
+      throw new Error('bundle replay 不应刷新 remembered source')
+    })
 
     await processRememberedCssReplay({
       addWatchFile: vi.fn(),
@@ -98,7 +101,7 @@ describe('bundlers/vite remembered css replay', () => {
       },
       recordCssAssetResult: vi.fn(),
       recordViteProcessedCssAssetResult: vi.fn(),
-      refreshRememberedCssSource: vi.fn(),
+      refreshRememberedCssSource,
       rootDir: '/repo',
       runtimeState: {
         tailwindRuntime: {
@@ -118,6 +121,7 @@ describe('bundlers/vite remembered css replay', () => {
     } as any)
 
     expect(createCssTokenSourceMap).not.toHaveBeenCalled()
+    expect(refreshRememberedCssSource).not.toHaveBeenCalled()
     expect(cssTaskFactories).toHaveLength(0)
   })
 
@@ -129,6 +133,7 @@ describe('bundlers/vite remembered css replay', () => {
     const recordCssAssetResult = vi.fn()
     const markCssAssetProcessed = vi.fn()
     const onUpdate = vi.fn()
+    const optionsBundle: Record<string, any> = {}
     const rawSource = '@import "app.wxss";\n'
 
     generateTailwindV4Css.mockImplementation(async () => {
@@ -138,7 +143,7 @@ describe('bundlers/vite remembered css replay', () => {
     await processRememberedCssReplay({
       addWatchFile: vi.fn(),
       activeViteCssCacheFiles,
-      bundle: {},
+      bundle: optionsBundle,
       bundleFiles: ['pages/index/index.js'],
       cache: {
         computeHash: (source: string) => `hash:${source}`,
@@ -208,6 +213,7 @@ describe('bundlers/vite remembered css replay', () => {
 
     expect(generateTailwindV4Css).not.toHaveBeenCalled()
     expect(emitOrReplayCssAsset).toHaveBeenCalledWith('main.wxss', '@import "./app.wxss";\n')
+    expect(optionsBundle['main.wxss']).toEqual({ source: '@import "./app.wxss";\n' })
     expect(recordCssAssetResult).toHaveBeenCalledWith('main.wxss', '@import "./app.wxss";\n')
     expect(markCssAssetProcessed).toHaveBeenCalledWith({ source: '@import "./app.wxss";\n' }, 'main.wxss')
     expect(onUpdate).toHaveBeenCalledWith('main.wxss', rawSource, '@import "./app.wxss";\n')

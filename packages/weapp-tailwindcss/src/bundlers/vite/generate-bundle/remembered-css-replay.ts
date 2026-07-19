@@ -2,12 +2,14 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from '../shared/framework-strategy'
 import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext, RememberedCssSource } from './types'
+import { AssetEmissionPlan } from '@/compiler'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
 import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
 import { normalizeMiniProgramGeneratorCssSource, normalizeMiniProgramImportShell } from '../../shared/generator-css/output-import-shell'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { createRuntimeAffectingSourceSignature } from '../runtime-affecting-signature'
 import { isHTMLRequest } from '../utils'
+import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 import { canProcessViteSourceStyleAsCss, SOURCE_STYLE_OUTPUT_EXT_RE } from './css-output'
 import { createCssRuntimeSignature } from './css-share-scope'
 import { measureElapsed } from './metrics'
@@ -90,6 +92,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
   const {
     addWatchFile,
     activeViteCssCacheFiles,
+    bundle,
     bundleFiles,
     cache,
     changedCssFiles = new Set<string>(),
@@ -120,7 +123,6 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     opts,
     recordCssAssetResult,
     recordViteProcessedCssAssetResult,
-    refreshRememberedCssSource,
     rootDir,
     runtimeState,
     setRememberedCssSignature,
@@ -145,11 +147,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     if (isHTMLRequest(outputFile) || options.opts.htmlMatcher(outputFile)) {
       continue
     }
-    const refreshedRememberedGroup = await Promise.all(rememberedGroup.map(async item => ({
-      key: item.key,
-      remembered: await refreshRememberedCssSource?.(item.remembered) ?? item.remembered,
-    })))
-    const replayableRememberedGroup = refreshedRememberedGroup.filter(({ remembered }) => {
+    const replayableRememberedGroup = rememberedGroup.filter(({ remembered }) => {
       const shouldSkip = shouldSkipRawRememberedCssSource(remembered.rawSource, remembered.sourceFile)
       if (shouldSkip) {
         debug('css replay skip raw source style: %s -> %s', remembered.sourceFile, outputFile)
@@ -234,6 +232,21 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     })
     const shouldPreserveLocalImportWrapper = shouldPreserveFrameworkRootImportShell
       || (!isRootMiniProgramStyleOutputFile(outputFile) && !isWebGeneratorTarget && isPureLocalCssImportWrapper(rawSource))
+    const emitRememberedCssAsset = (css: string) => {
+      const plan = new AssetEmissionPlan()
+      let replayAsset: OutputAsset | undefined
+      plan.write(outputFile, css)
+      applyViteAssetEmissionPlan(plan, {
+        bundle,
+        emitOrReplayAsset(file, source) {
+          replayAsset = emitOrReplayCssAsset(file, source)
+          return replayAsset
+        },
+      })
+      if (replayAsset) {
+        markCssAssetProcessed?.(replayAsset, outputFile)
+      }
+    }
     if (shouldPreserveLocalImportWrapper) {
       cssTaskFactories.push(() => timeTask('css.replay', async () => {
         const start = performance.now()
@@ -245,10 +258,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
         }
         recordCssAssetResult?.(outputFile, css)
         if (shouldEmitRememberedReplayCssAsset) {
-          const replayAsset = emitOrReplayCssAsset(outputFile, css)
-          if (replayAsset) {
-            markCssAssetProcessed?.(replayAsset, outputFile)
-          }
+          emitRememberedCssAsset(css)
         }
         metrics.css.elapsed += measureElapsed(start)
         metrics.css.transformed++
@@ -302,10 +312,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
         debug('css replay generated result: %s bytes=%d', outputFile, css.length)
       }
       if (shouldEmitRememberedReplayCssAsset) {
-        const replayAsset = emitOrReplayCssAsset(outputFile, css)
-        if (replayAsset) {
-          markCssAssetProcessed?.(replayAsset, outputFile)
-        }
+        emitRememberedCssAsset(css)
       }
       metrics.css.elapsed += measureElapsed(start)
       metrics.css.transformed++

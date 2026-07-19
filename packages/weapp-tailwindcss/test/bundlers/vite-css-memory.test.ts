@@ -22,7 +22,7 @@ describe('vite css memory', () => {
     await mkdir(path.join(root, 'src'), { recursive: true })
     const cssFile = path.join(root, 'src/app.css')
     const vueFile = path.join(root, 'src/App.vue')
-    await writeFile(cssFile, '.from-file{color:red}')
+    await writeFile(cssFile, '.from-file-must-not-be-read{color:red}')
     await writeFile(vueFile, '<template></template><style>.a{color:red}</style><style>.b{color:blue}</style>')
     const debug = vi.fn()
     const candidateSources = new Map<string, string>()
@@ -41,8 +41,9 @@ describe('vite css memory', () => {
     expect(memory.getRememberedCssSignature('app.wxss')).toBe('sig-1')
     expect(memory.getKnownSfcSource(vueFile)).toContain('.cached')
 
+    candidateSources.set(cssFile, '.from-transform-cache{color:red}')
     await memory.refreshRememberedCssSourceByCurrentFile(cssFile)
-    expect(memory.getRememberedCssSourceEntry('app.wxss')?.rawSource).toBe('.from-file{color:red}')
+    expect(memory.getRememberedCssSourceEntry('app.wxss')?.rawSource).toBe('.from-transform-cache{color:red}')
     expect(memory.getRememberedCssSignature('app.wxss')).toBeUndefined()
 
     memory.rememberCssSource({
@@ -86,6 +87,30 @@ describe('vite css memory', () => {
       '/not-found/app.css',
     )
     expect(memory.getKnownCssSource('/not-found/app.css')).toBeUndefined()
+  })
+
+  it('does not read existing style files during bundle replay refresh', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-css-memory-no-read-'))
+    const cssFile = path.join(root, 'existing.css')
+    await writeFile(cssFile, '.from-file{color:red}')
+    const debug = vi.fn()
+    const memory = createViteCssMemory({
+      debug,
+      getSourceCandidateSource: () => undefined,
+    })
+    const remembered = {
+      outputFile: 'existing.acss',
+      rawSource: '.remembered{color:blue}',
+      sourceFile: cssFile,
+    }
+    memory.rememberCssSource(remembered)
+
+    await expect(memory.refreshRememberedCssSource(remembered)).resolves.toBeUndefined()
+    expect(memory.getRememberedCssSourceEntry('existing.acss')?.rawSource).toBe('.remembered{color:blue}')
+    expect(debug).toHaveBeenCalledWith(
+      'refresh remembered css source before bundle replay skipped: missing cached source for %s',
+      cssFile,
+    )
   })
 
   it('refreshes remembered sfc entries with all style blocks and prunes stale known sfc files', async () => {

@@ -6092,7 +6092,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect((bundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toContain('.text-red-500')
   }, TEST_TIMEOUT_MS)
 
-  it('refreshes remembered source style files from disk before bundle replay when cache is missing', async () => {
+  it('does not refresh remembered source style files from disk when lifecycle cache is missing', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-css-memory-refresh-'))
     createdDirs.push(root)
     const sourceFile = path.join(root, 'src/tailwind.scss')
@@ -6114,8 +6114,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const refreshed = await cssMemory.refreshRememberedCssSource(remembered)
 
-    expect(refreshed?.rawSource).toBe(currentSource)
-    expect(refreshed?.sourceFile).toBe(sourceFile)
+    expect(refreshed).toBeUndefined()
+    expect(cssMemory.getRememberedCssSourceEntry('app.wxss')).toEqual(remembered)
   })
 
   it('does not reuse a mismatched vite-generated app css marker for page css assets', async () => {
@@ -13559,7 +13559,7 @@ ${utilities}
     expect(replayedCss).not.toContain('.tw-watch-style-case')
   }, TEST_TIMEOUT_MS)
 
-  it('refreshes remembered vite pipeline css with equivalent style source requests before replay', async () => {
+  it('replays remembered vite pipeline css from the latest lifecycle snapshot', async () => {
     const generateCssByGeneratorMock = vi.fn(async (options: {
       rawSource: string
     }) => {
@@ -13611,22 +13611,18 @@ ${utilities}
       },
     })
     const sourceFile = path.join(root, 'pages/index/index.vue')
-    const dirtyStyleRequest = `${sourceFile}?vue&type=style&index=0&lang.scss`
     const cleanStyleRequest = `${sourceFile}?vue&type=style&index=0&lang.scss&used`
-    const dirtySource = '.tw-watch-style-case { @apply font-bold; }'
     const cleanSource = '.clean-style { @apply block; }'
     const rememberedCssSources = new Map([
       ['pages/index/index.wxss', {
         outputFile: 'pages/index/index.wxss',
-        rawSource: dirtySource,
-        sourceFile: dirtyStyleRequest,
+        rawSource: cleanSource,
+        sourceFile: cleanStyleRequest,
       }],
     ])
-    const refreshRememberedCssSource = vi.fn(async (remembered: { outputFile: string, rawSource: string, sourceFile: string }) => ({
-      ...remembered,
-      rawSource: cleanSource,
-      sourceFile: cleanStyleRequest,
-    }))
+    const refreshRememberedCssSource = vi.fn(async () => {
+      throw new Error('bundle replay 不应刷新 remembered source')
+    })
     const generateBundle = createGenerateBundleHookWithMock({
       opts: context as any,
       runtimeState: {
@@ -13685,7 +13681,7 @@ ${utilities}
     }, {} as any, replayBundle)
 
     const replayedCss = emitted.find(file => file.fileName === 'pages/index/index.wxss')?.source
-    expect(refreshRememberedCssSource).toHaveBeenCalledTimes(1)
+    expect(refreshRememberedCssSource).not.toHaveBeenCalled()
     expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
       rawSource: cleanSource,
       file: cleanStyleRequest,
@@ -14500,7 +14496,7 @@ ${utilities}
     expect(refreshedCss).toContain('.tw-watch-style-case')
   }, TEST_TIMEOUT_MS)
 
-  it('replays merged sfc style sources once when vite omits the css bundle asset', async () => {
+  it('replays merged cached sfc style sources once when vite omits the css bundle asset', async () => {
     const generateMock = vi.fn(async (source: { css: string }) => {
       const css = [
         source.css.includes('.page-root') ? '.page-root{display:block}' : '',
@@ -14567,17 +14563,14 @@ ${utilities}
       }],
       [`pages/index/index.wxss\0${sourceFile}?type=style&index=1`, {
         outputFile: 'pages/index/index.wxss',
-        rawSource: cleanSecondStyleSource,
+        rawSource: dirtySecondStyleSource,
         sourceFile: secondStyleRequest,
       }],
     ])
     const rememberedSignatures = new Map<string, string>()
-    const refreshRememberedCssSource = vi.fn(async (remembered: { outputFile: string, rawSource: string, sourceFile: string }) => ({
-      ...remembered,
-      rawSource: remembered.sourceFile === secondStyleRequest
-        ? dirtySecondStyleSource
-        : firstStyleSource,
-    }))
+    const refreshRememberedCssSource = vi.fn(async () => {
+      throw new Error('bundle replay 不应刷新 remembered source')
+    })
     const generateBundle = createGenerateBundleHook({
       opts: context as any,
       runtimeState: {
@@ -14614,11 +14607,6 @@ ${utilities}
       recordGeneratorCandidates: vi.fn(),
     })
 
-    await writeFile(
-      sourceFile,
-      `<template><view /></template>\n<style lang="scss">\n${firstStyleSource}\n</style>\n<style lang="scss">\n${dirtySecondStyleSource}\n</style>\n`,
-      'utf8',
-    )
     const bundle = {
       'pages/index/index.js': {
         ...createRollupChunk('console.log("stable")'),
@@ -14634,7 +14622,7 @@ ${utilities}
       },
     }, {} as any, bundle)
 
-    expect(refreshRememberedCssSource).toHaveBeenCalledTimes(2)
+    expect(refreshRememberedCssSource).not.toHaveBeenCalled()
     const replayedCss = emitted.find(file => file.fileName === 'pages/index/index.wxss')?.source ?? ''
     expect(replayedCss).toContain('.page-root')
     expect(replayedCss).toContain('.base-style')

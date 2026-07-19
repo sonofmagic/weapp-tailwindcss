@@ -1,5 +1,4 @@
 import type { RememberedCssSource } from './generate-bundle'
-import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { isSourceStyleRequest, stripRequestQuery } from '../shared/style-requests'
@@ -220,7 +219,7 @@ export function createViteCssMemory(options: {
     return undefined
   }
 
-  const resolveCurrentStyleSource = async (sourceFile: string) => {
+  const resolveCurrentStyleSource = (sourceFile: string) => {
     const cached = resolveCachedStyleSource(sourceFile)
     if (cached != null) {
       return cached
@@ -234,16 +233,7 @@ export function createViteCssMemory(options: {
     if (candidateSource != null) {
       return candidateSource
     }
-    if (!isSourceStyleRequest(file)) {
-      return undefined
-    }
-    try {
-      return await readFile(file, 'utf8')
-    }
-    catch (error) {
-      options.debug('refresh remembered css source read failed: %s %O', file, error)
-      return undefined
-    }
+    return undefined
   }
 
   const refreshRememberedCssSourceByCurrentFile = async (sourceFile: string) => {
