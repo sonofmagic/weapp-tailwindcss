@@ -72,3 +72,5 @@ Vite generateBundle port 不再向内部 runtime 透传 remembered source refres
 将 Vite 普通 CSS asset 的 remembered source 匹配、scope 过滤、SFC snapshot 优先级和显式 root source 选择提取为独立 source plan，压缩 runtime 只负责提交构建图上下文并消费结构化结果。
 
 Vite source plan 进一步接管 temporary CSS asset 的首次 fallback，并显式返回最终 output、非主 chunk 标记、temporary 命中状态和 configured source owner；runtime 不再重复修改 source 选择状态。
+
+Vite CSS source plan 继续统一 scoped configured source、构建图与生命周期缓存推断、多入口 temporary source 以及匿名 CSS asset fallback，并显式区分 remembered source basedir 与 bundler source root。generateBundle runtime 只消费最终 source/output plan，不再维护嵌套来源选择分支。

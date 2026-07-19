@@ -1,5 +1,6 @@
 import type { OutputAsset } from 'rollup'
 import { describe, expect, it, vi } from 'vitest'
+import { resolveViteCssSourcePlan } from '@/bundlers/vite/generate-bundle/css-source-plan'
 import { resolveRememberedCssSourcePlan } from '@/bundlers/vite/generate-bundle/remembered-css-plan'
 
 function createAsset(fileName: string, source = ''): OutputAsset {
@@ -168,5 +169,155 @@ describe('vite remembered css source plan', () => {
       }],
       usedConfiguredSourceFiles: ['/repo/src/subpackage/app.css'],
     })
+  })
+})
+
+describe('vite css source plan', () => {
+  function createCssSourceOptions(
+    overrides: Partial<Parameters<typeof resolveViteCssSourcePlan>[0]> = {},
+  ) {
+    return {
+      ...createOptions(),
+      configuredEntries: [],
+      cwd: '/repo/src',
+      getSourceStyleSource: undefined,
+      getSourceStyleSources: undefined,
+      inferenceSourceRoot: '/repo/src',
+      isConfiguredSourceProcessed: () => false,
+      isConfiguredSourceUsed: () => false,
+      isCurrentRootMiniProgramStyleOutput: false,
+      projectRoot: '/repo',
+      selectConfiguredRootSource: () => undefined,
+      shouldKeepRootImportShell: () => false,
+      ...overrides,
+    }
+  }
+
+  it('selects a scoped configured source for a root style output', async () => {
+    const sourceFile = '/repo/src/app.css'
+    const plan = await resolveViteCssSourcePlan(createCssSourceOptions({
+      configuredEntries: [{
+        file: sourceFile,
+        source: '@import "tailwindcss";\n@plugin "@tailwindcss/typography";',
+      }],
+      isCurrentRootMiniProgramStyleOutput: true,
+      outputFile: 'app.wxss',
+      rawSource: '/* generated shell */',
+    }))
+
+    expect(plan.resolution).toBe('configured')
+    expect(plan.sources).toEqual([{
+      outputFile: 'app.wxss',
+      rawSource: '@import "tailwindcss";\n@plugin "@tailwindcss/typography";',
+      sourceFile,
+    }])
+    expect(plan.usedConfiguredSourceFiles).toEqual([sourceFile])
+  })
+
+  it('resolves a source style from the compilation snapshot', async () => {
+    const sourceFile = '/repo/src/pages/index/index.scss'
+    const plan = await resolveViteCssSourcePlan(createCssSourceOptions({
+      file: 'pages/index/index.css',
+      getSourceStyleSource: file => file === sourceFile ? '.page { @apply flex; }' : undefined,
+      outputFile: 'pages/index/index.css',
+      snapshot: {
+        entries: [{
+          file: 'pages/index/index.js',
+          output: {
+            facadeModuleId: '/repo/src/pages/index/index.vue',
+            fileName: 'pages/index/index.js',
+            moduleIds: [sourceFile],
+            modules: { [sourceFile]: {} },
+            type: 'chunk',
+          },
+          source: '',
+          type: 'js',
+        }],
+      } as any,
+    }))
+
+    expect(plan.resolution).toBe('inferred')
+    expect(plan.sources).toEqual([{
+      outputFile: 'pages/index/index.css',
+      rawSource: '.page { @apply flex; }',
+      sourceFile,
+    }])
+  })
+
+  it('uses a remaining configured source for an anonymous temporary asset', async () => {
+    const source = {
+      outputFile: 'subpackage/app.wxss',
+      rawSource: '@import "tailwindcss";',
+      sourceFile: '/repo/src/subpackage/app.css',
+    }
+    const plan = await resolveViteCssSourcePlan(createCssSourceOptions({
+      configuredEntries: [
+        { file: '/repo/src/app.css', source: '@import "tailwindcss";' },
+        { file: source.sourceFile, source: source.rawSource },
+      ],
+      outputFile: 'style.css',
+      rawSource: '/* anonymous asset */',
+      resolveMatchedOutputFile: () => source.outputFile,
+      resolveTemporarySource: () => source,
+      temporaryOutput: true,
+    }))
+
+    expect(plan.resolution).toBe('temporary')
+    expect(plan.forceNonMainChunk).toBe(true)
+    expect(plan.outputFile).toBe(source.outputFile)
+    expect(plan.sources).toEqual([source])
+  })
+
+  it('matches an anonymous generated asset to an unused configured source', async () => {
+    const sourceFile = '/repo/src/styles/tw-entry.vue'
+    const source = '@import "tailwindcss" source(none);'
+    const plan = await resolveViteCssSourcePlan(createCssSourceOptions({
+      configuredEntries: [{ file: sourceFile, source }],
+      originalSource: createAsset('styles/tw-entry.wxss'),
+      outputFile: 'styles/tw-entry.wxss',
+      rawSource: source,
+      resolveMatchedOutputFile: () => 'app.wxss',
+    }))
+
+    expect(plan.resolution).toBe('configured')
+    expect(plan.outputFile).toBe('app.wxss')
+    expect(plan.sources).toEqual([{
+      outputFile: 'app.wxss',
+      rawSource: source,
+      sourceFile,
+    }])
+  })
+
+  it('does not treat an unresolved multi-entry temporary asset as anonymous', async () => {
+    const plan = await resolveViteCssSourcePlan(createCssSourceOptions({
+      configuredEntries: [
+        { file: '/repo/src/main/app.css', source: '@import "tailwindcss";' },
+        { file: '/repo/src/sub/app.css', source: '@import "tailwindcss";' },
+      ],
+      originalSource: createAsset('app.css'),
+      outputFile: 'app.css',
+      rawSource: '@import "tailwindcss";',
+      resolveMatchedOutputFile: () => 'src/app.css',
+      temporaryOutput: true,
+    }))
+
+    expect(plan.resolution).toBe('unresolved')
+    expect(plan.outputFile).toBe('app.css')
+    expect(plan.sources).toEqual([])
+  })
+
+  it('filters inferred fallback sources against the current explicit scan context', async () => {
+    const plan = await resolveViteCssSourcePlan(createCssSourceOptions({
+      currentRawSourceHasExplicitScanContext: true,
+      getSourceStyleSources: () => new Map([
+        ['/virtual/app.css', '@import "tailwindcss" source(none);'],
+      ]),
+      outputFile: 'app.css',
+      rawSource: '@config "./tailwind.config.js";',
+    }))
+
+    expect(plan.resolution).toBe('inferred')
+    expect(plan.hasUsableTailwindSource).toBe(false)
+    expect(plan.sources).toEqual([])
   })
 })
