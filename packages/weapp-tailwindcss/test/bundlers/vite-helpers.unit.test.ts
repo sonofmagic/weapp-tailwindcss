@@ -17,6 +17,7 @@ import {
   createRootMiniProgramOriginStyleOutputFile,
   isRootMiniProgramStyleOutputFile,
   restoreFrameworkRootMiniProgramImportShellAssets,
+  resolveFrameworkRootImportShellPlan,
   shouldKeepRootMiniProgramStyleAsImportShell,
   shouldMoveRootMiniProgramStyleToImportShellOrigin,
   shouldPreserveFrameworkRootMiniProgramImportShell,
@@ -142,6 +143,61 @@ describe('bundlers/vite helper modules', () => {
 
     expect(bundle['entry-hash.acss']).toBe(output)
     expect(output.source).toBe('@import "./generated.acss";\n')
+  })
+
+  it('plans framework root import shell ownership without mutating runtime state', () => {
+    expect(resolveFrameworkRootImportShellPlan({
+      assetSourceFile: 'entry.acss',
+      configuredTargetFiles: [],
+      file: 'entry.acss',
+      isMainChunk: true,
+      isWebGeneratorTarget: false,
+      matchesCss: true,
+      processedTargetFiles: [],
+      rawSource: '@import "./generated.acss";',
+      rememberedTarget: undefined,
+      rootImportShellOutputFile: 'entry.acss',
+      shouldKeep: () => true,
+      shouldMoveToOrigin: () => false,
+    })).toEqual({
+      isCurrentImportShell: true,
+      reusableTarget: undefined,
+      targetToRemember: 'generated.acss',
+    })
+
+    expect(resolveFrameworkRootImportShellPlan({
+      assetSourceFile: 'entry.acss',
+      configuredTargetFiles: ['generated.acss'],
+      file: 'entry.acss',
+      isMainChunk: true,
+      isWebGeneratorTarget: false,
+      matchesCss: true,
+      processedTargetFiles: ['generated.acss'],
+      rawSource: 'page{}',
+      rememberedTarget: undefined,
+      rootImportShellOutputFile: 'entry.acss',
+      shouldKeep: () => true,
+      shouldMoveToOrigin: () => false,
+    })).toEqual({
+      isCurrentImportShell: false,
+      reusableTarget: 'generated.acss',
+      targetToRemember: 'generated.acss',
+    })
+
+    expect(resolveFrameworkRootImportShellPlan({
+      assetSourceFile: 'entry.acss',
+      configuredTargetFiles: ['first.acss', 'second.acss'],
+      file: 'entry.acss',
+      isMainChunk: true,
+      isWebGeneratorTarget: false,
+      matchesCss: true,
+      processedTargetFiles: [],
+      rawSource: 'page{}',
+      rememberedTarget: undefined,
+      rootImportShellOutputFile: 'entry.acss',
+      shouldKeep: () => true,
+      shouldMoveToOrigin: () => false,
+    }).reusableTarget).toBeUndefined()
   })
 
   it('preserves vite serve root mini-program import shells for framework-owned shell policies only', () => {

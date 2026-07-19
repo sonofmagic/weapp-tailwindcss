@@ -76,3 +76,5 @@ Vite source plan 进一步接管 temporary CSS asset 的首次 fallback，并显
 Vite CSS source plan 继续统一 scoped configured source、构建图与生命周期缓存推断、多入口 temporary source 以及匿名 CSS asset fallback，并显式区分 remembered source basedir 与 bundler source root。generateBundle runtime 只消费最终 source/output plan，不再维护嵌套来源选择分支。
 
 Vite temporary CSS source 队列改由独立 planner 合并 runtime-linked、remembered、显式配置和分包 scope 来源，并保持原有 ownership 优先级与去重规则；generateBundle 不再自行拼接四组临时来源。
+
+Vite root import shell 的识别、唯一生成目标推断和跨轮次复用改由纯 planner 返回结构化结果；generateBundle 只负责把明确的 target 写入 owner Map，不再在 CSS entry handler 内遍历配置来源和已处理产物猜测根样式归属。

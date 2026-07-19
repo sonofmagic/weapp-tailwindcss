@@ -77,6 +77,86 @@ export function shouldPreserveFrameworkRootMiniProgramImportShell(options: {
     && shouldKeepRootMiniProgramStyleAsImportShell(options.shouldKeep())
 }
 
+export interface ResolveFrameworkRootImportShellPlanOptions {
+  assetSourceFile: string
+  configuredTargetFiles: Iterable<string | undefined>
+  file: string
+  isMainChunk: boolean
+  isWebGeneratorTarget: boolean
+  matchesCss: boolean
+  processedTargetFiles: Iterable<string | undefined>
+  rawSource: string
+  rememberedTarget: string | undefined
+  rootImportShellOutputFile: string
+  shouldKeep: () => boolean | undefined
+  shouldMoveToOrigin: () => boolean | undefined
+}
+
+export interface FrameworkRootImportShellPlan {
+  isCurrentImportShell: boolean
+  reusableTarget: string | undefined
+  targetToRemember: string | undefined
+}
+
+export function resolveFrameworkRootImportShellPlan(
+  options: ResolveFrameworkRootImportShellPlanOptions,
+): FrameworkRootImportShellPlan {
+  const isCurrentImportShell = shouldPreserveFrameworkRootMiniProgramImportShell({
+    css: options.rawSource,
+    file: options.rootImportShellOutputFile,
+    isWebGeneratorTarget: options.isWebGeneratorTarget,
+    matchesCss: options.matchesCss,
+    shouldKeep: options.shouldKeep,
+  })
+  if (isCurrentImportShell) {
+    const importedFile = resolveSingleCssImportOutputFile(
+      options.rootImportShellOutputFile,
+      options.rawSource,
+    )
+    return {
+      isCurrentImportShell,
+      reusableTarget: options.rememberedTarget,
+      targetToRemember: importedFile && isRootMiniProgramStyleOutputFile(importedFile)
+        ? importedFile
+        : undefined,
+    }
+  }
+  if (options.rememberedTarget) {
+    return {
+      isCurrentImportShell,
+      reusableTarget: options.rememberedTarget,
+      targetToRemember: undefined,
+    }
+  }
+  const canInferTarget = !options.isWebGeneratorTarget
+    && isRootMiniProgramStyleOutputFile(options.rootImportShellOutputFile)
+    && normalizeOutputPathKey(options.assetSourceFile) === normalizeOutputPathKey(options.file)
+    && options.isMainChunk
+    && shouldKeepRootMiniProgramStyleAsImportShell(options.shouldKeep())
+    && !shouldMoveRootMiniProgramStyleToImportShellOrigin(options.shouldMoveToOrigin())
+  if (!canInferTarget) {
+    return {
+      isCurrentImportShell,
+      reusableTarget: undefined,
+      targetToRemember: undefined,
+    }
+  }
+  const targets = new Set([
+    ...options.configuredTargetFiles,
+    ...options.processedTargetFiles,
+  ].filter((file): file is string =>
+    typeof file === 'string'
+    && isRootMiniProgramStyleOutputFile(file)
+    && normalizeOutputPathKey(file) !== normalizeOutputPathKey(options.rootImportShellOutputFile),
+  ))
+  const target = targets.size === 1 ? [...targets][0] : undefined
+  return {
+    isCurrentImportShell,
+    reusableTarget: target,
+    targetToRemember: target,
+  }
+}
+
 export function restoreFrameworkRootMiniProgramImportShellAssets(
   bundle: OutputBundle,
   options: {
