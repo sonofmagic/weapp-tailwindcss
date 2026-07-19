@@ -70,3 +70,5 @@ Vite generateBundle port 不再向内部 runtime 透传 remembered source refres
 移除 `GenerateBundleContext`、CSS memory 和内部 runtime 中仅供后置阶段使用的 `refreshRememberedCssSource` 兼容契约；remembered source 更新现在只保留按 source file 提交的生命周期 API。
 
 将 Vite 普通 CSS asset 的 remembered source 匹配、scope 过滤、SFC snapshot 优先级和显式 root source 选择提取为独立 source plan，压缩 runtime 只负责提交构建图上下文并消费结构化结果。
+
+Vite source plan 进一步接管 temporary CSS asset 的首次 fallback，并显式返回最终 output、非主 chunk 标记、temporary 命中状态和 configured source owner；runtime 不再重复修改 source 选择状态。

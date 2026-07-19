@@ -29,8 +29,11 @@ function createOptions(overrides: Partial<Parameters<typeof resolveRememberedCss
     originalSource: createAsset('pages/index/index.wxss'),
     outputFile: 'pages/index/index.wxss',
     outputRoot: '/repo/dist',
+    rawSource: '',
     resolveConfiguredRootSource: () => undefined,
     resolveMatchedOutputFile: () => undefined,
+    resolveTemporarySource: () => undefined,
+    shouldKeepCurrentRootOutput: () => false,
     snapshot: { entries: [] } as any,
     sourceRoot: '/repo/src',
     temporaryOutput: false,
@@ -129,8 +132,41 @@ describe('vite remembered css source plan', () => {
     }))
 
     expect(plan).toEqual({
+      forceNonMainChunk: false,
       hasUsableTailwindSource: true,
+      outputFile: 'app.wxss',
+      resolvedFromTemporarySource: false,
       sources: [configuredRootSource],
+      usedConfiguredSourceFiles: [],
+    })
+  })
+
+  it('resolves temporary generation sources into an explicit output plan', async () => {
+    const temporarySource = {
+      outputFile: 'subpackage/generated.wxss',
+      rawSource: '@import "tailwindcss";\n@source "./pages/**/*.vue";',
+      sourceFile: '/repo/src/subpackage/app.css',
+    }
+    const resolveTemporarySource = vi.fn(() => temporarySource)
+    const plan = await resolveRememberedCssSourcePlan(createOptions({
+      outputFile: 'app.css',
+      rawSource: '@import "tailwindcss";',
+      resolveMatchedOutputFile: () => 'subpackage/app.wxss',
+      resolveTemporarySource,
+      temporaryOutput: true,
+    }))
+
+    expect(resolveTemporarySource).toHaveBeenCalledWith('app.css', '@import "tailwindcss";')
+    expect(plan).toEqual({
+      forceNonMainChunk: true,
+      hasUsableTailwindSource: true,
+      outputFile: 'subpackage/app.wxss',
+      resolvedFromTemporarySource: true,
+      sources: [{
+        ...temporarySource,
+        outputFile: 'subpackage/app.wxss',
+      }],
+      usedConfiguredSourceFiles: ['/repo/src/subpackage/app.css'],
     })
   })
 })

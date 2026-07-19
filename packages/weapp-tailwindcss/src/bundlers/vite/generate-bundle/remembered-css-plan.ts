@@ -22,8 +22,11 @@ export interface ResolveRememberedCssSourcePlanOptions {
   originalSource: OutputAsset
   outputFile: string
   outputRoot: string
+  rawSource: string
   resolveConfiguredRootSource: () => RememberedCssSource | undefined
   resolveMatchedOutputFile: (sourceFile: string) => string | undefined
+  resolveTemporarySource: (outputFile: string, rawSource: string) => RememberedCssSource | undefined
+  shouldKeepCurrentRootOutput: (sourceFile: string, outputFile: string) => boolean
   snapshot: BundleSnapshot
   sourceRoot: string | undefined
   temporaryOutput: boolean
@@ -31,8 +34,12 @@ export interface ResolveRememberedCssSourcePlanOptions {
 }
 
 export interface RememberedCssSourcePlan {
+  forceNonMainChunk: boolean
   hasUsableTailwindSource: boolean
+  outputFile: string
+  resolvedFromTemporarySource: boolean
   sources: RememberedCssSource[]
+  usedConfiguredSourceFiles: string[]
 }
 
 export async function resolveRememberedCssSourcePlan(
@@ -126,8 +133,43 @@ export async function resolveRememberedCssSourcePlan(
     )
   }
 
+  let outputFile = options.outputFile
+  let forceNonMainChunk = false
+  let resolvedFromTemporarySource = false
+  const usedConfiguredSourceFiles: string[] = []
+  if (
+    !hasUsableTailwindSource
+    && options.temporaryOutput
+    && hasTailwindGenerationSource(options.rawSource)
+  ) {
+    const temporarySource = options.resolveTemporarySource(outputFile, options.rawSource)
+    if (temporarySource) {
+      outputFile = options.shouldKeepCurrentRootOutput(temporarySource.sourceFile, outputFile)
+        ? outputFile
+        : options.resolveMatchedOutputFile(temporarySource.sourceFile) ?? temporarySource.outputFile
+      forceNonMainChunk = true
+      resolvedFromTemporarySource = true
+      usedConfiguredSourceFiles.push(normalizeOutputPathKey(temporarySource.sourceFile))
+      sources = [{
+        outputFile,
+        rawSource: temporarySource.rawSource,
+        sourceFile: temporarySource.sourceFile,
+      }]
+      hasUsableTailwindSource = true
+      options.debug(
+        'source style source inferred from temporary tailwind v4 css source: %s -> %s',
+        outputFile,
+        temporarySource.sourceFile,
+      )
+    }
+  }
+
   return {
+    forceNonMainChunk,
     hasUsableTailwindSource,
+    outputFile,
+    resolvedFromTemporarySource,
     sources,
+    usedConfiguredSourceFiles,
   }
 }
