@@ -43,6 +43,7 @@ export type CompilationScopeExecution<T>
 
 interface CompilationScopeEntry {
   active: boolean
+  executions: Set<Promise<unknown>>
   latest?: CompilationResult | undefined
   pending: Promise<void>
   scope: SourceScope
@@ -69,7 +70,13 @@ export class CompilationSessionPool {
     compile: (compilation: CompilationScopeState) => Promise<T>,
   ): Promise<CompilationScopeExecution<T>> {
     const entry = this.getEntry(request.scope)
-    return this.runEntry(entry, request, compile)
+    const execution = this.runEntry(entry, request, compile)
+    entry.executions.add(execution)
+    void execution.then(
+      () => entry.executions.delete(execution),
+      () => entry.executions.delete(execution),
+    )
+    return execution
   }
 
   invalidateScope(scopeId: string) {
@@ -78,19 +85,23 @@ export class CompilationSessionPool {
       return
     }
     entry.active = false
-    void entry.pending.then(() => entry.session.dispose())
+    void this.disposeEntry(entry)
     this.entries.delete(scopeId)
     this.dependencyState.delete(scopeId)
   }
 
   dispose() {
-    for (const entry of this.entries.values()) {
+    if (this.disposed) {
+      return Promise.resolve()
+    }
+    this.disposed = true
+    const entries = [...this.entries.values()]
+    for (const entry of entries) {
       entry.active = false
-      void entry.pending.then(() => entry.session.dispose())
     }
     this.entries.clear()
     this.dependencyState.clear()
-    this.disposed = true
+    return Promise.all(entries.map(entry => this.disposeEntry(entry))).then(() => undefined)
   }
 
   get size() {
@@ -132,6 +143,7 @@ export class CompilationSessionPool {
     }
     const entry: CompilationScopeEntry = {
       active: true,
+      executions: new Set(),
       pending: Promise.resolve(),
       scope: { ...scope },
       session: new DefaultCompilationSession(),
@@ -147,6 +159,12 @@ export class CompilationSessionPool {
       this.invalidateScope(oldestScopeId)
     }
     return entry
+  }
+
+  private async disposeEntry(entry: CompilationScopeEntry) {
+    await Promise.allSettled([...entry.executions])
+    await entry.pending
+    entry.session.dispose()
   }
 
   private async runEntry<T extends CompilationScopeGenerationResult | undefined>(
@@ -303,4 +321,13 @@ export function getCompilationSessionPool(owner: object) {
     compilationSessionPools.set(owner, pool)
   }
   return pool
+}
+
+export function disposeCompilationSessionPool(owner: object) {
+  const pool = compilationSessionPools.get(owner)
+  if (!pool) {
+    return Promise.resolve()
+  }
+  compilationSessionPools.delete(owner)
+  return pool.dispose()
 }

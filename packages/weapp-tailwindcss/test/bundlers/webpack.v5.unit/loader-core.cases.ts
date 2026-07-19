@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import type { LoaderModule } from './shared'
 import { setupWebpackV5UnitTest, FakeConcatSource, createCompilerWithLoaderTracking, createContext, getCompilerContextMock, getWebpackLoaderRuntime, isCssGenerationLoader, isCssImportRewriteLoader, path, testState, WeappTailwindcss } from './shared'
 import RuntimeClassSetLoader from '@/bundlers/webpack/loaders/weapp-tw-runtime-classset-loader'
+import { getCompilerShadowReportSession } from '@/compiler'
 describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
   setupWebpackV5UnitTest()
   it('injects a dedicated css generation loader before postcss-loader execution', () => {
@@ -154,7 +155,7 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
     expect(serializedRequest).not.toContain('!')
   })
 
-  it('cleans webpack loader runtime registry when watch closes', () => {
+  it('cleans webpack loader runtime registry when watch closes', async () => {
     testState.currentContext.tailwindRuntime.majorVersion = 4
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
     new WeappTailwindcss().apply(compiler as any)
@@ -169,11 +170,19 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
     getLoaderHandler()?.({}, module)
 
     const classSetLoaderEntry = module.loaders.find(entry => entry.loader === testState.currentContext.runtimeLoaderPath)
-    expect(getWebpackLoaderRuntime(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey)).toBeDefined()
+    const runtimeKey = classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey
+    const runtimeEntry = getWebpackLoaderRuntime(runtimeKey)
+    const runtimeState = runtimeEntry?.cssImportRewrite?.runtimeState
+    expect(runtimeEntry).toBeDefined()
+    expect(runtimeState).toBeDefined()
+    const shadowSession = getCompilerShadowReportSession(runtimeState!)
 
     cleanupRuntime?.()
 
-    expect(getWebpackLoaderRuntime(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey)).toBeUndefined()
+    expect(getWebpackLoaderRuntime(runtimeKey)).toBeUndefined()
+    await vi.waitFor(() => {
+      expect(() => shadowSession.snapshot()).toThrow('已释放')
+    })
   })
 
   it('does not register css-loader runtime modules as css source content', () => {

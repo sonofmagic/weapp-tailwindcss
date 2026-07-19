@@ -98,3 +98,12 @@ export function getTailwindGenerationSessionPool(owner: object) {
   }
   return pool
 }
+
+export function disposeTailwindGenerationSessionPool(owner: object) {
+  const pool = sessionPools.get(owner)
+  if (!pool) {
+    return
+  }
+  sessionPools.delete(owner)
+  pool.dispose()
+}

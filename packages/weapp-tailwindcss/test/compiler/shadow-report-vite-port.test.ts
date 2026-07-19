@@ -35,6 +35,7 @@ describe('vite compiler shadow run boundary', () => {
       beginCompilerShadowRun,
       COMPILER_MODE_ENV,
       COMPILER_SHADOW_GATE_ENV,
+      getCompilerShadowReportSession,
       getCompilerShadowRunSnapshot,
     } = await import('@/compiler')
     vi.stubEnv(COMPILER_MODE_ENV, 'shadow')
@@ -73,5 +74,10 @@ describe('vite compiler shadow run boundary', () => {
     expect(write).toHaveBeenCalledWith(expect.stringContaining(
       '[weapp-tailwindcss:compiler-shadow] {"mode":"report","passed":true',
     ))
+
+    const shadowSession = getCompilerShadowReportSession(runtimeState)
+    await plugin.closeBundle?.()
+    expect(() => shadowSession.snapshot()).toThrow('已释放')
+    expect(getCompilerShadowReportSession(runtimeState)).not.toBe(shadowSession)
   })
 })

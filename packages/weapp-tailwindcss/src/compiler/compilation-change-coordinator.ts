@@ -7,6 +7,7 @@ import { getTailwindGenerationSessionPool } from './tailwind-generation-session-
 
 export class CompilationChangeCoordinator {
   private readonly pendingChangesByScope = new Map<string, Map<string, CompilationDependencyChange>>()
+  private disposed = false
 
   constructor(
     private readonly compilationPool: CompilationSessionPool,
@@ -14,6 +15,7 @@ export class CompilationChangeCoordinator {
   ) {}
 
   record(changes: Iterable<CompilationDependencyChange>) {
+    this.ensureActive()
     const normalizedChanges = mergeCompilationDependencyChanges(changes)
     if (normalizedChanges.length === 0) {
       return new Set<string>()
@@ -54,6 +56,7 @@ export class CompilationChangeCoordinator {
   }
 
   consume(scopeId: string) {
+    this.ensureActive()
     const pendingChanges = this.pendingChangesByScope.get(scopeId)
     if (!pendingChanges) {
       return undefined
@@ -63,12 +66,25 @@ export class CompilationChangeCoordinator {
   }
 
   invalidateScope(scopeId: string) {
+    this.ensureActive()
     this.pendingChangesByScope.delete(scopeId)
     this.compilationPool.invalidateScope(scopeId)
   }
 
   getScopeDependencyRevision(scopeId: string) {
+    this.ensureActive()
     return this.compilationPool.getScopeDependencyRevision(scopeId)
+  }
+
+  dispose() {
+    this.pendingChangesByScope.clear()
+    this.disposed = true
+  }
+
+  private ensureActive() {
+    if (this.disposed) {
+      throw new Error('CompilationChangeCoordinator 已释放。')
+    }
   }
 }
 
@@ -103,4 +119,13 @@ export function getCompilationScopeDependencyRevision(owner: object, scopeId: st
 
 export function invalidateCompilationScope(owner: object, scopeId: string) {
   getCompilationChangeCoordinator(owner).invalidateScope(scopeId)
+}
+
+export function disposeCompilationChangeCoordinator(owner: object) {
+  const coordinator = compilationChangeCoordinators.get(owner)
+  if (!coordinator) {
+    return
+  }
+  compilationChangeCoordinators.delete(owner)
+  coordinator.dispose()
 }

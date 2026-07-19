@@ -7,6 +7,7 @@ import type { AppType, InternalUserDefinedOptions } from '@/types'
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { disposeCompilerOwner } from '@/compiler'
 import { pluginName } from '@/constants'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveRuntimeBranch } from '@/runtime-branch'
@@ -130,6 +131,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   })
   const cleanupWebpackLoaderRuntime = () => {
     deleteWebpackLoaderRuntime(runtimeRegistryKey)
+    void disposeCompilerOwner(runtimeState)
   }
   compiler.hooks.watchClose?.tap?.(pluginName, cleanupWebpackLoaderRuntime)
   compiler.hooks.shutdown?.tap?.(pluginName, cleanupWebpackLoaderRuntime)

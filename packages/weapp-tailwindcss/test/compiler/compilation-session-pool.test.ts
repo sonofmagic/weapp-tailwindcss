@@ -83,6 +83,42 @@ describe('CompilationSessionPool', () => {
     }))
   })
 
+  it('waits for active executions before disposing a scope session', async () => {
+    const pool = new CompilationSessionPool()
+    let releaseCompile: (() => void) | undefined
+    const compilePending = new Promise<void>((resolve) => {
+      releaseCompile = resolve
+    })
+    const execution = pool.run({
+      scope: componentScope,
+      outputId: 'pages/index.css',
+      sources: [{ id: '/src/app.css', kind: 'css', candidates: ['p-4'] }],
+    }, async compilation => {
+      await compilePending
+      return { classSet: compilation.candidates }
+    })
+
+    await vi.waitFor(() => {
+      expect(pool.size).toBe(1)
+    })
+    let disposed = false
+    const disposal = pool.dispose().then(() => {
+      disposed = true
+    })
+    await Promise.resolve()
+    expect(disposed).toBe(false)
+
+    releaseCompile?.()
+    await expect(execution).resolves.toMatchObject({ committed: false })
+    await disposal
+    expect(disposed).toBe(true)
+    expect(() => pool.run({
+      scope: componentScope,
+      outputId: 'pages/index.css',
+      sources: [],
+    }, async () => undefined)).toThrow('已释放')
+  })
+
   it('retains deleted candidates only when the scope requests it', async () => {
     const pool = new CompilationSessionPool()
     await pool.run({

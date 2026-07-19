@@ -4,7 +4,7 @@ import type { ViteFrameworkCssPipelineContext } from '../shared/framework-strate
 import type { CssFinalizerContext, CssFinalizerThis } from './options'
 import path from 'node:path'
 import process from 'node:process'
-import { AssetEmissionPlan, finalizeCompilerShadowRun } from '@/compiler'
+import { AssetEmissionPlan, disposeCompilerOwner, finalizeCompilerShadowRun } from '@/compiler'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
@@ -28,6 +28,9 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
   return {
     name: 'weapp-tailwindcss:adaptor:css-finalizer',
     enforce: 'post',
+    async closeBundle() {
+      await disposeCompilerOwner(context.runtimeState)
+    },
     generateBundle: {
       order: 'post',
       async handler(this: CssFinalizerThis, _options, bundle: OutputBundle) {

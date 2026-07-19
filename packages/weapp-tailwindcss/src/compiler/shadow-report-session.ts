@@ -168,3 +168,12 @@ export function getCompilerShadowRunSnapshot(owner: object) {
 export function completeCompilerShadowReportRun(owner: object, revision?: number | undefined) {
   return getCompilerShadowReportSession(owner).completeRun(revision)
 }
+
+export function disposeCompilerShadowReportSession(owner: object) {
+  const session = compilerShadowReportSessions.get(owner)
+  if (!session) {
+    return
+  }
+  compilerShadowReportSessions.delete(owner)
+  session.dispose()
+}

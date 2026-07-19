@@ -109,6 +109,21 @@ describe('bundlers/gulp createPlugins', () => {
     vi.restoreAllMocks()
   })
 
+  it('disposes compiler-owned sessions and resets the runtime manager', async () => {
+    const runtimeManager = {
+      reset: vi.fn(async () => undefined),
+      sync: vi.fn(),
+    }
+    const plugins = createPlugins({
+      __internalGulpRuntimeClassSetManager: runtimeManager,
+    } as any)
+
+    await plugins.dispose()
+    await plugins.dispose()
+
+    expect(runtimeManager.reset).toHaveBeenCalledTimes(2)
+  })
+
   it('processes files and caches results across runs', async () => {
     const plugins = createPlugins()
     expect(getCompilerContextMock).toHaveBeenCalled()
