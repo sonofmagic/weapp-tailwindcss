@@ -84,3 +84,5 @@ Vite CSS asset 的初始 output、root shell 复用、`originalFileNames` config
 Vite CSS source composition 改由独立 planner 合并 remembered fragments、选择 generator source、计算用户 layer、configured entry、root injection 与 handler options，并以结构化副作用意图返回 root shell target 和 configured source owner；generateBundle 不再直接维护这组嵌套状态。
 
 Vite CSS asset identity 改为优先依据 Rollup `originalFileNames`、真实 generator placeholder source 和生命周期 processed source 生成结构化 kind；generateBundle 不再直接搜索 placeholder 文本，旧 marker 识别仅保留在 port 兼容 resolver。
+
+Vite CSS transform 的 processed asset 复用、generator runtime 跟踪、last result replay 与缓存签名改由纯 decision/cache planner 统一计算；generateBundle 不再内联维护候选变化、stale CSS、runtime-linked source 和 cache key 的交叉判断。

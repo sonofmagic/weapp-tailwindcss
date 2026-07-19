@@ -365,6 +365,7 @@ describe('ci workflows', () => {
     const demoRoot = path.join(repoRoot, 'demo')
     const demoProjects = fs.readdirSync(demoRoot, { withFileTypes: true })
       .filter(entry => entry.isDirectory() && !entry.name.startsWith('.tmp-'))
+      .filter(entry => fs.existsSync(path.join(demoRoot, entry.name, 'package.json')))
       .map(entry => path.join(demoRoot, entry.name))
     const offenders = demoProjects.flatMap(projectRoot => listFiles(projectRoot))
       .filter(file => /\.(?:c?[jt]sx?|mjs|mts)$/.test(file))
