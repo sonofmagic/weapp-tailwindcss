@@ -265,31 +265,6 @@ export function createViteCssMemory(options: {
     }
   }
 
-  const refreshRememberedCssSource = async (remembered: RememberedCssSource) => {
-    const file = cleanUrl(stripRequestQuery(remembered.sourceFile))
-    const rememberedKey = [...rememberedCssSources.entries()]
-      .find(([, entry]) => entry === remembered)?.[0]
-    if (!rememberedKey || !path.isAbsolute(file)) {
-      return undefined
-    }
-    const source = await resolveCurrentStyleSource(file)
-    if (source == null) {
-      options.debug('refresh remembered css source before bundle replay skipped: missing cached source for %s', file)
-      return undefined
-    }
-    if (SFC_COMPONENT_FILE_RE.test(file)) {
-      const { query } = parseVueRequest(remembered.sourceFile)
-      const styleSource = extractSfcStyleSource(source, query.type === 'style' ? query.index : undefined)
-      return styleSource === undefined
-        ? undefined
-        : refreshRememberedCssSourceEntry(rememberedKey, remembered, remembered.sourceFile, styleSource)
-    }
-    if (isSourceStyleRequest(file)) {
-      return refreshRememberedCssSourceEntry(rememberedKey, remembered, remembered.sourceFile, source)
-    }
-    return undefined
-  }
-
   const prune = (pruneOptions: {
     activeFiles: Set<string>
     activeKnownSfcFiles?: Set<string> | undefined
@@ -339,7 +314,6 @@ export function createViteCssMemory(options: {
     }),
     rememberCssSource,
     rememberKnownSfcSource,
-    refreshRememberedCssSource,
     refreshRememberedCssSourceByCurrentFile,
     refreshRememberedCssSourceBySourceFile,
     setRememberedCssSignature: (file: string, cssRuntimeSignature: string) => {

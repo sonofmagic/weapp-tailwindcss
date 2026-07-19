@@ -6112,9 +6112,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     cssMemory.rememberCssSource(remembered)
     await writeFile(sourceFile, currentSource, 'utf8')
 
-    const refreshed = await cssMemory.refreshRememberedCssSource(remembered)
+    await cssMemory.refreshRememberedCssSourceByCurrentFile(sourceFile)
 
-    expect(refreshed).toBeUndefined()
     expect(cssMemory.getRememberedCssSourceEntry('app.wxss')).toEqual(remembered)
   })
 
@@ -6677,7 +6676,6 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       getSourceCandidatesForEntries: () => runtimeSet,
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
-      refreshRememberedCssSource: vi.fn(),
       getRememberedCssSources: () => rememberedCssSources,
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
@@ -7431,7 +7429,6 @@ module.exports = {
       getSourceCandidatesForEntries: () => runtimeSet,
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
-      refreshRememberedCssSource: vi.fn(),
       getRememberedCssSources: () => rememberedCssSources,
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
@@ -7580,7 +7577,6 @@ module.exports = {
       getSourceCandidatesForEntries: () => runtimeSet,
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
-      refreshRememberedCssSource: vi.fn(),
       getRememberedCssSources: () => rememberedCssSources,
       getRememberedCssSignature: (file: string) => rememberedSignatures.get(file),
       setRememberedCssSignature: (file: string, signature: string) => {
@@ -8112,7 +8108,6 @@ module.exports = {
       getSourceCandidatesForEntries: () => new Set(['tw-app-entry']),
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
-      refreshRememberedCssSource: vi.fn(),
       getRememberedCssSources: () => new Map([
         ['app-origin.wxss', {
           outputFile: 'app-origin.wxss',
@@ -11634,7 +11629,6 @@ const cls = "rounded-[92rpx]"
       getSourceCandidatesForEntries: () => new Set<string>(['text-red-500']),
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
-      refreshRememberedCssSource: vi.fn(),
       getRememberedCssSources: () => new Map(),
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
@@ -12688,7 +12682,6 @@ const cls = "w-[1.5px]"
           rememberedCssSignatures.set(source.sourceFile, signature)
         }
       },
-      refreshRememberedCssSource: vi.fn(async source => source),
       getRememberedCssSources: () => rememberedCssSources,
       getRememberedCssSignature: file => rememberedCssSignatures.get(file),
       setRememberedCssSignature: (file, signature) => rememberedCssSignatures.set(file, signature),
@@ -13620,9 +13613,6 @@ ${utilities}
         sourceFile: cleanStyleRequest,
       }],
     ])
-    const refreshRememberedCssSource = vi.fn(async () => {
-      throw new Error('bundle replay 不应刷新 remembered source')
-    })
     const generateBundle = createGenerateBundleHookWithMock({
       opts: context as any,
       runtimeState: {
@@ -13650,7 +13640,6 @@ ${utilities}
       getSourceCandidatesForEntries: () => new Set<string>(),
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
-      refreshRememberedCssSource,
       getRememberedCssSources: () => rememberedCssSources,
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
@@ -13681,7 +13670,6 @@ ${utilities}
     }, {} as any, replayBundle)
 
     const replayedCss = emitted.find(file => file.fileName === 'pages/index/index.wxss')?.source
-    expect(refreshRememberedCssSource).not.toHaveBeenCalled()
     expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
       rawSource: cleanSource,
       file: cleanStyleRequest,
@@ -14138,9 +14126,6 @@ ${utilities}
       }],
     ])
     let currentStyleSource = dirtyStyleSource
-    const refreshRememberedCssSource = vi.fn(async () => {
-      throw new Error('generateBundle 不应刷新 remembered source')
-    })
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
@@ -14182,7 +14167,6 @@ ${utilities}
       getSourceCandidatesForEntries: () => new Set<string>(),
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
-      refreshRememberedCssSource,
       getRememberedCssSources: () => rememberedCssSources,
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
@@ -14232,7 +14216,6 @@ ${utilities}
     }, {} as any, secondBundle)
 
     const rolledBackCss = (secondBundle['pages/index/index.wxss'] as OutputAsset).source.toString()
-    expect(refreshRememberedCssSource).not.toHaveBeenCalled()
     expect(generateCssByGeneratorMock).toHaveBeenCalled()
     const lastGeneratedOptions = generateCssByGeneratorMock.mock.calls.at(-1)?.[0]
     expect(lastGeneratedOptions.rawSource).toContain('.base-style { @apply flex; }')
@@ -14330,7 +14313,6 @@ ${utilities}
       getSourceCandidatesForEntries: () => new Set<string>(),
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource,
-      refreshRememberedCssSource: vi.fn(),
       getRememberedCssSources: () => new Map([
         ['pages/index/index.wxss', {
           outputFile: 'pages/index/index.wxss',
@@ -14572,9 +14554,6 @@ ${utilities}
       }],
     ])
     const rememberedSignatures = new Map<string, string>()
-    const refreshRememberedCssSource = vi.fn(async () => {
-      throw new Error('bundle replay 不应刷新 remembered source')
-    })
     const generateBundle = createGenerateBundleHook({
       opts: context as any,
       runtimeState: {
@@ -14602,7 +14581,6 @@ ${utilities}
       getSourceCandidatesForEntries: () => new Set<string>(),
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
-      refreshRememberedCssSource,
       getRememberedCssSources: () => rememberedCssSources,
       getRememberedCssSignature: (file: string) => rememberedSignatures.get(file),
       setRememberedCssSignature: (file: string, signature: string) => {
@@ -14626,7 +14604,6 @@ ${utilities}
       },
     }, {} as any, bundle)
 
-    expect(refreshRememberedCssSource).not.toHaveBeenCalled()
     const replayedCss = emitted.find(file => file.fileName === 'pages/index/index.wxss')?.source ?? ''
     expect(replayedCss).toContain('.page-root')
     expect(replayedCss).toContain('.base-style')
@@ -15665,7 +15642,6 @@ const fallback = "bg-[#434332] px-[32px]"
       getSourceCandidatesForEntries: () => new Set<string>(),
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
-      refreshRememberedCssSource: vi.fn(),
       getRememberedCssSources: () => new Map(),
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
@@ -15956,7 +15932,6 @@ const fallback = "bg-[#434332] px-[32px]"
       getSourceCandidateSourcesForEntries: () => [],
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
-      refreshRememberedCssSource: vi.fn(),
       getRememberedCssSources: () => new Map(),
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
@@ -16086,7 +16061,6 @@ const fallback = "bg-[#434332] px-[32px]"
       getSourceCandidateSourcesForEntries: () => [],
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource,
-      refreshRememberedCssSource: vi.fn(),
       getRememberedCssSources: () => new Map(),
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
@@ -16223,7 +16197,6 @@ const fallback = "bg-[#434332] px-[32px]"
       getSourceCandidateSourcesForEntries: () => [],
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
-      refreshRememberedCssSource: vi.fn(),
       getRememberedCssSources: () => new Map(),
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
@@ -16376,7 +16349,6 @@ const fallback = "bg-[#434332] px-[32px]"
       getSourceCandidateSourcesForEntries: () => [],
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
-      refreshRememberedCssSource: vi.fn(),
       getRememberedCssSources: () => rememberedCssSources,
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),
@@ -16458,7 +16430,6 @@ const fallback = "bg-[#434332] px-[32px]"
       getSourceCandidatesForEntries: () => runtimeSet,
       waitForSourceCandidateSyncs: vi.fn(async () => undefined),
       rememberCssSource: vi.fn(),
-      refreshRememberedCssSource: vi.fn(),
       getRememberedCssSources: () => new Map(),
       getRememberedCssSignature: () => undefined,
       setRememberedCssSignature: vi.fn(),

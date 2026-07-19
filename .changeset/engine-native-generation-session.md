@@ -66,3 +66,5 @@ Vite source/output ownership 现在按 source update revision 原子替换：同
 Vite remembered CSS refresh 不再在 generateBundle/replay 阶段通过 readFile 补取源码。普通样式更新消费 source-candidate transform cache，扫描规则排除的样式由 watchChange 生命周期显式写入 CSS memory；缓存缺失时跳过 replay 刷新并保留已有状态。remembered replay 直接消费生命周期缓存的 source snapshot，产物写回统一通过 `AssetEmissionPlan` 执行。
 
 Vite generateBundle port 不再向内部 runtime 透传 remembered source refresh 能力；普通 CSS asset 与缺失 asset replay 统一只消费 load、transform、watchChange 和 handleHotUpdate 已提交的 source snapshot，后置阶段不能重新解析源码状态。
+
+移除 `GenerateBundleContext`、CSS memory 和内部 runtime 中仅供后置阶段使用的 `refreshRememberedCssSource` 兼容契约；remembered source 更新现在只保留按 source file 提交的生命周期 API。

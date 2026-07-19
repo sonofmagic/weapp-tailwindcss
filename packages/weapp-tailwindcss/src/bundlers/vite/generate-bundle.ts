@@ -20,11 +20,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
   const relationOwner = getActiveViteSourceOutputRelationOwner()
   const removalConsumer = relationOwner?.createRemovalConsumer()
   const rememberCssSource = context.rememberCssSource
-  const runtimeContext = { ...context }
-  // generateBundle 只能消费 load/transform/watch 已提交的 remembered snapshot。
-  delete runtimeContext.refreshRememberedCssSource
   const runtimeHandler = createRuntimeGenerateBundleHook({
-    ...runtimeContext,
+    ...context,
     rememberCssSource: rememberCssSource
       ? (entry, cssRuntimeSignature) => {
           relationOwner?.recordOwnedOutput(entry.sourceFile, entry.outputFile)

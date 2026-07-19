@@ -51,10 +51,6 @@ describe('bundlers/vite remembered css replay', () => {
       createCssRuntimeSignature(runtimeSignature, runtimeSignature),
       `hash:${createRuntimeAffectingSourceSignature(rawSource, 'css')}`,
     )
-    const refreshRememberedCssSource = vi.fn(async () => {
-      throw new Error('bundle replay 不应刷新 remembered source')
-    })
-
     await processRememberedCssReplay({
       addWatchFile: vi.fn(),
       activeViteCssCacheFiles,
@@ -101,7 +97,6 @@ describe('bundlers/vite remembered css replay', () => {
       },
       recordCssAssetResult: vi.fn(),
       recordViteProcessedCssAssetResult: vi.fn(),
-      refreshRememberedCssSource,
       rootDir: '/repo',
       runtimeState: {
         tailwindRuntime: {
@@ -121,7 +116,6 @@ describe('bundlers/vite remembered css replay', () => {
     } as any)
 
     expect(createCssTokenSourceMap).not.toHaveBeenCalled()
-    expect(refreshRememberedCssSource).not.toHaveBeenCalled()
     expect(cssTaskFactories).toHaveLength(0)
   })
 
@@ -189,7 +183,6 @@ describe('bundlers/vite remembered css replay', () => {
       },
       recordCssAssetResult,
       recordViteProcessedCssAssetResult: vi.fn(),
-      refreshRememberedCssSource: vi.fn(),
       rootDir: '/repo',
       runtimeState: {
         tailwindRuntime: {

@@ -45,7 +45,6 @@ export interface GenerateBundleContext {
   getSourceCandidateSourcesForEntries?: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Map<string, Set<string>>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>
   rememberCssSource?: (entry: RememberedCssSource, cssRuntimeSignature?: string) => void
-  refreshRememberedCssSource?: (entry: RememberedCssSource) => Promise<RememberedCssSource | undefined> | RememberedCssSource | undefined
   getRememberedCssSources?: () => Iterable<[string, RememberedCssSource]>
   getRememberedCssSignature?: (file: string) => string | undefined
   setRememberedCssSignature?: (file: string, cssRuntimeSignature: string) => void

@@ -65,7 +65,6 @@ interface ProcessRememberedCssReplayOptions {
   opts: GenerateBundleContext['opts']
   recordCssAssetResult: GenerateBundleContext['recordCssAssetResult']
   recordViteProcessedCssAssetResult: GenerateBundleContext['recordViteProcessedCssAssetResult']
-  refreshRememberedCssSource?: GenerateBundleContext['refreshRememberedCssSource']
   rootDir: string
   runtimeState: GenerateBundleContext['runtimeState']
   setRememberedCssSignature?: ((file: string, cssRuntimeSignature: string) => void) | undefined

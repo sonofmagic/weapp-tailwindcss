@@ -67,29 +67,7 @@ describe('vite css memory', () => {
     expect(memory.getStats().rememberedCssSources).toBe(1)
   })
 
-  it('refreshes remembered entries directly and reports missing sources', async () => {
-    const debug = vi.fn()
-    const memory = createViteCssMemory({
-      debug,
-      getSourceCandidateSource: () => undefined,
-    })
-    const remembered = {
-      outputFile: 'missing.wxss',
-      rawSource: '.old{}',
-      sourceFile: '/not-found/app.css',
-    }
-
-    memory.rememberCssSource(remembered)
-
-    await expect(memory.refreshRememberedCssSource(remembered)).resolves.toBeUndefined()
-    expect(debug).toHaveBeenCalledWith(
-      'refresh remembered css source before bundle replay skipped: missing cached source for %s',
-      '/not-found/app.css',
-    )
-    expect(memory.getKnownCssSource('/not-found/app.css')).toBeUndefined()
-  })
-
-  it('does not read existing style files during bundle replay refresh', async () => {
+  it('does not read existing style files during lifecycle refresh', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-css-memory-no-read-'))
     const cssFile = path.join(root, 'existing.css')
     await writeFile(cssFile, '.from-file{color:red}')
@@ -105,10 +83,10 @@ describe('vite css memory', () => {
     }
     memory.rememberCssSource(remembered)
 
-    await expect(memory.refreshRememberedCssSource(remembered)).resolves.toBeUndefined()
+    await memory.refreshRememberedCssSourceByCurrentFile(cssFile)
     expect(memory.getRememberedCssSourceEntry('existing.acss')?.rawSource).toBe('.remembered{color:blue}')
     expect(debug).toHaveBeenCalledWith(
-      'refresh remembered css source before bundle replay skipped: missing cached source for %s',
+      'refresh remembered css source skipped: missing cached source for %s',
       cssFile,
     )
   })
@@ -133,8 +111,8 @@ describe('vite css memory', () => {
     memory.rememberCssSource(remembered, 'sig')
     candidateSources.set(sfcFile, '<template></template><style>.a{}</style><style>.b{}</style>')
 
-    const refreshed = await memory.refreshRememberedCssSource(remembered)
-    expect(refreshed?.rawSource).toBe('.a{}\n.b{}')
+    await memory.refreshRememberedCssSourceByCurrentFile(sfcFile)
+    expect(memory.getRememberedCssSourceEntry('app.wxss')?.rawSource).toBe('.a{}\n.b{}')
     expect(memory.getRememberedCssSignature('app.wxss')).toBeUndefined()
 
     memory.rememberKnownSfcSource(sfcFile, '<style>.known{}</style>')
