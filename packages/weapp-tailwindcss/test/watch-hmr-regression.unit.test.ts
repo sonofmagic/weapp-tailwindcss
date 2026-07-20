@@ -117,11 +117,13 @@ import {
   writeFilePreserveEol,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
 import {
+  createWebHmrReloadRecovery,
   isWebCompileDoneLogLine,
   isWebCompileReadyLogLine,
   resolveChromiumLaunchOptions,
   resolveWebHmrDomAttachTimeout,
   resolveWebHmrMarkerAttachTimeout,
+  resolveWebHmrReloadStallMs,
   waitForWebPageReloadReady,
   waitForWebPageReady,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web'
@@ -2178,6 +2180,48 @@ describe('watch-hmr regression cases', () => {
     expect(resolveWebHmrDomAttachTimeout(1500)).toBe(1500)
   })
 
+  it('reloads a stalled Web/H5 page and re-runs the runtime assertion', async () => {
+    const waitForReadySelector = vi.fn().mockResolvedValue(undefined)
+    const page = {
+      reload: vi.fn().mockResolvedValue(undefined),
+      locator: vi.fn(() => ({
+        waitFor: waitForReadySelector,
+      })),
+    }
+    const acceptWhen = vi.fn().mockResolvedValue(true)
+    const recover = createWebHmrReloadRecovery(page as any, '#app', {
+      enabled: true,
+      stallMs: 0,
+      timeoutMs: 500,
+      pollMs: 1,
+    })
+
+    await expect(recover(Date.now() - 1, acceptWhen)).resolves.toBe(true)
+    expect(page.reload).toHaveBeenCalledWith({
+      waitUntil: 'domcontentloaded',
+      timeout: 500,
+    })
+    expect(page.locator).toHaveBeenCalledWith('#app')
+    expect(acceptWhen).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps Web/H5 reload recovery disabled before the stall window', async () => {
+    const page = {
+      reload: vi.fn().mockResolvedValue(undefined),
+      locator: vi.fn(),
+    }
+    const recover = createWebHmrReloadRecovery(page as any, '#app', {
+      enabled: true,
+      stallMs: 5_000,
+      timeoutMs: 120_000,
+      pollMs: 40,
+    })
+
+    expect(resolveWebHmrReloadStallMs(120_000, 40, 5_000)).toBe(5_000)
+    await expect(recover(Date.now(), vi.fn())).resolves.toBe(false)
+    expect(page.reload).not.toHaveBeenCalled()
+  })
+
   it('does not treat webpack-dev-server URL output as Web/H5 compile readiness', () => {
     expect(isWebCompileReadyLogLine('<i> [webpack-dev-server] Loopback: http://localhost:10086/')).toBe(false)
     expect(isWebCompileReadyLogLine('<i> [webpack-dev-middleware] wait until bundle finished: /')).toBe(false)
@@ -3211,6 +3255,8 @@ describe('watch-hmr regression cases', () => {
 
     expect(uniAppCase?.webHmr?.sourceDomReplacementSequence?.[0]?.beforeSelector).toBe('.text-\\[\\#00f285\\]')
     expect(uniAppCase?.webHmr?.sourceDomReplacementSequence?.[0]?.expectedStyle?.color).toBe('rgb(18, 52, 86)')
+    expect(uniAppCase?.webHmr?.reloadOnHmrStall).toBe(true)
+    expect(uniAppCase?.webHmr?.hmrReloadStallMs).toBe(5_000)
   })
 
   it('filters platform-specific unstable watch cases from grouped runs', () => {

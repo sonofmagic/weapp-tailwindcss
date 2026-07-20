@@ -410,6 +410,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       injectMarkerElement: true,
       readySelector: 'uni-page[data-page="pages/index/index"]',
       initialMutationDelayMs: 1500,
+      reloadOnHmrStall: true,
+      hmrReloadStallMs: 5_000,
       mutate(source, payload) {
         return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->`
       },
