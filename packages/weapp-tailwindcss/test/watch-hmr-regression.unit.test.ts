@@ -154,6 +154,19 @@ const payload = {
   classVariableName: '__twWatchClass',
 }
 
+async function readContractSource(file: string, expected: string) {
+  let source = ''
+  await waitFor(async () => {
+    source = await readFileIfExists(file) ?? ''
+    return source.includes(expected)
+  }, {
+    timeoutMs: 5_000,
+    pollMs: 40,
+    message: `contract source did not stabilize: ${file}`,
+  })
+  return source
+}
+
 const pluginProcessSample = {
   at: 1,
   bundler: 'vite',
@@ -2359,22 +2372,22 @@ describe('watch-hmr regression cases', () => {
   })
 
   it('keeps Taro webpack demos on real NutUI and html plugin integration', async () => {
-    const configSource = await readFile(path.resolve(
+    const configSource = await readContractSource(path.resolve(
       __dirname,
       '../../../demo/taro-webpack-react-tailwindcss-v4/config/index.ts',
-    ), 'utf8')
-    const reactPackageJson = await readFile(path.resolve(
+    ), '@tarojs/plugin-html')
+    const reactPackageJson = await readContractSource(path.resolve(
       __dirname,
       '../../../demo/taro-webpack-react-tailwindcss-v4/package.json',
-    ), 'utf8')
-    const reactPageSource = await readFile(path.resolve(
+    ), '@nutui/nutui-react-taro')
+    const reactPageSource = await readContractSource(path.resolve(
       __dirname,
       '../../../demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx',
-    ), 'utf8')
-    const vueAppSource = await readFile(path.resolve(
+    ), '@nutui/nutui-react-taro')
+    const vueAppSource = await readContractSource(path.resolve(
       __dirname,
       '../../../demo/taro-webpack-vue3-tailwindcss-v4/src/app.ts',
-    ), 'utf8')
+    ), 'app.use(NutButton)')
 
     expect(configSource).toContain('@tarojs/plugin-html')
     expect(reactPackageJson).toContain('@nutui/nutui-react-taro')

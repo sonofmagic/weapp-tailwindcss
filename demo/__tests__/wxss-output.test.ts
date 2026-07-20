@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import postcss from 'postcss'
 import { describe, expect, it } from 'vitest'
 
 const DEMO_ROOT = fileURLToPath(new URL('..', import.meta.url))
@@ -384,11 +385,11 @@ describe('demo wxss artifacts', () => {
     const violations: string[] = []
 
     for (const file of artifacts) {
-      const normalized = normalizeSelectorCss(fs.readFileSync(file, 'utf8'))
-      const rootCount = countSelectorOccurrences(normalized, TAILWIND_V4_ROOT_SELECTORS)
-      const preflightCount = countSelectorOccurrences(normalized, TAILWIND_V4_PREFLIGHT_SELECTORS)
+      const source = fs.readFileSync(file, 'utf8')
+      const rootCount = countDuplicateSelectorRules(source, TAILWIND_V4_ROOT_SELECTORS)
+      const preflightCount = countDuplicateSelectorRules(source, TAILWIND_V4_PREFLIGHT_SELECTORS)
 
-      if (rootCount > 1 || preflightCount > 1) {
+      if (rootCount > 0 || preflightCount > 0) {
         violations.push([
           `${path.relative(DEMO_ROOT, file)} ->`,
           `root=${rootCount}`,
@@ -406,6 +407,21 @@ describe('demo wxss artifacts', () => {
       : ''
 
     expect(violations, debugMessage || undefined).toEqual([])
+  })
+
+  it('allows distinct root cascade blocks while detecting duplicate injected rules', () => {
+    const selector = TAILWIND_V4_ROOT_SELECTORS[0]!
+    const distinctOverrides = `
+      ${selector} { --color-white: #fff; }
+      ${selector} { --brand-color: #006241; }
+    `
+    const duplicateInjection = `
+      ${selector} { --color-white: #fff; }
+      ${selector} { --color-white: #fff; }
+    `
+
+    expect(countDuplicateSelectorRules(distinctOverrides, TAILWIND_V4_ROOT_SELECTORS)).toBe(0)
+    expect(countDuplicateSelectorRules(duplicateInjection, TAILWIND_V4_ROOT_SELECTORS)).toBe(1)
   })
 })
 
@@ -487,14 +503,20 @@ function normalizeSelectorCss(input: string): string {
     .replace(/::(before|after)\b/g, ':$1')
 }
 
-function countSelectorOccurrences(input: string, selectors: string[]) {
-  return selectors.reduce((count, selector) => count + countSubstring(input, selector), 0)
-}
+function countDuplicateSelectorRules(input: string, selectors: string[]) {
+  const targetSelectors = new Set(selectors.map(normalizeSelectorCss))
+  const signatureCounts = new Map<string, number>()
 
-function countSubstring(input: string, substring: string) {
-  if (substring.length === 0) {
-    return 0
-  }
+  postcss.parse(input).walkRules((rule) => {
+    const selector = normalizeSelectorCss(rule.selector)
+    if (!targetSelectors.has(selector)) {
+      return
+    }
+    const declarations = normalizeCss(rule.nodes.map(node => node.toString()).join(';'))
+    const signature = `${selector}{${declarations}}`
+    signatureCounts.set(signature, (signatureCounts.get(signature) ?? 0) + 1)
+  })
 
-  return input.split(substring).length - 1
+  return Array.from(signatureCounts.values())
+    .reduce((duplicates, count) => duplicates + Math.max(count - 1, 0), 0)
 }
