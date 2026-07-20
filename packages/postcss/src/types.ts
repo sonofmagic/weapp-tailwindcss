@@ -224,6 +224,10 @@ export type IStyleHandlerOptions = {
   /** uni-app x 的 CSS 输出目标；`uvue` 表示原生 uvue/nvue 样式链路，未设置时按 WebView CSS 处理。 */
   uniAppXCssTarget?: UniAppXCssTarget | undefined
   uniAppXUnsupported?: UniAppXUnsupportedMode | undefined
+  /**
+   * @internal
+   */
+  customPropertyValues?: ReadonlyMap<string, string> | undefined
   majorVersion?: 4 | undefined
 } & RequiredStyleHandlerOptions
 

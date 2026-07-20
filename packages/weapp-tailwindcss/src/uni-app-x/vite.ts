@@ -12,6 +12,7 @@ import type {
 } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
+import { normalizeTailwindcssV4InfinityCalcCss } from '@weapp-tailwindcss/postcss'
 import { processCachedTask } from '@/bundlers/shared/cache'
 import { hasTailwindApplyDirective, hasTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
 import { toAbsoluteOutputPath } from '@/bundlers/shared/module-graph'
@@ -242,7 +243,10 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       const { query } = parseVueRequest(id)
       const lang = query.lang
       if (isIosPlatform && isPreprocessorRequest(id, lang)) {
-        return
+        const normalizedCode = normalizeTailwindcssV4InfinityCalcCss(code)
+        return normalizedCode === code
+          ? undefined
+          : { code: normalizedCode, map: null }
       }
       return transformStyle(code, id, query, this)
     },

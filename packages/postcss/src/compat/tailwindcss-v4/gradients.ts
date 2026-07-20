@@ -49,6 +49,13 @@ export function normalizeTailwindcssV4InfinityCalcValue(value: string) {
   return INFINITY_CALC_VALUE_REGEXP.test(value.trim()) ? `${CLAMP_PX}px` : value
 }
 
+const INFINITY_CALC_CSS_RE = /calc\(\s*infinity\s*\*\s*(?:\d+(?:\.\d*)?|\.\d+)r?px\s*\)/gi
+
+/** 在预处理器解析前收敛 Tailwind v4 生成的无限圆角，避免 Sass 将 infinity 当作非法表达式。 */
+export function normalizeTailwindcssV4InfinityCalcCss(css: string) {
+  return css.replace(INFINITY_CALC_CSS_RE, `${CLAMP_PX}px`)
+}
+
 export function normalizeTailwindcssV4GradientDirectionDeclaration(rule: Rule, decl: PostcssDeclaration) {
   const normalized = normalizeTailwindcssV4GradientPosition(decl.value)
   if (normalized) {

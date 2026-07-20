@@ -213,6 +213,16 @@ describe('uni-app-x vite plugins', () => {
       expect(preResult).toBeUndefined()
       expect(styleHandler).not.toHaveBeenCalled()
 
+      const generatedApplyResult = await preCssPlugin!.transform?.(
+        '.issue-1002-apply { border-radius: calc(infinity * 1px); }',
+        scssId,
+      )
+      expect(generatedApplyResult).toEqual({
+        code: '.issue-1002-apply { border-radius: 9999px; }',
+        map: null,
+      })
+      expect(styleHandler).not.toHaveBeenCalled()
+
       const result = await cssPlugin!.transform?.('body { color: red; }', scssId)
       expect(styleHandler).toHaveBeenCalledTimes(1)
       expect(styleHandler).toHaveBeenCalledWith(

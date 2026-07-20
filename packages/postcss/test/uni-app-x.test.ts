@@ -86,6 +86,70 @@ describe('uni-app-x', () => {
     expect(css).toContain('.border-_b_h999_B')
   })
 
+  it('inlines adapted Tailwind theme tokens before removing the uvue root carrier', async () => {
+    const styleHandler = createStyleHandler({
+      appType: 'uni-app-x',
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+      majorVersion: 4,
+    })
+    const result = await styleHandler(
+      `page, .tw-root, wx-root-portal-content, :host {
+        --color-white: #fff;
+        --text-xs: 0.75rem;
+        --text-xs--line-height: calc(1 / 0.75);
+      }
+      .text-white {
+        color: var(--color-white);
+      }
+      .text-xs {
+        font-size: var(--text-xs);
+        line-height: var(--tw-leading, var(--text-xs--line-height));
+      }
+      .rounded-full {
+        border-radius: calc(infinity * 1px);
+      }`,
+      {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: '/src/components/Issue1002.uvue',
+          },
+        },
+      },
+    )
+
+    expect(result.css).toMatch(/\.text-white\s*\{\s*color:\s*#fff/)
+    expect(result.css).toMatch(/\.text-xs\s*\{[^}]*font-size:\s*0\.75rem/)
+    expect(result.css).toMatch(/\.text-xs\s*\{[^}]*line-height:\s*1\.33333/)
+    expect(result.css).toMatch(/\.rounded-full\s*\{\s*border-radius:\s*9999px/)
+    expect(result.css).not.toContain('.tw-root')
+    expect(result.css).not.toContain('calc(infinity')
+    expect(result.css).not.toContain('@property')
+    expect(result.css).not.toContain('var(--color-white)')
+    expect(result.css).not.toContain('var(--text-xs)')
+    expect(result.warnings()).toEqual([])
+  })
+
+  it('keeps unresolved user variables while consuming known uvue theme aliases', async () => {
+    const result = await postcss().process([
+      ':root,:host{--color-brand:var(--runtime-brand)}',
+      '.text-brand{color:var(--color-brand)}',
+    ].join('\n'), {
+      from: '/src/App.uvue',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+
+    expect(filtered.css).toBe('.text-brand{color:var(--runtime-brand)}')
+    expect(filtered.warnings()).toEqual([])
+  })
+
   it('filters unsupported uvue selectors and declarations with warnings', async () => {
     const styleHandler = createStyleHandler({
       uniAppX: true,
@@ -265,5 +329,52 @@ describe('uni-app-x', () => {
       expect.stringContaining('unknown source'),
       expect.stringContaining('selector must be class-only'),
     ]))
+  })
+
+  it('uses incremental theme values when a uvue utility has no root carrier', async () => {
+    const result = await postcss().process([
+      '.text-white{color:var(--color-white)}',
+      '.text-xs{font-size:var(--text-xs);line-height:var(--tw-leading,var(--text-xs--line-height))}',
+    ].join('\n'), {
+      from: '/src/pages/index/index.uvue',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      customPropertyValues: new Map([
+        ['--color-white', '#fff'],
+        ['--text-xs', '0.75rem'],
+        ['--text-xs--line-height', 'calc(1 / 0.75)'],
+      ]),
+    })
+
+    expect(filtered.css).toContain('color:#fff')
+    expect(filtered.css).toContain('font-size:0.75rem')
+    expect(filtered.css).toContain('line-height:1.33333')
+    expect(filtered.css).not.toContain('var(--')
+    expect(filtered.warnings()).toEqual([])
+  })
+
+  it('reduces static uvue calc expressions after theme and unit conversion', async () => {
+    const result = await postcss().process([
+      '.mt-3{margin-top:calc(8rpx * 3)}',
+      '.text-sm{line-height:calc(1.25 / 0.875)}',
+      '.dynamic{width:calc(100% - var(--runtime-offset))}',
+      '@property --tw-content{syntax:"*";initial-value:"";inherits:false}',
+    ].join('\n'), {
+      from: '/src/pages/index/index.uvue',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+    })
+
+    expect(filtered.css).toContain('.mt-3{margin-top:24rpx}')
+    expect(filtered.css).toContain('.text-sm{line-height:1.42857}')
+    expect(filtered.css).toContain('.dynamic{width:calc(100% - var(--runtime-offset))}')
+    expect(filtered.css).not.toContain('@property')
+    expect(filtered.warnings()).toEqual([])
   })
 })

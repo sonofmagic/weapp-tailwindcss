@@ -37,9 +37,7 @@ export async function transformTailwindV4CssToWeapp(
     ? await transformCssMacroCss(css, options)
     : css
   const compatibleCss = normalizeTailwindV4GeneratedUrlValues(macroCss)
-  const customPropertyValues = options && 'customPropertyValues' in options
-    ? (options as { customPropertyValues?: ReadonlyMap<string, string> }).customPropertyValues
-    : undefined
+  const customPropertyValues = options?.customPropertyValues
   const protectedCss = protectDynamicColorMixAlpha(compatibleCss, { customPropertyValues })
   const result = await defaultStyleHandler(protectedCss.css, {
     cssChildCombinatorReplaceValue: ['view', 'text'],
@@ -48,7 +46,10 @@ export async function transformTailwindV4CssToWeapp(
     majorVersion: 4,
     ...options,
   })
+  const isUniAppXUvueTarget = options?.uniAppX === true
+    && options.uniAppXCssTarget === 'uvue'
   const pruneOptions = {
+    preserveContentInit: isUniAppXUvueTarget ? false : undefined,
     preservePreflight: true,
     preserveConditionalComments: hasCssMacroStyleOptions(options),
   }

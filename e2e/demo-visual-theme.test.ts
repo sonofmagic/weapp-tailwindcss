@@ -74,6 +74,32 @@ describe('demo visual theme evidence', () => {
     expect(ios?.markerAnchor).toBe('<text :class="flag')
   })
 
+  it('keeps issue #1002 utilities in the uni-app x native runtime probes', async () => {
+    const page = await fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/pages/index/index.uvue'), 'utf8')
+
+    for (const utility of ['text-xs', 'text-sm', 'text-base', 'text-xl', 'text-white', 'rounded-full']) {
+      expect(page, `issue #1002 probe should include ${utility}`).toContain(utility)
+    }
+    expect(page).toContain('@apply text-xs text-white rounded-full bg-[#164e63];')
+
+    for (const item of uniAppXAppCases) {
+      expect(item.markerClass).toContain('rounded-full')
+      expect(item.markerTextClass).toContain('text-xl')
+      expect(item.markerTextClass).toContain('text-white')
+      expect(item.hmrMarkerTextClass).toContain('text-sm')
+      expect(item.hmrMarkerTextClass).toContain('text-white')
+      expect(item.transformedNotContains).toEqual(expect.arrayContaining([
+        '.tw-root',
+        'calc(infinity',
+        'var(--color-white)',
+      ]))
+      if (item.platform === 'app-android') {
+        expect(item.compiledStyleContains?.length).toBeGreaterThanOrEqual(8)
+      }
+      expect(item.logNotContains?.length).toBeGreaterThan(0)
+    }
+  })
+
   it('does not pin Harmony visual coverage to a machine-specific device', () => {
     const harmony = uniAppXAppCases.find(item => item.platform === 'app-harmony')
     if (!process.env['E2E_HBUILDERX_HARMONY_DEVICE_ID'] && !process.env['DEMO_VISUAL_HARMONY_DEVICE_ID']) {

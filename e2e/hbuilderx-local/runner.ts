@@ -45,6 +45,17 @@ function expectContent(source: string, entries: Array<string | RegExp>, label: s
   }
 }
 
+function expectNoContent(source: string, entries: Array<string | RegExp> | undefined, label: string) {
+  for (const entry of entries ?? []) {
+    if (typeof entry === 'string') {
+      expect(source, `${label} 不应包含 ${entry}`).not.toContain(entry)
+    }
+    else {
+      expect(source, `${label} 不应匹配 ${entry}`).not.toMatch(entry)
+    }
+  }
+}
+
 function hasContent(source: string, entries: Array<string | RegExp>) {
   return entries.every((entry) => {
     if (typeof entry === 'string') {
@@ -269,9 +280,24 @@ async function assertAppOutput(item: AppCase) {
 
   const transformed = await readAppTransformedOutput(projectRoot, outputRoot, item)
   expectContent(transformed, item.transformedContains, `${item.name} App 转换产物`)
+  if (item.compiledStyleContains?.length) {
+    expectContent(transformed, item.compiledStyleContains, `${item.name} App 编译样式产物`)
+  }
+  expectNoContent(transformed, item.transformedNotContains, `${item.name} App 转换产物`)
   if (item.styleContains?.length) {
     const style = await readAppStyleOutput(outputRoot, item)
     expectContent(style, item.styleContains, `${item.name} App 样式产物`)
+    expectNoContent(style, item.styleNotContains, `${item.name} App 样式产物`)
+  }
+}
+
+async function assertAppOutputHasNoUnsupportedContent(item: AppCase, outputRoot: string) {
+  const projectRoot = path.resolve(repoRoot, item.projectDir)
+  const transformed = await readAppTransformedOutput(projectRoot, outputRoot, item)
+  expectNoContent(transformed, item.transformedNotContains, `${item.name} App 转换产物`)
+  if (item.styleOutputFiles?.length) {
+    const style = await readAppStyleOutput(outputRoot, item)
+    expectNoContent(style, item.styleNotContains, `${item.name} App 样式产物`)
   }
 }
 
@@ -346,17 +372,21 @@ async function writeAppMarker(
   anchors: string[],
   marker: {
     className: string
+    textClassName?: string
     text: string
   },
 ) {
   const source = await readUtf8(file)
-  const cleaned = source.replace(/\n[ \t]*<view class="[^"]+">hbuilderx-app-(?:dynamic|hmr)-[^<]+<\/view>/g, '')
+  const cleaned = source.replace(/\n[ \t]*<view class="[^"]+">(?:<text class="[^"]+">)?hbuilderx-app-(?:dynamic|hmr)-[^<]+(?:<\/text>)?<\/view>/g, '')
   const anchor = anchors.find(item => cleaned.includes(item))
   const index = anchor ? cleaned.indexOf(anchor) : -1
   if (index < 0) {
     throw new Error(`找不到 App E2E 插入锚点：${file}`)
   }
-  const next = `${cleaned.slice(0, index)}<view class="${marker.className}">${marker.text}</view>\n\t\t${cleaned.slice(index)}`
+  const content = marker.textClassName
+    ? `<text class="${marker.textClassName}">${marker.text}</text>`
+    : marker.text
+  const next = `${cleaned.slice(0, index)}<view class="${marker.className}">${content}</view>\n\t\t${cleaned.slice(index)}`
   await fs.writeFile(file, next, 'utf8')
 }
 
@@ -415,6 +445,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     }
     await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
       className: item.markerClass,
+      textClassName: item.markerTextClass,
       text: item.markerText,
     })
     await cleanAppOutput(item)
@@ -463,9 +494,10 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     }
     await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
       className: item.hmrMarkerClass,
+      textClassName: item.hmrMarkerTextClass,
       text: item.hmrMarkerText,
     })
-    await waitForAppTransformedContent(item, item.hmrTransformedContains, hbuilderxAppTimeoutMs, ensureLaunchRunning, async () => {
+    const hmrOutputRoot = await waitForAppTransformedContent(item, item.hmrTransformedContains, hbuilderxAppTimeoutMs, ensureLaunchRunning, async () => {
       const source = await readUtf8(sourceFile)
       return [
         `source=${path.relative(projectRoot, sourceFile)}`,
@@ -473,6 +505,8 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
         `recentHBuilderXLogs=${logs.join('').slice(-4000)}`,
       ].join('\n')
     }, item.hmrStyleContains)
+    await assertAppOutputHasNoUnsupportedContent(item, hmrOutputRoot)
+    expectNoContent(logs.join(''), item.logNotContains, `${item.name} HBuilderX 日志`)
 
     killProcessTree(child)
     await Promise.race([closed, wait(5_000)])

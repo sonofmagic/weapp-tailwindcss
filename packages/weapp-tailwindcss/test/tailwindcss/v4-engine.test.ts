@@ -1722,6 +1722,114 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('@supports')
   })
 
+  it.each([true, false])(
+    'finalizes issue #1002 utilities for uni-app x uvue when isMainChunk=%s',
+    async (isMainChunk) => {
+      const source = await resolveTailwindV4Source({
+        css: `
+          @theme default {
+            --color-white: #fff;
+            --text-xs: 0.75rem;
+            --text-xs--line-height: calc(1 / 0.75);
+            --text-sm: 0.875rem;
+            --text-sm--line-height: calc(1.25 / 0.875);
+            --text-base: 1rem;
+            --text-base--line-height: calc(1.5 / 1);
+            --text-xl: 1.25rem;
+            --text-xl--line-height: calc(1.75 / 1.25);
+          }
+          @tailwind utilities;
+        `,
+        base: process.cwd(),
+      })
+      const engine = createTailwindV4Engine(source)
+
+      const result = await engine.generate({
+        candidates: ['text-xs', 'text-sm', 'text-base', 'text-xl', 'text-white', 'rounded-full'],
+        styleOptions: {
+          appType: 'uni-app-x',
+          uniAppX: true,
+          uniAppXCssTarget: 'uvue',
+          uniAppXUnsupported: 'warn',
+          cssPresetEnv: {
+            features: {
+              'custom-properties': {
+                preserve: false,
+              },
+            },
+          },
+          isMainChunk,
+          majorVersion: 4,
+          rem2rpx: true,
+        },
+      })
+
+      expect(result.css).toContain('.text-xs')
+      expect(result.css).toContain('.text-sm')
+      expect(result.css).toContain('.text-base')
+      expect(result.css).toContain('.text-xl')
+      expect(result.css).toMatch(/\.text-white\s*\{\s*color:\s*#fff/)
+      expect(result.css).toMatch(/\.rounded-full\s*\{\s*border-radius:\s*9999px/)
+      expect(result.css).not.toContain('var(--text-')
+      expect(result.css).not.toContain('var(--color-white)')
+      expect(result.css).not.toMatch(/line-height:\s*calc\(/)
+      expect(result.css).not.toContain('calc(infinity')
+      expect(result.css).not.toContain('.tw-root')
+      expect(result.css).not.toMatch(/(?:^|\})\s*(?:view|text|page|wx-root-portal-content)\s*,/)
+    },
+  )
+
+  it('keeps incremental uni-app x uvue utilities free of root carriers and infinity values', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme default {
+          --color-white: #fff;
+          --text-xs: 0.75rem;
+          --text-xs--line-height: calc(1 / 0.75);
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+    const styleOptions = {
+      appType: 'uni-app-x' as const,
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue' as const,
+      cssPresetEnv: {
+        features: {
+          'custom-properties': {
+            preserve: false,
+          },
+        },
+      },
+      isMainChunk: false,
+      majorVersion: 4 as const,
+      rem2rpx: true,
+    }
+
+    await engine.generate({
+      candidates: ['text-xs'],
+      incrementalCache: true,
+      scanSources: false,
+      styleOptions,
+    })
+    const result = await engine.generate({
+      candidates: ['text-xs', 'text-white', 'rounded-full'],
+      incrementalCache: true,
+      scanSources: false,
+      styleOptions,
+    })
+
+    expect(result.incrementalCss).toMatch(/\.text-white\s*\{\s*color:\s*#fff/)
+    expect(result.incrementalCss).toMatch(/\.rounded-full\s*\{\s*border-radius:\s*9999px/)
+    expect(result.incrementalCss).not.toContain('var(--color-white)')
+    expect(result.incrementalCss).not.toMatch(/line-height:\s*calc\(/)
+    expect(result.incrementalCss).not.toContain('calc(infinity')
+    expect(result.incrementalCss).not.toContain('.tw-root')
+    expect(result.incrementalCss).not.toContain('view,text')
+  })
+
   it('downgrades Tailwind v4 color-mix alpha colors for mini-program output', async () => {
     const source = await resolveTailwindV4Source({
       css: `

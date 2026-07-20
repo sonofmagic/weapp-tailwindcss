@@ -40,6 +40,7 @@ export {
   normalizeTailwindcssWebRpxDeclarations,
   type TailwindcssRpxToRemOptions,
 } from './compat/tailwindcss-rpx'
+export { normalizeTailwindcssV4InfinityCalcCss } from './compat/tailwindcss-v4'
 export {
   type NormalizedWebCssCompatOptions,
   normalizeWebCssCompatOptions,

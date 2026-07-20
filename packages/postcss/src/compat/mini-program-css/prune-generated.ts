@@ -19,6 +19,7 @@ const MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR = '::before,\n::after'
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 
 export interface PruneMiniProgramGeneratedCssOptions {
+  preserveContentInit?: boolean
   preservePreflight?: boolean
   preserveConditionalComments?: boolean
   preserveRawClassRules?: boolean
@@ -200,7 +201,8 @@ export function pruneMiniProgramGeneratedCss(
   options: PruneMiniProgramGeneratedCssOptions = {},
 ) {
   const root = postcss.parse(css)
-  const shouldPreserveContentInit = options.preservePreflight || usesTwContentVariable(root)
+  const shouldPreserveContentInit = options.preserveContentInit
+    ?? (options.preservePreflight || usesTwContentVariable(root))
 
   root.walkComments((comment) => {
     if (options.preserveConditionalComments && isConditionalCompilationComment(comment.text)) {
