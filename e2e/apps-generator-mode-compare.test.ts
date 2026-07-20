@@ -657,14 +657,7 @@ function createReportItem(
   project: CompareProject,
   generatorResult: GeneratorBuildResult,
 ): CompareReportItem {
-  const generatorCss = shouldNormalizeProjectCssSnapshots(project)
-    ? `${createStableCssSnapshots(generatorResult, project.cssFile, {
-      structureIdentity: isWebStyleDirectoryProject(project),
-    })
-      .map(snapshot => normalizeProjectCssSnapshot(project, snapshot))
-      .join('\n')}\n`
-    : `${normalizeCssSnapshot(generatorResult.css)}\n`
-  const generator = summarizeCss(generatorCss)
+  const generator = summarizeCss(`${createNormalizedGeneratorCss(project, generatorResult)}\n`)
   const cssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile, {
     structureIdentity: isWebStyleDirectoryProject(project),
   })
@@ -1059,6 +1052,20 @@ function createCssArtifactSnapshot(project: CompareProject, snapshot: GeneratorC
   return `${normalizeProjectCssSnapshot(project, snapshot).trimEnd()}\n`
 }
 
+function createNormalizedGeneratorCss(
+  project: CompareProject,
+  generatorResult: Pick<GeneratorBuildResult, 'css' | 'cssFiles'> & Partial<Pick<GeneratorBuildResult, 'cssSnapshots'>>,
+) {
+  if (shouldNormalizeProjectCssSnapshots(project)) {
+    return createStableCssSnapshots(generatorResult, project.cssFile, {
+      structureIdentity: isWebStyleDirectoryProject(project),
+    })
+      .map(snapshot => normalizeProjectCssSnapshot(project, snapshot))
+      .join('\n')
+  }
+  return normalizeCssSnapshot(normalizeGeneratedCssSourceMarkers(generatorResult.css))
+}
+
 function createCssOutputSnapshot(
   project: CompareProject,
   generatorResult: Pick<GeneratorBuildResult, 'css' | 'cssFiles'> & Partial<Pick<GeneratorBuildResult, 'cssSnapshots'>>,
@@ -1066,9 +1073,7 @@ function createCssOutputSnapshot(
   const stableCssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile, {
     structureIdentity: isWebStyleDirectoryProject(project),
   })
-  const generatorCss = shouldNormalizeProjectCssSnapshots(project)
-    ? stableCssSnapshots.map(snapshot => normalizeProjectCssSnapshot(project, snapshot)).join('\n')
-    : normalizeCssSnapshot(normalizeGeneratedCssSourceMarkers(generatorResult.css))
+  const generatorCss = createNormalizedGeneratorCss(project, generatorResult)
   const generator = summarizeCss(`${generatorCss}\n`)
   const cssSummaryRows = stableCssSnapshots.flatMap((snapshot) => {
     const summary = summarizeCss(`${normalizeProjectCssSnapshot(project, snapshot)}\n`)
@@ -1160,18 +1165,26 @@ describe('demo generator mode output', () => {
       cssPattern: WEB_CSS_PATTERN,
     }
     const source = 'demo/taro-vite-react-tailwindcss-v4/src/app.css'
-    const createOutput = (absoluteSource: string) => {
+    const createGeneratorResult = (absoluteSource: string): GeneratorBuildResult => {
       const css = `/*! weapp-tailwindcss vite-generated-css:${encodeURIComponent(absoluteSource)} */\n.example { color: red; }`
-      return createCssOutputSnapshot(project, {
+      return {
         css,
         cssFiles: ['css/index.css'],
         cssSnapshots: [{ fileName: 'css/index.css', content: css }],
-      })
+      }
     }
 
-    const expected = createOutput(`/Users/example/project/${source}`)
-    expect(createOutput(`/home/runner/work/project/${source}`)).toBe(expected)
-    expect(createOutput(`C:\\workspace\\project\\${source.replaceAll('/', '\\')}`)).toBe(expected)
+    const macResult = createGeneratorResult(`/Users/example/project/${source}`)
+    const expectedOutput = createCssOutputSnapshot(project, macResult)
+    const expectedReportItem = createReportItem(project, macResult)
+    for (const absoluteSource of [
+      `/home/runner/work/project/${source}`,
+      `C:\\workspace\\project\\${source.replaceAll('/', '\\')}`,
+    ]) {
+      const result = createGeneratorResult(absoluteSource)
+      expect(createCssOutputSnapshot(project, result)).toBe(expectedOutput)
+      expect(createReportItem(project, result)).toEqual(expectedReportItem)
+    }
   })
 
   it('collects nested selectors and normalizes unsupported pseudo aliases', () => {
