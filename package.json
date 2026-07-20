@@ -41,7 +41,7 @@
     "gulp-plugin"
   ],
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": ">=22.12.0"
   },
   "scripts": {
     "build": "cross-env WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD=1 WEAPP_TW_SKIP_INTERACTIVE_UNI_BUILD=1 turbo run build",

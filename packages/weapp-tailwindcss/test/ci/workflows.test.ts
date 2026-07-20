@@ -286,9 +286,8 @@ describe('ci workflows', () => {
 
     expect(workflow.jobs.compatibility.strategy['fail-fast']).toBe(false)
     expect(matrixIds(workflowDispatchRows)).toEqual(expect.arrayContaining([
-      'ubuntu-latest:20:node20-core',
+      'ubuntu-latest:22.12.0:node22-min-core',
       'ubuntu-latest:24:node24-core',
-      'windows-latest:20:windows-node20-core',
       'windows-latest:22:windows-node22-core',
       'windows-latest:24:windows-node24-core',
       'macos-latest:22:macos-node22-core',

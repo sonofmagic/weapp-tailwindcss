@@ -7,6 +7,8 @@ import {
   formatDoctorReport,
   hasDoctorFailure,
 } from '@/cli/doctor'
+import { WEAPP_TW_REQUIRED_NODE_VERSION_RANGE } from '@/constants'
+import packageJson from '../../package.json'
 
 const TMP_PREFIX = 'weapp-tw-doctor'
 
@@ -51,7 +53,7 @@ describe('createDoctorReport', () => {
     await writePackage(root, 'tailwindcss', '4.1.0')
     await writePackage(root, 'weapp-tailwindcss', '4.12.0')
 
-    const report = createDoctorReport({ cwd: root, nodeVersion: '20.19.0' })
+    const report = createDoctorReport({ cwd: root, nodeVersion: '22.12.0' })
 
     expect(report.detected.packageManager).toBe('pnpm@11.5.0')
     expect(report.detected.frameworks).toEqual(['uni-app'])
@@ -71,7 +73,7 @@ describe('createDoctorReport', () => {
     await writeFile(path.join(root, 'postcss.config.cjs'), 'module.exports = {}\n', 'utf8')
     await writePackage(root, 'tailwindcss', '4.0.0')
 
-    const report = createDoctorReport({ cwd: root, nodeVersion: '20.19.0' })
+    const report = createDoctorReport({ cwd: root, nodeVersion: '22.12.0' })
 
     const check = findCheck(report, 'tailwindcss-v4-postcss')
     expect(check.status).toBe('warn')
@@ -100,8 +102,13 @@ describe('createDoctorReport', () => {
       },
     })
 
+    expect(packageJson.engines.node).toBe(WEAPP_TW_REQUIRED_NODE_VERSION_RANGE)
     expect(findCheck(
-      createDoctorReport({ cwd: root, nodeVersion: '22.0.0' }),
+      createDoctorReport({ cwd: root, nodeVersion: '20.19.0' }),
+      'node-version',
+    ).status).toBe('error')
+    expect(findCheck(
+      createDoctorReport({ cwd: root, nodeVersion: '22.11.0' }),
       'node-version',
     ).status).toBe('error')
     expect(findCheck(

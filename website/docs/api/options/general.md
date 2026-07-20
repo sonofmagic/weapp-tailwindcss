@@ -65,7 +65,7 @@ false
 #### 备注
 
 当前仅在调用侧关闭 source map，且没有模块图、模块替换、ignore 调用/标签模板语义时尝试 OXC。
-OXC npm 包本身要求 Node `^20.19.0 || >=22.12.0`，Node 18 环境会自动回退到 Babel。
+`weapp-tailwindcss@5.2.0` 起要求 Node `>=22.12.0`。OXC 加载失败时仍会自动回退到 Babel。
 
 ### postcssOptions
 

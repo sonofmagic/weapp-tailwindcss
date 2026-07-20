@@ -471,12 +471,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: ${{ fromJSON(github.event_name == 'workflow_dispatch' && '[{"os":"ubuntu-latest","node-version":20,"pnpm-version":"10.23.0","scenario":"node20-core"},{"os":"ubuntu-latest","node-version":24,"pnpm-version":"11.9.0","scenario":"node24-core"},{"os":"windows-latest","node-version":20,"pnpm-version":"10.23.0","scenario":"windows-node20-core"},{"os":"windows-latest","node-version":22,"pnpm-version":"11.9.0","scenario":"windows-node22-core"},{"os":"windows-latest","node-version":24,"pnpm-version":"11.9.0","scenario":"windows-node24-core"},{"os":"macos-latest","node-version":22,"pnpm-version":"11.9.0","scenario":"macos-node22-core"}]' || '[{"os":"windows-latest","node-version":22,"pnpm-version":"11.9.0","scenario":"windows-node22-core"}]') }}
+        include: ${{ fromJSON(github.event_name == 'workflow_dispatch' && '[{"os":"ubuntu-latest","node-version":"22.12.0","pnpm-version":"11.9.0","scenario":"node22-min-core"},{"os":"ubuntu-latest","node-version":24,"pnpm-version":"11.9.0","scenario":"node24-core"},{"os":"windows-latest","node-version":22,"pnpm-version":"11.9.0","scenario":"windows-node22-core"},{"os":"windows-latest","node-version":24,"pnpm-version":"11.9.0","scenario":"windows-node24-core"},{"os":"macos-latest","node-version":22,"pnpm-version":"11.9.0","scenario":"macos-node22-core"}]' || '[{"os":"windows-latest","node-version":22,"pnpm-version":"11.9.0","scenario":"windows-node22-core"}]') }}
     runs-on: ${{ matrix.os }}
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-      # Node 20 兼容矩阵会使用 pnpm 10，避免 pnpm 因根 packageManager=pnpm@11 拒绝运行。
       COREPACK_ENABLE_STRICT: '0'
       npm_config_package_manager_strict: 'false'
       npm_config_manage_package_manager_versions: 'false'
@@ -490,7 +489,6 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: ${{ matrix.pnpm-version }}
-          # Node 20 兼容矩阵需要 pnpm 10，不能读取根 packageManager 的 pnpm 11。
           package_json_file: .github/pnpm-action-package.json
 
       - name: Setup Node.js environment
