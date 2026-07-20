@@ -1068,7 +1068,7 @@ function createCssOutputSnapshot(
   })
   const generatorCss = shouldNormalizeProjectCssSnapshots(project)
     ? stableCssSnapshots.map(snapshot => normalizeProjectCssSnapshot(project, snapshot)).join('\n')
-    : normalizeCssSnapshot(generatorResult.css)
+    : normalizeCssSnapshot(normalizeGeneratedCssSourceMarkers(generatorResult.css))
   const generator = summarizeCss(`${generatorCss}\n`)
   const cssSummaryRows = stableCssSnapshots.flatMap((snapshot) => {
     const summary = summarizeCss(`${normalizeProjectCssSnapshot(project, snapshot)}\n`)
@@ -1143,6 +1143,35 @@ describe('demo generator mode output', () => {
 
     expect(normalizeGeneratedCssSourceMarkers('/*! weapp-tailwindcss vite-generated-css:%E0%A4%A */'))
       .toBe('/*! weapp-tailwindcss vite-generated-css:%E0%A4%A */')
+  })
+
+  it('normalizes generated css source markers before aggregate metrics', () => {
+    const project: CompareProject = {
+      name: 'taro-vite-react-tailwindcss-v4',
+      fixturesDir: '../demo',
+      rootDir: 'taro-vite-react-tailwindcss-v4',
+      platform: 'web',
+      allowedPlatforms: ['h5'],
+      cssFile: 'dist',
+      cssPath: 'dist',
+      requiredCssFiles: [],
+      buildScript: 'build:h5',
+      cssSnapshotMode: 'directory',
+      cssPattern: WEB_CSS_PATTERN,
+    }
+    const source = 'demo/taro-vite-react-tailwindcss-v4/src/app.css'
+    const createOutput = (absoluteSource: string) => {
+      const css = `/*! weapp-tailwindcss vite-generated-css:${encodeURIComponent(absoluteSource)} */\n.example { color: red; }`
+      return createCssOutputSnapshot(project, {
+        css,
+        cssFiles: ['css/index.css'],
+        cssSnapshots: [{ fileName: 'css/index.css', content: css }],
+      })
+    }
+
+    const expected = createOutput(`/Users/example/project/${source}`)
+    expect(createOutput(`/home/runner/work/project/${source}`)).toBe(expected)
+    expect(createOutput(`C:\\workspace\\project\\${source.replaceAll('/', '\\')}`)).toBe(expected)
   })
 
   it('collects nested selectors and normalizes unsupported pseudo aliases', () => {

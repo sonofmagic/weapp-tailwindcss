@@ -7,7 +7,7 @@ Entry: taro-vite-react-tailwindcss-v4/dist
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 434454 | 2297 | true | true | true | true | true | true | false |
+| 434254 | 2297 | true | true | true | true | true | true | false |
 
 ## Generator CSS Files
 

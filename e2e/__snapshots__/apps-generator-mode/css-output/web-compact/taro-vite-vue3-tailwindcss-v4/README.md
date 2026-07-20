@@ -7,7 +7,7 @@ Entry: taro-vite-vue3-tailwindcss-v4/dist
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 327887 | 1756 | true | true | true | true | true | true | false |
+| 327737 | 1756 | true | true | true | true | true | true | false |
 
 ## Generator CSS Files
 

@@ -7,7 +7,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/h5
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 72673 | 387 | true | true | true | true | true | true | true |
+| 72423 | 387 | true | true | true | true | true | true | true |
 
 ## Generator CSS Files
 
