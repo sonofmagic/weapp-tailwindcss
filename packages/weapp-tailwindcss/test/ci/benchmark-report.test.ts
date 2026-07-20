@@ -69,6 +69,7 @@ describe('benchmark ci report', () => {
     expect(source).toContain('core-vite-processed-css-coverage')
     expect(source).toContain('runProcessedCssInjectionBenchmark')
     expect(source).toContain('core-vite-processed-css-injection')
+    expect(source.match(/hmrPluginStatistic: 'median'/g)).toHaveLength(3)
     expect(source).toContain("parseNumber('--poll-interval', 30)")
     expect(matrixSource).toContain("parseNumber('--poll-interval', 30)")
 
@@ -223,6 +224,64 @@ describe('benchmark ci report', () => {
       metric: 'hmrPluginP95',
       absoluteDelta: 11,
     }))
+  })
+
+  it('uses the median for isolated core micro benchmarks while keeping watch plugins on P95', async () => {
+    const { buildSummary, evaluatePerformanceGuard, toMarkdown } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-20T00:00:00.000Z',
+      options: { buildRuns: 1, hmrRuns: 3, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'core-vite-processed-css-coverage',
+          hmrMode: 'watch',
+          hmrPluginStatistic: 'median',
+          summary: { hmrPlugin: { median: 124, p95: 156 } },
+        },
+        {
+          version: currentLabel,
+          key: 'core-vite-processed-css-coverage',
+          hmrMode: 'watch',
+          hmrPluginStatistic: 'median',
+          summary: { hmrPlugin: { median: 118, p95: 171 } },
+        },
+        {
+          version: baselineLabel,
+          key: 'demo-watch',
+          hmrMode: 'watch',
+          summary: { hmrPlugin: { median: 80, p95: 100 } },
+        },
+        {
+          version: currentLabel,
+          key: 'demo-watch',
+          hmrMode: 'watch',
+          summary: { hmrPlugin: { median: 80, p95: 111 } },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    expect(summary.compares).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        key: 'core-vite-processed-css-coverage',
+        baselineHmrPlugin: 124,
+        currentHmrPlugin: 118,
+        hmrPluginStatistic: 'median',
+      }),
+      expect.objectContaining({
+        key: 'demo-watch',
+        baselineHmrPlugin: 100,
+        currentHmrPlugin: 111,
+        hmrPluginStatistic: 'p95',
+      }),
+    ]))
+    expect(evaluatePerformanceGuard(summary).violations).toContainEqual(expect.objectContaining({
+      key: 'demo-watch',
+      metric: 'hmrPluginP95',
+    }))
+    expect(toMarkdown(summary, 'main')).toContain('| core-vite-processed-css-coverage | - | - | - | median | 124.00 | 118.00 |')
   })
 
   it('uses the full build plugin median so one steady-sample outlier cannot dominate the guard', async () => {
