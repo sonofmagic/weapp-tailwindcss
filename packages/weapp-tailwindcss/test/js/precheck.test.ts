@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { shouldSkipJsTransform } from '@/js/precheck'
 import { shouldSkipViteJsTransform } from '@/bundlers/vite/js-precheck'
+import { hasDependencyHint, shouldSkipJsTransform } from '@/js/precheck'
 
 describe('shouldSkipJsTransform', () => {
   describe('空字符串返回 true（可跳过）', () => {
@@ -58,6 +58,17 @@ describe('shouldSkipJsTransform', () => {
 
     it('import 语句（星号导入）', () => {
       expect(shouldSkipJsTransform('import * as bar from "baz"')).toBe(false)
+    })
+
+    it('Webpack harmony import 注释不会误判为依赖', () => {
+      const source = '/* harmony import */ var className = getName()'
+      expect(hasDependencyHint(source)).toBe(false)
+    })
+
+    it('dynamic import 与 JSDoc import type 不会误判为静态模块图依赖', () => {
+      expect(hasDependencyHint('const lazy = import("./lazy")')).toBe(false)
+      expect(hasDependencyHint('/** @returns {import("@mpxjs/core").Mpx} */')).toBe(false)
+      expect(shouldSkipJsTransform('const lazy = import("./lazy")')).toBe(true)
     })
 
     it('export 语句', () => {
