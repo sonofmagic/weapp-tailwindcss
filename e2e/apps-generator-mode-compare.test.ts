@@ -921,6 +921,24 @@ function normalizeCssSnapshot(css: string) {
   return normalizeCssTextSnapshot(css)
 }
 
+const GENERATED_CSS_SOURCE_MARKER_RE = /(\/\*!\s*weapp-tailwindcss vite-generated-css:)([^\s*]+)(\s*\*\/)/g
+
+function normalizeGeneratedCssSourceMarkers(css: string) {
+  return css.replace(GENERATED_CSS_SOURCE_MARKER_RE, (match, prefix, encodedSource, suffix) => {
+    try {
+      const source = decodeURIComponent(encodedSource).replaceAll('\\', '/')
+      const demoIndex = source.lastIndexOf('/demo/')
+      if (demoIndex < 0) {
+        return match
+      }
+      return `${prefix}${encodeURIComponent(source.slice(demoIndex + 1))}${suffix}`
+    }
+    catch {
+      return match
+    }
+  })
+}
+
 const TARO_WEBPACK_V4_NUTUI_NOISE_KEYFRAMES = new Set([
   'rotation',
   'nutJump',
@@ -1009,7 +1027,7 @@ function removeTaroWebpackV4IndependentNutuiNoise(css: string) {
 }
 
 function normalizeProjectCssSnapshot(project: CompareProject, snapshot: GeneratorCssSnapshot) {
-  let normalized = normalizeCssSnapshot(snapshot.content)
+  let normalized = normalizeCssSnapshot(normalizeGeneratedCssSourceMarkers(snapshot.content))
   if (shouldRemoveTaroWebpackV4WebSubpackageNoise(project, snapshot.fileName)) {
     normalized = removeTaroWebpackV4WebSubpackageNoise(normalized)
   }
@@ -1110,6 +1128,23 @@ async function expectCssOutputSnapshot(
 }
 
 describe('demo generator mode output', () => {
+  it('normalizes generated css source markers across checkout locations', () => {
+    const source = 'demo/taro-vite-react-tailwindcss-v4/src/app.css'
+    const expected = `/*! weapp-tailwindcss vite-generated-css:${encodeURIComponent(source)} */`
+
+    for (const absoluteSource of [
+      `/Users/example/project/${source}`,
+      `/home/runner/work/project/${source}`,
+      `C:\\workspace\\project\\${source.replaceAll('/', '\\')}`,
+    ]) {
+      const marker = `/*! weapp-tailwindcss vite-generated-css:${encodeURIComponent(absoluteSource)} */`
+      expect(normalizeGeneratedCssSourceMarkers(marker)).toBe(expected)
+    }
+
+    expect(normalizeGeneratedCssSourceMarkers('/*! weapp-tailwindcss vite-generated-css:%E0%A4%A */'))
+      .toBe('/*! weapp-tailwindcss vite-generated-css:%E0%A4%A */')
+  })
+
   it('collects nested selectors and normalizes unsupported pseudo aliases', () => {
     expect(collectSelectors([
       '@media (prefers-color-scheme: dark) {',
