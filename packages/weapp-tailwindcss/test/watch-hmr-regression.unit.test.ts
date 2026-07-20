@@ -2186,6 +2186,8 @@ describe('watch-hmr regression cases', () => {
     expect(isWebCompileReadyLogLine('compiled with some warnings')).toBe(true)
     expect(isWebCompileReadyLogLine('webpack 5.107.2 compiled with 1 warning in 369825 ms')).toBe(true)
     expect(isWebCompileDoneLogLine('  ➜  Local:   http://localhost:10086/')).toBe(false)
+    expect(isWebCompileDoneLogLine('1:32:43 PM [vite] hmr update /src/main.css')).toBe(true)
+    expect(isWebCompileDoneLogLine('[weapp-tailwindcss:hmr] {"bundler":"vite","phase":"generateCss.serve","durationMs":40}')).toBe(true)
     expect(isWebCompileDoneLogLine('webpack 5.107.2 compiled with 1 warning in 369825 ms')).toBe(true)
   })
 
@@ -3211,6 +3213,7 @@ describe('watch-hmr regression cases', () => {
 
     expect(uniAppCase?.webHmr?.sourceDomReplacementSequence?.[0]?.beforeSelector).toBe('.text-\\[\\#00f285\\]')
     expect(uniAppCase?.webHmr?.sourceDomReplacementSequence?.[0]?.expectedStyle?.color).toBe('rgb(18, 52, 86)')
+    expect(uniAppCase?.webHmr?.touchCssEntryOnSourceMutation).toBe(false)
   })
 
   it('filters platform-specific unstable watch cases from grouped runs', () => {

@@ -36,8 +36,10 @@ export function isWebCompileReadyLogLine(line: string) {
 }
 
 export function isWebCompileDoneLogLine(line: string) {
-  return /ready in \d+|compiled successfully|compiled with (?:(?:some|\d+) )?warnings?|webpack\s+[\d.]+\s+compiled|webpack compiled|构建完成|编译成功/u.test(line)
+  return /ready in \d+|\[vite\]\s+hmr update|\[weapp-tailwindcss:hmr\].*"phase":"generateCss\.serve"|compiled successfully|compiled with (?:(?:some|\d+) )?warnings?|webpack\s+[\d.]+\s+compiled|webpack compiled|构建完成|编译成功/u.test(line)
 }
+
+type WaitForCompileSettled = (phaseStartedAt: number, phase: string) => Promise<void>
 
 function collectPluginProcessMetrics(samples: PluginProcessSample[], startedAt: number) {
   const phaseSamples = samples.filter(sample => sample.at >= startedAt)
@@ -386,6 +388,7 @@ async function runSourceClassReplacementSequence(
   page: Page,
   config: WebHmrConfig,
   sourceOriginal: string,
+  waitForCompileSettled: WaitForCompileSettled,
 ) {
   const sequence = config.sourceClassReplacementSequence ?? []
   if (sequence.length === 0) {
@@ -440,6 +443,8 @@ async function runSourceClassReplacementSequence(
       throw new Error(`${message}${lastError ? `\n${lastError}` : ''}`)
     })
 
+    await waitForCompileSettled(hotUpdateStartedAt, `source replacement ${item.label}`)
+
     results.push({
       label: item.label,
       from: item.from,
@@ -460,6 +465,7 @@ async function runSourceDomReplacementSequence(
   config: WebHmrConfig,
   sourceOriginal: string,
   cssEntryOriginal?: string | undefined,
+  waitForCompileSettled: WaitForCompileSettled,
 ) {
   const sequence = config.sourceDomReplacementSequence ?? []
   if (sequence.length === 0) {
@@ -485,7 +491,7 @@ async function runSourceDomReplacementSequence(
       message: `[${watchCase.label}] web source DOM replacement base node was not ready: ${item.label}`,
     }, hotUpdateStartedAt)
     await writeFilePreserveEol(config.sourceFile, mutation.next, sourceOriginal)
-    if (config.cssEntryFile && cssEntryOriginal != null) {
+    if (config.touchCssEntryOnSourceMutation !== false && config.cssEntryFile && cssEntryOriginal != null) {
       // Taro H5 的 TSX HMR 只更新页面模块；触碰 CSS 入口以复用框架真实的 app.css 热更新链路。
       await writeFilePreserveEol(
         config.cssEntryFile,
@@ -535,6 +541,8 @@ async function runSourceDomReplacementSequence(
       throw new Error(`${message}${lastError ? `\n${lastError}` : ''}`)
     })
 
+    await waitForCompileSettled(hotUpdateStartedAt, `source DOM replacement ${item.label}`)
+
     results.push({
       label: item.label,
       ...(item.selector ? { selector: item.selector } : {}),
@@ -575,6 +583,7 @@ async function runWebIconifyHmr(
   page: Page,
   config: WebHmrConfig,
   sourceOriginal: string,
+  waitForCompileSettled: WaitForCompileSettled,
 ) {
   const iconifyConfig = config.iconifyHmr
   if (!iconifyConfig) {
@@ -641,6 +650,7 @@ async function runWebIconifyHmr(
     },
     injectStartedAt,
   )
+  await waitForCompileSettled(injectStartedAt, 'iconify inject')
 
   const hotUpdateStartedAt = Date.now()
   process.stdout.write(
@@ -664,6 +674,7 @@ async function runWebIconifyHmr(
     },
     hotUpdateStartedAt,
   )
+  await waitForCompileSettled(hotUpdateStartedAt, 'iconify content')
 
   return {
     marker,
@@ -1009,7 +1020,7 @@ export async function runWebHmr(
     const initialReadyMs = Date.now() - startedAt
     const hotUpdateStartedAt = Date.now()
     await writeFilePreserveEol(config.sourceFile, mutatedSource, sourceOriginal)
-    if (config.cssEntryFile && cssEntryOriginal != null) {
+    if (config.touchCssEntryOnSourceMutation !== false && config.cssEntryFile && cssEntryOriginal != null) {
       await writeFilePreserveEol(
         config.cssEntryFile,
         createCssEntryContent(cssEntryOriginal, marker, mutation.classLiteral),
@@ -1054,6 +1065,7 @@ export async function runWebHmr(
       const message = error instanceof Error ? error.message : String(error)
       throw new Error(`${message}${lastStyleError ? `\n${lastStyleError}` : ''}`)
     }
+    await waitForCompileSettled(hotUpdateStartedAt, 'hot-update acceptance')
 
     const rollbackStartedAt = Date.now()
     const rollbackExpectedStyle = resolveRollbackExpectedStyle(config)
@@ -1064,7 +1076,7 @@ export async function runWebHmr(
         : sourceOriginal,
       sourceOriginal,
     )
-    if (config.cssEntryFile && cssEntryOriginal != null) {
+    if (config.touchCssEntryOnSourceMutation !== false && config.cssEntryFile && cssEntryOriginal != null) {
       await writeFilePreserveEol(
         config.cssEntryFile,
         config.injectMarkerElement
@@ -1106,6 +1118,7 @@ export async function runWebHmr(
       const message = error instanceof Error ? error.message : String(error)
       throw new Error(`${message}${lastStyleError ? `\n${lastStyleError}` : ''}`)
     })
+    await waitForCompileSettled(rollbackStartedAt, 'rollback acceptance')
     if (config.injectMarkerElement) {
       await page.locator(`[data-tw-watch-web="${marker}"]`).evaluate((element) => {
         element.remove()
@@ -1119,6 +1132,7 @@ export async function runWebHmr(
       page,
       config,
       sourceOriginal,
+      waitForCompileSettled,
     )
     const sourceDomReplacementSequence = await runSourceDomReplacementSequence(
       watchCase,
@@ -1127,6 +1141,7 @@ export async function runWebHmr(
       config,
       sourceOriginal,
       cssEntryOriginal,
+      waitForCompileSettled,
     )
     const iconifyHmr = await runWebIconifyHmr(
       watchCase,
@@ -1134,6 +1149,7 @@ export async function runWebHmr(
       page,
       config,
       sourceOriginal,
+      waitForCompileSettled,
     )
 
     process.stdout.write(
