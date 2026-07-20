@@ -6,7 +6,9 @@ import {
   createTsdownConfigs,
   externalizeEsmRuntimeDeps,
   moduleOutExtensions,
+  runtimeCjsEntries,
   runtimeEntries,
+  webpackLoaderEntries,
 } from '../../tsdown.shared.mts'
 
 describe('tsdown build layout', () => {
@@ -18,11 +20,13 @@ describe('tsdown build layout', () => {
     const cliCjsConfig = configs[3]
 
     expect(runtimeEsmConfig.entry).toEqual(runtimeEntries)
-    expect(runtimeCjsConfig.entry).toEqual(runtimeEntries)
+    expect(runtimeCjsConfig.entry).toEqual(runtimeCjsEntries)
     expect(runtimeEsmConfig.entry).not.toHaveProperty('cli')
+    expect(runtimeEsmConfig.entry).not.toHaveProperty('weapp-tw-css-import-rewrite-loader')
     expect(runtimeEsmConfig.entry).toHaveProperty('framework')
     expect(runtimeEsmConfig.entry).toHaveProperty('generator')
     expect(runtimeEsmConfig.entry).toHaveProperty('postcss')
+    expect(runtimeCjsConfig.entry).toMatchObject(webpackLoaderEntries)
 
     expect(cliEsmConfig.entry).toEqual(cliEntries)
     expect(cliCjsConfig.entry).toEqual(cliEntries)
@@ -44,14 +48,14 @@ describe('tsdown build layout', () => {
 
   it('uses module-safe extensions and keeps webpack loaders as physical cjs files', () => {
     const configs = createTsdownConfigs()
-    const loaderConfig = configs[5]
+    const runtimeCjsConfig = configs[1]
 
     expect(configs[0].format).toEqual(['esm'])
     expect(configs[1].format).toEqual(['cjs'])
     expect(configs[2].format).toEqual(['esm'])
     expect(configs[3].format).toEqual(['cjs'])
-    expect(loaderConfig.format).toEqual(['cjs'])
-    expect(loaderConfig.deps?.alwaysBundle).toBe(bundleCjsRuntimeDeps)
+    expect(runtimeCjsConfig.entry).toMatchObject(webpackLoaderEntries)
+    expect(runtimeCjsConfig.deps?.alwaysBundle).toBe(bundleCjsRuntimeDeps)
     expect(moduleOutExtensions({ format: 'es' }).js).toBe('.js')
     expect(moduleOutExtensions({ format: 'cjs' }).js).toBe('.cjs')
   })

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { createRuntimeAffectingSourceSignature } from '@/bundlers/vite/runtime-affecting-signature'
-import { parseCache } from '@/js/babel'
+import { babelParse, parseCache } from '@/js/babel/parse'
 
 describe('bundlers/vite runtime-affecting signature', () => {
   it('keeps html comment content in runtime-affecting signature', () => {
@@ -33,13 +33,23 @@ describe('bundlers/vite runtime-affecting signature', () => {
     expect(second).toContain('c: text-[#654321] ')
   })
 
-  it('does not retain runtime js signature parses in the global parser cache', () => {
+  it('seeds the parser cache for the downstream JS transform', () => {
     parseCache.clear()
+    const source = 'const cls = "card"'
 
-    createRuntimeAffectingSourceSignature('const cls = "card"', 'js')
-    createRuntimeAffectingSourceSignature('const cls = "card next"', 'js')
+    createRuntimeAffectingSourceSignature(source, 'js')
+    const cached = babelParse(source, {
+      cache: true,
+      cacheKey: 'st:unambiguous',
+      sourceType: 'unambiguous',
+    })
 
-    expect(parseCache.size).toBe(0)
+    expect(parseCache.size).toBe(1)
+    expect(babelParse(source, {
+      cache: true,
+      cacheKey: 'st:unambiguous',
+      sourceType: 'unambiguous',
+    })).toBe(cached)
   })
 
   it('skips js parser work when source has no runtime-affecting text hint', () => {

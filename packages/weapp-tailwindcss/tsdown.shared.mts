@@ -37,6 +37,11 @@ export const webpackLoaderEntries = {
   'weapp-tw-css-import-rewrite-loader': 'src/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader.ts',
 } as const
 
+export const runtimeCjsEntries = {
+  ...runtimeEntries,
+  ...webpackLoaderEntries,
+} as const
+
 function externalizeCommonRuntimeDeps(id: string) {
   return id === 'webpack'
     || id === 'tailwindcss/plugin'
@@ -95,7 +100,8 @@ export function createTsdownConfigs(options: WatchAwareOptions = {}) {
       outExtensions: moduleOutExtensions,
     },
     {
-      entry: runtimeEntries,
+      // loaders 与 runtime 共用构建图，避免 Babel 8 等 ESM-only 依赖被重复内联。
+      entry: runtimeCjsEntries,
       dts: false,
       clean: false,
       shims: true,
@@ -144,19 +150,6 @@ export function createTsdownConfigs(options: WatchAwareOptions = {}) {
       shims: false,
       format: ['cjs', 'esm'],
       target: ['es2020'],
-      outExtensions: moduleOutExtensions,
-    },
-    {
-      entry: webpackLoaderEntries,
-      dts: false,
-      clean: false,
-      shims: true,
-      format: ['cjs'],
-      deps: {
-        alwaysBundle: bundleCjsRuntimeDeps,
-        neverBundle: externalizeCommonRuntimeDeps,
-        onlyBundle: false,
-      },
       outExtensions: moduleOutExtensions,
     },
   ]

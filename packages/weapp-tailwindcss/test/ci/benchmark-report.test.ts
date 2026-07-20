@@ -176,7 +176,53 @@ describe('benchmark ci report', () => {
       'hmrPeakRssMb',
     ])
     expect(result.thresholds.regressionPercent).toBe(5)
+    expect(result.thresholds.minimumTimingRegressionMs).toBe(10)
     expect(result.passed).toBe(false)
+  })
+
+  it('ignores sub-10ms timing drift while retaining the percentage guard for larger regressions', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-20T00:00:00.000Z',
+      options: { buildRuns: 1, hmrRuns: 1, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'micro-noise',
+          hmrMode: 'watch',
+          summary: { hmrPlugin: { p95: 50 } },
+        },
+        {
+          version: currentLabel,
+          key: 'micro-noise',
+          hmrMode: 'watch',
+          summary: { hmrPlugin: { p95: 56 } },
+        },
+        {
+          version: baselineLabel,
+          key: 'real-regression',
+          hmrMode: 'watch',
+          summary: { hmrPlugin: { p95: 100 } },
+        },
+        {
+          version: currentLabel,
+          key: 'real-regression',
+          hmrMode: 'watch',
+          summary: { hmrPlugin: { p95: 111 } },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    const result = evaluatePerformanceGuard(summary)
+
+    expect(result.violations).not.toContainEqual(expect.objectContaining({ key: 'micro-noise' }))
+    expect(result.violations).toContainEqual(expect.objectContaining({
+      key: 'real-regression',
+      metric: 'hmrPluginP95',
+      absoluteDelta: 11,
+    }))
   })
 
   it('uses the full build plugin median so one steady-sample outlier cannot dominate the guard', async () => {

@@ -181,16 +181,17 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
 
 export function evaluatePerformanceGuard(summary, options = {}) {
   const regressionPercent = toNumber(options.regressionPercent) ?? 5
+  const minimumTimingRegressionMs = toNumber(options.minimumTimingRegressionMs) ?? 10
   const violations = summary.currentOnlyErrors.map(item => ({
     key: item.key,
     metric: 'error',
     message: String(item.error).split('\n')[0],
   }))
   const metrics = [
-    { metric: 'buildMedian', baseline: 'baselineBuild', current: 'currentBuild', delta: 'buildDeltaPct' },
-    { metric: 'hmrP95', baseline: 'baselineHmr', current: 'currentHmr', delta: 'hmrDeltaPct', watchOnly: true },
-    { metric: 'buildPluginMedian', baseline: 'baselineBuildPlugin', current: 'currentBuildPlugin', delta: 'buildPluginDeltaPct' },
-    { metric: 'hmrPluginP95', baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', watchOnly: true },
+    { metric: 'buildMedian', baseline: 'baselineBuild', current: 'currentBuild', delta: 'buildDeltaPct', timing: true },
+    { metric: 'hmrP95', baseline: 'baselineHmr', current: 'currentHmr', delta: 'hmrDeltaPct', timing: true, watchOnly: true },
+    { metric: 'buildPluginMedian', baseline: 'baselineBuildPlugin', current: 'currentBuildPlugin', delta: 'buildPluginDeltaPct', timing: true },
+    { metric: 'hmrPluginP95', baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', timing: true, watchOnly: true },
     { metric: 'buildPeakRssMb', baseline: 'baselineBuildPeakRssMb', current: 'currentBuildPeakRssMb', delta: 'buildPeakRssDeltaPct' },
     { metric: 'buildSteadyRssMb', baseline: 'baselineBuildSteadyRssMb', current: 'currentBuildSteadyRssMb', delta: 'buildSteadyRssDeltaPct' },
     { metric: 'hmrPeakRssMb', baseline: 'baselineHmrPeakRssMb', current: 'currentHmrPeakRssMb', delta: 'hmrPeakRssDeltaPct', watchOnly: true },
@@ -269,7 +270,8 @@ export function evaluatePerformanceGuard(summary, options = {}) {
         continue
       }
       const absoluteDelta = current - baseline
-      if (deltaPercent > regressionPercent) {
+      const minimumAbsoluteDelta = config.timing ? minimumTimingRegressionMs : 0
+      if (deltaPercent > regressionPercent && absoluteDelta >= minimumAbsoluteDelta) {
         violations.push({
           key: compare.key,
           metric: config.metric,
@@ -286,6 +288,7 @@ export function evaluatePerformanceGuard(summary, options = {}) {
   return {
     passed: violations.length === 0,
     thresholds: {
+      minimumTimingRegressionMs,
       regressionPercent,
     },
     violations,
@@ -324,6 +327,7 @@ export function toMarkdown(summary, baselineSpec) {
         '',
         `- 结果：${guard.passed ? '通过' : '失败'}`,
         `- 统一退化阈值：${guard.thresholds.regressionPercent}%`,
+        `- 时间回归绝对下限：${fmtMs(guard.thresholds.minimumTimingRegressionMs)}ms`,
         `- 违规项：${guard.violations.length}`,
         ...guard.violations.map(item => `- ${item.key} / ${item.metric}: ${item.message ?? `${fmtMs(item.baseline)} -> ${fmtMs(item.current)} (${fmtPct(item.deltaPercent)})`}`),
       ].join('\n')
