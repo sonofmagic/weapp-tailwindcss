@@ -17,9 +17,9 @@
 
 ## 使用前提
 
-- Node.js `20.19+`
+- Node.js `22.12+`（`weapp-tailwindcss@5.2.0` 起）
 - `pnpm`
-- `HBuilderX`
+- `HBuilderX 5.11+`
 
 ## 快速开始
 

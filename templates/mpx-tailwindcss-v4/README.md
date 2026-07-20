@@ -17,7 +17,7 @@
 
 ## 使用前提
 
-- Node.js `20.19+`
+- Node.js `22.12+`（`weapp-tailwindcss@5.2.0` 起）
 - `pnpm`
 - 微信开发者工具
 

@@ -4,7 +4,7 @@
 
 ## 1. 通用前置检查
 
-1. Node 版本建议 `^20.19.0 || >=22.12.0`
+1. `weapp-tailwindcss@5.2.0` 起要求 Node.js `>=22.12.0`；HBuilderX 项目还要求 HBuilderX `>=5.11`
 2. 包管理器默认 `pnpm`
 3. 使用 Tailwind CSS 4
 4. 明确目标端：仅小程序 or 小程序 + `H5/App`

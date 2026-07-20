@@ -43,7 +43,9 @@
 | 框架         | 支持 uni-app / uni-app x、Taro、Mpx、原生小程序、weapp-vite 等接入方式        |
 | 多端输出     | 覆盖小程序、H5/Web 与 App WebView 等平台差异                                  |
 | 运行时生态   | 提供 merge、variants、cva、runtime、typography、theme-transition、ui 等配套包 |
-| Node.js      | 需要 Node.js `^20.19.0` 或 `>=22.12.0`                                        |
+| Node.js      | `weapp-tailwindcss@5.2.0` 起需要 Node.js `>=22.12.0`                           |
+
+从 `weapp-tailwindcss@5.2.0` 开始，Node.js 最低版本提升到 `22.12.0`，该版本默认支持从 CommonJS 加载 ESM。使用 HBuilderX 的 `uni-app` / `uni-app x` 项目还需要升级到 HBuilderX `5.11` 或更高版本，避免 IDE 内置 Node 无法加载 ESM 依赖。
 
 ## 官方文档
 

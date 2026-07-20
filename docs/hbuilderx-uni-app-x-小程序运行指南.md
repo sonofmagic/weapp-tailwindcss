@@ -23,10 +23,12 @@
 
 | 条目 | 要求 |
 | --- | --- |
-| Node.js | `>=20.19.0` |
+| Node.js | `>=22.12.0`（`weapp-tailwindcss@5.2.0` 起） |
 | 包管理器 | `pnpm` |
-| HBuilderX | 本机已安装，可访问 CLI |
+| HBuilderX | `>=5.11`，本机已安装并可访问 CLI |
 | 目标目录 | 进入具体 `uni-app x` 工程目录再执行命令 |
+
+Node.js `22.12.0` 是 Node.js 22 默认支持从 CommonJS 加载 ESM 的最低版本。HBuilderX 低于 `5.11` 时，其内置 Node 可能无法加载 `weapp-tailwindcss@5.2.0` 使用的 ESM 依赖。
 
 ### 2.2 推荐命令
 

@@ -43,7 +43,9 @@ It is designed for:
 | Frameworks        | uni-app / uni-app x, Taro, Mpx, native mini programs, weapp-vite, and related integrations |
 | Output targets    | Mini programs, H5/Web, App WebView, and related platform differences                       |
 | Runtime ecosystem | merge, variants, cva, runtime, typography, theme-transition, ui, and related packages      |
-| Node.js           | Node.js `^20.19.0` or `>=22.12.0`                                                          |
+| Node.js           | Node.js `>=22.12.0` is required starting with `weapp-tailwindcss@5.2.0`                    |
+
+Starting with `weapp-tailwindcss@5.2.0`, the minimum Node.js version is `22.12.0`, where loading ESM from CommonJS is enabled by default. Projects using HBuilderX with `uni-app` or `uni-app x` must also upgrade to HBuilderX `5.11` or later so the IDE runtime can load ESM dependencies correctly.
 
 ## Documentation
 

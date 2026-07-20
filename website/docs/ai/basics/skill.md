@@ -81,7 +81,7 @@ Skill 会要求 AI 优先完成这些关键动作：
    - 构建器（`vite` / `webpack5`）
    - 目标端（仅小程序 / 小程序 + `H5/App`）
    - Tailwind CSS 4 与包管理器（重点 `pnpm@10+`）
-   - Node 版本（建议 `^20.19.0 || >=22.12.0`）
+   - Node 版本（`weapp-tailwindcss@5.2.0` 起要求 `>=22.12.0`）；HBuilderX 项目还要确认 HBuilderX `>=5.11`
 3. 按任务读取对应参考文件：
    - 集成/迁移：`references/integration-playbook.md`
    - 排障：`references/troubleshooting-playbook.md`

@@ -38,7 +38,8 @@ keywords:
 
 ## 环境要求
 
-- Node.js `^20.19.0` 或 `>=22.12.0`（建议 LTS）
+- `weapp-tailwindcss@5.2.0` 起要求 Node.js `>=22.12.0`。Node.js 22 从该版本开始默认支持从 CommonJS 加载 ESM。
+- 使用 HBuilderX 的 `uni-app` / `uni-app x` 项目要求 HBuilderX `>=5.11`。
 
 ## Why `weapp-tailwindcss`?
 

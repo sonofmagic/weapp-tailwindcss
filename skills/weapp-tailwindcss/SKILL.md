@@ -34,7 +34,7 @@ description: 帮助用户在 uni-app、taro、uni-app x 与原生小程序项目
 - 构建工具：`vite` / `webpack5` / `webpack4` / 其他
 - 目标端：仅小程序，还是小程序 + `H5` / `App`
 - `tailwindcss` 主版本（v3 / v4）与包管理器（重点确认是否 `pnpm@10+`）
-- 运行环境：`node` 版本（建议 `^20.19.0 || >=22.12.0`）
+- 运行环境：`node` 版本（`weapp-tailwindcss@5.2.0` 起要求 `>=22.12.0`）；涉及 HBuilderX 时确认版本 `>=5.11`
 - 当前诉求是“集成配置 / 问题排查 / 写法规范沉淀”中的哪一类
 
 ## 执行流程
