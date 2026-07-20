@@ -13,157 +13,78 @@ const runtimeBuildTargets = [
     filter: '@weapp-tailwindcss/runtime',
     label: '@weapp-tailwindcss/runtime',
     packageRoot: path.join(repoRoot, 'packages-runtime/runtime'),
-    stamps: [
-      'dist/index.cjs',
-      'dist/index.mjs',
-      'dist/index.d.mts',
-    ],
   },
   {
     name: '@weapp-tailwindcss/merge',
     filter: '@weapp-tailwindcss/merge',
     label: '@weapp-tailwindcss/merge',
     packageRoot: path.join(repoRoot, 'packages-runtime/merge'),
-    stamps: [
-      'dist/index.cjs',
-      'dist/index.mjs',
-      'dist/index.d.mts',
-    ],
   },
   {
     name: '@weapp-tailwindcss/cva',
     filter: '@weapp-tailwindcss/cva',
     label: '@weapp-tailwindcss/cva',
     packageRoot: path.join(repoRoot, 'packages-runtime/cva'),
-    stamps: [
-      'dist/index.cjs',
-      'dist/index.mjs',
-      'dist/index.d.mts',
-    ],
   },
   {
     name: '@weapp-tailwindcss/variants',
     filter: '@weapp-tailwindcss/variants',
     label: '@weapp-tailwindcss/variants',
     packageRoot: path.join(repoRoot, 'packages-runtime/variants'),
-    stamps: [
-      'dist/index.cjs',
-      'dist/index.mjs',
-      'dist/index.d.mts',
-    ],
   },
   {
     name: '@weapp-tailwindcss/typography',
     filter: '@weapp-tailwindcss/typography',
     label: '@weapp-tailwindcss/typography',
     packageRoot: path.join(repoRoot, 'packages-runtime/typography'),
-    stamps: [
-      'dist/index.js',
-      'dist/index.cjs',
-      'dist/transform.js',
-      'dist/transform.cjs',
-      'dist/index.d.ts',
-    ],
   },
 ]
-const buildTargets = [
+export const buildTargets = [
   {
     filter: '@weapp-tailwindcss/shared',
     label: '@weapp-tailwindcss/shared',
     packageRoot: path.join(repoRoot, 'packages/shared'),
-    stamps: [
-      'dist/index.js',
-      'dist/index.cjs',
-      'dist/node.js',
-      'dist/node.cjs',
-    ],
   },
   {
     filter: '@weapp-tailwindcss/logger',
     label: '@weapp-tailwindcss/logger',
     packageRoot: path.join(repoRoot, 'packages/logger'),
-    stamps: [
-      'dist/index.js',
-      'dist/index.cjs',
-      'dist/index.d.ts',
-    ],
   },
   {
     filter: '@weapp-tailwindcss/postcss-calc',
     label: '@weapp-tailwindcss/postcss-calc',
     packageRoot: path.join(repoRoot, 'packages/postcss-calc'),
-    stamps: [
-      'dist/index.cjs',
-      'dist/index.js',
-      'dist/index.d.ts',
-    ],
   },
   {
     filter: 'tailwindcss-config',
     label: 'tailwindcss-config',
     packageRoot: path.join(repoRoot, 'packages/tailwindcss-config'),
-    stamps: [
-      'dist/index.js',
-      'dist/index.cjs',
-      'dist/index.d.ts',
-    ],
   },
   {
     filter: '@weapp-tailwindcss/reset',
     label: '@weapp-tailwindcss/reset',
     packageRoot: path.join(repoRoot, 'packages/reset'),
-    stamps: [
-      'dist/index.cjs',
-      'dist/index.mjs',
-      'dist/index.d.ts',
-    ],
   },
   {
     filter: '@weapp-tailwindcss/postcss',
     label: '@weapp-tailwindcss/postcss',
     packageRoot: path.join(repoRoot, 'packages/postcss'),
-    stamps: [
-      'dist/index.js',
-      'dist/index.cjs',
-      'dist/index.d.ts',
-    ],
   },
   {
     filter: '@weapp-tailwindcss/debug-uni-app-x',
     label: '@weapp-tailwindcss/debug-uni-app-x',
     packageRoot: path.join(repoRoot, 'packages/debug-uni-app-x'),
-    stamps: [
-      'dist/index.cjs',
-      'dist/index.js',
-      'dist/index.d.ts',
-    ],
   },
   {
     filter: 'weapp-style-injector',
     label: 'weapp-style-injector',
     packageRoot: path.join(repoRoot, 'packages/weapp-style-injector'),
-    stamps: [
-      'dist/index.js',
-      'dist/index.cjs',
-      'dist/vite.js',
-      'dist/vite.cjs',
-      'dist/webpack.js',
-      'dist/webpack.cjs',
-    ],
   },
   {
     filter: 'weapp-tailwindcss',
     label: '核心包',
     packageRoot: path.join(repoRoot, 'packages/weapp-tailwindcss'),
-    stamps: [
-      'dist/vite.js',
-      'dist/vite.cjs',
-      'dist/webpack.js',
-      'dist/webpack.cjs',
-      'dist/gulp.js',
-      'dist/gulp.cjs',
-      'dist/index.js',
-      'dist/index.cjs',
+    extraStamps: [
       'dist/cli.cjs',
       'dist/weapp-tw-runtime-classset-loader.cjs',
     ],
@@ -177,6 +98,56 @@ function readPackageJson(file) {
   catch {
     return undefined
   }
+}
+
+function collectDistEntries(value, entries) {
+  if (typeof value === 'string') {
+    const normalized = value.startsWith('./') ? value.slice(2) : value
+    if (normalized.startsWith('dist/') && !normalized.includes('*')) {
+      entries.add(normalized)
+    }
+    return
+  }
+
+  if (Array.isArray(value)) {
+    for (const entry of value) {
+      collectDistEntries(entry, entries)
+    }
+    return
+  }
+
+  if (value && typeof value === 'object') {
+    for (const entry of Object.values(value)) {
+      collectDistEntries(entry, entries)
+    }
+  }
+}
+
+export function collectPackageEntryStamps(packageRoot) {
+  const packageJson = readPackageJson(path.join(packageRoot, 'package.json'))
+  if (!packageJson) {
+    return []
+  }
+
+  const entries = new Set()
+  for (const value of [
+    packageJson.exports,
+    packageJson.main,
+    packageJson.module,
+    packageJson.types,
+    packageJson.typings,
+    packageJson.bin,
+  ]) {
+    collectDistEntries(value, entries)
+  }
+  return [...entries].sort()
+}
+
+export function resolveTargetStamps(target) {
+  return [...new Set([
+    ...collectPackageEntryStamps(target.packageRoot),
+    ...(target.extraStamps ?? []),
+  ])]
 }
 
 function collectWorkspaceRuntimeDependencyNames() {
@@ -221,12 +192,17 @@ function collectLatestMtime(target, ignoredDirectories = new Set()) {
   return latest
 }
 
-function shouldBuild(target) {
+export function shouldBuild(target) {
   const srcRoot = path.join(target.packageRoot, 'src')
   const distRoot = path.join(target.packageRoot, 'dist')
-  const stampFiles = target.stamps.map(stamp => path.join(target.packageRoot, stamp))
+  const stampFiles = resolveTargetStamps(target)
+    .map(stamp => path.join(target.packageRoot, stamp))
 
-  if (!existsSync(distRoot) || stampFiles.some(file => !existsSync(file))) {
+  if (
+    !existsSync(distRoot)
+    || stampFiles.length === 0
+    || stampFiles.some(file => !existsSync(file))
+  ) {
     return true
   }
   const latestSource = collectLatestMtime(srcRoot)
@@ -269,35 +245,37 @@ function expandRuntimeBuildTargets() {
   return runtimeBuildTargets.filter(target => selectedNames.has(target.name))
 }
 
-const staleTargets = [
-  ...buildTargets,
-  ...expandRuntimeBuildTargets(),
-].filter(shouldBuild)
+export function main() {
+  const staleTargets = [
+    ...buildTargets,
+    ...expandRuntimeBuildTargets(),
+  ].filter(shouldBuild)
 
-if (staleTargets.length === 0) {
-  process.exit(0)
+  for (const target of staleTargets) {
+    console.log(`[weapp-tailwindcss] ${target.label} dist 已过期，正在构建供 demo 使用...`)
+    const command = createPnpmCommand(['--filter', target.filter, 'build'])
+    const result = spawnSync(
+      command.command,
+      command.args,
+      {
+        cwd: repoRoot,
+        stdio: 'inherit',
+        env: process.env,
+        shell: command.shell,
+      },
+    )
+
+    if (result.error) {
+      console.error(result.error)
+      process.exit(1)
+    }
+
+    if (result.status !== 0) {
+      process.exit(result.status ?? 1)
+    }
+  }
 }
 
-for (const target of staleTargets) {
-  console.log(`[weapp-tailwindcss] ${target.label} dist 已过期，正在构建供 demo 使用...`)
-  const command = createPnpmCommand(['--filter', target.filter, 'build'])
-  const result = spawnSync(
-    command.command,
-    command.args,
-    {
-      cwd: repoRoot,
-      stdio: 'inherit',
-      env: process.env,
-      shell: command.shell,
-    },
-  )
-
-  if (result.error) {
-    console.error(result.error)
-    process.exit(1)
-  }
-
-  if (result.status !== 0) {
-    process.exit(result.status ?? 1)
-  }
+if (path.resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
+  main()
 }
