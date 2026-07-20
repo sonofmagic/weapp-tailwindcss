@@ -33,6 +33,34 @@ function sampleCount(row, field) {
   return Array.isArray(row?.[field]) ? row[field].length : undefined
 }
 
+function numericSamples(row, field) {
+  return Array.isArray(row?.[field])
+    ? row[field].filter(value => typeof value === 'number' && Number.isFinite(value))
+    : []
+}
+
+function standardDeviation(values) {
+  if (values.length === 0) {
+    return 0
+  }
+  const mean = values.reduce((sum, value) => sum + value, 0) / values.length
+  return Math.sqrt(values.reduce((sum, value) => sum + ((value - mean) ** 2), 0) / values.length)
+}
+
+export function resolveRegressionNoiseMargin(
+  baselineSamples,
+  currentSamples,
+  minimumAbsoluteDelta,
+  noiseSigma = 3,
+) {
+  const baselineDeviation = standardDeviation(baselineSamples)
+  const currentDeviation = standardDeviation(currentSamples)
+  const pooledDeviation = Math.sqrt(
+    ((baselineDeviation ** 2) + (currentDeviation ** 2)) / 2,
+  )
+  return Math.max(minimumAbsoluteDelta, pooledDeviation * noiseSigma)
+}
+
 function average(values) {
   const validValues = values.filter(value => typeof value === 'number' && Number.isFinite(value))
   return validValues.length ? validValues.reduce((sum, value) => sum + value, 0) / validValues.length : undefined
@@ -102,6 +130,18 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
       currentHmrSampleCount: sampleCount(current, 'hmrMs'),
       baselineHmrPluginSampleCount: sampleCount(baseline, 'hmrPluginMs'),
       currentHmrPluginSampleCount: sampleCount(current, 'hmrPluginMs'),
+      baselineBuildSamples: numericSamples(baseline, 'buildMs'),
+      currentBuildSamples: numericSamples(current, 'buildMs'),
+      baselineHmrSamples: numericSamples(baseline, 'hmrMs'),
+      currentHmrSamples: numericSamples(current, 'hmrMs'),
+      baselineBuildPluginSamples: numericSamples(baseline, 'buildPluginMs'),
+      currentBuildPluginSamples: numericSamples(current, 'buildPluginMs'),
+      baselineHmrPluginSamples: numericSamples(baseline, 'hmrPluginMs'),
+      currentHmrPluginSamples: numericSamples(current, 'hmrPluginMs'),
+      baselineBuildPeakRssSamples: numericSamples(baseline, 'buildPeakRssMb'),
+      currentBuildPeakRssSamples: numericSamples(current, 'buildPeakRssMb'),
+      baselineBuildSteadyRssSamples: numericSamples(baseline, 'buildSteadyRssMb'),
+      currentBuildSteadyRssSamples: numericSamples(current, 'buildSteadyRssMb'),
       baselineMemoryStability: baseline?.memoryStability,
       currentMemoryStability: current.memoryStability,
       baselineBuildMode: baseline?.buildMode ?? 'build',
@@ -181,20 +221,19 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
 
 export function evaluatePerformanceGuard(summary, options = {}) {
   const regressionPercent = toNumber(options.regressionPercent) ?? 5
+  const noiseSigma = toNumber(options.noiseSigma) ?? 3
   const violations = summary.currentOnlyErrors.map(item => ({
     key: item.key,
     metric: 'error',
     message: String(item.error).split('\n')[0],
   }))
   const metrics = [
-    { metric: 'buildMedian', baseline: 'baselineBuild', current: 'currentBuild', delta: 'buildDeltaPct' },
-    { metric: 'hmrP95', baseline: 'baselineHmr', current: 'currentHmr', delta: 'hmrDeltaPct', watchOnly: true },
-    { metric: 'buildPluginMedian', baseline: 'baselineBuildPlugin', current: 'currentBuildPlugin', delta: 'buildPluginDeltaPct' },
-    { metric: 'hmrPluginP95', baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', watchOnly: true },
-    { metric: 'buildPeakRssMb', baseline: 'baselineBuildPeakRssMb', current: 'currentBuildPeakRssMb', delta: 'buildPeakRssDeltaPct' },
-    { metric: 'buildSteadyRssMb', baseline: 'baselineBuildSteadyRssMb', current: 'currentBuildSteadyRssMb', delta: 'buildSteadyRssDeltaPct' },
-    { metric: 'hmrPeakRssMb', baseline: 'baselineHmrPeakRssMb', current: 'currentHmrPeakRssMb', delta: 'hmrPeakRssDeltaPct', watchOnly: true },
-    { metric: 'hmrSteadyRssMb', baseline: 'baselineHmrSteadyRssMb', current: 'currentHmrSteadyRssMb', delta: 'hmrSteadyRssDeltaPct', watchOnly: true },
+    { metric: 'buildMedian', baseline: 'baselineBuild', current: 'currentBuild', delta: 'buildDeltaPct', baselineSamples: 'baselineBuildSamples', currentSamples: 'currentBuildSamples', minimumAbsoluteDelta: 50 },
+    { metric: 'hmrP95', baseline: 'baselineHmr', current: 'currentHmr', delta: 'hmrDeltaPct', baselineSamples: 'baselineHmrSamples', currentSamples: 'currentHmrSamples', minimumAbsoluteDelta: 100, watchOnly: true },
+    { metric: 'buildPluginMedian', baseline: 'baselineBuildPlugin', current: 'currentBuildPlugin', delta: 'buildPluginDeltaPct', baselineSamples: 'baselineBuildPluginSamples', currentSamples: 'currentBuildPluginSamples', minimumAbsoluteDelta: 10 },
+    { metric: 'hmrPluginP95', baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', baselineSamples: 'baselineHmrPluginSamples', currentSamples: 'currentHmrPluginSamples', minimumAbsoluteDelta: 10, watchOnly: true },
+    { metric: 'buildPeakRssMb', baseline: 'baselineBuildPeakRssMb', current: 'currentBuildPeakRssMb', delta: 'buildPeakRssDeltaPct', baselineSamples: 'baselineBuildPeakRssSamples', currentSamples: 'currentBuildPeakRssSamples', minimumAbsoluteDelta: 64 },
+    { metric: 'buildSteadyRssMb', baseline: 'baselineBuildSteadyRssMb', current: 'currentBuildSteadyRssMb', delta: 'buildSteadyRssDeltaPct', baselineSamples: 'baselineBuildSteadyRssSamples', currentSamples: 'currentBuildSteadyRssSamples', minimumAbsoluteDelta: 64 },
   ]
 
   for (const compare of summary.compares) {
@@ -269,7 +308,13 @@ export function evaluatePerformanceGuard(summary, options = {}) {
         continue
       }
       const absoluteDelta = current - baseline
-      if (deltaPercent > regressionPercent) {
+      const noiseMargin = resolveRegressionNoiseMargin(
+        compare[config.baselineSamples],
+        compare[config.currentSamples],
+        config.minimumAbsoluteDelta,
+        noiseSigma,
+      )
+      if (deltaPercent > regressionPercent && absoluteDelta > noiseMargin) {
         violations.push({
           key: compare.key,
           metric: config.metric,
@@ -277,6 +322,7 @@ export function evaluatePerformanceGuard(summary, options = {}) {
           current,
           deltaPercent,
           absoluteDelta,
+          noiseMargin,
           thresholdPercent: regressionPercent,
         })
       }
@@ -287,6 +333,8 @@ export function evaluatePerformanceGuard(summary, options = {}) {
     passed: violations.length === 0,
     thresholds: {
       regressionPercent,
+      noiseSigma,
+      minimumAbsoluteDelta: Object.fromEntries(metrics.map(item => [item.metric, item.minimumAbsoluteDelta])),
     },
     violations,
   }
@@ -324,6 +372,7 @@ export function toMarkdown(summary, baselineSpec) {
         '',
         `- 结果：${guard.passed ? '通过' : '失败'}`,
         `- 统一退化阈值：${guard.thresholds.regressionPercent}%`,
+        `- 噪声置信边界：${guard.thresholds.noiseSigma} 倍合并标准差，并应用各指标最小绝对变化量`,
         `- 违规项：${guard.violations.length}`,
         ...guard.violations.map(item => `- ${item.key} / ${item.metric}: ${item.message ?? `${fmtMs(item.baseline)} -> ${fmtMs(item.current)} (${fmtPct(item.deltaPercent)})`}`),
       ].join('\n')
@@ -362,6 +411,8 @@ ${rows}
 ${pluginRows}
 
 ## 内存
+
+HMR 进程树 peak/steady 仅用于趋势观察；单会话数据不参与相对门禁，HMR 内存泄漏由 100 次 class 增删稳定性用例拦截。
 
 | 项目 | Baseline Build peak(MB) | Current Build peak(MB) | 变化 | Baseline Build steady(MB) | Current Build steady(MB) | 变化 | Baseline HMR peak(MB) | Current HMR peak(MB) | 变化 | Baseline HMR steady(MB) | Current HMR steady(MB) | 变化 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |

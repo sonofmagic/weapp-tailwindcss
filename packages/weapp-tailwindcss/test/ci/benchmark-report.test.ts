@@ -122,7 +122,7 @@ describe('benchmark ci report', () => {
     expect(round.lines).not.toContain('after-round')
   })
 
-  it('guards cold build median, HMR P95, plugin timing and memory with one 5% limit', async () => {
+  it('guards repeatable timing and build memory regressions beyond the statistical noise margin', async () => {
     const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
     const baselineLabel = 'base:main'
     const currentLabel = 'current:feature'
@@ -138,6 +138,12 @@ describe('benchmark ci report', () => {
           version: baselineLabel,
           key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
           hmrMode: 'watch',
+          buildMs: [995, 1000, 1005],
+          hmrMs: [495, 500, 505],
+          buildPluginMs: [198, 200, 202],
+          hmrPluginMs: [98, 100, 102],
+          buildPeakRssMb: [995, 1000, 1005],
+          buildSteadyRssMb: [795, 800, 805],
           summary: {
             build: { median: 1000 },
             hmr: { p95: 500 },
@@ -153,15 +159,21 @@ describe('benchmark ci report', () => {
           version: currentLabel,
           key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
           hmrMode: 'watch',
+          buildMs: [1095, 1100, 1105],
+          hmrMs: [645, 650, 655],
+          buildPluginMs: [218, 220, 222],
+          hmrPluginMs: [113, 115, 117],
+          buildPeakRssMb: [1095, 1100, 1105],
+          buildSteadyRssMb: [895, 900, 905],
           summary: {
-            build: { median: 1060 },
-            hmr: { p95: 525 },
-            buildPlugin: { median: 211 },
-            hmrPlugin: { p95: 105 },
-            buildPeakRssMb: { median: 1050 },
-            buildSteadyRssMb: { median: 841 },
-            hmrPeakRssMb: { median: 1261 },
-            hmrSteadyRssMb: { median: 945 },
+            build: { median: 1100 },
+            hmr: { p95: 655 },
+            buildPlugin: { median: 220 },
+            hmrPlugin: { p95: 117 },
+            buildPeakRssMb: { median: 1100 },
+            buildSteadyRssMb: { median: 900 },
+            hmrPeakRssMb: { median: 1600 },
+            hmrSteadyRssMb: { median: 1500 },
           },
         },
       ],
@@ -171,12 +183,66 @@ describe('benchmark ci report', () => {
 
     expect(result.violations.map(item => item.metric)).toEqual([
       'buildMedian',
+      'hmrP95',
       'buildPluginMedian',
+      'hmrPluginP95',
+      'buildPeakRssMb',
       'buildSteadyRssMb',
-      'hmrPeakRssMb',
     ])
     expect(result.thresholds.regressionPercent).toBe(5)
+    expect(result.thresholds.noiseSigma).toBe(3)
     expect(result.passed).toBe(false)
+  })
+
+  it('ignores isolated benchmark jitter inside three pooled standard deviations', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-20T00:00:00.000Z',
+      options: { buildRuns: 3, hmrRuns: 6, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
+          hmrMode: 'watch',
+          hmrMs: [7600, 8355, 7700, 8200, 7900, 8050],
+          hmrPluginMs: [5200, 5900, 5100, 5300, 5000, 5150],
+          buildPeakRssMb: [880, 910, 930],
+          buildSteadyRssMb: [875, 905, 925],
+          summary: {
+            hmr: { p95: 8355 },
+            hmrPlugin: { p95: 5900 },
+            buildPeakRssMb: { median: 910 },
+            buildSteadyRssMb: { median: 905 },
+            hmrPeakRssMb: { median: 2200 },
+            hmrSteadyRssMb: { median: 2150 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
+          hmrMode: 'watch',
+          hmrMs: [8512, 8695, 8550, 8818, 8853, 8420],
+          hmrPluginMs: [5550, 5883, 5400, 5700, 5500, 5600],
+          buildPeakRssMb: [930, 965, 990],
+          buildSteadyRssMb: [925, 960, 985],
+          summary: {
+            hmr: { p95: 8853 },
+            hmrPlugin: { p95: 5883 },
+            buildPeakRssMb: { median: 965 },
+            buildSteadyRssMb: { median: 960 },
+            hmrPeakRssMb: { median: 2900 },
+            hmrSteadyRssMb: { median: 2850 },
+          },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    expect(evaluatePerformanceGuard(summary)).toMatchObject({
+      passed: true,
+      violations: [],
+    })
   })
 
   it('uses the full build plugin median so one steady-sample outlier cannot dominate the guard', async () => {
