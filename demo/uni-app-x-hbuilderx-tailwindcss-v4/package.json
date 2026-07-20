@@ -22,7 +22,7 @@
     "@dcloudio/uni-app": "3.0.0-5000720260410001",
     "@dcloudio/uni-components": "3.0.0-5000720260410001",
     "@dcloudio/uni-h5": "3.0.0-5000720260410001",
-    "vue": "^3.5.39"
+    "vue": "^3.5.40"
   },
   "devDependencies": {
     "@dcloudio/hbuilderx-cli": "^1.2.0",

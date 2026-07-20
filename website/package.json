@@ -91,7 +91,7 @@
     "autoprefixer": "catalog:autoprefixer10",
     "baseline-browser-mapping": "catalog:baselineBrowserMapping",
     "cross-env": "catalog:crossEnv",
-    "docusaurus-plugin-llms": "^0.4.0",
+    "docusaurus-plugin-llms": "^0.5.0",
     "docusaurus-plugin-sass": "^0.2.6",
     "docusaurus-plugin-typedoc": "1.4.2",
     "dotenv": "^17.4.2",

@@ -239,7 +239,7 @@
     "fast-glob": "^3.3.3",
     "local-pkg": "^1.2.1",
     "lru-cache": "11.5.2",
-    "magic-string": "0.30.21",
+    "magic-string": "1.0.0",
     "micromatch": "^4.0.8",
     "semver": "~7.8.5",
     "tailwindcss-config": "workspace:*",

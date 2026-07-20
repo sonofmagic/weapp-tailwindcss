@@ -45,7 +45,7 @@
     "@dcloudio/uni-mp-toutiao": "3.0.0-5000720260410001",
     "@dcloudio/uni-mp-vue": "3.0.0-5000320260312001",
     "@dcloudio/uni-mp-weixin": "3.0.0-5000720260410001",
-    "vue": "^3.5.39"
+    "vue": "^3.5.40"
   },
   "devDependencies": {
     "@dcloudio/types": "^3.4.8",
@@ -55,7 +55,7 @@
     "@iconify-json/svg-spinners": "catalog:iconifyJson",
     "@iconify/tailwind4": "^1.2.3",
     "@tailwindcss/postcss": "catalog:tailwindcss4",
-    "@vue/runtime-core": "^3.5.39",
+    "@vue/runtime-core": "^3.5.40",
     "@vue/tsconfig": "^0.9.1",
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-patch": "catalog:tailwindcssPatch",

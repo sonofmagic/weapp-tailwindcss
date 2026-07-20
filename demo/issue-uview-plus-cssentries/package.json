@@ -24,7 +24,7 @@
     "@dcloudio/uni-mp-alipay": "3.0.0-5000720260410001",
     "@dcloudio/uni-mp-weixin": "3.0.0-5000720260410001",
     "uview-plus": "catalog:uviewPlus",
-    "vue": "^3.5.39"
+    "vue": "^3.5.40"
   },
   "devDependencies": {
     "@dcloudio/types": "^3.4.8",
@@ -36,7 +36,7 @@
     "@iconify/tailwind4": "^1.2.3",
     "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@types/node": "catalog:typesNode2410",
-    "@vue/runtime-core": "^3.5.39",
+    "@vue/runtime-core": "^3.5.40",
     "@vue/tsconfig": "^0.9.1",
     "sass": "catalog:sass195",
     "tailwindcss": "catalog:tailwindcss4",
