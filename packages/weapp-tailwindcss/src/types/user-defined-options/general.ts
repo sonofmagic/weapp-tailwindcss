@@ -201,7 +201,7 @@ export interface UserDefinedOptionsGeneralPart {
    * @experimental
    * @remarks
    * 当前仅在调用侧关闭 source map，且没有模块图、模块替换、ignore 调用/标签模板语义时尝试 OXC。
-   * `weapp-tailwindcss@5.2.0` 起要求 Node `>=22.12.0`。OXC 加载失败时仍会自动回退到 Babel。
+   * Babel 8 链路要求 Node `^22.18.0 || >=24.11.0`。OXC 加载失败时仍会自动回退到 Babel。
    */
   experimentalJsFastPath?: boolean | 'oxc' | undefined
 

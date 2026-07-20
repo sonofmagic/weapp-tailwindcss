@@ -8,7 +8,7 @@ export default defineConfig({
   dts: true,
   deps: {
     neverBundle: [/^tailwindcss(\/|$)/],
-    onlyBundle: ['defu'],
+    onlyBundle: false,
   },
   outputOptions: {
     exports: 'named',

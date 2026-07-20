@@ -2,8 +2,8 @@ const castArray = require('lodash.castarray')
 const merge = require('lodash.merge')
 const parser = require('postcss-selector-parser')
 const plugin = require('tailwindcss/plugin')
-const styles = require('./styles')
-const { commonTrailingPseudos } = require('./utils')
+const styles = require('./styles.cjs')
+const { commonTrailingPseudos } = require('./utils.cjs')
 
 const parseSelector = parser()
 const computed = {

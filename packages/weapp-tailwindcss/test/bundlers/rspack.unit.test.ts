@@ -27,7 +27,7 @@ describe('bundlers/rspack patchRspackConfig', () => {
 
     patchRspackConfig(config, {
       cssImportRewriteLoader: {
-        loader: '/virtual/weapp-tw-css-import-rewrite-loader.js',
+        loader: '/virtual/weapp-tw-css-import-rewrite-loader.cjs',
       },
     })
 
@@ -35,7 +35,7 @@ describe('bundlers/rspack patchRspackConfig', () => {
       'css-extract-loader',
       'css-loader',
       'builtin:lightningcss-loader',
-      '/virtual/weapp-tw-css-import-rewrite-loader.js',
+      '/virtual/weapp-tw-css-import-rewrite-loader.cjs',
     ])
   })
 
@@ -75,7 +75,7 @@ describe('bundlers/rspack patchRspackConfig', () => {
                 use: [
                   { loader: 'css-loader' },
                   {
-                    loader: '/virtual/weapp-tw-css-import-rewrite-loader.js',
+                    loader: '/virtual/weapp-tw-css-import-rewrite-loader.cjs',
                     options: {
                       tailwindcssImportRewriteRuntimeKey: 'legacy',
                     },
@@ -94,7 +94,7 @@ describe('bundlers/rspack patchRspackConfig', () => {
     expect(getUseLoaders(config)).toEqual([
       'css-loader',
       'builtin:lightningcss-loader',
-      '/virtual/weapp-tw-css-import-rewrite-loader.js',
+      '/virtual/weapp-tw-css-import-rewrite-loader.cjs',
     ])
   })
 

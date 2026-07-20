@@ -9,6 +9,22 @@ catalogs:
     autoprefixer:
       specifier: ^10.5.4
       version: 10.5.4
+  babel8:
+    '@babel/core':
+      specifier: ^8.0.1
+      version: 8.0.1
+    '@babel/generator':
+      specifier: ^8.0.0
+      version: 8.0.0
+    '@babel/parser':
+      specifier: ^8.0.4
+      version: 8.0.4
+    '@babel/traverse':
+      specifier: ^8.0.4
+      version: 8.0.4
+    '@babel/types':
+      specifier: ^8.0.4
+      version: 8.0.4
   babelCore7285:
     '@babel/core':
       specifier: ^7.29.7
@@ -410,11 +426,11 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
       '@babel/core':
-        specifier: catalog:babelCore7285
-        version: 7.29.7
+        specifier: catalog:babel8
+        version: 8.0.1
       '@babel/generator':
-        specifier: ~7.29.7
-        version: 7.29.7
+        specifier: catalog:babel8
+        version: 8.0.0
       '@changesets/changelog-github':
         specifier: ^0.7.0
         version: 0.7.0(encoding@0.1.13)
@@ -592,9 +608,6 @@ importers:
       autoprefixer:
         specifier: catalog:autoprefixer10
         version: 10.5.4(postcss@8.5.20)
-      babel-loader:
-        specifier: ^10.1.1
-        version: 10.1.1(@babel/core@7.29.7)(@rspack/core@2.1.4(@swc/helpers@0.5.23))(webpack@5.105.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(clean-css@5.3.3)(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.20))
       boxen:
         specifier: ^8.0.1
         version: 8.0.1
@@ -3821,15 +3834,15 @@ importers:
 
   packages-runtime/theme-transition:
     dependencies:
+      defu:
+        specifier: ^6.1.7
+        version: 6.1.7
       tailwindcss:
         specifier: '>=3 <5'
         version: 4.1.18
 
   packages-runtime/typography:
-    devDependencies:
-      '@weapp-tailwindcss/test-helper':
-        specifier: workspace:*
-        version: link:../../packages/test-helper
+    dependencies:
       htmlparser2:
         specifier: ^12.0.0
         version: 12.0.0
@@ -3848,6 +3861,10 @@ importers:
       postcss-selector-parser:
         specifier: ^7.1.4
         version: 7.1.4
+    devDependencies:
+      '@weapp-tailwindcss/test-helper':
+        specifier: workspace:*
+        version: link:../../packages/test-helper
 
   packages-runtime/ui:
     dependencies:
@@ -3916,14 +3933,14 @@ importers:
   packages/babel:
     dependencies:
       '@babel/parser':
-        specifier: ~7.29.7
-        version: 7.29.7
+        specifier: catalog:babel8
+        version: 8.0.4
       '@babel/traverse':
-        specifier: ~7.29.7
-        version: 7.29.7
+        specifier: catalog:babel8
+        version: 8.0.4
       '@babel/types':
-        specifier: ~7.29.7
-        version: 7.29.7
+        specifier: catalog:babel8
+        version: 8.0.4
 
   packages/build-all:
     dependencies:
@@ -3980,7 +3997,7 @@ importers:
         version: link:../wetw
 
   packages/debug-uni-app-x:
-    devDependencies:
+    dependencies:
       defu:
         specifier: 6.1.7
         version: 6.1.7
@@ -3990,6 +4007,7 @@ importers:
       pathe:
         specifier: 2.0.3
         version: 2.0.3
+    devDependencies:
       vite:
         specifier: 7.2.7
         version: 7.2.7(@types/node@26.1.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
@@ -4027,7 +4045,7 @@ importers:
         version: 2.0.3
 
   packages/logger:
-    devDependencies:
+    dependencies:
       consola:
         specifier: ^3.4.2
         version: 3.4.2
@@ -4043,6 +4061,15 @@ importers:
 
   packages/postcss:
     dependencies:
+      '@csstools/css-color-parser':
+        specifier: ^4.1.9
+        version: 4.1.9(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-parser-algorithms':
+        specifier: ^4.0.0
+        version: 4.0.0(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-tokenizer':
+        specifier: ^4.0.0
+        version: 4.0.0
       '@tailwindcss-mangle/engine':
         specifier: catalog:tailwindcssMangleEngine
         version: 0.2.0(tailwindcss@4.3.3)
@@ -4058,6 +4085,9 @@ importers:
       autoprefixer:
         specifier: catalog:autoprefixer10
         version: 10.5.4(postcss@8.5.20)
+      es-toolkit:
+        specifier: ^1.49.0
+        version: 1.49.0
       lru-cache:
         specifier: 11.5.2
         version: 11.5.2
@@ -4070,6 +4100,9 @@ importers:
       postcss-load-config:
         specifier: ^6.0.1
         version: 6.0.1(jiti@2.7.0)(postcss@8.5.20)(tsx@4.23.1)(yaml@2.9.0)
+      postcss-preset-env:
+        specifier: ^11.3.2
+        version: 11.3.2(postcss@8.5.20)
       postcss-pxtrans:
         specifier: ^1.0.4
         version: 1.0.4(postcss@8.5.20)
@@ -4089,15 +4122,6 @@ importers:
         specifier: workspace:*
         version: link:../tailwindcss-config
     devDependencies:
-      '@csstools/css-color-parser':
-        specifier: ^4.1.9
-        version: 4.1.9(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
-      '@csstools/css-parser-algorithms':
-        specifier: ^4.0.0
-        version: 4.0.0(@csstools/css-tokenizer@4.0.0)
-      '@csstools/css-tokenizer':
-        specifier: ^4.0.0
-        version: 4.0.0
       '@csstools/postcss-is-pseudo-class':
         specifier: ^6.0.0
         version: 6.0.0(postcss@8.5.20)
@@ -4110,9 +4134,6 @@ importers:
       postcss-custom-properties:
         specifier: ^15.0.1
         version: 15.0.1(postcss@8.5.20)
-      postcss-preset-env:
-        specifier: ^11.3.2
-        version: 11.3.2(postcss@8.5.20)
 
   packages/postcss-calc:
     dependencies:
@@ -4169,13 +4190,12 @@ importers:
       get-value:
         specifier: ^4.1.0
         version: 4.1.0
-      set-value:
-        specifier: ^4.1.0
-        version: 4.1.0
-    devDependencies:
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
+      set-value:
+        specifier: ^4.1.0
+        version: 4.1.0
 
   packages/tailwindcss-config:
     dependencies:
@@ -4185,7 +4205,6 @@ importers:
       jiti:
         specifier: 2.7.0
         version: 2.7.0
-    devDependencies:
       lilconfig:
         specifier: ^3.1.3
         version: 3.1.3
@@ -4234,14 +4253,14 @@ importers:
   packages/weapp-tailwindcss:
     dependencies:
       '@babel/parser':
-        specifier: ~7.29.7
-        version: 7.29.7
+        specifier: catalog:babel8
+        version: 8.0.4
       '@babel/traverse':
-        specifier: ~7.29.7
-        version: 7.29.7
+        specifier: catalog:babel8
+        version: 8.0.4
       '@babel/types':
-        specifier: ~7.29.7
-        version: 7.29.7
+        specifier: catalog:babel8
+        version: 8.0.4
       '@tailwindcss-mangle/engine':
         specifier: catalog:tailwindcssMangleEngine
         version: 0.2.0(tailwindcss@4.3.3)
@@ -4272,6 +4291,9 @@ importers:
       fast-glob:
         specifier: ^3.3.3
         version: 3.3.3
+      htmlparser2:
+        specifier: 12.0.0
+        version: 12.0.0
       local-pkg:
         specifier: ^1.2.1
         version: 1.2.1
@@ -4300,9 +4322,6 @@ importers:
       '@mpxjs/webpack-plugin':
         specifier: ^2.11.0
         version: 2.11.0(@mpxjs/core@2.11.0)(vue@2.7.16)(webpack@5.105.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.20))
-      htmlparser2:
-        specifier: 12.0.0
-        version: 12.0.0
       webpack:
         specifier: 5.105.4
         version: 5.105.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(cssnano@5.1.15(postcss@8.5.20))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.20)
@@ -5165,10 +5184,6 @@ packages:
 
   '@babel/generator@7.25.6':
     resolution: {integrity: sha512-VPC82gr1seXOpkjAAKoLhP50vx4vGNlF4msF64dSFq1P8RfB+QAuJWGHPXXPc8QyfVWwwB/TNNU4+ayZmHNbZw==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/generator@7.28.5':
-    resolution: {integrity: sha512-3EwLFhZ38J4VyIP6WNtt2kUdW9dokXA9Cr4IVIFHuCpZ3H8/YFOl5JjZHisrn1fATPBmKKqXzDFvh9fUwHz6CQ==}
     engines: {node: '>=6.9.0'}
 
   '@babel/generator@7.29.7':
@@ -32633,7 +32648,7 @@ snapshots:
       gensync: 1.0.0-beta.2
       import-meta-resolve: 4.2.0
       json5: 2.2.3
-      obug: 2.1.3
+      obug: 2.1.4
       semver: 7.8.5
 
   '@babel/eslint-parser@7.28.5(@babel/core@7.29.7)(eslint@10.7.0(jiti@2.7.0))':
@@ -32650,14 +32665,6 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
       jsesc: 2.5.2
-
-  '@babel/generator@7.28.5':
-    dependencies:
-      '@babel/parser': 7.29.7
-      '@babel/types': 7.29.7
-      '@jridgewell/gen-mapping': 0.3.13
-      '@jridgewell/trace-mapping': 0.3.31
-      jsesc: 3.1.0
 
   '@babel/generator@7.29.7':
     dependencies:
@@ -41389,7 +41396,7 @@ snapshots:
       agent-base: 9.0.0
       http-proxy-agent: 9.0.0
       https-proxy-agent: 9.0.0
-      lru-cache: 11.5.1
+      lru-cache: 11.5.2
       socks-proxy-agent: 10.0.0
     transitivePeerDependencies:
       - supports-color
@@ -50747,14 +50754,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  babel-loader@10.1.1(@babel/core@7.29.7)(@rspack/core@2.1.4(@swc/helpers@0.5.23))(webpack@5.105.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(clean-css@5.3.3)(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.20)):
-    dependencies:
-      '@babel/core': 7.29.7
-      find-up: 5.0.0
-    optionalDependencies:
-      '@rspack/core': 2.1.4(@swc/helpers@0.5.23)
-      webpack: 5.105.4(@swc/core@1.15.46(@swc/helpers@0.5.23))(clean-css@5.3.3)(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.20)
-
   babel-loader@10.1.1(@babel/core@7.29.7)(@rspack/core@2.1.4(@swc/helpers@0.5.23))(webpack@5.105.4):
     dependencies:
       '@babel/core': 7.29.7
@@ -51640,7 +51639,7 @@ snapshots:
       '@npmcli/fs': 6.0.0
       fs-minipass: 3.0.3
       glob: 13.0.6
-      lru-cache: 11.5.1
+      lru-cache: 11.5.2
       minipass: 7.1.3
       minipass-collect: 2.0.1
       minipass-flush: 1.0.7
@@ -57276,7 +57275,7 @@ snapshots:
 
   hosted-git-info@10.1.1:
     dependencies:
-      lru-cache: 11.5.1
+      lru-cache: 11.5.2
 
   hosted-git-info@2.8.9: {}
 
@@ -62448,12 +62447,12 @@ snapshots:
 
   path-scurry@2.0.1:
     dependencies:
-      lru-cache: 11.5.1
+      lru-cache: 11.5.2
       minipass: 7.1.3
 
   path-scurry@2.0.2:
     dependencies:
-      lru-cache: 11.5.1
+      lru-cache: 11.5.2
       minipass: 7.1.3
 
   path-temp@2.0.0:
@@ -68417,7 +68416,7 @@ snapshots:
 
   unplugin-vue-router@0.19.2(@vue/compiler-sfc@3.5.40)(vue-router@4.6.4(vue@3.5.40(typescript@6.0.3)))(vue@3.5.40(typescript@6.0.3)):
     dependencies:
-      '@babel/generator': 7.28.5
+      '@babel/generator': 7.29.7
       '@vue-macros/common': 3.1.1(vue@3.5.40(typescript@6.0.3))
       '@vue/compiler-sfc': 3.5.40
       '@vue/language-core': 3.2.1
@@ -68831,7 +68830,7 @@ snapshots:
     dependencies:
       cac: 6.7.14
       es-module-lexer: 2.3.0
-      obug: 2.1.3
+      obug: 2.1.4
       pathe: 2.0.3
       vite: 7.3.6(@types/node@26.1.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.49.0)(tsx@4.23.1)(yaml@2.9.0)
     transitivePeerDependencies:

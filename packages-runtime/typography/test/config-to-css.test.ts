@@ -1,5 +1,5 @@
 /* eslint-disable ts/no-require-imports */
-const typographyPlugin: any = require('../src/index')
+const typographyPlugin: any = require('../src/index.cjs')
 
 describe('configToCss helper', () => {
   it('handles non-nested values for modern targets and modifiers', () => {

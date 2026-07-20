@@ -59,7 +59,9 @@ const runtimeBuildTargets = [
     packageRoot: path.join(repoRoot, 'packages-runtime/typography'),
     stamps: [
       'dist/index.js',
-      'dist/index.mjs',
+      'dist/index.cjs',
+      'dist/transform.js',
+      'dist/transform.cjs',
       'dist/index.d.ts',
     ],
   },
@@ -71,9 +73,9 @@ const buildTargets = [
     packageRoot: path.join(repoRoot, 'packages/shared'),
     stamps: [
       'dist/index.js',
-      'dist/index.mjs',
+      'dist/index.cjs',
       'dist/node.js',
-      'dist/node.mjs',
+      'dist/node.cjs',
     ],
   },
   {
@@ -82,7 +84,7 @@ const buildTargets = [
     packageRoot: path.join(repoRoot, 'packages/logger'),
     stamps: [
       'dist/index.js',
-      'dist/index.mjs',
+      'dist/index.cjs',
       'dist/index.d.ts',
     ],
   },
@@ -92,7 +94,7 @@ const buildTargets = [
     packageRoot: path.join(repoRoot, 'packages/postcss-calc'),
     stamps: [
       'dist/index.cjs',
-      'dist/index.mjs',
+      'dist/index.js',
       'dist/index.d.ts',
     ],
   },
@@ -122,7 +124,7 @@ const buildTargets = [
     packageRoot: path.join(repoRoot, 'packages/postcss'),
     stamps: [
       'dist/index.js',
-      'dist/index.mjs',
+      'dist/index.cjs',
       'dist/index.d.ts',
     ],
   },
@@ -132,8 +134,21 @@ const buildTargets = [
     packageRoot: path.join(repoRoot, 'packages/debug-uni-app-x'),
     stamps: [
       'dist/index.cjs',
-      'dist/index.mjs',
+      'dist/index.js',
       'dist/index.d.ts',
+    ],
+  },
+  {
+    filter: 'weapp-style-injector',
+    label: 'weapp-style-injector',
+    packageRoot: path.join(repoRoot, 'packages/weapp-style-injector'),
+    stamps: [
+      'dist/index.js',
+      'dist/index.cjs',
+      'dist/vite.js',
+      'dist/vite.cjs',
+      'dist/webpack.js',
+      'dist/webpack.cjs',
     ],
   },
   {
@@ -142,9 +157,15 @@ const buildTargets = [
     packageRoot: path.join(repoRoot, 'packages/weapp-tailwindcss'),
     stamps: [
       'dist/vite.js',
+      'dist/vite.cjs',
       'dist/webpack.js',
+      'dist/webpack.cjs',
       'dist/gulp.js',
+      'dist/gulp.cjs',
       'dist/index.js',
+      'dist/index.cjs',
+      'dist/cli.cjs',
+      'dist/weapp-tw-runtime-classset-loader.cjs',
     ],
   },
 ]

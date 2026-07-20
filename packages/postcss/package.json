@@ -1,5 +1,6 @@
 {
   "name": "@weapp-tailwindcss/postcss",
+  "type": "module",
   "version": "3.1.12",
   "description": "@weapp-tailwindcss/postcss",
   "author": "ice breaker <1324318532@qq.com>",
@@ -17,28 +18,28 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./types": {
       "types": "./dist/types.d.ts",
-      "import": "./dist/types.mjs",
-      "require": "./dist/types.js"
+      "import": "./dist/types.js",
+      "require": "./dist/types.cjs"
     },
     "./html-transform": {
       "types": "./dist/html-transform.d.ts",
-      "import": "./dist/html-transform.mjs",
-      "require": "./dist/html-transform.js"
+      "import": "./dist/html-transform.js",
+      "require": "./dist/html-transform.cjs"
     },
     "./css-macro/postcss": {
       "types": "./dist/css-macro/postcss.d.ts",
-      "import": "./dist/css-macro/postcss.mjs",
-      "require": "./dist/css-macro/postcss.js"
+      "import": "./dist/css-macro/postcss.js",
+      "require": "./dist/css-macro/postcss.cjs"
     },
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "typesVersions": {
     "*": {
@@ -65,8 +66,8 @@
   },
   "scripts": {
     "dev": "tsdown --watch --sourcemap",
-    "build": "tsdown && tsc -p tsconfig.build.json",
-    "build:types": "tsc -p tsconfig.build.json",
+    "build": "tsdown && tsc -p tsconfig.build.json && tsx ../../tools/weapp-tailwindcss-scripts/src/rewrite-dts-aliases.ts .",
+    "build:types": "tsc -p tsconfig.build.json && tsx ../../tools/weapp-tailwindcss-scripts/src/rewrite-dts-aliases.ts .",
     "test": "vitest run",
     "bench": "vitest bench",
     "test:dev": "vitest",
@@ -75,15 +76,20 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@csstools/css-color-parser": "^4.1.9",
+    "@csstools/css-parser-algorithms": "^4.0.0",
+    "@csstools/css-tokenizer": "^4.0.0",
     "@tailwindcss-mangle/engine": "catalog:tailwindcssMangleEngine",
     "@weapp-core/escape": "~8.0.0",
     "@weapp-tailwindcss/postcss-calc": "workspace:^",
     "@weapp-tailwindcss/shared": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
+    "es-toolkit": "^1.49.0",
     "lru-cache": "11.5.2",
     "micromatch": "^4.0.8",
     "postcss": "catalog:postcss85tilde",
     "postcss-load-config": "^6.0.1",
+    "postcss-preset-env": "^11.3.2",
     "postcss-pxtrans": "^1.0.4",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
     "postcss-rule-unit-converter": "^0.2.2",
@@ -92,13 +98,9 @@
     "tailwindcss-config": "workspace:*"
   },
   "devDependencies": {
-    "@csstools/css-color-parser": "^4.1.9",
-    "@csstools/css-parser-algorithms": "^4.0.0",
-    "@csstools/css-tokenizer": "^4.0.0",
     "@csstools/postcss-is-pseudo-class": "^6.0.0",
     "fast-check": "^4.9.0",
     "postcss-calc": "link:packages/postcss-calc",
-    "postcss-custom-properties": "^15.0.1",
-    "postcss-preset-env": "^11.3.2"
+    "postcss-custom-properties": "^15.0.1"
   }
 }

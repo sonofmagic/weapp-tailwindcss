@@ -46,6 +46,12 @@ catalogs:
     autoprefixer: ^10.5.4
   babelCore7285:
     '@babel/core': ^7.29.7
+  babel8:
+    '@babel/core': ^8.0.1
+    '@babel/generator': ^8.0.0
+    '@babel/parser': ^8.0.4
+    '@babel/traverse': ^8.0.4
+    '@babel/types': ^8.0.4
   babelPresetReact7285:
     '@babel/preset-react': ^7.29.7
   babelRuntime7284:

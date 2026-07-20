@@ -2,7 +2,7 @@
 import type { Config } from 'tailwindcss'
 import { generateCss4 } from '@weapp-tailwindcss/test-helper'
 
-const typographyPlugin = require('../src/index')
+const typographyPlugin = require('../src/index.cjs')
 // import typographyPlugin from '@/index'
 
 // const path = require('node:path')

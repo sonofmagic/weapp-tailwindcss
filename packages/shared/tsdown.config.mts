@@ -11,11 +11,11 @@ export default defineConfig({
   clean: true,
   dts: true,
   deps: {
-    alwaysBundle: ['pathe'],
+    onlyBundle: false,
   },
   outExtensions({ format }) {
     return {
-      js: format === 'es' ? '.mjs' : '.js',
+      js: format === 'es' ? '.js' : '.cjs',
       dts: '.d.ts',
     }
   },

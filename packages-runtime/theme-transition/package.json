@@ -60,6 +60,9 @@
       "optional": true
     }
   },
+  "dependencies": {
+    "defu": "^6.1.7"
+  },
   "publishConfig": {
     "exports": {
       ".": {

@@ -1,5 +1,5 @@
 /* eslint-disable ts/no-require-imports */
-const utils = require('../src/utils')
+const utils = require('../src/utils.cjs')
 
 describe('typography utils', () => {
   it('detects usable palette entries', () => {

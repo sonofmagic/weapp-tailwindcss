@@ -7,7 +7,7 @@ export default defineConfig({
   clean: true,
   dts: false,
   deps: {
-    alwaysBundle: ['lilconfig'],
+    onlyBundle: false,
   },
   target: ['es2020'],
   outExtensions({ format }) {
