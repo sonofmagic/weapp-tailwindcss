@@ -39,6 +39,79 @@ function numericSamples(row, field) {
     : undefined
 }
 
+function standardNormalCdf(value) {
+  const absolute = Math.abs(value)
+  const scale = 1 / (1 + 0.2316419 * absolute)
+  const density = Math.exp(-absolute * absolute / 2) / Math.sqrt(2 * Math.PI)
+  const tail = density * scale * (
+    0.319381530
+    + scale * (-0.356563782
+      + scale * (1.781477937
+        + scale * (-1.821255978 + scale * 1.330274429)))
+  )
+  return value >= 0 ? 1 - tail : tail
+}
+
+function mannWhitneyGreaterPValue(baselineSamples, currentSamples) {
+  if (!Array.isArray(baselineSamples) || !Array.isArray(currentSamples)
+    || baselineSamples.length < 2 || currentSamples.length < 2) {
+    return undefined
+  }
+  const values = [...baselineSamples, ...currentSamples]
+  const rankedIndices = values.map((value, index) => ({ index, value }))
+    .sort((first, second) => first.value - second.value)
+  const ranks = new Array(values.length)
+  let tieCorrection = 0
+  for (let start = 0; start < rankedIndices.length;) {
+    let end = start + 1
+    while (end < rankedIndices.length && rankedIndices[end].value === rankedIndices[start].value) {
+      end += 1
+    }
+    const averageRank = (start + 1 + end) / 2
+    const tieCount = end - start
+    tieCorrection += tieCount ** 3 - tieCount
+    for (let index = start; index < end; index += 1) {
+      ranks[rankedIndices[index].index] = averageRank
+    }
+    start = end
+  }
+
+  const currentCount = currentSamples.length
+  const rankOffset = currentCount * (currentCount + 1) / 2
+  const observedRankSum = ranks.slice(baselineSamples.length).reduce((sum, rank) => sum + rank, 0)
+  const observedU = observedRankSum - rankOffset
+  if (values.length > 18) {
+    const baselineCount = baselineSamples.length
+    const mean = baselineCount * currentCount / 2
+    const variance = baselineCount * currentCount / 12 * (
+      values.length + 1 - tieCorrection / (values.length * (values.length - 1))
+    )
+    if (variance <= 0) {
+      return 1
+    }
+    const zScore = (observedU - mean - 0.5) / Math.sqrt(variance)
+    return 1 - standardNormalCdf(zScore)
+  }
+  let extremeCombinations = 0
+  let totalCombinations = 0
+
+  function visit(start, remaining, rankSum) {
+    if (remaining === 0) {
+      totalCombinations += 1
+      if (rankSum - rankOffset >= observedU - Number.EPSILON) {
+        extremeCombinations += 1
+      }
+      return
+    }
+    for (let index = start; index <= ranks.length - remaining; index += 1) {
+      visit(index + 1, remaining - 1, rankSum + ranks[index])
+    }
+  }
+
+  visit(0, currentCount, 0)
+  return totalCombinations > 0 ? extremeCombinations / totalCombinations : undefined
+}
+
 function hmrPluginStatistic(row) {
   return row?.hmrPluginStatistic === 'median' ? 'median' : 'p95'
 }
@@ -127,6 +200,10 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
       currentHmrSampleCount: sampleCount(current, 'hmrMs'),
       baselineHmrPluginSampleCount: sampleCount(baseline, 'hmrPluginMs'),
       currentHmrPluginSampleCount: sampleCount(current, 'hmrPluginMs'),
+      baselineBuildSamples: numericSamples(baseline, 'buildMs'),
+      currentBuildSamples: numericSamples(current, 'buildMs'),
+      baselineBuildPluginSamples: numericSamples(baseline, 'buildPluginMs'),
+      currentBuildPluginSamples: numericSamples(current, 'buildPluginMs'),
       baselineHmrSamples: numericSamples(baseline, 'hmrMs'),
       currentHmrSamples: numericSamples(current, 'hmrMs'),
       baselineHmrPluginSamples: numericSamples(baseline, 'hmrPluginMs'),
@@ -213,17 +290,18 @@ export function evaluatePerformanceGuard(summary, options = {}) {
   const minimumTimingRegressionMs = toNumber(options.minimumTimingRegressionMs) ?? 10
   const minimumMemoryRegressionMb = toNumber(options.minimumMemoryRegressionMb) ?? 64
   const minimumTailRegressionSamples = Math.max(1, Math.floor(toNumber(options.minimumTailRegressionSamples) ?? 2))
+  const maximumMedianRegressionPValue = toNumber(options.maximumMedianRegressionPValue) ?? 0.05
   const violations = summary.currentOnlyErrors.map(item => ({
     key: item.key,
     metric: 'error',
     message: String(item.error).split('\n')[0],
   }))
   const metrics = [
-    { metric: 'buildMedian', baseline: 'baselineBuild', current: 'currentBuild', delta: 'buildDeltaPct', timing: true },
-    { metric: 'hmrMedian', baseline: 'baselineHmrMedian', current: 'currentHmrMedian', delta: 'hmrMedianDeltaPct', timing: true, watchOnly: true, tailSamples: 'currentHmrSamples', medianSamples: true, pluginConfirmation: { baseline: 'baselineHmrPluginMedian', current: 'currentHmrPluginMedian', delta: 'hmrPluginMedianDeltaPct', tailSamples: 'currentHmrPluginSamples', medianSamples: true } },
+    { metric: 'buildMedian', baseline: 'baselineBuild', current: 'currentBuild', delta: 'buildDeltaPct', timing: true, baselineSamples: 'baselineBuildSamples', tailSamples: 'currentBuildSamples', medianSamples: true },
+    { metric: 'hmrMedian', baseline: 'baselineHmrMedian', current: 'currentHmrMedian', delta: 'hmrMedianDeltaPct', timing: true, watchOnly: true, baselineSamples: 'baselineHmrSamples', tailSamples: 'currentHmrSamples', medianSamples: true, pluginConfirmation: { baseline: 'baselineHmrPluginMedian', current: 'currentHmrPluginMedian', delta: 'hmrPluginMedianDeltaPct', baselineSamples: 'baselineHmrPluginSamples', tailSamples: 'currentHmrPluginSamples', medianSamples: true } },
     { metric: 'hmrP95', baseline: 'baselineHmr', current: 'currentHmr', delta: 'hmrDeltaPct', timing: true, watchOnly: true, tailSamples: 'currentHmrSamples', pluginConfirmation: { baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', tailSamples: 'currentHmrPluginSamples' } },
-    { metric: 'buildPluginMedian', baseline: 'baselineBuildPlugin', current: 'currentBuildPlugin', delta: 'buildPluginDeltaPct', timing: true },
-    { metric: 'hmrPluginMedian', baseline: 'baselineHmrPluginMedian', current: 'currentHmrPluginMedian', delta: 'hmrPluginMedianDeltaPct', timing: true, watchOnly: true, tailSamples: 'currentHmrPluginSamples', medianSamples: true },
+    { metric: 'buildPluginMedian', baseline: 'baselineBuildPlugin', current: 'currentBuildPlugin', delta: 'buildPluginDeltaPct', timing: true, baselineSamples: 'baselineBuildPluginSamples', tailSamples: 'currentBuildPluginSamples', medianSamples: true },
+    { metric: 'hmrPluginMedian', baseline: 'baselineHmrPluginMedian', current: 'currentHmrPluginMedian', delta: 'hmrPluginMedianDeltaPct', timing: true, watchOnly: true, baselineSamples: 'baselineHmrPluginSamples', tailSamples: 'currentHmrPluginSamples', medianSamples: true },
     { metric: 'hmrPluginP95', baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', timing: true, watchOnly: true, tailSamples: 'currentHmrPluginSamples', p95PluginOnly: true },
     { metric: 'buildPeakRssMb', baseline: 'baselineBuildPeakRssMb', current: 'currentBuildPeakRssMb', delta: 'buildPeakRssDeltaPct', memory: true },
     { metric: 'buildSteadyRssMb', baseline: 'baselineBuildSteadyRssMb', current: 'currentBuildSteadyRssMb', delta: 'buildSteadyRssDeltaPct', memory: true },
@@ -336,10 +414,17 @@ export function evaluatePerformanceGuard(summary, options = {}) {
             const requiredPluginRegressionSamples = config.pluginConfirmation.medianSamples && Array.isArray(pluginTailSamples)
               ? Math.floor(pluginTailSamples.length / 2) + 1
               : minimumTailRegressionSamples
+            const pluginMedianRegressionPValue = config.pluginConfirmation.medianSamples
+              ? mannWhitneyGreaterPValue(
+                  compare[config.pluginConfirmation.baselineSamples],
+                  pluginTailSamples,
+                )
+              : undefined
             if (
               pluginDeltaPercent <= regressionPercent
               || pluginCurrent - pluginBaseline < minimumTimingRegressionMs
               || (regressedPluginTailSamples !== undefined && regressedPluginTailSamples < requiredPluginRegressionSamples)
+              || (pluginMedianRegressionPValue !== undefined && pluginMedianRegressionPValue > maximumMedianRegressionPValue)
             ) {
               continue
             }
@@ -372,6 +457,12 @@ export function evaluatePerformanceGuard(summary, options = {}) {
         if (regressedTailSamples !== undefined && regressedTailSamples < requiredRegressionSamples) {
           continue
         }
+        const medianRegressionPValue = config.medianSamples
+          ? mannWhitneyGreaterPValue(compare[config.baselineSamples], tailSamples)
+          : undefined
+        if (medianRegressionPValue !== undefined && medianRegressionPValue > maximumMedianRegressionPValue) {
+          continue
+        }
         violations.push({
           key: compare.key,
           metric: config.metric,
@@ -385,6 +476,7 @@ export function evaluatePerformanceGuard(summary, options = {}) {
                 regressionSamples: regressedTailSamples,
                 requiredRegressionSamples,
               }),
+          ...(medianRegressionPValue === undefined ? {} : { medianRegressionPValue }),
           thresholdPercent: regressionPercent,
         })
       }
@@ -397,6 +489,7 @@ export function evaluatePerformanceGuard(summary, options = {}) {
       minimumMemoryRegressionMb,
       minimumTailRegressionSamples,
       minimumTimingRegressionMs,
+      maximumMedianRegressionPValue,
       regressionPercent,
     },
     violations,
@@ -438,7 +531,8 @@ export function toMarkdown(summary, baselineSpec) {
         `- 时间回归绝对下限：${fmtMs(guard.thresholds.minimumTimingRegressionMs)}ms`,
         `- 内存回归绝对下限：${fmtMs(guard.thresholds.minimumMemoryRegressionMb)}MB`,
         `- P95 尾部回归最少样本：${guard.thresholds.minimumTailRegressionSamples}`,
-        '- 中位数回归需严格多数样本同步越界',
+        `- 中位数回归置信上限：p <= ${guard.thresholds.maximumMedianRegressionPValue}`,
+        '- 中位数回归需严格多数样本同步越界，并通过单侧分布置信检验',
         '- 端到端 HMR 回归需插件处理阶段同步越界确认',
         `- 违规项：${guard.violations.length}`,
         ...guard.violations.map(item => `- ${item.key} / ${item.metric}: ${item.message ?? `${fmtMs(item.baseline)} -> ${fmtMs(item.current)} (${fmtPct(item.deltaPercent)})`}`),
