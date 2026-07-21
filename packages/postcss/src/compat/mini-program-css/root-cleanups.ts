@@ -98,6 +98,17 @@ export function removeEmptyAtRules(root: postcss.Root) {
   return removed
 }
 
+export function removeEmptyBlockAtRules(root: postcss.Root) {
+  let removed = 0
+  root.walkAtRules((atRule) => {
+    if (atRule.nodes?.length === 0) {
+      atRule.remove()
+      removed++
+    }
+  })
+  return removed
+}
+
 function removeEmptyAtRuleAncestors(parent: postcss.Container | undefined) {
   while (parent?.type === 'atrule' && isEffectivelyEmptyContainer(parent)) {
     const nextParent = parent.parent

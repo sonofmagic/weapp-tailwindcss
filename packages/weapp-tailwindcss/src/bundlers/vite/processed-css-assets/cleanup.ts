@@ -71,14 +71,18 @@ export function restoreCssImportAtRules(source: string, filtered: string, file?:
 }
 
 export function removeCommentOnlyAtRules(css: string) {
-  if (!css.includes('@') || !/@[a-z-]+\b[^{};]*\{(?:\s|\/\*[\s\S]*?\*\/)*\}/i.test(css)) {
+  if (!css.includes('@') || !css.includes('{')) {
     return css
   }
   try {
     const root = postcss.parse(css)
     let changed = false
     root.walkAtRules((atRule) => {
-      if (!atRule.nodes || atRule.nodes.length === 0 || atRule.nodes.some(node => node.type !== 'comment')) {
+      if (!atRule.nodes || atRule.nodes.length === 0) {
+        return
+      }
+      const hasCss = atRule.nodes.some(node => node.type !== 'comment')
+      if (hasCss) {
         return
       }
       atRule.remove()
@@ -92,12 +96,18 @@ export function removeCommentOnlyAtRules(css: string) {
 }
 
 export function removeEmptyCssAtRules(css: string) {
-  if (!css.includes('@') || !/@[a-z-]+\b[^{};]*\{(?:\s|\/\*[\s\S]*?\*\/)*\}/i.test(css)) {
+  if (!css.includes('@') || !css.includes('{')) {
     return css
   }
   try {
     const root = postcss.parse(css)
-    return removeEmptyAtRules(root) > 0 ? root.toString() : css
+    let removed = 0
+    let passRemoved = 0
+    do {
+      passRemoved = removeEmptyAtRules(root)
+      removed += passRemoved
+    } while (passRemoved > 0)
+    return removed > 0 ? root.toString() : css
   }
   catch {
     return css

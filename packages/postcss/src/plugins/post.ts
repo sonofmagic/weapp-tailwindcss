@@ -2,7 +2,6 @@
 import type { Declaration, Plugin, PluginCreator, Root, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
-import { removeEmptyAtRules } from '../compat/mini-program-css/root-cleanups'
 import { getRuleSelectors, isMiniProgramThemeScopeSelector, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR } from '../compat/mini-program-css/selectors'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../compat/mini-program-prefixes'
 import { normalizeTailwindcssRpxDeclaration } from '../compat/tailwindcss-rpx'
@@ -227,13 +226,10 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
     if (shouldInjectTailwindcssV4Defaults || (opts.majorVersion === 4 && usesTailwindcssV4ContentVariable(root))) {
       injectMissingTailwindcssV4Defaults(root)
     }
-    if (enableMainChunkTransforms) {
-      removeEmptyAtRules(root)
-    }
   }
 
-  p.AtRuleExit = (atRule) => {
-    if (enableMainChunkTransforms) {
+  if (enableMainChunkTransforms) {
+    p.AtRuleExit = (atRule) => {
       removeUnsupportedMiniProgramPrefixedAtRule(atRule)
       /**
        * @description 移除 property
@@ -244,6 +240,10 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
         }
         atRule.remove()
       }
+      /**
+       * 清除空节点
+       */
+      atRule.nodes?.length === 0 && atRule.remove()
     }
   }
   return p
