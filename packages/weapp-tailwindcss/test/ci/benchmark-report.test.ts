@@ -453,6 +453,38 @@ describe('benchmark ci report', () => {
     expect(evaluatePerformanceGuard(summary).passed).toBe(true)
   })
 
+  it('requires HMR peak and steady RSS to confirm each other', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-21T00:00:00.000Z',
+      options: { buildRuns: 3, hmrRuns: 6, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'steady-only-memory-drift',
+          hmrMode: 'watch',
+          summary: {
+            hmrPeakRssMb: { median: 2584.37 },
+            hmrSteadyRssMb: { median: 2412.89 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'steady-only-memory-drift',
+          hmrMode: 'watch',
+          summary: {
+            hmrPeakRssMb: { median: 2712.90 },
+            hmrSteadyRssMb: { median: 2606.22 },
+          },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    expect(evaluatePerformanceGuard(summary).passed).toBe(true)
+  })
+
   it('ignores sub-10ms timing drift while retaining the percentage guard for larger regressions', async () => {
     const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
     const baselineLabel = 'base:main'

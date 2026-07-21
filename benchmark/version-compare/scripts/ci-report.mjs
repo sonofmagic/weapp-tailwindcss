@@ -306,7 +306,7 @@ export function evaluatePerformanceGuard(summary, options = {}) {
     { metric: 'buildPeakRssMb', baseline: 'baselineBuildPeakRssMb', current: 'currentBuildPeakRssMb', delta: 'buildPeakRssDeltaPct', memory: true },
     { metric: 'buildSteadyRssMb', baseline: 'baselineBuildSteadyRssMb', current: 'currentBuildSteadyRssMb', delta: 'buildSteadyRssDeltaPct', memory: true },
     { metric: 'hmrPeakRssMb', baseline: 'baselineHmrPeakRssMb', current: 'currentHmrPeakRssMb', delta: 'hmrPeakRssDeltaPct', memory: true, watchOnly: true, steadyConfirmation: true },
-    { metric: 'hmrSteadyRssMb', baseline: 'baselineHmrSteadyRssMb', current: 'currentHmrSteadyRssMb', delta: 'hmrSteadyRssDeltaPct', memory: true, watchOnly: true },
+    { metric: 'hmrSteadyRssMb', baseline: 'baselineHmrSteadyRssMb', current: 'currentHmrSteadyRssMb', delta: 'hmrSteadyRssDeltaPct', memory: true, watchOnly: true, peakConfirmation: true },
   ]
 
   for (const compare of summary.compares) {
@@ -444,6 +444,20 @@ export function evaluatePerformanceGuard(summary, options = {}) {
             continue
           }
         }
+        if (config.peakConfirmation) {
+          const peakBaseline = toNumber(compare.baselineHmrPeakRssMb)
+          const peakCurrent = toNumber(compare.currentHmrPeakRssMb)
+          const peakDeltaPercent = toNumber(compare.hmrPeakRssDeltaPct)
+          if (
+            peakBaseline === undefined
+            || peakCurrent === undefined
+            || peakDeltaPercent === undefined
+            || peakDeltaPercent <= regressionPercent
+            || peakCurrent - peakBaseline < minimumMemoryRegressionMb
+          ) {
+            continue
+          }
+        }
         const tailSamples = config.tailSamples ? compare[config.tailSamples] : undefined
         const regressedTailSamples = Array.isArray(tailSamples)
           ? tailSamples.filter((sample) => {
@@ -534,6 +548,7 @@ export function toMarkdown(summary, baselineSpec) {
         `- 中位数回归置信上限：p <= ${guard.thresholds.maximumMedianRegressionPValue}`,
         '- 中位数回归需严格多数样本同步越界，并通过单侧分布置信检验',
         '- 端到端 HMR 回归需插件处理阶段同步越界确认',
+        '- HMR 内存回归需 peak 与 steady 两项同步越界确认',
         `- 违规项：${guard.violations.length}`,
         ...guard.violations.map(item => `- ${item.key} / ${item.metric}: ${item.message ?? `${fmtMs(item.baseline)} -> ${fmtMs(item.current)} (${fmtPct(item.deltaPercent)})`}`),
       ].join('\n')
