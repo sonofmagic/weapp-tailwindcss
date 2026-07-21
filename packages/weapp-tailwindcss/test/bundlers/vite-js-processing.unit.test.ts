@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { createJsHandlerOptionsFactory } from '@/bundlers/vite/generate-bundle/js-handler-options'
 import { processJsBundleEntry } from '@/bundlers/vite/generate-bundle/js-processing'
 import { createTransformFilter, createTransformFilterSignature, shouldSkipViteJsChunkTransform } from '@/bundlers/vite/generate-bundle/transform-filter'
 import { createCache } from '@/cache'
@@ -44,6 +45,24 @@ function createSnapshot(file: string, sourceHash: string) {
 }
 
 describe('bundlers/vite js processing', () => {
+  it('selects the JS fast path from the current bundler lifecycle', () => {
+    let experimentalJsFastPath: false | 'oxc' = false
+    const createHandlerOptions = createJsHandlerOptionsFactory({
+      getExperimentalJsFastPath: () => experimentalJsFastPath,
+      getMajorVersion: () => 4,
+      moduleGraph: undefined,
+    })
+
+    expect(createHandlerOptions('/repo/dist/index.js')).toMatchObject({
+      experimentalJsFastPath: false,
+    })
+
+    experimentalJsFastPath = 'oxc'
+    expect(createHandlerOptions('/repo/dist/index.js')).toMatchObject({
+      experimentalJsFastPath: 'oxc',
+    })
+  })
+
   it('directly replays cached clean incremental chunks without scheduling js work', () => {
     const cache = createCache()
     const file = 'assets/index.js'

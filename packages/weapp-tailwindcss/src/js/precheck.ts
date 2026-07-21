@@ -5,7 +5,7 @@ import process from 'node:process'
 const FAST_JS_TRANSFORM_HINT_RE = /className\b|class\s*=|classList\.|\b(?:twMerge|clsx|classnames|cn|cva)\b|\[["'`]class["'`]\]|text-\[|bg-\[|\b(?:[whpm]|px|py|mx|my|rounded|flex|grid|gap)-/
 
 /** 用于检测源码中是否包含 import/export/require 语句的正则表达式 */
-const DEPENDENCY_HINT_RE = /\bimport\s*[("'`{*]|\brequire\s*\(|\bexport\s+\*\s+from\s+["'`]|\bexport\s*\{[^}]*\}\s*from\s+["'`]/
+const DEPENDENCY_HINT_RE = /\bimport\s*(?:["'`{]|\*\s+as\b)|\brequire\s*\(|\bexport\s+\*\s+from\s+["'`]|\bexport\s*\{[^}]*\}\s*from\s+["'`]/
 
 /**
  * 判断源码是否可能声明跨模块依赖。

@@ -7,12 +7,12 @@ export default defineConfig({
   dts: true,
   shims: true,
   deps: {
-    alwaysBundle: ['defu', 'fs-extra', 'pathe'],
     neverBundle: ['vite'],
+    onlyBundle: false,
   },
   outExtensions({ format }) {
     return {
-      js: format === 'es' ? '.mjs' : '.cjs',
+      js: format === 'es' ? '.js' : '.cjs',
       dts: '.d.ts',
     }
   },

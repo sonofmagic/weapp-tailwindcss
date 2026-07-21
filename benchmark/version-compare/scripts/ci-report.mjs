@@ -33,6 +33,16 @@ function sampleCount(row, field) {
   return Array.isArray(row?.[field]) ? row[field].length : undefined
 }
 
+function numericSamples(row, field) {
+  return Array.isArray(row?.[field])
+    ? row[field].filter(value => typeof value === 'number' && Number.isFinite(value))
+    : undefined
+}
+
+function hmrPluginStatistic(row) {
+  return row?.hmrPluginStatistic === 'median' ? 'median' : 'p95'
+}
+
 function average(values) {
   const validValues = values.filter(value => typeof value === 'number' && Number.isFinite(value))
   return validValues.length ? validValues.reduce((sum, value) => sum + value, 0) / validValues.length : undefined
@@ -53,12 +63,18 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
     const baseline = byKey.get(`${baselineLabel}::${current.key}`)
     const baselineBuild = summaryMetric(baseline, 'build')
     const currentBuild = summaryMetric(current, 'build')
+    const baselineHmrMedian = summaryMetric(baseline, 'hmr')
+    const currentHmrMedian = summaryMetric(current, 'hmr')
     const baselineHmr = summaryMetric(baseline, 'hmr', 'p95')
     const currentHmr = summaryMetric(current, 'hmr', 'p95')
     const baselineBuildPlugin = summaryMetric(baseline, 'buildPlugin')
     const currentBuildPlugin = summaryMetric(current, 'buildPlugin')
-    const baselineHmrPlugin = summaryMetric(baseline, 'hmrPlugin', 'p95')
-    const currentHmrPlugin = summaryMetric(current, 'hmrPlugin', 'p95')
+    const baselineHmrPluginMedian = summaryMetric(baseline, 'hmrPlugin')
+    const currentHmrPluginMedian = summaryMetric(current, 'hmrPlugin')
+    const baselineHmrPluginStatistic = hmrPluginStatistic(baseline)
+    const currentHmrPluginStatistic = hmrPluginStatistic(current)
+    const baselineHmrPlugin = summaryMetric(baseline, 'hmrPlugin', baselineHmrPluginStatistic)
+    const currentHmrPlugin = summaryMetric(current, 'hmrPlugin', currentHmrPluginStatistic)
     const baselineBuildPeakRssMb = memoryMetric(baseline, 'buildPeakRssMb')
     const currentBuildPeakRssMb = memoryMetric(current, 'buildPeakRssMb')
     const baselineBuildSteadyRssMb = memoryMetric(baseline, 'buildSteadyRssMb')
@@ -80,12 +96,21 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
       baselineHmr,
       currentHmr,
       hmrDeltaPct: pct(baselineHmr, currentHmr),
+      baselineHmrMedian,
+      currentHmrMedian,
+      hmrMedianDeltaPct: pct(baselineHmrMedian, currentHmrMedian),
       baselineBuildPlugin,
       currentBuildPlugin,
       buildPluginDeltaPct: pct(baselineBuildPlugin, currentBuildPlugin),
       baselineHmrPlugin,
       currentHmrPlugin,
+      hmrPluginStatistic: baselineHmrPluginStatistic === currentHmrPluginStatistic
+        ? currentHmrPluginStatistic
+        : `${baselineHmrPluginStatistic}->${currentHmrPluginStatistic}`,
       hmrPluginDeltaPct: pct(baselineHmrPlugin, currentHmrPlugin),
+      baselineHmrPluginMedian,
+      currentHmrPluginMedian,
+      hmrPluginMedianDeltaPct: pct(baselineHmrPluginMedian, currentHmrPluginMedian),
       baselineBuildPeakRssMb,
       currentBuildPeakRssMb,
       buildPeakRssDeltaPct: pct(baselineBuildPeakRssMb, currentBuildPeakRssMb),
@@ -102,6 +127,10 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
       currentHmrSampleCount: sampleCount(current, 'hmrMs'),
       baselineHmrPluginSampleCount: sampleCount(baseline, 'hmrPluginMs'),
       currentHmrPluginSampleCount: sampleCount(current, 'hmrPluginMs'),
+      baselineHmrSamples: numericSamples(baseline, 'hmrMs'),
+      currentHmrSamples: numericSamples(current, 'hmrMs'),
+      baselineHmrPluginSamples: numericSamples(baseline, 'hmrPluginMs'),
+      currentHmrPluginSamples: numericSamples(current, 'hmrPluginMs'),
       baselineMemoryStability: baseline?.memoryStability,
       currentMemoryStability: current.memoryStability,
       baselineBuildMode: baseline?.buildMode ?? 'build',
@@ -181,20 +210,25 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
 
 export function evaluatePerformanceGuard(summary, options = {}) {
   const regressionPercent = toNumber(options.regressionPercent) ?? 5
+  const minimumTimingRegressionMs = toNumber(options.minimumTimingRegressionMs) ?? 10
+  const minimumMemoryRegressionMb = toNumber(options.minimumMemoryRegressionMb) ?? 64
+  const minimumTailRegressionSamples = Math.max(1, Math.floor(toNumber(options.minimumTailRegressionSamples) ?? 2))
   const violations = summary.currentOnlyErrors.map(item => ({
     key: item.key,
     metric: 'error',
     message: String(item.error).split('\n')[0],
   }))
   const metrics = [
-    { metric: 'buildMedian', baseline: 'baselineBuild', current: 'currentBuild', delta: 'buildDeltaPct' },
-    { metric: 'hmrP95', baseline: 'baselineHmr', current: 'currentHmr', delta: 'hmrDeltaPct', watchOnly: true },
-    { metric: 'buildPluginMedian', baseline: 'baselineBuildPlugin', current: 'currentBuildPlugin', delta: 'buildPluginDeltaPct' },
-    { metric: 'hmrPluginP95', baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', watchOnly: true },
-    { metric: 'buildPeakRssMb', baseline: 'baselineBuildPeakRssMb', current: 'currentBuildPeakRssMb', delta: 'buildPeakRssDeltaPct' },
-    { metric: 'buildSteadyRssMb', baseline: 'baselineBuildSteadyRssMb', current: 'currentBuildSteadyRssMb', delta: 'buildSteadyRssDeltaPct' },
-    { metric: 'hmrPeakRssMb', baseline: 'baselineHmrPeakRssMb', current: 'currentHmrPeakRssMb', delta: 'hmrPeakRssDeltaPct', watchOnly: true },
-    { metric: 'hmrSteadyRssMb', baseline: 'baselineHmrSteadyRssMb', current: 'currentHmrSteadyRssMb', delta: 'hmrSteadyRssDeltaPct', watchOnly: true },
+    { metric: 'buildMedian', baseline: 'baselineBuild', current: 'currentBuild', delta: 'buildDeltaPct', timing: true },
+    { metric: 'hmrMedian', baseline: 'baselineHmrMedian', current: 'currentHmrMedian', delta: 'hmrMedianDeltaPct', timing: true, watchOnly: true, tailSamples: 'currentHmrSamples', medianSamples: true, pluginConfirmation: { baseline: 'baselineHmrPluginMedian', current: 'currentHmrPluginMedian', delta: 'hmrPluginMedianDeltaPct', tailSamples: 'currentHmrPluginSamples', medianSamples: true } },
+    { metric: 'hmrP95', baseline: 'baselineHmr', current: 'currentHmr', delta: 'hmrDeltaPct', timing: true, watchOnly: true, tailSamples: 'currentHmrSamples', pluginConfirmation: { baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', tailSamples: 'currentHmrPluginSamples' } },
+    { metric: 'buildPluginMedian', baseline: 'baselineBuildPlugin', current: 'currentBuildPlugin', delta: 'buildPluginDeltaPct', timing: true },
+    { metric: 'hmrPluginMedian', baseline: 'baselineHmrPluginMedian', current: 'currentHmrPluginMedian', delta: 'hmrPluginMedianDeltaPct', timing: true, watchOnly: true, tailSamples: 'currentHmrPluginSamples', medianSamples: true },
+    { metric: 'hmrPluginP95', baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', timing: true, watchOnly: true, tailSamples: 'currentHmrPluginSamples', p95PluginOnly: true },
+    { metric: 'buildPeakRssMb', baseline: 'baselineBuildPeakRssMb', current: 'currentBuildPeakRssMb', delta: 'buildPeakRssDeltaPct', memory: true },
+    { metric: 'buildSteadyRssMb', baseline: 'baselineBuildSteadyRssMb', current: 'currentBuildSteadyRssMb', delta: 'buildSteadyRssDeltaPct', memory: true },
+    { metric: 'hmrPeakRssMb', baseline: 'baselineHmrPeakRssMb', current: 'currentHmrPeakRssMb', delta: 'hmrPeakRssDeltaPct', memory: true, watchOnly: true, steadyConfirmation: true },
+    { metric: 'hmrSteadyRssMb', baseline: 'baselineHmrSteadyRssMb', current: 'currentHmrSteadyRssMb', delta: 'hmrSteadyRssDeltaPct', memory: true, watchOnly: true },
   ]
 
   for (const compare of summary.compares) {
@@ -262,6 +296,12 @@ export function evaluatePerformanceGuard(summary, options = {}) {
       if (config.metric === 'hmrP95' && compare.hmrEndToEndGuard === false) {
         continue
       }
+      if (config.metric === 'hmrMedian' && compare.hmrEndToEndGuard === false) {
+        continue
+      }
+      if (config.p95PluginOnly && compare.hmrPluginStatistic !== 'p95') {
+        continue
+      }
       const baseline = toNumber(compare[config.baseline])
       const current = toNumber(compare[config.current])
       const deltaPercent = toNumber(compare[config.delta])
@@ -269,7 +309,69 @@ export function evaluatePerformanceGuard(summary, options = {}) {
         continue
       }
       const absoluteDelta = current - baseline
-      if (deltaPercent > regressionPercent) {
+      const minimumAbsoluteDelta = config.timing
+        ? minimumTimingRegressionMs
+        : config.memory
+          ? minimumMemoryRegressionMb
+          : 0
+      if (deltaPercent > regressionPercent && absoluteDelta >= minimumAbsoluteDelta) {
+        if (config.pluginConfirmation) {
+          const pluginBaseline = toNumber(compare[config.pluginConfirmation.baseline])
+          const pluginCurrent = toNumber(compare[config.pluginConfirmation.current])
+          const pluginDeltaPercent = toNumber(compare[config.pluginConfirmation.delta])
+          if (
+            pluginBaseline !== undefined
+            && pluginCurrent !== undefined
+            && pluginDeltaPercent !== undefined
+          ) {
+            const pluginTailSamples = config.pluginConfirmation.tailSamples
+              ? compare[config.pluginConfirmation.tailSamples]
+              : undefined
+            const regressedPluginTailSamples = Array.isArray(pluginTailSamples)
+              ? pluginTailSamples.filter((sample) => {
+                const sampleDelta = sample - pluginBaseline
+                return pct(pluginBaseline, sample) > regressionPercent && sampleDelta >= minimumTimingRegressionMs
+              }).length
+              : undefined
+            const requiredPluginRegressionSamples = config.pluginConfirmation.medianSamples && Array.isArray(pluginTailSamples)
+              ? Math.floor(pluginTailSamples.length / 2) + 1
+              : minimumTailRegressionSamples
+            if (
+              pluginDeltaPercent <= regressionPercent
+              || pluginCurrent - pluginBaseline < minimumTimingRegressionMs
+              || (regressedPluginTailSamples !== undefined && regressedPluginTailSamples < requiredPluginRegressionSamples)
+            ) {
+              continue
+            }
+          }
+        }
+        if (config.steadyConfirmation) {
+          const steadyBaseline = toNumber(compare.baselineHmrSteadyRssMb)
+          const steadyCurrent = toNumber(compare.currentHmrSteadyRssMb)
+          const steadyDeltaPercent = toNumber(compare.hmrSteadyRssDeltaPct)
+          if (
+            steadyBaseline === undefined
+            || steadyCurrent === undefined
+            || steadyDeltaPercent === undefined
+            || steadyDeltaPercent <= regressionPercent
+            || steadyCurrent - steadyBaseline < minimumMemoryRegressionMb
+          ) {
+            continue
+          }
+        }
+        const tailSamples = config.tailSamples ? compare[config.tailSamples] : undefined
+        const regressedTailSamples = Array.isArray(tailSamples)
+          ? tailSamples.filter((sample) => {
+            const sampleDelta = sample - baseline
+            return pct(baseline, sample) > regressionPercent && sampleDelta >= minimumTimingRegressionMs
+          }).length
+          : undefined
+        const requiredRegressionSamples = config.medianSamples && Array.isArray(tailSamples)
+          ? Math.floor(tailSamples.length / 2) + 1
+          : minimumTailRegressionSamples
+        if (regressedTailSamples !== undefined && regressedTailSamples < requiredRegressionSamples) {
+          continue
+        }
         violations.push({
           key: compare.key,
           metric: config.metric,
@@ -277,6 +379,12 @@ export function evaluatePerformanceGuard(summary, options = {}) {
           current,
           deltaPercent,
           absoluteDelta,
+          ...(regressedTailSamples === undefined
+            ? {}
+            : {
+                regressionSamples: regressedTailSamples,
+                requiredRegressionSamples,
+              }),
           thresholdPercent: regressionPercent,
         })
       }
@@ -286,6 +394,9 @@ export function evaluatePerformanceGuard(summary, options = {}) {
   return {
     passed: violations.length === 0,
     thresholds: {
+      minimumMemoryRegressionMb,
+      minimumTailRegressionSamples,
+      minimumTimingRegressionMs,
       regressionPercent,
     },
     violations,
@@ -311,7 +422,7 @@ export function toMarkdown(summary, baselineSpec) {
   const errors = summary.errors.length
     ? summary.errors.map(item => `- ${item.version} / ${item.key}: ${String(item.error).split('\n')[0]}`).join('\n')
     : '- 无'
-  const pluginRows = summary.compares.map(item => `| ${item.key} | ${fmtMs(item.baselineBuildPlugin)} | ${fmtMs(item.currentBuildPlugin)} | ${fmtPct(item.buildPluginDeltaPct)} | ${fmtMs(item.baselineHmrPlugin)} | ${fmtMs(item.currentHmrPlugin)} | ${fmtPct(item.hmrPluginDeltaPct)} |`).join('\n')
+  const pluginRows = summary.compares.map(item => `| ${item.key} | ${fmtMs(item.baselineBuildPlugin)} | ${fmtMs(item.currentBuildPlugin)} | ${fmtPct(item.buildPluginDeltaPct)} | ${item.hmrPluginStatistic} | ${fmtMs(item.baselineHmrPlugin)} | ${fmtMs(item.currentHmrPlugin)} | ${fmtPct(item.hmrPluginDeltaPct)} |`).join('\n')
   const memoryRows = summary.compares.map(item => `| ${item.key} | ${fmtMs(item.baselineBuildPeakRssMb)} | ${fmtMs(item.currentBuildPeakRssMb)} | ${fmtPct(item.buildPeakRssDeltaPct)} | ${fmtMs(item.baselineBuildSteadyRssMb)} | ${fmtMs(item.currentBuildSteadyRssMb)} | ${fmtPct(item.buildSteadyRssDeltaPct)} | ${fmtMs(item.baselineHmrPeakRssMb)} | ${fmtMs(item.currentHmrPeakRssMb)} | ${fmtPct(item.hmrPeakRssDeltaPct)} | ${fmtMs(item.baselineHmrSteadyRssMb)} | ${fmtMs(item.currentHmrSteadyRssMb)} | ${fmtPct(item.hmrSteadyRssDeltaPct)} |`).join('\n')
   const baselineDisplay = summary.baseline.startsWith('base:')
     ? baselineSpec
@@ -324,6 +435,11 @@ export function toMarkdown(summary, baselineSpec) {
         '',
         `- 结果：${guard.passed ? '通过' : '失败'}`,
         `- 统一退化阈值：${guard.thresholds.regressionPercent}%`,
+        `- 时间回归绝对下限：${fmtMs(guard.thresholds.minimumTimingRegressionMs)}ms`,
+        `- 内存回归绝对下限：${fmtMs(guard.thresholds.minimumMemoryRegressionMb)}MB`,
+        `- P95 尾部回归最少样本：${guard.thresholds.minimumTailRegressionSamples}`,
+        '- 中位数回归需严格多数样本同步越界',
+        '- 端到端 HMR 回归需插件处理阶段同步越界确认',
         `- 违规项：${guard.violations.length}`,
         ...guard.violations.map(item => `- ${item.key} / ${item.metric}: ${item.message ?? `${fmtMs(item.baseline)} -> ${fmtMs(item.current)} (${fmtPct(item.deltaPercent)})`}`),
       ].join('\n')
@@ -344,7 +460,7 @@ export function toMarkdown(summary, baselineSpec) {
 - 冷构建中位数平均变化：${fmtPct(summary.averages.buildDeltaPct)}（${summary.averages.buildCompareCount} 项）
 - 真实 watch HMR P95 平均变化：${fmtPct(summary.averages.hmrDeltaPct)}（${summary.averages.watchHmrCompareCount} 项；fallback-build/unsupported 不参与）
 - 插件 Build 中位数平均变化：${fmtPct(summary.averages.buildPluginDeltaPct)}（${summary.averages.buildPluginCompareCount} 项）
-- 插件 HMR P95 平均变化：${fmtPct(summary.averages.hmrPluginDeltaPct)}（${summary.averages.watchHmrPluginCompareCount} 项）
+- 插件 HMR 门禁统计平均变化：${fmtPct(summary.averages.hmrPluginDeltaPct)}（${summary.averages.watchHmrPluginCompareCount} 项）
 - 失败项：${summary.errors.length}
 - 当前版本独有失败项：${summary.currentOnlyErrors.length}
 - 基线/当前共同失败项：${summary.sharedErrors.length}
@@ -357,8 +473,8 @@ ${rows}
 
 ## 插件处理阶段
 
-| 项目 | Baseline Build Plugin median(ms) | Current Build Plugin median(ms) | Build Plugin 变化 | Baseline HMR Plugin P95(ms) | Current HMR Plugin P95(ms) | HMR Plugin 变化 |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 项目 | Baseline Build Plugin median(ms) | Current Build Plugin median(ms) | Build Plugin 变化 | HMR 统计 | Baseline HMR Plugin(ms) | Current HMR Plugin(ms) | HMR Plugin 变化 |
+| --- | ---: | ---: | ---: | --- | ---: | ---: | ---: |
 ${pluginRows}
 
 ## 内存

@@ -1,5 +1,6 @@
 {
   "name": "@weapp-tailwindcss/debug-uni-app-x",
+  "type": "module",
   "version": "1.0.1",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
@@ -18,12 +19,12 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
+      "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
   },
   "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
@@ -39,22 +40,24 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "devDependencies": {
+  "dependencies": {
     "defu": "6.1.7",
     "fs-extra": "11.3.6",
-    "pathe": "2.0.3",
+    "pathe": "2.0.3"
+  },
+  "devDependencies": {
     "vite": "7.2.7"
   },
   "publishConfig": {
     "exports": {
       ".": {
         "types": "./dist/index.d.ts",
-        "import": "./dist/index.mjs",
+        "import": "./dist/index.js",
         "require": "./dist/index.cjs"
       }
     },
     "main": "./dist/index.cjs",
-    "module": "./dist/index.mjs",
+    "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "access": "public",
     "registry": "https://registry.npmjs.org"

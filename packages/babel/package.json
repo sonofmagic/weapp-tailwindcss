@@ -1,5 +1,6 @@
 {
   "name": "@weapp-tailwindcss/babel",
+  "type": "module",
   "version": "0.0.3",
   "private": true,
   "description": "weapp-tailwindcss babel package",
@@ -22,7 +23,7 @@
     "dist"
   ],
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": "^22.18.0 || >=24.11.0"
   },
   "scripts": {
     "dev": "tsdown --watch --sourcemap",
@@ -34,20 +35,20 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@babel/parser": "~7.29.7",
-    "@babel/traverse": "~7.29.7",
-    "@babel/types": "~7.29.7"
+    "@babel/parser": "catalog:babel8",
+    "@babel/traverse": "catalog:babel8",
+    "@babel/types": "catalog:babel8"
   },
   "publishConfig": {
     "exports": {
       ".": {
         "types": "./dist/index.d.ts",
-        "import": "./dist/index.mjs",
-        "require": "./dist/index.js"
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
       }
     },
-    "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
     "types": "./dist/index.d.ts"
   }
 }

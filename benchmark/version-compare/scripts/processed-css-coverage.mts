@@ -15,6 +15,8 @@ interface RemoveCssCoveredByRootStyleBundleSources {
   (bundle: Record<string, unknown>, file: string, css: string): string
 }
 
+const BENCHMARK_SAMPLE_COUNT = 7
+
 function summarize(values: number[]): BenchmarkStats {
   const sorted = [...values].sort((a, b) => a - b)
   const mean = values.reduce((sum, value) => sum + value, 0) / values.length
@@ -90,7 +92,7 @@ async function main() {
   const { removeCssCoveredByRootStyleBundleSources } = await import(pathToFileURL(sourceFile).href)
   runSample(removeCssCoveredByRootStyleBundleSources)
   const samples: number[] = []
-  for (let index = 0; index < 3; index++) {
+  for (let index = 0; index < BENCHMARK_SAMPLE_COUNT; index++) {
     samples.push(runSample(removeCssCoveredByRootStyleBundleSources))
   }
   process.stdout.write(`${JSON.stringify({

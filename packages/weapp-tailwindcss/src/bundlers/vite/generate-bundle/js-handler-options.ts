@@ -2,6 +2,7 @@ import type { CreateJsHandlerOptions, InternalUserDefinedOptions } from '@/types
 import { isUniAppXEnabled } from '@/uni-app-x/options'
 
 interface JsHandlerOptionsFactoryOptions {
+  getExperimentalJsFastPath?: () => CreateJsHandlerOptions['experimentalJsFastPath']
   getMajorVersion: () => number | undefined
   moduleGraph: CreateJsHandlerOptions['moduleGraph']
 }
@@ -14,6 +15,7 @@ export function createJsHandlerOptionsFactory(options: JsHandlerOptionsFactoryOp
   return (absoluteFilename: string, extra?: CreateJsHandlerOptions): CreateJsHandlerOptions => ({
     ...extra,
     generateMap: false,
+    experimentalJsFastPath: options.getExperimentalJsFastPath?.(),
     filename: absoluteFilename,
     tailwindcssMajorVersion: options.getMajorVersion(),
     moduleGraph: options.moduleGraph,

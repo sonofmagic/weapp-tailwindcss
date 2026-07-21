@@ -12,7 +12,7 @@ export default defineConfig({
   target: ['es2020'],
   outExtensions({ format }) {
     return {
-      js: format === 'es' ? '.mjs' : '.cjs',
+      js: format === 'es' ? '.js' : '.cjs',
       dts: '.d.ts',
     }
   },

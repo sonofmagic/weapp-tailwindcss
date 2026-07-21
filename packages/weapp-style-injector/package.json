@@ -1,5 +1,6 @@
 {
   "name": "weapp-style-injector",
+  "type": "module",
   "version": "1.0.1",
   "description": "weapp-style-injector",
   "author": "ice breaker <1324318532@qq.com>",
@@ -17,47 +18,47 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
+      "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
     "./vite": {
       "types": "./dist/vite.d.ts",
-      "import": "./dist/vite.mjs",
+      "import": "./dist/vite.js",
       "require": "./dist/vite.cjs"
     },
     "./vite/uni-app": {
       "types": "./dist/vite/uni-app.d.ts",
-      "import": "./dist/vite/uni-app.mjs",
+      "import": "./dist/vite/uni-app.js",
       "require": "./dist/vite/uni-app.cjs"
     },
     "./vite/taro": {
       "types": "./dist/vite/taro.d.ts",
-      "import": "./dist/vite/taro.mjs",
+      "import": "./dist/vite/taro.js",
       "require": "./dist/vite/taro.cjs"
     },
     "./webpack": {
       "types": "./dist/webpack.d.ts",
-      "import": "./dist/webpack.mjs",
+      "import": "./dist/webpack.js",
       "require": "./dist/webpack.cjs"
     },
     "./webpack/uni-app": {
       "types": "./dist/webpack/uni-app.d.ts",
-      "import": "./dist/webpack/uni-app.mjs",
+      "import": "./dist/webpack/uni-app.js",
       "require": "./dist/webpack/uni-app.cjs"
     },
     "./webpack/taro": {
       "types": "./dist/webpack/taro.d.ts",
-      "import": "./dist/webpack/taro.mjs",
+      "import": "./dist/webpack/taro.js",
       "require": "./dist/webpack/taro.cjs"
     },
     "./webpack/mpx": {
       "types": "./dist/webpack/mpx.d.ts",
-      "import": "./dist/webpack/mpx.mjs",
+      "import": "./dist/webpack/mpx.js",
       "require": "./dist/webpack/mpx.cjs"
     }
   },
   "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
@@ -67,8 +68,8 @@
   },
   "scripts": {
     "dev": "tsdown --watch --sourcemap",
-    "build": "tsdown && tsc -p tsconfig.build.json",
-    "build:types": "tsc -p tsconfig.build.json",
+    "build": "tsdown && tsc -p tsconfig.build.json && tsx ../../tools/weapp-tailwindcss-scripts/src/rewrite-dts-aliases.ts .",
+    "build:types": "tsc -p tsconfig.build.json && tsx ../../tools/weapp-tailwindcss-scripts/src/rewrite-dts-aliases.ts .",
     "test": "vitest run",
     "test:dev": "vitest",
     "release": "pnpm publish",

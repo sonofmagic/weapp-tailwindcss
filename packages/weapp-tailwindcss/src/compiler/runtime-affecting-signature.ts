@@ -1,9 +1,6 @@
-import type { NodePath } from '@babel/traverse'
-import type { JSXText, StringLiteral, TemplateElement } from '@babel/types'
 import type { RuntimeEntryType } from './runtime-snapshot'
 import { Parser } from 'htmlparser2'
-import { traverse } from '@/babel'
-import { babelParse } from '@/js/babel'
+import { babelParse } from '@/js/babel/parse'
 
 const CSS_BLOCK_COMMENT_RE = /\/\*[\s\S]*?\*\//g
 const CSS_AROUND_PUNCTUATION_RE = /\s*([{}:;,>+~()])\s*/g
@@ -11,6 +8,25 @@ const CSS_TRAILING_DECLARATION_SEMICOLON_RE = /;\}/g
 const CSS_WHITESPACE_RE = /\s+/g
 const JS_RUNTIME_AFFECTING_TEXT_HINT_RE = /["'`/]/
 const JS_INCOMPLETE_TRAILING_OPERATOR_RE = /(?:=>|[=+\-*%&|^!~?:,.({[\]])\s*$/
+const JS_AST_IGNORED_KEYS = new Set([
+  'comments',
+  'errors',
+  'extra',
+  'innerComments',
+  'leadingComments',
+  'loc',
+  'tokens',
+  'trailingComments',
+])
+
+interface AstNode {
+  type: string
+  [key: string]: unknown
+}
+
+function isAstNode(value: unknown): value is AstNode {
+  return Boolean(value && typeof value === 'object' && typeof (value as { type?: unknown }).type === 'string')
+}
 
 function createHtmlRuntimeAffectingSignature(source: string) {
   try {
@@ -56,30 +72,57 @@ function createJsRuntimeAffectingSignature(source: string) {
 
   try {
     const ast = babelParse(source, {
-      cache: false,
-      cacheKey: 'compiler-runtime-affecting:unambiguous',
+      cache: true,
+      cacheKey: 'st:unambiguous',
       plugins: ['jsx', 'typescript'],
       sourceType: 'unambiguous',
     })
     const parts: string[] = []
 
-    traverse(ast, {
-      noScope: true,
-      StringLiteral(path: NodePath<StringLiteral>) {
-        parts.push(`s:${path.node.value}`)
-      },
-      TemplateElement(path: NodePath<TemplateElement>) {
-        parts.push(`t:${path.node.value.raw}`)
-      },
-      JSXText(path: NodePath<JSXText>) {
-        const value = path.node.value.trim()
+    const stack: AstNode[] = [ast as unknown as AstNode]
+    while (stack.length > 0) {
+      const node = stack.pop()!
+      if (node.type === 'StringLiteral' && typeof node.value === 'string') {
+        parts.push(`s:${node.value}`)
+      }
+      else if (
+        node.type === 'TemplateElement'
+        && node.value
+        && typeof node.value === 'object'
+        && 'raw' in node.value
+        && typeof node.value.raw === 'string'
+      ) {
+        parts.push(`t:${node.value.raw}`)
+      }
+      else if (node.type === 'JSXText' && typeof node.value === 'string') {
+        const value = node.value.trim()
         if (value.length > 0) {
           parts.push(`x:${value}`)
         }
-      },
-    } as any)
+      }
 
-    const comments = (ast as any).comments
+      const children: AstNode[] = []
+      for (const [key, value] of Object.entries(node)) {
+        if (JS_AST_IGNORED_KEYS.has(key)) {
+          continue
+        }
+        if (Array.isArray(value)) {
+          for (const item of value) {
+            if (isAstNode(item)) {
+              children.push(item)
+            }
+          }
+        }
+        else if (isAstNode(value)) {
+          children.push(value)
+        }
+      }
+      for (let index = children.length - 1; index >= 0; index--) {
+        stack.push(children[index]!)
+      }
+    }
+
+    const comments = (ast as unknown as { comments?: Array<{ value?: unknown }> }).comments
     if (Array.isArray(comments)) {
       for (const comment of comments) {
         if (typeof comment?.value === 'string' && comment.value.length > 0) {

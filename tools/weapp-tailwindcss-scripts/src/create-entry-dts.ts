@@ -6,11 +6,11 @@ import { corePackageRoot } from './paths'
 const root = corePackageRoot
 
 const entryShims = {
-  'css-macro.d.ts': { target: './css-macro/index', defaultExport: true },
-  'framework.d.ts': { target: './framework/index' },
-  'generator.d.ts': { target: './generator/index' },
-  'reset.d.ts': { target: './reset/index', defaultExport: true },
-  'types.d.ts': { target: './types/index' },
+  'css-macro.d.ts': { target: './css-macro/index.js', defaultExport: true },
+  'framework.d.ts': { target: './framework/index.js' },
+  'generator.d.ts': { target: './generator/index.js' },
+  'reset.d.ts': { target: './reset/index.js', defaultExport: true },
+  'types.d.ts': { target: './types/index.js' },
 }
 
 async function main() {

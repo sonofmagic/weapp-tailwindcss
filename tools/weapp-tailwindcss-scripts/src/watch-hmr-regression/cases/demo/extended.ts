@@ -408,6 +408,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/pages/index/index.vue'),
       cssEntryFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/main.css'),
       injectMarkerElement: true,
+      touchCssEntryOnSourceMutation: false,
       readySelector: 'uni-page[data-page="pages/index/index"]',
       initialMutationDelayMs: 1500,
       mutate(source, payload) {
@@ -927,12 +928,15 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       devArgs: ['--watch'],
       sourceFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/src/pages/index/index.vue'),
       cssEntryFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/src/app.css'),
-      injectMarkerElement: true,
+      // Vue H5 通过同一个模板 HMR 同时携带 DOM 与 class，避免源码注释和 app.css 双更新竞态。
+      injectMarkerElement: false,
+      touchCssEntryOnSourceMutation: false,
       env: {
         NODE_ENV: 'development',
       },
       mutate(source, payload) {
-        return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->\n`
+        const snippet = `    <view data-tw-watch-web="${payload.marker}" class="${payload.classLiteral}">${payload.marker}-web</view>`
+        return insertBeforeClosingTag(source, '</template>', snippet)
       },
       sourceDomReplacementSequence: [
         {

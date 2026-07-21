@@ -53,7 +53,7 @@ describe('createDoctorReport', () => {
     await writePackage(root, 'tailwindcss', '4.1.0')
     await writePackage(root, 'weapp-tailwindcss', '4.12.0')
 
-    const report = createDoctorReport({ cwd: root, nodeVersion: '22.12.0' })
+    const report = createDoctorReport({ cwd: root, nodeVersion: '22.18.0' })
 
     expect(report.detected.packageManager).toBe('pnpm@11.5.0')
     expect(report.detected.frameworks).toEqual(['uni-app'])
@@ -73,7 +73,7 @@ describe('createDoctorReport', () => {
     await writeFile(path.join(root, 'postcss.config.cjs'), 'module.exports = {}\n', 'utf8')
     await writePackage(root, 'tailwindcss', '4.0.0')
 
-    const report = createDoctorReport({ cwd: root, nodeVersion: '22.12.0' })
+    const report = createDoctorReport({ cwd: root, nodeVersion: '22.18.0' })
 
     const check = findCheck(report, 'tailwindcss-v4-postcss')
     expect(check.status).toBe('warn')
@@ -108,11 +108,19 @@ describe('createDoctorReport', () => {
       'node-version',
     ).status).toBe('error')
     expect(findCheck(
-      createDoctorReport({ cwd: root, nodeVersion: '22.11.0' }),
+      createDoctorReport({ cwd: root, nodeVersion: '22.17.0' }),
       'node-version',
     ).status).toBe('error')
     expect(findCheck(
-      createDoctorReport({ cwd: root, nodeVersion: '22.12.0' }),
+      createDoctorReport({ cwd: root, nodeVersion: '22.18.0' }),
+      'node-version',
+    ).status).toBe('ok')
+    expect(findCheck(
+      createDoctorReport({ cwd: root, nodeVersion: '24.10.0' }),
+      'node-version',
+    ).status).toBe('error')
+    expect(findCheck(
+      createDoctorReport({ cwd: root, nodeVersion: '24.11.0' }),
       'node-version',
     ).status).toBe('ok')
   })

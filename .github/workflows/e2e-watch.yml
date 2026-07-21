@@ -314,45 +314,109 @@ jobs:
           - os: windows-latest
             runner_label: windows
             watch_case: taro-vite-react-tailwindcss-v4
-            round_profile: default
+            round_profile: main-style
             watch_save_snapshots: '1'
-            timeout_minutes: 80
+            # Windows PR 只跑主包与两个分包的真实主样式 HMR；完整多轮由 Linux/macOS 与 nightly 覆盖。
+            watch_main_style_only: '1'
+            watch_main_style_subpackage_limit: '2'
+            watch_max_attempts: '1'
+            timeout_minutes: 45
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '4200000'
+            watch_max_plugin_process_ms: '18000'
+            watch_command_timeout_ms: '2400000'
+          - os: windows-latest
+            runner_label: windows
+            watch_case: taro-vite-react-tailwindcss-v4
+            round_profile: web-only
+            watch_save_snapshots: '1'
+            # Web HMR 独立运行，避免小程序长轮次失败后从头重跑并耗尽 job 预算。
+            watch_web_only: '1'
+            watch_max_attempts: '1'
+            timeout_minutes: 25
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '40'
+            watch_command_timeout_ms: '1200000'
           - os: windows-latest
             runner_label: windows
             watch_case: taro-webpack-react-tailwindcss-v4
-            round_profile: default
+            round_profile: main-style
             watch_save_snapshots: '1'
-            timeout_minutes: 80
+            # Webpack 轮询重建在 Windows 上单轮接近一分钟，PR 只保留主包与两个分包的主样式契约。
+            watch_main_style_only: '1'
+            watch_main_style_subpackage_limit: '2'
+            watch_max_attempts: '1'
+            timeout_minutes: 45
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '60000'
+            watch_max_plugin_process_ms: '18000'
             taro_dev_ready_timeout_ms: '900000'
-            watch_command_timeout_ms: '4200000'
+            watch_command_timeout_ms: '2400000'
+          - os: windows-latest
+            runner_label: windows
+            watch_case: taro-webpack-react-tailwindcss-v4
+            round_profile: web-only
+            watch_save_snapshots: '1'
+            # Webpack H5 独立验证浏览器 HMR，避免和 20 余次小程序重建串行。
+            watch_web_only: '1'
+            watch_max_attempts: '1'
+            timeout_minutes: 25
+            watch_timeout_ms: '600000'
+            watch_poll_ms: '40'
+            watch_command_timeout_ms: '1200000'
           - os: windows-latest
             runner_label: windows
             watch_case: taro-vite-vue3-tailwindcss-v4
-            round_profile: default
+            round_profile: main-style
             watch_save_snapshots: '1'
-            timeout_minutes: 60
+            # Windows PR 只跑主包与两个分包的真实主样式 HMR；完整多轮由 Linux/macOS 矩阵覆盖。
+            watch_main_style_only: '1'
+            watch_main_style_subpackage_limit: '2'
+            watch_max_attempts: '1'
+            timeout_minutes: 45
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '3000000'
+            watch_max_plugin_process_ms: '18000'
+            watch_command_timeout_ms: '2400000'
+          - os: windows-latest
+            runner_label: windows
+            watch_case: taro-vite-vue3-tailwindcss-v4
+            round_profile: web-only
+            watch_save_snapshots: '1'
+            # Web HMR 独立运行，避免小程序长轮次失败后从头重跑并耗尽 job 预算。
+            watch_web_only: '1'
+            watch_max_attempts: '1'
+            timeout_minutes: 25
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '40'
+            watch_command_timeout_ms: '1200000'
           - os: windows-latest
             runner_label: windows
             watch_case: taro-webpack-vue3-tailwindcss-v4
-            round_profile: default
+            round_profile: main-style
             watch_save_snapshots: '1'
-            timeout_minutes: 80
+            # 一次默认轮次会串行触发 20 余次完整 Webpack 重建；PR 改为主包与两个分包的主样式门禁。
+            watch_main_style_only: '1'
+            watch_main_style_subpackage_limit: '2'
+            watch_max_attempts: '1'
+            timeout_minutes: 45
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '60000'
+            watch_max_plugin_process_ms: '18000'
             taro_dev_ready_timeout_ms: '900000'
-            watch_command_timeout_ms: '4200000'
+            watch_command_timeout_ms: '2400000'
+          - os: windows-latest
+            runner_label: windows
+            watch_case: taro-webpack-vue3-tailwindcss-v4
+            round_profile: web-only
+            watch_save_snapshots: '1'
+            # Vue3 Web HMR 单独运行，避免小程序轮次失败后连同 H5 从头重跑。
+            watch_web_only: '1'
+            watch_max_attempts: '1'
+            timeout_minutes: 25
+            watch_timeout_ms: '600000'
+            watch_poll_ms: '40'
+            watch_command_timeout_ms: '1200000'
           - os: windows-latest
             runner_label: windows
             watch_case: demo-uni
@@ -383,14 +447,17 @@ jobs:
             runner_label: windows
             watch_case: taro-vite-react-tailwindcss-v4:tt
             artifact_case: taro-vite-react-tailwindcss-v4-tt
-            round_profile: default
+            round_profile: main-style
             watch_save_snapshots: '1'
-            timeout_minutes: 70
-            watch_timeout_ms: '600000'
+            # Windows TT 完整多轮已在 Linux/macOS 覆盖；PR 保留主包与两个分包的主样式 HMR。
+            watch_main_style_only: '1'
+            watch_main_style_subpackage_limit: '2'
+            watch_max_attempts: '1'
+            timeout_minutes: 45
+            watch_timeout_ms: '420000'
             watch_poll_ms: '40'
-            # Windows TT 独立分包 added-class 会触发较重的冷态构建，需要独立处理预算。
             watch_max_plugin_process_ms: '18000'
-            watch_command_timeout_ms: '3300000'
+            watch_command_timeout_ms: '2400000'
           - os: windows-latest
             runner_label: windows
             watch_case: taro-vite-vue3-tailwindcss-v4:alipay
@@ -411,13 +478,17 @@ jobs:
             runner_label: windows
             watch_case: taro-vite-vue3-tailwindcss-v4:tt
             artifact_case: taro-vite-vue3-tailwindcss-v4-tt
-            round_profile: default
+            round_profile: main-style
             watch_save_snapshots: '1'
-            timeout_minutes: 70
-            watch_timeout_ms: '600000'
+            # Windows TT 完整多轮已在 Linux/macOS 覆盖；PR 保留主包与两个分包的主样式 HMR。
+            watch_main_style_only: '1'
+            watch_main_style_subpackage_limit: '2'
+            watch_max_attempts: '1'
+            timeout_minutes: 45
+            watch_timeout_ms: '420000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '10000'
-            watch_command_timeout_ms: '3300000'
+            watch_max_plugin_process_ms: '18000'
+            watch_command_timeout_ms: '2400000'
           - os: windows-latest
             runner_label: windows
             watch_case: uni-app-vite-tailwindcss-v4:mp-weixin

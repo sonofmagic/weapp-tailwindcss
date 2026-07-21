@@ -358,6 +358,9 @@ async function runBuildOnce(cwd, buildScript, timeoutMs, buildEnv = {}) {
   if (logs.includes('[uni-build-guard]') && logs.includes('已跳过 uni-app 的真实构建')) {
     throw new Error(`build skipped by uni-build-guard; set project buildEnv.UNI_BUILD_STRICT=1 for benchmark builds\n${logs.slice(-4000)}`)
   }
+  if (logs.includes('[taro-build-guard]') && logs.includes('已跳过 Taro demo/app 的 weapp 构建')) {
+    throw new Error(`build skipped by taro-build-guard; set project buildEnv.TARO_BUILD_STRICT=1 for benchmark builds\n${logs.slice(-4000)}`)
+  }
 
   const pluginTiming = resolvePluginTimingSample(logs.split(/\r?\n/))
   return {

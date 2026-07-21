@@ -1,5 +1,6 @@
 {
   "name": "@weapp-tailwindcss/shared",
+  "type": "module",
   "version": "2.0.0",
   "description": "@weapp-tailwindcss/shared",
   "author": "ice breaker <1324318532@qq.com>",
@@ -17,22 +18,22 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./extractors": {
       "types": "./dist/extractors.d.ts",
-      "import": "./dist/extractors.mjs",
-      "require": "./dist/extractors.js"
+      "import": "./dist/extractors.js",
+      "require": "./dist/extractors.cjs"
     },
     "./node": {
       "types": "./dist/node.d.ts",
-      "import": "./dist/node.mjs",
-      "require": "./dist/node.js"
+      "import": "./dist/node.js",
+      "require": "./dist/node.cjs"
     }
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
@@ -53,9 +54,7 @@
   "dependencies": {
     "defu": "^6.1.7",
     "get-value": "^4.1.0",
+    "pathe": "^2.0.3",
     "set-value": "^4.1.0"
-  },
-  "devDependencies": {
-    "pathe": "^2.0.3"
   }
 }

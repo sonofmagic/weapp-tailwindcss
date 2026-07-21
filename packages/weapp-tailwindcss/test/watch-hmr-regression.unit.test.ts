@@ -2186,6 +2186,8 @@ describe('watch-hmr regression cases', () => {
     expect(isWebCompileReadyLogLine('compiled with some warnings')).toBe(true)
     expect(isWebCompileReadyLogLine('webpack 5.107.2 compiled with 1 warning in 369825 ms')).toBe(true)
     expect(isWebCompileDoneLogLine('  ➜  Local:   http://localhost:10086/')).toBe(false)
+    expect(isWebCompileDoneLogLine('1:32:43 PM [vite] hmr update /src/main.css')).toBe(true)
+    expect(isWebCompileDoneLogLine('[weapp-tailwindcss:hmr] {"bundler":"vite","phase":"generateCss.serve","durationMs":40}')).toBe(true)
     expect(isWebCompileDoneLogLine('webpack 5.107.2 compiled with 1 warning in 369825 ms')).toBe(true)
   })
 
@@ -3211,6 +3213,29 @@ describe('watch-hmr regression cases', () => {
 
     expect(uniAppCase?.webHmr?.sourceDomReplacementSequence?.[0]?.beforeSelector).toBe('.text-\\[\\#00f285\\]')
     expect(uniAppCase?.webHmr?.sourceDomReplacementSequence?.[0]?.expectedStyle?.color).toBe('rgb(18, 52, 86)')
+    expect(uniAppCase?.webHmr?.touchCssEntryOnSourceMutation).toBe(false)
+  })
+
+  it('keeps Taro Vite Vue3 Web HMR marker and utility class in one template mutation', () => {
+    const demoExtendedCases = buildDemoExtendedCases('/repo')
+    const taroVue3Case = demoExtendedCases.find(watchCase => watchCase.name === 'taro-vite-vue3-tailwindcss-v4')
+    const webHmr = taroVue3Case?.webHmr
+
+    expect(webHmr?.injectMarkerElement).toBe(false)
+    expect(webHmr?.touchCssEntryOnSourceMutation).toBe(false)
+    expect(webHmr).toBeDefined()
+
+    const mutated = webHmr?.mutate(
+      '<template>\n  <view class="h-[300px] text-[#c31d6b] bg-[#123456]">Taro Vite Vue3 Tailwind CSS v4</view>\n</template>\n',
+      {
+        marker: 'watch-marker',
+        classLiteral: 'bg-[#123456] w-[88px] h-[44px]',
+        classVariableName: '__twWatchWebClass',
+      },
+    )
+
+    expect(mutated).toContain('<view data-tw-watch-web="watch-marker" class="bg-[#123456] w-[88px] h-[44px]">watch-marker-web</view>')
+    expect(mutated).toMatch(/<template>[\s\S]*data-tw-watch-web="watch-marker"[\s\S]*<\/template>/)
   })
 
   it('filters platform-specific unstable watch cases from grouped runs', () => {
@@ -3266,12 +3291,72 @@ describe('watch-hmr regression cases', () => {
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vite-tailwindcss-v4:mp-toutiao', artifact_case: 'uni-app-vite-tailwindcss-v4-mp-toutiao', round_profile: 'default' },
       { os: 'windows-latest', runner_label: 'windows', watch_case: 'uni-app-vite-tailwindcss-v4', round_profile: 'issue33' },
       { os: 'windows-latest', runner_label: 'windows', watch_case: 'weapp-vite-tailwindcss-v4', round_profile: 'issue33' },
-      { os: 'windows-latest', runner_label: 'windows', watch_case: 'taro-vite-vue3-tailwindcss-v4', round_profile: 'default' },
+      { os: 'windows-latest', runner_label: 'windows', watch_case: 'taro-vite-vue3-tailwindcss-v4', round_profile: 'main-style' },
     ]
 
     for (const entry of requiredMatrixEntries) {
       expect(matrixEntries).toContainEqual(expect.objectContaining(entry))
     }
+    expect(prMatrixEntries).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        os: 'windows-latest',
+        runner_label: 'windows',
+        watch_case: 'taro-vite-vue3-tailwindcss-v4',
+        round_profile: 'main-style',
+        watch_main_style_only: '1',
+        watch_main_style_subpackage_limit: '2',
+        watch_max_attempts: '1',
+      }),
+      expect.objectContaining({
+        os: 'windows-latest',
+        runner_label: 'windows',
+        watch_case: 'taro-vite-vue3-tailwindcss-v4',
+        round_profile: 'web-only',
+        watch_web_only: '1',
+        watch_max_attempts: '1',
+      }),
+      ...[
+        'taro-vite-react-tailwindcss-v4',
+        'taro-webpack-react-tailwindcss-v4',
+        'taro-webpack-vue3-tailwindcss-v4',
+      ].flatMap(watchCase => [
+        expect.objectContaining({
+          os: 'windows-latest',
+          runner_label: 'windows',
+          watch_case: watchCase,
+          round_profile: 'main-style',
+          watch_main_style_only: '1',
+          watch_main_style_subpackage_limit: '2',
+          watch_max_attempts: '1',
+        }),
+        expect.objectContaining({
+          os: 'windows-latest',
+          runner_label: 'windows',
+          watch_case: watchCase,
+          round_profile: 'web-only',
+          watch_web_only: '1',
+          watch_max_attempts: '1',
+        }),
+      ]),
+      expect.objectContaining({
+        os: 'windows-latest',
+        runner_label: 'windows',
+        watch_case: 'taro-vite-react-tailwindcss-v4:tt',
+        round_profile: 'main-style',
+        watch_main_style_only: '1',
+        watch_main_style_subpackage_limit: '2',
+        watch_max_attempts: '1',
+      }),
+      expect.objectContaining({
+        os: 'windows-latest',
+        runner_label: 'windows',
+        watch_case: 'taro-vite-vue3-tailwindcss-v4:tt',
+        round_profile: 'main-style',
+        watch_main_style_only: '1',
+        watch_main_style_subpackage_limit: '2',
+        watch_max_attempts: '1',
+      }),
+    ]))
     expect(String(workflowSource)).toContain('${{ matrix.artifact_case || matrix.watch_case }}')
     expect(prMatrixEntries.filter(entry => String(entry.watch_case).startsWith('weapp-vite-tailwindcss-'))).toEqual([
       expect.objectContaining({

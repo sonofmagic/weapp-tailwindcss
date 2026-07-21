@@ -4,6 +4,7 @@ import type { GeneratorPipelineExecutionContext, GeneratorPipelineOutputContext 
 import type { CompilationScopeDependency } from '@/compiler'
 import process from 'node:process'
 import { getCompilationSessionPool } from '@/compiler'
+import { runCompilerOwnerActivity } from '@/compiler/compiler-owner-state'
 import { getTailwindGenerationSessionPool } from '@/compiler/tailwind-generation-session-pool'
 import { shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
@@ -56,6 +57,15 @@ function resolveCompilationDependencies(dependencies: Iterable<string>): Compila
 }
 
 export async function executeGeneratorPipeline(
+  context: GeneratorPipelineExecutionContext,
+): Promise<GenerateCssByGeneratorResult | undefined> {
+  return runCompilerOwnerActivity(
+    context.runtimeState,
+    () => executeGeneratorPipelineWithOwner(context),
+  )
+}
+
+async function executeGeneratorPipelineWithOwner(
   context: GeneratorPipelineExecutionContext,
 ): Promise<GenerateCssByGeneratorResult | undefined> {
   const {

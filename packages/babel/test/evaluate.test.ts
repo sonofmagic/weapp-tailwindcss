@@ -1,4 +1,5 @@
-import babel from '@babel/core'
+import type { PluginItem } from '@babel/core'
+import { transformSync } from '@babel/core'
 import fs from 'fs-extra'
 import path from 'pathe'
 
@@ -6,7 +7,7 @@ function getCase(name: string) {
   return fs.readFileSync(path.resolve(import.meta.dirname, './fixtures/evaluate', name), 'utf8')
 }
 
-const plugin: babel.PluginItem = {
+const plugin: PluginItem = {
   visitor: {
     BinaryExpression(path) {
       // 尝试计算二元表达式的常量值
@@ -68,7 +69,7 @@ const plugin: babel.PluginItem = {
 }
 describe('evaluate', () => {
   it('0.js', () => {
-    const res = babel.transform(
+    const res = transformSync(
       getCase('0.js'),
       {
         plugins: [
@@ -82,7 +83,7 @@ describe('evaluate', () => {
   })
 
   it('1.js', () => {
-    const res = babel.transform(
+    const res = transformSync(
       getCase('1.js'),
       {
         plugins: [

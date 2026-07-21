@@ -129,6 +129,27 @@ describe('OXC JS fast path', () => {
     expect(oxcJsHandler('cn("w-[100px]")', options)).toBeUndefined()
   })
 
+  it('uses OXC with tagged-template ignore options when the AST has no tagged template', () => {
+    const options = {
+      ...createOptions(),
+      ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
+    }
+    const source = 'const cls = "w-[100px]"'
+
+    expect(canUseOxcJsFastPath(options)).toBe(false)
+    expect(oxcJsHandler(source, options)?.code).toBe(jsHandler(source, options).code)
+  })
+
+  it('falls back to Babel when tagged-template ignore options meet any tagged template', () => {
+    const options = {
+      ...createOptions(),
+      ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
+    }
+
+    expect(oxcJsHandler('other`w-[100px]`', options)).toBeUndefined()
+    expect(oxcJsHandler('weappTwIgnore`w-[100px]`', options)).toBeUndefined()
+  })
+
   it('falls back when arbitrary-value fallback needs Babel class context', () => {
     const options = {
       ...createOptions(),

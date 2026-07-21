@@ -7,7 +7,7 @@ Entry: taro-vite-react-tailwindcss-v4/dist
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 434510 | 2297 | true | true | true | true | true | true | false |
+| 434178 | 2297 | true | true | true | true | true | true | false |
 
 ## Generator CSS Files
 
@@ -24,9 +24,9 @@ Entry: taro-vite-react-tailwindcss-v4/dist
 
 | File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `css/index.1.css` | [artifacts/css__index.1.css](artifacts/css__index.1.css) | 13075 | 49 | true | false | true | false | false | true | false |
-| `css/index.2.css` | [artifacts/css__index.2.css](artifacts/css__index.2.css) | 380710 | 2230 | true | true | true | true | true | true | false |
-| `css/index.3.css` | [artifacts/css__index.3.css](artifacts/css__index.3.css) | 18887 | 86 | true | false | true | false | true | true | false |
-| `css/index.4.css` | [artifacts/css__index.4.css](artifacts/css__index.4.css) | 7482 | 27 | true | false | true | false | false | true | false |
+| `css/index.1.css` | [artifacts/css__index.1.css](artifacts/css__index.1.css) | 12992 | 49 | true | false | true | false | false | true | false |
+| `css/index.2.css` | [artifacts/css__index.2.css](artifacts/css__index.2.css) | 380627 | 2230 | true | true | true | true | true | true | false |
+| `css/index.3.css` | [artifacts/css__index.3.css](artifacts/css__index.3.css) | 18804 | 86 | true | false | true | false | true | true | false |
+| `css/index.4.css` | [artifacts/css__index.4.css](artifacts/css__index.4.css) | 7399 | 27 | true | false | true | false | false | true | false |
 | `css/index.5.css` | [artifacts/css__index.5.css](artifacts/css__index.5.css) | 50 | 1 | false | false | false | false | false | false | false |
 | `css/vendors.css` | [artifacts/css__vendors.css](artifacts/css__vendors.css) | 14306 | 59 | false | false | false | false | false | false | false |
