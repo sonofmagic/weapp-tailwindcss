@@ -1,6 +1,6 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { GenerateBundleContext, GenerateBundleThis } from './generate-bundle/types'
-import { beginCompilerShadowRun } from '@/compiler'
+import { beginCompilerShadowRun, getPendingCompilerOwnerDisposal } from '@/compiler'
 import { runWithRemovedBundleFiles } from './bundle-state'
 import { createGenerateBundleHook as createRuntimeGenerateBundleHook } from './generate-bundle/runtime'
 import {
@@ -38,6 +38,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     options: unknown,
     bundle: Record<string, OutputAsset | OutputChunk>,
   ) {
+    const pendingDisposal = getPendingCompilerOwnerDisposal(context.runtimeState)
+    if (pendingDisposal) {
+      await pendingDisposal
+    }
     relationOwner?.recordBundle(bundle)
     const removedFiles = removalConsumer?.consume(Object.keys(bundle)) ?? []
     beginCompilerShadowRun(context.runtimeState)

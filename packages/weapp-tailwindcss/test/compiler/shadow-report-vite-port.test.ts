@@ -30,6 +30,53 @@ describe('vite compiler shadow run boundary', () => {
     expect(runtimeHandler).toHaveBeenCalledTimes(2)
   })
 
+  it('waits for the previous owner disposal before starting the next generateBundle run', async () => {
+    const runtimeHandler = vi.fn(async () => undefined)
+    vi.doMock('@/bundlers/vite/generate-bundle/runtime', () => ({
+      createGenerateBundleHook: vi.fn(() => runtimeHandler),
+    }))
+    const { createGenerateBundleHook } = await import('@/bundlers/vite/generate-bundle')
+    const {
+      disposeCompilerOwner,
+      getCompilationSessionPool,
+      getCompilerShadowRunSnapshot,
+    } = await import('@/compiler')
+    const runtimeState = {
+      tailwindRuntime: { majorVersion: 4 },
+      readyPromise: Promise.resolve(),
+    }
+    const pool = getCompilationSessionPool(runtimeState)
+    let releaseCompilation: (() => void) | undefined
+    const compilationPending = new Promise<void>((resolve) => {
+      releaseCompilation = resolve
+    })
+    let compilationStarted = false
+    const activeCompilation = pool.run({
+      scope: { id: 'app.css', kind: 'global' },
+      outputId: 'app.css',
+      sources: [{ id: '/src/app.css', kind: 'css', candidates: ['p-4'] }],
+    }, async compilation => {
+      compilationStarted = true
+      await compilationPending
+      return { classSet: compilation.candidates }
+    })
+    await vi.waitFor(() => expect(compilationStarted).toBe(true))
+    const disposal = disposeCompilerOwner(runtimeState)
+    const handler = createGenerateBundleHook({ runtimeState } as any)
+    const nextBuild = handler.call({ addWatchFile: vi.fn() }, {}, {})
+
+    await Promise.resolve()
+    expect(runtimeHandler).not.toHaveBeenCalled()
+
+    releaseCompilation?.()
+    await activeCompilation
+    await disposal
+    await nextBuild
+
+    expect(runtimeHandler).toHaveBeenCalledTimes(1)
+    expect(getCompilerShadowRunSnapshot(runtimeState).revision).toBe(1)
+  })
+
   it('completes the current shadow run after the post css finalizer', async () => {
     const {
       beginCompilerShadowRun,
