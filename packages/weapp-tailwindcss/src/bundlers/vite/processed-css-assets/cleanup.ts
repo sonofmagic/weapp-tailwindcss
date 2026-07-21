@@ -71,7 +71,7 @@ export function restoreCssImportAtRules(source: string, filtered: string, file?:
 }
 
 export function removeCommentOnlyAtRules(css: string) {
-  if (!css.includes('@')) {
+  if (!css.includes('@') || !/@[a-z-]+\b[^{};]*\{(?:\s|\/\*[\s\S]*?\*\/)*\}/i.test(css)) {
     return css
   }
   try {

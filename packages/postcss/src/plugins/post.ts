@@ -227,7 +227,9 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
     if (shouldInjectTailwindcssV4Defaults || (opts.majorVersion === 4 && usesTailwindcssV4ContentVariable(root))) {
       injectMissingTailwindcssV4Defaults(root)
     }
-    removeEmptyAtRules(root)
+    if (!enableMainChunkTransforms) {
+      removeEmptyAtRules(root)
+    }
   }
 
   if (enableMainChunkTransforms) {
