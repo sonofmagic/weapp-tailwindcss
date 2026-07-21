@@ -3,8 +3,14 @@ import { unescape as unescapeClassName } from '@weapp-core/escape'
 const ESCAPED_CLASS_TOKEN_RE = /[\w-]+_[A-Z][\w-]*/gi
 const TAILWIND_RESTORED_CANDIDATE_SIGNAL_RE = /[[\]:/#!.]/
 const MAX_RESTORED_CANDIDATE_VARIANTS = 512
-const MAX_DELIMITER_BALANCE_CACHE_SIZE = 8192
-const delimiterBalanceCache = new Map<string, boolean>()
+const MAX_CACHED_RESTORED_CANDIDATES = 262144
+
+interface RestoredCandidateCache {
+  candidateCount: number
+  entries: Map<string, string[]>
+}
+
+const restoredCandidateCaches = new WeakMap<string[], RestoredCandidateCache>()
 
 function hasBalancedCandidateDelimitersFallback(candidate: string) {
   const stack: string[] = []
@@ -46,7 +52,7 @@ function hasBalancedCandidateDelimitersFallback(candidate: string) {
   return stack.length === 0 && quote === undefined && !escaped
 }
 
-function computeBalancedCandidateDelimiters(candidate: string) {
+function hasBalancedCandidateDelimiters(candidate: string) {
   let delimiterStack = 0
   let depth = 0
   let escaped = false
@@ -92,20 +98,32 @@ function computeBalancedCandidateDelimiters(candidate: string) {
   return depth === 0 && quote === 0 && !escaped
 }
 
-function hasBalancedCandidateDelimiters(candidate: string) {
-  const cached = delimiterBalanceCache.get(candidate)
-  if (cached !== undefined) {
-    return cached
-  }
-  const balanced = computeBalancedCandidateDelimiters(candidate)
-  if (delimiterBalanceCache.size >= MAX_DELIMITER_BALANCE_CACHE_SIZE) {
-    const oldest = delimiterBalanceCache.keys().next().value
-    if (oldest !== undefined) {
-      delimiterBalanceCache.delete(oldest)
+function getRestoredCandidateCache(escapeFragments: string[]) {
+  let cache = restoredCandidateCaches.get(escapeFragments)
+  if (!cache) {
+    cache = {
+      candidateCount: 0,
+      entries: new Map(),
     }
+    restoredCandidateCaches.set(escapeFragments, cache)
   }
-  delimiterBalanceCache.set(candidate, balanced)
-  return balanced
+  return cache
+}
+
+function cacheRestoredCandidates(cache: RestoredCandidateCache, token: string, candidates: string[]) {
+  if (candidates.length > MAX_CACHED_RESTORED_CANDIDATES) {
+    return
+  }
+  while (cache.candidateCount + candidates.length > MAX_CACHED_RESTORED_CANDIDATES) {
+    const oldest = cache.entries.entries().next().value
+    if (!oldest) {
+      break
+    }
+    cache.entries.delete(oldest[0])
+    cache.candidateCount -= oldest[1].length
+  }
+  cache.entries.set(token, candidates)
+  cache.candidateCount += candidates.length
 }
 
 export function createEscapeFragments(escapeMap: Record<string, string>) {
@@ -122,6 +140,11 @@ function createAmbiguousRestoredRuntimeCandidates(
   escapeMap: Record<string, string>,
   escapeFragments: string[],
 ) {
+  const cache = getRestoredCandidateCache(escapeFragments)
+  const cached = cache.entries.get(token)
+  if (cached) {
+    return cached
+  }
   if (!hasEscapeFragment(token, escapeFragments)) {
     return []
   }
@@ -157,10 +180,12 @@ function createAmbiguousRestoredRuntimeCandidates(
 
   variants.push(unescapeClassName(token, { map: escapeMap }))
 
-  return [...new Set(variants)].filter(restored => restored !== token
+  const restoredCandidates = [...new Set(variants)].filter(restored => restored !== token
     && TAILWIND_RESTORED_CANDIDATE_SIGNAL_RE.test(restored)
     && !/\s/.test(restored)
     && hasBalancedCandidateDelimiters(restored))
+  cacheRestoredCandidates(cache, token, restoredCandidates)
+  return restoredCandidates
 }
 
 export function collectEscapedRuntimeCandidates(
