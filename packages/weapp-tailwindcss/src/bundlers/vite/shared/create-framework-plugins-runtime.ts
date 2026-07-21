@@ -52,6 +52,7 @@ import { resolveViteWebCssCompatOptions, shouldApplyViteWebCssCompat } from '../
 import { createViteHmrCandidateState } from './framework-hmr-candidate-state'
 import { createFrameworkPostPlugin } from './framework-post-plugin'
 import { createFrameworkProcessedCssRegistry } from './framework-processed-css-registry'
+import { sameStringList } from './framework-runtime-options'
 import { createFrameworkSourceCandidatesPlugin } from './framework-source-candidates-plugin'
 import { createFrameworkSourceScanSession } from './framework-source-scan-session'
 
@@ -60,13 +61,6 @@ const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
 const generatorPlaceholderCssFile = path.join(weappTailwindcssPackageDir, 'generator-placeholder.css')
 const ENV_PLATFORM_KEYS = ['UNI_PLATFORM', 'UNI_UTS_PLATFORM', 'TARO_ENV', 'MPX_CURRENT_TARGET_MODE', 'MPX_CLI_MODE']
-function sameStringList(first, second) {
-  if (first === second) {
-    return true
-  } if (!first || !second || first.length !== second.length) {
-    return false
-  } return first.every((item, index) => item === second[index])
-}
 function collectConfiguredCssEntries(options) { const runtimeCssEntries = options.tailwindcssRuntimeOptions?.tailwindcss?.v4?.cssEntries; const entries = [...Array.isArray(options.cssEntries) ? options.cssEntries : [], ...Array.isArray(options.tailwindcss?.v4?.cssEntries) ? options.tailwindcss.v4.cssEntries : [], ...Array.isArray(runtimeCssEntries) ? runtimeCssEntries : []].filter(item => typeof item === 'string' && item.length > 0); return entries.length > 0 ? [...new Set(entries)] : void 0 }
 function normalizeViteStylePlatform(value, appType) { return normalizeFrameworkStylePlatform(value, appType) }
 function inferPlatformFromOutDir(outDir) {
@@ -326,7 +320,8 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
     const generatorTransformCode = currentGeneratorBranch.isWeb ? generatorCode : normalizeMiniProgramGeneratorCssSource(generatorCode, outputFile)
     const fileKey = normalizeGeneratedCssCacheFile(file)
     const fullRuntime = getSourceCandidates() ?? getRecordedGeneratorCandidates() ?? await ensureRuntimeClassSet()
-    const pendingHmrChange = hmrCandidateState.resolve(generatorCode, file)
+    const transient = hookContext?.transient === true
+    const pendingHmrChange = transient ? void 0 : hmrCandidateState.resolve(generatorCode, file)
     const forceFullHmrCssRegeneration = hmrCandidateState.shouldForceFullRegeneration(pendingHmrChange !== undefined)
     const runtime = fullRuntime
     const importShellCss = resolveViteServeRootMiniProgramImportShell({ css: generatorTransformCode, cssPipelineContext, cssPipelineStrategy: frameworkCssPipelineStrategy, isWebGeneratorTarget: currentGeneratorBranch.isWeb, outputFile })
@@ -377,6 +372,12 @@ ${previousTracedCss}`
     const finalizedCss = finalizeViteMiniProgramCss(generated.css)
     const shouldApplyWebCssCompat = shouldApplyViteWebCssCompat(cssPipelineContext, frameworkCssPipelineStrategy)
     const outputCss = frameworkCssPipelineStrategy?.transformGeneratedCss?.(finalizedCss, { ...cssPipelineContext, defaultWebCssCompat: css => transformWebCssCompat(css, resolveViteWebCssCompatOptions(cssPipelineContext)), removeScopedPreflight: removeScopedTailwindPreflightCss, shouldApplyWebCssCompat }) ?? removeScopedTailwindPreflightCss(shouldApplyWebCssCompat ? transformWebCssCompat(finalizedCss, resolveViteWebCssCompatOptions(cssPipelineContext)) : finalizedCss)
+    if (transient) {
+      for (const dependency of generated.dependencies) {
+        hookContext?.addWatchFile?.(dependency)
+      }
+      return outputCss
+    }
     const tracedCss = annotateCssSourceTrace(outputCss, { opts, tokenSources: createCssTokenSourceMap(getSourceCandidateSourcesForEntries(void 0), opts) })
     for (const dependency of generated.dependencies) {
       hookContext?.addWatchFile?.(dependency)

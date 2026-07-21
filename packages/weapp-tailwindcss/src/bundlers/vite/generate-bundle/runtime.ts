@@ -445,7 +445,7 @@ function createGenerateBundleHook(context): any {
         debug('js skip web target: %s', file)
         continue
       }
-      processJsBundleEntry({ applyLinkedUpdates, bundle, cache, createHandlerOptions, debug, disableJsPrecheck: envFlags.disableJsPrecheck, entry, getJsEntry, jsHandler, jsTaskFactories, linkedByEntry, metrics, onUpdate, outDir, processFiles, rememberProcessCacheKey, runtimeSignature, snapshot, transformFilterSignature, shouldSkipAstTransform: transformFilter ? chunk => shouldSkipViteJsChunkTransform(chunk, transformFilter) : void 0, slowJsAstWarnMs: envFlags.slowJsAstWarnMs, timeTask, transformRuntime, transformRuntimeSignature, uniAppX, useIncrementalMode })
+      processJsBundleEntry({ applyLinkedUpdates, bundle, cache, createHandlerOptions, debug, deferUniAppXStylePlaceholder: opts.appType === 'uni-app-x', disableJsPrecheck: envFlags.disableJsPrecheck, entry, getJsEntry, jsHandler, jsTaskFactories, linkedByEntry, metrics, onUpdate, outDir, processFiles, rememberProcessCacheKey, runtimeSignature, snapshot, transformFilterSignature, shouldSkipAstTransform: transformFilter ? chunk => shouldSkipViteJsChunkTransform(chunk, transformFilter) : void 0, slowJsAstWarnMs: envFlags.slowJsAstWarnMs, timeTask, transformRuntime, transformRuntimeSignature, uniAppX, useIncrementalMode })
     }
     recordTimingDetail('entries.plan', entryPlanningStartedAt)
     const rememberedCssStartedAt = performance.now()

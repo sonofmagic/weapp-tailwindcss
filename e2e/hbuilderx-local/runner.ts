@@ -1,6 +1,8 @@
 import type { AppCase, MiniProgramCase, WebCase } from './cases'
 
 import fs from 'node:fs/promises'
+import os from 'node:os'
+import process from 'node:process'
 
 import path from 'pathe'
 import { expect } from 'vitest'
@@ -25,6 +27,11 @@ import {
 import { runWebHmr } from './web'
 
 const repoRoot = path.resolve(__dirname, '../..')
+const HBUILDERX_DEVICE_UNAVAILABLE_RE = /未检测到指定设备|指定设备(?:不存在|不可用|已离线)|(?:device|emulator)[\w-]*\s+(?:not found|offline|unavailable)/i
+
+export function findHBuilderXDeviceUnavailableLog(output: string) {
+  return output.match(HBUILDERX_DEVICE_UNAVAILABLE_RE)?.[0]
+}
 
 function resolveAppMarkerAnchors(item: AppCase) {
   return item.markerAnchorCandidates?.length ? item.markerAnchorCandidates : [item.markerAnchor]
@@ -65,6 +72,15 @@ function hasContent(source: string, entries: Array<string | RegExp>) {
   })
 }
 
+function hasNoContent(source: string, entries: Array<string | RegExp> | undefined) {
+  return (entries ?? []).every((entry) => {
+    if (typeof entry === 'string') {
+      return !source.includes(entry)
+    }
+    return !entry.test(source)
+  })
+}
+
 function formatHBuilderXIssueDetails(output: string) {
   const issue = classifyHBuilderXOutput(output)
   return [
@@ -82,6 +98,25 @@ async function waitForFile(file: string, timeoutMs: number) {
     await wait(pollIntervalMs)
   }
   return false
+}
+
+async function waitForAppRuntimeLogs(
+  item: AppCase,
+  logs: string[],
+  ensureRunning: () => void,
+) {
+  if (!item.runtimeLogContains?.length) {
+    return
+  }
+  const startedAt = Date.now()
+  while (Date.now() - startedAt < hbuilderxAppTimeoutMs) {
+    ensureRunning()
+    if (hasContent(logs.join(''), item.runtimeLogContains)) {
+      return
+    }
+    await wait(pollIntervalMs)
+  }
+  throw new Error(`${item.name} 未在 ${hbuilderxAppTimeoutMs}ms 内进入真实 App 运行时\nexpected=${item.runtimeLogContains.map(String).join(' | ')}\nrecentHBuilderXLogs=${logs.join('').slice(-8000)}`)
 }
 
 async function resolveAppOutputRoot(item: AppCase) {
@@ -169,6 +204,7 @@ async function waitForAppTransformedContent(
   ensureRunning?: () => void,
   createFailureDetails?: () => Promise<string>,
   styleExpected?: Array<string | RegExp>,
+  forbidden?: Array<string | RegExp>,
 ) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
   const startedAt = Date.now()
@@ -196,6 +232,9 @@ async function waitForAppTransformedContent(
         if (!hasContent(style, styleExpected)) {
           continue
         }
+      }
+      if (!hasNoContent(transformed, forbidden)) {
+        continue
       }
       return outputRoot
     }
@@ -328,6 +367,7 @@ async function findReadyAppOutputRoot(item: AppCase) {
     if (
       transformed
       && hasContent(transformed, item.transformedContains)
+      && hasNoContent(transformed, item.transformedNotContains)
       && (item.styleContains?.length ? style != null && hasContent(style, item.styleContains) : true)
     ) {
       return outputRoot
@@ -365,6 +405,14 @@ async function rmWithRetry(target: string) {
       await wait(500)
     }
   }
+}
+
+async function createHBuilderXProjectAlias(projectRoot: string, platform: AppCase['platform']) {
+  const projectName = `${path.basename(projectRoot)}-weapp-tw-${platform}-${process.pid}`
+  const projectAlias = path.resolve(os.tmpdir(), projectName)
+  await rmWithRetry(projectAlias)
+  await fs.symlink(projectRoot, projectAlias, 'dir')
+  return { projectAlias, projectName }
 }
 
 async function writeAppMarker(
@@ -436,6 +484,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
   const hbuilderxCliPath = await resolveHBuilderXCli()
   const projectRoot = path.resolve(repoRoot, item.projectDir)
   const sourceFile = path.resolve(projectRoot, item.sourceFile)
+  let projectAlias: string | undefined
   let restore: (() => Promise<void>) | undefined
   let child: ReturnType<typeof spawnPnpm> | undefined
   try {
@@ -449,11 +498,13 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       text: item.markerText,
     })
     await cleanAppOutput(item)
-    await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot], hbuilderxAppTimeoutMs, {
+    const projectIdentity = await createHBuilderXProjectAlias(projectRoot, item.platform)
+    projectAlias = projectIdentity.projectAlias
+    await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectAlias], hbuilderxAppTimeoutMs, {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       ...androidEnv,
     })
-    child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectRoot, ...(item.launchArgs ?? [])], {
+    child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectIdentity.projectName, '--cleanCache', 'true', ...(item.launchArgs ?? [])], {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       WEAPP_TW_HMR_TIMING: '1',
       ...androidEnv,
@@ -470,8 +521,12 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
 
     const startedAt = Date.now()
     const ensureLaunchRunning = () => {
+      const output = logs.join('')
+      const unavailableDevice = findHBuilderXDeviceUnavailableLog(output)
+      if (unavailableDevice) {
+        throw new Error(`HBuilderX 未找到可用运行设备：${unavailableDevice}\n${output}`)
+      }
       if (exit && exit.code !== 0) {
-        const output = logs.join('')
         throw new Error(`命令失败：pnpm exec hbuilderx launch ${item.platform} exit=${exit.signal ?? exit.code}\n${formatHBuilderXIssueDetails(output)}\n${output}`)
       }
     }
@@ -492,6 +547,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     if (exit) {
       throw new Error(`HBuilderX app dev process exited before hot-update mutation: exit=${exit.signal ?? exit.code}\n${logs.join('')}`)
     }
+    await waitForAppRuntimeLogs(item, logs, ensureLaunchRunning)
     await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
       className: item.hmrMarkerClass,
       textClassName: item.hmrMarkerTextClass,
@@ -504,7 +560,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
         `sourceTail=${source.slice(-1200)}`,
         `recentHBuilderXLogs=${logs.join('').slice(-4000)}`,
       ].join('\n')
-    }, item.hmrStyleContains)
+    }, item.hmrStyleContains, item.transformedNotContains)
     await assertAppOutputHasNoUnsupportedContent(item, hmrOutputRoot)
     expectNoContent(logs.join(''), item.logNotContains, `${item.name} HBuilderX 日志`)
 
@@ -518,6 +574,9 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     }
     if (restore) {
       await restore()
+    }
+    if (projectAlias) {
+      await rmWithRetry(projectAlias)
     }
   }
 }

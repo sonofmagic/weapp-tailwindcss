@@ -269,7 +269,7 @@ async function rewriteHmrMarker(file: string, anchors: string[], steps: WebHmrSt
     throw new Error(`找不到 HMR 插入锚点：${file}`)
   }
   const insertion = steps
-    .slice(0, stepIndex + 1)
+    .slice(stepIndex, stepIndex + 1)
     .map(step => `<view class="${step.markerClass}">${step.markerText}</view>`)
     .join('\n\t\t')
   const next = `${cleaned.slice(0, index)}${insertion}\n\t\t${cleaned.slice(index)}`

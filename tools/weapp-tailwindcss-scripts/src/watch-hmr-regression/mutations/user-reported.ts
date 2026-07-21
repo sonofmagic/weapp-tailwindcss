@@ -75,6 +75,7 @@ function assertUserReportedOutputs(
   classTokens: string[],
   escapedClasses: string[],
   outputs: UserReportedOutputs,
+  forbiddenClassTokens: string[] = [],
 ) {
   const verifyClassLiteralIn = config.verifyClassLiteralIn ?? []
 
@@ -95,6 +96,21 @@ function assertUserReportedOutputs(
     }
     if (verifyClassLiteralIn.includes('js')) {
       assertContainsOneOf(outputs.js, expectedValues, `[${watchCase.label}] user reported ${config.label} ${phase} js literal`)
+    }
+  }
+
+  for (const classToken of forbiddenClassTokens) {
+    const escaped = replaceWxml(classToken)
+    const forbiddenValues = createClassTokenExpectedValues(classToken, escaped)
+    if (config.verifyEscapedIn.includes('wxml')) {
+      for (const value of forbiddenValues) {
+        assertNotContains(outputs.wxml, value, `[${watchCase.label}] user reported ${config.label} ${phase} stale wxml class`)
+      }
+    }
+    if (config.verifyEscapedIn.includes('js')) {
+      for (const value of forbiddenValues) {
+        assertNotContains(outputs.js, value, `[${watchCase.label}] user reported ${config.label} ${phase} stale js class`)
+      }
     }
   }
 
@@ -180,6 +196,7 @@ export async function runUserReportedHotUpdate(
         classTokens,
         escapedClasses,
         outputs,
+        rollbackClassTokens.filter(token => !classTokens.includes(token)),
       )
       return true
     },
@@ -213,15 +230,8 @@ export async function runUserReportedHotUpdate(
         rollbackClassTokens,
         rollbackEscapedClasses,
         outputs,
+        classTokens.filter(token => !rollbackClassTokens.includes(token)),
       )
-      for (const escaped of escapedClasses) {
-        if (config.verifyEscapedIn.includes('wxml')) {
-          assertNotContains(outputs.wxml, escaped, `[${watchCase.label}] user reported ${config.label} rollback wxml`)
-        }
-        if (config.verifyEscapedIn.includes('js')) {
-          assertNotContains(outputs.js, escaped, `[${watchCase.label}] user reported ${config.label} rollback js`)
-        }
-      }
       return true
     },
     {

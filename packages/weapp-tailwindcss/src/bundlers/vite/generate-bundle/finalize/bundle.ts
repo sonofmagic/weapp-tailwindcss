@@ -96,6 +96,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
   const applyStyleSources = await handleUniAppXPostCssTasks({
     bundle,
     debug,
+    deferStylePlaceholderInjection: opts.appType === 'uni-app-x',
     generatorRuntime,
     getCssHandlerOptions,
     getSourceCandidateSourcesForEntries,

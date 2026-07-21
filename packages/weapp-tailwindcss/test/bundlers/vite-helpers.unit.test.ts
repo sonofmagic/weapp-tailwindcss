@@ -339,6 +339,27 @@ describe('bundlers/vite helper modules', () => {
     })).toBeUndefined()
   })
 
+  it('infers uni-app x native targets from the bundler output directory', () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    delete process.env.UNI_UTS_PLATFORM
+    try {
+      const context = {
+        resolvedConfig: {
+          build: {
+            outDir: '/project/unpackage/dist/dev/.uvue',
+          },
+          root: '/tmp/project-weapp-tw-app-android-12345',
+        },
+      } as any
+
+      expect(uniAppXCssPipelineStrategy.isNativeAppStyleTarget?.(context)).toBe(true)
+      expect(uniAppXCssPipelineStrategy.shouldPreserveStyleOutputExtension?.(context)).toBe(true)
+    }
+    finally {
+      process.env.UNI_UTS_PLATFORM = originalPlatform
+    }
+  })
+
   it('resolves current source candidate source by explicit and scored candidates', () => {
     const rootDir = '/repo'
     const outDir = '/repo/dist'

@@ -1228,7 +1228,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       expect(styleMetric).toBeUndefined()
     }
 
-    if (item.name === 'uni-app-vite-tailwindcss-v4') {
+    if (item.name === 'uni-app-vite-tailwindcss-v4' || item.name === 'uni-app-x-hbuilderx-tailwindcss-v4') {
       const userReportedHotUpdate = item.userReportedHotUpdate
       expect(userReportedHotUpdate, `[${item.project}] should include the user reported hot-update scenario`).toBeDefined()
       if (!userReportedHotUpdate) {
@@ -1245,6 +1245,15 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
         expect(userReportedHotUpdate.label).toBe('index text-[102.43rpx] to text-[103.43rpx]')
         expect([userReportedHotUpdate.from, userReportedHotUpdate.to]).toEqual(expect.arrayContaining(['text-[#00f285] text-[102.43rpx] font-bold underline', 'text-[#00f285] text-[103.43rpx] font-bold underline']))
         expect(userReportedHotUpdate.classTokens.some(token => token === 'text-[102.43rpx]' || token === 'text-[103.43rpx]')).toBe(true)
+      }
+      else {
+        expect(normalizePathLike(userReportedHotUpdate.sourceFile)).toContain('pages/index/index.uvue')
+        expect(userReportedHotUpdate.label).toBe('index text-xs to text-[29px]')
+        expect([userReportedHotUpdate.from, userReportedHotUpdate.to]).toEqual(expect.arrayContaining([
+          'class="text-xs text-white">issue-1002 text-xs',
+          'class="text-[29px] text-white">issue-1002 text-[29px]',
+        ]))
+        expect(userReportedHotUpdate.classTokens.some(token => token === 'text-xs' || token === 'text-[29px]')).toBe(true)
       }
     }
 

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { miniProgramCases, uniAppAppCases, uniAppXAppCases, webCases } from '../../../e2e/hbuilderx-local/cases'
 import { filterHBuilderXCases, matchesHBuilderXCaseFilter, parseCaseNameFilters } from '../../../e2e/hbuilderx-local/filters'
+import { findHBuilderXDeviceUnavailableLog } from '../../../e2e/hbuilderx-local/runner'
 
 const hbuilderxDemoNames = [
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
@@ -27,6 +28,12 @@ function expectContainsMatcher(entries: Array<string | RegExp>, matcher: string 
 }
 
 describe('HBuilderX local demo matrix', () => {
+  it('fails fast when HBuilderX reports a missing device without exiting', () => {
+    expect(findHBuilderXDeviceUnavailableLog('未检测到指定设备 emulator-5554')).toBe('未检测到指定设备')
+    expect(findHBuilderXDeviceUnavailableLog('emulator-5556 offline')).toBe('emulator-5556 offline')
+    expect(findHBuilderXDeviceUnavailableLog('项目编译成功')).toBeUndefined()
+  })
+
   it('keeps every HBuilderX demo covered by local mini-program and Web HMR cases', () => {
     expect(miniProgramCases.map(item => item.name)).toEqual(hbuilderxMiniProgramCaseNames)
     expect(webCases.map(item => item.name)).toEqual(hbuilderxDemoNames)
@@ -43,8 +50,9 @@ describe('HBuilderX local demo matrix', () => {
       expect(webCase?.workflow.webHmr, `${name} should cover H5 dev HMR`).toBe(true)
       expect(webCase?.hmrSteps.length, `${name} should simulate multiple user edits during H5 dev`).toBeGreaterThanOrEqual(3)
       for (const step of webCase?.hmrSteps ?? []) {
-        expect(step.markerClass, `${name} HMR step should add user-authored classes`).toContain('bg-[#')
+        expect(step.markerClass, `${name} HMR step should replace user-authored classes on one probe`).toContain('hbuilderx-web-hmr-probe bg-[#')
         expect(step.cssContains.length, `${name} HMR step should assert generated CSS`).toBeGreaterThanOrEqual(3)
+        expect(step.runtimeStyles?.[0]?.selector, `${name} HMR step should assert the replaced probe at runtime`).toBe('.hbuilderx-web-hmr-probe')
       }
     }
   })

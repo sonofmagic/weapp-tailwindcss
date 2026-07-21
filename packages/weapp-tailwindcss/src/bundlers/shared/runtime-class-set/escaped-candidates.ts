@@ -4,6 +4,48 @@ const ESCAPED_CLASS_TOKEN_RE = /[\w-]+_[A-Z][\w-]*/gi
 const TAILWIND_RESTORED_CANDIDATE_SIGNAL_RE = /[[\]:/#!.]/
 const MAX_RESTORED_CANDIDATE_VARIANTS = 512
 
+function hasBalancedCandidateDelimiters(candidate: string) {
+  const stack: string[] = []
+  const closingByOpening: Record<string, string> = {
+    '(': ')',
+    '[': ']',
+    '{': '}',
+  }
+  let escaped = false
+  let quote: string | undefined
+  for (const char of candidate) {
+    if (escaped) {
+      escaped = false
+      continue
+    }
+    if (char === '\\') {
+      escaped = true
+      continue
+    }
+    if (quote) {
+      if (char === quote) {
+        quote = undefined
+      }
+      continue
+    }
+    if (char === '"' || char === '\'') {
+      quote = char
+      continue
+    }
+    if (closingByOpening[char]) {
+      stack.push(char)
+      continue
+    }
+    if (char === ')' || char === ']' || char === '}') {
+      const opening = stack.pop()
+      if (!opening || closingByOpening[opening] !== char) {
+        return false
+      }
+    }
+  }
+  return stack.length === 0 && quote === undefined && !escaped
+}
+
 export function createEscapeFragments(escapeMap: Record<string, string>) {
   return [...new Set(Object.values(escapeMap).filter(Boolean))]
     .sort((a, b) => b.length - a.length)
@@ -55,7 +97,8 @@ function createAmbiguousRestoredRuntimeCandidates(
 
   return [...new Set(variants)].filter(restored => restored !== token
     && TAILWIND_RESTORED_CANDIDATE_SIGNAL_RE.test(restored)
-    && !/\s/.test(restored))
+    && !/\s/.test(restored)
+    && hasBalancedCandidateDelimiters(restored))
 }
 
 export function collectEscapedRuntimeCandidates(

@@ -23,6 +23,7 @@ interface ProcessJsBundleEntryOptions {
   disableJsPrecheck: boolean
   entry: BundleStateEntry
   getJsEntry: ReturnType<typeof import('./js-entries').createJsEntryResolver>
+  deferUniAppXStylePlaceholder?: boolean
   jsHandler: GenerateBundleContext['opts']['jsHandler']
   jsTaskFactories: Array<() => Promise<void>>
   linkedByEntry: Map<string, Set<string>> | undefined
@@ -53,6 +54,7 @@ export function processJsBundleEntry(options: ProcessJsBundleEntryOptions) {
     disableJsPrecheck,
     entry,
     getJsEntry,
+    deferUniAppXStylePlaceholder,
     jsHandler,
     jsTaskFactories,
     linkedByEntry,
@@ -214,6 +216,7 @@ export function processJsBundleEntry(options: ProcessJsBundleEntryOptions) {
         createHandlerOptions,
         debug,
         getAssetSource: createUniAppXBundleAssetSourceGetter(bundle),
+        injectStylePlaceholder: !deferUniAppXStylePlaceholder,
         jsHandler,
         onUpdate,
         runtimeSet: transformRuntime,

@@ -340,3 +340,35 @@ export function createMergedStyleValue(code: string, localStyle: StyleValue | un
   }
   return changed ? merged : undefined
 }
+
+export function createMergedStyleValues(code: string, localStyles: StyleValue[], appStyle: StyleValue) {
+  if (localStyles.length === 0) {
+    return
+  }
+  const used = collectUsedStyleKeys(code, appStyle)
+  if (used.size === 0) {
+    return
+  }
+  const merged = localStyles.map(style => ({ ...style }))
+  let changed = false
+  for (const className of used) {
+    const generatedStyle = appStyle[className]
+    if (!generatedStyle) {
+      continue
+    }
+    const indexes = merged.flatMap((style, index) => style[className] ? [index] : [])
+    if (indexes.length === 0) {
+      merged[0][className] = generatedStyle
+      changed = true
+      continue
+    }
+    for (const index of indexes) {
+      if (JSON.stringify(merged[index][className]) === JSON.stringify(generatedStyle)) {
+        continue
+      }
+      merged[index][className] = generatedStyle
+      changed = true
+    }
+  }
+  return changed ? merged : undefined
+}

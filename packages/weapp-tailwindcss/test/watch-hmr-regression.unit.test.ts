@@ -15,6 +15,9 @@ import {
   buildDemoExtendedCases,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
 import {
+  buildUniAppHBuilderXCases,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/hbuilderx'
+import {
   buildCases,
   filterCasesForPlatform,
   pickCases,
@@ -2360,6 +2363,36 @@ describe('watch-hmr regression cases', () => {
       'const className = ref(\'bg-[#0000ff] text-[45rpx] text-white\')',
       payload,
     )).toContain(`const className = ref('${payload.classLiteral}')`)
+  })
+
+  it('keeps uni-app x Options API script and in-place class replacement HMR coverage', () => {
+    const uniAppXCase = buildUniAppHBuilderXCases('/repo').find(watchCase => watchCase.name === 'uni-app-x-hbuilderx-tailwindcss-v4')
+    const source = [
+      '<script lang="uts">',
+      'export default {',
+      '  data() {',
+      '    return {',
+      '      globalNum: 0,',
+      '    }',
+      '  },',
+      '}',
+      '</script>',
+      '<template>',
+      '  <BindClass />',
+      '  <text class="text-xs text-white">issue-1002 text-xs</text>',
+      '</template>',
+    ].join('\n')
+
+    expect(uniAppXCase).toBeDefined()
+    expect(uniAppXCase?.scriptMutation.mutate(source, payload)).toContain(`${payload.classVariableName}: '${payload.classLiteral}'`)
+    expect(uniAppXCase?.scriptMutation.mutate(source, payload)).toContain(`:class="${payload.classVariableName}"`)
+    expect(uniAppXCase?.userReportedHotUpdate).toMatchObject({
+      before: 'class="text-xs text-white">issue-1002 text-xs',
+      after: 'class="text-[29px] text-white">issue-1002 text-[29px]',
+      beforeClassTokens: ['text-xs'],
+      afterClassTokens: ['text-[29px]'],
+      verifyEscapedIn: ['wxml'],
+    })
   })
 
   it('uses the development H5 watch script for Taro webpack React v4 web HMR', () => {
