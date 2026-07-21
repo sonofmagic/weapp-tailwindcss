@@ -274,7 +274,7 @@ function createGenerateBundleHook(context): any {
     const transformRuntimeSignature = createCandidateSignature(transformRuntime)
     const shouldProcessTailwindGeneration = !useIncrementalMode || hasRuntimeAffectingChanges || generatorCandidatesChanged || snapshot.processFiles.css.size > 0
     const { applyLinkedUpdates, pendingLinkedUpdates } = createLinkedUpdateHelpers({ jsEntries, onUpdate, debug })
-    const createBaseHandlerOptions = createJsHandlerOptionsFactory({ getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion, moduleGraph: moduleGraphOptions })
+    const createBaseHandlerOptions = createJsHandlerOptionsFactory({ getExperimentalJsFastPath: () => opts.experimentalJsFastPath ?? (resolvedConfig?.build?.watch != null ? 'oxc' : false), getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion, moduleGraph: moduleGraphOptions })
     const resolveFrameworkJsHandlerOptions = absoluteFilename => context.cssPipelineStrategy?.getServeJsHandlerOptions?.({ ...cssPipelineContext, file: absoluteFilename })
     const createHandlerOptions = (absoluteFilename, extra) => { const frameworkExtra = resolveFrameworkJsHandlerOptions(absoluteFilename); return createBaseHandlerOptions(absoluteFilename, frameworkExtra || extra ? { ...frameworkExtra, ...extra } : void 0) }
     const shouldTransformJsBundle = !isWebGeneratorTarget || context.cssPipelineStrategy?.shouldTransformServeJs?.(cssPipelineContext) === true

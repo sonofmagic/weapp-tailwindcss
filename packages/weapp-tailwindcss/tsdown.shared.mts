@@ -37,27 +37,46 @@ export const webpackLoaderEntries = {
   'weapp-tw-css-import-rewrite-loader': 'src/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader.ts',
 } as const
 
-function externalizeRuntimeDeps(id: string) {
+export const runtimeCjsEntries = {
+  ...runtimeEntries,
+  ...webpackLoaderEntries,
+} as const
+
+function externalizeCommonRuntimeDeps(id: string) {
   return id === 'webpack'
     || id === 'tailwindcss/plugin'
     || id === 'postcss'
+    || id === '@vue/compiler-dom'
+    || id === '@vue/shared'
     || /[\\/]node_modules[\\/]\.pnpm[\\/]postcss@/.test(id)
     || /[\\/]node_modules[\\/]postcss[\\/]/.test(id)
 }
 
-function alwaysBundleRuntimeDeps(id: string) {
+function isBabelEsmOnlyDependency(id: string) {
+  return id === 'obug' || /^@babel(?:\/|$)/.test(id)
+}
+
+function isHtmlparser2EsmOnlyDependency(id: string) {
   return id === 'htmlparser2'
     || id === 'domhandler'
     || id === 'domutils'
     || id === 'domelementtype'
     || id === 'entities'
-    || id === '@vue/compiler-dom'
-    || id === '@vue/shared'
 }
 
-function preserveJsExports({ format }: { format: string }) {
+export function bundleCjsRuntimeDeps(id: string) {
+  return id === 'magic-string'
+    || isBabelEsmOnlyDependency(id)
+    || isHtmlparser2EsmOnlyDependency(id)
+}
+
+export function externalizeEsmRuntimeDeps(id: string) {
+  return externalizeCommonRuntimeDeps(id) || bundleCjsRuntimeDeps(id)
+}
+
+export function moduleOutExtensions({ format }: { format: string }) {
   return {
-    js: format === 'es' ? '.mjs' : '.js',
+    js: format === 'es' ? '.js' : '.cjs',
     dts: '.d.ts',
   }
 }
@@ -72,29 +91,56 @@ export function createTsdownConfigs(options: WatchAwareOptions = {}) {
       dts: false,
       clean: shouldClean,
       shims: true,
-      format: ['cjs', 'esm'],
+      format: ['esm'],
       deps: {
-        alwaysBundle: alwaysBundleRuntimeDeps,
-        neverBundle: externalizeRuntimeDeps,
+        neverBundle: externalizeEsmRuntimeDeps,
         onlyBundle: false,
       },
       target: ['es2020'],
-      outExtensions: preserveJsExports,
+      outExtensions: moduleOutExtensions,
     },
     {
-      // CLI 单独构建，避免未来引入 ESM-only 依赖时污染 runtime 入口共享 chunk。
+      // loaders 与 runtime 共用构建图，避免 Babel 8 等 ESM-only 依赖被重复内联。
+      entry: runtimeCjsEntries,
+      dts: false,
+      clean: false,
+      shims: true,
+      format: ['cjs'],
+      deps: {
+        alwaysBundle: bundleCjsRuntimeDeps,
+        neverBundle: externalizeCommonRuntimeDeps,
+        onlyBundle: false,
+      },
+      target: ['es2020'],
+      outExtensions: moduleOutExtensions,
+    },
+    {
+      // CLI 单独构建，避免依赖污染 runtime 入口共享 chunk。
       entry: cliEntries,
       dts: false,
       clean: false,
       shims: true,
-      format: ['cjs', 'esm'],
+      format: ['esm'],
       deps: {
-        alwaysBundle: alwaysBundleRuntimeDeps,
-        neverBundle: externalizeRuntimeDeps,
+        neverBundle: externalizeEsmRuntimeDeps,
         onlyBundle: false,
       },
       target: ['es2020'],
-      outExtensions: preserveJsExports,
+      outExtensions: moduleOutExtensions,
+    },
+    {
+      entry: cliEntries,
+      dts: false,
+      clean: false,
+      shims: true,
+      format: ['cjs'],
+      deps: {
+        alwaysBundle: bundleCjsRuntimeDeps,
+        neverBundle: externalizeCommonRuntimeDeps,
+        onlyBundle: false,
+      },
+      target: ['es2020'],
+      outExtensions: moduleOutExtensions,
     },
     {
       entry: escapeEntries,
@@ -104,18 +150,7 @@ export function createTsdownConfigs(options: WatchAwareOptions = {}) {
       shims: false,
       format: ['cjs', 'esm'],
       target: ['es2020'],
-      outExtensions: preserveJsExports,
-    },
-    {
-      entry: webpackLoaderEntries,
-      dts: false,
-      clean: false,
-      shims: true,
-      format: ['cjs'],
-      deps: {
-        neverBundle: ['webpack'],
-      },
-      outExtensions: preserveJsExports,
+      outExtensions: moduleOutExtensions,
     },
   ]
 }

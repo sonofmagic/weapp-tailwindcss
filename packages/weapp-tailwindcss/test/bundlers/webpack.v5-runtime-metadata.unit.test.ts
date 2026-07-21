@@ -99,8 +99,8 @@ function createContext(): TestContext {
     htmlMatcher: (file: string) => file.endsWith('.wxml'),
     jsMatcher: (file: string) => file.endsWith('.js'),
     wxsMatcher: () => false,
-    runtimeLoaderPath: '/virtual/weapp-tw-runtime-classset-loader.js',
-    runtimeCssImportRewriteLoaderPath: '/virtual/weapp-tw-css-import-rewrite-loader.js',
+    runtimeLoaderPath: '/virtual/weapp-tw-runtime-classset-loader.cjs',
+    runtimeCssImportRewriteLoaderPath: '/virtual/weapp-tw-css-import-rewrite-loader.cjs',
   }
 }
 

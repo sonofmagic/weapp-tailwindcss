@@ -1,9 +1,10 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises'
-import { dirname, join, relative, sep } from 'node:path'
+import { join, resolve } from 'node:path'
 import process from 'node:process'
+import { rewriteDeclarationModuleSpecifiers } from './dts-module-specifiers'
 import { corePackageRoot } from './paths'
 
-const root = corePackageRoot
+const root = process.argv[2] ? resolve(process.cwd(), process.argv[2]) : corePackageRoot
 const distDir = join(root, 'dist')
 
 async function* walk(dir) {
@@ -19,21 +20,16 @@ async function* walk(dir) {
   }
 }
 
-function toModulePath(filepath, aliasTarget) {
-  const target = join(distDir, aliasTarget)
-  let value = relative(dirname(filepath), target).split(sep).join('/')
-  if (!value.startsWith('.')) {
-    value = `./${value}`
-  }
-  return value
-}
-
 async function main() {
+  const declarationFiles = []
   for await (const filepath of walk(distDir)) {
+    declarationFiles.push(filepath)
+  }
+  const declarationFileSet = new Set(declarationFiles)
+
+  for (const filepath of declarationFiles) {
     const content = await readFile(filepath, 'utf8')
-    const next = content.replace(/from\s+(['"])@\/([^'"]+)\1/g, (_match, quote, aliasTarget) => {
-      return `from ${quote}${toModulePath(filepath, aliasTarget)}${quote}`
-    })
+    const next = rewriteDeclarationModuleSpecifiers(content, filepath, distDir, declarationFileSet)
     if (next !== content) {
       await writeFile(filepath, next, 'utf8')
     }

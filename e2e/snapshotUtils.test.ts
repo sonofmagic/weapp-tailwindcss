@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { replaceWxml } from '../packages/weapp-tailwindcss/src/wxml'
-import { collectCssSnapshots, formatRawCssSnapshotText, normalizeCssSnapshot, normalizeFontDataUrlsForSnapshot, normalizeFormattedCssSnapshot, normalizeRawCssSnapshotText, normalizeSnapshotName } from './snapshotUtils'
+import { collectCssSnapshots, formatRawCssSnapshotText, normalizeCssSnapshot, normalizeFontDataUrlsForSnapshot, normalizeFormattedCssSnapshot, normalizeGeneratedCssSourceMarkers, normalizeRawCssSnapshotText, normalizeSnapshotName } from './snapshotUtils'
 
 describe('normalizeCssSnapshot', () => {
   it('normalizes generated css file hashes in path segments', () => {
@@ -38,6 +38,15 @@ describe('normalizeCssSnapshot', () => {
       '@font-face{font-family:nutui-iconfont;src:url(data:font/woff2;base64,d09GMgABAAAA) format("truetype")}',
       '.bg-independent-subpackage-marker{background-color:#dc2626}',
     ].join('\n'))).resolves.toContain('url(data:font/woff2;base64,<stable>) format(\'truetype\')')
+  })
+
+  it('normalizes generated css source markers across worktree paths', () => {
+    const source = '/*! weapp-tailwindcss vite-generated-css:%2Ftmp%2Frepo-worktree%2Fdemo%2Fapp%2Fsrc%2Fapp.css */'
+
+    expect(normalizeGeneratedCssSourceMarkers(source, '/tmp/repo-worktree/demo/app')).toBe(
+      '/*! weapp-tailwindcss vite-generated-css:%3Cproject-root%3E%2Fsrc%2Fapp.css */',
+    )
+    expect(normalizeGeneratedCssSourceMarkers(source, '/tmp/other-project')).toBe(source)
   })
 
   it('falls back to PostCSS normalization for unsupported nested declaration blocks', async () => {

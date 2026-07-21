@@ -15,6 +15,7 @@ export interface CssTokenSource {
 
 export interface CssSnapshotOptions {
   classList?: string[]
+  generatedCssSourceRoot?: string
   normalizeWebpackAppSplitNoise?: boolean
   normalizeTailwindV4RootVariableNoise?: boolean
   rootSnapshotName?: string
@@ -189,6 +190,26 @@ export function normalizeFontDataUrlsForSnapshot(source: string) {
       return match
     }
     return `url(${openQuote}data:font/${fontType};base64,<stable>${closeQuote})`
+  })
+}
+
+const GENERATED_CSS_SOURCE_MARKER_RE = /(\/\*!\s*weapp-tailwindcss vite-generated-css:)([^\s*]+)(\s*\*\/)/g
+
+export function normalizeGeneratedCssSourceMarkers(source: string, projectRoot: string) {
+  const normalizedProjectRoot = path.resolve(projectRoot)
+  return source.replace(GENERATED_CSS_SOURCE_MARKER_RE, (marker, prefix, encodedSource, suffix) => {
+    try {
+      const sourceFile = decodeURIComponent(encodedSource)
+      const relativeSource = safeRelative(normalizedProjectRoot, path.resolve(sourceFile))
+      if (!relativeSource) {
+        return marker
+      }
+      const stableSource = path.posix.join('<project-root>', relativeSource.replace(/\\/g, '/'))
+      return `${prefix}${encodeURIComponent(stableSource)}${suffix}`
+    }
+    catch {
+      return marker
+    }
   })
 }
 
@@ -1146,7 +1167,10 @@ export async function collectCssSnapshots(projectRoot: string, cssRelativePath: 
 
     visited.add(normalizedPath)
 
-    const source = await fs.readFile(normalizedPath, 'utf8')
+    const source = normalizeGeneratedCssSourceMarkers(
+      await fs.readFile(normalizedPath, 'utf8'),
+      options.generatedCssSourceRoot ?? projectRoot,
+    )
     const cssNormalizeOptions: CssSnapshotOptions = {}
     if (options.normalizeWebpackAppSplitNoise) {
       cssNormalizeOptions.normalizeWebpackAppSplitNoise = true

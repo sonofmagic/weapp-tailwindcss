@@ -1,4 +1,4 @@
-import type { CompilationDependencyChange, CompilationScopeDependency, CompilationScopeSnapshotSource } from './compilation-scope-graph'
+import type { CompilationDependencyChange, CompilationScopeDependency, CompilationScopeGraphSource, CompilationScopeSnapshotSource } from './compilation-scope-graph'
 import type { CompilationChange, CompilationResult, SourceKind, SourceScope } from './types'
 import { CompilationDependencyState } from './compilation-dependency-state'
 import { createCompilationScopeGraph, createCompilationScopeSnapshot, dependencyNodeId, dependencySignature, mergeCompilationScopeDependencies, sourceNodeId } from './compilation-scope-graph'

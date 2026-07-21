@@ -52,15 +52,15 @@ export interface LoaderModule {
 
 export const CSS_IMPORT_REWRITE_LOADER_PATH = path.resolve(
   __dirname,
-  '../../../src/bundlers/webpack/BaseUnifiedPlugin/weapp-tw-css-import-rewrite-loader.js',
+  '../../../src/bundlers/webpack/BaseUnifiedPlugin/weapp-tw-css-import-rewrite-loader.cjs',
 )
 
 export function isCssImportRewriteLoader(entry: { loader?: string }) {
-  return entry.loader?.includes('weapp-tw-css-import-rewrite-loader.js') ?? false
+  return entry.loader?.includes('weapp-tw-css-import-rewrite-loader.cjs') ?? false
 }
 
 export function isCssGenerationLoader(entry: { loader?: string }) {
-  return entry.loader?.includes('weapp-tw-css-generation-loader.js') ?? false
+  return entry.loader?.includes('weapp-tw-css-generation-loader.cjs') ?? false
 }
 
 interface TestContext {
@@ -135,7 +135,7 @@ export function createContext(overrides: Partial<TestContext> = {}): TestContext
     htmlMatcher: (file: string) => file.endsWith('.wxml'),
     jsMatcher: (file: string) => file.endsWith('.js'),
     wxsMatcher: (_file: string) => false,
-    runtimeLoaderPath: '/virtual/weapp-tw-runtime-classset-loader.js',
+    runtimeLoaderPath: '/virtual/weapp-tw-runtime-classset-loader.cjs',
     appType: overrides.appType,
     ...overrides,
   }

@@ -13565,7 +13565,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 448555,
+      "bytes": 448479,
       "selectors": [
         "*",
         ".-translate-y-1",
@@ -15902,7 +15902,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 434254,
+      "bytes": 434178,
       "selectors": [
         "*",
         ".-translate-y-1",
@@ -21911,7 +21911,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 333539,
+      "bytes": 333485,
       "selectors": [
         "*",
         ".before\\:content-\\[\\'independent_subpackage_taro-vite-vue3-tailwindcss-v4\\'\\]:before",
@@ -23705,7 +23705,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 327737,
+      "bytes": 327683,
       "selectors": [
         "*",
         ".before\\:content-\\[\\'independent_subpackage_taro-vite-vue3-tailwindcss-v4\\'\\]:before",
@@ -25508,7 +25508,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 73788,
+      "bytes": 73708,
       "selectors": [
         "#app",
         "*",
@@ -25939,7 +25939,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 72423,
+      "bytes": 72343,
       "selectors": [
         "#app",
         "*",
@@ -26371,7 +26371,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 36932,
+      "bytes": 36916,
       "selectors": [
         "*",
         "*[data-v-04bcf89b]",
@@ -26592,7 +26592,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 36932,
+      "bytes": 36916,
       "selectors": [
         "*",
         "*[data-v-04bcf89b]",

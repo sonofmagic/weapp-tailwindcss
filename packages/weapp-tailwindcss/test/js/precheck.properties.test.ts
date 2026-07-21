@@ -66,7 +66,6 @@ const DEPENDENCY_TEMPLATES = [
   (id: string) => `import { ${id} } from "module"`,
   (id: string) => `import "${id}"`,
   (id: string) => `import * as ${id} from "pkg"`,
-  (_id: string) => `import("dynamic")`,
   (_id: string) => `const m = require("mod")`,
   (_id: string) => `export * from "module"`,
   (_id: string) => `export { foo } from "bar"`,

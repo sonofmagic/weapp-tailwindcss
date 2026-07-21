@@ -1,4 +1,5 @@
 import type { PluginObj, PluginPass } from '@babel/core'
+import { transformAsync } from '@babel/core'
 import type { Configuration, Stats } from 'webpack'
 import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
@@ -235,8 +236,6 @@ async function bundleWithSwc(keepFnNames: boolean) {
   return result.code.trim()
 }
 
-const babel = require('@babel/core') as typeof import('@babel/core')
-
 interface ManglePluginOptions {
   keepNames?: boolean
 }
@@ -265,7 +264,7 @@ function babelManglePlugin(): PluginObj<BabelManglePluginState> {
 }
 
 async function bundleWithBabel(keepFnNames: boolean) {
-  const result = await babel.transformAsync(BABEL_SOURCE, {
+  const result = await transformAsync(BABEL_SOURCE, {
     configFile: false,
     babelrc: false,
     sourceType: 'module',

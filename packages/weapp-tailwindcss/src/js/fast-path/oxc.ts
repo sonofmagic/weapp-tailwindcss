@@ -114,7 +114,7 @@ function hasSupportedClassMatchSource(options: IJsHandlerOptions) {
     || Boolean(options.classNameSet && options.classNameSet.size > 0)
 }
 
-export function canUseOxcJsFastPath(options: IJsHandlerOptions) {
+function canAttemptOxcJsFastPath(options: IJsHandlerOptions) {
   if (options.experimentalJsFastPath !== true && options.experimentalJsFastPath !== 'oxc') {
     return false
   }
@@ -126,6 +126,10 @@ export function canUseOxcJsFastPath(options: IJsHandlerOptions) {
     && hasSupportedClassMatchSource(options)
     && !shouldEnableArbitraryValueFallback(options)
     && !hasValues(options.ignoreCallExpressionIdentifiers)
+}
+
+export function canUseOxcJsFastPath(options: IJsHandlerOptions) {
+  return canAttemptOxcJsFastPath(options)
     && !hasValues(options.ignoreTaggedTemplateExpressionIdentifiers)
 }
 
@@ -235,8 +239,21 @@ function applyReplacements(
   return changed
 }
 
+function hasTaggedTemplateExpression(program: Program, walker: OxcWalker) {
+  let found = false
+  walker.walk(program, {
+    enter(node) {
+      if (node.type === 'TaggedTemplateExpression') {
+        found = true
+        this.skip()
+      }
+    },
+  })
+  return found
+}
+
 export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult | undefined {
-  if (!canUseOxcJsFastPath(options)) {
+  if (!canAttemptOxcJsFastPath(options)) {
     return undefined
   }
   if (hasUnsupportedSourceMarker(rawSource)) {
@@ -261,6 +278,12 @@ export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsH
   }
 
   if (!result.program || (Array.isArray(result.errors) && result.errors.length > 0)) {
+    return undefined
+  }
+  if (
+    hasValues(options.ignoreTaggedTemplateExpressionIdentifiers)
+    && hasTaggedTemplateExpression(result.program, walker)
+  ) {
     return undefined
   }
 

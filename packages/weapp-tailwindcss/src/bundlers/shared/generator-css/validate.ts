@@ -1,4 +1,5 @@
 import type { GenerateCssByGeneratorOptions } from './types'
+import { runCompilerOwnerActivity } from '@/compiler/compiler-owner-state'
 import { getTailwindGenerationSessionPool } from '@/compiler/tailwind-generation-session-pool'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { collectGeneratedRawSourceCandidates } from './class-selectors'
@@ -11,6 +12,15 @@ export interface ValidateCandidatesByGeneratorOptions extends Omit<GenerateCssBy
 }
 
 export async function validateCandidatesByGenerator(
+  options: ValidateCandidatesByGeneratorOptions,
+): Promise<Set<string>> {
+  return runCompilerOwnerActivity(
+    options.runtimeState,
+    () => validateCandidatesByGeneratorWithOwner(options),
+  )
+}
+
+async function validateCandidatesByGeneratorWithOwner(
   options: ValidateCandidatesByGeneratorOptions,
 ): Promise<Set<string>> {
   const {

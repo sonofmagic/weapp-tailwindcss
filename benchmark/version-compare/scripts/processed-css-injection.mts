@@ -15,6 +15,8 @@ interface InjectViteProcessedCssIntoMainCssAssets {
   (bundle: Record<string, unknown>, options: Record<string, unknown>): number
 }
 
+const BENCHMARK_SAMPLE_COUNT = 7
+
 function summarize(values: number[]): BenchmarkStats {
   const sorted = [...values].sort((a, b) => a - b)
   const mean = values.reduce((sum, value) => sum + value, 0) / values.length
@@ -107,7 +109,7 @@ async function main() {
   const { injectViteProcessedCssIntoMainCssAssets } = await import(pathToFileURL(sourceFile).href)
   runSample(injectViteProcessedCssIntoMainCssAssets)
   const samples: number[] = []
-  for (let index = 0; index < 3; index++) {
+  for (let index = 0; index < BENCHMARK_SAMPLE_COUNT; index++) {
     samples.push(runSample(injectViteProcessedCssIntoMainCssAssets))
   }
   process.stdout.write(`${JSON.stringify({

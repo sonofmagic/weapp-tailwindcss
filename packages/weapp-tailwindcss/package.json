@@ -1,5 +1,6 @@
 {
   "name": "weapp-tailwindcss",
+  "type": "module",
   "version": "5.1.16",
   "description": "把 tailwindcss 原子化样式思想，带给小程序开发者们! bring tailwindcss to miniprogram developers!",
   "author": "ice breaker <1324318532@qq.com>",
@@ -42,88 +43,88 @@
     ".": {
       "style": "./index.css",
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./escape": {
       "types": "./dist/escape.d.ts",
-      "import": "./dist/escape.mjs",
-      "require": "./dist/escape.js"
+      "import": "./dist/escape.js",
+      "require": "./dist/escape.cjs"
     },
     "./vite": {
       "types": "./dist/vite.d.ts",
-      "import": "./dist/vite.mjs",
-      "require": "./dist/vite.js"
+      "import": "./dist/vite.js",
+      "require": "./dist/vite.cjs"
     },
     "./webpack": {
       "types": "./dist/webpack.d.ts",
-      "import": "./dist/webpack.mjs",
-      "require": "./dist/webpack.js"
+      "import": "./dist/webpack.js",
+      "require": "./dist/webpack.cjs"
     },
     "./rspack": {
       "types": "./dist/rspack.d.ts",
-      "import": "./dist/rspack.mjs",
-      "require": "./dist/rspack.js"
+      "import": "./dist/rspack.js",
+      "require": "./dist/rspack.cjs"
     },
     "./core": {
       "types": "./dist/core.d.ts",
-      "import": "./dist/core.mjs",
-      "require": "./dist/core.js"
+      "import": "./dist/core.js",
+      "require": "./dist/core.cjs"
     },
     "./gulp": {
       "types": "./dist/gulp.d.ts",
-      "import": "./dist/gulp.mjs",
-      "require": "./dist/gulp.js"
+      "import": "./dist/gulp.js",
+      "require": "./dist/gulp.cjs"
     },
     "./generator": {
       "types": "./dist/generator.d.ts",
-      "import": "./dist/generator.mjs",
-      "require": "./dist/generator.js"
+      "import": "./dist/generator.js",
+      "require": "./dist/generator.cjs"
     },
     "./postcss": {
       "types": "./dist/postcss.d.ts",
-      "import": "./dist/postcss.mjs",
-      "require": "./dist/postcss.js"
+      "import": "./dist/postcss.js",
+      "require": "./dist/postcss.cjs"
     },
     "./defaults": {
       "types": "./dist/defaults.d.ts",
-      "import": "./dist/defaults.mjs",
-      "require": "./dist/defaults.js"
+      "import": "./dist/defaults.js",
+      "require": "./dist/defaults.cjs"
     },
     "./framework": {
       "types": "./dist/framework.d.ts",
-      "import": "./dist/framework.mjs",
-      "require": "./dist/framework.js"
+      "import": "./dist/framework.js",
+      "require": "./dist/framework.cjs"
     },
     "./presets": {
       "types": "./dist/presets.d.ts",
-      "import": "./dist/presets.mjs",
-      "require": "./dist/presets.js"
+      "import": "./dist/presets.js",
+      "require": "./dist/presets.cjs"
     },
     "./reset": {
       "types": "./dist/reset.d.ts",
-      "import": "./dist/reset.mjs",
-      "require": "./dist/reset.js"
+      "import": "./dist/reset.js",
+      "require": "./dist/reset.cjs"
     },
     "./css-macro/postcss": {
       "types": "./dist/css-macro/postcss.d.ts",
-      "import": "./dist/css-macro/postcss.mjs",
-      "require": "./dist/css-macro/postcss.js"
+      "import": "./dist/css-macro/postcss.js",
+      "require": "./dist/css-macro/postcss.cjs"
     },
     "./css-macro": {
       "types": "./dist/css-macro.d.ts",
-      "import": "./dist/css-macro.mjs",
-      "require": "./dist/css-macro.js"
+      "import": "./dist/css-macro.js",
+      "require": "./dist/css-macro.cjs"
     },
     "./types": {
       "types": "./dist/types.d.ts",
-      "import": "./dist/types.mjs",
-      "require": "./dist/types.js"
+      "import": "./dist/types.js",
+      "require": "./dist/types.cjs"
     },
     "./postcss-html-transform": {
       "types": "./dist/postcss-html-transform.d.ts",
-      "import": "./dist/postcss-html-transform.mjs",
-      "require": "./dist/postcss-html-transform.js"
+      "import": "./dist/postcss-html-transform.js",
+      "require": "./dist/postcss-html-transform.cjs"
     },
     "./package.json": "./package.json",
     "./index.css": "./index.css",
@@ -141,8 +142,8 @@
     "./css": "./css/index.css",
     "./*": "./*"
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "style": "index.css",
   "typesVersions": {
@@ -154,8 +155,8 @@
     }
   },
   "bin": {
-    "weapp-tailwindcss": "bin/weapp-tailwindcss.js",
-    "weapp-tw": "bin/weapp-tailwindcss.js"
+    "weapp-tailwindcss": "bin/weapp-tailwindcss.cjs",
+    "weapp-tw": "bin/weapp-tailwindcss.cjs"
   },
   "files": [
     "bin",
@@ -170,7 +171,7 @@
     "with-layer.css"
   ],
   "engines": {
-    "node": ">=22.12.0"
+    "node": "^22.18.0 || >=24.11.0"
   },
   "scripts": {
     "dev": "tsdown --watch --sourcemap",
@@ -224,9 +225,9 @@
     }
   },
   "dependencies": {
-    "@babel/parser": "~7.29.7",
-    "@babel/traverse": "~7.29.7",
-    "@babel/types": "~7.29.7",
+    "@babel/parser": "catalog:babel8",
+    "@babel/traverse": "catalog:babel8",
+    "@babel/types": "catalog:babel8",
     "@tailwindcss-mangle/engine": "catalog:tailwindcssMangleEngine",
     "@vue/compiler-dom": "catalog:vue3",
     "@weapp-core/escape": "~8.0.0",
@@ -237,10 +238,13 @@
     "comment-json": "^5.0.0",
     "debug": "~4.4.3",
     "fast-glob": "^3.3.3",
+    "htmlparser2": "12.0.0",
     "local-pkg": "^1.2.1",
     "lru-cache": "11.5.2",
     "magic-string": "1.0.0",
     "micromatch": "^4.0.8",
+    "oxc-parser": "^0.140.0",
+    "oxc-walker": "^1.0.0",
     "semver": "~7.8.5",
     "tailwindcss-config": "workspace:*",
     "weapp-style-injector": "workspace:*",
@@ -248,7 +252,6 @@
   },
   "devDependencies": {
     "@mpxjs/webpack-plugin": "^2.11.0",
-    "htmlparser2": "12.0.0",
     "webpack": "5.105.4"
   }
 }

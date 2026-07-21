@@ -7,7 +7,7 @@
 
 ## 核心职责
 
-- `src/index.js`：typography 插件主体（variant 注册、selector 变换、`legacy/modern` 目标处理）。
+- `src/index.cjs`：typography 插件主体（variant 注册、selector 变换、`legacy/modern` 目标处理）。
 - `src/transform.ts`：HTML 结构注入 class 的转换函数（基于 `htmlparser2` + `magic-string`）。
 
 ## 变更原则

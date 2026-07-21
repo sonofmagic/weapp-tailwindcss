@@ -509,6 +509,7 @@ async function collectOutputDirectoryCssSnapshots(projectRoot: string, project: 
       .map(async (file) => {
         const entries = await collectCssSnapshots(outputRoot, file, {
           classList,
+          generatedCssSourceRoot: projectRoot,
           rootSnapshotName: normalizeOutputCssFileName(file),
           normalizeTailwindV4RootVariableNoise: shouldNormalizeTailwindV4RootVariableNoise(projectRoot),
         })

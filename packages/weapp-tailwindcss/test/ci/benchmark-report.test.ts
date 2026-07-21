@@ -47,9 +47,12 @@ describe('benchmark ci report', () => {
     const mpxMpWeixin = benchmarkProjects.find(project => project.key === 'demo-mpx-tailwindcss-v4__mp-weixin')
     expect(mpxMpWeixin?.devScript).toBe('dev:e2e-watch')
     expect(mpxMpWeixin?.hmrMode).toBe('watch')
+    expect(mpxMpWeixin?.hmrPluginStatistic).toBe('median')
     expect(mpxMpWeixin?.hmrEndToEndGuard).toBe(false)
-    expect(mpxMpWeixin?.hmrGuardNote).toContain('processAssets timing remains guarded')
-    expect(benchmarkProjects.filter(project => project.key.includes('taro') && project.target === 'mp-weixin').every(project => project.hmrMode === 'watch')).toBe(true)
+    expect(mpxMpWeixin?.hmrGuardNote).toContain('processAssets median remains guarded')
+    const taroMpWeixinProjects = benchmarkProjects.filter(project => project.key.includes('taro') && project.target === 'mp-weixin')
+    expect(taroMpWeixinProjects.every(project => project.buildEnv?.TARO_BUILD_STRICT === '1')).toBe(true)
+    expect(taroMpWeixinProjects.every(project => project.hmrMode === 'watch')).toBe(true)
     const realDevServerTargets = benchmarkProjects.filter(project => (project.target === 'h5' || project.target === 'web') && !project.key.includes('hbuilderx'))
     expect(realDevServerTargets.every(project => project.hmrMode === 'watch')).toBe(true)
     expect(realDevServerTargets.every(project => project.hmrDriver === 'dev-server')).toBe(true)
@@ -69,8 +72,17 @@ describe('benchmark ci report', () => {
     expect(source).toContain('core-vite-processed-css-coverage')
     expect(source).toContain('runProcessedCssInjectionBenchmark')
     expect(source).toContain('core-vite-processed-css-injection')
+    expect(source.match(/hmrPluginStatistic: 'median'/g)).toHaveLength(3)
     expect(source).toContain("parseNumber('--poll-interval', 30)")
     expect(matrixSource).toContain("parseNumber('--poll-interval', 30)")
+    for (const benchmarkScript of [
+      'source-candidate-hot-update.mts',
+      'processed-css-coverage.mts',
+      'processed-css-injection.mts',
+    ]) {
+      const benchmarkSource = fs.readFileSync(path.resolve(__dirname, '../../../../benchmark/version-compare/scripts', benchmarkScript), 'utf8')
+      expect(benchmarkSource).toContain('const BENCHMARK_SAMPLE_COUNT = 7')
+    }
 
     const projectLoopIndex = matrixSource.indexOf('for (const projectMeta of selectedProjects)')
     const versionLoopIndex = matrixSource.indexOf('for (const versionMeta of versions)', projectLoopIndex)
@@ -122,7 +134,7 @@ describe('benchmark ci report', () => {
     expect(round.lines).not.toContain('after-round')
   })
 
-  it('guards repeatable timing and build memory regressions beyond the statistical noise margin', async () => {
+  it('guards cold build median, HMR timing and sustained memory regressions', async () => {
     const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
     const baselineLabel = 'base:main'
     const currentLabel = 'current:feature'
@@ -138,12 +150,6 @@ describe('benchmark ci report', () => {
           version: baselineLabel,
           key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
           hmrMode: 'watch',
-          buildMs: [995, 1000, 1005],
-          hmrMs: [495, 500, 505],
-          buildPluginMs: [198, 200, 202],
-          hmrPluginMs: [98, 100, 102],
-          buildPeakRssMb: [995, 1000, 1005],
-          buildSteadyRssMb: [795, 800, 805],
           summary: {
             build: { median: 1000 },
             hmr: { p95: 500 },
@@ -159,21 +165,15 @@ describe('benchmark ci report', () => {
           version: currentLabel,
           key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
           hmrMode: 'watch',
-          buildMs: [1095, 1100, 1105],
-          hmrMs: [645, 650, 655],
-          buildPluginMs: [218, 220, 222],
-          hmrPluginMs: [113, 115, 117],
-          buildPeakRssMb: [1095, 1100, 1105],
-          buildSteadyRssMb: [895, 900, 905],
           summary: {
-            build: { median: 1100 },
-            hmr: { p95: 655 },
-            buildPlugin: { median: 220 },
-            hmrPlugin: { p95: 117 },
-            buildPeakRssMb: { median: 1100 },
-            buildSteadyRssMb: { median: 900 },
-            hmrPeakRssMb: { median: 1600 },
-            hmrSteadyRssMb: { median: 1500 },
+            build: { median: 1060 },
+            hmr: { p95: 525 },
+            buildPlugin: { median: 211 },
+            hmrPlugin: { p95: 105 },
+            buildPeakRssMb: { median: 1050 },
+            buildSteadyRssMb: { median: 865 },
+            hmrPeakRssMb: { median: 1265 },
+            hmrSteadyRssMb: { median: 965 },
           },
         },
       ],
@@ -183,18 +183,163 @@ describe('benchmark ci report', () => {
 
     expect(result.violations.map(item => item.metric)).toEqual([
       'buildMedian',
-      'hmrP95',
       'buildPluginMedian',
-      'hmrPluginP95',
-      'buildPeakRssMb',
       'buildSteadyRssMb',
+      'hmrPeakRssMb',
+      'hmrSteadyRssMb',
     ])
     expect(result.thresholds.regressionPercent).toBe(5)
-    expect(result.thresholds.noiseSigma).toBe(3)
+    expect(result.thresholds.minimumTimingRegressionMs).toBe(10)
+    expect(result.thresholds.minimumMemoryRegressionMb).toBe(64)
+    expect(result.thresholds.minimumTailRegressionSamples).toBe(2)
     expect(result.passed).toBe(false)
   })
 
-  it('ignores isolated benchmark jitter inside three pooled standard deviations', async () => {
+  it('requires sustained median or two tail samples before failing small-sample HMR timing', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-20T00:00:00.000Z',
+      options: { buildRuns: 1, hmrRuns: 6, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'single-tail-outlier',
+          hmrMode: 'watch',
+          hmrMs: [90, 92, 94, 96, 98, 100],
+          hmrPluginMs: [40, 42, 44, 46, 48, 50],
+          summary: {
+            hmr: { median: 95, p95: 100 },
+            hmrPlugin: { median: 45, p95: 50 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'single-tail-outlier',
+          hmrMode: 'watch',
+          hmrMs: [91, 93, 95, 97, 99, 300],
+          hmrPluginMs: [41, 43, 45, 47, 49, 200],
+          summary: {
+            hmr: { median: 96, p95: 300 },
+            hmrPlugin: { median: 46, p95: 200 },
+          },
+        },
+        {
+          version: baselineLabel,
+          key: 'framework-only-median-regression',
+          hmrMode: 'watch',
+          hmrMs: [90, 92, 94, 96, 98, 100],
+          hmrPluginMs: [40, 42, 44, 46, 48, 50],
+          summary: {
+            hmr: { median: 95, p95: 100 },
+            hmrPlugin: { median: 45, p95: 50 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'framework-only-median-regression',
+          hmrMode: 'watch',
+          hmrMs: [110, 112, 114, 116, 118, 120],
+          hmrPluginMs: [41, 43, 45, 47, 49, 51],
+          summary: {
+            hmr: { median: 115, p95: 120 },
+            hmrPlugin: { median: 46, p95: 51 },
+          },
+        },
+        {
+          version: baselineLabel,
+          key: 'two-tail-regressions',
+          hmrMode: 'watch',
+          hmrMs: [90, 92, 94, 96, 98, 100],
+          hmrPluginMs: [40, 42, 44, 46, 48, 50],
+          summary: {
+            hmr: { median: 95, p95: 100 },
+            hmrPlugin: { median: 45, p95: 50 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'two-tail-regressions',
+          hmrMode: 'watch',
+          hmrMs: [91, 93, 95, 97, 120, 130],
+          hmrPluginMs: [41, 43, 45, 47, 70, 80],
+          summary: {
+            hmr: { median: 96, p95: 130 },
+            hmrPlugin: { median: 46, p95: 80 },
+          },
+        },
+        {
+          version: baselineLabel,
+          key: 'median-regression',
+          hmrMode: 'watch',
+          hmrMs: [90, 92, 94, 96, 98, 100],
+          hmrPluginMs: [40, 42, 44, 46, 48, 50],
+          summary: {
+            hmr: { median: 95, p95: 100 },
+            hmrPlugin: { median: 45, p95: 50 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'median-regression',
+          hmrMode: 'watch',
+          hmrMs: [110, 112, 114, 116, 118, 120],
+          hmrPluginMs: [55, 57, 59, 61, 63, 65],
+          summary: {
+            hmr: { median: 115, p95: 120 },
+            hmrPlugin: { median: 60, p95: 65 },
+          },
+        },
+        {
+          version: baselineLabel,
+          key: 'even-median-half-regression',
+          hmrMode: 'watch',
+          hmrPluginStatistic: 'median',
+          hmrPluginMs: [40, 42, 44, 46, 48, 50],
+          summary: {
+            hmrPlugin: { median: 45, p95: 50 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'even-median-half-regression',
+          hmrMode: 'watch',
+          hmrPluginStatistic: 'median',
+          hmrPluginMs: [46, 47, 48, 63, 64, 65],
+          summary: {
+            hmrPlugin: { median: 55.5, p95: 65 },
+          },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    const result = evaluatePerformanceGuard(summary)
+
+    expect(result.violations.filter(item => item.key === 'single-tail-outlier' && item.metric !== 'hmrMemorySamples')).toEqual([])
+    expect(result.violations.filter(item => item.key === 'framework-only-median-regression' && item.metric !== 'hmrMemorySamples')).toEqual([])
+    expect(result.violations).toContainEqual(expect.objectContaining({
+      key: 'two-tail-regressions',
+      metric: 'hmrP95',
+      regressionSamples: 2,
+    }))
+    expect(result.violations).toContainEqual(expect.objectContaining({
+      key: 'two-tail-regressions',
+      metric: 'hmrPluginP95',
+      regressionSamples: 2,
+    }))
+    expect(result.violations).toContainEqual(expect.objectContaining({
+      key: 'median-regression',
+      metric: 'hmrMedian',
+    }))
+    expect(result.violations).toContainEqual(expect.objectContaining({
+      key: 'median-regression',
+      metric: 'hmrPluginMedian',
+    }))
+    expect(result.violations.filter(item => item.key === 'even-median-half-regression')).toEqual([])
+  })
+
+  it('keeps isolated RSS peaks and sub-64MB memory drift informational', async () => {
     const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
     const baselineLabel = 'base:main'
     const currentLabel = 'current:feature'
@@ -204,45 +349,137 @@ describe('benchmark ci report', () => {
       rows: [
         {
           version: baselineLabel,
-          key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
+          key: 'rss-noise',
           hmrMode: 'watch',
-          hmrMs: [7600, 8355, 7700, 8200, 7900, 8050],
-          hmrPluginMs: [5200, 5900, 5100, 5300, 5000, 5150],
-          buildPeakRssMb: [880, 910, 930],
-          buildSteadyRssMb: [875, 905, 925],
           summary: {
-            hmr: { p95: 8355 },
-            hmrPlugin: { p95: 5900 },
-            buildPeakRssMb: { median: 910 },
-            buildSteadyRssMb: { median: 905 },
+            build: { median: 500 },
+            buildPeakRssMb: { median: 330 },
+            buildSteadyRssMb: { median: 330 },
+            hmr: { median: 100, p95: 110 },
             hmrPeakRssMb: { median: 2200 },
-            hmrSteadyRssMb: { median: 2150 },
+            hmrSteadyRssMb: { median: 2100 },
           },
         },
         {
           version: currentLabel,
-          key: 'demo-taro-vite-react-tailwindcss-v4__mp-weixin',
+          key: 'rss-noise',
           hmrMode: 'watch',
-          hmrMs: [8512, 8695, 8550, 8818, 8853, 8420],
-          hmrPluginMs: [5550, 5883, 5400, 5700, 5500, 5600],
-          buildPeakRssMb: [930, 965, 990],
-          buildSteadyRssMb: [925, 960, 985],
           summary: {
-            hmr: { p95: 8853 },
-            hmrPlugin: { p95: 5883 },
-            buildPeakRssMb: { median: 965 },
-            buildSteadyRssMb: { median: 960 },
-            hmrPeakRssMb: { median: 2900 },
-            hmrSteadyRssMb: { median: 2850 },
+            build: { median: 500 },
+            buildPeakRssMb: { median: 375 },
+            buildSteadyRssMb: { median: 375 },
+            hmr: { median: 100, p95: 110 },
+            hmrPeakRssMb: { median: 2450 },
+            hmrSteadyRssMb: { median: 2140 },
           },
         },
       ],
     }, baselineLabel, currentLabel)
 
-    expect(evaluatePerformanceGuard(summary)).toMatchObject({
-      passed: true,
-      violations: [],
-    })
+    expect(evaluatePerformanceGuard(summary).passed).toBe(true)
+  })
+
+  it('ignores sub-10ms timing drift while retaining the percentage guard for larger regressions', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-20T00:00:00.000Z',
+      options: { buildRuns: 1, hmrRuns: 1, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'micro-noise',
+          hmrMode: 'watch',
+          summary: { hmrPlugin: { p95: 50 } },
+        },
+        {
+          version: currentLabel,
+          key: 'micro-noise',
+          hmrMode: 'watch',
+          summary: { hmrPlugin: { p95: 56 } },
+        },
+        {
+          version: baselineLabel,
+          key: 'real-regression',
+          hmrMode: 'watch',
+          summary: { hmrPlugin: { p95: 100 } },
+        },
+        {
+          version: currentLabel,
+          key: 'real-regression',
+          hmrMode: 'watch',
+          summary: { hmrPlugin: { p95: 111 } },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    const result = evaluatePerformanceGuard(summary)
+
+    expect(result.violations).not.toContainEqual(expect.objectContaining({ key: 'micro-noise' }))
+    expect(result.violations).toContainEqual(expect.objectContaining({
+      key: 'real-regression',
+      metric: 'hmrPluginP95',
+      absoluteDelta: 11,
+    }))
+  })
+
+  it('uses the median for isolated core micro benchmarks while keeping watch plugins on P95', async () => {
+    const { buildSummary, evaluatePerformanceGuard, toMarkdown } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-20T00:00:00.000Z',
+      options: { buildRuns: 1, hmrRuns: 3, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'core-vite-processed-css-coverage',
+          hmrMode: 'watch',
+          hmrPluginStatistic: 'median',
+          summary: { hmrPlugin: { median: 124, p95: 156 } },
+        },
+        {
+          version: currentLabel,
+          key: 'core-vite-processed-css-coverage',
+          hmrMode: 'watch',
+          hmrPluginStatistic: 'median',
+          summary: { hmrPlugin: { median: 118, p95: 171 } },
+        },
+        {
+          version: baselineLabel,
+          key: 'demo-watch',
+          hmrMode: 'watch',
+          summary: { hmrPlugin: { median: 80, p95: 100 } },
+        },
+        {
+          version: currentLabel,
+          key: 'demo-watch',
+          hmrMode: 'watch',
+          summary: { hmrPlugin: { median: 80, p95: 111 } },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    expect(summary.compares).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        key: 'core-vite-processed-css-coverage',
+        baselineHmrPlugin: 124,
+        currentHmrPlugin: 118,
+        hmrPluginStatistic: 'median',
+      }),
+      expect.objectContaining({
+        key: 'demo-watch',
+        baselineHmrPlugin: 100,
+        currentHmrPlugin: 111,
+        hmrPluginStatistic: 'p95',
+      }),
+    ]))
+    expect(evaluatePerformanceGuard(summary).violations).toContainEqual(expect.objectContaining({
+      key: 'demo-watch',
+      metric: 'hmrPluginP95',
+    }))
+    expect(toMarkdown(summary, 'main')).toContain('| core-vite-processed-css-coverage | - | - | - | median | 124.00 | 118.00 |')
   })
 
   it('uses the full build plugin median so one steady-sample outlier cannot dominate the guard', async () => {
@@ -396,6 +633,8 @@ describe('benchmark ci report', () => {
     expect(source).toContain('outputProbeTemplates')
     expect(source).toContain('buildEnv.UNI_BUILD_STRICT=1')
     expect(source).toContain('build skipped by uni-build-guard')
+    expect(source).toContain('buildEnv.TARO_BUILD_STRICT=1')
+    expect(source).toContain('build skipped by taro-build-guard')
     expect(source).toContain('createProcessMemorySampler')
   })
 

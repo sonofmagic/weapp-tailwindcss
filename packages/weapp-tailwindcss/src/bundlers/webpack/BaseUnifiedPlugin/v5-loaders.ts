@@ -86,7 +86,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   }
 
   const runtimeClassSetLoader = runtimeLoaderPath
-    ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.js')
+    ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.cjs')
   const shouldInjectRuntimeClassSetLoader = !generatorBranch.isWeb
   const shouldInjectCssGenerationLoader = generatorOptions.enabled
     && runtimeState.tailwindRuntime.majorVersion === 4
@@ -94,10 +94,10 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   const shouldInjectCssImportRewriteLoader = shouldRewriteCssImports
     || shouldInjectCssGenerationLoader
   const runtimeCssGenerationLoader = shouldInjectCssGenerationLoader
-    ? path.resolve(__dirname, './weapp-tw-css-generation-loader.js')
+    ? path.resolve(__dirname, './weapp-tw-css-generation-loader.cjs')
     : undefined
   const runtimeCssImportRewriteLoader = shouldInjectCssImportRewriteLoader
-    ? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.js')
+    ? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.cjs')
     : undefined
   const runtimeClassSetLoaderExists = fs.existsSync(runtimeClassSetLoader)
   const runtimeCssGenerationLoaderExists = runtimeCssGenerationLoader

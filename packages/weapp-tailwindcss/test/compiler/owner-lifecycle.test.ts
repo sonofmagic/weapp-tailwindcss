@@ -117,6 +117,46 @@ describe('compiler owner lifecycle', () => {
     expect(getCompilationSessionPool(owner)).not.toBe(pool)
   })
 
+  it('waits for owner activity before disposal and queues the next build behind it', async () => {
+    const {
+      runCompilerOwnerActivity,
+      runCompilerOwnerDisposal,
+    } = await import('@/compiler/compiler-owner-state')
+    const owner = {}
+    let releaseCurrent: (() => void) | undefined
+    const currentGate = new Promise<void>((resolve) => {
+      releaseCurrent = resolve
+    })
+    let currentStarted = false
+    let disposed = false
+    let nextStarted = false
+
+    const current = runCompilerOwnerActivity(owner, async () => {
+      currentStarted = true
+      await currentGate
+    })
+    expect(currentStarted).toBe(true)
+
+    const disposal = runCompilerOwnerDisposal(owner, async () => {
+      disposed = true
+    })
+    const next = runCompilerOwnerActivity(owner, async () => {
+      nextStarted = true
+    })
+
+    await Promise.resolve()
+    expect(disposed).toBe(false)
+    expect(nextStarted).toBe(false)
+
+    releaseCurrent?.()
+    await current
+    await disposal
+    await next
+
+    expect(disposed).toBe(true)
+    expect(nextStarted).toBe(true)
+  })
+
   it('does not retain owner-bound state across 100 build lifecycles', async () => {
     const dispose = vi.fn()
     const createGenerator = vi.fn(() => ({

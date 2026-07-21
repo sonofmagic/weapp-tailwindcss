@@ -1,7 +1,7 @@
 /* eslint-disable ts/no-require-imports */
 import { generateCss4 } from '@weapp-tailwindcss/test-helper'
 
-const typographyPlugin: any = require('../src/index')
+const typographyPlugin: any = require('../src/index.cjs')
 
 describe('computed hooks', () => {
   afterEach(() => {
