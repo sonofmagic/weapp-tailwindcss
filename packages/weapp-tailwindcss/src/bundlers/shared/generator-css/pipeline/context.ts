@@ -15,6 +15,7 @@ export interface GeneratorPipelineExecutionContext {
     options?: {
       injectPreflight?: boolean | undefined
       preservePreflight?: boolean | undefined
+      removeEmptyAtRuleAncestors?: boolean | undefined
       styleOptions?: Partial<IStyleHandlerOptions> | undefined
     },
   ) => string

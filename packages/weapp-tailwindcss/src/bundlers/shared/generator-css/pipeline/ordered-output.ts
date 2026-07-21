@@ -21,6 +21,7 @@ export async function finalizeOrderedGeneratorCss(
     const css = incrementalCss.trim().length > 0
       ? finalizeIncrementalGeneratorCss(options.previousCss, incrementalCss, generated.target, majorVersion, opts.cssPreflight, {
           injectPreflight: false,
+          removeEmptyAtRuleAncestors: false,
           styleOptions: generatorStyleOptions,
         }, generatorOptions.webCompat)
       : options.previousCss
