@@ -54,8 +54,8 @@ export async function finalizeMiniProgramCssAssets(
     if (rawSource.trim().length === 0) {
       continue
     }
-    const structurallyCleanSource = removeCommentOnlyAtRules(rawSource)
     if (options.lastCssResultByFile?.has(file)) {
+      const structurallyCleanSource = removeCommentOnlyAtRules(rawSource)
       const outputCss = stripMiniProgramCssSpecificityPlaceholders(structurallyCleanSource)
       if (outputCss !== rawSource) {
         plan.write(file, outputCss)
@@ -68,6 +68,7 @@ export async function finalizeMiniProgramCssAssets(
       continue
     }
     if (!shouldFinalizeMiniProgramCssAsset(rawSource)) {
+      const structurallyCleanSource = removeCommentOnlyAtRules(rawSource)
       if (structurallyCleanSource !== rawSource) {
         plan.write(file, structurallyCleanSource)
         writeTargets.set(file, output)
@@ -80,7 +81,7 @@ export async function finalizeMiniProgramCssAssets(
     }
 
     const cssHandlerOptions = options.getCssHandlerOptions(file)
-    const { css } = await options.styleHandler(structurallyCleanSource, {
+    const { css } = await options.styleHandler(rawSource, {
       ...cssHandlerOptions,
       autoprefixer: false,
       cssOptions: {
