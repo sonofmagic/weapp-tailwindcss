@@ -81,7 +81,7 @@ export function removeCommentOnlyAtRules(css: string) {
     while (passChanged) {
       passChanged = false
       root.walkAtRules((atRule) => {
-        if (!atRule.nodes || atRule.nodes.length === 0 || atRule.nodes.every(node => node.type === 'comment')) {
+        if (atRule.nodes && (atRule.nodes.length === 0 || atRule.nodes.every(node => node.type === 'comment'))) {
           atRule.remove()
           changed = true
           passChanged = true
