@@ -668,6 +668,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/pages/index/index.tsx'),
       cssEntryFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/app.css'),
       injectMarkerElement: true,
+      reloadOnHmrStall: true,
+      hmrReloadStallMs: 5_000,
       env: {
         NODE_ENV: 'development',
       },
@@ -930,6 +932,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/src/pages/index/index.vue'),
       cssEntryFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v4/src/app.css'),
       injectMarkerElement: true,
+      reloadOnHmrStall: true,
+      hmrReloadStallMs: 5_000,
       env: {
         NODE_ENV: 'development',
       },

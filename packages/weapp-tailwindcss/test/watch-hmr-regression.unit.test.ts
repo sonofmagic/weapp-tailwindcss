@@ -3272,6 +3272,19 @@ describe('watch-hmr regression cases', () => {
     expect(uniAppCase?.webHmr?.hmrReloadStallMs).toBe(5_000)
   })
 
+  it('reloads stalled Taro Vite Web/H5 clients without replaying the full watch case', () => {
+    const demoExtendedCases = buildDemoExtendedCases('/repo')
+
+    for (const caseName of [
+      'taro-vite-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4',
+    ]) {
+      const watchCase = demoExtendedCases.find(item => item.name === caseName)
+      expect(watchCase?.webHmr?.reloadOnHmrStall, caseName).toBe(true)
+      expect(watchCase?.webHmr?.hmrReloadStallMs, caseName).toBe(5_000)
+    }
+  })
+
   it('filters platform-specific unstable watch cases from grouped runs', () => {
     const cases = buildCases('/repo')
 
