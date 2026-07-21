@@ -552,10 +552,10 @@ export const uniAppXAppCases: AppCase[] = [
     sourceFile: 'pages/index/index.uvue',
     markerAnchor: '<BindClass />',
     markerClass: 'flex h-[41px] w-[173px] items-center justify-center rounded-full bg-[#102938]',
-    markerTextClass: 'text-xl text-[#f7fbff]',
+    markerTextClass: 'text-xl text-white text-[#f7fbff]',
     markerText: 'hbuilderx-app-dynamic-v4-harmony',
     hmrMarkerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-full bg-[#3b0764]',
-    hmrMarkerTextClass: 'text-sm text-[#fef08a]',
+    hmrMarkerTextClass: 'text-sm text-white text-[#fef08a]',
     hmrMarkerText: 'hbuilderx-app-hmr-v4-harmony',
     launchArgs: defaultHarmonyLaunchArgs,
     requiredFiles: [

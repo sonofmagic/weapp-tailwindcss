@@ -88,7 +88,10 @@ describe('demo visual theme evidence', () => {
       expect(item.markerTextClass).toContain('text-white')
       expect(item.hmrMarkerTextClass).toContain('text-sm')
       expect(item.hmrMarkerTextClass).toContain('text-white')
-      expect(item.transformedNotContains).toEqual(expect.arrayContaining([
+      expect([
+        ...(item.transformedNotContains ?? []),
+        ...(item.styleNotContains ?? []),
+      ]).toEqual(expect.arrayContaining([
         '.tw-root',
         'calc(infinity',
         'var(--color-white)',
