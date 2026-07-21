@@ -33,6 +33,9 @@ export const benchmarkProjects = [
     project: 'demo/taro-vite-react-tailwindcss-v4',
     target: 'mp-weixin',
     buildScript: 'build',
+    buildEnv: {
+      TARO_BUILD_STRICT: '1',
+    },
     sourceFile: 'src/pages/index/index.tsx',
     outputTemplate: 'dist/pages/index/index.wxml',
     outputProbeTemplates: ['dist/pages/index/index.js'],
@@ -59,6 +62,9 @@ export const benchmarkProjects = [
     project: 'demo/taro-vite-vue3-tailwindcss-v4',
     target: 'mp-weixin',
     buildScript: 'build',
+    buildEnv: {
+      TARO_BUILD_STRICT: '1',
+    },
     sourceFile: 'src/pages/index/index.vue',
     outputTemplate: 'dist/pages/index/index.wxml',
     outputProbeTemplates: ['dist/pages/index/index.js'],
@@ -85,6 +91,9 @@ export const benchmarkProjects = [
     project: 'demo/taro-webpack-react-tailwindcss-v4',
     target: 'mp-weixin',
     buildScript: 'build',
+    buildEnv: {
+      TARO_BUILD_STRICT: '1',
+    },
     sourceFile: 'src/pages/index/index.tsx',
     outputTemplate: 'dist/pages/index/index.wxml',
     outputProbeTemplates: ['dist/pages/index/index.js'],
@@ -111,6 +120,9 @@ export const benchmarkProjects = [
     project: 'demo/taro-webpack-vue3-tailwindcss-v4',
     target: 'mp-weixin',
     buildScript: 'build',
+    buildEnv: {
+      TARO_BUILD_STRICT: '1',
+    },
     sourceFile: 'src/pages/index/index.vue',
     outputTemplate: 'dist/pages/index/index.wxml',
     outputProbeTemplates: ['dist/pages/index/index.js'],
