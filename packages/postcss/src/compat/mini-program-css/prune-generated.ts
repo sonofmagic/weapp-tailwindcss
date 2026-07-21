@@ -11,7 +11,7 @@ import {
   isPseudoContentInitRule,
   usesTwContentVariable,
 } from './predicates'
-import { removeEmptyAtRules, removeSpecificityPlaceholders, removeTailwindContainerMaxWidthMediaRules, removeTailwindContainerWidthRules, removeUnsupportedModernColorDeclarations } from './root-cleanups'
+import { removeSpecificityPlaceholders, removeTailwindContainerMaxWidthMediaRules, removeTailwindContainerWidthRules, removeUnsupportedModernColorDeclarations } from './root-cleanups'
 import { getRuleSelectors, isMiniProgramNativeElementSelector, isUnsupportedBrowserPreflightSelector, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR, MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS } from './selectors'
 
 const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
@@ -310,7 +310,11 @@ export function pruneMiniProgramGeneratedCss(
     ensureMiniProgramElementContentInit(root)
   }
 
-  removeEmptyAtRules(root)
+  root.walkAtRules((atRule) => {
+    if (!atRule.nodes || atRule.nodes.length === 0) {
+      atRule.remove()
+    }
+  })
 
   return root.toString()
 }

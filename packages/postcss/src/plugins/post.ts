@@ -241,10 +241,6 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
         atRule.remove()
       }
     }
-
-    if (atRule.nodes?.every(node => node.type === 'comment')) {
-      atRule.remove()
-    }
   }
   return p
 }
