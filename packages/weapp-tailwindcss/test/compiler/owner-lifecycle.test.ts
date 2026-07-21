@@ -135,7 +135,7 @@ describe('compiler owner lifecycle', () => {
       currentStarted = true
       await currentGate
     })
-    await vi.waitFor(() => expect(currentStarted).toBe(true))
+    expect(currentStarted).toBe(true)
 
     const disposal = runCompilerOwnerDisposal(owner, async () => {
       disposed = true

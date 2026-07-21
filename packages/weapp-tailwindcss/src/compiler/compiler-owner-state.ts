@@ -4,16 +4,20 @@ const compilerOwnerActivities = new WeakMap<object, {
   idleWaiters: Set<() => void>
 }>()
 
+type CompilerOwnerActivityRelease = () => void
+
 export function ensureCompilerOwnerActive(owner: object) {
   if (compilerOwnerDisposals.has(owner)) {
     throw new Error('Compiler owner 正在释放，不能创建新的编译状态。')
   }
 }
 
-async function acquireCompilerOwnerActivity(owner: object) {
+function acquireCompilerOwnerActivity(
+  owner: object,
+): CompilerOwnerActivityRelease | Promise<CompilerOwnerActivityRelease> {
   const currentDisposal = compilerOwnerDisposals.get(owner)
   if (currentDisposal) {
-    await currentDisposal
+    return currentDisposal.then(() => acquireCompilerOwnerActivity(owner))
   }
 
   let state = compilerOwnerActivities.get(owner)
@@ -54,16 +58,27 @@ function waitForCompilerOwnerIdle(owner: object) {
   })
 }
 
-export async function runCompilerOwnerActivity<T>(
+export function runCompilerOwnerActivity<T>(
   owner: object,
   activity: () => T | Promise<T>,
-) {
-  const release = await acquireCompilerOwnerActivity(owner)
-  try {
-    return await activity()
+): Promise<Awaited<T>> {
+  const acquired = acquireCompilerOwnerActivity(owner)
+  if (typeof acquired !== 'function') {
+    return acquired.then(release => runCompilerOwnerActivityWithRelease(activity, release))
   }
-  finally {
+  return runCompilerOwnerActivityWithRelease(activity, acquired)
+}
+
+function runCompilerOwnerActivityWithRelease<T>(
+  activity: () => T | Promise<T>,
+  release: CompilerOwnerActivityRelease,
+): Promise<Awaited<T>> {
+  try {
+    return Promise.resolve(activity()).finally(release)
+  }
+  catch (error) {
     release()
+    return Promise.reject(error)
   }
 }
 
