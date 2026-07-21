@@ -1,6 +1,6 @@
 import { disposeCompilationChangeCoordinator } from './compilation-change-coordinator'
 import { disposeCompilationSessionPool } from './compilation-session-pool'
-import { getPendingCompilerOwnerDisposal, runCompilerOwnerDisposal } from './compiler-owner-state'
+import { runCompilerOwnerDisposal } from './compiler-owner-state'
 import { disposeCompilerShadowReportSession } from './shadow-report-session'
 import { disposeTailwindGenerationSessionPool } from './tailwind-generation-session-pool'
 
@@ -14,5 +14,3 @@ async function disposeCompilerOwnerResources(owner: object) {
 export function disposeCompilerOwner(owner: object) {
   return runCompilerOwnerDisposal(owner, () => disposeCompilerOwnerResources(owner))
 }
-
-export { getPendingCompilerOwnerDisposal }

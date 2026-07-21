@@ -6,10 +6,6 @@ export function ensureCompilerOwnerActive(owner: object) {
   }
 }
 
-export function getPendingCompilerOwnerDisposal(owner: object) {
-  return compilerOwnerDisposals.get(owner)
-}
-
 export function runCompilerOwnerDisposal(
   owner: object,
   dispose: () => Promise<void>,
