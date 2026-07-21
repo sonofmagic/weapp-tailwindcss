@@ -796,27 +796,29 @@ describe('bundlers/webpack v5-assets hook branch coverage', () => {
   })
 
   it('marks initial watch runtime assets before syncing the runtime set', async () => {
+    const candidate = 'bg-[#123456]'
+    const escapedCandidate = 'bg-_b_#123456_B_'
     const runtimeClassSetManager = {
-      sync: vi.fn(async () => new Set(['bg-red-500'])),
+      sync: vi.fn(async () => new Set([candidate])),
       reset: vi.fn(async () => {}),
     }
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.css'),
       htmlMatcher: (file: string) => file.endsWith('.wxml'),
       jsMatcher: (file: string) => file.endsWith('.js'),
-      templateHandler: vi.fn(async (code: string) => code.replace('bg-red-500', 'bg-blue-500')),
-      jsHandler: vi.fn(async (code: string) => ({ code: code.replace('bg-red-500', 'bg-blue-500') })),
+      templateHandler: vi.fn(async (code: string) => code.replace(candidate, escapedCandidate)),
+      jsHandler: vi.fn(async (code: string) => ({ code: code.replace(candidate, escapedCandidate) })),
       tailwindRuntime: {
         ...createContext().tailwindRuntime,
         majorVersion: 4,
-        getClassSet: vi.fn(async () => new Set(['bg-red-500'])),
-        getClassSetSync: vi.fn(() => new Set(['bg-red-500'])),
+        getClassSet: vi.fn(async () => new Set([candidate])),
+        getClassSetSync: vi.fn(() => new Set([candidate])),
       },
     })
     const harness = createHookHarness({
       assetStore: {
-        'pages/index.wxml': '<view class="bg-red-500"></view>',
-        'pages/index.js': 'const cls = "bg-red-500"',
+        'pages/index.wxml': `<view class="${candidate}"></view>`,
+        'pages/index.js': `const cls = "${candidate}"`,
       },
       chunkFiles: ['pages/index.wxml', 'pages/index.js'],
       context,
@@ -829,6 +831,11 @@ describe('bundlers/webpack v5-assets hook branch coverage', () => {
     await harness.processAssets()
 
     expect(runtimeClassSetManager.sync).toHaveBeenCalled()
+    expect(context.jsHandler).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(Set),
+      expect.objectContaining({ experimentalJsFastPath: 'oxc' }),
+    )
   })
 
   it('consumes loader generated css directly when no asset user css is present', async () => {

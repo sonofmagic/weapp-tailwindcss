@@ -111,7 +111,7 @@ describe('bundlers/webpack WeappTailwindcss / process assets js cache', () => {
     expect(testState.currentContext.jsHandler).toHaveBeenCalledWith(
       js,
       expect.any(Set),
-      expect.objectContaining({ moduleGraph: undefined }),
+      expect.objectContaining({ experimentalJsFastPath: false, moduleGraph: undefined }),
     )
 
     const assetStoreSecond = {

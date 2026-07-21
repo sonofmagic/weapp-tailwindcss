@@ -100,7 +100,7 @@ describe('createHandlersFromContext', () => {
     expect(jsHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
       escapeMap: ctx.escapeMap,
       arbitraryValues: ctx.arbitraryValues,
-      experimentalJsFastPath: 'oxc',
+      experimentalJsFastPath: undefined,
     }))
 
     expect(templateHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({

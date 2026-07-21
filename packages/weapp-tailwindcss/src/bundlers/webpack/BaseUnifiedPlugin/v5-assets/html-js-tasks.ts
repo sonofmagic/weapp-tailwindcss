@@ -9,7 +9,7 @@ import {
 export * from './pipeline-helpers'
 
 export async function enqueueWebpackHtmlAndJsTasks(context: any) {
-  const { ConcatSource, applyWebpackLinkedJsResults, assetHashByChunk, compilation, compilerOptions, debug, defaultTemplateHandlerOptions, enqueueTask, groupedEntries, isWebGeneratorTarget, jsAssets, moduleGraphOptions, outputDir, rememberProcessCacheKey, rememberTransformedRuntimeCandidates, runtimeState, transformRuntimeSet, updateAssetIfChanged } = context
+  const { ConcatSource, applyWebpackLinkedJsResults, assetHashByChunk, compilation, compilerOptions, debug, defaultTemplateHandlerOptions, enqueueTask, groupedEntries, isWebGeneratorTarget, jsAssets, moduleGraphOptions, outputDir, rememberProcessCacheKey, rememberTransformedRuntimeCandidates, runtimeState, transformRuntimeSet, updateAssetIfChanged, watchMode } = context
   const htmlTaskFactories: Array<() => Promise<void>> = []
   if (!isWebGeneratorTarget && Array.isArray(groupedEntries.html)) {
     for (const element of groupedEntries.html) {
@@ -101,6 +101,7 @@ export async function enqueueWebpackHtmlAndJsTasks(context: any) {
             const handlerOptions = {
               tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
               generateMap: false,
+              experimentalJsFastPath: compilerOptions.experimentalJsFastPath ?? (watchMode ? 'oxc' : false),
               filename: absoluteFile,
               moduleGraph: outputModuleGraphOptions,
               babelParserOptions: {

@@ -416,6 +416,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           runtimeState,
           transformRuntimeSet,
           updateAssetIfChanged,
+          watchMode,
         })
         const cssTaskContext = { ConcatSource, affectedCompilationScopes, assetHashByChunk, compilation, compilationChanges, compilerOptions, configuredCssEntryFiles, configuredMainCssEntryFiles, createRuntimeSetHash, cssSourceTraceSignature, cssSources, cssTaskFactories, debug, enqueueTask, finalizeCssAssetSource, finalizeTracedCss, generatedCssSources, generatorRuntimeSet, getCompilationDependencyRevision, getCssHandlerOptions, getCssUserHandlerOptions, getGeneratorRuntimeSet, hasConfiguredTailwindV4SourceRoots, isKnownWebpackProcessedCssAsset, isSameWebpackSourceScope, isWebGeneratorTarget, isWebpackProcessedCssAsset, processedCssAssetSkipDecisionCache, rememberProcessCacheKey, resolveWebpackCssSourceFile, runtimeAffectingSourceHash, runtimeState, transformRuntimeSet, updateAssetIfChanged, watchMode, webpackSourceCandidateSet, webpackSourceCandidateValueSignature, webpackSourceCandidates }
         for (const element of groupedEntries.css) {
