@@ -6,7 +6,7 @@ import {
   stripMiniProgramCssSpecificityPlaceholders,
 } from '@/bundlers/shared/css-cleanup'
 import { AssetEmissionPlan } from '@/compiler'
-import { removeCommentOnlyAtRules } from '../processed-css-assets/cleanup'
+import { removeEmptyCssAtRules } from '../processed-css-assets/cleanup'
 import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 
 function readAssetSource(output: OutputAsset) {
@@ -58,7 +58,7 @@ export async function finalizeMiniProgramCssAssets(
     if (options.lastCssResultByFile?.has(file)) {
       const structurallyCleanSource = options.useIncrementalMode
         ? rawSource
-        : removeCommentOnlyAtRules(rawSource)
+        : removeEmptyCssAtRules(rawSource)
       const outputCss = stripMiniProgramCssSpecificityPlaceholders(structurallyCleanSource)
       if (outputCss !== rawSource) {
         plan.write(file, outputCss)
@@ -73,7 +73,7 @@ export async function finalizeMiniProgramCssAssets(
     if (!shouldFinalizeMiniProgramCssAsset(rawSource)) {
       const structurallyCleanSource = options.useIncrementalMode
         ? rawSource
-        : removeCommentOnlyAtRules(rawSource)
+        : removeEmptyCssAtRules(rawSource)
       if (structurallyCleanSource !== rawSource) {
         plan.write(file, structurallyCleanSource)
         writeTargets.set(file, output)

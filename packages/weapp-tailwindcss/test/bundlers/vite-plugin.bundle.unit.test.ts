@@ -7531,7 +7531,7 @@ module.exports = {
     expect(viteProcessedCssAssetResults.get(subSourceFile)?.injectIntoMain).toBe(false)
   }, TEST_TIMEOUT_MS)
 
-  it('regenerates complete css for unchanged uni-app vite css replay', async () => {
+  it('passes previous css to unchanged remembered vite css replay', async () => {
     const generateCalls: Array<{
       rawSource: string
       previousCss?: string | undefined
@@ -7544,8 +7544,8 @@ module.exports = {
         rawSource: options.rawSource,
         previousCss: options.previousCss,
       })
-      const css = generateCalls.length > 1
-        ? '.tw-replay-base{display:block}\n.tw-replay-next{display:flex}'
+      const css = options.previousCss
+        ? `${options.previousCss}\n.tw-replay-next{display:flex}`
         : '.tw-replay-base{display:block}'
       return {
         css,
@@ -7664,7 +7664,7 @@ module.exports = {
 
     expect(generateCalls).toHaveLength(2)
     expect(generateCalls[0]?.previousCss).toBeUndefined()
-    expect(generateCalls[1]?.previousCss).toBeUndefined()
+    expect(generateCalls[1]?.previousCss).toBe(firstCss)
     expect(pruneViteCssCaches).toHaveBeenCalledTimes(1)
     const firstPruneOptions = pruneViteCssCaches.mock.calls.at(0)?.[0]
     expect(firstPruneOptions.activeFiles.has('pages/index/index.wxss')).toBe(true)
