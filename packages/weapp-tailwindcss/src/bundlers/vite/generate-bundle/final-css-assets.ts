@@ -31,6 +31,7 @@ export async function finalizeMiniProgramCssAssets(
     onUpdate: GenerateBundleContext['opts']['onUpdate']
     recordCssAssetResult: GenerateBundleContext['recordCssAssetResult']
     styleHandler: GenerateBundleContext['opts']['styleHandler']
+    useIncrementalMode?: boolean | undefined
     debug?: GenerateBundleContext['debug']
   },
 ) {
@@ -55,7 +56,9 @@ export async function finalizeMiniProgramCssAssets(
       continue
     }
     if (options.lastCssResultByFile?.has(file)) {
-      const structurallyCleanSource = removeCommentOnlyAtRules(rawSource)
+      const structurallyCleanSource = options.useIncrementalMode
+        ? rawSource
+        : removeCommentOnlyAtRules(rawSource)
       const outputCss = stripMiniProgramCssSpecificityPlaceholders(structurallyCleanSource)
       if (outputCss !== rawSource) {
         plan.write(file, outputCss)
@@ -68,7 +71,9 @@ export async function finalizeMiniProgramCssAssets(
       continue
     }
     if (!shouldFinalizeMiniProgramCssAsset(rawSource)) {
-      const structurallyCleanSource = removeCommentOnlyAtRules(rawSource)
+      const structurallyCleanSource = options.useIncrementalMode
+        ? rawSource
+        : removeCommentOnlyAtRules(rawSource)
       if (structurallyCleanSource !== rawSource) {
         plan.write(file, structurallyCleanSource)
         writeTargets.set(file, output)

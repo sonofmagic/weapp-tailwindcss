@@ -15285,6 +15285,32 @@ page {
     expect(onUpdate).toHaveBeenCalledWith('app.wxss', expect.any(String), css)
   })
 
+  it('does not rewrite cached css assets during incremental finalization', async () => {
+    const { finalizeMiniProgramCssAssets } = await import('@/bundlers/vite/generate-bundle/final-css-assets')
+    const source = '@media (prefers-color-scheme: dark) {}\n.keep{color:red}'
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset(source),
+        fileName: 'app.wxss',
+      },
+    }
+    const onUpdate = vi.fn()
+
+    await finalizeMiniProgramCssAssets(bundle, {
+      cssMatcher: file => file.endsWith('.wxss'),
+      getCssHandlerOptions: () => ({ isMainChunk: true } as any),
+      isWebGeneratorTarget: false,
+      lastCssResultByFile: new Map([['app.wxss', 'cached']]),
+      onUpdate,
+      recordCssAssetResult: vi.fn(),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      useIncrementalMode: true,
+    })
+
+    expect((bundle['app.wxss'] as OutputAsset).source.toString()).toBe(source)
+    expect(onUpdate).not.toHaveBeenCalled()
+  })
+
   it('logs css diffs when vite css diff debugging is enabled', async () => {
     const previousDebugCssDiff = process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF
     process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF = '1'
