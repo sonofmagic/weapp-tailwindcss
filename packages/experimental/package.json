@@ -50,6 +50,6 @@
   "dependencies": {
     "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
-    "lightningcss": "^1.32.0"
+    "lightningcss": "^1.33.0"
   }
 }
