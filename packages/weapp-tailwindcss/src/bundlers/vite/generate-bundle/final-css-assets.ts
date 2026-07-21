@@ -6,6 +6,7 @@ import {
   stripMiniProgramCssSpecificityPlaceholders,
 } from '@/bundlers/shared/css-cleanup'
 import { AssetEmissionPlan } from '@/compiler'
+import { removeCommentOnlyAtRules } from '../processed-css-assets/cleanup'
 import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 
 function readAssetSource(output: OutputAsset) {
@@ -53,8 +54,9 @@ export async function finalizeMiniProgramCssAssets(
     if (rawSource.trim().length === 0) {
       continue
     }
+    const structurallyCleanSource = removeCommentOnlyAtRules(rawSource)
     if (options.lastCssResultByFile?.has(file)) {
-      const outputCss = stripMiniProgramCssSpecificityPlaceholders(rawSource)
+      const outputCss = stripMiniProgramCssSpecificityPlaceholders(structurallyCleanSource)
       if (outputCss !== rawSource) {
         plan.write(file, outputCss)
         writeTargets.set(file, output)
@@ -66,11 +68,19 @@ export async function finalizeMiniProgramCssAssets(
       continue
     }
     if (!shouldFinalizeMiniProgramCssAsset(rawSource)) {
+      if (structurallyCleanSource !== rawSource) {
+        plan.write(file, structurallyCleanSource)
+        writeTargets.set(file, output)
+        options.recordCssAssetResult?.(file, structurallyCleanSource)
+        options.onUpdate(file, rawSource, structurallyCleanSource)
+        options.debug?.('remove empty mini-program css at-rules: %s bytes=%d', file, structurallyCleanSource.length)
+        updated++
+      }
       continue
     }
 
     const cssHandlerOptions = options.getCssHandlerOptions(file)
-    const { css } = await options.styleHandler(rawSource, {
+    const { css } = await options.styleHandler(structurallyCleanSource, {
       ...cssHandlerOptions,
       autoprefixer: false,
       cssOptions: {

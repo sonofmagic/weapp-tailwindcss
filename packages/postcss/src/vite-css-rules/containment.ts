@@ -1,5 +1,6 @@
+import { removeEmptyAtRules } from '../compat/mini-program-css/root-cleanups'
 import { postcss } from '../postcss-runtime'
-import { isCssRuleCoveredByDeclarations, removeEmptyAtRules } from './coverage'
+import { isCssRuleCoveredByDeclarations } from './coverage'
 import { collectCssRuleContentKeys, collectCssRuleDeclarationKeyMap, collectNormalizedCssNodes, getCssRuleContentKey, normalizeCssForContainment } from './structure'
 
 export function filterExistingCssRules(baseCss: string, css: string) {

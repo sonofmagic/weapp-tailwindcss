@@ -1,3 +1,4 @@
+import { removeEmptyAtRules } from '../compat/mini-program-css/root-cleanups'
 import { postcss } from '../postcss-runtime'
 import { collectCssRuleDeclarationKeys, collectCssRuleDeclarationRecords, collectCssRuleDeclarations, getCssRuleStructuralKey, isCoveredByBaseVarFallbackDeclaration, isEquivalentVarFallbackDeclaration, normalizeCssDeclarationKey, normalizeCssForContainment, parseVarReferenceValue } from './structure'
 
@@ -169,12 +170,4 @@ export function mergeCoveredCssRuleDeclarations(baseCss: string, css: string) {
   catch {
     return { baseCss, css, changed: false }
   }
-}
-
-export function removeEmptyAtRules(root: postcss.Root) {
-  root.walkAtRules((atRule) => {
-    if (atRule.nodes && atRule.nodes.every(node => node.type === 'comment')) {
-      atRule.remove()
-    }
-  })
 }

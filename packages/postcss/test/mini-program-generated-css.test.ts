@@ -107,6 +107,24 @@ describe('mini-program generated css cleanup', () => {
     expect(css).not.toContain('box-sizing:border-box')
   })
 
+  it('removes empty conditional at-rules from non-main mini-program chunks', async () => {
+    const styleHandler = createStyleHandler({
+      majorVersion: 4,
+    })
+    const { css } = await styleHandler([
+      '@media (prefers-color-scheme: light) {}',
+      '@media (prefers-color-scheme: dark) { /* removed declarations */ }',
+      '@media screen { @supports (display: grid) {} }',
+      '.keep{color:red}',
+    ].join('\n'), {
+      isMainChunk: false,
+    })
+
+    expect(css).not.toContain('@media')
+    expect(css).not.toContain('@supports')
+    expect(css).toContain('.keep{color:red}')
+  })
+
   it('preserves user page custom properties that use Tailwind v4 theme namespaces', async () => {
     const styleHandler = createStyleHandler({
       majorVersion: 4,

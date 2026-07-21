@@ -1,7 +1,7 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { CollectViteProcessedCssAssetOptions } from './markers-imports'
 import type { InternalUserDefinedOptions } from '@/types'
-import { isMiniProgramLocalCssImportRequest, parseTailwindCssDirectiveRequest, postcss } from '@weapp-tailwindcss/postcss'
+import { isMiniProgramLocalCssImportRequest, parseTailwindCssDirectiveRequest, postcss, removeEmptyAtRules } from '@weapp-tailwindcss/postcss'
 import path from 'pathe'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { appendCss, collectImportedStyleFiles, createCssAssetPipelineContext, getAssetFile, isStyleImportRequest, readAssetSource } from './markers-imports'
@@ -76,19 +76,7 @@ export function removeCommentOnlyAtRules(css: string) {
   }
   try {
     const root = postcss.parse(css)
-    let changed = false
-    root.walkAtRules((atRule) => {
-      if (!atRule.nodes || atRule.nodes.length === 0) {
-        return
-      }
-      const hasCss = atRule.nodes.some(node => node.type !== 'comment')
-      if (hasCss) {
-        return
-      }
-      atRule.remove()
-      changed = true
-    })
-    return changed ? root.toString() : css
+    return removeEmptyAtRules(root) > 0 ? root.toString() : css
   }
   catch {
     return css

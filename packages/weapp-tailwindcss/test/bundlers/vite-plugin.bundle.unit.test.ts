@@ -15249,6 +15249,42 @@ page {
     expect(onUpdate).toHaveBeenCalledWith('cached.wxss', expect.any(String), css)
   })
 
+  it('removes empty conditional at-rules from cached mini-program css assets', async () => {
+    const { finalizeMiniProgramCssAssets } = await import('@/bundlers/vite/generate-bundle/final-css-assets')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset([
+          '@media (prefers-color-scheme: light) {}',
+          '@media (prefers-color-scheme: dark) { /* removed declarations */ }',
+          '@media screen { @supports (display: grid) {} }',
+          '.keep{color:red}',
+        ].join('\n')),
+        fileName: 'app.wxss',
+      },
+    }
+    const onUpdate = vi.fn()
+    const recordCssAssetResult = vi.fn()
+
+    await finalizeMiniProgramCssAssets(bundle, {
+      cssMatcher: file => file.endsWith('.wxss'),
+      getCssHandlerOptions: () => ({ isMainChunk: true } as any),
+      isWebGeneratorTarget: false,
+      lastCssResultByFile: new Map([['app.wxss', 'cached']]),
+      onUpdate,
+      recordCssAssetResult,
+      styleHandler,
+    })
+
+    const css = (bundle['app.wxss'] as OutputAsset).source.toString()
+    expect(css).not.toContain('@media')
+    expect(css).not.toContain('@supports')
+    expect(css).toContain('.keep{color:red}')
+    expect(styleHandler).not.toHaveBeenCalled()
+    expect(recordCssAssetResult).toHaveBeenCalledWith('app.wxss', css)
+    expect(onUpdate).toHaveBeenCalledWith('app.wxss', expect.any(String), css)
+  })
+
   it('logs css diffs when vite css diff debugging is enabled', async () => {
     const previousDebugCssDiff = process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF
     process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF = '1'

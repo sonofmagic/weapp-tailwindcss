@@ -1,7 +1,7 @@
 import type { Node, Selector } from 'postcss-selector-parser'
 import selectorParser from 'postcss-selector-parser'
+import { removeEmptyAtRules } from '../compat/mini-program-css/root-cleanups'
 import { postcss } from '../postcss-runtime'
-import { removeEmptyAtRules } from './coverage'
 import { collectCssRuleDeclarationRecords, collectCssRuleDeclarations, getCssRuleStructuralKeyWithSelectorKey, MINI_PROGRAM_PREFLIGHT_SELECTOR_KEY, MINI_PROGRAM_PREFLIGHT_SELECTOR_KEYS, MINI_PROGRAM_THEME_SCOPE_SELECTOR_KEY, MINI_PROGRAM_THEME_SCOPE_SELECTOR_KEYS, normalizeCssDeclarationKey } from './structure'
 
 function normalizeSimpleMiniProgramSelectorNode(node: Node) {
