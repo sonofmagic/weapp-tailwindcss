@@ -1183,11 +1183,12 @@ describe('e2e watch workflow', () => {
     }
   })
 
-  it('keeps PR web-only watch rows away from the extra taro dev-entry smoke', () => {
+  it('keeps reduced PR watch rows away from the extra taro dev-entry smoke', () => {
     const source = fs.readFileSync(path.resolve(repoRoot, 'e2e/watch/taro-demo-dev.test.ts'), 'utf8')
 
     expect(source).toContain('E2E_WATCH_WEB_ONLY')
-    expect(source).toContain('skips taro webpack pnpm dev smoke for web-only watch profile')
+    expect(source).toContain('E2E_WATCH_MAIN_STYLE_ONLY')
+    expect(source).toContain('skips taro pnpm dev smoke for reduced watch profile')
   })
 
   it('uses node-version specific artifact names for matrix rows that share case names', () => {

@@ -48,9 +48,13 @@ function resolveTaroDevTestTimeoutMs() {
   )
 }
 
-function isWebOnlyWatchProfile() {
-  const value = process.env.E2E_WATCH_WEB_ONLY
+function isEnabledEnv(name: string) {
+  const value = process.env[name]
   return value === '1' || value === 'true'
+}
+
+function isReducedWatchProfile() {
+  return isEnabledEnv('E2E_WATCH_WEB_ONLY') || isEnabledEnv('E2E_WATCH_MAIN_STYLE_ONLY')
 }
 
 async function stopProcessTree(child: ReturnType<typeof spawnPnpm>) {
@@ -177,8 +181,8 @@ async function expectDemoDevWatchReady(project: string) {
 describe('e2e watch taro demo dev entry', () => {
   const caseName = resolveCaseName()
 
-  if (isWebOnlyWatchProfile()) {
-    it.skip('skips taro webpack pnpm dev smoke for web-only watch profile', () => {})
+  if (isReducedWatchProfile()) {
+    it.skip('skips taro pnpm dev smoke for reduced watch profile', () => {})
     return
   }
 
