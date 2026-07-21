@@ -278,6 +278,7 @@ describe('bundlers/webpack v5-assets hook branch coverage', () => {
         'entry.js': 'const cls = "old-entry bg-[#123456]"',
         'linked.js': 'const linked = "old"',
       },
+      chunkFiles: [],
       compilerOutputPath: outDir,
       context,
     })
@@ -316,6 +317,7 @@ describe('bundlers/webpack v5-assets hook branch coverage', () => {
         'entry.js': 'const cls = "old-entry bg-[#123456]"',
         'linked.js': 'const linked = "old"',
       },
+      chunkFiles: [],
       compilerOutputPath: outDir,
       context,
     })
@@ -353,6 +355,7 @@ describe('bundlers/webpack v5-assets hook branch coverage', () => {
         'entry.js': 'const cls = "object-entry-old bg-[#654321]"',
         'linked.js': 'const linked = "object-old"',
       }),
+      chunkFiles: [],
       compilerOutputPath: outDir,
       context,
     })

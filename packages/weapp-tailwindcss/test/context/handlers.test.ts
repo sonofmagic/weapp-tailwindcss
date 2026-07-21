@@ -100,6 +100,7 @@ describe('createHandlersFromContext', () => {
     expect(jsHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
       escapeMap: ctx.escapeMap,
       arbitraryValues: ctx.arbitraryValues,
+      experimentalJsFastPath: 'oxc',
     }))
 
     expect(templateHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
@@ -113,6 +114,22 @@ describe('createHandlersFromContext', () => {
       jsHandler,
       templateHandler,
     })
+  })
+
+  it.each([
+    ['disabled', false, false],
+    ['enabled', true, true],
+    ['oxc', 'oxc', 'oxc'],
+  ] as const)('preserves an explicitly %s JS fast path', async (_label, experimentalJsFastPath, expected) => {
+    const { createHandlersFromContext } = await import('@/context/handlers')
+    const ctx = createContext()
+    ctx.experimentalJsFastPath = experimentalJsFastPath
+
+    createHandlersFromContext(ctx, customAttributesEntities, true)
+
+    expect(jsHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
+      experimentalJsFastPath: expected,
+    }))
   })
 
   it.each([

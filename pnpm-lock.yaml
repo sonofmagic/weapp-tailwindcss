@@ -746,12 +746,6 @@ importers:
       only-allow:
         specifier: ^1.2.2
         version: 1.2.2
-      oxc-parser:
-        specifier: ^0.140.0
-        version: 0.140.0
-      oxc-walker:
-        specifier: ^1.0.0
-        version: 1.0.0(oxc-parser@0.140.0)(rolldown@1.1.5)
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
@@ -4306,6 +4300,12 @@ importers:
       micromatch:
         specifier: ^4.0.8
         version: 4.0.8
+      oxc-parser:
+        specifier: ^0.140.0
+        version: 0.140.0
+      oxc-walker:
+        specifier: ^1.0.0
+        version: 1.0.0(oxc-parser@0.140.0)(rolldown@1.2.0)
       semver:
         specifier: ~7.8.5
         version: 7.8.5
@@ -62051,6 +62051,13 @@ snapshots:
     optionalDependencies:
       oxc-parser: 0.140.0
       rolldown: 1.1.5
+
+  oxc-walker@1.0.0(oxc-parser@0.140.0)(rolldown@1.2.0):
+    dependencies:
+      magic-regexp: 0.11.0
+    optionalDependencies:
+      oxc-parser: 0.140.0
+      rolldown: 1.2.0
 
   oxfmt@0.35.0:
     dependencies:

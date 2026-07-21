@@ -54,7 +54,7 @@ export function createHandlersFromContext(
     tailwindcssMajorVersion,
     generateMap: true,
     babelParserOptions,
-    experimentalJsFastPath,
+    experimentalJsFastPath: experimentalJsFastPath ?? 'oxc',
     ignoreCallExpressionIdentifiers,
     ignoreTaggedTemplateExpressionIdentifiers,
     uniAppX: uniAppXEnabled,

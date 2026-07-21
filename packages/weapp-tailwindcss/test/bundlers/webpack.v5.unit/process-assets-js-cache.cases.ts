@@ -31,7 +31,7 @@ describe('bundlers/webpack WeappTailwindcss / process assets js cache', () => {
     })
     const compilation = {
       compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
-      chunks: [{ id: 'main', hash: 'hash-1' }],
+      chunks: [{ id: 'main', hash: 'hash-1', files: ['index.js', 'index.wxs'] }],
       hooks: {
         processAssets: {
           tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
@@ -108,6 +108,11 @@ describe('bundlers/webpack WeappTailwindcss / process assets js cache', () => {
 
     expect(testState.currentContext.cache.has('index.js')).toBe(true)
     expect(testState.currentContext.cache.has('index.wxs')).toBe(true)
+    expect(testState.currentContext.jsHandler).toHaveBeenCalledWith(
+      js,
+      expect.any(Set),
+      expect.objectContaining({ moduleGraph: undefined }),
+    )
 
     const assetStoreSecond = {
       'index.wxml': html,
