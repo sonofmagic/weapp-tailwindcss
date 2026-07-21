@@ -3,14 +3,11 @@ import { unescape as unescapeClassName } from '@weapp-core/escape'
 const ESCAPED_CLASS_TOKEN_RE = /[\w-]+_[A-Z][\w-]*/gi
 const TAILWIND_RESTORED_CANDIDATE_SIGNAL_RE = /[[\]:/#!.]/
 const MAX_RESTORED_CANDIDATE_VARIANTS = 512
+const MAX_DELIMITER_BALANCE_CACHE_SIZE = 8192
+const delimiterBalanceCache = new Map<string, boolean>()
 
-function hasBalancedCandidateDelimiters(candidate: string) {
+function hasBalancedCandidateDelimitersFallback(candidate: string) {
   const stack: string[] = []
-  const closingByOpening: Record<string, string> = {
-    '(': ')',
-    '[': ']',
-    '{': '}',
-  }
   let escaped = false
   let quote: string | undefined
   for (const char of candidate) {
@@ -32,18 +29,83 @@ function hasBalancedCandidateDelimiters(candidate: string) {
       quote = char
       continue
     }
-    if (closingByOpening[char]) {
+    if (char === '(' || char === '[' || char === '{') {
       stack.push(char)
       continue
     }
     if (char === ')' || char === ']' || char === '}') {
       const opening = stack.pop()
-      if (!opening || closingByOpening[opening] !== char) {
+      if (!opening
+        || (opening === '(' && char !== ')')
+        || (opening === '[' && char !== ']')
+        || (opening === '{' && char !== '}')) {
         return false
       }
     }
   }
   return stack.length === 0 && quote === undefined && !escaped
+}
+
+function computeBalancedCandidateDelimiters(candidate: string) {
+  let delimiterStack = 0
+  let depth = 0
+  let escaped = false
+  let quote = 0
+  for (let index = 0; index < candidate.length; index++) {
+    const code = candidate.charCodeAt(index)
+    if (escaped) {
+      escaped = false
+      continue
+    }
+    if (code === 92) {
+      escaped = true
+      continue
+    }
+    if (quote !== 0) {
+      if (code === quote) {
+        quote = 0
+      }
+      continue
+    }
+    if (code === 34 || code === 39) {
+      quote = code
+      continue
+    }
+    const openingType = code === 40 ? 1 : code === 91 ? 2 : code === 123 ? 3 : 0
+    if (openingType !== 0) {
+      if (depth === 15) {
+        return hasBalancedCandidateDelimitersFallback(candidate)
+      }
+      delimiterStack = (delimiterStack << 2) | openingType
+      depth++
+      continue
+    }
+    const closingType = code === 41 ? 1 : code === 93 ? 2 : code === 125 ? 3 : 0
+    if (closingType !== 0) {
+      if (depth === 0 || (delimiterStack & 3) !== closingType) {
+        return false
+      }
+      delimiterStack >>>= 2
+      depth--
+    }
+  }
+  return depth === 0 && quote === 0 && !escaped
+}
+
+function hasBalancedCandidateDelimiters(candidate: string) {
+  const cached = delimiterBalanceCache.get(candidate)
+  if (cached !== undefined) {
+    return cached
+  }
+  const balanced = computeBalancedCandidateDelimiters(candidate)
+  if (delimiterBalanceCache.size >= MAX_DELIMITER_BALANCE_CACHE_SIZE) {
+    const oldest = delimiterBalanceCache.keys().next().value
+    if (oldest !== undefined) {
+      delimiterBalanceCache.delete(oldest)
+    }
+  }
+  delimiterBalanceCache.set(candidate, balanced)
+  return balanced
 }
 
 export function createEscapeFragments(escapeMap: Record<string, string>) {
