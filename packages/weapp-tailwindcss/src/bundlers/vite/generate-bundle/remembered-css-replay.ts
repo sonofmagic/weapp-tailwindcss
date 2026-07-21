@@ -195,7 +195,8 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     const cssSourceChanged = changedCssFiles.has(outputFile)
       || changedCssFiles.has(sourceFile)
       || (previousRawSourceHash != null && previousRawSourceHash !== rawSourceHash)
-    const previousCss = useIncrementalMode && !cssSourceChanged && getLastCssSourceHash(lastCssSourceHashByFile, outputFile) === cssRuntimeAffectingHash
+    const canAppendIncrementalCss = opts.appType !== 'taro' && opts.appType !== 'uni-app-vite'
+    const previousCss = useIncrementalMode && canAppendIncrementalCss && !cssSourceChanged && getLastCssSourceHash(lastCssSourceHashByFile, outputFile) === cssRuntimeAffectingHash
       ? getLastCssResult(lastCssResultByFile, outputFile)
       : undefined
     const allRememberedSignaturesFresh = rememberedKeys.length > 0
