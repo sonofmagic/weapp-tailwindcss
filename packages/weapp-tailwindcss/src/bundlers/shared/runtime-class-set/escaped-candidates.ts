@@ -3,11 +3,17 @@ import { unescape as unescapeClassName } from '@weapp-core/escape'
 const ESCAPED_CLASS_TOKEN_RE = /[\w-]+_[A-Z][\w-]*/gi
 const TAILWIND_RESTORED_CANDIDATE_SIGNAL_RE = /[[\]:/#!.]/
 const MAX_RESTORED_CANDIDATE_VARIANTS = 512
-const MAX_CACHED_RESTORED_CANDIDATES = 262144
+export const MAX_RESTORED_CANDIDATE_CACHE_ENTRIES = 8192
+export const MAX_RESTORED_CANDIDATE_CACHE_CODE_UNITS = 1_048_576
+
+interface RestoredCandidateCacheEntry {
+  candidates: string[]
+  codeUnits: number
+}
 
 interface RestoredCandidateCache {
-  candidateCount: number
-  entries: Map<string, string[]>
+  codeUnitCount: number
+  entries: Map<string, RestoredCandidateCacheEntry>
 }
 
 const restoredCandidateCaches = new WeakMap<string[], RestoredCandidateCache>()
@@ -102,7 +108,7 @@ function getRestoredCandidateCache(escapeFragments: string[]) {
   let cache = restoredCandidateCaches.get(escapeFragments)
   if (!cache) {
     cache = {
-      candidateCount: 0,
+      codeUnitCount: 0,
       entries: new Map(),
     }
     restoredCandidateCaches.set(escapeFragments, cache)
@@ -111,19 +117,31 @@ function getRestoredCandidateCache(escapeFragments: string[]) {
 }
 
 function cacheRestoredCandidates(cache: RestoredCandidateCache, token: string, candidates: string[]) {
-  if (candidates.length > MAX_CACHED_RESTORED_CANDIDATES) {
+  const codeUnits = token.length + candidates.reduce((total, candidate) => total + candidate.length, 0)
+  if (codeUnits > MAX_RESTORED_CANDIDATE_CACHE_CODE_UNITS) {
     return
   }
-  while (cache.candidateCount + candidates.length > MAX_CACHED_RESTORED_CANDIDATES) {
+  while (
+    cache.entries.size >= MAX_RESTORED_CANDIDATE_CACHE_ENTRIES
+    || cache.codeUnitCount + codeUnits > MAX_RESTORED_CANDIDATE_CACHE_CODE_UNITS
+  ) {
     const oldest = cache.entries.entries().next().value
     if (!oldest) {
       break
     }
     cache.entries.delete(oldest[0])
-    cache.candidateCount -= oldest[1].length
+    cache.codeUnitCount -= oldest[1].codeUnits
   }
-  cache.entries.set(token, candidates)
-  cache.candidateCount += candidates.length
+  cache.entries.set(token, { candidates, codeUnits })
+  cache.codeUnitCount += codeUnits
+}
+
+export function getRestoredCandidateCacheStats(escapeFragments: string[]) {
+  const cache = getRestoredCandidateCache(escapeFragments)
+  return {
+    codeUnitCount: cache.codeUnitCount,
+    entryCount: cache.entries.size,
+  }
 }
 
 export function createEscapeFragments(escapeMap: Record<string, string>) {
@@ -143,7 +161,7 @@ function createAmbiguousRestoredRuntimeCandidates(
   const cache = getRestoredCandidateCache(escapeFragments)
   const cached = cache.entries.get(token)
   if (cached) {
-    return cached
+    return cached.candidates
   }
   if (!hasEscapeFragment(token, escapeFragments)) {
     return []
