@@ -3315,6 +3315,29 @@ describe('watch-hmr regression cases', () => {
         watch_web_only: '1',
         watch_max_attempts: '1',
       }),
+      ...[
+        'taro-vite-react-tailwindcss-v4',
+        'taro-webpack-react-tailwindcss-v4',
+        'taro-webpack-vue3-tailwindcss-v4',
+      ].flatMap(watchCase => [
+        expect.objectContaining({
+          os: 'windows-latest',
+          runner_label: 'windows',
+          watch_case: watchCase,
+          round_profile: 'main-style',
+          watch_main_style_only: '1',
+          watch_main_style_subpackage_limit: '2',
+          watch_max_attempts: '1',
+        }),
+        expect.objectContaining({
+          os: 'windows-latest',
+          runner_label: 'windows',
+          watch_case: watchCase,
+          round_profile: 'web-only',
+          watch_web_only: '1',
+          watch_max_attempts: '1',
+        }),
+      ]),
       expect.objectContaining({
         os: 'windows-latest',
         runner_label: 'windows',
