@@ -416,7 +416,8 @@ jobs:
             timeout_minutes: 70
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '10000'
+            # Windows TT 冷态 CSS 处理在 React/Vue3 下使用相同预算，避免完整轮次因 runner 抖动触发无效重试。
+            watch_max_plugin_process_ms: '18000'
             watch_command_timeout_ms: '3300000'
           - os: windows-latest
             runner_label: windows

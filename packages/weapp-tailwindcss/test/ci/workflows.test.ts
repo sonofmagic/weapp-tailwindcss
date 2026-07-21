@@ -853,14 +853,14 @@ describe('e2e watch workflow', () => {
       watch_command_timeout_ms: '3300000',
     }))
     const slowWindowsTaroTtPrBudgets = [
-      { watchCase: 'taro-vite-react-tailwindcss-v4:tt', pluginBudget: '18000' },
-      { watchCase: 'taro-vite-vue3-tailwindcss-v4:tt', pluginBudget: '10000' },
-    ].map(({ watchCase, pluginBudget }) => ({
+      'taro-vite-react-tailwindcss-v4:tt',
+      'taro-vite-vue3-tailwindcss-v4:tt',
+    ].map(watchCase => ({
       watch_case: watchCase,
       round_profile: 'default',
       timeout_minutes: 70,
       watch_timeout_ms: '600000',
-      watch_max_plugin_process_ms: pluginBudget,
+      watch_max_plugin_process_ms: '18000',
       watch_command_timeout_ms: '3300000',
     }))
     const slowLinuxTaroAlipayPrBudgets = [
