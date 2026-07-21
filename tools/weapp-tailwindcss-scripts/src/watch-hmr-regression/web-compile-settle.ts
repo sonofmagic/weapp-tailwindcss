@@ -20,7 +20,8 @@ export async function waitForWebCompileSettled(options: WaitForWebCompileSettled
         return true
       }
       const lastCompileSignalAt = options.getLastCompileSignalAt()
-      return lastCompileSignalAt > options.phaseStartedAt
+      return lastCompileSignalAt > 0
+        && lastCompileSignalAt >= options.phaseStartedAt
         && Date.now() - lastCompileSignalAt >= stableWindowMs
     },
     {
@@ -30,6 +31,16 @@ export async function waitForWebCompileSettled(options: WaitForWebCompileSettled
     },
     options.phaseStartedAt,
   )
+}
+
+export function resolveWebCompileSettleTimeoutMs(timeoutMs: number, configuredTimeoutMs?: number) {
+  if (configuredTimeoutMs != null) {
+    return Math.min(timeoutMs, configuredTimeoutMs)
+  }
+  if (timeoutMs <= 30_000) {
+    return timeoutMs
+  }
+  return Math.min(Math.max(30_000, Math.ceil(timeoutMs / 4)), 90_000)
 }
 
 export function resolveReloadAcceptAttemptTimeout(timeoutMs: number, pollMs: number) {

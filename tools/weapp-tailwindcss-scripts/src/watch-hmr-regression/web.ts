@@ -17,7 +17,7 @@ import {
   spawnPnpm,
 } from './session'
 import { waitFor, writeFilePreserveEol } from './text'
-import { resolveReloadAcceptAttemptTimeout, waitForWebCompileSettled } from './web-compile-settle'
+import { resolveReloadAcceptAttemptTimeout, resolveWebCompileSettleTimeoutMs, waitForWebCompileSettled } from './web-compile-settle'
 
 const LOCAL_URL_RE = /https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])\S*/i
 const RGB_RE = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/
@@ -938,10 +938,7 @@ export async function runWebHmr(
     const configuredTimeoutMs = phase === 'initial'
       ? (config.initialCompileSettleTimeoutMs ?? config.compileSettleTimeoutMs)
       : config.compileSettleTimeoutMs
-    const timeoutMs = Math.min(
-      options.timeoutMs,
-      configuredTimeoutMs ?? 30_000,
-    )
+    const timeoutMs = resolveWebCompileSettleTimeoutMs(options.timeoutMs, configuredTimeoutMs)
     const settleOptions = {
       getLastCompileSignalAt: () => lastCompileSignalAt,
       label: watchCase.label,

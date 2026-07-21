@@ -132,6 +132,7 @@ import {
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web'
 import {
   resolveReloadAcceptAttemptTimeout,
+  resolveWebCompileSettleTimeoutMs,
   waitForWebCompileSettled,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web-compile-settle'
 import {
@@ -1443,6 +1444,29 @@ describe('watch-hmr web compile settle helpers', () => {
     expect(resolveReloadAcceptAttemptTimeout(120_000, 40)).toBe(5000)
     expect(resolveReloadAcceptAttemptTimeout(120_000, 500)).toBe(15_000)
     expect(resolveReloadAcceptAttemptTimeout(3000, 40)).toBe(3000)
+  })
+
+  it('accepts a stable compile signal recorded in the same millisecond as the mutation', async () => {
+    const phaseStartedAt = Date.now() - 700
+    const elapsed = await waitForWebCompileSettled({
+      ensureRunning() {},
+      getLastCompileSignalAt: () => phaseStartedAt,
+      label: 'demo/web',
+      phase: 'hot-update acceptance',
+      phaseStartedAt,
+      pollMs: 1,
+      timeoutMs: 1_000,
+    })
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
+  it('scales web compile settle timeout for slow dependency optimization reloads', () => {
+    expect(resolveWebCompileSettleTimeoutMs(20_000)).toBe(20_000)
+    expect(resolveWebCompileSettleTimeoutMs(240_000)).toBe(60_000)
+    expect(resolveWebCompileSettleTimeoutMs(600_000)).toBe(90_000)
+    expect(resolveWebCompileSettleTimeoutMs(240_000, 45_000)).toBe(45_000)
+    expect(resolveWebCompileSettleTimeoutMs(30_000, 45_000)).toBe(30_000)
   })
 })
 
