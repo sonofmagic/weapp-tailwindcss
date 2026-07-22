@@ -245,15 +245,8 @@ function resolveAnchor(source: string, anchors: string[]) {
   return anchors.find(anchor => source.includes(anchor))
 }
 
-async function mutateFile(file: string, anchors: string[], insertion: string) {
+async function createFileRestore(file: string) {
   const original = await readUtf8(file)
-  const anchor = resolveAnchor(original, anchors)
-  const index = anchor ? original.indexOf(anchor) : -1
-  if (index < 0) {
-    throw new Error(`找不到 HMR 插入锚点：${file}`)
-  }
-  const next = `${original.slice(0, index)}${insertion}\n\t\t${original.slice(index)}`
-  await fs.writeFile(file, next, 'utf8')
   return async () => {
     await fs.writeFile(file, original, 'utf8')
   }
@@ -317,7 +310,8 @@ export async function runWebHmr(
     })
     page.on('console', (message) => {
       if (message.type() === 'error') {
-        diagnostics.errors.push(message.text())
+        const location = message.location().url
+        diagnostics.errors.push(`${message.text()}${location ? ` (${location})` : ''}`)
       }
       else if (message.type() === 'warning') {
         diagnostics.warnings.push(message.text())
@@ -331,7 +325,7 @@ export async function runWebHmr(
 
     await waitForRuntimeStyles(page, initialRuntimeStyles, 'initial', logs, diagnostics, true)
     const initialCss = await waitForCss(joinUrl(ready.baseUrl, initialCssPath), initialCssContains, child, logs)
-    restore = await mutateFile(sourceFile, markerAnchors, '')
+    restore = await createFileRestore(sourceFile)
     const hmrCss: string[] = []
     for (const [index, step] of hmrSteps.entries()) {
       await rewriteHmrMarker(sourceFile, markerAnchors, hmrSteps, index)
@@ -342,7 +336,9 @@ export async function runWebHmr(
     return {
       hmrCss,
       initialCss,
+      pageErrors: diagnostics.errors,
       pageHtml: ready.text,
+      pageWarnings: diagnostics.warnings,
     }
   }
   finally {

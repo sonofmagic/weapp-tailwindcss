@@ -11,6 +11,7 @@ import {
   readUtf8,
   resolveHBuilderXCli,
   resolveHdcCommand,
+  resolveIosSimulatorDeviceId,
   runPnpmCommand,
   spawnPnpmCommand,
   wait,
@@ -38,6 +39,7 @@ export {
   readUtf8,
   resolveHBuilderXCli,
   resolveHdcCommand,
+  resolveIosSimulatorDeviceId,
   wait,
 }
 

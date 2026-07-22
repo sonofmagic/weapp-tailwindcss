@@ -20,17 +20,27 @@ import {
   pollIntervalMs,
   readUtf8,
   resolveHBuilderXCli,
+  resolveIosSimulatorDeviceId,
   runPnpm,
   spawnPnpm,
   wait,
 } from './process'
+import { collectMiniProgramStyleFiles } from './styles'
 import { runWebHmr } from './web'
 
 const repoRoot = path.resolve(__dirname, '../..')
 const HBUILDERX_DEVICE_UNAVAILABLE_RE = /未检测到指定设备|指定设备(?:不存在|不可用|已离线)|(?:device|emulator)[\w-]*\s+(?:not found|offline|unavailable)/i
+const HBUILDERX_APP_TERMINATED_RE = /\[plugin:uni:app-uts\]\s*编译失败|已停止运行|(?:compile|compilation)\s+failed/i
+const allowedWebConsoleWarnings = [
+  /^\[vue-router\]: importing from 'vue-router\/dist\/vue-router\.esm-bundler\.js' is deprecated\./,
+] as const
 
 export function findHBuilderXDeviceUnavailableLog(output: string) {
   return output.match(HBUILDERX_DEVICE_UNAVAILABLE_RE)?.[0]
+}
+
+export function findHBuilderXAppTerminatedLog(output: string) {
+  return output.match(HBUILDERX_APP_TERMINATED_RE)?.[0]
 }
 
 function resolveAppMarkerAnchors(item: AppCase) {
@@ -278,15 +288,12 @@ async function assertMiniProgramOutput(
     ).toBe(true)
   }
 
-  const css = (
-    await Promise.all(
-      item.cssFiles.map(async (file) => {
-        const target = path.resolve(outputRoot, file)
-        expect(await waitForFile(target, hbuilderxTimeoutMs), `${item.name} 缺少样式产物 ${file}`).toBe(true)
-        return await readUtf8(target)
-      }),
-    )
-  ).join('\n')
+  const styleFiles = await collectMiniProgramStyleFiles(outputRoot, item.cssExtensions)
+  expect(
+    styleFiles.length,
+    `${item.name} 缺少 ${item.cssExtensions.join('/')} 样式产物`,
+  ).toBeGreaterThan(0)
+  const css = (await Promise.all(styleFiles.map(readUtf8))).join('\n')
 
   expectContent(css, item.cssContains, item.name)
   if (item.outputContains) {
@@ -471,11 +478,15 @@ export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
 
 export async function verifyAppHmrWithHBuilderX(item: AppCase) {
   let androidEnv: Record<string, string> | undefined
+  let launchArgs = [...(item.launchArgs ?? [])]
   if (item.platform === 'app-android') {
     androidEnv = assertAndroidToolchain()
   }
   if (item.platform === 'app-ios') {
     assertIosSimulatorToolchain()
+    if (!launchArgs.includes('--deviceId')) {
+      launchArgs = [...launchArgs, '--deviceId', resolveIosSimulatorDeviceId()]
+    }
   }
   if (item.platform === 'app-harmony') {
     assertHarmonyToolchain()
@@ -504,7 +515,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       ...androidEnv,
     })
-    child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectIdentity.projectName, '--cleanCache', 'true', ...(item.launchArgs ?? [])], {
+    child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectIdentity.projectName, '--cleanCache', 'true', ...launchArgs], {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       WEAPP_TW_HMR_TIMING: '1',
       ...androidEnv,
@@ -525,6 +536,10 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       const unavailableDevice = findHBuilderXDeviceUnavailableLog(output)
       if (unavailableDevice) {
         throw new Error(`HBuilderX 未找到可用运行设备：${unavailableDevice}\n${output}`)
+      }
+      const terminated = findHBuilderXAppTerminatedLog(output)
+      if (terminated) {
+        throw new Error(`HBuilderX App 运行已终止：${terminated}\n${output.slice(-20_000)}`)
       }
       if (exit && exit.code !== 0) {
         throw new Error(`命令失败：pnpm exec hbuilderx launch ${item.platform} exit=${exit.signal ?? exit.code}\n${formatHBuilderXIssueDetails(output)}\n${output}`)
@@ -586,6 +601,9 @@ export async function verifyWebHmr(item: WebCase) {
   const result = await runWebHmr(projectRoot, path.resolve(projectRoot, item.sourceFile), resolveWebMarkerAnchors(item), item.initialCssPath, item.hmrCssPath, item.initialCssContains, item.initialRuntimeStyles, item.hmrSteps)
 
   expect(result.pageHtml, `${item.name} Web 首页应可访问`).toContain('<!DOCTYPE html>')
+  expect(result.pageErrors, `${item.name} Web 页面不应产生控制台错误`).toEqual([])
+  const unexpectedWarnings = result.pageWarnings.filter(warning => !allowedWebConsoleWarnings.some(pattern => pattern.test(warning)))
+  expect(unexpectedWarnings, `${item.name} Web 页面不应产生非预期控制台警告`).toEqual([])
   expect(result.initialCss, `${item.name} 不应保留 Tailwind 原始指令`).not.toMatch(rawTailwindDirectiveRE)
   for (const css of result.hmrCss) {
     expect(css, `${item.name} HMR CSS 不应保留 Tailwind 原始指令`).not.toMatch(rawTailwindDirectiveRE)

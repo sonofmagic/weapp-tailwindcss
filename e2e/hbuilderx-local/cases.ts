@@ -15,7 +15,7 @@ export interface MiniProgramCase {
   projectDir: string
   outputDir: string
   outputDirCandidates?: string[]
-  cssFiles: string[]
+  cssExtensions: string[]
   requiredFiles: string[]
   cssContains: Array<string | RegExp>
   cssNotContains?: Array<string | RegExp>
@@ -125,7 +125,7 @@ const uniAppHBuilderXMiniProgramPlatforms = [
 
 const miniProgramPlatformFiles = {
   'mp-alipay': {
-    cssFiles: ['app.acss', 'main.acss', 'sub-normal/pages/index.acss', 'sub-independent/pages/index.acss'],
+    cssExtensions: ['.acss'],
     outputDir: 'unpackage/dist/dev/mp-alipay',
     requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     templateFiles: {
@@ -135,7 +135,7 @@ const miniProgramPlatformFiles = {
     },
   },
   'mp-baidu': {
-    cssFiles: ['app.css', 'main.wxss', 'sub-normal/pages/index.wxss', 'sub-independent/pages/index.wxss'],
+    cssExtensions: ['.css'],
     outputDir: 'unpackage/dist/dev/mp-baidu',
     requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     templateFiles: {
@@ -145,7 +145,7 @@ const miniProgramPlatformFiles = {
     },
   },
   'mp-toutiao': {
-    cssFiles: ['app.ttss', 'main.ttss', 'sub-normal/pages/index.ttss', 'sub-independent/pages/index.ttss'],
+    cssExtensions: ['.ttss'],
     outputDir: 'unpackage/dist/dev/mp-toutiao',
     requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     templateFiles: {
@@ -155,7 +155,7 @@ const miniProgramPlatformFiles = {
     },
   },
   'mp-weixin': {
-    cssFiles: ['app.wxss', 'main.wxss', 'sub-normal/pages/index.wxss', 'sub-independent/pages/index.wxss'],
+    cssExtensions: ['.wxss'],
     outputDir: 'unpackage/dist/dev/mp-weixin',
     requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     templateFiles: {
@@ -165,7 +165,7 @@ const miniProgramPlatformFiles = {
     },
   },
 } satisfies Record<MiniProgramPlatform, {
-  cssFiles: string[]
+  cssExtensions: string[]
   outputDir: string
   requiredFiles: string[]
   templateFiles: {
@@ -221,7 +221,7 @@ function createUniAppHBuilderXMiniProgramCase(options: {
     projectDir: options.projectDir,
     outputDir: platformFiles.outputDir,
     outputDirCandidates: createMiniProgramOutputDirCandidates(options.platform),
-    cssFiles: platformFiles.cssFiles,
+    cssExtensions: platformFiles.cssExtensions,
     requiredFiles: platformFiles.requiredFiles,
     cssContains: isTailwindV4
       ? tailwindV4CssContains
@@ -265,7 +265,7 @@ function createUniAppXHBuilderXMiniProgramCase(options: {
     projectDir: options.projectDir,
     outputDir: platformFiles.outputDir,
     outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
-    cssFiles: ['app.wxss', 'uvue.wxss', 'pages/index/index.wxss', 'components/BindClass.wxss', 'components/WeappTailwindcss.wxss', ...platformFiles.cssFiles.slice(1)],
+    cssExtensions: platformFiles.cssExtensions,
     requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     cssContains: [...safeMiniProgramGeneratedSelectors, '.bg-_b_h87add3_B', '.bg-_b_hd2e252_B', '.text-_b93_d54rpx_B', '.bg-_b_hf21903_B', '.text-_b_hda0e3c_B', '.w-64'],
     cssNotContains: [rawTailwindDirectiveRE, ...unsafeMiniProgramSelectorFragments],

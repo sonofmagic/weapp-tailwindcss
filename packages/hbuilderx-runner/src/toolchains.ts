@@ -94,6 +94,105 @@ export function assertIosSimulatorToolchain(env: NodeJS.ProcessEnv = process.env
   }
 }
 
+export interface IosSimulatorDevice {
+  lastBootedAt?: string
+  name: string
+  state: string
+  udid: string
+}
+
+export function parseIosSimulatorDevices(output: string) {
+  const jsonStart = output.indexOf('{')
+  const jsonEnd = output.lastIndexOf('}')
+  if (jsonStart < 0 || jsonEnd < jsonStart) {
+    return []
+  }
+
+  let value: unknown
+  try {
+    value = JSON.parse(output.slice(jsonStart, jsonEnd + 1))
+  }
+  catch {
+    return []
+  }
+
+  if (!value || typeof value !== 'object' || !('devices' in value)) {
+    return []
+  }
+
+  const devices = (value as { devices?: unknown }).devices
+  if (!devices || typeof devices !== 'object') {
+    return []
+  }
+
+  return Object.values(devices).flatMap((runtimeDevices) => {
+    if (!Array.isArray(runtimeDevices)) {
+      return []
+    }
+    return runtimeDevices.flatMap((device): IosSimulatorDevice[] => {
+      if (
+        !device
+        || typeof device !== 'object'
+        || !('udid' in device)
+        || typeof device.udid !== 'string'
+        || ('isAvailable' in device && device.isAvailable === false)
+      ) {
+        return []
+      }
+      return [{
+        ...('lastBootedAt' in device && typeof device.lastBootedAt === 'string' ? { lastBootedAt: device.lastBootedAt } : {}),
+        name: 'name' in device && typeof device.name === 'string' ? device.name : device.udid,
+        state: 'state' in device && typeof device.state === 'string' ? device.state : 'Unknown',
+        udid: device.udid,
+      }]
+    })
+  })
+}
+
+export function selectPreferredIosSimulatorDevice(devices: IosSimulatorDevice[]) {
+  return [...devices].sort((left, right) => {
+    const stateDifference = Number(right.state === 'Booted') - Number(left.state === 'Booted')
+    if (stateDifference !== 0) {
+      return stateDifference
+    }
+    const leftLastBootedAt = Date.parse(left.lastBootedAt ?? '')
+    const rightLastBootedAt = Date.parse(right.lastBootedAt ?? '')
+    const lastBootedDifference = (Number.isNaN(rightLastBootedAt) ? 0 : rightLastBootedAt) - (Number.isNaN(leftLastBootedAt) ? 0 : leftLastBootedAt)
+    if (lastBootedDifference !== 0) {
+      return lastBootedDifference
+    }
+    return Number(/^iPhone\b/.test(right.name)) - Number(/^iPhone\b/.test(left.name))
+  })[0]
+}
+
+export function resolveIosSimulatorDeviceId(env: NodeJS.ProcessEnv = process.env) {
+  const explicitDeviceId = env.E2E_HBUILDERX_IOS_DEVICE_ID
+  if (explicitDeviceId) {
+    return explicitDeviceId
+  }
+
+  const booted = runTool('xcrun', ['simctl', 'list', 'devices', 'booted', '--json'])
+  const bootedDevices = booted.ok ? parseIosSimulatorDevices(booted.output) : []
+  const bootedDevice = selectPreferredIosSimulatorDevice(bootedDevices)
+  if (bootedDevice) {
+    return bootedDevice.udid
+  }
+
+  const available = runTool('xcrun', ['simctl', 'list', 'devices', 'available', '--json'])
+  const availableDevices = available.ok ? parseIosSimulatorDevices(available.output) : []
+  const availableDevice = selectPreferredIosSimulatorDevice(availableDevices)
+  if (availableDevice) {
+    return availableDevice.udid
+  }
+
+  throw new Error([
+    '未找到可用于 HBuilderX app-ios E2E 的 iOS 模拟器。',
+    `booted: ${booted.output || 'empty'}`,
+    `available: ${available.output || 'empty'}`,
+    '请先在 Xcode 中安装并启动一个模拟器，或设置 E2E_HBUILDERX_IOS_DEVICE_ID。',
+  ].join('\n'))
+}
+
 export function resolveHdcCommand(env: NodeJS.ProcessEnv = process.env) {
   const candidates = [
     env.DEMO_VISUAL_HARMONY_HDC_PATH,

@@ -10,6 +10,9 @@ import {
   createLogBuffer,
   extractHBuilderXExecutableFromProcessOutput,
   parseHdcTargets,
+  parseIosSimulatorDevices,
+  resolveIosSimulatorDeviceId,
+  selectPreferredIosSimulatorDevice,
   resolveHBuilderXCli,
   resolveHBuilderXCliInfo,
   runCommand,
@@ -49,6 +52,35 @@ describe('hbuilderx-runner', () => {
       'emulator-1',
     ])
     expect(parseHdcTargets('\n[Empty]\n')).toEqual([])
+  })
+
+  it('parses available iOS simulators from simctl JSON', () => {
+    const output = JSON.stringify({
+      devices: {
+        'com.apple.CoreSimulator.SimRuntime.iOS-18-5': [
+          { isAvailable: true, name: 'iPhone 16 Pro', state: 'Booted', udid: 'booted-device' },
+          { isAvailable: false, name: 'Unavailable', state: 'Shutdown', udid: 'unavailable-device' },
+        ],
+      },
+    })
+    expect(parseIosSimulatorDevices(`simctl warning\n${output}\ntrailing diagnostic`)).toEqual([
+      { name: 'iPhone 16 Pro', state: 'Booted', udid: 'booted-device' },
+    ])
+    expect(parseIosSimulatorDevices('not json')).toEqual([])
+  })
+
+  it('uses an explicitly configured iOS simulator without probing Xcode', () => {
+    expect(resolveIosSimulatorDeviceId({
+      E2E_HBUILDERX_IOS_DEVICE_ID: 'configured-device',
+    } as NodeJS.ProcessEnv)).toBe('configured-device')
+  })
+
+  it('prefers a recently booted iPhone over an uninitialized simulator', () => {
+    expect(selectPreferredIosSimulatorDevice([
+      { name: 'iPhone 17 Pro', state: 'Shutdown', udid: 'new-device' },
+      { lastBootedAt: '2026-07-22T15:56:44Z', name: 'iPhone 16 Pro', state: 'Shutdown', udid: 'recent-device' },
+      { lastBootedAt: '2026-07-21T15:56:44Z', name: 'iPad Pro', state: 'Shutdown', udid: 'older-device' },
+    ])?.udid).toBe('recent-device')
   })
 
   it('keeps a bounded recent log buffer', () => {

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { miniProgramCases, uniAppAppCases, uniAppXAppCases, webCases } from '../../../e2e/hbuilderx-local/cases'
 import { filterHBuilderXCases, matchesHBuilderXCaseFilter, parseCaseNameFilters } from '../../../e2e/hbuilderx-local/filters'
-import { findHBuilderXDeviceUnavailableLog } from '../../../e2e/hbuilderx-local/runner'
+import { findHBuilderXAppTerminatedLog, findHBuilderXDeviceUnavailableLog } from '../../../e2e/hbuilderx-local/runner'
 
 const hbuilderxDemoNames = [
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
@@ -32,6 +32,12 @@ describe('HBuilderX local demo matrix', () => {
     expect(findHBuilderXDeviceUnavailableLog('未检测到指定设备 emulator-5554')).toBe('未检测到指定设备')
     expect(findHBuilderXDeviceUnavailableLog('emulator-5556 offline')).toBe('emulator-5556 offline')
     expect(findHBuilderXDeviceUnavailableLog('项目编译成功')).toBeUndefined()
+  })
+
+  it('fails fast when HBuilderX stops an App build without exiting', () => {
+    expect(findHBuilderXAppTerminatedLog('[plugin:uni:app-uts] 编译失败')).toBe('[plugin:uni:app-uts] 编译失败')
+    expect(findHBuilderXAppTerminatedLog('已停止运行...')).toBe('已停止运行')
+    expect(findHBuilderXAppTerminatedLog('App Launch')).toBeUndefined()
   })
 
   it('keeps every HBuilderX demo covered by local mini-program and Web HMR cases', () => {
@@ -72,10 +78,10 @@ describe('HBuilderX local demo matrix', () => {
         'mp-baidu',
         'mp-toutiao',
       ])
-      expect(cases.find(item => item.platform === 'mp-weixin')?.cssFiles).toContain('app.wxss')
-      expect(cases.find(item => item.platform === 'mp-alipay')?.cssFiles).toContain('app.acss')
-      expect(cases.find(item => item.platform === 'mp-baidu')?.cssFiles).toContain('app.css')
-      expect(cases.find(item => item.platform === 'mp-toutiao')?.cssFiles).toContain('app.ttss')
+      expect(cases.find(item => item.platform === 'mp-weixin')?.cssExtensions).toEqual(['.wxss'])
+      expect(cases.find(item => item.platform === 'mp-alipay')?.cssExtensions).toEqual(['.acss'])
+      expect(cases.find(item => item.platform === 'mp-baidu')?.cssExtensions).toEqual(['.css'])
+      expect(cases.find(item => item.platform === 'mp-toutiao')?.cssExtensions).toEqual(['.ttss'])
       expect(cases.find(item => item.platform === 'mp-weixin')?.outputContains?.['sub-normal/pages/index.wxml']).toContain('bg-normal-subpackage-marker')
       expect(cases.find(item => item.platform === 'mp-alipay')?.outputContains?.['sub-normal/pages/index.axml']).toContain('bg-normal-subpackage-marker')
       expect(cases.find(item => item.platform === 'mp-baidu')?.outputContains?.['sub-normal/pages/index.swan']).toContain('bg-normal-subpackage-marker')
