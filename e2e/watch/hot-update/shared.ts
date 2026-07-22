@@ -358,6 +358,7 @@ interface HotUpdateReport {
   options?: {
     webOnly?: boolean
     miniProgramOnly?: boolean
+    miniProgramScope?: 'main-package' | 'subpackages'
     mainStyleOnly?: boolean
     mainStyleSubPackageLimit?: number
   }
@@ -448,6 +449,10 @@ function isWebOnlyProfile(report?: HotUpdateReport) {
 
 function isMainStyleOnlyProfile(report?: HotUpdateReport) {
   return toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false) || report?.options?.mainStyleOnly === true
+}
+
+function isSubPackagesOnlyProfile(report?: HotUpdateReport) {
+  return report?.options?.miniProgramScope === 'subpackages'
 }
 
 function resolveRequiredMutationRounds() {
@@ -1079,6 +1084,34 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     assertMainStyleOnlyHotUpdateReport(report, target, maxHotUpdateMs)
     return
   }
+  if (isSubPackagesOnlyProfile(report)) {
+    assertAllHotUpdateSamplesWithinBudget(report, maxHotUpdateMs)
+    expect(report.summary.count).toBeGreaterThan(0)
+    expect(report.cases.length).toBe(report.summary.count)
+    for (const item of report.cases) {
+      const baseCaseName = resolveReportBaseCaseName(item)
+      const configuredWatchCase = configuredWatchCasesByName.get(baseCaseName)
+      const subPackageMutationMetrics = item.subPackageMutationMetrics ?? []
+      expect(item.initialReadyMs).toBeGreaterThan(0)
+      expect(item.mainStyleHotUpdate).toBeUndefined()
+      expect(item.webHmr).toBeUndefined()
+      expect(subPackageMutationMetrics.map(metric => metric.root).sort()).toEqual(['sub-independent', 'sub-normal'])
+      for (const metric of subPackageMutationMetrics) {
+        const configuredMutation = configuredWatchCase?.subPackageMutations?.find(item => item.root === metric.root)
+        const expectedRoundCount = configuredMutation?.templateMutation.skipExtendedHmr
+          ? 1
+          : resolveRequiredMutationRounds().length
+        expect(metric.template.rounds.length).toBe(expectedRoundCount)
+        expect(metric.globalStyleOutputs.length).toBeGreaterThan(0)
+        expect(metric.style == null).toBe(configuredMutation?.skipStyleMutation === true)
+        if (configuredMutation?.mainStyleMutation) {
+          expect(metric.mainStyleHotUpdate).toBeDefined()
+        }
+      }
+      assertHmrDurationReport(report, item, maxHotUpdateMs)
+    }
+    return
+  }
 
   const requiredMutationRounds = resolveRequiredMutationRounds()
   const issue33RoundProfile = isIssue33RoundProfile()
@@ -1132,7 +1165,10 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     const subPackageMutationMetrics = item.subPackageMutationMetrics ?? []
     const hasStyleMutation = item.mutationMetrics.some(metric => metric.mutationKind === 'style')
     expect(item.mutationMetrics.length).toBe(2 + (hasStyleMutation ? 1 : 0) + (hasContentMutation ? 1 : 0))
-    if (SUBPACKAGE_HMR_CASES.has(baseCaseName)) {
+    if (report.options?.miniProgramScope === 'main-package') {
+      expect(subPackageMutationMetrics).toEqual([])
+    }
+    else if (SUBPACKAGE_HMR_CASES.has(baseCaseName)) {
       expect(subPackageMutationMetrics.length).toBe(2)
       expect(subPackageMutationMetrics.map(metric => metric.root).sort()).toEqual(['sub-independent', 'sub-normal'])
       expect(subPackageMutationMetrics.some(metric => metric.independent)).toBe(true)
@@ -1521,6 +1557,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
   const skipBuild = toBoolEnv('E2E_WATCH_SKIP_BUILD', true)
   const quietSass = toBoolEnv('E2E_WATCH_QUIET_SASS', true)
   const miniProgramOnly = toBoolEnv('E2E_WATCH_MINI_PROGRAM_ONLY', false)
+  const miniProgramScope = process.env.E2E_WATCH_MINI_PROGRAM_SCOPE
   const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
   const mainStyleSubPackageLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
   const reportFile = createReportFilePath(cwd, runTarget)
@@ -1558,6 +1595,10 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
 
   if (miniProgramOnly) {
     args.push('--mini-program-only')
+  }
+
+  if (miniProgramScope) {
+    args.push('--mini-program-scope', miniProgramScope)
   }
 
   if (mainStyleOnly) {

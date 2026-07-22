@@ -1,9 +1,10 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { CollectViteProcessedCssAssetOptions } from './markers-imports'
 import type { InternalUserDefinedOptions } from '@/types'
-import { isMiniProgramLocalCssImportRequest, parseTailwindCssDirectiveRequest, postcss } from '@weapp-tailwindcss/postcss'
+import { isMiniProgramLocalCssImportRequest, parseTailwindCssDirectiveRequest, postcss, removeEmptyAtRules } from '@weapp-tailwindcss/postcss'
 import path from 'pathe'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
+import { hasEmptyAtRuleBlockCandidate } from './empty-at-rule'
 import { appendCss, collectImportedStyleFiles, createCssAssetPipelineContext, getAssetFile, isStyleImportRequest, readAssetSource } from './markers-imports'
 import { isMiniProgramStyleOutputFile, isRootStyleOutputFile } from './style-files'
 
@@ -71,7 +72,7 @@ export function restoreCssImportAtRules(source: string, filtered: string, file?:
 }
 
 export function removeCommentOnlyAtRules(css: string) {
-  if (!css.includes('@')) {
+  if (!hasEmptyAtRuleBlockCandidate(css)) {
     return css
   }
   try {
@@ -89,6 +90,25 @@ export function removeCommentOnlyAtRules(css: string) {
       changed = true
     })
     return changed ? root.toString() : css
+  }
+  catch {
+    return css
+  }
+}
+
+export function removeEmptyCssAtRules(css: string) {
+  if (!hasEmptyAtRuleBlockCandidate(css)) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    let removed = 0
+    let passRemoved = 0
+    do {
+      passRemoved = removeEmptyAtRules(root)
+      removed += passRemoved
+    } while (passRemoved > 0)
+    return removed > 0 ? root.toString() : css
   }
   catch {
     return css

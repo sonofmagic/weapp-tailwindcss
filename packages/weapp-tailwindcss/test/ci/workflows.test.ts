@@ -720,7 +720,29 @@ describe('e2e watch workflow', () => {
     expect(cases).toContain('macos:22:demo-core:main-style')
     for (const runner of ['linux', 'macos']) {
       for (const watchCase of parallelTaroCases) {
-        expect(cases, `${runner} should cover ${watchCase} mini-program HMR`).toContain(`${runner}:22:${watchCase}:mini-program`)
+        const mainCommandTimeoutMs = watchCase.includes('webpack') ? '1500000' : '1200000'
+        for (const profile of ['mini-program-main', 'mini-program-subpackages']) {
+          expect(cases, `${runner} should cover ${watchCase} ${profile} HMR`).toContain(`${runner}:22:${watchCase}:${profile}`)
+        }
+        const scopeRows = rows.filter(row => row.runner_label === runner && row.watch_case === watchCase && String(row.round_profile).startsWith('mini-program-'))
+        expect(scopeRows).toEqual(expect.arrayContaining([
+          expect.objectContaining({
+            round_profile: 'mini-program-main',
+            watch_mini_program_only: '1',
+            watch_mini_program_scope: 'main-package',
+            watch_max_attempts: '1',
+            timeout_minutes: 30,
+            watch_command_timeout_ms: mainCommandTimeoutMs,
+          }),
+          expect.objectContaining({
+            round_profile: 'mini-program-subpackages',
+            watch_mini_program_only: '1',
+            watch_mini_program_scope: 'subpackages',
+            watch_max_attempts: '1',
+            timeout_minutes: 30,
+            watch_command_timeout_ms: '1200000',
+          }),
+        ]))
       }
     }
     for (const watchCase of parallelTaroCases) {
@@ -747,8 +769,8 @@ describe('e2e watch workflow', () => {
       .filter(row => row.runner_label === 'macos' && String(row.watch_case).includes(':'))
       .map(row => row.watch_case)
     expect(macosPlatformCases).toEqual(['uni-app-vite-tailwindcss-v4:mp-weixin'])
-    expect(rows.filter(row => row.runner_label === 'macos')).toHaveLength(13)
-    expect(rows.filter(row => row.runner_label === 'linux')).toHaveLength(14)
+    expect(rows.filter(row => row.runner_label === 'macos')).toHaveLength(17)
+    expect(rows.filter(row => row.runner_label === 'linux')).toHaveLength(18)
     expect(rows.filter(row => row.runner_label === 'windows')).toHaveLength(21)
     for (const row of [
       rows.find(row => row.runner_label === 'macos' && row.watch_case === 'demo-core'),
@@ -778,6 +800,7 @@ describe('e2e watch workflow', () => {
     expect(watchStep?.env).toMatchObject({
       E2E_TARO_DEV_READY_TIMEOUT_MS: '${{ matrix.taro_dev_ready_timeout_ms || matrix.watch_timeout_ms }}',
       E2E_WATCH_MINI_PROGRAM_ONLY: "${{ matrix.watch_mini_program_only || '0' }}",
+      E2E_WATCH_MINI_PROGRAM_SCOPE: "${{ matrix.watch_mini_program_scope || '' }}",
       E2E_WATCH_MAIN_STYLE_ONLY: "${{ matrix.watch_main_style_only || '0' }}",
       E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT: "${{ matrix.watch_main_style_subpackage_limit || '' }}",
     })
@@ -870,15 +893,24 @@ describe('e2e watch workflow', () => {
       { watchCase: 'taro-webpack-react-tailwindcss-v4', timeoutMs: '600000' },
       { watchCase: 'taro-vite-vue3-tailwindcss-v4', timeoutMs: '420000' },
       { watchCase: 'taro-webpack-vue3-tailwindcss-v4', timeoutMs: '600000' },
-    ].map(({ watchCase, timeoutMs }) => ({
+    ].flatMap(({ watchCase, timeoutMs }) => [
+      {
+        commandTimeoutMs: watchCase.includes('webpack') ? '1500000' : '1200000',
+        profile: 'mini-program-main',
+        scope: 'main-package',
+      },
+      { commandTimeoutMs: '1200000', profile: 'mini-program-subpackages', scope: 'subpackages' },
+    ].map(({ commandTimeoutMs, profile, scope }) => ({
       watch_case: watchCase,
-      round_profile: 'mini-program',
+      round_profile: profile,
       watch_mini_program_only: '1',
+      watch_mini_program_scope: scope,
+      watch_max_attempts: '1',
       timeout_minutes: 30,
       watch_timeout_ms: timeoutMs,
       watch_max_plugin_process_ms: '60000',
-      watch_command_timeout_ms: '1500000',
-    }))
+      watch_command_timeout_ms: commandTimeoutMs,
+    })))
     const slowLinuxDemoCorePrBudget = {
       watch_case: 'demo-core',
       round_profile: 'default',

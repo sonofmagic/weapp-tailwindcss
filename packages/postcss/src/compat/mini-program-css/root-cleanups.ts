@@ -80,11 +80,33 @@ function isEffectivelyEmptyContainer(container: postcss.Container) {
 }
 
 export function removeEmptyAtRules(root: postcss.Root) {
+  let removed = 0
+  const visit = (container: postcss.Container) => {
+    for (const node of [...(container.nodes ?? [])]) {
+      if (!('nodes' in node) || node.nodes === undefined) {
+        continue
+      }
+      visit(node)
+      if (node.type === 'atrule' && node.parent && isEffectivelyEmptyContainer(node)) {
+        node.remove()
+        removed++
+      }
+    }
+  }
+
+  visit(root)
+  return removed
+}
+
+export function removeEmptyBlockAtRules(root: postcss.Root) {
+  let removed = 0
   root.walkAtRules((atRule) => {
-    if (isEffectivelyEmptyContainer(atRule)) {
+    if (atRule.nodes?.length === 0) {
       atRule.remove()
+      removed++
     }
   })
+  return removed
 }
 
 function removeEmptyAtRuleAncestors(parent: postcss.Container | undefined) {

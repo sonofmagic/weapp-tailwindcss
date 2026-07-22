@@ -9971,6 +9971,16 @@ describe('bundlers/shared generator css', () => {
     expect(css).toContain('background-image:linear-gradient(to right, #06b6d4, #3b82f6)')
   })
 
+  it('preserves incremental at-rule placeholders during generator finalization', async () => {
+    const { finalizeMiniProgramGeneratorCss } = await import('@/bundlers/shared/generator-css/generation-helpers')
+    const css = finalizeMiniProgramGeneratorCss('@media screen{/* incremental placeholder */}', 'weapp', 4, false, {
+      injectPreflight: false,
+      removeEmptyAtRuleAncestors: false,
+    })
+
+    expect(css).toBe('@media screen{/* incremental placeholder */}')
+  })
+
   it('does not inject Tailwind v4 mini-program preflight twice when generator css already has reset', async () => {
     const { finalizeMiniProgramGeneratorCss } = await import('@/bundlers/shared/generator-css/generation-helpers')
     const css = finalizeMiniProgramGeneratorCss([

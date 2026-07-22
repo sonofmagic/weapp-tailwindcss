@@ -18,7 +18,12 @@ export function finalizeMiniProgramGeneratorCss(
   target: string,
   _majorVersion: number | undefined,
   cssPreflight: InternalUserDefinedOptions['cssPreflight'],
-  options: { injectPreflight?: boolean, preservePreflight?: boolean, styleOptions?: Partial<IStyleHandlerOptions> | undefined } = {},
+  options: {
+    injectPreflight?: boolean | undefined
+    preservePreflight?: boolean | undefined
+    removeEmptyAtRuleAncestors?: boolean | undefined
+    styleOptions?: Partial<IStyleHandlerOptions> | undefined
+  } = {},
 ) {
   if (!isMiniProgramGeneratorTarget(target)) {
     return css
@@ -29,6 +34,7 @@ export function finalizeMiniProgramGeneratorCss(
       cssSelectorReplacement: options.styleOptions?.cssOptions?.cssSelectorReplacement
         ?? options.styleOptions?.cssSelectorReplacement,
       isTailwindcssV4: true,
+      removeEmptyAtRuleAncestors: options.removeEmptyAtRuleAncestors,
       tailwindcssV4GradientFallback: options.styleOptions?.cssOptions?.tailwindcssV4GradientFallback
         ?? options.styleOptions?.tailwindcssV4GradientFallback,
     })
@@ -48,6 +54,7 @@ export function finalizeMiniProgramGeneratorCss(
     cssSelectorReplacement: options.styleOptions?.cssOptions?.cssSelectorReplacement
       ?? options.styleOptions?.cssSelectorReplacement,
     isTailwindcssV4: true,
+    removeEmptyAtRuleAncestors: options.removeEmptyAtRuleAncestors,
     tailwindcssV4GradientFallback: options.styleOptions?.cssOptions?.tailwindcssV4GradientFallback
       ?? options.styleOptions?.tailwindcssV4GradientFallback,
   })

@@ -1,4 +1,4 @@
-import type { CliOptions } from './types'
+import type { CliOptions, MiniProgramScope } from './types'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
@@ -47,8 +47,21 @@ function parseBooleanEnv(name: string) {
   return value === '1' || value === 'true'
 }
 
+function parseMiniProgramScope(value: string | undefined): MiniProgramScope | undefined {
+  if (value == null || value.trim() === '') {
+    return undefined
+  }
+  if (value === 'main-package' || value === 'subpackages') {
+    return value
+  }
+  throw new Error(`invalid mini-program scope: ${value}`)
+}
+
 export function resolveOptions(): CliOptions {
   const argv = process.argv.slice(2)
+  const miniProgramScope = parseMiniProgramScope(
+    parseArg('--mini-program-scope', argv) ?? process.env.E2E_WATCH_MINI_PROGRAM_SCOPE,
+  )
   return {
     caseName: (parseArg('--case', argv) ?? 'all') as CliOptions['caseName'],
     timeoutMs: parseNumber(parseArg('--timeout', argv), 240000),
@@ -56,7 +69,10 @@ export function resolveOptions(): CliOptions {
     skipBuild: parseBooleanFlag('--skip-build', argv),
     quietSass: parseBooleanFlag('--quiet-sass', argv),
     webOnly: parseBooleanFlag('--web-only', argv),
-    miniProgramOnly: parseBooleanFlag('--mini-program-only', argv) || parseBooleanEnv('E2E_WATCH_MINI_PROGRAM_ONLY'),
+    miniProgramOnly: parseBooleanFlag('--mini-program-only', argv)
+      || parseBooleanEnv('E2E_WATCH_MINI_PROGRAM_ONLY')
+      || miniProgramScope != null,
+    miniProgramScope,
     styleOnly: parseBooleanFlag('--style-only', argv),
     mainStyleOnly: parseBooleanFlag('--main-style-only', argv),
     mainStyleSubPackageLimit: parseOptionalNumber(parseArg('--main-style-subpackage-limit', argv))

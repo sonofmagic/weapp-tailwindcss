@@ -337,7 +337,16 @@ describe('watch-hmr coverage matrix', () => {
     ]))
     for (const watchCase of taroProjectCases) {
       expect(rows).toEqual(expect.arrayContaining([
-        expect.objectContaining({ watch_case: watchCase, round_profile: 'mini-program' }),
+        expect.objectContaining({
+          watch_case: watchCase,
+          round_profile: 'mini-program-main',
+          watch_mini_program_scope: 'main-package',
+        }),
+        expect.objectContaining({
+          watch_case: watchCase,
+          round_profile: 'mini-program-subpackages',
+          watch_mini_program_scope: 'subpackages',
+        }),
         expect.objectContaining({ watch_case: watchCase, round_profile: 'web-only' }),
       ]))
     }

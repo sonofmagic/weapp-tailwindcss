@@ -78,6 +78,7 @@ export class WatchHmrPartialMetricsError extends Error {
 
 interface SubPackageMutationRunResult {
   metric: WatchCaseMetrics['subPackageMutationMetrics'][number]
+  initialReadyMs: number
   memorySamples: ReturnType<WatchSession['memorySamplesSince']>
   memoryDebugSamples: ReturnType<WatchSession['memoryDebugSamplesSince']>
 }
@@ -112,8 +113,8 @@ async function runSubPackageMutationInNewSession(
   }, watchCase.env)
 
   try {
-    await waitForOutputsReady(subWatchCase, options, session, sessionStartedAt)
-    await waitForInitialWarmup(subWatchCase, options, session, sessionStartedAt)
+    const outputsReadyMs = await waitForOutputsReady(subWatchCase, options, session, sessionStartedAt)
+    const warmupMs = await waitForInitialWarmup(subWatchCase, options, session, sessionStartedAt)
     if ((watchCase.initialMutationDelayMs ?? 0) > 0) {
       process.stdout.write(
         `[watch-hmr] ${subWatchCase.label} split subpackage settle ${watchCase.initialMutationDelayMs}ms\n`,
@@ -132,6 +133,7 @@ async function runSubPackageMutationInNewSession(
 
     return {
       metric,
+      initialReadyMs: Math.max(outputsReadyMs, warmupMs),
       memorySamples: session.memorySamplesSince(sessionStartedAt),
       memoryDebugSamples: session.memoryDebugSamplesSince(sessionStartedAt),
     }
@@ -142,6 +144,105 @@ async function runSubPackageMutationInNewSession(
   }
   finally {
     await session.stop()
+  }
+}
+
+export async function runSubPackagesOnlyCase(watchCase: WatchCase, options: CliOptions): Promise<WatchCaseMetrics> {
+  const caseStartedAt = Date.now()
+  const subPackageMutations = watchCase.subPackageMutations ?? []
+  if (subPackageMutations.length === 0) {
+    throw new Error(`[${watchCase.label}] subpackages scope requires subPackageMutations`)
+  }
+
+  const sourceFiles = resolveCaseSourceFiles(watchCase)
+  const sourceOriginals = new Map<string, string>()
+  for (const sourceFile of sourceFiles) {
+    sourceOriginals.set(sourceFile, await fs.readFile(sourceFile, 'utf8'))
+  }
+
+  if (watchCase.initialBuildScript) {
+    process.stdout.write(`[watch-hmr] ${watchCase.label} prepare initial build (${watchCase.initialBuildScript})\n`)
+    await runPnpmCommand(watchCase.cwd, ['run', watchCase.initialBuildScript], 'prebuild')
+  }
+
+  try {
+    const results = []
+    for (const subPackageMutation of subPackageMutations) {
+      results.push(await runSubPackageMutationInNewSession(
+        watchCase,
+        options,
+        subPackageMutation,
+        sourceOriginals,
+      ))
+    }
+
+    const subPackageMutationMetrics = results.map(result => result.metric)
+    const mutationMetrics = subPackageMutationMetrics.flatMap(metric => [
+      metric.template,
+      ...(metric.style ? [metric.style] : []),
+    ])
+    const rounds = subPackageMutationMetrics.flatMap(metric => metric.template.rounds)
+    const preferredRound = resolvePreferredRound(subPackageMutationMetrics[0]!.template.rounds)
+    if (!preferredRound) {
+      throw new Error(`[${watchCase.label}] no preferred subpackage round produced`)
+    }
+    const memorySamples = results.flatMap(result => result.memorySamples)
+    const memoryDebugSamples = results.flatMap(result => result.memoryDebugSamples)
+    const memorySummary = summarizeMemorySamples(memorySamples)
+    const memoryDebugSummary = summarizeMemoryDebugSamples(memoryDebugSamples)
+    const globalStyleOutputs = [...new Set(subPackageMutationMetrics.flatMap(metric => metric.globalStyleOutputs))]
+
+    const metrics: WatchCaseMetrics = {
+      name: watchCase.name,
+      label: watchCase.label,
+      project: watchCase.project,
+      projectGroup: watchCase.group,
+      marker: preferredRound.marker,
+      classLiteral: preferredRound.classLiteral,
+      classTokens: preferredRound.classTokens,
+      escapedClasses: preferredRound.escapedClasses,
+      rounds,
+      verifyEscapedIn: subPackageMutationMetrics[0]!.template.verifyEscapedIn,
+      verifyClassLiteralIn: subPackageMutationMetrics[0]!.template.verifyClassLiteralIn,
+      globalStyleOutputs,
+      mutationMetrics,
+      subPackageMutationMetrics,
+      summaryByMutationKind: summarizeMutationMetricsByKind(mutationMetrics),
+      initialReadyMs: Math.max(...results.map(result => result.initialReadyMs)),
+      ...(watchCase.maxPluginProcessMs == null ? {} : { maxPluginProcessMs: watchCase.maxPluginProcessMs }),
+      hotUpdateOutputMs: preferredRound.hotUpdateOutputMs,
+      hotUpdateEffectiveMs: preferredRound.hotUpdateEffectiveMs,
+      hotUpdatePluginProcessMs: preferredRound.hotUpdatePluginProcessMs,
+      hotUpdatePluginProcessSamples: preferredRound.hotUpdatePluginProcessSamples,
+      rollbackOutputMs: preferredRound.rollbackOutputMs,
+      rollbackEffectiveMs: preferredRound.rollbackEffectiveMs,
+      rollbackPluginProcessMs: preferredRound.rollbackPluginProcessMs,
+      rollbackPluginProcessSamples: preferredRound.rollbackPluginProcessSamples,
+      totalMs: Date.now() - caseStartedAt,
+      memorySamples,
+      ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
+      memorySummary,
+      memoryDebugSummary,
+      memoryPeakRssMb: memorySummary.peakRssMb,
+      memoryRssDeltaMb: memorySummary.rssDeltaMb,
+    }
+
+    process.stdout.write(
+      `[watch-hmr] ${watchCase.label} subpackages-only passed (subpackages=${subPackageMutationMetrics.length})\n`,
+    )
+    return metrics
+  }
+  finally {
+    for (const [sourcePath, original] of sourceOriginals.entries()) {
+      try {
+        const current = await fs.readFile(sourcePath, 'utf8')
+        if (current !== original) {
+          await writeFilePreserveEol(sourcePath, original, original)
+        }
+      }
+      catch {
+      }
+    }
   }
 }
 
