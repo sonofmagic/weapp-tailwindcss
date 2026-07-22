@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/minify-preserve",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "Examples for keeping weapp-tailwindcss helper names during minification.",
   "author": "ice breaker <1324318532@qq.com>",

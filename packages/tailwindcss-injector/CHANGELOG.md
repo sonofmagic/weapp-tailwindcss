@@ -1,5 +1,13 @@
 # tailwindcss-injector
 
+## 1.0.14
+
+### Patch Changes
+
+- 🐛 **deps: upgrade** [`17c0dbe`](https://github.com/sonofmagic/weapp-tailwindcss/commit/17c0dbee727a642c78f9f9602e9d567a249d8025) by @sonofmagic
+- 📦 **Dependencies** [`8d9cc88`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8d9cc8878cc430a4953579e2c76213402f0932e1)
+  → `@weapp-tailwindcss/shared@2.0.1`, `tailwindcss-config@2.0.2`
+
 ## 1.0.13
 
 ### Patch Changes
