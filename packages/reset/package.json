@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/reset",
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "weapp-tailwindcss 的静态 reset 样式资源集合",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
