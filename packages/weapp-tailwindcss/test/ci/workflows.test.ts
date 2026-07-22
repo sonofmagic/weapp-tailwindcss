@@ -114,27 +114,34 @@ describe('ci workflows', () => {
       '**/*.md',
       '.changeset/**',
     ])
-    expect(workflow.jobs.quality.steps.some((step: Record<string, unknown>) => {
+    expect(workflow.jobs['quality-static'].steps.some((step: Record<string, unknown>) => {
       return typeof step.name === 'string' && step.name.startsWith('E2E ')
     })).toBe(false)
 
-    const qualityRuns = stepRuns(workflow, 'quality')
+    const qualityRuns = stepRuns(workflow, 'quality-static')
+    const unitRuns = stepRuns(workflow, 'unit-tests')
     expect(qualityRuns).toEqual(expect.arrayContaining([
       'pnpm install --frozen-lockfile',
       'pnpm lint',
     ]))
     expect(hasStepRunCommand(qualityRuns, 'pnpm build:ci')).toBe(true)
     expectPlaywrightInstallRetry(
-      qualityRuns.find(run => run.includes('playwright install chromium'))!,
+      unitRuns.find(run => run.includes('playwright install chromium'))!,
       'pnpm exec playwright install chromium',
     )
-    expect(hasStepRunCommand(qualityRuns, 'pnpm test')).toBe(true)
-    expect(hasStepRunCommand(qualityRuns, 'pnpm test:release')).toBe(false)
+    expect(hasStepRunCommand(unitRuns, 'pnpm build:ci')).toBe(true)
+    expect(unitRuns.join('\n')).toContain('pnpm exec vitest run --shard=${{ matrix.shard }}/${{ matrix.shard_total }}')
+    expect(workflow.jobs['unit-tests'].strategy.matrix.shard).toEqual([1, 2, 3])
+    expect(workflow.jobs['unit-tests'].strategy.matrix.shard_total).toEqual([3])
+    expect(workflow.jobs.quality.needs).toEqual(['quality-static', 'unit-tests'])
+    expect(stepRuns(workflow, 'quality').join('\n')).toContain('test "$STATIC_RESULT" = success')
+    expect(stepRuns(workflow, 'quality').join('\n')).toContain('test "$UNIT_RESULT" = success')
+    expect(hasStepRunCommand(unitRuns, 'pnpm test:release')).toBe(false)
   })
 
   it('keeps heavyweight e2e checks parallel to the quality gate', () => {
     const { workflow } = readWorkflow('ci.yml')
-    const qualityRuns = stepRuns(workflow, 'quality')
+    const qualityRuns = stepRuns(workflow, 'quality-static')
     const staticRuns = stepRuns(workflow, 'e2e-static')
     const focusedRuns = stepRuns(workflow, 'e2e-focused')
     const multiplatformRuns = stepRuns(workflow, 'e2e-multiplatform')
@@ -207,6 +214,38 @@ describe('ci workflows', () => {
       const installRun = stepRuns(workflow, jobName).find(run => run.includes('playwright install chromium'))
       expect(installRun, `${jobName} should install Playwright Chromium`).toBeDefined()
       expectPlaywrightInstallRetry(installRun!, 'pnpm exec playwright install chromium')
+    }
+  })
+
+  it('caps every pull request job at 30 minutes while retaining matrix coverage', () => {
+    const { workflow: ciWorkflow } = readWorkflow('ci.yml')
+    const { workflow: benchmarkWorkflow } = readWorkflow('benchmark.yml')
+    const { workflow: releaseGateWorkflow } = readWorkflow('release-gate.yml')
+    const { workflow: watchWorkflow } = readWorkflow('e2e-watch.yml')
+
+    for (const [jobName, job] of Object.entries(ciWorkflow.jobs) as Array<[string, Record<string, any>]>) {
+      const timeout = job['timeout-minutes']
+      if (typeof timeout === 'number') {
+        expect(timeout, `${jobName} should finish within 30 minutes`).toBeLessThanOrEqual(30)
+        continue
+      }
+      if (String(timeout).includes('matrix.timeout_minutes')) {
+        const rows: Array<Record<string, unknown>> = job.strategy.matrix.include
+        expect(rows.every(row => Number(row.timeout_minutes) <= 30), `${jobName} matrix timeout`).toBe(true)
+      }
+    }
+
+    expect(benchmarkWorkflow.jobs['benchmark-shard']['timeout-minutes']).toContain("github.event_name == 'pull_request' && 20")
+    expect(releaseGateWorkflow.jobs['release-gate']['timeout-minutes']).toBe(30)
+
+    const watchRows: Array<Record<string, unknown>> = watchWorkflow.jobs['pr-quick-gate'].strategy.matrix.include
+    expect(watchRows.every(row => Number(row.timeout_minutes) <= 30)).toBe(true)
+    expect(watchRows.every(row => Number(row.watch_command_timeout_ms) <= 1_500_000)).toBe(true)
+    for (const jobName of ['root-style-import-shell-hmr', 'uni-app-css-post-hmr']) {
+      expect(
+        watchWorkflow.jobs[jobName]['timeout-minutes'],
+        `${jobName} should finish within 30 minutes`,
+      ).toBeLessThanOrEqual(30)
     }
   })
 
@@ -408,21 +447,27 @@ describe('ci workflows', () => {
 
   it('keeps PR benchmark coverage on the smoke demo matrix', () => {
     const { workflow } = readWorkflow('benchmark.yml')
-    const job = workflow.jobs['current-vs-published']
-    const runCommand = stepRuns(workflow, 'current-vs-published').find(run => run.includes('pnpm perf:guard'))
+    const job = workflow.jobs['benchmark-shard']
+    const matrixInclude = String(job.strategy.matrix.include)
+    const runCommand = stepRuns(workflow, 'benchmark-shard').find(run => run.includes('pnpm perf:guard'))
 
-    expect(job['timeout-minutes']).toContain("github.event_name == 'pull_request' && 50")
+    expect(job.strategy['fail-fast']).toBe(false)
+    expect(job['timeout-minutes']).toContain("github.event_name == 'pull_request' && 20")
     expect(job['timeout-minutes']).toContain('|| 90')
-    expect(job.env.BENCH_ONLY).toContain('demo-weapp-vite-tailwindcss-v4__mp-weixin')
-    expect(job.env.BENCH_ONLY).toContain('demo-taro-vite-react-tailwindcss-v4__mp-weixin')
-    expect(job.env.BENCH_ONLY).toContain('demo-taro-webpack-react-tailwindcss-v4__mp-weixin')
-    expect(job.env.BENCH_ONLY).toContain('demo-uni-app-vite-tailwindcss-v4__mp-weixin')
-    expect(job.env.BENCH_ONLY).toContain('demo-mpx-tailwindcss-v4__mp-weixin')
+    expect(matrixInclude).toContain('demo-weapp-vite-tailwindcss-v4__mp-weixin')
+    expect(matrixInclude).toContain('demo-taro-vite-react-tailwindcss-v4__mp-weixin')
+    expect(matrixInclude).toContain('demo-taro-webpack-react-tailwindcss-v4__mp-weixin')
+    expect(matrixInclude).toContain('demo-uni-app-vite-tailwindcss-v4__mp-weixin')
+    expect(matrixInclude).toContain('demo-mpx-tailwindcss-v4__mp-weixin')
+    expect(matrixInclude).toContain('published-trend')
+    expect(job.env.BENCH_ONLY).toContain('matrix.bench_only')
     expect(job.env.BENCH_ONLY).toContain("github.event.inputs.only || ''")
     expect(job.env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '3'")
     expect(job.env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '6'")
     expect(runCommand).toContain('--baseline-ref')
     expect(runCommand).toContain('--only "$BENCH_ONLY"')
+    expect(workflow.jobs['current-vs-published'].needs).toBe('benchmark-shard')
+    expect(stepRuns(workflow, 'current-vs-published').join('\n')).toContain('test "$BENCHMARK_RESULT" = success')
   })
 
   it('keeps release version phase lightweight inside changesets action', () => {
@@ -453,7 +498,8 @@ describe('ci workflows', () => {
   it('runs base-ref performance guards on pull requests and published trends elsewhere', () => {
     const { workflow } = readWorkflow('benchmark.yml')
     const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
-    const runs = stepRuns(workflow, 'current-vs-published').join('\n')
+    const job = workflow.jobs['benchmark-shard']
+    const runs = stepRuns(workflow, 'benchmark-shard').join('\n')
 
     expect(packageJson.scripts['bench:ci']).toBe('node benchmark/version-compare/scripts/run-ci.mjs')
     expect(packageJson.scripts['perf:guard']).toBe('node benchmark/version-compare/scripts/run-ci.mjs --guard')
@@ -471,22 +517,22 @@ describe('ci workflows', () => {
       'next',
     ])
     expect(workflow.on.workflow_dispatch.inputs.baseline.default).toBe('auto')
-    expect(workflow.jobs['current-vs-published']['timeout-minutes']).toContain("github.event_name == 'pull_request' && 50")
-    expect(workflow.jobs['current-vs-published']['timeout-minutes']).toContain('|| 90')
-    expect(workflow.jobs['current-vs-published'].env.WEAPP_TW_BENCH_BASELINE).toContain('auto')
-    expect(workflow.jobs['current-vs-published'].env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '3'")
-    expect(workflow.jobs['current-vs-published'].env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '6'")
-    expect(workflow.jobs['current-vs-published'].env.BENCH_ONLY).toContain("github.event_name == 'pull_request'")
-    expect(workflow.jobs['current-vs-published'].env.BENCH_ONLY).toContain("github.event.inputs.only || ''")
+    expect(job['timeout-minutes']).toContain("github.event_name == 'pull_request' && 20")
+    expect(job['timeout-minutes']).toContain('|| 90')
+    expect(job.env.WEAPP_TW_BENCH_BASELINE).toContain('auto')
+    expect(job.env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '3'")
+    expect(job.env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '6'")
+    expect(job.env.BENCH_ONLY).toContain("github.event_name == 'pull_request'")
+    expect(job.env.BENCH_ONLY).toContain("github.event.inputs.only || ''")
     expect(runs).toContain('pnpm install --frozen-lockfile')
     expect(runs).toContain('pnpm perf:guard --')
     expect(runs).toContain('--baseline-ref')
     expect(runs).toContain('pnpm bench:ci --')
     expect(runs).toContain('--result-dir .tmp/benchmark-ci/result')
-    expect(workflow.jobs['current-vs-published'].steps.some((step: Record<string, unknown>) => {
+    expect(job.steps.some((step: Record<string, unknown>) => {
       const withConfig = step.with as Record<string, unknown> | undefined
       return step.uses === 'actions/upload-artifact@v4'
-        && withConfig?.name === 'benchmark-performance'
+        && withConfig?.name === 'benchmark-performance-${{ matrix.case_name }}'
     })).toBe(true)
   })
 
@@ -639,7 +685,13 @@ describe('e2e watch workflow', () => {
     const { workflow } = readWorkflow('e2e-watch.yml')
     const rows: Array<Record<string, unknown>> = workflow.jobs['pr-quick-gate'].strategy.matrix.include
     const cases = matrixCases(rows)
-    const demoShards = ['demo-core', 'demo-taro-react', 'demo-taro-vue3', 'demo-uni']
+    const retainedDemoShards = ['demo-core', 'demo-uni']
+    const parallelTaroCases = [
+      'taro-vite-react-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v4',
+    ]
     const windowsSplitDemoCases = [
       'gulp-tailwindcss-v4',
       'weapp-vite-tailwindcss-v4',
@@ -661,13 +713,21 @@ describe('e2e watch workflow', () => {
     ]
 
     expect(workflow.jobs['pr-quick-gate'].strategy['fail-fast']).toBe(false)
-    for (const watchCase of demoShards) {
+    for (const watchCase of retainedDemoShards) {
       expect(cases, `linux should cover ${watchCase}`).toContain(`linux:22:${watchCase}:default`)
     }
-    for (const watchCase of demoShards.filter(item => item !== 'demo-core')) {
-      expect(cases, `macos should cover ${watchCase}`).toContain(`macos:22:${watchCase}:default`)
-    }
+    expect(cases).toContain('macos:22:demo-uni:default')
     expect(cases).toContain('macos:22:demo-core:main-style')
+    for (const runner of ['linux', 'macos']) {
+      for (const watchCase of parallelTaroCases) {
+        expect(cases, `${runner} should cover ${watchCase} mini-program HMR`).toContain(`${runner}:22:${watchCase}:mini-program`)
+      }
+    }
+    for (const watchCase of parallelTaroCases) {
+      expect(cases, `macos should cover ${watchCase} Web HMR`).toContain(`macos:22:${watchCase}:web-only`)
+    }
+    expect(cases.some(item => item.includes(':demo-taro-react:'))).toBe(false)
+    expect(cases.some(item => item.includes(':demo-taro-vue3:'))).toBe(false)
     expect(cases).toContain('windows:22:demo-uni:default')
     for (const watchCase of windowsSplitDemoCases) {
       const profile = watchCase === 'mpx-tailwindcss-v4' || watchCase.startsWith('taro-')
@@ -677,7 +737,7 @@ describe('e2e watch workflow', () => {
     }
     for (const runner of ['linux', 'windows']) {
       for (const watchCase of completeMiniProgramCases) {
-        const profile = runner === 'windows' && (watchCase.endsWith(':alipay') || watchCase.endsWith(':tt'))
+        const profile = watchCase.startsWith('taro-')
           ? 'main-style'
           : 'default'
         expect(cases, `${runner} should cover ${watchCase}`).toContain(`${runner}:22:${watchCase}:${profile}`)
@@ -687,8 +747,8 @@ describe('e2e watch workflow', () => {
       .filter(row => row.runner_label === 'macos' && String(row.watch_case).includes(':'))
       .map(row => row.watch_case)
     expect(macosPlatformCases).toEqual(['uni-app-vite-tailwindcss-v4:mp-weixin'])
-    expect(rows.filter(row => row.runner_label === 'macos')).toHaveLength(9)
-    expect(rows.filter(row => row.runner_label === 'linux')).toHaveLength(12)
+    expect(rows.filter(row => row.runner_label === 'macos')).toHaveLength(13)
+    expect(rows.filter(row => row.runner_label === 'linux')).toHaveLength(14)
     expect(rows.filter(row => row.runner_label === 'windows')).toHaveLength(21)
     for (const row of [
       rows.find(row => row.runner_label === 'macos' && row.watch_case === 'demo-core'),
@@ -701,7 +761,7 @@ describe('e2e watch workflow', () => {
         watch_main_style_only: '1',
         watch_main_style_subpackage_limit: '0',
         watch_max_attempts: '1',
-        timeout_minutes: 35,
+        timeout_minutes: 30,
         watch_command_timeout_ms: '1500000',
       })
     }
@@ -717,6 +777,7 @@ describe('e2e watch workflow', () => {
     const watchStep = workflow.jobs['pr-quick-gate'].steps.find((step: Record<string, unknown>) => step.run === 'pnpm e2e:watch')
     expect(watchStep?.env).toMatchObject({
       E2E_TARO_DEV_READY_TIMEOUT_MS: '${{ matrix.taro_dev_ready_timeout_ms || matrix.watch_timeout_ms }}',
+      E2E_WATCH_MINI_PROGRAM_ONLY: "${{ matrix.watch_mini_program_only || '0' }}",
       E2E_WATCH_MAIN_STYLE_ONLY: "${{ matrix.watch_main_style_only || '0' }}",
       E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT: "${{ matrix.watch_main_style_subpackage_limit || '' }}",
     })
@@ -781,7 +842,7 @@ describe('e2e watch workflow', () => {
       {
         watch_case: 'uni-app-vite-tailwindcss-v4',
         round_profile: 'issue33',
-        timeout_minutes: 60,
+        timeout_minutes: 30,
         watch_timeout_ms: '420000',
         watch_max_plugin_process_ms: '9000',
         watch_command_timeout_ms: '1500000',
@@ -791,37 +852,40 @@ describe('e2e watch workflow', () => {
       {
         watch_case: 'uni-app-vite-tailwindcss-v4',
         round_profile: 'default',
-        timeout_minutes: 60,
+        timeout_minutes: 30,
         watch_timeout_ms: '420000',
         watch_command_timeout_ms: '1500000',
       },
       {
         watch_case: 'uni-app-vite-tailwindcss-v4',
         round_profile: 'issue33',
-        timeout_minutes: 60,
+        timeout_minutes: 30,
         watch_timeout_ms: '420000',
         watch_max_plugin_process_ms: '9000',
         watch_command_timeout_ms: '1500000',
       },
     ]
-    const slowDemoTaroPrBudgets = [
-      'demo-taro-react',
-      'demo-taro-vue3',
-    ].map(watchCase => ({
+    const parallelDemoTaroPrBudgets = [
+      { watchCase: 'taro-vite-react-tailwindcss-v4', timeoutMs: '420000' },
+      { watchCase: 'taro-webpack-react-tailwindcss-v4', timeoutMs: '600000' },
+      { watchCase: 'taro-vite-vue3-tailwindcss-v4', timeoutMs: '420000' },
+      { watchCase: 'taro-webpack-vue3-tailwindcss-v4', timeoutMs: '600000' },
+    ].map(({ watchCase, timeoutMs }) => ({
       watch_case: watchCase,
-      round_profile: 'default',
-      timeout_minutes: 90,
-      watch_timeout_ms: '420000',
+      round_profile: 'mini-program',
+      watch_mini_program_only: '1',
+      timeout_minutes: 30,
+      watch_timeout_ms: timeoutMs,
       watch_max_plugin_process_ms: '60000',
-      watch_command_timeout_ms: '4800000',
+      watch_command_timeout_ms: '1500000',
     }))
     const slowLinuxDemoCorePrBudget = {
       watch_case: 'demo-core',
       round_profile: 'default',
-      timeout_minutes: 95,
+      timeout_minutes: 30,
       watch_timeout_ms: '420000',
       watch_max_plugin_process_ms: '60000',
-      watch_command_timeout_ms: '5100000',
+      watch_command_timeout_ms: '1500000',
     }
     const minimalMacosDemoCorePrBudget = {
       watch_case: 'demo-core',
@@ -829,7 +893,7 @@ describe('e2e watch workflow', () => {
       watch_main_style_only: '1',
       watch_main_style_subpackage_limit: '0',
       watch_max_attempts: '1',
-      timeout_minutes: 35,
+      timeout_minutes: 30,
       watch_timeout_ms: '420000',
       watch_max_plugin_process_ms: '60000',
       watch_command_timeout_ms: '1500000',
@@ -840,7 +904,7 @@ describe('e2e watch workflow', () => {
       watch_main_style_only: '1',
       watch_main_style_subpackage_limit: '0',
       watch_max_attempts: '1',
-      timeout_minutes: 35,
+      timeout_minutes: 30,
       watch_timeout_ms: '420000',
       watch_max_plugin_process_ms: '60000',
       watch_command_timeout_ms: '1500000',
@@ -850,11 +914,14 @@ describe('e2e watch workflow', () => {
       'taro-vite-vue3-tailwindcss-v4:tt',
     ].map(watchCase => ({
       watch_case: watchCase,
-      round_profile: 'default',
-      timeout_minutes: 70,
+      round_profile: 'main-style',
+      watch_main_style_only: '1',
+      watch_main_style_subpackage_limit: '2',
+      watch_max_attempts: '1',
+      timeout_minutes: 30,
       watch_timeout_ms: '600000',
       watch_max_plugin_process_ms: '10000',
-      watch_command_timeout_ms: '3300000',
+      watch_command_timeout_ms: '1500000',
     }))
     const minimalWindowsTaroTtPrBudgets = [
       'taro-vite-react-tailwindcss-v4:tt',
@@ -865,21 +932,24 @@ describe('e2e watch workflow', () => {
       watch_main_style_only: '1',
       watch_main_style_subpackage_limit: '2',
       watch_max_attempts: '1',
-      timeout_minutes: 45,
+      timeout_minutes: 30,
       watch_timeout_ms: '420000',
       watch_max_plugin_process_ms: '18000',
-      watch_command_timeout_ms: '2400000',
+      watch_command_timeout_ms: '1500000',
     }))
     const slowLinuxTaroAlipayPrBudgets = [
       { watchCase: 'taro-vite-react-tailwindcss-v4:alipay', pluginBudget: '10000' },
       { watchCase: 'taro-vite-vue3-tailwindcss-v4:alipay', pluginBudget: '9000' },
     ].map(({ watchCase, pluginBudget }) => ({
       watch_case: watchCase,
-      round_profile: 'default',
-      timeout_minutes: 55,
+      round_profile: 'main-style',
+      watch_main_style_only: '1',
+      watch_main_style_subpackage_limit: '0',
+      watch_max_attempts: '1',
+      timeout_minutes: 30,
       watch_timeout_ms: '420000',
       watch_max_plugin_process_ms: pluginBudget,
-      watch_command_timeout_ms: '2700000',
+      watch_command_timeout_ms: '1500000',
     }))
     const defaultWindowsSplitDemoPrBudgets = [
       'gulp-tailwindcss-v4',
@@ -887,10 +957,10 @@ describe('e2e watch workflow', () => {
     ].map(watchCase => ({
       watch_case: watchCase,
       round_profile: 'default',
-      timeout_minutes: 60,
+      timeout_minutes: 30,
       watch_timeout_ms: '420000',
       watch_max_plugin_process_ms: '60000',
-      watch_command_timeout_ms: '3000000',
+      watch_command_timeout_ms: '1500000',
     }))
     const minimalWindowsTaroVuePrBudget = {
       watch_case: 'taro-vite-vue3-tailwindcss-v4',
@@ -898,10 +968,10 @@ describe('e2e watch workflow', () => {
       watch_main_style_only: '1',
       watch_main_style_subpackage_limit: '2',
       watch_max_attempts: '1',
-      timeout_minutes: 45,
+      timeout_minutes: 30,
       watch_timeout_ms: '420000',
       watch_max_plugin_process_ms: '18000',
-      watch_command_timeout_ms: '2400000',
+      watch_command_timeout_ms: '1500000',
     }
     const windowsTaroVueWebPrBudget = {
       watch_case: 'taro-vite-vue3-tailwindcss-v4',
@@ -922,11 +992,11 @@ describe('e2e watch workflow', () => {
       watch_main_style_only: '1',
       watch_main_style_subpackage_limit: '2',
       watch_max_attempts: '1',
-      timeout_minutes: 45,
+      timeout_minutes: 30,
       watch_timeout_ms: timeoutMs,
       watch_max_plugin_process_ms: '18000',
       ...(taroReadyTimeoutMs == null ? {} : { taro_dev_ready_timeout_ms: taroReadyTimeoutMs }),
-      watch_command_timeout_ms: '2400000',
+      watch_command_timeout_ms: '1500000',
     }))
     const windowsTaroWebPrBudgets = [
       { watchCase: 'taro-vite-react-tailwindcss-v4', timeoutMs: '420000' },
@@ -950,7 +1020,7 @@ describe('e2e watch workflow', () => {
       watch_main_style_only: '1',
       watch_main_style_subpackage_limit: '0',
       watch_max_attempts: '1',
-      timeout_minutes: 35,
+      timeout_minutes: 30,
       watch_timeout_ms: '420000',
       watch_max_plugin_process_ms: '18000',
       watch_command_timeout_ms: '1500000',
@@ -1018,6 +1088,9 @@ describe('e2e watch workflow', () => {
       },
     ]
 
+    expect(prRows.every(row => Number(row.timeout_minutes) <= 30)).toBe(true)
+    expect(prRows.every(row => Number(row.watch_command_timeout_ms) <= 1_500_000)).toBe(true)
+
     for (const budget of slowMacosUniAppPrBudgets) {
       expect(prRows).toContainEqual(expect.objectContaining({
         os: 'macos-latest',
@@ -1044,7 +1117,7 @@ describe('e2e watch workflow', () => {
       { os: 'macos-latest', runner_label: 'macos' },
       { os: 'ubuntu-latest', runner_label: 'linux' },
     ]) {
-      for (const budget of slowDemoTaroPrBudgets) {
+      for (const budget of parallelDemoTaroPrBudgets) {
         expect(prRows).toContainEqual(expect.objectContaining({
           ...runner,
           ...budget,

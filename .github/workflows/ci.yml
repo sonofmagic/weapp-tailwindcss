@@ -18,9 +18,9 @@ permissions:
   contents: read
 
 jobs:
-  quality:
-    name: Quality Gate (ubuntu-latest, 22)
-    timeout-minutes: 60
+  quality-static:
+    name: Quality Static Gate (ubuntu-latest, 22)
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     # Remote Caching enabled - configure TURBO_TOKEN and TURBO_TEAM in repository settings
     env:
@@ -57,6 +57,64 @@ jobs:
       - name: Build
         run: pnpm ci:memory --label quality-build --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm build:ci
 
+      - name: CI Status Note
+        if: always()
+        run: |
+          {
+            echo "## CI 状态说明"
+            echo "- Quality Static 负责 lint 与 build；全仓 unit/integration tests 由三个 Vitest shard 并行执行。"
+            echo "- 静态、专项、多平台 e2e 已拆分为并行 job，避免 Quality Gate 在单一 job 中串行等待全部 e2e。"
+            echo "- \`pnpm e2e:ci\` 仍保留本地/专项使用，其中 hot-update/watch 覆盖由独立工作流承载。"
+            echo "- \`E2E Watch Gate\` 负责主 CI 内的轻量跨平台 watch 覆盖，当前覆盖 linux、macOS、Windows。"
+            echo "- \`Compatibility Gate\` 负责跨系统/多 Node 的核心回归，避免把全仓 lint/build 在每个矩阵里重复执行。"
+            echo "- \`pnpm e2e:watch\` 的完整 PR/nightly 矩阵仍保留在独立工作流：\`E2E Watch\`（.github/workflows/e2e-watch.yml）。"
+            echo "- website SEO 质量门禁已拆分到独立工作流：\`Website SEO Quality\`（.github/workflows/website-seo-quality.yml）。"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload CI memory reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-memory-quality-static-${{ github.run_id }}
+          path: e2e/benchmark/ci-memory/**
+          if-no-files-found: ignore
+          retention-days: 14
+
+  unit-tests:
+    name: Unit Test Gate (${{ matrix.shard }}/${{ matrix.shard_total }}, ubuntu-latest, 22)
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+        shard_total: [3]
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      E2E_SKIP_OPEN_AUTOMATOR: '1'
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build test dependency closure
+        run: pnpm ci:memory --label unit-build-${{ matrix.shard }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm build:ci
+
       - name: Install Playwright Chromium
         run: |
           for attempt in 1 2 3 4; do
@@ -68,25 +126,13 @@ jobs:
           done
           pnpm exec playwright install chromium
 
-      - name: Test full repository suite
-        run: pnpm ci:memory --label quality-test --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm test
-
-      - name: CI Status Note
-        if: always()
-        run: |
-          {
-            echo "## CI 状态说明"
-            echo "- 本工作流负责：lint、build、unit/integration tests、coverage 上传。"
-            echo "- 静态、专项、多平台 e2e 已拆分为并行 job，避免 Quality Gate 在单一 job 中串行等待全部 e2e。"
-            echo "- \`pnpm e2e:ci\` 仍保留本地/专项使用，其中 hot-update/watch 覆盖由独立工作流承载。"
-            echo "- \`E2E Watch Gate\` 负责主 CI 内的轻量跨平台 watch 覆盖，当前覆盖 linux、macOS、Windows。"
-            echo "- \`Compatibility Gate\` 负责跨系统/多 Node 的核心回归，避免把全仓 lint/build 在每个矩阵里重复执行。"
-            echo "- \`pnpm e2e:watch\` 的完整 PR/nightly 矩阵仍保留在独立工作流：\`E2E Watch\`（.github/workflows/e2e-watch.yml）。"
-            echo "- website SEO 质量门禁已拆分到独立工作流：\`Website SEO Quality\`（.github/workflows/website-seo-quality.yml）。"
-          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Test repository shard
+        run: pnpm ci:memory --label unit-test-${{ matrix.shard }}-${{ matrix.shard_total }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm exec vitest run --shard=${{ matrix.shard }}/${{ matrix.shard_total }}
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
+        with:
+          flags: unit-${{ matrix.shard }}
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -94,10 +140,25 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ci-memory-quality-${{ github.run_id }}
+          name: ci-memory-unit-${{ matrix.shard }}-${{ github.run_id }}
           path: e2e/benchmark/ci-memory/**
           if-no-files-found: ignore
           retention-days: 14
+
+  quality:
+    name: Quality Gate (ubuntu-latest, 22)
+    if: always()
+    needs: [quality-static, unit-tests]
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require all quality shards
+        env:
+          STATIC_RESULT: ${{ needs.quality-static.result }}
+          UNIT_RESULT: ${{ needs.unit-tests.result }}
+        run: |
+          test "$STATIC_RESULT" = success
+          test "$UNIT_RESULT" = success
 
   e2e-static:
     name: E2E Static Gate (${{ matrix.shard }}/${{ matrix.shard_total }}, ubuntu-latest, 22)
@@ -317,7 +378,7 @@ jobs:
             round_profile: default
             watch_save_snapshots: '1'
             watch_web_only: '1'
-            timeout_minutes: 40
+            timeout_minutes: 30
             watch_timeout_ms: '280000'
             watch_poll_ms: '40'
             watch_command_timeout_ms: '720000'
@@ -328,7 +389,7 @@ jobs:
             round_profile: default
             watch_save_snapshots: '1'
             watch_web_only: '1'
-            timeout_minutes: 45
+            timeout_minutes: 30
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_command_timeout_ms: '960000'
@@ -339,7 +400,7 @@ jobs:
             artifact_case: uni-app-vite-tailwindcss-v4-mp-weixin
             round_profile: default
             watch_save_snapshots: '1'
-            timeout_minutes: 60
+            timeout_minutes: 30
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '9000'
@@ -351,7 +412,7 @@ jobs:
             round_profile: default
             watch_save_snapshots: '1'
             watch_web_only: '1'
-            timeout_minutes: 45
+            timeout_minutes: 30
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_command_timeout_ms: '960000'

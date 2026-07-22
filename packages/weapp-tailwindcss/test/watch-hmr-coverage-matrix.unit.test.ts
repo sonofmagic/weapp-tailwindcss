@@ -302,17 +302,26 @@ describe('watch-hmr coverage matrix', () => {
   })
 
   it('keeps PR e2e-watch covering every CI-stable demo development HMR surface', () => {
-    const rawWatchCases = getWorkflowWatchCases('e2e-watch.yml', 'pr-quick-gate')
+    const rows = readWorkflowMatrixRows('e2e-watch.yml', 'pr-quick-gate')
+    const rawWatchCases = rows
+      .map(row => row.watch_case)
+      .filter((item): item is string => typeof item === 'string')
     const workflowCases = expandWorkflowWatchCases(rawWatchCases)
     const missing = [...watchCoveredCaseNames]
       .filter(name => !isWatchCaseCoveredByWorkflow(name, workflowCases))
       .sort()
 
+    const taroProjectCases = [
+      'taro-vite-react-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v4',
+    ]
+
     expect(rawWatchCases).toEqual(expect.arrayContaining([
       'demo-core',
-      'demo-taro-react',
-      'demo-taro-vue3',
       'demo-uni',
+      ...taroProjectCases,
       'taro-vite-react-tailwindcss-v4:alipay',
       'taro-vite-react-tailwindcss-v4:tt',
       'taro-vite-vue3-tailwindcss-v4:alipay',
@@ -322,6 +331,16 @@ describe('watch-hmr coverage matrix', () => {
       'uni-app-vite-tailwindcss-v4:mp-qq',
       'uni-app-vite-tailwindcss-v4:mp-toutiao',
     ]))
+    expect(rawWatchCases).not.toEqual(expect.arrayContaining([
+      'demo-taro-react',
+      'demo-taro-vue3',
+    ]))
+    for (const watchCase of taroProjectCases) {
+      expect(rows).toEqual(expect.arrayContaining([
+        expect.objectContaining({ watch_case: watchCase, round_profile: 'mini-program' }),
+        expect.objectContaining({ watch_case: watchCase, round_profile: 'web-only' }),
+      ]))
+    }
     expect(missing).toEqual([])
   })
 

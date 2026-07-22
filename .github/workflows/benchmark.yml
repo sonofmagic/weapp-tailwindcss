@@ -37,17 +37,21 @@ permissions:
   contents: read
 
 jobs:
-  current-vs-published:
-    name: Performance guard and published trend
+  benchmark-shard:
+    name: Benchmark shard (${{ matrix.case_name }})
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ github.event_name == 'pull_request' && 50 || 90 }}
+    timeout-minutes: ${{ github.event_name == 'pull_request' && 20 || 90 }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(github.event_name == 'pull_request' && '[{"case_name":"weapp-vite","bench_only":"demo-weapp-vite-tailwindcss-v4__mp-weixin"},{"case_name":"taro-vite-react","bench_only":"demo-taro-vite-react-tailwindcss-v4__mp-weixin"},{"case_name":"taro-webpack-react","bench_only":"demo-taro-webpack-react-tailwindcss-v4__mp-weixin"},{"case_name":"uni-app-vite","bench_only":"demo-uni-app-vite-tailwindcss-v4__mp-weixin"},{"case_name":"mpx","bench_only":"demo-mpx-tailwindcss-v4__mp-weixin"}]' || '[{"case_name":"published-trend","bench_only":""}]') }}
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
       WEAPP_TW_BENCH_BASELINE: ${{ github.event.inputs.baseline || 'auto' }}
       BENCH_BUILD_RUNS: ${{ github.event_name == 'pull_request' && '3' || github.event.inputs.build_runs || '3' }}
       BENCH_HMR_RUNS: ${{ github.event_name == 'pull_request' && '6' || github.event.inputs.hmr_runs || '5' }}
-      BENCH_ONLY: ${{ github.event_name == 'pull_request' && 'demo-weapp-vite-tailwindcss-v4__mp-weixin,demo-taro-vite-react-tailwindcss-v4__mp-weixin,demo-taro-webpack-react-tailwindcss-v4__mp-weixin,demo-uni-app-vite-tailwindcss-v4__mp-weixin,demo-mpx-tailwindcss-v4__mp-weixin' || github.event.inputs.only || '' }}
+      BENCH_ONLY: ${{ github.event_name == 'pull_request' && matrix.bench_only || github.event.inputs.only || '' }}
 
     steps:
       - name: Check out code
@@ -94,6 +98,18 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: benchmark-performance
+          name: benchmark-performance-${{ matrix.case_name }}
           path: .tmp/benchmark-ci/result/**
           if-no-files-found: error
+
+  current-vs-published:
+    name: Performance guard and published trend
+    if: always()
+    needs: benchmark-shard
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every benchmark shard
+        env:
+          BENCHMARK_RESULT: ${{ needs.benchmark-shard.result }}
+        run: test "$BENCHMARK_RESULT" = success
