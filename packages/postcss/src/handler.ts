@@ -6,6 +6,7 @@ import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { LRUCache } from 'lru-cache'
 import postcss from 'postcss'
 import { protectDynamicColorMixAlpha } from './compat/color-mix'
+import { removeEmptyBlockAtRules } from './compat/mini-program-css/root-cleanups'
 import { probeFeatures, signalToCacheKey } from './content-probe'
 import { getDefaultOptions } from './defaults'
 import { fingerprintOptions } from './fingerprint'
@@ -128,6 +129,19 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     ).async().then((result) => {
       const styleBranch = resolvePostcssFrameworkProfile(resolvedOptions)
       let finalResult = styleBranch.postprocess(result, resolvedOptions)
+      if (resolvedOptions.isMainChunk !== false && finalResult.root) {
+        let removed = 0
+        let removedTotal = 0
+        do {
+          removed = removeEmptyBlockAtRules(finalResult.root)
+          removedTotal += removed
+        } while (removed > 0)
+        if (removedTotal > 0) {
+          const nextResult = finalResult.root.toResult(finalResult.opts)
+          nextResult.messages.push(...finalResult.messages)
+          finalResult = nextResult
+        }
+      }
       if (protectedColorMix) {
         const restoredCss = protectedColorMix.restore(finalResult.css)
         if (restoredCss !== finalResult.css) {

@@ -80,7 +80,16 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   const themeRule = collectThemeVariableRule(root, options)
   const hoistedRules = themeRule ? [...preflightRules, themeRule] : preflightRules
   insertHoistedRules(root, mergeEquivalentHoistedRules(hoistedRules), hoistAnchor)
-  removeEmptyAtRules(root)
+  if (options.removeEmptyAtRuleAncestors !== false) {
+    removeEmptyAtRules(root)
+  }
+  else {
+    root.walkAtRules((atRule) => {
+      if (atRule.nodes?.length === 0) {
+        atRule.remove()
+      }
+    })
+  }
 }
 
 export function hoistTailwindPreflightBase(css: string) {

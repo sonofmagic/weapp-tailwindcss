@@ -681,6 +681,23 @@ describe('mini-program css cleanup', () => {
     expect(css).not.toContain('margin')
   })
 
+  it('keeps incremental at-rule ancestors when recursive cleanup is disabled', () => {
+    const css = finalizeMiniProgramCss('@media screen{/* incremental placeholder */}', {
+      cssPreflight: false,
+      removeEmptyAtRuleAncestors: false,
+    })
+
+    expect(css).toBe('@media screen{/* incremental placeholder */}')
+  })
+
+  it('recursively removes empty at-rule ancestors for complete css output', () => {
+    const css = finalizeMiniProgramCss('@media screen{@supports (display:grid){}}', {
+      cssPreflight: false,
+    })
+
+    expect(css).toBe('')
+  })
+
   it('prunes browser-only generated css while preserving useful mini-program selectors', () => {
     const css = pruneMiniProgramGeneratedCss([
       '/* #ifdef MP-WEIXIN */',

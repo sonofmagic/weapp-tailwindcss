@@ -21,6 +21,7 @@ export {
   hoistTailwindPreflightBase,
   normalizeMiniProgramGeneratedCssForPostcss,
   pruneMiniProgramGeneratedCss,
+  removeEmptyAtRules,
   removeUnsupportedAtSupports,
   removeUnsupportedCascadeLayers,
   removeUnsupportedMiniProgramAtRules,

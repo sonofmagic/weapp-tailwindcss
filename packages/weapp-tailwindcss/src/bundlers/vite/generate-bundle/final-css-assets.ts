@@ -6,6 +6,7 @@ import {
   stripMiniProgramCssSpecificityPlaceholders,
 } from '@/bundlers/shared/css-cleanup'
 import { AssetEmissionPlan } from '@/compiler'
+import { removeEmptyCssAtRules } from '../processed-css-assets/cleanup'
 import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 
 function readAssetSource(output: OutputAsset) {
@@ -30,6 +31,7 @@ export async function finalizeMiniProgramCssAssets(
     onUpdate: GenerateBundleContext['opts']['onUpdate']
     recordCssAssetResult: GenerateBundleContext['recordCssAssetResult']
     styleHandler: GenerateBundleContext['opts']['styleHandler']
+    useIncrementalMode?: boolean | undefined
     debug?: GenerateBundleContext['debug']
   },
 ) {
@@ -54,7 +56,10 @@ export async function finalizeMiniProgramCssAssets(
       continue
     }
     if (options.lastCssResultByFile?.has(file)) {
-      const outputCss = stripMiniProgramCssSpecificityPlaceholders(rawSource)
+      const structurallyCleanSource = options.useIncrementalMode
+        ? rawSource
+        : removeEmptyCssAtRules(rawSource)
+      const outputCss = stripMiniProgramCssSpecificityPlaceholders(structurallyCleanSource)
       if (outputCss !== rawSource) {
         plan.write(file, outputCss)
         writeTargets.set(file, output)
@@ -66,6 +71,17 @@ export async function finalizeMiniProgramCssAssets(
       continue
     }
     if (!shouldFinalizeMiniProgramCssAsset(rawSource)) {
+      const structurallyCleanSource = options.useIncrementalMode
+        ? rawSource
+        : removeEmptyCssAtRules(rawSource)
+      if (structurallyCleanSource !== rawSource) {
+        plan.write(file, structurallyCleanSource)
+        writeTargets.set(file, output)
+        options.recordCssAssetResult?.(file, structurallyCleanSource)
+        options.onUpdate(file, rawSource, structurallyCleanSource)
+        options.debug?.('remove empty mini-program css at-rules: %s bytes=%d', file, structurallyCleanSource.length)
+        updated++
+      }
       continue
     }
 
@@ -80,7 +96,10 @@ export async function finalizeMiniProgramCssAssets(
       },
       cssPresetEnv: {},
     })
-    const outputCss = stripMiniProgramCssSpecificityPlaceholders(css)
+    const structurallyCleanCss = options.useIncrementalMode
+      ? css
+      : removeEmptyCssAtRules(css)
+    const outputCss = stripMiniProgramCssSpecificityPlaceholders(structurallyCleanCss)
     if (outputCss === rawSource) {
       continue
     }

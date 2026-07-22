@@ -17,5 +17,6 @@ export {
 } from './prune-generated'
 export {
   hasMiniProgramCssSpecificityPlaceholders,
+  removeEmptyAtRules,
   stripMiniProgramCssSpecificityPlaceholders,
 } from './root-cleanups'
