@@ -1387,6 +1387,29 @@ describe('watch-hmr regression cli options', () => {
     }
   })
 
+  it('enables mini-program-only mode for an explicit mini-program scope', () => {
+    const originalArgv = process.argv
+    process.argv = [
+      'node',
+      'watch-hmr-regression',
+      '--case',
+      'taro-vite-react-tailwindcss-v4',
+      '--mini-program-scope',
+      'subpackages',
+    ]
+
+    try {
+      expect(resolveOptions()).toMatchObject({
+        caseName: 'taro-vite-react-tailwindcss-v4',
+        miniProgramOnly: true,
+        miniProgramScope: 'subpackages',
+      })
+    }
+    finally {
+      process.argv = originalArgv
+    }
+  })
+
   it('ignores empty numeric environment variables from workflow matrix defaults', () => {
     const originalArgv = process.argv
     const originalLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
@@ -1735,6 +1758,7 @@ describe('watch-hmr regression summary helpers', () => {
       skipBuild: true,
       quietSass: true,
       webOnly: false,
+      miniProgramScope: 'main-package',
       styleOnly: false,
       mainStyleOnly: false,
       reportFile,
@@ -1759,6 +1783,7 @@ describe('watch-hmr regression summary helpers', () => {
     expect(report.repositoryRoot).toBe(path.basename(tempDir))
     expect(report.options.caseName).toBe('demo')
     expect(report.options.webOnly).toBe(false)
+    expect(report.options.miniProgramScope).toBe('main-package')
     expect(report.options.mainStyleOnly).toBe(false)
     expect(report.summary).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 40 })
     expect(report.summaryByMutationKind.template).toMatchObject({ count: 1, hotUpdateAvgMs: 30 })

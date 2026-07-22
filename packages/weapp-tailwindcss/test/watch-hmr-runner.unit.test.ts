@@ -2,7 +2,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { runCase, runMainStyleOnlyCase, WatchHmrPartialMetricsError } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/runner'
+import { runCase, runMainStyleOnlyCase, runSubPackagesOnlyCase, WatchHmrPartialMetricsError } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/runner'
 import type {
   CliOptions,
   MutationRoundMetrics,
@@ -14,6 +14,7 @@ const createWatchSessionMock = vi.fn<() => WatchSession>()
 const runClassMutationMock = vi.fn()
 const runStyleMutationMock = vi.fn()
 const runMainStyleHotUpdateMock = vi.fn()
+const runSubPackageMutationMock = vi.fn()
 
 vi.mock('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session', () => ({
   createWatchSession: () => createWatchSessionMock(),
@@ -40,7 +41,7 @@ vi.mock('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutat
   runClassMutation: (...args: unknown[]) => runClassMutationMock(...args),
   runMainStyleHotUpdate: (...args: unknown[]) => runMainStyleHotUpdateMock(...args),
   runStyleMutation: (...args: unknown[]) => runStyleMutationMock(...args),
-  runSubPackageMutation: vi.fn(),
+  runSubPackageMutation: (...args: unknown[]) => runSubPackageMutationMock(...args),
   waitForInitialWarmup: vi.fn(async () => 3),
   waitForOutputsReady: vi.fn(async () => 2),
 }))
@@ -53,6 +54,7 @@ function createOptions(): CliOptions {
     skipBuild: true,
     quietSass: true,
     webOnly: false,
+    miniProgramOnly: false,
     styleOnly: false,
     mainStyleOnly: false,
   }
@@ -155,6 +157,7 @@ describe('watch-hmr runner', () => {
     createWatchSessionMock.mockReset()
     runClassMutationMock.mockReset()
     runMainStyleHotUpdateMock.mockReset()
+    runSubPackageMutationMock.mockReset()
     runStyleMutationMock.mockReset()
   })
 
@@ -357,6 +360,108 @@ describe('watch-hmr runner', () => {
       independent: false,
     })
     expect(session.stop).toHaveBeenCalledTimes(1)
+  })
+
+  it('runs normal and independent subpackages without repeating main-package mutations', async () => {
+    const sourceFile = path.join(tempDir, 'index.tsx')
+    const styleFile = path.join(tempDir, 'index.css')
+    const normalSubSource = path.join(tempDir, 'sub-normal.tsx')
+    const independentSubSource = path.join(tempDir, 'sub-independent.tsx')
+    for (const file of [sourceFile, styleFile, normalSubSource, independentSubSource]) {
+      await writeFile(file, 'export default "anchor"\n', 'utf8')
+    }
+    const session: WatchSession = {
+      child: {} as WatchSession['child'],
+      ensureRunning: vi.fn(),
+      lastCompileSuccessAt: vi.fn(() => 0),
+      logs: vi.fn(() => 'watch logs'),
+      memorySamplesSince: vi.fn(() => [
+        { at: 1, rssMb: 100, maxProcessRssMb: 90, processCount: 2 },
+      ]),
+      memoryDebugSamplesSince: vi.fn(() => []),
+      stop: vi.fn(async () => {}),
+      pluginProcessSamplesSince: vi.fn(() => []),
+    }
+    createWatchSessionMock.mockReturnValue(session)
+    runSubPackageMutationMock.mockImplementation((_watchCase: WatchCase, _options: CliOptions, _session: WatchSession, mutation: NonNullable<WatchCase['subPackageMutations']>[number]) => {
+      return Promise.resolve({
+        root: mutation.root,
+        independent: mutation.independent,
+        outputWxml: mutation.outputWxml,
+        outputJs: mutation.outputJs,
+        globalStyleOutputs: mutation.globalStyleCandidates,
+        template: createClassMetric('template', mutation.templateMutation.sourceFile),
+        style: createStyleMetric(mutation.styleMutation.sourceFile),
+      })
+    })
+
+    const createSubPackageMutation = (root: 'sub-normal' | 'sub-independent', sourcePath: string) => ({
+      root,
+      independent: root === 'sub-independent',
+      outputWxml: path.join(tempDir, `dist/${root}/index.wxml`),
+      outputJs: path.join(tempDir, `dist/${root}/index.js`),
+      outputStyleCandidates: [path.join(tempDir, `dist/${root}/index.wxss`)],
+      globalStyleCandidates: [path.join(tempDir, `dist/${root}/app.wxss`)],
+      templateMutation: {
+        sourceFile: sourcePath,
+        verifyEscapedIn: ['js'] as const,
+        mutate: (source: string) => source,
+      },
+      styleMutation: {
+        sourceFile: sourcePath,
+        mutate: (source: string) => source,
+      },
+    })
+    const watchCase: WatchCase = {
+      name: 'taro-vite-react-tailwindcss-v4',
+      label: 'demo/taro-vite-react-tailwindcss-v4',
+      project: 'demo/taro-vite-react-tailwindcss-v4',
+      group: 'demo',
+      cwd: tempDir,
+      devScript: 'dev:e2e-watch',
+      outputWxml: path.join(tempDir, 'dist/index.wxml'),
+      outputJs: path.join(tempDir, 'dist/index.js'),
+      outputStyleCandidates: [path.join(tempDir, 'dist/index.wxss')],
+      globalStyleCandidates: [path.join(tempDir, 'dist/app.wxss')],
+      templateMutation: {
+        sourceFile,
+        verifyEscapedIn: ['js'],
+        mutate: source => source,
+      },
+      scriptMutation: {
+        sourceFile,
+        verifyEscapedIn: ['js'],
+        mutate: source => source,
+      },
+      styleMutation: {
+        sourceFile: styleFile,
+        mutate: source => source,
+      },
+      subPackageMutations: [
+        createSubPackageMutation('sub-normal', normalSubSource),
+        createSubPackageMutation('sub-independent', independentSubSource),
+      ],
+    }
+
+    const result = await runSubPackagesOnlyCase(watchCase, {
+      ...createOptions(),
+      miniProgramOnly: true,
+      miniProgramScope: 'subpackages',
+    })
+
+    expect(runClassMutationMock).not.toHaveBeenCalled()
+    expect(runSubPackageMutationMock).toHaveBeenCalledTimes(2)
+    expect(result.subPackageMutationMetrics.map(metric => metric.root).sort()).toEqual([
+      'sub-independent',
+      'sub-normal',
+    ])
+    expect(result.mutationMetrics.map(metric => metric.mutationKind)).toEqual([
+      'template',
+      'style',
+      'template',
+      'style',
+    ])
+    expect(session.stop).toHaveBeenCalledTimes(2)
   })
 
   it('throws partial metrics when main-style-only fails after root metrics are collected', async () => {

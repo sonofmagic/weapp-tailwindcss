@@ -29,6 +29,7 @@ export const DEFAULT_PLUGIN_PROCESS_BUDGET_MS = 500
 export type MutationRoundName = typeof MUTATION_ROUND_NAMES[number]
 export type MutationKind = 'template' | 'script' | 'style' | 'content'
 export type ClassMutationKind = 'template' | 'script' | 'content'
+export type MiniProgramScope = 'main-package' | 'subpackages'
 
 export interface CliOptions {
   caseName: WatchCaseName
@@ -38,6 +39,7 @@ export interface CliOptions {
   quietSass: boolean
   webOnly: boolean
   miniProgramOnly: boolean
+  miniProgramScope?: MiniProgramScope
   styleOnly: boolean
   mainStyleOnly: boolean
   mainStyleSubPackageLimit?: number
@@ -809,6 +811,7 @@ export interface WatchReport {
     quietSass: boolean
     webOnly: boolean
     miniProgramOnly: boolean
+    miniProgramScope?: MiniProgramScope
     styleOnly: boolean
     mainStyleOnly: boolean
     mainStyleSubPackageLimit?: number

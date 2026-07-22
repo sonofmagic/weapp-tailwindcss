@@ -179,6 +179,7 @@ export async function writeReport(baseCwd: string, options: CliOptions, metrics:
       quietSass: options.quietSass,
       webOnly: options.webOnly,
       miniProgramOnly: options.miniProgramOnly,
+      miniProgramScope: options.miniProgramScope,
       styleOnly: options.styleOnly,
       mainStyleOnly: options.mainStyleOnly,
       mainStyleSubPackageLimit: options.mainStyleSubPackageLimit,
