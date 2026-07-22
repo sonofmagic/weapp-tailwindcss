@@ -1,5 +1,5 @@
 ---
-"weapp-tailwindcss": major
+"weapp-tailwindcss": minor
 "@weapp-tailwindcss/debug-uni-app-x": patch
 "@weapp-tailwindcss/init": patch
 "@weapp-tailwindcss/logger": patch
