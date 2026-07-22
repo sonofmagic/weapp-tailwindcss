@@ -1,4 +1,5 @@
-import { readdir, readFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
@@ -16,7 +17,7 @@ interface PackageJson {
 }
 
 const repoRoot = fileURLToPath(new URL('../../../../', import.meta.url))
-const packageRoots = ['packages', 'packages-runtime']
+const packageRoots = ['packages', 'packages-runtime'].map(root => path.join(repoRoot, root))
 const migratedPackages = new Set([
   '@weapp-tailwindcss/babel',
   '@weapp-tailwindcss/debug-uni-app-x',
@@ -30,16 +31,23 @@ const migratedPackages = new Set([
   'weapp-tailwindcss',
 ])
 
-async function readWorkspacePackages() {
+async function readWorkspacePackages(roots = packageRoots) {
   const packages: PackageJson[] = []
-  for (const root of packageRoots) {
-    const directory = path.join(repoRoot, root)
+  for (const directory of roots) {
     for (const entry of await readdir(directory, { withFileTypes: true })) {
       if (!entry.isDirectory()) {
         continue
       }
       const packageJsonPath = path.join(directory, entry.name, 'package.json')
-      packages.push(JSON.parse(await readFile(packageJsonPath, 'utf8')) as PackageJson)
+      try {
+        packages.push(JSON.parse(await readFile(packageJsonPath, 'utf8')) as PackageJson)
+      }
+      catch (error) {
+        if (typeof error === 'object' && error !== null && 'code' in error && error.code === 'ENOENT') {
+          continue
+        }
+        throw error
+      }
     }
   }
   return packages
@@ -61,6 +69,26 @@ function expectModuleExtensions(exports: Record<string, unknown>) {
 }
 
 describe('package module metadata', () => {
+  it('ignores workspace directories without a package manifest', async () => {
+    const workspaceRoot = await mkdtemp(path.join(tmpdir(), 'weapp-tw-workspace-'))
+    try {
+      const packageDirectory = path.join(workspaceRoot, 'actual-package')
+      await mkdir(packageDirectory)
+      await mkdir(path.join(workspaceRoot, 'stale-package-artifacts'))
+      await writeFile(
+        path.join(packageDirectory, 'package.json'),
+        JSON.stringify({ name: 'actual-package', type: 'module' }),
+      )
+
+      await expect(readWorkspacePackages([workspaceRoot])).resolves.toEqual([
+        { name: 'actual-package', type: 'module' },
+      ])
+    }
+    finally {
+      await rm(workspaceRoot, { recursive: true, force: true })
+    }
+  })
+
   it('keeps Babel 7 framework loaders isolated from the root Babel 8 toolchain', async () => {
     const rootPackage = JSON.parse(
       await readFile(path.join(repoRoot, 'package.json'), 'utf8'),
