@@ -720,6 +720,7 @@ describe('e2e watch workflow', () => {
     expect(cases).toContain('macos:22:demo-core:main-style')
     for (const runner of ['linux', 'macos']) {
       for (const watchCase of parallelTaroCases) {
+        const mainCommandTimeoutMs = watchCase.includes('webpack') ? '1500000' : '1200000'
         for (const profile of ['mini-program-main', 'mini-program-subpackages']) {
           expect(cases, `${runner} should cover ${watchCase} ${profile} HMR`).toContain(`${runner}:22:${watchCase}:${profile}`)
         }
@@ -731,7 +732,7 @@ describe('e2e watch workflow', () => {
             watch_mini_program_scope: 'main-package',
             watch_max_attempts: '1',
             timeout_minutes: 30,
-            watch_command_timeout_ms: '1200000',
+            watch_command_timeout_ms: mainCommandTimeoutMs,
           }),
           expect.objectContaining({
             round_profile: 'mini-program-subpackages',
@@ -893,9 +894,13 @@ describe('e2e watch workflow', () => {
       { watchCase: 'taro-vite-vue3-tailwindcss-v4', timeoutMs: '420000' },
       { watchCase: 'taro-webpack-vue3-tailwindcss-v4', timeoutMs: '600000' },
     ].flatMap(({ watchCase, timeoutMs }) => [
-      { profile: 'mini-program-main', scope: 'main-package' },
-      { profile: 'mini-program-subpackages', scope: 'subpackages' },
-    ].map(({ profile, scope }) => ({
+      {
+        commandTimeoutMs: watchCase.includes('webpack') ? '1500000' : '1200000',
+        profile: 'mini-program-main',
+        scope: 'main-package',
+      },
+      { commandTimeoutMs: '1200000', profile: 'mini-program-subpackages', scope: 'subpackages' },
+    ].map(({ commandTimeoutMs, profile, scope }) => ({
       watch_case: watchCase,
       round_profile: profile,
       watch_mini_program_only: '1',
@@ -904,7 +909,7 @@ describe('e2e watch workflow', () => {
       timeout_minutes: 30,
       watch_timeout_ms: timeoutMs,
       watch_max_plugin_process_ms: '60000',
-      watch_command_timeout_ms: '1200000',
+      watch_command_timeout_ms: commandTimeoutMs,
     })))
     const slowLinuxDemoCorePrBudget = {
       watch_case: 'demo-core',
