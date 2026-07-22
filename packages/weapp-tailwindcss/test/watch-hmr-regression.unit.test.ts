@@ -2962,13 +2962,13 @@ describe('watch-hmr regression cases', () => {
     }
     const prMatrixEntries = workflow.jobs?.['pr-quick-gate']?.strategy?.matrix?.include ?? []
 
-    const prWebCaseNames = [
-      'taro-vite-react-tailwindcss-v4',
-      'taro-vite-vue3-tailwindcss-v4',
-      'uni-app-vite-tailwindcss-v4',
-    ]
+    const prWebCases = [
+      ['taro-vite-react-tailwindcss-v4', 'web-only'],
+      ['taro-vite-vue3-tailwindcss-v4', 'web-only'],
+      ['uni-app-vite-tailwindcss-v4', 'default'],
+    ] as const
 
-    for (const name of prWebCaseNames) {
+    for (const [name, roundProfile] of prWebCases) {
       expect(
         prMatrixEntries,
         `${name} should run in PR quick gate on macOS`,
@@ -2976,7 +2976,7 @@ describe('watch-hmr regression cases', () => {
         os: 'macos-latest',
         runner_label: 'macos',
         watch_case: name,
-        round_profile: 'default',
+        round_profile: roundProfile,
         watch_web_only: '1',
       }))
     }
