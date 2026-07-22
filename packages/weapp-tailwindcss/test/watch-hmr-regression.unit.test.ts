@@ -15,6 +15,9 @@ import {
   buildDemoExtendedCases,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
 import {
+  buildUniAppHBuilderXCases,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/hbuilderx'
+import {
   buildCases,
   filterCasesForPlatform,
   pickCases,
@@ -117,16 +120,19 @@ import {
   writeFilePreserveEol,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
 import {
+  createWebHmrReloadRecovery,
   isWebCompileDoneLogLine,
   isWebCompileReadyLogLine,
   resolveChromiumLaunchOptions,
   resolveWebHmrDomAttachTimeout,
   resolveWebHmrMarkerAttachTimeout,
+  resolveWebHmrReloadStallMs,
   waitForWebPageReloadReady,
   waitForWebPageReady,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web'
 import {
   resolveReloadAcceptAttemptTimeout,
+  resolveWebCompileSettleTimeoutMs,
   waitForWebCompileSettled,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web-compile-settle'
 import {
@@ -150,6 +156,19 @@ const payload = {
   marker: 'tw-watch-20260313',
   classLiteral: 'text-[#123456] bg-[#0f0f0f]',
   classVariableName: '__twWatchClass',
+}
+
+async function readContractSource(file: string, expected: string) {
+  let source = ''
+  await waitFor(async () => {
+    source = await readFileIfExists(file) ?? ''
+    return source.includes(expected)
+  }, {
+    timeoutMs: 5_000,
+    pollMs: 40,
+    message: `contract source did not stabilize: ${file}`,
+  })
+  return source
 }
 
 const pluginProcessSample = {
@@ -1426,6 +1445,29 @@ describe('watch-hmr web compile settle helpers', () => {
     expect(resolveReloadAcceptAttemptTimeout(120_000, 500)).toBe(15_000)
     expect(resolveReloadAcceptAttemptTimeout(3000, 40)).toBe(3000)
   })
+
+  it('accepts a stable compile signal recorded in the same millisecond as the mutation', async () => {
+    const phaseStartedAt = Date.now() - 700
+    const elapsed = await waitForWebCompileSettled({
+      ensureRunning() {},
+      getLastCompileSignalAt: () => phaseStartedAt,
+      label: 'demo/web',
+      phase: 'hot-update acceptance',
+      phaseStartedAt,
+      pollMs: 1,
+      timeoutMs: 1_000,
+    })
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
+  it('scales web compile settle timeout for slow dependency optimization reloads', () => {
+    expect(resolveWebCompileSettleTimeoutMs(20_000)).toBe(20_000)
+    expect(resolveWebCompileSettleTimeoutMs(240_000)).toBe(60_000)
+    expect(resolveWebCompileSettleTimeoutMs(600_000)).toBe(90_000)
+    expect(resolveWebCompileSettleTimeoutMs(240_000, 45_000)).toBe(45_000)
+    expect(resolveWebCompileSettleTimeoutMs(30_000, 45_000)).toBe(30_000)
+  })
 })
 
 describe('watch-hmr regression session helpers', () => {
@@ -2178,6 +2220,48 @@ describe('watch-hmr regression cases', () => {
     expect(resolveWebHmrDomAttachTimeout(1500)).toBe(1500)
   })
 
+  it('reloads a stalled Web/H5 page and re-runs the runtime assertion', async () => {
+    const waitForReadySelector = vi.fn().mockResolvedValue(undefined)
+    const page = {
+      reload: vi.fn().mockResolvedValue(undefined),
+      locator: vi.fn(() => ({
+        waitFor: waitForReadySelector,
+      })),
+    }
+    const acceptWhen = vi.fn().mockResolvedValue(true)
+    const recover = createWebHmrReloadRecovery(page as any, '#app', {
+      enabled: true,
+      stallMs: 0,
+      timeoutMs: 500,
+      pollMs: 1,
+    })
+
+    await expect(recover(Date.now() - 1, acceptWhen)).resolves.toBe(true)
+    expect(page.reload).toHaveBeenCalledWith({
+      waitUntil: 'domcontentloaded',
+      timeout: 500,
+    })
+    expect(page.locator).toHaveBeenCalledWith('#app')
+    expect(acceptWhen).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps Web/H5 reload recovery disabled before the stall window', async () => {
+    const page = {
+      reload: vi.fn().mockResolvedValue(undefined),
+      locator: vi.fn(),
+    }
+    const recover = createWebHmrReloadRecovery(page as any, '#app', {
+      enabled: true,
+      stallMs: 5_000,
+      timeoutMs: 120_000,
+      pollMs: 40,
+    })
+
+    expect(resolveWebHmrReloadStallMs(120_000, 40, 5_000)).toBe(5_000)
+    await expect(recover(Date.now(), vi.fn())).resolves.toBe(false)
+    expect(page.reload).not.toHaveBeenCalled()
+  })
+
   it('does not treat webpack-dev-server URL output as Web/H5 compile readiness', () => {
     expect(isWebCompileReadyLogLine('<i> [webpack-dev-server] Loopback: http://localhost:10086/')).toBe(false)
     expect(isWebCompileReadyLogLine('<i> [webpack-dev-middleware] wait until bundle finished: /')).toBe(false)
@@ -2307,6 +2391,36 @@ describe('watch-hmr regression cases', () => {
     )).toContain(`const className = ref('${payload.classLiteral}')`)
   })
 
+  it('keeps uni-app x Options API script and in-place class replacement HMR coverage', () => {
+    const uniAppXCase = buildUniAppHBuilderXCases('/repo').find(watchCase => watchCase.name === 'uni-app-x-hbuilderx-tailwindcss-v4')
+    const source = [
+      '<script lang="uts">',
+      'export default {',
+      '  data() {',
+      '    return {',
+      '      globalNum: 0,',
+      '    }',
+      '  },',
+      '}',
+      '</script>',
+      '<template>',
+      '  <BindClass />',
+      '  <text class="text-xs text-white">issue-1002 text-xs</text>',
+      '</template>',
+    ].join('\n')
+
+    expect(uniAppXCase).toBeDefined()
+    expect(uniAppXCase?.scriptMutation.mutate(source, payload)).toContain(`${payload.classVariableName}: '${payload.classLiteral}'`)
+    expect(uniAppXCase?.scriptMutation.mutate(source, payload)).toContain(`:class="${payload.classVariableName}"`)
+    expect(uniAppXCase?.userReportedHotUpdate).toMatchObject({
+      before: 'class="text-xs text-white">issue-1002 text-xs',
+      after: 'class="text-[29px] text-white">issue-1002 text-[29px]',
+      beforeClassTokens: ['text-xs'],
+      afterClassTokens: ['text-[29px]'],
+      verifyEscapedIn: ['wxml'],
+    })
+  })
+
   it('uses the development H5 watch script for Taro webpack React v4 web HMR', () => {
     const taroWebpackCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'taro-webpack-react-tailwindcss-v4')
 
@@ -2317,22 +2431,22 @@ describe('watch-hmr regression cases', () => {
   })
 
   it('keeps Taro webpack demos on real NutUI and html plugin integration', async () => {
-    const configSource = await readFile(path.resolve(
+    const configSource = await readContractSource(path.resolve(
       __dirname,
       '../../../demo/taro-webpack-react-tailwindcss-v4/config/index.ts',
-    ), 'utf8')
-    const reactPackageJson = await readFile(path.resolve(
+    ), '@tarojs/plugin-html')
+    const reactPackageJson = await readContractSource(path.resolve(
       __dirname,
       '../../../demo/taro-webpack-react-tailwindcss-v4/package.json',
-    ), 'utf8')
-    const reactPageSource = await readFile(path.resolve(
+    ), '@nutui/nutui-react-taro')
+    const reactPageSource = await readContractSource(path.resolve(
       __dirname,
       '../../../demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx',
-    ), 'utf8')
-    const vueAppSource = await readFile(path.resolve(
+    ), '@nutui/nutui-react-taro')
+    const vueAppSource = await readContractSource(path.resolve(
       __dirname,
       '../../../demo/taro-webpack-vue3-tailwindcss-v4/src/app.ts',
-    ), 'utf8')
+    ), 'app.use(NutButton)')
 
     expect(configSource).toContain('@tarojs/plugin-html')
     expect(reactPackageJson).toContain('@nutui/nutui-react-taro')
@@ -3213,7 +3327,22 @@ describe('watch-hmr regression cases', () => {
 
     expect(uniAppCase?.webHmr?.sourceDomReplacementSequence?.[0]?.beforeSelector).toBe('.text-\\[\\#00f285\\]')
     expect(uniAppCase?.webHmr?.sourceDomReplacementSequence?.[0]?.expectedStyle?.color).toBe('rgb(18, 52, 86)')
+    expect(uniAppCase?.webHmr?.reloadOnHmrStall).toBe(true)
+    expect(uniAppCase?.webHmr?.hmrReloadStallMs).toBe(5_000)
     expect(uniAppCase?.webHmr?.touchCssEntryOnSourceMutation).toBe(false)
+  })
+
+  it('reloads stalled Taro Vite Web/H5 clients without replaying the full watch case', () => {
+    const demoExtendedCases = buildDemoExtendedCases('/repo')
+
+    for (const caseName of [
+      'taro-vite-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4',
+    ]) {
+      const watchCase = demoExtendedCases.find(item => item.name === caseName)
+      expect(watchCase?.webHmr?.reloadOnHmrStall, caseName).toBe(true)
+      expect(watchCase?.webHmr?.hmrReloadStallMs, caseName).toBe(5_000)
+    }
   })
 
   it('keeps Taro Vite Vue3 Web HMR marker and utility class in one template mutation', () => {

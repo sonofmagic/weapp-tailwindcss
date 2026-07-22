@@ -78,6 +78,7 @@ interface HandleUniAppXPostCssOptions {
   opts: GenerateBundleContext['opts']
   runtimeState: GenerateBundleContext['runtimeState']
   styleHandler: GenerateBundleContext['opts']['styleHandler']
+  deferStylePlaceholderInjection?: boolean
 }
 
 export async function handleUniAppXPostCssTasks(options: HandleUniAppXPostCssOptions) {
@@ -95,6 +96,7 @@ export async function handleUniAppXPostCssTasks(options: HandleUniAppXPostCssOpt
     opts,
     runtimeState,
     styleHandler,
+    deferStylePlaceholderInjection,
   } = options
   const applyStyleSources = collectUniAppXHarmonyApplyStyleSources(bundle)
   if (opts.appType !== 'uni-app-x' && !isNativeAppStyleTarget && !isHarmonyAppStyleTarget) {
@@ -162,6 +164,9 @@ export async function handleUniAppXPostCssTasks(options: HandleUniAppXPostCssOpt
     )
     applyEmissionPlan()
   }
+  if (deferStylePlaceholderInjection) {
+    return applyStyleSources
+  }
   for (const [bundleFile, item] of Object.entries(bundle)) {
     if (item.type !== 'asset') {
       continue
@@ -173,7 +178,12 @@ export async function handleUniAppXPostCssTasks(options: HandleUniAppXPostCssOpt
       continue
     }
     const currentSource = String(item.source)
-    const nextSource = injectUniAppXStylePlaceholder(file, currentSource, getAssetSource)
+    const nextSource = injectUniAppXStylePlaceholder(
+      file,
+      currentSource,
+      getAssetSource,
+      viteProcessedCssSources,
+    )
     if (nextSource !== currentSource) {
       emissionPlan.write(file, nextSource)
       writeTargets.set(file, item)

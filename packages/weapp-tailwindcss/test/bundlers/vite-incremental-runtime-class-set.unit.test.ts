@@ -715,6 +715,35 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(secondRuntimeSet.has('bg-[#000025]')).toBe(false)
   })
 
+  it('restores only the canonical candidate for escaped arbitrary colors with alpha values', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const runtime = createV4Runtime()
+    const extractCandidates = createCandidateValidator([
+      'bg-[#31edd8]/[0.54]',
+      'bg-[#31edd8_B/[0.54]',
+    ])
+    const manager = createBundleRuntimeClassSetManager({
+      extractCandidates,
+      extractRawCandidates: vi.fn(async () => []),
+    })
+
+    const snapshot = buildBundleSnapshot({
+      'pages/index/index.js': {
+        ...createRollupChunk('const cls = "bg-_b_h31edd8_B_f_b0_d54_B";'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    await expect(manager.sync(runtime, snapshot)).resolves.toEqual(new Set([
+      'bg-[#31edd8]/[0.54]',
+    ]))
+    const validationSource = extractCandidates.mock.calls[0]?.[0]?.content ?? ''
+    expect(validationSource).toContain('bg-[#31edd8]/[0.54]')
+    expect(validationSource).not.toContain('bg-[#31edd8_B/[0.54]')
+  })
+
   it('ignores dependency vendor chunks when collecting tailwind v4 runtime candidates', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'

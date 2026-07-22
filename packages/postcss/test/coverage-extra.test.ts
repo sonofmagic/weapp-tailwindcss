@@ -13,6 +13,7 @@ import {
   isTailwindcssV4ModernCheck,
   mergeTailwindcssV4GradientDirectionRules,
   normalizeTailwindcssV4Declaration,
+  normalizeTailwindcssV4InfinityCalcCss,
   usesTailwindcssV4ContentVariable,
 } from '@/compat/tailwindcss-v4'
 import { protectDynamicColorMixAlpha } from '@/compat/color-mix'
@@ -208,6 +209,19 @@ describe('mp helpers', () => {
 })
 
 describe('compat helpers', () => {
+  it('normalizes Tailwind v4 infinity radii before preprocessors parse generated CSS', () => {
+    const css = normalizeTailwindcssV4InfinityCalcCss(`
+      .rounded-full { border-radius: calc(infinity * 1px); }
+      .rounded-r-full {
+        border-top-right-radius: CALC( infinity * .5rpx );
+        border-bottom-right-radius: calc(infinity * 100.1px);
+      }
+    `)
+
+    expect(css).not.toContain('infinity')
+    expect(css.match(/9999px/g)).toHaveLength(3)
+  })
+
   it('clamps non-finite radii in v4 normalizer', () => {
     const decl = new Declaration({ prop: 'border-radius', value: '1e309px' })
     const changed = normalizeTailwindcssV4Declaration(decl)

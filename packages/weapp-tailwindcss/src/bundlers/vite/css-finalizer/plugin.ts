@@ -29,6 +29,12 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
     name: 'weapp-tailwindcss:adaptor:css-finalizer',
     enforce: 'post',
     async closeBundle() {
+      if (context.getResolvedConfig()?.build?.watch != null) {
+        return
+      }
+      await disposeCompilerOwner(context.runtimeState)
+    },
+    async closeWatcher() {
       await disposeCompilerOwner(context.runtimeState)
     },
     generateBundle: {

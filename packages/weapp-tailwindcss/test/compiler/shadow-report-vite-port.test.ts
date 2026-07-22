@@ -30,6 +30,29 @@ describe('vite compiler shadow run boundary', () => {
     expect(runtimeHandler).toHaveBeenCalledTimes(2)
   })
 
+  it('keeps compiler sessions between watch builds and disposes them when the watcher closes', async () => {
+    const { getTailwindGenerationSessionPool } = await import('@/compiler')
+    const { createViteCssFinalizerOutputPlugin } = await import('@/bundlers/vite/css-finalizer/plugin')
+    const runtimeState = {
+      tailwindRuntime: { majorVersion: 4 },
+      readyPromise: Promise.resolve(),
+    }
+    const generationPool = getTailwindGenerationSessionPool(runtimeState)
+    const plugin = createViteCssFinalizerOutputPlugin({
+      runtimeState,
+      getResolvedConfig: () => ({
+        command: 'build',
+        build: { watch: {} },
+      }),
+    } as any)
+
+    await plugin.closeBundle?.()
+    expect(getTailwindGenerationSessionPool(runtimeState)).toBe(generationPool)
+
+    await plugin.closeWatcher?.()
+    expect(getTailwindGenerationSessionPool(runtimeState)).not.toBe(generationPool)
+  })
+
   it('completes the current shadow run after the post css finalizer', async () => {
     const {
       beginCompilerShadowRun,

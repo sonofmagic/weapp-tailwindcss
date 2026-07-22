@@ -35,6 +35,13 @@ export function fingerprintOptions(
     return `[${parts.join(',')}]`
   }
 
+  if (objectValue instanceof Map) {
+    const entries = [...objectValue.entries()]
+      .map(([key, entry]) => [fingerprintOptions(key, state), fingerprintOptions(entry, state)] as const)
+      .sort(([left], [right]) => left.localeCompare(right))
+    return `map:{${entries.map(([key, entry]) => `${key}:${entry}`).join(',')}}@${marker}`
+  }
+
   const keys = Object.keys(objectValue).sort()
   const parts = keys.map(key => `${key}:${fingerprintOptions(objectValue[key], state)}`)
   return `{${parts.join(',')}}@${marker}`

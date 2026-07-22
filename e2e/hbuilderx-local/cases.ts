@@ -36,8 +36,10 @@ export interface AppCase {
   markerAnchor: string
   markerAnchorCandidates?: string[]
   markerClass: string
+  markerTextClass?: string
   markerText: string
   hmrMarkerClass: string
+  hmrMarkerTextClass?: string
   hmrMarkerText: string
   launchArgs?: string[]
   launchEnv?: Record<string, string>
@@ -45,10 +47,15 @@ export interface AppCase {
   transformedFiles?: string[]
   transformedOutputFiles?: string[]
   transformedContains: Array<string | RegExp>
+  compiledStyleContains?: Array<string | RegExp>
+  transformedNotContains?: Array<string | RegExp>
   hmrTransformedContains: Array<string | RegExp>
   styleOutputFiles?: string[]
   styleContains?: Array<string | RegExp>
+  styleNotContains?: Array<string | RegExp>
   hmrStyleContains?: Array<string | RegExp>
+  runtimeLogContains?: Array<string | RegExp>
+  logNotContains?: Array<string | RegExp>
 }
 
 export interface WebCase {
@@ -288,16 +295,30 @@ const defaultIosLaunchArgs = ['--iosTarget', process.env['E2E_HBUILDERX_IOS_TARG
 const harmonyDeviceId = process.env['E2E_HBUILDERX_HARMONY_DEVICE_ID'] ?? process.env['DEMO_VISUAL_HARMONY_DEVICE_ID']
 const defaultHarmonyLaunchArgs = harmonyDeviceId ? ['--deviceId', harmonyDeviceId] : []
 const harmonyInitialTransformedContains = [
-  '"backgroundColor":"rgba(16,41,56,1)"',
-  '"color":"rgba(247,251,255,1)"',
+  '"backgroundColor":"#102938"',
+  '"color":"#f7fbff"',
   '"width":173',
 ]
 const harmonyHmrTransformedContains = [
-  '"backgroundColor":"rgba(59,7,100,1)"',
-  '"color":"rgba(254,240,138,1)"',
+  '"backgroundColor":"#3b0764"',
+  '"color":"#fef08a"',
   '"height":41',
   '"marginTop":19',
 ]
+const issue1002AppOutputNotContains = [
+  '.tw-root',
+  'calc(infinity',
+  'var(--color-white)',
+  /var\(--text-(?:xs|sm|base|xl)/,
+  /calc\((?:1(?:\.\d+)?\s*\/|8rpx\s*\*)/,
+]
+const issue1002AppLogNotContains = [
+  /unsupported utility:\s*tw-root/i,
+  /calc\(infinity\s*\*\s*1px\)/i,
+  /property value `calc\((?:1(?:\.\d+)?\s*\/|8rpx\s*\*)/i,
+  /not supported for `border-(?:bottom|top)-(?:left|right)-radius`/i,
+]
+const issue1002HarmonyStyleNotContains = issue1002AppOutputNotContains
 function createUniAppAppCases(options: {
   name: string
   projectDir: string
@@ -447,21 +468,50 @@ export const uniAppXAppCases: AppCase[] = [
     ],
     sourceFile: 'components/BindClass.uvue',
     markerAnchor: '<text :class="flag',
-    markerClass: 'bg-[#102938] text-[#f7fbff] h-[41px] w-[173px]',
+    markerClass: 'flex h-[41px] w-[173px] items-center justify-center rounded-full bg-[#102938]',
+    markerTextClass: 'text-xl text-white',
     markerText: 'hbuilderx-app-dynamic-v4-android',
-    hmrMarkerClass: 'bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]',
+    hmrMarkerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-full bg-[#3b0764]',
+    hmrMarkerTextClass: 'text-sm text-white',
     hmrMarkerText: 'hbuilderx-app-hmr-v4-android',
     launchArgs: defaultAndroidLaunchArgs,
     requiredFiles: [
       'App.uvue.ts',
       'components/BindClass.uvue.ts',
+      'pages/index/index.uvue.ts',
     ],
     transformedOutputFiles: [
       'App.uvue.ts',
       'components/BindClass.uvue.ts',
+      'pages/index/index.uvue.ts',
     ],
     transformedContains: ['hbuilderx-app-dynamic-v4-android'],
-    hmrTransformedContains: ['hbuilderx-app-hmr-v4-android'],
+    compiledStyleContains: [
+      'issue-1002 text-xs',
+      /\["wtu-[^"]+", _pS\(_uM\(\[\["fontSize", "24rpx"\]/,
+      /\["wtu-[^"]+", _pS\(_uM\(\[\["fontSize", "28rpx"\]/,
+      /\["wtu-[^"]+", _pS\(_uM\(\[\["fontSize", "32rpx"\]/,
+      /\["wtu-[^"]+", _pS\(_uM\(\[\["fontSize", "40rpx"\]/,
+      /\["wtu-[^"]+", _pS\(_uM\(\[\["color", "#ffffff"\]/,
+      /\["wtu-[^"]+", _pS\(_uM\(\[\["borderTopLeftRadius", 9999\]/,
+      '["issue-1002-apply", _pS(_uM([["borderTopLeftRadius", 9999]',
+      '["lineHeight", 1.33333]',
+    ],
+    transformedNotContains: [
+      ...issue1002AppOutputNotContains,
+      /class: "[^"]*\btext-xs\b/,
+      /class: "[^"]*\btext-white\b/,
+      /class: "[^"]*\brounded-full\b/,
+    ],
+    hmrTransformedContains: [
+      'hbuilderx-app-hmr-v4-android',
+      /\["backgroundColor", "#3b0764"\]/,
+      /\["fontSize", "28rpx"\]/,
+      /\["height", 41\]/,
+      /\["marginTop", 19\]/,
+    ],
+    runtimeLogContains: ['App Launch'],
+    logNotContains: issue1002AppLogNotContains,
   },
   {
     name: 'uni-app-x-hbuilderx-tailwindcss-v4 ios',
@@ -470,9 +520,11 @@ export const uniAppXAppCases: AppCase[] = [
     outputDir: 'unpackage/dist/dev/app-ios',
     sourceFile: 'components/BindClass.uvue',
     markerAnchor: '<text :class="flag',
-    markerClass: 'bg-[#102938] text-[#f7fbff] h-[41px] w-[173px]',
+    markerClass: 'flex h-[41px] w-[173px] items-center justify-center rounded-full bg-[#102938]',
+    markerTextClass: 'text-xl text-white',
     markerText: 'hbuilderx-app-dynamic-v4-ios',
-    hmrMarkerClass: 'bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]',
+    hmrMarkerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-full bg-[#3b0764]',
+    hmrMarkerTextClass: 'text-sm text-white',
     hmrMarkerText: 'hbuilderx-app-hmr-v4-ios',
     launchArgs: defaultIosLaunchArgs,
     requiredFiles: [
@@ -482,7 +534,10 @@ export const uniAppXAppCases: AppCase[] = [
       'unpackage/dist/dev/app-ios/app-service.js',
     ],
     transformedContains: ['bg-_b_h102938_B', 'text-_b_hf7fbff_B', 'w-_b173px_B', 'hbuilderx-app-dynamic-v4-ios'],
+    transformedNotContains: issue1002AppOutputNotContains,
     hmrTransformedContains: ['bg-_b_h3b0764_B', 'text-_b_hfef08a_B', 'h-_b41px_B', 'mt-_b19px_B', 'hbuilderx-app-hmr-v4-ios'],
+    runtimeLogContains: ['App Launch'],
+    logNotContains: issue1002AppLogNotContains,
   },
   {
     name: 'uni-app-x-hbuilderx-tailwindcss-v4 harmony',
@@ -496,9 +551,11 @@ export const uniAppXAppCases: AppCase[] = [
     ],
     sourceFile: 'pages/index/index.uvue',
     markerAnchor: '<BindClass />',
-    markerClass: 'bg-[#102938] text-[#f7fbff] w-[173px]',
+    markerClass: 'flex h-[41px] w-[173px] items-center justify-center rounded-full bg-[#102938]',
+    markerTextClass: 'text-xl text-white text-[#f7fbff]',
     markerText: 'hbuilderx-app-dynamic-v4-harmony',
-    hmrMarkerClass: 'bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]',
+    hmrMarkerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-full bg-[#3b0764]',
+    hmrMarkerTextClass: 'text-sm text-white text-[#fef08a]',
     hmrMarkerText: 'hbuilderx-app-hmr-v4-harmony',
     launchArgs: defaultHarmonyLaunchArgs,
     requiredFiles: [
@@ -512,7 +569,24 @@ export const uniAppXAppCases: AppCase[] = [
       'unpackage/dist/dev/.app-harmony/assets/pages/index/index.js',
     ],
     transformedContains: [...harmonyInitialTransformedContains, 'hbuilderx-app-dynamic-v4-harmony'],
+    transformedNotContains: ['.tw-root'],
+    styleOutputFiles: [
+      'pages/index/index.uvue',
+      'uni-app-x-harmony-apply.css',
+    ],
+    styleContains: [
+      /\.issue-1002-apply\s*\{[\s\S]*border-radius:\s*9999px/,
+      /\.rounded-full\s*\{[\s\S]*border-radius:\s*9999px/,
+      /\.text-xs\s*\{[\s\S]*font-size:\s*24rpx/,
+      /\.text-sm\s*\{[\s\S]*font-size:\s*28rpx/,
+      /\.text-base\s*\{[\s\S]*font-size:\s*32rpx/,
+      /\.text-xl\s*\{[\s\S]*font-size:\s*40rpx/,
+      /\.text-white\s*\{[\s\S]*color:\s*#fff(?:fff)?/,
+    ],
+    styleNotContains: issue1002HarmonyStyleNotContains,
     hmrTransformedContains: [...harmonyHmrTransformedContains, 'hbuilderx-app-hmr-v4-harmony'],
+    runtimeLogContains: ['App Launch'],
+    logNotContains: issue1002AppLogNotContains,
   },
 ]
 
@@ -532,19 +606,31 @@ export const webCases: WebCase[] = [
     workflow: uniAppHBuilderXWorkflow,
     hmrSteps: [
       {
-        markerClass: 'bg-[#0f5132] text-[#f8fafc] w-[188px]',
+        markerClass: 'hbuilderx-web-hmr-probe bg-[#0f5132] text-[#f8fafc] w-[188px]',
         markerText: 'hbuilderx-web-hmr-v4-step-1',
         cssContains: [/background-color:\s*#0f5132/, /color:\s*#f8fafc/, /width:\s*188px/],
+        runtimeStyles: [{
+          selector: '.hbuilderx-web-hmr-probe',
+          styles: { backgroundColor: 'rgb(15, 81, 50)', color: 'rgb(248, 250, 252)', width: '188px' },
+        }],
       },
       {
-        markerClass: 'bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',
+        markerClass: 'hbuilderx-web-hmr-probe bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',
         markerText: 'hbuilderx-web-hmr-v4-step-2',
         cssContains: [/background-color:\s*#7c2d12/, /color:\s*#ecfeff/, /height:\s*37px/, /margin-top:\s*11px/],
+        runtimeStyles: [{
+          selector: '.hbuilderx-web-hmr-probe',
+          styles: { backgroundColor: 'rgb(124, 45, 18)', color: 'rgb(236, 254, 255)', height: '37px', marginTop: '11px' },
+        }],
       },
       {
-        markerClass: 'bg-[#4338ca] text-[#fef3c7] w-[221px] rounded-[13px]',
+        markerClass: 'hbuilderx-web-hmr-probe bg-[#4338ca] text-[#fef3c7] w-[221px] rounded-[13px]',
         markerText: 'hbuilderx-web-hmr-v4-step-3',
         cssContains: [/background-color:\s*#4338ca/, /color:\s*#fef3c7/, /width:\s*221px/, /border-radius:\s*13px/],
+        runtimeStyles: [{
+          selector: '.hbuilderx-web-hmr-probe',
+          styles: { backgroundColor: 'rgb(67, 56, 202)', borderRadius: '13px', color: 'rgb(254, 243, 199)', width: '221px' },
+        }],
       },
     ],
   },
@@ -570,19 +656,31 @@ export const webCases: WebCase[] = [
     workflow: uniAppXHBuilderXWorkflow,
     hmrSteps: [
       {
-        markerClass: 'bg-[#0f5132] text-[#f8fafc] w-[188px]',
+        markerClass: 'hbuilderx-web-hmr-probe bg-[#0f5132] text-[#f8fafc] w-[188px]',
         markerText: 'hbuilderx-web-hmr-v4-step-1',
         cssContains: [/background-color:\s*#0f5132/, /color:\s*#f8fafc/, /width:\s*188px/],
+        runtimeStyles: [{
+          selector: '.hbuilderx-web-hmr-probe',
+          styles: { backgroundColor: 'rgb(15, 81, 50)', color: 'rgb(248, 250, 252)', width: '188px' },
+        }],
       },
       {
-        markerClass: 'bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',
+        markerClass: 'hbuilderx-web-hmr-probe bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',
         markerText: 'hbuilderx-web-hmr-v4-step-2',
         cssContains: [/background-color:\s*#7c2d12/, /color:\s*#ecfeff/, /height:\s*37px/, /margin-top:\s*11px/],
+        runtimeStyles: [{
+          selector: '.hbuilderx-web-hmr-probe',
+          styles: { backgroundColor: 'rgb(124, 45, 18)', color: 'rgb(236, 254, 255)', height: '37px', marginTop: '11px' },
+        }],
       },
       {
-        markerClass: 'bg-[#4338ca] text-[#fef3c7] w-[221px] rounded-[13px]',
+        markerClass: 'hbuilderx-web-hmr-probe bg-[#4338ca] text-[#fef3c7] w-[221px] rounded-[13px]',
         markerText: 'hbuilderx-web-hmr-v4-step-3',
         cssContains: [/background-color:\s*#4338ca/, /color:\s*#fef3c7/, /width:\s*221px/, /border-radius:\s*13px/],
+        runtimeStyles: [{
+          selector: '.hbuilderx-web-hmr-probe',
+          styles: { backgroundColor: 'rgb(67, 56, 202)', borderRadius: '13px', color: 'rgb(254, 243, 199)', width: '221px' },
+        }],
       },
     ],
   },

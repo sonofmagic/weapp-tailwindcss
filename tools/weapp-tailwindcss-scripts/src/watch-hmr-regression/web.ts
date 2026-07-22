@@ -17,12 +17,13 @@ import {
   spawnPnpm,
 } from './session'
 import { waitFor, writeFilePreserveEol } from './text'
-import { resolveReloadAcceptAttemptTimeout, waitForWebCompileSettled } from './web-compile-settle'
+import { resolveReloadAcceptAttemptTimeout, resolveWebCompileSettleTimeoutMs, waitForWebCompileSettled } from './web-compile-settle'
 
 const LOCAL_URL_RE = /https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])\S*/i
 const RGB_RE = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/
 const DOM_REPLACEMENT_SELECTOR = '[data-tw-watch-web-dom]'
 const WEB_HMR_MARKER_ATTACH_MIN_TIMEOUT_MS = 1_000
+const WEB_HMR_RELOAD_MIN_INTERVAL_MS = 500
 const DEFAULT_ICON_CLASS_TOKENS = [
   'i-[mdi--github-circle]',
   'i-[mdi--star]',
@@ -107,6 +108,53 @@ export function resolveWebHmrMarkerAttachTimeout(pollMs: number) {
 
 export function resolveWebHmrDomAttachTimeout(pollMs: number) {
   return resolveWebHmrMarkerAttachTimeout(pollMs)
+}
+
+export function resolveWebHmrReloadStallMs(timeoutMs: number, pollMs: number, configuredMs?: number) {
+  const requestedMs = configuredMs ?? Math.max(pollMs * 25, 5_000)
+  return Math.min(Math.max(requestedMs, 0), Math.max(timeoutMs - 1, 0))
+}
+
+export function createWebHmrReloadRecovery(
+  page: Pick<Page, 'reload' | 'locator'>,
+  readySelector: string,
+  options: Pick<CliOptions, 'timeoutMs' | 'pollMs'> & {
+    enabled: boolean
+    stallMs?: number
+  },
+) {
+  const stallMs = resolveWebHmrReloadStallMs(options.timeoutMs, options.pollMs, options.stallMs)
+  const attemptTimeoutMs = resolveReloadAcceptAttemptTimeout(
+    Math.min(options.timeoutMs, 120_000),
+    options.pollMs,
+  )
+  let lastReloadAttemptAt = 0
+
+  return async (phaseStartedAt: number, acceptWhen: () => Promise<boolean>) => {
+    const now = Date.now()
+    if (
+      !options.enabled
+      || now - phaseStartedAt < stallMs
+      || now - lastReloadAttemptAt < Math.max(options.pollMs * 4, WEB_HMR_RELOAD_MIN_INTERVAL_MS)
+    ) {
+      return false
+    }
+    lastReloadAttemptAt = now
+    try {
+      await page.reload({
+        waitUntil: 'domcontentloaded',
+        timeout: attemptTimeoutMs,
+      })
+      await page.locator(readySelector).waitFor({
+        state: 'attached',
+        timeout: attemptTimeoutMs,
+      })
+      return await acceptWhen()
+    }
+    catch {
+      return false
+    }
+  }
 }
 
 function normalizeDomExpectedStyle(style: NonNullable<NonNullable<WebHmrConfig['sourceDomReplacementSequence']>[number]['expectedStyle']>) {
@@ -388,6 +436,7 @@ async function runSourceClassReplacementSequence(
   page: Page,
   config: WebHmrConfig,
   sourceOriginal: string,
+  createReloadRecovery: () => ReturnType<typeof createWebHmrReloadRecovery>,
   waitForCompileSettled: WaitForCompileSettled,
 ) {
   const sequence = config.sourceClassReplacementSequence ?? []
@@ -415,21 +464,25 @@ async function runSourceClassReplacementSequence(
 
     let verifiedCssIncludes: string[] = []
     let lastError = ''
+    const reloadRecovery = createReloadRecovery()
+    const verifyReplacement = async () => {
+      const styleText = await collectStyleText(page)
+      verifiedCssIncludes = (item.expectedCssIncludes ?? [])
+        .filter(needle => styleText.includes(needle))
+      if (verifiedCssIncludes.length !== (item.expectedCssIncludes ?? []).length) {
+        const missing = (item.expectedCssIncludes ?? []).filter(needle => !verifiedCssIncludes.includes(needle))
+        throw new Error(`[${watchCase.label}] web HMR source replacement ${item.label} missing CSS fragments: ${missing.join(', ')}`)
+      }
+      return true
+    }
     const hotUpdateEffectiveMs = await waitFor(
       async () => {
         try {
-          const styleText = await collectStyleText(page)
-          verifiedCssIncludes = (item.expectedCssIncludes ?? [])
-            .filter(needle => styleText.includes(needle))
-          if (verifiedCssIncludes.length !== (item.expectedCssIncludes ?? []).length) {
-            const missing = (item.expectedCssIncludes ?? []).filter(needle => !verifiedCssIncludes.includes(needle))
-            throw new Error(`[${watchCase.label}] web HMR source replacement ${item.label} missing CSS fragments: ${missing.join(', ')}`)
-          }
-          return true
+          return await verifyReplacement()
         }
         catch (error) {
           lastError = error instanceof Error ? error.message : String(error)
-          return false
+          return await reloadRecovery?.(hotUpdateStartedAt, verifyReplacement) ?? false
         }
       },
       {
@@ -465,6 +518,7 @@ async function runSourceDomReplacementSequence(
   config: WebHmrConfig,
   sourceOriginal: string,
   cssEntryOriginal?: string | undefined,
+  createReloadRecovery: () => ReturnType<typeof createWebHmrReloadRecovery>,
   waitForCompileSettled: WaitForCompileSettled,
 ) {
   const sequence = config.sourceDomReplacementSequence ?? []
@@ -504,30 +558,34 @@ async function runSourceDomReplacementSequence(
     let verifiedCssIncludes: string[] = []
     let computedStyle: ReturnType<typeof assertDomReplacement> | undefined
     let lastError = ''
+    const reloadRecovery = createReloadRecovery()
+    const verifyReplacement = async () => {
+      await page.locator(selector).waitFor({
+        state: 'attached',
+        timeout: resolveWebHmrDomAttachTimeout(options.pollMs),
+      })
+      const styleText = await collectStyleText(page)
+      verifiedCssIncludes = (item.expectedCssIncludes ?? [])
+        .filter(needle => styleText.includes(needle))
+      if (verifiedCssIncludes.length !== (item.expectedCssIncludes ?? []).length) {
+        const missing = (item.expectedCssIncludes ?? []).filter(needle => !verifiedCssIncludes.includes(needle))
+        throw new Error(`[${watchCase.label}] web source DOM replacement ${item.label} missing CSS fragments: ${missing.join(', ')}`)
+      }
+      computedStyle = assertDomReplacement(
+        watchCase,
+        await getDomReplacementComputedStyle(page, selector),
+        item,
+      )
+      return true
+    }
     const hotUpdateEffectiveMs = await waitFor(
       async () => {
         try {
-          await page.locator(selector).waitFor({
-            state: 'attached',
-            timeout: resolveWebHmrDomAttachTimeout(options.pollMs),
-          })
-          const styleText = await collectStyleText(page)
-          verifiedCssIncludes = (item.expectedCssIncludes ?? [])
-            .filter(needle => styleText.includes(needle))
-          if (verifiedCssIncludes.length !== (item.expectedCssIncludes ?? []).length) {
-            const missing = (item.expectedCssIncludes ?? []).filter(needle => !verifiedCssIncludes.includes(needle))
-            throw new Error(`[${watchCase.label}] web source DOM replacement ${item.label} missing CSS fragments: ${missing.join(', ')}`)
-          }
-          computedStyle = assertDomReplacement(
-            watchCase,
-            await getDomReplacementComputedStyle(page, selector),
-            item,
-          )
-          return true
+          return await verifyReplacement()
         }
         catch (error) {
           lastError = error instanceof Error ? error.message : String(error)
-          return false
+          return await reloadRecovery?.(hotUpdateStartedAt, verifyReplacement) ?? false
         }
       },
       {
@@ -880,10 +938,7 @@ export async function runWebHmr(
     const configuredTimeoutMs = phase === 'initial'
       ? (config.initialCompileSettleTimeoutMs ?? config.compileSettleTimeoutMs)
       : config.compileSettleTimeoutMs
-    const timeoutMs = Math.min(
-      options.timeoutMs,
-      configuredTimeoutMs ?? 30_000,
-    )
+    const timeoutMs = resolveWebCompileSettleTimeoutMs(options.timeoutMs, configuredTimeoutMs)
     const settleOptions = {
       getLastCompileSignalAt: () => lastCompileSignalAt,
       label: watchCase.label,
@@ -976,6 +1031,17 @@ export async function runWebHmr(
       await waitForCompileSettled(startedAt, 'initial')
     }
 
+    const createReloadRecovery = () => createWebHmrReloadRecovery(
+      page,
+      config.readySelector ?? 'body',
+      {
+        enabled: config.reloadOnHmrStall === true,
+        ...(config.hmrReloadStallMs == null ? {} : { stallMs: config.hmrReloadStallMs }),
+        timeoutMs: options.timeoutMs,
+        pollMs: options.pollMs,
+      },
+    )
+
     let lastStyleError = ''
     const reloadTimeoutMs = Math.min(options.timeoutMs, 120_000)
     const reloadAcceptAttemptTimeoutMs = resolveReloadAcceptAttemptTimeout(reloadTimeoutMs, options.pollMs)
@@ -1033,24 +1099,28 @@ export async function runWebHmr(
     }
     let computedStyle: WebHmrMetrics['computedStyle'] | undefined
     let hotUpdateEffectiveMs = 0
+    const hotUpdateReloadRecovery = createReloadRecovery()
+    const verifyHotUpdate = async () => {
+      if (config.injectMarkerElement) {
+        await ensureInjectedMarkerElement(page, marker, mutation.classLiteral)
+      }
+      await page.locator(`[data-tw-watch-web="${marker}"]`).waitFor({
+        state: 'attached',
+        timeout: resolveWebHmrMarkerAttachTimeout(options.pollMs),
+      })
+      const currentStyle = await getElementComputedStyle(page, marker)
+      computedStyle = assertComputedStyle(watchCase, marker, currentStyle, expectedStyle)
+      return true
+    }
     try {
       hotUpdateEffectiveMs = await waitFor(
         async () => {
           try {
-            if (config.injectMarkerElement) {
-              await ensureInjectedMarkerElement(page, marker, mutation.classLiteral)
-            }
-            await page.locator(`[data-tw-watch-web="${marker}"]`).waitFor({
-              state: 'attached',
-              timeout: resolveWebHmrMarkerAttachTimeout(options.pollMs),
-            })
-            const currentStyle = await getElementComputedStyle(page, marker)
-            computedStyle = assertComputedStyle(watchCase, marker, currentStyle, expectedStyle)
-            return true
+            return await verifyHotUpdate()
           }
           catch (error) {
             lastStyleError = error instanceof Error ? error.message : String(error)
-            return false
+            return await hotUpdateReloadRecovery(hotUpdateStartedAt, verifyHotUpdate)
           }
         },
         {
@@ -1088,24 +1158,28 @@ export async function runWebHmr(
     if (config.reloadAfterCssMutation) {
       await waitForCompileSettled(rollbackStartedAt, 'rollback', createReloadedStyleAcceptWhen(rollbackExpectedStyle, resolveRollbackClassLiteral(config)))
     }
+    const rollbackReloadRecovery = createReloadRecovery()
+    const verifyRollback = async () => {
+      if (config.injectMarkerElement) {
+        await ensureInjectedMarkerElement(page, marker, rollbackExpectedStyle ? resolveRollbackClassLiteral(config) : undefined)
+      }
+      if (!config.injectMarkerElement) {
+        return await page.locator(`[data-tw-watch-web="${marker}"]`).count() === 0
+      }
+      const currentStyle = await getElementComputedStyle(page, marker)
+      assertComputedStyle(watchCase, marker, currentStyle, rollbackExpectedStyle)
+      return true
+    }
     const rollbackEffectiveMs = await waitFor(
       async () => {
         try {
-          if (config.injectMarkerElement) {
-            await ensureInjectedMarkerElement(page, marker, rollbackExpectedStyle ? resolveRollbackClassLiteral(config) : undefined)
-          }
-          if (!config.injectMarkerElement) {
-            return await page.locator(`[data-tw-watch-web="${marker}"]`).count() === 0
-          }
-          const currentStyle = await getElementComputedStyle(page, marker)
-          assertComputedStyle(watchCase, marker, currentStyle, rollbackExpectedStyle)
-          return true
+          return await verifyRollback()
         }
         catch (error) {
           if (config.injectMarkerElement) {
             lastStyleError = error instanceof Error ? error.message : String(error)
           }
-          return false
+          return await rollbackReloadRecovery(rollbackStartedAt, verifyRollback)
         }
       },
       {
@@ -1132,6 +1206,7 @@ export async function runWebHmr(
       page,
       config,
       sourceOriginal,
+      createReloadRecovery,
       waitForCompileSettled,
     )
     const sourceDomReplacementSequence = await runSourceDomReplacementSequence(
@@ -1141,6 +1216,7 @@ export async function runWebHmr(
       config,
       sourceOriginal,
       cssEntryOriginal,
+      createReloadRecovery,
       waitForCompileSettled,
     )
     const iconifyHmr = await runWebIconifyHmr(

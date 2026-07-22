@@ -86,6 +86,7 @@ describe('bundlers/vite uni-app-x post css tasks', () => {
     expect(String(mainCssAsset.source)).toContain('.generated{color:blue}')
     expect(bundle['assets/page-code-hash']).toBe(pageCodeAsset)
     expect(String(pageCodeAsset.source)).toContain('color')
+    expect(String(pageCodeAsset.source)).toContain('generated')
     expect(onUpdate).toHaveBeenCalledWith('styles/root.css', '.base{}', expect.stringContaining('.generated{color:blue}'))
     expect(debug).toHaveBeenCalledWith('uni-app-x harmony main css inject')
     expect(debug).toHaveBeenCalledWith('uni-app-x style placeholder inject: %s', 'pages/index.uvue.ts')

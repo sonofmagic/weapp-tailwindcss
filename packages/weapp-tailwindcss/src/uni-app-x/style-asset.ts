@@ -1,11 +1,13 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { StyleValue } from './style-asset/style-value'
 import { postcss } from '@weapp-tailwindcss/postcss'
+import { expandUniAppXHarmonyApplyStyles } from './style-asset/harmony-apply'
 import {
   collectChunkMapSourcesContent,
   collectUniAppXHarmonyApplyStyleSourcesFromSource,
   collectUniAppXHarmonyApplyUtilitiesFromSources,
   createMergedStyleValue,
+  createMergedStyleValues,
   createStyleValueFromApplySources,
   createUtsStyleArrayFromAppStyles,
   cssSourceToStyleValue,
@@ -29,7 +31,7 @@ const HARMONY_BUNDLE_MARKER_FILES = new Set([
 const STYLE_DECL_RE = /const\s+(_style_\d+)\s*=\s*\{/g
 const EXPORT_SFC_RE = /_export_sfc\(_sfc_main\s*,\s*\[/
 
-export const UNI_APP_X_STYLE_PLACEHOLDER_VERSION = 'uni-app-x-style-placeholder-v2'
+export const UNI_APP_X_STYLE_PLACEHOLDER_VERSION = 'uni-app-x-style-placeholder-v3'
 
 type BundleItem = { type: string } | OutputAsset | OutputChunk
 type OutputChunkWithViteMetadata = OutputChunk & {
@@ -57,6 +59,7 @@ interface StyleObjectDecl {
 export {
   collectUniAppXHarmonyApplyStyleSourcesFromSource,
   collectUniAppXHarmonyApplyUtilitiesFromSources,
+  expandUniAppXHarmonyApplyStyles,
 }
 
 export function createUniAppXHarmonyApplyGeneratorSource(
@@ -190,30 +193,33 @@ function findBalancedObjectEnd(source: string, start: number) {
   }
 }
 
-function findFirstStyleObjectDecl(source: string): StyleObjectDecl | undefined {
+function findStyleObjectDecls(source: string) {
   STYLE_DECL_RE.lastIndex = 0
-  const match = STYLE_DECL_RE.exec(source)
-  const varName = match?.[1]
-  if (!match || !varName) {
-    return
+  const declarations: StyleObjectDecl[] = []
+  for (const match of source.matchAll(STYLE_DECL_RE)) {
+    const varName = match[1]
+    if (!varName || match.index === undefined) {
+      continue
+    }
+    const objectStart = source.indexOf('{', match.index)
+    if (objectStart < 0) {
+      continue
+    }
+    const objectEnd = findBalancedObjectEnd(source, objectStart)
+    if (!objectEnd) {
+      continue
+    }
+    const semicolonEnd = source[objectEnd] === ';' ? objectEnd + 1 : objectEnd
+    declarations.push({
+      end: semicolonEnd,
+      objectEnd,
+      objectStart,
+      objectText: source.slice(objectStart, objectEnd),
+      start: match.index,
+      varName,
+    })
   }
-  const objectStart = source.indexOf('{', match.index)
-  if (objectStart < 0) {
-    return
-  }
-  const objectEnd = findBalancedObjectEnd(source, objectStart)
-  if (!objectEnd) {
-    return
-  }
-  const semicolonEnd = source[objectEnd] === ';' ? objectEnd + 1 : objectEnd
-  return {
-    end: semicolonEnd,
-    objectEnd,
-    objectStart,
-    objectText: source.slice(objectStart, objectEnd),
-    start: match.index,
-    varName,
-  }
+  return declarations
 }
 
 function resolveCssFallbackFiles(styleAssetFiles: Iterable<string | undefined> = []) {
@@ -264,8 +270,14 @@ function createStyleValueFromBundleSources(
 }
 
 function injectStyleOption(code: string, styleVarName: string) {
-  if (code.includes('["styles"')) {
-    return code
+  const styleOptionMatch = code.match(/(\["styles"\s*,\s*\[)([^\]]*)(\]\])/)
+  if (styleOptionMatch?.index !== undefined) {
+    const styleVars = styleOptionMatch[2]?.trim()
+    if (styleVars?.split(',').map(item => item.trim()).includes(styleVarName)) {
+      return code
+    }
+    const replacement = `${styleOptionMatch[1]}${styleVars ? `${styleVars}, ` : ''}${styleVarName}${styleOptionMatch[3]}`
+    return `${code.slice(0, styleOptionMatch.index)}${replacement}${code.slice(styleOptionMatch.index + styleOptionMatch[0].length)}`
   }
   const exportMatch = code.match(EXPORT_SFC_RE)
   if (!exportMatch || exportMatch.index === undefined) {
@@ -282,6 +294,7 @@ export function injectUniAppXStylePlaceholder(
   file: string,
   code: string,
   getAssetSource?: (file: string) => string | undefined,
+  cssSources: Iterable<string | undefined> = [],
 ) {
   const match = code.match(GEN_STYLES_PLACEHOLDER_RE)
   const stylesName = match?.[1] ?? match?.[2]
@@ -293,20 +306,21 @@ export function injectUniAppXStylePlaceholder(
     return code
   }
   const appStyleArray = createUtsStyleArrayFromAppStyles(code, getAssetSource?.('App.uvue.ts'))
-  if (appStyleArray) {
-    return code.replace(GEN_STYLES_PLACEHOLDER_RE, `const ${stylesName} = ${appStyleArray}`)
-  }
-  const styleSource = resolveStylePlaceholderFallbackFiles(file)
+  const fallbackStyleSources = resolveStylePlaceholderFallbackFiles(file)
     .map(candidate => getAssetSource?.(candidate))
-    .find((source): source is string => typeof source === 'string' && source.length > 0)
-  if (!styleSource) {
+  const styleExport = mergeStyleValues(
+    ...[...cssSources, ...fallbackStyleSources]
+      .map(source => source ? cssSourceToStyleValue(source) : undefined),
+  )
+  const cssStyleArray = styleExport ? styleExportToUtsMap(styleExport) : undefined
+  const styleArrays = [appStyleArray, cssStyleArray].filter((item): item is string => Boolean(item))
+  if (styleArrays.length === 0) {
     return code
   }
-  const styleExport = cssSourceToStyleValue(styleSource)
-  if (!styleExport) {
-    return code
-  }
-  return code.replace(GEN_STYLES_PLACEHOLDER_RE, `const ${stylesName} = ${styleExportToUtsMap(styleExport)}`)
+  const mergedStyleArray = styleArrays.length === 1
+    ? styleArrays[0]
+    : `[${styleArrays.map(item => item.slice(1, -1)).filter(Boolean).join(', ')}]`
+  return code.replace(GEN_STYLES_PLACEHOLDER_RE, `const ${stylesName} = ${mergedStyleArray}`)
 }
 
 export function injectUniAppXHarmonyGlobalStyles(
@@ -322,29 +336,45 @@ export function injectUniAppXHarmonyGlobalStyles(
     return code
   }
   const appSource = getBundleSource?.('assets/App.js') ?? getBundleSource?.('App.js')
-  const appStyleDecl = appSource ? findFirstStyleObjectDecl(appSource) : undefined
-  const appStyle = appStyleDecl ? parseStyleObject(appStyleDecl.objectText) : undefined
-  const localStyleDecl = findFirstStyleObjectDecl(code)
-  const localStyle = localStyleDecl ? parseStyleObject(localStyleDecl.objectText) : undefined
+  const appStyle = appSource
+    ? mergeStyleValues(...findStyleObjectDecls(appSource).map(decl => parseStyleObject(decl.objectText)))
+    : undefined
+  const localStyleDecls = findStyleObjectDecls(code)
+  const parseableLocalStyles = localStyleDecls.flatMap((decl) => {
+    const style = parseStyleObject(decl.objectText)
+    return style ? [{ decl, style }] : []
+  })
   const bundleStyle = createStyleValueFromBundleSources(file, code, getBundleSource, options)
-  const styleSource = mergeStyleValues(appStyle, bundleStyle)
+  const styleSource = mergeStyleValues(bundleStyle, appStyle)
   if (!styleSource) {
     return code
   }
-  const mergedStyle = createMergedStyleValue(code, localStyle, styleSource as StyleValue)
-  if (!mergedStyle) {
+  const mergedStyles = createMergedStyleValues(
+    code,
+    parseableLocalStyles.map(item => item.style),
+    styleSource as StyleValue,
+  )
+  if (mergedStyles) {
+    let nextCode = code
+    for (let index = parseableLocalStyles.length - 1; index >= 0; index--) {
+      const decl = parseableLocalStyles[index].decl
+      nextCode = `${nextCode.slice(0, decl.objectStart)}${JSON.stringify(mergedStyles[index])}${nextCode.slice(decl.objectEnd)}`
+    }
+    return nextCode
+  }
+  if (parseableLocalStyles.length > 0) {
     return code
   }
-  const nextStyleSource = JSON.stringify(mergedStyle)
-  if (localStyleDecl) {
-    return `${code.slice(0, localStyleDecl.objectStart)}${nextStyleSource}${code.slice(localStyleDecl.objectEnd)}`
+  const newStyle = createMergedStyleValue(code, undefined, styleSource as StyleValue)
+  if (!newStyle) {
+    return code
   }
   const exportMatch = code.match(EXPORT_SFC_RE)
   if (!exportMatch || exportMatch.index === undefined) {
     return code
   }
   const styleVarName = '_style_wt'
-  const withStyleDecl = `${code.slice(0, exportMatch.index)}const ${styleVarName} = ${nextStyleSource};\n${code.slice(exportMatch.index)}`
+  const withStyleDecl = `${code.slice(0, exportMatch.index)}const ${styleVarName} = ${JSON.stringify(newStyle)};\n${code.slice(exportMatch.index)}`
   return injectStyleOption(withStyleDecl, styleVarName)
 }
 

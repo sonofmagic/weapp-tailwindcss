@@ -134,23 +134,20 @@ function createUniAppHBuilderXVue3Case(baseCwd: string): WatchCase {
   }
 }
 
-function mutateUniAppXScriptSetupWithTemplateConsumer(
+function mutateUniAppXOptionsDataWithTemplateConsumer(
   source: string,
   payload: Parameters<NonNullable<WatchCase['scriptMutation']>['mutate']>[1],
 ) {
-  const anchor = 'const classArray = computed(() => ['
-  if (!source.includes(anchor)) {
-    throw new Error('uni-app-x script setup classArray anchor not found')
+  const dataAnchor = 'globalNum: 0,'
+  if (!source.includes(dataAnchor)) {
+    throw new Error('uni-app-x options data globalNum anchor not found')
   }
 
-  const scriptSnippet = [
-    `const ${payload.classVariableName} = computed(() => '${payload.classLiteral}')`,
-    `const __twWatchScriptMarker = '${payload.marker}'`,
-    '',
-  ].map(line => line ? `\t${line}` : '').join('\n')
-
   return insertBeforeAnchor(
-    source.replace(anchor, `${scriptSnippet}\n\t${anchor}`),
+    source.replace(
+      dataAnchor,
+      `${dataAnchor}\n\t\t\t\t${payload.classVariableName}: '${payload.classLiteral}',\n\t\t\t\t__twWatchScriptMarker: '${payload.marker}',`,
+    ),
     '<BindClass />',
     `\t\t<view hidden :class="${payload.classVariableName}">{{ __twWatchScriptMarker }}</view>\n\t\t`,
   )
@@ -189,6 +186,15 @@ function createUniAppXHBuilderXCase(baseCwd: string): WatchCase {
       file,
       forbiddenFragments: ['.i-\\[', '.before\\:'],
     })),
+    userReportedHotUpdate: {
+      label: 'index text-xs to text-[29px]',
+      sourceFile: pageSource,
+      before: 'class="text-xs text-white">issue-1002 text-xs',
+      after: 'class="text-[29px] text-white">issue-1002 text-[29px]',
+      beforeClassTokens: ['text-xs'],
+      afterClassTokens: ['text-[29px]'],
+      verifyEscapedIn: ['wxml'],
+    },
     templateMutation: {
       sourceFile: pageSource,
       verifyEscapedIn: ['wxml'],
@@ -204,7 +210,7 @@ function createUniAppXHBuilderXCase(baseCwd: string): WatchCase {
       verifyClassLiteralIn: [],
       roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
-        return mutateUniAppXScriptSetupWithTemplateConsumer(source, payload)
+        return mutateUniAppXOptionsDataWithTemplateConsumer(source, payload)
       },
     },
     styleMutation: {

@@ -411,6 +411,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       touchCssEntryOnSourceMutation: false,
       readySelector: 'uni-page[data-page="pages/index/index"]',
       initialMutationDelayMs: 1500,
+      reloadOnHmrStall: true,
+      hmrReloadStallMs: 5_000,
       mutate(source, payload) {
         return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->`
       },
@@ -667,6 +669,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/pages/index/index.tsx'),
       cssEntryFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/app.css'),
       injectMarkerElement: true,
+      reloadOnHmrStall: true,
+      hmrReloadStallMs: 5_000,
       env: {
         NODE_ENV: 'development',
       },
@@ -931,6 +935,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       // Vue H5 通过同一个模板 HMR 同时携带 DOM 与 class，避免源码注释和 app.css 双更新竞态。
       injectMarkerElement: false,
       touchCssEntryOnSourceMutation: false,
+      reloadOnHmrStall: true,
+      hmrReloadStallMs: 5_000,
       env: {
         NODE_ENV: 'development',
       },

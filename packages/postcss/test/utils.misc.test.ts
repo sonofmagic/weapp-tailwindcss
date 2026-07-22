@@ -32,6 +32,24 @@ describe('fingerprintOptions', () => {
     expect(arrayFingerprint).toContain('[ref:0')
     expect(arrayFingerprint).toContain('{nested:ref:0}')
   })
+
+  it('fingerprints map contents deterministically', () => {
+    const first = fingerprintOptions(new Map([
+      ['--text-xs', '0.75rem'],
+      ['--color-white', '#fff'],
+    ]))
+    const reordered = fingerprintOptions(new Map([
+      ['--color-white', '#fff'],
+      ['--text-xs', '0.75rem'],
+    ]))
+    const changed = fingerprintOptions(new Map([
+      ['--color-white', '#000'],
+      ['--text-xs', '0.75rem'],
+    ]))
+
+    expect(first).toBe(reordered)
+    expect(first).not.toBe(changed)
+  })
 })
 
 describe('css var helpers', () => {

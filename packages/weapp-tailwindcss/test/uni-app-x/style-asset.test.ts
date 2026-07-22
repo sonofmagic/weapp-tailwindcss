@@ -5,6 +5,7 @@ import {
   collectUniAppXHarmonyApplyUtilities,
   createUniAppXBundleAssetSourceGetter,
   createUniAppXHarmonyApplyGeneratorSource,
+  expandUniAppXHarmonyApplyStyles,
   injectUniAppXHarmonyBundleStyles,
   injectUniAppXHarmonyGlobalStyles,
   injectUniAppXStylePlaceholder,
@@ -15,6 +16,7 @@ import {
   collectUniAppXHarmonyApplyStyleSourcesFromSource,
   collectUniAppXHarmonyApplyUtilitiesFromSources,
   createMergedStyleValue,
+  createMergedStyleValues,
   createStyleValueFromApplySources,
   createUtsStyleArrayFromAppStyles,
   cssSourceToStyleValue,
@@ -86,6 +88,28 @@ describe('uni-app-x style asset helpers', () => {
     ], ['flex', 'block'])).toBe('.a{@apply flex}\n@reference "/project/main.css"; .b{@apply block}')
   })
 
+  it('expands harmony apply rules with generated platform-safe declarations', () => {
+    const source = [
+      '<template><view class="rounded" /></template>',
+      '<style scoped>',
+      '@reference "../../main.css";',
+      '.rounded { @apply rounded-full text-xs; }',
+      '.plain { color: red; }',
+      '</style>',
+    ].join('\n')
+
+    const next = expandUniAppXHarmonyApplyStyles(source, [
+      '.rounded { border-top-left-radius: 9999px; border-bottom-left-radius: 9999px; font-size: 24rpx; }',
+    ].join('\n'))
+
+    expect(next).toContain('border-top-left-radius: 9999px')
+    expect(next).toContain('border-bottom-left-radius: 9999px')
+    expect(next).toContain('font-size: 24rpx')
+    expect(next).toContain('.plain { color: red; }')
+    expect(next).not.toContain('@apply')
+    expect(next).not.toContain('@reference')
+  })
+
   it('resolves apply references against the original uvue module', () => {
     expect(collectUniAppXHarmonyApplyStyleSourcesFromSource(`
 <style scoped>
@@ -105,6 +129,22 @@ describe('uni-app-x style asset helpers', () => {
     expect(injectUniAppXStylePlaceholder('pages/index.uvue.ts', 'const GenPageStyles = []', () => undefined)).toBe('const GenPageStyles = []')
   })
 
+  it('combines used App styles with processed CSS for native style placeholders', () => {
+    const code = '_cE("view", _uM({ class: "template text-xs text-white rounded-full" }))\n/*GenPageStyles*/'
+    const appCode = 'const GenAppStyles = [_uM([["template", _pS(_uM([["display", "flex"]]))]])]'
+    const next = injectUniAppXStylePlaceholder(
+      'pages/index.uvue.ts',
+      code,
+      file => file === 'App.uvue.ts' ? appCode : undefined,
+      ['.text-xs{font-size:24rpx}.text-white{color:#fff}.rounded-full{border-radius:9999px}'],
+    )
+
+    expect(next).toContain('["template", _pS(_uM([["display", "flex"]]))]')
+    expect(next).toContain('["text-xs", _pS(_uM([["fontSize", "24rpx"]]))]')
+    expect(next).toContain('["text-white", _pS(_uM([["color", "#fff"]]))]')
+    expect(next).toContain('["rounded-full", _pS(_uM([["borderRadius", 9999]]))]')
+  })
+
   it('injects global styles into chunks and preserves unsupported files', () => {
     expect(injectUniAppXHarmonyGlobalStyles('App.js', componentCode, () => '.root{color:red}')).toBe(componentCode)
     expect(injectUniAppXHarmonyGlobalStyles('components/button.js', componentCode, () => '.root{color:red}', { excludeComponents: true })).toBe(componentCode)
@@ -119,6 +159,41 @@ describe('uni-app-x style asset helpers', () => {
     expect(next).toContain('const _style_wt =')
     expect(next).toContain('["styles", [_style_wt]]')
     expect(next).toContain('green')
+  })
+
+  it('reconciles generated styles across every parseable harmony style object', () => {
+    const code = [
+      'const _style_0 = {"local":{"":{"color":"red"}},"shared":{"":{"borderRadius":9999}}};',
+      'const _style_1 = {"shared":{"":{"borderRadius":"calc(infinity * 1px)"}},"untouched":{"":{"width":10}}};',
+      'function render(){return createElementVNode("view", { class: "shared added" })}',
+      'const index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0, _style_1]], ["__file", "pages/index/index.uvue"]]);',
+    ].join('\n')
+
+    const next = injectUniAppXHarmonyGlobalStyles('pages/index/index.js', code, undefined, {
+      cssSources: ['.shared{border-radius:9999px}.added{color:#fff}'],
+    })
+
+    expect(next).toContain('const _style_0 = {"local":{"":{"color":"red"}},"shared":{"":{"borderRadius":9999}},"added":{"":{"color":"#fff"}}};')
+    expect(next).toContain('const _style_1 = {"shared":{"":{"borderRadius":9999}},"untouched":{"":{"width":10}}};')
+    expect(next).toContain('["styles", [_style_0, _style_1]]')
+    expect(next).not.toContain('calc(infinity')
+    expect(next).not.toContain('const _style_wt')
+  })
+
+  it('appends generated styles when existing harmony style objects cannot be parsed', () => {
+    const code = [
+      'const _style_0 = {"icon":{"":{"maskImage":`url(${icon})`}}};',
+      'function render(){return createElementVNode("view", { class: "added" })}',
+      'const index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);',
+    ].join('\n')
+
+    const next = injectUniAppXHarmonyGlobalStyles('pages/index/index.js', code, undefined, {
+      cssSources: ['.added{color:#fff}'],
+    })
+
+    expect(next).toContain('const _style_0 = {"icon":{"":{"maskImage":`url(${icon})`}}};')
+    expect(next).toContain('const _style_wt = {"added":{"":{"color":"#fff"}}};')
+    expect(next).toContain('["styles", [_style_0, _style_wt]]')
   })
 
   it('collects apply sources from uvue assets, chunks, and sourcemaps', () => {
@@ -214,5 +289,15 @@ describe('uni-app-x style asset helpers', () => {
     expect(createMergedStyleValue('const cls = "app"', undefined, { app: { '': { color: 'red' } } })?.app[''].color).toBe('red')
     expect(createMergedStyleValue('const cls = "app"', { app: { '': { color: 'blue' } } }, { app: { '': { color: 'red' } } })).toBeUndefined()
     expect(createMergedStyleValue('const cls = "none"', undefined, { app: { '': { color: 'red' } } })).toBeUndefined()
+    expect(createMergedStyleValues('const cls = "app added"', [
+      { app: { '': { color: 'blue' } } },
+      { app: { '': { color: 'green' } }, untouched: { '': { width: 10 } } },
+    ], {
+      app: { '': { color: 'red' } },
+      added: { '': { height: 20 } },
+    })).toEqual([
+      { app: { '': { color: 'red' } }, added: { '': { height: 20 } } },
+      { app: { '': { color: 'red' } }, untouched: { '': { width: 10 } } },
+    ])
   })
 })

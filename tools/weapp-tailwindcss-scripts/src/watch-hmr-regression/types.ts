@@ -308,6 +308,8 @@ export interface WebHmrConfig {
   waitForInitialCompileSettled?: boolean
   initialCompileSettleTimeoutMs?: number
   reloadAfterCssMutation?: boolean
+  reloadOnHmrStall?: boolean
+  hmrReloadStallMs?: number
   touchCssEntryOnSourceMutation?: boolean
   compileSettleTimeoutMs?: number
   mutate: (source: string, payload: ClassMutationPayload) => string

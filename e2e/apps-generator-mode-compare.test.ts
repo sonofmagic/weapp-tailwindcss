@@ -658,14 +658,7 @@ function createReportItem(
   project: CompareProject,
   generatorResult: GeneratorBuildResult,
 ): CompareReportItem {
-  const generatorCss = shouldNormalizeProjectCssSnapshots(project)
-    ? `${createStableCssSnapshots(generatorResult, project.cssFile, {
-      structureIdentity: isWebStyleDirectoryProject(project),
-    })
-      .map(snapshot => normalizeProjectCssSnapshot(project, snapshot))
-      .join('\n')}\n`
-    : `${normalizeCssSnapshot(generatorResult.css)}\n`
-  const generator = summarizeCss(generatorCss)
+  const generator = summarizeCss(`${createNormalizedGeneratorCss(project, generatorResult)}\n`)
   const cssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile, {
     structureIdentity: isWebStyleDirectoryProject(project),
   })
@@ -922,6 +915,24 @@ function normalizeCssSnapshot(css: string) {
   return normalizeCssTextSnapshot(css)
 }
 
+const GENERATED_CSS_SOURCE_MARKER_RE = /(\/\*!\s*weapp-tailwindcss vite-generated-css:)([^\s*]+)(\s*\*\/)/g
+
+function normalizeGeneratedCssSourceMarkers(css: string) {
+  return css.replace(GENERATED_CSS_SOURCE_MARKER_RE, (match, prefix, encodedSource, suffix) => {
+    try {
+      const source = decodeURIComponent(encodedSource).replaceAll('\\', '/')
+      const demoIndex = source.lastIndexOf('/demo/')
+      if (demoIndex < 0) {
+        return match
+      }
+      return `${prefix}${encodeURIComponent(source.slice(demoIndex + 1))}${suffix}`
+    }
+    catch {
+      return match
+    }
+  })
+}
+
 const TARO_WEBPACK_V4_NUTUI_NOISE_KEYFRAMES = new Set([
   'rotation',
   'nutJump',
@@ -1010,7 +1021,7 @@ function removeTaroWebpackV4IndependentNutuiNoise(css: string) {
 }
 
 function normalizeProjectCssSnapshot(project: CompareProject, snapshot: GeneratorCssSnapshot) {
-  let normalized = normalizeCssSnapshot(snapshot.content)
+  let normalized = normalizeCssSnapshot(normalizeGeneratedCssSourceMarkers(snapshot.content))
   if (shouldRemoveTaroWebpackV4WebSubpackageNoise(project, snapshot.fileName)) {
     normalized = removeTaroWebpackV4WebSubpackageNoise(normalized)
   }
@@ -1042,6 +1053,20 @@ function createCssArtifactSnapshot(project: CompareProject, snapshot: GeneratorC
   return `${normalizeProjectCssSnapshot(project, snapshot).trimEnd()}\n`
 }
 
+function createNormalizedGeneratorCss(
+  project: CompareProject,
+  generatorResult: Pick<GeneratorBuildResult, 'css' | 'cssFiles'> & Partial<Pick<GeneratorBuildResult, 'cssSnapshots'>>,
+) {
+  if (shouldNormalizeProjectCssSnapshots(project)) {
+    return createStableCssSnapshots(generatorResult, project.cssFile, {
+      structureIdentity: isWebStyleDirectoryProject(project),
+    })
+      .map(snapshot => normalizeProjectCssSnapshot(project, snapshot))
+      .join('\n')
+  }
+  return normalizeCssSnapshot(normalizeGeneratedCssSourceMarkers(generatorResult.css))
+}
+
 function createCssOutputSnapshot(
   project: CompareProject,
   generatorResult: Pick<GeneratorBuildResult, 'css' | 'cssFiles'> & Partial<Pick<GeneratorBuildResult, 'cssSnapshots'>>,
@@ -1049,9 +1074,7 @@ function createCssOutputSnapshot(
   const stableCssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile, {
     structureIdentity: isWebStyleDirectoryProject(project),
   })
-  const generatorCss = shouldNormalizeProjectCssSnapshots(project)
-    ? stableCssSnapshots.map(snapshot => normalizeProjectCssSnapshot(project, snapshot)).join('\n')
-    : normalizeCssSnapshot(generatorResult.css)
+  const generatorCss = createNormalizedGeneratorCss(project, generatorResult)
   const generator = summarizeCss(`${generatorCss}\n`)
   const cssSummaryRows = stableCssSnapshots.flatMap((snapshot) => {
     const summary = summarizeCss(`${normalizeProjectCssSnapshot(project, snapshot)}\n`)
@@ -1111,6 +1134,60 @@ async function expectCssOutputSnapshot(
 }
 
 describe('demo generator mode output', () => {
+  it('normalizes generated css source markers across checkout locations', () => {
+    const source = 'demo/taro-vite-react-tailwindcss-v4/src/app.css'
+    const expected = `/*! weapp-tailwindcss vite-generated-css:${encodeURIComponent(source)} */`
+
+    for (const absoluteSource of [
+      `/Users/example/project/${source}`,
+      `/home/runner/work/project/${source}`,
+      `C:\\workspace\\project\\${source.replaceAll('/', '\\')}`,
+    ]) {
+      const marker = `/*! weapp-tailwindcss vite-generated-css:${encodeURIComponent(absoluteSource)} */`
+      expect(normalizeGeneratedCssSourceMarkers(marker)).toBe(expected)
+    }
+
+    expect(normalizeGeneratedCssSourceMarkers('/*! weapp-tailwindcss vite-generated-css:%E0%A4%A */'))
+      .toBe('/*! weapp-tailwindcss vite-generated-css:%E0%A4%A */')
+  })
+
+  it('normalizes generated css source markers before aggregate metrics', () => {
+    const project: CompareProject = {
+      name: 'taro-vite-react-tailwindcss-v4',
+      fixturesDir: '../demo',
+      rootDir: 'taro-vite-react-tailwindcss-v4',
+      platform: 'web',
+      allowedPlatforms: ['h5'],
+      cssFile: 'dist',
+      cssPath: 'dist',
+      requiredCssFiles: [],
+      buildScript: 'build:h5',
+      cssSnapshotMode: 'directory',
+      cssPattern: WEB_CSS_PATTERN,
+    }
+    const source = 'demo/taro-vite-react-tailwindcss-v4/src/app.css'
+    const createGeneratorResult = (absoluteSource: string): GeneratorBuildResult => {
+      const css = `/*! weapp-tailwindcss vite-generated-css:${encodeURIComponent(absoluteSource)} */\n.example { color: red; }`
+      return {
+        css,
+        cssFiles: ['css/index.css'],
+        cssSnapshots: [{ fileName: 'css/index.css', content: css }],
+      }
+    }
+
+    const macResult = createGeneratorResult(`/Users/example/project/${source}`)
+    const expectedOutput = createCssOutputSnapshot(project, macResult)
+    const expectedReportItem = createReportItem(project, macResult)
+    for (const absoluteSource of [
+      `/home/runner/work/project/${source}`,
+      `C:\\workspace\\project\\${source.replaceAll('/', '\\')}`,
+    ]) {
+      const result = createGeneratorResult(absoluteSource)
+      expect(createCssOutputSnapshot(project, result)).toBe(expectedOutput)
+      expect(createReportItem(project, result)).toEqual(expectedReportItem)
+    }
+  })
+
   it('collects nested selectors and normalizes unsupported pseudo aliases', () => {
     expect(collectSelectors([
       '@media (prefers-color-scheme: dark) {',

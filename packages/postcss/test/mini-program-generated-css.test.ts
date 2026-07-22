@@ -144,6 +144,20 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toBe('')
   })
 
+  it('does not restore element content carriers after uvue finalization', () => {
+    const css = pruneMiniProgramGeneratedCss([
+      'view,text,::after,::before{--tw-content:""}',
+      '.before-probe::before{--tw-content:"probe";content:var(--tw-content)}',
+    ].join('\n'), {
+      preserveContentInit: false,
+      preservePreflight: true,
+    })
+
+    expect(css).toContain('.before-probe::before')
+    expect(css).not.toContain('view,text')
+    expect(css).not.toContain('::after{--tw-content:""}')
+  })
+
   it('keeps injected mini-program preflight before runtime variables', async () => {
     const styleHandler = createStyleHandler({
       cssPreflight: {

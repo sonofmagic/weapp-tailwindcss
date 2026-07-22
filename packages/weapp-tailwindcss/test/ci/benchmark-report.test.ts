@@ -192,7 +192,81 @@ describe('benchmark ci report', () => {
     expect(result.thresholds.minimumTimingRegressionMs).toBe(10)
     expect(result.thresholds.minimumMemoryRegressionMb).toBe(64)
     expect(result.thresholds.minimumTailRegressionSamples).toBe(2)
+    expect(result.thresholds.maximumMedianRegressionPValue).toBe(0.05)
     expect(result.passed).toBe(false)
+  })
+
+  it('requires distribution-level confidence before blocking on a median regression', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-21T00:00:00.000Z',
+      options: { buildRuns: 3, hmrRuns: 6, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'noisy-taro-vite',
+          hmrMode: 'watch',
+          buildPluginMs: [6847, 6844, 7277],
+          hmrPluginMs: [5763, 4288, 4274, 4771, 4202, 4282],
+          summary: {
+            buildPlugin: { median: 6847 },
+            hmrPlugin: { median: 4285, p95: 5763 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'noisy-taro-vite',
+          hmrMode: 'watch',
+          buildPluginMs: [7193, 7373, 7407],
+          hmrPluginMs: [5714, 5426, 4207, 4403, 4799, 4675],
+          summary: {
+            buildPlugin: { median: 7373 },
+            hmrPlugin: { median: 4737, p95: 5714 },
+          },
+        },
+        {
+          version: baselineLabel,
+          key: 'separated-build-regression',
+          buildPluginMs: [100, 101, 102],
+          summary: { buildPlugin: { median: 101 } },
+        },
+        {
+          version: currentLabel,
+          key: 'separated-build-regression',
+          buildPluginMs: [120, 121, 122],
+          summary: { buildPlugin: { median: 121 } },
+        },
+        {
+          version: baselineLabel,
+          key: 'large-sample-regression',
+          buildPluginMs: Array.from({ length: 12 }, (_, index) => 100 + index),
+          summary: { buildPlugin: { median: 105.5 } },
+        },
+        {
+          version: currentLabel,
+          key: 'large-sample-regression',
+          buildPluginMs: Array.from({ length: 12 }, (_, index) => 130 + index),
+          summary: { buildPlugin: { median: 135.5 } },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    const result = evaluatePerformanceGuard(summary)
+
+    expect(result.violations.filter(item => item.key === 'noisy-taro-vite')).toEqual([])
+    expect(result.violations).toContainEqual(expect.objectContaining({
+      key: 'separated-build-regression',
+      metric: 'buildPluginMedian',
+      medianRegressionPValue: 0.05,
+    }))
+    expect(result.violations).toContainEqual(expect.objectContaining({
+      key: 'large-sample-regression',
+      metric: 'buildPluginMedian',
+      medianRegressionPValue: expect.any(Number),
+    }))
+    expect(result.violations.find(item => item.key === 'large-sample-regression')?.medianRegressionPValue).toBeLessThan(0.05)
   })
 
   it('requires sustained median or two tail samples before failing small-sample HMR timing', async () => {
@@ -371,6 +445,38 @@ describe('benchmark ci report', () => {
             hmr: { median: 100, p95: 110 },
             hmrPeakRssMb: { median: 2450 },
             hmrSteadyRssMb: { median: 2140 },
+          },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    expect(evaluatePerformanceGuard(summary).passed).toBe(true)
+  })
+
+  it('requires HMR peak and steady RSS to confirm each other', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-21T00:00:00.000Z',
+      options: { buildRuns: 3, hmrRuns: 6, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'steady-only-memory-drift',
+          hmrMode: 'watch',
+          summary: {
+            hmrPeakRssMb: { median: 2584.37 },
+            hmrSteadyRssMb: { median: 2412.89 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'steady-only-memory-drift',
+          hmrMode: 'watch',
+          summary: {
+            hmrPeakRssMb: { median: 2712.90 },
+            hmrSteadyRssMb: { median: 2606.22 },
           },
         },
       ],

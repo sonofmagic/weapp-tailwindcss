@@ -2,7 +2,7 @@ import type { ViteFrameworkCssPipelineStrategy } from '../../shared/framework-st
 import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import { hasTailwindApplyDirective } from '@/bundlers/shared/generator-css/directives'
 import { viteStyleInjectorDelegates } from '@/style-injector/internal'
-import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
+import { isUniAppXHarmonyOutDir, isUniAppXNativeAppOutDir } from '@/uni-app-x/harmony'
 import { isUniAppXHarmonyBundle } from '@/uni-app-x/style-asset'
 import { createUniAppXPlugins } from '@/uni-app-x/vite'
 import { withUniAppXWebPreflightReset } from '@/uni-app-x/web-preflight-reset'
@@ -10,8 +10,10 @@ import { resolveUniUtsPlatform } from '@/utils'
 import { createViteFrameworkPlugins } from '../../shared/create-framework-plugins'
 import { resolveUniAppXNativeCssHandlerOptions } from '../../uni-app-x-css-options'
 
-function isUniAppXNativeAppStyleTarget() {
+function isUniAppXNativeAppStyleTarget(context?: Parameters<NonNullable<ViteFrameworkCssPipelineStrategy['isNativeAppStyleTarget']>>[0]) {
   return resolveUniUtsPlatform().isApp
+    || isUniAppXNativeAppOutDir(context?.resolvedConfig?.build?.outDir)
+    || isUniAppXNativeAppOutDir(context?.resolvedConfig?.root)
 }
 
 function isUniAppXHarmonyAppStyleTarget(context: Parameters<NonNullable<ViteFrameworkCssPipelineStrategy['isHarmonyAppStyleTarget']>>[0]) {
@@ -30,14 +32,14 @@ export const uniAppXCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
   getCssHandlerExtraOptions(context) {
     return resolveUniAppXNativeCssHandlerOptions(context.opts)
   },
-  isNativeAppStyleTarget() {
-    return isUniAppXNativeAppStyleTarget()
+  isNativeAppStyleTarget(context) {
+    return isUniAppXNativeAppStyleTarget(context)
   },
   isHarmonyAppStyleTarget(context) {
     return isUniAppXHarmonyAppStyleTarget(context)
   },
   shouldPreserveStyleOutputExtension(context) {
-    return isUniAppXNativeAppStyleTarget()
+    return isUniAppXNativeAppStyleTarget(context)
       || isUniAppXHarmonyAppStyleTarget(context)
   },
   shouldKeepRootMiniProgramStyleAsImportShell() {

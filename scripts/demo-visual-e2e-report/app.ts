@@ -35,7 +35,7 @@ import {
   writeStyleIsolationVariantManifest,
 } from './style-isolation.ts'
 
-const appMarkerRE = /\n[ \t]*<view class="[^"]+">hbuilderx-app-(?:dynamic|hmr)-[^<]+<\/view>/g
+const appMarkerRE = /\n[ \t]*<view class="[^"]+">(?:<text class="[^"]+">)?hbuilderx-app-(?:dynamic|hmr)-[^<]+(?:<\/text>)?<\/view>/g
 const appReadyTimeoutMs = Number(process.env['DEMO_VISUAL_APP_READY_TIMEOUT_MS'] ?? 120_000)
 const appOutputTimeoutMs = Number(process.env['DEMO_VISUAL_APP_OUTPUT_TIMEOUT_MS'] ?? Math.min(hbuilderxAppTimeoutMs, 180_000))
 const androidScreenshotTimeoutMs = Number(process.env['DEMO_VISUAL_ANDROID_SCREENSHOT_TIMEOUT_MS'] ?? 30_000)
@@ -221,6 +221,7 @@ async function writeAppMarker(
   anchors: string[],
   marker: {
     className: string
+    textClassName?: string
     text: string
   },
 ) {
@@ -231,7 +232,10 @@ async function writeAppMarker(
   if (index < 0) {
     throw new Error(`找不到 App visual 插入锚点：${file}`)
   }
-  const next = `${cleaned.slice(0, index)}<view class="${marker.className}">${marker.text}</view>\n\t\t${cleaned.slice(index)}`
+  const content = marker.textClassName
+    ? `<text class="${marker.textClassName}">${marker.text}</text>`
+    : marker.text
+  const next = `${cleaned.slice(0, index)}<view class="${marker.className}">${content}</view>\n\t\t${cleaned.slice(index)}`
   await fs.writeFile(file, next, 'utf8')
 }
 
@@ -466,6 +470,10 @@ async function analyzeScreenshotColorPresence(
   const image = PNG.sync.read(fsSync.readFileSync(screenshot))
   const data = image.data
   let matchingPixels = 0
+  let maxX = -1
+  let maxY = -1
+  let minX = image.width
+  let minY = image.height
   for (let index = 0; index < data.length; index += 4) {
     const alpha = data[index + 3] ?? 255
     if (alpha < 8) {
@@ -480,12 +488,75 @@ async function analyzeScreenshotColorPresence(
       && Math.abs(blue - color.blue) <= 3
     ) {
       matchingPixels += 1
+      const pixel = index / 4
+      const x = pixel % image.width
+      const y = Math.floor(pixel / image.width)
+      minX = Math.min(minX, x)
+      minY = Math.min(minY, y)
+      maxX = Math.max(maxX, x)
+      maxY = Math.max(maxY, y)
     }
   }
   return {
+    bounds: matchingPixels > 0 ? { maxX, maxY, minX, minY } : undefined,
     color,
     matchingPixels,
     matched: matchingPixels > 100,
+  }
+}
+
+async function analyzeIssue1002MarkerPresentation(
+  screenshot: string,
+  marker: Awaited<ReturnType<typeof analyzeScreenshotColorPresence>>,
+  markerClass: string,
+  markerTextClass?: string,
+) {
+  const image = PNG.sync.read(fsSync.readFileSync(screenshot))
+  const bounds = marker.bounds
+  if (!bounds) {
+    return { ready: false }
+  }
+
+  const width = bounds.maxX - bounds.minX + 1
+  const height = bounds.maxY - bounds.minY + 1
+  const insetX = Math.max(1, Math.floor(width * 0.2))
+  const insetY = Math.max(1, Math.floor(height * 0.2))
+  let centerWhitePixels = 0
+  for (let y = bounds.minY + insetY; y <= bounds.maxY - insetY; y++) {
+    for (let x = bounds.minX + insetX; x <= bounds.maxX - insetX; x++) {
+      const index = (y * image.width + x) * 4
+      const red = image.data[index] ?? 0
+      const green = image.data[index + 1] ?? 0
+      const blue = image.data[index + 2] ?? 0
+      if (red >= 245 && green >= 245 && blue >= 245) {
+        centerWhitePixels += 1
+      }
+    }
+  }
+
+  const cornerInset = Math.max(1, Math.floor(Math.min(width, height) * 0.12))
+  const cornerPoints = [
+    [bounds.minX + cornerInset, bounds.minY + cornerInset],
+    [bounds.maxX - cornerInset, bounds.minY + cornerInset],
+    [bounds.minX + cornerInset, bounds.maxY - cornerInset],
+    [bounds.maxX - cornerInset, bounds.maxY - cornerInset],
+  ]
+  const background = marker.color
+  const coloredCorners = cornerPoints.filter(([x, y]) => {
+    const index = (y * image.width + x) * 4
+    return Math.abs((image.data[index] ?? 0) - background.red) <= 3
+      && Math.abs((image.data[index + 1] ?? 0) - background.green) <= 3
+      && Math.abs((image.data[index + 2] ?? 0) - background.blue) <= 3
+  }).length
+  const roundedReady = !markerClass.includes('rounded-full') || coloredCorners <= 1
+  const whiteTextReady = !markerTextClass?.includes('text-white') || centerWhitePixels >= 8
+
+  return {
+    centerWhitePixels,
+    coloredCorners,
+    ready: roundedReady && whiteTextReady,
+    roundedReady,
+    whiteTextReady,
   }
 }
 
@@ -504,12 +575,21 @@ async function collectAppScreenshotEvidence(
   const marker = expectedMarkerColor
     ? await analyzeScreenshotColorPresence(screenshot, expectedMarkerColor)
     : undefined
-  const markerReady = marker ? marker.matched : true
+  const markerPresentation = marker && expectedMarkerClass
+    ? await analyzeIssue1002MarkerPresentation(
+        screenshot,
+        marker,
+        expectedMarkerClass,
+        expectedMarkerClass === item.markerClass ? item.markerTextClass : item.hmrMarkerTextClass,
+      )
+    : undefined
+  const markerReady = marker ? marker.matched && (markerPresentation?.ready ?? true) : true
   if (item.platform === 'app-android') {
     const deviceId = resolveAndroidScreenshotDeviceId(item)
     const uiHierarchy = await readAndroidUiHierarchy(env, deviceId)
     return {
       marker,
+      markerPresentation,
       ready: !isAndroidDebugShell(uiHierarchy) && visual.nonWhiteRatio > 0.01 && markerReady,
       uiTextPreview: uiHierarchy
         .replace(/\s+/g, ' ')
@@ -520,12 +600,14 @@ async function collectAppScreenshotEvidence(
   if (item.platform === 'app-harmony') {
     return {
       marker,
+      markerPresentation,
       ready: visual.nonWhiteRatio > 0.025 && markerReady,
       visual,
     }
   }
   return {
     marker,
+    markerPresentation,
     ready: visual.nonWhiteRatio > 0.025 && markerReady,
     visual,
   }
@@ -668,6 +750,7 @@ async function runAppCaseVariant(
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write initial marker\n`)
     await writeAppMarker(activeSourceFile, resolveAppMarkerAnchors(item), {
       className: item.markerClass,
+      textClassName: item.markerTextClass,
       text: item.markerText,
     })
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: clean output\n`)
@@ -697,6 +780,7 @@ async function runAppCaseVariant(
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write hmr marker\n`)
     await writeAppMarker(activeSourceFile, resolveAppMarkerAnchors(item), {
       className: item.hmrMarkerClass,
+      textClassName: item.hmrMarkerTextClass,
       text: item.hmrMarkerText,
     })
     await wait(Number(process.env['DEMO_VISUAL_APP_HMR_MUTATION_DELAY_MS'] ?? 1000))

@@ -213,6 +213,16 @@ describe('uni-app-x vite plugins', () => {
       expect(preResult).toBeUndefined()
       expect(styleHandler).not.toHaveBeenCalled()
 
+      const generatedApplyResult = await preCssPlugin!.transform?.(
+        '.issue-1002-apply { border-radius: calc(infinity * 1px); }',
+        scssId,
+      )
+      expect(generatedApplyResult).toEqual({
+        code: '.issue-1002-apply { border-radius: 9999px; }',
+        map: null,
+      })
+      expect(styleHandler).not.toHaveBeenCalled()
+
       const result = await cssPlugin!.transform?.('body { color: red; }', scssId)
       expect(styleHandler).toHaveBeenCalledTimes(1)
       expect(styleHandler).toHaveBeenCalledWith(
@@ -462,6 +472,106 @@ describe('uni-app-x vite plugins', () => {
       process.env.UNI_UTS_PLATFORM = originalPlatform
     }
   })
+
+  it('enables page local styles when HBuilderX exposes Android through temporary module ids', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    delete process.env.UNI_UTS_PLATFORM
+    const runtimeSet = new Set(['text-xs', 'text-white'])
+    const jsHandler = vi.fn()
+    try {
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app-x',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { readyPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        jsHandler,
+        ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+        getResolvedConfig: () => ({ command: 'build', build: { watch: false }, root: '/project' } as ResolvedConfig),
+        uniAppX: {
+          enabled: true,
+          componentLocalStyles: {
+            enabled: true,
+            onlyWhenStyleIsolationVersion2: false,
+          },
+        },
+      })
+      const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
+      transformUVueMock.mockClear()
+      transformUVueMock.mockReturnValue({ code: 'transformed', map: null } as TransformResult)
+
+      await nvuePlugin?.transform?.(
+        '<template><text class="text-xs text-white" /></template>',
+        '/tmp/demo-weapp-tw-app-android-12345/pages/index/index.uvue',
+      )
+
+      expect(transformUVueMock).toHaveBeenLastCalledWith(
+        '<template><text class="text-xs text-white" /></template>',
+        '/tmp/demo-weapp-tw-app-android-12345/pages/index/index.uvue',
+        jsHandler,
+        runtimeSet,
+        {
+          enableComponentLocalStyle: true,
+          enablePageLocalStyle: true,
+        },
+      )
+    }
+    finally {
+      process.env.UNI_UTS_PLATFORM = originalPlatform
+    }
+  })
+
+  it('expands harmony page apply rules before the native compiler reads the transformed uvue source', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    try {
+      const generateCss = vi.fn(async () => '.issue-1002-apply { border-radius: calc(infinity * 1px); font-size: var(--text-xs); color: var(--color-white); }')
+      const styleHandler = vi.fn(async () => ({
+        css: '.issue-1002-apply { border-top-left-radius: 9999px; border-bottom-left-radius: 9999px; font-size: 24rpx; color: #fff; }',
+        map: { toJSON: () => ({ version: 3, sources: [], names: [], mappings: '' }) },
+      }))
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app-x',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => false),
+        runtimeState: { readyPromise: Promise.resolve() },
+        styleHandler,
+        generateCss,
+        jsHandler: vi.fn(),
+        ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        getResolvedConfig: () => ({ command: 'build', build: { watch: false }, root: '/project' } as ResolvedConfig),
+      })
+      const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
+      transformUVueMock.mockReturnValue({
+        code: '<template><text class="issue-1002-apply" /></template>\n<style scoped>\n@reference "../../main.css";\n.issue-1002-apply { @apply rounded-full text-xs text-white; }\n</style>',
+        map: null,
+      } as TransformResult)
+
+      const result = await nvuePlugin!.transform?.('<template/>', '/project/pages/index/index.uvue') as TransformResult
+
+      expect(result.code).toContain('border-top-left-radius: 9999px')
+      expect(result.code).toContain('font-size: 24rpx')
+      expect(result.code).toContain('color: #fff')
+      expect(result.code).not.toContain('@apply')
+      expect(result.code).not.toContain('calc(infinity')
+      expect(result.map).toBeNull()
+      expect(generateCss).toHaveBeenCalledWith(
+        expect.stringMatching(/^\/project\/uni-app-x-harmony-apply-[a-z0-9]+\.css$/),
+        '@reference "/project/main.css";\n.issue-1002-apply { @apply rounded-full text-xs text-white; }',
+        expect.objectContaining({ transient: true }),
+      )
+      expect(styleHandler).toHaveBeenCalledWith(
+        expect.stringContaining('calc(infinity'),
+        expect.objectContaining({ uniAppXCssTarget: 'uvue' }),
+      )
+    }
+    finally {
+      process.env.UNI_UTS_PLATFORM = originalPlatform
+    }
+  })
+
 
   it('allows disabling component local style transform from uniAppX options', async () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tw-issue-822-disabled-'))
@@ -1300,7 +1410,7 @@ describe('createUniAppXAssetTask', () => {
   })
 
   it('injects uni-app-x generated style placeholders from style assets', async () => {
-    const asset = createAsset('_cE("view", _uM({ class: "bg-_b_h102938_B w-_b173px_B" }))\n/*GenPagesIndexIndexStyles*/')
+    const asset = createAsset('_cE("view", _uM({ class: "bg-_b_h102938_B w-_b173px_B text-xs" }))\n/*GenPagesIndexIndexStyles*/')
     const runtimeSet = new Set(['alpha'])
     const jsHandler = vi.fn((source: string) => ({
       code: source,
@@ -1316,6 +1426,7 @@ describe('createUniAppXAssetTask', () => {
           ...extra,
         })),
         debug: vi.fn(),
+        getCssSources: () => ['.text-xs{font-size:24rpx}'],
         getAssetSource: vi.fn((file: string) => {
           if (file === 'App.uvue.ts') {
             return 'const GenAppStyles = [_uM([["bg-_b_h102938_B", _pS(_uM([["backgroundColor", "rgba(16,41,56,1)"]]))], ["w-_b173px_B", _pS(_uM([["width", 173]]))]])]'
@@ -1333,7 +1444,8 @@ describe('createUniAppXAssetTask', () => {
 
     await task()
 
-    expect(asset.source).toContain('const GenPagesIndexIndexStyles = [_uM([["bg-_b_h102938_B", _pS(_uM([["backgroundColor", "rgba(16,41,56,1)"]]))], ["w-_b173px_B", _pS(_uM([["width", 173]]))]])]')
+    expect(asset.source).toContain('const GenPagesIndexIndexStyles = [_uM([["bg-_b_h102938_B", _pS(_uM([["backgroundColor", "rgba(16,41,56,1)"]]))], ["w-_b173px_B", _pS(_uM([["width", 173]]))]]),')
+    expect(asset.source).toContain('["text-xs", _pS(_uM([["fontSize", "24rpx"]]))]')
     expect(asset.source).not.toContain('/*GenPagesIndexIndexStyles*/')
   })
 })

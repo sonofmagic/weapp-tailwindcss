@@ -1,6 +1,10 @@
 import type { Result as PostcssResult, Rule } from 'postcss'
 import type { IStyleHandlerOptions, UniAppXUnsupportedMode } from '../types'
+import postcssCalc from '@weapp-tailwindcss/postcss-calc'
+import postcss from 'postcss'
 import selectorParser from 'postcss-selector-parser'
+import { normalizeTailwindcssV4Declaration } from './tailwindcss-v4'
+import { consumeUniAppXSystemRootTheme } from './uni-app-x-uvue/theme'
 
 const ALLOWED_DISPLAY_VALUES = new Set(['flex', 'none'])
 const FALLBACK_CLASS_RE = /\.((?:\\.|[\w-])+)/g
@@ -122,7 +126,10 @@ function reportUnsupportedRule(
 
 export function applyUniAppXUvueCompatibility(
   result: PostcssResult,
-  options?: Pick<IStyleHandlerOptions, 'uniAppX' | 'uniAppXCssTarget' | 'uniAppXUnsupported'>,
+  options?: Pick<
+    IStyleHandlerOptions,
+    'customPropertyValues' | 'uniAppX' | 'uniAppXCssTarget' | 'uniAppXUnsupported'
+  >,
 ) {
   if (!isUniAppXUvueTarget(options)) {
     return result
@@ -131,7 +138,20 @@ export function applyUniAppXUvueCompatibility(
   const mode = normalizeUnsupportedMode(options?.uniAppXUnsupported)
   const warningCache = new Set<string>()
 
-  result.root.walkRules((rule) => {
+  let root = result.root
+  let calcMessages: PostcssResult['messages'] = []
+
+  consumeUniAppXSystemRootTheme(root, options?.customPropertyValues)
+  if (root.type === 'root' && Array.isArray(root.nodes) && typeof root.walkDecls === 'function') {
+    root.walkDecls((decl) => {
+      normalizeTailwindcssV4Declaration(decl)
+    })
+    const calcResult = postcss([postcssCalc()]).process(root, result.opts).sync()
+    root = calcResult.root
+    calcMessages = calcResult.messages
+  }
+
+  root.walkRules((rule) => {
     if (!hasOnlyClassSelectors(rule)) {
       reportUnsupportedRule(rule, result, mode, warningCache, 'selector must be class-only')
       rule.remove()
@@ -153,13 +173,18 @@ export function applyUniAppXUvueCompatibility(
     }
   })
 
-  result.root.walkAtRules((atRule) => {
+  root.walkAtRules((atRule) => {
+    if (atRule.name?.toLowerCase() === 'property') {
+      atRule.remove()
+      return
+    }
     if ((atRule.nodes?.length ?? 0) === 0) {
       atRule.remove()
     }
   })
 
-  const nextResult = result.root.toResult(result.opts)
+  const nextResult = root.toResult(result.opts)
   nextResult.messages.push(...result.messages)
+  nextResult.messages.push(...calcMessages)
   return nextResult
 }
