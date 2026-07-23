@@ -76,7 +76,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@csstools/css-color-parser": "^4.1.9",
+    "@csstools/css-color-parser": "^4.1.10",
     "@csstools/css-parser-algorithms": "^4.0.0",
     "@csstools/css-tokenizer": "^4.0.0",
     "@tailwindcss-mangle/engine": "catalog:tailwindcssMangleEngine",

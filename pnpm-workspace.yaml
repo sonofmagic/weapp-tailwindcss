@@ -59,7 +59,7 @@ catalogs:
   babelRuntime7284tilde:
     '@babel/runtime': ^7.29.2
   baselineBrowserMapping:
-    baseline-browser-mapping: ^2.11.0
+    baseline-browser-mapping: ^2.11.1
   classVarianceAuthority:
     class-variance-authority: ^0.7.1
   clsx:
@@ -90,9 +90,9 @@ catalogs:
   miniApiTypings:
     miniprogram-api-typings: ^5.2.1
   postcss85:
-    postcss: ^8.5.21
+    postcss: ^8.5.22
   postcss85tilde:
-    postcss: ^8.5.21
+    postcss: ^8.5.22
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem:
@@ -118,7 +118,7 @@ catalogs:
     '@rsbuild/plugin-react': ^2.1.0
     '@rsbuild/plugin-vue': ^2.0.1
   sass195:
-    sass: ^1.101.3
+    sass: ^1.101.6
   stylelint1625:
     stylelint: ^17.14.1
   tailwindMerge:
@@ -223,7 +223,7 @@ catalogs:
   vitePluginReact4:
     '@vitejs/plugin-react': ^4.7.0
   vitePluginReact6:
-    '@vitejs/plugin-react': ^6.0.3
+    '@vitejs/plugin-react': ^6.0.4
   vitePluginVue6:
     '@vitejs/plugin-vue': ^6.0.8
   vitest:
@@ -237,12 +237,12 @@ catalogs:
   vueRuntimeCore:
     '@vue/runtime-core': ^3.5.34
   vueTsc318:
-    vue-tsc: ^3.3.7
+    vue-tsc: ^3.3.8
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
     weapp-ide-cli: ^5.4.12
   weappVite:
-    weapp-vite: ^6.18.4
+    weapp-vite: ^6.18.5
   wrangler:
-    wrangler: ^4.112.0
+    wrangler: ^4.113.0
