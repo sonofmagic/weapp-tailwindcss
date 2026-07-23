@@ -16,7 +16,6 @@ const uniMpVueDir = dirname(uniMpVueRuntimePath);
 const officialPostcssParity = process.env.WEAPP_TW_OFFICIAL_POSTCSS_PARITY === '1'
 const issue1005FinalCssFixtureEnabled = process.env.WEAPP_TW_ISSUE_1005_FINAL_CSS_FIXTURE === '1'
   || process.env.WEAPP_TW_WATCH_REGRESSION === '1'
-  || process.env.E2E_SKIP_OPEN_AUTOMATOR === '1'
 const issue1005FinalCssFixture: Plugin = {
   name: 'issue-1005-final-css-fixture',
   enforce: 'post' as const,
