@@ -3,12 +3,14 @@ import type { IStyleHandlerOptions, UniAppXUnsupportedMode } from '../types'
 import postcssCalc from '@weapp-tailwindcss/postcss-calc'
 import postcss from 'postcss'
 import selectorParser from 'postcss-selector-parser'
+import valueParser from 'postcss-value-parser'
 import { normalizeTailwindcssV4Declaration } from './tailwindcss-v4'
 import { consumeUniAppXSystemRootTheme } from './uni-app-x-uvue/theme'
 
 const ALLOWED_DISPLAY_VALUES = new Set(['flex', 'none'])
 const FALLBACK_CLASS_RE = /\.((?:\\.|[\w-])+)/g
 const IMPORTANT_SUFFIX_RE = /\s*!important$/i
+const TRANSFORM_PROPERTIES = new Set(['transform', '-webkit-transform'])
 
 function isUniAppXUvueTarget(
   options?: Pick<IStyleHandlerOptions, 'uniAppX' | 'uniAppXCssTarget'>,
@@ -22,6 +24,34 @@ function normalizeUnsupportedMode(mode?: UniAppXUnsupportedMode): UniAppXUnsuppo
 
 function normalizeValue(value: string) {
   return value.trim().toLowerCase().replace(IMPORTANT_SUFFIX_RE, '')
+}
+
+function normalizeUniAppXTransformValue(value: string) {
+  if (!value.toLowerCase().includes('translate(') || !value.includes(',')) {
+    return value
+  }
+
+  const parsed = valueParser(value)
+  let changed = false
+
+  parsed.walk((node) => {
+    if (node.type !== 'function' || node.value.toLowerCase() !== 'translate') {
+      return
+    }
+
+    for (const child of node.nodes) {
+      if (child.type !== 'div' || child.value !== ',') {
+        continue
+      }
+
+      child.value = ' '
+      child.before = ''
+      child.after = ''
+      changed = true
+    }
+  })
+
+  return changed ? parsed.toString() : value
 }
 
 function getSourceFile(rule: Rule, result: PostcssResult) {
@@ -145,6 +175,9 @@ export function applyUniAppXUvueCompatibility(
   if (root.type === 'root' && Array.isArray(root.nodes) && typeof root.walkDecls === 'function') {
     root.walkDecls((decl) => {
       normalizeTailwindcssV4Declaration(decl)
+      if (TRANSFORM_PROPERTIES.has(decl.prop.toLowerCase())) {
+        decl.value = normalizeUniAppXTransformValue(decl.value)
+      }
     })
     const calcResult = postcss([postcssCalc()]).process(root, result.opts).sync()
     root = calcResult.root

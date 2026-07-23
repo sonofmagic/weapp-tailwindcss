@@ -1850,6 +1850,30 @@ describe('tailwindcss v4 engine', () => {
     },
   )
 
+  it('normalizes issue #823 translate arguments in generated uni-app x uvue css', async () => {
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['[transform:translate(10px,20px)]'],
+      styleOptions: {
+        appType: 'uni-app-x',
+        uniAppX: true,
+        uniAppXCssTarget: 'uvue',
+        uniAppXUnsupported: 'warn',
+        isMainChunk: false,
+        majorVersion: 4,
+      },
+    })
+
+    expect(result.rawCss).toContain('transform: translate(10px,20px)')
+    expect(result.css).toContain('transform: translate(10px 20px)')
+    expect(result.css).not.toContain('translate(10px,20px)')
+  })
+
   it('keeps incremental uni-app x uvue utilities free of root carriers and infinity values', async () => {
     const source = await resolveTailwindV4Source({
       css: `
