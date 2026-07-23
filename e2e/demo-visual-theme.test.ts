@@ -64,9 +64,16 @@ describe('demo visual theme evidence', () => {
     }
   })
 
-  it('uses the uni-app x component-local style probe on Android and iOS', () => {
+  it('uses the issue #822 component-local style probe on Android and iOS without a manual isolation override', async () => {
     const android = uniAppXAppCases.find(item => item.platform === 'app-android')
     const ios = uniAppXAppCases.find(item => item.platform === 'app-ios')
+    const component = await fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/components/BindClass.uvue'), 'utf8')
+
+    expect(component).toContain('class="issue-822-component-child h-[200px] w-full bg-[#87add3]"')
+    expect(component).toContain('class="text-[#111111]"')
+    expect(component).toContain('.issue-822-component-child {')
+    expect(component).toContain('border: 2px solid #7c3aed;')
+    expect(component).not.toContain('styleIsolation: \'app\'')
     expect(android?.requiredFiles).toContain('App.uvue.ts')
     expect(android?.sourceFile).toBe('components/BindClass.uvue')
     expect(android?.transformedOutputFiles).toContain('components/BindClass.uvue.ts')
@@ -110,10 +117,11 @@ describe('demo visual theme evidence', () => {
     }
   })
 
-  it('enables uni-app x local utility styles for every isolation version', async () => {
+  it('uses the uni-app x preset default for style isolation version detection', async () => {
     const config = await fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/vite.config.ts'), 'utf8')
-    expect(config).toContain('componentLocalStyles: {')
-    expect(config).toContain('onlyWhenStyleIsolationVersion2: false')
+    expect(config).toContain('uniAppX({')
+    expect(config).not.toContain('componentLocalStyles')
+    expect(config).not.toContain('onlyWhenStyleIsolationVersion2')
   })
 
   it('detects system and manual dark mode selectors in mini-program css output', () => {
