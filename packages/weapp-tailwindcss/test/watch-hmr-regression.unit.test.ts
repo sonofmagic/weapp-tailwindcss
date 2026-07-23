@@ -3127,14 +3127,15 @@ describe('watch-hmr regression cases', () => {
   })
 
   it('guards issue 1005 final watch styles against empty block at-rules', () => {
-    const watchCase = buildCases('/repo', { includeLocalOnly: true })
+    const baseCwd = '/repo'
+    const watchCase = buildCases(baseCwd, { includeLocalOnly: true })
       .find(item => item.name === 'uni-app-vite-tailwindcss-v4')
     const guardedDirectories = watchCase?.outputIntegrityGuards
       ?.filter(guard => guard.forbidEmptyBlockAtRules)
       .map(guard => guard.directory?.replace(/\\/g, '/')) ?? []
 
     expect(guardedDirectories).toEqual([
-      '/repo/demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin',
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin').replace(/\\/g, '/'),
     ])
   })
 
