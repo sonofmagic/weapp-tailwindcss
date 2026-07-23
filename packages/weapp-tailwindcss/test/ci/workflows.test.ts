@@ -467,7 +467,14 @@ describe('ci workflows', () => {
     expect(runCommand).toContain('--baseline-ref')
     expect(runCommand).toContain('--only "$BENCH_ONLY"')
     expect(workflow.jobs['current-vs-published'].needs).toBe('benchmark-shard')
-    expect(stepRuns(workflow, 'current-vs-published').join('\n')).toContain('test "$BENCHMARK_RESULT" = success')
+    const publishedRuns = stepRuns(workflow, 'current-vs-published').join('\n')
+    expect(publishedRuns).toContain('test "$BENCHMARK_RESULT" = success')
+    expect(publishedRuns).toContain('Benchmark report: $report')
+    expect(publishedRuns).toContain('performance guard')
+    expect(workflow.jobs['current-vs-published'].steps.some((step: Record<string, unknown>) => {
+      return step.uses === 'actions/download-artifact@v4'
+        && (step.with as Record<string, unknown>)?.pattern === 'benchmark-performance-*'
+    })).toBe(true)
   })
 
   it('keeps release version phase lightweight inside changesets action', () => {

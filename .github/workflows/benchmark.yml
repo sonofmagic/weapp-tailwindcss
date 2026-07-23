@@ -109,6 +109,36 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Download benchmark reports
+        if: always()
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          pattern: benchmark-performance-*
+          path: .tmp/benchmark-ci/artifacts
+
+      - name: Report benchmark shard failures
+        if: always()
+        env:
+          BENCHMARK_RESULT: ${{ needs.benchmark-shard.result }}
+        run: |
+          if [ "$BENCHMARK_RESULT" = success ]; then
+            exit 0
+          fi
+          echo "benchmark-shard result: $BENCHMARK_RESULT"
+          report_found=0
+          while IFS= read -r report; do
+            report_found=1
+            echo "::group::Benchmark report: $report"
+            echo "performance guard details:"
+            sed -n '/## 性能门禁/,/## 失败项/p' "$report" || true
+            sed -n '/## 失败项/,$p' "$report" || true
+            echo "::endgroup::"
+          done < <(find .tmp/benchmark-ci/artifacts -name report.md -type f -print 2>/dev/null | sort)
+          if [ "$report_found" = 0 ]; then
+            echo "::warning title=Benchmark diagnostics unavailable::No benchmark report artifact was available; inspect the failed shard log."
+          fi
+
       - name: Require every benchmark shard
         env:
           BENCHMARK_RESULT: ${{ needs.benchmark-shard.result }}
