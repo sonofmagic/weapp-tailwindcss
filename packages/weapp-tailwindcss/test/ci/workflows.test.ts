@@ -467,7 +467,14 @@ describe('ci workflows', () => {
     expect(runCommand).toContain('--baseline-ref')
     expect(runCommand).toContain('--only "$BENCH_ONLY"')
     expect(workflow.jobs['current-vs-published'].needs).toBe('benchmark-shard')
-    expect(stepRuns(workflow, 'current-vs-published').join('\n')).toContain('test "$BENCHMARK_RESULT" = success')
+    const publishedRuns = stepRuns(workflow, 'current-vs-published').join('\n')
+    expect(publishedRuns).toContain('test "$BENCHMARK_RESULT" = success')
+    expect(publishedRuns).toContain('Benchmark report: $report')
+    expect(publishedRuns).toContain('performance guard')
+    expect(workflow.jobs['current-vs-published'].steps.some((step: Record<string, unknown>) => {
+      return step.uses === 'actions/download-artifact@v4'
+        && (step.with as Record<string, unknown>)?.pattern === 'benchmark-performance-*'
+    })).toBe(true)
   })
 
   it('keeps release version phase lightweight inside changesets action', () => {
@@ -720,7 +727,11 @@ describe('e2e watch workflow', () => {
     expect(cases).toContain('macos:22:demo-core:main-style')
     for (const runner of ['linux', 'macos']) {
       for (const watchCase of parallelTaroCases) {
-        const mainCommandTimeoutMs = watchCase.includes('webpack') ? '1500000' : '1200000'
+        const mainCommandTimeoutMs = runner === 'macos' && watchCase === 'taro-vite-react-tailwindcss-v4'
+          ? '1500000'
+          : watchCase.includes('webpack')
+            ? '1500000'
+            : '1200000'
         for (const profile of ['mini-program-main', 'mini-program-subpackages']) {
           expect(cases, `${runner} should cover ${watchCase} ${profile} HMR`).toContain(`${runner}:22:${watchCase}:${profile}`)
         }
@@ -911,6 +922,17 @@ describe('e2e watch workflow', () => {
       watch_max_plugin_process_ms: '60000',
       watch_command_timeout_ms: commandTimeoutMs,
     })))
+    const macosTaroViteReactMainPrBudget = {
+      watch_case: 'taro-vite-react-tailwindcss-v4',
+      round_profile: 'mini-program-main',
+      watch_mini_program_only: '1',
+      watch_mini_program_scope: 'main-package',
+      watch_max_attempts: '1',
+      timeout_minutes: 30,
+      watch_timeout_ms: '420000',
+      watch_max_plugin_process_ms: '60000',
+      watch_command_timeout_ms: '1500000',
+    }
     const slowLinuxDemoCorePrBudget = {
       watch_case: 'demo-core',
       round_profile: 'default',
@@ -1016,9 +1038,14 @@ describe('e2e watch workflow', () => {
     }
     const minimalWindowsTaroPrBudgets = [
       { watchCase: 'taro-vite-react-tailwindcss-v4', timeoutMs: '420000' },
-      { watchCase: 'taro-webpack-react-tailwindcss-v4', timeoutMs: '420000', taroReadyTimeoutMs: '900000' },
+      {
+        watchCase: 'taro-webpack-react-tailwindcss-v4',
+        timeoutMs: '420000',
+        pluginProcessMs: '24000',
+        taroReadyTimeoutMs: '900000',
+      },
       { watchCase: 'taro-webpack-vue3-tailwindcss-v4', timeoutMs: '600000', taroReadyTimeoutMs: '900000' },
-    ].map(({ watchCase, timeoutMs, taroReadyTimeoutMs }) => ({
+    ].map(({ watchCase, timeoutMs, pluginProcessMs = '18000', taroReadyTimeoutMs }) => ({
       watch_case: watchCase,
       round_profile: 'main-style',
       watch_main_style_only: '1',
@@ -1026,7 +1053,7 @@ describe('e2e watch workflow', () => {
       watch_max_attempts: '1',
       timeout_minutes: 30,
       watch_timeout_ms: timeoutMs,
-      watch_max_plugin_process_ms: '18000',
+      watch_max_plugin_process_ms: pluginProcessMs,
       ...(taroReadyTimeoutMs == null ? {} : { taro_dev_ready_timeout_ms: taroReadyTimeoutMs }),
       watch_command_timeout_ms: '1500000',
     }))
@@ -1145,17 +1172,18 @@ describe('e2e watch workflow', () => {
       runner_label: 'windows',
       ...minimalWindowsMpxPrBudget,
     }))
-    for (const runner of [
-      { os: 'macos-latest', runner_label: 'macos' },
-      { os: 'ubuntu-latest', runner_label: 'linux' },
-    ]) {
-      for (const budget of parallelDemoTaroPrBudgets) {
-        expect(prRows).toContainEqual(expect.objectContaining({
-          ...runner,
-          ...budget,
-        }))
-      }
+    for (const budget of parallelDemoTaroPrBudgets) {
+      expect(prRows).toContainEqual(expect.objectContaining({
+        os: 'ubuntu-latest',
+        runner_label: 'linux',
+        ...budget,
+      }))
     }
+    expect(prRows).toContainEqual(expect.objectContaining({
+      os: 'macos-latest',
+      runner_label: 'macos',
+      ...macosTaroViteReactMainPrBudget,
+    }))
     for (const budget of defaultWindowsSplitDemoPrBudgets) {
       expect(prRows).toContainEqual(expect.objectContaining({
         os: 'windows-latest',

@@ -72,6 +72,11 @@ describe('benchmark ci report', () => {
     expect(source).toContain('core-vite-processed-css-coverage')
     expect(source).toContain('runProcessedCssInjectionBenchmark')
     expect(source).toContain('core-vite-processed-css-injection')
+    expect(source).toContain('hasGitChanges')
+    expect(source).toContain('skip unchanged core metric')
+    expect(source).toContain('performance guard violation')
+    expect(source).toContain('performanceRelevantPaths')
+    expect(source).toContain('asInformationalPerformanceGuard')
     expect(source.match(/hmrPluginStatistic: 'median'/g)).toHaveLength(3)
     expect(source).toContain("parseNumber('--poll-interval', 30)")
     expect(matrixSource).toContain("parseNumber('--poll-interval', 30)")
@@ -194,6 +199,53 @@ describe('benchmark ci report', () => {
     expect(result.thresholds.minimumTailRegressionSamples).toBe(2)
     expect(result.thresholds.maximumMedianRegressionPValue).toBe(0.05)
     expect(result.passed).toBe(false)
+  })
+
+  it('keeps noisy measurements visible but non-blocking without performance-relevant changes', async () => {
+    const { asInformationalPerformanceGuard, toMarkdown } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const violation = {
+      key: 'demo-mpx-tailwindcss-v4__mp-weixin',
+      metric: 'hmrPeakRssMb',
+      baseline: 2500,
+      current: 2640,
+      deltaPercent: 5.6,
+    }
+    const result = asInformationalPerformanceGuard({
+      passed: false,
+      thresholds: { regressionPercent: 5 },
+      violations: [violation],
+    }, 'PR 未修改性能相关源码、依赖或 demo')
+
+    expect(result).toMatchObject({
+      passed: true,
+      blocking: false,
+      skipReason: 'PR 未修改性能相关源码、依赖或 demo',
+      violations: [],
+      observations: [violation],
+    })
+    const markdown = toMarkdown({
+      generatedAt: '2026-07-24T00:00:00.000Z',
+      options: { buildRuns: 3, hmrRuns: 6, timeoutMs: 180000 },
+      baseline: 'base:main',
+      current: 'current:feature',
+      compares: [],
+      errors: [],
+      baselineErrors: [],
+      currentErrors: [],
+      currentOnlyErrors: [],
+      sharedErrors: [],
+      baselineOnlyErrors: [],
+      averages: {
+        buildCompareCount: 0,
+        watchHmrCompareCount: 0,
+        buildPluginCompareCount: 0,
+        watchHmrPluginCompareCount: 0,
+      },
+      performanceGuard: result,
+    }, 'main')
+    expect(markdown).toContain('- 门禁模式：仅记录')
+    expect(markdown).toContain('- 观察项：1')
+    expect(markdown).toContain('demo-mpx-tailwindcss-v4__mp-weixin / hmrPeakRssMb')
   })
 
   it('requires build RSS distributions to confirm a median regression', async () => {

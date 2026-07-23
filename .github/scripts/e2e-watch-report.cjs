@@ -30,6 +30,8 @@ const CACHE_INVALIDATION_RE = /invalidation|context-not-found|cache/
 const FS_RACE_RE = /enoent|eperm|ebusy|eacces|crlf|lf|rename|path/
 /** 进程/超时相关关键词 */
 const PROCESS_TIMEOUT_RE = /timeout|exceeded|watch process exited|sigkill|fatal|killed/
+/** 插件处理性能预算超限 */
+const PROCESS_BUDGET_RE = /processing exceeded budget/
 /** 匹配 mutation kind */
 const MUTATION_KIND_RE = /mutation=(template|script|style)/g
 /** 匹配 round 名称 */
@@ -781,11 +783,13 @@ function detectTokenAnomalies(source) {
 
 function scoreAttribution(primary, evidence) {
   const text = `${primary.error}\n${evidence.failureLogJoined}`.toLowerCase()
+  const processBudgetExceeded = PROCESS_BUDGET_RE.test(text)
   const scores = new Map([
     ['cache key/invalidation', 0],
     ['token extraction', 0],
     ['transform emit mismatch', 0],
     ['文件系统竞态/路径换行差异', 0],
+    ['性能预算超限', 0],
     ['进程/超时问题', 0],
   ])
 
@@ -795,7 +799,14 @@ function scoreAttribution(primary, evidence) {
       scores.get('cache key/invalidation') + 2,
     )
   }
-  if (evidence.tokenAnomalies.length > 0 || evidence.tokenCount === 0) {
+  if (
+    evidence.tokenAnomalies.length > 0
+    || (
+      evidence.tokenCount === 0
+      && evidence.hasTokenEvidence
+      && !processBudgetExceeded
+    )
+  ) {
     scores.set('token extraction', scores.get('token extraction') + 3)
   }
   if (
@@ -814,10 +825,13 @@ function scoreAttribution(primary, evidence) {
       scores.get('文件系统竞态/路径换行差异') + 3,
     )
   }
-  if (PROCESS_TIMEOUT_RE.test(text)) {
+  if (processBudgetExceeded) {
+    scores.set('性能预算超限', scores.get('性能预算超限') + 5)
+  }
+  else if (PROCESS_TIMEOUT_RE.test(text)) {
     scores.set('进程/超时问题', scores.get('进程/超时问题') + 3)
   }
-  if (primary.phase === 'rollback') {
+  if (primary.phase === 'rollback' && !processBudgetExceeded) {
     scores.set(
       'cache key/invalidation',
       scores.get('cache key/invalidation') + 1,
@@ -828,7 +842,10 @@ function scoreAttribution(primary, evidence) {
 }
 
 function buildSuggestions(topCategories) {
-  const top = topCategories.slice(0, 2).map(item => item[0])
+  const top = topCategories
+    .filter(([, score]) => score > 0)
+    .slice(0, 2)
+    .map(item => item[0])
   const fixSteps = []
   const tests = []
 
@@ -859,6 +876,12 @@ function buildSuggestions(topCategories) {
       '对读写与 stat 增加短暂重试，并统一 CRLF/LF 与路径规范化策略。',
     )
     tests.push('加入 Windows 路径分隔符与 CRLF 混用场景。')
+  }
+  if (top.includes('性能预算超限')) {
+    fixSteps.push(
+      '按 watch case 与操作系统设置独立插件处理预算，依据实际峰值保留慢机抖动余量，不放宽产物语义断言。',
+    )
+    tests.push('补充对应工作流矩阵项的性能预算回归断言。')
   }
   if (top.includes('进程/超时问题')) {
     fixSteps.push(
@@ -1017,6 +1040,7 @@ function generateRootCauseReport() {
 
   const evidence = {
     tokenCount: classTokens.length,
+    hasTokenEvidence: snapshot != null || metric != null,
     escapedCount: escapedClasses.length,
     wxssEscapedHits,
     wxmlEscapedHits,
@@ -1212,12 +1236,19 @@ function main() {
   throw new Error(`unknown command: ${command || '(empty)'}`)
 }
 
-try {
-  main()
+if (require.main === module) {
+  try {
+    main()
+  }
+  catch (error) {
+    const message
+      = error instanceof Error ? error.stack || error.message : String(error)
+    process.stderr.write(`${message}\n`)
+    process.exit(1)
+  }
 }
-catch (error) {
-  const message
-    = error instanceof Error ? error.stack || error.message : String(error)
-  process.stderr.write(`${message}\n`)
-  process.exit(1)
+
+module.exports = {
+  buildSuggestions,
+  scoreAttribution,
 }

@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
-import { buildSummary, evaluatePerformanceGuard, toMarkdown } from './ci-report.mjs'
+import { asInformationalPerformanceGuard, buildSummary, evaluatePerformanceGuard, toMarkdown } from './ci-report.mjs'
 import { benchmarkProjectDirs } from './projects.mjs'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -14,6 +14,22 @@ const packageJsonPath = path.join(repoRoot, 'packages/weapp-tailwindcss/package.
 const dependencyFields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']
 const publishedResolverDependencyNames = [
   '@weapp-core/escape',
+]
+const performanceRelevantPaths = [
+  ':(glob)packages/*/src/**',
+  ':(glob)packages/*/package.json',
+  ':(glob)packages/*/tsconfig.json',
+  ':(glob)packages/*/tsdown.config.*',
+  ':(glob)packages-runtime/*/src/**',
+  ':(glob)packages-runtime/*/package.json',
+  ':(glob)packages-runtime/*/tsconfig.json',
+  ':(glob)packages-runtime/*/tsdown.config.*',
+  ':(glob)demo/**',
+  ':(glob)patches/**',
+  'package.json',
+  'pnpm-lock.yaml',
+  'pnpm-workspace.yaml',
+  'turbo.json',
 ]
 
 function parseArg(name, fallback = '') {
@@ -101,6 +117,28 @@ async function runCapture(cwd, command, args, options = {}) {
     throw new Error(`${command} ${args.join(' ')} failed with code ${code}\n${stderr.slice(-4000)}`)
   }
   return stdout
+}
+
+async function hasGitChanges(ref, paths) {
+  const child = spawn('git', ['diff', '--quiet', ref, '--', ...paths], {
+    cwd: repoRoot,
+    stdio: ['ignore', 'ignore', 'pipe'],
+  })
+  let stderr = ''
+  child.stderr.on('data', chunk => {
+    stderr += chunk.toString('utf8')
+  })
+  const code = await new Promise((resolve, reject) => {
+    child.once('error', reject)
+    child.once('close', exitCode => resolve(exitCode ?? 1))
+  })
+  if (code === 0) {
+    return false
+  }
+  if (code === 1) {
+    return true
+  }
+  throw new Error(`unable to compare benchmark sources against ${ref}: git diff exited with ${code}\n${stderr}`)
 }
 
 function shouldCopy(src) {
@@ -469,28 +507,53 @@ async function main() {
   await run(repoRoot, process.execPath, matrixArgs)
 
   const raw = JSON.parse(await fs.readFile(rawPath, 'utf8'))
+  const performanceRelevantChanges = baselineRef
+    ? await hasGitChanges(baselineRef, performanceRelevantPaths)
+    : true
   if (baselineRef && !process.argv.includes('--skip-core-metrics')) {
-    const baselineCore = await runSourceCandidateHotUpdateBenchmark(baselineRoot)
-    const currentCore = await runSourceCandidateHotUpdateBenchmark(currentRoot)
-    const baselineProcessedCss = await runProcessedCssCoverageBenchmark(baselineRoot)
-    const currentProcessedCss = await runProcessedCssCoverageBenchmark(currentRoot)
-    const baselineProcessedCssInjection = await runProcessedCssInjectionBenchmark(baselineRoot)
-    const currentProcessedCssInjection = await runProcessedCssInjectionBenchmark(currentRoot)
-    raw.rows.push(
-      createSourceCandidateBenchmarkRow(baselineLabel, baselineRoot, baselineCore),
-      createSourceCandidateBenchmarkRow(currentLabel, currentRoot, currentCore),
-      createProcessedCssCoverageBenchmarkRow(baselineLabel, baselineRoot, baselineProcessedCss),
-      createProcessedCssCoverageBenchmarkRow(currentLabel, currentRoot, currentProcessedCss),
-      createProcessedCssInjectionBenchmarkRow(baselineLabel, baselineRoot, baselineProcessedCssInjection),
-      createProcessedCssInjectionBenchmarkRow(currentLabel, currentRoot, currentProcessedCssInjection),
-    )
+    const coreMetricSpecs = [
+      {
+        key: 'core-source-candidate-hot-update',
+        paths: ['packages/weapp-tailwindcss/src/bundlers/vite/source-candidates.ts'],
+        run: runSourceCandidateHotUpdateBenchmark,
+        createRow: createSourceCandidateBenchmarkRow,
+      },
+      {
+        key: 'core-vite-processed-css-coverage',
+        paths: ['packages/weapp-tailwindcss/src/bundlers/vite/processed-css-assets.ts'],
+        run: runProcessedCssCoverageBenchmark,
+        createRow: createProcessedCssCoverageBenchmarkRow,
+      },
+      {
+        key: 'core-vite-processed-css-injection',
+        paths: ['packages/weapp-tailwindcss/src/bundlers/vite/processed-css-assets.ts'],
+        run: runProcessedCssInjectionBenchmark,
+        createRow: createProcessedCssInjectionBenchmarkRow,
+      },
+    ]
+    for (const spec of coreMetricSpecs) {
+      if (!await hasGitChanges(baselineRef, spec.paths)) {
+        process.stdout.write(`[benchmark] skip unchanged core metric ${spec.key}\n`)
+        continue
+      }
+      const baselineResult = await spec.run(baselineRoot)
+      const currentResult = await spec.run(currentRoot)
+      raw.rows.push(
+        spec.createRow(baselineLabel, baselineRoot, baselineResult),
+        spec.createRow(currentLabel, currentRoot, currentResult),
+      )
+    }
     await fs.writeFile(rawPath, `${JSON.stringify(raw, null, 2)}\n`, 'utf8')
   }
   const summary = buildSummary(raw, baselineLabel, currentLabel)
   if (baselineRef) {
-    summary.performanceGuard = evaluatePerformanceGuard(summary, {
+    const performanceGuard = evaluatePerformanceGuard(summary, {
       regressionPercent: parseNumber('--regression-percent', 5),
     })
+    summary.performanceGuard = performanceRelevantChanges
+      ? { ...performanceGuard, blocking: true }
+      : asInformationalPerformanceGuard(performanceGuard, 'PR 未修改性能相关源码、依赖或 demo')
+    process.stdout.write(`[benchmark] performance guard mode: ${performanceRelevantChanges ? 'blocking' : 'informational'}\n`)
   }
   const markdown = toMarkdown(summary, baselineRef || baseline)
   await fs.writeFile(summaryPath, `${JSON.stringify(summary, null, 2)}\n`, 'utf8')
@@ -500,9 +563,15 @@ async function main() {
   process.stdout.write(`[benchmark] summary -> ${summaryPath}\n`)
 
   if (summary.currentOnlyErrors.length > 0 && !process.argv.includes('--allow-errors')) {
+    for (const item of summary.currentOnlyErrors) {
+      console.error(`[benchmark] current-only failure: ${item.key}\n${item.error}`)
+    }
     throw new Error(`benchmark current matrix has ${summary.currentOnlyErrors.length} current-only failed row(s)`)
   }
   if (summary.performanceGuard && !summary.performanceGuard.passed && !process.argv.includes('--allow-regressions')) {
+    for (const violation of summary.performanceGuard.violations) {
+      console.error(`[benchmark] performance guard violation: ${JSON.stringify(violation)}`)
+    }
     throw new Error(`performance guard detected ${summary.performanceGuard.violations.length} regression(s)`)
   }
 }
