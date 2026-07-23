@@ -31,7 +31,6 @@ export async function finalizeMiniProgramCssAssets(
     onUpdate: GenerateBundleContext['opts']['onUpdate']
     recordCssAssetResult: GenerateBundleContext['recordCssAssetResult']
     styleHandler: GenerateBundleContext['opts']['styleHandler']
-    useIncrementalMode?: boolean | undefined
     debug?: GenerateBundleContext['debug']
   },
 ) {
@@ -56,9 +55,7 @@ export async function finalizeMiniProgramCssAssets(
       continue
     }
     if (options.lastCssResultByFile?.has(file)) {
-      const structurallyCleanSource = options.useIncrementalMode
-        ? rawSource
-        : removeEmptyCssAtRules(rawSource)
+      const structurallyCleanSource = removeEmptyCssAtRules(rawSource)
       const outputCss = stripMiniProgramCssSpecificityPlaceholders(structurallyCleanSource)
       if (outputCss !== rawSource) {
         plan.write(file, outputCss)
@@ -71,9 +68,7 @@ export async function finalizeMiniProgramCssAssets(
       continue
     }
     if (!shouldFinalizeMiniProgramCssAsset(rawSource)) {
-      const structurallyCleanSource = options.useIncrementalMode
-        ? rawSource
-        : removeEmptyCssAtRules(rawSource)
+      const structurallyCleanSource = removeEmptyCssAtRules(rawSource)
       if (structurallyCleanSource !== rawSource) {
         plan.write(file, structurallyCleanSource)
         writeTargets.set(file, output)
@@ -96,9 +91,7 @@ export async function finalizeMiniProgramCssAssets(
       },
       cssPresetEnv: {},
     })
-    const structurallyCleanCss = options.useIncrementalMode
-      ? css
-      : removeEmptyCssAtRules(css)
+    const structurallyCleanCss = removeEmptyCssAtRules(css)
     const outputCss = stripMiniProgramCssSpecificityPlaceholders(structurallyCleanCss)
     if (outputCss === rawSource) {
       continue

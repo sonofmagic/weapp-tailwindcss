@@ -97,6 +97,7 @@ export interface ProjectEntry {
   cssFiles?: string[]
   url?: string
   skipOpenAutomator?: boolean
+  forbidEmptyBlockAtRules?: boolean
   extraSnapshots?: Array<'issue-909-transform'>
 }
 

@@ -71,6 +71,7 @@ export const E2E_PROJECTS = [
       'sub-normal/pages/index.wxss',
       'sub-independent/pages/index.wxss',
     ],
+    forbidEmptyBlockAtRules: true,
   },
   {
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',

@@ -124,6 +124,7 @@ export function uniAppMiniCase(options: {
     styleFileExtensions: [styleFile.slice(styleFile.lastIndexOf('.'))],
     textFiles: options.textFile ? [`${outputDir}/${options.textFile}`] : undefined,
     styleContains: options.styleContains,
+    forbidEmptyBlockAtRules: options.project === 'uni-app-vite-tailwindcss-v4',
     textContains: options.textContains,
     notContains: [rawTailwindDirectiveRE],
     status: 'ci',

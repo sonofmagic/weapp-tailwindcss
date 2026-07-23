@@ -5,6 +5,7 @@ import { execa } from 'execa'
 import fg from 'fast-glob'
 import path from 'pathe'
 import { expect } from 'vitest'
+import { collectEmptyBlockAtRules } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/css-integrity'
 import { clearProjectBuildState } from '../projectTest'
 
 const styleExtensions = /\.(?:css|wxss|acss|jxss|qss|ttss)$/i
@@ -162,6 +163,15 @@ export async function verifyBuildOutputCase(item: BuildOutputCase) {
       hasExpectedStyleExtension,
       `${item.name} should emit style output with one of ${item.styleFileExtensions.join(', ')}`,
     ).toBe(true)
+  }
+  if (item.forbidEmptyBlockAtRules) {
+    for (const file of styleFiles.filter(file => styleExtensions.test(file))) {
+      const source = await fs.readFile(file, 'utf8')
+      expect(
+        collectEmptyBlockAtRules(source),
+        `${item.name} ${path.relative(projectRoot, file)} should not emit empty block at-rules`,
+      ).toEqual([])
+    }
   }
   for (const needle of item.styleContains) {
     expectNeedle(styles, needle, `${item.name} style output should contain ${String(needle)}`)

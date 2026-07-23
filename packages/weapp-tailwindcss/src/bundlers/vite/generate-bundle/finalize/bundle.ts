@@ -210,7 +210,6 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     onUpdate,
     recordCssAssetResult,
     styleHandler,
-    useIncrementalMode,
   })
   recordTimingDetail('finalize.cssAssets', finalCssAssetsStartedAt)
   const webCompatStartedAt = performance.now()

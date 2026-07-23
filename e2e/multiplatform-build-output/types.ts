@@ -15,6 +15,7 @@ export interface BuildOutputCase {
   styleFileExtensions?: string[]
   textFiles?: string[]
   styleContains: Array<string | RegExp>
+  forbidEmptyBlockAtRules?: boolean
   textContains?: Array<string | RegExp>
   fileAssertions?: Array<{
     file: string

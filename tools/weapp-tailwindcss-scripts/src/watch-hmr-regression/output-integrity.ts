@@ -1,11 +1,14 @@
 import type { OutputIntegrityGuard } from './types'
 import { Buffer } from 'node:buffer'
 import { unwatchFile, watchFile } from 'node:fs'
-import { readFile } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
+import path from 'node:path'
 import { setTimeout as delay } from 'node:timers/promises'
 import { formatPath } from './cli'
+import { collectEmptyBlockAtRules } from './css-integrity'
 
 const OUTPUT_INTEGRITY_CONFIRMATION_MS = 10
+const STYLE_OUTPUT_EXTENSION_RE = /\.(?:acss|css|jxss|qss|ttss|wxss)$/i
 
 interface OutputIntegrityViolation {
   bytes: number
@@ -13,6 +16,28 @@ interface OutputIntegrityViolation {
   file: string
   forbiddenFragment: string
   observedAt: number
+}
+
+async function collectStyleOutputFiles(directory: string): Promise<string[]> {
+  const entries = await readdir(directory, { withFileTypes: true }).catch(() => [])
+  const files = await Promise.all(entries.map(async (entry) => {
+    const file = path.join(directory, entry.name)
+    if (entry.isDirectory()) {
+      return collectStyleOutputFiles(file)
+    }
+    return entry.isFile() && STYLE_OUTPUT_EXTENSION_RE.test(entry.name) ? [file] : []
+  }))
+  return files.flat()
+}
+
+async function resolveGuardFiles(guard: OutputIntegrityGuard) {
+  if (guard.file) {
+    return [guard.file]
+  }
+  if (guard.directory) {
+    return collectStyleOutputFiles(guard.directory)
+  }
+  return []
 }
 
 export function createOutputIntegrityMonitor(guards: OutputIntegrityGuard[] | undefined) {
@@ -23,35 +48,40 @@ export function createOutputIntegrityMonitor(guards: OutputIntegrityGuard[] | un
   const violations = new Map<string, OutputIntegrityViolation>()
   let pendingInspection = Promise.resolve()
   const inspect = async (guard: OutputIntegrityGuard) => {
-    const content = await readFile(guard.file, 'utf8').catch(() => undefined)
-    if (content === undefined) {
-      return
-    }
-    const matchedFragments = guard.forbiddenFragments.filter(forbiddenFragment => content.includes(forbiddenFragment))
-    if (matchedFragments.length === 0) {
-      return
-    }
-    await delay(OUTPUT_INTEGRITY_CONFIRMATION_MS)
-    const confirmedContent = await readFile(guard.file, 'utf8').catch(() => undefined)
-    if (confirmedContent === undefined) {
-      return
-    }
-    for (const forbiddenFragment of matchedFragments) {
-      if (!confirmedContent.includes(forbiddenFragment)) {
+    for (const file of await resolveGuardFiles(guard)) {
+      const content = await readFile(file, 'utf8').catch(() => undefined)
+      if (content === undefined) {
         continue
       }
-      const key = `${guard.file}\0${forbiddenFragment}`
-      const fragmentIndex = confirmedContent.indexOf(forbiddenFragment)
-      violations.set(key, {
-        bytes: Buffer.byteLength(confirmedContent),
-        excerpt: confirmedContent.slice(
-          Math.max(0, fragmentIndex - 80),
-          Math.min(confirmedContent.length, fragmentIndex + forbiddenFragment.length + 160),
-        ),
-        file: guard.file,
-        forbiddenFragment,
-        observedAt: Date.now(),
-      })
+      const matchedFragments = (guard.forbiddenFragments ?? []).filter(forbiddenFragment => content.includes(forbiddenFragment))
+      if (guard.forbidEmptyBlockAtRules) {
+        matchedFragments.push(...collectEmptyBlockAtRules(content))
+      }
+      if (matchedFragments.length === 0) {
+        continue
+      }
+      await delay(OUTPUT_INTEGRITY_CONFIRMATION_MS)
+      const confirmedContent = await readFile(file, 'utf8').catch(() => undefined)
+      if (confirmedContent === undefined) {
+        continue
+      }
+      for (const forbiddenFragment of matchedFragments) {
+        if (!confirmedContent.includes(forbiddenFragment)) {
+          continue
+        }
+        const key = `${file}\0${forbiddenFragment}`
+        const fragmentIndex = confirmedContent.indexOf(forbiddenFragment)
+        violations.set(key, {
+          bytes: Buffer.byteLength(confirmedContent),
+          excerpt: confirmedContent.slice(
+            Math.max(0, fragmentIndex - 80),
+            Math.min(confirmedContent.length, fragmentIndex + forbiddenFragment.length + 160),
+          ),
+          file,
+          forbiddenFragment,
+          observedAt: Date.now(),
+        })
+      }
     }
   }
   const queueInspection = (guard: OutputIntegrityGuard) => {
@@ -61,10 +91,12 @@ export function createOutputIntegrityMonitor(guards: OutputIntegrityGuard[] | un
   }
 
   for (const guard of guards) {
-    watchFile(guard.file, {
-      interval: 10,
-      persistent: false,
-    }, () => queueInspection(guard))
+    if (guard.file) {
+      watchFile(guard.file, {
+        interval: 10,
+        persistent: false,
+      }, () => queueInspection(guard))
+    }
     queueInspection(guard)
   }
 
@@ -80,6 +112,9 @@ export function createOutputIntegrityMonitor(guards: OutputIntegrityGuard[] | un
 
   return {
     async assertClean(phase: string) {
+      for (const guard of guards) {
+        queueInspection(guard)
+      }
       await pendingInspection
       const error = createError(phase)
       if (error) {
@@ -88,7 +123,9 @@ export function createOutputIntegrityMonitor(guards: OutputIntegrityGuard[] | un
     },
     async stop() {
       for (const guard of guards) {
-        unwatchFile(guard.file)
+        if (guard.file) {
+          unwatchFile(guard.file)
+        }
         queueInspection(guard)
       }
       await pendingInspection
