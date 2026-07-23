@@ -95,8 +95,10 @@ export interface ProjectEntry {
   projectPath: string
   cssFile: string
   cssFiles?: string[]
+  buildEnv?: Record<string, string>
   url?: string
   skipOpenAutomator?: boolean
+  forbidEmptyBlockAtRules?: boolean
   extraSnapshots?: Array<'issue-909-transform'>
 }
 

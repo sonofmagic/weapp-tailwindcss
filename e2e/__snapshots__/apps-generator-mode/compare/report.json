@@ -25508,7 +25508,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 73708,
+      "bytes": 73891,
       "selectors": [
         "#app",
         "*",
@@ -25613,6 +25613,7 @@
         ".p-2",
         ".p-4",
         ".p-5",
+        ".page",
         ".pt-2",
         ".px-3",
         ".px-4",
@@ -25939,7 +25940,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 72343,
+      "bytes": 72570,
       "selectors": [
         "#app",
         "*",
@@ -26045,6 +26046,7 @@
         ".p-2",
         ".p-4",
         ".p-5",
+        ".page",
         ".pt-2",
         ".px-3",
         ".px-4",

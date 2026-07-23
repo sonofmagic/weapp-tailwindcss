@@ -1,4 +1,4 @@
-import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
@@ -25,6 +25,22 @@ describe('watch output integrity monitor', () => {
     await writeFile(outputFile, '.i-_bmdi--github-circle_B{display:inline-block}', 'utf8')
 
     await expect(monitor.assertClean('test update')).rejects.toThrow('output integrity violation')
+    await monitor.stop()
+  })
+
+  it('records empty conditional at-rules in final style outputs', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-empty-at-rule-integrity-'))
+    createdDirs.push(root)
+    const outputDirectory = path.join(root, 'dist')
+    const outputFile = path.join(outputDirectory, 'pages/index/index.wxss')
+    await mkdir(path.dirname(outputFile), { recursive: true })
+    await writeFile(outputFile, '@media (prefers-color-scheme: dark) { /* removed declarations */ }\n.keep{color:red}', 'utf8')
+    const monitor = createOutputIntegrityMonitor([{
+      directory: outputDirectory,
+      forbidEmptyBlockAtRules: true,
+    }])!
+
+    await expect(monitor.assertClean('incremental finalization')).rejects.toThrow('@media (prefers-color-scheme: dark)')
     await monitor.stop()
   })
 })

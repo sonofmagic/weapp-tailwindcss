@@ -124,8 +124,12 @@ export function uniAppMiniCase(options: {
     styleFileExtensions: [styleFile.slice(styleFile.lastIndexOf('.'))],
     textFiles: options.textFile ? [`${outputDir}/${options.textFile}`] : undefined,
     styleContains: options.styleContains,
+    forbidEmptyBlockAtRules: options.project === 'uni-app-vite-tailwindcss-v4',
     textContains: options.textContains,
     notContains: [rawTailwindDirectiveRE],
+    env: options.project === 'uni-app-vite-tailwindcss-v4'
+      ? { WEAPP_TW_ISSUE_1005_FINAL_CSS_FIXTURE: '1' }
+      : undefined,
     status: 'ci',
   }
 }

@@ -4,6 +4,7 @@ import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
+import { collectEmptyBlockAtRules } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/css-integrity'
 import { ensureProjectBuilt } from './projectBuild'
 import { clearTailwindPatchTaskCache, collectCssSnapshots, formatWxml, getProjectCssSnapshotFiles, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, twPatch, wait } from './shared'
 import { formatRawCssSnapshotText, normalizeCssTextSnapshot } from './snapshotUtils'
@@ -296,7 +297,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   await twPatch(root)
 
   if (process.env.E2E_SKIP_BUILD !== '1') {
-    await ensureProjectBuilt(root)
+    await ensureProjectBuilt(root, { env: entry.buildEnv })
   }
 
   if (shouldResetPatchCaches) {
@@ -359,6 +360,13 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   }
 
   for (const cssEntry of getProjectCssSnapshotFiles(entry)) {
+    if (entry.forbidEmptyBlockAtRules) {
+      const source = await fs.readFile(path.resolve(projectPath, cssEntry.cssFile), 'utf8')
+      expect(
+        collectEmptyBlockAtRules(source),
+        `${entry.name}/${cssEntry.snapshotName} should not emit empty block at-rules`,
+      ).toEqual([])
+    }
     const shouldNormalizeWebpackAppSplitNoise = (
       entry.name === 'taro-webpack-react-tailwindcss-v4'
       || entry.name === 'taro-webpack-vue3-tailwindcss-v4'

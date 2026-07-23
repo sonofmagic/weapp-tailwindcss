@@ -1,0 +1,17 @@
+@media (prefers-color-scheme: light) {
+  /* #ifdef H5 */
+  :root,
+  /* #endif */
+  page, .page {
+    --td-brand-color-1: #e4f9ec;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  /* #ifdef H5 */
+  :root,
+  /* #endif */
+  page, .page {
+    --td-brand-color-1: #002517;
+  }
+}

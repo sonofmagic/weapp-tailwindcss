@@ -221,8 +221,10 @@ export interface StyleMutationConfig {
 }
 
 export interface OutputIntegrityGuard {
-  file: string
-  forbiddenFragments: string[]
+  directory?: string
+  file?: string
+  forbiddenFragments?: string[]
+  forbidEmptyBlockAtRules?: boolean
 }
 
 export interface UserReportedHotUpdateConfig {

@@ -175,7 +175,8 @@ function createUniAppPlatformCase(
     globalStyleCandidates: buildGlobalStyleCandidates,
     outputIntegrityGuards: watchCase.outputIntegrityGuards?.map(guard => ({
       ...guard,
-      file: replaceOutputFile(guard.file),
+      ...(guard.file ? { file: replaceOutputFile(guard.file) } : {}),
+      ...(guard.directory ? { directory: replacePlatformPath(guard.directory) } : {}),
     })),
     subPackageMutations: watchCase.subPackageMutations?.map(mutation => ({
       ...mutation,
@@ -322,6 +323,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         '.i-\\[',
         '.before\\:',
       ],
+    }, {
+      directory: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin'),
+      forbidEmptyBlockAtRules: true,
     }],
     userReportedHotUpdate: {
       label: 'index text-[102.43rpx] to text-[103.43rpx]',

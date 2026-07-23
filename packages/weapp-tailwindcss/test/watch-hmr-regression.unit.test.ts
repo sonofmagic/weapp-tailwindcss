@@ -3117,11 +3117,26 @@ describe('watch-hmr regression cases', () => {
     for (const caseName of guardedCases) {
       const watchCase = cases.find(item => item.name === caseName)
       expect(watchCase?.outputIntegrityGuards?.length, caseName).toBeGreaterThan(0)
-      for (const guard of watchCase?.outputIntegrityGuards ?? []) {
+      const selectorGuards = watchCase?.outputIntegrityGuards?.filter(guard => guard.forbiddenFragments?.length) ?? []
+      expect(selectorGuards.length, caseName).toBeGreaterThan(0)
+      for (const guard of selectorGuards) {
         expect(guard.forbiddenFragments, guard.file).toContain('.i-\\[')
         expect(guard.forbiddenFragments, guard.file).toContain('.before\\:')
       }
     }
+  })
+
+  it('guards issue 1005 final watch styles against empty block at-rules', () => {
+    const baseCwd = '/repo'
+    const watchCase = buildCases(baseCwd, { includeLocalOnly: true })
+      .find(item => item.name === 'uni-app-vite-tailwindcss-v4')
+    const guardedDirectories = watchCase?.outputIntegrityGuards
+      ?.filter(guard => guard.forbidEmptyBlockAtRules)
+      .map(guard => guard.directory?.replace(/\\/g, '/')) ?? []
+
+    expect(guardedDirectories).toEqual([
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin').replace(/\\/g, '/'),
+    ])
   })
 
   it('keeps script read-path HMR checks available for every demo case', () => {
