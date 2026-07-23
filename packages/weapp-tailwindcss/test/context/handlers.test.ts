@@ -343,6 +343,29 @@ describe('resolveStyleOptionsFromContext', () => {
     expect(styleOptions).not.toHaveProperty('cssOptions')
   })
 
+  it('disables rem2rpx for uni-app x web output without changing native or generic web output', async () => {
+    const { resolveStyleOptionsFromContext } = await import('@/context/style-options')
+    const createRem2rpxContext = (
+      appType: InternalUserDefinedOptions['appType'],
+      target: 'web' | 'weapp',
+    ) => ({
+      ...createContext(),
+      appType,
+      cssOptions: undefined,
+      generator: { target },
+      rem2rpx: true,
+    }) as unknown as InternalUserDefinedOptions
+
+    const uniAppXWeb = resolveStyleOptionsFromContext(createRem2rpxContext('uni-app-x', 'web'), 4)
+    const uniAppXNative = resolveStyleOptionsFromContext(createRem2rpxContext('uni-app-x', 'weapp'), 4)
+    const genericWeb = resolveStyleOptionsFromContext(createRem2rpxContext('native', 'web'), 4)
+
+    expect(uniAppXWeb.rem2rpx).toBe(false)
+    expect(uniAppXWeb).not.toHaveProperty('cssOptions')
+    expect(uniAppXNative.rem2rpx).toBe(true)
+    expect(genericWeb.rem2rpx).toBe(true)
+  })
+
   it('enables uni-app x native style options only for native app branches', async () => {
     const { resolveStyleOptionsFromContext } = await import('@/context/style-options')
     const originalUniUtsPlatform = process.env.UNI_UTS_PLATFORM

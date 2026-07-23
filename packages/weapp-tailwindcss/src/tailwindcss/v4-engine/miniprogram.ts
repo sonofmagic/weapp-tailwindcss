@@ -3,7 +3,7 @@ import type { TailwindV4GenerateTarget } from './types'
 import type { AppType } from '@/types'
 import { createStyleHandler, normalizeTailwindcssWebRpxDeclarations, postcss, protectDynamicColorMixAlpha } from '@weapp-tailwindcss/postcss'
 import { hasCssMacroStyleOptions, transformCssMacroCss } from '@/css-macro/auto'
-import { shouldUseWebGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
+import { shouldUseUniAppWebRpxCompatibility } from '@/runtime-branch/generator-target-env'
 import { pruneMiniProgramGeneratedCss } from '../miniprogram'
 
 const defaultStyleHandler = createStyleHandler({
@@ -71,10 +71,6 @@ export function transformTailwindV4WebRpxCss(css: string) {
   }
 }
 
-function shouldTransformWebRpxCss(options: TailwindV4TargetStyleOptions | undefined) {
-  return options?.appType === 'uni-app-vite' || shouldUseWebGeneratorTargetFromEnv()
-}
-
 export async function transformTailwindV4CssByTarget(
   css: string,
   target: TailwindV4GenerateTarget,
@@ -88,7 +84,7 @@ export async function transformTailwindV4CssByTarget(
     ? transformCssMacroCss(css, options)
     : css
   const resolvedWebCss = await webCss
-  return shouldTransformWebRpxCss(options)
+  return shouldUseUniAppWebRpxCompatibility(options?.appType)
     ? transformTailwindV4WebRpxCss(resolvedWebCss)
     : resolvedWebCss
 }

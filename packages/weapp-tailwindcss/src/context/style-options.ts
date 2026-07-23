@@ -2,6 +2,7 @@ import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { InternalUserDefinedOptions } from '@/types'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
+import { shouldUseUniAppWebRpxCompatibility } from '@/runtime-branch/generator-target-env'
 import { resolveUniAppXOptions } from '@/uni-app-x/options'
 
 export type ResolvedStyleOptions = Partial<IStyleHandlerOptions> & {
@@ -30,12 +31,16 @@ export function resolveStyleOptionsFromContext(
     uniAppX: resolvedUniAppXOptions,
   })
   const hasCssOptions = ctx.cssOptions !== undefined
+  const configuredRem2rpx = ctx.cssOptions?.rem2rpx ?? ctx.rem2rpx
+  const rem2rpx = branch.isWeb && shouldUseUniAppWebRpxCompatibility(ctx.appType)
+    ? false
+    : configuredRem2rpx
   const cssOptions = {
     cssPreflight: ctx.cssOptions?.cssPreflight ?? ctx.cssPreflight,
     cssPreflightRange: ctx.cssOptions?.cssPreflightRange ?? ctx.cssPreflightRange,
     cssChildCombinatorReplaceValue: ctx.cssOptions?.cssChildCombinatorReplaceValue ?? ctx.cssChildCombinatorReplaceValue,
     cssSelectorReplacement: ctx.cssOptions?.cssSelectorReplacement ?? ctx.cssSelectorReplacement,
-    rem2rpx: ctx.cssOptions?.rem2rpx ?? ctx.rem2rpx,
+    rem2rpx,
     cssRemoveProperty: ctx.cssOptions?.cssRemoveProperty ?? ctx.cssRemoveProperty,
     cssRemoveHoverPseudoClass: ctx.cssOptions?.cssRemoveHoverPseudoClass ?? ctx.cssRemoveHoverPseudoClass,
     tailwindcssV4GradientFallback: ctx.cssOptions?.tailwindcssV4GradientFallback ?? ctx.tailwindcssV4GradientFallback,
