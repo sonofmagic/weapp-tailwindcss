@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/hbuilderx-runner
 
+## 0.0.4
+
+### Patch Changes
+
+- 🐛 **修复多 iOS 模拟器环境下 HBuilderX 测试无法自动选择设备的问题。** [`d6c0951`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d6c0951bdd1b10b5a57dd8b6bac73850f1147e49) by @sonofmagic
+
 ## 0.0.3
 
 ### Patch Changes
