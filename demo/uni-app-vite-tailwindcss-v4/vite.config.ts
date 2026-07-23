@@ -14,6 +14,9 @@ const projectRoot = dirname(fileURLToPath(import.meta.url));
 const uniMpVueRuntimePath = require.resolve("@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js");
 const uniMpVueDir = dirname(uniMpVueRuntimePath);
 const officialPostcssParity = process.env.WEAPP_TW_OFFICIAL_POSTCSS_PARITY === '1'
+const issue1005FinalCssFixtureEnabled = process.env.WEAPP_TW_ISSUE_1005_FINAL_CSS_FIXTURE === '1'
+  || process.env.WEAPP_TW_WATCH_REGRESSION === '1'
+  || process.env.E2E_SKIP_OPEN_AUTOMATOR === '1'
 const issue1005FinalCssFixture: Plugin = {
   name: 'issue-1005-final-css-fixture',
   enforce: 'post' as const,
@@ -37,7 +40,7 @@ export default defineConfig(async () => {
     plugins: [
       // 改成 mts，则爆 uni is not a function
       uni(),
-      ...(uniPlatform.isMp ? [issue1005FinalCssFixture] : []),
+      ...(uniPlatform.isMp && issue1005FinalCssFixtureEnabled ? [issue1005FinalCssFixture] : []),
       WeappTailwindcss({
         appType: 'uni-app-vite',
         tailwindcssBasedir: projectRoot,
