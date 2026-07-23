@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 5.2.1
+
+### Patch Changes
+
+- 🐛 **确保 Vite 增量构建复用缓存样式时，最终小程序 CSS 产物仍会递归移除空的条件规则。** [#1009](https://github.com/sonofmagic/weapp-tailwindcss/pull/1009) by @sonofmagic
+
+- 🐛 **修复 uni-app x 的 UVUE 样式目标无法识别 `translate()` 逗号分隔参数的问题，将顶层参数转换为空格分隔形式，并保留 `var()` 回退值等嵌套函数中的逗号。** [#1011](https://github.com/sonofmagic/weapp-tailwindcss/pull/1011) by @sonofmagic
+
+- 🐛 **修复 uni-app x 开启 `rem2rpx` 后 Web 端 `rpx` 任意值与字号工具类不生效的问题。** [#1010](https://github.com/sonofmagic/weapp-tailwindcss/pull/1010) by @sonofmagic
+- 📦 **Dependencies** [`62ac4c0`](https://github.com/sonofmagic/weapp-tailwindcss/commit/62ac4c0fd1619dfb10639455f412634335c00001)
+  → `@weapp-tailwindcss/postcss@3.2.1`
+
 ## 5.2.0
 
 ### Minor Changes
