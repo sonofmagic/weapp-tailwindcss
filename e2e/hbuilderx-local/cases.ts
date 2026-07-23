@@ -682,6 +682,15 @@ export const webCases: WebCase[] = [
           styles: { backgroundColor: 'rgb(67, 56, 202)', borderRadius: '13px', color: 'rgb(254, 243, 199)', width: '221px' },
         }],
       },
+      {
+        markerClass: 'hbuilderx-web-hmr-probe bg-[#0e7490] mt-[10rpx] text-xs',
+        markerText: 'hbuilderx-web-hmr-v4-rem-rpx',
+        cssContains: [/background-color:\s*#0e7490/, /\.mt-_b10rpx_B\s*\{[\s\S]*margin-top:\s*0\.3125rem/, /\.text-xs\s*\{[\s\S]*font-size:\s*0\.75rem/],
+        runtimeStyles: [{
+          selector: '.hbuilderx-web-hmr-probe',
+          styles: { backgroundColor: 'rgb(14, 116, 144)', fontSize: '12px', marginTop: '5px' },
+        }],
+      },
     ],
   },
 ]

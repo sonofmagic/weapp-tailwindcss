@@ -413,6 +413,41 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('--tw-ring-color: 8rpx')
   })
 
+  it('converts uni-app x web rpx utilities back to rem without changing native output', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme inline {
+          --text-xs: 24rpx;
+        }
+        @tailwind utilities;
+      `,
+      base: process.cwd(),
+    })
+    const styleOptions = {
+      appType: 'uni-app-x' as const,
+      rem2rpx: true,
+    }
+
+    const webResult = await createTailwindV4Engine(source).generate({
+      candidates: ['mt-[10rpx]', 'text-xs'],
+      scanSources: false,
+      styleOptions,
+      target: 'web',
+    })
+    const nativeResult = await createTailwindV4Engine(source).generate({
+      candidates: ['mt-[10rpx]', 'text-xs'],
+      scanSources: false,
+      styleOptions,
+      target: 'weapp',
+    })
+
+    expect(webResult.css).toMatch(/\.mt-\\\[10rpx\\\]\s*\{[\s\S]*margin-top:\s*0\.3125rem/)
+    expect(webResult.css).toMatch(/\.text-xs\s*\{[\s\S]*font-size:\s*0\.75rem/)
+    expect(webResult.css).not.toMatch(/(?:margin-top|font-size):\s*\d+(?:\.\d+)?rpx/)
+    expect(nativeResult.css).toMatch(/\.mt-_b10rpx_B\s*\{[\s\S]*margin-top:\s*10rpx/)
+    expect(nativeResult.css).toMatch(/\.text-xs\s*\{[\s\S]*font-size:\s*24rpx/)
+  })
+
   it('treats scanned rpx arbitrary values as lengths in generated uni-app web css', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-web-rpx-length-'))
     const pageFile = path.join(root, 'src/pages/index/index.vue')
@@ -693,6 +728,42 @@ describe('tailwindcss v4 engine', () => {
     expect(second.css).not.toContain('background-color: 10rpx')
     expect(second.css).not.toContain('outline-color: 5rpx')
     expect(second.css).not.toContain('--tw-ring-color: 8rpx')
+  })
+
+  it('converts newly added uni-app x web rpx utilities in incremental css', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+        @theme inline {
+          --text-xs: 24rpx;
+        }
+        @tailwind utilities;
+        /* uni-app x web rpx incremental */
+      `,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+    const generateOptions = {
+      incrementalCache: true,
+      scanSources: false,
+      styleOptions: {
+        appType: 'uni-app-x' as const,
+        rem2rpx: true,
+      },
+      target: 'web' as const,
+    }
+
+    const first = await engine.generate({
+      ...generateOptions,
+      candidates: ['text-xs'],
+    })
+    const second = await engine.generate({
+      ...generateOptions,
+      candidates: ['text-xs', 'mt-[10rpx]'],
+    })
+
+    expect(first.css).toMatch(/\.text-xs\s*\{[\s\S]*font-size:\s*0\.75rem/)
+    expect(second.incrementalCss).toMatch(/\.mt-\\\[10rpx\\\]\s*\{[\s\S]*margin-top:\s*0\.3125rem/)
+    expect(second.incrementalCss).not.toContain('margin-top: 10rpx')
   })
 
   it('remembers requested candidates that do not generate css in the v4 incremental cache', async () => {

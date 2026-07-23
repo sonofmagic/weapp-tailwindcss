@@ -4,7 +4,7 @@ import fs from 'node:fs'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { LRUCache } from 'lru-cache'
 import { hasCssMacroTailwindV4Source, withCssMacroStyleOptions } from '@/css-macro/auto'
-import { shouldUseWebGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
+import { shouldUseUniAppWebRpxCompatibility } from '@/runtime-branch/generator-target-env'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '../candidates'
 import { loadTailwindV4DesignSystem } from '../design-system'
 import { normalizeRpxLengthCandidates } from './rpx-candidates'
@@ -279,7 +279,7 @@ function shouldNormalizeRpxLengthCandidatesForTarget(
     return true
   }
   const options = styleOptions as (Partial<IStyleHandlerOptions> & { appType?: string | undefined }) | undefined
-  return options?.appType === 'uni-app-vite' || shouldUseWebGeneratorTargetFromEnv()
+  return shouldUseUniAppWebRpxCompatibility(options?.appType)
 }
 
 export function normalizeTargetRpxLengthCandidates(
