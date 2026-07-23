@@ -91,7 +91,7 @@ jobs:
             watch_timeout_ms: '420000'
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '1200000'
+            watch_command_timeout_ms: '1500000'
           - os: macos-latest
             runner_label: macos
             watch_case: taro-vite-react-tailwindcss-v4
