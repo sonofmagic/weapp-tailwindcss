@@ -117,8 +117,10 @@ describe('framework demo CI coverage matrix', () => {
   it('wires framework scripts to CI-readable mini-program and H5 suites', () => {
     const scripts = rootScripts()
     const uniAppV4Config = fs.readFileSync(path.join(repoRoot, 'demo/uni-app-vite-tailwindcss-v4/vite.config.ts'), 'utf8')
-    expect(scripts['e2e:static']).toContain('WEAPP_TW_ISSUE_1005_FINAL_CSS_FIXTURE=1')
-    expect(scripts['e2e:static:u']).toContain('WEAPP_TW_ISSUE_1005_FINAL_CSS_FIXTURE=1')
+    const uniAppV4Project = E2E_PROJECTS.find(item => item.name === 'uni-app-vite-tailwindcss-v4')
+    expect(uniAppV4Project?.buildEnv).toEqual({ WEAPP_TW_ISSUE_1005_FINAL_CSS_FIXTURE: '1' })
+    expect(scripts['e2e:static']).not.toContain('WEAPP_TW_ISSUE_1005_FINAL_CSS_FIXTURE')
+    expect(scripts['e2e:static:u']).not.toContain('WEAPP_TW_ISSUE_1005_FINAL_CSS_FIXTURE')
     expect(uniAppV4Config).not.toContain('process.env.E2E_SKIP_OPEN_AUTOMATOR')
     expect(scripts['e2e:frameworks']).toBe('pnpm e2e:frameworks:mp && pnpm e2e:frameworks:h5')
     expect(scripts['e2e:frameworks:matrix']).toContain('framework-demo-ci-coverage-matrix.test.ts')

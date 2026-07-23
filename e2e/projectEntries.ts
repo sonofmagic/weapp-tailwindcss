@@ -71,6 +71,9 @@ export const E2E_PROJECTS = [
       'sub-normal/pages/index.wxss',
       'sub-independent/pages/index.wxss',
     ],
+    buildEnv: {
+      WEAPP_TW_ISSUE_1005_FINAL_CSS_FIXTURE: '1',
+    },
     forbidEmptyBlockAtRules: true,
   },
   {

@@ -297,7 +297,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   await twPatch(root)
 
   if (process.env.E2E_SKIP_BUILD !== '1') {
-    await ensureProjectBuilt(root)
+    await ensureProjectBuilt(root, { env: entry.buildEnv })
   }
 
   if (shouldResetPatchCaches) {

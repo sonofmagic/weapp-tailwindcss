@@ -12,7 +12,13 @@ const hbuilderxCliCandidates = [
 ].filter((item): item is string => Boolean(item))
 
 interface EnsureProjectBuiltOptions {
+  env?: Record<string, string | undefined>
   force?: boolean
+}
+
+function buildTaskKey(root: string, env: Record<string, string | undefined> | undefined) {
+  const envEntries = Object.entries(env ?? {}).sort(([left], [right]) => left.localeCompare(right))
+  return `${root}\0${JSON.stringify(envEntries)}`
 }
 
 function logE2EError(message: string, ...args: unknown[]) {
@@ -97,11 +103,17 @@ function isIdeUniAppViteMiniProgramProject(root: string, pkg?: { name?: string }
     || normalizedRoot.includes('/uni-app-vite-tailwindcss-v4')
 }
 
-async function ensureHBuilderXMiniProgramBuilt(root: string, pkgPath: string, pkg?: { name?: string }) {
+async function ensureHBuilderXMiniProgramBuilt(
+  root: string,
+  pkgPath: string,
+  pkg?: { name?: string },
+  env?: Record<string, string | undefined>,
+) {
   const timeoutMs = Number(process.env['E2E_IDE_HBUILDERX_DEV_BUILD_TIMEOUT_MS'] ?? process.env['E2E_IDE_BUILD_TIMEOUT_MS'] ?? 120_000)
   const hbuilderxCliPath = await resolveHBuilderXCliPath()
   const childEnv: Record<string, string | undefined> = {
     ...process.env,
+    ...env,
     HBUILDERX_CLI_PATH: hbuilderxCliPath,
     NODE_ENV: 'development',
     BROWSERSLIST_ENV: 'development',
@@ -160,7 +172,12 @@ async function ensureHBuilderXMiniProgramBuilt(root: string, pkgPath: string, pk
   }
 }
 
-async function ensureUniAppViteDevMiniProgramBuilt(root: string, pkgPath: string, pkg?: { name?: string }) {
+async function ensureUniAppViteDevMiniProgramBuilt(
+  root: string,
+  pkgPath: string,
+  pkg?: { name?: string },
+  env?: Record<string, string | undefined>,
+) {
   const timeoutMs = Number(process.env['E2E_IDE_UNI_APP_DEV_BUILD_TIMEOUT_MS'] ?? process.env['E2E_IDE_BUILD_TIMEOUT_MS'] ?? 120_000)
   const outputRoot = path.resolve(root, 'dist/dev/mp-weixin')
   const requiredFiles = [
@@ -172,6 +189,7 @@ async function ensureUniAppViteDevMiniProgramBuilt(root: string, pkgPath: string
   ]
   const childEnv: Record<string, string | undefined> = {
     ...process.env,
+    ...env,
     NODE_ENV: 'development',
     BROWSERSLIST_ENV: 'development',
     RUST_BACKTRACE: process.env['RUST_BACKTRACE'] ?? '1',
@@ -232,7 +250,8 @@ async function ensureUniAppViteDevMiniProgramBuilt(root: string, pkgPath: string
 }
 
 export async function ensureProjectBuilt(root: string, options: EnsureProjectBuiltOptions = {}) {
-  const existing = buildTasks.get(root)
+  const taskKey = buildTaskKey(root, options.env)
+  const existing = buildTasks.get(taskKey)
   if (existing && !options.force) {
     return existing
   }
@@ -249,12 +268,12 @@ export async function ensureProjectBuilt(root: string, options: EnsureProjectBui
     }
 
     if (isHBuilderXMiniProgramProject(root, pkg)) {
-      await ensureHBuilderXMiniProgramBuilt(root, pkgPath, pkg)
+      await ensureHBuilderXMiniProgramBuilt(root, pkgPath, pkg, options.env)
       return
     }
 
     if (isIdeUniAppViteMiniProgramProject(root, pkg)) {
-      await ensureUniAppViteDevMiniProgramBuilt(root, pkgPath, pkg)
+      await ensureUniAppViteDevMiniProgramBuilt(root, pkgPath, pkg, options.env)
       return
     }
 
@@ -268,6 +287,7 @@ export async function ensureProjectBuilt(root: string, options: EnsureProjectBui
     const stdio = process.env['E2E_DEBUG_BUILD'] === '1' ? 'inherit' : 'pipe'
     const childEnv: Record<string, string | undefined> = {
       ...process.env,
+      ...options.env,
       // Vitest workers set NODE_ENV=test; Taro + Vite builds are not stable in that mode.
       NODE_ENV: 'production',
       BROWSERSLIST_ENV: 'production',
@@ -304,12 +324,12 @@ export async function ensureProjectBuilt(root: string, options: EnsureProjectBui
     }
   })()
 
-  buildTasks.set(root, task)
+  buildTasks.set(taskKey, task)
   try {
     await task
   }
   catch (error) {
-    buildTasks.delete(root)
+    buildTasks.delete(taskKey)
     throw error
   }
 }
