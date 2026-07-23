@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
-import { buildSummary, evaluatePerformanceGuard, toMarkdown } from './ci-report.mjs'
+import { asInformationalPerformanceGuard, buildSummary, evaluatePerformanceGuard, toMarkdown } from './ci-report.mjs'
 import { benchmarkProjectDirs } from './projects.mjs'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -14,6 +14,22 @@ const packageJsonPath = path.join(repoRoot, 'packages/weapp-tailwindcss/package.
 const dependencyFields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']
 const publishedResolverDependencyNames = [
   '@weapp-core/escape',
+]
+const performanceRelevantPaths = [
+  ':(glob)packages/*/src/**',
+  ':(glob)packages/*/package.json',
+  ':(glob)packages/*/tsconfig.json',
+  ':(glob)packages/*/tsdown.config.*',
+  ':(glob)packages-runtime/*/src/**',
+  ':(glob)packages-runtime/*/package.json',
+  ':(glob)packages-runtime/*/tsconfig.json',
+  ':(glob)packages-runtime/*/tsdown.config.*',
+  ':(glob)demo/**',
+  ':(glob)patches/**',
+  'package.json',
+  'pnpm-lock.yaml',
+  'pnpm-workspace.yaml',
+  'turbo.json',
 ]
 
 function parseArg(name, fallback = '') {
@@ -491,6 +507,9 @@ async function main() {
   await run(repoRoot, process.execPath, matrixArgs)
 
   const raw = JSON.parse(await fs.readFile(rawPath, 'utf8'))
+  const performanceRelevantChanges = baselineRef
+    ? await hasGitChanges(baselineRef, performanceRelevantPaths)
+    : true
   if (baselineRef && !process.argv.includes('--skip-core-metrics')) {
     const coreMetricSpecs = [
       {
@@ -528,9 +547,13 @@ async function main() {
   }
   const summary = buildSummary(raw, baselineLabel, currentLabel)
   if (baselineRef) {
-    summary.performanceGuard = evaluatePerformanceGuard(summary, {
+    const performanceGuard = evaluatePerformanceGuard(summary, {
       regressionPercent: parseNumber('--regression-percent', 5),
     })
+    summary.performanceGuard = performanceRelevantChanges
+      ? { ...performanceGuard, blocking: true }
+      : asInformationalPerformanceGuard(performanceGuard, 'PR 未修改性能相关源码、依赖或 demo')
+    process.stdout.write(`[benchmark] performance guard mode: ${performanceRelevantChanges ? 'blocking' : 'informational'}\n`)
   }
   const markdown = toMarkdown(summary, baselineRef || baseline)
   await fs.writeFile(summaryPath, `${JSON.stringify(summary, null, 2)}\n`, 'utf8')
