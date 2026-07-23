@@ -44,6 +44,7 @@ describe('uni-app-x', () => {
   it('removes unsupported carrier selectors and pushes required defaults to utility classes', async () => {
     const styleHandler = createStyleHandler({
       uniAppX: true,
+      uniAppXCssTarget: 'uvue',
     })
     const { css } = await styleHandler(
       `view,text,:before,:after {
@@ -79,11 +80,44 @@ describe('uni-app-x', () => {
     expect(css).toContain('.transform {')
     expect(css).toContain('--tw-translate-x: 0;')
     expect(css).toContain('--tw-scale-y: 1;')
+    expect(css).toContain('transform: translate(var(--tw-translate-x) var(--tw-translate-y))')
+    expect(css).not.toContain('translate(var(--tw-translate-x), var(--tw-translate-y))')
     expect(css).toContain('.shadow {')
     expect(css).toContain('--tw-ring-offset-shadow: 0 0 rgba(0,0,0,0);')
     expect(css).toContain('--tw-shadow: 0 0 rgba(0,0,0,0);')
     expect(css).not.toContain('--tw-text-opacity:')
     expect(css).toContain('.border-_b_h999_B')
+  })
+
+  it('normalizes translate argument separators for uvue without changing nested commas', async () => {
+    const source = '.issue-823{-webkit-transform:translate(var(--x, 0), calc(var(--y, 0) + 1px));transform:translate(var(--x, 0), calc(var(--y, 0) + 1px)) rotate(45deg)}'
+    const result = await postcss().process(source, {
+      from: '/src/pages/issue-823.uvue',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+
+    expect(filtered.css).toBe(
+      '.issue-823{-webkit-transform:translate(var(--x, 0) calc(var(--y, 0) + 1px));transform:translate(var(--x, 0) calc(var(--y, 0) + 1px)) rotate(45deg)}',
+    )
+    expect(filtered.warnings()).toEqual([])
+  })
+
+  it('keeps translate argument separators for non-uvue targets', async () => {
+    const source = '.issue-823{transform:translate(var(--x), var(--y))}'
+    const result = await postcss().process(source, {
+      from: '/src/pages/issue-823.vue',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+    })
+
+    expect(filtered.css).toBe(source)
   })
 
   it('inlines adapted Tailwind theme tokens before removing the uvue root carrier', async () => {
