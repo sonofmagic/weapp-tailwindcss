@@ -39,6 +39,11 @@ function numericSamples(row, field) {
     : undefined
 }
 
+function steadySamples(row, field) {
+  const samples = numericSamples(row, field)
+  return samples?.slice(1)
+}
+
 function standardNormalCdf(value) {
   const absolute = Math.abs(value)
   const scale = 1 / (1 + 0.2316419 * absolute)
@@ -148,6 +153,10 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
     const currentHmrPluginStatistic = hmrPluginStatistic(current)
     const baselineHmrPlugin = summaryMetric(baseline, 'hmrPlugin', baselineHmrPluginStatistic)
     const currentHmrPlugin = summaryMetric(current, 'hmrPlugin', currentHmrPluginStatistic)
+    const baselineHmrPluginSteady = summaryMetric(baseline, 'hmrPluginSteady', 'p95')
+    const currentHmrPluginSteady = summaryMetric(current, 'hmrPluginSteady', 'p95')
+    const baselineHmrPluginGuard = baselineHmrPluginSteady ?? baselineHmrPlugin
+    const currentHmrPluginGuard = currentHmrPluginSteady ?? currentHmrPlugin
     const baselineBuildPeakRssMb = memoryMetric(baseline, 'buildPeakRssMb')
     const currentBuildPeakRssMb = memoryMetric(current, 'buildPeakRssMb')
     const baselineBuildSteadyRssMb = memoryMetric(baseline, 'buildSteadyRssMb')
@@ -181,6 +190,9 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
         ? currentHmrPluginStatistic
         : `${baselineHmrPluginStatistic}->${currentHmrPluginStatistic}`,
       hmrPluginDeltaPct: pct(baselineHmrPlugin, currentHmrPlugin),
+      baselineHmrPluginGuard,
+      currentHmrPluginGuard,
+      hmrPluginGuardDeltaPct: pct(baselineHmrPluginGuard, currentHmrPluginGuard),
       baselineHmrPluginMedian,
       currentHmrPluginMedian,
       hmrPluginMedianDeltaPct: pct(baselineHmrPluginMedian, currentHmrPluginMedian),
@@ -208,6 +220,12 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
       currentHmrSamples: numericSamples(current, 'hmrMs'),
       baselineHmrPluginSamples: numericSamples(baseline, 'hmrPluginMs'),
       currentHmrPluginSamples: numericSamples(current, 'hmrPluginMs'),
+      baselineHmrPluginSteadySamples: steadySamples(baseline, 'hmrPluginMs'),
+      currentHmrPluginSteadySamples: steadySamples(current, 'hmrPluginMs'),
+      baselineBuildPeakRssSamples: numericSamples(baseline, 'buildPeakRssMb'),
+      currentBuildPeakRssSamples: numericSamples(current, 'buildPeakRssMb'),
+      baselineBuildSteadyRssSamples: numericSamples(baseline, 'buildSteadyRssMb'),
+      currentBuildSteadyRssSamples: numericSamples(current, 'buildSteadyRssMb'),
       baselineMemoryStability: baseline?.memoryStability,
       currentMemoryStability: current.memoryStability,
       baselineBuildMode: baseline?.buildMode ?? 'build',
@@ -299,12 +317,12 @@ export function evaluatePerformanceGuard(summary, options = {}) {
   const metrics = [
     { metric: 'buildMedian', baseline: 'baselineBuild', current: 'currentBuild', delta: 'buildDeltaPct', timing: true, baselineSamples: 'baselineBuildSamples', tailSamples: 'currentBuildSamples', medianSamples: true },
     { metric: 'hmrMedian', baseline: 'baselineHmrMedian', current: 'currentHmrMedian', delta: 'hmrMedianDeltaPct', timing: true, watchOnly: true, baselineSamples: 'baselineHmrSamples', tailSamples: 'currentHmrSamples', medianSamples: true, pluginConfirmation: { baseline: 'baselineHmrPluginMedian', current: 'currentHmrPluginMedian', delta: 'hmrPluginMedianDeltaPct', baselineSamples: 'baselineHmrPluginSamples', tailSamples: 'currentHmrPluginSamples', medianSamples: true } },
-    { metric: 'hmrP95', baseline: 'baselineHmr', current: 'currentHmr', delta: 'hmrDeltaPct', timing: true, watchOnly: true, tailSamples: 'currentHmrSamples', pluginConfirmation: { baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', tailSamples: 'currentHmrPluginSamples' } },
+    { metric: 'hmrP95', baseline: 'baselineHmr', current: 'currentHmr', delta: 'hmrDeltaPct', timing: true, watchOnly: true, tailSamples: 'currentHmrSamples', pluginConfirmation: { baseline: 'baselineHmrPluginGuard', current: 'currentHmrPluginGuard', delta: 'hmrPluginGuardDeltaPct', tailSamples: 'currentHmrPluginSteadySamples' } },
     { metric: 'buildPluginMedian', baseline: 'baselineBuildPlugin', current: 'currentBuildPlugin', delta: 'buildPluginDeltaPct', timing: true, baselineSamples: 'baselineBuildPluginSamples', tailSamples: 'currentBuildPluginSamples', medianSamples: true },
     { metric: 'hmrPluginMedian', baseline: 'baselineHmrPluginMedian', current: 'currentHmrPluginMedian', delta: 'hmrPluginMedianDeltaPct', timing: true, watchOnly: true, baselineSamples: 'baselineHmrPluginSamples', tailSamples: 'currentHmrPluginSamples', medianSamples: true },
-    { metric: 'hmrPluginP95', baseline: 'baselineHmrPlugin', current: 'currentHmrPlugin', delta: 'hmrPluginDeltaPct', timing: true, watchOnly: true, tailSamples: 'currentHmrPluginSamples', p95PluginOnly: true },
-    { metric: 'buildPeakRssMb', baseline: 'baselineBuildPeakRssMb', current: 'currentBuildPeakRssMb', delta: 'buildPeakRssDeltaPct', memory: true },
-    { metric: 'buildSteadyRssMb', baseline: 'baselineBuildSteadyRssMb', current: 'currentBuildSteadyRssMb', delta: 'buildSteadyRssDeltaPct', memory: true },
+    { metric: 'hmrPluginP95', baseline: 'baselineHmrPluginGuard', current: 'currentHmrPluginGuard', delta: 'hmrPluginGuardDeltaPct', timing: true, watchOnly: true, baselineSamples: 'baselineHmrPluginSteadySamples', tailSamples: 'currentHmrPluginSteadySamples', p95PluginOnly: true },
+    { metric: 'buildPeakRssMb', baseline: 'baselineBuildPeakRssMb', current: 'currentBuildPeakRssMb', delta: 'buildPeakRssDeltaPct', memory: true, baselineSamples: 'baselineBuildPeakRssSamples', tailSamples: 'currentBuildPeakRssSamples', medianSamples: true },
+    { metric: 'buildSteadyRssMb', baseline: 'baselineBuildSteadyRssMb', current: 'currentBuildSteadyRssMb', delta: 'buildSteadyRssDeltaPct', memory: true, baselineSamples: 'baselineBuildSteadyRssSamples', tailSamples: 'currentBuildSteadyRssSamples', medianSamples: true },
     { metric: 'hmrPeakRssMb', baseline: 'baselineHmrPeakRssMb', current: 'currentHmrPeakRssMb', delta: 'hmrPeakRssDeltaPct', memory: true, watchOnly: true, steadyConfirmation: true },
     { metric: 'hmrSteadyRssMb', baseline: 'baselineHmrSteadyRssMb', current: 'currentHmrSteadyRssMb', delta: 'hmrSteadyRssDeltaPct', memory: true, watchOnly: true, peakConfirmation: true },
   ]
@@ -459,10 +477,15 @@ export function evaluatePerformanceGuard(summary, options = {}) {
           }
         }
         const tailSamples = config.tailSamples ? compare[config.tailSamples] : undefined
+        const minimumSampleDelta = config.timing
+          ? minimumTimingRegressionMs
+          : config.memory
+            ? minimumMemoryRegressionMb
+            : 0
         const regressedTailSamples = Array.isArray(tailSamples)
           ? tailSamples.filter((sample) => {
             const sampleDelta = sample - baseline
-            return pct(baseline, sample) > regressionPercent && sampleDelta >= minimumTimingRegressionMs
+            return pct(baseline, sample) > regressionPercent && sampleDelta >= minimumSampleDelta
           }).length
           : undefined
         const requiredRegressionSamples = config.medianSamples && Array.isArray(tailSamples)
@@ -545,6 +568,7 @@ export function toMarkdown(summary, baselineSpec) {
         `- 时间回归绝对下限：${fmtMs(guard.thresholds.minimumTimingRegressionMs)}ms`,
         `- 内存回归绝对下限：${fmtMs(guard.thresholds.minimumMemoryRegressionMb)}MB`,
         `- P95 尾部回归最少样本：${guard.thresholds.minimumTailRegressionSamples}`,
+        '- HMR 插件 P95 门禁使用首轮预热后的稳态样本',
         `- 中位数回归置信上限：p <= ${guard.thresholds.maximumMedianRegressionPValue}`,
         '- 中位数回归需严格多数样本同步越界，并通过单侧分布置信检验',
         '- 端到端 HMR 回归需插件处理阶段同步越界确认',

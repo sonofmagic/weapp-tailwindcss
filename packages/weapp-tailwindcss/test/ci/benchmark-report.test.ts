@@ -196,6 +196,88 @@ describe('benchmark ci report', () => {
     expect(result.passed).toBe(false)
   })
 
+  it('requires build RSS distributions to confirm a median regression', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-23T00:00:00.000Z',
+      options: { buildRuns: 3, hmrRuns: 0, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'noisy-build-rss',
+          buildPeakRssMb: [1911.56640625, 1838.4609375, 1758.21875],
+          buildSteadyRssMb: [1703.55078125, 1627.28515625, 1732.46875],
+          summary: {
+            build: { median: 1000 },
+            buildPeakRssMb: { median: 1838.4609375 },
+            buildSteadyRssMb: { median: 1703.55078125 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'noisy-build-rss',
+          buildPeakRssMb: [1975.9140625, 1808.0234375, 2016.73046875],
+          buildSteadyRssMb: [1688.390625, 1651, 1676.828125],
+          summary: {
+            build: { median: 1000 },
+            buildPeakRssMb: { median: 1975.9140625 },
+            buildSteadyRssMb: { median: 1676.828125 },
+          },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    const result = evaluatePerformanceGuard(summary)
+
+    expect(result.violations.filter(item => item.key === 'noisy-build-rss')).toEqual([])
+  })
+
+  it('uses steady HMR plugin samples for the P95 guard', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-23T00:00:00.000Z',
+      options: { buildRuns: 0, hmrRuns: 6, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'watcher-warmup-noise',
+          hmrMode: 'watch',
+          hmrMs: [555.53, 500.2, 470.1, 433.0, 441.0, 433.6],
+          hmrPluginMs: [218, 223, 185, 170, 182, 171],
+          summary: {
+            hmr: { p95: 555.53 },
+            hmrPlugin: { p95: 223 },
+            hmrPluginSteady: { p95: 223 },
+            hmrPeakRssMb: { median: 1000 },
+            hmrSteadyRssMb: { median: 900 },
+          },
+        },
+        {
+          version: currentLabel,
+          key: 'watcher-warmup-noise',
+          hmrMode: 'watch',
+          hmrMs: [591.35, 533.17, 500.88, 468.7, 469.56, 496.67],
+          hmrPluginMs: [240, 241, 201, 189, 180, 203],
+          summary: {
+            hmr: { p95: 591.35 },
+            hmrPlugin: { p95: 241 },
+            hmrPluginSteady: { p95: 241 },
+            hmrPeakRssMb: { median: 1000 },
+            hmrSteadyRssMb: { median: 900 },
+          },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    const result = evaluatePerformanceGuard(summary)
+
+    expect(result.violations.filter(item => item.key === 'watcher-warmup-noise')).toEqual([])
+  })
+
   it('requires distribution-level confidence before blocking on a median regression', async () => {
     const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
     const baselineLabel = 'base:main'
