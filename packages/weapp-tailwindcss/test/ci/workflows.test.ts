@@ -1016,9 +1016,14 @@ describe('e2e watch workflow', () => {
     }
     const minimalWindowsTaroPrBudgets = [
       { watchCase: 'taro-vite-react-tailwindcss-v4', timeoutMs: '420000' },
-      { watchCase: 'taro-webpack-react-tailwindcss-v4', timeoutMs: '420000', taroReadyTimeoutMs: '900000' },
+      {
+        watchCase: 'taro-webpack-react-tailwindcss-v4',
+        timeoutMs: '420000',
+        pluginProcessMs: '24000',
+        taroReadyTimeoutMs: '900000',
+      },
       { watchCase: 'taro-webpack-vue3-tailwindcss-v4', timeoutMs: '600000', taroReadyTimeoutMs: '900000' },
-    ].map(({ watchCase, timeoutMs, taroReadyTimeoutMs }) => ({
+    ].map(({ watchCase, timeoutMs, pluginProcessMs = '18000', taroReadyTimeoutMs }) => ({
       watch_case: watchCase,
       round_profile: 'main-style',
       watch_main_style_only: '1',
@@ -1026,7 +1031,7 @@ describe('e2e watch workflow', () => {
       watch_max_attempts: '1',
       timeout_minutes: 30,
       watch_timeout_ms: timeoutMs,
-      watch_max_plugin_process_ms: '18000',
+      watch_max_plugin_process_ms: pluginProcessMs,
       ...(taroReadyTimeoutMs == null ? {} : { taro_dev_ready_timeout_ms: taroReadyTimeoutMs }),
       watch_command_timeout_ms: '1500000',
     }))
