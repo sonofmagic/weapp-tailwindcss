@@ -1,29 +1,39 @@
 <template>
-  <view class="p-[20.32px] bg-[#87add3] border-[#111111] border-solid">
-		<text :class="flag ? 'bg-[#123456] mb-[12.32px]' : 'bg-[#d7700a]'">
-      simple
-    </text>
-    <text :class="[
-    extra,
-    { 'text-[#ff0000]': toggled }
-    ]">
-      complex
-    </text>
-    <text :class="condition ? 'bg-[#f205f6] text-[#70ed0a]' : ''">
-      fallback
-    </text>
-  </view>
+	<view class="border border-solid border-[#999] p-4">
+		<view class="issue-822-component-child h-[200px] w-full bg-[#87add3]">
+			<text class="text-[#111111]">issue 822 component child</text>
+		</view>
+		<view class="p-[20.32px] bg-[#87add3] border-[#111111] border-solid">
+			<text :class="flag ? 'bg-[#123456] mb-[12.32px]' : 'bg-[#d7700a]'">
+				simple
+			</text>
+			<text :class="[
+				extra,
+				{ 'text-[#ff0000]': toggled }
+			]">
+				complex
+			</text>
+			<text :class="condition ? 'bg-[#f205f6] text-[#70ed0a]' : ''">
+				fallback
+			</text>
+		</view>
+	</view>
 </template>
 <script lang="uts">
-  export default {
-    styleIsolation: 'app',
-    data() {
-      return {
-        condition: true,
-        extra: 'text-[93.54rpx] bg-[#d2e252]',
-        flag: true,
-        toggled: true,
-      }
-    },
-  }
+	export default {
+		data() {
+			return {
+				condition: true,
+				extra: 'text-[93.54rpx] bg-[#d2e252]',
+				flag: true,
+				toggled: true,
+			}
+		},
+	}
 </script>
+
+<style scoped>
+	.issue-822-component-child {
+		border: 2px solid #7c3aed;
+	}
+</style>

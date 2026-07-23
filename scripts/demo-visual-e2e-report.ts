@@ -5,7 +5,6 @@ import path from 'pathe'
 import { E2E_PROJECTS } from '../e2e/projectEntries.ts'
 import { taroWebHmrCases } from '../e2e/taro-web-demo-hmr-cases.ts'
 import { webViteHmrCases } from '../e2e/web-vite-demo-hmr-cases.ts'
-import { runH5Case, runMiniProgramCase } from './demo-visual-e2e-report/cases.ts'
 import {
   createMiniProgramHmrVisualConfig,
   createTaroHmrVisualConfig,
@@ -211,9 +210,10 @@ async function main() {
   await cleanScreenshotTargets(context, targetPlatforms, await collectTargetDemoNames(targetPlatforms))
   await fs.mkdir(path.join(context.artifactRoot, 'diffs'), { recursive: true })
   if (!weappOnly && !appOnly) {
-    const [{ chromium }, { resolveChromeExecutable }] = await Promise.all([
+    const [{ chromium }, { resolveChromeExecutable }, { runH5Case }] = await Promise.all([
       import('playwright'),
       import('../e2e/hbuilderx-local/process.ts'),
+      import('./demo-visual-e2e-report/cases.ts'),
     ])
     const executablePath = await resolveChromeExecutable()
     const browser = await chromium.launch({
@@ -265,6 +265,7 @@ async function main() {
     }
   }
   if (!h5Only && !appOnly) {
+    const { runMiniProgramCase } = await import('./demo-visual-e2e-report/cases.ts')
     for (const item of sortMiniProgramCases(E2E_PROJECTS)) {
       if (!matchesFilter(item.name)) {
         continue

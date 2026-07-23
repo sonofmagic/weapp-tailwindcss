@@ -771,7 +771,8 @@ async function runAppCaseVariant(
     const ensureInitialRunning = () => launch?.tracker.ensureRunning(launch.logs)
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait initial output\n`)
-    const initialOutputRoot = await waitForAppOutputRoot(item, projectRoot, item.transformedContains, appOutputTimeoutMs, ensureInitialRunning, item.styleContains)
+    const initialExpected = [...item.transformedContains, ...(item.compiledStyleContains ?? [])]
+    const initialOutputRoot = await waitForAppOutputRoot(item, projectRoot, initialExpected, appOutputTimeoutMs, ensureInitialRunning, item.styleContains)
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: initial output ${initialOutputRoot}\n`)
     await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot before\n`)
@@ -786,7 +787,8 @@ async function runAppCaseVariant(
     await wait(Number(process.env['DEMO_VISUAL_APP_HMR_MUTATION_DELAY_MS'] ?? 1000))
     const ensureHmrRunning = ensureInitialRunning
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait hmr output\n`)
-    const hmrOutputRoot = await waitForAppOutputRoot(item, projectRoot, item.hmrTransformedContains, appOutputTimeoutMs, ensureHmrRunning, item.hmrStyleContains)
+    const hmrExpected = [...item.hmrTransformedContains, ...(item.compiledStyleContains ?? [])]
+    const hmrOutputRoot = await waitForAppOutputRoot(item, projectRoot, hmrExpected, appOutputTimeoutMs, ensureHmrRunning, item.hmrStyleContains)
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: hmr output ${hmrOutputRoot}\n`)
     await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot after\n`)
