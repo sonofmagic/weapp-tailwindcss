@@ -76,6 +76,7 @@ describe('benchmark ci report', () => {
     expect(source).toContain('skip unchanged core metric')
     expect(source).toContain('performance guard violation')
     expect(source).toContain('performanceRelevantPaths')
+    expect(source).toContain('classifyPerformanceChanges')
     expect(source).toContain('asInformationalPerformanceGuard')
     expect(source.match(/hmrPluginStatistic: 'median'/g)).toHaveLength(3)
     expect(source).toContain("parseNumber('--poll-interval', 30)")
@@ -93,6 +94,72 @@ describe('benchmark ci report', () => {
     const versionLoopIndex = matrixSource.indexOf('for (const versionMeta of versions)', projectLoopIndex)
     expect(projectLoopIndex).toBeGreaterThan(-1)
     expect(versionLoopIndex).toBeGreaterThan(projectLoopIndex)
+  })
+
+  it('keeps Changesets release metadata non-blocking while preserving real dependency guards', async () => {
+    const { classifyChangedPerformanceFiles } = await import('../../../../benchmark/version-compare/scripts/change-relevance.mjs')
+    const manifests = new Map([
+      ['packages/weapp-tailwindcss/package.json', {
+        baseline: { name: 'weapp-tailwindcss', version: '5.2.0', dependencies: { '@weapp-core/escape': '^3.0.0' } },
+        current: { name: 'weapp-tailwindcss', version: '5.2.1', dependencies: { '@weapp-core/escape': '^3.0.0' } },
+      }],
+      ['packages/build-all/package.json', {
+        baseline: { name: '@weapp-tailwindcss/build-all', version: '1.0.0', dependencies: { 'weapp-tailwindcss': 'workspace:^5.2.0' } },
+        current: { name: '@weapp-tailwindcss/build-all', version: '1.0.1', dependencies: { 'weapp-tailwindcss': 'workspace:^5.2.1' } },
+      }],
+    ])
+    const releaseFiles = [...manifests.keys()]
+    const releaseResult = await classifyChangedPerformanceFiles(releaseFiles, async file => manifests.get(file))
+
+    expect(releaseResult).toEqual({
+      relevant: false,
+      relevantFiles: [],
+      ignoredReleaseMetadataFiles: releaseFiles.sort(),
+    })
+
+    manifests.set('packages/weapp-tailwindcss/package.json', {
+      baseline: { name: 'weapp-tailwindcss', version: '5.2.0', dependencies: { '@weapp-core/escape': '^3.0.0' } },
+      current: { name: 'weapp-tailwindcss', version: '5.2.1', dependencies: { '@weapp-core/escape': '^4.0.0' } },
+    })
+    const dependencyResult = await classifyChangedPerformanceFiles(releaseFiles, async file => manifests.get(file))
+
+    expect(dependencyResult.relevant).toBe(true)
+    expect(dependencyResult.relevantFiles).toEqual(['packages/weapp-tailwindcss/package.json'])
+
+    manifests.set('packages/weapp-tailwindcss/package.json', {
+      baseline: { name: 'weapp-tailwindcss', version: '5.2.0' },
+      current: { name: 'weapp-tailwindcss', version: '5.2.0' },
+    })
+    manifests.set('packages/build-all/package.json', {
+      baseline: { name: '@weapp-tailwindcss/build-all', version: '1.0.0', dependencies: { 'weapp-tailwindcss': 'workspace:^5.2.0' } },
+      current: { name: '@weapp-tailwindcss/build-all', version: '1.0.1', dependencies: { 'weapp-tailwindcss': 'workspace:^6.0.0' } },
+    })
+    const manualRangeResult = await classifyChangedPerformanceFiles(releaseFiles, async file => manifests.get(file))
+
+    expect(manualRangeResult.relevantFiles).toEqual(['packages/build-all/package.json'])
+  })
+
+  it('formats benchmark shard regressions as actionable GitHub annotations', async () => {
+    const { collectBenchmarkDiagnostics, formatGitHubErrorAnnotation } = await import('../../../../benchmark/version-compare/scripts/report-shard-failures.mjs')
+    const diagnostics = collectBenchmarkDiagnostics({
+      currentOnlyErrors: [],
+      performanceGuard: {
+        passed: false,
+        violations: [{
+          key: 'demo-taro-webpack-react-tailwindcss-v4__mp-weixin',
+          metric: 'hmrSteadyRssMb',
+          baseline: 1911.27,
+          current: 2118.32,
+          deltaPercent: 10.83,
+          thresholdPercent: 5,
+        }],
+      },
+    }, 'benchmark-performance-taro-webpack-react/summary.json')
+
+    expect(diagnostics).toEqual([
+      'benchmark-performance-taro-webpack-react/summary.json: demo-taro-webpack-react-tailwindcss-v4__mp-weixin / hmrSteadyRssMb: 1911.27 -> 2118.32 (+10.83%, threshold 5.00%)',
+    ])
+    expect(formatGitHubErrorAnnotation(diagnostics[0])).toContain('::error title=Benchmark shard failure::')
   })
 
   it('extracts plugin processing time from structured Vite and Webpack timing logs', async () => {
@@ -244,6 +311,7 @@ describe('benchmark ci report', () => {
       performanceGuard: result,
     }, 'main')
     expect(markdown).toContain('- 门禁模式：仅记录')
+    expect(markdown).toContain('- 仅记录原因：PR 未修改性能相关源码、依赖或 demo')
     expect(markdown).toContain('- 观察项：1')
     expect(markdown).toContain('demo-mpx-tailwindcss-v4__mp-weixin / hmrPeakRssMb')
   })

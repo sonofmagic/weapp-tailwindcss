@@ -4,6 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
+import { classifyPerformanceChanges, performanceRelevantPaths, summarizeFiles } from './change-relevance.mjs'
 import { asInformationalPerformanceGuard, buildSummary, evaluatePerformanceGuard, toMarkdown } from './ci-report.mjs'
 import { benchmarkProjectDirs } from './projects.mjs'
 
@@ -15,23 +16,6 @@ const dependencyFields = ['dependencies', 'devDependencies', 'peerDependencies',
 const publishedResolverDependencyNames = [
   '@weapp-core/escape',
 ]
-const performanceRelevantPaths = [
-  ':(glob)packages/*/src/**',
-  ':(glob)packages/*/package.json',
-  ':(glob)packages/*/tsconfig.json',
-  ':(glob)packages/*/tsdown.config.*',
-  ':(glob)packages-runtime/*/src/**',
-  ':(glob)packages-runtime/*/package.json',
-  ':(glob)packages-runtime/*/tsconfig.json',
-  ':(glob)packages-runtime/*/tsdown.config.*',
-  ':(glob)demo/**',
-  ':(glob)patches/**',
-  'package.json',
-  'pnpm-lock.yaml',
-  'pnpm-workspace.yaml',
-  'turbo.json',
-]
-
 function parseArg(name, fallback = '') {
   const index = process.argv.indexOf(name)
   return index === -1 ? fallback : (process.argv[index + 1] ?? fallback)
@@ -507,9 +491,10 @@ async function main() {
   await run(repoRoot, process.execPath, matrixArgs)
 
   const raw = JSON.parse(await fs.readFile(rawPath, 'utf8'))
-  const performanceRelevantChanges = baselineRef
-    ? await hasGitChanges(baselineRef, performanceRelevantPaths)
-    : true
+  const performanceChanges = baselineRef
+    ? await classifyPerformanceChanges(repoRoot, baselineRef)
+    : { relevant: true, relevantFiles: performanceRelevantPaths, ignoredReleaseMetadataFiles: [] }
+  const performanceRelevantChanges = performanceChanges.relevant
   if (baselineRef && !process.argv.includes('--skip-core-metrics')) {
     const coreMetricSpecs = [
       {
@@ -550,10 +535,17 @@ async function main() {
     const performanceGuard = evaluatePerformanceGuard(summary, {
       regressionPercent: parseNumber('--regression-percent', 5),
     })
+    const relevantFiles = summarizeFiles(performanceChanges.relevantFiles)
+    const ignoredFiles = summarizeFiles(performanceChanges.ignoredReleaseMetadataFiles)
+    const informationalReason = ignoredFiles
+      ? `PR 仅修改版本号或内部包发布范围等发版元数据：${ignoredFiles}`
+      : 'PR 未修改性能相关源码、依赖或 demo'
     summary.performanceGuard = performanceRelevantChanges
-      ? { ...performanceGuard, blocking: true }
-      : asInformationalPerformanceGuard(performanceGuard, 'PR 未修改性能相关源码、依赖或 demo')
+      ? { ...performanceGuard, blocking: true, relevantChanges: performanceChanges.relevantFiles }
+      : asInformationalPerformanceGuard(performanceGuard, informationalReason)
     process.stdout.write(`[benchmark] performance guard mode: ${performanceRelevantChanges ? 'blocking' : 'informational'}\n`)
+    process.stdout.write(`[benchmark] performance relevant files: ${relevantFiles || 'none'}\n`)
+    process.stdout.write(`[benchmark] ignored release metadata files: ${ignoredFiles || 'none'}\n`)
   }
   const markdown = toMarkdown(summary, baselineRef || baseline)
   await fs.writeFile(summaryPath, `${JSON.stringify(summary, null, 2)}\n`, 'utf8')

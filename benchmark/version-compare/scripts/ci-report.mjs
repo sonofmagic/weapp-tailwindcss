@@ -577,6 +577,7 @@ export function toMarkdown(summary, baselineSpec) {
         `- 结果：${guard.passed ? '通过' : '失败'}`,
         `- 门禁模式：${guard.blocking === false ? '仅记录' : '阻断'}`,
         ...(guard.skipReason ? [`- 仅记录原因：${guard.skipReason}`] : []),
+        ...(guard.relevantChanges?.length ? [`- 阻断依据：检测到性能相关变更：${guard.relevantChanges.join(', ')}`] : []),
         `- 统一退化阈值：${guard.thresholds.regressionPercent}%`,
         `- 时间回归绝对下限：${fmtMs(guard.thresholds.minimumTimingRegressionMs)}ms`,
         `- 内存回归绝对下限：${fmtMs(guard.thresholds.minimumMemoryRegressionMb)}MB`,
