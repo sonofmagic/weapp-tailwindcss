@@ -1,0 +1,8 @@
+@import "tailwindcss" source(none);
+@config "../../../tailwind.config.sub-normal.js";
+
+@source "./**/*.{css,vue,js,ts,jsx,tsx,html}";
+
+.normal-page-local {
+  border-width: 3rpx;
+}

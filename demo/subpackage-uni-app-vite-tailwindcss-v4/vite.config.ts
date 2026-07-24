@@ -1,10 +1,11 @@
 import { createRequire } from 'node:module'
+import { readFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import uni from '@dcloudio/vite-plugin-uni'
 import parity from '../official-postcss-parity-plugin.cjs'
-import { defineConfig, type Plugin } from 'vite'
+import { defineConfig, normalizePath, type Plugin } from 'vite'
 import { resolveUniPlatform } from 'weapp-tailwindcss/framework'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
@@ -18,9 +19,19 @@ const cssEntries = cssMode === 'single'
   ? [path.resolve(projectRoot, 'src/main.single.css')]
   : [
       path.resolve(projectRoot, 'src/main.css'),
-      path.resolve(projectRoot, 'src/sub-normal/pages/index.css'),
-      path.resolve(projectRoot, 'src/sub-independent/pages/index.css'),
+      path.resolve(projectRoot, 'src/sub-normal/index.css'),
+      path.resolve(projectRoot, 'src/sub-independent/index.css'),
     ]
+const singleSubpackageEntrySources = new Map([
+  [
+    normalizePath(path.resolve(projectRoot, 'src/sub-normal/pages/index.css')),
+    path.resolve(projectRoot, 'src/sub-normal/pages/index.single.css'),
+  ],
+  [
+    normalizePath(path.resolve(projectRoot, 'src/sub-independent/pages/index.css')),
+    path.resolve(projectRoot, 'src/sub-independent/pages/index.single.css'),
+  ],
+])
 
 function singleCssEntryPlugin(): Plugin {
   return {
@@ -34,6 +45,18 @@ function singleCssEntryPlugin(): Plugin {
         return path.resolve(projectRoot, 'src/main.single.css')
       }
       return null
+    },
+    async load(id) {
+      if (process.env.E2E_TW_CSS_ENTRY_MODE !== 'single') {
+        return null
+      }
+      const cleanId = id.split('?', 1)[0]
+      const singleEntrySource = cleanId ? singleSubpackageEntrySources.get(normalizePath(cleanId)) : undefined
+      if (!singleEntrySource) {
+        return null
+      }
+      this.addWatchFile(singleEntrySource)
+      return readFile(singleEntrySource, 'utf8')
     },
   }
 }
@@ -55,7 +78,20 @@ export default defineConfig(() => {
           : {
               webCompat: uniPlatform.isWeb ? true : undefined,
             },
-        styleInjector: false,
+        styleInjector: cssMode === 'isolated'
+          ? {
+              rules: {
+                'index.css': [
+                  'pages/**/*.css',
+                  'pages/**/*.wxss',
+                  'pages/**/*.acss',
+                  'pages/**/*.ttss',
+                  'pages/**/*.qss',
+                  'pages/**/*.jxss',
+                ],
+              },
+            }
+          : false,
         customAttributes: {
           '*': [/^t-class(?:-.+)?$/],
         },

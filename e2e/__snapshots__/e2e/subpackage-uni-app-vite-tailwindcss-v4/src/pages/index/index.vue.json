@@ -1,0 +1,12 @@
+{
+  "file": "src/pages/index/index.vue",
+  "count": 6,
+  "tokens": [
+    "bg-[#0977ee]",
+    "bg-twv4-uni-main",
+    "dark:bg-zinc-950",
+    "px-[29rpx]",
+    "text-[31rpx]",
+    "text-white"
+  ]
+}

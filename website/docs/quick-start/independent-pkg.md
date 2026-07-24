@@ -1,217 +1,245 @@
 ---
-title: tailwindcss 多上下文与独立分包
-description: 你看过动漫《百兽王》吗？《百兽王》的主人公是五个飞行员，他们分别驾驶黑、红、青、黄、绿五头机器狮，它们平时可以单独进行作战，遇到强敌时，也能进行五狮合体，成为巨大机器人“百兽王”。
+title: Tailwind CSS 多入口与分包隔离
+description: 使用 cssEntries、@source 与内置 styleInjector，让主包、普通分包和独立分包分别生成自己的 Tailwind CSS 样式入口。
 keywords:
-  - 快速开始
-  - 安装
-  - 配置
   - tailwindcss
-  - 多上下文与独立分包
-  - quick start
-  - independent pkg
+  - 多入口
+  - 分包
+  - 独立分包
+  - styleInjector
+  - weapp-style-injector
   - weapp-tailwindcss
   - 小程序
-  - 微信小程序
   - uni-app
   - taro
   - mpx
 ---
-# tailwindcss 多上下文与独立分包
 
-你看过动漫《百兽王》吗？《百兽王》的主人公是五个飞行员，他们分别驾驶黑、红、青、黄、绿五头机器狮，它们平时可以单独进行作战，遇到强敌时，也能进行五狮合体，成为巨大机器人“百兽王”。
+# Tailwind CSS 多入口与分包隔离
 
-同样，在日常开发中，我们经常遇到这样的问题，一个很大的程序，它有很多个独立的部分组成，每一个部分可以单独运行，也有独立的入口，相互之间没有任何的依赖，但是它们在同一个项目/任务里进行构建。
+小程序拆分主包、普通分包和独立分包后，通常不希望把所有 Tailwind 工具类复制到每一份样式产物中。更合理的结果是：
 
-在这种场景下，去使用 `tailwindcss` 就往往需要去创建多个上下文，让这些上下文各自去管理我们程序中的指定的一块区域。
+- 主包入口只生成主包使用的工具类。
+- 普通分包入口只生成该分包使用的工具类。
+- 独立分包入口只生成该独立分包使用的工具类。
+- 分包页面通过 `@import` 引用本分包入口，同时保留页面自己的局部 CSS。
 
-当然我写到这，相信大家也啥都没看懂，于是我搬出一个小程序中，独立分包的示例，来让大家理解这种思想。
+独立分包尤其需要单独的样式入口，因为主包中的全局样式不会作用到独立分包。
 
-## 什么是独立分包
+## 三项配置分别负责什么
 
-独立分包是小程序中一种特殊类型的分包，可以独立于主包和其他分包运行。从独立分包中页面进入小程序时，不需要下载主包。当用户进入普通分包或主包内页面时，主包才会被下载。
+| 配置 | 职责 |
+| --- | --- |
+| `cssEntries` | 告诉 `weapp-tailwindcss` 哪些文件是 Tailwind CSS 入口 |
+| 入口中的 `@source` | 决定当前入口扫描哪些模板和脚本、生成哪些候选类 |
+| `styleInjector.rules` | 生成分包入口资产，并把入口通过 `@import` 注入匹配的页面或组件样式 |
 
-独立分包属于分包的一种。普通分包的所有限制都对独立分包有效。独立分包中插件、自定义组件的处理方式同普通分包。此外，使用独立分包时要注意：
+`styleInjector` 不负责扫描模板，也不会替代 `cssEntries`。反过来，`cssEntries` 只负责识别和生成入口，不会自动让分包页面引用入口。三者需要一起配置。
 
-1. 独立分包中不能依赖主包和其他分包中的内容，包括 js 文件、template、wxss、自定义组件、插件等（使用 分包异步化 时 js 文件、自定义组件、插件不受此条限制）
-2. 主包中的 `app.wxss` 对独立分包无效，应避免在独立分包页面中使用 `app.wxss` 中的样式；
-3. App 只能在主包内定义，独立分包中不能定义 App，会造成无法预期的行为；
-4. 独立分包中暂时不支持使用插件。
+## 目录结构
 
-> 更多信息详见 [微信独立分包官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/independent.html)
+下面以 uni-app Vite + Tailwind CSS 4 为例：
 
----
-
-这里要特别注意第二条: **主包中的 `app.wxss` 对独立分包是无效的!!!**
-
-在我之前提供的`tailwindcss`小程序模板的示例中，所有 `tailwindcss` 生成的 `wxss` 工具类都是在主包里共用的 (`app.wxss`)，这在大部分情况下运转良好，然而这在独立分包场景下，是不行的！因为主包的样式无法影响到独立分包。
-
-那么应该怎么做才能解决这个问题呢？
-
-## 创建与配置示例
-
-这里笔者先以 `taro@3.6.7` 和 `weapp-tailwindcss@2.5.2` 版本的项目作为示例。
-
-首先配置好 `weapp-tailwindcss` 的配置，然后在 `config/index.js` 中关闭 `prebundle` 功能，因为这在独立分包场景下会报一些未知的错误:
-
-```js
-const config = {
-  compiler: {
-    prebundle: {
-      enable: false,
-    },
-    type: 'webpack5'
-  },
-  // .....
-}
+```text
+src/
+├── main.css
+├── main.ts
+├── pages/
+│   └── index/index.vue
+├── sub-normal/
+│   ├── index.css
+│   └── pages/
+│       ├── index.css
+│       └── index.vue
+└── sub-independent/
+    ├── index.css
+    └── pages/
+        ├── index.css
+        └── index.vue
 ```
 
-其次关闭插件对 `tailwindcss css var` 主块的寻址行为：
+`main.css`、两个分包根目录下的 `index.css` 是三份 Tailwind 入口。页面目录中的 `index.css` 只是页面局部样式，不包含 Tailwind 入口指令。
 
-```js
-chain.merge({
-  plugin: {
-    install: {
-      plugin: WeappTailwindcss,
-      args: [{
-        // 方法1: 不要传 appType
-        // 注释掉 appType : 'taro'
-        // 或者方法2: 显式让所有 css chunk 都是 main chunk
-        // mainCssChunkMatcher: ()=> true
-        // 2 种选其一即可
-      }]
-    }
-  }
+## 配置 cssEntries 与内置 Style Injector
+
+`weapp-tailwindcss` 已内置 `weapp-style-injector`，无需再注册一个独立插件：
+
+```ts title="vite.config.ts"
+import { createRequire } from 'node:module'
+import { dirname } from 'node:path'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import uni from '@dcloudio/vite-plugin-uni'
+import { defineConfig } from 'vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+const require = createRequire(import.meta.url)
+const projectRoot = dirname(fileURLToPath(import.meta.url))
+const uniMpVueRuntimePath = require.resolve('@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js')
+
+export default defineConfig({
+  plugins: [
+    uni(),
+    WeappTailwindcss({
+      tailwindcssBasedir: projectRoot,
+      cssEntries: [
+        path.resolve(projectRoot, 'src/main.css'),
+        path.resolve(projectRoot, 'src/sub-normal/index.css'),
+        path.resolve(projectRoot, 'src/sub-independent/index.css'),
+      ],
+      styleInjector: {
+        rules: {
+          'index.css': [
+            'pages/**/*.css',
+            'pages/**/*.wxss',
+            'pages/**/*.acss',
+            'pages/**/*.ttss',
+            'pages/**/*.qss',
+            'pages/**/*.jxss',
+          ],
+        },
+      },
+    }),
+  ],
+  resolve: {
+    alias: {
+      '@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js': uniMpVueRuntimePath,
+    },
+  },
 })
 ```
 
-接下来我们就可以创建一个独立分包 `moduleA`，在里面新建一个 `"pages/index"` 页面，并写入一个只属于 `moduleA` 的独一无二的 `tailwindcss class`，然后在 `app.config.ts` 里注册它:
+uni-app 预设会读取 `pages.json` 中的分包根目录。规则里的 `index.css` 会分别匹配：
 
-```js
-  subpackages: [
-    {
-      root: "moduleA",
-      pages: [
-        "pages/index",
-      ],
-      // 下方这个标志位，声明独立分包
-      independent: true
-    },
-  ]
+- `src/sub-normal/index.css`
+- `src/sub-independent/index.css`
+
+目标 glob 覆盖常见小程序样式后缀和 H5 的 `.css`。如果项目只构建微信小程序，可以缩小为 `pages/**/*.wxss`。
+
+## 限定三个入口的扫描范围
+
+主包入口只扫描主包页面，并显式排除两个分包：
+
+```css title="src/main.css"
+@import "tailwindcss" source(none);
+@config "../tailwind.config.js";
+
+@source "./pages/**/*.{vue,js,ts}";
+@source not "./sub-normal/**/*";
+@source not "./sub-independent/**/*";
 ```
 
-到这里，准备工作就完成了，接下来就可以设计方案了。
+普通分包入口只扫描普通分包：
 
-## 单 `tailwindcss` 上下文的方案（不完美不推荐）
+```css title="src/sub-normal/index.css"
+@import "tailwindcss" source(none);
+@config "../../tailwind.config.sub-normal.js";
 
-这个方案是一个不完美的方案，在这里写出来是为了促进大家对 `tailwindcss` 的理解。
-
-首先在独立分包中，也创建一个 `index.scss` 内容为:
-
-```css
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@source "./pages/**/*.{vue,js,ts}";
 ```
 
-然后在所有独立分包中的页面引用它，这样打包之后，独立分包里的 `tailwindcss` 样式也就生效了。
+独立分包入口只扫描独立分包：
 
-然而这种方式有一个巨大的问题，就是它会带来严重的 `css` 冗余。
+```css title="src/sub-independent/index.css"
+@import "tailwindcss" source(none);
+@config "../../tailwind.config.sub-independent.js";
 
-因为此时 `tailwindcss` 上下文有且仅有一个，它会把在这个项目中，所有提取出来的 `css` 工具类，全部注入到所有的 `@tailwind` 指令里去。`@import 'tailwindcss/utilities'` 这个引入(本质实际上是`@tailwind`指令)一下子膨胀了起来。
+@source "./pages/**/*.{vue,js,ts}";
+```
 
-这导致了，主包里的 `app.wxss` 里，会包含主包里所有的 `class` + 独立分包里所有的 `class`，而独立分包里的 `index.scss` 里，也包含主包里所有的 `class` + 独立分包里所有的 `class`!
+每个 `@config` 的 `content` 也应保持相同边界。不要让主配置重新扫描全部分包，否则会绕过入口中的隔离意图。
 
-这显然是不可接受的，因为主包是没有必要包含独立分包的 `class`，而独立分包里，也没有必要包含主包里的 `class`! 这只会白白增大打包后`wxss`文件的体积。
+## 页面只引入局部 CSS
 
-所以这个方案需要改进!
+分包页面不需要手工引入根目录的 Tailwind 入口：
 
-## 多 `tailwindcss` 上下文的方案
+```vue title="src/sub-normal/pages/index.vue"
+<template>
+  <view class="normal-page-local bg-twv4-uni-normal text-white">
+    normal subpackage
+  </view>
+</template>
 
-由于上面那个方案的问题，我们开始改进，就必须要创建多个 `tailwindcss` 上下文。
+<style src="./index.css"></style>
+```
 
-那么第一步就是要 **`↓`**
-
-### 创建多个 `tailwind.config.js`
-
-比如说我们只有一个独立分包，所以我们创建了2个 `tailwind.config.js`:
-
-1. `tailwind.config.js` 用于主包以及相互依赖的子包
-2. `tailwind.config.sub.js` 用于 `moduleA` 这个独立分包
-
-内容如下:
-
-#### 独立分包的上下文配置
-
-```js
-// `moduleA` 这个独立分包的 tailwind.config.sub.js
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  // 这里只提取 moduleA 这个独立分包下的文件内容
-  content: ["./src/moduleA/**/*.{html,js,ts,jsx,tsx}"],
-  // ....
-  corePlugins: {
-    preflight: false
-  }
+```css title="src/sub-normal/pages/index.css"
+.normal-page-local {
+  border-width: 3rpx;
 }
 ```
 
-#### 主包以及相互依赖的子包的上下文配置
+构建时，内置 Style Injector 会生成分包入口，并把引用插入页面产物。
 
-```js
-// 主包以及相互依赖的子包的 tailwind.config.js
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  // https://github.com/mrmlnc/fast-glob
-  // 这里需要限定范围，不去提取 moduleA 这个独立分包下的文件内容
-  // 所以后面跟了一个 `!` 开头的路径
-  content: [
-    "./src/**/*.{html,js,ts,jsx,tsx}",
-    // 不提取独立分包里的 class
-    "!./src/moduleA/**/*.{html,js,ts,jsx,tsx}"],
-  // ....
-  corePlugins: {
-    preflight: false
-  }
+## 预期产物
+
+以微信小程序为例：
+
+| 产物 | 应包含 | 不应包含 |
+| --- | --- | --- |
+| `main.wxss` | 主包专属工具类 | 普通分包、独立分包专属工具类 |
+| `sub-normal/index.wxss` | 普通分包专属工具类 | 主包、独立分包专属工具类 |
+| `sub-independent/index.wxss` | 独立分包专属工具类 | 主包、普通分包专属工具类 |
+| `sub-normal/pages/index.wxss` | 页面局部 CSS、`@import "../index.wxss"` | 三组入口工具类的内联副本 |
+| `sub-independent/pages/index.wxss` | 页面局部 CSS、`@import "../index.wxss"` | 三组入口工具类的内联副本 |
+
+页面产物类似：
+
+```css title="dist/build/mp-weixin/sub-normal/pages/index.wxss"
+@import "../index.wxss";
+
+.normal-page-local {
+  border-width: 3rpx;
 }
 ```
 
-这样 `2` 个配置文件创建好了，接下来就要通过配置让它们各自在打包中生效。
+隔离针对的是入口专属候选。若主包和多个分包都使用 `text-white`，每个入口各自生成该共享工具类是正常现象。
 
-### 生成模式配置
+## 独立使用 weapp-style-injector
 
-不再建议通过 `postcss.config.js` 创建多个 Tailwind 上下文。请为主包和独立分包准备不同的 CSS 入口，并把这些入口都加入 `cssEntries`：
+如果项目没有使用 `weapp-tailwindcss`，或者只需要注入已经生成的样式入口，可以独立注册框架预设：
 
-```ts title="vite.config.ts"
-import path from 'node:path'
-import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+```ts
+import uni from '@dcloudio/vite-plugin-uni'
+import { defineConfig } from 'vite'
+import { StyleInjector } from 'weapp-style-injector/vite/uni-app'
 
-WeappTailwindcss({
-  cssEntries: [
-    path.resolve(__dirname, 'src/app.css'),
-    path.resolve(__dirname, 'src/moduleA/app.css'),
+export default defineConfig({
+  plugins: [
+    uni(),
+    StyleInjector({
+      rules: {
+        'index.css': ['pages/**/*.wxss'],
+      },
+    }),
   ],
 })
 ```
 
-每个 CSS 入口可以通过 `@config` 指向自己的 Tailwind 配置：
+已经使用 `weapp-tailwindcss` 时，优先使用内置 `styleInjector`，避免注册两套相同的构建生命周期。
 
-```css title="src/moduleA/app.css"
-@config "../../tailwind.config.sub.js";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+## 验证
+
+先构建微信小程序：
+
+```bash
+pnpm build:mp-weixin
 ```
 
-通过这种方式，我们成功创建了 `2` 个不同的 Tailwind 上下文，此时你进行打包之后，会发现
+如果项目支持其他平台，再至少检查一个非微信目标，例如支付宝或抖音：
 
-主包里的 `app.wxss` 和独立分包里的 `index.wxss`，里面的内容就已经各归各了，不再相互包含了。
+```bash
+pnpm build:mp-alipay
+pnpm build:mp-toutiao
+```
 
-## 尾言
+验证时不要只检查固定的 `app.wxss` 文件名，应按真实平台后缀检查 `.wxss`、`.acss`、`.ttss` 等产物，并同时做正向和反向断言，确认入口之间没有串包。
 
-当然，上面只是一种方案，达到这样的目的方式有很多种，比如你可以在运行时去修改 `postcss-loader` 对它进行劫持，或者拆成多个项目，分开构建。
+## 完整示例
 
-我这篇文章只是抛砖引玉，相信聪明的你们一定可以举一反三的。
+仓库中的 [subpackage-uni-app-vite-tailwindcss-v4](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/subpackage-uni-app-vite-tailwindcss-v4) demo 同时覆盖：
 
-## 参考示例
-
-示例见:<https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/taro-app>
+- 内置 `styleInjector` 的隔离入口模式。
+- 主包、普通分包、独立分包的候选隔离。
+- 微信、支付宝、抖音和 H5 产物。
+- 用于兼容性回归的单入口模式。

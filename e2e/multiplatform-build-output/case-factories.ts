@@ -38,6 +38,8 @@ function createSubpackageCssAssertions(options: {
   mainMarker: string
   normalMarker: string
   independentMarker: string
+  normalLocalSelector: string
+  independentLocalSelector: string
   singleEntry: boolean
 }) {
   const allMarkers = [
@@ -64,7 +66,9 @@ function createSubpackageCssAssertions(options: {
     },
     {
       file: options.normalStyleFile,
-      contains: options.normalEntryStyleFile ? [importPathTo(`index${options.normalEntryStyleFile.slice(options.normalEntryStyleFile.lastIndexOf('.'))}`)] : [cssMarker(options.normalMarker)],
+      contains: options.normalEntryStyleFile
+        ? [parentImportPathTo(`index${options.normalEntryStyleFile.slice(options.normalEntryStyleFile.lastIndexOf('.'))}`), options.normalLocalSelector]
+        : [cssMarker(options.normalMarker)],
       notContains: [
         cssMarker(options.mainMarker),
         ...(options.normalEntryStyleFile ? [cssMarker(options.normalMarker)] : []),
@@ -74,7 +78,9 @@ function createSubpackageCssAssertions(options: {
     },
     {
       file: options.independentStyleFile,
-      contains: options.independentEntryStyleFile ? [importPathTo(`index${options.independentEntryStyleFile.slice(options.independentEntryStyleFile.lastIndexOf('.'))}`)] : [cssMarker(options.independentMarker)],
+      contains: options.independentEntryStyleFile
+        ? [parentImportPathTo(`index${options.independentEntryStyleFile.slice(options.independentEntryStyleFile.lastIndexOf('.'))}`), options.independentLocalSelector]
+        : [cssMarker(options.independentMarker)],
       notContains: [
         cssMarker(options.mainMarker),
         cssMarker(options.normalMarker),
@@ -86,14 +92,14 @@ function createSubpackageCssAssertions(options: {
       ? [{
           file: options.normalEntryStyleFile,
           contains: [cssMarker(options.normalMarker)],
-          notContains: [cssMarker(options.mainMarker), cssMarker(options.independentMarker), rawTailwindDirectiveRE],
+          notContains: [importPathTo(`pages/index${options.normalEntryStyleFile.slice(options.normalEntryStyleFile.lastIndexOf('.'))}`), cssMarker(options.mainMarker), cssMarker(options.independentMarker), rawTailwindDirectiveRE],
         }]
       : []),
     ...(options.independentEntryStyleFile
       ? [{
           file: options.independentEntryStyleFile,
           contains: [cssMarker(options.independentMarker)],
-          notContains: [cssMarker(options.mainMarker), cssMarker(options.normalMarker), rawTailwindDirectiveRE],
+          notContains: [importPathTo(`pages/index${options.independentEntryStyleFile.slice(options.independentEntryStyleFile.lastIndexOf('.'))}`), cssMarker(options.mainMarker), cssMarker(options.normalMarker), rawTailwindDirectiveRE],
         }]
       : []),
   ] satisfies BuildOutputCase['fileAssertions']
@@ -199,6 +205,8 @@ export function uniAppSubpackageMiniCase(options: {
   const entryExtension = extension
   const singleEntry = options.mode === 'single'
   const mainStyleFile = singleEntry ? `main.single${entryExtension}` : `main${entryExtension}`
+  const normalEntryStyleFile = singleEntry ? undefined : `${outputDir}/sub-normal/index${entryExtension}`
+  const independentEntryStyleFile = singleEntry ? undefined : `${outputDir}/sub-independent/index${entryExtension}`
   return {
     name: `${options.project} ${options.platform} ${options.mode}`,
     framework: 'uni-app',
@@ -217,6 +225,8 @@ export function uniAppSubpackageMiniCase(options: {
         ? [
             `${outputDir}/sub-normal/pages/index${entryExtension}`,
             `${outputDir}/sub-independent/pages/index${entryExtension}`,
+            normalEntryStyleFile!,
+            independentEntryStyleFile!,
           ]
         : []),
     ],
@@ -231,9 +241,13 @@ export function uniAppSubpackageMiniCase(options: {
       appStyleFile: `${outputDir}/${mainStyleFile}`,
       normalStyleFile: `${outputDir}/sub-normal/pages/index${entryExtension}`,
       independentStyleFile: `${outputDir}/sub-independent/pages/index${entryExtension}`,
+      normalEntryStyleFile,
+      independentEntryStyleFile,
       mainMarker: options.markers.main,
       normalMarker: options.markers.normal,
       independentMarker: options.markers.independent,
+      normalLocalSelector: '.normal-page-local',
+      independentLocalSelector: '.independent-page-local',
       singleEntry,
     }),
     notContains: [rawTailwindDirectiveRE],
@@ -601,6 +615,10 @@ export function gulpMiniCase(options: {
 
 function importPathTo(scopeFile: string) {
   return new RegExp(`@import\\s+["'][^"']*${scopeFile.replace('.', '\\.')}["']`)
+}
+
+function parentImportPathTo(scopeFile: string) {
+  return new RegExp(`@import\\s+["']\\.\\./${scopeFile.replace('.', '\\.')}["']`)
 }
 
 function tailwindCssImport() {

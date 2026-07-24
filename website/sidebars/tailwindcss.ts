@@ -73,6 +73,11 @@ const tailwindcssSidebar: SidebarConfig = [
         ],
       },
       'tailwindcss/best-practices',
+      {
+        type: 'doc',
+        id: 'quick-start/independent-pkg',
+        label: '分包 Tailwind 入口隔离',
+      },
       'tailwindcss/v5-official-plugin-parity',
       'tailwindcss/style-isolation',
     ],

@@ -1,4 +1,3 @@
-@import "tailwindcss" source(none);
-@config "../../../tailwind.config.sub-independent.js";
-
-@source "./**/*.{css,vue,js,ts,jsx,tsx,html}";
+.independent-page-local {
+  border-width: 5rpx;
+}
