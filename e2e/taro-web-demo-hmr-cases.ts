@@ -10,6 +10,7 @@ export interface TaroWebHmrCase {
   markerText: string
   anchors: string[]
   insertion: string
+  issue850ImportOrder?: 'nutui-first' | 'tailwind-first'
 }
 
 function reactCase(options: {
@@ -20,6 +21,7 @@ function reactCase(options: {
   markerAttr: string
   markerText: string
   anchors: string[]
+  issue850ImportOrder?: 'nutui-first' | 'tailwind-first'
 }): TaroWebHmrCase {
   return {
     ...options,
@@ -55,6 +57,7 @@ export const taroWebHmrCases: TaroWebHmrCase[] = [
     projectDir: 'demo/taro-vite-react-tailwindcss-v4',
     markerAttr: 'vite-react-v4',
     markerText: 'TARO-WEB-HMR-VITE-REACT-V4',
+    issue850ImportOrder: 'tailwind-first',
     anchors: [
       '<div className=\'h-[300px] text-[#c31d6b] bg-[#123456]\'>',
     ],
@@ -75,6 +78,7 @@ export const taroWebHmrCases: TaroWebHmrCase[] = [
     cssEntryFile: 'src/app.css',
     markerAttr: 'webpack-react-v4',
     markerText: 'TARO-WEB-HMR-WEBPACK-REACT-V4',
+    issue850ImportOrder: 'nutui-first',
     anchors: [
       '<View className=\'bg-[#534312] text-[#fff] text-[100rpx]\'>',
     ],

@@ -3,6 +3,7 @@ import process from 'node:process'
 import { execa } from 'execa'
 import fg from 'fast-glob'
 import path from 'pathe'
+import postcss from 'postcss'
 import { describe, expect, it } from 'vitest'
 import { clearProjectBuildState } from './projectTest'
 import { taroWebHmrCases } from './taro-web-demo-hmr-cases'
@@ -30,10 +31,8 @@ const thirdPartyCssTokensByName = new Map<string, string[]>([
     '.nut-button-primary',
   ]],
 ])
-const issue850CascadeProjectNames = new Set([
-  'taro vite react Tailwind v4',
-  'taro webpack react Tailwind v4',
-])
+const tailwindImportMarker = '@import "tailwindcss"'
+const nutuiImportMarker = '@import "@nutui/nutui-react-taro/dist/style.css"'
 
 function shouldAssertTaroRuntimeCss(name: string) {
   return name.includes('vite')
@@ -118,7 +117,19 @@ describe('demo Taro H5 build smoke', () => {
     for (const token of thirdPartyCssTokensByName.get(item.name) ?? []) {
       expect(css, `${item.name} should preserve third-party CSS token ${token}`).toContain(token)
     }
-    if (issue850CascadeProjectNames.has(item.name)) {
+    if (item.issue850ImportOrder) {
+      const cssEntry = await fs.readFile(path.resolve(projectRoot, 'src/app.css'), 'utf8')
+      const tailwindImportIndex = cssEntry.indexOf(tailwindImportMarker)
+      const nutuiImportIndex = cssEntry.indexOf(nutuiImportMarker)
+      expect(tailwindImportIndex, `${item.name} should import Tailwind`).toBeGreaterThanOrEqual(0)
+      expect(nutuiImportIndex, `${item.name} should import NutUI`).toBeGreaterThanOrEqual(0)
+      if (item.issue850ImportOrder === 'tailwind-first') {
+        expect(tailwindImportIndex, `${item.name} should import Tailwind before NutUI`).toBeLessThan(nutuiImportIndex)
+      }
+      else {
+        expect(nutuiImportIndex, `${item.name} should import NutUI before Tailwind`).toBeLessThan(tailwindImportIndex)
+      }
+
       expect(css, `${item.name} should generate the normal rounded-full utility`).toMatch(
         /\.rounded-full\s*\{[^}]*border-radius\s*:/,
       )
@@ -128,6 +139,24 @@ describe('demo Taro H5 build smoke', () => {
       expect(css, `${item.name} should preserve the competing NutUI round button rule`).toMatch(
         /\.nut-button-round\s*\{[^}]*border-radius\s*:/,
       )
+
+      const roundedFullLayers: Array<string | undefined> = []
+      const nutuiRoundLayers: Array<string | undefined> = []
+      postcss.parse(css).walkRules((rule) => {
+        let parent = rule.parent
+        while (parent && !(parent.type === 'atrule' && parent.name === 'layer')) {
+          parent = parent.parent
+        }
+        const layer = parent?.type === 'atrule' ? parent.params.trim() : undefined
+        if (rule.selector === '.rounded-full') {
+          roundedFullLayers.push(layer)
+        }
+        if (rule.selector === '.nut-button-round') {
+          nutuiRoundLayers.push(layer)
+        }
+      })
+      expect(roundedFullLayers, `${item.name} should flatten rounded-full for the H5 cascade`).toContain(undefined)
+      expect(nutuiRoundLayers, `${item.name} should keep NutUI unlayered for the H5 cascade`).toContain(undefined)
     }
   }, 1_200_000)
 })

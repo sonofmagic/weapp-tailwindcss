@@ -312,14 +312,17 @@ async function gotoReadyPage(page: Page, baseUrl: string, child: ChildProcess, l
 }
 
 async function expectIssue850Cascade(page: Page, item: TaroWebHmrCase) {
-  if (!item.name.includes('react')) {
+  if (!item.issue850ImportOrder) {
     return
   }
 
-  async function readButton(winner: 'nutui-wins' | 'tailwind-wins') {
-    const button = page.locator(`[data-issue-850-cascade="${winner}"] .nut-button`).first()
+  const demo = page.locator(`[data-issue-850-import-order="${item.issue850ImportOrder}"]`).first()
+  await demo.waitFor({ state: 'attached', timeout: 30_000 })
+
+  async function readButton(variant: 'important' | 'normal') {
+    const button = page.locator(`[data-issue-850-cascade="${variant}"] .nut-button`).first()
     await button.waitFor({ state: 'attached', timeout: 30_000 })
-    const utilityClass = winner === 'nutui-wins' ? 'rounded-full' : 'rounded-full!'
+    const utilityClass = variant === 'normal' ? 'rounded-full' : 'rounded-full!'
     return button.evaluate((element, className) => {
       const borderRadius = Number.parseFloat(window.getComputedStyle(element).borderRadius)
       element.classList.remove(className)
@@ -333,19 +336,25 @@ async function expectIssue850Cascade(page: Page, item: TaroWebHmrCase) {
     }, utilityClass)
   }
 
-  const [nutuiWins, tailwindWins] = await Promise.all([
-    readButton('nutui-wins'),
-    readButton('tailwind-wins'),
+  const [normal, important] = await Promise.all([
+    readButton('normal'),
+    readButton('important'),
   ])
 
-  expect(nutuiWins.className).toContain('rounded-full')
-  expect(nutuiWins.className).not.toContain('rounded-full!')
-  expect(nutuiWins.borderRadius).toBeGreaterThan(0)
-  expect(nutuiWins.borderRadius).toBe(nutuiWins.nutuiBorderRadius)
+  expect(normal.className).toContain('rounded-full')
+  expect(normal.className).not.toContain('rounded-full!')
+  expect(normal.borderRadius).toBeGreaterThan(0)
+  if (item.issue850ImportOrder === 'tailwind-first') {
+    expect(normal.borderRadius).toBe(normal.nutuiBorderRadius)
+  }
+  else {
+    expect(normal.borderRadius).toBeGreaterThan(1000)
+    expect(normal.borderRadius).toBeGreaterThan(normal.nutuiBorderRadius * 100)
+  }
 
-  expect(tailwindWins.className).toContain('rounded-full!')
-  expect(tailwindWins.borderRadius).toBeGreaterThan(1000)
-  expect(tailwindWins.borderRadius).toBeGreaterThan(tailwindWins.nutuiBorderRadius * 100)
+  expect(important.className).toContain('rounded-full!')
+  expect(important.borderRadius).toBeGreaterThan(1000)
+  expect(important.borderRadius).toBeGreaterThan(important.nutuiBorderRadius * 100)
 }
 
 describe('demo Taro H5 source HMR', () => {

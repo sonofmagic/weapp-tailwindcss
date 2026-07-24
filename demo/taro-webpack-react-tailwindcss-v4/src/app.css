@@ -1,6 +1,6 @@
-@import "tailwindcss" source(none);
 @import "@nutui/nutui-react-taro/dist/styles/themes/default.css";
 @import "@nutui/nutui-react-taro/dist/style.css";
+@import "tailwindcss" source(none);
 
 @config "../tailwind.config.js";
 @plugin "@iconify/tailwind4" {

@@ -28,11 +28,11 @@ export default function Index() {
       <div className='h-[300px] text-[#c31d6b] bg-[#123456]'>短斤少两快点撒</div>
       <Text className='text-[55rpx] text-[#fff] bg-purple-300'>Hello world!</Text>
       <View className='bg-[red]'>Hello world!</View>
-      <View className='weapp-tw-nutui-react-demo mt-4'>
-        <View data-issue-850-cascade='nutui-wins'>
-          <NutButton className='rounded-full' type='primary'>NutUI wins by source order</NutButton>
+      <View className='weapp-tw-nutui-react-demo mt-4' data-issue-850-import-order='tailwind-first'>
+        <View data-issue-850-cascade='normal'>
+          <NutButton className='rounded-full' type='primary'>NutUI wins by source order (Tailwind first)</NutButton>
         </View>
-        <View data-issue-850-cascade='tailwind-wins' className='mt-2'>
+        <View data-issue-850-cascade='important' className='mt-2'>
           <NutButton className='rounded-full!' type='primary'>Tailwind wins with important</NutButton>
         </View>
       </View>

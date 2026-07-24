@@ -11,11 +11,11 @@ export default function Index() {
       <View id='tw-watch-dom' className='bg-purple-800 text-pink-200'>
         11
       </View>
-      <View className='weapp-tw-nutui-react-demo mt-4'>
-        <View data-issue-850-cascade='nutui-wins'>
-          <NutButton className='rounded-full' type='primary'>NutUI wins by source order</NutButton>
+      <View className='weapp-tw-nutui-react-demo mt-4' data-issue-850-import-order='nutui-first'>
+        <View data-issue-850-cascade='normal'>
+          <NutButton className='rounded-full' type='primary'>Tailwind wins by source order (NutUI first)</NutButton>
         </View>
-        <View data-issue-850-cascade='tailwind-wins' className='mt-2'>
+        <View data-issue-850-cascade='important' className='mt-2'>
           <NutButton className='rounded-full!' type='primary'>Tailwind wins with important</NutButton>
         </View>
       </View>
