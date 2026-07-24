@@ -1,6 +1,6 @@
 {
   "file": "src/pages/index/index.tsx",
-  "count": 26,
+  "count": 28,
   "tokens": [
     "bg-[#0977ee]",
     "bg-[#534312]",
@@ -20,6 +20,8 @@
     "py-2",
     "py-3",
     "rounded",
+    "rounded-full",
+    "rounded-full!",
     "system-dark:bg-slate-900",
     "system-dark:text-slate-100",
     "text-[#fff]",

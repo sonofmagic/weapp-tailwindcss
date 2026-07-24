@@ -300,6 +300,13 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .rounded {
   border-radius: 0.25rem;
 }
+ /*tokens: rounded-full <= src/pages/index/index.tsx */
+.rounded-full {
+  border-radius: 9999px;
+}
+.rounded-full\! {
+  border-radius: 9999px !important;
+}
 .bg-\[\#0977ee\] {
   background-color: #0977ee;
 }

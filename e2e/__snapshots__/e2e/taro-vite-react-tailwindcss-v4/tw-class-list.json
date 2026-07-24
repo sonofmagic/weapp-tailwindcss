@@ -69,6 +69,8 @@
   "rounded",
   "rounded-[20rpx]",
   "rounded-[28rpx]",
+  "rounded-full",
+  "rounded-full!",
   "shadow-xl",
   "space-y-2",
   "space-y-2.5",

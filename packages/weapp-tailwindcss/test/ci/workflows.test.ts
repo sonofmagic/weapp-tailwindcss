@@ -401,6 +401,9 @@ describe('ci workflows', () => {
 
   it('keeps style injector enabled only in dedicated demo projects', () => {
     const demoRoot = path.join(repoRoot, 'demo')
+    const dedicatedProjects = new Set([
+      'subpackage-uni-app-vite-tailwindcss-v4',
+    ])
     const demoProjects = fs.readdirSync(demoRoot, { withFileTypes: true })
       .filter(entry => entry.isDirectory() && !entry.name.startsWith('.tmp-'))
       .filter(entry => fs.existsSync(path.join(demoRoot, entry.name, 'package.json')))
@@ -409,7 +412,7 @@ describe('ci workflows', () => {
       .filter(file => /\.(?:c?[jt]sx?|mjs|mts)$/.test(file))
       .filter((file) => {
         const project = path.relative(demoRoot, file).split(path.sep)[0]
-        return !project.startsWith('style-injector')
+        return !project.startsWith('style-injector') && !dedicatedProjects.has(project)
       })
       .flatMap((file) => {
         const source = fs.readFileSync(file, 'utf8')

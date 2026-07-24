@@ -375,6 +375,13 @@
   .rounded-\[28rpx\] {
     border-radius: 0.875rem;
   }
+ /*tokens: rounded-full <= src/pages/index/index.tsx */
+  .rounded-full {
+    border-radius: calc(infinity * 0.025rem);
+  }
+  .rounded-full\! {
+    border-radius: calc(infinity * 0.025rem) !important;
+  }
  /*tokens: border <= src/pages/index/index.tsx */
   .border {
     border-style: var(--tw-border-style);

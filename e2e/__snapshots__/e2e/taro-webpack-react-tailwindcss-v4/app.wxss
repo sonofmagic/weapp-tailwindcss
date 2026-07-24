@@ -11034,6 +11034,14 @@ wx-root-portal-content {
 .rounded {
   border-radius: 0.25rem;
 }
+/* tokens: rounded-full <= src/pages/index/index.tsx */
+.rounded-full {
+  border-radius: 9999px;
+}
+/* tokens: rounded-full! <= src/pages/index/index.tsx */
+.rounded-full_e {
+  border-radius: 9999px !important;
+}
 /* tokens: bg-[#0977ee] <= src/pages/index/index.tsx */
 .bg-_b_h0977ee_B {
   background-color: #0977ee;

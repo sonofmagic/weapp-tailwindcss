@@ -1,6 +1,6 @@
 {
   "file": "src/pages/index/index.tsx",
-  "count": 63,
+  "count": 65,
   "tokens": [
     "!bg-[gray]",
     "after:!content-['good_work!']",
@@ -46,6 +46,8 @@
     "rounded",
     "rounded-[20rpx]",
     "rounded-[28rpx]",
+    "rounded-full",
+    "rounded-full!",
     "shadow-xl",
     "space-y-2",
     "system-dark:bg-slate-900",

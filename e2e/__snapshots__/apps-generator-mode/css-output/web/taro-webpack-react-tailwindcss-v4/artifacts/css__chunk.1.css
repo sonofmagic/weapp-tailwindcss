@@ -289,6 +289,13 @@
   .rounded {
     border-radius: 0.25rem;
   }
+ /*tokens: rounded-full <= src/pages/index/index.tsx */
+  .rounded-full {
+    border-radius: calc(infinity * 1px);
+  }
+  .rounded-full\! {
+    border-radius: calc(infinity * 1px) !important;
+  }
   .bg-\[\#0977ee\] {
     background-color: #0977ee;
   }
