@@ -91,8 +91,13 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     cloneOutput: boolean,
     opt?: Partial<IStyleHandlerOptions>,
   ) {
-    const protectedVarFallbacks = protectDynamicVarFallbacks(rawSource)
     const resolvedOptions = resolver.resolve(opt)
+    const protectedVarFallbacks = resolvedOptions.uniAppX && resolvedOptions.uniAppXCssTarget === 'uvue'
+      ? protectDynamicVarFallbacks(rawSource)
+      : {
+          css: rawSource,
+          restore: (value: string) => value,
+        }
     const protectedColorMix = resolvedOptions.majorVersion === 4
       ? protectDynamicColorMixAlpha(protectedVarFallbacks.css)
       : undefined

@@ -165,6 +165,8 @@ describe('color-mix compatibility helpers', () => {
 
     const result = await createStyleHandler({
       majorVersion: 4,
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
       cssPresetEnv: {
         features: {
           'custom-properties': { preserve: false },
