@@ -365,7 +365,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 321673,
+      "bytes": 322101,
       "selectors": [
         ".-bg-conic-180",
         ".-bg-linear-65",
@@ -2279,6 +2279,8 @@
         ".rotate-y-90",
         ".rotate-z-45",
         ".rounded",
+        ".rounded-full",
+        ".rounded-full_e",
         ".rtl-nut-range-button-wrapper",
         ".rtl-nut-range-button-wrapper-left",
         ".rtl-nut-range-button-wrapper-right",
@@ -2645,7 +2647,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 538375,
+      "bytes": 538589,
       "selectors": [
         ".-translate-y-1",
         "._b--watch-hmr-offset_c000089px_B",
@@ -4572,6 +4574,8 @@
         ".rounded",
         ".rounded-_b20rpx_B",
         ".rounded-_b28rpx_B",
+        ".rounded-full",
+        ".rounded-full_e",
         ".rtl-nut-range-button-wrapper",
         ".rtl-nut-range-button-wrapper-left",
         ".rtl-nut-range-button-wrapper-right",
@@ -8888,7 +8892,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 458112,
+      "bytes": 458512,
       "selectors": [
         "*",
         ".-bg-conic-180",
@@ -10835,6 +10839,8 @@
         ".rotate-y-90",
         ".rotate-z-45",
         ".rounded",
+        ".rounded-full",
+        ".rounded-full\\!",
         ".rtl-nut-range-button-wrapper",
         ".rtl-nut-range-button-wrapper-left",
         ".rtl-nut-range-button-wrapper-right",
@@ -11226,7 +11232,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 441019,
+      "bytes": 441337,
       "selectors": [
         "*",
         ".-bg-conic-180",
@@ -13173,6 +13179,8 @@
         ".rotate-y-90",
         ".rotate-z-45",
         ".rounded",
+        ".rounded-full",
+        ".rounded-full\\!",
         ".rtl-nut-range-button-wrapper",
         ".rtl-nut-range-button-wrapper-left",
         ".rtl-nut-range-button-wrapper-right",
@@ -13565,7 +13573,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 448479,
+      "bytes": 448889,
       "selectors": [
         "*",
         ".-translate-y-1",
@@ -15489,6 +15497,8 @@
         ".rounded",
         ".rounded-\\[20rpx\\]",
         ".rounded-\\[28rpx\\]",
+        ".rounded-full",
+        ".rounded-full\\!",
         ".rtl-nut-range-button-wrapper",
         ".rtl-nut-range-button-wrapper-left",
         ".rtl-nut-range-button-wrapper-right",
@@ -15902,7 +15912,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 434178,
+      "bytes": 434504,
       "selectors": [
         "*",
         ".-translate-y-1",
@@ -17826,6 +17836,8 @@
         ".rounded",
         ".rounded-\\[20rpx\\]",
         ".rounded-\\[28rpx\\]",
+        ".rounded-full",
+        ".rounded-full\\!",
         ".rtl-nut-range-button-wrapper",
         ".rtl-nut-range-button-wrapper-left",
         ".rtl-nut-range-button-wrapper-right",

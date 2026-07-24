@@ -61,6 +61,8 @@
   "rotate-y-90",
   "rotate-z-45",
   "rounded",
+  "rounded-full",
+  "rounded-full!",
   "system-dark:bg-slate-900",
   "system-dark:text-slate-100",
   "text-[#fff]",

@@ -432,6 +432,14 @@ wx-button {
 .rounded-_b28rpx_B {
   border-radius: 28rpx;
 }
+/* tokens: rounded-full <= src/pages/index/index.tsx */
+.rounded-full {
+  border-radius: 9999px;
+}
+/* tokens: rounded-full! <= src/pages/index/index.tsx */
+.rounded-full_e {
+  border-radius: 9999px !important;
+}
 /* tokens: border <= src/pages/index/index.tsx */
 .border {
   border-style: var(--tw-border-style);
