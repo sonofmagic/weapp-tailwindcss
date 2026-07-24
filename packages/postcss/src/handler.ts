@@ -5,7 +5,7 @@ import type { IStyleHandlerOptions, StyleHandler } from './types'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { LRUCache } from 'lru-cache'
 import postcss from 'postcss'
-import { protectDynamicColorMixAlpha } from './compat/color-mix'
+import { protectDynamicColorMixAlpha, protectDynamicVarFallbacks } from './compat/color-mix'
 import { removeEmptyBlockAtRules } from './compat/mini-program-css/root-cleanups'
 import { probeFeatures, signalToCacheKey } from './content-probe'
 import { getDefaultOptions } from './defaults'
@@ -91,12 +91,13 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     cloneOutput: boolean,
     opt?: Partial<IStyleHandlerOptions>,
   ) {
+    const protectedVarFallbacks = protectDynamicVarFallbacks(rawSource)
     const resolvedOptions = resolver.resolve(opt)
     const protectedColorMix = resolvedOptions.majorVersion === 4
-      ? protectDynamicColorMixAlpha(rawSource)
+      ? protectDynamicColorMixAlpha(protectedVarFallbacks.css)
       : undefined
-    const source = protectedColorMix?.css ?? rawSource
-    const processInput = protectedColorMix ? source : root?.clone() ?? source
+    const source = protectedColorMix?.css ?? protectedVarFallbacks.css
+    const processInput = source !== rawSource ? source : root?.clone() ?? source
     // 当有用户插件时跳过内容探测，因为用户插件（如 tailwindcss）可能在 pre 阶段
     // 生成新的 CSS 特征（如现代颜色函数、:is() 伪类等），而 probeFeatures 只看原始输入
     let signal: FeatureSignal | undefined
@@ -142,8 +143,10 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
           finalResult = nextResult
         }
       }
-      if (protectedColorMix) {
-        const restoredCss = protectedColorMix.restore(finalResult.css)
+      if (protectedColorMix || protectedVarFallbacks.css !== rawSource) {
+        const restoredCss = protectedVarFallbacks.restore(
+          protectedColorMix?.restore(finalResult.css) ?? finalResult.css,
+        )
         if (restoredCss !== finalResult.css) {
           const nextResult = finalResult.root.clone().toResult(finalResult.opts)
           nextResult.css = restoredCss

@@ -1,5 +1,6 @@
 import valueParser from 'postcss-value-parser'
-import { normalizeModernColorValue, protectDynamicColorMixAlpha } from '../src/compat/color-mix'
+import { normalizeModernColorValue, protectDynamicColorMixAlpha, protectDynamicVarFallbacks } from '../src/compat/color-mix'
+import { createStyleHandler } from '../src/handler'
 import { hasUnsupportedModernColorFunction, isDisplayP3ColorFunction } from '../src/compat/color-mix/modern'
 import {
   normalizeColorFunctionName,
@@ -148,4 +149,33 @@ describe('color-mix compatibility helpers', () => {
     expect(protectedCss.css).toContain('rgba(255, 0, 0, 0.5)')
     expect(protectedCss.restore(protectedCss.css)).toContain('rgba(14, 165, 233, var(--alpha))')
   })
+
+  it('preserves author variable fallbacks without shielding Tailwind theme variables', async () => {
+    const source = [
+      '.bg-primary{background-color:var(--theme-color, #0957DE)}',
+      '.text-xs{font-size:var(--text-xs, 0.75rem)}',
+      '.text-white{color:var(--color-white, #fff)}',
+    ].join('')
+    const protectedCss = protectDynamicVarFallbacks(source)
+
+    expect(protectedCss.css).toContain('__weapp_tw_var_fallback_0__')
+    expect(protectedCss.css).toContain('var(--text-xs, 0.75rem)')
+    expect(protectedCss.css).toContain('var(--color-white, #fff)')
+    expect(protectedCss.restore(protectedCss.css)).toBe(source)
+
+    const result = await createStyleHandler({
+      majorVersion: 4,
+      cssPresetEnv: {
+        features: {
+          'custom-properties': { preserve: false },
+        },
+      },
+    })(source)
+    expect(result.css).toContain('background-color:var(--theme-color, #0957DE)')
+    expect(result.css).toContain('font-size:0.75rem')
+    expect(result.css).toContain('color:#fff')
+    expect(result.css).not.toContain('var(--text-xs')
+    expect(result.css).not.toContain('var(--color-white')
+  })
+
 })

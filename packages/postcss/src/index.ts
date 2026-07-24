@@ -13,6 +13,7 @@ export {
   type ModernColorValueNormalization,
   normalizeModernColorValue,
   protectDynamicColorMixAlpha,
+  protectDynamicVarFallbacks,
 } from './compat/color-mix'
 export {
   consumeCascadeLayers,

@@ -26,6 +26,17 @@ function normalizeValue(value: string) {
   return value.trim().toLowerCase().replace(IMPORTANT_SUFFIX_RE, '')
 }
 
+function hasCalcFunction(value: string) {
+  const parsed = valueParser(value)
+  let found = false
+  parsed.walk((node) => {
+    if (node.type === 'function' && node.value.toLowerCase() === 'calc') {
+      found = true
+    }
+  })
+  return found
+}
+
 function normalizeUniAppXTransformValue(value: string) {
   if (!value.toLowerCase().includes('translate(') || !value.includes(',')) {
     return value
@@ -102,6 +113,10 @@ function hasOnlyClassSelectors(rule: Rule) {
 function getUnsupportedDeclarationReason(prop: string, value: string) {
   const normalizedProp = prop.trim().toLowerCase()
   const normalizedValue = normalizeValue(value)
+
+  if (hasCalcFunction(value)) {
+    return `${normalizedProp}: ${value}`
+  }
 
   if (normalizedProp === 'display' && !ALLOWED_DISPLAY_VALUES.has(normalizedValue)) {
     return `${normalizedProp}: ${value}`

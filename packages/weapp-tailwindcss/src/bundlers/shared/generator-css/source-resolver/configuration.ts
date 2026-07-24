@@ -56,6 +56,30 @@ export function mergeCssSources(
   return merged.length > 0 ? merged : undefined
 }
 
+export function resolveUniqueTailwindV4CssConfig(sourceOptions: TailwindV4SourceOptions) {
+  const configs = new Set<string>()
+  const collect = (css: string | undefined, base: string | undefined) => {
+    if (!css || !base || !css.includes('@config')) {
+      return
+    }
+    const source = resolveCssEntrySource(css, base, { removeConfig: false })
+    if (source?.config) {
+      configs.add(path.resolve(source.config))
+    }
+  }
+
+  collect(sourceOptions.css, sourceOptions.base ?? sourceOptions.projectRoot)
+  for (const source of sourceOptions.cssSources ?? []) {
+    const base = source.base
+      ?? (source.file ? path.dirname(path.resolve(source.file)) : undefined)
+      ?? sourceOptions.base
+      ?? sourceOptions.projectRoot
+    collect(source.css, base)
+  }
+
+  return configs.size === 1 ? configs.values().next().value : undefined
+}
+
 export function createSingleTailwindV4SourceOptions(
   sourceOptions: TailwindV4SourceOptions,
   options: {

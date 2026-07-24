@@ -12,7 +12,11 @@ export default {
   ],
   darkMode,
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: 'var(--theme-color, #0957DE)',
+      },
+    },
   },
   plugins: [],
   corePlugins: {

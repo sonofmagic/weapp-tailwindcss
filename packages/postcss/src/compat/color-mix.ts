@@ -5,6 +5,7 @@ import { COLOR_MIX_NAME, MODERN_COLOR_FUNCTION_NAMES, PLACEHOLDER_PREFIX } from 
 import { hasUnsupportedModernColorFunction, isDisplayP3ColorFunction, isModernColorSyntaxFunction } from './color-mix/modern'
 import { normalizeStandaloneColorFunction } from './color-mix/parse'
 import { tryResolveColorMix } from './color-mix/resolve'
+import { isTailwindcssV4ThemeVariable } from './tailwindcss-v4/variables'
 
 export interface DynamicColorMixAlphaProtection {
   css: string
@@ -19,6 +20,78 @@ export interface ModernColorValueNormalization {
   value: string
   changed: boolean
   hasUnsupported: boolean
+}
+
+const DYNAMIC_VAR_FALLBACK_PLACEHOLDER_PREFIX = '__weapp_tw_var_fallback_'
+
+function getStandaloneDynamicVarWithFallback(value: string) {
+  const parsed = valueParser(value)
+  const nodes = parsed.nodes.filter(node => node.type !== 'space' && node.type !== 'comment')
+  const variable = nodes.length === 1 ? nodes[0] : undefined
+  const property = variable?.type === 'function'
+    ? variable.nodes.find(node => node.type === 'word' && node.value.startsWith('--'))
+    : undefined
+  if (
+    variable?.type !== 'function'
+    || variable.value.toLowerCase() !== 'var'
+    || property?.type !== 'word'
+    || isTailwindcssV4ThemeVariable(property.value)
+    || !variable.nodes.some(node => node.type === 'div' && node.value === ',')
+  ) {
+    return undefined
+  }
+  return variable
+}
+
+/**
+ * 保护带 fallback 的作者 CSS 变量，避免兼容插件把它错误静态化。
+ */
+export function protectDynamicVarFallbacks(css: string): DynamicColorMixAlphaProtection {
+  if (!css.includes('var(') || !css.includes(',')) {
+    return {
+      css,
+      restore: value => value,
+    }
+  }
+
+  const replacements = new Map<string, string>()
+  let root: postcss.Root
+  try {
+    root = postcss.parse(css)
+  }
+  catch {
+    return {
+      css,
+      restore: value => value,
+    }
+  }
+
+  root.walkDecls((decl) => {
+    if (!getStandaloneDynamicVarWithFallback(decl.value)) {
+      return
+    }
+    const placeholder = `${DYNAMIC_VAR_FALLBACK_PLACEHOLDER_PREFIX}${replacements.size}__`
+    replacements.set(placeholder, decl.value)
+    decl.value = placeholder
+  })
+
+  if (replacements.size === 0) {
+    return {
+      css,
+      restore: value => value,
+    }
+  }
+
+  return {
+    css: root.toString(),
+    restore(value) {
+      let restored = value
+      for (const [placeholder, replacement] of replacements) {
+        restored = restored.split(placeholder).join(replacement)
+      }
+      return restored
+    },
+  }
 }
 
 export function normalizeModernColorValue(

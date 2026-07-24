@@ -11,7 +11,7 @@ import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../mark
 import { resolveSourceSideCssEntrySource } from '../source-files'
 import { createTailwindV4ApplyReferenceSource, createTailwindV4SourceReferenceSource } from './apply-reference'
 import { resolveExistingConfigPath } from './config'
-import { canResolveSourceSideCssEntry, createCssEntrySources, createSingleTailwindV4SourceOptions, hasConfiguredTailwindV4CssSource, mergeCssSources, normalizeTailwindV4CssSourceConfigs, resolveTailwindV4CssEntrySource, shouldResolveSourceSideCssEntry, tryResolveTailwindV4SourceOptions } from './configuration'
+import { canResolveSourceSideCssEntry, createCssEntrySources, createSingleTailwindV4SourceOptions, hasConfiguredTailwindV4CssSource, mergeCssSources, normalizeTailwindV4CssSourceConfigs, resolveTailwindV4CssEntrySource, resolveUniqueTailwindV4CssConfig, shouldResolveSourceSideCssEntry, tryResolveTailwindV4SourceOptions } from './configuration'
 import { resolveCssHandlerSourceOptions, resolveCssSourceBase, resolvePostcssSourceFile } from './postcss-source'
 import { resolveCandidateMatchedTailwindV4CssEntry, resolveCandidateMatchedTailwindV4CssSource, resolveSingleTailwindV4CssSource, resolveTailwindV4SourceSideEntrySource } from './single-source'
 import { resolveMatchingTailwindV4CssEntry, resolveMatchingTailwindV4CssSource } from './source-matching'
@@ -55,9 +55,11 @@ export async function resolveGeneratorSource(
     ? normalizeTailwindV4CssSourceConfigs(resolvedSourceOptions)
     : undefined
   if (applyEntrySource && !cssHandlerOptions.isMainChunk && !hasTailwindRootDirectives(rawSource, { importFallback: generatorOptions?.importFallback ?? false })) {
+    const config = generatorOptions?.config
+      ?? (normalizedSourceOptions ? resolveUniqueTailwindV4CssConfig(normalizedSourceOptions) : undefined)
     const css = createTailwindV4ApplyReferenceSource(
       normalizeConfigDirective(
-        prependConfigDirective(applyEntrySource.css, generatorOptions?.config),
+        prependConfigDirective(applyEntrySource.css, config),
         undefined,
       ),
       normalizedSourceOptions ?? {},
