@@ -29,7 +29,12 @@ export default function Index() {
       <Text className='text-[55rpx] text-[#fff] bg-purple-300'>Hello world!</Text>
       <View className='bg-[red]'>Hello world!</View>
       <View className='weapp-tw-nutui-react-demo mt-4'>
-        <NutButton type='primary'>NutUI React Button</NutButton>
+        <View data-issue-850-cascade='nutui-wins'>
+          <NutButton className='rounded-full' type='primary'>NutUI wins by source order</NutButton>
+        </View>
+        <View data-issue-850-cascade='tailwind-wins' className='mt-2'>
+          <NutButton className='rounded-full!' type='primary'>Tailwind wins with important</NutButton>
+        </View>
       </View>
       <View className='theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark:bg-slate-900 system-dark:text-slate-100 dark:bg-zinc-900 dark:text-zinc-50'>
         Taro Vite React Tailwind CSS v4 system dark

@@ -30,6 +30,10 @@ const thirdPartyCssTokensByName = new Map<string, string[]>([
     '.nut-button-primary',
   ]],
 ])
+const issue850CascadeProjectNames = new Set([
+  'taro vite react Tailwind v4',
+  'taro webpack react Tailwind v4',
+])
 
 function shouldAssertTaroRuntimeCss(name: string) {
   return name.includes('vite')
@@ -113,6 +117,17 @@ describe('demo Taro H5 build smoke', () => {
     }
     for (const token of thirdPartyCssTokensByName.get(item.name) ?? []) {
       expect(css, `${item.name} should preserve third-party CSS token ${token}`).toContain(token)
+    }
+    if (issue850CascadeProjectNames.has(item.name)) {
+      expect(css, `${item.name} should generate the normal rounded-full utility`).toMatch(
+        /\.rounded-full\s*\{[^}]*border-radius\s*:/,
+      )
+      expect(css, `${item.name} should generate the important rounded-full utility`).toMatch(
+        /\.rounded-full\\!\s*\{[^}]*border-radius\s*:[^;}]+!important/,
+      )
+      expect(css, `${item.name} should preserve the competing NutUI round button rule`).toMatch(
+        /\.nut-button-round\s*\{[^}]*border-radius\s*:/,
+      )
     }
   }, 1_200_000)
 })

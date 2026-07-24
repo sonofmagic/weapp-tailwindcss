@@ -7,7 +7,7 @@ import fs from 'node:fs/promises'
 import process from 'node:process'
 import path from 'pathe'
 import { chromium } from 'playwright'
-import { afterEach, describe, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   fetchText,
   findFreePort,
@@ -311,6 +311,43 @@ async function gotoReadyPage(page: Page, baseUrl: string, child: ChildProcess, l
   throw lastError instanceof Error ? lastError : new Error(String(lastError))
 }
 
+async function expectIssue850Cascade(page: Page, item: TaroWebHmrCase) {
+  if (!item.name.includes('react')) {
+    return
+  }
+
+  async function readButton(winner: 'nutui-wins' | 'tailwind-wins') {
+    const button = page.locator(`[data-issue-850-cascade="${winner}"] .nut-button`).first()
+    await button.waitFor({ state: 'attached', timeout: 30_000 })
+    const utilityClass = winner === 'nutui-wins' ? 'rounded-full' : 'rounded-full!'
+    return button.evaluate((element, className) => {
+      const borderRadius = Number.parseFloat(window.getComputedStyle(element).borderRadius)
+      element.classList.remove(className)
+      const nutuiBorderRadius = Number.parseFloat(window.getComputedStyle(element).borderRadius)
+      element.classList.add(className)
+      return {
+        borderRadius,
+        className: element.className,
+        nutuiBorderRadius,
+      }
+    }, utilityClass)
+  }
+
+  const [nutuiWins, tailwindWins] = await Promise.all([
+    readButton('nutui-wins'),
+    readButton('tailwind-wins'),
+  ])
+
+  expect(nutuiWins.className).toContain('rounded-full')
+  expect(nutuiWins.className).not.toContain('rounded-full!')
+  expect(nutuiWins.borderRadius).toBeGreaterThan(0)
+  expect(nutuiWins.borderRadius).toBe(nutuiWins.nutuiBorderRadius)
+
+  expect(tailwindWins.className).toContain('rounded-full!')
+  expect(tailwindWins.borderRadius).toBeGreaterThan(1000)
+  expect(tailwindWins.borderRadius).toBeGreaterThan(tailwindWins.nutuiBorderRadius * 100)
+}
+
 describe('demo Taro H5 source HMR', () => {
   for (const signal of ['SIGINT', 'SIGTERM'] as const) {
     process.once(signal, () => {
@@ -352,6 +389,7 @@ describe('demo Taro H5 source HMR', () => {
     page.on('pageerror', error => rememberLog(`[pageerror] ${error.stack ?? error.message}`))
     page.on('requestfailed', request => rememberLog(`[requestfailed] ${request.url()} ${request.failure()?.errorText ?? ''}`))
     await gotoReadyPage(page, baseUrl, child, logs)
+    await expectIssue850Cascade(page, item)
 
     await mutateSource(item, sourceFile)
     if (cssEntryFile) {

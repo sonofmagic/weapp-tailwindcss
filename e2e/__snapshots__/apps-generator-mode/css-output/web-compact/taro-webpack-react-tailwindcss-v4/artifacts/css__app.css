@@ -867,6 +867,13 @@ wx-button {
 .rounded {
   border-radius: 0.25rem;
 }
+ /*tokens: rounded-full <= src/pages/index/index.tsx */
+.rounded-full {
+  border-radius: 249.975rem;
+}
+.rounded-full\! {
+  border-radius: 249.975rem !important;
+}
 .border {
   border-style: var(--tw-border-style);
   border-width: 0.025rem;
