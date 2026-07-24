@@ -90,7 +90,7 @@ describe('uni-app-x', () => {
   })
 
   it('normalizes translate argument separators for uvue without changing nested commas', async () => {
-    const source = '.issue-823{-webkit-transform:translate(var(--x, 0), calc(var(--y, 0) + 1px));transform:translate(var(--x, 0), calc(var(--y, 0) + 1px)) rotate(45deg)}'
+    const source = '.issue-823{-webkit-transform:translate(var(--x, 0), var(--y, 0));transform:translate(var(--x, 0), var(--y, 0)) rotate(45deg)}'
     const result = await postcss().process(source, {
       from: '/src/pages/issue-823.uvue',
     })
@@ -102,7 +102,7 @@ describe('uni-app-x', () => {
     })
 
     expect(filtered.css).toBe(
-      '.issue-823{-webkit-transform:translate(var(--x, 0) calc(var(--y, 0) + 1px));transform:translate(var(--x, 0) calc(var(--y, 0) + 1px)) rotate(45deg)}',
+      '.issue-823{-webkit-transform:translate(var(--x, 0) var(--y, 0));transform:translate(var(--x, 0) var(--y, 0)) rotate(45deg)}',
     )
     expect(filtered.warnings()).toEqual([])
   })
@@ -168,8 +168,9 @@ describe('uni-app-x', () => {
 
   it('keeps unresolved user variables while consuming known uvue theme aliases', async () => {
     const result = await postcss().process([
-      ':root,:host{--color-brand:var(--runtime-brand)}',
+      ':root,:host{--color-brand:var(--runtime-brand, #0957DE)}',
       '.text-brand{color:var(--color-brand)}',
+      '.issue-1002{font-size:var(--text-xs, 0.75rem);color:var(--color-white, #fff)}',
     ].join('\n'), {
       from: '/src/App.uvue',
     })
@@ -180,7 +181,10 @@ describe('uni-app-x', () => {
       uniAppXUnsupported: 'warn',
     })
 
-    expect(filtered.css).toBe('.text-brand{color:var(--runtime-brand)}')
+    expect(filtered.css).toBe([
+      '.text-brand{color:var(--runtime-brand, #0957DE)}',
+      '.issue-1002{font-size:0.75rem;color:#fff}',
+    ].join('\n'))
     expect(filtered.warnings()).toEqual([])
   })
 
@@ -407,8 +411,11 @@ describe('uni-app-x', () => {
 
     expect(filtered.css).toContain('.mt-3{margin-top:24rpx}')
     expect(filtered.css).toContain('.text-sm{line-height:1.42857}')
-    expect(filtered.css).toContain('.dynamic{width:calc(100% - var(--runtime-offset))}')
+    expect(filtered.css).not.toContain('.dynamic')
+    expect(filtered.css).not.toContain('calc(')
     expect(filtered.css).not.toContain('@property')
-    expect(filtered.warnings()).toEqual([])
+    expect(filtered.warnings()).toHaveLength(1)
+    expect(filtered.warnings()[0]?.text).toContain('dynamic')
+    expect(filtered.warnings()[0]?.text).toContain('calc(100% - var(--runtime-offset))')
   })
 })

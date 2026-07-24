@@ -79,6 +79,10 @@ page {
   --default-mono-font-family: var(--font-plex-mono), monospace;
 }
 
+.issue-902-theme-scope {
+  --theme-color: #16a34a;
+}
+
 /*  #ifdef  H5  */
 svg {
   display: initial;

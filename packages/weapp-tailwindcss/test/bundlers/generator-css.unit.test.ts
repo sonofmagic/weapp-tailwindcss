@@ -4969,6 +4969,59 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('inherits the unique configured Tailwind v4 config for @apply-only local css sources', async () => {
+    const root = '/project'
+    const config = `${root}/tailwind.config.js`
+    const rawSource = '.theme { @apply bg-primary; }'
+    const resolveTailwindV4Source = vi.fn(async (options: any) => ({
+      projectRoot: root,
+      base: options.base,
+      baseFallbacks: [],
+      css: options.css,
+      dependencies: [],
+    }))
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      resolveTailwindV4Source,
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: root,
+        packageName: 'tailwindcss',
+        cssSources: [
+          {
+            file: `${root}/main.css`,
+            base: root,
+            css: `@import "tailwindcss" source(none);\n@config "${config}";`,
+          },
+        ],
+      })),
+    }))
+
+    const { resolveGeneratorSource } = await import('@/bundlers/shared/generator-css/source-resolver')
+    await resolveGeneratorSource(
+      4,
+      {
+        tailwindRuntime: {
+          majorVersion: 4,
+          options: {},
+        } as any,
+      },
+      rawSource,
+      `${root}/pages/index/index.uvue?vue&type=style&index=0&lang.scss`,
+      {
+        isMainChunk: false,
+        majorVersion: 4,
+        postcssOptions: {
+          options: {
+            from: `${root}/pages/index/index.uvue`,
+          },
+        },
+      } as any,
+    )
+
+    expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+      css: expect.stringContaining(`@config "${config}";`),
+    }))
+  })
+
   it('skips forced generator for ordinary non-main css assets', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawSource = '.page{color:red}'

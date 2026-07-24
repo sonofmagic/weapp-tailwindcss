@@ -20,6 +20,7 @@ export const GRADIENT_BACKGROUND_RE = /^(linear|radial|conic)-gradient\(/i
 export const GRADIENT_STOPS_VAR_RE = /^(?:linear|radial|conic)-gradient\(\s*var\(\s*--tw-gradient-stops\b/i
 export const SIMPLE_CLASS_SELECTOR_RE = /^\.([_a-z\u00A0-\uFFFF\\-][\w\u00A0-\uFFFF\\-]*)$/i
 export const COLOR_VAR_RE = /^var\(\s*(--color-[\w-]+)\s*\)$/i
+export const TAILWIND_THEME_VARIABLE_RE = /^--(?:animate|aspect|blur|breakpoint|color|container|drop-shadow|ease|font|inset-shadow|leading|perspective|radius|shadow|spacing|text|tracking)(?:-|$)/
 export const GRADIENT_DIRECTION_CLASS_RE = /^(?:-?bg-linear|bg-gradient-to-|-?bg-conic|bg-radial)/
 
 // 用于 normalizeTailwindcssV4Declaration 的正则
@@ -48,6 +49,10 @@ const DEFAULT_VARIABLE_SCOPE_SELECTORS = new Set([
 
 export function isTailwindcssV4(options?: { majorVersion?: 4 }) {
   return options?.majorVersion === 4
+}
+
+export function isTailwindcssV4ThemeVariable(property: string) {
+  return property.startsWith('--tw-') || TAILWIND_THEME_VARIABLE_RE.test(property)
 }
 
 // Tailwind v4 会把 :root 与 :host 组合在一起，这里单独识别

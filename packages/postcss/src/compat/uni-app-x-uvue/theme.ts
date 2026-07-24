@@ -1,5 +1,6 @@
 import type { Root, Rule } from 'postcss'
 import valueParser from 'postcss-value-parser'
+import { isTailwindcssV4ThemeVariable } from '../tailwindcss-v4/variables'
 
 const SYSTEM_ROOT_SELECTORS = new Set([
   ':host',
@@ -67,7 +68,10 @@ function resolveNodes(
         new Set([...resolving, variable.value]),
       )
     }
-    else if (variable.value.startsWith('--tw-') && fallback) {
+    else if (
+      fallback
+      && isTailwindcssV4ThemeVariable(variable.value)
+    ) {
       replacement = resolveThemeValue(fallback, variables, resolving)
     }
 
