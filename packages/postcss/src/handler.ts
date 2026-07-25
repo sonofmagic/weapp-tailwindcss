@@ -93,7 +93,10 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     opt?: Partial<IStyleHandlerOptions>,
   ) {
     const resolvedOptions = resolver.resolve(opt)
-    const protectedVarFallbacks = resolvedOptions.uniAppX
+    // uni-app x 的 WebView/小程序目标也会复用 preserve:false 的 preset，
+    // 需要先保护作者变量，否则主题 fallback 会在生成阶段被静态化。
+    const isUniAppXFramework = resolvedOptions.appType === 'uni-app-x'
+    const protectedVarFallbacks = resolvedOptions.uniAppX || isUniAppXFramework
       ? protectDynamicVarFallbacks(rawSource)
       : {
           css: rawSource,
@@ -161,7 +164,9 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
           finalResult = nextResult
         }
       }
-      if (resolvedOptions.uniAppX && finalResult.root) {
+      const shouldSplitAuthorVariableFallbacks = resolvedOptions.uniAppX
+        && (resolvedOptions.uniAppXCssTarget === 'uvue' || !isUniAppXFramework)
+      if (shouldSplitAuthorVariableFallbacks && finalResult.root) {
         const changed = splitUnresolvedAuthorVariableFallbacks(finalResult.root, new Map())
         if (changed) {
           finalResult.css = finalResult.root.toString()

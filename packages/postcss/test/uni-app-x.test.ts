@@ -220,7 +220,6 @@ describe('uni-app-x', () => {
 
   it('splits author variable fallbacks for non-uvue uni-app x targets', async () => {
     const styleHandler = createStyleHandler({
-      appType: 'uni-app-x',
       uniAppX: true,
       majorVersion: 4,
       cssPresetEnv: {
@@ -232,6 +231,23 @@ describe('uni-app-x', () => {
     const result = await styleHandler('.bg-primary{background-color:var(--theme-color, #0957DE)}')
 
     expect(result.css).toContain('background-color:#0957DE;background-color:var(--theme-color)')
+  })
+
+  it('preserves author variable fallbacks when uni-app x uses a WebView target', async () => {
+    const styleHandler = createStyleHandler({
+      appType: 'uni-app-x',
+      uniAppX: false,
+      majorVersion: 4,
+      cssPresetEnv: {
+        features: {
+          'custom-properties': { preserve: false },
+        },
+      },
+    })
+    const result = await styleHandler('.bg-primary{background-color:var(--theme-color, #0957DE)}')
+
+    expect(result.css).toContain('background-color:var(--theme-color, #0957DE)')
+    expect(result.css).not.toContain('background-color:#0957DE;background-color:var(--theme-color)')
   })
 
   it('filters unsupported uvue selectors and declarations with warnings', async () => {
