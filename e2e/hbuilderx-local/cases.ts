@@ -275,7 +275,7 @@ function createUniAppXHBuilderXMiniProgramCase(options: {
       '.bg-_b_hf21903_B',
       '.text-_b_hda0e3c_B',
       '.bg-primary',
-      /background-color:\s*var\(--theme-color,\s*#0957de\)/i,
+      /background-color:\s*#0957de\s*;\s*background-color:\s*var\(--theme-color\)/i,
       /--theme-color:\s*#16a34a/i,
       '.w-64',
     ],

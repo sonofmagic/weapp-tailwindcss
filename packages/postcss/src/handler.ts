@@ -7,6 +7,7 @@ import { LRUCache } from 'lru-cache'
 import postcss from 'postcss'
 import { protectDynamicColorMixAlpha, protectDynamicVarFallbacks } from './compat/color-mix'
 import { removeEmptyBlockAtRules } from './compat/mini-program-css/root-cleanups'
+import { splitUnresolvedAuthorVariableFallbacks } from './compat/uni-app-x-uvue/theme'
 import { probeFeatures, signalToCacheKey } from './content-probe'
 import { getDefaultOptions } from './defaults'
 import { fingerprintOptions } from './fingerprint'
@@ -92,7 +93,7 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     opt?: Partial<IStyleHandlerOptions>,
   ) {
     const resolvedOptions = resolver.resolve(opt)
-    const protectedVarFallbacks = resolvedOptions.uniAppX && resolvedOptions.uniAppXCssTarget === 'uvue'
+    const protectedVarFallbacks = resolvedOptions.uniAppX
       ? protectDynamicVarFallbacks(rawSource)
       : {
           css: rawSource,
@@ -158,6 +159,12 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
           nextResult.root = postcss.parse(restoredCss, finalResult.opts)
           nextResult.messages.push(...finalResult.messages)
           finalResult = nextResult
+        }
+      }
+      if (resolvedOptions.uniAppX && finalResult.root) {
+        const changed = splitUnresolvedAuthorVariableFallbacks(finalResult.root, new Map())
+        if (changed) {
+          finalResult.css = finalResult.root.toString()
         }
       }
       // 缓存最终结果
