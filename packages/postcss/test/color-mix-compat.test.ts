@@ -173,7 +173,7 @@ describe('color-mix compatibility helpers', () => {
         },
       },
     })(source)
-    expect(result.css).toContain('background-color:var(--theme-color, #0957DE)')
+    expect(result.css).toContain('background-color:#0957DE;background-color:var(--theme-color)')
     expect(result.css).toContain('font-size:0.75rem')
     expect(result.css).toContain('color:#fff')
     expect(result.css).not.toContain('var(--text-xs')

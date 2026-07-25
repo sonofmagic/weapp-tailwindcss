@@ -182,10 +182,72 @@ describe('uni-app-x', () => {
     })
 
     expect(filtered.css).toBe([
-      '.text-brand{color:var(--runtime-brand, #0957DE)}',
+      '.text-brand{color:#0957DE;color:var(--runtime-brand)}',
       '.issue-1002{font-size:0.75rem;color:#fff}',
     ].join('\n'))
     expect(filtered.warnings()).toEqual([])
+  })
+
+  it('splits protected author variable fallbacks after full uvue processing', async () => {
+    const styleHandler = createStyleHandler({
+      appType: 'uni-app-x',
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+      majorVersion: 4,
+      cssPresetEnv: {
+        features: {
+          'custom-properties': { preserve: false },
+        },
+      },
+    })
+    const result = await styleHandler(
+      ':root,:host{--color-brand:var(--runtime-brand, #0957DE)}.text-brand{color:var(--color-brand)}',
+      {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: '/src/App.uvue',
+          },
+        },
+      },
+    )
+
+    expect(result.css).toContain('.text-brand{color:#0957DE;color:var(--runtime-brand)}')
+    expect(result.css).not.toContain(':root')
+    expect(result.warnings()).toEqual([])
+  })
+
+  it('splits author variable fallbacks for non-uvue uni-app x targets', async () => {
+    const styleHandler = createStyleHandler({
+      uniAppX: true,
+      majorVersion: 4,
+      cssPresetEnv: {
+        features: {
+          'custom-properties': { preserve: false },
+        },
+      },
+    })
+    const result = await styleHandler('.bg-primary{background-color:var(--theme-color, #0957DE)}')
+
+    expect(result.css).toContain('background-color:#0957DE;background-color:var(--theme-color)')
+  })
+
+  it('preserves author variable fallbacks when uni-app x uses a WebView target', async () => {
+    const styleHandler = createStyleHandler({
+      appType: 'uni-app-x',
+      uniAppX: false,
+      majorVersion: 4,
+      cssPresetEnv: {
+        features: {
+          'custom-properties': { preserve: false },
+        },
+      },
+    })
+    const result = await styleHandler('.bg-primary{background-color:var(--theme-color, #0957DE)}')
+
+    expect(result.css).toContain('background-color:var(--theme-color, #0957DE)')
+    expect(result.css).not.toContain('background-color:#0957DE;background-color:var(--theme-color)')
   })
 
   it('filters unsupported uvue selectors and declarations with warnings', async () => {

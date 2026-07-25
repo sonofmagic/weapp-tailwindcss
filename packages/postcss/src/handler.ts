@@ -7,6 +7,7 @@ import { LRUCache } from 'lru-cache'
 import postcss from 'postcss'
 import { protectDynamicColorMixAlpha, protectDynamicVarFallbacks } from './compat/color-mix'
 import { removeEmptyBlockAtRules } from './compat/mini-program-css/root-cleanups'
+import { splitUnresolvedAuthorVariableFallbacks } from './compat/uni-app-x-uvue/theme'
 import { probeFeatures, signalToCacheKey } from './content-probe'
 import { getDefaultOptions } from './defaults'
 import { fingerprintOptions } from './fingerprint'
@@ -92,7 +93,10 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     opt?: Partial<IStyleHandlerOptions>,
   ) {
     const resolvedOptions = resolver.resolve(opt)
-    const protectedVarFallbacks = resolvedOptions.uniAppX && resolvedOptions.uniAppXCssTarget === 'uvue'
+    // uni-app x 的 WebView/小程序目标也会复用 preserve:false 的 preset，
+    // 需要先保护作者变量，否则主题 fallback 会在生成阶段被静态化。
+    const isUniAppXFramework = resolvedOptions.appType === 'uni-app-x'
+    const protectedVarFallbacks = resolvedOptions.uniAppX || isUniAppXFramework
       ? protectDynamicVarFallbacks(rawSource)
       : {
           css: rawSource,
@@ -158,6 +162,14 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
           nextResult.root = postcss.parse(restoredCss, finalResult.opts)
           nextResult.messages.push(...finalResult.messages)
           finalResult = nextResult
+        }
+      }
+      const shouldSplitAuthorVariableFallbacks = resolvedOptions.uniAppX
+        && (resolvedOptions.uniAppXCssTarget === 'uvue' || !isUniAppXFramework)
+      if (shouldSplitAuthorVariableFallbacks && finalResult.root) {
+        const changed = splitUnresolvedAuthorVariableFallbacks(finalResult.root, new Map())
+        if (changed) {
+          finalResult.css = finalResult.root.toString()
         }
       }
       // 缓存最终结果
