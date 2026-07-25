@@ -260,16 +260,6 @@ function cleanupAndroidAppRuntime(env: Record<string, string | undefined>, devic
     encoding: 'utf8',
     env: { ...process.env, ...env },
   })
-  if (process.platform !== 'darwin') {
-    return
-  }
-  const listeners = spawnSync('lsof', ['-tiTCP:8000-8099', '-sTCP:LISTEN'], { encoding: 'utf8' })
-  for (const pid of (listeners.stdout ?? '').split(/\s+/).filter(Boolean)) {
-    const command = spawnSync('ps', ['-p', pid, '-o', 'command='], { encoding: 'utf8' }).stdout
-    if (command.includes('/HBuilderX.app/Contents/HBuilderX/plugins/node/node')) {
-      process.kill(Number(pid), 'SIGTERM')
-    }
-  }
 }
 
 async function captureAndroidScreenshot(screenshot: string, env: Record<string, string | undefined>, deviceId?: string) {
@@ -663,7 +653,7 @@ function createProcessExitTracker(child: ChildProcess) {
 function startAppLaunch(
   item: AppCase,
   projectRoot: string,
-  projectName: string,
+  projectPath: string,
   hbuilderxCliPath: string,
   toolEnv: Record<string, string | undefined>,
 ) {
@@ -671,7 +661,7 @@ function startAppLaunch(
   if (item.platform !== 'app-harmony' && !launchArgs.includes('--pagePath')) {
     launchArgs.push('--pagePath', 'pages/index/index')
   }
-  const child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectName, ...launchArgs], {
+  const child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectPath, ...launchArgs], {
     HBUILDERX_CLI_PATH: hbuilderxCliPath,
     WEAPP_TW_HMR_TIMING: '1',
     ...toolEnv,
@@ -686,8 +676,25 @@ async function stopAppLaunch(launch: ReturnType<typeof startAppLaunch> | undefin
   if (!launch) {
     return
   }
-  killProcessTree(launch.child)
-  await Promise.race([launch.tracker.closed, wait(5000)])
+  const child = launch.child
+  if (child.pid && child.exitCode == null) {
+    try {
+      if (process.platform === 'win32') {
+        child.kill('SIGINT')
+      }
+      else {
+        process.kill(-child.pid, 'SIGINT')
+      }
+    }
+    catch {
+      child.kill('SIGINT')
+    }
+    await Promise.race([launch.tracker.closed, wait(5000)])
+  }
+  if (child.exitCode == null) {
+    killProcessTree(child)
+    await Promise.race([launch.tracker.closed, wait(5000)])
+  }
 }
 
 async function runAppCaseVariant(
@@ -767,7 +774,7 @@ async function runAppCaseVariant(
     })
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: launch ${item.platform}\n`)
-    launch = startAppLaunch(item, projectRoot, projectAlias.projectName, hbuilderxCliPath, toolEnv)
+    launch = startAppLaunch(item, projectRoot, projectAlias.projectPath, hbuilderxCliPath, toolEnv)
     const ensureInitialRunning = () => launch?.tracker.ensureRunning(launch.logs)
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait initial output\n`)

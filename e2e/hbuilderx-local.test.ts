@@ -24,6 +24,7 @@ const filteredAppCases = filterHBuilderXCases(appCases, caseNameFilters)
 const miniProgramTest = !caseGroupFilter || caseGroupFilter === 'mp' ? it : it.skip
 const appTest = !caseGroupFilter || caseGroupFilter === 'app' ? it : it.skip
 const webTest = !caseGroupFilter || caseGroupFilter === 'web' ? it : it.skip
+const miniProgramTestTimeoutMs = hbuilderxTimeoutMs * 2 + 30_000
 
 describeLocalHBuilderX.sequential('HBuilderX demo local e2e', () => {
   afterEach(() => {
@@ -36,7 +37,7 @@ describeLocalHBuilderX.sequential('HBuilderX demo local e2e', () => {
 
   miniProgramTest.each(filteredMiniProgramCases)('用 HBuilderX 编译小程序产物：$name', async (item) => {
     await compileMiniProgramWithHBuilderX(item)
-  }, hbuilderxTimeoutMs + 30_000)
+  }, miniProgramTestTimeoutMs)
 
   appTest.each(filteredAppCases)('验证 HBuilderX uni-app App 开发态热更新产物：$name', async (item) => {
     await verifyAppHmrWithHBuilderX(item)

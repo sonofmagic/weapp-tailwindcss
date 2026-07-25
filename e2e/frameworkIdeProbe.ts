@@ -129,7 +129,9 @@ async function closeMiniProgram() {
 async function main() {
   if (process.env['E2E_IDE_BUILD'] === '1') {
     const { ensureProjectBuilt } = await import('./projectBuild')
-    await ensureProjectBuilt(root)
+    await ensureProjectBuilt(root, {
+      patchTailwind: supportEntry.tailwindcss !== 'v4',
+    })
   }
 
   const pageUrl = await ensureMiniProgramEntry()
@@ -167,7 +169,6 @@ async function main() {
 main().then(() => {
   process.exit(0)
 }).catch(async (error) => {
-  process.stderr.write(`${error instanceof Error ? error.stack : String(error)}\n`)
   await closeMiniProgram()
   await restoreProjectConfig()
   try {
@@ -176,5 +177,6 @@ main().then(() => {
   catch (diagnosticError) {
     process.stderr.write(`[e2e:ide] failed to collect diagnostics: ${diagnosticError instanceof Error ? diagnosticError.stack : String(diagnosticError)}\n`)
   }
+  process.stderr.write(`${error instanceof Error ? error.stack : String(error)}\n`)
   process.exit(1)
 })

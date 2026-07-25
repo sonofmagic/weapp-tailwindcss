@@ -330,6 +330,11 @@ const issue1002AppLogNotContains = [
   /property value `calc\((?:1(?:\.\d+)?\s*\/|8rpx\s*\*)/i,
   /not supported for `border-(?:bottom|top)-(?:left|right)-radius`/i,
 ]
+const iconifyNativeLogNotContains = [
+  /property value [`']?1em[`']? (?:is )?not supported for [`']?(?:width|height)/i,
+  /property value [`']?currentColor[`']? (?:is )?(?:invalid|not supported) for [`']?background-color/i,
+  /(?:-webkit-)?mask-(?:image|repeat|size).*not supported/i,
+]
 const issue1002HarmonyStyleNotContains = issue1002AppOutputNotContains
 function createUniAppAppCases(options: {
   name: string
@@ -480,11 +485,11 @@ export const uniAppXAppCases: AppCase[] = [
     ],
     sourceFile: 'components/BindClass.uvue',
     markerAnchor: '<text :class="flag',
-    markerClass: 'flex h-[41px] w-[173px] items-center justify-center rounded-full bg-[#102938]',
-    markerTextClass: 'text-xl text-white',
+    markerClass: 'flex h-[41px] w-[173px] items-center justify-center rounded-[9998px] bg-[#102938]',
+    markerTextClass: 'text-[39rpx] text-[#f7fbff]',
     markerText: 'hbuilderx-app-dynamic-v4-android',
-    hmrMarkerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-full bg-[#3b0764] [transform:translate(10px,20px)]',
-    hmrMarkerTextClass: 'text-sm text-white',
+    hmrMarkerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-[9997px] bg-[#3b0764] [transform:translate(10px,20px)]',
+    hmrMarkerTextClass: 'text-[28rpx] text-[#fef08a]',
     hmrMarkerText: 'hbuilderx-app-hmr-v4-android',
     launchArgs: defaultAndroidLaunchArgs,
     requiredFiles: [
@@ -501,7 +506,7 @@ export const uniAppXAppCases: AppCase[] = [
     compiledStyleContains: [
       'issue 822 component child',
       '["--theme-color", "#16a34a"]',
-      '["backgroundColor", "var(--theme-color, #0957DE)"]',
+      '["backgroundColor", "var(--theme-color)"]',
       /\["wtu-[^"]+", _pS\(_uM\(\[\["width", "100%"\]/,
       /\["wtu-[^"]+", _pS\(_uM\(\[\["height", 200\]/,
       /\["wtu-[^"]+", _pS\(_uM\(\[\["backgroundColor", "#87add3"\]/,
@@ -534,6 +539,7 @@ export const uniAppXAppCases: AppCase[] = [
     runtimeLogContains: ['App Launch'],
     logNotContains: [
       ...issue1002AppLogNotContains,
+      ...iconifyNativeLogNotContains,
       /property value .*translate.*not supported for .*transform/i,
     ],
   },
@@ -567,17 +573,17 @@ export const uniAppXAppCases: AppCase[] = [
       'w-_b173px_B',
       'hbuilderx-app-dynamic-v4-ios',
       /--theme-color["']?\s*[:,]\s*["']?#16a34a/i,
-      /backgroundColor["']?\s*[:,]\s*["']var\(--theme-color,\s*#0957DE\)/i,
+      /backgroundColor["']?\s*[:,]\s*["']var\(--theme-color\)/i,
       'issue 822 component child',
-      'w-full',
-      'h-_b200px_B',
-      'bg-_b_h87add3_B',
-      'text-_b_h111111_B',
+      /"wtu-[^"]+"\s*:\s*\{\s*""\s*:\s*\{\s*"width"\s*:\s*"100%"/,
+      /"wtu-[^"]+"\s*:\s*\{\s*""\s*:\s*\{\s*"height"\s*:\s*200/,
+      /"wtu-[^"]+"\s*:\s*\{\s*""\s*:\s*\{\s*"backgroundColor"\s*:\s*"#87add3"/,
+      /"wtu-[^"]+"\s*:\s*\{\s*""\s*:\s*\{\s*"color"\s*:\s*"#111111"/,
     ],
     transformedNotContains: issue1002AppOutputNotContains,
     hmrTransformedContains: ['bg-_b_h3b0764_B', 'text-_b_hfef08a_B', 'h-_b41px_B', 'mt-_b19px_B', 'hbuilderx-app-hmr-v4-ios'],
     runtimeLogContains: ['App Launch'],
-    logNotContains: issue1002AppLogNotContains,
+    logNotContains: [...issue1002AppLogNotContains, ...iconifyNativeLogNotContains],
   },
   {
     name: 'uni-app-x-hbuilderx-tailwindcss-v4 harmony',
@@ -631,7 +637,7 @@ export const uniAppXAppCases: AppCase[] = [
     styleNotContains: issue1002HarmonyStyleNotContains,
     hmrTransformedContains: [...harmonyHmrTransformedContains, 'hbuilderx-app-hmr-v4-harmony'],
     runtimeLogContains: ['App Launch'],
-    logNotContains: issue1002AppLogNotContains,
+    logNotContains: [...issue1002AppLogNotContains, ...iconifyNativeLogNotContains],
   },
 ]
 

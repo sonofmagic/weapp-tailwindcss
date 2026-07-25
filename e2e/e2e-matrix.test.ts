@@ -347,7 +347,13 @@ describe('e2e matrix', () => {
     const cssEntries = collectDemoIconifyCssEntries()
     expect(cssEntries.length, 'demo Iconify Tailwind entries should be discovered').toBeGreaterThan(0)
     for (const cssEntry of cssEntries) {
-      const source = fs.readFileSync(path.resolve(__dirname, '..', cssEntry), 'utf8')
+      const entryPath = path.resolve(__dirname, '..', cssEntry)
+      const entryName = path.basename(entryPath)
+      const siblingSources = fs.readdirSync(path.dirname(entryPath), { withFileTypes: true })
+        .filter(item => item.isFile() && /\.(?:css|scss|less)$/.test(item.name))
+        .map(item => fs.readFileSync(path.join(path.dirname(entryPath), item.name), 'utf8'))
+        .filter(source => source.includes(`@reference "./${entryName}"`) || source.includes(`@reference './${entryName}'`))
+      const source = [fs.readFileSync(entryPath, 'utf8'), ...siblingSources].join('\n')
       expect(source, `${cssEntry} should declare @source inline for Iconify build regression`).toContain('@source inline(')
       for (const token of ICONIFY_REGRESSION_SOURCE_TOKENS) {
         expect(source, `${cssEntry} should include ${token}`).toContain(token)

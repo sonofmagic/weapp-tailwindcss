@@ -37,6 +37,9 @@
 
 <style lang="scss">
 @import './main.css';
+/*  #ifndef  APP  */
+@import './main.iconify.css';
+/*  #endif  */
 
 page {
   --test-color: #006241;

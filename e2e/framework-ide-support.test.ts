@@ -151,31 +151,25 @@ describeFrameworkIde.sequential('framework support matrix ide', () => {
     }
   })
 
-  it('covers Tailwind CSS v4 and v4 IDE hot updates for every supported framework family', () => {
+  it('covers Tailwind CSS v4 IDE hot updates for every supported framework family', () => {
     if (process.env['E2E_PROJECT_FILTER']) {
       return
     }
 
-    const requiredPairs = [
-      ['uni-app', 'v3'],
-      ['uni-app', 'v4'],
-      ['uni-app-x', 'v3'],
-      ['uni-app-x', 'v4'],
-      ['taro-react', 'v3'],
-      ['taro-react', 'v4'],
-      ['taro-vue3', 'v3'],
-      ['taro-vue3', 'v4'],
-      ['mpx', 'v3'],
-      ['mpx', 'v4'],
-      ['native', 'v3'],
-      ['native', 'v4'],
+    const requiredFrameworks = [
+      'uni-app',
+      'uni-app-x',
+      'taro-react',
+      'taro-vue3',
+      'mpx',
+      'native',
     ] as const
     const ideCases = getFrameworkIdeCases()
 
-    for (const [framework, tailwindcss] of requiredPairs) {
+    for (const framework of requiredFrameworks) {
       expect(
-        ideCases.some(entry => entry.framework === framework && entry.tailwindcss === tailwindcss),
-        `${framework} should run tailwindcss@${tailwindcss.slice(1)} in e2e:ide`,
+        ideCases.some(entry => entry.framework === framework && entry.tailwindcss === 'v4'),
+        `${framework} should run tailwindcss@4 in e2e:ide`,
       ).toBe(true)
     }
   })

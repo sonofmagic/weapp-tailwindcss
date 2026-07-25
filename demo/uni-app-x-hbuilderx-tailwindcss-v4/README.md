@@ -5,9 +5,9 @@
 ## 关键配置
 
 - `vite.config.ts` 直接注册 `WeappTailwindcss(uniAppX(...))`
-- `main.css` 使用 `@import "tailwindcss"` 与 `@source`
+- `main.css` 使用 `@import "tailwindcss"` 与 `@source`，`main.iconify.css` 只在非 App 端生成 Iconify 工具类
 - `App.uvue` 的全局 `<style>` 使用 `@import './main.css'`，把生成入口加入 HBuilderX 构建图
-- 显式配置 `cssEntries`，使用项目根目录解析到 `main.css` 的绝对路径
+- 显式配置 `cssEntries`，使用项目根目录解析主入口和非 App Iconify 入口的绝对路径
 - 不注册 `@tailwindcss/postcss`，也不注册 `@tailwindcss/vite`
 
 ## 运行

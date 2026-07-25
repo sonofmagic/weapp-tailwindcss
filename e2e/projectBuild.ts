@@ -3,7 +3,6 @@ import process from 'node:process'
 import { format as formatMessage } from 'node:util'
 import { execa } from 'execa'
 import path from 'pathe'
-import { twPatch } from './shared'
 
 const buildTasks = new Map<string, Promise<void>>()
 const hbuilderxCliCandidates = [
@@ -14,6 +13,7 @@ const hbuilderxCliCandidates = [
 interface EnsureProjectBuiltOptions {
   env?: Record<string, string | undefined>
   force?: boolean
+  patchTailwind?: boolean
 }
 
 function buildTaskKey(root: string, env: Record<string, string | undefined> | undefined) {
@@ -282,7 +282,10 @@ export async function ensureProjectBuilt(root: string, options: EnsureProjectBui
       return
     }
 
-    await twPatch(root)
+    if (options.patchTailwind !== false) {
+      const { twPatch } = await import('./shared')
+      await twPatch(root)
+    }
 
     const stdio = process.env['E2E_DEBUG_BUILD'] === '1' ? 'inherit' : 'pipe'
     const childEnv: Record<string, string | undefined> = {

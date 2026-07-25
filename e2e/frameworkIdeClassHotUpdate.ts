@@ -23,6 +23,7 @@ import {
   getDevToolsBestEffortVisibleTimeoutMs,
   getDevToolsRelaunchTimeoutMs,
   getDevToolsVisibleTimeoutMs,
+  readCurrentPageLiveContent,
   readPageLiveContent,
 } from './frameworkIdeLivePage'
 
@@ -119,6 +120,28 @@ function getLivePageVisibilitySkipReason(watchCase: Pick<WatchCase, 'name'>) {
   return 'unknown'
 }
 
+function summarizeDiagnostic(value: string | undefined) {
+  if (value == null) {
+    return 'unavailable'
+  }
+  return JSON.stringify(value.slice(0, 500))
+}
+
+async function refreshDevToolsCompile(miniProgram: any) {
+  const errors: string[] = []
+  if (typeof miniProgram.clearCache === 'function') {
+    await miniProgram.clearCache({ clean: 'compile' }).catch((error: unknown) => {
+      errors.push(`clearCache: ${error instanceof Error ? error.message : String(error)}`)
+    })
+  }
+  if (typeof miniProgram.compile === 'function') {
+    await miniProgram.compile({ force: true }).catch((error: unknown) => {
+      errors.push(`compile: ${error instanceof Error ? error.message : String(error)}`)
+    })
+  }
+  return errors
+}
+
 export async function runIdeClassHotUpdate(
   options: CliOptions,
   watchCase: WatchCase,
@@ -134,7 +157,12 @@ export async function runIdeClassHotUpdate(
   const sourceFile = mutation.sourceFile
   process.stdout.write(`[e2e:ide] ${watchCase.label} ${mutationKind} HMR mutate ${sourceFile}\n`)
   const { artifacts: baselineArtifacts, mtimes: baselineMtimes } = await collectArtifactMtimes(watchCase)
-  const liveBefore = await readPageLiveContent(page, pageUrl).catch(() => undefined)
+  const liveBefore = await readCurrentPageLiveContent(miniProgram, page, pageUrl)
+    .then((result) => {
+      page = result.page
+      return result.content
+    })
+    .catch(() => undefined)
   const scenario = createClassMutationScenario(
     watchCase,
     mutationKind,
@@ -192,8 +220,7 @@ export async function runIdeClassHotUpdate(
   }
   assertNoUnsupportedMiniProgramCssImport(watchCase, afterArtifacts, `IDE ${mutationKind} HMR`)
 
-  await miniProgram.clearCache?.({ clean: 'compile' }).catch(() => undefined)
-  await miniProgram.compile({ force: true }).catch(() => undefined)
+  const compileErrors = await refreshDevToolsCompile(miniProgram)
   let devtoolsVisible = 'false'
   const verifyLivePage = shouldVerifyLivePageVisibility(watchCase)
   const requireLivePage = verifyLivePage && shouldRequireIdeLivePageVisibility(watchCase)
@@ -207,9 +234,11 @@ export async function runIdeClassHotUpdate(
     liveHasMarker = await waitFor(
       async () => {
         try {
-          const content = await readPageLiveContent(page, pageUrl)
+          const current = await readCurrentPageLiveContent(miniProgram, page, pageUrl)
+          page = current.page
+          const content = current.content
+          liveAfter = content
           if (content.includes(scenario.marker)) {
-            liveAfter = content
             return true
           }
           return false
@@ -242,12 +271,21 @@ export async function runIdeClassHotUpdate(
     else {
       process.stdout.write(`[e2e:ide] ${watchCase.label} ${mutationKind} HMR reLaunch DevTools page for visibility fallback\n`)
       const freshPage: any = await withDevToolsRelaunchTimeout(options, pageUrl, miniProgram.reLaunch(pageUrl)).catch(() => undefined)
-      const freshContent = freshPage ? await readPageLiveContent(freshPage, pageUrl).catch(() => undefined) : undefined
+      const freshContent = freshPage
+        ? await readCurrentPageLiveContent(miniProgram, freshPage, pageUrl).then(result => result.content).catch(() => undefined)
+        : undefined
       if (freshContent == null || !freshContent.includes(scenario.marker)) {
         process.stdout.write(`[e2e:ide] ${watchCase.label} ${mutationKind} HMR reopen DevTools project for visibility fallback\n`)
         const reopenedContent = await readFreshDevToolsPageContent(launchProjectPath, options, pageUrl).catch(() => undefined)
         if (reopenedContent == null || !reopenedContent.includes(scenario.marker)) {
-          throw new Error(`[${watchCase.label}] DevTools page did not show ${mutationKind} HMR marker after reLaunch/reopen: ${scenario.marker}`)
+          throw new Error([
+            `[${watchCase.label}] DevTools page did not show ${mutationKind} HMR marker after reLaunch/reopen: ${scenario.marker}`,
+            `compileErrors=${JSON.stringify(compileErrors)}`,
+            `liveBefore=${summarizeDiagnostic(liveBefore)}`,
+            `liveAfter=${summarizeDiagnostic(liveAfter)}`,
+            `freshContent=${summarizeDiagnostic(freshContent)}`,
+            `reopenedContent=${summarizeDiagnostic(reopenedContent)}`,
+          ].join('\n'))
         }
         else if (liveBefore != null && liveBefore === reopenedContent) {
           throw new Error(`[${watchCase.label}] DevTools reopened page content did not change after ${mutationKind} HMR`)
@@ -276,6 +314,5 @@ export async function runIdeClassHotUpdate(
   await writeFilePreserveEol(sourceFile, sourceOriginal, sourceOriginal)
   await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
   await waitForMarkerState(watchCase, scenario.marker, 'absent', options, session, rollbackStartedAt)
-  await miniProgram.clearCache?.({ clean: 'compile' }).catch(() => undefined)
-  await miniProgram.compile({ force: true }).catch(() => undefined)
+  await refreshDevToolsCompile(miniProgram)
 }

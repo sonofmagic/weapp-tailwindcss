@@ -10,11 +10,17 @@ import { fileURLToPath } from 'node:url'
 const uni = (uniModule as typeof uniModule & { default?: typeof uniModule }).default ?? uniModule
 const projectRoot = dirname(fileURLToPath(import.meta.url))
 const officialPostcssParity = process.env.WEAPP_TW_OFFICIAL_POSTCSS_PARITY === '1'
+const isNativeApp = process.env.UNI_UTS_PLATFORM?.startsWith('app-') === true
 const weappTailwindcssPlugins = WeappTailwindcss(
   uniAppX({
     base: projectRoot,
+    componentLocalStyles: {
+      enabled: true,
+      onlyWhenStyleIsolationVersion2: false,
+    },
     cssEntries: [
       resolve(projectRoot, 'main.css'),
+      ...isNativeApp ? [] : [resolve(projectRoot, 'main.iconify.css')],
     ],
     cssSourceTrace: true,
     rem2rpx: true,

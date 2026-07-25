@@ -1,3 +1,4 @@
+import type { ChildProcess } from 'node:child_process'
 import type { AppCase, MiniProgramCase, WebCase } from './cases'
 
 import fs from 'node:fs/promises'
@@ -6,6 +7,7 @@ import process from 'node:process'
 
 import path from 'pathe'
 import { expect } from 'vitest'
+import { createHBuilderXProjectAlias as createSharedHBuilderXProjectAlias } from '../../scripts/hbuilderx-project-alias.mjs'
 import { rawTailwindDirectiveRE } from './cases'
 import {
   assertAndroidToolchain,
@@ -97,6 +99,17 @@ function formatHBuilderXIssueDetails(output: string) {
     `issue=${issue.kind}: ${issue.message}`,
     issue.hint ? `hint=${issue.hint}` : '',
   ].filter(Boolean).join('\n')
+}
+
+async function stopAppLaunch(child: ChildProcess, closed: Promise<void>) {
+  if (child.exitCode == null && child.signalCode == null) {
+    killProcessTree(child, 'SIGINT')
+    await Promise.race([closed, wait(5_000)])
+  }
+  if (child.exitCode == null && child.signalCode == null) {
+    killProcessTree(child)
+    await Promise.race([closed, wait(5_000)])
+  }
 }
 
 async function waitForFile(file: string, timeoutMs: number) {
@@ -374,7 +387,6 @@ async function findReadyAppOutputRoot(item: AppCase) {
     if (
       transformed
       && hasContent(transformed, item.transformedContains)
-      && hasNoContent(transformed, item.transformedNotContains)
       && (item.styleContains?.length ? style != null && hasContent(style, item.styleContains) : true)
     ) {
       return outputRoot
@@ -457,14 +469,20 @@ export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
 
   if (item.platform !== 'mp-weixin') {
     const hbuilderxCliPath = await resolveHBuilderXCli()
-    await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot], hbuilderxTimeoutMs, {
-      HBUILDERX_CLI_PATH: hbuilderxCliPath,
-    })
-    await runPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectRoot, '--compile', 'true'], hbuilderxTimeoutMs, {
-      HBUILDERX_CLI_PATH: hbuilderxCliPath,
-      WEAPP_TW_HMR_TIMING: '1',
-    })
-    await assertMiniProgramOutput(item)
+    const projectAlias = await createSharedHBuilderXProjectAlias(projectRoot)
+    try {
+      await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectAlias.projectPath], hbuilderxTimeoutMs, {
+        HBUILDERX_CLI_PATH: hbuilderxCliPath,
+      })
+      await runPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectAlias.projectName, '--compile', 'true'], hbuilderxTimeoutMs, {
+        HBUILDERX_CLI_PATH: hbuilderxCliPath,
+        WEAPP_TW_HMR_TIMING: '1',
+      })
+      await assertMiniProgramOutput(item)
+    }
+    finally {
+      await projectAlias.cleanup()
+    }
     return
   }
 
@@ -579,18 +597,24 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     await assertAppOutputHasNoUnsupportedContent(item, hmrOutputRoot)
     expectNoContent(logs.join(''), item.logNotContains, `${item.name} HBuilderX 日志`)
 
-    killProcessTree(child)
-    await Promise.race([closed, wait(5_000)])
+    await stopAppLaunch(child, closed)
     child = undefined
   }
   finally {
     if (child) {
-      killProcessTree(child)
+      const closed = new Promise<void>((resolve) => {
+        child?.once('close', () => resolve())
+      })
+      await stopAppLaunch(child, closed)
     }
     if (restore) {
       await restore()
     }
     if (projectAlias) {
+      await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'close', '--path', projectAlias], hbuilderxAppTimeoutMs, {
+        HBUILDERX_CLI_PATH: hbuilderxCliPath,
+        ...androidEnv,
+      }).catch(() => undefined)
       await rmWithRetry(projectAlias)
     }
   }

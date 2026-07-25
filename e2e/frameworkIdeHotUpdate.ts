@@ -247,7 +247,7 @@ export async function runFrameworkIdeHotUpdateProbe(
   }
   catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    throw new Error(`${message}\n[${watchCase.label}] recent watch logs:\n${session.logs()}`)
+    throw new Error(`[${watchCase.label}] recent watch logs:\n${session.logs()}\n[${watchCase.label}] IDE HMR failure:\n${message}`)
   }
   finally {
     for (const [sourceFile, sourceOriginal] of sourceOriginals) {

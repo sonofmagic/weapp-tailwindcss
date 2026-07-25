@@ -90,11 +90,21 @@ describe('demo visual theme evidence', () => {
     expect(page).toContain('@apply text-xs text-white rounded-full bg-[#164e63];')
 
     for (const item of uniAppXAppCases) {
-      expect(item.markerClass).toContain('rounded-full')
-      expect(item.markerTextClass).toContain('text-xl')
-      expect(item.markerTextClass).toContain('text-white')
-      expect(item.hmrMarkerTextClass).toContain('text-sm')
-      expect(item.hmrMarkerTextClass).toContain('text-white')
+      if (item.platform === 'app-android') {
+        expect(item.markerClass).toContain('rounded-[9998px]')
+        expect(item.markerTextClass).toContain('text-[39rpx]')
+        expect(item.markerTextClass).toContain('text-[#f7fbff]')
+        expect(item.hmrMarkerClass).toContain('rounded-[9997px]')
+        expect(item.hmrMarkerTextClass).toContain('text-[28rpx]')
+        expect(item.hmrMarkerTextClass).toContain('text-[#fef08a]')
+      }
+      else {
+        expect(item.markerClass).toContain('rounded-full')
+        expect(item.markerTextClass).toContain('text-xl')
+        expect(item.markerTextClass).toContain('text-white')
+        expect(item.hmrMarkerTextClass).toContain('text-sm')
+        expect(item.hmrMarkerTextClass).toContain('text-white')
+      }
       expect([
         ...(item.transformedNotContains ?? []),
         ...(item.styleNotContains ?? []),
@@ -117,11 +127,26 @@ describe('demo visual theme evidence', () => {
     }
   })
 
-  it('uses the uni-app x preset default for style isolation version detection', async () => {
+  it('keeps issue #822 component-local styles enabled for both isolation versions', async () => {
     const config = await fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/vite.config.ts'), 'utf8')
     expect(config).toContain('uniAppX({')
-    expect(config).not.toContain('componentLocalStyles')
-    expect(config).not.toContain('onlyWhenStyleIsolationVersion2')
+    expect(config).toContain('componentLocalStyles: {')
+    expect(config).toContain('enabled: true')
+    expect(config).toContain('onlyWhenStyleIsolationVersion2: false')
+  })
+
+  it('keeps native App builds outside the Iconify CSS module graph', async () => {
+    const [app, config, iconify] = await Promise.all([
+      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/App.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/vite.config.ts'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/main.iconify.css'), 'utf8'),
+    ])
+    expect(app).toContain('/*  #ifndef  APP  */\n@import \'./main.iconify.css\';\n/*  #endif  */')
+    expect(config).toContain('process.env.UNI_UTS_PLATFORM?.startsWith(\'app-\')')
+    expect(config).toContain('...isNativeApp ? [] : [resolve(projectRoot, \'main.iconify.css\')]')
+    expect(iconify).toContain('@reference "./main.css";')
+    expect(iconify).toContain('i-[mdi--github-circle]')
+    expect(iconify).toContain('i-[svg-spinners--180-ring-with-bg]')
   })
 
   it('detects system and manual dark mode selectors in mini-program css output', () => {

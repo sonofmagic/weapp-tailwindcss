@@ -105,10 +105,7 @@ export async function readPageLiveContentRaw(page: any) {
 
   const pageContent = await readSelectorContent(page, 'page', 1)
   if (pageContent) {
-    const pageData = await page.data().catch(() => undefined)
-    return pageData == null
-      ? pageContent
-      : `${pageContent}\n[page:data] ${stringifyLiveValue(pageData)}`
+    parts.push(pageContent)
   }
 
   for (const selector of selectors) {
@@ -131,4 +128,13 @@ export async function readPageLiveContentRaw(page: any) {
 
 export async function readPageLiveContent(page: any, pageUrl: string) {
   return await withDevToolsReadTimeout(pageUrl, readPageLiveContentRaw(page))
+}
+
+export async function readCurrentPageLiveContent(miniProgram: any, fallbackPage: any, pageUrl: string) {
+  const page = await miniProgram.currentPage({ timeout: getDevToolsReadTimeoutMs() })
+    .catch(() => fallbackPage) ?? fallbackPage
+  return {
+    content: await readPageLiveContent(page, pageUrl),
+    page,
+  }
 }
