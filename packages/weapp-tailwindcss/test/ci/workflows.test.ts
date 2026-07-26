@@ -448,6 +448,20 @@ describe('ci workflows', () => {
     expect(releaseStep.env.NODE_AUTH_TOKEN).toBeUndefined()
   })
 
+  it('triggers npmmirror sync only after a successful npm publish', () => {
+    const { workflow } = readWorkflow('release.yml')
+    const syncStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
+      return step.name === 'Trigger npmmirror sync'
+    })
+
+    expect(syncStep).toMatchObject({
+      if: "steps.changesets.outputs.published == 'true'",
+      'continue-on-error': true,
+      run: 'node scripts/sync-npmmirror.mjs',
+    })
+    expect(syncStep.env.PUBLISHED_PACKAGES).toContain("steps.changesets.outputs['published-packages']")
+  })
+
   it('keeps PR benchmark coverage on the smoke demo matrix', () => {
     const { workflow } = readWorkflow('benchmark.yml')
     const job = workflow.jobs['benchmark-shard']

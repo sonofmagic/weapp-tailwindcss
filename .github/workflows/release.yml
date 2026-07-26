@@ -87,6 +87,13 @@ jobs:
           # https://github.com/changesets/changesets/pull/1659
           NPM_CONFIG_PROVENANCE: true
 
+      - name: Trigger npmmirror sync
+        if: steps.changesets.outputs.published == 'true'
+        continue-on-error: true
+        env:
+          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs['published-packages'] }}
+        run: node scripts/sync-npmmirror.mjs
+
       - name: Trigger release PR checks
         if: steps.changesets.outputs.hasChangesets == 'true' && steps.changesets.outputs.published != 'true' && env.CHANGESETS_RELEASE_TOKEN_SET != 'true'
         env:
