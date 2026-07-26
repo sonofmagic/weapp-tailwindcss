@@ -4135,8 +4135,8 @@ importers:
         specifier: catalog:postcssRem
         version: 7.0.4(postcss@8.5.22)
       postcss-rule-unit-converter:
-        specifier: ^0.2.2
-        version: 0.2.2(postcss@8.5.22)
+        specifier: ^0.2.3
+        version: 0.2.3(postcss@8.5.22)
       postcss-selector-parser:
         specifier: ~7.1.4
         version: 7.1.4
@@ -27497,8 +27497,8 @@ packages:
   postcss-rpx-transform@1.0.1:
     resolution: {integrity: sha512-BYEUOUWwzsBJChvGJYRDEiJ8IErhNrO4G4hnBgDtSub9KM529iVE4mlli3iFeyU2k8gPPNFnqrLrFv5OjtNZnQ==}
 
-  postcss-rule-unit-converter@0.2.2:
-    resolution: {integrity: sha512-6+/zbOOPLLThV/8hBz8tU8ftcGw6VEpwdtpdJMyfUZllsinmRc1cUDI5B9AWkkOThCI+IcnJS8he4zkERQnEOA==}
+  postcss-rule-unit-converter@0.2.3:
+    resolution: {integrity: sha512-FCcbnjkWkIMP/9ZRAjuYMza6wkpnJ476F8R5cSSFwI46qVZQ2wGmpYkEFxMTatp2pk8uvPTOlk1bfR2gI45Sjg==}
     peerDependencies:
       postcss: ^8
 
@@ -65558,7 +65558,7 @@ snapshots:
 
   postcss-rpx-transform@1.0.1: {}
 
-  postcss-rule-unit-converter@0.2.2(postcss@8.5.22):
+  postcss-rule-unit-converter@0.2.3(postcss@8.5.22):
     dependencies:
       postcss: 8.5.22
       postcss-plugin-shared: 1.1.5(postcss@8.5.22)
