@@ -53,7 +53,7 @@ function emptyManifest(): NativeStyleManifest {
 }
 
 function virtualModuleCode(manifest: NativeStyleManifest) {
-  return `import { setEnvironment, setManifest } from ${JSON.stringify('@weapp-tailwindcss/react-native/runtime')};\nimport { Appearance, Platform } from 'react-native';\nconst syncEnvironment = () => setEnvironment({ platform: Platform.OS, colorScheme: Appearance.getColorScheme() ?? 'light' });\nsetManifest(${JSON.stringify(manifest)});\nsyncEnvironment();\nAppearance.addChangeListener?.(({ colorScheme }) => setEnvironment({ platform: Platform.OS, colorScheme: colorScheme ?? 'light' }));\nexport default undefined;`
+  return `import { setEnvironment, setManifest, setStyleSheetFactory } from ${JSON.stringify('@weapp-tailwindcss/react-native/runtime')};\nimport { Appearance, Platform, StyleSheet } from 'react-native';\nsetStyleSheetFactory(StyleSheet.create);\nconst syncEnvironment = () => setEnvironment({ platform: Platform.OS, colorScheme: Appearance.getColorScheme() ?? 'light' });\nsetManifest(${JSON.stringify(manifest)});\nsyncEnvironment();\nAppearance.addChangeListener?.(({ colorScheme }) => setEnvironment({ platform: Platform.OS, colorScheme: colorScheme ?? 'light' }));\nexport default undefined;`
 }
 
 function writeVirtualModule(entry: RegisteredManifest) {
@@ -110,7 +110,8 @@ function register(options: WeappReactNativeMetroOptions) {
   const watchers = watched.map((file) => {
     const target = path.resolve(projectRoot, file)
     try {
-      return fs.watch(target, { persistent: false, recursive: true }, () => { void entry.refresh() })
+      const recursive = fs.statSync(target).isDirectory()
+      return fs.watch(target, { persistent: false, recursive }, () => { void entry.refresh() })
     }
     catch {
       return undefined
@@ -125,6 +126,13 @@ export function getRegisteredVirtualModule(filename: string) {
     if (entry.virtualPath === filename) { return entry }
   }
   return undefined
+}
+
+export async function getRegisteredManifest(id: string) {
+  const registered = registry.get(id)
+  if (!registered) { return undefined }
+  await registered.ready
+  return registered.manifest
 }
 
 export function getVirtualModuleCode(filename: string) {

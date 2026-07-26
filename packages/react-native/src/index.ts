@@ -1,6 +1,6 @@
 export { default as babelPlugin } from './babel'
 export { compileNativeStylesheet } from './compiler'
-export { getVirtualModuleCode, getVirtualModuleCodeAsync, VIRTUAL_MANIFEST_MODULE, withWeappTailwindcss } from './metro'
-export { createNativeStyleRuntime, getManifest, setEnvironment, setManifest, tw } from './runtime'
+export { getRegisteredManifest, getVirtualModuleCode, getVirtualModuleCodeAsync, VIRTUAL_MANIFEST_MODULE, withWeappTailwindcss } from './metro'
+export { composeStyle, createNativeStyleRuntime, getManifest, getStaticStyle, setEnvironment, setManifest, setStyleSheetFactory, tw } from './runtime'
 export { generateNativeStylesheet } from './tailwind'
 export type * from './types'

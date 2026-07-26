@@ -8,6 +8,7 @@ export default defineConfig({
     'babel': 'src/babel.ts',
     'metro': 'src/metro.ts',
     'runtime': 'src/runtime.ts',
+    'env': 'src/env.ts',
     'metro-transformer': 'src/metro-transformer.ts',
   },
   format: ['esm', 'cjs'],

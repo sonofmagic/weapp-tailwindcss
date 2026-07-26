@@ -60,4 +60,18 @@ describe('compileNativeStylesheet', () => {
     expect(manifest.rules['px-4']?.[0]?.style).toEqual({ paddingHorizontal: 16 })
     expect(manifest.warnings).toEqual([])
   })
+
+  it('records source order, important metadata, and static StyleSheet lookup', () => {
+    const manifest = compileNativeStylesheet(`
+      .text-red { color: #f00; }
+      .text-blue { color: #00f; }
+      .text-important { color: #0f0 !important; }
+    `, { classSet: ['text-red', 'text-blue', 'text-important'] })
+    expect(manifest.rules['text-red']?.[0]).toMatchObject({ order: 0, important: undefined })
+    expect(manifest.rules['text-important']?.[0]).toMatchObject({ important: true })
+    const id = manifest.staticLookup?.['text-blue']?.[0]
+    expect(id).toMatch(/^s\d+$/)
+    expect(manifest.styleSheet?.[id!]).toEqual({ color: '#00f' })
+    expect(manifest.styleEntries?.[id!]).toMatchObject({ order: 1 })
+  })
 })

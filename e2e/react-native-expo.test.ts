@@ -56,6 +56,7 @@ async function exportExample(platform: 'android' | 'ios') {
     expect(bundleText).toContain('ios:px-4')
     expect(bundleText).toContain('android:px-2')
     expect(bundleText).toContain('Tailwind RN')
+    expect(bundleText).toMatch(/twStatic|getStaticStyle/)
   }
   finally {
     await fs.rm(outputRoot, { recursive: true, force: true })

@@ -10,4 +10,7 @@ export default defineConfig({
       { find: '@', replacement: path.resolve(__dirname, './src') },
     ],
   },
+  benchmark: {
+    include: ['benchmark/**/*.{bench,benchmark}.{ts,tsx}'],
+  },
 })

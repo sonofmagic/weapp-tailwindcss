@@ -11,8 +11,9 @@ describe('React Native Babel plugin', () => {
       babelrc: false,
     })
     expect(result?.code).toContain('import')
-    expect(result?.code).toContain('tw("flex px-4")')
-    expect(result?.code).toContain('[props.style, _tw("flex px-4")]')
+    expect(result?.code).toContain('_twStatic(["flex", "px-4"])')
+    expect(result?.code).toContain('_twCompose(_twStatic(["flex", "px-4"]), props.style)')
+    expect(result?.code).not.toContain('_tw("flex px-4")')
     expect(result?.code).not.toContain('className')
   })
 
@@ -48,7 +49,7 @@ describe('React Native Babel plugin', () => {
       configFile: false,
       babelrc: false,
     })
-    expect(result?.code).toContain('style: [props.style, _tw("flex")]')
+    expect(result?.code).toContain('style: _twCompose(_twStatic(["flex"]), props.style)')
     expect(result?.code).not.toContain('className')
 
     const dependency = transformSync('<View className="flex" />', {

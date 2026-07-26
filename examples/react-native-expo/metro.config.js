@@ -5,17 +5,5 @@ const config = getDefaultConfig(__dirname)
 
 module.exports = withWeappTailwindcss(config, {
   input: './global.css',
-  classSet: [
-    'flex',
-    'items-center',
-    'justify-center',
-    'w-[180px]',
-    'h-[48px]',
-    'rounded-lg',
-    'bg-blue-500',
-    'dark:bg-slate-900',
-    'ios:px-4',
-    'android:px-2',
-    'text-white',
-  ],
+  sourceGlobs: ['./src/**/*.{js,jsx,ts,tsx}', './App.tsx'],
 })

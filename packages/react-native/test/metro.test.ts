@@ -1,9 +1,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { getVirtualModuleCode, VIRTUAL_MANIFEST_MODULE, withWeappTailwindcss } from '@/metro'
+import { getRegisteredManifest, getVirtualModuleCode, VIRTUAL_MANIFEST_MODULE, withWeappTailwindcss } from '@/metro'
 
 describe('Expo Metro integration', () => {
-  it('registers CSS and resolves the watched virtual manifest module', () => {
+  it('registers CSS and resolves the watched virtual manifest module', async () => {
     const config = withWeappTailwindcss({ resolver: { sourceExts: ['js'] } }, {
       css: '.flex { display: flex; }',
       classSet: ['flex'],
@@ -14,6 +14,9 @@ describe('Expo Metro integration', () => {
     expect(fs.existsSync(resolved.filePath)).toBe(true)
     expect(config.watchFolders).toContain(path.dirname(resolved.filePath))
     expect(getVirtualModuleCode(resolved.filePath)).toContain('"display":"flex"')
+    expect(getVirtualModuleCode(resolved.filePath)).toContain('setStyleSheetFactory(StyleSheet.create)')
+    const id = (config.transformer as Record<string, unknown>).weappTailwindcssMetroId as string
+    await expect(getRegisteredManifest(id)).resolves.toMatchObject({ staticLookup: { flex: expect.any(Array) } })
   })
 
   it('accepts an async Expo config factory', async () => {

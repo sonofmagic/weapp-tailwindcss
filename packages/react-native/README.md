@@ -21,19 +21,8 @@ module.exports = withWeappTailwindcss(config, {
 })
 ```
 
-```js
-// babel.config.js
-module.exports = function (api) {
-  api.cache(true)
-  return {
-    presets: ['babel-preset-expo'],
-    plugins: [['@weapp-tailwindcss/react-native/babel', {
-      classNameSet: ['flex', 'items-center', 'px-4'],
-    }]],
-  }
-}
-```
+Expo 只需要配置一次 Metro。Metro 会扫描 source、生成精确候选集合和 manifest，并自动把 Babel JSX transform 注入原有 Expo transformer；不需要再维护第二份 `classNameSet`。非 Expo 或定制 Metro 场景仍可显式使用 `@weapp-tailwindcss/react-native/babel`。
 
-静态 `className` 必须来自 generator 生成的精确 `classNameSet`；动态值使用 `tw(value)`。现有 `style` 会保持在数组前侧，Tailwind style 追加在后侧。不支持的 CSS 声明会写入 manifest 的 `warnings`，不会静默产出错误的 RN style。
+静态 `className` 会编译为预生成的 StyleSheet lookup，不在 render 中调用 `tw()`；动态值才使用 `tw(value)`。普通 inline `style` 覆盖 Tailwind class，`!important` class 覆盖 inline style。不支持的 CSS 声明会写入 manifest 的 `warnings`，不会静默产出错误的 RN style。
 
-公开入口：`compiler`、`babel`、`metro`、`runtime` 与 `tailwind`。
+公开入口：`compiler`、`babel`、`metro`、`runtime`、`tailwind` 与中性类型入口 `env`。

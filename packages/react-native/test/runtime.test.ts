@@ -33,4 +33,28 @@ describe('native style runtime', () => {
     runtime.setEnvironment({ colorScheme: 'dark', platform: 'ios' })
     expect(runtime.tw(['dark:bg-black', 'ios:px-4'])).toEqual({ backgroundColor: '#000', paddingLeft: 16, paddingRight: 16 })
   })
+
+  it('uses CSS source order and keeps important rules above inline styles', () => {
+    const ordered = createNativeStyleRuntime({
+      version: 1,
+      classSet: ['text-red', 'text-blue', 'text-important'],
+      variables: {},
+      warnings: [],
+      rules: {},
+      staticLookup: { 'text-red': ['r'], 'text-blue': ['b'], 'text-important': ['i'] },
+      styleSheet: { r: { color: '#f00' }, b: { color: '#00f' }, i: { color: '#0f0' } },
+      styleEntries: {
+        r: { id: 'r', order: 0, style: { color: '#f00' } },
+        b: { id: 'b', order: 1, style: { color: '#00f' } },
+        i: { id: 'i', order: 2, important: true, style: { color: '#0f0' } },
+      },
+    })
+    expect(ordered.tw(['text-blue', 'text-red'])).toEqual({ color: '#00f' })
+    const classStyle = ordered.getStaticStyle(['i'])
+    expect(ordered.composeStyle(classStyle, { color: '#000' })).toEqual([
+      { color: '#0f0' },
+      { color: '#000' },
+      { color: '#0f0' },
+    ])
+  })
 })

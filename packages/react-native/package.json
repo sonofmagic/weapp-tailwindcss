@@ -41,6 +41,11 @@
       "import": "./dist/runtime.js",
       "require": "./dist/runtime.cjs"
     },
+    "./env": {
+      "types": "./dist/env.d.ts",
+      "import": "./dist/env.js",
+      "require": "./dist/env.cjs"
+    },
     "./metro-transformer": {
       "types": "./dist/metro-transformer.d.ts",
       "import": "./dist/metro-transformer.js",
@@ -58,6 +63,7 @@
   "scripts": {
     "build": "tsdown",
     "test": "vitest run",
+    "bench": "vitest bench",
     "test:dev": "vitest",
     "lint": "eslint .",
     "release": "pnpm publish"

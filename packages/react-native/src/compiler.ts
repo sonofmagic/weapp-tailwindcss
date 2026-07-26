@@ -303,27 +303,57 @@ function addWarning(warnings: NativeCompilerWarning[], warning: NativeCompilerWa
   if (!warnings.some(item => item.message === warning.message && item.property === warning.property && item.className === warning.className)) { warnings.push(warning) }
 }
 
-function compileRule(rule: Rule, className: string, variables: Record<string, string>, warnings: NativeCompilerWarning[]) {
-  const style: Record<string, unknown> = {}
+function compileRule(rule: Rule, className: string, variables: Record<string, string>, warnings: NativeCompilerWarning[], order: number) {
+  const styles: Record<'normal' | 'important', Record<string, unknown>> = { normal: {}, important: {} }
   rule.walkDecls((decl) => {
     if (decl.prop.startsWith('--')) { return }
     const property = propertyName(decl.prop)
-    const expanded = expandDeclaration(property, decl.value, variables)
+    const important = decl.important || /!important\s*$/i.test(decl.value)
+    const value = decl.value.replace(/\s*!important\s*$/i, '')
+    const expanded = expandDeclaration(property, value, variables)
     if (!expanded || Object.values(expanded).includes(undefined)) {
-      const variableReference = /var\((--[\w-]+)/.exec(decl.value)?.[1]
+      const variableReference = /var\((--[\w-]+)/.exec(value)?.[1]
       if (!variableReference || !variables[variableReference]) {
-        addWarning(warnings, { className, property, message: `不支持将 ${decl.prop}: ${decl.value} 编译为 React Native style` })
+        addWarning(warnings, { className, property, message: `不支持将 ${decl.prop}: ${value} 编译为 React Native style` })
       }
       return
     }
-    Object.assign(style, expanded)
+    Object.assign(styles[important ? 'important' : 'normal'], expanded)
   })
-  if (Object.keys(style).length === 0) { return undefined }
-  return {
-    style,
+  const variant = {
     ...variantForClass(className),
     ...ancestors(rule).reduce((result, node) => ({ ...result, ...atRuleVariant(node) }), {}),
-  } satisfies NativeStyleRule
+  }
+  return (['normal', 'important'] as const)
+    .filter(kind => Object.keys(styles[kind]).length > 0)
+    .map(kind => ({
+      style: styles[kind],
+      ...variant,
+      important: kind === 'important' || undefined,
+      order,
+    } satisfies NativeStyleRule))
+}
+
+/** 为 manifest 生成稳定的 StyleSheet ID 和 Babel 静态 lookup。 */
+export function finalizeNativeManifest(manifest: NativeStyleManifest): NativeStyleManifest {
+  const styleSheet: Record<string, Record<string, unknown>> = {}
+  const styleEntries: Record<string, NativeStyleRule> = {}
+  const staticLookup: Record<string, string[]> = {}
+  let nextId = 0
+  for (const [className, rules] of Object.entries(manifest.rules)) {
+    for (const rule of rules) {
+      const id = rule.id ?? `s${nextId++}`
+      rule.id = id
+      styleSheet[id] = rule.style
+      styleEntries[id] = rule
+      ;(staticLookup[className] ??= []).push(id)
+    }
+  }
+  manifest.styleSheet = styleSheet
+  manifest.styleEntries = styleEntries
+  manifest.staticLookup = staticLookup
+  manifest.classSet = Object.keys(manifest.rules)
+  return manifest
 }
 
 export function compileNativeStylesheet(css: string, options: CompileNativeStylesheetOptions = {}): NativeStyleManifest {
@@ -332,30 +362,27 @@ export function compileNativeStylesheet(css: string, options: CompileNativeStyle
   const allowed = options.classSet ? new Set(options.classSet) : undefined
   const rules: Record<string, NativeStyleRule[]> = {}
   const warnings: NativeCompilerWarning[] = []
+  let order = 0
 
   root.walkRules((rule) => {
     if (options.ignorePreflight !== false && (rule.selector.includes(':root') || rule.selector.includes('*') || rule.selector.includes('::'))) { return }
     for (const selector of rule.selectors) {
       for (const className of walkClasses(selector)) {
         if (allowed && !allowed.has(className)) { continue }
-        const compiled = compileRule(rule, className, variables, warnings)
-        if (compiled) {
+        const compiled = compileRule(rule, className, variables, warnings, order++)
+        if (compiled.length) {
           const existing = rules[className] ??= []
-          if (!existing.some(item => item.colorScheme === compiled.colorScheme
-            && item.platform === compiled.platform
-            && JSON.stringify(item.style) === JSON.stringify(compiled.style))) {
-            existing.push(compiled)
-          }
+          existing.push(...compiled)
         }
       }
     }
   })
 
-  return {
+  return finalizeNativeManifest({
     version: 1,
     classSet: Object.keys(rules),
     rules,
     variables,
     warnings,
-  }
+  })
 }

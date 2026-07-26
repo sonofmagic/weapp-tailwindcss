@@ -3,7 +3,7 @@
 import type { TailwindV4SourceOptions } from 'weapp-tailwindcss/generator'
 import type { NativeStyleManifest } from './types'
 import { createWeappTailwindcssGenerator, resolveTailwindV4Source } from 'weapp-tailwindcss/generator'
-import { addNativeVariantRules, compileNativeStylesheet } from './compiler'
+import { addNativeVariantRules, compileNativeStylesheet, finalizeNativeManifest } from './compiler'
 
 export interface GenerateNativeStylesheetOptions extends TailwindV4SourceOptions {
   candidates?: Iterable<string> | undefined
@@ -36,6 +36,7 @@ export async function generateNativeStylesheet(options: GenerateNativeStylesheet
   for (const candidate of requestedCandidates) { classSet.add(candidate) }
   const manifest = compileNativeStylesheet(generated.rawCss, { classSet })
   addNativeVariantRules(manifest, requestedCandidates)
+  finalizeNativeManifest(manifest)
   generator.dispose?.()
   return manifest
 }

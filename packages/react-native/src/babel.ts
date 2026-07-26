@@ -6,12 +6,14 @@ import * as t from '@babel/types'
 
 export interface WeappReactNativeBabelOptions {
   classNameSet?: Iterable<string> | undefined
+  /** Metro 生成的 token -> StyleSheet ID lookup。 */
+  staticStyleMap?: Record<string, string[]> | undefined
   runtimeModule?: string | undefined
 }
 
 interface PluginState extends PluginPass {
   opts: WeappReactNativeBabelOptions
-  runtimeIdentifier?: t.Identifier
+  runtimeIdentifiers?: { tw?: t.Identifier, static?: t.Identifier, compose?: t.Identifier }
   virtualImported?: boolean
 }
 
@@ -19,19 +21,20 @@ function classTokens(value: string) {
   return value.split(/\s+/).filter(Boolean)
 }
 
-function ensureRuntimeIdentifier(program: NodePath<t.Program>, state: PluginState) {
-  if (state.runtimeIdentifier) { return state.runtimeIdentifier }
-  const identifier = program.scope.generateUidIdentifier('tw')
+function ensureRuntimeIdentifier(program: NodePath<t.Program>, state: PluginState, kind: 'tw' | 'static' | 'compose') {
+  const identifiers = state.runtimeIdentifiers ??= {}
+  if (identifiers[kind]) { return identifiers[kind] }
   const moduleName = state.opts.runtimeModule ?? '@weapp-tailwindcss/react-native/runtime'
+  const local = program.scope.generateUidIdentifier(kind === 'static' ? 'twStatic' : kind === 'compose' ? 'twCompose' : 'tw')
+  identifiers[kind] = local
   if (!state.virtualImported) {
     program.unshiftContainer('body', t.importDeclaration([], t.stringLiteral('@weapp-tailwindcss/react-native/virtual')))
     state.virtualImported = true
   }
   program.unshiftContainer('body', t.importDeclaration([
-    t.importSpecifier(identifier, t.identifier('tw')),
+    t.importSpecifier(local, t.identifier(kind === 'static' ? 'getStaticStyle' : kind === 'compose' ? 'composeStyle' : 'tw')),
   ], t.stringLiteral(moduleName)))
-  state.runtimeIdentifier = identifier
-  return identifier
+  return local
 }
 
 function shouldSkipFile(filename: string | undefined) {
@@ -47,11 +50,8 @@ function hasKnownStaticTokens(value: string, classNameSet: Set<string> | undefin
   return classTokens(value).every(token => classNameSet.has(token))
 }
 
-function callRuntime(program: NodePath<t.Program>, state: PluginState, value: t.Expression | t.StringLiteral) {
-  return t.callExpression(ensureRuntimeIdentifier(program, state), [value])
-}
-
-function styleExpression(attribute: t.JSXAttribute) {
+function styleExpression(attribute: t.JSXAttribute | undefined) {
+  if (!attribute) { return undefined }
   const value = attribute.value
   if (!value) { return undefined }
   if (t.isJSXExpressionContainer(value)) {
@@ -61,14 +61,25 @@ function styleExpression(attribute: t.JSXAttribute) {
   return undefined
 }
 
-function applyStyleAttribute(
-  opening: NodePath<t.JSXOpeningElement>,
-  expression: t.Expression,
-) {
+function composeExpression(program: NodePath<t.Program>, state: PluginState, tailwind: t.Expression, inline: t.Expression | undefined) {
+  if (!inline) { return tailwind }
+  return t.callExpression(ensureRuntimeIdentifier(program, state, 'compose'), [tailwind, inline])
+}
+
+function staticStyleExpression(program: NodePath<t.Program>, state: PluginState, value: string) {
+  const ids = classTokens(value).flatMap(token => state.opts.staticStyleMap?.[token] ?? [token])
+  const staticIdentifier = ensureRuntimeIdentifier(program, state, 'static')
+  return t.callExpression(staticIdentifier, [t.arrayExpression(ids.map(id => t.stringLiteral(id)))])
+}
+
+function dynamicStyleExpression(program: NodePath<t.Program>, state: PluginState, value: t.Expression) {
+  return t.callExpression(ensureRuntimeIdentifier(program, state, 'tw'), [value])
+}
+
+function applyStyleAttribute(opening: NodePath<t.JSXOpeningElement>, expression: t.Expression) {
   const existing = opening.node.attributes.find(attribute => t.isJSXAttribute(attribute) && attribute.name.name === 'style')
   if (existing && t.isJSXAttribute(existing)) {
-    const current = styleExpression(existing)
-    existing.value = t.jsxExpressionContainer(current ? t.arrayExpression([current, expression]) : expression)
+    existing.value = t.jsxExpressionContainer(expression)
     return
   }
   opening.node.attributes.push(t.jsxAttribute(t.jsxIdentifier('style'), t.jsxExpressionContainer(expression)))
@@ -85,28 +96,20 @@ function applyCreateElementProps(props: t.ObjectExpression, program: NodePath<t.
   if (!classProperty || !t.isObjectProperty(classProperty)) { return }
   const value = classProperty.value
   const classSet = state.opts.classNameSet ? new Set(state.opts.classNameSet) : undefined
+  const styleProperty = props.properties.find(property => t.isObjectProperty(property) && propertyName(property) === 'style')
+  const inline = styleProperty && t.isObjectProperty(styleProperty) ? styleProperty.value as t.Expression : undefined
+  let style: t.Expression
   if (t.isStringLiteral(value)) {
     if (!hasKnownStaticTokens(value.value, classSet)) { return }
-    const styleProperty = props.properties.find(property => t.isObjectProperty(property) && propertyName(property) === 'style')
-    const styleExpression = styleProperty && t.isObjectProperty(styleProperty) ? styleProperty.value : undefined
-    const nextStyle = styleExpression ? t.arrayExpression([styleExpression, callRuntime(program, state, value)]) : callRuntime(program, state, value)
-    if (styleProperty && t.isObjectProperty(styleProperty)) {
-      styleProperty.value = nextStyle
-    }
-    else { props.properties.push(t.objectProperty(t.identifier('style'), nextStyle)) }
-    props.properties = props.properties.filter(property => property !== classProperty)
-    return
+    style = composeExpression(program, state, staticStyleExpression(program, state, value.value), inline)
   }
-  if (t.isExpression(value)) {
-    const styleProperty = props.properties.find(property => t.isObjectProperty(property) && propertyName(property) === 'style')
-    const styleExpression = styleProperty && t.isObjectProperty(styleProperty) ? styleProperty.value : undefined
-    const nextStyle = styleExpression ? t.arrayExpression([styleExpression, callRuntime(program, state, value)]) : callRuntime(program, state, value)
-    if (styleProperty && t.isObjectProperty(styleProperty)) {
-      styleProperty.value = nextStyle
-    }
-    else { props.properties.push(t.objectProperty(t.identifier('style'), nextStyle)) }
-    props.properties = props.properties.filter(property => property !== classProperty)
+  else if (t.isExpression(value)) {
+    style = composeExpression(program, state, dynamicStyleExpression(program, state, value), inline)
   }
+  else { return }
+  if (styleProperty && t.isObjectProperty(styleProperty)) { styleProperty.value = style }
+  else { props.properties.push(t.objectProperty(t.identifier('style'), style)) }
+  props.properties = props.properties.filter(property => property !== classProperty)
 }
 
 export default function weappReactNativeBabel(): PluginObject<PluginState> {
@@ -119,18 +122,17 @@ export default function weappReactNativeBabel(): PluginObject<PluginState> {
         if (!program?.isProgram()) { return }
         const classAttribute = path.node.attributes.find(attribute => t.isJSXAttribute(attribute) && attribute.name.name === 'className')
         if (!classAttribute || !t.isJSXAttribute(classAttribute)) { return }
-
         if (t.isStringLiteral(classAttribute.value)) {
-          const tokens = classTokens(classAttribute.value.value)
-          const allowed = state.opts.classNameSet ? new Set(state.opts.classNameSet) : undefined
-          if (!hasKnownStaticTokens(classAttribute.value.value, allowed)) { return }
-          applyStyleAttribute(path, callRuntime(program, state, t.stringLiteral(tokens.join(' '))))
+          if (!hasKnownStaticTokens(classAttribute.value.value, state.opts.classNameSet ? new Set(state.opts.classNameSet) : undefined)) { return }
+          const style = composeExpression(program, state, staticStyleExpression(program, state, classAttribute.value.value), styleExpression(path.node.attributes.find(attribute => t.isJSXAttribute(attribute) && attribute.name.name === 'style')))
+          applyStyleAttribute(path, style)
           path.node.attributes = path.node.attributes.filter(attribute => attribute !== classAttribute)
           return
         }
-
         if (t.isJSXExpressionContainer(classAttribute.value) && classAttribute.value.expression) {
-          applyStyleAttribute(path, callRuntime(program, state, classAttribute.value.expression as t.Expression))
+          const existing = path.node.attributes.find(attribute => t.isJSXAttribute(attribute) && attribute.name.name === 'style') as t.JSXAttribute | undefined
+          const style = composeExpression(program, state, dynamicStyleExpression(program, state, classAttribute.value.expression as t.Expression), styleExpression(existing))
+          applyStyleAttribute(path, style)
           path.node.attributes = path.node.attributes.filter(attribute => attribute !== classAttribute)
         }
       },
