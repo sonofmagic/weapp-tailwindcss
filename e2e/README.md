@@ -22,6 +22,7 @@
 - Harmony 本地链路：`pnpm e2e:harmony`
 - 总矩阵一致性：`pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts`
 - 静态小程序快照：`E2E_SKIP_OPEN_AUTOMATOR=1 pnpm e2e:static`
+- React Native / Expo Metro export：`pnpm e2e:react-native-expo`
 - 多平台构建输出：`pnpm e2e:multiplatform-build`
 - 单个平台构建输出：`E2E_MULTIPLATFORM_BUILD_CASE="<demo> <platform>" pnpm e2e:multiplatform-build`
 - demo watch/HMR：`pnpm e2e:hot-update:demo`
