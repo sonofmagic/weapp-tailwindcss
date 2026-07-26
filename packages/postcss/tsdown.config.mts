@@ -13,11 +13,6 @@ export const postcssEsmOnlyDependencies = [
   'postcss-preset-env',
 ]
 
-export const postcssCjsBundleDependencies = [
-  ...postcssEsmOnlyDependencies,
-  'postcss-rule-unit-converter',
-]
-
 const sharedOptions = {
   entry: ['src/index.ts', 'src/types.ts', 'src/html-transform.ts', 'src/css-macro/postcss.ts'],
   shims: true,
@@ -49,7 +44,7 @@ export function createPostcssTsdownConfigs(options: WatchAwareOptions = {}) {
       format: ['cjs'],
       clean: false,
       deps: {
-        alwaysBundle: postcssCjsBundleDependencies,
+        neverBundle: postcssEsmOnlyDependencies,
         onlyBundle: false,
       },
     },

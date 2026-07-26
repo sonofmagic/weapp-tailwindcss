@@ -114,8 +114,8 @@ catalogs:
       version: 8.5.22
   postcssRem:
     postcss-rem-to-responsive-pixel:
-      specifier: ^7.0.4
-      version: 7.0.4
+      specifier: ^7.0.5
+      version: 7.0.5
   postcssRpx:
     postcss-rpx-transform:
       specifier: ^1.0.1
@@ -1135,7 +1135,7 @@ importers:
         version: 4.2.1(postcss@8.5.22)
       postcss-rem-to-responsive-pixel:
         specifier: catalog:postcssRem
-        version: 7.0.4(postcss@8.5.22)
+        version: 7.0.5(postcss@8.5.22)
       postcss-rpx-transform:
         specifier: catalog:postcssRpx
         version: 1.0.1
@@ -4133,7 +4133,7 @@ importers:
         version: 1.0.4(postcss@8.5.22)
       postcss-rem-to-responsive-pixel:
         specifier: catalog:postcssRem
-        version: 7.0.4(postcss@8.5.22)
+        version: 7.0.5(postcss@8.5.22)
       postcss-rule-unit-converter:
         specifier: ^0.2.3
         version: 0.2.3(postcss@8.5.22)
@@ -27474,8 +27474,8 @@ packages:
     peerDependencies:
       postcss: ^8.5.15
 
-  postcss-rem-to-responsive-pixel@7.0.4:
-    resolution: {integrity: sha512-KLWSuwZotO0RBRboavb1Ui0W1EjempzgnvvNJqQ2BOduTBIiJJhrizZpglVBkcwF3EXqhRv/kER0zHi+Wxr5Mg==}
+  postcss-rem-to-responsive-pixel@7.0.5:
+    resolution: {integrity: sha512-EDXfF/U0jzcK2ojeQB5SuB0SUwyX0Wc9ilvmpbW86Vxgq0wv98e1PclxDR/IPFPyDbJdkaBQJ1XewnuaOFA51w==}
     engines: {node: '>=16.6.0'}
     peerDependencies:
       postcss: ^8
@@ -65539,10 +65539,10 @@ snapshots:
       postcss: 8.5.22
       postcss-value-parser: 4.2.0
 
-  postcss-rem-to-responsive-pixel@7.0.4(postcss@8.5.22):
+  postcss-rem-to-responsive-pixel@7.0.5(postcss@8.5.22):
     dependencies:
       postcss: 8.5.22
-      postcss-plugin-shared: 1.1.4(postcss@8.5.22)
+      postcss-plugin-shared: 1.1.5(postcss@8.5.22)
 
   postcss-replace-overflow-wrap@4.0.0(postcss@8.5.22):
     dependencies:
