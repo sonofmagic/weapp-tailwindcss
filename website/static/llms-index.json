@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-07-24T16:22:20.589Z",
+  "generatedAt": "2026-07-26T04:24:10.868Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 165,
-    "docs": 161,
+    "all": 166,
+    "docs": 162,
     "blog": 4
   },
   "documents": [
@@ -3927,6 +3927,42 @@
       ],
       "updatedAt": null,
       "source": "docs/quick-start/native/1.install-plugin.mdx"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:quick-start/react-native-expo",
+      "title": "React Native / Expo",
+      "description": "使用 @weapp-tailwindcss/react-native 将 Tailwind CSS v4 编译为 React Native styles。",
+      "summary": "@weapp-tailwindcss/react-native 是独立的 React Native 编译器包。它复用 weapp-tailwindcss 的 Tailwind CSS v4 source 扫描和候选集合，将生成的原始 CSS 编译为内存中的 RN style manifest；运行时不依赖 NativeWind 或 react-native…",
+      "url": "/docs/quick-start/react-native-expo",
+      "canonical": "https://tw.icebreaker.top/docs/quick-start/react-native-expo",
+      "keywords": [
+        "React Native",
+        "Expo",
+        "Tailwind CSS v4",
+        "Metro",
+        "Babel",
+        "@weapp-tailwindcss/react-native",
+        "React 19",
+        "React Native 0.81",
+        "Expo SDK 54",
+        "Tailwind CSS",
+        "className",
+        "dark mode",
+        "快速开始",
+        "安装",
+        "配置",
+        "React"
+      ],
+      "headings": [
+        "安装",
+        "CSS 入口",
+        "Metro 与 Babel",
+        "运行时与边界",
+        "验证"
+      ],
+      "updatedAt": null,
+      "source": "docs/quick-start/react-native-expo.md"
     },
     {
       "kind": "doc",

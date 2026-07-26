@@ -47,6 +47,9 @@
       "path": "./packages/postcss"
     },
     {
+      "path": "./packages/react-native"
+    },
+    {
       "path": "./packages/reset"
     },
     {
@@ -99,6 +102,9 @@
     },
     {
       "path": "./website"
+    },
+    {
+      "path": "./examples/react-native-expo"
     },
     {
       "path": "./demo/gulp-tailwindcss-v4"

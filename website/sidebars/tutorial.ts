@@ -21,6 +21,11 @@ const tutorialSidebar: SidebarConfig = [
         label: 'Web 直接使用',
       },
       {
+        type: 'doc',
+        id: 'quick-start/react-native-expo',
+        label: 'React Native / Expo',
+      },
+      {
         type: 'category',
         label: 'uni-app',
         collapsed: true,

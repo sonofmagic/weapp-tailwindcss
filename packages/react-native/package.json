@@ -1,0 +1,91 @@
+{
+  "name": "@weapp-tailwindcss/react-native",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Tailwind CSS 4 compiler and Expo Metro integration for React Native.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/react-native"
+  },
+  "sideEffects": true,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./compiler": {
+      "types": "./dist/compiler.d.ts",
+      "import": "./dist/compiler.js",
+      "require": "./dist/compiler.cjs"
+    },
+    "./tailwind": {
+      "types": "./dist/tailwind.d.ts",
+      "import": "./dist/tailwind.js",
+      "require": "./dist/tailwind.cjs"
+    },
+    "./babel": {
+      "types": "./dist/babel.d.ts",
+      "import": "./dist/babel.js",
+      "require": "./dist/babel.cjs"
+    },
+    "./metro": {
+      "types": "./dist/metro.d.ts",
+      "import": "./dist/metro.js",
+      "require": "./dist/metro.cjs"
+    },
+    "./runtime": {
+      "types": "./dist/runtime.d.ts",
+      "import": "./dist/runtime.js",
+      "require": "./dist/runtime.cjs"
+    },
+    "./metro-transformer": {
+      "types": "./dist/metro-transformer.d.ts",
+      "import": "./dist/metro-transformer.js",
+      "require": "./dist/metro-transformer.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "lint": "eslint .",
+    "release": "pnpm publish"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@babel/core": ">=7.22.0",
+    "expo": ">=54.0.0",
+    "react": ">=19.0.0",
+    "react-native": ">=0.81.0",
+    "tailwindcss": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@babel/core": { "optional": true },
+    "expo": { "optional": true },
+    "react": { "optional": true },
+    "react-native": { "optional": true },
+    "tailwindcss": { "optional": true }
+  },
+  "dependencies": {
+    "@babel/types": "catalog:babel8",
+    "postcss": "catalog:postcss85",
+    "weapp-tailwindcss": "workspace:^"
+  },
+  "devDependencies": {
+    "@babel/core": "catalog:babel8",
+    "vitest": "^4.1.0"
+  }
+}
