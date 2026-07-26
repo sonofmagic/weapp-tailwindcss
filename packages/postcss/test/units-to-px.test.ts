@@ -30,6 +30,29 @@ describe('unitsToPx', () => {
     expect(css).not.toContain('2rpx')
   })
 
+  it('converts units in uni-app x uvue output without leaving infinity calc values', async () => {
+    const styleHandler = createStyleHandler({
+      appType: 'uni-app-x',
+      majorVersion: 4,
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+      unitsToPx: true,
+    })
+
+    const result = await styleHandler(
+      '.rounded-full{border-radius:calc(infinity * 1px)}.a{margin:2rem;padding:2rpx;width:10vw}',
+      { isMainChunk: true },
+    )
+
+    expect(result.css).toContain('border-radius:9999px')
+    expect(result.css).toContain('margin:32px')
+    expect(result.css).toContain('padding:1px')
+    expect(result.css).toContain('width:37.5px')
+    expect(result.css).not.toContain('calc(infinity')
+    expect(result.warnings()).toEqual([])
+  })
+
   it('preserves custom unitMap and transform fallback behavior', async () => {
     const styleHandler = createStyleHandler({
       unitsToPx: {
