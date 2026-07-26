@@ -115,6 +115,9 @@ jobs:
       - name: Build test dependency closure
         run: pnpm ci:memory --label unit-build-${{ matrix.shard }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm build:ci
 
+      - name: Build React Native test package
+        run: pnpm --filter @weapp-tailwindcss/react-native run build
+
       - name: Install Playwright Chromium
         run: |
           for attempt in 1 2 3 4; do
