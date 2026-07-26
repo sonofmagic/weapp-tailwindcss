@@ -13,9 +13,11 @@ describe('Expo Metro integration', () => {
     expect(resolved.type).toBe('sourceFile')
     expect(fs.existsSync(resolved.filePath)).toBe(true)
     expect(config.watchFolders).toContain(path.dirname(resolved.filePath))
+    expect(config.transformerPath).toContain('metro-transformer')
     expect(getVirtualModuleCode(resolved.filePath)).toContain('"display":"flex"')
     expect(getVirtualModuleCode(resolved.filePath)).toContain('setStyleSheetFactory(StyleSheet.create)')
     const id = (config.transformer as Record<string, unknown>).weappTailwindcssMetroId as string
+    expect((config.transformer as Record<string, unknown>).weappTailwindcssManifestPath).toContain('.manifest.json')
     await expect(getRegisteredManifest(id)).resolves.toMatchObject({ staticLookup: { flex: expect.any(Array) } })
   })
 

@@ -37,6 +37,7 @@ interface RegisteredManifest {
   version: number
   manifest: NativeStyleManifest
   virtualPath: string
+  manifestPath: string
   ready: Promise<void>
   refresh: () => Promise<void>
 }
@@ -59,6 +60,7 @@ function virtualModuleCode(manifest: NativeStyleManifest) {
 function writeVirtualModule(entry: RegisteredManifest) {
   fs.mkdirSync(path.dirname(entry.virtualPath), { recursive: true })
   fs.writeFileSync(entry.virtualPath, virtualModuleCode(entry.manifest), 'utf8')
+  fs.writeFileSync(entry.manifestPath, JSON.stringify(entry.manifest), 'utf8')
 }
 
 async function compileOptions(options: WeappReactNativeMetroOptions, projectRoot: string) {
@@ -83,6 +85,7 @@ function register(options: WeappReactNativeMetroOptions) {
     version: 0,
     manifest: options.manifest ?? (options.css ? compileNativeStylesheet(options.css, { classSet: options.classSet }) : emptyManifest()),
     virtualPath: path.join(os.tmpdir(), 'weapp-tailwindcss-native', `${id}.js`),
+    manifestPath: path.join(os.tmpdir(), 'weapp-tailwindcss-native', `${id}.manifest.json`),
     ready: Promise.resolve(),
     refresh: async () => {},
   }
@@ -171,6 +174,7 @@ export function withWeappTailwindcss<T extends MetroConfigLike>(config: T | Prom
       ...resolvedConfig.transformer,
       weappTailwindcssMetroId: id,
       weappTailwindcssOriginalTransformerPath: resolvedConfig.transformerPath,
+      weappTailwindcssManifestPath: entry.manifestPath,
     },
     resolver: {
       ...resolvedConfig.resolver,

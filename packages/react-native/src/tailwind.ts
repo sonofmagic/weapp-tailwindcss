@@ -22,11 +22,23 @@ export async function generateNativeStylesheet(options: GenerateNativeStylesheet
     const base = candidate.split(':').at(-1)
     if (base && /^(?:ios|android|native):/.test(candidate)) { generatorCandidates.add(base) }
   }
-  const generated = await generator.generate({
+  let generated = await generator.generate({
     target: 'web',
     ...(generatorCandidates.size ? { candidates: generatorCandidates } : {}),
     scanSources: sourcePatterns ?? true,
   })
+  const platformBases = new Set<string>()
+  for (const candidate of generated.rawCandidates ?? []) {
+    const base = candidate.split(':').at(-1)
+    if (base && /^(?:ios|android|native):/.test(candidate) && !generated.classSet.has(base)) { platformBases.add(base) }
+  }
+  if (platformBases.size) {
+    generated = await generator.generate({
+      target: 'web',
+      candidates: new Set([...generatorCandidates, ...platformBases]),
+      scanSources: sourcePatterns ?? true,
+    })
+  }
   const classSet = new Set(generated.classSet)
   const requestedCandidates = new Set(options.candidates ?? [])
   for (const candidate of generated.rawCandidates ?? []) {

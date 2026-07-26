@@ -1,4 +1,5 @@
 import type { Buffer } from 'node:buffer'
+import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { transformSync } from '@babel/core'
 import babelPlugin from './babel'
@@ -15,7 +16,9 @@ export async function transform(config: Record<string, unknown>, projectRoot: st
     }
   }
   const metroId = config.weappTailwindcssMetroId as string | undefined
-  const manifest = metroId ? await getRegisteredManifest(metroId) : undefined
+  const manifestPath = config.weappTailwindcssManifestPath as string | undefined
+  const manifest = (metroId ? await getRegisteredManifest(metroId) : undefined)
+    ?? (manifestPath ? readManifest(manifestPath) : undefined)
   let source = data
   if (manifest && /\.(?:[cm]?[jt]sx?|flow)$/i.test(filename) && !filename.replaceAll('\\', '/').includes('/node_modules/')) {
     const transformed = transformSync(data.toString(), {
@@ -38,4 +41,13 @@ export async function transform(config: Record<string, unknown>, projectRoot: st
     ? require(originalPath)
     : require('metro-react-native-babel-transformer')
   return transformer.transform(config, projectRoot, filename, source, options)
+}
+
+function readManifest(filename: string) {
+  try {
+    return JSON.parse(fs.readFileSync(filename, 'utf8')) as Awaited<ReturnType<typeof getRegisteredManifest>>
+  }
+  catch {
+    return undefined
+  }
 }
