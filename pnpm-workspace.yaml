@@ -20,7 +20,6 @@ allowBuilds:
   '@tarojs/binding': false
   '@tarojs/cli': false
   '@tailwindcss/oxide': true
-  '@weapp-tailwindcss/merge': true
   core-js: false
   core-js-pure: false
   esbuild: true
