@@ -127,12 +127,16 @@ test.describe('homepage hero layout', () => {
       const style = getComputedStyle(element)
       const rect = element.getBoundingClientRect()
       return {
+        backgroundColor: style.backgroundColor,
+        color: style.color,
         text: element.textContent?.trim() ?? '',
         whiteSpace: style.whiteSpace,
         width: rect.width,
       }
     })
     expect(primaryStyle.text).toContain('开始接入')
+    expect(primaryStyle.backgroundColor).toBe('rgb(2, 132, 199)')
+    expect(primaryStyle.color).toBe('rgb(255, 255, 255)')
     expect(primaryStyle.whiteSpace).toBe('nowrap')
     expect(primaryStyle.width).toBeLessThan(180)
 
@@ -199,6 +203,28 @@ test.describe('homepage hero layout', () => {
     const viewportWidth = await page.evaluate(() => document.documentElement.clientWidth)
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth)
     expect(scrollWidth).toBeLessThanOrEqual(viewportWidth + 1)
+  })
+
+  test('primary CTA remains readable in light mode', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
+    await page.addInitScript(() => {
+      window.localStorage.setItem('theme', 'light')
+    })
+    await page.goto(baseURL, {
+      waitUntil: 'networkidle',
+    })
+
+    const primaryCta = page.locator('.home-hero__actions .home-cta')
+    const colors = await primaryCta.evaluate((element) => {
+      const style = getComputedStyle(element)
+      return {
+        backgroundColor: style.backgroundColor,
+        color: style.color,
+      }
+    })
+
+    expect(colors.backgroundColor).toBe('rgb(2, 132, 199)')
+    expect(colors.color).toBe('rgb(255, 255, 255)')
   })
 
   test('mobile hero actions fit without horizontal overflow', async ({ page }) => {
