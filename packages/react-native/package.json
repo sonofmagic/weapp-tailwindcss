@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/react-native",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Tailwind CSS 4 compiler and Expo Metro integration for React Native.",
   "license": "MIT",
   "repository": {
@@ -56,7 +56,9 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=22.12.0"
   },
@@ -79,11 +81,21 @@
     "tailwindcss": ">=4.0.0"
   },
   "peerDependenciesMeta": {
-    "@babel/core": { "optional": true },
-    "expo": { "optional": true },
-    "react": { "optional": true },
-    "react-native": { "optional": true },
-    "tailwindcss": { "optional": true }
+    "@babel/core": {
+      "optional": true
+    },
+    "expo": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    },
+    "tailwindcss": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@babel/types": "catalog:babel8",
