@@ -133,8 +133,12 @@ describe('demo visual theme evidence', () => {
         expect(item.hmrSteps?.map(step => step.name)).toEqual([
           'new-named-and-invalid-class',
           'replace-with-new-arbitrary-classes',
+          'delete-new-classes',
+          'rollback-to-first-new-classes',
         ])
         expect(item.hmrSteps?.[1]?.markerClass).toContain('bg-[#0f766e]')
+        expect(item.hmrSteps?.[2]?.transformedNotContains).toContainEqual(/\["backgroundColor", "#0f766e"\]/)
+        expect(item.hmrSteps?.[3]?.markerTextClass).toContain('text-blue-600')
       }
       else {
         expect(item.markerClass).toContain('rounded-full')

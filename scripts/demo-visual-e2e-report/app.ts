@@ -120,6 +120,15 @@ function hasContent(source: string, entries: Array<string | RegExp>) {
   })
 }
 
+function hasNoContent(source: string, entries: Array<string | RegExp> | undefined) {
+  return (entries ?? []).every((entry) => {
+    if (typeof entry === 'string') {
+      return !source.includes(entry)
+    }
+    return !entry.test(source)
+  })
+}
+
 async function findReadyAppOutputRoot(item: AppCase, projectRoot: string, expected: Array<string | RegExp>, styleExpected?: Array<string | RegExp>) {
   for (const outputDir of resolveAppOutputDirCandidates(item)) {
     const outputRoot = path.resolve(projectRoot, outputDir)
@@ -150,6 +159,7 @@ async function waitForAppOutputRoot(
   timeoutMs: number,
   ensureRunning: () => void,
   styleExpected?: Array<string | RegExp>,
+  forbidden?: Array<string | RegExp>,
 ) {
   const startedAt = Date.now()
   let latest = ''
@@ -173,6 +183,9 @@ async function waitForAppOutputRoot(
       if (!hasContent(transformed, expected)) {
         continue
       }
+      if (!hasNoContent(transformed, forbidden)) {
+        continue
+      }
       if (styleExpected?.length) {
         const style = await readExistingAppStyleOutput(outputRoot, item)
         if (style == null) {
@@ -187,7 +200,7 @@ async function waitForAppOutputRoot(
     }
     await wait(pollIntervalMs)
   }
-  throw new Error(`${item.name} App 产物未包含预期内容\nexpected=${expected.map(String).join(' | ')}\nstyleExpected=${styleExpected?.map(String).join(' | ') ?? ''}\nlatest=${latest.slice(0, 2000)}\nlatestStyle=${latestStyle.slice(0, 2000)}`)
+  throw new Error(`${item.name} App 产物未包含预期内容\nexpected=${expected.map(String).join(' | ')}\nforbidden=${forbidden?.map(String).join(' | ') ?? ''}\nstyleExpected=${styleExpected?.map(String).join(' | ') ?? ''}\nlatest=${latest.slice(0, 2000)}\nlatestStyle=${latestStyle.slice(0, 2000)}`)
 }
 
 async function cleanAppOutput(item: AppCase, projectRoot: string) {
@@ -804,7 +817,15 @@ async function runAppCaseVariant(
       await wait(Number(process.env['DEMO_VISUAL_APP_HMR_MUTATION_DELAY_MS'] ?? 1000))
       process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait hmr output ${step.name}\n`)
       const hmrExpected = [...step.transformedContains, ...(item.compiledStyleContains ?? [])]
-      hmrOutputRoot = await waitForAppOutputRoot(item, projectRoot, hmrExpected, appOutputTimeoutMs, ensureHmrRunning, step.styleContains)
+      hmrOutputRoot = await waitForAppOutputRoot(
+        item,
+        projectRoot,
+        hmrExpected,
+        appOutputTimeoutMs,
+        ensureHmrRunning,
+        step.styleContains,
+        [...(item.transformedNotContains ?? []), ...(step.transformedNotContains ?? [])],
+      )
       process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: hmr output ${step.name} ${hmrOutputRoot}\n`)
       await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
       process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot after ${step.name}\n`)
