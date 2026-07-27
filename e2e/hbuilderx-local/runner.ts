@@ -8,7 +8,7 @@ import process from 'node:process'
 import path from 'pathe'
 import { expect } from 'vitest'
 import { createHBuilderXProjectAlias as createSharedHBuilderXProjectAlias } from '../../scripts/hbuilderx-project-alias.mjs'
-import { rawTailwindDirectiveRE } from './cases'
+import { rawTailwindDirectiveRE, resolveAppHmrSteps } from './cases'
 import {
   assertAndroidToolchain,
   assertHarmonyToolchain,
@@ -581,19 +581,23 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       throw new Error(`HBuilderX app dev process exited before hot-update mutation: exit=${exit.signal ?? exit.code}\n${logs.join('')}`)
     }
     await waitForAppRuntimeLogs(item, logs, ensureLaunchRunning)
-    await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
-      className: item.hmrMarkerClass,
-      textClassName: item.hmrMarkerTextClass,
-      text: item.hmrMarkerText,
-    })
-    const hmrOutputRoot = await waitForAppTransformedContent(item, item.hmrTransformedContains, hbuilderxAppTimeoutMs, ensureLaunchRunning, async () => {
-      const source = await readUtf8(sourceFile)
-      return [
-        `source=${path.relative(projectRoot, sourceFile)}`,
-        `sourceTail=${source.slice(-1200)}`,
-        `recentHBuilderXLogs=${logs.join('').slice(-4000)}`,
-      ].join('\n')
-    }, item.hmrStyleContains, item.transformedNotContains)
+    let hmrOutputRoot = initialOutputRoot
+    for (const step of resolveAppHmrSteps(item)) {
+      await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
+        className: step.markerClass,
+        text: step.markerText,
+        ...(step.markerTextClass ? { textClassName: step.markerTextClass } : {}),
+      })
+      hmrOutputRoot = await waitForAppTransformedContent(item, step.transformedContains, hbuilderxAppTimeoutMs, ensureLaunchRunning, async () => {
+        const source = await readUtf8(sourceFile)
+        return [
+          `step=${step.name}`,
+          `source=${path.relative(projectRoot, sourceFile)}`,
+          `sourceTail=${source.slice(-1200)}`,
+          `recentHBuilderXLogs=${logs.join('').slice(-4000)}`,
+        ].join('\n')
+      }, step.styleContains, [...(item.transformedNotContains ?? []), ...(step.transformedNotContains ?? [])])
+    }
     await assertAppOutputHasNoUnsupportedContent(item, hmrOutputRoot)
     expectNoContent(logs.join(''), item.logNotContains, `${item.name} HBuilderX 日志`)
 

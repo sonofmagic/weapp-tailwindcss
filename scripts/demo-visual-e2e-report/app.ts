@@ -1,13 +1,14 @@
 import type { ChildProcess } from 'node:child_process'
 import type { AppCase } from '../../e2e/hbuilderx-local/cases.ts'
 import type { StyleIsolationVariant } from './style-isolation.ts'
-import type { CaseResult, RuntimeContext } from './types.ts'
+import type { CaseResult, RuntimeContext, VisualHmrStepResult } from './types.ts'
 import { spawnSync } from 'node:child_process'
 import fsSync from 'node:fs'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import path from 'pathe'
 import { PNG } from 'pngjs'
+import { resolveAppHmrSteps } from '../../e2e/hbuilderx-local/cases.ts'
 import {
   assertAndroidToolchain,
   assertHarmonyToolchain,
@@ -26,7 +27,7 @@ import {
 } from '../../e2e/hbuilderx-local/process.ts'
 import { createHBuilderXProjectAlias } from '../hbuilderx-project-alias.mjs'
 import { finalizeHarmonyAppOutput } from './harmony-output.ts'
-import { resolveHmrScreenshotPath, resolveScreenshotPath } from './screenshots.ts'
+import { resolveHmrScreenshotPath, resolveHmrStepScreenshotPath, resolveScreenshotPath } from './screenshots.ts'
 import {
   readManifest,
   resolveStyleIsolationVariants,
@@ -785,21 +786,42 @@ async function runAppCaseVariant(
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot before\n`)
     beforeScreenshotEvidence = await waitForAppScreenshotReady(item, hmrBeforeScreenshot, toolEnv, `${item.name} HMR 前`, ensureInitialRunning, item.markerClass)
 
-    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write hmr marker\n`)
-    await writeAppMarker(activeSourceFile, resolveAppMarkerAnchors(item), {
-      className: item.hmrMarkerClass,
-      textClassName: item.hmrMarkerTextClass,
-      text: item.hmrMarkerText,
-    })
-    await wait(Number(process.env['DEMO_VISUAL_APP_HMR_MUTATION_DELAY_MS'] ?? 1000))
     const ensureHmrRunning = ensureInitialRunning
-    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait hmr output\n`)
-    const hmrExpected = [...item.hmrTransformedContains, ...(item.compiledStyleContains ?? [])]
-    const hmrOutputRoot = await waitForAppOutputRoot(item, projectRoot, hmrExpected, appOutputTimeoutMs, ensureHmrRunning, item.hmrStyleContains)
-    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: hmr output ${hmrOutputRoot}\n`)
-    await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
-    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot after\n`)
-    afterScreenshotEvidence = await waitForAppScreenshotReady(item, hmrAfterScreenshot, toolEnv, `${item.name} HMR 后`, ensureHmrRunning, item.hmrMarkerClass)
+    const hmrSteps: VisualHmrStepResult[] = []
+    let previousAfterScreenshot = hmrBeforeScreenshot
+    let hmrOutputRoot = initialOutputRoot
+    for (const step of resolveAppHmrSteps(item)) {
+      const stepBeforeScreenshot = resolveHmrStepScreenshotPath(context, name, platform, step.name, 'before', variant.key)
+      const stepAfterScreenshot = resolveHmrStepScreenshotPath(context, name, platform, step.name, 'after', variant.key)
+      await fs.mkdir(path.dirname(stepBeforeScreenshot), { recursive: true })
+      await fs.copyFile(previousAfterScreenshot, stepBeforeScreenshot)
+      process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write hmr marker ${step.name}\n`)
+      await writeAppMarker(activeSourceFile, resolveAppMarkerAnchors(item), {
+        className: step.markerClass,
+        text: step.markerText,
+        ...(step.markerTextClass ? { textClassName: step.markerTextClass } : {}),
+      })
+      await wait(Number(process.env['DEMO_VISUAL_APP_HMR_MUTATION_DELAY_MS'] ?? 1000))
+      process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait hmr output ${step.name}\n`)
+      const hmrExpected = [...step.transformedContains, ...(item.compiledStyleContains ?? [])]
+      hmrOutputRoot = await waitForAppOutputRoot(item, projectRoot, hmrExpected, appOutputTimeoutMs, ensureHmrRunning, step.styleContains)
+      process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: hmr output ${step.name} ${hmrOutputRoot}\n`)
+      await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
+      process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot after ${step.name}\n`)
+      const evidence = await waitForAppScreenshotReady(item, stepAfterScreenshot, toolEnv, `${item.name} HMR ${step.name} 后`, ensureHmrRunning, step.markerClass)
+      hmrSteps.push({
+        afterScreenshot: stepAfterScreenshot,
+        beforeScreenshot: stepBeforeScreenshot,
+        classLiteral: [step.markerClass, step.markerTextClass].filter(Boolean).join(' '),
+        evidence,
+        expectedBackgroundColor: step.markerClass.match(/bg-\[(#[0-9a-f]{6})\]/i)?.[1] ?? '',
+        marker: step.markerText,
+        name: step.name,
+      })
+      afterScreenshotEvidence = evidence
+      previousAfterScreenshot = stepAfterScreenshot
+    }
+    await fs.copyFile(previousAfterScreenshot, hmrAfterScreenshot)
     await fs.copyFile(hmrAfterScreenshot, screenshot)
 
     results.push({
@@ -810,9 +832,11 @@ async function runAppCaseVariant(
       screenshot,
       hmrBeforeScreenshot,
       hmrAfterScreenshot,
+      hmrSteps,
       diagnostics: {
         hmr: {
-          markerText: item.hmrMarkerText,
+          markerText: hmrSteps.at(-1)?.marker,
+          steps: hmrSteps,
         },
         initialOutputRoot,
         screenshot: {
