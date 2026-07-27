@@ -133,6 +133,7 @@ website/tests/index.spec.ts-snapshots
 e2e/.artifacts/
 .tmp/
 .codex-tmp/
+/.codex-worktrees/
 **/.weapp-vite/
 
 # 本地参考源码，不进入 workspace / CI / 发布链路
