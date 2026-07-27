@@ -436,10 +436,17 @@ describe('uni-app-x', () => {
       '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
       '[data-v-abc]:root,[data-v-abc]:host{--spacing:.25rem}',
       '*[data-v-abc],[data-v-abc]::after,[data-v-abc]::before{box-sizing:border-box;margin:0;padding:0}',
+      'button.data-v-abc,input.data-v-abc{font:inherit;color:inherit;background-color:transparent}',
+      'uni-progress.data-v-abc{vertical-align:baseline}',
       'view.data-v-abc,text.data-v-abc,.data-v-abc::after,.data-v-abc::before{--tw-content:""}',
       'view.data-v-abc{color:red}',
+      'button.data-v-abc{color:blue}',
+      'input.data-v-abc{border-color:#123456}',
+      'img.data-v-abc{width:12px}',
+      '.data-v-abc::before{content:"author"}',
       '.card.data-v-abc{padding:16px}',
       '.card.data-v-abc .title.data-v-abc{font-weight:700}',
+      '@media (min-width:640px){button.data-v-abc{color:green}}',
       'text.data-v-abc{display:block}',
       '@property --tw-content{syntax:"*";initial-value:"";inherits:false}',
     ].join(''), {
@@ -454,17 +461,87 @@ describe('uni-app-x', () => {
     const warningTexts = filtered.warnings().map(item => item.text)
 
     expect(filtered.css).toContain('view.data-v-abc{color:red}')
+    expect(filtered.css).toContain('button.data-v-abc{color:blue}')
+    expect(filtered.css).toContain('input.data-v-abc{border-color:#123456}')
+    expect(filtered.css).toContain('img.data-v-abc{width:12px}')
+    expect(filtered.css).toContain('.data-v-abc::before{content:"author"}')
     expect(filtered.css).toContain('.card.data-v-abc{padding:16px}')
     expect(filtered.css).toContain('.card.data-v-abc .title.data-v-abc{font-weight:700}')
+    expect(filtered.css).toContain('@media (min-width:640px){button.data-v-abc{color:green}}')
     expect(filtered.css).not.toContain('tailwindcss v4.3.2')
     expect(filtered.css).not.toContain('[data-v-abc]:root')
     expect(filtered.css).not.toContain('box-sizing:border-box')
     expect(filtered.css).not.toContain('--tw-content')
     expect(filtered.css).not.toContain('@property')
+    expect(filtered.css).not.toContain('font:inherit')
+    expect(filtered.css).not.toContain('vertical-align:baseline')
     expect(filtered.css).not.toContain('display:block')
     expect(warningTexts).toHaveLength(1)
     expect(warningTexts[0]).toContain('display: block')
     expect(warningTexts[0]).not.toContain('selector must be class-only')
+  })
+
+  it('detects scoped uvue requests from the PostCSS input source when result options lose from', async () => {
+    const id = '/src/components/ScopedChild.uvue?vue&type=style&index=0&scoped=abc&lang.css'
+    const result = postcss.parse('button.data-v-abc{color:red}', { from: id }).toResult()
+
+    expect(result.opts.from).toBeUndefined()
+    expect(result.root.first?.source?.input.from).toBe(id)
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+
+    expect(filtered.css).toBe('button.data-v-abc{color:red}')
+    expect(filtered.warnings()).toEqual([])
+  })
+
+  it('preserves author selectors for uvue SFC style requests that omit the scoped query', async () => {
+    const result = await postcss().process('button{color:red}', {
+      from: '/src/components/ScopedChild.uvue?vue&type=style&index=0&lang.css',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+
+    expect(filtered.css).toBe('button{color:red}')
+    expect(filtered.warnings()).toEqual([])
+  })
+
+  it('detects compiled scoped selectors when all uvue request metadata is lost', async () => {
+    const result = await postcss().process('button[data-v-abc]{color:red}', {
+      from: undefined,
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+
+    expect(filtered.css).toBe('button[data-v-abc]{color:red}')
+    expect(filtered.warnings()).toEqual([])
+  })
+
+  it('does not classify non-uvue Vue style requests as uvue author styles', async () => {
+    const result = await postcss().process('button{color:red}', {
+      from: '/src/components/ScopedChild.vue?vue&type=style&index=0&scoped=abc&lang.css',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+
+    expect(filtered.css).toBe('')
+    expect(filtered.warnings()).toHaveLength(1)
+    expect(filtered.warnings()[0]?.text).toContain('selector must be class-only')
   })
 
   it('uses incremental theme values when a uvue utility has no root carrier', async () => {
