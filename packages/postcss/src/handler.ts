@@ -6,6 +6,7 @@ import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { LRUCache } from 'lru-cache'
 import postcss from 'postcss'
 import { protectDynamicColorMixAlpha, protectDynamicVarFallbacks } from './compat/color-mix'
+import { normalizeCssLineComments } from './compat/line-comments'
 import { removeEmptyBlockAtRules } from './compat/mini-program-css/root-cleanups'
 import { splitUnresolvedAuthorVariableFallbacks } from './compat/uni-app-x-uvue/theme'
 import { probeFeatures, signalToCacheKey } from './content-probe'
@@ -93,20 +94,21 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     opt?: Partial<IStyleHandlerOptions>,
   ) {
     const resolvedOptions = resolver.resolve(opt)
+    const normalizedRawSource = normalizeCssLineComments(rawSource)
     // uni-app x 的 WebView/小程序目标也会复用 preserve:false 的 preset，
     // 需要先保护作者变量，否则主题 fallback 会在生成阶段被静态化。
     const isUniAppXFramework = resolvedOptions.appType === 'uni-app-x'
     const protectedVarFallbacks = resolvedOptions.uniAppX || isUniAppXFramework
-      ? protectDynamicVarFallbacks(rawSource)
+      ? protectDynamicVarFallbacks(normalizedRawSource)
       : {
-          css: rawSource,
+          css: normalizedRawSource,
           restore: (value: string) => value,
         }
     const protectedColorMix = resolvedOptions.majorVersion === 4
       ? protectDynamicColorMixAlpha(protectedVarFallbacks.css)
       : undefined
     const source = protectedColorMix?.css ?? protectedVarFallbacks.css
-    const processInput = source !== rawSource ? source : root?.clone() ?? source
+    const processInput = source !== normalizedRawSource ? source : root?.clone() ?? source
     // 当有用户插件时跳过内容探测，因为用户插件（如 tailwindcss）可能在 pre 阶段
     // 生成新的 CSS 特征（如现代颜色函数、:is() 伪类等），而 probeFeatures 只看原始输入
     let signal: FeatureSignal | undefined
@@ -152,7 +154,7 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
           finalResult = nextResult
         }
       }
-      if (protectedColorMix || protectedVarFallbacks.css !== rawSource) {
+      if (protectedColorMix || protectedVarFallbacks.css !== normalizedRawSource) {
         const restoredCss = protectedVarFallbacks.restore(
           protectedColorMix?.restore(finalResult.css) ?? finalResult.css,
         )

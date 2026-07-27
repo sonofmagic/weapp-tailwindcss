@@ -174,7 +174,7 @@ export function applyUniAppXUvueCompatibility(
   result: PostcssResult,
   options?: Pick<
     IStyleHandlerOptions,
-    'customPropertyValues' | 'uniAppX' | 'uniAppXCssTarget' | 'uniAppXUnsupported'
+    'customPropertyValues' | 'isMainChunk' | 'uniAppX' | 'uniAppXCssTarget' | 'uniAppXUnsupported'
   >,
 ) {
   if (!isUniAppXUvueTarget(options)) {
@@ -183,7 +183,7 @@ export function applyUniAppXUvueCompatibility(
 
   const mode = normalizeUnsupportedMode(options?.uniAppXUnsupported)
   const warningCache = new Set<string>()
-  const sfcStyleRequest = isUvueSfcStyleRequest(result)
+  const sfcStyleRequest = options?.isMainChunk !== true && isUvueSfcStyleRequest(result)
 
   let root = result.root
   let calcMessages: PostcssResult['messages'] = []

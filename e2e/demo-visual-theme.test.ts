@@ -108,12 +108,22 @@ describe('demo visual theme evidence', () => {
   })
 
   it('keeps issue #1002 utilities in the uni-app x native runtime probes', async () => {
-    const page = await fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/pages/index/index.uvue'), 'utf8')
+    const [component, mainCss, page] = await Promise.all([
+      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/components/BindClass.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/main.css'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/pages/index/index.uvue'), 'utf8'),
+    ])
 
     for (const utility of ['text-xs', 'text-sm', 'text-base', 'text-xl', 'text-white', 'rounded-full']) {
       expect(page, `issue #1002 probe should include ${utility}`).toContain(utility)
     }
     expect(page).toContain('@apply text-xs text-white rounded-full bg-[#164e63];')
+    for (const hmrOnlyUtility of ['bg-[#3b0764]', 'text-blue-600', 'text-bule-600', 'bg-[#0f766e]', 'text-[#facc15]']) {
+      expect(mainCss, `HMR utility ${hmrOnlyUtility} must not be pre-seeded`).not.toContain(hmrOnlyUtility)
+    }
+    expect(component).not.toContain('text-blue-600/50')
+    expect(mainCss).not.toContain('text-blue-600/50')
+    expect(page).not.toContain('text-blue-600/50')
 
     for (const item of uniAppXAppCases) {
       if (item.platform === 'app-android') {
@@ -122,7 +132,20 @@ describe('demo visual theme evidence', () => {
         expect(item.markerTextClass).toContain('text-[#f7fbff]')
         expect(item.hmrMarkerClass).toContain('rounded-[9997px]')
         expect(item.hmrMarkerTextClass).toContain('text-[28rpx]')
-        expect(item.hmrMarkerTextClass).toContain('text-[#fef08a]')
+        expect(item.hmrMarkerTextClass).toContain('text-blue-600')
+        expect(item.hmrMarkerTextClass).toContain('text-bule-600')
+        expect(item.hmrSteps?.map(step => step.name)).toEqual([
+          'new-named-and-invalid-class',
+          'replace-with-new-arbitrary-classes',
+          'arbitrary-background-and-color-opacity',
+          'delete-new-classes',
+          'rollback-to-first-new-classes',
+        ])
+        expect(item.hmrSteps?.[1]?.markerClass).toContain('bg-[#0f766e]')
+        expect(item.hmrSteps?.[2]?.markerClass).toContain('bg-[#123456]')
+        expect(item.hmrSteps?.[2]?.markerTextClass).toContain('text-blue-600/50')
+        expect(item.hmrSteps?.[3]?.transformedNotContains).toContainEqual(/\["color", "rgba\(21,\s*93,\s*252,\s*0\.5\)"\]/)
+        expect(item.hmrSteps?.[4]?.markerTextClass).toContain('text-blue-600')
       }
       else {
         expect(item.markerClass).toContain('rounded-full')

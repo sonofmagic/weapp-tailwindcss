@@ -26,6 +26,16 @@ export interface MiniProgramCase {
 export type MiniProgramPlatform = 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-weixin'
 export type AppPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 
+export interface AppHmrStep {
+  name: string
+  markerClass: string
+  markerTextClass?: string
+  markerText: string
+  transformedContains: Array<string | RegExp>
+  transformedNotContains?: Array<string | RegExp>
+  styleContains?: Array<string | RegExp>
+}
+
 export interface AppCase {
   name: string
   platform: AppPlatform
@@ -41,6 +51,7 @@ export interface AppCase {
   hmrMarkerClass: string
   hmrMarkerTextClass?: string
   hmrMarkerText: string
+  hmrSteps?: AppHmrStep[]
   launchArgs?: string[]
   launchEnv?: Record<string, string>
   requiredFiles: string[]
@@ -56,6 +67,17 @@ export interface AppCase {
   hmrStyleContains?: Array<string | RegExp>
   runtimeLogContains?: Array<string | RegExp>
   logNotContains?: Array<string | RegExp>
+}
+
+export function resolveAppHmrSteps(item: AppCase): AppHmrStep[] {
+  return item.hmrSteps ?? [{
+    name: 'hot-update',
+    markerClass: item.hmrMarkerClass,
+    markerText: item.hmrMarkerText,
+    transformedContains: item.hmrTransformedContains,
+    ...(item.hmrMarkerTextClass ? { markerTextClass: item.hmrMarkerTextClass } : {}),
+    ...(item.hmrStyleContains ? { styleContains: item.hmrStyleContains } : {}),
+  }]
 }
 
 export interface WebCase {
@@ -491,7 +513,7 @@ export const uniAppXAppCases: AppCase[] = [
     markerTextClass: 'text-[39rpx] text-[#f7fbff]',
     markerText: 'hbuilderx-app-dynamic-v4-android',
     hmrMarkerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-[9997px] bg-[#3b0764] [transform:translate(10px,20px)]',
-    hmrMarkerTextClass: 'text-[28rpx] text-[#fef08a]',
+    hmrMarkerTextClass: 'text-[28rpx] text-blue-600 text-bule-600',
     hmrMarkerText: 'hbuilderx-app-hmr-v4-android',
     launchArgs: defaultAndroidLaunchArgs,
     requiredFiles: [
@@ -535,11 +557,136 @@ export const uniAppXAppCases: AppCase[] = [
     hmrTransformedContains: [
       'hbuilderx-app-hmr-v4-android',
       /\["backgroundColor", "#3b0764"\]/,
+      /\["color", "rgb\(21,93,252\)"\]/,
       /\["fontSize", "28rpx"\]/,
       /\["height", 41\]/,
       /\["marginTop", 19\]/,
       /\["WebkitTransform", "translate\(10px 20px\)"\]/,
       /\["transform", "translate\(10px 20px\)"\]/,
+    ],
+    hmrSteps: [
+      {
+        name: 'new-named-and-invalid-class',
+        markerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-[9997px] bg-[#3b0764] [transform:translate(10px,20px)]',
+        markerTextClass: 'text-[28rpx] text-blue-600 text-bule-600',
+        markerText: 'hbuilderx-app-hmr-v4-android',
+        transformedContains: [
+          'hbuilderx-app-hmr-v4-android',
+          'text-bule-600',
+          /\["backgroundColor", "#3b0764"\]/,
+          /\["color", "rgb\(21,93,252\)"\]/,
+          /\["fontSize", "28rpx"\]/,
+          /\["height", 41\]/,
+          /\["marginTop", 19\]/,
+          /\["WebkitTransform", "translate\(10px 20px\)"\]/,
+          /\["transform", "translate\(10px 20px\)"\]/,
+        ],
+        transformedNotContains: [
+          /\["text-bule-600",\s*_pS/,
+        ],
+      },
+      {
+        name: 'replace-with-new-arbitrary-classes',
+        markerClass: 'mt-[23px] flex h-[47px] w-[181px] items-center justify-center rounded-[7777px] bg-[#0f766e]',
+        markerTextClass: 'text-[31rpx] text-[#facc15]',
+        markerText: 'hbuilderx-app-hmr-v4-android-round-2',
+        transformedContains: [
+          'hbuilderx-app-hmr-v4-android-round-2',
+          /\["backgroundColor", "#0f766e"\]/,
+          /\["color", "#facc15"\]/,
+          /\["fontSize", "31rpx"\]/,
+          /\["height", 47\]/,
+          /\["marginTop", 23\]/,
+          /\["width", 181\]/,
+        ],
+        transformedNotContains: [
+          'hbuilderx-app-hmr-v4-android"',
+          'text-bule-600',
+          /\["backgroundColor", "#3b0764"\]/,
+          /\["color", "rgb\(21,93,252\)"\]/,
+          /\["transform", "translate\(10px 20px\)"\]/,
+        ],
+      },
+      {
+        name: 'arbitrary-background-and-color-opacity',
+        markerClass: 'mt-[17px] flex h-[43px] w-[179px] items-center justify-center rounded-[6888px] bg-[#123456]',
+        markerTextClass: 'text-[30rpx] text-blue-600/50',
+        markerText: 'hbuilderx-app-hmr-v4-android-color-opacity',
+        transformedContains: [
+          'hbuilderx-app-hmr-v4-android-color-opacity',
+          /\["backgroundColor", "#123456"\]/,
+          /\["color", "rgba\(21,\s*93,\s*252,\s*0\.5\)"\]/,
+          /\["fontSize", "30rpx"\]/,
+          /\["height", 43\]/,
+          /\["marginTop", 17\]/,
+          /\["width", 179\]/,
+        ],
+        transformedNotContains: [
+          'hbuilderx-app-hmr-v4-android-round-2',
+          /\["backgroundColor", "#0f766e"\]/,
+          /\["color", "#facc15"\]/,
+          /\["fontSize", "31rpx"\]/,
+          /\["height", 47\]/,
+          /\["marginTop", 23\]/,
+          /\["width", 181\]/,
+        ],
+      },
+      {
+        name: 'delete-new-classes',
+        markerClass: 'flex h-[41px] w-[173px] items-center justify-center rounded-[9998px] bg-[#102938]',
+        markerTextClass: 'text-[39rpx] text-[#f7fbff]',
+        markerText: 'hbuilderx-app-hmr-v4-android-deleted',
+        transformedContains: [
+          'hbuilderx-app-hmr-v4-android-deleted',
+          /\["backgroundColor", "#102938"\]/,
+          /\["color", "#f7fbff"\]/,
+          /\["fontSize", "39rpx"\]/,
+          /\["height", 41\]/,
+          /\["width", 173\]/,
+        ],
+        transformedNotContains: [
+          'hbuilderx-app-hmr-v4-android-color-opacity',
+          /\["backgroundColor", "#0f766e"\]/,
+          /\["color", "#facc15"\]/,
+          /\["color", "rgba\(21,\s*93,\s*252,\s*0\.5\)"\]/,
+          /\["fontSize", "30rpx"\]/,
+          /\["fontSize", "31rpx"\]/,
+          /\["height", 43\]/,
+          /\["height", 47\]/,
+          /\["marginTop", 17\]/,
+          /\["marginTop", 23\]/,
+          /\["width", 179\]/,
+          /\["width", 181\]/,
+        ],
+      },
+      {
+        name: 'rollback-to-first-new-classes',
+        markerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-[9997px] bg-[#3b0764] [transform:translate(10px,20px)]',
+        markerTextClass: 'text-[28rpx] text-blue-600 text-bule-600',
+        markerText: 'hbuilderx-app-hmr-v4-android-rollback',
+        transformedContains: [
+          'hbuilderx-app-hmr-v4-android-rollback',
+          'text-bule-600',
+          /\["backgroundColor", "#3b0764"\]/,
+          /\["color", "rgb\(21,93,252\)"\]/,
+          /\["fontSize", "28rpx"\]/,
+          /\["height", 41\]/,
+          /\["marginTop", 19\]/,
+          /\["WebkitTransform", "translate\(10px 20px\)"\]/,
+          /\["transform", "translate\(10px 20px\)"\]/,
+        ],
+        transformedNotContains: [
+          'hbuilderx-app-hmr-v4-android-deleted',
+          /\["text-bule-600",\s*_pS/,
+          /\["color", "rgba\(21,\s*93,\s*252,\s*0\.5\)"\]/,
+          /\["backgroundColor", "#0f766e"\]/,
+          /\["color", "#facc15"\]/,
+          /\["fontSize", "31rpx"\]/,
+          /\["height", 47\]/,
+          /\["marginTop", 23\]/,
+          /\["width", 181\]/,
+        ],
+      },
     ],
     runtimeLogContains: ['App Launch'],
     logNotContains: [
