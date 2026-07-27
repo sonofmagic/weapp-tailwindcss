@@ -9,49 +9,21 @@ export function normalizeCssLineComments(source: string) {
 
   const parts: string[] = []
   let lastWriteIndex = 0
-  let quote: '"' | '\'' | undefined
-  let blockComment = false
-  let unquotedUrl = false
+  const syntaxCharacter = /[/"'(]/g
 
-  for (let index = 0; index < source.length; index++) {
-    const char = source[index]
+  for (let match = syntaxCharacter.exec(source); match; match = syntaxCharacter.exec(source)) {
+    const index = match.index
+    const char = match[0]
     const next = source[index + 1]
 
-    if (blockComment) {
-      if (char === '*' && next === '/') {
-        index++
-        blockComment = false
-      }
-      continue
-    }
-
-    if (quote) {
-      if (char === '\\' && next !== undefined) {
-        index++
-      }
-      else if (char === quote) {
-        quote = undefined
-      }
-      continue
-    }
-
-    if (unquotedUrl) {
-      if (char === '\\' && next !== undefined) {
-        index++
-      }
-      else if (char === ')') {
-        unquotedUrl = false
-      }
-      continue
-    }
-
     if (char === '/' && next === '*' && !isEscaped(source, index)) {
-      index++
-      blockComment = true
+      const commentEnd = source.indexOf('*/', index + 2)
+      syntaxCharacter.lastIndex = commentEnd === -1 ? source.length : commentEnd + 2
       continue
     }
     if ((char === '"' || char === '\'') && !isEscaped(source, index)) {
-      quote = char
+      const quoteEnd = findUnescapedCharacter(source, char, index + 1)
+      syntaxCharacter.lastIndex = quoteEnd === -1 ? source.length : quoteEnd + 1
       continue
     }
     if (char === '(' && isUrlFunctionStart(source, index)) {
@@ -60,7 +32,10 @@ export function normalizeCssLineComments(source: string) {
         valueStart++
       }
       const valueStartChar = source[valueStart]
-      unquotedUrl = valueStartChar !== '"' && valueStartChar !== '\''
+      if (valueStartChar !== '"' && valueStartChar !== '\'') {
+        const urlEnd = findUnescapedCharacter(source, ')', valueStart)
+        syntaxCharacter.lastIndex = urlEnd === -1 ? source.length : urlEnd + 1
+      }
       continue
     }
 
@@ -84,7 +59,7 @@ export function normalizeCssLineComments(source: string) {
       }
       parts.push(unchangedPrefix, '/*', source.slice(index + 2, lineEnd), '*/')
       lastWriteIndex = lineEnd
-      index = lineEnd - 1
+      syntaxCharacter.lastIndex = lineEnd
       continue
     }
   }
@@ -102,6 +77,14 @@ function isEscaped(source: string, index: number) {
     backslashCount++
   }
   return backslashCount % 2 === 1
+}
+
+function findUnescapedCharacter(source: string, character: string, fromIndex: number) {
+  let index = source.indexOf(character, fromIndex)
+  while (index !== -1 && isEscaped(source, index)) {
+    index = source.indexOf(character, index + 1)
+  }
+  return index
 }
 
 function isUrlFunctionStart(source: string, index: number) {
