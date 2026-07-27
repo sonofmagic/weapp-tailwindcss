@@ -902,7 +902,13 @@ describe('vite processed css assets', () => {
       '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
       '[data-v-04bcf89b]:root,[data-v-04bcf89b]:host{--spacing:.25rem}',
       '*[data-v-04bcf89b],[data-v-04bcf89b]::after,[data-v-04bcf89b]::before{box-sizing:border-box;margin:0;padding:0}',
+      'html[data-v-04bcf89b],[data-v-04bcf89b]:host{line-height:1.5;-webkit-text-size-adjust:100%;-o-tab-size:4;tab-size:4;font-family:var(--default-font-family,sans-serif);font-feature-settings:var(--default-font-feature-settings,normal);font-variation-settings:var(--default-font-variation-settings,normal);-webkit-tap-highlight-color:transparent}',
+      'abbr:where([title][data-v-04bcf89b]){text-decoration:underline dotted}',
       'button[data-v-04bcf89b],input[data-v-04bcf89b]{font:inherit;color:inherit;background-color:transparent}',
+      '[data-v-04bcf89b]::file-selector-button{margin-inline-end:4px}',
+      '[data-v-04bcf89b]::placeholder{color:currentcolor}',
+      '[data-v-04bcf89b]::-webkit-datetime-edit{padding-block:0}',
+      '[data-v-04bcf89b]::-webkit-calendar-picker-indicator{line-height:1}',
       'uni-button[data-v-04bcf89b]{font:inherit}',
       'view[data-v-04bcf89b]{color:red}',
       'button[data-v-04bcf89b]{color:red}',
@@ -926,6 +932,10 @@ describe('vite processed css assets', () => {
     expect(nextCss).not.toContain(':host')
     expect(nextCss).not.toContain('box-sizing:border-box')
     expect(nextCss).not.toContain('button[data-v-04bcf89b],input[data-v-04bcf89b]')
+    expect(nextCss).not.toContain('--default-font-family')
+    expect(nextCss).not.toContain('margin-inline-end')
+    expect(nextCss).not.toContain('currentcolor')
+    expect(nextCss).not.toContain('padding-block')
   })
 
   it('removes unscoped mini-program preflight from scoped generated css without a Tailwind banner', () => {

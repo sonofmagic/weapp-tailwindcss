@@ -9,7 +9,11 @@ const TAILWIND_PREFLIGHT_DECLARATIONS = new Set([
   '-moz-tab-size:4',
   '-webkit-appearance:none',
   '-webkit-appearance:button',
+  '-webkit-tap-highlight-color:transparent',
   '-webkit-text-decoration:inherit',
+  '-webkit-text-decoration:underline dotted',
+  '-webkit-text-size-adjust:100%',
+  '-o-tab-size:4',
   'appearance:button',
   'background-color:transparent',
   'border-collapse:collapse',
@@ -34,18 +38,24 @@ const TAILWIND_PREFLIGHT_DECLARATIONS = new Set([
   'height:0',
   'height:auto',
   'letter-spacing:inherit',
+  'line-height:1',
+  'line-height:1.5',
   'line-height:0',
   'line-height:inherit',
   'list-style:none',
+  'margin-inline-end:4px',
   'max-width:100%',
   'min-height:1lh',
   'opacity:1',
   'outline:auto',
+  'padding:0',
+  'padding-block:0',
   'position:relative',
   'resize:vertical',
   'tab-size:4',
   'text-align:inherit',
   'text-decoration:inherit',
+  'text-decoration:underline dotted',
   'text-indent:0',
   'text-transform:none',
   'top:-.5em',
@@ -93,6 +103,16 @@ function isTailwindPreflightDeclaration(decl: Declaration) {
     return true
   }
   if (prop === 'color' && value.startsWith('color-mix(') && value.includes('currentcolor') && value.includes('transparent')) {
+    return true
+  }
+  if (prop === 'color' && value === 'currentcolor') {
+    return true
+  }
+  if (
+    (prop === 'font-family' && value.startsWith('var(--default-font-family'))
+    || (prop === 'font-feature-settings' && value.startsWith('var(--default-font-feature-settings'))
+    || (prop === 'font-variation-settings' && value.startsWith('var(--default-font-variation-settings'))
+  ) {
     return true
   }
   return TAILWIND_PREFLIGHT_DECLARATIONS.has(`${prop}:${value}`)

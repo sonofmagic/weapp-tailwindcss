@@ -436,8 +436,14 @@ describe('uni-app-x', () => {
       '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
       '[data-v-abc]:root,[data-v-abc]:host{--spacing:.25rem}',
       '*[data-v-abc],[data-v-abc]::after,[data-v-abc]::before{box-sizing:border-box;margin:0;padding:0}',
+      'html.data-v-abc,.data-v-abc:host{line-height:1.5;-webkit-text-size-adjust:100%;-o-tab-size:4;tab-size:4;font-family:var(--default-font-family,sans-serif);font-feature-settings:var(--default-font-feature-settings,normal);font-variation-settings:var(--default-font-variation-settings,normal);-webkit-tap-highlight-color:transparent}',
+      'abbr:where([title].data-v-abc){text-decoration:underline dotted}',
       'button.data-v-abc,input.data-v-abc{font:inherit;color:inherit;background-color:transparent}',
       'uni-progress.data-v-abc{vertical-align:baseline}',
+      '.data-v-abc::file-selector-button{margin-inline-end:4px}',
+      '.data-v-abc::placeholder{color:currentcolor}',
+      '.data-v-abc::-webkit-datetime-edit{padding-block:0}',
+      '.data-v-abc::-webkit-calendar-picker-indicator{line-height:1}',
       'view.data-v-abc,text.data-v-abc,.data-v-abc::after,.data-v-abc::before{--tw-content:""}',
       'view.data-v-abc{color:red}',
       'button.data-v-abc{color:blue}',
@@ -475,6 +481,10 @@ describe('uni-app-x', () => {
     expect(filtered.css).not.toContain('@property')
     expect(filtered.css).not.toContain('font:inherit')
     expect(filtered.css).not.toContain('vertical-align:baseline')
+    expect(filtered.css).not.toContain('--default-font-family')
+    expect(filtered.css).not.toContain('margin-inline-end')
+    expect(filtered.css).not.toContain('currentcolor')
+    expect(filtered.css).not.toContain('padding-block')
     expect(filtered.css).not.toContain('display:block')
     expect(warningTexts).toHaveLength(1)
     expect(warningTexts[0]).toContain('display: block')
