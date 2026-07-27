@@ -56,6 +56,23 @@ describe('index', () => {
     expect(css).toContain('content:"// keep this"')
   })
 
+  it('preserves escaped URL separators in Tailwind arbitrary-value selectors', async () => {
+    const styleHandler = createStyleHandler()
+    const { css } = await styleHandler(`
+.bg-\\[url\\(https\\:\\/\\/cdn\\.example\\.com\\/button\\.png\\)\\] {
+  background-image: url(https://cdn.example.com/button.png);
+}
+.bg-\\[url\\(\\'https\\:\\/\\/cdn\\.example\\.com\\/button\\.webp\\'\\)\\] {
+  background-image: url('https://cdn.example.com/button.webp');
+}
+`)
+
+    expect(css).toContain('.bg-_burl_phttps_c_f_fcdn_dexample_dcom_fbutton_dpng_P_B')
+    expect(css).toContain('background-image: url(https://cdn.example.com/button.png)')
+    expect(css).toContain('.bg-_burl_p_ahttps_c_f_fcdn_dexample_dcom_fbutton_dwebp_a_P_B')
+    expect(css).toContain("background-image: url('https://cdn.example.com/button.webp')")
+  })
+
   it('transforms current and likely Tailwind :where selectors to mini-program-safe CSS', async () => {
     const styleHandler = createStyleHandler({
       cssChildCombinatorReplaceValue: ['view', 'text'],

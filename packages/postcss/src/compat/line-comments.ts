@@ -52,7 +52,7 @@ export function normalizeCssLineComments(source: string) {
       blockComment = true
       continue
     }
-    if (char === '"' || char === '\'') {
+    if ((char === '"' || char === '\'') && !isEscaped(source, index)) {
       result += char
       quote = char
       continue
@@ -68,7 +68,7 @@ export function normalizeCssLineComments(source: string) {
       continue
     }
 
-    if (char === '/' && next === '/') {
+    if (char === '/' && next === '/' && !isEscaped(source, index)) {
       let lineStart = result.length - 1
       while (lineStart >= 0 && result[lineStart] !== '\n' && result[lineStart] !== '\r') {
         lineStart--
@@ -97,4 +97,12 @@ export function normalizeCssLineComments(source: string) {
   }
 
   return result
+}
+
+function isEscaped(source: string, index: number) {
+  let backslashCount = 0
+  for (let cursor = index - 1; cursor >= 0 && source[cursor] === '\\'; cursor--) {
+    backslashCount++
+  }
+  return backslashCount % 2 === 1
 }
