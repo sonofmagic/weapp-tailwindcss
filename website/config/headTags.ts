@@ -7,6 +7,7 @@ import { getBuildLocale } from './buildLocale'
 import { geoMeta, organizationJsonLd, siteLanguage, siteName, siteUrl, websiteJsonLd } from './siteMetadata'
 
 const copy = getSiteConfigCopy(getBuildLocale())
+const localeNavigationStorageKey = `${localePreferenceStorageKey}:navigation`
 
 const navbarUiBootstrapScript = `
 (() => {
@@ -40,6 +41,12 @@ const localeBootstrapScript = `
     if (!(pathname === '/' || pathname === '/index.html')) {
       return;
     }
+    const pendingLocale = window.sessionStorage.getItem(${JSON.stringify(localeNavigationStorageKey)});
+    if (pendingLocale === 'zh-cn') {
+      window.sessionStorage.removeItem(${JSON.stringify(localeNavigationStorageKey)});
+      window.localStorage.setItem(${JSON.stringify(localePreferenceStorageKey)}, 'zh-cn');
+      return;
+    }
     const rawStoredLocale = window.localStorage.getItem(${JSON.stringify(localePreferenceStorageKey)});
     const storedLocale = rawStoredLocale === 'en' || rawStoredLocale === 'zh-cn' ? rawStoredLocale : null;
     const navigatorLocales = Array.isArray(window.navigator.languages) && window.navigator.languages.length
@@ -53,6 +60,34 @@ const localeBootstrapScript = `
       return;
     }
     window.location.replace('/en/' + (window.location.search || '') + (window.location.hash || ''));
+  } catch {}
+})();
+`.trim()
+
+const localePreferenceScript = `
+(() => {
+  try {
+    document.addEventListener('click', event => {
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+      const link = target.closest('a[href]');
+      if (!link) {
+        return;
+      }
+      const url = new URL(link.href, window.location.href);
+      if (url.origin !== window.location.origin) {
+        return;
+      }
+      const language = link.getAttribute('lang');
+      if (!language) {
+        return;
+      }
+      const locale = language.toLowerCase().startsWith('en') ? 'en' : 'zh-cn';
+      window.localStorage.setItem(${JSON.stringify(localePreferenceStorageKey)}, locale);
+      window.sessionStorage.setItem(${JSON.stringify(localeNavigationStorageKey)}, locale);
+    }, true);
   } catch {}
 })();
 `.trim()
@@ -83,6 +118,14 @@ const headTags: NonNullable<Config['headTags']> = [
       id: 'locale-bootstrap',
     },
     innerHTML: localeBootstrapScript,
+  },
+  {
+    tagName: 'script',
+    attributes: {
+      type: 'text/javascript',
+      id: 'locale-preference-bootstrap',
+    },
+    innerHTML: localePreferenceScript,
   },
   {
     tagName: 'meta',

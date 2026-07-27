@@ -56,7 +56,9 @@ const viewports: ViewportCase[] = [
 
 async function setStoredLocale(page: Parameters<typeof test>[0]['page'], locale: 'zh-cn' | 'en') {
   await page.addInitScript(({ key, value }) => {
-    window.localStorage.setItem(key, value)
+    if (!window.localStorage.getItem(key)) {
+      window.localStorage.setItem(key, value)
+    }
   }, { key: localeStorageKey, value: locale })
 }
 
@@ -275,6 +277,32 @@ test.describe('homepage locale detection', () => {
 
     await expect(page).toHaveURL(/\/en\/?$/)
     await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/Start setup/)
+  })
+
+  test('switches from English to Chinese and persists the selection', async ({ page }) => {
+    await setStoredLocale(page, 'en')
+
+    await page.goto(new URL('/en/', baseURL).toString(), {
+      waitUntil: 'networkidle',
+    })
+
+    const localeDropdown = page.locator('.navbar__item.dropdown').filter({ hasText: 'English' })
+    await expect(localeDropdown).toHaveCount(1)
+    await localeDropdown.hover()
+
+    const chineseLink = localeDropdown.locator('a[href="/"]')
+    await expect(chineseLink).toHaveCount(1)
+    await chineseLink.click()
+
+    await expect(page).toHaveURL(/https?:\/\/[^/]+\/?$/)
+    await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/开始接入/)
+    await expect(page.locator('html')).toHaveAttribute('lang', /zh/i)
+
+    await page.goto(baseURL, {
+      waitUntil: 'networkidle',
+    })
+    await expect(page).toHaveURL(/https?:\/\/[^/]+\/?$/)
+    await expect(page.locator('html')).toHaveAttribute('lang', /zh/i)
   })
 
   test('serves translated docs and blog samples for English pages', async ({ page }) => {
