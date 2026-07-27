@@ -332,7 +332,7 @@ function AdsContainerElement() {
                 relative z-10 text-inherit
                 hover:text-inherit
               "
-              to="/docs/sponsor"
+              to={locale === 'en' ? 'https://github.com/sponsors/sonofmagic' : '/docs/sponsor'}
             >
               {locale === 'en' ? 'Become a sponsor' : '成为赞助商'}
             </Link>

@@ -2,29 +2,45 @@ import type { ThemeConfig } from '@docusaurus/preset-classic'
 import { getSiteConfigCopy } from '../src/i18n/siteConfig'
 import { getBuildLocale } from './buildLocale'
 
-const copy = getSiteConfigCopy(getBuildLocale())
+const locale = getBuildLocale()
+const copy = getSiteConfigCopy(locale)
 
 const footerLinks: NonNullable<ThemeConfig['footer']>['links'] = [
   {
     title: copy.footer.docs,
-    items: [
-      {
-        label: copy.footer.guide,
-        to: '/docs/intro',
-      },
-      {
-        label: copy.footer.options,
-        to: '/docs/api/interfaces/UserDefinedOptions',
-      },
-      {
-        label: copy.footer.issues,
-        to: '/docs/issues/',
-      },
-      {
-        label: copy.footer.blog,
-        to: '/blog',
-      },
-    ],
+    items: locale === 'en'
+      ? [
+          {
+            label: copy.footer.guide,
+            to: '/docs/intro',
+          },
+          {
+            label: 'Install',
+            to: '/docs/quick-start/install',
+          },
+          {
+            label: copy.footer.blog,
+            to: '/blog',
+          },
+        ]
+      : [
+          {
+            label: copy.footer.guide,
+            to: '/docs/intro',
+          },
+          {
+            label: copy.footer.options,
+            to: '/docs/api/interfaces/UserDefinedOptions',
+          },
+          {
+            label: copy.footer.issues,
+            to: '/docs/issues/',
+          },
+          {
+            label: copy.footer.blog,
+            to: '/blog',
+          },
+        ],
   },
   {
     title: copy.footer.more,

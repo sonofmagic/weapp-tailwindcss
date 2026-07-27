@@ -1,0 +1,100 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-07-27T06:01:00.180Z",
+  "siteUrl": "https://tw.icebreaker.top/en",
+  "totals": {
+    "all": 3,
+    "docs": 2,
+    "blog": 1
+  },
+  "documents": [
+    {
+      "kind": "blog",
+      "id": "blog:2025/9/v4.3-release",
+      "title": "4.3.0 🚀",
+      "description": "weapp-tailwindcss@4.3.0 enabled CSS variable calculation mode by default and added finer-grained cssCalc and px2rpx options, significantly improving rpx and calc compatibility across targets.",
+      "summary": "weapp-tailwindcss@4.3.0 enabled CSS variable calculation mode by default and added finer-grained cssCalc, px2rpx, and related options, significantly improving rpx and calc compati…",
+      "url": "/en/blog/2025/9/v4.3-release",
+      "canonical": "https://tw.icebreaker.top/en/blog/2025/9/v4.3-release",
+      "keywords": [
+        "v4.3 release",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "mini app",
+        "mini program",
+        "uni-app",
+        "taro",
+        "mpx"
+      ],
+      "headings": [
+        "CSS variable calculation mode",
+        "New options",
+        "# px2rpx",
+        "# logLevel"
+      ],
+      "updatedAt": "2025-09-13T00:00:00.000Z",
+      "source": "i18n/en/blog/2025/9/v4.3-release.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:intro",
+      "title": "Introduction",
+      "description": "Mini app runtimes come with their own technical constraints, and weapp-tailwindcss bridges Tailwind CSS back into that environment.",
+      "summary": "Mini app runtimes have their own **distinct** technical rules, so many features you take for granted on the web are not available as-is.",
+      "url": "/en/docs/intro",
+      "canonical": "https://tw.icebreaker.top/en/docs/intro",
+      "keywords": [
+        "introduction",
+        "intro",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "mini app",
+        "mini program",
+        "uni-app",
+        "taro",
+        "mpx"
+      ],
+      "headings": [
+        "Overview",
+        "Environment requirements",
+        "Why `weapp-tailwindcss`?",
+        "Quick start :rocket:",
+        "# 👉 [Install dependencies](/docs/quick-start/install)",
+        "Demo video",
+        "Special thanks to [Shunyue](https://space.bilibili.com/475498258) for producing a video for `weapp-tailwindcss`"
+      ],
+      "updatedAt": null,
+      "source": "i18n/en/docs/intro.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:quick-start/install",
+      "title": "Install dependencies",
+      "description": "Install Tailwind CSS and weapp-tailwindcss.",
+      "summary": "This page only covers package installation. Framework-specific registration comes in the next chapter.",
+      "url": "/en/docs/quick-start/install",
+      "canonical": "https://tw.icebreaker.top/en/docs/quick-start/install",
+      "keywords": [
+        "quick start",
+        "install",
+        "dependencies",
+        "tailwindcss",
+        "tailwindcss 4",
+        "package install",
+        "weapp-tailwindcss",
+        "installation",
+        "configuration",
+        "mini app",
+        "mini program",
+        "uni-app",
+        "taro",
+        "mpx"
+      ],
+      "headings": [
+        "Install the current version"
+      ],
+      "updatedAt": null,
+      "source": "i18n/en/docs/quick-start/install.mdx"
+    }
+  ]
+}

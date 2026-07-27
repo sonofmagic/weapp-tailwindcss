@@ -163,16 +163,16 @@ const homepageCopy = {
         icon: 'icon-[mdi--numeric-4-box-outline]',
       },
       {
-        href: '/docs/quick-start/frameworks/uni-app-vite',
-        label: 'Framework Setup',
-        description: 'Pick the path for uni-app, Taro, Mpx, Weapp-vite, or native mini apps.',
-        icon: 'icon-[mdi--transit-connection-variant]',
+        href: '/docs/intro',
+        label: 'Introduction',
+        description: 'Understand the runtime constraints and the transformation pipeline.',
+        icon: 'icon-[mdi--book-open-page-variant-outline]',
       },
       {
-        href: '/docs/api/interfaces/UserDefinedOptions',
-        label: 'Config Reference',
-        description: 'Go straight to plugin options, defaults, and type entry points.',
-        icon: 'icon-[mdi--api]',
+        href: '/blog',
+        label: 'Release Notes',
+        description: 'Read English release notes and compatibility updates.',
+        icon: 'icon-[mdi--newspaper-variant-outline]',
       },
     ] satisfies RouteItem[],
     capabilities: [
@@ -205,16 +205,16 @@ const homepageCopy = {
         icon: 'icon-[mdi--rocket-launch-outline]',
       },
       {
-        href: '/docs/quick-start/frameworks/uni-app-vite',
-        label: 'Framework Setup',
-        description: 'Choose config by uni-app, Taro, Mpx, Weapp-vite, or native mini apps.',
-        icon: 'icon-[mdi--transit-connection-variant]',
+        href: '/docs/intro',
+        label: 'Introduction',
+        description: 'Learn how weapp-tailwindcss adapts Tailwind CSS for mini app runtimes.',
+        icon: 'icon-[mdi--book-open-page-variant-outline]',
       },
       {
-        href: '/docs/api/interfaces/UserDefinedOptions',
-        label: 'Options',
-        description: 'Complete reference for types, plugins, and configuration.',
-        icon: 'icon-[mdi--api]',
+        href: '/blog',
+        label: 'Release Notes',
+        description: 'Follow English release notes and behavior changes.',
+        icon: 'icon-[mdi--newspaper-variant-outline]',
       },
       {
         href: '/llms',
@@ -223,9 +223,9 @@ const homepageCopy = {
         icon: 'icon-[logos--openai-icon]',
       },
       {
-        href: '/docs/community/group',
+        href: 'https://github.com/sonofmagic/weapp-tailwindcss/discussions',
         label: 'Community',
-        description: 'Join the community and share framework-specific issues.',
+        description: 'Join GitHub Discussions and share framework-specific issues.',
         icon: 'icon-[mdi--account-group-outline]',
         control: 'communityEntry',
       },
@@ -248,6 +248,7 @@ const homepageCopy = {
       primaryCta: 'Start setup',
       aiEntry: 'AI entry',
       communityEntry: 'Join the tech community',
+      communityHref: 'https://github.com/sonofmagic/weapp-tailwindcss/discussions',
     },
     factsAria: 'Support matrix',
     routesAria: 'Setup routes',
@@ -257,7 +258,8 @@ const homepageCopy = {
     buildToolsDescription: 'Webpack, Vite, Gulp, and custom Node flows all route output through weapp-tailwindcss so mini app builds do not stack the official Tailwind generation plugin.',
     storyTitle: 'One Tailwind input, delivered per runtime target',
     storyBody: 'H5/Web keeps native Tailwind semantics; mini apps add selectors, units, escaping, and runtime boundaries. Teams keep one entry and wire frameworks around it.',
-    storyCta: 'View options',
+    storyCta: 'Read the introduction',
+    storyHref: '/docs/intro',
     entrypointsAria: 'Docs entry points',
   },
 } as const
@@ -353,7 +355,7 @@ function HomepageHeader() {
                 {homepage.communityEntry && (
                   <InteractionPill
                     className="ui-homepage-community-entry"
-                    href="/docs/community/group"
+                    href={'communityHref' in copy.hero ? copy.hero.communityHref : '/docs/community/group'}
                     icon={<i aria-hidden="true" className="icon-[mdi--account-group-outline] text-[18px]"></i>}
                     label={copy.hero.communityEntry}
                   />
@@ -441,7 +443,7 @@ function HomepageHeader() {
         </div>
         <div className="home-v5-story__body">
           <p>{copy.storyBody}</p>
-          <Link to="/docs/api/interfaces/UserDefinedOptions">{copy.storyCta}</Link>
+          <Link to={'storyHref' in copy ? copy.storyHref : '/docs/api/interfaces/UserDefinedOptions'}>{copy.storyCta}</Link>
         </div>
       </section>
 

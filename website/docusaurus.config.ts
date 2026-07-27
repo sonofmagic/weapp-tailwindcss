@@ -11,6 +11,7 @@ import createBlogOptions from './config/blog'
 import { getBuildLocale } from './config/buildLocale'
 import { footer, footerCustomFields } from './config/footer'
 import headTags from './config/headTags'
+import { englishDocsDirectory, englishDocSourceFiles } from './config/localizedContent'
 import navbar from './config/navbar'
 import { siteUrl } from './config/siteMetadata'
 import themeMetadata from './config/themeMetadata'
@@ -24,7 +25,9 @@ const isProd = process.env.NODE_ENV === 'production'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const tailwindCssEntry = path.resolve(__dirname, 'src/css/tailwind.css')
 const workspacePackagePnpmStorePattern = /[\\/]packages(?:-runtime)?[\\/][^\\/]+[\\/]node_modules[\\/]\.pnpm[\\/]/
-const siteCopy = getSiteConfigCopy(getBuildLocale())
+const buildLocale = getBuildLocale()
+const isEnglishBuild = buildLocale === 'en'
+const siteCopy = getSiteConfigCopy(buildLocale)
 console.log(`[hostingProvider]: ${hostingProvider}, [isGithub]: ${isGithub}`)
 
 const config: Config = {
@@ -37,6 +40,7 @@ const config: Config = {
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: isGithub ? '/weapp-tailwindcss/' : '/',
+  staticDirectories: isEnglishBuild ? ['static', 'static/en'] : ['static'],
   trailingSlash: false,
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -58,7 +62,7 @@ const config: Config = {
         htmlLang: 'en-US',
       },
       'zh-cn': {
-        label: '中文',
+        label: 'Chinese',
         direction: 'ltr',
         htmlLang: 'zh-CN',
       },
@@ -75,7 +79,8 @@ const config: Config = {
       'classic',
       {
         docs: {
-          sidebarPath: 'sidebars.ts',
+          sidebarPath: isEnglishBuild ? 'sidebars.en.ts' : 'sidebars.ts',
+          include: isEnglishBuild ? [...englishDocSourceFiles] : undefined,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/sonofmagic/weapp-tailwindcss/tree/main/website',
@@ -121,78 +126,84 @@ const config: Config = {
     [
       'docusaurus-plugin-llms',
       {
-        title: getBuildLocale() === 'en' ? 'weapp-tailwindcss doc index' : 'weapp-tailwindcss 文档索引',
-        description: getBuildLocale() === 'en'
+        title: isEnglishBuild ? 'weapp-tailwindcss doc index' : 'weapp-tailwindcss 文档索引',
+        description: isEnglishBuild
           ? 'Official docs for bringing Tailwind CSS to mini apps across uni-app, Taro, native mini apps, and multiple builders.'
           : 'Tailwind CSS 小程序适配方案，覆盖 uni-app、Taro、原生小程序与多构建器场景的官方文档合集。',
-        docsDir: 'docs',
-        includeBlog: true,
+        docsDir: isEnglishBuild
+          ? [{ path: englishDocsDirectory, routeBasePath: 'docs' }]
+          : 'docs',
+        includeBlog: !isEnglishBuild,
         generateMarkdownFiles: true,
         excludeImports: true,
         removeDuplicateHeadings: true,
         keepFrontMatter: ['sidebar_label', 'title', 'description'],
-        includeOrder: [
-          'docs/intro.md',
-          'docs/quick-start/**',
-          'docs/tailwindcss/v4-reference.md',
-          'docs/tools/**',
-          'docs/uni-app-x/**',
-          'docs/community/templates.md',
-          'docs/api/**',
-          'docs/options/**',
-          'docs/migrations/**',
-          'docs/issues/**',
-          'docs/ai/**',
-        ],
+        includeOrder: isEnglishBuild
+          ? ['intro.md', 'quick-start/install.mdx']
+          : [
+              'docs/intro.md',
+              'docs/quick-start/**',
+              'docs/tailwindcss/v4-reference.md',
+              'docs/tools/**',
+              'docs/uni-app-x/**',
+              'docs/community/templates.md',
+              'docs/api/**',
+              'docs/options/**',
+              'docs/migrations/**',
+              'docs/issues/**',
+              'docs/ai/**',
+            ],
         includeUnmatchedLast: true,
-        rootContent: getBuildLocale() === 'en'
+        rootContent: isEnglishBuild
           ? `LLM navigation notes:
-- The order is "getting started -> configuration -> API -> migrations/issues -> AI workflows", covering webpack/vite/gulp and mini app frameworks.
+- The English bundle contains the maintained introduction and installation guide.
 - The site root is ${siteUrl}, and GitHub Pages uses the /weapp-tailwindcss/ prefix.
 - MDX imports and duplicate headings are removed for easier model parsing, while key title/description frontmatter is preserved.`
           : `LLM 导航说明：
 - 顺序为「入门 → 配置 → API → 迁移/问题 → AI 工作流」，覆盖 webpack/vite/gulp 与各类小程序框架。
 - 站点根为 ${siteUrl}，GitHub Pages 下为 /weapp-tailwindcss/ 前缀。
 - 已剔除 MDX import 与重复标题，便于模型解析；附带保留的标题/描述 frontmatter。`,
-        fullRootContent: getBuildLocale() === 'en'
+        fullRootContent: isEnglishBuild
           ? `Full doc bundle for offline or single-file loading:
-- quick-start/* covers setup flows and framework examples, options/* and api/* provide config and API detail, and ai/* contains prompts and workflows.
-- Content is ordered for onboarding first, with key frontmatter preserved for summarization and indexing.`
+- The bundle contains the maintained English introduction and installation guide.
+- Content is ordered for onboarding, with key frontmatter preserved for summarization and indexing.`
           : `完整文档合辑，适合离线或单文件加载：
 - quick-start/* 给出接入步骤与常见框架示例，options/*、api* 提供配置与 API 细节，ai/* 收录提示词与工作流。
 - 内容按上手优先排序，并保留关键 frontmatter 供模型摘要与索引。`,
         customLLMFiles: [
           {
             filename: 'llms-quickstart.txt',
-            includePatterns: [
-              'docs/intro.md',
-              'docs/quick-start/**',
-              'docs/tailwindcss/v4-reference.md',
-              'docs/community/templates.md',
-              'docs/tools/**',
-              'docs/uni-app-x/**',
-              'docs/ai/**',
-            ],
+            includePatterns: isEnglishBuild
+              ? ['intro.md', 'quick-start/install.mdx']
+              : [
+                  'docs/intro.md',
+                  'docs/quick-start/**',
+                  'docs/tailwindcss/v4-reference.md',
+                  'docs/community/templates.md',
+                  'docs/tools/**',
+                  'docs/uni-app-x/**',
+                  'docs/ai/**',
+                ],
             fullContent: true,
-            title: getBuildLocale() === 'en' ? 'weapp-tailwindcss quick start and AI workflows' : 'weapp-tailwindcss 上手与 AI 工作流',
-            description: getBuildLocale() === 'en'
-              ? 'Quick setup, templates, CLI usage, and AI workflow guidance for onboarding and mini app code generation questions.'
+            title: isEnglishBuild ? 'weapp-tailwindcss quick start' : 'weapp-tailwindcss 上手与 AI 工作流',
+            description: isEnglishBuild
+              ? 'Maintained English introduction and installation guidance for onboarding.'
               : '快速接入、模板、CLI 与 AI 辅助编排的完整内容，优先用于回答「如何开始」「如何让 AI 生成小程序代码」类问题。',
           },
-          {
-            filename: 'llms-api.txt',
-            includePatterns: [
-              'docs/options/**',
-              'docs/api/**',
-              'docs/issues/**',
-              'docs/migrations/**',
-            ],
-            fullContent: true,
-            title: getBuildLocale() === 'en' ? 'weapp-tailwindcss API and configuration reference' : 'weapp-tailwindcss API 与配置参考',
-            description: getBuildLocale() === 'en'
-              ? 'Plugin options, API details, common issues, and migration guidance for configuration and compatibility questions.'
-              : '包含插件配置、API 细节、常见问题与迁移指南，适合回答配置/兼容性问题。',
-          },
+          ...(!isEnglishBuild
+            ? [{
+                filename: 'llms-api.txt',
+                includePatterns: [
+                  'docs/options/**',
+                  'docs/api/**',
+                  'docs/issues/**',
+                  'docs/migrations/**',
+                ],
+                fullContent: true,
+                title: 'weapp-tailwindcss API 与配置参考',
+                description: '包含插件配置、API 细节、常见问题与迁移指南，适合回答配置/兼容性问题。',
+              }]
+            : []),
         ],
       },
     ],

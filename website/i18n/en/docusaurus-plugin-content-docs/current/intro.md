@@ -53,13 +53,7 @@ At its core, this project is a string escaper. It takes the class names collecte
 
 The current docs target `tailwindcss@4` with the latest `weapp-tailwindcss`.
 
-### 👉 [Framework templates](/docs/community/templates)
-
-If you want runnable projects to compare against, start with the template projects.
-
-### 👉 [Tailwind CSS 4 default mode reference](/docs/tailwindcss/v4-reference)
-
-This section covers CSS-first setup, `@source`, `@apply`, `@layer`, and extra IntelliSense notes.
+For runnable integrations, browse the maintained examples in the [project repository](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo).
 
 ## Demo video
 

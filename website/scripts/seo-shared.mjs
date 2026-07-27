@@ -254,7 +254,7 @@ function toTitleKeywords(title) {
 export function resolveKeywords(params) {
   const relativePath = params.relativePath.replace(BACKSLASH_RE, '/')
   const firstSection = relativePath.split('/')[0] || ''
-  const sectionKeywords = sectionKeywordMap[firstSection] || []
+  const sectionKeywords = (params.sectionKeywordMap ?? sectionKeywordMap)[firstSection] || []
   const pathKeywords = relativePath
     .replace(MD_MDX_EXTENSION_RE, '')
     .split('/')
@@ -266,7 +266,7 @@ export function resolveKeywords(params) {
     ...sectionKeywords,
     ...toTitleKeywords(params.title),
     ...pathKeywords,
-    ...commonKeywords,
+    ...(params.commonKeywords ?? commonKeywords),
   ]
   return normalizeKeywords(merged, {
     maxItems: params.maxItems ?? 16,

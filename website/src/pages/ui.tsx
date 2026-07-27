@@ -159,6 +159,7 @@ function UiManagementPageContent() {
         hiddenLabel: 'Hidden',
         pageTitle: 'UI management',
         pageDescription: 'Manage website UI toggles and persist them to localStorage.',
+        sentenceEnd: '.',
         navbarControls: {
           atomgit: { label: 'AtomGit icon', description: 'Show or hide the AtomGit link in the navbar.' },
           github: { label: 'GitHub icon', description: 'Show or hide the GitHub link in the navbar.' },
@@ -197,6 +198,7 @@ function UiManagementPageContent() {
         hiddenLabel: '隐藏',
         pageTitle: 'UI 管理',
         pageDescription: '管理站点 UI 开关，并持久化到 localStorage。',
+        sentenceEnd: '。',
         navbarControls: {
           atomgit: { label: 'AtomGit 图标', description: '控制导航栏中的 AtomGit 图标链接是否显示。' },
           github: { label: 'GitHub 图标', description: '控制导航栏中的 GitHub 图标链接是否显示。' },
@@ -265,7 +267,7 @@ function UiManagementPageContent() {
                 {copy.description}
                 {' '}
                 <code>localStorage</code>
-                。
+                {copy.sentenceEnd}
               </p>
             </div>
           </div>
