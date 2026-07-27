@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 5.2.3
+
+### Patch Changes
+
+- 🐛 **修复 uni-app x 使用 `unitsToPx` 时 CommonJS 构建无法加载单位转换插件，避免 HBuilderX 编译直接中断；升级相关 PostCSS 单位转换插件并使用其兼容的 CommonJS 导出。** [#1023](https://github.com/sonofmagic/weapp-tailwindcss/pull/1023) by @sonofmagic
+- 📦 **Dependencies** [`d28f70d`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d28f70dbb581673416868a5bb9517e82e0e24c98)
+  → `@weapp-tailwindcss/postcss@3.2.3`
+
 ## 5.2.2
 
 ### Patch Changes
