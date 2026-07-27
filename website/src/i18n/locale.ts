@@ -8,6 +8,15 @@ export const localePreferenceStorageKey = 'weapp-tailwindcss:website:locale'
 const ENGLISH_PREFIX_RE = /^en(?:[-_]|$)/i
 const CHINESE_PREFIX_RE = /^zh(?:[-_]|$)/i
 const EN_LOCALE_PATH_RE = /^\/en(?:\/|$)/
+const REPEATED_PATH_SEPARATOR_RE = /\/{2,}/g
+
+function normalizePathname(pathname: string): string {
+  if (!pathname) {
+    return '/'
+  }
+  const withLeadingSlash = pathname.startsWith('/') ? pathname : `/${pathname}`
+  return withLeadingSlash.replace(REPEATED_PATH_SEPARATOR_RE, '/')
+}
 
 export function normalizeSiteLocale(value?: string | null): SiteLocale {
   if (!value) {
@@ -31,24 +40,24 @@ export function getLocalePrefix(locale: SiteLocale): string {
 }
 
 export function stripLocalePrefix(pathname: string): string {
-  if (!pathname || pathname === '/') {
+  const normalizedPathname = normalizePathname(pathname)
+  if (normalizedPathname === '/') {
     return '/'
   }
 
-  if (pathname === '/en') {
+  if (normalizedPathname === '/en') {
     return '/'
   }
 
-  if (EN_LOCALE_PATH_RE.test(pathname)) {
-    return pathname.replace('/en', '') || '/'
+  if (EN_LOCALE_PATH_RE.test(normalizedPathname)) {
+    return normalizedPathname.replace('/en', '') || '/'
   }
 
-  return pathname
+  return normalizedPathname
 }
 
 export function toLocalePath(pathname: string, locale: SiteLocale): string {
-  const normalizedPath = pathname.startsWith('/') ? pathname : `/${pathname}`
-  const strippedPath = stripLocalePrefix(normalizedPath)
+  const strippedPath = stripLocalePrefix(pathname)
 
   if (locale === 'en') {
     return strippedPath === '/' ? '/en/' : `/en${strippedPath}`

@@ -55,9 +55,9 @@ const viewports: ViewportCase[] = [
 ] as const
 
 async function setStoredLocale(page: Parameters<typeof test>[0]['page'], locale: 'zh-cn' | 'en') {
-  await page.addInitScript((key, value) => {
+  await page.addInitScript(({ key, value }) => {
     window.localStorage.setItem(key, value)
-  }, localeStorageKey, locale)
+  }, { key: localeStorageKey, value: locale })
 }
 
 async function setNavigatorLanguages(page: Parameters<typeof test>[0]['page'], languages: string[]) {
@@ -302,6 +302,7 @@ test.describe('mobile navbar sidebar', () => {
   )
 
   test('keeps the document menu visible and navigable', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
     await page.goto(new URL('/docs/intro', baseURL).toString(), {
       waitUntil: 'networkidle',
     })
@@ -332,6 +333,7 @@ test.describe('mobile navbar sidebar', () => {
 
 test.describe('color mode transition strategy', () => {
   test('desktop uses a short view transition for theme changes', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
     await page.setViewportSize({ width: 1440, height: 900 })
     await page.addInitScript(() => {
       window.localStorage.setItem('theme', 'dark')
@@ -360,6 +362,7 @@ test.describe('color mode transition strategy', () => {
   })
 
   test('non fine-pointer environments skip view transitions for theme changes', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
     await page.setViewportSize({ width: 1440, height: 900 })
     await page.addInitScript(() => {
       window.localStorage.setItem('theme', 'dark')

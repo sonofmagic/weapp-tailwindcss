@@ -2,8 +2,8 @@ import type { SiteLocale } from '../src/i18n/locale'
 import { getSiteConfigCopy } from '../src/i18n/siteConfig'
 import { getBuildLocale } from './buildLocale'
 
-// eslint-disable-next-line node/prefer-global/process -- Docusaurus 会在服务端和客户端构建中注入该环境变量
-const envSiteUrl = process.env.SITE_URL
+// eslint-disable-next-line node/prefer-global/process -- 此模块也会进入浏览器 bundle，需安全访问可选的 Node 全局
+const envSiteUrl = globalThis.process?.env.SITE_URL
 
 export const siteUrl = envSiteUrl || 'https://tw.icebreaker.top'
 export const siteName = 'weapp-tailwindcss'
