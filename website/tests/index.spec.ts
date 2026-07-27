@@ -317,12 +317,17 @@ test.describe('homepage locale detection', () => {
     await localeDropdown.hover()
 
     const chineseLink = localeDropdown.locator('a[href="/"]')
-    await expect(chineseLink).toHaveCount(1)
+    await expect(chineseLink).toHaveText('中文')
     await chineseLink.click()
 
     await expect(page).toHaveURL(/https?:\/\/[^/]+\/?$/)
     await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/开始接入/)
     await expect(page.locator('html')).toHaveAttribute('lang', /zh/i)
+
+    const chineseLocaleDropdown = page.locator('.navbar__item.dropdown').filter({ hasText: '中文' })
+    await expect(chineseLocaleDropdown).toHaveCount(1)
+    await chineseLocaleDropdown.hover()
+    await expect(chineseLocaleDropdown.locator('a[href^="/en/"]')).toHaveText('English')
 
     await page.goto(baseURL, {
       waitUntil: 'networkidle',

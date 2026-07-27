@@ -62,7 +62,7 @@ const config: Config = {
         htmlLang: 'en-US',
       },
       'zh-cn': {
-        label: 'Chinese',
+        label: '中文',
         direction: 'ltr',
         htmlLang: 'zh-CN',
       },
