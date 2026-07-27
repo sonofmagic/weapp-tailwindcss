@@ -830,11 +830,24 @@ async function runAppCaseVariant(
       await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
       process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot after ${step.name}\n`)
       const evidence = await waitForAppScreenshotReady(item, stepAfterScreenshot, toolEnv, `${item.name} HMR ${step.name} 后`, ensureHmrRunning, step.markerClass)
+      const expectedMarkerColor = parseHexColorFromClass(step.markerClass)
+      const beforeMarker = expectedMarkerColor
+        ? await analyzeScreenshotColorPresence(stepBeforeScreenshot, expectedMarkerColor)
+        : undefined
+      const markerColorDelta = beforeMarker && evidence.marker
+        ? evidence.marker.matchingPixels - beforeMarker.matchingPixels
+        : undefined
+      if (markerColorDelta != null && markerColorDelta <= 100) {
+        throw new Error(`${item.name} HMR ${step.name} 目标背景色像素未明显增加：before=${beforeMarker?.matchingPixels} after=${evidence.marker?.matchingPixels}`)
+      }
       hmrSteps.push({
         afterScreenshot: stepAfterScreenshot,
         beforeScreenshot: stepBeforeScreenshot,
         classLiteral: [step.markerClass, step.markerTextClass].filter(Boolean).join(' '),
-        evidence,
+        evidence: {
+          ...evidence,
+          markerColorDelta,
+        },
         expectedBackgroundColor: step.markerClass.match(/bg-\[(#[0-9a-f]{6})\]/i)?.[1] ?? '',
         marker: step.markerText,
         name: step.name,
