@@ -431,6 +431,129 @@ describe('uni-app-x', () => {
     ]))
   })
 
+  it('preserves scoped author css while removing scoped tailwind carriers for uvue requests', async () => {
+    const result = await postcss().process([
+      '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+      '[data-v-abc]:root,[data-v-abc]:host{--spacing:.25rem}',
+      '*[data-v-abc],[data-v-abc]::after,[data-v-abc]::before{box-sizing:border-box;margin:0;padding:0}',
+      'html.data-v-abc,.data-v-abc:host{line-height:1.5;-webkit-text-size-adjust:100%;-o-tab-size:4;tab-size:4;font-family:var(--default-font-family,sans-serif);font-feature-settings:var(--default-font-feature-settings,normal);font-variation-settings:var(--default-font-variation-settings,normal);-webkit-tap-highlight-color:transparent}',
+      'abbr:where([title].data-v-abc){text-decoration:underline dotted}',
+      'button.data-v-abc,input.data-v-abc{font:inherit;color:inherit;background-color:transparent}',
+      'uni-progress.data-v-abc{vertical-align:baseline}',
+      '.data-v-abc::file-selector-button{margin-inline-end:4px}',
+      '.data-v-abc::placeholder{color:currentcolor}',
+      '.data-v-abc::-webkit-datetime-edit{padding-block:0}',
+      '.data-v-abc::-webkit-calendar-picker-indicator{line-height:1}',
+      'view.data-v-abc,text.data-v-abc,.data-v-abc::after,.data-v-abc::before{--tw-content:""}',
+      'view.data-v-abc{color:red}',
+      'button.data-v-abc{color:blue}',
+      'input.data-v-abc{border-color:#123456}',
+      'img.data-v-abc{width:12px}',
+      '.data-v-abc::before{content:"author"}',
+      '.card.data-v-abc{padding:16px}',
+      '.card.data-v-abc .title.data-v-abc{font-weight:700}',
+      '@media (min-width:640px){button.data-v-abc{color:green}}',
+      'text.data-v-abc{display:block}',
+      '@property --tw-content{syntax:"*";initial-value:"";inherits:false}',
+    ].join(''), {
+      from: '/src/components/ScopedChild.uvue?vue&type=style&index=0&scoped=abc&lang.css',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+    const warningTexts = filtered.warnings().map(item => item.text)
+
+    expect(filtered.css).toContain('view.data-v-abc{color:red}')
+    expect(filtered.css).toContain('button.data-v-abc{color:blue}')
+    expect(filtered.css).toContain('input.data-v-abc{border-color:#123456}')
+    expect(filtered.css).toContain('img.data-v-abc{width:12px}')
+    expect(filtered.css).toContain('.data-v-abc::before{content:"author"}')
+    expect(filtered.css).toContain('.card.data-v-abc{padding:16px}')
+    expect(filtered.css).toContain('.card.data-v-abc .title.data-v-abc{font-weight:700}')
+    expect(filtered.css).toContain('@media (min-width:640px){button.data-v-abc{color:green}}')
+    expect(filtered.css).not.toContain('tailwindcss v4.3.2')
+    expect(filtered.css).not.toContain('[data-v-abc]:root')
+    expect(filtered.css).not.toContain('box-sizing:border-box')
+    expect(filtered.css).not.toContain('--tw-content')
+    expect(filtered.css).not.toContain('@property')
+    expect(filtered.css).not.toContain('font:inherit')
+    expect(filtered.css).not.toContain('vertical-align:baseline')
+    expect(filtered.css).not.toContain('--default-font-family')
+    expect(filtered.css).not.toContain('margin-inline-end')
+    expect(filtered.css).not.toContain('currentcolor')
+    expect(filtered.css).not.toContain('padding-block')
+    expect(filtered.css).not.toContain('display:block')
+    expect(warningTexts).toHaveLength(1)
+    expect(warningTexts[0]).toContain('display: block')
+    expect(warningTexts[0]).not.toContain('selector must be class-only')
+  })
+
+  it('detects scoped uvue requests from the PostCSS input source when result options lose from', async () => {
+    const id = '/src/components/ScopedChild.uvue?vue&type=style&index=0&scoped=abc&lang.css'
+    const result = postcss.parse('button.data-v-abc{color:red}', { from: id }).toResult()
+
+    expect(result.opts.from).toBeUndefined()
+    expect(result.root.first?.source?.input.from).toBe(id)
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+
+    expect(filtered.css).toBe('button.data-v-abc{color:red}')
+    expect(filtered.warnings()).toEqual([])
+  })
+
+  it('preserves author selectors for uvue SFC style requests that omit the scoped query', async () => {
+    const result = await postcss().process('button{color:red}', {
+      from: '/src/components/ScopedChild.uvue?vue&type=style&index=0&lang.css',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+
+    expect(filtered.css).toBe('button{color:red}')
+    expect(filtered.warnings()).toEqual([])
+  })
+
+  it('detects compiled scoped selectors when all uvue request metadata is lost', async () => {
+    const result = await postcss().process('button[data-v-abc]{color:red}', {
+      from: undefined,
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+
+    expect(filtered.css).toBe('button[data-v-abc]{color:red}')
+    expect(filtered.warnings()).toEqual([])
+  })
+
+  it('does not classify non-uvue Vue style requests as uvue author styles', async () => {
+    const result = await postcss().process('button{color:red}', {
+      from: '/src/components/ScopedChild.vue?vue&type=style&index=0&scoped=abc&lang.css',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+
+    expect(filtered.css).toBe('')
+    expect(filtered.warnings()).toHaveLength(1)
+    expect(filtered.warnings()[0]?.text).toContain('selector must be class-only')
+  })
+
   it('uses incremental theme values when a uvue utility has no root carrier', async () => {
     const result = await postcss().process([
       '.text-white{color:var(--color-white)}',

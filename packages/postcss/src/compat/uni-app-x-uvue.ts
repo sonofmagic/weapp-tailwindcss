@@ -5,6 +5,7 @@ import postcss from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import valueParser from 'postcss-value-parser'
 import { normalizeTailwindcssV4Declaration } from './tailwindcss-v4'
+import { isUvueSfcStyleRequest, stripScopedTailwindNoise } from './uni-app-x-uvue/scoped-style'
 import { consumeUniAppXSystemRootTheme } from './uni-app-x-uvue/theme'
 
 const ALLOWED_DISPLAY_VALUES = new Set(['flex', 'none'])
@@ -182,6 +183,7 @@ export function applyUniAppXUvueCompatibility(
 
   const mode = normalizeUnsupportedMode(options?.uniAppXUnsupported)
   const warningCache = new Set<string>()
+  const sfcStyleRequest = isUvueSfcStyleRequest(result)
 
   let root = result.root
   let calcMessages: PostcssResult['messages'] = []
@@ -199,8 +201,12 @@ export function applyUniAppXUvueCompatibility(
     calcMessages = calcResult.messages
   }
 
+  if (sfcStyleRequest) {
+    stripScopedTailwindNoise(root)
+  }
+
   root.walkRules((rule) => {
-    if (!hasOnlyClassSelectors(rule)) {
+    if (!sfcStyleRequest && !hasOnlyClassSelectors(rule)) {
       reportUnsupportedRule(rule, result, mode, warningCache, 'selector must be class-only')
       rule.remove()
       return

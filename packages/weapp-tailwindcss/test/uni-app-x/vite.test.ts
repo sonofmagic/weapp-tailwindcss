@@ -323,6 +323,61 @@ describe('uni-app-x vite plugins', () => {
     expect(result?.code).toBe('css:.content{display:flex}')
   })
 
+  it('passes scoped uvue style request ids into styleHandler without dropping author css output', async () => {
+    const scopedCss = [
+      'view.data-v-abc{color:red}',
+      '.card.data-v-abc{padding:16px}',
+      '.card.data-v-abc .title.data-v-abc{font-weight:700}',
+    ].join('')
+    const styleHandler = vi.fn(async (_code: string, options?: Record<string, any>) => ({
+      css: scopedCss,
+      map: {
+        toJSON: () => ({
+          version: 3,
+          file: options?.postcssOptions?.options?.from ?? '',
+          sources: [options?.postcssOptions?.options?.from ?? ''],
+          names: [],
+          mappings: '',
+          sourcesContent: [scopedCss],
+        }),
+      },
+      warnings: () => [],
+    }))
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      isIosPlatform: false,
+      mainCssChunkMatcher: vi.fn(() => false),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler,
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
+    })
+    const cssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css')
+    expect(cssPlugin).toBeDefined()
+
+    const id = '/src/components/ScopedChild.uvue?vue&type=style&index=0&scoped=abc&lang.css'
+    const result = await cssPlugin!.transform?.('.card { padding: 16px; }', id)
+
+    expect(styleHandler).toHaveBeenCalledWith(
+      '.card { padding: 16px; }',
+      expect.objectContaining({
+        uniAppXCssTarget: 'uvue',
+        uniAppXUnsupported: 'warn',
+        postcssOptions: expect.objectContaining({
+          options: expect.objectContaining({
+            from: id,
+          }),
+        }),
+      }),
+    )
+    expect(result?.code).toBe(scopedCss)
+    expect(result?.code).toContain('view.data-v-abc{color:red}')
+    expect(result?.code).toContain('.card.data-v-abc .title.data-v-abc{font-weight:700}')
+  })
+
   it('runs nvue transform with runtime set and custom options', async () => {
     const runtimeSet = new Set(['alpha'])
     const ensureRuntimeClassSet = vi.fn(async () => runtimeSet)

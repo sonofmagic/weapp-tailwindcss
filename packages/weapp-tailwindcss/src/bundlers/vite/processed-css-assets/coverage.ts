@@ -4,30 +4,10 @@ import { postcss } from '@weapp-tailwindcss/postcss'
 import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
 import { isSubpackageOutputFile } from '../generate-bundle/subpackages'
 import { collectRootStyleBundleCssSources, getAssetFile, hasNonCommentCss, isCssOutputFile, isMatchingGeneratedCssMarkerFile, normalizeMarkerOutputFile, readAssetSource } from './markers-imports'
+import { hasScopedMiniProgramTailwindContentInitRule, hasUnscopedMiniProgramTailwindPreflightRule, hasVueScopedAttr, isLikelyTailwindGlobalRule, isLikelyTailwindPropertyAtRule, isScopedMiniProgramTailwindContentInitRule, isUnscopedMiniProgramTailwindPreflightRule, normalizeCssSignatureValue } from './scoped-tailwind-noise'
 import { isMiniProgramStyleOutputFile, isRootStyleOutputFile } from './style-files'
 
-const VUE_SCOPED_ATTR_RE = /\[data-v-[^\]]+\]/gi
-const VUE_SCOPED_CLASS_RE = /\.data-v-[\w-]+/gi
-
-function hasVueScopedAttr(value: string) {
-  VUE_SCOPED_ATTR_RE.lastIndex = 0
-  VUE_SCOPED_CLASS_RE.lastIndex = 0
-  const matched = VUE_SCOPED_ATTR_RE.test(value) || VUE_SCOPED_CLASS_RE.test(value)
-  VUE_SCOPED_ATTR_RE.lastIndex = 0
-  VUE_SCOPED_CLASS_RE.lastIndex = 0
-  return matched
-}
-
-export function normalizeCssSignatureValue(value: string) {
-  return value
-    .replace(VUE_SCOPED_ATTR_RE, '')
-    .replace(VUE_SCOPED_CLASS_RE, '')
-    .replace(/\s+/g, ' ')
-    .replace(/\s*([>+~])\s*/g, '$1')
-    .replace(/\(\s+/g, '(')
-    .replace(/\s+\)/g, ')')
-    .trim()
-}
+export { normalizeCssSignatureValue } from './scoped-tailwind-noise'
 
 function createDeclarationSignature(rule: postcss.Rule) {
   return createDeclarationKeys(rule).sort().join(';')
@@ -45,75 +25,6 @@ function createDeclarationKeys(rule: postcss.Rule) {
 
 function createAtRuleCoverageKey(atRule: postcss.AtRule) {
   return `${atRule.name}\0${normalizeCssSignatureValue(atRule.params)}\0${normalizeCssSignatureValue(atRule.toString())}`
-}
-
-function hasClassSelector(selector: string) {
-  return /(?:^|[^\\])\.[_a-z\u00A0-\uFFFF-]/i.test(normalizeCssSignatureValue(selector))
-}
-
-function isLikelyTailwindGlobalSelector(selector: string) {
-  const normalized = normalizeCssSignatureValue(selector)
-  return normalized === '*'
-    || normalized.startsWith('::')
-    || normalized.startsWith(':root')
-    || normalized.startsWith(':host')
-    || /^(?:html|body|hr|abbr|h1|h2|h3|h4|h5|h6|a|b|strong|code|kbd|samp|small|sub|sup|table|button|input|select|optgroup|textarea|summary|blockquote|dl|dd|fieldset|legend|ol|ul|menu|dialog|progress|video|audio|canvas|embed|iframe|img|object|svg|details|template|[uo]ni-progress)(?:$|[:,[\s>+~.#])/.test(normalized)
-}
-
-function isLikelyTailwindGlobalRule(rule: postcss.Rule) {
-  return (rule.selectors ?? [rule.selector]).every(selector =>
-    !hasClassSelector(selector) && isLikelyTailwindGlobalSelector(selector),
-  )
-}
-
-function isLikelyTailwindPropertyAtRule(atRule: postcss.AtRule) {
-  return atRule.name.toLowerCase() === 'property'
-    && normalizeCssSignatureValue(atRule.params).startsWith('--tw-')
-}
-
-const MINI_PROGRAM_PREFLIGHT_SELECTORS = new Set(['view', 'text', '::after', '::before'])
-const MINI_PROGRAM_PREFLIGHT_DECLARATIONS = new Set(['box-sizing', 'margin', 'padding', 'border'])
-
-function isMiniProgramTailwindPreflightDeclaration(decl: postcss.Declaration) {
-  return decl.prop.startsWith('--tw-') || MINI_PROGRAM_PREFLIGHT_DECLARATIONS.has(decl.prop)
-}
-
-function isUnscopedMiniProgramTailwindPreflightRule(rule: postcss.Rule) {
-  const selectors = rule.selectors ?? [rule.selector]
-  if (
-    selectors.length === 0
-    || !selectors.every((selector) => {
-      const normalized = normalizeCssSignatureValue(selector)
-      return !hasVueScopedAttr(selector) && MINI_PROGRAM_PREFLIGHT_SELECTORS.has(normalized)
-    })
-  ) {
-    return false
-  }
-  const declarations = rule.nodes?.filter((node): node is postcss.Declaration => node.type === 'decl') ?? []
-  return declarations.length > 0 && declarations.every(isMiniProgramTailwindPreflightDeclaration)
-}
-
-function isScopedMiniProgramTailwindContentInitRule(rule: postcss.Rule) {
-  const selectors = rule.selectors ?? [rule.selector]
-  if (
-    selectors.length === 0
-    || !selectors.every((selector) => {
-      const normalized = normalizeCssSignatureValue(selector)
-      return hasVueScopedAttr(selector) && MINI_PROGRAM_PREFLIGHT_SELECTORS.has(normalized)
-    })
-  ) {
-    return false
-  }
-  const declarations = rule.nodes?.filter((node): node is postcss.Declaration => node.type === 'decl') ?? []
-  return declarations.length > 0 && declarations.every(decl => decl.prop === '--tw-content')
-}
-
-function hasUnscopedMiniProgramTailwindPreflightRule(css: string) {
-  return /(?:^|[{}])\s*view\s*,\s*text\s*,\s*::after\s*,\s*::before\s*\{/.test(css)
-}
-
-function hasScopedMiniProgramTailwindContentInitRule(css: string) {
-  return /(?:^|[{}])[^{}]*\.data-v-[\w-][^{}]*\{\s*--tw-content\s*:/.test(css)
 }
 
 export function collectRootScopedComparableCssCoverage(cssSources: string[]) {

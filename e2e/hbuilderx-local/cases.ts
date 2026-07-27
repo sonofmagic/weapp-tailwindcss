@@ -282,6 +282,8 @@ function createUniAppXHBuilderXMiniProgramCase(options: {
     cssNotContains: [rawTailwindDirectiveRE, ...unsafeMiniProgramSelectorFragments],
     outputContains: {
       'app.json': ['"root": "sub-normal"', '"root": "sub-independent"', '"independent": true'],
+      'components/BindClass.js': ['__scopeId', 'data-v-'],
+      'components/BindClass.wxml': ['issue-822-component-child', /data-v-[\da-f]+/],
       [platformFiles.templateFiles.main]: ['issue-902-theme-probe', 'bg-primary'],
       [platformFiles.templateFiles.independent]: ['bg-independent-subpackage-marker'],
       [platformFiles.templateFiles.normal]: ['bg-normal-subpackage-marker'],
@@ -505,6 +507,9 @@ export const uniAppXAppCases: AppCase[] = [
     transformedContains: ['hbuilderx-app-dynamic-v4-android'],
     compiledStyleContains: [
       'issue 822 component child',
+      /\["issue-822-component-child",\s*_pS\(_uM\(\[\["borderTopWidth",\s*2\]/,
+      /\["borderTopStyle",\s*"solid"\]/,
+      /\["borderTopColor",\s*"#7c3aed"\]/,
       '["--theme-color", "#16a34a"]',
       '["backgroundColor", "var(--theme-color)"]',
       /\["wtu-[^"]+", _pS\(_uM\(\[\["width", "100%"\]/,
@@ -572,6 +577,8 @@ export const uniAppXAppCases: AppCase[] = [
       'text-_b_hf7fbff_B',
       'w-_b173px_B',
       'hbuilderx-app-dynamic-v4-ios',
+      /"issue-822-component-child"\s*:\s*\{\s*""\s*:\s*\{\s*"borderTopWidth"\s*:\s*2/,
+      /"borderTopColor"\s*:\s*"#7c3aed"/,
       /--theme-color["']?\s*[:,]\s*["']?#16a34a/i,
       /backgroundColor["']?\s*[:,]\s*["']var\(--theme-color\)/i,
       'issue 822 component child',
@@ -607,6 +614,7 @@ export const uniAppXAppCases: AppCase[] = [
     requiredFiles: [
       'manifest.json',
       'app-service.js',
+      'assets/components/BindClass.js',
       'assets/pages/index/index.js',
     ],
     transformedFiles: [
@@ -614,9 +622,15 @@ export const uniAppXAppCases: AppCase[] = [
       'unpackage/dist/dev/.app-harmony/assets/App.js',
       'unpackage/dist/dev/.app-harmony/assets/pages/index/index.js',
     ],
+    transformedOutputFiles: [
+      'assets/components/BindClass.js',
+    ],
     transformedContains: [
       ...harmonyInitialTransformedContains,
       'hbuilderx-app-dynamic-v4-harmony',
+      /"issue-822-component-child"\s*:\s*\{\s*""\s*:\s*\{\s*"borderTopWidth"\s*:\s*2/,
+      /"borderTopStyle"\s*:\s*"solid"/,
+      /"borderTopColor"\s*:\s*"#7c3aed"/,
       /--theme-color["']?\s*[:,]\s*["']?#16a34a/i,
       /backgroundColor["']?\s*[:,]\s*["']var\(--theme-color,\s*#0957DE\)/i,
     ],
@@ -715,6 +729,14 @@ export const webCases: WebCase[] = [
         selector: '.issue-902-theme-probe',
         styles: {
           backgroundColor: 'rgb(22, 163, 74)',
+        },
+      },
+      {
+        selector: '.issue-822-component-child',
+        styles: {
+          borderTopColor: 'rgb(124, 58, 237)',
+          borderTopStyle: 'solid',
+          borderTopWidth: '2px',
         },
       },
     ],

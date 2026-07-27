@@ -7,7 +7,7 @@ import { createArtifactVisualSeed, createPortAwareCommand, disableDevToolsCompil
 import { parseWechatDevToolsWindowBounds } from '../scripts/demo-visual-e2e-report/ide'
 import { createHmrComparisons, mergeCaseResults } from '../scripts/demo-visual-e2e-report/report'
 import { analyzeThemeCss, countDarkPixels } from '../scripts/demo-visual-e2e-report/theme'
-import { uniAppXAppCases } from './hbuilderx-local/cases'
+import { miniProgramCases, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
 
 describe('demo visual theme evidence', () => {
   it('uses each web case command and resolves its dynamic port', () => {
@@ -64,9 +64,12 @@ describe('demo visual theme evidence', () => {
     }
   })
 
-  it('uses the issue #822 component-local style probe on Android and iOS without a manual isolation override', async () => {
+  it('uses the issue #822 component-local style probe on every target without a manual isolation override', async () => {
     const android = uniAppXAppCases.find(item => item.platform === 'app-android')
     const ios = uniAppXAppCases.find(item => item.platform === 'app-ios')
+    const harmony = uniAppXAppCases.find(item => item.platform === 'app-harmony')
+    const miniProgram = miniProgramCases.find(item => item.name === 'uni-app-x-hbuilderx-tailwindcss-v4')
+    const web = webCases.find(item => item.name === 'uni-app-x-hbuilderx-tailwindcss-v4')
     const component = await fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/components/BindClass.uvue'), 'utf8')
 
     expect(component).toContain('class="issue-822-component-child h-[200px] w-full bg-[#87add3]"')
@@ -77,8 +80,31 @@ describe('demo visual theme evidence', () => {
     expect(android?.requiredFiles).toContain('App.uvue.ts')
     expect(android?.sourceFile).toBe('components/BindClass.uvue')
     expect(android?.transformedOutputFiles).toContain('components/BindClass.uvue.ts')
+    expect(android?.compiledStyleContains?.some(item => item instanceof RegExp && item.source.includes('"issue-822-component-child"'))).toBe(true)
+    expect(android?.compiledStyleContains?.some(item => item instanceof RegExp && item.source.includes('"borderTopStyle"') && item.source.includes('solid'))).toBe(true)
+    expect(android?.compiledStyleContains?.some(item => item instanceof RegExp && item.source.includes('"borderTopColor"') && item.source.includes('#7c3aed'))).toBe(true)
     expect(ios?.sourceFile).toBe('components/BindClass.uvue')
     expect(ios?.markerAnchor).toBe('<text :class="flag')
+    expect(ios?.transformedContains?.some(item => item instanceof RegExp && item.source.includes('"issue-822-component-child"'))).toBe(true)
+    expect(ios?.transformedContains?.some(item => item instanceof RegExp && item.source.includes('"borderTopColor"') && item.source.includes('#7c3aed'))).toBe(true)
+    expect(harmony?.requiredFiles).toContain('assets/components/BindClass.js')
+    expect(harmony?.transformedOutputFiles).toContain('assets/components/BindClass.js')
+    expect(harmony?.transformedContains?.some(item => item instanceof RegExp && item.source.includes('"issue-822-component-child"'))).toBe(true)
+    expect(harmony?.transformedContains?.some(item => item instanceof RegExp && item.source.includes('"borderTopStyle"') && item.source.includes('solid'))).toBe(true)
+    expect(harmony?.transformedContains?.some(item => item instanceof RegExp && item.source.includes('"borderTopColor"') && item.source.includes('#7c3aed'))).toBe(true)
+    expect(miniProgram?.outputContains?.['components/BindClass.js']).toEqual(expect.arrayContaining(['__scopeId', 'data-v-']))
+    expect(miniProgram?.outputContains?.['components/BindClass.wxml']).toEqual(expect.arrayContaining(['issue-822-component-child']))
+    expect(miniProgram?.outputContains?.['components/BindClass.wxml']?.some(item => item instanceof RegExp && item.source.includes('data-v-'))).toBe(true)
+    expect(web?.initialRuntimeStyles).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        selector: '.issue-822-component-child',
+        styles: expect.objectContaining({
+          borderTopColor: 'rgb(124, 58, 237)',
+          borderTopStyle: 'solid',
+          borderTopWidth: '2px',
+        }),
+      }),
+    ]))
   })
 
   it('keeps issue #1002 utilities in the uni-app x native runtime probes', async () => {
