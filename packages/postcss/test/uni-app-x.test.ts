@@ -431,6 +431,42 @@ describe('uni-app-x', () => {
     ]))
   })
 
+  it('preserves scoped author css while removing scoped tailwind carriers for uvue requests', async () => {
+    const result = await postcss().process([
+      '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+      '[data-v-abc]:root,[data-v-abc]:host{--spacing:.25rem}',
+      '*[data-v-abc],[data-v-abc]::after,[data-v-abc]::before{box-sizing:border-box;margin:0;padding:0}',
+      'view.data-v-abc,text.data-v-abc,.data-v-abc::after,.data-v-abc::before{--tw-content:""}',
+      'view.data-v-abc{color:red}',
+      '.card.data-v-abc{padding:16px}',
+      '.card.data-v-abc .title.data-v-abc{font-weight:700}',
+      'text.data-v-abc{display:block}',
+      '@property --tw-content{syntax:"*";initial-value:"";inherits:false}',
+    ].join(''), {
+      from: '/src/components/ScopedChild.uvue?vue&type=style&index=0&scoped=abc&lang.css',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+    const warningTexts = filtered.warnings().map(item => item.text)
+
+    expect(filtered.css).toContain('view.data-v-abc{color:red}')
+    expect(filtered.css).toContain('.card.data-v-abc{padding:16px}')
+    expect(filtered.css).toContain('.card.data-v-abc .title.data-v-abc{font-weight:700}')
+    expect(filtered.css).not.toContain('tailwindcss v4.3.2')
+    expect(filtered.css).not.toContain('[data-v-abc]:root')
+    expect(filtered.css).not.toContain('box-sizing:border-box')
+    expect(filtered.css).not.toContain('--tw-content')
+    expect(filtered.css).not.toContain('@property')
+    expect(filtered.css).not.toContain('display:block')
+    expect(warningTexts).toHaveLength(1)
+    expect(warningTexts[0]).toContain('display: block')
+    expect(warningTexts[0]).not.toContain('selector must be class-only')
+  })
+
   it('uses incremental theme values when a uvue utility has no root carrier', async () => {
     const result = await postcss().process([
       '.text-white{color:var(--color-white)}',
