@@ -3,7 +3,12 @@
  * 避免改写字符串、块注释和未加引号的 URL。
  */
 export function normalizeCssLineComments(source: string) {
-  let result = ''
+  if (!source.includes('//')) {
+    return source
+  }
+
+  const parts: string[] = []
+  let lastWriteIndex = 0
   let quote: '"' | '\'' | undefined
   let blockComment = false
   let unquotedUrl = false
@@ -13,9 +18,7 @@ export function normalizeCssLineComments(source: string) {
     const next = source[index + 1]
 
     if (blockComment) {
-      result += char
       if (char === '*' && next === '/') {
-        result += next
         index++
         blockComment = false
       }
@@ -23,9 +26,7 @@ export function normalizeCssLineComments(source: string) {
     }
 
     if (quote) {
-      result += char
       if (char === '\\' && next !== undefined) {
-        result += next
         index++
       }
       else if (char === quote) {
@@ -35,9 +36,7 @@ export function normalizeCssLineComments(source: string) {
     }
 
     if (unquotedUrl) {
-      result += char
       if (char === '\\' && next !== undefined) {
-        result += next
         index++
       }
       else if (char === ')') {
@@ -46,57 +45,55 @@ export function normalizeCssLineComments(source: string) {
       continue
     }
 
-    if (char === '/' && next === '*') {
-      result += char + next
+    if (char === '/' && next === '*' && !isEscaped(source, index)) {
       index++
       blockComment = true
       continue
     }
     if ((char === '"' || char === '\'') && !isEscaped(source, index)) {
-      result += char
       quote = char
       continue
     }
-    if (char === '(' && /\burl$/i.test(result)) {
+    if (char === '(' && isUrlFunctionStart(source, index)) {
       let valueStart = index + 1
       while (valueStart < source.length && /\s/.test(source[valueStart] ?? '')) {
         valueStart++
       }
       const valueStartChar = source[valueStart]
       unquotedUrl = valueStartChar !== '"' && valueStartChar !== '\''
-      result += char
       continue
     }
 
     if (char === '/' && next === '/' && !isEscaped(source, index)) {
-      let lineStart = result.length - 1
-      while (lineStart >= 0 && result[lineStart] !== '\n' && result[lineStart] !== '\r') {
+      let lineStart = index - 1
+      while (lineStart >= 0 && source[lineStart] !== '\n' && source[lineStart] !== '\r') {
         lineStart--
       }
-      const linePrefix = result.slice(lineStart + 1)
+      const linePrefix = source.slice(lineStart + 1, index)
       const trimmedLinePrefix = linePrefix.trimEnd()
       const needsSemicolon = trimmedLinePrefix.length > 0 && !/[;{}]$/.test(trimmedLinePrefix)
+      let unchangedPrefix = source.slice(lastWriteIndex, index)
       if (needsSemicolon) {
-        const trailingWhitespace = linePrefix.slice(trimmedLinePrefix.length)
-        result = `${result.slice(0, result.length - trailingWhitespace.length)};${trailingWhitespace}`
+        const trailingWhitespaceLength = linePrefix.length - trimmedLinePrefix.length
+        const insertionIndex = unchangedPrefix.length - trailingWhitespaceLength
+        unchangedPrefix = `${unchangedPrefix.slice(0, insertionIndex)};${unchangedPrefix.slice(insertionIndex)}`
       }
-      result += '/*'
-      index += 2
-      while (index < source.length && source[index] !== '\n' && source[index] !== '\r') {
-        result += source[index]
-        index++
+      let lineEnd = index + 2
+      while (lineEnd < source.length && source[lineEnd] !== '\n' && source[lineEnd] !== '\r') {
+        lineEnd++
       }
-      result += '*/'
-      if (index < source.length) {
-        result += source[index]
-      }
+      parts.push(unchangedPrefix, '/*', source.slice(index + 2, lineEnd), '*/')
+      lastWriteIndex = lineEnd
+      index = lineEnd - 1
       continue
     }
-
-    result += char
   }
 
-  return result
+  if (parts.length === 0) {
+    return source
+  }
+  parts.push(source.slice(lastWriteIndex))
+  return parts.join('')
 }
 
 function isEscaped(source: string, index: number) {
@@ -105,4 +102,14 @@ function isEscaped(source: string, index: number) {
     backslashCount++
   }
   return backslashCount % 2 === 1
+}
+
+function isUrlFunctionStart(source: string, index: number) {
+  if (isEscaped(source, index) || index < 3) {
+    return false
+  }
+  const prefix = source.slice(index - 3, index)
+  const beforePrefix = source[index - 4]
+  return prefix.toLowerCase() === 'url'
+    && (beforePrefix === undefined || !/\w/.test(beforePrefix))
 }

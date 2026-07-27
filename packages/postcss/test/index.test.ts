@@ -1,5 +1,6 @@
 import { generateCss4 } from '@weapp-tailwindcss/test-helper'
 import path from 'pathe'
+import { normalizeCssLineComments } from '@/compat/line-comments'
 import { createStyleHandler, unitConversionComposeRules, unitConversionPresets } from '@/index'
 
 function generateCss(css: string, base: string) {
@@ -71,6 +72,13 @@ describe('index', () => {
     expect(css).toContain('background-image: url(https://cdn.example.com/button.png)')
     expect(css).toContain('.bg-_burl_p_ahttps_c_f_fcdn_dexample_dcom_fbutton_dwebp_a_P_B')
     expect(css).toContain("background-image: url('https://cdn.example.com/button.webp')")
+  })
+
+  it('preserves URL-heavy CSS without real line comments', () => {
+    const rule = String.raw`.bg-\[url\(https\:\/\/cdn\.example\.com\/image\.png\)\]{background-image:url(https://cdn.example.com/image.png)}`
+    const source = Array.from({ length: 1_000 }, (_, index) => `${rule}-${index}`).join('\n')
+
+    expect(normalizeCssLineComments(source)).toBe(source)
   })
 
   it('transforms current and likely Tailwind :where selectors to mini-program-safe CSS', async () => {
