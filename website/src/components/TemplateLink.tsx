@@ -1,4 +1,5 @@
 import type { JSX, ReactNode } from 'react'
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
 import React from 'react'
 import GitHubStarButton from './GitHubStarButton'
 
@@ -16,6 +17,7 @@ interface TemplateLinkProps {
 }
 
 export default function TemplateLink(props: TemplateLinkProps): JSX.Element {
+  const locale = useCurrentSiteLocale()
   const {
     title,
     href,
@@ -32,10 +34,10 @@ export default function TemplateLink(props: TemplateLinkProps): JSX.Element {
   const variant = deprecated ? 'deprecated' : hot ? 'recommended' : 'default'
   const badgeContent = badge
     ?? (variant === 'deprecated'
-      ? '⚠️ 不推荐'
+      ? (locale === 'en' ? '⚠️ Not recommended' : '⚠️ 不推荐')
       : variant === 'recommended'
-        ? '🔥 推荐'
-        : '✅ 可用')
+        ? (locale === 'en' ? '🔥 Recommended' : '🔥 推荐')
+        : (locale === 'en' ? '✅ Available' : '✅ 可用'))
   const baseClass = `
     mt-4 flex flex-wrap items-center justify-between gap-4 rounded-2xl
     p-4 transition duration-300

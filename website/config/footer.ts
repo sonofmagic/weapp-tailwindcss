@@ -1,29 +1,33 @@
 import type { ThemeConfig } from '@docusaurus/preset-classic'
+import { getSiteConfigCopy } from '../src/i18n/siteConfig'
+import { getBuildLocale } from './buildLocale'
+
+const copy = getSiteConfigCopy(getBuildLocale())
 
 const footerLinks: NonNullable<ThemeConfig['footer']>['links'] = [
   {
-    title: '文档',
+    title: copy.footer.docs,
     items: [
       {
-        label: '指南',
+        label: copy.footer.guide,
         to: '/docs/intro',
       },
       {
-        label: '配置项',
+        label: copy.footer.options,
         to: '/docs/api/interfaces/UserDefinedOptions',
       },
       {
-        label: '常见问题',
+        label: copy.footer.issues,
         to: '/docs/issues/',
       },
       {
-        label: '博客',
-        href: '/blog',
+        label: copy.footer.blog,
+        to: '/blog',
       },
     ],
   },
   {
-    title: '更多',
+    title: copy.footer.more,
     items: [
       {
         label: 'GitHub',
@@ -46,7 +50,7 @@ const copyrightYears = '2021-present'
 export const footerCustomFields = {
   legal: {
     href: '/copyright',
-    label: 'Copyright',
+    label: copy.footer.copyrightLabel,
     target: '_self',
   },
   owner: {
@@ -54,7 +58,7 @@ export const footerCustomFields = {
     name: 'sonofmagic',
   },
   poweredBy: {
-    prefix: '本站由',
+    prefix: copy.footer.poweredByPrefix,
     href: 'https://www.netlify.com',
     label: 'Netlify',
     logoAlt: 'Netlify logo',
@@ -65,5 +69,5 @@ export const footerCustomFields = {
 export const footer: NonNullable<ThemeConfig['footer']> = {
   style: 'dark',
   links: footerLinks,
-  copyright: `<a href="/copyright" target="_self" rel="noopener noreferrer">Copyright</a> © ${copyrightYears} <a href="https://github.com/sonofmagic" target="_blank" rel="noopener noreferrer">sonofmagic</a>. Released under the <a href="https://github.com/sonofmagic/weapp-tailwindcss/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>.`,
+  copyright: `<a href="/copyright" target="_self" rel="noopener noreferrer">${copy.footer.copyrightLabel}</a> © ${copyrightYears} <a href="https://github.com/sonofmagic" target="_blank" rel="noopener noreferrer">sonofmagic</a>. Released under the <a href="https://github.com/sonofmagic/weapp-tailwindcss/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>.`,
 }

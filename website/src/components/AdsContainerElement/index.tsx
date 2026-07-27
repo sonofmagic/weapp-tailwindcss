@@ -1,12 +1,14 @@
 import Link from '@docusaurus/Link'
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
 import Aizex from '@site/static/img/ads/aizex-mini.png'
 import clsx from 'clsx'
 import React, { useEffect, useRef, useState } from 'react'
 
-const adItems = [
-  {
-    badge: 'SPONSORED',
-    cardClassName: `
+const adItems = {
+  'zh-cn': [
+    {
+      badge: 'SPONSORED',
+      cardClassName: `
       overflow-hidden border-[#8b7bff]/20
       bg-[radial-gradient(circle_at_12%_18%,rgba(139,123,255,0.20),transparent_32%),radial-gradient(circle_at_88%_14%,rgba(14,165,233,0.16),transparent_24%),linear-gradient(145deg,rgba(255,255,255,0.97),rgba(245,243,255,0.98))]
       text-slate-900 shadow-[0_20px_44px_rgba(99,102,241,0.16)]
@@ -16,64 +18,134 @@ const adItems = [
       dark:hover:shadow-[0_30px_70px_rgba(99,102,241,0.32),0_12px_36px_rgba(14,165,233,0.18)]
       dark:bg-[radial-gradient(circle_at_14%_18%,rgba(139,123,255,0.34),transparent_34%),radial-gradient(circle_at_88%_18%,rgba(52,211,153,0.18),transparent_28%),linear-gradient(145deg,rgba(15,23,42,0.98),rgba(30,41,59,0.94))]
     `,
-    description: '企业级的分布式搜索型数据库',
-    href: 'https://easysearch.cn/',
-    imageWrapperClassName: `
+      description: '企业级的分布式搜索型数据库',
+      href: 'https://easysearch.cn/',
+      imageWrapperClassName: `
       relative z-10 px-1 pt-5 pb-1
     `,
-    logoClassName: 'h-10 w-auto',
-    metaClassName: 'hidden',
-    titleClassName: 'hidden',
-    descriptionClassName: 'mx-auto max-w-[15ch] text-center text-[12px] leading-5 text-slate-600 dark:text-[#ddd6fe]',
-    footerClassName: 'hidden',
-    renderLogo: () => (
-      <>
-        <img
-          className="
+      logoClassName: 'h-10 w-auto',
+      metaClassName: 'hidden',
+      titleClassName: 'hidden',
+      descriptionClassName: 'mx-auto max-w-[15ch] text-center text-[12px] leading-5 text-slate-600 dark:text-[#ddd6fe]',
+      footerClassName: 'hidden',
+      renderLogo: () => (
+        <>
+          <img
+            className="
             h-10 w-auto
             dark:hidden
           "
-          src="/img/ads/easysearch.svg"
-          alt="Easysearch"
-        >
-        </img>
-        <img
-          className="
+            src="/img/ads/easysearch.svg"
+            alt="Easysearch"
+          >
+          </img>
+          <img
+            className="
             hidden h-10 w-auto
             dark:block
           "
-          src="/img/ads/easysearch-dark.svg"
-          alt="Easysearch"
-        >
-        </img>
-      </>
-    ),
-    title: 'Easysearch',
-    tone: 'hero',
-  },
-  {
-    badge: '亲测推荐',
-    cardClassName: '',
-    description: '更好用的「GPT-5 x Claude」使用方式',
-    href: 'https://aizex.cn/0LcJ7G',
-    imageWrapperClassName: `
+            src="/img/ads/easysearch-dark.svg"
+            alt="Easysearch"
+          >
+          </img>
+        </>
+      ),
+      title: 'Easysearch',
+      tone: 'hero',
+    },
+    {
+      badge: '亲测推荐',
+      cardClassName: '',
+      description: '更好用的「GPT-5 x Claude」使用方式',
+      href: 'https://aizex.cn/0LcJ7G',
+      imageWrapperClassName: `
       rounded-xl bg-white/70 px-2 py-1
       dark:bg-slate-900/30
     `,
-    logoClassName: 'h-14 w-auto',
-    metaClassName: 'hidden',
-    titleClassName: 'text-base font-semibold tracking-[0.01em]',
-    descriptionClassName: 'text-xs text-sky-600 dark:text-sky-300',
-    footerClassName: 'hidden',
-    renderLogo: () => <img className="h-14 w-auto" src={Aizex} alt="aizex"></img>,
-    title: 'Aizex 合租面板',
-    tone: 'default',
-  },
-] as const
+      logoClassName: 'h-14 w-auto',
+      metaClassName: 'hidden',
+      titleClassName: 'text-base font-semibold tracking-[0.01em]',
+      descriptionClassName: 'text-xs text-sky-600 dark:text-sky-300',
+      footerClassName: 'hidden',
+      renderLogo: () => <img className="h-14 w-auto" src={Aizex} alt="aizex"></img>,
+      title: 'Aizex 合租面板',
+      tone: 'default',
+    },
+  ],
+  'en': [
+    {
+      badge: 'SPONSORED',
+      cardClassName: `
+      overflow-hidden border-[#8b7bff]/20
+      bg-[radial-gradient(circle_at_12%_18%,rgba(139,123,255,0.20),transparent_32%),radial-gradient(circle_at_88%_14%,rgba(14,165,233,0.16),transparent_24%),linear-gradient(145deg,rgba(255,255,255,0.97),rgba(245,243,255,0.98))]
+      text-slate-900 shadow-[0_20px_44px_rgba(99,102,241,0.16)]
+      hover:shadow-[0_24px_54px_rgba(99,102,241,0.2)]
+      dark:border-[#8b7bff]/35 dark:text-white
+      dark:shadow-[0_24px_56px_rgba(14,165,233,0.14),0_10px_30px_rgba(76,29,149,0.24)]
+      dark:hover:shadow-[0_30px_70px_rgba(99,102,241,0.32),0_12px_36px_rgba(14,165,233,0.18)]
+      dark:bg-[radial-gradient(circle_at_14%_18%,rgba(139,123,255,0.34),transparent_34%),radial-gradient(circle_at_88%_18%,rgba(52,211,153,0.18),transparent_28%),linear-gradient(145deg,rgba(15,23,42,0.98),rgba(30,41,59,0.94))]
+    `,
+      description: 'Distributed search infrastructure for production teams',
+      href: 'https://easysearch.cn/',
+      imageWrapperClassName: `
+      relative z-10 px-1 pt-5 pb-1
+    `,
+      logoClassName: 'h-10 w-auto',
+      metaClassName: 'hidden',
+      titleClassName: 'hidden',
+      descriptionClassName: 'mx-auto max-w-[18ch] text-center text-[12px] leading-5 text-slate-600 dark:text-[#ddd6fe]',
+      footerClassName: 'hidden',
+      renderLogo: () => (
+        <>
+          <img
+            className="
+            h-10 w-auto
+            dark:hidden
+          "
+            src="/img/ads/easysearch.svg"
+            alt="Easysearch"
+          >
+          </img>
+          <img
+            className="
+            hidden h-10 w-auto
+            dark:block
+          "
+            src="/img/ads/easysearch-dark.svg"
+            alt="Easysearch"
+          >
+          </img>
+        </>
+      ),
+      title: 'Easysearch',
+      tone: 'hero',
+    },
+    {
+      badge: 'Recommended',
+      cardClassName: '',
+      description: 'A smoother way to combine GPT-5 and Claude',
+      href: 'https://aizex.cn/0LcJ7G',
+      imageWrapperClassName: `
+      rounded-xl bg-white/70 px-2 py-1
+      dark:bg-slate-900/30
+    `,
+      logoClassName: 'h-14 w-auto',
+      metaClassName: 'hidden',
+      titleClassName: 'text-base font-semibold tracking-[0.01em]',
+      descriptionClassName: 'text-xs text-sky-600 dark:text-sky-300',
+      footerClassName: 'hidden',
+      renderLogo: () => <img className="h-14 w-auto" src={Aizex} alt="aizex"></img>,
+      title: 'Aizex shared panel',
+      tone: 'default',
+    },
+  ],
+} as const
 
 function AdsContainerElement() {
+  const locale = useCurrentSiteLocale()
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [isCompact, setIsCompact] = useState(false)
+  const currentAdItems = adItems[locale]
 
   useEffect(() => {
     if (typeof window === 'undefined' || typeof window.ResizeObserver === 'undefined') {
@@ -105,7 +177,7 @@ function AdsContainerElement() {
   return (
     <div ref={containerRef} className="space-y-4 px-4">
       {/* 暂时仅展示 Easysearch 赞助位，保留 Aizex 配置以便后续恢复。 */}
-      {adItems.filter(item => item.title === 'Easysearch').map(item => (
+      {currentAdItems.filter(item => item.title === 'Easysearch').map(item => (
         <a
           key={item.title}
           className={clsx(
@@ -189,7 +261,7 @@ function AdsContainerElement() {
             )}
           >
             <div className={clsx('mb-1', item.metaClassName)}>
-              品牌赞助位
+              {locale === 'en' ? 'Brand sponsor slot' : '品牌赞助位'}
             </div>
             <div className={item.titleClassName}>
               {item.title}
@@ -198,7 +270,7 @@ function AdsContainerElement() {
               {item.description}
             </div>
             <div className={clsx('mt-2', item.footerClassName)}>
-              Explore Search Infrastructure
+              {locale === 'en' ? 'Explore search infrastructure' : '探索搜索基础设施'}
             </div>
           </div>
           {item.badge && item.tone !== 'hero'
@@ -262,7 +334,7 @@ function AdsContainerElement() {
               "
               to="/docs/sponsor"
             >
-              成为赞助商
+              {locale === 'en' ? 'Become a sponsor' : '成为赞助商'}
             </Link>
           </button>
         </div>

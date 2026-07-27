@@ -1,35 +1,29 @@
-const baseKeywords = [
-  'weapp-tailwindcss',
-  'tailwindcss',
-  '小程序',
-  '微信小程序',
-  'uni-app',
-  'taro',
-  'mpx',
-]
+import type { SiteLocale } from '@site/src/i18n/locale'
+import { normalizeSiteLocale } from '@site/src/i18n/locale'
+import { getSiteConfigCopy } from '@site/src/i18n/siteConfig'
 
-const sectionKeywords: Array<{ pattern: RegExp, keywords: string[] }> = [
+const sectionPatterns = [
   {
     pattern: /\/docs\/quick-start(\/|$)/,
-    keywords: ['快速开始', '安装', '配置'],
+    key: 'quickStart',
   },
   {
     pattern: /\/docs\/issues(\/|$)/,
-    keywords: ['常见问题', '故障排查', '兼容性'],
+    key: 'issues',
   },
   {
     pattern: /\/docs\/api(\/|$)|\/docs\/options(\/|$)/,
-    keywords: ['API', '配置项', '接口文档'],
+    key: 'api',
   },
   {
     pattern: /\/docs\/ai(\/|$)/,
-    keywords: ['AI 编程', 'LLM', '工作流'],
+    key: 'ai',
   },
   {
     pattern: /\/blog(\/|$)/,
-    keywords: ['博客', '最佳实践'],
+    key: 'blog',
   },
-]
+] as const
 
 const KEYWORD_SPLIT_RE = /[，,、|/]/g
 const CODE_BLOCK_RE = /```[\s\S]*?```/g
@@ -85,13 +79,17 @@ export function resolveSeoDescription(params: {
   title: string
   fallbackText?: string
   maxLength?: number
+  locale?: SiteLocale
 }) {
+  const locale = normalizeSiteLocale(params.locale)
+  const copy = getSiteConfigCopy(locale)
   const maxLength = params.maxLength ?? 140
-  const raw = [params.description, params.fallbackText, `${params.title} - weapp-tailwindcss 文档`]
-    .find(Boolean) || `${params.title} - weapp-tailwindcss 文档`
+  const suffix = copy.seo.docSuffix
+  const raw = [params.description, params.fallbackText, `${params.title} - ${suffix}`]
+    .find(Boolean) || `${params.title} - ${suffix}`
   const normalized = stripMarkdown(String(raw)).replace(WHITESPACE_RE, ' ').trim()
   if (!normalized) {
-    return `${params.title} - weapp-tailwindcss 文档`
+    return `${params.title} - ${suffix}`
   }
   if (normalized.length <= maxLength) {
     return normalized
@@ -105,10 +103,13 @@ export function resolveSeoKeywords(params: {
   metadataKeywords?: string[] | string
   frontMatterKeywords?: string[] | string
   maxItems?: number
+  locale?: SiteLocale
 }) {
-  const fromSection = sectionKeywords
+  const locale = normalizeSiteLocale(params.locale)
+  const copy = getSiteConfigCopy(locale)
+  const fromSection = sectionPatterns
     .filter(item => item.pattern.test(params.permalink))
-    .flatMap(item => item.keywords)
+    .flatMap(item => copy.seo.sectionKeywords[item.key])
 
   const merged = [
     ...normalizeKeywords(params.metadataKeywords),
@@ -116,7 +117,7 @@ export function resolveSeoKeywords(params: {
     ...fromSection,
     ...extractTitleTerms(params.title),
     ...extractPermalinkTerms(params.permalink),
-    ...baseKeywords,
+    ...copy.seo.baseKeywords,
   ]
   const deduped = [...new Set(
     merged
@@ -130,10 +131,13 @@ export function buildBreadcrumbJsonLd(params: {
   siteUrl: string
   permalink: string
   title: string
+  locale?: SiteLocale
 }) {
+  const locale = normalizeSiteLocale(params.locale)
+  const copy = getSiteConfigCopy(locale)
   const rootUrl = params.siteUrl.replace(TRAILING_SLASH_RE, '')
   const segments = params.permalink.split('/').filter(Boolean)
-  const names: string[] = ['首页']
+  const names: string[] = [copy.seo.breadcrumb.home]
   const items: string[] = [rootUrl]
   let current = ''
 
@@ -141,11 +145,11 @@ export function buildBreadcrumbJsonLd(params: {
     current += `/${segment}`
     items.push(`${rootUrl}${current}`)
     if (segment === 'docs') {
-      names.push('文档')
+      names.push(copy.seo.breadcrumb.docs)
       continue
     }
     if (segment === 'blog') {
-      names.push('博客')
+      names.push(copy.seo.breadcrumb.blog)
       continue
     }
     names.push(decodeURIComponent(segment).replace(HYPHEN_UNDERSCORE_RE, ' '))

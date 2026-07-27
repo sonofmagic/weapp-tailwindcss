@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
 import { create } from '@weapp-tailwindcss/variants'
 import { useMemo, useState } from 'react'
 import { useHighlight } from './useHighlight'
@@ -30,6 +31,7 @@ const badgeConfig = {
 type Tone = keyof typeof badgeConfig.variants.tone
 
 export function VariantsDemo() {
+  const locale = useCurrentSiteLocale()
   const [tone, setTone] = useState<Tone>('neutral')
   const [soft, setSoft] = useState(false)
   const [mergeEnabled, setMergeEnabled] = useState(true)
@@ -97,7 +99,7 @@ export function VariantsDemo() {
               checked={soft}
               onChange={event => setSoft(event.target.checked)}
             />
-            软色（soft）
+            {locale === 'en' ? 'Soft tone' : '软色（soft）'}
           </label>
         </div>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -106,7 +108,7 @@ export function VariantsDemo() {
             checked={mergeEnabled}
             onChange={event => setMergeEnabled(event.target.checked)}
           />
-          开启 twMerge 去重
+          {locale === 'en' ? 'Enable twMerge dedupe' : '开启 twMerge 去重'}
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <input
@@ -114,18 +116,18 @@ export function VariantsDemo() {
             checked={disableEscape}
             onChange={event => setDisableEscape(event.target.checked)}
           />
-          禁用 escape/unescape
+          {locale === 'en' ? 'Disable escape/unescape' : '禁用 escape/unescape'}
         </label>
       </div>
       <div>
-        <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>tv 输出</div>
+        <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{locale === 'en' ? 'tv output' : 'tv 输出'}</div>
         <code style={blockStyle(highlightTv)}>{badgeClassName}</code>
       </div>
       <div>
-        <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>cn 合并结果</div>
+        <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{locale === 'en' ? 'cn merged result' : 'cn 合并结果'}</div>
         <code style={blockStyle(highlightMerged)}>{mergedCn}</code>
         <div style={{ marginTop: '0.25rem', fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-700)' }}>
-          关闭 twMerge 时：
+          {locale === 'en' ? 'With twMerge disabled:' : '关闭 twMerge 时：'}
         </div>
         <code style={{ ...blockStyle(highlightRaw), marginTop: '0.25rem' }}>{rawCn}</code>
       </div>

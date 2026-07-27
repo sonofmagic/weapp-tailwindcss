@@ -1,4 +1,8 @@
 import type { ThemeConfig } from '@docusaurus/preset-classic'
+import { getSiteConfigCopy } from '../src/i18n/siteConfig'
+import { getBuildLocale } from './buildLocale'
+
+const copy = getSiteConfigCopy(getBuildLocale())
 
 const navbar: NonNullable<ThemeConfig['navbar']> = {
   title: 'weapp-tailwindcss',
@@ -11,45 +15,45 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
       type: 'doc',
       docId: 'intro',
       position: 'left',
-      label: '指南',
+      label: copy.navbar.guide,
     },
 
     {
       type: 'doc',
-      label: '生态',
+      label: copy.navbar.ecosystem,
       docId: 'community/templates',
     },
     {
       type: 'doc',
-      label: '常见问题',
+      label: copy.navbar.issues,
       docId: 'issues/index',
     },
     {
       type: 'doc',
-      label: '案例展示',
+      label: copy.navbar.showcase,
       docId: 'showcase/index',
     },
 
     {
       type: 'doc',
-      label: '迁移',
+      label: copy.navbar.migrations,
       docId: 'migrations/v5',
     },
     {
       type: 'doc',
       docId: 'api/interfaces/UserDefinedOptions',
       position: 'left',
-      label: '配置项',
+      label: copy.navbar.options,
     },
     {
-      href: '/blog',
+      to: '/blog',
       position: 'left',
-      label: '博客',
+      label: copy.navbar.blog,
     },
 
     {
       type: 'doc',
-      label: 'Tailwind 专题',
+      label: copy.navbar.tailwindTopic,
       docId: 'tailwindcss/index',
       position: 'left',
     },
@@ -66,14 +70,18 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
       position: 'right',
       items: [
         {
-          label: 'v5 当前版本',
+          label: copy.navbar.currentV5,
           href: '/',
         },
         {
-          label: 'v4 最新版本',
+          label: copy.navbar.latestV4,
           href: 'https://v4.tw.icebreaker.top/',
         },
       ],
+    },
+    {
+      type: 'localeDropdown',
+      position: 'right',
     },
     {
       href: 'https://atomgit.com/sonofmagic/weapp-tailwindcss',

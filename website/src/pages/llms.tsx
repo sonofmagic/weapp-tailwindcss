@@ -1,4 +1,6 @@
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
+import { getLocalePrefix, toLocalePath } from '@site/src/i18n/locale'
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
 import Layout from '@theme/Layout'
 import React from 'react'
 
@@ -9,23 +11,120 @@ const cardBase = `
   dark:border-white/10 dark:bg-slate-900/70 dark:shadow-[0_16px_50px_rgba(0,0,0,0.45)]
 `
 
-const txtFiles = [
-  { label: 'llms-index.json', path: '/llms-index.json', desc: 'GEO 索引（标题、摘要、关键词、canonical）' },
-  { label: 'llms.txt', path: '/llms.txt', desc: '全站文档链接索引（llmstxt.org 规范）' },
-  { label: 'llms-full.txt', path: '/llms-full.txt', desc: '全量内容（适合离线/一次性载入）' },
-  { label: 'llms-quickstart.txt', path: '/llms-quickstart.txt', desc: '入门、模板、AI 工作流合集' },
-  { label: 'llms-api.txt', path: '/llms-api.txt', desc: '配置、API、迁移与常见问题' },
-]
-
-const markdownExamples = [
-  { label: 'intro.md', path: '/intro.md', desc: '文档首页内容副本' },
-  { label: 'quick-start/install.md', path: '/quick-start/install.md', desc: 'Tailwind CSS 4 生成模式安装指南' },
-  { label: 'tailwindcss/v4-reference.md', path: '/tailwindcss/v4-reference.md', desc: 'Tailwind CSS 4 默认模式参考' },
-  { label: 'tools/weapp-tw-cli.md', path: '/tools/weapp-tw-cli.md', desc: 'CLI 用法' },
-  { label: 'ai/index.md', path: '/ai/index.md', desc: 'AI 生成小程序专题' },
-]
-
 const TRAILING_SLASH_RE = /\/$/
+
+const llmsPageCopy = {
+  'zh-cn': {
+    title: 'LLM / Skill 文档入口',
+    description: '为大模型准备的 llms 文档入口与 weapp-tailwindcss skill 安装说明',
+    badge: '🤖 AI 入口',
+    intro: '构建后会生成一组便于大模型消费的文件：索引型 txt、全量 txt 以及去除 MDX import 的 Markdown 副本。本页同时包含 weapp-tailwindcss skill 安装指令，方便直接接入 AI 工作流。',
+    quickstartCta: '直接查看 llms-quickstart.txt',
+    fullCta: '获取全量 llms-full.txt',
+    indexTitle: '可用索引文件',
+    markdownTitle: 'Markdown 副本（示例）',
+    markdownIntroPrefix: '每篇文档都会生成纯 Markdown（路径同原始 docs，只是后缀改为 .md）。完整列表见',
+    skillTitle: 'Skill 安装与使用',
+    skillIntro: '如果你希望 AI 在业务项目中按 weapp-tailwindcss 最佳实践输出配置与排障流程，可以先安装官方 skill：',
+    installCommandLabel: '安装命令',
+    skillListLabel: '查看可安装 Skill 列表',
+    localInstallLabel: '本地仓库调试安装',
+    promptTitle: '推荐提示词（新项目）',
+    promptText: '我现在是 uni-app cli vue3 vite 项目，目标端是微信小程序 + H5。请按 weapp-tailwindcss skill 给我最小可用配置，输出需要包含安装命令、完整配置文件、验证步骤。',
+    docsEntryTitle: '文档入口',
+    docsEntries: [
+      { label: 'Skill（技能系统）文档', path: '/docs/ai/basics/skill' },
+      { label: 'Skill 发布与版本化', path: '/docs/ai/basics/skill-release' },
+    ],
+    loadingTitle: '推荐加载顺序',
+    onlineTitle: '在线模式',
+    onlineSteps: [
+      '结构化检索：先读取 {baseUrl}/llms-index.json，拿到标题、摘要、关键词和 canonical。',
+      '入门、模板、AI 工作流：加载 {baseUrl}/llms-quickstart.txt。',
+      '配置、API、兼容与迁移：加载 {baseUrl}/llms-api.txt。',
+      '需要导航：先读取 {baseUrl}/llms.txt，拿到章节与链接。',
+      '完整知识库：读取 {baseUrl}/llms-full.txt。',
+    ],
+    offlineTitle: '离线/批量模式',
+    offlineSteps: [
+      '下载 llms-full.txt 或构建产出的 Markdown 文件整体打包。',
+      '向量化时可按章节拆分，使用 llms.txt 里的标题做元信息。',
+      '需要元信息检索可使用 llms-index.json 作为首层索引，再按 url 读取正文。',
+      '生成回答时引用具体链接或标题，便于追溯来源。',
+    ],
+    exampleTitle: '示例提示词',
+    examplePrompt: '你可以从 {baseUrl}/llms-quickstart.txt 和 {baseUrl}/llms-api.txt 读取 weapp-tailwindcss 的入门、配置和常见问题，回答时请引用对应链接。',
+    txtFiles: [
+      { label: 'llms-index.json', path: '/llms-index.json', desc: 'GEO 索引（标题、摘要、关键词、canonical）' },
+      { label: 'llms.txt', path: '/llms.txt', desc: '全站文档链接索引（llmstxt.org 规范）' },
+      { label: 'llms-full.txt', path: '/llms-full.txt', desc: '全量内容（适合离线/一次性载入）' },
+      { label: 'llms-quickstart.txt', path: '/llms-quickstart.txt', desc: '入门、模板、AI 工作流合集' },
+      { label: 'llms-api.txt', path: '/llms-api.txt', desc: '配置、API、迁移与常见问题' },
+    ],
+    markdownExamples: [
+      { label: 'intro.md', path: '/intro.md', desc: '文档首页内容副本' },
+      { label: 'quick-start/install.md', path: '/quick-start/install.md', desc: 'Tailwind CSS 4 生成模式安装指南' },
+      { label: 'tailwindcss/v4-reference.md', path: '/tailwindcss/v4-reference.md', desc: 'Tailwind CSS 4 默认模式参考' },
+      { label: 'tools/weapp-tw-cli.md', path: '/tools/weapp-tw-cli.md', desc: 'CLI 用法' },
+      { label: 'ai/index.md', path: '/ai/index.md', desc: 'AI 生成小程序专题' },
+    ],
+  },
+  'en': {
+    title: 'LLM / Skill entry',
+    description: 'LLMS entry points and weapp-tailwindcss skill install notes for AI workflows',
+    badge: '🤖 AI entry',
+    intro: 'After build, the site emits model-friendly assets: index txt files, full-content txt bundles, and Markdown copies with MDX imports stripped out. This page also includes the weapp-tailwindcss skill install flow so you can plug it into AI workflows directly.',
+    quickstartCta: 'Open llms-quickstart.txt',
+    fullCta: 'Fetch llms-full.txt',
+    indexTitle: 'Available index files',
+    markdownTitle: 'Markdown copies (examples)',
+    markdownIntroPrefix: 'Each doc also ships as plain Markdown with the same route path and a .md suffix. For the full list, see',
+    skillTitle: 'Install and use the skill',
+    skillIntro: 'If you want AI to generate setup and troubleshooting steps that follow weapp-tailwindcss best practices inside your product project, install the official skill first:',
+    installCommandLabel: 'Install command',
+    skillListLabel: 'List installable skills',
+    localInstallLabel: 'Install from the local repo for debugging',
+    promptTitle: 'Suggested prompt (new project)',
+    promptText: 'I have a uni-app CLI project with Vue 3 + Vite, targeting WeChat mini apps and H5. Please give me the minimum working setup following the weapp-tailwindcss skill, including install commands, complete config files, and verification steps.',
+    docsEntryTitle: 'Docs entry points',
+    docsEntries: [
+      { label: 'Skill documentation', path: '/docs/ai/basics/skill' },
+      { label: 'Skill release and versioning', path: '/docs/ai/basics/skill-release' },
+    ],
+    loadingTitle: 'Recommended loading order',
+    onlineTitle: 'Online mode',
+    onlineSteps: [
+      'Structured retrieval: read {baseUrl}/llms-index.json first to get titles, summaries, keywords, and canonicals.',
+      'Quick start, templates, and AI workflows: load {baseUrl}/llms-quickstart.txt.',
+      'Config, API, compatibility, and migration: load {baseUrl}/llms-api.txt.',
+      'Need navigation context: read {baseUrl}/llms.txt first to get section names and links.',
+      'Full knowledge base: read {baseUrl}/llms-full.txt.',
+    ],
+    offlineTitle: 'Offline / batch mode',
+    offlineSteps: [
+      'Download llms-full.txt or package the generated Markdown files together.',
+      'When vectorizing, split by section and use titles from llms.txt as metadata.',
+      'For metadata retrieval, use llms-index.json as the first-layer index and fetch article bodies by url afterward.',
+      'When generating answers, cite the exact link or title so the source stays traceable.',
+    ],
+    exampleTitle: 'Example prompt',
+    examplePrompt: 'You can read the weapp-tailwindcss quick start, configuration, and FAQ from {baseUrl}/llms-quickstart.txt and {baseUrl}/llms-api.txt. Please cite the corresponding links in your answer.',
+    txtFiles: [
+      { label: 'llms-index.json', path: '/llms-index.json', desc: 'GEO index with titles, summaries, keywords, and canonicals' },
+      { label: 'llms.txt', path: '/llms.txt', desc: 'Site-wide document link index following llmstxt.org' },
+      { label: 'llms-full.txt', path: '/llms-full.txt', desc: 'Full content bundle for offline or single-pass loading' },
+      { label: 'llms-quickstart.txt', path: '/llms-quickstart.txt', desc: 'Quick starts, templates, and AI workflow guidance' },
+      { label: 'llms-api.txt', path: '/llms-api.txt', desc: 'Configuration, API, migration, and FAQ content' },
+    ],
+    markdownExamples: [
+      { label: 'intro.md', path: '/intro.md', desc: 'Copy of the docs homepage content' },
+      { label: 'quick-start/install.md', path: '/quick-start/install.md', desc: 'Tailwind CSS 4 generation-mode install guide' },
+      { label: 'tailwindcss/v4-reference.md', path: '/tailwindcss/v4-reference.md', desc: 'Reference for the default Tailwind CSS 4 mode' },
+      { label: 'tools/weapp-tw-cli.md', path: '/tools/weapp-tw-cli.md', desc: 'CLI usage guide' },
+      { label: 'ai/index.md', path: '/ai/index.md', desc: 'AI-focused mini app guide' },
+    ],
+  },
+} as const
 
 function useBaseUrl() {
   const { siteConfig } = useDocusaurusContext()
@@ -35,11 +134,18 @@ function useBaseUrl() {
   return `${siteUrl}${base === '/' ? '' : base}`
 }
 
+function formatTemplate(template: string, baseUrl: string) {
+  return template.replaceAll('{baseUrl}', baseUrl)
+}
+
 export default function LLMSPage() {
+  const locale = useCurrentSiteLocale()
+  const copy = llmsPageCopy[locale]
   const baseUrl = useBaseUrl()
+  const localePrefix = getLocalePrefix(locale)
 
   return (
-    <Layout title="LLM / Skill 文档入口" description="为大模型准备的 llms 文档入口与 weapp-tailwindcss skill 安装说明">
+    <Layout title={copy.title} description={copy.description}>
       <main className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0">
           <div className={`
@@ -71,22 +177,21 @@ export default function LLMSPage() {
               dark:bg-sky-900/40 dark:text-sky-200
             `}
             >
-              🤖 AI 入口
+              {copy.badge}
             </span>
             <h1 className={`
               text-3xl font-bold
               md:text-4xl
             `}
             >
-              LLM / Skill 文档入口
+              {copy.title}
             </h1>
             <p className={`
               max-w-4xl text-slate-600
               dark:text-slate-200/80
             `}
             >
-              构建后会生成一组便于大模型消费的文件：索引型 txt、全量 txt 以及去除 MDX import 的 Markdown 副本。
-              本页同时包含 weapp-tailwindcss skill 安装指令，方便直接接入 AI 工作流。
+              {copy.intro}
             </p>
             <div className="flex flex-wrap gap-3">
               <a
@@ -102,7 +207,7 @@ export default function LLMSPage() {
                 target="_blank"
                 rel="noreferrer"
               >
-                直接查看 llms-quickstart.txt
+                {copy.quickstartCta}
                 <span aria-hidden className="text-lg">↗</span>
               </a>
               <a
@@ -118,7 +223,7 @@ export default function LLMSPage() {
                 target="_blank"
                 rel="noreferrer"
               >
-                获取全量 llms-full.txt
+                {copy.fullCta}
                 <span aria-hidden className="text-lg">↗</span>
               </a>
             </div>
@@ -130,9 +235,9 @@ export default function LLMSPage() {
           `}
           >
             <div className={cardBase}>
-              <h2 className="mb-3 text-xl font-semibold">可用索引文件</h2>
+              <h2 className="mb-3 text-xl font-semibold">{copy.indexTitle}</h2>
               <ul className="space-y-2">
-                {txtFiles.map(item => (
+                {copy.txtFiles.map(item => (
                   <li
                     className={`
                       flex items-start gap-2 rounded-xl bg-slate-50/80 px-3 py-2
@@ -170,13 +275,13 @@ export default function LLMSPage() {
             </div>
 
             <div className={cardBase}>
-              <h2 className="mb-3 text-xl font-semibold">Markdown 副本（示例）</h2>
+              <h2 className="mb-3 text-xl font-semibold">{copy.markdownTitle}</h2>
               <p className={`
                 text-sm text-slate-600
                 dark:text-slate-300
               `}
               >
-                每篇文档都会生成纯 Markdown（路径同原始 docs，只是后缀改为 .md）。完整列表见
+                {copy.markdownIntroPrefix}
                 {' '}
                 <a
                   className={`
@@ -191,10 +296,10 @@ export default function LLMSPage() {
                 >
                   llms.txt
                 </a>
-                。
+                {locale === 'en' ? '.' : '。'}
               </p>
               <ul className="mt-3 space-y-2">
-                {markdownExamples.map(item => (
+                {copy.markdownExamples.map(item => (
                   <li
                     className={`
                       flex items-start gap-2 rounded-xl bg-slate-50/80 px-3 py-2
@@ -212,7 +317,7 @@ export default function LLMSPage() {
                           dark:text-sky-300
                           dark:hover:text-sky-200
                         `}
-                        href={`${baseUrl}${item.path}`}
+                        href={`${baseUrl}${localePrefix}${item.path}`}
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -233,13 +338,13 @@ export default function LLMSPage() {
           </section>
 
           <section className={cardBase}>
-            <h2 className="mb-3 text-xl font-semibold">Skill 安装与使用</h2>
+            <h2 className="mb-3 text-xl font-semibold">{copy.skillTitle}</h2>
             <p className={`
               text-sm text-slate-600
               dark:text-slate-300
             `}
             >
-              如果你希望 AI 在业务项目中按 weapp-tailwindcss 最佳实践输出配置与排障流程，可以先安装官方 skill：
+              {copy.skillIntro}
             </p>
             <div className={`
               mt-3 rounded-xl border border-dashed border-slate-300/70
@@ -247,7 +352,7 @@ export default function LLMSPage() {
               dark:border-white/15 dark:bg-white/5 dark:text-slate-200
             `}
             >
-              <p className="font-semibold">安装命令</p>
+              <p className="font-semibold">{copy.installCommandLabel}</p>
               <code className={`
                 mt-2 block whitespace-pre-wrap rounded-lg bg-black/90 px-3 py-3
                 text-xs text-emerald-200 shadow-[0_8px_30px_rgba(0,0,0,0.35)]
@@ -255,7 +360,7 @@ export default function LLMSPage() {
               >
                 npx skills add sonofmagic/skills --skill weapp-tailwindcss
               </code>
-              <p className="mt-3 font-semibold">查看可安装 Skill 列表</p>
+              <p className="mt-3 font-semibold">{copy.skillListLabel}</p>
               <code className={`
                 mt-2 block whitespace-pre-wrap rounded-lg bg-black/90 px-3 py-3
                 text-xs text-emerald-200 shadow-[0_8px_30px_rgba(0,0,0,0.35)]
@@ -263,7 +368,7 @@ export default function LLMSPage() {
               >
                 npx skills add sonofmagic/skills --list
               </code>
-              <p className="mt-3 font-semibold">本地仓库调试安装</p>
+              <p className="mt-3 font-semibold">{copy.localInstallLabel}</p>
               <code className={`
                 mt-2 block whitespace-pre-wrap rounded-lg bg-black/90 px-3 py-3
                 text-xs text-emerald-200 shadow-[0_8px_30px_rgba(0,0,0,0.35)]
@@ -283,14 +388,14 @@ export default function LLMSPage() {
                 dark:bg-white/5 dark:text-slate-200
               `}
               >
-                <p className="font-semibold">推荐提示词（新项目）</p>
+                <p className="font-semibold">{copy.promptTitle}</p>
                 <code className={`
                   mt-2 block whitespace-pre-wrap rounded-lg bg-black/90 px-3
                   py-3 text-xs text-emerald-200
                   shadow-[0_8px_30px_rgba(0,0,0,0.35)]
                 `}
                 >
-                  我现在是 uni-app cli vue3 vite 项目，目标端是微信小程序 + H5。请按 weapp-tailwindcss skill 给我最小可用配置，输出需要包含安装命令、完整配置文件、验证步骤。
+                  {copy.promptText}
                 </code>
               </div>
               <div className={`
@@ -298,45 +403,32 @@ export default function LLMSPage() {
                 dark:bg-white/5 dark:text-slate-200
               `}
               >
-                <p className="font-semibold">文档入口</p>
+                <p className="font-semibold">{copy.docsEntryTitle}</p>
                 <ul className="mt-2 list-disc space-y-1 pl-5">
-                  <li>
-                    <a
-                      className={`
-                        font-semibold text-sky-600
-                        hover:text-sky-500
-                        dark:text-sky-300
-                        dark:hover:text-sky-200
-                      `}
-                      href={`${baseUrl}/docs/ai/basics/skill`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Skill（技能系统）文档
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className={`
-                        font-semibold text-sky-600
-                        hover:text-sky-500
-                        dark:text-sky-300
-                        dark:hover:text-sky-200
-                      `}
-                      href={`${baseUrl}/docs/ai/basics/skill-release`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Skill 发布与版本化
-                    </a>
-                  </li>
+                  {copy.docsEntries.map(item => (
+                    <li key={item.path}>
+                      <a
+                        className={`
+                          font-semibold text-sky-600
+                          hover:text-sky-500
+                          dark:text-sky-300
+                          dark:hover:text-sky-200
+                        `}
+                        href={`${baseUrl}${toLocalePath(item.path, locale)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
           </section>
 
           <section className={cardBase}>
-            <h2 className="mb-3 text-xl font-semibold">推荐加载顺序</h2>
+            <h2 className="mb-3 text-xl font-semibold">{copy.loadingTitle}</h2>
             <div className={`
               grid gap-4
               md:grid-cols-2
@@ -347,52 +439,11 @@ export default function LLMSPage() {
                 dark:text-slate-200
               `}
               >
-                <p className="font-semibold">在线模式</p>
+                <p className="font-semibold">{copy.onlineTitle}</p>
                 <ol className="list-decimal space-y-1 pl-5">
-                  <li>
-                    结构化检索：先读取
-                    {' '}
-                    <code>
-                      {baseUrl}
-                      /llms-index.json
-                    </code>
-                    {' '}
-                    拿到标题、摘要、关键词和 canonical
-                  </li>
-                  <li>
-                    入门/模板/AI 工作流：加载
-                    {' '}
-                    <code>
-                      {baseUrl}
-                      /llms-quickstart.txt
-                    </code>
-                  </li>
-                  <li>
-                    配置、API、兼容与迁移：加载
-                    {' '}
-                    <code>
-                      {baseUrl}
-                      /llms-api.txt
-                    </code>
-                  </li>
-                  <li>
-                    需要导航：先读取
-                    {' '}
-                    <code>
-                      {baseUrl}
-                      /llms.txt
-                    </code>
-                    {' '}
-                    拿到章节与链接
-                  </li>
-                  <li>
-                    完整知识库：读取
-                    {' '}
-                    <code>
-                      {baseUrl}
-                      /llms-full.txt
-                    </code>
-                  </li>
+                  {copy.onlineSteps.map(step => (
+                    <li key={step}>{formatTemplate(step, baseUrl)}</li>
+                  ))}
                 </ol>
               </div>
               <div className={`
@@ -400,12 +451,11 @@ export default function LLMSPage() {
                 dark:text-slate-200
               `}
               >
-                <p className="font-semibold">离线/批量模式</p>
+                <p className="font-semibold">{copy.offlineTitle}</p>
                 <ul className="list-disc space-y-1 pl-5">
-                  <li>下载 llms-full.txt 或构建产出的 Markdown 文件整体打包。</li>
-                  <li>向量化时可按章节拆分，使用 llms.txt 里的标题做元信息。</li>
-                  <li>需要元信息检索可使用 llms-index.json 作为首层索引，再按 url 读取正文。</li>
-                  <li>生成回答时引用具体链接或标题，便于追溯来源。</li>
+                  {copy.offlineSteps.map(step => (
+                    <li key={step}>{step}</li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -415,13 +465,13 @@ export default function LLMSPage() {
               dark:border-white/15 dark:bg-white/5 dark:text-slate-200
             `}
             >
-              <p className="font-semibold">示例提示词</p>
+              <p className="font-semibold">{copy.exampleTitle}</p>
               <code className={`
                 mt-2 block whitespace-pre-wrap rounded-lg bg-black/90 px-3 py-3
                 text-xs text-emerald-200 shadow-[0_8px_30px_rgba(0,0,0,0.35)]
               `}
               >
-                {`你可以从 ${baseUrl}/llms-quickstart.txt 和 ${baseUrl}/llms-api.txt 读取 weapp-tailwindcss 的入门、配置和常见问题，回答时请引用对应链接。`}
+                {formatTemplate(copy.examplePrompt, baseUrl)}
               </code>
             </div>
           </section>

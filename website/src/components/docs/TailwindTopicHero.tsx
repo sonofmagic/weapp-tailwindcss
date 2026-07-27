@@ -1,7 +1,8 @@
 import Link from '@docusaurus/Link'
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
 import React from 'react'
 
-import { tailwindTopicData, type TailwindTopicCard } from './tailwindTopicData'
+import { getTailwindTopicData, type TailwindTopicCard } from './tailwindTopicData'
 
 function TopicCard({ card }: { card: TailwindTopicCard }) {
   const isExternal = Boolean(card.href?.startsWith('http'))
@@ -42,7 +43,8 @@ interface TailwindTopicHeroProps {
 }
 
 export default function TailwindTopicHero({ title, topicId }: TailwindTopicHeroProps) {
-  const topic = tailwindTopicData[topicId]
+  const locale = useCurrentSiteLocale()
+  const topic = getTailwindTopicData(locale)[topicId]
 
   if (!topic) {
     return null
@@ -69,8 +71,8 @@ export default function TailwindTopicHero({ title, topicId }: TailwindTopicHeroP
             <div className="tailwind-topic-panel__heading">
               <span className="icon-[mdi--package-variant-closed] tailwind-topic-panel__heading-icon" aria-hidden="true" />
               <div>
-                <h3>相关第三方包</h3>
-                <p>本页涉及到的生态工具、库和构建底座。</p>
+                <h3>{locale === 'en' ? 'Related packages' : '相关第三方包'}</h3>
+                <p>{locale === 'en' ? 'Ecosystem tools, libraries, and builder foundations referenced by this page.' : '本页涉及到的生态工具、库和构建底座。'}</p>
               </div>
             </div>
             <div className="tailwind-topic-panel__cards">
@@ -86,8 +88,8 @@ export default function TailwindTopicHero({ title, topicId }: TailwindTopicHeroP
             <div className="tailwind-topic-panel__heading">
               <span className="icon-[mdi--lightbulb-on-outline] tailwind-topic-panel__heading-icon" aria-hidden="true" />
               <div>
-                <h3>相关解决方案</h3>
-                <p>建议连读的章节、配套方法和工程落点。</p>
+                <h3>{locale === 'en' ? 'Related solutions' : '相关解决方案'}</h3>
+                <p>{locale === 'en' ? 'Recommended follow-up chapters, supporting methods, and engineering landing points.' : '建议连读的章节、配套方法和工程落点。'}</p>
               </div>
             </div>
             <div className="tailwind-topic-panel__cards">

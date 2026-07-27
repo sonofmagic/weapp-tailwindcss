@@ -1,3 +1,4 @@
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
 import { useEffect, useId, useState, type ReactNode } from 'react'
 
 type ShowcaseImage = {
@@ -39,12 +40,14 @@ function ShowcaseImageButton({
   label,
   className,
   frameClassName,
+  locale,
   onOpen,
 }: {
   image: ShowcaseImage
   label: string
   className?: string
   frameClassName?: string
+  locale: 'zh-cn' | 'en'
   onOpen: (image: ShowcaseImage) => void
 }) {
   const alt = image.alt || label
@@ -54,7 +57,7 @@ function ShowcaseImageButton({
       type="button"
       className={`showcase-card__image-button${frameClassName ? ` ${frameClassName}` : ''}`}
       onClick={() => onOpen({ ...image, alt })}
-      aria-label={`放大查看：${alt}`}
+      aria-label={locale === 'en' ? `Zoom image: ${alt}` : `放大查看：${alt}`}
     >
       <img className={className} loading="lazy" src={image.src} alt={alt} />
       <span className="showcase-card__zoom-hint" aria-hidden="true" />
@@ -75,6 +78,7 @@ export default function ShowcaseCard({
   screenshots = [],
   children,
 }: ShowcaseCardProps) {
+  const locale = useCurrentSiteLocale()
   const [expanded, setExpanded] = useState(true)
   const [previewImage, setPreviewImage] = useState<ShowcaseImage | null>(null)
   const panelId = useId()
@@ -106,17 +110,17 @@ export default function ShowcaseCard({
       <header className="showcase-card__header">
         <h3 id={title}>
           {titleContent}
-          <a className="showcase-card__anchor" href={`#${title}`} aria-label={`${title} 的直接链接`}>
+          <a className="showcase-card__anchor" href={`#${title}`} aria-label={locale === 'en' ? `Direct link to ${title}` : `${title} 的直接链接`}>
             #
           </a>
         </h3>
         <p className="showcase-card__meta">
-          <strong>提交者：</strong>
-          {authorLogin && authorUrl ? <a href={authorUrl}>@{authorLogin}</a> : '匿名'}
+          <strong>{locale === 'en' ? 'Submitted by: ' : '提交者：'}</strong>
+          {authorLogin && authorUrl ? <a href={authorUrl}>@{authorLogin}</a> : (locale === 'en' ? 'Anonymous' : '匿名')}
           <span aria-hidden="true"> · </span>
           <span>{createdAt}</span>
           <span aria-hidden="true"> · </span>
-          <a href={commentUrl}>查看评论</a>
+          <a href={commentUrl}>{locale === 'en' ? 'View comment' : '查看评论'}</a>
         </p>
       </header>
 
@@ -124,7 +128,7 @@ export default function ShowcaseCard({
         <div className="showcase-card__body">
           {link ? (
             <p>
-              <strong>链接：</strong>
+              <strong>{locale === 'en' ? 'Link: ' : '链接：'}</strong>
               <ShowcaseExternalLink value={link} />
             </p>
           ) : null}
@@ -140,12 +144,13 @@ export default function ShowcaseCard({
 
       <div className="showcase-card__media">
         <figure className="showcase-card__primary">
-          {hasScreenshots ? <figcaption>小程序码</figcaption> : null}
+          {hasScreenshots ? <figcaption>{locale === 'en' ? 'Mini app code' : '小程序码'}</figcaption> : null}
           <ShowcaseImageButton
             image={primaryImage}
             label={title}
             className="showcase-card__image"
             frameClassName="showcase-card__image-button--code"
+            locale={locale}
             onOpen={setPreviewImage}
           />
         </figure>
@@ -161,8 +166,8 @@ export default function ShowcaseCard({
               onClick={() => setExpanded(value => !value)}
             >
               <span className="showcase-card__caret" aria-hidden="true" />
-              <span className="showcase-card__toggle-label">作品截图</span>
-              <span className="showcase-card__count">（{screenshots.length} 张）</span>
+              <span className="showcase-card__toggle-label">{locale === 'en' ? 'Screenshots' : '作品截图'}</span>
+              <span className="showcase-card__count">（{locale === 'en' ? `${screenshots.length}` : `${screenshots.length} 张`}）</span>
             </button>
 
             <div id={panelId} className="showcase-card__shot-panel" hidden={!expanded}>
@@ -171,9 +176,10 @@ export default function ShowcaseCard({
                   <ShowcaseImageButton
                     key={`${image.src}-${index}`}
                     image={image}
-                    label={`${title} 截图 ${index + 1}`}
+                    label={locale === 'en' ? `${title} screenshot ${index + 1}` : `${title} 截图 ${index + 1}`}
                     className="showcase-card__image showcase-card__shot"
                     frameClassName="showcase-card__image-button--shot"
+                    locale={locale}
                     onOpen={setPreviewImage}
                   />
                 ))}
@@ -188,14 +194,14 @@ export default function ShowcaseCard({
           className="showcase-card__lightbox"
           role="dialog"
           aria-modal="true"
-          aria-label={`图片预览：${previewImage.alt || title}`}
+          aria-label={locale === 'en' ? `Image preview: ${previewImage.alt || title}` : `图片预览：${previewImage.alt || title}`}
           onClick={() => setPreviewImage(null)}
         >
           <button
             type="button"
             className="showcase-card__lightbox-close"
             onClick={() => setPreviewImage(null)}
-            aria-label="关闭图片预览"
+            aria-label={locale === 'en' ? 'Close image preview' : '关闭图片预览'}
           >
             ×
           </button>

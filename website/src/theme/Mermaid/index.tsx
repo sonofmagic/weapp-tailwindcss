@@ -1,5 +1,6 @@
 import type { Props } from '@theme/Mermaid'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
 import OriginalMermaid from '@theme-original/Mermaid'
 import clsx from 'clsx'
 import { deflateRaw } from 'pako'
@@ -47,6 +48,7 @@ async function encodeForMermaidLive(code: string) {
 const WHITESPACE_RE = /\s+/
 
 export default function MermaidWithToolbar({ value, ...rest }: Props) {
+  const locale = useCurrentSiteLocale()
   const { siteConfig } = useDocusaurusContext()
   const wheelZoomEnabled = Boolean((siteConfig as any)?.customFields?.mermaidWheelZoom)
 
@@ -320,20 +322,20 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
     () => (
       <div className={styles.toolbar}>
         <div className={styles.toolGroup}>
-          <button className={styles.toolButton} type="button" onClick={zoomOut} aria-label="缩小">-</button>
+          <button className={styles.toolButton} type="button" onClick={zoomOut} aria-label={locale === 'en' ? 'Zoom out' : '缩小'}>-</button>
           <span className={styles.scaleText}>
             {Math.round(scale * 100)}
             %
           </span>
-          <button className={styles.toolButton} type="button" onClick={zoomIn} aria-label="放大">+</button>
-          <button className={styles.toolButton} type="button" onClick={resetView} aria-label="重置视图">重置</button>
+          <button className={styles.toolButton} type="button" onClick={zoomIn} aria-label={locale === 'en' ? 'Zoom in' : '放大'}>+</button>
+          <button className={styles.toolButton} type="button" onClick={resetView} aria-label={locale === 'en' ? 'Reset view' : '重置视图'}>{locale === 'en' ? 'Reset' : '重置'}</button>
         </div>
         <div className={styles.toolGroup}>
           <button className={styles.toolButton} type="button" onClick={handleCopy}>
-            {copied ? '已复制' : '复制源码'}
+            {copied ? (locale === 'en' ? 'Copied' : '已复制') : (locale === 'en' ? 'Copy source' : '复制源码')}
           </button>
           <button className={styles.toolButton} type="button" onClick={handleDownload}>
-            下载 SVG
+            {locale === 'en' ? 'Download SVG' : '下载 SVG'}
           </button>
           <a className={styles.toolButton} href={liveHref.current} target="_blank" rel="noreferrer">
             Mermaid Live
@@ -341,7 +343,7 @@ export default function MermaidWithToolbar({ value, ...rest }: Props) {
         </div>
       </div>
     ),
-    [copied, handleCopy, handleDownload, resetView, scale, zoomIn, zoomOut],
+    [copied, handleCopy, handleDownload, locale, resetView, scale, zoomIn, zoomOut],
   )
 
   return (

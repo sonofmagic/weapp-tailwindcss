@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
 import { create } from '@weapp-tailwindcss/cva'
 import { useMemo, useState } from 'react'
 import { useHighlight } from './useHighlight'
@@ -28,6 +29,7 @@ type Tone = keyof typeof variantConfig.variants.tone
 type Size = keyof typeof variantConfig.variants.size
 
 export function CvaDemo() {
+  const locale = useCurrentSiteLocale()
   const [tone, setTone] = useState<Tone>('primary')
   const [size, setSize] = useState<Size>('md')
   const [disableEscape, setDisableEscape] = useState(false)
@@ -94,11 +96,11 @@ export function CvaDemo() {
             checked={disableEscape}
             onChange={event => setDisableEscape(event.target.checked)}
           />
-          禁用 escape/unescape
+          {locale === 'en' ? 'Disable escape/unescape' : '禁用 escape/unescape'}
         </label>
       </div>
       <div>
-        <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>输出类名</div>
+        <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{locale === 'en' ? 'Output class name' : '输出类名'}</div>
         <code style={codeStyle}>{result}</code>
       </div>
     </div>

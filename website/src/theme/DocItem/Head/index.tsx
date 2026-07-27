@@ -2,7 +2,10 @@ import type { PartialGeoMeta } from '@site/src/utils/geo'
 
 import Head from '@docusaurus/Head'
 import { useDoc } from '@docusaurus/plugin-content-docs/client'
-import { siteLanguage, siteName, siteUrl, socialImageUrl } from '@site/config/siteMetadata'
+import { getGeoMeta, getSiteLanguage, siteName, siteUrl, socialImageUrl } from '@site/config/siteMetadata'
+import { toAbsoluteLocaleUrl } from '@site/src/i18n/locale'
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
+import { getSiteConfigCopy } from '@site/src/i18n/siteConfig'
 import { extractGeoCoordinates, resolveGeoMeta, toAbsoluteUrl } from '@site/src/utils/geo'
 import { buildBreadcrumbJsonLd, resolveSeoDescription, resolveSeoKeywords } from '@site/src/utils/seo'
 import OriginalHead from '@theme-original/DocItem/Head'
@@ -29,9 +32,14 @@ function toIsoString(value?: number | string | null) {
 type DocItemHeadProps = React.ComponentProps<typeof OriginalHead>
 
 export default function DocItemHead(props: DocItemHeadProps) {
+  const locale = useCurrentSiteLocale()
   const { metadata } = useDoc()
-  const geo = resolveGeoMeta((metadata.frontMatter as FrontMatterWithGeo | undefined)?.geo)
+  const geo = resolveGeoMeta((metadata.frontMatter as FrontMatterWithGeo | undefined)?.geo ?? getGeoMeta(locale))
   const coordinates = extractGeoCoordinates(geo)
+  const copy = getSiteConfigCopy(locale)
+  const siteLanguage = getSiteLanguage(locale)
+  const alternateZhUrl = toAbsoluteLocaleUrl(siteUrl, metadata.permalink, 'zh-cn')
+  const alternateEnUrl = toAbsoluteLocaleUrl(siteUrl, metadata.permalink, 'en')
 
   const canonicalUrl = toAbsoluteUrl(siteUrl, metadata.permalink) || `${siteUrl}${metadata.permalink}`
   const imageUrl = toAbsoluteUrl(siteUrl, metadata.frontMatter?.image) || socialImageUrl
@@ -40,17 +48,20 @@ export default function DocItemHead(props: DocItemHeadProps) {
   const description = resolveSeoDescription({
     description: metadata.description ?? metadata.frontMatter?.description,
     title: metadata.title,
+    locale,
   })
   const keywords = resolveSeoKeywords({
     title: metadata.title,
     permalink: metadata.permalink,
     metadataKeywords: metadata.keywords,
     frontMatterKeywords: metadata.frontMatter?.keywords,
+    locale,
   })
   const breadcrumbJsonLd = buildBreadcrumbJsonLd({
     siteUrl,
     permalink: metadata.permalink,
     title: metadata.title,
+    locale,
   })
 
   const docJsonLd = {
@@ -107,10 +118,14 @@ export default function DocItemHead(props: DocItemHeadProps) {
         <meta property="og:description" content={description} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:image" content={imageUrl} />
+        <meta property="og:locale" content={copy.metadata.ogLocale} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metadata.title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={imageUrl} />
+        <link rel="alternate" hrefLang="zh-CN" href={alternateZhUrl} />
+        <link rel="alternate" hrefLang="en-US" href={alternateEnUrl} />
+        <link rel="alternate" hrefLang="x-default" href={alternateZhUrl} />
         {publishedTime && <meta property="article:published_time" content={publishedTime} />}
         {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
         <meta httpEquiv="Content-Language" content={siteLanguage} />

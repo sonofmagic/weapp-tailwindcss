@@ -1,3 +1,5 @@
+import type { SiteLocale } from '@site/src/i18n/locale'
+
 export interface TailwindTopicCard {
   title: string
   description: string
@@ -14,7 +16,7 @@ export interface TailwindTopicEntry {
   solutions?: TailwindTopicCard[]
 }
 
-export const tailwindTopicData: Record<string, TailwindTopicEntry> = {
+const tailwindTopicDataZh: Record<string, TailwindTopicEntry> = {
   'tailwindcss/index': {
     eyebrow: '专题导览',
     summary: '把演进历史、生态底座、工程实践、AI 工作流和 Demo 对照收成一张总图，先帮读者看清全局，再决定去哪一页深挖。',
@@ -309,4 +311,305 @@ export const tailwindTopicData: Record<string, TailwindTopicEntry> = {
       { title: '样式方案演化', description: '把 demo 与历史阶段一一对应起来。', icon: 'icon-[mdi--source-branch]', href: '/docs/tailwindcss/history' },
     ],
   },
+}
+
+const tailwindTopicDataEn: Record<string, TailwindTopicEntry> = {
+  'tailwindcss/index': {
+    eyebrow: 'Topic overview',
+    summary: 'Collect the history, ecosystem foundations, engineering practice, AI workflow, and demo comparisons into one map so readers can see the whole picture before choosing where to dive deeper.',
+    highlights: ['See the whole landscape first', 'Then choose tools and approaches', 'Finally land on engineering constraints'],
+    packages: [
+      { title: 'Tailwind CSS', description: 'The mainline tool for utility classes and theme tokens.', icon: 'icon-[mdi--weather-windy]', href: 'https://tailwindcss.com/', badge: 'Core' },
+      { title: 'UnoCSS', description: 'Useful for comparing flexibility, custom rules, and migration cost.', icon: 'icon-[logos--unocss]', href: 'https://unocss.dev/', badge: 'Compare' },
+      { title: 'PostCSS', description: 'Almost every modern CSS toolchain passes through it.', icon: 'icon-[logos--postcss]', href: 'https://postcss.org/', badge: 'Base' },
+    ],
+    solutions: [
+      { title: 'Style evolution', description: 'A map from Raw CSS to utility-first.', icon: 'icon-[mdi--timeline-outline]', href: '/docs/tailwindcss/history' },
+      { title: 'Best practices', description: 'Connect tokens, variants, merge, and review checklists.', icon: 'icon-[mdi--check-decagram-outline]', href: '/docs/tailwindcss/best-practices' },
+      { title: 'AI and demos', description: 'Bring prompt templates, verification chains, and live examples into the workflow.', icon: 'icon-[mdi--robot-outline]', href: '/docs/tailwindcss/ai-friendly-and-demos' },
+    ],
+  },
+  'tailwindcss/history/history-style-evolution': {
+    eyebrow: 'Evolution map',
+    summary: 'Put CSS solutions back on a real timeline. The point is not memorizing dates, but understanding which problem each stage solved and which new boundary it created.',
+    highlights: ['Great for stack evaluation', 'Useful for team sharing', 'Explains why teams arrive at Tailwind'],
+    packages: [
+      { title: 'Bootstrap', description: 'A representative of the global component-class and style-framework era.', icon: 'icon-[logos--bootstrap]', href: 'https://getbootstrap.com/' },
+      { title: 'Sass', description: 'The first big productivity boost from variables, nesting, and mixins.', icon: 'icon-[logos--sass]', href: 'https://sass-lang.com/' },
+      { title: 'styled-components', description: 'A landmark of component-boundary and runtime styling.', icon: 'icon-[mdi--application-braces-outline]', href: 'https://styled-components.com/' },
+    ],
+    solutions: [
+      { title: 'Raw CSS phase', description: 'See the earliest reset logic and global naming model.', icon: 'icon-[mdi--language-css3]', href: '/docs/tailwindcss/history/raw-css' },
+      { title: 'Utility-first phase', description: 'Understand how Tailwind and UnoCSS changed organization.', icon: 'icon-[mdi--lightning-bolt-outline]', href: '/docs/tailwindcss/history/utility-first' },
+      { title: 'Headless + tokens', description: 'Upgrade style questions into component abstraction and design-system questions.', icon: 'icon-[mdi--cube-outline]', href: '/docs/tailwindcss/history/headless-tokens' },
+    ],
+  },
+  'tailwindcss/css-origin-evolution': {
+    eyebrow: 'Where the problem starts',
+    summary: 'Go back to the origin of native CSS and global styles to understand why resets, naming conventions, and build tools kept appearing.',
+    highlights: ['Start from browser defaults', 'See the reset vs normalize boundary', 'Understand why modern layers keep stacking'],
+    packages: [
+      { title: 'normalize.css', description: 'A classic baseline for unifying default browser styles.', icon: 'icon-[mdi--tune-variant]', href: 'https://necolas.github.io/normalize.css/' },
+      { title: 'modern-normalize', description: 'A more modern and lightweight reset.', icon: 'icon-[mdi--format-align-middle]', href: 'https://github.com/sindresorhus/modern-normalize' },
+    ],
+    solutions: [
+      { title: 'Raw CSS / BEM', description: 'See the most direct naming-based style engineering.', icon: 'icon-[mdi--code-braces]', href: '/docs/tailwindcss/history/raw-css' },
+      { title: 'PostCSS ecosystem', description: 'Move from native CSS toward plugin-based processing.', icon: 'icon-[logos--postcss]', href: '/docs/tailwindcss/postcss' },
+    ],
+  },
+  'tailwindcss/bem-and-oocss': {
+    eyebrow: 'Naming systems',
+    summary: 'BEM and OOCSS are a key prehistory of modern component naming and reusable style organization. Many Tailwind constraints still echo them today.',
+    highlights: ['Semantic naming', 'Component boundaries', 'Reuse patterns'],
+    packages: [
+      { title: 'SUIT CSS', description: 'A representative of pushing component naming into a more engineered system.', icon: 'icon-[mdi--alphabetical-variant]', href: 'https://suitcss.github.io/' },
+      { title: 'Bootstrap', description: 'A real-world sample of semantic and component class naming at scale.', icon: 'icon-[logos--bootstrap]', href: 'https://getbootstrap.com/' },
+    ],
+    solutions: [
+      { title: 'Raw CSS history', description: 'Look back at what BEM and OOCSS actually solved.', icon: 'icon-[mdi--history]', href: '/docs/tailwindcss/history/raw-css' },
+      { title: 'Best practices', description: 'Understand why modern teams move toward tokens and variants.', icon: 'icon-[mdi--check-bold]', href: '/docs/tailwindcss/best-practices' },
+    ],
+  },
+  'tailwindcss/history/history-raw-css': {
+    eyebrow: 'Phase one',
+    summary: 'Raw CSS is the starting point of everything that came after it. It is direct, but it also exposes global pollution, naming collisions, and maintenance drift most easily.',
+    highlights: ['Zero build', 'Global naming', 'Manual cascade control'],
+    packages: [
+      { title: 'normalize.css', description: 'A classic baseline for default browser-style normalization.', icon: 'icon-[mdi--minus-circle-outline]', href: 'https://necolas.github.io/normalize.css/' },
+      { title: 'Bulma', description: 'A representative of semantic classes and lightweight UI frameworks.', icon: 'icon-[logos--bulma]', href: 'https://bulma.io/' },
+      { title: 'Pure.css', description: 'Another trade-off for small global style frameworks.', icon: 'icon-[mdi--feather]', href: 'https://purecss.io/' },
+    ],
+    solutions: [
+      { title: 'BEM / OOCSS', description: 'Reduce global pollution through naming conventions.', icon: 'icon-[mdi--shape-outline]', href: '/docs/tailwindcss/bem-and-oocss' },
+      { title: 'CSS Modules', description: 'Hand the isolation problem to compile time.', icon: 'icon-[mdi--shield-outline]', href: '/docs/tailwindcss/history/css-modules' },
+    ],
+  },
+  'tailwindcss/history/history-preprocessors': {
+    eyebrow: 'Preprocessor era',
+    summary: 'Sass and Less brought variables, nesting, and mixins into frontend engineering, solving the "plain CSS is too slow to write" problem for the first time at scale.',
+    highlights: ['Variables and mixins', 'Theme customization', 'Scripted compilation'],
+    packages: [
+      { title: 'Sass', description: 'The most mature CSS preprocessor ecosystem.', icon: 'icon-[logos--sass]', href: 'https://sass-lang.com/' },
+      { title: 'Less', description: 'A lighter route with friendlier syntax.', icon: 'icon-[logos--less]', href: 'https://lesscss.org/' },
+      { title: 'Stylus', description: 'Another route with a more free-form syntax style.', icon: 'icon-[mdi--language-css3]', href: 'https://stylus-lang.com/' },
+    ],
+    solutions: [
+      { title: 'PostCSS', description: 'The turning point from syntax sugar to a plugin platform.', icon: 'icon-[logos--postcss]', href: '/docs/tailwindcss/postcss' },
+      { title: 'Style evolution', description: 'Put preprocessors back onto the longer historical line.', icon: 'icon-[mdi--source-branch]', href: '/docs/tailwindcss/history' },
+    ],
+  },
+  'tailwindcss/postcss': {
+    eyebrow: 'Plugin foundation',
+    summary: 'PostCSS is the shared foundation of Tailwind, Autoprefixer, CSS Modules, and many compile-time styling approaches. Understanding it makes the ecosystem boundary much clearer.',
+    highlights: ['AST pipeline', 'Plugin order matters', 'Shared builder foundation'],
+    packages: [
+      { title: 'Autoprefixer', description: 'Turn vendor prefixes from manual labor into a build step.', icon: 'icon-[mdi--auto-fix]', href: 'https://github.com/postcss/autoprefixer', badge: 'Popular' },
+      { title: 'postcss-preset-env', description: 'Bring future CSS syntax into production step by step.', icon: 'icon-[mdi--test-tube-empty]', href: 'https://preset-env.cssdb.org/' },
+      { title: 'cssnano', description: 'A common final step for compression and optimization.', icon: 'icon-[mdi--zip-box-outline]', href: 'https://cssnano.github.io/cssnano/' },
+    ],
+    solutions: [
+      { title: 'CSS Modules', description: 'See how PostCSS participates in modularization and isolation.', icon: 'icon-[mdi--layers-triple-outline]', href: '/docs/tailwindcss/history/css-modules' },
+      { title: 'Tailwind core mechanics', description: 'Understand why Tailwind must stand on top of PostCSS.', icon: 'icon-[mdi--weather-windy]', href: '/docs/tailwindcss/tailwind-core' },
+      { title: 'Isolation strategies', description: 'Connect preflight, scoping, and build boundaries.', icon: 'icon-[mdi--wall]', href: '/docs/tailwindcss/style-isolation' },
+    ],
+  },
+  'tailwindcss/history/history-css-modules': {
+    eyebrow: 'Isolation upgrade',
+    summary: 'CSS Modules represent the stage where build tools, not humans, manage scope. Isolation becomes clear, but the abstraction depends more heavily on component structure.',
+    highlights: ['Compile-time hashes', 'Local scope by default', 'Themes and shared variables need separate design'],
+    packages: [
+      { title: 'CSS Modules', description: 'The de facto standard for scoped hashes and mapping files.', icon: 'icon-[mdi--pound-box-outline]', href: 'https://github.com/css-modules/css-modules' },
+      { title: 'vanilla-extract', description: 'Bring the type system and compile-time styles together.', icon: 'icon-[mdi--ice-pop]', href: 'https://vanilla-extract.style/' },
+    ],
+    solutions: [
+      { title: 'Style isolation', description: 'Compare Modules inside a fuller set of isolation strategies.', icon: 'icon-[mdi--shield-half-full]', href: '/docs/tailwindcss/style-isolation' },
+      { title: 'CSS-in-JS phase', description: 'See why the next step leaned into stronger component boundaries.', icon: 'icon-[mdi--application-braces-outline]', href: '/docs/tailwindcss/history/css-in-js' },
+    ],
+  },
+  'tailwindcss/history/history-css-in-js': {
+    eyebrow: 'Component boundary',
+    summary: 'CSS-in-JS ties style generation tightly to component state, trading for strong dynamic power while also bringing runtime cost and debugging complexity.',
+    highlights: ['Runtime injection', 'Theme systems', 'Strong dynamic styling'],
+    packages: [
+      { title: 'styled-components', description: 'The most representative CSS-in-JS route.', icon: 'icon-[mdi--application-braces-outline]', href: 'https://styled-components.com/' },
+      { title: 'Emotion', description: 'Another mainstream route with a stronger balance of flexibility and performance.', icon: 'icon-[mdi--emoticon-outline]', href: 'https://emotion.sh/' },
+      { title: 'Linaria', description: 'Push CSS-in-JS toward zero runtime.', icon: 'icon-[mdi--flash-outline]', href: 'https://linaria.dev/' },
+    ],
+    solutions: [
+      { title: 'Tailwind vs UnoCSS', description: 'Compare compile-time utility classes with runtime styles.', icon: 'icon-[mdi--compare-horizontal]', href: '/docs/tailwindcss/tailwind-vs-unocss' },
+      { title: 'The future of generative CSS', description: 'See how runtime and build-time boundaries keep merging.', icon: 'icon-[mdi--timeline-clock-outline]', href: '/docs/tailwindcss/history/future-generative-css' },
+    ],
+  },
+  'tailwindcss/history/history-utility-first': {
+    eyebrow: 'Utility-first phase',
+    summary: 'Utility-first shifts the center of styling from naming classes to organizing constraints. Class names stop being the end goal; tokens, variants, JIT, and the review chain become the real focus.',
+    highlights: ['JIT', 'Tree shaking', 'Token alignment', 'Engineering constraints'],
+    packages: [
+      { title: 'Tailwind CSS', description: 'The center of the utility-first CSS ecosystem and practice.', icon: 'icon-[mdi--weather-windy]', href: 'https://tailwindcss.com/' },
+      { title: 'UnoCSS', description: 'A more flexible rule engine and preset system.', icon: 'icon-[logos--unocss]', href: 'https://unocss.dev/' },
+      { title: 'Windi CSS', description: 'An important driver of JIT utility-first thinking.', icon: 'icon-[mdi--weather-windy]', href: 'https://windicss.org/' },
+    ],
+    solutions: [
+      { title: 'Tailwind design principles', description: 'Understand how tokens, JIT, and component semantics connect.', icon: 'icon-[mdi--head-cog-outline]', href: '/docs/tailwindcss/tailwind-core' },
+      { title: 'Best practices', description: 'Push utility-first from "can write" to "can maintain".', icon: 'icon-[mdi--clipboard-check-outline]', href: '/docs/tailwindcss/best-practices' },
+    ],
+  },
+  'tailwindcss/history/history-headless-tokens': {
+    eyebrow: 'Design-system phase',
+    summary: 'Once teams maintain component libraries, multi-brand systems, and design systems, the focus moves from "how to write classes" to "how tokens, headless primitives, and variants work together".',
+    highlights: ['Headless components', 'Design tokens', 'Variant factories'],
+    packages: [
+      { title: 'Radix UI', description: 'A core representative of unstyled interaction primitives.', icon: 'icon-[mdi--orbit-variant]', href: 'https://www.radix-ui.com/' },
+      { title: 'Headless UI', description: 'Unstyled interaction components from Tailwind Labs.', icon: 'icon-[mdi--view-quilt-outline]', href: 'https://headlessui.com/' },
+      { title: 'tailwind-variants', description: 'Organize slots, recipes, and merge behavior together.', icon: 'icon-[mdi--shape-plus-outline]', href: 'https://www.tailwind-variants.org/' },
+    ],
+    solutions: [
+      { title: 'shadcn/ui', description: 'See how the copy-source model became an engineering default.', icon: 'icon-[mdi--library-outline]', href: '/docs/tailwindcss/shadcn-ui' },
+      { title: 'merge / variants', description: 'Understand the loop among cva, tv, and tailwind-merge.', icon: 'icon-[mdi--merge]', href: '/docs/tailwindcss/merge-and-variants' },
+    ],
+  },
+  'tailwindcss/history/history-future-generative-css': {
+    eyebrow: 'What comes next',
+    summary: 'Generative CSS, new native capabilities, and AI collaboration are turning "writing styles" into "constraining style systems", with the focus shifting toward stronger context and verification chains.',
+    highlights: ['AI collaboration', 'Stronger native capabilities', 'Runtime and build time keep converging'],
+    packages: [
+      { title: 'Lightning CSS', description: 'A new trend in high-performance all-in-one CSS processing.', icon: 'icon-[mdi--flash-triangle-outline]', href: 'https://lightningcss.dev/' },
+      { title: 'StyleX', description: 'Push atomic styling and compile-time constraints even further.', icon: 'icon-[mdi--vector-polyline]', href: 'https://stylexjs.com/' },
+      { title: 'OpenAI / Agents', description: 'AI is reshaping style generation and review workflows.', icon: 'icon-[mdi--robot-happy-outline]', href: '/docs/tailwindcss/ai-friendly-and-demos' },
+    ],
+    solutions: [
+      { title: 'AI-friendly workflows', description: 'Connect prompts, lint, build, and human spot checks.', icon: 'icon-[mdi--robot-excited-outline]', href: '/docs/tailwindcss/ai-friendly-and-demos' },
+      { title: 'Comparison demos', description: 'Use one UI to compare outputs from different styling strategies.', icon: 'icon-[mdi--test-tube]', href: '/docs/tailwindcss/demos' },
+    ],
+  },
+  'tailwindcss/history/history-component-evolution': {
+    eyebrow: 'Component-library evolution',
+    summary: 'Component libraries have moved from skin-opinionated UI kits to headless + tokens + source ownership, which makes the styling system look more and more like infrastructure.',
+    highlights: ['From UI kits to primitives', 'From package dependency to source ownership', 'From theme overrides to token constraints'],
+    packages: [
+      { title: 'Ant Design', description: 'A typical representative of traditional skinned UI kits.', icon: 'icon-[logos--ant-design]', href: 'https://ant.design/' },
+      { title: 'Radix UI', description: 'A key milestone on the primitives route.', icon: 'icon-[mdi--orbit-variant]', href: 'https://www.radix-ui.com/' },
+      { title: 'shadcn/ui', description: 'Turned the copy-source model into a default practice.', icon: 'icon-[mdi--content-copy]', href: '/docs/tailwindcss/shadcn-ui' },
+    ],
+    solutions: [
+      { title: 'Headless + tokens', description: 'Understand why component libraries started layering their design.', icon: 'icon-[mdi--cube-send]', href: '/docs/tailwindcss/history/headless-tokens' },
+      { title: 'Style isolation', description: 'Handle the boundary problems of publishable component libraries.', icon: 'icon-[mdi--border-inside]', href: '/docs/tailwindcss/style-isolation' },
+    ],
+  },
+  'tailwindcss/tailwind-core': {
+    eyebrow: 'Core design',
+    summary: 'The real value of Tailwind is not "writing less CSS", but connecting tokens, JIT, component semantics, and review constraints into one engineering pipeline.',
+    highlights: ['tokens -> utilities -> component semantics', 'Precise content scanning', 'JIT and plugin systems'],
+    packages: [
+      { title: 'Tailwind CSS', description: 'The full core from theme extension to utility generation.', icon: 'icon-[mdi--weather-windy]', href: 'https://tailwindcss.com/docs/utility-first', badge: 'Core' },
+      { title: 'Tailwind Typography', description: 'A typical representative of the official plugin ecosystem.', icon: 'icon-[mdi--format-text]', href: 'https://tailwindcss.com/docs/typography-plugin' },
+      { title: 'UnoCSS', description: 'Useful for contrasting Tailwind design trade-offs.', icon: 'icon-[logos--unocss]', href: 'https://unocss.dev/' },
+    ],
+    solutions: [
+      { title: 'Tailwind vs UnoCSS', description: 'Compare ecosystem, IDE support, and merge ergonomics.', icon: 'icon-[mdi--compare]', href: '/docs/tailwindcss/tailwind-vs-unocss' },
+      { title: 'Merge / Variants', description: 'The key layer for plugging Tailwind into component APIs.', icon: 'icon-[mdi--layers-edit]', href: '/docs/tailwindcss/merge-and-variants' },
+    ],
+  },
+  'tailwindcss/tailwind-vs-unocss': {
+    eyebrow: 'Solution comparison',
+    summary: 'Tailwind wins on ecosystem, merge support, IDE experience, and community patterns; UnoCSS wins on rule freedom and customization range. The core trade-off is whether the team wants to own its rule system.',
+    highlights: ['Ecosystem comparison', 'Rule flexibility', 'Merge and hinting cost'],
+    packages: [
+      { title: 'Tailwind CSS', description: 'Ready-made ecosystem, design-system conventions, and merge rules.', icon: 'icon-[mdi--weather-windy]', href: 'https://tailwindcss.com/' },
+      { title: 'UnoCSS', description: 'More engine-like atomization with stronger custom rules and presets.', icon: 'icon-[logos--unocss]', href: 'https://unocss.dev/' },
+      { title: 'tailwind-merge', description: 'A highly mature conflict-dedup solution for Tailwind use cases.', icon: 'icon-[mdi--merge]', href: 'https://github.com/dcastil/tailwind-merge' },
+    ],
+    solutions: [
+      { title: 'Tailwind core', description: 'Understand why Tailwind is more ready to use out of the box.', icon: 'icon-[mdi--rocket-launch-outline]', href: '/docs/tailwindcss/tailwind-core' },
+      { title: 'Best practices', description: 'Explain how to land Tailwind after choosing it.', icon: 'icon-[mdi--notebook-check-outline]', href: '/docs/tailwindcss/best-practices' },
+    ],
+  },
+  'tailwindcss/merge-and-variants': {
+    eyebrow: 'Component loop',
+    summary: 'tailwind-merge, cva, and tailwind-variants solve the same question: how do utility classes grow into a stable component API? This step decides whether Tailwind remains maintainable.',
+    highlights: ['Merge deduplication', 'Single-slot and multi-slot variants', 'From tokens to component output'],
+    packages: [
+      { title: 'tailwind-merge', description: 'Keep external class override behavior predictable.', icon: 'icon-[mdi--merge]', href: 'https://github.com/dcastil/tailwind-merge', badge: 'Must-have' },
+      { title: 'class-variance-authority', description: 'A lightweight single-slot variant factory.', icon: 'icon-[mdi--alpha-c-circle-outline]', href: 'https://cva.style/' },
+      { title: 'tailwind-variants', description: 'A good fit for multi-slot components and design-system recipes.', icon: 'icon-[mdi--shape-plus]', href: 'https://www.tailwind-variants.org/' },
+    ],
+    solutions: [
+      { title: 'shadcn/ui', description: 'See how the copy-source model depends on merge and variants.', icon: 'icon-[mdi--content-duplicate]', href: '/docs/tailwindcss/shadcn-ui' },
+      { title: 'Best practices', description: 'Connect state convergence, defaults, and review rules.', icon: 'icon-[mdi--tune-vertical-variant]', href: '/docs/tailwindcss/best-practices' },
+    ],
+  },
+  'tailwindcss/shadcn-ui': {
+    eyebrow: 'Source ownership',
+    summary: 'The real impact of shadcn/ui is not what a specific button looks like. It turned "copy source + merge + variants + headless primitives" into the default component workflow for frontend teams.',
+    highlights: ['Copy the source', 'Radix + Tailwind', 'Source ownership returns to the team'],
+    packages: [
+      { title: 'shadcn/ui', description: 'Copy code into the repo and maintain it, rather than only installing a dependency.', icon: 'icon-[mdi--content-copy]', href: 'https://ui.shadcn.com/' },
+      { title: 'Radix UI', description: 'Provides unstyled interaction primitives.', icon: 'icon-[mdi--orbit-variant]', href: 'https://www.radix-ui.com/' },
+      { title: 'Ariakit', description: 'Another headless and accessibility-focused primitive base.', icon: 'icon-[mdi--access-point-network]', href: 'https://ariakit.org/' },
+    ],
+    solutions: [
+      { title: 'Merge / Variants', description: 'Understand why shadcn/ui depends on cn, cva, and tv.', icon: 'icon-[mdi--source-merge]', href: '/docs/tailwindcss/merge-and-variants' },
+      { title: 'Component-library evolution', description: 'Put shadcn/ui back into the longer history of component libraries.', icon: 'icon-[mdi--library-shelves]', href: '/docs/tailwindcss/history/component-evolution' },
+    ],
+  },
+  'tailwindcss/best-practices': {
+    eyebrow: 'Engineering practice',
+    summary: 'What makes Tailwind stable in production is not whether you can write classes, but whether tokens, variants, merge, size monitoring, and review checklists become a shared team language.',
+    highlights: ['Tokens first', 'Centralized state', 'Verifiable content and bundle size'],
+    packages: [
+      { title: 'class-variance-authority', description: 'Converge component state into a builder.', icon: 'icon-[mdi--tune-variant]', href: 'https://cva.style/' },
+      { title: 'tailwind-merge', description: 'Handle conflicting classes and external overrides.', icon: 'icon-[mdi--merge]', href: 'https://github.com/dcastil/tailwind-merge' },
+      { title: 'clsx', description: 'A lightweight class composition entry that pairs well with merge.', icon: 'icon-[mdi--code-json]', href: 'https://github.com/lukeed/clsx' },
+    ],
+    solutions: [
+      { title: 'Style isolation', description: 'The next step for micro-frontends, component libraries, and third-party embeds.', icon: 'icon-[mdi--shield-sun-outline]', href: '/docs/tailwindcss/style-isolation' },
+      { title: 'AI-friendly workflows', description: 'Write best practices into prompts, lint, and review.', icon: 'icon-[mdi--robot-industrial-outline]', href: '/docs/tailwindcss/ai-friendly-and-demos' },
+    ],
+  },
+  'tailwindcss/style-isolation': {
+    eyebrow: 'Boundary governance',
+    summary: 'Once Tailwind enters component libraries, micro-frontends, widgets, or third-party embeds, the problem is no longer "do the classes look nice", but "how do we establish style boundaries".',
+    highlights: ['Namespaces', 'Compile-time hashes', 'Shadow DOM / iframe', 'Preflight control'],
+    packages: [
+      { title: 'CSS Modules', description: 'Use hashed class names for compile-time isolation.', icon: 'icon-[mdi--shield-lock-outline]', href: 'https://github.com/css-modules/css-modules' },
+      { title: 'vanilla-extract', description: 'Type-safe compile-time styling and theme variables.', icon: 'icon-[mdi--palette-swatch-variant]', href: 'https://vanilla-extract.style/' },
+      { title: 'Shadow DOM', description: 'The browser-native final tool for isolation boundaries.', icon: 'icon-[mdi--dock-window]', href: 'https://developer.mozilla.org/docs/Web/API/Web_components/Using_shadow_DOM' },
+    ],
+    solutions: [
+      { title: 'Best practices', description: 'Manage tokens and variants well before introducing isolation strategies.', icon: 'icon-[mdi--hammer-wrench]', href: '/docs/tailwindcss/best-practices' },
+      { title: 'Component-library evolution', description: 'Understand why isolation becomes unavoidable for component libraries.', icon: 'icon-[mdi--widgets-outline]', href: '/docs/tailwindcss/history/component-evolution' },
+    ],
+  },
+  'tailwindcss/ai-friendly-and-demos': {
+    eyebrow: 'AI collaboration',
+    summary: 'Utility classes are model-friendly, but truly shippable output requires tokens, variants, blacklists, merge, and build verification to be given to the model together.',
+    highlights: ['Prompt templates', 'Boundary constraints', 'React / Vue demos', 'Verification chain'],
+    packages: [
+      { title: 'OpenAI / Codex', description: 'Represents the current AI code generation and collaboration workflow.', icon: 'icon-[mdi--robot-happy-outline]', href: 'https://openai.com/' },
+      { title: 'tailwind-merge', description: 'Helps model-generated class combinations converge more reliably.', icon: 'icon-[mdi--merge]', href: 'https://github.com/dcastil/tailwind-merge' },
+      { title: 'class-variance-authority', description: 'Collapse dynamic space from string concatenation into enums.', icon: 'icon-[mdi--counter]', href: 'https://cva.style/' },
+    ],
+    solutions: [
+      { title: 'Best practices', description: 'Write the team constraints clearly before feeding them to the model.', icon: 'icon-[mdi--clipboard-text-search-outline]', href: '/docs/tailwindcss/best-practices' },
+      { title: 'Demo comparison', description: 'Validate the same UI across React, Vue, and multiple styling approaches.', icon: 'icon-[mdi--presentation-play]', href: '/docs/tailwindcss/demos' },
+    ],
+  },
+  'tailwindcss/demos': {
+    eyebrow: 'Controlled experiments',
+    summary: 'Implement the same UI with Raw CSS, Sass, Modules, CSS-in-JS, Tailwind, and headless patterns. It is one of the best ways to support real team discussion and trade-off analysis.',
+    highlights: ['Same problem, many answers', 'Compare code and output side by side', 'Great for sharing and review'],
+    packages: [
+      { title: 'React', description: 'Used to show how Tailwind and headless solutions are written.', icon: 'icon-[logos--react]', href: 'https://react.dev/' },
+      { title: 'Vue', description: 'Used to contrast another set of semantics around scoped styles, utilities, and variants.', icon: 'icon-[logos--vue]', href: 'https://vuejs.org/' },
+      { title: 'styled-components', description: 'A typical comparison point for the CSS-in-JS route.', icon: 'icon-[mdi--application-braces-outline]', href: 'https://styled-components.com/' },
+    ],
+    solutions: [
+      { title: 'AI-friendly workflows', description: 'Turn demos into higher-quality context for AI prompting.', icon: 'icon-[mdi--robot-confused-outline]', href: '/docs/tailwindcss/ai-friendly-and-demos' },
+      { title: 'Style evolution', description: 'Map demos back to each historical stage.', icon: 'icon-[mdi--source-branch]', href: '/docs/tailwindcss/history' },
+    ],
+  },
+}
+
+export function getTailwindTopicData(locale: SiteLocale): Record<string, TailwindTopicEntry> {
+  return locale === 'en' ? tailwindTopicDataEn : tailwindTopicDataZh
 }

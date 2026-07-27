@@ -1,7 +1,9 @@
 import type { JSX, ReactNode } from 'react'
+import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import HomeLogo from '@site/src/components/HomeLogo'
 import { useUiManagement } from '@site/src/features/ui-management/context'
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
 import Layout from '@theme/Layout'
 import HeroGithubBadge from '../components/HeroGithubBadge'
 import HeroVersionBadge from '../components/HeroVersionBadge'
@@ -33,121 +35,245 @@ interface RouteItem {
   icon: string
 }
 
-const facts: FactItem[] = [
-  { label: 'Tailwind', value: 'CSS 4 / @source' },
-  { label: '框架', value: 'uni-app / Taro / Mpx / Weapp-vite' },
-  { label: '构建器', value: 'Webpack / Vite / Gulp' },
-  { label: '运行时', value: 'merge / cva / variants' },
-]
+const homepageCopy = {
+  'zh-cn': {
+    facts: [
+      { label: 'Tailwind', value: 'CSS 4 / @source' },
+      { label: '框架', value: 'uni-app / Taro / Mpx / Weapp-vite' },
+      { label: '构建器', value: 'Webpack / Vite / Gulp' },
+      { label: '运行时', value: 'merge / cva / variants' },
+    ] satisfies FactItem[],
+    routeLinks: [
+      {
+        href: '/docs/quick-start/install',
+        label: '快速开始',
+        description: '从 CSS-first 入口接入当前版本。',
+        icon: 'icon-[mdi--numeric-4-box-outline]',
+      },
+      {
+        href: '/docs/quick-start/frameworks/uni-app-vite',
+        label: '框架接入',
+        description: '按 uni-app、Taro、Mpx、Weapp-vite 或原生选择路线。',
+        icon: 'icon-[mdi--transit-connection-variant]',
+      },
+      {
+        href: '/docs/api/interfaces/UserDefinedOptions',
+        label: '配置参考',
+        description: '直接查看插件选项、默认值和类型入口。',
+        icon: 'icon-[mdi--api]',
+      },
+    ] satisfies RouteItem[],
+    capabilities: [
+      {
+        title: '精确转译',
+        description: 'JS 与模板只转换 Tailwind 已生成类名，避免业务字符串被误伤。',
+        icon: 'icon-[mdi--target]',
+      },
+      {
+        title: 'Web / 小程序分端输出',
+        description: '同一份 CSS-first 输入，按环境生成浏览器 CSS 或小程序 CSS。',
+        icon: 'icon-[mdi--source-branch]',
+      },
+      {
+        title: '跨生态落地',
+        description: '覆盖 uni-app、Taro、Mpx、Weapp-vite、原生小程序以及 Webpack、Vite、Gulp 链路。',
+        icon: 'icon-[mdi--transit-connection-variant]',
+      },
+      {
+        title: '运行时工具族',
+        description: 'merge、variants、cva 在小程序端保持转义前后一致。',
+        icon: 'icon-[mdi--package-variant-closed]',
+      },
+    ] satisfies CapabilityItem[],
+    entries: [
+      {
+        href: '/docs/quick-start/install',
+        label: '快速开始',
+        description: '从 Tailwind CSS 4 与 CSS-first 入口开始。',
+        icon: 'icon-[mdi--rocket-launch-outline]',
+      },
+      {
+        href: '/docs/quick-start/frameworks/uni-app-vite',
+        label: '框架接入',
+        description: '按 uni-app、Taro、Mpx、Weapp-vite 或原生小程序选择配置。',
+        icon: 'icon-[mdi--transit-connection-variant]',
+      },
+      {
+        href: '/docs/api/interfaces/UserDefinedOptions',
+        label: '配置项',
+        description: '类型、插件与配置项的完整参考。',
+        icon: 'icon-[mdi--api]',
+      },
+      {
+        href: '/llms',
+        label: 'AI / llms',
+        description: '让模型读取精简索引，减少过期配置。',
+        icon: 'icon-[logos--openai-icon]',
+      },
+      {
+        href: '/docs/community/group',
+        label: '社区',
+        description: '加入交流群，反馈真实框架问题。',
+        icon: 'icon-[mdi--account-group-outline]',
+        control: 'communityEntry',
+      },
+    ] as Array<EntryItem & { control?: 'communityEntry' }>,
+    platformIcons: [
+      { id: 'web', label: 'Web' },
+      { id: 'miniapp', label: '小程序' },
+      { id: 'android', label: 'Android' },
+      { id: 'ios', label: 'iOS' },
+      { id: 'harmony', label: 'HarmonyOS' },
+    ],
+    hero: {
+      badge: 'Tailwind CSS 4 + 小程序生成链路',
+      copyrightAria: '查看版权与证书页面',
+      copyrightTitle: 'G-Star 毕业项目认证',
+      copyrightImageAlt: 'AtomGit G-Star 毕业项目认证徽章',
+      lead: '一套 CSS-first 输入，交付 Web 与小程序两端样式。',
+      sublead: '保留 `WeappTailwindcss` 接管生成、转义与运行时边界，不在小程序构建里重复注册官方 Tailwind 插件。',
+      platformAria: '支持平台',
+      primaryCta: '开始接入',
+      aiEntry: 'AI 学习入口',
+      communityEntry: '加入技术交流群',
+    },
+    factsAria: '支持矩阵',
+    routesAria: '接入路线',
+    capabilitiesTitle: '守住工程边界，接管生成与转译',
+    capabilitiesSummary: '复用 Tailwind CSS 4 输入，把源码扫描、样式生成、类名转义和运行时工具放在一条工程链路里。',
+    buildToolsTitle: '构建器接管 Tailwind 生成',
+    buildToolsDescription: 'Webpack、Vite、Gulp 与自定义 Node 流程都由 weapp-tailwindcss 接管输出，小程序构建不再叠加官方 Tailwind 生成插件。',
+    storyTitle: '同一套 Tailwind 输入，按目标端交付产物',
+    storyBody: 'H5/Web 保持 Tailwind 原生语义；小程序补齐选择器、单位、转义与运行时边界。团队统一入口，再按框架接入。',
+    storyCta: '查看配置项',
+    entrypointsAria: '文档入口',
+  },
+  'en': {
+    facts: [
+      { label: 'Tailwind', value: 'CSS 4 / @source' },
+      { label: 'Frameworks', value: 'uni-app / Taro / Mpx / Weapp-vite' },
+      { label: 'Builders', value: 'Webpack / Vite / Gulp' },
+      { label: 'Runtime', value: 'merge / cva / variants' },
+    ] satisfies FactItem[],
+    routeLinks: [
+      {
+        href: '/docs/quick-start/install',
+        label: 'Quick Start',
+        description: 'Start from the CSS-first entry for the current version.',
+        icon: 'icon-[mdi--numeric-4-box-outline]',
+      },
+      {
+        href: '/docs/quick-start/frameworks/uni-app-vite',
+        label: 'Framework Setup',
+        description: 'Pick the path for uni-app, Taro, Mpx, Weapp-vite, or native mini apps.',
+        icon: 'icon-[mdi--transit-connection-variant]',
+      },
+      {
+        href: '/docs/api/interfaces/UserDefinedOptions',
+        label: 'Config Reference',
+        description: 'Go straight to plugin options, defaults, and type entry points.',
+        icon: 'icon-[mdi--api]',
+      },
+    ] satisfies RouteItem[],
+    capabilities: [
+      {
+        title: 'Precise transforms',
+        description: 'Only class names that Tailwind already generated are transformed, so business strings stay untouched.',
+        icon: 'icon-[mdi--target]',
+      },
+      {
+        title: 'Web / mini app output targets',
+        description: 'One CSS-first input generates browser CSS or mini app CSS depending on the target.',
+        icon: 'icon-[mdi--source-branch]',
+      },
+      {
+        title: 'Cross-ecosystem delivery',
+        description: 'Supports uni-app, Taro, Mpx, Weapp-vite, native mini apps, plus Webpack, Vite, and Gulp.',
+        icon: 'icon-[mdi--transit-connection-variant]',
+      },
+      {
+        title: 'Runtime utility family',
+        description: 'merge, variants, and cva stay consistent around escaping on mini app targets.',
+        icon: 'icon-[mdi--package-variant-closed]',
+      },
+    ] satisfies CapabilityItem[],
+    entries: [
+      {
+        href: '/docs/quick-start/install',
+        label: 'Quick Start',
+        description: 'Start with Tailwind CSS 4 and the CSS-first entry.',
+        icon: 'icon-[mdi--rocket-launch-outline]',
+      },
+      {
+        href: '/docs/quick-start/frameworks/uni-app-vite',
+        label: 'Framework Setup',
+        description: 'Choose config by uni-app, Taro, Mpx, Weapp-vite, or native mini apps.',
+        icon: 'icon-[mdi--transit-connection-variant]',
+      },
+      {
+        href: '/docs/api/interfaces/UserDefinedOptions',
+        label: 'Options',
+        description: 'Complete reference for types, plugins, and configuration.',
+        icon: 'icon-[mdi--api]',
+      },
+      {
+        href: '/llms',
+        label: 'AI / llms',
+        description: 'Let models read a compact index and reduce stale setup advice.',
+        icon: 'icon-[logos--openai-icon]',
+      },
+      {
+        href: '/docs/community/group',
+        label: 'Community',
+        description: 'Join the community and share framework-specific issues.',
+        icon: 'icon-[mdi--account-group-outline]',
+        control: 'communityEntry',
+      },
+    ] as Array<EntryItem & { control?: 'communityEntry' }>,
+    platformIcons: [
+      { id: 'web', label: 'Web' },
+      { id: 'miniapp', label: 'Mini app' },
+      { id: 'android', label: 'Android' },
+      { id: 'ios', label: 'iOS' },
+      { id: 'harmony', label: 'HarmonyOS' },
+    ],
+    hero: {
+      badge: 'Tailwind CSS 4 + mini app generation pipeline',
+      copyrightAria: 'View the copyright and certificate page',
+      copyrightTitle: 'G-Star graduation project certification',
+      copyrightImageAlt: 'AtomGit G-Star graduation project badge',
+      lead: 'One CSS-first input, delivered as Web and mini app styles.',
+      sublead: 'Keep `WeappTailwindcss` in charge of generation, escaping, and runtime boundaries without registering the official Tailwind plugin twice in mini app builds.',
+      platformAria: 'Supported platforms',
+      primaryCta: 'Start setup',
+      aiEntry: 'AI entry',
+      communityEntry: 'Join the tech community',
+    },
+    factsAria: 'Support matrix',
+    routesAria: 'Setup routes',
+    capabilitiesTitle: 'Keep firm engineering boundaries and own generation plus transforms',
+    capabilitiesSummary: 'Reuse Tailwind CSS 4 input while keeping source scanning, style generation, class escaping, and runtime utilities in one engineering pipeline.',
+    buildToolsTitle: 'Builders own Tailwind generation',
+    buildToolsDescription: 'Webpack, Vite, Gulp, and custom Node flows all route output through weapp-tailwindcss so mini app builds do not stack the official Tailwind generation plugin.',
+    storyTitle: 'One Tailwind input, delivered per runtime target',
+    storyBody: 'H5/Web keeps native Tailwind semantics; mini apps add selectors, units, escaping, and runtime boundaries. Teams keep one entry and wire frameworks around it.',
+    storyCta: 'View options',
+    entrypointsAria: 'Docs entry points',
+  },
+} as const
 
-const routeLinks: RouteItem[] = [
-  {
-    href: '/docs/quick-start/install',
-    label: '快速开始',
-    description: '从 CSS-first 入口接入当前版本。',
-    icon: 'icon-[mdi--numeric-4-box-outline]',
-  },
-  {
-    href: '/docs/quick-start/frameworks/uni-app-vite',
-    label: '框架接入',
-    description: '按 uni-app、Taro、Mpx、Weapp-vite 或原生选择路线。',
-    icon: 'icon-[mdi--transit-connection-variant]',
-  },
-  {
-    href: '/docs/api/interfaces/UserDefinedOptions',
-    label: '配置参考',
-    description: '直接查看插件选项、默认值和类型入口。',
-    icon: 'icon-[mdi--api]',
-  },
-]
-
-const capabilities: CapabilityItem[] = [
-  {
-    title: '精确转译',
-    description: 'JS 与模板只转换 Tailwind 已生成类名，避免业务字符串被误伤。',
-    icon: 'icon-[mdi--target]',
-  },
-  {
-    title: 'Web / 小程序分端输出',
-    description: '同一份 CSS-first 输入，按环境生成浏览器 CSS 或小程序 CSS。',
-    icon: 'icon-[mdi--source-branch]',
-  },
-  {
-    title: '跨生态落地',
-    description: '覆盖 uni-app、Taro、Mpx、Weapp-vite、原生小程序以及 Webpack、Vite、Gulp 链路。',
-    icon: 'icon-[mdi--transit-connection-variant]',
-  },
-  {
-    title: '运行时工具族',
-    description: 'merge、variants、cva 在小程序端保持转义前后一致。',
-    icon: 'icon-[mdi--package-variant-closed]',
-  },
-]
-
-const entries: Array<EntryItem & { control?: 'communityEntry' }> = [
-  {
-    href: '/docs/quick-start/install',
-    label: '快速开始',
-    description: '从 Tailwind CSS 4 与 CSS-first 入口开始。',
-    icon: 'icon-[mdi--rocket-launch-outline]',
-  },
-  {
-    href: '/docs/quick-start/frameworks/uni-app-vite',
-    label: '框架接入',
-    description: '按 uni-app、Taro、Mpx、Weapp-vite 或原生小程序选择配置。',
-    icon: 'icon-[mdi--transit-connection-variant]',
-  },
-  {
-    href: '/docs/api/interfaces/UserDefinedOptions',
-    label: '配置项',
-    description: '类型、插件与配置项的完整参考。',
-    icon: 'icon-[mdi--api]',
-  },
-  {
-    href: '/llms',
-    label: 'AI / llms',
-    description: '让模型读取精简索引，减少过期配置。',
-    icon: 'icon-[logos--openai-icon]',
-  },
-  {
-    href: '/docs/community/group',
-    label: '社区',
-    description: '加入交流群，反馈真实框架问题。',
-    icon: 'icon-[mdi--account-group-outline]',
-    control: 'communityEntry',
-  },
-]
-
-const platformIcons: Array<{ id: string, label: string, content: ReactNode }> = [
-  {
-    id: 'web',
-    label: 'Web',
-    content: <i aria-hidden="true" className="icon-[logos--chrome] text-[28px]"></i>,
-  },
-  {
-    id: 'miniapp',
-    label: '小程序',
-    content: <i aria-hidden="true" className="icon-[mdi--wechat] text-[30px] text-[#07c160]"></i>,
-  },
-  {
-    id: 'android',
-    label: 'Android',
-    content: <i aria-hidden="true" className="icon-[mdi--android] text-[32px] text-[#3DDC84]"></i>,
-  },
-  {
-    id: 'ios',
-    label: 'iOS',
-    content: <i aria-hidden="true" className="icon-[mdi--apple] text-[30px]"></i>,
-  },
-  {
-    id: 'harmony',
-    label: 'HarmonyOS',
-    content: <i aria-hidden="true" className="icon-[mdi--cellphone-link] text-[29px] text-[#E5484D]"></i>,
-  },
-]
+const platformIconContent: Record<string, ReactNode> = {
+  web: <i aria-hidden="true" className="icon-[logos--chrome] text-[28px]"></i>,
+  miniapp: <i aria-hidden="true" className="icon-[mdi--wechat] text-[30px] text-[#07c160]"></i>,
+  android: <i aria-hidden="true" className="icon-[mdi--android] text-[32px] text-[#3DDC84]"></i>,
+  ios: <i aria-hidden="true" className="icon-[mdi--apple] text-[30px]"></i>,
+  harmony: <i aria-hidden="true" className="icon-[mdi--cellphone-link] text-[29px] text-[#E5484D]"></i>,
+}
 
 function HomepageHeader() {
   const { homepage } = useUiManagement()
+  const locale = useCurrentSiteLocale()
+  const copy = homepageCopy[locale]
 
   return (
     <main className="home-v5">
@@ -159,7 +285,7 @@ function HomepageHeader() {
                 <HomeLogo />
                 {homepage.heroBadge && (
                   <span className="ui-homepage-hero-badge home-hero__badge">
-                    Tailwind CSS 4 + 小程序生成链路
+                    {copy.hero.badge}
                   </span>
                 )}
               </div>
@@ -174,54 +300,54 @@ function HomepageHeader() {
                   </h1>
                 )}
                 {homepage.gstarBadge && (
-                  <a
-                    aria-label="查看版权与证书页面"
+                  <Link
+                    aria-label={copy.hero.copyrightAria}
                     className="home-hero__gstar-corner ui-homepage-gstar-badge"
-                    href="/copyright"
-                    title="G-Star 毕业项目认证"
+                    to="/copyright"
+                    title={copy.hero.copyrightTitle}
                   >
                     <img
-                      alt="AtomGit G-Star 毕业项目认证徽章"
+                      alt={copy.hero.copyrightImageAlt}
                       className="home-hero__gstar-corner-image"
                       loading="lazy"
                       src="/img/gstar-tag-twinkle.gif"
                     />
-                  </a>
+                  </Link>
                 )}
               </div>
               {homepage.heroSubtitlePrimary && (
                 <p className="ui-homepage-hero-subtitle-primary home-hero__lead">
-                  一套 CSS-first 输入，交付 Web 与小程序两端样式。
+                  {copy.hero.lead}
                 </p>
               )}
               {homepage.heroSubtitleSecondary && (
                 <p className="ui-homepage-hero-subtitle-secondary home-hero__sublead">
-                  保留 `WeappTailwindcss` 接管生成、转义与运行时边界，不在小程序构建里重复注册官方 Tailwind 插件。
+                  {copy.hero.sublead}
                 </p>
               )}
               {homepage.platformTags && (
-                <div className="home-hero__platform-strip" aria-label="支持平台">
-                  {platformIcons.map(({ id, label, content }) => (
+                <div className="home-hero__platform-strip" aria-label={copy.hero.platformAria}>
+                  {copy.platformIcons.map(({ id, label }) => (
                     <span aria-label={label} className="home-hero__platform-icon" key={id} role="img" title={label}>
                       <span className="sr-only">{label}</span>
-                      {content}
+                      {platformIconContent[id]}
                     </span>
                   ))}
                 </div>
               )}
               <div className="home-hero__actions">
                 {homepage.primaryCta && (
-                  <a className={`${ctaButton()} home-cta ui-homepage-primary-cta`} href="/docs/quick-start/install">
-                    <span>开始接入</span>
+                  <Link className={`${ctaButton()} home-cta ui-homepage-primary-cta`} to="/docs/quick-start/install">
+                    <span>{copy.hero.primaryCta}</span>
                     <i aria-hidden="true" className="icon-[mdi--arrow-right] text-[1.1rem]"></i>
-                  </a>
+                  </Link>
                 )}
                 {homepage.aiEntry && (
                   <InteractionPill
                     className="ui-homepage-ai-entry"
                     href="/llms"
                     icon={<i aria-hidden="true" className="icon-[logos--openai-icon] text-[18px]"></i>}
-                    label="AI 学习入口"
+                    label={copy.hero.aiEntry}
                   />
                 )}
                 {homepage.communityEntry && (
@@ -229,7 +355,7 @@ function HomepageHeader() {
                     className="ui-homepage-community-entry"
                     href="/docs/community/group"
                     icon={<i aria-hidden="true" className="icon-[mdi--account-group-outline] text-[18px]"></i>}
-                    label="加入技术交流群"
+                    label={copy.hero.communityEntry}
                   />
                 )}
               </div>
@@ -240,22 +366,22 @@ function HomepageHeader() {
       </section>
 
       {homepage.platformTags && (
-        <section className="ui-homepage-platform-tags home-facts" aria-label="支持矩阵">
-          {facts.map(fact => (
+        <section className="ui-homepage-platform-tags home-facts" aria-label={copy.factsAria}>
+          {copy.facts.map(fact => (
             <div className="home-facts__item" key={fact.label}>
               <span>{fact.label}</span>
               <strong>{fact.value}</strong>
             </div>
           ))}
-          <nav className="home-facts__routes" aria-label="接入路线">
-            {routeLinks.map(route => (
-              <a className="home-facts__route" href={route.href} key={route.href}>
+          <nav className="home-facts__routes" aria-label={copy.routesAria}>
+            {copy.routeLinks.map(route => (
+              <Link className="home-facts__route" to={route.href} key={route.href}>
                 <i aria-hidden="true" className={route.icon}></i>
                 <span>
                   <strong>{route.label}</strong>
                   <small>{route.description}</small>
                 </span>
-              </a>
+              </Link>
             ))}
           </nav>
           {(homepage.githubBadge || homepage.npmVersionBadge) && (
@@ -274,19 +400,19 @@ function HomepageHeader() {
       {homepage.heroFeatureGrid && (
         <section className="ui-homepage-hero-feature-grid home-capabilities" aria-labelledby="home-capabilities-title">
           <div className="home-section-heading">
-            <h2 id="home-capabilities-title">守住工程边界，接管生成与转译</h2>
-            <p>复用 Tailwind CSS 4 输入，把源码扫描、样式生成、类名转义和运行时工具放在一条工程链路里。</p>
+            <h2 id="home-capabilities-title">{copy.capabilitiesTitle}</h2>
+            <p>{copy.capabilitiesSummary}</p>
           </div>
           <div className="home-capabilities__layout">
             {homepage.buildToolsCard && (
               <article className="ui-homepage-build-tools-card home-capability home-capability--large">
                 <i aria-hidden="true" className="icon-[mdi--webpack]"></i>
-                <h3>构建器接管 Tailwind 生成</h3>
-                <p>Webpack、Vite、Gulp 与自定义 Node 流程都由 weapp-tailwindcss 接管输出，小程序构建不再叠加官方 Tailwind 生成插件。</p>
+                <h3>{copy.buildToolsTitle}</h3>
+                <p>{copy.buildToolsDescription}</p>
               </article>
             )}
             <div className="home-capabilities__grid">
-              {capabilities.map((item, index) => {
+              {copy.capabilities.map((item, index) => {
                 const visible = index === 1
                   ? homepage.versionsCard
                   : index === 2
@@ -311,26 +437,24 @@ function HomepageHeader() {
 
       <section className="home-v5-story" aria-labelledby="home-v5-title">
         <div>
-          <h2 id="home-v5-title">同一套 Tailwind 输入，按目标端交付产物</h2>
+          <h2 id="home-v5-title">{copy.storyTitle}</h2>
         </div>
         <div className="home-v5-story__body">
-          <p>
-            H5/Web 保持 Tailwind 原生语义；小程序补齐选择器、单位、转义与运行时边界。团队统一入口，再按框架接入。
-          </p>
-          <a href="/docs/api/interfaces/UserDefinedOptions">查看配置项</a>
+          <p>{copy.storyBody}</p>
+          <Link to="/docs/api/interfaces/UserDefinedOptions">{copy.storyCta}</Link>
         </div>
       </section>
 
-      <section className="home-entrypoints" aria-label="文档入口">
-        {entries.map((entry) => {
+      <section className="home-entrypoints" aria-label={copy.entrypointsAria}>
+        {copy.entries.map((entry) => {
           if (entry.control && !homepage[entry.control]) {
             return null
           }
 
           return (
-            <a
+            <Link
               className={['home-entrypoint', entry.control === 'communityEntry' ? 'ui-homepage-community-entry' : ''].filter(Boolean).join(' ')}
-              href={entry.href}
+              to={entry.href}
               key={entry.href}
             >
               <i aria-hidden="true" className={entry.icon}></i>
@@ -338,7 +462,7 @@ function HomepageHeader() {
                 <strong>{entry.label}</strong>
                 <small>{entry.description}</small>
               </span>
-            </a>
+            </Link>
           )
         })}
       </section>

@@ -1,4 +1,5 @@
 import type { JSX } from 'react'
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
 import { useEffect, useState } from 'react'
 
 const PACKAGE_NAME = 'weapp-tailwindcss'
@@ -92,6 +93,7 @@ interface HeroVersionBadgeProps {
 }
 
 export default function HeroVersionBadge({ className }: HeroVersionBadgeProps = {}): JSX.Element {
+  const locale = useCurrentSiteLocale()
   const [data, setData] = useState<VersionPayload>(() => readCache() ?? { version: null, publishedAt: null })
 
   useEffect(() => {
@@ -125,7 +127,7 @@ export default function HeroVersionBadge({ className }: HeroVersionBadgeProps = 
       target="_blank"
       rel="noreferrer"
       className={[baseClass, className ?? ''].filter(Boolean).join(' ')}
-      aria-label="查看 weapp-tailwindcss 在 npm 的最新版本"
+      aria-label={locale === 'en' ? 'View the latest weapp-tailwindcss version on npm' : '查看 weapp-tailwindcss 在 npm 的最新版本'}
     >
       <i aria-hidden="true" className="icon-[mdi--package-variant-closed] text-[1.1rem] text-[#0ea5e9]"></i>
       <span className={`

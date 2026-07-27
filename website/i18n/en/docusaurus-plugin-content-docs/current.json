@@ -1,0 +1,290 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.各框架注册方式": {
+    "message": "Framework-specific setup",
+    "description": "The label for category '各框架注册方式' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.uni-app": {
+    "message": "uni-app",
+    "description": "The label for category 'uni-app' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Taro": {
+    "message": "Taro",
+    "description": "The label for category 'Taro' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Weapp-vite": {
+    "message": "Weapp-vite",
+    "description": "The label for category 'Weapp-vite' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Mpx": {
+    "message": "Mpx",
+    "description": "The label for category 'Mpx' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.🔥uni-app x 专题": {
+    "message": "🔥 uni-app x topic",
+    "description": "The label for category '🔥uni-app x 专题' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.🛠️ 工具与 CLI": {
+    "message": "🛠️ Tools and CLI",
+    "description": "The label for category '🛠️ 工具与 CLI' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.link.谁在使用？": {
+    "message": "Who is using it?",
+    "description": "The label for link '谁在使用？' in sidebar 'tutorialSidebar', linking to 'https://github.com/sonofmagic/weapp-tailwindcss/issues/270'"
+  },
+  "sidebar.tutorialSidebar.doc.安装依赖": {
+    "message": "Install dependencies",
+    "description": "The label for the doc item '安装依赖' in sidebar 'tutorialSidebar', linking to the doc quick-start/install"
+  },
+  "sidebar.tutorialSidebar.doc.Web 直接使用": {
+    "message": "Use directly on the Web",
+    "description": "The label for the doc item 'Web 直接使用' in sidebar 'tutorialSidebar', linking to the doc quick-start/web"
+  },
+  "sidebar.tutorialSidebar.doc.React Native / Expo": {
+    "message": "React Native / Expo",
+    "description": "The label for the doc item 'React Native / Expo' in sidebar 'tutorialSidebar', linking to the doc quick-start/react-native-expo"
+  },
+  "sidebar.tutorialSidebar.doc.CLI Vue3 Vite": {
+    "message": "CLI Vue3 Vite",
+    "description": "The label for the doc item 'CLI Vue3 Vite' in sidebar 'tutorialSidebar', linking to the doc quick-start/frameworks/uni-app-vite"
+  },
+  "sidebar.tutorialSidebar.doc.HBuilderX": {
+    "message": "HBuilderX",
+    "description": "The label for the doc item 'HBuilderX' in sidebar 'tutorialSidebar', linking to the doc quick-start/frameworks/hbuilderx"
+  },
+  "sidebar.tutorialSidebar.doc.CLI Vue2 Webpack（存量项目）": {
+    "message": "CLI Vue2 Webpack (legacy projects)",
+    "description": "The label for the doc item 'CLI Vue2 Webpack（存量项目）' in sidebar 'tutorialSidebar', linking to the doc quick-start/frameworks/uni-app"
+  },
+  "sidebar.tutorialSidebar.doc.uni-app x": {
+    "message": "uni-app x",
+    "description": "The label for the doc item 'uni-app x' in sidebar 'tutorialSidebar', linking to the doc quick-start/frameworks/uni-app-x"
+  },
+  "sidebar.tutorialSidebar.doc.Webpack / Vite": {
+    "message": "Webpack / Vite",
+    "description": "The label for the doc item 'Webpack / Vite' in sidebar 'tutorialSidebar', linking to the doc quick-start/frameworks/taro"
+  },
+  "sidebar.tutorialSidebar.doc.快速接入": {
+    "message": "Quick setup",
+    "description": "The label for the doc item '快速接入' in sidebar 'tutorialSidebar', linking to the doc quick-start/native/install"
+  },
+  "sidebar.tutorialSidebar.doc.打包方案说明": {
+    "message": "Bundling strategy notes",
+    "description": "The label for the doc item '打包方案说明' in sidebar 'tutorialSidebar', linking to the doc quick-start/frameworks/native"
+  },
+  "sidebar.tutorialSidebar.doc.Mpx": {
+    "message": "Mpx",
+    "description": "The label for the doc item 'Mpx' in sidebar 'tutorialSidebar', linking to the doc quick-start/frameworks/mpx"
+  },
+  "sidebar.tutorialSidebar.doc.前言": {
+    "message": "Introduction",
+    "description": "The label for the doc item '前言' in sidebar 'tutorialSidebar', linking to the doc uni-app-x/index"
+  },
+  "sidebar.tutorialSidebar.doc.快速集成": {
+    "message": "Quick integration",
+    "description": "The label for the doc item '快速集成' in sidebar 'tutorialSidebar', linking to the doc uni-app-x/install"
+  },
+  "sidebar.tutorialSidebar.doc.🔥快速开始(模板项目)": {
+    "message": "🔥 Quick start (template project)",
+    "description": "The label for the doc item '🔥快速开始(模板项目)' in sidebar 'tutorialSidebar', linking to the doc community/templates"
+  },
+  "sidebar.tutorialSidebar.doc.包导出总览": {
+    "message": "Package exports overview",
+    "description": "The label for the doc item '包导出总览' in sidebar 'tutorialSidebar', linking to the doc options/exports"
+  },
+  "sidebar.tutorialSidebar.doc.🗑️Tailwind CSS @2.x": {
+    "message": "🗑️Tailwind CSS @2.x",
+    "description": "The label for the doc item '🗑️Tailwind CSS @2.x' in sidebar 'tutorialSidebar', linking to the doc quick-start/v2/index"
+  },
+  "sidebar.tutorialSidebar.doc.如何贡献": {
+    "message": "How to contribute",
+    "description": "The label for the doc item '如何贡献' in sidebar 'tutorialSidebar', linking to the doc how-to-contribute"
+  },
+  "sidebar.optionsSidebar.doc.配置项": {
+    "message": "Options",
+    "description": "The label for the doc item '配置项' in sidebar 'optionsSidebar', linking to the doc api/interfaces/UserDefinedOptions"
+  },
+  "sidebar.issuesSidebar.doc.v1版本常见问题": {
+    "message": "Common issues in v1",
+    "description": "The label for the doc item 'v1版本常见问题' in sidebar 'issuesSidebar', linking to the doc issues/v1"
+  },
+  "sidebar.issuesSidebar.doc.深入核心原理": {
+    "message": "Dive into the core principles",
+    "description": "The label for the doc item '深入核心原理' in sidebar 'issuesSidebar', linking to the doc principle/index"
+  },
+  "sidebar.issuesSidebar.doc.Tailwindcss 原子类维护指南": {
+    "message": "Tailwindcss utility-class maintenance guide",
+    "description": "The label for the doc item 'Tailwindcss 原子类维护指南' in sidebar 'issuesSidebar', linking to the doc tailwindcss-maintenance-book"
+  },
+  "sidebar.API.category.配置项": {
+    "message": "Options",
+    "description": "The label for category '配置项' in sidebar 'API'"
+  },
+  "sidebar.API.category.🗂️ 其他接口": {
+    "message": "🗂️ Other interfaces",
+    "description": "The label for category '🗂️ 其他接口' in sidebar 'API'"
+  },
+  "sidebar.aiSidebar.category.🤖 AI 工作流": {
+    "message": "🤖 AI workflows",
+    "description": "The label for category '🤖 AI 工作流' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.category.📚 AI 基础知识": {
+    "message": "📚 AI fundamentals",
+    "description": "The label for category '📚 AI 基础知识' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.category.核心概念": {
+    "message": "Core concepts",
+    "description": "The label for category '核心概念' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.category.协议与工具": {
+    "message": "Protocols and tools",
+    "description": "The label for category '协议与工具' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.category.安全与隔离": {
+    "message": "Safety and isolation",
+    "description": "The label for category '安全与隔离' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.category.开发方法": {
+    "message": "Development methods",
+    "description": "The label for category '开发方法' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.category.📊 模型对比": {
+    "message": "📊 Model comparisons",
+    "description": "The label for category '📊 模型对比' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.doc.AI 生成小程序代码": {
+    "message": "AI-generated mini app code",
+    "description": "The label for the doc item 'AI 生成小程序代码' in sidebar 'aiSidebar', linking to the doc ai/index"
+  },
+  "sidebar.aiSidebar.doc.AI 编程方案对比": {
+    "message": "AI coding solution comparison",
+    "description": "The label for the doc item 'AI 编程方案对比' in sidebar 'aiSidebar', linking to the doc ai/ai-programming-plan"
+  },
+  "sidebar.aiSidebar.doc.LLM 友好文档": {
+    "message": "LLM-friendly docs",
+    "description": "The label for the doc item 'LLM 友好文档' in sidebar 'aiSidebar', linking to the doc ai/llms"
+  },
+  "sidebar.aiSidebar.doc.Token（词元）": {
+    "message": "Token",
+    "description": "The label for the doc item 'Token（词元）' in sidebar 'aiSidebar', linking to the doc ai/basics/token"
+  },
+  "sidebar.aiSidebar.doc.上下文窗口（Context Window）": {
+    "message": "Context window",
+    "description": "The label for the doc item '上下文窗口（Context Window）' in sidebar 'aiSidebar', linking to the doc ai/basics/context-window"
+  },
+  "sidebar.aiSidebar.doc.LLMs.txt（LLM 友好文档）": {
+    "message": "LLMs.txt (LLM-friendly docs)",
+    "description": "The label for the doc item 'LLMs.txt（LLM 友好文档）' in sidebar 'aiSidebar', linking to the doc ai/basics/llms-txt"
+  },
+  "sidebar.aiSidebar.doc.MCP（Model Context Protocol）": {
+    "message": "MCP (Model Context Protocol)",
+    "description": "The label for the doc item 'MCP（Model Context Protocol）' in sidebar 'aiSidebar', linking to the doc ai/basics/mcp"
+  },
+  "sidebar.aiSidebar.doc.Skill（技能系统）": {
+    "message": "Skill system",
+    "description": "The label for the doc item 'Skill（技能系统）' in sidebar 'aiSidebar', linking to the doc ai/basics/skill"
+  },
+  "sidebar.aiSidebar.doc.Skill 发布与版本化": {
+    "message": "Skill release and versioning",
+    "description": "The label for the doc item 'Skill 发布与版本化' in sidebar 'aiSidebar', linking to the doc ai/basics/skill-release"
+  },
+  "sidebar.aiSidebar.doc.AI Agent（智能体）": {
+    "message": "AI agent",
+    "description": "The label for the doc item 'AI Agent（智能体）' in sidebar 'aiSidebar', linking to the doc ai/basics/agent"
+  },
+  "sidebar.aiSidebar.doc.RAG（检索增强生成）": {
+    "message": "RAG (retrieval-augmented generation)",
+    "description": "The label for the doc item 'RAG（检索增强生成）' in sidebar 'aiSidebar', linking to the doc ai/basics/rag"
+  },
+  "sidebar.aiSidebar.doc.Power（规范驱动编程能力）": {
+    "message": "Power (spec-driven programming capability)",
+    "description": "The label for the doc item 'Power（规范驱动编程能力）' in sidebar 'aiSidebar', linking to the doc ai/basics/power"
+  },
+  "sidebar.aiSidebar.doc.AI 沙箱（Sandbox）": {
+    "message": "AI sandbox",
+    "description": "The label for the doc item 'AI 沙箱（Sandbox）' in sidebar 'aiSidebar', linking to the doc ai/basics/ai-sandbox"
+  },
+  "sidebar.aiSidebar.doc.Spec-Driven Development（规范驱动开发）": {
+    "message": "Spec-Driven Development",
+    "description": "The label for the doc item 'Spec-Driven Development（规范驱动开发）' in sidebar 'aiSidebar', linking to the doc ai/basics/spec-driven-development"
+  },
+  "sidebar.aiSidebar.doc.Vibe Coding（直觉编程）": {
+    "message": "Vibe coding",
+    "description": "The label for the doc item 'Vibe Coding（直觉编程）' in sidebar 'aiSidebar', linking to the doc ai/basics/vibe-coding"
+  },
+  "sidebar.aiSidebar.doc.Prompt Engineering（提示词工程）": {
+    "message": "Prompt engineering",
+    "description": "The label for the doc item 'Prompt Engineering（提示词工程）' in sidebar 'aiSidebar', linking to the doc ai/basics/prompt-engineering"
+  },
+  "sidebar.aiSidebar.doc.AI 编程助手落地实施方案": {
+    "message": "AI coding assistant rollout plan",
+    "description": "The label for the doc item 'AI 编程助手落地实施方案' in sidebar 'aiSidebar', linking to the doc ai/ai-coding-deployment-guide"
+  },
+  "sidebar.aiSidebar.doc.国外编程模型/工具选型建议": {
+    "message": "Recommendations for international coding models and tools",
+    "description": "The label for the doc item '国外编程模型/工具选型建议' in sidebar 'aiSidebar', linking to the doc ai/international-ai-models-comparison"
+  },
+  "sidebar.aiSidebar.doc.国内编程模型/工具选型建议": {
+    "message": "Recommendations for domestic coding models and tools",
+    "description": "The label for the doc item '国内编程模型/工具选型建议' in sidebar 'aiSidebar', linking to the doc ai/qoder-vs-glm47-cursor-claude-comparison"
+  },
+  "sidebar.communitySidebar.category.packages-runtime": {
+    "message": "packages-runtime",
+    "description": "The label for category 'packages-runtime' in sidebar 'communitySidebar'"
+  },
+  "sidebar.communitySidebar.doc.独立分包": {
+    "message": "Independent subpackages",
+    "description": "The label for the doc item '独立分包' in sidebar 'communitySidebar', linking to the doc quick-start/independent-pkg"
+  },
+  "sidebar.communitySidebar.doc.wxs 的转义与处理": {
+    "message": "Escaping and handling for wxs",
+    "description": "The label for the doc item 'wxs 的转义与处理' in sidebar 'communitySidebar', linking to the doc quick-start/wxs"
+  },
+  "sidebar.migrationsSidebar.doc.旧有uni-app项目升级webpack5": {
+    "message": "Upgrade legacy uni-app projects to Webpack 5",
+    "description": "The label for the doc item '旧有uni-app项目升级webpack5' in sidebar 'migrationsSidebar', linking to the doc upgrade/uni-app"
+  },
+  "sidebar.migrationsSidebar.doc.What's new in v2": {
+    "message": "What's new in v2",
+    "description": "The label for the doc item 'What's new in v2' in sidebar 'migrationsSidebar', linking to the doc releases/v2"
+  },
+  "sidebar.tailwindcssSidebar.category.[演进] 样式方案与组件库演进": {
+    "message": "[Evolution] Style systems and component-library evolution",
+    "description": "The label for category '[演进] 样式方案与组件库演进' in sidebar 'tailwindcssSidebar'"
+  },
+  "sidebar.tailwindcssSidebar.category.[基础] Raw CSS / BEM / OOCSS": {
+    "message": "[Basics] Raw CSS / BEM / OOCSS",
+    "description": "The label for category '[基础] Raw CSS / BEM / OOCSS' in sidebar 'tailwindcssSidebar'"
+  },
+  "sidebar.tailwindcssSidebar.category.[核心] Tailwind 设计、生态与对比": {
+    "message": "[Core] Tailwind design, ecosystem, and comparisons",
+    "description": "The label for category '[核心] Tailwind 设计、生态与对比' in sidebar 'tailwindcssSidebar'"
+  },
+  "sidebar.tailwindcssSidebar.category.[工程] 约束、隔离与落地边界": {
+    "message": "[Engineering] Constraints, isolation, and runtime boundaries",
+    "description": "The label for category '[工程] 约束、隔离与落地边界' in sidebar 'tailwindcssSidebar'"
+  },
+  "sidebar.tailwindcssSidebar.category.Tailwind CSS 4 默认模式": {
+    "message": "Tailwind CSS 4 default mode",
+    "description": "The label for category 'Tailwind CSS 4 默认模式' in sidebar 'tailwindcssSidebar'"
+  },
+  "sidebar.tailwindcssSidebar.category.[实验] AI 工作流与对照实验": {
+    "message": "[Experiments] AI workflows and comparison demos",
+    "description": "The label for category '[实验] AI 工作流与对照实验' in sidebar 'tailwindcssSidebar'"
+  },
+  "sidebar.tailwindcssSidebar.doc.[总览] 专题导览": {
+    "message": "[Overview] Topic guide",
+    "description": "The label for the doc item '[总览] 专题导览' in sidebar 'tailwindcssSidebar', linking to the doc tailwindcss/index"
+  },
+  "sidebar.tailwindcssSidebar.doc.默认 v4 模式参考": {
+    "message": "Default v4 mode reference",
+    "description": "The label for the doc item '默认 v4 模式参考' in sidebar 'tailwindcssSidebar', linking to the doc tailwindcss/v4-reference"
+  },
+  "sidebar.tailwindcssSidebar.doc.分包 Tailwind 入口隔离": {
+    "message": "Subpackage Tailwind entry isolation",
+    "description": "The label for the doc item '分包 Tailwind 入口隔离' in sidebar 'tailwindcssSidebar', linking to the doc quick-start/independent-pkg"
+  }
+}

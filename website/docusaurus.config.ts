@@ -8,11 +8,13 @@ import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import createBlogOptions from './config/blog'
+import { getBuildLocale } from './config/buildLocale'
 import { footer, footerCustomFields } from './config/footer'
 import headTags from './config/headTags'
 import navbar from './config/navbar'
 import { siteUrl } from './config/siteMetadata'
 import themeMetadata from './config/themeMetadata'
+import { getSiteConfigCopy } from './src/i18n/siteConfig'
 import PrismDark from './src/utils/prismDark'
 import PrismLight from './src/utils/prismLight'
 
@@ -22,11 +24,12 @@ const isProd = process.env.NODE_ENV === 'production'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const tailwindCssEntry = path.resolve(__dirname, 'src/css/tailwind.css')
 const workspacePackagePnpmStorePattern = /[\\/]packages(?:-runtime)?[\\/][^\\/]+[\\/]node_modules[\\/]\.pnpm[\\/]/
+const siteCopy = getSiteConfigCopy(getBuildLocale())
 console.log(`[hostingProvider]: ${hostingProvider}, [isGithub]: ${isGithub}`)
 
 const config: Config = {
   title: 'weapp-tailwindcss',
-  tagline: '让 Tailwind CSS 稳定跑在小程序里，覆盖多框架与多构建器链路。',
+  tagline: siteCopy.tagline,
   favicon: 'favicon.ico',
 
   // Set the production url of your site here
@@ -47,15 +50,17 @@ const config: Config = {
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'zh-cn',
-    locales: ['zh-cn'], // , 'en'
+    locales: ['zh-cn', 'en'],
     localeConfigs: {
-      // en: {
-      //   label: 'English',
-      //   direction: 'ltr'
-      // },
+      'en': {
+        label: 'English',
+        direction: 'ltr',
+        htmlLang: 'en-US',
+      },
       'zh-cn': {
         label: '中文',
         direction: 'ltr',
+        htmlLang: 'zh-CN',
       },
     },
   },
@@ -116,8 +121,10 @@ const config: Config = {
     [
       'docusaurus-plugin-llms',
       {
-        title: 'weapp-tailwindcss 文档索引',
-        description: 'Tailwind CSS 小程序适配方案，覆盖 uni-app、Taro、原生小程序与多构建器场景的官方文档合集。',
+        title: getBuildLocale() === 'en' ? 'weapp-tailwindcss doc index' : 'weapp-tailwindcss 文档索引',
+        description: getBuildLocale() === 'en'
+          ? 'Official docs for bringing Tailwind CSS to mini apps across uni-app, Taro, native mini apps, and multiple builders.'
+          : 'Tailwind CSS 小程序适配方案，覆盖 uni-app、Taro、原生小程序与多构建器场景的官方文档合集。',
         docsDir: 'docs',
         includeBlog: true,
         generateMarkdownFiles: true,
@@ -138,11 +145,20 @@ const config: Config = {
           'docs/ai/**',
         ],
         includeUnmatchedLast: true,
-        rootContent: `LLM 导航说明：
+        rootContent: getBuildLocale() === 'en'
+          ? `LLM navigation notes:
+- The order is "getting started -> configuration -> API -> migrations/issues -> AI workflows", covering webpack/vite/gulp and mini app frameworks.
+- The site root is ${siteUrl}, and GitHub Pages uses the /weapp-tailwindcss/ prefix.
+- MDX imports and duplicate headings are removed for easier model parsing, while key title/description frontmatter is preserved.`
+          : `LLM 导航说明：
 - 顺序为「入门 → 配置 → API → 迁移/问题 → AI 工作流」，覆盖 webpack/vite/gulp 与各类小程序框架。
 - 站点根为 ${siteUrl}，GitHub Pages 下为 /weapp-tailwindcss/ 前缀。
 - 已剔除 MDX import 与重复标题，便于模型解析；附带保留的标题/描述 frontmatter。`,
-        fullRootContent: `完整文档合辑，适合离线或单文件加载：
+        fullRootContent: getBuildLocale() === 'en'
+          ? `Full doc bundle for offline or single-file loading:
+- quick-start/* covers setup flows and framework examples, options/* and api/* provide config and API detail, and ai/* contains prompts and workflows.
+- Content is ordered for onboarding first, with key frontmatter preserved for summarization and indexing.`
+          : `完整文档合辑，适合离线或单文件加载：
 - quick-start/* 给出接入步骤与常见框架示例，options/*、api* 提供配置与 API 细节，ai/* 收录提示词与工作流。
 - 内容按上手优先排序，并保留关键 frontmatter 供模型摘要与索引。`,
         customLLMFiles: [
@@ -158,8 +174,10 @@ const config: Config = {
               'docs/ai/**',
             ],
             fullContent: true,
-            title: 'weapp-tailwindcss 上手与 AI 工作流',
-            description: '快速接入、模板、CLI 与 AI 辅助编排的完整内容，优先用于回答「如何开始」「如何让 AI 生成小程序代码」类问题。',
+            title: getBuildLocale() === 'en' ? 'weapp-tailwindcss quick start and AI workflows' : 'weapp-tailwindcss 上手与 AI 工作流',
+            description: getBuildLocale() === 'en'
+              ? 'Quick setup, templates, CLI usage, and AI workflow guidance for onboarding and mini app code generation questions.'
+              : '快速接入、模板、CLI 与 AI 辅助编排的完整内容，优先用于回答「如何开始」「如何让 AI 生成小程序代码」类问题。',
           },
           {
             filename: 'llms-api.txt',
@@ -170,8 +188,10 @@ const config: Config = {
               'docs/migrations/**',
             ],
             fullContent: true,
-            title: 'weapp-tailwindcss API 与配置参考',
-            description: '包含插件配置、API 细节、常见问题与迁移指南，适合回答配置/兼容性问题。',
+            title: getBuildLocale() === 'en' ? 'weapp-tailwindcss API and configuration reference' : 'weapp-tailwindcss API 与配置参考',
+            description: getBuildLocale() === 'en'
+              ? 'Plugin options, API details, common issues, and migration guidance for configuration and compatibility questions.'
+              : '包含插件配置、API 细节、常见问题与迁移指南，适合回答配置/兼容性问题。',
           },
         ],
       },

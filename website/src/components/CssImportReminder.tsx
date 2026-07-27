@@ -1,3 +1,5 @@
+import Link from '@docusaurus/Link'
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
 import Admonition from '@theme/Admonition'
 import React from 'react'
 
@@ -9,55 +11,65 @@ import React from 'react'
  * <CssImportReminder />
  */
 export default function CssImportReminder(): React.JSX.Element {
+  const locale = useCurrentSiteLocale()
+
   return (
-    <Admonition type="info" title="关于 @import 'tailwindcss'">
+    <Admonition type="info" title={locale === 'en' ? 'About @import \'tailwindcss\'' : '关于 @import \'tailwindcss\''}>
       <p>
-        生成模式下，推荐在 Tailwind CSS 4.x 入口里直接写
+        {locale === 'en'
+          ? 'In generator mode, we recommend writing '
+          : '生成模式下，推荐在 Tailwind CSS 4.x 入口里直接写'}
         {' '}
         <code>@import &apos;tailwindcss&apos;</code>
-        。
+        {locale === 'en' ? '.' : '。'}
         <code>WeappTailwindcss</code>
         {' '}
-        会根据
+        {locale === 'en' ? 'will generate mini app target CSS based on ' : '会根据'}
         {' '}
         <code>target: &apos;weapp&apos;</code>
-        {' '}
-        生成小程序目标 CSS。
+        {locale === 'en' ? '.' : ' 生成小程序目标 CSS。'}
       </p>
       <p>
-        这也能继续复用官方文档和 IntelliSense 识别的写法
+        {locale === 'en'
+          ? 'This also keeps the official docs and IntelliSense-friendly form of '
+          : '这也能继续复用官方文档和 IntelliSense 识别的写法'}
         {' '}
         <code>@import &apos;tailwindcss&apos;</code>
-        ，以获得更好的
+        {locale === 'en' ? ' so you can get better ' : '，以获得更好的'}
         {' '}
-        <a href="/docs/quick-start/intelliSense">IDE 智能提示</a>
+        <Link to="/docs/quick-start/intelliSense">{locale === 'en' ? 'IDE IntelliSense' : 'IDE 智能提示'}</Link>
         {' '}
-        支持。
+        {locale === 'en' ? 'support.' : '支持。'}
       </p>
       <p>
-        存量项目中已经存在的
+        {locale === 'en'
+          ? 'Existing projects can still keep using '
+          : '存量项目中已经存在的'}
         {' '}
         <code>@import &apos;weapp-tailwindcss/index.css&apos;</code>
-        {' '}
-        仍然可以继续使用，适合暂时不调整 CSS 入口的 v4 项目。
+        {locale === 'en'
+          ? ' when you do not want to change the CSS entry yet in a v4 project.'
+          : ' 仍然可以继续使用，适合暂时不调整 CSS 入口的 v4 项目。'}
       </p>
       <p>
-        不论使用哪种入口，都请确保
+        {locale === 'en'
+          ? 'No matter which entry you use, make sure '
+          : '不论使用哪种入口，都请确保'}
         {' '}
         <code>cssEntries</code>
         {' '}
-        指向纯
+        {locale === 'en' ? 'points to a pure ' : '指向纯'}
         {' '}
         <code>.css</code>
         {' '}
-        文件，并且不要额外注册
+        {locale === 'en' ? 'file, and do not register extra ' : '文件，并且不要额外注册'}
         {' '}
         <code>@tailwindcss/postcss</code>
         {' '}
-        或
+        {locale === 'en' ? 'or ' : '或'}
         {' '}
         <code>@tailwindcss/vite</code>
-        。
+        {locale === 'en' ? '.' : '。'}
       </p>
     </Admonition>
   )

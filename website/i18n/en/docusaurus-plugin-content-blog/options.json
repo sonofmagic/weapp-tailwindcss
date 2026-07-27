@@ -1,0 +1,14 @@
+{
+  "title": {
+    "message": "weapp-tailwindcss Blog",
+    "description": "The title for the blog used in SEO"
+  },
+  "description": {
+    "message": "Best practices, release notes, and ecosystem updates for Tailwind CSS in mini app development.",
+    "description": "The description for the blog used in SEO"
+  },
+  "sidebar.title": {
+    "message": "Recent posts",
+    "description": "The label for the left sidebar"
+  }
+}

@@ -1,7 +1,12 @@
 import type { Config } from '@docusaurus/types'
 import { homepageUiControls } from '../src/features/ui-management/homepage'
 import { navbarUiControls, navbarUiStorageKey } from '../src/features/ui-management/navbar'
+import { defaultSiteLocale, localePreferenceStorageKey } from '../src/i18n/locale'
+import { getSiteConfigCopy } from '../src/i18n/siteConfig'
+import { getBuildLocale } from './buildLocale'
 import { geoMeta, organizationJsonLd, siteLanguage, siteName, siteUrl, websiteJsonLd } from './siteMetadata'
+
+const copy = getSiteConfigCopy(getBuildLocale())
 
 const navbarUiBootstrapScript = `
 (() => {
@@ -28,6 +33,30 @@ const navbarUiBootstrapScript = `
 })();
 `.trim()
 
+const localeBootstrapScript = `
+(() => {
+  try {
+    const pathname = window.location.pathname;
+    if (!(pathname === '/' || pathname === '/index.html')) {
+      return;
+    }
+    const rawStoredLocale = window.localStorage.getItem(${JSON.stringify(localePreferenceStorageKey)});
+    const storedLocale = rawStoredLocale === 'en' || rawStoredLocale === 'zh-cn' ? rawStoredLocale : null;
+    const navigatorLocales = Array.isArray(window.navigator.languages) && window.navigator.languages.length
+      ? window.navigator.languages
+      : [window.navigator.language];
+    const browserLocale = navigatorLocales.find(candidate => typeof candidate === 'string' && candidate.toLowerCase().startsWith('en'))
+      ? 'en'
+      : ${JSON.stringify(defaultSiteLocale)};
+    const targetLocale = storedLocale || browserLocale;
+    if (targetLocale !== 'en') {
+      return;
+    }
+    window.location.replace('/en/' + (window.location.search || '') + (window.location.hash || ''));
+  } catch {}
+})();
+`.trim()
+
 const headTags: NonNullable<Config['headTags']> = [
   {
     tagName: 'script',
@@ -46,6 +75,14 @@ const headTags: NonNullable<Config['headTags']> = [
       id: 'ui-navbar-bootstrap',
     },
     innerHTML: navbarUiBootstrapScript,
+  },
+  {
+    tagName: 'script',
+    attributes: {
+      type: 'text/javascript',
+      id: 'locale-bootstrap',
+    },
+    innerHTML: localeBootstrapScript,
   },
   {
     tagName: 'meta',
@@ -115,7 +152,7 @@ const headTags: NonNullable<Config['headTags']> = [
     attributes: {
       rel: 'alternate',
       type: 'application/rss+xml',
-      title: 'weapp-tailwindcss 博客订阅',
+      title: copy.blog.feedTitle,
       href: `${siteUrl}/blog/rss.xml`,
     },
   },

@@ -9,6 +9,7 @@ declare global {
 }
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'https://tw.icebreaker.top/'
+const localeStorageKey = 'weapp-tailwindcss:website:locale'
 
 interface ViewportCase {
   name: string
@@ -53,8 +54,28 @@ const viewports: ViewportCase[] = [
   },
 ] as const
 
+async function setStoredLocale(page: Parameters<typeof test>[0]['page'], locale: 'zh-cn' | 'en') {
+  await page.addInitScript((key, value) => {
+    window.localStorage.setItem(key, value)
+  }, localeStorageKey, locale)
+}
+
+async function setNavigatorLanguages(page: Parameters<typeof test>[0]['page'], languages: string[]) {
+  await page.addInitScript((values) => {
+    Object.defineProperty(window.navigator, 'language', {
+      configurable: true,
+      get: () => values[0] ?? 'zh-CN',
+    })
+    Object.defineProperty(window.navigator, 'languages', {
+      configurable: true,
+      get: () => values,
+    })
+  }, languages)
+}
+
 test.describe('homepage hero layout', () => {
   test('desktop hero actions and platform icons stay visually compact', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto(baseURL, {
       waitUntil: 'networkidle',
@@ -179,6 +200,7 @@ test.describe('homepage hero layout', () => {
   })
 
   test('mobile hero actions fit without horizontal overflow', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto(baseURL, {
       waitUntil: 'networkidle',
@@ -210,6 +232,64 @@ test.describe('homepage hero layout', () => {
     const viewportWidth = await page.evaluate(() => document.documentElement.clientWidth)
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth)
     expect(scrollWidth).toBeLessThanOrEqual(viewportWidth + 1)
+  })
+})
+
+test.describe('homepage locale detection', () => {
+  test('redirects root visitors to /en when browser language is English', async ({ page }) => {
+    await page.addInitScript((key) => {
+      window.localStorage.removeItem(key)
+    }, localeStorageKey)
+    await setNavigatorLanguages(page, ['en-US', 'en'])
+
+    await page.goto(baseURL, {
+      waitUntil: 'networkidle',
+    })
+
+    await expect(page).toHaveURL(/\/en\/?$/)
+    await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/Start setup/)
+    await expect(page.locator('html')).toHaveAttribute('lang', /en/i)
+  })
+
+  test('keeps Chinese as the default when language detection does not match English', async ({ page }) => {
+    await page.addInitScript((key) => {
+      window.localStorage.removeItem(key)
+    }, localeStorageKey)
+    await setNavigatorLanguages(page, ['fr-FR'])
+
+    await page.goto(baseURL, {
+      waitUntil: 'networkidle',
+    })
+
+    await expect(page).toHaveURL(/https?:\/\/[^/]+\/?$/)
+    await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/开始接入/)
+    await expect(page.locator('html')).toHaveAttribute('lang', /zh/i)
+  })
+
+  test('respects stored English preference on the root page', async ({ page }) => {
+    await setStoredLocale(page, 'en')
+
+    await page.goto(baseURL, {
+      waitUntil: 'networkidle',
+    })
+
+    await expect(page).toHaveURL(/\/en\/?$/)
+    await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/Start setup/)
+  })
+
+  test('serves translated docs and blog samples for English pages', async ({ page }) => {
+    await page.goto(new URL('/en/docs/intro', baseURL).toString(), {
+      waitUntil: 'networkidle',
+    })
+    await expect(page.locator('h1')).toHaveText('Introduction')
+    await expect(page.locator('html')).toHaveAttribute('lang', /en/i)
+    await expect(page.locator('head meta[http-equiv="Content-Language"]')).toHaveAttribute('content', /en/i)
+
+    await page.goto(new URL('/en/blog/2025/9/v4.3-release', baseURL).toString(), {
+      waitUntil: 'networkidle',
+    })
+    await expect(page.locator('h1')).toContainText('4.3.0')
+    await expect(page.locator('html')).toHaveAttribute('lang', /en/i)
   })
 })
 

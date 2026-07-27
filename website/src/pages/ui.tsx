@@ -1,6 +1,7 @@
 import { useUiManagement } from '@site/src/features/ui-management/context'
 import { homepageUiControls } from '@site/src/features/ui-management/homepage'
 import { navbarUiControls, navbarUiStorageKey } from '@site/src/features/ui-management/navbar'
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
 import Layout from '@theme/Layout'
 
 interface ControlMeta<TKey extends string> {
@@ -12,16 +13,22 @@ interface ControlMeta<TKey extends string> {
 
 function ControlSection<TKey extends string>({
   controls,
+  defaultButtonLabel,
+  hiddenLabel,
   onReset,
   onToggle,
+  visibleLabel,
   title,
   values,
 }: {
   controls: Array<ControlMeta<TKey>>
+  defaultButtonLabel: string
+  hiddenLabel: string
   onReset: () => void
   onToggle: (key: TKey, visible: boolean) => void
   title: string
   values: Record<TKey, boolean>
+  visibleLabel: string
 }) {
   return (
     <section className="
@@ -50,7 +57,7 @@ function ControlSection<TKey extends string>({
           type="button"
           onClick={onReset}
         >
-          恢复默认
+          {defaultButtonLabel}
         </button>
       </div>
       <div className="
@@ -97,9 +104,9 @@ function ControlSection<TKey extends string>({
               bg-slate-200/80 text-slate-500
               dark:bg-slate-800 dark:text-slate-300
             `}
-                  `}
+                    `}
                 >
-                  {values[control.key] ? '显示' : '隐藏'}
+                  {values[control.key] ? visibleLabel : hiddenLabel}
                 </span>
               </div>
               <p className="
@@ -127,6 +134,7 @@ function ControlSection<TKey extends string>({
 }
 
 function UiManagementPageContent() {
+  const locale = useCurrentSiteLocale()
   const {
     hasHydrated,
     homepage,
@@ -136,6 +144,91 @@ function UiManagementPageContent() {
     setHomepageVisibility,
     setNavbarVisibility,
   } = useUiManagement()
+  const copy = locale === 'en'
+    ? {
+        badge: 'UI Management',
+        title: 'UI management',
+        description: 'Control the key navbar and homepage hero entry points. The panel now uses a more compact grouped layout so we can keep expanding options later, and state is persisted automatically in ',
+        storageKeyLabel: 'Storage key:',
+        hydrated: 'Loaded the current state from local settings.',
+        hydrating: 'Reading local settings.',
+        navbarTitle: 'Navbar',
+        homepageTitle: 'Homepage Hero',
+        defaultButtonLabel: 'Reset defaults',
+        visibleLabel: 'Visible',
+        hiddenLabel: 'Hidden',
+        pageTitle: 'UI management',
+        pageDescription: 'Manage website UI toggles and persist them to localStorage.',
+        navbarControls: {
+          atomgit: { label: 'AtomGit icon', description: 'Show or hide the AtomGit link in the navbar.' },
+          github: { label: 'GitHub icon', description: 'Show or hide the GitHub link in the navbar.' },
+          weappVite: { label: 'Weapp-vite entry', description: 'Show or hide the Weapp-vite entry in the navbar.' },
+        },
+        homepageControls: {
+          heroContent: { label: 'Hero content', description: 'Show or hide the main content block in the first screen.' },
+          heroFeatureGrid: { label: 'Core capability area', description: 'Show or hide the core capability and pipeline explanation area.' },
+          gstarBadge: { label: 'G-Star badge', description: 'Show or hide the G-Star certification badge on the hero title.' },
+          heroBadge: { label: 'Hero top badge', description: 'Show or hide the Tailwind CSS 4 generation badge next to the logo.' },
+          heroTitle: { label: 'Hero title', description: 'Show or hide the homepage title weapp-tailwindcss.' },
+          heroSubtitlePrimary: { label: 'Hero subtitle 1', description: 'Show or hide the primary hero subtitle line.' },
+          heroSubtitleSecondary: { label: 'Hero subtitle 2', description: 'Keep the legacy secondary subtitle toggle for compatibility.' },
+          primaryCta: { label: 'Primary CTA', description: 'Show or hide the main setup CTA button.' },
+          aiEntry: { label: 'AI entry', description: 'Show or hide the AI entry button in the hero area.' },
+          communityEntry: { label: 'Community entry', description: 'Show or hide the community entry in the docs entry section.' },
+          githubBadge: { label: 'GitHub star badge', description: 'Show or hide the GitHub Star badge in the support matrix.' },
+          npmVersionBadge: { label: 'npm version badge', description: 'Show or hide the latest npm version badge in the support matrix.' },
+          platformTags: { label: 'Support matrix', description: 'Show or hide the platform matrix and route links below the hero.' },
+          buildToolsCard: { label: 'Builder card', description: 'Show or hide the large builder compatibility card.' },
+          versionsCard: { label: 'Version card', description: 'Show or hide the multi-version support capability card.' },
+          frameworksCard: { label: 'Framework card', description: 'Show or hide the framework and native support capability card.' },
+        },
+      }
+    : {
+        badge: 'UI Management',
+        title: 'UI 管理',
+        description: '当前支持 navbar 与首页 hero 区域的关键入口开关。面板已经改成更紧凑的分组结构，方便后续继续扩更多配置项，状态会自动持久化到 ',
+        storageKeyLabel: '存储 key：',
+        hydrated: '已从本地配置加载当前状态。',
+        hydrating: '正在读取本地配置。',
+        navbarTitle: 'Navbar',
+        homepageTitle: 'Homepage Hero',
+        defaultButtonLabel: '恢复默认',
+        visibleLabel: '显示',
+        hiddenLabel: '隐藏',
+        pageTitle: 'UI 管理',
+        pageDescription: '管理站点 UI 开关，并持久化到 localStorage。',
+        navbarControls: {
+          atomgit: { label: 'AtomGit 图标', description: '控制导航栏中的 AtomGit 图标链接是否显示。' },
+          github: { label: 'GitHub 图标', description: '控制导航栏中的 GitHub 图标链接是否显示。' },
+          weappVite: { label: 'Weapp-vite 入口', description: '控制导航栏中的 Weapp-vite 图标入口是否显示。' },
+        },
+        homepageControls: {
+          heroContent: { label: 'Hero 主区', description: '控制首页首屏主内容区域整体显示。' },
+          heroFeatureGrid: { label: '核心能力区', description: '控制首页核心能力与构建链路说明区域整体显示。' },
+          gstarBadge: { label: 'G-Star 角标', description: '控制首页标题区域右上角的 G-Star 认证角标。' },
+          heroBadge: { label: 'Hero 顶部标签', description: '控制 logo 右侧的 Tailwind CSS 4 生成链路标签。' },
+          heroTitle: { label: 'Hero 主标题', description: '控制首页主标题 weapp-tailwindcss。' },
+          heroSubtitlePrimary: { label: 'Hero 副标题一', description: '控制“Web 与小程序两端样式”这一行文案。' },
+          heroSubtitleSecondary: { label: 'Hero 副标题二', description: '保留旧版副文案开关，用于兼容 UI 管理配置。' },
+          primaryCta: { label: '首页主按钮', description: '控制“开始接入”主 CTA。' },
+          aiEntry: { label: 'AI 文档入口', description: '控制首页 hero 区域的 AI 学习入口按钮。' },
+          communityEntry: { label: '技术交流群入口', description: '控制首页文档入口区域的技术交流群入口。' },
+          githubBadge: { label: 'GitHub Star 徽章', description: '控制支持矩阵区域的 GitHub Star 徽章。' },
+          npmVersionBadge: { label: 'npm 版本徽章', description: '控制支持矩阵区域的 npm 最新版本徽章。' },
+          platformTags: { label: '支持与接入路线区', description: '控制首页首屏下方的支持矩阵与接入路线入口。' },
+          buildToolsCard: { label: '构建工具卡片', description: '控制“多构建工具适配”展示卡片。' },
+          versionsCard: { label: '版本矩阵卡片', description: '控制 Tailwind 多版本支持展示卡片。' },
+          frameworksCard: { label: '生态支持卡片', description: '控制主流框架与原生开发支持展示卡片。' },
+        },
+      }
+  const localizedNavbarControls = navbarUiControls.map(control => ({
+    ...control,
+    ...copy.navbarControls[control.key],
+  }))
+  const localizedHomepageControls = homepageUiControls.map(control => ({
+    ...control,
+    ...copy.homepageControls[control.key],
+  }))
 
   return (
     <main className="container py-12">
@@ -154,7 +247,7 @@ function UiManagementPageContent() {
               dark:text-sky-300
             "
             >
-              UI Management
+              {copy.badge}
             </span>
             <div className="space-y-2">
               <h1 className="
@@ -162,14 +255,14 @@ function UiManagementPageContent() {
                 dark:text-slate-50
               "
               >
-                UI 管理
+                {copy.title}
               </h1>
               <p className="
                 max-w-3xl text-sm leading-6 text-slate-600
                 dark:text-slate-300
               "
               >
-                当前支持 navbar 与首页 hero 区域的关键入口开关。面板已经改成更紧凑的分组结构，方便后续继续扩更多配置项，状态会自动持久化到
+                {copy.description}
                 {' '}
                 <code>localStorage</code>
                 。
@@ -184,24 +277,30 @@ function UiManagementPageContent() {
           "
           >
             <div>
-              存储 key：
+              {copy.storageKeyLabel}
               <code>{navbarUiStorageKey}</code>
             </div>
-            <div>{hasHydrated ? '已从本地配置加载当前状态。' : '正在读取本地配置。'}</div>
+            <div>{hasHydrated ? copy.hydrated : copy.hydrating}</div>
           </div>
         </div>
 
         <ControlSection
-          controls={navbarUiControls}
-          title="Navbar"
+          controls={localizedNavbarControls}
+          defaultButtonLabel={copy.defaultButtonLabel}
+          hiddenLabel={copy.hiddenLabel}
+          title={copy.navbarTitle}
           values={navbar}
+          visibleLabel={copy.visibleLabel}
           onReset={resetNavbarSettings}
           onToggle={(key, visible) => setNavbarVisibility(key, visible)}
         />
         <ControlSection
-          controls={homepageUiControls}
-          title="Homepage Hero"
+          controls={localizedHomepageControls}
+          defaultButtonLabel={copy.defaultButtonLabel}
+          hiddenLabel={copy.hiddenLabel}
+          title={copy.homepageTitle}
           values={homepage}
+          visibleLabel={copy.visibleLabel}
           onReset={resetHomepageSettings}
           onToggle={(key, visible) => setHomepageVisibility(key, visible)}
         />
@@ -211,8 +310,19 @@ function UiManagementPageContent() {
 }
 
 export default function UiManagementPage() {
+  const locale = useCurrentSiteLocale()
+  const copy = locale === 'en'
+    ? {
+        title: 'UI management',
+        description: 'Manage website UI toggles and persist them to localStorage.',
+      }
+    : {
+        title: 'UI 管理',
+        description: '管理站点 UI 开关，并持久化到 localStorage。',
+      }
+
   return (
-    <Layout title="UI 管理" description="管理站点 UI 开关，并持久化到 localStorage。">
+    <Layout title={copy.title} description={copy.description}>
       <UiManagementPageContent />
     </Layout>
   )

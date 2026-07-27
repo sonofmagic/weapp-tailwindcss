@@ -1,10 +1,15 @@
 import type { ThemeConfig } from '@docusaurus/preset-classic'
+import { getSiteConfigCopy } from '../src/i18n/siteConfig'
+import { getBuildLocale } from './buildLocale'
 import { defaultMetaDescription, defaultMetaTitle, siteName, siteUrl, socialImageUrl } from './siteMetadata'
+
+const currentLocale = getBuildLocale()
+const copy = getSiteConfigCopy(currentLocale)
 
 const themeMetadata: NonNullable<ThemeConfig['metadata']> = [
   {
     name: 'keywords',
-    content: 'weapp,小程序,tailwindcss,原子类,uni-app,taro,mpx,native,remax,原生,webpack,plugin,vite,gulp,wxss,wxml',
+    content: copy.metadata.themeKeywords.join(','),
   },
   {
     name: 'description',
@@ -40,7 +45,7 @@ const themeMetadata: NonNullable<ThemeConfig['metadata']> = [
   },
   {
     property: 'og:locale',
-    content: 'zh_CN',
+    content: copy.metadata.ogLocale,
   },
   {
     property: 'og:site_name',
@@ -48,7 +53,7 @@ const themeMetadata: NonNullable<ThemeConfig['metadata']> = [
   },
   {
     property: 'og:image:alt',
-    content: 'weapp-tailwindcss 项目标识',
+    content: copy.metadata.socialImageAlt,
   },
   {
     name: 'twitter:card',

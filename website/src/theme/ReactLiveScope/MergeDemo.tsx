@@ -1,9 +1,11 @@
 import type { CSSProperties } from 'react'
+import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
 import { create } from '@weapp-tailwindcss/merge'
 import { useMemo, useState } from 'react'
 import { useHighlight } from './useHighlight'
 
 export function MergeDemo() {
+  const locale = useCurrentSiteLocale()
   const [disableEscape, setDisableEscape] = useState(false)
 
   const runtime = useMemo(() => {
@@ -40,15 +42,15 @@ export function MergeDemo() {
     <div>
       <div className="flex space-x-3">
         <div>
-          参数 escape/unescape 禁用:
+          {locale === 'en' ? 'escape/unescape disabled:' : '参数 escape/unescape 禁用:'}
           {String(disableEscape)}
         </div>
         <div>
-          <button onClick={() => setDisableEscape(!disableEscape)}>点我切换参数</button>
+          <button onClick={() => setDisableEscape(!disableEscape)}>{locale === 'en' ? 'Toggle option' : '点我切换参数'}</button>
         </div>
       </div>
       <div className="space-x-3">
-        <span>结果:</span>
+        <span>{locale === 'en' ? 'Result:' : '结果:'}</span>
         <code style={codeStyle}>{x}</code>
       </div>
     </div>

@@ -1,0 +1,66 @@
+{
+  "title": {
+    "message": "weapp-tailwindcss",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "weapp tailwindcss Logo",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.指南": {
+    "message": "Guide",
+    "description": "Navbar item with label 指南"
+  },
+  "item.label.生态": {
+    "message": "Ecosystem",
+    "description": "Navbar item with label 生态"
+  },
+  "item.label.常见问题": {
+    "message": "Issues",
+    "description": "Navbar item with label 常见问题"
+  },
+  "item.label.案例展示": {
+    "message": "Showcase",
+    "description": "Navbar item with label 案例展示"
+  },
+  "item.label.迁移": {
+    "message": "Migrations",
+    "description": "Navbar item with label 迁移"
+  },
+  "item.label.配置项": {
+    "message": "Options",
+    "description": "Navbar item with label 配置项"
+  },
+  "item.label.博客": {
+    "message": "Blog",
+    "description": "Navbar item with label 博客"
+  },
+  "item.label.Tailwind 专题": {
+    "message": "Tailwind Topics",
+    "description": "Navbar item with label Tailwind 专题"
+  },
+  "item.label.Weapp-vite": {
+    "message": "Weapp-vite",
+    "description": "Navbar item with label Weapp-vite"
+  },
+  "item.label.v5": {
+    "message": "v5",
+    "description": "Navbar item with label v5"
+  },
+  "item.label.AtomGit": {
+    "message": "AtomGit",
+    "description": "Navbar item with label AtomGit"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  },
+  "item.label.v5 当前版本": {
+    "message": "Current v5",
+    "description": "Navbar item with label v5 当前版本"
+  },
+  "item.label.v4 最新版本": {
+    "message": "Latest v4",
+    "description": "Navbar item with label v4 最新版本"
+  }
+}
