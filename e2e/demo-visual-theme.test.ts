@@ -64,9 +64,10 @@ describe('demo visual theme evidence', () => {
     }
   })
 
-  it('uses the issue #822 component-local style probe on Android and iOS without a manual isolation override', async () => {
+  it('uses the issue #822 component-local style probe on every target without a manual isolation override', async () => {
     const android = uniAppXAppCases.find(item => item.platform === 'app-android')
     const ios = uniAppXAppCases.find(item => item.platform === 'app-ios')
+    const harmony = uniAppXAppCases.find(item => item.platform === 'app-harmony')
     const miniProgram = miniProgramCases.find(item => item.name === 'uni-app-x-hbuilderx-tailwindcss-v4')
     const web = webCases.find(item => item.name === 'uni-app-x-hbuilderx-tailwindcss-v4')
     const component = await fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/components/BindClass.uvue'), 'utf8')
@@ -80,11 +81,17 @@ describe('demo visual theme evidence', () => {
     expect(android?.sourceFile).toBe('components/BindClass.uvue')
     expect(android?.transformedOutputFiles).toContain('components/BindClass.uvue.ts')
     expect(android?.compiledStyleContains?.some(item => item instanceof RegExp && item.source.includes('"issue-822-component-child"'))).toBe(true)
-    expect(android?.compiledStyleContains?.some(item => item instanceof RegExp && item.source.includes('"borderTopColor"\\s*:\\s*"#7c3aed"'))).toBe(true)
+    expect(android?.compiledStyleContains?.some(item => item instanceof RegExp && item.source.includes('"borderTopStyle"') && item.source.includes('solid'))).toBe(true)
+    expect(android?.compiledStyleContains?.some(item => item instanceof RegExp && item.source.includes('"borderTopColor"') && item.source.includes('#7c3aed'))).toBe(true)
     expect(ios?.sourceFile).toBe('components/BindClass.uvue')
     expect(ios?.markerAnchor).toBe('<text :class="flag')
     expect(ios?.transformedContains?.some(item => item instanceof RegExp && item.source.includes('"issue-822-component-child"'))).toBe(true)
-    expect(ios?.transformedContains?.some(item => item instanceof RegExp && item.source.includes('"borderTopColor"\\s*:\\s*"#7c3aed"'))).toBe(true)
+    expect(ios?.transformedContains?.some(item => item instanceof RegExp && item.source.includes('"borderTopColor"') && item.source.includes('#7c3aed'))).toBe(true)
+    expect(harmony?.requiredFiles).toContain('assets/components/BindClass.js')
+    expect(harmony?.transformedOutputFiles).toContain('assets/components/BindClass.js')
+    expect(harmony?.transformedContains?.some(item => item instanceof RegExp && item.source.includes('"issue-822-component-child"'))).toBe(true)
+    expect(harmony?.transformedContains?.some(item => item instanceof RegExp && item.source.includes('"borderTopStyle"') && item.source.includes('solid'))).toBe(true)
+    expect(harmony?.transformedContains?.some(item => item instanceof RegExp && item.source.includes('"borderTopColor"') && item.source.includes('#7c3aed'))).toBe(true)
     expect(miniProgram?.outputContains?.['components/BindClass.js']).toEqual(expect.arrayContaining(['__scopeId', 'data-v-']))
     expect(miniProgram?.outputContains?.['components/BindClass.wxml']).toEqual(expect.arrayContaining(['issue-822-component-child']))
     expect(miniProgram?.outputContains?.['components/BindClass.wxml']?.some(item => item instanceof RegExp && item.source.includes('data-v-'))).toBe(true)
