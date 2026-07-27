@@ -37,6 +37,25 @@ describe('index', () => {
     expect(css).toBe('page,.tw-root,wx-root-portal-content,:host{--x:1;}')
   })
 
+  it('accepts line comments from component library CSS without rewriting strings or URLs', async () => {
+    const styleHandler = createStyleHandler()
+    const { css } = await styleHandler(`
+// standalone comment
+.button{color:red // trailing comment
+  background-image:url(//cdn.example.com/button.png);
+  mask-image:url(http://cdn.example.com/button.svg);
+  border-image:url(data:image/svg+xml,%3Csvg//keep%3E);
+  content:"// keep this";
+}
+`)
+
+    expect(css).toContain('.button{color:red;')
+    expect(css).toContain('background-image:url(//cdn.example.com/button.png)')
+    expect(css).toContain('mask-image:url(http://cdn.example.com/button.svg)')
+    expect(css).toContain('border-image:url(data:image/svg+xml,%3Csvg//keep%3E)')
+    expect(css).toContain('content:"// keep this"')
+  })
+
   it('transforms current and likely Tailwind :where selectors to mini-program-safe CSS', async () => {
     const styleHandler = createStyleHandler({
       cssChildCombinatorReplaceValue: ['view', 'text'],

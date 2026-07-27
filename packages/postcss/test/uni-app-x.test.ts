@@ -523,6 +523,24 @@ describe('uni-app-x', () => {
     expect(filtered.warnings()).toEqual([])
   })
 
+  it('keeps global uvue style entries on the class-only compatibility path', async () => {
+    const result = await postcss().process('page{--color-primary:#0957DE}.bg-primary{background-color:#0957DE}', {
+      from: '/src/App.uvue?vue&type=style&index=0&lang.css',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      isMainChunk: true,
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+
+    expect(filtered.css).not.toContain('page{')
+    expect(filtered.css).toContain('.bg-primary{background-color:#0957DE}')
+    expect(filtered.warnings()).toHaveLength(1)
+    expect(filtered.warnings()[0]?.text).toContain('selector must be class-only')
+  })
+
   it('detects compiled scoped selectors when all uvue request metadata is lost', async () => {
     const result = await postcss().process('button[data-v-abc]{color:red}', {
       from: undefined,
