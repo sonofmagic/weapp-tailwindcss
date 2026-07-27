@@ -44,7 +44,7 @@ export function createPostcssTsdownConfigs(options: WatchAwareOptions = {}) {
       format: ['cjs'],
       clean: false,
       deps: {
-        alwaysBundle: postcssEsmOnlyDependencies,
+        neverBundle: postcssEsmOnlyDependencies,
         onlyBundle: false,
       },
     },

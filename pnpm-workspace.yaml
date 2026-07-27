@@ -95,7 +95,7 @@ catalogs:
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem:
-    postcss-rem-to-responsive-pixel: ^7.0.4
+    postcss-rem-to-responsive-pixel: ^7.0.5
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
   prettier371:
