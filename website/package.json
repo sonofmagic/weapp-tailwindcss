@@ -64,7 +64,7 @@
     "react-dom": "catalog:react19",
     "react-github-btn": "^1.4.0",
     "tailwind-merge": "catalog:tailwindMerge",
-    "tailwind-variants": "^3.2.2",
+    "tailwind-variants": "^3.3.0",
     "weapp-tailwindcss": "workspace:*"
   },
   "devDependencies": {
@@ -81,7 +81,7 @@
     "@iconify-json/mdi": "catalog:iconifyJson",
     "@iconify-json/mdi-light": "catalog:iconifyJson",
     "@iconify/tailwind4": "^1.2.3",
-    "@playwright/test": "^1.61.1",
+    "@playwright/test": "^1.62.0",
     "@tailwindcss/typography": "^0.5.20",
     "@types/file-saver": "^2.0.7",
     "@types/node": "catalog:typesNode2410",
@@ -96,7 +96,7 @@
     "docusaurus-plugin-typedoc": "1.4.2",
     "dotenv": "^17.4.2",
     "gray-matter": "^4.0.3",
-    "js-yaml": "^5.2.1",
+    "js-yaml": "^5.2.2",
     "mini-svg-data-uri": "^1.4.4",
     "node-loader": "^2.1.0",
     "sass": "catalog:sass195",

@@ -84,7 +84,7 @@
     "@weapp-tailwindcss/postcss-calc": "workspace:^",
     "@weapp-tailwindcss/shared": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
-    "es-toolkit": "^1.49.0",
+    "es-toolkit": "^1.50.0",
     "lru-cache": "11.5.2",
     "micromatch": "^4.0.8",
     "postcss": "catalog:postcss85tilde",

@@ -104,6 +104,7 @@
   },
   "devDependencies": {
     "@babel/core": "catalog:babel8",
+    "react": "catalog:react19",
     "vitest": "^4.1.0"
   }
 }
