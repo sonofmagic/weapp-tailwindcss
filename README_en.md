@@ -87,18 +87,25 @@ Each package now uses Chinese as its default `README.md` and provides an English
 
 ## AI Skill
 
-If you want AI to integrate `weapp-tailwindcss` in an application project using current best practices, install the official Skill:
+The official skills are now split by task: setup, migration, troubleshooting, runtime classes, custom builds, and React Native. The original `weapp-tailwindcss` name remains as a compatibility router. Install the complete suite with:
+
+```bash
+npx skills add sonofmagic/skills \
+  --skill weapp-tailwindcss \
+  --skill weapp-tailwindcss-setup \
+  --skill weapp-tailwindcss-migrate \
+  --skill weapp-tailwindcss-troubleshoot \
+  --skill weapp-tailwindcss-runtime \
+  --skill weapp-tailwindcss-custom-build \
+  --skill weapp-tailwindcss-react-native \
+  -y
+```
+
+The previous single-skill command remains available and routes requests to the appropriate specialized skill:
 
 ```bash
 npx skills add sonofmagic/skills --skill weapp-tailwindcss
 ```
-
-It is useful for:
-
-- Setting up `uni-app` / `uni-app x`, Taro, or native mini program projects.
-- Choosing the right Tailwind CSS v4 configuration path.
-- Troubleshooting missing classes, rpx arbitrary values, JS string classes, and `space-x/space-y` behavior.
-- Producing integration steps with validation and rollback guidance.
 
 Read more in the [Skill documentation](https://tw.icebreaker.top/docs/ai/basics/skill).
 

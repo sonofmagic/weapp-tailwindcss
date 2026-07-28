@@ -13,24 +13,38 @@ const cardBase = `
 
 const TRAILING_SLASH_RE = /\/$/
 
+const SKILL_INSTALL_COMMAND = `npx skills add sonofmagic/skills \\
+  --skill weapp-tailwindcss \\
+  --skill weapp-tailwindcss-setup \\
+  --skill weapp-tailwindcss-migrate \\
+  --skill weapp-tailwindcss-troubleshoot \\
+  --skill weapp-tailwindcss-runtime \\
+  --skill weapp-tailwindcss-custom-build \\
+  --skill weapp-tailwindcss-react-native \\
+  -y`
+
+const LOCAL_SKILL_INSTALL_COMMAND = SKILL_INSTALL_COMMAND.replace('sonofmagic/skills', '.')
+
 const llmsPageCopy = {
   'zh-cn': {
     title: 'LLM / Skill 文档入口',
-    description: '为大模型准备的 llms 文档入口与 weapp-tailwindcss skill 安装说明',
+    description: '为大模型准备的 llms 文档入口与 weapp-tailwindcss skill 套件安装说明',
     badge: '🤖 AI 入口',
-    intro: '构建后会生成一组便于大模型消费的文件：索引型 txt、全量 txt 以及去除 MDX import 的 Markdown 副本。本页同时包含 weapp-tailwindcss skill 安装指令，方便直接接入 AI 工作流。',
+    intro: '构建后会生成一组便于大模型消费的文件：索引型 txt、全量 txt 以及去除 MDX import 的 Markdown 副本。本页同时包含 weapp-tailwindcss 官方 skill 套件安装指令，方便直接接入 AI 工作流。',
     quickstartCta: '直接查看 llms-quickstart.txt',
     fullCta: '获取全量 llms-full.txt',
     indexTitle: '可用索引文件',
     markdownTitle: 'Markdown 副本（示例）',
     markdownIntroPrefix: '每篇文档都会生成纯 Markdown（路径同原始 docs，只是后缀改为 .md）。完整列表见',
-    skillTitle: 'Skill 安装与使用',
-    skillIntro: '如果你希望 AI 在业务项目中按 weapp-tailwindcss 最佳实践输出配置与排障流程，可以先安装官方 skill：',
-    installCommandLabel: '安装命令',
+    skillTitle: 'Skill 套件安装与使用',
+    skillIntro: '官方套件包含兼容协调入口，以及接入、迁移、排障、运行时、自定义构建和 React Native 六个专用工作流：',
+    installCommandLabel: '安装完整套件',
+    installCommand: SKILL_INSTALL_COMMAND,
     skillListLabel: '查看可安装 Skill 列表',
     localInstallLabel: '本地仓库调试安装',
+    localInstallCommand: LOCAL_SKILL_INSTALL_COMMAND,
     promptTitle: '推荐提示词（新项目）',
-    promptText: '我现在是 uni-app cli vue3 vite 项目，目标端是微信小程序 + H5。请按 weapp-tailwindcss skill 给我最小可用配置，输出需要包含安装命令、完整配置文件、验证步骤。',
+    promptText: '使用 $weapp-tailwindcss-setup，为新的 uni-app Vue3 Vite 项目配置微信小程序和 H5，输出安装命令、完整配置文件和验证步骤。',
     docsEntryTitle: '文档入口',
     docsEntries: [
       { label: 'Skill（技能系统）文档', path: '/docs/ai/basics/skill' },
@@ -71,21 +85,23 @@ const llmsPageCopy = {
   },
   'en': {
     title: 'LLM / Skill entry',
-    description: 'LLMS entry points and weapp-tailwindcss skill install notes for AI workflows',
+    description: 'LLMS entry points and weapp-tailwindcss skill suite install notes for AI workflows',
     badge: '🤖 AI entry',
-    intro: 'After build, the site emits model-friendly assets: index txt files, full-content txt bundles, and Markdown copies with MDX imports stripped out. This page also includes the weapp-tailwindcss skill install flow so you can plug it into AI workflows directly.',
+    intro: 'After build, the site emits model-friendly assets: index txt files, full-content txt bundles, and Markdown copies with MDX imports stripped out. This page also includes the complete weapp-tailwindcss skill suite install flow.',
     quickstartCta: 'Open llms-quickstart.txt',
     fullCta: 'Fetch llms-full.txt',
     indexTitle: 'Available index files',
     markdownTitle: 'Markdown copies (examples)',
     markdownIntroPrefix: 'Each doc also ships as plain Markdown with the same route path and a .md suffix. For the full list, see',
-    skillTitle: 'Install and use the skill',
-    skillIntro: 'If you want AI to generate setup and troubleshooting steps that follow weapp-tailwindcss best practices inside your product project, install the official skill first:',
-    installCommandLabel: 'Install command',
+    skillTitle: 'Install and use the skill suite',
+    skillIntro: 'The suite includes the compatibility router plus focused setup, migration, troubleshooting, runtime, custom-build, and React Native workflows:',
+    installCommandLabel: 'Install the complete suite',
+    installCommand: SKILL_INSTALL_COMMAND,
     skillListLabel: 'List installable skills',
     localInstallLabel: 'Install from the local repo for debugging',
+    localInstallCommand: LOCAL_SKILL_INSTALL_COMMAND,
     promptTitle: 'Suggested prompt (new project)',
-    promptText: 'I have a uni-app CLI project with Vue 3 + Vite, targeting WeChat mini apps and H5. Please give me the minimum working setup following the weapp-tailwindcss skill, including install commands, complete config files, and verification steps.',
+    promptText: 'Use $weapp-tailwindcss-setup to configure a new uni-app Vue 3 + Vite project for WeChat mini apps and H5, including complete files and verification steps.',
     docsEntryTitle: 'Docs entry points',
     docsEntries: [
       { label: 'Introduction', path: '/docs/intro' },
@@ -353,7 +369,7 @@ export default function LLMSPage() {
                 text-xs text-emerald-200 shadow-[0_8px_30px_rgba(0,0,0,0.35)]
               `}
               >
-                npx skills add sonofmagic/skills --skill weapp-tailwindcss
+                {copy.installCommand}
               </code>
               <p className="mt-3 font-semibold">{copy.skillListLabel}</p>
               <code className={`
@@ -369,7 +385,7 @@ export default function LLMSPage() {
                 text-xs text-emerald-200 shadow-[0_8px_30px_rgba(0,0,0,0.35)]
               `}
               >
-                npx skills add . --skill weapp-tailwindcss
+                {copy.localInstallCommand}
               </code>
             </div>
 

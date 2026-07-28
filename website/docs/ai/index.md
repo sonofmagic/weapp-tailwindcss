@@ -27,13 +27,21 @@ keywords:
 
 ## AI 学习中心：Skill 快速安装
 
-如果你希望 AI 在你的业务项目中，按 `weapp-tailwindcss` 最佳实践快速完成小程序与多端接入，可以先安装 `weapp-tailwindcss` Skill：
+官方 Skill 已按任务拆分为 1 个兼容协调入口和 6 个专用工作流。推荐安装整套，以覆盖接入、迁移、排障、运行时、自定义构建和 Expo React Native：
 
 ```bash
-npx skills add sonofmagic/skills --skill weapp-tailwindcss
+npx skills add sonofmagic/skills \
+  --skill weapp-tailwindcss \
+  --skill weapp-tailwindcss-setup \
+  --skill weapp-tailwindcss-migrate \
+  --skill weapp-tailwindcss-troubleshoot \
+  --skill weapp-tailwindcss-runtime \
+  --skill weapp-tailwindcss-custom-build \
+  --skill weapp-tailwindcss-react-native \
+  -y
 ```
 
-该 Skill 除了接入配置与排障，也覆盖 Tailwind 写法规范（例如 `space-y-*` / `space-x-*` 在小程序端默认标签限制与修复优先级）。
+原来的 `weapp-tailwindcss` 名称继续作为轻量协调入口，旧安装命令不会失效。
 
 详细说明见：[Skill（技能系统）](/docs/ai/basics/skill)
 

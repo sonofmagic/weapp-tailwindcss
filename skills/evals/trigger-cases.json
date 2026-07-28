@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "router-general-cn",
+      "kind": "positive",
+      "prompt": "我的小程序项目想用 weapp-tailwindcss，但还不确定应该先做接入还是迁移。",
+      "expectedSkill": "weapp-tailwindcss"
+    },
+    {
+      "id": "router-general-en",
+      "kind": "positive",
+      "prompt": "Help me choose the right weapp-tailwindcss workflow for my application.",
+      "expectedSkill": "weapp-tailwindcss"
+    },
+    {
+      "id": "setup-uni-app",
+      "kind": "positive",
+      "prompt": "给新的 uni-app Vue3 Vite 微信小程序和 H5 项目配置 Tailwind CSS 4。",
+      "expectedSkill": "weapp-tailwindcss-setup"
+    },
+    {
+      "id": "setup-taro",
+      "kind": "positive",
+      "prompt": "Set up weapp-tailwindcss v5 in a new Taro 4 Webpack 5 project for mini and H5 builds.",
+      "expectedSkill": "weapp-tailwindcss-setup"
+    },
+    {
+      "id": "migrate-patch",
+      "kind": "positive",
+      "prompt": "把还在运行 weapp-tw patch 和 @tailwindcss/vite 的 v4 项目迁移到 v5。",
+      "expectedSkill": "weapp-tailwindcss-migrate"
+    },
+    {
+      "id": "migrate-h5",
+      "kind": "positive",
+      "prompt": "Upgrade our legacy setup and remove the old disabled H5 branch without breaking mini-program output.",
+      "expectedSkill": "weapp-tailwindcss-migrate"
+    },
+    {
+      "id": "troubleshoot-js",
+      "kind": "positive",
+      "prompt": "JS 字符串里的 px-[4px] 在微信开发者工具中被切断了，帮我定位原因。",
+      "expectedSkill": "weapp-tailwindcss-troubleshoot"
+    },
+    {
+      "id": "troubleshoot-hmr",
+      "kind": "positive",
+      "prompt": "The first Tailwind build works, but newly added arbitrary classes stop updating during HMR.",
+      "expectedSkill": "weapp-tailwindcss-troubleshoot"
+    },
+    {
+      "id": "runtime-cn",
+      "kind": "positive",
+      "prompt": "用 @weapp-tailwindcss/merge 给组件实现可覆盖的 cn，并处理自定义 token。",
+      "expectedSkill": "weapp-tailwindcss-runtime"
+    },
+    {
+      "id": "runtime-variants",
+      "kind": "positive",
+      "prompt": "Should this mini-program component use cva or tailwind-variants, and how should escaping work?",
+      "expectedSkill": "weapp-tailwindcss-runtime"
+    },
+    {
+      "id": "custom-core",
+      "kind": "positive",
+      "prompt": "在自研构建器中用 weapp-tailwindcss/core 转换内存里的 CSS、WXML 和 JavaScript。",
+      "expectedSkill": "weapp-tailwindcss-custom-build"
+    },
+    {
+      "id": "custom-injector",
+      "kind": "positive",
+      "prompt": "Design subpackage style injection for a custom Webpack adapter without writing directly to dist.",
+      "expectedSkill": "weapp-tailwindcss-custom-build"
+    },
+    {
+      "id": "rn-expo",
+      "kind": "positive",
+      "prompt": "给 Expo SDK 54 项目配置 @weapp-tailwindcss/react-native 和 Metro。",
+      "expectedSkill": "weapp-tailwindcss-react-native"
+    },
+    {
+      "id": "rn-manifest",
+      "kind": "positive",
+      "prompt": "Why are unsupported declarations appearing in my React Native Tailwind style manifest warnings?",
+      "expectedSkill": "weapp-tailwindcss-react-native"
+    },
+    {
+      "id": "boundary-old-project-broken",
+      "kind": "boundary",
+      "prompt": "旧项目升级依赖后样式完全没了，先判断是迁移配置还是运行时故障。",
+      "expectedSkill": "weapp-tailwindcss-migrate"
+    },
+    {
+      "id": "boundary-custom-vite",
+      "kind": "boundary",
+      "prompt": "普通 uni-app Vite 项目只需要注册官方插件，不是在开发自研 bundler。",
+      "expectedSkill": "weapp-tailwindcss-setup"
+    },
+    {
+      "id": "boundary-app-not-rn",
+      "kind": "boundary",
+      "prompt": "这是 uni-app x 的 Android App，不是 Expo 或 React Native，样式在设备上缺失。",
+      "expectedSkill": "weapp-tailwindcss-troubleshoot"
+    },
+    {
+      "id": "negative-general-tailwind-web",
+      "kind": "negative",
+      "prompt": "Create a plain Next.js website with the official Tailwind CSS plugin and no mini-program support.",
+      "expectedSkill": null
+    },
+    {
+      "id": "negative-playwright",
+      "kind": "negative",
+      "prompt": "Use Playwright to take a screenshot of the current documentation page.",
+      "expectedSkill": null
+    }
+  ]
+}

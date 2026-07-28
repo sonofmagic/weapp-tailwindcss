@@ -87,18 +87,25 @@
 
 ## AI Skill
 
-如果希望 AI 在业务项目中按当前最佳实践接入 `weapp-tailwindcss`，可以安装官方 Skill：
+官方 Skill 已按任务拆分为接入、迁移、排障、运行时、自定义构建和 React Native 六个工作流，并保留 `weapp-tailwindcss` 兼容协调入口。推荐一次安装整套：
+
+```bash
+npx skills add sonofmagic/skills \
+  --skill weapp-tailwindcss \
+  --skill weapp-tailwindcss-setup \
+  --skill weapp-tailwindcss-migrate \
+  --skill weapp-tailwindcss-troubleshoot \
+  --skill weapp-tailwindcss-runtime \
+  --skill weapp-tailwindcss-custom-build \
+  --skill weapp-tailwindcss-react-native \
+  -y
+```
+
+旧的单 Skill 安装命令仍然可用，并会负责识别任务与引导到专用 Skill：
 
 ```bash
 npx skills add sonofmagic/skills --skill weapp-tailwindcss
 ```
-
-它适合处理这些任务：
-
-- 新项目接入 `uni-app` / `uni-app x`、Taro 或原生小程序。
-- 判断 Tailwind CSS v4 的配置差异。
-- 排查 class 不生效、rpx 任意值、JS 字符串 class、`space-x/space-y` 等问题。
-- 生成可验证、可回滚的接入步骤。
 
 更多说明见 [Skill 文档](https://tw.icebreaker.top/docs/ai/basics/skill)。
 
