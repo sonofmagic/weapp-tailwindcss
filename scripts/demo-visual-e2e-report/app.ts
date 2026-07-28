@@ -1,5 +1,6 @@
 import type { ChildProcess } from 'node:child_process'
 import type { AppCase } from '../../e2e/hbuilderx-local/cases.ts'
+import type { HBuilderXRunner } from '../../packages/hbuilderx-runner/src/types.ts'
 import type { StyleIsolationVariant } from './style-isolation.ts'
 import type { CaseResult, RuntimeContext, VisualHmrStepResult } from './types.ts'
 import { spawnSync } from 'node:child_process'
@@ -14,15 +15,13 @@ import {
   assertHarmonyToolchain,
   assertIosSimulatorToolchain,
   collectProcessOutput,
+  createLocalHBuilderXRunner,
   fileExists,
   hbuilderxAppTimeoutMs,
   killProcessTree,
   pollIntervalMs,
   readUtf8,
-  resolveHBuilderXCli,
   resolveHdcCommand,
-  runPnpm,
-  spawnPnpm,
   wait,
 } from '../../e2e/hbuilderx-local/process.ts'
 import { createHBuilderXProjectAlias } from '../hbuilderx-project-alias.mjs'
@@ -668,19 +667,22 @@ function startAppLaunch(
   item: AppCase,
   projectRoot: string,
   projectPath: string,
-  hbuilderxCliPath: string,
+  hbuilderx: HBuilderXRunner,
   toolEnv: Record<string, string | undefined>,
 ) {
   const launchArgs = [...(item.launchArgs ?? [])]
   if (item.platform !== 'app-harmony' && !launchArgs.includes('--pagePath')) {
     launchArgs.push('--pagePath', 'pages/index/index')
   }
-  const child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectPath, ...launchArgs], {
-    HBUILDERX_CLI_PATH: hbuilderxCliPath,
-    WEAPP_TW_HMR_TIMING: '1',
-    ...toolEnv,
-    ...item.launchEnv,
-  })
+  const child = hbuilderx.spawn({
+    args: ['launch', item.platform, '--project', projectPath, ...launchArgs],
+    cwd: projectRoot,
+    env: {
+      WEAPP_TW_HMR_TIMING: '1',
+      ...toolEnv,
+      ...item.launchEnv,
+    },
+  }).child
   const logs = collectProcessOutput(child)
   const tracker = createProcessExitTracker(child)
   return { child, logs, tracker }
@@ -717,7 +719,7 @@ async function runAppCaseVariant(
   results: CaseResult[],
   variant: StyleIsolationVariant,
   shared?: {
-    hbuilderxCliPath?: string
+    hbuilderx?: HBuilderXRunner
     originalManifest?: string
     originalSource?: string
     toolEnv?: Record<string, string | undefined>
@@ -751,7 +753,7 @@ async function runAppCaseVariant(
       assertHarmonyToolchain(process.env, resolveLaunchArg(item, '--deviceId'))
     }
 
-    const hbuilderxCliPath = shared?.hbuilderxCliPath ?? await resolveHBuilderXCli()
+    const hbuilderx = shared?.hbuilderx ?? await createLocalHBuilderXRunner(projectRoot, toolEnv)
     projectAlias = await createHBuilderXProjectAlias(projectRoot)
     activeSourceFile = path.resolve(projectAlias.projectPath, item.sourceFile)
     const originalSource = shared?.originalSource ?? (await readUtf8(sourceFile)).replace(appMarkerRE, '')
@@ -778,17 +780,22 @@ async function runAppCaseVariant(
     await cleanAppOutput(item, projectRoot)
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: open project ${projectRoot}\n`)
-    await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'close', '--path', projectAlias.projectPath], hbuilderxAppTimeoutMs, {
-      HBUILDERX_CLI_PATH: hbuilderxCliPath,
-      ...toolEnv,
+    await hbuilderx.run({
+      args: ['project', 'close', '--path', projectAlias.projectPath],
+      cwd: projectRoot,
+      timeoutMs: hbuilderxAppTimeoutMs,
+      allowFailure: true,
+      env: toolEnv,
     }).catch(() => undefined)
-    await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectAlias.projectPath], hbuilderxAppTimeoutMs, {
-      HBUILDERX_CLI_PATH: hbuilderxCliPath,
-      ...toolEnv,
+    await hbuilderx.run({
+      args: ['project', 'open', '--path', projectAlias.projectPath],
+      cwd: projectRoot,
+      timeoutMs: hbuilderxAppTimeoutMs,
+      env: toolEnv,
     })
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: launch ${item.platform}\n`)
-    launch = startAppLaunch(item, projectRoot, projectAlias.projectPath, hbuilderxCliPath, toolEnv)
+    launch = startAppLaunch(item, projectRoot, projectAlias.projectPath, hbuilderx, toolEnv)
     const ensureInitialRunning = () => launch?.tracker.ensureRunning(launch.logs)
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait initial output\n`)
@@ -908,9 +915,12 @@ async function runAppCaseVariant(
       cleanupAndroidAppRuntime(shared?.toolEnv ?? {}, resolveAndroidScreenshotDeviceId(item))
     }
     if (projectAlias) {
-      await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'close', '--path', projectAlias.projectPath], hbuilderxAppTimeoutMs, {
-        HBUILDERX_CLI_PATH: shared?.hbuilderxCliPath,
-        ...shared?.toolEnv,
+      await shared?.hbuilderx?.run({
+        args: ['project', 'close', '--path', projectAlias.projectPath],
+        cwd: projectRoot,
+        timeoutMs: hbuilderxAppTimeoutMs,
+        allowFailure: true,
+        env: shared?.toolEnv,
       }).catch(() => undefined)
       await projectAlias.cleanup().catch(() => undefined)
     }
@@ -933,14 +943,14 @@ export async function runAppCase(item: AppCase, context: RuntimeContext, results
   const originalSource = (await readUtf8(sourceFile)).replace(appMarkerRE, '')
   const originalManifest = await readManifest(projectRoot).catch(() => undefined)
   const shared = {
-    hbuilderxCliPath: await resolveHBuilderXCli(),
     originalManifest,
     originalSource,
     toolEnv: item.platform === 'app-android' ? assertAndroidToolchain() : {},
   }
+  const hbuilderx = await createLocalHBuilderXRunner(projectRoot, shared.toolEnv)
   try {
     for (const variant of resolveStyleIsolationVariants(item.projectDir)) {
-      await runAppCaseVariant(item, context, results, variant, shared)
+      await runAppCaseVariant(item, context, results, variant, { ...shared, hbuilderx })
     }
   }
   finally {

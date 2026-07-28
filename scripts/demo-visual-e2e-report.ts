@@ -80,6 +80,8 @@ function printHelp() {
     '  --help          显示帮助',
     '',
     'Environment:',
+    '  HBUILDERX_CHANNEL=auto|stable|alpha  选择 HBuilderX 版本，默认 auto',
+    '  HBUILDERX_HOST=<name>              多实例时选择 listhost 返回的 host',
     '  DEMO_VISUAL_IDE_CLEANUP=0           不在小程序 case 前后关闭微信开发者工具',
     '  DEMO_VISUAL_IDE_LAUNCH_RETRIES=1    DevTools launch 超时后的重试次数',
     '  DEMO_VISUAL_IDE_SETTLE_MS=800       清理 DevTools 后等待时间',

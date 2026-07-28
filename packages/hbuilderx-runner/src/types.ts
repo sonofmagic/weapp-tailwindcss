@@ -3,9 +3,13 @@ import type { ChildProcess } from 'node:child_process'
 export type HBuilderXMiniProgramPlatform = 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao'
 export type HBuilderXAppPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 export type HBuilderXPlatform = HBuilderXMiniProgramPlatform | HBuilderXAppPlatform
+export type HBuilderXChannel = 'auto' | 'stable' | 'alpha'
+export type HBuilderXResolvedChannel = Exclude<HBuilderXChannel, 'auto'> | 'unknown'
 
 export type HBuilderXIssueKind
   = | 'cli-not-found'
+    | 'cli-instance-mismatch'
+    | 'cli-host-ambiguous'
     | 'project-not-uni-app'
     | 'project-type-unsupported'
     | 'config-load-failed'
@@ -62,6 +66,8 @@ export interface SpawnedHBuilderXCommand {
 export interface HBuilderXProjectOptions {
   cwd: string
   hbuilderxCliPath?: string
+  channel?: HBuilderXChannel
+  host?: string
   env?: Record<string, string | undefined>
   timeoutMs?: number
   allowFailure?: boolean
@@ -89,8 +95,45 @@ export interface AndroidToolchain {
 
 export type HBuilderXCliResolutionSource = 'running-process' | 'env' | 'default-path' | 'candidate'
 
+export interface HBuilderXCliResolveOptions {
+  candidates?: string[]
+  channel?: HBuilderXChannel
+  env?: NodeJS.ProcessEnv
+  host?: string
+}
+
 export interface HBuilderXCliResolution {
   path: string
   isRunning: boolean
   source: HBuilderXCliResolutionSource
+  channel: HBuilderXResolvedChannel
+  host?: string
+  version?: string
+}
+
+export interface HBuilderXNativeCommandOptions {
+  args: string[]
+  cwd?: string
+  timeoutMs?: number
+  env?: Record<string, string | undefined>
+  allowFailure?: boolean
+  detached?: boolean
+  stdio?: 'pipe' | 'inherit'
+}
+
+export interface HBuilderXRunnerOptions extends HBuilderXCliResolveOptions {
+  cwd?: string
+  hbuilderxCliPath?: string
+  timeoutMs?: number
+}
+
+export interface HBuilderXRunner {
+  resolution: HBuilderXCliResolution
+  run: (options: HBuilderXNativeCommandOptions) => Promise<HBuilderXCommandResult>
+  spawn: (options: HBuilderXNativeCommandOptions) => SpawnedHBuilderXCommand
+  closeProject: (options: HBuilderXProjectOptions) => Promise<HBuilderXCommandResult>
+  openProject: (options: HBuilderXProjectOptions) => Promise<HBuilderXCommandResult>
+  prepareProject: (options: HBuilderXProjectOptions) => Promise<HBuilderXCommandResult>
+  launchProject: (options: HBuilderXLaunchOptions) => Promise<HBuilderXCommandResult>
+  startLaunch: (options: HBuilderXLaunchOptions) => SpawnedHBuilderXCommand
 }

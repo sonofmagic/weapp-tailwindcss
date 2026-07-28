@@ -6,6 +6,8 @@ const PROJECT_NOT_UNI_APP_RE = /不是\s*uni-app\s*项目|not\s+a\s+uni-app\s+pr
 const PROJECT_TYPE_UNSUPPORTED_RE = /项目类型为(.+?)，暂不支持|project\s+type.+unsupported/i
 const CONFIG_LOAD_FAILED_RE = /failed to load config|error when starting dev server|Failed to resolve entry for package/i
 const CLI_NOT_FOUND_RE = /未找到\s*HBuilderX\s*CLI|HBUILDERX_CLI_PATH|command not found|ENOENT/i
+const CLI_INSTANCE_MISMATCH_RE = /当前运行的cli与正在运行的HBuilderX不匹配|cli.+(?:does not match|mismatch).+HBuilderX|try.+HBuilderX.+(?:cli|MacOS)/i
+const CLI_HOST_AMBIGUOUS_RE = /multiple running hbuilderx|多个.+HBuilderX.+运行|listhost.+--\s*host|--host.+listhost/i
 const ANDROID_TOOLCHAIN_MISSING_RE = /adb(?:\.exe)?(?:\s*[:：].*)?(?:not found|ENOENT|不是内部或外部命令)|Android SDK|platform-tools/i
 const IOS_TOOLCHAIN_MISSING_RE = /xcrun|xcode-select|xcodebuild|simctl|DEVELOPER_DIR|iOS 模拟器|Xcode/i
 const HARMONY_TOOLCHAIN_MISSING_RE = /(?:^|\s)hdc[\s:：]|Harmony|DevEco|OpenHarmony/i
@@ -34,6 +36,20 @@ export function collectProcessOutput(child: ChildProcess, maxChunks = 160) {
 }
 
 export function classifyHBuilderXOutput(output: string): HBuilderXIssue {
+  if (CLI_INSTANCE_MISMATCH_RE.test(output)) {
+    return {
+      kind: 'cli-instance-mismatch',
+      message: '当前 HBuilderX CLI 与目标运行实例不匹配。',
+      hint: '请使用与目标 stable/alpha 实例对应的 CLI，并通过 listhost 与 --host 绑定运行实例。',
+    }
+  }
+  if (CLI_HOST_AMBIGUOUS_RE.test(output)) {
+    return {
+      kind: 'cli-host-ambiguous',
+      message: '检测到多个可用的 HBuilderX 运行实例。',
+      hint: '请设置 HBUILDERX_HOST，或在 runner options 中显式传入 host。',
+    }
+  }
   if (ANDROID_TOOLCHAIN_MISSING_RE.test(output)) {
     return {
       kind: 'android-toolchain-missing',

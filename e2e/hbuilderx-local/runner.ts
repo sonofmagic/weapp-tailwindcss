@@ -15,16 +15,15 @@ import {
   assertIosSimulatorToolchain,
   classifyHBuilderXOutput,
   collectProcessOutput,
+  createLocalHBuilderXRunner,
   fileExists,
   hbuilderxAppTimeoutMs,
   hbuilderxTimeoutMs,
   killProcessTree,
   pollIntervalMs,
   readUtf8,
-  resolveHBuilderXCli,
   resolveIosSimulatorDeviceId,
   runPnpm,
-  spawnPnpm,
   wait,
 } from './process'
 import { collectMiniProgramStyleFiles } from './styles'
@@ -468,15 +467,18 @@ export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
   )
 
   if (item.platform !== 'mp-weixin') {
-    const hbuilderxCliPath = await resolveHBuilderXCli()
+    const hbuilderx = await createLocalHBuilderXRunner(projectRoot, { WEAPP_TW_HMR_TIMING: '1' })
     const projectAlias = await createSharedHBuilderXProjectAlias(projectRoot)
     try {
-      await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectAlias.projectPath], hbuilderxTimeoutMs, {
-        HBUILDERX_CLI_PATH: hbuilderxCliPath,
+      await hbuilderx.run({
+        args: ['project', 'open', '--path', projectAlias.projectPath],
+        cwd: projectRoot,
+        timeoutMs: hbuilderxTimeoutMs,
       })
-      await runPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectAlias.projectName, '--compile', 'true'], hbuilderxTimeoutMs, {
-        HBUILDERX_CLI_PATH: hbuilderxCliPath,
-        WEAPP_TW_HMR_TIMING: '1',
+      await hbuilderx.run({
+        args: ['launch', item.platform, '--project', projectAlias.projectName, '--compile', 'true'],
+        cwd: projectRoot,
+        timeoutMs: hbuilderxTimeoutMs,
       })
       await assertMiniProgramOutput(item)
     }
@@ -487,7 +489,6 @@ export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
   }
 
   await runPnpm(projectRoot, ['run', 'dev:mp-weixin'], hbuilderxTimeoutMs, {
-    HBUILDERX_CLI_PATH: await resolveHBuilderXCli(),
     HBUILDERX_COMPILE_ONLY: '1',
     WEAPP_TW_HMR_TIMING: '1',
   })
@@ -510,12 +511,16 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     assertHarmonyToolchain()
   }
 
-  const hbuilderxCliPath = await resolveHBuilderXCli()
   const projectRoot = path.resolve(repoRoot, item.projectDir)
+  const hbuilderx = await createLocalHBuilderXRunner(projectRoot, {
+    WEAPP_TW_HMR_TIMING: '1',
+    ...androidEnv,
+    ...item.launchEnv,
+  })
   const sourceFile = path.resolve(projectRoot, item.sourceFile)
   let projectAlias: string | undefined
   let restore: (() => Promise<void>) | undefined
-  let child: ReturnType<typeof spawnPnpm> | undefined
+  let child: ChildProcess | undefined
   try {
     const original = await readUtf8(sourceFile)
     restore = async () => {
@@ -529,16 +534,21 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     await cleanAppOutput(item)
     const projectIdentity = await createHBuilderXProjectAlias(projectRoot, item.platform)
     projectAlias = projectIdentity.projectAlias
-    await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectAlias], hbuilderxAppTimeoutMs, {
-      HBUILDERX_CLI_PATH: hbuilderxCliPath,
-      ...androidEnv,
+    await hbuilderx.run({
+      args: ['project', 'open', '--path', projectAlias],
+      cwd: projectRoot,
+      timeoutMs: hbuilderxAppTimeoutMs,
+      env: androidEnv,
     })
-    child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectIdentity.projectName, '--cleanCache', 'true', ...launchArgs], {
-      HBUILDERX_CLI_PATH: hbuilderxCliPath,
-      WEAPP_TW_HMR_TIMING: '1',
-      ...androidEnv,
-      ...item.launchEnv,
-    })
+    child = hbuilderx.spawn({
+      args: ['launch', item.platform, '--project', projectIdentity.projectName, '--cleanCache', 'true', ...launchArgs],
+      cwd: projectRoot,
+      env: {
+        WEAPP_TW_HMR_TIMING: '1',
+        ...androidEnv,
+        ...item.launchEnv,
+      },
+    }).child
     const logs = collectProcessOutput(child)
     let exit: { code: number | null, signal: NodeJS.Signals | null } | undefined
     const closed = new Promise<void>((resolve) => {
@@ -560,7 +570,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
         throw new Error(`HBuilderX App 运行已终止：${terminated}\n${output.slice(-20_000)}`)
       }
       if (exit && exit.code !== 0) {
-        throw new Error(`命令失败：pnpm exec hbuilderx launch ${item.platform} exit=${exit.signal ?? exit.code}\n${formatHBuilderXIssueDetails(output)}\n${output}`)
+        throw new Error(`命令失败：HBuilderX ${hbuilderx.resolution.channel} launch ${item.platform} exit=${exit.signal ?? exit.code}\n${formatHBuilderXIssueDetails(output)}\n${output}`)
       }
     }
     let initialOutputRoot: string | undefined
@@ -615,9 +625,12 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       await restore()
     }
     if (projectAlias) {
-      await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'close', '--path', projectAlias], hbuilderxAppTimeoutMs, {
-        HBUILDERX_CLI_PATH: hbuilderxCliPath,
-        ...androidEnv,
+      await hbuilderx.run({
+        args: ['project', 'close', '--path', projectAlias],
+        cwd: projectRoot,
+        timeoutMs: hbuilderxAppTimeoutMs,
+        allowFailure: true,
+        env: androidEnv,
       }).catch(() => undefined)
       await rmWithRetry(projectAlias)
     }

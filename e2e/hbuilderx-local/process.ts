@@ -6,14 +6,15 @@ import {
   assertIosSimulatorToolchain,
   classifyHBuilderXOutput,
   collectProcessOutput,
+  createHBuilderXRunner,
   fileExists,
   killProcessTree,
   readUtf8,
   resolveHBuilderXCli,
   resolveHdcCommand,
   resolveIosSimulatorDeviceId,
-  runPnpmCommand,
-  spawnPnpmCommand,
+  runCommand,
+  spawnCommand,
   wait,
 } from '../../packages/hbuilderx-runner/src'
 
@@ -70,22 +71,33 @@ export async function findFreePort() {
 }
 
 export function spawnPnpm(projectRoot: string, args: string[], env: Record<string, string | undefined> = {}) {
-  return spawnPnpmCommand({
+  return spawnCommand({
+    command: 'pnpm',
     cwd: projectRoot,
     args,
     env,
-    hbuilderxCliPath: process.env['HBUILDERX_CLI_PATH'],
   }).child
 }
 
 export async function runPnpm(projectRoot: string, args: string[], timeoutMs: number, env: Record<string, string | undefined> = {}) {
-  await runPnpmCommand({
+  await runCommand({
+    command: 'pnpm',
     cwd: projectRoot,
     args,
     timeoutMs,
     env,
-    hbuilderxCliPath: process.env['HBUILDERX_CLI_PATH'],
   })
+}
+
+export async function createLocalHBuilderXRunner(projectRoot: string, env: Record<string, string | undefined> = {}) {
+  const runner = await createHBuilderXRunner({
+    cwd: projectRoot,
+    env,
+    timeoutMs: hbuilderxTimeoutMs,
+  })
+  const { channel, host, path, version } = runner.resolution
+  process.stdout.write(`[hbuilderx] channel=${channel} version=${version} host=${host} cli=${path}\n`)
+  return runner
 }
 
 export function joinUrl(baseUrl: string, requestPath: string) {

@@ -3,12 +3,9 @@ import process from 'node:process'
 import { format as formatMessage } from 'node:util'
 import { execa } from 'execa'
 import path from 'pathe'
+import { createHBuilderXRunner } from '../packages/hbuilderx-runner/src'
 
 const buildTasks = new Map<string, Promise<void>>()
-const hbuilderxCliCandidates = [
-  process.env['HBUILDERX_CLI_PATH'],
-  process.platform === 'darwin' ? '/Applications/HBuilderX.app/Contents/MacOS/cli' : undefined,
-].filter((item): item is string => Boolean(item))
 
 interface EnsureProjectBuiltOptions {
   env?: Record<string, string | undefined>
@@ -27,25 +24,6 @@ function logE2EError(message: string, ...args: unknown[]) {
 
 function wait(timeoutMs: number) {
   return new Promise(resolve => setTimeout(resolve, timeoutMs))
-}
-
-async function fileExists(file: string) {
-  try {
-    await fs.access(file)
-    return true
-  }
-  catch {
-    return false
-  }
-}
-
-async function resolveHBuilderXCliPath() {
-  for (const candidate of hbuilderxCliCandidates) {
-    if (await fileExists(candidate)) {
-      return candidate
-    }
-  }
-  return process.env['HBUILDERX_CLI_PATH']
 }
 
 async function cleanupWechatDevToolsAfterHBuilderXBuild() {
@@ -68,16 +46,17 @@ async function cleanupWechatDevToolsAfterHBuilderXBuild() {
 async function runHBuilderXCli(root: string, args: string[], env: Record<string, string | undefined>, timeoutMs: number) {
   const stdio = process.env['E2E_DEBUG_BUILD'] === '1' ? 'inherit' : 'pipe'
   try {
-    await execa('pnpm', ['exec', 'hbuilderx', ...args], {
+    const runner = await createHBuilderXRunner({
       cwd: root,
       env,
-      stdio,
-      timeout: timeoutMs,
     })
+    const { channel, host, path: cliPath, version } = runner.resolution
+    process.stdout.write(`[e2e] HBuilderX channel=${channel} version=${version} host=${host} cli=${cliPath}\n`)
+    await runner.run({ args, cwd: root, env, stdio, timeoutMs })
   }
   catch (error) {
     if (stdio !== 'inherit') {
-      logE2EError('[e2e] HBuilderX command failed in %s: pnpm exec hbuilderx %s\n%o', root, args.join(' '), error)
+      logE2EError('[e2e] HBuilderX command failed in %s: %s\n%o', root, args.join(' '), error)
     }
     throw error
   }
@@ -110,11 +89,9 @@ async function ensureHBuilderXMiniProgramBuilt(
   env?: Record<string, string | undefined>,
 ) {
   const timeoutMs = Number(process.env['E2E_IDE_HBUILDERX_DEV_BUILD_TIMEOUT_MS'] ?? process.env['E2E_IDE_BUILD_TIMEOUT_MS'] ?? 120_000)
-  const hbuilderxCliPath = await resolveHBuilderXCliPath()
   const childEnv: Record<string, string | undefined> = {
     ...process.env,
     ...env,
-    HBUILDERX_CLI_PATH: hbuilderxCliPath,
     NODE_ENV: 'development',
     BROWSERSLIST_ENV: 'development',
     RUST_BACKTRACE: process.env['RUST_BACKTRACE'] ?? '1',

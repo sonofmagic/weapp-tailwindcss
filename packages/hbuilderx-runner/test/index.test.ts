@@ -1,14 +1,20 @@
 import { spawnSync } from 'node:child_process'
-import { mkdtemp, writeFile } from 'node:fs/promises'
+import { chmod, mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import {
   HBuilderXCommandError,
   classifyHBuilderXOutput,
+  createHBuilderXRunner,
   createLaunchArgs,
   createLogBuffer,
   extractHBuilderXExecutableFromProcessOutput,
+  extractHBuilderXExecutablesFromProcessOutput,
+  getDefaultHBuilderXCliCandidates,
+  inferHBuilderXChannel,
+  parseHBuilderXHosts,
+  parseHBuilderXVersion,
   parseHdcTargets,
   parseIosSimulatorDevices,
   resolveIosSimulatorDeviceId,
@@ -16,6 +22,7 @@ import {
   resolveHBuilderXCli,
   resolveHBuilderXCliInfo,
   runCommand,
+  selectHBuilderXCliCandidatesForChannel,
 } from '../src'
 
 describe('hbuilderx-runner', () => {
@@ -38,6 +45,8 @@ describe('hbuilderx-runner', () => {
   })
 
   it('classifies common HBuilderX project recognition failures', () => {
+    expect(classifyHBuilderXOutput('当前运行的cli与正在运行的HBuilderX不匹配，请尝试另一个 cli').kind).toBe('cli-instance-mismatch')
+    expect(classifyHBuilderXOutput('There are currently multiple running hbuilderx. Use listhost and --host.').kind).toBe('cli-host-ambiguous')
     expect(classifyHBuilderXOutput('项目 /demo 不是 uni-app 项目，暂不支持').kind).toBe('project-not-uni-app')
     expect(classifyHBuilderXOutput('项目 /demo 项目类型为Web，暂不支持').kind).toBe('project-type-unsupported')
     expect(classifyHBuilderXOutput('failed to load config from vite.config.ts\nFailed to resolve entry for package "@x/y"').kind).toBe('config-load-failed')
@@ -104,6 +113,44 @@ describe('hbuilderx-runner', () => {
     })
   })
 
+  it('orders stable and Alpha default installations by channel', () => {
+    expect(getDefaultHBuilderXCliCandidates({}, 'auto', 'darwin')).toEqual([
+      '/Applications/HBuilderX.app/Contents/MacOS/cli',
+      '/Applications/HBuilderX-Alpha.app/Contents/MacOS/cli',
+    ])
+    expect(getDefaultHBuilderXCliCandidates({}, 'alpha', 'darwin')).toEqual([
+      '/Applications/HBuilderX-Alpha.app/Contents/MacOS/cli',
+    ])
+    expect(getDefaultHBuilderXCliCandidates({}, 'stable', 'win32')).toEqual([])
+    const running = [
+      '/Applications/HBuilderX-Alpha.app/Contents/MacOS/cli',
+      '/opt/custom/cli',
+      '/Applications/HBuilderX.app/Contents/MacOS/cli',
+    ]
+    expect(selectHBuilderXCliCandidatesForChannel(running, 'auto')).toEqual([
+      '/Applications/HBuilderX.app/Contents/MacOS/cli',
+      '/Applications/HBuilderX-Alpha.app/Contents/MacOS/cli',
+      '/opt/custom/cli',
+    ])
+    expect(selectHBuilderXCliCandidatesForChannel(running, 'alpha')).toEqual([
+      '/Applications/HBuilderX-Alpha.app/Contents/MacOS/cli',
+    ])
+  })
+
+  it('lets an explicit CLI path override channel discovery', async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), 'hbuilderx-explicit-'))
+    const cli = path.join(dir, 'custom-cli')
+    await writeFile(cli, '', 'utf8')
+    await expect(resolveHBuilderXCliInfo({
+      channel: 'alpha',
+      env: { HBUILDERX_CLI_PATH: cli } as NodeJS.ProcessEnv,
+    })).resolves.toMatchObject({
+      path: cli,
+      source: 'env',
+      channel: 'unknown',
+    })
+  })
+
   it('extracts HBuilderX executables from process listings', () => {
     expect(extractHBuilderXExecutableFromProcessOutput(
       '123 ?? 0:01.23 /Applications/HBuilderX.app/Contents/MacOS/HBuilderX --type=renderer',
@@ -117,6 +164,107 @@ describe('hbuilderx-runner', () => {
       'Node,DESKTOP,123,C:\\Program Files\\HBuilderX\\HBuilderX.exe',
       'win32',
     )).toBe('C:\\Program Files\\HBuilderX\\HBuilderX.exe')
+
+    expect(extractHBuilderXExecutablesFromProcessOutput([
+      '/Applications/HBuilderX.app/Contents/MacOS/HBuilderX',
+      '/Applications/HBuilderX.app/Contents/HBuilderX/plugins/node/node worker.js',
+      '/Applications/HBuilderX-Alpha.app/Contents/MacOS/HBuilderX --type=renderer',
+    ].join('\n'), 'darwin')).toEqual([
+      '/Applications/HBuilderX.app/Contents/MacOS/HBuilderX',
+      '/Applications/HBuilderX-Alpha.app/Contents/MacOS/HBuilderX',
+    ])
+    expect(inferHBuilderXChannel('/Applications/HBuilderX-Alpha.app/Contents/MacOS/cli')).toBe('alpha')
+  })
+
+  it('parses HBuilderX hosts and ANSI-colored versions', () => {
+    expect(parseHBuilderXHosts('\nHBuilderX\nHBuilderX-Alpha\nHBuilderX\n')).toEqual([
+      'HBuilderX',
+      'HBuilderX-Alpha',
+    ])
+    expect(parseHBuilderXVersion('\u001B[1;32m5.22.2026072503-alpha\u001B[0m')).toBe('5.22.2026072503-alpha')
+  })
+
+  it('binds stable and Alpha runners to their own native CLI and host', async () => {
+    if (process.platform === 'win32') {
+      return
+    }
+    const dir = await mkdtemp(path.join(tmpdir(), 'hbuilderx-runners-'))
+    const script = [
+      '#!/bin/sh',
+      'printf "%s\\n" "$*" >> "$HBUILDERX_FAKE_LOG"',
+      'case "$1" in',
+      '  open) exit 0 ;;',
+      '  listhost) printf "%s\\n" "$HBUILDERX_FAKE_HOST" ;;',
+      '  version) printf "%s\\n" "$HBUILDERX_FAKE_VERSION" ;;',
+      '  *) printf "ok\\n" ;;',
+      'esac',
+    ].join('\n')
+    const createFakeCli = async (appName: string) => {
+      const cli = path.join(dir, `${appName}.app`, 'Contents', 'MacOS', 'cli')
+      await mkdir(path.dirname(cli), { recursive: true })
+      await writeFile(cli, script, 'utf8')
+      await chmod(cli, 0o755)
+      return cli
+    }
+    const stableCli = await createFakeCli('HBuilderX')
+    const alphaCli = await createFakeCli('HBuilderX-Alpha')
+    const stableLog = path.join(dir, 'stable.log')
+    const alphaLog = path.join(dir, 'alpha.log')
+
+    const stable = await createHBuilderXRunner({
+      hbuilderxCliPath: stableCli,
+      cwd: dir,
+      env: {
+        HBUILDERX_FAKE_HOST: 'stable-host',
+        HBUILDERX_FAKE_LOG: stableLog,
+        HBUILDERX_FAKE_VERSION: '5.15.2026070915',
+      },
+    })
+    const alpha = await createHBuilderXRunner({
+      hbuilderxCliPath: alphaCli,
+      cwd: dir,
+      env: {
+        HBUILDERX_FAKE_HOST: 'alpha-host',
+        HBUILDERX_FAKE_LOG: alphaLog,
+        HBUILDERX_FAKE_VERSION: '5.22.2026072503-alpha',
+      },
+    })
+    await stable.run({ args: ['project', 'list'] })
+    await alpha.run({ args: ['project', 'list'] })
+
+    expect(stable.resolution).toMatchObject({ channel: 'stable', host: 'stable-host', version: '5.15.2026070915' })
+    expect(alpha.resolution).toMatchObject({ channel: 'alpha', host: 'alpha-host', version: '5.22.2026072503-alpha' })
+    expect(await readFile(stableLog, 'utf8')).toContain('project list --host stable-host')
+    expect(await readFile(alphaLog, 'utf8')).toContain('project list --host alpha-host')
+    expect(await readFile(stableLog, 'utf8')).not.toContain('alpha-host')
+    expect(await readFile(alphaLog, 'utf8')).not.toContain('stable-host')
+  })
+
+  it('rejects a CLI mismatch even when HBuilderX exits successfully', async () => {
+    if (process.platform === 'win32') {
+      return
+    }
+    const dir = await mkdtemp(path.join(tmpdir(), 'hbuilderx-mismatch-'))
+    const cli = path.join(dir, 'HBuilderX.app', 'Contents', 'MacOS', 'cli')
+    await mkdir(path.dirname(cli), { recursive: true })
+    await writeFile(cli, [
+      '#!/bin/sh',
+      'printf "当前运行的cli与正在运行的HBuilderX不匹配，请尝试 Alpha cli\\n"',
+      'exit 0',
+    ].join('\n'), 'utf8')
+    await chmod(cli, 0o755)
+
+    await expect(createHBuilderXRunner({
+      hbuilderxCliPath: cli,
+      cwd: dir,
+      timeoutMs: 1000,
+    })).rejects.toMatchObject({
+      result: {
+        issue: {
+          kind: 'cli-instance-mismatch',
+        },
+      },
+    })
   })
 
   it('creates launch args with compile and runtime log flags', () => {
