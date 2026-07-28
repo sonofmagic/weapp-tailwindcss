@@ -913,7 +913,7 @@ function renderOptionsProperty(prop: PropertyDoc, level: number, context: TypeRe
     lines.push('')
     lines.push('`generator.webCompat` 用于 Web/H5 与经典 uni-app App WebView 目标下的 Tailwind CSS v4 兼容降级。自动推断 `generator.target: "web"` 时默认开启，uni-app 的 `app` / `app-plus` 构建也会自动启用；如果显式配置了 `generator.target`，则以用户传入的 `webCompat` 为准。')
     lines.push('')
-    lines.push('传入 `true` 等价于 `{ preset: "legacy-web" }`，该预设面向 Web Compact 输出，兼容基线为 `Chrome/91.0.4472.114` 与 `AppleWebKit/537.36`。它会移除或降级 `@theme`、`@layer`、`@property`、嵌套规则、`oklch()`、现代颜色函数与相关 `@supports` 包裹。经典 uni-app App 还会在最终 WebView 产物中补充 `-webkit-background-clip: text`，同时保留 Tailwind CSS v4 的运行时间距变量语义。需要保持 Tailwind CSS 官方 Web 输出时，可传入 `false` 或 `{ preset: "off" }`。')
+    lines.push('传入 `true` 等价于 `{ preset: "legacy-web" }`，该预设面向 Web Compact 输出，兼容基线为 `Chrome/91.0.4472.114` 与 `AppleWebKit/537.36`。它会移除或降级 `@theme`、`@layer`、`@property`、嵌套规则、`oklch()`、现代颜色函数与相关 `@supports` 包裹，并补充 `-webkit-background-clip: text`，同时保留 Tailwind CSS v4 的运行时间距变量语义。需要保持 Tailwind CSS 官方 Web 输出时，可传入 `false` 或 `{ preset: "off" }`。')
     lines.push('')
     lines.push('```ts')
     lines.push('WeappTailwindcss({')

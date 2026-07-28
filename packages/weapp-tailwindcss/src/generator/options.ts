@@ -31,8 +31,8 @@ export interface WeappTailwindcssGeneratorOptions {
    * 也会在 Web 环境中显式开启。传入 `true` 等价于
    * `{ preset: 'legacy-web' }`，其兼容基线为 Chrome/91.0.4472.114 与 AppleWebKit/537.36。
    * 该预设会移除或降级 `@theme`、`@layer`、`@property`、嵌套规则、`oklch()`、
-   * 现代颜色函数与相关 `@supports` 包裹。经典 uni-app App 还会在最终 WebView 产物中补充
-   * `-webkit-background-clip: text`，同时保留 Tailwind CSS v4 的运行时间距变量语义。
+   * 现代颜色函数与相关 `@supports` 包裹，并补充 `-webkit-background-clip: text`，同时保留
+   * Tailwind CSS v4 的运行时间距变量语义。
    * 如果需要保持 Tailwind CSS 官方 Web 输出，可传入 `false` 或 `{ preset: 'off' }`。
    */
   webCompat?: WebCssCompatUserOptions | undefined

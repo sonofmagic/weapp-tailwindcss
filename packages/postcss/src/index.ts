@@ -43,7 +43,6 @@ export {
   type TailwindcssRpxToRemOptions,
 } from './compat/tailwindcss-rpx'
 export { normalizeTailwindcssV4InfinityCalcCss } from './compat/tailwindcss-v4'
-export { transformUniAppWebviewCssCompat } from './compat/uni-app-webview'
 export {
   type NormalizedWebCssCompatOptions,
   normalizeWebCssCompatOptions,

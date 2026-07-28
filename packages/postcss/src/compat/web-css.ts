@@ -309,6 +309,26 @@ function removeEmptyAtRules(root: postcss.Root) {
   })
 }
 
+function insertWebkitBackgroundClipText(root: postcss.Root) {
+  root.walkDecls('background-clip', (decl) => {
+    if (decl.value.trim().toLowerCase() !== 'text') {
+      return
+    }
+    const parent = decl.parent
+    if (!parent || !('nodes' in parent)) {
+      return
+    }
+    const hasWebkitFallback = parent.nodes.some((node) => {
+      return node.type === 'decl'
+        && node.prop.toLowerCase() === '-webkit-background-clip'
+        && node.value.trim().toLowerCase() === 'text'
+    })
+    if (!hasWebkitFallback) {
+      decl.cloneBefore({ prop: '-webkit-background-clip' })
+    }
+  })
+}
+
 function transformCssNesting(root: postcss.Root) {
   postcss([
     postcssPresetEnv({
@@ -328,7 +348,7 @@ export function transformWebCssCompat(
   options: WebCssCompatUserOptions | undefined,
 ) {
   const normalized = normalizeWebCssCompatOptions(options)
-  if (!isWebCssCompatEnabled(normalized)) {
+  if (!isWebCssCompatEnabled(normalized) && normalized.preset !== 'legacy-web') {
     return css
   }
 
@@ -351,6 +371,9 @@ export function transformWebCssCompat(
     normalizeTailwindcssV4GradientPositionDeclarations(root)
     normalizeTailwindcssV4InfinityCalcDeclarations(root)
     normalizeModernColorDeclarations(root, normalized.features)
+    if (normalized.preset === 'legacy-web') {
+      insertWebkitBackgroundClipText(root)
+    }
     if (normalized.features.layer) {
       removeUnsupportedCascadeLayers(root)
     }
