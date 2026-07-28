@@ -4,7 +4,11 @@ import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy 
 import type { BundleMetrics } from '../metrics'
 import type { GenerateBundleContext } from '../types'
 import path from 'node:path'
-import { transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
+import {
+  transformUniAppWebviewCssCompat,
+  transformWebCssCompat,
+  transformWebCssSafeSelectors,
+} from '@weapp-tailwindcss/postcss'
 import { AssetEmissionPlan } from '@/compiler'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { isPureLocalCssImportWrapper } from '../../../shared/generator-css/local-imports'
@@ -99,7 +103,9 @@ export function finalizeWebviewCssCompat(
     }
     const rawSource = readAssetSource(output)
     const nextCss = transformWebCssSafeSelectors(
-      transformWebCssCompat(rawSource, generatorOptions.webCompat ?? true),
+      transformUniAppWebviewCssCompat(
+        transformWebCssCompat(rawSource, generatorOptions.webCompat ?? true),
+      ),
       { escapeMap: options.opts.escapeMap },
     )
     if (nextCss === rawSource) {

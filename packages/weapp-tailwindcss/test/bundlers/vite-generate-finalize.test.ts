@@ -15,7 +15,14 @@ function asset(fileName: string, source: string): OutputAsset {
 
 describe('vite generate bundle finalize helpers', () => {
   it('writes webview css compat results through the original output asset', () => {
-    const styleAsset = asset('assets/style.css', '@layer utilities { .rounded-\\[20rpx\\] { border-radius: 0.625rem; } }')
+    const styleAsset = asset('assets/style.css', [
+      ':root { --spacing: 0.25rem; }',
+      '@layer utilities {',
+      '  .rounded-\\[20rpx\\] { border-radius: 0.625rem; }',
+      '  .p-5 { padding: calc(var(--spacing) * 5); }',
+      '  .bg-clip-text { background-clip: text; }',
+      '}',
+    ].join('\n'))
     const bundle: OutputBundle = {
       'assets/style-hash.css': styleAsset,
       'chunk.js': { type: 'chunk', fileName: 'chunk.js' } as any,
@@ -39,6 +46,8 @@ describe('vite generate bundle finalize helpers', () => {
     expect(bundle['assets/style-hash.css']).toBe(styleAsset)
     expect(String(styleAsset.source)).toContain('.rounded-_b20rpx_B')
     expect(String(styleAsset.source)).not.toContain('@layer')
+    expect(String(styleAsset.source)).toContain('padding: 1.25rem')
+    expect(String(styleAsset.source)).toContain('-webkit-background-clip: text')
     expect(onUpdate).toHaveBeenCalledOnce()
     expect(record).toHaveBeenCalledWith('assets/style.css', String(styleAsset.source))
   })

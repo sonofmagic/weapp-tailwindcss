@@ -26,11 +26,13 @@ export interface WeappTailwindcssGeneratorOptions {
    * Web 端 Tailwind CSS v4 产物兼容降级配置。
    *
    * @remarks
-   * Web 目标在自动推断 `generator.target: 'web'` 时默认开启，显式配置 `target` 时保持用户配置。
-   * uni-app H5、Taro H5 等 preset 也会在 Web 环境中显式开启。传入 `true` 等价于
+   * Web 目标在自动推断 `generator.target: 'web'` 时默认开启，经典 uni-app 的 `app` / `app-plus`
+   * WebView 构建也会自动启用；显式配置 `target` 时保持用户配置。uni-app H5、Taro H5 等 preset
+   * 也会在 Web 环境中显式开启。传入 `true` 等价于
    * `{ preset: 'legacy-web' }`，其兼容基线为 Chrome/91.0.4472.114 与 AppleWebKit/537.36。
    * 该预设会移除或降级 `@theme`、`@layer`、`@property`、嵌套规则、`oklch()`、
-   * 现代颜色函数与相关 `@supports` 包裹，以适配对应 Android/iOS WebView。
+   * 现代颜色函数与相关 `@supports` 包裹。经典 uni-app App 还会在最终 WebView 产物中归约
+   * Tailwind CSS v4 间距计算并补充 `-webkit-background-clip: text`。
    * 如果需要保持 Tailwind CSS 官方 Web 输出，可传入 `false` 或 `{ preset: 'off' }`。
    */
   webCompat?: WebCssCompatUserOptions | undefined
