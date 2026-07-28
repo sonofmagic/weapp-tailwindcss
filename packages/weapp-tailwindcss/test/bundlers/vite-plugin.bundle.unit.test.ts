@@ -5368,8 +5368,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       expect(appCss).toContain('radial-gradient')
       expect(appCss).toContain('--tw-gradient-position:to bottom right')
       expect(appCss).not.toContain('to bottom right in oklab')
-      expect(appCss).toContain('.p-5{padding:1.25rem}')
-      expect(appCss).not.toContain('var(--spacing)')
+      expect(appCss).toContain(':root{--spacing:.25rem}')
+      expect(appCss).toContain('.p-5{padding:calc(var(--spacing)*5)}')
       expect(appCss).toContain('.bg-clip-text{-webkit-background-clip:text;background-clip:text}')
     }
     finally {

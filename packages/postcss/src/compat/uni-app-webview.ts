@@ -1,36 +1,4 @@
-import postcssCalc from '@weapp-tailwindcss/postcss-calc'
 import postcss from 'postcss'
-
-const tailwindSpacingVariable = /var\(--spacing\)/g
-
-function resolveTailwindSpacingCalculations(root: postcss.Root) {
-  let spacing: string | undefined
-  root.walkDecls('--spacing', (decl) => {
-    spacing = decl.value.trim()
-  })
-  if (!spacing || spacing.includes('var(--spacing)')) {
-    return
-  }
-  const resolvedSpacing = spacing
-
-  let changed = false
-  root.walkDecls((decl) => {
-    if (!decl.value.includes('var(--spacing)')) {
-      return
-    }
-    decl.value = decl.value.replace(tailwindSpacingVariable, resolvedSpacing)
-    changed = true
-  })
-
-  if (changed) {
-    postcss([
-      postcssCalc({
-        preserve: false,
-        warnWhenCannotResolve: false,
-      }),
-    ]).process(root, { from: undefined }).sync()
-  }
-}
 
 function insertWebkitBackgroundClipText(root: postcss.Root) {
   root.walkDecls('background-clip', (decl) => {
@@ -58,7 +26,6 @@ function insertWebkitBackgroundClipText(root: postcss.Root) {
 export function transformUniAppWebviewCssCompat(css: string) {
   try {
     const root = postcss.parse(css)
-    resolveTailwindSpacingCalculations(root)
     insertWebkitBackgroundClipText(root)
     return root.toString()
   }

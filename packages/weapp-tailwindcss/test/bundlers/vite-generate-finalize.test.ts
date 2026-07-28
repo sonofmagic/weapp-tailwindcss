@@ -46,7 +46,7 @@ describe('vite generate bundle finalize helpers', () => {
     expect(bundle['assets/style-hash.css']).toBe(styleAsset)
     expect(String(styleAsset.source)).toContain('.rounded-_b20rpx_B')
     expect(String(styleAsset.source)).not.toContain('@layer')
-    expect(String(styleAsset.source)).toContain('padding: 1.25rem')
+    expect(String(styleAsset.source)).toContain('padding: calc(var(--spacing) * 5)')
     expect(String(styleAsset.source)).toContain('-webkit-background-clip: text')
     expect(onUpdate).toHaveBeenCalledOnce()
     expect(record).toHaveBeenCalledWith('assets/style.css', String(styleAsset.source))
