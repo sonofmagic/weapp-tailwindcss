@@ -5193,6 +5193,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       const generateMock = vi.fn(async (options: { candidates: Set<string>, target: string }) => {
         const webCss = [
           ':root{--color-emerald-500:oklch(69.6% 0.17 162.48);--color-zinc-950:oklch(14.1% 0.005 285.823)}',
+          ':root{--spacing:.25rem}',
           '.template-corpus-card{display:block}',
           '.bg-emerald-500{background-color:var(--color-emerald-500)}',
           '.bg-white\\/70{background-color:rgb(255 255 255 / 70%)}',
@@ -5202,6 +5203,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           '.space-y-2>:not([hidden])~:not([hidden]){margin-top:.5rem}',
           '.bg-radial{background-image:radial-gradient(circle,#fff,#000)}',
           '.bg-gradient-to-br{--tw-gradient-position:to bottom right in oklab;background-image:linear-gradient(var(--tw-gradient-stops))}',
+          '.p-5{padding:calc(var(--spacing)*5)}',
+          '.bg-clip-text{background-clip:text}',
         ].join('\n')
         const miniProgramCss = [
           '.template-corpus-card{display:block}',
@@ -5254,6 +5257,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         'space-y-2',
         'bg-radial',
         'bg-gradient-to-br',
+        'p-5',
+        'bg-clip-text',
       ])
       setCurrentContext(createContext({
         appType: 'uni-app-vite',
@@ -5363,6 +5368,9 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       expect(appCss).toContain('radial-gradient')
       expect(appCss).toContain('--tw-gradient-position:to bottom right')
       expect(appCss).not.toContain('to bottom right in oklab')
+      expect(appCss).toContain(':root{--spacing:.25rem}')
+      expect(appCss).toContain('.p-5{padding:calc(var(--spacing)*5)}')
+      expect(appCss).toContain('.bg-clip-text{-webkit-background-clip:text;background-clip:text}')
     }
     finally {
       if (previousPlatform === undefined) {

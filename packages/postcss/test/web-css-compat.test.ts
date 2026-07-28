@@ -51,6 +51,30 @@ describe('web css compatibility transform', () => {
     expect(result).not.toContain('background-color: color-mix(')
   })
 
+  it('preserves runtime spacing and adds the WebKit text clip fallback once', () => {
+    const css = [
+      ':root { --spacing: 0.25rem; }',
+      '.scope { --spacing: 0.5rem; }',
+      '.p-5 { padding: calc(var(--spacing) * 5); }',
+      '.space-y-5 > :not(:last-child) {',
+      '  --tw-space-y-reverse: 0;',
+      '  margin-block-start: calc(calc(var(--spacing) * 5) * var(--tw-space-y-reverse));',
+      '  margin-block-end: calc(calc(var(--spacing) * 5) * calc(1 - var(--tw-space-y-reverse)));',
+      '}',
+      '.space-y-reverse > :not(:last-child) { --tw-space-y-reverse: 1; }',
+      '.title { background-clip: text; }',
+      '.prefixed { -WEBKIT-background-clip: text; background-clip: text; }',
+    ].join('\n')
+    const result = transformWebCssCompat(css, true)
+
+    expect(result).toContain('.scope { --spacing: 0.5rem; }')
+    expect(result).toContain('padding: calc(var(--spacing) * 5)')
+    expect(result).toContain('margin-block-start: calc(calc(var(--spacing) * 5) * var(--tw-space-y-reverse))')
+    expect(result).toContain('margin-block-end: calc(calc(var(--spacing) * 5) * calc(1 - var(--tw-space-y-reverse)))')
+    expect(result).toContain('.title { -webkit-background-clip: text; background-clip: text; }')
+    expect(result.match(/-webkit-background-clip: text/gi)).toHaveLength(2)
+  })
+
   it('uses declared layer order in legacy web output without specificity placeholders', () => {
     const css = [
       '@layer base, components, utilities;',
