@@ -9,6 +9,14 @@ import fs from 'node:fs/promises'
 import process from 'node:process'
 import path from 'pathe'
 import { PNG } from 'pngjs'
+import {
+  analyzeScreenshotColorPresence,
+  captureAndroidScreenshot,
+  isAndroidDebugShell,
+  parseHexColorFromClass,
+  readAndroidUiHierarchy,
+  resolveAdbCommand,
+} from '../../e2e/hbuilderx-local/android-runtime.ts'
 import { resolveAppHmrSteps } from '../../e2e/hbuilderx-local/cases.ts'
 import {
   assertAndroidToolchain,
@@ -38,7 +46,6 @@ import {
 const appMarkerRE = /\n[ \t]*<view class="[^"]+">(?:<text class="[^"]+">)?hbuilderx-app-(?:dynamic|hmr)-[^<]+(?:<\/text>)?<\/view>/g
 const appReadyTimeoutMs = Number(process.env['DEMO_VISUAL_APP_READY_TIMEOUT_MS'] ?? 120_000)
 const appOutputTimeoutMs = Number(process.env['DEMO_VISUAL_APP_OUTPUT_TIMEOUT_MS'] ?? Math.min(hbuilderxAppTimeoutMs, 180_000))
-const androidScreenshotTimeoutMs = Number(process.env['DEMO_VISUAL_ANDROID_SCREENSHOT_TIMEOUT_MS'] ?? 30_000)
 const harmonyScreenshotTimeoutMs = Number(process.env['DEMO_VISUAL_HARMONY_SCREENSHOT_TIMEOUT_MS'] ?? 30_000)
 const iosScreenshotTimeoutMs = Number(process.env['DEMO_VISUAL_IOS_SCREENSHOT_TIMEOUT_MS'] ?? 30_000)
 
@@ -252,21 +259,6 @@ async function writeAppMarker(
   await fs.writeFile(file, next, 'utf8')
 }
 
-function resolveAdbCommand(env: Record<string, string | undefined>) {
-  const pathEntries = (env.PATH ?? process.env['PATH'] ?? '').split(path.delimiter)
-  const candidates = [
-    'adb',
-    ...pathEntries.map(item => path.resolve(item, process.platform === 'win32' ? 'adb.exe' : 'adb')),
-  ]
-  for (const candidate of candidates) {
-    const result = spawnSync(candidate, ['version'], { encoding: 'utf8', env: { ...process.env, ...env } })
-    if (result.status === 0) {
-      return candidate
-    }
-  }
-  return 'adb'
-}
-
 function cleanupAndroidAppRuntime(env: Record<string, string | undefined>, deviceId?: string) {
   const adb = resolveAdbCommand(env)
   spawnSync(adb, [...createAndroidAdbArgs(deviceId), 'reverse', '--remove-all'], {
@@ -275,52 +267,10 @@ function cleanupAndroidAppRuntime(env: Record<string, string | undefined>, devic
   })
 }
 
-async function captureAndroidScreenshot(screenshot: string, env: Record<string, string | undefined>, deviceId?: string) {
-  await fs.mkdir(path.dirname(screenshot), { recursive: true })
-  const adb = resolveAdbCommand(env)
-  const args = [
-    ...(deviceId ? ['-s', deviceId] : []),
-    'exec-out',
-    'screencap',
-    '-p',
-  ]
-  const result = spawnSync(adb, args, {
-    encoding: 'buffer',
-    env: { ...process.env, ...env },
-    killSignal: 'SIGTERM',
-    maxBuffer: 20 * 1024 * 1024,
-    timeout: androidScreenshotTimeoutMs,
-  })
-  if (result.status !== 0 || result.stdout.length === 0) {
-    const timeoutMessage = result.error?.message ? ` error=${result.error.message}` : ''
-    throw new Error(`Android 截图失败：${result.stderr.toString() || `exit=${result.status} signal=${result.signal ?? 'none'}${timeoutMessage}`}`)
-  }
-  await fs.writeFile(screenshot, result.stdout)
-}
-
 function createAndroidAdbArgs(deviceId?: string) {
   return [
     ...(deviceId ? ['-s', deviceId] : []),
   ]
-}
-
-async function readAndroidUiHierarchy(env: Record<string, string | undefined>, deviceId?: string) {
-  const adb = resolveAdbCommand(env)
-  const baseArgs = createAndroidAdbArgs(deviceId)
-  spawnSync(adb, [...baseArgs, 'shell', 'uiautomator', 'dump', '/sdcard/window.xml'], {
-    encoding: 'utf8',
-    env: { ...process.env, ...env },
-    killSignal: 'SIGTERM',
-    timeout: androidScreenshotTimeoutMs,
-  })
-  const result = spawnSync(adb, [...baseArgs, 'shell', 'cat', '/sdcard/window.xml'], {
-    encoding: 'utf8',
-    env: { ...process.env, ...env },
-    killSignal: 'SIGTERM',
-    maxBuffer: 1024 * 1024,
-    timeout: androidScreenshotTimeoutMs,
-  })
-  return result.status === 0 ? result.stdout : ''
 }
 
 function resolveIosScreenshotTarget(item: AppCase) {
@@ -453,61 +403,6 @@ async function analyzeAppScreenshot(screenshot: string) {
   }
 }
 
-function parseHexColorFromClass(className: string) {
-  const match = className.match(/\bbg-\[#([0-9a-f]{6})\]/i)
-  if (!match?.[1]) {
-    return undefined
-  }
-  const value = match[1]
-  return {
-    blue: Number.parseInt(value.slice(4, 6), 16),
-    green: Number.parseInt(value.slice(2, 4), 16),
-    red: Number.parseInt(value.slice(0, 2), 16),
-  }
-}
-
-async function analyzeScreenshotColorPresence(
-  screenshot: string,
-  color: { red: number, green: number, blue: number },
-) {
-  const image = PNG.sync.read(fsSync.readFileSync(screenshot))
-  const data = image.data
-  let matchingPixels = 0
-  let maxX = -1
-  let maxY = -1
-  let minX = image.width
-  let minY = image.height
-  for (let index = 0; index < data.length; index += 4) {
-    const alpha = data[index + 3] ?? 255
-    if (alpha < 8) {
-      continue
-    }
-    const red = data[index] ?? 255
-    const green = data[index + 1] ?? 255
-    const blue = data[index + 2] ?? 255
-    if (
-      Math.abs(red - color.red) <= 3
-      && Math.abs(green - color.green) <= 3
-      && Math.abs(blue - color.blue) <= 3
-    ) {
-      matchingPixels += 1
-      const pixel = index / 4
-      const x = pixel % image.width
-      const y = Math.floor(pixel / image.width)
-      minX = Math.min(minX, x)
-      minY = Math.min(minY, y)
-      maxX = Math.max(maxX, x)
-      maxY = Math.max(maxY, y)
-    }
-  }
-  return {
-    bounds: matchingPixels > 0 ? { maxX, maxY, minX, minY } : undefined,
-    color,
-    matchingPixels,
-    matched: matchingPixels > 100,
-  }
-}
-
 async function analyzeIssue1002MarkerPresentation(
   screenshot: string,
   marker: Awaited<ReturnType<typeof analyzeScreenshotColorPresence>>,
@@ -561,10 +456,6 @@ async function analyzeIssue1002MarkerPresentation(
     roundedReady,
     whiteTextReady,
   }
-}
-
-function isAndroidDebugShell(uiHierarchy: string) {
-  return /Connect to HBuilderX successfully|Failed to connect to \/127\.0\.0\.1|io\.dcloud\.uniappx:id\/pull_msg|io\.dcloud\.HBuilder\/io\.dcloud\.PandoraEntryActivity/.test(uiHierarchy)
 }
 
 async function collectAppScreenshotEvidence(

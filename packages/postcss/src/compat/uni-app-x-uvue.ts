@@ -203,10 +203,15 @@ export function applyUniAppXUvueCompatibility(
 
   if (sfcStyleRequest) {
     stripScopedTailwindNoise(root)
+
+    const nextResult = root.toResult(result.opts)
+    nextResult.messages.push(...result.messages)
+    nextResult.messages.push(...calcMessages)
+    return nextResult
   }
 
   root.walkRules((rule) => {
-    if (!sfcStyleRequest && !hasOnlyClassSelectors(rule)) {
+    if (!hasOnlyClassSelectors(rule)) {
       reportUnsupportedRule(rule, result, mode, warningCache, 'selector must be class-only')
       rule.remove()
       return

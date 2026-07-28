@@ -85,7 +85,9 @@ export function createUniAppXVitePlugins(options: UserDefinedOptions | InternalU
       mainCssChunkMatcher: context.mainCssChunkMatcher,
       runtimeState: context.runtimeState,
       styleHandler: context.styleHandler,
+      tailwindRootCssModuleIds: context.tailwindRootCssModuleIds,
       uniAppX: context.uniAppX,
+      viteProcessedCssSourceFiles: context.viteProcessedCssSourceFiles,
     }),
   })
 }

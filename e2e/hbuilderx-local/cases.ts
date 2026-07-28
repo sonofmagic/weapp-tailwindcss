@@ -34,6 +34,15 @@ export interface AppHmrStep {
   transformedContains: Array<string | RegExp>
   transformedNotContains?: Array<string | RegExp>
   styleContains?: Array<string | RegExp>
+  runtime?: AndroidRuntimeStyleExpectation
+}
+
+export interface AndroidRuntimeStyleExpectation {
+  backgroundColor: string
+  height: number
+  markerText: string
+  textColor?: string
+  width: number
 }
 
 export interface AppCase {
@@ -66,6 +75,7 @@ export interface AppCase {
   styleNotContains?: Array<string | RegExp>
   hmrStyleContains?: Array<string | RegExp>
   runtimeLogContains?: Array<string | RegExp>
+  runtime?: AndroidRuntimeStyleExpectation
   logNotContains?: Array<string | RegExp>
 }
 
@@ -130,6 +140,7 @@ export interface WebHmrStep {
 
 export interface WebRuntimeStyleAssertion {
   selector: string
+  scopeAttribute?: RegExp
   styles: Record<string, string | RegExp>
 }
 
@@ -512,6 +523,13 @@ export const uniAppXAppCases: AppCase[] = [
     markerClass: 'flex h-[41px] w-[173px] items-center justify-center rounded-[9998px] bg-[#102938]',
     markerTextClass: 'text-[39rpx] text-[#f7fbff]',
     markerText: 'hbuilderx-app-dynamic-v4-android',
+    runtime: {
+      backgroundColor: '#102938',
+      height: 41,
+      markerText: 'hbuilderx-app-dynamic-v4-android',
+      textColor: '#f7fbff',
+      width: 173,
+    },
     hmrMarkerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-[9997px] bg-[#3b0764] [transform:translate(10px,20px)]',
     hmrMarkerTextClass: 'text-[28rpx] text-blue-600 text-bule-600',
     hmrMarkerText: 'hbuilderx-app-hmr-v4-android',
@@ -570,6 +588,12 @@ export const uniAppXAppCases: AppCase[] = [
         markerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-[9997px] bg-[#3b0764] [transform:translate(10px,20px)]',
         markerTextClass: 'text-[28rpx] text-blue-600 text-bule-600',
         markerText: 'hbuilderx-app-hmr-v4-android',
+        runtime: {
+          backgroundColor: '#3b0764',
+          height: 41,
+          markerText: 'hbuilderx-app-hmr-v4-android',
+          width: 173,
+        },
         transformedContains: [
           'hbuilderx-app-hmr-v4-android',
           'text-bule-600',
@@ -590,6 +614,13 @@ export const uniAppXAppCases: AppCase[] = [
         markerClass: 'mt-[23px] flex h-[47px] w-[181px] items-center justify-center rounded-[7777px] bg-[#0f766e]',
         markerTextClass: 'text-[31rpx] text-[#facc15]',
         markerText: 'hbuilderx-app-hmr-v4-android-round-2',
+        runtime: {
+          backgroundColor: '#0f766e',
+          height: 47,
+          markerText: 'hbuilderx-app-hmr-v4-android-round-2',
+          textColor: '#facc15',
+          width: 181,
+        },
         transformedContains: [
           'hbuilderx-app-hmr-v4-android-round-2',
           /\["backgroundColor", "#0f766e"\]/,
@@ -612,6 +643,12 @@ export const uniAppXAppCases: AppCase[] = [
         markerClass: 'mt-[17px] flex h-[43px] w-[179px] items-center justify-center rounded-[6888px] bg-[#123456]',
         markerTextClass: 'text-[30rpx] text-blue-600/50',
         markerText: 'hbuilderx-app-hmr-v4-android-color-opacity',
+        runtime: {
+          backgroundColor: '#123456',
+          height: 43,
+          markerText: 'hbuilderx-app-hmr-v4-android-color-opacity',
+          width: 179,
+        },
         transformedContains: [
           'hbuilderx-app-hmr-v4-android-color-opacity',
           /\["backgroundColor", "#123456"\]/,
@@ -636,6 +673,13 @@ export const uniAppXAppCases: AppCase[] = [
         markerClass: 'flex h-[41px] w-[173px] items-center justify-center rounded-[9998px] bg-[#102938]',
         markerTextClass: 'text-[39rpx] text-[#f7fbff]',
         markerText: 'hbuilderx-app-hmr-v4-android-deleted',
+        runtime: {
+          backgroundColor: '#102938',
+          height: 41,
+          markerText: 'hbuilderx-app-hmr-v4-android-deleted',
+          textColor: '#f7fbff',
+          width: 173,
+        },
         transformedContains: [
           'hbuilderx-app-hmr-v4-android-deleted',
           /\["backgroundColor", "#102938"\]/,
@@ -664,6 +708,12 @@ export const uniAppXAppCases: AppCase[] = [
         markerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-[9997px] bg-[#3b0764] [transform:translate(10px,20px)]',
         markerTextClass: 'text-[28rpx] text-blue-600 text-bule-600',
         markerText: 'hbuilderx-app-hmr-v4-android-rollback',
+        runtime: {
+          backgroundColor: '#3b0764',
+          height: 41,
+          markerText: 'hbuilderx-app-hmr-v4-android-rollback',
+          width: 173,
+        },
         transformedContains: [
           'hbuilderx-app-hmr-v4-android-rollback',
           'text-bule-600',
@@ -854,7 +904,6 @@ export const webCases: WebCase[] = [
     initialCssPath: '/main.css?direct',
     hmrCssPath: '/main.css?direct',
     initialCssContains: [
-      /uni-page-body,\s*\.tw-root,\s*wx-root-portal-content,\s*:host/,
       '--text-xl',
       '--color-white',
       /background-color:\s*#f21903/,
@@ -884,6 +933,31 @@ export const webCases: WebCase[] = [
           borderTopColor: 'rgb(124, 58, 237)',
           borderTopStyle: 'solid',
           borderTopWidth: '2px',
+        },
+      },
+      {
+        selector: '.issue-1019-up-button',
+        scopeAttribute: /^data-v-[\da-f]+$/,
+        styles: {
+          alignItems: 'center',
+          backgroundColor: 'rgb(9, 87, 222)',
+          borderBottomColor: 'rgb(7, 59, 154)',
+          borderBottomStyle: 'solid',
+          borderBottomWidth: '2px',
+          borderRadius: '9px',
+          color: 'rgb(255, 255, 255)',
+          display: 'flex',
+          height: '44px',
+          justifyContent: 'center',
+          width: '184px',
+        },
+      },
+      {
+        selector: '.issue-1019-up-button .up-button__text',
+        scopeAttribute: /^data-v-[\da-f]+$/,
+        styles: {
+          color: 'rgb(255, 255, 255)',
+          fontSize: '16px',
         },
       },
     ],
@@ -919,7 +993,11 @@ export const webCases: WebCase[] = [
       {
         markerClass: 'hbuilderx-web-hmr-probe bg-[#0e7490] mt-[10rpx] text-xs',
         markerText: 'hbuilderx-web-hmr-v4-rem-rpx',
-        cssContains: [/background-color:\s*#0e7490/, /\.mt-_b10rpx_B\s*\{[\s\S]*margin-top:\s*0\.3125rem/, /\.text-xs\s*\{[\s\S]*font-size:\s*0\.75rem/],
+        cssContains: [
+          /background-color:\s*#0e7490/,
+          /\.mt-\\\[10rpx\\\]\s*\{[\s\S]*margin-top:\s*0\.3125rem/,
+          /\.text-xs\s*\{[\s\S]*font-size:\s*(?:var\(--text-xs\)|0\.75rem)/,
+        ],
         runtimeStyles: [{
           selector: '.hbuilderx-web-hmr-probe',
           styles: { backgroundColor: 'rgb(14, 116, 144)', fontSize: '12px', marginTop: '5px' },

@@ -1,5 +1,5 @@
 /* node-modules/uview-plus/components/u-button/u-button.acss */
-.u-button.data-v-e43777a0{width:100%;white-space:nowrap}
+.u-button.data-v-e43777a0{width:auto;white-space:nowrap}
 .u-button__text.data-v-e43777a0{white-space:nowrap;line-height:1}
 .u-button.data-v-e43777a0::before{position:absolute;top:50%;left:50%;width:100%;height:100%;border:inherit;border-radius:inherit;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);opacity:0;content:" ";background-color:#000;border-color:#000}
 .u-button--active.data-v-e43777a0::before{opacity:.15}

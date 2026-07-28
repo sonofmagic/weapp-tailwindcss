@@ -23,6 +23,15 @@ function getGenerateBundleHandler(plugin: Plugin) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
+function createNativeResolvedConfig() {
+  return {
+    command: 'serve',
+    css: { postcss: { plugins: [] } },
+    build: { outDir: '/project/unpackage/dist/dev/.uvue/app-android' },
+    root: '/project',
+  } as unknown as ResolvedConfig
+}
+
 describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
   beforeEach(() => {
     vi.resetModules()
@@ -61,6 +70,8 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     expect(cssPrePlugin?.transform).toBeTypeOf('function')
     expect(nvuePlugin?.transform).toBeTypeOf('function')
 
+    await (postPlugin.configResolved as any)?.call(postPlugin, createNativeResolvedConfig())
+    currentContext.tailwindRuntime.extract.mockClear()
     const cssTransform = cssPlugin.transform as any
     const cssResult = await cssTransform?.call(cssPlugin, '.foo { color: red; }', 'App.uvue?vue&type=style&index=0') as TransformResult
     expect(cssResult?.code).toBe('css:.foo { color: red; }')
@@ -72,9 +83,15 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
     const nvueTransform = nvuePlugin.transform as any
     const nvueResult = await nvueTransform?.call(nvuePlugin, 'console.log("x")', 'App.nvue')
-    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
-    expect(transformUVueMock).toHaveBeenCalledWith('console.log("x")', 'App.nvue', currentContext.jsHandler, runtimeSet)
+    expect(transformUVueMock).toHaveBeenCalledWith(
+      'console.log("x")',
+      'App.nvue',
+      currentContext.jsHandler,
+      runtimeSet,
+      expect.objectContaining({ enablePageLocalStyle: true }),
+    )
     expect(nvueResult).toEqual({ code: 'uvue:App.nvue:console.log("x")' })
 
     const bundle = {
@@ -93,7 +110,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
-    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
 
     expect(currentContext.jsHandler).toHaveBeenCalledWith(
@@ -346,8 +363,10 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     const plugins = WeappTailwindcss()
     const cssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(cssPlugin).toBeTruthy()
 
+    await (postPlugin.configResolved as any)?.call(postPlugin, createNativeResolvedConfig())
     const cssTransform = cssPlugin.transform as any
     await cssTransform?.call(cssPlugin, '.foo { color: red; }', 'App.uvue?vue&type=style&index=0')
     await cssTransform?.call(cssPlugin, '.foo { color: blue; }', 'App.uvue?vue&type=style&index=0')
@@ -367,8 +386,10 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     const plugins = WeappTailwindcss()
     const cssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(cssPlugin).toBeTruthy()
 
+    await (postPlugin.configResolved as any)?.call(postPlugin, createNativeResolvedConfig())
     const cssTransform = cssPlugin.transform as any
     await cssTransform?.call(cssPlugin, '.foo { color: red; }', 'App.uvue?vue&type=style&index=0')
 
@@ -669,7 +690,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     const config = {
       command: 'serve',
       css: { postcss: { plugins: [] } },
-      build: { outDir: 'dist' },
+      build: { outDir: '/project/unpackage/dist/dev/.uvue/app-android' },
       root: process.cwd(),
     } as unknown as ResolvedConfig
     await (postPlugin.configResolved as any)?.call(postPlugin, config)
@@ -678,14 +699,23 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     currentContext.tailwindRuntime.extract.mockClear()
     currentContext.tailwindRuntime.getClassSetSync.mockClear()
     runtimeIndex = 1
-    await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.uvue' } as HmrContext)
+    const server = {
+      config,
+      moduleGraph: {
+        getModuleById: vi.fn(),
+        getModulesByFile: vi.fn(),
+        invalidateModule: vi.fn(),
+      },
+      ws: { send: vi.fn() },
+    }
+    await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.uvue', modules: [], server } as unknown as HmrContext)
     expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
 
     currentContext.tailwindRuntime.extract.mockClear()
     currentContext.tailwindRuntime.getClassSetSync.mockClear()
     runtimeIndex = 1
-    await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.nvue' } as HmrContext)
+    await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.nvue', modules: [], server } as unknown as HmrContext)
     expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
 

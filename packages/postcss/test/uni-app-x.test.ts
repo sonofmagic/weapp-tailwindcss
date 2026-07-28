@@ -454,6 +454,8 @@ describe('uni-app-x', () => {
       '.card.data-v-abc .title.data-v-abc{font-weight:700}',
       '@media (min-width:640px){button.data-v-abc{color:green}}',
       'text.data-v-abc{display:block}',
+      '.up-button--primary.data-v-abc{display:inline-flex;min-height:100vh;gap:8px;background:var(--up-primary, #0957de)}',
+      '.up-button--primary.data-v-abc::after{border:1px solid var(--up-border, #dcdfe6);border-radius:8px}',
       '@property --tw-content{syntax:"*";initial-value:"";inherits:false}',
     ].join(''), {
       from: '/src/components/ScopedChild.uvue?vue&type=style&index=0&scoped=abc&lang.css',
@@ -485,10 +487,38 @@ describe('uni-app-x', () => {
     expect(filtered.css).not.toContain('margin-inline-end')
     expect(filtered.css).not.toContain('currentcolor')
     expect(filtered.css).not.toContain('padding-block')
-    expect(filtered.css).not.toContain('display:block')
-    expect(warningTexts).toHaveLength(1)
-    expect(warningTexts[0]).toContain('display: block')
-    expect(warningTexts[0]).not.toContain('selector must be class-only')
+    expect(filtered.css).toContain('text.data-v-abc{display:block}')
+    expect(filtered.css).toContain('.up-button--primary.data-v-abc{display:inline-flex;min-height:100vh;gap:8px;')
+    expect(filtered.css).toContain('background:var(--up-primary)')
+    expect(filtered.css).toContain('.up-button--primary.data-v-abc::after{border:1px solid var(--up-border, #dcdfe6);border-radius:8px}')
+    expect(warningTexts).toEqual([])
+  })
+
+  it('preserves ambiguous scoped author reset and theme rules without Tailwind source evidence', async () => {
+    const result = await postcss().process([
+      '[data-v-abc]:root{--brand:#0957de}',
+      '*[data-v-abc]{box-sizing:border-box;margin:0;padding:0}',
+      'view{margin:0}',
+      '[data-v-abc]:host{--tw-author-noise:0}',
+      '*[data-v-abc]{--tw-reset-noise:0}',
+      'text{--tw-mini-noise:0}',
+    ].join(''), {
+      from: '/src/components/ScopedChild.uvue?vue&type=style&index=0&scoped=abc&lang.css',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+
+    expect(filtered.css).toContain('[data-v-abc]:root{--brand:#0957de}')
+    expect(filtered.css).toContain('*[data-v-abc]{box-sizing:border-box;margin:0;padding:0}')
+    expect(filtered.css).toContain('view{margin:0}')
+    expect(filtered.css).not.toContain('--tw-author-noise')
+    expect(filtered.css).not.toContain('--tw-reset-noise')
+    expect(filtered.css).not.toContain('--tw-mini-noise')
+    expect(filtered.warnings()).toEqual([])
   })
 
   it('detects scoped uvue requests from the PostCSS input source when result options lose from', async () => {

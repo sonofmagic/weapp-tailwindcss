@@ -37,3 +37,12 @@ pnpm e2e:hbuilderx:local:ios
 ```bash
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer pnpm e2e:hbuilderx:local:ios
 ```
+
+## Issue 回归
+
+- `components/issue-1019-button/issue-1019-button.uvue` 提炼自
+  [`unibestX` 的 `weapp-tailwindcss` 分支](https://github.com/cq112233/unibestX/tree/9f0366d359002fa1c55e015eba24227a654629cf)，
+  保留 `uview-ultra/components/up-button/up-button.uvue` 中触发 #1019 的 scoped SCSS、嵌套 BEM、伪元素和变量 fallback 结构。
+- `packages/postcss/test/uni-app-x.test.ts` 验证原生兼容转换不会误删上述作者样式，
+  `e2e/hbuilderx-local/cases.ts` 则在 H5 浏览器中验证 scope 属性和 computed style。
+- 同一 demo 也用于 #1021 Android HMR 回归；每一步都同时检查构建产物、页面 marker、截图颜色和元素尺寸。

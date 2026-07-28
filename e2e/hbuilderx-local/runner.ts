@@ -8,6 +8,11 @@ import process from 'node:process'
 import path from 'pathe'
 import { expect } from 'vitest'
 import { createHBuilderXProjectAlias as createSharedHBuilderXProjectAlias } from '../../scripts/hbuilderx-project-alias.mjs'
+import {
+  collectAndroidRuntimeMetadata,
+  resolveAndroidDeviceId,
+  waitForAndroidRuntimeEvidence,
+} from './android-runtime'
 import { rawTailwindDirectiveRE, resolveAppHmrSteps } from './cases'
 import {
   assertAndroidToolchain,
@@ -591,6 +596,37 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       throw new Error(`HBuilderX app dev process exited before hot-update mutation: exit=${exit.signal ?? exit.code}\n${logs.join('')}`)
     }
     await waitForAppRuntimeLogs(item, logs, ensureLaunchRunning)
+    const androidDeviceId = item.platform === 'app-android'
+      ? resolveAndroidDeviceId(launchArgs)
+      : undefined
+    const runtimeEvidenceRoot = path.resolve(
+      os.tmpdir(),
+      'weapp-tailwindcss-hbuilderx-runtime',
+      `${process.pid}-${item.name.replace(/[^\w-]+/g, '-')}`,
+    )
+    let previousRuntimeScreenshot: string | undefined
+    if (item.platform === 'app-android') {
+      if (!item.runtime) {
+        throw new Error(`${item.name} 缺少 Android 初始运行时断言`)
+      }
+      const initialScreenshot = path.resolve(runtimeEvidenceRoot, 'initial.png')
+      const evidence = await waitForAndroidRuntimeEvidence({
+        deviceId: androidDeviceId,
+        ensureRunning: ensureLaunchRunning,
+        env: androidEnv,
+        expectation: item.runtime,
+        label: `${item.name} initial`,
+        screenshot: initialScreenshot,
+        timeoutMs: hbuilderxAppTimeoutMs,
+      })
+      previousRuntimeScreenshot = evidence.screenshot
+      process.stdout.write(`${JSON.stringify({
+        hbuilderx: hbuilderx.resolution,
+        outputRoot: initialOutputRoot,
+        runtime: collectAndroidRuntimeMetadata(androidEnv, androidDeviceId),
+        runtimeEvidence: evidence,
+      })}\n`)
+    }
     let hmrOutputRoot = initialOutputRoot
     for (const step of resolveAppHmrSteps(item)) {
       await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
@@ -607,6 +643,28 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
           `recentHBuilderXLogs=${logs.join('').slice(-4000)}`,
         ].join('\n')
       }, step.styleContains, [...(item.transformedNotContains ?? []), ...(step.transformedNotContains ?? [])])
+      if (item.platform === 'app-android') {
+        if (!step.runtime) {
+          throw new Error(`${item.name} ${step.name} 缺少 Android 运行时断言`)
+        }
+        const screenshot = path.resolve(runtimeEvidenceRoot, `${step.name}.png`)
+        const evidence = await waitForAndroidRuntimeEvidence({
+          deviceId: androidDeviceId,
+          ensureRunning: ensureLaunchRunning,
+          env: androidEnv,
+          expectation: step.runtime,
+          label: `${item.name} ${step.name}`,
+          screenshot,
+          timeoutMs: hbuilderxAppTimeoutMs,
+        })
+        process.stdout.write(`${JSON.stringify({
+          outputRoot: hmrOutputRoot,
+          previousRuntimeScreenshot,
+          runtimeEvidence: evidence,
+          step: step.name,
+        })}\n`)
+        previousRuntimeScreenshot = evidence.screenshot
+      }
     }
     await assertAppOutputHasNoUnsupportedContent(item, hmrOutputRoot)
     expectNoContent(logs.join(''), item.logNotContains, `${item.name} HBuilderX 日志`)

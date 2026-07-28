@@ -422,7 +422,7 @@ ${tracedCss}`
       await discoverAndRegisterAutoCssSources()
     } await sourceScanSession.sync()
   }
-  const extraPlugins = frameworkBranch.createExtraPlugins?.({ customAttributesEntities, disabledDefaultTemplateHandler, ensureRuntimeClassSet, generateCss: generateTailwindCssForVitePipeline, getResolvedConfig, isEnabled: shouldEnableFrameworkExtraPlugins, isIosPlatform: extraPluginPlatform.isIosPlatform === true, jsHandler, mainCssChunkMatcher, runtimeState, styleHandler, uniAppX }) ?? []
+  const extraPlugins = frameworkBranch.createExtraPlugins?.({ customAttributesEntities, disabledDefaultTemplateHandler, ensureRuntimeClassSet, generateCss: generateTailwindCssForVitePipeline, getResolvedConfig, isEnabled: shouldEnableFrameworkExtraPlugins, isIosPlatform: extraPluginPlatform.isIosPlatform === true, jsHandler, mainCssChunkMatcher, runtimeState, styleHandler, tailwindRootCssModuleIds, uniAppX, viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles }) ?? []
   const installFrameworkWatchCssCacheAdapter = async (config) => {
     if (!shouldAdaptFrameworkWatchCss()) {
       return

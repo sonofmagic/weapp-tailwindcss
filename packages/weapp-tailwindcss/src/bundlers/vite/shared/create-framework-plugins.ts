@@ -39,7 +39,9 @@ export interface ViteFrameworkExtraPluginContext {
   mainCssChunkMatcher: ReturnType<typeof getCompilerContext>['mainCssChunkMatcher']
   runtimeState: ReturnType<typeof createViteRuntimeClassSet>['runtimeState']
   styleHandler: ReturnType<typeof getCompilerContext>['styleHandler']
+  tailwindRootCssModuleIds: Set<string>
   uniAppX: ReturnType<typeof getCompilerContext>['uniAppX']
+  viteProcessedCssSourceFiles: Iterable<string>
 }
 
 function wrapPluginHook(
