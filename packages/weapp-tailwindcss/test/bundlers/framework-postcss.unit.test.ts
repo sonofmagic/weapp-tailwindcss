@@ -113,6 +113,44 @@ describe('framework PostCSS pipeline', () => {
     expect(new Set(files)).toEqual(new Set(['/workspace/src/theme.css']))
   })
 
+  it('removes empty standard fallbacks emitted by the framework PostCSS pipeline', async () => {
+    const currentOwner = owner()
+    captureFrameworkPostcssOptions(currentOwner, {
+      plugins: [{
+        postcssPlugin: 'framework-custom-property-fallback',
+        Declaration(decl: postcss.Declaration) {
+          if (decl.prop === 'filter' && decl.value.includes('var(')) {
+            decl.cloneBefore({ value: ' ' })
+          }
+        },
+      }],
+    })
+    const styleHandler = vi.fn(async (css: string, options: any) => {
+      return postcss(options.postcssOptions.plugins).process(css, options.postcssOptions.options)
+    })
+
+    const css = await adaptGeneratedCssWithFrameworkPipeline(currentOwner, {
+      css: ':host,page,.tw-root,wx-root-portal-content{--tw-blur: }.blur-3xl{--tw-blur:blur(64px);filter:var(--tw-blur,) var(--tw-brightness,)}',
+      classSet: new Set(['blur-3xl']),
+      dependencies: [],
+      source: 'generator',
+      target: 'weapp',
+      metadata: {
+        file: '/workspace/src/theme.css',
+        preflightMode: { inject: false, preserve: true },
+      },
+    }, {
+      cssHandlerOptions: { isMainChunk: true } as any,
+      file: '/workspace/src/theme.css',
+      majorVersion: 4,
+      styleHandler: styleHandler as any,
+    })
+
+    expect(css).toContain('--tw-blur:')
+    expect(css).toMatch(/filter:var\(--tw-blur,\s*\) var\(--tw-brightness,\s*\)/)
+    expect(css).not.toMatch(/(?:^|[;{])\s*filter:\s*;/)
+  })
+
   it('clears the captured pipeline when the framework has no PostCSS config', () => {
     const currentOwner = owner()
     expect(captureFrameworkPostcssOptions(currentOwner, {
