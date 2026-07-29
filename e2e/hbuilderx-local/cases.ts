@@ -26,6 +26,12 @@ export interface MiniProgramCase {
 export type MiniProgramPlatform = 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-weixin'
 export type AppPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 
+export interface HmrSourceMutation {
+  append: string
+  cssContains?: Array<string | RegExp>
+  file: string
+}
+
 export interface AppHmrStep {
   name: string
   markerClass: string
@@ -35,6 +41,7 @@ export interface AppHmrStep {
   transformedNotContains?: Array<string | RegExp>
   styleContains?: Array<string | RegExp>
   runtime?: AndroidRuntimeStyleExpectation
+  sourceMutation?: HmrSourceMutation
 }
 
 export interface AndroidRuntimeStyleExpectation {
@@ -136,6 +143,7 @@ export interface WebHmrStep {
   markerText: string
   cssContains: Array<string | RegExp>
   runtimeStyles?: WebRuntimeStyleAssertion[]
+  sourceMutation?: HmrSourceMutation
 }
 
 export interface WebRuntimeStyleAssertion {
@@ -585,9 +593,13 @@ export const uniAppXAppCases: AppCase[] = [
     hmrSteps: [
       {
         name: 'new-named-and-invalid-class',
-        markerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-[9997px] bg-[#3b0764] [transform:translate(10px,20px)]',
+        markerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-[9997px] bg-issue-1021-hmr [transform:translate(10px,20px)]',
         markerTextClass: 'text-[28rpx] text-blue-600 text-bule-600',
         markerText: 'hbuilderx-app-hmr-v4-android',
+        sourceMutation: {
+          append: '@theme static { --color-issue-1021-hmr: #3b0764; }',
+          file: 'main.css',
+        },
         runtime: {
           backgroundColor: '#3b0764',
           height: 41,
@@ -742,6 +754,7 @@ export const uniAppXAppCases: AppCase[] = [
     logNotContains: [
       ...issue1002AppLogNotContains,
       ...iconifyNativeLogNotContains,
+      /Cannot read properties of null \(reading ['"]replace['"]\)/i,
       /property value .*translate.*not supported for .*transform/i,
     ],
   },
@@ -964,13 +977,18 @@ export const webCases: WebCase[] = [
     workflow: uniAppXHBuilderXWorkflow,
     hmrSteps: [
       {
-        markerClass: 'hbuilderx-web-hmr-probe bg-[#0f5132] text-[#f8fafc] w-[188px]',
+        markerClass: 'hbuilderx-web-hmr-probe bg-issue-1021-hmr text-[#f8fafc] w-[188px]',
         markerText: 'hbuilderx-web-hmr-v4-step-1',
-        cssContains: [/background-color:\s*#0f5132/, /color:\s*#f8fafc/, /width:\s*188px/],
+        cssContains: [/\.bg-issue-1021-hmr\s*\{/, /color:\s*#f8fafc/, /width:\s*188px/],
         runtimeStyles: [{
           selector: '.hbuilderx-web-hmr-probe',
           styles: { backgroundColor: 'rgb(15, 81, 50)', color: 'rgb(248, 250, 252)', width: '188px' },
         }],
+        sourceMutation: {
+          append: '@theme static { --color-issue-1021-hmr: #0f5132; }',
+          cssContains: ['--color-issue-1021-hmr: #0f5132'],
+          file: 'main.css',
+        },
       },
       {
         markerClass: 'hbuilderx-web-hmr-probe bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',

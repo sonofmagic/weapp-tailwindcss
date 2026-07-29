@@ -5,6 +5,7 @@ import type { WebHmrStep, WebRuntimeStyleAssertion } from './cases'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 
+import path from 'pathe'
 import { chromium } from 'playwright'
 
 import {
@@ -21,6 +22,7 @@ import {
   spawnPnpm,
   wait,
 } from './process'
+import { appendHmrSourceMutation, createHmrSourceRestore } from './source-mutations'
 
 let devProcess: ChildProcess | undefined
 
@@ -260,13 +262,6 @@ function resolveAnchor(source: string, anchors: string[]) {
   return anchors.find(anchor => source.includes(anchor))
 }
 
-async function createFileRestore(file: string) {
-  const original = await readUtf8(file)
-  return async () => {
-    await fs.writeFile(file, original, 'utf8')
-  }
-}
-
 async function rewriteHmrMarker(file: string, anchors: string[], steps: WebHmrStep[], stepIndex: number) {
   const source = await readUtf8(file)
   const markerRE = /\n\t\t<view class="[^"]+">hbuilderx-web-hmr-[^<]+<\/view>/g
@@ -340,19 +335,33 @@ export async function runWebHmr(
 
     await waitForRuntimeStyles(page, initialRuntimeStyles, 'initial', logs, diagnostics, true)
     const initialCss = await waitForCss(joinUrl(ready.baseUrl, initialCssPath), initialCssContains, child, logs)
-    restore = await createFileRestore(sourceFile)
+    restore = await createHmrSourceRestore([
+      sourceFile,
+      ...hmrSteps.flatMap(step => step.sourceMutation ? [path.resolve(projectRoot, step.sourceMutation.file)] : []),
+    ])
     const hmrCss: string[] = []
     for (const [index, step] of hmrSteps.entries()) {
+      if (step.sourceMutation) {
+        await appendHmrSourceMutation(projectRoot, step.sourceMutation)
+        if (step.sourceMutation.cssContains?.length) {
+          hmrCss.push(await waitForCss(joinUrl(ready.baseUrl, hmrCssPath), step.sourceMutation.cssContains, child, logs))
+        }
+      }
       await rewriteHmrMarker(sourceFile, markerAnchors, hmrSteps, index)
       await waitForRuntimeStyles(page, step.runtimeStyles, `hmr:${step.markerText}`, logs, diagnostics)
       hmrCss.push(await waitForCss(joinUrl(ready.baseUrl, hmrCssPath), step.cssContains, child, logs))
     }
+    const errorOverlay = page.locator('vite-error-overlay')
+    const pageOverlayText = await errorOverlay.count() > 0
+      ? await errorOverlay.first().textContent()
+      : undefined
 
     return {
       hmrCss,
       initialCss,
       pageErrors: diagnostics.errors,
       pageHtml: ready.text,
+      pageOverlayText,
       pageWarnings: diagnostics.warnings,
     }
   }

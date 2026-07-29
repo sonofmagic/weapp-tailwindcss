@@ -4,9 +4,13 @@ import process from 'node:process'
 import { isSourceStyleRequest } from '../shared/style-requests'
 import { cleanUrl, slash } from './utils'
 
-export function resolveHotTailwindCssModules(ctx: HmrContext, tailwindRootCssModuleIds: Set<string>) {
+export function resolveHotTailwindCssModules(
+  ctx: HmrContext,
+  tailwindRootCssModuleIds: Iterable<string | null | undefined>,
+) {
   const modules: ModuleNode[] = []
   const seenModules = new Set<ModuleNode>()
+  const seenModuleIds = new Set<string>()
   const root = ctx.server.config?.root ?? process.cwd()
   const outDir = ctx.server.config?.build?.outDir
     ? normalizeAbsoluteFilePath(path.resolve(root, ctx.server.config.build.outDir))
@@ -40,14 +44,21 @@ export function resolveHotTailwindCssModules(ctx: HmrContext, tailwindRootCssMod
     modules.push(mod)
   }
   for (const id of tailwindRootCssModuleIds) {
-    const candidates = [
-      ctx.server.moduleGraph.getModuleById(id),
-      ctx.server.moduleGraph.getModuleById(cleanUrl(id)),
-      ...(ctx.server.moduleGraph.getModulesByFile(id) ?? []),
-      ...(ctx.server.moduleGraph.getModulesByFile(cleanUrl(id)) ?? []),
-    ]
-    for (const mod of candidates) {
-      collectModule(mod)
+    if (typeof id !== 'string' || id.length === 0) {
+      continue
+    }
+    for (const moduleId of [id, cleanUrl(id)]) {
+      if (moduleId.length === 0 || seenModuleIds.has(moduleId)) {
+        continue
+      }
+      seenModuleIds.add(moduleId)
+      const candidates = [
+        ctx.server.moduleGraph.getModuleById(moduleId),
+        ...(ctx.server.moduleGraph.getModulesByFile(moduleId) ?? []),
+      ]
+      for (const mod of candidates) {
+        collectModule(mod)
+      }
     }
   }
   return modules

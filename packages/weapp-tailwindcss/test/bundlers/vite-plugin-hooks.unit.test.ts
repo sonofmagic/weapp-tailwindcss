@@ -107,6 +107,175 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     })
   })
 
+  it('ignores null Vite module identities while recording root css hot modules', async () => {
+    const context = createContext({
+      appType: 'uni-app-x',
+      cssEntries: ['/project/main.css'],
+      tailwindcssBasedir: '/project',
+    })
+    setCurrentContext(context)
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()!
+    const sourcePlugin = getPlugin(plugins, 'source-candidates')
+    const postPlugin = getPlugin(plugins, 'post')
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: '/project',
+      plugins: [{ name: 'vite:uni' }],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/web' },
+    } as any)
+    const cssModule = {
+      file: null,
+      id: null,
+      url: '/main.css?direct',
+    }
+    const assertStringId = (id: unknown) => {
+      if (typeof id !== 'string') {
+        throw new TypeError('module id must be a string')
+      }
+      return id
+    }
+    const getModuleById = vi.fn((id: unknown) => {
+      return assertStringId(id) === cssModule.url ? cssModule : undefined
+    })
+    const getModulesByFile = vi.fn((id: unknown) => {
+      assertStringId(id)
+      return undefined
+    })
+
+    await expect(sourcePlugin.handleHotUpdate?.({
+      file: '/project/main.css',
+      modules: [cssModule],
+      read: vi.fn(async () => '@import "tailwindcss";\n@theme { --color-issue-1021: #123456; }'),
+      timestamp: 1021,
+      server: {
+        config: {
+          root: '/project',
+          build: { outDir: 'dist/web' },
+        },
+        moduleGraph: {
+          getModuleById,
+          getModulesByFile,
+          invalidateModule: vi.fn(),
+        },
+        ws: { send: vi.fn() },
+      },
+    } as any)).resolves.not.toThrow()
+    expect(getModuleById.mock.calls.flat().every(id => typeof id === 'string' && id.length > 0)).toBe(true)
+    expect(getModulesByFile.mock.calls.flat().every(id => typeof id === 'string' && id.length > 0)).toBe(true)
+  })
+
+  it('refreshes the Tailwind runtime and registered root source before a native css hot update', async () => {
+    const cssFile = '/project/main.css'
+    const initialCss = '@import "tailwindcss";'
+    const updatedCss = `${initialCss}\n@theme static { --color-issue-1021-hmr: #0f5132; }`
+    const context = createContext({
+      appType: 'uni-app-x',
+      cssEntries: [cssFile],
+      platform: 'android',
+      tailwindcssBasedir: '/project',
+    })
+    setCurrentContext(context)
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()!
+    const postPlugin = getPlugin(plugins, 'post')
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: '/project',
+      plugins: [{ name: 'vite:uni' }],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/web' },
+    } as any)
+
+    const serveCssPlugin = getPlugin(plugins, 'generate:serve')
+    await getTransformHandler(serveCssPlugin)?.call(
+      { addWatchFile: vi.fn() },
+      initialCss,
+      cssFile,
+    )
+
+    const cssModule = { file: cssFile, id: `${cssFile}?direct`, url: '/main.css?direct' }
+    const sourcePlugin = getPlugin(plugins, 'source-candidates')
+    context.refreshTailwindcssRuntime.mockClear()
+    await sourcePlugin.handleHotUpdate?.({
+      file: cssFile,
+      modules: [cssModule],
+      read: vi.fn(async () => updatedCss),
+      timestamp: 1021,
+      server: {
+        config: {
+          root: '/project',
+          build: { outDir: 'dist/web' },
+        },
+        moduleGraph: {
+          getModuleById: vi.fn(id => id === cssModule.id ? cssModule : undefined),
+          getModulesByFile: vi.fn(id => id === cssFile ? new Set([cssModule]) : undefined),
+          invalidateModule: vi.fn(),
+        },
+        ws: { send: vi.fn() },
+      },
+    } as any)
+    expect(context.refreshTailwindcssRuntime).toHaveBeenCalledTimes(1)
+
+    mocks.generateTailwindV4Css.mockClear()
+    const serveCssHmrPlugin = getPlugin(plugins, 'generate:serve-hmr')
+    const staleTransformedCss = `${initialCss}\n.probe { @apply bg-issue-1021-hmr; }`
+    const hmrCode = `const __vite__css = ${JSON.stringify(staleTransformedCss)};\n__vite__updateStyle(__vite__id, __vite__css)`
+    await getTransformHandler(serveCssHmrPlugin)?.call(
+      { addWatchFile: vi.fn() },
+      hmrCode,
+      `${cssFile}?direct&t=1021`,
+    )
+
+    expect(mocks.generateTailwindV4Css).toHaveBeenCalledWith(expect.objectContaining({
+      cssSources: [expect.objectContaining({
+        css: expect.stringContaining('--color-issue-1021-hmr: #0f5132'),
+        file: cssFile,
+      })],
+    }))
+  })
+
+  it('refreshes a changed Tailwind root before the next native watch compilation', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-root-watch-'))
+    createdDirs.push(root)
+    const cssFile = path.join(root, 'main.css')
+    const initialCss = '@import "tailwindcss";'
+    const updatedCss = `${initialCss}\n@theme static { --color-issue-1021-hmr: #3b0764; }`
+    await writeFile(cssFile, initialCss, 'utf8')
+    const context = createContext({
+      appType: 'uni-app-x',
+      cssEntries: [cssFile],
+      platform: 'android',
+      tailwindcssBasedir: root,
+    })
+    setCurrentContext(context)
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()!
+    const postPlugin = getPlugin(plugins, 'post')
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root,
+      plugins: [{ name: 'vite:uni' }],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: path.join(root, 'unpackage/dist/dev/.uvue/app-android'), watch: {} },
+    } as any)
+
+    const serveCssPlugin = getPlugin(plugins, 'generate:serve')
+    await getTransformHandler(serveCssPlugin)?.call(
+      { addWatchFile: vi.fn() },
+      initialCss,
+      cssFile,
+    )
+    context.refreshTailwindcssRuntime.mockClear()
+    await writeFile(cssFile, updatedCss, 'utf8')
+
+    const sourcePlugin = getPlugin(plugins, 'source-candidates')
+    await sourcePlugin.watchChange?.(cssFile, { event: 'update' } as any)
+
+    expect(context.refreshTailwindcssRuntime).toHaveBeenCalledTimes(1)
+  })
+
   it('compiles uni conditional CSS before downstream style checks on mini-program platforms', async () => {
     const previousUniPlatform = process.env.UNI_PLATFORM
     process.env.UNI_PLATFORM = 'mp-weixin'

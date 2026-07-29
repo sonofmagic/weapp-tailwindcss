@@ -88,7 +88,14 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
           }))
           return
         }
-        await options.sourceScanSession.syncChangedFile(id)
+        const changedSource = options.shouldOwnTailwindGeneration && isSourceCandidateRequest(id) && isCSSRequest(id)
+          ? await readFile(cleanUrl(id), 'utf8').catch(() => undefined)
+          : undefined
+        if (typeof changedSource === 'string') {
+          options.rememberOriginalCssLayerSource(id, changedSource)
+          await options.refreshTailwindRootCssSource(id, changedSource)
+        }
+        await options.sourceScanSession.syncChangedFile(id, changedSource)
       }, { emit: false })
     },
     async handleHotUpdate(ctx) {
@@ -97,9 +104,11 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
         const isSourceCandidateHotUpdate = options.shouldOwnTailwindGeneration && isSourceCandidateRequest(ctx.file)
         if (isSourceCandidateHotUpdate && isSourceStyleRequest(ctx.file)) {
           for (const mod of ctx.modules) {
-            options.rememberTailwindRootCssModule(mod.id)
-            options.rememberTailwindRootCssModule(mod.url)
-            options.rememberTailwindRootCssModule(mod.file)
+            for (const id of [mod.id, mod.url, mod.file]) {
+              if (typeof id === 'string' && id.length > 0) {
+                options.rememberTailwindRootCssModule(id)
+              }
+            }
           }
         }
         const hotSource = isSourceCandidateHotUpdate && typeof ctx.read === 'function'
@@ -107,6 +116,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
           : undefined
         if (typeof hotSource === 'string' && isCSSRequest(ctx.file)) {
           options.rememberOriginalCssLayerSource(ctx.file, hotSource)
+          await options.refreshTailwindRootCssSource(ctx.file, hotSource)
         }
         const sourceCandidateChange = await options.sourceScanSession.syncChangedFile(ctx.file, hotSource)
         const isWebLikeHotUpdate = options.isCurrentWebLikeStylePlatform()

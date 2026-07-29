@@ -26,7 +26,6 @@ import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '.
 import { normalizeMiniProgramGeneratorCssSource } from '../../shared/generator-css/output-import-shell'
 import { createHmrTimingRecorder } from '../../shared/hmr-timing'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
-import { isSourceStyleRequest } from '../../shared/style-requests'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { createViteCssAssetIdentityResolver } from '../css-asset-identity'
 import { createViteCssFinalizerOutputPlugin } from '../css-finalizer'
@@ -55,6 +54,7 @@ import { createFrameworkProcessedCssRegistry } from './framework-processed-css-r
 import { sameStringList } from './framework-runtime-options'
 import { createFrameworkSourceCandidatesPlugin } from './framework-source-candidates-plugin'
 import { createFrameworkSourceScanSession } from './framework-source-scan-session'
+import { createFrameworkTailwindRootCss } from './framework-tailwind-root-css'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
@@ -204,7 +204,6 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
   const generatedClassSetByFile = new Map()
   const processedCssRegistry = createFrameworkProcessedCssRegistry()
   const cssMemory = createViteCssMemory({ debug, getSourceCandidateSource: file => sourceCandidateCollector.source(file) })
-  const tailwindRootCssModuleIds = new Set()
   const { runtimeState, refreshRuntimeState, ensureRuntimeClassSet, ensureBundleRuntimeClassSet } = createViteRuntimeClassSet({ opts, initialTailwindRuntime, refreshTailwindcssRuntime: refreshTailwindRuntime, uniAppXEnabled, customAttributesEntities, disabledDefaultTemplateHandler, debug })
   const hmrTimingRecorder = createHmrTimingRecorder('vite')
   refreshRuntimeStateForAutoCssSources = refreshRuntimeState
@@ -261,6 +260,7 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
     shouldOwnTailwindGeneration,
     sourceCandidateCollector,
   })
+  const { moduleIds: tailwindRootCssModuleIds, refreshSource: refreshTailwindRootCssSource, register: registerTailwindRootCss, rememberModule: rememberTailwindRootCssModule } = createFrameworkTailwindRootCss({ getImportFallback: () => resolveCurrentGeneratorOptions().importFallback, refreshRuntimeState, registerAutoCssSource, shouldOwnTailwindGeneration, sourceScanSession })
   const recordCssAssetResult = (file, css) => { touchMapEntry(cleanGeneratedCssByFile, normalizeVitePersistentCacheKey(file), css) }
   const recordViteProcessedCssAssetResult = processedCssRegistry.record
   const getViteProcessedCssAssetResults = processedCssRegistry.entries
@@ -283,14 +283,6 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
   }
   const normalizeViteProcessedCssFile = file => path.resolve(cleanUrl(file))
   const markViteProcessedCssSource = processedCssRegistry.markSource
-  const rememberTailwindRootCssModule = (id) => {
-    if (!shouldOwnTailwindGeneration) {
-      return
-    } tailwindRootCssModuleIds.add(id); const cleanId = cleanUrl(id); if (isSourceStyleRequest(cleanId)) {
-      tailwindRootCssModuleIds.add(cleanId)
-    }
-  }
-  const registerTailwindRootCss = async (id, code) => { rememberTailwindRootCssModule(id); await registerAutoCssSource(id, code) }
   const isUniViteProject = () => { return resolvedConfig?.plugins?.some(plugin => plugin.name.includes('uni')) ?? false }
   const resolveCssAssetIdentity = createViteCssAssetIdentityResolver({ generatorPlaceholderFile: generatorPlaceholderCssFile, isKnownProcessedSource: processedCssRegistry.matchesIdentity })
   const isViteProcessedCssAsset = (asset, file) => resolveCssAssetIdentity(asset, file).kind === 'bundler-generated'
@@ -450,6 +442,7 @@ ${tracedCss}`
     prepareTailwindGeneration,
     preGenerateBundleHook,
     refreshRuntimeStateForAutoCssSources,
+    refreshTailwindRootCssSource,
     rememberOriginalCssLayerSource,
     rememberTailwindRootCssModule,
     resolveCurrentGeneratorBranch,

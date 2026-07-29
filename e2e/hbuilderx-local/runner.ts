@@ -31,6 +31,7 @@ import {
   runPnpm,
   wait,
 } from './process'
+import { appendHmrSourceMutation, createHmrOutputSnapshot, createHmrSourceRestore, haveHmrOutputsChanged } from './source-mutations'
 import { collectMiniProgramStyleFiles } from './styles'
 import { runWebHmr } from './web'
 
@@ -270,6 +271,22 @@ async function waitForAppTransformedContent(
 
   const details = await createFailureDetails?.()
   throw new Error(`${item.name} App 热更新产物未包含预期内容\nexpected=${expected.map(String).join(' | ')}\nstyleExpected=${styleExpected?.map(String).join(' | ') ?? ''}\nlatest=${latest.slice(0, 2000)}\nlatestStyle=${latestStyle.slice(0, 2000)}${details ? `\n${details}` : ''}`)
+}
+
+async function waitForAppTransformedOutputsRefresh(
+  snapshot: Awaited<ReturnType<typeof createHmrOutputSnapshot>>,
+  ensureRunning: () => void,
+  createFailureDetails: () => string,
+) {
+  const startedAt = Date.now()
+  while (Date.now() - startedAt < hbuilderxAppTimeoutMs) {
+    ensureRunning()
+    if (await haveHmrOutputsChanged(snapshot)) {
+      return
+    }
+    await wait(pollIntervalMs)
+  }
+  throw new Error(`HBuilderX App 样式源码保存后转换产物未刷新\n${createFailureDetails()}`)
 }
 
 async function assertMiniProgramOutput(
@@ -527,10 +544,10 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
   let restore: (() => Promise<void>) | undefined
   let child: ChildProcess | undefined
   try {
-    const original = await readUtf8(sourceFile)
-    restore = async () => {
-      await fs.writeFile(sourceFile, original, 'utf8')
-    }
+    restore = await createHmrSourceRestore([
+      sourceFile,
+      ...resolveAppHmrSteps(item).flatMap(step => step.sourceMutation ? [path.resolve(projectRoot, step.sourceMutation.file)] : []),
+    ])
     await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
       className: item.markerClass,
       textClassName: item.markerTextClass,
@@ -629,6 +646,17 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     }
     let hmrOutputRoot = initialOutputRoot
     for (const step of resolveAppHmrSteps(item)) {
+      if (step.sourceMutation) {
+        const outputSnapshot = await createHmrOutputSnapshot(
+          resolveAppTransformedFiles(projectRoot, hmrOutputRoot, item),
+        )
+        await appendHmrSourceMutation(projectRoot, step.sourceMutation)
+        await waitForAppTransformedOutputsRefresh(outputSnapshot, ensureLaunchRunning, () => [
+          `step=${step.name}:source-mutation`,
+          `source=${step.sourceMutation!.file}`,
+          `recentHBuilderXLogs=${logs.join('').slice(-4000)}`,
+        ].join('\n'))
+      }
       await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
         className: step.markerClass,
         text: step.markerText,
@@ -701,6 +729,7 @@ export async function verifyWebHmr(item: WebCase) {
 
   expect(result.pageHtml, `${item.name} Web 首页应可访问`).toContain('<!DOCTYPE html>')
   expect(result.pageErrors, `${item.name} Web 页面不应产生控制台错误`).toEqual([])
+  expect(result.pageOverlayText, `${item.name} Web 页面不应显示 Vite 错误遮罩`).toBeUndefined()
   const unexpectedWarnings = result.pageWarnings.filter(warning => !allowedWebConsoleWarnings.some(pattern => pattern.test(warning)))
   expect(unexpectedWarnings, `${item.name} Web 页面不应产生非预期控制台警告`).toEqual([])
   expect(result.initialCss, `${item.name} 不应保留 Tailwind 原始指令`).not.toMatch(rawTailwindDirectiveRE)
