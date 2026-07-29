@@ -25,9 +25,34 @@ describe('generator css apply reference', () => {
   it('falls back to the Tailwind package when configured roots are ambiguous', () => {
     const result = createTailwindV4ApplyReferenceSource('.probe { @apply flex; }', {
       cssSources: [
-        { css: '@import "tailwindcss";', file: '/project/main.css' },
-        { css: '@import "tailwindcss";', file: '/project/admin.css' },
+        { css: '@import "tailwindcss";\n@theme { --color-main: #123456; }', file: '/project/main.css' },
+        { css: '@import "tailwindcss";\n@theme { --color-admin: #654321; }', file: '/project/admin.css' },
       ],
+    })
+
+    expect(result).toContain('@import "tailwindcss" source(none);')
+    expect(result).not.toContain('@reference')
+  })
+
+  it('normalizes Windows Tailwind root paths in reference directives', () => {
+    const result = createTailwindV4ApplyReferenceSource('.probe { @apply flex; }', {
+      cssSources: [{
+        css: '@import "tailwindcss";\n@theme { --color-probe: #123456; }',
+        file: 'D:\\project\\main.css',
+      }],
+    })
+
+    expect(result).toContain('@reference "D:/project/main.css";')
+    expect(result).not.toContain('D:\\project')
+  })
+
+  it('keeps the package fallback for a root without project theme directives', () => {
+    const result = createTailwindV4ApplyReferenceSource('.probe { @apply flex; }', {
+      cssEntries: ['/project/main.css'],
+      cssSources: [{
+        css: '@import "tailwindcss";\n@plugin "@iconify/tailwind4";\n@source "../**/*.vue";',
+        file: '/project/main.css',
+      }],
     })
 
     expect(result).toContain('@import "tailwindcss" source(none);')

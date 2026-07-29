@@ -12,15 +12,14 @@ interface TailwindV4ApplyReferenceSourceOptions {
 }
 
 function resolveTailwindV4ApplyReference(options: TailwindV4ApplyReferenceSourceOptions) {
-  const references = new Set(
-    (options.cssEntries ?? []).filter(entry => typeof entry === 'string' && entry.length > 0),
-  )
+  const references = new Set<string>()
   for (const source of options.cssSources ?? []) {
     if (
       typeof source.file === 'string'
       && source.file.length > 0
       && typeof source.css === 'string'
       && hasTailwindRootDirectives(source.css, { importFallback: true })
+      && hasTailwindThemeDirective(source.css)
     ) {
       references.add(source.file)
     }
@@ -28,12 +27,25 @@ function resolveTailwindV4ApplyReference(options: TailwindV4ApplyReferenceSource
   return references.size === 1 ? references.values().next().value : undefined
 }
 
+function hasTailwindThemeDirective(css: string) {
+  try {
+    let found = false
+    postcss.parse(css).walkAtRules('theme', () => {
+      found = true
+    })
+    return found
+  }
+  catch {
+    return false
+  }
+}
+
 export function createTailwindV4ApplyReferenceSource(css: string, sourceOptions: TailwindV4ApplyReferenceSourceOptions) {
   const reference = resolveTailwindV4ApplyReference(sourceOptions)
   return createTailwindV4SourceReferenceSource(
     css,
     sourceOptions,
-    reference ? `@reference ${JSON.stringify(reference)};` : undefined,
+    reference ? `@reference ${JSON.stringify(reference.replace(/\\/g, '/'))};` : undefined,
   )
 }
 
