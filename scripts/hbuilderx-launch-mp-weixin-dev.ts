@@ -1,7 +1,9 @@
+/// <reference types="node" />
+
 import { rm } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import process from 'node:process'
-import { createHBuilderXRunner } from '../packages/hbuilderx-runner/src/index.ts'
+import { createHBuilderXRunner } from '../packages/hbuilderx-runner/src/index'
 import { createHBuilderXProjectAlias } from './hbuilderx-project-alias.mjs'
 
 async function main() {
