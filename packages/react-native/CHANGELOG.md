@@ -1,5 +1,13 @@
 # @weapp-tailwindcss/react-native
 
+## 0.2.1
+
+### Patch Changes
+
+- 🐛 **同步 React Native 包开发环境与工作区 React 版本，避免依赖升级后 Expo 示例解析到不同 peer 上下文而丢失 `className` 类型增强。** [`92ea656`](https://github.com/sonofmagic/weapp-tailwindcss/commit/92ea656d6bf211ac846a7c8af3919606d58be1ea) by @sonofmagic
+- 📦 **Dependencies** [`3f3f3b3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3f3f3b3045d9aac099a359b514cd9f3b7cab1d3f)
+  → `weapp-tailwindcss@5.2.5`
+
 ## 0.2.0
 
 ### Minor Changes

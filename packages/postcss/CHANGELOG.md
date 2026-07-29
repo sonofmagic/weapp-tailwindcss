@@ -1,5 +1,15 @@
 # @weapp-tailwindcss/postcss
 
+## 3.2.5
+
+### Patch Changes
+
+- 🐛 **完善经典 uni-app app-plus 的默认 WebView 兼容转换，并在 `legacy-web` 现有处理链中为文本渐变补充 WebKit 前缀；Tailwind CSS v4 运行时间距变量和间距反转语义保持不变，使 Android 与 iOS App 无需业务侧兼容插件即可使用对应工具类。** [#1028](https://github.com/sonofmagic/weapp-tailwindcss/pull/1028) by @sonofmagic
+
+- 🐛 **修复 uni-app 的 PostCSS 兼容链展开 Tailwind CSS v4 空变量回退值后生成 `filter: ;` 与 `backdrop-filter: ;` 的问题；最终小程序样式会移除无效的普通空属性，同时保留 Tailwind 运行时所需的空自定义属性初始化。** [#1030](https://github.com/sonofmagic/weapp-tailwindcss/pull/1030) by @sonofmagic
+
+- 🐛 **修复 uni-app x scoped 作者样式被原生 Tailwind 兼容过滤误删的问题，并让 H5/Web 作者样式继续交由 SFC 预处理链处理；同时在原生 App 的 `.uvue` 类集合扩大时失效 Tailwind CSS 模块并触发自动重载，使新增字体、颜色、间距和任意值类无需手动重新运行到设备即可生效。** [#1029](https://github.com/sonofmagic/weapp-tailwindcss/pull/1029) by @sonofmagic
+
 ## 3.2.4
 
 ### Patch Changes
