@@ -1,0 +1,306 @@
+import { spawnSync } from 'node:child_process'
+import fsSync from 'node:fs'
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import process from 'node:process'
+import { PNG } from 'pngjs'
+
+export interface AndroidRuntimeStyleExpectation {
+  backgroundColor: string
+  height: number
+  markerText: string
+  textColor?: string
+  width: number
+}
+
+export interface AndroidRuntimeEvidence {
+  background: Awaited<ReturnType<typeof analyzeScreenshotColorPresence>>
+  density: number
+  height: number
+  markerBounds?: AndroidScreenBounds
+  markerTextVisible: boolean
+  screenshot: string
+  text?: Awaited<ReturnType<typeof analyzeScreenshotColorPresence>>
+  uiTextPreview: string
+  width: number
+}
+
+interface AndroidScreenBounds {
+  maxX: number
+  maxY: number
+  minX: number
+  minY: number
+}
+
+interface WaitForAndroidRuntimeEvidenceOptions {
+  deviceId?: string
+  ensureRunning: () => void
+  env: Record<string, string | undefined>
+  expectation: AndroidRuntimeStyleExpectation
+  label: string
+  screenshot: string
+  timeoutMs: number
+}
+
+const screenshotTimeoutMs = 30_000
+
+function createAdbArgs(deviceId?: string) {
+  return deviceId ? ['-s', deviceId] : []
+}
+
+export function resolveAdbCommand(env: Record<string, string | undefined>) {
+  const pathEntries = (env.PATH ?? process.env.PATH ?? '').split(path.delimiter)
+  const candidates = [
+    'adb',
+    ...pathEntries.map(item => path.resolve(item, process.platform === 'win32' ? 'adb.exe' : 'adb')),
+  ]
+  for (const candidate of candidates) {
+    const result = spawnSync(candidate, ['version'], { encoding: 'utf8', env: { ...process.env, ...env } })
+    if (result.status === 0) {
+      return candidate
+    }
+  }
+  return 'adb'
+}
+
+export function resolveAndroidDeviceId(launchArgs: string[] | undefined) {
+  const index = launchArgs?.indexOf('--deviceId') ?? -1
+  return process.env.E2E_HBUILDERX_ANDROID_SCREENSHOT_DEVICE_ID
+    ?? process.env.E2E_HBUILDERX_ANDROID_DEVICE_ID
+    ?? (index >= 0 ? launchArgs?.[index + 1] : undefined)
+}
+
+function readAndroidShellValue(
+  env: Record<string, string | undefined>,
+  deviceId: string | undefined,
+  args: string[],
+) {
+  const result = spawnSync(resolveAdbCommand(env), [
+    ...createAdbArgs(deviceId),
+    'shell',
+    ...args,
+  ], {
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+    timeout: screenshotTimeoutMs,
+  })
+  return result.status === 0 ? result.stdout.trim() : ''
+}
+
+export function collectAndroidRuntimeMetadata(
+  env: Record<string, string | undefined>,
+  deviceId?: string,
+) {
+  const model = readAndroidShellValue(env, deviceId, ['getprop', 'ro.product.model'])
+  const api = readAndroidShellValue(env, deviceId, ['getprop', 'ro.build.version.sdk'])
+  const webview = readAndroidShellValue(env, deviceId, ['dumpsys', 'package', 'com.google.android.webview'])
+    || readAndroidShellValue(env, deviceId, ['dumpsys', 'package', 'com.android.webview'])
+  return {
+    api,
+    deviceId: deviceId ?? 'default',
+    model,
+    webview: webview.match(/versionName=(\S+)/)?.[1] ?? 'unknown',
+  }
+}
+
+export async function captureAndroidScreenshot(
+  screenshot: string,
+  env: Record<string, string | undefined>,
+  deviceId?: string,
+) {
+  await fs.mkdir(path.dirname(screenshot), { recursive: true })
+  const result = spawnSync(resolveAdbCommand(env), [
+    ...createAdbArgs(deviceId),
+    'exec-out',
+    'screencap',
+    '-p',
+  ], {
+    encoding: 'buffer',
+    env: { ...process.env, ...env },
+    killSignal: 'SIGTERM',
+    maxBuffer: 20 * 1024 * 1024,
+    timeout: screenshotTimeoutMs,
+  })
+  if (result.status !== 0 || result.stdout.length === 0) {
+    const timeoutMessage = result.error?.message ? ` error=${result.error.message}` : ''
+    throw new Error(`Android 截图失败：${result.stderr.toString() || `exit=${result.status} signal=${result.signal ?? 'none'}${timeoutMessage}`}`)
+  }
+  await fs.writeFile(screenshot, result.stdout)
+}
+
+export async function readAndroidUiHierarchy(env: Record<string, string | undefined>, deviceId?: string) {
+  const adb = resolveAdbCommand(env)
+  const args = createAdbArgs(deviceId)
+  spawnSync(adb, [...args, 'shell', 'uiautomator', 'dump', '/sdcard/window.xml'], {
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+    killSignal: 'SIGTERM',
+    timeout: screenshotTimeoutMs,
+  })
+  const result = spawnSync(adb, [...args, 'shell', 'cat', '/sdcard/window.xml'], {
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+    killSignal: 'SIGTERM',
+    maxBuffer: 1024 * 1024,
+    timeout: screenshotTimeoutMs,
+  })
+  return result.status === 0 ? result.stdout : ''
+}
+
+export function isAndroidDebugShell(uiHierarchy: string) {
+  return /Connect to HBuilderX successfully|Failed to connect to \/127\.0\.0\.1|io\.dcloud\.uniappx:id\/pull_msg|io\.dcloud\.HBuilder\/io\.dcloud\.PandoraEntryActivity/.test(uiHierarchy)
+}
+
+function parseAndroidBounds(value: string | undefined): AndroidScreenBounds | undefined {
+  const match = value?.match(/^\[(-?\d+),(-?\d+)\]\[(-?\d+),(-?\d+)\]$/)
+  if (!match) {
+    return
+  }
+  return {
+    maxX: Number(match[3]) - 1,
+    maxY: Number(match[4]) - 1,
+    minX: Number(match[1]),
+    minY: Number(match[2]),
+  }
+}
+
+function resolveAndroidMarkerBounds(uiHierarchy: string, markerText: string) {
+  for (const nodeMatch of uiHierarchy.matchAll(/<node\b([^>]*)>/g)) {
+    const attributes = new Map<string, string>()
+    for (const attributeMatch of nodeMatch[1]!.matchAll(/([\w:-]+)="([^"]*)"/g)) {
+      attributes.set(attributeMatch[1]!, attributeMatch[2]!)
+    }
+    const label = `${attributes.get('text') ?? ''} ${attributes.get('content-desc') ?? ''}`
+    if (label.includes(markerText)) {
+      return parseAndroidBounds(attributes.get('bounds'))
+    }
+  }
+}
+
+function parseHexColor(value: string) {
+  const match = value.match(/^#?([\da-f]{6})$/i)
+  if (!match?.[1]) {
+    throw new Error(`无法解析运行时颜色：${value}`)
+  }
+  return {
+    blue: Number.parseInt(match[1].slice(4, 6), 16),
+    green: Number.parseInt(match[1].slice(2, 4), 16),
+    red: Number.parseInt(match[1].slice(0, 2), 16),
+  }
+}
+
+export function parseHexColorFromClass(className: string) {
+  const match = className.match(/\bbg-\[#([\da-f]{6})\]/i)
+  return match?.[1] ? parseHexColor(match[1]) : undefined
+}
+
+export async function analyzeScreenshotColorPresence(
+  screenshot: string,
+  color: { red: number, green: number, blue: number },
+  bounds?: { maxX: number, maxY: number, minX: number, minY: number },
+) {
+  const image = PNG.sync.read(fsSync.readFileSync(screenshot))
+  const data = image.data
+  let matchingPixels = 0
+  let maxX = -1
+  let maxY = -1
+  let minX = image.width
+  let minY = image.height
+  for (let y = bounds?.minY ?? 0; y <= (bounds?.maxY ?? image.height - 1); y++) {
+    for (let x = bounds?.minX ?? 0; x <= (bounds?.maxX ?? image.width - 1); x++) {
+      const index = (y * image.width + x) * 4
+      const alpha = data[index + 3] ?? 255
+      if (alpha < 8) {
+        continue
+      }
+      if (
+        Math.abs((data[index] ?? 255) - color.red) <= 4
+        && Math.abs((data[index + 1] ?? 255) - color.green) <= 4
+        && Math.abs((data[index + 2] ?? 255) - color.blue) <= 4
+      ) {
+        matchingPixels += 1
+        minX = Math.min(minX, x)
+        minY = Math.min(minY, y)
+        maxX = Math.max(maxX, x)
+        maxY = Math.max(maxY, y)
+      }
+    }
+  }
+  return {
+    bounds: matchingPixels > 0 ? { maxX, maxY, minX, minY } : undefined,
+    color,
+    matchingPixels,
+    matched: matchingPixels > 100,
+  }
+}
+
+function readAndroidDensity(env: Record<string, string | undefined>, deviceId?: string) {
+  const result = spawnSync(resolveAdbCommand(env), [
+    ...createAdbArgs(deviceId),
+    'shell',
+    'wm',
+    'density',
+  ], {
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+    timeout: screenshotTimeoutMs,
+  })
+  const density = Number(result.stdout.match(/Override density:\s*(\d+)/)?.[1]
+    ?? result.stdout.match(/Physical density:\s*(\d+)/)?.[1]
+    ?? 160)
+  return density / 160
+}
+
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+export async function waitForAndroidRuntimeEvidence(options: WaitForAndroidRuntimeEvidenceOptions) {
+  const startedAt = Date.now()
+  let latest: AndroidRuntimeEvidence | undefined
+  const backgroundColor = parseHexColor(options.expectation.backgroundColor)
+  const textColor = options.expectation.textColor ? parseHexColor(options.expectation.textColor) : undefined
+  const density = readAndroidDensity(options.env, options.deviceId)
+
+  while (Date.now() - startedAt < options.timeoutMs) {
+    options.ensureRunning()
+    await captureAndroidScreenshot(options.screenshot, options.env, options.deviceId)
+    const uiHierarchy = await readAndroidUiHierarchy(options.env, options.deviceId)
+    const markerBounds = resolveAndroidMarkerBounds(uiHierarchy, options.expectation.markerText)
+    const background = await analyzeScreenshotColorPresence(options.screenshot, backgroundColor, markerBounds)
+    const presentationBounds = markerBounds ?? background.bounds
+    const width = presentationBounds ? presentationBounds.maxX - presentationBounds.minX + 1 : 0
+    const height = presentationBounds ? presentationBounds.maxY - presentationBounds.minY + 1 : 0
+    const text = textColor && presentationBounds
+      ? await analyzeScreenshotColorPresence(options.screenshot, textColor, presentationBounds)
+      : undefined
+    const markerTextVisible = uiHierarchy.includes(options.expectation.markerText)
+    latest = {
+      background,
+      density,
+      height,
+      markerBounds,
+      markerTextVisible,
+      screenshot: options.screenshot,
+      text,
+      uiTextPreview: uiHierarchy.replace(/\s+/g, ' ').slice(0, 1000),
+      width,
+    }
+    const expectedWidth = options.expectation.width * density
+    const expectedHeight = options.expectation.height * density
+    const sizeReady = Math.abs(width - expectedWidth) <= 14 * density
+      && Math.abs(height - expectedHeight) <= 14 * density
+    if (
+      !isAndroidDebugShell(uiHierarchy)
+      && markerTextVisible
+      && background.matched
+      && sizeReady
+      && (!textColor || (text?.matchingPixels ?? 0) >= 8)
+    ) {
+      return latest
+    }
+    await delay(500)
+  }
+
+  throw new Error(`${options.label} 未在 Android 设备呈现预期 marker/style\nexpected=${JSON.stringify(options.expectation)}\nlatest=${JSON.stringify(latest)}`)
+}

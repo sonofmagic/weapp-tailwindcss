@@ -1,0 +1,39 @@
+<template>
+	<view class="issue-1019-up-button up-button up-button--primary">
+		<text class="up-button__text">
+			<slot />
+		</text>
+	</view>
+</template>
+
+<style lang="scss" scoped>
+	.up-button {
+		// 从 unibestX 的 uview-ultra up-button 提炼 scoped BEM 作者样式
+		box-sizing: border-box;
+		display: flex;
+		/* #ifdef H5 */
+		display: inline-flex;
+		/* #endif */
+		align-items: center;
+		justify-content: center;
+		width: 184px;
+		height: 44px;
+		border: 2px solid var(--issue-1019-border, #073b9a);
+		border-radius: 9px;
+		color: var(--issue-1019-text, #ffffff);
+
+		&--primary {
+			background-color: var(--issue-1019-primary, #0957de);
+		}
+
+		&::after {
+			border: 1px solid var(--issue-1019-after, #dcdfe6);
+			border-radius: 9px;
+		}
+
+		&__text {
+			color: var(--issue-1019-text, #ffffff);
+			font-size: 16px;
+		}
+	}
+</style>

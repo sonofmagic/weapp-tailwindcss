@@ -152,7 +152,11 @@ function isTailwindPreflightDeclaration(decl: postcss.Declaration) {
   return TAILWIND_PREFLIGHT_DECLARATIONS.has(`${prop}:${value}`)
 }
 
-function isScopedTailwindThemeCarrierRule(rule: Rule) {
+function hasTailwindSourceEvidence(declarations: postcss.Declaration[], hasTailwindBanner: boolean) {
+  return hasTailwindBanner || declarations.some(decl => decl.prop.startsWith('--tw-'))
+}
+
+function isScopedTailwindThemeCarrierRule(rule: Rule, hasTailwindBanner: boolean) {
   const selectors = rule.selectors ?? [rule.selector]
   const declarations = getDeclarations(rule)
   return selectors.length > 0
@@ -162,15 +166,17 @@ function isScopedTailwindThemeCarrierRule(rule: Rule) {
     })
     && declarations.length > 0
     && declarations.every(decl => decl.prop.startsWith('--'))
+    && hasTailwindSourceEvidence(declarations, hasTailwindBanner)
 }
 
-function isScopedUniversalTailwindPreflightRule(rule: Rule) {
+function isScopedUniversalTailwindPreflightRule(rule: Rule, hasTailwindBanner: boolean) {
   const selectors = rule.selectors ?? [rule.selector]
   const declarations = getDeclarations(rule)
   return selectors.length > 0
     && selectors.every(selector => hasVueScopedAttr(selector) && SCOPED_UNIVERSAL_PREFLIGHT_SELECTORS.has(normalizeCssSignatureValue(selector)))
     && declarations.length > 0
     && declarations.every(decl => decl.prop.startsWith('--tw-') || ['box-sizing', 'margin', 'padding', 'border'].includes(decl.prop))
+    && hasTailwindSourceEvidence(declarations, hasTailwindBanner)
 }
 
 function isScopedTailwindElementPreflightRule(rule: Rule, hasTailwindBanner: boolean) {
@@ -185,7 +191,7 @@ function isScopedTailwindElementPreflightRule(rule: Rule, hasTailwindBanner: boo
     && declarations.every(isTailwindPreflightDeclaration)
 }
 
-function isUnscopedMiniProgramTailwindPreflightRule(rule: Rule) {
+function isUnscopedMiniProgramTailwindPreflightRule(rule: Rule, hasTailwindBanner: boolean) {
   const selectors = rule.selectors ?? [rule.selector]
   if (
     selectors.length === 0
@@ -197,7 +203,9 @@ function isUnscopedMiniProgramTailwindPreflightRule(rule: Rule) {
     return false
   }
   const declarations = getDeclarations(rule)
-  return declarations.length > 0 && declarations.every(decl => decl.prop.startsWith('--tw-') || ['box-sizing', 'margin', 'padding', 'border'].includes(decl.prop))
+  return declarations.length > 0
+    && declarations.every(decl => decl.prop.startsWith('--tw-') || ['box-sizing', 'margin', 'padding', 'border'].includes(decl.prop))
+    && hasTailwindSourceEvidence(declarations, hasTailwindBanner)
 }
 
 function isScopedMiniProgramTailwindContentInitRule(rule: Rule) {
@@ -236,10 +244,10 @@ export function stripScopedTailwindNoise(root: postcss.Root) {
   })
   root.walkRules((rule) => {
     if (
-      isScopedTailwindThemeCarrierRule(rule)
-      || isScopedUniversalTailwindPreflightRule(rule)
+      isScopedTailwindThemeCarrierRule(rule, hasTailwindBanner)
+      || isScopedUniversalTailwindPreflightRule(rule, hasTailwindBanner)
       || isScopedTailwindElementPreflightRule(rule, hasTailwindBanner)
-      || isUnscopedMiniProgramTailwindPreflightRule(rule)
+      || isUnscopedMiniProgramTailwindPreflightRule(rule, hasTailwindBanner)
       || isScopedMiniProgramTailwindContentInitRule(rule)
     ) {
       rule.remove()

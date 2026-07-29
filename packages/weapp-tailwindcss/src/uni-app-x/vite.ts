@@ -33,6 +33,7 @@ import {
 } from './style-asset'
 import { resolveUniAppXStyleIsolationEnabled } from './style-isolation'
 import { createUniAppXHarmonyApplyExpander } from './vite/harmony-apply'
+import { createUniAppXNativeHmrReloader } from './vite/native-hmr'
 import { createUniAppXNativeBuildTargetResolver } from './vite/native-target'
 
 type TransformUVue = typeof import('./transform')['transformUVue']
@@ -43,17 +44,14 @@ function loadTransformUVue(): Promise<TransformUVue> {
   return transformUVuePromise
 }
 
-interface UniAppXRuntimeState {
-  readyPromise: Promise<unknown>
-}
-
 interface CreateUniAppXPluginsOptions {
   appType: AppType
   customAttributesEntities: ICustomAttributesEntities
-  disabledDefaultTemplateHandler: boolean
+  disabledDefaultTemplateHandler: boolean | undefined
   mainCssChunkMatcher: NonNullable<InternalUserDefinedOptions['mainCssChunkMatcher']>
-  runtimeState: UniAppXRuntimeState
+  runtimeState: { readyPromise: Promise<unknown> }
   styleHandler: InternalUserDefinedOptions['styleHandler']
+  tailwindRootCssModuleIds?: Iterable<string> | undefined
   generateCss?: ((id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void, transient?: boolean }) => Promise<string | undefined> | string | undefined) | undefined
   jsHandler: JsHandler
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
@@ -61,6 +59,7 @@ interface CreateUniAppXPluginsOptions {
   isIosPlatform?: boolean
   isEnabled?: (() => boolean) | undefined
   uniAppX?: InternalUserDefinedOptions['uniAppX']
+  viteProcessedCssSourceFiles?: Iterable<string> | undefined
 }
 
 const preprocessorLangs = new Set(['scss', 'sass', 'less', 'styl', 'stylus'])
@@ -105,12 +104,14 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     mainCssChunkMatcher,
     runtimeState,
     styleHandler,
+    tailwindRootCssModuleIds = [],
     generateCss,
     jsHandler,
     ensureRuntimeClassSet,
     getResolvedConfig,
     isEnabled = () => true,
     uniAppX,
+    viteProcessedCssSourceFiles = [],
   } = options
   const resolvedUniAppXOptions = resolveUniAppXOptions(uniAppX)
   const utsPlatform = resolveUniUtsPlatform()
@@ -132,6 +133,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   }>()
   let componentLocalStyleEnabled: boolean | undefined
   const isNativeAppBuildTarget = createUniAppXNativeBuildTargetResolver(getResolvedConfig)
+  const nativeHmrReloader = createUniAppXNativeHmrReloader({ ensureRuntimeClassSet, isNativeAppBuildTarget, tailwindRootCssModuleIds, viteProcessedCssSourceFiles })
 
   function shouldEnableComponentLocalStyle() {
     if (!resolvedUniAppXOptions.componentLocalStyles.enabled) {
@@ -167,7 +169,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     if (!styleHandlerOptions) {
       styleHandlerOptions = omitUndefined({
         isMainChunk: mainCssChunkMatcher(id, appType),
-        uniAppXCssTarget: resolveUniAppXCssTarget(id),
+        uniAppXCssTarget: isNativeAppBuildTarget(id) ? resolveUniAppXCssTarget(id) : undefined,
         uniAppXUnsupported: resolvedUniAppXOptions.uvueUnsupported,
         postcssOptions: {
           options: {
@@ -203,6 +205,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       }
       const shouldGenerateCss = hasTailwindSourceDirectives(code, { importFallback: true })
         || hasTailwindApplyDirective(code)
+      if (!isNativeAppBuildTarget(id) && !shouldGenerateCss) {
+        return
+      }
       harmonyApply.rememberSource(code, id)
       const generatedCss = (
         shouldGenerateCss
@@ -278,7 +283,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (!isEnabled()) {
         return
       }
-      await ensureRuntimeClassSet(true)
+      await nativeHmrReloader.refreshBaseline()
     },
     async transform(code, id) {
       if (!isEnabled()) {
@@ -297,6 +302,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       const currentRuntimeSet: Set<string> = shouldForceRefresh
         ? await ensureRuntimeClassSet(true)
         : await ensureRuntimeClassSet()
+      nativeHmrReloader.remember(currentRuntimeSet)
       const transformUVue = await loadTransformUVue()
       const enableComponentLocalStyle = shouldEnableComponentLocalStyle()
       const enablePageLocalStyle = shouldEnableNativePageLocalStyle(id)
@@ -335,8 +341,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (!UVUE_NVUE_RE.test(ctx.file)) {
         return
       }
-      // 热重载新增类名，无需等待完整重建
-      await ensureRuntimeClassSet(true)
+      return nativeHmrReloader.handleHotUpdate(ctx)
     },
     async watchChange(id) {
       if (!isEnabled()) {
@@ -415,7 +420,6 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     stylePlaceholderPlugin,
   ]
 }
-
 type ApplyLinkedResults = (linked: Record<string, LinkedJsModuleResult> | undefined) => void
 
 interface CreateUniAppXAssetTaskOptions {

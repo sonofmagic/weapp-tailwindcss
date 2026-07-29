@@ -1,6 +1,7 @@
 <script lang="uts">
 	import WeappTailwindcss from '../../components/WeappTailwindcss.uvue'
 	import BindClass from '../../components/BindClass.uvue'
+	import Issue1019Button from '../../components/issue-1019-button/issue-1019-button.uvue'
 
 	const buttonColors = [
 		'bg-[#000]',
@@ -25,6 +26,7 @@
 		styleIsolation: 'app',
 		components: {
 			BindClass,
+			Issue1019Button,
 			WeappTailwindcss,
 		},
 		data() {
@@ -55,6 +57,7 @@
 	<view class="content">
 		<WeappTailwindcss />
 		<BindClass />
+		<Issue1019Button>issue 1019 scoped button</Issue1019Button>
 		<view class="w-full bg-[#164e63] p-[12px] issue-1002-probe">
 			<text class="text-xs text-white">issue-1002 text-xs</text>
 			<text class="text-sm text-white">issue-1002 text-sm</text>

@@ -133,14 +133,26 @@ async function waitForCss(url: string, entries: Array<string | RegExp>, child: C
     }
     await wait(pollIntervalMs)
   }
-  throw new Error(`等待 CSS 内容超时：${url}\n${latest.slice(0, 1000)}\n${logs.join('')}`)
+  const missing = entries.filter((entry) => {
+    return typeof entry === 'string' ? !latest.includes(entry) : !entry.test(latest)
+  })
+  throw new Error(`等待 CSS 内容超时：${url}\nmissing=${missing.map(String).join(', ')}\n${latest.slice(0, 1000)}\n${logs.join('')}`)
 }
 
 function formatRuntimeStyleAssertions(assertions: WebRuntimeStyleAssertion[]) {
-  return assertions.map(assertion => `${assertion.selector}: ${Object.keys(assertion.styles).join(', ')}`).join('; ')
+  return assertions.map((assertion) => {
+    const scope = assertion.scopeAttribute ? ` scope=${assertion.scopeAttribute}` : ''
+    return `${assertion.selector}${scope}: ${Object.keys(assertion.styles).join(', ')}`
+  }).join('; ')
 }
 
-function matchRuntimeStyles(actual: Record<string, string>, assertion: WebRuntimeStyleAssertion) {
+function matchRuntimeStyles(actual: Record<string, string | string[]>, assertion: WebRuntimeStyleAssertion) {
+  if (assertion.scopeAttribute) {
+    const attributeNames = actual.__attributeNames
+    if (!Array.isArray(attributeNames) || !attributeNames.some(name => assertion.scopeAttribute!.test(name))) {
+      return false
+    }
+  }
   for (const [property, expected] of Object.entries(assertion.styles)) {
     const value = actual[property]
     if (typeof expected === 'string') {
@@ -148,7 +160,7 @@ function matchRuntimeStyles(actual: Record<string, string>, assertion: WebRuntim
         return false
       }
     }
-    else if (!expected.test(value ?? '')) {
+    else if (!expected.test(typeof value === 'string' ? value : '')) {
       return false
     }
   }
@@ -163,7 +175,10 @@ async function readRuntimeStyles(page: Page, assertion: WebRuntimeStyleAssertion
         return null
       }
       const computed = getComputedStyle(element)
-      return Object.fromEntries(properties.map(property => [property, computed[property as keyof CSSStyleDeclaration]?.toString() ?? '']))
+      return {
+        ...Object.fromEntries(properties.map(property => [property, computed[property as keyof CSSStyleDeclaration]?.toString() ?? ''])),
+        __attributeNames: element.getAttributeNames(),
+      }
     }, {
       properties: Object.keys(assertion.styles),
       selector: assertion.selector,
