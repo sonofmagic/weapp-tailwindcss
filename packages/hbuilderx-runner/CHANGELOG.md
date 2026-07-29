@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/hbuilderx-runner
 
+## 0.1.0
+
+### Minor Changes
+
+- ✨ **新增 HBuilderX stable、Alpha 共存选择能力，将 CLI 路径、运行实例 host 与版本绑定到同一 runner 会话，并让仓库 HBuilderX e2e、demo 与 visual 工作流稳定使用指定版本。** [`8319746`](https://github.com/sonofmagic/weapp-tailwindcss/commit/83197469e6662c684ae30ab9bbd6b0b58ea75d20) by @sonofmagic
+
 ## 0.0.4
 
 ### Patch Changes

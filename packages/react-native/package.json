@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/react-native",
   "type": "module",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Tailwind CSS 4 compiler and Expo Metro integration for React Native.",
   "license": "MIT",
   "repository": {
