@@ -1,0 +1,61 @@
+import path from 'node:path'
+import { hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
+import { isSourceStyleRequest } from '../../shared/style-requests'
+import { cleanUrl } from '../utils'
+
+interface FrameworkTailwindRootCssOptions {
+  getImportFallback: () => boolean
+  refreshRuntimeState: (force: boolean) => Promise<void>
+  registerAutoCssSource: (id: string, css: string) => Promise<void>
+  shouldOwnTailwindGeneration: boolean
+  sourceScanSession: {
+    invalidate: () => void
+    sync: (options?: { force?: boolean }) => Promise<void>
+  }
+}
+
+export function createFrameworkTailwindRootCss(options: FrameworkTailwindRootCssOptions) {
+  const hotSourceByFile = new Map<string, string>()
+  const moduleIds = new Set<string>()
+  const normalizeSourceFile = (id: string) => path.normalize(path.resolve(cleanUrl(id)))
+
+  const rememberModule = (id: unknown) => {
+    if (!options.shouldOwnTailwindGeneration || typeof id !== 'string' || id.length === 0) {
+      return
+    }
+    moduleIds.add(id)
+    const cleanId = cleanUrl(id)
+    if (isSourceStyleRequest(cleanId)) {
+      moduleIds.add(cleanId)
+    }
+  }
+
+  const register = async (id: string, code: string) => {
+    rememberModule(id)
+    const hotSource = hotSourceByFile.get(normalizeSourceFile(id))
+    await options.registerAutoCssSource(id, hotSource ?? code)
+  }
+
+  const refreshSource = async (id: string, code: string) => {
+    const file = cleanUrl(id)
+    if (
+      !moduleIds.has(id)
+      && !moduleIds.has(file)
+      && !hasTailwindRootDirectives(code, { importFallback: options.getImportFallback() })
+    ) {
+      return
+    }
+    hotSourceByFile.set(normalizeSourceFile(id), code)
+    await register(id, code)
+    options.sourceScanSession.invalidate()
+    await options.refreshRuntimeState(true)
+    await options.sourceScanSession.sync({ force: true })
+  }
+
+  return {
+    refreshSource,
+    register,
+    rememberModule,
+    moduleIds,
+  }
+}

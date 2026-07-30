@@ -56,7 +56,11 @@ describe('HBuilderX local demo matrix', () => {
       expect(webCase?.workflow.webHmr, `${name} should cover H5 dev HMR`).toBe(true)
       expect(webCase?.hmrSteps.length, `${name} should simulate multiple user edits during H5 dev`).toBeGreaterThanOrEqual(3)
       for (const step of webCase?.hmrSteps ?? []) {
-        expect(step.markerClass, `${name} HMR step should replace user-authored classes on one probe`).toContain('hbuilderx-web-hmr-probe bg-[#')
+        const themeColor = step.sourceMutation?.append.match(/--color-([\w-]+)\s*:/)?.[1]
+        const hasGeneratedBackground = step.markerClass.includes('bg-[#')
+          || (themeColor !== undefined && step.markerClass.split(/\s+/).includes(`bg-${themeColor}`))
+        expect(step.markerClass, `${name} HMR step should replace user-authored classes on one probe`).toContain('hbuilderx-web-hmr-probe')
+        expect(hasGeneratedBackground, `${name} HMR step should cover an arbitrary or newly declared theme background`).toBe(true)
         expect(step.cssContains.length, `${name} HMR step should assert generated CSS`).toBeGreaterThanOrEqual(3)
         expect(step.runtimeStyles?.[0]?.selector, `${name} HMR step should assert the replaced probe at runtime`).toBe('.hbuilderx-web-hmr-probe')
       }
@@ -124,6 +128,15 @@ describe('HBuilderX local demo matrix', () => {
       expect(miniProgramCase?.outputContains?.['sub-normal/pages/index.wxml'], `${name} should verify normal subpackage marker`).toContain('bg-normal-subpackage-marker')
       expect(miniProgramCase?.outputContains?.['sub-independent/pages/index.wxml'], `${name} should verify independent subpackage marker`).toContain('bg-independent-subpackage-marker')
     }
+  })
+
+  it('saves the Android Tailwind root source before introducing a new named class', () => {
+    const androidCase = uniAppXAppCases.find(item => item.name === 'uni-app-x-hbuilderx-tailwindcss-v4 android')
+    const firstStep = androidCase?.hmrSteps?.[0]
+
+    expect(firstStep?.sourceMutation?.append).toContain('@theme static')
+    expect(firstStep?.sourceMutation?.file).toBe('main.css')
+    expect(firstStep?.markerClass).toContain('bg-issue-1021-hmr')
   })
 
   it('keeps local App coverage explicit for supported HBuilderX demo platforms', () => {

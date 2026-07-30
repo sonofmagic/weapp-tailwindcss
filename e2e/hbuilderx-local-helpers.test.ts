@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'pathe'
 import { parseHexColorFromClass } from './hbuilderx-local/android-runtime'
+import { appendHmrSourceMutation, createHmrOutputSnapshot, createHmrSourceRestore, haveHmrOutputsChanged } from './hbuilderx-local/source-mutations'
 import { collectMiniProgramStyleFiles } from './hbuilderx-local/styles'
 
 describe('HBuilderX local helpers', () => {
@@ -12,6 +13,46 @@ describe('HBuilderX local helpers', () => {
       red: 16,
     })
     expect(parseHexColorFromClass('bg-red-500')).toBeUndefined()
+  })
+
+  it('restores files after appending HBuilderX HMR source mutations', async () => {
+    const root = await fs.mkdtemp(path.resolve(os.tmpdir(), 'hbuilderx-source-mutation-'))
+    const file = path.resolve(root, 'theme.css')
+    try {
+      await fs.writeFile(file, '@import "tailwindcss";\n')
+      const restore = await createHmrSourceRestore([file, file])
+
+      await appendHmrSourceMutation(root, {
+        append: '@theme { --color-issue-1021: #123456; }',
+        file: 'theme.css',
+      })
+
+      expect(await fs.readFile(file, 'utf8')).toBe('@import "tailwindcss";\n@theme { --color-issue-1021: #123456; }\n')
+      await restore()
+      expect(await fs.readFile(file, 'utf8')).toBe('@import "tailwindcss";\n')
+    }
+    finally {
+      await fs.rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('detects when every HBuilderX transformed output has refreshed', async () => {
+    const root = await fs.mkdtemp(path.resolve(os.tmpdir(), 'hbuilderx-output-refresh-'))
+    const files = [path.resolve(root, 'app.ts'), path.resolve(root, 'page.ts')]
+    try {
+      await Promise.all(files.map(file => fs.writeFile(file, 'initial')))
+      const snapshot = await createHmrOutputSnapshot(files)
+      const refreshedTime = new Date(Date.now() + 2000)
+
+      expect(await haveHmrOutputsChanged(snapshot)).toBe(false)
+      await fs.utimes(files[0]!, refreshedTime, refreshedTime)
+      expect(await haveHmrOutputsChanged(snapshot)).toBe(false)
+      await fs.utimes(files[1]!, refreshedTime, refreshedTime)
+      expect(await haveHmrOutputsChanged(snapshot)).toBe(true)
+    }
+    finally {
+      await fs.rm(root, { force: true, recursive: true })
+    }
   })
 
   it('collects platform style files recursively without assuming output filenames', async () => {

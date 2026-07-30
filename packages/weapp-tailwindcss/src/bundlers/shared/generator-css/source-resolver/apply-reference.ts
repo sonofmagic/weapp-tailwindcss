@@ -1,12 +1,59 @@
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { collectCssApplyCandidates } from '../candidates'
-import { hasTailwindApplyDirective, hasTailwindSourceDirectives, parseImportRequest } from '../directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives, parseImportRequest } from '../directives'
 
-export function createTailwindV4ApplyReferenceSource(css: string, sourceOptions: { packageName?: string }) {
-  return createTailwindV4SourceReferenceSource(css, sourceOptions)
+interface TailwindV4ApplyReferenceSourceOptions {
+  cssEntries?: string[] | undefined
+  cssSources?: Array<{
+    css?: string | undefined
+    file?: string | undefined
+  }> | undefined
+  packageName?: string | undefined
 }
 
-export function createTailwindV4SourceReferenceSource(css: string, sourceOptions: { packageName?: string }) {
+function resolveTailwindV4ApplyReference(options: TailwindV4ApplyReferenceSourceOptions) {
+  const references = new Set<string>()
+  for (const source of options.cssSources ?? []) {
+    if (
+      typeof source.file === 'string'
+      && source.file.length > 0
+      && typeof source.css === 'string'
+      && hasTailwindRootDirectives(source.css, { importFallback: true })
+      && hasTailwindThemeDirective(source.css)
+    ) {
+      references.add(source.file)
+    }
+  }
+  return references.size === 1 ? references.values().next().value : undefined
+}
+
+function hasTailwindThemeDirective(css: string) {
+  try {
+    let found = false
+    postcss.parse(css).walkAtRules('theme', () => {
+      found = true
+    })
+    return found
+  }
+  catch {
+    return false
+  }
+}
+
+export function createTailwindV4ApplyReferenceSource(css: string, sourceOptions: TailwindV4ApplyReferenceSourceOptions) {
+  const reference = resolveTailwindV4ApplyReference(sourceOptions)
+  return createTailwindV4SourceReferenceSource(
+    css,
+    sourceOptions,
+    reference ? `@reference ${JSON.stringify(reference.replace(/\\/g, '/'))};` : undefined,
+  )
+}
+
+export function createTailwindV4SourceReferenceSource(
+  css: string,
+  sourceOptions: { packageName?: string },
+  referenceDirective?: string,
+) {
   if (hasTailwindV4RootImport(css, sourceOptions)) {
     return css
   }
@@ -16,7 +63,7 @@ export function createTailwindV4SourceReferenceSource(css: string, sourceOptions
   }
   const utilities = hasApplyDirective ? collectCssApplyCandidates(css) : []
   return [
-    `@import "${sourceOptions.packageName ?? 'tailwindcss'}" source(none);`,
+    referenceDirective ?? `@import "${sourceOptions.packageName ?? 'tailwindcss'}" source(none);`,
     utilities.length > 0 ? `@source inline(${JSON.stringify(utilities.join(' '))});` : undefined,
     css,
   ].filter(Boolean).join('\n')

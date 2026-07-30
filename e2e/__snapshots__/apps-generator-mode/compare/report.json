@@ -25520,7 +25520,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 73891,
+      "bytes": 73704,
       "selectors": [
         "#app",
         "*",
@@ -25952,11 +25952,10 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 72570,
+      "bytes": 72445,
       "selectors": [
         "#app",
         "*",
-        "*[data-v-04bcf89b]",
         "*[data-v-0a5a82ca]",
         "*[data-v-b12531e8]",
         ".\\!bg-\\[gray\\]",
@@ -26214,9 +26213,6 @@
         ":where(select:is([multiple], [size])) optgroup option[data-v-b12531e8]",
         ":where(select:is([multiple], [size])) optgroup[data-v-0a5a82ca]",
         ":where(select:is([multiple], [size])) optgroup[data-v-b12531e8]",
-        "[data-v-04bcf89b]::backdrop",
-        "[data-v-04bcf89b]:after",
-        "[data-v-04bcf89b]:before",
         "[data-v-0a5a82ca]:-moz-ui-invalid",
         "[data-v-0a5a82ca]::backdrop",
         "[data-v-0a5a82ca]::file-selector-button",
@@ -26385,10 +26381,9 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 36916,
+      "bytes": 36791,
       "selectors": [
         "*",
-        "*[data-v-04bcf89b]",
         "._ebg-_bgray_B",
         ".active_cbg-emerald-50:active",
         ".active_cbg-emerald-600:active",
@@ -26556,9 +26551,6 @@
         ":where(.space-y-reverse > :not(:last-child))",
         ":where(select:is([multiple], [size])) optgroup",
         ":where(select:is([multiple], [size])) optgroup option",
-        "[data-v-04bcf89b]::backdrop",
-        "[data-v-04bcf89b]:after",
-        "[data-v-04bcf89b]:before",
         "abc",
         "button:after",
         "wx-button",
@@ -26606,10 +26598,9 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 36916,
+      "bytes": 36791,
       "selectors": [
         "*",
-        "*[data-v-04bcf89b]",
         "._ebg-_bgray_B",
         ".active_cbg-emerald-50:active",
         ".active_cbg-emerald-600:active",
@@ -26777,9 +26768,6 @@
         ":where(.space-y-reverse > :not(:last-child))",
         ":where(select:is([multiple], [size])) optgroup",
         ":where(select:is([multiple], [size])) optgroup option",
-        "[data-v-04bcf89b]::backdrop",
-        "[data-v-04bcf89b]:after",
-        "[data-v-04bcf89b]:before",
         "abc",
         "button:after",
         "wx-button",
