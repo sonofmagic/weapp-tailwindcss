@@ -1,6 +1,6 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import { describe, expect, it, vi } from 'vitest'
-import { finalizeMiniProgramCssAssets } from '@/bundlers/vite/generate-bundle/final-css-assets'
+import { finalizeMiniProgramCssAssets, finalizeMiniProgramCssAssetStructures } from '@/bundlers/vite/generate-bundle/final-css-assets'
 import { createRollupAsset } from './vite-plugin.testkit'
 
 function createBundle(source: string, fileName = 'app.wxss') {
@@ -13,6 +13,35 @@ function createBundle(source: string, fileName = 'app.wxss') {
 }
 
 describe('vite final mini-program css assets', () => {
+  it('limits late structural cleanup to css assets written by the finalizer', () => {
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('@media (prefers-color-scheme: dark) {}\n.app{color:red}'),
+        fileName: 'app.wxss',
+      },
+      'pages/index.wxss': {
+        ...createRollupAsset('@media (prefers-color-scheme: light) {}\n.page{color:blue}'),
+        fileName: 'pages/index.wxss',
+      },
+    } satisfies Record<string, OutputAsset | OutputChunk>
+    const onUpdate = vi.fn()
+    const recordCssAssetResult = vi.fn()
+
+    expect(finalizeMiniProgramCssAssetStructures(bundle, {
+      cssMatcher: file => file.endsWith('.wxss'),
+      files: new Set(['app.wxss']),
+      isWebGeneratorTarget: false,
+      onUpdate,
+      recordCssAssetResult,
+    })).toBe(1)
+
+    expect(String((bundle['app.wxss'] as OutputAsset).source)).toBe('.app{color:red}')
+    expect(String((bundle['pages/index.wxss'] as OutputAsset).source)).toContain('prefers-color-scheme: light')
+    expect(recordCssAssetResult).toHaveBeenCalledOnce()
+    expect(recordCssAssetResult).toHaveBeenCalledWith('app.wxss', '.app{color:red}')
+    expect(onUpdate).toHaveBeenCalledOnce()
+  })
+
   it('removes empty conditional at-rules from cached app styles', async () => {
     const bundle = createBundle([
       '@import "./theme.wxss";',

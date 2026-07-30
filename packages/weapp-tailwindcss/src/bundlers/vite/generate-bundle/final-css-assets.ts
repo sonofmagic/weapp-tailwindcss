@@ -5,8 +5,8 @@ import {
   hasMiniProgramCssSpecificityPlaceholders,
   stripMiniProgramCssSpecificityPlaceholders,
 } from '@/bundlers/shared/css-cleanup'
+import { finalizeMiniProgramCssStructure } from '@/bundlers/shared/final-css-cleanup'
 import { AssetEmissionPlan } from '@/compiler'
-import { removeEmptyCssAtRules } from '../processed-css-assets/cleanup'
 import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 
 function readAssetSource(output: OutputAsset) {
@@ -19,6 +19,51 @@ function shouldFinalizeMiniProgramCssAsset(source: string) {
   return source.includes(':hover')
     || source.includes('does-not-exist')
     || hasMiniProgramCssSpecificityPlaceholders(source)
+}
+
+export function finalizeMiniProgramCssAssetStructures(
+  bundle: Record<string, OutputAsset | OutputChunk>,
+  options: {
+    cssMatcher: GenerateBundleContext['opts']['cssMatcher']
+    files?: ReadonlySet<string> | undefined
+    isWebGeneratorTarget: boolean
+    onUpdate: GenerateBundleContext['opts']['onUpdate']
+    recordCssAssetResult: GenerateBundleContext['recordCssAssetResult']
+    debug?: GenerateBundleContext['debug']
+  },
+) {
+  if (options.isWebGeneratorTarget) {
+    return 0
+  }
+
+  const plan = new AssetEmissionPlan()
+  const writeTargets = new Map<string, OutputAsset>()
+  let updated = 0
+  for (const [bundleFile, output] of Object.entries(bundle)) {
+    if (output.type !== 'asset') {
+      continue
+    }
+    const file = output.fileName || bundleFile
+    if (!options.cssMatcher(file) || (options.files && !options.files.has(file))) {
+      continue
+    }
+    const rawSource = readAssetSource(output)
+    const outputCss = finalizeMiniProgramCssStructure(rawSource)
+    if (outputCss === rawSource) {
+      continue
+    }
+    plan.write(file, outputCss)
+    writeTargets.set(file, output)
+    options.recordCssAssetResult?.(file, outputCss)
+    options.onUpdate(file, rawSource, outputCss)
+    options.debug?.('remove final empty mini-program css at-rules: %s bytes=%d', file, outputCss.length)
+    updated++
+  }
+  applyViteAssetEmissionPlan(plan, {
+    bundle,
+    writeTargets,
+  })
+  return updated
 }
 
 export async function finalizeMiniProgramCssAssets(
@@ -55,7 +100,7 @@ export async function finalizeMiniProgramCssAssets(
       continue
     }
     if (options.lastCssResultByFile?.has(file)) {
-      const structurallyCleanSource = removeEmptyCssAtRules(rawSource)
+      const structurallyCleanSource = finalizeMiniProgramCssStructure(rawSource)
       const outputCss = stripMiniProgramCssSpecificityPlaceholders(structurallyCleanSource)
       if (outputCss !== rawSource) {
         plan.write(file, outputCss)
@@ -68,7 +113,7 @@ export async function finalizeMiniProgramCssAssets(
       continue
     }
     if (!shouldFinalizeMiniProgramCssAsset(rawSource)) {
-      const structurallyCleanSource = removeEmptyCssAtRules(rawSource)
+      const structurallyCleanSource = finalizeMiniProgramCssStructure(rawSource)
       if (structurallyCleanSource !== rawSource) {
         plan.write(file, structurallyCleanSource)
         writeTargets.set(file, output)
@@ -91,7 +136,7 @@ export async function finalizeMiniProgramCssAssets(
       },
       cssPresetEnv: {},
     })
-    const structurallyCleanCss = removeEmptyCssAtRules(css)
+    const structurallyCleanCss = finalizeMiniProgramCssStructure(css)
     const outputCss = stripMiniProgramCssSpecificityPlaceholders(structurallyCleanCss)
     if (outputCss === rawSource) {
       continue

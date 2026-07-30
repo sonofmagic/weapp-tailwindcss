@@ -15873,7 +15873,7 @@ const fallback = "bg-[#434332] px-[32px]"
       expect([...currentContext.cache.instance.keys()]).toEqual(expect.arrayContaining([
         expect.stringContaining('index.wxml:html:'),
         'index.js',
-        'index.css',
+        expect.stringContaining('index.css:css:'),
       ]))
 
       const payloads = write.mock.calls

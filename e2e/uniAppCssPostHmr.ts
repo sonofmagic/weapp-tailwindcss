@@ -6,6 +6,7 @@ export interface UniAppCssPostHmrCase {
   projectRoot: string
   devScript: string
   sourceFile: string
+  outputRoot: string
   outputStyleFile: string
   generatedStyleFile: string
 }
@@ -27,6 +28,7 @@ export function createUniAppCssPostHmrCases(repositoryRoot: string): UniAppCssPo
       projectRoot,
       devScript: `dev:${platform}`,
       sourceFile: path.resolve(projectRoot, 'src/pages/demonstration/index.vue'),
+      outputRoot,
       outputStyleFile: path.resolve(outputRoot, `pages/demonstration/index.${extension}`),
       generatedStyleFile: path.resolve(outputRoot, `styles/tailwindcss.${extension}`),
     }

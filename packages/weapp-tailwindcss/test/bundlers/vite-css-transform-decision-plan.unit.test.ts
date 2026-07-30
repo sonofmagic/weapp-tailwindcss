@@ -89,13 +89,34 @@ describe('vite css transform cache plan', () => {
       sourceTraceSignature: 'trace',
       tailwindcssMajorVersion: 4,
     })).toEqual({
-      cssCacheKey: 'app.acss',
+      cssCacheKey: 'app.acss:css:runtime:candidates:4',
       cssHashKey: 'app.acss:css:runtime:candidates:4',
       cssRuntimeSignature: 'runtime:candidates',
       cssSharedCacheKey: 'scope:runtime:candidates:4:1:raw-hash:candidates:trace',
       cssTaskHash: 'raw-hash:candidates:trace:linked',
       rememberedCssRuntimeSignature: 'runtime:candidates:raw-hash',
     })
+  })
+
+  it('isolates cache ownership when scoped candidates change', () => {
+    const createPlan = (scopedGeneratorCandidateSignature: string) => resolveViteCssTransformCachePlan({
+      cssIsMainChunk: false,
+      cssRuntimeAffectingHash: 'raw-hash',
+      cssShareScope: 'scope',
+      linkedImpactSignature: '',
+      outputFile: 'pages/index.wxss',
+      runtimeSignature: 'runtime',
+      scopedGeneratorCandidateSignature,
+      sourceTraceSignature: 'trace',
+      tailwindcssMajorVersion: 4,
+    })
+
+    const initial = createPlan('dark:bg-[#232323]')
+    const updated = createPlan('dark:bg-[#242424]')
+
+    expect(updated.cssCacheKey).not.toBe(initial.cssCacheKey)
+    expect(updated.cssHashKey).not.toBe(initial.cssHashKey)
+    expect(updated.cssTaskHash).not.toBe(initial.cssTaskHash)
   })
 
   it('sorts linked html and js changes before resolving signatures', () => {

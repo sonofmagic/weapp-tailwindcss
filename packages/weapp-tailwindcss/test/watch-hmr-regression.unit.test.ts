@@ -3126,17 +3126,24 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
-  it('guards issue 1005 final watch styles against empty block at-rules', () => {
+  it('guards every final mini-program watch style directory against empty block at-rules', () => {
     const baseCwd = '/repo'
-    const watchCase = buildCases(baseCwd, { includeLocalOnly: true })
-      .find(item => item.name === 'uni-app-vite-tailwindcss-v4')
-    const guardedDirectories = watchCase?.outputIntegrityGuards
-      ?.filter(guard => guard.forbidEmptyBlockAtRules)
-      .map(guard => guard.directory?.replace(/\\/g, '/')) ?? []
+    const cases = buildCases(baseCwd, { includeLocalOnly: true })
 
-    expect(guardedDirectories).toEqual([
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin').replace(/\\/g, '/'),
-    ])
+    for (const watchCase of cases) {
+      const guardedDirectories = watchCase.outputIntegrityGuards
+        ?.filter(guard => guard.forbidEmptyBlockAtRules && guard.directory)
+        .map(guard => guard.directory!.replace(/\\/g, '/')) ?? []
+      const expectedDirectories = new Set(
+        watchCase.globalStyleCandidates.map(candidate => path.dirname(candidate).replace(/\\/g, '/')),
+      )
+
+      expect(guardedDirectories.length, watchCase.name).toBeGreaterThan(0)
+      expect(new Set(guardedDirectories).size, watchCase.name).toBe(guardedDirectories.length)
+      for (const directory of expectedDirectories) {
+        expect(guardedDirectories, watchCase.name).toContain(directory)
+      }
+    }
   })
 
   it('keeps script read-path HMR checks available for every demo case', () => {

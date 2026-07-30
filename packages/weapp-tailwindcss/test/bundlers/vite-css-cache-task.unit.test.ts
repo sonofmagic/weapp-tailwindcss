@@ -5,6 +5,7 @@ import {
   applyViteCssCacheResult,
   processViteCssCacheTask,
 } from '../../src/bundlers/vite/generate-bundle/css-cache-task'
+import { resolveViteCssTransformCachePlan } from '../../src/bundlers/vite/generate-bundle/css-transform-decision-plan'
 
 function createOutputAsset(): OutputAsset {
   return {
@@ -79,6 +80,49 @@ describe('vite css cache task', () => {
     expect(transform).toHaveBeenCalledOnce()
     expect(applyResult).toHaveBeenCalledTimes(2)
     expect(onCacheHit).toHaveBeenCalledOnce()
+  })
+
+  it('restores the exact cached candidate result when the source rolls back', async () => {
+    const cache = createCache()
+    const applied: string[] = []
+    const transform = vi.fn(async (source: string) => source)
+    const run = (source: string) => {
+      const plan = resolveViteCssTransformCachePlan({
+        cssIsMainChunk: false,
+        cssRuntimeAffectingHash: 'source-hash',
+        cssShareScope: 'scope',
+        linkedImpactSignature: '',
+        outputFile: 'pages/index.wxss',
+        runtimeSignature: 'runtime',
+        scopedGeneratorCandidateSignature: source,
+        sourceTraceSignature: 'trace',
+        tailwindcssMajorVersion: 4,
+      })
+      return processViteCssCacheTask({
+        applyResult: result => applied.push(result),
+        cache,
+        cacheKey: plan.cssCacheKey,
+        hashKey: plan.cssHashKey,
+        onCacheHit: vi.fn(),
+        onSharedCacheHit: vi.fn(),
+        onSharedResult: vi.fn(),
+        onTransformResult: vi.fn(),
+        sharedResultCache: new Map<string, Promise<string>>(),
+        taskHash: plan.cssTaskHash,
+        transform: () => transform(source),
+      })
+    }
+
+    await run('.probe{display:flex}')
+    await run('.probe{display:block}')
+    await run('.probe{display:flex}')
+
+    expect(applied).toEqual([
+      '.probe{display:flex}',
+      '.probe{display:block}',
+      '.probe{display:flex}',
+    ])
+    expect(transform).toHaveBeenCalledTimes(2)
   })
 
   it('shares an in-flight transform across distinct process cache keys', async () => {

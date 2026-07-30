@@ -6,6 +6,7 @@ import { dedupeCoveredCssRules } from '@weapp-tailwindcss/postcss'
 import { resolveStyleOptionsFromContext } from '@/context/style-options'
 import { finalizeMiniProgramCss, pruneMiniProgramGeneratedCss, stripMiniProgramCssSpecificityPlaceholders } from '../../../../shared/css-cleanup'
 import { createCssTokenSourceMap, isCssSourceTraceEnabled } from '../../../../shared/css-source-trace'
+import { finalizeMiniProgramCssStructure } from '../../../../shared/final-css-cleanup'
 import { stripBundlerGeneratedCssMarkers } from '../../../../shared/generated-css-marker'
 import { removeTailwindSourceDirectives } from '../../../../shared/generator-css/directives'
 import { hasMiniProgramTailwindV4PreflightReset } from '../../../../shared/generator-css/generation-helpers'
@@ -124,12 +125,13 @@ export function finalizeWebpackCssAssetOutputSource(
     return source
   }
   const styleOptions = resolveStyleOptionsFromContext(compilerOptions)
-  return stripMiniProgramCssSpecificityPlaceholders(
+  const finalized = stripMiniProgramCssSpecificityPlaceholders(
     removeMiniProgramHoverSelectors(
       dedupeCoveredCssRules(dedupeMiniProgramPreflightSelectorRules(source)),
       styleOptions.cssRemoveHoverPseudoClass,
     ),
   )
+  return finalizeMiniProgramCssStructure(finalized)
 }
 
 export function collectWebpackJsRuntimeCandidatesFromAssets(options: {

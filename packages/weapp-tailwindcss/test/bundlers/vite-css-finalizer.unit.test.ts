@@ -140,6 +140,39 @@ describe('vite css finalizer output plugin', () => {
     )
   })
 
+  it('removes empty at-rules after framework css processing and preserves valid dark media', async () => {
+    const { context } = createContext({
+      opts: {
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        htmlMatcher: (file: string) => file.endsWith('.wxml'),
+        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        styleHandler: vi.fn(async (css: string) => ({
+          css: `${css}\n@media (prefers-color-scheme: dark) { /* removed declarations */ }`,
+        })),
+        onUpdate: vi.fn(),
+        generator: {
+          target: 'weapp',
+        },
+      },
+    })
+    const plugin = createViteCssFinalizerOutputPlugin(context as any)
+    const output = asset('app.wxss', [
+      '@media (prefers-color-scheme: light) {}',
+      '@media (prefers-color-scheme: dark) { .theme{background:#232323} }',
+    ].join('\n'))
+    const bundle: OutputBundle = {
+      'app.wxss': output,
+    }
+
+    await getHandler(plugin).call(plugin, {}, bundle)
+
+    const css = String(output.source)
+    expect(css).not.toContain('prefers-color-scheme: light')
+    expect(css).not.toContain('removed declarations')
+    expect(css).toContain('@media (prefers-color-scheme: dark) { .theme{background:#232323} }')
+  })
+
   it('preserves mini-program import shell assets without resolving output imports', async () => {
     const { context } = createContext({
       opts: {
@@ -216,6 +249,7 @@ describe('vite css finalizer output plugin', () => {
       'pages/index.wxss': asset('pages/index.wxss', [
         createBundlerGeneratedCssMarker('vite', 'src/pages/index.css'),
         '.page{color:red}',
+        '@media (prefers-color-scheme: dark) { /* removed */ }',
       ].join('\n')),
     }
 
@@ -223,7 +257,7 @@ describe('vite css finalizer output plugin', () => {
 
     expect(String((bundle['pages/index.wxss'] as OutputAsset).source)).toBe('.page{color:red}')
     expect(context.recordCssAssetResult).toHaveBeenCalledWith('pages/index.wxss', '.page{color:red}')
-    expect(context.debug).toHaveBeenCalledWith('collect vite-processed css asset: %s bytes=%d', 'pages/index.wxss', 16)
+    expect(context.debug).toHaveBeenCalledWith('collect vite-processed css asset: %s bytes=%d', 'pages/index.wxss', 70)
   })
 
   it('strips Vite internal marker-only css assets', async () => {
@@ -366,7 +400,10 @@ describe('vite css finalizer output plugin', () => {
       },
     })
     const plugin = createViteCssFinalizerOutputPlugin(context as any)
-    const output = asset('style.css', '@media (hover: hover){.hover\\:bg-red-500:hover{color:red}}')
+    const output = asset('style.css', [
+      '@media (hover: hover){.hover\\:bg-red-500:hover{color:red}}',
+      '@media (prefers-color-scheme: dark) {}',
+    ].join('\n'))
     const bundle: OutputBundle = {
       'style.css': output,
     }
@@ -379,6 +416,7 @@ describe('vite css finalizer output plugin', () => {
     }))
     expect(opts.styleHandler).not.toHaveBeenCalled()
     expect(String(output.source)).toContain('@media (hover: hover)')
+    expect(String(output.source)).toContain('@media (prefers-color-scheme: dark) {}')
     expect(context.markCssAssetProcessed).toHaveBeenCalledWith(output, 'style.css')
   })
 
@@ -409,7 +447,11 @@ describe('vite css finalizer output plugin', () => {
 
   it('runs final injection and taro shell normalization when there are no pending css entries', async () => {
     const records = new Map<string, any>([
-      ['src/app.css', { css: '.generated{color:blue}', injectIntoMain: true, outputFile: 'app.wxss' }],
+      ['src/app.css', {
+        css: '.generated{color:blue}\n@media (prefers-color-scheme: dark) { /* removed */ }',
+        injectIntoMain: true,
+        outputFile: 'app.wxss',
+      }],
     ])
     const { context, opts } = createContext({
       getViteProcessedCssAssetResults: vi.fn(() => records.entries()),
@@ -425,6 +467,7 @@ describe('vite css finalizer output plugin', () => {
 
     expect(context.ensureRuntimeClassSet).not.toHaveBeenCalled()
     expect(String((bundle['app.wxss'] as OutputAsset).source)).toContain('.generated{color:blue}')
+    expect(String((bundle['app.wxss'] as OutputAsset).source)).not.toContain('prefers-color-scheme: dark')
     expect(String((bundle['app.wxss'] as OutputAsset).source)).not.toContain('@source')
     expect(opts.onUpdate).toHaveBeenCalled()
   })

@@ -130,7 +130,7 @@ export function uniAppMiniCase(options: {
     styleFileExtensions: [styleFile.slice(styleFile.lastIndexOf('.'))],
     textFiles: options.textFile ? [`${outputDir}/${options.textFile}`] : undefined,
     styleContains: options.styleContains,
-    forbidEmptyBlockAtRules: options.project === 'uni-app-vite-tailwindcss-v4',
+    forbidEmptyBlockAtRules: true,
     textContains: options.textContains,
     notContains: [rawTailwindDirectiveRE],
     env: options.project === 'uni-app-vite-tailwindcss-v4'
@@ -236,6 +236,7 @@ export function uniAppSubpackageMiniCase(options: {
     styleContains: singleEntry
       ? [cssMarker(options.markers.main), cssMarker(options.markers.normal), cssMarker(options.markers.independent)]
       : [cssMarker(options.markers.main), cssMarker(options.markers.normal), cssMarker(options.markers.independent)],
+    forbidEmptyBlockAtRules: true,
     textContains: [options.markers.main, options.markers.normal, options.markers.independent],
     fileAssertions: createSubpackageCssAssertions({
       appStyleFile: `${outputDir}/${mainStyleFile}`,
@@ -348,6 +349,7 @@ export function uniAppHBuilderXMiniCase(options: {
       '.w-_b120px_B',
       '.h-_b6rem_B',
     ],
+    forbidEmptyBlockAtRules: true,
     textContains: [
       'bg-_b_h123456_B',
       'text-_b_h888800_B',
@@ -404,6 +406,7 @@ export function mpxCase(options: {
           '.bg-_b_h123456_B',
           '.before_ccontent',
         ],
+    forbidEmptyBlockAtRules: true,
     textContains: isV4
       ? [
           'bg-_b_h123456_B',
@@ -488,6 +491,7 @@ export function taroMiniCase(options: {
     styleFileExtensions: [options.platform === 'alipay' ? '.acss' : '.ttss'],
     textFiles: [output.pageScript],
     styleContains: options.styleContains,
+    forbidEmptyBlockAtRules: true,
     textContains: options.textContains,
     fileAssertions: options.fileAssertions,
     notContains: [rawTailwindDirectiveRE],
@@ -535,6 +539,7 @@ export function taroSubpackageMiniCase(options: {
     styleFileExtensions: [options.platform === 'alipay' ? '.acss' : '.ttss', extension],
     textFiles: ['dist'],
     styleContains: [cssMarker(options.markers.main), cssMarker(options.markers.normal), cssMarker(options.markers.independent)],
+    forbidEmptyBlockAtRules: true,
     textContains: [options.markers.main, options.markers.normal, options.markers.independent],
     fileAssertions: createSubpackageCssAssertions({
       appStyleFile: output.appStyle,
@@ -607,6 +612,7 @@ export function gulpMiniCase(options: {
     styleFileExtensions: ['.ttss'],
     textFiles: ['dist'],
     styleContains: options.styleContains,
+    forbidEmptyBlockAtRules: true,
     textContains: options.textContains,
     notContains: [rawTailwindDirectiveRE],
     status: 'ci',
@@ -672,6 +678,7 @@ export function styleInjectorUniAppMiniCase(options: {
       '.injector-uni-ali-entry',
       '.injector-uni-independent',
     ],
+    forbidEmptyBlockAtRules: true,
     textContains: [
       'injector-uni-normal',
       'injector-uni-independent',
@@ -861,6 +868,7 @@ export function styleInjectorMpxMiniCase(options: {
       '.injector-mpx-less-entry',
       '.injector-mpx-independent',
     ],
+    forbidEmptyBlockAtRules: true,
     textContains: [
       'injector-mpx-normal',
       'injector-mpx-independent',
@@ -947,6 +955,7 @@ export function styleInjectorTaroMiniCase(options: {
       lessMarker,
       independentMarker,
     ],
+    forbidEmptyBlockAtRules: true,
     textContains: [
       `injector-${options.markerPrefix}-normal`,
       `injector-${options.markerPrefix}-independent`,

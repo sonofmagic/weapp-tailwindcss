@@ -194,6 +194,28 @@ describe('bundlers/gulp createPlugins', () => {
     expect(tailwindRuntime.extract).not.toHaveBeenCalled()
   })
 
+  it('removes empty at-rules only from final gulp css outputs', async () => {
+    const source = [
+      '@media (prefers-color-scheme: light) {}',
+      '@media screen { @supports (display: grid) { /* removed */ } }',
+      '@media (prefers-color-scheme: dark) { .theme { background: #232323; } }',
+    ].join('\n')
+    styleHandler.mockImplementation(async (css: string) => ({ css }))
+    const plugins = createPlugins()
+
+    const generated = await runTransform(plugins.generateWxss(), createFile('/src/app.wxss', source))
+    const transformed = await runTransform(plugins.transformWxss(), createFile('/src/page.wxss', source))
+    const adapted = await runTransform(plugins.adaptWxss(), createFile('/src/component.wxss', source))
+
+    expect(generated.contents?.toString()).toContain('@media (prefers-color-scheme: light) {}')
+    for (const finalOutput of [transformed, adapted]) {
+      const css = finalOutput.contents?.toString() ?? ''
+      expect(css).not.toContain('prefers-color-scheme: light')
+      expect(css).not.toContain('@supports')
+      expect(css).toContain('@media (prefers-color-scheme: dark) { .theme { background: #232323; } }')
+    }
+  })
+
   it('refreshes gulp runtime candidates before transforming changed js sources', async () => {
     let currentRuntimeSet = new Set(['w-[1px]'])
     tailwindRuntime.getClassSetSync.mockImplementation(() => currentRuntimeSet)

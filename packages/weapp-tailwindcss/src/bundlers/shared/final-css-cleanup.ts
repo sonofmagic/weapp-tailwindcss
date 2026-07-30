@@ -1,3 +1,5 @@
+import { postcss, removeEmptyAtRules } from '@weapp-tailwindcss/postcss'
+
 function isAtRuleNameCharacter(code: number) {
   return code === 45
     || (code >= 65 && code <= 90)
@@ -101,4 +103,26 @@ export function hasEmptyAtRuleBlockCandidate(css: string) {
     }
   }
   return false
+}
+
+/**
+ * 在小程序样式进入最终产物图时递归清理空的块级 at-rule。
+ */
+export function finalizeMiniProgramCssStructure(css: string) {
+  if (!hasEmptyAtRuleBlockCandidate(css)) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    let removed = 0
+    let passRemoved = 0
+    do {
+      passRemoved = removeEmptyAtRules(root)
+      removed += passRemoved
+    } while (passRemoved > 0)
+    return removed > 0 ? root.toString() : css
+  }
+  catch {
+    return css
+  }
 }

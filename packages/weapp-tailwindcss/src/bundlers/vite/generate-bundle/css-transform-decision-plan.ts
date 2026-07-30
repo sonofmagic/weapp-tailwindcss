@@ -142,10 +142,11 @@ export function resolveViteCssTransformCachePlan(
     options.cssRuntimeAffectingHash,
   )
   const tailwindcssMajorVersion = options.tailwindcssMajorVersion ?? 'unknown'
+  const cssCacheKey = `${options.outputFile}:css:${cssRuntimeSignature}:${tailwindcssMajorVersion}`
 
   return {
-    cssCacheKey: options.outputFile,
-    cssHashKey: `${options.outputFile}:css:${cssRuntimeSignature}:${tailwindcssMajorVersion}`,
+    cssCacheKey,
+    cssHashKey: cssCacheKey,
     cssRuntimeSignature,
     cssSharedCacheKey: [
       options.cssShareScope,
