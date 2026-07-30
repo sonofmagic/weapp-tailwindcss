@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { getMultiplatformBuildOutputCases, MULTIPLATFORM_BUILD_OUTPUT_CASES } from './multiplatform-build-output/cases'
-import { uniqueTargetKey } from './multiplatform-build-output/helpers'
+import { isMiniProgramTarget, uniqueTargetKey } from './multiplatform-build-output/helpers'
 import { verifyBuildOutputCase } from './multiplatform-build-output/runner'
 import { MULTIPLATFORM_TARGETS } from './multiplatform-build-output/targets'
+import { E2E_PROJECTS } from './projectEntries'
 
 describe('multiplatform build output smoke', () => {
   it('keeps full platform matrix covered and local-only cases documented', () => {
@@ -43,6 +44,18 @@ describe('multiplatform build output smoke', () => {
     for (const item of MULTIPLATFORM_BUILD_OUTPUT_CASES.filter(item => item.status === 'ci')) {
       expect(item.styleFileExtensions?.length, `${item.name} should declare expected style output suffixes`).toBeGreaterThan(0)
     }
+
+    const miniProgramCases = MULTIPLATFORM_BUILD_OUTPUT_CASES.filter(isMiniProgramTarget)
+    expect(miniProgramCases.length).toBeGreaterThan(0)
+    for (const item of miniProgramCases) {
+      expect(item.forbidEmptyBlockAtRules, `${item.name} should guard every final style output`).toBe(true)
+    }
+
+    for (const item of MULTIPLATFORM_BUILD_OUTPUT_CASES.filter(item => /^(?:h5|quickapp)/.test(item.platform))) {
+      expect(item.forbidEmptyBlockAtRules, `${item.name} web output should preserve legal empty conditional rules`).not.toBe(true)
+    }
+
+    expect(E2E_PROJECTS.every(item => item.forbidEmptyBlockAtRules)).toBe(true)
   })
 
   it.each(getMultiplatformBuildOutputCases())('$name', async (item) => {

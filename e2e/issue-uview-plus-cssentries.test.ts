@@ -3,7 +3,9 @@ import process from 'node:process'
 import { execa } from 'execa'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
+import { collectEmptyBlockAtRules } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/css-integrity'
 import { ensureProjectBuilt } from './projectBuild'
+import { hasScopedDarkApplyProbeStyle, initialScopedDarkApplyProbeState } from './scopedDarkApplyProbe'
 
 const demoRoot = path.resolve(__dirname, '../demo/issue-uview-plus-cssentries')
 const expectedUviewCssTokens = [
@@ -122,8 +124,22 @@ async function buildPlatform(platform: 'mp-weixin' | 'mp-alipay') {
 async function expectUviewCssEvidence(platform: 'mp-weixin' | 'mp-alipay') {
   const { assets } = await buildPlatform(platform)
   const css = assets.map(asset => asset.source).join('\n')
+  const ext = platform === 'mp-weixin' ? 'wxss' : 'acss'
+  const pageStyleFile = `pages/demonstration/index.${ext}`
+  const pageStyle = assets.find(asset => asset.file === pageStyleFile)
 
   expect(assets.map(asset => asset.file)).toContain(platform === 'mp-weixin' ? 'app.wxss' : 'app.acss')
+  expect(pageStyle, `${platform} should emit ${pageStyleFile}`).toBeDefined()
+  expect(
+    hasScopedDarkApplyProbeStyle(pageStyle?.source ?? '', initialScopedDarkApplyProbeState),
+    `${platform} should preserve scoped base and dark @apply declarations`,
+  ).toBe(true)
+  for (const asset of assets) {
+    expect(
+      collectEmptyBlockAtRules(asset.source),
+      `${platform} ${asset.file} should not emit empty block at-rules`,
+    ).toEqual([])
+  }
   expect(css).toContain('.u-button')
   expect(css).toContain('var(--up-primary')
   expect(css).toContain('.u-loading-icon')
@@ -141,7 +157,6 @@ async function expectUviewCssEvidence(platform: 'mp-weixin' | 'mp-alipay') {
   expect(evidence).toContain('.u-button')
   expect(evidence).toContain('.u-loading-icon')
 
-  const ext = platform === 'mp-weixin' ? 'wxss' : 'acss'
   const snapshotPath = path.resolve(__dirname, `__snapshots__/issue-uview-plus-cssentries/uview-css-evidence.${ext}`)
   await fs.mkdir(path.dirname(snapshotPath), { recursive: true })
   await expect(evidence).toMatchFileSnapshot(snapshotPath)

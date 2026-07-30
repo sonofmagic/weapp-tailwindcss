@@ -81,6 +81,36 @@ describe('vite css cache task', () => {
     expect(onCacheHit).toHaveBeenCalledOnce()
   })
 
+  it('does not replay the latest result when the source rolls back', async () => {
+    const cache = createCache()
+    const applied: string[] = []
+    const transform = vi.fn(async (source: string) => source)
+    const run = (source: string) => processViteCssCacheTask({
+      applyResult: result => applied.push(result),
+      cache,
+      cacheKey: 'pages/index.wxss',
+      hashKey: 'pages/index.wxss:css:4',
+      onCacheHit: vi.fn(),
+      onSharedCacheHit: vi.fn(),
+      onSharedResult: vi.fn(),
+      onTransformResult: vi.fn(),
+      sharedResultCache: new Map<string, Promise<string>>(),
+      taskHash: source,
+      transform: () => transform(source),
+    })
+
+    await run('.probe{display:flex}')
+    await run('.probe{display:block}')
+    await run('.probe{display:flex}')
+
+    expect(applied).toEqual([
+      '.probe{display:flex}',
+      '.probe{display:block}',
+      '.probe{display:flex}',
+    ])
+    expect(transform).toHaveBeenCalledTimes(3)
+  })
+
   it('shares an in-flight transform across distinct process cache keys', async () => {
     const sharedResultCache = new Map<string, Promise<string>>()
     const transform = vi.fn(async () => '.shared {}')

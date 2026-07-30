@@ -16,6 +16,7 @@ import {
   createWebpackUserCssSourceAppend,
   finalizeMiniProgramUserCssAssetSource,
   finalizeTracedWebpackCssAsset,
+  finalizeWebpackCssAssetOutputSource,
   finalizeWebpackCssAssetSource,
   getRuntimeClassSetSync,
   hasAdditionalWebpackAssetUserCssMarkers,
@@ -834,6 +835,16 @@ describe('bundlers/webpack v5-assets helpers', () => {
       generatedCss: true,
     })).toContain('.card')
     expect(finalizeWebpackCssAssetSource('.card:hover{color:red}', baseContext as any, false)).not.toContain(':hover')
+    const finalAssetSource = [
+      '@media (prefers-color-scheme: light) {}',
+      '@media screen { @supports (display: grid) { /* removed */ } }',
+      '@media (prefers-color-scheme: dark) { .card{background:#232323} }',
+    ].join('\n')
+    const finalizedAsset = finalizeWebpackCssAssetOutputSource(finalAssetSource, baseContext as any, false)
+    expect(finalizedAsset).not.toContain('prefers-color-scheme: light')
+    expect(finalizedAsset).not.toContain('@supports')
+    expect(finalizedAsset).toContain('@media (prefers-color-scheme: dark) { .card{background:#232323} }')
+    expect(finalizeWebpackCssAssetOutputSource(finalAssetSource, baseContext as any, true)).toBe(finalAssetSource)
     const layeredUserCss = finalizeWebpackCssAssetSource('@layer base{wx-button{background:#000}}abc{background:#222}', baseContext as any, false)
     expect(layeredUserCss).not.toContain('@layer')
     expect(layeredUserCss).toContain('wx-button{background:#000}')

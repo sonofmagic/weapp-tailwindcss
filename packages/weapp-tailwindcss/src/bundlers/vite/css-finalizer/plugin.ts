@@ -17,6 +17,7 @@ import { normalizeMiniProgramGeneratorCssSource } from '../../shared/generator-c
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from '../generate-bundle'
 import { applyViteAssetEmissionPlan } from '../generate-bundle/asset-emission-plan'
+import { finalizeMiniProgramCssAssetStructures } from '../generate-bundle/final-css-assets'
 import { normalizeRootMiniProgramImportShellAssets } from '../generate-bundle/finalize'
 import { restoreFrameworkRootMiniProgramImportShellAssets } from '../generate-bundle/root-style-output'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '../processed-css-assets'
@@ -246,6 +247,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             onUpdate: opts.onUpdate,
             recordCssAssetResult,
           })
+          finalizeMiniProgramCssAssetStructures(bundle, {
+            cssMatcher: opts.cssMatcher,
+            debug,
+            isWebGeneratorTarget,
+            onUpdate: opts.onUpdate,
+            recordCssAssetResult,
+          })
           finalizeCompilerShadowRun(runtimeState)
           return
         }
@@ -408,6 +416,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           cssMatcher: opts.cssMatcher,
           debug,
           enabled: cssPipelineStrategy?.shouldNormalizeRootMiniProgramImportShell?.(createCssPipelineContext('')) === true,
+          onUpdate: opts.onUpdate,
+          recordCssAssetResult,
+        })
+        finalizeMiniProgramCssAssetStructures(bundle, {
+          cssMatcher: opts.cssMatcher,
+          debug,
+          isWebGeneratorTarget,
           onUpdate: opts.onUpdate,
           recordCssAssetResult,
         })

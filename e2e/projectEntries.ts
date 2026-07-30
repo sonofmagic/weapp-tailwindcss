@@ -1,6 +1,6 @@
 import type { ProjectEntry } from './shared.ts'
 
-export const E2E_PROJECTS = [
+export const E2E_PROJECTS = ([
   {
     name: 'gulp-tailwindcss-v4',
     projectPath: 'gulp-tailwindcss-v4',
@@ -74,7 +74,6 @@ export const E2E_PROJECTS = [
     buildEnv: {
       WEAPP_TW_ISSUE_1005_FINAL_CSS_FIXTURE: '1',
     },
-    forbidEmptyBlockAtRules: true,
   },
   {
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
@@ -96,7 +95,10 @@ export const E2E_PROJECTS = [
       'dist/sub-independent/pages/index.wxss',
     ],
   },
-] satisfies ProjectEntry[]
+] satisfies ProjectEntry[]).map(entry => ({
+  ...entry,
+  forbidEmptyBlockAtRules: true,
+})) satisfies ProjectEntry[]
 
 export const NATIVE_PROJECTS = [] satisfies ProjectEntry[]
 

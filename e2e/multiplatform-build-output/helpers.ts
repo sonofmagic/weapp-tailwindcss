@@ -2,6 +2,25 @@ import type { BuildOutputCase } from './types'
 
 export const rawTailwindDirectiveRE = /@(import\s+["']tailwindcss|tailwind|apply|theme|source)\b/
 
+const MINI_PROGRAM_PLATFORM_NAMES = new Set([
+  'ali',
+  'alipay',
+  'dd',
+  'jd',
+  'qq',
+  'swan',
+  'tt',
+  'weapp',
+  'wx',
+])
+
+export function isMiniProgramTarget(target: Pick<BuildOutputCase, 'framework' | 'platform'>) {
+  return target.framework === 'gulp'
+    || target.framework === 'mpx'
+    || target.platform.startsWith('mp-')
+    || MINI_PROGRAM_PLATFORM_NAMES.has(target.platform)
+}
+
 export function createLocalTargetCase(options: {
   name: string
   framework: BuildOutputCase['framework']
@@ -19,6 +38,7 @@ export function createLocalTargetCase(options: {
     requiredFiles: ['package.json'],
     styleFiles: ['package.json'],
     styleContains: [],
+    forbidEmptyBlockAtRules: isMiniProgramTarget(options),
     verifySourceFixtures: false,
     status: 'local',
     reason: options.reason,

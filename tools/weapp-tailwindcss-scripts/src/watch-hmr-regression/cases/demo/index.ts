@@ -1,4 +1,5 @@
 import type { WatchCase } from '../../types'
+import path from 'node:path'
 import { buildDemoBaseCases } from './base'
 import { buildDemoExtendedCases } from './extended'
 import { buildUniAppHBuilderXCases } from './hbuilderx'
@@ -18,14 +19,40 @@ function withIconifyHmr(cases: WatchCase[]): WatchCase[] {
   }))
 }
 
+function withFinalStyleIntegrity(cases: WatchCase[]): WatchCase[] {
+  return cases.map((watchCase) => {
+    const outputIntegrityGuards = [...(watchCase.outputIntegrityGuards ?? [])]
+    const styleDirectories = new Set(watchCase.globalStyleCandidates.map(candidate => path.dirname(candidate)))
+    for (const directory of styleDirectories) {
+      const existingIndex = outputIntegrityGuards.findIndex(guard => guard.directory === directory)
+      if (existingIndex >= 0) {
+        outputIntegrityGuards[existingIndex] = {
+          ...outputIntegrityGuards[existingIndex],
+          forbidEmptyBlockAtRules: true,
+        }
+      }
+      else {
+        outputIntegrityGuards.push({
+          directory,
+          forbidEmptyBlockAtRules: true,
+        })
+      }
+    }
+    return {
+      ...watchCase,
+      outputIntegrityGuards,
+    }
+  })
+}
+
 export function buildDemoCases(baseCwd: string, options: {
   includeLocalOnly?: boolean
 } = {}): WatchCase[] {
-  return withIconifyHmr([
+  return withIconifyHmr(withFinalStyleIntegrity([
     ...buildDemoBaseCases(baseCwd),
     ...buildDemoExtendedCases(baseCwd),
     ...(options.includeLocalOnly ? buildUniAppHBuilderXCases(baseCwd) : []),
-  ])
+  ]))
 }
 
 export { buildUniAppHBuilderXCases }

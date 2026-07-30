@@ -20,7 +20,10 @@ const message = "Hello uview-plus";
 </template>
 
 <style lang="scss" scoped>
+@reference "../../styles/tailwindcss.css";
+
 .hello-scss {
+  @apply flex bg-[#f1f1f1] dark:bg-[#232323];
   color: #f00;
 }
 </style>

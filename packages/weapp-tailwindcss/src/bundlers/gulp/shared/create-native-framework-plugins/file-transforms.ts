@@ -6,6 +6,7 @@ import path from 'node:path'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { processCachedTask } from '../../../shared/cache'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap } from '../../../shared/css-source-trace'
+import { finalizeMiniProgramCssStructure } from '../../../shared/final-css-cleanup'
 import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../../../shared/generated-css-marker'
 import { finalizeMiniProgramGeneratorCss } from '../../../shared/generator-css/generation-helpers'
 import { rewriteLocalCssImportRequestsForOutput } from '../../../shared/generator-css/local-imports'
@@ -174,7 +175,11 @@ export function createGulpFileTransforms(context: GulpFileTransformContext) {
                 styleOutputExtension,
               })
           debug('css handle: %s', file.path)
-          return { result: outputCss }
+          return {
+            result: stage === 'transform'
+              ? finalizeMiniProgramCssStructure(outputCss)
+              : outputCss,
+          }
         },
       })
       rememberGulpProcessCacheKey(gulpProcessCacheKeys, file.path)
@@ -209,9 +214,10 @@ export function createGulpFileTransforms(context: GulpFileTransformContext) {
             },
           )
         : handled.css
-      writeGulpFileAsset(file, rewriteLocalCssImportRequestsForOutput(finalized, {
+      const outputCss = rewriteLocalCssImportRequestsForOutput(finalized, {
         styleOutputExtension,
-      }))
+      })
+      writeGulpFileAsset(file, finalizeMiniProgramCssStructure(outputCss))
       debug('css adapt: %s', file.path)
     }, () => resolveGulpTransformTimingDetails('css:adapt'))
 

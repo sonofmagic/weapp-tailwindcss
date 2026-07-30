@@ -145,7 +145,7 @@ export function resolveViteCssTransformCachePlan(
 
   return {
     cssCacheKey: options.outputFile,
-    cssHashKey: `${options.outputFile}:css:${cssRuntimeSignature}:${tailwindcssMajorVersion}`,
+    cssHashKey: `${options.outputFile}:css:${tailwindcssMajorVersion}`,
     cssRuntimeSignature,
     cssSharedCacheKey: [
       options.cssShareScope,

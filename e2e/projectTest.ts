@@ -13,6 +13,7 @@ import { collectTokenSourceReports, formatTokenSourceFileReport } from './tokenS
 export { ensureProjectBuilt } from './projectBuild'
 
 const EPERM_RE = /EPERM/i
+const MINI_PROGRAM_STYLE_OUTPUT_RE = /\.(?:acss|css|jxss|qss|ttss|wxss)$/i
 const automator = new Launcher()
 const cleanedProjectSnapshotDirs = new Set<string>()
 
@@ -60,6 +61,18 @@ async function safeRm(target: string) {
       throw error
     }
   }
+}
+
+async function collectMiniProgramStyleOutputs(directory: string): Promise<string[]> {
+  const entries = await fs.readdir(directory, { withFileTypes: true }).catch(() => [])
+  const files = await Promise.all(entries.map(async (entry) => {
+    const file = path.resolve(directory, entry.name)
+    if (entry.isDirectory()) {
+      return collectMiniProgramStyleOutputs(file)
+    }
+    return entry.isFile() && MINI_PROGRAM_STYLE_OUTPUT_RE.test(entry.name) ? [file] : []
+  }))
+  return files.flat()
 }
 
 function isUpdatingSnapshots() {
@@ -359,14 +372,18 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
     )
   }
 
-  for (const cssEntry of getProjectCssSnapshotFiles(entry)) {
-    if (entry.forbidEmptyBlockAtRules) {
-      const source = await fs.readFile(path.resolve(projectPath, cssEntry.cssFile), 'utf8')
+  if (entry.forbidEmptyBlockAtRules) {
+    const outputStyleRoot = path.dirname(path.resolve(projectPath, entry.cssFile))
+    for (const file of await collectMiniProgramStyleOutputs(outputStyleRoot)) {
+      const source = await fs.readFile(file, 'utf8')
       expect(
         collectEmptyBlockAtRules(source),
-        `${entry.name}/${cssEntry.snapshotName} should not emit empty block at-rules`,
+        `${entry.name}/${path.relative(projectPath, file)} should not emit empty block at-rules`,
       ).toEqual([])
     }
+  }
+
+  for (const cssEntry of getProjectCssSnapshotFiles(entry)) {
     const shouldNormalizeWebpackAppSplitNoise = (
       entry.name === 'taro-webpack-react-tailwindcss-v4'
       || entry.name === 'taro-webpack-vue3-tailwindcss-v4'
