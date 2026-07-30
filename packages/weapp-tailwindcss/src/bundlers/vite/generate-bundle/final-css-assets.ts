@@ -25,6 +25,7 @@ export function finalizeMiniProgramCssAssetStructures(
   bundle: Record<string, OutputAsset | OutputChunk>,
   options: {
     cssMatcher: GenerateBundleContext['opts']['cssMatcher']
+    files?: ReadonlySet<string> | undefined
     isWebGeneratorTarget: boolean
     onUpdate: GenerateBundleContext['opts']['onUpdate']
     recordCssAssetResult: GenerateBundleContext['recordCssAssetResult']
@@ -43,7 +44,7 @@ export function finalizeMiniProgramCssAssetStructures(
       continue
     }
     const file = output.fileName || bundleFile
-    if (!options.cssMatcher(file)) {
+    if (!options.cssMatcher(file) || (options.files && !options.files.has(file))) {
       continue
     }
     const rawSource = readAssetSource(output)

@@ -89,8 +89,8 @@ describe('vite css transform cache plan', () => {
       sourceTraceSignature: 'trace',
       tailwindcssMajorVersion: 4,
     })).toEqual({
-      cssCacheKey: 'app.acss',
-      cssHashKey: 'app.acss:css:4',
+      cssCacheKey: 'app.acss:css:runtime:candidates:4',
+      cssHashKey: 'app.acss:css:runtime:candidates:4',
       cssRuntimeSignature: 'runtime:candidates',
       cssSharedCacheKey: 'scope:runtime:candidates:4:1:raw-hash:candidates:trace',
       cssTaskHash: 'raw-hash:candidates:trace:linked',
@@ -98,7 +98,7 @@ describe('vite css transform cache plan', () => {
     })
   })
 
-  it('keeps the hash owner stable when scoped candidates roll back', () => {
+  it('isolates cache ownership when scoped candidates change', () => {
     const createPlan = (scopedGeneratorCandidateSignature: string) => resolveViteCssTransformCachePlan({
       cssIsMainChunk: false,
       cssRuntimeAffectingHash: 'raw-hash',
@@ -114,7 +114,8 @@ describe('vite css transform cache plan', () => {
     const initial = createPlan('dark:bg-[#232323]')
     const updated = createPlan('dark:bg-[#242424]')
 
-    expect(updated.cssHashKey).toBe(initial.cssHashKey)
+    expect(updated.cssCacheKey).not.toBe(initial.cssCacheKey)
+    expect(updated.cssHashKey).not.toBe(initial.cssHashKey)
     expect(updated.cssTaskHash).not.toBe(initial.cssTaskHash)
   })
 

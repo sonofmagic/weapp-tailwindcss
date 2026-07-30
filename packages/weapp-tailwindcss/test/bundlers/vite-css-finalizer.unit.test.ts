@@ -249,6 +249,7 @@ describe('vite css finalizer output plugin', () => {
       'pages/index.wxss': asset('pages/index.wxss', [
         createBundlerGeneratedCssMarker('vite', 'src/pages/index.css'),
         '.page{color:red}',
+        '@media (prefers-color-scheme: dark) { /* removed */ }',
       ].join('\n')),
     }
 
@@ -256,7 +257,7 @@ describe('vite css finalizer output plugin', () => {
 
     expect(String((bundle['pages/index.wxss'] as OutputAsset).source)).toBe('.page{color:red}')
     expect(context.recordCssAssetResult).toHaveBeenCalledWith('pages/index.wxss', '.page{color:red}')
-    expect(context.debug).toHaveBeenCalledWith('collect vite-processed css asset: %s bytes=%d', 'pages/index.wxss', 16)
+    expect(context.debug).toHaveBeenCalledWith('collect vite-processed css asset: %s bytes=%d', 'pages/index.wxss', 70)
   })
 
   it('strips Vite internal marker-only css assets', async () => {

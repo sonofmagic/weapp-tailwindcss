@@ -44,6 +44,7 @@ export function collectViteProcessedCssAssetResults(
     nextCss = options.transformCss?.(nextCss, file) ?? nextCss
     if (nextCss !== rawSource) {
       output.source = nextCss
+      options.onAssetWrite?.(file)
     }
     options.markCssAssetProcessed?.(output, file)
     options.recordCssAssetResult?.(file, nextCss)
@@ -75,6 +76,7 @@ export function collectViteProcessedCssAssetResults(
         const targetNextCss = appendCss(targetRawSource, missingCss)
         if (targetNextCss !== targetRawSource) {
           targetAsset.source = targetNextCss
+          options.onAssetWrite?.(resolvedOutputFile)
           options.markCssAssetProcessed?.(targetAsset, resolvedOutputFile)
           options.recordCssAssetResult?.(resolvedOutputFile, targetNextCss)
         }

@@ -102,11 +102,16 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           : rootDir
         const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
           ?? resolveSourceRootFromBundleGraph(resolvedConfig, bundle)
+        const finalCssAssetFiles = new Set<string>()
+        const trackFinalCssAssetUpdate = (file: string, original: string, generated: string) => {
+          finalCssAssetFiles.add(file)
+          opts.onUpdate(file, original, generated)
+        }
         restoreFrameworkRootMiniProgramImportShellAssets(bundle, {
           debug,
           isWebGeneratorTarget,
           matchesCss: opts.cssMatcher,
-          onUpdate: opts.onUpdate,
+          onUpdate: trackFinalCssAssetUpdate,
           recordCssAssetResult,
           shouldKeep: (file, css) => cssPipelineStrategy?.shouldKeepRootMiniProgramStyleAsImportShell?.({
             ...createCssPipelineContext(file),
@@ -132,6 +137,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             markCssAssetProcessed,
             recordCssAssetResult,
             recordViteProcessedCssAssetResult,
+            onAssetWrite: file => finalCssAssetFiles.add(file),
             resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget, sourceRoot, resolveMiniProgramStyleOutputExtension({
               files: Object.keys(bundle),
             }), Object.keys(bundle)),
@@ -156,7 +162,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
               file,
             }, cssPipelineStrategy),
             debug,
-            onUpdate: opts.onUpdate,
+            onUpdate: trackFinalCssAssetUpdate,
           })
         }
 
@@ -244,12 +250,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             cssMatcher: opts.cssMatcher,
             debug,
             enabled: cssPipelineStrategy?.shouldNormalizeRootMiniProgramImportShell?.(createCssPipelineContext('')) === true,
-            onUpdate: opts.onUpdate,
+            onUpdate: trackFinalCssAssetUpdate,
             recordCssAssetResult,
           })
           finalizeMiniProgramCssAssetStructures(bundle, {
             cssMatcher: opts.cssMatcher,
             debug,
+            files: finalCssAssetFiles,
             isWebGeneratorTarget,
             onUpdate: opts.onUpdate,
             recordCssAssetResult,
@@ -272,6 +279,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         const writeTargets = new Map<string, OutputAsset>()
         const writeCssAsset = (file: string, output: OutputAsset, source: string) => {
           emissionPlan.write(file, source)
+          finalCssAssetFiles.add(file)
           writeTargets.set(file, output)
         }
         await Promise.all(entries.map(async ([bundleFile, output]) => {
@@ -416,12 +424,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           cssMatcher: opts.cssMatcher,
           debug,
           enabled: cssPipelineStrategy?.shouldNormalizeRootMiniProgramImportShell?.(createCssPipelineContext('')) === true,
-          onUpdate: opts.onUpdate,
+          onUpdate: trackFinalCssAssetUpdate,
           recordCssAssetResult,
         })
         finalizeMiniProgramCssAssetStructures(bundle, {
           cssMatcher: opts.cssMatcher,
           debug,
+          files: finalCssAssetFiles,
           isWebGeneratorTarget,
           onUpdate: opts.onUpdate,
           recordCssAssetResult,

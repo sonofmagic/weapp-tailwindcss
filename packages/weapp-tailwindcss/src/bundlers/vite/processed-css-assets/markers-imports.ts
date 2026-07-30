@@ -41,6 +41,7 @@ export interface CollectViteProcessedCssAssetOptions {
   recordCssAssetResult?: CssAssetResultRecorder | undefined
   recordViteProcessedCssAssetResult?: CssAssetResultRecorder | undefined
   resolveViteProcessedCssOutputFile?: ((file: string) => string | undefined) | undefined
+  onAssetWrite?: ((file: string) => void) | undefined
   subpackageRoots?: Set<string> | undefined
   transformCss?: ((css: string, file: string) => string) | undefined
   debug?: ((format: string, ...args: unknown[]) => void) | undefined
