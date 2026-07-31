@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   windows-hbuilderx-hmr:
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    if: vars.E2E_HBUILDERX_WINDOWS_ENABLED == 'true' && (github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository)
     name: Windows HBuilderX ${{ matrix.channel }} H5 and Android HMR
     runs-on: [self-hosted, Windows, hbuilderx, android]
     timeout-minutes: 90
