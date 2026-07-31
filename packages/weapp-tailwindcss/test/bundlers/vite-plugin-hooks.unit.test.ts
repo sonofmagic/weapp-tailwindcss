@@ -31,6 +31,11 @@ function getTransformHandler(plugin: Plugin) {
     : plugin.transform?.handler
 }
 
+function getHandleHotUpdateHandler(plugin: Plugin) {
+  const hook = plugin.handleHotUpdate
+  return typeof hook === 'object' ? hook.handler : hook
+}
+
 function getPlugin(plugins: Plugin[], suffix: string) {
   return plugins.find(plugin => plugin.name === `${vitePluginName}:${suffix}`) as Plugin
 }
@@ -74,7 +79,7 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     await sourcePlugin.watchChange?.('/project/src/page.ts', { event: 'update' } as any)
     await sourcePlugin.watchChange?.('/project/src/page.ts', { event: 'delete' } as any)
 
-    const hotResult = await sourcePlugin.handleHotUpdate?.({
+    const hotResult = await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: '/project/src/page.ts',
       modules: [],
       server: {
@@ -144,7 +149,7 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
       return undefined
     })
 
-    await expect(sourcePlugin.handleHotUpdate?.({
+    await expect(getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: '/project/main.css',
       modules: [cssModule],
       read: vi.fn(async () => '@import "tailwindcss";\n@theme { --color-issue-1021: #123456; }'),
@@ -198,7 +203,7 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     const cssModule = { file: cssFile, id: `${cssFile}?direct`, url: '/main.css?direct' }
     const sourcePlugin = getPlugin(plugins, 'source-candidates')
     context.refreshTailwindcssRuntime.mockClear()
-    await sourcePlugin.handleHotUpdate?.({
+    await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: cssFile,
       modules: [cssModule],
       read: vi.fn(async () => updatedCss),
@@ -773,7 +778,7 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     mocks.generateTailwindV4Css.mockClear()
     const sourcePlugin = getPlugin(plugins, 'source-candidates')
     const send = vi.fn()
-    const hotResult = await sourcePlugin.handleHotUpdate?.({
+    const hotResult = await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: '/project/src/pages/index.vue',
       modules: [{ id: '/project/src/pages/index.vue', isSelfAccepting: true }],
       read: vi.fn(async () => '<template><view class="text-[yellow] bg-[blue]">hmr</view></template>'),
@@ -889,7 +894,7 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     const sourcePlugin = getPlugin(plugins, 'source-candidates')
 
     await sourcePlugin.watchChange?.(dependency, { event: 'update' } as any)
-    await sourcePlugin.handleHotUpdate?.({
+    await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: dependency,
       modules: [],
       read: vi.fn(async () => 'export default {}'),
@@ -993,7 +998,7 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
 
     const sourcePlugin = getPlugin(plugins, 'source-candidates')
     const send = vi.fn()
-    const hotResult = await sourcePlugin.handleHotUpdate?.({
+    const hotResult = await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: '/project/src/pages/index.ts',
       modules: [{ id: '/project/src/pages/index.ts', isSelfAccepting: false }],
       server: {
@@ -1037,7 +1042,7 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
       url: '/src/main.tsx?macro=true',
       isSelfAccepting: true,
     }
-    const hotResult = await sourcePlugin.handleHotUpdate?.({
+    const hotResult = await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: '/project/src/main.tsx',
       modules: [module],
       server: {

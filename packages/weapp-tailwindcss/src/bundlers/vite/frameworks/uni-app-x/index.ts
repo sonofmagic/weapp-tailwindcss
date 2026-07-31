@@ -1,17 +1,22 @@
 import type { ViteFrameworkCssPipelineStrategy } from '../../shared/framework-strategy'
 import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
-import { hasTailwindApplyDirective } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
 import { viteStyleInjectorDelegates } from '@/style-injector/internal'
 import { isUniAppXHarmonyOutDir, isUniAppXNativeAppOutDir } from '@/uni-app-x/harmony'
 import { isUniAppXHarmonyBundle } from '@/uni-app-x/style-asset'
 import { createUniAppXPlugins } from '@/uni-app-x/vite'
+import { resolveUniAppXCssTarget } from '@/uni-app-x/vite/style-request'
 import { withUniAppXWebPreflightReset } from '@/uni-app-x/web-preflight-reset'
 import { resolveUniUtsPlatform } from '@/utils'
 import { createViteFrameworkPlugins } from '../../shared/create-framework-plugins'
 import { resolveUniAppXNativeCssHandlerOptions } from '../../uni-app-x-css-options'
 
 function isUniAppXNativeAppStyleTarget(context?: Parameters<NonNullable<ViteFrameworkCssPipelineStrategy['isNativeAppStyleTarget']>>[0]) {
+  const stylePlatform = context?.resolveStylePlatform?.()
   return resolveUniUtsPlatform().isApp
+    || stylePlatform === 'app'
+    || stylePlatform === 'app-plus'
+    || stylePlatform?.startsWith('app-') === true
     || isUniAppXNativeAppOutDir(context?.resolvedConfig?.build?.outDir)
     || isUniAppXNativeAppOutDir(context?.resolvedConfig?.root)
 }
@@ -51,6 +56,11 @@ export const uniAppXCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
     }
     return true
   },
+  shouldDeferPreTransformTailwindGeneration(context) {
+    return resolveUniAppXCssTarget(context.id) === 'uvue'
+      && hasTailwindApplyDirective(context.code)
+      && !hasTailwindRootDirectives(context.code, { importFallback: true })
+  },
   transformGeneratedCss(css, context) {
     const webCss = context.shouldApplyWebCssCompat
       ? context.defaultWebCssCompat(css)
@@ -85,6 +95,7 @@ export function createUniAppXVitePlugins(options: UserDefinedOptions | InternalU
       mainCssChunkMatcher: context.mainCssChunkMatcher,
       runtimeState: context.runtimeState,
       styleHandler: context.styleHandler,
+      syncSourceCandidatesForHotUpdate: context.syncSourceCandidatesForHotUpdate,
       tailwindRootCssModuleIds: context.tailwindRootCssModuleIds,
       uniAppX: context.uniAppX,
       viteProcessedCssSourceFiles: context.viteProcessedCssSourceFiles,

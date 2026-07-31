@@ -1,4 +1,4 @@
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { HmrContext, Plugin, ResolvedConfig } from 'vite'
 import type { ViteFrameworkName } from '../../framework-selector'
 import type { createViteRuntimeClassSet } from '../runtime-class-set'
 import type { ViteFrameworkCssPipelineStrategy, ViteFrameworkExtraPluginPlatform, ViteFrameworkRuntimeFeatureContext } from './framework-strategy'
@@ -39,6 +39,7 @@ export interface ViteFrameworkExtraPluginContext {
   mainCssChunkMatcher: ReturnType<typeof getCompilerContext>['mainCssChunkMatcher']
   runtimeState: ReturnType<typeof createViteRuntimeClassSet>['runtimeState']
   styleHandler: ReturnType<typeof getCompilerContext>['styleHandler']
+  syncSourceCandidatesForHotUpdate: (ctx: HmrContext) => Promise<void>
   tailwindRootCssModuleIds: Set<string>
   uniAppX: ReturnType<typeof getCompilerContext>['uniAppX']
   viteProcessedCssSourceFiles: Iterable<string>

@@ -16,6 +16,7 @@ export type HBuilderXIssueKind
     | 'android-toolchain-missing'
     | 'ios-toolchain-missing'
     | 'harmony-toolchain-missing'
+    | 'harmony-build-failed'
     | 'timeout'
     | 'process-exit'
     | 'unknown'

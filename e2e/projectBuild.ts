@@ -3,7 +3,8 @@ import process from 'node:process'
 import { format as formatMessage } from 'node:util'
 import { execa } from 'execa'
 import path from 'pathe'
-import { createHBuilderXRunner } from '../packages/hbuilderx-runner/src'
+import { createHBuilderXRunner, fileExists } from '../packages/hbuilderx-runner/src'
+import { createHBuilderXProjectAlias } from '../scripts/hbuilderx-project-alias.mjs'
 
 const buildTasks = new Map<string, Promise<void>>()
 
@@ -117,9 +118,11 @@ async function ensureHBuilderXMiniProgramBuilt(
     force: true,
   })
 
+  const projectAlias = await createHBuilderXProjectAlias(root)
   try {
-    await runHBuilderXCli(root, ['project', 'open', '--path', root], childEnv, timeoutMs)
-    await runHBuilderXCli(root, ['launch', 'mp-weixin', '--project', root, '--compile', 'true'], childEnv, timeoutMs)
+    await runHBuilderXCli(root, ['project', 'close', '--path', projectAlias.projectPath], childEnv, timeoutMs).catch(() => undefined)
+    await runHBuilderXCli(root, ['project', 'open', '--path', projectAlias.projectPath], childEnv, timeoutMs)
+    await runHBuilderXCli(root, ['launch', 'mp-weixin', '--project', projectAlias.projectName, '--compile', 'true'], childEnv, timeoutMs)
 
     const outputRoots = [
       path.resolve(root, 'unpackage/dist/dev/mp-weixin'),
@@ -145,6 +148,8 @@ async function ensureHBuilderXMiniProgramBuilt(
     throw new Error(`[e2e] HBuilderX mp-weixin compile output did not become ready in ${timeoutMs}ms: ${outputRoots.join(', ')}`)
   }
   finally {
+    await runHBuilderXCli(root, ['project', 'close', '--path', projectAlias.projectPath], childEnv, timeoutMs).catch(() => undefined)
+    await projectAlias.cleanup()
     await cleanupWechatDevToolsAfterHBuilderXBuild()
   }
 }

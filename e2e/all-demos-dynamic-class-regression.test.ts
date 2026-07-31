@@ -510,13 +510,19 @@ function expectNoDuplicateMiniProgramPreflight(entry: ProjectEntry, appCss: stri
   expect(rootPreflightCount, `${entry.name} should not duplicate mini-program root preflight`).toBeLessThanOrEqual(1)
 }
 
+const regressionProjects = projectFilter(E2E_PROJECTS.filter(item => !localHBuilderXProjectNames.has(item.name)))
+
 describe('all demo dynamic class regression', () => {
   afterEach(async () => {
     await restorePatchedFiles()
     await cleanupPatchedProjects()
   })
 
-  for (const entry of projectFilter(E2E_PROJECTS.filter(item => !localHBuilderXProjectNames.has(item.name)))) {
+  if (regressionProjects.length === 0) {
+    it.skip('当前项目过滤器没有匹配动态类回归项目', () => {})
+  }
+
+  for (const entry of regressionProjects) {
     it(entry.name, async () => {
       const patch = createPatch(entry)
       const root = projectRoot(entry)

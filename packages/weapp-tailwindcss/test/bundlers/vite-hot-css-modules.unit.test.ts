@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
-import { resolveHotTailwindCssModules, sendSupplementalCssHotUpdates } from '@/bundlers/vite/hot-css-modules'
+import { mergeHotModulesByIdentity, resolveHotSourceModules, resolveHotTailwindCssModules, sendSupplementalCssHotUpdates } from '@/bundlers/vite/hot-css-modules'
 
 function createHmrContext(root: string) {
   const send = vi.fn()
@@ -27,7 +27,7 @@ function createHmrContext(root: string) {
 }
 
 describe('bundlers/vite hot css modules', () => {
-  it('does not resolve mini-program output style modules as hot source css modules', () => {
+  it('does not resolve mini-program output style modules as hot source css modules', async () => {
     const root = path.resolve('/project')
     const outputModule = {
       url: '/app.wxss',
@@ -54,7 +54,7 @@ describe('bundlers/vite hot css modules', () => {
       return undefined
     })
 
-    const modules = resolveHotTailwindCssModules(ctx, new Set([
+    const modules = await resolveHotTailwindCssModules(ctx, new Set([
       '/app.wxss',
       sourceModule.id,
       distModule.id,
@@ -66,7 +66,7 @@ describe('bundlers/vite hot css modules', () => {
     expect(ctx.server.moduleGraph.invalidateModule).not.toHaveBeenCalledWith(distModule)
   })
 
-  it('does not pass invalid remembered css module ids to the Vite module graph', () => {
+  it('does not pass invalid remembered css module ids to the Vite module graph', async () => {
     const root = path.resolve('/project')
     const sourceModule = {
       file: path.join(root, 'src/main.css'),
@@ -94,7 +94,7 @@ describe('bundlers/vite hot css modules', () => {
       '',
     ]) as unknown as Set<string>
 
-    expect(() => resolveHotTailwindCssModules(ctx, rememberedIds)).not.toThrow()
+    await expect(resolveHotTailwindCssModules(ctx, rememberedIds)).resolves.toBeDefined()
     expect(ctx.server.moduleGraph.invalidateModule).toHaveBeenCalledWith(sourceModule)
     expect(ctx.server.moduleGraph.getModuleById.mock.calls.flat()).toEqual(expect.arrayContaining([
       sourceModule.id,
@@ -102,6 +102,79 @@ describe('bundlers/vite hot css modules', () => {
     ]))
     expect(ctx.server.moduleGraph.getModuleById.mock.calls.flat().every((id: unknown) => typeof id === 'string' && id.length > 0)).toBe(true)
     expect(ctx.server.moduleGraph.getModulesByFile.mock.calls.flat().every((id: unknown) => typeof id === 'string' && id.length > 0)).toBe(true)
+  })
+
+  it('keeps query-specific Vite modules when a clean file id was remembered first', async () => {
+    const root = path.resolve('/project')
+    const file = path.join(root, 'src/main.css')
+    const directId = `${file}?direct`
+    const directModule = {
+      file,
+      id: directId,
+      url: '/src/main.css?direct',
+    } as any
+    const ctx = createHmrContext(root)
+    ctx.server.moduleGraph.getModuleById = vi.fn((id: string) => id === directId ? directModule : undefined)
+    ctx.server.moduleGraph.getModulesByFile = vi.fn(() => undefined)
+
+    expect(await resolveHotTailwindCssModules(ctx, [file, directId])).toEqual([directModule])
+    expect(ctx.server.moduleGraph.invalidateModule).toHaveBeenCalledWith(directModule)
+    expect(ctx.server.moduleGraph.getModuleById).toHaveBeenCalledWith(directId)
+  })
+
+  it('includes source-style importers that are the browser-facing hot modules', async () => {
+    const root = path.resolve('/project')
+    const file = path.join(root, 'main.css')
+    const appStyleModule = {
+      id: `${path.join(root, 'App.uvue')}?vue&type=style&index=0&lang.scss`,
+      importers: new Set(),
+      url: '/App.uvue?vue&type=style&index=0&lang.scss',
+    } as any
+    const rootModule = {
+      file,
+      id: file,
+      importers: new Set([appStyleModule]),
+      url: '/main.css',
+    } as any
+    const ctx = createHmrContext(root)
+    ctx.server.moduleGraph.getModuleById = vi.fn((id: string) => id === file ? rootModule : undefined)
+    ctx.server.moduleGraph.getModulesByFile = vi.fn(() => undefined)
+
+    expect(await resolveHotTailwindCssModules(ctx, [file])).toEqual([rootModule, appStyleModule])
+    expect(ctx.server.moduleGraph.invalidateModule).toHaveBeenCalledWith(rootModule)
+    expect(ctx.server.moduleGraph.invalidateModule).toHaveBeenCalledWith(appStyleModule)
+  })
+
+  it('resolves a uni-app source proxy from the Vite URL index after file indexes are stale', async () => {
+    const root = path.resolve('/project')
+    const pageFile = path.join(root, 'pages/index.uvue')
+    const pageModule = {
+      file: pageFile,
+      id: `${pageFile}?import`,
+      url: '/pages/index.uvue?import',
+    } as any
+    const ctx = createHmrContext(root)
+    ctx.file = pageFile
+    ctx.modules = []
+    ctx.server.moduleGraph.getModuleById = vi.fn(() => undefined)
+    ctx.server.moduleGraph.getModulesByFile = vi.fn(() => undefined)
+    ctx.server.moduleGraph.getModuleByUrl = vi.fn(async (url: string) => url === pageModule.url ? pageModule : undefined)
+
+    expect(await resolveHotSourceModules(ctx)).toEqual([pageModule])
+    expect(ctx.server.moduleGraph.getModuleByUrl).toHaveBeenCalledWith('/pages/index.uvue?import')
+  })
+
+  it('deduplicates equivalent css module instances by normalized Vite identity', () => {
+    const root = path.resolve('/project')
+    const cssFile = path.join(root, 'src/main.css')
+    const sourceModule = { id: path.join(root, 'src/pages/index.uvue') } as any
+    const fileModule = { file: cssFile, id: cssFile, url: '/src/main.css' } as any
+    const urlModule = { id: '/src/main.css?direct', url: '/src/main.css?direct' } as any
+
+    expect(mergeHotModulesByIdentity(root, [sourceModule, fileModule], [urlModule])).toEqual([
+      sourceModule,
+      fileModule,
+    ])
   })
 
   it('does not send supplemental css updates for relative output file names', async () => {

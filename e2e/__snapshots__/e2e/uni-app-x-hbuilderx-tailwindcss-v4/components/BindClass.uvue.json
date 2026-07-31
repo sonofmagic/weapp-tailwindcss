@@ -1,0 +1,33 @@
+{
+  "file": "components/BindClass.uvue",
+  "count": 27,
+  "tokens": [
+    "bg-[#102938]",
+    "bg-[#123456]",
+    "bg-[#87add3]",
+    "bg-[#d2e252]",
+    "bg-[#d7700a]",
+    "bg-[#f205f6]",
+    "border",
+    "border-[#111111]",
+    "border-[#999]",
+    "border-solid",
+    "flex",
+    "h-[200px]",
+    "h-[41px]",
+    "items-center",
+    "justify-center",
+    "mb-[12.32px]",
+    "p-4",
+    "p-[20.32px]",
+    "rounded-[9998px]",
+    "text-[#111111]",
+    "text-[#70ed0a]",
+    "text-[#f7fbff]",
+    "text-[#ff0000]",
+    "text-[39rpx]",
+    "text-[93.54rpx]",
+    "w-[173px]",
+    "w-full"
+  ]
+}

@@ -1,0 +1,35 @@
+<template>
+	<view class="issue-1019-z-paging z-paging-probe is-ready">
+		<view class="z-paging__content">
+			<text class="z-paging__text">z-paging scoped style</text>
+		</view>
+	</view>
+</template>
+
+<style lang="scss" scoped>
+	.z-paging-probe {
+		// 从 z-paging 的容器与内容层提炼 scoped 选择器和声明兼容场景
+		width: 184px;
+		min-height: 48px;
+		border: 1px solid var(--z-paging-border, #0e7490);
+		transition-property: transform, opacity;
+		transition-duration: 200ms;
+		-webkit-transform: translate(0px, 0px);
+		transform: translate(0px, 0px);
+
+		/* #ifndef APP */
+		&:is(.is-ready, .is-loading) {
+			opacity: 1;
+		}
+
+		:deep(.z-paging__content) {
+			background-color: var(--z-paging-background, #ecfeff);
+			color: var(--z-paging-color, #164e63);
+		}
+		/* #endif */
+
+		&__text {
+			font-size: 15px;
+		}
+	}
+</style>

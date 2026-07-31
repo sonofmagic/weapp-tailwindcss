@@ -4,7 +4,7 @@ import { postcss } from '@weapp-tailwindcss/postcss'
 import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
 import { isSubpackageOutputFile } from '../generate-bundle/subpackages'
 import { collectRootStyleBundleCssSources, getAssetFile, hasNonCommentCss, isCssOutputFile, isMatchingGeneratedCssMarkerFile, normalizeMarkerOutputFile, readAssetSource } from './markers-imports'
-import { hasScopedMiniProgramTailwindContentInitRule, hasUnscopedMiniProgramTailwindPreflightRule, hasVueScopedAttr, isLikelyTailwindGlobalRule, isLikelyTailwindPropertyAtRule, isScopedMiniProgramTailwindContentInitRule, isUnscopedMiniProgramTailwindPreflightRule, normalizeCssSignatureValue } from './scoped-tailwind-noise'
+import { hasVueScopedAttr, isLikelyTailwindGlobalRule, isLikelyTailwindLayerOrderAtRule, isLikelyTailwindPropertyAtRule, isScopedMiniProgramTailwindContentInitRule, isScopedUniAppWebTailwindPreflightRule, isScopedUniversalTailwindPreflightRule, isUnscopedMiniProgramTailwindPreflightRule, normalizeCssSignatureValue } from './scoped-tailwind-noise'
 import { isMiniProgramStyleOutputFile, isRootStyleOutputFile } from './style-files'
 
 export { normalizeCssSignatureValue } from './scoped-tailwind-noise'
@@ -98,12 +98,7 @@ function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: stri
     return css
   }
   const hasScopedTailwindGeneratedCss = /tailwindcss v\d/i.test(css)
-  const hasUnscopedMiniProgramPreflight = hasUnscopedMiniProgramTailwindPreflightRule(css)
-  const hasScopedMiniProgramContentInit = hasScopedMiniProgramTailwindContentInitRule(css)
   const coverage = collectRootScopedComparableCssCoverage(rootSources)
-  if (coverage.rules.size === 0 && coverage.atRules.size === 0 && !hasScopedTailwindGeneratedCss && !hasUnscopedMiniProgramPreflight && !hasScopedMiniProgramContentInit) {
-    return css
-  }
   try {
     const root = postcss.parse(css)
     let changed = false
@@ -122,6 +117,8 @@ function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: stri
         )
         || isUnscopedMiniProgramTailwindPreflightRule(rule)
         || isScopedMiniProgramTailwindContentInitRule(rule)
+        || isScopedUniAppWebTailwindPreflightRule(rule)
+        || isScopedUniversalTailwindPreflightRule(rule)
       ) {
         rule.remove()
         changed = true
@@ -130,10 +127,8 @@ function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: stri
     root.walkAtRules((atRule) => {
       if (
         coverage.atRules.has(createAtRuleCoverageKey(atRule))
-        || (
-          hasScopedTailwindGeneratedCss
-          && isLikelyTailwindPropertyAtRule(atRule)
-        )
+        || isLikelyTailwindPropertyAtRule(atRule)
+        || isLikelyTailwindLayerOrderAtRule(atRule)
       ) {
         atRule.remove()
         changed = true
@@ -192,13 +187,9 @@ export function removeCssCoveredByRootStyleBundleSources(
   }
   const hasScopedCss = hasVueScopedAttr(css)
   const hasScopedTailwindGeneratedCss = hasScopedCss && /tailwindcss v\d/i.test(css)
-  const hasUnscopedMiniProgramPreflight = hasScopedCss && hasUnscopedMiniProgramTailwindPreflightRule(css)
-  const hasScopedMiniProgramContentInit = hasScopedCss && hasScopedMiniProgramTailwindContentInitRule(css)
   if (
     rootSources.length === 0
-    && !hasScopedTailwindGeneratedCss
-    && !hasUnscopedMiniProgramPreflight
-    && !hasScopedMiniProgramContentInit
+    && !hasScopedCss
   ) {
     return css
   }
@@ -217,6 +208,8 @@ export function removeCssCoveredByRootStyleBundleSources(
             || (hasScopedTailwindGeneratedCss && isLikelyTailwindGlobalRule(rule))
             || isUnscopedMiniProgramTailwindPreflightRule(rule)
             || isScopedMiniProgramTailwindContentInitRule(rule)
+            || isScopedUniAppWebTailwindPreflightRule(rule)
+            || isScopedUniversalTailwindPreflightRule(rule)
           )
         )
       ) {
@@ -228,7 +221,8 @@ export function removeCssCoveredByRootStyleBundleSources(
       root.walkAtRules((atRule) => {
         if (
           coverage.atRules.has(createAtRuleCoverageKey(atRule))
-          || (hasScopedTailwindGeneratedCss && isLikelyTailwindPropertyAtRule(atRule))
+          || isLikelyTailwindPropertyAtRule(atRule)
+          || isLikelyTailwindLayerOrderAtRule(atRule)
         ) {
           atRule.remove()
           changed = true

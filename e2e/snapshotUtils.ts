@@ -1,3 +1,4 @@
+import { realpathSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'pathe'
 import postcss from 'postcss'
@@ -194,13 +195,15 @@ export function normalizeFontDataUrlsForSnapshot(source: string) {
 }
 
 const GENERATED_CSS_SOURCE_MARKER_RE = /(\/\*!\s*weapp-tailwindcss vite-generated-css:)([^\s*]+)(\s*\*\/)/g
+const HBUILDERX_PROJECT_ALIAS_SEGMENT_RE = /^.+-[a-f\d]{10}-\d+$/
 
 export function normalizeGeneratedCssSourceMarkers(source: string, projectRoot: string) {
-  const normalizedProjectRoot = path.resolve(projectRoot)
+  const normalizedProjectRoot = resolveRealSnapshotPath(projectRoot)
   return source.replace(GENERATED_CSS_SOURCE_MARKER_RE, (marker, prefix, encodedSource, suffix) => {
     try {
       const sourceFile = decodeURIComponent(encodedSource)
-      const relativeSource = safeRelative(normalizedProjectRoot, path.resolve(sourceFile))
+      const relativeSource = safeRelative(normalizedProjectRoot, resolveRealSnapshotPath(sourceFile))
+        ?? relativeHBuilderXAliasSource(sourceFile)
       if (!relativeSource) {
         return marker
       }
@@ -211,6 +214,27 @@ export function normalizeGeneratedCssSourceMarkers(source: string, projectRoot: 
       return marker
     }
   })
+}
+
+function relativeHBuilderXAliasSource(file: string) {
+  const segments = file.replace(/\\/g, '/').split('/')
+  const aliasRootIndex = segments.lastIndexOf('weapp-tailwindcss-hbuilderx-projects')
+  const aliasSegment = segments[aliasRootIndex + 1]
+  if (aliasRootIndex < 0 || !aliasSegment || !HBUILDERX_PROJECT_ALIAS_SEGMENT_RE.test(aliasSegment)) {
+    return undefined
+  }
+  const relativeSegments = segments.slice(aliasRootIndex + 2)
+  return relativeSegments.length > 0 ? relativeSegments.join('/') : undefined
+}
+
+function resolveRealSnapshotPath(file: string) {
+  const resolved = path.resolve(file)
+  try {
+    return realpathSync.native(resolved)
+  }
+  catch {
+    return resolved
+  }
 }
 
 export function normalizeFormattedCssSnapshot(source: string) {

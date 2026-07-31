@@ -40,6 +40,11 @@ function getOutputOptionsHandler(plugin: Plugin) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
+function getHandleHotUpdateHandler(plugin: Plugin) {
+  const hook = plugin.handleHotUpdate as any
+  return typeof hook === 'object' ? hook.handler : hook
+}
+
 async function resolvePostPlugin() {
   const WeappTailwindcss = await loadWeappTailwindcssPlugin()
   const plugins = WeappTailwindcss()
@@ -2004,7 +2009,7 @@ describe('v5 vite generator bundle', () => {
     const vueMainModule = { id: path.join(tempDir, 'src/App.vue') }
     const pageModule = { id: sourceFile }
     const invalidateModule = vi.fn()
-    const hotModules = await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+    const hotModules = await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: sourceFile,
       modules: [pageModule],
       server: {
@@ -2018,7 +2023,7 @@ describe('v5 vite generator bundle', () => {
 
     expect(invalidateModule).toHaveBeenCalledWith(cssModule)
     expect(invalidateModule).not.toHaveBeenCalledWith(vueMainModule)
-    expect(hotModules).toBeUndefined()
+    expect(hotModules).toEqual([pageModule, vueMainModule, cssModule])
 
     await cssTransform?.call(
       rewritePlugin,
@@ -2121,7 +2126,7 @@ describe('v5 vite generator bundle', () => {
 
     await writeFile(sourceFile, '<template><view class="bg-red-500"></view></template>', 'utf8')
     const cssModule = { id: cssFile }
-    await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+    await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: sourceFile,
       modules: [{ id: sourceFile, isSelfAccepting: true }],
       server: {
@@ -2232,7 +2237,7 @@ describe('v5 vite generator bundle', () => {
 
     await writeFile(sourceFile, '<template><view class="bg-red-500"></view></template>', 'utf8')
     const cssModule = { id: cssFile }
-    await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+    await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: sourceFile,
       modules: [{ id: sourceFile, isSelfAccepting: true }],
       server: {
@@ -2350,7 +2355,7 @@ describe('v5 vite generator bundle', () => {
 
     await writeFile(sourceFile, '<template><view class="bg-red-500"></view></template>', 'utf8')
     const cssModule = { id: cssFile }
-    await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+    await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: sourceFile,
       modules: [{ id: sourceFile, isSelfAccepting: true }],
       server: {

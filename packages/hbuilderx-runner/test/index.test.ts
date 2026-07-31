@@ -49,6 +49,14 @@ describe('hbuilderx-runner', () => {
     expect(classifyHBuilderXOutput('There are currently multiple running hbuilderx. Use listhost and --host.').kind).toBe('cli-host-ambiguous')
     expect(classifyHBuilderXOutput('项目 /demo 不是 uni-app 项目，暂不支持').kind).toBe('project-not-uni-app')
     expect(classifyHBuilderXOutput('项目 /demo 项目类型为Web，暂不支持').kind).toBe('project-type-unsupported')
+    expect(classifyHBuilderXOutput('项目 /demo 是 uni-app x 项目，暂不支持')).toMatchObject({
+      kind: 'project-type-unsupported',
+      message: 'HBuilderX 不支持当前项目类型：uni-app x。',
+    })
+    expect(classifyHBuilderXOutput('项目 /demo 不支持运行到鸿蒙')).toMatchObject({
+      kind: 'project-type-unsupported',
+      message: 'HBuilderX 不支持当前运行目标：鸿蒙。',
+    })
     expect(classifyHBuilderXOutput('failed to load config from vite.config.ts\nFailed to resolve entry for package "@x/y"').kind).toBe('config-load-failed')
     expect(classifyHBuilderXOutput('adb: command not found').kind).toBe('android-toolchain-missing')
     expect(classifyHBuilderXOutput('xcrun: error: unable to find utility "simctl"').kind).toBe('ios-toolchain-missing')
@@ -94,11 +102,36 @@ describe('hbuilderx-runner', () => {
 
   it('keeps a bounded recent log buffer', () => {
     const buffer = createLogBuffer(2)
-    buffer.push('first')
+    buffer.push('ERROR: first fatal\n')
     buffer.push('second')
     buffer.push('third')
     expect(buffer.logs).toEqual(['second', 'third'])
-    expect(buffer.text()).toBe('secondthird')
+    expect(buffer.text()).toContain('ERROR: first fatal')
+    expect(buffer.text()).toContain('secondthird')
+  })
+
+  it('keeps the first compiler error when later errors exceed the important-log limit', () => {
+    const buffer = createLogBuffer(2)
+    buffer.push('ArkTS Compiler ERROR: first actionable failure\n')
+    for (let index = 0; index < 30; index++) {
+      buffer.push(`hvigor ERROR: follow-up failure ${index}\n`)
+    }
+
+    expect(buffer.text()).toContain('ArkTS Compiler ERROR: first actionable failure')
+    expect(buffer.text()).toContain('hvigor ERROR: follow-up failure 29')
+  })
+
+  it('classifies Harmony compiler failures separately from a missing toolchain', () => {
+    expect(classifyHBuilderXOutput([
+      'ArkTS Compiler Error',
+      'Failed to resolve OhmUrl for "vue"',
+      '运行包制作失败',
+    ].join('\n'))).toMatchObject({
+      kind: 'harmony-build-failed',
+    })
+    expect(classifyHBuilderXOutput('DevEco Studio not found')).toMatchObject({
+      kind: 'harmony-toolchain-missing',
+    })
   })
 
   it('resolves HBuilderX CLI from explicit candidates', async () => {

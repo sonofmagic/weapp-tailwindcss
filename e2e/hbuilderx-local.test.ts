@@ -1,6 +1,6 @@
 import { afterEach, describe, it } from 'vitest'
 
-import { miniProgramCases, uniAppAppCases, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
+import { miniProgramCases, resolveAppHmrSteps, uniAppAppCases, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
 import { filterHBuilderXCases, parseCaseNameFilters } from './hbuilderx-local/filters'
 import { hbuilderxAppTimeoutMs, hbuilderxTimeoutMs, killProcessTree, serverTimeoutMs } from './hbuilderx-local/process'
 import { compileMiniProgramWithHBuilderX, verifyAppHmrWithHBuilderX, verifyWebHmr } from './hbuilderx-local/runner'
@@ -25,6 +25,8 @@ const miniProgramTest = !caseGroupFilter || caseGroupFilter === 'mp' ? it : it.s
 const appTest = !caseGroupFilter || caseGroupFilter === 'app' ? it : it.skip
 const webTest = !caseGroupFilter || caseGroupFilter === 'web' ? it : it.skip
 const miniProgramTestTimeoutMs = hbuilderxTimeoutMs * 2 + 30_000
+const maxAppHmrSteps = Math.max(1, ...filteredAppCases.map(item => resolveAppHmrSteps(item).length))
+const appTestTimeoutMs = hbuilderxAppTimeoutMs * (maxAppHmrSteps + 1) + 30_000
 
 describeLocalHBuilderX.sequential('HBuilderX demo local e2e', () => {
   afterEach(() => {
@@ -41,7 +43,7 @@ describeLocalHBuilderX.sequential('HBuilderX demo local e2e', () => {
 
   appTest.each(filteredAppCases)('验证 HBuilderX uni-app App 开发态热更新产物：$name', async (item) => {
     await verifyAppHmrWithHBuilderX(item)
-  }, hbuilderxAppTimeoutMs + 30_000)
+  }, appTestTimeoutMs)
 
   webTest.each(filteredWebCases)('验证 HBuilderX uni-app Web 页面和 HMR：$name', async (item) => {
     await verifyWebHmr(item)

@@ -1,6 +1,7 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { HmrContext, Plugin, ResolvedConfig, TransformResult } from 'vite'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { uniAppXCssPipelineStrategy } from '@/bundlers/vite/frameworks/uni-app-x'
 import { replaceWxml } from '@/wxml'
 import {
   createContext,
@@ -23,6 +24,11 @@ function getGenerateBundleHandler(plugin: Plugin) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
+function getTransformHandler(plugin: Plugin) {
+  const hook = plugin.transform as any
+  return typeof hook === 'object' ? hook.handler : hook
+}
+
 function createNativeResolvedConfig() {
   return {
     command: 'serve',
@@ -37,6 +43,25 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     vi.resetModules()
     vi.doUnmock('@/bundlers/vite/incremental-runtime-class-set')
     resetVitePluginTestContext()
+  })
+
+  it('defers Native SFC apply generation to the source-aware uni-app-x plugin', () => {
+    const shouldDefer = uniAppXCssPipelineStrategy.shouldDeferPreTransformTailwindGeneration
+    const context = {
+      currentGeneratorBranch: {},
+      currentGeneratorOptions: {},
+      opts: {},
+      resolvedConfig: {
+        ...createNativeResolvedConfig(),
+        build: { outDir: '/project/unpackage/dist/dev/app-plus' },
+      },
+      resolveStylePlatform: () => 'app-android',
+    } as any
+    const id = '/project/components/BindClass.uvue?vue&type=style&index=1&scoped=true&lang.css'
+
+    expect(shouldDefer?.({ ...context, code: '.wtu-a { @apply flex; }', id })).toBe(true)
+    expect(shouldDefer?.({ ...context, code: '@import "tailwindcss";\n.wtu-a { @apply flex; }', id })).toBe(false)
+    expect(shouldDefer?.({ ...context, code: '.author { color: red; }', id })).toBe(false)
   })
 
   it('provides uni-app-x specific transforms', async () => {
@@ -66,22 +91,25 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
 
+    expect(plugins!.indexOf(cssPrePlugin)).toBeLessThan(plugins!.findIndex(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports'))
+    expect(plugins!.indexOf(cssPrePlugin)).toBeLessThan(plugins!.findIndex(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:build'))
+
     expect(cssPlugin?.transform).toBeTypeOf('function')
     expect(cssPrePlugin?.transform).toBeTypeOf('function')
-    expect(nvuePlugin?.transform).toBeTypeOf('function')
+    expect(nvuePlugin?.transform).toMatchObject({ order: 'pre' })
 
     await (postPlugin.configResolved as any)?.call(postPlugin, createNativeResolvedConfig())
     currentContext.tailwindRuntime.extract.mockClear()
     const cssTransform = cssPlugin.transform as any
     const cssResult = await cssTransform?.call(cssPlugin, '.foo { color: red; }', 'App.uvue?vue&type=style&index=0') as TransformResult
-    expect(cssResult?.code).toBe('css:.foo { color: red; }')
-    expect(cssResult?.map).toBeTruthy()
+    expect(cssResult).toBeUndefined()
+    expect(currentContext.styleHandler).not.toHaveBeenCalled()
 
     const nvueBuildStart = nvuePlugin.buildStart as any
     await nvueBuildStart?.call(nvuePlugin)
     expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
-    const nvueTransform = nvuePlugin.transform as any
+    const nvueTransform = getTransformHandler(nvuePlugin)
     const nvueResult = await nvueTransform?.call(nvuePlugin, 'console.log("x")', 'App.nvue')
     expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
@@ -368,8 +396,8 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     await (postPlugin.configResolved as any)?.call(postPlugin, createNativeResolvedConfig())
     const cssTransform = cssPlugin.transform as any
-    await cssTransform?.call(cssPlugin, '.foo { color: red; }', 'App.uvue?vue&type=style&index=0')
-    await cssTransform?.call(cssPlugin, '.foo { color: blue; }', 'App.uvue?vue&type=style&index=0')
+    await cssTransform?.call(cssPlugin, '.foo { color: red; }', '/project/main.css')
+    await cssTransform?.call(cssPlugin, '.foo { color: blue; }', '/project/main.css')
 
     expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
     expect(currentContext.styleHandler.mock.calls[0]?.[1]).toBe(currentContext.styleHandler.mock.calls[1]?.[1])
@@ -391,9 +419,9 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     await (postPlugin.configResolved as any)?.call(postPlugin, createNativeResolvedConfig())
     const cssTransform = cssPlugin.transform as any
-    await cssTransform?.call(cssPlugin, '.foo { color: red; }', 'App.uvue?vue&type=style&index=0')
+    await cssTransform?.call(cssPlugin, '.foo { color: red; }', '/project/main.css')
 
-    expect(mainCssChunkMatcher).toHaveBeenCalledWith('App.uvue?vue&type=style&index=0', 'uni-app-x')
+    expect(mainCssChunkMatcher).toHaveBeenCalledWith('/project/main.css', 'uni-app-x')
   }, TEST_TIMEOUT_MS)
 
   it('transforms plain uni-app x css without writing native app output files directly', async () => {
@@ -560,7 +588,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
       const hashedExisting = replaceWxml('text-[#123456]')
       const hashedNew = replaceWxml('text-[#234567]')
 
-      const firstResult = await (nvuePlugin.transform as any)?.call(
+      const firstResult = await getTransformHandler(nvuePlugin)?.call(
         nvuePlugin,
         '<template><view class="text-[#123456]"/></template>',
         'Component.uvue',
@@ -570,7 +598,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
       expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
 
       runtimeIndex = 1
-      const secondResult = await (nvuePlugin.transform as any)?.call(
+      const secondResult = await getTransformHandler(nvuePlugin)?.call(
         nvuePlugin,
         '<template><view class="text-[#234567]"/></template>',
         'Component.uvue',
@@ -635,7 +663,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
       const hashedExisting = replaceWxml('text-[#123456]')
       const hashedNew = replaceWxml('text-[#345678]')
 
-      const firstResult = await (nvuePlugin.transform as any)?.call(
+      const firstResult = await getTransformHandler(nvuePlugin)?.call(
         nvuePlugin,
         '<template><view class="text-[#123456]"/></template>',
         'Component.uvue',
@@ -645,7 +673,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
       expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
 
       runtimeIndex = 1
-      const secondResult = await (nvuePlugin.transform as any)?.call(
+      const secondResult = await getTransformHandler(nvuePlugin)?.call(
         nvuePlugin,
         '<template><view class="text-[#345678]"/></template>',
         'Component.uvue',
@@ -820,7 +848,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     currentContext.tailwindRuntime.extract.mockClear()
     currentContext.tailwindRuntime.getClassSetSync.mockClear()
     runtimeIndex = 1
-    await (nvuePlugin.transform as any)?.call(nvuePlugin, '<template></template>', 'App.uvue')
+    await getTransformHandler(nvuePlugin)?.call(nvuePlugin, '<template></template>', 'App.uvue')
     expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
     expect(transformUVueMock).toHaveBeenCalledWith('<template></template>', 'App.uvue', currentContext.jsHandler, runtimeSets[1])

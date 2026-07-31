@@ -20,6 +20,7 @@ export interface AndroidRuntimeEvidence {
   markerBounds?: AndroidScreenBounds
   markerTextVisible: boolean
   screenshot: string
+  screenshotChanged: boolean
   text?: Awaited<ReturnType<typeof analyzeScreenshotColorPresence>>
   uiTextPreview: string
   width: number
@@ -38,8 +39,16 @@ interface WaitForAndroidRuntimeEvidenceOptions {
   env: Record<string, string | undefined>
   expectation: AndroidRuntimeStyleExpectation
   label: string
+  previousScreenshot?: string
   screenshot: string
   timeoutMs: number
+}
+
+export function hasScreenshotContentChanged(current: Uint8Array, previous?: Uint8Array) {
+  if (!previous || current.length !== previous.length) {
+    return true
+  }
+  return current.some((value, index) => value !== previous[index])
 }
 
 const screenshotTimeoutMs = 30_000
@@ -255,6 +264,24 @@ function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+function scrollAndroidViewport(env: Record<string, string | undefined>, deviceId?: string) {
+  spawnSync(resolveAdbCommand(env), [
+    ...createAdbArgs(deviceId),
+    'shell',
+    'input',
+    'swipe',
+    '540',
+    '1700',
+    '540',
+    '500',
+    '400',
+  ], {
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+    timeout: screenshotTimeoutMs,
+  })
+}
+
 export async function waitForAndroidRuntimeEvidence(options: WaitForAndroidRuntimeEvidenceOptions) {
   const startedAt = Date.now()
   let latest: AndroidRuntimeEvidence | undefined
@@ -275,6 +302,12 @@ export async function waitForAndroidRuntimeEvidence(options: WaitForAndroidRunti
       ? await analyzeScreenshotColorPresence(options.screenshot, textColor, presentationBounds)
       : undefined
     const markerTextVisible = uiHierarchy.includes(options.expectation.markerText)
+    const screenshotChanged = options.previousScreenshot
+      ? hasScreenshotContentChanged(
+          await fs.readFile(options.screenshot),
+          await fs.readFile(options.previousScreenshot),
+        )
+      : true
     latest = {
       background,
       density,
@@ -282,6 +315,7 @@ export async function waitForAndroidRuntimeEvidence(options: WaitForAndroidRunti
       markerBounds,
       markerTextVisible,
       screenshot: options.screenshot,
+      screenshotChanged,
       text,
       uiTextPreview: uiHierarchy.replace(/\s+/g, ' ').slice(0, 1000),
       width,
@@ -295,9 +329,13 @@ export async function waitForAndroidRuntimeEvidence(options: WaitForAndroidRunti
       && markerTextVisible
       && background.matched
       && sizeReady
+      && screenshotChanged
       && (!textColor || (text?.matchingPixels ?? 0) >= 8)
     ) {
       return latest
+    }
+    if (!markerTextVisible) {
+      scrollAndroidViewport(options.env, options.deviceId)
     }
     await delay(500)
   }

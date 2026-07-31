@@ -7,7 +7,7 @@ import { createArtifactVisualSeed, createPortAwareCommand, disableDevToolsCompil
 import { parseWechatDevToolsWindowBounds } from '../scripts/demo-visual-e2e-report/ide'
 import { createHmrComparisons, mergeCaseResults } from '../scripts/demo-visual-e2e-report/report'
 import { analyzeThemeCss, countDarkPixels } from '../scripts/demo-visual-e2e-report/theme'
-import { miniProgramCases, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
+import { miniProgramCases, rawTailwindDirectiveRE, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
 
 describe('demo visual theme evidence', () => {
   it('uses each web case command and resolves its dynamic port', () => {
@@ -135,17 +135,20 @@ describe('demo visual theme evidence', () => {
         expect(item.hmrMarkerTextClass).toContain('text-blue-600')
         expect(item.hmrMarkerTextClass).toContain('text-bule-600')
         expect(item.hmrSteps?.map(step => step.name)).toEqual([
+          'append-mt-200-to-existing-node',
           'new-named-and-invalid-class',
           'replace-with-new-arbitrary-classes',
           'arbitrary-background-and-color-opacity',
           'delete-new-classes',
           'rollback-to-first-new-classes',
         ])
-        expect(item.hmrSteps?.[1]?.markerClass).toContain('bg-[#0f766e]')
-        expect(item.hmrSteps?.[2]?.markerClass).toContain('bg-[#123456]')
-        expect(item.hmrSteps?.[2]?.markerTextClass).toContain('text-blue-600/50')
-        expect(item.hmrSteps?.[3]?.transformedNotContains).toContainEqual(/\["color", "rgba\(21,\s*93,\s*252,\s*0\.5\)"\]/)
-        expect(item.hmrSteps?.[4]?.markerTextClass).toContain('text-blue-600')
+        expect(item.hmrSteps?.[0]?.markerClass).toContain('mt-200')
+        expect(item.hmrSteps?.[1]?.markerClass).toContain('bg-issue-1021-hmr')
+        expect(item.hmrSteps?.[2]?.markerClass).toContain('bg-[#0f766e]')
+        expect(item.hmrSteps?.[3]?.markerClass).toContain('bg-[#123456]')
+        expect(item.hmrSteps?.[3]?.markerTextClass).toContain('text-blue-600/50')
+        expect(item.hmrSteps?.[4]?.transformedNotContains).toContainEqual(/\["color", "rgba\(21,\s*93,\s*252,\s*0\.5\)"\]/)
+        expect(item.hmrSteps?.[5]?.markerTextClass).toContain('text-blue-600')
       }
       else {
         expect(item.markerClass).toContain('rounded-full')
@@ -160,13 +163,31 @@ describe('demo visual theme evidence', () => {
       ]).toEqual(expect.arrayContaining([
         '.tw-root',
         'calc(infinity',
-        'var(--color-white)',
       ]))
       if (item.platform === 'app-android') {
         expect(item.compiledStyleContains?.length).toBeGreaterThanOrEqual(8)
+        expect(item.transformedNotContains).toContain(rawTailwindDirectiveRE)
+        expect(item.transformedNotContains).toContainEqual(/@[\w-][^;{}]*\{\s*\}/)
       }
       expect(item.logNotContains?.length).toBeGreaterThan(0)
     }
+  })
+
+  it('keeps uview-ultra and z-paging scoped author css probes intact', async () => {
+    const [button, paging] = await Promise.all([
+      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/components/issue-1019-button/issue-1019-button.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/components/z-paging-probe/z-paging-probe.uvue'), 'utf8'),
+    ])
+
+    for (const source of [button, paging]) {
+      expect(source).toContain('transition-property: transform, opacity;')
+      expect(source).toContain('-webkit-transform: translate(0px, 0px);')
+      expect(source).toContain('transform: translate(0px, 0px);')
+    }
+    expect(button).toContain('&:is(.up-button--primary, .is-ready)')
+    expect(button).toContain('var(--issue-1019-primary, #0957de)')
+    expect(paging).toContain(':deep(.z-paging__content)')
+    expect(paging).toContain('var(--z-paging-background, #ecfeff)')
   })
 
   it('does not pin Harmony visual coverage to a machine-specific device', () => {

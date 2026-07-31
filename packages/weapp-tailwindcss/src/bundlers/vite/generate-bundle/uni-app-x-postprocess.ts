@@ -85,7 +85,6 @@ export async function handleUniAppXPostCssTasks(options: HandleUniAppXPostCssOpt
   const {
     bundle,
     debug,
-    generatorRuntime,
     getCssHandlerOptions,
     getSourceCandidateSourcesForEntries,
     getSourceCandidatesForEntries,
@@ -123,10 +122,7 @@ export async function handleUniAppXPostCssTasks(options: HandleUniAppXPostCssOpt
     const generated = await generateTailwindV4Css({
       opts,
       runtimeState,
-      runtime: new Set([
-        ...generatorRuntime,
-        ...applyUtilities,
-      ]),
+      runtime: new Set(),
       rawSource: createUniAppXHarmonyApplyGeneratorSource(applyStyleSources, applyUtilities),
       file: outputFile,
       outputFile,
@@ -136,6 +132,7 @@ export async function handleUniAppXPostCssTasks(options: HandleUniAppXPostCssOpt
         isMainChunk: false,
       },
       cssStage: 'framework-processed',
+      disableSourceScan: true,
       getSourceCandidatesForEntries,
       styleHandler,
       debug,

@@ -1,3 +1,4 @@
+import type { HmrContext } from 'vite'
 import type { createViteCssMemory } from '../css-memory'
 import type { createViteRuntimeClassSet } from '../runtime-class-set'
 import type { createSourceCandidateCollector } from '../source-candidates'
@@ -36,6 +37,17 @@ interface FrameworkSourceScanSessionOptions {
   runtimeState: RuntimeState
   shouldOwnTailwindGeneration: boolean
   sourceCandidateCollector: SourceCandidateCollector
+}
+
+export async function syncFrameworkSourceCandidatesForHotUpdate(
+  sourceScanSession: Pick<ReturnType<typeof createFrameworkSourceScanSession>, 'syncChangedFile' | 'waitForPendingSyncs'>,
+  ctx: HmrContext,
+) {
+  const source = typeof ctx.read === 'function'
+    ? await ctx.read().catch(() => undefined)
+    : undefined
+  await sourceScanSession.syncChangedFile(ctx.file, source)
+  await sourceScanSession.waitForPendingSyncs()
 }
 
 export function createFrameworkSourceScanSession(options: FrameworkSourceScanSessionOptions) {

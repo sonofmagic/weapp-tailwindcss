@@ -92,11 +92,6 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
 
   async function syncCurrentSource(id: string, source: string) {
     const normalizedId = cleanUrl(id)
-    transformCandidatesById.delete(normalizedId)
-    cssCandidatesById.delete(normalizedId)
-    transformSourceById.delete(normalizedId)
-    cssSourceById.delete(normalizedId)
-    recompute(normalizedId)
     const previousFileCandidates = new Set(candidatesById.get(normalizedId) ?? [])
     const extension = resolveSourceCandidateExtension(normalizedId)
     const nextCandidates = await resolveCandidates(source, extension)
@@ -106,6 +101,12 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     ])
     const previousVisibleCandidates = collectVisibleCandidates(affectedCandidates)
 
+    if (extension !== 'css') {
+      transformCandidatesById.delete(normalizedId)
+      cssCandidatesById.delete(normalizedId)
+      transformSourceById.delete(normalizedId)
+      cssSourceById.delete(normalizedId)
+    }
     scanSourceById.set(normalizedId, source)
     replaceScanLayer(normalizedId, nextCandidates)
 
