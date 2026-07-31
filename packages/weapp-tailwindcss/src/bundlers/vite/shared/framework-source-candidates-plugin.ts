@@ -181,7 +181,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
             isWebLikeHotUpdate
             && isSourceCandidateHotUpdate
             && !isSourceStyleRequest(ctx.file)
-            && ctx.modules.some(mod => options.isNuxtPageMacroHotModule(mod.id ?? mod.url))
+            && sourceModules.some(mod => options.isNuxtPageMacroHotModule(mod.id ?? mod.url))
           ) {
             sendFullReloadForUnresolvedHotUpdate(ctx)
             return []
