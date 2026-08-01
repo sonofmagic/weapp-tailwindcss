@@ -13228,7 +13228,7 @@ wx-button {
 }
  /*tokens: from-cyan-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
 .from-cyan-500 {
-  --tw-gradient-from: #00b7d7;
+  --tw-gradient-from: #00b6d4;
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
@@ -13268,7 +13268,7 @@ wx-button {
 }
  /*tokens: via-purple-500 <= src/pages/issue-928/index.tsx */
 .via-purple-500 {
-  --tw-gradient-via: #ac4bff;
+  --tw-gradient-via: #ab4eff;
   --tw-gradient-via-stops:
     var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position),
     var(--tw-gradient-to) var(--tw-gradient-to-position);
@@ -13305,7 +13305,7 @@ wx-button {
 }
  /*tokens: to-blue-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
 .to-blue-500 {
-  --tw-gradient-to: #3080ff;
+  --tw-gradient-to: #3280ff;
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
