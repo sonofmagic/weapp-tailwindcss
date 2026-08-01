@@ -69,7 +69,7 @@ function collectCustomPropertyValues(root: postcss.Root) {
       return
     }
     rule.each((node) => {
-      if (node.type === 'decl' && node.prop.startsWith('--')) {
+      if (node.type === 'decl' && node.prop.startsWith('--') && !node.prop.startsWith('--tw-')) {
         const decl = node
         values.set(decl.prop, decl.value.trim())
       }
