@@ -614,7 +614,7 @@ wx-button {
 }
  /*tokens: from-cyan-500 <= src/pages/index/index.tsx */
 .from-cyan-500 {
-  --tw-gradient-from: #00b7d7;
+  --tw-gradient-from: rgb(0, 182, 212);
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
@@ -640,7 +640,7 @@ wx-button {
 }
  /*tokens: to-blue-500 <= src/app.css, src/pages/index/index.tsx */
 .to-blue-500 {
-  --tw-gradient-to: #3080ff;
+  --tw-gradient-to: rgb(50, 128, 255);
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
@@ -12974,7 +12974,7 @@ abc {
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
   --tw-gradient-from: #9e58e9;
-  --tw-gradient-to: #3080ff;
+  --tw-gradient-to: rgb(50, 128, 255);
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
