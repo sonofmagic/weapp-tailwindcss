@@ -29,13 +29,15 @@ const mpxWatchEnv = {
 
 const taroViteWatchEnv = {
   TARO_BUILD_STRICT: '1',
-  TARO_E2E_WATCH_NATIVE: '0',
+  TARO_E2E_WATCH_NATIVE: '1',
   CHOKIDAR_USEPOLLING: '1',
   CHOKIDAR_INTERVAL: '50',
   NODE_ENV: 'development',
 }
 
-// Taro polling-build 每次变更都会启动新的完整构建，采样覆盖冷态 CSS 生成与转译，
+// Taro Vite 使用同一 compiler 的增量构建，预算覆盖 native watch 中的 CSS replay 与转译。
+const taroViteNativeWatchPluginProcessBudgetMs = 10000
+// Taro Webpack polling-build 每次变更都会启动新的完整构建，采样覆盖冷态 CSS 生成与转译，
 // 不等同于同一 compiler 内的增量插件耗时；与 e2e:taro:mp 专项脚本保持一致。
 const taroPollingBuildPluginProcessBudgetMs = 8000
 const webDomMarkerAttr = 'data-tw-watch-web-dom="1"'
@@ -593,7 +595,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/taro-vite-react-tailwindcss-v4',
     project: 'demo/taro-vite-react-tailwindcss-v4',
     group: 'demo',
-    maxPluginProcessMs: taroPollingBuildPluginProcessBudgetMs,
+    maxPluginProcessMs: taroViteNativeWatchPluginProcessBudgetMs,
     initialMutationDelayMs: 15_000,
     cwd: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',

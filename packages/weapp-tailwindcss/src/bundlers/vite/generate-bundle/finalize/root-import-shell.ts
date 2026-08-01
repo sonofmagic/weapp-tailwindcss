@@ -2,7 +2,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { BundleBuildState, BundleSnapshot } from '../../bundle-state'
 import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from '../../shared/framework-strategy'
 import type { BundleMetrics } from '../metrics'
-import type { GenerateBundleContext } from '../types'
+import type { GenerateBundleContext, PendingRememberedCssReplayUpdate } from '../types'
 import path from 'node:path'
 import { transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
 import { AssetEmissionPlan } from '@/compiler'
@@ -50,6 +50,7 @@ export interface FinalizeGenerateBundleOptions {
   opts: GenerateBundleContext['opts']
   outDir: string
   pendingLinkedUpdates: Array<() => void>
+  pendingRememberedCssReplayUpdates: PendingRememberedCssReplayUpdate[]
   pruneViteCssCaches: GenerateBundleContext['pruneViteCssCaches']
   recordCssAssetResult: GenerateBundleContext['recordCssAssetResult']
   recordTimingDetail: (name: string, startedAt: number) => void

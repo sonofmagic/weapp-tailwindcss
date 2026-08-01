@@ -77,8 +77,8 @@ jobs:
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '60000'
             watch_command_timeout_ms: '1500000'
-          # Taro 小程序继续按主包与分包拆分，完整轮次并行执行，避免单 job 串行超过 30 分钟。
-          # 主包完整轮次还要覆盖 report 写入与子进程退出，命令预算为 25 分钟，job 仍受 30 分钟硬上限约束。
+          # Taro 小程序继续按主包与分包拆分；Vite 使用 native watch，Webpack 保留 polling build。
+          # Vite 本地完整主包回归约 3 分钟，CI 命令保留 10 分钟预算。
           - os: macos-latest
             runner_label: macos
             watch_case: taro-vite-react-tailwindcss-v4
@@ -88,10 +88,10 @@ jobs:
             watch_mini_program_scope: main-package
             watch_max_attempts: '1'
             timeout_minutes: 30
-            watch_timeout_ms: '420000'
+            watch_timeout_ms: '60000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '1500000'
+            watch_max_plugin_process_ms: '10000'
+            watch_command_timeout_ms: '600000'
           - os: macos-latest
             runner_label: macos
             watch_case: taro-vite-react-tailwindcss-v4
@@ -101,10 +101,10 @@ jobs:
             watch_mini_program_scope: subpackages
             watch_max_attempts: '1'
             timeout_minutes: 30
-            watch_timeout_ms: '420000'
+            watch_timeout_ms: '60000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '1200000'
+            watch_max_plugin_process_ms: '10000'
+            watch_command_timeout_ms: '600000'
           - os: macos-latest
             runner_label: macos
             watch_case: taro-webpack-react-tailwindcss-v4
@@ -142,10 +142,10 @@ jobs:
             watch_mini_program_scope: main-package
             watch_max_attempts: '1'
             timeout_minutes: 30
-            watch_timeout_ms: '420000'
+            watch_timeout_ms: '60000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '1500000'
+            watch_max_plugin_process_ms: '10000'
+            watch_command_timeout_ms: '600000'
           - os: macos-latest
             runner_label: macos
             watch_case: taro-vite-vue3-tailwindcss-v4
@@ -155,10 +155,10 @@ jobs:
             watch_mini_program_scope: subpackages
             watch_max_attempts: '1'
             timeout_minutes: 30
-            watch_timeout_ms: '420000'
+            watch_timeout_ms: '60000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '1200000'
+            watch_max_plugin_process_ms: '10000'
+            watch_command_timeout_ms: '600000'
           - os: macos-latest
             runner_label: macos
             watch_case: taro-webpack-vue3-tailwindcss-v4
@@ -262,10 +262,10 @@ jobs:
             watch_mini_program_scope: main-package
             watch_max_attempts: '1'
             timeout_minutes: 30
-            watch_timeout_ms: '420000'
+            watch_timeout_ms: '60000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '1500000'
+            watch_max_plugin_process_ms: '10000'
+            watch_command_timeout_ms: '600000'
           - os: ubuntu-latest
             runner_label: linux
             watch_case: taro-vite-react-tailwindcss-v4
@@ -275,10 +275,10 @@ jobs:
             watch_mini_program_scope: subpackages
             watch_max_attempts: '1'
             timeout_minutes: 30
-            watch_timeout_ms: '420000'
+            watch_timeout_ms: '60000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '1200000'
+            watch_max_plugin_process_ms: '10000'
+            watch_command_timeout_ms: '600000'
           - os: ubuntu-latest
             runner_label: linux
             watch_case: taro-webpack-react-tailwindcss-v4
@@ -316,10 +316,10 @@ jobs:
             watch_mini_program_scope: main-package
             watch_max_attempts: '1'
             timeout_minutes: 30
-            watch_timeout_ms: '420000'
+            watch_timeout_ms: '60000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '1500000'
+            watch_max_plugin_process_ms: '10000'
+            watch_command_timeout_ms: '600000'
           - os: ubuntu-latest
             runner_label: linux
             watch_case: taro-vite-vue3-tailwindcss-v4
@@ -329,10 +329,10 @@ jobs:
             watch_mini_program_scope: subpackages
             watch_max_attempts: '1'
             timeout_minutes: 30
-            watch_timeout_ms: '420000'
+            watch_timeout_ms: '60000'
             watch_poll_ms: '40'
-            watch_max_plugin_process_ms: '60000'
-            watch_command_timeout_ms: '1200000'
+            watch_max_plugin_process_ms: '10000'
+            watch_command_timeout_ms: '600000'
           - os: ubuntu-latest
             runner_label: linux
             watch_case: taro-webpack-vue3-tailwindcss-v4
