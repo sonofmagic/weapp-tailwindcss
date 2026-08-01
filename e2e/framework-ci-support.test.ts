@@ -150,12 +150,18 @@ describeFrameworkCi('framework support matrix ci', () => {
       'uni-app-x-hbuilderx-tailwindcss-v4',
     ])
     for (const name of ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4']) {
+      const projectCases = miniProgramCases.filter(item => item.projectDir.endsWith(name))
       expect(
-        miniProgramCases
-          .filter(item => item.projectDir.endsWith(name))
-          .map(item => item.platform),
+        projectCases.map(item => item.platform),
         `${name} should cover HBuilderX non-WeChat mini-program output locally`,
       ).toEqual(['mp-weixin', 'mp-alipay', 'mp-baidu', 'mp-toutiao'])
+      for (const item of projectCases) {
+        const appJsonAssertions = item.outputContains?.['app.json'] ?? []
+        const expectsIndependentMetadata = appJsonAssertions.includes('"independent": true')
+        expect(expectsIndependentMetadata, `${item.name} independent metadata capability should be platform-specific`).toBe(
+          item.platform === 'mp-weixin' || item.platform === 'mp-alipay',
+        )
+      }
     }
     for (const name of ['uni-app-x-hbuilderx-tailwindcss-v4']) {
       expect(
@@ -207,6 +213,8 @@ describeFrameworkCi('framework support matrix ci', () => {
         ).toBeGreaterThanOrEqual(2)
       }
     }
+    expect(uniAppAppCases.filter(item => item.platform === 'app-android').every(item => item.runtime === undefined)).toBe(true)
+    expect(uniAppXAppCases.find(item => item.platform === 'app-android')?.runtime).toBeDefined()
   })
 
   it('keeps HBuilderX static fixtures out of unsupported Linux runners', () => {

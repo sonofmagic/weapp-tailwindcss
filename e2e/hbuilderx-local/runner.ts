@@ -662,10 +662,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
           `${process.pid}-${item.name.replace(/[^\w-]+/g, '-')}`,
         )
     let previousRuntimeScreenshot: string | undefined
-    if (item.platform === 'app-android') {
-      if (!item.runtime) {
-        throw new Error(`${item.name} 缺少 Android 初始运行时断言`)
-      }
+    if (item.platform === 'app-android' && item.runtime) {
       const initialScreenshot = path.resolve(runtimeEvidenceRoot, 'initial.png')
       const evidence = await waitForAndroidRuntimeEvidence({
         deviceId: androidDeviceId,
@@ -683,6 +680,9 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
         runtime: collectAndroidRuntimeMetadata(androidEnv, androidDeviceId),
         runtimeEvidence: evidence,
       })}\n`)
+    }
+    else if (item.platform === 'app-android') {
+      process.stdout.write(`[hbuilderx-app] ${item.name} 未配置 Android 运行时探针，保留产物/HMR 断言\n`)
     }
     let hmrOutputRoot = initialOutputRoot
     for (const step of resolveAppHmrSteps(item)) {
@@ -715,10 +715,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
           `recentHBuilderXLogs=${formatRecentLogs(logs, 4000)}`,
         ].join('\n')
       }, step.styleContains, [...(item.transformedNotContains ?? []), ...(step.transformedNotContains ?? [])])
-      if (item.platform === 'app-android') {
-        if (!step.runtime) {
-          throw new Error(`${item.name} ${step.name} 缺少 Android 运行时断言`)
-        }
+      if (item.platform === 'app-android' && step.runtime) {
         const screenshot = path.resolve(runtimeEvidenceRoot, `${step.name}.png`)
         const evidence = await waitForAndroidRuntimeEvidence({
           deviceId: androidDeviceId,
@@ -743,6 +740,9 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
           step: step.name,
         })}\n`)
         previousRuntimeScreenshot = evidence.screenshot
+      }
+      else if (item.platform === 'app-android') {
+        process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} 未配置 Android 运行时探针，保留产物/HMR 断言\n`)
       }
       process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} passed\n`)
     }

@@ -276,7 +276,12 @@ function createUniAppHBuilderXMiniProgramCase(options: {
       : ['.bg-_b_h123456_B', /background-color:\s*rgba\(18,\s*52,\s*86/, /normal[-_]subpackage/i, /independent[-_]subpackage/i],
     cssNotContains: [rawTailwindDirectiveRE, ...unsafeMiniProgramSelectorFragments],
     outputContains: {
-      'app.json': ['"root": "sub-normal"', '"root": "sub-independent"', '"independent": true'],
+      // 百度和抖音小程序编译器会保留分包但不会输出 uni-app 的 independent 元数据。
+      'app.json': [
+        '"root": "sub-normal"',
+        '"root": "sub-independent"',
+        ...(['mp-baidu', 'mp-toutiao'].includes(options.platform) ? [] : ['"independent": true']),
+      ],
       [platformFiles.templateFiles.main]: [
         'template-corpus-card',
         'template-corpus-radial',
