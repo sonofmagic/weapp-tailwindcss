@@ -6,6 +6,7 @@ import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { collectEmptyBlockAtRules } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/css-integrity'
 import { ensureProjectBuilt } from './projectBuild'
+import { isE2EProjectSupportedOnPlatform } from './projectEntries'
 import { clearTailwindPatchTaskCache, collectCssSnapshots, formatWxml, getProjectCssSnapshotFiles, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, twPatch, wait } from './shared'
 import { formatRawCssSnapshotText, normalizeCssTextSnapshot } from './snapshotUtils'
 import { collectTokenSourceReports, formatTokenSourceFileReport } from './tokenSourceReports'
@@ -471,7 +472,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
 export function defineProjectTest(entry: ProjectEntry, options: ProjectTestOptions) {
   const filtered = projectFilter([entry])
   const activeEntry = filtered[0] ?? entry
-  const register = filtered.length > 0 ? it : it.skip
+  const register = filtered.length > 0 && isE2EProjectSupportedOnPlatform(activeEntry) ? it : it.skip
   const describeTitle = options.describeTitle ?? options.suite
 
   describe(describeTitle, () => {

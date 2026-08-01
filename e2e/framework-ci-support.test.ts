@@ -6,6 +6,7 @@ import { buildCases, demoWatchShardCases, getBaseWatchCaseName, pickCases } from
 import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_CI_CASES, HOT_UPDATE_COVERED_PROJECTS, HOT_UPDATE_EXEMPT_PROJECTS } from './e2eMatrix'
 import { FRAMEWORK_SUPPORT_CASES, getFrameworkCiCases, getFrameworkIdeExemptCases } from './frameworkSupportMatrix'
 import { miniProgramCases, uniAppAppCases, uniAppXAppCases, uniAppXHBuilderXUnsupportedMiniProgramPlatforms, webCases } from './hbuilderx-local/cases'
+import { E2E_PROJECTS, isE2EProjectSupportedOnPlatform } from './projectEntries'
 
 const describeFrameworkCi = process.env['E2E_FRAMEWORK_SUPPORT'] === '1' ? describe : describe.skip
 
@@ -206,6 +207,18 @@ describeFrameworkCi('framework support matrix ci', () => {
         ).toBeGreaterThanOrEqual(2)
       }
     }
+  })
+
+  it('keeps HBuilderX static fixtures out of unsupported Linux runners', () => {
+    const hbuilderxProjects = E2E_PROJECTS.filter(item => item.requiresHBuilderX)
+
+    expect(hbuilderxProjects.map(item => item.name)).toEqual([
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+      'uni-app-x-hbuilderx-tailwindcss-v4',
+    ])
+    expect(hbuilderxProjects.every(item => !isE2EProjectSupportedOnPlatform(item, 'linux'))).toBe(true)
+    expect(hbuilderxProjects.every(item => isE2EProjectSupportedOnPlatform(item, 'darwin'))).toBe(true)
+    expect(hbuilderxProjects.every(item => isE2EProjectSupportedOnPlatform(item, 'win32'))).toBe(true)
   })
 
   for (const entry of getFrameworkCiCases()) {
