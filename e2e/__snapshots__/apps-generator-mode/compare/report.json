@@ -15912,7 +15912,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 434504,
+      "bytes": 434533,
       "selectors": [
         "*",
         ".-translate-y-1",
@@ -20086,7 +20086,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 567561,
+      "bytes": 567631,
       "selectors": [
         "*",
         ".\\!bg-\\[gray\\]",
@@ -23717,7 +23717,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 327683,
+      "bytes": 327702,
       "selectors": [
         "*",
         ".before\\:content-\\[\\'independent_subpackage_taro-vite-vue3-tailwindcss-v4\\'\\]:before",

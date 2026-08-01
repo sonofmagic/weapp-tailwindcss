@@ -279,7 +279,7 @@ wx-button {
   --tw-gradient-position: to right;
   background-image: linear-gradient(var(--tw-gradient-stops));
   --tw-gradient-from: #9e58e9;
-  --tw-gradient-to: #3080ff;
+  --tw-gradient-to: rgb(50, 128, 255);
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
@@ -486,7 +486,7 @@ wx-button {
 }
  /*tokens: from-cyan-500 <= src/pages/index/index.vue */
 .from-cyan-500 {
-  --tw-gradient-from: #00b7d7;
+  --tw-gradient-from: rgb(0, 182, 212);
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
@@ -512,7 +512,7 @@ wx-button {
 }
  /*tokens: to-blue-500 <= src/app.css, src/pages/index/index.vue */
 .to-blue-500 {
-  --tw-gradient-to: #3080ff;
+  --tw-gradient-to: rgb(50, 128, 255);
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
@@ -614,7 +614,7 @@ wx-button {
 }
  /*tokens: text-slate-900 <= src/pages/index/index.vue */
 .text-slate-900 {
-  color: #0f172b;
+  color: rgb(15, 23, 43);
 }
  /*tokens: text-white <= src/app.css, src/pages/index/index.vue */
 .text-white {
@@ -644,11 +644,11 @@ wx-button {
 }
  /*tokens: dark:bg-zinc-900 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
 .dark\:bg-zinc-900.theme-dark {
-  background-color: #18181b;
+  background-color: rgb(24, 24, 27);
 }
  /*tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-900 <= src/pages/index/index.vue */
 .theme-dark .dark\:bg-zinc-900 {
-  background-color: #18181b;
+  background-color: rgb(24, 24, 27);
 }
  /*tokens: dark:bg-zinc-950 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
 .dark\:bg-zinc-950.theme-dark {
@@ -669,7 +669,7 @@ wx-button {
 @media (prefers-color-scheme: dark) {
  /*tokens: system-dark:bg-slate-900 <= src/pages/index/index.vue */
   .system-dark\:bg-slate-900 {
-    background-color: #0f172b;
+    background-color: rgb(15, 23, 43);
   }
  /*tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
   .system-dark\:text-slate-100 {
@@ -678,7 +678,7 @@ wx-button {
 }
  /*tokens: not-wx:bg-red-500 <= src/pages/index/index.vue */
 .not-wx\:bg-red-500 {
-  background-color: #fb2c36;
+  background-color: rgb(251, 44, 54);
 }
 @media (any-hover: hover) {
  /*tokens: any-hover:bg-slate-800 <= src/pages/index/index.vue */

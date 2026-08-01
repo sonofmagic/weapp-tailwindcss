@@ -283,6 +283,34 @@ describe('web css compatibility transform', () => {
     expect(result).toContain('font-size: var(--app-size)')
   })
 
+  it('preserves element-scoped shadow color variables across utilities', () => {
+    const css = [
+      ':root {',
+      '  --color-red-500: oklch(63.7% 0.237 25.331);',
+      '  --color-teal-600: oklch(60% 0.118 184.704);',
+      '  .nested-shadow { --tw-shadow-color: var(--color-teal-600); }',
+      '}',
+      '@property --tw-shadow-color { syntax: "*"; inherits: false; initial-value: initial; }',
+      '@property --tw-shadow-alpha { syntax: "<percentage>"; inherits: false; initial-value: 100%; }',
+      '.shadow-lg {',
+      '  --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1));',
+      '  box-shadow: var(--tw-shadow);',
+      '}',
+      '.shadow-red-500 { --tw-shadow-color: var(--color-red-500); }',
+      '.shadow-teal-600\\/20 {',
+      '  --tw-shadow-color: color-mix(in oklab, var(--color-teal-600) 20%, transparent);',
+      '}',
+    ].join('\n')
+    const result = transformWebCssCompat(css, true)
+
+    expect(result).toContain('--tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgba(0, 0, 0, 0.1))')
+    expect(result).toContain('box-shadow: var(--tw-shadow)')
+    expect(result).toContain('.shadow-red-500 { --tw-shadow-color: rgb(251, 44, 54); }')
+    expect(result).toContain('.shadow-teal-600\\/20 {')
+    expect(result).toContain('--tw-shadow-color: rgba(0, 148, 136, 0.2)')
+    expect(result).not.toContain('--tw-shadow: 0 10px 15px -3px rgba(0, 148, 136, 0.2)')
+  })
+
   it('preserves Tailwind registered property initial values as web compat fallbacks', () => {
     const css = [
       '@property --tw-border-style { syntax: "*"; inherits: false; initial-value: solid; }',

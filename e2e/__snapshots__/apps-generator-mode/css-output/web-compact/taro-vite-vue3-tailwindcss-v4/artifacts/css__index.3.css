@@ -435,7 +435,7 @@ wx-button {
 }
  /*tokens: from-cyan-500 <= src/pages/index/index.vue */
 .from-cyan-500 {
-  --tw-gradient-from: #00b7d7;
+  --tw-gradient-from: rgb(0, 182, 212);
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),
@@ -445,7 +445,7 @@ wx-button {
 }
  /*tokens: to-blue-500 <= src/pages/index/index.vue */
 .to-blue-500 {
-  --tw-gradient-to: #3080ff;
+  --tw-gradient-to: rgb(50, 128, 255);
   --tw-gradient-stops: var(
     --tw-gradient-via-stops,
     var(--tw-gradient-position),

@@ -64,6 +64,9 @@ const TAILWIND_V4_SURFACE_CANDIDATES = [
   'decoration-2',
   'underline-offset-4',
   'shadow-xl',
+  'shadow-lg',
+  'shadow-red-500',
+  'shadow-teal-600/20',
   'shadow-[0_18px_70px_rgba(15,23,42,0.24)]',
   'ring-2',
   'ring-brand/30',
@@ -371,6 +374,8 @@ function createFixtureBody() {
     <button id="interactive" aria-expanded="true" data-state="open" data-density="compact" class="block rounded-full !border-brand bg-brand text-[length:clamp(14px,2vw,20px)] font-semibold leading-tight tracking-wide underline decoration-brand decoration-2 underline-offset-4 ring-2 ring-brand/30 outline-none opacity-90 hover:bg-brand/80 hover:[box-shadow:0_0_0_3px_var(--color-brand)] active:scale-95 focus-visible:ring-4 aria-expanded:bg-accent data-[state=open]:grid data-[density=compact]:gap-2 any-hover:bg-accent">button</button>
     <input id="input" class="placeholder:text-brand/60 disabled:opacity-40" placeholder="placeholder" disabled>
     <div id="motion" class="shadow-[0_18px_70px_rgba(15,23,42,0.24)] blur-[1px] backdrop-blur-md brightness-110 contrast-125 rotate-[2deg] -translate-y-[3px] scale-[1.03] transform-gpu origin-top-left transition-[transform,opacity,box-shadow] duration-[375ms] ease-[cubic-bezier(.16,1,.3,1)] animate-wiggle [--card-gap:18px] [mask-image:linear-gradient(to_bottom,black,transparent)]"></div>
+    <div id="shadow-red" class="shadow-lg shadow-red-500"></div>
+    <div id="shadow-teal" class="shadow-lg shadow-teal-600/20"></div>
     <div id="group" class="group/card"><span id="group-child" class="inline-block group-hover/card:translate-x-2">group</span></div>
     <input id="peer-source" class="peer" type="checkbox" checked><span id="peer-target" class="opacity-90 peer-checked:opacity-100">peer</span>
     <div id="has-image" class="has-[img]:p-0 p-4"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt=""></div>
@@ -415,6 +420,7 @@ describe('Tailwind CSS v4 web compat computed parity', () => {
     expect(compatCss).toContain('.bg-gradient-to-br')
     expect(compatCss).toContain('.i-\\[tst--home\\]')
     expect(compatCss).toContain('.icon-\\[tst--wide\\]')
+    expect(compatCss).toMatch(/--tw-shadow:\s*0 10px 15px -3px var\(--tw-shadow-color,/)
 
     const browser = await chromium.launch({ headless: true })
     try {
@@ -498,6 +504,22 @@ describe('Tailwind CSS v4 web compat computed parity', () => {
         }
         expect(values.compat.borderTopColor, `${selector} compat border color should be resolved`).not.toBe('')
       }
+
+      const shadowValues = await page.evaluate(() => {
+        function read(frameId: 'standard' | 'compat', selector: string) {
+          const doc = document.querySelector<HTMLIFrameElement>(`#${frameId}`)!.contentDocument!
+          return doc.defaultView!.getComputedStyle(doc.querySelector(selector)!).boxShadow
+        }
+        return {
+          standardRed: read('standard', '#shadow-red'),
+          standardTeal: read('standard', '#shadow-teal'),
+          compatRed: read('compat', '#shadow-red'),
+          compatTeal: read('compat', '#shadow-teal'),
+        }
+      })
+
+      expect(normalizeCssValue(shadowValues.standardRed)).not.toBe(normalizeCssValue(shadowValues.standardTeal))
+      expect(normalizeCssValue(shadowValues.compatRed)).not.toBe(normalizeCssValue(shadowValues.compatTeal))
 
       for (const pseudo of ['::before', '::after', '::first-letter'] as const) {
         const values = await page.evaluate(({ pseudo, properties }) => {
