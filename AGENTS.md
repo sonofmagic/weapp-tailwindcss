@@ -15,8 +15,12 @@
 - 新增或调整 demo、issue 复现页、样式输出回归用例时，必须重新生成对应项目的 e2e static 快照/产物基线，并在验证记录中说明对应项目与命令；禁止只改源码或 IDE 用例而遗漏 static 基线。
 - 本项目禁止使用 Prettier 做格式化；不要运行 `prettier`、`pnpm format` 或其它会调用 Prettier 的格式化命令。
 - 提交信息遵循 Conventional Commits。
+- PR、提交信息和变更说明默认只使用 `Refs #<issue>`、`Related to #<issue>` 或普通链接关联 Issue；禁止默认使用 `Fixes`、`Closes`、`Resolves` 等关闭关键词，也不要在 GitHub `Development` 侧栏建立会随 PR 合并关闭 Issue 的关联。只有用户明确要求关闭对应 Issue 时才允许使用关闭型关联。
 - 所有新增或修改的 Changeset 内容必须使用中文。
 - JSDoc 注释必须使用中文；新增行内注释默认中文（术语可保留英文）。
+- Node.js、构建器、CLI、测试与脚本默认必须同时支持 Windows、macOS 和 Linux，不得把 POSIX 路径、分隔符、盘符、大小写或 shell 行为当作跨平台默认值。
+- 文件系统路径统一优先使用 `node:path` 的 `resolve`、`join`、`relative`、`normalize` 等 API，以及 `fileURLToPath` / `pathToFileURL` 处理 URL 转换；禁止通过字符串拼接、固定 `/`、`split('/')` 或单次替换反斜杠来实现通用文件系统路径逻辑。临时目录使用 `os.tmpdir()` / `mkdtemp`，禁止硬编码 `/tmp`。
+- 必须区分文件系统路径与 bundler module id、bundle asset name、URL/route 等逻辑路径：只有后者可在明确边界统一为 `/`；不得把规范化后的 module id 或 URL 直接当作文件系统路径。涉及路径解析、缓存 key、模块身份或产物归属的改动，至少覆盖 POSIX、Windows 反斜杠、盘符/根目录与相对路径回归用例。
 - Tailwind CSS v3/v4 的样式生成统一由 `weapp-tailwindcss` 接管；禁止通过 `tailwindcss@3` PostCSS 插件、`@tailwindcss/postcss` 或 `@tailwindcss/vite` 生成样式。
 - HBuilderX / uni-app x 链路必须避免引入会被 CJS 同步 `require()` 的 Tailwind 纯 ESM 官方插件依赖；Tailwind v4 相关能力应继续经 `weapp-tailwindcss/vite`、`tailwindcss-patch` 的动态加载链路接入，禁止用 `@tailwindcss/vite` 等 ESM-only 插件替代或兜底。
 - 构建插件禁止用 `fs` 直接写入或改写构建输出目录；输出变更必须通过对应 bundler 的插件 API、bundle asset、`emitFile`、loader result 或 stream/file 对象完成，确保产物仍在同一个构建图里。
