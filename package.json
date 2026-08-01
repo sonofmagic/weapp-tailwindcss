@@ -263,7 +263,7 @@
     "@icebreakers/eslint-config": "^7.0.2",
     "@icebreakers/stylelint-config": "^5.0.3",
     "@iconify-json/svg-spinners": "catalog:iconifyJson",
-    "@oxc-project/types": "^0.140.0",
+    "@oxc-project/types": "^0.142.0",
     "@swc/core": "^1.15.47",
     "@tailwindcss/postcss": "catalog:tailwindcss4",
     "@tailwindcss/vite": "catalog:tailwindcss4",

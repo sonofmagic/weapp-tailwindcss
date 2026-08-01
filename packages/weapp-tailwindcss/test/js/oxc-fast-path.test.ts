@@ -198,16 +198,13 @@ describe('OXC JS fast path', () => {
     expect(handler(source, new Set()).code).toBe(fallbackHandler(source, new Set()).code)
   })
 
-  it('falls back to Babel on Node versions unsupported by oxc-parser', async () => {
+  it('does not load the native OXC parser on unsupported Node versions', async () => {
     vi.resetModules()
     vi.doMock('@/js/babel', () => ({
       jsHandler: vi.fn(() => ({ code: 'babel-fallback' })),
     }))
     vi.doMock('oxc-parser', () => {
       throw new Error('Node 18 must not load oxc-parser')
-    })
-    vi.doMock('oxc-walker', () => {
-      throw new Error('Node 18 must not load oxc-walker')
     })
     vi.spyOn(process.versions, 'node', 'get').mockReturnValue('18.20.8')
 
@@ -227,7 +224,6 @@ describe('OXC JS fast path', () => {
     vi.restoreAllMocks()
     vi.doUnmock('@/js/babel')
     vi.doUnmock('oxc-parser')
-    vi.doUnmock('oxc-walker')
   })
 
   it('does not call Babel when the OXC fast path succeeds', async () => {

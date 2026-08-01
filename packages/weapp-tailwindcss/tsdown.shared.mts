@@ -66,6 +66,7 @@ function isHtmlparser2EsmOnlyDependency(id: string) {
 
 export function bundleCjsRuntimeDeps(id: string) {
   return id === 'magic-string'
+    || id === 'oxc-walker'
     || isBabelEsmOnlyDependency(id)
     || isHtmlparser2EsmOnlyDependency(id)
 }

@@ -1,33 +1,14 @@
-import type { Node, Program, StringLiteral, TemplateElement } from '@oxc-project/types'
+import type { Program, StringLiteral, TemplateElement } from '@oxc-project/types'
 import type { IJsHandlerOptions, JsHandlerResult } from '../../types'
 import { createRequire } from 'node:module'
 import process from 'node:process'
 import MagicString from 'magic-string'
+import { walk } from 'oxc-walker'
 import { shouldEnableArbitraryValueFallback } from '../../shared/classname-transform'
 import { jsStringEscape } from '../js-string-escape'
 import { transformLiteralText } from '../literal-transform'
 
-interface OxcParseResult {
-  program?: Program
-  errors?: unknown[]
-}
-
-interface OxcParser {
-  parseSync: (
-    filename: string,
-    source: string,
-    options?: { sourceType?: string, lang?: string },
-  ) => OxcParseResult
-}
-
-interface OxcWalker {
-  walk: (
-    input: Program | Node,
-    options: {
-      enter?: (this: { skip: () => void }, node: Node) => void
-    },
-  ) => Node | null
-}
+type OxcParser = Pick<typeof import('oxc-parser'), 'parseSync'>
 
 interface ReplacementContext {
   ms?: MagicString
@@ -35,7 +16,6 @@ interface ReplacementContext {
 
 const require = createRequire(import.meta.url)
 let oxcParser: OxcParser | false | undefined
-let oxcWalker: OxcWalker | false | undefined
 
 export function isOxcParserRuntimeSupported(version = process.versions.node) {
   const match = /^(\d+)\.(\d+)(?:\.|$)/.exec(version)
@@ -76,28 +56,6 @@ function loadOxcParser(): OxcParser | undefined {
   }
 
   return oxcParser
-}
-
-function loadOxcWalker(): OxcWalker | undefined {
-  if (!isOxcParserRuntimeSupported()) {
-    return undefined
-  }
-  if (oxcWalker === false) {
-    return undefined
-  }
-  if (oxcWalker) {
-    return oxcWalker
-  }
-
-  try {
-    oxcWalker = require('oxc-walker') as OxcWalker
-  }
-  catch {
-    oxcWalker = false
-    return undefined
-  }
-
-  return oxcWalker
 }
 
 function hasValues<T>(values: T[] | undefined): values is T[] {
@@ -217,13 +175,12 @@ function addTemplateElementReplacement(
 function applyReplacements(
   rawSource: string,
   program: Program,
-  walker: OxcWalker,
   stringLiteralOptions: IJsHandlerOptions,
   templateLiteralOptions: IJsHandlerOptions,
   context: ReplacementContext,
 ) {
   let changed = false
-  walker.walk(program, {
+  walk(program, {
     enter(node) {
       if (node.type === 'Literal') {
         changed = addStringLiteralReplacement(rawSource, node as StringLiteral, stringLiteralOptions, context) || changed
@@ -239,9 +196,9 @@ function applyReplacements(
   return changed
 }
 
-function hasTaggedTemplateExpression(program: Program, walker: OxcWalker) {
+function hasTaggedTemplateExpression(program: Program) {
   let found = false
-  walker.walk(program, {
+  walk(program, {
     enter(node) {
       if (node.type === 'TaggedTemplateExpression') {
         found = true
@@ -261,12 +218,11 @@ export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsH
   }
 
   const parser = loadOxcParser()
-  const walker = loadOxcWalker()
-  if (!parser || !walker) {
+  if (!parser) {
     return undefined
   }
 
-  let result: OxcParseResult
+  let result: ReturnType<OxcParser['parseSync']>
   try {
     result = parser.parseSync(options.filename ?? 'weapp-tailwindcss.js', rawSource, {
       sourceType: getParserSourceType(options.babelParserOptions?.sourceType),
@@ -282,7 +238,7 @@ export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsH
   }
   if (
     hasValues(options.ignoreTaggedTemplateExpressionIdentifiers)
-    && hasTaggedTemplateExpression(result.program, walker)
+    && hasTaggedTemplateExpression(result.program)
   ) {
     return undefined
   }
@@ -300,7 +256,7 @@ export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsH
         needEscaped: false,
       }
   const replacementContext: ReplacementContext = {}
-  if (!applyReplacements(rawSource, result.program, walker, stringLiteralOptions, templateLiteralOptions, replacementContext)) {
+  if (!applyReplacements(rawSource, result.program, stringLiteralOptions, templateLiteralOptions, replacementContext)) {
     return {
       code: rawSource,
     }

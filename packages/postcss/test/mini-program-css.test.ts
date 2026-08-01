@@ -273,7 +273,7 @@ describe('mini-program css cleanup', () => {
     removeSpecificityPlaceholders(emptySelectorsRoot)
     removeRootSpecificityPlaceholders(emptySelectorsRoot)
     removeUnsupportedBrowserSelectors(emptySelectorsRoot)
-    expect(rule.selectors).toEqual([''])
+    expect(rule.selectors).toEqual([])
 
     const containerRoot = postcss.parse([
       '.container{width:100%;/* generated */}',

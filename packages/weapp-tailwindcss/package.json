@@ -243,7 +243,7 @@
     "lru-cache": "11.5.2",
     "magic-string": "1.0.0",
     "micromatch": "^4.0.8",
-    "oxc-parser": "^0.140.0",
+    "oxc-parser": "^0.142.0",
     "oxc-walker": "^1.1.1",
     "semver": "~7.8.5",
     "tailwindcss-config": "workspace:*",
