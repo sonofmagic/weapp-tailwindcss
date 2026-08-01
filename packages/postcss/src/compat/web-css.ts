@@ -64,10 +64,16 @@ function isWebCssCompatEnabled(options: NormalizedWebCssCompatOptions) {
 
 function collectCustomPropertyValues(root: postcss.Root) {
   const values = new Map<string, string>()
-  root.walkDecls((decl) => {
-    if (decl.prop.startsWith('--')) {
-      values.set(decl.prop, decl.value.trim())
+  root.walkRules((rule) => {
+    if (!rule.selectors.some(selector => selector.trim() === ':root' || selector.trim() === ':host')) {
+      return
     }
+    rule.each((node) => {
+      if (node.type === 'decl' && node.prop.startsWith('--')) {
+        const decl = node
+        values.set(decl.prop, decl.value.trim())
+      }
+    })
   })
   return values
 }
