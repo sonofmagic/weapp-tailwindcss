@@ -4,6 +4,7 @@ import postcssCalc from '@weapp-tailwindcss/postcss-calc'
 import postcss from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import valueParser from 'postcss-value-parser'
+import { removeEmptyStandardDeclarations } from './mini-program-css/root-cleanups'
 import { normalizeTailwindcssV4Declaration } from './tailwindcss-v4'
 import { isUvueSfcStyleRequest, stripScopedTailwindNoise } from './uni-app-x-uvue/scoped-style'
 import { consumeUniAppXSystemRootTheme } from './uni-app-x-uvue/theme'
@@ -199,6 +200,7 @@ export function applyUniAppXUvueCompatibility(
     const calcResult = postcss([postcssCalc()]).process(root, result.opts).sync()
     root = calcResult.root
     calcMessages = calcResult.messages
+    removeEmptyStandardDeclarations(root)
   }
 
   if (sfcStyleRequest) {

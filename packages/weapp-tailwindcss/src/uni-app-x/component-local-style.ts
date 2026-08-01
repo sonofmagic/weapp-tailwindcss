@@ -6,6 +6,11 @@ import { analyzeSource, babelParse } from '@/js/babel'
 import { isClassContextLiteralPath } from '@/js/class-context'
 import { JsTokenUpdater } from '@/js/JsTokenUpdater'
 import { replaceWxml } from '@/wxml'
+import {
+  collectClassBindingNames,
+  collectClassBindingRoots,
+  isClassBindingLiteralPath,
+} from './component-local-style-binding'
 
 interface RewriteCodeOptions {
   wrapExpression?: boolean
@@ -107,6 +112,7 @@ export function shouldEnablePageLocalStyle(id: string) {
 export class UniAppXComponentLocalStyleCollector {
   private aliasByUtility = new Map<string, string>()
   private aliasByLookup = new Map<string, string>()
+  private classBindingNames = new Set<string>()
 
   constructor(
     private readonly fileId: string,
@@ -157,16 +163,24 @@ export class UniAppXComponentLocalStyleCollector {
         plugins: ['typescript'],
         sourceType: options.wrapExpression ? 'module' : 'unambiguous',
       })
+      if (options.wrapExpression) {
+        collectClassBindingNames(ast, this.classBindingNames)
+      }
+      const classBindingRoots = options.wrapExpression
+        ? undefined
+        : collectClassBindingRoots(ast, this.classBindingNames)
       const analysis = analyzeSource(ast, {}, undefined, false)
       for (const path of analysis.targetPaths) {
         const { literal } = extractLiteralValue(path)
         const candidates = splitCandidateTokens(literal)
-        const classContext = options.wrapExpression || isClassContextLiteralPath(path)
+        const classContext = options.wrapExpression
+          || isClassContextLiteralPath(path)
+          || isClassBindingLiteralPath(path, classBindingRoots)
         for (const candidate of candidates) {
-          if (!candidate || (!classContext && !isRuntimeCandidate(candidate, this.runtimeSet))) {
+          if (!candidate || !classContext || !isRuntimeCandidate(candidate, this.runtimeSet)) {
             continue
           }
-          if (isRuntimeCandidate(candidate, this.runtimeSet) && !hasTopLevelVariant(candidate)) {
+          if (!hasTopLevelVariant(candidate)) {
             this.ensureAlias(candidate)
           }
         }
@@ -191,12 +205,22 @@ export class UniAppXComponentLocalStyleCollector {
         plugins: ['typescript'],
         sourceType: options.wrapExpression ? 'module' : 'unambiguous',
       })
+      const classBindingRoots = options.wrapExpression
+        ? undefined
+        : collectClassBindingRoots(ast, this.classBindingNames)
       const analysis = analyzeSource(ast, {}, undefined, false)
       if (analysis.targetPaths.length === 0) {
         return rawSource
       }
       const updater = new JsTokenUpdater()
       for (const path of analysis.targetPaths) {
+        if (
+          !options.wrapExpression
+          && !isClassContextLiteralPath(path)
+          && !isClassBindingLiteralPath(path, classBindingRoots)
+        ) {
+          continue
+        }
         const { literal, offset } = extractLiteralValue(path)
         const candidates = splitCandidateTokens(literal)
         if (candidates.length === 0) {

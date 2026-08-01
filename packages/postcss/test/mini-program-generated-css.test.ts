@@ -125,6 +125,7 @@ describe('mini-program generated css cleanup', () => {
       ':host,page,.tw-root,wx-root-portal-content{--tw-blur: ;--tw-backdrop-blur: ;}',
       '.blur-3xl{--tw-blur:blur(64px);filter: ;filter:var(--tw-blur,) var(--tw-brightness,)}',
       '.backdrop-blur-sm{--tw-backdrop-blur:blur(8px);backdrop-filter: ;backdrop-filter:var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,)}',
+      '.transform{transform: }',
       '.legacy{legacy:/* uni variables */}',
     ].join('\n'), { isTailwindcssV4: true })
 
@@ -133,6 +134,7 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toMatch(/filter:var\(--tw-blur,\s*\) var\(--tw-brightness,\s*\)/)
     expect(css).toMatch(/backdrop-filter:var\(--tw-backdrop-blur,\s*\) var\(--tw-backdrop-brightness,\s*\)/)
     expect(css).not.toMatch(/(?:^|[;{])\s*(?:backdrop-)?filter:\s*;/)
+    expect(css).not.toContain('.transform')
     expect(css).toContain('legacy:/* uni variables */')
   })
 

@@ -3,8 +3,6 @@ import { isSourceStyleRequest } from '../../shared/style-requests'
 import { normalizeVitePersistentCacheKey } from '../plugin-cache'
 import { cleanUrl } from '../utils'
 
-const WEB_HMR_RUNTIME_AFFECTING_DIRECTIVE_RE = /@(?:theme|source|config|plugin|apply)\b/
-
 interface CandidateDelta {
   addedCandidates: Set<string>
   removedCandidates: Set<string>
@@ -33,13 +31,13 @@ interface CreateViteHmrCandidateStateOptions {
   generatedClassSetByFile: Map<string, Set<string>>
   getCommand: () => string | undefined
   getGeneratorOptions: () => ViteHmrGeneratorOptions
-  getSourceCandidate: (file: string) => string | undefined
   isRuntimeAffectingSource?: (file: string) => boolean
 }
 
 export function createViteHmrCandidateState(options: CreateViteHmrCandidateStateOptions) {
   let pendingChange: ViteSourceCandidateChange | undefined
   let pendingCssTargetFiles: Set<string> | undefined
+  let pendingTargetsArmed = false
   let pendingFullRegeneration = false
 
   const normalizeCssTargetFile = (file: string) => normalizeVitePersistentCacheKey(cleanUrl(file))
@@ -47,16 +45,21 @@ export function createViteHmrCandidateState(options: CreateViteHmrCandidateState
   const clear = () => {
     pendingChange = undefined
     pendingCssTargetFiles = undefined
+    pendingTargetsArmed = false
     pendingFullRegeneration = false
   }
 
   const queueFullRegeneration = () => {
     pendingChange = undefined
     pendingCssTargetFiles = undefined
+    pendingTargetsArmed = false
     pendingFullRegeneration = true
   }
 
   const queueChange = (change: ViteSourceCandidateChange) => {
+    if (pendingFullRegeneration) {
+      return
+    }
     pendingFullRegeneration = false
     if (!pendingChange) {
       pendingChange = {
@@ -85,8 +88,7 @@ export function createViteHmrCandidateState(options: CreateViteHmrCandidateState
     file,
     runtimeAffecting: changeOptions.runtimeAffecting === true
       || options.isRuntimeAffectingSource?.(file) === true
-      || isSourceStyleRequest(file)
-      || WEB_HMR_RUNTIME_AFFECTING_DIRECTIVE_RE.test(options.getSourceCandidate(file) ?? ''),
+      || isSourceStyleRequest(file),
   })
 
   const apply = (change: ViteSourceCandidateChange) => {
@@ -103,7 +105,7 @@ export function createViteHmrCandidateState(options: CreateViteHmrCandidateState
       if (change.addedCandidates.size > 0) {
         queueChange(change)
       }
-      else if (!pendingChange) {
+      else if (!pendingChange && !pendingFullRegeneration) {
         clear()
       }
       return change
@@ -125,7 +127,7 @@ export function createViteHmrCandidateState(options: CreateViteHmrCandidateState
       || (options.getGeneratorOptions().target === 'weapp' && hasUserCssLayerBlocks(generatorCode))
       || !options.cleanGeneratedCssByFile.has(fileKey)
       || !options.generatedClassSetByFile.has(fileKey)
-      || (pendingCssTargetFiles !== undefined && !pendingCssTargetFiles.has(fileKey))
+      || (pendingTargetsArmed && !pendingCssTargetFiles?.has(fileKey))
     ) {
       return undefined
     }
@@ -133,11 +135,10 @@ export function createViteHmrCandidateState(options: CreateViteHmrCandidateState
   }
 
   const finishTarget = (file: string) => {
-    if (!pendingChange) {
+    if (!pendingChange && !pendingFullRegeneration) {
       return
     }
-    if (!pendingCssTargetFiles) {
-      clear()
+    if (!pendingTargetsArmed || !pendingCssTargetFiles) {
       return
     }
     pendingCssTargetFiles.delete(normalizeCssTargetFile(file))
@@ -147,8 +148,9 @@ export function createViteHmrCandidateState(options: CreateViteHmrCandidateState
   }
 
   const armTargets = (cssModules: ViteHmrModule[], fallbackCssIds: Iterable<string>) => {
-    if (!pendingChange) {
+    if (!pendingChange && !pendingFullRegeneration) {
       pendingCssTargetFiles = undefined
+      pendingTargetsArmed = false
       return
     }
     const targets = new Set<string>()
@@ -157,7 +159,7 @@ export function createViteHmrCandidateState(options: CreateViteHmrCandidateState
         return
       }
       const key = normalizeCssTargetFile(file)
-      if (options.cleanGeneratedCssByFile.has(key)) {
+      if (pendingFullRegeneration || options.cleanGeneratedCssByFile.has(key)) {
         targets.add(key)
       }
     }
@@ -169,7 +171,47 @@ export function createViteHmrCandidateState(options: CreateViteHmrCandidateState
     for (const id of fallbackCssIds) {
       addTarget(id)
     }
-    pendingCssTargetFiles = targets.size > 0 ? targets : undefined
+    pendingCssTargetFiles = targets
+    pendingTargetsArmed = true
+  }
+
+  const reconcileRuntimeCandidates = (
+    file: string,
+    candidates: Iterable<string>,
+    rootCssIds: Iterable<string>,
+  ) => {
+    if (options.getCommand() !== 'serve' || pendingFullRegeneration) {
+      return
+    }
+    const generatedClassSets: Set<string>[] = []
+    const seenFiles = new Set<string>()
+    for (const id of rootCssIds) {
+      const fileKey = normalizeCssTargetFile(id)
+      if (seenFiles.has(fileKey)) {
+        continue
+      }
+      seenFiles.add(fileKey)
+      const classSet = options.generatedClassSetByFile.get(fileKey)
+      if (classSet) {
+        generatedClassSets.push(classSet)
+      }
+    }
+    if (generatedClassSets.length === 0) {
+      return
+    }
+    const addedCandidates = new Set<string>()
+    for (const candidate of candidates) {
+      if (generatedClassSets.some(classSet => !classSet.has(candidate))) {
+        addedCandidates.add(candidate)
+      }
+    }
+    if (addedCandidates.size === 0) {
+      return
+    }
+    apply(createChange(file, {
+      addedCandidates,
+      removedCandidates: new Set(),
+    }))
   }
 
   return {
@@ -179,13 +221,26 @@ export function createViteHmrCandidateState(options: CreateViteHmrCandidateState
     createChange,
     finishTarget,
     hasPendingCandidateAppend: () => pendingChange != null && !pendingChange.runtimeAffecting && pendingChange.addedCandidates.size > 0,
-    hasPendingChange: () => pendingChange != null,
+    hasPendingChange: () => pendingChange != null || pendingFullRegeneration,
     queueFullRegeneration,
+    reconcileRuntimeCandidates,
     resolve,
-    shouldForceFullRegeneration: (resolved: boolean) => pendingFullRegeneration || (options.getCommand() === 'serve' && pendingChange != null && !resolved),
+    shouldForceFullRegeneration: (file: string, resolved: boolean) => {
+      if (options.getCommand() !== 'serve') {
+        return false
+      }
+      if (pendingFullRegeneration) {
+        return pendingTargetsArmed && pendingCssTargetFiles?.has(normalizeCssTargetFile(file)) === true
+      }
+      return pendingChange != null
+        && !resolved
+        && pendingTargetsArmed
+        && pendingCssTargetFiles?.has(normalizeCssTargetFile(file)) === true
+    },
     snapshotDebugState: () => ({
       pendingAddedCandidates: pendingChange?.addedCandidates.size ?? 0,
       pendingCssTargets: pendingCssTargetFiles?.size ?? 0,
+      pendingFullRegeneration,
     }),
   }
 }

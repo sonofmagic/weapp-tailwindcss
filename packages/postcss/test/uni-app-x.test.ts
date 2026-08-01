@@ -107,6 +107,27 @@ describe('uni-app-x', () => {
     expect(filtered.warnings()).toEqual([])
   })
 
+  it('removes empty standard declarations before the Native style compiler', async () => {
+    const result = await postcss().process([
+      '.transform{transform: }',
+      '.defaults{--tw-translate-x: }',
+      '.keep{color:red}',
+    ].join(''), {
+      from: '/src/App.uvue',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+
+    expect(filtered.css).not.toContain('.transform')
+    expect(filtered.css).toContain('.defaults{--tw-translate-x: }')
+    expect(filtered.css).toContain('.keep{color:red}')
+    expect(filtered.warnings()).toEqual([])
+  })
+
   it('keeps translate argument separators for non-uvue targets', async () => {
     const source = '.issue-823{transform:translate(var(--x), var(--y))}'
     const result = await postcss().process(source, {

@@ -91,6 +91,8 @@ export function createUniAppXVitePlugins(options: UserDefinedOptions | InternalU
       getResolvedConfig: context.getResolvedConfig,
       isEnabled: context.isEnabled,
       isIosPlatform: context.isIosPlatform,
+      isNativeAppStyleTarget: context.isNativeAppStyleTarget,
+      isWebGeneratorTarget: context.isWebGeneratorTarget,
       jsHandler: context.jsHandler,
       mainCssChunkMatcher: context.mainCssChunkMatcher,
       runtimeState: context.runtimeState,

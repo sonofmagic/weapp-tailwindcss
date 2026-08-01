@@ -1,3 +1,4 @@
+import { normalizeTailwindcssV4InfinityCalcCss } from '@weapp-tailwindcss/postcss'
 import { cleanUrl } from '@/bundlers/vite/utils'
 
 const preprocessorLangs = new Set(['scss', 'sass', 'less', 'styl', 'stylus'])
@@ -25,4 +26,30 @@ export function resolveUniAppXCssTarget(id: string) {
 
 export function isCssModuleExport(code: string) {
   return CSS_MODULE_EXPORT_RE.test(code)
+}
+
+interface ResolvePreprocessorTransformOptions {
+  isIosPlatform: boolean
+  isNativeAppStyleTarget: boolean
+  isWebGeneratorTarget: boolean
+}
+
+export function resolvePreprocessorTransform(
+  code: string,
+  id: string,
+  lang: string | undefined,
+  options: ResolvePreprocessorTransformOptions,
+) {
+  if (!isPreprocessorRequest(id, lang)) {
+    return
+  }
+  if (options.isIosPlatform) {
+    const normalizedCode = normalizeTailwindcssV4InfinityCalcCss(code)
+    return {
+      result: normalizedCode === code ? undefined : { code: normalizedCode, map: null },
+    }
+  }
+  if (options.isWebGeneratorTarget && !options.isNativeAppStyleTarget) {
+    return { result: undefined }
+  }
 }

@@ -35,6 +35,8 @@ export interface ViteFrameworkExtraPluginContext {
   getResolvedConfig: () => ResolvedConfig | undefined
   isEnabled: () => boolean
   isIosPlatform: boolean
+  isNativeAppStyleTarget: () => boolean
+  isWebGeneratorTarget: () => boolean
   jsHandler: ReturnType<typeof getCompilerContext>['jsHandler']
   mainCssChunkMatcher: ReturnType<typeof getCompilerContext>['mainCssChunkMatcher']
   runtimeState: ReturnType<typeof createViteRuntimeClassSet>['runtimeState']

@@ -129,6 +129,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
             await options.refreshTailwindRootCssSource(ctx.file, hotSource)
           }
           const sourceCandidateChange = await options.sourceScanSession.syncChangedFile(ctx.file, hotSource)
+          options.sourceScanSession.consumeHotUpdateChange(ctx.file)
           const isWebLikeHotUpdate = options.isCurrentWebLikeStylePlatform()
           let canUseHmrCandidateAppend = false
           if (isSourceCandidateHotUpdate) {
@@ -153,6 +154,13 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
           }
           if (isSourceCandidateHotUpdate) {
             await options.sourceScanSession.waitForPendingSyncs()
+          }
+          if (isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)) {
+            options.hmrCandidateState.reconcileRuntimeCandidates(
+              ctx.file,
+              options.sourceCandidateCollector.values(),
+              options.tailwindRootCssModuleIds,
+            )
           }
           const hotTailwindCssModuleIds = isSourceStyleRequest(ctx.file)
             ? [ctx.file]
@@ -212,7 +220,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
             ...options.tailwindRootCssModuleIds,
             ...options.viteProcessedCssSourceFiles,
           ])
-          if (hasHmrCandidateAppend) {
+          if (options.hmrCandidateState.hasPendingChange()) {
             options.hmrCandidateState.armTargets(cssModules, supplementalCssFallbackIds)
           }
           if (shouldSendSupplementalCssHotUpdates) {
