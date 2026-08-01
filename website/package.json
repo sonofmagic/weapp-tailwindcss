@@ -68,8 +68,8 @@
     "weapp-tailwindcss": "workspace:*"
   },
   "devDependencies": {
-    "@babel/parser": "~7.29.7",
-    "@babel/traverse": "~7.29.7",
+    "@babel/parser": "~7.29.8",
+    "@babel/traverse": "~7.29.8",
     "@docusaurus/module-type-aliases": "3.10.2",
     "@docusaurus/remark-plugin-npm2yarn": "3.10.2",
     "@docusaurus/theme-mermaid": "3.10.2",
@@ -81,7 +81,7 @@
     "@iconify-json/mdi": "catalog:iconifyJson",
     "@iconify-json/mdi-light": "catalog:iconifyJson",
     "@iconify/tailwind4": "^1.2.3",
-    "@playwright/test": "^1.62.0",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/typography": "^0.5.20",
     "@types/file-saver": "^2.0.7",
     "@types/node": "catalog:typesNode2410",
@@ -96,7 +96,7 @@
     "docusaurus-plugin-typedoc": "1.4.2",
     "dotenv": "^17.4.2",
     "gray-matter": "^4.0.3",
-    "js-yaml": "^5.2.2",
+    "js-yaml": "^5.2.3",
     "mini-svg-data-uri": "^1.4.4",
     "node-loader": "^2.1.0",
     "sass": "catalog:sass195",
