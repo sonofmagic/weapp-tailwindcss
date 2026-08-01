@@ -1,11 +1,12 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from '../shared/framework-strategy'
 import type { BundleMetrics } from './metrics'
-import type { GenerateBundleContext, RememberedCssSource } from './types'
+import type { GenerateBundleContext, PendingRememberedCssReplayUpdate, RememberedCssSource } from './types'
 import { AssetEmissionPlan } from '@/compiler'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
 import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
 import { normalizeMiniProgramGeneratorCssSource, normalizeMiniProgramImportShell } from '../../shared/generator-css/output-import-shell'
+import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { createRuntimeAffectingSourceSignature } from '../runtime-affecting-signature'
 import { isHTMLRequest } from '../utils'
@@ -53,6 +54,7 @@ interface ProcessRememberedCssReplayOptions {
   getCssUserHandlerOptions: (file: string) => ReturnType<ReturnType<typeof import('./css-handler-options').createCssHandlerOptionsCache>['getCssUserHandlerOptions']>
   getRememberedCssSignature?: ((file: string) => string | undefined) | undefined
   getRememberedCssSources?: (() => Iterable<[string, RememberedCssSource]>) | undefined
+  frameworkRootImportShellTargetByFile?: ReadonlyMap<string, string> | undefined
   isNativeAppStyleTarget: boolean
   isWebGeneratorTarget: boolean
   lastCssRawSourceHashByFile: Map<string, string>
@@ -63,6 +65,7 @@ interface ProcessRememberedCssReplayOptions {
   normalizeViteCssCacheKey: (file: string) => string
   onUpdate: GenerateBundleContext['opts']['onUpdate']
   opts: GenerateBundleContext['opts']
+  pendingRememberedCssReplayUpdates: PendingRememberedCssReplayUpdate[]
   recordCssAssetResult: GenerateBundleContext['recordCssAssetResult']
   recordViteProcessedCssAssetResult: GenerateBundleContext['recordViteProcessedCssAssetResult']
   rootDir: string
@@ -85,6 +88,42 @@ export function shouldSkipRawRememberedCssSource(rawSource: string, sourceFile: 
   const cleanSourceFile = sourceFile.replace(/[?#].*$/, '')
   return SOURCE_STYLE_OUTPUT_EXT_RE.test(cleanSourceFile)
     && !canProcessViteSourceStyleAsCss(rawSource, sourceFile)
+}
+
+export function resolveRememberedCssReplayOutputFile(
+  outputFile: string,
+  targetByFile: ReadonlyMap<string, string> | undefined,
+) {
+  const outputKey = normalizeOutputPathKey(outputFile)
+  for (const [shellFile, targetFile] of targetByFile ?? []) {
+    if (normalizeOutputPathKey(shellFile) === outputKey) {
+      return targetFile
+    }
+  }
+  return outputFile
+}
+
+function createRememberedCssReplayUpdates(
+  css: string,
+  sourceFile: string,
+  outputFile: string,
+  injectIntoMain: boolean,
+): PendingRememberedCssReplayUpdate[] {
+  const updates: PendingRememberedCssReplayUpdate[] = [{
+    css,
+    file: sourceFile,
+    injectIntoMain,
+    outputFile,
+  }]
+  if (outputFile !== sourceFile) {
+    updates.push({
+      css,
+      file: outputFile,
+      injectIntoMain,
+      outputFile,
+    })
+  }
+  return updates
 }
 
 export async function processRememberedCssReplay(options: ProcessRememberedCssReplayOptions) {
@@ -110,6 +149,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     getCssUserHandlerOptions,
     getRememberedCssSignature,
     getRememberedCssSources,
+    frameworkRootImportShellTargetByFile,
     isNativeAppStyleTarget,
     isWebGeneratorTarget,
     lastCssRawSourceHashByFile = new Map<string, string>(),
@@ -120,6 +160,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     normalizeViteCssCacheKey,
     onUpdate,
     opts,
+    pendingRememberedCssReplayUpdates,
     recordCssAssetResult,
     recordViteProcessedCssAssetResult,
     rootDir,
@@ -142,7 +183,15 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     defaultStyleOutputExtension,
     bundleFiles,
   )
-  for (const [outputFile, rememberedGroup] of rememberedReplayGroups) {
+  const normalizedBundleFiles = new Set(bundleFiles.map(normalizeOutputPathKey))
+  for (const [rememberedOutputFile, rememberedGroup] of rememberedReplayGroups) {
+    const outputFile = resolveRememberedCssReplayOutputFile(
+      rememberedOutputFile,
+      frameworkRootImportShellTargetByFile,
+    )
+    if (outputFile !== rememberedOutputFile) {
+      debug('css replay use framework root import shell target: %s -> %s', rememberedOutputFile, outputFile)
+    }
     if (isHTMLRequest(outputFile) || options.opts.htmlMatcher(outputFile)) {
       continue
     }
@@ -167,7 +216,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       : normalizeMiniProgramGeneratorCssSource(rawSource, outputFile)
     activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
     activeViteCssCacheFiles.add(normalizeViteCssCacheKey(sourceFile))
-    const outputCssHandlerOptions = getCssHandlerOptions(outputFile)
+    const outputCssHandlerOptions = getCssHandlerOptions(rememberedOutputFile)
     const cssHandlerOptions = {
       ...getCssHandlerOptions(sourceFile),
       isMainChunk: outputCssHandlerOptions.isMainChunk,
@@ -200,8 +249,30 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       : undefined
     const allRememberedSignaturesFresh = rememberedKeys.length > 0
       && rememberedKeys.every(key => getRememberedCssSignature?.(key) === rememberedCssRuntimeSignature)
-    if (bundleFiles.includes(outputFile) || bundleFiles.includes(sourceFile) || allRememberedSignaturesFresh) {
+    if (bundleFiles.includes(rememberedOutputFile) || bundleFiles.includes(sourceFile)) {
       continue
+    }
+    const shouldMergeReplayIntoFrameworkRootTarget = outputFile !== rememberedOutputFile
+      && normalizedBundleFiles.has(normalizeOutputPathKey(outputFile))
+    if (allRememberedSignaturesFresh) {
+      if (!shouldMergeReplayIntoFrameworkRootTarget) {
+        continue
+      }
+      else {
+        const cachedCss = getLastCssResult(lastCssResultByFile, outputFile)
+        if (cachedCss != null) {
+          pendingRememberedCssReplayUpdates.push(...createRememberedCssReplayUpdates(
+            cachedCss,
+            sourceFile,
+            outputFile,
+            true,
+          ))
+          metrics.css.cacheHits++
+          debug('css replay cached result into framework root target: %s', outputFile)
+          continue
+        }
+        debug('css replay framework root target cache miss, regenerate: %s', outputFile)
+      }
     }
     const sourceTraceSources = scopedSourceCandidateSourceGetter
       ? await createScopedGeneratorSourceTraceMap(generatorRawSource, sourceFile, scopedSourceCandidateSourceGetter)
@@ -215,6 +286,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     })
     const shouldRecordRememberedReplayCss = useIncrementalMode || isNativeAppStyleTarget
     const shouldEmitRememberedReplayCssAsset = shouldRecordRememberedReplayCss
+      && !shouldMergeReplayIntoFrameworkRootTarget
     if (!shouldRecordRememberedReplayCss) {
       continue
     }
@@ -294,19 +366,19 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
         registerGeneratorDependencies({ addWatchFile }, generated.dependencies)
         recordCssAssetResult?.(outputFile, css)
         const shouldInjectReplayCssIntoMain = shouldInjectCssIntoMainFromOutput(outputFile, sourceFile, outputCssHandlerOptions)
-        recordViteProcessedCssAssetResult?.(sourceFile, css, {
-          injectIntoMain: outputCssHandlerOptions.isMainChunk
+        const injectIntoMain = shouldMergeReplayIntoFrameworkRootTarget
+          ? true
+          : outputCssHandlerOptions.isMainChunk
             ? false
-            : shouldInjectReplayCssIntoMain,
-          outputFile,
-        })
-        if (outputFile !== sourceFile) {
-          recordViteProcessedCssAssetResult?.(outputFile, css, {
-            injectIntoMain: outputCssHandlerOptions.isMainChunk
-              ? false
-              : shouldInjectReplayCssIntoMain,
-            outputFile,
-          })
+            : shouldInjectReplayCssIntoMain
+        const replayUpdates = createRememberedCssReplayUpdates(css, sourceFile, outputFile, injectIntoMain)
+        if (shouldMergeReplayIntoFrameworkRootTarget) {
+          pendingRememberedCssReplayUpdates.push(...replayUpdates)
+        }
+        else {
+          for (const update of replayUpdates) {
+            recordViteProcessedCssAssetResult?.(update.file, update.css, update)
+          }
         }
         debug('css replay generated result: %s bytes=%d', outputFile, css.length)
       }

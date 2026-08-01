@@ -70,6 +70,13 @@ export interface RememberedCssSource {
   sourceFile: string
 }
 
+export interface PendingRememberedCssReplayUpdate {
+  css: string
+  file: string
+  injectIntoMain?: boolean | undefined
+  outputFile: string
+}
+
 export interface GenerateBundleThis {
   addWatchFile?: (id: string) => void
   emitFile?: (emittedFile: {

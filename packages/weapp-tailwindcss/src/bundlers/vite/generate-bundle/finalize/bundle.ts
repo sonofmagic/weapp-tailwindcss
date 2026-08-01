@@ -54,6 +54,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     opts,
     outDir,
     pendingLinkedUpdates,
+    pendingRememberedCssReplayUpdates,
     pruneViteCssCaches,
     recordCssAssetResult,
     recordTimingDetail,
@@ -127,7 +128,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     })
     recordTimingDetail('finalize.processedCss.collect', collectStartedAt)
     const injectStartedAt = performance.now()
-    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+    let injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts,
       cssPipelineStrategy,
       createCssPipelineContext,
@@ -147,6 +148,31 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
       onUpdate,
       recordTimingDetail,
     })
+    if (pendingRememberedCssReplayUpdates.length > 0) {
+      for (const update of pendingRememberedCssReplayUpdates) {
+        recordViteProcessedCssAssetResult?.(update.file, update.css, update)
+      }
+      injected += injectViteProcessedCssIntoMainCssAssets(bundle, {
+        opts,
+        cssPipelineStrategy,
+        createCssPipelineContext,
+        getViteProcessedCssAssetResults: () => pendingRememberedCssReplayUpdates.map(update => [
+          update.file,
+          {
+            css: update.css,
+            injectIntoMain: update.injectIntoMain,
+            outputFile: update.outputFile,
+          },
+        ] as const),
+        markCssAssetProcessed,
+        recordCssAssetResult,
+        transformCss: transformWebTargetCss,
+        debug,
+        onUpdate,
+        recordTimingDetail,
+      })
+      debug('inject remembered css replay updates after framework css collection: %d', pendingRememberedCssReplayUpdates.length)
+    }
     recordTimingDetail('finalize.processedCss.inject', injectStartedAt)
     return injected
   }

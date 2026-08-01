@@ -2221,12 +2221,22 @@ describe('watch-hmr regression cases', () => {
     expect(resolveChromiumLaunchOptions()).toMatchObject({ headless: true })
   })
 
-  it('uses the full-build plugin budget for Taro polling-build cases', () => {
+  it('uses the native-watch plugin budget for Taro Vite cases', () => {
     const cases = buildDemoExtendedCases('/repo')
     for (const caseName of [
       'taro-vite-react-tailwindcss-v4',
-      'taro-webpack-react-tailwindcss-v4',
       'taro-vite-vue3-tailwindcss-v4',
+    ]) {
+      const watchCase = cases.find(item => item.name === caseName)
+      expect(watchCase?.env).toHaveProperty('TARO_E2E_WATCH_NATIVE', '1')
+      expect(watchCase?.maxPluginProcessMs).toBe(10000)
+    }
+  })
+
+  it('uses the full-build plugin budget for Taro Webpack polling-build cases', () => {
+    const cases = buildDemoExtendedCases('/repo')
+    for (const caseName of [
+      'taro-webpack-react-tailwindcss-v4',
       'taro-webpack-vue3-tailwindcss-v4',
     ]) {
       const watchCase = cases.find(item => item.name === caseName)
@@ -2735,8 +2745,8 @@ describe('watch-hmr regression cases', () => {
     ])
 
     for (const watchCase of cases) {
-      expect(watchCase.env).toHaveProperty('TARO_E2E_WATCH_NATIVE', '0')
-      expect(watchCase.maxPluginProcessMs).toBe(8000)
+      expect(watchCase.env).toHaveProperty('TARO_E2E_WATCH_NATIVE', '1')
+      expect(watchCase.maxPluginProcessMs).toBe(10000)
       expect(watchCase.initialMutationDelayMs).toBe(15_000)
     }
   })

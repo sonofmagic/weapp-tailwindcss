@@ -749,6 +749,7 @@ describe('e2e watch workflow', () => {
         for (const profile of ['mini-program-main', 'mini-program-subpackages']) {
           expect(cases, `${runner} should cover ${watchCase} ${profile} HMR`).toContain(`${runner}:22:${watchCase}:${profile}`)
         }
+        const isViteCase = watchCase.startsWith('taro-vite-')
         const scopeRows = rows.filter(row => row.runner_label === runner && row.watch_case === watchCase && String(row.round_profile).startsWith('mini-program-'))
         expect(scopeRows).toEqual(expect.arrayContaining([
           expect.objectContaining({
@@ -757,7 +758,9 @@ describe('e2e watch workflow', () => {
             watch_mini_program_scope: 'main-package',
             watch_max_attempts: '1',
             timeout_minutes: 30,
-            watch_command_timeout_ms: '1500000',
+            watch_timeout_ms: isViteCase ? '60000' : '600000',
+            watch_max_plugin_process_ms: isViteCase ? '10000' : '60000',
+            watch_command_timeout_ms: isViteCase ? '600000' : '1500000',
           }),
           expect.objectContaining({
             round_profile: 'mini-program-subpackages',
@@ -765,7 +768,9 @@ describe('e2e watch workflow', () => {
             watch_mini_program_scope: 'subpackages',
             watch_max_attempts: '1',
             timeout_minutes: 30,
-            watch_command_timeout_ms: '1200000',
+            watch_timeout_ms: isViteCase ? '60000' : '600000',
+            watch_max_plugin_process_ms: isViteCase ? '10000' : '60000',
+            watch_command_timeout_ms: isViteCase ? '600000' : '1200000',
           }),
         ]))
       }
@@ -914,17 +919,17 @@ describe('e2e watch workflow', () => {
       },
     ]
     const parallelDemoTaroPrBudgets = [
-      { watchCase: 'taro-vite-react-tailwindcss-v4', timeoutMs: '420000' },
-      { watchCase: 'taro-webpack-react-tailwindcss-v4', timeoutMs: '600000' },
-      { watchCase: 'taro-vite-vue3-tailwindcss-v4', timeoutMs: '420000' },
-      { watchCase: 'taro-webpack-vue3-tailwindcss-v4', timeoutMs: '600000' },
-    ].flatMap(({ watchCase, timeoutMs }) => [
+      { watchCase: 'taro-vite-react-tailwindcss-v4', timeoutMs: '60000', pluginProcessMs: '10000', mainCommandTimeoutMs: '600000', subpackageCommandTimeoutMs: '600000' },
+      { watchCase: 'taro-webpack-react-tailwindcss-v4', timeoutMs: '600000', pluginProcessMs: '60000', mainCommandTimeoutMs: '1500000', subpackageCommandTimeoutMs: '1200000' },
+      { watchCase: 'taro-vite-vue3-tailwindcss-v4', timeoutMs: '60000', pluginProcessMs: '10000', mainCommandTimeoutMs: '600000', subpackageCommandTimeoutMs: '600000' },
+      { watchCase: 'taro-webpack-vue3-tailwindcss-v4', timeoutMs: '600000', pluginProcessMs: '60000', mainCommandTimeoutMs: '1500000', subpackageCommandTimeoutMs: '1200000' },
+    ].flatMap(({ watchCase, timeoutMs, pluginProcessMs, mainCommandTimeoutMs, subpackageCommandTimeoutMs }) => [
       {
-        commandTimeoutMs: '1500000',
+        commandTimeoutMs: mainCommandTimeoutMs,
         profile: 'mini-program-main',
         scope: 'main-package',
       },
-      { commandTimeoutMs: '1200000', profile: 'mini-program-subpackages', scope: 'subpackages' },
+      { commandTimeoutMs: subpackageCommandTimeoutMs, profile: 'mini-program-subpackages', scope: 'subpackages' },
     ].map(({ commandTimeoutMs, profile, scope }) => ({
       watch_case: watchCase,
       round_profile: profile,
@@ -933,7 +938,7 @@ describe('e2e watch workflow', () => {
       watch_max_attempts: '1',
       timeout_minutes: 30,
       watch_timeout_ms: timeoutMs,
-      watch_max_plugin_process_ms: '60000',
+      watch_max_plugin_process_ms: pluginProcessMs,
       watch_command_timeout_ms: commandTimeoutMs,
     })))
     const slowLinuxDemoCorePrBudget = {
