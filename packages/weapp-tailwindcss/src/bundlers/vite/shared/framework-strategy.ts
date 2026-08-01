@@ -50,6 +50,10 @@ export interface ViteFrameworkCssPipelineStrategy {
     cssHandlerOptions: { isMainChunk?: boolean | undefined }
     generatorCode: string
   }) => boolean
+  shouldDeferPreTransformTailwindGeneration?: (context: ViteFrameworkCssPipelineContext & {
+    code: string
+    id: string
+  }) => boolean
   shouldKeepRootMiniProgramStyleAsImportShell?: (context: ViteFrameworkCssPipelineContext & {
     css: string
     file: string

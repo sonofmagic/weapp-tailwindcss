@@ -2,8 +2,9 @@ import type { AtRule, Declaration, Rule } from 'postcss'
 
 const VUE_SCOPED_ATTR_RE = /\[data-v-[^\]]+\]/gi
 const VUE_SCOPED_CLASS_RE = /\.data-v-[\w-]+/gi
-const SCOPED_UNIVERSAL_PREFLIGHT_SELECTORS = new Set(['*', '::after', '::before', '::backdrop', '::file-selector-button'])
+const SCOPED_UNIVERSAL_PREFLIGHT_SELECTORS = new Set(['*', ':after', ':before', '::after', '::before', '::backdrop', '::file-selector-button'])
 const MINI_PROGRAM_PREFLIGHT_SELECTORS = new Set(['view', 'text', '::after', '::before'])
+const UNI_APP_WEB_PREFLIGHT_SELECTORS = new Set(['uni-view', 'uni-text', ':after', ':before', '::after', '::before'])
 const MINI_PROGRAM_PREFLIGHT_DECLARATIONS = new Set(['box-sizing', 'margin', 'padding', 'border'])
 const TAILWIND_PREFLIGHT_DECLARATIONS = new Set([
   '-moz-tab-size:4',
@@ -134,7 +135,7 @@ function isScopedTailwindThemeCarrierRule(rule: Rule) {
     && declarations.every(decl => decl.prop.startsWith('--'))
 }
 
-function isScopedUniversalTailwindPreflightRule(rule: Rule) {
+export function isScopedUniversalTailwindPreflightRule(rule: Rule) {
   const selectors = rule.selectors ?? [rule.selector]
   const declarations = getRuleDeclarations(rule)
   return selectors.length > 0
@@ -143,11 +144,26 @@ function isScopedUniversalTailwindPreflightRule(rule: Rule) {
     && declarations.every(decl => decl.prop.startsWith('--tw-') || MINI_PROGRAM_PREFLIGHT_DECLARATIONS.has(decl.prop))
 }
 
+export function isScopedUniAppWebTailwindPreflightRule(rule: Rule) {
+  const selectors = rule.selectors ?? [rule.selector]
+  const declarations = getRuleDeclarations(rule)
+  return selectors.length > 0
+    && selectors.every(selector => hasVueScopedAttr(selector) && UNI_APP_WEB_PREFLIGHT_SELECTORS.has(normalizeCssSignatureValue(selector)))
+    && declarations.length > 0
+    && declarations.every(decl => decl.prop.startsWith('--tw-') || MINI_PROGRAM_PREFLIGHT_DECLARATIONS.has(decl.prop))
+}
+
+export function hasScopedUniAppWebTailwindPreflightRule(css: string) {
+  return /uni-(?:view|text)\[data-v-[^\]]+\]/i.test(css)
+    && /\[data-v-[^\]]+\]::(?:after|before)/i.test(css)
+}
+
 export function isLikelyTailwindGlobalRule(rule: Rule) {
   const selectors = rule.selectors ?? [rule.selector]
   const declarations = getRuleDeclarations(rule)
   return isScopedTailwindThemeCarrierRule(rule)
     || isScopedUniversalTailwindPreflightRule(rule)
+    || isScopedUniAppWebTailwindPreflightRule(rule)
     || (
       selectors.every(selector => !hasClassSelector(selector) && isLikelyTailwindGlobalSelector(selector))
       && declarations.length > 0
@@ -158,6 +174,17 @@ export function isLikelyTailwindGlobalRule(rule: Rule) {
 export function isLikelyTailwindPropertyAtRule(atRule: AtRule) {
   return atRule.name.toLowerCase() === 'property'
     && normalizeCssSignatureValue(atRule.params).startsWith('--tw-')
+}
+
+export function isLikelyTailwindLayerOrderAtRule(atRule: AtRule) {
+  if (atRule.name.toLowerCase() !== 'layer' || atRule.nodes !== undefined) {
+    return false
+  }
+  const params = normalizeCssSignatureValue(atRule.params).replace(/\s+/g, '')
+  return params === 'properties'
+    || params === 'theme'
+    || params === 'base'
+    || params === 'theme,base,components,utilities'
 }
 
 export function isUnscopedMiniProgramTailwindPreflightRule(rule: Rule) {

@@ -49,6 +49,39 @@ describe('normalizeCssSnapshot', () => {
     expect(normalizeGeneratedCssSourceMarkers(source, '/tmp/other-project')).toBe(source)
   })
 
+  it('normalizes generated css source markers through project aliases', async () => {
+    const root = await fs.mkdtemp(path.join(tmpdir(), 'generated-css-source-root-'))
+    const alias = `${root}-alias`
+    const sourceFile = path.join(root, 'App.uvue')
+    await fs.writeFile(sourceFile, '<style />')
+    await fs.symlink(root, alias, process.platform === 'win32' ? 'junction' : 'dir')
+
+    try {
+      const marker = `/*! weapp-tailwindcss vite-generated-css:${encodeURIComponent(path.join(alias, 'App.uvue'))} */`
+      expect(normalizeGeneratedCssSourceMarkers(marker, root)).toBe(
+        '/*! weapp-tailwindcss vite-generated-css:%3Cproject-root%3E%2FApp.uvue */',
+      )
+    }
+    finally {
+      await fs.rm(alias, { recursive: true, force: true })
+      await fs.rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('normalizes cleaned HBuilderX project alias markers', () => {
+    const sourceFile = path.join(
+      tmpdir(),
+      'weapp-tailwindcss-hbuilderx-projects',
+      'uni-app-x-hbuilderx-tailwindcss-v4-886dbfe1d9-26409',
+      'App.uvue',
+    )
+    const marker = `/*! weapp-tailwindcss vite-generated-css:${encodeURIComponent(sourceFile)} */`
+
+    expect(normalizeGeneratedCssSourceMarkers(marker, '/workspace/demo/uni-app-x-hbuilderx-tailwindcss-v4')).toBe(
+      '/*! weapp-tailwindcss vite-generated-css:%3Cproject-root%3E%2FApp.uvue */',
+    )
+  })
+
   it('falls back to PostCSS normalization for unsupported nested declaration blocks', async () => {
     const css = '@supports (color: color-mix(in lab,red,red)){{color:red}}'
 

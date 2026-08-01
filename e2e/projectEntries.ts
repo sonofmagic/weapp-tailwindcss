@@ -1,4 +1,5 @@
 import type { ProjectEntry } from './shared.ts'
+import process from 'node:process'
 
 export const E2E_PROJECTS = ([
   {
@@ -79,11 +80,13 @@ export const E2E_PROJECTS = ([
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
     projectPath: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4/unpackage/dist/dev/mp-weixin',
     cssFile: 'app.wxss',
+    requiresHBuilderX: true,
   },
   {
     name: 'uni-app-x-hbuilderx-tailwindcss-v4',
     projectPath: 'uni-app-x-hbuilderx-tailwindcss-v4/unpackage/dist/dev/mp-weixin',
     cssFile: 'app.wxss',
+    requiresHBuilderX: true,
   },
   {
     name: 'weapp-vite-tailwindcss-v4',
@@ -118,4 +121,11 @@ export function getE2EProject(name: string): ProjectEntry {
 
 export function getNativeProject(name: string): ProjectEntry {
   return cloneProject(NATIVE_PROJECTS, name)
+}
+
+export function isE2EProjectSupportedOnPlatform(
+  project: ProjectEntry,
+  platform: NodeJS.Platform = process.platform,
+) {
+  return !(project.requiresHBuilderX && platform === 'linux')
 }

@@ -1,6 +1,7 @@
 import type { ResolvedConfig } from 'vite'
 import path from 'node:path'
 import process from 'node:process'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { cleanUrl, normalizePath } from '@/bundlers/vite/utils'
 import {
   collectUniAppXHarmonyApplyStyleSourcesFromSource,
@@ -14,7 +15,11 @@ interface HarmonyApplyHookContext {
 }
 
 interface CreateUniAppXHarmonyApplyExpanderOptions {
-  generateCss?: ((id: string, code: string, hookContext?: HarmonyApplyHookContext & { transient?: boolean }) => Promise<string | undefined> | string | undefined) | undefined
+  generateCss?: ((id: string, code: string, hookContext?: HarmonyApplyHookContext & {
+    disableSourceScan?: boolean
+    sourceCandidates?: Iterable<string>
+    transient?: boolean
+  }) => Promise<string | undefined> | string | undefined) | undefined
   getResolvedConfig: () => ResolvedConfig | undefined
   isHarmonyBuildTarget: () => boolean
   transformCss: (css: string, id: string) => Promise<string>
@@ -30,24 +35,55 @@ function createStableHash(input: string) {
 }
 
 export function createUniAppXHarmonyApplyExpander(options: CreateUniAppXHarmonyApplyExpanderOptions) {
+  const referenceBySourceId = new Map<string, Set<string>>()
   const styleSources = new Set<string>()
   const utilities = new Set<string>()
 
-  function rememberSource(code: string, id: string) {
+  function rememberSource(code: string, id: string, authoritative = false) {
     const sources = collectUniAppXHarmonyApplyStyleSourcesFromSource(code, id)
+    const sourceKey = normalizePath(cleanUrl(id))
+    const references = authoritative
+      ? new Set<string>()
+      : new Set(referenceBySourceId.get(sourceKey))
     for (const source of sources) {
       styleSources.add(source)
+      try {
+        postcss.parse(source).walkAtRules('reference', (rule) => {
+          const reference = rule.toString()
+          references.add(reference.endsWith(';') ? reference : `${reference};`)
+        })
+      }
+      catch {
+
+      }
       for (const utility of collectUniAppXHarmonyApplyUtilitiesFromSources([source])) {
         utilities.add(utility)
       }
     }
+    if (references.size > 0) {
+      referenceBySourceId.set(sourceKey, references)
+    }
+    else if (authoritative) {
+      referenceBySourceId.delete(sourceKey)
+    }
+  }
+
+  function prepareStyles(code: string, id: string) {
+    if (!code.includes('@apply') || code.includes('@reference')) {
+      return code
+    }
+    const references = referenceBySourceId.get(normalizePath(cleanUrl(id)))
+    if (references?.size !== 1) {
+      return code
+    }
+    return `${references.values().next().value}\n${code}`
   }
 
   async function expandStyles(code: string, id: string, hookContext: HarmonyApplyHookContext) {
     if (!options.isHarmonyBuildTarget() || !code.includes('@apply')) {
       return code
     }
-    const sources = collectUniAppXHarmonyApplyStyleSourcesFromSource(code, id)
+    const sources = collectUniAppXHarmonyApplyStyleSourcesFromSource(prepareStyles(code, id), id)
     const sourceUtilities = collectUniAppXHarmonyApplyUtilitiesFromSources(sources)
     if (sources.length === 0 || sourceUtilities.size === 0) {
       return code
@@ -56,11 +92,14 @@ export function createUniAppXHarmonyApplyExpander(options: CreateUniAppXHarmonyA
       options.getResolvedConfig()?.root ?? process.cwd(),
       `uni-app-x-harmony-apply-${createStableHash(normalizePath(cleanUrl(id)))}.css`,
     )
+    const generatorSource = createUniAppXHarmonyApplyGeneratorSource(sources, sourceUtilities)
     const generatedCss = await options.generateCss?.(
       cssFile,
-      createUniAppXHarmonyApplyGeneratorSource(sources, sourceUtilities),
+      generatorSource,
       {
         addWatchFile: hookContext.addWatchFile?.bind(hookContext),
+        disableSourceScan: true,
+        sourceCandidates: [],
         transient: true,
       },
     )
@@ -72,6 +111,7 @@ export function createUniAppXHarmonyApplyExpander(options: CreateUniAppXHarmonyA
 
   return {
     expandStyles,
+    prepareStyles,
     rememberSource,
     styleSources,
     utilities,

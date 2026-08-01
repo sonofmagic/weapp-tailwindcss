@@ -1,5 +1,6 @@
 <template>
 	<view class="border border-solid border-[#999] p-4">
+		<view id="native-hmr-probe" class="hbuilderx-app-native-hmr-probe flex h-[41px] w-[173px] items-center justify-center rounded-[9998px] bg-[#102938]"><text class="text-[39rpx] text-[#f7fbff]">hbuilderx-app-dynamic-v4-android</text></view>
 		<view class="issue-822-component-child h-[200px] w-full bg-[#87add3]">
 			<text class="text-[#111111]">issue 822 component child</text>
 		</view>

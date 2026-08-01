@@ -8,6 +8,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { createCache } from '@/cache'
 import { collectUniAppXHarmonyApplyStyleSources, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles, injectUniAppXStylePlaceholder } from '@/uni-app-x/style-asset'
 import { createUniAppXAssetTask, createUniAppXPlugins } from '@/uni-app-x/vite'
+import { createUniAppXHarmonyApplyExpander } from '@/uni-app-x/vite/harmony-apply'
 import { clearUniAppXStyleIsolationCache } from '@/uni-app-x/style-isolation'
 
 /** 将平台路径转为 posix 格式，与源码 normalizePath 行为一致 */
@@ -52,7 +53,37 @@ function getGenerateBundleHandler(plugin: Plugin | undefined) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
+function getTransformHandler(plugin: Plugin | undefined) {
+  const hook = plugin?.transform as any
+  return typeof hook === 'object' ? hook.handler : hook
+}
+
 describe('uni-app-x vite plugins', () => {
+  it('reuses an authoritative SFC reference for generated local @apply style requests', () => {
+    const expander = createUniAppXHarmonyApplyExpander({
+      getResolvedConfig: () => undefined,
+      isHarmonyBuildTarget: () => true,
+      transformCss: async css => css,
+    })
+    const id = 'C:\\project\\pages\\index\\index.uvue'
+
+    expander.rememberSource([
+      '<template><view class="bg-primary" /></template>',
+      '<style scoped>',
+      '@reference "../../main.css";',
+      '.content { @apply flex; }',
+      '</style>',
+    ].join('\n'), id, true)
+
+    expect(expander.prepareStyles(
+      '.wtu-bg-primary { @apply bg-primary; }',
+      `${id}?vue&type=style&index=1`,
+    )).toBe([
+      '@reference "C:/project/main.css";',
+      '.wtu-bg-primary { @apply bg-primary; }',
+    ].join('\n'))
+  })
+
   it('skips plugin lifecycle work when disabled and ignores unrelated updates', async () => {
     let enabled = false
     let currentConfig: ResolvedConfig = { command: 'serve', build: { watch: false } } as ResolvedConfig
@@ -78,7 +109,7 @@ describe('uni-app-x vite plugins', () => {
     await preCssPlugin!.transform?.('.a{}', '/foo.css')
     await cssPlugin!.transform?.('.a{}', '/foo.css')
     await nvuePlugin!.buildStart?.()
-    await nvuePlugin!.transform?.('<template/>', '/foo.uvue')
+    await getTransformHandler(nvuePlugin)?.call(nvuePlugin, '<template/>', '/foo.uvue')
     await nvuePlugin!.handleHotUpdate?.({ file: '/foo.uvue' } as HmrContext)
     await nvuePlugin!.watchChange?.('/foo.uvue')
     await getGenerateBundleHandler(placeholderPlugin)?.({} as any, {
@@ -90,7 +121,7 @@ describe('uni-app-x vite plugins', () => {
     expect(transformUVueMock).not.toHaveBeenCalled()
 
     enabled = true
-    await nvuePlugin!.transform?.('<template/>', '/foo.ts')
+    await getTransformHandler(nvuePlugin)?.call(nvuePlugin, '<template/>', '/foo.ts')
     currentConfig = { command: 'build', build: { watch: false } } as ResolvedConfig
     await nvuePlugin!.handleHotUpdate?.({ file: '/foo.uvue' } as HmrContext)
     await nvuePlugin!.watchChange?.('/foo.uvue')
@@ -113,7 +144,10 @@ describe('uni-app-x vite plugins', () => {
       styleHandler,
       jsHandler: vi.fn(),
       ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
-      getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
+      getResolvedConfig: () => ({
+        command: 'build',
+        build: { outDir: '/project/unpackage/dist/dev/.uvue/app-android', watch: false },
+      } as ResolvedConfig),
     })
     const preCssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
 
@@ -123,7 +157,7 @@ describe('uni-app-x vite plugins', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
-  it('processes css requests and forwards map options', async () => {
+  it('processes Native Tailwind root css and forwards its source boundary', async () => {
     const styleHandler = vi.fn(async (code: string, options?: Record<string, unknown>) => ({
       css: `css:${code}`,
       map: {
@@ -155,12 +189,14 @@ describe('uni-app-x vite plugins', () => {
     const cssPlugin = plugins.find((p): p is Plugin => Boolean(p.name?.includes(':css')))
     expect(cssPlugin).toBeDefined()
 
-    const result = await cssPlugin!.transform?.('body { color: red; }', '/foo.css')
+    const source = '@import "tailwindcss";'
+    const result = await cssPlugin!.transform?.(source, '/foo.css')
 
     expect(styleHandler).toHaveBeenCalledWith(
-      'body { color: red; }',
+      source,
       expect.objectContaining({
         isMainChunk: true,
+        uniAppXCssSource: 'tailwind-root',
         uniAppXUnsupported: 'warn',
         postcssOptions: expect.objectContaining({
           options: expect.objectContaining({
@@ -170,10 +206,56 @@ describe('uni-app-x vite plugins', () => {
         }),
       }),
     )
-    expect(result?.code).toBe('css:body { color: red; }')
+    expect(result?.code).toBe(`css:${source}`)
     // formatPostcssSourceMap 使用 path.resolve 后转 posix，Windows 下会带盘符
     const expectedFooCss = toPosix(path.resolve(path.dirname('/foo.css'), '/foo.css'))
     expect((result?.map as any)?.sources).toContain(expectedFooCss)
+  })
+
+  it('treats imported Native Tailwind roots as global css when the SFC request is not a main chunk', async () => {
+    const styleHandler = vi.fn(async (code: string, options?: Record<string, unknown>) => ({
+      css: code,
+      map: {
+        toJSON: () => ({
+          version: 3,
+          file: options?.postcssOptions?.options?.from ?? '',
+          sources: [options?.postcssOptions?.options?.from ?? ''],
+          names: [],
+          mappings: '',
+          sourcesContent: [code],
+        }),
+      },
+    }))
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      mainCssChunkMatcher: vi.fn(() => false),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler,
+      generateCss: vi.fn(async () => '.space-y-2 > view + view { margin-top: 8px; }\n.flex { display: flex; }'),
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      getResolvedConfig: () => ({
+        command: 'build',
+        build: { outDir: '/project/unpackage/dist/dev/.uvue/app-harmony', watch: false },
+      } as ResolvedConfig),
+    })
+    const cssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css')
+
+    await cssPlugin!.transform?.(
+      '@import "tailwindcss";',
+      '/project/App.uvue?vue&type=style&index=0&lang.css',
+    )
+
+    expect(styleHandler).toHaveBeenCalledWith(
+      expect.stringContaining('.space-y-2'),
+      expect.objectContaining({
+        isMainChunk: true,
+        uniAppXCssSource: 'tailwind-root',
+        uniAppXCssTarget: 'uvue',
+      }),
+    )
   })
 
   it('skips pre hook for preprocessor styles and runs after preprocess', async () => {
@@ -227,25 +309,15 @@ describe('uni-app-x vite plugins', () => {
       expect(styleHandler).not.toHaveBeenCalled()
 
       const result = await cssPlugin!.transform?.('body { color: red; }', scssId)
-      expect(styleHandler).toHaveBeenCalledTimes(1)
-      expect(styleHandler).toHaveBeenCalledWith(
-        'body { color: red; }',
-        expect.objectContaining({
-          uniAppXCssTarget: 'uvue',
-          uniAppXUnsupported: 'warn',
-        }),
-      )
-      expect(result?.code).toBe('css:body { color: red; }')
-      // cleanUrl 去除 query 后为 /pages/index/index.uvue，sources 经 path.resolve 后转 posix
-      const expectedUvue = toPosix(path.resolve(path.dirname('/pages/index/index.uvue'), '/pages/index/index.uvue'))
-      expect((result?.map as any)?.sources).toContain(expectedUvue)
+      expect(result).toBeUndefined()
+      expect(styleHandler).not.toHaveBeenCalled()
     }
     finally {
       process.env.UNI_UTS_PLATFORM = originalPlatform
     }
   })
 
-  it('pre hook continues for preprocessors on non-iOS platforms', async () => {
+  it('leaves Native preprocessor author styles to the framework on non-iOS platforms', async () => {
     const styleHandler = vi.fn(async (code: string, options?: Record<string, unknown>) => ({
       css: `css:${code}`,
       map: {
@@ -279,14 +351,7 @@ describe('uni-app-x vite plugins', () => {
 
     const scssId = '/pages/index/index.uvue?vue&type=style&index=0&lang.scss'
     await preCssPlugin!.transform?.('$color: red;', scssId)
-    expect(styleHandler).toHaveBeenCalledTimes(1)
-    expect(styleHandler).toHaveBeenCalledWith(
-      '$color: red;',
-      expect.objectContaining({
-        uniAppXCssTarget: 'uvue',
-        uniAppXUnsupported: 'warn',
-      }),
-    )
+    expect(styleHandler).not.toHaveBeenCalled()
   })
 
   it('records uni-app-x style @apply for generator css without short-circuiting style handling', async () => {
@@ -315,7 +380,10 @@ describe('uni-app-x vite plugins', () => {
       generateCss,
       jsHandler: vi.fn(),
       ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
-      getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
+      getResolvedConfig: () => ({
+        command: 'build',
+        build: { outDir: '/project/unpackage/dist/dev/.uvue/app-android', watch: false },
+      } as ResolvedConfig),
     })
     const cssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css')
     expect(cssPlugin).toBeDefined()
@@ -323,13 +391,70 @@ describe('uni-app-x vite plugins', () => {
     const id = '/pages/index/index.uvue?vue&type=style&index=0&lang.scss&scoped=true'
     const result = await cssPlugin!.transform?.('.content { @apply flex; }', id)
 
-    expect(generateCss).toHaveBeenCalledWith(id, '.content { @apply flex; }', expect.any(Object))
+    expect(generateCss).toHaveBeenCalledWith(id, '.content { @apply flex; }', expect.objectContaining({
+      disableSourceScan: true,
+      sourceCandidates: [],
+      transient: true,
+    }))
     expect(styleHandler).toHaveBeenCalledTimes(1)
-    expect(styleHandler).toHaveBeenCalledWith('.content{display:flex}', expect.any(Object))
+    expect(styleHandler).toHaveBeenCalledWith(
+      '.content{display:flex}',
+      expect.objectContaining({ uniAppXCssSource: 'author-apply' }),
+    )
     expect(result?.code).toBe('css:.content{display:flex}')
   })
 
-  it('passes scoped uvue style request ids into styleHandler without dropping author css output', async () => {
+  it('keeps only author rules when expanding scoped @apply styles', async () => {
+    const styleHandler = vi.fn(async (code: string, options?: Record<string, unknown>) => ({
+      css: code,
+      map: {
+        toJSON: () => ({
+          version: 3,
+          file: options?.postcssOptions?.options?.from ?? '',
+          sources: [options?.postcssOptions?.options?.from ?? ''],
+          names: [],
+          mappings: '',
+          sourcesContent: [code],
+        }),
+      },
+    }))
+    const generateCss = vi.fn(async () => [
+      '/*! tailwindcss v4.3.3 */',
+      'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
+      '.flex{display:flex}',
+      '.content{display:flex;color:var(--author-color,red)}',
+      '@supports (display:grid){.content{display:grid}}',
+      '@property --tw-content { syntax: "*"; inherits: false; initial-value: ""; }',
+    ].join('\n'))
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      mainCssChunkMatcher: vi.fn(() => false),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler,
+      generateCss,
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      getResolvedConfig: () => ({ command: 'serve', build: { watch: false } } as ResolvedConfig),
+    })
+    const cssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css')
+    const id = '/pages/index/index.uvue?vue&type=style&index=0&lang.scss&scoped=true'
+    const result = await cssPlugin!.transform?.([
+      '@reference "../../main.css";',
+      '.content { @apply flex; color: var(--author-color, red); }',
+      '@supports (display: grid) { .content { @apply flex; } }',
+    ].join('\n'), id)
+
+    expect(result?.code).toContain('.content{display:flex;color:var(--author-color,red)}')
+    expect(result?.code).toContain('@supports (display:grid){.content{display:grid}}')
+    expect(result?.code).not.toContain('view,text')
+    expect(result?.code).not.toContain('.flex{')
+    expect(result?.code).not.toContain('@property')
+    expect(result?.code).not.toContain('tailwindcss v4')
+  })
+
+  it('keeps scoped uvue author css outside the generated css handler', async () => {
     const scopedCss = [
       'view.data-v-abc{color:red}',
       '.card.data-v-abc{padding:16px}',
@@ -370,21 +495,8 @@ describe('uni-app-x vite plugins', () => {
     const id = '/src/components/ScopedChild.uvue?vue&type=style&index=0&scoped=abc&lang.css'
     const result = await cssPlugin!.transform?.('.card { padding: 16px; }', id)
 
-    expect(styleHandler).toHaveBeenCalledWith(
-      '.card { padding: 16px; }',
-      expect.objectContaining({
-        uniAppXCssTarget: 'uvue',
-        uniAppXUnsupported: 'warn',
-        postcssOptions: expect.objectContaining({
-          options: expect.objectContaining({
-            from: id,
-          }),
-        }),
-      }),
-    )
-    expect(result?.code).toBe(scopedCss)
-    expect(result?.code).toContain('view.data-v-abc{color:red}')
-    expect(result?.code).toContain('.card.data-v-abc .title.data-v-abc{font-weight:700}')
+    expect(styleHandler).not.toHaveBeenCalled()
+    expect(result).toBeUndefined()
   })
 
   it('leaves H5 uvue author styles to the Sass and Vue scoped pipeline', async () => {
@@ -450,7 +562,7 @@ describe('uni-app-x vite plugins', () => {
     await nvuePlugin!.buildStart?.()
     expect(ensureRuntimeClassSet).toHaveBeenCalledWith(true)
 
-    const transformResult = await nvuePlugin!.transform?.('<template/>', '/foo.uvue')
+    const transformResult = await getTransformHandler(nvuePlugin)?.call(nvuePlugin, '<template/>', '/foo.uvue')
     expect(transformUVueMock).toHaveBeenCalledWith(
       '<template/>',
       '/foo.uvue',
@@ -511,7 +623,11 @@ describe('uni-app-x vite plugins', () => {
 
     send.mockClear()
     await nvuePlugin!.handleHotUpdate?.(context)
-    expect(send).not.toHaveBeenCalled()
+    expect(send).toHaveBeenCalledWith({
+      type: 'full-reload',
+      path: '*',
+      triggeredBy: context.file,
+    })
   })
 
   it('invalidates and returns deduplicated Tailwind CSS modules for uvue hot updates', async () => {
@@ -554,6 +670,164 @@ describe('uni-app-x vite plugins', () => {
 
     expect(invalidateModule).toHaveBeenCalledWith(cssModule)
     expect(modules).toEqual([sourceModule, cssModule])
+  })
+
+  it('synchronizes candidates before retransforms for Native add, delete, and rollback updates', async () => {
+    const order: string[] = []
+    let runtimeSet = new Set(['text-red-500'])
+    const ensureRuntimeClassSet = vi.fn(async () => {
+      order.push('runtime')
+      return new Set(runtimeSet)
+    })
+    const syncSourceCandidatesForHotUpdate = vi.fn(async () => {
+      order.push('sync')
+    })
+    const send = vi.fn()
+    const sourceModule = {
+      file: '/project/pages/index/index.uvue',
+      id: '/project/pages/index/index.uvue',
+      url: '/pages/index/index.uvue',
+      isSelfAccepting: true,
+    }
+    const cssModule = {
+      file: '/project/main.css',
+      id: '/project/main.css?direct',
+      url: '/main.css?direct',
+    }
+    const invalidateModule = vi.fn((mod: { file: string }) => {
+      order.push(`invalidate:${mod.file}`)
+    })
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      mainCssChunkMatcher: vi.fn(() => true),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler: vi.fn(),
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet,
+      syncSourceCandidatesForHotUpdate,
+      getResolvedConfig: () => ({
+        command: 'serve',
+        root: '/project',
+        build: { outDir: '/project/unpackage/dist/dev/.uvue/app-android', watch: false },
+      } as ResolvedConfig),
+      tailwindRootCssModuleIds: new Set(['/project/main.css']),
+    })
+    const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
+    const context = {
+      file: '/project/pages/index/index.uvue',
+      modules: [sourceModule],
+      server: {
+        config: { root: '/project' },
+        moduleGraph: {
+          getModuleById: vi.fn((id: string) => id === sourceModule.id ? sourceModule : undefined),
+          getModulesByFile: vi.fn((file: string) => {
+            if (file === sourceModule.file) {
+              return new Set([sourceModule])
+            }
+            if (file === cssModule.file) {
+              return new Set([cssModule])
+            }
+            return undefined
+          }),
+          invalidateModule,
+        },
+        ws: { send },
+      },
+    } as unknown as HmrContext
+
+    await nvuePlugin!.buildStart?.()
+    for (const nextRuntime of [
+      new Set(['text-red-500', 'mt-200']),
+      new Set(['text-red-500']),
+      new Set(['text-red-500', 'mt-200']),
+    ]) {
+      runtimeSet = nextRuntime
+      order.length = 0
+      invalidateModule.mockClear()
+      const modules = await nvuePlugin!.handleHotUpdate?.(context)
+
+      expect(order.slice(0, 2)).toEqual(['sync', 'runtime'])
+      expect(invalidateModule).toHaveBeenCalledWith(sourceModule)
+      expect(invalidateModule).toHaveBeenCalledWith(cssModule)
+      expect(modules).toEqual([sourceModule, cssModule])
+      expect(send).not.toHaveBeenCalled()
+    }
+  })
+
+  it('retransforms loaded Native local style modules when a Tailwind root changes the candidate signature', async () => {
+    let runtimeSet = new Set(['text-red-500'])
+    const ensureRuntimeClassSet = vi.fn(async () => new Set(runtimeSet))
+    const pageModule = {
+      file: '/project/pages/index/index.uvue',
+      id: '/project/pages/index/index.uvue',
+      url: '/pages/index/index.uvue',
+      isSelfAccepting: true,
+    }
+    const cssModule = {
+      file: '/project/main.css',
+      id: '/project/main.css?direct',
+      url: '/main.css?direct',
+    }
+    const invalidateModule = vi.fn()
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      mainCssChunkMatcher: vi.fn(() => true),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler: vi.fn(),
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet,
+      syncSourceCandidatesForHotUpdate: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'serve',
+        root: '/project',
+        build: { outDir: '/project/unpackage/dist/dev/.uvue/app-android', watch: false },
+      } as ResolvedConfig),
+      tailwindRootCssModuleIds: new Set(['/project/main.css']),
+    })
+    const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
+    transformUVueMock.mockReturnValue({ code: 'transformed', map: null } as TransformResult)
+    await nvuePlugin!.buildStart?.()
+    await getTransformHandler(nvuePlugin)?.call(nvuePlugin, '<template><view class="issue-1021-hmr" /></template>', pageModule.id)
+
+    runtimeSet = new Set(['text-red-500', 'issue-1021-hmr'])
+    const modules = await nvuePlugin!.handleHotUpdate?.({
+      file: '/project/main.css',
+      modules: [cssModule],
+      read: vi.fn(async () => '@theme { --color-issue-1021-hmr: #0f5132; }'),
+      server: {
+        config: { root: '/project' },
+        moduleGraph: {
+          getModuleById: vi.fn((id: string) => {
+            if (id === pageModule.id) {
+              return pageModule
+            }
+            if (id === cssModule.id) {
+              return cssModule
+            }
+            return undefined
+          }),
+          getModulesByFile: vi.fn((file: string) => {
+            if (file === pageModule.file) {
+              return new Set([pageModule])
+            }
+            if (file === cssModule.file) {
+              return new Set([cssModule])
+            }
+            return undefined
+          }),
+          invalidateModule,
+        },
+        ws: { send: vi.fn() },
+      },
+    } as unknown as HmrContext)
+
+    expect(invalidateModule).toHaveBeenCalledWith(pageModule)
+    expect(invalidateModule).toHaveBeenCalledWith(cssModule)
+    expect(modules).toEqual([pageModule, cssModule])
   })
 
   it('leaves web uvue hot updates to the framework source-candidates plugin', async () => {
@@ -633,7 +907,7 @@ describe('uni-app-x vite plugins', () => {
       transformUVueMock.mockClear()
       transformUVueMock.mockReturnValue({ code: 'transformed', map: null } as TransformResult)
 
-      await nvuePlugin!.transform?.('<template/>', '/src/components/foo.uvue')
+      await getTransformHandler(nvuePlugin)?.call(nvuePlugin, '<template/>', '/src/components/foo.uvue')
 
       expect(transformUVueMock).toHaveBeenLastCalledWith(
         '<template/>',
@@ -684,7 +958,7 @@ describe('uni-app-x vite plugins', () => {
       transformUVueMock.mockClear()
       transformUVueMock.mockReturnValue({ code: 'transformed', map: null } as TransformResult)
 
-      await nvuePlugin!.transform?.('<template/>', '/src/pages/index/index.uvue')
+      await getTransformHandler(nvuePlugin)?.call(nvuePlugin, '<template/>', '/src/pages/index/index.uvue')
 
       expect(transformUVueMock).toHaveBeenLastCalledWith(
         '<template/>',
@@ -731,7 +1005,8 @@ describe('uni-app-x vite plugins', () => {
       transformUVueMock.mockClear()
       transformUVueMock.mockReturnValue({ code: 'transformed', map: null } as TransformResult)
 
-      await nvuePlugin?.transform?.(
+      await getTransformHandler(nvuePlugin)?.call(
+        nvuePlugin,
         '<template><text class="text-xs text-white" /></template>',
         '/tmp/demo-weapp-tw-app-android-12345/pages/index/index.uvue',
       )
@@ -779,7 +1054,7 @@ describe('uni-app-x vite plugins', () => {
         map: null,
       } as TransformResult)
 
-      const result = await nvuePlugin!.transform?.('<template/>', '/project/pages/index/index.uvue') as TransformResult
+      const result = await getTransformHandler(nvuePlugin)?.call(nvuePlugin, '<template/>', '/project/pages/index/index.uvue') as TransformResult
 
       expect(result.code).toContain('border-top-left-radius: 9999px')
       expect(result.code).toContain('font-size: 24rpx')
@@ -790,7 +1065,11 @@ describe('uni-app-x vite plugins', () => {
       expect(generateCss).toHaveBeenCalledWith(
         expect.stringMatching(/^\/project\/uni-app-x-harmony-apply-[a-z0-9]+\.css$/),
         '@reference "/project/main.css";\n.issue-1002-apply { @apply rounded-full text-xs text-white; }',
-        expect.objectContaining({ transient: true }),
+        expect.objectContaining({
+          disableSourceScan: true,
+          sourceCandidates: [],
+          transient: true,
+        }),
       )
       expect(styleHandler).toHaveBeenCalledWith(
         expect.stringContaining('calc(infinity'),
@@ -836,7 +1115,7 @@ describe('uni-app-x vite plugins', () => {
       transformUVueMock.mockClear()
       transformUVueMock.mockReturnValue({ code: 'transformed', map: null } as TransformResult)
 
-      await nvuePlugin!.transform?.('<template/>', '/src/components/foo.uvue')
+      await getTransformHandler(nvuePlugin)?.call(nvuePlugin, '<template/>', '/src/components/foo.uvue')
 
       expect(transformUVueMock).toHaveBeenLastCalledWith(
         '<template/>',
@@ -1154,7 +1433,11 @@ describe('uni-app-x vite plugins', () => {
           '.wtu-b {\n  @apply text-[#f7fbff];\n}',
           '.wtu-c {\n  @apply w-[173px];\n}',
         ].join('\n'),
-        undefined,
+        expect.objectContaining({
+          disableSourceScan: true,
+          sourceCandidates: [],
+          transient: true,
+        }),
       )
       expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-a":{"":{"backgroundColor":"rgba(16,41,56,1)"}}')
       expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-b":{"":{"color":"rgba(247,251,255,1)"}}')
@@ -1190,7 +1473,7 @@ describe('uni-app-x vite plugins', () => {
       const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
       const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
 
-      await nvuePlugin?.transform?.call({} as any, '<template><view class="wtu-a" /></template>\n<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n</style>', '/project/pages/index/index.uvue')
+      await getTransformHandler(nvuePlugin)?.call({} as any, '<template><view class="wtu-a" /></template>\n<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n</style>', '/project/pages/index/index.uvue')
 
       const bundle = {
         'assets/App.js': createChunk('const _style_0 = {};'),
@@ -1202,7 +1485,11 @@ describe('uni-app-x vite plugins', () => {
       expect(generateCss).toHaveBeenCalledWith(
         path.resolve(process.cwd(), 'uni-app-x-harmony-apply.css'),
         '.wtu-a {\n  @apply bg-[#102938];\n}',
-        undefined,
+        expect.objectContaining({
+          disableSourceScan: true,
+          sourceCandidates: [],
+          transient: true,
+        }),
       )
       expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-a":{"":{"backgroundColor":"rgba(16,41,56,1)"}}')
     }

@@ -1,11 +1,18 @@
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'pathe'
-import { parseHexColorFromClass } from './hbuilderx-local/android-runtime'
+import { hasScreenshotContentChanged, parseHexColorFromClass } from './hbuilderx-local/android-runtime'
 import { appendHmrSourceMutation, createHmrOutputSnapshot, createHmrSourceRestore, haveHmrOutputsChanged } from './hbuilderx-local/source-mutations'
 import { collectMiniProgramStyleFiles } from './hbuilderx-local/styles'
 
 describe('HBuilderX local helpers', () => {
+  it('waits for Android HMR screenshots to differ from the previous frame', () => {
+    expect(hasScreenshotContentChanged(Uint8Array.from([1, 2, 3]))).toBe(true)
+    expect(hasScreenshotContentChanged(Uint8Array.from([1, 2, 3]), Uint8Array.from([1, 2, 3]))).toBe(false)
+    expect(hasScreenshotContentChanged(Uint8Array.from([1, 2, 4]), Uint8Array.from([1, 2, 3]))).toBe(true)
+    expect(hasScreenshotContentChanged(Uint8Array.from([1, 2]), Uint8Array.from([1, 2, 3]))).toBe(true)
+  })
+
   it('parses arbitrary Tailwind background colors for Android screenshot evidence', () => {
     expect(parseHexColorFromClass('flex bg-[#102938] text-white')).toEqual({
       blue: 56,

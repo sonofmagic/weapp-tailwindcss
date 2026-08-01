@@ -264,6 +264,16 @@ function resolveAnchor(source: string, anchors: string[]) {
 
 async function rewriteHmrMarker(file: string, anchors: string[], steps: WebHmrStep[], stepIndex: number) {
   const source = await readUtf8(file)
+  const persistentMarkerRE = /<view class="[^"]*\bhbuilderx-web-hmr-probe\b[^"]*">[^<]*<\/view>/
+  const step = steps[stepIndex]
+  if (!step) {
+    throw new Error(`缺少 Web HMR 步骤：${stepIndex}`)
+  }
+  const persistentMarker = `<view class="hbuilderx-web-hmr-probe ${step.markerClass.replace(/\bhbuilderx-web-hmr-probe\b/g, '').trim()}">${step.markerText}</view>`
+  if (persistentMarkerRE.test(source)) {
+    await fs.writeFile(file, source.replace(persistentMarkerRE, persistentMarker), 'utf8')
+    return
+  }
   const markerRE = /\n\t\t<view class="[^"]+">hbuilderx-web-hmr-[^<]+<\/view>/g
   const cleaned = source.replace(markerRE, '')
   const anchor = resolveAnchor(cleaned, anchors)
@@ -271,10 +281,7 @@ async function rewriteHmrMarker(file: string, anchors: string[], steps: WebHmrSt
   if (index < 0) {
     throw new Error(`找不到 HMR 插入锚点：${file}`)
   }
-  const insertion = steps
-    .slice(stepIndex, stepIndex + 1)
-    .map(step => `<view class="${step.markerClass}">${step.markerText}</view>`)
-    .join('\n\t\t')
+  const insertion = persistentMarker
   const next = `${cleaned.slice(0, index)}${insertion}\n\t\t${cleaned.slice(index)}`
   await fs.writeFile(file, next, 'utf8')
 }

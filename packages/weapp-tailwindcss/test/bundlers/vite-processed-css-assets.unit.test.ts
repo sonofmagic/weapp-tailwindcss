@@ -897,6 +897,68 @@ describe('vite processed css assets', () => {
     expect(nextCss).not.toContain('@property --tw-space-y-reverse')
   })
 
+  it('removes scoped uni-app Web preflight that would override global utilities', () => {
+    const css = [
+      '/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */',
+      'uni-view[data-v-00a60067],uni-text[data-v-00a60067],[data-v-00a60067]::after,[data-v-00a60067]::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
+      'uni-view[data-v-00a60067]{color:red}',
+      '.content[data-v-00a60067]{display:flex}',
+    ].join('\n')
+
+    const nextCss = removeScopedTailwindPreflightCss(css)
+
+    expect(nextCss).not.toContain('box-sizing:border-box')
+    expect(nextCss).not.toContain('margin:0')
+    expect(nextCss).toContain('uni-view[data-v-00a60067]{color:red}')
+    expect(nextCss).toContain('.content[data-v-00a60067]{display:flex}')
+  })
+
+  it('removes framework-processed scoped uni-app Web preflight without a Tailwind banner', () => {
+    const css = [
+      'uni-view[data-v-00a60067],uni-text[data-v-00a60067],[data-v-00a60067]::after,[data-v-00a60067]::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
+      'uni-view[data-v-00a60067]{color:red}',
+      '.content[data-v-00a60067]{display:flex}',
+    ].join('\n')
+
+    const nextCss = removeScopedTailwindPreflightCss(css)
+
+    expect(nextCss).not.toContain('box-sizing:border-box')
+    expect(nextCss).not.toContain('margin:0')
+    expect(nextCss).toContain('uni-view[data-v-00a60067]{color:red}')
+    expect(nextCss).toContain('.content[data-v-00a60067]{display:flex}')
+  })
+
+  it('removes bannerless Tailwind layer, property and universal preflight noise from scoped @reference output', () => {
+    const css = [
+      '@layer properties;',
+      '@layer theme, base, components, utilities;',
+      '@layer theme;',
+      '@layer base;',
+      '@property --tw-content{syntax:"*";initial-value:"";inherits:false}',
+      '*[data-v-04bcf89b],[data-v-04bcf89b]::before,[data-v-04bcf89b]::after,[data-v-04bcf89b]::backdrop{--tw-content:""}',
+      '@layer components{.hello-world-shell[data-v-04bcf89b]{display:flex}}',
+      '.user-card[data-v-04bcf89b]{padding:16px}',
+    ].join('\n')
+
+    const nextCss = removeScopedTailwindPreflightCss(css)
+
+    expect(nextCss).not.toContain('@layer properties')
+    expect(nextCss).not.toContain('@layer theme, base, components, utilities')
+    expect(nextCss).not.toContain('@property --tw-content')
+    expect(nextCss).not.toContain('--tw-content:""')
+    expect(nextCss).toContain('@layer components{.hello-world-shell[data-v-04bcf89b]{display:flex}}')
+    expect(nextCss).toContain('.user-card[data-v-04bcf89b]{padding:16px}')
+  })
+
+  it('removes scoped universal preflight when Vue serializes pseudo-elements with one colon', () => {
+    const css = '*[data-v-04bcf89b],[data-v-04bcf89b]:before,[data-v-04bcf89b]:after,[data-v-04bcf89b]::backdrop{--tw-content:""}\n.card[data-v-04bcf89b]{color:red}'
+
+    const nextCss = removeScopedTailwindPreflightCss(css)
+
+    expect(nextCss).not.toContain('--tw-content:""')
+    expect(nextCss).toContain('.card[data-v-04bcf89b]{color:red}')
+  })
+
   it('preserves mixed user scoped css while removing scoped Tailwind theme and element preflight', () => {
     const css = [
       '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',

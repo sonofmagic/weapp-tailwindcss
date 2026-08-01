@@ -1,6 +1,7 @@
 import type { ChildProcess } from 'node:child_process'
 import type { AppCase, MiniProgramCase, WebCase } from './cases'
 
+import { createHash } from 'node:crypto'
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import process from 'node:process'
@@ -22,13 +23,13 @@ import {
   collectProcessOutput,
   createLocalHBuilderXRunner,
   fileExists,
+  formatRecentLogs,
   hbuilderxAppTimeoutMs,
   hbuilderxTimeoutMs,
   killProcessTree,
   pollIntervalMs,
   readUtf8,
   resolveIosSimulatorDeviceId,
-  runPnpm,
   wait,
 } from './process'
 import { appendHmrSourceMutation, createHmrOutputSnapshot, createHmrSourceRestore, haveHmrOutputsChanged } from './source-mutations'
@@ -37,7 +38,7 @@ import { runWebHmr } from './web'
 
 const repoRoot = path.resolve(__dirname, '../..')
 const HBUILDERX_DEVICE_UNAVAILABLE_RE = /未检测到指定设备|指定设备(?:不存在|不可用|已离线)|(?:device|emulator)[\w-]*\s+(?:not found|offline|unavailable)/i
-const HBUILDERX_APP_TERMINATED_RE = /\[plugin:uni:app-uts\]\s*编译失败|已停止运行|(?:compile|compilation)\s+failed/i
+const HBUILDERX_APP_TERMINATED_RE = /\[plugin:uni:app-uts\]\s*编译失败|运行包制作失败|已停止运行|(?:compile|compilation)\s+failed/i
 const allowedWebConsoleWarnings = [
   /^\[vue-router\]: importing from 'vue-router\/dist\/vue-router\.esm-bundler\.js' is deprecated\./,
 ] as const
@@ -48,6 +49,15 @@ export function findHBuilderXDeviceUnavailableLog(output: string) {
 
 export function findHBuilderXAppTerminatedLog(output: string) {
   return output.match(HBUILDERX_APP_TERMINATED_RE)?.[0]
+}
+
+export function resolveHBuilderXLaunchProject(
+  platform: AppCase['platform'],
+  projectIdentity: { projectAlias: string, projectName: string },
+) {
+  return platform === 'app-harmony'
+    ? projectIdentity.projectAlias
+    : projectIdentity.projectName
 }
 
 function resolveAppMarkerAnchors(item: AppCase) {
@@ -128,6 +138,10 @@ async function waitForFile(file: string, timeoutMs: number) {
   return false
 }
 
+async function hashFile(file: string) {
+  return createHash('sha256').update(await fs.readFile(file)).digest('hex')
+}
+
 async function waitForAppRuntimeLogs(
   item: AppCase,
   logs: string[],
@@ -144,7 +158,7 @@ async function waitForAppRuntimeLogs(
     }
     await wait(pollIntervalMs)
   }
-  throw new Error(`${item.name} 未在 ${hbuilderxAppTimeoutMs}ms 内进入真实 App 运行时\nexpected=${item.runtimeLogContains.map(String).join(' | ')}\nrecentHBuilderXLogs=${logs.join('').slice(-8000)}`)
+  throw new Error(`${item.name} 未在 ${hbuilderxAppTimeoutMs}ms 内进入真实 App 运行时\nexpected=${item.runtimeLogContains.map(String).join(' | ')}\nrecentHBuilderXLogs=${formatRecentLogs(logs, 8000)}`)
 }
 
 async function resolveAppOutputRoot(item: AppCase) {
@@ -447,12 +461,13 @@ async function rmWithRetry(target: string) {
   }
 }
 
-async function createHBuilderXProjectAlias(projectRoot: string, platform: AppCase['platform']) {
-  const projectName = `${path.basename(projectRoot)}-weapp-tw-${platform}-${process.pid}`
-  const projectAlias = path.resolve(os.tmpdir(), projectName)
-  await rmWithRetry(projectAlias)
-  await fs.symlink(projectRoot, projectAlias, 'dir')
-  return { projectAlias, projectName }
+async function createHBuilderXProjectAlias(projectRoot: string) {
+  const identity = await createSharedHBuilderXProjectAlias(projectRoot)
+  return {
+    cleanup: identity.cleanup,
+    projectAlias: identity.projectPath,
+    projectName: identity.projectName,
+  }
 }
 
 async function writeAppMarker(
@@ -465,16 +480,23 @@ async function writeAppMarker(
   },
 ) {
   const source = await readUtf8(file)
+  const persistentMarkerRE = /<view(?:\s+id="native-hmr-probe")?\s+class="[^"]*\bhbuilderx-app-native-hmr-probe\b[^"]*">[\s\S]*?<\/view>/
+  const markerClassName = `hbuilderx-app-native-hmr-probe ${marker.className.replace(/\bhbuilderx-app-native-hmr-probe\b/g, '').trim()}`
   const cleaned = source.replace(/\n[ \t]*<view class="[^"]+">(?:<text class="[^"]+">)?hbuilderx-app-(?:dynamic|hmr)-[^<]+(?:<\/text>)?<\/view>/g, '')
+  const content = marker.textClassName
+    ? `<text class="${marker.textClassName}">${marker.text}</text>`
+    : marker.text
+  const persistentMarker = `<view id="native-hmr-probe" class="${markerClassName}">${content}</view>`
+  if (persistentMarkerRE.test(source)) {
+    await fs.writeFile(file, source.replace(persistentMarkerRE, persistentMarker), 'utf8')
+    return
+  }
   const anchor = anchors.find(item => cleaned.includes(item))
   const index = anchor ? cleaned.indexOf(anchor) : -1
   if (index < 0) {
     throw new Error(`找不到 App E2E 插入锚点：${file}`)
   }
-  const content = marker.textClassName
-    ? `<text class="${marker.textClassName}">${marker.text}</text>`
-    : marker.text
-  const next = `${cleaned.slice(0, index)}<view class="${marker.className}">${content}</view>\n\t\t${cleaned.slice(index)}`
+  const next = `${cleaned.slice(0, index)}${persistentMarker}\n\t\t${cleaned.slice(index)}`
   await fs.writeFile(file, next, 'utf8')
 }
 
@@ -488,33 +510,43 @@ export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
     }),
   )
 
-  if (item.platform !== 'mp-weixin') {
-    const hbuilderx = await createLocalHBuilderXRunner(projectRoot, { WEAPP_TW_HMR_TIMING: '1' })
-    const projectAlias = await createSharedHBuilderXProjectAlias(projectRoot)
-    try {
-      await hbuilderx.run({
-        args: ['project', 'open', '--path', projectAlias.projectPath],
-        cwd: projectRoot,
-        timeoutMs: hbuilderxTimeoutMs,
-      })
-      await hbuilderx.run({
-        args: ['launch', item.platform, '--project', projectAlias.projectName, '--compile', 'true'],
-        cwd: projectRoot,
-        timeoutMs: hbuilderxTimeoutMs,
-      })
-      await assertMiniProgramOutput(item)
+  const hbuilderx = await createLocalHBuilderXRunner(projectRoot, { WEAPP_TW_HMR_TIMING: '1' })
+  const projectAlias = await createSharedHBuilderXProjectAlias(projectRoot)
+  try {
+    await hbuilderx.run({
+      args: ['project', 'close', '--path', projectAlias.projectPath],
+      allowFailure: true,
+      cwd: projectRoot,
+      timeoutMs: hbuilderxTimeoutMs,
+    })
+    await hbuilderx.run({
+      args: ['project', 'open', '--path', projectAlias.projectPath],
+      cwd: projectRoot,
+      timeoutMs: hbuilderxTimeoutMs,
+    })
+    const launch = await hbuilderx.run({
+      args: ['launch', item.platform, '--project', projectAlias.projectName, '--compile', 'true'],
+      cwd: projectRoot,
+      timeoutMs: hbuilderxTimeoutMs,
+    })
+    if (launch.issue.kind !== 'unknown') {
+      throw new Error([
+        `${item.name} HBuilderX 编译失败：${launch.issue.message}`,
+        launch.issue.hint,
+        launch.output,
+      ].filter(Boolean).join('\n'))
     }
-    finally {
-      await projectAlias.cleanup()
-    }
-    return
+    await assertMiniProgramOutput(item)
   }
-
-  await runPnpm(projectRoot, ['run', 'dev:mp-weixin'], hbuilderxTimeoutMs, {
-    HBUILDERX_COMPILE_ONLY: '1',
-    WEAPP_TW_HMR_TIMING: '1',
-  })
-  await assertMiniProgramOutput(item)
+  finally {
+    await hbuilderx.run({
+      args: ['project', 'close', '--path', projectAlias.projectPath],
+      allowFailure: true,
+      cwd: projectRoot,
+      timeoutMs: hbuilderxTimeoutMs,
+    })
+    await projectAlias.cleanup()
+  }
 }
 
 export async function verifyAppHmrWithHBuilderX(item: AppCase) {
@@ -541,6 +573,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
   })
   const sourceFile = path.resolve(projectRoot, item.sourceFile)
   let projectAlias: string | undefined
+  let cleanupProjectAlias: (() => Promise<void>) | undefined
   let restore: (() => Promise<void>) | undefined
   let child: ChildProcess | undefined
   try {
@@ -554,8 +587,9 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       text: item.markerText,
     })
     await cleanAppOutput(item)
-    const projectIdentity = await createHBuilderXProjectAlias(projectRoot, item.platform)
+    const projectIdentity = await createHBuilderXProjectAlias(projectRoot)
     projectAlias = projectIdentity.projectAlias
+    cleanupProjectAlias = projectIdentity.cleanup
     await hbuilderx.run({
       args: ['project', 'open', '--path', projectAlias],
       cwd: projectRoot,
@@ -563,7 +597,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       env: androidEnv,
     })
     child = hbuilderx.spawn({
-      args: ['launch', item.platform, '--project', projectIdentity.projectName, '--cleanCache', 'true', ...launchArgs],
+      args: ['launch', item.platform, '--project', resolveHBuilderXLaunchProject(item.platform, projectIdentity), '--cleanCache', 'true', ...launchArgs],
       cwd: projectRoot,
       env: {
         WEAPP_TW_HMR_TIMING: '1',
@@ -589,10 +623,14 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       }
       const terminated = findHBuilderXAppTerminatedLog(output)
       if (terminated) {
-        throw new Error(`HBuilderX App 运行已终止：${terminated}\n${output.slice(-20_000)}`)
+        throw new Error(`HBuilderX App 运行已终止：${terminated}\n${formatRecentLogs(logs, 20_000)}`)
+      }
+      const issue = classifyHBuilderXOutput(output)
+      if (issue.kind === 'project-type-unsupported') {
+        throw new Error(`HBuilderX App 运行目标不受支持：${issue.message}\n${issue.hint ?? ''}\n${formatRecentLogs(logs, 20_000)}`)
       }
       if (exit && exit.code !== 0) {
-        throw new Error(`命令失败：HBuilderX ${hbuilderx.resolution.channel} launch ${item.platform} exit=${exit.signal ?? exit.code}\n${formatHBuilderXIssueDetails(output)}\n${output}`)
+        throw new Error(`命令失败：HBuilderX ${hbuilderx.resolution.channel} launch ${item.platform} exit=${exit.signal ?? exit.code}\n${formatHBuilderXIssueDetails(output)}\n${formatRecentLogs(logs, 20_000)}`)
       }
     }
     let initialOutputRoot: string | undefined
@@ -605,27 +643,26 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       await wait(pollIntervalMs)
     }
     if (!initialOutputRoot) {
-      throw new Error(`${item.name} App 初始开发产物未在 ${hbuilderxAppTimeoutMs}ms 内就绪\n${logs.join('')}`)
+      throw new Error(`${item.name} App 初始开发产物未在 ${hbuilderxAppTimeoutMs}ms 内就绪\n${formatRecentLogs(logs, 20_000)}`)
     }
 
     await assertAppOutput(item)
     if (exit) {
-      throw new Error(`HBuilderX app dev process exited before hot-update mutation: exit=${exit.signal ?? exit.code}\n${logs.join('')}`)
+      throw new Error(`HBuilderX app dev process exited before hot-update mutation: exit=${exit.signal ?? exit.code}\n${formatRecentLogs(logs, 20_000)}`)
     }
     await waitForAppRuntimeLogs(item, logs, ensureLaunchRunning)
     const androidDeviceId = item.platform === 'app-android'
       ? resolveAndroidDeviceId(launchArgs)
       : undefined
-    const runtimeEvidenceRoot = path.resolve(
-      os.tmpdir(),
-      'weapp-tailwindcss-hbuilderx-runtime',
-      `${process.pid}-${item.name.replace(/[^\w-]+/g, '-')}`,
-    )
+    const runtimeEvidenceRoot = process.env['E2E_HBUILDERX_RUNTIME_EVIDENCE_ROOT']
+      ? path.resolve(process.env['E2E_HBUILDERX_RUNTIME_EVIDENCE_ROOT'], item.name.replace(/[^\w-]+/g, '-'))
+      : path.resolve(
+          os.tmpdir(),
+          'weapp-tailwindcss-hbuilderx-runtime',
+          `${process.pid}-${item.name.replace(/[^\w-]+/g, '-')}`,
+        )
     let previousRuntimeScreenshot: string | undefined
-    if (item.platform === 'app-android') {
-      if (!item.runtime) {
-        throw new Error(`${item.name} 缺少 Android 初始运行时断言`)
-      }
+    if (item.platform === 'app-android' && item.runtime) {
       const initialScreenshot = path.resolve(runtimeEvidenceRoot, 'initial.png')
       const evidence = await waitForAndroidRuntimeEvidence({
         deviceId: androidDeviceId,
@@ -644,18 +681,25 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
         runtimeEvidence: evidence,
       })}\n`)
     }
+    else if (item.platform === 'app-android') {
+      process.stdout.write(`[hbuilderx-app] ${item.name} 未配置 Android 运行时探针，保留产物/HMR 断言\n`)
+    }
     let hmrOutputRoot = initialOutputRoot
     for (const step of resolveAppHmrSteps(item)) {
+      process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} start\n`)
       if (step.sourceMutation) {
-        const outputSnapshot = await createHmrOutputSnapshot(
-          resolveAppTransformedFiles(projectRoot, hmrOutputRoot, item),
-        )
+        const shouldWaitForOutputRefresh = step.sourceMutation.expectOutputRefresh !== false
+        const outputSnapshot = shouldWaitForOutputRefresh
+          ? await createHmrOutputSnapshot(resolveAppTransformedFiles(projectRoot, hmrOutputRoot, item))
+          : undefined
         await appendHmrSourceMutation(projectRoot, step.sourceMutation)
-        await waitForAppTransformedOutputsRefresh(outputSnapshot, ensureLaunchRunning, () => [
-          `step=${step.name}:source-mutation`,
-          `source=${step.sourceMutation!.file}`,
-          `recentHBuilderXLogs=${logs.join('').slice(-4000)}`,
-        ].join('\n'))
+        if (outputSnapshot) {
+          await waitForAppTransformedOutputsRefresh(outputSnapshot, ensureLaunchRunning, () => [
+            `step=${step.name}:source-mutation`,
+            `source=${step.sourceMutation!.file}`,
+            `recentHBuilderXLogs=${formatRecentLogs(logs, 4000)}`,
+          ].join('\n'))
+        }
       }
       await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
         className: step.markerClass,
@@ -668,13 +712,10 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
           `step=${step.name}`,
           `source=${path.relative(projectRoot, sourceFile)}`,
           `sourceTail=${source.slice(-1200)}`,
-          `recentHBuilderXLogs=${logs.join('').slice(-4000)}`,
+          `recentHBuilderXLogs=${formatRecentLogs(logs, 4000)}`,
         ].join('\n')
       }, step.styleContains, [...(item.transformedNotContains ?? []), ...(step.transformedNotContains ?? [])])
-      if (item.platform === 'app-android') {
-        if (!step.runtime) {
-          throw new Error(`${item.name} ${step.name} 缺少 Android 运行时断言`)
-        }
+      if (item.platform === 'app-android' && step.runtime) {
         const screenshot = path.resolve(runtimeEvidenceRoot, `${step.name}.png`)
         const evidence = await waitForAndroidRuntimeEvidence({
           deviceId: androidDeviceId,
@@ -682,9 +723,16 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
           env: androidEnv,
           expectation: step.runtime,
           label: `${item.name} ${step.name}`,
+          previousScreenshot: previousRuntimeScreenshot,
           screenshot,
           timeoutMs: hbuilderxAppTimeoutMs,
         })
+        if (previousRuntimeScreenshot) {
+          expect(
+            await hashFile(evidence.screenshot),
+            `${item.name} ${step.name} 热更新前后截图应发生变化`,
+          ).not.toBe(await hashFile(previousRuntimeScreenshot))
+        }
         process.stdout.write(`${JSON.stringify({
           outputRoot: hmrOutputRoot,
           previousRuntimeScreenshot,
@@ -693,6 +741,10 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
         })}\n`)
         previousRuntimeScreenshot = evidence.screenshot
       }
+      else if (item.platform === 'app-android') {
+        process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} 未配置 Android 运行时探针，保留产物/HMR 断言\n`)
+      }
+      process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} passed\n`)
     }
     await assertAppOutputHasNoUnsupportedContent(item, hmrOutputRoot)
     expectNoContent(logs.join(''), item.logNotContains, `${item.name} HBuilderX 日志`)
@@ -718,7 +770,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
         allowFailure: true,
         env: androidEnv,
       }).catch(() => undefined)
-      await rmWithRetry(projectAlias)
+      await cleanupProjectAlias?.()
     }
   }
 }

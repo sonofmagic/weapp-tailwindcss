@@ -89,14 +89,17 @@ describe.skipIf(!enabled)('uni-app scoped CSS post HMR', () => {
       await writeFilePreserveEol(testCase.sourceFile, updatedSource, originalSource)
       await waitFor(
         async () => {
-          const pageStyle = await readFileIfExists(testCase.outputStyleFile)
+          const [pageStyle, generatedStyle] = await Promise.all([
+            readFileIfExists(testCase.outputStyleFile),
+            readFileIfExists(testCase.generatedStyleFile),
+          ])
           return session.lastCompileSuccessAt() > updateStartedAt
             && pageStyle != null
             && hasScopedDarkApplyProbeStyle(pageStyle, {
               ...firstUpdatedState,
               staleDarkBackgrounds: ['#232323', '#252525'],
             })
-            && pageStyle.includes(safeIconSelector)
+            && generatedStyle?.includes(safeIconSelector) === true
         },
         {
           timeoutMs: CSS_POST_HMR_TIMEOUT_MS,

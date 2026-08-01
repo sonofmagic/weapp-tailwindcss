@@ -1,17 +1,32 @@
 import type { HmrSourceMutation } from './cases'
 
+import { createHash } from 'node:crypto'
 import fs from 'node:fs/promises'
 import path from 'pathe'
 
 import { readUtf8 } from './process'
 
-export type HmrOutputSnapshot = Map<string, number>
+interface HmrOutputSignature {
+  hash: string
+  mtimeMs: number
+  size: number
+}
+
+export type HmrOutputSnapshot = Map<string, HmrOutputSignature>
 
 export async function appendHmrSourceMutation(projectRoot: string, mutation: HmrSourceMutation) {
   const file = path.resolve(projectRoot, mutation.file)
   const source = await readUtf8(file)
   const separator = source.endsWith('\n') ? '' : '\n'
-  await fs.writeFile(file, `${source}${separator}${mutation.append.trimEnd()}\n`, 'utf8')
+  const nextSource = typeof mutation.append === 'string'
+    ? `${source}${separator}${mutation.append.trimEnd()}\n`
+    : mutation.touch
+      ? `${source}${separator}\n`
+      : undefined
+  if (nextSource === undefined) {
+    throw new Error(`HMR 源码变更缺少 append 或 touch：${mutation.file}`)
+  }
+  await fs.writeFile(file, nextSource, 'utf8')
   return file
 }
 
@@ -26,14 +41,21 @@ export async function createHmrSourceRestore(files: Iterable<string>) {
 }
 
 export async function createHmrOutputSnapshot(files: Iterable<string>): Promise<HmrOutputSnapshot> {
-  return new Map(await Promise.all([...new Set(files)].map(async file => [
-    file,
-    (await fs.stat(file)).mtimeMs,
-  ] as const)))
+  return new Map(await Promise.all([...new Set(files)].map(async (file) => {
+    const [stat, content] = await Promise.all([fs.stat(file), fs.readFile(file)])
+    return [file, {
+      hash: createHash('sha256').update(content).digest('hex'),
+      mtimeMs: stat.mtimeMs,
+      size: stat.size,
+    }] as const
+  })))
 }
 
 export async function haveHmrOutputsChanged(snapshot: HmrOutputSnapshot) {
-  return (await Promise.all([...snapshot].map(async ([file, previousMtime]) => {
-    return (await fs.stat(file)).mtimeMs > previousMtime
+  return (await Promise.all([...snapshot].map(async ([file, previous]) => {
+    const [stat, content] = await Promise.all([fs.stat(file), fs.readFile(file)])
+    return stat.mtimeMs !== previous.mtimeMs
+      || stat.size !== previous.size
+      || createHash('sha256').update(content).digest('hex') !== previous.hash
   }))).every(Boolean)
 }

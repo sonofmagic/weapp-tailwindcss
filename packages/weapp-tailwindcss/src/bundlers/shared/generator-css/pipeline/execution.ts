@@ -140,6 +140,7 @@ async function executeGeneratorPipelineWithOwner(
           ...source,
           css: removeTailwindSourceDirectives(sourceCss, {
             importFallback: generatorOptions.importFallback,
+            preserveApplyContext: true,
           }),
         }
       : sourceCss === source.css

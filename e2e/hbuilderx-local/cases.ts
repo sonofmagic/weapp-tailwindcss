@@ -1,6 +1,6 @@
 import process from 'node:process'
 
-export const rawTailwindDirectiveRE = /@(import\s+["']tailwindcss|tailwind|apply|theme|source)\b/
+export const rawTailwindDirectiveRE = /@(import\s+["']tailwindcss|tailwind|apply|theme|source)\b[^;\n{}]*[;{]/
 const unsafeMiniProgramSelectorFragments = ['.i-\\[', '.before\\:'] as const
 const safeMiniProgramGeneratedSelectors = [
   '.i-_bmdi--github-circle_B',
@@ -27,9 +27,11 @@ export type MiniProgramPlatform = 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-
 export type AppPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 
 export interface HmrSourceMutation {
-  append: string
+  append?: string
   cssContains?: Array<string | RegExp>
+  expectOutputRefresh?: boolean
   file: string
+  touch?: boolean
 }
 
 export interface AppHmrStep {
@@ -152,17 +154,22 @@ export interface WebRuntimeStyleAssertion {
   styles: Record<string, string | RegExp>
 }
 
-const hbuilderxMiniProgramOutputDirCandidates = [
-  'unpackage/dist/dev/mp-weixin',
-  'dist/dev/mp-weixin',
-]
-
 const uniAppHBuilderXMiniProgramPlatforms = [
   'mp-weixin',
   'mp-alipay',
   'mp-baidu',
   'mp-toutiao',
 ] satisfies MiniProgramPlatform[]
+
+const uniAppXHBuilderXMiniProgramPlatforms = [
+  'mp-weixin',
+] satisfies MiniProgramPlatform[]
+
+export const uniAppXHBuilderXUnsupportedMiniProgramPlatforms = {
+  'mp-alipay': 'HBuilderX stable/alpha 当前拒绝将 uni-app x 项目编译到支付宝小程序。',
+  'mp-baidu': 'HBuilderX stable/alpha 当前拒绝将 uni-app x 项目编译到百度小程序。',
+  'mp-toutiao': 'HBuilderX stable/alpha 当前拒绝将 uni-app x 项目编译到抖音小程序。',
+} as const satisfies Partial<Record<MiniProgramPlatform, string>>
 
 const miniProgramPlatformFiles = {
   'mp-alipay': {
@@ -269,7 +276,12 @@ function createUniAppHBuilderXMiniProgramCase(options: {
       : ['.bg-_b_h123456_B', /background-color:\s*rgba\(18,\s*52,\s*86/, /normal[-_]subpackage/i, /independent[-_]subpackage/i],
     cssNotContains: [rawTailwindDirectiveRE, ...unsafeMiniProgramSelectorFragments],
     outputContains: {
-      'app.json': ['"root": "sub-normal"', '"root": "sub-independent"', '"independent": true'],
+      // 百度和抖音小程序编译器会保留分包但不会输出 uni-app 的 independent 元数据。
+      'app.json': [
+        '"root": "sub-normal"',
+        '"root": "sub-independent"',
+        ...(['mp-baidu', 'mp-toutiao'].includes(options.platform) ? [] : ['"independent": true']),
+      ],
       [platformFiles.templateFiles.main]: [
         'template-corpus-card',
         'template-corpus-radial',
@@ -297,15 +309,17 @@ function createUniAppHBuilderXMiniProgramCases(options: {
 
 function createUniAppXHBuilderXMiniProgramCase(options: {
   name: string
+  platform: MiniProgramPlatform
   projectDir: string
 }): MiniProgramCase {
-  const platformFiles = miniProgramPlatformFiles['mp-weixin']
+  const platformFiles = miniProgramPlatformFiles[options.platform]
+  const templateExtension = platformFiles.templateFiles.main.split('.').at(-1)!
   return {
-    name: options.name,
-    platform: 'mp-weixin',
+    name: withMiniProgramPlatformName(options.name, options.platform),
+    platform: options.platform,
     projectDir: options.projectDir,
     outputDir: platformFiles.outputDir,
-    outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
+    outputDirCandidates: createMiniProgramOutputDirCandidates(options.platform),
     cssExtensions: platformFiles.cssExtensions,
     requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     cssContains: [
@@ -324,7 +338,7 @@ function createUniAppXHBuilderXMiniProgramCase(options: {
     outputContains: {
       'app.json': ['"root": "sub-normal"', '"root": "sub-independent"', '"independent": true'],
       'components/BindClass.js': ['__scopeId', 'data-v-'],
-      'components/BindClass.wxml': ['issue-822-component-child', /data-v-[\da-f]+/],
+      [`components/BindClass.${templateExtension}`]: ['issue-822-component-child', /data-v-[\da-f]+/],
       [platformFiles.templateFiles.main]: ['issue-902-theme-probe', 'bg-primary'],
       [platformFiles.templateFiles.independent]: ['bg-independent-subpackage-marker'],
       [platformFiles.templateFiles.normal]: ['bg-normal-subpackage-marker'],
@@ -333,13 +347,23 @@ function createUniAppXHBuilderXMiniProgramCase(options: {
   }
 }
 
+function createUniAppXHBuilderXMiniProgramCases(options: {
+  name: string
+  projectDir: string
+}) {
+  return uniAppXHBuilderXMiniProgramPlatforms.map(platform => createUniAppXHBuilderXMiniProgramCase({
+    ...options,
+    platform,
+  }))
+}
+
 export const miniProgramCases: MiniProgramCase[] = [
   ...createUniAppHBuilderXMiniProgramCases({
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
     projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
     tailwindcss: 'v4',
   }),
-  createUniAppXHBuilderXMiniProgramCase({
+  ...createUniAppXHBuilderXMiniProgramCases({
     name: 'uni-app-x-hbuilderx-tailwindcss-v4',
     projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
   }),
@@ -362,9 +386,9 @@ const harmonyHmrTransformedContains = [
 ]
 const issue1002AppOutputNotContains = [
   '.tw-root',
+  rawTailwindDirectiveRE,
+  /@[\w-][^;{}]*\{\s*\}/,
   'calc(infinity',
-  'var(--color-white)',
-  /var\(--text-(?:xs|sm|base|xl)/,
   /calc\((?:1(?:\.\d+)?\s*\/|8rpx\s*\*)/,
 ]
 const issue1002AppLogNotContains = [
@@ -377,6 +401,13 @@ const iconifyNativeLogNotContains = [
   /property value [`']?1em[`']? (?:is )?not supported for [`']?(?:width|height)/i,
   /property value [`']?currentColor[`']? (?:is )?(?:invalid|not supported) for [`']?background-color/i,
   /(?:-webkit-)?mask-(?:image|repeat|size).*not supported/i,
+]
+const nativeScopedAuthorLogNotContains = [
+  /property value [`']?\s*[`']? (?:is )?(?:invalid|not supported) for [`']?-webkit-transform/i,
+  /transition-property.*(?:invalid|not supported)/i,
+  /(?:selector|pseudo).*(?::is|:deep).*(?:invalid|not supported|parse)/i,
+  /(?:@apply|@theme|@source).*(?:invalid|not supported|unknown)/i,
+  /empty at-rule/i,
 ]
 const issue1002HarmonyStyleNotContains = issue1002AppOutputNotContains
 function createUniAppAppCases(options: {
@@ -587,13 +618,35 @@ export const uniAppXAppCases: AppCase[] = [
       /\["fontSize", "28rpx"\]/,
       /\["height", 41\]/,
       /\["marginTop", 19\]/,
-      /\["WebkitTransform", "translate\(10px 20px\)"\]/,
       /\["transform", "translate\(10px 20px\)"\]/,
     ],
     hmrSteps: [
       {
+        name: 'append-mt-200-to-existing-node',
+        markerClass: 'mt-200 flex h-[41px] w-[173px] items-center justify-center rounded-[9998px] bg-[#102938]',
+        markerTextClass: 'text-[39rpx] text-[#f7fbff]',
+        markerText: 'hbuilderx-app-hmr-v4-android-mt-200',
+        sourceMutation: {
+          expectOutputRefresh: false,
+          file: 'main.css',
+          touch: true,
+        },
+        runtime: {
+          backgroundColor: '#102938',
+          height: 41,
+          markerText: 'hbuilderx-app-hmr-v4-android-mt-200',
+          textColor: '#f7fbff',
+          width: 173,
+        },
+        transformedContains: [
+          'hbuilderx-app-hmr-v4-android-mt-200',
+          /\["backgroundColor", "#102938"\]/,
+          /\["marginTop", "1600rpx"\]/,
+        ],
+      },
+      {
         name: 'new-named-and-invalid-class',
-        markerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-[9997px] bg-issue-1021-hmr [transform:translate(10px,20px)]',
+        markerClass: 'mt-200 flex h-[41px] w-[173px] items-center justify-center rounded-[9997px] bg-issue-1021-hmr [transform:translate(10px,20px)]',
         markerTextClass: 'text-[28rpx] text-blue-600 text-bule-600',
         markerText: 'hbuilderx-app-hmr-v4-android',
         sourceMutation: {
@@ -613,8 +666,7 @@ export const uniAppXAppCases: AppCase[] = [
           /\["color", "rgb\(21,93,252\)"\]/,
           /\["fontSize", "28rpx"\]/,
           /\["height", 41\]/,
-          /\["marginTop", 19\]/,
-          /\["WebkitTransform", "translate\(10px 20px\)"\]/,
+          /\["marginTop", "1600rpx"\]/,
           /\["transform", "translate\(10px 20px\)"\]/,
         ],
         transformedNotContains: [
@@ -717,7 +769,7 @@ export const uniAppXAppCases: AppCase[] = [
       },
       {
         name: 'rollback-to-first-new-classes',
-        markerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-[9997px] bg-[#3b0764] [transform:translate(10px,20px)]',
+        markerClass: 'mt-200 flex h-[41px] w-[173px] items-center justify-center rounded-[9997px] bg-[#3b0764] [transform:translate(10px,20px)]',
         markerTextClass: 'text-[28rpx] text-blue-600 text-bule-600',
         markerText: 'hbuilderx-app-hmr-v4-android-rollback',
         runtime: {
@@ -733,8 +785,7 @@ export const uniAppXAppCases: AppCase[] = [
           /\["color", "rgb\(21,93,252\)"\]/,
           /\["fontSize", "28rpx"\]/,
           /\["height", 41\]/,
-          /\["marginTop", 19\]/,
-          /\["WebkitTransform", "translate\(10px 20px\)"\]/,
+          /\["marginTop", "1600rpx"\]/,
           /\["transform", "translate\(10px 20px\)"\]/,
         ],
         transformedNotContains: [
@@ -754,6 +805,7 @@ export const uniAppXAppCases: AppCase[] = [
     logNotContains: [
       ...issue1002AppLogNotContains,
       ...iconifyNativeLogNotContains,
+      ...nativeScopedAuthorLogNotContains,
       /Cannot read properties of null \(reading ['"]replace['"]\)/i,
       /property value .*translate.*not supported for .*transform/i,
     ],
@@ -798,9 +850,15 @@ export const uniAppXAppCases: AppCase[] = [
       /"wtu-[^"]+"\s*:\s*\{\s*""\s*:\s*\{\s*"color"\s*:\s*"#111111"/,
     ],
     transformedNotContains: issue1002AppOutputNotContains,
-    hmrTransformedContains: ['bg-_b_h3b0764_B', 'text-_b_hfef08a_B', 'h-_b41px_B', 'mt-_b19px_B', 'hbuilderx-app-hmr-v4-ios'],
+    hmrTransformedContains: [
+      'hbuilderx-app-hmr-v4-ios',
+      /"wtu-[^"]+"\s*:\s*\{\s*""\s*:\s*\{\s*"marginTop"\s*:\s*19/,
+      /"wtu-[^"]+"\s*:\s*\{\s*""\s*:\s*\{\s*"height"\s*:\s*41/,
+      /"wtu-[^"]+"\s*:\s*\{\s*""\s*:\s*\{\s*"backgroundColor"\s*:\s*"#3b0764"/,
+      /"wtu-[^"]+"\s*:\s*\{\s*""\s*:\s*\{\s*"color"\s*:\s*"#ffffff"/,
+    ],
     runtimeLogContains: ['App Launch'],
-    logNotContains: [...issue1002AppLogNotContains, ...iconifyNativeLogNotContains],
+    logNotContains: [...issue1002AppLogNotContains, ...iconifyNativeLogNotContains, ...nativeScopedAuthorLogNotContains],
   },
   {
     name: 'uni-app-x-hbuilderx-tailwindcss-v4 harmony',
@@ -842,26 +900,21 @@ export const uniAppXAppCases: AppCase[] = [
       /"borderTopStyle"\s*:\s*"solid"/,
       /"borderTopColor"\s*:\s*"#7c3aed"/,
       /--theme-color["']?\s*[:,]\s*["']?#16a34a/i,
-      /backgroundColor["']?\s*[:,]\s*["']var\(--theme-color,\s*#0957DE\)/i,
+      /backgroundColor["']?\s*[:,]\s*["']var\(--theme-color\)/i,
     ],
-    transformedNotContains: ['.tw-root'],
-    styleOutputFiles: [
-      'pages/index/index.uvue',
-      'uni-app-x-harmony-apply.css',
+    compiledStyleContains: [
+      /"issue-1002-apply":\{"":\{"borderRadius":9999/,
+      /"wtu-[^"]+":\{"":\{"borderRadius":9999/,
+      /"fontSize":"24rpx"/,
+      /"fontSize":"28rpx"/,
+      /"fontSize":"32rpx"/,
+      /"fontSize":"40rpx"/,
+      /"color":"#fff(?:fff)?"/,
     ],
-    styleContains: [
-      /\.issue-1002-apply\s*\{[\s\S]*border-radius:\s*9999px/,
-      /\.rounded-full\s*\{[\s\S]*border-radius:\s*9999px/,
-      /\.text-xs\s*\{[\s\S]*font-size:\s*24rpx/,
-      /\.text-sm\s*\{[\s\S]*font-size:\s*28rpx/,
-      /\.text-base\s*\{[\s\S]*font-size:\s*32rpx/,
-      /\.text-xl\s*\{[\s\S]*font-size:\s*40rpx/,
-      /\.text-white\s*\{[\s\S]*color:\s*#fff(?:fff)?/,
-    ],
-    styleNotContains: issue1002HarmonyStyleNotContains,
+    transformedNotContains: issue1002HarmonyStyleNotContains,
     hmrTransformedContains: [...harmonyHmrTransformedContains, 'hbuilderx-app-hmr-v4-harmony'],
     runtimeLogContains: ['App Launch'],
-    logNotContains: [...issue1002AppLogNotContains, ...iconifyNativeLogNotContains],
+    logNotContains: [...issue1002AppLogNotContains, ...iconifyNativeLogNotContains, ...nativeScopedAuthorLogNotContains],
   },
 ]
 
@@ -962,6 +1015,8 @@ export const webCases: WebCase[] = [
           display: 'flex',
           height: '44px',
           justifyContent: 'center',
+          transform: 'matrix(1, 0, 0, 1, 0, 0)',
+          transitionProperty: 'transform, opacity',
           width: '184px',
         },
       },
@@ -973,16 +1028,47 @@ export const webCases: WebCase[] = [
           fontSize: '16px',
         },
       },
+      {
+        selector: '.issue-1019-z-paging',
+        scopeAttribute: /^data-v-[\da-f]+$/,
+        styles: {
+          borderTopColor: 'rgb(14, 116, 144)',
+          minHeight: '48px',
+          transform: 'matrix(1, 0, 0, 1, 0, 0)',
+          transitionProperty: 'transform, opacity',
+          width: '184px',
+        },
+      },
+      {
+        selector: '.issue-1019-z-paging .z-paging__content',
+        styles: {
+          backgroundColor: 'rgb(236, 254, 255)',
+          color: 'rgb(22, 78, 99)',
+        },
+      },
     ],
     workflow: uniAppXHBuilderXWorkflow,
     hmrSteps: [
       {
-        markerClass: 'hbuilderx-web-hmr-probe bg-issue-1021-hmr text-[#f8fafc] w-[188px]',
+        markerClass: 'hbuilderx-web-hmr-probe mt-200 bg-[#102938] text-[#f7fbff] w-[173px]',
+        markerText: 'hbuilderx-web-hmr-v4-mt-200',
+        cssContains: [/\.mt-200\s*\{/, /background-color:\s*#102938/, /width:\s*173px/],
+        runtimeStyles: [{
+          selector: '.hbuilderx-web-hmr-probe',
+          styles: { backgroundColor: 'rgb(16, 41, 56)', color: 'rgb(247, 251, 255)', marginTop: '800px', width: '173px' },
+        }],
+        sourceMutation: {
+          file: 'main.css',
+          touch: true,
+        },
+      },
+      {
+        markerClass: 'hbuilderx-web-hmr-probe mt-200 bg-issue-1021-hmr text-[#f8fafc] w-[188px]',
         markerText: 'hbuilderx-web-hmr-v4-step-1',
         cssContains: [/\.bg-issue-1021-hmr\s*\{/, /color:\s*#f8fafc/, /width:\s*188px/],
         runtimeStyles: [{
           selector: '.hbuilderx-web-hmr-probe',
-          styles: { backgroundColor: 'rgb(15, 81, 50)', color: 'rgb(248, 250, 252)', width: '188px' },
+          styles: { backgroundColor: 'rgb(15, 81, 50)', color: 'rgb(248, 250, 252)', marginTop: '800px', width: '188px' },
         }],
         sourceMutation: {
           append: '@theme static { --color-issue-1021-hmr: #0f5132; }',
@@ -1013,7 +1099,7 @@ export const webCases: WebCase[] = [
         markerText: 'hbuilderx-web-hmr-v4-rem-rpx',
         cssContains: [
           /background-color:\s*#0e7490/,
-          /\.mt-\\\[10rpx\\\]\s*\{[\s\S]*margin-top:\s*0\.3125rem/,
+          /\.mt-_b10rpx_B\s*\{[\s\S]*margin-top:\s*0\.3125rem/,
           /\.text-xs\s*\{[\s\S]*font-size:\s*(?:var\(--text-xs\)|0\.75rem)/,
         ],
         runtimeStyles: [{

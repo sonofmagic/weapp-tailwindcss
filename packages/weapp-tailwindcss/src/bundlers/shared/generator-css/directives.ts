@@ -34,10 +34,21 @@ const TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES = new Set([
   'variant',
 ])
 
+const TAILWIND_APPLY_CONTEXT_DIRECTIVE_NAMES = new Set([
+  'config',
+  'custom-variant',
+  'plugin',
+  'reference',
+  'theme',
+  'utility',
+  'variant',
+])
+
 const TAILWIND_ROOT_DIRECTIVE_RE = /@(?:import\s+(?:url\(\s*)?["']?tailwindcss4?(?:\/[^"')\s]*)?|(?:use|forward)\s+(?:url\(\s*)?["']?tailwindcss4?(?:\/[^"')\s]*)?|tailwind|config|custom-variant|plugin|source|theme|utility|variant)\b/
 
 interface TailwindDirectiveOptions {
   importFallback?: boolean | undefined
+  preserveApplyContext?: boolean | undefined
 }
 
 interface TailwindGenerationDirectiveOptions extends TailwindDirectiveOptions {
@@ -167,6 +178,9 @@ function isTailwindSourceDirective(node: postcss.Node, options: TailwindDirectiv
   }
   if (atRule.name === 'layer') {
     return !atRule.nodes || atRule.nodes.length === 0
+  }
+  if (options.preserveApplyContext && TAILWIND_APPLY_CONTEXT_DIRECTIVE_NAMES.has(atRule.name)) {
+    return false
   }
   return TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES.has(atRule.name)
 }
