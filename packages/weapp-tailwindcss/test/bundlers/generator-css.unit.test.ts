@@ -4843,6 +4843,32 @@ describe('bundlers/shared generator css', () => {
     ].join('\n'))
   })
 
+  it('preserves Tailwind apply context while disabling source scanning', async () => {
+    const { removeTailwindSourceDirectives } = await import('@/bundlers/shared/generator-css')
+    const result = removeTailwindSourceDirectives([
+      '@import "tailwindcss" source(none);',
+      '@source inline("bg-primary");',
+      '@reference "/project/main.css";',
+      '@config "/project/tailwind.config.js";',
+      '@theme { --color-primary: #0957de; }',
+      '@plugin "./plugin.js";',
+      '@utility project-card { display: flex; }',
+      '.probe { @apply bg-primary project-card; }',
+    ].join('\n'), {
+      importFallback: true,
+      preserveApplyContext: true,
+    })
+
+    expect(result).not.toContain('@import')
+    expect(result).not.toContain('@source')
+    expect(result).toContain('@reference "/project/main.css";')
+    expect(result).toContain('@config "/project/tailwind.config.js";')
+    expect(result).toContain('@theme { --color-primary: #0957de; }')
+    expect(result).toContain('@plugin "./plugin.js";')
+    expect(result).toContain('@utility project-card { display: flex; }')
+    expect(result).toContain('@apply bg-primary project-card;')
+  })
+
   it('resolves current css asset directives for generator source', async () => {
     const rawSource = [
       '@config "./generator-css.unit.test.ts";',

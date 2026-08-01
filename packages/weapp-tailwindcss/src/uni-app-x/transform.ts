@@ -23,6 +23,7 @@ interface ParsedSfc {
   template?: SfcBlock & { ast?: ParentNode }
   script?: SfcBlock
   scriptSetup?: SfcBlock
+  styles: SfcBlock[]
   errors: unknown[]
 }
 
@@ -158,11 +159,12 @@ const defaultCreateJsHandlerOptions: CreateJsHandlerOptions = {
   },
 }
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)(?:\?.*)?$/
-const SFC_BLOCK_RE = /<(template|script)\b([^>]*)>([\s\S]*?)<\/\1>/gi
+const SFC_BLOCK_RE = /<(template|script|style)\b([^>]*)>([\s\S]*?)<\/\1>/gi
 const SCRIPT_SETUP_RE = /(?:^|\s)setup(?:\s|=|$)/
+const STYLE_SCOPED_RE = /(?:^|\s)scoped(?:\s|=|$)/i
 
 function parseSfc(code: string): ParsedSfc {
-  const descriptor: ParsedSfc = { errors: [] }
+  const descriptor: ParsedSfc = { errors: [], styles: [] }
 
   for (const match of code.matchAll(SFC_BLOCK_RE)) {
     const type = match[1]
@@ -199,6 +201,11 @@ function parseSfc(code: string): ParsedSfc {
       else {
         descriptor.script ??= block
       }
+      continue
+    }
+
+    if (type === 'style') {
+      descriptor.styles.push(block)
     }
   }
 
@@ -305,7 +312,14 @@ export function transformUVue(
     }
 
     if (localStyleCollector?.hasStyles()) {
-      ms.append(`\n${localStyleCollector.toStyleBlock()}`)
+      const scopedStyle = descriptor.styles.findLast(style => STYLE_SCOPED_RE.test(style.attrs))
+      if (scopedStyle) {
+        const separator = scopedStyle.content.endsWith('\n') ? '' : '\n'
+        ms.appendLeft(scopedStyle.end, `${separator}${localStyleCollector.toStyleRules()}`)
+      }
+      else {
+        ms.append(`\n${localStyleCollector.toStyleBlock()}`)
+      }
     }
   }
   const result: TransformResult = {

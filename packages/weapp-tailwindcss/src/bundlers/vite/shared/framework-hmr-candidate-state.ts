@@ -34,6 +34,7 @@ interface CreateViteHmrCandidateStateOptions {
   getCommand: () => string | undefined
   getGeneratorOptions: () => ViteHmrGeneratorOptions
   getSourceCandidate: (file: string) => string | undefined
+  isRuntimeAffectingSource?: (file: string) => boolean
 }
 
 export function createViteHmrCandidateState(options: CreateViteHmrCandidateStateOptions) {
@@ -83,6 +84,7 @@ export function createViteHmrCandidateState(options: CreateViteHmrCandidateState
     ...change,
     file,
     runtimeAffecting: changeOptions.runtimeAffecting === true
+      || options.isRuntimeAffectingSource?.(file) === true
       || isSourceStyleRequest(file)
       || WEB_HMR_RUNTIME_AFFECTING_DIRECTIVE_RE.test(options.getSourceCandidate(file) ?? ''),
   })
@@ -92,8 +94,12 @@ export function createViteHmrCandidateState(options: CreateViteHmrCandidateState
       clear()
       return change
     }
+    if (change.runtimeAffecting) {
+      queueFullRegeneration()
+      return change
+    }
     const preserveDeletedCss = options.getGeneratorOptions().hmr.preserveDeletedCss
-    if (preserveDeletedCss && !change.runtimeAffecting) {
+    if (preserveDeletedCss) {
       if (change.addedCandidates.size > 0) {
         queueChange(change)
       }

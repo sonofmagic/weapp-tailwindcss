@@ -1,6 +1,6 @@
-import path from 'node:path'
 import { hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
 import { isSourceStyleRequest } from '../../shared/style-requests'
+import { resolveViteModuleIdentity } from '../module-identity'
 import { cleanUrl } from '../utils'
 
 interface FrameworkTailwindRootCssOptions {
@@ -17,16 +17,18 @@ interface FrameworkTailwindRootCssOptions {
 export function createFrameworkTailwindRootCss(options: FrameworkTailwindRootCssOptions) {
   const hotSourceByFile = new Map<string, string>()
   const moduleIds = new Set<string>()
-  const normalizeSourceFile = (id: string) => path.normalize(path.resolve(cleanUrl(id)))
+  const normalizeSourceFile = (id: string) => resolveViteModuleIdentity(id).key
 
   const rememberModule = (id: unknown) => {
     if (!options.shouldOwnTailwindGeneration || typeof id !== 'string' || id.length === 0) {
       return
     }
     moduleIds.add(id)
-    const cleanId = cleanUrl(id)
-    if (isSourceStyleRequest(cleanId)) {
-      moduleIds.add(cleanId)
+    const identity = resolveViteModuleIdentity(id)
+    if (isSourceStyleRequest(identity.cleanId)) {
+      for (const moduleId of identity.lookupIds) {
+        moduleIds.add(moduleId)
+      }
     }
   }
 

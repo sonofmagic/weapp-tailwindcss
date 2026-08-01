@@ -21,10 +21,20 @@
 		border: 2px solid var(--issue-1019-border, #073b9a);
 		border-radius: 9px;
 		color: var(--issue-1019-text, #ffffff);
+		transition-property: transform, opacity;
+		transition-duration: 200ms;
+		-webkit-transform: translate(0px, 0px);
+		transform: translate(0px, 0px);
 
 		&--primary {
 			background-color: var(--issue-1019-primary, #0957de);
 		}
+
+		/* #ifndef APP */
+		&:is(.up-button--primary, .is-ready) {
+			opacity: 1;
+		}
+		/* #endif */
 
 		&::after {
 			border: 1px solid var(--issue-1019-after, #dcdfe6);

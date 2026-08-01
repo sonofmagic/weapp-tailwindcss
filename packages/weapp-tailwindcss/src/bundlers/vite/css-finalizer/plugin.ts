@@ -168,17 +168,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
 
         collectViteProcessedCssAssets()
 
-        const createHarmonyBundleStyleSources = async (runtime: Set<string>) => {
+        const createHarmonyBundleStyleSources = async () => {
           const cssSources = collectViteProcessedCssSources(getViteProcessedCssAssetResults)
           const applyUtilities = collectUniAppXHarmonyApplyUtilities(bundle)
           const applyStyleSources = collectUniAppXHarmonyApplyStyleSources(bundle)
           if (applyUtilities.size === 0 || applyStyleSources.length === 0) {
             return cssSources
           }
-          const harmonyRuntime = new Set([
-            ...runtime,
-            ...applyUtilities,
-          ])
           const harmonyCssHandlerOptions = createCssHandlerOptions(
             opts,
             runtimeState.tailwindRuntime.majorVersion,
@@ -192,7 +188,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           const generated = await generateTailwindV4Css({
             opts,
             runtimeState,
-            runtime: harmonyRuntime,
+            runtime: new Set(),
             rawSource: createUniAppXHarmonyApplyGeneratorSource(applyStyleSources, applyUtilities),
             file: 'uni-app-x-harmony-apply.css',
             outputFile: 'uni-app-x-harmony-apply.css',
@@ -202,6 +198,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
               isMainChunk: false,
             },
             cssStage: 'framework-processed',
+            disableSourceScan: true,
             getSourceCandidatesForEntries,
             generatorPlatform,
             styleHandler: opts.styleHandler,
@@ -213,12 +210,12 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           return cssSources
         }
 
-        const injectHarmonyBundleStyles = async (runtime: Set<string>) => {
+        const injectHarmonyBundleStyles = async () => {
           if (!isHarmonyAppStyleTarget) {
             return
           }
           const changed = injectUniAppXHarmonyBundleStyles(bundle, {
-            cssSources: await createHarmonyBundleStyleSources(runtime),
+            cssSources: await createHarmonyBundleStyleSources(),
           })
           if (changed) {
             debug('uni-app-x harmony bundle styles inject')
@@ -417,7 +414,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           bundle,
           writeTargets,
         })
-        await injectHarmonyBundleStyles(generatorRuntime)
+        await injectHarmonyBundleStyles()
         collectViteProcessedCssAssets()
         injectViteProcessedCssIntoMainCss()
         normalizeRootMiniProgramImportShellAssets(bundle, {

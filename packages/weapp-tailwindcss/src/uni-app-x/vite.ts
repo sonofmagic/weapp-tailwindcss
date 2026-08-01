@@ -1,11 +1,10 @@
 import type { RawSourceMap } from '@ampproject/remapping'
 import type { ExistingRawSourceMap, OutputAsset, SourceMap } from 'rollup'
-import type { Plugin, ResolvedConfig, TransformResult } from 'vite'
+import type { Plugin, TransformResult } from 'vite'
+import type { CreateUniAppXPluginsOptions } from './vite/plugin-options'
 import type { ICreateCacheReturnType } from '@/cache'
 import type {
-  AppType,
   CreateJsHandlerOptions,
-  ICustomAttributesEntities,
   InternalUserDefinedOptions,
   JsHandler,
   LinkedJsModuleResult,
@@ -14,7 +13,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { normalizeTailwindcssV4InfinityCalcCss } from '@weapp-tailwindcss/postcss'
 import { processCachedTask } from '@/bundlers/shared/cache'
-import { hasTailwindApplyDirective, hasTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
 import { toAbsoluteOutputPath } from '@/bundlers/shared/module-graph'
 import { parseVueRequest } from '@/bundlers/vite/query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest, normalizePath } from '@/bundlers/vite/utils'
@@ -32,9 +31,11 @@ import {
   injectUniAppXStylePlaceholder,
 } from './style-asset'
 import { resolveUniAppXStyleIsolationEnabled } from './style-isolation'
+import { retainUniAppXAuthorApplyCss } from './vite/author-apply'
 import { createUniAppXHarmonyApplyExpander } from './vite/harmony-apply'
 import { createUniAppXNativeHmrReloader } from './vite/native-hmr'
 import { createUniAppXNativeBuildTargetResolver } from './vite/native-target'
+import { isCssModuleExport, isPreprocessorRequest, resolveUniAppXCssTarget } from './vite/style-request'
 
 type TransformUVue = typeof import('./transform')['transformUVue']
 let transformUVuePromise: Promise<TransformUVue> | undefined
@@ -44,55 +45,11 @@ function loadTransformUVue(): Promise<TransformUVue> {
   return transformUVuePromise
 }
 
-interface CreateUniAppXPluginsOptions {
-  appType: AppType
-  customAttributesEntities: ICustomAttributesEntities
-  disabledDefaultTemplateHandler: boolean | undefined
-  mainCssChunkMatcher: NonNullable<InternalUserDefinedOptions['mainCssChunkMatcher']>
-  runtimeState: { readyPromise: Promise<unknown> }
-  styleHandler: InternalUserDefinedOptions['styleHandler']
-  tailwindRootCssModuleIds?: Iterable<string> | undefined
-  generateCss?: ((id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void, transient?: boolean }) => Promise<string | undefined> | string | undefined) | undefined
-  jsHandler: JsHandler
-  ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
-  getResolvedConfig: () => ResolvedConfig | undefined
-  isIosPlatform?: boolean
-  isEnabled?: (() => boolean) | undefined
-  uniAppX?: InternalUserDefinedOptions['uniAppX']
-  viteProcessedCssSourceFiles?: Iterable<string> | undefined
-}
-
-const preprocessorLangs = new Set(['scss', 'sass', 'less', 'styl', 'stylus'])
-
-const INLINE_LANG_RE = /lang\.([a-z]+)/i
-const PREPROCESSOR_EXT_RE = /\.(?:scss|sass|less|styl|stylus)(?:\?|$)/i
 const UVUE_NVUE_QUERY_RE = /\.(?:uvue|nvue)(?:\?.*)?$/
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)$/
-const CSS_MODULE_EXPORT_RE = /^\s*export\s+default\s+(?:\{|\w|\[\])/
-
-function isPreprocessorRequest(id: string, lang?: string): boolean {
-  const normalizedLang = lang?.toLowerCase()
-  if (normalizedLang && preprocessorLangs.has(normalizedLang)) {
-    return true
-  }
-  const inlineLangMatch = id.match(INLINE_LANG_RE)
-  const inlineLang = inlineLangMatch?.[1]
-  if (inlineLang && preprocessorLangs.has(inlineLang.toLowerCase())) {
-    return true
-  }
-  return PREPROCESSOR_EXT_RE.test(id)
-}
-
-function resolveUniAppXCssTarget(id: string) {
-  return UVUE_NVUE_RE.test(cleanUrl(id)) ? 'uvue' : undefined
-}
 
 function resolveUniAppXJsTransformEnabled(uniAppX: InternalUserDefinedOptions['uniAppX'] | undefined) {
   return uniAppX === undefined ? true : isUniAppXEnabled(uniAppX)
-}
-
-function isCssModuleExport(code: string) {
-  return CSS_MODULE_EXPORT_RE.test(code)
 }
 
 export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plugin[] {
@@ -104,6 +61,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     mainCssChunkMatcher,
     runtimeState,
     styleHandler,
+    syncSourceCandidatesForHotUpdate,
     tailwindRootCssModuleIds = [],
     generateCss,
     jsHandler,
@@ -119,6 +77,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   const cssHandlerOptionsCache = new Map<string, {
     isMainChunk: boolean
     uniAppXCssTarget?: 'uvue' | undefined
+    uniAppXCssSource?: 'tailwind-root' | 'author-apply' | undefined
     uniAppXUnsupported: 'error' | 'warn' | 'silent'
     postcssOptions: {
       options: {
@@ -131,9 +90,17 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       }
     }
   }>()
+  const nativeLocalStyleModuleIds = new Set<string>()
   let componentLocalStyleEnabled: boolean | undefined
   const isNativeAppBuildTarget = createUniAppXNativeBuildTargetResolver(getResolvedConfig)
-  const nativeHmrReloader = createUniAppXNativeHmrReloader({ ensureRuntimeClassSet, isNativeAppBuildTarget, tailwindRootCssModuleIds, viteProcessedCssSourceFiles })
+  const nativeHmrReloader = createUniAppXNativeHmrReloader({
+    ensureRuntimeClassSet,
+    isNativeAppBuildTarget,
+    localStyleModuleIds: nativeLocalStyleModuleIds,
+    syncSourceCandidates: syncSourceCandidatesForHotUpdate,
+    tailwindRootCssModuleIds,
+    viteProcessedCssSourceFiles,
+  })
 
   function shouldEnableComponentLocalStyle() {
     if (!resolvedUniAppXOptions.componentLocalStyles.enabled) {
@@ -163,13 +130,15 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     return isUniAppXHarmonyOutDir(getResolvedConfig()?.build?.outDir)
   }
 
-  function getStyleHandlerOptions(id: string) {
-    const cacheKey = `${mainCssChunkMatcher(id, appType) ? '1' : '0'}:${id}`
+  function getStyleHandlerOptions(id: string, source?: 'tailwind-root' | 'author-apply') {
+    const isMainChunk = source === 'tailwind-root' || mainCssChunkMatcher(id, appType)
+    const cacheKey = `${isMainChunk ? '1' : '0'}:${source ?? ''}:${id}`
     let styleHandlerOptions = cssHandlerOptionsCache.get(cacheKey)
     if (!styleHandlerOptions) {
       styleHandlerOptions = omitUndefined({
-        isMainChunk: mainCssChunkMatcher(id, appType),
+        isMainChunk,
         uniAppXCssTarget: isNativeAppBuildTarget(id) ? resolveUniAppXCssTarget(id) : undefined,
+        uniAppXCssSource: isNativeAppBuildTarget(id) ? source : undefined,
         uniAppXUnsupported: resolvedUniAppXOptions.uvueUnsupported,
         postcssOptions: {
           options: {
@@ -197,27 +166,45 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   }
 
   async function transformStyle(code: string, id: string, query?: ReturnType<typeof parseVueRequest>['query'], hookContext?: { addWatchFile?: (id: string) => void }) {
-    isNativeAppBuildTarget(id)
+    const isNativeStyle = isNativeAppBuildTarget(id)
     const parsed = query ?? parseVueRequest(id).query
     if (isCSSRequest(id) || (parsed.vue && parsed.type === 'style')) {
       if (isCssModuleExport(code)) {
         return
       }
-      const shouldGenerateCss = hasTailwindSourceDirectives(code, { importFallback: true })
-        || hasTailwindApplyDirective(code)
-      if (!isNativeAppBuildTarget(id) && !shouldGenerateCss) {
+      const hasTailwindRoot = hasTailwindRootDirectives(code, { importFallback: true })
+      const hasTailwindApply = hasTailwindApplyDirective(code)
+      const shouldGenerateCss = hasTailwindRoot || hasTailwindApply
+      const isNativeSfcAuthorStyle = isNativeStyle && resolveUniAppXCssTarget(id) === 'uvue'
+      if (!shouldGenerateCss && (!isNativeStyle || isNativeSfcAuthorStyle)) {
         return
       }
       harmonyApply.rememberSource(code, id)
       const generatedCss = (
         shouldGenerateCss
       )
-        ? await generateCss?.(id, code, hookContext)
+        ? await generateCss?.(
+            id,
+            isNativeSfcAuthorStyle && hasTailwindApply && !hasTailwindRoot
+              ? harmonyApply.prepareStyles(code, id)
+              : code,
+            {
+              ...hookContext,
+              disableSourceScan: isNativeSfcAuthorStyle && hasTailwindApply && !hasTailwindRoot,
+              sourceCandidates: isNativeSfcAuthorStyle && hasTailwindApply && !hasTailwindRoot ? [] : undefined,
+              transient: isNativeSfcAuthorStyle && hasTailwindApply && !hasTailwindRoot,
+            },
+          )
         : undefined
       const styleCode = typeof generatedCss === 'string' && generatedCss.trim().length > 0
-        ? generatedCss
+        ? hasTailwindApply && !hasTailwindRoot
+          ? retainUniAppXAuthorApplyCss(generatedCss, code)
+          : generatedCss
         : code
-      const styleHandlerOptions = getStyleHandlerOptions(id)
+      const styleHandlerOptions = getStyleHandlerOptions(
+        id,
+        isNativeStyle && hasTailwindRoot ? 'tailwind-root' : isNativeStyle ? 'author-apply' : undefined,
+      )
       const postcssResult = await styleHandler(styleCode, styleHandlerOptions)
       reportStyleWarnings(postcssResult)
       const rawPostcssMap = postcssResult.map.toJSON()
@@ -237,7 +224,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     getResolvedConfig,
     isHarmonyBuildTarget,
     async transformCss(css, id) {
-      const result = await styleHandler(css, getStyleHandlerOptions(id))
+      const result = await styleHandler(css, getStyleHandlerOptions(id, 'author-apply'))
       reportStyleWarnings(result)
       return result.css
     },
@@ -285,50 +272,56 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       }
       await nativeHmrReloader.refreshBaseline()
     },
-    async transform(code, id) {
-      if (!isEnabled()) {
-        return
-      }
-      if (!UVUE_NVUE_QUERY_RE.test(id)) {
-        return
-      }
-      isNativeAppBuildTarget(id)
-      harmonyApply.rememberSource(code, id)
-      const resolvedConfig = getResolvedConfig()
-      const isServeCommand = resolvedConfig?.command === 'serve'
-      const isWatchBuild = resolvedConfig?.command === 'build' && !!resolvedConfig.build?.watch
-      const isNonWatchBuild = resolvedConfig?.command === 'build' && !resolvedConfig.build?.watch
-      const shouldForceRefresh = isServeCommand || isWatchBuild || isNonWatchBuild
-      const currentRuntimeSet: Set<string> = shouldForceRefresh
-        ? await ensureRuntimeClassSet(true)
-        : await ensureRuntimeClassSet()
-      nativeHmrReloader.remember(currentRuntimeSet)
-      const transformUVue = await loadTransformUVue()
-      const enableComponentLocalStyle = shouldEnableComponentLocalStyle()
-      const enablePageLocalStyle = shouldEnableNativePageLocalStyle(id)
-      const shouldPassOptions = customAttributesEntities.length > 0
-        || disabledDefaultTemplateHandler
-        || enableComponentLocalStyle
-        || enablePageLocalStyle
-      const result = shouldPassOptions
-        ? transformUVue(code, id, jsHandler, currentRuntimeSet, omitUndefined({
-            ...(customAttributesEntities.length > 0 ? { customAttributesEntities } : {}),
-            ...(disabledDefaultTemplateHandler ? { disabledDefaultTemplateHandler } : {}),
-            ...(enableComponentLocalStyle ? { enableComponentLocalStyle } : {}),
-            ...(enablePageLocalStyle ? { enablePageLocalStyle } : {}),
-          }))
-        : transformUVue(code, id, jsHandler, currentRuntimeSet)
-      if (result?.code) {
-        harmonyApply.rememberSource(result.code, id)
-        const expandedCode = await harmonyApply.expandStyles(result.code, id, this)
-        if (expandedCode !== result.code) {
-          return {
-            code: expandedCode,
-            map: null,
+    transform: {
+      order: 'pre',
+      async handler(code, id) {
+        if (!isEnabled()) {
+          return
+        }
+        if (!UVUE_NVUE_QUERY_RE.test(id)) {
+          return
+        }
+        if (isNativeAppBuildTarget(id)) {
+          nativeLocalStyleModuleIds.add(id)
+          nativeLocalStyleModuleIds.add(cleanUrl(id))
+        }
+        harmonyApply.rememberSource(code, id, true)
+        const resolvedConfig = getResolvedConfig()
+        const isServeCommand = resolvedConfig?.command === 'serve'
+        const isWatchBuild = resolvedConfig?.command === 'build' && !!resolvedConfig.build?.watch
+        const isNonWatchBuild = resolvedConfig?.command === 'build' && !resolvedConfig.build?.watch
+        const shouldForceRefresh = isServeCommand || isWatchBuild || isNonWatchBuild
+        const currentRuntimeSet: Set<string> = shouldForceRefresh
+          ? await ensureRuntimeClassSet(true)
+          : await ensureRuntimeClassSet()
+        nativeHmrReloader.remember(currentRuntimeSet)
+        const transformUVue = await loadTransformUVue()
+        const enableComponentLocalStyle = shouldEnableComponentLocalStyle()
+        const enablePageLocalStyle = shouldEnableNativePageLocalStyle(id)
+        const shouldPassOptions = customAttributesEntities.length > 0
+          || disabledDefaultTemplateHandler
+          || enableComponentLocalStyle
+          || enablePageLocalStyle
+        const result = shouldPassOptions
+          ? transformUVue(code, id, jsHandler, currentRuntimeSet, omitUndefined({
+              ...(customAttributesEntities.length > 0 ? { customAttributesEntities } : {}),
+              ...(disabledDefaultTemplateHandler ? { disabledDefaultTemplateHandler } : {}),
+              ...(enableComponentLocalStyle ? { enableComponentLocalStyle } : {}),
+              ...(enablePageLocalStyle ? { enablePageLocalStyle } : {}),
+            }))
+          : transformUVue(code, id, jsHandler, currentRuntimeSet)
+        if (result?.code) {
+          harmonyApply.rememberSource(result.code, id)
+          const expandedCode = await harmonyApply.expandStyles(result.code, id, this)
+          if (expandedCode !== result.code) {
+            return {
+              code: expandedCode,
+              map: null,
+            }
           }
         }
-      }
-      return result
+        return result
+      },
     },
     async handleHotUpdate(ctx) {
       if (!isEnabled()) {
@@ -338,7 +331,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (resolvedConfig?.command !== 'serve') {
         return
       }
-      if (!UVUE_NVUE_RE.test(ctx.file)) {
+      if (!UVUE_NVUE_RE.test(ctx.file) && !isCSSRequest(ctx.file)) {
         return
       }
       return nativeHmrReloader.handleHotUpdate(ctx)
@@ -389,7 +382,12 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
             const generatedCss = await generateCss?.(
               harmonyApplyCssFile,
               createUniAppXHarmonyApplyGeneratorSource(applyStyleSources, applyUtilities),
-              this,
+              {
+                addWatchFile: this?.addWatchFile?.bind(this),
+                disableSourceScan: true,
+                sourceCandidates: [],
+                transient: true,
+              },
             )
             if (typeof generatedCss === 'string' && generatedCss.trim().length > 0) {
               cssSources.push(generatedCss)

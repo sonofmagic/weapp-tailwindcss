@@ -274,6 +274,7 @@ function resolveReferencePaths(styleSource: string, sourceId?: string) {
     return styleSource
   }
   const cleanSourceId = sourceId.replace(/\?.*$/, '')
+  const pathApi = /^[a-z]:[\\/]/i.test(cleanSourceId) ? path.win32 : path
   root.walkAtRules('reference', (rule) => {
     const quote = rule.params[0]
     if (quote !== '"' && quote !== '\'') {
@@ -287,7 +288,8 @@ function resolveReferencePaths(styleSource: string, sourceId?: string) {
     if (!referencePath.startsWith('.')) {
       return
     }
-    rule.params = `${quote}${path.resolve(path.dirname(cleanSourceId), referencePath)}${quote}${rule.params.slice(closingQuoteIndex + 1)}`
+    const resolvedPath = pathApi.resolve(pathApi.dirname(cleanSourceId), referencePath).replaceAll('\\', '/')
+    rule.params = `${quote}${resolvedPath}${quote}${rule.params.slice(closingQuoteIndex + 1)}`
   })
   return root.toString()
 }

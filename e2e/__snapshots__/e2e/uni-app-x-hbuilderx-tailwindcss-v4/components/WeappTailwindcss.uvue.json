@@ -1,0 +1,14 @@
+{
+  "file": "components/WeappTailwindcss.uvue",
+  "count": 8,
+  "tokens": [
+    "h-[48.3px]",
+    "px-4",
+    "text-2xl",
+    "text-center",
+    "text-gray-600/75",
+    "text-xs",
+    "underline",
+    "w-[300px]"
+  ]
+}

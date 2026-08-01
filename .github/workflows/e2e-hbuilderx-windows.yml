@@ -1,0 +1,116 @@
+name: E2E HBuilderX Windows
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/e2e-hbuilderx-windows.yml
+      - demo/uni-app-x-hbuilderx-tailwindcss-v4/**
+      - e2e/**
+      - packages/hbuilderx-runner/**
+      - packages/postcss/**
+      - packages/weapp-tailwindcss/**
+      - pnpm-lock.yaml
+  workflow_dispatch:
+
+concurrency:
+  group: e2e-hbuilderx-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  windows-hbuilderx-hmr:
+    if: vars.E2E_HBUILDERX_WINDOWS_ENABLED == 'true' && (github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository)
+    name: Windows HBuilderX ${{ matrix.channel }} H5 and Android HMR
+    runs-on: [self-hosted, Windows, hbuilderx, android]
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        channel: [stable, alpha]
+
+    steps:
+      - name: Check out maintainer branch
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.12.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Select HBuilderX channel
+        shell: pwsh
+        env:
+          ALPHA_CLI: ${{ vars.HBUILDERX_ALPHA_CLI_PATH }}
+          STABLE_CLI: ${{ vars.HBUILDERX_STABLE_CLI_PATH }}
+        run: |
+          $cli = if ('${{ matrix.channel }}' -eq 'stable') { $env:STABLE_CLI } else { $env:ALPHA_CLI }
+          if ([string]::IsNullOrWhiteSpace($cli) -or -not (Test-Path -LiteralPath $cli)) {
+            throw '请配置对应 channel 的 HBUILDERX_STABLE_CLI_PATH/HBUILDERX_ALPHA_CLI_PATH repository variable。'
+          }
+          "HBUILDERX_CHANNEL=${{ matrix.channel }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "HBUILDERX_CLI_PATH=$cli" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Verify Honor GT Pro device
+        shell: pwsh
+        env:
+          CONFIGURED_DEVICE_ID: ${{ vars.E2E_HBUILDERX_ANDROID_DEVICE_ID }}
+        run: |
+          $deviceId = $env:CONFIGURED_DEVICE_ID
+          if ([string]::IsNullOrWhiteSpace($deviceId)) {
+            $deviceId = (adb devices | Select-String "`tdevice$" | Select-Object -First 1).Line.Split("`t")[0]
+          }
+          if ([string]::IsNullOrWhiteSpace($deviceId)) {
+            throw '未找到已授权的 Android 真机。'
+          }
+          $model = (adb -s $deviceId shell getprop ro.product.model).Trim()
+          if ($model -ne 'PPG-AN00') {
+            throw "设备型号不匹配：expected=PPG-AN00 actual=$model device=$deviceId"
+          }
+          "E2E_HBUILDERX_ANDROID_DEVICE_ID=$deviceId" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build HBuilderX suite dependencies
+        shell: pwsh
+        run: |
+          pnpm --filter "@weapp-tailwindcss/shared" run build
+          pnpm --filter "@weapp-tailwindcss/logger" run build
+          pnpm --filter "@weapp-tailwindcss/postcss" run build
+          pnpm --filter "@weapp-tailwindcss/reset" run build
+          pnpm --filter "@weapp-tailwindcss/hbuilderx-runner" run build
+          pnpm --filter "weapp-style-injector" run build
+          pnpm --filter "weapp-tailwindcss" run build
+
+      - name: Run H5 HMR
+        env:
+          E2E_HBUILDERX_CASE: uni-app-x-hbuilderx-tailwindcss-v4
+          E2E_HBUILDERX_CHROME_PATH: ${{ vars.E2E_HBUILDERX_CHROME_PATH }}
+          E2E_HBUILDERX_RUNTIME_EVIDENCE_ROOT: .e2e-runtime/${{ matrix.channel }}
+        run: pnpm e2e:hbuilderx:h5
+
+      - name: Run Android real-device HMR
+        env:
+          E2E_HBUILDERX_CASE: uni-app-x-hbuilderx-tailwindcss-v4
+          E2E_HBUILDERX_RUNTIME_EVIDENCE_ROOT: .e2e-runtime/${{ matrix.channel }}
+        run: pnpm e2e:hbuilderx:android
+
+      - name: Upload runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: hbuilderx-windows-${{ matrix.channel }}
+          if-no-files-found: warn
+          path: |
+            .e2e-runtime/${{ matrix.channel }}/**
+            demo/uni-app-x-hbuilderx-tailwindcss-v4/unpackage/dist/dev/**

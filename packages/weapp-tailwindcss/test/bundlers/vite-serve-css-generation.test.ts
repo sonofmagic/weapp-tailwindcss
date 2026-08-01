@@ -103,4 +103,27 @@ describe('vite serve css generation plugins', () => {
     })
     await expect(buildDisabled.plugins[1]!.transform?.call({} as any, '@import "tailwindcss";', '/src/app.css' as any)).resolves.toBeUndefined()
   })
+
+  it('defers selected build style requests without skipping Tailwind root generation', async () => {
+    const shouldDeferGeneration = vi.fn((id: string, code: string) => {
+      return id.includes('.uvue?') && code.includes('@apply') && !code.includes('@import "tailwindcss"')
+    })
+    const { options, plugins } = createPlugins({
+      getCommand: vi.fn(() => 'build'),
+      shouldDeferGeneration,
+    })
+    const buildPlugin = plugins[1]!
+    const authorStyleId = '/src/components/card.uvue?vue&type=style&index=0&scoped=true&lang.css'
+
+    await expect(buildPlugin.transform?.call({} as any, '.card { @apply p-4; }', authorStyleId as any)).resolves.toBeUndefined()
+    expect(options.generateCss).not.toHaveBeenCalled()
+
+    const rootCss = '@import "tailwindcss";\n.card { @apply p-4; }'
+    await expect(buildPlugin.transform?.call({} as any, rootCss, '/src/main.css' as any)).resolves.toEqual({
+      code: `${rootCss}\n/* /src/main.css */`,
+      map: null,
+    })
+    expect(options.generateCss).toHaveBeenCalledTimes(1)
+    expect(options.onTailwindRootCss).toHaveBeenCalledWith('/src/main.css', rootCss)
+  })
 })

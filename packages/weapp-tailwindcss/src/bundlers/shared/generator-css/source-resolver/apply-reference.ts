@@ -19,7 +19,7 @@ function resolveTailwindV4ApplyReference(options: TailwindV4ApplyReferenceSource
       && source.file.length > 0
       && typeof source.css === 'string'
       && hasTailwindRootDirectives(source.css, { importFallback: true })
-      && hasTailwindThemeDirective(source.css)
+      && hasTailwindApplyContextDirective(source.css)
     ) {
       references.add(source.file)
     }
@@ -27,11 +27,14 @@ function resolveTailwindV4ApplyReference(options: TailwindV4ApplyReferenceSource
   return references.size === 1 ? references.values().next().value : undefined
 }
 
-function hasTailwindThemeDirective(css: string) {
+function hasTailwindApplyContextDirective(css: string) {
   try {
     let found = false
-    postcss.parse(css).walkAtRules('theme', () => {
-      found = true
+    postcss.parse(css).walkAtRules((rule) => {
+      if (rule.name === 'theme' || rule.name === 'config') {
+        found = true
+        return false
+      }
     })
     return found
   }

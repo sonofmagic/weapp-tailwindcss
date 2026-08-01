@@ -22,6 +22,26 @@ describe('generator css apply reference', () => {
     expect(result).not.toContain('@import "tailwindcss" source(none);')
   })
 
+  it('references a Tailwind root whose project theme comes from @config', () => {
+    const css = '.probe { @apply bg-primary; }'
+    const result = createTailwindV4ApplyReferenceSource(css, {
+      cssSources: [
+        {
+          css: '@import "tailwindcss" source(none);\n@config "./tailwind.config.js";',
+          file: 'C:\\project\\main.css',
+        },
+        {
+          css,
+          file: 'C:\\project\\pages\\index\\index.uvue?vue&type=style',
+        },
+      ],
+    })
+
+    expect(result).toContain('@reference "C:/project/main.css";')
+    expect(result).toContain('@source inline("bg-primary");')
+    expect(result).not.toContain('@import "tailwindcss" source(none);')
+  })
+
   it('falls back to the Tailwind package when configured roots are ambiguous', () => {
     const result = createTailwindV4ApplyReferenceSource('.probe { @apply flex; }', {
       cssSources: [

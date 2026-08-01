@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
-import { miniProgramCases, uniAppAppCases, uniAppXAppCases, webCases } from '../../../e2e/hbuilderx-local/cases'
+import { miniProgramCases, rawTailwindDirectiveRE, uniAppAppCases, uniAppXAppCases, uniAppXHBuilderXUnsupportedMiniProgramPlatforms, webCases } from '../../../e2e/hbuilderx-local/cases'
 import { filterHBuilderXCases, matchesHBuilderXCaseFilter, parseCaseNameFilters } from '../../../e2e/hbuilderx-local/filters'
-import { findHBuilderXAppTerminatedLog, findHBuilderXDeviceUnavailableLog } from '../../../e2e/hbuilderx-local/runner'
+import { findHBuilderXAppTerminatedLog, findHBuilderXDeviceUnavailableLog, resolveHBuilderXLaunchProject } from '../../../e2e/hbuilderx-local/runner'
 
 const hbuilderxDemoNames = [
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
@@ -28,6 +28,13 @@ function expectContainsMatcher(entries: Array<string | RegExp>, matcher: string 
 }
 
 describe('HBuilderX local demo matrix', () => {
+  it('distinguishes CSS directives from visible text mentioning @apply', () => {
+    expect('@apply 多端写法示例').not.toMatch(rawTailwindDirectiveRE)
+    expect('@apply flex items-center;').toMatch(rawTailwindDirectiveRE)
+    expect('@theme static {').toMatch(rawTailwindDirectiveRE)
+    expect('@import "tailwindcss";').toMatch(rawTailwindDirectiveRE)
+  })
+
   it('fails fast when HBuilderX reports a missing device without exiting', () => {
     expect(findHBuilderXDeviceUnavailableLog('未检测到指定设备 emulator-5554')).toBe('未检测到指定设备')
     expect(findHBuilderXDeviceUnavailableLog('emulator-5556 offline')).toBe('emulator-5556 offline')
@@ -36,8 +43,20 @@ describe('HBuilderX local demo matrix', () => {
 
   it('fails fast when HBuilderX stops an App build without exiting', () => {
     expect(findHBuilderXAppTerminatedLog('[plugin:uni:app-uts] 编译失败')).toBe('[plugin:uni:app-uts] 编译失败')
+    expect(findHBuilderXAppTerminatedLog('运行包制作失败')).toBe('运行包制作失败')
     expect(findHBuilderXAppTerminatedLog('已停止运行...')).toBe('已停止运行')
     expect(findHBuilderXAppTerminatedLog('App Launch')).toBeUndefined()
+  })
+
+  it('uses the absolute project alias for Harmony without changing other App launch identities', () => {
+    const identity = {
+      projectAlias: 'C:/Temp/uni-app-x-worktree-alias',
+      projectName: 'uni-app-x-worktree-alias',
+    }
+
+    expect(resolveHBuilderXLaunchProject('app-harmony', identity)).toBe(identity.projectAlias)
+    expect(resolveHBuilderXLaunchProject('app-android', identity)).toBe(identity.projectName)
+    expect(resolveHBuilderXLaunchProject('app-ios', identity)).toBe(identity.projectName)
   })
 
   it('keeps every HBuilderX demo covered by local mini-program and Web HMR cases', () => {
@@ -56,7 +75,7 @@ describe('HBuilderX local demo matrix', () => {
       expect(webCase?.workflow.webHmr, `${name} should cover H5 dev HMR`).toBe(true)
       expect(webCase?.hmrSteps.length, `${name} should simulate multiple user edits during H5 dev`).toBeGreaterThanOrEqual(3)
       for (const step of webCase?.hmrSteps ?? []) {
-        const themeColor = step.sourceMutation?.append.match(/--color-([\w-]+)\s*:/)?.[1]
+        const themeColor = step.sourceMutation?.append?.match(/--color-([\w-]+)\s*:/)?.[1]
         const hasGeneratedBackground = step.markerClass.includes('bg-[#')
           || (themeColor !== undefined && step.markerClass.split(/\s+/).includes(`bg-${themeColor}`))
         expect(step.markerClass, `${name} HMR step should replace user-authored classes on one probe`).toContain('hbuilderx-web-hmr-probe')
@@ -97,13 +116,20 @@ describe('HBuilderX local demo matrix', () => {
     }
   })
 
-  it('keeps uni-app-x HBuilderX mini-program coverage limited to mp-weixin while HBuilderX rejects other mini-program targets', () => {
+  it('keeps uni-app-x HBuilderX coverage on supported targets and records upstream exclusions', () => {
     const uniAppXMiniProgramCases = miniProgramCases.filter(item => item.projectDir.includes('uni-app-x-hbuilderx'))
 
-    expect(uniAppXMiniProgramCases.map(item => item.name)).toEqual([
-      'uni-app-x-hbuilderx-tailwindcss-v4',
+    expect(uniAppXMiniProgramCases.map(item => item.platform)).toEqual([
+      'mp-weixin',
     ])
-    expect(uniAppXMiniProgramCases.map(item => item.platform)).toEqual(['mp-weixin'])
+    expect(uniAppXMiniProgramCases.map(item => item.cssExtensions)).toEqual([
+      ['.wxss'],
+    ])
+    expect(uniAppXHBuilderXUnsupportedMiniProgramPlatforms).toEqual({
+      'mp-alipay': expect.stringContaining('HBuilderX stable/alpha'),
+      'mp-baidu': expect.stringContaining('HBuilderX stable/alpha'),
+      'mp-toutiao': expect.stringContaining('HBuilderX stable/alpha'),
+    })
   })
 
   it('keeps uni-app-x HBuilderX cases covering dynamic classes, user styles and component styles', () => {
@@ -130,13 +156,16 @@ describe('HBuilderX local demo matrix', () => {
     }
   })
 
-  it('saves the Android Tailwind root source before introducing a new named class', () => {
+  it('touches the Tailwind root before adding utilities and declares named classes before use', () => {
     const androidCase = uniAppXAppCases.find(item => item.name === 'uni-app-x-hbuilderx-tailwindcss-v4 android')
     const firstStep = androidCase?.hmrSteps?.[0]
+    const namedClassStep = androidCase?.hmrSteps?.[1]
 
-    expect(firstStep?.sourceMutation?.append).toContain('@theme static')
     expect(firstStep?.sourceMutation?.file).toBe('main.css')
-    expect(firstStep?.markerClass).toContain('bg-issue-1021-hmr')
+    expect(firstStep?.sourceMutation?.touch).toBe(true)
+    expect(firstStep?.markerClass).toContain('mt-200')
+    expect(namedClassStep?.sourceMutation?.append).toContain('@theme static')
+    expect(namedClassStep?.markerClass).toContain('bg-issue-1021-hmr')
   })
 
   it('keeps local App coverage explicit for supported HBuilderX demo platforms', () => {
@@ -147,6 +176,15 @@ describe('HBuilderX local demo matrix', () => {
     expect(appCaseNames).toContain('uni-app-x-hbuilderx-tailwindcss-v4 android')
     expect(appCaseNames).toContain('uni-app-x-hbuilderx-tailwindcss-v4 ios')
     expect(appCaseNames).toContain('uni-app-x-hbuilderx-tailwindcss-v4 harmony')
+  })
+
+  it('validates Harmony styles from final compiled JavaScript instead of compiler intermediates', () => {
+    const harmonyCase = uniAppXAppCases.find(item => item.platform === 'app-harmony')
+
+    expect(harmonyCase?.styleOutputFiles).toBeUndefined()
+    expect(harmonyCase?.styleContains).toBeUndefined()
+    expect(harmonyCase?.compiledStyleContains?.length).toBeGreaterThanOrEqual(7)
+    expectContainsMatcher(harmonyCase?.transformedNotContains ?? [], rawTailwindDirectiveRE, 'Harmony output should reject leaked Tailwind directives')
   })
 
   it('filters local HBuilderX e2e cases by demo name without requiring Vitest -t suffix matching', () => {

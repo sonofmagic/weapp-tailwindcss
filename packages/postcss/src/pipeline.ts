@@ -56,6 +56,10 @@ interface PipelinePreparedNode extends PipelineNodeCursor {
   createPlugin: (context: PipelineNodeContext) => AcceptedPlugin
 }
 
+interface UniAppXInternalStyleHandlerOptions extends IStyleHandlerOptions {
+  uniAppXCssSource?: 'tailwind-root' | 'author' | 'author-apply'
+}
+
 export interface ResolvedPipelineNode extends PipelineNodeCursor {
   plugin: AcceptedPlugin
   context: PipelineNodeContext
@@ -122,9 +126,43 @@ function shouldUseDefaultAutoprefixer(options: IStyleHandlerOptions, userPlugins
   return options.majorVersion === 4
 }
 
+function isUniAppXNativeAuthorStyle(options: IStyleHandlerOptions) {
+  const source = (options as UniAppXInternalStyleHandlerOptions).uniAppXCssSource
+  return options.uniAppX === true
+    && options.uniAppXCssTarget === 'uvue'
+    && (source === 'author' || source === 'author-apply')
+}
+
+function appendUniAppXNativeAuthorDeclarationNodes(
+  preparedNodes: PipelinePreparedNode[],
+  options: IStyleHandlerOptions,
+) {
+  if ((options as UniAppXInternalStyleHandlerOptions).uniAppXCssSource !== 'author-apply') {
+    return
+  }
+
+  const declarationPlugins = [
+    ['normal:units-to-px', getUnitsToPxPlugin(options)],
+    ['normal:px-transform', getPxTransformPlugin(options)],
+    ['normal:rem-transform', getRemTransformPlugin(options)],
+    ['normal:unit-conversion', getUnitConversionPlugin(options)],
+    ['normal:calc', getCalcPlugin(options)],
+  ] as const
+
+  for (const [id, plugin] of declarationPlugins) {
+    if (plugin) {
+      preparedNodes.push(createPreparedNode(id, 'normal', () => plugin))
+    }
+  }
+}
+
 // createPreparedNodes 直接按最终顺序生成可实例化节点，避免 definition 二次中转
 function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSignal): PipelinePreparedNode[] {
   const preparedNodes: PipelinePreparedNode[] = []
+  if (isUniAppXNativeAuthorStyle(options)) {
+    appendUniAppXNativeAuthorDeclarationNodes(preparedNodes, options)
+    return preparedNodes
+  }
   const userPlugins = normalizeUserPlugins(options.postcssOptions?.plugins)
   const presetEnvOptions = {
     ...options.cssPresetEnv,

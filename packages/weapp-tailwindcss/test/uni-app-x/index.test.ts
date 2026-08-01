@@ -384,6 +384,29 @@ const active = true
     expect(styleBlock).toContain('@apply text-[#ff0000];')
   })
 
+  it('merges page local styles into the existing scoped style payload', () => {
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    const { jsHandler } = getCompilerContext({ uniAppX: true })
+    const code = [
+      '<template><view class="bg-[#123456]">hello</view></template>',
+      '<style lang="scss" scoped>',
+      '.author { @apply flex; }',
+      '</style>',
+    ].join('\n')
+
+    const result = transformUVue(
+      code,
+      '/src/pages/index/index.uvue',
+      jsHandler,
+      new Set(['bg-[#123456]']),
+      { enablePageLocalStyle: true },
+    )
+
+    expect(result?.code.match(/<style\b/g)).toHaveLength(1)
+    expect(result?.code).toContain('.author { @apply flex; }')
+    expect(result?.code).toMatch(/\.wtu-[\w-]+ \{\n  @apply bg-\[#123456\];\n\}/)
+  })
+
   it('keeps variant utilities on the global platform pipeline for app-harmony pages', () => {
     process.env.UNI_UTS_PLATFORM = 'app-harmony'
     const { jsHandler } = getCompilerContext({

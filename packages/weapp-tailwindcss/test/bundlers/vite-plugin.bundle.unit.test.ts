@@ -83,6 +83,11 @@ function getOutputOptionsHandler(plugin: Plugin) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
+function getHandleHotUpdateHandler(plugin: Plugin) {
+  const hook = plugin.handleHotUpdate as any
+  return typeof hook === 'object' ? hook.handler : hook
+}
+
 function normalizeGeneratorOptions(options: any) {
   const target = options?.target ?? 'weapp'
   const platformFamily = target === 'web' ? 'web' : 'mini-program'
@@ -1417,7 +1422,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     } as ModuleNode
     const invalidateModule = vi.fn()
     const wsSend = vi.fn()
-    const handleHotUpdate = sourcePlugin.handleHotUpdate as any
+    const handleHotUpdate = getHandleHotUpdateHandler(sourcePlugin)
     const result = await handleHotUpdate.call(sourcePlugin, {
       file: pageFile,
       modules: [vueModule],
@@ -1434,7 +1439,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       },
     } as HmrContext)
 
-    expect(result).toBeUndefined()
+    expect(result).toEqual([vueModule, cssModule])
     expect(invalidateModule).toHaveBeenCalledWith(cssModule)
     await Promise.resolve()
     expect(wsSend).toHaveBeenCalledWith({
@@ -1584,7 +1589,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       file: cssFile,
       url: cssFile,
     } as ModuleNode
-    await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+    await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: pageFile,
       modules: [{
         id: pageFile,
@@ -1766,7 +1771,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       file: cssFile,
       url: cssFile,
     } as ModuleNode
-    await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+    await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: pageFile,
       modules: [{
         id: pageFile,
@@ -2192,7 +2197,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const transform = getTransformHandler(servePlugin)
     await transform?.call(servePlugin, css, cssFile)
-    const handleHotUpdate = sourcePlugin.handleHotUpdate as any
+    const handleHotUpdate = getHandleHotUpdateHandler(sourcePlugin)
     await handleHotUpdate.call(sourcePlugin, {
       file: cssFile,
       modules: [{
@@ -2223,13 +2228,14 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     await greenExtractionStarted
 
     const wsSend = vi.fn()
+    const sourceModule = {
+      id: pageFile,
+      isSelfAccepting: true,
+      url: '/src/pages/index/index.tsx',
+    } as ModuleNode
     const hotUpdate = handleHotUpdate.call(sourcePlugin, {
       file: pageFile,
-      modules: [{
-        id: pageFile,
-        isSelfAccepting: true,
-        url: '/src/pages/index/index.tsx',
-      } as ModuleNode],
+      modules: [sourceModule],
       read: vi.fn(async () => '<View className="bg-[red]">Hello world!</View>\n'),
       timestamp: 123456,
       server: {
@@ -2253,9 +2259,13 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     await Promise.resolve()
     expect(wsSend).not.toHaveBeenCalled()
     releaseGreenExtraction()
-    await Promise.all([watchSync, hotUpdate])
+    const [, hotModules] = await Promise.all([watchSync, hotUpdate])
     await Promise.resolve()
 
+    expect(hotModules).toEqual([
+      sourceModule,
+      expect.objectContaining({ id: cssFile, url: '/app.css' }),
+    ])
     expect(wsSend).toHaveBeenCalledWith({
       type: 'update',
       updates: expect.arrayContaining([
@@ -2363,7 +2373,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       } as ModuleNode
       const invalidateModule = vi.fn()
       const wsSend = vi.fn()
-      const result = await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+      const result = await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
         file: pageFile,
         modules: [vueModule],
         timestamp: 123456,
@@ -2379,7 +2389,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         },
       } as HmrContext)
 
-      expect(result).toBeUndefined()
+      expect(result).toEqual([vueModule, cssModule])
       expect(wsSend).not.toHaveBeenCalledWith({
         type: 'full-reload',
         path: '*',
@@ -2579,7 +2589,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           isSelfAccepting: true,
           url: `/src/${path.relative(path.join(root, 'src'), sourceCase.file).replaceAll(path.sep, '/')}`,
         } as ModuleNode
-        const result = await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+        const result = await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
           file: sourceCase.file,
           modules: [sourceModule],
           timestamp: Date.now(),
@@ -2590,7 +2600,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
             moduleGraph,
           },
         } as HmrContext)
-        expect(result).toBeUndefined()
+        expect(result).toEqual([sourceModule, cssModule])
       }
 
       const initialCandidates = await regenerateCss()
@@ -2708,7 +2718,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     } as ModuleNode
     const invalidateModule = vi.fn()
     const wsSend = vi.fn()
-    const result = await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+    const result = await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: pageFile,
       modules: [vueModule],
       timestamp: 123456,
@@ -2863,7 +2873,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       id: cssModuleId,
       url: cssModuleId,
     } as ModuleNode
-    await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+    await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: pageFile,
       modules: [],
       timestamp: 123456,
@@ -3165,7 +3175,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     } as ModuleNode
     const invalidateModule = vi.fn()
     const wsSend = vi.fn()
-    const result = await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+    const result = await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
       file: pageFile,
       modules: [vueModule, cssModule],
       timestamp: 123456,
@@ -12469,7 +12479,7 @@ ${generatedBanner}`
 
       runtimeSet.clear()
       runtimeSet.add('text-[103.43rpx]')
-      await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+      await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
         file: path.resolve(process.cwd(), 'src/pages/index/index.vue'),
         modules: [],
         server: {
@@ -13050,7 +13060,7 @@ ${utilities}
 
       runtimeSet.clear()
       runtimeSet.add('bg-[#4268EA]')
-      await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+      await getHandleHotUpdateHandler(sourcePlugin)?.call(sourcePlugin, {
         file: path.resolve(process.cwd(), 'src/pages/index/index.vue'),
         modules: [],
         server: {

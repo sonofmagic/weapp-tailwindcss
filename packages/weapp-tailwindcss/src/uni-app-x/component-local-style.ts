@@ -249,13 +249,19 @@ export class UniAppXComponentLocalStyleCollector {
     if (!this.hasStyles()) {
       return ''
     }
-    const lines = ['<style scoped>']
+    return `<style scoped>\n${this.toStyleRules()}</style>\n`
+  }
+
+  toStyleRules() {
+    if (!this.hasStyles()) {
+      return ''
+    }
+    const lines: string[] = []
     for (const [utility, alias] of this.aliasByUtility) {
       lines.push(`.${alias} {`)
       lines.push(`  @apply ${utility};`)
       lines.push('}')
     }
-    lines.push('</style>')
     return `${lines.join('\n')}\n`
   }
 }

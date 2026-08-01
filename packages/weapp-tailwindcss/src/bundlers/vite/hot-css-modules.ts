@@ -2,18 +2,61 @@ import type { HmrContext, ModuleNode } from 'vite'
 import path from 'node:path'
 import process from 'node:process'
 import { isSourceStyleRequest } from '../shared/style-requests'
+import { hasSameViteModuleIdentity, resolveViteModuleIdentity } from './module-identity'
 import { cleanUrl, slash } from './utils'
 
-export function resolveHotTailwindCssModules(
+async function resolveHotModulesByIds(
   ctx: HmrContext,
-  tailwindRootCssModuleIds: Iterable<string | null | undefined>,
+  ids: Iterable<string | null | undefined>,
+  acceptModule: (mod: ModuleNode) => boolean,
 ) {
   const modules: ModuleNode[] = []
   const seenModules = new Set<ModuleNode>()
   const seenModuleIds = new Set<string>()
+  const seenFileIdentities = new Set<string>()
+  const root = ctx.server.config?.root ?? process.cwd()
+  const collectModule = (mod: ModuleNode | undefined) => {
+    if (mod == null || seenModules.has(mod) || !acceptModule(mod)) {
+      return
+    }
+    seenModules.add(mod)
+    modules.push(mod)
+  }
+  for (const id of ids) {
+    if (typeof id !== 'string' || id.length === 0) {
+      continue
+    }
+    const identity = resolveViteModuleIdentity(id, root)
+    for (const moduleId of identity.lookupIds) {
+      if (seenModuleIds.has(moduleId)) {
+        continue
+      }
+      seenModuleIds.add(moduleId)
+      collectModule(ctx.server.moduleGraph.getModuleById?.(moduleId))
+      if (moduleId.startsWith('/')) {
+        collectModule(await ctx.server.moduleGraph.getModuleByUrl?.(moduleId))
+      }
+    }
+    if (seenFileIdentities.has(identity.key)) {
+      continue
+    }
+    seenFileIdentities.add(identity.key)
+    for (const file of identity.lookupFiles) {
+      for (const mod of ctx.server.moduleGraph.getModulesByFile?.(file) ?? []) {
+        collectModule(mod)
+      }
+    }
+  }
+  return modules
+}
+
+export async function resolveHotTailwindCssModules(
+  ctx: HmrContext,
+  tailwindRootCssModuleIds: Iterable<string | null | undefined>,
+) {
   const root = ctx.server.config?.root ?? process.cwd()
   const outDir = ctx.server.config?.build?.outDir
-    ? normalizeAbsoluteFilePath(path.resolve(root, ctx.server.config.build.outDir))
+    ? resolveViteModuleIdentity(ctx.server.config.build.outDir, root)
     : undefined
   const isHotSourceStyleModule = (id: string | null | undefined) => {
     if (!isSourceStyleRequest(id)) {
@@ -23,48 +66,58 @@ export function resolveHotTailwindCssModules(
     if (isRootMiniProgramStyleUrl(file) || (!isAbsoluteFilePath(file) && !file.startsWith('/'))) {
       return false
     }
-    if (outDir && isAbsoluteFilePath(file)) {
-      const normalizedFile = normalizeAbsoluteFilePath(file)
-      if (normalizedFile === outDir || normalizedFile.startsWith(`${outDir}/`)) {
+    if (outDir) {
+      const identity = resolveViteModuleIdentity(file, root)
+      if (identity.key === outDir.key || identity.key.startsWith(`${outDir.key}/`)) {
         return false
       }
     }
     return true
   }
-  const collectModule = (mod: ModuleNode | undefined) => {
-    if (mod == null || seenModules.has(mod)) {
-      return
-    }
+  const modules = await resolveHotModulesByIds(ctx, tailwindRootCssModuleIds, (mod) => {
     const modId = mod.id ?? mod.url
-    if (!isHotSourceStyleModule(modId)) {
-      return
+    return isHotSourceStyleModule(modId)
+  })
+  const seenHotModules = new Set(modules)
+  for (let index = 0; index < modules.length; index++) {
+    for (const importer of modules[index]?.importers ?? []) {
+      const importerId = importer.id ?? importer.url
+      if (!seenHotModules.has(importer) && isHotSourceStyleModule(importerId)) {
+        seenHotModules.add(importer)
+        modules.push(importer)
+      }
     }
-    seenModules.add(mod)
-    ctx.server.moduleGraph.invalidateModule(mod)
-    modules.push(mod)
   }
-  for (const id of tailwindRootCssModuleIds) {
-    if (typeof id !== 'string' || id.length === 0) {
-      continue
-    }
-    for (const moduleId of [id, cleanUrl(id)]) {
-      if (moduleId.length === 0 || seenModuleIds.has(moduleId)) {
-        continue
-      }
-      seenModuleIds.add(moduleId)
-      const candidates = [
-        ctx.server.moduleGraph.getModuleById(moduleId),
-        ...(ctx.server.moduleGraph.getModulesByFile(moduleId) ?? []),
-      ]
-      for (const mod of candidates) {
-        collectModule(mod)
-      }
-    }
+  for (const mod of modules) {
+    ctx.server.moduleGraph.invalidateModule(mod)
   }
   return modules
 }
 
-export function resolveHotSourceModules(ctx: HmrContext) {
+export async function resolveHotSourceModulesByIds(
+  ctx: HmrContext,
+  ids: Iterable<string | null | undefined>,
+) {
+  const root = ctx.server.config?.root ?? process.cwd()
+  const sourceIds = new Set<string | null | undefined>(ids)
+  for (const id of ids) {
+    if (typeof id !== 'string' || !/\.(?:uvue|nvue)(?:$|[?#])/i.test(id)) {
+      continue
+    }
+    const identity = resolveViteModuleIdentity(id, root)
+    for (const lookupId of identity.lookupIds) {
+      if (!/[?&]import(?:[=&]|$)/.test(lookupId)) {
+        sourceIds.add(`${cleanUrl(lookupId)}?import`)
+      }
+    }
+  }
+  return resolveHotModulesByIds(ctx, sourceIds, (mod) => {
+    const modId = mod.id ?? mod.url
+    return !isSourceStyleRequest(modId)
+  })
+}
+
+export async function resolveHotSourceModules(ctx: HmrContext) {
   const modules: ModuleNode[] = []
   const seenModules = new Set<ModuleNode>()
   const collectModule = (mod: ModuleNode | undefined) => {
@@ -82,15 +135,31 @@ export function resolveHotSourceModules(ctx: HmrContext) {
   for (const mod of ctx.modules) {
     collectModule(mod)
   }
-  for (const mod of ctx.server.moduleGraph.getModulesByFile(ctx.file) ?? []) {
+  for (const mod of await resolveHotSourceModulesByIds(ctx, [ctx.file])) {
     collectModule(mod)
   }
-  for (const mod of ctx.server.moduleGraph.getModulesByFile(cleanUrl(ctx.file)) ?? []) {
-    collectModule(mod)
-  }
-  collectModule(ctx.server.moduleGraph.getModuleById?.(ctx.file))
-  collectModule(ctx.server.moduleGraph.getModuleById?.(cleanUrl(ctx.file)))
 
+  return modules
+}
+
+export function mergeHotModulesByIdentity(root: string, ...groups: ModuleNode[][]) {
+  const modules: ModuleNode[] = []
+  const seenModules = new Set<ModuleNode>()
+  const seenIdentities = new Set<string>()
+  for (const mod of groups.flat()) {
+    if (seenModules.has(mod)) {
+      continue
+    }
+    const ids = [mod.id, mod.url, mod.file].filter((id): id is string => typeof id === 'string' && id.length > 0)
+    const moduleKind = ids.some(isSourceStyleRequest) ? 'style' : 'source'
+    const keys = ids.map(id => `${moduleKind}:${resolveViteModuleIdentity(id, root).key}`)
+    if (keys.some(key => seenIdentities.has(key))) {
+      continue
+    }
+    seenModules.add(mod)
+    keys.forEach(key => seenIdentities.add(key))
+    modules.push(mod)
+  }
   return modules
 }
 
@@ -123,13 +192,14 @@ function isRootMiniProgramStyleUrl(file: string) {
 
 function resolveCssHotUrl(id: string, root: string) {
   const suffix = /[?#]/.test(id) ? id.slice(id.search(/[?#]/)) : ''
-  const file = cleanUrl(id)
-  if (/^\/(?![A-Z]:)/i.test(file) && !file.startsWith(slash(root))) {
-    if (isRootMiniProgramStyleUrl(file)) {
+  const cleanId = cleanUrl(id)
+  if (/^\/(?!@fs\/|[A-Z]:)/i.test(cleanId) && !cleanId.startsWith(slash(root))) {
+    if (isRootMiniProgramStyleUrl(cleanId)) {
       return undefined
     }
-    return `${file}${suffix}`
+    return `${cleanId}${suffix}`
   }
+  const file = resolveViteModuleIdentity(id, root).file ?? cleanId
   if (!isAbsoluteFilePath(file)) {
     return undefined
   }
@@ -141,7 +211,7 @@ function resolveCssHotUrl(id: string, root: string) {
   return `/${slash(path.relative(normalizedRoot, normalizedFile))}${suffix}`
 }
 
-function includesHotModule(modules: ModuleNode[], target: ModuleNode) {
+function includesHotModule(modules: ModuleNode[], target: ModuleNode, root: string) {
   const targetUrl = resolveModuleHotUrl(target)
   const targetId = target.id
   return modules.some((mod) => {
@@ -155,7 +225,9 @@ function includesHotModule(modules: ModuleNode[], target: ModuleNode) {
       typeof targetId === 'string'
       && targetId.length > 0
       && mod.id === targetId
-    )
+    ) || [target.id, target.url, target.file].some(targetIdentity => (
+      [mod.id, mod.url, mod.file].some(moduleIdentity => hasSameViteModuleIdentity(targetIdentity, moduleIdentity, root))
+    ))
   })
 }
 
@@ -177,10 +249,23 @@ export function hasSelfAcceptingNonStyleHotModule(modules: ModuleNode[]) {
   })
 }
 
-export function sendSupplementalCssHotUpdates(ctx: HmrContext, cssModules: ModuleNode[], fallbackCssIds: Iterable<string> = []) {
+export function sendSupplementalCssHotUpdates(
+  ctx: HmrContext,
+  cssModules: ModuleNode[],
+  fallbackCssIds: Iterable<string> = [],
+  fallbackSourceIds: Iterable<string> = [],
+) {
   const seenUrls = new Set<string>()
   const root = ctx.server.config?.root ?? process.cwd()
   const updates: Array<ReturnType<typeof createSupplementalHotUpdate>> = []
+  for (const id of fallbackSourceIds) {
+    const hotUrl = resolveCssHotUrl(id, root)
+    if (!hotUrl || seenUrls.has(hotUrl)) {
+      continue
+    }
+    seenUrls.add(hotUrl)
+    updates.push(createSupplementalHotUpdate(hotUrl, ctx.timestamp))
+  }
   for (const id of fallbackCssIds) {
     if (!isSourceStyleRequest(id)) {
       continue
@@ -193,7 +278,7 @@ export function sendSupplementalCssHotUpdates(ctx: HmrContext, cssModules: Modul
     updates.push(createSupplementalHotUpdate(hotUrl, ctx.timestamp))
   }
   for (const mod of cssModules) {
-    if (includesHotModule(ctx.modules, mod)) {
+    if (includesHotModule(ctx.modules, mod, root)) {
       continue
     }
     const moduleHotUrl = resolveModuleHotUrl(mod)

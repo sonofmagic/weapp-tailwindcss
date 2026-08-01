@@ -494,6 +494,46 @@ describe('uni-app-x', () => {
     expect(warningTexts).toEqual([])
   })
 
+  it('keeps Native author apply selectors out of the generated css pipeline', async () => {
+    const styleHandler = createStyleHandler({
+      appType: 'uni-app-x',
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      majorVersion: 4,
+    })
+    const options = {
+      isMainChunk: false,
+      uniAppXCssSource: 'author-apply' as const,
+      postcssOptions: {
+        options: {
+          from: '/src/components/UpButton.uvue?vue&type=style&index=0&scoped=abc&lang.css',
+        },
+      },
+    }
+    const source = [
+      '.up-button--primary.data-v-abc:is(.is-active,.is-loading){transition-property:transform,opacity;-webkit-transform:translate(var(--x, 0),var(--y, 0));transform:translate(var(--x, 0),var(--y, 0));color:var(--up-primary, #0957de)}',
+      '.up-list.data-v-abc :deep(.up-list-item__body){transition:transform .2s ease;--up-border:var(--runtime-border, #dcdfe6)}',
+    ].join('')
+
+    const result = await styleHandler(source, options)
+    const pipeline = styleHandler.getPipeline(options)
+
+    expect(pipeline.nodes.map(node => node.id)).not.toEqual(expect.arrayContaining([
+      'pre:core',
+      'normal:preset-env',
+      'normal:autoprefixer',
+      'post:core',
+    ]))
+    expect(result.css).toContain('.up-button--primary.data-v-abc:is(.is-active,.is-loading)')
+    expect(result.css).toContain('.up-list.data-v-abc :deep(.up-list-item__body)')
+    expect(result.css).toContain('transition-property:transform,opacity')
+    expect(result.css).toContain('-webkit-transform:translate(var(--x, 0) var(--y, 0))')
+    expect(result.css).toContain('transform:translate(var(--x, 0) var(--y, 0))')
+    expect(result.css).not.toContain('-webkit-transform:;')
+    expect(result.css).not.toContain('@apply')
+    expect(result.warnings()).toEqual([])
+  })
+
   it('preserves ambiguous scoped author reset and theme rules without Tailwind source evidence', async () => {
     const result = await postcss().process([
       '[data-v-abc]:root{--brand:#0957de}',

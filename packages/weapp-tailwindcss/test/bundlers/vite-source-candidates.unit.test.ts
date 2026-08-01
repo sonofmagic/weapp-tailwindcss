@@ -353,6 +353,45 @@ describe('bundlers/vite source candidates', () => {
     expect(new Map(collector.sources()).get(id)).toBe(currentSource)
   })
 
+  it('drops the stale transform layer before the updated transform replaces it', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const collector = createSourceCandidateCollector({
+      extractor: source => source.split(/\s+/).filter(Boolean),
+    })
+    const id = '/project/pages/index.uvue'
+
+    await collector.sync(id, 'raw-old')
+    await collector.merge(id, 'transform-old')
+
+    const change = await collector.syncCurrentSource(id, 'raw-new mt-200')
+    expect(change).toEqual({
+      addedCandidates: new Set(['raw-new', 'mt-200']),
+      removedCandidates: new Set(['raw-old', 'transform-old']),
+    })
+    expect(collector.values()).toEqual(new Set(['raw-new', 'mt-200']))
+
+    await collector.merge(id, 'transform-new')
+    expect(collector.values()).toEqual(new Set(['raw-new', 'mt-200', 'transform-new']))
+  })
+
+  it('keeps generated css layers when a css root source is refreshed', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const collector = createSourceCandidateCollector({
+      extractor: source => source.split(/\s+/).filter(Boolean),
+    })
+    const id = '/project/main.css'
+
+    await collector.sync(id, 'root-old')
+    await collector.merge(id, 'generated-existing')
+
+    const change = await collector.syncCurrentSource(id, 'root-new')
+    expect(change).toEqual({
+      addedCandidates: new Set(['root-new']),
+      removedCandidates: new Set(['root-old']),
+    })
+    expect(collector.values()).toEqual(new Set(['root-new', 'generated-existing']))
+  })
+
   it('collects TSX script string and template candidates from AST literals', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const collector = createSourceCandidateCollector()

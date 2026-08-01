@@ -96,6 +96,7 @@ export interface ProjectEntry {
   cssFile: string
   cssFiles?: string[]
   buildEnv?: Record<string, string>
+  requiresHBuilderX?: boolean
   url?: string
   skipOpenAutomator?: boolean
   forbidEmptyBlockAtRules?: boolean

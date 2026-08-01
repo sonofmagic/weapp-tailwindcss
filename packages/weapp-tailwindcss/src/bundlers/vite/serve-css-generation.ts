@@ -20,6 +20,7 @@ interface ViteCssGenerationOptions {
   onTailwindRootCss?: ((id: string, code: string) => Promise<void> | void) | undefined
   shouldGenerate: () => boolean
   shouldGenerateBuild?: (() => boolean) | undefined
+  shouldDeferGeneration?: ((id: string, code: string) => boolean) | undefined
 }
 
 function decodeJsStringLiteral(literal: string) {
@@ -141,6 +142,9 @@ export function createViteCssGenerationPlugins(options: ViteCssGenerationOptions
         return
       }
       if (!hasViteCssGenerationDirective(code)) {
+        return
+      }
+      if (options.shouldDeferGeneration?.(id, code)) {
         return
       }
       if (hasViteServeCssRootDirective(code)) {

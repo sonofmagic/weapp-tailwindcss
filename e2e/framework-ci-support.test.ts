@@ -5,7 +5,8 @@ import { describe, expect, it } from 'vitest'
 import { buildCases, demoWatchShardCases, getBaseWatchCaseName, pickCases } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_CI_CASES, HOT_UPDATE_COVERED_PROJECTS, HOT_UPDATE_EXEMPT_PROJECTS } from './e2eMatrix'
 import { FRAMEWORK_SUPPORT_CASES, getFrameworkCiCases, getFrameworkIdeExemptCases } from './frameworkSupportMatrix'
-import { miniProgramCases, uniAppAppCases, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
+import { miniProgramCases, uniAppAppCases, uniAppXAppCases, uniAppXHBuilderXUnsupportedMiniProgramPlatforms, webCases } from './hbuilderx-local/cases'
+import { E2E_PROJECTS, isE2EProjectSupportedOnPlatform } from './projectEntries'
 
 const describeFrameworkCi = process.env['E2E_FRAMEWORK_SUPPORT'] === '1' ? describe : describe.skip
 
@@ -149,21 +150,33 @@ describeFrameworkCi('framework support matrix ci', () => {
       'uni-app-x-hbuilderx-tailwindcss-v4',
     ])
     for (const name of ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4']) {
+      const projectCases = miniProgramCases.filter(item => item.projectDir.endsWith(name))
       expect(
-        miniProgramCases
-          .filter(item => item.projectDir.endsWith(name))
-          .map(item => item.platform),
+        projectCases.map(item => item.platform),
         `${name} should cover HBuilderX non-WeChat mini-program output locally`,
       ).toEqual(['mp-weixin', 'mp-alipay', 'mp-baidu', 'mp-toutiao'])
+      for (const item of projectCases) {
+        const appJsonAssertions = item.outputContains?.['app.json'] ?? []
+        const expectsIndependentMetadata = appJsonAssertions.includes('"independent": true')
+        expect(expectsIndependentMetadata, `${item.name} independent metadata capability should be platform-specific`).toBe(
+          item.platform === 'mp-weixin' || item.platform === 'mp-alipay',
+        )
+      }
     }
     for (const name of ['uni-app-x-hbuilderx-tailwindcss-v4']) {
       expect(
         miniProgramCases
           .filter(item => item.projectDir.endsWith(name))
           .map(item => item.platform),
-        `${name} should stay on mp-weixin because HBuilderX rejects uni-app x non-WeChat mini-program compile`,
+        `${name} should cover every HBuilderX-supported mini-program target`,
       ).toEqual(['mp-weixin'])
     }
+    expect(Object.keys(uniAppXHBuilderXUnsupportedMiniProgramPlatforms)).toEqual([
+      'mp-alipay',
+      'mp-baidu',
+      'mp-toutiao',
+    ])
+    expect(Object.values(uniAppXHBuilderXUnsupportedMiniProgramPlatforms).every(reason => reason.includes('HBuilderX stable/alpha'))).toBe(true)
     expect(webCases.map(item => item.name)).toEqual([
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
       'uni-app-x-hbuilderx-tailwindcss-v4',
@@ -200,6 +213,20 @@ describeFrameworkCi('framework support matrix ci', () => {
         ).toBeGreaterThanOrEqual(2)
       }
     }
+    expect(uniAppAppCases.filter(item => item.platform === 'app-android').every(item => item.runtime === undefined)).toBe(true)
+    expect(uniAppXAppCases.find(item => item.platform === 'app-android')?.runtime).toBeDefined()
+  })
+
+  it('keeps HBuilderX static fixtures out of unsupported Linux runners', () => {
+    const hbuilderxProjects = E2E_PROJECTS.filter(item => item.requiresHBuilderX)
+
+    expect(hbuilderxProjects.map(item => item.name)).toEqual([
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+      'uni-app-x-hbuilderx-tailwindcss-v4',
+    ])
+    expect(hbuilderxProjects.every(item => !isE2EProjectSupportedOnPlatform(item, 'linux'))).toBe(true)
+    expect(hbuilderxProjects.every(item => isE2EProjectSupportedOnPlatform(item, 'darwin'))).toBe(true)
+    expect(hbuilderxProjects.every(item => isE2EProjectSupportedOnPlatform(item, 'win32'))).toBe(true)
   })
 
   for (const entry of getFrameworkCiCases()) {

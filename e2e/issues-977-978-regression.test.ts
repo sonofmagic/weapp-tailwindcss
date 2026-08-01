@@ -100,8 +100,12 @@ async function readProjectCss(projectPath: string, cssFiles: string[]) {
   return parts.join('\n')
 }
 
+const projects = projectFilter(E2E_PROJECTS.filter(project => OUTPUT_REGRESSION_PROJECT_NAMES.has(project.name)))
+
 describe('issues 977 and 978 demo regressions', () => {
-  const projects = projectFilter(E2E_PROJECTS.filter(project => OUTPUT_REGRESSION_PROJECT_NAMES.has(project.name)))
+  if (projects.length === 0) {
+    it.skip('当前项目过滤器没有匹配 issues 977/978 回归项目', () => {})
+  }
 
   it.each(projects)('$name preserves page custom variables and t-class @source output', async (project) => {
     const projectBase = path.resolve(__dirname, '../demo')
