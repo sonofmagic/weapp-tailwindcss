@@ -1,6 +1,35 @@
 import { describe, expect, it } from 'vitest'
 
 describe('benchmark ci report', () => {
+  it('shards the full trend by project while preserving the focused PR matrix', async () => {
+    const { benchmarkProjects } = await import('../../../../benchmark/version-compare/scripts/projects.mjs')
+    const { createBenchmarkShards, pullRequestBenchmarkKeys } = await import('../../../../benchmark/version-compare/scripts/ci-matrix.mjs')
+
+    const shards = createBenchmarkShards()
+    const allShardKeys = shards.flatMap(shard => shard.bench_only.split(','))
+    expect(allShardKeys).toEqual(benchmarkProjects.map(project => project.key))
+    expect(new Set(shards.map(shard => shard.case_name)).size).toBe(shards.length)
+    for (const shard of shards) {
+      const projectDirs = shard.bench_only.split(',').map((key) => {
+        return benchmarkProjects.find(project => project.key === key)?.project
+      })
+      expect(new Set(projectDirs).size).toBe(1)
+    }
+
+    const pullRequestShards = createBenchmarkShards({ eventName: 'pull_request' })
+    expect(new Set(pullRequestShards.flatMap(shard => shard.bench_only.split(','))))
+      .toEqual(new Set(pullRequestBenchmarkKeys))
+
+    const selectedShards = createBenchmarkShards({
+      only: 'demo-uni-app-vite-tailwindcss-v4__mp-weixin,demo-uni-app-vite-tailwindcss-v4__h5',
+    })
+    expect(selectedShards).toEqual([{
+      case_name: 'demo-uni-app-vite-tailwindcss-v4',
+      bench_only: 'demo-uni-app-vite-tailwindcss-v4__mp-weixin,demo-uni-app-vite-tailwindcss-v4__h5',
+    }])
+    expect(() => createBenchmarkShards({ only: 'missing-project' })).toThrow('unknown benchmark project key(s): missing-project')
+  })
+
   it('keeps version compare benchmark covering every demo package', async () => {
     const fs = await import('node:fs')
     const path = await import('node:path')
