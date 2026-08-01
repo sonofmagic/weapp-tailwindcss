@@ -1,5 +1,13 @@
 # @weapp-tailwindcss/postcss
 
+## 3.2.6
+
+### Patch Changes
+
+- 🐛 **修复 uni-app x Native scoped 作者样式被通用 CSS 生成管线提前改写的问题，并统一 Windows 下 Vite 模块身份与 HMR 候选刷新顺序，确保新增、删除和回滚类名时会重新编译对应 `.uvue` 本地样式；同时细分 Harmony 构建失败、保留 HBuilderX 日志中的首个关键错误，并让 Harmony 回归基于与 HBuilderX Alpha 对齐的编译器及最终 JavaScript 产物验收样式。** [#1036](https://github.com/sonofmagic/weapp-tailwindcss/pull/1036) by @sonofmagic
+
+- 🐛 **修复 H5 与 App WebView 兼容模式错误静态化 Tailwind 运行时 CSS 变量的问题，避免 shadow、ring、gradient、mask 等颜色组合工具类互相串色。** [#1039](https://github.com/sonofmagic/weapp-tailwindcss/pull/1039) by @sonofmagic
+
 ## 3.2.5
 
 ### Patch Changes
