@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 5.2.9
+
+### Patch Changes
+
+- 🐛 **修复 uni-app x 组件局部样式绑定被误识别为 Tailwind 类名、Native 端局部 `@apply` 未展开，以及 Web 端样式预处理与连续 HMR 候选更新不完整的问题。** [#1042](https://github.com/sonofmagic/weapp-tailwindcss/pull/1042) by @sonofmagic
+
+- 🐛 **修复 Taro Vite 监听模式连续构建时根样式 replay 丢失的问题，保留框架生成的全局样式并恢复 native watch 回归验证。** [#1040](https://github.com/sonofmagic/weapp-tailwindcss/pull/1040) by @sonofmagic
+- 📦 **Dependencies** [`5f1fa8c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5f1fa8c782ec6044e54890d31af6cb3788f80c59)
+  → `@weapp-tailwindcss/postcss@3.2.7`
+
 ## 5.2.8
 
 ### Patch Changes
