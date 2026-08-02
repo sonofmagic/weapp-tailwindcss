@@ -2,7 +2,7 @@ import type { HmrContext } from 'vite'
 import type { createViteCssMemory } from '../css-memory'
 import type { createViteRuntimeClassSet } from '../runtime-class-set'
 import type { createSourceCandidateCollector } from '../source-candidates'
-import type { createViteHmrCandidateState } from './framework-hmr-candidate-state'
+import type { createViteHmrCandidateState, ViteSourceCandidateChange } from './framework-hmr-candidate-state'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
@@ -12,6 +12,7 @@ import { isSourceStyleRequest } from '../../shared/style-requests'
 import { createSourceCandidateScanSignature } from '../source-candidate-scan-signature'
 import { createViteSourceScanMatcher, resolveViteSourceScanEntries } from '../source-scan'
 import { cleanUrl } from '../utils'
+import { hasFrameworkHmrRuntimeSourceChange } from './framework-hmr-runtime-signature'
 
 const SOURCE_CANDIDATE_SCAN_CACHE_MAX = 8
 
@@ -62,6 +63,7 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
   let sourceCandidateScanInvalidated = true
   const pendingSourceCandidateSyncs = new Set<Promise<unknown>>()
   const pendingSourceCandidateSyncByFile = new Map<string, Promise<any>>()
+  const pendingHotUpdateChangeByFile = new Map<string, ViteSourceCandidateChange>()
 
   const normalizeDependency = (file: string) => path.normalize(path.resolve(cleanUrl(file)))
   const isDependency = (file: string) => sourceScanDependencies.has(normalizeDependency(file))
@@ -184,6 +186,33 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     }
   }
 
+  const rememberHotUpdateChange = (change: ViteSourceCandidateChange | undefined) => {
+    if (!change) {
+      return undefined
+    }
+    const previous = pendingHotUpdateChangeByFile.get(change.file)
+    if (!previous) {
+      const remembered = {
+        ...change,
+        addedCandidates: new Set(change.addedCandidates),
+        removedCandidates: new Set(change.removedCandidates),
+      }
+      pendingHotUpdateChangeByFile.set(change.file, remembered)
+      return remembered
+    }
+    for (const candidate of change.addedCandidates) {
+      previous.addedCandidates.add(candidate)
+      previous.removedCandidates.delete(candidate)
+    }
+    for (const candidate of change.removedCandidates) {
+      if (!previous.addedCandidates.delete(candidate)) {
+        previous.removedCandidates.add(candidate)
+      }
+    }
+    previous.runtimeAffecting ||= change.runtimeAffecting
+    return previous
+  }
+
   const syncChangedFile = (id: string, sourceOverride?: string) => {
     if (!options.shouldOwnTailwindGeneration || !options.isCandidateRequest(id)) {
       return Promise.resolve(undefined)
@@ -206,12 +235,13 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
         : Promise.resolve()
       return refresh
         .then(() => options.cssMemory.refreshRememberedCssSourceByCurrentFile(file))
-        .then(() => options.hmrCandidateState.apply(options.hmrCandidateState.createChange(file, change, { runtimeAffecting: true })))
+        .then(() => rememberHotUpdateChange(options.hmrCandidateState.apply(options.hmrCandidateState.createChange(file, change, { runtimeAffecting: true }))))
     }
     const existingTask = pendingSourceCandidateSyncByFile.get(file)
     if (existingTask) {
       return existingTask.then(() => syncChangedFile(id, sourceOverride))
     }
+    const previousSource = options.sourceCandidateCollector.source(file)
     const task = (sourceOverride === undefined
       ? options.sourceCandidateCollector.syncCurrentFile(id)
       : options.sourceCandidateCollector.syncCurrentSource(id, sourceOverride))
@@ -221,9 +251,18 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
       })
       .then((change) => {
         cacheCurrent()
-        return change
-          ? options.hmrCandidateState.apply(options.hmrCandidateState.createChange(file, change, { runtimeAffecting: runtimeAffectingByDependency }))
+        const runtimeAffectingBySource = hasFrameworkHmrRuntimeSourceChange(
+          file,
+          previousSource,
+          options.sourceCandidateCollector.source(file),
+        )
+        const appliedChange = change
+          ? options.hmrCandidateState.apply(options.hmrCandidateState.createChange(file, change, {
+              runtimeAffecting: runtimeAffectingByDependency || runtimeAffectingBySource,
+            }))
           : undefined
+        return rememberHotUpdateChange(appliedChange)
+          ?? pendingHotUpdateChangeByFile.get(file)
       })
       .finally(() => {
         pendingSourceCandidateSyncs.delete(task)
@@ -239,9 +278,11 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
 
   return {
     cacheCurrent,
+    consumeHotUpdateChange: (id: string) => pendingHotUpdateChangeByFile.delete(cleanUrl(id)),
     getStats: () => ({
       pendingSourceCandidateSyncByFile: pendingSourceCandidateSyncByFile.size,
       pendingSourceCandidateSyncs: pendingSourceCandidateSyncs.size,
+      pendingHotUpdateChangeByFile: pendingHotUpdateChangeByFile.size,
       sourceCandidateScanCache: sourceCandidateScanCache.size,
     }),
     invalidate,

@@ -25,6 +25,8 @@ export interface CreateUniAppXPluginsOptions {
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
   getResolvedConfig: () => ResolvedConfig | undefined
   isIosPlatform?: boolean
+  isNativeAppStyleTarget?: (() => boolean) | undefined
+  isWebGeneratorTarget?: (() => boolean) | undefined
   isEnabled?: (() => boolean) | undefined
   uniAppX?: InternalUserDefinedOptions['uniAppX']
   viteProcessedCssSourceFiles?: Iterable<string> | undefined

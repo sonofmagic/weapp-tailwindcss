@@ -354,6 +354,95 @@ describe('uni-app-x vite plugins', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
+  it('expands component-local @apply before the Native SCSS compiler', async () => {
+    const styleHandler = vi.fn(async (code: string, options?: Record<string, unknown>) => ({
+      css: `css:${code}`,
+      map: {
+        toJSON: () => ({
+          version: 3,
+          file: options?.postcssOptions?.options?.from ?? '',
+          sources: [options?.postcssOptions?.options?.from ?? ''],
+          names: [],
+          mappings: '',
+          sourcesContent: [code],
+        }),
+      },
+    }))
+    const generateCss = vi.fn(async () => '.wtu-transform { transform: translate(0, 0); }')
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      isIosPlatform: false,
+      mainCssChunkMatcher: vi.fn(() => false),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler,
+      generateCss,
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      getResolvedConfig: () => ({
+        command: 'build',
+        build: { outDir: '/project/unpackage/dist/dev/.uvue/app-android', watch: false },
+      } as ResolvedConfig),
+    })
+    const preCssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
+    const id = '/components/line/line.uvue?vue&type=style&index=0&lang.scss&scoped=true'
+    const source = '.wtu-transform { @apply transform; }'
+
+    const result = await preCssPlugin!.transform?.(source, id)
+
+    expect(generateCss).toHaveBeenCalledWith(id, source, expect.objectContaining({
+      disableSourceScan: true,
+      sourceCandidates: [],
+      transient: true,
+    }))
+    expect(styleHandler).toHaveBeenCalledWith(
+      '.wtu-transform { transform: translate(0, 0); }',
+      expect.objectContaining({
+        uniAppXCssSource: 'author-apply',
+        uniAppXCssTarget: 'uvue',
+      }),
+    )
+    expect(result).toEqual(expect.objectContaining({
+      code: 'css:.wtu-transform { transform: translate(0, 0); }',
+    }))
+  })
+
+  it('leaves component-local @apply styles to the Web preprocessor before generation', async () => {
+    const styleHandler = vi.fn()
+    const generateCss = vi.fn()
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      isIosPlatform: false,
+      mainCssChunkMatcher: vi.fn(() => false),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler,
+      generateCss,
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      isWebGeneratorTarget: () => true,
+      getResolvedConfig: () => ({
+        command: 'serve',
+        build: { outDir: '/project/unpackage/dist/dev/web', watch: false },
+      } as ResolvedConfig),
+    })
+    const preCssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
+    const id = '/uni_modules/uview-ultra/components/up-line/up-line.uvue?vue&type=style&index=0&scoped=abc&lang.scss'
+    const source = [
+      '@import "../../libs/css/components.scss";',
+      '.up-line {}',
+      '.wtu-transform { @apply transform; }',
+    ].join('\n')
+
+    const result = await preCssPlugin!.transform?.(source, id)
+
+    expect(result).toBeUndefined()
+    expect(generateCss).not.toHaveBeenCalled()
+    expect(styleHandler).not.toHaveBeenCalled()
+  })
+
   it('records uni-app-x style @apply for generator css without short-circuiting style handling', async () => {
     const styleHandler = vi.fn(async (code: string, options?: Record<string, unknown>) => ({
       css: `css:${code}`,

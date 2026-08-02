@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'pathe'
-import { hasScreenshotContentChanged, parseHexColorFromClass } from './hbuilderx-local/android-runtime'
+import { hasScreenshotContentChanged, parseHexColorFromClass, shouldRestoreAndroidRuntime } from './hbuilderx-local/android-runtime'
 import { appendHmrSourceMutation, createHmrOutputSnapshot, createHmrSourceRestore, haveHmrOutputsChanged } from './hbuilderx-local/source-mutations'
 import { collectMiniProgramStyleFiles } from './hbuilderx-local/styles'
 
@@ -20,6 +20,16 @@ describe('HBuilderX local helpers', () => {
       red: 16,
     })
     expect(parseHexColorFromClass('bg-red-500')).toBeUndefined()
+  })
+
+  it('only restores a live UniApp runtime hidden by the HBuilderX debug shell', () => {
+    const debugShell = '<node resource-id="io.dcloud.uniappx:id/pull_msg" text="Connect to HBuilderX successfully" />'
+
+    expect(shouldRestoreAndroidRuntime(debugShell, '1234')).toBe(true)
+    expect(shouldRestoreAndroidRuntime(debugShell, '1234 5678')).toBe(true)
+    expect(shouldRestoreAndroidRuntime(debugShell, '')).toBe(false)
+    expect(shouldRestoreAndroidRuntime(debugShell, 'adb: process not found')).toBe(false)
+    expect(shouldRestoreAndroidRuntime('<node text="issue-1021-runtime" />', '1234')).toBe(false)
   })
 
   it('restores files after appending HBuilderX HMR source mutations', async () => {

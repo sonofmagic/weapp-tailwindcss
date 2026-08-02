@@ -44,6 +44,8 @@ interface WaitForAndroidRuntimeEvidenceOptions {
   timeoutMs: number
 }
 
+const defaultAndroidRuntimeComponent = 'io.dcloud.uniappx/io.dcloud.uniapp.UniAppActivity'
+
 export function hasScreenshotContentChanged(current: Uint8Array, previous?: Uint8Array) {
   if (!previous || current.length !== previous.length) {
     return true
@@ -94,6 +96,39 @@ function readAndroidShellValue(
     timeout: screenshotTimeoutMs,
   })
   return result.status === 0 ? result.stdout.trim() : ''
+}
+
+export function shouldRestoreAndroidRuntime(uiHierarchy: string, runtimeProcessId: string) {
+  return isAndroidDebugShell(uiHierarchy) && /^\d+(?:\s+\d+)*$/.test(runtimeProcessId)
+}
+
+function restoreAndroidRuntimeForeground(
+  uiHierarchy: string,
+  env: Record<string, string | undefined>,
+  deviceId?: string,
+) {
+  const component = env.E2E_HBUILDERX_ANDROID_RUNTIME_COMPONENT ?? defaultAndroidRuntimeComponent
+  const packageName = component.split('/', 1)[0]
+  if (!packageName) {
+    return false
+  }
+  const runtimeProcessId = readAndroidShellValue(env, deviceId, ['pidof', packageName])
+  if (!shouldRestoreAndroidRuntime(uiHierarchy, runtimeProcessId)) {
+    return false
+  }
+  const result = spawnSync(resolveAdbCommand(env), [
+    ...createAdbArgs(deviceId),
+    'shell',
+    'am',
+    'start',
+    '-n',
+    component,
+  ], {
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+    timeout: screenshotTimeoutMs,
+  })
+  return result.status === 0
 }
 
 export function collectAndroidRuntimeMetadata(
@@ -293,6 +328,10 @@ export async function waitForAndroidRuntimeEvidence(options: WaitForAndroidRunti
     options.ensureRunning()
     await captureAndroidScreenshot(options.screenshot, options.env, options.deviceId)
     const uiHierarchy = await readAndroidUiHierarchy(options.env, options.deviceId)
+    if (restoreAndroidRuntimeForeground(uiHierarchy, options.env, options.deviceId)) {
+      await delay(500)
+      continue
+    }
     const markerBounds = resolveAndroidMarkerBounds(uiHierarchy, options.expectation.markerText)
     const background = await analyzeScreenshotColorPresence(options.screenshot, backgroundColor, markerBounds)
     const presentationBounds = markerBounds ?? background.bounds

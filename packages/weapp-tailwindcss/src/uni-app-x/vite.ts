@@ -11,7 +11,6 @@ import type {
 } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
-import { normalizeTailwindcssV4InfinityCalcCss } from '@weapp-tailwindcss/postcss'
 import { processCachedTask } from '@/bundlers/shared/cache'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
 import { toAbsoluteOutputPath } from '@/bundlers/shared/module-graph'
@@ -35,7 +34,7 @@ import { retainUniAppXAuthorApplyCss } from './vite/author-apply'
 import { createUniAppXHarmonyApplyExpander } from './vite/harmony-apply'
 import { createUniAppXNativeHmrReloader } from './vite/native-hmr'
 import { createUniAppXNativeBuildTargetResolver } from './vite/native-target'
-import { isCssModuleExport, isPreprocessorRequest, resolveUniAppXCssTarget } from './vite/style-request'
+import { isCssModuleExport, resolvePreprocessorTransform, resolveUniAppXCssTarget } from './vite/style-request'
 
 type TransformUVue = typeof import('./transform')['transformUVue']
 let transformUVuePromise: Promise<TransformUVue> | undefined
@@ -68,6 +67,8 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     ensureRuntimeClassSet,
     getResolvedConfig,
     isEnabled = () => true,
+    isNativeAppStyleTarget = () => false,
+    isWebGeneratorTarget = () => resolveUniUtsPlatform().isWeb,
     uniAppX,
     viteProcessedCssSourceFiles = [],
   } = options
@@ -239,12 +240,13 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       }
       await runtimeState.readyPromise
       const { query } = parseVueRequest(id)
-      const lang = query.lang
-      if (isIosPlatform && isPreprocessorRequest(id, lang)) {
-        const normalizedCode = normalizeTailwindcssV4InfinityCalcCss(code)
-        return normalizedCode === code
-          ? undefined
-          : { code: normalizedCode, map: null }
+      const preprocessor = resolvePreprocessorTransform(code, id, query.lang, {
+        isIosPlatform,
+        isNativeAppStyleTarget: isNativeAppStyleTarget(),
+        isWebGeneratorTarget: isWebGeneratorTarget(),
+      })
+      if (preprocessor) {
+        return preprocessor.result
       }
       return transformStyle(code, id, query, this)
     },

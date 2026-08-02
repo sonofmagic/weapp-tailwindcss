@@ -246,8 +246,9 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
     generatedClassSetByFile,
     getCommand: () => resolvedConfig?.command,
     getGeneratorOptions: resolveCurrentGeneratorOptions,
-    getSourceCandidate: file => sourceCandidateCollector.source(file),
-    isRuntimeAffectingSource: file => uniAppXEnabled && /\.(?:uvue|nvue)$/i.test(cleanUrl(file)),
+    isRuntimeAffectingSource: file => uniAppXEnabled
+      && !resolveCurrentGeneratorBranch().isWeb
+      && /\.(?:uvue|nvue)$/i.test(cleanUrl(file)),
   })
   const sourceScanSession = createFrameworkSourceScanSession({
     cssMemory,
@@ -315,7 +316,7 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
     const fullRuntime = getSourceCandidates() ?? getRecordedGeneratorCandidates() ?? await ensureRuntimeClassSet()
     const transient = hookContext?.transient === true
     const pendingHmrChange = transient ? void 0 : hmrCandidateState.resolve(generatorCode, file)
-    const forceFullHmrCssRegeneration = hmrCandidateState.shouldForceFullRegeneration(pendingHmrChange !== undefined)
+    const forceFullHmrCssRegeneration = hmrCandidateState.shouldForceFullRegeneration(file, pendingHmrChange !== undefined)
     const runtime = hookContext?.sourceCandidates === undefined
       ? fullRuntime
       : new Set(hookContext.sourceCandidates)
@@ -328,7 +329,7 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
       markViteProcessedCssSource(file)
       rememberTailwindRootCssModule(id)
       recordGeneratorCandidates(fullRuntime)
-      if (pendingHmrChange) {
+      if (pendingHmrChange || forceFullHmrCssRegeneration) {
         hmrCandidateState.finishTarget(file)
       }
       else if (!hmrCandidateState.hasPendingChange()) {
@@ -393,7 +394,7 @@ ${previousTracedCss}`
       rememberTailwindRootCssModule(id)
     }
     recordGeneratorCandidates(fullRuntime)
-    if (pendingHmrChange) {
+    if (pendingHmrChange || forceFullHmrCssRegeneration) {
       hmrCandidateState.finishTarget(file)
     }
     else if (!hmrCandidateState.hasPendingChange()) {
@@ -421,7 +422,7 @@ ${tracedCss}`
       await discoverAndRegisterAutoCssSources()
     } await sourceScanSession.sync()
   }
-  const extraPlugins = frameworkBranch.createExtraPlugins?.({ customAttributesEntities, disabledDefaultTemplateHandler, ensureRuntimeClassSet, generateCss: generateTailwindCssForVitePipeline, getResolvedConfig, isEnabled: shouldEnableFrameworkExtraPlugins, isIosPlatform: extraPluginPlatform.isIosPlatform === true, jsHandler, mainCssChunkMatcher, runtimeState, styleHandler, syncSourceCandidatesForHotUpdate, tailwindRootCssModuleIds, uniAppX, viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles }) ?? []
+  const extraPlugins = frameworkBranch.createExtraPlugins?.({ customAttributesEntities, disabledDefaultTemplateHandler, ensureRuntimeClassSet, generateCss: generateTailwindCssForVitePipeline, getResolvedConfig, isEnabled: shouldEnableFrameworkExtraPlugins, isIosPlatform: extraPluginPlatform.isIosPlatform === true, isNativeAppStyleTarget: () => frameworkCssPipelineStrategy?.isNativeAppStyleTarget?.(createCssPipelineContext()) === true, isWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, jsHandler, mainCssChunkMatcher, runtimeState, styleHandler, syncSourceCandidatesForHotUpdate, tailwindRootCssModuleIds, uniAppX, viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles }) ?? []
   const installFrameworkWatchCssCacheAdapter = async (config) => {
     if (!shouldAdaptFrameworkWatchCss()) {
       return

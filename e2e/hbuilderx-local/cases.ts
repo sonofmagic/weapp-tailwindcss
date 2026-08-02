@@ -1029,6 +1029,19 @@ export const webCases: WebCase[] = [
         },
       },
       {
+        selector: '.issue-1019-style-key',
+        scopeAttribute: /^data-v-[\da-f]+$/,
+        styles: {
+          borderBottomColor: 'rgb(190, 18, 60)',
+          borderBottomStyle: 'solid',
+          borderBottomWidth: '2px',
+          height: '4px',
+          marginTop: '8px',
+          transform: 'matrix(1, 0, 0, 0.5, 0, 0)',
+          width: '184px',
+        },
+      },
+      {
         selector: '.issue-1019-z-paging',
         scopeAttribute: /^data-v-[\da-f]+$/,
         styles: {

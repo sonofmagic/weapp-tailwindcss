@@ -163,17 +163,12 @@ function removeDeclarationAndEmptyRule(decl: postcss.Declaration) {
   }
 }
 
-export function removeEmptyStandardPropertyFallbacks(root: postcss.Root) {
+export function removeEmptyStandardDeclarations(root: postcss.Root) {
   root.walkDecls((decl) => {
     if (
       !decl.prop.startsWith('--')
       && decl.value.trim().length === 0
-      && decl.parent?.nodes.some(node => (
-        node !== decl
-        && node.type === 'decl'
-        && node.prop === decl.prop
-        && node.value.trim().length > 0
-      ))
+      && decl.next()?.type !== 'comment'
     ) {
       removeDeclarationAndEmptyRule(decl)
     }

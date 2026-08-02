@@ -1,0 +1,28 @@
+<template>
+	<view class="issue-1019-style-key" :style="[lineStyle]" />
+</template>
+
+<script lang="uts">
+	export default {
+		computed: {
+			lineStyle() {
+				const style = {
+					width: '184px',
+					borderBottomWidth: '2px',
+					borderBottomStyle: 'solid',
+					borderColor: '#be123c',
+					transform: '',
+				}
+				style['transform'] = 'scaleY(0.5)'
+				return style
+			},
+		},
+	}
+</script>
+
+<style lang="scss" scoped>
+	.issue-1019-style-key {
+		height: 4px;
+		margin-top: 8px;
+	}
+</style>

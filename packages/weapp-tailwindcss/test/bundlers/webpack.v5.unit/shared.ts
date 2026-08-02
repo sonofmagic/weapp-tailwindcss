@@ -26,6 +26,7 @@ export const replaceWxml = replaceWxmlImpl
 export const testState: {
   currentContext: TestContext
   existsSyncSpy?: ReturnType<typeof vi.spyOn>
+  projectRoot?: string
 } = {} as any
 
 export const getCompilerContextMock = vi.fn<(options?: unknown) => TestContext>(() => testState.currentContext)
@@ -92,6 +93,7 @@ interface TestContext {
   runtimeLoaderPath: string
   appType?: string
   tailwindcss?: any
+  tailwindcssBasedir?: string
 }
 
 export function createAssetsFromStore(store: Record<string, string>) {
@@ -107,6 +109,7 @@ export function createAssetsFromStore(store: Record<string, string>) {
 
 export function createContext(overrides: Partial<TestContext> = {}): TestContext {
   const cache = createCache()
+  const projectRoot = testState.projectRoot ?? path.join(os.tmpdir(), 'weapp-tw-webpack-v5-unit')
   const runtimeSet = new Set(['beta'])
 
   return {
@@ -126,7 +129,7 @@ export function createContext(overrides: Partial<TestContext> = {}): TestContext
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 4,
       options: {
-        projectRoot: process.cwd(),
+        projectRoot,
         tailwindcss: {},
       },
     },
@@ -136,6 +139,7 @@ export function createContext(overrides: Partial<TestContext> = {}): TestContext
     jsMatcher: (file: string) => file.endsWith('.js'),
     wxsMatcher: (_file: string) => false,
     runtimeLoaderPath: '/virtual/weapp-tw-runtime-classset-loader.cjs',
+    tailwindcssBasedir: projectRoot,
     appType: overrides.appType,
     ...overrides,
   }
@@ -206,18 +210,23 @@ export function createCompilerWithLoaderTracking() {
 }
 
 export function setupWebpackV5UnitTest() {
-  beforeEach(() => {
+  beforeEach(async () => {
+    testState.projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-v5-unit-'))
     testState.currentContext = createContext()
     getCompilerContextMock.mockClear()
     testState.existsSyncSpy = vi.spyOn(nodeFs as any, 'existsSync')
     testState.existsSyncSpy.mockReturnValue(true)
   })
 
-  afterEach(() => {
+  afterEach(async () => {
     delete process.env.WEAPP_TW_HMR_MEMORY_DEBUG
     delete process.env.WEAPP_TW_WATCH_REGRESSION
     testState.existsSyncSpy?.mockRestore()
     testState.existsSyncSpy = undefined
+    if (testState.projectRoot) {
+      await rm(testState.projectRoot, { force: true, recursive: true })
+      testState.projectRoot = undefined
+    }
     vi.doUnmock('@/generator')
     vi.resetModules()
   })
