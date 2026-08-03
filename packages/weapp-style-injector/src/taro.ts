@@ -1,5 +1,5 @@
 import type { PerFileImportResolver } from './core'
-import type { ResolvedSubpackageStyleScope, ResolvedSubpackageTargetSourceFile, ResolvedSubpackageTargetSourceModule, SubpackageStyleGenerator, SubpackageStyleRules } from './subpackage'
+import type { ResolvedSubpackageStyleScope, SubpackageStyleGenerator, SubpackageStyleRules } from './subpackage'
 
 import fs from 'node:fs'
 import path from 'node:path'
@@ -9,9 +9,13 @@ import {
   normalizeSubpackageStyleRules,
 } from './subpackage'
 import {
+  collectFrameworkTargets,
+  createDefaultStyleEntry,
+  resolveSubpackageStyleScopes,
+} from './subpackage-resolution'
+import {
   ensurePosix,
   normalizeRelativeImport,
-  normalizeRoot,
   toArray,
 } from './utils'
 
@@ -126,191 +130,6 @@ function loadAppConfigModule(filePath: string): Record<string, unknown> | null {
   }
 }
 
-function ensureArray<T>(value: T | T[] | undefined): T[] {
-  return Array.isArray(value) ? value : (typeof value === 'undefined' ? [] : [value])
-}
-
-function normalizePagePath(value: unknown): string | undefined {
-  const raw = typeof value === 'string'
-    ? value
-    : value && typeof value === 'object' && 'path' in value && typeof (value as { path?: unknown }).path === 'string'
-      ? (value as { path: string }).path
-      : undefined
-  if (!raw) {
-    return undefined
-  }
-  const normalized = ensurePosix(raw).replace(/^[./\\]+/, '')
-  return normalized.length > 0 ? normalized : undefined
-}
-
-function resolvePageStyleFiles(entry: { root?: string, pages?: unknown }): string[] {
-  const root = entry.root ? normalizeRoot(entry.root) : ''
-  if (!root || !Array.isArray(entry.pages)) {
-    return []
-  }
-  return entry.pages
-    .map(normalizePagePath)
-    .filter((page): page is string => Boolean(page))
-    .map(page => ensurePosix(path.posix.join(root, page)))
-}
-
-function resolvePageStyleSourceFiles(
-  entry: { root?: string, pages?: unknown },
-  baseDir: string,
-): ResolvedSubpackageTargetSourceFile[] {
-  const root = entry.root ? normalizeRoot(entry.root) : ''
-  if (!root || !Array.isArray(entry.pages)) {
-    return []
-  }
-
-  return entry.pages
-    .map(normalizePagePath)
-    .filter((page): page is string => Boolean(page))
-    .flatMap((page) => {
-      const sourceAbsolutePath = path.resolve(baseDir, root, `${page}.css`)
-      if (!fs.existsSync(sourceAbsolutePath) || !fs.statSync(sourceAbsolutePath).isFile()) {
-        return []
-      }
-      return [{
-        fileName: ensurePosix(path.posix.join(root, `${page}.css`)),
-        sourceAbsolutePath,
-      }]
-    })
-}
-
-function removeStyleExt(fileName: string): string {
-  const ext = path.posix.extname(fileName)
-  return ext ? fileName.slice(0, -ext.length) : fileName
-}
-
-function walkFiles(directory: string, predicate: (fileName: string) => boolean): string[] {
-  if (!fs.existsSync(directory) || !fs.statSync(directory).isDirectory()) {
-    return []
-  }
-
-  const files: string[] = []
-  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
-    const absolutePath = path.join(directory, entry.name)
-    if (entry.isDirectory()) {
-      files.push(...walkFiles(absolutePath, predicate))
-    }
-    else if (entry.isFile() && predicate(entry.name)) {
-      files.push(absolutePath)
-    }
-  }
-  return files
-}
-
-function resolveComponentStyleSourceFiles(
-  root: string,
-  baseDir: string,
-): ResolvedSubpackageTargetSourceFile[] {
-  const componentsDir = path.resolve(baseDir, root, 'components')
-  return walkFiles(componentsDir, fileName => fileName.endsWith('.css')).map((sourceAbsolutePath) => {
-    const fileName = ensurePosix(path.relative(baseDir, sourceAbsolutePath))
-    return {
-      fileName,
-      sourceAbsolutePath,
-    }
-  })
-}
-
-function resolveSourceModules(
-  root: string,
-  baseDir: string,
-): ResolvedSubpackageTargetSourceModule[] {
-  const directories = [
-    path.resolve(baseDir, root, 'pages'),
-    path.resolve(baseDir, root, 'components'),
-  ]
-  return directories.flatMap(directory =>
-    walkFiles(directory, fileName => /\.[^.]+\.(?:vue|tsx|jsx|ts|js)$/.test(fileName)).map((sourceAbsolutePath) => {
-      const fileName = ensurePosix(path.relative(baseDir, sourceAbsolutePath))
-      const styleFileName = removeStyleExt(fileName)
-      return {
-        fileName,
-        styleFileName,
-        sourceAbsolutePath,
-      }
-    }),
-  )
-}
-
-function resolveReferenceOutputName(fileName: string): string {
-  const normalized = ensurePosix(fileName)
-  return path.posix.basename(normalized, path.posix.extname(normalized)) || 'app'
-}
-
-function shouldUseAppStyleReference(styleEntry: TaroSubPackageStyleEntry): boolean {
-  return (
-    styleEntry.appStyle === true
-    || Boolean(styleEntry.referenceFileName)
-    || (
-      styleEntry.sourceFileName === undefined
-      && styleEntry.outputName === undefined
-      && styleEntry.generate === undefined
-      && (
-        Object.keys(styleEntry).length === 0
-        || styleEntry.preprocess !== undefined
-        || styleEntry.files !== undefined
-        || styleEntry.include !== undefined
-        || styleEntry.exclude !== undefined
-        || styleEntry.sourceInclude !== undefined
-        || styleEntry.sourceExclude !== undefined
-      )
-    )
-  )
-}
-
-function applyStyleEntryOptions(
-  resolvedEntry: ResolvedTaroSubPackage,
-  styleEntry: TaroSubPackageStyleEntry,
-) {
-  if (toArray(styleEntry.files).length > 0) {
-    resolvedEntry.files = toArray(styleEntry.files)
-  }
-  if (styleEntry.include !== undefined) {
-    resolvedEntry.include = styleEntry.include
-  }
-  if (styleEntry.exclude !== undefined) {
-    resolvedEntry.exclude = styleEntry.exclude
-  }
-  if (styleEntry.sourceInclude !== undefined) {
-    resolvedEntry.sourceInclude = styleEntry.sourceInclude
-  }
-  if (styleEntry.sourceExclude !== undefined) {
-    resolvedEntry.sourceExclude = styleEntry.sourceExclude
-  }
-  if (styleEntry.generate) {
-    resolvedEntry.generate = styleEntry.generate
-  }
-}
-
-function createDefaultStyleEntry(config: TaroSubPackageConfig): TaroSubPackageStyleEntry {
-  const entry: TaroSubPackageStyleEntry = {
-    sourceFileName: ensureArray(config.sourceFileName ?? config.indexFileNames),
-  }
-  if (config.outputName !== undefined) {
-    entry.outputName = config.outputName
-  }
-  if (config.files !== undefined) {
-    entry.files = config.files
-  }
-  if (config.include !== undefined) {
-    entry.include = config.include
-  }
-  if (config.exclude !== undefined) {
-    entry.exclude = config.exclude
-  }
-  if (config.generate !== undefined) {
-    entry.generate = config.generate
-  }
-  if (config.preprocess !== undefined) {
-    entry.preprocess = config.preprocess
-  }
-  return entry
-}
-
 export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTaroSubPackage[] {
   const appConfigPath = path.resolve(config.appConfigPath)
   const appConfig = loadAppConfigModule(appConfigPath)
@@ -319,9 +138,9 @@ export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTa
     return []
   }
 
-  const primary = ensureArray((appConfig as Record<string, unknown>)['subPackages'] as Array<{ root?: string, pages?: unknown }> | undefined)
+  const primary = toArray((appConfig as Record<string, unknown>)['subPackages'] as Array<{ root?: string, pages?: unknown }> | undefined)
 
-  const secondary = ensureArray((appConfig as Record<string, unknown>)['subpackages'] as Array<{ root?: string, pages?: unknown }> | undefined)
+  const secondary = toArray((appConfig as Record<string, unknown>)['subpackages'] as Array<{ root?: string, pages?: unknown }> | undefined)
   const subPackagesInput = [...primary, ...secondary]
 
   if (subPackagesInput.length === 0) {
@@ -332,81 +151,20 @@ export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTa
   const entries = normalizeSubpackageStyleRules(config.rules)
   const styleRules: TaroSubPackageStyleEntry[] = entries.length > 0
     ? entries
-    : [createDefaultStyleEntry(config)]
+    : [createDefaultStyleEntry<TaroSubPackageStyleEntry>(
+        config,
+        toArray(config.sourceFileName ?? config.indexFileNames),
+      )]
 
-  const resolved: ResolvedTaroSubPackage[] = []
-
-  for (const entry of subPackagesInput) {
-    if (!entry?.root) {
-      continue
-    }
-
-    const normalizedRoot = normalizeRoot(entry.root)
-    if (!normalizedRoot) {
-      continue
-    }
-
-    for (const styleEntry of styleRules) {
-      const componentStyleSourceFiles = resolveComponentStyleSourceFiles(normalizedRoot, baseDir)
-
-      if (shouldUseAppStyleReference(styleEntry)) {
-        const referenceFileName = ensurePosix(styleEntry.referenceFileName ?? 'app.css')
-        const resolvedEntry: ResolvedTaroSubPackage = {
-          root: ensurePosix(normalizedRoot),
-          sourceRelativePath: referenceFileName,
-          sourceAbsolutePath: path.resolve(baseDir, referenceFileName),
-          referenceFileName,
-          outputName: styleEntry.outputName ?? resolveReferenceOutputName(referenceFileName),
-          preprocess: false,
-          framework: 'taro',
-        }
-        resolvedEntry.targetFiles = [
-          ...resolvePageStyleFiles(entry),
-          ...componentStyleSourceFiles.map(file => removeStyleExt(file.fileName)),
-        ]
-        resolvedEntry.targetSourceFiles = [
-          ...resolvePageStyleSourceFiles(entry, baseDir),
-          ...componentStyleSourceFiles,
-        ]
-        resolvedEntry.sourceModules = resolveSourceModules(normalizedRoot, baseDir)
-        applyStyleEntryOptions(resolvedEntry, styleEntry)
-        resolved.push(resolvedEntry)
-        continue
-      }
-
-      const styleFileNames = ensureArray(styleEntry.sourceFileName).flatMap(name => (typeof name === 'string' && name.length > 0 ? [name] : []))
-      const styleCandidates = styleFileNames.length > 0 ? styleFileNames : DEFAULT_STYLE_FILENAMES
-      const stylePath = styleCandidates
-        .map(candidate => path.resolve(baseDir, normalizedRoot, candidate))
-        .find(candidatePath => fs.existsSync(candidatePath))
-
-      if (!stylePath) {
-        continue
-      }
-
-      const resolvedEntry: ResolvedTaroSubPackage = {
-        root: ensurePosix(normalizedRoot),
-        sourceRelativePath: ensurePosix(path.relative(baseDir, stylePath)),
-        sourceAbsolutePath: stylePath,
-        outputName: styleEntry.outputName ?? path.basename(stylePath, path.extname(stylePath)),
-        preprocess: (styleEntry.preprocess ?? config.preprocess) !== false,
-        framework: 'taro',
-      }
-      resolvedEntry.targetFiles = [
-        ...resolvePageStyleFiles(entry),
-        ...componentStyleSourceFiles.map(file => removeStyleExt(file.fileName)),
-      ]
-      resolvedEntry.targetSourceFiles = [
-        ...resolvePageStyleSourceFiles(entry, baseDir),
-        ...componentStyleSourceFiles,
-      ]
-      resolvedEntry.sourceModules = resolveSourceModules(normalizedRoot, baseDir)
-      applyStyleEntryOptions(resolvedEntry, styleEntry)
-      resolved.push(resolvedEntry)
-    }
-  }
-
-  return resolved
+  return resolveSubpackageStyleScopes({
+    framework: 'taro',
+    sourceRoot: baseDir,
+    subPackages: subPackagesInput,
+    styleEntries: styleRules,
+    defaultStyleCandidates: DEFAULT_STYLE_FILENAMES,
+    preprocess: config.preprocess,
+    collectTargets: collectFrameworkTargets,
+  })
 }
 
 export function createTaroSubPackageImportResolver(

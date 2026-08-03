@@ -1,10 +1,15 @@
 import type { PerFileImportResolver } from './core'
-import type { ResolvedSubpackageStyleScope, ResolvedSubpackageTargetSourceFile, ResolvedSubpackageTargetSourceModule, SubpackageStyleGenerator, SubpackageStyleRules } from './subpackage'
+import type { ResolvedSubpackageStyleScope, SubpackageStyleGenerator, SubpackageStyleRules } from './subpackage'
 
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { normalizeSubpackageStyleRules } from './subpackage'
+import {
+  collectFrameworkTargets,
+  createDefaultStyleEntry,
+  resolveSubpackageStyleScopes,
+} from './subpackage-resolution'
 import {
   ensurePosix,
   normalizeRelativeImport,
@@ -140,8 +145,8 @@ function normalizeCandidateList(candidate: UniAppSubPackageConfig['sourceFileNam
     : FALLBACK_INDEX_FILE_NAMES
 
   return list
-    .map(entry => entry?.trim())
-    .filter((entry): entry is string => Boolean(entry && entry.length > 0))
+    .map((entry: string) => entry?.trim())
+    .filter((entry: string | undefined): entry is string => Boolean(entry && entry.length > 0))
 }
 
 function resolveOutputName(fileName: string, outputName?: string): string {
@@ -150,187 +155,6 @@ function resolveOutputName(fileName: string, outputName?: string): string {
   }
 
   return path.basename(fileName, path.extname(fileName))
-}
-
-function resolveReferenceOutputName(fileName: string): string {
-  const normalized = ensurePosix(fileName)
-  return path.posix.basename(normalized, path.posix.extname(normalized)) || 'app'
-}
-
-function shouldUseAppStyleReference(styleEntry: UniAppSubPackageStyleEntry): boolean {
-  return (
-    styleEntry.appStyle === true
-    || Boolean(styleEntry.referenceFileName)
-    || (
-      styleEntry.sourceFileName === undefined
-      && styleEntry.outputName === undefined
-      && styleEntry.generate === undefined
-      && (
-        Object.keys(styleEntry).length === 0
-        || styleEntry.preprocess !== undefined
-        || styleEntry.files !== undefined
-        || styleEntry.include !== undefined
-        || styleEntry.exclude !== undefined
-        || styleEntry.sourceInclude !== undefined
-        || styleEntry.sourceExclude !== undefined
-      )
-    )
-  )
-}
-
-function applyStyleEntryOptions(
-  resolvedEntry: ResolvedSubPackage,
-  styleEntry: UniAppSubPackageStyleEntry,
-) {
-  if (toArray(styleEntry.files).length > 0) {
-    resolvedEntry.files = toArray(styleEntry.files)
-  }
-  if (styleEntry.include !== undefined) {
-    resolvedEntry.include = styleEntry.include
-  }
-  if (styleEntry.exclude !== undefined) {
-    resolvedEntry.exclude = styleEntry.exclude
-  }
-  if (styleEntry.sourceInclude !== undefined) {
-    resolvedEntry.sourceInclude = styleEntry.sourceInclude
-  }
-  if (styleEntry.sourceExclude !== undefined) {
-    resolvedEntry.sourceExclude = styleEntry.sourceExclude
-  }
-  if (styleEntry.generate) {
-    resolvedEntry.generate = styleEntry.generate
-  }
-}
-
-function createDefaultStyleEntry(config: UniAppSubPackageConfig): UniAppSubPackageStyleEntry {
-  const entry: UniAppSubPackageStyleEntry = {
-    sourceFileName: normalizeCandidateList(config.sourceFileName ?? config.indexFileName),
-  }
-  if (config.outputName !== undefined) {
-    entry.outputName = config.outputName
-  }
-  if (config.files !== undefined) {
-    entry.files = config.files
-  }
-  if (config.include !== undefined) {
-    entry.include = config.include
-  }
-  if (config.exclude !== undefined) {
-    entry.exclude = config.exclude
-  }
-  if (config.generate !== undefined) {
-    entry.generate = config.generate
-  }
-  if (config.preprocess !== undefined) {
-    entry.preprocess = config.preprocess
-  }
-  return entry
-}
-
-function normalizePagePath(value: unknown): string | undefined {
-  const raw = typeof value === 'string'
-    ? value
-    : value && typeof value === 'object' && 'path' in value && typeof (value as { path?: unknown }).path === 'string'
-      ? (value as { path: string }).path
-      : undefined
-  if (!raw) {
-    return undefined
-  }
-  const normalized = ensurePosix(raw).replace(LEADING_DOTS_SLASHES_RE, '')
-  return normalized.length > 0 ? normalized : undefined
-}
-
-function resolvePageStyleFiles(entry: { root?: string, pages?: unknown }): string[] {
-  const root = entry.root ? normalizeRoot(entry.root) : ''
-  if (!root || !Array.isArray(entry.pages)) {
-    return []
-  }
-  return entry.pages
-    .map(normalizePagePath)
-    .filter((page): page is string => Boolean(page))
-    .map(page => ensurePosix(path.posix.join(root, page)))
-}
-
-function resolvePageStyleSourceFiles(
-  entry: { root?: string, pages?: unknown },
-  baseDir: string,
-): ResolvedSubpackageTargetSourceFile[] {
-  const root = entry.root ? normalizeRoot(entry.root) : ''
-  if (!root || !Array.isArray(entry.pages)) {
-    return []
-  }
-
-  return entry.pages
-    .map(normalizePagePath)
-    .filter((page): page is string => Boolean(page))
-    .flatMap((page) => {
-      const sourceAbsolutePath = path.resolve(baseDir, root, `${page}.css`)
-      if (!fs.existsSync(sourceAbsolutePath) || !fs.statSync(sourceAbsolutePath).isFile()) {
-        return []
-      }
-      return [{
-        fileName: ensurePosix(path.posix.join(root, `${page}.css`)),
-        sourceAbsolutePath,
-      }]
-    })
-}
-
-function removeStyleExt(fileName: string): string {
-  const ext = path.posix.extname(fileName)
-  return ext ? fileName.slice(0, -ext.length) : fileName
-}
-
-function walkFiles(directory: string, predicate: (fileName: string) => boolean): string[] {
-  if (!fs.existsSync(directory) || !fs.statSync(directory).isDirectory()) {
-    return []
-  }
-
-  const files: string[] = []
-  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
-    const absolutePath = path.join(directory, entry.name)
-    if (entry.isDirectory()) {
-      files.push(...walkFiles(absolutePath, predicate))
-    }
-    else if (entry.isFile() && predicate(entry.name)) {
-      files.push(absolutePath)
-    }
-  }
-  return files
-}
-
-function resolveComponentStyleSourceFiles(
-  root: string,
-  baseDir: string,
-): ResolvedSubpackageTargetSourceFile[] {
-  const componentsDir = path.resolve(baseDir, root, 'components')
-  return walkFiles(componentsDir, fileName => fileName.endsWith('.css')).map((sourceAbsolutePath) => {
-    const fileName = ensurePosix(path.relative(baseDir, sourceAbsolutePath))
-    return {
-      fileName,
-      sourceAbsolutePath,
-    }
-  })
-}
-
-function resolveSourceModules(
-  root: string,
-  baseDir: string,
-): ResolvedSubpackageTargetSourceModule[] {
-  const directories = [
-    path.resolve(baseDir, root, 'pages'),
-    path.resolve(baseDir, root, 'components'),
-  ]
-  return directories.flatMap(directory =>
-    walkFiles(directory, fileName => /\.[^.]+\.(?:vue|tsx|jsx|ts|js)$/.test(fileName)).map((sourceAbsolutePath) => {
-      const fileName = ensurePosix(path.relative(baseDir, sourceAbsolutePath))
-      const styleFileName = removeStyleExt(fileName)
-      return {
-        fileName,
-        styleFileName,
-        sourceAbsolutePath,
-      }
-    }),
-  )
 }
 
 function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[] {
@@ -353,90 +177,24 @@ function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[
   const entries = normalizeSubpackageStyleRules(config.rules)
   const styleRules: UniAppSubPackageStyleEntry[] = entries.length > 0
     ? entries
-    : [createDefaultStyleEntry(config)]
+    : [createDefaultStyleEntry<UniAppSubPackageStyleEntry>(
+        config,
+        normalizeCandidateList(config.sourceFileName ?? config.indexFileName),
+      )]
 
-  const resolved: ResolvedSubPackage[] = []
-
-  for (const entry of subPackages) {
-    if (!entry?.root) {
-      continue
-    }
-
-    const normalizedRoot = normalizeRoot(entry.root)
-    if (!normalizedRoot) {
-      continue
-    }
-
-    for (const styleEntry of styleRules) {
-      const componentStyleSourceFiles = resolveComponentStyleSourceFiles(normalizedRoot, baseDir)
-
-      if (shouldUseAppStyleReference(styleEntry)) {
-        const referenceFileName = ensurePosix(styleEntry.referenceFileName ?? 'app.css')
-        const resolvedEntry: ResolvedSubPackage = {
-          root: ensurePosix(normalizedRoot),
-          sourceRelativePath: referenceFileName,
-          sourceAbsolutePath: path.resolve(baseDir, referenceFileName),
-          referenceFileName,
-          outputName: styleEntry.outputName ?? resolveReferenceOutputName(referenceFileName),
-          preprocess: false,
-          framework: 'uni-app',
-        }
-        resolvedEntry.targetFiles = [
-          ...resolvePageStyleFiles(entry),
-          ...componentStyleSourceFiles.map(file => removeStyleExt(file.fileName)),
-        ]
-        resolvedEntry.targetSourceFiles = [
-          ...resolvePageStyleSourceFiles(entry, baseDir),
-          ...componentStyleSourceFiles,
-        ]
-        resolvedEntry.sourceModules = resolveSourceModules(normalizedRoot, baseDir)
-        applyStyleEntryOptions(resolvedEntry, styleEntry)
-        resolved.push(resolvedEntry)
-        continue
-      }
-
-      const candidates = normalizeCandidateList(styleEntry.sourceFileName)
-      let matchedFileName: string | undefined
-      let matchedAbsolutePath: string | undefined
-
-      for (const candidate of candidates) {
-        const indexAbsolutePath = path.resolve(baseDir, normalizedRoot, candidate)
-        if (fs.existsSync(indexAbsolutePath) && fs.statSync(indexAbsolutePath).isFile()) {
-          matchedFileName = candidate
-          matchedAbsolutePath = indexAbsolutePath
-          break
-        }
-      }
-
-      if (!matchedFileName || !matchedAbsolutePath) {
-        continue
-      }
-
-      const sourceRelativePath = ensurePosix(path.join(normalizedRoot, matchedFileName))
-
-      const resolvedEntry: ResolvedSubPackage = {
-        root: ensurePosix(normalizedRoot),
-        sourceRelativePath,
-        sourceAbsolutePath: matchedAbsolutePath,
-        outputName: resolveOutputName(matchedFileName, styleEntry.outputName),
-        preprocess: (styleEntry.preprocess ?? config.preprocess) !== false,
-        framework: 'uni-app',
-      }
-      resolvedEntry.targetFiles = [
-        ...resolvePageStyleFiles(entry),
-        ...componentStyleSourceFiles.map(file => removeStyleExt(file.fileName)),
-      ]
-      resolvedEntry.targetSourceFiles = [
-        ...resolvePageStyleSourceFiles(entry, baseDir),
-        ...componentStyleSourceFiles,
-      ]
-      resolvedEntry.sourceModules = resolveSourceModules(normalizedRoot, baseDir)
-      applyStyleEntryOptions(resolvedEntry, styleEntry)
-      resolved.push(resolvedEntry)
-    }
-  }
-
-  return resolved
+  return resolveSubpackageStyleScopes({
+    framework: 'uni-app',
+    sourceRoot: baseDir,
+    subPackages,
+    styleEntries: styleRules,
+    defaultStyleCandidates: FALLBACK_INDEX_FILE_NAMES,
+    preprocess: config.preprocess,
+    collectTargets: collectFrameworkTargets,
+    normalizeStyleCandidates: normalizeCandidateList,
+    resolveOutputName,
+    resolveSourceRelativePath: (root, candidate) => ensurePosix(path.join(root, candidate)),
+    isStyleFile: filePath => fs.existsSync(filePath) && fs.statSync(filePath).isFile(),
+  })
 }
 
 export function createUniAppSubPackageImportResolver(
