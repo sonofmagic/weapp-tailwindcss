@@ -9,8 +9,8 @@ import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
 import { pathToFileURL } from 'node:url'
+import { assignDefined, collectPresetConfigs, createStyleRuleTargets } from '../preset-resolution'
 import { resolveUniAppStyleScopes, splitUniAppStyleScopes } from '../uni-app'
-import { toArray } from '../utils'
 import weappStyleInjector from '../vite'
 
 export type { SubpackageStyleRule, SubpackageStyleRules } from '../subpackage'
@@ -322,51 +322,33 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
     ...rest
   } = options
 
-  const configs = new Map<string, UniAppSubPackageConfig>()
   const { subPackages: scopedSubPackages, manual: manualStyleScopes } = splitUniAppStyleScopes(styleScopes)
-
-  for (const entry of [...toArray(subPackages), ...scopedSubPackages]) {
-    configs.set(path.resolve(entry.pagesJsonPath), entry)
-  }
-
-  const candidatePaths = pagesJsonPath
-    ? toArray(pagesJsonPath).map(entry => path.resolve(entry))
-    : resolveDefaultPagesJsonPaths()
-
-  for (const candidate of candidatePaths) {
-    if (!configs.has(candidate) && fs.existsSync(candidate)) {
+  const explicitConfigs = Array.isArray(subPackages)
+    ? subPackages
+    : subPackages
+      ? [subPackages]
+      : []
+  const configs = collectPresetConfigs<UniAppSubPackageConfig>({
+    explicitConfigs: [...explicitConfigs, ...scopedSubPackages],
+    requestedPaths: pagesJsonPath,
+    defaultPaths: resolveDefaultPagesJsonPaths(),
+    getConfigPath: config => config.pagesJsonPath,
+    createDiscoveredConfig: (candidate) => {
       const config: UniAppSubPackageConfig = {
         pagesJsonPath: candidate,
       }
-      if (indexFileName !== undefined) {
-        config.indexFileName = indexFileName
-      }
-      if (sourceFileName !== undefined) {
-        config.sourceFileName = sourceFileName
-      }
-      if (outputName !== undefined) {
-        config.outputName = outputName
-      }
-      if (files !== undefined) {
-        config.files = files
-      }
-      if (include !== undefined) {
-        config.include = include
-      }
-      if (exclude !== undefined) {
-        config.exclude = exclude
-      }
+      assignDefined(config, { indexFileName, sourceFileName, outputName, files, include, exclude })
       if (rules !== undefined) {
         config.rules = rules
       }
       else if (sourceFileName === undefined && indexFileName === undefined) {
-        config.rules = [{ from: { ref: 'app.css' }, to: { files, include, exclude } }]
+        config.rules = [{ from: { ref: 'app.css' }, to: createStyleRuleTargets(files, include, exclude) }]
       }
-      configs.set(candidate, config)
-    }
-  }
+      return config
+    },
+  })
 
-  const entries = configs.size > 0 ? [...configs.values()] : undefined
+  const entries = configs.length > 0 ? configs : undefined
   const manualEntries = manualStyleScopes.length > 0 ? manualStyleScopes : undefined
   const resolvedSubPackages = resolveUniAppStyleScopes(entries, manualEntries)
 

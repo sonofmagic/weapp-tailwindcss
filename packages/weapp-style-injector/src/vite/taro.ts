@@ -7,9 +7,15 @@ import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { createStyleInjector } from '../core'
+import {
+  assignDefined,
+  collectPresetConfigs,
+  createAsyncScopeGenerator,
+  createStyleRuleTargets,
+} from '../preset-resolution'
 import { isFileMatchedBySubpackageScope, resolveSubpackageStyleImport, shouldInjectSubpackageStyleImport } from '../subpackage'
 import { createTaroSubPackageImportResolver, resolveTaroSubPackages } from '../taro'
-import { ensurePosix, mergePerFileResolvers, toArray } from '../utils'
+import { ensurePosix, mergePerFileResolvers } from '../utils'
 import weappStyleInjector from '../vite'
 
 export type { SubpackageStyleRule, SubpackageStyleRules } from '../subpackage'
@@ -158,45 +164,25 @@ export function StyleInjector(options: ViteTaroStyleInjectorOptions = {}) {
     ...rest
   } = options
 
-  const configs = new Map<string, TaroSubPackageConfig>()
-
-  for (const entry of toArray(subPackages)) {
-    configs.set(path.resolve(entry.appConfigPath), entry)
-  }
-
-  const candidatePaths = appConfigPath
-    ? toArray(appConfigPath).map(entry => path.resolve(entry))
-    : resolveDefaultAppConfigPaths()
-
-  for (const candidate of candidatePaths) {
-    if (!configs.has(candidate) && fs.existsSync(candidate)) {
-      const config: TaroSubPackageConfig = { appConfigPath: candidate }
-      if (sourceFileName !== undefined) {
-        config.sourceFileName = sourceFileName
+  const entries = collectPresetConfigs<TaroSubPackageConfig>({
+    explicitConfigs: subPackages,
+    requestedPaths: appConfigPath,
+    defaultPaths: resolveDefaultAppConfigPaths(),
+    getConfigPath: config => config.appConfigPath,
+    createDiscoveredConfig: (candidate) => {
+      const config: TaroSubPackageConfig = {
+        appConfigPath: candidate,
       }
-      if (outputName !== undefined) {
-        config.outputName = outputName
-      }
-      if (files !== undefined) {
-        config.files = files
-      }
-      if (include !== undefined) {
-        config.include = include
-      }
-      if (exclude !== undefined) {
-        config.exclude = exclude
-      }
+      assignDefined(config, { sourceFileName, outputName, files, include, exclude })
       if (rules !== undefined) {
         config.rules = rules
       }
       else if (sourceFileName === undefined) {
-        config.rules = [{ from: { ref: 'app.css' }, to: { files, include, exclude } }]
+        config.rules = [{ from: { ref: 'app.css' }, to: createStyleRuleTargets(files, include, exclude) }]
       }
-      configs.set(candidate, config)
-    }
-  }
-
-  const entries = [...configs.values()]
+      return config
+    },
+  })
   const taroResolver = createTaroSubPackageImportResolver(entries)
   const resolvedSubPackages = entries.flatMap(resolveTaroSubPackages)
 
@@ -212,19 +198,7 @@ export function StyleInjector(options: ViteTaroStyleInjectorOptions = {}) {
   }
   if (resolvedSubPackages.length > 0) {
     injectorOptions.subpackageStyleScopes = resolvedSubPackages
-    injectorOptions.generateSubpackageStyle = async (context) => {
-      const scope = resolvedSubPackages.find(entry => entry.root === context.root && entry.sourceAbsolutePath === context.sourcePath)
-      if (!scope) {
-        return undefined
-      }
-      if (scope.generate) {
-        return scope.generate(context)
-      }
-      if (!fs.existsSync(scope.sourceAbsolutePath)) {
-        return undefined
-      }
-      return fs.promises.readFile(scope.sourceAbsolutePath, 'utf8')
-    }
+    injectorOptions.generateSubpackageStyle = createAsyncScopeGenerator(resolvedSubPackages)
   }
 
   const sourceStyleInjector = createTaroSourceStyleInjectorPlugin(resolvedSubPackages)

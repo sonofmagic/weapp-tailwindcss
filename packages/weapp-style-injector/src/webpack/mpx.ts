@@ -2,10 +2,14 @@ import type { MpxSubPackageConfig } from '../mpx'
 import type { SubpackageStyleRules } from '../subpackage'
 import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } from '../webpack'
 
-import fs from 'node:fs'
-import path from 'node:path'
 import { resolveDefaultMpxAppPaths, resolveMpxSubPackages } from '../mpx'
-import { toArray } from '../utils'
+import {
+  assignDefined,
+  collectPresetConfigs,
+  createStyleRuleTargets,
+  createSyncScopeGenerator,
+  loadSubpackageTargetStyle,
+} from '../preset-resolution'
 import { weappStyleInjectorWebpack } from '../webpack'
 
 export type { MpxSubPackageConfig } from '../mpx'
@@ -37,73 +41,35 @@ export function StyleInjector(options: WebpackMpxStyleInjectorOptions = {}): Web
     ...rest
   } = options
 
-  const configs = new Map<string, MpxSubPackageConfig>()
-
-  for (const entry of toArray(subPackages)) {
-    configs.set(path.resolve(entry.appPath), entry)
-  }
-
-  const candidatePaths = appPath
-    ? toArray(appPath).map(entry => path.resolve(entry))
-    : resolveDefaultMpxAppPaths()
-
-  for (const candidate of candidatePaths) {
-    if (!configs.has(candidate) && fs.existsSync(candidate)) {
-      const config: MpxSubPackageConfig = { appPath: candidate }
-      if (sourceRoot !== undefined) {
-        config.sourceRoot = sourceRoot
+  const configs = collectPresetConfigs<MpxSubPackageConfig>({
+    explicitConfigs: subPackages,
+    requestedPaths: appPath,
+    defaultPaths: resolveDefaultMpxAppPaths(),
+    getConfigPath: config => config.appPath,
+    createDiscoveredConfig: (candidate) => {
+      const config: MpxSubPackageConfig = {
+        appPath: candidate,
       }
-      if (sourceFileName !== undefined) {
-        config.sourceFileName = sourceFileName
-      }
-      if (outputName !== undefined) {
-        config.outputName = outputName
-      }
-      if (files !== undefined) {
-        config.files = files
-      }
-      if (include !== undefined) {
-        config.include = include
-      }
-      if (exclude !== undefined) {
-        config.exclude = exclude
-      }
+      assignDefined(config, { sourceRoot, sourceFileName, outputName, files, include, exclude })
       if (rules !== undefined) {
         config.rules = rules
       }
       else if (sourceFileName === undefined) {
-        config.rules = [{ from: { ref: 'app.css' }, to: { files, include, exclude } }]
+        config.rules = [{ from: { ref: 'app.css' }, to: createStyleRuleTargets(files, include, exclude) }]
       }
-      configs.set(candidate, config)
-    }
-  }
+      return config
+    },
+  })
 
-  const resolvedSubPackages = [...configs.values()].flatMap(resolveMpxSubPackages)
+  const resolvedSubPackages = configs.flatMap(resolveMpxSubPackages)
   const injectorOptions: WebpackWeappStyleInjectorOptions = {
     ...rest,
   }
 
   if (resolvedSubPackages.length > 0) {
     injectorOptions.subpackageStyleScopes = resolvedSubPackages
-    injectorOptions.generateSubpackageStyle = (context) => {
-      const scope = resolvedSubPackages.find(entry => entry.root === context.root && entry.sourceAbsolutePath === context.sourcePath)
-      if (!scope) {
-        return undefined
-      }
-      if (scope.generate) {
-        return scope.generate(context)
-      }
-      if (!fs.existsSync(scope.sourceAbsolutePath)) {
-        return undefined
-      }
-      return fs.readFileSync(scope.sourceAbsolutePath, 'utf8')
-    }
-    injectorOptions.loadSubpackageTargetStyle = (_fileName, sourceAbsolutePath) => {
-      if (!fs.existsSync(sourceAbsolutePath)) {
-        return undefined
-      }
-      return fs.readFileSync(sourceAbsolutePath, 'utf8')
-    }
+    injectorOptions.generateSubpackageStyle = createSyncScopeGenerator(resolvedSubPackages)
+    injectorOptions.loadSubpackageTargetStyle = loadSubpackageTargetStyle
   }
 
   return weappStyleInjectorWebpack(injectorOptions)
