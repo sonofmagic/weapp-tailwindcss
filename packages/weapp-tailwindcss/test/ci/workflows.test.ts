@@ -1305,7 +1305,9 @@ describe('e2e watch workflow', () => {
     expect(prRunStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
     expect(nightlyRunStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
     expect(prRunStep.env.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
+    expect(prRunStep.env.E2E_WATCH_CONFIRM_PERFORMANCE_BUDGET).toBe('1')
     expect(nightlyRunStep.env.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
+    expect(nightlyRunStep.env.E2E_WATCH_CONFIRM_PERFORMANCE_BUDGET).toBeUndefined()
   })
 
   it('keeps any explicit e2e watch plugin processing matrix budget within 60000ms', () => {

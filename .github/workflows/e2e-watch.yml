@@ -808,6 +808,8 @@ jobs:
           E2E_WATCH_MAX_MEMORY_HEAP_USED_MB: ${{ matrix.watch_max_memory_heap_used_mb || '4096' }}
           E2E_WATCH_COMMAND_TIMEOUT_MS: ${{ matrix.watch_command_timeout_ms }}
           E2E_WATCH_MAX_ATTEMPTS: ${{ matrix.watch_max_attempts || '2' }}
+          # GitHub-hosted runner 的单次性能尖峰需要在全新 watch session 中复现，语义错误与超时仍立即失败。
+          E2E_WATCH_CONFIRM_PERFORMANCE_BUDGET: '1'
           E2E_WATCH_ROUND_PROFILE: ${{ matrix.round_profile }}
           E2E_WATCH_WEB_ONLY: ${{ matrix.watch_web_only || '0' }}
           E2E_WATCH_MINI_PROGRAM_ONLY: ${{ matrix.watch_mini_program_only || '0' }}
