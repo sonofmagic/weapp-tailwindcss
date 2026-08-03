@@ -716,6 +716,114 @@ describe('benchmark ci report', () => {
     expect(evaluatePerformanceGuard(summary).passed).toBe(true)
   })
 
+  it('requires an independent reversed-order run to confirm HMR RSS regressions', async () => {
+    const {
+      confirmHmrMemoryViolations,
+      markHmrMemoryConfirmationUnavailable,
+      requiresHmrMemoryConfirmation,
+      toMarkdown,
+    } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const primaryGuard = {
+      passed: false,
+      thresholds: { regressionPercent: 5 },
+      violations: [
+        { key: 'taro-webpack', metric: 'hmrPeakRssMb', baseline: 1900, current: 2150, deltaPercent: 13.16, absoluteDelta: 250 },
+        { key: 'taro-webpack', metric: 'hmrSteadyRssMb', baseline: 1850, current: 2080, deltaPercent: 12.43, absoluteDelta: 230 },
+      ],
+    }
+
+    expect(requiresHmrMemoryConfirmation(primaryGuard)).toBe(true)
+    expect(requiresHmrMemoryConfirmation({
+      ...primaryGuard,
+      violations: [...primaryGuard.violations, { key: 'taro-webpack', metric: 'hmrP95' }],
+    })).toBe(false)
+
+    const unconfirmed = confirmHmrMemoryViolations(primaryGuard, {
+      passed: true,
+      thresholds: { regressionPercent: 5 },
+      violations: [],
+    })
+    expect(unconfirmed).toMatchObject({
+      passed: true,
+      violations: [],
+      memoryConfirmation: {
+        order: 'current->baseline',
+        confirmedViolations: 0,
+      },
+    })
+    expect(unconfirmed.observations).toHaveLength(2)
+    expect(unconfirmed.observations[0].message).toContain('反向顺序独立复测未复现')
+
+    const confirmed = confirmHmrMemoryViolations(primaryGuard, {
+      passed: false,
+      thresholds: { regressionPercent: 5 },
+      violations: [
+        { key: 'taro-webpack', metric: 'hmrPeakRssMb', baseline: 1920, current: 2160, deltaPercent: 12.5, absoluteDelta: 240 },
+        { key: 'taro-webpack', metric: 'hmrSteadyRssMb', baseline: 1860, current: 2090, deltaPercent: 12.37, absoluteDelta: 230 },
+      ],
+    })
+    expect(confirmed.passed).toBe(false)
+    expect(confirmed.violations).toEqual([
+      expect.objectContaining({
+        metric: 'hmrPeakRssMb',
+        message: expect.stringContaining('复测 1920.00 -> 2160.00 MB'),
+        confirmation: expect.objectContaining({ baseline: 1920, current: 2160 }),
+      }),
+      expect.objectContaining({
+        metric: 'hmrSteadyRssMb',
+        confirmation: expect.objectContaining({ baseline: 1860, current: 2090 }),
+      }),
+    ])
+
+    const unavailable = markHmrMemoryConfirmationUnavailable(primaryGuard, 'matrix has incomplete RSS samples')
+    expect(unavailable).toMatchObject({
+      passed: false,
+      memoryConfirmation: {
+        order: 'current->baseline',
+        error: 'matrix has incomplete RSS samples',
+      },
+    })
+    expect(unavailable.violations[0].message).toContain('独立复测不可用')
+
+    const markdown = toMarkdown({
+      generatedAt: '2026-08-03T00:00:00.000Z',
+      options: { buildRuns: 3, hmrRuns: 6, timeoutMs: 180000 },
+      baseline: 'base:main',
+      current: 'current:feature',
+      compares: [],
+      errors: [],
+      baselineErrors: [],
+      currentErrors: [],
+      currentOnlyErrors: [],
+      sharedErrors: [],
+      averages: {
+        buildDeltaPct: undefined,
+        hmrDeltaPct: undefined,
+        buildCompareCount: 0,
+        watchHmrCompareCount: 0,
+        buildPluginDeltaPct: undefined,
+        hmrPluginDeltaPct: undefined,
+        buildPluginCompareCount: 0,
+        watchHmrPluginCompareCount: 0,
+      },
+      performanceGuard: unconfirmed,
+    }, 'main')
+    expect(markdown).toContain('HMR 内存独立复测：current->baseline，确认 0 项')
+  })
+
+  it('runs HMR memory confirmation without builds and reverses version order', async () => {
+    const fs = await import('node:fs')
+    const path = await import('node:path')
+    const source = fs.readFileSync(path.resolve(__dirname, '../../../../benchmark/version-compare/scripts/run-ci.mjs'), 'utf8')
+
+    expect(source).toContain("{ version: currentLabel, root: currentRoot }")
+    expect(source).toContain("{ version: baselineLabel, root: baselineRoot }")
+    expect(source).toContain('matrixBuildRuns: 0')
+    expect(source).toContain('memory-confirmation-raw.json')
+    expect(source).toContain("violation.metric === 'hmrMemorySamples'")
+    expect(source).toContain('markHmrMemoryConfirmationUnavailable')
+  })
+
   it('ignores sub-10ms timing drift while retaining the percentage guard for larger regressions', async () => {
     const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
     const baselineLabel = 'base:main'

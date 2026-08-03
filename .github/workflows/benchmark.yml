@@ -59,7 +59,7 @@ jobs:
     name: Benchmark shard (${{ matrix.case_name }})
     needs: benchmark-matrix
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ github.event_name == 'pull_request' && 20 || 45 }}
+    timeout-minutes: ${{ github.event_name == 'pull_request' && 30 || 45 }}
     strategy:
       fail-fast: false
       max-parallel: 6

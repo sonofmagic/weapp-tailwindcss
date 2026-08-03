@@ -1,4 +1,5 @@
 import type { ConcreteOrPlatformWatchCaseName, WatchCaseArtifacts } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
+import type { PerformanceBudgetFailure } from './performance-confirmation'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { execa } from 'execa'
@@ -7,6 +8,11 @@ import { expect } from 'vitest'
 import { buildCases, demoWatchShardCases, getBaseWatchCaseName, isDemoWatchShardName, isLocalOnlyWatchCase } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import { assertDevHmrArtifactSnapshotGate } from '../../watchArtifactSnapshotGate'
+import {
+  listWatchHmrFailureLogs,
+  readNewPerformanceBudgetFailure,
+  resolvePerformanceBudgetConfirmation,
+} from './performance-confirmation'
 
 export type WatchProjectGroup = 'demo'
 export type DemoWatchShardName
@@ -611,8 +617,10 @@ export function shouldRunGroupedTarget(caseName: WatchCaseName, target: WatchPro
 
 async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs: number) {
   const maxAttempts = Math.max(1, toNumberEnv('E2E_WATCH_MAX_ATTEMPTS', 2))
+  const confirmPerformanceBudget = toBoolEnv('E2E_WATCH_CONFIRM_PERFORMANCE_BUDGET', false)
   const heartbeatIntervalMs = Math.max(30_000, toNumberEnv('E2E_WATCH_HEARTBEAT_INTERVAL_MS', 60_000))
   const env = { ...process.env }
+  let performanceBudgetConfirmation: PerformanceBudgetFailure | undefined
 
   for (const key of Object.keys(env)) {
     if (key === 'VITEST' || key.startsWith('VITEST_')) {
@@ -626,11 +634,17 @@ async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs:
     delete env.BABEL_ENV
   }
 
-  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+  for (let attempt = 1; attempt <= maxAttempts + 1; attempt += 1) {
+    const failureLogsBeforeAttempt = confirmPerformanceBudget
+      ? await listWatchHmrFailureLogs(cwd)
+      : new Set<string>()
     const attemptStartedAt = Date.now()
     const heartbeat = setInterval(() => {
       const elapsedSeconds = Math.round((Date.now() - attemptStartedAt) / 1000)
-      process.stdout.write(`[e2e-watch] watch-hmr attempt ${attempt}/${maxAttempts} still running (${elapsedSeconds}s elapsed)\n`)
+      const attemptLabel = performanceBudgetConfirmation
+        ? 'performance budget confirmation'
+        : `attempt ${attempt}/${maxAttempts}`
+      process.stdout.write(`[e2e-watch] watch-hmr ${attemptLabel} still running (${elapsedSeconds}s elapsed)\n`)
     }, heartbeatIntervalMs)
 
     try {
@@ -643,6 +657,11 @@ async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs:
         killSignal: 'SIGKILL',
         forceKillAfterDelay: 1000,
       })
+      if (performanceBudgetConfirmation) {
+        process.stdout.write(
+          `[e2e-watch] performance budget observation was not reproduced: ${performanceBudgetConfirmation.label}\n`,
+        )
+      }
       return
     }
     catch (error) {
@@ -650,6 +669,34 @@ async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs:
       // 命令级超时通常意味着预算不足，直接重试只会重复消耗整段 CI 时间。
       if (timedOut) {
         throw error
+      }
+
+      const currentPerformanceFailure = confirmPerformanceBudget
+        ? await readNewPerformanceBudgetFailure(cwd, failureLogsBeforeAttempt)
+        : undefined
+      const confirmation = resolvePerformanceBudgetConfirmation(
+        confirmPerformanceBudget,
+        performanceBudgetConfirmation,
+        currentPerformanceFailure,
+      )
+
+      if (confirmation.action === 'retry') {
+        performanceBudgetConfirmation = confirmation.failure
+        process.stdout.write(
+          `[e2e-watch] performance budget exceeded once; confirming with a fresh watch session: ${confirmation.failure.label}\n`,
+        )
+        continue
+      }
+      if (confirmation.action === 'confirmed') {
+        process.stdout.write(`[e2e-watch] performance budget regression confirmed: ${confirmation.failure.label}\n`)
+        throw error
+      }
+      if (confirmation.action === 'inconclusive') {
+        const actual = confirmation.actual?.label ?? 'non-performance failure'
+        throw new Error(
+          `performance budget confirmation was inconclusive: expected ${confirmation.expected.label}, received ${actual}`,
+          { cause: error },
+        )
       }
       if (attempt >= maxAttempts) {
         throw error

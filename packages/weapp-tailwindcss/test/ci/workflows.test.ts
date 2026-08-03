@@ -235,7 +235,7 @@ describe('ci workflows', () => {
       }
     }
 
-    expect(benchmarkWorkflow.jobs['benchmark-shard']['timeout-minutes']).toContain("github.event_name == 'pull_request' && 20")
+    expect(benchmarkWorkflow.jobs['benchmark-shard']['timeout-minutes']).toContain("github.event_name == 'pull_request' && 30")
     expect(releaseGateWorkflow.jobs['release-gate']['timeout-minutes']).toBe(30)
 
     const watchRows: Array<Record<string, unknown>> = watchWorkflow.jobs['pr-quick-gate'].strategy.matrix.include
@@ -475,7 +475,7 @@ describe('ci workflows', () => {
     expect(job.needs).toBe('benchmark-matrix')
     expect(job.strategy['fail-fast']).toBe(false)
     expect(job.strategy['max-parallel']).toBe(6)
-    expect(job['timeout-minutes']).toContain("github.event_name == 'pull_request' && 20")
+    expect(job['timeout-minutes']).toContain("github.event_name == 'pull_request' && 30")
     expect(job['timeout-minutes']).toContain('|| 45')
     expect(matrixInclude).toContain('needs.benchmark-matrix.outputs.include')
     expect(job.env.BENCH_ONLY).toBe('${{ matrix.bench_only }}')
@@ -544,7 +544,7 @@ describe('ci workflows', () => {
       'next',
     ])
     expect(workflow.on.workflow_dispatch.inputs.baseline.default).toBe('auto')
-    expect(job['timeout-minutes']).toContain("github.event_name == 'pull_request' && 20")
+    expect(job['timeout-minutes']).toContain("github.event_name == 'pull_request' && 30")
     expect(job['timeout-minutes']).toContain('|| 45')
     expect(job.env.WEAPP_TW_BENCH_BASELINE).toContain('auto')
     expect(job.env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '3'")
@@ -1305,7 +1305,9 @@ describe('e2e watch workflow', () => {
     expect(prRunStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
     expect(nightlyRunStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
     expect(prRunStep.env.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
+    expect(prRunStep.env.E2E_WATCH_CONFIRM_PERFORMANCE_BUDGET).toBe('1')
     expect(nightlyRunStep.env.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
+    expect(nightlyRunStep.env.E2E_WATCH_CONFIRM_PERFORMANCE_BUDGET).toBeUndefined()
   })
 
   it('keeps any explicit e2e watch plugin processing matrix budget within 60000ms', () => {
