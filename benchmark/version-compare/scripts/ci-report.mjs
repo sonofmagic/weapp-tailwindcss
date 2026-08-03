@@ -133,6 +133,74 @@ function normalizePackageSpec(value) {
   return `weapp-tailwindcss@${value}`
 }
 
+const hmrMemoryMetrics = new Set(['hmrPeakRssMb', 'hmrSteadyRssMb'])
+
+function violationId(violation) {
+  return `${violation.key}::${violation.metric}`
+}
+
+export function requiresHmrMemoryConfirmation(guard) {
+  return guard.violations.length > 0
+    && guard.violations.every(violation => hmrMemoryMetrics.has(violation.metric))
+}
+
+export function confirmHmrMemoryViolations(primaryGuard, confirmationGuard) {
+  const confirmationById = new Map(
+    confirmationGuard.violations
+      .filter(violation => hmrMemoryMetrics.has(violation.metric))
+      .map(violation => [violationId(violation), violation]),
+  )
+  const observations = [...(primaryGuard.observations ?? [])]
+  const violations = primaryGuard.violations.flatMap((violation) => {
+    if (!hmrMemoryMetrics.has(violation.metric)) {
+      return [violation]
+    }
+    const confirmation = confirmationById.get(violationId(violation))
+    if (!confirmation) {
+      observations.push({
+        ...violation,
+        message: `首次检测到 HMR RSS 回归，反向顺序独立复测未复现（${fmtMs(violation.baseline)} -> ${fmtMs(violation.current)} MB）`,
+      })
+      return []
+    }
+    return [{
+      ...violation,
+      message: `HMR RSS 回归经反向顺序独立复测确认：首次 ${fmtMs(violation.baseline)} -> ${fmtMs(violation.current)} MB；复测 ${fmtMs(confirmation.baseline)} -> ${fmtMs(confirmation.current)} MB`,
+      confirmation: {
+        baseline: confirmation.baseline,
+        current: confirmation.current,
+        deltaPercent: confirmation.deltaPercent,
+        absoluteDelta: confirmation.absoluteDelta,
+      },
+    }]
+  })
+
+  return {
+    ...primaryGuard,
+    passed: violations.length === 0,
+    violations,
+    observations,
+    memoryConfirmation: {
+      order: 'current->baseline',
+      confirmedViolations: violations.filter(violation => hmrMemoryMetrics.has(violation.metric)).length,
+    },
+  }
+}
+
+export function markHmrMemoryConfirmationUnavailable(primaryGuard, reason) {
+  return {
+    ...primaryGuard,
+    violations: primaryGuard.violations.map(violation => ({
+      ...violation,
+      message: `HMR RSS 首次检测已超限，但反向顺序独立复测不可用：${reason}`,
+    })),
+    memoryConfirmation: {
+      order: 'current->baseline',
+      error: reason,
+    },
+  }
+}
+
 export function buildSummary(raw, baselineLabel, currentLabel) {
   const rows = raw.rows ?? []
   const byKey = new Map(rows.map(row => [`${row.version}::${row.key}`, row]))
@@ -586,7 +654,12 @@ export function toMarkdown(summary, baselineSpec) {
         `- 中位数回归置信上限：p <= ${guard.thresholds.maximumMedianRegressionPValue}`,
         '- 中位数回归需严格多数样本同步越界，并通过单侧分布置信检验',
         '- 端到端 HMR 回归需插件处理阶段同步越界确认',
-        '- HMR 内存回归需 peak 与 steady 两项同步越界确认',
+        '- HMR 内存回归需 peak 与 steady 两项同步越界，并通过反向顺序独立复测确认',
+        ...(guard.memoryConfirmation
+          ? [guard.memoryConfirmation.error
+              ? `- HMR 内存独立复测：${guard.memoryConfirmation.order}，不可用：${guard.memoryConfirmation.error}`
+              : `- HMR 内存独立复测：${guard.memoryConfirmation.order}，确认 ${guard.memoryConfirmation.confirmedViolations} 项`]
+          : []),
         `- 违规项：${guard.violations.length}`,
         ...guard.violations.map(item => `- ${item.key} / ${item.metric}: ${item.message ?? `${fmtMs(item.baseline)} -> ${fmtMs(item.current)} (${fmtPct(item.deltaPercent)})`}`),
         `- 观察项：${guard.observations?.length ?? 0}`,
