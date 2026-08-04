@@ -1,0 +1,12 @@
+{
+  "file": "components/issue-1021-cell/issue-1021-cell.uvue",
+  "count": 6,
+  "tokens": [
+    "flex-row",
+    "items-center",
+    "justify-between",
+    "pl-16",
+    "pr-12",
+    "py-14"
+  ]
+}

@@ -164,8 +164,14 @@ wx-root-portal-content {
 .flex-col {
   flex-direction: column;
 }
+.flex-row {
+  flex-direction: row;
+}
 .items-center {
   align-items: center;
+}
+.justify-between {
+  justify-content: space-between;
 }
 .justify-center {
   justify-content: center;
@@ -373,9 +379,19 @@ wx-root-portal-content {
   padding-top: calc(var(--spacing) * 4);
   padding-bottom: calc(var(--spacing) * 4);
 }
+.py-14 {
+  padding-top: calc(var(--spacing) * 14);
+  padding-bottom: calc(var(--spacing) * 14);
+}
 .py-_b24px_B {
   padding-top: 24px;
   padding-bottom: 24px;
+}
+.pr-12 {
+  padding-right: calc(var(--spacing) * 12);
+}
+.pl-16 {
+  padding-left: calc(var(--spacing) * 16);
 }
 .text-center {
   text-align: center;
