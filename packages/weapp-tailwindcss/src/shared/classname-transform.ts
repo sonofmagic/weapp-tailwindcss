@@ -1,7 +1,7 @@
 import type { IJsHandlerOptions } from '../types'
 import { replaceWxml } from '../wxml/shared'
 
-export type ClassNameTransformDecision = 'direct' | 'escaped' | 'fallback' | 'skip'
+export type ClassNameTransformDecision = 'direct' | 'escaped' | 'skip'
 type EscapeMap = NonNullable<IJsHandlerOptions['escapeMap']>
 
 const escapedCandidateCacheByEscapeMap = new WeakMap<EscapeMap, Map<string, string>>()
@@ -55,72 +55,8 @@ function isPlainSlashPathCandidate(candidate: string) {
   return !candidate.slice(0, slashIndex).includes('-')
 }
 
-function isArbitraryValueCandidate(candidate: string) {
-  let hasOpenBracket = false
-  let hasCloseBracket = false
-
-  for (let i = 0; i < candidate.length; i++) {
-    const char = candidate[i]
-    if (char === '[') {
-      hasOpenBracket = true
-    }
-    else if (char === ']') {
-      hasCloseBracket = true
-    }
-
-    if (hasOpenBracket && hasCloseBracket) {
-      break
-    }
-  }
-
-  if (!hasOpenBracket || !hasCloseBracket) {
-    return false
-  }
-
-  const normalized = candidate.trim()
-
-  // URL 片段中的 [] 不应作为任意值候选处理。
-  if (isUrlLikeCandidate(normalized)) {
-    return false
-  }
-
-  return true
-}
-
-function shouldEnableArbitraryValueFallbackByInputs(
-  classNameSet: ResolveClassNameTransformOptions['classNameSet'],
-  jsArbitraryValueFallback: ResolveClassNameTransformOptions['jsArbitraryValueFallback'],
-  tailwindcssMajorVersion: ResolveClassNameTransformOptions['tailwindcssMajorVersion'],
-) {
-  if (jsArbitraryValueFallback === true) {
-    return true
-  }
-
-  if (jsArbitraryValueFallback === false) {
-    return false
-  }
-
-  // auto: 仅在 Tailwind v4 且 classNameSet 异常（空）时启用。
-  return tailwindcssMajorVersion === 4 && (!classNameSet || classNameSet.size === 0)
-}
-
-export function shouldEnableArbitraryValueFallback(
-  {
-    classNameSet,
-    jsArbitraryValueFallback,
-    tailwindcssMajorVersion,
-  }: Pick<ResolveClassNameTransformOptions, 'classNameSet' | 'jsArbitraryValueFallback' | 'tailwindcssMajorVersion'>,
-) {
-  return shouldEnableArbitraryValueFallbackByInputs(
-    classNameSet,
-    jsArbitraryValueFallback,
-    tailwindcssMajorVersion,
-  )
-}
-
 const SKIP_RESULT: ClassNameTransformResult = { decision: 'skip' }
 const DIRECT_RESULT: ClassNameTransformResult = { decision: 'direct' }
-const FALLBACK_RESULT: ClassNameTransformResult = { decision: 'fallback' }
 
 function getEscapedCandidateCacheStore(escapeMap?: EscapeMap) {
   if (!escapeMap) {
@@ -154,7 +90,7 @@ function getEscapedCandidate(candidate: string, escapeMap?: EscapeMap, store = g
  * JS 转译严格遵循 runtime class set：
  * 1. 直接命中 classNameSet 原始值；
  * 2. 兼容命中 classNameSet 中已转义值；
- * 3. 仅在受控条件下允许 class 语义兜底。
+ * 3. 除显式 alwaysEscape 外，不允许绕过 classNameSet。
  *
  * 返回结构化结果，附带已计算的 escapedValue 以避免下游重复 escape。
  */
@@ -164,9 +100,7 @@ export function resolveClassNameTransformWithResult(
     alwaysEscape,
     classNameSet,
     escapeMap,
-    jsArbitraryValueFallback,
     jsPreserveClass,
-    tailwindcssMajorVersion,
     classContext,
   }: ResolveClassNameTransformOptions,
 ): ClassNameTransformResult {
@@ -191,14 +125,6 @@ export function resolveClassNameTransformWithResult(
     if (escapedCandidate !== candidate && classNameSet.has(escapedCandidate)) {
       return { decision: 'escaped', escapedValue: escapedCandidate }
     }
-  }
-
-  if (
-    classContext
-    && shouldEnableArbitraryValueFallbackByInputs(classNameSet, jsArbitraryValueFallback, tailwindcssMajorVersion)
-    && isArbitraryValueCandidate(candidate)
-  ) {
-    return FALLBACK_RESULT
   }
 
   return SKIP_RESULT

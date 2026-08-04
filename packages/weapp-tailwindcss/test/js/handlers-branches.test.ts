@@ -394,7 +394,7 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token?.value).toBe('flex gap-_b20px_B')
   })
 
-  it('supports controlled arbitrary fallback in explicit class context for tailwindcss v4 when runtime set is empty', () => {
+  it('does not let legacy auto fallback bypass an empty runtime set', () => {
     const literal = getLiteralPath('const state = { className: \'flex gap-[20px]\' }', 'StringLiteral')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
@@ -403,7 +403,7 @@ describe('replaceHandleValue branch coverage', () => {
       needEscaped: true,
     })
 
-    expect(token?.value).toBe('flex gap-_b20px_B')
+    expect(token).toBeUndefined()
   })
 
   it('transforms matched arbitrary utilities inside ref array literals when runtime set is fresh', () => {
@@ -424,7 +424,7 @@ describe('replaceHandleValue branch coverage', () => {
     expect(token?.value).not.toContain('bg-[#123456]')
   })
 
-  it('does not apply controlled arbitrary fallback for non-class strings', () => {
+  it('keeps non-class strings unchanged with legacy auto fallback', () => {
     const literal = getLiteralPath('const trace = \'at App.vue:4 gap-[20px]\'', 'StringLiteral')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,

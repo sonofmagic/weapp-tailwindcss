@@ -188,6 +188,8 @@ await ctx.getRuntimeSet({
 
 watch/HMR 中必须先刷新集合，再处理受影响的 JS 和模板。不要用启发式转义弥补过期的集合；新 class 尚未进入集合时，保持原值比误改业务字符串更安全。
 
+`jsArbitraryValueFallback` 已废弃，仅用于兼容旧配置。`true` 和 `'auto'` 都不会绕过 `classNameSet`；集合为空或候选未命中时，`transformJs()` 会保持源码不变。
+
 ## `runtimeSet` 的安全边界
 
 `transformJs()` 的核心原则是 `classNameSet` 精确命中：只有 Tailwind 生成或验证过的 class 才能进入普通 JS 字符串的转译路径。
@@ -273,6 +275,8 @@ const ctx = createContext({
 - `map`：启用时生成的 source map。
 - `error`：Babel 解析错误。Core API 会把错误放在结果中，调用方必须主动检查。
 - `linked`：启用 `filename + moduleGraph` 跨模块分析后产生的关联模块结果，以绝对路径为键；调用方负责把它们交回构建图。
+
+除显式底层参数 `alwaysEscape: true` 外，`transformJs()` 只转译精确命中当前 `classNameSet` 的候选。空集合、缺失集合和未命中候选都会原样保留。
 
 ## 常见问题排查
 

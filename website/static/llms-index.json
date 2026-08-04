@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-07-28T10:39:19.714Z",
+  "generatedAt": "2026-08-04T05:04:21.042Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 166,
@@ -1452,8 +1452,8 @@
       "kind": "doc",
       "id": "doc:api/options/important",
       "title": "✅ 重要配置",
-      "description": "✅ 重要配置：21 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。",
-      "summary": "本页收录 21 个配置项，来源于 UserDefinedOptions。",
+      "description": "✅ 重要配置：20 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。",
+      "summary": "本页收录 20 个配置项，来源于 UserDefinedOptions。",
       "url": "/docs/api/options/important",
       "canonical": "https://tw.icebreaker.top/docs/api/options/important",
       "keywords": [

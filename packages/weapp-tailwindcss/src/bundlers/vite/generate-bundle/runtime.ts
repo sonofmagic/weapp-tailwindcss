@@ -1,5 +1,6 @@
 /* eslint-disable style/max-statements-per-line */
 import type { PendingRememberedCssReplayUpdate } from './types'
+import { Buffer } from 'node:buffer'
 import path from 'node:path'
 import process from 'node:process'
 import { transformWebCssCompat } from '@weapp-tailwindcss/postcss'
@@ -10,6 +11,7 @@ import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/
 import { resolveUniUtsPlatform } from '@/utils'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap } from '../../shared/css-source-trace'
 import { hasBundlerGeneratedCssMarker } from '../../shared/generated-css-marker'
+import { collectGeneratedRawSourceCandidatesFromCss } from '../../shared/generator-css/class-selectors'
 import { normalizeMiniProgramGeneratorCssSource } from '../../shared/generator-css/output-import-shell'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { createBundleModuleGraphOptions } from '../bundle-entries'
@@ -207,7 +209,12 @@ function createGenerateBundleHook(context): any {
     const collectedGeneratorCandidates = new Set([...runtime, ...sourceCandidates])
     const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates) : collectedGeneratorCandidates
     const filteredSourceCandidates = shouldFilterTailwindV4MiniProgramCandidates ? filterUnsupportedMiniProgramTailwindV4Candidates(sourceCandidates) : sourceCandidates
-    const transformRuntime = shouldFilterTailwindV4MiniProgramCandidates ? new Set(runtime) : new Set(filteredGeneratorCandidates)
+    const shouldTransformJsBundle = !isWebGeneratorTarget || context.cssPipelineStrategy?.shouldTransformServeJs?.(cssPipelineContext) === true
+    const transformRuntime = isWebGeneratorTarget
+      ? new Set<string>()
+      : shouldFilterTailwindV4MiniProgramCandidates
+        ? new Set(runtime)
+        : new Set(filteredGeneratorCandidates)
     const generatorRuntime = filteredGeneratorCandidates
     const cssEntries = snapshot.entries.filter(entry => entry.type === 'css' && entry.output.type === 'asset')
     const hasMultipleConfiguredCssEntries = (opts.cssEntries?.length ?? 0) > 1
@@ -272,13 +279,14 @@ function createGenerateBundleHook(context): any {
     }
     debug('get runtimeSet, class count: %d, transform class count: %d', runtime.size, transformRuntime.size)
     const runtimeSignature = getRuntimeClassSetSignature(runtimeState.tailwindRuntime) ?? 'runtime:missing'
-    const transformRuntimeSignature = createCandidateSignature(transformRuntime)
+    const transformRuntimeSignature = isWebGeneratorTarget
+      ? generatorCandidateSignature
+      : createCandidateSignature(transformRuntime)
     const shouldProcessTailwindGeneration = !useIncrementalMode || hasRuntimeAffectingChanges || generatorCandidatesChanged || snapshot.processFiles.css.size > 0
     const { applyLinkedUpdates, pendingLinkedUpdates } = createLinkedUpdateHelpers({ jsEntries, onUpdate, debug })
     const createBaseHandlerOptions = createJsHandlerOptionsFactory({ getExperimentalJsFastPath: () => opts.experimentalJsFastPath ?? (resolvedConfig?.build?.watch != null ? 'oxc' : false), getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion, moduleGraph: moduleGraphOptions })
     const resolveFrameworkJsHandlerOptions = absoluteFilename => context.cssPipelineStrategy?.getServeJsHandlerOptions?.({ ...cssPipelineContext, file: absoluteFilename })
     const createHandlerOptions = (absoluteFilename, extra) => { const frameworkExtra = resolveFrameworkJsHandlerOptions(absoluteFilename); return createBaseHandlerOptions(absoluteFilename, frameworkExtra || extra ? { ...frameworkExtra, ...extra } : void 0) }
-    const shouldTransformJsBundle = !isWebGeneratorTarget || context.cssPipelineStrategy?.shouldTransformServeJs?.(cssPipelineContext) === true
     const linkedByEntry = useIncrementalMode ? new Map() : void 0
     const sharedCssResultCache = new Map()
     const activeProcessCacheKeys = new Set()
@@ -455,7 +463,26 @@ function createGenerateBundleHook(context): any {
       await processRememberedCssReplay({ addWatchFile, activeViteCssCacheFiles, bundle, bundleFiles, cache, changedCssFiles: snapshot.changedByType.css, cssTaskFactories, cssPipelineContext, cssPipelineStrategy: context.cssPipelineStrategy, createScopedGeneratorRuntime, createScopedSourceCandidateGetter, createScopedSourceCandidateSourceGetter, debug, defaultStyleOutputExtension, emitOrReplayCssAsset, frameworkRootImportShellTargetByFile, generatorPlatform, generatorRuntime, getCssHandlerOptions, getCssUserHandlerOptions, getRememberedCssSignature, getRememberedCssSources, isNativeAppStyleTarget, isWebGeneratorTarget, lastCssRawSourceHashByFile, lastCssResultByFile, lastCssSourceHashByFile, markCssAssetProcessed, metrics, normalizeViteCssCacheKey, onUpdate, opts, pendingRememberedCssReplayUpdates, recordCssAssetResult, recordViteProcessedCssAssetResult, rootDir, runtimeState, setRememberedCssSignature, shouldInjectCssIntoMainFromOutput, shouldPreserveAppCssExtension, sourceRoot, styleHandler, timeTask, useIncrementalMode })
     }
     recordTimingDetail('rememberedCss.plan', rememberedCssStartedAt)
-    await finalizeGenerateBundle({ activeProcessCacheKeys, activeProcessHashKeys, activeViteCssCacheFiles, bundle, bundleFiles, cache, cssTaskFactories, cssPipelineStrategy: context.cssPipelineStrategy, createCssPipelineContext: () => cssPipelineContext, debug, defaultStyleOutputExtension, formatIteration: useIncrementalMode ? state.iteration : 0, generatorCandidateSignature, generatorRuntime, getCssHandlerOptions, getSourceCandidateSourcesForEntries, getSourceCandidatesForEntries: getCombinedSourceCandidatesForEntries, getViteCssCacheStats, getViteProcessedCssAssetResults, hmrTimingRecorder, hmrTimingStartedAt, isHarmonyAppStyleTarget, isNativeAppStyleTarget, isViteProcessedCssAsset, isWebGeneratorTarget, jsAfterCss: shouldFilterTailwindV4MiniProgramCandidates && cssTaskFactories.length > 0, jsTaskFactories, lastCssResultByFile, lastCssSourceHashByFile, linkedByEntry, markCssAssetProcessed, metrics, onEnd, onUpdate, opts, outDir, pendingLinkedUpdates, pendingRememberedCssReplayUpdates, pruneViteCssCaches, recordCssAssetResult, recordTimingDetail, recordViteProcessedCssAssetResult, rootDir, runtime, runtimeState, shouldPreserveAppCssExtension, snapshot, sourceCandidates, sourceRoot, state, styleHandler, tasks, timingDetails, transformRuntime, transformWebTargetCss, useIncrementalMode })
+    const prepareJsTransformRuntime = isWebGeneratorTarget && shouldTransformJsBundle
+      ? () => {
+          transformRuntime.clear()
+          const cssSources = new Set<string>()
+          for (const output of Object.values(bundle)) {
+            if (output.type !== 'asset' || !opts.cssMatcher(output.fileName)) {
+              continue
+            }
+            cssSources.add(typeof output.source === 'string' ? output.source : Buffer.from(output.source).toString())
+          }
+          for (const [, record] of getViteProcessedCssAssetResults?.() ?? []) {
+            cssSources.add(typeof record === 'string' ? record : record.css)
+          }
+          for (const candidate of collectGeneratedRawSourceCandidatesFromCss(generatorRuntime, cssSources, opts.escapeMap)) {
+            transformRuntime.add(candidate)
+          }
+          debug('rebuild webview JS transform class set from generated CSS: %d', transformRuntime.size)
+        }
+      : undefined
+    await finalizeGenerateBundle({ activeProcessCacheKeys, activeProcessHashKeys, activeViteCssCacheFiles, bundle, bundleFiles, cache, cssTaskFactories, cssPipelineStrategy: context.cssPipelineStrategy, createCssPipelineContext: () => cssPipelineContext, debug, defaultStyleOutputExtension, formatIteration: useIncrementalMode ? state.iteration : 0, generatorCandidateSignature, generatorRuntime, getCssHandlerOptions, getSourceCandidateSourcesForEntries, getSourceCandidatesForEntries: getCombinedSourceCandidatesForEntries, getViteCssCacheStats, getViteProcessedCssAssetResults, hmrTimingRecorder, hmrTimingStartedAt, isHarmonyAppStyleTarget, isNativeAppStyleTarget, isViteProcessedCssAsset, isWebGeneratorTarget, jsAfterCss: (shouldFilterTailwindV4MiniProgramCandidates || (isWebGeneratorTarget && shouldTransformJsBundle)) && cssTaskFactories.length > 0, jsTaskFactories, lastCssResultByFile, lastCssSourceHashByFile, linkedByEntry, markCssAssetProcessed, metrics, onEnd, onUpdate, opts, outDir, pendingLinkedUpdates, pendingRememberedCssReplayUpdates, prepareJsTransformRuntime, pruneViteCssCaches, recordCssAssetResult, recordTimingDetail, recordViteProcessedCssAssetResult, rootDir, runtime, runtimeState, shouldPreserveAppCssExtension, snapshot, sourceCandidates, sourceRoot, state, styleHandler, tasks, timingDetails, transformRuntime, transformWebTargetCss, useIncrementalMode })
     state.bundleMarkupCandidatesByFile = bundleMarkupCandidates.candidatesByFile
   }
 }

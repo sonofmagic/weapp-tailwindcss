@@ -1,15 +1,15 @@
 import type { IJsHandlerOptions } from '../types'
 import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
-import { resolveClassNameTransformWithResult, shouldEnableArbitraryValueFallback } from '../shared/classname-transform'
+import { resolveClassNameTransformWithResult } from '../shared/classname-transform'
 import { decodeUnicode2 } from '../utils/decode'
 import { getReplacement, getReplacementCacheStore } from './replacement-cache'
 
 export function transformLiteralText(
   literal: string,
   options: IJsHandlerOptions,
+  classContext = true,
 ): string | undefined {
-  const fallbackEnabled = shouldEnableArbitraryValueFallback(options)
-  if (!options.alwaysEscape && !fallbackEnabled && (!options.classNameSet || options.classNameSet.size === 0)) {
+  if (!options.alwaysEscape && (!options.classNameSet || options.classNameSet.size === 0)) {
     return undefined
   }
 
@@ -21,7 +21,7 @@ export function transformLiteralText(
 
   const transformOptions = {
     ...options,
-    classContext: true,
+    classContext,
   }
   const replacementCache = getReplacementCacheStore(options.escapeMap)
   let transformed = source

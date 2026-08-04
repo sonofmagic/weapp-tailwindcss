@@ -51,6 +51,7 @@ export interface FinalizeGenerateBundleOptions {
   outDir: string
   pendingLinkedUpdates: Array<() => void>
   pendingRememberedCssReplayUpdates: PendingRememberedCssReplayUpdate[]
+  prepareJsTransformRuntime?: (() => void) | undefined
   pruneViteCssCaches: GenerateBundleContext['pruneViteCssCaches']
   recordCssAssetResult: GenerateBundleContext['recordCssAssetResult']
   recordTimingDetail: (name: string, startedAt: number) => void

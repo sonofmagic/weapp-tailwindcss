@@ -59,8 +59,6 @@ function getOptionsFingerprint(options: IJsHandlerOptions): string {
     options.generateMap ? '1' : '0',
     options.uniAppX ? '1' : '0',
     options.wrapExpression ? '1' : '0',
-    String(options.tailwindcssMajorVersion ?? ''),
-    String(options.jsArbitraryValueFallback ?? ''),
     JSON.stringify(options.arbitraryValues ?? null),
     JSON.stringify(options.ignoreCallExpressionIdentifiers ?? null),
     JSON.stringify(options.ignoreTaggedTemplateExpressionIdentifiers?.map(v => v instanceof RegExp ? v.source : v) ?? null),

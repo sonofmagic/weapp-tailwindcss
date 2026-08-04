@@ -178,7 +178,12 @@ const world = {
   CCC: `text` + `/evexstream`,
   BBB: weappTwIgnore`bg-[#123498]`
 }
-console.log(world, twMerge)
+const vuexActionProbe = {
+  dispatch(action: string) {
+    return action
+  }
+}.dispatch('user/getUserInfo')
+console.log(world, twMerge, vuexActionProbe)
 
 function stringifyInfoValue(value: unknown) {
   if (value === undefined || value === null || value === '') {
