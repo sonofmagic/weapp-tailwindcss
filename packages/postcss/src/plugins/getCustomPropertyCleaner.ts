@@ -1,5 +1,5 @@
 // 移除冗余的 CSS 自定义属性声明，避免重复覆盖
-import type { AcceptedPlugin } from 'postcss'
+import type { AcceptedPlugin, Declaration } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { regExpTest } from '@weapp-tailwindcss/shared'
 import valueParser from 'postcss-value-parser'
@@ -20,6 +20,48 @@ export function getCustomPropertyCleaner(options: IStyleHandlerOptions): Accepte
 
   const shouldInspectValue = (value: string) => value.includes('var(') && value.includes('--')
 
+  const containsIncludedCustomProperty = (value: string) => {
+    if (!shouldInspectValue(value)) {
+      return false
+    }
+
+    const parsed = valueParser(value)
+    let containsIncludedCustomProperty = false
+
+    parsed.walk((node) => {
+      if (node.type !== 'function' || node.value !== 'var' || containsIncludedCustomProperty) {
+        return
+      }
+      const match = node.nodes.find((x) => {
+        return x.type === 'word' && regExpTest(includeCustomProperties, x.value)
+      })
+      if (match) {
+        containsIncludedCustomProperty = true
+      }
+    })
+
+    return containsIncludedCustomProperty
+  }
+
+  const hasSameSourceRange = (left: Declaration, right: Declaration) => {
+    const leftSource = left.source
+    const rightSource = right.source
+    if (
+      !leftSource?.start
+      || !leftSource.end
+      || !rightSource?.start
+      || !rightSource.end
+      || leftSource.input !== rightSource.input
+    ) {
+      return false
+    }
+
+    return leftSource.start.line === rightSource.start.line
+      && leftSource.start.column === rightSource.start.column
+      && leftSource.end.line === rightSource.end.line
+      && leftSource.end.column === rightSource.end.column
+  }
+
   return {
     postcssPlugin: 'postcss-remove-include-custom-properties',
     OnceExit(root) {
@@ -38,44 +80,31 @@ export function getCustomPropertyCleaner(options: IStyleHandlerOptions): Accepte
           return
         }
 
-        // 逻辑简写（如 margin-inline）会被展开成交错的物理声明
-        // （margin-left; margin-right; margin-left(calc); margin-right(calc)），
-        // 故字面回退值未必是紧邻前兄弟，需向前扫描同规则内所有兄弟声明。
-        let hasEarlierSameProp = false
+        if (!containsIncludedCustomProperty(decl.value)) {
+          return
+        }
+
+        // 逻辑简写展开后，同一来源的物理属性会交错排列；只允许跨过这些同源声明，
+        // 避免把作者独立编写的非相邻级联声明误判为 fallback。
+        let fallbackDecl: Declaration | undefined
         let node = prevNode
         while (node) {
           if (node.type === 'decl' && node.prop === decl.prop) {
-            hasEarlierSameProp = true
+            fallbackDecl = node
             break
           }
           node = node.prev()
         }
-        if (!hasEarlierSameProp) {
+        if (
+          !fallbackDecl
+          || fallbackDecl.important !== decl.important
+          || (fallbackDecl !== prevNode && !hasSameSourceRange(fallbackDecl, decl))
+          || containsIncludedCustomProperty(fallbackDecl.value)
+        ) {
           return
         }
 
-        if (!shouldInspectValue(decl.value)) {
-          return
-        }
-
-        const parsed = valueParser(decl.value)
-        let containsIncludedCustomProperty = false
-
-        parsed.walk((node) => {
-          if (node.type !== 'function' || node.value !== 'var' || containsIncludedCustomProperty) {
-            return
-          }
-          const match = node.nodes.find((x) => {
-            return x.type === 'word' && regExpTest(includeCustomProperties, x.value)
-          })
-          if (match) {
-            containsIncludedCustomProperty = true
-          }
-        })
-
-        if (containsIncludedCustomProperty) {
-          decl.remove()
-        }
+        decl.remove()
       })
     },
   }
