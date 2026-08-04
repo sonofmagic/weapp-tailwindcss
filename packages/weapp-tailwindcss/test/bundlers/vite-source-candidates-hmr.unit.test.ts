@@ -7,7 +7,32 @@ function getHandleHotUpdateHandler(plugin: ReturnType<typeof createFrameworkSour
   return typeof hook === 'object' ? hook.handler : hook
 }
 
+function getTransformHandler(plugin: ReturnType<typeof createFrameworkSourceCandidatesPlugin>) {
+  const hook = plugin.transform as any
+  return typeof hook === 'object' ? hook.handler : hook
+}
+
 describe('Vite source candidate HMR transactions', () => {
+  it('keeps weapp-vite sidecar requests out of source candidate memory', async () => {
+    const rememberKnownSfcSource = vi.fn()
+    const rememberTailwindRootCssModule = vi.fn()
+    const plugin = createFrameworkSourceCandidatesPlugin({
+      cssMemory: { rememberKnownSfcSource },
+      hasUserCssLayerBlocks: () => false,
+      rememberOriginalCssLayerSource: vi.fn(),
+      rememberTailwindRootCssModule,
+      resolveCurrentGeneratorBranch: () => ({ isWeb: false }),
+      resolveCurrentGeneratorOptions: () => ({ importFallback: false }),
+      shouldOwnTailwindGeneration: true,
+      transformEarlyMiniProgramCss: (code: string) => code,
+    })
+    const id = '/project/app.wxss?weapp-vite-sidecar-owner=app&weapp-vite-sidecar=style&lang.css'
+
+    await expect(getTransformHandler(plugin)?.call(plugin, '@import "tailwindcss";', id)).resolves.toBeUndefined()
+    expect(rememberKnownSfcSource).not.toHaveBeenCalled()
+    expect(rememberTailwindRootCssModule).not.toHaveBeenCalled()
+  })
+
   it('refreshes only the changed Tailwind root and its importers for a root CSS update', async () => {
     const cssFile = '/project/main.css'
     const siblingCssFile = '/project/sub-package.css'

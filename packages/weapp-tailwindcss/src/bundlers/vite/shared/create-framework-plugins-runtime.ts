@@ -44,7 +44,7 @@ import { createViteServeJsTransformPlugin } from '../serve-js-transform'
 import { resolveViteServeRootMiniProgramImportShell } from '../serve-root-import-shell'
 import { createSourceCandidateCollector, isSourceCandidateRequest } from '../source-candidates'
 import { discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteTailwindV4CssDependencies } from '../source-scan'
-import { cleanUrl, isCSSRequest, isHTMLRequest, slash } from '../utils'
+import { cleanUrl, isCSSRequest, isHTMLRequest, resolveViteCssPipelineRequestFile, slash } from '../utils'
 import { shouldAdaptFrameworkWatchCssBeforeCache, wrapViteCssPostTransform } from '../watch-css-post'
 import { resolveWeappViteSourceRoot } from '../weapp-vite-config'
 import { resolveViteWebCssCompatOptions, shouldApplyViteWebCssCompat } from '../web-css-compat'
@@ -299,7 +299,7 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
     await sourceScanSession.waitForPendingSyncs()
     const file = cleanUrl(id)
     const inferredSfcStyleRequest = isSfcStyleSourceFile(file) ? resolveSfcStyleRequestFromKnownSource(file, cssMemory.getKnownSfcSource(file), code) : file
-    const requestFile = isCSSRequest(id) ? inferredSfcStyleRequest === file ? id : inferredSfcStyleRequest : inferredSfcStyleRequest
+    const requestFile = isCSSRequest(id) ? inferredSfcStyleRequest === file ? resolveViteCssPipelineRequestFile(id) : inferredSfcStyleRequest : inferredSfcStyleRequest
     if (!isCSSRequest(requestFile) || opts.htmlMatcher(file) || isHTMLRequest(file)) {
       return void 0
     }

@@ -13,8 +13,23 @@ export const isWindows = process.platform === 'win32'
 const cssLangs = `\\.(?:css|less|sass|scss|styl|stylus|pcss|postcss)(?:$|\\?)`
 export const cssLangRE = new RegExp(cssLangs)
 const htmlLangRE = /\.html?(?:$|\?)/
+
 export function isCSSRequest(request: string): boolean {
   return cssLangRE.test(request) || isSourceStyleRequest(request)
+}
+
+export function isWeappViteSidecarRequest(request: string): boolean {
+  const queryIndex = request.indexOf('?')
+  if (queryIndex < 0) {
+    return false
+  }
+  const hashIndex = request.indexOf('#', queryIndex)
+  const query = request.slice(queryIndex + 1, hashIndex < 0 ? undefined : hashIndex)
+  return new URLSearchParams(query).has('weapp-vite-sidecar')
+}
+
+export function resolveViteCssPipelineRequestFile(request: string): string {
+  return isWeappViteSidecarRequest(request) ? cleanUrl(request) : request
 }
 
 export function isHTMLRequest(request: string): boolean {
