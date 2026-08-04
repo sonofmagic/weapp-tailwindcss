@@ -55,7 +55,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
           transformedCode = options.transformEarlyMiniProgramCss(code)
         }
         const shouldReturnTransformedCode = transformedCode !== code
-        if (options.shouldOwnTailwindGeneration) {
+        if (options.shouldOwnTailwindGeneration && shouldCollectTransformedSourceCandidates(id)) {
           options.cssMemory.rememberKnownSfcSource(id, transformedCode)
           if (isCSSRequest(id) && hasTailwindRootDirectives(transformedCode, { importFallback: options.resolveCurrentGeneratorOptions().importFallback })) {
             options.rememberTailwindRootCssModule(id)

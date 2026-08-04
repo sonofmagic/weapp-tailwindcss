@@ -7,14 +7,25 @@ import {
   normalizeCssSourceIdentity,
   shouldCollectTransformedSourceCandidates,
 } from '@/bundlers/vite/css-memory'
+import { isWeappViteSidecarRequest, resolveViteCssPipelineRequestFile } from '@/bundlers/vite/utils'
 
 describe('vite css memory', () => {
   it('normalizes css source identities and transform collection requests', () => {
     expect(normalizeCssSourceIdentity('/src/App.vue?vue&type=style&index=2&lang.css#hash')).toBe('/src/App.vue?type=style&index=2')
     expect(normalizeCssSourceIdentity('/src/app.css?used')).toBe('/src/app.css')
     expect(shouldCollectTransformedSourceCandidates('/src/App.vue?vue&type=style')).toBe(false)
+    expect(shouldCollectTransformedSourceCandidates('/src/app.wxss?weapp-vite-sidecar-owner=app&weapp-vite-sidecar=style&lang.css')).toBe(false)
     expect(shouldCollectTransformedSourceCandidates('/src/app.ts?raw')).toBe(true)
     expect(shouldCollectTransformedSourceCandidates('/src/app.ts')).toBe(true)
+  })
+
+  it('keeps weapp-vite sidecar module ids out of physical css file paths', () => {
+    const sidecarRequest = '/src/app.wxss?weapp-vite-sidecar-owner=app&weapp-vite-sidecar=style&lang.css'
+
+    expect(isWeappViteSidecarRequest(sidecarRequest)).toBe(true)
+    expect(resolveViteCssPipelineRequestFile(sidecarRequest)).toBe('/src/app.wxss')
+    expect(isWeappViteSidecarRequest('/src/app.css?label=weapp-vite-sidecar=style')).toBe(false)
+    expect(resolveViteCssPipelineRequestFile('/src/app.css?direct')).toBe('/src/app.css?direct')
   })
 
   it('remembers, refreshes, and prunes css sources', async () => {

@@ -5,7 +5,7 @@ import { isSourceStyleRequest, stripRequestQuery } from '../shared/style-request
 import { pruneMapToMaxSize, touchMapEntry } from './map-cache'
 import { parseVueRequest } from './query'
 import { getActiveViteSourceOutputRelationOwner } from './source-output-relations'
-import { cleanUrl } from './utils'
+import { cleanUrl, isWeappViteSidecarRequest } from './utils'
 
 const VITE_REMEMBERED_CSS_CACHE_MAX = 96
 const VITE_KNOWN_SFC_SOURCE_CACHE_MAX = 128
@@ -94,6 +94,9 @@ function normalizeKnownSfcSourceKey(file: string) {
 }
 
 export function shouldCollectTransformedSourceCandidates(id: string) {
+  if (isWeappViteSidecarRequest(id)) {
+    return false
+  }
   const queryIndex = id.search(/[?#]/)
   if (queryIndex < 0) {
     return true
