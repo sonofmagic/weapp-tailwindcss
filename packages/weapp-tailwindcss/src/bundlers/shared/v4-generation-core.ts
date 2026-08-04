@@ -7,7 +7,7 @@ import { adaptGeneratedCssWithFrameworkPipeline, adaptGeneratedCssWithFrameworkR
 import { generateCssByGenerator } from './generator-css'
 import { preferScopedGeneratedCssRules } from './generator-css/scoped-rules'
 import { resolvePostcssRequestOption } from './generator-css/source-resolver/postcss-source'
-import { isVueScopedStyleRequest } from './style-requests'
+import { isVueScopedStyleRequest, stripRequestQuery } from './style-requests'
 
 export interface TailwindV4GenerationCoreInput extends GenerateCssByGeneratorOptions {
   compilationChanges?: CompilationDependencyChange[] | undefined
@@ -35,19 +35,23 @@ function resolveGenerationOptions(
   options: TailwindV4GenerationCoreInput,
   mode: ReturnType<typeof resolveCompilerMode>,
 ) {
+  const physicalFile = stripRequestQuery(options.file)
+  const normalizedOptions = physicalFile === options.file
+    ? options
+    : { ...options, file: physicalFile }
   if (mode === 'legacy') {
-    return options
+    return normalizedOptions
   }
-  const scopeId = options.scope?.id ?? options.outputFile ?? options.file
+  const scopeId = normalizedOptions.scope?.id ?? normalizedOptions.outputFile ?? normalizedOptions.file
   const compilationChanges = mergeCompilationDependencyChanges(
-    options.compilationChanges,
-    consumeCompilationScopeChanges(options.runtimeState, scopeId),
+    normalizedOptions.compilationChanges,
+    consumeCompilationScopeChanges(normalizedOptions.runtimeState, scopeId),
   )
   if (compilationChanges.length === 0) {
-    return options
+    return normalizedOptions
   }
   return {
-    ...options,
+    ...normalizedOptions,
     compilationChanges,
     previousClassSet: undefined,
     previousCss: undefined,

@@ -85,6 +85,39 @@ describe('compiler mode', () => {
     expect(result?.artifact).toBeUndefined()
   })
 
+  it.each([
+    [
+      '/workspace/src/app.wxss?weapp-vite-sidecar-owner=app&weapp-vite-sidecar=style&lang.css',
+      '/workspace/src/app.wxss',
+    ],
+    [
+      'C:\\workspace\\src\\app.wxss?weapp-vite-sidecar=style#virtual',
+      'C:\\workspace\\src\\app.wxss',
+    ],
+  ])('normalizes the physical generation file for bundler request %s', async (file, physicalFile) => {
+    process.env[COMPILER_MODE_ENV] = 'legacy'
+    const generateCssByGenerator = vi.fn(async (options: { file: string }) => {
+      expect(options.file).toBe(physicalFile)
+      return {
+        ...createGeneratedResult('.p-4 { padding: 1rem; }'),
+        metadata: {
+          file: physicalFile,
+          outputFile: 'app.css',
+        },
+      }
+    })
+    vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
+    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+
+    const result = await generateTailwindV4Css({
+      ...createGenerationOptions(),
+      file,
+    })
+
+    expect(generateCssByGenerator).toHaveBeenCalledTimes(1)
+    expect(result?.metadata.file).toBe(physicalFile)
+  })
+
   it('uses the root framework adapter in graph mode', async () => {
     process.env[COMPILER_MODE_ENV] = 'graph'
     const generateCssByGenerator = vi.fn(async (options: { deferCssAdaptation?: boolean }) => {
