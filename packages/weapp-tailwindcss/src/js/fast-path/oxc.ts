@@ -4,7 +4,6 @@ import { createRequire } from 'node:module'
 import process from 'node:process'
 import MagicString from 'magic-string'
 import { walk } from 'oxc-walker'
-import { shouldEnableArbitraryValueFallback } from '../../shared/classname-transform'
 import { jsStringEscape } from '../js-string-escape'
 import { transformLiteralText } from '../literal-transform'
 
@@ -82,7 +81,6 @@ function canAttemptOxcJsFastPath(options: IJsHandlerOptions) {
     && !options.moduleGraph
     && !options.moduleSpecifierReplacements
     && hasSupportedClassMatchSource(options)
-    && !shouldEnableArbitraryValueFallback(options)
     && !hasValues(options.ignoreCallExpressionIdentifiers)
 }
 

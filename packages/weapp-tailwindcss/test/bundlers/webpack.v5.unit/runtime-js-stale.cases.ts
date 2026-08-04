@@ -2,10 +2,12 @@ import { describe, expect, it, vi } from 'vitest'
 import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, createContext, createJsHandler, getCompilerContextMock, path, replaceWxml, testState, WeappTailwindcss } from './shared'
 describe('bundlers/webpack WeappTailwindcss / runtime js stale fallback', () => {
   setupWebpackV5UnitTest()
-  it('respects explicit stale fallback option when set to false', async () => {
+  it('does not let the legacy fallback option bypass webpack runtime classes', async () => {
     const runtimeSet = new Set(['text-[100rpx]', 'text-white'])
     const realJsHandler = createJsHandler({
       escapeMap: undefined,
+      jsArbitraryValueFallback: true,
+      tailwindcssMajorVersion: 4,
     })
     testState.currentContext = createContext({
       jsHandler: vi.fn((code: string, classSet?: Set<string>, options?: Record<string, unknown>) =>

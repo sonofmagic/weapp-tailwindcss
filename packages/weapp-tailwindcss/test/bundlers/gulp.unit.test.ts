@@ -10,6 +10,7 @@ import Vinyl from 'vinyl'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPlugins } from '@/bundlers/gulp'
 import { createCache } from '@/cache'
+import { createJsHandler } from '@/js'
 
 interface InternalContext {
   templateHandler: ReturnType<typeof vi.fn>
@@ -232,6 +233,28 @@ describe('bundlers/gulp createPlugins', () => {
 
     expect(processed.contents?.toString()).toBe('hit:w-[2px]')
     expect(tailwindRuntime.extract).toHaveBeenCalledTimes(0)
+  })
+
+  it('fails closed when gulp has no Tailwind-confirmed runtime classes', async () => {
+    const strictJsHandler = createJsHandler({
+      jsArbitraryValueFallback: true,
+      tailwindcssMajorVersion: 4,
+    })
+    jsHandler.mockImplementation((source: string, classSet?: Set<string>, options?: Record<string, unknown>) =>
+      strictJsHandler(source, classSet, options as any))
+    const runtimeManager = {
+      reset: vi.fn(async () => undefined),
+      sync: vi.fn(async () => new Set<string>()),
+    }
+    const plugins = createPlugins({
+      __internalGulpRuntimeClassSetManager: runtimeManager,
+    } as any)
+    const source = 'const cls = "w-[100px]"; store.dispatch("user/getUserInfo")'
+
+    const processed = await runTransform(plugins.transformJs(), createFile('/src/app.js', source))
+
+    expect(processed.contents?.toString()).toBe(source)
+    expect(runtimeManager.sync).toHaveBeenCalledTimes(1)
   })
 
   it('uses incremental runtime candidates for tailwindcss v4 gulp js updates', async () => {

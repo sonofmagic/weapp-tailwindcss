@@ -184,7 +184,7 @@ describe('OXC JS fast path', () => {
     expect(oxcJsHandler('weappTwIgnore`w-[100px]`', options)).toBeUndefined()
   })
 
-  it('falls back when arbitrary-value fallback needs Babel class context', () => {
+  it('rejects the fast path when no runtime classes are confirmed', () => {
     const options = {
       ...createOptions(),
       alwaysEscape: false,
@@ -196,7 +196,7 @@ describe('OXC JS fast path', () => {
     expect(oxcJsHandler('const message = "cost-[100px]"', options)).toBeUndefined()
   })
 
-  it('falls back when arbitrary-value fallback is enabled with a runtime class set', () => {
+  it('ignores the legacy fallback option when a runtime class set is available', () => {
     const options = {
       ...createOptions(),
       alwaysEscape: false,
@@ -204,8 +204,8 @@ describe('OXC JS fast path', () => {
       classNameSet: new Set<string>(['w-[100px]']),
     }
 
-    expect(canUseOxcJsFastPath(options)).toBe(false)
-    expect(oxcJsHandler('const cls = "w-[100px]"', options)).toBeUndefined()
+    expect(canUseOxcJsFastPath(options)).toBe(true)
+    expect(oxcJsHandler('const cls = "w-[100px]"', options)?.code).toContain('w-_b100px_B')
   })
 
   it('returns unchanged code when OXC finds no literal replacements and falls back on parse errors', () => {

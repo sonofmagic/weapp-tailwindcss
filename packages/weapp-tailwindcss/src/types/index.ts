@@ -87,15 +87,11 @@ export interface IJsHandlerOptions {
   escapeMap?: Record<string, string> | undefined
   classNameSet?: Set<string> | undefined
   /**
-   * 控制在 classNameSet 异常时的任意值兜底策略。
-   *
-   * - `false`：关闭兜底。
-   * - `true`：在 class 语义上下文中允许任意值兜底。
-   * - `'auto'`：仅在 TailwindCSS v4 且 classNameSet 为空时启用。
+   * @deprecated 为兼容旧配置保留。JS 转译不再允许绕过 classNameSet。
    */
   jsArbitraryValueFallback?: boolean | 'auto' | undefined
   /**
-   * 当前 TailwindCSS 主版本号，用于自动兜底判定。
+   * 当前 TailwindCSS 主版本号。为兼容旧的 JS handler 调用保留，不参与类名命中判断。
    */
   tailwindcssMajorVersion?: number | undefined
   arbitraryValues?: IArbitraryValues | undefined

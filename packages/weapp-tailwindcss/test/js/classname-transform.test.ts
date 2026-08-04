@@ -71,14 +71,14 @@ describe('classname transform caching', () => {
     })
   })
 
-  it('keeps whitespace-wrapped arbitrary candidates eligible for controlled fallback', () => {
+  it('does not let the legacy fallback option bypass classNameSet', () => {
     const result = classNameTransform.resolveClassNameTransformWithResult('  bg-[length:200rpx_100rpx]  ', {
       classContext: true,
       jsArbitraryValueFallback: true,
     })
 
     expect(result).toEqual({
-      decision: 'fallback',
+      decision: 'skip',
     })
   })
 
@@ -121,7 +121,7 @@ describe('classname transform caching', () => {
     })
   })
 
-  it('keeps whitespace-wrapped url-like arbitrary fragments excluded from fallback', () => {
+  it('keeps whitespace-wrapped url-like arbitrary fragments unchanged', () => {
     const result = classNameTransform.resolveClassNameTransformWithResult('  https://foo-bar.com/assets/[token]  ', {
       classContext: true,
       jsArbitraryValueFallback: true,
@@ -132,26 +132,14 @@ describe('classname transform caching', () => {
     })
   })
 
-  it('skips arbitrary candidates in class context when fallback is explicitly disabled', () => {
+  it.each([true, 'auto'] as const)('keeps arbitrary candidates unchanged for legacy fallback value %s', (jsArbitraryValueFallback) => {
     const result = classNameTransform.resolveClassNameTransformWithResult('bg-[length:200rpx_100rpx]', {
       classContext: true,
-      jsArbitraryValueFallback: false,
-    })
-
-    expect(result).toEqual({
-      decision: 'skip',
-    })
-  })
-
-  it('enables auto fallback for tailwindcss v4 when the runtime set is empty', () => {
-    expect(classNameTransform.shouldEnableArbitraryValueFallback({
-      tailwindcssMajorVersion: 4,
       classNameSet: new Set<string>(),
-    })).toBe(true)
-
-    expect(classNameTransform.shouldEnableArbitraryValueFallback({
+      jsArbitraryValueFallback,
       tailwindcssMajorVersion: 4,
-      classNameSet: new Set(['bg-red-500']),
-    })).toBe(false)
+    })
+
+    expect(result).toEqual({ decision: 'skip' })
   })
 })
