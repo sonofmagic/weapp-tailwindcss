@@ -13784,7 +13784,12 @@ ${utilities}
     const replayedCss = emitted.find(file => file.fileName === 'pages/index/index.wxss')?.source
     expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
       rawSource: cleanSource,
-      file: cleanStyleRequest,
+      file: sourceFile,
+      cssHandlerOptions: expect.objectContaining({
+        sourceOptions: expect.objectContaining({
+          requestFile: cleanStyleRequest,
+        }),
+      }),
     }))
     expect(replayedCss).toContain('.clean-style')
     expect(replayedCss).not.toContain('.tw-watch-style-case')
