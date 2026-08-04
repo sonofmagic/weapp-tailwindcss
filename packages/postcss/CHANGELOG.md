@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 3.2.8
+
+### Patch Changes
+
+- 🐛 **修复逻辑方向属性展开后残留 `calc()` 声明导致小程序间距计算异常的问题，并避免清理过程改变作者声明的级联与 `!important` 语义。** [#1045](https://github.com/sonofmagic/weapp-tailwindcss/pull/1045) by @ZCY-G
+
 ## 3.2.7
 
 ### Patch Changes
