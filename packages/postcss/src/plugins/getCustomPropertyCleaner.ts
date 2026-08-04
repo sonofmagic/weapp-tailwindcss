@@ -31,6 +31,7 @@ export function getCustomPropertyCleaner(options: IStyleHandlerOptions): Accepte
           prevNode
           && prevNode.type === 'decl'
           && prevNode.prop === decl.prop
+          && prevNode.important === decl.important
           && prevNode.value === decl.value
         ) {
           decl.remove()
