@@ -750,6 +750,10 @@ describe('e2e watch workflow', () => {
           expect(cases, `${runner} should cover ${watchCase} ${profile} HMR`).toContain(`${runner}:22:${watchCase}:${profile}`)
         }
         const isViteCase = watchCase.startsWith('taro-vite-')
+        const subpackagePluginProcessMs
+          = runner === 'macos' && watchCase === 'taro-vite-react-tailwindcss-v4'
+            ? '12000'
+            : isViteCase ? '10000' : '60000'
         const scopeRows = rows.filter(row => row.runner_label === runner && row.watch_case === watchCase && String(row.round_profile).startsWith('mini-program-'))
         expect(scopeRows).toEqual(expect.arrayContaining([
           expect.objectContaining({
@@ -769,7 +773,7 @@ describe('e2e watch workflow', () => {
             watch_max_attempts: '1',
             timeout_minutes: 30,
             watch_timeout_ms: isViteCase ? '60000' : '600000',
-            watch_max_plugin_process_ms: isViteCase ? '10000' : '60000',
+            watch_max_plugin_process_ms: subpackagePluginProcessMs,
             watch_command_timeout_ms: isViteCase ? '600000' : '1200000',
           }),
         ]))
@@ -1185,10 +1189,15 @@ describe('e2e watch workflow', () => {
       { label: 'macos', os: 'macos-latest' },
     ]) {
       for (const budget of parallelDemoTaroPrBudgets) {
+        const platformBudget = runner.label === 'macos'
+          && budget.watch_case === 'taro-vite-react-tailwindcss-v4'
+          && budget.round_profile === 'mini-program-subpackages'
+          ? { ...budget, watch_max_plugin_process_ms: '12000' }
+          : budget
         expect(prRows).toContainEqual(expect.objectContaining({
           os: runner.os,
           runner_label: runner.label,
-          ...budget,
+          ...platformBudget,
         }))
       }
     }
