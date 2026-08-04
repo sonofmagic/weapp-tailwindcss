@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 5.2.10
+
+### Patch Changes
+
+- 🐛 **修复 uni-app App 构建中业务字符串被误当作 Tailwind 类名转译的问题。所有构建端的 JavaScript 现在只转译由 Tailwind 生成或验证链路确认的类名；废弃的 `jsArbitraryValueFallback` 不再允许任意值绕过 `classNameSet`，空集合和未命中候选均保持原文。** [#1046](https://github.com/sonofmagic/weapp-tailwindcss/pull/1046) by @sonofmagic
+
+- 🐛 **修复逻辑方向属性展开后残留 `calc()` 声明导致小程序间距计算异常的问题，并避免清理过程改变作者声明的级联与 `!important` 语义。** [#1045](https://github.com/sonofmagic/weapp-tailwindcss/pull/1045) by @ZCY-G
+
+- 🐛 **修复 weapp-vite HMR sidecar 虚拟查询被当作物理 CSS 文件路径传入 Tailwind 生成管线后触发 `ENOENT` 的问题。** [#1047](https://github.com/sonofmagic/weapp-tailwindcss/pull/1047) by @sonofmagic
+- 📦 **Dependencies** [`5066997`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5066997beef53842a2e97da3af064d1349ea00be)
+  → `@weapp-tailwindcss/postcss@3.2.8`
+
 ## 5.2.9
 
 ### Patch Changes
