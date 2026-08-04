@@ -79,6 +79,40 @@ describe('OXC JS fast path', () => {
     expect(fast?.code).toContain('"w-_b100px_B"')
   })
 
+  it('keeps polluted App business strings unchanged while transforming slash utilities', () => {
+    const source = [
+      `store.dispatch('user/getUserInfo')`,
+      `request('order/get_order_amount')`,
+      `const route = 'pages/order/detail'`,
+      `const accept = 'text/event-stream'`,
+      `const classes = 'w-1/2 bg-red-500/50 shadow-lg'`,
+    ].join('\n')
+    const options = {
+      ...createOptions(),
+      alwaysEscape: false,
+      classNameSet: new Set([
+        'user/getUserInfo',
+        'order/get_order_amount',
+        'pages/order/detail',
+        'text/event-stream',
+        'w-1/2',
+        'bg-red-500/50',
+        'shadow-lg',
+      ]),
+    }
+
+    const fast = oxcJsHandler(source, options)
+    const babel = jsHandler(source, options)
+
+    for (const code of [fast?.code, babel.code]) {
+      expect(code).toContain(`store.dispatch('user/getUserInfo')`)
+      expect(code).toContain(`request('order/get_order_amount')`)
+      expect(code).toContain(`const route = 'pages/order/detail'`)
+      expect(code).toContain(`const accept = 'text/event-stream'`)
+      expect(code).toContain(`const classes = 'w-1_f2 bg-red-500_f50 shadow-lg'`)
+    }
+  })
+
   it('falls back to Babel when source maps are requested', () => {
     const options = {
       ...createOptions(),

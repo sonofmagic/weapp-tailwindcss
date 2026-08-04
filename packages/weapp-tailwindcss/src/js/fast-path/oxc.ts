@@ -129,7 +129,7 @@ function addStringLiteralReplacement(
     return false
   }
 
-  const transformed = transformLiteralText(node.value, transformOptions)
+  const transformed = transformLiteralText(node.value, transformOptions, false)
   if (!transformed) {
     return false
   }
@@ -155,7 +155,7 @@ function addTemplateElementReplacement(
     return false
   }
 
-  const transformed = transformLiteralText(raw, transformOptions)
+  const transformed = transformLiteralText(raw, transformOptions, false)
   if (!transformed || transformed === raw) {
     return false
   }

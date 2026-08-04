@@ -7,6 +7,7 @@ import { getReplacement, getReplacementCacheStore } from './replacement-cache'
 export function transformLiteralText(
   literal: string,
   options: IJsHandlerOptions,
+  classContext = true,
 ): string | undefined {
   const fallbackEnabled = shouldEnableArbitraryValueFallback(options)
   if (!options.alwaysEscape && !fallbackEnabled && (!options.classNameSet || options.classNameSet.size === 0)) {
@@ -21,7 +22,7 @@ export function transformLiteralText(
 
   const transformOptions = {
     ...options,
-    classContext: true,
+    classContext,
   }
   const replacementCache = getReplacementCacheStore(options.escapeMap)
   let transformed = source
