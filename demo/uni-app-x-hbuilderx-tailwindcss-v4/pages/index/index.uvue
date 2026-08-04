@@ -3,6 +3,7 @@
 	import BindClass from '../../components/BindClass.uvue'
 	import Issue1019Button from '../../components/issue-1019-button/issue-1019-button.uvue'
 	import Issue1019StyleKey from '../../components/issue-1019-style-key/issue-1019-style-key.uvue'
+	import Issue1021Cell from '../../components/issue-1021-cell/issue-1021-cell.uvue'
 	import ZPagingProbe from '../../components/z-paging-probe/z-paging-probe.uvue'
 
 	const buttonColors = [
@@ -30,6 +31,7 @@
 			BindClass,
 			Issue1019Button,
 			Issue1019StyleKey,
+			Issue1021Cell,
 			WeappTailwindcss,
 			ZPagingProbe,
 		},
@@ -65,6 +67,7 @@
 		<BindClass />
 		<Issue1019Button>issue 1019 scoped button</Issue1019Button>
 		<Issue1019StyleKey />
+		<Issue1021Cell />
 		<ZPagingProbe />
 		<view class="w-full bg-[#164e63] p-[12px] issue-1002-probe">
 			<text class="text-xs text-white">issue-1002 text-xs</text>

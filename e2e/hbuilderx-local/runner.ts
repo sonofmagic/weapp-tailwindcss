@@ -777,7 +777,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
 
 export async function verifyWebHmr(item: WebCase) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
-  const result = await runWebHmr(projectRoot, path.resolve(projectRoot, item.sourceFile), resolveWebMarkerAnchors(item), item.initialCssPath, item.hmrCssPath, item.initialCssContains, item.initialRuntimeStyles, item.hmrSteps)
+  const result = await runWebHmr(projectRoot, path.resolve(projectRoot, item.sourceFile), resolveWebMarkerAnchors(item), item.initialCssPath, item.hmrCssPath, item.initialCssContains, item.initialRuntimeStyles, item.persistentRuntimeStyles, item.hmrSteps)
 
   expect(result.pageHtml, `${item.name} Web 首页应可访问`).toContain('<!DOCTYPE html>')
   expect(result.pageErrors, `${item.name} Web 页面不应产生控制台错误`).toEqual([])

@@ -294,6 +294,7 @@ export async function runWebHmr(
   hmrCssPath: string,
   initialCssContains: Array<string | RegExp>,
   initialRuntimeStyles: WebRuntimeStyleAssertion[] | undefined,
+  persistentRuntimeStyles: WebRuntimeStyleAssertion[] | undefined,
   hmrSteps: WebHmrStep[],
 ) {
   const port = await findFreePort()
@@ -355,7 +356,10 @@ export async function runWebHmr(
         }
       }
       await rewriteHmrMarker(sourceFile, markerAnchors, hmrSteps, index)
-      await waitForRuntimeStyles(page, step.runtimeStyles, `hmr:${step.markerText}`, logs, diagnostics)
+      await waitForRuntimeStyles(page, [
+        ...(persistentRuntimeStyles ?? []),
+        ...(step.runtimeStyles ?? []),
+      ], `hmr:${step.markerText}`, logs, diagnostics)
       hmrCss.push(await waitForCss(joinUrl(ready.baseUrl, hmrCssPath), step.cssContains, child, logs))
     }
     const errorOverlay = page.locator('vite-error-overlay')

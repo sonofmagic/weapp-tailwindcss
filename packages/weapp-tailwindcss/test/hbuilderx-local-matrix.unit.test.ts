@@ -74,6 +74,9 @@ describe('HBuilderX local demo matrix', () => {
       expect(miniProgramCase?.requiredFiles, `${name} should require independent subpackage output`).toContain('sub-independent/pages/index.json')
       expect(webCase?.workflow.webHmr, `${name} should cover H5 dev HMR`).toBe(true)
       expect(webCase?.hmrSteps.length, `${name} should simulate multiple user edits during H5 dev`).toBeGreaterThanOrEqual(3)
+      if (name === 'uni-app-x-hbuilderx-tailwindcss-v4') {
+        expect(webCase?.persistentRuntimeStyles?.map(item => item.selector)).toContain('.issue-1021-cell')
+      }
       for (const step of webCase?.hmrSteps ?? []) {
         const themeColor = step.sourceMutation?.append?.match(/--color-([\w-]+)\s*:/)?.[1]
         const hasGeneratedBackground = step.markerClass.includes('bg-[#')

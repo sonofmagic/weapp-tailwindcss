@@ -109,6 +109,7 @@ export interface WebCase {
   hmrCssPath: string
   initialCssContains: Array<string | RegExp>
   initialRuntimeStyles?: WebRuntimeStyleAssertion[]
+  persistentRuntimeStyles?: WebRuntimeStyleAssertion[]
   hmrSteps: WebHmrStep[]
   workflow: HBuilderXWorkflowCoverage
 }
@@ -153,6 +154,22 @@ export interface WebRuntimeStyleAssertion {
   scopeAttribute?: RegExp
   styles: Record<string, string | RegExp>
 }
+
+const issue1021CellRuntimeStyle = {
+  selector: '.issue-1021-cell',
+  styles: {
+    alignItems: 'center',
+    borderBottomColor: 'rgb(190, 18, 60)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: '56px',
+    paddingLeft: '64px',
+    paddingRight: '48px',
+    paddingTop: '56px',
+  },
+} satisfies WebRuntimeStyleAssertion
 
 const uniAppHBuilderXMiniProgramPlatforms = [
   'mp-weixin',
@@ -1041,6 +1058,7 @@ export const webCases: WebCase[] = [
           width: '184px',
         },
       },
+      issue1021CellRuntimeStyle,
       {
         selector: '.issue-1019-z-paging',
         scopeAttribute: /^data-v-[\da-f]+$/,
@@ -1060,6 +1078,7 @@ export const webCases: WebCase[] = [
         },
       },
     ],
+    persistentRuntimeStyles: [issue1021CellRuntimeStyle],
     workflow: uniAppXHBuilderXWorkflow,
     hmrSteps: [
       {
