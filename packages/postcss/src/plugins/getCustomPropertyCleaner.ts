@@ -25,12 +25,31 @@ export function getCustomPropertyCleaner(options: IStyleHandlerOptions): Accepte
     OnceExit(root) {
       root.walkDecls((decl) => {
         const prevNode = decl.prev()
-        if (!prevNode || prevNode.type !== 'decl' || prevNode.prop !== decl.prop) {
+
+        // 精确重复：仅比对紧邻前兄弟，保留原语义（避免 a:1;a:2;a:1 级联被误删）
+        if (
+          prevNode
+          && prevNode.type === 'decl'
+          && prevNode.prop === decl.prop
+          && prevNode.value === decl.value
+        ) {
+          decl.remove()
           return
         }
 
-        if (prevNode.value === decl.value) {
-          decl.remove()
+        // 逻辑简写（如 margin-inline）会被展开成交错的物理声明
+        // （margin-left; margin-right; margin-left(calc); margin-right(calc)），
+        // 故字面回退值未必是紧邻前兄弟，需向前扫描同规则内所有兄弟声明。
+        let hasEarlierSameProp = false
+        let node = prevNode
+        while (node) {
+          if (node.type === 'decl' && node.prop === decl.prop) {
+            hasEarlierSameProp = true
+            break
+          }
+          node = node.prev()
+        }
+        if (!hasEarlierSameProp) {
           return
         }
 

@@ -301,4 +301,37 @@ describe('calc', () => {
     const { css } = await styleHandler(code)
     expect(css).toMatchSnapshot()
   })
+
+  it('移除逻辑简写(margin-inline/padding-inline)展开后交错的 calc 残留', async () => {
+    const code = `page,
+:root {
+  --spacing: 8rpx;
+}
+.mx-20 {
+  margin-inline: calc(var(--spacing) * 20);
+}
+.px-12 {
+  padding-inline: calc(var(--spacing) * 12);
+}`
+
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssCalc: [
+        '--spacing',
+      ],
+      px2rpx: true,
+    })
+    const { css } = await styleHandler(code)
+
+    // 字面回退值保留
+    expect(css).toContain('margin-left: 160rpx;')
+    expect(css).toContain('margin-right: 160rpx;')
+    expect(css).toContain('padding-left: 96rpx;')
+    expect(css).toContain('padding-right: 96rpx;')
+    // 展开后交错的 calc 残留被清除
+    expect(css).not.toMatch(/margin-left:\s*calc\(var\(--spacing\)/)
+    expect(css).not.toMatch(/margin-right:\s*calc\(var\(--spacing\)/)
+    expect(css).not.toMatch(/padding-left:\s*calc\(var\(--spacing\)/)
+    expect(css).not.toMatch(/padding-right:\s*calc\(var\(--spacing\)/)
+  })
 })
