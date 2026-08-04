@@ -1,0 +1,7 @@
+app.output=demo/uni-app-vite-tailwindcss-v4/dist/build/app
+app.action=preserved
+app.misescaped=false
+app.safeClass=true
+h5.output=demo/uni-app-vite-tailwindcss-v4/dist/build/h5
+h5.action=preserved
+h5.misescaped=false

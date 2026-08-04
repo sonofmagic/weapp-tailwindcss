@@ -55,6 +55,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     outDir,
     pendingLinkedUpdates,
     pendingRememberedCssReplayUpdates,
+    prepareJsTransformRuntime,
     pruneViteCssCaches,
     recordCssAssetResult,
     recordTimingDetail,
@@ -85,6 +86,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
       tasks.push(cssTask)
     }
   }
+  prepareJsTransformRuntime?.()
   if (jsTaskFactories.length > 0) {
     tasks.push(runWithConcurrency(jsTaskFactories).then(() => undefined))
   }

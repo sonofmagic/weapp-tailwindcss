@@ -5,7 +5,7 @@ import type { IJsHandlerOptions } from '../types'
 import type { JsToken } from './types'
 import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
 import { createDebug } from '@/debug'
-import { resolveClassNameTransformWithResult, shouldEnableArbitraryValueFallback } from '../shared/classname-transform'
+import { resolveClassNameTransformWithResult } from '../shared/classname-transform'
 import { decodeUnicode2 } from '../utils/decode'
 import { isClassContextLiteralPath } from './class-context'
 import { jsStringEscape } from './js-string-escape'
@@ -162,9 +162,8 @@ export function replaceHandleValue(
 ): JsToken | undefined {
   const { needEscaped = false } = options
   const { classNameSet, alwaysEscape } = options
-  const fallbackEnabled = shouldEnableArbitraryValueFallback(options)
 
-  if (!alwaysEscape && !fallbackEnabled && (!classNameSet || classNameSet.size === 0)) {
+  if (!alwaysEscape && (!classNameSet || classNameSet.size === 0)) {
     return undefined
   }
 
@@ -188,7 +187,6 @@ export function replaceHandleValue(
   let mutated = false
   let matchedCandidateCount = 0
   let escapedDecisionCount = 0
-  let fallbackDecisionCount = 0
   let escapedSamples: string[] | undefined
   let skippedSamples: string[] | undefined
   const resolveCandidatePlan = createCandidatePlanResolver(options, classContext)
@@ -218,9 +216,6 @@ export function replaceHandleValue(
           escapedSamples.push(candidate)
         }
       }
-      if (plan.result.decision === 'fallback') {
-        fallbackDecisionCount += 1
-      }
     }
 
     // 使用 String.replace 仅替换首次出现，与原始行为一致
@@ -238,9 +233,8 @@ export function replaceHandleValue(
 
   if (debugEnabled) {
     debug(
-      'runtimeSet size=%d fallbackTriggered=%s candidates=%d matched=%d escapedHits=%d skipped=%d file=%s escapedSamples=%s skippedSamples=%s',
+      'runtimeSet size=%d candidates=%d matched=%d escapedHits=%d skipped=%d file=%s escapedSamples=%s skippedSamples=%s',
       classNameSet?.size ?? 0,
-      fallbackDecisionCount > 0,
       candidates.length,
       matchedCandidateCount,
       escapedDecisionCount,

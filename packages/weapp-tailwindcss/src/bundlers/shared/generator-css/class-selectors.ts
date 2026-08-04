@@ -41,3 +41,17 @@ export function collectGeneratedRawSourceCandidates(
   }
   return matched
 }
+
+export function collectGeneratedRawSourceCandidatesFromCss(
+  candidates: Iterable<string>,
+  cssSources: Iterable<string>,
+  escapeMap: Record<string, string> | undefined,
+) {
+  const matched = new Set<string>()
+  for (const css of cssSources) {
+    for (const candidate of collectGeneratedRawSourceCandidates(candidates, css, escapeMap)) {
+      matched.add(candidate)
+    }
+  }
+  return matched
+}

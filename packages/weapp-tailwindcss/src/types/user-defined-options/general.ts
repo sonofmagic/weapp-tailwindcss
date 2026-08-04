@@ -62,14 +62,11 @@ export interface UserDefinedOptionsGeneralPart {
   jsPreserveClass?: ((keyword: string) => boolean | undefined) | undefined
 
   /**
-   * 控制 JS 任意值类名在 classNameSet 异常时的受控兜底策略。
+   * @deprecated 为兼容旧配置保留。JS 转译不再允许绕过 classNameSet。
    *
    * @group 0.重要配置
    * @remarks
-   * 为避免误伤业务字符串，兜底仅在 class 语义上下文生效。
-   * - `false`：关闭兜底；
-   * - `true`：始终开启受控兜底；
-   * - `'auto'`：仅 TailwindCSS v4 且 classNameSet 为空时启用。
+   * 该选项不再启用任意值兜底。所有 JS 类名都必须精确命中 Tailwind 生成确认的 classNameSet。
    */
   jsArbitraryValueFallback?: boolean | 'auto' | undefined
 

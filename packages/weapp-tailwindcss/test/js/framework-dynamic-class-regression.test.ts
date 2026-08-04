@@ -10,7 +10,7 @@ function createStrictHandler() {
   })
 }
 
-function createAutoFallbackHandler() {
+function createLegacyFallbackHandler() {
   return createJsHandler({
     escapeMap: MappingChars2String,
     jsArbitraryValueFallback: 'auto',
@@ -85,19 +85,17 @@ describe('framework dynamic class regression', () => {
     expect(code).not.toContain('active:bg-[#989898]')
   })
 
-  it('uses controlled fallback in className context for taro style output when runtime-set is empty', async () => {
-    const handler = createAutoFallbackHandler()
+  it('fails closed for className arbitrary values when runtime-set is empty', async () => {
+    const handler = createLegacyFallbackHandler()
     const source = 'const node={className:"h-[300px] text-[#c31d6b] bg-[#123456]"}'
 
     const { code } = await handler(source, new Set())
 
-    expect(code).toContain('h-_b300px_B')
-    expect(code).toContain('text-_b_hc31d6b_B')
-    expect(code).toContain('bg-_b_h123456_B')
+    expect(code).toBe(source)
   })
 
-  it('does not enable fallback for non-class-like mpx keys when runtime-set is empty', async () => {
-    const handler = createAutoFallbackHandler()
+  it('fails closed for non-class-like mpx keys when runtime-set is empty', async () => {
+    const handler = createLegacyFallbackHandler()
     const source = 'const state={data:{clsnm:"bg-[#010101] active:bg-[#989898]"}}'
 
     const { code } = await handler(source, new Set())
@@ -105,5 +103,17 @@ describe('framework dynamic class regression', () => {
     expect(code).toContain('clsnm:"bg-[#010101] active:bg-[#989898]"')
     expect(code).not.toContain('bg-_b_h010101_B')
     expect(code).not.toContain('active_cbg-_b_h989898_B')
+  })
+
+  it.each([
+    ['uni-app', 'const state={class:"text-[45rpx]"}'],
+    ['taro-vite', 'const node={className:"w-[100px]"}'],
+    ['taro-webpack', 'const node={className:"bg-[#123456]"}'],
+    ['mpx', 'const state={data:{clsnm:"h-[200px]"}}'],
+    ['gulp', 'const classes="gap-[20px]"'],
+  ])('preserves %s JavaScript when Tailwind confirms no classes', async (_framework, source) => {
+    const handler = createLegacyFallbackHandler()
+
+    expect(handler(source, new Set())).toMatchObject({ code: source })
   })
 })

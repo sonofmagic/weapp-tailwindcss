@@ -2,7 +2,7 @@
 title: "✅ 重要配置"
 sidebar_label: "✅ 重要配置"
 sidebar_position: 1
-description: "✅ 重要配置：21 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。"
+description: "✅ 重要配置：20 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。"
 keywords:
   - "weapp-tailwindcss"
   - "API"
@@ -17,7 +17,7 @@ keywords:
   - "插件参数"
 ---
 
-本页收录 21 个配置项，来源于 `UserDefinedOptions`。
+本页收录 20 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
 
@@ -28,16 +28,15 @@ keywords:
 | [arbitraryValues](#arbitraryvalues) | <code>IArbitraryValues</code> | — | TailwindCSS 任意值的相关配置。 |
 | [unocss](#unocss) | <code>boolean &#124; IUnocssCompatibilityOptions</code> | <code>false</code> | 启用部分 UnoCSS class 写法兼容。 |
 | [jsPreserveClass](#jspreserveclass) | <code>(keyword: string) => boolean &#124; undefined</code> | — | 控制 JS 字面量是否需要保留。 |
-| [jsArbitraryValueFallback](#jsarbitraryvaluefallback) | <code>boolean &#124; "auto"</code> | — | 控制 JS 任意值类名在 classNameSet 异常时的受控兜底策略。 |
 | [disabled](#disabled) | <code>boolean &#124; { plugin?: boolean &#124; undefined; }</code> | — | 是否禁用此插件。 |
 | [replaceRuntimePackages](#replaceruntimepackages) | <code>boolean &#124; Record<string, string></code> | — | 是否替换运行时依赖包名。 |
-| [customAttributes](#customattributes) | <code>ICustomAttributes</code> | — | 自定义 `wxml` 标签属性的转换规则。 |
 | [rewriteCssImports](#rewritecssimports) | <code>boolean</code> | <code>false</code> | 是否把 CSS 中的 Tailwind 包入口改写到 `weapp-tailwindcss` 内部样式入口。 |
+| [customAttributes](#customattributes) | <code>ICustomAttributes</code> | — | 自定义 `wxml` 标签属性的转换规则。 |
 | [customReplaceDictionary](#customreplacedictionary) | <code>Record<string, string></code> | <code>MappingChars2String</code> | 自定义 class 名称的替换字典。 |
-| [generator](#generator) | <code>WeappTailwindcssGeneratorOptions</code> | — | 控制 Tailwind CSS 直接生成目标端 CSS 的策略。 |
+| [generator](#generator) | <code>WeappTailwindcssGeneratorUserOptions</code> | — | 控制 Tailwind CSS 直接生成目标端 CSS 的策略。 |
 | [ignoreTaggedTemplateExpressionIdentifiers](#ignoretaggedtemplateexpressionidentifiers) | <code>(string &#124; RegExp)[]</code> | <code>['weappTwIgnore']</code> | 忽略指定标签模板表达式中的标识符。 |
-| [ignoreCallExpressionIdentifiers](#ignorecallexpressionidentifiers) | <code>(string &#124; RegExp)[]</code> | — | 忽略指定调用表达式中的标识符。 |
 | [styleInjector](#styleinjector) | <code>WeappTailwindcssStyleInjectorUserOptions</code> | <code>false</code> | 开启构建产物样式入口注入。 |
+| [ignoreCallExpressionIdentifiers](#ignorecallexpressionidentifiers) | <code>(string &#124; RegExp)[]</code> | — | 忽略指定调用表达式中的标识符。 |
 | [disabledDefaultTemplateHandler](#disableddefaulttemplatehandler) | <code>boolean</code> | <code>false</code> | 禁用默认的 `wxml` 模板替换器。 |
 | [tailwindcssBasedir](#tailwindcssbasedir) | <code>string</code> | — | 指定用于获取 Tailwind 上下文的路径。 |
 | [cache](#cache) | <code>boolean &#124; ICreateCacheReturnType</code> | — | 控制缓存策略。 |
@@ -114,19 +113,6 @@ false
 
 `boolean | undefined`
 
-### jsArbitraryValueFallback
-
-> 可选 | 类型: `boolean | "auto"`
-
-控制 JS 任意值类名在 classNameSet 异常时的受控兜底策略。
-
-#### 备注
-
-为避免误伤业务字符串，兜底仅在 class 语义上下文生效。
-- `false`：关闭兜底；
-- `true`：始终开启受控兜底；
-- `'auto'`：仅 TailwindCSS v4 且 classNameSet 为空时启用。
-
 ### disabled
 
 > 可选 | 类型: `boolean | { plugin?: boolean | undefined; }`
@@ -178,6 +164,24 @@ replaceRuntimePackages: {
 }
 ```
 
+### rewriteCssImports
+
+> 可选 | 类型: `boolean` | 默认值: `false`
+
+是否把 CSS 中的 Tailwind 包入口改写到 `weapp-tailwindcss` 内部样式入口。
+
+#### 备注
+
+默认关闭。Tailwind CSS v4 项目应保留 `@import "tailwindcss"` 原始入口，由
+`weapp-tailwindcss` 基于 CSS AST/source 结果生成目标端 CSS。仅在需要兼容旧项目
+或特定框架无法正常解析 Tailwind 包入口时显式开启。
+
+#### 默认值
+
+```ts
+false
+```
+
 ### customAttributes
 
 > 可选 | 类型: `ICustomAttributes`
@@ -202,24 +206,6 @@ const customAttributes = {
 }
 ```
 
-### rewriteCssImports
-
-> 可选 | 类型: `boolean` | 默认值: `false`
-
-是否把 CSS 中的 Tailwind 包入口改写到 `weapp-tailwindcss` 内部样式入口。
-
-#### 备注
-
-默认关闭。Tailwind CSS v4 项目应保留 `@import "tailwindcss"` 原始入口，由
-`weapp-tailwindcss` 基于 CSS AST/source 结果生成目标端 CSS。仅在需要兼容旧项目
-或特定框架无法正常解析 Tailwind 包入口时显式开启。
-
-#### 默认值
-
-```ts
-false
-```
-
 ### customReplaceDictionary
 
 > 可选 | 类型: `Record<string, string>` | 默认值: `MappingChars2String`
@@ -238,7 +224,7 @@ MappingChars2String
 
 ### generator
 
-> 可选 | 类型: `WeappTailwindcssGeneratorOptions`
+> 可选 | 类型: `WeappTailwindcssGeneratorUserOptions`
 
 控制 Tailwind CSS 直接生成目标端 CSS 的策略。
 
@@ -278,16 +264,6 @@ WeappTailwindcss({
 ['weappTwIgnore']
 ```
 
-### ignoreCallExpressionIdentifiers
-
-> 可选 | 类型: `(string | RegExp)[]` | 版本: ^4.0.0
-
-忽略指定调用表达式中的标识符。
-
-#### 备注
-
-使用这些方法包裹的模板字符串或字符串字面量会跳过转义，常与 `@weapp-tailwindcss/merge` 配合（如 `['twMerge', 'twJoin', 'cva']`）。
-
 ### styleInjector
 
 > 可选 | 类型: `WeappTailwindcssStyleInjectorUserOptions` | 默认值: `false`
@@ -310,6 +286,16 @@ Vite 会按当前 `appType` 自动选择 uni-app、Taro 或通用预设；Webpac
 ```ts
 false
 ```
+
+### ignoreCallExpressionIdentifiers
+
+> 可选 | 类型: `(string | RegExp)[]` | 版本: ^4.0.0
+
+忽略指定调用表达式中的标识符。
+
+#### 备注
+
+使用这些方法包裹的模板字符串或字符串字面量会跳过转义，常与 `@weapp-tailwindcss/merge` 配合（如 `['twMerge', 'twJoin', 'cva']`）。
 
 ### disabledDefaultTemplateHandler
 

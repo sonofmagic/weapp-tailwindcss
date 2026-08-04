@@ -5255,8 +5255,18 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       createdDirs.push(root)
       await mkdir(path.join(root, 'src'), { recursive: true })
       const cssFile = path.join(root, 'src/main.css')
+      const pageFile = path.join(root, 'src/pages/index/index.ts')
       const rawCss = '@import "tailwindcss" source(none);\n@source "./**/*.{vue,js,ts}";'
+      const appSource = [
+        `store.dispatch('user/getUserInfo')`,
+        `request('order/get_order_amount')`,
+        `const route = 'pages/order/detail'`,
+        `const accept = 'text/event-stream'`,
+        `function render(){return 'template-corpus-card bg-white/70 text-[45rpx] space-y-2 bg-radial bg-gradient-to-br'}`,
+      ].join('\n')
+      await mkdir(path.dirname(pageFile), { recursive: true })
       await writeFile(cssFile, rawCss, 'utf8')
+      await writeFile(pageFile, appSource, 'utf8')
       const runtimeSet = new Set([
         'template-corpus-card',
         'bg-emerald-500',
@@ -5269,6 +5279,10 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         'bg-gradient-to-br',
         'p-5',
         'bg-clip-text',
+        'user/getUserInfo',
+        'order/get_order_amount',
+        'pages/order/detail',
+        'text/event-stream',
       ])
       setCurrentContext(createContext({
         appType: 'uni-app-vite',
@@ -5297,15 +5311,18 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         },
         jsHandler: createJsHandler({
           escapeMap: MappingChars2String,
+          experimentalJsFastPath: 'oxc',
           tailwindcssMajorVersion: 4,
           generateMap: false,
         }),
       }))
 
       const plugins = WeappTailwindcss()
+      const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
       const servePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
       const serveJsPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:js:serve') as Plugin
       const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      expect(sourcePlugin).toBeTruthy()
       expect(servePlugin).toBeTruthy()
       expect(serveJsPlugin).toBeTruthy()
       expect(postPlugin).toBeTruthy()
@@ -5319,6 +5336,12 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       } as ResolvedConfig
       await (postPlugin.configResolved as any)?.call(postPlugin, resolvedConfig)
       await (servePlugin.configResolved as any)?.call(servePlugin, resolvedConfig)
+      await (sourcePlugin.configResolved as any)?.call(sourcePlugin, resolvedConfig)
+      const buildStart = sourcePlugin.buildStart as any
+      await (typeof buildStart === 'object' ? buildStart.handler : buildStart)?.call({
+        ...sourcePlugin,
+        addWatchFile: vi.fn(),
+      })
 
       const transform = getTransformHandler(servePlugin)
       const transformed = await transform?.call({
@@ -5355,7 +5378,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           fileName: 'app.css',
         },
         'app-service.js': {
-          ...createRollupChunk('function render(){return "template-corpus-card text-[45rpx] space-y-2 bg-radial bg-gradient-to-br"}'),
+          ...createRollupChunk(appSource),
           fileName: 'app-service.js',
         },
       }
@@ -5381,6 +5404,12 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       expect(appCss).toContain(':root{--spacing:.25rem}')
       expect(appCss).toContain('.p-5{padding:calc(var(--spacing)*5)}')
       expect(appCss).toContain('.bg-clip-text{-webkit-background-clip:text;background-clip:text}')
+      const appJs = (bundle['app-service.js'] as OutputChunk).code
+      expect(appJs).toContain(`store.dispatch('user/getUserInfo')`)
+      expect(appJs).toContain(`request('order/get_order_amount')`)
+      expect(appJs).toContain(`const route = 'pages/order/detail'`)
+      expect(appJs).toContain(`const accept = 'text/event-stream'`)
+      expect(appJs).toContain('template-corpus-card bg-white_f70 text-_b45rpx_B')
     }
     finally {
       if (previousPlatform === undefined) {
