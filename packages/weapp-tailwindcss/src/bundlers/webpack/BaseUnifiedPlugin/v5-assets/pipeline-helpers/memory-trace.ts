@@ -113,8 +113,8 @@ export function finalizeMiniProgramUserCssAssetSource(
     return source
   }
   const finalized = finalizeMiniProgramCss(removeMiniProgramInteractiveSelectors(source, {
-    active: styleOptions.cssRemoveActivePseudoClass,
-    hover: styleOptions.cssRemoveHoverPseudoClass,
+    active: styleOptions.cssRemoveActivePseudoClass ?? true,
+    hover: styleOptions.cssRemoveHoverPseudoClass ?? true,
   }), {
     cssPreflight: options.cssPreflight === false
       ? false

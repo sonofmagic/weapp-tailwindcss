@@ -83,8 +83,8 @@ export function finalizeWebpackCssAssetSource(
     })
     finalized = dedupeMiniProgramPreflightSelectorRules(finalized)
     return stripMiniProgramCssSpecificityPlaceholders(removeMiniProgramInteractiveSelectors(finalized, {
-      active: styleOptions.cssRemoveActivePseudoClass,
-      hover: styleOptions.cssRemoveHoverPseudoClass,
+      active: styleOptions.cssRemoveActivePseudoClass ?? true,
+      hover: styleOptions.cssRemoveHoverPseudoClass ?? true,
     }))
   }
   try {
@@ -117,8 +117,8 @@ export function finalizeWebpackCssAssetSource(
     finalized = dedupeMiniProgramPreflightSelectorRules(finalized)
   }
   return stripMiniProgramCssSpecificityPlaceholders(removeMiniProgramInteractiveSelectors(finalized, {
-    active: styleOptions.cssRemoveActivePseudoClass,
-    hover: styleOptions.cssRemoveHoverPseudoClass,
+    active: styleOptions.cssRemoveActivePseudoClass ?? true,
+    hover: styleOptions.cssRemoveHoverPseudoClass ?? true,
   }))
 }
 
@@ -135,8 +135,8 @@ export function finalizeWebpackCssAssetOutputSource(
     removeMiniProgramInteractiveSelectors(
       dedupeCoveredCssRules(dedupeMiniProgramPreflightSelectorRules(source)),
       {
-        active: styleOptions.cssRemoveActivePseudoClass,
-        hover: styleOptions.cssRemoveHoverPseudoClass,
+        active: styleOptions.cssRemoveActivePseudoClass ?? true,
+        hover: styleOptions.cssRemoveHoverPseudoClass ?? true,
       },
     ),
   )
