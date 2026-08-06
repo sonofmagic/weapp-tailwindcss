@@ -704,14 +704,6 @@ wx-root-portal-content {
   content: var(--tw-content);
   content: var(--tw-content) !important;
 }
- /* tokens: active:bg-[#543210] <= src/components/list.mpx */
-.active_cbg-_b_h543210_B:active {
-  background-color: #543210;
-}
- /* tokens: active:bg-[#989898] <= src/components/list.mpx, src/custom-tab-bar/index.mpx */
-.active_cbg-_b_h989898_B:active {
-  background-color: #989898;
-}
 @media (min-width: 96rem) {
  /* tokens: 2xl:text-base <= src/pages/index.mpx */
   ._2xl_ctext-base {

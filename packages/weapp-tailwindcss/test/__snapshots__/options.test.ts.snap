@@ -26,6 +26,7 @@ exports[`get options > default options 1`] = `
     "margin": "0",
     "padding": "0",
   },
+  "cssRemoveActivePseudoClass": true,
   "cssRemoveHoverPseudoClass": true,
   "cssRemoveProperty": true,
   "cssSelectorReplacement": {

@@ -4807,9 +4807,6 @@ wx-button {
   color: var(--nutui-color-title, #1a1a1a);
   cursor: pointer;
 }
-.nut-popup-title-right:active {
-  opacity: 0.7;
-}
 .nut-popup-title-right-top-left {
   top: var(--nutui-popup-title-padding, 16rpx);
   left: var(--nutui-popup-title-padding, 16rpx);
@@ -6853,7 +6850,6 @@ wx-button {
   border: 1rpx solid var(--nutui-hoverbutton-item-border-color, rgba(0, 0, 0, 0.12));
   background-color: var(--nutui-hoverbutton-item-background, var(--nutui-white-12));
 }
-.nut-hoverbutton-item-container:active,
 .nut-hoverbutton-item-container-active {
   background-color: var(--nutui-hoverbutton-item-background-active, rgba(247, 248, 252, 0.9));
 }
@@ -6889,10 +6885,6 @@ wx-button {
   width: 20rpx;
   height: 20rpx;
   font-size: 20rpx;
-}
-.nut-hoverbutton-item-container:active .nut-hoverbutton-item-icon {
-  color: var(--nutui-hoverbutton-item-icon-color-active, var(--nutui-color-title, #1a1a1a));
-  fill: var(--nutui-hoverbutton-item-icon-color-active, var(--nutui-color-title, #1a1a1a));
 }
 .nut-hoverbutton-item-text-icon {
   width: 14rpx;
@@ -7048,9 +7040,6 @@ wx-button {
   transform: translate(-50%, -50%);
   opacity: 0;
   content: ' ';
-}
-.nut-grid-item-content-clickable:active::before {
-  opacity: 0.1;
 }
 [dir='rtl'] .nut-grid-item-content-border,
 .nut-rtl .nut-grid-item-content-border {
@@ -7870,9 +7859,6 @@ wx-button {
   border-radius: 50%;
   width: var(--nutui-dialog-bottom-close-icon-size, 24rpx);
   height: var(--nutui-dialog-bottom-close-icon-size, 24rpx);
-}
-.nut-dialog-close:active {
-  opacity: 0.7;
 }
 .nut-dialog-header {
   display: block;
@@ -8911,9 +8897,6 @@ wx-button {
   font-size: var(--nutui-cell-extra-font-size, var(--nutui-font-size-base, 14rpx));
   color: var(--nutui-cell-extra-color, var(--nutui-color-text, #505259));
 }
-.nut-cell:active::before {
-  opacity: 0.1;
-}
 .nut-cell-clickable {
   cursor: pointer;
 }
@@ -9565,9 +9548,6 @@ wx-button {
 }
 .nut-button::after {
   border: none;
-}
-.nut-button:active::before {
-  opacity: 0.1;
 }
 .nut-button-wrap {
   height: 100%;
@@ -14961,6 +14941,9 @@ wx-button {
   border-radius: var(--nutui-hoverbutton-item-size, 40rpx);
   border: 1rpx solid var(--nutui-hoverbutton-item-border-color, rgba(0, 0, 0, 0.12));
   background-color: var(--nutui-hoverbutton-item-background, var(--nutui-white-12));
+}
+.nut-hoverbutton-item-container-active {
+  background-color: var(--nutui-hoverbutton-item-background-active, rgba(247, 248, 252, 0.9));
 }
 .nut-hoverbutton-item-container-harmony {
   margin-bottom: var(--nutui-hoverbutton-spacing, var(--nutui-spacing-base, 8rpx));
