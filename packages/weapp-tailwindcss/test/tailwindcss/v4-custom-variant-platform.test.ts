@@ -55,8 +55,10 @@ describe('tailwindcss v4 platform custom variants', () => {
       styleOptions: { platform: 'mp-weixin' },
     })
 
-    expect(generated.css).toContain('inner-mp')
-    expect(generated.css).toContain('outer-mp')
+    expect(generated.rawCss).toContain('inner-mp')
+    expect(generated.rawCss).toContain('outer-mp')
+    expect(generated.css).not.toContain('inner-mp')
+    expect(generated.css).not.toContain('outer-mp')
     expect(generated.css).not.toContain('inner-web')
     expect(generated.css).not.toContain('outer-web')
   })

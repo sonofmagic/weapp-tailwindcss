@@ -31,6 +31,7 @@ function shouldRemoveUnsupportedInteractiveSelector(selector: Selector, options:
     if (
       (options.cssRemoveHoverPseudoClass && node.value === ':hover')
       || (options.cssRemoveActivePseudoClass && node.value === ':active')
+      || (options.cssRemoveFocusPseudoClass && node.value === ':focus')
     ) {
       shouldRemove = true
       return false

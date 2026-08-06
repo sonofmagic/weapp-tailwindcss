@@ -59,6 +59,7 @@ function syncCssOptionsToLegacyFields(ctx: InternalUserDefinedOptions) {
   ctx.cssRemoveProperty = cssOptions.cssRemoveProperty ?? ctx.cssRemoveProperty
   ctx.cssRemoveActivePseudoClass = cssOptions.cssRemoveActivePseudoClass ?? ctx.cssRemoveActivePseudoClass
   ctx.cssRemoveHoverPseudoClass = cssOptions.cssRemoveHoverPseudoClass ?? ctx.cssRemoveHoverPseudoClass
+  ctx.cssRemoveFocusPseudoClass = cssOptions.cssRemoveFocusPseudoClass ?? ctx.cssRemoveFocusPseudoClass
   ctx.tailwindcssV4GradientFallback = cssOptions.tailwindcssV4GradientFallback ?? ctx.tailwindcssV4GradientFallback
   ctx.cssPresetEnv = cssOptions.cssPresetEnv ?? ctx.cssPresetEnv
   ctx.atRules = cssOptions.atRules ?? ctx.atRules
@@ -85,6 +86,7 @@ function syncLegacyFieldsToCssOptions(ctx: InternalUserDefinedOptions) {
     cssRemoveProperty: ctx.cssRemoveProperty,
     cssRemoveActivePseudoClass: ctx.cssRemoveActivePseudoClass,
     cssRemoveHoverPseudoClass: ctx.cssRemoveHoverPseudoClass,
+    cssRemoveFocusPseudoClass: ctx.cssRemoveFocusPseudoClass,
     tailwindcssV4GradientFallback: ctx.tailwindcssV4GradientFallback,
     cssPresetEnv: ctx.cssPresetEnv,
     atRules: ctx.atRules,

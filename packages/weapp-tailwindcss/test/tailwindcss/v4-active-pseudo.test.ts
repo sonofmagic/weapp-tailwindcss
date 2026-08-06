@@ -18,6 +18,7 @@ const candidates = [
   'active:bg-blue-500',
   'group-active:bg-blue-500',
   'not-active:bg-blue-500',
+  'focus:bg-blue-500',
 ]
 
 describe('tailwindcss v4 active pseudo class', () => {
@@ -26,6 +27,7 @@ describe('tailwindcss v4 active pseudo class', () => {
 
     expect(generated.css).toContain('.bg-blue-500')
     expect(generated.css).not.toContain(':active')
+    expect(generated.css).not.toContain(':focus')
     expect(generated.classSet).toEqual(new Set(candidates))
   })
 
@@ -40,6 +42,17 @@ describe('tailwindcss v4 active pseudo class', () => {
     expect(generated.css).toContain(':active')
   })
 
+  it('keeps focus selectors when mini-program removal is disabled', async () => {
+    const generated = await (await createEngine()).generate({
+      candidates,
+      styleOptions: {
+        cssRemoveFocusPseudoClass: false,
+      },
+    })
+
+    expect(generated.css).toContain(':focus')
+  })
+
   it('keeps active selectors for web targets', async () => {
     const generated = await (await createEngine()).generate({
       candidates,
@@ -48,5 +61,6 @@ describe('tailwindcss v4 active pseudo class', () => {
 
     expect(generated.css).toContain('.active\\:bg-blue-500:active')
     expect(generated.css).toContain(':active')
+    expect(generated.css).toContain(':focus')
   })
 })

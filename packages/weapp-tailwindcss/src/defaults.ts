@@ -120,6 +120,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     cssRemoveProperty: true,
     cssRemoveActivePseudoClass: true,
     cssRemoveHoverPseudoClass: true,
+    cssRemoveFocusPseudoClass: true,
     ignoreCallExpressionIdentifiers: [],
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
     replaceRuntimePackages: false,

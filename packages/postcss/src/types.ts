@@ -176,6 +176,7 @@ export interface CssOptions {
   platform?: string | undefined
   cssRemoveActivePseudoClass?: boolean | undefined
   cssRemoveHoverPseudoClass?: boolean | undefined
+  cssRemoveFocusPseudoClass?: boolean | undefined
   cssRemoveProperty?: boolean | undefined
   cssCalc?: boolean | CssCalcOptions | (string | RegExp)[] | undefined
   /**
@@ -205,6 +206,8 @@ export type IStyleHandlerOptions = {
    * @deprecated 请使用 `cssOptions.cssRemoveHoverPseudoClass`。
    */
   cssRemoveHoverPseudoClass?: boolean | undefined
+  /** @deprecated 请使用 `cssOptions.cssRemoveFocusPseudoClass`。 */
+  cssRemoveFocusPseudoClass?: boolean | undefined
   /**
    * @deprecated 请使用 `cssOptions.tailwindcssV4GradientFallback`。
    */

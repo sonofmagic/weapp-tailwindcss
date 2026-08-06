@@ -237,7 +237,7 @@ export interface UserDefinedOptionsGeneralPart {
    * 后续用于控制生成 CSS 的兼容兜底、变量保留、规则修剪等细粒度行为。
    * `cssPreflight`、`cssPreflightRange`、`cssChildCombinatorReplaceValue`、`cssPresetEnv`、`autoprefixer`、
    * `atRules`、`injectAdditionalCssVarScope`、`cssSelectorReplacement`、`rem2rpx`、`px2rpx`、`unitsToPx`、
-   * `unitConversion`、`platform`、`cssRemoveActivePseudoClass`、`cssRemoveHoverPseudoClass`、`cssRemoveProperty`、`cssCalc`
+   * `unitConversion`、`platform`、`cssRemoveActivePseudoClass`、`cssRemoveHoverPseudoClass`、`cssRemoveFocusPseudoClass`、`cssRemoveProperty`、`cssCalc`
    * 与 `tailwindcssV4GradientFallback` 都推荐放在这里。
    */
   cssOptions?: CssOptions | undefined
@@ -265,6 +265,12 @@ export interface UserDefinedOptionsGeneralPart {
    * @deprecated 请使用 `cssOptions.cssRemoveHoverPseudoClass`。
    */
   cssRemoveHoverPseudoClass?: boolean | undefined
+  /**
+   * 是否移除 CSS 中的 `:focus` 选择器。小程序默认移除，H5 保持原样。
+   * @default `true`
+   * @deprecated 请使用 `cssOptions.cssRemoveFocusPseudoClass`。
+   */
+  cssRemoveFocusPseudoClass?: boolean | undefined
   /**
    * 是否移除 `@property` 节点。
    *

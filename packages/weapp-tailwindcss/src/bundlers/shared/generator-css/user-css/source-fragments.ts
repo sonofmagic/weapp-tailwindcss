@@ -40,6 +40,7 @@ export function isCommentOnlyCss(source: string) {
 export interface RemoveMiniProgramInteractiveSelectorsOptions {
   active?: boolean | undefined
   hover?: boolean | undefined
+  focus?: boolean | undefined
 }
 
 export function removeMiniProgramInteractiveSelectors(
@@ -48,9 +49,10 @@ export function removeMiniProgramInteractiveSelectors(
 ) {
   const removeActive = options.active === true
   const removeHover = options.hover === true
+  const removeFocus = options.focus === true
   if (
-    (!removeActive && !removeHover)
-    || (!source.includes(':active') && !source.includes(':hover'))
+    (!removeActive && !removeHover && !removeFocus)
+    || (!source.includes(':active') && !source.includes(':hover') && !source.includes(':focus'))
   ) {
     return source
   }
@@ -63,6 +65,7 @@ export function removeMiniProgramInteractiveSelectors(
         const unsupportedPseudoClasses = [
           ...(removeActive ? [':active'] : []),
           ...(removeHover ? [':hover'] : []),
+          ...(removeFocus ? [':focus'] : []),
         ]
         return !selectorContainsPseudoClass(selector, unsupportedPseudoClasses)
       })
@@ -102,6 +105,7 @@ export function removeProcessedMiniProgramUnsupportedCss(
     {
       active: options.cssRemoveActivePseudoClass ?? true,
       hover: options.cssRemoveHoverPseudoClass ?? true,
+      focus: options.cssRemoveFocusPseudoClass ?? true,
     },
   )
 }

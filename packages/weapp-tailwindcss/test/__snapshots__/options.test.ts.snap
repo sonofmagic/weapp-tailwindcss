@@ -27,6 +27,7 @@ exports[`get options > default options 1`] = `
     "padding": "0",
   },
   "cssRemoveActivePseudoClass": true,
+  "cssRemoveFocusPseudoClass": true,
   "cssRemoveHoverPseudoClass": true,
   "cssRemoveProperty": true,
   "cssSelectorReplacement": {

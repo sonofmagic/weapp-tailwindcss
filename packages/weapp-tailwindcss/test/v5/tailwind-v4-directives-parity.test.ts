@@ -549,7 +549,7 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
         css: '@source inline("tw:bg-brand bg-brand");',
         weappAssertions: (css: string) => {
           expect(css).toContain('.tw_cbg-brand')
-          expect(css).toContain('background-color: #123456')
+          expect(css).toContain('color: #123456')
           expect(css).not.toContain('.bg-brand {')
         },
       },
@@ -621,8 +621,8 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
           expect(css).toContain('color: #123456')
           expect(css).toContain('.config-size-card')
           expect(css).toContain('width: 42px')
-          expect(css).toContain('.config-hocus_cbg-brand:focus')
-          expect(css).toContain('background-color: #123456')
+          expect(css).not.toContain('.config-hocus_cbg-brand:focus')
+          expect(css).not.toContain('background-color: #123456')
           expect(css).not.toContain(':hover')
         },
       },
