@@ -10,7 +10,7 @@ import { clearTailwindV4IncrementalGenerateCacheForTest, createTailwindV4Engine,
 import { resolveTailwindV4SourceFromRuntimeOptions } from '@/tailwindcss/v4-engine/source'
 
 const require = createRequire(import.meta.url)
-const tailwindcssRoot = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcssRoot = path.dirname(require.resolve('tailwindcss/package.json'))
 
 const MINIMAL_THEME_CSS = `
 @theme default {

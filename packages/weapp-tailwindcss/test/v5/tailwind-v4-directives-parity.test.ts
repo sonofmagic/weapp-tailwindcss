@@ -9,7 +9,7 @@ import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
 
 const require = createRequire(import.meta.url)
 const workspaceRoot = path.resolve(__dirname, '../../../..')
-const tailwindcss4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcss4Root = path.dirname(require.resolve('tailwindcss/package.json'))
 
 async function createTailwindV4DirectiveFixture() {
   const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-directives-'))

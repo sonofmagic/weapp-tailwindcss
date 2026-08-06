@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest'
 import { WeappTailwindcss } from '../packages/weapp-tailwindcss/src/bundlers/vite'
 
 const require = createRequire(import.meta.url)
-const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss/package.json'))
 
 async function createTempProject(prefix: string) {
   const root = await mkdtemp(path.join(tmpdir(), prefix))

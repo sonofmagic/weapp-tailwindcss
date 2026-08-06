@@ -11,7 +11,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import weappTailwindcss from '@/postcss'
 
 const require = createRequire(import.meta.url)
-const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss/package.json'))
 const TEST_TIMEOUT = 120_000
 const createdRoots: string[] = []
 

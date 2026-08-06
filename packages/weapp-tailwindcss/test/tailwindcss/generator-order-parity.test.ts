@@ -8,7 +8,7 @@ import { replaceWxml } from '@/wxml/shared'
 import { createTailwindV4Engine, resolveTailwindV4Source } from '@/tailwindcss/v4-engine'
 
 const require = createRequire(import.meta.url)
-const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss/package.json'))
 
 // 这些语料从 Tailwind submodule 的 sort 与 variant-order 用例提炼而来，用于锁定官方生成顺序。
 const TAILWIND_V4_COMPATIBLE_ORDER_CORPUS = [

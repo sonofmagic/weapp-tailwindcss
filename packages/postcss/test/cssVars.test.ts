@@ -15,7 +15,7 @@ function readExistingFile(filepaths: string[]) {
 }
 
 function readTailwindV4UtilitiesSource() {
-  const packageJson = require.resolve('tailwindcss4/package.json')
+  const packageJson = require.resolve('tailwindcss/package.json')
   const packageRoot = path.dirname(packageJson)
   const sourceFile = path.resolve(__dirname, '../../../submodules/tailwindcss-v4/packages/tailwindcss/src/utilities.ts')
   if (fs.existsSync(sourceFile)) {
@@ -29,7 +29,7 @@ function readTailwindV4UtilitiesSource() {
 }
 
 function readTailwindV4BundledUtilitiesSource() {
-  const packageJson = require.resolve('tailwindcss4/package.json')
+  const packageJson = require.resolve('tailwindcss/package.json')
   const packageRoot = path.dirname(packageJson)
   return readExistingFile([
     path.resolve(packageRoot, 'dist/chunk-3IR7ZFJX.mjs'),

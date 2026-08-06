@@ -4,7 +4,7 @@ import path from 'node:path'
 import { createTailwindV4Engine, resolveTailwindV4Source } from '@/tailwindcss/v4-engine'
 
 const require = createRequire(import.meta.url)
-const tailwindcssPackageRoot = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcssPackageRoot = path.dirname(require.resolve('tailwindcss/package.json'))
 
 const PACKAGE_CSS_ENTRIES = [
   'index.css',

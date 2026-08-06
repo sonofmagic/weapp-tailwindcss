@@ -12,7 +12,7 @@ import weappTailwindcss from '@/postcss'
 import { compositionCases } from './fixtures/web-compat-runtime-color-composition'
 
 const require = createRequire(import.meta.url)
-const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss/package.json'))
 const createdRoots: string[] = []
 const TEST_TIMEOUT = 120_000
 

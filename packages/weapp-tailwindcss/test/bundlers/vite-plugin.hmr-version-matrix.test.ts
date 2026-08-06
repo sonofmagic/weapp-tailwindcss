@@ -16,7 +16,7 @@ interface ViteBuildModule {
 }
 
 const require = createRequire(import.meta.url)
-const tailwindcss4Basedir = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcss4Basedir = path.dirname(require.resolve('tailwindcss/package.json'))
 const createdDirs: string[] = []
 
 const viteCases = [

@@ -35,7 +35,6 @@
     "picocolors": "catalog:buildUtilities",
     "postcss": "catalog:postcss85",
     "tailwindcss": "catalog:tailwindcss4",
-    "tailwindcss4": "catalog:tailwindcss4",
     "traverse": "^0.6.11"
   },
   "devDependencies": {

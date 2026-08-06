@@ -9,7 +9,7 @@ import { WeappTailwindcss } from '../packages/weapp-tailwindcss/src/bundlers/vit
 import weappTailwindcssPostcss from '../packages/weapp-tailwindcss/src/postcss'
 
 const require = createRequire(import.meta.url)
-const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss/package.json'))
 
 async function createTempProject(prefix: string) {
   const root = await mkdtemp(path.join(tmpdir(), prefix))

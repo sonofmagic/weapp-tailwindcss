@@ -12,7 +12,7 @@ const pluginPackageRoots = [
   path.join(workspaceRoot, 'demo/uni-app-vite-tailwindcss-v4'),
   path.join(workspaceRoot, 'website'),
 ]
-const tailwindcss4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcss4Root = path.dirname(require.resolve('tailwindcss/package.json'))
 const linkedPackages = [
   '@egoist/tailwindcss-icons',
   '@iconify-json/lucide',

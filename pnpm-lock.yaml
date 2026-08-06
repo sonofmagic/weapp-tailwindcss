@@ -270,9 +270,6 @@ catalogs:
     tailwindcss:
       specifier: ^4.3.3
       version: 4.3.3
-    tailwindcss4:
-      specifier: npm:tailwindcss@^4.3.3
-      version: 4.3.3
   tailwindcssMangleEngine:
     '@tailwindcss-mangle/engine':
       specifier: 0.2.0
@@ -867,9 +864,6 @@ importers:
       tailwindcss:
         specifier: catalog:tailwindcss4
         version: 4.3.3
-      tailwindcss4:
-        specifier: catalog:tailwindcss4
-        version: tailwindcss@4.3.3
       terser-webpack-plugin:
         specifier: ^5.6.1
         version: 5.6.1(@swc/core@1.15.47(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@8.0.4(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.26)(uglify-js@3.19.3)(webpack@5.105.4)
@@ -4849,9 +4843,6 @@ importers:
       tailwindcss:
         specifier: catalog:tailwindcss4
         version: 4.3.3
-      tailwindcss4:
-        specifier: catalog:tailwindcss4
-        version: tailwindcss@4.3.3
       traverse:
         specifier: ^0.6.11
         version: 0.6.11

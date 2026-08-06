@@ -9,7 +9,7 @@ import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
 
 const require = createRequire(import.meta.url)
 const repoRoot = path.resolve(__dirname, '../../../..')
-const tailwindcss4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcss4Root = path.dirname(require.resolve('tailwindcss/package.json'))
 const uniAppViteV4CssEntries = (projectRoot: string) => [
   path.resolve(projectRoot, 'src/main.css'),
   path.resolve(projectRoot, 'src/sub-normal/pages/index.css'),

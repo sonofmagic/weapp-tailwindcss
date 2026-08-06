@@ -11,7 +11,7 @@ import webpack from 'webpack'
 const require = createRequire(import.meta.url)
 const repoRoot = path.resolve(__dirname, '..')
 const ensureBuiltScript = path.resolve(repoRoot, 'scripts/ensure-weapp-tailwindcss-built.mjs')
-const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss/package.json'))
 const modes: Array<NonNullable<Configuration['mode']>> = ['development', 'production']
 
 function ensureWeappTailwindcssBuilt() {

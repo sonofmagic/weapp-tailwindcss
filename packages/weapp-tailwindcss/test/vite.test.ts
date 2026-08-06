@@ -35,7 +35,7 @@ async function readBuiltStyle(root: string) {
 }
 
 const require = createRequire(import.meta.url)
-const tailwindcss4Basedir = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcss4Basedir = path.dirname(require.resolve('tailwindcss/package.json'))
 const previousTailwindcssBasedir = process.env.WEAPP_TAILWINDCSS_BASEDIR
 if (previousTailwindcssBasedir === undefined) {
   process.env.WEAPP_TAILWINDCSS_BASEDIR = tailwindcss4Basedir

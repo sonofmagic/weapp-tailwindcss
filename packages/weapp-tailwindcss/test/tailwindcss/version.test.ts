@@ -29,7 +29,7 @@ describe('tailwindcss version helpers', () => {
 
   it('reads the installed Tailwind package major version from the project root', () => {
     expect(readInstalledPackageMajorVersion('tailwindcss', repoRoot)).toBe(4)
-    expect(readInstalledPackageMajorVersion('tailwindcss4', repoRoot)).toBe(4)
+    expect(readInstalledPackageMajorVersion('tailwindcss4', repoRoot)).toBeUndefined()
   })
 
   it('returns undefined when the Tailwind package is not installed', () => {

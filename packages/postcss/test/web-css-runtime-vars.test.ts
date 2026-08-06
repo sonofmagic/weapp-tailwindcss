@@ -43,7 +43,7 @@ const colorCompositionProperties = [
 ]
 
 function readTailwindV4Bundle() {
-  const packageRoot = path.dirname(require.resolve('tailwindcss4/package.json'))
+  const packageRoot = path.dirname(require.resolve('tailwindcss/package.json'))
   for (const filepath of [
     path.join(packageRoot, 'dist/chunk-3IR7ZFJX.mjs'),
     path.join(packageRoot, 'dist/lib.js'),

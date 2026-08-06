@@ -33,7 +33,7 @@ import {
 
 const require = createRequire(import.meta.url)
 const workspaceRoot = path.resolve(__dirname, '../../../..')
-const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss/package.json'))
 const websiteRoot = path.join(workspaceRoot, 'website')
 const createdRoots: string[] = []
 const TEST_TIMEOUT = 120_000

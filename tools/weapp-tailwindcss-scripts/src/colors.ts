@@ -3,7 +3,7 @@ import { ComponentValueType, parseComponentValue } from '@csstools/css-parser-al
 import { tokenize } from '@csstools/css-tokenizer'
 import fs from 'fs-extra'
 import path from 'pathe'
-import colors4 from 'tailwindcss4/colors'
+import colors4 from 'tailwindcss/colors'
 // import colors from 'tailwindcss/colors'
 import traverse from 'traverse'
 

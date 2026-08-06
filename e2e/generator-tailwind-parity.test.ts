@@ -11,9 +11,9 @@ import {
 import { tailwindParityCandidateCategories, tailwindParityCandidates } from './fixtures/tailwind-parity-candidates'
 
 const require = createRequire(import.meta.url)
-const tailwindcssV4Version = require('tailwindcss4/package.json').version as string
+const tailwindcssV4Version = require('tailwindcss/package.json').version as string
 
-const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss/package.json'))
 
 const TAILWIND_V4_CSS = [
   '@import "tailwindcss" source(none);',

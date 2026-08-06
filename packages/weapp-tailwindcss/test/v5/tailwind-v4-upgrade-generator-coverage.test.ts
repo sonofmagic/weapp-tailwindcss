@@ -7,7 +7,7 @@ import postcss from 'postcss'
 import weappTailwindcss from '@/postcss'
 
 const require = createRequire(import.meta.url)
-const tailwindcss4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const tailwindcss4Root = path.dirname(require.resolve('tailwindcss/package.json'))
 
 const UPGRADE_DEFAULTS_CSS = `
 @import "tailwindcss" source(none);

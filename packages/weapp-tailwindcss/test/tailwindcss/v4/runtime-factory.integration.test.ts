@@ -14,7 +14,7 @@ describe('tailwindcss/v4 runtime integration with @config + cssEntries', () => {
     const fixtureRoot = path.resolve(__dirname, '../../fixtures/tailwind-v4-config-import')
     const cssEntry = path.resolve(fixtureRoot, 'src/app.css')
     const fixtureModules = path.resolve(fixtureRoot, 'node_modules')
-    const tailwindcss4Path = path.resolve(workspaceRoot, 'node_modules/tailwindcss4')
+    const tailwindcss4Path = path.resolve(workspaceRoot, 'node_modules/tailwindcss')
     const fixtureTailwindcss = path.resolve(fixtureModules, 'tailwindcss')
 
     await fs.mkdir(fixtureModules, { recursive: true })
