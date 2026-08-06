@@ -399,6 +399,14 @@ describe('ci workflows', () => {
     expect(packageJson.devDependencies?.['@weapp-tailwindcss/postcss-calc']).toBe('workspace:^')
   })
 
+  it('keeps Tailwind CSS imports backed by a direct demo dependency', () => {
+    const packageJson = readPackageJson<{
+      devDependencies?: Record<string, string>
+    }>('demo/style-injector-uni-app/package.json')
+
+    expect(packageJson.devDependencies?.tailwindcss).toBe('catalog:tailwindcss4')
+  })
+
   it('keeps style injector enabled only in dedicated demo projects', () => {
     const demoRoot = path.join(repoRoot, 'demo')
     const dedicatedProjects = new Set([
