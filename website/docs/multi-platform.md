@@ -237,7 +237,7 @@ WeappTailwindcss({
 })
 ```
 
-启用后只会补充一条预计算声明，不会删除后面的原始 `calc()` 声明。这样可以保持 CSS 级联兼容，但如果目标小程序运行时会优先采用后续 `calc()`，你需要显式指定要清理的 CSS 变量。
+启用后会补充一条预计算声明，并默认保留后面的原始 `var()` / `calc()` 声明。这样可以保持 CSS 级联兼容，但会让单个工具类出现两份等价的属性；如果目标小程序运行时会优先采用后续原始声明，或者你希望减小 CSS 体积，需要显式指定要清理的 CSS 变量。
 
 例如 Tailwind CSS 4 生成：
 
@@ -274,7 +274,7 @@ WeappTailwindcss({
 })
 ```
 
-此时匹配 `--spacing` 的原始 `calc()` 声明会被删除，输出会变成：
+此时匹配 `--spacing` 的原始 `var()` / `calc()` 声明会被删除，输出会变成：
 
 ```css
 .h-2 {
@@ -312,6 +312,60 @@ WeappTailwindcss({
   },
 })
 ```
+
+### 减少 `.mx-*` 的重复间距声明
+
+例如使用 `mx-1` 时，Tailwind CSS 4 可能先生成变量形式：
+
+```css
+.mx-1 {
+  margin-left: var(--spacing);
+  margin-right: var(--spacing);
+}
+```
+
+开启 `cssCalc` 后，`weapp-tailwindcss` 会额外计算出 `8rpx`。默认保留原始变量声明时，最终会看到四条属性：
+
+```css
+.mx-1 {
+  margin-left: 8rpx;
+  margin-right: 8rpx;
+  margin-left: var(--spacing);
+  margin-right: var(--spacing);
+}
+```
+
+按需求选择以下配置：
+
+```ts
+// 只保留 Tailwind 原始的 CSS 变量，关闭预计算，产物最少。
+WeappTailwindcss({
+  cssOptions: {
+    cssCalc: false,
+  },
+})
+```
+
+```ts
+// 保留 rpx 预计算结果，同时删除 --spacing 对应的原始声明。
+// 适合需要兼容不完整支持 CSS 变量或 calc() 的小程序运行时。
+WeappTailwindcss({
+  cssOptions: {
+    cssCalc: ['--spacing'],
+  },
+})
+```
+
+第二种配置的结果是：
+
+```css
+.mx-1 {
+  margin-left: 8rpx;
+  margin-right: 8rpx;
+}
+```
+
+`cssCalc: false` 与 `cssCalc: ['--spacing']` 的区别是：前者不生成预计算 fallback，后者保留预计算的 `rpx` 结果但去掉重复的变量声明。修改后请重新执行目标端构建，并检查实际生成的 `app.wxss`、`app.ttss` 或对应平台 CSS 文件；如果关闭预计算后在低版本运行时出现间距失效，改用第二种配置。
 
 ## 多端单位转换
 
