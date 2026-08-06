@@ -217,6 +217,17 @@ function transformExpandedSelectorNodes(selector: Selector, context: TransformCo
   })
 }
 
+function transformExpandedUniversalNodes(selector: Selector, context: TransformContext) {
+  if (!context.universalReplacement) {
+    return
+  }
+  selector.walk((node) => {
+    if (node.type === 'universal') {
+      node.value = context.universalReplacement
+    }
+  })
+}
+
 function appendExpandedWhereSelectors(parent: Selector, index: number, branches: Container<string, Node>[], context: TransformContext) {
   const root = parent.parent
   if (!root) {
@@ -258,6 +269,8 @@ function flattenWherePseudo(node: Pseudo, context: TransformContext, index: numb
 
   const targetSelector = branches[0]
   if (targetSelector) {
+    // 单分支展开也要应用节点级兼容转换，否则分支中的通配符会在兜底阶段被误删。
+    transformExpandedUniversalNodes(targetSelector, context)
     node.replaceWith(...targetSelector.nodes.map(item => item.clone()))
   }
 

@@ -227,10 +227,19 @@ describe('selectorParser', () => {
       ['.child\\:ring-white'],
       [':where('],
     ],
+    [
+      'single-branch where with universal selector',
+      '.theme-midnight\\:bg-blue-500:where([data-theme="midnight"] *){background-color:red;}',
+      ['.theme-midnight_cbg-blue-500[data-theme="midnight"] :is(view,text)'],
+      [':where(', '*'],
+    ],
   ])('ruleTransformSync covers %s', (_name, source, includes, excludes) => {
     const root = postcss.parse(source)
     root.walkRules(rule => ruleTransformSync(rule, {
       cssChildCombinatorReplaceValue: ['view', 'text'],
+      ...(_name === 'single-branch where with universal selector'
+        ? { cssSelectorReplacement: { universal: ['view', 'text'] } }
+        : {}),
     }))
     const transformed = root.toString()
     for (const expected of includes) {
