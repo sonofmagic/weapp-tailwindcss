@@ -163,11 +163,20 @@ function hasSlotNode(nodes: postcss.ChildNode[]) {
   return nodes.some(node => node.type === 'atrule' && node.name === 'slot')
 }
 
+function createConditionalAtRule(start: ReturnType<typeof parseConditionalStart>, nodes: postcss.ChildNode[]) {
+  const conditionalAtRule = postcss.atRule({
+    name: start.directive === 'ifndef' ? ifndefAtRule : ifdefAtRule,
+    params: quoteAtRuleParam(start.expression),
+  })
+  conditionalAtRule.append(...nodes.map(node => node.clone()))
+  return conditionalAtRule
+}
+
 function rewriteCustomVariantConditionalComments(root: postcss.Root) {
   let changed = false
 
-  root.walkAtRules('custom-variant', (rule) => {
-    const nodes = [...rule.nodes ?? []]
+  const transformContainer = (container: postcss.Container, variant: postcss.AtRule): boolean => {
+    const nodes = [...container.nodes ?? []]
     for (let index = 0; index < nodes.length; index += 1) {
       const node = nodes[index]
       if (node?.type !== 'comment') {
@@ -208,19 +217,110 @@ function rewriteCustomVariantConditionalComments(root: postcss.Root) {
         continue
       }
 
-      const conditionalAtRule = postcss.atRule({
-        name: start.directive === 'ifndef' ? ifndefAtRule : ifdefAtRule,
-        params: quoteAtRuleParam(start.expression),
-      })
-      conditionalAtRule.append(...conditionalNodes.map(current => current.clone()))
+      if (container !== variant) {
+        node.remove()
+        nodes[endIndex]?.remove()
+        const variantNodes = [...variant.nodes ?? []]
+        variant.removeAll()
+        variant.append(createConditionalAtRule(start, variantNodes))
+        changed = true
+        return true
+      }
+
+      const conditionalAtRule = createConditionalAtRule(start, conditionalNodes)
       node.replaceWith(conditionalAtRule)
       for (const removedNode of nodes.slice(index + 1, endIndex + 1)) {
         removedNode.remove()
       }
       changed = true
     }
+
+    for (const node of [...container.nodes ?? []]) {
+      if ('nodes' in node && node.nodes && transformContainer(node, variant)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  root.walkAtRules('custom-variant', (rule) => {
+    transformContainer(rule, rule)
   })
 
+  return changed
+}
+
+function rewriteOuterCustomVariantConditionalComments(root: postcss.Root) {
+  let changed = false
+
+  const transformContainer = (container: postcss.Container) => {
+    const nodes = [...container.nodes ?? []]
+    for (let index = 0; index < nodes.length; index += 1) {
+      const node = nodes[index]
+      if (node?.type !== 'comment') {
+        continue
+      }
+
+      const start = parseConditionalStart(node.text)
+      if (!start) {
+        continue
+      }
+
+      let depth = 1
+      let endIndex = -1
+      for (let searchIndex = index + 1; searchIndex < nodes.length; searchIndex += 1) {
+        const current = nodes[searchIndex]
+        if (current?.type !== 'comment') {
+          continue
+        }
+        if (parseConditionalStart(current.text)) {
+          depth += 1
+          continue
+        }
+        if (CONDITIONAL_END_RE.test(current.text)) {
+          depth -= 1
+          if (depth === 0) {
+            endIndex = searchIndex
+            break
+          }
+        }
+      }
+
+      if (endIndex < 0) {
+        continue
+      }
+
+      const conditionalNodes = nodes.slice(index + 1, endIndex)
+      const customVariants = conditionalNodes.filter((current): current is postcss.AtRule => current.type === 'atrule' && current.name === 'custom-variant')
+      if (customVariants.length === 0 || customVariants.some(variant => !variant.nodes?.length)) {
+        continue
+      }
+
+      for (const variant of customVariants) {
+        const variantNodes = [...variant.nodes ?? []]
+        variant.removeAll()
+        variant.append(createConditionalAtRule(start, variantNodes))
+      }
+      const hasOnlyCustomVariants = conditionalNodes.every(current => current.type === 'comment' || (current.type === 'atrule' && current.name === 'custom-variant'))
+      if (hasOnlyCustomVariants) {
+        node.remove()
+        for (const removedNode of nodes.slice(index + 1, endIndex + 1)) {
+          if (removedNode.type === 'comment') {
+            removedNode.remove()
+          }
+        }
+      }
+      changed = true
+    }
+
+    for (const node of [...container.nodes ?? []]) {
+      if ('nodes' in node && node.nodes) {
+        transformContainer(node)
+      }
+    }
+  }
+
+  transformContainer(root)
   return changed
 }
 
@@ -329,8 +429,32 @@ export function hasCssMacroTailwindV4CustomVariantConditionalComments(css: strin
   try {
     const root = postcss.parse(css)
     let found = false
-    root.walkAtRules('custom-variant', (rule) => {
-      const nodes = [...rule.nodes ?? []]
+    let outerConditional = false
+    const scanOuterConditional = (container: postcss.Container) => {
+      const nodes = [...container.nodes ?? []]
+      for (let index = 0; index < nodes.length; index += 1) {
+        if (nodes[index]?.type !== 'comment' || !parseConditionalStart(nodes[index].text)) {
+          continue
+        }
+        const tail = nodes.slice(index + 1)
+        if (tail.some(current => current.type === 'comment' && CONDITIONAL_END_RE.test(current.text))
+          && tail.some(current => current.type === 'atrule' && current.name === 'custom-variant')) {
+          outerConditional = true
+          return false
+        }
+      }
+    }
+    scanOuterConditional(root)
+    root.walk((node) => {
+      if (node.type === 'document' || node.type === 'rule' || node.type === 'atrule') {
+        scanOuterConditional(node as postcss.Container)
+      }
+    })
+    if (outerConditional) {
+      return true
+    }
+    const hasConditionalSlot = (container: postcss.Container): boolean => {
+      const nodes = [...container.nodes ?? []]
       for (let index = 0; index < nodes.length; index += 1) {
         const node = nodes[index]
         if (node?.type !== 'comment' || !parseConditionalStart(node.text)) {
@@ -338,9 +462,15 @@ export function hasCssMacroTailwindV4CustomVariantConditionalComments(css: strin
         }
         const tail = nodes.slice(index + 1)
         if (tail.some(current => current.type === 'comment' && CONDITIONAL_END_RE.test(current.text)) && hasSlotNode(tail)) {
-          found = true
-          return false
+          return true
         }
+      }
+      return nodes.some(node => 'nodes' in node && node.nodes && hasConditionalSlot(node))
+    }
+    root.walkAtRules('custom-variant', (rule) => {
+      if (hasConditionalSlot(rule)) {
+        found = true
+        return false
       }
     })
     return found
@@ -383,7 +513,9 @@ export function transformCssMacroTailwindV4Source(css: string): string {
 
   try {
     const root = postcss.parse(css)
-    return rewriteCustomVariantConditionalComments(root) ? root.toString() : css
+    const outerChanged = rewriteOuterCustomVariantConditionalComments(root)
+    const innerChanged = rewriteCustomVariantConditionalComments(root)
+    return outerChanged || innerChanged ? root.toString() : css
   }
   catch {
     return css

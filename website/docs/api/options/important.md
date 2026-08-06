@@ -359,6 +359,32 @@ WeappTailwindcss({
 })
 ```
 
+#### `@custom-variant` 的跨平台条件
+
+Tailwind CSS v4 的任意 `@custom-variant` 都支持 uni-app 条件编译，条件注释放在变体内部或包住整个变体，效果相同：
+
+```css
+@custom-variant active {
+  &:active {
+    /* #ifndef MP */
+    @slot;
+    /* #endif */
+  }
+}
+```
+
+```css
+/* #ifndef MP */
+@custom-variant active {
+  &:active {
+    @slot;
+  }
+}
+/* #endif */
+```
+
+这项兼容不限定变体名称，`active`、`any-hover`、`wx` 以及项目自定义的其他 `@custom-variant` 都会按目标平台处理。条件表达式支持 `#ifdef`、`#ifndef` 及现有 uni-app 平台别名。
+
 ### tailwindcss
 
 > 可选 | 类型: [`TailwindCssOptions`](../interfaces/TailwindCssOptions.md) | 版本: ^4.0.0
