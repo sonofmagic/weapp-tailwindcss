@@ -1087,9 +1087,6 @@ wx-button {
   cursor: pointer;
   opacity: 0;
 }
-.nut-uploader-input:disabled {
-  cursor: not-allowed;
-}
 .nut-uploader-upload-disabled {
   background: var(--nutui-uploader-background-disabled, var(--nutui-color-background, #f2f3f5));
   color: var(--nutui-uploader-image-disabled, var(--nutui-color-text-disabled, #c2c4cc));
@@ -1297,9 +1294,6 @@ wx-button {
 .nut-video-player {
   width: 100%;
   background: #000;
-}
-.nut-video-player:focus {
-  outline: none;
 }
 .nut-video .h5-video {
   width: 100%;
@@ -6594,13 +6588,6 @@ wx-button {
 }
 .nut-input-disabled {
   color: var(--nutui-color-text-disabled, #c2c4cc) !important;
-}
-.nut-input-disabled .h5-input:disabled {
-  color: var(--nutui-color-text-disabled, #c2c4cc);
-  cursor: not-allowed;
-  background: none;
-  opacity: 1;
-  -webkit-text-fill-color: var(--nutui-color-text-disabled, #c2c4cc);
 }
 .nut-indicator {
   display: -ms-flexbox;
@@ -14786,13 +14773,6 @@ wx-button {
   outline: 0 none;
   text-decoration: none;
   background-color: transparent;
-}
-.nut-input-disabled .h5-input:disabled {
-  color: var(--nutui-color-text-disabled, #c2c4cc);
-  cursor: not-allowed;
-  background: none;
-  opacity: 1;
-  -webkit-text-fill-color: var(--nutui-color-text-disabled, #c2c4cc);
 }
 .nut-indicator-fixed-width {
   width: 21rpx;

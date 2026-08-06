@@ -2,7 +2,6 @@
 }
 .nut-calendarcard-day.header {
 }
-.nut-uploader__input:disabled,
 .nut-uploader__input.disabled {
 }
 .nut-action-sheet .nut-action-sheet__item--loading {
@@ -2597,12 +2596,6 @@ wx-root-portal-content {
 .nut-input--disabled {
   color: var(--nut-input-disabled-color, #c8c9cc) !important;
 }
-.nut-input--disabled .h5-input:disabled {
-  background: none;
-  color: var(--nut-input-disabled-color, #c8c9cc);
-  opacity: 1;
-  -webkit-text-fill-color: var(--nut-input-disabled-color, #c8c9cc);
-}
 .nut-input--error::-webkit-input-placeholder {
   color: var(--nut-input-required-color, var(--nut-required-color, #fa2c19));
   -webkit-text-fill-color: var(--nut-input-required-color, var(--nut-required-color, #fa2c19));
@@ -4412,9 +4405,6 @@ wx-root-portal-content {
 .nut-video-player {
   background: #000;
   width: 100%;
-}
-.nut-video-player:focus {
-  outline: none;
 }
 .nut-video .nut-video-mask {
   bottom: 60rpx;
