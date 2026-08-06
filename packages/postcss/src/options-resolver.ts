@@ -17,6 +17,7 @@ const CSS_OPTION_KEYS = [
   'unitsToPx',
   'unitConversion',
   'platform',
+  'cssRemoveActivePseudoClass',
   'cssRemoveHoverPseudoClass',
   'cssRemoveProperty',
   'cssCalc',
@@ -28,6 +29,7 @@ function getSimpleOverrideCacheKey(options: Partial<IStyleHandlerOptions>) {
   let isMainChunk = SIMPLE_OVERRIDE_UNSET
   let majorVersion = SIMPLE_OVERRIDE_UNSET
   let cssRemoveProperty = SIMPLE_OVERRIDE_UNSET
+  let cssRemoveActivePseudoClass = SIMPLE_OVERRIDE_UNSET
   let cssRemoveHoverPseudoClass = SIMPLE_OVERRIDE_UNSET
   let uniAppX = SIMPLE_OVERRIDE_UNSET
   let cssPreflightRange = SIMPLE_OVERRIDE_UNSET
@@ -68,6 +70,12 @@ function getSimpleOverrideCacheKey(options: Partial<IStyleHandlerOptions>) {
           return undefined
         }
         cssRemoveHoverPseudoClass = value ? '1' : '0'
+        break
+      case 'cssRemoveActivePseudoClass':
+        if (typeof value !== 'boolean') {
+          return undefined
+        }
+        cssRemoveActivePseudoClass = value ? '1' : '0'
         break
       case 'uniAppX':
         if (typeof value !== 'boolean') {
@@ -151,6 +159,7 @@ function getSimpleOverrideCacheKey(options: Partial<IStyleHandlerOptions>) {
     isMainChunk,
     majorVersion,
     cssRemoveProperty,
+    cssRemoveActivePseudoClass,
     cssRemoveHoverPseudoClass,
     uniAppX,
     cssPreflightRange,

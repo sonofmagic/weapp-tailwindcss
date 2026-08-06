@@ -9,7 +9,7 @@ import { finalizeMiniProgramCss, stripMiniProgramCssSpecificityPlaceholders } fr
 import { hasTailwindSourceDirectives } from '../../../../shared/generator-css'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, parseImportRequest } from '../../../../shared/generator-css/directives'
 import { hasMiniProgramTailwindV4PreflightReset } from '../../../../shared/generator-css/generation-helpers'
-import { removeMiniProgramHoverSelectors } from '../../../../shared/generator-css/user-css'
+import { removeMiniProgramInteractiveSelectors } from '../../../../shared/generator-css/user-css'
 import { removeTailwindV4StandaloneHostPreflightRule, resolveConfiguredWebpackCssPreflight, toMb, WEBPACK_CSS_HANDLER_OPTIONS_CACHE_MAX } from './preflight-runtime'
 
 export function resolveWebpackMemoryDebugStats(context: {
@@ -112,7 +112,10 @@ export function finalizeMiniProgramUserCssAssetSource(
   if (isWebGeneratorTarget) {
     return source
   }
-  const finalized = finalizeMiniProgramCss(removeMiniProgramHoverSelectors(source, styleOptions.cssRemoveHoverPseudoClass), {
+  const finalized = finalizeMiniProgramCss(removeMiniProgramInteractiveSelectors(source, {
+    active: styleOptions.cssRemoveActivePseudoClass,
+    hover: styleOptions.cssRemoveHoverPseudoClass,
+  }), {
     cssPreflight: options.cssPreflight === false
       ? false
       : !hasMiniProgramTailwindV4PreflightReset(source)

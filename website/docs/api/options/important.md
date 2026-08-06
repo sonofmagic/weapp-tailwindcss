@@ -340,8 +340,24 @@ CSS 生成与兼容后处理的微调配置。
 后续用于控制生成 CSS 的兼容兜底、变量保留、规则修剪等细粒度行为。
 `cssPreflight`、`cssPreflightRange`、`cssChildCombinatorReplaceValue`、`cssPresetEnv`、`autoprefixer`、
 `atRules`、`injectAdditionalCssVarScope`、`cssSelectorReplacement`、`rem2rpx`、`px2rpx`、`unitsToPx`、
-`unitConversion`、`platform`、`cssRemoveHoverPseudoClass`、`cssRemoveProperty`、`cssCalc`
+`unitConversion`、`platform`、`cssRemoveActivePseudoClass`、`cssRemoveHoverPseudoClass`、`cssRemoveProperty`、`cssCalc`
 与 `tailwindcssV4GradientFallback` 都推荐放在这里。
+
+#### 小程序默认移除 `:active`
+
+小程序本身不支持 CSS `:active` 伪类，因此 `cssOptions.cssRemoveActivePseudoClass` 默认为 `true`。Tailwind CSS v4 仍会识别 `active:*` candidate，模板和 JS 类名也会正常转成安全类，但小程序最终样式不会包含对应的 `:active` selector。H5 与 App 的 Web 构建不执行这项删除。
+
+不需要使用 `@source not inline("active:*")`：`@source not inline()` 排除的是完整 candidate，`active:*` 不是变体通配表达式。
+
+如果某个自定义小程序运行时确实支持 `:active`，可以显式恢复：
+
+```ts
+WeappTailwindcss({
+  cssOptions: {
+    cssRemoveActivePseudoClass: false,
+  },
+})
+```
 
 ### tailwindcss
 

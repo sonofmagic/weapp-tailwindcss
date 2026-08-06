@@ -33,9 +33,13 @@ Tailwind CSS 的核心不在于背公式，而是把 UI 拆成「布局」「排
 
 - `@theme` 管理设计令牌：颜色、间距、字号、阴影等
 - `@utility` 声明可复用的工具类，代替传统的 `.btn { ... }`
-- `@variant` / `@custom-variant` 管理状态类（如 `active:`、`dark:`）
+- `@variant` / `@custom-variant` 管理状态类（如 `dark:` 与业务属性状态）
 
 掌握这些指令后，就可以在不离开 CSS 语法的前提下扩展 Tailwind。
+
+:::note 小程序交互状态
+小程序不支持 CSS `:active`。`weapp-tailwindcss` 默认从小程序样式产物中删除 `active:*` 生成的 selector，但 H5 与 App 的 Web 构建仍会保留。小程序按压反馈应优先使用组件的 `hover-class`。
+:::
 
 ## 1. 拆解一个卡片组件
 

@@ -118,6 +118,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     // 支付宝小程序会直接挂掉
     // https://developer.mozilla.org/en-US/docs/Web/CSS/@property
     cssRemoveProperty: true,
+    cssRemoveActivePseudoClass: true,
     cssRemoveHoverPseudoClass: true,
     ignoreCallExpressionIdentifiers: [],
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],

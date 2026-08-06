@@ -174,6 +174,7 @@ export interface CssOptions {
   unitsToPx?: boolean | UnitsToPxOptions | undefined
   unitConversion?: UnitConversionOptions | undefined
   platform?: string | undefined
+  cssRemoveActivePseudoClass?: boolean | undefined
   cssRemoveHoverPseudoClass?: boolean | undefined
   cssRemoveProperty?: boolean | undefined
   cssCalc?: boolean | CssCalcOptions | (string | RegExp)[] | undefined
@@ -196,6 +197,10 @@ export type IStyleHandlerOptions = {
    * @deprecated 请使用 `cssOptions.cssRemoveProperty`。
    */
   cssRemoveProperty?: boolean | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.cssRemoveActivePseudoClass`。
+   */
+  cssRemoveActivePseudoClass?: boolean | undefined
   /**
    * @deprecated 请使用 `cssOptions.cssRemoveHoverPseudoClass`。
    */
@@ -278,6 +283,10 @@ export interface UserDefinedPostcssOptions {
   unitConversion?: UnitConversionOptions | undefined
   postcssOptions?: LoadedPostcssOptions | undefined
   /**
+   * @deprecated 请使用 `cssOptions.cssRemoveActivePseudoClass`。
+   */
+  cssRemoveActivePseudoClass?: boolean | undefined
+  /**
    * @deprecated 请使用 `cssOptions.cssRemoveHoverPseudoClass`。
    */
   cssRemoveHoverPseudoClass?: boolean | undefined
@@ -290,7 +299,7 @@ export interface UserDefinedPostcssOptions {
    *
    * `cssPreflight`、`cssPreflightRange`、`cssChildCombinatorReplaceValue`、`cssPresetEnv`、`autoprefixer`、
    * `atRules`、`injectAdditionalCssVarScope`、`cssSelectorReplacement`、`rem2rpx`、`px2rpx`、`unitsToPx`、
-   * `unitConversion`、`platform`、`cssRemoveHoverPseudoClass`、`cssRemoveProperty`、`cssCalc`
+   * `unitConversion`、`platform`、`cssRemoveActivePseudoClass`、`cssRemoveHoverPseudoClass`、`cssRemoveProperty`、`cssCalc`
    * 与 `tailwindcssV4GradientFallback` 都推荐放在这里。
    */
   cssOptions?: CssOptions | undefined

@@ -25,11 +25,18 @@ export function handleUniversalNode(node: Node, context: TransformContext) {
   }
 }
 
-function shouldRemoveHoverSelector(selector: Selector, options: IStyleHandlerOptions) {
-  if (!options.cssRemoveHoverPseudoClass) {
-    return false
-  }
-  return selector.nodes.some(node => node.type === 'pseudo' && node.value === ':hover')
+function shouldRemoveUnsupportedInteractiveSelector(selector: Selector, options: IStyleHandlerOptions) {
+  let shouldRemove = false
+  selector.walkPseudos((node) => {
+    if (
+      (options.cssRemoveHoverPseudoClass && node.value === ':hover')
+      || (options.cssRemoveActivePseudoClass && node.value === ':active')
+    ) {
+      shouldRemove = true
+      return false
+    }
+  })
+  return shouldRemove
 }
 
 function isHiddenOrTemplateNotPseudo(node?: Node | null) {
@@ -94,7 +101,7 @@ export function handleSelectorNode(selector: Selector, context: TransformContext
     return
   }
 
-  if (shouldRemoveHoverSelector(selector, context.options)) {
+  if (shouldRemoveUnsupportedInteractiveSelector(selector, context.options)) {
     selector.remove()
     return
   }

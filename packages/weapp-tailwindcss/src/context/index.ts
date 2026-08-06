@@ -57,6 +57,7 @@ function syncCssOptionsToLegacyFields(ctx: InternalUserDefinedOptions) {
   ctx.cssSelectorReplacement = cssOptions.cssSelectorReplacement ?? ctx.cssSelectorReplacement
   ctx.rem2rpx = cssOptions.rem2rpx ?? ctx.rem2rpx
   ctx.cssRemoveProperty = cssOptions.cssRemoveProperty ?? ctx.cssRemoveProperty
+  ctx.cssRemoveActivePseudoClass = cssOptions.cssRemoveActivePseudoClass ?? ctx.cssRemoveActivePseudoClass
   ctx.cssRemoveHoverPseudoClass = cssOptions.cssRemoveHoverPseudoClass ?? ctx.cssRemoveHoverPseudoClass
   ctx.tailwindcssV4GradientFallback = cssOptions.tailwindcssV4GradientFallback ?? ctx.tailwindcssV4GradientFallback
   ctx.cssPresetEnv = cssOptions.cssPresetEnv ?? ctx.cssPresetEnv
@@ -82,6 +83,7 @@ function syncLegacyFieldsToCssOptions(ctx: InternalUserDefinedOptions) {
     cssSelectorReplacement: ctx.cssSelectorReplacement,
     rem2rpx: ctx.rem2rpx,
     cssRemoveProperty: ctx.cssRemoveProperty,
+    cssRemoveActivePseudoClass: ctx.cssRemoveActivePseudoClass,
     cssRemoveHoverPseudoClass: ctx.cssRemoveHoverPseudoClass,
     tailwindcssV4GradientFallback: ctx.tailwindcssV4GradientFallback,
     cssPresetEnv: ctx.cssPresetEnv,

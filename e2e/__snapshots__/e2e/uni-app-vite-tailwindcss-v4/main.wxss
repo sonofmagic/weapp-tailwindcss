@@ -768,18 +768,6 @@ wx-button {
   --tw-content: 'good work!' !important;
   content: var(--tw-content) !important;
 }
-/* tokens: active:bg-emerald-600 <= src/pages/index/index.vue */
-.active_cbg-emerald-600:active {
-  background-color: var(--color-emerald-600);
-}
-/* tokens: active:bg-emerald-700 <= src/pages/index/index.vue */
-.active_cbg-emerald-700:active {
-  background-color: var(--color-emerald-700);
-}
-/* tokens: active:bg-slate-700 <= src/pages/index/index.vue */
-.active_cbg-slate-700:active {
-  background-color: var(--color-slate-700);
-}
 /* tokens: dark:bg-red-300 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
 .dark_cbg-red-300.theme-dark {
   background-color: var(--color-red-300);

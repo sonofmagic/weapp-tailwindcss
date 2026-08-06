@@ -8,6 +8,7 @@ import { pruneMiniProgramGeneratedCss } from '../miniprogram'
 
 const defaultStyleHandler = createStyleHandler({
   cssChildCombinatorReplaceValue: ['view', 'text'],
+  cssRemoveActivePseudoClass: true,
   cssRemoveHoverPseudoClass: true,
   isMainChunk: true,
   majorVersion: 4,
@@ -41,6 +42,7 @@ export async function transformTailwindV4CssToWeapp(
   const protectedCss = protectDynamicColorMixAlpha(compatibleCss, { customPropertyValues })
   const result = await defaultStyleHandler(protectedCss.css, {
     cssChildCombinatorReplaceValue: ['view', 'text'],
+    cssRemoveActivePseudoClass: true,
     cssRemoveHoverPseudoClass: true,
     isMainChunk: true,
     majorVersion: 4,
