@@ -15,7 +15,7 @@
     "@weapp-tailwindcss/variants": "workspace:*",
     "class-variance-authority": "catalog:classVarianceAuthority",
     "tailwind-merge": "catalog:tailwindMerge",
-    "tailwind-variants": "^3.3.0",
+    "tailwind-variants": "^3.3.1",
     "tailwindcss": "catalog:tailwindcss4"
   },
   "devDependencies": {

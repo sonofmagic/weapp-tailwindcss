@@ -4,7 +4,7 @@ import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
 const DEFAULT_PROXY_HOST = '127.0.0.1'
-const DEFAULT_PROXY_PORT = 7890
+const DEFAULT_PROXY_PORT = 10808
 const DEFAULT_PROXY_URL = `http://${DEFAULT_PROXY_HOST}:${DEFAULT_PROXY_PORT}`
 const CONNECT_TIMEOUT_MS = 500
 const UPDATE_COMMANDS = new Set(['up', 'update'])

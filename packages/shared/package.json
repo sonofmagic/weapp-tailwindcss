@@ -52,9 +52,9 @@
   },
   "publishConfig": {},
   "dependencies": {
-    "defu": "^6.1.7",
+    "defu": "catalog:buildUtilities",
     "get-value": "^4.1.0",
-    "pathe": "^2.0.3",
+    "pathe": "catalog:buildUtilities",
     "set-value": "^4.1.0"
   }
 }

@@ -43,6 +43,21 @@ overrides:
 catalogs:
   autoprefixer10:
     autoprefixer: ^10.5.4
+  buildUtilities:
+    debug: ~4.4.3
+    defu: ^6.1.7
+    fast-glob: ^3.3.3
+    fs-extra: ^11.4.0
+    htmlparser2: ^12.0.0
+    local-pkg: ^1.2.1
+    lru-cache: 11.5.2
+    magic-string: ^1.1.0
+    micromatch: ^4.0.8
+    pathe: ^2.0.3
+    picocolors: ^1.1.1
+    postcss-load-config: ^6.0.1
+    postcss-selector-parser: ^7.1.4
+    yaml: ^2.9.0
   babelCore7285:
     '@babel/core': ^7.29.7
   babel8:
@@ -58,7 +73,7 @@ catalogs:
   babelRuntime7284tilde:
     '@babel/runtime': ^7.29.2
   baselineBrowserMapping:
-    baseline-browser-mapping: ^2.11.9
+    baseline-browser-mapping: ^2.11.12
   classVarianceAuthority:
     class-variance-authority: ^0.7.1
   clsx:
@@ -75,7 +90,7 @@ catalogs:
     eslint-plugin-react-hooks: ^7.1.1
   iconifyJson:
     '@iconify-json/line-md': ^1.2.16
-    '@iconify-json/logos': ^1.2.11
+    '@iconify-json/logos': ^1.2.12
     '@iconify-json/lucide': ^1.2.121
     '@iconify-json/mdi': ^1.2.3
     '@iconify-json/mdi-light': ^1.2.2
@@ -89,9 +104,9 @@ catalogs:
   miniApiTypings:
     miniprogram-api-typings: ^5.2.2
   postcss85:
-    postcss: ^8.5.25
+    postcss: ^8.5.26
   postcss85tilde:
-    postcss: ^8.5.25
+    postcss: ^8.5.26
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem:
@@ -107,13 +122,13 @@ catalogs:
     react-dom: ^18.3.1
   react19:
     '@types/react': ^19.2.18
-    '@types/react-dom': 19.2.3
+    '@types/react-dom': 19.2.4
     react: ^19.2.8
     react-dom: ^19.2.8
   reactRefresh018:
     react-refresh: ^0.18.0
   rsbuild2:
-    '@rsbuild/core': ^2.1.9
+    '@rsbuild/core': ^2.1.10
     '@rsbuild/plugin-react': ^2.1.0
     '@rsbuild/plugin-vue': ^2.0.1
   sass195:
@@ -194,7 +209,7 @@ catalogs:
   metroReactNativeBabelPreset077:
     metro-react-native-babel-preset: 0.77.0
   tsx:
-    tsx: ^4.23.1
+    tsx: ^4.23.9
   typesNode2410:
     '@types/node': ^26.1.2
   typescript59:
@@ -230,9 +245,9 @@ catalogs:
   vue2:
     vue: ^2.7.16
   vue3:
-    '@vue/compiler-dom': ^3.5.40
-    '@vue/compiler-sfc': ^3.5.40
-    vue: ^3.5.40
+    '@vue/compiler-dom': ^3.5.41
+    '@vue/compiler-sfc': ^3.5.41
+    vue: ^3.5.41
   vueRuntimeCore:
     '@vue/runtime-core': ^3.5.34
   vueTsc318:
@@ -240,8 +255,8 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.4.12
+    weapp-ide-cli: ^6.0.2
   weappVite:
     weapp-vite: ^6.19.1
   wrangler:
-    wrangler: ^4.118.0
+    wrangler: ^4.119.0

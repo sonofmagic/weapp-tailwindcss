@@ -64,7 +64,7 @@
     "react-dom": "catalog:react19",
     "react-github-btn": "^1.4.0",
     "tailwind-merge": "catalog:tailwindMerge",
-    "tailwind-variants": "^3.3.0",
+    "tailwind-variants": "^3.3.1",
     "weapp-tailwindcss": "workspace:*"
   },
   "devDependencies": {

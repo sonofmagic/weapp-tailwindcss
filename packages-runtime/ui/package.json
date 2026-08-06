@@ -129,18 +129,18 @@
   "dependencies": {
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",
-    "tailwind-variants": "^3.3.0"
+    "tailwind-variants": "^3.3.1"
   },
   "devDependencies": {
-    "@storybook/addon-a11y": "^10.5.5",
-    "@storybook/react": "^10.5.5",
-    "@storybook/react-vite": "^10.5.5",
+    "@storybook/addon-a11y": "^10.5.6",
+    "@storybook/react": "^10.5.6",
+    "@storybook/react-vite": "^10.5.6",
     "@tailwindcss/vite": "catalog:tailwindcss4",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "react": "catalog:react18",
     "react-dom": "catalog:react18",
-    "storybook": "^10.5.5",
+    "storybook": "^10.5.6",
     "tailwindcss": "catalog:tailwindcss4",
     "typescript": "catalog:typescript59",
     "vite": "catalog:vite724",

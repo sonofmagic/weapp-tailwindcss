@@ -42,6 +42,9 @@ describe('benchmark ci report', () => {
         if (!entry.isDirectory()) {
           return []
         }
+        if (entry.name === 'node_modules') {
+          return []
+        }
         if (entry.name.startsWith('.tmp-')) {
           return []
         }

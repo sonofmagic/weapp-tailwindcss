@@ -41,9 +41,9 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "defu": "6.1.7",
-    "fs-extra": "11.3.6",
-    "pathe": "2.0.3"
+    "defu": "catalog:buildUtilities",
+    "fs-extra": "catalog:buildUtilities",
+    "pathe": "catalog:buildUtilities"
   },
   "devDependencies": {
     "vite": "7.2.7"

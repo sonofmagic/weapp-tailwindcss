@@ -60,12 +60,12 @@
     "sync": "cnpm sync @weapp-tailwindcss/typography"
   },
   "dependencies": {
-    "htmlparser2": "^12.0.0",
+    "htmlparser2": "catalog:buildUtilities",
     "lodash.castarray": "^4.4.0",
     "lodash.isplainobject": "^4.0.6",
     "lodash.merge": "^4.6.2",
-    "magic-string": "^1.0.0",
-    "postcss-selector-parser": "^7.1.4"
+    "magic-string": "catalog:buildUtilities",
+    "postcss-selector-parser": "catalog:buildUtilities"
   },
   "devDependencies": {
     "@weapp-tailwindcss/test-helper": "workspace:*"
