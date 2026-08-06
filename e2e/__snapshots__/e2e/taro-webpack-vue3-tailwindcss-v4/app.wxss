@@ -8290,8 +8290,8 @@ wx-root-portal-content {
 }
 /* tokens: py-1 <= src/pages/index/index.vue */
 .py-1 {
-  padding-top: var(--spacing);
-  padding-bottom: var(--spacing);
+  padding-top: calc(var(--spacing) * 1);
+  padding-bottom: calc(var(--spacing) * 1);
 }
 /* tokens: py-2 <= src/pages/index/index.vue */
 .py-2 {
@@ -8413,6 +8413,8 @@ wx-root-portal-content {
   .system-dark_cbg-slate-900 {
     background-color: var(--color-slate-900);
   }
+}
+@media (prefers-color-scheme: dark) {
   /* tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
   .system-dark_ctext-slate-100 {
     color: var(--color-slate-100);

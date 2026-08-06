@@ -57,10 +57,7 @@ import { createFrameworkSourceScanSession, syncFrameworkSourceCandidatesForHotUp
 import { createFrameworkTailwindRootCss } from './framework-tailwind-root-css'
 
 const debug = createDebug()
-const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
-const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
-const generatorPlaceholderCssFile = path.join(weappTailwindcssPackageDir, 'generator-placeholder.css')
-const ENV_PLATFORM_KEYS = ['UNI_PLATFORM', 'UNI_UTS_PLATFORM', 'TARO_ENV', 'MPX_CURRENT_TARGET_MODE', 'MPX_CLI_MODE']
+const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss'); const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir); const generatorPlaceholderCssFile = path.join(weappTailwindcssPackageDir, 'generator-placeholder.css'); const ENV_PLATFORM_KEYS = ['UNI_PLATFORM', 'UNI_UTS_PLATFORM', 'TARO_ENV', 'MPX_CURRENT_TARGET_MODE', 'MPX_CLI_MODE']
 function collectConfiguredCssEntries(options) { const runtimeCssEntries = options.tailwindcssRuntimeOptions?.tailwindcss?.v4?.cssEntries; const entries = [...Array.isArray(options.cssEntries) ? options.cssEntries : [], ...Array.isArray(options.tailwindcss?.v4?.cssEntries) ? options.tailwindcss.v4.cssEntries : [], ...Array.isArray(runtimeCssEntries) ? runtimeCssEntries : []].filter(item => typeof item === 'string' && item.length > 0); return entries.length > 0 ? [...new Set(entries)] : void 0 }
 function normalizeViteStylePlatform(value, appType) { return normalizeFrameworkStylePlatform(value, appType) }
 function inferPlatformFromOutDir(outDir) {

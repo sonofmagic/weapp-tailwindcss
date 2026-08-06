@@ -59,7 +59,7 @@ describe.skipIf(isCI)('vite', () => {
     ].join('\n'))
     await writeFile(path.join(root, 'index.ts'), 'import "./index.css"\n')
     await writeFile(path.join(root, 'index.css'), [
-      '@import "tailwindcss4";',
+      '@import "tailwindcss";',
       '@source inline("w-[100px] text-[#123456]");',
       '.card:hover { color: red; }',
     ].join('\n'))
@@ -72,7 +72,7 @@ describe.skipIf(isCI)('vite', () => {
           WeappTailwindcss({
             tailwindcssBasedir: tailwindcss4Basedir,
             tailwindcss: {
-              packageName: 'tailwindcss4',
+              packageName: 'tailwindcss',
             },
             cssEntries: [path.join(root, 'index.css')],
           }),

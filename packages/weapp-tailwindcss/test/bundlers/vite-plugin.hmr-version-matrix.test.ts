@@ -56,7 +56,7 @@ async function createFixtureRoot() {
 
 function createTailwindCss(candidate: string) {
   return [
-    '@import "tailwindcss4";',
+    '@import "tailwindcss";',
     `@source inline("${candidate}");`,
     '',
   ].join('\n')
@@ -159,7 +159,7 @@ async function runWatchHmrReplayCase(viteSpecifier: string) {
         cssEntries: [cssFile],
         tailwindcssBasedir: tailwindcss4Basedir,
         tailwindcss: {
-          packageName: 'tailwindcss4',
+            packageName: 'tailwindcss',
           v4: {
             cssEntries: [cssFile],
           },

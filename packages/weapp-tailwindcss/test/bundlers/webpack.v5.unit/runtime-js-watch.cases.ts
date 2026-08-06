@@ -38,7 +38,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         options: {
           projectRoot: process.cwd(),
           tailwindcss: {
-            packageName: 'tailwindcss4',
+            packageName: 'tailwindcss',
             v4: {
               css: '@import "tailwindcss";',
               base: process.cwd(),
