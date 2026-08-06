@@ -18,6 +18,7 @@ import {
 describe('selectorParser', () => {
   it('detects pseudo classes without matching escaped classes or attribute values', () => {
     expect(selectorContainsPseudoClass('.btn:active', [':active'])).toBe(true)
+    expect(selectorContainsPseudoClass('.btn:active', [':focus'])).toBe(false)
     expect(selectorContainsPseudoClass('.group:not(*:active) .child', [':active'])).toBe(true)
     expect(selectorContainsPseudoClass('.literal\\:active', [':active'])).toBe(false)
     expect(selectorContainsPseudoClass('[data-state=":active"]', [':active'])).toBe(false)

@@ -1,36 +1,11 @@
 import type { Node, Selector } from 'postcss-selector-parser'
-import type { IStyleHandlerOptions } from '../../types'
 import type { TransformContext } from './types'
 import { stripUnsupportedNodeForUniAppX } from '../../compat/uni-app-x'
 import { internalCssSelectorReplacer } from '../../shared'
 import { transformSpacingSelector } from '../spacing'
 import { getCombinatorSelectorAst } from '../utils'
 import { shouldRemoveUnsupportedPseudoElementSelector } from './pseudos'
-
-const UNSUPPORTED_MINI_PROGRAM_PSEUDO_CLASS_SET = new Set([
-  ':autofill',
-  ':checked',
-  ':default',
-  ':disabled',
-  ':enabled',
-  ':focus-visible',
-  ':focus-within',
-  ':fullscreen',
-  ':indeterminate',
-  ':in-range',
-  ':invalid',
-  ':modal',
-  ':open',
-  ':optional',
-  ':out-of-range',
-  ':placeholder-shown',
-  ':read-only',
-  ':read-write',
-  ':required',
-  ':target',
-  ':valid',
-  ':visited',
-])
+import { getUnsupportedPseudoClassSet, removeUnsupportedPseudoSelector } from './unsupported-pseudos'
 
 export function handleClassNode(node: Node, context: TransformContext) {
   if (node.type !== 'class') {
@@ -48,22 +23,6 @@ export function handleUniversalNode(node: Node, context: TransformContext) {
   if (context.universalReplacement) {
     node.value = context.universalReplacement
   }
-}
-
-function shouldRemoveUnsupportedInteractiveSelector(selector: Selector, options: IStyleHandlerOptions) {
-  let shouldRemove = false
-  selector.walkPseudos((node) => {
-    if (
-      (options.cssRemoveHoverPseudoClass && node.value === ':hover')
-      || (options.cssRemoveActivePseudoClass && node.value === ':active')
-      || (options.cssRemoveFocusPseudoClass && node.value === ':focus')
-      || UNSUPPORTED_MINI_PROGRAM_PSEUDO_CLASS_SET.has(node.value)
-    ) {
-      shouldRemove = true
-      return false
-    }
-  })
-  return shouldRemove
 }
 
 function isHiddenOrTemplateNotPseudo(node?: Node | null) {
@@ -128,8 +87,10 @@ export function handleSelectorNode(selector: Selector, context: TransformContext
     return
   }
 
-  if (shouldRemoveUnsupportedInteractiveSelector(selector, context.options)) {
-    selector.remove()
+  const unsupportedPseudoClasses = context.unsupportedPseudoClasses ?? getUnsupportedPseudoClassSet(context.options)
+  const unsupportedPseudo = selector.nodes.find(node => node.type === 'pseudo' && unsupportedPseudoClasses.has(node.value))
+  if (unsupportedPseudo) {
+    removeUnsupportedPseudoSelector(unsupportedPseudo, context.options, unsupportedPseudoClasses)
     return
   }
 

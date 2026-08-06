@@ -4,6 +4,7 @@ import type { TransformContext } from './types'
 import { isUniAppXEnabled } from '../../compat/uni-app-x'
 import { internalCssSelectorReplacer } from '../../shared'
 import { transformSpacingSelector } from '../spacing'
+import { getUnsupportedPseudoClassSet, removeUnsupportedPseudoSelector } from './unsupported-pseudos'
 
 const RTL_LANGUAGE_ANY_PSEUDO_SET = new Set([
   ':-moz-any',
@@ -290,6 +291,14 @@ export function shouldRemoveUnsupportedPseudoElementSelector(selector: Selector,
 
 export function handlePseudoNode(node: Node, index: number, context: TransformContext, parent: Selector | undefined) {
   if (node.type !== 'pseudo') {
+    return
+  }
+
+  if (removeUnsupportedPseudoSelector(
+    node,
+    context.options,
+    context.unsupportedPseudoClasses ?? getUnsupportedPseudoClassSet(context.options),
+  )) {
     return
   }
 

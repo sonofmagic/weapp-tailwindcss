@@ -8,6 +8,7 @@ export interface TransformContext {
   rootReplacement?: string
   universalReplacement?: string
   selectorReplacerOptions?: InternalCssSelectorReplacerOptions
+  unsupportedPseudoClasses?: ReadonlySet<string>
 }
 
 export interface CachedSelectorTransformResult {

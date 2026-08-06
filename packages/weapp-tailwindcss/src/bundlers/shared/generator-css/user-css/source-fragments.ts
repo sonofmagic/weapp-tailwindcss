@@ -50,8 +50,13 @@ export function removeMiniProgramInteractiveSelectors(
   const removeActive = options.active === true
   const removeHover = options.hover === true
   const removeFocus = options.focus === true
+  const unsupportedPseudoClasses = [
+    ...(removeActive ? [':active'] : []),
+    ...(removeHover ? [':hover'] : []),
+    ...(removeFocus ? [':focus'] : []),
+  ]
   if (
-    (!removeActive && !removeHover && !removeFocus)
+    unsupportedPseudoClasses.length === 0
     || (!source.includes(':active') && !source.includes(':hover') && !source.includes(':focus'))
   ) {
     return source
@@ -62,11 +67,9 @@ export function removeMiniProgramInteractiveSelectors(
     root.walkRules((rule) => {
       const selectors = rule.selectors ?? [rule.selector]
       const keptSelectors = selectors.filter((selector) => {
-        const unsupportedPseudoClasses = [
-          ...(removeActive ? [':active'] : []),
-          ...(removeHover ? [':hover'] : []),
-          ...(removeFocus ? [':focus'] : []),
-        ]
+        if (!unsupportedPseudoClasses.some(pseudoClass => selector.includes(pseudoClass))) {
+          return true
+        }
         return !selectorContainsPseudoClass(selector, unsupportedPseudoClasses)
       })
       if (keptSelectors.length === selectors.length) {
