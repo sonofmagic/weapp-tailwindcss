@@ -620,29 +620,35 @@
   .text-slate-900 {
     color: var(--color-slate-900);
   }
- /*tokens: dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
-  .dark\:bg-zinc-900.theme-dark {
-    background-color: var(--color-zinc-900);
+ /*tokens: dark:bg-zinc-900 <= src/pages/index/index.tsx */
+  .dark\:bg-zinc-900 {
+ /*tokens: theme-dark <= src/pages/index/index.tsx */
+    &.theme-dark {
+      background-color: var(--color-zinc-900);
+    }
+ /*tokens: theme-dark <= src/pages/index/index.tsx */
+    .theme-dark & {
+    }
   }
- /*tokens: theme-dark <= src/pages/index/index.tsx | dark:bg-zinc-900 <= src/pages/index/index.tsx */
-  .theme-dark .dark\:bg-zinc-900 {
-    background-color: var(--color-zinc-900);
+ /*tokens: dark:bg-zinc-950 <= src/pages/index/index.tsx */
+  .dark\:bg-zinc-950 {
+ /*tokens: theme-dark <= src/pages/index/index.tsx */
+    &.theme-dark {
+      background-color: var(--color-zinc-950);
+    }
+ /*tokens: theme-dark <= src/pages/index/index.tsx */
+    .theme-dark & {
+    }
   }
- /*tokens: dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
-  .dark\:bg-zinc-950.theme-dark {
-    background-color: var(--color-zinc-950);
-  }
- /*tokens: theme-dark <= src/pages/index/index.tsx | dark:bg-zinc-950 <= src/pages/index/index.tsx */
-  .theme-dark .dark\:bg-zinc-950 {
-    background-color: var(--color-zinc-950);
-  }
- /*tokens: dark:text-zinc-50 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
-  .dark\:text-zinc-50.theme-dark {
-    color: var(--color-zinc-50);
-  }
- /*tokens: theme-dark <= src/pages/index/index.tsx | dark:text-zinc-50 <= src/pages/index/index.tsx */
-  .theme-dark .dark\:text-zinc-50 {
-    color: var(--color-zinc-50);
+ /*tokens: dark:text-zinc-50 <= src/pages/index/index.tsx */
+  .dark\:text-zinc-50 {
+ /*tokens: theme-dark <= src/pages/index/index.tsx */
+    &.theme-dark {
+      color: var(--color-zinc-50);
+    }
+ /*tokens: theme-dark <= src/pages/index/index.tsx */
+    .theme-dark & {
+    }
   }
 }
  /*tokens: issue-998-page <= src/pages/issue-998/index.tsx */
@@ -734,7 +740,7 @@
     }
   }
 }
-/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
 @layer theme {
   :host,
   :root {

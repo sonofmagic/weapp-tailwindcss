@@ -101,7 +101,7 @@ export async function resolveHotSourceModulesByIds(
   const root = ctx.server.config?.root ?? process.cwd()
   const sourceIds = new Set<string | null | undefined>(ids)
   for (const id of ids) {
-    if (typeof id !== 'string' || !/\.(?:uvue|nvue)(?:$|[?#])/i.test(id)) {
+    if (typeof id !== 'string' || !/\.(?:uvue|nvue|vue|tsx?|jsx?)(?:$|[?#])/i.test(id)) {
       continue
     }
     const identity = resolveViteModuleIdentity(id, root)

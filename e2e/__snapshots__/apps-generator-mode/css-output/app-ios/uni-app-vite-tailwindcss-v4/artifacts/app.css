@@ -24,7 +24,7 @@
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-content: '';
 }
-/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   *,
   ::before,
@@ -330,7 +330,7 @@ wx-button {
 }
  /*tokens: mt-1 <= src/pages/index/index.vue */
 .mt-1 {
-  margin-top: var(--spacing);
+  margin-top: calc(var(--spacing) * 1);
 }
  /*tokens: mt-2 <= src/pages/index/index.vue */
 .mt-2 {
@@ -489,7 +489,7 @@ wx-button {
   justify-content: center;
 }
 .gap-1 {
-  gap: var(--spacing);
+  gap: calc(var(--spacing) * 1);
 }
  /*tokens: gap-2 <= src/components/HelloWorld.vue, src/pages/index/index.vue */
 .gap-2 {
@@ -759,7 +759,7 @@ wx-button {
 }
  /*tokens: py-1 <= src/pages/index/index.vue */
 .py-1 {
-  padding-block: var(--spacing);
+  padding-block: calc(var(--spacing) * 1);
 }
  /*tokens: py-2 <= src/pages/index/index.vue */
 .py-2 {
@@ -994,6 +994,8 @@ wx-button {
   .system-dark_cbg-slate-900 {
     background-color: rgb(15, 23, 43);
   }
+}
+@media (prefers-color-scheme: dark) {
  /*tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
   .system-dark_ctext-slate-100 {
     color: rgb(241, 245, 249);
@@ -1015,7 +1017,7 @@ wx-button {
 abc {
   background: #222;
 }
-/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
  /*tokens: before:content-['independent_subpackage_uni-app-vite-tailwindcss-v4'] <= src/sub-independent/pages/index.vue */
 .before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
@@ -1026,7 +1028,7 @@ abc {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
-/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
  /*tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.vue */
 .bg-independent-subpackage-marker {
   background-color: #dc2626;

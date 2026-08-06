@@ -19,6 +19,31 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
     return typeof request === 'string'
       && /\.(?:uvue|nvue)(?:\?import)?$/i.test(request)
   })
+  const sendSupplementalSourceHotUpdates = (ctx: any, modules: ModuleNode[]) => {
+    const root = ctx.server.config?.root ?? process.cwd()
+    const relatedModules = modules.flatMap(mod => [mod, ...(mod.importedModules ?? [])])
+    const updates = relatedModules
+      .filter(mod => !isSourceStyleRequest(mod.id ?? mod.url))
+      .map((mod) => {
+        let hotPath: string | undefined
+        if (typeof mod.id === 'string' && path.isAbsolute(mod.id)) {
+          const relative = typeof mod.url === 'string' && mod.url.startsWith('/pages/')
+            ? path.relative(path.dirname(root), mod.id)
+            : path.relative(root, mod.id)
+          if (relative && !relative.startsWith('..') && !path.isAbsolute(relative)) {
+            hotPath = `/${relative.split(path.sep).join('/')}`
+          }
+        }
+        hotPath ??= mod.url ?? (typeof mod.id === 'string' && mod.id.startsWith('/') ? mod.id : undefined)
+        return hotPath
+          ? { acceptedPath: hotPath, explicitImportRequired: false, isWithinCircularImport: false, path: hotPath, timestamp: ctx.timestamp, type: 'js-update' as const }
+          : undefined
+      })
+      .filter((update): update is NonNullable<typeof update> => update !== undefined)
+    if (updates.length > 0) {
+      ctx.server.ws?.send?.({ type: 'update', updates })
+    }
+  }
   return {
     name: `${vitePluginName}:source-candidates`,
     enforce: 'pre',
@@ -170,6 +195,18 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
           const sourceModules = isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)
             ? await resolveHotSourceModules(ctx)
             : ctx.modules
+          if (isWebLikeHotUpdate && isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)) {
+            sendSupplementalSourceHotUpdates(ctx, sourceModules)
+            if (sourceModules.some((mod) => {
+              const id = mod.id ?? mod.url
+              return typeof id === 'string' && /[?&]macro=true(?:&|$)/.test(id) === false
+                && typeof mod.url === 'string' && mod.url.startsWith('/pages/')
+                && /\.vue(?:$|[?#])/i.test(id)
+            })) {
+              queueMicrotask(() => sendFullReloadForUnresolvedHotUpdate(ctx))
+              return []
+            }
+          }
           const hasHmrCandidateAppend = options.hmrCandidateState.hasPendingCandidateAppend()
             || (canUseHmrCandidateAppend && sourceCandidateChange !== undefined && sourceCandidateChange.addedCandidates.size > 0)
           if (
@@ -189,7 +226,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
             isWebLikeHotUpdate
             && isSourceCandidateHotUpdate
             && !isSourceStyleRequest(ctx.file)
-            && sourceModules.some(mod => options.isNuxtPageMacroHotModule(mod.id ?? mod.url))
+            && sourceModules.some(mod => options.isNuxtPageHotModule?.(mod.id ?? mod.url))
           ) {
             sendFullReloadForUnresolvedHotUpdate(ctx)
             return []

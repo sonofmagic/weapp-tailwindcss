@@ -324,10 +324,12 @@
     gap: calc(var(--spacing) * 3);
   }
  /*tokens: space-y-2 <= src/pages/index/index.vue */
-  :where(.space-y-2 > :not(:last-child)) {
-    --tw-space-y-reverse: 0;
-    margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
-    margin-block-end: calc(calc(var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
+  .space-y-2 {
+    :where(& > :not(:last-child)) {
+      --tw-space-y-reverse: 0;
+      margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
+      margin-block-end: calc(calc(var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
+    }
   }
  /*tokens: rounded <= src/pages/index/index.vue */
   .rounded {
@@ -485,7 +487,7 @@
   }
  /*tokens: py-1 <= src/pages/index/index.vue */
   .py-1 {
-    padding-block: var(--spacing);
+    padding-block: calc(var(--spacing) * 1);
   }
  /*tokens: py-2 <= src/pages/index/index.vue */
   .py-2 {
@@ -552,50 +554,64 @@
     --tw-ease: var(--ease-in-out);
     transition-timing-function: var(--ease-in-out);
   }
-  .before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\]::before {
-    --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
-    content: var(--tw-content);
+  .before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\] {
+    &::before {
+      --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
+      content: var(--tw-content);
+    }
   }
-  .before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\]::before {
-    --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
-    content: var(--tw-content);
+  .before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\] {
+    &::before {
+      --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
+      content: var(--tw-content);
+    }
   }
-  .after\:\!content-\[\'good_work\!\'\]::after {
-    content: var(--tw-content);
-    --tw-content: 'good work!' !important;
-    content: var(--tw-content) !important;
+  .after\:\!content-\[\'good_work\!\'\] {
+    &::after {
+      content: var(--tw-content);
+      --tw-content: 'good work!' !important;
+      content: var(--tw-content) !important;
+    }
   }
- /*tokens: dark:bg-zinc-900 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
-  .dark\:bg-zinc-900.theme-dark {
-    background-color: var(--color-zinc-900);
+ /*tokens: dark:bg-zinc-900 <= src/pages/index/index.vue */
+  .dark\:bg-zinc-900 {
+ /*tokens: theme-dark <= src/pages/index/index.vue */
+    &.theme-dark {
+      background-color: var(--color-zinc-900);
+    }
+ /*tokens: theme-dark <= src/pages/index/index.vue */
+    .theme-dark & {
+    }
   }
- /*tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-900 <= src/pages/index/index.vue */
-  .theme-dark .dark\:bg-zinc-900 {
-    background-color: var(--color-zinc-900);
+ /*tokens: dark:bg-zinc-950 <= src/pages/index/index.vue */
+  .dark\:bg-zinc-950 {
+ /*tokens: theme-dark <= src/pages/index/index.vue */
+    &.theme-dark {
+      background-color: var(--color-zinc-950);
+    }
+ /*tokens: theme-dark <= src/pages/index/index.vue */
+    .theme-dark & {
+    }
   }
- /*tokens: dark:bg-zinc-950 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
-  .dark\:bg-zinc-950.theme-dark {
-    background-color: var(--color-zinc-950);
+ /*tokens: dark:text-zinc-50 <= src/pages/index/index.vue */
+  .dark\:text-zinc-50 {
+ /*tokens: theme-dark <= src/pages/index/index.vue */
+    &.theme-dark {
+      color: var(--color-zinc-50);
+    }
+ /*tokens: theme-dark <= src/pages/index/index.vue */
+    .theme-dark & {
+    }
   }
- /*tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-950 <= src/pages/index/index.vue */
-  .theme-dark .dark\:bg-zinc-950 {
-    background-color: var(--color-zinc-950);
-  }
- /*tokens: dark:text-zinc-50 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
-  .dark\:text-zinc-50.theme-dark {
-    color: var(--color-zinc-50);
-  }
- /*tokens: theme-dark <= src/pages/index/index.vue | dark:text-zinc-50 <= src/pages/index/index.vue */
-  .theme-dark .dark\:text-zinc-50 {
-    color: var(--color-zinc-50);
-  }
-  @media (prefers-color-scheme: dark) {
  /*tokens: system-dark:bg-slate-900 <= src/pages/index/index.vue */
-    .system-dark\:bg-slate-900 {
+  .system-dark\:bg-slate-900 {
+    @media (prefers-color-scheme: dark) {
       background-color: var(--color-slate-900);
     }
+  }
  /*tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
-    .system-dark\:text-slate-100 {
+  .system-dark\:text-slate-100 {
+    @media (prefers-color-scheme: dark) {
       color: var(--color-slate-100);
     }
   }
@@ -603,10 +619,12 @@
   .not-wx\:bg-red-500 {
     background-color: var(--color-red-500);
   }
-  @media (any-hover: hover) {
  /*tokens: any-hover:bg-slate-800 <= src/pages/index/index.vue */
-    .any-hover\:bg-slate-800:hover {
-      background-color: var(--color-slate-800);
+  .any-hover\:bg-slate-800 {
+    @media (any-hover: hover) {
+      &:hover {
+        background-color: var(--color-slate-800);
+      }
     }
   }
 }

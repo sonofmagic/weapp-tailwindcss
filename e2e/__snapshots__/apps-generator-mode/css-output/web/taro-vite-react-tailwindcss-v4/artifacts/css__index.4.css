@@ -1,4 +1,4 @@
-/*! weapp-tailwindcss vite-generated-css:%3Cproject-root%3E%2Fsrc%2Fsub-independent%2Fpages%2Findex.css */ /*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+/*! weapp-tailwindcss vite-generated-css:%3Cproject-root%3E%2Fsrc%2Fsub-independent%2Fpages%2Findex.css */ /*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
 @layer properties;
 @layer theme,base,components,utilities;
 @layer theme {
@@ -311,17 +311,23 @@
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
-  .before\:content-\[\'independent_subpackage_taro-vite-react-tailwindcss-v4\'\]::before {
-    --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v4';
-    content: var(--tw-content);
+  .before\:content-\[\'independent_subpackage_taro-vite-react-tailwindcss-v4\'\] {
+    &::before {
+      --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v4';
+      content: var(--tw-content);
+    }
   }
-  .before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\]::before {
-    --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
-    content: var(--tw-content);
+  .before\:content-\[\'现在，让我们开始神奇的_tailwindcss_开发之旅吧！\'\] {
+    &::before {
+      --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
+      content: var(--tw-content);
+    }
   }
-  .before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\]::before {
-    --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
-    content: var(--tw-content);
+  .before\:content-\[\'现在，让我们继续神奇的_tailwindcss_HMR_回归之旅吧！\'\] {
+    &::before {
+      --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
+      content: var(--tw-content);
+    }
   }
 }
 @property --tw-content {

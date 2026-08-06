@@ -235,10 +235,14 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
   const isWatchBuild = () => resolvedConfig?.command === 'build' && resolvedConfig.build.watch != null
   const isWatchLikeBuild = () => isWatchBuild() || resolvedConfig?.command === 'serve' || process.env['WEAPP_TW_WATCH_REGRESSION'] === '1' || process.env['WEAPP_TW_HMR_TIMING'] === '1'
   const isCurrentWebLikeStylePlatform = () => { const platform = resolveViteStylePlatform(); return platform ? isWebOrNativeAppPlatform(platform) : resolveCurrentGeneratorBranch().isWeb }
-  const isNuxtPageMacroHotModule = (id) => {
-    if (typeof id !== 'string' || !/[?&]macro=true(?:&|$)/.test(id)) {
+  const isNuxtPageHotModule = (id) => {
+    if (typeof id !== 'string') {
       return false
-    } const cleanId = cleanUrl(id); return cleanId.includes('/pages/') && /\.(?:vue|tsx?|jsx?)$/.test(cleanId)
+    } const cleanId = cleanUrl(id).replace(/%2F/gi, '/'); if (cleanId.includes('virtual:nuxt:') && /(?:^|\/)routes\.mjs$/.test(cleanId)) {
+      return true
+    } if (!/[?&]macro=true(?:&|$)/.test(id)) {
+      return false
+    } return cleanId.includes('/pages/') && /\.(?:vue|tsx?|jsx?)$/.test(cleanId)
   }
   const normalizeGeneratedCssCacheFile = file => normalizeVitePersistentCacheKey(cleanUrl(file))
   const hmrCandidateState = createViteHmrCandidateState({
@@ -444,7 +448,7 @@ ${tracedCss}`
     hmrTimingRecorder,
     invalidateRecordedGeneratorCandidates,
     isCurrentWebLikeStylePlatform,
-    isNuxtPageMacroHotModule,
+    isNuxtPageHotModule,
     isUniViteProject,
     isWebOrNativeAppPlatform,
     prepareTailwindGeneration,

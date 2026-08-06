@@ -61,7 +61,7 @@
   --tw-ring-offset-color: #fff;
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-content: '';
-} /*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+} /*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   ::-webkit-backdrop {
     --tw-space-y-reverse: 0;
@@ -684,7 +684,7 @@ wx-button {
 }
  /*tokens: py-1 <= src/pages/index/index.tsx */
 .py-1 {
-  padding-block: var(--spacing);
+  padding-block: calc(var(--spacing) * 1);
 }
  /*tokens: py-2 <= src/pages/index/index.tsx */
 .py-2 {
@@ -769,6 +769,8 @@ wx-button {
   .system-dark\:bg-slate-900 {
     background-color: #0f172b;
   }
+}
+@media (prefers-color-scheme: dark) {
  /*tokens: system-dark:text-slate-100 <= src/pages/index/index.tsx */
   .system-dark\:text-slate-100 {
     color: #f1f5f9;
@@ -3846,6 +3848,8 @@ page {
 .nut-step-title {
   position: relative;
   z-index: 1;
+}
+.nut-step-title {
   height: 0.35rem;
   line-height: 0.35rem;
   font-size: var(--nutui-steps-base-title-font-size, var(--nutui-font-size-s, 0.3rem));

@@ -51,7 +51,7 @@ describe('Vite source candidate HMR transactions', () => {
       hmrTimingRecorder: { measure: (_name: string, task: () => unknown) => task() },
       invalidateRecordedGeneratorCandidates: vi.fn(),
       isCurrentWebLikeStylePlatform: () => true,
-      isNuxtPageMacroHotModule: () => false,
+      isNuxtPageHotModule: () => false,
       isUniViteProject: () => true,
       rememberOriginalCssLayerSource: vi.fn(),
       rememberTailwindRootCssModule: vi.fn(),
@@ -110,7 +110,7 @@ describe('Vite source candidate HMR transactions', () => {
       hmrTimingRecorder: { measure: (_name: string, task: () => unknown) => task() },
       invalidateRecordedGeneratorCandidates: vi.fn(),
       isCurrentWebLikeStylePlatform: () => true,
-      isNuxtPageMacroHotModule: () => false,
+      isNuxtPageHotModule: () => false,
       isUniViteProject: () => true,
       rememberOriginalCssLayerSource: vi.fn(),
       rememberTailwindRootCssModule: vi.fn(),
@@ -182,7 +182,7 @@ describe('Vite source candidate HMR transactions', () => {
       hmrTimingRecorder: { measure: (_name: string, task: () => unknown) => task() },
       invalidateRecordedGeneratorCandidates: vi.fn(),
       isCurrentWebLikeStylePlatform: () => true,
-      isNuxtPageMacroHotModule: () => false,
+      isNuxtPageHotModule: () => false,
       isUniViteProject: () => true,
       rememberOriginalCssLayerSource: vi.fn(),
       rememberTailwindRootCssModule: vi.fn(),
@@ -234,9 +234,19 @@ describe('Vite source candidate HMR transactions', () => {
     })
   })
 
-  it('falls back to a full reload when the Web module graph cannot accept the transaction', async () => {
-    const pageFile = '/project/pages/index.uvue'
+  it('falls back to a full reload for a Nuxt route transaction without the page module', async () => {
+    const pageFile = '/project/app/pages/index.vue'
     const cssFile = '/project/main.css'
+    const routeModule = {
+      id: 'virtual:nuxt:.nuxt/routes.mjs',
+      isSelfAccepting: true,
+      url: '/@id/virtual:nuxt:.nuxt%2Froutes.mjs',
+    } as ModuleNode
+    const cssModule = {
+      file: cssFile,
+      id: `${cssFile}?direct`,
+      url: '/main.css?direct',
+    } as ModuleNode
     const wsSend = vi.fn()
     const plugin = createFrameworkSourceCandidatesPlugin({
       hmrCandidateState: {
@@ -250,8 +260,8 @@ describe('Vite source candidate HMR transactions', () => {
       hmrTimingRecorder: { measure: (_name: string, task: () => unknown) => task() },
       invalidateRecordedGeneratorCandidates: vi.fn(),
       isCurrentWebLikeStylePlatform: () => true,
-      isNuxtPageMacroHotModule: () => false,
-      isUniViteProject: () => true,
+      isNuxtPageHotModule: (id: string) => id.includes('virtual:nuxt:'),
+      isUniViteProject: () => false,
       rememberOriginalCssLayerSource: vi.fn(),
       rememberTailwindRootCssModule: vi.fn(),
       resolveCurrentGeneratorOptions: () => ({ hmr: { preserveDeletedCss: true } }),
@@ -274,13 +284,13 @@ describe('Vite source candidate HMR transactions', () => {
     })
     const result = await getHandleHotUpdateHandler(plugin)?.call(plugin, {
       file: pageFile,
-      modules: [],
+      modules: [routeModule],
       read: vi.fn(async () => '<view class="bg-issue-1021-hmr" />'),
       timestamp: 789,
       server: {
         config: { root: '/project' },
         moduleGraph: {
-          getModuleById: vi.fn(() => undefined),
+          getModuleById: vi.fn((id: string) => id === `${cssFile}?direct` ? cssModule : undefined),
           getModuleByUrl: vi.fn(async () => undefined),
           getModulesByFile: vi.fn(() => undefined),
           invalidateModule: vi.fn(),
@@ -322,7 +332,7 @@ describe('Vite source candidate HMR transactions', () => {
       hmrTimingRecorder: { measure: (_name: string, task: () => unknown) => task() },
       invalidateRecordedGeneratorCandidates: vi.fn(),
       isCurrentWebLikeStylePlatform: () => true,
-      isNuxtPageMacroHotModule: () => false,
+      isNuxtPageHotModule: () => false,
       isUniViteProject: () => true,
       rememberOriginalCssLayerSource: vi.fn(),
       rememberTailwindRootCssModule: vi.fn(),
