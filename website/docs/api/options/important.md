@@ -340,8 +340,53 @@ CSS 生成与兼容后处理的微调配置。
 后续用于控制生成 CSS 的兼容兜底、变量保留、规则修剪等细粒度行为。
 `cssPreflight`、`cssPreflightRange`、`cssChildCombinatorReplaceValue`、`cssPresetEnv`、`autoprefixer`、
 `atRules`、`injectAdditionalCssVarScope`、`cssSelectorReplacement`、`rem2rpx`、`px2rpx`、`unitsToPx`、
-`unitConversion`、`platform`、`cssRemoveHoverPseudoClass`、`cssRemoveProperty`、`cssCalc`
+`unitConversion`、`platform`、`cssRemoveActivePseudoClass`、`cssRemoveHoverPseudoClass`、`cssRemoveFocusPseudoClass`、`cssRemoveProperty`、`cssCalc`
 与 `tailwindcssV4GradientFallback` 都推荐放在这里。
+
+#### 小程序默认移除 `:active` 与 `:focus`
+
+小程序本身不支持 CSS `:active` 与 `:focus` 伪类，因此 `cssOptions.cssRemoveActivePseudoClass` 和 `cssOptions.cssRemoveFocusPseudoClass` 均默认为 `true`。Tailwind CSS v4 仍会识别对应 candidate，模板和 JS 类名也会正常转成安全类，但小程序最终样式不会包含对应 selector。H5 与 App 的 Web 构建不执行这项删除。
+
+不需要使用 `@source not inline("active:*")`：`@source not inline()` 排除的是完整 candidate，`active:*` 不是变体通配表达式。
+
+如果某个自定义小程序运行时确实支持这些伪类，可以显式恢复：
+
+```ts
+WeappTailwindcss({
+  cssOptions: {
+    cssRemoveActivePseudoClass: false,
+    cssRemoveFocusPseudoClass: false,
+  },
+})
+```
+
+同一条小程序兼容边界也会默认删除 `focus-visible`、`focus-within`、`disabled`、`enabled`、`checked`、`required`、`optional`、`valid`、`invalid`、`visited`、`target` 等依赖浏览器状态的选择器。`first`、`last`、`nth-*` 等结构选择器以及 Tailwind 为兼容性生成的 `:is`、`:where`、`:not` 不在此清理范围内。
+
+#### `@custom-variant` 的跨平台条件
+
+Tailwind CSS v4 的任意 `@custom-variant` 都支持 uni-app 条件编译，条件注释放在变体内部或包住整个变体，效果相同：
+
+```css
+@custom-variant active {
+  &:active {
+    /* #ifndef MP */
+    @slot;
+    /* #endif */
+  }
+}
+```
+
+```css
+/* #ifndef MP */
+@custom-variant active {
+  &:active {
+    @slot;
+  }
+}
+/* #endif */
+```
+
+这项兼容不限定变体名称，`active`、`any-hover`、`wx` 以及项目自定义的其他 `@custom-variant` 都会按目标平台处理。条件表达式支持 `#ifdef`、`#ifndef` 及现有 uni-app 平台别名。
 
 ### tailwindcss
 

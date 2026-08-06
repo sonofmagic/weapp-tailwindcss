@@ -7,6 +7,7 @@ import psp from 'postcss-selector-parser'
 import { composeIsPseudo } from '../shared'
 import { handleClassNode, handleCombinatorNode, handleSelectorNode, handleTagOrAttribute, handleUniversalNode } from './rule-transformer/nodes'
 import { handlePseudoNode, shouldRemoveEmptyFunctionalPseudo } from './rule-transformer/pseudos'
+import { getUnsupportedPseudoClassSet } from './rule-transformer/unsupported-pseudos'
 import {
   isNotLastChildPseudo,
   normalizeSpacingDeclarations,
@@ -101,6 +102,7 @@ function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
   const selectorReplacerOptions = options.escapeMap
     ? { escapeMap: options.escapeMap }
     : undefined
+  const unsupportedPseudoClasses = getUnsupportedPseudoClassSet(options)
 
   function writeSelectorResultCache(selector: string, result: CachedSelectorTransformResult) {
     if (selectorResultCache.size >= selectorResultCacheLimit) {
@@ -147,6 +149,7 @@ function createRuleTransformer(options: IStyleHandlerOptions): RuleTransformer {
       rootReplacement,
       universalReplacement,
       selectorReplacerOptions,
+      unsupportedPseudoClasses,
     }
 
     let wasRemoved = false

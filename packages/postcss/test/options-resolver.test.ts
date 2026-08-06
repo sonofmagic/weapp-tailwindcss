@@ -52,6 +52,7 @@ describe('options resolver', () => {
       unitsToPx: false,
       unitConversion: false,
       platform: 'weapp',
+      cssRemoveActivePseudoClass: true,
       cssCalc: false,
       cssChildCombinatorReplaceValue: 'view',
       injectAdditionalCssVarScope: true,
@@ -64,6 +65,7 @@ describe('options resolver', () => {
       unitsToPx: false,
       unitConversion: false,
       platform: 'weapp',
+      cssRemoveActivePseudoClass: true,
       cssCalc: false,
       cssChildCombinatorReplaceValue: 'view',
       injectAdditionalCssVarScope: true,
@@ -78,6 +80,7 @@ describe('options resolver', () => {
       unitsToPx: false,
       unitConversion: false,
       platform: 'weapp',
+      cssRemoveActivePseudoClass: true,
       cssCalc: false,
       cssChildCombinatorReplaceValue: 'view',
       injectAdditionalCssVarScope: true,
@@ -96,6 +99,7 @@ describe('options resolver', () => {
     expect(resolver.resolve().tailwindcssV4GradientFallback).toBe(true)
     const resolvedNested = resolver.resolve({
       cssOptions: {
+        cssRemoveActivePseudoClass: false,
         cssRemoveProperty: false,
         rem2rpx: true,
         cssChildCombinatorReplaceValue: 'view',
@@ -103,12 +107,14 @@ describe('options resolver', () => {
       },
     })
     expect(resolvedNested).toMatchObject({
+      cssRemoveActivePseudoClass: false,
       cssRemoveProperty: false,
       rem2rpx: true,
       cssChildCombinatorReplaceValue: 'view',
       tailwindcssV4GradientFallback: false,
     })
     expect(resolvedNested.cssOptions).toMatchObject({
+      cssRemoveActivePseudoClass: false,
       cssRemoveProperty: false,
       rem2rpx: true,
       cssChildCombinatorReplaceValue: 'view',
@@ -172,6 +178,7 @@ describe('options resolver', () => {
       { isMainChunk: 'true' as any },
       { majorVersion: '4' as any },
       { cssRemoveProperty: 'true' as any },
+      { cssRemoveActivePseudoClass: 'true' as any },
       { cssRemoveHoverPseudoClass: 'true' as any },
       { uniAppX: 'true' as any },
       { cssPreflightRange: true as any },

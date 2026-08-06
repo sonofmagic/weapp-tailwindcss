@@ -163,6 +163,7 @@ export type {
   Rule,
 } from './postcss-runtime'
 export { createInjectPreflight } from './preflight'
+export { selectorContainsPseudoClass } from './selectorParser/pseudo'
 export { internalCssSelectorReplacer } from './shared'
 export {
   collectCssInlineSourceCandidates,

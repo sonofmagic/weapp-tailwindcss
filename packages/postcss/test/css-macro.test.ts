@@ -129,6 +129,35 @@ describe('css macro helpers', () => {
     expect(transformCssMacroTailwindV4Source('@custom-variant wx { /* #ifdef MP-WEIXIN */')).toBe('@custom-variant wx { /* #ifdef MP-WEIXIN */')
     expect(transformCssMacroTailwindV4Source('@custom-variant wx { /* #ifdef MP-WEIXIN */ color:red; /* #endif */ }')).toBe('@custom-variant wx { /* #ifdef MP-WEIXIN */ color:red; /* #endif */ }')
     expect(transformCssMacroTailwindV4Source('@custom-variant wx { /* #ifdef MP-WEIXIN */ /* #ifdef H5 */ @slot; /* #endif */ /* #endif */ }')).toContain(`@${ifdefAtRule} "MP-WEIXIN"`)
+    expect(transformCssMacroTailwindV4Source('@custom-variant active { &:active { /* #ifndef MP */ @slot; /* #endif */ } }')).toContain(`@custom-variant active { @${ifndefAtRule} "MP"`)
+  })
+
+  it('rewrites conditional comments around every custom variant', () => {
+    const source = [
+      '/* #ifndef MP */',
+      '@custom-variant active { &:active { @slot; } }',
+      '@custom-variant any-hover { @media (any-hover: hover) { @slot; } }',
+      '/* #endif */',
+    ].join('\n')
+
+    const transformed = transformCssMacroTailwindV4Source(source)
+    expect(transformed).not.toContain('/* #ifndef MP */')
+    expect(transformed).toMatch(new RegExp(`@custom-variant active \\{\\s*@${ifndefAtRule} "MP"`))
+    expect(transformed).toMatch(new RegExp(`@custom-variant any-hover \\{\\s*@${ifndefAtRule} "MP"`))
+  })
+
+  it('keeps non-variant nodes inside outer conditionals while rewriting variants', () => {
+    const source = [
+      '/* #ifndef MP */',
+      '.web-only { color: red; }',
+      '@custom-variant active { &:active { @slot; } }',
+      '/* #endif */',
+    ].join('\n')
+
+    const transformed = transformCssMacroTailwindV4Source(source)
+    expect(transformed).toContain('/* #ifndef MP */')
+    expect(transformed).toContain('.web-only')
+    expect(transformed).toMatch(new RegExp(`@custom-variant active \\{\\s*@${ifndefAtRule} "MP"`))
   })
 
   it('compiles conditional comments for matching and non-matching platforms', () => {

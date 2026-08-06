@@ -1,5 +1,5 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import { postcss, removeUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
+import { postcss, removeUnsupportedCascadeLayers, selectorContainsPseudoClass } from '@weapp-tailwindcss/postcss'
 import { removeUnsupportedMiniProgramAtRules } from '../../css-cleanup'
 import { removeTailwindSourceMediaBlocks, terminateTailwindSourceAtRulesBeforeNextDirective } from './at-rules'
 import { removeTailwindV4GeneratorAtRulesFallback, TAILWIND_V4_GENERATOR_AT_RULES } from './generated-cleanup'
@@ -37,8 +37,28 @@ export function isCommentOnlyCss(source: string) {
   }
 }
 
-export function removeMiniProgramHoverSelectors(source: string, enabled: boolean | undefined = true) {
-  if (!enabled || !source.includes(':hover')) {
+export interface RemoveMiniProgramInteractiveSelectorsOptions {
+  active?: boolean | undefined
+  hover?: boolean | undefined
+  focus?: boolean | undefined
+}
+
+export function removeMiniProgramInteractiveSelectors(
+  source: string,
+  options: RemoveMiniProgramInteractiveSelectorsOptions = { active: true, hover: true },
+) {
+  const removeActive = options.active === true
+  const removeHover = options.hover === true
+  const removeFocus = options.focus === true
+  const unsupportedPseudoClasses = [
+    ...(removeActive ? [':active'] : []),
+    ...(removeHover ? [':hover'] : []),
+    ...(removeFocus ? [':focus'] : []),
+  ]
+  if (
+    unsupportedPseudoClasses.length === 0
+    || (!source.includes(':active') && !source.includes(':hover') && !source.includes(':focus'))
+  ) {
     return source
   }
   try {
@@ -46,7 +66,12 @@ export function removeMiniProgramHoverSelectors(source: string, enabled: boolean
     let changed = false
     root.walkRules((rule) => {
       const selectors = rule.selectors ?? [rule.selector]
-      const keptSelectors = selectors.filter(selector => !selector.includes(':hover'))
+      const keptSelectors = selectors.filter((selector) => {
+        if (!unsupportedPseudoClasses.some(pseudoClass => selector.includes(pseudoClass))) {
+          return true
+        }
+        return !selectorContainsPseudoClass(selector, unsupportedPseudoClasses)
+      })
       if (keptSelectors.length === selectors.length) {
         return
       }
@@ -70,13 +95,21 @@ export function removeMiniProgramHoverSelectors(source: string, enabled: boolean
   }
 }
 
+export function removeMiniProgramHoverSelectors(source: string, enabled: boolean | undefined = true) {
+  return removeMiniProgramInteractiveSelectors(source, { hover: enabled })
+}
+
 export function removeProcessedMiniProgramUnsupportedCss(
   source: string,
   options: Partial<IStyleHandlerOptions>,
 ) {
-  return removeMiniProgramHoverSelectors(
+  return removeMiniProgramInteractiveSelectors(
     removeUnsupportedMiniProgramAtRules(source),
-    options.cssRemoveHoverPseudoClass,
+    {
+      active: options.cssRemoveActivePseudoClass ?? true,
+      hover: options.cssRemoveHoverPseudoClass ?? true,
+      focus: options.cssRemoveFocusPseudoClass ?? true,
+    },
   )
 }
 

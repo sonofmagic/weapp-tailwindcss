@@ -237,11 +237,22 @@ export interface UserDefinedOptionsGeneralPart {
    * 后续用于控制生成 CSS 的兼容兜底、变量保留、规则修剪等细粒度行为。
    * `cssPreflight`、`cssPreflightRange`、`cssChildCombinatorReplaceValue`、`cssPresetEnv`、`autoprefixer`、
    * `atRules`、`injectAdditionalCssVarScope`、`cssSelectorReplacement`、`rem2rpx`、`px2rpx`、`unitsToPx`、
-   * `unitConversion`、`platform`、`cssRemoveHoverPseudoClass`、`cssRemoveProperty`、`cssCalc`
+   * `unitConversion`、`platform`、`cssRemoveActivePseudoClass`、`cssRemoveHoverPseudoClass`、`cssRemoveFocusPseudoClass`、`cssRemoveProperty`、`cssCalc`
    * 与 `tailwindcssV4GradientFallback` 都推荐放在这里。
    */
   cssOptions?: CssOptions | undefined
 
+  /**
+   * 是否移除 CSS 中的 `:active` 选择器。
+   *
+   * @since ^5.2.12
+   * @group 3.一般配置
+   * @remarks
+   * 小程序中的 `:active` 不生效，因此默认删除相关节点。H5 与 App 的 Web 构建不受此选项影响。
+   * @default `true`
+   * @deprecated 请使用 `cssOptions.cssRemoveActivePseudoClass`。
+   */
+  cssRemoveActivePseudoClass?: boolean | undefined
   /**
    * 是否移除 CSS 中的 `:hover` 选择器。
    *
@@ -254,6 +265,12 @@ export interface UserDefinedOptionsGeneralPart {
    * @deprecated 请使用 `cssOptions.cssRemoveHoverPseudoClass`。
    */
   cssRemoveHoverPseudoClass?: boolean | undefined
+  /**
+   * 是否移除 CSS 中的 `:focus` 选择器。小程序默认移除，H5 保持原样。
+   * @default `true`
+   * @deprecated 请使用 `cssOptions.cssRemoveFocusPseudoClass`。
+   */
+  cssRemoveFocusPseudoClass?: boolean | undefined
   /**
    * 是否移除 `@property` 节点。
    *

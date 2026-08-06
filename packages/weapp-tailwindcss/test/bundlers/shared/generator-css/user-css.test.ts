@@ -6,6 +6,7 @@ import {
   isCommentOnlyCss,
   normalizeEmptyTailwindCustomVariants,
   removeMiniProgramHoverSelectors,
+  removeMiniProgramInteractiveSelectors,
   removeTailwindV4GeneratedUserCssArtifacts,
   removeTailwindV4GeneratorAtRules,
   shouldFilterApplyOnlyGeneratedCss,
@@ -193,6 +194,14 @@ describe('generator user css helpers', () => {
     expect(removeMiniProgramHoverSelectors('@media screen{.btn:hover{color:red}}.btn{color:blue}')).toBe('.btn{color:blue}')
     expect(removeMiniProgramHoverSelectors('.btn:hover{color:red}', false)).toContain(':hover')
     expect(removeMiniProgramHoverSelectors('.broken:hover{')).toBe('.broken:hover{')
+    expect(removeMiniProgramInteractiveSelectors([
+      '.active\\:bg-red:active{color:red}',
+      '.group:not(*:active) .child{color:red}',
+      '.literal\\:active{color:blue}',
+      '[data-state=":active"]{color:purple}',
+      '.keep{color:green}',
+    ].join(''), { active: true })).toBe('.literal\\:active{color:blue}[data-state=":active"]{color:purple}.keep{color:green}')
+    expect(removeMiniProgramInteractiveSelectors('.btn:active{color:red}', { active: false })).toContain(':active')
     expect(isCommentOnlyCss('/* only comment */')).toBe(true)
     expect(isCommentOnlyCss('.broken{')).toBe(false)
     expect(removeTailwindV4GeneratedUserCssArtifacts('/* Deprecated */\n.keep{color:red}')).toBe('.keep{color:red}')

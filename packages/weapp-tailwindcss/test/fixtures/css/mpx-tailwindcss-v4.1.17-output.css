@@ -349,12 +349,6 @@ view,text,::after,::before {
     --tw-border-style: none;
     border-style: none;
   }
-.active_cbg-_b_h543210_B:active {
-    background-color: #543210;
-  }
-.active_cbg-_b_h989898_B:active {
-    background-color: #989898;
-  }
 @media (min-width: 96rem) {
 ._2xl_ctext-base {
     font-size: var(--text-base);

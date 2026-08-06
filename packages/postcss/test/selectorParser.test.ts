@@ -2,7 +2,7 @@ import type { Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '@/types'
 import postcss from 'postcss'
 import psp from 'postcss-selector-parser'
-import { getFallbackRemove, ruleTransformSync } from '@/selectorParser'
+import { getFallbackRemove, ruleTransformSync, selectorContainsPseudoClass } from '@/selectorParser'
 import {
   handleClassNode,
   handleCombinatorNode,
@@ -16,6 +16,14 @@ import {
 } from '@/selectorParser/rule-transformer/pseudos'
 
 describe('selectorParser', () => {
+  it('detects pseudo classes without matching escaped classes or attribute values', () => {
+    expect(selectorContainsPseudoClass('.btn:active', [':active'])).toBe(true)
+    expect(selectorContainsPseudoClass('.btn:active', [':focus'])).toBe(false)
+    expect(selectorContainsPseudoClass('.group:not(*:active) .child', [':active'])).toBe(true)
+    expect(selectorContainsPseudoClass('.literal\\:active', [':active'])).toBe(false)
+    expect(selectorContainsPseudoClass('[data-state=":active"]', [':active'])).toBe(false)
+  })
+
   it('fallbackRemove case 0', async () => {
     const x = await getFallbackRemove().process('#app-provider :is(.space-x-4>view+view)')
     expect(x).toMatchSnapshot()
@@ -220,10 +228,19 @@ describe('selectorParser', () => {
       ['.child\\:ring-white'],
       [':where('],
     ],
+    [
+      'single-branch where with universal selector',
+      '.theme-midnight\\:bg-blue-500:where([data-theme="midnight"] *){background-color:red;}',
+      ['.theme-midnight_cbg-blue-500[data-theme="midnight"] :is(view,text)'],
+      [':where(', '*'],
+    ],
   ])('ruleTransformSync covers %s', (_name, source, includes, excludes) => {
     const root = postcss.parse(source)
     root.walkRules(rule => ruleTransformSync(rule, {
       cssChildCombinatorReplaceValue: ['view', 'text'],
+      ...(_name === 'single-branch where with universal selector'
+        ? { cssSelectorReplacement: { universal: ['view', 'text'] } }
+        : {}),
     }))
     const transformed = root.toString()
     for (const expected of includes) {
@@ -314,6 +331,16 @@ describe('selectorParser', () => {
     })
 
     expect(rule.toString()).toBe('.btn:active{color:red;}')
+  })
+
+  it('ruleTransformSync removes active selectors when configured', () => {
+    const root = postcss.parse('.btn:active,.group:not(*:active) .child,.btn:hover{color:red;}')
+    const rule = root.first as Rule
+    ruleTransformSync(rule, {
+      cssRemoveActivePseudoClass: true,
+    })
+
+    expect(rule.toString()).toBe('.btn:hover{color:red;}')
   })
 
   it('ruleTransformSync keeps mini-program before and after but removes them for uni-app-x', () => {

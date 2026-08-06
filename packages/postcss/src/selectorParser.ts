@@ -3,6 +3,8 @@ export { isOnlyBeforeAndAfterPseudoElement } from './selectorParser/before-after
 
 export { getFallbackRemove } from './selectorParser/fallback'
 
+export { selectorContainsPseudoClass } from './selectorParser/pseudo'
+
 export { ruleTransformSync } from './selectorParser/rule-transformer'
 
 export {

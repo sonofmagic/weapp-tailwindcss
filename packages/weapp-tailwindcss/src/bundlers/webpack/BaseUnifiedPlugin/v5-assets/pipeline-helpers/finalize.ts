@@ -10,7 +10,7 @@ import { finalizeMiniProgramCssStructure } from '../../../../shared/final-css-cl
 import { stripBundlerGeneratedCssMarkers } from '../../../../shared/generated-css-marker'
 import { removeTailwindSourceDirectives } from '../../../../shared/generator-css/directives'
 import { hasMiniProgramTailwindV4PreflightReset } from '../../../../shared/generator-css/generation-helpers'
-import { removeMiniProgramHoverSelectors, removeTailwindV4GeneratorAtRules, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments } from '../../../../shared/generator-css/user-css'
+import { removeMiniProgramInteractiveSelectors, removeTailwindV4GeneratorAtRules, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments } from '../../../../shared/generator-css/user-css'
 import { collectStrictEscapedRuntimeCandidates } from '../../../../shared/runtime-class-set/escaped-candidates'
 import { finalizeMiniProgramUserCssAssetSource, shouldInjectWebpackCssTracePreflight } from './memory-trace'
 import { collectRuntimeTokenSignatureParts, dedupeMiniProgramPreflightSelectorRules, ensureWebpackMiniProgramTwContentInit, hasMiniProgramPreflightSelector, isRuntimeTransformCandidate, removeMiniProgramPreflightSelectorRule, resolveExistingWebpackCssPreflight, stripTrailingLineWhitespace } from './preflight-runtime'
@@ -82,7 +82,10 @@ export function finalizeWebpackCssAssetSource(
       tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
     })
     finalized = dedupeMiniProgramPreflightSelectorRules(finalized)
-    return stripMiniProgramCssSpecificityPlaceholders(removeMiniProgramHoverSelectors(finalized, styleOptions.cssRemoveHoverPseudoClass))
+    return stripMiniProgramCssSpecificityPlaceholders(removeMiniProgramInteractiveSelectors(finalized, {
+      active: styleOptions.cssRemoveActivePseudoClass ?? true,
+      hover: styleOptions.cssRemoveHoverPseudoClass ?? true,
+    }))
   }
   try {
     finalized = pruneMiniProgramGeneratedCss(finalized, {
@@ -113,7 +116,10 @@ export function finalizeWebpackCssAssetSource(
   else {
     finalized = dedupeMiniProgramPreflightSelectorRules(finalized)
   }
-  return stripMiniProgramCssSpecificityPlaceholders(removeMiniProgramHoverSelectors(finalized, styleOptions.cssRemoveHoverPseudoClass))
+  return stripMiniProgramCssSpecificityPlaceholders(removeMiniProgramInteractiveSelectors(finalized, {
+    active: styleOptions.cssRemoveActivePseudoClass ?? true,
+    hover: styleOptions.cssRemoveHoverPseudoClass ?? true,
+  }))
 }
 
 export function finalizeWebpackCssAssetOutputSource(
@@ -126,9 +132,12 @@ export function finalizeWebpackCssAssetOutputSource(
   }
   const styleOptions = resolveStyleOptionsFromContext(compilerOptions)
   const finalized = stripMiniProgramCssSpecificityPlaceholders(
-    removeMiniProgramHoverSelectors(
+    removeMiniProgramInteractiveSelectors(
       dedupeCoveredCssRules(dedupeMiniProgramPreflightSelectorRules(source)),
-      styleOptions.cssRemoveHoverPseudoClass,
+      {
+        active: styleOptions.cssRemoveActivePseudoClass ?? true,
+        hover: styleOptions.cssRemoveHoverPseudoClass ?? true,
+      },
     ),
   )
   return finalizeMiniProgramCssStructure(finalized)

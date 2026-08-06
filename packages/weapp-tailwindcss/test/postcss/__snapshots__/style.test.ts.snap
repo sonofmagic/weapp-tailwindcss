@@ -201,11 +201,7 @@ exports[`styleHandler > arbitrary values case 4 1`] = `
 `;
 
 exports[`styleHandler > arbitrary values case 5 1`] = `
-"@media (any-hover: hover) {
-  ._b_tmedia_pany-hover_chover_P_k_n_chover_K_B_copacity-100:focus {
-    opacity: 1;
-  }
-}
+"
 "
 `;
 

@@ -4,6 +4,7 @@ import type { TransformContext } from './types'
 import { isUniAppXEnabled } from '../../compat/uni-app-x'
 import { internalCssSelectorReplacer } from '../../shared'
 import { transformSpacingSelector } from '../spacing'
+import { getUnsupportedPseudoClassSet, removeUnsupportedPseudoSelector } from './unsupported-pseudos'
 
 const RTL_LANGUAGE_ANY_PSEUDO_SET = new Set([
   ':-moz-any',
@@ -217,6 +218,17 @@ function transformExpandedSelectorNodes(selector: Selector, context: TransformCo
   })
 }
 
+function transformExpandedUniversalNodes(selector: Selector, context: TransformContext) {
+  if (!context.universalReplacement) {
+    return
+  }
+  selector.walk((node) => {
+    if (node.type === 'universal') {
+      node.value = context.universalReplacement
+    }
+  })
+}
+
 function appendExpandedWhereSelectors(parent: Selector, index: number, branches: Container<string, Node>[], context: TransformContext) {
   const root = parent.parent
   if (!root) {
@@ -258,6 +270,8 @@ function flattenWherePseudo(node: Pseudo, context: TransformContext, index: numb
 
   const targetSelector = branches[0]
   if (targetSelector) {
+    // 单分支展开也要应用节点级兼容转换，否则分支中的通配符会在兜底阶段被误删。
+    transformExpandedUniversalNodes(targetSelector, context)
     node.replaceWith(...targetSelector.nodes.map(item => item.clone()))
   }
 
@@ -277,6 +291,14 @@ export function shouldRemoveUnsupportedPseudoElementSelector(selector: Selector,
 
 export function handlePseudoNode(node: Node, index: number, context: TransformContext, parent: Selector | undefined) {
   if (node.type !== 'pseudo') {
+    return
+  }
+
+  if (removeUnsupportedPseudoSelector(
+    node,
+    context.options,
+    context.unsupportedPseudoClasses ?? getUnsupportedPseudoClassSet(context.options),
+  )) {
     return
   }
 

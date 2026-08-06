@@ -1,11 +1,11 @@
 import type { Node, Selector } from 'postcss-selector-parser'
-import type { IStyleHandlerOptions } from '../../types'
 import type { TransformContext } from './types'
 import { stripUnsupportedNodeForUniAppX } from '../../compat/uni-app-x'
 import { internalCssSelectorReplacer } from '../../shared'
 import { transformSpacingSelector } from '../spacing'
 import { getCombinatorSelectorAst } from '../utils'
 import { shouldRemoveUnsupportedPseudoElementSelector } from './pseudos'
+import { getUnsupportedPseudoClassSet, removeUnsupportedPseudoSelector } from './unsupported-pseudos'
 
 export function handleClassNode(node: Node, context: TransformContext) {
   if (node.type !== 'class') {
@@ -23,13 +23,6 @@ export function handleUniversalNode(node: Node, context: TransformContext) {
   if (context.universalReplacement) {
     node.value = context.universalReplacement
   }
-}
-
-function shouldRemoveHoverSelector(selector: Selector, options: IStyleHandlerOptions) {
-  if (!options.cssRemoveHoverPseudoClass) {
-    return false
-  }
-  return selector.nodes.some(node => node.type === 'pseudo' && node.value === ':hover')
 }
 
 function isHiddenOrTemplateNotPseudo(node?: Node | null) {
@@ -94,8 +87,10 @@ export function handleSelectorNode(selector: Selector, context: TransformContext
     return
   }
 
-  if (shouldRemoveHoverSelector(selector, context.options)) {
-    selector.remove()
+  const unsupportedPseudoClasses = context.unsupportedPseudoClasses ?? getUnsupportedPseudoClassSet(context.options)
+  const unsupportedPseudo = selector.nodes.find(node => node.type === 'pseudo' && unsupportedPseudoClasses.has(node.value))
+  if (unsupportedPseudo) {
+    removeUnsupportedPseudoSelector(unsupportedPseudo, context.options, unsupportedPseudoClasses)
     return
   }
 

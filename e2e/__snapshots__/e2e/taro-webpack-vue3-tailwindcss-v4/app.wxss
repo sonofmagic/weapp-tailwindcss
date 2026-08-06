@@ -2,7 +2,6 @@
 }
 .nut-calendarcard-day.header {
 }
-.nut-uploader__input:disabled,
 .nut-uploader__input.disabled {
 }
 .nut-action-sheet .nut-action-sheet__item--loading {
@@ -1021,9 +1020,6 @@ wx-root-portal-content {
   transform: translate(-50%, -50%);
   width: 100%;
 }
-.nut-grid-item__content--clickable:active::before {
-  opacity: 0.1;
-}
 .nut-space {
   display: inline-flex;
 }
@@ -1105,9 +1101,6 @@ wx-root-portal-content {
   overflow: hidden;
   padding: var(--nut-navbar-padding, 0 16rpx);
   position: relative;
-}
-.nut-navbar:active::before {
-  opacity: 0.1;
 }
 .nut-navbar--border {
   border-bottom: 1rpx solid #eee;
@@ -2612,12 +2605,6 @@ wx-root-portal-content {
 .nut-input--disabled {
   color: var(--nut-input-disabled-color, #c8c9cc) !important;
 }
-.nut-input--disabled .h5-input:disabled {
-  background: none;
-  color: var(--nut-input-disabled-color, #c8c9cc);
-  opacity: 1;
-  -webkit-text-fill-color: var(--nut-input-disabled-color, #c8c9cc);
-}
 .nut-input--error::-webkit-input-placeholder {
   color: var(--nut-input-required-color, var(--nut-required-color, #fa2c19));
   -webkit-text-fill-color: var(--nut-input-required-color, var(--nut-required-color, #fa2c19));
@@ -3257,9 +3244,6 @@ wx-root-portal-content {
   height: 40rpx;
   justify-content: center;
   width: 40rpx;
-}
-.nut-backtop.show :active {
-  background: rgba(0, 0, 0, 0.10196);
 }
 .nut-backtop-main {
   transition: all 0.2s ease-in-out;
@@ -4431,9 +4415,6 @@ wx-root-portal-content {
 .nut-video-player {
   background: #000;
   width: 100%;
-}
-.nut-video-player:focus {
-  outline: none;
 }
 .nut-video .nut-video-mask {
   bottom: 60rpx;
@@ -6233,9 +6214,6 @@ wx-root-portal-content {
   width: 30rpx;
   z-index: 1;
 }
-.nut-popup__close-icon:active {
-  opacity: 0.7;
-}
 .nut-popup__close-icon--top-left {
   left: var(--nut-popup-close-icon-margin, 16rpx);
   top: var(--nut-popup-close-icon-margin, 16rpx);
@@ -7469,9 +7447,6 @@ wx-root-portal-content {
 .nut-button::after {
   border: none;
 }
-.nut-button:active::before {
-  opacity: 0.1;
-}
 .nut-button__wrap {
   align-items: center;
   display: flex;
@@ -7586,69 +7561,6 @@ wx-root-portal-content {
 }
 .nut-button--square {
   border-radius: 0;
-}
-.nut-button--default:not([disabled]):active {
-  background: var(--nut-button-default-bg-color, var(--nut-white, #fff));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid var(--nut-button-default-border-color, #ccc);
-  color: var(--nut-button-default-color, #666);
-}
-.nut-button--primary:not([disabled]):active {
-  background: var(
-    --nut-button-primary-background-color,
-    linear-gradient(135deg, var(--nut-primary-color, var(--nut-primary-color, #fa2c19)) 0, var(--nut-primary-color, var(--nut-primary-color, #fa2c19)) 100%)
-  );
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-  color: var(--nut-button-primary-color, var(--nut-white, #fff));
-}
-.nut-button--info:not([disabled]):active {
-  background: var(--nut-button-info-background-color, linear-gradient(315deg, #498ff2 0, #4965f2 100%));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-  color: var(--nut-button-info-color, var(--nut-white, #fff));
-}
-.nut-button--success:not([disabled]):active {
-  background: var(--nut-button-success-background-color, linear-gradient(135deg, #26bf26 0, #27c530 45%, #28cf3f 83%, #29d446 100%));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-  color: var(--nut-button-success-color, var(--nut-white, #fff));
-}
-.nut-button--danger:not([disabled]):active {
-  background: var(--nut-button-danger-background-color, #fa2c19);
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-  color: var(--nut-button-danger-color, var(--nut-white, #fff));
-}
-.nut-button--warning:not([disabled]):active {
-  background: var(--nut-button-warning-background-color, linear-gradient(135deg, #ff9e0d 0, #ffa70d 45%, #ffb60d 83%, #ffbe0d 100%));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-  color: var(--nut-button-warning-color, var(--nut-white, #fff));
-}
-.nut-button--plain:not([disabled]):active {
-  background: var(--nut-button-plain-background-color, var(--nut-white, #fff));
-  background-origin: border-box;
-}
-.nut-button--plain.nut-button--primary:not([disabled]):active {
-  border-color: var(--nut-button-primary-border-color, var(--nut-primary-color, #fa2c19));
-  color: var(--nut-button-primary-border-color, var(--nut-primary-color, #fa2c19));
-}
-.nut-button--plain.nut-button--info:not([disabled]):active {
-  border-color: var(--nut-button-info-border-color, #496af2);
-  color: var(--nut-button-info-border-color, #496af2);
-}
-.nut-button--plain.nut-button--success:not([disabled]):active {
-  border-color: var(--nut-button-success-border-color, #26bf26);
-  color: var(--nut-button-success-border-color, #26bf26);
-}
-.nut-button--plain.nut-button--danger:not([disabled]):active {
-  border-color: var(--nut-button-danger-border-color, #fa2c19);
-  color: var(--nut-button-danger-border-color, #fa2c19);
-}
-.nut-button--plain.nut-button--warning:not([disabled]):active {
-  border-color: var(--nut-button-warning-border-color, #ff9e0d);
-  color: var(--nut-button-warning-border-color, #ff9e0d);
 }
 .nut-radio-group {
   display: inline-block;
@@ -7842,9 +7754,6 @@ wx-root-portal-content {
   position: absolute;
   right: var(--nut-cell-after-right, 16rpx);
   transform: scaleY(0.5);
-}
-.nut-cell:active::before {
-  opacity: 0.1;
 }
 .nut-cell--clickable::before {
   background-color: var(--nut-black, #000);

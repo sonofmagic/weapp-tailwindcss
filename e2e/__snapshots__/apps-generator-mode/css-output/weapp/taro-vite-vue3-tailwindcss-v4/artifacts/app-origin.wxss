@@ -660,9 +660,6 @@ wx-button {
   opacity: 0;
   content: ' ';
 }
-.nut-grid-item__content--clickable:active::before {
-  opacity: 0.1;
-}
 .nut-space {
   display: -ms-inline-flexbox;
   display: inline-flex;
@@ -763,9 +760,6 @@ wx-button {
   font-size: var(--nut-navbar-title-base-font, var(--nut-font-size-2, 14rpx));
   color: var(--nut-navbar-color, var(--nut-title-color2, #666666));
   overflow: hidden;
-}
-.nut-navbar:active::before {
-  opacity: 0.1;
 }
 .nut-navbar--border {
   border-bottom: 1rpx solid #eee;
@@ -2448,13 +2442,6 @@ wx-button {
 .nut-input--disabled {
   color: var(--nut-input-disabled-color, #c8c9cc) !important;
 }
-.nut-input--disabled .h5-input:disabled {
-  background: none;
-  color: var(--nut-input-disabled-color, #c8c9cc);
-  cursor: not-allowed;
-  opacity: 1;
-  -webkit-text-fill-color: var(--nut-input-disabled-color, #c8c9cc);
-}
 .nut-input--error::-webkit-input-placeholder {
   color: var(--nut-input-required-color, var(--nut-required-color, #fa2c19));
   -webkit-text-fill-color: var(--nut-input-required-color, var(--nut-required-color, #fa2c19));
@@ -2846,7 +2833,6 @@ wx-button {
   cursor: pointer !important;
   opacity: 0;
 }
-.nut-uploader__input:disabled,
 .nut-uploader__input.disabled {
   cursor: not-allowed !important;
 }
@@ -3211,9 +3197,6 @@ wx-button {
   align-items: center;
   -ms-flex-pack: center;
   justify-content: center;
-}
-.nut-backtop.show :active {
-  background: rgba(0, 0, 0, 0.1);
 }
 .nut-backtop-main {
   transition: all 0.2s ease-in-out;
@@ -4593,9 +4576,6 @@ wx-button {
 .nut-video-player {
   width: 100%;
   background: #000;
-}
-.nut-video-player:focus {
-  outline: none;
 }
 .nut-video .nut-video-mask {
   width: 100%;
@@ -6499,9 +6479,6 @@ wx-button {
   line-height: 30rpx;
   text-align: center;
 }
-.nut-popup__close-icon:active {
-  opacity: 0.7;
-}
 .nut-popup__close-icon--top-left {
   top: var(--nut-popup-close-icon-margin, 16rpx);
   left: var(--nut-popup-close-icon-margin, 16rpx);
@@ -7879,9 +7856,6 @@ wx-button {
 .nut-button::after {
   border: none;
 }
-.nut-button:active::before {
-  opacity: 0.1;
-}
 .nut-button__wrap {
   height: 100%;
   width: 100%;
@@ -8001,69 +7975,6 @@ wx-button {
 }
 .nut-button--square {
   border-radius: 0;
-}
-.nut-button--default:not([disabled]):active {
-  color: var(--nut-button-default-color, rgb(102, 102, 102));
-  background: var(--nut-button-default-bg-color, var(--nut-white, #fff));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid var(--nut-button-default-border-color, rgb(204, 204, 204));
-}
-.nut-button--primary:not([disabled]):active {
-  color: var(--nut-button-primary-color, var(--nut-white, #fff));
-  background: var(
-    --nut-button-primary-background-color,
-    linear-gradient(135deg, var(--nut-primary-color, var(--nut-primary-color, #fa2c19)) 0%, var(--nut-primary-color, var(--nut-primary-color, #fa2c19)) 100%)
-  );
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-}
-.nut-button--info:not([disabled]):active {
-  color: var(--nut-button-info-color, var(--nut-white, #fff));
-  background: var(--nut-button-info-background-color, linear-gradient(315deg, rgb(73, 143, 242) 0%, rgb(73, 101, 242) 100%));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-}
-.nut-button--success:not([disabled]):active {
-  color: var(--nut-button-success-color, var(--nut-white, #fff));
-  background: var(--nut-button-success-background-color, linear-gradient(135deg, rgb(38, 191, 38) 0%, rgb(39, 197, 48) 45%, rgb(40, 207, 63) 83%, rgb(41, 212, 70) 100%));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-}
-.nut-button--danger:not([disabled]):active {
-  color: var(--nut-button-danger-color, var(--nut-white, #fff));
-  background: var(--nut-button-danger-background-color, rgb(250, 44, 25));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-}
-.nut-button--warning:not([disabled]):active {
-  color: var(--nut-button-warning-color, var(--nut-white, #fff));
-  background: var(--nut-button-warning-background-color, linear-gradient(135deg, rgb(255, 158, 13) 0%, rgb(255, 167, 13) 45%, rgb(255, 182, 13) 83%, rgb(255, 190, 13) 100%));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-}
-.nut-button--plain:not([disabled]):active {
-  background: var(--nut-button-plain-background-color, var(--nut-white, #fff));
-  background-origin: border-box;
-}
-.nut-button--plain.nut-button--primary:not([disabled]):active {
-  color: var(--nut-button-primary-border-color, var(--nut-primary-color, #fa2c19));
-  border-color: var(--nut-button-primary-border-color, var(--nut-primary-color, #fa2c19));
-}
-.nut-button--plain.nut-button--info:not([disabled]):active {
-  color: var(--nut-button-info-border-color, rgb(73, 106, 242));
-  border-color: var(--nut-button-info-border-color, rgb(73, 106, 242));
-}
-.nut-button--plain.nut-button--success:not([disabled]):active {
-  color: var(--nut-button-success-border-color, rgb(38, 191, 38));
-  border-color: var(--nut-button-success-border-color, rgb(38, 191, 38));
-}
-.nut-button--plain.nut-button--danger:not([disabled]):active {
-  color: var(--nut-button-danger-border-color, rgb(250, 44, 25));
-  border-color: var(--nut-button-danger-border-color, rgb(250, 44, 25));
-}
-.nut-button--plain.nut-button--warning:not([disabled]):active {
-  color: var(--nut-button-warning-border-color, rgb(255, 158, 13));
-  border-color: var(--nut-button-warning-border-color, rgb(255, 158, 13));
 }
 .nut-radio-group {
   display: inline-block;
@@ -8269,9 +8180,6 @@ wx-button {
   left: 16rpx;
   -ms-transform: scaleY(0.5);
   transform: scaleY(0.5);
-}
-.nut-cell:active::before {
-  opacity: 0.1;
 }
 .nut-cell--clickable {
   cursor: pointer;
@@ -9710,13 +9618,6 @@ wx-button {
   color: var(--nut-input-required-color, var(--nut-required-color, #fa2c19));
   content: '*';
 }
-.nut-input--disabled .h5-input:disabled {
-  background: none;
-  color: var(--nut-input-disabled-color, #c8c9cc);
-  cursor: not-allowed;
-  opacity: 1;
-  -webkit-text-fill-color: var(--nut-input-disabled-color, #c8c9cc);
-}
 .nut-input--error::-webkit-input-placeholder {
   color: var(--nut-input-required-color, var(--nut-required-color, #fa2c19));
   -webkit-text-fill-color: var(--nut-input-required-color, var(--nut-required-color, #fa2c19));
@@ -9982,6 +9883,9 @@ wx-button {
   align-items: center;
   -ms-flex-pack: center;
   justify-content: center;
+}
+.nut-uploader__input.disabled {
+  cursor: not-allowed !important;
 }
 .nut-uploader__preview {
   display: -ms-flexbox;
@@ -10255,9 +10159,6 @@ wx-button {
   align-items: center;
   -ms-flex-pack: center;
   justify-content: center;
-}
-.nut-backtop.show :active {
-  background: rgba(0, 0, 0, 0.1);
 }
 .nut-drag {
   position: fixed;
@@ -13555,45 +13456,6 @@ wx-button {
 }
 .nut-button--round {
   border-radius: var(--nut-button-border-radius, 25rpx);
-}
-.nut-button--default:not([disabled]):active {
-  color: var(--nut-button-default-color, rgb(102, 102, 102));
-  background: var(--nut-button-default-bg-color, var(--nut-white, #fff));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid var(--nut-button-default-border-color, rgb(204, 204, 204));
-}
-.nut-button--primary:not([disabled]):active {
-  color: var(--nut-button-primary-color, var(--nut-white, #fff));
-  background: var(
-    --nut-button-primary-background-color,
-    linear-gradient(135deg, var(--nut-primary-color, var(--nut-primary-color, #fa2c19)) 0%, var(--nut-primary-color, var(--nut-primary-color, #fa2c19)) 100%)
-  );
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-}
-.nut-button--info:not([disabled]):active {
-  color: var(--nut-button-info-color, var(--nut-white, #fff));
-  background: var(--nut-button-info-background-color, linear-gradient(315deg, rgb(73, 143, 242) 0%, rgb(73, 101, 242) 100%));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-}
-.nut-button--success:not([disabled]):active {
-  color: var(--nut-button-success-color, var(--nut-white, #fff));
-  background: var(--nut-button-success-background-color, linear-gradient(135deg, rgb(38, 191, 38) 0%, rgb(39, 197, 48) 45%, rgb(40, 207, 63) 83%, rgb(41, 212, 70) 100%));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-}
-.nut-button--danger:not([disabled]):active {
-  color: var(--nut-button-danger-color, var(--nut-white, #fff));
-  background: var(--nut-button-danger-background-color, rgb(250, 44, 25));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
-}
-.nut-button--warning:not([disabled]):active {
-  color: var(--nut-button-warning-color, var(--nut-white, #fff));
-  background: var(--nut-button-warning-background-color, linear-gradient(135deg, rgb(255, 158, 13) 0%, rgb(255, 167, 13) 45%, rgb(255, 182, 13) 83%, rgb(255, 190, 13) 100%));
-  background-origin: border-box;
-  border: var(--nut-button-border-width, 1rpx) solid transparent;
 }
 .nut-radio-group .nut-radio {
   margin-bottom: 5rpx;

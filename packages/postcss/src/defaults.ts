@@ -25,6 +25,7 @@ export function getDefaultOptions(options?: Partial<IStyleHandlerOptions>): Part
     },
     // 支付宝小程序不支持，所以默认关闭
     cssRemoveProperty: true,
+    cssRemoveFocusPseudoClass: true,
     uniAppXUnsupported: 'warn',
     // cssRemoveAtSupports: true,
     // cssRemoveAtMedia: true,
