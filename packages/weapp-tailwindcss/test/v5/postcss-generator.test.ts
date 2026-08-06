@@ -41,7 +41,7 @@ describe('v5 postcss generator', () => {
         generator: {
           target: 'web',
         },
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         candidates: ['hover:bg-blue-500', 'w-[100px]'],
         scanSources: false,
       }),
@@ -65,7 +65,7 @@ describe('v5 postcss generator', () => {
         generator: {
           target: 'web',
         },
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         candidates: ['ring', 'border', 'shadow-sm'],
         scanSources: false,
       }),
@@ -91,7 +91,7 @@ describe('v5 postcss generator', () => {
         generator: {
           target: 'web',
         },
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         candidates: ['ring', 'border', 'shadow-sm'],
         scanSources: false,
       }),
@@ -117,7 +117,7 @@ describe('v5 postcss generator', () => {
         generator: {
           target: 'web',
         },
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         candidates: ['hover:bg-blue-500', 'w-[100px]'],
         scanSources: false,
       }),
@@ -237,7 +237,7 @@ describe('v5 postcss generator', () => {
         generator: {
           target: 'web',
         },
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         projectRoot: repositoryRoot,
       }),
     ]).process(`
@@ -280,7 +280,7 @@ describe('v5 postcss generator', () => {
         generator: {
           target: 'web',
         },
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         projectRoot: repositoryRoot,
       }),
     ]).process(`
@@ -315,7 +315,7 @@ describe('v5 postcss generator', () => {
         generator: {
           target: 'web',
         },
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
       }),
     ]).process(`
       @theme default {
@@ -343,7 +343,7 @@ describe('v5 postcss generator', () => {
     const result = await postcss([
       weappTailwindcss({
         projectRoot: repositoryRoot,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         candidates: ['bg-brand'],
       }),
     ]).process(`
@@ -365,7 +365,7 @@ describe('v5 postcss generator', () => {
 
     const result = await postcss([
       weappTailwindcss({
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         candidates: ['bg-brand'],
         generator: {
           config: configFile,

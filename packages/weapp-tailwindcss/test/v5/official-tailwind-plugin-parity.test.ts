@@ -264,7 +264,7 @@ describe('v5 official tailwind plugin parity', () => {
       }),
       postcss([
         weappTailwindcss({
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
           generator: {
             target: 'web',
           },

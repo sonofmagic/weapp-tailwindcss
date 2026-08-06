@@ -51,7 +51,7 @@ describe("tailwindcss v4", () => {
   it("keeps Tailwind v4 variable-only input without injecting preflight reset defaults", async () => {
     const { styleHandler } = getCtx({
       tailwindcss: {
-        packageName: "tailwindcss4",
+        packageName: "tailwindcss",
       },
     });
     const borderProp = ["bor", "der"].join("");
