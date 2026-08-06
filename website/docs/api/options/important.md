@@ -360,6 +360,8 @@ WeappTailwindcss({
 })
 ```
 
+同一条小程序兼容边界也会默认删除 `focus-visible`、`focus-within`、`disabled`、`enabled`、`checked`、`required`、`optional`、`valid`、`invalid`、`visited`、`target` 等依赖浏览器状态的选择器。`first`、`last`、`nth-*` 等结构选择器以及 Tailwind 为兼容性生成的 `:is`、`:where`、`:not` 不在此清理范围内。
+
 #### `@custom-variant` 的跨平台条件
 
 Tailwind CSS v4 的任意 `@custom-variant` 都支持 uni-app 条件编译，条件注释放在变体内部或包住整个变体，效果相同：

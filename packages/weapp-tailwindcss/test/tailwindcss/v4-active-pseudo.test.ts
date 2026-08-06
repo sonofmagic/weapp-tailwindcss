@@ -19,6 +19,9 @@ const candidates = [
   'group-active:bg-blue-500',
   'not-active:bg-blue-500',
   'focus:bg-blue-500',
+  'focus-visible:bg-blue-500',
+  'disabled:bg-blue-500',
+  'checked:bg-blue-500',
 ]
 
 describe('tailwindcss v4 active pseudo class', () => {
@@ -28,6 +31,7 @@ describe('tailwindcss v4 active pseudo class', () => {
     expect(generated.css).toContain('.bg-blue-500')
     expect(generated.css).not.toContain(':active')
     expect(generated.css).not.toContain(':focus')
+    expect(generated.css).not.toMatch(/:(focus-visible|disabled|checked)/)
     expect(generated.classSet).toEqual(new Set(candidates))
   })
 
@@ -62,5 +66,6 @@ describe('tailwindcss v4 active pseudo class', () => {
     expect(generated.css).toContain('.active\\:bg-blue-500:active')
     expect(generated.css).toContain(':active')
     expect(generated.css).toContain(':focus')
+    expect(generated.css).toContain(':focus-visible')
   })
 })

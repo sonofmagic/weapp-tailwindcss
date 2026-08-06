@@ -7,6 +7,31 @@ import { transformSpacingSelector } from '../spacing'
 import { getCombinatorSelectorAst } from '../utils'
 import { shouldRemoveUnsupportedPseudoElementSelector } from './pseudos'
 
+const UNSUPPORTED_MINI_PROGRAM_PSEUDO_CLASS_SET = new Set([
+  ':autofill',
+  ':checked',
+  ':default',
+  ':disabled',
+  ':enabled',
+  ':focus-visible',
+  ':focus-within',
+  ':fullscreen',
+  ':indeterminate',
+  ':in-range',
+  ':invalid',
+  ':modal',
+  ':open',
+  ':optional',
+  ':out-of-range',
+  ':placeholder-shown',
+  ':read-only',
+  ':read-write',
+  ':required',
+  ':target',
+  ':valid',
+  ':visited',
+])
+
 export function handleClassNode(node: Node, context: TransformContext) {
   if (node.type !== 'class') {
     return
@@ -32,6 +57,7 @@ function shouldRemoveUnsupportedInteractiveSelector(selector: Selector, options:
       (options.cssRemoveHoverPseudoClass && node.value === ':hover')
       || (options.cssRemoveActivePseudoClass && node.value === ':active')
       || (options.cssRemoveFocusPseudoClass && node.value === ':focus')
+      || UNSUPPORTED_MINI_PROGRAM_PSEUDO_CLASS_SET.has(node.value)
     ) {
       shouldRemove = true
       return false
