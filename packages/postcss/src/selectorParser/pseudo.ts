@@ -1,29 +1,53 @@
-import selectorParser from 'postcss-selector-parser'
-
-const selectorPseudoClassCache = new Map<string, ReadonlySet<string>>()
-const SELECTOR_PSEUDO_CLASS_CACHE_LIMIT = 50000
-
-function getSelectorPseudoClasses(selector: string) {
-  const cached = selectorPseudoClassCache.get(selector)
-  if (cached) {
-    return cached
-  }
-
-  const pseudoClasses = new Set<string>()
-  selectorParser().astSync(selector).walkPseudos(node => pseudoClasses.add(node.value))
-  if (selectorPseudoClassCache.size >= SELECTOR_PSEUDO_CLASS_CACHE_LIMIT) {
-    selectorPseudoClassCache.clear()
-  }
-  selectorPseudoClassCache.set(selector, pseudoClasses)
-  return pseudoClasses
-}
-
 export function selectorContainsPseudoClass(selector: string, pseudoClasses: readonly string[]) {
-  try {
-    const selectorPseudoClasses = getSelectorPseudoClasses(selector)
-    return pseudoClasses.some(pseudoClass => selectorPseudoClasses.has(pseudoClass))
-  }
-  catch {
+  if (pseudoClasses.length === 0) {
     return false
   }
+
+  let attributeDepth = 0
+  let quote: string | undefined
+  let escaped = false
+
+  for (let index = 0; index < selector.length; index += 1) {
+    const character = selector[index]
+    if (escaped) {
+      escaped = false
+      continue
+    }
+    if (character === '\\') {
+      escaped = true
+      continue
+    }
+    if (quote) {
+      if (character === quote) {
+        quote = undefined
+      }
+      continue
+    }
+    if (character === '"' || character === '\'') {
+      quote = character
+      continue
+    }
+    if (character === '[') {
+      attributeDepth += 1
+      continue
+    }
+    if (character === ']') {
+      attributeDepth = Math.max(0, attributeDepth - 1)
+      continue
+    }
+    if (attributeDepth > 0 || character !== ':') {
+      continue
+    }
+
+    let end = index + 1
+    while (end < selector.length && /[\w-]/.test(selector[end] ?? '')) {
+      end += 1
+    }
+    if (pseudoClasses.includes(selector.slice(index, end))) {
+      return true
+    }
+    index = end - 1
+  }
+
+  return false
 }
