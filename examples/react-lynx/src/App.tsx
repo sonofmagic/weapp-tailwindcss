@@ -1,6 +1,38 @@
+const arbitraryUtilities = [
+  'w-[123px]',
+  'h-[45rpx]',
+  'min-w-[calc(100%-2rem)]',
+  'max-h-[var(--panel-height)]',
+  'bg-[#123456]',
+  'bg-[rgb(12,34,56)]',
+  'bg-[radial-gradient(circle_at_20%_20%,#fff,#000)]',
+  'text-[length:23px]',
+  'text-[color:#c31d6b]',
+  'leading-[1.25]',
+  'tracking-[0.12em]',
+  'p-[13px]',
+  'px-[7.5px]',
+  'rounded-[18px]',
+  '[mask-type:luminance]',
+  '[--panel-height:240px]',
+  'bg-(--brand-color)',
+  'text-black/[.35]',
+  '!bg-[gray]',
+  'hover:bg-[red]',
+  'md:w-[200px]',
+  'dark:text-[color:#fff]',
+  'data-[state=open]:opacity-100',
+  'supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]',
+  'before:content-[\'lynx\']',
+  'group-[.is-active]:block',
+  'aria-[sort=ascending]:underline',
+  'aspect-[4/3]',
+  'grid-cols-[200px_minmax(0,1fr)_80px]',
+].join(' ')
+
 export function App() {
   return (
-    <view className="flex items-center justify-center bg-sky-500 p-6">
+    <view className={`flex items-center justify-center bg-sky-500 p-6 ${arbitraryUtilities}`}>
       <text className="text-lg font-bold text-white">weapp-tailwindcss + Lynx</text>
     </view>
   )
