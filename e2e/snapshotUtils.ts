@@ -258,6 +258,7 @@ export function normalizeCssTextSnapshot(source: string, options: CssSnapshotOpt
     .map(line => normalizeTokenCommentIndent(line))
     .map(line => line.trimEnd())
     .join('\n')
+    .replace(/^[ \t]*(\/\*\s*tokens?:)/gm, ' $1')
 }
 
 export function normalizeRawCssSnapshotText(source: string, options: CssSnapshotOptions = {}) {
