@@ -141,7 +141,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 31619,
+      "bytes": 31599,
       "selectors": [
         ".-mt-2",
         "._2xl_ctext-base",
