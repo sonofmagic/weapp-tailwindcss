@@ -4929,7 +4929,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 240276,
+      "bytes": 240216,
       "selectors": [
         "._ebg-_bgray_B",
         ".after_c_econtent-_b_agood_work_e_a_B:after",
