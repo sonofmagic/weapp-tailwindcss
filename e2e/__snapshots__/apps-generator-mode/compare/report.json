@@ -6699,7 +6699,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 434343,
+      "bytes": 434303,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
