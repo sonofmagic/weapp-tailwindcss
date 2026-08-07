@@ -8441,7 +8441,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 52640,
+      "bytes": 52550,
       "selectors": [
         "._ebg-_bgray_B",
         ".after_c_econtent-_b_agood_work_e_a_B:after",
