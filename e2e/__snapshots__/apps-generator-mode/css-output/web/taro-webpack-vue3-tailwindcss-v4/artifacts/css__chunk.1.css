@@ -487,7 +487,7 @@
   }
  /*tokens: py-1 <= src/pages/index/index.vue */
   .py-1 {
-    padding-block: calc(var(--spacing) * 1);
+    padding-block: var(--spacing);
   }
  /*tokens: py-2 <= src/pages/index/index.vue */
   .py-2 {

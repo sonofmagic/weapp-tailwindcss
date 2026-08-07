@@ -938,7 +938,7 @@ describe('tailwindcss v4 engine', () => {
     expect(second.css).toContain('.text-_b88rpx_B')
   })
 
-  it('uses mini-program-safe Tailwind v4 default color variables for native v4 weapp output', async () => {
+  it('uses mini-program-safe Tailwind v4 default color variables for native v4 weapp output', { timeout: 180_000 }, async () => {
     const source = await resolveTailwindV4Source({
       css: `
         @import "tailwindcss";

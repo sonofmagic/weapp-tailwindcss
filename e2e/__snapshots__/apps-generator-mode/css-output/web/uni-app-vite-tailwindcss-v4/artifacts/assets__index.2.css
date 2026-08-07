@@ -26,7 +26,7 @@
  /*tokens: justify-center <= src/pages-order/pages/user/user.vue */
 .justify-center{justify-content:center}
  /*tokens: gap-1 <= src/pages-order/pages/user/user.vue */
-.gap-1{gap:calc(var(--spacing) * 1)}
+.gap-1{gap:var(--spacing)}
  /*tokens: gap-3 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .gap-3{gap:calc(var(--spacing) * 3)}
  /*tokens: rounded-xl <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */

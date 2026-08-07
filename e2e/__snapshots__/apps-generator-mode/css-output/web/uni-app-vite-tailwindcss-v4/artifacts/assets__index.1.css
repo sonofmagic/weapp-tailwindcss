@@ -2,7 +2,7 @@
  /*tokens: m-3 <= src/pages/index/index.vue */
 .m-3{margin:calc(var(--spacing) * 3)}
  /*tokens: mt-1 <= src/pages/index/index.vue */
-.mt-1{margin-top:calc(var(--spacing) * 1)}
+.mt-1{margin-top:var(--spacing)}
  /*tokens: mt-2 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .mt-2{margin-top:calc(var(--spacing) * 2)}
  /*tokens: mt-3 <= src/pages/index/index.vue */
@@ -48,7 +48,7 @@
  /*tokens: justify-center <= src/pages-order/pages/user/user.vue */
 .justify-center{justify-content:center}
  /*tokens: gap-1 <= src/pages-order/pages/user/user.vue */
-.gap-1{gap:calc(var(--spacing) * 1)}
+.gap-1{gap:var(--spacing)}
  /*tokens: gap-2 <= src/components/HelloWorld.vue, src/main.css, src/pages/index/index.vue */
 .gap-2{gap:calc(var(--spacing) * 2)}
  /*tokens: gap-3 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
@@ -144,7 +144,7 @@
  /*tokens: px-4 <= src/components/HelloWorld.vue, src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .px-4{padding-inline:calc(var(--spacing) * 4)}.px-\[29rpx\]{padding-inline:.90625rem}.px-\[48px\]{padding-inline:48px}
  /*tokens: py-1 <= src/pages/index/index.vue */
-.py-1{padding-block:calc(var(--spacing) * 1)}
+.py-1{padding-block:var(--spacing)}
  /*tokens: py-2 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .py-2{padding-block:calc(var(--spacing) * 2)}
  /*tokens: py-3 <= src/components/HelloWorld.vue, src/pages/index/index.vue */

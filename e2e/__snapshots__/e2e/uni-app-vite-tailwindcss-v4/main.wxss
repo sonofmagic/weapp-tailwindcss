@@ -153,7 +153,7 @@ wx-button {
 }
 /* tokens: mt-1 <= src/pages/index/index.vue */
 .mt-1 {
-  margin-top: calc(var(--spacing) * 1);
+  margin-top: var(--spacing);
 }
 /* tokens: mt-2 <= src/pages/index/index.vue */
 .mt-2 {
@@ -603,8 +603,8 @@ wx-button {
 }
 /* tokens: py-1 <= src/pages/index/index.vue */
 .py-1 {
-  padding-top: calc(var(--spacing) * 1);
-  padding-bottom: calc(var(--spacing) * 1);
+  padding-top: var(--spacing);
+  padding-bottom: var(--spacing);
 }
 /* tokens: py-2 <= src/pages/index/index.vue */
 .py-2 {

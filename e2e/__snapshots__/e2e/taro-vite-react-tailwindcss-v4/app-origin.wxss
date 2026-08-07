@@ -573,8 +573,8 @@ wx-button {
 }
 /* tokens: py-1 <= src/pages/index/index.tsx */
 .py-1 {
-  padding-top: calc(var(--spacing) * 1);
-  padding-bottom: calc(var(--spacing) * 1);
+  padding-top: var(--spacing);
+  padding-bottom: var(--spacing);
 }
 /* tokens: py-2 <= src/pages/index/index.tsx */
 .py-2 {
