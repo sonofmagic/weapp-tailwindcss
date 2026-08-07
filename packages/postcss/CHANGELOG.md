@@ -1,5 +1,13 @@
 # @weapp-tailwindcss/postcss
 
+## 3.2.9
+
+### Patch Changes
+
+- 🐛 **小程序样式现在默认移除无效的 `:active` 选择器，同时保留 Tailwind candidate 与模板类名转换，并允许通过 `cssOptions.cssRemoveActivePseudoClass: false` 显式恢复。Tailwind CSS v4 的任意 `@custom-variant` 都支持条件注释放在变体内部或包住整个变体的跨平台写法。H5 与 App 的 Web 构建行为保持不变。** [#1052](https://github.com/sonofmagic/weapp-tailwindcss/pull/1052) by @sonofmagic
+
+- 🐛 **统一升级构建链路依赖，并将多个跨包复用的工具依赖提炼到 pnpm catalog，降低版本漂移和后续升级成本。** [`11f26f7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/11f26f7c93f99db9f3f0b7e57c633e8654c2a6a6) by @sonofmagic
+
 ## 3.2.8
 
 ### Patch Changes

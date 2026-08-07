@@ -1,5 +1,19 @@
 # weapp-tailwindcss
 
+## 5.2.12
+
+### Patch Changes
+
+- 🐛 **升级仓库使用的 `weapp-vite` 与其配套的 `wevu` 到 6.19.1，确保 demo、构建链路和运行时依赖使用最新稳定版本。** [#1052](https://github.com/sonofmagic/weapp-tailwindcss/pull/1052) by @sonofmagic
+
+- 🐛 **小程序样式现在默认移除无效的 `:active` 选择器，同时保留 Tailwind candidate 与模板类名转换，并允许通过 `cssOptions.cssRemoveActivePseudoClass: false` 显式恢复。Tailwind CSS v4 的任意 `@custom-variant` 都支持条件注释放在变体内部或包住整个变体的跨平台写法。H5 与 App 的 Web 构建行为保持不变。** [#1052](https://github.com/sonofmagic/weapp-tailwindcss/pull/1052) by @sonofmagic
+
+- 🐛 **修复 Nuxt 页面在 Vite 热更新时源模块未同步、Tailwind 样式更新后页面状态不刷新的问题。** [`f264a83`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f264a83b8968fbd48c88edcd87db6438d0a122f8) by @sonofmagic
+
+- 🐛 **统一升级构建链路依赖，并将多个跨包复用的工具依赖提炼到 pnpm catalog，降低版本漂移和后续升级成本。** [`11f26f7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/11f26f7c93f99db9f3f0b7e57c633e8654c2a6a6) by @sonofmagic
+- 📦 **Dependencies** [`1dcb3b3`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1dcb3b3a57ae088f2105e594db2df5a99225be45)
+  → `@weapp-tailwindcss/postcss@3.2.9`
+
 ## 5.2.11
 
 ### Patch Changes

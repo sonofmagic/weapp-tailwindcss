@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/typography
 
+## 1.0.2
+
+### Patch Changes
+
+- 🐛 **统一升级构建链路依赖，并将多个跨包复用的工具依赖提炼到 pnpm catalog，降低版本漂移和后续升级成本。** [`11f26f7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/11f26f7c93f99db9f3f0b7e57c633e8654c2a6a6) by @sonofmagic
+
 ## 1.0.1
 
 ### Patch Changes
