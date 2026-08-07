@@ -1,0 +1,6 @@
+@import 'tailwindcss';
+@source "./";
+
+page {
+  min-height: 100vh;
+}

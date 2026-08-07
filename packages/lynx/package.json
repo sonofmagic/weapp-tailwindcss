@@ -1,0 +1,60 @@
+{
+  "name": "@weapp-tailwindcss/lynx",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Tailwind CSS 4 integration for ReactLynx and Rspeedy.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/lynx"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest run",
+    "test:dev": "vitest",
+    "lint": "eslint .",
+    "release": "pnpm publish"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@lynx-js/rspeedy": ">=0.16.0",
+    "tailwindcss": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@lynx-js/rspeedy": {
+      "optional": true
+    },
+    "tailwindcss": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "weapp-tailwindcss": "workspace:^"
+  },
+  "devDependencies": {
+    "@lynx-js/rspeedy": "^0.16.3",
+    "tailwindcss": "catalog:tailwindcss4",
+    "vitest": "^4.1.0"
+  }
+}
