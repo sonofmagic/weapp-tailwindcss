@@ -2834,6 +2834,10 @@ describe('watch-hmr regression cases', () => {
     const cases = buildDemoExtendedCases('/repo')
     const caseMap = new Map(cases.map(watchCase => [watchCase.name, watchCase]))
 
+    expect(caseMap.get('taro-vite-react-tailwindcss-v4')?.requireInitialCompileSuccess).toBe(true)
+    expect(caseMap.get('taro-vite-react-tailwindcss-v4:weapp')?.requireInitialCompileSuccess).toBe(true)
+    expect(caseMap.get('taro-vite-react-tailwindcss-v4:alipay')?.requireInitialCompileSuccess).toBe(true)
+    expect(caseMap.get('taro-vite-react-tailwindcss-v4:tt')?.requireInitialCompileSuccess).toBe(true)
     expect(caseMap.get('taro-vite-react-tailwindcss-v4:weapp')?.devScript).toBe('dev:e2e-watch')
     expect(caseMap.get('taro-vite-react-tailwindcss-v4:alipay')?.devScript).toBe('dev:e2e-watch')
     expect(caseMap.get('taro-vite-react-tailwindcss-v4:alipay')?.env).toMatchObject({

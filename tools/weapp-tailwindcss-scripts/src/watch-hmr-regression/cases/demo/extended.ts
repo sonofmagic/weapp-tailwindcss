@@ -600,6 +600,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     cwd: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
     env: taroViteWatchEnv,
+    requireInitialCompileSuccess: true,
     outputWxml: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/pages/index/index.js'),
     outputStyleCandidates: [

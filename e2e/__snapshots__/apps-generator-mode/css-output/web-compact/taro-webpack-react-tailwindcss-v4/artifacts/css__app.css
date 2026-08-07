@@ -13,7 +13,7 @@
 }
 @import '@nutui/nutui-react-taro/dist/styles/themes/default.css';
 @import '@nutui/nutui-react-taro/dist/style.css';
-/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   *,
   ::before,
@@ -419,7 +419,7 @@ page {
   --tw-gradient-to-position: 100%;
   --tw-content: '';
 }
-/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   ::-webkit-backdrop {
     --tw-border-style: solid;
@@ -3515,16 +3515,14 @@ page {
   background-color: #fff;
 }
 .nut-step-title {
-  position: relative;
-  z-index: 1;
-}
-.nut-step-title {
   color: var(--nutui-steps-base-title-color, var(--nutui-color-title, #1a1a1a));
   font-size: var(--nutui-steps-base-title-font-size, var(--nutui-font-size-s, 0.3rem));
   height: 0.35rem;
   line-height: 0.35rem;
   overflow: hidden;
+  position: relative;
   white-space: nowrap;
+  z-index: 1;
 }
 .nut-step-description {
   color: var(--nutui-steps-base-description-color, var(--nutui-color-text-help, #888b94));
@@ -13405,8 +13403,6 @@ wx-button {
   .system-dark\:bg-slate-900 {
     background-color: #0f172b;
   }
-}
-@media (prefers-color-scheme: dark) {
  /*tokens: system-dark:text-slate-100 <= src/pages/index/index.tsx */
   .system-dark\:text-slate-100 {
     color: #f1f5f9;

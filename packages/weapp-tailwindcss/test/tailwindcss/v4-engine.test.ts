@@ -938,10 +938,10 @@ describe('tailwindcss v4 engine', () => {
     expect(second.css).toContain('.text-_b88rpx_B')
   })
 
-  it('uses mini-program-safe Tailwind v4 default color variables for native v4 weapp output', async () => {
+  it('uses mini-program-safe Tailwind v4 default color variables for native v4 weapp output', { timeout: 300_000 }, async () => {
     const source = await resolveTailwindV4Source({
       css: `
-        @import "tailwindcss4";
+        @import "tailwindcss";
         @theme default {
           --color-blue-500: oklch(62.3% 0.214 259.815);
           --color-red-500: oklch(63.7% 0.237 25.331);

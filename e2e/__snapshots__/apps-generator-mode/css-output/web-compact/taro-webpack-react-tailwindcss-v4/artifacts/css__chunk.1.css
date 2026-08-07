@@ -9,7 +9,7 @@
   --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
 }
-/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   *,
   ::before,
@@ -653,7 +653,7 @@ input:where([type='button'], [type='reset'], [type='submit']),
   --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
 }
-/*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
   ::-webkit-backdrop {
     --tw-gradient-from: #0000;

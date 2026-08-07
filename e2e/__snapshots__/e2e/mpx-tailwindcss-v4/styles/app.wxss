@@ -526,8 +526,8 @@ wx-root-portal-content {
 }
 /* tokens: py-1 <= src/pages/index.mpx */
 .py-1 {
-  padding-top: calc(var(--spacing) * 1);
-  padding-bottom: calc(var(--spacing) * 1);
+  padding-top: var(--spacing);
+  padding-bottom: var(--spacing);
 }
 /* tokens: py-2 <= src/pages/index.mpx */
 .py-2 {

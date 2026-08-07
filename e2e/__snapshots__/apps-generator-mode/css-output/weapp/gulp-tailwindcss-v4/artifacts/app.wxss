@@ -176,10 +176,8 @@ wx-root-portal-content {
 .space-y-1 > text + view,
 .space-y-1 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc((var(--spacing) * 1) * var(--tw-space-y-reverse));
-  margin-bottom: calc(calc(var(--spacing) * 1) * var(--tw-space-y-reverse));
-  margin-top: calc((var(--spacing) * 1) * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(calc(var(--spacing) * 1) * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(var(--spacing) * var(--tw-space-y-reverse));
+  margin-top: calc(var(--spacing) * (1 - var(--tw-space-y-reverse)));
 }
  /* tokens: space-y-4 <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .space-y-4 > view + view,
@@ -361,8 +359,6 @@ wx-root-portal-content {
   .system-dark_cbg-slate-900 {
     background-color: var(--color-slate-900);
   }
-}
-@media (prefers-color-scheme: dark) {
  /* tokens: system-dark:text-slate-100 <= src/pages/index/index.wxml */
   .system-dark_ctext-slate-100 {
     color: var(--color-slate-100);

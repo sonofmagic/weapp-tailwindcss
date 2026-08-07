@@ -60,7 +60,7 @@ describe('bundlers/vite source scan', () => {
               '@source inline("text-[45rpx]");',
             ].join('\n'),
           }],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
@@ -100,7 +100,7 @@ describe('bundlers/vite source scan', () => {
             base: '/project/src',
             css: '@theme { --color-brand: #123456; }',
           }],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
@@ -135,7 +135,7 @@ describe('bundlers/vite source scan', () => {
               '@source not "./generated/**";',
             ].join('\n'),
           }],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
@@ -189,7 +189,7 @@ describe('bundlers/vite source scan', () => {
               '@config "../../../tailwind.config.sub-normal.js";',
             ].join('\n'),
           }],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
@@ -243,7 +243,7 @@ describe('bundlers/vite source scan', () => {
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
@@ -288,7 +288,7 @@ describe('bundlers/vite source scan', () => {
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
@@ -331,7 +331,7 @@ describe('bundlers/vite source scan', () => {
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
@@ -392,7 +392,7 @@ describe('bundlers/vite source scan', () => {
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: vi.fn(async () => {
           throw new Error('css entry should be discovered')
@@ -449,7 +449,7 @@ describe('bundlers/vite source scan', () => {
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: vi.fn(async () => {
           throw new Error('css entry should be discovered')
@@ -574,7 +574,7 @@ describe('bundlers/vite source scan', () => {
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
@@ -634,7 +634,7 @@ describe('bundlers/vite source scan', () => {
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: vi.fn(async () => {
           throw new Error('auto-discovered css roots should avoid full Tailwind v4 source fallback')
@@ -689,7 +689,7 @@ describe('bundlers/vite source scan', () => {
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
           cssSources: [
             {
               file: path.join(srcDir, 'app.css'),
@@ -753,7 +753,7 @@ describe('bundlers/vite source scan', () => {
           projectRoot: '/outside-project',
           base: '/outside-project',
           baseFallbacks: [],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }

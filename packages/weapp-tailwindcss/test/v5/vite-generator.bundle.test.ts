@@ -1794,7 +1794,7 @@ describe('v5 vite generator bundle', () => {
       cssEntries: [appCss, subNormalCss, subIndependentCss],
       tailwindcss: {
         version: 4,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         v4: {
           cssEntries: [appCss, subNormalCss, subIndependentCss],
         },
@@ -2427,7 +2427,7 @@ describe('v5 vite generator bundle', () => {
       cssEntries: [cssEntry],
       tailwindcss: {
         version: 4,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         v4: {
           cssEntries: [cssEntry],
         },
@@ -2514,7 +2514,7 @@ describe('v5 vite generator bundle', () => {
           base: tempDir,
           baseFallbacks: [],
           cssEntries: [cssEntry],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: tempDir,
@@ -2530,7 +2530,7 @@ describe('v5 vite generator bundle', () => {
       cssEntries: [cssEntry],
       tailwindcss: {
         version: 4,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         v4: {
           cssEntries: [cssEntry],
         },
@@ -2612,7 +2612,7 @@ describe('v5 vite generator bundle', () => {
           base: tempDir,
           baseFallbacks: [],
           cssEntries: [cssEntry],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: tempDir,
@@ -2628,7 +2628,7 @@ describe('v5 vite generator bundle', () => {
       cssEntries: [cssEntry],
       tailwindcss: {
         version: 4,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         v4: {
           cssEntries: [cssEntry],
         },
@@ -2646,7 +2646,7 @@ describe('v5 vite generator bundle', () => {
       cssEntries: [cssEntry],
       tailwindcss: {
         version: 4,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         v4: {
           cssEntries: [cssEntry],
         },
@@ -2715,7 +2715,7 @@ describe('v5 vite generator bundle', () => {
           base: tempDir,
           baseFallbacks: [],
           cssEntries: [cssEntry],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
       }
     })
@@ -2724,7 +2724,7 @@ describe('v5 vite generator bundle', () => {
       cssEntries: [cssEntry],
       tailwindcss: {
         version: 4,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         v4: {
           cssEntries: [cssEntry],
         },
@@ -2742,7 +2742,7 @@ describe('v5 vite generator bundle', () => {
       cssEntries: [cssEntry],
       tailwindcss: {
         version: 4,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         v4: {
           cssEntries: [cssEntry],
         },
@@ -2802,7 +2802,7 @@ describe('v5 vite generator bundle', () => {
           base: tempDir,
           baseFallbacks: [],
           cssEntries: [cssEntry],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: tempDir,
@@ -2818,7 +2818,7 @@ describe('v5 vite generator bundle', () => {
       cssEntries: [cssEntry],
       tailwindcss: {
         version: 4,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         v4: {
           cssEntries: [cssEntry],
         },
@@ -2836,7 +2836,7 @@ describe('v5 vite generator bundle', () => {
       cssEntries: [cssEntry],
       tailwindcss: {
         version: 4,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         v4: {
           cssEntries: [cssEntry],
         },
@@ -2933,7 +2933,7 @@ describe('v5 vite generator bundle', () => {
           css: cssSource,
           base: path.dirname(cssEntry),
         }],
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
       }))
       return {
         ...actual,
@@ -2956,7 +2956,7 @@ describe('v5 vite generator bundle', () => {
     setCurrentContext(createContext({
       tailwindcss: {
         version: 4,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
       },
       tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
@@ -2970,7 +2970,7 @@ describe('v5 vite generator bundle', () => {
     const createPlugins = () => WeappTailwindcss({
       tailwindcss: {
         version: 4,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
       },
     })
     const plugins = createPlugins()
@@ -3073,7 +3073,7 @@ describe('v5 vite generator bundle', () => {
           base: tempDir,
           baseFallbacks: [],
           cssEntries: [cssEntry],
-          packageName: 'tailwindcss4',
+          packageName: 'tailwindcss',
         })),
         resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: tempDir,
@@ -3089,7 +3089,7 @@ describe('v5 vite generator bundle', () => {
       cssEntries: [cssEntry],
       tailwindcss: {
         version: 4,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         v4: {
           cssEntries: [cssEntry],
         },
@@ -3107,7 +3107,7 @@ describe('v5 vite generator bundle', () => {
       cssEntries: [cssEntry],
       tailwindcss: {
         version: 4,
-        packageName: 'tailwindcss4',
+        packageName: 'tailwindcss',
         v4: {
           cssEntries: [cssEntry],
         },
