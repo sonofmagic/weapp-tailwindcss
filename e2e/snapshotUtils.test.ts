@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { replaceWxml } from '../packages/weapp-tailwindcss/src/wxml'
-import { collectCssSnapshots, formatRawCssSnapshotText, normalizeCssSnapshot, normalizeFontDataUrlsForSnapshot, normalizeFormattedCssSnapshot, normalizeGeneratedCssSourceMarkers, normalizeRawCssSnapshotText, normalizeSnapshotName } from './snapshotUtils'
+import { collectCssSnapshots, formatRawCssSnapshotText, normalizeCssSnapshot, normalizeCssTextSnapshot, normalizeFontDataUrlsForSnapshot, normalizeFormattedCssSnapshot, normalizeGeneratedCssSourceMarkers, normalizeRawCssSnapshotText, normalizeSnapshotName } from './snapshotUtils'
 
 describe('normalizeCssSnapshot', () => {
   it('normalizes generated css file hashes in path segments', () => {
@@ -156,6 +156,24 @@ describe('normalizeCssSnapshot', () => {
       '.tw-root,',
       'wx-root-portal-content {',
       '  --spacing: 8rpx;',
+      '}',
+    ].join('\n'))
+  })
+
+  it('normalizes token comment indentation inside nested rules', () => {
+    expect(normalizeCssTextSnapshot([
+      '@media (prefers-color-scheme: dark) {',
+      '\t  /* tokens: system-dark:bg-slate-900 <= pages/index/index.wxml */',
+      '    .system-dark_cbg-slate-900 { color: red; }',
+      '  /* tokens: system-dark:text-slate-100 <= pages/index/index.wxml */',
+      '    .system-dark_ctext-slate-100 { color: white; }',
+      '}',
+    ].join('\n'))).toBe([
+      '@media (prefers-color-scheme: dark) {',
+      ' /* tokens: system-dark:bg-slate-900 <= pages/index/index.wxml */',
+      '    .system-dark_cbg-slate-900 { color: red; }',
+      ' /* tokens: system-dark:text-slate-100 <= pages/index/index.wxml */',
+      '    .system-dark_ctext-slate-100 { color: white; }',
       '}',
     ].join('\n'))
   })

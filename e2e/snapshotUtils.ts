@@ -240,12 +240,8 @@ function resolveRealSnapshotPath(file: string) {
 export function normalizeFormattedCssSnapshot(source: string) {
   return source
     .replace(/\}\s+(\/\*\s*tokens?:)/g, '}\n$1')
-    .replace(/^ *(\/\*\s*tokens?:)/gm, ' $1')
+    .replace(/^[ \t]*(\/\*\s*tokens?:)/gm, ' $1')
     .replace(/\n{2,}(?=(?:view|text|:{1,2}after|:{1,2}before|:host|page|\.tw-root|wx-root-portal-content)[\s,{])/g, '\n')
-}
-
-function normalizeTokenCommentIndent(source: string) {
-  return source.replace(/^ *(\/\*\s*tokens?:)/gm, ' $1')
 }
 
 export function normalizeCssTextSnapshot(source: string, options: CssSnapshotOptions = {}) {
@@ -255,10 +251,8 @@ export function normalizeCssTextSnapshot(source: string, options: CssSnapshotOpt
   return normalizeFormattedCssSnapshot(normalizedCss)
     .trimEnd()
     .split('\n')
-    .map(line => normalizeTokenCommentIndent(line))
     .map(line => line.trimEnd())
     .join('\n')
-    .replace(/^[ \t]*(\/\*\s*tokens?:)/gm, ' $1')
 }
 
 export function normalizeRawCssSnapshotText(source: string, options: CssSnapshotOptions = {}) {
