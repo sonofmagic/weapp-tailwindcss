@@ -167,6 +167,7 @@ describe('ci workflows', () => {
     expect(workflow.jobs['e2e-focused'].strategy['fail-fast']).toBe(false)
     expect(matrixCaseNames(focusedRows)).toEqual([
       'generator-web-parity',
+      'lynx-rspeedy',
       'preprocessor-source',
       'framework-support',
       'taro-h5-build',
@@ -181,6 +182,7 @@ describe('ci workflows', () => {
     ])
     expect(focusedRows.map(row => row.command)).toEqual([
       'pnpm e2e:generator-parity',
+      'pnpm e2e:lynx',
       'pnpm e2e:preprocessor',
       'pnpm exec cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts',
       'pnpm e2e:taro:h5-build',
