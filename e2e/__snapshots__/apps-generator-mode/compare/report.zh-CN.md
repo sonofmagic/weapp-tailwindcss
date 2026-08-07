@@ -6,7 +6,7 @@
 
 | 项目 | 来源 | 平台 | 允许平台 | 状态 | CSS 文件 | 字节数 | 选择器数 | @supports | :hover | Tailwind banner | 系统暗色媒体查询 | 手动暗色选择器 | 不兼容主题属性选择器 | 不兼容主题复杂选择器 | 原始任意值选择器 | 小程序转义任意值选择器 |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| gulp-tailwindcss-v4 | demo | weapp | `weapp`, `tt` | 通过 | `gulp-tailwindcss-v4/dist/app.wxss` (+4) | 18037 | 84 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| gulp-tailwindcss-v4 | demo | weapp | `weapp`, `tt` | 通过 | `gulp-tailwindcss-v4/dist/app.wxss` (+4) | 17828 | 84 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | mpx-tailwindcss-v4 | demo | wx | `wx`, `ali`, `swan`, `tt`, `dd` | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+9) | 31619 | 183 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-webpack-react-tailwindcss-v4 | demo | weapp | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+4) | 321314 | 2231 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-vite-react-tailwindcss-v4 | demo | weapp | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+6) | 537712 | 2256 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |

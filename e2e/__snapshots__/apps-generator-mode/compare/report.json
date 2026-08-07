@@ -17,7 +17,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 18037,
+      "bytes": 17828,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before",
