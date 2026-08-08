@@ -160,13 +160,16 @@ export function createSourceCandidateEligibilityMatcher(options: {
   return (file: string) => {
     const resolvedFile = path.resolve(file)
     const relative = path.relative(root, resolvedFile)
-    if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
-      return false
-    }
-    if (explicit) {
+    if (explicit && entries !== undefined) {
+      if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
+        return false
+      }
       return entries?.length && entries.some(entry => !entry.negated)
         ? isFileMatchedByTailwindSourceEntries(resolvedFile, entries)
         : false
+    }
+    if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
+      return true
     }
     return !isFileExcludedByTailwindSourceEntries(resolvedFile, ignoredSources)
   }

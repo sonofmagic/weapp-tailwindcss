@@ -293,7 +293,8 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     }),
     invalidate,
     isDependency,
-    matches: (file: string) => sourceScanMatcher?.(file) ?? false,
+    // 首次 source scan 完成前保留 Vite 原有的 transform 行为；sync() 完成后由统一 matcher 负责边界判断。
+    matches: (file: string) => sourceScanMatcher?.(file) ?? true,
     shouldDiscoverAutoCssSources,
     sync,
     syncChangedFile,
