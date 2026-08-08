@@ -8,9 +8,10 @@ import path from 'node:path'
 import process from 'node:process'
 import { LRUCache } from 'lru-cache'
 import { isTailwindV4CssEntry } from '@/tailwindcss/v4/css-entries'
+import { createSourceCandidateEligibilityMatcher } from '../../shared/source-candidates/scan-root'
 import { isSourceStyleRequest } from '../../shared/style-requests'
 import { createSourceCandidateScanSignature } from '../source-candidate-scan-signature'
-import { createViteSourceScanMatcher, resolveViteSourceScanEntries } from '../source-scan'
+import { resolveViteSourceScanEntries } from '../source-scan'
 import { cleanUrl } from '../utils'
 import { hasFrameworkHmrRuntimeSourceChange } from './framework-hmr-runtime-signature'
 
@@ -56,7 +57,7 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     max: SOURCE_CANDIDATE_SCAN_CACHE_MAX,
   })
   let sourceScanEntries: SourceScanResult['entries']
-  let sourceScanMatcher: ReturnType<typeof createViteSourceScanMatcher>
+  let sourceScanMatcher: ReturnType<typeof createSourceCandidateEligibilityMatcher>
   let sourceScanDependencies = new Set<string>()
   let sourceScanExplicit = false
   let sourceCandidateScanSignature: string | undefined
@@ -132,7 +133,12 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     const sourceScan = await resolveViteSourceScanEntries(options.opts, options.runtimeState.tailwindRuntime, { outDir, root })
     sourceScanEntries = sourceScan?.entries
     sourceScanExplicit = sourceScan?.explicit ?? false
-    sourceScanMatcher = createViteSourceScanMatcher(sourceScanEntries)
+    sourceScanMatcher = createSourceCandidateEligibilityMatcher({
+      entries: sourceScanEntries,
+      explicit: sourceScanExplicit,
+      outDir,
+      root,
+    })
     sourceScanDependencies = new Set((sourceScan?.dependencies ?? []).map(normalizeDependency))
     const roots = collectRoots(root, sourceScanEntries)
     const nextScanSignature = createSourceCandidateScanSignature({
@@ -287,6 +293,7 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     }),
     invalidate,
     isDependency,
+    // 首次 source scan 完成前保留 Vite 原有的 transform 行为；sync() 完成后由统一 matcher 负责边界判断。
     matches: (file: string) => sourceScanMatcher?.(file) ?? true,
     shouldDiscoverAutoCssSources,
     sync,
