@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 3.2.10
+
+### Patch Changes
+
+- 🐛 **新增 ReactLynx 与 Rspeedy 的 Tailwind CSS v4 构建集成，保留原生 className，并在构建期静态化 Tailwind theme 变量，输出 Lynx 原生运行时可消费的 CSS。** [#1055](https://github.com/sonofmagic/weapp-tailwindcss/pull/1055) by @sonofmagic
+
 ## 3.2.9
 
 ### Patch Changes
