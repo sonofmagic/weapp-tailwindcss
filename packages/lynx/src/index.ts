@@ -31,6 +31,7 @@ interface RsbuildPluginApi {
 
 function normalizeOptions(options: LynxTailwindcssOptions): UserDefinedOptions {
   const { rspack: _rspack, generator, ...rest } = options
+  const generatorOptions = generator === false ? {} : generator
   return {
     ...rest,
     rewriteCssImports: true,
@@ -40,7 +41,15 @@ function normalizeOptions(options: LynxTailwindcssOptions): UserDefinedOptions {
       platform: 'lynx',
     },
     generator: {
-      ...(generator === false ? {} : generator),
+      ...generatorOptions,
+      webCompat: true,
+      styleOptions: {
+        ...generatorOptions?.styleOptions,
+        cssOptions: {
+          ...generatorOptions?.styleOptions?.cssOptions,
+          platform: 'lynx',
+        },
+      },
       target: 'web',
     },
   }

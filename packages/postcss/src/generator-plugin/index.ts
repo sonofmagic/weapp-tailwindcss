@@ -1,6 +1,7 @@
 import type { PluginCreator, Root } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import type { WeappTailwindcssPostcssPluginAdapters, WeappTailwindcssPostcssPluginOptions } from './types'
+import { transformLynxCssCompat } from '../compat/lynx-css'
 import { finalizeMiniProgramCss } from '../compat/mini-program-css'
 import { transformWebCssCompat } from '../compat/web-css'
 import { createSourceScanPattern, DEFAULT_SOURCE_SCAN_EXTENSIONS, resolveCssSourceEntries } from '../source-scan'
@@ -36,7 +37,9 @@ function finalizeGeneratedCss(
   webCompat: ReturnType<WeappTailwindcssPostcssPluginAdapters['normalizeGeneratorOptions']>['webCompat'],
 ) {
   if (target === 'web') {
-    return transformWebCssCompat(css, webCompat)
+    const webCss = transformWebCssCompat(css, webCompat)
+    const platform = styleOptions?.cssOptions?.platform ?? styleOptions?.platform
+    return platform === 'lynx' ? transformLynxCssCompat(webCss) : webCss
   }
   if (!isMiniProgramGeneratorTarget(target)) {
     return css

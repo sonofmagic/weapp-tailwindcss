@@ -34,7 +34,11 @@ describe('pluginLynxTailwindcss', () => {
     expect(options).toMatchObject({
       platform: 'lynx',
       cssOptions: { platform: 'lynx' },
-      generator: { target: 'web', webCompat: false },
+      generator: {
+        target: 'web',
+        webCompat: true,
+        styleOptions: { cssOptions: { platform: 'lynx' } },
+      },
     })
     expect(getRspackHandler()).toBeTypeOf('function')
   })

@@ -8,6 +8,7 @@ const repoRoot = path.resolve(import.meta.dirname, '..')
 const lynxPackage = '@weapp-tailwindcss/lynx'
 const examplePackage = '@weapp-tailwindcss/example-react-lynx'
 const bundlePath = path.resolve(repoRoot, 'examples/react-lynx/dist/main.lynx.bundle')
+const sourceCorpusPath = path.resolve(repoRoot, 'examples/react-lynx/src/tailwind-sources.ts')
 
 const arbitraryUtilities = [
   'w-[123px]',
@@ -60,13 +61,30 @@ describe('ReactLynx Rspeedy integration', () => {
 
     const bundle = await fs.readFile(bundlePath)
     const bundleText = bundle.toString('latin1')
+    const sourceCorpus = await fs.readFile(sourceCorpusPath, 'utf8')
     expect(bundle.byteLength).toBeGreaterThan(1024)
     expect(bundleText).toContain('flex items-center justify-center bg-sky-500 p-6')
     expect(bundleText).toContain('text-lg font-bold text-white')
     expect(bundleText).toContain('weapp-tailwindcss + Lynx')
     for (const utility of arbitraryUtilities) {
-      expect(bundleText, `missing generated class ${utility}`).toContain(utility)
+      expect(sourceCorpus, `missing source coverage for ${utility}`).toContain(utility.replaceAll('\'', '\\\''))
     }
     expect(bundleText).not.toContain('@import "tailwindcss"')
+    expect(bundleText).toContain('background.js')
+    expect(bundleText).toContain('100vh')
+    expect(bundleText).toContain('0.2.0.0')
+    expect(bundleText).toContain('/.rspeedy/main/background.')
+    expect(bundleText).toContain('bg-sky-500')
+    expect(bundleText).toContain('rgb(0,165,234)')
+    expect(bundleText).toContain('p-6')
+    expect(bundleText).toContain('1.5rem')
+    expect(bundleText).toContain('text-lg')
+    expect(bundleText).toContain('1.125rem')
+    expect(bundleText).toContain('font-bold')
+    expect(bundleText).toContain('text-white')
+    expect(bundleText).toContain('#fff')
+    expect(bundleText).not.toContain('var(--color-sky-500)')
+    expect(bundleText).not.toContain('var(--spacing)')
+    expect(bundleText).not.toContain('@source')
   }, 300_000)
 })
