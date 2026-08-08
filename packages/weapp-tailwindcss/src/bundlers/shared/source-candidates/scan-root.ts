@@ -55,6 +55,8 @@ interface ResolveSourceCandidateScanFilesOptions {
   root: string
 }
 
+type SourceCandidateEligibilityRoot = Omit<ResolveSourceCandidateScanFilesOptions, 'filter'>
+
 function resolveOutDirIgnorePattern(root: string, outDir: string | undefined) {
   if (!outDir) {
     return
@@ -146,32 +148,29 @@ function createDefaultIgnoredSources(
 }
 
 /** 创建与文件系统 root scan 一致的增量源码资格判断器。 */
-export function createSourceCandidateEligibilityMatcher(options: {
-  root: string
-  outDir?: string | undefined
-  entries?: TailwindSourceEntry[] | undefined
-  explicit?: boolean | undefined
-}) {
-  const root = path.resolve(options.root)
-  const outDirIgnore = resolveOutDirIgnorePattern(root, options.outDir)
-  const entries = options.entries
-  const explicit = options.explicit === true
-  const ignoredSources = createDefaultIgnoredSources(root, outDirIgnore, entries, explicit)
-  return (file: string) => {
-    const resolvedFile = path.resolve(file)
-    const relative = path.relative(root, resolvedFile)
-    if (explicit && entries !== undefined) {
+export function createSourceCandidateEligibilityMatcher(roots: SourceCandidateEligibilityRoot[]) {
+  const matchers = roots.map((options) => {
+    const root = path.resolve(options.root)
+    const outDirIgnore = resolveOutDirIgnorePattern(root, options.outDir)
+    const entries = options.entries
+    const explicit = options.explicit === true
+    const hasPositiveEntry = entries?.some(entry => !entry.negated) === true
+    const ignoredSources = createDefaultIgnoredSources(root, outDirIgnore, entries, explicit)
+    return (resolvedFile: string) => {
+      if (explicit) {
+        return hasPositiveEntry && isFileMatchedByTailwindSourceEntries(resolvedFile, entries)
+      }
+      const relative = path.relative(root, resolvedFile)
       if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
         return false
       }
-      return entries?.length && entries.some(entry => !entry.negated)
-        ? isFileMatchedByTailwindSourceEntries(resolvedFile, entries)
-        : false
+      return isFileMatchedByTailwindSourceEntries(resolvedFile, entries)
+        && !isFileExcludedByTailwindSourceEntries(resolvedFile, ignoredSources)
     }
-    if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
-      return true
-    }
-    return !isFileExcludedByTailwindSourceEntries(resolvedFile, ignoredSources)
+  })
+  return (file: string) => {
+    const resolvedFile = path.resolve(file)
+    return matchers.some(matches => matches(resolvedFile))
   }
 }
 

@@ -133,14 +133,12 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     const sourceScan = await resolveViteSourceScanEntries(options.opts, options.runtimeState.tailwindRuntime, { outDir, root })
     sourceScanEntries = sourceScan?.entries
     sourceScanExplicit = sourceScan?.explicit ?? false
-    sourceScanMatcher = createSourceCandidateEligibilityMatcher({
-      entries: sourceScanEntries,
-      explicit: sourceScanExplicit,
-      outDir,
-      root,
-    })
     sourceScanDependencies = new Set((sourceScan?.dependencies ?? []).map(normalizeDependency))
     const roots = collectRoots(root, sourceScanEntries)
+    sourceScanMatcher = createSourceCandidateEligibilityMatcher(roots.map(scanRoot => ({
+      ...scanRoot,
+      outDir,
+    })))
     const nextScanSignature = createSourceCandidateScanSignature({
       inlineCandidates: sourceScan?.inlineCandidates,
       outDir,
