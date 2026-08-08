@@ -1,0 +1,24 @@
+{
+  "name": "@weapp-tailwindcss/example-react-lynx",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "rspeedy build",
+    "dev": "rspeedy dev",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@lynx-js/react": "^0.123.3",
+    "@lynx-js/react-rsbuild-plugin": "^0.18.3",
+    "@weapp-tailwindcss/lynx": "workspace:*",
+    "react": "catalog:react19"
+  },
+  "devDependencies": {
+    "@lynx-js/rspeedy": "^0.16.3",
+    "@types/react": "catalog:react19",
+    "tailwindcss": "catalog:tailwindcss4",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.0"
+  }
+}

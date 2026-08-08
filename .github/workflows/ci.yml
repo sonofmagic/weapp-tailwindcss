@@ -231,6 +231,8 @@ jobs:
         include:
           - case_name: generator-web-parity
             command: pnpm e2e:generator-parity
+          - case_name: lynx-rspeedy
+            command: pnpm e2e:lynx
           - case_name: preprocessor-source
             command: pnpm e2e:preprocessor
           - case_name: framework-support
