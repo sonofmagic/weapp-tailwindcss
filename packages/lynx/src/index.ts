@@ -33,6 +33,7 @@ function normalizeOptions(options: LynxTailwindcssOptions): UserDefinedOptions {
   const { rspack: _rspack, generator, ...rest } = options
   return {
     ...rest,
+    rewriteCssImports: true,
     platform: 'lynx',
     cssOptions: {
       ...options.cssOptions,

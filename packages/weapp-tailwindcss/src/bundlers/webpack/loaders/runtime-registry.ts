@@ -74,3 +74,9 @@ export function deleteWebpackLoaderRuntime(key: string) {
 export function getWebpackLoaderRuntime(key?: string) {
   return key ? runtimeRegistry.get(key) : undefined
 }
+
+/** 获取当前编译器注册的最新运行时，供 Rspeedy 静态 CSS 规则使用。 */
+export function getLatestWebpackLoaderRuntime() {
+  const entries = [...runtimeRegistry.values()]
+  return entries.at(-1)
+}
