@@ -95,7 +95,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
           if (!options.sourceScanSession.matches(file)) {
             options.sourceCandidateCollector.remove(file)
             options.sourceScanSession.cacheCurrent()
-            return
+            return shouldReturnTransformedCode ? { code: transformedCode, map: null } : undefined
           }
           await options.sourceCandidateCollector.merge(id, transformedCode)
           options.sourceScanSession.cacheCurrent()
