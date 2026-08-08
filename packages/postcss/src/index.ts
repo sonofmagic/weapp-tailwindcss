@@ -15,6 +15,7 @@ export {
   protectDynamicColorMixAlpha,
   protectDynamicVarFallbacks,
 } from './compat/color-mix'
+export { transformLynxCssCompat } from './compat/lynx-css'
 export {
   consumeCascadeLayers,
   finalizeMiniProgramCss,

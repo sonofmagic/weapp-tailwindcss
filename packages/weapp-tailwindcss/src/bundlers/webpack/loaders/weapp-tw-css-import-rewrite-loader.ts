@@ -5,7 +5,7 @@ import { Buffer } from 'node:buffer'
 import path from 'node:path'
 import process from 'node:process'
 import { inspect } from 'node:util'
-import { filterExistingCssRules } from '@weapp-tailwindcss/postcss'
+import { filterExistingCssRules, transformLynxCssCompat } from '@weapp-tailwindcss/postcss'
 import { ensurePosix } from '@weapp-tailwindcss/shared'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
@@ -213,7 +213,10 @@ export async function generateCssForWebpackPipeline(
   for (const dependency of generated.dependencies) {
     registerWebpackWatchFile(loaderContext, dependency)
   }
-  const generatedCss = removeTailwindSourceDirectives(generated.css, { importFallback: true })
+  const generatedCssSource = removeTailwindSourceDirectives(generated.css, { importFallback: true })
+  const generatedCss = (compilerOptions.cssOptions?.platform ?? compilerOptions.platform) === 'lynx'
+    ? transformLynxCssCompat(generatedCssSource)
+    : generatedCssSource
   const bareUserCss = generatorTarget === 'web' ? '' : collectWebpackBareSelectorUserCss(normalizedSource)
   const missingBareUserCss = bareUserCss.trim().length === 0
     ? ''
