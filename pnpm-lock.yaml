@@ -3814,10 +3814,13 @@ importers:
     dependencies:
       '@lynx-js/react':
         specifier: ^0.123.3
-        version: 0.123.3(@types/react@19.2.18)
+        version: 0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18)
       '@lynx-js/react-rsbuild-plugin':
         specifier: ^0.18.3
-        version: 0.18.3(@lynx-js/react@0.123.3(@types/react@19.2.18))(tslib@2.8.1)
+        version: 0.18.3(@lynx-js/react@0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18))(tslib@2.8.1)
+      '@lynx-js/types':
+        specifier: ^4.0.0
+        version: 4.1.0
       '@weapp-tailwindcss/lynx':
         specifier: workspace:*
         version: link:../../packages/lynx
@@ -10692,6 +10695,9 @@ packages:
   '@lynx-js/template-webpack-plugin@0.15.0':
     resolution: {integrity: sha512-uUdVJ38V8ayykHvIP7ulvPxbtldNrL+xtKsC0vjMCicczEnLh3y+4mrXZw1PTVogabfQtj4Wcxsmtrwy1ZdrsQ==}
     engines: {node: ^18.14 || >=19.4}
+
+  '@lynx-js/types@4.1.0':
+    resolution: {integrity: sha512-WLWnMpGZMrjffSR62PYesSfjD0RWumPyT21iMTi7GySGkOSOGdv4q4wWkarg8zNI7SxcCFM6kpXFhyIERADBPQ==}
 
   '@lynx-js/use-sync-external-store@1.5.0':
     resolution: {integrity: sha512-iXwLiGUBgfWLozCIh3ICe07x534p9CVlFS3/iGEiFOce58MLX6/PbAvWcE8qEhYaOKiQNe9hqUnS2RbyCqoqGg==}
@@ -19297,6 +19303,9 @@ packages:
   cssstyle@4.6.0:
     resolution: {integrity: sha512-2z+rWdzbbSZv6/rhtvzvqeZQHrBaqgogqt85sqFNbabZOuFbCVFb8kPeEtZjiKkbrm395irpNKiYeFeLiQnFPg==}
     engines: {node: '>=18'}
+
+  csstype@3.1.3:
+    resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
 
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
@@ -42444,40 +42453,42 @@ snapshots:
 
   '@lynx-js/react-alias-rsbuild-plugin@0.18.3': {}
 
-  '@lynx-js/react-refresh-webpack-plugin@0.4.1(@lynx-js/react-webpack-plugin@0.10.3(@lynx-js/react@0.123.3(@types/react@19.2.18))(@lynx-js/template-webpack-plugin@0.15.0(tslib@2.8.1)))':
+  '@lynx-js/react-refresh-webpack-plugin@0.4.1(@lynx-js/react-webpack-plugin@0.10.3(@lynx-js/react@0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18))(@lynx-js/template-webpack-plugin@0.15.0(tslib@2.8.1)))':
     dependencies:
-      '@lynx-js/react-webpack-plugin': 0.10.3(@lynx-js/react@0.123.3(@types/react@19.2.18))(@lynx-js/template-webpack-plugin@0.15.0(tslib@2.8.1))
+      '@lynx-js/react-webpack-plugin': 0.10.3(@lynx-js/react@0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18))(@lynx-js/template-webpack-plugin@0.15.0(tslib@2.8.1))
 
-  '@lynx-js/react-rsbuild-plugin@0.18.3(@lynx-js/react@0.123.3(@types/react@19.2.18))(tslib@2.8.1)':
+  '@lynx-js/react-rsbuild-plugin@0.18.3(@lynx-js/react@0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18))(tslib@2.8.1)':
     dependencies:
       '@lynx-js/css-extract-webpack-plugin': 0.10.1(@lynx-js/template-webpack-plugin@0.15.0(tslib@2.8.1))
       '@lynx-js/react-alias-rsbuild-plugin': 0.18.3
-      '@lynx-js/react-refresh-webpack-plugin': 0.4.1(@lynx-js/react-webpack-plugin@0.10.3(@lynx-js/react@0.123.3(@types/react@19.2.18))(@lynx-js/template-webpack-plugin@0.15.0(tslib@2.8.1)))
-      '@lynx-js/react-webpack-plugin': 0.10.3(@lynx-js/react@0.123.3(@types/react@19.2.18))(@lynx-js/template-webpack-plugin@0.15.0(tslib@2.8.1))
+      '@lynx-js/react-refresh-webpack-plugin': 0.4.1(@lynx-js/react-webpack-plugin@0.10.3(@lynx-js/react@0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18))(@lynx-js/template-webpack-plugin@0.15.0(tslib@2.8.1)))
+      '@lynx-js/react-webpack-plugin': 0.10.3(@lynx-js/react@0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18))(@lynx-js/template-webpack-plugin@0.15.0(tslib@2.8.1))
       '@lynx-js/runtime-wrapper-webpack-plugin': 0.2.3
       '@lynx-js/template-webpack-plugin': 0.15.0(tslib@2.8.1)
-      '@lynx-js/use-sync-external-store': 1.5.0(@lynx-js/react@0.123.3(@types/react@19.2.18))
+      '@lynx-js/use-sync-external-store': 1.5.0(@lynx-js/react@0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18))
       background-only: 0.0.1
       tiny-invariant: 1.3.3
     optionalDependencies:
-      '@lynx-js/react': 0.123.3(@types/react@19.2.18)
+      '@lynx-js/react': 0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18)
     transitivePeerDependencies:
       - '@lynx-js/lynx-core'
       - tslib
 
-  '@lynx-js/react-webpack-plugin@0.10.3(@lynx-js/react@0.123.3(@types/react@19.2.18))(@lynx-js/template-webpack-plugin@0.15.0(tslib@2.8.1))':
+  '@lynx-js/react-webpack-plugin@0.10.3(@lynx-js/react@0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18))(@lynx-js/template-webpack-plugin@0.15.0(tslib@2.8.1))':
     dependencies:
       '@lynx-js/debug-metadata': 0.1.0
       '@lynx-js/template-webpack-plugin': 0.15.0(tslib@2.8.1)
       '@lynx-js/webpack-runtime-globals': 0.0.7
       tiny-invariant: 1.3.3
     optionalDependencies:
-      '@lynx-js/react': 0.123.3(@types/react@19.2.18)
+      '@lynx-js/react': 0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18)
 
-  '@lynx-js/react@0.123.3(@types/react@19.2.18)':
+  '@lynx-js/react@0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18)':
     dependencies:
       '@types/react': 19.2.18
       preact: '@lynx-js/internal-preact@10.29.1-20260519060144-e6da44c'
+    optionalDependencies:
+      '@lynx-js/types': 4.1.0
 
   '@lynx-js/rsbuild-plugin@0.0.2(@rsbuild/core@2.1.7(core-js@3.50.0))':
     dependencies:
@@ -42564,9 +42575,13 @@ snapshots:
       - '@lynx-js/lynx-core'
       - tslib
 
-  '@lynx-js/use-sync-external-store@1.5.0(@lynx-js/react@0.123.3(@types/react@19.2.18))':
+  '@lynx-js/types@4.1.0':
     dependencies:
-      '@lynx-js/react': 0.123.3(@types/react@19.2.18)
+      csstype: 3.1.3
+
+  '@lynx-js/use-sync-external-store@1.5.0(@lynx-js/react@0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18))':
+    dependencies:
+      '@lynx-js/react': 0.123.3(@lynx-js/types@4.1.0)(@types/react@19.2.18)
 
   '@lynx-js/web-core@0.24.0(@lynx-js/css-serializer@0.1.7)(tslib@2.8.1)':
     dependencies:
@@ -55072,6 +55087,8 @@ snapshots:
     dependencies:
       '@asamuzakjp/css-color': 3.2.0
       rrweb-cssom: 0.8.0
+
+  csstype@3.1.3: {}
 
   csstype@3.2.3: {}
 
