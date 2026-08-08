@@ -138,7 +138,9 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   const { findRewriteAnchor, findClassSetAnchor } = loaderAnchorFinders
   const cssImportRewriteLoaderOptions = runtimeLoaderRewriteOptions && shouldInjectCssImportRewriteLoader
     ? {
-        generateCss: false,
+        // Rspeedy 的 ReactLynx CSS 规则在 loader hook 后不会执行动态插入的
+        // generation loader，Lynx 背景规则由 rewrite loader 直接生成。
+        generateCss: compilerOptions.platform === 'lynx',
         tailwindcssImportRewriteRuntimeKey: runtimeRegistryKey,
       }
     : undefined
@@ -196,6 +198,13 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
       }
       patchMpxLoaderResolve(_loaderContext, weappTailwindcssPackageDir, shouldRewriteCssImports && mpxCssImportRewrite)
       const loaderEntries = module.loaders || []
+      // ReactLynx 为同一 CSS 模块创建 main-thread/background 两条规则。
+      // main-thread 由 ignore-css-loader 丢弃，不能让它提前消费 Tailwind 源。
+      const isLynxMainThreadCss = compilerOptions.platform === 'lynx'
+        && (
+          (module as unknown as { layer?: string }).layer === 'react:main-thread'
+          || loaderEntries.some((entry: any) => entry.loader?.includes?.('ignore-css-loader'))
+        )
       let rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
       const classSetAnchorIdx = findClassSetAnchor(loaderEntries)
       const isCssModule = isCssLikeModuleResource(module.resource, compilerOptions.cssMatcher, appType)
@@ -209,7 +218,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
         markWebpackCssSourceModule?.(module.resource)
       }
       if (process.env['WEAPP_TW_LOADER_DEBUG'] && isCssModule) {
-        debug('loader hook css module: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
+        debug('loader hook css module: %s layer=%s loaders=%o anchors=%o', module.resource, (module as any).layer, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
       }
       if (process.env['WEAPP_TW_LOADER_DEBUG'] && typeof module.resource === 'string' && module.resource.endsWith('.css')) {
         debug('css module seen: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
@@ -230,6 +239,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
         && runtimeCssGenerationLoaderExists
         && runtimeCssGenerationLoader
         && isCssModule
+        && !isLynxMainThreadCss
         && !hasLoaderEntry(loaderEntries, runtimeCssGenerationLoader)
       ) {
         const generationLoaderEntry = createCssGenerationLoaderEntry()
@@ -248,6 +258,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
         && runtimeCssImportRewriteLoaderExists
         && runtimeCssImportRewriteLoader
         && isCssModule
+        && !isLynxMainThreadCss
       ) {
         const existingIndex = loaderEntries.findIndex(entry => entry.loader?.includes?.(runtimeCssImportRewriteLoader))
         const rewriteLoaderEntry = existingIndex !== -1

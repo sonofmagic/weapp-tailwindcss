@@ -19,13 +19,14 @@ import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
 import { collectWebpackBareSelectorUserCss } from '../BaseUnifiedPlugin/v5-assets/pipeline-helpers'
-import { getWebpackLoaderRuntime } from './runtime-registry'
+import { getLatestWebpackLoaderRuntime, getWebpackLoaderRuntime } from './runtime-registry'
 import { registerWebpackWatchFile } from './watch-dependencies'
 
 interface CssImportRewriteLoaderOptions extends WebpackCssImportRewriteLoaderOptions {}
 
 export function resolveWebpackCssPipelineLoaderOptions(options: CssImportRewriteLoaderOptions | undefined): CssImportRewriteLoaderOptions | undefined {
-  const runtime = getWebpackLoaderRuntime(options?.tailwindcssImportRewriteRuntimeKey)?.cssImportRewrite
+  const runtime = (getWebpackLoaderRuntime(options?.tailwindcssImportRewriteRuntimeKey)
+    ?? getLatestWebpackLoaderRuntime())?.cssImportRewrite
   return runtime
     ? {
         ...options,
