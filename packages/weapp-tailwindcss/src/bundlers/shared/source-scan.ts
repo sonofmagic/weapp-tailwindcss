@@ -88,6 +88,7 @@ export async function resolveSourceScanEntries(
   scanOptions: ResolveSourceScanOptions = {},
 ): Promise<ResolvedSourceScan | undefined> {
   const sourceOptions = resolveTailwindV4SourceOptionsFromRuntime(runtime)
+  const configuredSourceEntries = sourceOptions.sources ?? []
   const cssEntries = collectExistingCssEntries(options)
   if (cssEntries.length === 0 && !sourceOptions.css && !sourceOptions.cssSources?.length) {
     const scanRoot = scanOptions.root
@@ -103,7 +104,7 @@ export async function resolveSourceScanEntries(
   const entries: TailwindSourceEntry[] = []
   const cssInlineCandidates: TailwindInlineSourceCandidates[] = []
   const dependencies = new Set<string>()
-  let explicit = false
+  let explicit = configuredSourceEntries.length > 0
   let readableCssEntryCount = 0
   for (const cssEntry of cssEntries) {
     addSourceScanDependency(dependencies, cssEntry)
@@ -130,7 +131,7 @@ export async function resolveSourceScanEntries(
   })
   if (scanEntries.length > 0 || inlineCandidates || explicit || readableCssEntryCount > 0) {
     return createResolvedSourceScan({
-      entries: resolveExplicitSourceScanEntries(scanEntries, explicit),
+      entries: resolveExplicitSourceScanEntries([...configuredSourceEntries, ...scanEntries], explicit),
       explicit,
       inlineCandidates,
     }, dependencies)
@@ -140,7 +141,7 @@ export async function resolveSourceScanEntries(
     const resolved = await resolveTailwindV4EntriesFromCssCached(sourceOptions.css, sourceOptions.base ?? sourceOptions.projectRoot ?? process.cwd())
     return resolved
       ? createResolvedSourceScan(
-          createResolvedV4CssScanInput(resolved.entries, resolved.inlineCandidates, resolved.explicit),
+          createResolvedV4CssScanInput([...configuredSourceEntries, ...resolved.entries], resolved.inlineCandidates, explicit || resolved.explicit),
           new Set(resolved.dependencies),
         )
       : undefined
@@ -175,7 +176,7 @@ export async function resolveSourceScanEntries(
   })
   if (cssSourceScanEntries.length > 0 || cssSourceInlineCandidates || explicit) {
     return createResolvedSourceScan({
-      entries: resolveExplicitSourceScanEntries(cssSourceScanEntries, explicit),
+      entries: resolveExplicitSourceScanEntries([...configuredSourceEntries, ...cssSourceScanEntries], explicit),
       explicit,
       inlineCandidates: cssSourceInlineCandidates,
     }, dependencies)
@@ -191,9 +192,9 @@ export async function resolveSourceScanEntries(
   return resolved
     ? createResolvedSourceScan(
         createResolvedV4CssScanInput(
-          resolved.entries.length > 0 ? resolved.entries : [],
+          resolved.entries.length > 0 ? [...configuredSourceEntries, ...resolved.entries] : configuredSourceEntries,
           resolved.inlineCandidates,
-          resolved.entries.length > 0 ? resolved.explicit : false,
+          explicit || (resolved.entries.length > 0 ? resolved.explicit : false),
         ),
         new Set([...dependencies, ...resolved.dependencies]),
       )
