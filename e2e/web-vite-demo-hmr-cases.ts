@@ -38,7 +38,6 @@ const allWebViteHmrCases: WebViteHmrCase[] = [
     classTo: '<h1 data-web-vite-hmr="react-v4" className="m-0 text-[#ff0000] leading-[38px] font-semibold">',
     markerAttr: 'react-v4',
     styleRequired: false,
-    classFlowRequired: false,
   },
   {
     name: 'web vue vite Tailwind v4',
@@ -52,7 +51,6 @@ const allWebViteHmrCases: WebViteHmrCase[] = [
     markerAttr: 'vue-v4',
     expectedViteHmrPath: '/src/App.vue',
     styleRequired: false,
-    classFlowRequired: false,
     titleHmrRetry: true,
   },
   {
@@ -67,7 +65,6 @@ const allWebViteHmrCases: WebViteHmrCase[] = [
     markerAttr: 'vue-vite7-v4',
     expectedViteHmrPath: '/src/App.vue',
     styleRequired: false,
-    classFlowRequired: false,
     titleHmrRetry: true,
   },
   {
