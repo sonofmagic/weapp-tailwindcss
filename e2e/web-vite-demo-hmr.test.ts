@@ -39,6 +39,7 @@ const repoRoot = path.resolve(__dirname, '..')
 const localUrlRE = /Local:\s*(https?:\/\/\S+)/i
 const reloadMarker = 'web-vite-hmr-marker'
 const serverTimeoutMs = Number(process.env['E2E_WEB_VITE_HMR_TIMEOUT_MS'] ?? 120_000)
+const hmrLatencyLimitMs = Number(process.env['E2E_WEB_VITE_HMR_LATENCY_LIMIT_MS'] ?? 10_000)
 const pollIntervalMs = 100
 const iconifyClassTokens = [
   'i-[mdi--github-circle]',
@@ -562,6 +563,16 @@ async function waitForFlowElementStyle(page: Page, item: WebViteHmrCase, selecto
   throw new Error(`${item.name} Web HMR Tailwind class flow 样式未更新：${lastError}\nbody=${body}`)
 }
 
+async function measureHmrLatency(name: string, task: () => Promise<void>) {
+  const startedAt = performance.now()
+  await task()
+  const durationMs = Math.round(performance.now() - startedAt)
+  process.stdout.write(`[web-vite-hmr] ${name} ${durationMs}ms\n`)
+  if (durationMs > hmrLatencyLimitMs) {
+    throw new Error(`${name} HMR 耗时 ${durationMs}ms，超过 ${hmrLatencyLimitMs}ms 上限`)
+  }
+}
+
 function collectViteHmrMessages(page: Page) {
   const messages: ViteHmrMessage[] = []
   page.on('websocket', (socket) => {
@@ -780,52 +791,60 @@ describe('demo/web source HMR', () => {
       throw new Error(`${item.name} Web HMR class flow 初始样式不符合预期：${JSON.stringify(originalState)}`)
     }
 
-    await fs.writeFile(sourceFile, flow.addedSource, 'utf8')
     const addMessageStart = hmrMessages.length
-    await waitForFlowElementStyle(page, item, flow.selector, {
-      backgroundColor: 'rgb(255, 255, 255)',
-      borderTopColor: 'rgb(0, 255, 0)',
-      borderTopWidth: '1px',
-      className: originalState.className.replace('bg-white', 'border border-[#00ff00] bg-white'),
+    await measureHmrLatency(`${item.name} class add`, async () => {
+      await fs.writeFile(sourceFile, flow.addedSource, 'utf8')
+      await waitForFlowElementStyle(page, item, flow.selector, {
+        backgroundColor: 'rgb(255, 255, 255)',
+        borderTopColor: 'rgb(0, 255, 0)',
+        borderTopWidth: '1px',
+        className: originalState.className.replace('bg-white', 'border border-[#00ff00] bg-white'),
+      })
     })
     if (!item.reloadAllowed) {
       expectNoViteFullReload(item, hmrMessages, addMessageStart)
     }
     await expectPageSessionPreserved(page, item)
 
-    await fs.writeFile(sourceFile, flow.modifiedSource, 'utf8')
     const modifyMessageStart = hmrMessages.length
-    await waitForFlowElementStyle(page, item, flow.selector, {
-      backgroundColor: 'rgb(255, 255, 255)',
-      borderTopColor: 'rgb(255, 0, 170)',
-      borderTopWidth: '1px',
-      className: originalState.className.replace('bg-white', 'border border-[#ff00aa] bg-white'),
+    await measureHmrLatency(`${item.name} class modify`, async () => {
+      await fs.writeFile(sourceFile, flow.modifiedSource, 'utf8')
+      await waitForFlowElementStyle(page, item, flow.selector, {
+        backgroundColor: 'rgb(255, 255, 255)',
+        borderTopColor: 'rgb(255, 0, 170)',
+        borderTopWidth: '1px',
+        className: originalState.className.replace('bg-white', 'border border-[#ff00aa] bg-white'),
+      })
     })
     if (!item.reloadAllowed) {
       expectNoViteFullReload(item, hmrMessages, modifyMessageStart)
     }
     await expectPageSessionPreserved(page, item)
 
-    await fs.writeFile(sourceFile, flow.removedClassSource, 'utf8')
     const removeClassMessageStart = hmrMessages.length
-    await waitForFlowElementStyle(page, item, flow.selector, {
-      backgroundColor: 'rgb(255, 255, 255)',
-      borderTopColor: originalState.borderTopColor,
-      borderTopWidth: originalState.borderTopWidth,
-      className: originalState.className,
+    await measureHmrLatency(`${item.name} class remove`, async () => {
+      await fs.writeFile(sourceFile, flow.removedClassSource, 'utf8')
+      await waitForFlowElementStyle(page, item, flow.selector, {
+        backgroundColor: 'rgb(255, 255, 255)',
+        borderTopColor: originalState.borderTopColor,
+        borderTopWidth: originalState.borderTopWidth,
+        className: originalState.className,
+      })
     })
     if (!item.reloadAllowed) {
       expectNoViteFullReload(item, hmrMessages, removeClassMessageStart)
     }
     await expectPageSessionPreserved(page, item)
 
-    await fs.writeFile(sourceFile, original, 'utf8')
     const rollbackMessageStart = hmrMessages.length
-    await waitForFlowElementStyle(page, item, flow.selector, {
-      backgroundColor: 'rgb(255, 255, 255)',
-      borderTopColor: originalState.borderTopColor,
-      borderTopWidth: originalState.borderTopWidth,
-      className: originalState.className,
+    await measureHmrLatency(`${item.name} class rollback`, async () => {
+      await fs.writeFile(sourceFile, original, 'utf8')
+      await waitForFlowElementStyle(page, item, flow.selector, {
+        backgroundColor: 'rgb(255, 255, 255)',
+        borderTopColor: originalState.borderTopColor,
+        borderTopWidth: originalState.borderTopWidth,
+        className: originalState.className,
+      })
     })
     if (!item.reloadAllowed) {
       expectNoViteFullReload(item, hmrMessages, rollbackMessageStart)

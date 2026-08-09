@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { shouldUseGenericWebProductionFastPath } from '@/bundlers/vite/shared/generic-web-production-fast-path'
+import { shouldUseGenericWebFinalizerFastPath, shouldUseGenericWebProductionFastPath } from '@/bundlers/vite/shared/generic-web-production-fast-path'
 
 describe('generic Web production fast path', () => {
   const productionWeb = {
@@ -26,6 +26,29 @@ describe('generic Web production fast path', () => {
   ])('keeps the full pipeline for %s', (_label, overrides) => {
     expect(shouldUseGenericWebProductionFastPath({
       ...productionWeb,
+      ...overrides,
+    })).toBe(false)
+  })
+
+  it('enables the finalizer fast path only without platform-specific css structures', () => {
+    expect(shouldUseGenericWebFinalizerFastPath({
+      ...productionWeb,
+      hasFrameworkRootImportShells: false,
+      isHarmonyAppStyleTarget: false,
+      isNativeAppStyleTarget: false,
+    })).toBe(true)
+  })
+
+  it.each([
+    ['framework root import shell', { hasFrameworkRootImportShells: true }],
+    ['Harmony app styles', { isHarmonyAppStyleTarget: true }],
+    ['native app styles', { isNativeAppStyleTarget: true }],
+  ])('keeps the full finalizer for %s', (_label, overrides) => {
+    expect(shouldUseGenericWebFinalizerFastPath({
+      ...productionWeb,
+      hasFrameworkRootImportShells: false,
+      isHarmonyAppStyleTarget: false,
+      isNativeAppStyleTarget: false,
       ...overrides,
     })).toBe(false)
   })

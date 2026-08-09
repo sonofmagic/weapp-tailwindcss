@@ -110,6 +110,185 @@ describe('vite css finalizer output plugin', () => {
     expect(context.markCssAssetProcessed).not.toHaveBeenCalled()
   })
 
+  it('finalizes Generic Web css assets once without reading js chunks', async () => {
+    const transformGeneratedCss = vi.fn((css: string) => `${css}\n.finalized{display:block}`)
+    const hmrTimingRecorder = {
+      emitTotal: vi.fn(),
+      measure: vi.fn(),
+      record: vi.fn(),
+    }
+    const records = new Map<string, any>([
+      ['/project/src/app.css', {
+        css: '.app{color:red}.icon-mdi--home{display:inline-block}',
+        outputFile: 'assets/app.css',
+      }],
+      ['/project/src/admin.css', {
+        css: '.admin{color:blue}.text-sm{font-size:.875rem}',
+        outputFile: 'assets/admin.css',
+      }],
+    ])
+    const { context } = createContext({
+      frameworkName: 'generic',
+      opts: {
+        appType: 'native',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        htmlMatcher: (file: string) => file.endsWith('.html'),
+        mainCssChunkMatcher: () => false,
+        styleHandler: vi.fn(),
+        onUpdate: vi.fn(),
+        generator: { target: 'web' },
+      },
+      cssPipelineStrategy: { transformGeneratedCss },
+      hmrTimingRecorder,
+      getViteProcessedCssAssetResults: vi.fn(() => records.entries()),
+      isViteProcessedCssAsset: vi.fn((_asset: OutputAsset, file?: string) => file?.endsWith('.css') === true),
+      resolveCssAssetIdentity: vi.fn((_asset: OutputAsset, file?: string) => ({
+        kind: 'bundler-generated',
+        sourceFile: file === 'assets/app.css' ? '/project/src/app.css' : '/project/src/admin.css',
+      })),
+    })
+    const plugin = createViteCssFinalizerOutputPlugin(context as any)
+    const appCss = asset('assets/app.css', `${createBundlerGeneratedCssMarker('vite', '/project/src/app.css')}\n.app{color:red}.icon-mdi--home{display:inline-block}`)
+    const adminCss = asset('assets/admin.css', `${createBundlerGeneratedCssMarker('vite', '/project/src/admin.css')}\n.admin{color:blue}.text-sm{font-size:.875rem}`)
+    const jsChunk = {
+      type: 'chunk',
+      fileName: 'assets/app.js',
+      get code() {
+        throw new Error('Generic Web finalizer must not read JS chunks')
+      },
+    }
+    const bundle = {
+      'assets/app.css': appCss,
+      'assets/admin.css': adminCss,
+      'assets/app.js': jsChunk,
+    } as unknown as OutputBundle
+
+    await getHandler(plugin).call(plugin, {}, bundle)
+
+    expect(String(appCss.source)).toContain('.icon-mdi--home')
+    expect(String(adminCss.source)).toContain('.text-sm')
+    expect(String(appCss.source)).not.toContain('weapp-tailwindcss:generated-css')
+    expect(String(adminCss.source)).not.toContain('weapp-tailwindcss:generated-css')
+    expect(transformGeneratedCss).toHaveBeenCalledTimes(2)
+    expect(context.opts.styleHandler).not.toHaveBeenCalled()
+    expect(context.opts.onUpdate).toHaveBeenCalledTimes(2)
+    expect(hmrTimingRecorder.record).toHaveBeenCalledWith('cssFinalizer', expect.any(Number), {
+      timingDetails: expect.objectContaining({
+        'assets.enumerate': expect.any(Number),
+        'assets.markerCleanupWrite': expect.any(Number),
+        'finalizeWebCss': expect.any(Number),
+        'processedCss.collect': expect.any(Number),
+        'processedCss.inject': expect.any(Number),
+      }),
+    })
+    expect(hmrTimingRecorder.emitTotal).toHaveBeenCalledOnce()
+  })
+
+  it('falls back when a Generic Web processed css record has no final asset identity', async () => {
+    const records = new Map<string, any>([
+      ['/project/src/missing.css', {
+        css: '.missing{color:red}',
+        outputFile: 'assets/missing.css',
+      }],
+    ])
+    const { context } = createContext({
+      frameworkName: 'generic',
+      opts: {
+        appType: 'native',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        htmlMatcher: (file: string) => file.endsWith('.html'),
+        mainCssChunkMatcher: (file: string) => file === 'assets/app.css',
+        styleHandler: vi.fn(),
+        onUpdate: vi.fn(),
+        generator: { target: 'web' },
+      },
+      getViteProcessedCssAssetResults: vi.fn(() => records.entries()),
+      isViteProcessedCssAsset: vi.fn(() => false),
+    })
+    const plugin = createViteCssFinalizerOutputPlugin(context as any)
+    const output = asset('assets/app.css', '.app{color:red}')
+
+    await getHandler(plugin).call(plugin, {}, { 'assets/app.css': output })
+
+    expect(context.isCssAssetProcessed).toHaveBeenCalledWith(output, 'assets/app.css')
+    expect(context.markCssAssetProcessed).toHaveBeenCalledWith(output, 'assets/app.css')
+  })
+
+  it('uses the single HTML-owned css asset for a Generic Web registry result', async () => {
+    const records = new Map<string, any>([
+      ['/project/src/style.css', {
+        css: '.generated{color:red}.icon-\\[mdi--home\\]{display:inline-block}',
+        outputFile: 'src/style.css',
+      }],
+    ])
+    const { context } = createContext({
+      frameworkName: 'generic',
+      opts: {
+        appType: 'native',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        htmlMatcher: (file: string) => file.endsWith('.html'),
+        mainCssChunkMatcher: () => false,
+        styleHandler: vi.fn(),
+        onUpdate: vi.fn(),
+        generator: { target: 'web' },
+      },
+      getViteProcessedCssAssetResults: vi.fn(() => records.entries()),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      resolveCssAssetIdentity: vi.fn(() => ({ kind: 'user' })),
+    })
+    const plugin = createViteCssFinalizerOutputPlugin(context as any)
+    const indexCss = {
+      ...asset('assets/index.css', '.vite-output{color:red}'),
+      originalFileName: 'index.html',
+      originalFileNames: ['index.html'],
+    }
+    const monacoCss = asset('assets/monaco.css', '.monaco{color:blue}')
+
+    await getHandler(plugin).call(plugin, {}, {
+      'assets/index.css': indexCss,
+      'assets/monaco.css': monacoCss,
+    })
+
+    expect(String(indexCss.source)).toBe('.generated{color:red}.icon-\\[mdi--home\\]{display:inline-block}')
+    expect(String(monacoCss.source)).toBe('.monaco{color:blue}')
+    expect(context.opts.onUpdate).toHaveBeenCalledOnce()
+    expect(context.ensureRuntimeClassSet).not.toHaveBeenCalled()
+  })
+
+  it('falls back for ambiguous HTML-owned Generic Web css assets', async () => {
+    const records = new Map<string, any>([
+      ['/project/src/style.css', { css: '.generated{color:red}', outputFile: 'src/style.css' }],
+    ])
+    const { context } = createContext({
+      frameworkName: 'generic',
+      opts: {
+        appType: 'native',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        htmlMatcher: (file: string) => file.endsWith('.html'),
+        mainCssChunkMatcher: () => false,
+        styleHandler: vi.fn(),
+        onUpdate: vi.fn(),
+        generator: { target: 'web' },
+      },
+      getViteProcessedCssAssetResults: vi.fn(() => records.entries()),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      resolveCssAssetIdentity: vi.fn(() => ({ kind: 'user' })),
+    })
+    const plugin = createViteCssFinalizerOutputPlugin(context as any)
+    const first = { ...asset('assets/first.css', '.first{}'), originalFileName: 'first.html' }
+    const second = { ...asset('assets/second.css', '.second{}'), originalFileName: 'second.html' }
+
+    await getHandler(plugin).call(plugin, {}, {
+      'assets/first.css': first,
+      'assets/second.css': second,
+    })
+
+    expect(context.isCssAssetProcessed).toHaveBeenCalled()
+    expect(context.ensureRuntimeClassSet).not.toHaveBeenCalled()
+    expect(String(first.source)).not.toContain('.generated')
+    expect(String(second.source)).not.toContain('.generated')
+  })
+
   it('finalizes ordinary css assets through the configured style handler', async () => {
     const { context, opts } = createContext()
     const plugin = createViteCssFinalizerOutputPlugin(context as any)

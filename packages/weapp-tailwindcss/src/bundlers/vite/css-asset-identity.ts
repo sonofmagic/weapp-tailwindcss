@@ -40,8 +40,9 @@ export function createViteCssAssetIdentityResolver(
       }
     }
     else {
-      identity = candidates.some(options.isKnownProcessedSource)
-        ? { kind: 'bundler-generated' }
+      const processedSourceFile = candidates.find(options.isKnownProcessedSource)
+      identity = processedSourceFile
+        ? { kind: 'bundler-generated', sourceFile: processedSourceFile }
         : { kind: 'user' }
     }
     identityByAsset.set(asset, identity)
