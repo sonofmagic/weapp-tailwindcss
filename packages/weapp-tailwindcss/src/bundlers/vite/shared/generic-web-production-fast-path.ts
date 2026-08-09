@@ -8,6 +8,16 @@ interface GenericWebProductionFastPathOptions {
   watch: ResolvedConfig['build']['watch'] | undefined
 }
 
+interface GenericWebProductionBundleHooksOptions {
+  emitTiming: () => void
+  frameworkName: string
+  getHasProcessedCss: () => boolean
+  getIsWebGeneratorTarget: () => boolean
+  getResolvedConfig: () => ResolvedConfig | undefined
+  onEnd: () => void
+  onStart: () => void
+}
+
 /**
  * Generic Web 生产构建的 CSS 已在 Vite transform 阶段生成时，不需要再建立面向小程序的完整产物快照。
  */
@@ -19,4 +29,29 @@ export function shouldUseGenericWebProductionFastPath(
     && options.watch == null
     && options.isWebGeneratorTarget
     && options.hasProcessedCss
+}
+
+/**
+ * 将 Generic Web fast path 的判定和跳过生命周期集中起来，供 generateBundle hook 直接消费。
+ */
+export function createGenericWebProductionBundleHooks(
+  options: GenericWebProductionBundleHooksOptions,
+) {
+  return {
+    onSkipProcessBundle: () => {
+      options.onStart()
+      options.onEnd()
+      options.emitTiming()
+    },
+    shouldProcessBundle: () => {
+      const config = options.getResolvedConfig()
+      return !shouldUseGenericWebProductionFastPath({
+        command: config?.command,
+        frameworkName: options.frameworkName,
+        hasProcessedCss: options.getHasProcessedCss(),
+        isWebGeneratorTarget: options.getIsWebGeneratorTarget(),
+        watch: config?.build?.watch,
+      })
+    },
+  }
 }
