@@ -23,6 +23,7 @@ import { restoreFrameworkRootMiniProgramImportShellAssets } from '../generate-bu
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '../processed-css-assets'
 import { isHTMLRequest } from '../utils'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from '../weapp-vite-config'
+import { tryFinalizeGenericWebCss } from './generic-web-fast-path'
 import { collectViteProcessedCssSources, createCssHandlerOptions, finalizeWebCss, inferPlatformFromViteOutDir, registerGeneratorDependencies, shouldGenerateCssByGenerator } from './options'
 
 export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext): Plugin {
@@ -91,6 +92,25 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           resolvedConfig,
           resolveStylePlatform: () => generatorPlatform,
         })
+        const timingDetails: Record<string, number> = {}
+        const recordTiming = (phase: string, startedAt: number) => {
+          timingDetails[phase] = (timingDetails[phase] ?? 0) + Math.max(0, performance.now() - startedAt)
+        }
+        const finishTiming = () => {
+          context.hmrTimingRecorder?.record('cssFinalizer', performance.now() - finalizerStartedAt, {
+            timingDetails,
+          })
+          context.hmrTimingRecorder?.emitTotal()
+        }
+        const finalizeWebCssAsset = (css: string, file: string) => {
+          const startedAt = performance.now()
+          const finalized = finalizeWebCss(css, {
+            ...createCssPipelineContext(file),
+            file,
+          }, cssPipelineStrategy)
+          recordTiming('finalizeWebCss', startedAt)
+          return finalized
+        }
         const isHarmonyAppStyleTarget = cssPipelineStrategy?.isHarmonyAppStyleTarget?.(createCssPipelineContext('')) === true
         const isNativeAppStyleTarget = cssPipelineStrategy?.isNativeAppStyleTarget?.(createCssPipelineContext('')) === true
         if (resolvedConfig?.command !== 'build' && !isNativeAppStyleTarget) {
@@ -102,6 +122,22 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           : rootDir
         const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
           ?? resolveSourceRootFromBundleGraph(resolvedConfig, bundle)
+        const finalizerStartedAt = performance.now()
+        if (tryFinalizeGenericWebCss({
+          bundle,
+          context,
+          createCssPipelineContext,
+          isHarmonyAppStyleTarget,
+          isNativeAppStyleTarget,
+          isWebGeneratorTarget,
+          recordTiming,
+          rootDir,
+          sourceRoot,
+        })) {
+          finalizeCompilerShadowRun(runtimeState)
+          finishTiming()
+          return
+        }
         const finalCssAssetFiles = new Set<string>()
         const trackFinalCssAssetUpdate = (file: string, original: string, generated: string) => {
           finalCssAssetFiles.add(file)
@@ -129,6 +165,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         })
 
         const collectViteProcessedCssAssets = () => {
+          const startedAt = performance.now()
           collectViteProcessedCssAssetResults(bundle, {
             opts,
             cssPipelineStrategy,
@@ -141,29 +178,27 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget, sourceRoot, resolveMiniProgramStyleOutputExtension({
               files: Object.keys(bundle),
             }), Object.keys(bundle)),
-            transformCss: (css, file) => finalizeWebCss(css, {
-              ...createCssPipelineContext(file),
-              file,
-            }, cssPipelineStrategy),
+            transformCss: finalizeWebCssAsset,
             debug,
           })
+          recordTiming('processedCss.collect', startedAt)
         }
 
         const injectViteProcessedCssIntoMainCss = () => {
-          return injectViteProcessedCssIntoMainCssAssets(bundle, {
+          const startedAt = performance.now()
+          const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
             opts,
             cssPipelineStrategy,
             createCssPipelineContext,
             getViteProcessedCssAssetResults,
             markCssAssetProcessed,
             recordCssAssetResult,
-            transformCss: (css, file) => finalizeWebCss(css, {
-              ...createCssPipelineContext(file),
-              file,
-            }, cssPipelineStrategy),
+            transformCss: finalizeWebCssAsset,
             debug,
             onUpdate: trackFinalCssAssetUpdate,
           })
+          recordTiming('processedCss.inject', startedAt)
+          return injected
         }
 
         collectViteProcessedCssAssets()
@@ -236,7 +271,9 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           )
         }
 
+        const enumerateStartedAt = performance.now()
         const entries = Object.entries(bundle).filter(isCssOutputAssetEntry)
+        recordTiming('assets.enumerate', enumerateStartedAt)
 
         if (entries.length === 0) {
           const runtime = getRecordedGeneratorCandidates?.() ?? getSourceCandidates?.() ?? await ensureRuntimeClassSet()
@@ -259,6 +296,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             recordCssAssetResult,
           })
           finalizeCompilerShadowRun(runtimeState)
+          finishTiming()
           return
         }
 
@@ -295,14 +333,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
               }) ?? {},
             )
             const nextCss = annotateCss(generatorBranch.isWeb
-              ? finalizeWebCss(
-                  cleanRawSource,
-                  {
-                    ...createCssPipelineContext(file),
-                    file,
-                  },
-                  cssPipelineStrategy,
-                )
+              ? finalizeWebCssAsset(cleanRawSource, file)
               : (await opts.styleHandler(cleanRawSource, cssHandlerOptions)).css)
             writeCssAsset(file, output, nextCss)
             markCssAssetProcessed(output, file)
@@ -391,10 +422,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           }
           const nextCss = annotateCss(generated?.css ?? (
             generatorBranch.isWeb
-              ? finalizeWebCss(cleanRawSource, {
-                  ...createCssPipelineContext(file),
-                  file,
-                }, cssPipelineStrategy)
+              ? finalizeWebCssAsset(cleanRawSource, file)
               : (await opts.styleHandler(generatorTransformRawSource, cssHandlerOptions)).css
           ))
           if (generated) {
@@ -410,6 +438,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           opts.onUpdate(file, rawSource, nextCss)
           debug('css finalizer handle: %s', file)
         }))
+        const writeStartedAt = performance.now()
         applyViteAssetEmissionPlan(emissionPlan, {
           bundle,
           writeTargets,
@@ -433,6 +462,8 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           recordCssAssetResult,
         })
         finalizeCompilerShadowRun(runtimeState)
+        recordTiming('assets.write', writeStartedAt)
+        finishTiming()
       },
     },
   }

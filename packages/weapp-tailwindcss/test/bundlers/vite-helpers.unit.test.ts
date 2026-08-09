@@ -87,6 +87,7 @@ describe('bundlers/vite helper modules', () => {
       '/repo/src/generated.css',
     ]) as any)).toEqual({
       kind: 'bundler-generated',
+      sourceFile: '/repo/src/generated.css',
     })
     expect(resolveIdentity(createAsset('/* vite-placeholder */') as any)).toEqual({
       kind: 'user',

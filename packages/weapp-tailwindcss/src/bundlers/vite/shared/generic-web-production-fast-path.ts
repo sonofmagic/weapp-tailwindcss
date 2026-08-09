@@ -8,8 +8,13 @@ interface GenericWebProductionFastPathOptions {
   watch: ResolvedConfig['build']['watch'] | undefined
 }
 
+export interface GenericWebFinalizerFastPathOptions extends GenericWebProductionFastPathOptions {
+  hasFrameworkRootImportShells: boolean
+  isHarmonyAppStyleTarget: boolean
+  isNativeAppStyleTarget: boolean
+}
+
 interface GenericWebProductionBundleHooksOptions {
-  emitTiming: () => void
   frameworkName: string
   getHasProcessedCss: () => boolean
   getIsWebGeneratorTarget: () => boolean
@@ -32,6 +37,18 @@ export function shouldUseGenericWebProductionFastPath(
 }
 
 /**
+ * Finalizer fast path 只处理无小程序结构语义的 Generic Web 生产产物。
+ */
+export function shouldUseGenericWebFinalizerFastPath(
+  options: GenericWebFinalizerFastPathOptions,
+) {
+  return shouldUseGenericWebProductionFastPath(options)
+    && !options.hasFrameworkRootImportShells
+    && !options.isHarmonyAppStyleTarget
+    && !options.isNativeAppStyleTarget
+}
+
+/**
  * 将 Generic Web fast path 的判定和跳过生命周期集中起来，供 generateBundle hook 直接消费。
  */
 export function createGenericWebProductionBundleHooks(
@@ -41,7 +58,6 @@ export function createGenericWebProductionBundleHooks(
     onSkipProcessBundle: () => {
       options.onStart()
       options.onEnd()
-      options.emitTiming()
     },
     shouldProcessBundle: () => {
       const config = options.getResolvedConfig()

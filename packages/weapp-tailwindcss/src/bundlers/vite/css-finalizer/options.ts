@@ -1,6 +1,8 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { OutputAsset } from 'rollup'
 import type { ResolvedConfig } from 'vite'
+import type { HmrTimingRecorder } from '../../shared/hmr-timing'
+import type { ViteCssAssetIdentity } from '../css-asset-identity'
 import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from '../shared/framework-strategy'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
@@ -19,6 +21,7 @@ interface RememberedMainCssSource {
 }
 
 export interface CssFinalizerContext {
+  frameworkName?: string | undefined
   opts: InternalUserDefinedOptions
   runtimeState: {
     tailwindRuntime: InternalUserDefinedOptions['tailwindRuntime']
@@ -41,7 +44,9 @@ export interface CssFinalizerContext {
   rememberMainCssSource?: (file: string, rawSource: string) => void
   getRememberedMainCssSource?: (file: string) => RememberedMainCssSource | undefined
   isViteProcessedCssAsset?: (asset: OutputAsset, file?: string) => boolean
+  resolveCssAssetIdentity?: (asset: OutputAsset, file?: string) => ViteCssAssetIdentity
   frameworkRootImportShellTargetByFile?: ReadonlyMap<string, string> | undefined
+  hmrTimingRecorder?: HmrTimingRecorder | undefined
 }
 
 export interface CssFinalizerThis {

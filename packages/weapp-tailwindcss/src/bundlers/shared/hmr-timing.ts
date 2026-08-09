@@ -6,6 +6,7 @@ export interface HmrTimingDetails {
   hooks?: Record<string, HmrTimingHookSummary>
   metric?: 'hook' | 'total'
   memoryDebug?: Record<string, unknown> | undefined
+  timingDetails?: Record<string, number> | undefined
   wallMs?: number
 }
 
