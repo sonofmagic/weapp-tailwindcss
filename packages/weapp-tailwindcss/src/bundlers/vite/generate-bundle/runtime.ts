@@ -82,6 +82,7 @@ function createGenerateBundleHook(context): any {
   const cssHandlerOptions = createCssHandlerOptionsCache({ getAppType: () => context.opts.appType, mainCssChunkMatcher: context.opts.mainCssChunkMatcher, getMajorVersion: () => context.runtimeState.tailwindRuntime.majorVersion, getOutputRoot: () => currentOutDir, getExtraOptions: file => ({ ...resolveViteCssHandlerExtraOptions(file), ...context.cssPipelineStrategy?.getCssHandlerExtraOptions?.(createInitialCssPipelineContext(file)) ?? {}, ...currentSubpackageRoots && isSubpackageOutputFile(file, currentSubpackageRoots) ? { isMainChunk: false } : {} }) })
   return async function generateBundle(_opt, bundle) {
     if (context.shouldProcessBundle?.() === false) {
+      await context.onSkipProcessBundle?.()
       return
     }
     const processMarkupAndScripts = context.processMarkupAndScripts !== false

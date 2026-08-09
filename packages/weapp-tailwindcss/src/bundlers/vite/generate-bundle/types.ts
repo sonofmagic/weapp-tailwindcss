@@ -9,6 +9,7 @@ import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 
 export interface GenerateBundleContext {
+  onSkipProcessBundle?: (() => void | Promise<void>) | undefined
   processMarkupAndScripts?: boolean | undefined
   processStyles?: boolean | undefined
   shouldProcessBundle?: (() => boolean) | undefined

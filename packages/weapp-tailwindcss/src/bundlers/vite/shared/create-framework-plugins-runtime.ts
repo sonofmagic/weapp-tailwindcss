@@ -55,6 +55,7 @@ import { sameStringList } from './framework-runtime-options'
 import { createFrameworkSourceCandidatesPlugin } from './framework-source-candidates-plugin'
 import { createFrameworkSourceScanSession, syncFrameworkSourceCandidatesForHotUpdate } from './framework-source-scan-session'
 import { createFrameworkTailwindRootCss } from './framework-tailwind-root-css'
+import { shouldUseGenericWebProductionFastPath } from './generic-web-production-fast-path'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss'); const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir); const generatorPlaceholderCssFile = path.join(weappTailwindcssPackageDir, 'generator-placeholder.css'); const ENV_PLATFORM_KEYS = ['UNI_PLATFORM', 'UNI_UTS_PLATFORM', 'TARO_ENV', 'MPX_CURRENT_TARGET_MODE', 'MPX_CLI_MODE']
@@ -413,8 +414,27 @@ ${tracedCss}`
   }
   const generateBundleContext = { opts, runtimeState, ensureRuntimeClassSet, ensureBundleRuntimeClassSet, debug, getResolvedConfig, markCssAssetProcessed, isCssAssetProcessed, isViteProcessedCssAsset, resolveCssAssetIdentity, recordCssAssetResult, recordViteProcessedCssAssetResult, getViteProcessedCssAssetResults, getViteProcessedCssAssetResult, getSourceCandidates, getSourceCandidateSource: file => sourceCandidateCollector.source(file), getSourceCandidateSources: () => sourceCandidateCollector.sources(), extractSourceCandidates: (file, source) => extractCandidatesFromSource(source, path.extname(cleanUrl(file)).slice(1) || 'html', { bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues, customAttributesEntities, disabledDefaultTemplateHandler }), getSourceCandidatesForEntries, getSourceCandidateSourcesForEntries, waitForSourceCandidateSyncs: sourceScanSession.waitForPendingSyncs, rememberCssSource: cssMemory.rememberCssSource, getRememberedCssSources: cssMemory.getRememberedCssSources, getRememberedCssSignature: cssMemory.getRememberedCssSignature, setRememberedCssSignature: cssMemory.setRememberedCssSignature, getKnownCssSource: cssMemory.getKnownCssSource, getKnownSfcSource: cssMemory.getKnownSfcSource, getOriginalCssLayerSource: file => originalCssLayerSourceByFile.get(cleanUrl(file)), recordGeneratorCandidates, pruneViteCssCaches, getViteCssCacheStats, hmrTimingRecorder, cssPipelineStrategy: frameworkCssPipelineStrategy, frameworkRootImportShellTargetByFile }
   const shouldSplitGenerateBundlePhases = () => opts.appType === 'weapp-vite' && getResolvedConfig()?.mode !== 'production'
+  const shouldSkipGenericWebProductionBundle = () => {
+    const config = getResolvedConfig()
+    return shouldUseGenericWebProductionFastPath({
+      command: config?.command,
+      frameworkName: frameworkBranch.frameworkName,
+      hasProcessedCss: processedCssRegistry.getStats().viteProcessedCssAssetResults > 0,
+      isWebGeneratorTarget: resolveCurrentGeneratorBranch().isWeb,
+      watch: config?.build?.watch,
+    })
+  }
   const preGenerateBundleHook = createGenerateBundleHook({ ...generateBundleContext, processMarkupAndScripts: false, shouldProcessBundle: shouldSplitGenerateBundlePhases })
-  const generateBundleHook = createGenerateBundleHook({ ...generateBundleContext, shouldProcessStyles: () => !shouldSplitGenerateBundlePhases() })
+  const generateBundleHook = createGenerateBundleHook({
+    ...generateBundleContext,
+    onSkipProcessBundle: () => {
+      opts.onStart()
+      opts.onEnd()
+      hmrTimingRecorder.emitTotal()
+    },
+    shouldProcessBundle: () => !shouldSkipGenericWebProductionBundle(),
+    shouldProcessStyles: () => !shouldSplitGenerateBundlePhases(),
+  })
   const cssFinalizerOutputPlugin = createViteCssFinalizerOutputPlugin({ opts, runtimeState, ensureRuntimeClassSet, cssPipelineStrategy: frameworkCssPipelineStrategy, debug, getResolvedConfig, markCssAssetProcessed, isCssAssetProcessed, isViteProcessedCssAsset, recordCssAssetResult, recordViteProcessedCssAssetResult, getViteProcessedCssAssetResults, getRecordedGeneratorCandidates, getSourceCandidates, getSourceCandidatesForEntries, getSourceCandidateSourcesForEntries, waitForSourceCandidateSyncs: sourceScanSession.waitForPendingSyncs, frameworkRootImportShellTargetByFile, rememberMainCssSource: (file, rawSource) => cssMemory.rememberCssSource({ outputFile: file, rawSource, sourceFile: file }), getRememberedMainCssSource: cssMemory.getRememberedCssSourceEntry })
   const extraPluginPlatform = frameworkBranch.getExtraPluginPlatform?.() ?? {}
   const syncSourceCandidatesForHotUpdate = ctx => syncFrameworkSourceCandidatesForHotUpdate(sourceScanSession, ctx)
