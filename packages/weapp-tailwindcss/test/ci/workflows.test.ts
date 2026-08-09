@@ -750,7 +750,8 @@ describe('e2e watch workflow', () => {
 
     expect(workflow.jobs['pr-quick-gate'].strategy['fail-fast']).toBe(false)
     for (const watchCase of retainedDemoShards) {
-      expect(cases, `linux should cover ${watchCase}`).toContain(`linux:22:${watchCase}:default`)
+      const expectedProfile = watchCase === 'demo-core' ? 'main-style' : 'default'
+      expect(cases, `linux should cover ${watchCase}`).toContain(`linux:22:${watchCase}:${expectedProfile}`)
     }
     expect(cases).toContain('macos:22:demo-uni:default')
     expect(cases).toContain('macos:22:demo-core:main-style')
@@ -957,7 +958,10 @@ describe('e2e watch workflow', () => {
     })))
     const slowLinuxDemoCorePrBudget = {
       watch_case: 'demo-core',
-      round_profile: 'default',
+      round_profile: 'main-style',
+      watch_main_style_only: '1',
+      watch_main_style_subpackage_limit: '0',
+      watch_max_attempts: '1',
       timeout_minutes: 30,
       watch_timeout_ms: '420000',
       watch_max_plugin_process_ms: '60000',
