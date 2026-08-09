@@ -41,8 +41,8 @@ export async function readFileWithRetry(
     retryDelayMs?: number
   } = {},
 ) {
-  const retries = options.retries ?? 6
-  const retryDelayMs = options.retryDelayMs ?? 40
+  const retries = options.retries ?? 12
+  const retryDelayMs = options.retryDelayMs ?? 100
   let lastError: unknown
 
   for (let attempt = 0; attempt <= retries; attempt += 1) {
@@ -96,8 +96,8 @@ export async function writeFilePreserveEol(
     retryDelayMs?: number
   } = {},
 ) {
-  const retries = options.retries ?? 6
-  const retryDelayMs = options.retryDelayMs ?? 40
+  const retries = options.retries ?? 12
+  const retryDelayMs = options.retryDelayMs ?? 100
   const alignedContent = alignContentEol(content, source)
 
   for (let attempt = 0; attempt <= retries; attempt += 1) {
