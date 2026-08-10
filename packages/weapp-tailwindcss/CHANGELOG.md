@@ -1,5 +1,21 @@
 # weapp-tailwindcss
 
+## 5.2.13
+
+### Patch Changes
+
+- 🐛 **修复 Vite Web generator 在 monorepo 中通过 transform 和 HMR 扫描第三方依赖的问题，并保留显式 source 引入外部依赖的能力。** [#1062](https://github.com/sonofmagic/weapp-tailwindcss/pull/1062) by @sonofmagic
+
+- 🐛 **优化 Generic Vite Web 生产构建：当 Tailwind CSS 已在 Vite transform 阶段生成时，跳过面向小程序增量处理的完整 bundle snapshot，避免读取和散列无关的大型 JS chunk。小程序、uni-app、uni-app x、Taro、weapp-vite、watch 与 HMR 构建继续使用原有流水线。** [#1063](https://github.com/sonofmagic/weapp-tailwindcss/pull/1063) by @sonofmagic
+
+- 🐛 **优化 Generic Vite Web 生产构建的 CSS 收尾流程，复用 transform 阶段已登记的 CSS 产物身份，减少重复遍历和重复兼容处理，并补充分项性能计时。** [#1064](https://github.com/sonofmagic/weapp-tailwindcss/pull/1064) by @sonofmagic
+
+- 🐛 **新增 ReactLynx 与 Rspeedy 的 Tailwind CSS v4 构建集成，保留原生 className，并在构建期静态化 Tailwind theme 变量，输出 Lynx 原生运行时可消费的 CSS。** [#1055](https://github.com/sonofmagic/weapp-tailwindcss/pull/1055) by @sonofmagic
+
+- 🐛 **修复 Vite Web generator 默认扫描第三方依赖模块导致候选类污染和构建性能下降的问题，并让 `tailwindcss.v4.sources` 同时约束初始扫描与增量更新。** [#1061](https://github.com/sonofmagic/weapp-tailwindcss/pull/1061) by @sonofmagic
+- 📦 **Dependencies** [`8287ade`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8287ade3e759bad448d8954076573e2848f45fae)
+  → `@weapp-tailwindcss/postcss@3.2.10`
+
 ## 5.2.12
 
 ### Patch Changes

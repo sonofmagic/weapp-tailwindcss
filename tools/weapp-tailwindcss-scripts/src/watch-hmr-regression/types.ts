@@ -261,6 +261,7 @@ export interface WatchCase {
   project: string
   group: WatchProjectGroup
   requireInitialCompileSuccess?: boolean
+  requireInitialTemplateOutput?: boolean
   initialMutationDelayMs?: number
   initialBuildScript?: string
   maxPluginProcessMs?: number

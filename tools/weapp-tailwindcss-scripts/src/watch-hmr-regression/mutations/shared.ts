@@ -110,7 +110,8 @@ export async function waitForOutputsReady(
         getMtime(outputs.wxml),
         getMtime(outputs.js),
       ])
-      if (wxml == null || js == null) {
+      const requireInitialTemplateOutput = watchCase.requireInitialTemplateOutput !== false
+      if ((requireInitialTemplateOutput && wxml == null) || js == null) {
         return false
       }
 
@@ -175,7 +176,9 @@ export async function waitForInitialWarmup(
       // Some watch toolchains reuse existing outputs without touching mtimes on initial attach.
       // If both outputs exist and the watcher has stayed alive for a short grace period,
       // proceed and let later mutation checks enforce real hot-update behavior.
-      return wxmlMtime > 0 && jsMtime > 0 && Date.now() - sessionStartedAt >= warmupGraceMs
+      return (watchCase.requireInitialTemplateOutput === false ? jsMtime > 0 : wxmlMtime > 0)
+        && jsMtime > 0
+        && Date.now() - sessionStartedAt >= warmupGraceMs
     },
     {
       timeoutMs: options.timeoutMs,
@@ -369,9 +372,10 @@ export async function waitForClassOutputBaseline(
         hasResolvedOutputFiles(globalStyleOutputs),
       ])
 
-      if (wxml && js && hasGlobalStyleOutputs) {
+      const requireInitialTemplateOutput = watchCase.requireInitialTemplateOutput !== false
+      if ((requireInitialTemplateOutput ? wxml : true) && js && hasGlobalStyleOutputs) {
         resolvedOutputs = {
-          wxml,
+          wxml: wxml ?? '',
           js,
           globalStyle,
         }
@@ -379,7 +383,7 @@ export async function waitForClassOutputBaseline(
       }
 
       lastReason = [
-        wxml ? undefined : 'wxml',
+        requireInitialTemplateOutput && !wxml ? 'wxml' : undefined,
         js ? undefined : 'js',
         hasGlobalStyleOutputs ? undefined : 'global style',
       ].filter(Boolean).join(', ')

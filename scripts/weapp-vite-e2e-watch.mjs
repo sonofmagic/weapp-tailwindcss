@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process'
 import { readdir, stat } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
+import { pathToFileURL } from 'node:url'
 
 const READY_RE = /开发服务已就绪|dev(?:elopment)? server ready|ready in \d+/i
 const WEAK_READY_RE = /根据 Vite 项目根目录自动推断 appType/i
@@ -9,6 +10,15 @@ const pnpmExecPath = process.env.npm_execpath
 const sourceDirs = ['miniprogram', 'pages', 'packageA', 'packageB', 'sub-normal', 'sub-independent']
 const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
 const rootSourceFileRe = /^(?:app|tailwind\.config(?:\.[\w-]+)?)\.[cm]?[jt]s$|^app\.(?:wxss|css|s[ac]ss|less|json)$/i
+const supportedWatchPlatforms = new Set(['weapp', 'web', 'all'])
+
+export function resolveWatchPlatform(env = process.env) {
+  const platform = env.WEAPP_VITE_E2E_WATCH_PLATFORM?.trim() || 'weapp'
+  if (!supportedWatchPlatforms.has(platform)) {
+    throw new Error(`Unsupported WEAPP_VITE_E2E_WATCH_PLATFORM: ${platform}`)
+  }
+  return platform
+}
 
 function createPnpmCommand(args) {
   if (pnpmExecPath) {
@@ -147,11 +157,12 @@ function hasSnapshotChanged(previous, next) {
 
 async function main() {
   const runFallbackBuild = process.env.WEAPP_VITE_E2E_WATCH_BUILD_FALLBACK === '1'
+  const watchPlatform = resolveWatchPlatform()
   let resolveReady
   const ready = new Promise((resolve) => {
     resolveReady = resolve
   })
-  const dev = spawnPnpm(['exec', 'weapp-vite', 'dev', '--platform', 'all'])
+  const dev = spawnPnpm(['exec', 'weapp-vite', 'dev', '--platform', watchPlatform])
   let stopping = false
   let building = false
   let queued = false
@@ -241,7 +252,9 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  process.stderr.write(`${error.stack ?? error.message}\n`)
-  process.exitCode = 1
-})
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    process.stderr.write(`${error.stack ?? error.message}\n`)
+    process.exitCode = 1
+  })
+}

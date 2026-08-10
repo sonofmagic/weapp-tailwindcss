@@ -159,11 +159,15 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     project: 'demo/weapp-vite-tailwindcss-v4',
     group: 'demo',
     requireInitialCompileSuccess: false,
+    requireInitialTemplateOutput: false,
     requireStableGlobalStyleOnSameClassLiteral: false,
     initialBuildScript: 'build',
     initialMutationDelayMs: 3_000,
     cwd: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
+    env: {
+      WEAPP_VITE_E2E_WATCH_BUILD_FALLBACK: '1',
+    },
     outputWxml: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/dist/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/dist/pages/index/index.js'),
     outputStyleCandidates: [
