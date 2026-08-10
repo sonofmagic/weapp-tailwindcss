@@ -215,4 +215,98 @@ describe('bundlers/rspack patchRspackConfig', () => {
       '/virtual/weapp-tw-css-import-rewrite-loader.cjs',
     ])
   })
+
+  it('does not patch non-css rules even when their loader names contain css anchors', () => {
+    const config = {
+      module: {
+        rules: [
+          {
+            oneOf: [
+              {
+                test: /\.[jt]sx?$/,
+                use: [
+                  { loader: 'css-loader' },
+                  { loader: 'builtin:lightningcss-loader' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    }
+
+    patchRspackConfig(config, {
+      removeLightningCssLoader: true,
+      cssImportRewriteLoader: {
+        loader: '/virtual/weapp-tw-css-import-rewrite-loader.cjs',
+      },
+    })
+
+    expect(getUseLoaders(config)).toEqual([
+      'css-loader',
+      'builtin:lightningcss-loader',
+    ])
+  })
+
+  it('patches css rules identified by test metadata', () => {
+    const config = {
+      module: {
+        rules: [
+          {
+            oneOf: [
+              {
+                test: /\.css$/,
+                use: [
+                  { loader: 'css-loader' },
+                  { loader: 'builtin:lightningcss-loader' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    }
+
+    patchRspackConfig(config, {
+      cssImportRewriteLoader: {
+        loader: '/virtual/weapp-tw-css-import-rewrite-loader.cjs',
+      },
+    })
+
+    expect(getUseLoaders(config)).toEqual([
+      'css-loader',
+      'builtin:lightningcss-loader',
+      '/virtual/weapp-tw-css-import-rewrite-loader.cjs',
+    ])
+  })
+
+  it('patches style rules identified by resourceQuery metadata', () => {
+    const config = {
+      module: {
+        rules: [
+          {
+            oneOf: [
+              {
+                resourceQuery: /type=style/,
+                use: [
+                  { loader: 'postcss-loader' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    }
+
+    patchRspackConfig(config, {
+      cssImportRewriteLoader: {
+        loader: '/virtual/weapp-tw-css-import-rewrite-loader.cjs',
+      },
+    })
+
+    expect(getUseLoaders(config)).toEqual([
+      'postcss-loader',
+      '/virtual/weapp-tw-css-import-rewrite-loader.cjs',
+    ])
+  })
 })
