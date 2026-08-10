@@ -1,7 +1,7 @@
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import path from 'node:path'
 import { resolveProjectSourceFiles } from '@tailwindcss-mangle/engine'
-import { isFileExcludedByTailwindSourceEntries, isFileMatchedByTailwindSourceEntries, toPosixPath } from '@/tailwindcss/source-scan'
+import { isFileExcludedByTailwindSourceEntries, isFileMatchedByTailwindSourceEntries, resolveSourceScanPath, toPosixPath } from '@/tailwindcss/source-scan'
 
 const TAILWIND_V4_IGNORED_CONTENT_DIRS = [
   '.git',
@@ -148,9 +148,15 @@ function createDefaultIgnoredSources(
 }
 
 /** 创建与文件系统 root scan 一致的增量源码资格判断器。 */
-export function createSourceCandidateEligibilityMatcher(roots: SourceCandidateEligibilityRoot[]) {
+export function createSourceCandidateEligibilityMatcher(
+  roots: SourceCandidateEligibilityRoot[],
+  eligibleFiles?: Iterable<string>,
+) {
+  const eligibleFileSet = eligibleFiles === undefined
+    ? undefined
+    : new Set([...eligibleFiles].map(resolveSourceScanPath))
   const matchers = roots.map((options) => {
-    const root = path.resolve(options.root)
+    const root = resolveSourceScanPath(options.root)
     const outDirIgnore = resolveOutDirIgnorePattern(root, options.outDir)
     const entries = options.entries
     const explicit = options.explicit === true
@@ -166,10 +172,11 @@ export function createSourceCandidateEligibilityMatcher(roots: SourceCandidateEl
       }
       return isFileMatchedByTailwindSourceEntries(resolvedFile, entries)
         && !isFileExcludedByTailwindSourceEntries(resolvedFile, ignoredSources)
+        && (eligibleFileSet?.has(resolvedFile) ?? true)
     }
   })
   return (file: string) => {
-    const resolvedFile = path.resolve(file)
+    const resolvedFile = resolveSourceScanPath(file)
     return matchers.some(matches => matches(resolvedFile))
   }
 }

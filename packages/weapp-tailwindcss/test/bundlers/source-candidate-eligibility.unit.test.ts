@@ -1,8 +1,36 @@
 import path from 'node:path'
-import { describe, expect, it } from 'vitest'
-import { createSourceCandidateEligibilityMatcher } from '@/bundlers/shared/source-candidates/scan-root'
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import os from 'node:os'
+import { afterEach, describe, expect, it } from 'vitest'
+import { createSourceCandidateEligibilityMatcher, resolveSourceCandidateScanFiles } from '@/bundlers/shared/source-candidates/scan-root'
+
+const createdDirs: string[] = []
 
 describe('source candidate eligibility', () => {
+  afterEach(async () => {
+    await Promise.all(createdDirs.splice(0).map(dir => rm(dir, { recursive: true, force: true })))
+  })
+
+  it('uses scanner file identities to exclude gitignored transformed modules', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-source-eligibility-'))
+    const sourceFile = path.join(root, 'src/App.vue')
+    const ignoredFile = path.join(root, 'ignored-by-gitignore.js')
+    createdDirs.push(root)
+    await mkdir(path.dirname(sourceFile), { recursive: true })
+    await writeFile(path.join(root, '.gitignore'), 'ignored-by-gitignore.js\n')
+    await writeFile(sourceFile, '<template><view class="text-green-500" /></template>')
+    await writeFile(ignoredFile, 'export const className = "text-red-500"')
+
+    const files = await resolveSourceCandidateScanFiles({
+      filter: () => true,
+      root,
+    })
+    const matches = createSourceCandidateEligibilityMatcher([{ root }], files)
+
+    expect(matches(sourceFile)).toBe(true)
+    expect(matches(ignoredFile)).toBe(false)
+  })
+
   it('applies Tailwind default ignores to implicit root scans', () => {
     const root = path.resolve('workspace/packages/app')
     const matches = createSourceCandidateEligibilityMatcher([{ root, outDir: 'dist' }])

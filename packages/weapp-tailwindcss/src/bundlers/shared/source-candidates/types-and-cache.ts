@@ -14,6 +14,7 @@ export interface SourceCandidateStore {
   syncFile: (id: string) => Promise<void>
   syncCurrentSource: (id: string, source: string) => Promise<SourceCandidateChange>
   syncCurrentFile: (id: string) => Promise<SourceCandidateChange>
+  resolveScanFiles: (options: ScanSourceCandidateRootOptions) => Promise<string[]>
   scanRoot: (options: ScanSourceCandidateRootOptions) => Promise<void>
   syncInline: (inlineCandidates: TailwindInlineSourceCandidates | undefined) => void
   remove: (id: string) => SourceCandidateChange
@@ -58,6 +59,7 @@ export interface ScanSourceCandidateRootOptions {
   outDir?: string | undefined
   entries?: TailwindSourceEntry[] | undefined
   explicit?: boolean | undefined
+  onFilesResolved?: ((files: string[]) => void) | undefined
 }
 
 export interface SourceCandidateCollectorOptions {

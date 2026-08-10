@@ -132,7 +132,7 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     }
   }
 
-  async function scanRoot({ entries, explicit, root, outDir }: ScanSourceCandidateRootOptions) {
+  async function resolveScanFiles({ entries, explicit, root, outDir }: ScanSourceCandidateRootOptions) {
     const files = await resolveSourceCandidateScanFiles({
       entries,
       explicit,
@@ -140,7 +140,13 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
       outDir,
       root,
     })
-    await Promise.all(files.map(file => syncFile(resolveSourceScanPath(file))))
+    return files.map(resolveSourceScanPath)
+  }
+
+  async function scanRoot(options: ScanSourceCandidateRootOptions) {
+    const resolvedFiles = await resolveScanFiles(options)
+    options.onFilesResolved?.(resolvedFiles)
+    await Promise.all(resolvedFiles.map(syncFile))
   }
 
   function replaceFinal(id: string, nextCandidates: Set<string>) {
@@ -417,6 +423,7 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     syncFile,
     syncCurrentSource,
     syncCurrentFile,
+    resolveScanFiles,
     scanRoot,
     syncInline,
     remove,

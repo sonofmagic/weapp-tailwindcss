@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, rm } from 'node:fs/promises'
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -120,12 +120,14 @@ describe('vite framework source scan session', () => {
 
   it('keeps implicit transformed modules inside the source scan roots', async () => {
     const { appRoot, workspaceRoot } = await createTempWorkspace()
+    const appFile = path.join(appRoot, 'src/App.vue')
+    await mkdir(path.dirname(appFile), { recursive: true })
+    await writeFile(appFile, 'text-green-400')
     const extractor = vi.fn(async (source: string) => [source])
     const { session, sourceCandidateCollector } = createSession({ appRoot, extractor })
     await session.sync()
     extractor.mockClear()
 
-    const appFile = path.join(appRoot, 'src/App.vue')
     const dependencyFile = path.join(workspaceRoot, 'node_modules/monaco-editor/index.ts')
     await session.syncChangedFile(dependencyFile, 'text-blue-500')
     await session.syncChangedFile(appFile, 'text-green-500')
@@ -133,6 +135,34 @@ describe('vite framework source scan session', () => {
     expect(extractor).toHaveBeenCalledOnce()
     expect(extractor).toHaveBeenCalledWith('text-green-500', 'vue')
     expect(sourceCandidateCollector.values()).toEqual(new Set(['text-green-500']))
+  })
+
+  it('keeps gitignored modules out while accepting newly created source files', async () => {
+    const { appRoot } = await createTempWorkspace()
+    const ignoredFile = path.join(appRoot, 'ignored-by-gitignore.js')
+    const existingFile = path.join(appRoot, 'src/App.vue')
+    const newFile = path.join(appRoot, 'src/NewPage.vue')
+    await mkdir(path.dirname(existingFile), { recursive: true })
+    await writeFile(path.join(appRoot, '.gitignore'), 'ignored-by-gitignore.js\n')
+    await writeFile(ignoredFile, 'text-red-500')
+    await writeFile(existingFile, 'text-green-500')
+
+    const extractor = vi.fn(async (source: string) => [source])
+    const { session, sourceCandidateCollector } = createSession({ appRoot, extractor })
+    const resolveScanFiles = vi.spyOn(sourceCandidateCollector, 'resolveScanFiles')
+    await session.sync()
+    resolveScanFiles.mockClear()
+    extractor.mockClear()
+
+    await session.syncChangedFile(ignoredFile, 'text-red-500')
+    await session.syncChangedFile(ignoredFile, 'text-red-500')
+    await writeFile(newFile, 'text-sky-500')
+    await session.syncChangedFile(newFile, 'text-sky-500')
+
+    expect(resolveScanFiles).toHaveBeenCalledTimes(2)
+    expect(extractor).toHaveBeenCalledOnce()
+    expect(extractor).toHaveBeenCalledWith('text-sky-500', 'vue')
+    expect(sourceCandidateCollector.values()).toEqual(new Set(['text-green-500', 'text-sky-500']))
   })
 
   it('keeps explicitly configured dependency sources eligible outside the vite root', async () => {
