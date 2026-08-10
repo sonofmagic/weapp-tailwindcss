@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { patchRspackConfig } from '@/rspack'
 
 function getUseLoaders(config: any) {
@@ -145,5 +145,74 @@ describe('bundlers/rspack patchRspackConfig', () => {
     patchRspackConfig(config)
 
     expect(getUseLoaders(config)).toEqual(['builtin:swc-loader'])
+  })
+
+  it('keeps function use rules unchanged', () => {
+    const use = vi.fn()
+    const config = {
+      module: {
+        rules: [
+          {
+            oneOf: [
+              {
+                use,
+              },
+            ],
+          },
+        ],
+      },
+    }
+
+    patchRspackConfig(config)
+
+    expect(config.module.rules[0].oneOf[0].use).toBe(use)
+  })
+
+  it('preserves single non-css loader entries', () => {
+    const loader = { loader: 'builtin:swc-loader' }
+    const config = {
+      module: {
+        rules: [
+          {
+            oneOf: [
+              {
+                use: loader,
+              },
+            ],
+          },
+        ],
+      },
+    }
+
+    patchRspackConfig(config)
+
+    expect(config.module.rules[0].oneOf[0].use).toBe(loader)
+  })
+
+  it('can expand a single css loader entry when injecting rewrite loader', () => {
+    const config = {
+      module: {
+        rules: [
+          {
+            oneOf: [
+              {
+                use: { loader: 'css-loader' },
+              },
+            ],
+          },
+        ],
+      },
+    }
+
+    patchRspackConfig(config, {
+      cssImportRewriteLoader: {
+        loader: '/virtual/weapp-tw-css-import-rewrite-loader.cjs',
+      },
+    })
+
+    expect(config.module.rules[0].oneOf[0].use.map((item: any) => item.loader)).toEqual([
+      'css-loader',
+      '/virtual/weapp-tw-css-import-rewrite-loader.cjs',
+    ])
   })
 })

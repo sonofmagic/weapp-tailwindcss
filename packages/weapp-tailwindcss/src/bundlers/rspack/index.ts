@@ -11,11 +11,12 @@ type RspackUseItem = string | {
   options?: unknown
   [key: string]: unknown
 }
+type RspackRuleUse = RspackUseItem | RspackUseItem[] | ((...args: unknown[]) => unknown)
 
 interface RspackRuleLike {
   oneOf?: unknown[]
   rules?: unknown[]
-  use?: RspackUseItem | RspackUseItem[]
+  use?: RspackRuleUse
   [key: string]: unknown
 }
 
@@ -52,14 +53,30 @@ function isRuleLike(value: unknown): value is RspackRuleLike {
   return typeof value === 'object' && value !== null
 }
 
-function normalizeUse(use: RspackRuleLike['use']): RspackUseItem[] | undefined {
+function isRspackUseItem(value: unknown): value is RspackUseItem {
+  return typeof value === 'string' || (typeof value === 'object' && value !== null)
+}
+
+function normalizeRuleUse(use: RspackRuleLike['use']): {
+  entries: RspackUseItem[]
+  commit: (entries: RspackUseItem[]) => RspackRuleUse
+} | undefined {
   if (Array.isArray(use)) {
-    return use
+    return {
+      entries: use,
+      commit: entries => entries,
+    }
   }
   if (use === undefined) {
     return undefined
   }
-  return [use]
+  if (!isRspackUseItem(use)) {
+    return undefined
+  }
+  return {
+    entries: [use],
+    commit: entries => entries.length === 1 ? entries[0]! : entries,
+  }
 }
 
 function getLoaderName(item: RspackUseItem | undefined) {
@@ -91,10 +108,11 @@ function resolveCssImportRewriteOptions(
 }
 
 function patchRuleUse(rule: RspackRuleLike, options: PatchRspackConfigOptions) {
-  let use = normalizeUse(rule.use)
-  if (!use) {
+  const normalizedUse = normalizeRuleUse(rule.use)
+  if (!normalizedUse) {
     return
   }
+  let use = normalizedUse.entries
 
   if (options.removeLightningCssLoader) {
     use = use.filter(item => !includesLoaderName(item, LIGHTNING_CSS_LOADER_NAME))
@@ -114,7 +132,7 @@ function patchRuleUse(rule: RspackRuleLike, options: PatchRspackConfigOptions) {
     }
   }
 
-  rule.use = use
+  rule.use = normalizedUse.commit(use)
 }
 
 function walkRspackRule(rule: unknown, options: PatchRspackConfigOptions) {
