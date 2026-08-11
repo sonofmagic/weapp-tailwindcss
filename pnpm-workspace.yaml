@@ -91,7 +91,7 @@ catalogs:
   iconifyJson:
     '@iconify-json/line-md': ^1.2.16
     '@iconify-json/logos': ^1.2.12
-    '@iconify-json/lucide': ^1.2.122
+    '@iconify-json/lucide': ^1.2.123
     '@iconify-json/mdi': ^1.2.3
     '@iconify-json/mdi-light': ^1.2.2
     '@iconify-json/svg-spinners': ^1.2.4
@@ -128,7 +128,7 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   rsbuild2:
-    '@rsbuild/core': ^2.1.10
+    '@rsbuild/core': ^2.1.11
     '@rsbuild/plugin-react': ^2.1.0
     '@rsbuild/plugin-vue': ^2.0.1
   sass195:
@@ -207,7 +207,7 @@ catalogs:
   metroReactNativeBabelPreset077:
     metro-react-native-babel-preset: 0.77.0
   tsx:
-    tsx: ^4.23.11
+    tsx: ^4.23.12
   typesNode2410:
     '@types/node': ^26.2.0
   typescript59:
@@ -253,8 +253,8 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^6.0.4
+    weapp-ide-cli: ^6.0.5
   weappVite:
-    weapp-vite: ^6.19.4
+    weapp-vite: ^6.20.0
   wrangler:
-    wrangler: ^4.120.0
+    wrangler: ^4.120.1
