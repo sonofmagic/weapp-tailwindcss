@@ -279,11 +279,11 @@ test.describe('homepage locale detection', () => {
     await expect(page.locator('html')).toHaveAttribute('lang', /en/i)
   })
 
-  test('keeps Chinese as the default when language detection does not match English', async ({ page }) => {
+  test('keeps Chinese when navigator languages include Chinese', async ({ page }) => {
     await page.addInitScript((key) => {
       window.localStorage.removeItem(key)
     }, localeStorageKey)
-    await setNavigatorLanguages(page, ['fr-FR'])
+    await setNavigatorLanguages(page, ['en-US', 'en', 'zh-CN'])
 
     await page.goto(baseURL, {
       waitUntil: 'networkidle',
@@ -292,6 +292,21 @@ test.describe('homepage locale detection', () => {
     await expect(page).toHaveURL(/https?:\/\/[^/]+\/?$/)
     await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/开始接入/)
     await expect(page.locator('html')).toHaveAttribute('lang', /zh/i)
+  })
+
+  test('redirects non-Chinese browser languages to English', async ({ page }) => {
+    await page.addInitScript((key) => {
+      window.localStorage.removeItem(key)
+    }, localeStorageKey)
+    await setNavigatorLanguages(page, ['fr-FR', 'fr'])
+
+    await page.goto(baseURL, {
+      waitUntil: 'networkidle',
+    })
+
+    await expect(page).toHaveURL(/\/en\/?$/)
+    await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/Start setup/)
+    await expect(page.locator('html')).toHaveAttribute('lang', /en/i)
   })
 
   test('respects stored English preference on the root page', async ({ page }) => {

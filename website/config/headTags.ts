@@ -52,9 +52,11 @@ const localeBootstrapScript = `
     const navigatorLocales = Array.isArray(window.navigator.languages) && window.navigator.languages.length
       ? window.navigator.languages
       : [window.navigator.language];
-    const browserLocale = navigatorLocales.find(candidate => typeof candidate === 'string' && candidate.toLowerCase().startsWith('en'))
-      ? 'en'
-      : ${JSON.stringify(defaultSiteLocale)};
+    const hasChineseLocale = navigatorLocales.some(candidate =>
+      typeof candidate === 'string' && candidate.toLowerCase().startsWith('zh'));
+    const browserLocale = hasChineseLocale
+      ? ${JSON.stringify(defaultSiteLocale)}
+      : 'en';
     const targetLocale = storedLocale || browserLocale;
     if (targetLocale !== 'en') {
       return;
