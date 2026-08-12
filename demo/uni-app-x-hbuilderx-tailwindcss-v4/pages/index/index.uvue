@@ -1,5 +1,6 @@
 <script lang="uts">
 	import WeappTailwindcss from '../../components/WeappTailwindcss.uvue'
+	import ANavbar from '../../components/a-navbar/a-navbar.uvue'
 	import BindClass from '../../components/BindClass.uvue'
 	import Issue1019Button from '../../components/issue-1019-button/issue-1019-button.uvue'
 	import Issue1019StyleKey from '../../components/issue-1019-style-key/issue-1019-style-key.uvue'
@@ -28,6 +29,7 @@
 	export default {
 		styleIsolation: 'app',
 		components: {
+			ANavbar,
 			BindClass,
 			Issue1019Button,
 			Issue1019StyleKey,
@@ -69,6 +71,17 @@
 		<Issue1019StyleKey />
 		<Issue1021Cell />
 		<ZPagingProbe />
+		<a-navbar
+			leftClass="issue-navbar-left bg-primary w-[100rpx]! h-[100rpx] px-[30rpx]"
+			rightClass="issue-navbar-right bg-[#102938] w-[100rpx]! h-[100rpx] p-[12rpx]"
+		>
+			<template #left>
+				<image src="/static/logo.png" class="issue-navbar-image w-[100rpx]! h-[100rpx] rounded-[10rpx]" />
+			</template>
+			<template #right>
+				<text class="text-[#f7fbff]">right</text>
+			</template>
+		</a-navbar>
 		<view class="w-full bg-[#164e63] p-[12px] issue-1002-probe">
 			<text class="text-xs text-white">issue-1002 text-xs</text>
 			<text class="text-sm text-white">issue-1002 text-sm</text>

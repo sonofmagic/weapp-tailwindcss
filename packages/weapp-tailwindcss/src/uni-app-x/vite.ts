@@ -17,6 +17,7 @@ import { toAbsoluteOutputPath } from '@/bundlers/shared/module-graph'
 import { parseVueRequest } from '@/bundlers/vite/query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest, normalizePath } from '@/bundlers/vite/utils'
 import { logger } from '@/logger'
+import { shouldEnablePageLocalStyle as isPageLocalStyleFile } from '@/uni-app-x/component-local-style'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { resolveUniUtsPlatform } from '@/utils'
 import { omitUndefined } from '@/utils/object'
@@ -35,18 +36,16 @@ import { createUniAppXHarmonyApplyExpander } from './vite/harmony-apply'
 import { createUniAppXNativeHmrReloader } from './vite/native-hmr'
 import { createUniAppXNativeBuildTargetResolver } from './vite/native-target'
 import { isCssModuleExport, resolvePreprocessorTransform, resolveUniAppXCssTarget } from './vite/style-request'
+import { createUniAppXWebLocalStyleBridge } from './vite/web-local-style'
 
 type TransformUVue = typeof import('./transform')['transformUVue']
 let transformUVuePromise: Promise<TransformUVue> | undefined
-
 function loadTransformUVue(): Promise<TransformUVue> {
   transformUVuePromise ??= import('./transform').then(mod => mod.transformUVue)
   return transformUVuePromise
 }
-
 const UVUE_NVUE_QUERY_RE = /\.(?:uvue|nvue)(?:\?.*)?$/
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)$/
-
 function resolveUniAppXJsTransformEnabled(uniAppX: InternalUserDefinedOptions['uniAppX'] | undefined) {
   return uniAppX === undefined ? true : isUniAppXEnabled(uniAppX)
 }
@@ -92,6 +91,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     }
   }>()
   const nativeLocalStyleModuleIds = new Set<string>()
+  const webLocalStyle = createUniAppXWebLocalStyleBridge(isWebGeneratorTarget)
   let componentLocalStyleEnabled: boolean | undefined
   const isNativeAppBuildTarget = createUniAppXNativeBuildTargetResolver(getResolvedConfig)
   const nativeHmrReloader = createUniAppXNativeHmrReloader({
@@ -102,7 +102,6 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     tailwindRootCssModuleIds,
     viteProcessedCssSourceFiles,
   })
-
   function shouldEnableComponentLocalStyle() {
     if (!resolvedUniAppXOptions.componentLocalStyles.enabled) {
       componentLocalStyleEnabled = false
@@ -119,18 +118,15 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     componentLocalStyleEnabled = resolveUniAppXStyleIsolationEnabled(root)
     return componentLocalStyleEnabled
   }
-
-  function shouldEnableNativePageLocalStyle(id: string) {
-    return isNativeAppBuildTarget(id) && resolvedUniAppXOptions.componentLocalStyles.enabled
+  function shouldEnablePageLocalStyleForFile(id: string) {
+    return resolvedUniAppXOptions.componentLocalStyles.enabled && (isNativeAppBuildTarget(id) || isPageLocalStyleFile(id))
   }
-
   function isHarmonyBuildTarget() {
     if (resolveUniUtsPlatform().isAppHarmony) {
       return true
     }
     return isUniAppXHarmonyOutDir(getResolvedConfig()?.build?.outDir)
   }
-
   function getStyleHandlerOptions(id: string, source?: 'tailwind-root' | 'author-apply') {
     const isMainChunk = source === 'tailwind-root' || mainCssChunkMatcher(id, appType)
     const cacheKey = `${isMainChunk ? '1' : '0'}:${source ?? ''}:${id}`
@@ -158,7 +154,6 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     }
     return styleHandlerOptions
   }
-
   function reportStyleWarnings(result: Awaited<ReturnType<typeof styleHandler>>) {
     const warnings = typeof result.warnings === 'function' ? result.warnings() : []
     for (const warning of warnings) {
@@ -230,7 +225,6 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       return result.css
     },
   })
-
   const cssPrePlugin: Plugin = {
     name: 'weapp-tailwindcss:uni-app-x:css:pre',
     enforce: 'pre',
@@ -240,18 +234,18 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       }
       await runtimeState.readyPromise
       const { query } = parseVueRequest(id)
-      const preprocessor = resolvePreprocessorTransform(code, id, query.lang, {
+      const styleCode = query.vue && query.type === 'style' ? webLocalStyle.appendToStyle(code, id) : code
+      const preprocessor = resolvePreprocessorTransform(styleCode, id, query.lang, {
         isIosPlatform,
         isNativeAppStyleTarget: isNativeAppStyleTarget(),
         isWebGeneratorTarget: isWebGeneratorTarget(),
       })
       if (preprocessor) {
-        return preprocessor.result
+        return preprocessor.result ?? (styleCode !== code ? { code: styleCode, map: null } : undefined)
       }
-      return transformStyle(code, id, query, this)
+      return transformStyle(styleCode, id, query, this)
     },
   }
-
   const cssPlugin: Plugin = {
     name: 'weapp-tailwindcss:uni-app-x:css',
     async transform(code, id) {
@@ -264,6 +258,38 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   }
 
   const cssPlugins = [cssPlugin, cssPrePlugin]
+
+  async function transformSfc(code: string, id: string, context: { addWatchFile?: (id: string) => void }) {
+    if (isNativeAppBuildTarget(id)) {
+      nativeLocalStyleModuleIds.add(id)
+      nativeLocalStyleModuleIds.add(cleanUrl(id))
+    }
+    harmonyApply.rememberSource(code, id, true)
+    const resolvedConfig = getResolvedConfig()
+    const shouldForceRefresh = resolvedConfig?.command === 'serve' || resolvedConfig?.command === 'build'
+    const currentRuntimeSet: Set<string> = await ensureRuntimeClassSet(shouldForceRefresh)
+    nativeHmrReloader.remember(currentRuntimeSet)
+    const transformUVue = await loadTransformUVue()
+    const enableComponentLocalStyle = shouldEnableComponentLocalStyle()
+    const enablePageLocalStyle = shouldEnablePageLocalStyleForFile(id)
+    const transformOptions = omitUndefined({
+      ...(customAttributesEntities.length > 0 ? { customAttributesEntities } : {}),
+      ...(disabledDefaultTemplateHandler ? { disabledDefaultTemplateHandler } : {}),
+      ...(enableComponentLocalStyle ? { enableComponentLocalStyle } : {}),
+      ...(enablePageLocalStyle ? { enablePageLocalStyle } : {}),
+      ...(isWebGeneratorTarget() && customAttributesEntities.length > 0 ? { webCustomAttributeDeep: true } : {}),
+      ...(isWebGeneratorTarget() ? { onWebLocalStyleRules: (rules: string) => webLocalStyle.remember(id, rules) } : {}),
+    })
+    const result = Object.keys(transformOptions).length > 0
+      ? transformUVue(code, id, jsHandler, currentRuntimeSet, transformOptions)
+      : transformUVue(code, id, jsHandler, currentRuntimeSet)
+    if (!result?.code) {
+      return result
+    }
+    harmonyApply.rememberSource(result.code, id)
+    const expandedCode = await harmonyApply.expandStyles(result.code, id, context)
+    return expandedCode === result.code ? result : { code: expandedCode, map: null }
+  }
 
   const nvuePlugin: Plugin = {
     name: 'weapp-tailwindcss:uni-app-x:nvue',
@@ -283,60 +309,23 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         if (!UVUE_NVUE_QUERY_RE.test(id)) {
           return
         }
-        if (isNativeAppBuildTarget(id)) {
-          nativeLocalStyleModuleIds.add(id)
-          nativeLocalStyleModuleIds.add(cleanUrl(id))
-        }
-        harmonyApply.rememberSource(code, id, true)
-        const resolvedConfig = getResolvedConfig()
-        const isServeCommand = resolvedConfig?.command === 'serve'
-        const isWatchBuild = resolvedConfig?.command === 'build' && !!resolvedConfig.build?.watch
-        const isNonWatchBuild = resolvedConfig?.command === 'build' && !resolvedConfig.build?.watch
-        const shouldForceRefresh = isServeCommand || isWatchBuild || isNonWatchBuild
-        const currentRuntimeSet: Set<string> = shouldForceRefresh
-          ? await ensureRuntimeClassSet(true)
-          : await ensureRuntimeClassSet()
-        nativeHmrReloader.remember(currentRuntimeSet)
-        const transformUVue = await loadTransformUVue()
-        const enableComponentLocalStyle = shouldEnableComponentLocalStyle()
-        const enablePageLocalStyle = shouldEnableNativePageLocalStyle(id)
-        const shouldPassOptions = customAttributesEntities.length > 0
-          || disabledDefaultTemplateHandler
-          || enableComponentLocalStyle
-          || enablePageLocalStyle
-        const result = shouldPassOptions
-          ? transformUVue(code, id, jsHandler, currentRuntimeSet, omitUndefined({
-              ...(customAttributesEntities.length > 0 ? { customAttributesEntities } : {}),
-              ...(disabledDefaultTemplateHandler ? { disabledDefaultTemplateHandler } : {}),
-              ...(enableComponentLocalStyle ? { enableComponentLocalStyle } : {}),
-              ...(enablePageLocalStyle ? { enablePageLocalStyle } : {}),
-            }))
-          : transformUVue(code, id, jsHandler, currentRuntimeSet)
-        if (result?.code) {
-          harmonyApply.rememberSource(result.code, id)
-          const expandedCode = await harmonyApply.expandStyles(result.code, id, this)
-          if (expandedCode !== result.code) {
-            return {
-              code: expandedCode,
-              map: null,
-            }
-          }
-        }
-        return result
+        return transformSfc(code, id, this)
       },
     },
-    async handleHotUpdate(ctx) {
-      if (!isEnabled()) {
-        return
-      }
-      const resolvedConfig = getResolvedConfig()
-      if (resolvedConfig?.command !== 'serve') {
-        return
-      }
-      if (!UVUE_NVUE_RE.test(ctx.file) && !isCSSRequest(ctx.file)) {
-        return
-      }
-      return nativeHmrReloader.handleHotUpdate(ctx)
+    handleHotUpdate: {
+      order: 'post',
+      async handler(ctx) {
+        if (!isEnabled() || getResolvedConfig()?.command !== 'serve') {
+          return
+        }
+        if (!UVUE_NVUE_RE.test(ctx.file) && !isCSSRequest(ctx.file)) {
+          return
+        }
+        if (isWebGeneratorTarget() && UVUE_NVUE_RE.test(ctx.file) && typeof ctx.read === 'function') {
+          await transformSfc(await ctx.read(), ctx.file, this)
+        }
+        return webLocalStyle.handleHotUpdate(ctx) ?? nativeHmrReloader.handleHotUpdate(ctx)
+      },
     },
     async watchChange(id) {
       if (!isEnabled()) {

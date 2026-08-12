@@ -152,6 +152,12 @@ describe('Vite source candidate HMR transactions', () => {
     expect(result).toEqual([pageModule, cssModule])
     expect(invalidateModule).toHaveBeenCalledWith(cssModule)
     await Promise.resolve()
+    expect(wsSend).not.toHaveBeenCalledWith({
+      type: 'update',
+      updates: expect.arrayContaining([
+        expect.objectContaining({ path: '/pages/index.uvue' }),
+      ]),
+    })
     expect(wsSend).toHaveBeenCalledWith({
       type: 'update',
       updates: expect.arrayContaining([

@@ -16,7 +16,7 @@ function extractInjectedStyle(code: string) {
 }
 
 function extractAliasByUtility(styleBlock: string) {
-  const entries = [...styleBlock.matchAll(/\.([A-Za-z0-9-]+) \{\n  @apply ([^;]+);/g)]
+  const entries = [...styleBlock.matchAll(/\.([A-Za-z0-9-]+)(?:, :deep\(\.[A-Za-z0-9-]+\))? \{\n  @apply ([^;]+);/g)]
   return new Map(entries.map(match => [match[2], match[1]]))
 }
 
@@ -170,6 +170,59 @@ const condition = true
     expect(result?.code).toContain(`foo-class="${replaceWxml('bg-[#121212]')}"`)
     expect(result?.code).toContain(replaceWxml('bg-[#343434]'))
     expect(result?.code).toContain(replaceWxml('text-[#565656]'))
+  })
+
+  it('localizes slot content and explicitly configured component class props', () => {
+    const { jsHandler } = getCompilerContext({ uniAppX: true })
+    const runtimeSet = new Set<string>([
+      'bg-primary',
+      'w-[100rpx]!',
+      'h-[100rpx]',
+      'rounded-[10rpx]',
+      'px-[30rpx]',
+    ])
+    const code = `
+<template>
+  <a-navbar
+    leftClass="bg-primary w-[100rpx]!"
+    :rightClass="active ? 'bg-primary px-[30rpx]' : ''"
+    label="w-[100rpx]!"
+  >
+    <template #left>
+      <view>222</view>
+    </template>
+  </a-navbar>
+  <image src="/static/logo.png" class="w-[100rpx]! h-[100rpx] rounded-[10rpx]" />
+</template>
+`
+    const result = transformUVue(
+      code,
+      '/src/pages/navbar/index.uvue',
+      jsHandler,
+      runtimeSet,
+      {
+        customAttributesEntities: [
+          ['a-navbar', ['leftClass', 'rightClass']],
+        ],
+        enablePageLocalStyle: true,
+        webCustomAttributeDeep: true,
+      },
+    )
+
+    const styleBlock = extractInjectedStyle(result!.code)
+    const aliasByUtility = extractAliasByUtility(styleBlock)
+    for (const utility of runtimeSet) {
+      expect(aliasByUtility.get(utility), utility).toBeTruthy()
+      expect(styleBlock).toContain(`@apply ${utility};`)
+    }
+    expect(result?.code).toContain(`leftClass="${aliasByUtility.get('bg-primary')} ${aliasByUtility.get('w-[100rpx]!')}"`)
+    expect(result?.code).toContain(aliasByUtility.get('px-[30rpx]')!)
+    expect(result?.code).toContain(`class="${aliasByUtility.get('w-[100rpx]!')} ${aliasByUtility.get('h-[100rpx]')} ${aliasByUtility.get('rounded-[10rpx]')}"`)
+    expect(result?.code).toContain('<template #left>')
+    expect(result?.code).toContain('label="w-[100rpx]!"')
+    expect(styleBlock).not.toContain('@apply issue-navbar;')
+    expect(styleBlock).toContain(`.${aliasByUtility.get('bg-primary')}, :deep(.${aliasByUtility.get('bg-primary')})`)
+    expect(styleBlock).not.toContain(`:deep(.${aliasByUtility.get('h-[100rpx]')})`)
   })
 
   it('honors disabledDefaultTemplateHandler with custom class rules', () => {

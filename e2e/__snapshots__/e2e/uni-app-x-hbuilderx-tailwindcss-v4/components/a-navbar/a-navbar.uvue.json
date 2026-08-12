@@ -1,0 +1,9 @@
+{
+  "file": "components/a-navbar/a-navbar.uvue",
+  "count": 3,
+  "tokens": [
+    "flex-row",
+    "items-center",
+    "justify-between"
+  ]
+}

@@ -196,7 +196,9 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
             ? await resolveHotSourceModules(ctx)
             : ctx.modules
           if (isWebLikeHotUpdate && isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)) {
-            sendSupplementalSourceHotUpdates(ctx, sourceModules)
+            if (!/\.(?:uvue|nvue)$/i.test(cleanUrl(ctx.file))) {
+              sendSupplementalSourceHotUpdates(ctx, sourceModules)
+            }
             if (sourceModules.some((mod) => {
               const id = mod.id ?? mod.url
               return typeof id === 'string' && /[?&]macro=true(?:&|$)/.test(id) === false

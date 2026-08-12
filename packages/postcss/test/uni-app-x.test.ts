@@ -271,6 +271,24 @@ describe('uni-app-x', () => {
     expect(result.css).not.toContain('background-color:#0957DE;background-color:var(--theme-color)')
   })
 
+  it('preserves local Web utility declarations and important priority', async () => {
+    const styleHandler = createStyleHandler({
+      appType: 'uni-app-x',
+      uniAppX: false,
+    })
+    const result = await styleHandler([
+      '.wtu-navbar{width:100rpx!important;height:100rpx;padding-left:30rpx;padding-right:30rpx;background-color:#0957de}',
+      '.wtu-image{width:100rpx!important;height:100rpx;border-radius:10rpx}',
+    ].join('\n'))
+
+    expect(result.css).toContain('width:100rpx!important')
+    expect(result.css).toContain('height:100rpx')
+    expect(result.css).toContain('padding-left:30rpx')
+    expect(result.css).toContain('padding-right:30rpx')
+    expect(result.css).toContain('background-color:#0957de')
+    expect(result.css).toContain('border-radius:10rpx')
+  })
+
   it('filters unsupported uvue selectors and declarations with warnings', async () => {
     const styleHandler = createStyleHandler({
       uniAppX: true,

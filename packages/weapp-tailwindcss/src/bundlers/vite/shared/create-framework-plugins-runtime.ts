@@ -49,6 +49,7 @@ import { shouldAdaptFrameworkWatchCssBeforeCache, wrapViteCssPostTransform } fro
 import { resolveWeappViteSourceRoot } from '../weapp-vite-config'
 import { resolveViteWebCssCompatOptions, shouldApplyViteWebCssCompat } from '../web-css-compat'
 import { createViteHmrCandidateState } from './framework-hmr-candidate-state'
+import { orderFrameworkSourceCandidatePlugins } from './framework-plugin-order'
 import { createFrameworkPostPlugin } from './framework-post-plugin'
 import { createFrameworkProcessedCssRegistry } from './framework-processed-css-registry'
 import { sameStringList } from './framework-runtime-options'
@@ -60,7 +61,6 @@ import { createGenericWebProductionBundleHooks } from './generic-web-production-
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss'); const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir); const generatorPlaceholderCssFile = path.join(weappTailwindcssPackageDir, 'generator-placeholder.css'); const ENV_PLATFORM_KEYS = ['UNI_PLATFORM', 'UNI_UTS_PLATFORM', 'TARO_ENV', 'MPX_CURRENT_TARGET_MODE', 'MPX_CLI_MODE']
 function collectConfiguredCssEntries(options) { const runtimeCssEntries = options.tailwindcssRuntimeOptions?.tailwindcss?.v4?.cssEntries; const entries = [...Array.isArray(options.cssEntries) ? options.cssEntries : [], ...Array.isArray(options.tailwindcss?.v4?.cssEntries) ? options.tailwindcss.v4.cssEntries : [], ...Array.isArray(runtimeCssEntries) ? runtimeCssEntries : []].filter(item => typeof item === 'string' && item.length > 0); return entries.length > 0 ? [...new Set(entries)] : void 0 }
-function normalizeViteStylePlatform(value, appType) { return normalizeFrameworkStylePlatform(value, appType) }
 function inferPlatformFromOutDir(outDir) {
   const segment = outDir ? path.basename(path.normalize(outDir)) : void 0; if (!segment) {
     return void 0
@@ -103,10 +103,10 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
   const shouldRewriteCssImports = opts.rewriteCssImports === true
   let resolvedConfig
   const resolveViteStylePlatform = () => {
-    const explicit = normalizeViteStylePlatform(opts.cssOptions?.platform ?? opts.platform, opts.appType); if (explicit) {
+    const explicit = normalizeFrameworkStylePlatform(opts.cssOptions?.platform ?? opts.platform, opts.appType); if (explicit) {
       return explicit
     } for (const key of ENV_PLATFORM_KEYS) {
-      const envPlatform = normalizeViteStylePlatform(process.env[key], opts.appType)
+      const envPlatform = normalizeFrameworkStylePlatform(process.env[key], opts.appType)
       if (envPlatform) {
         return envPlatform
       }
@@ -492,7 +492,7 @@ ${tracedCss}`
     shouldOwnTailwindGeneration,
     syncCssEntriesFromAnchor,
   })
-  const plugins = [...extraPlugins, ...rewritePlugins, sourceCandidatesPlugin, ...createViteCssGenerationPlugins({ generateCss: generateTailwindCssForVitePipeline, getCommand: () => resolvedConfig?.command, onTailwindRootCss: registerTailwindRootCss, shouldDeferGeneration: shouldDeferFrameworkPreTransformGeneration, shouldGenerate: () => shouldOwnTailwindGeneration, shouldGenerateBuild: () => resolveCurrentGeneratorBranch().isWeb }), createViteServeJsTransformPlugin({ createHandlerOptions: file => serveJsHandlerOptions(file, frameworkCssPipelineStrategy?.getServeJsHandlerOptions?.({ ...createCssPipelineContext(), file })), getCommand: () => resolvedConfig?.command, jsHandler, shouldTransform: () => shouldOwnTailwindGeneration && (frameworkCssPipelineStrategy?.shouldTransformServeJs?.(createCssPipelineContext()) ?? !resolveCurrentGeneratorBranch().isWeb), transformRuntime: ensureRuntimeClassSet }), { name: `${vitePluginName}:watch-css-cache`, configResolved: { order: 'post', handler: installFrameworkWatchCssCacheAdapter } }, postPlugin]
+  const plugins = [...orderFrameworkSourceCandidatePlugins(extraPlugins, rewritePlugins, sourceCandidatesPlugin, frameworkBranch.sourceCandidatesBeforeExtraPlugin), ...createViteCssGenerationPlugins({ generateCss: generateTailwindCssForVitePipeline, getCommand: () => resolvedConfig?.command, onTailwindRootCss: registerTailwindRootCss, shouldDeferGeneration: shouldDeferFrameworkPreTransformGeneration, shouldGenerate: () => shouldOwnTailwindGeneration, shouldGenerateBuild: () => resolveCurrentGeneratorBranch().isWeb }), createViteServeJsTransformPlugin({ createHandlerOptions: file => serveJsHandlerOptions(file, frameworkCssPipelineStrategy?.getServeJsHandlerOptions?.({ ...createCssPipelineContext(), file })), getCommand: () => resolvedConfig?.command, jsHandler, shouldTransform: () => shouldOwnTailwindGeneration && (frameworkCssPipelineStrategy?.shouldTransformServeJs?.(createCssPipelineContext()) ?? !resolveCurrentGeneratorBranch().isWeb), transformRuntime: ensureRuntimeClassSet }), { name: `${vitePluginName}:watch-css-cache`, configResolved: { order: 'post', handler: installFrameworkWatchCssCacheAdapter } }, postPlugin]
   plugins.push(cssFinalizerOutputPlugin)
   plugins.push(...createBuiltinViteStyleInjectorPlugins(styleInjector, () => frameworkBranch.styleInjectorDelegate))
   return plugins
