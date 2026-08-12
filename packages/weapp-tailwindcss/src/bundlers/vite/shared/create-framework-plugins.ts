@@ -25,6 +25,7 @@ export interface ViteFrameworkBranchContext {
   getExtraPluginPlatform?: () => ViteFrameworkExtraPluginPlatform
   styleInjectorDelegate: ViteStyleInjectorDelegateFactory
   isRuntimeClassSetFeatureEnabled?: (context: ViteFrameworkRuntimeFeatureContext) => boolean
+  sourceCandidatesBeforeExtraPlugin?: (plugin: Plugin) => boolean
 }
 
 export interface ViteFrameworkExtraPluginContext {

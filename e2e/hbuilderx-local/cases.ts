@@ -1011,6 +1011,36 @@ export const webCases: WebCase[] = [
         },
       },
       {
+        selector: '.issue-navbar-left',
+        styles: {
+          backgroundColor: 'rgb(9, 87, 222)',
+          height: '50px',
+          paddingLeft: '15px',
+          paddingRight: '15px',
+          width: '50px',
+        },
+      },
+      {
+        selector: '.issue-navbar-right',
+        styles: {
+          backgroundColor: 'rgb(16, 41, 56)',
+          height: '50px',
+          paddingBottom: '6px',
+          paddingLeft: '6px',
+          paddingRight: '6px',
+          paddingTop: '6px',
+          width: '50px',
+        },
+      },
+      {
+        selector: '.issue-navbar-image',
+        styles: {
+          borderRadius: '5px',
+          height: '50px',
+          width: '50px',
+        },
+      },
+      {
         selector: '.issue-822-component-child',
         styles: {
           borderTopColor: 'rgb(124, 58, 237)',

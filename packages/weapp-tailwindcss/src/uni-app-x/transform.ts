@@ -54,6 +54,7 @@ function updateStaticAttributeWithLocalStyle(
   prop: AttributeNode,
   offset: number,
   collector: UniAppXComponentLocalStyleCollector,
+  deep: boolean,
   content = prop.value?.content,
 ) {
   if (!prop.value) {
@@ -62,7 +63,7 @@ function updateStaticAttributeWithLocalStyle(
   const start = offset + prop.value.loc.start.offset + 1
   const end = offset + prop.value.loc.end.offset - 1
   if (start < end) {
-    ms.update(start, end, collector.collectAndRewriteStaticClass(content ?? ''))
+    ms.update(start, end, collector.collectAndRewriteStaticClass(content ?? '', { deep }))
   }
 }
 
@@ -96,6 +97,7 @@ function updateDirectiveExpressionWithLocalStyle(
   offset: number,
   jsHandler: JsHandler,
   collector: UniAppXComponentLocalStyleCollector,
+  deep: boolean,
   runtimeSet?: Set<string>,
 ) {
   if (prop.exp?.type !== NodeTypes.SIMPLE_EXPRESSION) {
@@ -108,6 +110,7 @@ function updateDirectiveExpressionWithLocalStyle(
     return
   }
   collector.collectRuntimeClasses(expression, {
+    deep,
     wrapExpression: true,
   })
   const generated = generateCode(expression, {
@@ -123,6 +126,8 @@ interface TransformUVueOptions {
   disabledDefaultTemplateHandler?: boolean
   enableComponentLocalStyle?: boolean
   enablePageLocalStyle?: boolean
+  webCustomAttributeDeep?: boolean
+  onWebLocalStyleRules?: (rules: string) => void
 }
 
 function shouldEnableLocalStyle(id: string, options: TransformUVueOptions) {
@@ -159,9 +164,42 @@ const defaultCreateJsHandlerOptions: CreateJsHandlerOptions = {
   },
 }
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)(?:\?.*)?$/
-const SFC_BLOCK_RE = /<(template|script|style)\b([^>]*)>([\s\S]*?)<\/\1>/gi
+const SFC_BLOCK_RE = /<(template|script|style)\b([^>]*)>/gi
 const SCRIPT_SETUP_RE = /(?:^|\s)setup(?:\s|=|$)/
 const STYLE_SCOPED_RE = /(?:^|\s)scoped(?:\s|=|$)/i
+
+function findSfcBlockEnd(code: string, type: string, contentStart: number) {
+  const closeTag = new RegExp(`<\\/${type}\\s*>`, 'gi')
+  if (type !== 'template') {
+    const match = closeTag.exec(code.slice(contentStart))
+    return match
+      ? {
+          blockEnd: contentStart + match.index + match[0].length,
+          contentEnd: contentStart + match.index,
+        }
+      : undefined
+  }
+
+  const tag = new RegExp(`<\\/?${type}\\b[^>]*>`, 'gi')
+  tag.lastIndex = contentStart
+  let depth = 1
+  let match = tag.exec(code)
+  while (match) {
+    if (match[0].startsWith('</')) {
+      depth -= 1
+    }
+    else if (!match[0].trimEnd().endsWith('/>')) {
+      depth += 1
+    }
+    if (depth === 0) {
+      return {
+        blockEnd: tag.lastIndex,
+        contentEnd: match.index,
+      }
+    }
+    match = tag.exec(code)
+  }
+}
 
 function parseSfc(code: string): ParsedSfc {
   const descriptor: ParsedSfc = { errors: [], styles: [] }
@@ -169,14 +207,19 @@ function parseSfc(code: string): ParsedSfc {
   for (const match of code.matchAll(SFC_BLOCK_RE)) {
     const type = match[1]
     const attrs = match[2] ?? ''
-    const content = match[3] ?? ''
-    const full = match[0]
     const blockStart = match.index ?? 0
-    const contentStart = blockStart + full.indexOf('>') + 1
+    const contentStart = blockStart + match[0].length
+    const blockBoundary = findSfcBlockEnd(code, type, contentStart)
+    if (!blockBoundary) {
+      descriptor.errors.push(new Error(`未闭合的 ${type} SFC 块`))
+      continue
+    }
+    const { contentEnd } = blockBoundary
+    const content = code.slice(contentStart, contentEnd)
     const block: SfcBlock = {
       content,
       start: contentStart,
-      end: contentStart + content.length,
+      end: contentEnd,
       attrs,
     }
 
@@ -239,7 +282,7 @@ export function transformUVue(
         const tag = node.tag
         for (const prop of node.props) {
           if (prop.type === NodeTypes.ATTRIBUTE) {
-            const { shouldHandle, shouldHandleDefault } = shouldHandleAttribute(
+            const { shouldHandle, shouldHandleCustom, shouldHandleDefault } = shouldHandleAttribute(
               tag,
               prop.name,
               disabledDefaultTemplateHandler,
@@ -248,8 +291,14 @@ export function transformUVue(
             if (!shouldHandle) {
               continue
             }
-            if (shouldHandleDefault && localStyleCollector) {
-              updateStaticAttributeWithLocalStyle(ms, prop, templateOffset, localStyleCollector)
+            if (localStyleCollector) {
+              updateStaticAttributeWithLocalStyle(
+                ms,
+                prop,
+                templateOffset,
+                localStyleCollector,
+                options.webCustomAttributeDeep === true && shouldHandleCustom,
+              )
             }
             else {
               updateStaticAttribute(ms, prop, templateOffset)
@@ -265,7 +314,7 @@ export function transformUVue(
             && prop.arg.isStatic
           ) {
             const attrName = prop.arg.content
-            const { shouldHandle } = shouldHandleAttribute(
+            const { shouldHandle, shouldHandleCustom } = shouldHandleAttribute(
               tag,
               attrName,
               disabledDefaultTemplateHandler,
@@ -274,13 +323,14 @@ export function transformUVue(
             if (!shouldHandle) {
               continue
             }
-            if (attrName.toLowerCase() === 'class' && localStyleCollector) {
+            if (localStyleCollector) {
               updateDirectiveExpressionWithLocalStyle(
                 ms,
                 prop,
                 templateOffset,
                 jsHandler,
                 localStyleCollector,
+                options.webCustomAttributeDeep === true && shouldHandleCustom,
                 runtimeSet,
               )
             }
@@ -313,7 +363,10 @@ export function transformUVue(
 
     if (localStyleCollector?.hasStyles()) {
       const scopedStyle = descriptor.styles.findLast(style => STYLE_SCOPED_RE.test(style.attrs))
-      if (scopedStyle) {
+      if (scopedStyle && options.onWebLocalStyleRules) {
+        options.onWebLocalStyleRules(localStyleCollector.toStyleRules())
+      }
+      else if (scopedStyle) {
         const separator = scopedStyle.content.endsWith('\n') ? '' : '\n'
         ms.appendLeft(scopedStyle.end, `${separator}${localStyleCollector.toStyleRules()}`)
       }

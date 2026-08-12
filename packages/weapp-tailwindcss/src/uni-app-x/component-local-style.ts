@@ -13,6 +13,7 @@ import {
 } from './component-local-style-binding'
 
 interface RewriteCodeOptions {
+  deep?: boolean
   wrapExpression?: boolean
 }
 
@@ -113,6 +114,7 @@ export class UniAppXComponentLocalStyleCollector {
   private aliasByUtility = new Map<string, string>()
   private aliasByLookup = new Map<string, string>()
   private classBindingNames = new Set<string>()
+  private deepUtilities = new Set<string>()
 
   constructor(
     private readonly fileId: string,
@@ -149,8 +151,16 @@ export class UniAppXComponentLocalStyleCollector {
     return rewritten
   }
 
-  collectAndRewriteStaticClass(literal: string) {
-    return this.rewriteLiteral(literal)
+  collectAndRewriteStaticClass(literal: string, options: RewriteCodeOptions = {}) {
+    const rewritten = this.rewriteLiteral(literal)
+    if (options.deep) {
+      for (const candidate of splitCandidateTokens(literal)) {
+        if (this.aliasByUtility.has(candidate)) {
+          this.deepUtilities.add(candidate)
+        }
+      }
+    }
+    return rewritten
   }
 
   collectRuntimeClasses(rawSource: string, options: RewriteCodeOptions = {}) {
@@ -182,6 +192,9 @@ export class UniAppXComponentLocalStyleCollector {
           }
           if (!hasTopLevelVariant(candidate)) {
             this.ensureAlias(candidate)
+            if (options.deep) {
+              this.deepUtilities.add(candidate)
+            }
           }
         }
       }
@@ -282,7 +295,10 @@ export class UniAppXComponentLocalStyleCollector {
     }
     const lines: string[] = []
     for (const [utility, alias] of this.aliasByUtility) {
-      lines.push(`.${alias} {`)
+      const selector = this.deepUtilities.has(utility)
+        ? `.${alias}, :deep(.${alias})`
+        : `.${alias}`
+      lines.push(`${selector} {`)
       lines.push(`  @apply ${utility};`)
       lines.push('}')
     }

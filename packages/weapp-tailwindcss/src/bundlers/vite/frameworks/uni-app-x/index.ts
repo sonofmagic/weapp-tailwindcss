@@ -82,6 +82,7 @@ export function createUniAppXVitePlugins(options: UserDefinedOptions | InternalU
     }),
     styleInjectorDelegate: viteStyleInjectorDelegates.uniApp,
     isRuntimeClassSetFeatureEnabled: () => true,
+    sourceCandidatesBeforeExtraPlugin: plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue',
     createExtraPlugins: context => createUniAppXPlugins({
       appType: 'uni-app-x',
       customAttributesEntities: context.customAttributesEntities,

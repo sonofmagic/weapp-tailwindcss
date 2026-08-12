@@ -54,6 +54,7 @@ describe('demo visual theme evidence', () => {
       'demo/uni-app-x-hbuilderx-tailwindcss-v4/pages/index/index.uvue',
       'demo/uni-app-x-hbuilderx-tailwindcss-v4/components/BindClass.uvue',
       'demo/uni-app-x-hbuilderx-tailwindcss-v4/components/WeappTailwindcss.uvue',
+      'demo/uni-app-x-hbuilderx-tailwindcss-v4/components/a-navbar/a-navbar.uvue',
       'demo/uni-app-x-hbuilderx-tailwindcss-v4/sub-normal/pages/index.uvue',
       'demo/uni-app-x-hbuilderx-tailwindcss-v4/sub-independent/pages/index.uvue',
     ]
@@ -62,6 +63,21 @@ describe('demo visual theme evidence', () => {
       expect(source, file).toContain('<script lang="uts">')
       expect(source, file).not.toContain('<script setup')
     }
+  })
+
+  it('keeps the uni-app x navbar slot and custom class prop regression probe', async () => {
+    const [component, page, config] = await Promise.all([
+      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/components/a-navbar/a-navbar.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/pages/index/index.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/vite.config.ts'), 'utf8'),
+    ])
+
+    expect(component).toContain('class="issue-navbar-side" :class="leftClass"')
+    expect(component).toContain('<slot name="left" />')
+    expect(page).toContain('leftClass="issue-navbar-left bg-primary w-[100rpx]! h-[100rpx] px-[30rpx]"')
+    expect(page).toContain('class="issue-navbar-image w-[100rpx]! h-[100rpx] rounded-[10rpx]"')
+    expect(page).toContain('<template #left>')
+    expect(config).toContain('\'a-navbar\': [\'leftClass\', \'rightClass\']')
   })
 
   it('uses the issue #822 component-local style probe on every target without a manual isolation override', async () => {

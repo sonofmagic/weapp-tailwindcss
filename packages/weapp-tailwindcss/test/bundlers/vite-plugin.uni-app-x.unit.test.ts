@@ -29,6 +29,11 @@ function getTransformHandler(plugin: Plugin) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
+function getHotUpdateHandler(plugin: Plugin) {
+  const hook = plugin.handleHotUpdate as any
+  return typeof hook === 'object' ? hook.handler : hook
+}
+
 function createNativeResolvedConfig() {
   return {
     command: 'serve',
@@ -89,6 +94,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     const cssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
     const cssPrePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css:pre') as Plugin
     const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
+    const sourceCandidatesPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
 
     expect(plugins!.indexOf(cssPrePlugin)).toBeLessThan(plugins!.findIndex(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports'))
@@ -97,6 +103,9 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     expect(cssPlugin?.transform).toBeTypeOf('function')
     expect(cssPrePlugin?.transform).toBeTypeOf('function')
     expect(nvuePlugin?.transform).toMatchObject({ order: 'pre' })
+    expect(plugins!.findIndex(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports')).toBeLessThan(plugins!.indexOf(sourceCandidatesPlugin))
+    expect(plugins!.indexOf(sourceCandidatesPlugin)).toBeLessThan(plugins!.indexOf(nvuePlugin))
+    expect(plugins!.indexOf(nvuePlugin)).toBeLessThan(plugins!.findIndex(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:build'))
 
     await (postPlugin.configResolved as any)?.call(postPlugin, createNativeResolvedConfig())
     currentContext.tailwindRuntime.extract.mockClear()
@@ -736,20 +745,20 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
       },
       ws: { send: vi.fn() },
     }
-    await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.uvue', modules: [], server } as unknown as HmrContext)
+    await getHotUpdateHandler(nvuePlugin)?.call(nvuePlugin, { file: '/src/pages/foo.uvue', modules: [], server } as unknown as HmrContext)
     expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
 
     currentContext.tailwindRuntime.extract.mockClear()
     currentContext.tailwindRuntime.getClassSetSync.mockClear()
     runtimeIndex = 1
-    await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.nvue', modules: [], server } as unknown as HmrContext)
+    await getHotUpdateHandler(nvuePlugin)?.call(nvuePlugin, { file: '/src/pages/foo.nvue', modules: [], server } as unknown as HmrContext)
     expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
 
     currentContext.tailwindRuntime.extract.mockClear()
     currentContext.tailwindRuntime.getClassSetSync.mockClear()
-    await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.vue' } as HmrContext)
+    await getHotUpdateHandler(nvuePlugin)?.call(nvuePlugin, { file: '/src/pages/foo.vue' } as HmrContext)
     expect(currentContext.tailwindRuntime.extract).not.toHaveBeenCalled()
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)

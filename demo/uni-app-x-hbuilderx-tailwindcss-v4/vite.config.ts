@@ -26,6 +26,7 @@ const weappTailwindcssPlugins = WeappTailwindcss(
     rem2rpx: true,
     customAttributes: {
       '*': [/^t-class(?:-.+)?$/],
+      'a-navbar': ['leftClass', 'rightClass'],
     },
     generator: officialPostcssParity ? false : undefined,
   }),

@@ -1,0 +1,38 @@
+<script lang="uts">
+export default {
+	props: {
+		leftClass: {
+			type: String,
+			default: '',
+		},
+		rightClass: {
+			type: String,
+			default: '',
+		},
+	},
+}
+</script>
+
+<template>
+	<view class="issue-navbar flex-row items-center justify-between">
+		<view class="issue-navbar-side" :class="leftClass">
+			<slot name="left" />
+		</view>
+		<view class="issue-navbar-side" :class="rightClass">
+			<slot name="right" />
+		</view>
+	</view>
+</template>
+
+<style scoped>
+	.issue-navbar {
+		background-color: #e2e8f0;
+	}
+
+	.issue-navbar-side {
+		width: 48rpx;
+		height: 48rpx;
+		padding: 4rpx;
+		background-color: #94a3b8;
+	}
+</style>
