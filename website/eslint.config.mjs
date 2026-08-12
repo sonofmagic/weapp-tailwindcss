@@ -24,6 +24,8 @@ const config = icebreaker({
     // Docusaurus 生成产物不参与源码 lint。
     '.docusaurus/**',
     'build/**',
+    'docs/api/typedoc-sidebar.cjs',
+    'i18n/**/api/typedoc-sidebar.cjs',
     'playwright-report/**',
     // 文档 MDX 由 Docusaurus 编译校验。
     '**/*.mdx',
