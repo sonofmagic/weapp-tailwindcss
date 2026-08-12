@@ -1,5 +1,7 @@
 # @weapp-tailwindcss/lynx
 
+简体中文 | [English](./README_en.md)
+
 ReactLynx + Rspeedy 的 Tailwind CSS v4 集成。它通过 Rspeedy 的 Rspack 生命周期调用 `weapp-tailwindcss` 生成 Lynx 可消费的普通 CSS，保留 ReactLynx 原生 `className`，不引入运行时样式表或 JSX 转换。
 
 ## 安装

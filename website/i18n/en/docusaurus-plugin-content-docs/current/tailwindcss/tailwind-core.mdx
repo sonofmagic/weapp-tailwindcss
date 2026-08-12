@@ -1,0 +1,272 @@
+---
+id: tailwind-core
+title: Tailwind design concept
+description: The essence of Tailwind is to compress the design token into an atomic class, and then let the component interface grow semantics again
+sidebar_position: 3
+keywords:
+  - tailwindcss
+  - Tutorial
+  - atomization
+  - Tailwind
+  - design concept
+  - tailwind core
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+import TailwindTopicHero from '@site/src/components/docs/TailwindTopicHero'
+
+<TailwindTopicHero topicId="tailwindcss/tailwind-core" title="Tailwind design concept" />
+
+## What is the essence of Tailwind?
+
+- Tailwind can be understood as a "compression and expansion" pipeline.
+- It maps many common visual decisions into reusable utility classes, such as color, spacing, rounded corners, font size, etc.
+- Then reorganize these atomic classes at the component layer and grow them into readable interfaces such as `Button`, `Badge`, and `Card`.
+- So what Tailwind really solves is not just "write less CSS", but making it easier to align style constraints, class name combinations and component encapsulation.
+
+### Remember this sentence first
+
+> In team engineering, the most valuable aspect of Tailwind is usually not "less writing of CSS", but that it is easier to establish constraints, reuse and review mechanisms.
+
+### Suggested ways to read this page
+
+- If you are watching Tailwind for the first time, focus on the three parts of "entrance, middle section, and exit" and establish the overall link first.
+- If you are already using Tailwind in your project, focus on "Exit: Component Regrowth Semantics" as most maintainability issues arise here.
+
+:::info information reference
+- [Tailwind CSS: Utility-first](https://tailwindcss.com/docs/utility-first)
+- [Tailwind CSS: Detecting classes in source files](https://tailwindcss.com/docs/detecting-classes-in-source-files)
+- [UnoCSS Guide](https://unocss.dev/guide/)
+:::
+
+**Demo (overall series connection)**
+
+```ts
+// tailwind.config.ts
+export default {
+  content: ['./src/**/*.{tsx,jsx,html}'],
+  theme: {
+    extend: {
+      colors: { brand: { 50: '#f1f5ff', 500: '#3b82f6' } },
+      spacing: { 3.5: '0.875rem' },
+      borderRadius: { pill: '999px' },
+    },
+  },
+  plugins: [require('@tailwindcss/typography')],
+}
+```
+
+```tsx
+// src/components/Button.tsx
+import { tv } from 'tailwind-variants'
+
+const button = tv({
+  base: 'inline-flex items-center justify-center font-medium transition-colors',
+  variants: {
+    tone: {
+      primary: 'bg-brand-500 text-white hover:bg-brand-500/90',
+      ghost: 'bg-transparent text-brand-500 hover:bg-brand-50',
+    },
+    size: { md: 'h-10 px-4 rounded-pill', lg: 'h-11 px-5 rounded-pill text-base' },
+  },
+  defaultVariants: { tone: 'primary', size: 'md' },
+})
+
+export function Button({ tone, size, className, ...props }) {
+  return <button {...props} className={button({ tone, size, class: className })} />
+}
+```
+
+## Portal: Single source of design semantics
+
+- In team practice, it is best to converge the design values  into tokens first, and then write the class name. This step may seem slow, but it actually reduces the burden on all subsequent components.
+- Prioritize quoting tokens in class instead of writing bare values  directly. In this way, when changing brands, themes, or dark mode, what is changed is one layer of mapping, not the entire project search string.
+- What the team needs to focus on is not “whether Tailwind is used”, but “whether everyone is inventing new values  at will”.
+
+In other words, the "entry" here is more suitable to be understood as a recommended engineering practice, rather than the only correct way to use Tailwind.
+
+> Note: Tailwind officially supports the establishment of constraints through theme, design tokens and custom utilities, and also retains escape hatches such as arbitrary values  and custom CSS; the writing method given here is a recommended path for team engineering.
+
+**Demo: token definition**
+
+```ts
+// tailwind.config.ts fragment
+export default {
+  theme: {
+    extend: {
+      colors: {
+        brand: { 50: 'var(--brand-50)', 500: 'var(--brand-500)' },
+      },
+      spacing: { 3.5: 'var(--space-3_5)' },
+      borderRadius: { pill: 'var(--radius-pill)' },
+    },
+  },
+}
+```
+
+```css
+/* src/styles/theme.css */
+:root {
+  --brand-50: #eef2ff;
+  --brand-500: #4f46e5;
+  --space-3_5: 0.875rem;
+  --radius-pill: 999px;
+}
+```
+
+## Middle section: Tailwind’s generation logic
+
+This layer can be split into two parts: one is how Tailwind generates classes, and the other is how the team adds boundaries to these classes.
+
+### Generation mechanism
+
+- **JIT + content**: Tailwind will only generate the classes it scans, so the more accurate `content` is written, the cleaner the final CSS will be. Many package body problems are not caused by Tailwind itself being slow, but rather by the scanning range being too wide or the dynamic classes being too arbitrary.
+- **`@layer`**: It determines the coverage order of `base / components / utilities`. `@apply` can be used, but it is more suitable for stable reuse and not suitable for secretly stuffing business logic.
+- **Plug-in**: Suitable for translating your stable design rules into classes, not suitable for stuffing temporary requirements into new syntax sugar.
+
+### Constraint mechanism
+
+- **Variants/Relationships**: `md:`, `hover:`, `group-`, `peer-`, As the relationship chain deepens, readability will quickly decrease.
+- **tokens and naming boundaries**: Classes can be flexible, but teams are better off not having to invent new values  for every component. Otherwise the JIT is fast and the code will still be messy.
+- **Component Factory**: When the same set of classes is combined repeatedly, you should start thinking about `cva`, `tailwind-variants` or your own recipe layer.
+
+If you find that the classes in your project are getting longer and longer and more difficult to change, it is usually not because there is a problem with atomization itself, but because there is a lack of boundaries in the middle.
+
+## Common misunderstandings
+
+- Do not interpret this page as "Tailwind officially requires you to create a token first and then write the class name." This is a recommended path for team engineering and is not the only official correct answer.
+- Do not mix `@apply`, plugins, variants, and component factories into the same layer. The first two are more focused on generation mechanisms, while the latter two are more focused on team encapsulation strategies.
+- Don’t think of Tailwind as “the fewer classes the better” or “never write custom CSS”. What really matters is clarity of boundaries, not purity of form.
+
+**Demo: content precise + partial @layer**
+
+```ts
+// tailwind.config.ts fragment
+export default {
+  content: ['./src/app/**/*.{tsx,jsx}', './src/pages/**/*.{tsx,jsx}'],
+  plugins: [],
+}
+```
+
+```css
+/* src/styles/components.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white shadow-sm;
+  }
+  .card-title {
+    @apply text-lg font-semibold text-slate-900;
+  }
+}
+```
+
+```tsx
+// src/app/Card.tsx
+export function Card({ title, children }) {
+  return (
+    <div className="card">
+      <h3 className="card-title">{title}</h3>
+      <div className="text-sm text-slate-600">{children}</div>
+    </div>
+  )
+}
+```
+
+**Demo: Relationship class and status class**
+
+```tsx
+// src/components/Nav.tsx
+export function Nav() {
+  return (
+    <nav className="flex items-center gap-4">
+      <button className="relative group px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900">
+        Home
+        <span className="absolute inset-x-3 -bottom-1 block h-0.5 scale-x-0 bg-brand-500 transition group-hover:scale-x-100" />
+      </button>
+      <button className="px-3 py-2 text-sm text-slate-600 data-[active=true]:text-brand-600 data-[active=true]:font-semibold">
+        Docs
+      </button>
+    </nav>
+  )
+}
+```
+
+**Demo: Custom plug-in extends a tool class**
+
+```ts
+// tailwind.config.ts fragment
+import plugin from 'tailwindcss/plugin'
+
+export default {
+  // ...
+  plugins: [
+    plugin(({ matchUtilities, theme }) => {
+      matchUtilities(
+        {
+          'grid-auto-fill': (value) => ({
+            gridTemplateColumns: `repeat(auto-fill, minmax(${value}, 1fr))`,
+          }),
+        },
+        { values: theme('spacing') },
+      )
+    }),
+  ],
+}
+```
+
+```tsx
+//Use custom tool class
+<div className="grid gap-4 grid-auto-fill-48">
+{/* Autofill columns，smallest 12rem */}
+</div>
+```
+
+## Exit: Component re-grow semantics
+
+- This is the most easily overlooked stage, but the one that most determines maintainability.
+- Atomic classes are easy to experiment with in templates, but once the project becomes larger, what really determines the quality of the code is whether you have reorganized these classes into stable component interfaces.
+- It is recommended to concentrate changes such as size, color palette, status, and slot into `cva` or `tailwind-variants` instead of having business components scattered everywhere.
+- Coupled with `tailwind-merge` at the end, "component default style" and "caller override style" can be established at the same time, and the behavior can be predictable.
+
+This step can be understood as: the styles were broken down earlier, and now they must be put back into a "human-readable" structure.
+
+### When does it mean that you have gone astray?
+
+- A button component with a dozen boolean parameters but no centralized variant definition.
+- Large sections of duplicate classes appear repeatedly in business components, with only 1 or 2 values  changed.
+- Once the caller passes `className`, you are not sure which style will take effect in the end.
+
+**Demo: Simplify variants with tailwind-variants**
+
+```tsx
+// src/components/Badge.tsx
+import { tv } from 'tailwind-variants'
+
+const badge = tv({
+  base: 'inline-flex items-center gap-1 rounded-full font-medium',
+  variants: {
+    tone: {
+      success: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100',
+      warning: 'bg-amber-50 text-amber-700 ring-1 ring-amber-100',
+    },
+    size: { sm: 'px-2 py-1 text-xs', md: 'px-3 py-1.5 text-sm' },
+  },
+  defaultVariants: { tone: 'success', size: 'sm' },
+})
+
+export function Badge({ tone, size, className, ...props }) {
+  return <span {...props} className={badge({ tone, size, class: className })} />
+}
+```
+
+> Further reading:
+> - [Tailwind vs UnoCSS comparison](./tailwind-vs-unocss)
+> - [tailwind-merge, cva, tailwind-variants essentials] (./merge-and-variants)

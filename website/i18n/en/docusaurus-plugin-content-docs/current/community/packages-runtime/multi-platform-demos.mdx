@@ -1,0 +1,155 @@
+---
+id: multi-platform-demos
+title: 'Multi-terminal Demo: Mini Program + Web'
+description: 'Cross-end examples based on packages-runtime: uni-app + Web, Taro + Web.'
+keywords:
+  - Community
+  - template
+  - Case
+  - Multifaceted
+  - Demo
+  - Mini program
+  - Web
+  - community
+  - packages runtime
+  - multi platform demos
+  - weapp-tailwindcss
+  - tailwindcss
+  - WeChat applet
+  - uni-app
+  - taro
+---
+The examples on this page use **Tailwind v4** as the main line (`@weapp-tailwindcss/merge` + `@weapp-tailwindcss/variants`). The current documentation only maintains Tailwind CSS 4 access instructions.
+
+## Demo 1：uni-app + Web（Vue + TS）
+
+The same `tv` instance can cover the mini program and H5, and determine whether to turn off escape/unescape through environment variables.
+
+### Shared variant (`src/ui/button.variants.ts`)
+
+```ts
+import { create } from '@weapp-tailwindcss/variants'
+
+type ButtonConfig = Parameters<ReturnType<typeof create>['tv']>[0]
+
+const config: ButtonConfig = {
+  base: 'inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium',
+  variants: {
+    tone: {
+      primary: 'bg-[#2563EB] text-white hover:bg-[#1D4ED8]',
+      ghost: 'bg-transparent text-[#0F172A] hover:bg-[#E2E8F0]',
+    },
+    size: {
+      sm: 'h-8 px-3',
+      md: 'h-9 px-4',
+    },
+  },
+  defaultVariants: {
+    tone: 'primary',
+    size: 'md',
+  },
+}
+
+// For cross-platform frameworks, please determine whether it is built with H5. It can usually be read from environment variables.
+let isH5 = false
+// #ifdef H5
+isH5 = true
+// #endif
+
+const { tv } = create({
+  escape: !isH5,
+  unescape: !isH5,
+})
+
+export const button = tv(config)
+```
+
+### Mini program / H5 shared page (`src/pages/index/index.vue`)
+
+```vue
+<template>
+  <view class="p-6 space-y-3">
+    <view :class="button({ tone: 'primary' })">Primary</view>
+    <view :class="button({ tone: 'ghost', size: 'sm' })">Ghost</view>
+  </view>
+</template>
+
+<script setup lang="ts">
+import { button } from '@/ui/button.variants'
+</script>
+```
+
+### Notes
+
+- If you rename and package `tv`/`cn`, please update `ignoreCallExpressionIdentifiers` simultaneously.
+- After turning off escape on the H5 side, the class name remains intact and Tailwind can match it normally.
+
+## Demo 2：Taro + Web（React + TSX）
+
+The same `tv` instance can cover the mini program and H5, and determine whether to turn off escape/unescape through environment variables.
+
+### Shared variant (`src/ui/card.variants.ts`)
+
+```ts
+import { create } from '@weapp-tailwindcss/variants'
+
+type CardConfig = Parameters<ReturnType<typeof create>['tv']>[0]
+
+const config: CardConfig = {
+  base: 'rounded-xl border border-[#E2E8F0] bg-white p-4 shadow-sm',
+  variants: {
+    tone: {
+      normal: 'text-[#0F172A]',
+      muted: 'text-[#64748B] bg-[#F8FAFC]',
+    },
+  },
+  defaultVariants: {
+    tone: 'normal',
+  },
+}
+
+// For cross-platform frameworks, please determine whether it is built with H5. It can usually be read from environment variables.
+const isH5 = process.env.TARO_ENV === 'h5'
+const { tv } = create({
+  escape: !isH5,
+  unescape: !isH5,
+})
+
+export const card = tv(config)
+```
+
+### Mini program page (`src/pages/index/index.tsx`)
+
+```tsx
+import { View, Text } from '@tarojs/components'
+import { card } from '@/ui/card.variants'
+
+export default function Index() {
+  return (
+    <View className={card({ tone: 'normal' })}>
+      <Text>Card for Mini Program</Text>
+    </View>
+  )
+}
+```
+
+### Web Components (`src/components/Card.web.tsx`)
+
+```tsx
+import { card } from '@/ui/card.variants'
+
+export function CardWeb() {
+  return <div className={card({ tone: 'muted' })}>Card for Web</div>
+}
+```
+
+### Notes
+
+- `process.env.TARO_ENV` is injected during the build phase and is suitable for conditional switching of H5/mini programs.
+- For multi-terminal projects, it is recommended to use the Tailwind CSS 4 entry uniformly and keep the build plug-in enabled; here only switch the escape/unescape of the runtime by terminal.
+
+## Extension direction
+
+- Enhance reusable components with `compoundVariants` or `slots`.
+- Set `cn` for `twMerge: false` to disable merging in scenarios where all class names need to be preserved.
+- Encapsulate multi-terminal configuration as `createVariantsRuntime()` to unify team usage.

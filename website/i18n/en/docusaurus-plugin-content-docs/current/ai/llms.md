@@ -1,0 +1,51 @@
+---
+sidebar: aiSidebar
+title: LLM Friendly Documentation (llms.txt)
+description: 1. Execute pnpm --filter @weapp-tailwindcss/website build (or cd website && pnpm build) in the root directory of the warehouse.
+keywords:
+  - AI programming
+  - LLM
+  - Workflow
+  - Friendly documentation
+  - llms.txt
+  - ai
+  - llms
+  - weapp-tailwindcss
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+
+# LLM friendly documentation (llms.txt)
+
+## Generation method
+
+1. Execute `pnpm --filter @weapp-tailwindcss/website build` (or `cd website && pnpm build`) in the warehouse root directory.
+2. After building, `website/build/` will generate:
+
+- `llms.txt` (index)
+- `llms-full.txt` (full content)
+- `llms-quickstart.txt` (Getting Started/AI Workflow)
+- `llms-api.txt` (configuration, API, migration and issues)
+- Remove the pure Markdown file of MDX import to facilitate direct feeding to the model.
+
+## Online address
+
+- `https://tw.icebreaker.top/llms.txt`
+- `https://tw.icebreaker.top/llms-full.txt`
+- `https://tw.icebreaker.top/llms-quickstart.txt`
+- `https://tw.icebreaker.top/llms-api.txt`
+
+> If accessed via GitHub Pages, please note the prefix path `/weapp-tailwindcss/`.
+
+## Example prompt words for AI
+
+> You can read the entry and configuration instructions of weapp-tailwindcss from https://tw.icebreaker.top/llms-quickstart.txt and https://tw.icebreaker.top/llms-api.txt Please cite the relevant links when answering.
+
+## Offline use
+
+- Download `llms-full.txt` directly to the model.
+- Or package the Markdown file in the generation phase as a whole for model context retrieval.

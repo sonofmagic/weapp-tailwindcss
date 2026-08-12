@@ -1,0 +1,147 @@
+---
+id: style-isolation
+title: Style isolation scheme and principle
+description: Options and working principles to avoid mutual contamination of styles in micro-frontends, component libraries or third-party embedding scenarios
+sidebar_position: 5
+keywords:
+  - tailwindcss
+  - Tutorial
+  - atomization
+  - Style isolation scheme and principle
+  - style isolation
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+import TailwindTopicHero from '@site/src/components/docs/TailwindTopicHero'
+
+<TailwindTopicHero topicId="tailwindcss/style-isolation" title="Style isolation scheme and principle" />
+
+## When is isolation required?
+
+- Micro frontend/Widget/off-site embedding: The host may have a global reset or UI library, which must avoid overwriting each other.
+- Publishable component library: You want class names to be readable but not polluting the global situation, or to deliver "styled components" to third parties.
+- Containers shared by multiple teams: When multiple sets of styles (marketing area, business area) are superimposed on the same page, each needs to be packaged.
+
+> Most ordinary pages do not require additional isolation; priority is given to ensuring tokens, variants, and consistent class habits.
+
+## Solution overview
+
+- Namespace: `prefix` + `important`; selector priority isolation, the most lightweight but does not change the nature of the cascade.
+- Compile-time hash: CSS Modules/vanilla-extract; class name rewriting, naturally does not pollute the global situation.
+- Scope container: `data-*` + `:where` / `@scope`; shell the local DOM to increase the priority of specific areas.
+- Vue `scoped`: Automatically add `data-v-*` to the selector during compilation, which takes effect locally.
+- Shadow DOM / iframe: browser-level boundary; the strongest isolation, but styles need to be injected independently within the boundary.
+- Preflight control: close/rewrite base to avoid reset contaminating the host; often combined with the above solutions.
+
+## Namespace (Tailwind prefix + important)
+
+- **Principle**: Add a prefix (such as `tw-btn`) to all generated class names, and increase the selector priority through `important: '#app'` or `[data-scope=root]` to reduce host style coverage.
+- **Configuration Example**:
+
+```ts
+// tailwind.config.ts
+export default {
+  prefix: 'tw-',
+important: '[data-scope=widget]', // or '#app'
+  content: ['./src/**/*.{tsx,vue,html}'],
+}
+```
+
+- **Applicable**: Micro front-end, third-party embedding, and scenarios that only need to be "not covered".
+- **Note**: It is still a global style, and the host's `!important` may still interfere; preflight will still affect the host (can be turned off).
+
+## Compile-time hashing (CSS Modules/vanilla-extract)
+
+- **Principle**: The class name is rewritten as a hash during construction, and JS is referenced through mapping, which is not leaked to the world by default; the Tailwind class can be reused in `.module.css` using `@apply`.
+- **Example (CSS Modules)**:
+
+```css
+/* card.module.css */
+.card {
+  @apply rounded-xl border bg-card/80 p-4;
+}
+```
+
+```tsx
+import styles from './card.module.css'
+
+export function Card() {
+return <div className={styles.card}> isolated card </div>
+}
+```
+
+- **Applicable**: Publishable component libraries, medium and large applications, hoping that "the class name is readable + does not pollute the global situation".
+- **Note**: To reuse tokens across components, variables must be exported separately; theme switching requires additional variable pipelines.
+
+## Vue `<style scoped>`
+
+- **Principle**: The SFC compiler adds `data-v-xxxx` to both the element and style selectors of the current file, and the style only applies to the DOM rendered by this component.
+- **Example**:
+
+```html
+<template>
+  <section class="card">
+    <h2>{{ title }}</h2>
+  </section>
+</template>
+
+<style scoped>
+.card {
+  @apply rounded-xl border bg-card/80 p-4;
+}
+</style>
+```
+
+- **Product**: The template-generated node has `data-v-xxxx`, and the CSS selector is compiled to `.card[data-v-xxxx]`.
+- **Applicable**: Vue SFC local isolation, especially small and medium components or local customization. Tailwind atomic classes can be written directly in templates or in scoped styles `@apply`.
+- **Notice**:
+- Global styles that need to cross components are wrapped with `:global(.class)`; third-party components need to be explicitly penetrated (`::v-deep`).
+- scoped does not rewrite the class name itself. To avoid external overrides, it can be combined with `prefix`/namespace.
+
+## Scope container (data-* + :where / @scope)
+
+- **Principle**: Add a label to the root node, and then use a strong selector to limit the style to this container; `:where` does not increase specificity and is easy to cover; `@scope` is a future solution (progressive support).
+- **Example**:
+
+```css
+:where([data-scope=mini]) .card {
+  @apply rounded-xl border bg-card/80 p-4;
+}
+```
+
+```html
+<section data-scope="mini">
+<div class="card"> local scope</div>
+</section>
+```
+
+- **Applicable**: Inject styles locally into the host page, or multiple sets of areas need to coexist.
+- **Note**: still share the same CSS, need to manually manage the scope selector; can be combined with `prefix`/hash.
+
+## Shadow DOM / iframe
+
+- **Principle**: Using the browser's native isolation boundaries, the styles within Shadow DOM/iframe will not affect the outside by default.
+- **Implementation Points**:
+- Shadow DOM: Inject Tailwind products into Web Component (can be inlined with `<style>`); be careful to bring CSS into the component when building.
+- iframe: Introduce Tailwind products independently into sub-pages; communication/events require additional bridging.
+- **Applicable**: Widgets, advertising spaces, and cross-team micro frontends with strong isolation requirements.
+- **Note**: Each boundary needs to inject styles separately, and the packaging and runtime volume may increase; style injection needs to be processed during pre-rendering/SSR.
+
+## preflight control (optional combination)
+
+- **Principle**: Turn off or partially enable Tailwind preflight to avoid global reset affecting the host.
+- **How  to do**:
+- Configure `tailwind.config.ts` in `corePlugins: { preflight: false }`, or introduce `@tailwind base;` only in a specific entry.
+- Do not introduce preflight in the component library and let the host decide the global reset by itself.
+- **Applicable**: Publishable component libraries, micro-frontends, and when coexisting with existing UI libraries.
+
+## Select suggestions
+
+- Embed third-party pages: `prefix` + `important` to start; if the host style is complex, add a scope container.
+- Component library: Prioritize CSS Modules/vanilla-extract (compile-time hash), preflight can be turned off.
+- Widget/advertising slot/micro frontend: Shadow DOM or iframe provides the strongest isolation, depending on the size and runtime cost.
+- A progressive strategy is required: first use namespace and preflight control, confirm that there are still conflicts and then upgrade to container/Shadow DOM.

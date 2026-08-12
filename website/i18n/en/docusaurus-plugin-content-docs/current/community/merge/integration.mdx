@@ -1,0 +1,95 @@
+---
+id: integration
+title: Integration and Troubleshooting Guide
+description: Notes on integrating @weapp-tailwindcss/merge in real projects, as well as debugging tips for different packagers.
+keywords:
+  - Community
+  - template
+  - Case
+  - Integration and Troubleshooting Guide
+  - community
+  - merge
+  - integration
+  - weapp-tailwindcss
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+:::tip has been migrated to packages-runtime
+The complete API and multi-end demo of the runtime package have been compiled in the [packages-runtime](/docs/community/packages-runtime) chapter.
+:::
+
+## Work with build tools
+
+### Reserve key function names
+
+`weapp-tailwindcss` will scan the source code for identifiers such as `twMerge`, `twJoin`, `cva`, `cn`, `tv`, and `weappTwIgnore` during the compilation phase. When the packager rewrites the function name during the compression process (such as compressing `twMerge` into `a`), the scan will fail, causing the runtime string to be unrecoverable.
+
+- **esbuild / Vite**
+
+  ```ts title="vite.config.ts"
+  export default defineConfig({
+    build: {
+      minify: 'esbuild',
+      terserOptions: undefined,
+      rollupOptions: {},
+    },
+    esbuild: {
+      keepNames: true,
+    },
+  })
+  ```
+
+- **Terser / Webpack**
+
+  ```js title="webpack.config.js"
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          mangle: {
+            keep_classnames: true,
+            keep_fnames: true,
+          },
+        },
+      }),
+    ],
+  },
+  ```
+
+A complete example can be found in [`packages/minify-preserve`](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/packages/minify-preserve).
+
+## Runtime package selection
+
+| Tailwind version | Merge runtime | Variant runtime | Description |
+| --- | --- | --- | --- |
+| v4 | `@weapp-tailwindcss/merge` | `@weapp-tailwindcss/variants` | Default combination, adapted to `tailwind-merge@3` |
+
+## Linked with weapp-tailwindcss plug-in
+
+1. **Synchronize dependency versions**: Ensure that the `weapp-tailwindcss` compile-time plug-in is consistent with the runtime main version to avoid mapping table inconsistencies.
+2. **Configure ignore list**: If you encapsulate new tool functions to proxy APIs such as `twMerge`/`cva`, please add these names to `ignoreCallExpressionIdentifiers`; similarly use `ignoreTaggedTemplateExpressionIdentifiers` for template tags.
+3. **Third-party class name**: When the class name needs to be passed to the third-party library as it is, use `weappTwIgnore` to skip compilation-time escaping.
+
+## rpx length and any value
+
+`@weapp-tailwindcss/merge` has built-in rpx normalization (for example, `text-[12rpx]` ➜ `text-[length:12rpx]`) to avoid mis-merging of `tailwind-merge`. If you customize the rpx prefix combination, you can build a custom runtime based on `createRuntimeFactory` + `createRpxLengthTransform`.
+
+## Debugging suggestions
+
+- **Verify runtime version**: Output `tailwindMergeVersion` to confirm whether the current runtime branch is correct.
+- **Confirm escape link**: Execute the script locally to check whether `twMerge` has completed "Restore ➜ Merge ➜ Re-escape".
+
+  ```bash
+  node - <<'NODE'
+  const { twMerge } = require('@weapp-tailwindcss/merge')
+  console.log(twMerge('text-[#ececec]', 'text-[#ECECEC]'))
+  NODE
+  ```
+
+- **Check compressed products**: Search whether keywords such as `twMerge` and `weappTwIgnore` still exist in the product after packaging.
+- **Snapshot Regression**: Perform snapshot testing on `twMerge`/`tv` output to facilitate comparison when upgrading Tailwind or running.

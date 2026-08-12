@@ -1,0 +1,161 @@
+---
+id: cva-and-variants
+title: cva and tailwind-variants support
+description: Use the built-in cva(), tv() and other tools of the weapp-tailwindcss runtime series (@weapp-tailwindcss/cva and @weapp-tailwindcss/variants) to quickly encapsulate cross-end components.
+keywords:
+  - Community
+  - template
+  - Case
+  - cva
+  - tailwind-variants
+  - support
+  - community
+  - merge
+  - cva and variants
+  - weapp-tailwindcss
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+---
+`@weapp-tailwindcss/cva` and `@weapp-tailwindcss/variants` perform runtime encapsulation of `class-variance-authority` (cva) and `tailwind-variants` to ensure that the output class name is consistent with the applet compilation period.
+
+:::tip has been migrated to packages-runtime system
+For detailed usage and multi-terminal demo, please refer to:
+- [@weapp-tailwindcss/cva](/docs/community/packages-runtime/cva)  
+- [@weapp-tailwindcss/variants](/docs/community/packages-runtime/variants)  
+:::
+
+## Install
+
+```bash npm2yarn
+npm install @weapp-tailwindcss/cva
+npm install @weapp-tailwindcss/variants
+```
+
+> `class-variance-authority` / `tailwind-variants` is already built into the runtime, so there is no need to install upstream dependencies.
+
+## cva()
+
+`@weapp-tailwindcss/cva` directly encapsulates the upstream `cva` and escapes the output; the return type is consistent with `VariantProps` and the original library. There is an internal short cache of 256 entries.
+
+```ts
+import { cva } from '@weapp-tailwindcss/cva'
+
+const button = cva(
+  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors',
+  {
+    variants: {
+      tone: {
+        primary: 'bg-[#2563EB] text-white hover:bg-[#1D4ED8]',
+        outline: 'border border-border/60 bg-transparent',
+      },
+      size: {
+        sm: 'h-8 px-3',
+        md: 'h-9 px-4',
+        lg: 'h-10 px-6',
+      },
+    },
+    defaultVariants: {
+      tone: 'primary',
+      size: 'md',
+    },
+  },
+)
+
+button({ tone: 'outline', size: 'sm' })
+// => Escaped class name
+```
+
+To turn off escaping on the Web/H5 side, use `create`:
+
+```ts
+import { create } from '@weapp-tailwindcss/cva'
+
+// For cross-platform frameworks, please determine whether it is built with H5. It can usually be read from environment variables.
+const isH5 = true
+const { cva: cvaForWeb } = create({ escape: !isH5, unescape: !isH5 })
+```
+
+### Live Demo
+
+```jsx live
+function () {
+  return <CvaDemo/>
+}
+```
+
+## tailwind-variants
+
+`@weapp-tailwindcss/variants` is based on `tailwind-variants` and integrates the merge logic of `@weapp-tailwindcss/merge` by default:
+
+- `tv`: variant factory (supports `slots`, `compoundVariants`), the returned class name has been escaped.
+- `cn`: Class name aggregator, **returns a function**, optionally enabling `twMerge`.
+- `cnBase`: Only splicing and escaping, no merging.
+- `createTV`: Create `tv` factory with preset configuration.
+- `create`: Control escape/unescape for multi-port projects.
+
+### Combination variants
+
+```ts
+import { tv } from '@weapp-tailwindcss/variants'
+
+const badge = tv({
+  base: 'inline-flex items-center rounded-full px-2 text-xs font-semibold',
+  variants: {
+    tone: {
+      neutral: 'bg-[#F4F4F5] text-[#18181B]',
+      success: 'bg-[#DCFCE7] text-[#166534]',
+      danger: 'bg-[#FEE2E2] text-[#B91C1C]',
+    },
+    soft: {
+      true: 'bg-opacity-75',
+    },
+  },
+  compoundVariants: [
+    {
+      tone: 'danger',
+      soft: true,
+      class: 'bg-[#F87171] text-white',
+    },
+  ],
+  defaultVariants: {
+    tone: 'neutral',
+  },
+})
+
+badge({ tone: 'success' })
+// => Escaped class name
+```
+
+### cn / cnBase
+
+```ts
+import { cn, cnBase } from '@weapp-tailwindcss/variants'
+
+const mergeLater = cn('text-[#ececec]', 'text-[#ECECEC]')
+mergeLater() // => merge + escape
+
+mergeLater({ twMerge: false }) // => only escape, not merge
+
+cnBase('text-[#ececec]', 'text-[#ECECEC]') // => escape only
+```
+
+### Multi-terminal projects
+
+```ts
+import { create } from '@weapp-tailwindcss/variants'
+
+// For cross-platform frameworks, please determine whether it is built with H5. It can usually be read from environment variables.
+const isH5 = true
+const { tv, cn } = create({ escape: !isH5, unescape: !isH5 })
+```
+
+### Live Demo
+
+```jsx live
+function () {
+  return <VariantsDemo/>
+}
+```

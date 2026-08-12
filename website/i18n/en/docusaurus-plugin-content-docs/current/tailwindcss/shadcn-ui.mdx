@@ -1,0 +1,107 @@
+---
+id: shadcn-ui
+title: The emergence and significance of shadcn/ui
+description: The industry impact brought by the ready-to-copy component model and Radix + Tailwind + merge architecture
+sidebar_position: 3.3
+keywords:
+  - tailwindcss
+  - Tutorial
+  - atomization
+  - shadcn
+  - ui
+  - The emergence and significance of
+  - shadcn ui
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+import TailwindTopicHero from '@site/src/components/docs/TailwindTopicHero'
+
+<TailwindTopicHero topicId="tailwindcss/shadcn-ui" title="shadcn/ui The emergence and significance of" />
+
+## Background: Copy the source code instead of installing dependencies
+
+- Mode: shadcn/ui does not publish npm packages, but provides reproducible source code and CLI. After generating component files, the team will maintain and modify them themselves.
+- Impact: Avoid being locked by package version, components are completely owned by the team; update rhythm and breaking changes become "merge by yourself", and the risk is controllable.
+- Base: Radix UI (styleless, accessible interaction) + Tailwind (visual) + `tailwind-merge` (conflict resolution) + `cva`/`variants` (variants), forming a clear composition paradigm.
+
+## Core paradigm
+
+1) Design tokens: Define color, radius, and spacing through Tailwind theme or CSS variables.
+2) Variant declaration: Use `cva` or `tailwind-variants` to manage `size/tone/state`, etc.
+3) Merge: Encapsulate `cn = twMerge(clsx(...))`, and all components `className` go through merge.
+4) Copyable: CLI outputs source code such as `Button.tsx`, which is directly placed in the warehouse to facilitate secondary customization and code review.
+
+## Integration with other Headless UI
+
+- Radix is  not the only option, the same pattern can be applied to styleless bases such as Headless UI, Ark UI, Ariakit, React Aria/Headless, TanStack state machine, etc.
+- Here's the kicker: Interaction/accessibility is provided by the base, visuals and variants are taken over by Tailwind + `tailwind-merge` + `cva`/`variants`. When changing the base, you only need to adjust the attribute mapping and state class name.
+- Example: Wrap Ark UI's `Popover` as `cn + variants`, or use Ariakit's Dialog component with custom tokens, still maintaining the "source code copying, transformable, and overridable" mode.
+
+## What is Headless UI? Common bases and positioning
+
+- Definition: A component/Hook that only provides interaction logic and accessibility, without styles (or very few styles); it allows you to decide the DOM structure and class by yourself through render props, slots, or a combination of native elements.
+- Typical representatives:
+- Radix UI: Unstyled interactive original, with any style layer.
+- Headless UI (Tailwind Labs): Provides interactive components for render props/slots.
+- Ark UI/Kobalte/Ariakit: Unstyled + accessibility, suitable for custom themes.
+- React Aria / React Stately: Hook forms provide interaction and state.
+- TanStack Table: The table/data table logic is completely headless and can be combined with any style library.
+- TanStack Form (formerly React Form): form status/validation Hook, not responsible for visuals.
+- Scenarios that are not strictly headless: UI kits with default themes/styles (such as some reka UI kits) usually have encapsulated visual layers. Although they can be customized, they do not fall into the category of pure headless.
+
+## Headless UI library division (quick check)
+
+- Interactive primitives (component primitives): Radix UI, Headless UI, Ark UI, Ariakit, Kobalte - provide DOM structure/state machine/accessibility, the style is all up to you.
+- Hook/logical type: React Aria + React Stately (ARIA + state), TanStack Form (form state), only exposes Hook and is not responsible for DOM.
+- Data logic type: TanStack Table (table/data table logic, rendering customization), which is approximately a pure logic layer.
+- Semi-headless/styled kits: such as partial reka UI or themed UI kits, which provide default skins but can be replaced, and are not strictly headless.
+
+## Component example (abbreviated version)
+
+```tsx
+// utils/cn.ts
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+export const cn = (...inputs: ClassValue[]) => twMerge(clsx(...inputs))
+
+// components/button.tsx
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/utils/cn'
+
+const button = cva(
+  'inline-flex items-center gap-2 rounded-md font-medium transition-colors',
+  {
+    variants: {
+      tone: {
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        ghost: 'bg-transparent text-foreground hover:bg-accent',
+      },
+      size: { sm: 'h-8 px-2.5 text-sm', md: 'h-10 px-3 text-sm', lg: 'h-12 px-4 text-base' },
+    },
+    defaultVariants: { tone: 'default', size: 'md' },
+  }
+)
+
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof button>
+
+export function Button({ tone, size, className, ...props }: ButtonProps) {
+  return <button className={cn(button({ tone, size }), className)} {...props} />
+}
+```
+
+- Unified management of `cva` and `tone/size` through
+- Component files are within the project and can be adjusted according to team specifications (such as changing color palettes, changing radius, adding slots) instead of waiting for upstream releases.
+
+## Industry significance
+
+- **Template Scaffolding**: Provides a plug-in architecture of "copiable source code + merge + variants" for Tailwind scenarios, becoming the default starting point for a large number of teams.
+- **Ownership Transfer**: Transfer component ownership from the package author back to the using team, reducing dependency risks and facilitating security auditing and customization.
+- **De facto standard**: Make `tailwind-merge` the default solution for class name conflict resolution, spawning various `cn` packages and custom merge rules.
+- **Popularization of styleless interaction**: Promoted the combination of "styleless interaction such as Radix + atomic style", proving that high-availability components can be quickly produced without a high degree of encapsulation.
+---
+
+> Want to dig deeper into "What problem does merge solve?" See the "[tailwind-merge, cva, tailwind-variants essence] (./merge-and-variants)" section.

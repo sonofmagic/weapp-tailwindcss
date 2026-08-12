@@ -1,0 +1,113 @@
+---
+id: merge
+title: '@weapp-tailwindcss/merge（Tailwind v4）'
+description: The tailwind-merge runtime package adapted to Tailwind v4 provides small program escape/unescape and multi-terminal factory capabilities.
+keywords:
+  - Community
+  - template
+  - Case
+  - weapp-tailwindcss
+  - merge
+  - Tailwind
+  - v4
+  - community
+  - packages runtime
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+`@weapp-tailwindcss/merge` is a small program-friendly package of `tailwind-merge@3`, adapted to `tailwindcss@4`. It automatically handles escape/unescape before and after merging, making runtime output consistent with compile time.
+
+## Install
+
+```bash npm2yarn
+npm install @weapp-tailwindcss/merge
+```
+
+## Core API
+
+- `twMerge(...classValues)`: Merge Tailwind class names and remove conflicts.
+- `twJoin(...classValues)`: splicing class names (no conflict judgment).
+- `extendTailwindMerge(config)`/`createTailwindMerge(config)`: Extended merge rules.
+- `create(options?)`: Create isolated instances, control escape/unescape.
+- `weappTwIgnore`: Template string marked "do not escape".
+
+### Basic example
+
+```ts
+import { twMerge } from '@weapp-tailwindcss/merge'
+
+const className = twMerge(
+  'px-2 py-1 bg-red hover:bg-dark-red',
+  'p-3 bg-[#B91C1C]'
+)
+
+// => The escaped class name can be written directly into the applet class
+```
+
+### Extend merge rules
+
+```ts
+import { extendTailwindMerge } from '@weapp-tailwindcss/merge'
+
+const mergeCard = extendTailwindMerge({
+  classGroups: {
+    card: ['card-default', 'card-primary'],
+  },
+})
+
+mergeCard('card-default card-primary') // => 'card-primary'
+```
+
+## Mini program usage
+
+It is recommended to use the default export directly on the applet, and the escaped class name will be automatically output during runtime:
+
+```ts
+import { twMerge } from '@weapp-tailwindcss/merge'
+
+const buttonClass = twMerge(
+  'inline-flex items-center rounded-md px-3 py-2 text-sm',
+  isPrimary && 'bg-[#2563EB] text-white'
+)
+```
+
+## Web usage (turn off escaping)
+
+In a Web/SSR environment, use `create` to turn off escape/unescape:
+
+```ts
+import { create } from '@weapp-tailwindcss/merge'
+
+// For cross-platform frameworks, please determine whether it is built with H5. It can usually be read from environment variables.
+const isH5 = true
+const { twMerge } = create({
+  escape: !isH5,
+  unescape: !isH5,
+})
+
+const className = twMerge('text-[#2563EB]', 'text-[#1D4ED8]')
+// => 'text-[#1D4ED8]'
+```
+
+## Demo: Button class name merge
+
+```ts
+import { twMerge } from '@weapp-tailwindcss/merge'
+
+const base = 'inline-flex items-center rounded-md px-4 py-2 text-sm font-medium'
+const state = 'bg-[#2563EB] text-white hover:bg-[#1D4ED8]'
+const override = 'px-6'
+
+const className = twMerge(base, state, override)
+```
+
+## Common precautions
+
+- **Function name reserved**: If you alias `twMerge` to `cn`, you need to supplement the name in `ignoreCallExpressionIdentifiers`.
+- **Skip compile-time escaping**: When the class name needs to be passed unchanged to a third party, mark the template string with `weappTwIgnore`.
+
+For more details and debugging guidance, see [Integration and Troubleshooting Guide](/docs/community/merge/integration).

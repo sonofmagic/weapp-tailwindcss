@@ -1,0 +1,159 @@
+---
+id: runtime-api
+title: Runtime API
+description: shared runtime - @weapp-tailwindcss/runtime and the usage of merge series in mini programs.
+keywords:
+  - Community
+  - template
+  - Case
+  - runtime
+  - API
+  - community
+  - merge
+  - runtime api
+  - weapp-tailwindcss
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+`@weapp-tailwindcss/runtime` is the common base for all runtime packages, uniformly providing escape/unescape, `clsx`, `weappTwIgnore`, `createRuntimeFactory` and `createRpxLengthTransform`.
+
+:::tip has been migrated to packages-runtime
+More complete usage and multi-end examples have been included in the packages-runtime chapter:
+- [packages-runtime overview](/docs/community/packages-runtime)
+- [@weapp-tailwindcss/merge](/docs/community/packages-runtime/merge)  
+- [@weapp-tailwindcss/variants](/docs/community/packages-runtime/variants)
+:::
+
+## Install
+
+```bash npm2yarn
+npm install @weapp-tailwindcss/merge
+```
+
+If the project must continue to use Tailwind CSS v3, please install `weapp-tailwindcss@4` and check out the [v4 documentation site](https://v4.tw.icebreaker.top/); `@weapp-tailwindcss/runtime` is usually installed automatically as an indirect dependency.
+
+## Runtime basic export
+
+```ts
+import {
+  clsx,
+  weappTwIgnore,
+  resolveTransformers,
+  createRuntimeFactory,
+  createRpxLengthTransform,
+} from '@weapp-tailwindcss/runtime'
+```
+
+- `clsx` / `ClassValue`: A unified class name aggregation tool, the parameter type is consistent with `clsx`.
+- `weappTwIgnore`: Alias  of `String.raw`, used to skip compile-time escaping.
+- `resolveTransformers(options?)`: Return `{ escape, unescape }` and automatically merge the default mapping table.
+- `createRuntimeFactory(options)`: Wraps runtimes such as `tailwind-merge` with built-in escape/unescape, short cache and pluggable preprocessing/restore hooks.
+- `createRpxLengthTransform(prefixes?)`: Provides `prepareValue`/`restoreValue` for rpx length normalization.
+
+## createRuntimeFactory
+
+`createRuntimeFactory` will package the original `twMerge`/`twJoin`/`extendTailwindMerge`/`createTailwindMerge` into a small program runtime. The internal process is:
+
+1. Optional unescape (fired only if input contains placeholders).
+2. `prepareValue` preprocessing (e.g. rpx normalization).
+3. Original merge.
+4. `restoreValue` restore.
+5. escape output and cache the results (256 items).
+
+`@weapp-tailwindcss/merge` Use `createRpxLengthTransform()` as preprocessing/restore hook by default.
+
+## createRpxLengthTransform
+
+rpx normalization is performed by default on any value of the following prefixes: `text`, `border`, `bg`, `outline`, `ring`.
+
+```ts
+import { createRpxLengthTransform, createRuntimeFactory } from '@weapp-tailwindcss/runtime'
+import { twMerge, twJoin, createTailwindMerge, extendTailwindMerge } from 'tailwind-merge'
+
+const rpxTransform = createRpxLengthTransform(['text', 'bg'])
+const create = createRuntimeFactory({
+  version: 3,
+  twMerge,
+  twJoin,
+  createTailwindMerge,
+  extendTailwindMerge,
+  ...rpxTransform,
+})
+```
+
+## Standard export of merge runtime
+
+```ts
+import {
+  twMerge,
+  twJoin,
+  createTailwindMerge,
+  extendTailwindMerge,
+  getDefaultConfig,
+  mergeConfigs,
+  tailwindMergeVersion,
+  weappTwIgnore,
+  create,
+} from '@weapp-tailwindcss/merge'
+```
+
+- `@weapp-tailwindcss/merge` adapts to `tailwindcss@4`, `tailwindMergeVersion` to `3`.
+- Built-in rpx normalization and escape/unescape.
+
+## twMerge(...classValues)
+
+Merge the Tailwind utility classes and remove conflicting items, returning the escaped string. All parameter types compatible with `clsx` are supported (Boolean, array, object, etc.).
+
+```ts
+twMerge('px-2 py-1', ['px-6', { 'py-5': shouldExpand }])
+// => 'px-6 py-5'
+```
+
+## twJoin(...classValues)
+
+Class names are spliced  without conflict judgment, but the unescape/escape and rpx normalization processes will still be performed.
+
+```ts
+twJoin('text-[#ececec]', condition && 'bg-[#010101]')
+// => will still output the escaped class name
+```
+
+## create(options?)
+
+`create` will return a set of isolated runtimes based on `CreateOptions`, often used for multi-port project control escapes:
+
+```ts
+const { twMerge } = create({ escape: false, unescape: false })
+```
+
+### CreateOptions
+
+| Options | Type | Default | Description |
+| --- | --- | --- | --- |
+| `escape` | `false` \| `EscapeConfig` | |
+| `unescape` | `false` \| `UnescapeConfig` | |
+
+- When `escape`/`unescape` provides a custom `map`, it is automatically merged with the default mapping.
+- `resolveTransformers` will try to share the same mapping table to avoid inconsistencies between compile time and run time.
+
+## weappTwIgnore
+
+The template string label function is essentially `String.raw` and is linked to the `ignoreTaggedTemplateExpressionIdentifiers` configuration:
+
+```ts
+import { weappTwIgnore } from '@weapp-tailwindcss/merge'
+
+const raw = weappTwIgnore`
+  bg-[#123456]
+  before:content-['>']
+`
+```
+
+## Other packages based on runtime
+
+- `@weapp-tailwindcss/cva`: encapsulates `class-variance-authority`, see [@weapp-tailwindcss/cva](/docs/community/packages-runtime/cva) for details
+- `@weapp-tailwindcss/variants`: encapsulates `tailwind-variants`, see [@weapp-tailwindcss/variants](/docs/community/packages-runtime/variants) for details

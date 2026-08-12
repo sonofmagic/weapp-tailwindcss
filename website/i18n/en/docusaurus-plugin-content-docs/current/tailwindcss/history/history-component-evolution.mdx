@@ -1,0 +1,87 @@
+---
+id: history-component-evolution
+title: The evolution of component libraries
+description: The decoupling route from heavy-style UI kits to Headless Primitives and design tokens
+slug: /tailwindcss/history/component-evolution
+sidebar_position: 2
+keywords:
+  - tailwindcss
+  - Tutorial
+  - atomization
+  - The evolution of component libraries
+  - history
+  - history component evolution
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+import TailwindTopicHero from '@site/src/components/docs/TailwindTopicHero'
+
+<TailwindTopicHero topicId="tailwindcss/history/history-component-evolution" title="The evolution of component libraries" />
+
+## Key Points
+
+- The component library has evolved from "component + style bundling" to "theming" to "Headless Primitives", gradually decoupling APIs, styles and design tokens.
+- Headless + tokens allow atomic classes/design systems to be implemented, and variants need to be declared centrally through `cva`/`tailwind-variants`, etc., in conjunction with `tailwind-merge`.
+- Migration strategy: first extract public tokens, then provide class injection/styleless mode for components, and finally replace key components with Headless templates.
+
+> For the evolution of the style scheme itself, see: [Evolution of the style scheme] (/docs/tailwindcss/history).
+
+## <span className="mr-2 inline-block align-middle text-primary dark:text-primary-200 icon-[mdi--chart-areaspline]"></span> Evolution stages and comparison
+
+| Stages | Representatives | Characteristics | Problems |
+| --- | --- | --- | --- |
+| Traditional UI kit | Element, AntD | Styles are bound with components, and theme switching costs are high | Customization costs are high, and overriding styles are fragile |
+| Design systemization | Chakra, MUI | Themes and tokens, some can be combined | There is still style coupling, and deep transformation is difficult |
+| Headless/UI primitives | Headless UI, shadcn/ui, reka-ui, Radix Primitives | Decouple API and style, leaving design layer | Need your own design system and class name constraints |
+
+```mermaid
+%%{ init: { "flowchart": { "curve": "basis", "nodeSpacing": 32, "rankSpacing": 24 } } }%%
+flowchart TB
+C1["2017 · Element / AntD: Component + Style Bundling"]
+C2["2019 · Chakra / MUI: Semi-decoupling of themes and components"]
+C3["2022 · Headless UI / Radix: API and style separation"]
+  C4["2023 · shadcn/ui, reka-ui：Headless + tokens + Tailwind"]
+
+  C1 --> C2 --> C3 --> C4
+```
+
+<div className="mt-3 grid gap-2 text-sm text-muted-foreground">
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--cube] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+<span>2017: Traditional component library, strong binding of styles and components. </span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--tune] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+<span>2019: Themed/designed component library. </span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--link] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+<span>2022: Headless Primitives, API and style decoupling. </span>
+  </div>
+  <div className="flex items-start gap-2">
+    <span className="icon-[mdi--magic-staff] text-lg text-primary dark:text-primary-200" aria-hidden="true" />
+<span>2023: shadcn/ui and other template solutions, Headless + tokens + Tailwind. </span>
+  </div>
+</div>
+
+## Advantages and Disadvantages of Headless Combination Paradigm
+
+- Advantages:
+- API and style are split, and the style is completely handed over to Tailwind/Uno + tokens; easy to switch between multiple brands/dark colors.
+- Cooperate with `cva`/`tailwind-variants` to centrally declare variants to reduce review costs.
+- AI generation friendly: templates are fixed and class names are merge/lint protected.
+- Disadvantages:
+- You need to build your own design system and token table, otherwise different page styles will easily drift.
+- Document/example construction costs are high, and "recommended class name combinations" need to be given.
+- For beginners, class readability and semantics require additional training.
+
+## Migration and implementation suggestions
+
+- Extract tokens: Converg design variables such as color palette/spacing/font size into the configuration file, and the component only consumes tokens.
+- Unstyled interface: Add `className`/`classes` injection or "unstyled" mode to existing components, gradually stripping away coupling styles.
+- Variant concentration: Use `cva`/`tailwind-variants` to create variant tables of core components such as buttons, inputs, and cards, and use `tailwind-merge` to cover them all.
+- Review checklist: Check whether there is still deep coverage, whether there is leakage of custom color values, and whether there are ad-hoc classes that cannot be reused.

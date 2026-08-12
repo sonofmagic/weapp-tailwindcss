@@ -1,0 +1,96 @@
+---
+id: bem-and-oocss
+title: BEM and OOCSS methodologies
+description: Naming rules, design ideas and examples of traditional CSS architecture
+sidebar_position: 2.5
+keywords:
+  - tailwindcss
+  - Tutorial
+  - atomization
+  - BEM
+  - OOCSS
+  - methodology
+  - bem and oocss
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+import TailwindTopicHero from '@site/src/components/docs/TailwindTopicHero'
+
+<TailwindTopicHero topicId="tailwindcss/bem-and-oocss" title="BEM and OOCSS methodology" />
+
+## BEM（Block / Element / Modifier）
+
+- Goal: Reduce hierarchical selectors through naming conventions to ensure components are cohesive and easy to combine.
+- Naming: `block` describes independent components, `block__element` represents internal elements, and `block--modifier` represents single-dimensional variants/states; do not pile multi-dimensional states on the same modifier.
+- Applicable: Stable and readable class name constraints are required in multi-page or old projects; also often used as a JS/test hook.
+
+### Example
+
+```html
+<article class="card card--featured">
+  <header class="card__header">
+<h3 class="card__title">Title</h3>
+<button class="card__action card__action--primary">View</button>
+  </header>
+<p class="card__desc"> Description copy</p>
+</article>
+```
+
+```css
+.card { border: 1px solid #e5e7eb; padding: 16px; border-radius: 12px; background: #fff; }
+.card__header { display: flex; align-items: center; gap: 8px; }
+.card__title { margin: 0; font-size: 16px; }
+.card__action { border: none; background: transparent; color: #6b7280; cursor: pointer; }
+.card__action--primary { color: #2563eb; font-weight: 600; }
+.card--featured { border-color: #2563eb; box-shadow: 0 12px 32px rgba(37, 99, 235, 0.12); }
+```
+
+- Advantages: Class names are self-describing and can be combined; element/variant boundaries are clear, making it easy to split files.
+- Common pitfalls: The nesting level may still increase (`card__header__title` violates BEM); when the modifier explodes, it is necessary to recycle public styles or introduce tokens.
+- With Tailwind: If you turn to atomization, you can keep block/element as a data hook and leave the vision to utilities; or maintain BEM on a small number of containers that need to be globally reused.
+
+## OOCSS（Object-Oriented CSS）
+
+- Goal: Split styles into "structure objects" and "skin objects" to encourage reuse and combination and reduce coupling.
+- Core principles: separation of structure and skin (layout vs. visual), decoupling of containers and content (object independence, nestable), single responsibility (one class only takes care of one dimension).
+- Applicable to: design systems or multi-theme scenes, especially when the same layout skeleton needs to be reused across components.
+
+### Example
+
+```css
+/* Structural object: media block skeleton */
+.media { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; }
+.media__img { width: 56px; height: 56px; object-fit: cover; border-radius: 12px; }
+.media__body { display: grid; gap: 4px; }
+
+/* Skin object: can be reused in different places */
+.card-skin { padding: 16px; border: 1px solid #e5e7eb; border-radius: 16px; background: #fff; }
+.card-skin--muted { background: #f9fafb; color: #4b5563; }
+.tag-skin { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; background: #eef2ff; color: #4338ca; font-size: 12px; }
+```
+
+```html
+<article class="media card-skin card-skin--muted">
+  <img class="media__img" src="/img/avatar.png" alt="avatar" />
+  <div class="media__body">
+    <div class="tag-skin">Pro</div>
+<p> object structure + skin combination gets card </p>
+  </div>
+</article>
+
+<div class="media">
+  <img class="media__img" src="/img/icon.png" alt="icon" />
+  <div class="media__body">
+<strong>Same structure object</strong>
+<span> can be changed into a label, card or list item by changing its skin </span>
+  </div>
+</div>
+```
+
+- Advantages: Abstract "instantiable" style objects to reduce repetitive CSS; skins can be switched without changing the structure.
+- Limitations: The number of class names increases; complex states may require additional state classes or JS participation.
+- With Tailwind: The essence of Tailwind's utility/variants is also to break down the structure and skin, but to break down the objects more finely. During migration, commonly used OOCSS objects can be translated into atomic combinations (or `@apply`), retaining component semantics but easing style maintenance.

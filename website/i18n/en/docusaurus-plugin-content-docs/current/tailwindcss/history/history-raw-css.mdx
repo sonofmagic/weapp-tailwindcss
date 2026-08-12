@@ -1,0 +1,107 @@
+---
+id: history-raw-css
+title: Raw CSS / BEM / OOCSS
+description: The advantages and disadvantages, applicable scenarios and common pitfalls of the global naming phase
+slug: /tailwindcss/history/raw-css
+sidebar_position: 2
+keywords:
+  - tailwindcss
+  - Tutorial
+  - atomization
+  - Raw
+  - CSS
+  - BEM
+  - OOCSS
+  - history
+  - history raw css
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+import TailwindTopicHero from '@site/src/components/docs/TailwindTopicHero'
+
+<TailwindTopicHero topicId="tailwindcss/history/history-raw-css" title="Raw CSS / BEM / OOCSS" />
+
+## Key Points
+
+- Global styles + naming convention (BEM/OOCSS) reduce mental burden and make the tool chain simple.
+- Cost: The coverage chain is difficult to troubleshoot, naming conflicts occur frequently, and reuse relies on team discipline.
+- Suitable for one-time pages/static sites or extremely small-scale projects; maintenance costs increase sharply after a certain scale.
+- Representative packages: `normalize.css`/`reset.css` are responsible for baseline unification.
+
+## Advantages / Disadvantages / When to use
+
+| Item | Content |
+| --- | --- |
+| Advantages | No build dependencies, direct reading from the browser; clear class name semantics; low entry cost |
+| Disadvantages | Global pollution; difficult to control coverage order; difficult to align design tokens; many repeated styles |
+| Applicable | Landing/activity page, small display site; no complex theme/status requirements |
+| Not applicable | Medium and large applications, projects requiring strong isolation or multiple themes |
+
+## Representative packages and typical usage
+
+- **normalize.css / reset.css**: Place it at the entrance to unify the default styles of different browsers; then add your own naming system.
+
+```html title="Entrance introduction"
+<link rel="stylesheet" href="/static/normalize.css" />
+<link rel="stylesheet" href="/static/site.css" />
+```
+
+- **Bootstrap 3/4**: global naming + component style binding, suitable for quick page assembly.
+
+```html title="Bootstrap Card"
+<link rel="stylesheet" href="__PROTECTED_0__ />
+<div class="card shadow-sm">
+  <div class="card-body">
+    <p class="text-uppercase text-muted small mb-2">Bootstrap</p>
+<h5 class="card-title"> global + component binding</h5>
+<p class="card-text"> completes the UI through a combination of utility auxiliary classes and component classes. </p>
+<button class="btn btn-dark">View details</button>
+  </div>
+</div>
+```
+
+- **Bulma/Pure.css**: Semantic class + lightweight size, suitable for small sites that do not require strong customization.
+
+```html title="Bulma button example"
+<link rel="stylesheet" href="__PROTECTED_0__ />
+<div class="buttons">
+  <button class="button is-dark">Dark</button>
+  <button class="button is-outlined is-dark">Outline</button>
+  <button class="button is-light">Light</button>
+</div>
+```
+
+## Example (BEM)
+
+```html
+<section class="card card--elevated">
+  <header class="card__header">
+    <p class="card__eyebrow">Raw CSS</p>
+<h2 class="card__title">Simple but global</h2>
+<p class="card__desc"> naming relies on convention, and coverage and reuse all rely on discipline. </p>
+<button class="btn btn--primary">View details</button>
+  </header>
+</section>
+
+<style>
+  .card { border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; }
+  .card--elevated { box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+  .card__header { display: flex; flex-direction: column; gap: 8px; }
+  .card__eyebrow { font-size: 12px; letter-spacing: 0.1em; color: #6b7280; }
+  .card__title { font-size: 18px; margin: 0; }
+  .card__desc { color: #4b5563; font-size: 14px; }
+  .btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #111827; background: #111827; color: #fff; }
+  .btn--primary:hover { background: #0f172a; }
+</style>
+```
+
+## Common pitfalls and countermeasures
+
+- Naming conflicts: unified prefix or chunking (such as `layout-`/`component-`).
+- Cover chain: disallow more than 3 levels of nesting; avoid `!important` stacking.
+- Design Alignment: Extract color palette/spacing variables ahead of time, even for CSS variables, to reduce drift.
+- Maintainability: Reserve exits for componentized migration (split partial files to reduce cross-file coverage).

@@ -1,0 +1,119 @@
+---
+id: history-preprocessors
+title: Sass/Less preprocessing phase
+description: Reuse and risks brought about by variables, mixins, and nesting
+slug: /tailwindcss/history/preprocessors
+sidebar_position: 3
+keywords:
+  - tailwindcss
+  - Tutorial
+  - atomization
+  - Sass
+  - Less
+  - preprocessing stage
+  - history
+  - history preprocessors
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+import TailwindTopicHero from '@site/src/components/docs/TailwindTopicHero'
+
+<TailwindTopicHero topicId="tailwindcss/history/history-preprocessors" title="Sass / Less preprocessing stage" />
+
+## Key Points
+
+- Variables/mix-ins/functions improve reusability, making BEM/OOCSS easier to implement; they are still in global scope.
+- Nesting and inheritance can easily get out of control, and the compilation volume may expand; additional specifications are still required for design token alignment.
+- Suitable for teams that have certain reuse needs but have not yet been componentized, or small and medium-sized projects that need to quickly implement themes.
+- Representative packages: `Sass/SCSS` (the strongest community, `node-sass`/`dart-sass` compiler), `Less` (representative of theme variables in the Ant Design era), `Stylus` (flexible functional writing), and
+
+## Advantages / Disadvantages / When to use
+
+| Item | Content |
+| --- | --- |
+| Advantages | Variables/mixins improve reuse; tool chain is mature; CSS output is controllable |
+| Disadvantages | Still global pollution; nested hell; theme switching requires additional pipelines |
+| Applicable | Small and medium-sized projects that require a small amount of theme switching or design draft mapping |
+| Not applicable | Projects that require strong isolation/releasable component libraries and wish to align tokens directly |
+
+## Representative packages and common scenarios
+
+- **Sass/SCSS**: The most complete mainstream functions, modularized with `@use`/`@forward`.
+- **Less**: Classic usage of variable + calculated theme switching (Ant Design `modifyVars`); still a global style.
+- **Stylus**: indentation syntax + functional mixin; common in early Vue templates.
+- **PostCSS plugin chain**: `autoprefixer` + `postcss-nesting` combination to get new syntax support without migrating to CSS-in-JS.
+
+```scss title="Sass modular tokens"
+// tokens/_color.scss
+$primary: #111827;
+$muted: #6b7280;
+
+// tokens/_radius.scss
+$card-radius: 16px;
+
+// styles/card.scss
+@use '../tokens/color' as *;
+@use '../tokens/radius' as *;
+
+.card {
+  border: 1px solid lighten($primary, 65%);
+  border-radius: $card-radius;
+}
+```
+
+```less title="Less modifyVars quick theme switching"
+//Adjust modifyVars through webpack/vite
+lessOptions: {
+  javascriptEnabled: true,
+  modifyVars: {
+    '@primary-color': '#111827',
+    '@btn-border-radius-base': '8px',
+  },
+}
+```
+
+```css title="PostCSS plug-in chain (postcss.config.js)">
+module.exports = {
+  plugins: {
+    'postcss-nesting': {},
+    autoprefixer: {},
+  },
+}
+```
+
+## Example (Sass + BEM)
+
+```scss
+$radius: 16px;
+$primary: #111827;
+$muted: #6b7280;
+
+.card {
+  border: 1px solid lighten($primary, 65%);
+  border-radius: $radius;
+  padding: 16px;
+  &--elevated { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
+  &__header { display: flex; flex-direction: column; gap: 8px; }
+}
+
+.eyebrow { font-size: 12px; letter-spacing: 0.1em; color: $muted; }
+.btn {
+  padding: 10px 16px;
+  border-radius: $radius - 4px;
+  border: 1px solid $primary;
+  background: $primary;
+  color: #fff;
+  &:hover { background: darken($primary, 5%); }
+}
+```
+
+## Common pitfalls and countermeasures
+
+- Nesting levels: limited to 3 levels; prevent deep selectors via lint.
+- Variable scattering: Concentrate tokens into a single file to prevent multiple swatches from splitting.
+- Product size: avoid abusing `@extend` and global mixins; check the compiled size regularly.
+- Migration path: Use CSS variables to carry tokens in advance to facilitate switching to Utility-first/componentization in the future.

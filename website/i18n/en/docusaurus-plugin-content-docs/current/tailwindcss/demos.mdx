@@ -1,0 +1,279 @@
+---
+id: demos
+title: Demo and product comparison of each style plan
+description: Code and expected products of the same UI under Raw CSS, Sass, CSS Modules, CSS-in-JS, Tailwind, Headless + cva/tv
+sidebar_position: 7
+keywords:
+  - tailwindcss
+  - Tutorial
+  - atomization
+  - Each style plan
+  - Demo
+  - Compare with product
+  - demos
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+import TailwindTopicHero from '@site/src/components/docs/TailwindTopicHero'
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem'
+
+<TailwindTopicHero topicId="tailwindcss/demos" title="Each style plan Demo Compare with product" />
+
+## Goals and products
+
+- Use a unified "card + button" UI to display the implementation of different style solutions.
+- Each plan provides: core code snippets, operating ideas, and expected products (screenshot placeholders or descriptions of construction results).
+- You can copy the fragment to `apps/react-app` or `apps/vue-app` for comparison, or put it separately into `tmp/style-demos/` for comparison.
+
+> Note: Product size/performance needs to be measured locally; measurement commands are given below. Screenshot placeholder: `<!-- screenshot: style-demo-{Plan name} -->`.
+
+## Measurement command (optional)
+
+- Run React Demo (Tailwind/Headless version is built-in): `pnpm --filter react-app dev`
+- Run Vue Demo: `pnpm --filter vue-app dev`
+- If testing in standalone HTML: Open the HTML with `npx serve` or VSCode Live Server, and use browser coverage to view actual CSS hits.
+
+## Demo snippet
+
+### Raw CSS / BEM
+
+```html
+<section class="card card--elevated">
+  <header class="card__header">
+    <p class="eyebrow">Raw CSS / BEM</p>
+<h2 class="title"> is small and straightforward, no toolchain </h2>
+<p class="desc"> global naming, easy to hit, but easy to be overwritten, requires team naming discipline. </p>
+<button class="btn btn--primary">View details</button>
+  </header>
+</section>
+
+<style>
+  .card { border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; }
+  .card--elevated { box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+  .card__header { display: flex; flex-direction: column; gap: 8px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.1em; color: #6b7280; }
+  .title { font-size: 18px; margin: 0; }
+  .desc { color: #4b5563; font-size: 14px; }
+  .btn { padding: 10px 16px; border-radius: 8px; border: 1px solid #111827; background: #111827; color: #fff; }
+  .btn--primary:hover { background: #0f172a; }
+</style>
+```
+
+Expected product: Single CSS, no splitting; global naming is prone to conflicts.
+
+### Sass + BEM (including variables)
+
+```scss
+$radius: 16px;
+$primary: #111827;
+$muted: #6b7280;
+
+.card {
+  border: 1px solid lighten($primary, 65%);
+  border-radius: $radius;
+  padding: 16px;
+  &--elevated { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); }
+  &__header { display: flex; flex-direction: column; gap: 8px; }
+}
+
+.eyebrow { font-size: 12px; letter-spacing: 0.1em; color: $muted; }
+.btn {
+  padding: 10px 16px;
+  border-radius: $radius - 4px;
+  border: 1px solid $primary;
+  background: $primary;
+  color: #fff;
+  &:hover { background: darken($primary, 5%); }
+}
+```
+
+Expected product: Compiled to a single CSS, variables inlined at build time; still globally scoped.
+
+### CSS Modules（React）
+
+```tsx title="Card.tsx"
+import styles from './Card.module.css'
+
+export function Card() {
+  return (
+    <section className={__PROTECTED_0__}>
+      <div className={styles.header}>
+        <p className={styles.eyebrow}>CSS Modules</p>
+<h2 className={styles.title}>Scope isolation</h2>
+The <p className={styles.desc}> class name becomes a hash and will not conflict with the global. </p>
+<button className={styles.button}>View details</button>
+      </div>
+    </section>
+  )
+}
+```
+
+```css title="Card.module.css"
+.card { border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; }
+.elevated { box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+.header { display: flex; flex-direction: column; gap: 8px; }
+.eyebrow { font-size: 12px; letter-spacing: 0.1em; color: #6b7280; }
+.title { font-size: 18px; margin: 0; }
+.desc { color: #4b5563; font-size: 14px; }
+.button { padding: 10px 16px; border-radius: 8px; border: 1px solid #111827; background: #111827; color: #fff; }
+```
+
+Expected product: Compiled class names are hashed, with good isolation; theme switching requires additional token pipelines.
+
+### Vue `<style scoped>`
+
+```html
+<template>
+  <section class="card">
+    <p class="eyebrow">Scoped CSS</p>
+<h2 class="title"> Scope isolation (compile time) </h2>
+Add data-v-xxx when compiling <p class="desc">Vue SFC to avoid global pollution. </p>
+<button class="button">View details</button>
+  </section>
+</template>
+
+<style scoped>
+.card { border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+.eyebrow { font-size: 12px; letter-spacing: 0.1em; color: #6b7280; }
+.title { font-size: 18px; margin: 0; }
+.desc { color: #4b5563; font-size: 14px; }
+.button { padding: 10px 16px; border-radius: 8px; border: 1px solid #111827; background: #111827; color: #fff; }
+</style>
+```
+
+Expected product: scoped selector compiled into data-v-xxx to avoid global pollution; additional pipelines are still needed to process topics/tokens.
+
+### CSS-in-JS (styled-components example)
+
+```tsx
+import styled from 'styled-components'
+
+const Card = styled.section`
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: ${({ elevated }) => (elevated ? '0 10px 30px rgba(0,0,0,0.06)' : 'none')};
+`
+
+const Button = styled.button`
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #111827;
+  background: #111827;
+  color: #fff;
+  &:hover { background: #0f172a; }
+`
+
+export const Demo = () => (
+  <Card elevated>
+    <p className="eyebrow">CSS-in-JS</p>
+<h2> dynamic style, component boundary </h2>
+<Button>View details</Button>
+  </Card>
+)
+```
+
+Expected product: Runtime injection style; pay attention to SSR water injection volume and runtime overhead.
+
+### Utility-first（Tailwind）
+
+<Tabs>
+  <TabItem value="react" label="React">
+
+```tsx
+export function TailwindCard() {
+  return (
+    <section className="grid gap-3 rounded-2xl border bg-card/80 p-4 shadow-sm">
+      <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Tailwind</div>
+<h2 className="text-lg font-semibold"> class name is style </h2>
+<p className="text-sm text-muted-foreground">JIT + tokens; the class name is clear at a glance, and the product is small after shaking the tree. </p>
+      <button className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground hover:bg-primary/90">
+check the details
+      </button>
+    </section>
+  )
+}
+```
+
+  </TabItem>
+  <TabItem value="vue" label="Vue">
+
+```html
+<template>
+  <section class="grid gap-3 rounded-2xl border bg-card/80 p-4 shadow-sm">
+    <p class="text-xs uppercase tracking-[0.2em] text-muted-foreground">Tailwind</p>
+<h2 class="text-lg font-semibold"> class name is style </h2>
+<p class="text-sm text-muted-foreground">JIT + tokens; the class name is clear at a glance, and the product is small after shaking the tree. </p>
+    <button class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground hover:bg-primary/90">
+check the details
+    </button>
+  </section>
+</template>
+```
+
+  </TabItem>
+</Tabs>
+
+Expected product: Atoms generated on demand, with `content` precise scanning, the product is controllable.
+
+### Headless + cva/tailwind-variants (already in Demo application)
+
+<Tabs>
+  <TabItem value="react" label="React">
+
+```tsx
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+
+export function HeadlessCard() {
+  return (
+    <section className="rounded-2xl border bg-card/80 p-4 shadow-sm">
+      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Headless + cva</p>
+<h2 className="text-lg font-semibold">API decoupled from styles</h2>
+<p className="text-sm text-muted-foreground">variants/compoundVariants centralized statement, `tailwind-merge` full disclosure. </p>
+      <div className="mt-3 flex gap-2">
+<button className={cn(buttonVariants({ variant: 'default' }), 'gap-2')}>Main button</button>
+<button className={buttonVariants({ variant: 'outline', size: 'sm' })}> times button</button>
+      </div>
+    </section>
+  )
+}
+```
+
+  </TabItem>
+  <TabItem value="vue" label="Vue">
+
+```html
+<script setup lang="ts">
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+</script>
+
+<template>
+  <section class="rounded-2xl border bg-card/80 p-4 shadow-sm">
+    <p class="text-xs uppercase tracking-[0.2em] text-muted-foreground">Headless + cva</p>
+<h2 class="text-lg font-semibold">API decoupled from styles</h2>
+<p class="text-sm text-muted-foreground">variants/compoundVariants centralized statement, `tailwind-merge` full disclosure. </p>
+    <div class="mt-3 flex gap-2">
+<button :class="cn(buttonVariants({ variant: 'default' }), 'gap-2')">Main button</button>
+<button :class="buttonVariants({ variant: 'outline', size: 'sm' })"> times button</button>
+    </div>
+  </section>
+</template>
+```
+
+  </TabItem>
+</Tabs>
+
+Expected product: atomic class + merge deduplication; aligned with design token, can be run directly in existing React/Vue Demo.
+
+## How to verify these solutions in this repository
+
+1. Tailwind / Headless: Run `pnpm --filter react-app dev` or `pnpm --filter vue-app dev` directly, the corresponding code has been built-in.
+2. Raw/Sass/CSS Modules/CSS-in-JS: Copy the above fragment to `tmp/style-demos/` (or existing app), open it with `npx serve tmp/style-demos`, and compare the style and product; the Coverage panel can view the actual hits.
+3. If you need to take a stable screenshot, add a comment placeholder next to the corresponding HTML: `<!-- screenshot: style-demo-css-modules -->`, then use the browser screenshot tool to generate and put it into the document.

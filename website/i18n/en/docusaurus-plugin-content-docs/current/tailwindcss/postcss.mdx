@@ -1,0 +1,117 @@
+---
+id: postcss
+title: 'PostCSS: plug-in CSS engine, historical status and ecology'
+description: Review the development, core mechanism and contribution of PostCSS to modern CSS, and sort out commonly used plug-ins and best practices.
+slug: /tailwindcss/postcss
+sidebar_position: 2.8
+keywords:
+  - tailwindcss
+  - Tutorial
+  - atomization
+  - PostCSS
+  - plug-in
+  - CSS
+  - engine
+  - Historical status and ecology
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+import TailwindTopicHero from '@site/src/components/docs/TailwindTopicHero'
+
+<TailwindTopicHero topicId="tailwindcss/postcss" title="PostCSS：plug-in CSS engine、Historical status and ecology" />
+
+## Why care about PostCSS
+
+- It is an AST-driven "secondary processing" engine, not a preprocessor; you can insert plug-ins on top of standard CSS to complete tasks such as compatibility, future syntax, and customized output.
+- Tailwind itself is a PostCSS plug-in, and instructions such as `@tailwind`/`@apply`/`@layer` are parsed and generated through the PostCSS pipeline.
+- Ecologically stable: Plug-ins such as `autoprefixer`, `postcss-preset-env`, `postcss-nesting`, and `cssnano` have almost become default options for build tools, indirectly promoting CSS standardization.
+- Strong platform adaptability: `px → rem/viewport`, RTL flipping, and theme token injection can be completed in batches through plug-ins, and can also be smoothly migrated between Vite/webpack/Rollup/Parcel.
+
+## Core mechanism (plug-in AST pipeline)
+
+- Input standard CSS → parse to AST (selectors, declarations, rules) → modify the tree plugin by plugin → output CSS/SourceMap.
+- Plugins are functions `(root, result) => void` that read/modify the AST and output statistics, warnings, or metadata (e.g. Tailwind JIT collection class names) via `result.messages`.
+- `postcss-load-config` is responsible for reading configuration files. `postcss-reporter` can summarize and output plug-in prompts; `postcss-js` allows JS objects to be used to describe styles to facilitate testing.
+- Order sensitive: `@import`/modular plug-ins should be run first, syntax conversion/compatibility plug-ins in the middle, Tailwind/design system plug-ins after syntax conversion, and compression (`cssnano`) at the end.
+
+## Historical nodes and status
+
+- **2013-2014: The birth of Autoprefixer**, author Andrey Sitnik abstracted "automatically prefixing CSS" into AST conversion, and PostCSS was formed.
+- **2015-2016: The plug-in ecosystem explodes**: `postcss-nesting`, `postcss-custom-properties`, `postcss-modules`, `postcss-import`, etc. appear, and webpack `postcss-loader` becomes standard.
+- **2017-2019: Becoming the "future grammar experimental field"**: `postcss-preset-env` provides the CSS draft feature to the engineering team with a Babel preset-style experience. CRA/Next.js has PostCSS built-in by default.
+- **2020-present: Deep binding with Tailwind/JIT**: Tailwind CLI/plug-in system relies on PostCSS; Vite, Parcel, Snowpack, and Rollup plug-in chains all support PostCSS, and the ecosystem tends to be stable and performance optimized (parallelism, caching).
+
+## Ecological map (common plug-in layering)
+
+- **Compatibility / Future Syntax**
+- `autoprefixer`: Automatically add vendor prefixes to resolve the compatibility matrix; still the most widely used PostCSS plug-in.
+- `postcss-preset-env`: Similar to Babel preset, polyfill is enabled according to the target browser (including `nesting`, `custom-media`, `custom-properties`, etc.).
+- `postcss-nesting` / `postcss-nested`: Provide draft-consistent nesting; avoid Sass-style deep selectors.
+- `postcss-custom-media` / `postcss-media-minmax`: Manage media queries using aliases or mathematical notation.
+- **Modular/Engineering**
+- `postcss-import`: Support `@import` merging at the CSS level to work with design tokens.
+- `postcss-modules`: Compile CSS Modules into hash class names, expose JSON mapping, often used with React/Vue components.
+- `postcss-mixins`, `postcss-advanced-variables`: Lighter mixin/variables than Sass; suitable for progressive migration.
+- `stylelint`: Although a standalone tool, it uses the PostCSS parser to implement rule checking.
+- **Optimization and Products**
+- `cssnano`: staged compression (merging declarations, deduplication, compressed color values); destructive rules can be disabled on demand.
+- `postcss-svgo`, `postcss-normalize`: Targeted optimization of SVG, normalize.css, etc.
+- `postcss-rtlcss`, `postcss-px-to-viewport`: Region/device oriented batch processing (RTL, mobile viewport).
+- **Bindings to frameworks/tools**
+- Tailwind/UnoCSS core plug-in relies on PostCSS AST; `@apply` and `@layer` are both expanded in the PostCSS stage.
+- Next.js, Vite, Nuxt, and SvelteKit have built-in PostCSS pipeline by default; `astro` is also integrated through `@astrojs/postcss`.
+- CSS-in-JS solutions (Linaria, Vanilla Extract) also reuse PostCSS to handle static styles and autoprefixer during compilation.
+
+## Connection with CSS Modules / CSS-in-JS
+
+- **postcss-modules**: implements the CSS Modules specification in the form of a plug-in, generates hash class names and mapping files, and is one of the construction phase implementations of [CSS Modules / Scoped phase] (/docs/tailwindcss/history/css-modules); when you enable `modules` in webpack/Vite, the underlying logic is similar.
+- **postcss-js**: allows the use of JS objects to describe styles, and then reuse the PostCSS plug-in chain (such as autoprefixer/preset-env); it is often used by the CSS-in-JS library to perform compatibility processing on static styles during the compilation/build period, realizing "CSS-in-JS can also reuse the PostCSS ecosystem".
+- **Combined strategy**: If you use Tailwind + CSS Modules at the same time in React/Vue, you can put `postcss-modules` after import/nesting and before Tailwind; if you extract static styles in CSS-in-JS, you can use `postcss-js` to make autoprefixer/preset-env also take effect.
+
+## Contribution and influence to CSS
+
+- **Accelerate the implementation of the draft**: You can try nesting, custom media, logical attributes, etc. before browser implementation, so that standardization discussions have real feedback samples.
+- **Unified Compatibility Story**: Autoprefixer makes "no need to memorize browser prefixes" the default recognition, reducing duplication of work and bug density between teams.
+- **Ecological Cornerstone**: The construction tool delegates CSS parsing/conversion to PostCSS, making plug-ins reusable and combinable, preventing each company from reinventing the wheel.
+- **Education and best practice output**: Configurations such as `postcss-preset-env` and `cssnano` become teaching material examples to help the team understand the importance of "sequence", "compatibility matrix" and "safe conversion".
+
+## Boundaries with other solutions
+
+- **Comparison of Sass/Less**: Sass focuses on syntax sugar (variables/nesting/loops), while PostCSS is more like a plug-in platform that can provide both future syntax and customized transformations; the two can coexist, but PostCSS is closer to standard syntax.
+- **Compare CSS-in-JS**: CSS-in-JS generates styles at runtime/compile time, while PostCSS focuses on static conversion during build time; when styles can be statically extracted, PostCSS is still often used for compatibility and compression.
+- **Comparison with Lightning CSS**: Lightning CSS uses Rust to implement a high-performance "all-in-one" CSS processor; PostCSS excels in plug-in ecology and customizability. When performance requirements are extremely high, mixed use can be considered (such as replacing only the compression link).
+
+## Typical configuration and sequence examples
+
+```js title="postcss.config.cjs"
+module.exports = {
+  plugins: [
+    require('postcss-import'),
+    require('postcss-nesting'),
+    require('tailwindcss'),
+    require('postcss-preset-env')({
+      stage: 1,
+features: { 'nesting-rules': false }, // used postcss-nesting
+      autoprefixer: { grid: true },
+    }),
+    require('cssnano')({
+      preset: ['default', { discardComments: { removeAll: true } }],
+    }),
+  ],
+}
+```
+
+- Put import/modularization first to ensure that subsequent plug-ins see the complete AST.
+- Tailwind (or other design system plug-in) is placed after the grammar transformation to ensure that standardized rules are received.
+- Compression plug-ins are placed at the end to avoid debugging difficulties caused by early folding; production and development can be configured separately.
+
+## Debugging, performance and migration recommendations
+
+- **Debugging**: Enable `postcss-reporter` and collect warnings from each plug-in in CI; cooperate with SourceMap to locate the rules before and after conversion.
+- **Performance**: Reduce the number of plug-ins and pay attention to whether similar conversions are repeated (such as enabling nesting of `postcss-nesting` and preset-env at the same time); enable caching or multi-threading in Vite/webpack.
+- **Migration**: When migrating from Sass/Less, give priority to using CSS variables to carry tokens, and then use PostCSS plug-ins to complete missing features; if you plan to switch to Lightning CSS in the future, you can first keep the minimum set of plug-ins (import, nesting, autoprefixer).
+- **Implementation strategy**: Treat PostCSS as the "base layer" to coexist with Tailwind, CSS Modules, and even CSS-in-JS; reuse a copy of `postcss.config` in the monorepo to reduce multi-package maintenance costs.

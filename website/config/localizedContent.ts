@@ -1,8 +1,3 @@
-export const englishDocSourceFiles = [
-  'intro.md',
-  'quick-start/install.mdx',
-] as const
-
 export const englishBlogSourceFiles = [
   '2025/9/v4.3-release.md',
 ] as const

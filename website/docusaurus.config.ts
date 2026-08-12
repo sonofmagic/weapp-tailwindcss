@@ -11,7 +11,7 @@ import createBlogOptions from './config/blog'
 import { getBuildLocale } from './config/buildLocale'
 import { footer, footerCustomFields } from './config/footer'
 import headTags from './config/headTags'
-import { englishDocsDirectory, englishDocSourceFiles } from './config/localizedContent'
+import { englishDocsDirectory } from './config/localizedContent'
 import navbar from './config/navbar'
 import { siteUrl } from './config/siteMetadata'
 import themeMetadata from './config/themeMetadata'
@@ -79,8 +79,7 @@ const config: Config = {
       'classic',
       {
         docs: {
-          sidebarPath: isEnglishBuild ? 'sidebars.en.ts' : 'sidebars.ts',
-          include: isEnglishBuild ? [...englishDocSourceFiles] : undefined,
+          sidebarPath: 'sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/sonofmagic/weapp-tailwindcss/tree/main/website',
@@ -138,25 +137,23 @@ const config: Config = {
         excludeImports: true,
         removeDuplicateHeadings: true,
         keepFrontMatter: ['sidebar_label', 'title', 'description'],
-        includeOrder: isEnglishBuild
-          ? ['intro.md', 'quick-start/install.mdx']
-          : [
-              'docs/intro.md',
-              'docs/quick-start/**',
-              'docs/tailwindcss/v4-reference.md',
-              'docs/tools/**',
-              'docs/uni-app-x/**',
-              'docs/community/templates.md',
-              'docs/api/**',
-              'docs/options/**',
-              'docs/migrations/**',
-              'docs/issues/**',
-              'docs/ai/**',
-            ],
+        includeOrder: [
+          isEnglishBuild ? 'intro.md' : 'docs/intro.md',
+          isEnglishBuild ? 'quick-start/**' : 'docs/quick-start/**',
+          isEnglishBuild ? 'tailwindcss/v4-reference.md' : 'docs/tailwindcss/v4-reference.md',
+          isEnglishBuild ? 'tools/**' : 'docs/tools/**',
+          isEnglishBuild ? 'uni-app-x/**' : 'docs/uni-app-x/**',
+          isEnglishBuild ? 'community/templates.md' : 'docs/community/templates.md',
+          isEnglishBuild ? 'api/**' : 'docs/api/**',
+          isEnglishBuild ? 'options/**' : 'docs/options/**',
+          isEnglishBuild ? 'migrations/**' : 'docs/migrations/**',
+          isEnglishBuild ? 'issues/**' : 'docs/issues/**',
+          isEnglishBuild ? 'ai/**' : 'docs/ai/**',
+        ],
         includeUnmatchedLast: true,
         rootContent: isEnglishBuild
           ? `LLM navigation notes:
-- The English bundle contains the maintained introduction and installation guide.
+- The English bundle mirrors the complete Chinese documentation tree, including guides, API references, troubleshooting, migrations, and AI workflows.
 - The site root is ${siteUrl}, and GitHub Pages uses the /weapp-tailwindcss/ prefix.
 - MDX imports and duplicate headings are removed for easier model parsing, while key title/description frontmatter is preserved.`
           : `LLM 导航说明：
@@ -165,7 +162,7 @@ const config: Config = {
 - 已剔除 MDX import 与重复标题，便于模型解析；附带保留的标题/描述 frontmatter。`,
         fullRootContent: isEnglishBuild
           ? `Full doc bundle for offline or single-file loading:
-- The bundle contains the maintained English introduction and installation guide.
+- quick-start/* covers setup flows and framework examples, options/* and api/* provide configuration and API details, and ai/* contains prompts and workflows.
 - Content is ordered for onboarding, with key frontmatter preserved for summarization and indexing.`
           : `完整文档合辑，适合离线或单文件加载：
 - quick-start/* 给出接入步骤与常见框架示例，options/*、api* 提供配置与 API 细节，ai/* 收录提示词与工作流。
@@ -174,7 +171,7 @@ const config: Config = {
           {
             filename: 'llms-quickstart.txt',
             includePatterns: isEnglishBuild
-              ? ['intro.md', 'quick-start/install.mdx']
+              ? ['intro.md', 'quick-start/**', 'tailwindcss/v4-reference.md', 'community/templates.md', 'tools/**', 'uni-app-x/**', 'ai/**']
               : [
                   'docs/intro.md',
                   'docs/quick-start/**',
@@ -185,25 +182,25 @@ const config: Config = {
                   'docs/ai/**',
                 ],
             fullContent: true,
-            title: isEnglishBuild ? 'weapp-tailwindcss quick start' : 'weapp-tailwindcss 上手与 AI 工作流',
+            title: isEnglishBuild ? 'weapp-tailwindcss quick start and AI workflows' : 'weapp-tailwindcss 上手与 AI 工作流',
             description: isEnglishBuild
-              ? 'Maintained English introduction and installation guidance for onboarding.'
+              ? 'Complete English setup, templates, CLI, and AI workflow guidance.'
               : '快速接入、模板、CLI 与 AI 辅助编排的完整内容，优先用于回答「如何开始」「如何让 AI 生成小程序代码」类问题。',
           },
-          ...(!isEnglishBuild
-            ? [{
-                filename: 'llms-api.txt',
-                includePatterns: [
-                  'docs/options/**',
-                  'docs/api/**',
-                  'docs/issues/**',
-                  'docs/migrations/**',
-                ],
-                fullContent: true,
-                title: 'weapp-tailwindcss API 与配置参考',
-                description: '包含插件配置、API 细节、常见问题与迁移指南，适合回答配置/兼容性问题。',
-              }]
-            : []),
+          {
+            filename: 'llms-api.txt',
+            includePatterns: [
+              isEnglishBuild ? 'options/**' : 'docs/options/**',
+              isEnglishBuild ? 'api/**' : 'docs/api/**',
+              isEnglishBuild ? 'issues/**' : 'docs/issues/**',
+              isEnglishBuild ? 'migrations/**' : 'docs/migrations/**',
+            ],
+            fullContent: true,
+            title: isEnglishBuild ? 'weapp-tailwindcss API and configuration reference' : 'weapp-tailwindcss API 与配置参考',
+            description: isEnglishBuild
+              ? 'Plugin configuration, API details, troubleshooting, and migration guides for configuration and compatibility questions.'
+              : '包含插件配置、API 细节、常见问题与迁移指南，适合回答配置/兼容性问题。',
+          },
         ],
       },
     ],

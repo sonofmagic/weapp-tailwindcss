@@ -1,0 +1,180 @@
+---
+title: '`weapp-tailwindcss/reset`'
+description: weapp-tailwindcss/reset provides a composable reset plug-in that supports preset, built-in component reset and custom extensions.
+keywords:
+  - Configuration items
+  - Plug-in parameters
+  - Options
+  - weapp-tailwindcss
+  - reset
+  - options
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+# `weapp-tailwindcss/reset`
+
+`weapp-tailwindcss/reset` provides a set of reset plug-in capabilities for the mini program ecosystem. By default, it will:
+
+- Clear all `button`'s native styles (padding/color/border, etc.) to make it behave the same as `view` / `text`;
+- Unified `<image>` / `<img>` to `display: block` and restricted to `max-width: 100%`, `height: auto`.
+
+You can use options to control whether to inject these rules, override selectors/declarations, and even append custom resets.
+
+> ℹ️ `weapp-tailwindcss/reset` is currently a compatible export layer, and the actual implementation comes from `@weapp-tailwindcss/reset`. Old projects can continue to use the original entrance, and new projects can also be imported directly from `@weapp-tailwindcss/reset`.
+
+> ℹ️ When you pass in `.class` / `#id` as the selector, the plugin will automatically convert to `[class~="class"]` / `[id="id"]`, ensuring that they still belong to the base layer and will not destroy other layers.
+
+## Available options
+
+- `preset?: 'minimal' | 'form' | 'content' | 'media' | 'all' | ResetPreset[]`
+- `buttonReset?: false | ResetConfig`
+- `imageReset?: false | ResetConfig`
+- `inputReset?: false | ResetConfig`
+- `textareaReset?: false | ResetConfig`
+- `listReset?: false | ResetConfig`
+- `navigatorReset?: false | ResetConfig`
+- `videoReset?: false | ResetConfig`
+- `extraResets?: ResetConfig[]`
+
+```ts
+interface ResetConfig {
+selectors?: string[] // Support element / class name / ID
+  declarations?: Record<string, string | number | false>
+pseudo?: Record<string, string | number | false> // Inject into ::after
+}
+```
+
+Set to `false` to turn off the corresponding default reset; when the class name/ID is provided, it will be automatically converted to `[class~="foo"]`/`[id="bar"]`.
+
+For built-in items such as `inputReset`,
+
+```ts
+reset({
+  inputReset: {
+    selectors: ['.wx-reset-input'],
+  },
+  videoReset: {
+    selectors: ['.wx-reset-video'],
+  },
+})
+```
+
+## preset
+
+`preset` is used to quickly enable a set of built-in resets. By default, it is equivalent to `minimal` when not passed. It remains consistent with the old version and only injects `button` and `image`.
+
+- `minimal`：`button` + `image`
+- `form`：`minimal` + `input` + `textarea`
+- `content`：`minimal` + `ul/ol` + `navigator/a`
+- `media`：`minimal` + `video`
+- `all`: Enable all built-in resets
+
+You can also combine multiple presets:
+
+```ts
+reset({
+  preset: ['content', 'media'],
+})
+```
+
+## Tailwind plug-in usage
+
+```ts title="tailwind.config.ts"
+import reset from 'weapp-tailwindcss/reset'
+
+export default {
+  plugins: [
+//Default injection button/image reset
+    reset(),
+
+// Fully customizable
+    reset({
+      preset: 'form',
+      buttonReset: {
+        selectors: ['.wx-reset-btn', '#primary-btn'],
+        declarations: {
+          padding: '0',
+          backgroundColor: 'transparent',
+        },
+        pseudo: {
+          border: 'none',
+        },
+      },
+      imageReset: {
+        selectors: ['.wx-reset-image'],
+        declarations: {
+          display: 'inline-block',
+          borderWidth: '0',
+        },
+      },
+      listReset: {
+        selectors: ['.wx-reset-list'],
+      },
+      extraResets: [
+        {
+          selectors: ['.wx-reset-view'],
+          declarations: {
+            display: 'block',
+            borderWidth: '0',
+          },
+          pseudo: {
+            borderColor: 'transparent',
+          },
+        },
+      ],
+    }),
+  ],
+}
+```
+
+Turn off the default reset:
+
+```ts
+reset({
+  buttonReset: false,
+  imageReset: false,
+})
+```
+
+Even if `preset` is enabled, you can still turn off the built-in reset exactly by setting the single item to `false`:
+
+```ts
+reset({
+  preset: 'all',
+  listReset: false,
+  videoReset: false,
+})
+```
+
+## Tailwind CSS v4 usage
+
+Just register via `@plugin` in the entry CSS:
+
+```css title="app.css"
+@plugin 'weapp-tailwindcss/reset';
+
+@plugin 'weapp-tailwindcss/reset' ({
+  preset: 'content',
+  buttonReset: false,
+  imageReset: {
+    selectors: ['.wx-reset-image'],
+    declarations: {
+      display: 'inline-block',
+    },
+  },
+  extraResets: [
+    {
+      selectors: ['.list-reset'],
+      declarations: { listStyle: 'none', margin: '0', padding: '0' },
+    },
+  ],
+});
+
+@import 'tailwindcss/utilities';
+```
+
+The required reset can also be precisely controlled through `buttonReset: false` / `imageReset: false`. `preset` is responsible for opening built-in rules in batches, and `extraResets` allows you to add multiple custom rules at one time.

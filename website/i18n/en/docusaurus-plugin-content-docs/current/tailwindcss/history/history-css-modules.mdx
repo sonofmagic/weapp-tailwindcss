@@ -1,0 +1,165 @@
+---
+id: history-css-modules
+title: CSS Modules / Scoped stage
+description: Hash class names and compile-time scoped (Vue/Svelte) isolation solutions, reuse patterns and theming challenges
+slug: /tailwindcss/history/css-modules
+sidebar_position: 4
+keywords:
+  - tailwindcss
+  - Tutorial
+  - atomization
+  - CSS
+  - Modules
+  - Scoped
+  - stage
+  - history
+  - history css modules
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+import TailwindTopicHero from '@site/src/components/docs/TailwindTopicHero'
+
+<TailwindTopicHero topicId="tailwindcss/history/history-css-modules" title="CSS Modules / Scoped stage" />
+
+## Key Points
+
+- Class name hashing implements scope isolation, naturally preventing global pollution; suitable for releasable component libraries.
+- Reuse relies on shared variables/mixed files, and cross-component reuse requires additional abstraction; theme switching requires additional token pipelines.
+- Suitable for medium and large-scale web applications or component libraries that require isolation but do not want to introduce a runtime.
+- Representative packages/toolchains: `webpack css-loader modules`,
+
+## Advantages / Disadvantages / When to use
+
+| Item | Content |
+| --- | --- |
+| Advantages | Good isolation; no runtime; smooth cooperation with React/Vue |
+| Disadvantages | Tokens/themes require additional pipelines; cross-component style reuse requires careful abstraction |
+| Applicable | Component libraries/applications whose design system has not yet been tokenized but needs to be isolated |
+| Not applicable | Teams that need to share atomic classes across platforms (small programs), or want to use Utility-first directly |
+
+## Representative packages and usage
+
+- **webpack/Vite CSS Modules**: Enable `modules` in the bundler to generate hash class names; it can be combined with `:global` to expose public styles.
+
+```js title="Vite configuration example vite.config.ts"
+export default defineConfig({
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+      generateScopedName: '[name]__[local]___[hash:base64:5]',
+    },
+  },
+})
+```
+
+- **Next.js / CRA supports by default**: writing styles in `.module.css` and `.module.scss` files, automatic scope isolation.
+
+```tsx title="Next.js page uses CSS Modules"
+import styles from './page.module.css'
+
+export default function Page() {
+Return <div className={styles.hero}>Next.js brings out-of-box isolation </div>
+}
+```
+
+- **vanilla-extract**: Generate CSS at compile time, expose `className` and variables, zero runtime, often used in component libraries with high performance requirements.
+
+```ts title="vanilla-extract" 
+// styles.css.ts
+import { style, createVar } from '@vanilla-extract/css'
+
+export const primary = createVar()
+export const card = style({
+  borderRadius: '16px',
+  vars: { [primary]: '#111827' },
+  border: `1px solid color-mix(in srgb, ${primary} 10%, transparent)`,
+})
+```
+
+## Vue `<style scoped>` (also belongs to the compile-time scope school)
+
+- **Principle**: When SFC is compiled, add `data-v-xxxx` to both the template node and the style selector, so that the style only acts on the DOM rendered by the current component.
+- **Example**:
+
+```html
+<template>
+  <section class="card">
+    <p class="eyebrow">Scoped</p>
+    <h2>{{ title }}</h2>
+  </section>
+</template>
+
+<style scoped>
+.card { @apply rounded-xl border bg-card/80 p-4; }
+.eyebrow { @apply text-xs uppercase tracking-[0.2em] text-muted-foreground; }
+</style>
+```
+
+- **Product**: `.card[data-v-xxxx] { ... }`, the node is rendered as `<section class="card" data-v-xxxx>`.
+- **Applicable/Note**: Suitable for local isolation of Vue components; if global style or third-party component penetration is required, use `:global`/`::v-deep`; can be superimposed with Tailwind `prefix` to reduce host coverage.
+
+## Svelte `<style>` default isolation
+
+- **Principle**: The Svelte compiler generates a unique identifier (such as `svelte-abc123`) for the component and attaches it to the DOM and style selector. The effect is similar to scoped.
+- **Example**:
+
+```html
+<script>
+  export let title = 'Svelte Scoped'
+</script>
+
+<section class="card">
+  <h2>{title}</h2>
+</section>
+
+<style>
+  .card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+  }
+</style>
+```
+
+- **Product**: After compilation, the node is `<section class="card svelte-abc123">` and the CSS is `.card.svelte-abc123 { ... }`.
+- **Applicable/Note**: It can be isolated by default, and the shared style across components requires `:global(.class)`; if Tailwind is superimposed, you can directly write the atomic class in the template or `<style>` in `@apply` (configuration required). Can still be combined with `prefix`/namespace in micro frontend/embedded scenarios.
+
+## Example (React)
+
+```tsx title="Card.tsx"
+import styles from './Card.module.css'
+
+export function Card() {
+  return (
+    <section className={__PROTECTED_0__}>
+      <div className={styles.header}>
+        <p className={styles.eyebrow}>CSS Modules</p>
+<h2 className={styles.title}>Scope isolation</h2>
+<p className={styles.desc}> class name is hashed and will not conflict with the global. </p>
+<button className={styles.button}>View details</button>
+      </div>
+    </section>
+  )
+}
+```
+
+```css title="Card.module.css"
+.card { border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; }
+.elevated { box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+.header { display: flex; flex-direction: column; gap: 8px; }
+.eyebrow { font-size: 12px; letter-spacing: 0.1em; color: #6b7280; }
+.title { font-size: 18px; margin: 0; }
+.desc { color: #4b5563; font-size: 14px; }
+.button { padding: 10px 16px; border-radius: 8px; border: 1px solid #111827; background: #111827; color: #fff; }
+```
+
+## Common pitfalls and countermeasures
+
+- Theme/Multiple Brands: Host tokens through CSS variables and then reference them in Modules to reduce global files.
+- Reuse: Extract `variables.css` and `mixins.css` to avoid repeatedly defining color palettes and spacing in multiple modules.
+- Dynamic classes: avoid splicing hash classes at runtime, and declare necessary modification classes in the module.
+- Cooperate with Utility-first: you can keep a small amount of `@apply` in Modules (if configuration allows), or keep atomic helper classes during the transition period.

@@ -26,6 +26,11 @@ const tutorialSidebar: SidebarConfig = [
         label: 'React Native / Expo',
       },
       {
+        type: 'doc',
+        id: 'quick-start/frameworks/lynx',
+        label: 'ReactLynx / Rspeedy',
+      },
+      {
         type: 'category',
         label: 'uni-app',
         collapsed: true,

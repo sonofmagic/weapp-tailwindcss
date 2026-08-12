@@ -1,0 +1,76 @@
+---
+title: weapp-tailwindcss export overview
+description: weapp-tailwindcss provides both ESM and CommonJS entrances, and has multiple built-in secondary exports to adapt to different combinations of webpack, Vite, Gulp, Tailwind macros, etc. The following is a description based on usage classification.
+keywords:
+  - Configuration items
+  - Plug-in parameters
+  - Options
+  - weapp-tailwindcss
+  - Export overview
+  - options
+  - exports
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+# weapp-tailwindcss export overview
+
+> This article is organized according to the `packages/weapp-tailwindcss/package.json` field of `exports` to help you quickly locate the appropriate entry file in different frameworks/construction scenarios.
+
+weapp-tailwindcss provides both ESM and CommonJS entrances, and has multiple built-in secondary exports to adapt to different combinations of webpack, Vite, Gulp, Tailwind macros, etc. The following is a description based on usage classification.
+
+## Core plug-in entrance
+
+| Export path | Description | Typical usage |
+| --- | --- | --- |
+|
+| `weapp-tailwindcss/webpack` | webpack@5 adaptation entrance (uni-app CLI, mpx, native applets, etc.) |
+| `weapp-tailwindcss/vite` | Vite plug-in entrance (Taro Vite, weapp-vite, etc.) | `import { WeappTailwindcss } from 'weapp-tailwindcss/vite'`
+| `weapp-tailwindcss/core` | Expose underlying APIs such as `createContext` and customize the transform process |
+
+## Configuration, tools and peripherals
+
+| Export path | Description | Scene |
+| --- | --- | --- |
+| `weapp-tailwindcss/defaults` | Default plug-in configuration and runtime constants | View/reuse default options
+| `weapp-tailwindcss/presets` | Official preset collection (differentiation strategies, Tailwind configuration, etc.) | Extend or combine default behaviors
+| [`weapp-tailwindcss/reset`](./reset) | Built-in default `button` reset, the selector can be disabled or overridden through the `buttonReset` option | `@plugin 'weapp-tailwindcss/reset';`
+| `weapp-tailwindcss/types` | TypeScript type definition convenient entrance | `import type { UserDefinedOptions } from 'weapp-tailwindcss/types'`
+| `weapp-tailwindcss/escape` | `replaceWxml`, `isAllowedClassName` and other string processing tools | Reused when processing templates/strings individually
+| `weapp-tailwindcss/postcss-html-transform` | PostCSS converter for HTML/WXML | Custom PostCSS process
+|
+|
+| `weapp-tailwindcss/gulp` | Gulp plug-in entrance | Traditional Gulp build chain integration
+| `weapp-tailwindcss/package.json` | Package metadata | Read version number and other information
+
+> Supplement: If you need "static reset style resources that can be directly imported", please use the independent package [`@weapp-tailwindcss/reset`](/docs/community/reset) instead of the `weapp-tailwindcss/reset` plug-in entry here.
+
+:::tip plugin naming
+Vite, Webpack and Gulp entries all export the two aliases `WeappTailwindcss` and `weappTailwindcss`. The document recommends using uppercase `WeappTailwindcss`; lowercase `weappTailwindcss` is suitable for projects with partial functional naming.
+:::
+
+## Style resources
+
+In the project style entry of `tailwindcss@4` + `weapp-tailwindcss@5`, it is recommended to write `@import 'tailwindcss';` uniformly. The following `weapp-tailwindcss/*` CSS exports are stable paths for compatibility with older projects, direct reference to static sub-resources, or custom combinations.
+
+| Export path | Description | Reference example |
+| --- | --- | --- |
+| `weapp-tailwindcss/index.css` (`weapp-tailwindcss/index`) | Compatible with runtime style entry | `@import 'weapp-tailwindcss/index.css';`
+| `weapp-tailwindcss/preflight.css` (`weapp-tailwindcss/preflight`) | Mini program only Preflight |
+| `weapp-tailwindcss/theme.css` (`weapp-tailwindcss/theme`) | Topic variable definition | `@import 'weapp-tailwindcss/theme.css';`
+| `weapp-tailwindcss/utilities.css` (`weapp-tailwindcss/utilities`) | Atomic class collection | `@import 'weapp-tailwindcss/utilities.css';`
+| `weapp-tailwindcss/with-layer.css` (`weapp-tailwindcss/with-layer`) | layer version style, adapted to Tailwind v4 layer writing method |
+| `weapp-tailwindcss/uni-app-x.css` (`weapp-tailwindcss/uni-app-x`) | uni-app x custom style | `@import 'weapp-tailwindcss/uni-app-x.css';`
+| `weapp-tailwindcss/css` | Points to `css/index.css`, compatible with old directory structure | `@import 'weapp-tailwindcss/css';`
+
+> ⚠️ Note: Do not write the bare package name `@import 'weapp-tailwindcss';` in the project entry. Some build tools (e.g. `postcss-import`, mpx CLI) may parse it into the JS entry (`dist/index.js`) and throw "Unknown word "use strict"". Please write `@import 'tailwindcss';` for the Tailwind v4 project entry; only use the `weapp-tailwindcss/*` path in the above table when you clearly need to directly reference static sub-resources.
+
+## Other exports
+
+- `weapp-tailwindcss/*`: retain wildcard paths and be compatible with historical file structures; it is recommended to give priority to the stable entries listed in the table above.
+- All JS modules provide both `import` and `require` formats. The TS project can obtain a complete statement by combining it with the `types` entry.
+
+To learn more about the APIs exposed by each module, you can check [`weapp-tailwindcss` API Overview] (../api/index.md) or directly read the corresponding type definitions and source code.

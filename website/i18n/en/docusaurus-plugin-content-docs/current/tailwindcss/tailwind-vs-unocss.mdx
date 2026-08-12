@@ -1,0 +1,71 @@
+---
+id: tailwind-vs-unocss
+title: Tailwind vs UnoCSS comparison
+description: Ecology, type hints, merge deduplication, trade-offs between runtime and migration costs
+sidebar_position: 3.1
+keywords:
+  - tailwindcss
+  - Tutorial
+  - atomization
+  - Tailwind
+  - vs
+  - UnoCSS
+  - contrast
+  - tailwind vs unocss
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+import TailwindTopicHero from '@site/src/components/docs/TailwindTopicHero'
+
+<TailwindTopicHero topicId="tailwindcss/tailwind-vs-unocss" title="Tailwind vs UnoCSS contrast" />
+
+## Key Points
+
+- Tailwind provides "out-of-the-box" presets, plug-ins, `tailwind-merge`, IDE support and community paradigms; UnoCSS provides highly customizable rules/variants/presets, but merge/prompts need to be self-supported.
+- Selection criteria: whether to reuse community assets, whether there are resources to maintain the rule base, requirements for runtime/compilation speed, whether extremely customized class name semantics are required.
+
+## Decision table (lite version)
+
+| Dimensions | Tailwind | UnoCSS |
+| --- | --- | --- |
+| Ecology/community | Official plug-in + a large number of community preset/component paradigms, `tailwind-merge` is mature | rule/variant can be expanded arbitrarily and is highly flexible; there are few presets and needs to be self-supported |
+| Type tips | Official language-service, IDE friendly | Depends on preset/plug-in quality, additional configuration required |
+| Merge deduplication |
+| Runtime/JIT | v4 JIT is stable, RSC/SSR products are mature | The real-time mode is extremely fast and can be customized freely; the larger the rule base, the more maintenance it requires |
+| Migration/Assets | Ready-made component library (shadcn/ui, reka-ui), rich design system examples | High flexibility, migration cost depends on self-built rules and team habits |
+
+## When to choose Tailwind?
+
+- Don't want to maintain merge/variant/IDE prompt rules, prefer to "use them out of the box".
+- Need to quickly reuse community assets, Presets, component libraries (shadcn/ui, reka-ui, etc.).
+- Pay attention to RSC/SSR stability, plug-in completeness, or need to let external collaborators get started quickly.
+
+## When to choose UnoCSS?
+
+- Want to fully customize class name semantics (even DSL), or already have an internal preset library.
+- Products/rules must be extremely controllable (small programs/low code, etc.), and the team can maintain the rules and merge logic.
+- Requires extremely fast real-time mode that accepts self-implemented duplication/type hinting.
+
+## Integration/Practical Differences
+
+- IDE: Tailwind language service is plug-and-play; Uno needs to prompt the plug-in according to the preset configuration.
+- Merge: Tailwind is equipped with `tailwind-merge`, and the rules need to be updated when custom tokens/sizes are encountered; Uno does not deduplicate by default and needs to be self-written or combined.
+- Content scanning: Both require accurate content. Tailwind v4 JIT is more mature for SSR/RSC products; when customizing Uno, you must also avoid wildcard amplification of products.
+- Plug-in chain: Tailwind official typography/forms/animate, etc. are ready to use; Uno plug-in ecology is less but can be freely spliced  with rules.
+
+## Simple selection process (text version)
+
+1) Do you want to reuse existing components/paradigms? Do → Tailwind; Doesn't matter → Continue.
+2) Is there the manpower to maintain the rule base? No → Tailwind; Yes → Continue.
+3) Do you need very short class names/DSL? Requires → UnoCSS; does not require → Tailwind.
+4) Is the first screen/product extremely compressed and can you manage the rules yourself? Yes → UnoCSS; otherwise Tailwind.
+
+## Common pitfalls and countermeasures
+
+- Tailwind: The content is too wide and the dynamic class is expanded → Tighten the scanning range and use `cva/tv` parameterization; remember to update the `tailwind-merge` rules for custom tokens.
+- UnoCSS: Rules/merge/prompts need to be self-supporting → build preset warehouse + merge rules; do lint on DSL to avoid team bifurcation.
+- Both: The relationship class is nested too deep and has poor readability → Constrain `group/peer/aria/data` depth; maintain tokens mapping table.

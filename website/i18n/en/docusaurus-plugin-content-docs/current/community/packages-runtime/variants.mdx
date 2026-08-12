@@ -1,0 +1,137 @@
+---
+id: variants
+title: '@weapp-tailwindcss/variants'
+description: The tailwind-variants small program runtime package provides APIs such as tv/cn/createTV.
+keywords:
+  - Community
+  - template
+  - Case
+  - weapp-tailwindcss
+  - variants
+  - community
+  - packages runtime
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+`@weapp-tailwindcss/variants` is a small program package of `tailwind-variants`, which automatically completes escape/unescape and integrates the merging capability of `@weapp-tailwindcss/merge` by default. Applies to Tailwind v4 projects.
+
+## Install
+
+```bash npm2yarn
+npm install @weapp-tailwindcss/variants
+```
+
+## tv: variant factory
+
+```ts
+import { tv } from '@weapp-tailwindcss/variants'
+
+const button = tv({
+  base: 'inline-flex items-center gap-2 rounded-md text-sm font-medium transition-colors',
+  slots: {
+    icon: 'size-4',
+    label: 'truncate',
+  },
+  variants: {
+    tone: {
+      primary: 'bg-[#2563EB] text-white hover:bg-[#1D4ED8]',
+      ghost: 'bg-transparent text-[#0F172A] hover:bg-[#E2E8F0]',
+    },
+    size: {
+      sm: { base: 'h-8 px-3', icon: 'size-3' },
+      md: { base: 'h-9 px-4', icon: 'size-4' },
+    },
+  },
+  defaultVariants: {
+    tone: 'primary',
+    size: 'md',
+  },
+})
+
+const slots = button({ tone: 'ghost', size: 'sm' })
+slots.base() // => escaped class name
+slots.icon({ class: 'text-xs' })
+```
+
+## cn / cnBase
+
+```ts
+import { cn } from '@weapp-tailwindcss/variants'
+
+const mergeLater = cn('text-[#ececec]', isActive && 'text-[#ECECEC]')
+mergeLater() // => merge + escape
+
+mergeLater({ twMerge: false }) // => only escape, not merge
+```
+
+## Mini Program + Web
+
+```ts
+import { create } from '@weapp-tailwindcss/variants'
+
+// For cross-platform frameworks, please determine whether it is built with H5. It can usually be read from environment variables.
+const isH5 = true
+const { tv, cn } = create({
+  escape: !isH5,
+  unescape: !isH5,
+})
+
+const card = tv({
+  base: 'rounded-xl border border-[#E2E8F0] bg-white',
+})
+
+const className = cn('text-[#0F172A]', 'text-[#1E293B]')()
+```
+
+## Demo: reuse the same configuration
+
+```ts
+import { tv, create } from '@weapp-tailwindcss/variants'
+
+const buttonConfig = {
+  base: 'inline-flex items-center rounded-md px-3 py-2 text-sm font-medium',
+  variants: {
+    tone: {
+      primary: 'bg-[#2563EB] text-white',
+      danger: 'bg-[#DC2626] text-white',
+    },
+  },
+  defaultVariants: {
+    tone: 'primary',
+  },
+}
+
+const button = tv(buttonConfig)
+// For cross-platform frameworks, please determine whether it is built with H5. It can usually be read from environment variables.
+const isH5 = true
+const { tv: tvRuntime } = create({ escape: !isH5, unescape: !isH5 })
+const buttonWeb = tvRuntime(buttonConfig)
+```
+
+##Default twMerge configuration
+
+```ts
+import { create } from '@weapp-tailwindcss/variants'
+
+const { cn, tv } = create({
+  twMergeConfig: {
+    extend: {
+      classGroups: {
+        'font-size': [{ text: ['20', '22', '24', '26', '28', '30', '32'] }],
+      },
+    },
+  },
+})
+
+cn('text-32', 'text-surface-700')()
+tv({ base: 'text-32 text-surface-700' })()
+```
+
+## Common precautions
+
+- **Function name reserved**: `tv`/`cn` If it is renamed, `ignoreCallExpressionIdentifiers` needs to be configured.
+- **Same version**: The runtime package and the compile-time plug-in keep the same main version to avoid mapping table inconsistency.

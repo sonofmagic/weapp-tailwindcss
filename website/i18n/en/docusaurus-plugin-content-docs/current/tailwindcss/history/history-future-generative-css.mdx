@@ -1,0 +1,104 @@
+---
+id: history-future-generative-css
+title: Generative CSS/native capability fusion
+description: Looking ahead to @layer / @container / @scope / @property and the generative pipeline
+slug: /tailwindcss/history/future-generative-css
+sidebar_position: 8
+keywords:
+  - tailwindcss
+  - Tutorial
+  - atomization
+  - Generative
+  - CSS
+  - Integration of native capabilities
+  - history
+  - history future generative css
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+import TailwindTopicHero from '@site/src/components/docs/TailwindTopicHero'
+
+<TailwindTopicHero topicId="tailwindcss/history/history-future-generative-css" title="Generative CSS / Integration of native capabilities" />
+
+## Key Points
+
+- Core idea: CSS will become more and more generative - tokens/design intent → builder/AI generation rules → @layer/@scope bounds → only keep the required atoms or component-level fragments at runtime.
+- Native capabilities have been added: `@container`, `:has()`, `@scope`, `@property`, and
+- Rule collaboration: `@layer` controls the coverage order, `@scope` limits the impact area, `@container` drives responsive components, and `@property` makes custom properties animatable and typeable.
+- Ecological trends: Generators such as Tailwind/UnoCSS are integrated with native new features, and JIT/tree shaking continues to evolve; AI generation requires a closed loop of "whitelist tokens + hierarchical constraints + lint".
+
+## Future capability combination (schematic)
+
+```css title="future.css"
+@layer reset, theme, components, utilities;
+
+@layer theme {
+  @property --radius-lg {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 16px;
+  }
+
+  :root {
+    --brand: color-mix(in srgb, #0ea5e9 60%, #111827 40%);
+  }
+}
+
+@layer components {
+  @scope (.card) {
+    .card {
+      border-radius: var(--radius-lg);
+      border: 1px solid color-mix(in srgb, var(--brand) 30%, #e5e7eb 70%);
+      background: white;
+      transition: box-shadow 150ms ease, transform 150ms ease;
+    }
+
+    @container style(--wide: min-width: 640px) {
+      .card { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    }
+
+    .card:has(button:focus-visible) { box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+  }
+}
+```
+
+- `@layer`: Layer the generated products to facilitate merge/coverage and analysis.
+- `@scope`: Limit the scope to avoid global pollution; can be aligned with the component entry class.
+- `@container`: Make components responsive by parent container instead of viewport, suitable for cards/blocks.
+- `@property`: Declarative typing, combined with tokens/animations to avoid "numeric magic values".
+
+## Generative pipeline idea
+
+1. Design source: Design draft/Design Token/Interface protocol output JSON (color, spacing, shadow, color matching mode).
+2. Generation phase: Script or AI generates `@layer theme/components/utilities` based on tokens + component intent, and only produces hit rules; the atomic class generator continues to provide JIT, supplemented by `content` precise scanning.
+3. Constraint phase: lint checks `@scope` boundaries, dynamic class whitelist, `@property` type; merge rules prevent class conflicts.
+4. Runtime: `@container`/`:has()`/`color-mix()` completes the adaptation in the browser, and JS is only responsible for interaction or data binding.
+5. Feedback: Coverage/volume monitoring is written back to the generator, and tokens or layer order is adjusted.
+
+> The goal of this link is "Declare Intent → Generate → Constraint → Run". Developers focus on tokens and interactions rather than hand-written long chain selectors.
+
+## Implications for existing toolchains
+
+- Tailwind/UnoCSS: retain the atomic ecology, but add `@layer`/`@scope` output options to cooperate with container query preset; JIT should be able to understand `@property`/`color-mix()`.
+- RSC/mini program scenario: generate layered CSS through pre-compilation, and only use container query/custom attributes at runtime to avoid JS water injection.
+- Design system: tokens need to be of type (color, length, angle), aligned with `@property`; the AI  generated prompt should include a list of "available tokens" and "allowed layers".
+
+## More future directions and implementation thoughts
+
+- Multi-dimensional adaptation: a combination of container query + viewport query + environment query (prefers-reduced-motion, HDR/dynamic-range) to reduce the need for JS to monitor resize.
+- Hierarchical versioning: Treat `@layer` as a "style API", leaving a separate layer for theme/brand customization to avoid damaging the core component layer during upgrades.
+- Scoped Islands: `@scope` is bound to the routing/micro-frontend boundary, and cooperates with `:has()` to handle local interactions to reduce the interference of global selectors on different applications.
+- Typed tokens: Declare types for length/color/angle through `@property`, combined with design-token JSON schema, so that the generator/AI can detect illegal values  at compile time.
+- CSS Houdini and animation: Custom properties + paint/worklet combination to replace JS animation; cooperate with APIs such as `view-transition` to hand over UI transition to the browser pipeline.
+- Generative guardrails: Provide prompt words or configurations of "allowed tokens + levels + scope boundaries" for AI/scripts, and then use lint/visual diff to verify after output, forming a closed loop.
+
+## Further reading
+
+- https://developer.mozilla.org/en-US/docs/Web/CSS/@scope
+- https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries
+- https://developer.mozilla.org/en-US/docs/Web/CSS/@property
+- https://tailwindcss.com/blog/tailwindcss-v4-alpha

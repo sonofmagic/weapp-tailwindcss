@@ -1,0 +1,104 @@
+---
+id: cva
+title: '@weapp-tailwindcss/cva'
+description: Small program runtime encapsulation of class-variance-authority automatically handles escape and maintains type deduction.
+keywords:
+  - Community
+  - template
+  - Case
+  - weapp-tailwindcss
+  - cva
+  - community
+  - packages runtime
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+`@weapp-tailwindcss/cva` is the runtime encapsulation of `class-variance-authority`, and the output class name will be automatically escaped by the mini program. The API is consistent with type inference and can directly replace the original `cva`.
+
+## Install
+
+```bash npm2yarn
+npm install @weapp-tailwindcss/cva
+```
+
+## Basic usage
+
+```ts
+import { cva, type VariantProps } from '@weapp-tailwindcss/cva'
+
+const button = cva(
+  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors',
+  {
+    variants: {
+      tone: {
+        primary: 'bg-[#2563EB] text-white hover:bg-[#1D4ED8]',
+        outline: 'border border-border/60 bg-transparent',
+      },
+      size: {
+        sm: 'h-8 px-3',
+        md: 'h-9 px-4',
+        lg: 'h-10 px-6',
+      },
+    },
+    defaultVariants: {
+      tone: 'primary',
+      size: 'md',
+    },
+  },
+)
+
+type ButtonVariants = VariantProps<typeof button>
+
+const className = button({ tone: 'outline', size: 'sm' })
+// => Escaped class name
+```
+
+## Mini Program + Web
+
+Use `create` to turn off escaping for the web, preserving the original class name:
+
+```ts
+import { create } from '@weapp-tailwindcss/cva'
+
+// For cross-platform frameworks, please determine whether it is built with H5. It can usually be read from environment variables.
+const isH5 = true
+const { cva: cvaRuntime } = create({
+  escape: !isH5,
+  unescape: !isH5,
+})
+
+const badge = cvaRuntime('text-[#0F172A] bg-[#E2E8F0]')
+```
+
+## Demo: Cross-end variant factory
+
+```ts
+import { cva, create } from '@weapp-tailwindcss/cva'
+
+const config = {
+  variants: {
+    status: {
+      ok: 'text-[#16A34A] bg-[#DCFCE7]',
+      warn: 'text-[#B45309] bg-[#FEF3C7]',
+    },
+  },
+  defaultVariants: {
+    status: 'ok',
+  },
+}
+
+const pill = cva('inline-flex items-center rounded-full px-2 text-xs font-medium', config)
+// For cross-platform frameworks, please determine whether it is built with H5. It can usually be read from environment variables.
+const isH5 = true
+const { cva: cvaRuntime } = create({ escape: !isH5, unescape: !isH5 })
+const pillWeb = cvaRuntime('inline-flex items-center rounded-full px-2 text-xs font-medium', config)
+```
+
+## Common precautions
+
+- **Function name alias**: If the package `cva` is `createVariants`, etc., please update `ignoreCallExpressionIdentifiers`.
+- **Relationship with Tailwind version**: `cva` is not bound to the Tailwind version, but the escape rules must be consistent with the `weapp-tailwindcss` version.

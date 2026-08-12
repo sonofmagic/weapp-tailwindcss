@@ -1,0 +1,232 @@
+---
+id: best-practices
+title: Atomized CSS best practices
+description: Design tokens, variants, performance and code review checklists
+sidebar_position: 4
+keywords:
+  - tailwindcss
+  - Tutorial
+  - atomization
+  - CSS
+  - best practices
+  - best practices
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+import TailwindTopicHero from '@site/src/components/docs/TailwindTopicHero'
+
+<TailwindTopicHero topicId="tailwindcss/best-practices" title="atomization CSS best practices" />
+
+## Give the conclusion first
+
+- If you are only going to remember 3 things from this page, remember these 3:
+- Build the design system first, then write the class name. Don’t let each component invent its own color, spacing, and size.
+- Convergence component variants first, then talk about reuse. Don't think of `className` splicing as the only way to extend it.
+- Verify the product first, then trust the feelings. Package bodies, scan ranges, and dynamic classes should all have checking methods.
+
+## Why do many teams use Tailwind indiscriminately?
+
+- Because it is so quick to get started with, it is easy to skip the "Design Constraints" step directly.
+- Because it is low-cost to experiment, components are easy to use in the early stage, but as the number of states increases, class names will spread in the business code.
+- Because many problems do not explode immediately, but are exposed until review, migration, topic change, and AI connection.
+
+So this page does not teach you "what other classes can you write", but helps you establish a set of usage methods that are not easy to get out of control.
+
+## Design system and tokens
+
+- First set the core values  of color palette, spacing, rounded corners, shadow, and font size into tokens and map them to CSS variables or `@theme inline`.
+- It is best to keep a comparison table of "design value -> token name". It looks like documentation work, but can actually significantly reduce the cost of understanding for new people.
+- It is recommended to change the token through `data-theme` or `.dark` when switching themes. Do not write the color value directly in the class.
+- If there are multiple brands in demand, prioritize the management of "brand variables" and "dark variables" separately, otherwise it will be easy to contaminate each other.
+
+In addition to visual tokens, the layout is also worth drawing into a stable combination. This way the team remembers the pattern rather than spelling out the string from scratch each time.
+
+### Counterexample comparison: Don’t let values  scatter in components
+
+```tsx title="Not recommended: write naked values  directly into business components"
+export function PromoCard() {
+  return (
+    <section className="rounded-[18px] bg-[#3b82f6] px-[18px] py-[14px] text-[15px] text-white shadow-[0_8px_30px_rgba(59,130,246,0.22)]">
+limited time event
+    </section>
+  )
+}
+```
+
+```tsx title="Recommendation: Align token first, then consume token"
+export function PromoCard() {
+  return (
+    <section className="rounded-card bg-brand-500 px-4 py-3 text-sm text-white shadow-brand">
+limited time event
+    </section>
+  )
+}
+```
+
+The former way of writing is faster in the short term, but the long-term problem is that it is difficult to change topics, unify the vision, and do reviews.
+
+```ts
+// Stack (vertical spacing is uniform)
+const stack = 'flex flex-col gap-4'
+// Cluster (inline wrap arrangement, suitable for label/button groups)
+const cluster = 'flex flex-wrap items-center gap-2'
+// Sidebar (body + sidebar)
+const sidebar = 'grid gap-4 lg:grid-cols-[1fr,360px]'
+```
+
+## Components and Variants
+
+The core principle of this part is: centralize changes and hard-code default values.
+
+- Use `cva`/`tv` to describe variants/defaultVariants/compoundVariants, example:
+
+```ts
+const card = cva('rounded-2xl border bg-card/80 shadow-sm transition-all', {
+  variants: {
+    tone: { neutral: 'border-border', brand: 'border-primary/40 shadow-lg', subtle: 'border-muted bg-muted/60' },
+    interactive: { true: 'hover:-translate-y-0.5 hover:shadow-md' },
+  },
+  defaultVariants: { tone: 'neutral', interactive: true },
+})
+```
+
+Common combinations:
+
+- `group`/`peer`: Suitable for father-son linkage or brother linkage. For example, when hovering an item, the icon or description copy will change.
+- `aria-*`: suitable for form and interaction states, such as `aria-invalid`, `aria-busy`, which can reduce a lot of extra JS judgments.
+- `data-*`: Suitable for themes and business states, such as `data-theme`, `data-state`, the semantics are usually clearer than self-made class names.
+- `tv` slots: suitable for multi-slot components such as cards, pop-up windows, and menus, and can converge header/body/footer classes together.
+
+The most common bad smell here is: there are many states, but the state logic is scattered among different components. As long as this happens, subsequent maintenance costs will definitely rise.
+
+### Counterexample comparison: Don’t repeatedly spell out large strings of classes in business components
+
+```tsx title="Not recommended: status is scattered in business components"
+export function Notice({ tone = 'info', dense = false }) {
+  return (
+    <div
+      className={[
+        'rounded-xl border text-sm',
+        tone === 'info' ? 'border-sky-200 bg-sky-50 text-sky-900' : '',
+        tone === 'danger' ? 'border-red-200 bg-red-50 text-red-900' : '',
+        dense ? 'px-2 py-1' : 'px-4 py-3',
+      ].join(' ')}
+    >
+content
+    </div>
+  )
+}
+```
+
+```tsx title="Recommendation: Centralize changes to builder"
+const notice = cva('rounded-xl border text-sm', {
+  variants: {
+    tone: {
+      info: 'border-sky-200 bg-sky-50 text-sky-900',
+      danger: 'border-red-200 bg-red-50 text-red-900',
+    },
+    dense: {
+      true: 'px-2 py-1',
+      false: 'px-4 py-3',
+    },
+  },
+  defaultVariants: {
+    tone: 'info',
+    dense: false,
+  },
+})
+```
+
+This is not to "have to use the tool", but to keep the status and default values  in one place.
+
+### Business scenario paradigm
+
+- Form: use `focus:ring` plus `aria-invalid` for the input box, use `text-destructive` for the error text, use `disabled:` for the button disabled state, and do not return to the inline style.
+- Data table or list: Give priority to using `grid`,
+- Empty state: Give it a fixed skeleton, such as `flex flex-col items-center gap-3 text-center text-muted-foreground`, to avoid having to reassemble each page.
+
+## Layout and responsiveness
+
+- Prioritize the container first, then the content. Basic containers like `max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8` should be unified as soon as possible.
+- `clamp()` and container queries are great for "more natural responsiveness", especially title font sizes and panel grids.
+- Try to reduce the nesting of flex/grid as much as possible. If it can be solved with `gap`, don’t rely on margin to push each other.
+- For most content area layouts, a grid is usually more intuitive and easier to review than layers of `md:flex-row`.
+
+Example (container query + clamp):
+
+```css
+/* Enable query on container */
+.dashboard { @apply container mx-auto px-4; container-type: inline-size; container-name: dash; }
+
+@container dash (min-width: 720px) {
+  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.title-fluid { font-size: clamp(1.25rem, 1.8vw, 1.5rem); }
+```
+
+> Need to avoid style pollution in micro frontends/component libraries/3rd party embeds? For details, see "[Style Isolation Scheme and Principle] (./style-isolation)".
+
+## Performance and size
+
+- Focus on `content` first, and then talk about optimization. The root cause of many CSS bloat problems is actually that the scanning range is too wide or there are string spelling classes.
+- After building, look at the size, don’t just look at the page “seems to run”. It is best to leave a baseline for key pages, such as how many KB the homepage CSS should not exceed.
+- For necessary dynamic classes, try to fall back to `@apply`, `cva` or restricted enumerations, rather than letting the runtime freely splice arbitrary values.
+- Tailwind v4's JIT is already very fast, but what really slows down cold startup is often out-of-control content and too many plug-ins.
+
+### Counterexample comparison: avoid splicing arbitrary classes at runtime
+
+```ts title="Not recommended: Splicing arbitrary classes at runtime"
+const cls = `bg-${color}-${level} px-${size}`
+```
+
+```ts title="Recommendation: Convergence of dynamic space into enumeration"
+const badge = cva('inline-flex items-center rounded-full', {
+  variants: {
+    color: {
+      brand: 'bg-brand-500 text-white',
+      neutral: 'bg-muted text-foreground',
+    },
+    size: {
+      sm: 'px-2 py-1 text-xs',
+      md: 'px-3 py-1.5 text-sm',
+    },
+  },
+})
+```
+
+The latter way of writing is not only more stable, but also easier for build tools, reviewers, and AI to read.
+
+## Code review checklist (example)
+
+The following checklist is more suitable to go through directly during the review, rather than waiting until problems arise and then go back and make up for the specifications.
+
+- Do class names only use default tokens? Is there any nude color value/font size?
+- Are `cn`/`tailwind-merge` used to handle dynamic combinations? Is there any similar conflict (`p-4` vs `p-2`)?
+- Are the variants concentrated in component factories (`cva`/`tv`) rather than scattered in business components? Are the default values  hard-coded?
+- Is there any misuse or lack of semantics of `group`/`peer`/`aria`/`data-*`? Does the relationship chain go beyond 2 levels?
+- Is the content match too wide? Is dynamic class introduced? Is there a string concatenation class name?
+-Does the document/example update the running command and screenshot placeholder simultaneously? Is there a list of "recommended class name combinations" given?
+
+Quick display (table version):
+
+| Dimensions | Requirements | Checking methods |
+| --- | --- | --- |
+| tokens | Do not write nude color/nude spacing | Search `#`/`px`/`rgb(`; View configuration mapping |
+| variants | Focus on `cva`/`tv` | Check whether `variants`/`compoundVariants` is declared in a single point |
+| merge | Unify dynamic classes into `cn` | Search whether `clsx`/`classNames` exists scattered |
+| Relationship class | `group/peer/aria/data` ≤ 2 levels | Spot check component class string length and level |
+| content | Accurate scanning template | Check the content path of `tailwind.config` |
+| Product | CSS volume controllable | View CSS volume/coverage after construction |
+
+## Common pitfalls and countermeasures
+
+- Class order conflict: use `tailwind-merge`; use `cn` uniformly at the component entrance, do not scatter `clsx`.
+- Custom colors are not registered: use tokens or declare in `@theme`/configuration; avoid scattered values  such as `text-[#123]` and create `brand-50/100/...` if necessary.
+- Breakpoint misuse: confirm mobile-first; self-test key breakpoints (sm/md/lg/xl), especially the performance of `gap`/`grid` on small screens.
+- preflight conflict: Enable with caution in releasable component libraries or micro-frontends, and can be turned off locally.
+- Excessive plug-ins: typography/forms is very convenient, but you need to check whether it affects the host style; it can be imported or partially closed on demand.

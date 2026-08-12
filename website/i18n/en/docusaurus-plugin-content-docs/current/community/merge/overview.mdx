@@ -1,0 +1,122 @@
+---
+id: overview
+title: Overview
+slug: /community/merge
+description: '@weapp-tailwindcss/merge’s positioning, installation methods, quick-start examples, and common usage of multi-end projects.'
+keywords:
+  - Community
+  - template
+  - Case
+  - Overview
+  - community
+  - merge
+  - overview
+  - weapp-tailwindcss
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+:::tip has been migrated to packages-runtime
+This page is an old entry, and the content has been updated according to the latest source code; for the complete system, please refer to:
+- [packages-runtime overview](/docs/community/packages-runtime)
+- [@weapp-tailwindcss/merge](/docs/community/packages-runtime/merge)  
+- [Multi-terminal Demo (mini program + Web)](/docs/community/packages-runtime/multi-platform-demos)
+:::
+
+`@weapp-tailwindcss/merge` is the `tailwind-merge` runtime package for the mini program ecosystem, adapting to `tailwindcss@4`. It automatically executes escape/unescape before and after merging, and has built-in rpx length normalization to ensure that the mini program is consistent with the compile-time plug-in output.
+
+## Runtime matrix
+
+| Package name | Applicable scenarios | Description |
+| --- | --- | --- |
+| `@weapp-tailwindcss/runtime` | Shared dependencies | Provide escape/unescape, `clsx`, `weappTwIgnore`, `createRuntimeFactory` |
+| `@weapp-tailwindcss/merge` | `tailwindcss@4` | Based on `tailwind-merge@3`, default entry |
+| `@weapp-tailwindcss/cva` | Component variant | `class-variance-authority` runtime wrapper |
+| `@weapp-tailwindcss/variants` | Component variants + slots | `tailwind-variants` runtime packaging |
+
+## Runtime process (small program)
+
+The default `@weapp-tailwindcss/merge` of `twMerge` will be processed according to the following process:
+
+1. **Optional unescape**: Restore first when input contains placeholders or unicode fragments.
+2. **rpx length normalization**: `text-[12rpx]` ➜ `text-[length:12rpx]` to avoid misjudgment by the merge rule.
+3. **tailwind-merge**: perform conflict removal.
+4. **Restore rpx**: Restore the `length:` placeholder back to its original writing.
+5. **escape output**: Get the class names available for the applet.
+
+In order to reduce repeated calculations, the runtime also has a built-in short cache (256 entries).
+
+## Install
+
+```bash npm2yarn
+npm install @weapp-tailwindcss/merge
+```
+
+> The current document only maintains Tailwind CSS 4 access instructions.
+
+## Get started quickly
+
+```ts
+import { twMerge } from '@weapp-tailwindcss/merge'
+
+const className = twMerge(
+  'px-2 py-1 bg-red hover:bg-dark-red',
+  'p-3 bg-[#B91C1C]'
+)
+
+// => The escaped class name can be written directly into the applet class
+```
+
+## rpx length normalization
+
+The runtime will convert any value of `rpx` with the following prefix to `length:` semantics before merging, and then restore it after merging:
+
+- `text-*`
+- `border-*`
+- `bg-*`
+- `outline-*`
+- `ring-*`
+
+This step allows `tailwind-merge` to correctly understand the `rpx` dimensions and avoid mis-merging.
+
+## Compile-time collaboration with weapp-tailwindcss
+
+- If the function names such as `twMerge`, `twJoin`, and `cva` are renamed, please add `ignoreCallExpressionIdentifiers`.
+- When you need to skip compile-time escaping, use the `weappTwIgnore` template tag:
+
+  ```ts
+  import { weappTwIgnore } from '@weapp-tailwindcss/merge'
+
+  const raw = weappTwIgnore`text-[#123456]`
+  ```
+
+## Multi-terminal project: control escaping on demand
+
+```ts
+import { create } from '@weapp-tailwindcss/merge'
+
+// For cross-platform frameworks, please determine whether it is built with H5. It can usually be read from environment variables.
+const isH5 = false
+const { twMerge } = create({
+  escape: !isH5,
+  unescape: !isH5,
+})
+```
+
+In H5 environment, set `isH5` to `true` to keep the original class name.
+
+## Related runtimes
+
+- [@weapp-tailwindcss/variants](/docs/community/packages-runtime/variants)
+- [@weapp-tailwindcss/cva](/docs/community/packages-runtime/cva)
+
+## Online experience
+
+```jsx live
+function () {
+  return <MergeDemo/>
+}
+```

@@ -1,0 +1,88 @@
+---
+id: index
+title: packages-runtime overview
+slug: /community/packages-runtime
+description: Version selection, capability matrix and multi-terminal usage mental model of runtime series packages.
+keywords:
+  - Community
+  - template
+  - Case
+  - packages-runtime
+  - Overview
+  - community
+  - packages runtime
+  - weapp-tailwindcss
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+`packages-runtime` is a set of runtime capabilities of `weapp-tailwindcss`, which is used to extend compile-time class name rules to the applet to solve problems such as "dynamic class name conflicts", "illegal character escaping" and "multi-terminal consistency". They provide escape/unescape and factory capabilities based on `@weapp-tailwindcss/runtime`, and the current documentation is for Tailwind CSS 4.
+
+The current documentation only maintains Tailwind CSS 4 access instructions.
+
+## Runtime matrix
+
+| Package name | Tailwind version | Applicable scenarios | Description |
+| --- | --- | --- | --- |
+| `@weapp-tailwindcss/merge` | v4 | Mini program / multi-terminal project | `tailwind-merge@3` compatible implementation, default entry |
+| `@weapp-tailwindcss/cva` | v4 | Component variant factory | `class-variance-authority` runtime packaging |
+| `@weapp-tailwindcss/variants` | v4 | Component variants + slots | `tailwind-variants` runtime packaging |
+
+> `@weapp-tailwindcss/runtime` is a base package, which is usually automatically installed as an indirect dependency and does not need to be introduced separately.
+
+## Version selection
+
+- **Tailwind v4**: Prioritize `@weapp-tailwindcss/merge` + `@weapp-tailwindcss/variants`; add `@weapp-tailwindcss/cva` when variant factory is required.
+
+## pnpm + uni-app Notes
+
+uni-app's Vite turns on `preserveSymlinks` by default and will resolve dependencies from the symlink path in the package; pnpm's isolation layout will not put transitive dependencies under this path, so "XXX not found" will appear repeatedly (for example, `@vueuse/shared` is a transitive dependency of `@vueuse/core`). npm/yarn is not affected.
+
+There are two ways to solve it "completely":
+
+1. Change `node-linker` to `hoisted` (the most thorough, close to npm/yarn classic)
+
+After setting it in the root directory `.npmrc` (or the workspace configuration of `pnpm-workspace.yaml`) and then re-`pnpm install`, the dependencies will be flatter, and transitive dependencies can also be resolved under `preserveSymlinks`.
+
+   ```ini
+   node-linker=hoisted
+   ```
+
+2. Maintain `isolated` and continue to supplement hoist/direct dependencies (not complete, high maintenance costs)
+
+For example, append to `.npmrc`:
+
+   ```ini
+   public-hoist-pattern[]=@weapp-tailwindcss/*
+   public-hoist-pattern[]=tailwind-merge
+   public-hoist-pattern[]=@weapp-core/*
+   ```
+
+Later, when new missing dependencies (such as `@vueuse/shared`) are encountered, they need to be filled in as direct dependencies.
+
+## Multi-terminal mental model (small program + Web)
+
+The applet needs escape/unescape to keep the class name legal; the web side wants to keep the original class name. Each package's `create(...)` factory allows you to generate isolated instances for different ends:
+
+```ts
+import { create } from '@weapp-tailwindcss/merge'
+
+// For cross-platform frameworks, please determine whether it is built with H5. It can usually be read from environment variables.
+const isH5 = false
+const { twMerge } = create({
+  escape: !isH5,
+  unescape: !isH5,
+})
+```
+
+This mode is also applicable to variant tools such as `cva`, `tv`, and
+
+## Chapter quick overview
+
+- [@weapp-tailwindcss/merge（Tailwind v4）](/docs/community/packages-runtime/merge)
+- [@weapp-tailwindcss/cva](/docs/community/packages-runtime/cva)
+- [@weapp-tailwindcss/variants](/docs/community/packages-runtime/variants)
+- [Multi-terminal Demo: uni-app + Web, Taro + Web](/docs/community/packages-runtime/multi-platform-demos)

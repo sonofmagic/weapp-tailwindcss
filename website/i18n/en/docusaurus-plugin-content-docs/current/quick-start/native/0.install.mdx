@@ -1,0 +1,89 @@
+---
+title: 1. Install and configure Tailwind CSS
+description: Installation and configuration steps for native WeChat applet projects to access Tailwind CSS 4 and weapp-tailwindcss.
+keywords:
+  - quick start
+  - Install
+  - Configuration
+  - '1.'
+  - Installation and configuration
+  - tailwindcss
+  - quick start
+  - native
+  - 0.install
+  - weapp-tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+# 1. Install and configure Tailwind CSS
+
+## Preface
+
+This tutorial demonstrates how to connect the native WeChat applet JS template to `tailwindcss@4` and `weapp-tailwindcss`. The key points are two things: the source code must enter the Tailwind scanning range, and the mini program target translation must be handed over to `weapp-tailwindcss`.
+
+The current documentation only maintains Tailwind CSS 4 access instructions.
+
+### Running environment
+
+Starting with `weapp-tailwindcss@5.2.0`, Node.js `>=22.12.0` is required. Node.js 22 supports loading ESM from CommonJS by default starting from this version, which is also the engines requirement of the current warehouse and core packages. When the Node version is not satisfactory, it is not recommended to use `--ignore-engines` hard installation, and subsequent build errors will be more difficult to troubleshoot.
+
+If the project runs `uni-app` or `uni-app x` through HBuilderX, you also need to upgrade to HBuilderX `>=5.11` to ensure that the IDE's built-in Node can correctly load the current ESM dependencies.
+
+## Create project
+
+Open the WeChat developer tools, click `+` to create a project, and select:
+
+0. `AppID` uses test number
+1. Development mode: `Mini program`
+2. Backend service: `Not using cloud services`
+3. Template selection: Second selection `Base`
+4. Select `JS Basic template`
+
+![](/img/create-project.png)
+
+> Projects created using JS basic templates can still use `Typescript`
+
+Prepare the entrance to Tailwind CSS first, and then register `weapp-tailwindcss` and `weapp-vite` on the next page.
+
+## 0. Initialize `package.json`
+
+If you use a native JS template to create a project, there is usually no `package.json` in the project directory.
+
+At this time, you need to execute:
+
+`npm init -y`, create `package.json` under the project.
+
+## 1. Install Tailwind CSS
+
+```bash npm2yarn
+# Install tailwindcss and weapp-tailwindcss
+npm i -D tailwindcss weapp-tailwindcss
+```
+
+`weapp-tailwindcss` will take over Tailwind CSS generation, do not create Tailwind-specific `postcss.config.js`. If the project already has PostCSS configuration, only keep the business's own non-Tailwind plug-ins.
+
+## 2. Configure scan range
+
+Tailwind CSS 4 writes the scan range in the CSS entry:
+
+```css title="app.css"
+@import "tailwindcss";
+@source "./components/**/*.{wxml,js,ts}";
+@source "./pages/**/*.{wxml,js,ts}";
+@source "./app.{js,ts,json}";
+@source not "./node_modules";
+@source not "./dist";
+```
+
+Please put the entry of Tailwind 4 in a pure `.css` file. Do not write directly into the `less`, `scss`, `sass` entries.
+
+## 3. Introduce Tailwind CSS
+
+Write the Tailwind entry in the mini program project entry style file, using the `@import "tailwindcss";` and `@source` above.
+
+After adding this piece of code to the entry CSS, the WeChat developer tools may report an error first. This is usually because the `weapp-tailwindcss` plug-in has not been registered yet.
+
+Next step is to continue installing and registering `weapp-tailwindcss`.

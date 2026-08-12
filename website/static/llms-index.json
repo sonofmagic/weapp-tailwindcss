@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-04T05:04:21.042Z",
+  "generatedAt": "2026-08-12T08:20:02.270Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 166,
-    "docs": 162,
+    "all": 167,
+    "docs": 163,
     "blog": 4
   },
   "documents": [
@@ -3541,6 +3541,43 @@
       ],
       "updatedAt": null,
       "source": "docs/quick-start/frameworks/hbuilderx.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:quick-start/frameworks/lynx",
+      "title": "ReactLynx / Rspeedy",
+      "description": "在 ReactLynx + Rspeedy 项目中接入 Tailwind CSS 4 与 weapp-tailwindcss。",
+      "summary": "@weapp-tailwindcss/lynx 通过 Rspeedy 的 Rspack 生命周期生成 Lynx 可消费的普通 CSS。它保留 ReactLynx 原生 className，不引入运行时样式表或 JSX 转换。",
+      "url": "/docs/quick-start/frameworks/lynx",
+      "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/lynx",
+      "keywords": [
+        "Lynx",
+        "ReactLynx",
+        "Rspeedy",
+        "Tailwind CSS 4",
+        "weapp-tailwindcss",
+        "快速开始",
+        "安装",
+        "配置",
+        "quick start",
+        "frameworks",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "mpx"
+      ],
+      "headings": [
+        "安装",
+        "注册 Rspeedy 插件",
+        "配置 Tailwind CSS 入口",
+        "任意值与动态类名",
+        "构建警告",
+        "验证与示例"
+      ],
+      "updatedAt": null,
+      "source": "docs/quick-start/frameworks/lynx.md"
     },
     {
       "kind": "doc",

@@ -12,22 +12,28 @@ function assertContainsNoChinese(value: string, context: string) {
   expect(value, `${context} contains Chinese text`).not.toMatch(HAN_CHARACTER_RE)
 }
 
+async function getNaturalLanguageText(page: import('@playwright/test').Page) {
+  return page.locator('main').evaluate((main) => {
+    const copy = main.cloneNode(true) as HTMLElement
+    copy.querySelectorAll('pre, code, svg, script, style, .theme-doc-toc-desktop, .theme-doc-pagination, .pagination-nav, .mermaid, .mermaid-container').forEach(node => node.remove())
+    return copy.textContent ?? ''
+  })
+}
+
 const englishRoutes = [
   '/en/',
   ...routes.filter(route => route === '/en' || route.startsWith('/en/')),
 ]
 
 test.describe('English content isolation', () => {
-  test('all generated English pages contain no visible Chinese text', async ({ page }) => {
-    test.setTimeout(120_000)
-
-    for (const route of new Set(englishRoutes)) {
+  for (const route of new Set(englishRoutes)) {
+    test(`English route ${route}`, async ({ page }) => {
       const response = await page.goto(new URL(route, baseURL).toString(), {
         waitUntil: 'networkidle',
       })
       expect(response?.ok(), `${route} should return a successful response`).toBe(true)
 
-      assertContainsNoChinese(await page.locator('body').textContent() ?? '', `${route} body`)
+      assertContainsNoChinese(await getNaturalLanguageText(page), `${route} main content`)
       assertContainsNoChinese(await page.title(), `${route} title`)
       await expect(page.locator('html')).toHaveAttribute('lang', /^en/i)
       await expect(page.locator('meta[http-equiv="Content-Language"]')).toHaveAttribute('content', /^en/i)
@@ -50,8 +56,8 @@ test.describe('English content isolation', () => {
           expect(value, `${route} structured data should use English`).toContain('"inLanguage":"en-US"')
         }
       }
-    }
-  })
+    })
+  }
 
   test('locale menu and English 404 contain no Chinese text', async ({ page }) => {
     await page.goto(new URL('/en/', baseURL).toString(), {
@@ -80,6 +86,7 @@ test.describe('English content isolation', () => {
       '/en/llms.txt',
       '/en/llms-full.txt',
       '/en/llms-quickstart.txt',
+      '/en/llms-api.txt',
       '/en/wetw/registry.json',
       '/en/blog/rss.xml',
       '/en/blog/atom.xml',

@@ -1,0 +1,119 @@
+---
+toc_max_heading_level: 4
+title: CSS unit conversion
+description: Configure px2rpx and unitsToPx through cssOptions to handle unit conversion in applet, multi-terminal and uni-app x scenarios.
+keywords:
+  - quick start
+  - Install
+  - Configuration
+  - CSS
+  - unit conversion
+  - quick start
+  - css unit transform
+  - weapp-tailwindcss
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+  - mpx
+---
+# CSS unit conversion
+
+The most common situation is to convert `rem` to `rpx` and directly open `WeappTailwindcss` in `cssOptions` of `rem2rpx`:
+
+```js
+WeappTailwindcss({
+  cssOptions: {
+    rem2rpx: true,
+  },
+})
+```
+
+`true` means `1rem = 32rpx`. This page only talks about two other situations: `px` to `rpx`, and multi-unit conversion to `px`.
+
+## px to rpx
+
+Starting with `weapp-tailwindcss@4.3.0`, the plugin has [`postcss-pxtransform`](https://www.npmjs.com/package/postcss-pxtransform) built-in. When you need to convert `px` to `rpx`, open `cssOptions` in `px2rpx`:
+
+```js
+// vite
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+WeappTailwindcss({
+  cssOptions: {
+    px2rpx: true,
+  },
+})
+```
+
+```js
+// webpack
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+
+new WeappTailwindcss({
+  cssOptions: {
+    px2rpx: true,
+  },
+})
+```
+
+`true` will be converted as `1:1`, for example, `10px` will be output as `10rpx`.
+
+If your design draft is 375 wide and you want `10px` to be output as `20rpx`, pass the object:
+
+```js
+WeappTailwindcss({
+  cssOptions: {
+    px2rpx: {
+      designWidth: 375,
+      deviceRatio: {
+        375: 2,
+      },
+    },
+  },
+})
+```
+
+See [`postcss-pxtransform`](https://www.npmjs.com/package/postcss-pxtransform) for more parameters. Do not register the Tailwind CSS official PostCSS plug-in for unit conversion. The mini program style generation is still taken over by `weapp-tailwindcss`.
+
+## Convert multiple units to px
+
+Scenarios such as `uni-app x` are more suitable for outputting `px`. At this time, you can enable `cssOptions.unitsToPx` and convert `rem`, `em`, `vw`, `vh`, `vmin`, `vmax`, `rpx` and other units into `px`.
+
+```js
+// vite
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+WeappTailwindcss({
+  cssOptions: {
+    unitsToPx: true,
+  },
+})
+```
+
+In the default conversion:
+
+- `1rem` is output as `16px`
+- `2rpx` is output as `1px`
+
+Need to customize the time transfer object:
+
+```js
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+
+new WeappTailwindcss({
+  cssOptions: {
+    unitsToPx: {
+      unitPrecision: 2,
+      unitMap: {
+        rem: 16,
+        rpx: 0.5,
+        vw: 3.75,
+      },
+    },
+  },
+})
+```
+
+If you ultimately want to output `px`, do not enable `cssOptions.px2rpx` or `cssOptions.rem2rpx` at the same time. `cssOptions.unitsToPx` will be converted to `px` first, and will continue to be converted to `rpx` later.

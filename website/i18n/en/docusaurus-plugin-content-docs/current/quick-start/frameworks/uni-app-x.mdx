@@ -1,0 +1,121 @@
+---
+title: uni-app x
+description: HBuilderX uni-app x project integrates Tailwind CSS 4 and weapp-tailwindcss.
+keywords:
+  - quick start
+  - Install
+  - Configuration
+  - uni-app
+  - quick start
+  - frameworks
+  - uni app x
+  - weapp-tailwindcss
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - taro
+  - mpx
+---
+import CompatibilityWarning from '../../uni-app-x/_compatibility-warning.mdx'
+
+# uni-app x
+
+<CompatibilityWarning />
+
+`uni-app x` uses HBuilderX and `@dcloudio/vite-plugin-uni`. It is recommended to use it with the built-in `uniAppX` preset.
+
+The HBuilderX local E2E in the current warehouse covers uni-app x applet, Android and iOS products. App E2E relies on native HBuilderX and the simulator and only executes locally.
+
+:::warning Capability Boundary
+`uvue` Do not rely on `gap`, `gap-x-*`, and `gap-y-*` on the native app. These layout capabilities are currently not supported.
+
+`space-x-*`, `space-y-*` should also not be used in `uni-app x`. Please use child explicit `mt-*` / `ml-*` directly instead, or encapsulate a fixed-structure spacing component.
+:::
+
+```bash npm2yarn
+npm run e2e:hbuilderx:local
+npm run e2e:hbuilderx:local:android
+npm run e2e:hbuilderx:local:ios
+```
+
+## Register plugin
+
+`uniAppX` is derived from `weapp-tailwindcss/presets` and `cssEntries` should be passed in explicitly.
+
+```ts title="vite.config.ts"
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { defineConfig } from 'vite'
+import uni from '@dcloudio/vite-plugin-uni'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+import { uniAppX } from 'weapp-tailwindcss/presets'
+
+const projectRoot = dirname(fileURLToPath(import.meta.url))
+
+export default defineConfig({
+  plugins: [
+    uni(),
+    WeappTailwindcss(
+      uniAppX({
+        base: projectRoot,
+        cssEntries: [resolve(projectRoot, 'main.css')],
+        rem2rpx: true,
+      }),
+    ),
+  ],
+})
+```
+
+Tailwind CSS generation is taken over by `weapp-tailwindcss`, do not register `tailwindcss`, `@tailwindcss/postcss` or `@tailwindcss/vite` anymore.
+
+The current documentation only maintains Tailwind CSS 4 access instructions.
+
+:::info Web and App Debugging Notes
+`cssEntries` is used to tell `weapp-tailwindcss` the entry file of Tailwind CSS 4. The entry should still be a real CSS file that HBuilderX / Vite can process. Web/H5, Android and iOS all need to maintain `appType: 'uni-app-x'`. Do not manually close `uniAppX` when running on the web side, otherwise any value class name in the `.uvue` template will not be converted into a safe selector.
+
+`rem2rpx`,
+:::
+
+## Tailwind CSS entry
+
+Tailwind CSS 4 uses the CSS-first entry, `@source` to cover pages, components, and script directories that may produce class names:
+
+```css title="main.css"
+@import "tailwindcss" source(none);
+@source "./App.uvue";
+@source "./pages/**/*.{uts,uvue}";
+@source "./components/**/*.{uts,uvue}";
+@source "./stores/**/*.{uts,uvue}";
+@source not "./uni_modules/**/*";
+@source not "./unpackage/**/*";
+```
+
+Do not put `unpackage` into the scan range, otherwise the HBuilderX product will in turn interfere with the development build.
+
+##Introduce the entrance in App.uvue
+
+`cssEntries` is responsible for generating portal identification and is not responsible for automatically adding CSS to the HBuilderX / Vite module diagram. Must be actually imported in global styles:
+
+```html title="App.uvue"
+<style>
+@import './main.css';
+</style>
+```
+
+If this import is missing, Tailwind can scan for the `.uvue` candidate, but the web, applet, and app pages will not load the generated styles.
+
+## Verify any value class name
+
+Write a minimal use case on any page:
+
+```html
+<view class="p-4">
+  <text class="bg-[#102938] text-[#f7fbff] w-[173px]">Tailwind CSS</text>
+</view>
+```
+
+After running to the Web, WeChat applet and target App platform in sequence, check whether the element style takes effect. App-side text uses `<text>`, and text-related styles must be written directly on `<text>`.
+
+## Reference template
+
+- [Tailwind CSS 4 demo in the warehouse](https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v4)

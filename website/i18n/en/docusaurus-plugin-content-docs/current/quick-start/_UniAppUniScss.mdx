@@ -1,0 +1,10 @@
+---
+{}
+---
+:::warning
+
+Never introduce `uni.scss` into `tailwindcss`. `uni.scss` essentially uses `scss.additionalData`. It will add the file content in `scss` at the beginning of each `uni.scss` file.
+
+So this is equivalent to adding `scss` to every `vue`/ `tailwindcss` file. Then the size of `css` will explode.
+
+:::

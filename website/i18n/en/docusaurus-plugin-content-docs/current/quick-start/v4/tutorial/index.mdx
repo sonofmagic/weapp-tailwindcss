@@ -1,0 +1,153 @@
+---
+sidebar_label: Getting Started
+sidebar_position: 1
+toc_max_heading_level: 4
+title: 'Getting started: Quick introduction to Tailwind CSS 4 and weapp-tailwindcss'
+description: 'Tailwind CSS 4 moves the configuration entry to CSS: theme variables and custom tools can be declared using native syntax. weapp-tailwindcss has adapted to this compilation process. This article takes 30 minutes to build a tailwi...'
+keywords:
+  - quick start
+  - Install
+  - Configuration
+  - Getting Started
+  - Quick understanding
+  - Tailwind
+  - CSS
+  - weapp-tailwindcss
+  - quick start
+  - v4
+  - tutorial
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+---
+import CssImportReminder from '@site/src/components/CssImportReminder';
+
+# Getting started: Quickly understand Tailwind CSS 4 and weapp-tailwindcss
+
+Tailwind CSS 4 moves the configuration entry to `CSS`: theme variables and custom tools can be declared using native syntax. `weapp-tailwindcss` has adapted to this compilation process. This article takes 30 minutes to set up a basic development environment of `tailwindcss@4` + `weapp-tailwindcss`, and explains several configuration points that must be understood.
+
+## What can you learn from this article?
+
+- Build a set of runnable Tailwind CSS 4 + applet project skeleton
+- Distinguish the responsibilities of each core configuration (`@source`, `@reference`, `cssEntries`, etc.)
+- Understand why v5 build mode only requires registering the `WeappTailwindcss` builder plugin
+- Master the minimum closed loop to verify whether the style is effective, and avoid the common pitfall of "it is written but it does not take effect"
+
+If you have not come into contact with `weapp-tailwindcss`, it is recommended to browse [Installation Dependencies] (/docs/quick-start/install) and the corresponding framework access page to understand the problems that the plug-in can solve, and then come back to complete the 4.x configuration.
+
+## Environment preparation
+
+| Name | Description |
+| --- | --- |
+| Node.js `>=22.12.0` | The minimum version starting from `weapp-tailwindcss@5.2.0`, which supports loading ESM from CommonJS by default |
+| pnpm ≥ 8 | Monorepo is used uniformly with document projects `pnpm` |
+| Mini program framework | You can choose `weapp-vite`, `uni-app`, `taro`, etc., it is recommended to use ready-made templates |
+| Code Editor | VS Code and install the `Tailwind CSS IntelliSense` plug-in |
+
+After initializing the project, execute `pnpm install` and the initialization command of the framework CLI (such as `pnpm create @tarojs/cli`). You can then proceed to the Tailwind CSS configuration steps.
+
+## Step 1: Install dependencies
+
+Execute in the project root directory:
+
+```bash npm2yarn
+npm install -D tailwindcss@latest weapp-tailwindcss
+```
+
+> `weapp-tailwindcss@5` enables build mode by default, and most Vite/Webpack applet projects only need to register `WeappTailwindcss`. Do not register additional `@tailwindcss/vite` or `@tailwindcss/postcss`.
+
+When running `uni-app` / `uni-app x` via HBuilderX, HBuilderX `>=5.11` is also required.
+
+## Step 2: Register weapp-tailwindcss plug-in
+
+Take `weapp-vite` as an example (for different frameworks, please refer to the corresponding [Default Mode Reference] (/docs/tailwindcss/v4-reference) and framework registration page):
+
+```ts title="vite.config.ts"
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { defineConfig } from 'weapp-vite/config'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+const projectRoot = dirname(fileURLToPath(import.meta.url))
+
+export default defineConfig({
+  plugins: [
+    WeappTailwindcss({
+      cssEntries: [
+        resolve(projectRoot, 'src/app.css'),
+      ],
+// Commonly used built-in capabilities: enable px automatic conversion
+      cssOptions: {
+        rem2rpx: true,
+      },
+    }),
+  ],
+})
+```
+
+Tailwind CSS 4 projects should configure `cssEntries` explicitly. It allows `WeappTailwindcss` to stably read the `@import "tailwindcss"`, `@source`, `@config` and runtime class sources in the entry CSS, avoiding style loss caused by differences in construction diagrams of different frameworks and different platforms.
+
+`cssEntries` is not a switch that replaces import. Entry CSS still needs to be actually introduced through the framework's global style entry or business entry file, otherwise the framework will not generate the corresponding CSS assets. Multiple Tailwind CSS entries, subpackage entries, and independent subpackage entries must be written into the same `cssEntries` array.
+
+## Step 3: Check PostCSS configuration
+
+There is no need to add `postcss.config.js` for Tailwind CSS in build mode. If the project already has PostCSS configuration, just keep the business's own plug-in; please do not register `@tailwindcss/postcss` or `tailwindcss` here, otherwise it will form two sets of Tailwind generation links with `WeappTailwindcss`.
+
+## Step 4: Create entry CSS
+
+Write in `src/app.css`:
+
+```css title="src/app.css"
+@import "tailwindcss";
+
+/* Declare the template scan path to ensure that atomic classes can be collected */
+@source "../src/**/*.{vue,tsx,jsx,svelte,wxml}";
+
+/* If you need a custom design token, you can write it here */
+@theme {
+  --color-brand: oklch(67% 0.2 264);
+  --spacing-safe: clamp(12px, 1.2vw + 8px, 24px);
+}
+```
+
+<CssImportReminder />
+
+`@source` is a new way of writing Tailwind 4, which is used to replace the `content` configuration of the old version. Please adjust the path according to the project structure. If you need to use `@apply` in a local style file, add `@reference "./app.css";` at the top of the corresponding file.
+
+## Step 5: Verify whether the class name is valid
+
+Create a minimal page (take `src/pages/index/index.vue` as an example):
+
+```html title="src/pages/index/index.vue"
+<template>
+  <view class="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-6 py-safe">
+    <view class="w-full max-w-md rounded-3xl bg-white p-6 shadow-lg shadow-slate-200">
+      <text class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Tailwind CSS 4</text>
+<text class="mt-3 text-2xl font-bold text-slate-900">Welcome to weapp-tailwindcss</text>
+      <text class="mt-2 text-sm leading-6 text-slate-600">
+Now you can try to modify <text class="font-medium text-brand">bg-brand</text> or customize <text class="font-medium">utility</text>.
+      </text>
+      <button class="mt-6 inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white shadow transition hover:bg-brand/90 active:scale-95">
+Start practicing
+      </button>
+    </view>
+  </view>
+</template>
+```
+
+> `py-safe` is the custom variable we declared in `@theme` above (exported through `--spacing-safe`), which can verify whether the theme customization takes effect.
+
+Run a framework command such as `pnpm dev:weapp` or `pnpm run build -- --watch` to see if the page in the developer tools renders as expected. If not:
+
+- Check if `@source` contains the current file extension
+- Confirm whether the entry CSS is imported by the builder, and check whether `cssEntries` points to these entry CSS that have been introduced by the project
+- If using `@apply` within a single file component, make sure to add `@reference`
+
+## Common next steps
+
+- Read [Tailwind CSS 4 official documentation](https://tailwindcss.com/docs/installation) to learn more about native directives
+- For integration details of different frameworks, please refer to the documents in the "🧪Tailwind CSS @4.x" category
+- If you want to understand the downgrade plan of `@layer` under the mini program, you can continue reading the [Advanced Chapter] (/docs/quick-start/v4/tutorial/workflow) and [Advanced Chapter] (/docs/quick-start/v4/tutorial/advanced) of this tutorial
+
+After completing this article, you can continue to look at the writing method in the real component, focusing on the output results of `@source`, `@reference` and the mini program target CSS.

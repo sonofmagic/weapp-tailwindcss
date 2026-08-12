@@ -1,0 +1,14 @@
+[
+  "api/interfaces/ApplyOptions",
+  "api/interfaces/CacheOptions",
+  "api/interfaces/ExtractOptions",
+  "api/interfaces/TailwindCssOptions",
+  "api/interfaces/TailwindCssRuntimeOptions",
+  "api/interfaces/TailwindV4Options",
+  "api/interfaces/WeappTailwindcssGenerateOptions",
+  "api/interfaces/WeappTailwindcssGenerateResult",
+  "api/interfaces/WeappTailwindcssGenerator",
+  "api/interfaces/WeappTailwindcssGeneratorTarget",
+  "api/interfaces/WeappTailwindcssPostcssPluginOptions",
+  "api/interfaces/WeappTailwindcssStyleInjectorOptions"
+]

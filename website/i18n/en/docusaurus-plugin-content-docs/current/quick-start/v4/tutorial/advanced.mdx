@@ -1,0 +1,118 @@
+---
+sidebar_label: Advanced level
+sidebar_position: 3
+toc_max_heading_level: 4
+title: 'Advanced chapter: performance, compatibility and team collaboration'
+description: Tailwind CSS 4 brings more powerful native syntax, but it still needs to balance compatibility and team collaboration in a small program environment. This article starts from an engineering perspective to help you stably implement, optimize and maintain it in real projects.
+keywords:
+  - quick start
+  - Install
+  - Configuration
+  - Advanced level
+  - performance
+  - Compatible with teamwork
+  - quick start
+  - v4
+  - tutorial
+  - advanced
+  - weapp-tailwindcss
+  - tailwindcss
+  - Mini program
+  - WeChat applet
+  - uni-app
+  - taro
+---
+# Advanced chapter: performance, compatibility and team collaboration
+
+Tailwind CSS 4 brings more powerful native syntax, but it still needs to balance compatibility and team collaboration in a small program environment. This article starts from an engineering perspective to help you stably implement, optimize and maintain it in real projects.
+
+## 1. Handling `@layer` and compatibility
+
+The mini program runtime currently has limited support for CSS Cascade Layers. When you reference third-party components or custom styles, coverage relationships may be confused. `weapp-tailwindcss` The built-in `postcss-preset-env` can translate `@layer` into traditional writing to improve compatibility.
+
+```ts title="vite.config.ts"
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    WeappTailwindcss({
+      cssEntries: [
+        /* ... */
+      ],
+      cssOptions: {
+        cssPresetEnv: {
+          stage: 1,
+          features: {
+            'cascade-layers': true,
+          },
+        },
+      },
+    }),
+  ],
+})
+```
+
+> If you only debug the WeChat applet, you can use the "custom compilation" of the developer tools to observe the difference before and after processing; if there are still coverage problems, you can combine it with the traditional `!important` or layout splitting strategy.
+
+Extra tips:
+
+- `cssOptions.cssSelectorReplacement.root` includes `['page', '.tw-root', 'wx-root-portal-content']` by default. When a container outside the page (such as a custom tab bar, pop-up layer root node, etc.) needs to carry the `--tw-*` variable injected by Tailwind, you only need to add `class="tw-root"` to the container to reuse the entire set of presets without additional configuration. Here's an example of injecting theme variables into a custom tab bar:
+
+  ```xml title="custom-tab-bar/index.mpx"
+  <template>
+    <view class="tw-root bg-[var(--tab-bar-bg)] text-[var(--tab-bar-color)]">
+      <!-- Tailwind utility classes can still be used here. -->
+    </view>
+  </template>
+  ```
+
+With the variables injected by `cssOptions.cssPreflight` or customized `@theme`, the theme color, gradient background, etc. of the tab bar can be managed by Tailwind. If you need to override other container names, you can still extend `cssOptions.cssSelectorReplacement.root` to include more selectors through configuration.
+
+- `cssOptions.cssPresetEnv` will participate in the final build. Please execute the `pnpm build:apps` or corresponding `pnpm build` command to confirm the product before publishing.
+
+## 2. Multi-terminal coexistence and on-demand construction
+
+The team often maintains the mini program and the H5 version at the same time. At this time, multiple `@source` can be used to distinguish the template range, and combined with conditional compilation to achieve on-demand packaging:
+
+```css title="src/app.css"
+@source "../src/**/*.{vue,wxml}";
+@source not "../src/**/*.h5.*"; /* Exclude templates only for H5 */
+
+@import "tailwindcss";
+```
+
+When you need to split the volume, you can write the styles of different business domains into their respective `entry.css`, and then add the path to `cssEntries`:
+
+```ts
+WeappTailwindcss({
+  cssEntries: [
+    path.resolve(import.meta.dirname, './src/app.css'),
+    path.resolve(import.meta.dirname, './src/features/order/app.css'),
+  ],
+})
+```
+
+In this way, Tailwind will only generate atomic classes for the templates actually referenced to avoid redundancy.
+
+## 3. Product volume and performance optimization
+
+- **Control scan range**: `@source` supports `not` syntax. Excluding directories such as `dist` and `node_modules` can significantly speed up incremental compilation.
+- **Reasonable use of custom tool classes**: Refining the same combination into `@utility` not only reduces the size of the template, but also facilitates unified adjustment
+- **Enable `cssOptions.rem2rpx` / `cssOptions.px2rpx` on demand**: When rpx is only needed on the mini-program, it can be dynamically enabled in multi-terminal builds
+- **Cache Management**: Tailwind will write to the cache at `.tailwind`. The CI environment can cache this directory to improve build speed. If you need to clean it completely before publishing, run `pnpm exec tailwindcss --config tailwind.config.js --clean` or delete the cache directory directly.
+
+## 4. Debugging and Quality Assurance
+
+- **Visual positioning**: Use the `outline` class to temporarily mark component boundaries, for example, add `outline outline-1 outline-dashed outline-brand/60` during debugging
+- **Assertion style exists**: core components can introduce snapshot tests or DOM assertions, combined with Vitest + @testing-library to verify key class names
+- **lint constraint**: In `eslint-plugin-tailwindcss` or the lint rule agreed by the team, the custom class name must be restricted to `@utility`
+- **Regression Verification**: When upgrading Tailwind, execute `pnpm test`,
+
+## 5. Upgrade and maintenance strategy
+
+1. **Version Alignment**: Tailwind 4 iterates frequently. Before upgrading, check Breaking Changes in `CHANGELOG` and GitHub Release, and then test run on the test branch.
+2. **Split Changeset**: Follow the [Changesets](https://github.com/changesets/changesets) convention when publishing the library externally to ensure that dependents know when manual intervention is required.
+3. **Document Synchronization**: The team internally records the design specifications of `@utility` and `@theme`. It is recommended to write the core styles into Storybook or internal component sample library.
+4. **Prompt feedback when encountering problems**: The `weapp-tailwindcss` community provides quick feedback on Tailwind 4 needs. If you encounter compatibility issues, you can participate in co-construction through Issues or PRs.
+
+At this point, you have mastered the complete implementation ideas of Tailwind CSS 4 in small programs: from environment construction, component practice to performance and collaboration. Combined with the existing framework and integrated documentation, a systematic learning path can be provided for new members.
