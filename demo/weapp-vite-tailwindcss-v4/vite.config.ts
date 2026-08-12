@@ -8,6 +8,7 @@ const require = createRequire(import.meta.url)
 const projectRoot = dirname(fileURLToPath(import.meta.url))
 const parity = require('../official-postcss-parity-plugin.cjs')
 const officialPostcssParity = process.env.WEAPP_TW_OFFICIAL_POSTCSS_PARITY === '1'
+const e2eWatchHmrRuntime = process.env.WEAPP_VITE_E2E_WATCH_HMR_RUNTIME
 const weappTailwindcssPlugins = WeappTailwindcss({
   tailwindcssBasedir: projectRoot,
   cssEntries: [
@@ -42,6 +43,9 @@ export default defineConfig({
   ],
   weapp: {
     forwardConsole: false,
+    ...(e2eWatchHmrRuntime === 'classic' || e2eWatchHmrRuntime === 'stateful-experimental'
+      ? { hmr: { runtime: e2eWatchHmrRuntime } }
+      : {}),
   },
   css: {
     preprocessorOptions: {

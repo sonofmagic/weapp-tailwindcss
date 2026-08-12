@@ -5,12 +5,15 @@ import process from 'node:process'
 import { pathToFileURL } from 'node:url'
 
 const READY_RE = /开发服务已就绪|dev(?:elopment)? server ready|ready in \d+/i
-const WEAK_READY_RE = /根据 Vite 项目根目录自动推断 appType/i
 const pnpmExecPath = process.env.npm_execpath
 const sourceDirs = ['miniprogram', 'pages', 'packageA', 'packageB', 'sub-normal', 'sub-independent']
 const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
 const rootSourceFileRe = /^(?:app|tailwind\.config(?:\.[\w-]+)?)\.[cm]?[jt]s$|^app\.(?:wxss|css|s[ac]ss|less|json)$/i
 const supportedWatchPlatforms = new Set(['weapp', 'web', 'all'])
+
+export function isWatchReadyOutput(text) {
+  return READY_RE.test(text)
+}
 
 export function resolveWatchPlatform(env = process.env) {
   const platform = env.WEAPP_VITE_E2E_WATCH_PLATFORM?.trim() || 'weapp'
@@ -55,11 +58,7 @@ function pipeWithReady(child, resolveReady) {
   const onData = (chunk) => {
     const text = chunk.toString()
     process.stdout.write(text)
-    if (READY_RE.test(text)) {
-      resolveOnce()
-      return
-    }
-    if (WEAK_READY_RE.test(text)) {
+    if (isWatchReadyOutput(text)) {
       resolveOnce()
     }
   }

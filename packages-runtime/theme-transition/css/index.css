@@ -25,13 +25,13 @@
 }
 
 [data-theme-transition='to-dark']::view-transition-new(root) {
-  clip-path: circle(0px at var(--theme-transition-x) var(--theme-transition-y));
   z-index: 2147483646;
+  clip-path: circle(0 at var(--theme-transition-x) var(--theme-transition-y));
 }
 
 [data-theme-transition='from-dark']::view-transition-old(root) {
-  clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
   z-index: 2147483646;
+  clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
 }
 
 [data-theme-transition='from-dark']::view-transition-new(root) {
