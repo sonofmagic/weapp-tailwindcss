@@ -228,6 +228,17 @@ async function readExistingAppTransformedOutput(projectRoot: string, outputRoot:
   return (await Promise.all(transformedFiles.map(readUtf8))).join('\n')
 }
 
+async function readExistingAppHmrTransformedOutput(projectRoot: string, outputRoot: string, item: AppCase) {
+  if (!item.hmrTransformedOutputFiles?.length) {
+    return readExistingAppTransformedOutput(projectRoot, outputRoot, item)
+  }
+  const transformedFiles = item.hmrTransformedOutputFiles.map(file => path.resolve(outputRoot, file))
+  if (!(await Promise.all(transformedFiles.map(fileExists))).every(Boolean)) {
+    return undefined
+  }
+  return (await Promise.all(transformedFiles.map(readUtf8))).join('\n')
+}
+
 async function readExistingAppStyleOutput(outputRoot: string, item: AppCase) {
   const styleFiles = resolveAppStyleOutputFiles(outputRoot, item)
   if (styleFiles.length === 0) {
@@ -275,7 +286,10 @@ async function waitForAppTransformedContent(
           continue
         }
       }
-      if (!hasNoContent(transformed, forbidden)) {
+      const forbiddenScope = forbidden?.length
+        ? await readExistingAppHmrTransformedOutput(projectRoot, outputRoot, item)
+        : transformed
+      if (forbiddenScope == null || !hasNoContent(forbiddenScope, forbidden)) {
         continue
       }
       return outputRoot
