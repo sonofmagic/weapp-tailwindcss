@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-12T08:20:02.382Z",
+  "generatedAt": "2026-08-13T04:52:38.731Z",
   "totals": {
     "files": 167,
-    "issues": 1
+    "issues": 0
   },
   "coverage": {
     "docs": {
@@ -22,15 +22,6 @@
       "keywords": 1
     }
   },
-  "issueTypes": {
-    "few_keywords": 1
-  },
-  "issues": [
-    {
-      "type": "few_keywords",
-      "file": "quick-start/frameworks/lynx.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "docs"
-    }
-  ]
+  "issueTypes": {},
+  "issues": []
 }
