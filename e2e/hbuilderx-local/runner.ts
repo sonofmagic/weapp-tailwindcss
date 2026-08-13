@@ -33,7 +33,7 @@ import {
   wait,
 } from './process'
 import { appendHmrSourceMutation, createHmrOutputSnapshot, createHmrSourceRestore, haveHmrOutputsChanged } from './source-mutations'
-import { collectMiniProgramStyleFiles } from './styles'
+import { collectMiniProgramStyleFiles, readReachableMiniProgramStyles, resolveMiniProgramRuntimeStyleEntry } from './styles'
 import { runWebHmr } from './web'
 
 const repoRoot = path.resolve(__dirname, '../..')
@@ -341,7 +341,9 @@ async function assertMiniProgramOutput(
     styleFiles.length,
     `${item.name} 缺少 ${item.cssExtensions.join('/')} 样式产物`,
   ).toBeGreaterThan(0)
-  const css = (await Promise.all(styleFiles.map(readUtf8))).join('\n')
+  const runtimeStyleEntry = await resolveMiniProgramRuntimeStyleEntry(outputRoot, item.cssExtensions)
+  expect(runtimeStyleEntry, `${item.name} 无法唯一识别小程序运行时根样式入口`).toBeTruthy()
+  const css = await readReachableMiniProgramStyles(outputRoot, runtimeStyleEntry!, item.cssExtensions)
 
   expectContent(css, item.cssContains, item.name)
   if (item.outputContains) {

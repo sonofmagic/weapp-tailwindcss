@@ -214,6 +214,85 @@ export function restoreFrameworkRootMiniProgramImportShellAssets(
   return restored
 }
 
+function resolveRuntimeRootStyleOutputFile(bundle: OutputBundle, matchesCss: (file: string) => boolean) {
+  const rootChunkStems = new Set(Object.entries(bundle).flatMap(([bundleFile, output]) => {
+    if (output.type !== 'chunk') {
+      return []
+    }
+    const file = normalizeOutputPathKey(output.fileName || bundleFile)
+    if (file.includes('/')) {
+      return []
+    }
+    return [path.posix.parse(file).name]
+  }))
+  const candidates = Object.entries(bundle).flatMap(([bundleFile, output]) => {
+    if (output.type !== 'asset') {
+      return []
+    }
+    const file = normalizeOutputPathKey(output.fileName || bundleFile)
+    return isRootMiniProgramStyleOutputFile(file)
+      && matchesCss(file)
+      && rootChunkStems.has(path.posix.parse(file).name)
+      ? [file]
+      : []
+  })
+  return candidates.length === 1 ? candidates[0] : undefined
+}
+
+export function linkFrameworkRootStyleToRuntimeEntry(
+  bundle: OutputBundle,
+  options: {
+    debug?: ((format: string, ...args: unknown[]) => void) | undefined
+    matchesCss: (file: string) => boolean
+    onUpdate?: ((file: string, oldVal: string, newVal: string) => void) | undefined
+    recordCssAssetResult?: ((file: string, css: string) => void) | undefined
+    targetByFile: ReadonlyMap<string, string>
+  },
+) {
+  if (options.targetByFile.size === 0) {
+    return 0
+  }
+  const runtimeRootFile = resolveRuntimeRootStyleOutputFile(bundle, options.matchesCss)
+  if (!runtimeRootFile) {
+    return 0
+  }
+  const frameworkRootFiles = [...options.targetByFile.keys()].filter(file =>
+    normalizeOutputPathKey(file) !== normalizeOutputPathKey(runtimeRootFile)
+    && isRootMiniProgramStyleOutputFile(file)
+    && options.matchesCss(file),
+  )
+  if (frameworkRootFiles.length !== 1) {
+    return 0
+  }
+  const frameworkRootFile = frameworkRootFiles[0]!
+  const runtimeOutput = Object.entries(bundle).find(([bundleFile, output]) =>
+    output.type === 'asset'
+    && normalizeOutputPathKey(output.fileName || bundleFile) === normalizeOutputPathKey(runtimeRootFile),
+  )?.[1]
+  const frameworkOutput = Object.entries(bundle).find(([bundleFile, output]) =>
+    output.type === 'asset'
+    && normalizeOutputPathKey(output.fileName || bundleFile) === normalizeOutputPathKey(frameworkRootFile),
+  )?.[1]
+  if (runtimeOutput?.type !== 'asset' || frameworkOutput?.type !== 'asset') {
+    return 0
+  }
+  const runtimeSource = runtimeOutput.source.toString()
+  const importedRuntimeFile = resolveSingleCssImportOutputFile(runtimeRootFile, runtimeSource)
+  if (importedRuntimeFile && normalizeOutputPathKey(importedRuntimeFile) === normalizeOutputPathKey(frameworkRootFile)) {
+    return 0
+  }
+  const importedFrameworkFile = resolveSingleCssImportOutputFile(frameworkRootFile, frameworkOutput.source.toString())
+  if (importedFrameworkFile && normalizeOutputPathKey(importedFrameworkFile) === normalizeOutputPathKey(runtimeRootFile)) {
+    return 0
+  }
+  const nextSource = `${createCssImportShell(runtimeRootFile, frameworkRootFile)}${runtimeSource}`
+  runtimeOutput.source = nextSource
+  options.recordCssAssetResult?.(runtimeRootFile, nextSource)
+  options.onUpdate?.(runtimeRootFile, runtimeSource, nextSource)
+  options.debug?.('link framework root css to runtime entry: %s -> %s', runtimeRootFile, frameworkRootFile)
+  return 1
+}
+
 export function shouldMoveRootMiniProgramStyleToImportShellOrigin(enabled: boolean | undefined) {
   return enabled === true
 }

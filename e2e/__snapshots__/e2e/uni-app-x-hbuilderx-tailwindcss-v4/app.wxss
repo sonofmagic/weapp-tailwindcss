@@ -1,3 +1,4 @@
+@import './uvue.wxss';
 :host,
 page,
 .tw-root,

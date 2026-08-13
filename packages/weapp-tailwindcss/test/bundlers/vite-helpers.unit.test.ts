@@ -18,6 +18,7 @@ import {
   createRelativeCssImportRequest,
   createRootMiniProgramOriginStyleOutputFile,
   isRootMiniProgramStyleOutputFile,
+  linkFrameworkRootStyleToRuntimeEntry,
   restoreFrameworkRootMiniProgramImportShellAssets,
   resolveFrameworkRootImportShellPlan,
   shouldKeepRootMiniProgramStyleAsImportShell,
@@ -223,6 +224,71 @@ describe('bundlers/vite helper modules', () => {
 
     expect(bundle['entry-hash.acss']).toBe(output)
     expect(output.source).toBe('@import "./generated.acss";\n')
+  })
+
+  it('links a framework root style shell from the runtime root style asset', () => {
+    const runtimeStyle = {
+      type: 'asset' as const,
+      fileName: 'entry.acss',
+      source: '.runtime{color:red}',
+    }
+    const bundle = {
+      'entry.js': {
+        type: 'chunk' as const,
+        fileName: 'entry.js',
+        code: '',
+      },
+      'entry.acss': runtimeStyle,
+      'framework.acss': {
+        type: 'asset' as const,
+        fileName: 'framework.acss',
+        source: '@import "./generated.acss";',
+      },
+    }
+
+    expect(linkFrameworkRootStyleToRuntimeEntry(bundle as any, {
+      matchesCss: file => file.endsWith('.acss'),
+      targetByFile: new Map([
+        ['framework.acss', 'generated.acss'],
+      ]),
+    })).toBe(1)
+
+    expect(runtimeStyle.source).toBe('@import "./framework.acss";\n.runtime{color:red}')
+  })
+
+  it('does not link an ambiguous or cyclic framework root style graph', () => {
+    const createBundle = (frameworkSource: string) => ({
+      'entry.js': {
+        type: 'chunk' as const,
+        fileName: 'entry.js',
+        code: '',
+      },
+      'entry.acss': {
+        type: 'asset' as const,
+        fileName: 'entry.acss',
+        source: '.runtime{color:red}',
+      },
+      'framework.acss': {
+        type: 'asset' as const,
+        fileName: 'framework.acss',
+        source: frameworkSource,
+      },
+    })
+
+    expect(linkFrameworkRootStyleToRuntimeEntry(createBundle('@import "./entry.acss";') as any, {
+      matchesCss: file => file.endsWith('.acss'),
+      targetByFile: new Map([
+        ['framework.acss', 'generated.acss'],
+      ]),
+    })).toBe(0)
+
+    expect(linkFrameworkRootStyleToRuntimeEntry(createBundle('@import "./generated.acss";') as any, {
+      matchesCss: file => file.endsWith('.acss'),
+      targetByFile: new Map([
+        ['framework.acss', 'generated.acss'],
+        ['other.acss', 'other-generated.acss'],
+      ]),
+    })).toBe(0)
   })
 
   it('plans framework root import shell ownership without mutating runtime state', () => {

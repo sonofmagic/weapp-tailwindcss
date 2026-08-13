@@ -689,6 +689,49 @@ describe('vite css finalizer output plugin', () => {
     expect(context.debug).toHaveBeenCalledWith('restore framework root css import shell: %s -> %s', 'app.wxss', 'main.wxss')
   })
 
+  it('links a uni-app-x framework style shell from the runtime root style asset', async () => {
+    const { context } = createContext({
+      opts: {
+        appType: 'uni-app-x',
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        htmlMatcher: (file: string) => file.endsWith('.wxml'),
+        mainCssChunkMatcher: () => false,
+        styleHandler: vi.fn(async (css: string) => ({ css })),
+        onUpdate: vi.fn(),
+        generator: {
+          target: 'weapp',
+        },
+      },
+      cssPipelineStrategy: {
+        shouldKeepRootMiniProgramStyleAsImportShell: () => true,
+        shouldLinkFrameworkRootStyleToRuntimeEntry: () => true,
+      },
+      frameworkRootImportShellTargetByFile: new Map([
+        ['framework.wxss', 'generated.wxss'],
+      ]),
+      getViteProcessedCssAssetResults: vi.fn(() => []),
+      isCssAssetProcessed: vi.fn(() => true),
+    })
+    const plugin = createViteCssFinalizerOutputPlugin(context as any)
+    const bundle: OutputBundle = {
+      'entry.js': {
+        type: 'chunk',
+        fileName: 'entry.js',
+        name: 'entry',
+        code: '',
+      } as any,
+      'entry.wxss': asset('entry.wxss', '.runtime{display:flex}'),
+      'framework.wxss': asset('framework.wxss', '.framework{display:block}'),
+      'generated.wxss': asset('generated.wxss', '.tailwind{width:100rpx}'),
+    }
+
+    await getHandler(plugin).call(plugin, {}, bundle)
+
+    expect(String((bundle['entry.wxss'] as OutputAsset).source)).toContain('@import "./framework.wxss";')
+    expect(String((bundle['framework.wxss'] as OutputAsset).source)).toBe('@import "./generated.wxss";\n')
+    expect(context.debug).toHaveBeenCalledWith('link framework root css to runtime entry: %s -> %s', 'entry.wxss', 'framework.wxss')
+  })
+
   it('injects uni-app-x harmony apply styles when finalizer has no css assets', async () => {
     mocks.generateTailwindV4Css.mockResolvedValue({
       css: '.flex{display:flex}',

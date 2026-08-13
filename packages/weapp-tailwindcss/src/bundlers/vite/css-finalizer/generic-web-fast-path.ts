@@ -2,6 +2,7 @@ import type { OutputAsset, OutputBundle } from 'rollup'
 import type { ViteFrameworkCssPipelineContext } from '../shared/framework-strategy'
 import type { CssFinalizerContext } from './options'
 import { stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
+import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../../shared/generator-css'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { resolveViteCssPipelineOutputFile } from '../generate-bundle'
 import { collectMatchingGeneratedCssMarkerFiles, resolveViteProcessedCssAssetSource } from '../processed-css-assets/markers-imports'
@@ -91,7 +92,7 @@ function resolveProcessedCssAssets(
       assetBySourceFile.set(normalizeOutputPathKey(sourceFile), output)
     }
   }
-  const processedAssets = new Map<GenericWebCssAsset, string>()
+  const processedAssets = new Map<GenericWebCssAsset, { css: string, useAssetSource: boolean }>()
   const htmlOwnedAssets = [...cssAssets.values()].filter(output => [
     output.asset.originalFileName,
     ...(output.asset.originalFileNames ?? []),
@@ -103,6 +104,7 @@ function resolveProcessedCssAssets(
       : record.outputFile ?? resolveProcessedCssOutputFile(file, options, bundleFiles)
     let output = assetBySourceFile.get(normalizeOutputPathKey(file))
       ?? (outputFile ? cssAssets.get(normalizeOutputPathKey(outputFile)) : undefined)
+    let useAssetSource = output !== undefined
     if (!output) {
       const matchingAssets = [...cssAssets.values()].filter(candidate =>
         options.context.isCssAssetProcessed(candidate.asset, candidate.file)
@@ -114,19 +116,22 @@ function resolveProcessedCssAssets(
       )
       if (matchingAssets.length === 1) {
         output = matchingAssets[0]
+        useAssetSource = true
       }
     }
     if (!output && records.length === 1 && htmlOwnedAssets.length === 1) {
       output = htmlOwnedAssets[0]
+      useAssetSource = hasTailwindGeneratedCss(output.original)
+        || hasTailwindGeneratedCssMarkers(output.original)
     }
     if (!output) {
       return
     }
-    const existingCss = processedAssets.get(output)
-    if (existingCss !== undefined && existingCss !== recordCss) {
+    const existing = processedAssets.get(output)
+    if (existing !== undefined && existing.css !== recordCss) {
       return
     }
-    processedAssets.set(output, recordCss)
+    processedAssets.set(output, { css: recordCss, useAssetSource })
   }
   return processedAssets
 }
@@ -165,10 +170,11 @@ export function tryFinalizeGenericWebCss(
   }
 
   const writeStartedAt = performance.now()
-  for (const [{ asset, file, original }, processedCss] of processedAssets) {
+  for (const [{ asset, file, original }, processed] of processedAssets) {
     const finalizeStartedAt = performance.now()
+    const finalCssSource = processed.useAssetSource ? original : processed.css
     const generated = finalizeWebCss(
-      stripBundlerGeneratedCssMarkers(processedCss),
+      stripBundlerGeneratedCssMarkers(finalCssSource),
       { ...options.createCssPipelineContext(file), file },
       context.cssPipelineStrategy,
     )

@@ -10642,6 +10642,72 @@ const trace = "at App.vue:4"
     expect(getCurrentContext().onEnd).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
+  it('preserves Vite PostCSS output when finalizing Generic Web generated CSS', async () => {
+    const runtimeSet = new Set(['flex'])
+    const generatedCss = '.flex{display:flex}'
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: vi.fn(async () => ({
+          css: generatedCss,
+          rawCss: generatedCss,
+          target: 'web',
+          classSet: runtimeSet,
+          dependencies: [],
+          sources: [],
+          root: null,
+        })),
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: createMockTailwindV4SourceResolver(),
+      resolveTailwindV4SourceFromRuntime: createMockTailwindV4SourceResolver(),
+    }))
+    setCurrentContext(createContext({
+      appType: 'native',
+      generator: { target: 'web' },
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({ appType: 'native', generator: { target: 'web' } })
+    const buildPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:build') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    const finalizerPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:css-finalizer') as Plugin
+    await getConfigResolvedHandler(postPlugin)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const sourceFile = path.resolve(process.cwd(), 'src/style.css')
+    const transformed = await getTransformHandler(buildPlugin)?.call(
+      { addWatchFile: vi.fn() } as any,
+      '@import "tailwindcss";',
+      sourceFile,
+    )
+    const transformedCss = String((transformed as { code?: string } | undefined)?.code)
+    const bundle = {
+      'assets/index.css': {
+        ...createRollupAsset(`${transformedCss}\n.postcss-saw-generated-css{display:block}`),
+        fileName: 'assets/index.css',
+        originalFileNames: [sourceFile],
+      },
+    }
+
+    await getGenerateBundleHandler(postPlugin)?.call(postPlugin, {} as any, bundle)
+    await getGenerateBundleHandler(finalizerPlugin)?.call(finalizerPlugin, {} as any, bundle)
+
+    const output = (bundle['assets/index.css'] as OutputAsset).source.toString()
+    expect(output).toContain(generatedCss)
+    expect(output).toContain('.postcss-saw-generated-css{display:block}')
+    expect(output).not.toContain('vite-generated-css:')
+  }, TEST_TIMEOUT_MS)
+
   it('keeps uni-app H5 web css and js raw while App WebView owns safe transforms', async () => {
     const rawClass = 'bg-[#0000ff]'
     const safeClass = replaceWxml(rawClass)

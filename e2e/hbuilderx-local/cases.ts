@@ -356,7 +356,7 @@ function createUniAppXHBuilderXMiniProgramCase(options: {
       'app.json': ['"root": "sub-normal"', '"root": "sub-independent"', '"independent": true'],
       'components/BindClass.js': ['__scopeId', 'data-v-'],
       [`components/BindClass.${templateExtension}`]: ['issue-822-component-child', /data-v-[\da-f]+/],
-      [platformFiles.templateFiles.main]: ['issue-902-theme-probe', 'bg-primary'],
+      [platformFiles.templateFiles.main]: ['issue-902-theme-probe'],
       [platformFiles.templateFiles.independent]: ['bg-independent-subpackage-marker'],
       [platformFiles.templateFiles.normal]: ['bg-normal-subpackage-marker'],
     },

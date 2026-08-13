@@ -19,7 +19,7 @@ import { resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFil
 import { applyViteAssetEmissionPlan } from '../generate-bundle/asset-emission-plan'
 import { finalizeMiniProgramCssAssetStructures } from '../generate-bundle/final-css-assets'
 import { normalizeRootMiniProgramImportShellAssets } from '../generate-bundle/finalize'
-import { restoreFrameworkRootMiniProgramImportShellAssets } from '../generate-bundle/root-style-output'
+import { linkFrameworkRootStyleToRuntimeEntry, restoreFrameworkRootMiniProgramImportShellAssets } from '../generate-bundle/root-style-output'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '../processed-css-assets'
 import { isHTMLRequest } from '../utils'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from '../weapp-vite-config'
@@ -156,6 +156,18 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           }),
           targetByFile: frameworkRootImportShellTargetByFile ?? new Map(),
         })
+        if (
+          !isWebGeneratorTarget
+          && cssPipelineStrategy?.shouldLinkFrameworkRootStyleToRuntimeEntry?.(createCssPipelineContext('')) === true
+        ) {
+          linkFrameworkRootStyleToRuntimeEntry(bundle, {
+            debug,
+            matchesCss: opts.cssMatcher,
+            onUpdate: trackFinalCssAssetUpdate,
+            recordCssAssetResult,
+            targetByFile: frameworkRootImportShellTargetByFile ?? new Map(),
+          })
+        }
         const sourceTraceTokenSources = getSourceCandidateSourcesForEntries
           ? createCssTokenSourceMap(getSourceCandidateSourcesForEntries(undefined), opts)
           : undefined

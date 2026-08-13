@@ -86,7 +86,6 @@ export const E2E_PROJECTS = ([
     name: 'uni-app-x-hbuilderx-tailwindcss-v4',
     projectPath: 'uni-app-x-hbuilderx-tailwindcss-v4/unpackage/dist/dev/mp-weixin',
     cssFile: 'app.wxss',
-    cssFiles: ['app.wxss', 'main.wxss'],
     requiresHBuilderX: true,
   },
   {
