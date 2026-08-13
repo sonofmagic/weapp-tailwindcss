@@ -280,7 +280,7 @@ const homepageCopy = {
 const platformIconContent: Record<string, ReactNode> = {
   'web': <i aria-hidden="true" className="icon-[logos--html-5] text-[29px]"></i>,
   'miniapp': <MiniProgramLogo aria-hidden="true" className="home-hero__platform-logo home-hero__platform-logo--mini-program" />,
-  'android': <i aria-hidden="true" className="icon-[logos--android-icon] text-[24px]"></i>,
+  'android': <i aria-hidden="true" className="icon-[bi--android2] text-[30px] text-[#3DDC84]"></i>,
   'ios': <i aria-hidden="true" className="icon-[mdi--apple] text-[30px]"></i>,
   'harmony': <HarmonyOsLogo aria-hidden="true" className="home-hero__platform-logo home-hero__platform-logo--harmony" />,
   'react-native': <i aria-hidden="true" className="icon-[logos--react] text-[29px]"></i>,
