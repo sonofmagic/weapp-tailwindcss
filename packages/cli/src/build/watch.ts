@@ -35,13 +35,23 @@ function changed(previous: Map<string, string>, next: Map<string, string>) {
 
 export async function watchBuildInputs(options: {
   cwd: string
-  dependencies: Set<string>
   interval: number
   output?: string
   rebuild: () => Promise<Set<string>>
 }) {
-  let dependencies = options.dependencies
-  let previous = await snapshot(options.cwd, dependencies, options.output)
+  let dependencies = new Set<string>()
+  const previous = await snapshot(options.cwd, dependencies, options.output)
+  dependencies = await options.rebuild()
+
+  // 初始构建才会发现项目目录之外的配置和插件依赖，只补充基线中尚不存在的文件。
+  // 项目目录内在构建期间发生的修改必须保留，交给第一次轮询触发后续构建。
+  const initialized = await snapshot(options.cwd, dependencies, options.output)
+  for (const [file, value] of initialized) {
+    if (!previous.has(file)) {
+      previous.set(file, value)
+    }
+  }
+
   await new Promise<void>((resolve) => {
     let running = false
     const timer = setInterval(async () => {
@@ -52,9 +62,11 @@ export async function watchBuildInputs(options: {
       try {
         const next = await snapshot(options.cwd, dependencies, options.output)
         if (changed(previous, next)) {
-          previous = next
+          previous.clear()
+          for (const [file, value] of next) {
+            previous.set(file, value)
+          }
           dependencies = await options.rebuild()
-          previous = await snapshot(options.cwd, dependencies, options.output)
         }
       }
       catch (error) {

@@ -118,13 +118,12 @@ async function runBuild(argv: string[]) {
     }
     return result.dependencies
   }
-  const dependencies = await rebuild()
   if (!options.watch || (options.input === '-' && options.watch !== 'always')) {
+    await rebuild()
     return 0
   }
   await watchBuildInputs({
     cwd: options.cwd,
-    dependencies,
     interval: options.pollInterval,
     output: options.output,
     rebuild,
