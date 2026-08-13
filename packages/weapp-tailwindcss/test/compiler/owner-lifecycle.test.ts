@@ -157,6 +157,60 @@ describe('compiler owner lifecycle', () => {
     expect(nextStarted).toBe(true)
   })
 
+  it('allows active compilation work to create owner state during disposal', async () => {
+    const { getCompilationSessionPool } = await import('@/compiler')
+    const {
+      runCompilerOwnerActivity,
+      runCompilerOwnerDisposal,
+    } = await import('@/compiler/compiler-owner-state')
+    const owner = {}
+    let continueActivity: (() => void) | undefined
+    const activityGate = new Promise<void>((resolve) => {
+      continueActivity = resolve
+    })
+    let sessionCreated = false
+
+    const activity = runCompilerOwnerActivity(owner, async () => {
+      await activityGate
+      getCompilationSessionPool(owner)
+      sessionCreated = true
+    })
+    const disposal = runCompilerOwnerDisposal(owner, async () => {})
+
+    expect(() => getCompilationSessionPool(owner)).toThrow('正在释放')
+    continueActivity?.()
+    await activity
+    await disposal
+
+    expect(sessionCreated).toBe(true)
+  })
+
+  it('does not retain owner access in detached async work after activity release', async () => {
+    const { getCompilationSessionPool } = await import('@/compiler')
+    const {
+      runCompilerOwnerActivity,
+      runCompilerOwnerDisposal,
+    } = await import('@/compiler/compiler-owner-state')
+    const owner = {}
+    let continueDetached: (() => void) | undefined
+    const detachedGate = new Promise<void>((resolve) => {
+      continueDetached = resolve
+    })
+    let detachedAccess: Promise<void> | undefined
+
+    await runCompilerOwnerActivity(owner, () => {
+      detachedAccess = detachedGate.then(() => {
+        getCompilationSessionPool(owner)
+      })
+    })
+    const disposal = runCompilerOwnerDisposal(owner, async () => {
+      continueDetached?.()
+      await expect(detachedAccess).rejects.toThrow('正在释放')
+    })
+
+    await disposal
+  })
+
   it('does not retain owner-bound state across 100 build lifecycles', async () => {
     const dispose = vi.fn()
     const createGenerator = vi.fn(() => ({
