@@ -16,15 +16,15 @@ keywords:
   - taro
   - mpx
 ---
-import CompatibilityWarning from '../../uni-app-x/_compatibility-warning.mdx'
+import EnvironmentRequirements from '../../uni-app-x/_environment-requirements.mdx'
 
 # uni-app x
 
-<CompatibilityWarning />
+<EnvironmentRequirements />
 
 `uni-app x` 使用 HBuilderX 和 `@dcloudio/vite-plugin-uni`。建议配合内置的 `uniAppX` 预设使用。
 
-当前仓库的 HBuilderX 本地 E2E 覆盖了 uni-app x 小程序、Android 和 iOS 产物。App E2E 依赖本机 HBuilderX 与模拟器，只在本地执行。
+当前仓库的 HBuilderX 本地 E2E 覆盖了 uni-app x Web、微信小程序、Android、iOS 和鸿蒙。小程序与 App E2E 依赖本机 HBuilderX、开发者工具或模拟器，只在本地执行。
 
 :::warning 能力边界
 `uvue` 原生 App 端不要依赖 `gap`、`gap-x-*`、`gap-y-*`，这些布局能力当前都不支持。
@@ -34,8 +34,11 @@ import CompatibilityWarning from '../../uni-app-x/_compatibility-warning.mdx'
 
 ```bash npm2yarn
 npm run e2e:hbuilderx:local
+npm run e2e:hbuilderx:local:web
+npm run e2e:hbuilderx:local:mp
 npm run e2e:hbuilderx:local:android
 npm run e2e:hbuilderx:local:ios
+npm run e2e:hbuilderx:local:harmony
 ```
 
 ## 注册插件

@@ -95,10 +95,6 @@
     "message": "Package exports overview",
     "description": "The label for the doc item '包导出总览' in sidebar 'tutorialSidebar', linking to the doc options/exports"
   },
-  "sidebar.tutorialSidebar.doc.🗑️Tailwind CSS @2.x": {
-    "message": "🗑️Tailwind CSS @2.x",
-    "description": "The label for the doc item '🗑️Tailwind CSS @2.x' in sidebar 'tutorialSidebar', linking to the doc quick-start/v2/index"
-  },
   "sidebar.tutorialSidebar.doc.如何贡献": {
     "message": "How to contribute",
     "description": "The label for the doc item '如何贡献' in sidebar 'tutorialSidebar', linking to the doc how-to-contribute"
