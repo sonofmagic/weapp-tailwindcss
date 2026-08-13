@@ -1,36 +1,21 @@
-import { AsyncLocalStorage } from 'node:async_hooks'
-
 const compilerOwnerDisposals = new WeakMap<object, Promise<void>>()
 const compilerOwnerActivities = new WeakMap<object, {
   active: number
   idleWaiters: Set<() => void>
 }>()
-const compilerOwnerActivityStorage = new AsyncLocalStorage<ReadonlyMap<object, CompilerOwnerActivityToken>>()
-
-interface CompilerOwnerActivityToken {
-  active: boolean
-}
-
-interface CompilerOwnerActivityLease {
-  release: () => void
-  token: CompilerOwnerActivityToken
-}
+type CompilerOwnerActivityRelease = () => void
 
 export function ensureCompilerOwnerActive(owner: object) {
-  if (compilerOwnerDisposals.has(owner) && !hasCompilerOwnerActivity(owner)) {
+  if (compilerOwnerDisposals.has(owner)) {
     throw new Error('Compiler owner 正在释放，不能创建新的编译状态。')
   }
 }
 
-function hasCompilerOwnerActivity(owner: object) {
-  return compilerOwnerActivityStorage.getStore()?.get(owner)?.active === true
-}
-
 function acquireCompilerOwnerActivity(
   owner: object,
-): CompilerOwnerActivityLease | Promise<CompilerOwnerActivityLease> {
+): CompilerOwnerActivityRelease | Promise<CompilerOwnerActivityRelease> {
   const currentDisposal = compilerOwnerDisposals.get(owner)
-  if (currentDisposal && !hasCompilerOwnerActivity(owner)) {
+  if (currentDisposal) {
     return currentDisposal.then(() => acquireCompilerOwnerActivity(owner))
   }
 
@@ -45,25 +30,20 @@ function acquireCompilerOwnerActivity(
   state.active += 1
 
   let released = false
-  const token: CompilerOwnerActivityToken = { active: true }
-  return {
-    release() {
-      if (released) {
-        return
-      }
-      released = true
-      token.active = false
-      state.active -= 1
-      if (state.active > 0) {
-        return
-      }
-      compilerOwnerActivities.delete(owner)
-      for (const resolve of state.idleWaiters) {
-        resolve()
-      }
-      state.idleWaiters.clear()
-    },
-    token,
+  return () => {
+    if (released) {
+      return
+    }
+    released = true
+    state.active -= 1
+    if (state.active > 0) {
+      return
+    }
+    compilerOwnerActivities.delete(owner)
+    for (const resolve of state.idleWaiters) {
+      resolve()
+    }
+    state.idleWaiters.clear()
   }
 }
 
@@ -82,28 +62,21 @@ export function runCompilerOwnerActivity<T>(
   activity: () => T | Promise<T>,
 ): Promise<Awaited<T>> {
   const acquired = acquireCompilerOwnerActivity(owner)
-  if (acquired instanceof Promise) {
-    return acquired.then(lease => runCompilerOwnerActivityWithLease(owner, activity, lease))
+  if (typeof acquired !== 'function') {
+    return acquired.then(release => runCompilerOwnerActivityWithRelease(activity, release))
   }
-  return runCompilerOwnerActivityWithLease(owner, activity, acquired)
+  return runCompilerOwnerActivityWithRelease(activity, acquired)
 }
 
-function runCompilerOwnerActivityWithLease<T>(
-  owner: object,
+function runCompilerOwnerActivityWithRelease<T>(
   activity: () => T | Promise<T>,
-  lease: CompilerOwnerActivityLease,
+  release: CompilerOwnerActivityRelease,
 ): Promise<Awaited<T>> {
   try {
-    const currentOwners = compilerOwnerActivityStorage.getStore()
-    const owners = currentOwners?.get(owner)?.active
-      ? currentOwners
-      : new Map([...(currentOwners ?? []), [owner, lease.token]])
-    return Promise.resolve(
-      compilerOwnerActivityStorage.run(owners, activity),
-    ).finally(lease.release)
+    return Promise.resolve(activity()).finally(release)
   }
   catch (error) {
-    lease.release()
+    release()
     return Promise.reject(error)
   }
 }

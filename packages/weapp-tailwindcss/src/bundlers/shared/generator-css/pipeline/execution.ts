@@ -61,12 +61,18 @@ export async function executeGeneratorPipeline(
 ): Promise<GenerateCssByGeneratorResult | undefined> {
   return runCompilerOwnerActivity(
     context.runtimeState,
-    () => executeGeneratorPipelineWithOwner(context),
+    () => executeGeneratorPipelineWithOwner(
+      context,
+      getCompilationSessionPool(context.runtimeState),
+      getTailwindGenerationSessionPool(context.runtimeState),
+    ),
   )
 }
 
 async function executeGeneratorPipelineWithOwner(
   context: GeneratorPipelineExecutionContext,
+  compilationPool: ReturnType<typeof getCompilationSessionPool>,
+  generationSession: ReturnType<typeof getTailwindGenerationSessionPool>,
 ): Promise<GenerateCssByGeneratorResult | undefined> {
   const {
     cssHandlerOptions,
@@ -129,7 +135,6 @@ async function executeGeneratorPipelineWithOwner(
     generatorSourceRecords.map(record => record.source),
   )
   const sourceConcurrency = resolveGeneratorSourceConcurrency()
-  const generationSession = getTailwindGenerationSessionPool(runtimeState)
   const preparedGenerationInputs = (await runWithConcurrency(generatorSourceRecords.map((record, index) => async () => {
     const { metadata: sourceMetadata, source } = record
     const sourceCss = options.deferCssAdaptation
@@ -220,7 +225,6 @@ async function executeGeneratorPipelineWithOwner(
   let compilationRevision: number | undefined
   let generated
   if (options.compilation?.enabled) {
-    const compilationPool = getCompilationSessionPool(runtimeState)
     const execution = await compilationPool.run({
       scope: options.compilation.scope,
       outputId: options.outputFile ?? file,

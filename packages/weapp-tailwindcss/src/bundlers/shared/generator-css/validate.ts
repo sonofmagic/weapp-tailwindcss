@@ -16,12 +16,16 @@ export async function validateCandidatesByGenerator(
 ): Promise<Set<string>> {
   return runCompilerOwnerActivity(
     options.runtimeState,
-    () => validateCandidatesByGeneratorWithOwner(options),
+    () => validateCandidatesByGeneratorWithOwner(
+      options,
+      getTailwindGenerationSessionPool(options.runtimeState),
+    ),
   )
 }
 
 async function validateCandidatesByGeneratorWithOwner(
   options: ValidateCandidatesByGeneratorOptions,
+  generationSession: ReturnType<typeof getTailwindGenerationSessionPool>,
 ): Promise<Set<string>> {
   const {
     candidates,
@@ -55,7 +59,6 @@ async function validateCandidatesByGeneratorWithOwner(
           runtime: candidates,
         },
       )
-      const generationSession = getTailwindGenerationSessionPool(runtimeState)
       const classSets = await Promise.all(sourceRecords.map(async ({ source }) => {
         return generationSession.validateCandidates(source, candidates)
       }))
