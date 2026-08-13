@@ -682,7 +682,12 @@ describe('web target official tailwind parity', () => {
     for (const [name, css] of Object.entries(outputs)) {
       expect(css, `${name} website web output should match @tailwindcss/postcss byte-for-byte`).toBe(officialPostcss)
       expect(css).toContain('.sr-only')
-      expect(css).toContain('.icon-\\[mdi--wechat\\]')
+      expect(css).toContain('.icon-\\[logos--html-5\\]')
+      expect(css).toContain('.icon-\\[logos--android-icon\\]')
+      expect(css).toContain('.icon-\\[logos--react\\]')
+      expect(css).not.toContain('.icon-\\[mdi--wechat\\]')
+      expect(css).not.toContain('.icon-\\[mdi--android\\]')
+      expect(css).not.toContain('.icon-\\[mdi--cellphone-link\\]')
       expect(css).toContain('--svg')
       expect(css).not.toContain(':not(#\\#)')
     }

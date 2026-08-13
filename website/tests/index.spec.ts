@@ -91,7 +91,28 @@ test.describe('homepage hero layout', () => {
     const pipeline = page.locator('.home-pipeline')
 
     await expect(hero).toBeVisible()
-    await expect(platformIcons).toHaveCount(5)
+    await expect(platformIcons).toHaveCount(7)
+    const platformLabels = await platformIcons.evaluateAll(elements => elements.map(element => element.getAttribute('aria-label')))
+    expect(platformLabels).toEqual(['Web', '小程序', 'Android', 'iOS', 'HarmonyOS', 'React Native', 'Lynx'])
+    const platformHrefs = await platformIcons.evaluateAll(elements => elements.map(element => element.getAttribute('href')))
+    expect(platformHrefs).toEqual([
+      '/docs/intro',
+      '/docs/quick-start/native/install',
+      '/docs/quick-start/frameworks/uni-app-x',
+      '/docs/quick-start/frameworks/uni-app-x',
+      '/docs/quick-start/frameworks/uni-app-x',
+      '/docs/quick-start/react-native-expo',
+      '/docs/quick-start/frameworks/lynx',
+    ])
+    await expect(platformIcons.nth(0).locator('[class~="icon-[logos--html-5]"]')).toHaveCount(1)
+    await expect(platformIcons.nth(1).locator('.home-hero__platform-logo--mini-program')).toHaveCount(1)
+    await expect(platformIcons.nth(2).locator('[class~="icon-[logos--android-icon]"]')).toHaveCount(1)
+    await expect(platformIcons.nth(3).locator('[class~="icon-[mdi--apple]"]')).toHaveCount(1)
+    await expect(platformIcons.nth(4).locator('.home-hero__platform-logo--harmony')).toHaveCount(1)
+    await expect(platformIcons.nth(5).locator('[class~="icon-[logos--react]"]')).toHaveCount(1)
+    await expect(platformIcons.nth(6).locator('.home-hero__platform-logo--lynx')).toHaveCount(1)
+    await expect(platformIcons.locator('img')).toHaveCount(0)
+    await expect(page.locator('[class~="icon-[mdi--wechat]"], [class~="icon-[mdi--android]"], [class~="icon-[mdi--cellphone-link]"]')).toHaveCount(0)
     await expect(primaryCta).toBeVisible()
     await expect(primaryCta).toHaveText(/开始接入/)
     await expect(primaryCta).toHaveAttribute('href', '/docs/quick-start/install')
@@ -105,19 +126,24 @@ test.describe('homepage hero layout', () => {
       expect(box?.width).toBeLessThanOrEqual(56)
       expect(box?.height).toBeGreaterThanOrEqual(44)
       expect(box?.height).toBeLessThanOrEqual(56)
-    }
 
-    const srOnlyBoxes = await page.locator('.home-hero__platform-icon .sr-only').evaluateAll(elements => elements.map((element) => {
-      const rect = element.getBoundingClientRect()
-      return {
-        width: rect.width,
-        height: rect.height,
-      }
-    }))
-    expect(srOnlyBoxes).toHaveLength(5)
-    for (const box of srOnlyBoxes) {
-      expect(box.width).toBeLessThanOrEqual(1)
-      expect(box.height).toBeLessThanOrEqual(1)
+      const iconGeometry = await platformIcons.nth(index).locator('i, svg').evaluate((icon) => {
+        const iconRect = icon.getBoundingClientRect()
+        const containerRect = icon.parentElement!.getBoundingClientRect()
+        return {
+          centerOffset: Math.hypot(
+            (iconRect.left + iconRect.width / 2) - (containerRect.left + containerRect.width / 2),
+            (iconRect.top + iconRect.height / 2) - (containerRect.top + containerRect.height / 2),
+          ),
+          height: iconRect.height,
+          width: iconRect.width,
+        }
+      })
+      expect(iconGeometry.centerOffset).toBeLessThanOrEqual(1)
+      expect(iconGeometry.height).toBeGreaterThanOrEqual(20)
+      expect(iconGeometry.height).toBeLessThanOrEqual(32)
+      expect(iconGeometry.width).toBeGreaterThanOrEqual(20)
+      expect(iconGeometry.width).toBeLessThanOrEqual(42)
     }
 
     const primaryBox = await primaryCta.boundingBox()
@@ -203,6 +229,50 @@ test.describe('homepage hero layout', () => {
     const viewportWidth = await page.evaluate(() => document.documentElement.clientWidth)
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth)
     expect(scrollWidth).toBeLessThanOrEqual(viewportWidth + 1)
+  })
+
+  test('English homepage keeps the semantic platform icon order', async ({ page }) => {
+    await setStoredLocale(page, 'en')
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto(new URL('/en/', baseURL).toString(), {
+      waitUntil: 'networkidle',
+    })
+
+    const platformLabels = await page.locator('.home-hero__platform-icon')
+      .evaluateAll(elements => elements.map(element => element.getAttribute('aria-label')))
+    expect(platformLabels).toEqual(['Web', 'Mini app', 'Android', 'iOS', 'HarmonyOS', 'React Native', 'Lynx'])
+    const platformHrefs = await page.locator('.home-hero__platform-icon')
+      .evaluateAll(elements => elements.map(element => element.getAttribute('href')))
+    expect(platformHrefs).toEqual([
+      '/en/docs/intro',
+      '/en/docs/quick-start/native/install',
+      '/en/docs/quick-start/frameworks/uni-app-x',
+      '/en/docs/quick-start/frameworks/uni-app-x',
+      '/en/docs/quick-start/frameworks/uni-app-x',
+      '/en/docs/quick-start/react-native-expo',
+      '/en/docs/quick-start/frameworks/lynx',
+    ])
+  })
+
+  test('React Native and Lynx platform links reach their localized documentation', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
+    await page.goto(baseURL, { waitUntil: 'networkidle' })
+
+    await page.getByRole('link', { name: 'React Native' }).click()
+    await expect(page).toHaveURL(/\/docs\/quick-start\/react-native-expo\/?$/)
+
+    await page.goto(baseURL, { waitUntil: 'networkidle' })
+    await page.getByRole('link', { name: 'Lynx' }).click()
+    await expect(page).toHaveURL(/\/docs\/quick-start\/frameworks\/lynx\/?$/)
+
+    await setStoredLocale(page, 'en')
+    await page.goto(new URL('/en/', baseURL).toString(), { waitUntil: 'networkidle' })
+    await page.getByRole('link', { name: 'React Native' }).click()
+    await expect(page).toHaveURL(/\/en\/docs\/quick-start\/react-native-expo\/?$/)
+
+    await page.goto(new URL('/en/', baseURL).toString(), { waitUntil: 'networkidle' })
+    await page.getByRole('link', { name: 'Lynx' }).click()
+    await expect(page).toHaveURL(/\/en\/docs\/quick-start\/frameworks\/lynx\/?$/)
   })
 
   test('primary CTA remains readable in light mode', async ({ page }) => {
