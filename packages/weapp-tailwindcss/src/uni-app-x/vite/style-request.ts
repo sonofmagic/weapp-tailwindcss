@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { normalizeTailwindcssV4InfinityCalcCss } from '@weapp-tailwindcss/postcss'
 import { cleanUrl } from '@/bundlers/vite/utils'
 
@@ -6,6 +7,8 @@ const INLINE_LANG_RE = /lang\.([a-z]+)/i
 const PREPROCESSOR_EXT_RE = /\.(?:scss|sass|less|styl|stylus)(?:\?|$)/i
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)$/
 const CSS_MODULE_EXPORT_RE = /^\s*export\s+default\s+(?:\{|\w|\[\])/
+const RELATIVE_REFERENCE_RE = /@reference\s+(["'])(\.\.?[\\/][^"']+)\1\s*;?/g
+const WINDOWS_ABSOLUTE_PATH_RE = /^[a-z]:[\\/]/i
 
 export function isPreprocessorRequest(id: string, lang?: string): boolean {
   const normalizedLang = lang?.toLowerCase()
@@ -26,6 +29,19 @@ export function resolveUniAppXCssTarget(id: string) {
 
 export function isCssModuleExport(code: string) {
   return CSS_MODULE_EXPORT_RE.test(code)
+}
+
+export function normalizeRelativeTailwindReferences(code: string, id: string) {
+  if (!code.includes('@reference')) {
+    return code
+  }
+  const sourceFile = cleanUrl(id)
+  const pathApi = WINDOWS_ABSOLUTE_PATH_RE.test(sourceFile) ? path.win32 : path
+  const sourceDir = pathApi.dirname(sourceFile)
+  return code.replace(RELATIVE_REFERENCE_RE, (_full, quote: string, request: string) => {
+    const resolved = pathApi.resolve(sourceDir, request).replace(/\\/g, '/')
+    return `@reference ${quote}${resolved}${quote};`
+  })
 }
 
 interface ResolvePreprocessorTransformOptions {

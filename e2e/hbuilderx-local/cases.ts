@@ -75,6 +75,8 @@ export interface AppCase {
   requiredFiles: string[]
   transformedFiles?: string[]
   transformedOutputFiles?: string[]
+  /** 热更新移除断言应限定到实际发生变更的产物，避免被其他入口的同值声明干扰。 */
+  hmrTransformedOutputFiles?: string[]
   transformedContains: Array<string | RegExp>
   compiledStyleContains?: Array<string | RegExp>
   transformedNotContains?: Array<string | RegExp>
@@ -600,6 +602,7 @@ export const uniAppXAppCases: AppCase[] = [
       'components/BindClass.uvue.ts',
       'pages/index/index.uvue.ts',
     ],
+    hmrTransformedOutputFiles: ['components/BindClass.uvue.ts'],
     transformedContains: ['hbuilderx-app-dynamic-v4-android'],
     compiledStyleContains: [
       'issue 822 component child',

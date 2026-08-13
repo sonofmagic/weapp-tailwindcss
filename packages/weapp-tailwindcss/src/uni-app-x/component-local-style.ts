@@ -48,6 +48,13 @@ function createAlias(fileId: string, utility: string, index: number) {
   return `wtu-${createStableHash(`${fileId}:${utility}`)}-${index.toString(36)}`
 }
 
+function serializeApplyUtility(utility: string) {
+  if (!utility.endsWith('!') || utility.endsWith('\\!')) {
+    return utility
+  }
+  return `${utility.slice(0, -1)}#{'!'}`
+}
+
 function isRuntimeCandidate(candidate: string, runtimeSet?: Set<string>) {
   if (!runtimeSet || runtimeSet.size === 0) {
     return false
@@ -299,7 +306,7 @@ export class UniAppXComponentLocalStyleCollector {
         ? `.${alias}, :deep(.${alias})`
         : `.${alias}`
       lines.push(`${selector} {`)
-      lines.push(`  @apply ${utility};`)
+      lines.push(`  @apply ${serializeApplyUtility(utility)};`)
       lines.push('}')
     }
     return `${lines.join('\n')}\n`
