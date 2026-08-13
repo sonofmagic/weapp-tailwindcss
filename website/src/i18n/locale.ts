@@ -7,7 +7,7 @@ export const localePreferenceStorageKey = 'weapp-tailwindcss:website:locale'
 
 const ENGLISH_PREFIX_RE = /^en(?:[-_]|$)/i
 const CHINESE_PREFIX_RE = /^zh(?:[-_]|$)/i
-const EN_LOCALE_PATH_RE = /^\/en(?:\/|$)/
+const EN_LOCALE_PATH_RE = /^\/en(?=\/|$)/
 const REPEATED_PATH_SEPARATOR_RE = /\/{2,}/g
 
 function normalizePathname(pathname: string): string {
@@ -40,17 +40,10 @@ export function getLocalePrefix(locale: SiteLocale): string {
 }
 
 export function stripLocalePrefix(pathname: string): string {
-  const normalizedPathname = normalizePathname(pathname)
-  if (normalizedPathname === '/') {
-    return '/'
-  }
+  let normalizedPathname = normalizePathname(pathname)
 
-  if (normalizedPathname === '/en') {
-    return '/'
-  }
-
-  if (EN_LOCALE_PATH_RE.test(normalizedPathname)) {
-    return normalizedPathname.replace('/en', '') || '/'
+  while (EN_LOCALE_PATH_RE.test(normalizedPathname)) {
+    normalizedPathname = normalizedPathname.replace(EN_LOCALE_PATH_RE, '') || '/'
   }
 
   return normalizedPathname
