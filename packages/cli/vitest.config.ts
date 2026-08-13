@@ -9,6 +9,7 @@ export default defineProject({
         replacement: path.resolve(__dirname, './src'),
       },
     ],
+    globalSetup: ['./test/global-setup.ts'],
     globals: true,
     testTimeout: 60_000,
   },

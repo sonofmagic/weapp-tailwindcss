@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
@@ -11,8 +12,9 @@ async function snapshot(cwd: string, dependencies: ReadonlySet<string>, output?:
   const state = new Map<string, string>()
   await Promise.all([...files].map(async (file) => {
     try {
-      const stat = await fs.stat(file)
-      state.set(path.resolve(file), `${stat.mtimeMs}:${stat.size}`)
+      const [stat, content] = await Promise.all([fs.stat(file), fs.readFile(file)])
+      const digest = createHash('sha256').update(content).digest('hex')
+      state.set(path.resolve(file), `${stat.mtimeMs}:${stat.size}:${digest}`)
     }
     catch {}
   }))
