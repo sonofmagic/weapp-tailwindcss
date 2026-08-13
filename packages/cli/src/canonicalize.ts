@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { createInterface } from 'node:readline'
-import { loadTailwindV4DesignSystem, resolveTailwindV4Source } from '@/tailwindcss/v4-engine'
+import { loadTailwindV4DesignSystem, resolveTailwindV4Source } from 'weapp-tailwindcss/generator'
 
 type Format = 'text' | 'json' | 'jsonl'
 type DesignSystem = Awaited<ReturnType<typeof loadTailwindV4DesignSystem>> & {

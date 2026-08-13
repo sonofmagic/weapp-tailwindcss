@@ -4,8 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { compileTailwindV4Source, createTailwindV4CompiledSourceEntries, extractRawCandidatesWithPositions, normalizeTailwindV4ScannerSources, resolveProjectSourceFiles } from '@tailwindcss-mangle/engine'
 import { transform } from 'lightningcss'
-import { resolveTailwindV4CssEntrySource } from '@/bundlers/shared/generator-css/source-resolver/configuration'
-import { createWeappTailwindcssGenerator, resolveTailwindV4Source } from '@/generator'
+import { createWeappTailwindcssGenerator, resolveTailwindV4Source } from 'weapp-tailwindcss/generator'
 import { parseBuildArgs } from './build/args'
 import { watchBuildInputs } from './build/watch'
 import { runCanonicalize } from './canonicalize'
@@ -42,9 +41,7 @@ async function buildOnce(options: ReturnType<typeof parseBuildArgs>, stdinCss?: 
     cwd: options.cwd,
     packageName: 'tailwindcss',
   }
-  const source = options.input && options.input !== '-'
-    ? await resolveTailwindV4CssEntrySource(options.input, { ...sourceOptions, cssEntries: [options.input] })
-    : await resolveTailwindV4Source({ ...sourceOptions, css: inputCss })
+  const source = await resolveTailwindV4Source({ ...sourceOptions, css: inputCss })
   const generator = createWeappTailwindcssGenerator(source)
   try {
     const { compiled, dependencies: compilerDependencies } = await compileTailwindV4Source(source)

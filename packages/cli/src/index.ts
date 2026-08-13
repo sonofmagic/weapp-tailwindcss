@@ -1,34 +1,26 @@
-import type { CommonCommandOptions } from './cli/types'
+import type { CommonCommandOptions } from './types'
 import process from 'node:process'
+import { logger } from '@weapp-tailwindcss/logger'
 import semver from 'semver'
-import { runTailwindCli } from './cli/build'
-import { formatOutputPath } from './cli/context'
+import { runTailwindCli } from './build'
+import { WEAPP_TW_REQUIRED_NODE_VERSION_RANGE, WEAPP_TW_VERSION } from './constants'
+import { formatOutputPath } from './context'
 import {
   createDoctorReport,
   formatDoctorReport,
   hasDoctorFailure,
-} from './cli/doctor'
+} from './doctor'
 import {
   commandAction,
   readStringArrayOption,
   readStringOption,
   resolveCliCwd,
   toBoolean,
-} from './cli/helpers'
-import { logObsoletePatchCommand, logPatchCommandObsoleteNotice, obsoletePatchCommands, PATCH_COMMAND_OBSOLETE_NOTICE } from './cli/mount-options'
-import { generateVscodeIntellisenseEntry } from './cli/vscode-entry'
-import { WEAPP_TW_REQUIRED_NODE_VERSION_RANGE, WEAPP_TW_VERSION } from './constants'
-import { logger } from './logger'
+} from './helpers'
+import { logObsoletePatchCommand, logPatchCommandObsoleteNotice, obsoletePatchCommands, PATCH_COMMAND_OBSOLETE_NOTICE } from './mount-options'
+import { generateVscodeIntellisenseEntry } from './vscode-entry'
 
 type CliOptions = CommonCommandOptions & Record<string, boolean | string | string[] | undefined>
-
-process.title = 'node (weapp-tailwindcss)'
-
-if (!semver.satisfies(process.versions.node, WEAPP_TW_REQUIRED_NODE_VERSION_RANGE)) {
-  logger.warn(
-    `You are using Node.js ${process.versions.node}. For weapp-tailwindcss, Node.js version ${WEAPP_TW_REQUIRED_NODE_VERSION_RANGE} is required.`,
-  )
-}
 
 function parseLegacyArgs(argv: string[]) {
   const options: CliOptions = {}
@@ -142,8 +134,13 @@ async function runDoctor(options: CliOptions) {
   }
 }
 
-async function main() {
-  const argv = process.argv.slice(2)
+export async function runCli(argv = process.argv.slice(2)) {
+  if (!semver.satisfies(process.versions.node, WEAPP_TW_REQUIRED_NODE_VERSION_RANGE)) {
+    logger.warn(
+      `You are using Node.js ${process.versions.node}. For @weapp-tailwindcss/cli, Node.js version ${WEAPP_TW_REQUIRED_NODE_VERSION_RANGE} is required.`,
+    )
+  }
+
   const { command, options } = parseLegacyArgs(argv)
 
   await commandAction(async () => {
@@ -184,6 +181,6 @@ async function main() {
     }
     process.exitCode = await runTailwindCli(argv)
   })()
-}
 
-void main()
+  return process.exitCode ?? 0
+}

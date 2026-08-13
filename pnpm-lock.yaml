@@ -4101,6 +4101,30 @@ importers:
         specifier: workspace:*
         version: link:../wetw
 
+  packages/cli:
+    dependencies:
+      '@tailwindcss-mangle/engine':
+        specifier: catalog:tailwindcssMangleEngine
+        version: 0.2.0(tailwindcss@4.3.3)
+      '@weapp-tailwindcss/logger':
+        specifier: workspace:*
+        version: link:../logger
+      fast-glob:
+        specifier: catalog:buildUtilities
+        version: 3.3.3
+      lightningcss:
+        specifier: catalog:buildUtilities
+        version: 1.33.0
+      semver:
+        specifier: ~7.8.5
+        version: 7.8.5
+      tailwindcss:
+        specifier: ^4.0.0
+        version: 4.3.3
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../weapp-tailwindcss
+
   packages/debug-uni-app-x:
     dependencies:
       defu:

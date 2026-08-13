@@ -1,4 +1,4 @@
-import { logger } from '@/logger'
+import { logger } from '@weapp-tailwindcss/logger'
 
 export const PATCH_COMMAND_OBSOLETE_NOTICE
   = '提示：weapp-tailwindcss@5 已由构建运行时接管 Tailwind CSS 处理，weapp-tw patch 已无需执行；请移除 package.json 中的 postinstall 钩子。'

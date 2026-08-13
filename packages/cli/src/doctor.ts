@@ -4,7 +4,7 @@ import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
 import semver from 'semver'
-import { WEAPP_TW_REQUIRED_NODE_VERSION_RANGE } from '@/constants'
+import { WEAPP_TW_REQUIRED_NODE_VERSION_RANGE } from './constants'
 import { CONFIG_FILES, FRAMEWORK_DEPS } from './doctor/constants'
 
 function tryReadJson<T>(file: string): T | undefined {

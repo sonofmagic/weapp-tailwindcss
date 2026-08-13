@@ -1,0 +1,65 @@
+{
+  "name": "@weapp-tailwindcss/cli",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Tailwind CSS CLI-compatible builds with optional mini-program CSS output",
+  "author": "ice breaker <1324318532@qq.com>",
+  "license": "MIT",
+  "homepage": "https://tw.icebreaker.top/docs/tools/weapp-tw-cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "keywords": [
+    "tailwindcss",
+    "cli",
+    "weapp",
+    "miniprogram"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "weapp-tailwindcss": "dist/bin.cjs",
+    "weapp-tw": "dist/bin.cjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": "^22.18.0 || >=24.11.0"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "test": "pnpm run build && vitest run",
+    "test:dev": "vitest",
+    "lint": "eslint ."
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "peerDependencies": {
+    "tailwindcss": "^4.0.0"
+  },
+  "dependencies": {
+    "@tailwindcss-mangle/engine": "catalog:tailwindcssMangleEngine",
+    "@weapp-tailwindcss/logger": "workspace:*",
+    "fast-glob": "catalog:buildUtilities",
+    "lightningcss": "catalog:buildUtilities",
+    "semver": "~7.8.5",
+    "weapp-tailwindcss": "workspace:*"
+  }
+}

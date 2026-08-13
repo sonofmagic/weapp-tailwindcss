@@ -10,6 +10,6 @@ Upstream baseline: `tailwindcss@4.3.3`.
 | `commands/canonicalize/canonicalize.test.ts` | `canonicalize-parity.test.ts`: positional/stdin/stream input, text/JSON/JSONL output and error handling. |
 | `integrations/cli/standalone.test.ts` | Common CLI behavior is covered by the suites above. Native executable embedding and platform binary packaging are intentionally out of scope because `weapp-tw` is distributed as a Node package. |
 
-The local tests execute the real `weapp-tw` source entry in an isolated temporary project. They reuse the repository dependency installation without copying Tailwind's workspace-only integration runner.
+The local tests execute the built `@weapp-tailwindcss/cli` binary entry in an isolated temporary project. They reuse the repository dependency installation without copying Tailwind's workspace-only integration runner.
 
 The implementation uses the package's existing Tailwind v4 generator and design-system loader. It does not shell out to or depend on `@tailwindcss/cli`. Watch parity is provided by the CLI adapter's dependency-aware polling loop, without a native watcher package.

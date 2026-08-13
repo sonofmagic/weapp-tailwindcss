@@ -6,7 +6,7 @@ import {
   DEFAULT_VSCODE_ENTRY_OUTPUT,
   DEFAULT_VSCODE_SOURCES,
   generateVscodeIntellisenseEntry,
-} from '@/cli/vscode-entry'
+} from '@/vscode-entry'
 
 const TMP_PREFIX = 'weapp-tw-vscode'
 

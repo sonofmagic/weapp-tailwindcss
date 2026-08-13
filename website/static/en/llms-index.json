@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-13T12:06:52.176Z",
+  "generatedAt": "2026-08-13T15:19:47.446Z",
   "siteUrl": "https://tw.icebreaker.top/en",
   "totals": {
     "all": 164,
@@ -5713,7 +5713,7 @@
       "id": "doc:tools/weapp-tw-cli",
       "title": "weapp-tw CLI Guide",
       "description": "Build Tailwind CSS, watch files, generate source maps, canonicalize candidates, and optionally emit mini-program-compatible CSS with weapp-tw.",
-      "summary": "weapp-tailwindcss ships equivalent weapp-tw and weapp-tailwindcss commands. The build command emits Web CSS by default and follows the current Tailwind CSS CLI contract for input,…",
+      "summary": "@weapp-tailwindcss/cli independently publishes the equivalent weapp-tw and weapp-tailwindcss commands. The build command emits Web CSS by default and follows the current Tailwind…",
       "url": "/en/docs/tools/weapp-tw-cli",
       "canonical": "https://tw.icebreaker.top/en/docs/tools/weapp-tw-cli",
       "keywords": [
@@ -5735,6 +5735,7 @@
         "mini program"
       ],
       "headings": [
+        "Installation",
         "Build options",
         "Mini-program CSS target",
         "canonicalize",

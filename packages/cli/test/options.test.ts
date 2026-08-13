@@ -7,7 +7,7 @@ import {
   readStringOption,
   resolveCliCwd,
   toBoolean,
-} from '@/cli/helpers/options'
+} from '@/helpers/options'
 
 describe('cli option helpers', () => {
   let cwd: string

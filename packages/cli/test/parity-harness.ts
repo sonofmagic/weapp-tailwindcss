@@ -3,9 +3,9 @@ import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
+const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const repositoryRoot = path.resolve(packageRoot, '../..')
-const cliEntry = path.join(packageRoot, 'bin/weapp-tailwindcss.cjs')
+const cliEntry = path.join(packageRoot, 'dist/bin.cjs')
 
 export interface CliResult {
   stdout: string

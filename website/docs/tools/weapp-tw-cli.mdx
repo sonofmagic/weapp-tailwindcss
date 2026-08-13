@@ -12,9 +12,17 @@ keywords:
   - Web CSS
 ---
 
-`weapp-tailwindcss` 自带 `weapp-tw` 和 `weapp-tailwindcss` 两个等价命令。构建命令默认输出 Web CSS，并对齐当前 Tailwind CSS CLI 的输入、输出、watch、优化和 source map 行为。
+`@weapp-tailwindcss/cli` 独立发布 `weapp-tw` 和 `weapp-tailwindcss` 两个等价命令。构建命令默认输出 Web CSS，并对齐当前 Tailwind CSS CLI 的输入、输出、watch、优化和 source map 行为。
 
-CLI 直接复用 `weapp-tailwindcss` 内部的 Tailwind v4 generator、design system 与 source graph，不安装或调用 `@tailwindcss/cli`。watch 统一使用跨平台轮询，也没有原生文件监听二进制依赖。
+CLI 直接复用 `weapp-tailwindcss` 的 Tailwind v4 generator、design system 与 source graph，不安装或调用 `@tailwindcss/cli`。watch 统一使用跨平台轮询，也不依赖 `@parcel/watcher`。
+
+## 安装
+
+```bash
+pnpm add -D @weapp-tailwindcss/cli weapp-tailwindcss tailwindcss
+```
+
+其中 `@weapp-tailwindcss/cli` 提供命令层，`weapp-tailwindcss` 提供生成和 CSS 转换能力，项目使用的 Tailwind CSS v4 由 `tailwindcss` 提供。
 
 ```bash
 pnpm exec weapp-tw -i src/input.css -o dist/output.css

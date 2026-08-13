@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const loggerError = vi.hoisted(() => vi.fn())
 
-vi.mock('@/logger', () => ({
+vi.mock('@weapp-tailwindcss/logger', () => ({
   logger: {
     error: loggerError,
   },
@@ -20,7 +20,7 @@ describe('cli helpers', () => {
   })
 
   it('creates directories recursively', async () => {
-    const { ensureDir } = await import('@/cli/helpers')
+    const { ensureDir } = await import('@/helpers')
     const dir = path.join(os.tmpdir(), `weapp-tw-cli-${Date.now()}`, 'nested')
 
     await ensureDir(dir)
@@ -29,7 +29,7 @@ describe('cli helpers', () => {
   })
 
   it('wraps successful command handlers without changing exit code', async () => {
-    const { commandAction } = await import('@/cli/helpers')
+    const { commandAction } = await import('@/helpers')
     const handler = vi.fn(async (_value: string) => {})
     const action = commandAction(handler)
 
@@ -41,7 +41,7 @@ describe('cli helpers', () => {
   })
 
   it('logs error messages and sets exit code when command handlers fail', async () => {
-    const { commandAction } = await import('@/cli/helpers')
+    const { commandAction } = await import('@/helpers')
     const action = commandAction(async () => {
       throw new Error('failed command')
     })
@@ -53,7 +53,7 @@ describe('cli helpers', () => {
   })
 
   it('logs stack traces only when debug mode is enabled', async () => {
-    const { commandAction } = await import('@/cli/helpers')
+    const { commandAction } = await import('@/helpers')
     process.env.WEAPP_TW_DEBUG = '1'
     const error = new Error('debug failure')
     error.stack = 'debug stack'
@@ -69,7 +69,7 @@ describe('cli helpers', () => {
   })
 
   it('logs non-error thrown values', async () => {
-    const { commandAction } = await import('@/cli/helpers')
+    const { commandAction } = await import('@/helpers')
     const action = commandAction(async () => {
       throw 'string failure'
     })
