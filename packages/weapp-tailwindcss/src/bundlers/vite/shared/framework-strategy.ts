@@ -58,7 +58,6 @@ export interface ViteFrameworkCssPipelineStrategy {
     css: string
     file: string
   }) => boolean
-  shouldLinkFrameworkRootStyleToRuntimeEntry?: (context: ViteFrameworkCssPipelineContext) => boolean
   shouldMoveRootMiniProgramStyleToImportShellOrigin?: (context: ViteFrameworkCssPipelineContext & {
     file: string
   }) => boolean

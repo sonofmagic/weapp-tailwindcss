@@ -156,10 +156,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           }),
           targetByFile: frameworkRootImportShellTargetByFile ?? new Map(),
         })
-        if (
-          !isWebGeneratorTarget
-          && cssPipelineStrategy?.shouldLinkFrameworkRootStyleToRuntimeEntry?.(createCssPipelineContext('')) === true
-        ) {
+        if (!isWebGeneratorTarget) {
           linkFrameworkRootStyleToRuntimeEntry(bundle, {
             debug,
             matchesCss: opts.cssMatcher,

@@ -215,7 +215,7 @@ export function restoreFrameworkRootMiniProgramImportShellAssets(
 }
 
 function resolveRuntimeRootStyleOutputFile(bundle: OutputBundle, matchesCss: (file: string) => boolean) {
-  const rootChunkStems = new Set(Object.entries(bundle).flatMap(([bundleFile, output]) => {
+  const rootChunks = Object.entries(bundle).flatMap(([bundleFile, output]) => {
     if (output.type !== 'chunk') {
       return []
     }
@@ -223,8 +223,10 @@ function resolveRuntimeRootStyleOutputFile(bundle: OutputBundle, matchesCss: (fi
     if (file.includes('/')) {
       return []
     }
-    return [path.posix.parse(file).name]
-  }))
+    return [{ file, isEntry: output.isEntry === true }]
+  })
+  const entryChunks = rootChunks.filter(chunk => chunk.isEntry)
+  const rootChunkStems = new Set((entryChunks.length > 0 ? entryChunks : rootChunks).map(chunk => path.posix.parse(chunk.file).name))
   const candidates = Object.entries(bundle).flatMap(([bundleFile, output]) => {
     if (output.type !== 'asset') {
       return []
