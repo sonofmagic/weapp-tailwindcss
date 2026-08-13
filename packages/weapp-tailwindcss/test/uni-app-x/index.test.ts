@@ -17,7 +17,12 @@ function extractInjectedStyle(code: string) {
 
 function extractAliasByUtility(styleBlock: string) {
   const entries = [...styleBlock.matchAll(/\.([A-Za-z0-9-]+)(?:, :deep\(\.[A-Za-z0-9-]+\))? \{\n  @apply ([^;]+);/g)]
-  return new Map(entries.map(match => [match[2], match[1]]))
+  return new Map(entries.map((match) => {
+    const utility = match[2].endsWith("#{'!'}")
+      ? `${match[2].slice(0, -"#{'!'}".length)}!`
+      : match[2]
+    return [utility, match[1]]
+  }))
 }
 
 describe('uni-app-x', () => {
@@ -213,8 +218,10 @@ const condition = true
     const aliasByUtility = extractAliasByUtility(styleBlock)
     for (const utility of runtimeSet) {
       expect(aliasByUtility.get(utility), utility).toBeTruthy()
-      expect(styleBlock).toContain(`@apply ${utility};`)
     }
+    expect(styleBlock).toContain("@apply w-[100rpx]#{'!'};")
+    expect(styleBlock).not.toContain('@apply w-[100rpx]!;')
+    expect(styleBlock).toContain('@apply h-[100rpx];')
     expect(result?.code).toContain(`leftClass="${aliasByUtility.get('bg-primary')} ${aliasByUtility.get('w-[100rpx]!')}"`)
     expect(result?.code).toContain(aliasByUtility.get('px-[30rpx]')!)
     expect(result?.code).toContain(`class="${aliasByUtility.get('w-[100rpx]!')} ${aliasByUtility.get('h-[100rpx]')} ${aliasByUtility.get('rounded-[10rpx]')}"`)

@@ -35,7 +35,7 @@ import { retainUniAppXAuthorApplyCss } from './vite/author-apply'
 import { createUniAppXHarmonyApplyExpander } from './vite/harmony-apply'
 import { createUniAppXNativeHmrReloader } from './vite/native-hmr'
 import { createUniAppXNativeBuildTargetResolver } from './vite/native-target'
-import { isCssModuleExport, resolvePreprocessorTransform, resolveUniAppXCssTarget } from './vite/style-request'
+import { isCssModuleExport, normalizeRelativeTailwindReferences, resolvePreprocessorTransform, resolveUniAppXCssTarget } from './vite/style-request'
 import { createUniAppXWebLocalStyleBridge } from './vite/web-local-style'
 
 type TransformUVue = typeof import('./transform')['transformUVue']
@@ -168,22 +168,23 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (isCssModuleExport(code)) {
         return
       }
-      const hasTailwindRoot = hasTailwindRootDirectives(code, { importFallback: true })
-      const hasTailwindApply = hasTailwindApplyDirective(code)
+      const sourceCode = normalizeRelativeTailwindReferences(code, id)
+      const hasTailwindRoot = hasTailwindRootDirectives(sourceCode, { importFallback: true })
+      const hasTailwindApply = hasTailwindApplyDirective(sourceCode)
       const shouldGenerateCss = hasTailwindRoot || hasTailwindApply
       const isNativeSfcAuthorStyle = isNativeStyle && resolveUniAppXCssTarget(id) === 'uvue'
       if (!shouldGenerateCss && (!isNativeStyle || isNativeSfcAuthorStyle)) {
         return
       }
-      harmonyApply.rememberSource(code, id)
+      harmonyApply.rememberSource(sourceCode, id)
       const generatedCss = (
         shouldGenerateCss
       )
         ? await generateCss?.(
             id,
             isNativeSfcAuthorStyle && hasTailwindApply && !hasTailwindRoot
-              ? harmonyApply.prepareStyles(code, id)
-              : code,
+              ? harmonyApply.prepareStyles(sourceCode, id)
+              : sourceCode,
             {
               ...hookContext,
               disableSourceScan: isNativeSfcAuthorStyle && hasTailwindApply && !hasTailwindRoot,
@@ -194,9 +195,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         : undefined
       const styleCode = typeof generatedCss === 'string' && generatedCss.trim().length > 0
         ? hasTailwindApply && !hasTailwindRoot
-          ? retainUniAppXAuthorApplyCss(generatedCss, code)
+          ? retainUniAppXAuthorApplyCss(generatedCss, sourceCode)
           : generatedCss
-        : code
+        : sourceCode
       const styleHandlerOptions = getStyleHandlerOptions(
         id,
         isNativeStyle && hasTailwindRoot ? 'tailwind-root' : isNativeStyle ? 'author-apply' : undefined,
