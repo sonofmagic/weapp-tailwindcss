@@ -38,6 +38,14 @@ const localeBootstrapScript = `
 (() => {
   try {
     const pathname = window.location.pathname;
+    if (/^\\/en\\/en(?:\\/|$)/.test(pathname)) {
+      let canonicalPathname = pathname;
+      while (/^\\/en\\/en(?:\\/|$)/.test(canonicalPathname)) {
+        canonicalPathname = canonicalPathname.replace(/^\\/en(?=\\/|$)/, '');
+      }
+      window.location.replace(canonicalPathname + window.location.search + window.location.hash);
+      return;
+    }
     if (!(pathname === '/' || pathname === '/index.html')) {
       return;
     }
@@ -87,8 +95,19 @@ const localePreferenceScript = `
         return;
       }
       const locale = language.toLowerCase().startsWith('en') ? 'en' : 'zh-cn';
+      let pathname = window.location.pathname.replace(/\\/{2,}/g, '/');
+      while (/^\\/en(?=\\/|$)/.test(pathname)) {
+        pathname = pathname.replace(/^\\/en(?=\\/|$)/, '') || '/';
+      }
+      const targetPathname = locale === 'en'
+        ? (pathname === '/' ? '/en/' : '/en' + pathname)
+        : pathname;
       window.localStorage.setItem(${JSON.stringify(localePreferenceStorageKey)}, locale);
       window.sessionStorage.setItem(${JSON.stringify(localeNavigationStorageKey)}, locale);
+      if (url.pathname !== targetPathname || window.location.pathname !== targetPathname) {
+        event.preventDefault();
+        window.location.assign(targetPathname + url.search + url.hash);
+      }
     }, true);
   } catch {}
 })();

@@ -351,6 +351,101 @@ test.describe('homepage locale detection', () => {
     await expect(page.locator('html')).toHaveAttribute('lang', /zh/i)
   })
 
+  test('keeps repeated locale switches on canonical paths', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
+    await page.goto(new URL('/docs/quick-start/install', baseURL).toString(), {
+      waitUntil: 'networkidle',
+    })
+
+    for (let index = 0; index < 3; index += 1) {
+      const englishLink = page.locator('.navbar__item.dropdown a[lang^="en"]')
+      await expect(englishLink).toHaveAttribute('href', '/en/docs/quick-start/install')
+      await englishLink.click()
+      await expect(page).toHaveURL(/\/en\/docs\/quick-start\/install$/)
+      expect(new URL(page.url()).pathname).not.toMatch(/^\/en\/en(?:\/|$)/)
+
+      const chineseLink = page.locator('.navbar__item.dropdown a[lang^="zh"]')
+      await expect(chineseLink).toHaveAttribute('href', '/docs/quick-start/install')
+      await chineseLink.click()
+      await expect(page).toHaveURL(/\/docs\/quick-start\/install$/)
+    }
+  })
+
+  test('recovers repeated English prefixes to a canonical page', async ({ page }) => {
+    await page.goto(new URL('/en/en/en', baseURL).toString(), {
+      waitUntil: 'networkidle',
+    })
+
+    await expect(page).toHaveURL(/\/en\/?$/)
+    await expect(page.locator('html')).toHaveAttribute('lang', /en/i)
+    await expect(page.locator('h1')).toContainText('weapp-tailwindcss')
+  })
+
+  test('keeps the desktop locale switcher icon and label on one line', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
+
+    for (const width of [1440, 1100]) {
+      await page.setViewportSize({ width, height: 800 })
+      await page.goto(baseURL, {
+        waitUntil: 'networkidle',
+      })
+
+      const localeLink = page.locator('.navbar__item.dropdown > .navbar__link').filter({ hasText: '中文' })
+      await expect(localeLink).toHaveCount(1)
+      await expect(localeLink).toHaveCSS('display', 'inline-flex')
+      await expect(localeLink).toHaveCSS('white-space', 'nowrap')
+
+      const alignment = await localeLink.evaluate((link) => {
+        const dropdown = link.parentElement
+        const navbarItems = link.closest('.navbar__items')
+        const icon = link.querySelector('svg')
+        const labelNode = Array.from(link.childNodes).find(node => node.nodeType === Node.TEXT_NODE && node.textContent?.trim())
+        if (!dropdown || !navbarItems || !icon || !labelNode) {
+          return null
+        }
+
+        const labelRange = document.createRange()
+        labelRange.selectNode(labelNode)
+        const dropdownRect = dropdown.getBoundingClientRect()
+        const navbarItemsRect = navbarItems.getBoundingClientRect()
+        const linkRect = link.getBoundingClientRect()
+        const iconRect = icon.getBoundingClientRect()
+        const labelRect = labelRange.getBoundingClientRect()
+        const navbarItemsCenter = navbarItemsRect.top + navbarItemsRect.height / 2
+        const rightItemCenterOffsets = Array.from(navbarItems.children)
+          .filter(element => getComputedStyle(element).display !== 'none')
+          .map((element) => {
+            const rect = element.getBoundingClientRect()
+            return Math.abs((rect.top + rect.height / 2) - navbarItemsCenter)
+          })
+
+        return {
+          rightItemCenterOffsets,
+          dropdownCenterOffset: Math.abs(
+            (dropdownRect.top + dropdownRect.height / 2)
+            - navbarItemsCenter,
+          ),
+          linkCenterOffset: Math.abs(
+            (linkRect.top + linkRect.height / 2)
+            - navbarItemsCenter,
+          ),
+          centerOffset: Math.abs(
+            (iconRect.top + iconRect.height / 2) - (labelRect.top + labelRect.height / 2),
+          ),
+          navbarOverflows: document.querySelector('.navbar__inner')!.scrollWidth
+            > document.querySelector('.navbar__inner')!.clientWidth,
+        }
+      })
+
+      expect(alignment).not.toBeNull()
+      expect(Math.max(...alignment!.rightItemCenterOffsets)).toBeLessThanOrEqual(0.5)
+      expect(alignment!.dropdownCenterOffset).toBeLessThanOrEqual(0.5)
+      expect(alignment!.linkCenterOffset).toBeLessThanOrEqual(0.5)
+      expect(alignment!.centerOffset).toBeLessThanOrEqual(2)
+      expect(alignment!.navbarOverflows).toBe(false)
+    }
+  })
+
   test('serves translated docs and blog samples for English pages', async ({ page }) => {
     await page.goto(new URL('/en/docs/intro', baseURL).toString(), {
       waitUntil: 'networkidle',
