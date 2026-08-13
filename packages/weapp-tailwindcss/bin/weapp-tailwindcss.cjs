@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const fs = require('node:fs')
 const path = require('node:path')
+const process = require('node:process')
 
 process.env.npm_package_version ||= require('../package.json').version
 
