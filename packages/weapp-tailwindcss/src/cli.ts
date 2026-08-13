@@ -17,7 +17,7 @@ import {
 } from './cli/helpers'
 import { logObsoletePatchCommand, logPatchCommandObsoleteNotice, obsoletePatchCommands, PATCH_COMMAND_OBSOLETE_NOTICE } from './cli/mount-options'
 import { generateVscodeIntellisenseEntry } from './cli/vscode-entry'
-import { WEAPP_TW_REQUIRED_NODE_VERSION_RANGE } from './constants'
+import { WEAPP_TW_REQUIRED_NODE_VERSION_RANGE, WEAPP_TW_VERSION } from './constants'
 import { logger } from './logger'
 
 type CliOptions = CommonCommandOptions & Record<string, boolean | string | string[] | undefined>
@@ -165,7 +165,7 @@ async function main() {
         printHelp()
         return
       case 'version':
-        process.stdout.write(`${process.env.npm_package_version ?? '0.0.0'}\n`)
+        process.stdout.write(`${WEAPP_TW_VERSION}\n`)
         return
       default:
         if ((obsoletePatchCommands as readonly string[]).includes(command ?? '')) {
@@ -179,7 +179,7 @@ async function main() {
       return
     }
     if (argv.includes('--version') || argv.includes('-v')) {
-      process.stdout.write(`${process.env.npm_package_version ?? '0.0.0'}\n`)
+      process.stdout.write(`${WEAPP_TW_VERSION}\n`)
       return
     }
     process.exitCode = await runTailwindCli(argv)
