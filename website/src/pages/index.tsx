@@ -1,6 +1,7 @@
 import type { JSX, ReactNode } from 'react'
 import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
+import LynxLogo from '@site/src/assets/framework-logos/lynx.svg'
 import HarmonyOsLogo from '@site/src/assets/platform-logos/harmonyos.svg'
 import MiniProgramLogo from '@site/src/assets/platform-logos/mini-program.svg'
 import HomeLogo from '@site/src/components/HomeLogo'
@@ -35,6 +36,12 @@ interface RouteItem {
   label: string
   description: string
   icon: string
+}
+
+interface PlatformIconItem {
+  id: keyof typeof platformIconContent
+  label: string
+  href: string
 }
 
 const homepageCopy = {
@@ -121,12 +128,14 @@ const homepageCopy = {
       },
     ] as Array<EntryItem & { control?: 'communityEntry' }>,
     platformIcons: [
-      { id: 'web', label: 'Web' },
-      { id: 'miniapp', label: '小程序' },
-      { id: 'android', label: 'Android' },
-      { id: 'ios', label: 'iOS' },
-      { id: 'harmony', label: 'HarmonyOS' },
-    ],
+      { id: 'web', label: 'Web', href: '/docs/intro' },
+      { id: 'miniapp', label: '小程序', href: '/docs/quick-start/native/install' },
+      { id: 'android', label: 'Android', href: '/docs/quick-start/frameworks/uni-app-x' },
+      { id: 'ios', label: 'iOS', href: '/docs/quick-start/frameworks/uni-app-x' },
+      { id: 'harmony', label: 'HarmonyOS', href: '/docs/quick-start/frameworks/uni-app-x' },
+      { id: 'react-native', label: 'React Native', href: '/docs/quick-start/react-native-expo' },
+      { id: 'lynx', label: 'Lynx', href: '/docs/quick-start/frameworks/lynx' },
+    ] satisfies PlatformIconItem[],
     hero: {
       badge: 'Tailwind CSS 4 + 小程序生成链路',
       copyrightAria: '查看版权与证书页面',
@@ -233,12 +242,14 @@ const homepageCopy = {
       },
     ] as Array<EntryItem & { control?: 'communityEntry' }>,
     platformIcons: [
-      { id: 'web', label: 'Web' },
-      { id: 'miniapp', label: 'Mini app' },
-      { id: 'android', label: 'Android' },
-      { id: 'ios', label: 'iOS' },
-      { id: 'harmony', label: 'HarmonyOS' },
-    ],
+      { id: 'web', label: 'Web', href: '/docs/intro' },
+      { id: 'miniapp', label: 'Mini app', href: '/docs/quick-start/native/install' },
+      { id: 'android', label: 'Android', href: '/docs/quick-start/frameworks/uni-app-x' },
+      { id: 'ios', label: 'iOS', href: '/docs/quick-start/frameworks/uni-app-x' },
+      { id: 'harmony', label: 'HarmonyOS', href: '/docs/quick-start/frameworks/uni-app-x' },
+      { id: 'react-native', label: 'React Native', href: '/docs/quick-start/react-native-expo' },
+      { id: 'lynx', label: 'Lynx', href: '/docs/quick-start/frameworks/lynx' },
+    ] satisfies PlatformIconItem[],
     hero: {
       badge: 'Tailwind CSS 4 + mini app generation pipeline',
       copyrightAria: 'View the copyright and certificate page',
@@ -267,11 +278,13 @@ const homepageCopy = {
 } as const
 
 const platformIconContent: Record<string, ReactNode> = {
-  web: <i aria-hidden="true" className="icon-[logos--html-5] text-[29px]"></i>,
-  miniapp: <MiniProgramLogo aria-hidden="true" className="home-hero__platform-logo home-hero__platform-logo--mini-program" />,
-  android: <i aria-hidden="true" className="icon-[logos--android-icon] text-[24px]"></i>,
-  ios: <i aria-hidden="true" className="icon-[mdi--apple] text-[30px]"></i>,
-  harmony: <HarmonyOsLogo aria-hidden="true" className="home-hero__platform-logo home-hero__platform-logo--harmony" />,
+  'web': <i aria-hidden="true" className="icon-[logos--html-5] text-[29px]"></i>,
+  'miniapp': <MiniProgramLogo aria-hidden="true" className="home-hero__platform-logo home-hero__platform-logo--mini-program" />,
+  'android': <i aria-hidden="true" className="icon-[logos--android-icon] text-[24px]"></i>,
+  'ios': <i aria-hidden="true" className="icon-[mdi--apple] text-[30px]"></i>,
+  'harmony': <HarmonyOsLogo aria-hidden="true" className="home-hero__platform-logo home-hero__platform-logo--harmony" />,
+  'react-native': <i aria-hidden="true" className="icon-[logos--react] text-[29px]"></i>,
+  'lynx': <LynxLogo aria-hidden="true" className="home-hero__platform-logo home-hero__platform-logo--lynx" />,
 }
 
 function HomepageHeader() {
@@ -331,11 +344,10 @@ function HomepageHeader() {
               )}
               {homepage.platformTags && (
                 <div className="home-hero__platform-strip" aria-label={copy.hero.platformAria}>
-                  {copy.platformIcons.map(({ id, label }) => (
-                    <span aria-label={label} className="home-hero__platform-icon" key={id} role="img" title={label}>
-                      <span className="sr-only">{label}</span>
+                  {copy.platformIcons.map(({ id, label, href }) => (
+                    <Link aria-label={label} className="home-hero__platform-icon" key={id} title={label} to={href}>
                       {platformIconContent[id]}
-                    </span>
+                    </Link>
                   ))}
                 </div>
               )}
