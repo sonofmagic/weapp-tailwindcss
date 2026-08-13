@@ -1,6 +1,8 @@
 import type { JSX, ReactNode } from 'react'
 import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
+import HarmonyOsLogo from '@site/src/assets/platform-logos/harmonyos.svg'
+import MiniProgramLogo from '@site/src/assets/platform-logos/mini-program.svg'
 import HomeLogo from '@site/src/components/HomeLogo'
 import { useUiManagement } from '@site/src/features/ui-management/context'
 import { useCurrentSiteLocale } from '@site/src/i18n/runtime'
@@ -265,11 +267,11 @@ const homepageCopy = {
 } as const
 
 const platformIconContent: Record<string, ReactNode> = {
-  web: <i aria-hidden="true" className="icon-[logos--chrome] text-[28px]"></i>,
-  miniapp: <i aria-hidden="true" className="icon-[mdi--wechat] text-[30px] text-[#07c160]"></i>,
-  android: <i aria-hidden="true" className="icon-[mdi--android] text-[32px] text-[#3DDC84]"></i>,
+  web: <i aria-hidden="true" className="icon-[logos--html-5] text-[29px]"></i>,
+  miniapp: <MiniProgramLogo aria-hidden="true" className="home-hero__platform-logo home-hero__platform-logo--mini-program" />,
+  android: <i aria-hidden="true" className="icon-[logos--android-icon] text-[24px]"></i>,
   ios: <i aria-hidden="true" className="icon-[mdi--apple] text-[30px]"></i>,
-  harmony: <i aria-hidden="true" className="icon-[mdi--cellphone-link] text-[29px] text-[#E5484D]"></i>,
+  harmony: <HarmonyOsLogo aria-hidden="true" className="home-hero__platform-logo home-hero__platform-logo--harmony" />,
 }
 
 function HomepageHeader() {

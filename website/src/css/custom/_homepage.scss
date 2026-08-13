@@ -924,6 +924,18 @@ html[data-theme='dark'] .homepage .home-cta:hover {
   backdrop-filter: blur(14px);
 }
 
+.home-hero__platform-logo {
+  display: block;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.home-hero__platform-logo--harmony {
+  width: 29px;
+  height: 29px;
+}
+
 [data-theme='dark'] .home-hero__platform-icon {
   border-color: rgb(125 211 252 / 13%);
   background: rgb(15 23 42 / 56%);
