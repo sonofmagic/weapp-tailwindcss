@@ -238,6 +238,31 @@ describe('benchmark ci report', () => {
     expect(round.lines).not.toContain('after-round')
   })
 
+  it('waits for a project-specific watcher readiness signal before mutating sources', async () => {
+    const { isWatchReady } = await import('../../../../benchmark/version-compare/scripts/watch-readiness.mjs')
+    const output = {
+      outputExists: true,
+      outputMtime: 200,
+      initialOutputMtime: 100,
+      outputHasContent: true,
+    }
+
+    expect(isWatchReady({
+      ...output,
+      logs: ['Build complete'],
+      watchReadyLog: 'watching for changes',
+    })).toBe(false)
+    expect(isWatchReady({
+      ...output,
+      logs: ['Build complete', 'watching for changes'],
+      watchReadyLog: 'watching for changes',
+    })).toBe(true)
+    expect(isWatchReady({
+      ...output,
+      logs: [],
+    })).toBe(true)
+  })
+
   it('guards cold build median, HMR timing and sustained memory regressions', async () => {
     const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
     const baselineLabel = 'base:main'

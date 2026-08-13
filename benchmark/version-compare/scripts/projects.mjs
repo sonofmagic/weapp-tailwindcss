@@ -9,6 +9,7 @@ export const benchmarkProjects = [
     devScript: 'dev',
     injectType: 'wxml-class',
     hmrMode: 'watch',
+    watchReadyLog: 'watching for changes',
     devEnv: {
       CHOKIDAR_INTERVAL: '50',
       CHOKIDAR_USEPOLLING: '1',

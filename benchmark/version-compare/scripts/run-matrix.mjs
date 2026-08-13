@@ -7,6 +7,7 @@ import { createProcessMemorySampler } from './process-memory.mjs'
 import { benchmarkProjects as projects } from './projects.mjs'
 import { resolvePluginTimingSample } from './timing.mjs'
 import { createWatchLogBuffer } from './watch-log-buffer.mjs'
+import { isWatchReady } from './watch-readiness.mjs'
 
 const defaultVersions = [
   { version: '4.9.8', root: '/tmp/weapp-tailwindcss-4.9.8' },
@@ -105,7 +106,6 @@ function spawnPnpmWithEnv(cwd, args, env = {}, stdio = 'pipe') {
 }
 
 const localUrlRE = /(?:Local|Loopback|Listening at):\s*(https?:\/\/\S+)/i
-const devReadyLogRE = /compiled successfully|built in [\d.]+m?s?|Build complete|Watching for changes|ready in \d+/i
 
 async function readText(file) {
   try {
@@ -225,10 +225,6 @@ function resolveLoggedBaseUrls(logs, fallbackUrl) {
     }
   }
   return Array.from(urls)
-}
-
-function hasDevReadyLog(logs) {
-  return logs.some(line => devReadyLogRE.test(line))
 }
 
 async function fetchProbeText(url) {
@@ -407,6 +403,7 @@ async function runHmrRounds({
   devScript,
   injectType,
   devEnv,
+  watchReadyLog,
   rounds,
   timeoutMs,
   pollIntervalMs,
@@ -433,14 +430,15 @@ async function runHmrRounds({
       if (child.exitCode != null) {
         throw new Error(`dev exited early code=${child.exitCode}\n${logs.slice(-120).join('\n')}`)
       }
-      if (!(await exists(outputPath))) {
-        return false
-      }
-      if ((await statMtimeMs(outputPath) <= initialOutputMtime) && !hasDevReadyLog(logs)) {
-        return false
-      }
       const text = await readText(outputPath)
-      return text.trim().length > 0
+      return isWatchReady({
+        logs,
+        outputExists: await exists(outputPath),
+        outputMtime: await statMtimeMs(outputPath),
+        initialOutputMtime,
+        outputHasContent: text.trim().length > 0,
+        watchReadyLog,
+      })
     }, timeoutMs, pollIntervalMs)
 
     if (!ready) {
@@ -693,6 +691,7 @@ async function runCase(versionMeta, projectMeta, options) {
         devScript: projectMeta.devScript,
         injectType: projectMeta.injectType,
         devEnv: projectMeta.devEnv,
+        watchReadyLog: projectMeta.watchReadyLog,
         rounds: options.hmrRuns,
         timeoutMs: options.timeoutMs,
         pollIntervalMs: options.pollIntervalMs,
