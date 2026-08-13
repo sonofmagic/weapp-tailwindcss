@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-13T09:11:02.100Z",
+  "generatedAt": "2026-08-13T12:06:52.176Z",
   "siteUrl": "https://tw.icebreaker.top/en",
   "totals": {
     "all": 164,
@@ -5711,37 +5711,35 @@
     {
       "kind": "doc",
       "id": "doc:tools/weapp-tw-cli",
-      "title": "weapp-tw CLI User Guide",
-      "description": "weapp-tailwindcss comes with a weapp-tw command line tool, which is responsible for assisting in generating class name cache, collecting tokens and outputting compatibility prompts. The following content introduces commonly used commands and best practices.",
-      "summary": "weapp-tailwindcss comes with a weapp-tw command line tool, which is responsible for assisting in generating class name cache, collecting tokens and outputting compatibility prompt…",
+      "title": "weapp-tw CLI Guide",
+      "description": "Build Tailwind CSS, watch files, generate source maps, canonicalize candidates, and optionally emit mini-program-compatible CSS with weapp-tw.",
+      "summary": "weapp-tailwindcss ships equivalent weapp-tw and weapp-tailwindcss commands. The build command emits Web CSS by default and follows the current Tailwind CSS CLI contract for input,…",
       "url": "/en/docs/tools/weapp-tw-cli",
       "canonical": "https://tw.icebreaker.top/en/docs/tools/weapp-tw-cli",
       "keywords": [
         "weapp-tw",
+        "Tailwind CSS CLI",
+        "watch",
+        "canonicalize",
+        "mini-program CSS",
+        "source map",
+        "Tailwind watch",
+        "Web CSS",
         "CLI",
-        "User Guide",
+        "Guide",
         "tools",
         "weapp tw cli",
         "weapp-tailwindcss",
         "tailwindcss",
-        "Mini program",
-        "WeChat applet",
-        "uni-app",
-        "taro",
-        "mpx",
-        "User",
-        "Guide",
-        "mini app"
+        "mini app",
+        "mini program"
       ],
       "headings": [
-        "Common scenarios",
-        "`patch` subcommand",
-        "# Function",
-        "# Common parameters",
-        "`extract` subcommand",
-        "`tokens` subcommand",
-        "`status` subcommand",
-        "Quick troubleshooting guide"
+        "Build options",
+        "Mini-program CSS target",
+        "canonicalize",
+        "Compatibility and helper commands",
+        "Common errors"
       ],
       "updatedAt": null,
       "source": "i18n/en/docs/tools/weapp-tw-cli.mdx"

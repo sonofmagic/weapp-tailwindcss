@@ -8,6 +8,10 @@
 
 更多接入方式、配置说明和框架示例见 [weapp-tailwindcss 官方文档](https://tw.icebreaker.top)。
 
+## CLI
+
+`weapp-tw` 默认提供与 Tailwind CSS CLI 对齐的 Web CSS 构建、watch、source map 与 `canonicalize` 能力。需要 CSS-only 的小程序兼容输出时可显式传入 `--target weapp`；完整 WXML/JS/WXSS 项目仍应使用构建器插件。详见 [CLI 使用指南](https://tw.icebreaker.top/docs/tools/weapp-tw-cli)。
+
 Tailwind CSS 4 项目中，入口 CSS 需要同时满足两点：在项目里被实际引入，并通过 `cssEntries` 显式传给插件用于稳定识别。`cssEntries` 应使用项目根目录解析出的绝对路径；它不是替代 import 的开关。
 
 ## 运行环境

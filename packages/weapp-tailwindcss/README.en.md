@@ -8,6 +8,10 @@ This is the core package that brings Tailwind CSS to mini program ecosystems, ha
 
 For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.icebreaker.top).
 
+## CLI
+
+`weapp-tw` provides Tailwind CSS CLI-compatible Web builds, watch mode, source maps, and `canonicalize` by default. Pass `--target weapp` explicitly for CSS-only mini-program compatibility output. Complete WXML/JS/WXSS projects should continue to use a bundler integration. See the [CLI guide](https://tw.icebreaker.top/en/docs/tools/weapp-tw-cli).
+
 For Tailwind CSS 4 projects, the entry CSS must still be imported by the application. Configure `cssEntries` explicitly with absolute paths resolved from the project root, but do not treat it as a replacement for importing the CSS entry into the build graph.
 
 ## Runtime requirements

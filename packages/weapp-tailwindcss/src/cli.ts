@@ -1,6 +1,7 @@
 import type { CommonCommandOptions } from './cli/types'
 import process from 'node:process'
 import semver from 'semver'
+import { runTailwindCli } from './cli/build'
 import { formatOutputPath } from './cli/context'
 import {
   createDoctorReport,
@@ -15,9 +16,7 @@ import {
   toBoolean,
 } from './cli/helpers'
 import { logObsoletePatchCommand, logPatchCommandObsoleteNotice, obsoletePatchCommands, PATCH_COMMAND_OBSOLETE_NOTICE } from './cli/mount-options'
-import {
-  generateVscodeIntellisenseEntry,
-} from './cli/vscode-entry'
+import { generateVscodeIntellisenseEntry } from './cli/vscode-entry'
 import { WEAPP_TW_REQUIRED_NODE_VERSION_RANGE } from './constants'
 import { logger } from './logger'
 
@@ -31,7 +30,7 @@ if (!semver.satisfies(process.versions.node, WEAPP_TW_REQUIRED_NODE_VERSION_RANG
   )
 }
 
-function parseArgs(argv: string[]) {
+function parseLegacyArgs(argv: string[]) {
   const options: CliOptions = {}
   const positional: string[] = []
   for (let index = 0; index < argv.length; index++) {
@@ -69,23 +68,35 @@ function parseArgs(argv: string[]) {
       options[key] = [String(current), String(value)]
     }
   }
-  return {
-    command: positional[0],
-    options,
-  }
+  return { command: positional[0], options }
 }
 
 function printHelp() {
   logger.log(`weapp-tailwindcss
 
 Usage:
-  weapp-tw <command> [options]
+  weapp-tw [--input input.css] [--output output.css] [--watch] [options...]
+  weapp-tw build [--input input.css] [--output output.css] [--watch] [options...]
+  weapp-tw canonicalize [classes...]
 
-Commands:
-  patch          Deprecated no-op: v5 runtime handles Tailwind CSS automatically
-  status         Deprecated no-op: patch status is no longer required
-  vscode-entry   Generate a VS Code helper CSS for Tailwind IntelliSense
-  doctor         Check project setup for weapp-tailwindcss
+Build options:
+  -i, --input <file>       Input CSS file (use - for stdin)
+  -o, --output <file>      Output CSS file (defaults to stdout)
+  -w, --watch[=always]     Watch for changes and rebuild
+      --poll[=ms]          Poll for changes while watching
+  -m, --minify             Optimize and minify the output
+      --optimize           Optimize without minifying
+      --cwd <dir>          Set the working directory
+      --map[=<file>]       Generate a source map
+      --silent             Suppress non-error build output
+      --target <target>    CSS target: web (default) or weapp
+
+Additional commands:
+  canonicalize  Canonicalize Tailwind candidate lists
+  patch         Deprecated no-op: v5 runtime handles Tailwind CSS automatically
+  status        Deprecated no-op: patch status is no longer required
+  vscode-entry  Generate a VS Code helper CSS for Tailwind IntelliSense
+  doctor        Check project setup for weapp-tailwindcss
 `)
 }
 
@@ -95,16 +106,11 @@ async function runPatch() {
 }
 
 async function runStatus(options: CliOptions) {
-  const payload = {
-    required: false,
-    status: 'unnecessary',
-    message: PATCH_COMMAND_OBSOLETE_NOTICE,
-  }
-  if (toBoolean(options['json'], false)) {
+  const payload = { required: false, status: 'unnecessary', message: PATCH_COMMAND_OBSOLETE_NOTICE }
+  if (toBoolean(options.json, false)) {
     logger.log(JSON.stringify(payload, null, 2))
     return
   }
-
   logPatchCommandObsoleteNotice()
   logger.success('无需检查 Tailwind CSS patch 状态。')
 }
@@ -112,59 +118,36 @@ async function runStatus(options: CliOptions) {
 async function runVscodeEntry(options: CliOptions) {
   const resolvedCwd = resolveCliCwd(options.cwd)
   const baseDir = resolvedCwd ?? process.cwd()
-  const cssEntry = readStringOption('css', options['css'])
+  const cssEntry = readStringOption('css', options.css)
   if (!cssEntry) {
     throw new Error('Option "--css" is required.')
   }
 
-  const output = readStringOption('output', options['output'])
-  const sources = readStringArrayOption('source', options['source'])
-  const force = toBoolean(options['force'], false)
-
   const result = await generateVscodeIntellisenseEntry({
     baseDir,
     cssEntry,
-    output,
-    sources,
-    force,
+    output: readStringOption('output', options.output),
+    sources: readStringArrayOption('source', options.source),
+    force: toBoolean(options.force, false),
   })
-
-  logger.success(
-    `VS Code helper generated -> ${formatOutputPath(result.outputPath, resolvedCwd)}`,
-  )
+  logger.success(`VS Code helper generated -> ${formatOutputPath(result.outputPath, resolvedCwd)}`)
 }
 
 async function runDoctor(options: CliOptions) {
   const resolvedCwd = resolveCliCwd(options.cwd)
   const report = createDoctorReport({ cwd: resolvedCwd })
-  if (toBoolean(options['json'], false)) {
-    logger.log(JSON.stringify(report, null, 2))
-  }
-  else {
-    logger.log(formatDoctorReport(report))
-  }
-
-  if (hasDoctorFailure(report, toBoolean(options['strict'], false))) {
+  logger.log(toBoolean(options.json, false) ? JSON.stringify(report, null, 2) : formatDoctorReport(report))
+  if (hasDoctorFailure(report, toBoolean(options.strict, false))) {
     process.exitCode = 1
   }
 }
 
 async function main() {
-  const { command, options } = parseArgs(process.argv.slice(2))
+  const argv = process.argv.slice(2)
+  const { command, options } = parseLegacyArgs(argv)
 
   await commandAction(async () => {
     switch (command) {
-      case undefined:
-      case '-h':
-      case '--help':
-      case 'help':
-        printHelp()
-        return
-      case '-v':
-      case '--version':
-      case 'version':
-        logger.log(process.env['npm_package_version'] ?? '0.0.0')
-        return
       case 'patch':
       case 'install':
         await runPatch()
@@ -178,13 +161,28 @@ async function main() {
       case 'doctor':
         await runDoctor(options)
         return
+      case 'help':
+        printHelp()
+        return
+      case 'version':
+        process.stdout.write(`${process.env.npm_package_version ?? '0.0.0'}\n`)
+        return
       default:
-        if ((obsoletePatchCommands as readonly string[]).includes(command)) {
-          logObsoletePatchCommand(command)
+        if ((obsoletePatchCommands as readonly string[]).includes(command ?? '')) {
+          logObsoletePatchCommand(command!)
           return
         }
-        throw new Error(`Unknown command: ${command}`)
     }
+
+    if ((argv.includes('--help') || argv.includes('-h')) && command === undefined) {
+      printHelp()
+      return
+    }
+    if (argv.includes('--version') || argv.includes('-v')) {
+      process.stdout.write(`${process.env.npm_package_version ?? '0.0.0'}\n`)
+      return
+    }
+    process.exitCode = await runTailwindCli(argv)
   })()
 }
 
