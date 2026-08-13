@@ -15,6 +15,7 @@ packages:
 
 allowBuilds:
   '@dcloudio/hbuilderx-cli': false
+  '@parcel/watcher': false
   '@swc/core': false
   '@tarojs/binding': false
   '@tarojs/cli': false
