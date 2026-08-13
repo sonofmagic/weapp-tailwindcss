@@ -25,6 +25,48 @@ async function expandCategory(page: Parameters<typeof test>[0]['page'], name: st
 }
 
 for (const route of ['/docs/quick-start/install', '/en/docs/quick-start/install']) {
+  test(`${route} renders package manager logos and keeps tabs interactive`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto(new URL(route, baseURL).toString(), { waitUntil: 'networkidle' })
+
+    const tabs = page.locator('.theme-tabs-container').first()
+    const expectedTabs = [
+      { name: 'npm', icon: 'logos--npm-icon' },
+      { name: 'Yarn', icon: 'logos--yarn' },
+      { name: 'pnpm', icon: 'logos--pnpm' },
+      { name: 'Bun', icon: 'logos--bun' },
+    ] as const
+
+    for (const { icon, name } of expectedTabs) {
+      const tab = tabs.getByRole('tab', { name, exact: true })
+      const logo = tab.locator(`[class~="icon-[${icon}]"]`)
+      await expect(tab).toBeVisible()
+      await expect(logo).toHaveCount(1)
+
+      const style = await logo.evaluate((element) => {
+        const computedStyle = getComputedStyle(element)
+        const box = element.getBoundingClientRect()
+        return {
+          backgroundImage: computedStyle.backgroundImage,
+          height: box.height,
+          maskImage: computedStyle.maskImage,
+          width: box.width,
+        }
+      })
+
+      expect(style.backgroundImage !== 'none' || style.maskImage !== 'none').toBe(true)
+      expect(style.width).toBeCloseTo(18, 0)
+      expect(style.height).toBeCloseTo(18, 0)
+    }
+
+    const tabList = tabs.getByRole('tablist')
+    expect(await tabList.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true)
+
+    await tabs.getByRole('tab', { name: 'pnpm', exact: true }).click()
+    await expect(tabs.getByRole('tab', { name: 'pnpm', exact: true })).toHaveAttribute('aria-selected', 'true')
+    await expect(tabs.getByRole('tabpanel')).toContainText('pnpm add')
+  })
+
   test(`${route} renders framework logos for every setup item`, async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto(new URL(route, baseURL).toString(), { waitUntil: 'networkidle' })

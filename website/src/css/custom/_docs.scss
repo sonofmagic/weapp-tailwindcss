@@ -75,6 +75,27 @@ html.docs-wrapper .theme-doc-markdown .theme-admonition {
   max-width: none;
 }
 
+html.docs-wrapper .package-manager-tab__label {
+  display: inline-flex;
+  min-width: max-content;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+html.docs-wrapper .package-manager-tab__label > i {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: 0 0 1.125rem;
+}
+
+@media (width <= 480px) {
+  html.docs-wrapper .package-manager-tabs > .tabs__item {
+    padding-right: 0.55rem;
+    padding-left: 0.55rem;
+  }
+}
+
 html.docs-wrapper .theme-doc-markdown > h1:first-child,
 html.docs-wrapper .theme-doc-markdown header h1 {
   max-width: 82ch;
