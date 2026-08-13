@@ -190,11 +190,6 @@ const tutorialSidebar: SidebarConfig = [
   // },
   {
     type: 'doc',
-    id: 'quick-start/v2/index',
-    label: '🗑️Tailwind CSS @2.x',
-  },
-  {
-    type: 'doc',
     label: '如何贡献',
     id: 'how-to-contribute',
   },

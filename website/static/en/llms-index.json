@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-12T08:43:43.625Z",
+  "generatedAt": "2026-08-13T09:11:02.100Z",
   "siteUrl": "https://tw.icebreaker.top/en",
   "totals": {
     "all": 164,
@@ -3802,7 +3802,7 @@
       "headings": [
         "Register plugin",
         "Tailwind CSS entry",
-        "Introduce the entrance in App.uvue",
+        "Import the entry in App.uvue",
         "Verify any value class name",
         "Reference template"
       ],
@@ -4486,7 +4486,7 @@
       "id": "doc:quick-start/v4/uni-app-x",
       "title": "uni-app x",
       "description": "Tailwind CSS v4 access method, platform verification scope and local E2E instructions in uni-app x (HBuilderX).",
-      "summary": "weapp-tailwindcss@5 can integrate Tailwind CSS 4 in HBuilderX's uni-app x project. The current warehouse uses local HBuilderX E2E to cover WeChat applets, Android Apps, iOS Apps,…",
+      "summary": "weapp-tailwindcss@5 supports Tailwind CSS 4 in HBuilderX uni-app x projects. The repository's local HBuilderX E2E suite covers the Web, WeChat Mini Program, Android, iOS, HarmonyO…",
       "url": "/en/docs/quick-start/v4/uni-app-x",
       "canonical": "https://tw.icebreaker.top/en/docs/quick-start/v4/uni-app-x",
       "keywords": [
@@ -4511,7 +4511,7 @@
         "Install",
         "Register plugin",
         "Add CSS entry",
-        "Introduce the entrance in App.uvue",
+        "Import the entry in App.uvue",
         "Verify any value class name",
         "Layout restrictions",
         "Reference template"

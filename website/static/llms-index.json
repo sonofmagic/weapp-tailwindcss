@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-13T04:52:38.610Z",
+  "generatedAt": "2026-08-13T09:11:02.100Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 167,
@@ -4452,7 +4452,7 @@
       "id": "doc:quick-start/v4/uni-app-x",
       "title": "uni-app x",
       "description": "Tailwind CSS v4 在 uni-app x（HBuilderX）中的接入方式、平台验证范围与本地 E2E 说明。",
-      "summary": "weapp-tailwindcss@5 可以在 HBuilderX 的 uni-app x 项目中接入 Tailwind CSS 4。当前仓库用本地 HBuilderX E2E 覆盖了微信小程序、Android App、iOS App，以及 Web HMR 任意值类名连续新增场景。",
+      "summary": "weapp-tailwindcss@5 可以在 HBuilderX 的 uni-app x 项目中接入 Tailwind CSS 4。当前仓库用本地 HBuilderX E2E 覆盖了 Web、微信小程序、Android、iOS、鸿蒙，以及 Web HMR 任意值类名连续新增场景。",
       "url": "/docs/quick-start/v4/uni-app-x",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/uni-app-x",
       "keywords": [

@@ -16,25 +16,28 @@ keywords:
   - taro
   - mpx
 ---
-import CompatibilityWarning from '../../uni-app-x/_compatibility-warning.mdx'
+import EnvironmentRequirements from '../../uni-app-x/_environment-requirements.mdx'
 
 # uni-app x
 
-<CompatibilityWarning />
+<EnvironmentRequirements />
 
 :::tip
 Mainline access documentation has been merged into [uni-app x](/docs/quick-start/frameworks/uni-app-x). This page is reserved for legacy links and Tailwind CSS 4-specific troubleshooting.
 :::
 
-`weapp-tailwindcss@5` can integrate Tailwind CSS 4 in HBuilderX's uni-app x project. The current warehouse uses local HBuilderX E2E to cover WeChat applets, Android Apps, iOS Apps, and scenarios where Web HMR arbitrary value class names are continuously added.
+`weapp-tailwindcss@5` supports Tailwind CSS 4 in HBuilderX uni-app x projects. The repository's local HBuilderX E2E suite covers the Web, WeChat Mini Program, Android, iOS, HarmonyOS, and consecutive arbitrary-value class additions through Web HMR.
 
 :::info local verification
-HBuilderX, Android simulator and iOS simulator all rely on the development machine environment, so App E2E only runs locally and does not enter CI/CD.
+HBuilderX, developer tools, and App simulators depend on the development machine, so Mini Program and App E2E runs stay local and do not run in CI/CD.
 
 ```bash npm2yarn
 npm run e2e:hbuilderx:local
+npm run e2e:hbuilderx:local:web
+npm run e2e:hbuilderx:local:mp
 npm run e2e:hbuilderx:local:android
 npm run e2e:hbuilderx:local:ios
+npm run e2e:hbuilderx:local:harmony
 ```
 :::
 
@@ -47,7 +50,7 @@ npm install -D tailwindcss weapp-tailwindcss
 
 ## Register plugin
 
-uni-app x To use the `uniAppX` preset. The entry for Tailwind CSS 4 should be placed in a pure `.css` file, and the absolute path passed in `cssEntries` explicitly.
+Use the `uniAppX` preset for uni-app x. Put the Tailwind CSS 4 entry in a plain `.css` file and pass its absolute path through `cssEntries`.
 
 ```ts title="vite.config.ts"
 import { dirname, resolve } from 'node:path'
@@ -78,7 +81,7 @@ Do not register `@tailwindcss/postcss` or `@tailwindcss/vite` again. Tailwind ge
 :::info Web and App Debugging Notes
 `cssEntries` is used to tell `weapp-tailwindcss` the entry file of Tailwind CSS 4. The entry should still be a real CSS file that HBuilderX / Vite can process. Web/H5, Android and iOS all need to maintain `appType: 'uni-app-x'`. Do not manually close `uniAppX` when running on the web side, otherwise any value class name in the `.uvue` template will not be converted into a safe selector.
 
-`rem2rpx`,
+`rem2rpx`, `unitsToPx`, and `unitConversion` are top-level options of the `uniAppX()` preset. Do not put them under `cssOptions`.
 :::
 
 ## Add CSS entry
@@ -95,7 +98,7 @@ Do not register `@tailwindcss/postcss` or `@tailwindcss/vite` again. Tailwind ge
 
 `@source` Directory of scripts to override pages, components, and possibly generated class names. Do not put `unpackage` into the scan range, otherwise the HBuilderX product will in turn interfere with the development build.
 
-##Introduce the entrance in App.uvue
+## Import the entry in App.uvue
 
 `cssEntries` will not automatically add CSS to the HBuilderX / Vite module diagram, it must be actually imported in the global style:
 
@@ -128,4 +131,4 @@ After running to the Web, WeChat applet and target App platform in sequence, che
 
 ## Reference template
 
-- [Tailwind CSS v4 demo in the warehouse](https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v4)
+- [Tailwind CSS v4 demo in the repository](https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v4)

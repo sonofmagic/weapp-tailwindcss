@@ -16,15 +16,15 @@ keywords:
   - taro
   - mpx
 ---
-import CompatibilityWarning from '../../uni-app-x/_compatibility-warning.mdx'
+import EnvironmentRequirements from '../../uni-app-x/_environment-requirements.mdx'
 
 # uni-app x
 
-<CompatibilityWarning />
+<EnvironmentRequirements />
 
 `uni-app x` uses HBuilderX and `@dcloudio/vite-plugin-uni`. It is recommended to use it with the built-in `uniAppX` preset.
 
-The HBuilderX local E2E in the current warehouse covers uni-app x applet, Android and iOS products. App E2E relies on native HBuilderX and the simulator and only executes locally.
+The repository's local HBuilderX E2E suite covers uni-app x on the Web, WeChat Mini Program, Android, iOS, and HarmonyOS. Mini Program and App E2E runs depend on local HBuilderX, developer tools, or simulators, so they only run locally.
 
 :::warning Capability Boundary
 `uvue` Do not rely on `gap`, `gap-x-*`, and `gap-y-*` on the native app. These layout capabilities are currently not supported.
@@ -34,13 +34,16 @@ The HBuilderX local E2E in the current warehouse covers uni-app x applet, Androi
 
 ```bash npm2yarn
 npm run e2e:hbuilderx:local
+npm run e2e:hbuilderx:local:web
+npm run e2e:hbuilderx:local:mp
 npm run e2e:hbuilderx:local:android
 npm run e2e:hbuilderx:local:ios
+npm run e2e:hbuilderx:local:harmony
 ```
 
 ## Register plugin
 
-`uniAppX` is derived from `weapp-tailwindcss/presets` and `cssEntries` should be passed in explicitly.
+`uniAppX` is exported from `weapp-tailwindcss/presets`; pass `cssEntries` explicitly.
 
 ```ts title="vite.config.ts"
 import { dirname, resolve } from 'node:path'
@@ -66,14 +69,14 @@ export default defineConfig({
 })
 ```
 
-Tailwind CSS generation is taken over by `weapp-tailwindcss`, do not register `tailwindcss`, `@tailwindcss/postcss` or `@tailwindcss/vite` anymore.
+Tailwind CSS generation is handled by `weapp-tailwindcss`. Do not also register `tailwindcss`, `@tailwindcss/postcss`, or `@tailwindcss/vite`.
 
 The current documentation only maintains Tailwind CSS 4 access instructions.
 
 :::info Web and App Debugging Notes
 `cssEntries` is used to tell `weapp-tailwindcss` the entry file of Tailwind CSS 4. The entry should still be a real CSS file that HBuilderX / Vite can process. Web/H5, Android and iOS all need to maintain `appType: 'uni-app-x'`. Do not manually close `uniAppX` when running on the web side, otherwise any value class name in the `.uvue` template will not be converted into a safe selector.
 
-`rem2rpx`,
+`rem2rpx`, `unitsToPx`, and `unitConversion` are top-level options of the `uniAppX()` preset. Do not put them under `cssOptions`.
 :::
 
 ## Tailwind CSS entry
@@ -92,9 +95,9 @@ Tailwind CSS 4 uses the CSS-first entry, `@source` to cover pages, components, a
 
 Do not put `unpackage` into the scan range, otherwise the HBuilderX product will in turn interfere with the development build.
 
-##Introduce the entrance in App.uvue
+## Import the entry in App.uvue
 
-`cssEntries` is responsible for generating portal identification and is not responsible for automatically adding CSS to the HBuilderX / Vite module diagram. Must be actually imported in global styles:
+`cssEntries` tells `weapp-tailwindcss` where the entry is, but it does not automatically add the CSS to the HBuilderX / Vite module graph. Import it from the global style block:
 
 ```html title="App.uvue"
 <style>
@@ -114,8 +117,8 @@ Write a minimal use case on any page:
 </view>
 ```
 
-After running to the Web, WeChat applet and target App platform in sequence, check whether the element style takes effect. App-side text uses `<text>`, and text-related styles must be written directly on `<text>`.
+Run the project on the Web, WeChat Mini Program, and each target App platform, then confirm the styles are applied. On native App targets, use `<text>` for text and apply text styles directly to that element.
 
 ## Reference template
 
-- [Tailwind CSS 4 demo in the warehouse](https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v4)
+- [Tailwind CSS 4 demo in the repository](https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v4)
