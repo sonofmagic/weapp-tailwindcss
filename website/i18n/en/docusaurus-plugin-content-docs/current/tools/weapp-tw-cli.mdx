@@ -14,6 +14,8 @@ keywords:
 
 `weapp-tailwindcss` ships equivalent `weapp-tw` and `weapp-tailwindcss` commands. The build command emits Web CSS by default and follows the current Tailwind CSS CLI contract for input, output, watching, optimization, and source maps.
 
+The CLI directly reuses the Tailwind v4 generator, design system, and source graph built into `weapp-tailwindcss`. It does not install or invoke `@tailwindcss/cli`. Watch mode consistently uses cross-platform polling and has no native filesystem watcher binary dependency.
+
 ```bash
 pnpm exec weapp-tw -i src/input.css -o dist/output.css
 pnpm exec weapp-tw build -i src/input.css -o dist/output.css

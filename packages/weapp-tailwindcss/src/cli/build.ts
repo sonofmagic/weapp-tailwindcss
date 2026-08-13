@@ -1,207 +1,143 @@
-import { spawn } from 'node:child_process'
+import { Buffer } from 'node:buffer'
 import fs from 'node:fs/promises'
-import { createRequire } from 'node:module'
-import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
+import { compileTailwindV4Source, createTailwindV4CompiledSourceEntries, extractRawCandidatesWithPositions, normalizeTailwindV4ScannerSources, resolveProjectSourceFiles } from '@tailwindcss-mangle/engine'
+import { transform } from 'lightningcss'
+import { resolveTailwindV4CssEntrySource } from '@/bundlers/shared/generator-css/source-resolver/configuration'
+import { createWeappTailwindcssGenerator, resolveTailwindV4Source } from '@/generator'
+import { parseBuildArgs } from './build/args'
+import { watchBuildInputs } from './build/watch'
+import { runCanonicalize } from './canonicalize'
 
-const require = createRequire(import.meta.url)
+const DEFAULT_INPUT = '@import "tailwindcss";'
 
-type CssTarget = 'web' | 'weapp'
-
-interface TargetArgs {
-  argv: string[]
-  target: CssTarget
-}
-
-function parseTarget(argv: string[]): TargetArgs {
-  const forwarded: string[] = []
-  let target: CssTarget = 'web'
-  for (let index = 0; index < argv.length; index++) {
-    const arg = argv[index]
-    if (arg === '--target') {
-      const value = argv[++index]
-      if (value !== 'web' && value !== 'weapp') {
-        throw new Error('Option "--target" must be "web" or "weapp".')
-      }
-      target = value
-      continue
-    }
-    if (arg?.startsWith('--target=')) {
-      const value = arg.slice('--target='.length)
-      if (value !== 'web' && value !== 'weapp') {
-        throw new Error('Option "--target" must be "web" or "weapp".')
-      }
-      target = value
-      continue
-    }
-    if (arg !== undefined) {
-      forwarded.push(arg)
-    }
+async function drainStdin() {
+  const chunks: Buffer[] = []
+  for await (const chunk of process.stdin) {
+    chunks.push(Buffer.from(chunk))
   }
-  return { argv: forwarded, target }
+  return Buffer.concat(chunks).toString()
 }
 
-function resolveOfficialCli() {
-  const packageJson = require.resolve('@tailwindcss/cli/package.json')
-  return path.resolve(path.dirname(packageJson), 'dist/index.mjs')
+async function writeFile(file: string, content: string | Uint8Array) {
+  await fs.mkdir(path.dirname(file), { recursive: true })
+  await fs.writeFile(file, content)
 }
 
-function spawnOfficial(argv: string[], stdio: 'inherit' | ['inherit', 'pipe', 'inherit'] = 'inherit') {
-  return spawn(process.execPath, [resolveOfficialCli(), ...argv], {
-    cwd: process.cwd(),
-    env: process.env,
-    stdio,
-  })
+function sourceMapComment(value: string) {
+  return `/*# sourceMappingURL=${value} */`
 }
 
-function waitForExit(child: ReturnType<typeof spawn>) {
-  return new Promise<number>((resolve, reject) => {
-    child.once('error', reject)
-    child.once('exit', (code, signal) => {
-      if (signal) {
-        resolve(1)
+async function buildOnce(options: ReturnType<typeof parseBuildArgs>, stdinCss?: string) {
+  const inputCss = options.input === '-'
+    ? (stdinCss ?? await drainStdin())
+    : options.input
+      ? await fs.readFile(options.input, 'utf8')
+      : DEFAULT_INPUT
+  const base = options.input && options.input !== '-' ? path.dirname(options.input) : options.cwd
+  const sourceOptions = {
+    base,
+    projectRoot: options.cwd,
+    cwd: options.cwd,
+    packageName: 'tailwindcss',
+  }
+  const source = options.input && options.input !== '-'
+    ? await resolveTailwindV4CssEntrySource(options.input, { ...sourceOptions, cssEntries: [options.input] })
+    : await resolveTailwindV4Source({ ...sourceOptions, css: inputCss })
+  const generator = createWeappTailwindcssGenerator(source)
+  try {
+    const { compiled, dependencies: compilerDependencies } = await compileTailwindV4Source(source)
+    const scanPatterns = createTailwindV4CompiledSourceEntries(compiled.root, compiled.sources, source.projectRoot)
+    const scanSources = normalizeTailwindV4ScannerSources(scanPatterns, source.projectRoot)
+    const outputPath = options.output && options.output !== '-' ? path.resolve(options.output) : undefined
+    const sourceFiles = await resolveProjectSourceFiles({
+      cwd: source.projectRoot,
+      sources: scanSources,
+      filter: file => path.resolve(file) !== outputPath,
+    })
+    const candidateGroups = await Promise.all(sourceFiles.map(async (file) => {
+      const content = await fs.readFile(file, 'utf8')
+      const extension = path.extname(file).slice(1) || 'html'
+      return extractRawCandidatesWithPositions(content, extension)
+    }))
+    const candidates = new Set(candidateGroups.flat().map(candidate => candidate.rawCandidate))
+    const result = await generator.generate({ candidates, target: options.target, scanSources: false, incrementalCache: false })
+    let css = result.css
+    let map: Uint8Array | undefined
+    if (options.minify || options.optimize || options.map) {
+      const transformed = transform({
+        filename: options.input && options.input !== '-' ? path.basename(options.input) : 'input.css',
+        code: Buffer.from(css),
+        minify: options.minify,
+        sourceMap: Boolean(options.map),
+      })
+      css = Buffer.from(transformed.code).toString()
+      map = transformed.map
+    }
+    if (options.map && map) {
+      if (options.map === true) {
+        css += `\n${sourceMapComment(`data:application/json;base64,${Buffer.from(map).toString('base64')}`)}`
       }
       else {
-        resolve(code ?? 1)
-      }
-    })
-  })
-}
-
-function findOption(argv: string[], long: string, short?: string) {
-  for (let index = 0; index < argv.length; index++) {
-    const arg = argv[index]
-    if (arg === long || (short && arg === short)) {
-      return argv[index + 1] ?? true
-    }
-    if (arg?.startsWith(`${long}=`)) {
-      return arg.slice(long.length + 1)
-    }
-  }
-  return undefined
-}
-
-function hasOption(argv: string[], long: string, short?: string) {
-  return argv.some(arg => arg === long || (short !== undefined && arg === short) || arg.startsWith(`${long}=`))
-}
-
-function replaceOutput(argv: string[], output: string) {
-  const result: string[] = []
-  let replaced = false
-  for (let index = 0; index < argv.length; index++) {
-    const arg = argv[index]
-    if (arg === '--output' || arg === '-o') {
-      result.push(arg, output)
-      index++
-      replaced = true
-    }
-    else if (arg?.startsWith('--output=')) {
-      result.push(`--output=${output}`)
-      replaced = true
-    }
-    else if (arg !== undefined) {
-      result.push(arg)
-    }
-  }
-  if (!replaced) {
-    result.push('--output', output)
-  }
-  return result
-}
-
-async function writeWeappOutput(webOutput: string, output: string | boolean | undefined, cwd: string) {
-  const css = await fs.readFile(webOutput, 'utf8')
-  const { transformTailwindV4CssToWeapp } = await import('@/generator')
-  const transformed = await transformTailwindV4CssToWeapp(css)
-  if (output === undefined || output === true || output === '-') {
-    process.stdout.write(`${transformed}\n`)
-    return
-  }
-  const outputPath = path.resolve(cwd, output)
-  await fs.mkdir(path.dirname(outputPath), { recursive: true })
-  await fs.writeFile(outputPath, transformed)
-}
-
-async function runWeapp(argv: string[]) {
-  if (argv[0] === 'canonicalize') {
-    return waitForExit(spawnOfficial(argv))
-  }
-  if (hasOption(argv, '--map')) {
-    throw new Error('Option "--map" is only supported when "--target web" is used.')
-  }
-
-  const cwdOption = findOption(argv, '--cwd')
-  const cwd = typeof cwdOption === 'string' ? path.resolve(cwdOption) : process.cwd()
-  const input = findOption(argv, '--input', '-i')
-  const output = findOption(argv, '--output', '-o')
-  if (typeof input === 'string' && input !== '-' && typeof output === 'string' && output !== '-') {
-    const inputPath = path.resolve(cwd, input)
-    const outputPath = path.resolve(cwd, output)
-    if (inputPath === outputPath) {
-      throw new Error('Input and output paths must be different; received identical paths.')
-    }
-  }
-  const watch = findOption(argv, '--watch', '-w')
-  const temporaryDirectory = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tw-cli-'))
-  const webOutput = path.join(temporaryDirectory, 'output.css')
-  const forwarded = replaceOutput(argv, webOutput)
-  let lastCss = ''
-
-  const render = async () => {
-    try {
-      const css = await fs.readFile(webOutput, 'utf8')
-      if (css === lastCss) {
-        return
-      }
-      lastCss = css
-      await writeWeappOutput(webOutput, output, cwd)
-    }
-    catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
-        throw error
+        await writeFile(options.map, map)
+        const mapBase = options.output && options.output !== '-' ? path.dirname(options.output) : options.cwd
+        css += `\n${sourceMapComment(path.relative(mapBase, options.map))}`
       }
     }
-  }
-
-  if (!watch) {
-    try {
-      const exitCode = await waitForExit(spawnOfficial(forwarded))
-      if (exitCode === 0) {
-        await render()
-      }
-      return exitCode
+    return {
+      css,
+      dependencies: new Set([
+        ...(options.input && options.input !== '-' ? [options.input] : []),
+        ...source.dependencies,
+        ...compilerDependencies,
+        ...result.dependencies,
+        ...sourceFiles,
+      ]),
     }
-    finally {
-      await fs.rm(temporaryDirectory, { recursive: true, force: true })
-    }
-  }
-
-  const watcher = (await import('@parcel/watcher')).subscribe(temporaryDirectory, render)
-  const child = spawnOfficial(forwarded)
-  const signals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM']
-  const signalHandlers = new Map<NodeJS.Signals, () => void>()
-  for (const signal of signals) {
-    const handler = () => child.kill(signal)
-    signalHandlers.set(signal, handler)
-    process.once(signal, handler)
-  }
-  try {
-    return await waitForExit(child)
   }
   finally {
-    for (const signal of signals) {
-      process.off(signal, signalHandlers.get(signal)!)
-    }
-    await (await watcher).unsubscribe()
-    await fs.rm(temporaryDirectory, { recursive: true, force: true })
+    generator.dispose?.()
   }
+}
+
+async function runBuild(argv: string[]) {
+  const options = parseBuildArgs(argv)
+  if (!options.silent) {
+    process.stderr.write(`tailwindcss v${process.env.npm_package_version ?? ''}\n\n`)
+  }
+  const stdinCss = options.input === '-' ? await drainStdin() : undefined
+  let previous = ''
+  const rebuild = async () => {
+    const result = await buildOnce(options, stdinCss)
+    if (result.css !== previous) {
+      if (options.output && options.output !== '-') {
+        await writeFile(options.output, result.css)
+      }
+      else {
+        process.stdout.write(`${result.css}\n`)
+      }
+      previous = result.css
+    }
+    return result.dependencies
+  }
+  const dependencies = await rebuild()
+  if (!options.watch || (options.input === '-' && options.watch !== 'always')) {
+    return 0
+  }
+  await watchBuildInputs({
+    cwd: options.cwd,
+    dependencies,
+    interval: options.pollInterval,
+    output: options.output,
+    rebuild,
+  })
+  return 0
 }
 
 export async function runTailwindCli(rawArgv: string[]) {
-  const { argv, target } = parseTarget(rawArgv)
-  if (target === 'web') {
-    return waitForExit(spawnOfficial(argv))
+  if (rawArgv[0] === 'canonicalize') {
+    return runCanonicalize(rawArgv.slice(1))
   }
-  return runWeapp(argv)
+  return runBuild(rawArgv[0] === 'build' ? rawArgv.slice(1) : rawArgv)
 }

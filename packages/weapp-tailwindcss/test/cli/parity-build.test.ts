@@ -38,6 +38,12 @@ describe('Tailwind CLI build parity', () => {
     expect(stdout).toContain('.p-4')
   })
 
+  test('exits watch on stdin EOF unless --watch=always is used', async () => {
+    const project = await fixture({})
+    const result = await runCli(project.root, ['--input', '-', '--watch', '--silent'], inputCss)
+    expect(result.stdout).toContain('.flex')
+  })
+
   test('uses the default Tailwind input when input is omitted', async () => {
     const project = await fixture({ 'index.html': '<div class="underline"></div>' })
     await runCli(project.root, ['--output', 'out.css', '--silent'])
