@@ -15,7 +15,8 @@ import { ctaButton } from '../features/homepage/variants'
 
 interface FactItem {
   label: string
-  value: string
+  values: string[]
+  icon: string
 }
 
 interface CapabilityItem {
@@ -47,10 +48,14 @@ interface PlatformIconItem {
 const homepageCopy = {
   'zh-cn': {
     facts: [
-      { label: 'Tailwind', value: 'CSS 4 / @source' },
-      { label: '框架', value: 'uni-app / Taro / React Native / Lynx' },
-      { label: '构建器', value: 'Webpack / Vite / Metro / Rspeedy' },
-      { label: '运行时', value: 'merge / cva / variants' },
+      { label: 'Tailwind', values: ['CSS 4', '@source'], icon: 'icon-[mdi--tailwind]' },
+      {
+        label: '框架',
+        values: ['uni-app', 'Taro', 'React Native', 'Lynx'],
+        icon: 'icon-[mdi--transit-connection-variant]',
+      },
+      { label: '构建器', values: ['Webpack', 'Vite', 'Metro', 'Rspeedy'], icon: 'icon-[mdi--hammer-wrench]' },
+      { label: '运行时', values: ['merge', 'cva', 'variants'], icon: 'icon-[mdi--function-variant]' },
     ] satisfies FactItem[],
     routeLinks: [
       {
@@ -161,10 +166,14 @@ const homepageCopy = {
   },
   'en': {
     facts: [
-      { label: 'Tailwind', value: 'CSS 4 / @source' },
-      { label: 'Frameworks', value: 'uni-app / Taro / React Native / Lynx' },
-      { label: 'Builders', value: 'Webpack / Vite / Metro / Rspeedy' },
-      { label: 'Runtime', value: 'merge / cva / variants' },
+      { label: 'Tailwind', values: ['CSS 4', '@source'], icon: 'icon-[mdi--tailwind]' },
+      {
+        label: 'Frameworks',
+        values: ['uni-app', 'Taro', 'React Native', 'Lynx'],
+        icon: 'icon-[mdi--transit-connection-variant]',
+      },
+      { label: 'Builders', values: ['Webpack', 'Vite', 'Metro', 'Rspeedy'], icon: 'icon-[mdi--hammer-wrench]' },
+      { label: 'Runtime', values: ['merge', 'cva', 'variants'], icon: 'icon-[mdi--function-variant]' },
     ] satisfies FactItem[],
     routeLinks: [
       {
@@ -383,10 +392,21 @@ function HomepageHeader() {
 
       {homepage.platformTags && (
         <section className="ui-homepage-platform-tags home-facts" aria-label={copy.factsAria}>
-          {copy.facts.map(fact => (
+          {copy.facts.map((fact, index) => (
             <div className="home-facts__item" key={fact.label}>
-              <span>{fact.label}</span>
-              <strong>{fact.value}</strong>
+              <div className="home-facts__heading">
+                <i aria-hidden="true" className={fact.icon}></i>
+                <span>{fact.label}</span>
+                <small aria-hidden="true">
+                  0
+                  {index + 1}
+                </small>
+              </div>
+              <div className="home-facts__values">
+                {fact.values.map(value => (
+                  <strong key={value}>{value}</strong>
+                ))}
+              </div>
             </div>
           ))}
           <nav className="home-facts__routes" aria-label={copy.routesAria}>
