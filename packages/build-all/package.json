@@ -3,6 +3,7 @@
   "type": "module",
   "version": "0.0.71",
   "private": true,
+  "description": "Internal build aggregation for the weapp-tailwindcss workspace. weapp-tailwindcss 工作区内部聚合构建包。",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },

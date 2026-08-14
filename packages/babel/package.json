@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.3",
   "private": true,
-  "description": "weapp-tailwindcss babel package",
+  "description": "Babel utilities for cross-platform Tailwind CSS class transforms. 跨端 Tailwind CSS 类名转换的 Babel 工具。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "repository": {

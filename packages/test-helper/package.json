@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "version": "0.0.2",
-  "description": "tsdown package template",
+  "description": "Test helpers for cross-platform Tailwind CSS integration suites. 跨端 Tailwind CSS 集成测试辅助工具。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "repository": {
