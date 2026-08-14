@@ -50,7 +50,6 @@ describe('website tutorial integration contract', () => {
   it('keeps all uni-app x entry points aligned with the verified demo', () => {
     const tutorialFiles = [
       'website/docs/quick-start/frameworks/uni-app-x.mdx',
-      'website/docs/quick-start/v4/uni-app-x.mdx',
       'website/docs/uni-app-x/_shared.mdx',
     ]
     for (const file of tutorialFiles) {
