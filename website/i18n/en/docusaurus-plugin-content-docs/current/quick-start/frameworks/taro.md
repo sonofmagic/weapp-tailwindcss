@@ -7,7 +7,6 @@ keywords:
   - Configuration
   - Taro
   - All frames
-  - quick start
   - frameworks
   - weapp-tailwindcss
   - tailwindcss
@@ -15,6 +14,10 @@ keywords:
   - WeChat applet
   - uni-app
   - mpx
+  - 快速开始
+  - 安装
+  - 配置
+  - Tailwind CSS 4
 ---
 
 # Taro

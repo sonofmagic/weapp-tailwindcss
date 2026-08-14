@@ -4,7 +4,7 @@ import { navbarUiControls, navbarUiStorageKey } from '../src/features/ui-managem
 import { defaultSiteLocale, localePreferenceStorageKey } from '../src/i18n/locale'
 import { getSiteConfigCopy } from '../src/i18n/siteConfig'
 import { getBuildLocale } from './buildLocale'
-import { geoMeta, organizationJsonLd, siteLanguage, siteName, siteUrl, websiteJsonLd } from './siteMetadata'
+import { organizationJsonLd, siteLanguage, siteName, siteUrl, softwareJsonLd, websiteJsonLd } from './siteMetadata'
 
 const copy = getSiteConfigCopy(getBuildLocale())
 const localeNavigationStorageKey = `${localePreferenceStorageKey}:navigation`
@@ -189,34 +189,6 @@ const headTags: NonNullable<Config['headTags']> = [
     },
   },
   {
-    tagName: 'meta',
-    attributes: {
-      name: 'geo.region',
-      content: geoMeta.region,
-    },
-  },
-  {
-    tagName: 'meta',
-    attributes: {
-      name: 'geo.placename',
-      content: geoMeta.placename,
-    },
-  },
-  {
-    tagName: 'meta',
-    attributes: {
-      name: 'geo.position',
-      content: geoMeta.position,
-    },
-  },
-  {
-    tagName: 'meta',
-    attributes: {
-      name: 'ICBM',
-      content: geoMeta.icbm,
-    },
-  },
-  {
     tagName: 'link',
     attributes: {
       rel: 'preconnect',
@@ -251,6 +223,7 @@ const headTags: NonNullable<Config['headTags']> = [
     tagName: 'script',
     attributes: {
       type: 'application/ld+json',
+      id: 'organization-jsonld',
     },
     innerHTML: JSON.stringify(organizationJsonLd),
   },
@@ -261,6 +234,14 @@ const headTags: NonNullable<Config['headTags']> = [
       id: 'website-jsonld',
     },
     innerHTML: JSON.stringify(websiteJsonLd),
+  },
+  {
+    tagName: 'script',
+    attributes: {
+      type: 'application/ld+json',
+      id: 'software-jsonld',
+    },
+    innerHTML: JSON.stringify(softwareJsonLd),
   },
 ]
 

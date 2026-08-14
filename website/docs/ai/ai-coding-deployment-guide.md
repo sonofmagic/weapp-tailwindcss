@@ -1,7 +1,7 @@
 ---
 sidebar: aiSidebar
 title: AI 编程助手落地实施方案
-description: 1. **合规边界**：哪些仓库/文件允许出境？是否必须审计留痕？（决定能不能用海外、能用到什么程度）
+description: AI 编程助手落地实施方案，覆盖 AI 工作流、提示词和工程化实践。
 keywords:
   - AI 编程
   - LLM

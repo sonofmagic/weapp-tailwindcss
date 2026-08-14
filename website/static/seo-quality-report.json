@@ -1,26 +1,39 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-14T13:12:42.682Z",
+  "generatedAt": "2026-08-14T16:42:28.037Z",
   "totals": {
-    "files": 144,
+    "files": 285,
     "issues": 0
   },
   "coverage": {
-    "docs": {
+    "en": {
       "title": 1,
       "description": 1,
       "keywords": 1
     },
-    "blog": {
-      "title": 1,
-      "description": 1,
-      "keywords": 1
-    },
-    "all": {
+    "zh-cn": {
       "title": 1,
       "description": 1,
       "keywords": 1
     }
+  },
+  "issuesByLocale": {
+    "en": 0,
+    "zh-cn": 0
+  },
+  "geo": {
+    "en": {
+      "primary": 85,
+      "full": 141
+    },
+    "zh-cn": {
+      "primary": 85,
+      "full": 144
+    }
+  },
+  "routeConsistency": {
+    "valid": true,
+    "issues": []
   },
   "issueTypes": {},
   "issues": []

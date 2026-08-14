@@ -73,13 +73,6 @@ export const footerCustomFields = {
     href: 'https://github.com/sonofmagic',
     name: 'sonofmagic',
   },
-  poweredBy: {
-    prefix: copy.footer.poweredByPrefix,
-    href: 'https://www.netlify.com',
-    label: 'Netlify',
-    logoAlt: 'Netlify logo',
-    logoSrc: '/img/logo-netlify.png',
-  },
 } as const
 
 export const footer: NonNullable<ThemeConfig['footer']> = {

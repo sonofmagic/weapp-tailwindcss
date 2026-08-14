@@ -8,7 +8,6 @@ keywords:
   - use
   - arbitrary
   - values
-  - options
   - arbitrary values
   - weapp-tailwindcss
   - tailwindcss
@@ -17,6 +16,8 @@ keywords:
   - uni-app
   - taro
   - mpx
+  - 配置项
+  - 插件参数
 ---
 
 # Use arbitrary values

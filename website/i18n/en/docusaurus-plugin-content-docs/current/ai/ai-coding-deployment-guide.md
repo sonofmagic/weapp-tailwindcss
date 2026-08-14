@@ -1,7 +1,9 @@
 ---
 sidebar: aiSidebar
 title: AI programming assistant implementation plan
-description: '1. **Compliance Boundary**: Which warehouses/documents are allowed to leave the country? Is audit trail necessary? (Decide whether it can be used overseas and to what extent it can be used)'
+description: >-
+  AI programming assistant implementation plan: Current concepts, configuration guidance, and practical examples for
+  weapp-tailwindcss users.
 keywords:
   - AI programming
   - LLM

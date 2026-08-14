@@ -1,7 +1,9 @@
 ---
 sidebar: aiSidebar
 title: LLM Friendly Documentation (llms.txt)
-description: 1. Execute pnpm --filter @weapp-tailwindcss/website build (or cd website && pnpm build) in the root directory of the warehouse.
+description: >-
+  LLM Friendly Documentation (llms.txt): Current concepts, configuration guidance, and practical examples for
+  weapp-tailwindcss users.
 keywords:
   - AI programming
   - LLM
@@ -28,6 +30,8 @@ keywords:
 
 - `llms.txt` (index)
 - `llms-full.txt` (full content)
+- `llms-index.json` (product, integration, API, migration, and troubleshooting index)
+- `llms-index-full.json` (complete index including blog, AI fundamentals, and history)
 - `llms-quickstart.txt` (Getting Started/AI Workflow)
 - `llms-api.txt` (configuration, API, migration and issues)
 - Remove the pure Markdown file of MDX import to facilitate direct feeding to the model.
@@ -36,10 +40,12 @@ keywords:
 
 - `https://tw.icebreaker.top/llms.txt`
 - `https://tw.icebreaker.top/llms-full.txt`
+- `https://tw.icebreaker.top/llms-index.json`
+- `https://tw.icebreaker.top/llms-index-full.json`
 - `https://tw.icebreaker.top/llms-quickstart.txt`
 - `https://tw.icebreaker.top/llms-api.txt`
 
-> If accessed via GitHub Pages, please note the prefix path `/weapp-tailwindcss/`.
+English assets are served from the site root, while Chinese assets use the `/zh-cn` prefix.
 
 ## Example prompt words for AI
 

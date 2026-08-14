@@ -7,7 +7,6 @@ keywords:
   - Configuration
   - Native development
   - Packaging plan
-  - quick start
   - frameworks
   - native
   - weapp-tailwindcss
@@ -17,6 +16,8 @@ keywords:
   - uni-app
   - taro
   - mpx
+  - 快速开始
+  - 安装
 ---
 
 # Native development (packaging solution)

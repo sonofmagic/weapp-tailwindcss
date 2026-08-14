@@ -1,12 +1,9 @@
-import { readFileSync } from 'node:fs'
-import path from 'node:path'
 import process from 'node:process'
 import { expect, test } from '@playwright/test'
 import routes from '../routes.json'
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'https://tw.icebreaker.top/'
 const HAN_CHARACTER_RE = /[\u3400-\u9FFF\uF900-\uFAFF]/
-const netlifyConfig = readFileSync(path.resolve(__dirname, '../../netlify.toml'), 'utf8')
 
 function assertContainsNoChinese(value: string, context: string) {
   expect(value, `${context} contains Chinese text`).not.toMatch(HAN_CHARACTER_RE)
@@ -77,14 +74,12 @@ test.describe('English content isolation', () => {
     expect(response?.ok()).toBe(true)
     assertContainsNoChinese(await getNaturalLanguageText(page), 'English 404 body')
     assertContainsNoChinese(await page.title(), 'English 404 title')
-
-    const english404Rule = 'from = "/*"\nto = "/404.html"\nstatus = 404'
-    expect(netlifyConfig).toContain(english404Rule)
   })
 
   test('English LLM assets and blog feeds contain no Chinese text', async ({ request }) => {
     const assetPaths = [
       '/llms-index.json',
+      '/llms-index-full.json',
       '/llms.txt',
       '/llms-full.txt',
       '/llms-quickstart.txt',

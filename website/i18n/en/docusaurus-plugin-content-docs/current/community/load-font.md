@@ -1,12 +1,11 @@
 ---
 title: Load custom fonts
-description: 'For details, see: https://github.com/sonofmagic/weapp-tailwindcss/discussions/637'
+description: 'Load custom fonts: Current concepts, configuration guidance, and practical examples for weapp-tailwindcss users.'
 keywords:
   - Community
   - template
   - Case
   - Load custom fonts
-  - community
   - load font
   - weapp-tailwindcss
   - tailwindcss
@@ -15,6 +14,10 @@ keywords:
   - uni-app
   - taro
   - mpx
+  - 社区
+  - 模板
+  - 案例
+  - Load
 ---
 
 #Load custom font

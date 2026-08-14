@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "weapp-tailwindcss",
-  "compatibility_date": "2025-12-07",
+  "compatibility_date": "2026-08-11",
   "assets": {
     "directory": "./build",
     "not_found_handling": "404-page"
@@ -15,5 +15,16 @@
       "custom_domain": true,
       "pattern": "weapp-tw.icebreaker.top"
     }
-  ]
+  ],
+  "env": {
+    "next": {
+      "name": "weapp-tailwindcss-next",
+      "routes": [
+        {
+          "custom_domain": true,
+          "pattern": "next.tw.icebreaker.top"
+        }
+      ]
+    }
+  }
 }

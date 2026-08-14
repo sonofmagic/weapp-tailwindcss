@@ -1,9 +1,10 @@
 ---
 title: How to contribute
-description: It's actually very simple. You don't necessarily need to contribute code. You raise an issue, answer a question, and write a related article. These are all contributions to the project, and there is no need to stick to specific forms.
+description: >-
+  It's actually very simple. You don't necessarily need to contribute code. You raise an issue, answer a question, and
+  write a related article. These are all contributions to the project, and there is no need to stick to specific forms.
 keywords:
   - How to contribute
-  - how to contribute
   - weapp-tailwindcss
   - tailwindcss
   - Mini program
@@ -11,6 +12,14 @@ keywords:
   - uni-app
   - taro
   - mpx
+  - How
+  - to
+  - contribute
+  - Tailwind CSS 4
+  - cross-platform
+  - mini app
+  - React Native
+  - Lynx
 ---
 
 # How to contribute

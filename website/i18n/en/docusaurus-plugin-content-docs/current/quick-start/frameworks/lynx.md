@@ -7,6 +7,16 @@ keywords:
   - Rspeedy
   - Tailwind CSS 4
   - weapp-tailwindcss
+  - 快速开始
+  - 安装
+  - 配置
+  - quick start
+  - frameworks
+  - cross-platform
+  - mini app
+  - uni-app
+  - Taro
+  - React Native
 ---
 
 # ReactLynx / Rspeedy

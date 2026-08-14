@@ -7,7 +7,6 @@ keywords:
   - Configuration items
   - Plug-in parameters
   - Options
-  - options
   - Options overview
   - weapp-tailwindcss
   - tailwindcss
@@ -16,6 +15,11 @@ keywords:
   - uni-app
   - taro
   - mpx
+  - 配置项
+  - 插件参数
+  - 选项
+  - overview
+  - Tailwind CSS 4
 ---
 
 The detailed configuration of this chapter has been moved to [API / Configuration Item Document](/docs/api/interfaces/UserDefinedOptions).

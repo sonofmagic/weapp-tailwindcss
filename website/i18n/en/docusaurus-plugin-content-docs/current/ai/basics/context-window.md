@@ -11,13 +11,14 @@ keywords:
   - Window
   - ai
   - basics
-  - context window
   - weapp-tailwindcss
   - tailwindcss
   - Mini program
   - WeChat applet
   - uni-app
   - taro
+  - AI 编程
+  - 工作流
 ---
 
 #Context Window

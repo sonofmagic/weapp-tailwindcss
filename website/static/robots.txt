@@ -2,3 +2,4 @@ User-agent: *
 Disallow:
 Allow: /
 Sitemap: https://tw.icebreaker.top/sitemap.xml
+Sitemap: https://tw.icebreaker.top/zh-cn/sitemap.xml

@@ -1,6 +1,8 @@
 ---
 title: How to use uni-app HBuilderX
-description: How to configure the HBuilderX Vue3 Vite project to access Tailwind CSS 4 and weapp-tailwindcss, as well as suggestions for processing Vue2 Webpack stock projects.
+description: >-
+  How to configure the HBuilderX Vue3 Vite project to access Tailwind CSS 4 and weapp-tailwindcss, as well as
+  suggestions for processing Vue2 Webpack stock projects.
 keywords:
   - quick start
   - Install
@@ -8,7 +10,6 @@ keywords:
   - uni-app
   - HBuilderX
   - Usage
-  - quick start
   - frameworks
   - weapp-tailwindcss
   - tailwindcss
@@ -16,6 +17,9 @@ keywords:
   - WeChat applet
   - taro
   - mpx
+  - 快速开始
+  - 安装
+  - 配置
 ---
 
 # uni-app HBuilderX usage

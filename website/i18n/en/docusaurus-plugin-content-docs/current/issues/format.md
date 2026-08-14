@@ -8,13 +8,16 @@ keywords:
   - Tailwindcss
   - format
   - issues
-  - format
   - weapp-tailwindcss
   - Mini program
   - WeChat applet
   - uni-app
   - taro
   - mpx
+  - 常见问题
+  - 故障排查
+  - 兼容性
+  - formatting
 ---
 
 # Tailwindcss formatting

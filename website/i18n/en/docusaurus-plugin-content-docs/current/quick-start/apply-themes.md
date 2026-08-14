@@ -1,12 +1,11 @@
 ---
 title: Mini program multi-theme solution
-description: For the web, the need for multiple theme colors is very common. For example, dark mode is an extremely common need.
+description: 'For the web, the need for multiple theme colors is very common. For example, dark mode is an extremely common need.'
 keywords:
   - quick start
   - Install
   - Configuration
   - Mini program multi-theme solution
-  - quick start
   - apply themes
   - weapp-tailwindcss
   - tailwindcss
@@ -15,6 +14,10 @@ keywords:
   - uni-app
   - taro
   - mpx
+  - 快速开始
+  - 安装
+  - 配置
+  - Mini
 ---
 
 # Mini program multi-theme solution
