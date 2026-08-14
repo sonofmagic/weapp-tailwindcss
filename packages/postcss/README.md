@@ -1,9 +1,9 @@
 # @weapp-tailwindcss/postcss
 
-> 简体中文 | [English](./README.en.md)
+> English | [简体中文](./README.zh-CN.md)
 
-这个包是 weapp-tailwindcss 的 CSS 处理核心，负责小程序端的 PostCSS AST 转换、选择器兼容、平台差异处理和 Tailwind 输出后处理。
+This package is the CSS processing core of weapp-tailwindcss. It handles PostCSS AST transforms, selector compatibility, platform differences, and Tailwind output post-processing for mini programs.
 
-## 官网
+## Website
 
-更多接入方式、配置说明和框架示例见 [weapp-tailwindcss 官方文档](https://tw.icebreaker.top)。
+For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.icebreaker.top).

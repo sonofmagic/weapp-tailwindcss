@@ -1,12 +1,16 @@
 # @weapp-tailwindcss/react-native
 
-面向 React Native 与 Expo 的 Tailwind CSS v4 编译器。它复用 `weapp-tailwindcss` 的 source 扫描与候选生成，将原始 CSS 编译为可序列化的 React Native style manifest，不引入 NativeWind 或 `react-native-css` 运行时。
+> English | [简体中文](./README.zh-CN.md)
 
-## Expo 配置
+A Tailwind CSS v4 compiler for React Native and Expo. It reuses source scanning and candidate generation from `weapp-tailwindcss`, then compiles CSS into a serializable React Native style manifest without adding NativeWind or a `react-native-css` runtime.
+
+## Installation
 
 ```bash
 pnpm add @weapp-tailwindcss/react-native tailwindcss
 ```
+
+## Expo and Metro
 
 ```js
 // metro.config.js
@@ -21,8 +25,23 @@ module.exports = withWeappTailwindcss(config, {
 })
 ```
 
-Expo 只需要配置一次 Metro。Metro 会扫描 source、生成精确候选集合和 manifest，并自动把 Babel JSX transform 注入原有 Expo transformer；不需要再维护第二份 `classNameSet`。非 Expo 或定制 Metro 场景仍可显式使用 `@weapp-tailwindcss/react-native/babel`。
+Metro scans sources, builds the exact candidate set and manifest, and connects the Babel JSX transform to the existing Expo transformer. You do not need to maintain a second `classNameSet`.
 
-静态 `className` 会编译为预生成的 StyleSheet lookup，不在 render 中调用 `tw()`；动态值才使用 `tw(value)`。普通 inline `style` 覆盖 Tailwind class，`!important` class 覆盖 inline style。不支持的 CSS 声明会写入 manifest 的 `warnings`，不会静默产出错误的 RN style。
+## Runtime model
 
-公开入口：`compiler`、`babel`、`metro`、`runtime`、`tailwind` 与中性类型入口 `env`。
+- Static `className` values compile to pre-generated StyleSheet lookups without calling `tw()` during render.
+- Dynamic class values are resolved through `tw(value)` at runtime.
+- Regular inline `style` overrides Tailwind classes, while `!important` classes override inline styles.
+- Unsupported CSS declarations are recorded in manifest `warnings` instead of producing incorrect native styles silently.
+
+## Public entry points
+
+The package exposes `compiler`, `tailwind`, `babel`, `metro`, `runtime`, and the platform-neutral `env` type entry. Custom Metro setups can compose these entry points directly.
+
+## Scope
+
+This package generates React Native style manifests. It does not emit Web CSS or mini-program WXSS and does not add NativeWind or a browser CSS runtime to the application.
+
+## Documentation
+
+See the [React Native and Expo guide](https://tw.icebreaker.top/en/docs/quick-start/react-native-expo) for the complete setup.
