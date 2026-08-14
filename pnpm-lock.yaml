@@ -42,6 +42,9 @@ catalogs:
       specifier: ^2.11.13
       version: 2.11.13
   buildUtilities:
+    '@parcel/watcher':
+      specifier: ^2.5.6
+      version: 2.5.6
     debug:
       specifier: ~4.4.3
       version: 4.4.3
@@ -4103,6 +4106,9 @@ importers:
 
   packages/cli:
     dependencies:
+      '@parcel/watcher':
+        specifier: catalog:buildUtilities
+        version: 2.5.6
       '@tailwindcss-mangle/engine':
         specifier: catalog:tailwindcssMangleEngine
         version: 0.2.0(tailwindcss@4.3.3)
@@ -44741,7 +44747,6 @@ snapshots:
       '@parcel/watcher-win32-arm64': 2.5.6
       '@parcel/watcher-win32-ia32': 2.5.6
       '@parcel/watcher-win32-x64': 2.5.6
-    optional: true
 
   '@peculiar/asn1-cms@2.7.0':
     dependencies:
@@ -64461,8 +64466,7 @@ snapshots:
 
   node-abort-controller@3.1.1: {}
 
-  node-addon-api@7.1.1:
-    optional: true
+  node-addon-api@7.1.1: {}
 
   node-dir@0.1.17:
     dependencies:

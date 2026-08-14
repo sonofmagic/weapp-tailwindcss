@@ -12,4 +12,4 @@ Upstream baseline: `tailwindcss@4.3.3`.
 
 The local tests execute the built `@weapp-tailwindcss/cli` binary entry in an isolated temporary project. They reuse the repository dependency installation without copying Tailwind's workspace-only integration runner.
 
-The implementation uses the package's existing Tailwind v4 generator and design-system loader. It does not shell out to or depend on `@tailwindcss/cli`. Watch parity is provided by the CLI adapter's dependency-aware polling loop, without a native watcher package.
+The implementation uses the package's existing Tailwind v4 generator and design-system loader. It does not shell out to or depend on `@tailwindcss/cli`. Watch mode uses `@parcel/watcher` by default and supports the dependency-aware polling loop through `--poll` as a cross-platform fallback.

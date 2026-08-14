@@ -125,6 +125,7 @@ async function runBuild(argv: string[]) {
   await watchBuildInputs({
     cwd: options.cwd,
     interval: options.pollInterval,
+    mode: options.watchMode,
     output: options.output,
     rebuild,
   })

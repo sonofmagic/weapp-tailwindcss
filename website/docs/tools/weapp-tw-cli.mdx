@@ -14,7 +14,7 @@ keywords:
 
 `@weapp-tailwindcss/cli` 独立发布 `weapp-tw` 和 `weapp-tailwindcss` 两个等价命令。构建命令默认输出 Web CSS，并对齐当前 Tailwind CSS CLI 的输入、输出、watch、优化和 source map 行为。
 
-CLI 直接复用 `weapp-tailwindcss` 的 Tailwind v4 generator、design system 与 source graph，不安装或调用 `@tailwindcss/cli`。watch 统一使用跨平台轮询，也不依赖 `@parcel/watcher`。
+CLI 直接复用 `weapp-tailwindcss` 的 Tailwind v4 generator、design system 与 source graph，不安装或调用 `@tailwindcss/cli`。watch 默认使用 `@parcel/watcher` 原生文件事件；在容器、网络文件系统或需要稳定轮询行为时，可使用 `--poll[=ms]` 切换到轮询模式。
 
 ## 安装
 
@@ -36,7 +36,7 @@ pnpm exec weapp-tw build -i src/input.css -o dist/output.css
 | `--input <file>` | `-i` | 输入 CSS；传 `-` 时读取 stdin。省略时使用 `@import "tailwindcss";`。 |
 | `--output <file>` | `-o` | 输出 CSS；默认或传 `-` 时写入 stdout。 |
 | `--watch[=always]` | `-w` | 监听依赖并增量重建；`always` 会在 stdin 关闭后继续监听。 |
-| `--poll[=ms]` | | watch 时使用轮询；不传间隔时默认 250ms。 |
+| `--poll[=ms]` | | watch 时使用轮询而不是原生 watcher；不传间隔时默认 250ms。 |
 | `--minify` | `-m` | 优化并压缩 CSS。 |
 | `--optimize` | | 优化 CSS，但不压缩。 |
 | `--cwd <dir>` | | 设置输入、输出和依赖解析的工作目录。 |

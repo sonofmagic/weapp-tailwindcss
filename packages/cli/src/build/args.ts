@@ -7,6 +7,7 @@ export interface BuildArgs {
   input?: string
   output?: string
   watch: false | true | 'always'
+  watchMode: 'native' | 'poll'
   pollInterval: number
   minify: boolean
   optimize: boolean
@@ -26,6 +27,7 @@ export function parseBuildArgs(argv: string[]): BuildArgs {
   let input: string | undefined
   let output: string | undefined
   let watch: BuildArgs['watch'] = false
+  let watchMode: BuildArgs['watchMode'] = 'native'
   let pollInterval = 250
   let minify = false
   let optimize = false
@@ -64,9 +66,11 @@ export function parseBuildArgs(argv: string[]): BuildArgs {
       watch = 'always'
     }
     else if (arg === '--poll') {
+      watchMode = 'poll'
       pollInterval = 250
     }
     else if (arg.startsWith('--poll=')) {
+      watchMode = 'poll'
       pollInterval = Number(value(argv, index, '--poll'))
       if (!Number.isFinite(pollInterval) || pollInterval <= 0) {
         throw new Error('Specified polling interval must be a positive number.')
@@ -130,5 +134,5 @@ export function parseBuildArgs(argv: string[]): BuildArgs {
   if (target === 'weapp' && map) {
     throw new Error('Option "--map" is only supported when "--target web" is used.')
   }
-  return { cwd, input, output, watch, pollInterval, minify, optimize, map, silent, target }
+  return { cwd, input, output, watch, watchMode, pollInterval, minify, optimize, map, silent, target }
 }

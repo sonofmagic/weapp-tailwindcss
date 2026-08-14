@@ -14,7 +14,7 @@ keywords:
 
 `@weapp-tailwindcss/cli` independently publishes the equivalent `weapp-tw` and `weapp-tailwindcss` commands. The build command emits Web CSS by default and follows the current Tailwind CSS CLI contract for input, output, watching, optimization, and source maps.
 
-The CLI directly reuses the Tailwind v4 generator, design system, and source graph provided by `weapp-tailwindcss`. It does not install or invoke `@tailwindcss/cli`. Watch mode consistently uses cross-platform polling and does not depend on `@parcel/watcher`.
+The CLI directly reuses the Tailwind v4 generator, design system, and source graph provided by `weapp-tailwindcss`. It does not install or invoke `@tailwindcss/cli`. Watch mode uses `@parcel/watcher` native file events by default; use `--poll[=ms]` for polling on containers, network filesystems, or environments where polling is preferable.
 
 ## Installation
 
@@ -36,7 +36,7 @@ pnpm exec weapp-tw build -i src/input.css -o dist/output.css
 | `--input <file>` | `-i` | Input CSS. Use `-` for stdin. Without this option the CLI uses `@import "tailwindcss";`. |
 | `--output <file>` | `-o` | Output CSS. The default, or `-`, writes to stdout. |
 | `--watch[=always]` | `-w` | Rebuild when dependencies change. `always` keeps watching after stdin closes. |
-| `--poll[=ms]` | | Poll while watching. The default interval is 250ms. |
+| `--poll[=ms]` | | Use polling instead of the native watcher. The default interval is 250ms. |
 | `--minify` | `-m` | Optimize and minify CSS. |
 | `--optimize` | | Optimize CSS without minifying it. |
 | `--cwd <dir>` | | Set the working directory used for input, output, and dependency resolution. |

@@ -110,6 +110,22 @@ describe('Tailwind CLI build parity', () => {
     }
   })
 
+  test('rebuilds in native watch mode by default', async () => {
+    const project = await fixture({
+      'input.css': '@import "tailwindcss" source(none);\n@source "./index.html";\n',
+      'index.html': '<div class="flex"></div>',
+    })
+    const child = spawnCli(project.root, ['-i', 'input.css', '-o', 'out.css', '--watch', '--silent'])
+    try {
+      await retryAssertion(async () => expect(await project.read('out.css')).toContain('.flex'))
+      await project.write('index.html', '<div class="grid"></div>')
+      await retryAssertion(async () => expect(await project.read('out.css')).toContain('.grid'))
+    }
+    finally {
+      child.kill('SIGTERM')
+    }
+  })
+
   test('converts CSS only when --target weapp is explicit', async () => {
     const project = await fixture({ 'input.css': inputCss })
     await runCli(project.root, ['-i', 'input.css', '-o', 'web.css', '--target', 'web', '--silent'])

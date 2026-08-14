@@ -75,7 +75,7 @@ Build options:
   -i, --input <file>       Input CSS file (use - for stdin)
   -o, --output <file>      Output CSS file (defaults to stdout)
   -w, --watch[=always]     Watch for changes and rebuild
-      --poll[=ms]          Poll for changes while watching
+      --poll[=ms]          Use polling instead of the native watcher (default 250ms)
   -m, --minify             Optimize and minify the output
       --optimize           Optimize without minifying
       --cwd <dir>          Set the working directory

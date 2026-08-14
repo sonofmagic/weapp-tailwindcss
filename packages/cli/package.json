@@ -55,6 +55,7 @@
     "tailwindcss": "^4.0.0"
   },
   "dependencies": {
+    "@parcel/watcher": "catalog:buildUtilities",
     "@tailwindcss-mangle/engine": "catalog:tailwindcssMangleEngine",
     "@weapp-tailwindcss/logger": "workspace:*",
     "fast-glob": "catalog:buildUtilities",
