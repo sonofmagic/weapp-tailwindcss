@@ -23,10 +23,6 @@ export const runtimeEntries = {
   'postcss-html-transform': 'src/postcss-html-transform.ts',
 } as const
 
-export const cliEntries = {
-  cli: 'src/cli.ts',
-} as const
-
 export const escapeEntries = {
   escape: 'src/escape.ts',
 } as const
@@ -103,34 +99,6 @@ export function createTsdownConfigs(options: WatchAwareOptions = {}) {
     {
       // loaders 与 runtime 共用构建图，避免 Babel 8 等 ESM-only 依赖被重复内联。
       entry: runtimeCjsEntries,
-      dts: false,
-      clean: false,
-      shims: true,
-      format: ['cjs'],
-      deps: {
-        alwaysBundle: bundleCjsRuntimeDeps,
-        neverBundle: externalizeCommonRuntimeDeps,
-        onlyBundle: false,
-      },
-      target: ['es2020'],
-      outExtensions: moduleOutExtensions,
-    },
-    {
-      // CLI 单独构建，避免依赖污染 runtime 入口共享 chunk。
-      entry: cliEntries,
-      dts: false,
-      clean: false,
-      shims: true,
-      format: ['esm'],
-      deps: {
-        neverBundle: externalizeEsmRuntimeDeps,
-        onlyBundle: false,
-      },
-      target: ['es2020'],
-      outExtensions: moduleOutExtensions,
-    },
-    {
-      entry: cliEntries,
       dts: false,
       clean: false,
       shims: true,

@@ -4,8 +4,8 @@ import {
   logObsoletePatchCommand,
   logPatchCommandObsoleteNotice,
   obsoletePatchCommands,
-} from '@/cli/mount-options'
-import { logger } from '@/logger'
+} from '@/mount-options'
+import { logger } from '@weapp-tailwindcss/logger'
 
 describe('obsolete patch command notices', () => {
   beforeEach(() => {

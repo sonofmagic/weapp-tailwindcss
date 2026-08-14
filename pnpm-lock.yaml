@@ -42,6 +42,9 @@ catalogs:
       specifier: ^2.11.13
       version: 2.11.13
   buildUtilities:
+    '@parcel/watcher':
+      specifier: ^2.5.6
+      version: 2.5.6
     debug:
       specifier: ~4.4.3
       version: 4.4.3
@@ -57,6 +60,9 @@ catalogs:
     htmlparser2:
       specifier: ^12.0.0
       version: 12.0.0
+    lightningcss:
+      specifier: ^1.33.0
+      version: 1.33.0
     local-pkg:
       specifier: ^1.2.1
       version: 1.2.1
@@ -4098,6 +4104,33 @@ importers:
         specifier: workspace:*
         version: link:../wetw
 
+  packages/cli:
+    dependencies:
+      '@parcel/watcher':
+        specifier: catalog:buildUtilities
+        version: 2.5.6
+      '@tailwindcss-mangle/engine':
+        specifier: catalog:tailwindcssMangleEngine
+        version: 0.2.0(tailwindcss@4.3.3)
+      '@weapp-tailwindcss/logger':
+        specifier: workspace:*
+        version: link:../logger
+      fast-glob:
+        specifier: catalog:buildUtilities
+        version: 3.3.3
+      lightningcss:
+        specifier: catalog:buildUtilities
+        version: 1.33.0
+      semver:
+        specifier: ~7.8.5
+        version: 7.8.5
+      tailwindcss:
+        specifier: ^4.0.0
+        version: 4.3.3
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../weapp-tailwindcss
+
   packages/debug-uni-app-x:
     dependencies:
       defu:
@@ -4446,6 +4479,9 @@ importers:
       htmlparser2:
         specifier: catalog:buildUtilities
         version: 12.0.0
+      lightningcss:
+        specifier: catalog:buildUtilities
+        version: 1.33.0
       local-pkg:
         specifier: catalog:buildUtilities
         version: 1.2.1
@@ -20501,10 +20537,6 @@ packages:
 
   enhanced-resolve@5.24.2:
     resolution: {integrity: sha512-rpsZEGT1jFuve6QlpyRp9ckQ+kN61hvF9BzCPyMdaKTm8UJce96KBn3sorXOFXlzjPrs3Vc4T1NsSroZ3PxlFw==}
-    engines: {node: '>=10.13.0'}
-
-  enhanced-resolve@5.24.3:
-    resolution: {integrity: sha512-PwKooW9JUzh5chmYfHM3IQl5OkK2u2Nm011MgeZrss3JmFraUx/fqrf78kk8GUMYoibx/14MdwTl/1WKkG7TpQ==}
     engines: {node: '>=10.13.0'}
 
   enhanced-resolve@5.24.5:
@@ -44715,7 +44747,6 @@ snapshots:
       '@parcel/watcher-win32-arm64': 2.5.6
       '@parcel/watcher-win32-ia32': 2.5.6
       '@parcel/watcher-win32-x64': 2.5.6
-    optional: true
 
   '@peculiar/asn1-cms@2.7.0':
     dependencies:
@@ -56532,11 +56563,6 @@ snapshots:
       graceful-fs: 4.2.11
       tapable: 2.3.3
 
-  enhanced-resolve@5.24.3:
-    dependencies:
-      graceful-fs: 4.2.11
-      tapable: 2.3.3
-
   enhanced-resolve@5.24.5:
     dependencies:
       graceful-fs: 4.2.11
@@ -57339,7 +57365,7 @@ snapshots:
   eslint-plugin-n@18.2.2(eslint@10.8.1(jiti@2.7.0)(supports-color@10.2.2))(ts-declaration-location@1.0.7(typescript@6.0.3))(typescript@6.0.3):
     dependencies:
       '@eslint-community/eslint-utils': 4.9.1(eslint@10.8.1(jiti@2.7.0)(supports-color@10.2.2))
-      enhanced-resolve: 5.24.3
+      enhanced-resolve: 5.24.5
       eslint: 10.8.1(jiti@2.7.0)(supports-color@10.2.2)
       eslint-plugin-es-x: 7.8.0(eslint@10.8.1(jiti@2.7.0)(supports-color@10.2.2))
       get-tsconfig: 4.14.1
@@ -64440,8 +64466,7 @@ snapshots:
 
   node-abort-controller@3.1.1: {}
 
-  node-addon-api@7.1.1:
-    optional: true
+  node-addon-api@7.1.1: {}
 
   node-dir@0.1.17:
     dependencies:
@@ -67036,7 +67061,7 @@ snapshots:
 
   postcss-tailwindcss@3.0.3:
     dependencies:
-      enhanced-resolve: 5.24.3
+      enhanced-resolve: 5.24.5
       get-tsconfig: 4.14.1
       postcss: 8.5.26
       postcss-selector-parser: 7.1.5
@@ -70524,7 +70549,7 @@ snapshots:
 
   tailwind-api-utils@1.0.3(tailwindcss@4.3.3):
     dependencies:
-      enhanced-resolve: 5.24.3
+      enhanced-resolve: 5.24.5
       jiti: 2.7.0
       local-pkg: 1.2.1
       tailwindcss: 4.3.3

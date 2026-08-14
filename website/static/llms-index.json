@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-13T09:11:02.100Z",
+  "generatedAt": "2026-08-13T15:19:47.446Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 167,
@@ -5602,12 +5602,19 @@
       "kind": "doc",
       "id": "doc:tools/weapp-tw-cli",
       "title": "weapp-tw CLI 使用指南",
-      "description": "weapp-tailwindcss 自带一个 weapp-tw 命令行工具，负责辅助生成类名缓存、收集 token 和输出兼容提示。以下内容介绍常用命令及最佳实践。",
-      "summary": "weapp-tailwindcss 自带一个 weapp-tw 命令行工具，负责辅助生成类名缓存、收集 token 和输出兼容提示。weapp-tailwindcss@5 已由构建运行时接管 Tailwind CSS 处理，weapp-tw patch 不再是必须步骤。",
+      "description": "使用 weapp-tw 构建 Tailwind CSS、监听文件、生成 source map、规范化候选类，并按需输出小程序兼容 CSS。",
+      "summary": "@weapp-tailwindcss/cli 独立发布 weapp-tw 和 weapp-tailwindcss 两个等价命令。构建命令默认输出 Web CSS，并对齐当前 Tailwind CSS CLI 的输入、输出、watch、优化和 source map 行为。",
       "url": "/docs/tools/weapp-tw-cli",
       "canonical": "https://tw.icebreaker.top/docs/tools/weapp-tw-cli",
       "keywords": [
         "weapp-tw",
+        "Tailwind CSS CLI",
+        "watch",
+        "canonicalize",
+        "小程序 CSS",
+        "source map",
+        "Tailwind watch",
+        "Web CSS",
         "CLI",
         "使用指南",
         "tools",
@@ -5615,20 +5622,15 @@
         "weapp-tailwindcss",
         "tailwindcss",
         "小程序",
-        "微信小程序",
-        "uni-app",
-        "taro",
-        "mpx"
+        "微信小程序"
       ],
       "headings": [
-        "常见场景",
-        "`patch` 子命令",
-        "# 功能",
-        "# 常用参数",
-        "`extract` 子命令",
-        "`tokens` 子命令",
-        "`status` 子命令",
-        "快速排查指引"
+        "安装",
+        "构建参数",
+        "小程序 CSS 目标",
+        "canonicalize",
+        "兼容与辅助命令",
+        "常见错误"
       ],
       "updatedAt": null,
       "source": "docs/tools/weapp-tw-cli.mdx"

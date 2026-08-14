@@ -302,6 +302,79 @@ describe('bundlers/shared generator css', () => {
     expect(dispose).toHaveBeenCalledTimes(1)
   })
 
+  it('acquires compiler sessions before asynchronous source resolution', async () => {
+    let continueResolution: (() => void) | undefined
+    let markResolutionStarted: (() => void) | undefined
+    const resolutionGate = new Promise<void>((resolve) => {
+      continueResolution = resolve
+    })
+    const resolutionStarted = new Promise<void>((resolve) => {
+      markResolutionStarted = resolve
+    })
+    const dispose = vi.fn()
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        dispose,
+        async generate() {
+          return {
+            css: '.text-\\[24rpx\\]{font-size:24rpx}',
+            rawCss: '.text-\\[24rpx\\]{font-size:24rpx}',
+            target: 'weapp',
+            classSet: new Set(['text-[24rpx]']),
+            dependencies: [],
+            root: null,
+          }
+        },
+      })),
+      async resolveTailwindV4Source(options: any = {}) {
+        markResolutionStarted?.()
+        await resolutionGate
+        return {
+          projectRoot: process.cwd(),
+          base: process.cwd(),
+          baseFallbacks: [],
+          css: options.css ?? '@import "tailwindcss";',
+          dependencies: options.cssEntries ?? [],
+        }
+      },
+    }))
+
+    const runtimeState = {
+      tailwindRuntime: { majorVersion: 4 } as any,
+      readyPromise: Promise.resolve(),
+    }
+    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    const { disposeCompilerOwner } = await import('@/compiler')
+    const generation = generateTailwindV4Css({
+      opts: {
+        generator: { target: 'weapp' },
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState,
+      runtime: new Set(['text-[24rpx]']),
+      rawSource: '@import "tailwindcss";',
+      file: '/workspace/src/app.css',
+      outputFile: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {} as any,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+    })
+
+    await resolutionStarted
+    const disposal = disposeCompilerOwner(runtimeState)
+    continueResolution?.()
+
+    await expect(generation).resolves.toMatchObject({
+      classSet: new Set(['text-[24rpx]']),
+    })
+    await disposal
+    expect(dispose).toHaveBeenCalledTimes(1)
+  })
+
   it('adapts generated mini-program CSS through the complete framework PostCSS pipeline', async () => {
     const frameworkPlugin = {
       postcssPlugin: 'framework-token-transform',

@@ -6,9 +6,9 @@ import {
   createDoctorReport,
   formatDoctorReport,
   hasDoctorFailure,
-} from '@/cli/doctor'
+} from '@/doctor'
 import { WEAPP_TW_REQUIRED_NODE_VERSION_RANGE } from '@/constants'
-import packageJson from '../../package.json'
+import packageJson from '../package.json'
 
 const TMP_PREFIX = 'weapp-tw-doctor'
 

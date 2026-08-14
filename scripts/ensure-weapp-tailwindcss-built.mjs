@@ -84,10 +84,7 @@ export const buildTargets = [
     filter: 'weapp-tailwindcss',
     label: '核心包',
     packageRoot: path.join(repoRoot, 'packages/weapp-tailwindcss'),
-    extraStamps: [
-      'dist/cli.cjs',
-      'dist/weapp-tw-runtime-classset-loader.cjs',
-    ],
+    extraStamps: ['dist/weapp-tw-runtime-classset-loader.cjs'],
   },
 ]
 

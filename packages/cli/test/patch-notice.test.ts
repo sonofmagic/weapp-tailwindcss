@@ -2,10 +2,10 @@ import { describe, expect, it, vi } from 'vitest'
 import {
   logPatchCommandObsoleteNotice,
   PATCH_COMMAND_OBSOLETE_NOTICE,
-} from '../../src/cli/mount-options'
-import { logger } from '../../src/logger'
+} from '@/mount-options'
+import { logger } from '@weapp-tailwindcss/logger'
 
-vi.mock('../../src/logger', () => ({
+vi.mock('@weapp-tailwindcss/logger', () => ({
   logger: {
     warn: vi.fn(),
   },

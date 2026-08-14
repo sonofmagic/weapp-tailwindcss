@@ -154,12 +154,7 @@
       ]
     }
   },
-  "bin": {
-    "weapp-tailwindcss": "bin/weapp-tailwindcss.cjs",
-    "weapp-tw": "bin/weapp-tailwindcss.cjs"
-  },
   "files": [
-    "bin",
     "css",
     "dist",
     "generator-placeholder.css",
@@ -178,7 +173,6 @@
     "build": "tsdown && tsc -p tsconfig.build.json --declaration --emitDeclarationOnly --declarationDir dist --noEmit false && tsx ../../tools/weapp-tailwindcss-scripts/src/rewrite-dts-aliases.ts && tsx ../../tools/weapp-tailwindcss-scripts/src/create-entry-dts.ts && tsx ../../tools/weapp-tailwindcss-scripts/src/ensure-escape-dts.ts",
     "build:types": "tsc -p tsconfig.build.json --declaration --emitDeclarationOnly --declarationDir dist --noEmit false && tsx ../../tools/weapp-tailwindcss-scripts/src/rewrite-dts-aliases.ts && tsx ../../tools/weapp-tailwindcss-scripts/src/create-entry-dts.ts",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
-    "build:cli": "cd plugins/cli && pnpm run build",
     "build:css": "pnpm --filter @weapp-tailwindcss/scripts build:css",
     "build:weapp-theme": "pnpm --filter @weapp-tailwindcss/scripts build:weapp-theme",
     "test": "vitest run",
@@ -239,6 +233,7 @@
     "debug": "catalog:buildUtilities",
     "fast-glob": "catalog:buildUtilities",
     "htmlparser2": "catalog:buildUtilities",
+    "lightningcss": "catalog:buildUtilities",
     "local-pkg": "catalog:buildUtilities",
     "lru-cache": "catalog:buildUtilities",
     "magic-string": "catalog:buildUtilities",

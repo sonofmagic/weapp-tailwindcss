@@ -1,6 +1,6 @@
 import { mkdir } from 'node:fs/promises'
 import process from 'node:process'
-import { logger } from '@/logger'
+import { logger } from '@weapp-tailwindcss/logger'
 import {
   normalizeExtractFormat,
   normalizeTokenFormat,
