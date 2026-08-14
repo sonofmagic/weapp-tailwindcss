@@ -1,0 +1,42 @@
+name: Package README Quality
+
+on:
+  pull_request:
+    paths:
+      - 'packages/*/README*.md'
+      - 'packages/*/package.json'
+      - 'packages-runtime/*/README*.md'
+      - 'packages-runtime/*/package.json'
+      - scripts/check-package-readmes.mjs
+      - .github/workflows/package-readme-quality.yml
+  push:
+    branches: [main, next]
+    paths:
+      - 'packages/*/README*.md'
+      - 'packages/*/package.json'
+      - 'packages-runtime/*/README*.md'
+      - 'packages-runtime/*/package.json'
+      - scripts/check-package-readmes.mjs
+      - .github/workflows/package-readme-quality.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate published package READMEs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Validate bilingual package READMEs
+        run: node scripts/check-package-readmes.mjs

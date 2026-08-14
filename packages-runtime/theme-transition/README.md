@@ -1,9 +1,9 @@
 # theme-transition
 
-> 简体中文 | [English](./README.en.md)
+> English | [简体中文](./README.zh-CN.md)
 
-这个包提供主题切换运行时和 Tailwind 插件，封装 View Transition API，并在不支持时自动降级到普通主题切换。
+This package provides a theme transition runtime and Tailwind plugin, wrapping the View Transition API and falling back to normal theme toggles when unsupported.
 
-## 官网
+## Website
 
-更多接入方式、配置说明和框架示例见 [weapp-tailwindcss 官方文档](https://tw.icebreaker.top)。
+For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.icebreaker.top).

@@ -1,9 +1,9 @@
 # @weapp-tailwindcss/init
 
-> 简体中文 | [English](./README.en.md)
+> English | [简体中文](./README.zh-CN.md)
 
-这个包负责初始化 weapp-tailwindcss 相关配置，会帮助项目写入 Tailwind、PostCSS 和依赖版本等接入所需文件。
+This package initializes weapp-tailwindcss related project configuration, including Tailwind, PostCSS, dependency versions, and required setup files.
 
-## 官网
+## Website
 
-更多接入方式、配置说明和框架示例见 [weapp-tailwindcss 官方文档](https://tw.icebreaker.top)。
+For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.icebreaker.top).
