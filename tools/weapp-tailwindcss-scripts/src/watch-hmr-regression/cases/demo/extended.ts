@@ -676,6 +676,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/pages/index/index.tsx'),
       cssEntryFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/app.css'),
       injectMarkerElement: true,
+      // TSX 注释已携带待扫描 class；只写源码，避免 macOS watcher 合并相邻的源码与 CSS 原子替换事件。
+      touchCssEntryOnSourceMutation: false,
       reloadOnHmrStall: true,
       hmrReloadStallMs: 5_000,
       env: {

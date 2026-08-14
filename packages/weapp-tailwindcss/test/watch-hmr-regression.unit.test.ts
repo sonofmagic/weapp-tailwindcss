@@ -3403,6 +3403,7 @@ describe('watch-hmr regression cases', () => {
       const watchCase = demoExtendedCases.find(item => item.name === caseName)
       expect(watchCase?.webHmr?.reloadOnHmrStall, caseName).toBe(true)
       expect(watchCase?.webHmr?.hmrReloadStallMs, caseName).toBe(5_000)
+      expect(watchCase?.webHmr?.touchCssEntryOnSourceMutation, caseName).toBe(false)
     }
   })
 
