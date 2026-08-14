@@ -96,13 +96,13 @@ test.describe('homepage hero layout', () => {
     expect(platformLabels).toEqual(['Web', '小程序', 'Android', 'iOS', 'HarmonyOS', 'React Native', 'Lynx'])
     const platformHrefs = await platformIcons.evaluateAll(elements => elements.map(element => element.getAttribute('href')))
     expect(platformHrefs).toEqual([
-      '/docs/intro',
-      '/docs/quick-start/native/install',
-      '/docs/quick-start/frameworks/uni-app-x',
-      '/docs/quick-start/frameworks/uni-app-x',
-      '/docs/quick-start/frameworks/uni-app-x',
-      '/docs/quick-start/react-native-expo',
-      '/docs/quick-start/frameworks/lynx',
+      '/zh-cn/docs/intro',
+      '/zh-cn/docs/quick-start/native/install',
+      '/zh-cn/docs/quick-start/frameworks/uni-app-x',
+      '/zh-cn/docs/quick-start/frameworks/uni-app-x',
+      '/zh-cn/docs/quick-start/frameworks/uni-app-x',
+      '/zh-cn/docs/quick-start/react-native-expo',
+      '/zh-cn/docs/quick-start/frameworks/lynx',
     ])
     await expect(platformIcons.nth(0).locator('[class~="icon-[logos--html-5]"]')).toHaveCount(1)
     await expect(platformIcons.nth(1).locator('.home-hero__platform-logo--mini-program')).toHaveCount(1)
@@ -116,7 +116,7 @@ test.describe('homepage hero layout', () => {
     await expect(page.locator('[class~="icon-[mdi--wechat]"], [class~="icon-[mdi--cellphone-link]"]')).toHaveCount(0)
     await expect(primaryCta).toBeVisible()
     await expect(primaryCta).toHaveText(/开始接入/)
-    await expect(primaryCta).toHaveAttribute('href', '/docs/quick-start/install')
+    await expect(primaryCta).toHaveAttribute('href', '/zh-cn/docs/quick-start/install')
     await expect(secondaryActions).toHaveCount(2)
     await expect(githubBadge).toBeVisible()
     await expect(pipeline).toBeVisible()
@@ -235,7 +235,7 @@ test.describe('homepage hero layout', () => {
   test('English homepage keeps the semantic platform icon order', async ({ page }) => {
     await setStoredLocale(page, 'en')
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto(new URL('/en/', baseURL).toString(), {
+    await page.goto(baseURL, {
       waitUntil: 'networkidle',
     })
 
@@ -245,13 +245,13 @@ test.describe('homepage hero layout', () => {
     const platformHrefs = await page.locator('.home-hero__platform-icon')
       .evaluateAll(elements => elements.map(element => element.getAttribute('href')))
     expect(platformHrefs).toEqual([
-      '/en/docs/intro',
-      '/en/docs/quick-start/native/install',
-      '/en/docs/quick-start/frameworks/uni-app-x',
-      '/en/docs/quick-start/frameworks/uni-app-x',
-      '/en/docs/quick-start/frameworks/uni-app-x',
-      '/en/docs/quick-start/react-native-expo',
-      '/en/docs/quick-start/frameworks/lynx',
+      '/docs/intro',
+      '/docs/quick-start/native/install',
+      '/docs/quick-start/frameworks/uni-app-x',
+      '/docs/quick-start/frameworks/uni-app-x',
+      '/docs/quick-start/frameworks/uni-app-x',
+      '/docs/quick-start/react-native-expo',
+      '/docs/quick-start/frameworks/lynx',
     ])
   })
 
@@ -260,20 +260,20 @@ test.describe('homepage hero layout', () => {
     await page.goto(baseURL, { waitUntil: 'networkidle' })
 
     await page.getByRole('link', { name: 'React Native' }).click()
+    await expect(page).toHaveURL(/\/zh-cn\/docs\/quick-start\/react-native-expo\/?$/)
+
+    await page.goto(baseURL, { waitUntil: 'networkidle' })
+    await page.getByRole('link', { name: 'Lynx' }).click()
+    await expect(page).toHaveURL(/\/zh-cn\/docs\/quick-start\/frameworks\/lynx\/?$/)
+
+    await page.evaluate(key => window.localStorage.setItem(key, 'en'), localeStorageKey)
+    await page.goto(baseURL, { waitUntil: 'networkidle' })
+    await page.getByRole('link', { name: 'React Native' }).click()
     await expect(page).toHaveURL(/\/docs\/quick-start\/react-native-expo\/?$/)
 
     await page.goto(baseURL, { waitUntil: 'networkidle' })
     await page.getByRole('link', { name: 'Lynx' }).click()
     await expect(page).toHaveURL(/\/docs\/quick-start\/frameworks\/lynx\/?$/)
-
-    await setStoredLocale(page, 'en')
-    await page.goto(new URL('/en/', baseURL).toString(), { waitUntil: 'networkidle' })
-    await page.getByRole('link', { name: 'React Native' }).click()
-    await expect(page).toHaveURL(/\/en\/docs\/quick-start\/react-native-expo\/?$/)
-
-    await page.goto(new URL('/en/', baseURL).toString(), { waitUntil: 'networkidle' })
-    await page.getByRole('link', { name: 'Lynx' }).click()
-    await expect(page).toHaveURL(/\/en\/docs\/quick-start\/frameworks\/lynx\/?$/)
   })
 
   test('primary CTA remains readable in light mode', async ({ page }) => {
@@ -309,7 +309,7 @@ test.describe('homepage hero layout', () => {
     const primaryCta = page.locator('.home-hero__actions .home-cta')
     await expect(primaryCta).toBeVisible()
     await expect(primaryCta).toHaveText(/开始接入/)
-    await expect(primaryCta).toHaveAttribute('href', '/docs/quick-start/install')
+    await expect(primaryCta).toHaveAttribute('href', '/zh-cn/docs/quick-start/install')
 
     const actionBoxes = await page.locator('.home-hero__actions a').evaluateAll(elements => elements.map((element) => {
       const rect = element.getBoundingClientRect()
@@ -335,121 +335,146 @@ test.describe('homepage hero layout', () => {
 })
 
 test.describe('homepage locale detection', () => {
-  test('redirects root visitors to /en when browser language is English', async ({ page }) => {
+  test('keeps English browsers on the default root locale', async ({ page }) => {
     await page.addInitScript((key) => {
       window.localStorage.removeItem(key)
     }, localeStorageKey)
     await setNavigatorLanguages(page, ['en-US', 'en'])
 
     await page.goto(baseURL, {
-      waitUntil: 'networkidle',
+      waitUntil: 'domcontentloaded',
     })
 
-    await expect(page).toHaveURL(/\/en\/?$/)
+    await expect(page).toHaveURL(/https?:\/\/[^/]+\/?$/)
     await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/Start setup/)
     await expect(page.locator('html')).toHaveAttribute('lang', /en/i)
   })
 
-  test('keeps Chinese when navigator languages include Chinese', async ({ page }) => {
+  test('redirects to Chinese when navigator languages include Chinese', async ({ page }) => {
     await page.addInitScript((key) => {
       window.localStorage.removeItem(key)
     }, localeStorageKey)
     await setNavigatorLanguages(page, ['en-US', 'en', 'zh-CN'])
 
     await page.goto(baseURL, {
-      waitUntil: 'networkidle',
+      waitUntil: 'domcontentloaded',
     })
 
-    await expect(page).toHaveURL(/https?:\/\/[^/]+\/?$/)
+    await expect(page).toHaveURL(/\/zh-cn\/?$/)
     await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/开始接入/)
     await expect(page.locator('html')).toHaveAttribute('lang', /zh/i)
   })
 
-  test('redirects non-Chinese browser languages to English', async ({ page }) => {
+  test('keeps non-Chinese browser languages on English', async ({ page }) => {
     await page.addInitScript((key) => {
       window.localStorage.removeItem(key)
     }, localeStorageKey)
     await setNavigatorLanguages(page, ['fr-FR', 'fr'])
 
     await page.goto(baseURL, {
-      waitUntil: 'networkidle',
+      waitUntil: 'domcontentloaded',
     })
 
-    await expect(page).toHaveURL(/\/en\/?$/)
+    await expect(page).toHaveURL(/https?:\/\/[^/]+\/?$/)
     await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/Start setup/)
     await expect(page.locator('html')).toHaveAttribute('lang', /en/i)
   })
 
-  test('respects stored English preference on the root page', async ({ page }) => {
+  test('respects stored English preference over a Chinese browser locale', async ({ page }) => {
     await setStoredLocale(page, 'en')
+    await setNavigatorLanguages(page, ['zh-CN', 'zh'])
 
     await page.goto(baseURL, {
-      waitUntil: 'networkidle',
+      waitUntil: 'domcontentloaded',
     })
 
-    await expect(page).toHaveURL(/\/en\/?$/)
+    await expect(page).toHaveURL(/https?:\/\/[^/]+\/?$/)
     await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/Start setup/)
+  })
+
+  test('respects stored Chinese preference on the root page', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
+
+    await page.goto(baseURL, {
+      waitUntil: 'domcontentloaded',
+    })
+
+    await expect(page).toHaveURL(/\/zh-cn\/?$/)
+    await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/开始接入/)
   })
 
   test('switches from English to Chinese and persists the selection', async ({ page }) => {
     await setStoredLocale(page, 'en')
 
-    await page.goto(new URL('/en/', baseURL).toString(), {
-      waitUntil: 'networkidle',
+    await page.goto(baseURL, {
+      waitUntil: 'domcontentloaded',
     })
 
     const localeDropdown = page.locator('.navbar__item.dropdown').filter({ hasText: 'English' })
     await expect(localeDropdown).toHaveCount(1)
     await localeDropdown.hover()
 
-    const chineseLink = localeDropdown.locator('a[href="/"]')
+    const chineseLink = localeDropdown.locator('a[href="/zh-cn/"]')
     await expect(chineseLink).toHaveText('中文')
     await chineseLink.click()
 
-    await expect(page).toHaveURL(/https?:\/\/[^/]+\/?$/)
+    await expect(page).toHaveURL(/\/zh-cn\/?$/)
     await expect(page.locator('.home-hero__actions .home-cta')).toHaveText(/开始接入/)
     await expect(page.locator('html')).toHaveAttribute('lang', /zh/i)
 
     const chineseLocaleDropdown = page.locator('.navbar__item.dropdown').filter({ hasText: '中文' })
     await expect(chineseLocaleDropdown).toHaveCount(1)
     await chineseLocaleDropdown.hover()
-    await expect(chineseLocaleDropdown.locator('a[href^="/en/"]')).toHaveText('English')
+    await expect(chineseLocaleDropdown.locator('a[href="/"]')).toHaveText('English')
 
     await page.goto(baseURL, {
-      waitUntil: 'networkidle',
+      waitUntil: 'domcontentloaded',
     })
-    await expect(page).toHaveURL(/https?:\/\/[^/]+\/?$/)
+    await expect(page).toHaveURL(/\/zh-cn\/?$/)
     await expect(page.locator('html')).toHaveAttribute('lang', /zh/i)
   })
 
   test('keeps repeated locale switches on canonical paths', async ({ page }) => {
     await setStoredLocale(page, 'zh-cn')
-    await page.goto(new URL('/docs/quick-start/install', baseURL).toString(), {
-      waitUntil: 'networkidle',
+    await page.goto(new URL('/zh-cn/docs/quick-start/install', baseURL).toString(), {
+      waitUntil: 'domcontentloaded',
     })
 
     for (let index = 0; index < 3; index += 1) {
+      await page.locator('.navbar__item.dropdown').filter({ hasText: '中文' }).hover()
       const englishLink = page.locator('.navbar__item.dropdown a[lang^="en"]')
-      await expect(englishLink).toHaveAttribute('href', '/en/docs/quick-start/install')
+      await expect(englishLink).toHaveAttribute('href', '/docs/quick-start/install')
       await englishLink.click()
-      await expect(page).toHaveURL(/\/en\/docs\/quick-start\/install$/)
-      expect(new URL(page.url()).pathname).not.toMatch(/^\/en\/en(?:\/|$)/)
-
-      const chineseLink = page.locator('.navbar__item.dropdown a[lang^="zh"]')
-      await expect(chineseLink).toHaveAttribute('href', '/docs/quick-start/install')
-      await chineseLink.click()
       await expect(page).toHaveURL(/\/docs\/quick-start\/install$/)
+
+      await page.locator('.navbar__item.dropdown').filter({ hasText: 'English' }).hover()
+      const chineseLink = page.locator('.navbar__item.dropdown a[lang^="zh"]')
+      await expect(chineseLink).toHaveAttribute('href', '/zh-cn/docs/quick-start/install')
+      await chineseLink.click()
+      await expect(page).toHaveURL(/\/zh-cn\/docs\/quick-start\/install$/)
+      expect(new URL(page.url()).pathname).not.toMatch(/^\/zh-cn\/zh-cn(?:\/|$)/)
     }
   })
 
-  test('recovers repeated English prefixes to a canonical page', async ({ page }) => {
-    await page.goto(new URL('/en/en/en', baseURL).toString(), {
-      waitUntil: 'networkidle',
+  test('recovers repeated Chinese prefixes to a canonical page', async ({ page }) => {
+    await page.goto(new URL('/zh-cn/zh-cn/zh-cn', baseURL).toString(), {
+      waitUntil: 'domcontentloaded',
     })
 
-    await expect(page).toHaveURL(/\/en\/?$/)
-    await expect(page.locator('html')).toHaveAttribute('lang', /en/i)
+    await expect(page).toHaveURL(/\/zh-cn\/?$/)
+    await expect(page.locator('html')).toHaveAttribute('lang', /zh/i)
     await expect(page.locator('h1')).toContainText('weapp-tailwindcss')
+  })
+
+  test('redirects legacy English prefixes to unprefixed canonical paths', async ({ page }) => {
+    await setStoredLocale(page, 'en')
+    await page.goto(new URL('/en/en/docs/intro', baseURL).toString(), {
+      waitUntil: 'domcontentloaded',
+    })
+
+    await expect(page).toHaveURL(/\/docs\/intro$/)
+    await expect(page.locator('html')).toHaveAttribute('lang', /en/i)
+    await expect(page.locator('h1')).toHaveText('Introduction')
   })
 
   test('keeps the desktop locale switcher icon and label on one line', async ({ page }) => {
@@ -458,12 +483,12 @@ test.describe('homepage locale detection', () => {
     for (const width of [1440, 1100]) {
       await page.setViewportSize({ width, height: 800 })
       await page.goto(baseURL, {
-        waitUntil: 'networkidle',
+        waitUntil: 'domcontentloaded',
       })
 
       const localeLink = page.locator('.navbar__item.dropdown > .navbar__link').filter({ hasText: '中文' })
       await expect(localeLink).toHaveCount(1)
-      await expect(localeLink).toHaveCSS('display', 'inline-flex')
+      await expect(localeLink).toHaveCSS('display', /^(?:inline-)?flex$/)
       await expect(localeLink).toHaveCSS('white-space', 'nowrap')
 
       const alignment = await localeLink.evaluate((link) => {
@@ -517,16 +542,16 @@ test.describe('homepage locale detection', () => {
     }
   })
 
-  test('serves translated docs and blog samples for English pages', async ({ page }) => {
-    await page.goto(new URL('/en/docs/intro', baseURL).toString(), {
-      waitUntil: 'networkidle',
+  test('serves English docs and blog samples on unprefixed pages', async ({ page }) => {
+    await page.goto(new URL('/docs/intro', baseURL).toString(), {
+      waitUntil: 'domcontentloaded',
     })
     await expect(page.locator('h1')).toHaveText('Introduction')
     await expect(page.locator('html')).toHaveAttribute('lang', /en/i)
     await expect(page.locator('head meta[http-equiv="Content-Language"]')).toHaveAttribute('content', /en/i)
 
-    await page.goto(new URL('/en/blog/2025/9/v4.3-release', baseURL).toString(), {
-      waitUntil: 'networkidle',
+    await page.goto(new URL('/blog/2025/9/v4.3-release', baseURL).toString(), {
+      waitUntil: 'domcontentloaded',
     })
     await expect(page.locator('h1')).toContainText('4.3.0')
     await expect(page.locator('html')).toHaveAttribute('lang', /en/i)
@@ -543,7 +568,7 @@ test.describe('mobile navbar sidebar', () => {
 
   test('keeps the document menu visible and navigable', async ({ page }) => {
     await setStoredLocale(page, 'zh-cn')
-    await page.goto(new URL('/docs/intro', baseURL).toString(), {
+    await page.goto(new URL('/zh-cn/docs/intro', baseURL).toString(), {
       waitUntil: 'networkidle',
     })
 

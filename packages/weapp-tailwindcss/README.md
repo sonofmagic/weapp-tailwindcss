@@ -1,29 +1,64 @@
 # weapp-tailwindcss
 
-> 简体中文 | [English](./README.en.md)
+> English | [简体中文](./README.zh-CN.md)
 
-这个包是跨端 Tailwind CSS 工具链的核心编译与构建入口，负责 Web 与小程序的样式生成、类名转译、CSS 兼容和框架构建适配，并为 React Native、Lynx 等生态集成提供 Tailwind v4 生成基础。
+Bring Tailwind CSS to every platform. `weapp-tailwindcss` is the core compiler and build integration layer for delivering utility-first styles to Web, mini programs, and native cross-platform runtimes.
 
-## 官网
+## What it provides
 
-更多接入方式、配置说明和框架示例见 [weapp-tailwindcss 官方文档](https://tw.icebreaker.top)。
+- Tailwind CSS v4 generation through a shared compiler boundary.
+- Vite, Webpack, Rspack, Gulp, PostCSS, and Node.js integration points.
+- Precise class transformation based on the generated Tailwind candidate set.
+- CSS compatibility transforms for WeChat, Alipay, ByteDance, QQ, and other mini-program style environments.
+- Shared generation foundations for React Native, Expo, ReactLynx, and Rspeedy integrations.
+
+## Choose an integration
+
+| Target | Recommended entry |
+| --- | --- |
+| Web / H5 | `weapp-tailwindcss/vite`, Webpack/Rspack integration, or `@weapp-tailwindcss/cli` |
+| uni-app / uni-app x | Vite or Webpack integration selected by the framework build chain |
+| Taro / Mpx / native mini programs | Vite, Webpack, Rspack, or Gulp integration |
+| React Native / Expo | `@weapp-tailwindcss/react-native` |
+| ReactLynx / Rspeedy | `@weapp-tailwindcss/lynx` |
+
+Start with the [installation guide](https://tw.icebreaker.top/docs/quick-start/install) or select a framework from the [documentation website](https://tw.icebreaker.top/).
+
+## Tailwind CSS 4 entry
+
+Your CSS entry must be imported by the application build graph. Configure `cssEntries` with absolute paths resolved from the project root when stable entry discovery is required, but do not treat it as a replacement for importing the CSS file.
+
+```css
+@import "tailwindcss";
+@source "./src";
+```
+
+Tailwind generation remains owned by `weapp-tailwindcss`. Do not add `@tailwindcss/vite` or `@tailwindcss/postcss` as a second generator in the same build.
 
 ## CLI
 
-CLI 已作为 `@weapp-tailwindcss/cli` 独立发布，需要与本包和 Tailwind CSS 一起安装：
+Install the independently published CLI together with this package and Tailwind CSS:
 
 ```bash
 pnpm add -D @weapp-tailwindcss/cli weapp-tailwindcss tailwindcss
+pnpm exec weapp-tw -i src/input.css -o dist/output.css --watch
 ```
 
-`weapp-tw` 默认提供与 Tailwind CSS CLI 对齐的 Web CSS 构建、watch、source map 与 `canonicalize` 能力。需要 CSS-only 的小程序兼容输出时可显式传入 `--target weapp`；完整 WXML/JS/WXSS 项目仍应使用构建器插件。详见 [CLI 使用指南](https://tw.icebreaker.top/docs/tools/weapp-tw-cli)。
+The CLI generates Web CSS by default. `--target weapp` performs CSS-only mini-program compatibility conversion; complete WXML, JavaScript, and WXSS projects still require a bundler integration. Watch mode uses `@parcel/watcher` native events by default and supports explicit polling with `--poll`.
 
-独立 CLI 直接复用本包的 Tailwind v4 generator、design system 与 source graph，不依赖或调用 `@tailwindcss/cli`。watch 使用跨平台轮询，因此也不依赖 `@parcel/watcher`。
+See the [CLI guide](https://tw.icebreaker.top/docs/tools/weapp-tw-cli) for source maps, stdin/stdout, watch mode, and `canonicalize`.
 
-Tailwind CSS 4 项目中，入口 CSS 需要同时满足两点：在项目里被实际引入，并通过 `cssEntries` 显式传给插件用于稳定识别。`cssEntries` 应使用项目根目录解析出的绝对路径；它不是替代 import 的开关。
+## Runtime requirements
 
-## 运行环境
+- Node.js `^22.18.0 || >=24.11.0` for the current release line.
+- HBuilderX `>=5.11` when using uni-app or uni-app x through HBuilderX.
 
-从 `weapp-tailwindcss@5.2.0` 开始，需要 Node.js `>=22.12.0`。该版本默认支持从 CommonJS 加载 ESM。
+## Community and support
 
-通过 HBuilderX 使用 `uni-app` 或 `uni-app x` 时，还需要 HBuilderX `>=5.11`。旧版 HBuilderX 的内置 Node 可能无法加载当前依赖中的 ESM 模块。
+- [Documentation](https://tw.icebreaker.top/)
+- [GitHub Issues](https://github.com/sonofmagic/weapp-tailwindcss/issues)
+- [GitHub Discussions](https://github.com/sonofmagic/weapp-tailwindcss/discussions)
+
+## License
+
+[MIT](../../LICENSE)

@@ -211,8 +211,8 @@ cn(a, 'xx', 'yy')
 
 ## **参考链接**
 
-- [weapp-tailwindcss 迁移文档](https://tw.icebreaker.top/docs/migrations/v3)
-- [Tailwindcss@4 各个框架集成方式](https://tw.icebreaker.top/docs/quick-start/v4)
+- [weapp-tailwindcss 迁移文档](https://tw.icebreaker.top/docs/migrations/v5)
+- [Tailwindcss@4 各个框架集成方式](https://tw.icebreaker.top/docs/tailwindcss/v4-reference)
 - [Tailwindcss@4 升级指南](https://tailwindcss.com/docs/upgrade-guide)
 - [uni-app-tailwindcss-v4 参考模板](https://github.com/icebreaker-template/uni-app-tailwindcss-v4)
 

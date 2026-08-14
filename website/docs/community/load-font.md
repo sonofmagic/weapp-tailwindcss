@@ -1,6 +1,6 @@
 ---
 title: 加载自定义字体
-description: '详见: https://github.com/sonofmagic/weapp-tailwindcss/discussions/637'
+description: 加载自定义字体，汇总生态插件、模板与实践案例。
 keywords:
   - 社区
   - 模板

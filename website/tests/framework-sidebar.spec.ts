@@ -24,7 +24,7 @@ async function expandCategory(page: Parameters<typeof test>[0]['page'], name: st
   await expect(category).toHaveAttribute('aria-expanded', 'true')
 }
 
-for (const route of ['/docs/quick-start/install', '/en/docs/quick-start/install']) {
+for (const route of ['/docs/quick-start/install', '/zh-cn/docs/quick-start/install']) {
   test(`${route} renders package manager logos and keeps tabs interactive`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto(new URL(route, baseURL).toString(), { waitUntil: 'networkidle' })

@@ -1,7 +1,9 @@
 ---
 sidebar: aiSidebar
 title: MCP (Model Context Protocol)
-description: 'MCP is a **client-server protocol** that defines:'
+description: >-
+  MCP (Model Context Protocol): Current concepts, configuration guidance, and practical examples for weapp-tailwindcss
+  users.
 keywords:
   - AI programming
   - LLM

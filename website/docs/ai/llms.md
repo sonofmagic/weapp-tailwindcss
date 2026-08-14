@@ -1,7 +1,7 @@
 ---
 sidebar: aiSidebar
 title: LLM 友好文档 (llms.txt)
-description: 1. 在仓库根目录执行 pnpm --filter @weapp-tailwindcss/website build（或 cd website && pnpm build）。
+description: LLM 友好文档 (llms.txt)，覆盖 AI 工作流、提示词和工程化实践。
 keywords:
   - AI 编程
   - LLM
@@ -25,8 +25,10 @@ keywords:
 
 1. 在仓库根目录执行 `pnpm --filter @weapp-tailwindcss/website build`（或 `cd website && pnpm build`）。
 2. 构建后，`website/build/` 会生成：
-   - `llms.txt`（索引）
-   - `llms-full.txt`（完整内容）
+- `llms.txt`（索引）
+- `llms-full.txt`（完整内容）
+- `llms-index.json`（当前产品、接入、API、迁移与排障的主索引）
+- `llms-index-full.json`（包含博客、AI 基础与历史文章的完整索引）
    - `llms-quickstart.txt`（上手/AI 工作流）
    - `llms-api.txt`（配置、API、迁移与问题）
    - 去除 MDX import 的纯 Markdown 文件，方便直接喂给模型。
@@ -35,10 +37,12 @@ keywords:
 
 - `https://tw.icebreaker.top/llms.txt`
 - `https://tw.icebreaker.top/llms-full.txt`
+- `https://tw.icebreaker.top/zh-cn/llms-index.json`
+- `https://tw.icebreaker.top/zh-cn/llms-index-full.json`
 - `https://tw.icebreaker.top/llms-quickstart.txt`
 - `https://tw.icebreaker.top/llms-api.txt`
 
-> 如果通过 GitHub Pages 访问，请注意前缀路径 `/weapp-tailwindcss/`。
+中文资产统一位于 `/zh-cn`，英文资产位于站点根路径。
 
 ## 给 AI 的示例提示词
 

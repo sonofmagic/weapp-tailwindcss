@@ -374,7 +374,7 @@ export interface UserDefinedOptionsImportantPart {
   autoprefixer?: WeappAutoprefixerOptions | undefined
 
   /**
-   * 为不同版本的 Tailwind 配置行为。
+   * 配置 Tailwind CSS v4 的运行时行为。
    *
    * @since ^4.0.0
    * @group 0.重要配置

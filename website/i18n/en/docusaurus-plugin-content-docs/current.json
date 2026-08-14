@@ -55,10 +55,6 @@
     "message": "HBuilderX",
     "description": "The label for the doc item 'HBuilderX' in sidebar 'tutorialSidebar', linking to the doc quick-start/frameworks/hbuilderx"
   },
-  "sidebar.tutorialSidebar.doc.CLI Vue2 Webpack（存量项目）": {
-    "message": "CLI Vue2 Webpack (legacy projects)",
-    "description": "The label for the doc item 'CLI Vue2 Webpack（存量项目）' in sidebar 'tutorialSidebar', linking to the doc quick-start/frameworks/uni-app"
-  },
   "sidebar.tutorialSidebar.doc.uni-app x": {
     "message": "uni-app x",
     "description": "The label for the doc item 'uni-app x' in sidebar 'tutorialSidebar', linking to the doc quick-start/frameworks/uni-app-x"
@@ -102,18 +98,6 @@
   "sidebar.optionsSidebar.doc.配置项": {
     "message": "Options",
     "description": "The label for the doc item '配置项' in sidebar 'optionsSidebar', linking to the doc api/interfaces/UserDefinedOptions"
-  },
-  "sidebar.issuesSidebar.doc.v1版本常见问题": {
-    "message": "Common issues in v1",
-    "description": "The label for the doc item 'v1版本常见问题' in sidebar 'issuesSidebar', linking to the doc issues/v1"
-  },
-  "sidebar.issuesSidebar.doc.深入核心原理": {
-    "message": "Dive into the core principles",
-    "description": "The label for the doc item '深入核心原理' in sidebar 'issuesSidebar', linking to the doc principle/index"
-  },
-  "sidebar.issuesSidebar.doc.Tailwindcss 原子类维护指南": {
-    "message": "Tailwindcss utility-class maintenance guide",
-    "description": "The label for the doc item 'Tailwindcss 原子类维护指南' in sidebar 'issuesSidebar', linking to the doc tailwindcss-maintenance-book"
   },
   "sidebar.API.category.配置项": {
     "message": "Options",
@@ -238,14 +222,6 @@
   "sidebar.communitySidebar.doc.wxs 的转义与处理": {
     "message": "Escaping and handling for wxs",
     "description": "The label for the doc item 'wxs 的转义与处理' in sidebar 'communitySidebar', linking to the doc quick-start/wxs"
-  },
-  "sidebar.migrationsSidebar.doc.旧有uni-app项目升级webpack5": {
-    "message": "Upgrade legacy uni-app projects to Webpack 5",
-    "description": "The label for the doc item '旧有uni-app项目升级webpack5' in sidebar 'migrationsSidebar', linking to the doc upgrade/uni-app"
-  },
-  "sidebar.migrationsSidebar.doc.What's new in v2": {
-    "message": "What's new in v2",
-    "description": "The label for the doc item 'What's new in v2' in sidebar 'migrationsSidebar', linking to the doc releases/v2"
   },
   "sidebar.tailwindcssSidebar.category.[演进] 样式方案与组件库演进": {
     "message": "[Evolution] Style systems and component-library evolution",

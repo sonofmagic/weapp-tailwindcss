@@ -1,30 +1,49 @@
 # @weapp-tailwindcss/cli
 
-独立发布的 Tailwind CSS v4 命令行工具，默认生成 Web CSS，并可通过 `--target weapp` 输出小程序兼容 CSS。
+> English | [简体中文](./README.zh-CN.md)
 
-注意：npm 上的 `3.x` 与 `4.0.0-alpha.x` 属于旧版原生小程序 Gulp 工具链。本包的新 Tailwind CSS CLI 实现从 `5.x` 版本线开始发布；升级时请按本文档重新配置输入 CSS，不要继续使用旧版 `init`、Sass/Less 或项目目录扫描流程。
+A Tailwind CSS v4 command-line interface for Web and mini-program CSS. It generates browser-compatible Web CSS by default and can emit mini-program-compatible CSS explicitly with `--target weapp`.
 
-## 安装
+> [!IMPORTANT]
+> Versions `3.x` and `4.0.0-alpha.x` on npm belong to the legacy Gulp workflow for native mini programs. The current CLI starts from the `5.x` release line and does not provide the legacy `init`, Sass/Less, or project-directory scanning workflow.
+
+## Installation
 
 ```bash
 pnpm add -D @weapp-tailwindcss/cli weapp-tailwindcss tailwindcss
 ```
 
-`weapp-tw` 与 `weapp-tailwindcss` 是等价的命令入口：
+## Quick start
+
+`weapp-tw` and `weapp-tailwindcss` are equivalent command names:
 
 ```bash
 pnpm exec weapp-tw -i src/input.css -o dist/output.css
-pnpm exec weapp-tw build -i src/input.css -o dist/output.css
+pnpm exec weapp-tw build -i src/input.css -o dist/output.css --minify
 pnpm exec weapp-tailwindcss canonicalize "py-3 p-1 px-3"
 ```
 
-CLI 复用 `weapp-tailwindcss` 的 Tailwind v4 generator、design system 与 CSS 转换能力，不依赖或调用 `@tailwindcss/cli`。watch 默认使用 `@parcel/watcher` 原生事件；使用 `--poll[=ms]` 可切换到轮询，原生后端不可用时也会自动降级。
+The CLI reuses the Tailwind v4 generator, design system, and CSS transformation APIs from `weapp-tailwindcss`. It neither depends on nor invokes `@tailwindcss/cli`.
 
-默认目标是 `web`。显式传入 `--target weapp` 时只转换 CSS，不扫描或改写 WXML、JavaScript、TypeScript、JSX、TSX 或已有 WXSS。完整小程序项目应继续使用 `weapp-tailwindcss` 的 Vite、Webpack、Rspack 或 Gulp 集成。
+## Output targets
 
-完整参数、watch、source map 与 `canonicalize` 用法见 [CLI 使用指南](https://tw.icebreaker.top/docs/tools/weapp-tw-cli)。
+| Target | Behavior |
+| --- | --- |
+| `web` | The default. Preserves Tailwind CSS browser selectors, escaping, and Web semantics. |
+| `weapp` | Transforms generated CSS for mini-program style environments. |
 
-## 程序化调用
+`--target weapp` is CSS-only. It does not scan or rewrite WXML, JavaScript, TypeScript, JSX, TSX, or existing WXSS assets. Use the Vite, Webpack, Rspack, or Gulp integrations from `weapp-tailwindcss` for complete mini-program projects.
+
+## Watch mode
+
+Watch mode uses native file-system events through `@parcel/watcher` by default. Pass `--poll` or `--poll=500` to use polling instead. The CLI also falls back automatically when the native watcher is unavailable.
+
+```bash
+pnpm exec weapp-tw -i src/input.css -o dist/output.css --watch
+pnpm exec weapp-tw -i src/input.css -o dist/output.css --watch --poll=500
+```
+
+## Programmatic API
 
 ```ts
 import { runCli } from '@weapp-tailwindcss/cli'
@@ -32,4 +51,8 @@ import { runCli } from '@weapp-tailwindcss/cli'
 const exitCode = await runCli(['-i', 'src/input.css', '-o', 'dist/output.css'])
 ```
 
-导入包不会自动执行命令。`runCli` 沿用命令行的 stdout、stderr 与 `process.exitCode` 语义。
+Importing the package does not execute the CLI. `runCli` follows the same stdout, stderr, and `process.exitCode` behavior as the binary.
+
+## Documentation
+
+See the [CLI guide](https://tw.icebreaker.top/docs/tools/weapp-tw-cli) for all options, stdin/stdout, source maps, watch mode, and `canonicalize`.

@@ -1,9 +1,6 @@
 import process from 'node:process'
+import { seoLocales } from './seo-locales.mjs'
 import { scanSeoQuality, summarizeByType } from './seo-quality-lib.mjs'
-import {
-  blogRoot,
-  docsRoot,
-} from './seo-shared.mjs'
 
 function parseArgs(argv) {
   const options = {
@@ -23,16 +20,17 @@ function parseArgs(argv) {
 }
 
 const options = parseArgs(process.argv.slice(2))
-const docs = scanSeoQuality(docsRoot, 'docs')
-const blog = scanSeoQuality(blogRoot, 'blog')
-const issues = [...docs.issues, ...blog.issues]
+const scans = seoLocales.flatMap(locale => [
+  scanSeoQuality(locale.docsRoot, `${locale.id}:docs`),
+  scanSeoQuality(locale.blogRoot, `${locale.id}:blog`),
+])
+const issues = scans.flatMap(scan => scan.issues)
 
 const grouped = summarizeByType(issues)
 
 console.table([
-  { scope: 'docs', files: docs.files.length, issues: docs.issues.length },
-  { scope: 'blog', files: blog.files.length, issues: blog.issues.length },
-  { scope: 'all', files: docs.files.length + blog.files.length, issues: issues.length },
+  ...scans.map(scan => ({ scope: scan.label, files: scan.files.length, issues: scan.issues.length })),
+  { scope: 'all', files: scans.reduce((total, scan) => total + scan.files.length, 0), issues: issues.length },
 ])
 
 if (Object.keys(grouped).length > 0) {

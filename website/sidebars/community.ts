@@ -34,10 +34,6 @@ const communitySidebar: SidebarConfig = [
   },
   {
     type: 'doc',
-    id: 'quick-start/build-or-import-outside-components',
-  },
-  {
-    type: 'doc',
     label: '独立分包',
     id: 'quick-start/independent-pkg',
   },
@@ -63,11 +59,6 @@ const communitySidebar: SidebarConfig = [
     type: 'doc',
     id: 'community/plugins',
   },
-  {
-    type: 'doc',
-    id: 'community/typography',
-  },
-
 ]
 
 export default communitySidebar

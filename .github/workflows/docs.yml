@@ -1,98 +1,89 @@
-name: Deploy Docs
+name: Build and Deploy Docs Worker
 
 on:
-  # push:
-  #   paths:
-  #     - 'website/**'
-  #   branches:
-  #     - main
+  pull_request:
+    paths:
+      - .github/workflows/docs.yml
+      - 'website/**'
+      - 'packages/**'
+      - 'packages-runtime/**'
+      - pnpm-lock.yaml
+  push:
+    branches:
+      - main
+      - next
+    paths:
+      - .github/workflows/docs.yml
+      - 'website/**'
+      - 'packages/**'
+      - 'packages-runtime/**'
+      - pnpm-lock.yaml
   workflow_dispatch:
-  # repository_dispatch:
-  #   types: [deploy_docs]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-worker-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
-  build:
-    name: Deploy production docs
-    if: github.ref != 'refs/heads/next'
+  build-and-deploy:
+    name: Build${{ github.event_name == 'pull_request' && ' and dry-run' || ' and deploy' }}
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [22]
+    timeout-minutes: 30
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: pnpm
-      - name: Install dependencies
-        run: pnpm install
-      - name: Build
-        run: pnpm run build:docs
-      - name: Require Cloudflare token
-        if: env.CLOUDFLARE_API_TOKEN == ''
-        run: |
-          {
-            echo "## Deploy blocked"
-            echo "- \`CLOUDFLARE_API_TOKEN\` is not configured for this repository."
-            echo "- Docs build completed successfully, but production deployment cannot continue."
-          } >> "$GITHUB_STEP_SUMMARY"
-          echo "::error::CLOUDFLARE_API_TOKEN is required to deploy production docs."
-          exit 1
-      - name: Deploy
-        if: env.CLOUDFLARE_API_TOKEN != ''
-        run: pnpm exec wrangler deploy --config wrangler.jsonc
-        working-directory: ./website
-      - name: Verify deployed assets
-        if: env.CLOUDFLARE_API_TOKEN != ''
-        run: pnpm run verify:deployment -- https://tw.icebreaker.top
-        working-directory: ./website
-        # uses: cloudflare/wrangler-action@v3
-        # with:
-        #   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        #   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        #   workingDirectory: ./website
-        #   command: pages deploy .vitepress/dist --project-name=host-docs
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      SITE_URL: ${{ github.ref == 'refs/heads/next' && 'https://next.tw.icebreaker.top' || 'https://tw.icebreaker.top' }}
 
-  next:
-    name: Deploy next docs
-    if: github.ref == 'refs/heads/next'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [22]
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out code
+        uses: actions/checkout@v6
+
       - uses: pnpm/action-setup@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 22
           cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
       - name: Install dependencies
-        run: pnpm install
-      - name: Build workspace dependencies
-        run: pnpm --filter @weapp-tailwindcss/website... --filter '!@weapp-tailwindcss/website' build
-      - name: Build next docs
-        run: pnpm --filter @weapp-tailwindcss/website build:next
-      - name: Require next Cloudflare token
-        if: env.CLOUDFLARE_API_TOKEN == ''
+        run: pnpm install --frozen-lockfile
+
+      - name: Build website
+        run: pnpm --filter @weapp-tailwindcss/website build
+
+      - name: Run SEO/GEO quality gate
+        run: pnpm --filter @weapp-tailwindcss/website seo:quality:strict
+
+      - name: Validate Worker bundle
+        run: pnpm --filter @weapp-tailwindcss/website deploy:worker:dry-run
+
+      - name: Require Cloudflare credentials
+        if: github.event_name != 'pull_request' && (env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '')
         run: |
-          {
-            echo "## Deploy blocked"
-            echo "- \`CLOUDFLARE_API_TOKEN\` is not configured for this repository."
-            echo "- Next docs build completed successfully, but deployment cannot continue."
-          } >> "$GITHUB_STEP_SUMMARY"
-          echo "::error::CLOUDFLARE_API_TOKEN is required to deploy next docs."
+          echo "::error::CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID are required for Workers deployment."
           exit 1
-      - name: Deploy next docs
-        if: env.CLOUDFLARE_API_TOKEN != ''
-        run: pnpm --filter @weapp-tailwindcss/website deploy:next
-      - name: Verify next deployed assets
-        if: env.CLOUDFLARE_API_TOKEN != ''
-        run: pnpm --filter @weapp-tailwindcss/website verify:deployment -- https://next.tw.icebreaker.top
+
+      - name: Deploy production Worker
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        working-directory: website
+        run: pnpm run deploy:worker
+
+      - name: Deploy next Worker
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/next'
+        working-directory: website
+        run: pnpm run deploy:worker:next
+
+      - name: Verify production deployment
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        working-directory: website
+        run: pnpm run verify:deployment -- https://tw.icebreaker.top
+
+      - name: Verify next deployment
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/next'
+        working-directory: website
+        run: pnpm run verify:deployment -- https://next.tw.icebreaker.top

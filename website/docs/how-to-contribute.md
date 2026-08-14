@@ -122,7 +122,7 @@ Why？
 - `wxml`: 处理 `wxml` 的地方
 - `*`: `src` 其他一些文件，大多是一些导出文件
 
-想要知道各自做了什么事情，详见 [深入核心原理](./principle)
+想了解当前 Tailwind 生成、设计 token 与组件封装边界，参阅 [Tailwind 设计理念](./tailwindcss/tailwind-core)。
 
 ## 如何本地调试
 

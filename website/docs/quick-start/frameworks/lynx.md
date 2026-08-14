@@ -22,7 +22,7 @@ keywords:
 npm install -D @weapp-tailwindcss/lynx tailwindcss
 ```
 
-当前集成要求 Node.js `>=22.12.0`、Rspeedy `>=0.16.0` 和 Tailwind CSS `>=4.0.0`，仅支持 ReactLynx + Rspeedy 构建目标。
+当前集成要求 Node.js `^22.18.0 || >=24.11.0`、Rspeedy `>=0.16.0` 和 Tailwind CSS `>=4.0.0`，仅支持 ReactLynx + Rspeedy 构建目标。
 
 ## 注册 Rspeedy 插件
 
@@ -94,4 +94,4 @@ pnpm e2e:lynx
 
 静态构建只能证明 CSS 已生成并进入 bundle。iOS Simulator 与 LynxExplorer 的视觉验收可运行 `pnpm e2e:lynx:ios`。
 
-首版不覆盖 Rspeedy Web 输出、非 React Lynx 框架、Tailwind CSS 3 或 React Native 风格的运行时样式映射。
+当前集成只覆盖 ReactLynx + Rspeedy 构建目标，不覆盖 Rspeedy Web 输出、非 React Lynx 框架或 React Native 风格的运行时样式映射。

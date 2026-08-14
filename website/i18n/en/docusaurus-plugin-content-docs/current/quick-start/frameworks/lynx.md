@@ -7,6 +7,16 @@ keywords:
   - Rspeedy
   - Tailwind CSS 4
   - weapp-tailwindcss
+  - 快速开始
+  - 安装
+  - 配置
+  - quick start
+  - frameworks
+  - cross-platform
+  - mini app
+  - uni-app
+  - Taro
+  - React Native
 ---
 
 # ReactLynx / Rspeedy
@@ -19,7 +29,7 @@ keywords:
 npm install -D @weapp-tailwindcss/lynx tailwindcss
 ```
 
-The integration requires Node.js `>=22.12.0`, Rspeedy `>=0.16.0`, and Tailwind CSS `>=4.0.0`. It currently supports only ReactLynx projects built with Rspeedy.
+The integration requires Node.js `^22.18.0 || >=24.11.0`, Rspeedy `>=0.16.0`, and Tailwind CSS `>=4.0.0`. It currently supports only ReactLynx projects built with Rspeedy.
 
 ## Register the Rspeedy plugin
 
@@ -91,4 +101,4 @@ pnpm e2e:lynx
 
 A static build only proves that CSS was generated and included in the bundle. For visual validation with iOS Simulator and LynxExplorer, run `pnpm e2e:lynx:ios`.
 
-The initial release does not cover Rspeedy Web output, non-React Lynx frameworks, Tailwind CSS 3, or React Native-style runtime style mapping.
+The current integration only covers ReactLynx + Rspeedy build targets. It does not cover Rspeedy Web output, non-React Lynx frameworks, or React Native-style runtime style mapping.
