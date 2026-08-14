@@ -1,7 +1,7 @@
 {
   "name": "@weapp-tailwindcss/cli",
   "type": "module",
-  "version": "0.1.0",
+  "version": "5.2.14",
   "description": "Tailwind CSS CLI-compatible builds with optional mini-program CSS output",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",

@@ -14,6 +14,8 @@ keywords:
 
 `@weapp-tailwindcss/cli` 独立发布 `weapp-tw` 和 `weapp-tailwindcss` 两个等价命令。构建命令默认输出 Web CSS，并对齐当前 Tailwind CSS CLI 的输入、输出、watch、优化和 source map 行为。
 
+注意：npm 上的 `3.x` 与 `4.0.0-alpha.x` 是旧版原生小程序 Gulp 工具链。本 CLI 的新实现从 `5.x` 版本线开始发布；升级时请按本文档配置 CSS 输入，不再使用旧版 `init`、Sass/Less 编译或项目目录扫描流程。
+
 CLI 直接复用 `weapp-tailwindcss` 的 Tailwind v4 generator、design system 与 source graph，不安装或调用 `@tailwindcss/cli`。watch 默认使用 `@parcel/watcher` 原生文件事件；在容器、网络文件系统或需要稳定轮询行为时，可使用 `--poll[=ms]` 切换到轮询模式。
 
 ## 安装

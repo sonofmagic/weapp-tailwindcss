@@ -14,6 +14,8 @@ keywords:
 
 `@weapp-tailwindcss/cli` independently publishes the equivalent `weapp-tw` and `weapp-tailwindcss` commands. The build command emits Web CSS by default and follows the current Tailwind CSS CLI contract for input, output, watching, optimization, and source maps.
 
+The npm `3.x` and `4.0.0-alpha.x` releases belong to the legacy native mini-program Gulp toolchain. The new Tailwind CSS CLI implementation starts on the `5.x` version line. During migration, configure a CSS input as described here instead of using the legacy `init`, Sass/Less compilation, or project-directory scanning flow.
+
 The CLI directly reuses the Tailwind v4 generator, design system, and source graph provided by `weapp-tailwindcss`. It does not install or invoke `@tailwindcss/cli`. Watch mode uses `@parcel/watcher` native file events by default; use `--poll[=ms]` for polling on containers, network filesystems, or environments where polling is preferable.
 
 ## Installation

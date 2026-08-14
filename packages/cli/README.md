@@ -2,6 +2,8 @@
 
 独立发布的 Tailwind CSS v4 命令行工具，默认生成 Web CSS，并可通过 `--target weapp` 输出小程序兼容 CSS。
 
+注意：npm 上的 `3.x` 与 `4.0.0-alpha.x` 属于旧版原生小程序 Gulp 工具链。本包的新 Tailwind CSS CLI 实现从 `5.x` 版本线开始发布；升级时请按本文档重新配置输入 CSS，不要继续使用旧版 `init`、Sass/Less 或项目目录扫描流程。
+
 ## 安装
 
 ```bash
