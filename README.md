@@ -138,7 +138,7 @@ CLI 默认目标是 `web`，支持 stdin/stdout、watch、原生 watcher、`--po
 
 ## 环境要求
 
-- Node.js `>=22.12.0`
+- Node.js `^22.18.0 || >=24.11.0`
 - Tailwind CSS `>=4.0.0`
 - 使用 HBuilderX 的 `uni-app` / `uni-app x` 项目需要 HBuilderX `>=5.11`
 
@@ -146,7 +146,7 @@ CLI 默认目标是 `web`，支持 stdin/stdout、watch、原生 watcher、`--po
 
 - [官网](https://tw.icebreaker.top)
 - [安装与快速开始](https://tw.icebreaker.top/zh-cn/docs/quick-start/install)
-- [Tailwind CSS v4 指南](https://tw.icebreaker.top/zh-cn/docs/quick-start/v4)
+- [Tailwind CSS v4 指南](https://tw.icebreaker.top/zh-cn/docs/tailwindcss/v4-reference)
 - [框架接入](https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/uni-app-vite)
 - [React Native / Expo](https://tw.icebreaker.top/zh-cn/docs/quick-start/react-native-expo)
 - [ReactLynx / Rspeedy](https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/lynx)

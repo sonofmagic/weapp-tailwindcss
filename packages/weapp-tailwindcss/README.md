@@ -6,7 +6,7 @@ Bring Tailwind CSS to every platform. `weapp-tailwindcss` is the core compiler a
 
 ## What it provides
 
-- Tailwind CSS v3 and v4 generation through a shared compiler boundary.
+- Tailwind CSS v4 generation through a shared compiler boundary.
 - Vite, Webpack, Rspack, Gulp, PostCSS, and Node.js integration points.
 - Precise class transformation based on the generated Tailwind candidate set.
 - CSS compatibility transforms for WeChat, Alipay, ByteDance, QQ, and other mini-program style environments.
@@ -50,7 +50,7 @@ See the [CLI guide](https://tw.icebreaker.top/docs/tools/weapp-tw-cli) for sourc
 
 ## Runtime requirements
 
-- Node.js `>=22.12.0` for `weapp-tailwindcss@5.2.0` and later.
+- Node.js `^22.18.0 || >=24.11.0` for the current release line.
 - HBuilderX `>=5.11` when using uni-app or uni-app x through HBuilderX.
 
 ## Community and support

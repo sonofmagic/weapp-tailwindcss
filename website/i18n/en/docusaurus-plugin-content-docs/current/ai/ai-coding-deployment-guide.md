@@ -901,7 +901,7 @@ env | grep -E 'HTTP_PROXY|HTTPS_PROXY|ALL_PROXY|NO_PROXY'
 
 #### Administrator preparation (company/team level)
 
-1. Unify the Node version (recommended Node >= 18) and npm proxy strategy (to avoid failing to install the CLI).
+1. Standardize the Node.js version (this repository uses `^22.18.0 || >=24.11.0`) and npm proxy policy so CLI installation is reproducible.
 2. Activate agents (`Pro`/`Teams`) as a team and clarify which members have permission to use the S1/S2 warehouse.
 3. Establish `CLAUDE.md` template library: one copy for different technology stacks (Node/Java/Go), copy it to the warehouse and use it.
 

@@ -41,7 +41,7 @@ keywords:
 | [tailwindcssBasedir](#tailwindcssbasedir) | <code>string</code> | — | 指定用于获取 Tailwind 上下文的路径。 |
 | [cache](#cache) | <code>boolean &#124; ICreateCacheReturnType</code> | — | 控制缓存策略。 |
 | [cssOptions](#cssoptions) | <code>CssOptions</code> | — | CSS 生成与兼容后处理的微调配置。 |
-| [tailwindcss](#tailwindcss) | [`TailwindCssOptions`](../interfaces/TailwindCssOptions.md) | — | 为不同版本的 Tailwind 配置行为。 |
+| [tailwindcss](#tailwindcss) | [`TailwindCssOptions`](../interfaces/TailwindCssOptions.md) | — | 配置 Tailwind CSS v4 的运行时行为。 |
 | [cssEntries](#cssentries) | <code>string[]</code> | — | 指定 tailwindcss@4 的入口 CSS。 |
 
 ## 详细说明
@@ -58,7 +58,7 @@ https://github.com/sonofmagic/weapp-tailwindcss/issues/110
 
 #### 备注
 
-TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `rpx` 识别为颜色。本选项默认开启，并由构建运行时自动接管。
+Tailwind CSS v4 会对任意值执行类型推断，未声明的 `rpx` 可能被识别为颜色。本选项默认开启，并由构建运行时自动接管。
 
 ### appType
 
@@ -392,7 +392,7 @@ Tailwind CSS v4 的任意 `@custom-variant` 都支持 uni-app 条件编译，条
 
 > 可选 | 类型: [`TailwindCssOptions`](../interfaces/TailwindCssOptions.md) | 版本: ^4.0.0
 
-为不同版本的 Tailwind 配置行为。
+配置 Tailwind CSS v4 的运行时行为。
 
 ### cssEntries
 

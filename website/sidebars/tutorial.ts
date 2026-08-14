@@ -53,12 +53,6 @@ const tutorialSidebar: SidebarConfig = [
           },
           {
             type: 'doc',
-            label: 'CLI Vue2 Webpack（存量项目）',
-            id: 'quick-start/frameworks/uni-app',
-            customProps: { frameworkLogo: 'webpack' },
-          },
-          {
-            type: 'doc',
             label: 'uni-app x',
             id: 'quick-start/frameworks/uni-app-x',
             customProps: { frameworkLogo: 'uni-app-x' },
@@ -186,7 +180,6 @@ const tutorialSidebar: SidebarConfig = [
   // {
   //   type: 'doc',
   //   label: '从 v1 迁移到 v2',
-  //   id: 'migrations/v1'
   // },
   {
     type: 'doc',

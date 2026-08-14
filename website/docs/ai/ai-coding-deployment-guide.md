@@ -897,7 +897,7 @@ env | grep -E 'HTTP_PROXY|HTTPS_PROXY|ALL_PROXY|NO_PROXY'
 
 #### 管理员准备（公司/团队层）
 
-1. 统一 Node 版本（建议 Node >= 18）与 npm 代理策略（避免装不上 CLI）。
+1. 统一 Node 版本（本仓库使用 Node `^22.18.0 || >=24.11.0`）与 npm 代理策略（避免装不上 CLI）。
 2. 以团队为单位开通座席（`Pro`/`Teams`），并明确哪些成员有权限在 S1/S2 仓库使用。
 3. 建立 `CLAUDE.md` 模板库：不同技术栈（Node/Java/Go）各一份，复制到仓库即可用。
 

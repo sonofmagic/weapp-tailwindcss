@@ -6,7 +6,7 @@
 
 ## 核心能力
 
-- 通过统一编译边界生成 Tailwind CSS v3 与 v4 样式。
+- 通过统一编译边界生成 Tailwind CSS v4 样式。
 - 提供 Vite、Webpack、Rspack、Gulp、PostCSS 与 Node.js 接入入口。
 - 基于 Tailwind 已生成候选集合精确转换 class，避免误伤业务字符串。
 - 处理微信、支付宝、抖音、QQ 等小程序样式环境的 CSS 兼容差异。
@@ -50,7 +50,7 @@ source map、stdin/stdout、watch 与 `canonicalize` 的完整用法见 [CLI 指
 
 ## 运行环境
 
-- `weapp-tailwindcss@5.2.0` 及以上需要 Node.js `>=22.12.0`。
+- 当前版本需要 Node.js `^22.18.0 || >=24.11.0`。
 - 通过 HBuilderX 使用 uni-app 或 uni-app x 时需要 HBuilderX `>=5.11`。
 
 ## 社区与支持

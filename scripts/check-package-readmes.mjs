@@ -41,6 +41,7 @@ async function findPublishedPackages() {
       }
 
       packages.push({
+        manifest,
         name: manifest.name,
         packageRoot,
       })
@@ -50,7 +51,7 @@ async function findPublishedPackages() {
   return packages.sort((a, b) => a.name.localeCompare(b.name))
 }
 
-function validateContent({ name, packageRoot }, english, chinese) {
+function validateContent({ manifest, name, packageRoot }, english, chinese) {
   const errors = []
   const relativeRoot = path.relative(repositoryRoot, packageRoot)
 
@@ -65,6 +66,18 @@ function validateContent({ name, packageRoot }, english, chinese) {
   }
   if (!chinese.includes('> [English](./README.md) | 简体中文')) {
     errors.push(`${relativeRoot}/README.zh-CN.md must use the standard Chinese language switch`)
+  }
+
+  if (name === 'weapp-tailwindcss') {
+    const nodeRequirement = manifest.engines?.node
+    const unsupportedTailwindVersion = /Tailwind\s*CSS\s*(?:@|v)?[23]\b/i
+
+    if (unsupportedTailwindVersion.test(english) || unsupportedTailwindVersion.test(chinese)) {
+      errors.push(`${relativeRoot} READMEs must describe the current Tailwind CSS v4-only support boundary`)
+    }
+    if (nodeRequirement && (!english.includes(nodeRequirement) || !chinese.includes(nodeRequirement))) {
+      errors.push(`${relativeRoot} READMEs must match package.json engines.node (${nodeRequirement})`)
+    }
   }
 
   return errors

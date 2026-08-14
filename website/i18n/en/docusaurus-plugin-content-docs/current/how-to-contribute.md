@@ -123,7 +123,7 @@ There are more evolutions here, which is equivalent to adding multiple postcss p
 - `wxml`: Where to handle `wxml`
 - `*`: `src` Some other files, mostly export files
 
-If you want to know what each has done, please see [In-depth Core Principles](./principle)
+For the current Tailwind generation, design-token, and component-boundary model, see [Tailwind design principles](./tailwindcss/tailwind-core).
 
 ## How to debug locally
 

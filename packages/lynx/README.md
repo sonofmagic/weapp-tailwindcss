@@ -34,7 +34,7 @@ Import Tailwind CSS 4 from the application CSS entry and point `@source` at the 
 
 `pluginLynxTailwindcss` fixes `platform` to `'lynx'`, sets `generator.target` to `'web'`, and enables Lynx-compatible output. Tailwind CSS 4 theme variables are resolved at build time, while application-defined dynamic variables remain unchanged.
 
-The initial release supports ReactLynx + Rspeedy and Tailwind CSS 4 only. It does not cover Rspeedy Web output, non-React Lynx frameworks, Tailwind CSS 3, or React Native-style runtime style mapping.
+The current integration supports ReactLynx + Rspeedy and Tailwind CSS 4. It does not cover Rspeedy Web output, non-React Lynx frameworks, or React Native-style runtime style mapping.
 
 ## Arbitrary values
 

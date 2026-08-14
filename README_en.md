@@ -138,7 +138,7 @@ See the complete [weapp-tw CLI guide](https://tw.icebreaker.top/docs/tools/weapp
 
 ## Requirements
 
-- Node.js `>=22.12.0`
+- Node.js `^22.18.0 || >=24.11.0`
 - Tailwind CSS `>=4.0.0`
 - HBuilderX `>=5.11` for `uni-app` / `uni-app x` projects using HBuilderX
 
@@ -146,7 +146,7 @@ See the complete [weapp-tw CLI guide](https://tw.icebreaker.top/docs/tools/weapp
 
 - [Official website](https://tw.icebreaker.top)
 - [Install and quick start](https://tw.icebreaker.top/docs/quick-start/install)
-- [Tailwind CSS v4 guide](https://tw.icebreaker.top/docs/quick-start/v4)
+- [Tailwind CSS v4 guide](https://tw.icebreaker.top/docs/tailwindcss/v4-reference)
 - [Framework integrations](https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite)
 - [React Native / Expo](https://tw.icebreaker.top/docs/quick-start/react-native-expo)
 - [ReactLynx / Rspeedy](https://tw.icebreaker.top/docs/quick-start/frameworks/lynx)
