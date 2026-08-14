@@ -123,7 +123,7 @@ async function watchWithNativeWatcher(options: {
   rebuild: () => Promise<Set<string>>
 }) {
   let dependencies = new Set<string>()
-  let subscriptions: parcelWatcher.AsyncSubscription[] = []
+  const subscriptions = new Map<string, parcelWatcher.AsyncSubscription>()
   let running = false
   let pending = false
   let resolvePending: (() => void) | undefined
@@ -134,10 +134,12 @@ async function watchWithNativeWatcher(options: {
     resolvePending?.()
   }
 
-  const subscribe = async () => {
-    await Promise.all(subscriptions.map(subscription => subscription.unsubscribe()))
-    subscriptions = []
-    for (const directory of parentDirectories(dependencies, options.cwd)) {
+  const syncSubscriptions = async () => {
+    const directories = parentDirectories(dependencies, options.cwd)
+    for (const directory of directories) {
+      if (subscriptions.has(directory)) {
+        continue
+      }
       const subscription = await parcelWatcher.subscribe(directory, (error, events) => {
         if (error) {
           process.stderr.write(`${error.message}\n`)
@@ -147,18 +149,25 @@ async function watchWithNativeWatcher(options: {
           requestRebuild()
         }
       }, { ignore: ['**/node_modules/**', '**/.git/**'] })
-      subscriptions.push(subscription)
+      subscriptions.set(directory, subscription)
+    }
+    for (const [directory, subscription] of subscriptions) {
+      if (!directories.has(directory)) {
+        await subscription.unsubscribe()
+        subscriptions.delete(directory)
+      }
     }
   }
 
   // 先建立目录订阅再进行首次构建，避免首次构建期间的修改丢失。
-  await subscribe()
+  await syncSubscriptions()
   dependencies = await options.rebuild()
-  await subscribe()
+  // 增量补充项目外依赖目录，不能中断已有订阅，否则会丢失构建完成瞬间的事件。
+  await syncSubscriptions()
 
   await new Promise<void>((resolve) => {
     const stop = () => {
-      void Promise.all(subscriptions.map(subscription => subscription.unsubscribe())).finally(resolve)
+      void Promise.all([...subscriptions.values()].map(subscription => subscription.unsubscribe())).finally(resolve)
     }
     process.once('SIGINT', stop)
     process.once('SIGTERM', stop)
@@ -179,7 +188,7 @@ async function watchWithNativeWatcher(options: {
       pending = false
       try {
         dependencies = await options.rebuild()
-        await subscribe()
+        await syncSubscriptions()
       }
       catch (error) {
         process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`)
