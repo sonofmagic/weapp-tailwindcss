@@ -2,7 +2,7 @@
 
 > English | [简体中文](./README.md)
 
-This is the core package that brings Tailwind CSS to mini program ecosystems, handling class transformation, CSS compatibility, framework build adapters, and Tailwind v4 support.
+This is the core compiler and builder package for the cross-platform Tailwind CSS toolchain. It handles Web and mini-program style generation, class transforms, CSS compatibility, and framework build adapters while providing the Tailwind v4 generation foundation used by React Native and Lynx integrations.
 
 ## Website
 

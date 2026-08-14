@@ -7,7 +7,7 @@
 <h1 align="center">weapp-tailwindcss</h1>
 
 <p align="center">
-  <strong>把 Tailwind CSS 带到小程序与多端开发中。</strong>
+  <strong>Bring Tailwind CSS to every platform! 把 Tailwind CSS 的原子化开发体验带到全端！</strong>
 </p>
 
 <p align="center">
@@ -25,7 +25,7 @@
 
 ## 项目定位
 
-`weapp-tailwindcss` 是面向小程序生态的 Tailwind CSS 适配方案。它负责把 Tailwind CSS 生成的选择器、工具类和部分 CSS 能力转换成小程序与多端框架更容易消费的形式。
+`weapp-tailwindcss` 是面向全端场景的 Tailwind CSS 工具链。核心包负责 Web 与小程序的样式生成、类名转译和构建器适配，生态包进一步覆盖 React Native、Lynx、运行时类名工具与跨端 UI。
 
 它适合这些场景：
 
@@ -33,6 +33,7 @@
 - 在 `uni-app` / `uni-app x`、Taro、Mpx、原生小程序、weapp-vite 等框架里复用同一套原子化样式写法。
 - 在 Tailwind CSS v4 项目中处理小程序 class 转义、选择器兼容、rpx 任意值、CSS 降级和 H5/Web 输出差异。
 - 在多端项目中同时覆盖小程序、H5/Web 与 App WebView 等目标。
+- 通过 `@weapp-tailwindcss/react-native` 与 `@weapp-tailwindcss/lynx` 将同一套原子化开发体验扩展到 React Native 和 Lynx。
 
 ## 当前支持
 

@@ -48,8 +48,8 @@ const homepageCopy = {
   'zh-cn': {
     facts: [
       { label: 'Tailwind', value: 'CSS 4 / @source' },
-      { label: '框架', value: 'uni-app / Taro / Mpx / Weapp-vite' },
-      { label: '构建器', value: 'Webpack / Vite / Gulp' },
+      { label: '框架', value: 'uni-app / Taro / React Native / Lynx' },
+      { label: '构建器', value: 'Webpack / Vite / Metro / Rspeedy' },
       { label: '运行时', value: 'merge / cva / variants' },
     ] satisfies FactItem[],
     routeLinks: [
@@ -79,13 +79,13 @@ const homepageCopy = {
         icon: 'icon-[mdi--target]',
       },
       {
-        title: 'Web / 小程序分端输出',
-        description: '同一份 CSS-first 输入，按环境生成浏览器 CSS 或小程序 CSS。',
+        title: '多端输出目标',
+        description: '按目标端生成 Web CSS、小程序 CSS 或原生样式清单。',
         icon: 'icon-[mdi--source-branch]',
       },
       {
         title: '跨生态落地',
-        description: '覆盖 uni-app、Taro、Mpx、Weapp-vite、原生小程序以及 Webpack、Vite、Gulp 链路。',
+        description: '覆盖 uni-app、Taro、Mpx、Weapp-vite、React Native、Lynx 与原生小程序。',
         icon: 'icon-[mdi--transit-connection-variant]',
       },
       {
@@ -137,12 +137,12 @@ const homepageCopy = {
       { id: 'lynx', label: 'Lynx', href: '/docs/quick-start/frameworks/lynx' },
     ] satisfies PlatformIconItem[],
     hero: {
-      badge: 'Tailwind CSS 4 + 小程序生成链路',
+      badge: 'Tailwind CSS 4 + 全端生成链路',
       copyrightAria: '查看版权与证书页面',
       copyrightTitle: 'G-Star 毕业项目认证',
       copyrightImageAlt: 'AtomGit G-Star 毕业项目认证徽章',
-      lead: '一套 CSS-first 输入，交付 Web 与小程序两端样式。',
-      sublead: '保留 `WeappTailwindcss` 接管生成、转义与运行时边界，不在小程序构建里重复注册官方 Tailwind 插件。',
+      lead: '一套原子化开发体验，交付 Web、小程序与原生跨端应用。',
+      sublead: '按平台复用编译器、构建器集成与运行时适配，同时保留各端真实语义与工程边界。',
       platformAria: '支持平台',
       primaryCta: '开始接入',
       aiEntry: 'AI 学习入口',
@@ -162,8 +162,8 @@ const homepageCopy = {
   'en': {
     facts: [
       { label: 'Tailwind', value: 'CSS 4 / @source' },
-      { label: 'Frameworks', value: 'uni-app / Taro / Mpx / Weapp-vite' },
-      { label: 'Builders', value: 'Webpack / Vite / Gulp' },
+      { label: 'Frameworks', value: 'uni-app / Taro / React Native / Lynx' },
+      { label: 'Builders', value: 'Webpack / Vite / Metro / Rspeedy' },
       { label: 'Runtime', value: 'merge / cva / variants' },
     ] satisfies FactItem[],
     routeLinks: [
@@ -193,13 +193,13 @@ const homepageCopy = {
         icon: 'icon-[mdi--target]',
       },
       {
-        title: 'Web / mini app output targets',
-        description: 'One CSS-first input generates browser CSS or mini app CSS depending on the target.',
+        title: 'Multi-platform output targets',
+        description: 'Generate Web CSS, mini-program CSS, or native style manifests for each target.',
         icon: 'icon-[mdi--source-branch]',
       },
       {
         title: 'Cross-ecosystem delivery',
-        description: 'Supports uni-app, Taro, Mpx, Weapp-vite, native mini apps, plus Webpack, Vite, and Gulp.',
+        description: 'Supports uni-app, Taro, Mpx, Weapp-vite, React Native, Lynx, and native mini programs.',
         icon: 'icon-[mdi--transit-connection-variant]',
       },
       {
@@ -251,12 +251,12 @@ const homepageCopy = {
       { id: 'lynx', label: 'Lynx', href: '/docs/quick-start/frameworks/lynx' },
     ] satisfies PlatformIconItem[],
     hero: {
-      badge: 'Tailwind CSS 4 + mini app generation pipeline',
+      badge: 'Tailwind CSS 4 + cross-platform generation pipeline',
       copyrightAria: 'View the copyright and certificate page',
       copyrightTitle: 'G-Star graduation project certification',
       copyrightImageAlt: 'AtomGit G-Star graduation project badge',
-      lead: 'One CSS-first input, delivered as Web and mini app styles.',
-      sublead: 'Keep `WeappTailwindcss` in charge of generation, escaping, and runtime boundaries without registering the official Tailwind plugin twice in mini app builds.',
+      lead: 'One utility-first workflow for Web, mini programs, and native cross-platform apps.',
+      sublead: 'Reuse compilers, builder integrations, and runtime adapters while preserving each platform\'s native semantics and engineering boundaries.',
       platformAria: 'Supported platforms',
       primaryCta: 'Start setup',
       aiEntry: 'AI entry',

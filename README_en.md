@@ -7,7 +7,7 @@
 <h1 align="center">weapp-tailwindcss</h1>
 
 <p align="center">
-  <strong>Bring Tailwind CSS to mini programs and multi-platform apps.</strong>
+  <strong>Bring Tailwind CSS to every platform!</strong>
 </p>
 
 <p align="center">
@@ -25,7 +25,7 @@
 
 ## What It Is
 
-`weapp-tailwindcss` adapts Tailwind CSS for mini program ecosystems. It transforms Tailwind-generated selectors, utility classes, and selected CSS capabilities into forms that mini programs and multi-platform frameworks can consume more reliably.
+`weapp-tailwindcss` is a cross-platform Tailwind CSS toolchain. The core package owns Web and mini-program style generation, class transforms, and builder integrations, while ecosystem packages extend the same utility-first experience to React Native, Lynx, runtime class utilities, and cross-platform UI.
 
 It is designed for:
 
@@ -33,6 +33,7 @@ It is designed for:
 - Sharing atomic CSS conventions across `uni-app` / `uni-app x`, Taro, Mpx, native mini programs, weapp-vite, and related stacks.
 - Handling mini program class escaping, selector compatibility, rpx arbitrary values, CSS fallbacks, and H5/Web output differences in Tailwind CSS v4 projects.
 - Building multi-platform apps that target mini programs, H5/Web, and App WebViews.
+- Extending the same utility-first workflow to React Native and Lynx through `@weapp-tailwindcss/react-native` and `@weapp-tailwindcss/lynx`.
 
 ## Current Support
 

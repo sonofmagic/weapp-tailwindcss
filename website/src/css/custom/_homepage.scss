@@ -2106,7 +2106,8 @@ html[data-theme='dark'] .homepage .home-cta:hover {
     font-size: clamp(1.05rem, 4.8vw, 1.22rem);
     line-height: 1.24;
     text-align: center;
-    white-space: nowrap;
+    text-wrap: balance;
+    white-space: normal;
   }
 
   .home-hero__sublead {
