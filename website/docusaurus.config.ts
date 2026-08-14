@@ -11,7 +11,7 @@ import createBlogOptions from './config/blog'
 import { getBuildLocale } from './config/buildLocale'
 import { footer, footerCustomFields } from './config/footer'
 import headTags from './config/headTags'
-import { englishDocsDirectory } from './config/localizedContent'
+import { getDocsDirectory } from './config/localizedContent'
 import navbar from './config/navbar'
 import { siteUrl } from './config/siteMetadata'
 import themeMetadata from './config/themeMetadata'
@@ -53,8 +53,8 @@ const config: Config = {
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'zh-cn',
-    locales: ['zh-cn', 'en'],
+    defaultLocale: 'en',
+    locales: ['en', 'zh-cn'],
     localeConfigs: {
       'en': {
         label: 'English',
@@ -79,6 +79,7 @@ const config: Config = {
       'classic',
       {
         docs: {
+          path: getDocsDirectory(buildLocale),
           sidebarPath: 'sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -129,9 +130,7 @@ const config: Config = {
         description: isEnglishBuild
           ? 'Official docs for bringing Tailwind CSS to mini apps across uni-app, Taro, native mini apps, and multiple builders.'
           : 'Tailwind CSS 小程序适配方案，覆盖 uni-app、Taro、原生小程序与多构建器场景的官方文档合集。',
-        docsDir: isEnglishBuild
-          ? [{ path: englishDocsDirectory, routeBasePath: 'docs' }]
-          : 'docs',
+        docsDir: getDocsDirectory(buildLocale),
         includeBlog: !isEnglishBuild,
         generateMarkdownFiles: true,
         excludeImports: true,

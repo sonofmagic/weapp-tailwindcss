@@ -13,23 +13,23 @@ function assertContainsNoChinese(value: string, context: string) {
 }
 
 async function getNaturalLanguageText(page: import('@playwright/test').Page) {
-  return page.locator('main').evaluate((main) => {
-    const copy = main.cloneNode(true) as HTMLElement
-    copy.querySelectorAll('pre, code, svg, script, style, .theme-doc-toc-desktop, .theme-doc-pagination, .pagination-nav, .mermaid, .mermaid-container').forEach(node => node.remove())
+  return page.locator('body').evaluate((body) => {
+    const copy = body.cloneNode(true) as HTMLElement
+    copy.querySelectorAll('nav, footer, pre, code, svg, script, style, .theme-doc-toc-desktop, .theme-doc-pagination, .pagination-nav, .mermaid, .mermaid-container').forEach(node => node.remove())
     return copy.textContent ?? ''
   })
 }
 
 const englishRoutes = [
-  '/en/',
-  ...routes.filter(route => route === '/en' || route.startsWith('/en/')),
+  '/',
+  ...routes.filter(route => route !== '/zh-cn' && !route.startsWith('/zh-cn/')),
 ]
 
 test.describe('English content isolation', () => {
   for (const route of new Set(englishRoutes)) {
     test(`English route ${route}`, async ({ page }) => {
       const response = await page.goto(new URL(route, baseURL).toString(), {
-        waitUntil: 'networkidle',
+        waitUntil: 'domcontentloaded',
       })
       expect(response?.ok(), `${route} should return a successful response`).toBe(true)
 
@@ -40,9 +40,11 @@ test.describe('English content isolation', () => {
       await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute('content', 'en_US')
 
       const canonical = await page.locator('link[rel="canonical"]').first().getAttribute('href')
-      expect(canonical, `${route} canonical should target the English site`).toContain('/en')
+      expect(canonical, `${route} canonical should target the English site`).not.toContain('/zh-cn')
       const englishAlternate = await page.locator('link[rel="alternate"][hreflang="en-US"]').getAttribute('href')
-      expect(englishAlternate, `${route} should expose an English alternate`).toContain('/en')
+      expect(englishAlternate, `${route} should expose an English alternate`).not.toContain('/zh-cn')
+      const chineseAlternate = await page.locator('link[rel="alternate"][hreflang="zh-CN"]').getAttribute('href')
+      expect(chineseAlternate, `${route} should expose a Chinese alternate`).toContain('/zh-cn')
 
       const description = await page.locator('meta[name="description"]').getAttribute('content')
       if (description) {
@@ -59,37 +61,37 @@ test.describe('English content isolation', () => {
     })
   }
 
-  test('locale menu and English 404 contain no Chinese text', async ({ page }) => {
-    await page.goto(new URL('/en/', baseURL).toString(), {
+  test('locale menu names both languages and English 404 contains no Chinese text', async ({ page }) => {
+    await page.goto(baseURL, {
       waitUntil: 'domcontentloaded',
     })
 
     const localeDropdown = page.locator('.navbar__item.dropdown').filter({ hasText: 'English' }).first()
     await localeDropdown.hover()
-    assertContainsNoChinese(await page.locator('body').textContent() ?? '', 'English locale menu')
+    await expect(localeDropdown.locator('a[lang^="zh"]')).toHaveText('中文')
+    await expect(localeDropdown.locator('a[lang^="zh"]')).toHaveAttribute('href', '/zh-cn/')
 
-    const response = await page.goto(new URL('/en/404.html', baseURL).toString(), {
+    const response = await page.goto(new URL('/404.html', baseURL).toString(), {
       waitUntil: 'domcontentloaded',
     })
     expect(response?.ok()).toBe(true)
-    assertContainsNoChinese(await page.locator('body').textContent() ?? '', 'English 404 body')
+    assertContainsNoChinese(await getNaturalLanguageText(page), 'English 404 body')
     assertContainsNoChinese(await page.title(), 'English 404 title')
 
-    const english404Rule = 'from = "/en/*"\nto = "/en/404.html"\nstatus = 404'
+    const english404Rule = 'from = "/*"\nto = "/404.html"\nstatus = 404'
     expect(netlifyConfig).toContain(english404Rule)
-    expect(netlifyConfig.indexOf(english404Rule)).toBeLessThan(netlifyConfig.indexOf('from = "/*"'))
   })
 
   test('English LLM assets and blog feeds contain no Chinese text', async ({ request }) => {
     const assetPaths = [
-      '/en/llms-index.json',
-      '/en/llms.txt',
-      '/en/llms-full.txt',
-      '/en/llms-quickstart.txt',
-      '/en/llms-api.txt',
-      '/en/wetw/registry.json',
-      '/en/blog/rss.xml',
-      '/en/blog/atom.xml',
+      '/llms-index.json',
+      '/llms.txt',
+      '/llms-full.txt',
+      '/llms-quickstart.txt',
+      '/llms-api.txt',
+      '/wetw/registry.json',
+      '/blog/rss.xml',
+      '/blog/atom.xml',
     ]
 
     for (const assetPath of assetPaths) {

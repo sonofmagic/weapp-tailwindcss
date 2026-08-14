@@ -3,7 +3,8 @@
   "name": "weapp-tailwindcss-next",
   "compatibility_date": "2025-12-07",
   "assets": {
-    "directory": "./build"
+    "directory": "./build",
+    "not_found_handling": "404-page"
   },
   "routes": [
     {

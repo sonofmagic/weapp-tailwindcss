@@ -146,4 +146,4 @@ StyleInjector({
 ## 示例与文档
 
 - [内置 Style Injector 分包隔离 demo](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/subpackage-uni-app-vite-tailwindcss-v4)
-- [Tailwind CSS 多入口与分包隔离](https://tw.icebreaker.top/docs/quick-start/independent-pkg)
+- [Tailwind CSS 多入口与分包隔离](https://tw.icebreaker.top/zh-cn/docs/quick-start/independent-pkg)

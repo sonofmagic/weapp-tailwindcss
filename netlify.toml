@@ -7,13 +7,19 @@ NODE_VERSION = "22"
 
 [[redirects]]
 from = "/en/*"
-to = "/en/404.html"
+to = "/:splat"
+status = 301
+force = true
+
+[[redirects]]
+from = "/zh-cn/*"
+to = "/zh-cn/404.html"
 status = 404
 
 [[redirects]]
 from = "/*"
-to = "/index.html"
-status = 200
+to = "/404.html"
+status = 404
 
 [context.deploy-preview]
 ignore = "exit 0"

@@ -55,4 +55,4 @@ Importing the package does not execute the CLI. `runCli` follows the same stdout
 
 ## Documentation
 
-See the [CLI guide](https://tw.icebreaker.top/en/docs/tools/weapp-tw-cli) for all options, stdin/stdout, source maps, watch mode, and `canonicalize`.
+See the [CLI guide](https://tw.icebreaker.top/docs/tools/weapp-tw-cli) for all options, stdin/stdout, source maps, watch mode, and `canonicalize`.

@@ -16,9 +16,9 @@
 
 <p align="center">
   <a href="https://tw.icebreaker.top">官网</a> ·
-  <a href="https://tw.icebreaker.top/docs/intro">文档</a> ·
-  <a href="https://tw.icebreaker.top/docs/quick-start/install">快速开始</a> ·
-  <a href="https://tw.icebreaker.top/docs/tools/weapp-tw-cli">CLI</a> ·
+  <a href="https://tw.icebreaker.top/zh-cn/docs/intro">文档</a> ·
+  <a href="https://tw.icebreaker.top/zh-cn/docs/quick-start/install">快速开始</a> ·
+  <a href="https://tw.icebreaker.top/zh-cn/docs/tools/weapp-tw-cli">CLI</a> ·
   <a href="https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo">示例</a>
 </p>
 
@@ -97,7 +97,7 @@ export default defineConfig({
 })
 ```
 
-Webpack、Rspack、Gulp、Taro、uni-app、Mpx 和原生小程序的完整配置见[框架接入指南](https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite)。
+Webpack、Rspack、Gulp、Taro、uni-app、Mpx 和原生小程序的完整配置见[框架接入指南](https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/uni-app-vite)。
 
 ## CLI
 
@@ -115,7 +115,7 @@ pnpm exec weapp-tw -i src/app.css -o dist/app.wxss --target weapp
 
 CLI 默认目标是 `web`，支持 stdin/stdout、watch、原生 watcher、`--poll`、minify、optimize、source map 和 `canonicalize`。`--target weapp` 是 CSS-only 转换：不会扫描或改写 WXML、JS、TS、JSX、TSX，也不会替代完整项目的构建器集成。
 
-完整参数表见 [weapp-tw CLI 文档](https://tw.icebreaker.top/docs/tools/weapp-tw-cli)。
+完整参数表见 [weapp-tw CLI 文档](https://tw.icebreaker.top/zh-cn/docs/tools/weapp-tw-cli)。
 
 ## 选择正确的包
 
@@ -145,14 +145,14 @@ CLI 默认目标是 `web`，支持 stdin/stdout、watch、原生 watcher、`--po
 ## 文档与示例
 
 - [官网](https://tw.icebreaker.top)
-- [安装与快速开始](https://tw.icebreaker.top/docs/quick-start/install)
-- [Tailwind CSS v4 指南](https://tw.icebreaker.top/docs/quick-start/v4)
-- [框架接入](https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite)
-- [React Native / Expo](https://tw.icebreaker.top/docs/quick-start/react-native-expo)
-- [ReactLynx / Rspeedy](https://tw.icebreaker.top/docs/quick-start/frameworks/lynx)
-- [多端配置](https://tw.icebreaker.top/docs/multi-platform)
-- [API 参考](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
-- [官方 CLI](https://tw.icebreaker.top/docs/tools/weapp-tw-cli)
+- [安装与快速开始](https://tw.icebreaker.top/zh-cn/docs/quick-start/install)
+- [Tailwind CSS v4 指南](https://tw.icebreaker.top/zh-cn/docs/quick-start/v4)
+- [框架接入](https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/uni-app-vite)
+- [React Native / Expo](https://tw.icebreaker.top/zh-cn/docs/quick-start/react-native-expo)
+- [ReactLynx / Rspeedy](https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/lynx)
+- [多端配置](https://tw.icebreaker.top/zh-cn/docs/multi-platform)
+- [API 参考](https://tw.icebreaker.top/zh-cn/docs/api/interfaces/UserDefinedOptions)
+- [官方 CLI](https://tw.icebreaker.top/zh-cn/docs/tools/weapp-tw-cli)
 - [框架示例](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo)
 - [React Native 与 Lynx 示例](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/examples)
 - [备用文档地址](https://ice-tw.netlify.app/)
@@ -179,7 +179,7 @@ npx skills add sonofmagic/skills \
 npx skills add sonofmagic/skills --skill weapp-tailwindcss
 ```
 
-更多说明见 [Skill 文档](https://tw.icebreaker.top/docs/ai/basics/skill)。
+更多说明见 [Skill 文档](https://tw.icebreaker.top/zh-cn/docs/ai/basics/skill)。
 
 ## 参与贡献
 

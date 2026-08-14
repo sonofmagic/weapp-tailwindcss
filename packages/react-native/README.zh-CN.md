@@ -44,4 +44,4 @@ Metro 会扫描源码、生成精确候选集合和 manifest，并把 Babel JSX 
 
 ## 文档
 
-完整接入说明见 [React Native / Expo 指南](https://tw.icebreaker.top/docs/quick-start/react-native-expo)。
+完整接入说明见 [React Native / Expo 指南](https://tw.icebreaker.top/zh-cn/docs/quick-start/react-native-expo)。

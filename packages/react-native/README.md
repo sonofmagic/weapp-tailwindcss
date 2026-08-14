@@ -44,4 +44,4 @@ This package generates React Native style manifests. It does not emit Web CSS or
 
 ## Documentation
 
-See the [React Native and Expo guide](https://tw.icebreaker.top/en/docs/quick-start/react-native-expo) for the complete setup.
+See the [React Native and Expo guide](https://tw.icebreaker.top/docs/quick-start/react-native-expo) for the complete setup.
