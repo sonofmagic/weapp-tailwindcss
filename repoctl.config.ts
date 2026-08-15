@@ -15,6 +15,17 @@ export default defineMonorepoConfig({
       autoConfirm: false,
       includePrivate: true,
     },
+    release: {
+      hooks: {
+        verify: ['release:verify'],
+        afterPublish: [
+          {
+            script: 'release:sync-npmmirror',
+            continueOnError: true,
+          },
+        ],
+      },
+    },
     upgrade: {
       skipOverwrite: false,
       mergeTargets: true,

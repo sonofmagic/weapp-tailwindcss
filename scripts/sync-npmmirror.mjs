@@ -1,5 +1,7 @@
+import { readFile } from 'node:fs/promises'
 import process from 'node:process'
 import { pathToFileURL } from 'node:url'
+import { parsePublishSummary } from 'repoctl'
 
 export const npmMirrorRegistry = 'https://registry-direct.npmmirror.com'
 
@@ -21,22 +23,36 @@ export function parsePublishedPackages(value) {
     packages = JSON.parse(value)
   }
   catch (error) {
-    throw new Error(`无法解析 Changesets 发布包列表：${error instanceof Error ? error.message : String(error)}`)
+    throw new Error(`无法解析 repoctl 发布包列表：${error instanceof Error ? error.message : String(error)}`)
   }
 
   if (!Array.isArray(packages)) {
-    throw new TypeError('Changesets 发布包列表必须是数组')
+    throw new TypeError('repoctl 发布包列表必须是数组')
   }
 
   const names = packages.map((item) => {
     const name = typeof item === 'string' ? item : item?.name
     if (typeof name !== 'string' || !name) {
-      throw new Error('Changesets 发布包列表包含缺少 name 的条目')
+      throw new Error('repoctl 发布包列表包含缺少 name 的条目')
     }
     return name
   })
 
   return [...new Set(names)]
+}
+
+export async function readPublishedPackages(options = {}) {
+  const publishedPackages = options.publishedPackages ?? process.env.REPO_RELEASE_PUBLISHED_PACKAGES
+  if (publishedPackages?.trim()) {
+    return parsePublishedPackages(publishedPackages)
+  }
+
+  const summaryPath = options.summaryPath ?? process.env.REPO_RELEASE_PUBLISH_SUMMARY
+  if (!summaryPath?.trim()) {
+    return []
+  }
+
+  return parsePublishedPackages(JSON.stringify(parsePublishSummary(await readFile(summaryPath, 'utf8'))))
 }
 
 export async function syncPackages(packageNames, options = {}) {
@@ -64,7 +80,7 @@ export async function syncPackages(packageNames, options = {}) {
 }
 
 async function main() {
-  const packageNames = parsePublishedPackages(process.env.PUBLISHED_PACKAGES)
+  const packageNames = await readPublishedPackages()
   if (!packageNames.length) {
     console.log('本次没有发布 npm 包，跳过 npmmirror 同步')
     return

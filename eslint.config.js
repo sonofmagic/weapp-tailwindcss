@@ -1,7 +1,7 @@
-import { icebreaker } from '@icebreakers/eslint-config'
 import { globalIgnores } from 'eslint/config'
+import { createMonorepoEslintConfig } from 'repoctl/tooling'
 
-const config = icebreaker(
+const config = createMonorepoEslintConfig(
   {
     tailwindcss: false,
     markdown: false,

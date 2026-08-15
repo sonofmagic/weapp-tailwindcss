@@ -443,33 +443,38 @@ describe('ci workflows', () => {
   })
 
   it('keeps release publishing on npm trusted publishing', () => {
-    const { workflow } = readWorkflow('release.yml')
+    const { source, workflow } = readWorkflow('release.yml')
     const setupNodeStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
-      return step.uses === 'actions/setup-node@v6'
+      return String(step.uses).startsWith('actions/setup-node@')
     })
     const releaseStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
-      return step.id === 'changesets'
+      return step.name === 'Run repo release CI'
     })
 
+    expect(source).toContain('# repoctl-managed: release/v2')
     expect(setupNodeStep.with['node-version']).toBe(24)
+    expect(setupNodeStep.with['registry-url']).toBe('https://registry.npmjs.org')
     expect(workflow.permissions['id-token']).toBe('write')
-    expect(releaseStep.env.NPM_CONFIG_PROVENANCE).toBe(true)
+    expect(workflow.env.NPM_CONFIG_PROVENANCE).toBe(true)
+    expect(workflow.env.npm_config_registry).toBe('https://registry.npmjs.org')
+    expect(releaseStep.run).toBe('pnpm exec repo release ci')
+    expect(releaseStep.env.GITHUB_TOKEN).toContain('secrets.REPOCTL_RELEASE_TOKEN || secrets.CHANGESETS_RELEASE_TOKEN || github.token')
     expect(releaseStep.env.NPM_TOKEN).toBeUndefined()
     expect(releaseStep.env.NODE_AUTH_TOKEN).toBeUndefined()
+    expect(source).not.toContain('changesets/action')
+    expect(source).not.toContain('NPM_TOKEN:')
+    expect(source).not.toContain('NODE_AUTH_TOKEN:')
   })
 
-  it('triggers npmmirror sync only after a successful npm publish', () => {
-    const { workflow } = readWorkflow('release.yml')
-    const syncStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
-      return step.name === 'Trigger npmmirror sync'
-    })
+  it('runs release verification and npmmirror sync through repoctl hooks', () => {
+    const config = readText('repoctl.config.ts')
+    const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
 
-    expect(syncStep).toMatchObject({
-      if: "steps.changesets.outputs.published == 'true'",
-      'continue-on-error': true,
-      run: 'node scripts/sync-npmmirror.mjs',
-    })
-    expect(syncStep.env.PUBLISHED_PACKAGES).toContain("steps.changesets.outputs['published-packages']")
+    expect(config).toContain("verify: ['release:verify']")
+    expect(config).toContain("script: 'release:sync-npmmirror'")
+    expect(config).toContain('continueOnError: true')
+    expect(packageJson.scripts['release:verify']).toBe('node scripts/verify-packed-packages.mjs && pnpm test:release')
+    expect(packageJson.scripts['release:sync-npmmirror']).toBe('node scripts/sync-npmmirror.mjs')
   })
 
   it('keeps PR benchmark coverage on the smoke demo matrix', () => {
@@ -507,29 +512,46 @@ describe('ci workflows', () => {
     })).toBe(true)
   })
 
-  it('keeps release version phase lightweight inside changesets action', () => {
-    const { workflow } = readWorkflow('release.yml')
+  it('delegates the complete package lifecycle to repoctl', () => {
+    const { source, workflow } = readWorkflow('release.yml')
+    const { workflow: releaseGateWorkflow } = readWorkflow('release-gate.yml')
+    const packageJson = readPackageJson<{ scripts: Record<string, string>, devDependencies: Record<string, string> }>('package.json')
     const releaseStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
-      return step.id === 'changesets'
+      return step.name === 'Run repo release CI'
     })
-    const publishScript = readText('scripts/publish-packages.mjs')
-    const latestScript = publishScript.match(/function publishLatest\(options\) \{\n([\s\S]*?)\n\}/)?.[1] ?? ''
-    const prereleaseScript = publishScript.match(/function publishPrerelease\(tag, options\) \{\n([\s\S]*?)\n\}/)?.[1] ?? ''
-    const latestVersionBranch = latestScript.match(
-      /if \(options\.phase === 'version'\) \{\n([\s\S]*?)\n  \}/,
-    )?.[1] ?? ''
-    const prereleaseVersionBranch = prereleaseScript.match(
-      /if \(options\.phase === 'version'\) \{\n([\s\S]*?)\n    return\n  \}/,
-    )?.[1] ?? ''
 
-    expect(releaseStep.with.version).toBe('pnpm publish-packages -- --phase version')
-    expect(publishScript).toContain('runWithRetry(\'pnpm\', [\'changeset\', \'version\']')
-    expect(publishScript).toContain('/Premature close/i')
-    expect(latestVersionBranch).toContain('runChangesetVersion(options)')
-    expect(latestVersionBranch).not.toContain('pnpm\', [\'build')
-    expect(latestVersionBranch).not.toContain('pnpm\', [\'test')
-    expect(prereleaseVersionBranch).toContain('enterPreMode(tag, options)')
-    expect(prereleaseVersionBranch).toContain('runChangesetVersion(options)')
+    expect(workflow.on.workflow_dispatch.inputs.mode.options).toEqual([
+      'auto',
+      'prepare',
+      'publish',
+      'publish-unpublished',
+    ])
+    expect(releaseStep.env.REPO_RELEASE_MODE).toContain("inputs.mode || 'auto'")
+    expect(releaseStep.env.REPO_RELEASE_PACKAGE).toContain('inputs.package')
+    expect(releaseStep.env.REPO_RELEASE_VERSION).toContain('inputs.version')
+    expect(source.match(/pnpm exec repo release ci/g)).toHaveLength(1)
+    expect(packageJson.scripts.release).toBe('pnpm change')
+    expect(packageJson.scripts['version-packages']).toBe('pnpm version -r')
+    expect(packageJson.scripts.cv).toBe('pnpm version -r')
+    expect(packageJson.scripts['publish-packages']).toBe('repo release stable publish')
+    expect(packageJson.scripts['release:pre']).toBe('repo release pre publish')
+    expect(packageJson.scripts.pr).toBe('pnpm pr:alpha')
+    expect(packageJson.scripts['pr:alpha']).toBe('repo release pre enter alpha')
+    expect(packageJson.scripts['pr:beta']).toBe('repo release pre enter beta')
+    expect(packageJson.scripts['pr:rc']).toBe('repo release pre enter rc')
+    expect(packageJson.scripts['pr:next']).toBe('repo release pre enter next')
+    expect(packageJson.scripts['pr:exit']).toBe('repo release pre exit')
+    expect(packageJson.devDependencies.repoctl).toBe('^5.4.0')
+    expect(packageJson.devDependencies['@changesets/cli']).toBeUndefined()
+    expect(packageJson.devDependencies['@changesets/changelog-github']).toBeUndefined()
+    expect(packageJson.devDependencies['@icebreakers/changelog-github']).toBeUndefined()
+    expect(fs.existsSync(path.join(repoRoot, '.changeset/config.json'))).toBe(false)
+    expect(fs.existsSync(path.join(repoRoot, 'scripts/publish-packages.mjs'))).toBe(false)
+    expect(fs.existsSync(path.join(repoRoot, 'scripts/setPrivate.ts'))).toBe(false)
+    expect(stepRuns(releaseGateWorkflow, 'release-gate').slice(-2)).toEqual([
+      'pnpm build',
+      'pnpm release:verify',
+    ])
   })
 
   it('runs base-ref performance guards on pull requests and published trends elsewhere', () => {
