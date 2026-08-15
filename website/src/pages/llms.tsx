@@ -21,6 +21,7 @@ const SKILL_INSTALL_COMMAND = `npx skills add sonofmagic/skills \\
   --skill weapp-tailwindcss-runtime \\
   --skill weapp-tailwindcss-custom-build \\
   --skill weapp-tailwindcss-react-native \\
+  --skill weapp-tailwindcss-lynx \\
   -y`
 
 const LOCAL_SKILL_INSTALL_COMMAND = SKILL_INSTALL_COMMAND.replace('sonofmagic/skills', '.')
@@ -37,7 +38,7 @@ const llmsPageCopy = {
     markdownTitle: 'Markdown 副本（示例）',
     markdownIntroPrefix: '每篇文档都会生成纯 Markdown（路径同原始 docs，只是后缀改为 .md）。完整列表见',
     skillTitle: 'Skill 套件安装与使用',
-    skillIntro: '官方套件包含兼容协调入口，以及接入、迁移、排障、运行时、自定义构建和 React Native 六个专用工作流：',
+    skillIntro: '官方套件包含兼容协调入口，以及接入、迁移、排障、运行时、自定义构建、React Native 和 ReactLynx 七个专用工作流：',
     installCommandLabel: '安装完整套件',
     installCommand: SKILL_INSTALL_COMMAND,
     skillListLabel: '查看可安装 Skill 列表',
@@ -95,7 +96,7 @@ const llmsPageCopy = {
     markdownTitle: 'Markdown copies (examples)',
     markdownIntroPrefix: 'Each doc also ships as plain Markdown with the same route path and a .md suffix. For the full list, see',
     skillTitle: 'Install and use the skill suite',
-    skillIntro: 'The suite includes the compatibility router plus focused setup, migration, troubleshooting, runtime, custom-build, and React Native workflows:',
+    skillIntro: 'The suite includes the compatibility router plus seven focused setup, migration, troubleshooting, runtime, custom-build, React Native, and ReactLynx workflows:',
     installCommandLabel: 'Install the complete suite',
     installCommand: SKILL_INSTALL_COMMAND,
     skillListLabel: 'List installable skills',

@@ -74,3 +74,12 @@ await ctx.getRuntimeSet({
 ## 增量依赖索引
 
 watch 适配器需要维护“候选来源 -> runtime set -> 模板/JavaScript 消费者”的依赖索引。候选新增、删除或 Tailwind 配置变化时，先刷新 runtime set，再让所有依赖该集合的模板和 JavaScript 重新转换；不能只处理触发 watch 事件的那个文件。
+
+## Scanner 与 source candidates
+
+- 从 Tailwind Scanner 或 generator source metadata 获取实际扫描文件，不为 transform/HMR 重新发明 glob。
+- 初始扫描、transform filter、watchChange 与 handleHotUpdate 共用同一规范化模块身份。
+- 尊重 `.gitignore` 和 Scanner 排除结果；只有显式 `source()` / `@source` 才允许把 monorepo 外部依赖纳入。
+- 文件系统路径用 `node:path` 处理；module id、asset name 与 URL 只在明确逻辑边界规范化为 `/`。
+
+Rspack adapter 处理 rule 时必须支持字符串、正则、函数、数组与组合 condition，并保证重复应用 loader/plugin patch 后结果不变。

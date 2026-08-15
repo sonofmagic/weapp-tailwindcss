@@ -27,7 +27,7 @@ At the same time, I also hope that everyone can discuss and participate together
 
 ## AI Learning Center: Skill Quick Installation
 
-The official skill has been split by task into 1 compatible coordination portal and 6 dedicated workflows. It is recommended to install the entire suite to cover onboarding, migration, troubleshooting, runtime, custom builds, and Expo React Native:
+The official skill suite is split into 1 compatibility router and 7 dedicated workflows. Install the full suite for setup, migration, troubleshooting, runtime, custom builds, Expo React Native, and ReactLynx/Rspeedy:
 
 ```bash
 npx skills add sonofmagic/skills \
@@ -38,6 +38,7 @@ npx skills add sonofmagic/skills \
   --skill weapp-tailwindcss-runtime \
   --skill weapp-tailwindcss-custom-build \
   --skill weapp-tailwindcss-react-native \
+  --skill weapp-tailwindcss-lynx \
   -y
 ```
 

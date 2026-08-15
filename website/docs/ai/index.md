@@ -27,7 +27,7 @@ keywords:
 
 ## AI 学习中心：Skill 快速安装
 
-官方 Skill 已按任务拆分为 1 个兼容协调入口和 6 个专用工作流。推荐安装整套，以覆盖接入、迁移、排障、运行时、自定义构建和 Expo React Native：
+官方 Skill 已按任务拆分为 1 个兼容协调入口和 7 个专用工作流。推荐安装整套，以覆盖接入、迁移、排障、运行时、自定义构建、Expo React Native 和 ReactLynx/Rspeedy：
 
 ```bash
 npx skills add sonofmagic/skills \
@@ -38,6 +38,7 @@ npx skills add sonofmagic/skills \
   --skill weapp-tailwindcss-runtime \
   --skill weapp-tailwindcss-custom-build \
   --skill weapp-tailwindcss-react-native \
+  --skill weapp-tailwindcss-lynx \
   -y
 ```
 

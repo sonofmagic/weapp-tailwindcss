@@ -159,7 +159,7 @@ See the complete [weapp-tw CLI guide](https://tw.icebreaker.top/docs/tools/weapp
 
 ## AI Skills
 
-The official skills are split by setup, migration, troubleshooting, runtime classes, custom builds, and React Native. Install the complete suite with:
+The official suite contains one router plus seven focused workflows for setup, migration, troubleshooting, runtime classes, custom builds, React Native, and ReactLynx. Install the complete suite with:
 
 ```bash
 npx skills add sonofmagic/skills \
@@ -170,6 +170,7 @@ npx skills add sonofmagic/skills \
   --skill weapp-tailwindcss-runtime \
   --skill weapp-tailwindcss-custom-build \
   --skill weapp-tailwindcss-react-native \
+  --skill weapp-tailwindcss-lynx \
   -y
 ```
 
