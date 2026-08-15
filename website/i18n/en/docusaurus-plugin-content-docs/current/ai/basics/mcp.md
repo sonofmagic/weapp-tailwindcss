@@ -147,7 +147,7 @@ claude-code mcp install my-server
 my-server --stdio
 ```
 
-### 2. SSE（Server-Sent Events）
+### 2. SSE (Server-Sent Events)
 
 Applies to **Local HTTP Communication**:
 

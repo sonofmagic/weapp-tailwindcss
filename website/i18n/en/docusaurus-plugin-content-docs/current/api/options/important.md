@@ -342,9 +342,9 @@ Fine-tuned configuration of CSS generation and post-processing compatibility.
 #### Remark
 
 It is subsequently used to control fine-grained behaviors such as CSS compatibility, variable retention, and rule pruning.
-`cssPreflight`、`cssPreflightRange`、`cssChildCombinatorReplaceValue`、`cssPresetEnv`、`autoprefixer`、
-`atRules`、`injectAdditionalCssVarScope`、`cssSelectorReplacement`、`rem2rpx`、`px2rpx`、`unitsToPx`、
-`unitConversion`、`platform`、`cssRemoveActivePseudoClass`、`cssRemoveHoverPseudoClass`、`cssRemoveFocusPseudoClass`、`cssRemoveProperty`、`cssCalc`
+`cssPreflight`, `cssPreflightRange`, `cssChildCombinatorReplaceValue`, `cssPresetEnv`, `autoprefixer`,
+`atRules`, `injectAdditionalCssVarScope`, `cssSelectorReplacement`, `rem2rpx`, `px2rpx`, `unitsToPx`,
+`unitConversion`, `platform`, `cssRemoveActivePseudoClass`, `cssRemoveHoverPseudoClass`, `cssRemoveFocusPseudoClass`, `cssRemoveProperty`, `cssCalc`
 and `tailwindcssV4GradientFallback` are recommended to be placed here.
 
 #### The mini program removes `:active` and `:focus` by default

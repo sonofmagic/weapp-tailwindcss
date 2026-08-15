@@ -2,7 +2,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { seoLocales } from './seo-locales.mjs'
 import { isKeywordsNormalized } from './seo-quality-lib.mjs'
-import { readMatterFile, resolveKeywords, walkMarkdownFiles, writeMatterFile } from './seo-shared.mjs'
+import { containsHan, readMatterFile, resolveKeywords, walkMarkdownFiles, writeMatterFile } from './seo-shared.mjs'
 
 const options = {
   write: process.argv.includes('--write'),
@@ -14,14 +14,13 @@ function normalizeFile(filePath, rootDir, locale) {
   const relativePath = path.relative(rootDir, filePath)
   if (Array.isArray(parsed.data.keywords)
     && parsed.data.keywords.length >= 8
-    && isKeywordsNormalized(parsed.data.keywords)) {
+    && isKeywordsNormalized(parsed.data.keywords)
+    && (locale !== 'en' || parsed.data.keywords.every(keyword => !containsHan(keyword)))) {
     return false
   }
   const nextKeywords = resolveKeywords({
-    commonKeywords: locale === 'en'
-      ? ['weapp-tailwindcss', 'Tailwind CSS 4', 'cross-platform', 'mini app', 'uni-app', 'Taro', 'React Native', 'Lynx']
-      : undefined,
     existingKeywords: parsed.data.keywords,
+    locale: locale === 'en' ? locale : undefined,
     title: parsed.data.title || relativePath,
     relativePath,
     maxItems: options.maxItems,

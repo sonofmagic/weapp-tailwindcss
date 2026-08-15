@@ -15,11 +15,11 @@ keywords:
   - uni-app
   - taro
   - mpx
-  - 配置项
-  - 插件参数
-  - 选项
+  - plugin options
   - overview
   - Tailwind CSS 4
+  - configuration
+  - cross-platform
 ---
 
 The detailed configuration of this chapter has been moved to [API / Configuration Item Document](/docs/api/interfaces/UserDefinedOptions).

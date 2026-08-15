@@ -14,10 +14,10 @@ keywords:
   - WeChat applet
   - uni-app
   - mpx
-  - 快速开始
-  - 安装
-  - 配置
+  - installation
   - Tailwind CSS 4
+  - cross-platform
+  - mini app
 ---
 
 # Taro

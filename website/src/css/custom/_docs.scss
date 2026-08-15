@@ -1370,9 +1370,13 @@ html.docs-doc-id-showcase\/index .theme-doc-markdown > div.grid > div:has(> deta
   color: rgb(15 23 42);
   background: rgb(255 255 255 / 86%);
   box-shadow: 0 5px 14px rgb(15 23 42 / 9%);
-  content: '小程序码';
+  content: 'Mini app code';
   font-size: 0.72rem;
   font-weight: 700;
+}
+
+html[lang^='zh'].docs-doc-id-showcase\/index .theme-doc-markdown > div.grid > div:has(> details) > div.grid::before {
+  content: '小程序码';
 }
 
 html.docs-doc-id-showcase\/index[data-theme='dark']

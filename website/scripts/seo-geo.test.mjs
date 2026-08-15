@@ -13,6 +13,7 @@ import { createGeoIndexPayload } from './generate-geo-index.mjs'
 import { createRedirectRules, validateRedirectRules } from './redirects.mjs'
 import { websiteRoot } from './seo-locales.mjs'
 import { buildFileIssues } from './seo-quality-lib.mjs'
+import { resolveKeywords } from './seo-shared.mjs'
 
 function readPngSize(filePath) {
   const content = fs.readFileSync(filePath)
@@ -40,6 +41,26 @@ describe('website SEO and GEO contracts', () => {
     expect(primary.documents.some(item => item.kind === 'blog')).toBe(false)
     expect(primary.documents.some(item => item.source.includes('/ai/'))).toBe(false)
     expect(primary.documents.some(item => item.source.includes('/history/'))).toBe(false)
+  })
+
+  it('keeps English keyword normalization free of Chinese fallback values', () => {
+    const keywords = resolveKeywords({
+      existingKeywords: ['配置项', 'existing keyword'],
+      locale: 'en',
+      relativePath: 'options/index.md',
+      title: 'Plugin Options',
+    })
+    expect(keywords).toEqual(expect.arrayContaining(['options', 'plugin options', 'configuration', 'existing keyword']))
+    expect(keywords.join('')).not.toMatch(/\p{Script=Han}/u)
+  })
+
+  it('preserves the Chinese GEO keyword contract', () => {
+    const keywords = resolveKeywords({
+      locale: 'zh-cn',
+      relativePath: 'options/index.md',
+      title: '配置项',
+    })
+    expect(keywords).toEqual(expect.arrayContaining(['Tailwind CSS 4', '跨端', '小程序', 'Taro']))
   })
 
   it('rejects code, lists, URLs, and Markdown descriptions', () => {

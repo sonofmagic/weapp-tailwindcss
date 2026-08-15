@@ -17,9 +17,9 @@ keywords:
   - uni-app
   - taro
   - mpx
-  - 配置项
-  - 插件参数
-  - 选项
+  - plugin options
+  - configuration
+  - Exact
 ---
 
 # Exact conversion and ignoring in js

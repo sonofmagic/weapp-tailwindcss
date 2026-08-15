@@ -17,8 +17,8 @@ keywords:
   - WeChat applet
   - uni-app
   - taro
-  - AI 编程
-  - 工作流
+  - AI coding
+  - Tailwind CSS 4
 ---
 
 #Context Window

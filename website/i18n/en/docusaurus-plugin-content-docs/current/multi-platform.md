@@ -27,8 +27,8 @@ The generator default target is `weapp`. When the following environment variable
 | Explicitly specified         | `WEAPP_TW_TARGET=web`, `WEAPP_TAILWINDCSS_TARGET=web`                              |
 | uni-app H5                   | `UNI_PLATFORM=h5`                                                                  |
 | Ordinary uni-app App WebView | `UNI_PLATFORM=app`, `UNI_PLATFORM=app-plus`, and `UNI_UTS_PLATFORM` is not `app-*` |
-| uni-app x Web                | `UNI_UTS_PLATFORM=h5`、`web`、`web-*`                                              |
-| Mpx Web                      | `MPX_CLI_MODE=web`、`MPX_CURRENT_TARGET_MODE=web`                                  |
+| uni-app x Web                | `UNI_UTS_PLATFORM=h5`, `web`, `web-*`                                              |
+| Mpx Web                      | `MPX_CLI_MODE=web`, `MPX_CURRENT_TARGET_MODE=web`                                  |
 | Taro H5                      | `TARO_ENV=h5`                                                                      |
 
 `target` represents the CSS output form, not the platform enumeration. Native App targets such as `uni-app x`'s `app-android`, `app-ios`, and `app-harmony` will not be regarded as web, and `target: 'app'` does not need to be configured. This type of target continues to use the applet output family, and uses the `uniAppX` preset to handle the differences between `uvue` and the App side.

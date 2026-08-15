@@ -16,8 +16,8 @@ keywords:
   - uni-app
   - taro
   - mpx
-  - 配置项
-  - 插件参数
+  - plugin options
+  - configuration
 ---
 
 # Use arbitrary values

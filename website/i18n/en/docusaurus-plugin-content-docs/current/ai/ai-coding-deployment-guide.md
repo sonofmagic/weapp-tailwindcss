@@ -767,10 +767,10 @@ $env:NO_PROXY="localhost,127.0.0.1,.corp.internal"
 
 #### 9.1.3 Common domain names that need to be released/reachable (choose based on the selected product)
 
-- Cursor：`cursor.com`、`*.cursor.com`
-- Claude/Anthropic：`claude.ai`、`claude.com`、`*.anthropic.com`
+- Cursor: `cursor.com`, `*.cursor.com`
+- Claude/Anthropic: `claude.ai`, `claude.com`, `*.anthropic.com`
 - OpenAI/ChatGPT: `openai.com`, `chatgpt.com` (Cloudflare risk control may be stricter in some areas)
-- Google：`cloud.google.com`、`*.googleapis.com`、`*.gstatic.com`
+- Google: `cloud.google.com`, `*.googleapis.com`, `*.gstatic.com`
 
 Recommended practice: Maintain a "domain name whitelist" on the platform side and update it synchronously when network policies change.
 

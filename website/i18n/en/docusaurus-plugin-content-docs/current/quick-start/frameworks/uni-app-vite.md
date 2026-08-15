@@ -16,8 +16,8 @@ keywords:
   - Mini program
   - WeChat applet
   - taro
-  - 快速开始
-  - 安装
+  - installation
+  - Tailwind CSS 4
 ---
 
 # uni-app CLI Vue3 Vite

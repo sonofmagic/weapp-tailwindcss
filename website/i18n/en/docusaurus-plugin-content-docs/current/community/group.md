@@ -14,10 +14,10 @@ keywords:
   - uni-app
   - taro
   - mpx
-  - 社区
-  - 模板
-  - 案例
+  - templates
+  - case studies
   - Join
+  - the
 ---
 
 # Join the technical exchange group

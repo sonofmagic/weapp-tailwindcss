@@ -15,9 +15,9 @@ keywords:
   - uni-app
   - taro
   - mpx
-  - 社区
-  - 模板
-  - 案例
+  - templates
+  - case studies
+  - Adapted
 ---
 
 # Adapted `tailwindcss` plug-in

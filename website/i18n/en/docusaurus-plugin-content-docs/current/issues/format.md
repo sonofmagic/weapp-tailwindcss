@@ -14,10 +14,10 @@ keywords:
   - uni-app
   - taro
   - mpx
-  - 常见问题
-  - 故障排查
-  - 兼容性
+  - common issues
   - formatting
+  - diagnostics
+  - Tailwind CSS 4
 ---
 
 # Tailwindcss formatting

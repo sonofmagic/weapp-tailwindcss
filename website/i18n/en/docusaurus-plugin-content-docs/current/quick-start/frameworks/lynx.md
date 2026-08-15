@@ -7,10 +7,9 @@ keywords:
   - Rspeedy
   - Tailwind CSS 4
   - weapp-tailwindcss
-  - 快速开始
-  - 安装
-  - 配置
   - quick start
+  - installation
+  - configuration
   - frameworks
   - cross-platform
   - mini app

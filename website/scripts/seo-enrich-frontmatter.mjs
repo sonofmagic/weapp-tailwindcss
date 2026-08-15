@@ -4,6 +4,7 @@ import { seoLocales } from './seo-locales.mjs'
 import { isDescriptionValid, isKeywordsNormalized } from './seo-quality-lib.mjs'
 import {
   buildFallbackDescription,
+  containsHan,
   extractFirstHeading,
   readMatterFile,
   resolveKeywords,
@@ -46,13 +47,13 @@ function processFile(absPath, rootDir, locale, write) {
     changed = true
   }
 
-  const hasEnoughKeywords = Array.isArray(data.keywords) && data.keywords.length >= 8
+  const hasEnoughKeywords = Array.isArray(data.keywords)
+    && data.keywords.length >= 8
+    && (locale !== 'en' || data.keywords.every(keyword => !containsHan(keyword)))
   if (!hasEnoughKeywords || !isKeywordsNormalized(data.keywords)) {
     const keywords = resolveKeywords({
-      commonKeywords: locale === 'en'
-        ? ['weapp-tailwindcss', 'Tailwind CSS 4', 'cross-platform', 'mini app', 'uni-app', 'Taro', 'React Native', 'Lynx']
-        : undefined,
       existingKeywords: data.keywords,
+      locale: locale === 'en' ? locale : undefined,
       title: data.title,
       relativePath,
     })

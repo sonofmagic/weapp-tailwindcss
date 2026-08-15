@@ -17,9 +17,9 @@ keywords:
   - WeChat applet
   - taro
   - mpx
-  - 快速开始
-  - 安装
-  - 配置
+  - installation
+  - How
+  - to
 ---
 
 # uni-app HBuilderX usage

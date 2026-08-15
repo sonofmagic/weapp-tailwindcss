@@ -84,7 +84,7 @@ Currently `weapp-tailwindcss` uses:
 - `htmlparser2` to handle `wxml`
 - `postcss` to handle `wxss`
 
-Why？
+Why?
 
 #### wxml htmlparser2
 

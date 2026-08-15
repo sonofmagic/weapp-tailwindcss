@@ -3,18 +3,58 @@ import { expect, test } from '@playwright/test'
 import routes from '../routes.json'
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'https://tw.icebreaker.top/'
-const HAN_CHARACTER_RE = /[\u3400-\u9FFF\uF900-\uFAFF]/
+const CHINESE_TEXT_RE = /[\u3000-\u303F\u3400-\u9FFF\uF900-\uFAFF\uFE10-\uFE1F\uFF01-\uFF60]/
 
 function assertContainsNoChinese(value: string, context: string) {
-  expect(value, `${context} contains Chinese text`).not.toMatch(HAN_CHARACTER_RE)
+  expect(value, `${context} contains Chinese text`).not.toMatch(CHINESE_TEXT_RE)
 }
 
 async function getNaturalLanguageText(page: import('@playwright/test').Page) {
   return page.locator('body').evaluate((body) => {
     const copy = body.cloneNode(true) as HTMLElement
-    copy.querySelectorAll('nav, footer, pre, code, svg, script, style, .theme-doc-toc-desktop, .theme-doc-pagination, .pagination-nav, .mermaid, .mermaid-container').forEach(node => node.remove())
+    copy.querySelectorAll('a[lang^="zh"], svg, script, style').forEach(node => node.remove())
     return copy.textContent ?? ''
   })
+}
+
+async function getNaturalLanguageAttributes(page: import('@playwright/test').Page) {
+  return page.locator('body').evaluate((body) => {
+    const attributes = ['alt', 'aria-label', 'placeholder', 'title']
+    return [...body.querySelectorAll<HTMLElement>('*')]
+      .filter(element => !element.closest('a[lang^="zh"]'))
+      .flatMap(element => attributes.map(attribute => element.getAttribute(attribute)))
+      .filter((value): value is string => Boolean(value))
+      .join('\n')
+  })
+}
+
+async function getGeneratedContentText(page: import('@playwright/test').Page) {
+  return page.locator('body').evaluate((body) => {
+    return [...body.querySelectorAll<HTMLElement>('*')]
+      .flatMap(element => ['::before', '::after'].map(pseudoElement => getComputedStyle(element, pseudoElement).content))
+      .filter(value => value !== 'none' && value !== 'normal')
+      .join('\n')
+  })
+}
+
+function assertStructuredDataLocale(value: string, context: string) {
+  const visit = (entry: unknown): void => {
+    if (Array.isArray(entry)) {
+      entry.forEach(visit)
+      return
+    }
+    if (!entry || typeof entry !== 'object') {
+      return
+    }
+
+    const record = entry as Record<string, unknown>
+    if (typeof record.inLanguage === 'string') {
+      expect(record.inLanguage, `${context} should use English`).toBe('en-US')
+    }
+    Object.values(record).forEach(visit)
+  }
+
+  visit(JSON.parse(value))
 }
 
 const englishRoutes = [
@@ -31,6 +71,8 @@ test.describe('English content isolation', () => {
       expect(response?.ok(), `${route} should return a successful response`).toBe(true)
 
       assertContainsNoChinese(await getNaturalLanguageText(page), `${route} main content`)
+      assertContainsNoChinese(await getNaturalLanguageAttributes(page), `${route} natural-language attributes`)
+      assertContainsNoChinese(await getGeneratedContentText(page), `${route} generated CSS content`)
       assertContainsNoChinese(await page.title(), `${route} title`)
       await expect(page.locator('html')).toHaveAttribute('lang', /^en/i)
       await expect(page.locator('meta[http-equiv="Content-Language"]')).toHaveAttribute('content', /^en/i)
@@ -38,10 +80,12 @@ test.describe('English content isolation', () => {
 
       const canonical = await page.locator('link[rel="canonical"]').first().getAttribute('href')
       expect(canonical, `${route} canonical should target the English site`).not.toContain('/zh-cn')
-      const englishAlternate = await page.locator('link[rel="alternate"][hreflang="en-US"]').getAttribute('href')
-      expect(englishAlternate, `${route} should expose an English alternate`).not.toContain('/zh-cn')
-      const chineseAlternate = await page.locator('link[rel="alternate"][hreflang="zh-CN"]').getAttribute('href')
-      expect(chineseAlternate, `${route} should expose a Chinese alternate`).toContain('/zh-cn')
+      const englishAlternates = await page.locator('link[rel="alternate"][hreflang="en-US"]').evaluateAll(elements => elements.map(element => element.getAttribute('href')))
+      expect(englishAlternates.length, `${route} should expose an English alternate`).toBeGreaterThan(0)
+      expect(englishAlternates.every(href => href && !href.includes('/zh-cn')), `${route} English alternates should target the English site`).toBe(true)
+      const chineseAlternates = await page.locator('link[rel="alternate"][hreflang="zh-CN"]').evaluateAll(elements => elements.map(element => element.getAttribute('href')))
+      expect(chineseAlternates.length, `${route} should expose a Chinese alternate`).toBeGreaterThan(0)
+      expect(chineseAlternates.every(href => href?.includes('/zh-cn')), `${route} Chinese alternates should target the Chinese site`).toBe(true)
 
       const description = await page.locator('meta[name="description"]').getAttribute('content')
       if (description) {
@@ -51,9 +95,7 @@ test.describe('English content isolation', () => {
       const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents()
       for (const value of structuredData) {
         assertContainsNoChinese(value, `${route} structured data`)
-        if (value.includes('"inLanguage"')) {
-          expect(value, `${route} structured data should use English`).toContain('"inLanguage":"en-US"')
-        }
+        assertStructuredDataLocale(value, `${route} structured data`)
       }
     })
   }
@@ -97,6 +139,7 @@ test.describe('English content isolation', () => {
       '/wetw/registry.json',
       '/blog/rss.xml',
       '/blog/atom.xml',
+      '/blog/feed.json',
     ]
 
     for (const assetPath of assetPaths) {

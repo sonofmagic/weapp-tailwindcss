@@ -22,6 +22,8 @@ const sidebars: SidebarsConfig = {
   tailwindcssSidebar,
 }
 
+const hanCharacter = /[\u3400-\u9FFF\uF900-\uFAFF]/
+
 const englishLabelBySource = new Map(
   Object.entries(englishSidebarTranslations).flatMap(([key, translation]) => {
     const match = key.match(/^sidebar\.[^.]+\.(?:category|doc|link)\.(.+)$/)
@@ -40,7 +42,14 @@ function localizeSidebarValue(value: unknown): unknown {
   return Object.fromEntries(
     Object.entries(value).map(([key, entry]) => {
       if (key === 'label' && typeof entry === 'string') {
-        return [key, englishLabelBySource.get(entry) ?? entry]
+        const translatedLabel = englishLabelBySource.get(entry)
+        if (!translatedLabel) {
+          throw new Error(`Missing English sidebar translation for: ${entry}`)
+        }
+        if (hanCharacter.test(translatedLabel)) {
+          throw new Error(`Invalid English sidebar translation for: ${entry}`)
+        }
+        return [key, translatedLabel]
       }
       return [key, localizeSidebarValue(entry)]
     }),

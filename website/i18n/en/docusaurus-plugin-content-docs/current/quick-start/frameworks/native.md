@@ -16,8 +16,8 @@ keywords:
   - uni-app
   - taro
   - mpx
-  - 快速开始
-  - 安装
+  - installation
+  - development
 ---
 
 # Native development (packaging solution)

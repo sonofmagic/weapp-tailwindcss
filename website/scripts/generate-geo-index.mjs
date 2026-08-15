@@ -31,20 +31,6 @@ const primaryProductAreas = new Set([
   'uni-app-x',
 ])
 
-const localeKeywords = {
-  'en': ['weapp-tailwindcss', 'Tailwind CSS 4', 'cross-platform', 'mini app', 'uni-app', 'Taro', 'React Native', 'Lynx'],
-  'zh-cn': ['weapp-tailwindcss', 'Tailwind CSS 4', '跨端', '小程序', 'uni-app', 'Taro', 'React Native', 'Lynx'],
-}
-
-const localeSectionKeywords = {
-  en: {
-    'quick-start': ['quick start', 'installation', 'configuration'],
-    'issues': ['troubleshooting', 'compatibility', 'diagnostics'],
-    'migrations': ['migration', 'upgrade', 'compatibility'],
-    'tools': ['CLI', 'developer tools', 'build workflow'],
-  },
-}
-
 function resolveTitle(data, content, absPath, locale) {
   return (typeof data.title === 'string' && data.title.trim())
     || extractFirstHeading(content)
@@ -138,9 +124,8 @@ function buildRecords(localeConfig, kind) {
       canonical: `${siteUrl}${routePath}`,
       alternates: toAlternates(baseRoute),
       keywords: resolveKeywords({
-        commonKeywords: localeKeywords[localeConfig.id],
         existingKeywords: parsed.data.keywords,
-        sectionKeywordMap: localeSectionKeywords[localeConfig.id],
+        locale: localeConfig.id,
         title,
         relativePath: relative,
       }),

@@ -14,10 +14,10 @@ keywords:
   - uni-app
   - taro
   - mpx
-  - 快速开始
-  - 安装
-  - 配置
+  - installation
   - Mini
+  - program
+  - multi-theme
 ---
 
 # Mini program multi-theme solution

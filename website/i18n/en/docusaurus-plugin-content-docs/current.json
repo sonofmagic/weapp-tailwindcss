@@ -248,7 +248,7 @@
     "description": "The label for the doc item '分包 Tailwind 入口隔离' in sidebar 'tailwindcssSidebar', linking to the doc quick-start/independent-pkg"
   },
   "sidebar.tutorialSidebar.category.快速开始": {
-    "message": "快速开始",
+    "message": "Quick start",
     "description": "The label for category '快速开始' in sidebar 'tutorialSidebar'"
   },
   "sidebar.tutorialSidebar.category.Framework-specific setup": {
@@ -256,15 +256,15 @@
     "description": "The label for category 'Framework-specific setup' in sidebar 'tutorialSidebar'"
   },
   "sidebar.tutorialSidebar.category.工具与 CLI": {
-    "message": "工具与 CLI",
+    "message": "Tools and CLI",
     "description": "The label for category '工具与 CLI' in sidebar 'tutorialSidebar'"
   },
   "sidebar.tutorialSidebar.category.兼容与进阶": {
-    "message": "兼容与进阶",
+    "message": "Compatibility and advanced topics",
     "description": "The label for category '兼容与进阶' in sidebar 'tutorialSidebar'"
   },
   "sidebar.tutorialSidebar.category.社区与贡献": {
-    "message": "社区与贡献",
+    "message": "Community and contributing",
     "description": "The label for category '社区与贡献' in sidebar 'tutorialSidebar'"
   },
   "sidebar.tutorialSidebar.link.Who is using it?": {
@@ -296,7 +296,7 @@
     "description": "The label for the doc item 'Package exports overview' in sidebar 'tutorialSidebar', linking to the doc options/exports"
   },
   "sidebar.tutorialSidebar.doc.模板项目": {
-    "message": "模板项目",
+    "message": "Templates",
     "description": "The label for the doc item '模板项目' in sidebar 'tutorialSidebar', linking to the doc community/templates"
   },
   "sidebar.optionsSidebar.doc.Options": {
@@ -456,7 +456,7 @@
     "description": "The label for the doc item 'Default v4 mode reference' in sidebar 'tailwindcssSidebar', linking to the doc tailwindcss/v4-reference"
   },
   "sidebar.tailwindcssSidebar.doc.UnoCSS 写法兼容": {
-    "message": "UnoCSS 写法兼容",
+    "message": "UnoCSS syntax compatibility",
     "description": "The label for the doc item 'UnoCSS 写法兼容' in sidebar 'tailwindcssSidebar', linking to the doc tailwindcss/unocss-compatibility"
   },
   "sidebar.tailwindcssSidebar.doc.Subpackage Tailwind entry isolation": {

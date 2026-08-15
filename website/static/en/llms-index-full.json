@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-15T03:21:26.179Z",
+  "generatedAt": "2026-08-15T18:55:52.005Z",
   "locale": "en-US",
   "contentTier": "full",
   "siteUrl": "https://tw.icebreaker.top",
@@ -78,10 +78,10 @@
         "uni-app",
         "taro",
         "mpx",
+        "AI coding",
         "generates",
         "small",
-        "program",
-        "code"
+        "program"
       ],
       "headings": [
         "Improve efficiency",
@@ -126,9 +126,9 @@
         "uni-app",
         "taro",
         "mpx",
+        "AI coding",
         "programming",
-        "assistant",
-        "implementation"
+        "assistant"
       ],
       "headings": [
         "0. One-page conclusion (make decisions first, then compare)",
@@ -176,9 +176,9 @@
         "uni-app",
         "taro",
         "mpx",
+        "AI coding",
         "Selection",
-        "guide",
-        "for"
+        "guide"
       ],
       "headings": [
         "Overview",
@@ -226,9 +226,9 @@
         "uni-app",
         "taro",
         "mpx",
+        "AI coding",
         "Common",
-        "shortcomings",
-        "and"
+        "shortcomings"
       ],
       "headings": [
         "Data and knowledge level",
@@ -272,9 +272,9 @@
         "uni-app",
         "taro",
         "mpx",
+        "AI coding",
         "Programming",
-        "Solution",
-        "Selection"
+        "Solution"
       ],
       "headings": [
         "1. Plan Overview",
@@ -321,10 +321,10 @@
         "WeChat applet",
         "uni-app",
         "taro",
-        "AI 编程",
-        "工作流",
+        "AI coding",
         "Tailwind CSS 4",
-        "cross-platform"
+        "cross-platform",
+        "mini app"
       ],
       "headings": [
         "Overview",
@@ -372,9 +372,9 @@
         "WeChat applet",
         "uni-app",
         "taro",
-        "AI 编程",
-        "工作流",
-        "Tailwind CSS 4"
+        "AI coding",
+        "Tailwind CSS 4",
+        "cross-platform"
       ],
       "headings": [
         "Overview",
@@ -423,8 +423,8 @@
         "WeChat applet",
         "uni-app",
         "taro",
-        "AI 编程",
-        "工作流"
+        "AI coding",
+        "Tailwind CSS 4"
       ],
       "headings": [
         "Overview",
@@ -474,7 +474,7 @@
         "uni-app",
         "taro",
         "mpx",
-        "friendly"
+        "AI coding"
       ],
       "headings": [
         "Overview",
@@ -524,7 +524,7 @@
         "WeChat applet",
         "uni-app",
         "taro",
-        "Tailwind CSS 4"
+        "AI coding"
       ],
       "headings": [
         "Overview",
@@ -537,7 +537,7 @@
         "3. Tools",
         "MCP transport layer",
         "1. STDIO (standard input/output)",
-        "2. SSE（Server-Sent Events）",
+        "2. SSE (Server-Sent Events)",
         "3. Custom transmission"
       ],
       "source": "i18n/en/docs/ai/basics/mcp.md"
@@ -573,8 +573,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "standard-driven",
-        "programming"
+        "AI coding",
+        "standard-driven"
       ],
       "headings": [
         "Overview",
@@ -624,7 +624,7 @@
         "WeChat applet",
         "uni-app",
         "taro",
-        "Tailwind CSS 4"
+        "AI coding"
       ],
       "headings": [
         "Overview",
@@ -673,8 +673,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "Retrieval",
-        "Augmentation"
+        "AI coding",
+        "Retrieval"
       ],
       "headings": [
         "Overview",
@@ -719,12 +719,12 @@
         "taro",
         "mpx",
         "React Native",
+        "AI coding",
+        "workflow",
         "system",
         "ai",
         "basics",
-        "cross-platform",
-        "mini app",
-        "Lynx"
+        "cross-platform"
       ],
       "headings": [
         "Install the complete package",
@@ -761,14 +761,14 @@
         "AI programming",
         "Workflow",
         "Mini program",
+        "AI coding",
+        "LLM",
         "publishing",
         "and",
         "synchronization",
         "ai",
         "basics",
-        "skill release",
-        "Tailwind CSS 4",
-        "cross-platform"
+        "skill release"
       ],
       "headings": [
         "Synchronization relationship",
@@ -810,7 +810,7 @@
         "WeChat applet",
         "uni-app",
         "taro",
-        "Tailwind CSS 4"
+        "AI coding"
       ],
       "headings": [
         "Overview",
@@ -859,8 +859,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "word",
-        "element"
+        "AI coding",
+        "word"
       ],
       "headings": [
         "Overview",
@@ -910,7 +910,7 @@
         "WeChat applet",
         "uni-app",
         "taro",
-        "intuitive"
+        "AI coding"
       ],
       "headings": [
         "Overview",
@@ -958,9 +958,9 @@
         "uni-app",
         "taro",
         "mpx",
+        "AI coding",
         "Recommendations",
-        "for",
-        "selecting"
+        "for"
       ],
       "headings": [
         "Executive summary",
@@ -1009,8 +1009,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "Friendly",
-        "Documentation"
+        "AI coding",
+        "Friendly"
       ],
       "headings": [
         "Generation method",
@@ -1050,9 +1050,9 @@
         "uni-app",
         "taro",
         "mpx",
+        "AI coding",
         "Programming",
-        "Tool",
-        "Selection"
+        "Tool"
       ],
       "headings": [
         "Executive summary",
@@ -1098,11 +1098,11 @@
         "Configuration item index",
         "interface index",
         "Parameter description",
+        "reference",
+        "options",
         "Tailwind CSS 4",
         "cross-platform",
-        "mini app",
-        "uni-app",
-        "Taro"
+        "mini app"
       ],
       "headings": [
         "Configuration items",
@@ -1138,11 +1138,11 @@
         "ApplyOptions interface",
         "ApplyOptions type definition",
         "TypeScript",
+        "reference",
+        "options",
         "interfaces",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "uni-app"
+        "cross-platform"
       ],
       "headings": [
         "Properties",
@@ -1180,11 +1180,11 @@
         "CacheOptions interface",
         "CacheOptions type definition",
         "TypeScript",
+        "reference",
+        "options",
         "interfaces",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "uni-app"
+        "cross-platform"
       ],
       "headings": [
         "Properties",
@@ -1225,11 +1225,11 @@
         "ExtractOptions interface",
         "ExtractOptions type definition",
         "TypeScript",
+        "reference",
+        "options",
         "interfaces",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "uni-app"
+        "cross-platform"
       ],
       "headings": [
         "Properties",
@@ -1269,11 +1269,11 @@
         "TailwindCssOptions interface",
         "TailwindCssOptions type definition",
         "TypeScript",
+        "reference",
+        "options",
         "interfaces",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "uni-app"
+        "cross-platform"
       ],
       "headings": [
         "Properties",
@@ -1315,11 +1315,11 @@
         "TailwindCssRuntimeOptions interface",
         "TailwindCssRuntimeOptions type definition",
         "TypeScript",
+        "reference",
+        "options",
         "interfaces",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "uni-app"
+        "cross-platform"
       ],
       "headings": [
         "Properties",
@@ -1360,11 +1360,11 @@
         "TailwindV4Options interface",
         "TailwindV4Options type definition",
         "TypeScript",
+        "reference",
+        "options",
         "interfaces",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "uni-app"
+        "cross-platform"
       ],
       "headings": [
         "Properties",
@@ -1405,11 +1405,11 @@
         "Configuration overview",
         "Plug-in parameters",
         "Overview of options",
+        "reference",
+        "options",
         "interfaces",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "uni-app"
+        "cross-platform"
       ],
       "headings": [
         "Group entry"
@@ -1444,11 +1444,11 @@
         "WeappTailwindcssGenerateOptions interface",
         "WeappTailwindcssGenerateOptions type definition",
         "TypeScript",
+        "reference",
+        "options",
         "interfaces",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "uni-app"
+        "cross-platform"
       ],
       "headings": [
         "Properties",
@@ -1490,11 +1490,11 @@
         "WeappTailwindcssGenerateResult interface",
         "WeappTailwindcssGenerateResult type definition",
         "TypeScript",
+        "reference",
+        "options",
         "interfaces",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "uni-app"
+        "cross-platform"
       ],
       "headings": [
         "Properties",
@@ -1539,11 +1539,11 @@
         "WeappTailwindcssGenerator interface",
         "WeappTailwindcssGenerator type definition",
         "TypeScript",
+        "reference",
+        "options",
         "interfaces",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "uni-app"
+        "cross-platform"
       ],
       "headings": [
         "Properties",
@@ -1582,11 +1582,11 @@
         "WeappTailwindcssGeneratorTarget interface",
         "WeappTailwindcssGeneratorTarget type definition",
         "TypeScript",
+        "reference",
+        "options",
         "interfaces",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "uni-app"
+        "cross-platform"
       ],
       "headings": [
         "Properties",
@@ -1622,11 +1622,11 @@
         "WeappTailwindcssPostcssPluginOptions interface",
         "WeappTailwindcssPostcssPluginOptions type definition",
         "TypeScript",
+        "reference",
+        "options",
         "interfaces",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "uni-app"
+        "cross-platform"
       ],
       "headings": [
         "Properties",
@@ -1672,11 +1672,11 @@
         "WeappTailwindcssStyleInjectorOptions interface",
         "WeappTailwindcssStyleInjectorOptions type definition",
         "TypeScript",
+        "reference",
+        "options",
         "interfaces",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "uni-app"
+        "cross-platform"
       ],
       "headings": [
         "Properties",
@@ -1722,11 +1722,11 @@
         "⚙️ General configuration",
         "General configuration configuration",
         "Plug-in parameters",
+        "reference",
+        "options",
         "General",
         "configuration",
-        "options",
-        "Tailwind CSS 4",
-        "cross-platform"
+        "Tailwind CSS 4"
       ],
       "headings": [
         "Configuration overview",
@@ -1768,11 +1768,11 @@
         "✅Important configuration",
         "Important configuration Configuration",
         "Plug-in parameters",
+        "reference",
+        "options",
         "Important",
         "configuration",
-        "options",
-        "Tailwind CSS 4",
-        "cross-platform"
+        "Tailwind CSS 4"
       ],
       "headings": [
         "Configuration overview",
@@ -1818,11 +1818,11 @@
         "🧭 life cycle",
         "life cycle configuration",
         "Plug-in parameters",
+        "reference",
+        "options",
         "life",
         "cycle",
-        "options",
-        "lifecycle",
-        "Tailwind CSS 4"
+        "lifecycle"
       ],
       "headings": [
         "Configuration overview",
@@ -1862,11 +1862,11 @@
         "🧩 File matching",
         "File matching configuration",
         "Plug-in parameters",
+        "reference",
+        "options",
         "File",
         "matching",
-        "options",
-        "matchers",
-        "Tailwind CSS 4"
+        "matchers"
       ],
       "headings": [
         "Configuration overview",
@@ -1909,11 +1909,11 @@
         "runtime interface",
         "type definition",
         "interface index",
+        "reference",
+        "options",
         "Other",
         "interfaces",
-        "Tailwind CSS 4",
-        "cross-platform",
-        "mini app"
+        "Tailwind CSS 4"
       ],
       "headings": [],
       "source": "i18n/en/docs/api/other-interfaces.md"
@@ -2046,10 +2046,10 @@
         "uni-app",
         "taro",
         "mpx",
-        "社区",
-        "模板",
-        "案例",
-        "Consulting"
+        "templates",
+        "case studies",
+        "Consulting",
+        "and"
       ],
       "headings": [
         "Some random thoughts"
@@ -2085,10 +2085,10 @@
         "uni-app",
         "taro",
         "mpx",
-        "社区",
-        "模板",
-        "案例",
-        "Join"
+        "templates",
+        "case studies",
+        "Join",
+        "the"
       ],
       "headings": [],
       "source": "i18n/en/docs/community/group.md"
@@ -2122,10 +2122,10 @@
         "uni-app",
         "taro",
         "mpx",
-        "社区",
-        "模板",
-        "案例",
-        "Load"
+        "templates",
+        "case studies",
+        "Load",
+        "custom"
       ],
       "headings": [
         "WeChat applet loads custom fonts"
@@ -2161,10 +2161,10 @@
         "uni-app",
         "taro",
         "mpx",
-        "社区",
-        "模板",
-        "案例",
-        "Tailwind CSS 4"
+        "templates",
+        "case studies",
+        "Tailwind CSS 4",
+        "cross-platform"
       ],
       "headings": [
         "Runtime matrix",
@@ -2210,8 +2210,8 @@
         "WeChat applet",
         "uni-app",
         "taro",
-        "社区",
-        "模板"
+        "templates",
+        "case studies"
       ],
       "headings": [
         "Install",
@@ -2255,9 +2255,9 @@
         "uni-app",
         "taro",
         "mpx",
-        "社区",
-        "模板",
-        "案例"
+        "templates",
+        "case studies",
+        "and"
       ],
       "headings": [
         "Work with build tools",
@@ -2300,8 +2300,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "社区",
-        "模板"
+        "templates",
+        "case studies"
       ],
       "headings": [
         "Install",
@@ -2348,9 +2348,9 @@
         "uni-app",
         "taro",
         "mpx",
-        "社区",
-        "模板",
-        "案例"
+        "templates",
+        "case studies",
+        "Tailwind CSS 4"
       ],
       "headings": [
         "Runtime matrix",
@@ -2390,10 +2390,10 @@
         "uni-app",
         "taro",
         "mpx",
-        "社区",
-        "模板",
-        "案例",
-        "Tailwind CSS 4"
+        "templates",
+        "case studies",
+        "Tailwind CSS 4",
+        "cross-platform"
       ],
       "headings": [
         "Install",
@@ -2410,7 +2410,7 @@
       "locale": "en-US",
       "contentTier": "full",
       "productArea": "community",
-      "title": "@weapp-tailwindcss/merge（Tailwind v4）",
+      "title": "@weapp-tailwindcss/merge (Tailwind v4)",
       "description": "The tailwind-merge runtime package adapted to Tailwind v4 provides small program escape/unescape and multi-terminal factory capabilities.",
       "summary": "@weapp-tailwindcss/merge is a small program-friendly package of tailwind-merge@3, adapted to tailwindcss@4. It automatically handles escape/unescape before and after merging, making runtime output consistent with compil…",
       "url": "/docs/community/packages-runtime/merge",
@@ -2435,8 +2435,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "社区",
-        "模板"
+        "templates",
+        "case studies"
       ],
       "headings": [
         "Install",
@@ -2481,15 +2481,15 @@
         "WeChat applet",
         "uni-app",
         "taro",
-        "社区",
-        "模板"
+        "templates",
+        "case studies"
       ],
       "headings": [
-        "Demo 1：uni-app + Web（Vue + TS）",
+        "Demo 1: uni-app + Web (Vue + TS)",
         "Shared variant (`src/ui/button.variants.ts`)",
         "Mini program / H5 shared page (`src/pages/index/index.vue`)",
         "Notes",
-        "Demo 2：Taro + Web（React + TSX）",
+        "Demo 2: Taro + Web (React + TSX)",
         "Shared variant (`src/ui/card.variants.ts`)",
         "Mini program page (`src/pages/index/index.tsx`)",
         "Web Components (`src/components/Card.web.tsx`)",
@@ -2527,10 +2527,10 @@
         "uni-app",
         "taro",
         "mpx",
-        "社区",
-        "模板",
-        "案例",
-        "Tailwind CSS 4"
+        "templates",
+        "case studies",
+        "Tailwind CSS 4",
+        "cross-platform"
       ],
       "headings": [
         "Install",
@@ -2572,9 +2572,9 @@
         "uni-app",
         "taro",
         "mpx",
-        "社区",
-        "模板",
-        "案例"
+        "templates",
+        "case studies",
+        "Adapted"
       ],
       "headings": [],
       "source": "i18n/en/docs/community/plugins.md"
@@ -2607,11 +2607,11 @@
         "WeChat applet",
         "uni-app",
         "taro",
+        "templates",
+        "case studies",
         "Tailwind CSS 4",
         "cross-platform",
-        "mini app",
-        "React Native",
-        "Lynx"
+        "mini app"
       ],
       "headings": [
         "Install",
@@ -2654,10 +2654,10 @@
         "uni-app",
         "taro",
         "mpx",
-        "社区",
-        "模板",
-        "案例",
-        "for"
+        "case studies",
+        "for",
+        "each",
+        "framework"
       ],
       "headings": [
         "uni-app",
@@ -3168,10 +3168,10 @@
         "uni-app",
         "taro",
         "mpx",
-        "常见问题",
-        "故障排查",
-        "兼容性",
-        "formatting"
+        "common issues",
+        "formatting",
+        "diagnostics",
+        "Tailwind CSS 4"
       ],
       "headings": [
         "prettier plugin",
@@ -3792,11 +3792,11 @@
         "uni-app",
         "taro",
         "mpx",
-        "配置项",
-        "插件参数",
-        "选项",
+        "plugin options",
         "overview",
-        "Tailwind CSS 4"
+        "Tailwind CSS 4",
+        "configuration",
+        "cross-platform"
       ],
       "headings": [],
       "source": "i18n/en/docs/options/index.md"
@@ -3832,8 +3832,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "配置项",
-        "插件参数"
+        "plugin options",
+        "configuration"
       ],
       "headings": [],
       "source": "i18n/en/docs/options/arbitrary-values.md"
@@ -3868,9 +3868,9 @@
         "uni-app",
         "taro",
         "mpx",
-        "配置项",
-        "插件参数",
-        "选项"
+        "plugin options",
+        "configuration",
+        "Exact"
       ],
       "headings": [],
       "source": "i18n/en/docs/options/comments.md"
@@ -3904,10 +3904,10 @@
         "uni-app",
         "taro",
         "mpx",
-        "配置项",
-        "插件参数",
-        "选项",
-        "export"
+        "plugin options",
+        "export",
+        "configuration",
+        "overview"
       ],
       "headings": [
         "Core plug-in entrance",
@@ -3945,11 +3945,11 @@
         "uni-app",
         "taro",
         "mpx",
-        "配置项",
-        "插件参数",
-        "选项",
+        "plugin options",
         "Tailwind CSS 4",
-        "cross-platform"
+        "cross-platform",
+        "configuration",
+        "mini app"
       ],
       "headings": [
         "Available options",
@@ -4028,10 +4028,10 @@
         "uni-app",
         "taro",
         "mpx",
-        "快速开始",
-        "安装",
-        "配置",
-        "Mini"
+        "installation",
+        "Mini",
+        "program",
+        "multi-theme"
       ],
       "headings": [
         "Free web solution",
@@ -4072,9 +4072,9 @@
         "uni-app",
         "taro",
         "mpx",
-        "快速开始",
-        "安装",
-        "配置"
+        "installation",
+        "unit",
+        "conversion"
       ],
       "headings": [
         "px to rpx",
@@ -4162,9 +4162,9 @@
         "WeChat applet",
         "taro",
         "mpx",
-        "快速开始",
-        "安装",
-        "配置"
+        "installation",
+        "How",
+        "to"
       ],
       "headings": [
         "HBuilderX Vue3 Vite",
@@ -4195,17 +4195,15 @@
         "Rspeedy",
         "Tailwind CSS 4",
         "weapp-tailwindcss",
-        "快速开始",
-        "安装",
-        "配置",
         "quick start",
+        "installation",
+        "configuration",
         "frameworks",
         "cross-platform",
         "mini app",
         "uni-app",
         "Taro",
-        "React Native",
-        "installation"
+        "React Native"
       ],
       "headings": [
         "Install",
@@ -4246,10 +4244,10 @@
         "WeChat applet",
         "uni-app",
         "taro",
-        "快速开始",
-        "安装",
-        "配置",
-        "Tailwind CSS 4"
+        "installation",
+        "Tailwind CSS 4",
+        "cross-platform",
+        "mini app"
       ],
       "headings": [
         "Register plugin",
@@ -4290,8 +4288,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "快速开始",
-        "安装"
+        "installation",
+        "development"
       ],
       "headings": [
         "gulp template",
@@ -4330,10 +4328,10 @@
         "WeChat applet",
         "uni-app",
         "mpx",
-        "快速开始",
-        "安装",
-        "配置",
-        "Tailwind CSS 4"
+        "installation",
+        "Tailwind CSS 4",
+        "cross-platform",
+        "mini app"
       ],
       "headings": [
         "Tailwind CSS entry",
@@ -4376,8 +4374,8 @@
         "Mini program",
         "WeChat applet",
         "taro",
-        "快速开始",
-        "安装"
+        "installation",
+        "Tailwind CSS 4"
       ],
       "headings": [
         "Tailwind entrance",
@@ -4558,9 +4556,9 @@
         "uni-app",
         "taro",
         "mpx",
-        "快速开始",
-        "安装",
-        "配置"
+        "installation",
+        "smart",
+        "prompt"
       ],
       "headings": [
         "VS Code",
@@ -4603,8 +4601,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "快速开始",
-        "安装"
+        "installation",
+        "and"
       ],
       "headings": [
         "Preface",
@@ -4648,8 +4646,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "快速开始",
-        "安装"
+        "installation",
+        "this"
       ],
       "headings": [
         "Install plugin",
@@ -4783,8 +4781,8 @@
         "Mini program",
         "WeChat applet",
         "uni-app",
-        "快速开始",
-        "安装"
+        "installation",
+        "Getting"
       ],
       "headings": [
         "What can you learn from this article?",
@@ -4830,7 +4828,7 @@
         "WeChat applet",
         "uni-app",
         "taro",
-        "快速开始"
+        "installation"
       ],
       "headings": [
         "1. Handling `@layer` and compatibility",
@@ -4873,7 +4871,7 @@
         "Mini program",
         "WeChat applet",
         "uni-app",
-        "快速开始"
+        "installation"
       ],
       "headings": [
         "Tool-first mental model",
@@ -5068,11 +5066,11 @@
         "uni-app",
         "taro",
         "mpx",
+        "utility-first",
         "tour",
         "of",
         "Atomized",
-        "Tailwind CSS 4",
-        "cross-platform"
+        "Tailwind CSS 4"
       ],
       "headings": [
         "Why read this topic?",
@@ -5118,8 +5116,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "AI-friendly",
-        "tips"
+        "utility-first",
+        "AI-friendly"
       ],
       "headings": [
         "Make the model write like a human",
@@ -5167,14 +5165,14 @@
         "uni-app",
         "taro",
         "mpx",
+        "utility-first",
         "and",
-        "methodologies",
-        "Tailwind CSS 4"
+        "methodologies"
       ],
       "headings": [
-        "BEM（Block / Element / Modifier）",
+        "BEM (Block / Element / Modifier)",
         "Example",
-        "OOCSS（Object-Oriented CSS）",
+        "OOCSS (Object-Oriented CSS)",
         "Example"
       ],
       "source": "i18n/en/docs/tailwindcss/bem-and-oocss.mdx"
@@ -5207,11 +5205,11 @@
         "uni-app",
         "taro",
         "mpx",
-        "教程",
-        "原子化",
+        "utility-first",
         "Atomized",
         "best",
-        "practices"
+        "practices",
+        "Tailwind CSS 4"
       ],
       "headings": [
         "Give the conclusion first",
@@ -5258,10 +5256,10 @@
         "uni-app",
         "taro",
         "mpx",
+        "utility-first",
         "The",
         "birth",
-        "and",
-        "evolution"
+        "and"
       ],
       "headings": [
         "Key Points",
@@ -5303,9 +5301,9 @@
         "uni-app",
         "taro",
         "mpx",
+        "utility-first",
         "and",
-        "product",
-        "comparison"
+        "product"
       ],
       "headings": [
         "Goals and products",
@@ -5313,10 +5311,10 @@
         "Demo snippet",
         "Raw CSS / BEM",
         "Sass + BEM (including variables)",
-        "CSS Modules（React）",
+        "CSS Modules (React)",
         "Vue `<style scoped>`",
         "CSS-in-JS (styled-components example)",
-        "Utility-first（Tailwind）",
+        "Utility-first (Tailwind)",
         "Headless + cva/tailwind-variants (already in Demo application)",
         "How to verify these solutions in this repository"
       ],
@@ -5350,11 +5348,11 @@
         "uni-app",
         "taro",
         "mpx",
+        "utility-first",
         "The",
         "evolution",
         "of",
-        "style",
-        "schemes"
+        "style"
       ],
       "headings": [
         "Key Points",
@@ -5367,7 +5365,7 @@
         "Preprocessor (Sass/Less)",
         "CSS Modules",
         "CSS-in-JS",
-        "Utility-first（Tailwind / Uno）",
+        "Utility-first (Tailwind / Uno)",
         "Token + Headless component trend"
       ],
       "source": "i18n/en/docs/tailwindcss/history/index.mdx"
@@ -5401,10 +5399,10 @@
         "uni-app",
         "taro",
         "mpx",
+        "utility-first",
         "The",
         "evolution",
-        "of",
-        "component"
+        "of"
       ],
       "headings": [
         "Key Points",
@@ -5444,9 +5442,9 @@
         "uni-app",
         "taro",
         "mpx",
+        "utility-first",
         "Tailwind CSS 4",
-        "cross-platform",
-        "mini app"
+        "cross-platform"
       ],
       "headings": [
         "Key Points",
@@ -5494,7 +5492,7 @@
         "uni-app",
         "taro",
         "mpx",
-        "Tailwind CSS 4"
+        "utility-first"
       ],
       "headings": [
         "Key Points",
@@ -5538,8 +5536,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "native",
-        "capability"
+        "utility-first",
+        "native"
       ],
       "headings": [
         "Key Points",
@@ -5583,7 +5581,7 @@
         "uni-app",
         "taro",
         "mpx",
-        "Tokenization"
+        "utility-first"
       ],
       "headings": [
         "Key Points",
@@ -5627,8 +5625,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "preprocessing",
-        "phase"
+        "utility-first",
+        "preprocessing"
       ],
       "headings": [
         "Key Points",
@@ -5671,7 +5669,7 @@
         "uni-app",
         "taro",
         "mpx",
-        "Tailwind CSS 4"
+        "utility-first"
       ],
       "headings": [
         "Key Points",
@@ -5758,8 +5756,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "Tailwind CSS 4",
-        "cross-platform"
+        "utility-first",
+        "Tailwind CSS 4"
       ],
       "headings": [
         "Key Points",
@@ -5808,8 +5806,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "historical",
-        "status"
+        "utility-first",
+        "historical"
       ],
       "headings": [
         "Why care about PostCSS",
@@ -5854,9 +5852,9 @@
         "uni-app",
         "taro",
         "mpx",
+        "utility-first",
         "The",
-        "emergence",
-        "and"
+        "emergence"
       ],
       "headings": [
         "Background: Copy the source code instead of installing dependencies",
@@ -5897,11 +5895,11 @@
         "uni-app",
         "taro",
         "mpx",
+        "utility-first",
         "Style",
         "isolation",
         "scheme",
-        "and",
-        "principle"
+        "and"
       ],
       "headings": [
         "When is isolation required?",
@@ -5945,10 +5943,10 @@
         "uni-app",
         "taro",
         "mpx",
+        "utility-first",
         "design",
         "concept",
-        "Tailwind CSS 4",
-        "cross-platform"
+        "Tailwind CSS 4"
       ],
       "headings": [
         "What is the essence of Tailwind?",
@@ -5995,8 +5993,8 @@
         "uni-app",
         "taro",
         "mpx",
-        "comparison",
-        "Tailwind CSS 4"
+        "utility-first",
+        "comparison"
       ],
       "headings": [
         "Key Points",
@@ -6036,12 +6034,12 @@
         "bg-#fff",
         "p-10%",
         "text-rgb",
+        "tutorial",
+        "utility-first",
         "writing",
         "compatibility",
         "unocss compatibility",
-        "Tailwind CSS 4",
-        "cross-platform",
-        "mini app"
+        "Tailwind CSS 4"
       ],
       "headings": [
         "1. Enable the option",
@@ -6077,13 +6075,13 @@
         "uni-app",
         "taro",
         "mpx",
+        "tutorial",
+        "utility-first",
         "Tailwind",
         "CSS",
         "default",
         "mode",
-        "reference",
-        "v4 reference",
-        "Tailwind CSS 4"
+        "reference"
       ],
       "headings": [
         "Positioning changes: style preprocessor",
@@ -6126,14 +6124,14 @@
         "cssEntries",
         "Official plug-in",
         "plugin parity",
+        "tailwindcss",
+        "tutorial",
+        "utility-first",
         "v5",
         "compared",
         "with",
         "the",
-        "official",
-        "Tailwind",
-        "plug-in",
-        "tailwindcss"
+        "official"
       ],
       "headings": [
         "One-to-one correspondence matrix",
