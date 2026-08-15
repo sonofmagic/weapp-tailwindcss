@@ -18,13 +18,7 @@ keywords:
 
 CLI 直接复用 `weapp-tailwindcss` 的 Tailwind v4 generator、design system 与 source graph，不安装或调用 `@tailwindcss/cli`。watch 默认使用 `@parcel/watcher` 原生文件事件；在容器、网络文件系统或需要稳定轮询行为时，可使用 `--poll[=ms]` 切换到轮询模式。
 
-## 安装
-
-```bash
-pnpm add -D @weapp-tailwindcss/cli weapp-tailwindcss tailwindcss
-```
-
-其中 `@weapp-tailwindcss/cli` 提供命令层，`weapp-tailwindcss` 提供生成和 CSS 转换能力，项目使用的 Tailwind CSS v4 由 `tailwindcss` 提供。
+安装依赖请先查看 [快速开始：安装依赖](/docs/quick-start/install)。`@weapp-tailwindcss/cli` 提供命令层，`weapp-tailwindcss` 提供生成和 CSS 转换能力，项目使用的 Tailwind CSS v4 由 `tailwindcss` 提供。
 
 ```bash
 pnpm exec weapp-tw -i src/input.css -o dist/output.css

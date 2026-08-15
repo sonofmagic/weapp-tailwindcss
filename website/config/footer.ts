@@ -15,10 +15,6 @@ const footerLinks: NonNullable<ThemeConfig['footer']>['links'] = [
             to: '/docs/intro',
           },
           {
-            label: 'Install',
-            to: '/docs/quick-start/install',
-          },
-          {
             label: copy.footer.blog,
             to: '/blog',
           },

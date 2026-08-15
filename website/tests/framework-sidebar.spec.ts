@@ -8,7 +8,6 @@ const frameworkLogos = [
   'uni-app',
   'vite',
   'hbuilderx',
-  'webpack',
   'uni-app-x',
   'taro',
   'weapp-vite',
@@ -76,7 +75,7 @@ for (const route of ['/docs/quick-start/install', '/zh-cn/docs/quick-start/insta
     }
 
     const items = page.locator('.theme-doc-sidebar-menu .framework-sidebar-item')
-    await expect(items).toHaveCount(16)
+    await expect(items).toHaveCount(15)
 
     for (const logo of frameworkLogos) {
       const logoItems = page.locator(`.framework-sidebar-item--${logo}`)

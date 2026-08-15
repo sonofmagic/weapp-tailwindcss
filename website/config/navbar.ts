@@ -14,12 +14,6 @@ const englishItems: NonNullable<ThemeConfig['navbar']>['items'] = [
   },
   {
     type: 'doc',
-    docId: 'quick-start/install',
-    position: 'left',
-    label: 'Install',
-  },
-  {
-    type: 'doc',
     docId: 'showcase/index',
     position: 'left',
     label: copy.navbar.showcase,

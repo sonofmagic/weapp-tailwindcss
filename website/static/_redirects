@@ -24,6 +24,12 @@
 /zh-cn/docs/quick-start/v4/uni-app /zh-cn/docs/quick-start/frameworks/uni-app-vite 301
 /docs/quick-start/v4/uni-app-x /docs/quick-start/frameworks/uni-app-x 301
 /zh-cn/docs/quick-start/v4/uni-app-x /zh-cn/docs/quick-start/frameworks/uni-app-x 301
+/docs/uni-app-x /docs/quick-start/frameworks/uni-app-x 301
+/zh-cn/docs/uni-app-x /zh-cn/docs/quick-start/frameworks/uni-app-x 301
+/docs/uni-app-x/install /docs/quick-start/frameworks/uni-app-x 301
+/zh-cn/docs/uni-app-x/install /zh-cn/docs/quick-start/frameworks/uni-app-x 301
+/docs/quick-start/unocss /docs/tailwindcss/unocss-compatibility 301
+/zh-cn/docs/quick-start/unocss /zh-cn/docs/tailwindcss/unocss-compatibility 301
 /docs/releases/v2 /docs/migrations/v5 301
 /zh-cn/docs/releases/v2 /zh-cn/docs/migrations/v5 301
 /docs/tailwindcss-maintenance-book /docs/tailwindcss 301

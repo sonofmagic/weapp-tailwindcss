@@ -52,6 +52,14 @@ describe('website SEO and GEO contracts', () => {
   it('expands bilingual legacy redirects to existing destinations', () => {
     const rules = createRedirectRules()
     expect(rules).toContainEqual(['/en/*', '/:splat', 301])
+    for (const [source, destination] of [
+      ['/docs/uni-app-x', '/docs/quick-start/frameworks/uni-app-x'],
+      ['/docs/uni-app-x/install', '/docs/quick-start/frameworks/uni-app-x'],
+      ['/docs/quick-start/unocss', '/docs/tailwindcss/unocss-compatibility'],
+    ]) {
+      expect(rules).toContainEqual([source, destination, 301])
+      expect(rules).toContainEqual([`/zh-cn${source}`, `/zh-cn${destination}`, 301])
+    }
     expect(() => validateRedirectRules(rules)).not.toThrow()
   })
 

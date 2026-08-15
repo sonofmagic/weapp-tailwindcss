@@ -18,13 +18,7 @@ The npm `3.x` and `4.0.0-alpha.x` releases belong to the legacy native mini-prog
 
 The CLI directly reuses the Tailwind v4 generator, design system, and source graph provided by `weapp-tailwindcss`. It does not install or invoke `@tailwindcss/cli`. Watch mode uses `@parcel/watcher` native file events by default; use `--poll[=ms]` for polling on containers, network filesystems, or environments where polling is preferable.
 
-## Installation
-
-```bash
-pnpm add -D @weapp-tailwindcss/cli weapp-tailwindcss tailwindcss
-```
-
-`@weapp-tailwindcss/cli` provides the command layer, `weapp-tailwindcss` provides generation and CSS transformation, and `tailwindcss` provides the Tailwind CSS v4 version used by the project.
+See [Quick start: Install dependencies](/docs/quick-start/install) for installation. `@weapp-tailwindcss/cli` provides the command layer, `weapp-tailwindcss` provides generation and CSS transformation, and `tailwindcss` provides the Tailwind CSS v4 version used by the project.
 
 ```bash
 pnpm exec weapp-tw -i src/input.css -o dist/output.css

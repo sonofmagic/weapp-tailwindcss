@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-14T16:42:27.879Z",
+  "generatedAt": "2026-08-15T03:21:26.179Z",
   "locale": "zh-CN",
   "contentTier": "primary",
   "siteUrl": "https://tw.icebreaker.top/zh-cn",
   "totals": {
-    "all": 85,
-    "docs": 85,
+    "all": 83,
+    "docs": 83,
     "blog": 0
   },
   "documents": [
@@ -892,11 +892,8 @@
       "headings": [
         "总览",
         "环境要求",
-        "Why `weapp-tailwindcss`?",
-        "快速开始 :rocket:",
-        "👉 [安装依赖](/docs/quick-start/install)",
-        "👉 [各框架模板](/docs/community/templates)",
-        "👉 [Tailwind CSS 4 默认模式参考](/docs/tailwindcss/v4-reference)"
+        "能力概览",
+        "下一步"
       ],
       "source": "docs/intro.md"
     },
@@ -2327,7 +2324,7 @@
       "contentTier": "primary",
       "productArea": "quick-start",
       "title": "uni-app x",
-      "description": "HBuilderX uni-app x 项目接入 Tailwind CSS 4 与 weapp-tailwindcss。",
+      "description": "在 HBuilderX 的 uni-app x 项目中接入 Tailwind CSS 4 与 weapp-tailwindcss，并覆盖 Web、小程序、Android、iOS 与鸿蒙。",
       "summary": "uni-app x 使用 HBuilderX 和 @dcloudio/vite-plugin-uni。建议配合内置的 uniAppX 预设使用。",
       "url": "/zh-cn/docs/quick-start/frameworks/uni-app-x",
       "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/uni-app-x",
@@ -2341,25 +2338,32 @@
         "安装",
         "配置",
         "uni-app",
-        "quick start",
-        "frameworks",
         "uni app x",
+        "HBuilderX",
         "weapp-tailwindcss",
         "tailwindcss",
         "小程序",
-        "微信小程序",
-        "taro",
-        "mpx",
+        "Android",
+        "iOS",
+        "HarmonyOS",
+        "quick start",
+        "frameworks",
         "Tailwind CSS 4",
-        "跨端",
-        "React Native"
+        "跨端"
       ],
       "headings": [
-        "注册插件",
-        "Tailwind CSS 入口",
-        "在 App.uvue 中引入入口",
-        "验证任意值类名",
-        "参考模板"
+        "这篇文档适合谁",
+        "当前支持范围",
+        "最快开始",
+        "手动集成",
+        "前置条件",
+        "1) 创建项目",
+        "2) 安装依赖",
+        "3) 注册 weapp-tailwindcss",
+        "4) 配置 Tailwind CSS 入口",
+        "5) 把入口 CSS 加入 HBuilderX 构建图",
+        "6) 运行与验证",
+        "7) 编辑器智能提示"
       ],
       "source": "docs/quick-start/frameworks/uni-app-x.mdx"
     },
@@ -2418,7 +2422,7 @@
       "productArea": "quick-start",
       "title": "安装依赖",
       "description": "安装 Tailwind CSS 与 weapp-tailwindcss。",
-      "summary": "这一页只处理包安装。框架注册方式放到下一章。",
+      "summary": "这一页只处理包安装。框架注册方式放到下一章，CLI 的完整参数见 weapp-tw CLI 使用指南。",
       "url": "/zh-cn/docs/quick-start/install",
       "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/install",
       "alternates": {
@@ -2445,7 +2449,8 @@
         "Taro"
       ],
       "headings": [
-        "安装当前版本"
+        "安装当前版本",
+        "使用独立 CLI"
       ],
       "source": "docs/quick-start/install.mdx"
     },
@@ -2672,48 +2677,6 @@
         "IDE 智能提示"
       ],
       "source": "docs/quick-start/uni-app-css-macro.md"
-    },
-    {
-      "kind": "doc",
-      "id": "doc:quick-start/unocss",
-      "locale": "zh-CN",
-      "contentTier": "primary",
-      "productArea": "quick-start",
-      "title": "UnoCSS 写法兼容",
-      "description": "说明如何在 weapp-tailwindcss 中开启部分 UnoCSS class 写法兼容，以及当前支持边界。",
-      "summary": "weapp-tailwindcss 仍然使用 Tailwind CSS 作为样式生成引擎。unocss 配置只负责兼容一部分常见的 UnoCSS class 写法，默认关闭。",
-      "url": "/zh-cn/docs/quick-start/unocss",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/unocss",
-      "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/unocss",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/unocss",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/unocss"
-      },
-      "keywords": [
-        "weapp-tailwindcss",
-        "unocss",
-        "tailwindcss",
-        "小程序",
-        "class",
-        "arbitrary values",
-        "裸任意值",
-        "写法兼容",
-        "小程序转义",
-        "bg-#fff",
-        "p-10%",
-        "text-rgb",
-        "快速开始",
-        "安装",
-        "配置",
-        "quick start"
-      ],
-      "headings": [
-        "1. 启用方式",
-        "2. 支持的写法",
-        "3. 当前不支持的写法",
-        "4. 自定义转义规则"
-      ],
-      "source": "docs/quick-start/unocss.md"
     },
     {
       "kind": "doc",
@@ -3490,6 +3453,48 @@
     },
     {
       "kind": "doc",
+      "id": "doc:tailwindcss/unocss-compatibility",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "tailwindcss",
+      "title": "UnoCSS 写法兼容",
+      "description": "说明如何在 weapp-tailwindcss 中开启部分 UnoCSS class 写法兼容，以及当前支持边界。",
+      "summary": "weapp-tailwindcss 仍然使用 Tailwind CSS 作为样式生成引擎。unocss 配置只负责兼容一部分常见的 UnoCSS class 写法，默认关闭。",
+      "url": "/zh-cn/docs/tailwindcss/unocss-compatibility",
+      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/unocss-compatibility",
+      "alternates": {
+        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/unocss-compatibility",
+        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/unocss-compatibility",
+        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/unocss-compatibility"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "unocss",
+        "tailwindcss",
+        "小程序",
+        "class",
+        "arbitrary values",
+        "裸任意值",
+        "写法兼容",
+        "小程序转义",
+        "bg-#fff",
+        "p-10%",
+        "text-rgb",
+        "教程",
+        "原子化",
+        "unocss compatibility",
+        "Tailwind CSS 4"
+      ],
+      "headings": [
+        "1. 启用方式",
+        "2. 支持的写法",
+        "3. 当前不支持的写法",
+        "4. 自定义转义规则"
+      ],
+      "source": "docs/tailwindcss/unocss-compatibility.md"
+    },
+    {
+      "kind": "doc",
       "id": "doc:tailwindcss/v4-reference",
       "locale": "zh-CN",
       "contentTier": "primary",
@@ -3614,7 +3619,6 @@
         "小程序"
       ],
       "headings": [
-        "安装",
         "构建参数",
         "小程序 CSS 目标",
         "canonicalize",
@@ -3622,89 +3626,6 @@
         "常见错误"
       ],
       "source": "docs/tools/weapp-tw-cli.mdx"
-    },
-    {
-      "kind": "doc",
-      "id": "doc:uni-app-x/index",
-      "locale": "zh-CN",
-      "contentTier": "primary",
-      "productArea": "uni-app-x",
-      "title": "uni-app x 专题",
-      "description": "在 HBuilderX 的 uni-app x 项目中接入 Tailwind CSS，并覆盖 Web、小程序、Android 与 iOS。",
-      "summary": "Tailwind CSS × uni-app x",
-      "url": "/zh-cn/docs/uni-app-x",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/uni-app-x",
-      "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/uni-app-x",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/uni-app-x",
-        "x-default": "https://tw.icebreaker.top/docs/uni-app-x"
-      },
-      "keywords": [
-        "uni-app",
-        "专题",
-        "uni app x",
-        "weapp-tailwindcss",
-        "tailwindcss",
-        "小程序",
-        "微信小程序",
-        "taro",
-        "mpx",
-        "Tailwind CSS 4",
-        "跨端",
-        "React Native",
-        "Lynx"
-      ],
-      "headings": [
-        "这篇文档适合谁",
-        "当前支持范围",
-        "最快开始",
-        "开发建议",
-        "布局能力边界",
-        "为什么推荐先用 Android",
-        "常见问题",
-        "VS Code 对 uvue/uts 的高亮与跳转",
-        "Tailwind CSS 智能提示",
-        "运行方式",
-        "接下来"
-      ],
-      "source": "docs/uni-app-x/index.mdx"
-    },
-    {
-      "kind": "doc",
-      "id": "doc:uni-app-x/install",
-      "locale": "zh-CN",
-      "contentTier": "primary",
-      "productArea": "uni-app-x",
-      "title": "快速集成",
-      "description": "uni-app x 快速集成指南，涵盖依赖安装、模板项目与最小可运行配置。",
-      "summary": "uni-app x 快速集成指南，涵盖依赖安装、模板项目与最小可运行配置。",
-      "url": "/zh-cn/docs/uni-app-x/install",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/uni-app-x/install",
-      "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/uni-app-x/install",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/uni-app-x/install",
-        "x-default": "https://tw.icebreaker.top/docs/uni-app-x/install"
-      },
-      "keywords": [
-        "快速集成",
-        "安装指南",
-        "模板项目",
-        "最小配置",
-        "uni app x",
-        "install",
-        "weapp-tailwindcss",
-        "tailwindcss",
-        "小程序",
-        "微信小程序",
-        "uni-app",
-        "taro",
-        "mpx",
-        "Tailwind CSS 4",
-        "跨端",
-        "React Native"
-      ],
-      "headings": [],
-      "source": "docs/uni-app-x/install.mdx"
     }
   ]
 }

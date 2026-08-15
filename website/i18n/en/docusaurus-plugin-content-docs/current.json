@@ -23,10 +23,6 @@
     "message": "Mpx",
     "description": "The label for category 'Mpx' in sidebar 'tutorialSidebar'"
   },
-  "sidebar.tutorialSidebar.category.🔥uni-app x 专题": {
-    "message": "🔥 uni-app x topic",
-    "description": "The label for category '🔥uni-app x 专题' in sidebar 'tutorialSidebar'"
-  },
   "sidebar.tutorialSidebar.category.🛠️ 工具与 CLI": {
     "message": "🛠️ Tools and CLI",
     "description": "The label for category '🛠️ 工具与 CLI' in sidebar 'tutorialSidebar'"
@@ -74,14 +70,6 @@
   "sidebar.tutorialSidebar.doc.Mpx": {
     "message": "Mpx",
     "description": "The label for the doc item 'Mpx' in sidebar 'tutorialSidebar', linking to the doc quick-start/frameworks/mpx"
-  },
-  "sidebar.tutorialSidebar.doc.前言": {
-    "message": "Introduction",
-    "description": "The label for the doc item '前言' in sidebar 'tutorialSidebar', linking to the doc uni-app-x/index"
-  },
-  "sidebar.tutorialSidebar.doc.快速集成": {
-    "message": "Quick integration",
-    "description": "The label for the doc item '快速集成' in sidebar 'tutorialSidebar', linking to the doc uni-app-x/install"
   },
   "sidebar.tutorialSidebar.doc.🔥快速开始(模板项目)": {
     "message": "🔥 Quick start (template project)",
@@ -258,5 +246,221 @@
   "sidebar.tailwindcssSidebar.doc.分包 Tailwind 入口隔离": {
     "message": "Subpackage Tailwind entry isolation",
     "description": "The label for the doc item '分包 Tailwind 入口隔离' in sidebar 'tailwindcssSidebar', linking to the doc quick-start/independent-pkg"
+  },
+  "sidebar.tutorialSidebar.category.快速开始": {
+    "message": "快速开始",
+    "description": "The label for category '快速开始' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Framework-specific setup": {
+    "message": "Framework-specific setup",
+    "description": "The label for category 'Framework-specific setup' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.工具与 CLI": {
+    "message": "工具与 CLI",
+    "description": "The label for category '工具与 CLI' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.兼容与进阶": {
+    "message": "兼容与进阶",
+    "description": "The label for category '兼容与进阶' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.社区与贡献": {
+    "message": "社区与贡献",
+    "description": "The label for category '社区与贡献' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.link.Who is using it?": {
+    "message": "Who is using it?",
+    "description": "The label for link 'Who is using it?' in sidebar 'tutorialSidebar', linking to 'https://github.com/sonofmagic/weapp-tailwindcss/issues/270'"
+  },
+  "sidebar.tutorialSidebar.doc.Install dependencies": {
+    "message": "Install dependencies",
+    "description": "The label for the doc item 'Install dependencies' in sidebar 'tutorialSidebar', linking to the doc quick-start/install"
+  },
+  "sidebar.tutorialSidebar.doc.Use directly on the Web": {
+    "message": "Use directly on the Web",
+    "description": "The label for the doc item 'Use directly on the Web' in sidebar 'tutorialSidebar', linking to the doc quick-start/web"
+  },
+  "sidebar.tutorialSidebar.doc.ReactLynx / Rspeedy": {
+    "message": "ReactLynx / Rspeedy",
+    "description": "The label for the doc item 'ReactLynx / Rspeedy' in sidebar 'tutorialSidebar', linking to the doc quick-start/frameworks/lynx"
+  },
+  "sidebar.tutorialSidebar.doc.Quick setup": {
+    "message": "Quick setup",
+    "description": "The label for the doc item 'Quick setup' in sidebar 'tutorialSidebar', linking to the doc quick-start/native/install"
+  },
+  "sidebar.tutorialSidebar.doc.Bundling strategy notes": {
+    "message": "Bundling strategy notes",
+    "description": "The label for the doc item 'Bundling strategy notes' in sidebar 'tutorialSidebar', linking to the doc quick-start/frameworks/native"
+  },
+  "sidebar.tutorialSidebar.doc.Package exports overview": {
+    "message": "Package exports overview",
+    "description": "The label for the doc item 'Package exports overview' in sidebar 'tutorialSidebar', linking to the doc options/exports"
+  },
+  "sidebar.tutorialSidebar.doc.模板项目": {
+    "message": "模板项目",
+    "description": "The label for the doc item '模板项目' in sidebar 'tutorialSidebar', linking to the doc community/templates"
+  },
+  "sidebar.optionsSidebar.doc.Options": {
+    "message": "Options",
+    "description": "The label for the doc item 'Options' in sidebar 'optionsSidebar', linking to the doc api/interfaces/UserDefinedOptions"
+  },
+  "sidebar.API.category.Options": {
+    "message": "Options",
+    "description": "The label for category 'Options' in sidebar 'API'"
+  },
+  "sidebar.API.category.🗂️ Other interfaces": {
+    "message": "🗂️ Other interfaces",
+    "description": "The label for category '🗂️ Other interfaces' in sidebar 'API'"
+  },
+  "sidebar.aiSidebar.category.🤖 AI workflows": {
+    "message": "🤖 AI workflows",
+    "description": "The label for category '🤖 AI workflows' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.category.📚 AI fundamentals": {
+    "message": "📚 AI fundamentals",
+    "description": "The label for category '📚 AI fundamentals' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.category.Core concepts": {
+    "message": "Core concepts",
+    "description": "The label for category 'Core concepts' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.category.Protocols and tools": {
+    "message": "Protocols and tools",
+    "description": "The label for category 'Protocols and tools' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.category.Safety and isolation": {
+    "message": "Safety and isolation",
+    "description": "The label for category 'Safety and isolation' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.category.Development methods": {
+    "message": "Development methods",
+    "description": "The label for category 'Development methods' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.category.📊 Model comparisons": {
+    "message": "📊 Model comparisons",
+    "description": "The label for category '📊 Model comparisons' in sidebar 'aiSidebar'"
+  },
+  "sidebar.aiSidebar.doc.AI-generated mini app code": {
+    "message": "AI-generated mini app code",
+    "description": "The label for the doc item 'AI-generated mini app code' in sidebar 'aiSidebar', linking to the doc ai/index"
+  },
+  "sidebar.aiSidebar.doc.AI coding solution comparison": {
+    "message": "AI coding solution comparison",
+    "description": "The label for the doc item 'AI coding solution comparison' in sidebar 'aiSidebar', linking to the doc ai/ai-programming-plan"
+  },
+  "sidebar.aiSidebar.doc.LLM-friendly docs": {
+    "message": "LLM-friendly docs",
+    "description": "The label for the doc item 'LLM-friendly docs' in sidebar 'aiSidebar', linking to the doc ai/llms"
+  },
+  "sidebar.aiSidebar.doc.Token": {
+    "message": "Token",
+    "description": "The label for the doc item 'Token' in sidebar 'aiSidebar', linking to the doc ai/basics/token"
+  },
+  "sidebar.aiSidebar.doc.Context window": {
+    "message": "Context window",
+    "description": "The label for the doc item 'Context window' in sidebar 'aiSidebar', linking to the doc ai/basics/context-window"
+  },
+  "sidebar.aiSidebar.doc.LLMs.txt (LLM-friendly docs)": {
+    "message": "LLMs.txt (LLM-friendly docs)",
+    "description": "The label for the doc item 'LLMs.txt (LLM-friendly docs)' in sidebar 'aiSidebar', linking to the doc ai/basics/llms-txt"
+  },
+  "sidebar.aiSidebar.doc.MCP (Model Context Protocol)": {
+    "message": "MCP (Model Context Protocol)",
+    "description": "The label for the doc item 'MCP (Model Context Protocol)' in sidebar 'aiSidebar', linking to the doc ai/basics/mcp"
+  },
+  "sidebar.aiSidebar.doc.Skill system": {
+    "message": "Skill system",
+    "description": "The label for the doc item 'Skill system' in sidebar 'aiSidebar', linking to the doc ai/basics/skill"
+  },
+  "sidebar.aiSidebar.doc.Skill release and versioning": {
+    "message": "Skill release and versioning",
+    "description": "The label for the doc item 'Skill release and versioning' in sidebar 'aiSidebar', linking to the doc ai/basics/skill-release"
+  },
+  "sidebar.aiSidebar.doc.AI agent": {
+    "message": "AI agent",
+    "description": "The label for the doc item 'AI agent' in sidebar 'aiSidebar', linking to the doc ai/basics/agent"
+  },
+  "sidebar.aiSidebar.doc.RAG (retrieval-augmented generation)": {
+    "message": "RAG (retrieval-augmented generation)",
+    "description": "The label for the doc item 'RAG (retrieval-augmented generation)' in sidebar 'aiSidebar', linking to the doc ai/basics/rag"
+  },
+  "sidebar.aiSidebar.doc.Power (spec-driven programming capability)": {
+    "message": "Power (spec-driven programming capability)",
+    "description": "The label for the doc item 'Power (spec-driven programming capability)' in sidebar 'aiSidebar', linking to the doc ai/basics/power"
+  },
+  "sidebar.aiSidebar.doc.AI sandbox": {
+    "message": "AI sandbox",
+    "description": "The label for the doc item 'AI sandbox' in sidebar 'aiSidebar', linking to the doc ai/basics/ai-sandbox"
+  },
+  "sidebar.aiSidebar.doc.Spec-Driven Development": {
+    "message": "Spec-Driven Development",
+    "description": "The label for the doc item 'Spec-Driven Development' in sidebar 'aiSidebar', linking to the doc ai/basics/spec-driven-development"
+  },
+  "sidebar.aiSidebar.doc.Vibe coding": {
+    "message": "Vibe coding",
+    "description": "The label for the doc item 'Vibe coding' in sidebar 'aiSidebar', linking to the doc ai/basics/vibe-coding"
+  },
+  "sidebar.aiSidebar.doc.Prompt engineering": {
+    "message": "Prompt engineering",
+    "description": "The label for the doc item 'Prompt engineering' in sidebar 'aiSidebar', linking to the doc ai/basics/prompt-engineering"
+  },
+  "sidebar.aiSidebar.doc.AI coding assistant rollout plan": {
+    "message": "AI coding assistant rollout plan",
+    "description": "The label for the doc item 'AI coding assistant rollout plan' in sidebar 'aiSidebar', linking to the doc ai/ai-coding-deployment-guide"
+  },
+  "sidebar.aiSidebar.doc.Recommendations for international coding models and tools": {
+    "message": "Recommendations for international coding models and tools",
+    "description": "The label for the doc item 'Recommendations for international coding models and tools' in sidebar 'aiSidebar', linking to the doc ai/international-ai-models-comparison"
+  },
+  "sidebar.aiSidebar.doc.Recommendations for domestic coding models and tools": {
+    "message": "Recommendations for domestic coding models and tools",
+    "description": "The label for the doc item 'Recommendations for domestic coding models and tools' in sidebar 'aiSidebar', linking to the doc ai/qoder-vs-glm47-cursor-claude-comparison"
+  },
+  "sidebar.communitySidebar.doc.Independent subpackages": {
+    "message": "Independent subpackages",
+    "description": "The label for the doc item 'Independent subpackages' in sidebar 'communitySidebar', linking to the doc quick-start/independent-pkg"
+  },
+  "sidebar.communitySidebar.doc.Escaping and handling for wxs": {
+    "message": "Escaping and handling for wxs",
+    "description": "The label for the doc item 'Escaping and handling for wxs' in sidebar 'communitySidebar', linking to the doc quick-start/wxs"
+  },
+  "sidebar.tailwindcssSidebar.category.[Evolution] Style systems and component-library evolution": {
+    "message": "[Evolution] Style systems and component-library evolution",
+    "description": "The label for category '[Evolution] Style systems and component-library evolution' in sidebar 'tailwindcssSidebar'"
+  },
+  "sidebar.tailwindcssSidebar.category.[Basics] Raw CSS / BEM / OOCSS": {
+    "message": "[Basics] Raw CSS / BEM / OOCSS",
+    "description": "The label for category '[Basics] Raw CSS / BEM / OOCSS' in sidebar 'tailwindcssSidebar'"
+  },
+  "sidebar.tailwindcssSidebar.category.[Core] Tailwind design, ecosystem, and comparisons": {
+    "message": "[Core] Tailwind design, ecosystem, and comparisons",
+    "description": "The label for category '[Core] Tailwind design, ecosystem, and comparisons' in sidebar 'tailwindcssSidebar'"
+  },
+  "sidebar.tailwindcssSidebar.category.[Engineering] Constraints, isolation, and runtime boundaries": {
+    "message": "[Engineering] Constraints, isolation, and runtime boundaries",
+    "description": "The label for category '[Engineering] Constraints, isolation, and runtime boundaries' in sidebar 'tailwindcssSidebar'"
+  },
+  "sidebar.tailwindcssSidebar.category.Tailwind CSS 4 default mode": {
+    "message": "Tailwind CSS 4 default mode",
+    "description": "The label for category 'Tailwind CSS 4 default mode' in sidebar 'tailwindcssSidebar'"
+  },
+  "sidebar.tailwindcssSidebar.category.[Experiments] AI workflows and comparison demos": {
+    "message": "[Experiments] AI workflows and comparison demos",
+    "description": "The label for category '[Experiments] AI workflows and comparison demos' in sidebar 'tailwindcssSidebar'"
+  },
+  "sidebar.tailwindcssSidebar.doc.[Overview] Topic guide": {
+    "message": "[Overview] Topic guide",
+    "description": "The label for the doc item '[Overview] Topic guide' in sidebar 'tailwindcssSidebar', linking to the doc tailwindcss/index"
+  },
+  "sidebar.tailwindcssSidebar.doc.Default v4 mode reference": {
+    "message": "Default v4 mode reference",
+    "description": "The label for the doc item 'Default v4 mode reference' in sidebar 'tailwindcssSidebar', linking to the doc tailwindcss/v4-reference"
+  },
+  "sidebar.tailwindcssSidebar.doc.UnoCSS 写法兼容": {
+    "message": "UnoCSS 写法兼容",
+    "description": "The label for the doc item 'UnoCSS 写法兼容' in sidebar 'tailwindcssSidebar', linking to the doc tailwindcss/unocss-compatibility"
+  },
+  "sidebar.tailwindcssSidebar.doc.Subpackage Tailwind entry isolation": {
+    "message": "Subpackage Tailwind entry isolation",
+    "description": "The label for the doc item 'Subpackage Tailwind entry isolation' in sidebar 'tailwindcssSidebar', linking to the doc quick-start/independent-pkg"
   }
 }

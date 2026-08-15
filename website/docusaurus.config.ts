@@ -131,7 +131,6 @@ const config: Config = {
           isEnglishBuild ? 'quick-start/**' : 'docs/quick-start/**',
           isEnglishBuild ? 'tailwindcss/v4-reference.md' : 'docs/tailwindcss/v4-reference.md',
           isEnglishBuild ? 'tools/**' : 'docs/tools/**',
-          isEnglishBuild ? 'uni-app-x/**' : 'docs/uni-app-x/**',
           isEnglishBuild ? 'community/templates.md' : 'docs/community/templates.md',
           isEnglishBuild ? 'api/**' : 'docs/api/**',
           isEnglishBuild ? 'options/**' : 'docs/options/**',
@@ -160,14 +159,13 @@ const config: Config = {
           {
             filename: 'llms-quickstart.txt',
             includePatterns: isEnglishBuild
-              ? ['intro.md', 'quick-start/**', 'tailwindcss/v4-reference.md', 'community/templates.md', 'tools/**', 'uni-app-x/**', 'ai/**']
+              ? ['intro.md', 'quick-start/**', 'tailwindcss/v4-reference.md', 'community/templates.md', 'tools/**', 'ai/**']
               : [
                   'docs/intro.md',
                   'docs/quick-start/**',
                   'docs/tailwindcss/v4-reference.md',
                   'docs/community/templates.md',
                   'docs/tools/**',
-                  'docs/uni-app-x/**',
                   'docs/ai/**',
                 ],
             fullContent: true,

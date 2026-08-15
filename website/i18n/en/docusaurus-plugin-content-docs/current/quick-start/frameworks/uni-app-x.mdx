@@ -3,21 +3,16 @@ title: uni-app x
 description: HBuilderX uni-app x project integrates Tailwind CSS 4 and weapp-tailwindcss.
 keywords:
   - quick start
-  - Install
-  - Configuration
   - uni-app
-  - frameworks
   - uni app x
   - weapp-tailwindcss
   - tailwindcss
   - Mini program
-  - WeChat applet
-  - taro
-  - mpx
-  - 快速开始
-  - 安装
-  - 配置
   - Tailwind CSS 4
+  - HBuilderX
+  - Android
+  - iOS
+  - HarmonyOS
 ---
 import EnvironmentRequirements from '../../uni-app-x/_environment-requirements.mdx'
 
@@ -27,6 +22,22 @@ import EnvironmentRequirements from '../../uni-app-x/_environment-requirements.m
 
 `uni-app x` uses HBuilderX and `@dcloudio/vite-plugin-uni`. It is recommended to use it with the built-in `uniAppX` preset.
 
+This page is the complete uni-app x entry point. It covers the verified demo, manual installation, CSS-first configuration, multi-platform validation, editor setup, and native App limitations.
+
+## Who this is for
+
+- Developers who want to use Tailwind CSS in a uni-app x project
+- Teams that need one atomic styling workflow across Web, mini programs, Android, iOS, and HarmonyOS
+- HBuilderX users who run or publish uni-app x projects
+
+## Current support range
+
+The current documentation targets Tailwind CSS 4. The `uniAppX()` preset delegates Tailwind generation and mini-program/App transformation to `weapp-tailwindcss`.
+
+| Tailwind version | Entry method | Scan method | Current verification |
+| --- | --- | --- | --- |
+| Tailwind CSS 4 | `@import "tailwindcss" source(none);` | `@source` rules in the CSS entry | HBuilderX Web, WeChat Mini Program, Android, iOS, and HarmonyOS |
+
 The repository's local HBuilderX E2E suite covers uni-app x on the Web, WeChat Mini Program, Android, iOS, and HarmonyOS. Mini Program and App E2E runs depend on local HBuilderX, developer tools, or simulators, so they only run locally.
 
 :::warning Capability Boundary
@@ -35,6 +46,10 @@ The repository's local HBuilderX E2E suite covers uni-app x on the Web, WeChat M
 `space-x-*`, `space-y-*` should also not be used in `uni-app x`. Please use child explicit `mt-*` / `ml-*` directly instead, or encapsulate a fixed-structure spacing component.
 :::
 
+## Quickest start
+
+Use the [verified uni-app x + Tailwind CSS 4 demo](https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v4) and follow its README. Do not use the old `icebreaker-template/uni-app-x-hbuilderx` as the starting point for a new project.
+
 ```bash npm2yarn
 npm run e2e:hbuilderx:local
 npm run e2e:hbuilderx:local:web
@@ -42,6 +57,15 @@ npm run e2e:hbuilderx:local:mp
 npm run e2e:hbuilderx:local:android
 npm run e2e:hbuilderx:local:ios
 npm run e2e:hbuilderx:local:harmony
+```
+
+## Manual integration
+
+Create a new `uni-app x` project in HBuilderX and initialize a `package.json` in the project root:
+
+```bash npm2yarn
+npm init -y
+npm install -D tailwindcss weapp-tailwindcss
 ```
 
 ## Register plugin
@@ -125,3 +149,29 @@ Run the project on the Web, WeChat Mini Program, and each target App platform, t
 ## Reference template
 
 - [Tailwind CSS 4 demo in the repository](https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v4)
+
+## Development suggestions
+
+- Use VS Code for editing and HBuilderX for running and building.
+- Prefer Android for the first native debugging pass; its feedback loop is usually more accessible than iOS or HarmonyOS.
+- Native App text must be placed in `<text>` and text styles must be applied directly to that element.
+- When a style is limited on App, stabilize Android first and add conditional adaptations for mini programs or Web as needed.
+
+## FAQ
+
+### VS Code support for uvue and uts
+
+Install `dcloud-ide.hbuilderx-language-services` for language hints, navigation, references, and validation. To enable Tailwind IntelliSense mappings, add this to `.vscode/settings.json`:
+
+```json title=".vscode/settings.json"
+{
+  "tailwindCSS.includeLanguages": {
+    "uvue": "html",
+    "uts": "javascript"
+  }
+}
+```
+
+### Running the project
+
+HBuilderX remains the source of truth for uni-app x running and building. For command-line automation, use the HBuilderX CLI; this repository's local E2E suite launches Web, mini-program, and App targets through `hbuilderx launch`.

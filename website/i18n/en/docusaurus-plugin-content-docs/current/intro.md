@@ -30,19 +30,14 @@ The generator first compiles candidates with Tailwind CSS 4, then adapts selecto
 - The current release line requires Node.js `^22.18.0 || >=24.11.0`.
 - `uni-app` / `uni-app x` projects that use HBuilderX require HBuilderX `>=5.11`.
 
-## Why `weapp-tailwindcss`?
+## Capabilities
 
-- ✅ Handles all relevant files automatically. Using WeChat Mini Program as an example, it can process and escape not only `wxml` / `wxss`, but also `js` and `wxs` output.
-- ✅ Supports native mini app development as well as frameworks such as `taro`, `uni-app`, and `mpx`.
-- ✅ Offers multiple integration styles, including `webpack` / `vite` / `gulp` plugins and a direct `nodejs api`.
-- ✅ Comes with a rich ecosystem and ready-to-run templates, so you can reuse existing `tailwindcss` tooling to build mini apps.
-- ✅ Uses efficient parsing and caching for fast hot updates.
-- ✅ Stays close to the `tailwindcss` mental model and works well with IntelliSense.
+- Generates target CSS for Web, mini programs, and App WebView through Vite, Webpack, Rspack, Gulp, and Node.js integrations.
+- Mini-program builds transform generated class names in templates and scripts; React Native and Lynx use their corresponding platform packages.
+- Only candidates confirmed by Tailwind CSS are transformed, keeping CSS and templates aligned across targets.
 
-## Quick start :rocket:
+## Next steps
 
-### 👉 [Install dependencies](/docs/quick-start/install)
-
-The current docs target `tailwindcss@4` with the latest `weapp-tailwindcss`.
-
-For runnable integrations, browse the maintained examples in the [project repository](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo).
+1. [Install dependencies](/docs/quick-start/install), including the optional standalone CLI.
+2. Choose a [framework integration](/docs/quick-start/frameworks/uni-app-vite) for the project's builder.
+3. Browse [templates](/docs/community/templates) or the [Tailwind CSS 4 reference](/docs/tailwindcss/v4-reference) for runnable examples and CSS-first conventions.

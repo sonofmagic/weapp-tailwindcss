@@ -87,6 +87,8 @@ Enable some UnoCSS class writing compatibility.
 Off by default. Passing in `true` enables Tailwind CSS v4 bare arbitrary value generation. class character escape continues by
 `customReplaceDictionary` control, JS translation still follows the `classNameSet` precise hit principle.
 
+See the [UnoCSS writing compatibility guide](/docs/tailwindcss/unocss-compatibility) for supported syntax, limitations, and examples.
+
 #### default value
 
 ```ts

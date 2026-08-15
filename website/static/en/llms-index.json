@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-14T16:42:27.879Z",
+  "generatedAt": "2026-08-15T03:21:26.179Z",
   "locale": "en-US",
   "contentTier": "primary",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 85,
-    "docs": 85,
+    "all": 83,
+    "docs": 83,
     "blog": 0
   },
   "documents": [
@@ -892,9 +892,8 @@
       "headings": [
         "Overview",
         "Environment requirements",
-        "Why `weapp-tailwindcss`?",
-        "Quick start :rocket:",
-        "👉 [Install dependencies](/docs/quick-start/install)"
+        "Capabilities",
+        "Next steps"
       ],
       "source": "i18n/en/docs/intro.md"
     },
@@ -2337,28 +2336,35 @@
       },
       "keywords": [
         "quick start",
-        "Install",
-        "Configuration",
         "uni-app",
-        "frameworks",
         "uni app x",
         "weapp-tailwindcss",
         "tailwindcss",
         "Mini program",
-        "WeChat applet",
-        "taro",
-        "mpx",
-        "快速开始",
-        "安装",
-        "配置",
-        "Tailwind CSS 4"
+        "Tailwind CSS 4",
+        "HBuilderX",
+        "Android",
+        "iOS",
+        "HarmonyOS",
+        "installation",
+        "configuration",
+        "frameworks",
+        "cross-platform",
+        "mini app"
       ],
       "headings": [
+        "Who this is for",
+        "Current support range",
+        "Quickest start",
+        "Manual integration",
         "Register plugin",
         "Tailwind CSS entry",
         "Import the entry in App.uvue",
         "Verify any value class name",
-        "Reference template"
+        "Reference template",
+        "Development suggestions",
+        "FAQ",
+        "VS Code support for uvue and uts"
       ],
       "source": "i18n/en/docs/quick-start/frameworks/uni-app-x.mdx"
     },
@@ -2417,7 +2423,7 @@
       "productArea": "quick-start",
       "title": "Install dependencies",
       "description": "Install Tailwind CSS and weapp-tailwindcss.",
-      "summary": "This page only covers package installation. Framework-specific registration comes in the next chapter.",
+      "summary": "This page only covers package installation. Framework-specific registration comes in the next chapter; see the weapp-tw CLI guide for the complete CLI reference.",
       "url": "/docs/quick-start/install",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/install",
       "alternates": {
@@ -2433,18 +2439,19 @@
         "tailwindcss 4",
         "package install",
         "weapp-tailwindcss",
-        "快速开始",
-        "安装",
-        "配置",
         "Tailwind CSS 4",
         "cross-platform",
         "mini app",
         "uni-app",
         "Taro",
-        "React Native"
+        "React Native",
+        "installation",
+        "configuration",
+        "Lynx"
       ],
       "headings": [
-        "Install the current version"
+        "Install the current version",
+        "Use the standalone CLI"
       ],
       "source": "i18n/en/docs/quick-start/install.mdx"
     },
@@ -2671,48 +2678,6 @@
         "IDE smart prompts"
       ],
       "source": "i18n/en/docs/quick-start/uni-app-css-macro.md"
-    },
-    {
-      "kind": "doc",
-      "id": "doc:quick-start/unocss",
-      "locale": "en-US",
-      "contentTier": "primary",
-      "productArea": "quick-start",
-      "title": "UnoCSS writing method compatible",
-      "description": "Explain how to enable compatibility with some UnoCSS class writing methods in weapp-tailwindcss, as well as the current supported boundaries.",
-      "summary": "weapp-tailwindcss still uses Tailwind CSS as the style generation engine. The unocss configuration is only compatible with some common UnoCSS class writing methods and is turned off by default.",
-      "url": "/docs/quick-start/unocss",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/unocss",
-      "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/unocss",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/unocss",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/unocss"
-      },
-      "keywords": [
-        "weapp-tailwindcss",
-        "unocss",
-        "tailwindcss",
-        "Mini program",
-        "class",
-        "arbitrary values",
-        "Naked arbitrary value",
-        "Compatible with writing",
-        "Mini program escaping",
-        "bg-#fff",
-        "p-10%",
-        "text-rgb",
-        "quick start",
-        "installation",
-        "configuration",
-        "writing"
-      ],
-      "headings": [
-        "1. Enablement method",
-        "2. Supported writing methods",
-        "3. Currently unsupported writing method",
-        "4. Custom escape rules"
-      ],
-      "source": "i18n/en/docs/quick-start/unocss.md"
     },
     {
       "kind": "doc",
@@ -3491,6 +3456,48 @@
     },
     {
       "kind": "doc",
+      "id": "doc:tailwindcss/unocss-compatibility",
+      "locale": "en-US",
+      "contentTier": "primary",
+      "productArea": "tailwindcss",
+      "title": "UnoCSS writing compatibility",
+      "description": "Enable selected UnoCSS class-writing patterns in weapp-tailwindcss and understand the supported boundaries.",
+      "summary": "weapp-tailwindcss still uses Tailwind CSS as the style generation engine. The unocss option only enables compatibility with selected common UnoCSS class-writing patterns and is disabled by default.",
+      "url": "/docs/tailwindcss/unocss-compatibility",
+      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/unocss-compatibility",
+      "alternates": {
+        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/unocss-compatibility",
+        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/unocss-compatibility",
+        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/unocss-compatibility"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "unocss",
+        "tailwindcss",
+        "mini program",
+        "class",
+        "arbitrary values",
+        "escape",
+        "bg-#fff",
+        "p-10%",
+        "text-rgb",
+        "writing",
+        "compatibility",
+        "unocss compatibility",
+        "Tailwind CSS 4",
+        "cross-platform",
+        "mini app"
+      ],
+      "headings": [
+        "1. Enable the option",
+        "2. Supported patterns",
+        "3. Unsupported patterns",
+        "4. Custom escaping"
+      ],
+      "source": "i18n/en/docs/tailwindcss/unocss-compatibility.md"
+    },
+    {
+      "kind": "doc",
       "id": "doc:tailwindcss/v4-reference",
       "locale": "en-US",
       "contentTier": "primary",
@@ -3615,7 +3622,6 @@
         "Tailwind CSS 4"
       ],
       "headings": [
-        "Installation",
         "Build options",
         "Mini-program CSS target",
         "canonicalize",
@@ -3623,91 +3629,6 @@
         "Common errors"
       ],
       "source": "i18n/en/docs/tools/weapp-tw-cli.mdx"
-    },
-    {
-      "kind": "doc",
-      "id": "doc:uni-app-x/index",
-      "locale": "en-US",
-      "contentTier": "primary",
-      "productArea": "uni-app-x",
-      "title": "uni-app x topic",
-      "description": "Integrate Tailwind CSS in HBuilderX's uni-app x project, and cover Web, applets, Android and iOS.",
-      "summary": "Cross-end atomization style scheme",
-      "url": "/docs/uni-app-x",
-      "canonical": "https://tw.icebreaker.top/docs/uni-app-x",
-      "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/uni-app-x",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/uni-app-x",
-        "x-default": "https://tw.icebreaker.top/docs/uni-app-x"
-      },
-      "keywords": [
-        "uni-app",
-        "Topics",
-        "uni app x",
-        "weapp-tailwindcss",
-        "tailwindcss",
-        "Mini program",
-        "WeChat applet",
-        "taro",
-        "mpx",
-        "topic",
-        "Tailwind CSS 4",
-        "cross-platform",
-        "mini app",
-        "React Native",
-        "Lynx"
-      ],
-      "headings": [
-        "Who is this document suitable for?",
-        "Current support range",
-        "Quickest start",
-        "Development suggestions",
-        "Layout capability boundaries",
-        "Why is it recommended to use Android first?",
-        "FAQ",
-        "VS Code highlights and jumps to uvue/uts",
-        "Tailwind CSS Smart Tips",
-        "Operation mode",
-        "Next"
-      ],
-      "source": "i18n/en/docs/uni-app-x/index.mdx"
-    },
-    {
-      "kind": "doc",
-      "id": "doc:uni-app-x/install",
-      "locale": "en-US",
-      "contentTier": "primary",
-      "productArea": "uni-app-x",
-      "title": "Quick integration",
-      "description": "uni-app x quick integration guide, covering dependency installation, template projects and minimum runnable configuration.",
-      "summary": "uni-app x quick integration guide, covering dependency installation, template projects and minimum runnable configuration.",
-      "url": "/docs/uni-app-x/install",
-      "canonical": "https://tw.icebreaker.top/docs/uni-app-x/install",
-      "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/uni-app-x/install",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/uni-app-x/install",
-        "x-default": "https://tw.icebreaker.top/docs/uni-app-x/install"
-      },
-      "keywords": [
-        "Quick integration",
-        "Installation guide",
-        "template project",
-        "Minimal configuration",
-        "uni app x",
-        "install",
-        "weapp-tailwindcss",
-        "tailwindcss",
-        "Mini program",
-        "WeChat applet",
-        "uni-app",
-        "taro",
-        "mpx",
-        "Quick",
-        "integration",
-        "Tailwind CSS 4"
-      ],
-      "headings": [],
-      "source": "i18n/en/docs/uni-app-x/install.mdx"
     }
   ]
 }

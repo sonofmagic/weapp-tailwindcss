@@ -87,6 +87,8 @@ TailwindCSS 任意值的相关配置。
 默认关闭。传入 `true` 后会启用 Tailwind CSS v4 裸任意值生成。class 字符转义继续由
 `customReplaceDictionary` 控制，JS 转译仍遵循 `classNameSet` 精确命中原则。
 
+完整的支持写法、限制和示例见 [UnoCSS 写法兼容指南](/docs/tailwindcss/unocss-compatibility)。
+
 #### 默认值
 
 ```ts
