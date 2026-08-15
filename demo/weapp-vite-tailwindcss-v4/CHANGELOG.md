@@ -1,5 +1,12 @@
 # weapp-vite-tailwindcss-v4
 
+## 1.0.22
+
+### Patch Changes
+
+- 📦 **Dependencies** [`c2ba271`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c2ba271ac62ba851c23549a8de1038a71bb868d6)
+  → `@weapp-tailwindcss/merge@2.2.2`
+
 ## 1.0.21
 
 ### Patch Changes

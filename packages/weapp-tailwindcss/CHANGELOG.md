@@ -1,5 +1,30 @@
 # weapp-tailwindcss
 
+## 5.3.0
+
+### Minor Changes
+
+- ✨ **新增独立的 `@weapp-tailwindcss/cli` 包：默认提供与 Tailwind CSS CLI 对齐的 Web 构建、监听、优化、source map 与 `canonicalize` 能力，并支持通过 `--target weapp` 显式生成小程序兼容 CSS。CLI 命令不再由 `weapp-tailwindcss` 核心包发布。** [#1076](https://github.com/sonofmagic/weapp-tailwindcss/pull/1076) by @sonofmagic
+  - 该包此前已经存在 `3.x` 和 `4.0.0-alpha.x` 的旧版原生小程序 Gulp CLI。本次使用 `5.x` 版本线发布新的 Tailwind CSS CLI 兼容实现，避免覆盖旧版本语义或让 npm `latest` 回退到 `0.x`。
+
+### Patch Changes
+
+- 🐛 **统一更新各发布包的 npm 描述与中英文 README，明确 `weapp-tailwindcss` 面向 Web、小程序、React Native、Lynx 与跨端框架的全端 Tailwind CSS 定位。公开包现在默认展示英文 README，并提供统一命名的简体中文入口，同时保留各子包的具体职责边界。** [#1079](https://github.com/sonofmagic/weapp-tailwindcss/pull/1079) by @sonofmagic
+
+- 🐛 **修复 uni-app x Web 端页面与组件局部 Tailwind 样式隔离，确保插槽内容、图片以及显式配置的组件 class 属性能够保留宽高、颜色、间距和 `!important` 优先级。** [#1067](https://github.com/sonofmagic/weapp-tailwindcss/pull/1067) by @sonofmagic
+
+- 🐛 **修复 uni-app x 组件局部样式中的 Tailwind v4 后缀重要修饰符导致 Android、iOS App 的 SCSS 编译失败，并确保局部样式内的相对 `@reference` 按原始 `.uvue` 模块位置解析。** [#1072](https://github.com/sonofmagic/weapp-tailwindcss/pull/1072) by @sonofmagic
+
+- 🐛 **统一修复 Vite 小程序构建中框架根样式与运行时样式入口分离时的引用关系，并优先根据 Rollup 入口元数据识别实际运行时根样式。** [`f2cc9ec`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f2cc9ecc11afcfec967d720929fa24a47fbf8f46) by @sonofmagic
+
+- 🐛 **修复 uni-app x HBuilderX 小程序构建中根样式未引入框架样式入口的问题，确保 Tailwind CSS 生成结果能够从应用样式入口加载。** [`0e1f0dc`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0e1f0dc14d2f19abd26e4a639255852fadb7cacd) by @sonofmagic
+- 📦 Updated 6 dependencies [`c2ba271`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c2ba271ac62ba851c23549a8de1038a71bb868d6)
+  <details><summary>Details</summary>
+
+  `@weapp-tailwindcss/logger@2.0.2`, `@weapp-tailwindcss/postcss@3.2.11`, `@weapp-tailwindcss/reset@0.1.3`, `@weapp-tailwindcss/shared@2.0.2`, `tailwindcss-config@2.0.3`, `weapp-style-injector@1.0.3`
+
+  </details>
+
 ## 5.2.14
 
 ### Patch Changes
