@@ -19,6 +19,18 @@ const englishItems: NonNullable<ThemeConfig['navbar']>['items'] = [
     label: 'Install',
   },
   {
+    type: 'doc',
+    docId: 'showcase/index',
+    position: 'left',
+    label: copy.navbar.showcase,
+  },
+  {
+    type: 'doc',
+    docId: 'api/interfaces/UserDefinedOptions',
+    position: 'left',
+    label: copy.navbar.options,
+  },
+  {
     to: '/blog',
     position: 'left',
     label: copy.navbar.blog,

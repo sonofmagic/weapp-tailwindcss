@@ -58,6 +58,16 @@ test.describe('English content isolation', () => {
     })
   }
 
+  test('English navbar exposes showcase and options', async ({ page }) => {
+    await page.goto(baseURL, {
+      waitUntil: 'domcontentloaded',
+    })
+
+    const navbar = page.locator('nav')
+    await expect(navbar.getByRole('link', { name: 'Showcase', exact: true })).toHaveAttribute('href', '/docs/showcase')
+    await expect(navbar.getByRole('link', { name: 'Options', exact: true })).toHaveAttribute('href', '/docs/api/interfaces/UserDefinedOptions')
+  })
+
   test('locale menu names both languages and English 404 contains no Chinese text', async ({ page }) => {
     await page.goto(baseURL, {
       waitUntil: 'domcontentloaded',
