@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-15T18:55:52.005Z",
+  "generatedAt": "2026-08-15T19:26:00.170Z",
   "locale": "en-US",
   "contentTier": "full",
   "siteUrl": "https://tw.icebreaker.top",
@@ -719,12 +719,12 @@
         "taro",
         "mpx",
         "React Native",
+        "ReactLynx",
         "AI coding",
         "workflow",
         "system",
         "ai",
-        "basics",
-        "cross-platform"
+        "basics"
       ],
       "headings": [
         "Install the complete package",

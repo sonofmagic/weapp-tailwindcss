@@ -159,7 +159,7 @@ CLI 默认目标是 `web`，支持 stdin/stdout、watch、原生 watcher、`--po
 
 ## AI Skill
 
-官方 Skill 已按接入、迁移、排障、运行时、自定义构建和 React Native 拆分。推荐安装完整套件：
+官方 Skill 已拆分为 1 个协调入口和接入、迁移、排障、运行时、自定义构建、React Native、ReactLynx 7 个专用工作流。推荐安装完整套件：
 
 ```bash
 npx skills add sonofmagic/skills \
@@ -170,6 +170,7 @@ npx skills add sonofmagic/skills \
   --skill weapp-tailwindcss-runtime \
   --skill weapp-tailwindcss-custom-build \
   --skill weapp-tailwindcss-react-native \
+  --skill weapp-tailwindcss-lynx \
   -y
 ```
 

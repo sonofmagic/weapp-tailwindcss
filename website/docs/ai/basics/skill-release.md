@@ -50,7 +50,7 @@ npx skills add . --list
 1. 在本仓库提交 `skills/**`、验证语料和文档入口。
 2. 合并到 `main`。
 3. 等待聚合仓库定时同步，或在需要立即发布时手动运行聚合仓库的 `Sync Skills From Upstreams` workflow。
-4. 检查同步提交是否包含 7 个 Skill 目录。
+4. 检查同步提交是否包含 8 个 Skill 目录。
 5. 从 `sonofmagic/skills` 执行 `--list` 和临时安装验证。
 
 Skill 不再使用独立 `skill-weapp-tailwindcss-v*` tag 或 GitHub Release 作为内容分发机制。版本历史以源仓库提交和聚合仓库同步提交为准。
@@ -68,6 +68,7 @@ npx skills add sonofmagic/skills \
   --skill weapp-tailwindcss-runtime \
   --skill weapp-tailwindcss-custom-build \
   --skill weapp-tailwindcss-react-native \
+  --skill weapp-tailwindcss-lynx \
   -y
 ```
 
