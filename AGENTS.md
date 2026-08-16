@@ -16,7 +16,7 @@
 - 本项目禁止使用 Prettier 做格式化；不要运行 `prettier`、`pnpm format` 或其它会调用 Prettier 的格式化命令。
 - 提交信息遵循 Conventional Commits。
 - PR、提交信息和变更说明默认只使用 `Refs #<issue>`、`Related to #<issue>` 或普通链接关联 Issue；禁止默认使用 `Fixes`、`Closes`、`Resolves` 等关闭关键词，也不要在 GitHub `Development` 侧栏建立会随 PR 合并关闭 Issue 的关联。只有用户明确要求关闭对应 Issue 时才允许使用关闭型关联。
-- 所有新增或修改的 Changeset 内容必须使用中文。
+- 所有新增或修改的 change intent 内容必须使用中文。
 - JSDoc 注释必须使用中文；新增行内注释默认中文（术语可保留英文）。
 - Node.js、构建器、CLI、测试与脚本默认必须同时支持 Windows、macOS 和 Linux，不得把 POSIX 路径、分隔符、盘符、大小写或 shell 行为当作跨平台默认值。
 - 文件系统路径统一优先使用 `node:path` 的 `resolve`、`join`、`relative`、`normalize` 等 API，以及 `fileURLToPath` / `pathToFileURL` 处理 URL 转换；禁止通过字符串拼接、固定 `/`、`split('/')` 或单次替换反斜杠来实现通用文件系统路径逻辑。临时目录使用 `os.tmpdir()` / `mkdtemp`，禁止硬编码 `/tmp`。
@@ -74,6 +74,7 @@
 - demo、Web/H5、watch 与 e2e 场景都必须遵守 Tailwind CSS 由 `weapp-tailwindcss` 生成的约束，不能为修复样式或 HMR 问题注册官方 Tailwind 生成插件。
 - 运行时封装（`packages-runtime/*`）改动需重点关注 escape/unescape、merge 兼容和缓存边界。
 - Release 工作流发布 npm 必须使用 trusted publishing/OIDC：发布 job 使用 Node 24 以满足 npm CLI 的 OIDC 支持要求，保留 `permissions.id-token: write` 与 provenance，禁止在发布步骤注入 `NPM_TOKEN` 或 `NODE_AUTH_TOKEN`。
+- 包的 change intent、版本、预发布、npm publish、tag、GitHub Release 与失败恢复统一由 repoctl 编排；使用 `pnpm release`、`pnpm version-packages`、`pnpm publish-packages` 和 `pnpm release:pre`，不要恢复 Changesets CLI/action。
 
 ## 新增 AGENTS 触发条件
 - 目录具备独立发布或独立 `build/test` 流程。

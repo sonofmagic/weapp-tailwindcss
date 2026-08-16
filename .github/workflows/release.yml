@@ -1,3 +1,4 @@
+# repoctl-managed: release/v2
 name: Release
 
 on:
@@ -9,110 +10,69 @@ on:
       - rc
       - next
   workflow_dispatch:
+    inputs:
+      mode:
+        description: Release operation
+        required: true
+        default: auto
+        type: choice
+        options:
+          - auto
+          - prepare
+          - publish
+          - publish-unpublished
+      package:
+        description: Package used for unpublished-version recovery
+        required: false
+        type: string
+      version:
+        description: Version used for unpublished-version recovery
+        required: false
+        type: string
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
+
 env:
-  CHANGESETS_RELEASE_TOKEN_SET: ${{ secrets.CHANGESETS_RELEASE_TOKEN != '' }}
   HUSKY: 0
+  NPM_CONFIG_PROVENANCE: true
+  npm_config_registry: https://registry.npmjs.org
 
 permissions:
-  actions: write # to dispatch CI workflows for release PRs created by GITHUB_TOKEN
-  contents: write # to create release (changesets/action)
-  issues: write # to post issue comments (changesets/action)
-  pull-requests: write # to create pull request (changesets/action)
-  id-token: write # to use OpenID Connect token for provenance (changesets/action)
+  contents: write
+  pull-requests: write
+  id-token: write
 
 jobs:
   release:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     name: Release
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+          registry-url: https://registry.npmjs.org
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Verify packed deps are resolved
-        run: |
-          set -euo pipefail
-          TMP_DIR="$(mktemp -d)"
-          PACKAGES=(
-            "@weapp-tailwindcss/runtime"
-            "@weapp-tailwindcss/merge"
-            "@weapp-tailwindcss/variants"
-            "@weapp-tailwindcss/cva"
-            "@weapp-tailwindcss/typography"
-            "@weapp-tailwindcss/ui"
-            "theme-transition"
-          )
-          for pkg in "${PACKAGES[@]}"; do
-            SAFE_PKG="${pkg//@/}"
-            SAFE_PKG="${SAFE_PKG//\//_}"
-            PKG_DIR="$TMP_DIR/$SAFE_PKG"
-            mkdir -p "$PKG_DIR"
-            pnpm --filter "$pkg" pack --pack-destination "$PKG_DIR"
-            TARBALL="$(ls "$PKG_DIR"/*.tgz | head -n 1)"
-            tar -xzf "$TARBALL" -C "$PKG_DIR" package/package.json
-            if grep -n '"workspace:\\*"' "$PKG_DIR/package/package.json"; then
-              echo "ERROR: workspace:* found in packed package.json for $pkg"
-              exit 1
-            fi
-          done
-
-      - name: Create Release Pull Request or Publish to npm
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          # A PAT or GitHub App token avoids GitHub's GITHUB_TOKEN recursion guard,
-          # so pull_request workflows run automatically for Version Packages PRs.
-          # The fallback keeps publishing working even before the secret is configured.
-          github-token: ${{ secrets.CHANGESETS_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
-          publish: pnpm publish-packages
-          version: pnpm publish-packages -- --phase version
+      - name: Run repo release CI
         env:
-          GITHUB_TOKEN: ${{ secrets.CHANGESETS_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
-          npm_config_registry: https://registry.npmjs.org
-          # https://github.com/changesets/changesets/pull/1659
-          NPM_CONFIG_PROVENANCE: true
-
-      - name: Trigger npmmirror sync
-        if: steps.changesets.outputs.published == 'true'
-        continue-on-error: true
-        env:
-          PUBLISHED_PACKAGES: ${{ steps.changesets.outputs['published-packages'] }}
-        run: node scripts/sync-npmmirror.mjs
-
-      - name: Trigger release PR checks
-        if: steps.changesets.outputs.hasChangesets == 'true' && steps.changesets.outputs.published != 'true' && env.CHANGESETS_RELEASE_TOKEN_SET != 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_PR_BRANCH: changeset-release/${{ github.ref_name }}
-        run: |
-          set -euo pipefail
-
-          echo "Dispatching release PR checks for ${RELEASE_PR_BRANCH}"
-
-          gh workflow run ci.yml --ref "${RELEASE_PR_BRANCH}"
-          gh workflow run release-gate.yml --ref "${RELEASE_PR_BRANCH}"
-          gh workflow run benchmark.yml --ref "${RELEASE_PR_BRANCH}" \
-            -f baseline=auto \
-            -f build_runs=1 \
-            -f hmr_runs=1 \
-            -f only=demo-weapp-vite-tailwindcss-v4__mp-weixin,demo-uni-app-vite-tailwindcss-v4__mp-weixin,demo-web-vue-vite-tailwindcss-v4__web
-          gh workflow run e2e-watch.yml --ref "${RELEASE_PR_BRANCH}" \
-            -f run_pr_quick_gate=true
+          GITHUB_TOKEN: ${{ secrets.REPOCTL_RELEASE_TOKEN || secrets.CHANGESETS_RELEASE_TOKEN || github.token }}
+          REPO_RELEASE_MODE: ${{ inputs.mode || 'auto' }}
+          REPO_RELEASE_PACKAGE: ${{ inputs.package }}
+          REPO_RELEASE_VERSION: ${{ inputs.version }}
+        run: pnpm exec repo release ci
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5

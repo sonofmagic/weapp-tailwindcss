@@ -36,6 +36,12 @@ minimumReleaseAge: 0
 minimumReleaseAgeExclude:
   - prettier@3.9.3
 
+versioning:
+  fixed:
+    - [weapp-tailwindcss, '@weapp-tailwindcss/cli']
+  changelog:
+    storage: repository
+
 overrides:
   jiti: 2.7.0
   postcss-calc: link:packages/postcss-calc
