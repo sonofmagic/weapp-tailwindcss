@@ -59,6 +59,9 @@ jobs:
       - name: Run SEO/GEO quality gate
         run: pnpm --filter @weapp-tailwindcss/website seo:quality:strict
 
+      - name: Verify Worker routing locally
+        run: pnpm --filter @weapp-tailwindcss/website test:worker
+
       - name: Validate Worker bundle
         run: pnpm --filter @weapp-tailwindcss/website deploy:worker:dry-run
 
@@ -81,7 +84,9 @@ jobs:
       - name: Verify production deployment
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         working-directory: website
-        run: pnpm run verify:deployment -- https://tw.icebreaker.top
+        run: |
+          pnpm run verify:deployment -- https://tw.icebreaker.top
+          pnpm run verify:deployment -- https://weapp-tw.icebreaker.top --canonical-origin https://tw.icebreaker.top
 
       - name: Verify next deployment
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/next'

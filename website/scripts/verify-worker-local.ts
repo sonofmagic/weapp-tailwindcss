@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process'
+import { readdir } from 'node:fs/promises'
 import { createServer } from 'node:net'
 import path from 'node:path'
 import process from 'node:process'
@@ -47,6 +48,7 @@ async function expectResponse(baseUrl: URL, pathname: string, status: number, lo
   if (location && response.headers.get('location') !== location) {
     throw new Error(`${pathname} expected Location ${location}, received ${response.headers.get('location')}`)
   }
+  return response
 }
 
 async function main() {
@@ -80,7 +82,15 @@ async function main() {
     await expectResponse(baseUrl, '/docs/migrations/v2', 301, '/docs/migrations/v5')
     await expectResponse(baseUrl, '/unknown-worker-route', 404)
     await expectResponse(baseUrl, '/zh-cn/unknown-worker-route', 404)
-    console.log('[website] Wrangler local 200/301/404 verification passed')
+    const cssFiles = (await readdir(path.join(websiteRoot, 'build', 'assets', 'css'))).filter(filename => filename.endsWith('.css')).sort()
+    if (cssFiles.length === 0) {
+      throw new Error('Wrangler 本地测试找不到构建后的 CSS 资源')
+    }
+    const cssResponse = await expectResponse(baseUrl, `/assets/css/${cssFiles[0]}`, 200)
+    if (cssResponse.headers.get('cache-control') !== 'public, max-age=31536000, immutable') {
+      throw new Error('Wrangler 本地静态资源缺少 immutable 缓存策略')
+    }
+    console.log('[website] Wrangler local 200/301/404/cache verification passed')
   }
   catch (error) {
     if (stderr) {
