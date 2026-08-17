@@ -1,0 +1,1636 @@
+{
+  "schemaVersion": 1,
+  "platform": "android",
+  "catalogHash": "a8c3b45f993d9aa28782f308fc959a09e160d67a9097d11b1bc6a8a38b93c886",
+  "verifiedAt": "2026-08-17T06:34:56.557Z",
+  "versions": {
+    "tailwindcss": "4.3.3",
+    "lynxEngine": "4.0.1",
+    "engineVersion": "3.9",
+    "cssDefines": "0.0.16"
+  },
+  "environment": {
+    "deviceName": "sdk_gphone_arm64",
+    "deviceModel": "sdk_gphone_arm64",
+    "osName": "Android",
+    "osVersion": "11",
+    "osBuild": "RSR1.240422.006",
+    "runtimeIdentifier": "android-30",
+    "abi": "arm64-v8a",
+    "viewport": {
+      "width": 1080,
+      "height": 2340,
+      "pixelRatio": 2.75
+    },
+    "apiLevel": 30
+  },
+  "results": [
+    {
+      "id": "layout-aspect",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,72,48; child=0,4,12,12",
+          "expected": "control=0,0,72,16; child=0,4,12,12"
+        }
+      ]
+    },
+    {
+      "id": "layout-columns",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：columns",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "layout-box-sizing",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.181884765625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181884765625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "layout-display",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,40; child=31.27272605895996,12,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181884765625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "layout-float",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：float",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "layout-isolation",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：isolation",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "layout-object-fit",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：object-fit",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "layout-overflow",
+      "status": "unsupported",
+      "reason": "probe/control 元素截图没有可观察的像素差异",
+      "failureStage": "runtime",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": false,
+          "actual": "2688:a6f0d0f1",
+          "expected": "different from 2688:a6f0d0f1"
+        }
+      ]
+    },
+    {
+      "id": "layout-position",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,72,62.181819915771484; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "layout-visibility",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "layout-z-index",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "1948:7cfa30e3",
+          "expected": "different from 3572:5f39621a"
+        }
+      ]
+    },
+    {
+      "id": "flex-direction",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,40; child=31.27272605895996,12,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "flex-alignment",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=74.90909004211426,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "flex-grow",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.18212890625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.18212890625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "grid-template",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,55.272727966308594; child=94.90909004211426,12,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.18212890625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "spacing-margin",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,151.27272033691406,62.181819915771484; child=8,26.18212890625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "spacing-padding",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,72.36363983154297; child=6.909090042114258,31.2724609375,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "spacing-logical",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：padding-inline",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "sizing-fixed",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,122.90908813476562,40; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "sizing-min-max",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "table-layout",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：table-layout, border-collapse",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "type-size",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.18212890625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.18212890625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "type-weight-style",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "type-tracking",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "type-align-overflow",
+      "status": "unsupported",
+      "reason": "probe/control 元素截图没有可观察的像素差异",
+      "failureStage": "runtime",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": false,
+          "actual": "2688:a6f0d0f1",
+          "expected": "different from 2688:a6f0d0f1"
+        }
+      ]
+    },
+    {
+      "id": "type-decoration",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：text-decoration-line",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "background-color",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3252:ffdd5357",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "background-gradient",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "13836:f9d910a1",
+          "expected": "different from 1084:9dba8391"
+        }
+      ]
+    },
+    {
+      "id": "background-size",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3732:24c599e9",
+          "expected": "different from 3752:e5f03b0a"
+        }
+      ]
+    },
+    {
+      "id": "border-width-color",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3144:dcceecd2",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "border-radius",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "5600:1da4906",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "effect-opacity",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "effect-shadow",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "2780:3dfe520a",
+          "expected": "different from 2780:bd1e106e"
+        }
+      ]
+    },
+    {
+      "id": "effect-blend",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：mix-blend-mode",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "filter-blur",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "filter-backdrop",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：backdrop-filter",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "svg-fill-stroke",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：fill, stroke-width, stroke",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "accessibility-sr",
+      "status": "unsupported",
+      "reason": "Tailwind probe 与 control 的几何结果没有满足 case 断言",
+      "failureStage": "runtime",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": false,
+          "actual": "0,0,72,40; child=0,18.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "transform-translate",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：translate",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "transform-rotate",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：rotate",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "transform-scale",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：scale",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "transform-origin",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "transition-basic",
+      "status": "unsupported",
+      "reason": "transition 的开始、中间和结束 checkpoint 未形成连续变化",
+      "failureStage": "runtime",
+      "checkpoints": [
+        {
+          "name": "interaction:transition-progress",
+          "passed": false,
+          "actual": "3024:cc0f6f66 -> 3024:cc0f6f66 -> 3024:cc0f6f66"
+        }
+      ]
+    },
+    {
+      "id": "animation-spin",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "interaction:animation-progress",
+          "passed": true,
+          "actual": "8388:6073b061 -> 3140:e6df318"
+        }
+      ]
+    },
+    {
+      "id": "interaction-pointer",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "interaction:pointer-events-native",
+          "passed": true,
+          "actual": "probe=true; control=false",
+          "expected": "probe=true; control=false"
+        }
+      ]
+    },
+    {
+      "id": "interaction-select",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：user-select",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "interaction-scroll",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：scroll-behavior, scroll-snap-type",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "variant-responsive",
+      "status": "unsupported",
+      "reason": "Tailwind probe 与 control 的几何结果没有满足 case 断言",
+      "failureStage": "runtime",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": false,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "variant-dark",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "variant-state",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "interaction:pseudo-active",
+          "passed": true,
+          "actual": "3024:cc0f6f66 -> 3068:993ff23b"
+        }
+      ]
+    },
+    {
+      "id": "variant-structural",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "variant-group-peer",
+      "status": "unsupported",
+      "reason": "encoder 删除 selector：.peer-checked\\:opacity-100:is(:where(.peer):checked~*)",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "variant-data-aria",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：text-decoration-line",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "variant-supports",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "variant-pseudo-element",
+      "status": "unsupported",
+      "reason": "TASM 未保留完整 selector 或声明",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "variant-arbitrary",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "syntax-negative",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：translate",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "syntax-important",
+      "status": "unsupported",
+      "reason": "TASM 未保留完整 selector 或声明",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "syntax-opacity-modifier",
+      "status": "unsupported",
+      "reason": "TASM 未保留完整 selector 或声明",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "syntax-arbitrary-property",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：mask-type",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "syntax-css-variable",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "syntax-type-hint",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "directive-import",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "build:generated",
+          "passed": true
+        },
+        {
+          "name": "build:bundled",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "directive-theme",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "build:generated",
+          "passed": true
+        },
+        {
+          "name": "build:bundled",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "directive-source",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：text-decoration-line",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "directive-utility",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：content-visibility",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "directive-variant",
+      "status": "unsupported",
+      "reason": "encoder 删除 selector：.theme-midnight\\:bg-black:where(.theme-midnight,.theme-midnight *), .lynx-at-variant:where(.theme-midnight,.theme-midnight *)",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "directive-apply",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "build:generated",
+          "passed": true
+        },
+        {
+          "name": "build:bundled",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "directive-reference",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "build:generated",
+          "passed": true
+        },
+        {
+          "name": "build:bundled",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "directive-config-plugin",
+      "status": "unsupported",
+      "reason": "TASM 未保留完整 selector 或声明",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "directive-prefix-important",
+      "status": "unsupported",
+      "reason": "TASM 未保留完整 selector 或声明",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "layout-break",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：break-before, break-after, break-inside",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "layout-decoration-clear",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：box-decoration-break, clear",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "layout-object-position",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：object-position",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "layout-overscroll",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：overscroll-behavior",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "flex-wrap-order",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "flex-shorthand-shrink",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "grid-placement",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "grid-auto",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "grid-place",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：place-content, place-items, place-self",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "grid-justify-self",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "grid-align-content-self",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,72,62.181819915771484; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "spacing-space-between",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：margin-block-start",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "sizing-size",
+      "status": "unsupported",
+      "reason": "Tailwind probe 与 control 的几何结果没有满足 case 断言",
+      "failureStage": "runtime",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": false,
+          "actual": "0,0,72,44; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "type-family-smoothing-stretch",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：-webkit-font-smoothing, font-stretch",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "type-numeric",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：font-variant-numeric",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "type-line-clamp",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：-webkit-line-clamp",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "type-list",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：list-style-position, list-style-type, list-style-image",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "type-decoration-full",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：text-decoration-style, text-underline-offset",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "type-transform-wrap-indent",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：text-transform, text-wrap",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "type-flow",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.181640625,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.181640625,12,12"
+        }
+      ]
+    },
+    {
+      "id": "type-breaking",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：overflow-wrap",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "type-content",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "background-attachment-clip-origin",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：background-attachment",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "background-linear-gradient",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3732:24c599e9",
+          "expected": "different from 3752:e5f03b0a"
+        }
+      ]
+    },
+    {
+      "id": "border-divide",
+      "status": "unsupported",
+      "reason": "encoder 删除 selector：:where(.divide-y-2>:not(:last-child)), :where(.divide-dashed>:not(:last-child)), :where(.divide-\\[\\#64748b\\]>:not(:last-child))",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "border-outline",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：outline-offset",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "effect-ring",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "effect-inset-text-shadow",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "effect-background-blend",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：background-blend-mode",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "effect-mask-box",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：mask-mode",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "effect-mask-image-composite",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：mask-type",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "filter-color-adjustments",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "filter-color-rotation",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "filter-drop-shadow",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "pixel:probe-vs-control",
+          "passed": true,
+          "actual": "3024:cc0f6f66",
+          "expected": "different from 3024:f4819954"
+        }
+      ]
+    },
+    {
+      "id": "filter-backdrop-adjustments",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：backdrop-filter",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "table-spacing-caption",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：border-spacing, caption-side",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "transform-skew",
+      "status": "supported",
+      "checkpoints": [
+        {
+          "name": "geometry:probe-vs-control",
+          "passed": true,
+          "actual": "0,0,162.18182373046875,62.181819915771484; child=8,26.18359375,12,12",
+          "expected": "control=0,0,161.81817626953125,62.181819915771484; child=8,26.18359375,12,12"
+        }
+      ]
+    },
+    {
+      "id": "transform-perspective",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：perspective-origin",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "transform-style-backface",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：transform-style, backface-visibility",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "transition-complete",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：transition-behavior",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "interaction-form-colors",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：accent-color",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "interaction-form-control",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：appearance, field-sizing, resize",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "interaction-cursor-scheme",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：color-scheme",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "interaction-scroll-spacing",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：scroll-margin, scroll-padding",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "interaction-snap-touch",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：scroll-snap-align, scroll-snap-stop, touch-action",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "interaction-will-change",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：will-change",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    },
+    {
+      "id": "accessibility-forced-colors",
+      "status": "unsupported",
+      "reason": "encoder 删除属性：forced-color-adjust",
+      "checkpoints": [
+        {
+          "name": "generated",
+          "passed": true
+        },
+        {
+          "name": "bundled",
+          "passed": false
+        }
+      ]
+    }
+  ]
+}

@@ -9,7 +9,7 @@ import { filterExistingCssRules, transformLynxCssCompat } from '@weapp-tailwindc
 import { ensurePosix } from '@weapp-tailwindcss/shared'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives, normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindRootImportDirectives, normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
 import { createSourceCandidateStore, isSourceCandidateRequest } from '@/bundlers/shared/source-candidates'
 import { resolveSourceCandidateScanFiles } from '@/bundlers/shared/source-candidates/scan-root'
 import { resolveTailwindV4EntriesFromCssCached } from '@/bundlers/shared/source-scan'
@@ -203,7 +203,10 @@ export async function generateCssForWebpackPipeline(
     },
     cssStage: 'raw',
     styleHandler: compilerOptions.styleHandler,
-    debug: () => undefined,
+    incrementalCache: false,
+    debug: process.env['WEAPP_TW_LOADER_DEBUG']
+      ? (message, ...args) => process.stdout.write(`[weapp-tw-css-import-rewrite-loader] ${message} ${inspect(args)}\n`)
+      : () => undefined,
     deferCssAdaptation: generatorTarget !== 'web',
   })
   if (!generated) {
@@ -224,6 +227,15 @@ export async function generateCssForWebpackPipeline(
   const css = missingBareUserCss.trim().length === 0
     ? generatedCss
     : `${generatedCss}\n${missingBareUserCss}`
+  if (process.env['WEAPP_TW_LOADER_DEBUG']) {
+    process.stdout.write(`[weapp-tw-css-import-rewrite-loader] generated ${inspect({
+      classes: generated.classSet.size,
+      cssLength: css.length,
+      file,
+      preview: css.slice(0, 160),
+      target: generated.target,
+    })}\n`)
+  }
   rewriteOptions.registerGeneratedCss?.({
     classSet: generated.classSet,
     css,
@@ -242,6 +254,13 @@ export function registerWebpackCssGeneratorSource(
     normalizeTailwindSourceForGenerator(source, { importFallback: true }),
     resourcePath,
   )
+  if (process.env['WEAPP_TW_LOADER_DEBUG']) {
+    process.stdout.write(`[weapp-tw-css-import-rewrite-loader] register source ${inspect({
+      cssLength: css.length,
+      file: resourcePath,
+      preview: css.slice(0, 240),
+    })}\n`)
+  }
   options?.tailwindcssImportRewrite?.registerCssSourceFile?.({
     file: resourcePath,
     css,
@@ -286,8 +305,16 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
     hasTailwindRootDirectives(input, { importFallback: true })
     || hasTailwindApplyDirective(input)
   )
-  const registerTask = hasTailwindGeneratorSource
-    ? registerWebpackCssGeneratorSource(input, this.resourcePath, opt)
+  const isLynxPipeline = opt?.tailwindcssImportRewrite?.compilerOptions?.platform === 'lynx'
+  const hasLynxEntrySource = !isLynxPipeline || (
+    hasTailwindRootImportDirectives(input, { importFallback: true })
+    || hasTailwindApplyDirective(input)
+  )
+  const shouldRegisterGeneratorSource = hasTailwindGeneratorSource
+    && hasLynxEntrySource
+    && (!isLynxPipeline || opt?.generateCss === true)
+  const register = shouldRegisterGeneratorSource
+    ? () => registerWebpackCssGeneratorSource(input, this.resourcePath, opt)
     : undefined
   const transform = () => {
     const transformed = transformCssImportRewriteSource(source, opt)
@@ -296,8 +323,9 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
     }
     return transformed
   }
-  const canGenerate = opt?.generateCss !== false
+  const canGenerate = opt?.generateCss === true
     && hasTailwindGeneratorSource
+    && hasLynxEntrySource
     && opt?.tailwindcssImportRewrite?.compilerOptions
     && opt.tailwindcssImportRewrite.runtimeState
     && opt.tailwindcssImportRewrite.getRuntimeSet
@@ -307,16 +335,17 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
       return generated ?? transform()
     }
     : undefined
-  if (registerTask && typeof (registerTask as PromiseLike<void>).then === 'function') {
-    return Promise.resolve(registerTask).then(async () => {
-      if (generate) {
-        return generate()
-      }
-      return transform()
+  if (generate) {
+    return Promise.resolve().then(async () => {
+      await register?.()
+      return generate()
     })
   }
-  if (generate) {
-    return generate()
+  const registerTask = register?.()
+  if (registerTask && typeof (registerTask as PromiseLike<void>).then === 'function') {
+    return Promise.resolve(registerTask).then(async () => {
+      return transform()
+    })
   }
   return transform()
 }

@@ -349,6 +349,83 @@ describe('bundlers/shared css-imports', () => {
     expect(sawGeneratedCss).toBe(true)
   })
 
+  it('generates Lynx split imports only from the explicit source loader stage', async () => {
+    vi.resetModules()
+    const generateTailwindV4Css = vi.fn(async () => ({
+      css: [
+        '@layer utilities {',
+        '  .flex { display: flex; }',
+        '  .bg-red-500 { background-color: var(--color-red-500); }',
+        '}',
+      ].join('\n'),
+      target: 'web',
+      source: 'generator',
+      classSet: new Set(['flex', 'bg-red-500']),
+      dependencies: [],
+      metadata: {
+        file: '/repo/examples/react-lynx/src/global.css',
+        majorVersion: 4,
+        outputFile: '/repo/examples/react-lynx/src/global.css',
+      },
+    }))
+    vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
+      generateTailwindV4Css,
+    }))
+    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
+    const registerCssSource = vi.fn(async () => undefined)
+    const registerGeneratedCss = vi.fn()
+    const source = [
+      '@layer theme, utilities;',
+      '@import "tailwindcss/theme.css" layer(theme);',
+      '@import "tailwindcss/utilities.css" layer(utilities) source(none);',
+      '@source inline("flex bg-red-500");',
+    ].join('\n')
+    const residualSource = [
+      '@source inline("flex bg-red-500");',
+      '@theme { --color-brand: #123456; }',
+    ].join('\n')
+    const createContext = (generateCss?: boolean) => ({
+      addDependency: vi.fn(),
+      getOptions: () => ({
+        ...(generateCss === undefined ? {} : { generateCss }),
+        tailwindcssImportRewrite: {
+          pkgDir,
+          compilerOptions: {
+            appType: 'weapp-vite',
+            cssOptions: { platform: 'lynx' },
+            generator: { target: 'web', webCompat: true },
+            mainCssChunkMatcher: () => true,
+            platform: 'lynx',
+            styleHandler: async (css: string) => ({ css }),
+          },
+          getRuntimeSet: async () => new Set(['flex', 'bg-red-500']),
+          registerCssSource,
+          registerGeneratedCss,
+          runtimeState: {
+            readyPromise: Promise.resolve(),
+            tailwindRuntime: { majorVersion: 4 },
+          },
+        },
+      }),
+      resourcePath: '/repo/examples/react-lynx/src/global.css',
+      rootContext: '/repo/examples/react-lynx',
+    })
+
+    const [first, second] = await Promise.all([
+      webpackLoader.call(createContext(true) as any, source),
+      webpackLoader.call(createContext() as any, residualSource),
+    ])
+
+    expect(generateTailwindV4Css).toHaveBeenCalledOnce()
+    expect(generateTailwindV4Css).toHaveBeenCalledWith(expect.objectContaining({ incrementalCache: false }))
+    expect(registerCssSource).toHaveBeenCalledOnce()
+    expect(registerGeneratedCss).toHaveBeenCalledOnce()
+    expect(first).toContain('.flex { display: flex; }')
+    expect(first).toContain('.bg-red-500')
+    expect(first).not.toContain('@import "tailwindcss')
+    expect(second).toBe(residualSource)
+  })
+
   it('removes Tailwind source directives from generated webpack H5 css', async () => {
     vi.resetModules()
     const generateTailwindV4Css = vi.fn(async (options: any) => ({

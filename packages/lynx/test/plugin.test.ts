@@ -60,10 +60,12 @@ describe('pluginLynxTailwindcss', () => {
     getRspackHandler()?.(config)
     getRspackHandler()?.(config)
 
-    expect((config as any).module.rules[0].use.map((item: any) => item.loader)).toEqual([
+    const use = (config as any).module.rules[0].use
+    expect(use.map((item: any) => item.loader)).toEqual([
       'css-loader',
       'builtin:lightningcss-loader',
       expect.stringMatching(/weapp-tw-css-import-rewrite-loader\.cjs$/),
     ])
+    expect(use[2].options).toEqual({ generateCss: true })
   })
 })

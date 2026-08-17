@@ -10,5 +10,5 @@ export default defineConfig({
       intermediate: 'dist/.rspeedy',
     },
   },
-  plugins: [pluginReactLynx(), pluginLynxTailwindcss()],
+  plugins: [pluginReactLynx({ engineVersion: '3.9' }), pluginLynxTailwindcss()],
 })

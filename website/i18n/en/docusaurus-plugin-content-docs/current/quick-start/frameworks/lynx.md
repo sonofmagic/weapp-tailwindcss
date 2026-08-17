@@ -98,6 +98,17 @@ pnpm --filter @weapp-tailwindcss/example-react-lynx build
 pnpm e2e:lynx
 ```
 
-A static build only proves that CSS was generated and included in the bundle. For visual validation with iOS Simulator and LynxExplorer, run `pnpm e2e:lynx:ios`.
+`examples/react-lynx` is a multi-page compatibility lab pinned to Tailwind CSS `4.3.3`, Lynx Engine `4.0.1`, bundle `engineVersion: '3.9'`, and `@lynx-js/css-defines` `0.0.16`. Representative cases cover every official utility family, variant kind, directive, and arbitrary syntax branch.
+
+The static gate records Tailwind generation and Lynx encoder retention separately. Cross-platform support is determined only by runtime reports from Pixel 7/API 35 and iPhone 16 Pro/iOS 18.5; css-defines cannot replace runtime evidence:
+
+```bash
+pnpm e2e:lynx:android
+pnpm e2e:lynx:ios
+pnpm e2e:lynx:native
+pnpm e2e:lynx:update
+```
+
+The updater requires complete reports from both platforms for the same catalog and Engine version. Missing cases, regressions, and newly supported behavior require explicit review.
 
 The current integration only covers ReactLynx + Rspeedy build targets. It does not cover Rspeedy Web output, non-React Lynx frameworks, or React Native-style runtime style mapping.
