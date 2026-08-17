@@ -130,6 +130,13 @@ async function collectAndroidArtifacts(artifactDir: string) {
   }
 }
 
+async function collectAndroidLogcat(artifactDir: string) {
+  const result = await execa('adb', ['logcat', '-d', '-t', '2500'], { encoding: 'utf8', reject: false })
+  if (result.stdout) {
+    await fs.writeFile(path.join(artifactDir, 'logcat.txt'), result.stdout)
+  }
+}
+
 async function collectIosArtifacts(container: string, artifactDir: string) {
   const source = path.join(container, 'Library', 'Application Support', 'lynx-compat', 'artifacts')
   await fs.cp(source, path.join(artifactDir, 'crops'), { recursive: true }).catch(() => undefined)
@@ -192,6 +199,7 @@ async function runAndroid(hostDir: string, artifactDir: string) {
     return report
   }
   finally {
+    await collectAndroidLogcat(artifactDir)
     const restoreArguments = hiddenErrorDialogs === 'null'
       ? ['shell', 'settings', 'delete', 'global', 'hide_error_dialogs']
       : ['shell', 'settings', 'put', 'global', 'hide_error_dialogs', hiddenErrorDialogs]
