@@ -19,6 +19,11 @@ public final class MainActivity extends Activity {
     lynxView = new LynxViewBuilder().build(this);
     CompatibilityReporterModule.setLynxView(lynxView);
     setContentView(lynxView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    // 将 bundle 注入排到 Activity 首帧之后，避免 API 35 软件模拟器在 onCreate 内创建空 UI 树。
+    lynxView.post(this::renderBundle);
+  }
+
+  private void renderBundle() {
     try (InputStream input = getAssets().open("main.lynx.bundle")) {
       lynxView.renderTemplateWithBaseUrl(readAllBytes(input), new HashMap<>(), "assets://main.lynx.bundle");
     } catch (IOException error) {
