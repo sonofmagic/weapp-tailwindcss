@@ -131,10 +131,8 @@ async function collectAndroidArtifacts(artifactDir: string) {
 }
 
 async function collectAndroidLogcat(artifactDir: string) {
-  const result = await execa('adb', ['logcat', '-d', '-t', '2500'], { encoding: 'utf8', reject: false })
-  if (result.stdout) {
-    await fs.writeFile(path.join(artifactDir, 'logcat.txt'), result.stdout)
-  }
+  const result = await execa('adb', ['logcat', '-d', '-t', '2500'], { all: true, encoding: 'utf8', reject: false })
+  await fs.writeFile(path.join(artifactDir, 'logcat.txt'), result.all ?? result.stdout ?? result.stderr ?? '')
 }
 
 async function collectIosArtifacts(container: string, artifactDir: string) {

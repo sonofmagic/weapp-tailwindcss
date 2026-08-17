@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   android:
-    name: Lynx Android 4.0.1 (API 35)
+    name: Lynx Android 4.0.1 (API 30)
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -36,9 +36,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 35
+          api-level: 30
           arch: x86_64
-          profile: pixel_7
+          profile: pixel_2
           disable-animations: true
           script: pnpm e2e:lynx:android
       - uses: actions/upload-artifact@v4

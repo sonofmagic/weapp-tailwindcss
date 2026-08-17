@@ -21,7 +21,7 @@ export async function waitForProbeLayout(
   const intervalMs = options.intervalMs ?? 250
   const now = options.now ?? Date.now
   const sleep = options.sleep ?? (duration => new Promise(resolve => setTimeout(resolve, duration)))
-  // GitHub 的 Android API 35 x86_64 模拟器没有 KVM，首次 Lynx 布局可能明显慢于本机。
+  // 软件 Android 模拟器首次 Lynx 布局可能明显慢于本机。
   const deadline = now() + (options.timeoutMs ?? 120_000)
 
   while (true) {
