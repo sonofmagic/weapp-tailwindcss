@@ -33,6 +33,7 @@ export interface GenerateCssByGeneratorOptions {
   forceGenerator?: boolean | undefined
   previousCss?: string | undefined
   previousClassSet?: Set<string> | undefined
+  incrementalCache?: boolean | undefined
   deferEmptyScopedCssSource?: boolean | undefined
   deferCssAdaptation?: boolean | undefined
   disableSourceScan?: boolean | undefined

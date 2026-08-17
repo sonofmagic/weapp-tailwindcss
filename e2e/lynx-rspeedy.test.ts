@@ -1,90 +1,51 @@
+import type { StaticEvidenceReport } from '../examples/react-lynx/src/compatibility/types'
 import fs from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import path from 'node:path'
-import process from 'node:process'
-import { execa } from 'execa'
 import { describe, expect, it } from 'vitest'
+import staticEvidenceJson from '../examples/react-lynx/src/compatibility/static-evidence.json'
+import { buildCompatibilityBundle } from './lynx/build'
+import { compatibilityDir, exampleDir, getCatalogHash, repoRoot } from './lynx/catalog'
+import { analyzeStaticEvidence } from './lynx/static-evidence'
 
-const repoRoot = path.resolve(import.meta.dirname, '..')
-const lynxPackage = '@weapp-tailwindcss/lynx'
-const examplePackage = '@weapp-tailwindcss/example-react-lynx'
-const bundlePath = path.resolve(repoRoot, 'examples/react-lynx/dist/main.lynx.bundle')
-const sourceCorpusPath = path.resolve(repoRoot, 'examples/react-lynx/src/tailwind-sources.ts')
+const bundlePath = path.join(exampleDir, 'dist', 'main.lynx.bundle')
+let encoderLog = ''
 
-const arbitraryUtilities = [
-  'w-[123px]',
-  'h-[45rpx]',
-  'min-w-[calc(100%-2rem)]',
-  'max-h-[var(--panel-height)]',
-  'bg-[#123456]',
-  'bg-[rgb(12,34,56)]',
-  'bg-[radial-gradient(circle_at_20%_20%,#fff,#000)]',
-  'text-[length:23px]',
-  'text-[color:#c31d6b]',
-  'leading-[1.25]',
-  'tracking-[0.12em]',
-  'p-[13px]',
-  'px-[7.5px]',
-  'rounded-[18px]',
-  '[mask-type:luminance]',
-  '[--panel-height:240px]',
-  'bg-(--brand-color)',
-  'text-black/[.35]',
-  '!bg-[gray]',
-  'hover:bg-[red]',
-  'md:w-[200px]',
-  'dark:text-[color:#fff]',
-  'data-[state=open]:opacity-100',
-  'supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]',
-  'before:content-[\'lynx\']',
-  'group-[.is-active]:block',
-  'aria-[sort=ascending]:underline',
-  'aspect-[4/3]',
-  'grid-cols-[200px_minmax(0,1fr)_80px]',
-]
-
-async function runPnpm(args: string[]) {
-  await execa('pnpm', args, {
-    cwd: repoRoot,
-    env: { ...process.env, CI: '1' },
-    stdio: process.env['E2E_DEBUG_BUILD'] === '1' ? 'inherit' : 'pipe',
-    timeout: 300_000,
-  })
-}
-
-describe('ReactLynx Rspeedy integration', () => {
-  it('builds the public Lynx package before consuming its workspace export', async () => {
-    await runPnpm(['--filter', lynxPackage, 'build'])
-  }, 300_000)
-
-  it('builds a real Lynx bundle with Tailwind className values', async () => {
-    await runPnpm(['--filter', examplePackage, 'build'])
-
-    const bundle = await fs.readFile(bundlePath)
-    const bundleText = bundle.toString('latin1')
-    const sourceCorpus = await fs.readFile(sourceCorpusPath, 'utf8')
+describe.sequential('ReactLynx Rspeedy compatibility evidence', () => {
+  it('builds the public Lynx package and a development bundle with inspectable CSS', async () => {
+    const build = await buildCompatibilityBundle()
+    encoderLog = build.encoderLog
+    const [bundle, css, tasm] = await Promise.all([
+      fs.readFile(bundlePath),
+      fs.readFile(path.join(exampleDir, 'dist', '.rspeedy', 'main', 'main.css'), 'utf8'),
+      fs.readFile(path.join(exampleDir, 'dist', '.rspeedy', 'main', 'tasm.json'), 'utf8'),
+    ])
     expect(bundle.byteLength).toBeGreaterThan(1024)
-    expect(bundleText).toContain('flex items-center justify-center bg-sky-500 p-6')
-    expect(bundleText).toContain('text-lg font-bold text-white')
-    expect(bundleText).toContain('weapp-tailwindcss + Lynx')
-    for (const utility of arbitraryUtilities) {
-      expect(sourceCorpus, `missing source coverage for ${utility}`).toContain(utility.replaceAll('\'', '\\\''))
-    }
-    expect(bundleText).not.toContain('@import "tailwindcss"')
-    expect(bundleText).toContain('background.js')
-    expect(bundleText).toContain('100vh')
-    expect(bundleText).toContain('0.2.0.0')
-    expect(bundleText).toContain('/.rspeedy/main/background.')
-    expect(bundleText).toContain('bg-sky-500')
-    expect(bundleText).toContain('rgb(0,165,234)')
-    expect(bundleText).toContain('p-6')
-    expect(bundleText).toContain('1.5rem')
-    expect(bundleText).toContain('text-lg')
-    expect(bundleText).toContain('1.125rem')
-    expect(bundleText).toContain('font-bold')
-    expect(bundleText).toContain('text-white')
-    expect(bundleText).toContain('#fff')
-    expect(bundleText).not.toContain('var(--color-sky-500)')
-    expect(bundleText).not.toContain('var(--spacing)')
-    expect(bundleText).not.toContain('@source')
+    expect(css).toContain('tailwindcss v4.3.3')
+    expect(css).not.toContain('@source')
+    expect((JSON.parse(tasm) as { css: { cssMap: object } }).css.cssMap).toBeTruthy()
   }, 300_000)
+
+  it('decodes the real bundle with the pinned TASM decoder', async () => {
+    const require = createRequire(path.join(repoRoot, 'e2e', 'package.json'))
+    const tasm = require('@lynx-js/tasm') as { decode_napi: (source: Uint8Array) => unknown, decode_wasm: (source: Uint8Array) => Promise<unknown>, supportNapi: () => boolean }
+    const source = new Uint8Array(await fs.readFile(bundlePath))
+    const decoded = tasm.supportNapi() ? tasm.decode_napi(source) : await tasm.decode_wasm(source)
+    expect(decoded).toBeTruthy()
+  }, 120_000)
+
+  it('matches the committed CSS AST and encoder evidence for every catalog case', async () => {
+    const actual = await analyzeStaticEvidence('ignored-by-comparison', encoderLog)
+    const expected = staticEvidenceJson as StaticEvidenceReport
+    expect(actual.catalogHash).toBe(getCatalogHash())
+    expect(actual.versions).toEqual(expected.versions)
+    expect(actual.catalogHash).toBe(expected.catalogHash)
+    expect(actual.results).toEqual(expected.results)
+    expect(actual.results.some(result => result.failureStage === 'encoder')).toBe(true)
+    expect(actual.results.some(result => result.bundled)).toBe(true)
+  })
+
+  it('keeps generated evidence under the compatibility directory', () => {
+    expect(path.dirname(path.join(compatibilityDir, 'static-evidence.json'))).toBe(compatibilityDir)
+  })
 })

@@ -1,6 +1,255 @@
-@import 'tailwindcss';
-@source "./";
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+
+@source './**/*.{ts,tsx}';
+@source inline('underline {hover:,focus:,}bg-red-{500,600}');
+@source not './compatibility/excluded.ts';
+
+@theme {
+  --color-lynx-brand: #0ea5e9;
+}
+
+@utility content-auto {
+  content-visibility: auto;
+}
+
+@custom-variant theme-midnight (&:where(.theme-midnight, .theme-midnight *));
+
+.lynx-at-variant {
+  @variant theme-midnight {
+    color: #fff;
+  }
+}
+
+.lynx-applied {
+  @apply flex items-center;
+}
 
 page {
   min-height: 100vh;
+  background-color: #f4f7f8;
+}
+
+.nav-item {
+  padding: 8px 11px;
+  border: 1px solid #d3dde0;
+  border-radius: 6px;
+  background-color: #f8fafb;
+}
+
+.nav-item-active {
+  border-color: #16734b;
+  background-color: #16734b;
+}
+
+.filter-item {
+  padding: 6px 9px;
+  border: 1px solid #d8e0e3;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.filter-item-active {
+  border-color: #e1a21a;
+  background-color: #fff4ce;
+}
+
+.summary-panel {
+  padding: 16px;
+  border: 1px solid #d8e0e3;
+  border-radius: 7px;
+  background-color: #fff;
+}
+
+.verification-banner {
+  margin-top: 14px;
+  padding: 9px 11px;
+  border-radius: 5px;
+}
+
+.verification-ready {
+  background-color: #dff5e8;
+}
+
+.verification-pending {
+  background-color: #fff0c2;
+}
+
+.compat-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.case-card {
+  padding: 14px;
+  border: 1px solid #d8e0e3;
+  border-radius: 7px;
+  background-color: #fff;
+}
+
+.class-code {
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 4px;
+  background-color: #edf2f4;
+  color: #26353b;
+  font-family: monospace;
+  font-size: 11px;
+  word-break: break-all;
+}
+
+.evidence-code {
+  margin-top: 7px;
+  color: #526168;
+  font-family: monospace;
+  font-size: 10px;
+  word-break: break-all;
+}
+
+.filter-label {
+  margin-bottom: 7px;
+  color: #607178;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.filter-scroll {
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+.probe-shell {
+  position: relative;
+  min-height: 46px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 5px;
+  background-color: #e8edef;
+}
+
+@layer components {
+  .probe-pair {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    min-height: 92px;
+  }
+
+  .probe-slot {
+    position: relative;
+    width: 48%;
+    min-height: 86px;
+    overflow: hidden;
+    padding: 6px;
+    background-color: #f7fafb;
+  }
+
+  .compat-probe {
+    min-width: 72px;
+    min-height: 40px;
+    padding: 8px;
+    background-color: #0ea5e9;
+  }
+
+  .probe-fixture-layout-aspect .compat-probe {
+    width: 64px;
+    min-height: 0;
+    height: auto;
+    box-sizing: border-box;
+  }
+
+  .probe-fixture-layout-aspect .probe-target,
+  .probe-fixture-layout-aspect .probe-child {
+    position: absolute;
+  }
+
+  .probe-target {
+    color: #fff;
+    font-size: 12px;
+  }
+
+  .probe-child {
+    width: 12px;
+    height: 12px;
+    margin-top: 4px;
+    background-color: #facc15;
+  }
+
+  .probe-child-b {
+    background-color: #ef4444;
+  }
+
+  .probe-fixture-background-size .compat-probe,
+  .probe-fixture-background-linear-gradient .compat-probe {
+    background-image: linear-gradient(90deg, #0f172a, #f8fafc);
+  }
+
+  .probe-fixture-background-gradient .compat-probe {
+    background-color: #fff;
+  }
+
+  .probe-fixture-transform-origin .compat-probe {
+    transform: rotate(15deg);
+  }
+
+  .probe-fixture-layout-overflow .compat-probe,
+  .probe-fixture-type-align-overflow .compat-probe {
+    width: 54px;
+  }
+
+  .probe-fixture-effect-shadow .compat-probe {
+    box-shadow: 0 0 0 5px #ef4444;
+  }
+
+  .probe-fixture-effect-shadow .probe-child-a {
+    position: absolute;
+    left: 28px;
+    top: 20px;
+    width: 26px;
+    height: 26px;
+    background-color: #facc15;
+  }
+
+  .probe-fixture-layout-z-index .compat-probe {
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    width: 76px;
+    height: 52px;
+  }
+
+  .probe-z-overlay {
+    position: absolute;
+    left: 32px;
+    top: 22px;
+    z-index: 1;
+    width: 66px;
+    height: 42px;
+    background-color: #facc15;
+  }
+}
+
+.status-badge {
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+
+.status-supported {
+  background-color: #dff5e8;
+}
+
+.status-unsupported {
+  background-color: #ffe2dc;
+}
+
+.status-pending {
+  background-color: #fff0c2;
+}
+
+.status-text {
+  color: #26353b;
+  font-size: 10px;
 }

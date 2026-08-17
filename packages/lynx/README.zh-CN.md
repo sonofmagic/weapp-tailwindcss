@@ -101,14 +101,15 @@ pnpm --filter @weapp-tailwindcss/lynx test
 pnpm e2e:lynx
 ```
 
-测试覆盖长度、`rpx`、`calc()`、颜色、渐变、CSS 变量、重要值、任意属性及常见变体。静态 E2E 只证明 CSS 已生成并进入 bundle；伪元素、交互状态、媒体查询和复杂视觉效果仍应在实际 Lynx 目标端验收。
+仓库中的 `examples/react-lynx` 是多页面兼容性实验室，固定 Tailwind CSS `4.3.3`、Lynx Engine `4.0.1`、bundle `engineVersion: '3.9'` 和 `@lynx-js/css-defines` `0.0.16`。它以代表值覆盖官方 utility 功能族、variant、指令和任意语法分支。
 
-## iOS 视觉验收
-
-仓库开发者可在已安装 LynxExplorer 的 iOS Simulator 中运行：
+静态 gate 使用 PostCSS 解析真实 `main.css`，并结合 `tasm.json.css.cssMap` 与 encoder removal 日志分别记录 `generated` 和 `bundled`。原生结论只来自固定 iOS/Android host 的已提交报告，`css-defines` 只用于版本提示。
 
 ```bash
+pnpm e2e:lynx:android
 pnpm e2e:lynx:ios
+pnpm e2e:lynx:native
+pnpm e2e:lynx:update
 ```
 
-命令会启动 Rspeedy、解析实际 bundle URL、将 URL 写入 Simulator pasteboard，并在截图后按生成的 `bg-sky-500` 颜色做像素断言。当前 LynxExplorer iOS 版本没有可用的 deep-link 回调，因此需在提示出现后手动将 URL 粘贴到首页、点击 Go，再回到终端按 Enter；其余截图、裁剪、像素分析和 dev server 清理均自动完成。
+原生 host 分别固定 Pixel 7/API 35 x86_64 与 iPhone 16 Pro/iOS 18.5。更新器要求同一 catalog 与 Engine 版本的完整双端报告同时存在；缺失结果、能力退化或意外新增支持都会失败，不能手工编辑基线。

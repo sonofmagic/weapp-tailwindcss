@@ -1,0 +1,92 @@
+name: Lynx Native Compatibility
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'packages/lynx/**'
+      - 'packages/weapp-tailwindcss/src/bundlers/**'
+      - 'examples/react-lynx/**'
+      - 'e2e/lynx/**'
+      - 'e2e/fixtures/lynx-native/**'
+      - package.json
+      - pnpm-lock.yaml
+      - .github/workflows/lynx-native.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    name: Lynx Android 4.0.1 (hosted diagnostic)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.10.2
+      - run: pnpm install --frozen-lockfile
+      - uses: reactivecircus/android-emulator-runner@v2
+        id: android-native
+        continue-on-error: true
+        with:
+          api-level: 30
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          script: pnpm e2e:lynx:android
+      - name: Explain hosted Android result
+        if: steps.android-native.outcome == 'failure'
+        run: |
+          {
+            echo '### Android hosted diagnostic'
+            echo
+            echo 'The hosted Ubuntu Android emulator is diagnostic-only because this runner has no KVM hardware acceleration.'
+            echo 'Artifacts remain available for investigation; the submitted arm64 simulator report remains the authoritative Android baseline.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lynx-android-${{ github.run_id }}
+          path: e2e/.artifacts/lynx-*/**
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 14
+
+  ios:
+    name: Lynx iOS 4.0.1 (iPhone 16 Pro / 18.5)
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - run: brew install cocoapods xcodegen
+      - run: pnpm install --frozen-lockfile
+      - name: Boot iOS 18.5 simulator
+        run: |
+          udid="$(xcrun simctl create LynxCompatibility 'iPhone 16 Pro' 'com.apple.CoreSimulator.SimRuntime.iOS-18-5')"
+          echo "LYNX_IOS_DEVICE_ID=$udid" >> "$GITHUB_ENV"
+          xcrun simctl boot "$udid"
+          xcrun simctl bootstatus "$udid" -b
+      - run: pnpm e2e:lynx:ios
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lynx-ios-${{ github.run_id }}
+          path: e2e/.artifacts/lynx-*/**
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 14

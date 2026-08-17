@@ -61,10 +61,15 @@ pnpm --filter @weapp-tailwindcss/lynx test
 pnpm e2e:lynx
 ```
 
-For repository-level visual validation with iOS Simulator and LynxExplorer:
+`examples/react-lynx` is a multi-page compatibility lab pinned to Tailwind CSS `4.3.3`, Lynx Engine `4.0.1`, bundle `engineVersion: '3.9'`, and `@lynx-js/css-defines` `0.0.16`. Representative cases cover every official utility family, variant kind, directive, and arbitrary syntax branch.
+
+The static gate parses the real `main.css` with PostCSS, then combines `tasm.json.css.cssMap` with encoder removal logs to record `generated` and `bundled` separately. Native support comes only from committed iOS and Android reports; css-defines is only a version hint.
 
 ```bash
+pnpm e2e:lynx:android
 pnpm e2e:lynx:ios
+pnpm e2e:lynx:native
+pnpm e2e:lynx:update
 ```
 
-The visual command starts Rspeedy, resolves the actual bundle URL, captures a screenshot, and checks generated colors. The current LynxExplorer iOS build requires manually pasting the URL and selecting Go when prompted.
+The native hosts are pinned to Pixel 7/API 35 x86_64 and iPhone 16 Pro/iOS 18.5. The updater requires complete reports from both platforms for the same catalog and Engine version. Missing results, regressions, and newly supported behavior all require explicit review.

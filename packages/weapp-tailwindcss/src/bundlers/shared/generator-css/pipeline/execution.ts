@@ -204,7 +204,7 @@ async function executeGeneratorPipelineWithOwner(
       const generated = await generationSession.generate(input.generatorSource, {
         bareArbitraryValues: generatorOptions.bareArbitraryValues,
         candidates: currentCandidates,
-        incrementalCache: true,
+        incrementalCache: options.incrementalCache ?? true,
         scanSources: options.disableSourceScan === true
           ? false
           : shouldScanTailwindV4Sources(

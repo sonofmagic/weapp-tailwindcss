@@ -55,6 +55,26 @@ function normalizeOptions(options: LynxTailwindcssOptions): UserDefinedOptions {
   }
 }
 
+function normalizeRspackOptions(options: PatchRspackConfigOptions | undefined): PatchRspackConfigOptions {
+  const cssImportRewriteLoader = options?.cssImportRewriteLoader
+  if (cssImportRewriteLoader === false) {
+    return options ?? {}
+  }
+  const loaderOptions = cssImportRewriteLoader === true || cssImportRewriteLoader === undefined
+    ? {}
+    : cssImportRewriteLoader
+  return {
+    ...options,
+    cssImportRewriteLoader: {
+      ...loaderOptions,
+      options: {
+        ...loaderOptions.options,
+        generateCss: true,
+      },
+    },
+  }
+}
+
 /**
  * 为 ReactLynx + Rspeedy 注册 Tailwind CSS v4 构建链路。
  *
@@ -71,7 +91,7 @@ export function pluginLynxTailwindcss(options: LynxTailwindcssOptions = {}): Rsb
         chain.plugin(PLUGIN_NAME).use(WeappTailwindcss, [normalizedOptions])
         return chain
       })
-      rsbuildApi.modifyRspackConfig(config => patchRspackConfig(config, options.rspack))
+      rsbuildApi.modifyRspackConfig(config => patchRspackConfig(config, normalizeRspackOptions(options.rspack)))
     },
   }
 }

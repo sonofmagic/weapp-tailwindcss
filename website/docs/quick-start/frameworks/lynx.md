@@ -92,6 +92,17 @@ pnpm --filter @weapp-tailwindcss/example-react-lynx build
 pnpm e2e:lynx
 ```
 
-静态构建只能证明 CSS 已生成并进入 bundle。iOS Simulator 与 LynxExplorer 的视觉验收可运行 `pnpm e2e:lynx:ios`。
+`examples/react-lynx` 已扩展为多页面兼容性实验室，固定 Tailwind CSS `4.3.3`、Lynx Engine `4.0.1`、bundle `engineVersion: '3.9'` 与 `@lynx-js/css-defines` `0.0.16`。catalog 使用代表值覆盖官方 utility 功能族、variant、指令和任意语法分支。
+
+静态 gate 分别记录 Tailwind 是否生成规则和 Lynx encoder 是否保留规则。双端支持只由固定 Pixel 7/API 35 与 iPhone 16 Pro/iOS 18.5 的 runtime 报告决定，`css-defines` 不能替代运行时结论：
+
+```bash
+pnpm e2e:lynx:android
+pnpm e2e:lynx:ios
+pnpm e2e:lynx:native
+pnpm e2e:lynx:update
+```
+
+基线更新器要求同一 catalog 与 Engine 版本的完整双端报告；缺失 case、能力退化或意外新增支持都需要显式审查。
 
 当前集成只覆盖 ReactLynx + Rspeedy 构建目标，不覆盖 Rspeedy Web 输出、非 React Lynx 框架或 React Native 风格的运行时样式映射。
