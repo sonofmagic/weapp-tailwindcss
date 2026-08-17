@@ -6,7 +6,7 @@ import { exampleDir, repoRoot } from './catalog'
 
 const artifactsDir = path.join(repoRoot, 'e2e', '.artifacts', 'lynx-static')
 
-async function runPnpm(args: string[]) {
+async function runPnpm(args: string[], logPath: string) {
   const result = await execa('pnpm', args, {
     all: true,
     cwd: repoRoot,
@@ -14,19 +14,25 @@ async function runPnpm(args: string[]) {
     reject: false,
     timeout: 300_000,
   })
+  const output = result.all ?? ''
+  await fs.writeFile(logPath, output)
   if (result.exitCode !== 0) {
-    throw new Error(result.all || `pnpm ${args.join(' ')} failed with exit code ${result.exitCode}`)
+    throw new Error(output || `pnpm ${args.join(' ')} failed with exit code ${result.exitCode}`)
   }
-  return result.all ?? ''
+  return output
 }
 
 export async function buildCompatibilityBundle() {
   await fs.mkdir(artifactsDir, { recursive: true })
-  const packageLog = await runPnpm(['--filter', '@weapp-tailwindcss/lynx', 'build'])
-  const encoderLog = await runPnpm(['--filter', '@weapp-tailwindcss/example-react-lynx', 'exec', 'rspeedy', 'build', '--mode', 'development'])
+  await runPnpm(
+    ['--filter', 'weapp-tailwindcss...', '--filter', '@weapp-tailwindcss/lynx', 'build'],
+    path.join(artifactsDir, 'package-build.log'),
+  )
+  const encoderLog = await runPnpm(
+    ['--filter', '@weapp-tailwindcss/example-react-lynx', 'exec', 'rspeedy', 'build', '--mode', 'development'],
+    path.join(artifactsDir, 'encoder.log'),
+  )
   await Promise.all([
-    fs.writeFile(path.join(artifactsDir, 'package-build.log'), packageLog),
-    fs.writeFile(path.join(artifactsDir, 'encoder.log'), encoderLog),
     fs.copyFile(path.join(exampleDir, 'dist', '.rspeedy', 'main', 'main.css'), path.join(artifactsDir, 'main.css')),
     fs.copyFile(path.join(exampleDir, 'dist', '.rspeedy', 'main', 'tasm.json'), path.join(artifactsDir, 'tasm.json')),
     fs.copyFile(path.join(exampleDir, 'dist', 'main.lynx.bundle'), path.join(artifactsDir, 'main.lynx.bundle')),

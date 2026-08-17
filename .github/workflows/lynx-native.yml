@@ -47,6 +47,7 @@ jobs:
           name: lynx-android-${{ github.run_id }}
           path: e2e/.artifacts/lynx-*/**
           if-no-files-found: warn
+          include-hidden-files: true
           retention-days: 14
 
   ios:
@@ -75,4 +76,5 @@ jobs:
           name: lynx-ios-${{ github.run_id }}
           path: e2e/.artifacts/lynx-*/**
           if-no-files-found: warn
+          include-hidden-files: true
           retention-days: 14
