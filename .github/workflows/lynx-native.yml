@@ -67,6 +67,7 @@ jobs:
       - name: Boot iOS 18.5 simulator
         run: |
           udid="$(xcrun simctl create LynxCompatibility 'iPhone 16 Pro' 'com.apple.CoreSimulator.SimRuntime.iOS-18-5')"
+          echo "LYNX_IOS_DEVICE_ID=$udid" >> "$GITHUB_ENV"
           xcrun simctl boot "$udid"
           xcrun simctl bootstatus "$udid" -b
       - run: pnpm e2e:lynx:ios

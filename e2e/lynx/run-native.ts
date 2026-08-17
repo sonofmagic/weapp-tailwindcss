@@ -171,28 +171,39 @@ async function runAndroid(hostDir: string, artifactDir: string) {
   await command('adb', ['install', '-r', apkPath], hostDir, 120_000)
   await command('adb', ['shell', 'am', 'force-stop', applicationId], hostDir, 30_000)
   await execa('adb', ['shell', 'run-as', applicationId, 'rm', '-f', 'files/lynx-compat/report.json'], { reject: false })
-  await execa('adb', ['shell', 'input', 'keyevent', 'KEYCODE_WAKEUP'], { reject: false })
-  await execa('adb', ['shell', 'wm', 'dismiss-keyguard'], { reject: false })
-  await execa('adb', ['shell', 'input', 'keyevent', 'KEYCODE_BACK'], { reject: false })
-  await command('adb', ['shell', 'am', 'start', '-W', '-n', `${applicationId}/.MainActivity`], hostDir, 60_000)
-  const report = await waitForReport(async () => {
-    const result = await execa('adb', ['shell', 'run-as', applicationId, 'cat', 'files/lynx-compat/report.json'], { reject: false })
-    return result.exitCode === 0 && result.stdout.trim().startsWith('{') ? result.stdout : undefined
-  })
-  const screenshotPath = path.join(artifactDir, 'screen.png')
-  const screenshot = await execa('adb', ['exec-out', 'screencap', '-p'], { encoding: 'buffer', reject: false })
-  if (screenshot.exitCode === 0 && screenshot.stdout) {
-    await fs.writeFile(screenshotPath, screenshot.stdout)
+  const hiddenErrorDialogs = (await command('adb', ['shell', 'settings', 'get', 'global', 'hide_error_dialogs'], hostDir, 30_000)).trim()
+  await command('adb', ['shell', 'settings', 'put', 'global', 'hide_error_dialogs', '1'], hostDir, 30_000)
+  try {
+    await execa('adb', ['shell', 'input', 'keyevent', 'KEYCODE_WAKEUP'], { reject: false })
+    await execa('adb', ['shell', 'wm', 'dismiss-keyguard'], { reject: false })
+    await execa('adb', ['shell', 'am', 'broadcast', '-a', 'android.intent.action.CLOSE_SYSTEM_DIALOGS'], { reject: false })
+    await execa('adb', ['shell', 'input', 'keyevent', 'KEYCODE_BACK'], { reject: false })
+    await command('adb', ['shell', 'am', 'start', '-W', '-n', `${applicationId}/.MainActivity`], hostDir, 60_000)
+    const report = await waitForReport(async () => {
+      const result = await execa('adb', ['shell', 'run-as', applicationId, 'cat', 'files/lynx-compat/report.json'], { reject: false })
+      return result.exitCode === 0 && result.stdout.trim().startsWith('{') ? result.stdout : undefined
+    })
+    const screenshotPath = path.join(artifactDir, 'screen.png')
+    const screenshot = await execa('adb', ['exec-out', 'screencap', '-p'], { encoding: 'buffer', reject: false })
+    if (screenshot.exitCode === 0 && screenshot.stdout) {
+      await fs.writeFile(screenshotPath, screenshot.stdout)
+    }
+    await collectAndroidArtifacts(artifactDir)
+    return report
   }
-  await collectAndroidArtifacts(artifactDir)
-  return report
+  finally {
+    const restoreArguments = hiddenErrorDialogs === 'null'
+      ? ['shell', 'settings', 'delete', 'global', 'hide_error_dialogs']
+      : ['shell', 'settings', 'put', 'global', 'hide_error_dialogs', hiddenErrorDialogs]
+    await execa('adb', restoreArguments, { reject: false })
+  }
 }
 
 async function runIos(hostDir: string, artifactDir: string) {
   await command('xcodegen', ['generate'], hostDir, 60_000)
   await command('pod', ['install', '--repo-update'], hostDir, 600_000)
   await command('xcrun', ['simctl', 'bootstatus', 'booted', '-b'], hostDir, 120_000)
-  const deviceId = await bootedIosDeviceId(hostDir)
+  const deviceId = process.env['LYNX_IOS_DEVICE_ID'] ?? await bootedIosDeviceId(hostDir)
   const derivedData = path.join(hostDir, 'DerivedData')
   await command('xcodebuild', [
     '-quiet',
@@ -212,13 +223,13 @@ async function runIos(hostDir: string, artifactDir: string) {
     'build',
   ], hostDir, 1_800_000)
   const appPath = path.join(derivedData, 'Build', 'Products', 'Debug-iphonesimulator', 'LynxCompatibilityHost.app')
-  await command('xcrun', ['simctl', 'install', 'booted', appPath], hostDir, 120_000)
-  const container = (await command('xcrun', ['simctl', 'get_app_container', 'booted', applicationId, 'data'], hostDir, 30_000)).trim()
+  await command('xcrun', ['simctl', 'install', deviceId, appPath], hostDir, 120_000)
+  const container = (await command('xcrun', ['simctl', 'get_app_container', deviceId, applicationId, 'data'], hostDir, 30_000)).trim()
   const reportPath = path.join(container, 'Library', 'Application Support', 'lynx-compat', 'report.json')
   await fs.rm(reportPath, { force: true })
-  await command('xcrun', ['simctl', 'launch', '--terminate-running-process', 'booted', applicationId], hostDir, 60_000)
+  await command('xcrun', ['simctl', 'launch', '--terminate-running-process', deviceId, applicationId], hostDir, 60_000)
   const report = await waitForReport(async () => fs.readFile(reportPath, 'utf8').catch(() => undefined))
-  await command('xcrun', ['simctl', 'io', 'booted', 'screenshot', path.join(artifactDir, 'screen.png')], hostDir, 60_000)
+  await command('xcrun', ['simctl', 'io', deviceId, 'screenshot', path.join(artifactDir, 'screen.png')], hostDir, 60_000)
   await collectIosArtifacts(container, artifactDir)
   return report
 }
