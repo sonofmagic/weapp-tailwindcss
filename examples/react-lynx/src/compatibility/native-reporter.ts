@@ -1,5 +1,6 @@
 import type { CompatibilityCase, NativeCaseResult, NativePlatformReport, NativeRuntimeEnvironment, Platform, StaticEvidenceReport } from './types'
 import { compatibilityCases } from './catalog'
+import { waitForProbeLayout } from './runtime-ready'
 import staticEvidenceJson from './static-evidence.json'
 
 interface RectResult {
@@ -382,7 +383,7 @@ export async function submitNativeCompatibilityReport() {
   if (!reporter?.submit || !platform || staticEvidence.catalogHash === 'pending-static-e2e') {
     return
   }
-  await wait(1200)
+  await waitForProbeLayout(id => measure(id, reporter))
   const results: NativeCaseResult[] = []
   for (const item of compatibilityCases) {
     results.push(await collectCase(item, reporter))

@@ -171,6 +171,9 @@ async function runAndroid(hostDir: string, artifactDir: string) {
   await command('adb', ['install', '-r', apkPath], hostDir, 120_000)
   await command('adb', ['shell', 'am', 'force-stop', applicationId], hostDir, 30_000)
   await execa('adb', ['shell', 'run-as', applicationId, 'rm', '-f', 'files/lynx-compat/report.json'], { reject: false })
+  await execa('adb', ['shell', 'input', 'keyevent', 'KEYCODE_WAKEUP'], { reject: false })
+  await execa('adb', ['shell', 'wm', 'dismiss-keyguard'], { reject: false })
+  await execa('adb', ['shell', 'input', 'keyevent', 'KEYCODE_BACK'], { reject: false })
   await command('adb', ['shell', 'am', 'start', '-W', '-n', `${applicationId}/.MainActivity`], hostDir, 60_000)
   const report = await waitForReport(async () => {
     const result = await execa('adb', ['shell', 'run-as', applicationId, 'cat', 'files/lynx-compat/report.json'], { reject: false })
@@ -192,6 +195,7 @@ async function runIos(hostDir: string, artifactDir: string) {
   const deviceId = await bootedIosDeviceId(hostDir)
   const derivedData = path.join(hostDir, 'DerivedData')
   await command('xcodebuild', [
+    '-quiet',
     '-workspace',
     'LynxCompatibilityHost.xcworkspace',
     '-scheme',
@@ -204,8 +208,9 @@ async function runIos(hostDir: string, artifactDir: string) {
     process.env['LYNX_IOS_DESTINATION'] ?? `platform=iOS Simulator,id=${deviceId}`,
     '-derivedDataPath',
     derivedData,
+    'COMPILER_INDEX_STORE_ENABLE=NO',
     'build',
-  ], hostDir, 900_000)
+  ], hostDir, 1_800_000)
   const appPath = path.join(derivedData, 'Build', 'Products', 'Debug-iphonesimulator', 'LynxCompatibilityHost.app')
   await command('xcrun', ['simctl', 'install', 'booted', appPath], hostDir, 120_000)
   const container = (await command('xcrun', ['simctl', 'get_app_container', 'booted', applicationId, 'data'], hostDir, 30_000)).trim()
