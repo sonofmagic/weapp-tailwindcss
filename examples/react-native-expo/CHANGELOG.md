@@ -4,6 +4,13 @@
 
 ### Patch Changes
 
+- Updated dependencies:
+  - @weapp-tailwindcss/react-native@0.2.3
+
+## 0.1.3
+
+### Patch Changes
+
 - 📦 **Dependencies** [`c2ba271`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c2ba271ac62ba851c23549a8de1038a71bb868d6)
   → `@weapp-tailwindcss/react-native@0.2.2`
 
