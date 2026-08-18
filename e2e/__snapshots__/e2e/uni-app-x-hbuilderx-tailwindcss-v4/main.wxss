@@ -176,11 +176,11 @@ wx-root-portal-content {
 .w-64 {
   width: calc(var(--spacing) * 64);
 }
+._ew-_b100rpx_B {
+  width: 100rpx !important;
+}
 .w-_b48px_B {
   width: 48px;
-}
-.w-_b100rpx_B_e {
-  width: 100rpx !important;
 }
 .w-_b173px_B {
   width: 173px;

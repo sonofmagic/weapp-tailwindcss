@@ -232,6 +232,22 @@ const condition = true
     expect(styleBlock).not.toContain(`:deep(.${aliasByUtility.get('h-[100rpx]')})`)
   })
 
+  it('serializes leading important utilities for Sass', () => {
+    const { jsHandler } = getCompilerContext({ uniAppX: true })
+    const runtimeSet = new Set(['!w-[100rpx]'])
+    const result = transformUVue(
+      '<template><view class="!w-[100rpx]">leading important</view></template>',
+      '/src/pages/index/index.uvue',
+      jsHandler,
+      runtimeSet,
+      { enablePageLocalStyle: true },
+    )
+    const styleBlock = extractInjectedStyle(result!.code)
+    expect(styleBlock).toContain("@apply w-[100rpx]#{'!'};")
+    expect(styleBlock).not.toContain('@apply !w-[100rpx];')
+    expect(result?.code).not.toContain('class="!w-[100rpx]"')
+  })
+
   it('honors disabledDefaultTemplateHandler with custom class rules', () => {
     const { jsHandler } = getCompilerContext()
     const runtimeSet = new Set<string>([

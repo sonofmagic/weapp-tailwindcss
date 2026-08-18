@@ -49,6 +49,9 @@ function createAlias(fileId: string, utility: string, index: number) {
 }
 
 function serializeApplyUtility(utility: string) {
+  if (utility.startsWith('!') && !utility.startsWith('\\!')) {
+    return `${utility.slice(1)}#{'!'}`
+  }
   if (!utility.endsWith('!') || utility.endsWith('\\!')) {
     return utility
   }
