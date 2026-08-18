@@ -444,19 +444,39 @@ describe('ci workflows', () => {
 
   it('keeps release publishing on npm trusted publishing', () => {
     const { source, workflow } = readWorkflow('release.yml')
-    const setupNodeStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
+    const releaseSteps: Array<Record<string, any>> = workflow.jobs.release.steps
+    const checkoutStep = releaseSteps.find((step: Record<string, unknown>) => {
+      return String(step.uses).startsWith('actions/checkout@')
+    })
+    const pnpmSetupStep = releaseSteps.find((step: Record<string, unknown>) => {
+      return String(step.uses).startsWith('pnpm/action-setup@')
+    })
+    const setupNodeStep = releaseSteps.find((step: Record<string, unknown>) => {
       return String(step.uses).startsWith('actions/setup-node@')
     })
-    const releaseStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
+    const playwrightStep = releaseSteps.find((step: Record<string, unknown>) => {
+      return step.name === 'Install Playwright Chromium'
+    })
+    const releaseStep = releaseSteps.find((step: Record<string, unknown>) => {
       return step.name === 'Run repo release CI'
     })
 
     expect(source).toContain('# repoctl-managed: release/v2')
+    expect(checkoutStep.uses).toBe('actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1')
+    expect(pnpmSetupStep.uses).toBe('pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86')
+    expect(setupNodeStep.uses).toBe('actions/setup-node@820762786026740c76f36085b0efc47a31fe5020')
     expect(setupNodeStep.with['node-version']).toBe(24)
     expect(setupNodeStep.with['registry-url']).toBe('https://registry.npmjs.org')
+    expect(workflow.concurrency).toEqual({
+      group: '${{ github.workflow }}-${{ github.ref }}',
+      'cancel-in-progress': false,
+    })
+    expect(workflow.jobs.release.if).toBeUndefined()
     expect(workflow.permissions['id-token']).toBe('write')
     expect(workflow.env.NPM_CONFIG_PROVENANCE).toBe(true)
     expect(workflow.env.npm_config_registry).toBe('https://registry.npmjs.org')
+    expectPlaywrightInstallRetry(playwrightStep.run, 'pnpm exec playwright install chromium')
+    expect(releaseSteps.indexOf(playwrightStep)).toBeLessThan(releaseSteps.indexOf(releaseStep))
     expect(releaseStep.run).toBe('pnpm exec repo release ci')
     expect(releaseStep.env.GITHUB_TOKEN).toContain('secrets.REPOCTL_RELEASE_TOKEN || secrets.CHANGESETS_RELEASE_TOKEN || github.token')
     expect(releaseStep.env.NPM_TOKEN).toBeUndefined()
@@ -541,7 +561,7 @@ describe('ci workflows', () => {
     expect(packageJson.scripts['pr:rc']).toBe('repo release pre enter rc')
     expect(packageJson.scripts['pr:next']).toBe('repo release pre enter next')
     expect(packageJson.scripts['pr:exit']).toBe('repo release pre exit')
-    expect(packageJson.devDependencies.repoctl).toBe('^5.4.0')
+    expect(packageJson.devDependencies.repoctl).toBe('^5.4.1')
     expect(packageJson.devDependencies['@changesets/cli']).toBeUndefined()
     expect(packageJson.devDependencies['@changesets/changelog-github']).toBeUndefined()
     expect(packageJson.devDependencies['@icebreakers/changelog-github']).toBeUndefined()
