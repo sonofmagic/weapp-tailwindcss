@@ -81,7 +81,7 @@
     "@csstools/css-tokenizer": "^4.0.0",
     "@tailwindcss-mangle/engine": "catalog:tailwindcssMangleEngine",
     "@weapp-core/escape": "~8.0.0",
-    "@weapp-tailwindcss/postcss-calc": "workspace:^",
+    "@weapp-tailwindcss/postcss-calc": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "es-toolkit": "^1.50.0",

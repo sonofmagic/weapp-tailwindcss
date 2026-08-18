@@ -50,7 +50,7 @@
     }
   },
   "dependencies": {
-    "weapp-tailwindcss": "workspace:^"
+    "weapp-tailwindcss": "workspace:*"
   },
   "devDependencies": {
     "@lynx-js/rspeedy": "^0.16.3",

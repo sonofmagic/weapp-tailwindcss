@@ -20,6 +20,25 @@ describe('发布包 manifest 校验', () => {
     expect(packages.every(pkg => pkg.manifest.private !== true)).toBe(true)
   })
 
+  it('公开包之间统一使用 repoctl 要求的 workspace 协议', async () => {
+    const packages = await getWorkspacePackages(workspaceRoot)
+    const workspacePackageNames = new Set(packages.map(pkg => pkg.manifest.name))
+    const dependencySections = ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies'] as const
+    const violations = packages.flatMap((pkg) => {
+      return dependencySections.flatMap((section) => {
+        const dependencies = pkg.manifest[section]
+        if (!dependencies) {
+          return []
+        }
+        return Object.entries(dependencies)
+          .filter(([name, version]) => workspacePackageNames.has(name) && version !== 'workspace:*')
+          .map(([name, version]) => `${pkg.manifest.name} -> ${section}.${name}=${version}`)
+      })
+    })
+
+    expect(violations).toEqual([])
+  })
+
   it('递归定位残留的 workspace 协议', () => {
     expect(findWorkspaceProtocols({
       dependencies: {

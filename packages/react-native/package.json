@@ -100,7 +100,7 @@
   "dependencies": {
     "@babel/types": "catalog:babel8",
     "postcss": "catalog:postcss85",
-    "weapp-tailwindcss": "workspace:^"
+    "weapp-tailwindcss": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "catalog:babel8",

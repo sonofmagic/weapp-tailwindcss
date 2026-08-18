@@ -4191,7 +4191,7 @@ importers:
   packages/lynx:
     dependencies:
       weapp-tailwindcss:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../weapp-tailwindcss
     devDependencies:
       '@lynx-js/rspeedy':
@@ -4228,7 +4228,7 @@ importers:
         specifier: ~8.0.0
         version: 8.0.0
       '@weapp-tailwindcss/postcss-calc':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../postcss-calc
       '@weapp-tailwindcss/shared':
         specifier: workspace:*
@@ -4341,7 +4341,7 @@ importers:
         specifier: '>=4.0.0'
         version: 4.3.3
       weapp-tailwindcss:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../weapp-tailwindcss
     devDependencies:
       '@babel/core':
