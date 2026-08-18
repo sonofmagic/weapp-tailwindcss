@@ -426,6 +426,58 @@ describe('bundlers/shared css-imports', () => {
     expect(second).toBe(residualSource)
   })
 
+  it.each([
+    ['taro', '/repo/demo/taro-webpack-react-tailwindcss-v4/src/app.css'],
+    ['mpx', '/repo/demo/mpx-tailwindcss-v4/src/app.css'],
+  ] as const)('registers and rewrites %s CSS without generating a duplicate stylesheet', async (appType, resourcePath) => {
+    vi.resetModules()
+    const generateTailwindV4Css = vi.fn()
+    vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
+      generateTailwindV4Css,
+    }))
+    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
+    const registerCssSource = vi.fn(async () => undefined)
+    const source = [
+      '@import "tailwindcss";',
+      '.ordinary-css { color: red; }',
+    ].join('\n')
+
+    const result = await webpackLoader.call({
+      getOptions: () => ({
+        tailwindcssImportRewrite: {
+          pkgDir,
+          appType,
+          compilerOptions: {
+            appType,
+            platform: appType,
+            generator: { target: 'weapp' },
+            mainCssChunkMatcher: () => true,
+            styleHandler: async (css: string) => ({ css }),
+          },
+          registerCssSource,
+          runtimeState: {
+            readyPromise: Promise.resolve(),
+            tailwindRuntime: { majorVersion: 4 },
+          },
+          getRuntimeSet: async () => new Set(['ordinary-css']),
+        },
+      }),
+      resourcePath,
+      rootContext: path.dirname(path.dirname(resourcePath)),
+    } as any, source)
+
+    expect(generateTailwindV4Css).not.toHaveBeenCalled()
+    expect(registerCssSource).toHaveBeenCalledOnce()
+    expect(registerCssSource).toHaveBeenCalledWith({
+      file: resourcePath,
+      css: source,
+    })
+    expect(result).toBe([
+      `@import "${pkgDir}/index.css";`,
+      '.ordinary-css { color: red; }',
+    ].join('\n'))
+  })
+
   it('removes Tailwind source directives from generated webpack H5 css', async () => {
     vi.resetModules()
     const generateTailwindV4Css = vi.fn(async (options: any) => ({

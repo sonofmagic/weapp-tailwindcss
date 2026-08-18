@@ -2160,6 +2160,34 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('group-hover')
   })
 
+  it('filters unsupported has-in slash variants discovered by source scanning', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-has-in-source-'))
+    await writeFile(
+      path.join(root, 'index.html'),
+      '<view class="has-in-[.group/name]:flex has-not-in-[.group/name]:block bg-red-500"></view>',
+    )
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: root,
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      scanSources: [{
+        base: root,
+        pattern: '*.html',
+        negated: false,
+      }],
+    })
+
+    expect(result.classSet).toEqual(new Set(['bg-red-500']))
+    expect(result.rawCss).not.toContain('has-in-')
+    expect(result.rawCss).not.toContain('has-not-in-')
+    expect(result.css).not.toContain('has-in-')
+    expect(result.css).not.toContain('has-not-in-')
+    expect(result.css).toContain('.bg-red-500')
+  })
+
   it('can generate web css without mini-program escaping', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,

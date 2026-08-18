@@ -29,8 +29,8 @@
   },
   "scripts": {
     "build": "tsdown",
-    "test": "vitest run",
-    "test:dev": "vitest",
+    "test": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs && vitest run",
+    "test:dev": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs && vitest",
     "lint": "eslint .",
     "release": "pnpm publish"
   },

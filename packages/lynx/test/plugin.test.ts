@@ -43,7 +43,86 @@ describe('pluginLynxTailwindcss', () => {
     expect(getRspackHandler()).toBeTypeOf('function')
   })
 
-  it('patches CSS rules once when Rspeedy resolves its Rspack config', () => {
+  it('enables CSS generation by default when patching Rspack rules', () => {
+    const { api, getRspackHandler } = createApi()
+    pluginLynxTailwindcss().setup(api as never)
+    const config = {
+      module: {
+        rules: [{
+          use: [
+            { loader: 'css-loader' },
+            { loader: 'builtin:lightningcss-loader' },
+          ],
+        }],
+      },
+    }
+
+    getRspackHandler()?.(config)
+
+    const use = (config as any).module.rules[0].use
+    expect(use.map((item: any) => item.loader)).toEqual([
+      'css-loader',
+      'builtin:lightningcss-loader',
+      expect.stringMatching(/weapp-tw-css-import-rewrite-loader\.cjs$/),
+    ])
+    expect(use[2].options).toEqual({ generateCss: true })
+  })
+
+  it('preserves custom CSS loader settings while enabling generation', () => {
+    const { api, getRspackHandler } = createApi()
+    pluginLynxTailwindcss({
+      rspack: {
+        cssImportRewriteLoader: {
+          loader: '/custom/css-loader.cjs',
+          options: {
+            tailwindcssImportRewriteRuntimeKey: 'lynx-runtime',
+          },
+        },
+      },
+    }).setup(api as never)
+    const config = {
+      module: {
+        rules: [{
+          use: [{ loader: 'builtin:lightningcss-loader' }],
+        }],
+      },
+    }
+
+    getRspackHandler()?.(config)
+
+    expect((config as any).module.rules[0].use).toEqual([
+      { loader: 'builtin:lightningcss-loader' },
+      {
+        loader: '/custom/css-loader.cjs',
+        options: {
+          tailwindcssImportRewriteRuntimeKey: 'lynx-runtime',
+          generateCss: true,
+        },
+      },
+    ])
+  })
+
+  it('does not patch CSS rules when the loader is explicitly disabled', () => {
+    const { api, getRspackHandler } = createApi()
+    pluginLynxTailwindcss({
+      rspack: { cssImportRewriteLoader: false },
+    }).setup(api as never)
+    const config = {
+      module: {
+        rules: [{
+          use: [{ loader: 'builtin:lightningcss-loader' }],
+        }],
+      },
+    }
+
+    getRspackHandler()?.(config)
+
+    expect((config as any).module.rules[0].use).toEqual([
+      { loader: 'builtin:lightningcss-loader' },
+    ])
+  })
+
+  it('keeps repeated Rspack patches idempotent', () => {
     const { api, getRspackHandler } = createApi()
     pluginLynxTailwindcss().setup(api as never)
     const config = {
@@ -60,12 +139,7 @@ describe('pluginLynxTailwindcss', () => {
     getRspackHandler()?.(config)
     getRspackHandler()?.(config)
 
-    const use = (config as any).module.rules[0].use
-    expect(use.map((item: any) => item.loader)).toEqual([
-      'css-loader',
-      'builtin:lightningcss-loader',
-      expect.stringMatching(/weapp-tw-css-import-rewrite-loader\.cjs$/),
-    ])
-    expect(use[2].options).toEqual({ generateCss: true })
+    expect((config as any).module.rules[0].use).toHaveLength(3)
+    expect((config as any).module.rules[0].use[2].options).toEqual({ generateCss: true })
   })
 })

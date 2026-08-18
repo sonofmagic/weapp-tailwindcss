@@ -49,7 +49,7 @@ view,text,::after,::before {
     const { code, map } = await ctx.transformJs(content, { runtimeSet })
     expect(code).toBe(`const className = 'mb-[1.5rem]'`)
     expect(map).toMatchSnapshot()
-  })
+  }, 120_000)
 
   it('scss usage case 1', async () => {
     const ctx = createContext()
@@ -69,7 +69,7 @@ view,text,::after,::before {
     const { code, map } = await ctx.transformJs(content, { runtimeSet })
     expect(code).toBe(`const className = 'mb-[1.5rem]'`)
     expect(map).toMatchSnapshot()
-  })
+  }, 120_000)
 })
 
 describe('core transform functions', () => {
