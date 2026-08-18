@@ -4,6 +4,13 @@
 
 ### Patch Changes
 
+- Updated dependencies:
+  - weapp-tailwindcss@5.3.1
+
+## 1.0.65
+
+### Patch Changes
+
 - 📦 Updated 4 dependencies [`c2ba271`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c2ba271ac62ba851c23549a8de1038a71bb868d6)
   <details><summary>Details</summary>
 
