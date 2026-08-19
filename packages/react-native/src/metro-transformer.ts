@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import { transformSync } from '@babel/core'
 import babelPlugin from './babel'
-import { getRegisteredManifest, getVirtualModuleCodeAsync } from './metro'
+import { getRegisteredManifest, getRegisteredManifestByPath, getVirtualModuleCodeAsync } from './metro'
 
 const require = createRequire(import.meta.url)
 
@@ -12,7 +12,7 @@ export async function transform(config: Record<string, unknown>, projectRoot: st
   const metroId = config.weappTailwindcssMetroId as string | undefined
   const manifestPath = config.weappTailwindcssManifestPath as string | undefined
   const manifest = (metroId ? await getRegisteredManifest(metroId) : undefined)
-    ?? (manifestPath ? readManifest(manifestPath) : undefined)
+    ?? (manifestPath ? await getRegisteredManifestByPath(manifestPath) ?? readManifest(manifestPath) : undefined)
   let source = virtualCode ? Buffer.from(virtualCode) : data
   if (!virtualCode && manifest && /\.(?:[cm]?[jt]sx?|flow)$/i.test(filename) && !filename.replaceAll('\\', '/').includes('/node_modules/')) {
     const transformed = transformSync(data.toString(), {

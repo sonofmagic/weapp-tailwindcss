@@ -145,6 +145,17 @@ export async function getRegisteredManifest(id: string) {
   return registered.manifest
 }
 
+/** 等待并读取由 Metro 配置注册的 manifest 文件，兼容未透传自定义 Metro id 的 transformer。 */
+export async function getRegisteredManifestByPath(filename: string) {
+  for (const entry of registry.values()) {
+    if (entry.manifestPath === filename) {
+      await entry.ready
+      return entry.manifest
+    }
+  }
+  return undefined
+}
+
 export function getVirtualModuleCode(filename: string) {
   const registered = getRegisteredVirtualModule(filename)
   if (!registered) { return undefined }
