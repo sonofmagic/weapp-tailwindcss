@@ -21,6 +21,7 @@ const reportsDir = path.resolve(repoRoot, 'e2e/react-native/reports')
 const markerFile = path.resolve(exampleRoot, 'src/hmr-marker.ts')
 const cssFile = path.resolve(exampleRoot, 'global.css')
 const reports: ReportEnvelope[] = []
+const updateBaseline = process.env['RN_UPDATE_BASELINE'] === '1'
 
 function startReporter() {
   let server: Server
@@ -79,8 +80,9 @@ async function fileHash(file: string) {
 }
 
 async function main() {
+  await fs.rm(artifacts, { recursive: true, force: true })
   await fs.mkdir(artifacts, { recursive: true })
-  await fs.mkdir(reportsDir, { recursive: true })
+  if (updateBaseline) { await fs.mkdir(reportsDir, { recursive: true }) }
   const originalMarker = await fs.readFile(markerFile, 'utf8')
   const originalCss = await fs.readFile(cssFile, 'utf8')
   const reporter = startReporter()
@@ -103,7 +105,7 @@ async function main() {
     await waitForWeb(expo)
     browser = await chromium.launch({ headless: true })
     const page = await browser.newPage({ viewport: { width: 402, height: 874 }, deviceScaleFactor: 1 })
-    await page.goto('http://127.0.0.1:8082', { waitUntil: 'networkidle' })
+    await page.goto('http://127.0.0.1:8082', { waitUntil: 'networkidle', timeout: 120_000 })
     await page.getByTestId('tw-rn-root').waitFor()
     const userAgent = await page.evaluate(() => navigator.userAgent)
     const environment = {
@@ -155,7 +157,9 @@ async function main() {
       afterTsxScreenshotHash: afterTsxHash,
       afterScreenshotHash: afterHash,
     }, null, 2)}\n`, 'utf8')
-    await fs.writeFile(path.resolve(reportsDir, 'web.json'), `${JSON.stringify(cssHmrReport, null, 2)}\n`, 'utf8')
+    if (updateBaseline) {
+      await fs.writeFile(path.resolve(reportsDir, 'web.json'), `${JSON.stringify(cssHmrReport, null, 2)}\n`, 'utf8')
+    }
   }
   finally {
     await fs.writeFile(markerFile, originalMarker, 'utf8')

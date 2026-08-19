@@ -24,6 +24,7 @@ const reportsDir = path.resolve(repoRoot, 'e2e/react-native/reports')
 const markerFile = path.resolve(exampleRoot, 'src/hmr-marker.ts')
 const cssFile = path.resolve(exampleRoot, 'global.css')
 const reports: ReportEnvelope[] = []
+const updateBaseline = process.env['RN_UPDATE_BASELINE'] === '1'
 
 function startReporter() {
   let server: Server
@@ -139,8 +140,9 @@ function withNativeEnvironment(report: ReactNativeReport, environment: Partial<R
 }
 
 async function main() {
+  await fs.rm(artifacts, { recursive: true, force: true })
   await fs.mkdir(artifacts, { recursive: true })
-  await fs.mkdir(reportsDir, { recursive: true })
+  if (updateBaseline) { await fs.mkdir(reportsDir, { recursive: true }) }
   const originalMarker = await fs.readFile(markerFile, 'utf8')
   const originalCss = await fs.readFile(cssFile, 'utf8')
   const reporter = startReporter()
@@ -234,7 +236,9 @@ async function main() {
       afterTsxScreenshotHash: afterTsxHash,
       afterScreenshotHash: afterHash,
     }, null, 2)}\n`, 'utf8')
-    await fs.writeFile(path.resolve(reportsDir, `${platform}.json`), `${JSON.stringify(cssHmrReport, null, 2)}\n`, 'utf8')
+    if (updateBaseline) {
+      await fs.writeFile(path.resolve(reportsDir, `${platform}.json`), `${JSON.stringify(cssHmrReport, null, 2)}\n`, 'utf8')
+    }
   }
   finally {
     await fs.writeFile(markerFile, originalMarker, 'utf8')
