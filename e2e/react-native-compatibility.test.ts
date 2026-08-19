@@ -111,6 +111,12 @@ describe('React Native Expo static exports', () => {
     }
     catch (error) {
       if (process.env.CI) {
+        const childOutput = error as { stdout?: unknown, stderr?: unknown }
+        await fs.writeFile(
+          path.join(outputRoot, 'export-error.log'),
+          `${String(childOutput.stdout ?? '')}\n${String(childOutput.stderr ?? '')}\n${error instanceof Error ? error.stack ?? error.message : String(error)}`,
+          'utf8',
+        )
         await fs.cp(outputRoot, path.join(repoRoot, 'e2e/.artifacts/react-native-web/static-export-debug'), { recursive: true, force: true })
       }
       throw error
