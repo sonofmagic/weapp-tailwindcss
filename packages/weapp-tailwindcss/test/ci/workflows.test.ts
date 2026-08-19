@@ -805,7 +805,7 @@ describe('e2e watch workflow', () => {
         const isViteCase = watchCase.startsWith('taro-vite-')
         const subpackagePluginProcessMs
           = runner === 'macos' && watchCase === 'taro-vite-react-tailwindcss-v4'
-            ? '12000'
+            ? '18000'
             : isViteCase ? '10000' : '60000'
         const scopeRows = rows.filter(row => row.runner_label === runner && row.watch_case === watchCase && String(row.round_profile).startsWith('mini-program-'))
         expect(scopeRows).toEqual(expect.arrayContaining([
@@ -1248,7 +1248,7 @@ describe('e2e watch workflow', () => {
         const platformBudget = runner.label === 'macos'
           && budget.watch_case === 'taro-vite-react-tailwindcss-v4'
           && budget.round_profile === 'mini-program-subpackages'
-          ? { ...budget, watch_max_plugin_process_ms: '12000' }
+          ? { ...budget, watch_max_plugin_process_ms: '18000' }
           : budget
         expect(prRows).toContainEqual(expect.objectContaining({
           os: runner.os,

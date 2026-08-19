@@ -6,3 +6,7 @@ weapp-tailwindcss@5.3.1:
   dir: packages/weapp-tailwindcss
   intents:
     - lynx-tailwind-v4-compat
+weapp-tailwindcss@5.3.2:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - bright-harmony-vdom
