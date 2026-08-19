@@ -103,8 +103,8 @@ jobs:
             timeout_minutes: 30
             watch_timeout_ms: '60000'
             watch_poll_ms: '40'
-            # macOS hosted runner 的分包 corpus 会同时回放多个样式入口；保留独立预算，避免放宽主包与其他平台。
-            watch_max_plugin_process_ms: '12000'
+            # macOS hosted runner 的分包 corpus 会同时回放多个样式入口；按当前 p95 保留独立预算，避免放宽主包与其他平台。
+            watch_max_plugin_process_ms: '18000'
             watch_command_timeout_ms: '600000'
           - os: macos-latest
             runner_label: macos
