@@ -64,7 +64,9 @@ Expo 只配置一次 Metro；它会把 source 扫描、manifest 生成和 Babel 
 
 ## 运行时与边界
 
-Metro virtual module 会把 manifest、`Platform.OS` 和 `Appearance` 颜色模式注入 runtime，因此 `dark:`、`ios:`、`android:`、`native:` 变体可以按当前环境选择规则。编译器覆盖常用 layout、flex、spacing、sizing、colors、typography、border、radius、opacity、transform、shadow 和 arbitrary values；浏览器 preflight 默认忽略。不支持的 CSS 特性会产生中文 warning，可在 `manifest.warnings` 中检查。
+Metro virtual module 会把 manifest、`Platform.OS` 和 `Appearance` 颜色模式注入 runtime，因此 `dark:`、`ios:`、`android:`、`native:` 变体可以按当前环境选择规则。编译器覆盖常用 layout、flex、spacing、sizing、colors、typography、border、radius、opacity、transform、shadow 和 arbitrary values；浏览器 preflight 默认忽略。只有明确识别的 React Native style 属性会进入 manifest，不支持或未知的 CSS 声明会产生中文 warning，不会原样透传给 `StyleSheet.create`。
+
+状态、响应式、结构等依赖浏览器 selector 的变体不会在 React Native 中降级为无条件样式，而是进入 warning。manifest 的静态 StyleSheet ID 由 class 与条件规则身份稳定生成，因此修改其他 class 或 CSS 值时，Metro HMR 不会让 Babel 的静态 lookup 指向错误样式。
 
 类型增强从 `@weapp-tailwindcss/react-native/env` 引入；普通自定义组件只要接收 `className` 和 `style` 就可以复用同一套写法，不需要第三方组件 prop 映射。
 
@@ -74,7 +76,7 @@ import { tw } from '@weapp-tailwindcss/react-native/runtime'
 const style = tw(condition ? 'bg-red-500' : 'bg-blue-500')
 ```
 
-Tailwind 仍由 `weapp-tailwindcss` generator 生成，不要同时注册 `@tailwindcss/vite` 或 `@tailwindcss/postcss`。Expo Web 只建议作为 smoke test，Android/iOS 模拟器或真机才是首个版本的验收目标。
+Tailwind 仍由 `weapp-tailwindcss` generator 生成，不要同时注册 `@tailwindcss/vite` 或 `@tailwindcss/postcss`。仓库内的 118 项兼容性实验室同时验证 Expo Web、Android 与 iOS；原生端需要完整运行时报告、系统截图、结构 marker 和 HMR 前后证据，Metro export 通过不能替代原生验收。
 
 ## 验证
 
@@ -83,4 +85,8 @@ pnpm --filter @weapp-tailwindcss/react-native test
 pnpm --filter @weapp-tailwindcss/react-native build
 pnpm --filter @weapp-tailwindcss/example-react-native-expo build
 pnpm --filter @weapp-tailwindcss/example-react-native-expo test
+pnpm e2e:react-native-compatibility
+pnpm e2e:react-native:web
+pnpm e2e:react-native:android
+pnpm e2e:react-native:ios
 ```

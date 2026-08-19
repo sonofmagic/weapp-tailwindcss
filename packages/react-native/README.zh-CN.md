@@ -33,6 +33,9 @@ Metro 会扫描源码、生成精确候选集合和 manifest，并把 Babel JSX 
 - 动态 class 才通过 `tw(value)` 在运行时解析。
 - 普通 inline `style` 覆盖 Tailwind class，`!important` class 覆盖 inline style。
 - 不支持的 CSS 声明会记录在 manifest `warnings` 中，不会静默生成错误样式。
+- 编译器只输出明确识别的 React Native style 属性；浏览器专属或未知声明不会透传到 `StyleSheet.create`。
+- `dark:`、`ios:`、`android:`、`native:` 是原生条件变体；状态、响应式、结构等浏览器 selector 变体会明确报告为不支持，不会被错误地无条件应用。
+- 静态 StyleSheet ID 在无关 class 增删和 CSS 值变化时保持稳定，Metro CSS HMR 不会让已有 Babel lookup 串到其他规则。
 
 ## 公开入口
 
@@ -45,3 +48,5 @@ Metro 会扫描源码、生成精确候选集合和 manifest，并把 Babel JSX 
 ## 文档
 
 完整接入说明见 [React Native / Expo 指南](https://tw.icebreaker.top/zh-cn/docs/quick-start/react-native-expo)。
+
+仓库兼容性实验室在 Expo Web、Android、iOS 三端复用同一份 118 项 Tailwind catalog。运行 `pnpm e2e:react-native:all` 可执行完整三端门禁；也可分别运行 `pnpm e2e:react-native-compatibility`、`pnpm e2e:react-native:web`、`pnpm e2e:react-native:android` 和 `pnpm e2e:react-native:ios` 复现静态、运行时、截图以及独立的 TSX/CSS HMR 门禁。只有明确要刷新静态证据时才运行 `pnpm e2e:react-native:update`。

@@ -9,18 +9,12 @@ const require = createRequire(import.meta.url)
 
 export async function transform(config: Record<string, unknown>, projectRoot: string, filename: string, data: Buffer, options: Record<string, unknown>) {
   const virtualCode = await getVirtualModuleCodeAsync(filename)
-  if (virtualCode) {
-    return {
-      output: [{ type: 'js/module', data: { code: virtualCode, map: null } }],
-      dependencies: [],
-    }
-  }
   const metroId = config.weappTailwindcssMetroId as string | undefined
   const manifestPath = config.weappTailwindcssManifestPath as string | undefined
   const manifest = (metroId ? await getRegisteredManifest(metroId) : undefined)
     ?? (manifestPath ? readManifest(manifestPath) : undefined)
-  let source = data
-  if (manifest && /\.(?:[cm]?[jt]sx?|flow)$/i.test(filename) && !filename.replaceAll('\\', '/').includes('/node_modules/')) {
+  let source = virtualCode ? Buffer.from(virtualCode) : data
+  if (!virtualCode && manifest && /\.(?:[cm]?[jt]sx?|flow)$/i.test(filename) && !filename.replaceAll('\\', '/').includes('/node_modules/')) {
     const transformed = transformSync(data.toString(), {
       filename,
       configFile: false,

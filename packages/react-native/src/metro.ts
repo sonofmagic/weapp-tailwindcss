@@ -23,6 +23,11 @@ export interface MetroConfigLike {
   [key: string]: unknown
 }
 
+interface MetroResolverContext {
+  originModulePath?: string
+  resolveRequest?: (context: unknown, moduleName: string, platform?: string) => unknown
+}
+
 export interface WeappReactNativeMetroOptions {
   projectRoot?: string | undefined
   input?: string | undefined
@@ -36,6 +41,7 @@ export interface WeappReactNativeMetroOptions {
 interface RegisteredManifest {
   version: number
   manifest: NativeStyleManifest
+  projectRoot: string
   virtualPath: string
   manifestPath: string
   ready: Promise<void>
@@ -84,6 +90,7 @@ function register(options: WeappReactNativeMetroOptions) {
   const entry: RegisteredManifest = {
     version: 0,
     manifest: options.manifest ?? (options.css ? compileNativeStylesheet(options.css, { classSet: options.classSet }) : emptyManifest()),
+    projectRoot,
     virtualPath: path.join(os.tmpdir(), 'weapp-tailwindcss-native', `${id}.js`),
     manifestPath: path.join(os.tmpdir(), 'weapp-tailwindcss-native', `${id}.manifest.json`),
     ready: Promise.resolve(),
@@ -163,8 +170,13 @@ export function withWeappTailwindcss<T extends MetroConfigLike>(config: T | Prom
     if (moduleName === VIRTUAL_MANIFEST_MODULE) {
       return { type: 'sourceFile', filePath: entry.virtualPath }
     }
-    return originalResolver?.(context, moduleName, platform)
-      ?? (context as { resolveRequest?: (ctx: unknown, name: string, platform?: string) => unknown }).resolveRequest?.(context, moduleName, platform)
+    const resolverContext = context as MetroResolverContext
+    // 虚拟模块位于系统临时目录，依赖解析必须锚定项目根目录，避免 monorepo 中加载另一份 React Native。
+    const anchoredContext = resolverContext.originModulePath === entry.virtualPath
+      ? { ...resolverContext, originModulePath: path.join(entry.projectRoot, 'package.json') }
+      : resolverContext
+    return originalResolver?.(anchoredContext, moduleName, platform)
+      ?? resolverContext.resolveRequest?.(anchoredContext, moduleName, platform)
   }
   return {
     ...resolvedConfig,
