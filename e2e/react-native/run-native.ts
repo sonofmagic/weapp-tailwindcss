@@ -124,6 +124,7 @@ async function relaunchRuntime(device: string) {
   const appId = 'com.weapptailwindcss.rncompat'
   const url = `${appId}://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081`
   if (platform === 'android') {
+    await execa('adb', ['-s', device, 'shell', 'am', 'broadcast', '-a', 'android.intent.action.CLOSE_SYSTEM_DIALOGS'], { reject: false })
     await execa('adb', ['-s', device, 'shell', 'am', 'force-stop', appId], { reject: false })
     await execa('adb', ['-s', device, 'shell', 'am', 'start', '-a', 'android.intent.action.VIEW', '-d', url], { reject: false })
     return
@@ -189,6 +190,8 @@ async function main() {
   if (platform === 'android') {
     await execa('adb', ['-s', device, 'reverse', `tcp:${port}`, `tcp:${port}`])
     await execa('adb', ['-s', device, 'reverse', 'tcp:8081', 'tcp:8081'])
+    await execa('adb', ['-s', device, 'shell', 'settings', 'put', 'global', 'hide_error_dialogs', '1'])
+    await execa('adb', ['-s', device, 'shell', 'am', 'broadcast', '-a', 'android.intent.action.CLOSE_SYSTEM_DIALOGS'], { reject: false })
     await execa('adb', ['-s', device, 'logcat', '-c'], { reject: false })
   }
   const logFile = await fs.open(path.resolve(artifacts, 'expo-run.log'), 'w')
