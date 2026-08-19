@@ -39,20 +39,58 @@ export async function runWebRuntime(outputDirectory: string, screenshotFile: str
   const browser = await chromium.launch({ headless: true })
   try {
     const page = await browser.newPage({ viewport: { width: 402, height: 874 }, deviceScaleFactor: 1 })
+    const browserDiagnostics: string[] = []
+    page.on('console', message => browserDiagnostics.push(`console:${message.type()}:${message.text()}`))
+    page.on('pageerror', error => browserDiagnostics.push(`pageerror:${error.message}`))
+    page.on('requestfailed', request => browserDiagnostics.push(`requestfailed:${request.url()}:${request.failure()?.errorText ?? 'unknown'}`))
     await page.goto(server.url, { waitUntil: 'networkidle' })
     await page.getByText('Tailwind RN').waitFor()
     const root = page.getByTestId('tw-rn-root')
     const card = page.getByTestId('tw-rn-card')
-    await page.waitForFunction(() => {
-      const card = document.querySelector('[data-testid="tw-rn-card"]')
-      const theme = document.querySelector('[data-testid="tw-rn-theme"]')
-      if (!card || !theme) {
-        return false
-      }
-      const cardBackground = getComputedStyle(card).backgroundColor
-      const themeColor = getComputedStyle(theme).color
-      return cardBackground !== 'rgba(0, 0, 0, 0)' && themeColor !== 'rgba(0, 0, 0, 0)'
-    })
+    try {
+      await page.waitForFunction(() => {
+        const card = document.querySelector('[data-testid="tw-rn-card"]')
+        const theme = document.querySelector('[data-testid="tw-rn-theme"]')
+        if (!card || !theme) {
+          return false
+        }
+        const cardBackground = getComputedStyle(card).backgroundColor
+        const themeColor = getComputedStyle(theme).color
+        return cardBackground !== 'rgba(0, 0, 0, 0)' && themeColor !== 'rgba(0, 0, 0, 0)'
+      }, undefined, { polling: 100, timeout: 30_000 })
+    }
+    catch (error) {
+      const state = await page.evaluate(() => {
+        const card = document.querySelector('[data-testid="tw-rn-card"]')
+        const theme = document.querySelector('[data-testid="tw-rn-theme"]')
+        const styleSheets = [...document.styleSheets].map((sheet) => {
+          try {
+            return { href: sheet.href, rules: sheet.cssRules.length }
+          }
+          catch {
+            return { href: sheet.href, rules: 'unreadable' }
+          }
+        })
+        const describe = (element: Element | null) => element
+          ? {
+              className: element.getAttribute('class'),
+              outerHTML: element.outerHTML.slice(0, 500),
+              backgroundColor: getComputedStyle(element).backgroundColor,
+              color: getComputedStyle(element).color,
+              width: getComputedStyle(element).width,
+              height: getComputedStyle(element).height,
+            }
+          : null
+        return {
+          readyState: document.readyState,
+          styleSheets,
+          card: describe(card),
+          theme: describe(theme),
+        }
+      })
+      const details = JSON.stringify({ state, browserDiagnostics })
+      throw new Error(`React Native Web styles did not become measurable: ${details}`, { cause: error })
+    }
     const box = await card.boundingBox()
     const background = await card.evaluate(element => getComputedStyle(element).backgroundColor)
     const textColor = await page.getByTestId('tw-rn-theme').evaluate(element => getComputedStyle(element).color)
