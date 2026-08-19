@@ -140,7 +140,11 @@ function register(options: WeappReactNativeMetroOptions) {
     }
   }
   entry.ready = entry.refresh().catch((error) => {
-    entry.manifest.warnings.push({ message: `生成 React Native manifest 失败：${error instanceof Error ? error.message : String(error)}` })
+    const message = `生成 React Native manifest 失败：${error instanceof Error ? error.message : String(error)}`
+    entry.manifest.warnings.push({ message })
+    if (process.env.WEAPP_TW_RN_DEBUG === '1') {
+      console.error(`[react-native-debug] ${message}`)
+    }
     writeVirtualModule(entry)
     markManifestReady(entry)
   })
