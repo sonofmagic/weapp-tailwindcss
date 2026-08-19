@@ -12,6 +12,7 @@ interface LayoutValue { width: number, height: number, x: number, y: number }
 export default function App() {
   const colorScheme = useColorScheme() ?? 'light'
   const [layoutCount, setLayoutCount] = useState(0)
+  const [layoutSettled, setLayoutSettled] = useState(false)
   const layouts = useRef(new Map<string, LayoutValue>())
   const sentRevision = useRef('')
   const cssHmrStyle = StyleSheet.flatten(tw('rn-css-hmr-probe')) as { backgroundColor?: string }
@@ -22,9 +23,18 @@ export default function App() {
   }), [])
 
   useEffect(() => {
+    if (!layoutCount) {
+      return
+    }
+    setLayoutSettled(false)
+    const timer = setTimeout(setLayoutSettled, 1_000, true)
+    return () => clearTimeout(timer)
+  }, [layoutCount])
+
+  useEffect(() => {
     const reportUrl = process.env.EXPO_PUBLIC_RN_REPORT_URL
     const revision = `${HMR_MARKER}:${cssHmrColor}`
-    if (!reportUrl || layoutCount < supportedRuntimeCases.length || sentRevision.current === revision) {
+    if (!reportUrl || !layoutSettled || sentRevision.current === revision) {
       return
     }
     sentRevision.current = revision
@@ -39,6 +49,7 @@ export default function App() {
         id: item.id,
         status: layout && layout.width > 0 && layout.height > 0 ? 'supported' : 'unsupported',
         reason: layout ? undefined : 'React Native onLayout did not report a measurable probe',
+        warnings: layout ? undefined : ['React Native onLayout did not report a measurable probe'],
         checkpoints: [{
           name: `${item.probe}:probe`,
           passed: Boolean(layout && layout.width > 0 && layout.height > 0),
@@ -47,29 +58,45 @@ export default function App() {
         }],
       }
     })
-    void fetch(reportUrl, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        hmrMarker: HMR_MARKER,
-        cssHmrColor,
-        report: {
-          ...evidence.report,
-          platform: Platform.OS,
-          verifiedAt: new Date().toISOString(),
-          environment: {
-            deviceName: `${Platform.OS}-runtime`,
-            osName: Platform.OS,
-            osVersion: String(Platform.Version),
-            runtimeIdentifier: `expo-${Platform.OS}`,
-            abi: Platform.OS === 'web' ? 'n/a' : 'simulator',
-            viewport: { width: window.width, height: window.height, pixelRatio: PixelRatio.get() },
-          },
-          results,
+    const body = JSON.stringify({
+      hmrMarker: HMR_MARKER,
+      cssHmrColor,
+      report: {
+        ...evidence.report,
+        platform: Platform.OS,
+        verifiedAt: new Date().toISOString(),
+        environment: {
+          deviceName: `${Platform.OS}-runtime`,
+          osName: Platform.OS,
+          osVersion: String(Platform.Version),
+          runtimeIdentifier: `expo-${Platform.OS}`,
+          abi: Platform.OS === 'web' ? 'n/a' : 'simulator',
+          viewport: { width: window.width, height: window.height, pixelRatio: PixelRatio.get() },
         },
-      }),
+        results,
+      },
     })
-  }, [cssHmrColor, layoutCount, supportedRuntimeCases, HMR_MARKER])
+    void (async () => {
+      for (let attempt = 0; attempt < 5; attempt++) {
+        try {
+          const response = await fetch(reportUrl, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body,
+          })
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`)
+          }
+          return
+        }
+        catch (error) {
+          console.error(`[rn-compat] report attempt ${attempt + 1} failed`, error)
+          await new Promise(resolve => setTimeout(resolve, 250 * 2 ** attempt))
+        }
+      }
+      sentRevision.current = ''
+    })()
+  }, [cssHmrColor, layoutCount, layoutSettled, supportedRuntimeCases, HMR_MARKER])
 
   const recordLayout = (id: string, layout: LayoutValue) => {
     if (!layouts.current.has(id)) {

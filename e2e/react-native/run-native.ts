@@ -65,12 +65,19 @@ async function waitForMetro(metro: ReturnType<typeof execa>, timeout = 120_000) 
   throw new Error('Timed out waiting for Metro on port 8081')
 }
 
-async function waitForReportOrExit(marker: string, run: ReturnType<typeof execa>, metro: ReturnType<typeof execa>, timeout = 240_000, cssHmrColor?: string) {
+async function waitForReportOrExit(marker: string, run: ReturnType<typeof execa>, metro: ReturnType<typeof execa>, timeout = 240_000, cssHmrColor?: string, recover?: () => Promise<void>) {
   const started = Date.now()
+  let runCompletedAt: number | undefined
+  let recovered = false
   while (Date.now() - started < timeout) {
     const envelope = reports.find(item => item.hmrMarker === marker && (!cssHmrColor || item.cssHmrColor === cssHmrColor))
     if (envelope) { return envelope }
     if (typeof run.exitCode === 'number' && run.exitCode !== 0) { throw new TypeError(`expo run:${platform} exited with code ${run.exitCode}; see ${path.resolve(artifacts, 'expo-run.log')}`) }
+    if (run.exitCode === 0 && !runCompletedAt) { runCompletedAt = Date.now() }
+    if (recover && runCompletedAt && !recovered && Date.now() - runCompletedAt >= 60_000) {
+      await recover()
+      recovered = true
+    }
     if (typeof metro.exitCode === 'number') { throw new TypeError(`Metro exited with code ${metro.exitCode}; see ${path.resolve(artifacts, 'metro.log')}`) }
     await new Promise(resolve => setTimeout(resolve, 500))
   }
@@ -97,6 +104,32 @@ async function capture(name: string, device: string) {
   const stat = await fs.stat(output)
   if (stat.size < 1024) { throw new Error(`${platform} screenshot is unexpectedly small: ${stat.size}`) }
   return output
+}
+
+async function captureFailureDiagnostics(device: string) {
+  if (platform === 'android') {
+    const logcat = await execa('adb', ['-s', device, 'logcat', '-d', '-v', 'threadtime'], { reject: false })
+    await fs.writeFile(path.resolve(artifacts, 'logcat.txt'), logcat.stdout, 'utf8')
+    const dumpResult = await execa('adb', ['-s', device, 'shell', 'uiautomator', 'dump', '/sdcard/window.xml'], { reject: false })
+    if (dumpResult.exitCode === 0) {
+      const window = await execa('adb', ['-s', device, 'exec-out', 'cat', '/sdcard/window.xml'], { reject: false })
+      await fs.writeFile(path.resolve(artifacts, 'window-failure.xml'), window.stdout, 'utf8')
+    }
+  }
+  try { await capture('failure.png', device) }
+  catch { /* 设备未启动时没有可用截图。 */ }
+}
+
+async function relaunchRuntime(device: string) {
+  const appId = 'com.weapptailwindcss.rncompat'
+  const url = `${appId}://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081`
+  if (platform === 'android') {
+    await execa('adb', ['-s', device, 'shell', 'am', 'force-stop', appId], { reject: false })
+    await execa('adb', ['-s', device, 'shell', 'am', 'start', '-a', 'android.intent.action.VIEW', '-d', url], { reject: false })
+    return
+  }
+  await execa('xcrun', ['simctl', 'terminate', device, appId], { reject: false })
+  await execa('xcrun', ['simctl', 'openurl', device, url])
 }
 
 async function assertAndroidMarker(device: string, marker: string) {
@@ -156,6 +189,7 @@ async function main() {
   if (platform === 'android') {
     await execa('adb', ['-s', device, 'reverse', `tcp:${port}`, `tcp:${port}`])
     await execa('adb', ['-s', device, 'reverse', 'tcp:8081', 'tcp:8081'])
+    await execa('adb', ['-s', device, 'logcat', '-c'], { reject: false })
   }
   const logFile = await fs.open(path.resolve(artifacts, 'expo-run.log'), 'w')
   const metroLogFile = await fs.open(path.resolve(artifacts, 'metro.log'), 'w')
@@ -194,9 +228,10 @@ async function main() {
     stderr: logFile.createWriteStream(),
     reject: false,
   })
+  let completed = false
   try {
     // 首次原生构建包含 CocoaPods/Gradle 依赖准备，不能使用 HMR 的短超时。
-    const baseline = await waitForReportOrExit('rn-hmr-baseline', run, metro, 1_200_000, '#10b981')
+    const baseline = await waitForReportOrExit('rn-hmr-baseline', run, metro, 1_200_000, '#10b981', () => relaunchRuntime(device))
     const baselineReport = withNativeEnvironment(baseline.report, nativeEnvironment)
     validateReactNativeReport(baselineReport, platform)
     await waitForRuntimePaint()
@@ -239,8 +274,10 @@ async function main() {
     if (updateBaseline) {
       await fs.writeFile(path.resolve(reportsDir, `${platform}.json`), `${JSON.stringify(cssHmrReport, null, 2)}\n`, 'utf8')
     }
+    completed = true
   }
   finally {
+    if (!completed) { await captureFailureDiagnostics(device) }
     await fs.writeFile(markerFile, originalMarker, 'utf8')
     await fs.writeFile(cssFile, originalCss, 'utf8')
     run.kill('SIGTERM')
