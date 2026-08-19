@@ -1,5 +1,7 @@
 # E2E Demo 覆盖说明
 
+本地多端 E2E 的统一执行手册见 [`LOCAL-MULTI-PLATFORM-E2E.md`](LOCAL-MULTI-PLATFORM-E2E.md)。其中包含换电脑后的工具链准备、设备 ID 配置、HBuilderX/DevEco 运行边界、静态矩阵、HMR、五端截图、结构探针、像素差异和阻塞记录方式。
+
 本目录的 demo 覆盖矩阵由 `e2e/demoCoverageMatrix.ts` 维护，并由 `e2e/e2e-matrix.test.ts` 校验。矩阵会扫描 `demo/*/package.json` 与 `demo/web/*/package.json`，确保每个 demo、平台脚本、静态构建、HMR 或本地豁免都有明确状态。
 
 常用验证命令：

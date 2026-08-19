@@ -67,6 +67,9 @@
 - `e2e/*`：`e2e/AGENTS.md`
 - `scripts/*`：`scripts/AGENTS.md`
 
+## 本地多端 E2E 入口
+- H5、微信小程序、Android、iOS、Harmony 的本地 E2E、HBuilderX、设备环境、截图、HMR、结构探针和阻塞记录统一遵循 [`e2e/LOCAL-MULTI-PLATFORM-E2E.md`](e2e/LOCAL-MULTI-PLATFORM-E2E.md)。换电脑时只重新配置工具链和设备 ID，不在规则文件或测试中写入本机绝对路径。
+
 ## 关键约束索引
 - `packages/weapp-tailwindcss` 的 JS 转译必须遵循 `classNameSet` 精确命中原则，禁止启发式兜底转译。
 - `packages/weapp-tailwindcss` 的 bundler 适配不得依赖硬编码目录或后置 `fs.readFile` 兜底来还原源码关系；源码关系必须来自构建图、插件生命周期缓存或明确的扫描层。
