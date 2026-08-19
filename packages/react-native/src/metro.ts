@@ -156,6 +156,16 @@ export async function getRegisteredManifestByPath(filename: string) {
   return undefined
 }
 
+/** 按 Metro 传入的项目根目录读取当前注册项，兼容 transformer 未透传自定义字段的实现。 */
+export async function getRegisteredManifestByProjectRoot(projectRoot: string) {
+  const resolvedRoot = path.resolve(projectRoot)
+  const entries = [...registry.values()].filter(entry => entry.projectRoot === resolvedRoot)
+  const entry = entries.at(-1)
+  if (!entry) { return undefined }
+  await entry.ready
+  return entry.manifest
+}
+
 export function getVirtualModuleCode(filename: string) {
   const registered = getRegisteredVirtualModule(filename)
   if (!registered) { return undefined }
