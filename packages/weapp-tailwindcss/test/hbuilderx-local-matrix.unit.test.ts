@@ -1,8 +1,10 @@
+import fs from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
 import { miniProgramCases, rawTailwindDirectiveRE, uniAppAppCases, uniAppXAppCases, uniAppXHBuilderXUnsupportedMiniProgramPlatforms, webCases } from '../../../e2e/hbuilderx-local/cases'
 import { filterHBuilderXCases, matchesHBuilderXCaseFilter, parseCaseNameFilters } from '../../../e2e/hbuilderx-local/filters'
 import { findHBuilderXAppTerminatedLog, findHBuilderXDeviceUnavailableLog, resolveHBuilderXLaunchProject } from '../../../e2e/hbuilderx-local/runner'
+import { resolveExpectedMarkerTextColor } from '../../../scripts/demo-visual-e2e-report/app'
 
 const hbuilderxDemoNames = [
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
@@ -183,11 +185,28 @@ describe('HBuilderX local demo matrix', () => {
 
   it('validates Harmony styles from final compiled JavaScript instead of compiler intermediates', () => {
     const harmonyCase = uniAppXAppCases.find(item => item.platform === 'app-harmony')
+    const harmonyPage = fs.readFileSync(new URL('../../../demo/uni-app-x-hbuilderx-tailwindcss-v4/pages/index/index.uvue', import.meta.url), 'utf8')
+    const compiledStyle = [
+      '"issue-1002-apply":{"":{"borderTopLeftRadius":9999,"borderRadius":9999}}',
+      '"wtu-rounded":{"":{"borderTopLeftRadius":9999,"borderRadius":9999}}',
+    ].join(',')
 
     expect(harmonyCase?.styleOutputFiles).toBeUndefined()
     expect(harmonyCase?.styleContains).toBeUndefined()
     expect(harmonyCase?.compiledStyleContains?.length).toBeGreaterThanOrEqual(7)
+    expect(harmonyCase?.markerClass).toContain('bg-[#68c828]')
+    expect(harmonyCase?.transformedContains).toContain('"backgroundColor":"#68c828"')
+    expect(harmonyPage.indexOf(harmonyCase?.markerAnchor ?? '')).toBeGreaterThan(harmonyPage.indexOf('<BindClass />'))
+    for (const matcher of harmonyCase?.compiledStyleContains?.slice(0, 2) ?? []) {
+      expect(compiledStyle).toMatch(matcher)
+    }
     expectContainsMatcher(harmonyCase?.transformedNotContains ?? [], rawTailwindDirectiveRE, 'Harmony output should reject leaked Tailwind directives')
+  })
+
+  it('uses the final explicit marker text color for visual evidence', () => {
+    expect(resolveExpectedMarkerTextColor('text-sm text-white')).toEqual({ blue: 255, green: 255, red: 255 })
+    expect(resolveExpectedMarkerTextColor('text-sm text-white text-[#fef08a]')).toEqual({ blue: 138, green: 240, red: 254 })
+    expect(resolveExpectedMarkerTextColor('text-sm')).toBeUndefined()
   })
 
   it('filters local HBuilderX e2e cases by demo name without requiring Vitest -t suffix matching', () => {

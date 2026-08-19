@@ -403,6 +403,22 @@ async function analyzeAppScreenshot(screenshot: string) {
   }
 }
 
+export function resolveExpectedMarkerTextColor(markerTextClass?: string) {
+  if (!markerTextClass) {
+    return undefined
+  }
+  const arbitraryColor = [...markerTextClass.matchAll(/\btext-\[#([\da-f]{6})\]/gi)].at(-1)?.[1]
+  const color = arbitraryColor ?? (markerTextClass.split(/\s+/).includes('text-white') ? 'ffffff' : undefined)
+  if (!color) {
+    return undefined
+  }
+  return {
+    blue: Number.parseInt(color.slice(4, 6), 16),
+    green: Number.parseInt(color.slice(2, 4), 16),
+    red: Number.parseInt(color.slice(0, 2), 16),
+  }
+}
+
 async function analyzeIssue1002MarkerPresentation(
   screenshot: string,
   marker: Awaited<ReturnType<typeof analyzeScreenshotColorPresence>>,
@@ -419,15 +435,21 @@ async function analyzeIssue1002MarkerPresentation(
   const height = bounds.maxY - bounds.minY + 1
   const insetX = Math.max(1, Math.floor(width * 0.2))
   const insetY = Math.max(1, Math.floor(height * 0.2))
-  let centerWhitePixels = 0
+  const expectedTextColor = resolveExpectedMarkerTextColor(markerTextClass)
+  let centerTextColorPixels = 0
   for (let y = bounds.minY + insetY; y <= bounds.maxY - insetY; y++) {
     for (let x = bounds.minX + insetX; x <= bounds.maxX - insetX; x++) {
       const index = (y * image.width + x) * 4
       const red = image.data[index] ?? 0
       const green = image.data[index + 1] ?? 0
       const blue = image.data[index + 2] ?? 0
-      if (red >= 245 && green >= 245 && blue >= 245) {
-        centerWhitePixels += 1
+      if (
+        expectedTextColor
+        && Math.abs(red - expectedTextColor.red) <= 4
+        && Math.abs(green - expectedTextColor.green) <= 4
+        && Math.abs(blue - expectedTextColor.blue) <= 4
+      ) {
+        centerTextColorPixels += 1
       }
     }
   }
@@ -447,14 +469,15 @@ async function analyzeIssue1002MarkerPresentation(
       && Math.abs((image.data[index + 2] ?? 0) - background.blue) <= 3
   }).length
   const roundedReady = !markerClass.includes('rounded-full') || coloredCorners <= 1
-  const whiteTextReady = !markerTextClass?.includes('text-white') || centerWhitePixels >= 8
+  const textColorReady = !expectedTextColor || centerTextColorPixels >= 8
 
   return {
-    centerWhitePixels,
+    centerTextColorPixels,
     coloredCorners,
-    ready: roundedReady && whiteTextReady,
+    expectedTextColor,
+    ready: roundedReady && textColorReady,
     roundedReady,
-    whiteTextReady,
+    textColorReady,
   }
 }
 

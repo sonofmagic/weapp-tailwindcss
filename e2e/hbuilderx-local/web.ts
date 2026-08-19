@@ -349,13 +349,13 @@ export async function runWebHmr(
     ])
     const hmrCss: string[] = []
     for (const [index, step] of hmrSteps.entries()) {
+      await rewriteHmrMarker(sourceFile, markerAnchors, hmrSteps, index)
       if (step.sourceMutation) {
         await appendHmrSourceMutation(projectRoot, step.sourceMutation)
         if (step.sourceMutation.cssContains?.length) {
           hmrCss.push(await waitForCss(joinUrl(ready.baseUrl, hmrCssPath), step.sourceMutation.cssContains, child, logs))
         }
       }
-      await rewriteHmrMarker(sourceFile, markerAnchors, hmrSteps, index)
       await waitForRuntimeStyles(page, [
         ...(persistentRuntimeStyles ?? []),
         ...(step.runtimeStyles ?? []),

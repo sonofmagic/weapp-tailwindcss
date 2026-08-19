@@ -72,11 +72,11 @@
 		<Issue1021Cell />
 		<ZPagingProbe />
 		<a-navbar
-			leftClass="issue-navbar-left bg-primary !w-[100rpx] h-[100rpx] px-[30rpx]"
-			rightClass="issue-navbar-right bg-[#102938] !w-[100rpx] h-[100rpx] p-[12rpx]"
+			leftClass="issue-navbar-left bg-primary w-[100rpx] h-[100rpx] px-[30rpx]"
+			rightClass="issue-navbar-right bg-[#102938] w-[100rpx] h-[100rpx] p-[12rpx]"
 		>
 			<template #left>
-				<image src="/static/logo.png" class="issue-navbar-image !w-[100rpx] h-[100rpx] rounded-[10rpx]" />
+				<image src="/static/logo.png" class="issue-navbar-image w-[100rpx] h-[100rpx] rounded-[10rpx]" />
 			</template>
 			<template #right>
 				<text class="text-[#f7fbff]">right</text>

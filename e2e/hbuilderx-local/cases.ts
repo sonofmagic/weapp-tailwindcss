@@ -393,7 +393,7 @@ const defaultIosLaunchArgs = ['--iosTarget', process.env['E2E_HBUILDERX_IOS_TARG
 const harmonyDeviceId = process.env['E2E_HBUILDERX_HARMONY_DEVICE_ID'] ?? process.env['DEMO_VISUAL_HARMONY_DEVICE_ID']
 const defaultHarmonyLaunchArgs = harmonyDeviceId ? ['--deviceId', harmonyDeviceId] : []
 const harmonyInitialTransformedContains = [
-  '"backgroundColor":"#102938"',
+  '"backgroundColor":"#68c828"',
   '"color":"#f7fbff"',
   '"width":173',
 ]
@@ -891,8 +891,8 @@ export const uniAppXAppCases: AppCase[] = [
       'unpackage/cache/.app-harmony/sourcemap',
     ],
     sourceFile: 'pages/index/index.uvue',
-    markerAnchor: '<BindClass />',
-    markerClass: 'flex h-[41px] w-[173px] items-center justify-center rounded-full bg-[#102938]',
+    markerAnchor: '<Issue1019Button>',
+    markerClass: 'flex h-[41px] w-[173px] items-center justify-center rounded-full bg-[#68c828]',
     markerTextClass: 'text-xl text-white text-[#f7fbff]',
     markerText: 'hbuilderx-app-dynamic-v4-harmony',
     hmrMarkerClass: 'mt-[19px] flex h-[41px] w-[173px] items-center justify-center rounded-full bg-[#3b0764]',
@@ -923,8 +923,8 @@ export const uniAppXAppCases: AppCase[] = [
       /backgroundColor["']?\s*[:,]\s*["']var\(--theme-color\)/i,
     ],
     compiledStyleContains: [
-      /"issue-1002-apply":\{"":\{"borderRadius":9999/,
-      /"wtu-[^"]+":\{"":\{"borderRadius":9999/,
+      /"issue-1002-apply":\{"":\{[^}]*"borderRadius":9999/,
+      /"wtu-[^"]+":\{"":\{[^}]*"borderRadius":9999/,
       /"fontSize":"24rpx"/,
       /"fontSize":"28rpx"/,
       /"fontSize":"32rpx"/,
