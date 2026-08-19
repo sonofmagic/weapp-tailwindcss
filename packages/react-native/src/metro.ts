@@ -1,6 +1,7 @@
 /* eslint-disable style/max-statements-per-line */
 
 import type { NativeStyleManifest } from './types'
+import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -49,8 +50,23 @@ interface RegisteredManifest {
   refresh: () => Promise<void>
 }
 
+export interface NativeManifestPaths {
+  manifestPath: string
+  manifestReadyPath: string
+}
+
 const registry = new Map<string, RegisteredManifest>()
 let nextId = 0
+
+/** 为 Metro worker 提供不依赖进程内 registry 的 manifest 入口。 */
+export function getManifestPathsForProjectRoot(projectRoot: string): NativeManifestPaths {
+  const projectKey = createHash('sha256').update(path.resolve(projectRoot)).digest('hex').slice(0, 24)
+  const base = path.join(os.tmpdir(), 'weapp-tailwindcss-native', `project-${projectKey}`)
+  return {
+    manifestPath: `${base}.manifest.json`,
+    manifestReadyPath: `${base}.manifest.ready`,
+  }
+}
 
 function resolveInput(input: string | undefined, projectRoot: string) {
   return input ? path.resolve(projectRoot, input) : undefined
@@ -96,13 +112,14 @@ async function compileOptions(options: WeappReactNativeMetroOptions, projectRoot
 function register(options: WeappReactNativeMetroOptions) {
   const id = `weapp-tailwindcss-native-${nextId++}`
   const projectRoot = path.resolve(options.projectRoot ?? process.cwd())
+  const manifestPaths = getManifestPathsForProjectRoot(projectRoot)
   const entry: RegisteredManifest = {
     version: 0,
     manifest: options.manifest ?? (options.css ? compileNativeStylesheet(options.css, { classSet: options.classSet }) : emptyManifest()),
     projectRoot,
     virtualPath: path.join(os.tmpdir(), 'weapp-tailwindcss-native', `${id}.js`),
-    manifestPath: path.join(os.tmpdir(), 'weapp-tailwindcss-native', `${id}.manifest.json`),
-    manifestReadyPath: path.join(os.tmpdir(), 'weapp-tailwindcss-native', `${id}.manifest.ready`),
+    manifestPath: manifestPaths.manifestPath,
+    manifestReadyPath: manifestPaths.manifestReadyPath,
     ready: Promise.resolve(),
     refresh: async () => {},
   }

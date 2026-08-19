@@ -124,6 +124,32 @@ describe('Expo Metro integration', () => {
     }
   })
 
+  it('reads the project manifest when the transformer runs in a fresh worker', async () => {
+    const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'weapp-tailwindcss-rn-manifest-worker-'))
+    try {
+      const transformerPath = path.join(temporaryRoot, 'transformer.cjs')
+      fs.writeFileSync(transformerPath, `exports.transform = (_config, _root, filename, data) => ({ filename, code: data.toString(), dependencies: [] })\n`)
+      const config = withWeappTailwindcss({ transformerPath }, {
+        projectRoot: temporaryRoot,
+        css: '.flex { display: flex; }',
+        classSet: ['flex'],
+      })
+      const transformerConfig = { ...(config.transformer ?? {}) } as Record<string, unknown>
+      const originalTransformerPath = transformerConfig.weappTailwindcssOriginalTransformerPath
+      for (const key of Object.keys(transformerConfig)) {
+        if (key.startsWith('weappTailwindcss')) { delete transformerConfig[key] }
+      }
+      transformerConfig.weappTailwindcssOriginalTransformerPath = originalTransformerPath
+      const result = await transform(transformerConfig, temporaryRoot, path.join(temporaryRoot, 'Screen.tsx'), Buffer.from('<View className="flex" />'), {}) as { code: string }
+
+      expect(result.code).toMatch(/_twStatic\(\["s[a-z0-9]+"\]\)/)
+      expect(result.code).not.toContain('className')
+    }
+    finally {
+      fs.rmSync(temporaryRoot, { recursive: true, force: true })
+    }
+  })
+
   it('does not prefer an empty manifest file over a registered project manifest', async () => {
     const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'weapp-tailwindcss-rn-empty-manifest-'))
     try {

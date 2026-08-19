@@ -4,7 +4,7 @@ import { createRequire } from 'node:module'
 import process from 'node:process'
 import { transformSync } from '@babel/core'
 import babelPlugin from './babel'
-import { getRegisteredManifest, getRegisteredManifestByPath, getRegisteredManifestByProjectRoot, getVirtualModuleCodeAsync } from './metro'
+import { getManifestPathsForProjectRoot, getRegisteredManifest, getRegisteredManifestByPath, getRegisteredManifestByProjectRoot, getVirtualModuleCodeAsync } from './metro'
 
 const require = createRequire(import.meta.url)
 
@@ -14,11 +14,15 @@ export async function transform(config: Record<string, unknown>, projectRoot: st
   const manifestPath = config.weappTailwindcssManifestPath as string | undefined
   const manifestReadyPath = config.weappTailwindcssManifestReadyPath as string | undefined
   const virtualModulePath = config.weappTailwindcssVirtualModulePath as string | undefined
+  const projectManifestPaths = getManifestPathsForProjectRoot(projectRoot)
   const registeredManifest = (metroId ? await getRegisteredManifest(metroId) : undefined)
     ?? (manifestPath ? await getRegisteredManifestByPath(manifestPath) : undefined)
     ?? await getRegisteredManifestByProjectRoot(projectRoot)
-  const manifest = registeredManifest ?? (manifestPath ? await readManifest(manifestPath, manifestReadyPath) : undefined)
-  if (process.env.WEAPP_TW_RN_DEBUG === '1' && filename.includes('/examples/react-native-expo/') && !filename.includes('/node_modules/')) {
+  const manifest = registeredManifest ?? await readManifest(
+    manifestPath ?? projectManifestPaths.manifestPath,
+    manifestReadyPath ?? projectManifestPaths.manifestReadyPath,
+  )
+  if (process.env.WEAPP_TW_RN_DEBUG === '1' && !filename.replaceAll('\\', '/').includes('/node_modules/')) {
     console.error(`[react-native-debug] ${JSON.stringify({
       filename,
       projectRoot,
