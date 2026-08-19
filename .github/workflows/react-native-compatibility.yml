@@ -31,7 +31,7 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @weapp-tailwindcss/postcss-calc build && pnpm --filter @weapp-tailwindcss/postcss build && pnpm --filter weapp-tailwindcss build
+      - run: pnpm --filter @weapp-tailwindcss/shared build && pnpm --filter @weapp-tailwindcss/postcss-calc build && pnpm --filter @weapp-tailwindcss/postcss build && pnpm --filter weapp-tailwindcss build
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm e2e:react-native-compatibility
       - run: pnpm e2e:react-native:web
@@ -61,7 +61,7 @@ jobs:
           distribution: temurin
           java-version: 17
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @weapp-tailwindcss/postcss-calc build && pnpm --filter @weapp-tailwindcss/postcss build && pnpm --filter weapp-tailwindcss build && pnpm --filter @weapp-tailwindcss/react-native build
+      - run: pnpm --filter @weapp-tailwindcss/shared build && pnpm --filter @weapp-tailwindcss/postcss-calc build && pnpm --filter @weapp-tailwindcss/postcss build && pnpm --filter weapp-tailwindcss build && pnpm --filter @weapp-tailwindcss/react-native build
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
@@ -92,7 +92,7 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
       - run: brew install cocoapods
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @weapp-tailwindcss/postcss-calc build && pnpm --filter @weapp-tailwindcss/postcss build && pnpm --filter weapp-tailwindcss build && pnpm --filter @weapp-tailwindcss/react-native build
+      - run: pnpm --filter @weapp-tailwindcss/shared build && pnpm --filter @weapp-tailwindcss/postcss-calc build && pnpm --filter @weapp-tailwindcss/postcss build && pnpm --filter weapp-tailwindcss build && pnpm --filter @weapp-tailwindcss/react-native build
       - name: Boot iOS simulator
         run: |
           udid="$(xcrun simctl create ReactNativeCompatibility 'iPhone 16 Pro' 'com.apple.CoreSimulator.SimRuntime.iOS-18-5')"
