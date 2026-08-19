@@ -374,7 +374,12 @@ export function injectUniAppXHarmonyGlobalStyles(
     return code
   }
   const styleVarName = '_style_wt'
-  const withStyleDecl = `${code.slice(0, exportMatch.index)}const ${styleVarName} = ${JSON.stringify(newStyle)};\n${code.slice(exportMatch.index)}`
+  const statementStart = code.lastIndexOf('\n', exportMatch.index)
+  const insertPos = statementStart === -1 ? 0 : statementStart + 1
+  const declarationRE = new RegExp(`\\b(?:const|let|var)\\s+${styleVarName}\\s*=`)
+  const withStyleDecl = declarationRE.test(code)
+    ? code
+    : `${code.slice(0, insertPos)}const ${styleVarName} = ${JSON.stringify(newStyle)};\n${code.slice(insertPos)}`
   return injectStyleOption(withStyleDecl, styleVarName)
 }
 

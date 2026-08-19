@@ -16,11 +16,15 @@ import { resolveScreenshotsRoot } from './demo-visual-e2e-report/screenshots.ts'
 
 const repoRoot = path.resolve(import.meta.dirname, '..')
 const defaultArtifactRoot = 'e2e/.artifacts/demo-visual/full'
+const configuredCrossPlatformDiffRatio = Number(process.env['DEMO_VISUAL_MAX_CROSS_PLATFORM_DIFF_RATIO'])
 const context: RuntimeContext = {
   artifactRoot: path.resolve(repoRoot, defaultArtifactRoot),
   repoRoot,
   timeoutMs: Number(process.env['DEMO_VISUAL_TIMEOUT_MS'] ?? 180_000),
   viewport: { width: 390, height: 844 },
+  ...(Number.isFinite(configuredCrossPlatformDiffRatio) && configuredCrossPlatformDiffRatio >= 0
+    ? { maxCrossPlatformDiffRatio: configuredCrossPlatformDiffRatio }
+    : {}),
 }
 
 const uniH5Cases = [
@@ -87,6 +91,7 @@ function printHelp() {
     '  DEMO_VISUAL_IDE_SETTLE_MS=800       清理 DevTools 后等待时间',
     '  DEMO_VISUAL_IDE_SCREENSHOT_COMMAND_TIMEOUT_MS=30000  单次 DevTools 截图命令超时',
     '  DEMO_VISUAL_HMR_OUTPUT_TIMEOUT_MS    小程序 visual HMR 初始/增量产物等待超时',
+    '  DEMO_VISUAL_MAX_CROSS_PLATFORM_DIFF_RATIO  H5 与其他端的最大归一化截图差异比例',
     '',
   ].join('\n'))
 }

@@ -14,6 +14,32 @@ const CLASS_SELECTOR_PREFIX_RE = /^\.((?:\\[^\n\r\f]|[\w-])+)(?=$|[.:#[])/
 type StyleDeclarations = Record<string, string | number>
 export type StyleValue = Record<string, Record<string, StyleDeclarations>>
 
+function cloneStyleEntry(entry: Record<string, StyleDeclarations>): Record<string, StyleDeclarations> {
+  return Object.fromEntries(
+    Object.entries(entry).map(([state, declarations]) => [state, { ...declarations }]),
+  )
+}
+
+function mergeStyleEntry(
+  local: Record<string, StyleDeclarations> | undefined,
+  generated: Record<string, StyleDeclarations>,
+) {
+  const merged = local ? cloneStyleEntry(local) : {}
+  for (const [state, declarations] of Object.entries(generated)) {
+    merged[state] = {
+      ...(merged[state] ?? {}),
+      ...declarations,
+    }
+  }
+  return merged
+}
+
+function cloneStyleValue(style: StyleValue): StyleValue {
+  return Object.fromEntries(
+    Object.entries(style).map(([className, entry]) => [className, cloneStyleEntry(entry)]),
+  )
+}
+
 function toCamelCase(prop: string) {
   return prop.replace(/-([a-z])/g, (_, char: string) => char.toUpperCase())
 }
@@ -329,15 +355,18 @@ export function createMergedStyleValue(code: string, localStyle: StyleValue | un
   if (used.size === 0) {
     return
   }
-  const merged: StyleValue = {
-    ...(localStyle ?? {}),
-  }
+  const merged = localStyle ? cloneStyleValue(localStyle) : {}
   let changed = false
   for (const className of used) {
-    if (merged[className] || !appStyle[className]) {
+    const generatedStyle = appStyle[className]
+    if (!generatedStyle) {
       continue
     }
-    merged[className] = appStyle[className]
+    const next = mergeStyleEntry(merged[className], generatedStyle)
+    if (JSON.stringify(next) === JSON.stringify(merged[className])) {
+      continue
+    }
+    merged[className] = next
     changed = true
   }
   return changed ? merged : undefined
@@ -351,7 +380,7 @@ export function createMergedStyleValues(code: string, localStyles: StyleValue[],
   if (used.size === 0) {
     return
   }
-  const merged = localStyles.map(style => ({ ...style }))
+  const merged = localStyles.map(cloneStyleValue)
   let changed = false
   for (const className of used) {
     const generatedStyle = appStyle[className]
@@ -360,15 +389,16 @@ export function createMergedStyleValues(code: string, localStyles: StyleValue[],
     }
     const indexes = merged.flatMap((style, index) => style[className] ? [index] : [])
     if (indexes.length === 0) {
-      merged[0][className] = generatedStyle
+      merged[0][className] = mergeStyleEntry(undefined, generatedStyle)
       changed = true
       continue
     }
     for (const index of indexes) {
-      if (JSON.stringify(merged[index][className]) === JSON.stringify(generatedStyle)) {
+      const next = mergeStyleEntry(merged[index][className], generatedStyle)
+      if (JSON.stringify(merged[index][className]) === JSON.stringify(next)) {
         continue
       }
-      merged[index][className] = generatedStyle
+      merged[index][className] = next
       changed = true
     }
   }

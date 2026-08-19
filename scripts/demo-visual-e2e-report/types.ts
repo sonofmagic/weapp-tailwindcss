@@ -28,6 +28,7 @@ export interface RuntimeContext {
     width: number
     height: number
   }
+  maxCrossPlatformDiffRatio?: number
 }
 
 export interface MiniProgramHmrMutation {
