@@ -44,6 +44,7 @@ interface RegisteredManifest {
   projectRoot: string
   virtualPath: string
   manifestPath: string
+  manifestReadyPath: string
   ready: Promise<void>
   refresh: () => Promise<void>
 }
@@ -67,6 +68,14 @@ function writeVirtualModule(entry: RegisteredManifest) {
   fs.mkdirSync(path.dirname(entry.virtualPath), { recursive: true })
   fs.writeFileSync(entry.virtualPath, virtualModuleCode(entry.manifest), 'utf8')
   fs.writeFileSync(entry.manifestPath, JSON.stringify(entry.manifest), 'utf8')
+}
+
+function markManifestPending(entry: RegisteredManifest) {
+  fs.rmSync(entry.manifestReadyPath, { force: true })
+}
+
+function markManifestReady(entry: RegisteredManifest) {
+  fs.writeFileSync(entry.manifestReadyPath, `${entry.version}\n`, 'utf8')
 }
 
 async function compileOptions(options: WeappReactNativeMetroOptions, projectRoot: string) {
@@ -93,24 +102,30 @@ function register(options: WeappReactNativeMetroOptions) {
     projectRoot,
     virtualPath: path.join(os.tmpdir(), 'weapp-tailwindcss-native', `${id}.js`),
     manifestPath: path.join(os.tmpdir(), 'weapp-tailwindcss-native', `${id}.manifest.json`),
+    manifestReadyPath: path.join(os.tmpdir(), 'weapp-tailwindcss-native', `${id}.manifest.ready`),
     ready: Promise.resolve(),
     refresh: async () => {},
   }
   registry.set(id, entry)
+  markManifestPending(entry)
   writeVirtualModule(entry)
 
   let generation = 0
   entry.refresh = async () => {
     const currentGeneration = ++generation
+    markManifestPending(entry)
     const manifest = await compileOptions(options, projectRoot)
     if (currentGeneration === generation) {
       entry.manifest = manifest
       entry.version++
       writeVirtualModule(entry)
+      markManifestReady(entry)
     }
   }
   entry.ready = entry.refresh().catch((error) => {
     entry.manifest.warnings.push({ message: `生成 React Native manifest 失败：${error instanceof Error ? error.message : String(error)}` })
+    writeVirtualModule(entry)
+    markManifestReady(entry)
   })
 
   const sourceRoots = (options.sourceGlobs ?? [])
@@ -208,6 +223,8 @@ export function withWeappTailwindcss<T extends MetroConfigLike>(config: T | Prom
       weappTailwindcssMetroId: id,
       weappTailwindcssOriginalTransformerPath: resolvedConfig.transformerPath,
       weappTailwindcssManifestPath: entry.manifestPath,
+      weappTailwindcssManifestReadyPath: entry.manifestReadyPath,
+      weappTailwindcssVirtualModulePath: entry.virtualPath,
     },
     resolver: {
       ...resolvedConfig.resolver,

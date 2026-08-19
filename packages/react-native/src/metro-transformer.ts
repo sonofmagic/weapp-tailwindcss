@@ -11,11 +11,16 @@ export async function transform(config: Record<string, unknown>, projectRoot: st
   const virtualCode = await getVirtualModuleCodeAsync(filename)
   const metroId = config.weappTailwindcssMetroId as string | undefined
   const manifestPath = config.weappTailwindcssManifestPath as string | undefined
+  const manifestReadyPath = config.weappTailwindcssManifestReadyPath as string | undefined
+  const virtualModulePath = config.weappTailwindcssVirtualModulePath as string | undefined
   const registeredManifest = (metroId ? await getRegisteredManifest(metroId) : undefined)
     ?? (manifestPath ? await getRegisteredManifestByPath(manifestPath) : undefined)
     ?? await getRegisteredManifestByProjectRoot(projectRoot)
-  const manifest = registeredManifest ?? (manifestPath ? readManifest(manifestPath) : undefined)
+  const manifest = registeredManifest ?? (manifestPath ? await readManifest(manifestPath, manifestReadyPath) : undefined)
   let source = virtualCode ? Buffer.from(virtualCode) : data
+  if (!virtualCode && manifest && virtualModulePath === filename) {
+    source = Buffer.from(fs.readFileSync(filename))
+  }
   if (!virtualCode && manifest && /\.(?:[cm]?[jt]sx?|flow)$/i.test(filename) && !filename.replaceAll('\\', '/').includes('/node_modules/')) {
     const transformed = transformSync(data.toString(), {
       filename,
@@ -39,9 +44,21 @@ export async function transform(config: Record<string, unknown>, projectRoot: st
   return transformer.transform(config, projectRoot, filename, source, options)
 }
 
-function readManifest(filename: string) {
+async function readManifest(filename: string, readyPath: string | undefined) {
+  if (readyPath) {
+    const deadline = Date.now() + 120_000
+    while (Date.now() < deadline) {
+      try {
+        await fs.promises.access(readyPath)
+        break
+      }
+      catch {
+        await new Promise(resolve => setTimeout(resolve, 25))
+      }
+    }
+  }
   try {
-    return JSON.parse(fs.readFileSync(filename, 'utf8')) as Awaited<ReturnType<typeof getRegisteredManifest>>
+    return JSON.parse(await fs.promises.readFile(filename, 'utf8')) as Awaited<ReturnType<typeof getRegisteredManifest>>
   }
   catch {
     return undefined

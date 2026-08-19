@@ -6,4 +6,4 @@
 
 稳定 Babel 静态 lookup 使用的 StyleSheet ID，避免 TSX 或 CSS HMR 改变规则顺序后串用其他 class 的样式；同时加入 Expo Web、Android、iOS 共用的 118 项兼容性报告、截图和独立 TSX/CSS HMR 门禁。
 
-Metro transformer 在未透传自定义 id 或 manifest 路径时也会按项目根目录等待异步样式生成完成，避免构建速度较慢时使用空 manifest 导致静态 className 未被转换。
+Metro transformer 在未透传自定义 id 或 manifest 路径时也会按项目根目录等待异步样式生成完成，并通过跨进程 ready 标记同步 manifest 与 virtual module，避免构建速度较慢或 HMR 刷新时使用空 manifest 导致静态 className 未被转换。
