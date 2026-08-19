@@ -109,6 +109,12 @@ describe('React Native Expo static exports', () => {
         }
       }
     }
+    catch (error) {
+      if (process.env.CI) {
+        await fs.cp(outputRoot, path.join(repoRoot, 'e2e/.artifacts/react-native-web/static-export-debug'), { recursive: true, force: true })
+      }
+      throw error
+    }
     finally {
       await fs.rm(outputRoot, { recursive: true, force: true })
     }
