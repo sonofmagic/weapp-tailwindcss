@@ -90,11 +90,14 @@ describe('React Native Expo static exports', () => {
     const outputRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tailwindcss-rn-export-'))
     try {
       for (const platform of ['web', 'android', 'ios'] as const) {
-        await execa('pnpm', ['--filter', examplePackage, 'exec', 'expo', 'export', '--platform', platform, '--output-dir', path.join(outputRoot, platform)], {
+        const exportResult = await execa('pnpm', ['--filter', examplePackage, 'exec', 'expo', 'export', '--clear', '--platform', platform, '--output-dir', path.join(outputRoot, platform)], {
           cwd: repoRoot,
           env: { ...process.env, CI: '1', WEAPP_TW_RN_DEBUG: '1' },
           timeout: 300_000,
         })
+        if (process.env.CI) {
+          await fs.writeFile(path.join(outputRoot, `${platform}-export.log`), `${exportResult.stdout}\n${exportResult.stderr}\n`, 'utf8')
+        }
         const metadata = JSON.parse(await fs.readFile(path.join(outputRoot, platform, 'metadata.json'), 'utf8')) as { bundler: string }
         expect(metadata.bundler).toBe('metro')
         const bundlePath = await findBundle(path.join(outputRoot, platform), platform)
