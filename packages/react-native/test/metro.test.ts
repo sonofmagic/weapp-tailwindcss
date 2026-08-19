@@ -121,4 +121,28 @@ describe('Expo Metro integration', () => {
       fs.rmSync(temporaryRoot, { recursive: true, force: true })
     }
   })
+
+  it('does not prefer an empty manifest file over a registered project manifest', async () => {
+    const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'weapp-tailwindcss-rn-empty-manifest-'))
+    try {
+      const transformerPath = path.join(temporaryRoot, 'transformer.cjs')
+      const emptyManifestPath = path.join(temporaryRoot, 'stale.manifest.json')
+      fs.writeFileSync(transformerPath, `exports.transform = (_config, _root, filename, data) => ({ filename, code: data.toString(), dependencies: [] })\n`)
+      fs.writeFileSync(emptyManifestPath, JSON.stringify({ version: 1, classSet: [], rules: {}, variables: {}, warnings: [] }))
+      const config = withWeappTailwindcss({ transformerPath }, {
+        projectRoot: temporaryRoot,
+        css: '.flex { display: flex; }',
+        classSet: ['flex'],
+      })
+      const transformerConfig = { ...(config.transformer ?? {}), weappTailwindcssManifestPath: emptyManifestPath } as Record<string, unknown>
+      delete transformerConfig.weappTailwindcssMetroId
+      const result = await transform(transformerConfig, temporaryRoot, path.join(temporaryRoot, 'Screen.tsx'), Buffer.from('<View className="flex" />'), {}) as { code: string }
+
+      expect(result.code).toMatch(/_twStatic\(\["s[a-z0-9]+"\]\)/)
+      expect(result.code).not.toContain('className')
+    }
+    finally {
+      fs.rmSync(temporaryRoot, { recursive: true, force: true })
+    }
+  })
 })

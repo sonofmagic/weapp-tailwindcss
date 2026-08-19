@@ -11,9 +11,10 @@ export async function transform(config: Record<string, unknown>, projectRoot: st
   const virtualCode = await getVirtualModuleCodeAsync(filename)
   const metroId = config.weappTailwindcssMetroId as string | undefined
   const manifestPath = config.weappTailwindcssManifestPath as string | undefined
-  const manifest = (metroId ? await getRegisteredManifest(metroId) : undefined)
-    ?? (manifestPath ? await getRegisteredManifestByPath(manifestPath) ?? readManifest(manifestPath) : undefined)
+  const registeredManifest = (metroId ? await getRegisteredManifest(metroId) : undefined)
+    ?? (manifestPath ? await getRegisteredManifestByPath(manifestPath) : undefined)
     ?? await getRegisteredManifestByProjectRoot(projectRoot)
+  const manifest = registeredManifest ?? (manifestPath ? readManifest(manifestPath) : undefined)
   let source = virtualCode ? Buffer.from(virtualCode) : data
   if (!virtualCode && manifest && /\.(?:[cm]?[jt]sx?|flow)$/i.test(filename) && !filename.replaceAll('\\', '/').includes('/node_modules/')) {
     const transformed = transformSync(data.toString(), {
