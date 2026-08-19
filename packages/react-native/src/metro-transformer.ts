@@ -1,6 +1,7 @@
 import type { Buffer } from 'node:buffer'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
+import process from 'node:process'
 import { transformSync } from '@babel/core'
 import babelPlugin from './babel'
 import { getRegisteredManifest, getRegisteredManifestByPath, getRegisteredManifestByProjectRoot, getVirtualModuleCodeAsync } from './metro'
@@ -17,6 +18,20 @@ export async function transform(config: Record<string, unknown>, projectRoot: st
     ?? (manifestPath ? await getRegisteredManifestByPath(manifestPath) : undefined)
     ?? await getRegisteredManifestByProjectRoot(projectRoot)
   const manifest = registeredManifest ?? (manifestPath ? await readManifest(manifestPath, manifestReadyPath) : undefined)
+  if (process.env.WEAPP_TW_RN_DEBUG === '1' && filename.includes('/examples/react-native-expo/') && !filename.includes('/node_modules/')) {
+    console.error(`[react-native-debug] ${JSON.stringify({
+      filename,
+      projectRoot,
+      configKeys: Object.keys(config).filter(key => key.startsWith('weappTailwindcss')),
+      manifestPath,
+      manifestReadyPath,
+      virtualModulePath,
+      virtualCode: Boolean(virtualCode),
+      manifestClasses: manifest?.classSet.length ?? null,
+      manifestReady: manifestReadyPath ? fs.existsSync(manifestReadyPath) : null,
+      inputBytes: data.byteLength,
+    })}`)
+  }
   let source = virtualCode ? Buffer.from(virtualCode) : data
   if (!virtualCode && manifest && virtualModulePath === filename) {
     source = Buffer.from(fs.readFileSync(filename))

@@ -92,7 +92,7 @@ describe('React Native Expo static exports', () => {
       for (const platform of ['web', 'android', 'ios'] as const) {
         await execa('pnpm', ['--filter', examplePackage, 'exec', 'expo', 'export', '--platform', platform, '--output-dir', path.join(outputRoot, platform)], {
           cwd: repoRoot,
-          env: { ...process.env, CI: '1' },
+          env: { ...process.env, CI: '1', WEAPP_TW_RN_DEBUG: '1' },
           timeout: 300_000,
         })
         const metadata = JSON.parse(await fs.readFile(path.join(outputRoot, platform, 'metadata.json'), 'utf8')) as { bundler: string }
