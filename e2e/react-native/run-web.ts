@@ -88,7 +88,12 @@ async function main() {
   const logFile = await fs.open(path.resolve(artifacts, 'metro.log'), 'w')
   const expo = execa('pnpm', ['--filter', '@weapp-tailwindcss/example-react-native-expo', 'exec', 'expo', 'start', '--web', '--localhost', '--port', '8082', '--clear'], {
     cwd: repoRoot,
-    env: { ...process.env, CI: '0', EXPO_PUBLIC_RN_REPORT_URL: `http://127.0.0.1:${reporterPort}` },
+    env: {
+      ...process.env,
+      CI: '0',
+      EXPO_PUBLIC_RN_REPORT_URL: `http://127.0.0.1:${reporterPort}`,
+      WEAPP_TW_RN_DEBUG: '1',
+    },
     stdout: logFile.createWriteStream(),
     stderr: logFile.createWriteStream(),
     reject: false,
