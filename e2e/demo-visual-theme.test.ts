@@ -337,4 +337,40 @@ describe('demo visual theme evidence', () => {
     } as never)).not.toThrow()
     expect(results[0].status).toBe('passed')
   })
+
+  it('fails cross-platform comparisons above the configured ratio limit', async () => {
+    const artifactRoot = await fs.mkdtemp(path.join(tmpdir(), 'demo-visual-diff-limit-'))
+    const width = 390
+    const height = 844
+    const createImage = (value: number) => {
+      const png = new PNG({ width, height })
+      png.data.fill(value)
+      return png
+    }
+    const h5 = path.join(artifactRoot, 'h5.png')
+    const harmony = path.join(artifactRoot, 'harmony.png')
+    await fs.writeFile(h5, PNG.sync.write(createImage(0)))
+    await fs.writeFile(harmony, PNG.sync.write(createImage(255)))
+    const results = [
+      { name: 'demo', platform: 'h5' as const, status: 'passed' as const, screenshot: h5 },
+      { name: 'demo', platform: 'app-harmony' as const, status: 'passed' as const, screenshot: harmony },
+    ]
+
+    const { createCrossPlatformComparisons } = await import('../scripts/demo-visual-e2e-report/report')
+    createCrossPlatformComparisons(results, {
+      artifactRoot,
+      viewport: { width, height },
+      maxCrossPlatformDiffRatio: 0.05,
+    } as never)
+
+    expect(results[0].status).toBe('failed')
+    expect(results[1].status).toBe('failed')
+    expect(results[1].error).toContain('超过上限 0.05')
+    expect(results[1].comparison).toMatchObject({
+      maxRatio: 0.05,
+      target: 'h5',
+      withinLimit: false,
+    })
+    await fs.rm(artifactRoot, { recursive: true, force: true })
+  })
 })

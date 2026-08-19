@@ -161,6 +161,33 @@ describe('uni-app-x style asset helpers', () => {
     expect(next).toContain('green')
   })
 
+  it('inserts generated style declarations at a statement boundary and remains idempotent', () => {
+    const code = 'const cls = "green"; const page = /* @__PURE__ */ _export_sfc(_sfc_main, [["__file","pages/index.uvue"]]);'
+    const next = injectUniAppXHarmonyGlobalStyles('pages/index.js', code, undefined, {
+      cssSources: ['.green{color:green}'],
+    })
+
+    expect(next).toMatch(/^const _style_wt = .*;\nconst cls = "green"; const page = \/\* @__PURE__ \*\//)
+    expect(next.match(/const _style_wt\s*=/g)).toHaveLength(1)
+    expect(next.match(/\["styles", \[_style_wt\]\]/g)).toHaveLength(1)
+    expect(injectUniAppXHarmonyGlobalStyles('pages/index.js', next, undefined, {
+      cssSources: ['.green{color:green}'],
+    })).toBe(next)
+
+    const existingStyle = 'let _style_wt = {"green":{"":{"color":"green"}}};const page = _export_sfc(_sfc_main, [["styles", [_style_wt]], ["__file","pages/index.uvue"]]);'
+    expect(injectUniAppXHarmonyGlobalStyles('pages/index.js', existingStyle, undefined, {
+      cssSources: ['.green{color:green}'],
+    })).toBe(existingStyle)
+
+    const existingDeclaration = 'var _style_wt = {"green":{"":{"color":"green"}}};const page = _export_sfc(_sfc_main, [["__file","pages/index.uvue"]]);'
+    const withExistingDeclaration = injectUniAppXHarmonyGlobalStyles('pages/index.js', existingDeclaration, undefined, {
+      cssSources: ['.green{color:green}'],
+    })
+    expect(withExistingDeclaration).toContain('var _style_wt = {"green":{"":{"color":"green"}}};')
+    expect(withExistingDeclaration).toContain('[["styles", [_style_wt]], ["__file"')
+    expect(withExistingDeclaration.match(/(?:const|let|var) _style_wt\s*=/g)).toHaveLength(1)
+  })
+
   it('reconciles generated styles across every parseable harmony style object', () => {
     const code = [
       'const _style_0 = {"local":{"":{"color":"red"}},"shared":{"":{"borderRadius":9999}}};',
@@ -287,7 +314,16 @@ describe('uni-app-x style asset helpers', () => {
     expect(collectUniAppXHarmonyApplyStyleSourcesFromSource('<style>.a{@apply flex}</style><style>.b{color:red}</style>')).toEqual(['.a{@apply flex}'])
     expect([...collectUniAppXHarmonyApplyUtilitiesFromSources(['.a{@apply flex block}', '.broken{'])]).toEqual(['flex', 'block'])
     expect(createMergedStyleValue('const cls = "app"', undefined, { app: { '': { color: 'red' } } })?.app[''].color).toBe('red')
-    expect(createMergedStyleValue('const cls = "app"', { app: { '': { color: 'blue' } } }, { app: { '': { color: 'red' } } })).toBeUndefined()
+    expect(createMergedStyleValue('const cls = "app"', { app: { '': { color: 'blue' } } }, { app: { '': { color: 'red' } } })).toEqual({
+      app: { '': { color: 'red' } },
+    })
+    expect(createMergedStyleValue('const cls = "app"', {
+      app: { '': { color: 'blue', padding: 12 }, dark: { color: 'white' } },
+    }, {
+      app: { '': { color: 'red', margin: 8 }, dark: { backgroundColor: 'black' } },
+    })).toEqual({
+      app: { '': { color: 'red', padding: 12, margin: 8 }, dark: { color: 'white', backgroundColor: 'black' } },
+    })
     expect(createMergedStyleValue('const cls = "none"', undefined, { app: { '': { color: 'red' } } })).toBeUndefined()
     expect(createMergedStyleValues('const cls = "app added"', [
       { app: { '': { color: 'blue' } } },
@@ -298,6 +334,15 @@ describe('uni-app-x style asset helpers', () => {
     })).toEqual([
       { app: { '': { color: 'red' } }, added: { '': { height: 20 } } },
       { app: { '': { color: 'red' } }, untouched: { '': { width: 10 } } },
+    ])
+    expect(createMergedStyleValues('const cls = "shared"', [
+      { shared: { '': { color: 'blue', padding: 12 } } },
+      { shared: { '': { borderRadius: 4 } } },
+    ], {
+      shared: { '': { color: 'red', margin: 8 } },
+    })).toEqual([
+      { shared: { '': { color: 'red', padding: 12, margin: 8 } } },
+      { shared: { '': { borderRadius: 4, color: 'red', margin: 8 } } },
     ])
   })
 })
