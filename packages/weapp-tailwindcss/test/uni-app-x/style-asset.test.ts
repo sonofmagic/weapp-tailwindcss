@@ -161,6 +161,36 @@ describe('uni-app-x style asset helpers', () => {
     expect(next).toContain('green')
   })
 
+  it('excludes custom component directories using harmony source metadata', () => {
+    const layoutCode = [
+      'const _sfc_main = { class: "green" };',
+      'export default _export_sfc(_sfc_main, [["__file", "layouts/default.uvue"]]);',
+    ].join('\n')
+    const matcher = (id: string) => id.startsWith('layouts/')
+
+    expect(injectUniAppXHarmonyGlobalStyles(
+      'assets/layouts/default.js',
+      layoutCode,
+      undefined,
+      {
+        componentMatcher: matcher,
+        cssSources: ['.green{color:green}'],
+        excludeComponents: true,
+      },
+    )).toBe(layoutCode)
+
+    expect(injectUniAppXHarmonyGlobalStyles(
+      'assets/views/default.js',
+      layoutCode.replace('layouts/default.uvue', 'views/default.uvue'),
+      undefined,
+      {
+        componentMatcher: matcher,
+        cssSources: ['.green{color:green}'],
+        excludeComponents: true,
+      },
+    )).toContain('const _style_wt =')
+  })
+
   it('inserts generated style declarations at a statement boundary and remains idempotent', () => {
     const code = 'const cls = "green"; const page = /* @__PURE__ */ _export_sfc(_sfc_main, [["__file","pages/index.uvue"]]);'
     const next = injectUniAppXHarmonyGlobalStyles('pages/index.js', code, undefined, {

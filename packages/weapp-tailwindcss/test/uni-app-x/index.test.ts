@@ -5,6 +5,10 @@ import { beforeEach, afterEach } from 'vitest'
 import { vi } from 'vitest'
 import { getCompilerContext } from '@/context'
 import { transformUVue } from '@/uni-app-x'
+import {
+  shouldEnableComponentLocalStyle,
+  shouldEnablePageLocalStyle,
+} from '@/uni-app-x/local-style-matcher'
 import { replaceWxml } from '@/wxml'
 
 const getCase = createGetCase(fixturesRootPath)
@@ -275,6 +279,48 @@ const condition = true
     const result = transformUVue('<template><view/></template>', 'App.vue', jsHandler, new Set())
     expect(result).toBeUndefined()
     expect(jsHandler).not.toHaveBeenCalled()
+  })
+
+  it('normalizes local style matcher ids and preserves default directories', () => {
+    expect(shouldEnableComponentLocalStyle('/project/src/components/card.uvue?vue&type=template')).toBe(true)
+    expect(shouldEnableComponentLocalStyle('C:\\project\\src\\components\\card.nvue#source')).toBe(true)
+    expect(shouldEnablePageLocalStyle('C:\\project\\src\\pages\\index.uvue?vue&type=template')).toBe(true)
+    expect(shouldEnableComponentLocalStyle('/project/src/layouts/default.uvue')).toBe(false)
+
+    const matcher = vi.fn((id: string) => id.endsWith('/layouts/default.uvue'))
+    expect(shouldEnableComponentLocalStyle('C:\\project\\src\\layouts\\default.uvue?vue&type=template', matcher)).toBe(true)
+    expect(matcher).toHaveBeenCalledWith('C:/project/src/layouts/default.uvue')
+  })
+
+  it('enables local styles for custom component directories only when matched', () => {
+    const { jsHandler } = getCompilerContext({ uniAppX: true })
+    const code = '<template><view class="px-4" /></template>'
+    const componentMatcher = (id: string) => id.endsWith('/layouts/default.uvue')
+    const matched = transformUVue(
+      code,
+      '/project/src/layouts/default.uvue?vue&type=template',
+      jsHandler,
+      new Set(['px-4']),
+      {
+        componentMatcher,
+        enableComponentLocalStyle: true,
+      },
+    )
+    const unmatched = transformUVue(
+      code,
+      '/project/src/views/default.uvue',
+      jsHandler,
+      new Set(['px-4']),
+      {
+        componentMatcher,
+        enableComponentLocalStyle: true,
+      },
+    )
+
+    expect(matched?.code).toContain('class="wtu-')
+    expect(matched?.code).toContain('@apply px-4;')
+    expect(unmatched?.code).toContain('class="px-4"')
+    expect(unmatched?.code).not.toContain('@apply px-4;')
   })
 
   it('does not expand static space-y utility in uvue template', () => {

@@ -17,8 +17,8 @@ import { toAbsoluteOutputPath } from '@/bundlers/shared/module-graph'
 import { parseVueRequest } from '@/bundlers/vite/query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest, normalizePath } from '@/bundlers/vite/utils'
 import { logger } from '@/logger'
-import { shouldEnablePageLocalStyle as isPageLocalStyleFile } from '@/uni-app-x/component-local-style'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
+import { shouldEnablePageLocalStyle as isPageLocalStyleFile } from '@/uni-app-x/local-style-matcher'
 import { resolveUniUtsPlatform } from '@/utils'
 import { omitUndefined } from '@/utils/object'
 import { isUniAppXEnabled, resolveUniAppXOptions } from './options'
@@ -120,7 +120,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     return componentLocalStyleEnabled
   }
   function shouldEnablePageLocalStyleForFile(id: string) {
-    return resolvedUniAppXOptions.componentLocalStyles.enabled && (isNativeAppBuildTarget(id) || isPageLocalStyleFile(id))
+    return resolvedUniAppXOptions.componentLocalStyles.enabled && (isNativeAppBuildTarget(id) || isPageLocalStyleFile(id, resolvedUniAppXOptions.componentLocalStyles.pageMatcher))
   }
   function isHarmonyBuildTarget() {
     if (resolveUniUtsPlatform().isAppHarmony) {
@@ -281,10 +281,12 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     nativeHmrReloader.remember(currentRuntimeSet)
     const transformUVue = await loadTransformUVue()
     const transformOptions = omitUndefined({
+      componentMatcher: resolvedUniAppXOptions.componentLocalStyles.componentMatcher,
       ...(customAttributesEntities.length > 0 ? { customAttributesEntities } : {}),
       ...(disabledDefaultTemplateHandler ? { disabledDefaultTemplateHandler } : {}),
       ...(enableComponentLocalStyle ? { enableComponentLocalStyle } : {}),
       ...(enablePageLocalStyle ? { enablePageLocalStyle } : {}),
+      pageMatcher: resolvedUniAppXOptions.componentLocalStyles.pageMatcher,
       ...(isWebGeneratorTarget() && customAttributesEntities.length > 0 ? { webCustomAttributeDeep: true } : {}),
       ...(isWebGeneratorTarget() ? { onWebLocalStyleRules: (rules: string) => webLocalStyle.remember(id, rules) } : {}),
     })
@@ -394,6 +396,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
           }
           injectUniAppXHarmonyBundleStyles(bundle, {
             cssSources,
+            componentMatcher: resolvedUniAppXOptions.componentLocalStyles.componentMatcher,
             excludeComponents: shouldEnableComponentLocalStyle(),
           })
         }

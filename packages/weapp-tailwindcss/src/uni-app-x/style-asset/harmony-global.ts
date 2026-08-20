@@ -1,4 +1,9 @@
+import type { UniAppXLocalStyleMatcher } from '../local-style-matcher'
 import type { StyleValue } from './style-value'
+import {
+  normalizeUniAppXLocalStyleId,
+  shouldEnableComponentLocalStyle,
+} from '../local-style-matcher'
 import {
   createMergedStyleValue,
   createMergedStyleValues,
@@ -17,10 +22,31 @@ const STYLE_DECL_RE = /const\s+(_style_\d+)\s*=\s*\{/g
 const EXPORT_SFC_RE = /_export_sfc\(_sfc_main\s*,\s*\[/
 
 export interface HarmonyStyleInjectOptions {
+  componentMatcher?: UniAppXLocalStyleMatcher | undefined
   cssSources?: Iterable<string | undefined> | undefined
   styleAssetFiles?: Iterable<string | undefined> | ((file: string) => Iterable<string | undefined>) | undefined
   excludeComponents?: boolean | undefined
   mapSources?: Iterable<string | undefined> | undefined
+}
+
+function resolveSfcSourceId(code: string) {
+  const match = code.match(/\[\s*["']__file["']\s*,\s*(["'])(.*?)\1\s*\]/)
+  return match?.[2] ? normalizeUniAppXLocalStyleId(match[2]) : undefined
+}
+
+function shouldExcludeComponent(file: string, code: string, options: HarmonyStyleInjectOptions) {
+  if (!options.excludeComponents) {
+    return false
+  }
+  const sourceId = resolveSfcSourceId(code)
+  if (sourceId) {
+    return shouldEnableComponentLocalStyle(sourceId, options.componentMatcher)
+  }
+  const normalizedFile = normalizeUniAppXLocalStyleId(file)
+  if (options.componentMatcher?.(normalizedFile)) {
+    return true
+  }
+  return COMPONENT_JS_RE.test(normalizedFile)
 }
 
 interface StyleObjectDecl {
@@ -192,7 +218,7 @@ export function injectUniAppXHarmonyGlobalStyles(
   if (!JS_RE.test(file) || APP_JS_RE.test(file)) {
     return code
   }
-  if (options.excludeComponents && COMPONENT_JS_RE.test(file)) {
+  if (shouldExcludeComponent(file, code, options)) {
     return code
   }
   const appSource = getBundleSource?.('assets/App.js') ?? getBundleSource?.('App.js')

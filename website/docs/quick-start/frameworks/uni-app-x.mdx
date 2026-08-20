@@ -137,6 +137,20 @@ Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不要再注册 `tailwindcss
 `rem2rpx`、`unitsToPx`、`unitConversion` 是 `uniAppX()` 预设的顶层选项，不要放进 `cssOptions`。
 :::
 
+项目把可复用组件放在 `layouts` 等自定义目录时，可以显式扩展局部样式匹配范围：
+
+```ts title="vite.config.ts"
+uniAppX({
+  base: projectRoot,
+  cssEntries: [resolve(projectRoot, 'main.css')],
+  componentLocalStyles: {
+    componentMatcher: id => /(?:^|\/)layouts\/.+\.(?:uvue|nvue)$/.test(id),
+  },
+})
+```
+
+`componentMatcher` 会覆盖默认的 `components` 目录规则；需要同时保留默认组件目录时，应在回调中一并匹配 `components` 和自定义目录。页面目录可通过同级的 `pageMatcher` 调整。两个回调收到的路径都已移除 query/hash，并统一为正斜杠。
+
 ### 4) 配置 Tailwind CSS 入口
 
 Tailwind CSS 4 使用 CSS-first 入口。入口文件应放在项目根目录或源码目录下，并在 `cssEntries` 中使用绝对路径引用：

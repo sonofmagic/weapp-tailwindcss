@@ -1042,6 +1042,53 @@ describe('uni-app-x vite plugins', () => {
     }
   })
 
+  it('passes custom local style matchers to the uvue transform', async () => {
+    const runtimeSet = new Set(['px-4'])
+    const jsHandler = vi.fn()
+    const componentMatcher = (id: string) => id.endsWith('/layouts/default.uvue')
+    const pageMatcher = (id: string) => id.endsWith('/screens/home.uvue')
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      mainCssChunkMatcher: vi.fn(() => true),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler: vi.fn(),
+      jsHandler,
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      getResolvedConfig: () => ({ command: 'build', build: { watch: false }, root: '/project' } as ResolvedConfig),
+      uniAppX: {
+        enabled: true,
+        componentLocalStyles: {
+          componentMatcher,
+          onlyWhenStyleIsolationVersion2: false,
+          pageMatcher,
+        },
+      },
+    })
+    const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
+    transformUVueMock.mockClear()
+    transformUVueMock.mockReturnValue({ code: 'transformed', map: null } as TransformResult)
+
+    await getTransformHandler(nvuePlugin)?.call(
+      nvuePlugin,
+      '<template><view class="px-4" /></template>',
+      '/project/src/layouts/default.uvue?vue&type=template',
+    )
+
+    expect(transformUVueMock).toHaveBeenLastCalledWith(
+      '<template><view class="px-4" /></template>',
+      '/project/src/layouts/default.uvue?vue&type=template',
+      jsHandler,
+      runtimeSet,
+      {
+        componentMatcher,
+        enableComponentLocalStyle: true,
+        pageMatcher,
+      },
+    )
+  })
+
   it('enables page local style transform on app-harmony without styleIsolationVersion=2', async () => {
     const originalPlatform = process.env.UNI_UTS_PLATFORM
     process.env.UNI_UTS_PLATFORM = 'app-harmony'
@@ -1468,7 +1515,9 @@ describe('uni-app-x vite plugins', () => {
         getResolvedConfig: () => ({ command: 'build', build: { watch: false }, root } as ResolvedConfig),
         uniAppX: {
           enabled: true,
-          componentLocalStyles: true,
+          componentLocalStyles: {
+            componentMatcher: id => /(?:^|\/)(?:components|layouts)\//.test(id),
+          },
         },
       })
       const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
@@ -1476,6 +1525,7 @@ describe('uni-app-x vite plugins', () => {
       const bundle = {
         'assets/App.js': createChunk('const _style_0 = {"px-4":{"":{"paddingLeft":"32rpx","paddingRight":"32rpx"}}};'),
         'assets/components/Logo.js': createChunk('function render(){return createElementVNode("view", { class: "px-4" })}\nconst Logo = _export_sfc(_sfc_main, [["render", render], ["__file", "components/Logo.uvue"]]);'),
+        'assets/layouts/default.js': createChunk('function render(){return createElementVNode("view", { class: "px-4" })}\nconst layout = _export_sfc(_sfc_main, [["render", render], ["__file", "layouts/default.uvue"]]);'),
         'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "px-4" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
       }
 
@@ -1483,6 +1533,8 @@ describe('uni-app-x vite plugins', () => {
 
       expect(bundle['assets/components/Logo.js'].code).not.toContain('const _style_wt')
       expect(bundle['assets/components/Logo.js'].code).not.toContain('"px-4":{"":{"paddingLeft":"32rpx"')
+      expect(bundle['assets/layouts/default.js'].code).not.toContain('const _style_wt')
+      expect(bundle['assets/layouts/default.js'].code).not.toContain('"px-4":{"":{"paddingLeft":"32rpx"')
       expect(bundle['assets/pages/index/index.js'].code).toContain('"px-4":{"":{"paddingLeft":"32rpx"')
     }
     finally {

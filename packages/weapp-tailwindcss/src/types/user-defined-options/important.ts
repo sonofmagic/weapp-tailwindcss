@@ -15,6 +15,13 @@ import type { TailwindCssRuntimeOptions } from '@/tailwindcss/runtime-types'
 
 export interface UniAppXComponentLocalStylesOptions {
   /**
+   * 判断模块是否按组件局部样式处理。
+   *
+   * @remarks
+   * 回调接收已移除 query/hash 并统一为正斜杠的模块路径。配置后会覆盖默认的 `components` 目录匹配规则。
+   */
+  componentMatcher?: ((id: string) => boolean) | undefined
+  /**
    * 是否开启组件级局部 Tailwind 样式注入。
    *
    * @default true
@@ -26,6 +33,13 @@ export interface UniAppXComponentLocalStylesOptions {
    * @default true
    */
   onlyWhenStyleIsolationVersion2?: boolean | undefined
+  /**
+   * 判断模块是否按页面局部样式处理。
+   *
+   * @remarks
+   * 回调接收已移除 query/hash 并统一为正斜杠的模块路径。配置后会覆盖默认的 `pages` 目录匹配规则。
+   */
+  pageMatcher?: ((id: string) => boolean) | undefined
 }
 
 export interface UniAppXOptions {
