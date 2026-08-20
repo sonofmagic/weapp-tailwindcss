@@ -8,6 +8,7 @@ import type {
   NativeStyleManifest,
   NativeStyleRule,
 } from './types'
+import { createHash } from 'node:crypto'
 import postcss from 'postcss'
 
 const CLASS_SELECTOR_RE = /\.((?:\\.|[^\s.#:[>+~])+)/g
@@ -58,6 +59,27 @@ const NUMERIC_PROPERTIES = new Set([
   'width',
   'zIndex',
 ])
+const STRING_PROPERTIES = new Set([
+  'alignContent',
+  'alignItems',
+  'alignSelf',
+  'borderStyle',
+  'direction',
+  'display',
+  'flexDirection',
+  'flexWrap',
+  'fontFamily',
+  'fontStyle',
+  'fontWeight',
+  'justifyContent',
+  'overflow',
+  'position',
+  'textAlign',
+  'textDecorationLine',
+  'textDecorationStyle',
+  'textTransform',
+  'writingDirection',
+])
 const SHORTHANDS: Record<string, string[]> = {
   margin: ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
   padding: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
@@ -85,6 +107,43 @@ function decodeCssIdentifier(value: string) {
     .replace(/\\(.)/g, '$1')
 }
 
+function splitClassName(className: string) {
+  const parts: string[] = []
+  let current = ''
+  let bracketDepth = 0
+  let escaped = false
+  for (const character of className) {
+    if (escaped) {
+      current += character
+      escaped = false
+      continue
+    }
+    if (character === '\\') {
+      current += character
+      escaped = true
+      continue
+    }
+    if (character === '[') { bracketDepth += 1 }
+    if (character === ']') { bracketDepth = Math.max(0, bracketDepth - 1) }
+    if (character === ':' && bracketDepth === 0) {
+      parts.push(current)
+      current = ''
+      continue
+    }
+    current += character
+  }
+  parts.push(current)
+  return parts
+}
+
+export function baseClassName(className: string) {
+  return splitClassName(className).at(-1)
+}
+
+function unsupportedVariant(className: string) {
+  return splitClassName(className).slice(0, -1).find(variant => !['dark', 'ios', 'android', 'native'].includes(variant))
+}
+
 function propertyName(property: string) {
   const logical = {
     'padding-inline': 'paddingHorizontal',
@@ -109,6 +168,8 @@ function splitValue(value: string) {
 
 function parseNumber(value: string, variables: Record<string, string>) {
   const resolved = resolveVariables(value, variables)
+  const fraction = resolved.match(/^(-?(?:\d+\.\d+|\d+|\.\d+))\s*\/\s*(-?(?:\d+\.\d+|\d+|\.\d+))$/)
+  if (fraction && Number(fraction[2]) !== 0) { return Number(fraction[1]) / Number(fraction[2]) }
   const calculated = resolved.match(/^calc\(\s*(-?(?:\d+\.\d+|\d+|\.\d+))(px|rem|em|%)?\s*\*\s*(-?(?:\d+\.\d+|\d+|\.\d+))\s*\)$/)
   if (calculated) {
     const base = parseNumber(`${calculated[1]}${calculated[2] ?? ''}`, variables)
@@ -206,11 +267,17 @@ function parseValue(property: string, value: string, variables: Record<string, s
     const color = resolveVariables(trimmed, variables)
     return isColor(color) ? normalizeColor(color) : undefined
   }
-  if (NUMERIC_PROPERTIES.has(property)) { return parseNumber(trimmed, variables) }
+  if (NUMERIC_PROPERTIES.has(property)) {
+    const number = parseNumber(trimmed, variables)
+    if (property === 'opacity' && typeof number === 'string' && number.endsWith('%')) {
+      return Number.parseFloat(number) / 100
+    }
+    return number
+  }
   if (property === 'transform') { return parseTransform(trimmed, variables) }
   if (property === 'boxShadow') { return parseShadow(trimmed, variables) }
   if (property === 'display' && !['flex', 'none'].includes(trimmed)) { return undefined }
-  return trimmed
+  return STRING_PROPERTIES.has(property) ? trimmed : undefined
 }
 
 function expandDeclaration(property: string, value: string, variables: Record<string, string>) {
@@ -248,7 +315,7 @@ function walkClasses(selector: string) {
 
 function variantForClass(className: string): Pick<NativeStyleRule, 'colorScheme' | 'platform'> {
   const result: Pick<NativeStyleRule, 'colorScheme' | 'platform'> = {}
-  for (const variant of className.split(':').slice(0, -1)) {
+  for (const variant of splitClassName(className).slice(0, -1)) {
     if (variant === 'dark') { result.colorScheme = 'dark' }
     if (variant === 'ios' || variant === 'android' || variant === 'native') { result.platform = variant as NativePlatform }
   }
@@ -266,7 +333,7 @@ function atRuleVariant(node: AtRule | undefined): Pick<NativeStyleRule, 'colorSc
 
 export function addNativeVariantRules(manifest: NativeStyleManifest, candidates: Iterable<string>) {
   for (const candidate of candidates) {
-    const parts = candidate.split(':')
+    const parts = splitClassName(candidate)
     if (parts.length < 2) { continue }
     const base = parts.at(-1)
     if (!base || manifest.rules[candidate] || !manifest.rules[base]) { continue }
@@ -304,6 +371,15 @@ function addWarning(warnings: NativeCompilerWarning[], warning: NativeCompilerWa
 }
 
 function compileRule(rule: Rule, className: string, variables: Record<string, string>, warnings: NativeCompilerWarning[], order: number) {
+  const unsupported = unsupportedVariant(className)
+  if (unsupported) {
+    addWarning(warnings, {
+      className,
+      property: 'variant',
+      message: `不支持将 ${unsupported}: 变体编译为 React Native 条件样式`,
+    })
+    return []
+  }
   const styles: Record<'normal' | 'important', Record<string, unknown>> = { normal: {}, important: {} }
   rule.walkDecls((decl) => {
     if (decl.prop.startsWith('--')) { return }
@@ -312,10 +388,7 @@ function compileRule(rule: Rule, className: string, variables: Record<string, st
     const value = decl.value.replace(/\s*!important\s*$/i, '')
     const expanded = expandDeclaration(property, value, variables)
     if (!expanded || Object.values(expanded).includes(undefined)) {
-      const variableReference = /var\((--[\w-]+)/.exec(value)?.[1]
-      if (!variableReference || !variables[variableReference]) {
-        addWarning(warnings, { className, property, message: `不支持将 ${decl.prop}: ${value} 编译为 React Native style` })
-      }
+      addWarning(warnings, { className, property, message: `不支持将 ${decl.prop}: ${value} 编译为 React Native style` })
       return
     }
     Object.assign(styles[important ? 'important' : 'normal'], expanded)
@@ -339,10 +412,10 @@ export function finalizeNativeManifest(manifest: NativeStyleManifest): NativeSty
   const styleSheet: Record<string, Record<string, unknown>> = {}
   const styleEntries: Record<string, NativeStyleRule> = {}
   const staticLookup: Record<string, string[]> = {}
-  let nextId = 0
   for (const [className, rules] of Object.entries(manifest.rules)) {
-    for (const rule of rules) {
-      const id = rule.id ?? `s${nextId++}`
+    for (const [index, rule] of rules.entries()) {
+      const identity = `${className}\0${index}\0${rule.colorScheme ?? ''}\0${rule.platform ?? ''}\0${rule.important ? 'important' : 'normal'}`
+      const id = rule.id ?? `s${createHash('sha256').update(identity).digest('hex').slice(0, 12)}`
       rule.id = id
       styleSheet[id] = rule.style
       styleEntries[id] = rule

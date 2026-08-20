@@ -38,6 +38,14 @@ const workspaceAliases = [
     find: /^@weapp-tailwindcss\/postcss\/css-macro\/postcss$/,
     replacement: path.resolve(__dirname, '../packages/postcss/src/css-macro/postcss.ts'),
   },
+  {
+    find: /^@weapp-tailwindcss\/react-native\/tailwind$/,
+    replacement: path.resolve(__dirname, '../packages/react-native/src/tailwind.ts'),
+  },
+  {
+    find: /^@weapp-tailwindcss\/react-native\/compiler$/,
+    replacement: path.resolve(__dirname, '../packages/react-native/src/compiler.ts'),
+  },
 ]
 
 export default defineConfig({

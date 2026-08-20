@@ -131,6 +131,9 @@ website/tests/index.spec.ts-snapshots
 /.playwright-cli/
 /.playwright-mcp/
 e2e/.artifacts/
+examples/react-native-expo/.expo/
+examples/react-native-expo/android/
+examples/react-native-expo/ios/
 .e2e-runtime/
 .tmp/
 .codex-tmp/

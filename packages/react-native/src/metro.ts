@@ -1,6 +1,7 @@
 /* eslint-disable style/max-statements-per-line */
 
 import type { NativeStyleManifest } from './types'
+import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -23,6 +24,11 @@ export interface MetroConfigLike {
   [key: string]: unknown
 }
 
+interface MetroResolverContext {
+  originModulePath?: string
+  resolveRequest?: (context: unknown, moduleName: string, platform?: string) => unknown
+}
+
 export interface WeappReactNativeMetroOptions {
   projectRoot?: string | undefined
   input?: string | undefined
@@ -36,14 +42,41 @@ export interface WeappReactNativeMetroOptions {
 interface RegisteredManifest {
   version: number
   manifest: NativeStyleManifest
+  projectRoot: string
   virtualPath: string
   manifestPath: string
+  manifestReadyPath: string
   ready: Promise<void>
   refresh: () => Promise<void>
 }
 
+export interface NativeManifestPaths {
+  manifestPath: string
+  manifestReadyPath: string
+}
+
 const registry = new Map<string, RegisteredManifest>()
+const appRootSingletonModules = new Set(['react', 'react-native'])
 let nextId = 0
+
+function packageNameFromModuleId(moduleName: string) {
+  const segments = moduleName.split('/')
+  return moduleName.startsWith('@') ? segments.slice(0, 2).join('/') : segments[0]
+}
+
+function shouldResolveFromAppRoot(moduleName: string, platform?: string) {
+  return platform !== 'web' && appRootSingletonModules.has(packageNameFromModuleId(moduleName))
+}
+
+/** 为 Metro worker 提供不依赖进程内 registry 的 manifest 入口。 */
+export function getManifestPathsForProjectRoot(projectRoot: string): NativeManifestPaths {
+  const projectKey = createHash('sha256').update(path.resolve(projectRoot)).digest('hex').slice(0, 24)
+  const base = path.join(os.tmpdir(), 'weapp-tailwindcss-native', `project-${projectKey}`)
+  return {
+    manifestPath: `${base}.manifest.json`,
+    manifestReadyPath: `${base}.manifest.ready`,
+  }
+}
 
 function resolveInput(input: string | undefined, projectRoot: string) {
   return input ? path.resolve(projectRoot, input) : undefined
@@ -61,6 +94,14 @@ function writeVirtualModule(entry: RegisteredManifest) {
   fs.mkdirSync(path.dirname(entry.virtualPath), { recursive: true })
   fs.writeFileSync(entry.virtualPath, virtualModuleCode(entry.manifest), 'utf8')
   fs.writeFileSync(entry.manifestPath, JSON.stringify(entry.manifest), 'utf8')
+}
+
+function markManifestPending(entry: RegisteredManifest) {
+  fs.rmSync(entry.manifestReadyPath, { force: true })
+}
+
+function markManifestReady(entry: RegisteredManifest) {
+  fs.writeFileSync(entry.manifestReadyPath, `${entry.version}\n`, 'utf8')
 }
 
 async function compileOptions(options: WeappReactNativeMetroOptions, projectRoot: string) {
@@ -81,29 +122,41 @@ async function compileOptions(options: WeappReactNativeMetroOptions, projectRoot
 function register(options: WeappReactNativeMetroOptions) {
   const id = `weapp-tailwindcss-native-${nextId++}`
   const projectRoot = path.resolve(options.projectRoot ?? process.cwd())
+  const manifestPaths = getManifestPathsForProjectRoot(projectRoot)
   const entry: RegisteredManifest = {
     version: 0,
     manifest: options.manifest ?? (options.css ? compileNativeStylesheet(options.css, { classSet: options.classSet }) : emptyManifest()),
+    projectRoot,
     virtualPath: path.join(os.tmpdir(), 'weapp-tailwindcss-native', `${id}.js`),
-    manifestPath: path.join(os.tmpdir(), 'weapp-tailwindcss-native', `${id}.manifest.json`),
+    manifestPath: manifestPaths.manifestPath,
+    manifestReadyPath: manifestPaths.manifestReadyPath,
     ready: Promise.resolve(),
     refresh: async () => {},
   }
   registry.set(id, entry)
+  markManifestPending(entry)
   writeVirtualModule(entry)
 
   let generation = 0
   entry.refresh = async () => {
     const currentGeneration = ++generation
+    markManifestPending(entry)
     const manifest = await compileOptions(options, projectRoot)
     if (currentGeneration === generation) {
       entry.manifest = manifest
       entry.version++
       writeVirtualModule(entry)
+      markManifestReady(entry)
     }
   }
   entry.ready = entry.refresh().catch((error) => {
-    entry.manifest.warnings.push({ message: `生成 React Native manifest 失败：${error instanceof Error ? error.message : String(error)}` })
+    const message = `生成 React Native manifest 失败：${error instanceof Error ? error.message : String(error)}`
+    entry.manifest.warnings.push({ message })
+    if (process.env.WEAPP_TW_RN_DEBUG === '1') {
+      console.error(`[react-native-debug] ${message}`)
+    }
+    writeVirtualModule(entry)
+    markManifestReady(entry)
   })
 
   const sourceRoots = (options.sourceGlobs ?? [])
@@ -138,6 +191,27 @@ export async function getRegisteredManifest(id: string) {
   return registered.manifest
 }
 
+/** 等待并读取由 Metro 配置注册的 manifest 文件，兼容未透传自定义 Metro id 的 transformer。 */
+export async function getRegisteredManifestByPath(filename: string) {
+  for (const entry of registry.values()) {
+    if (entry.manifestPath === filename) {
+      await entry.ready
+      return entry.manifest
+    }
+  }
+  return undefined
+}
+
+/** 按 Metro 传入的项目根目录读取当前注册项，兼容 transformer 未透传自定义字段的实现。 */
+export async function getRegisteredManifestByProjectRoot(projectRoot: string) {
+  const resolvedRoot = path.resolve(projectRoot)
+  const entries = [...registry.values()].filter(entry => entry.projectRoot === resolvedRoot)
+  const entry = entries.at(-1)
+  if (!entry) { return undefined }
+  await entry.ready
+  return entry.manifest
+}
+
 export function getVirtualModuleCode(filename: string) {
   const registered = getRegisteredVirtualModule(filename)
   if (!registered) { return undefined }
@@ -163,8 +237,13 @@ export function withWeappTailwindcss<T extends MetroConfigLike>(config: T | Prom
     if (moduleName === VIRTUAL_MANIFEST_MODULE) {
       return { type: 'sourceFile', filePath: entry.virtualPath }
     }
-    return originalResolver?.(context, moduleName, platform)
-      ?? (context as { resolveRequest?: (ctx: unknown, name: string, platform?: string) => unknown }).resolveRequest?.(context, moduleName, platform)
+    const resolverContext = context as MetroResolverContext
+    // React 核心包必须与原生工程使用同一实例；workspace symlink 不能从包目录加载另一套 peer。
+    const anchoredContext = resolverContext.originModulePath === entry.virtualPath || shouldResolveFromAppRoot(moduleName, platform)
+      ? { ...resolverContext, originModulePath: path.join(entry.projectRoot, 'package.json') }
+      : resolverContext
+    return originalResolver?.(anchoredContext, moduleName, platform)
+      ?? resolverContext.resolveRequest?.(anchoredContext, moduleName, platform)
   }
   return {
     ...resolvedConfig,
@@ -175,6 +254,8 @@ export function withWeappTailwindcss<T extends MetroConfigLike>(config: T | Prom
       weappTailwindcssMetroId: id,
       weappTailwindcssOriginalTransformerPath: resolvedConfig.transformerPath,
       weappTailwindcssManifestPath: entry.manifestPath,
+      weappTailwindcssManifestReadyPath: entry.manifestReadyPath,
+      weappTailwindcssVirtualModulePath: entry.virtualPath,
     },
     resolver: {
       ...resolvedConfig.resolver,
