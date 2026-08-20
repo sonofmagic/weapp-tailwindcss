@@ -127,7 +127,7 @@
 					@apply 多端写法示例
 				</text>
 			</view>
-			<view class="theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark:bg-slate-900 system-dark:text-slate-100 dark:bg-zinc-900 dark:text-zinc-50">
+			<view class="theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark:bg-slate-900 system-dark:text-slate-100 dark:bg-zinc-950 dark:text-zinc-50">
 				<text>uni-app x Tailwind CSS v4 system dark</text>
 				<view class="theme-dark issue-1091-probe mt-2 rounded bg-[#eccc68] px-3 py-2 text-slate-900 dark:bg-[#3498db] dark:text-zinc-50">
 					<text>uni-app x Tailwind CSS v4 manual dark issue 1091</text>
