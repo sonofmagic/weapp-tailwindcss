@@ -368,14 +368,14 @@ export function transformUVue(
     if (localStyleCollector?.hasStyles()) {
       const scopedStyle = descriptor.styles.findLast(style => STYLE_SCOPED_RE.test(style.attrs))
       if (scopedStyle && options.onWebLocalStyleRules) {
-        options.onWebLocalStyleRules(localStyleCollector.toStyleRules())
+        options.onWebLocalStyleRules(localStyleCollector.toStyleRules({ web: true }))
       }
       else if (scopedStyle) {
         const separator = scopedStyle.content.endsWith('\n') ? '' : '\n'
         ms.appendLeft(scopedStyle.end, `${separator}${localStyleCollector.toStyleRules()}`)
       }
       else {
-        ms.append(`\n${localStyleCollector.toStyleBlock()}`)
+        ms.append(`\n${localStyleCollector.toStyleBlock({ web: Boolean(options.onWebLocalStyleRules) })}`)
       }
     }
   }

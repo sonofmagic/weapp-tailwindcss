@@ -529,6 +529,41 @@ const active = true
     expect(result?.code).toMatch(/\.wtu-[\w-]+ \{\n  @apply bg-\[#123456\];\n\}/)
   })
 
+  it('lowers web local utility specificity so variants can override the base utility', () => {
+    const { jsHandler } = getCompilerContext({ uniAppX: true })
+    const onWebLocalStyleRules = vi.fn()
+    const result = transformUVue(
+      '<template><view class="bg-[#eccc68] dark:bg-[#3498db]" /></template>\n<style scoped>.author { color: red; }</style>',
+      '/src/pages/index/index.uvue',
+      jsHandler,
+      new Set(['bg-[#eccc68]', 'dark:bg-[#3498db]']),
+      {
+        enablePageLocalStyle: true,
+        onWebLocalStyleRules,
+      },
+    )
+
+    expect(result?.code).toContain('class="wtu-')
+    expect(result?.code).toContain('dark_cbg-_b_h3498db_B')
+    expect(onWebLocalStyleRules).toHaveBeenCalledWith(expect.stringMatching(/:global\(\.wtu-[\w-]+\)/))
+  })
+
+  it('uses the same web-safe selector when a page has no scoped author style', () => {
+    const { jsHandler } = getCompilerContext({ uniAppX: true })
+    const result = transformUVue(
+      '<template><view class="bg-[#eccc68]" /></template>',
+      '/src/pages/index/index.uvue',
+      jsHandler,
+      new Set(['bg-[#eccc68]']),
+      {
+        enablePageLocalStyle: true,
+        onWebLocalStyleRules: vi.fn(),
+      },
+    )
+
+    expect(result?.code).toMatch(/<style scoped>\n:global\(\.wtu-[\w-]+\)/)
+  })
+
   it('keeps variant utilities on the global platform pipeline for app-harmony pages', () => {
     process.env.UNI_UTS_PLATFORM = 'app-harmony'
     const { jsHandler } = getCompilerContext({
