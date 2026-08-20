@@ -10,6 +10,7 @@ import process from 'node:process'
 import os from 'node:os'
 import { execa } from 'execa'
 import type { ReactNativePlatform, ReactNativeReport } from './catalog'
+import { findAndroidAnrWaitTap } from './android-window'
 import { getHttpText } from './native-http'
 import { evaluateNativeWait } from './native-wait'
 import { validateReactNativeReport } from './reports'
@@ -211,10 +212,17 @@ function iosHostAddress() {
 
 async function assertAndroidMarker(device: string, marker: string) {
   const dump = path.resolve(artifacts, 'window.xml')
-  await execa('adb', ['-s', device, 'shell', 'uiautomator', 'dump', '/sdcard/window.xml'])
-  const result = await execa('adb', ['-s', device, 'exec-out', 'cat', '/sdcard/window.xml'])
-  await fs.writeFile(dump, result.stdout, 'utf8')
-  if (!result.stdout.includes(marker) || !result.stdout.includes('tw-rn-root')) { throw new Error(`Android accessibility tree is missing ${marker} or tw-rn-root`) }
+  for (let attempt = 0; attempt < 3; attempt++) {
+    await execa('adb', ['-s', device, 'shell', 'uiautomator', 'dump', '/sdcard/window.xml'])
+    const result = await execa('adb', ['-s', device, 'exec-out', 'cat', '/sdcard/window.xml'])
+    await fs.writeFile(dump, result.stdout, 'utf8')
+    if (result.stdout.includes(marker) && result.stdout.includes('tw-rn-root')) { return }
+    const waitTap = findAndroidAnrWaitTap(result.stdout)
+    if (!waitTap) { break }
+    await execa('adb', ['-s', device, 'shell', 'input', 'tap', String(waitTap.x), String(waitTap.y)])
+    await new Promise(resolve => setTimeout(resolve, 1_000))
+  }
+  throw new Error(`Android accessibility tree is missing ${marker} or tw-rn-root`)
 }
 
 async function androidExpoDevice(device: string) {
@@ -355,8 +363,8 @@ async function main() {
     const baselineReport = withNativeEnvironment(baseline.report, nativeEnvironment)
     validateReactNativeReport(baselineReport, platform)
     await waitForRuntimePaint()
-    const beforeScreenshot = await capture('runtime-before.png', device)
     if (platform === 'android') { await assertAndroidMarker(device, 'rn-hmr-baseline') }
+    const beforeScreenshot = await capture('runtime-before.png', device)
 
     const updated = originalMarker.replace('rn-hmr-baseline', 'rn-hmr-updated').replace('bg-emerald-500', 'bg-rose-500')
     await fs.writeFile(markerFile, updated, 'utf8')
@@ -364,8 +372,8 @@ async function main() {
     const hmrReport = withNativeEnvironment(hmr.report, nativeEnvironment)
     validateReactNativeReport(hmrReport, platform)
     await waitForRuntimePaint()
-    const afterTsxScreenshot = await capture('runtime-tsx-after.png', device)
     if (platform === 'android') { await assertAndroidMarker(device, 'rn-hmr-updated') }
+    const afterTsxScreenshot = await capture('runtime-tsx-after.png', device)
     const updatedCss = originalCss.replace('#10b981', '#f59e0b')
     if (updatedCss === originalCss) { throw new Error('CSS HMR probe color was not found') }
     await fs.writeFile(cssFile, updatedCss, 'utf8')
@@ -373,8 +381,8 @@ async function main() {
     const cssHmrReport = withNativeEnvironment(cssHmr.report, nativeEnvironment)
     validateReactNativeReport(cssHmrReport, platform)
     await waitForRuntimePaint()
-    const afterScreenshot = await capture('runtime-after.png', device)
     if (platform === 'android') { await assertAndroidMarker(device, 'rn-hmr-updated') }
+    const afterScreenshot = await capture('runtime-after.png', device)
     const beforeHash = await fileHash(beforeScreenshot)
     const afterTsxHash = await fileHash(afterTsxScreenshot)
     const afterHash = await fileHash(afterScreenshot)
