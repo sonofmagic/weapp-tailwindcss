@@ -192,4 +192,4 @@ Issues, reproducible bug reports, framework examples, documentation improvements
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=sonofmagic/weapp-tailwindcss&type=Date)](https://star-history.com/#sonofmagic/weapp-tailwindcss&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=sonofmagic/weapp-tailwindcss&type=Date)](https://star-history.dera.page/#sonofmagic/weapp-tailwindcss&Date)
