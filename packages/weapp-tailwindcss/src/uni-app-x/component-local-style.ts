@@ -282,22 +282,25 @@ export class UniAppXComponentLocalStyleCollector {
     return this.aliasByUtility.size > 0
   }
 
-  toStyleBlock() {
+  toStyleBlock(options: { web?: boolean } = {}) {
     if (!this.hasStyles()) {
       return ''
     }
-    return `<style scoped>\n${this.toStyleRules()}</style>\n`
+    return `<style scoped>\n${this.toStyleRules(options)}</style>\n`
   }
 
-  toStyleRules() {
+  toStyleRules(options: { web?: boolean } = {}) {
     if (!this.hasStyles()) {
       return ''
     }
     const lines: string[] = []
     for (const [utility, alias] of this.aliasByUtility) {
+      // H5 的 Vue scoped 编译会把 :where(.alias) 展开为带 scope attribute 的选择器，
+      // 重新抬高特异性；使用 :global 保持局部 alias 的单类选择器特异性。
+      const localSelector = options.web ? `:global(.${alias})` : `.${alias}`
       const selector = this.deepUtilities.has(utility)
-        ? `.${alias}, :deep(.${alias})`
-        : `.${alias}`
+        ? `${localSelector}, :deep(.${alias})`
+        : localSelector
       lines.push(`${selector} {`)
       lines.push(`  @apply ${serializeApplyUtility(utility)};`)
       lines.push('}')

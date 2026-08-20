@@ -1014,6 +1014,12 @@ export const webCases: WebCase[] = [
         },
       },
       {
+        selector: '.issue-1091-probe',
+        styles: {
+          backgroundColor: 'rgb(52, 152, 219)',
+        },
+      },
+      {
         selector: '.issue-navbar-left',
         styles: {
           backgroundColor: 'rgb(9, 87, 222)',
