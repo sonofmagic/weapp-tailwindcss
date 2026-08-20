@@ -193,6 +193,17 @@ async function androidExpoDevice(device: string) {
   throw new Error(`Unable to resolve the Expo AVD name for ${device}; set RN_ANDROID_EXPO_DEVICE explicitly`)
 }
 
+function startAndroidDialogGuard(device: string) {
+  let dismissing = false
+  const timer = setInterval(() => {
+    if (dismissing) { return }
+    dismissing = true
+    void execa('adb', ['-s', device, 'shell', 'am', 'broadcast', '-a', 'android.intent.action.CLOSE_SYSTEM_DIALOGS'], { reject: false })
+      .finally(() => { dismissing = false })
+  }, 10_000)
+  return () => clearInterval(timer)
+}
+
 async function collectNativeEnvironment(device: string): Promise<Partial<ReactNativeReport['environment']>> {
   if (platform === 'android') {
     const [model, abi, release, sdk] = await Promise.all([
@@ -240,12 +251,16 @@ async function main() {
   if (!device) { throw new TypeError(`No booted ${platform} simulator was found`) }
   const nativeEnvironment = await collectNativeEnvironment(device)
   const reportUrl = `http://${runtimeHost}:${port}`
+  let stopAndroidDialogGuard: (() => void) | undefined
   if (platform === 'android') {
     await execa('adb', ['-s', device, 'reverse', `tcp:${port}`, `tcp:${port}`])
     await execa('adb', ['-s', device, 'reverse', 'tcp:8081', 'tcp:8081'])
     await execa('adb', ['-s', device, 'shell', 'settings', 'put', 'global', 'hide_error_dialogs', '1'])
+    await execa('adb', ['-s', device, 'shell', 'settings', 'put', 'global', 'anr_show_background', '0'])
+    await execa('adb', ['-s', device, 'shell', 'settings', 'put', 'global', 'show_first_crash_dialog', '0'])
     await execa('adb', ['-s', device, 'shell', 'am', 'broadcast', '-a', 'android.intent.action.CLOSE_SYSTEM_DIALOGS'], { reject: false })
     await execa('adb', ['-s', device, 'logcat', '-c'], { reject: false })
+    stopAndroidDialogGuard = startAndroidDialogGuard(device)
   }
   const logFile = await fs.open(path.resolve(artifacts, 'expo-run.log'), 'w')
   const metroLogFile = await fs.open(metroLogPath, 'w')
@@ -341,6 +356,7 @@ async function main() {
     completed = true
   }
   finally {
+    stopAndroidDialogGuard?.()
     if (!completed) { await captureFailureDiagnostics(device) }
     await fs.writeFile(markerFile, originalMarker, 'utf8')
     await fs.writeFile(cssFile, originalCss, 'utf8')
