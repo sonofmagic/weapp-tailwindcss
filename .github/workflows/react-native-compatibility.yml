@@ -32,7 +32,16 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm turbo run build --filter=@weapp-tailwindcss/react-native...
-      - run: pnpm exec playwright install --with-deps chromium
+      - name: Install Playwright Chromium
+        run: |
+          for attempt in 1 2 3 4; do
+            if pnpm exec playwright install chromium; then
+              exit 0
+            fi
+            echo "Playwright Chromium install failed, retrying (${attempt}/4)"
+            sleep $((attempt * 10))
+          done
+          pnpm exec playwright install chromium
       - run: pnpm e2e:react-native-compatibility
       - run: pnpm e2e:react-native:web
       - uses: actions/upload-artifact@v4
@@ -62,13 +71,18 @@ jobs:
           java-version: 17
       - run: pnpm install --frozen-lockfile
       - run: pnpm turbo run build --filter=@weapp-tailwindcss/react-native...
+      - name: Build Android debug APK
+        run: |
+          pnpm --filter @weapp-tailwindcss/example-react-native-expo exec expo prebuild --platform android --no-install
+          cd examples/react-native-expo/android
+          ./gradlew app:assembleDebug -PreactNativeArchitectures=x86_64
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
           arch: x86_64
           profile: pixel_2
           disable-animations: true
-          script: RN_ANDROID_DEVICE_ID=emulator-5554 pnpm e2e:react-native:android
+          script: RN_ANDROID_DEVICE_ID=emulator-5554 RN_ANDROID_BINARY=examples/react-native-expo/android/app/build/outputs/apk/debug/app-debug.apk pnpm e2e:react-native:android
       - uses: actions/upload-artifact@v4
         if: always()
         with:

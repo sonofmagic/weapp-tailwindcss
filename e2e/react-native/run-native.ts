@@ -26,7 +26,7 @@ const cssFile = path.resolve(exampleRoot, 'global.css')
 const reports: ReportEnvelope[] = []
 const updateBaseline = process.env['RN_UPDATE_BASELINE'] === '1'
 
-function startReporter() {
+function startReporter(host: string) {
   let server: Server
   const ready = new Promise<number>((resolve) => {
     server = createServer((request, response) => {
@@ -43,7 +43,7 @@ function startReporter() {
         }
       })
     })
-    server.listen(0, '127.0.0.1', () => {
+    server.listen(0, host, () => {
       const address = server.address()
       resolve(typeof address === 'object' && address ? address.port : 0)
     })
@@ -120,9 +120,9 @@ async function captureFailureDiagnostics(device: string) {
   catch { /* 设备未启动时没有可用截图。 */ }
 }
 
-async function relaunchRuntime(device: string) {
+async function relaunchRuntime(device: string, metroHost: string) {
   const appId = 'com.weapptailwindcss.rncompat'
-  const url = `${appId}://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081`
+  const url = `${appId}://expo-development-client/?url=${encodeURIComponent(`http://${metroHost}:8081`)}`
   if (platform === 'android') {
     await execa('adb', ['-s', device, 'shell', 'am', 'broadcast', '-a', 'android.intent.action.CLOSE_SYSTEM_DIALOGS'], { reject: false })
     await execa('adb', ['-s', device, 'shell', 'am', 'force-stop', appId], { reject: false })
@@ -133,12 +133,38 @@ async function relaunchRuntime(device: string) {
   await execa('xcrun', ['simctl', 'openurl', device, url])
 }
 
+function iosHostAddress() {
+  const configured = process.env['RN_IOS_HOST']
+  if (configured) { return configured }
+  const interfaces = os.networkInterfaces()
+  const candidates = Object.entries(interfaces).flatMap(([name, addresses]) =>
+    (addresses ?? [])
+      .filter(address => address.family === 'IPv4' && !address.internal)
+      .map(address => ({ name, address: address.address })),
+  )
+  return candidates.find(candidate => candidate.name === 'en0')?.address
+    ?? candidates[0]?.address
+    ?? '127.0.0.1'
+}
+
 async function assertAndroidMarker(device: string, marker: string) {
   const dump = path.resolve(artifacts, 'window.xml')
   await execa('adb', ['-s', device, 'shell', 'uiautomator', 'dump', '/sdcard/window.xml'])
   const result = await execa('adb', ['-s', device, 'exec-out', 'cat', '/sdcard/window.xml'])
   await fs.writeFile(dump, result.stdout, 'utf8')
   if (!result.stdout.includes(marker) || !result.stdout.includes('tw-rn-root')) { throw new Error(`Android accessibility tree is missing ${marker} or tw-rn-root`) }
+}
+
+async function androidExpoDevice(device: string) {
+  const configured = process.env['RN_ANDROID_EXPO_DEVICE']
+  if (configured) { return configured }
+  const result = await execa('adb', ['-s', device, 'emu', 'avd', 'name'], { reject: false })
+  const avdName = result.stdout
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .find(line => line && line !== 'OK')
+  if (result.exitCode === 0 && avdName) { return avdName }
+  throw new Error(`Unable to resolve the Expo AVD name for ${device}; set RN_ANDROID_EXPO_DEVICE explicitly`)
 }
 
 async function collectNativeEnvironment(device: string): Promise<Partial<ReactNativeReport['environment']>> {
@@ -179,14 +205,15 @@ async function main() {
   if (updateBaseline) { await fs.mkdir(reportsDir, { recursive: true }) }
   const originalMarker = await fs.readFile(markerFile, 'utf8')
   const originalCss = await fs.readFile(cssFile, 'utf8')
-  const reporter = startReporter()
+  const runtimeHost = platform === 'ios' ? iosHostAddress() : '127.0.0.1'
+  const reporter = startReporter(platform === 'ios' ? '0.0.0.0' : runtimeHost)
   const port = await reporter.ready
   const device = platform === 'android'
     ? process.env['RN_ANDROID_DEVICE_ID'] ?? 'emulator-5554'
     : process.env['RN_IOS_DEVICE_ID'] ?? (await execa('xcrun', ['simctl', 'list', 'devices', 'booted', '-j'])).stdout.match(/"udid"\s*:\s*"([^"]+)"/)?.[1] ?? ''
   if (!device) { throw new TypeError(`No booted ${platform} simulator was found`) }
   const nativeEnvironment = await collectNativeEnvironment(device)
-  const reportUrl = `http://127.0.0.1:${port}`
+  const reportUrl = `http://${runtimeHost}:${port}`
   if (platform === 'android') {
     await execa('adb', ['-s', device, 'reverse', `tcp:${port}`, `tcp:${port}`])
     await execa('adb', ['-s', device, 'reverse', 'tcp:8081', 'tcp:8081'])
@@ -196,10 +223,13 @@ async function main() {
   }
   const logFile = await fs.open(path.resolve(artifacts, 'expo-run.log'), 'w')
   const metroLogFile = await fs.open(path.resolve(artifacts, 'metro.log'), 'w')
+  const androidStudioJavaHome = '/Applications/Android Studio.app/Contents/jbr/Contents/Home'
+  const hasAndroidStudioJava = process.platform === 'darwin'
+    ? await fs.access(androidStudioJavaHome).then(() => true, () => false)
+    : false
   const javaHome = platform === 'android'
     ? process.env['RN_JAVA_HOME']
-    ?? process.env['JAVA_HOME']
-    ?? (process.platform === 'darwin' ? '/Applications/Android Studio.app/Contents/jbr/Contents/Home' : undefined)
+    ?? (hasAndroidStudioJava ? androidStudioJavaHome : process.env['JAVA_HOME'])
     : undefined
   const androidHome = process.env['ANDROID_HOME']
     ?? process.env['ANDROID_SDK_ROOT']
@@ -214,7 +244,8 @@ async function main() {
     ...(platform === 'android' ? { ANDROID_HOME: androidHome } : {}),
   }
   if (javaHome) { env.PATH = `${path.join(javaHome, 'bin')}${path.delimiter}${process.env['PATH'] ?? ''}` }
-  const metro = execa('pnpm', ['--filter', '@weapp-tailwindcss/example-react-native-expo', 'exec', 'expo', 'start', '--localhost', '--port', '8081', '--clear'], {
+  const metroHost = platform === 'ios' ? '--lan' : '--localhost'
+  const metro = execa('pnpm', ['--filter', '@weapp-tailwindcss/example-react-native-expo', 'exec', 'expo', 'start', metroHost, '--port', '8081', '--clear'], {
     cwd: repoRoot,
     env,
     stdout: metroLogFile.createWriteStream(),
@@ -223,7 +254,11 @@ async function main() {
   })
   await waitForMetro(metro)
   const runArgs = ['--filter', '@weapp-tailwindcss/example-react-native-expo', 'exec', 'expo', 'run', platform === 'android' ? 'android' : 'ios', '--no-bundler']
-  if (platform === 'ios') { runArgs.push('--device', device) }
+  const expoDevice = platform === 'android' ? await androidExpoDevice(device) : device
+  runArgs.push('--device', expoDevice)
+  if (platform === 'android' && process.env['RN_ANDROID_BINARY']) {
+    runArgs.push('--binary', path.resolve(repoRoot, process.env['RN_ANDROID_BINARY']))
+  }
   const run = execa('pnpm', runArgs, {
     cwd: repoRoot,
     env,
@@ -234,7 +269,7 @@ async function main() {
   let completed = false
   try {
     // 首次原生构建包含 CocoaPods/Gradle 依赖准备，不能使用 HMR 的短超时。
-    const baseline = await waitForReportOrExit('rn-hmr-baseline', run, metro, 1_200_000, '#10b981', () => relaunchRuntime(device))
+    const baseline = await waitForReportOrExit('rn-hmr-baseline', run, metro, 1_200_000, '#10b981', () => relaunchRuntime(device, runtimeHost))
     const baselineReport = withNativeEnvironment(baseline.report, nativeEnvironment)
     validateReactNativeReport(baselineReport, platform)
     await waitForRuntimePaint()

@@ -10,6 +10,7 @@ import { runWebRuntime } from './react-native/web-runtime'
 
 const repoRoot = path.resolve(import.meta.dirname, '..')
 const examplePackage = '@weapp-tailwindcss/example-react-native-expo'
+const reactNativePackage = '@weapp-tailwindcss/react-native'
 
 async function findBundle(root: string, platform: string) {
   const metadata = JSON.parse(await fs.readFile(path.join(root, 'metadata.json'), 'utf8')) as { fileMetadata: Record<string, { bundle?: string }> }
@@ -89,6 +90,8 @@ describe('React Native Expo static exports', () => {
   it('exports Web, Android and iOS bundles through Metro', async () => {
     const outputRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tailwindcss-rn-export-'))
     try {
+      // 通用 E2E shard 不保证 workspace 包已按示例依赖拓扑构建。
+      await execa('pnpm', ['--filter', reactNativePackage, 'build'], { cwd: repoRoot })
       for (const platform of ['web', 'android', 'ios'] as const) {
         const exportResult = await execa('pnpm', ['--filter', examplePackage, 'exec', 'expo', 'export', '--clear', '--platform', platform, '--output-dir', path.join(outputRoot, platform)], {
           cwd: repoRoot,
