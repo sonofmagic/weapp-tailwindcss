@@ -81,7 +81,7 @@ jobs:
           api-level: 30
           arch: x86_64
           profile: pixel_2
-          cores: 4
+          cores: 2
           ram-size: 4096M
           heap-size: 512M
           disable-animations: true

@@ -13,14 +13,18 @@ export function evaluateNativeWait(state: NativeWaitState) {
   const phase = state.runCompletedAt ? 'runtime report' : 'native build and launch'
   const phaseStartedAt = state.runCompletedAt ?? state.startedAt
   const phaseTimeout = state.runCompletedAt ? state.reportTimeout : state.startupTimeout
+  const phaseTimedOut = state.now - phaseStartedAt >= phaseTimeout
+  const shouldRecover = Boolean(
+    state.runCompletedAt
+    && !state.recovered
+    && (
+      (!state.bundleCompletedAt && state.now - state.runCompletedAt >= state.recoveryDelay)
+      || phaseTimedOut
+    ),
+  )
   return {
     phase,
-    shouldRecover: Boolean(
-      state.runCompletedAt
-      && !state.recovered
-      && !state.bundleCompletedAt
-      && state.now - state.runCompletedAt >= state.recoveryDelay,
-    ),
-    timedOut: state.now - phaseStartedAt >= phaseTimeout,
+    shouldRecover,
+    timedOut: phaseTimedOut,
   }
 }

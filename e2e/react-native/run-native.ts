@@ -109,6 +109,7 @@ async function waitForReportOrExit(marker: string, run: ReturnType<typeof execa>
       if (state.shouldRecover) {
         await recover()
         recovered = true
+        runCompletedAt = Date.now()
       }
     }
     if (typeof metro.exitCode === 'number') { throw new TypeError(`Metro exited with code ${metro.exitCode}; see ${path.resolve(artifacts, 'metro.log')}`) }
