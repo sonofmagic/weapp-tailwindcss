@@ -96,6 +96,7 @@ export function createUniAppXVitePlugins(options: UserDefinedOptions | InternalU
       isWebGeneratorTarget: context.isWebGeneratorTarget,
       jsHandler: context.jsHandler,
       mainCssChunkMatcher: context.mainCssChunkMatcher,
+      registerModuleGraphCandidates: context.registerModuleGraphCandidates,
       runtimeState: context.runtimeState,
       styleHandler: context.styleHandler,
       syncSourceCandidatesForHotUpdate: context.syncSourceCandidatesForHotUpdate,

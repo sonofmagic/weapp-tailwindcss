@@ -10,6 +10,7 @@ export interface SourceCandidateStore {
   syncSource: (id: string, source: string) => Promise<void>
   sync: (id: string, source: string) => Promise<void>
   syncCss: (id: string, source: string) => Promise<void>
+  syncModuleSource: (id: string, source: string) => Promise<Set<string>>
   merge: (id: string, source: string) => Promise<void>
   syncFile: (id: string) => Promise<void>
   syncCurrentSource: (id: string, source: string) => Promise<SourceCandidateChange>
@@ -41,6 +42,8 @@ export interface SourceCandidateCollectorSnapshot {
   candidatesById: Array<[string, string[]]>
   cssCandidatesById?: Array<[string, string[]]> | undefined
   cssSourceById?: Array<[string, string]> | undefined
+  moduleCandidatesById?: Array<[string, string[]]> | undefined
+  moduleSourceById?: Array<[string, string]> | undefined
   scanCandidatesById?: Array<[string, string[]]> | undefined
   scanSourceById?: Array<[string, string]> | undefined
   sourceById?: Array<[string, string]> | undefined

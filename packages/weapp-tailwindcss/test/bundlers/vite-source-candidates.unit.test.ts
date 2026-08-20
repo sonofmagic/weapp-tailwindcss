@@ -215,6 +215,51 @@ describe('bundlers/vite source candidates', () => {
     }])).toEqual(new Set(['bg-normal']))
   })
 
+  it('keeps active module graph candidates across positive source gaps and explicit exclusions', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const createCollector = () => createSourceCandidateCollector({
+      extractor: source => source.split(/\s+/).filter(Boolean),
+    })
+    const root = '/project'
+    const pageFile = '/project/src/pages/index.uvue'
+    const subpageFile = '/project/src/sub/tailwindcss/index.uvue'
+    const excludedFile = '/project/uni_modules/example/index.uvue'
+    const entries = [
+      {
+        base: root,
+        negated: false,
+        pattern: 'src/pages/**/*.{uts,uvue}',
+      },
+      {
+        base: root,
+        negated: true,
+        pattern: 'uni_modules/**/*',
+      },
+    ]
+    const collector = createCollector()
+
+    await collector.sync(pageFile, 'bg-page')
+    await collector.syncModuleSource(subpageFile, 'dark:bg-[#3498db]')
+    await collector.syncModuleSource(excludedFile, 'bg-excluded')
+
+    expect(collector.valuesForEntries(entries)).toEqual(new Set([
+      'bg-page',
+      'dark:bg-[#3498db]',
+    ]))
+    expect(collector.sourcesForEntries(entries).get('dark:bg-[#3498db]')).toEqual(new Set([subpageFile]))
+    expect(collector.valuesForEntries([])).toEqual(new Set([
+      'dark:bg-[#3498db]',
+      'bg-excluded',
+    ]))
+
+    const restored = createCollector()
+    restored.restore(collector.snapshot())
+    expect(restored.valuesForEntries(entries)).toEqual(new Set([
+      'bg-page',
+      'dark:bg-[#3498db]',
+    ]))
+  })
+
   it('refreshes Tailwind v4 Vue arbitrary candidates after a source update', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const root = await createTempDir('weapp-tw-vite-v4-vue-hmr-candidates')

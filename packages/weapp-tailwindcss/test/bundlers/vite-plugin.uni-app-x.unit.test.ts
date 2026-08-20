@@ -194,6 +194,78 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     expect((bundle['index.asset.js'] as OutputAsset).source).toBe('js:console.log("text-[#565656]")')
   }, TEST_TIMEOUT_MS)
 
+  it('validates active local-style page candidates outside configured Tailwind sources', async () => {
+    const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'web'
+    const validatedCandidates = new Set([
+      'bg-[#eccc68]',
+      'dark:bg-[#3498db]',
+    ])
+    const validateCandidatesByGenerator = vi.fn(async () => validatedCandidates)
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        validateCandidatesByGenerator,
+      }
+    })
+
+    try {
+      const initialRuntimeSet = new Set(['bg-[#eccc68]'])
+      setCurrentContext(createContext({
+        appType: 'uni-app-x',
+        uniAppX: {
+          enabled: true,
+          componentLocalStyles: {
+            enabled: true,
+            onlyWhenStyleIsolationVersion2: false,
+          },
+        },
+        tailwindRuntime: {
+          getClassSet: vi.fn(async () => initialRuntimeSet),
+          getClassSetSync: vi.fn(() => initialRuntimeSet),
+          extract: vi.fn(async () => ({ classSet: initialRuntimeSet })),
+          majorVersion: 4,
+        },
+      }))
+      const currentContext = getCurrentContext()
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      const plugins = WeappTailwindcss()
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
+      const source = '<template><button class="bg-[#eccc68] dark:bg-[#3498db] dark:not-a-utility-[#bad]" /></template>'
+      const id = '/virtual/weapp-tailwindcss-vite-test/src/pages/issue-1091.uvue'
+
+      await (postPlugin.configResolved as any)?.call(postPlugin, {
+        command: 'build',
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+        root: '/virtual/weapp-tailwindcss-vite-test',
+      } as ResolvedConfig)
+      await getTransformHandler(nvuePlugin)?.call(nvuePlugin, source, id)
+
+      expect(validateCandidatesByGenerator).toHaveBeenCalledWith(expect.objectContaining({
+        candidates: expect.any(Set),
+        file: id,
+      }))
+      const extractedCandidates = validateCandidatesByGenerator.mock.calls[0]![0].candidates as Set<string>
+      expect(extractedCandidates).toContain('dark:bg-[#3498db]')
+      const transformRuntimeSet = getTransformUVueMock().mock.calls.at(-1)?.[3] as Set<string>
+      expect(transformRuntimeSet).toContain('bg-[#eccc68]')
+      expect(transformRuntimeSet).toContain('dark:bg-[#3498db]')
+      expect(transformRuntimeSet).not.toContain('dark:not-a-utility-[#bad]')
+      expect(currentContext.tailwindRuntime.extract).toHaveBeenCalled()
+    }
+    finally {
+      if (previousUtsPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = previousUtsPlatform
+      }
+    }
+  }, TEST_TIMEOUT_MS)
+
   it('skips clean uni-app-x js assets during generateBundle precheck', async () => {
     const runtimeSet = new Set(['text-[#424242]'])
     const syncMock = vi.fn(async () => runtimeSet)

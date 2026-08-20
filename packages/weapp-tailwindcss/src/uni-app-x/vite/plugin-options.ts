@@ -11,6 +11,7 @@ export interface CreateUniAppXPluginsOptions {
   customAttributesEntities: ICustomAttributesEntities
   disabledDefaultTemplateHandler: boolean | undefined
   mainCssChunkMatcher: NonNullable<InternalUserDefinedOptions['mainCssChunkMatcher']>
+  registerModuleGraphCandidates?: ((id: string, source: string) => Promise<Set<string>>) | undefined
   runtimeState: { readyPromise: Promise<unknown> }
   styleHandler: InternalUserDefinedOptions['styleHandler']
   syncSourceCandidatesForHotUpdate?: ((ctx: HmrContext) => Promise<void>) | undefined
