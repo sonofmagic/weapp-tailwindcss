@@ -49,6 +49,7 @@ import { shouldAdaptFrameworkWatchCssBeforeCache, wrapViteCssPostTransform } fro
 import { resolveWeappViteSourceRoot } from '../weapp-vite-config'
 import { resolveViteWebCssCompatOptions, shouldApplyViteWebCssCompat } from '../web-css-compat'
 import { createViteHmrCandidateState } from './framework-hmr-candidate-state'
+import { createFrameworkModuleCandidateRegistrar } from './framework-module-candidates'
 import { orderFrameworkSourceCandidatePlugins } from './framework-plugin-order'
 import { createFrameworkPostPlugin } from './framework-post-plugin'
 import { createFrameworkProcessedCssRegistry } from './framework-processed-css-registry'
@@ -416,14 +417,13 @@ ${tracedCss}`
   const shouldSplitGenerateBundlePhases = () => opts.appType === 'weapp-vite' && getResolvedConfig()?.mode !== 'production'; const preGenerateBundleHook = createGenerateBundleHook({ ...generateBundleContext, processMarkupAndScripts: false, shouldProcessBundle: shouldSplitGenerateBundlePhases })
   const generateBundleHook = createGenerateBundleHook({ ...generateBundleContext, ...createGenericWebProductionBundleHooks({ frameworkName: frameworkBranch.frameworkName, getHasProcessedCss: () => processedCssRegistry.getStats().viteProcessedCssAssetResults > 0, getIsWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, getResolvedConfig, onEnd: opts.onEnd, onStart: opts.onStart }), shouldProcessStyles: () => !shouldSplitGenerateBundlePhases() })
   const cssFinalizerOutputPlugin = createViteCssFinalizerOutputPlugin({ opts, runtimeState, ensureRuntimeClassSet, cssPipelineStrategy: frameworkCssPipelineStrategy, debug, frameworkName: frameworkBranch.frameworkName, getResolvedConfig, hmrTimingRecorder, markCssAssetProcessed, isCssAssetProcessed, isViteProcessedCssAsset, resolveCssAssetIdentity, recordCssAssetResult, recordViteProcessedCssAssetResult, getViteProcessedCssAssetResults, getRecordedGeneratorCandidates, getSourceCandidates, getSourceCandidatesForEntries, getSourceCandidateSourcesForEntries, waitForSourceCandidateSyncs: sourceScanSession.waitForPendingSyncs, frameworkRootImportShellTargetByFile, rememberMainCssSource: (file, rawSource) => cssMemory.rememberCssSource({ outputFile: file, rawSource, sourceFile: file }), getRememberedMainCssSource: cssMemory.getRememberedCssSourceEntry })
-  const extraPluginPlatform = frameworkBranch.getExtraPluginPlatform?.() ?? {}
-  const syncSourceCandidatesForHotUpdate = ctx => syncFrameworkSourceCandidatesForHotUpdate(sourceScanSession, ctx)
+  const extraPluginPlatform = frameworkBranch.getExtraPluginPlatform?.() ?? {}; const syncSourceCandidatesForHotUpdate = ctx => syncFrameworkSourceCandidatesForHotUpdate(sourceScanSession, ctx); const registerModuleGraphCandidates = createFrameworkModuleCandidateRegistrar({ cacheCurrent: sourceScanSession.cacheCurrent, debug, getCssHandlerOptions: transformCssHandlerOptions.getCssHandlerOptions, getGeneratorPlatform: resolveGeneratorPlatform, invalidateRecordedGeneratorCandidates, opts, runtimeState, sourceCandidateCollector, styleHandler })
   const prepareTailwindGeneration = async () => {
     if (sourceScanSession.shouldDiscoverAutoCssSources(autoCssSourcesDiscovered)) {
       await discoverAndRegisterAutoCssSources()
     } await sourceScanSession.sync()
   }
-  const extraPlugins = frameworkBranch.createExtraPlugins?.({ customAttributesEntities, disabledDefaultTemplateHandler, ensureRuntimeClassSet, generateCss: generateTailwindCssForVitePipeline, getResolvedConfig, isEnabled: shouldEnableFrameworkExtraPlugins, isIosPlatform: extraPluginPlatform.isIosPlatform === true, isNativeAppStyleTarget: () => frameworkCssPipelineStrategy?.isNativeAppStyleTarget?.(createCssPipelineContext()) === true, isWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, jsHandler, mainCssChunkMatcher, runtimeState, styleHandler, syncSourceCandidatesForHotUpdate, tailwindRootCssModuleIds, uniAppX, viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles }) ?? []
+  const extraPlugins = frameworkBranch.createExtraPlugins?.({ customAttributesEntities, disabledDefaultTemplateHandler, ensureRuntimeClassSet, generateCss: generateTailwindCssForVitePipeline, getResolvedConfig, isEnabled: shouldEnableFrameworkExtraPlugins, isIosPlatform: extraPluginPlatform.isIosPlatform === true, isNativeAppStyleTarget: () => frameworkCssPipelineStrategy?.isNativeAppStyleTarget?.(createCssPipelineContext()) === true, isWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, jsHandler, mainCssChunkMatcher, registerModuleGraphCandidates, runtimeState, styleHandler, syncSourceCandidatesForHotUpdate, tailwindRootCssModuleIds, uniAppX, viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles }) ?? []
   const installFrameworkWatchCssCacheAdapter = async (config) => {
     if (!shouldAdaptFrameworkWatchCss()) {
       return

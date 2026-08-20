@@ -40,6 +40,7 @@ export interface ViteFrameworkExtraPluginContext {
   isWebGeneratorTarget: () => boolean
   jsHandler: ReturnType<typeof getCompilerContext>['jsHandler']
   mainCssChunkMatcher: ReturnType<typeof getCompilerContext>['mainCssChunkMatcher']
+  registerModuleGraphCandidates: (id: string, source: string) => Promise<Set<string>>
   runtimeState: ReturnType<typeof createViteRuntimeClassSet>['runtimeState']
   styleHandler: ReturnType<typeof getCompilerContext>['styleHandler']
   syncSourceCandidatesForHotUpdate: (ctx: HmrContext) => Promise<void>

@@ -57,6 +57,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     disabledDefaultTemplateHandler,
     isIosPlatform: providedIosPlatform,
     mainCssChunkMatcher,
+    registerModuleGraphCandidates,
     runtimeState,
     styleHandler,
     syncSourceCandidatesForHotUpdate,
@@ -266,13 +267,19 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       nativeLocalStyleModuleIds.add(cleanUrl(id))
     }
     harmonyApply.rememberSource(code, id, true)
-    const resolvedConfig = getResolvedConfig()
-    const shouldForceRefresh = resolvedConfig?.command === 'serve' || resolvedConfig?.command === 'build'
-    const currentRuntimeSet: Set<string> = await ensureRuntimeClassSet(shouldForceRefresh)
-    nativeHmrReloader.remember(currentRuntimeSet)
-    const transformUVue = await loadTransformUVue()
     const enableComponentLocalStyle = shouldEnableComponentLocalStyle()
     const enablePageLocalStyle = shouldEnablePageLocalStyleForFile(id)
+    const resolvedConfig = getResolvedConfig()
+    const shouldForceRefresh = resolvedConfig?.command === 'serve' || resolvedConfig?.command === 'build'
+    const moduleGraphCandidates = enableComponentLocalStyle || enablePageLocalStyle
+      ? await registerModuleGraphCandidates?.(id, code)
+      : undefined
+    const runtimeSet = await ensureRuntimeClassSet(shouldForceRefresh)
+    const currentRuntimeSet: Set<string> = moduleGraphCandidates?.size
+      ? new Set([...runtimeSet, ...moduleGraphCandidates])
+      : runtimeSet
+    nativeHmrReloader.remember(currentRuntimeSet)
+    const transformUVue = await loadTransformUVue()
     const transformOptions = omitUndefined({
       ...(customAttributesEntities.length > 0 ? { customAttributesEntities } : {}),
       ...(disabledDefaultTemplateHandler ? { disabledDefaultTemplateHandler } : {}),
