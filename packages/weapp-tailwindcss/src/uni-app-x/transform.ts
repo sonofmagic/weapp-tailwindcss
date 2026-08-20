@@ -7,10 +7,12 @@ import MagicString from 'magic-string'
 import { generateCode, replaceWxml } from '@/wxml'
 import { createAttributeMatcher } from '@/wxml/custom-attributes'
 import {
-  shouldEnableComponentLocalStyle,
-  shouldEnablePageLocalStyle,
   UniAppXComponentLocalStyleCollector,
 } from './component-local-style'
+import {
+  shouldEnableComponentLocalStyle,
+  shouldEnablePageLocalStyle,
+} from './local-style-matcher'
 
 interface SfcBlock {
   content: string
@@ -122,19 +124,21 @@ function updateDirectiveExpressionWithLocalStyle(
 }
 
 interface TransformUVueOptions {
+  componentMatcher?: (id: string) => boolean
   customAttributesEntities?: ICustomAttributesEntities
   disabledDefaultTemplateHandler?: boolean
   enableComponentLocalStyle?: boolean
   enablePageLocalStyle?: boolean
+  pageMatcher?: (id: string) => boolean
   webCustomAttributeDeep?: boolean
   onWebLocalStyleRules?: (rules: string) => void
 }
 
 function shouldEnableLocalStyle(id: string, options: TransformUVueOptions) {
-  if (options.enableComponentLocalStyle && shouldEnableComponentLocalStyle(id)) {
+  if (options.enableComponentLocalStyle && shouldEnableComponentLocalStyle(id, options.componentMatcher)) {
     return true
   }
-  if (options.enablePageLocalStyle && shouldEnablePageLocalStyle(id)) {
+  if (options.enablePageLocalStyle && shouldEnablePageLocalStyle(id, options.pageMatcher)) {
     return true
   }
   return false

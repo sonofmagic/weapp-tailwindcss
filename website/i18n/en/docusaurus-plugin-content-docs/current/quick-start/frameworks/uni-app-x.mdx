@@ -106,6 +106,20 @@ The current documentation only maintains Tailwind CSS 4 access instructions.
 `rem2rpx`, `unitsToPx`, and `unitConversion` are top-level options of the `uniAppX()` preset. Do not put them under `cssOptions`.
 :::
 
+When reusable components live in a custom directory such as `layouts`, extend the local-style matcher explicitly:
+
+```ts title="vite.config.ts"
+uniAppX({
+  base: projectRoot,
+  cssEntries: [resolve(projectRoot, 'main.css')],
+  componentLocalStyles: {
+    componentMatcher: id => /(?:^|\/)layouts\/.+\.(?:uvue|nvue)$/.test(id),
+  },
+})
+```
+
+`componentMatcher` replaces the default `components` directory rule. Match both `components` and custom directories in the callback when both are needed. Use the sibling `pageMatcher` option for custom page directories. Both callbacks receive paths with query/hash removed and path separators normalized to forward slashes.
+
 ## Tailwind CSS entry
 
 Tailwind CSS 4 uses the CSS-first entry, `@source` to cover pages, components, and script directories that may produce class names:

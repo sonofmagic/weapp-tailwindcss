@@ -19,8 +19,6 @@ interface RewriteCodeOptions {
 
 const EXPRESSION_WRAPPER_PREFIX = '(\n'
 const EXPRESSION_WRAPPER_SUFFIX = '\n)'
-const COMPONENT_RE = /(?:^|[/\\])components(?:[/\\].+)?\.(?:uvue|nvue)$/
-const PAGE_RE = /(?:^|[/\\])pages(?:[/\\].+)?\.(?:uvue|nvue)$/
 
 function createStableHash(input: string) {
   let hash = 2166136261
@@ -110,14 +108,6 @@ export function hasTopLevelVariant(candidate: string) {
     }
   }
   return false
-}
-
-export function shouldEnableComponentLocalStyle(id: string) {
-  return COMPONENT_RE.test(id)
-}
-
-export function shouldEnablePageLocalStyle(id: string) {
-  return PAGE_RE.test(id)
 }
 
 export class UniAppXComponentLocalStyleCollector {
