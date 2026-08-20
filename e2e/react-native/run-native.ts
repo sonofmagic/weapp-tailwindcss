@@ -10,6 +10,7 @@ import process from 'node:process'
 import os from 'node:os'
 import { execa } from 'execa'
 import type { ReactNativePlatform, ReactNativeReport } from './catalog'
+import { getHttpText } from './native-http'
 import { evaluateNativeWait } from './native-wait'
 import { validateReactNativeReport } from './reports'
 
@@ -65,8 +66,7 @@ async function waitForMetro(metro: ReturnType<typeof execa>, timeout = 120_000) 
   while (Date.now() - started < timeout) {
     if (typeof metro.exitCode === 'number') { throw new TypeError(`Metro exited with code ${metro.exitCode}; see ${path.resolve(artifacts, 'metro.log')}`) }
     try {
-      const response = await fetch('http://127.0.0.1:8081/status')
-      if ((await response.text()).includes('packager-status:running')) { return }
+      if ((await getHttpText('http://127.0.0.1:8081/status')).includes('packager-status:running')) { return }
     }
     catch {}
     await new Promise(resolve => setTimeout(resolve, 500))
