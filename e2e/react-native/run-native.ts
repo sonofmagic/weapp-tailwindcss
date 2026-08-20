@@ -10,9 +10,17 @@ import process from 'node:process'
 import os from 'node:os'
 import { execa } from 'execa'
 import type { ReactNativePlatform, ReactNativeReport } from './catalog'
+import { evaluateNativeWait } from './native-wait'
 import { validateReactNativeReport } from './reports'
 
 interface ReportEnvelope { hmrMarker: string, cssHmrColor: string, report: ReactNativeReport }
+
+interface ReportWaitOptions {
+  cssHmrColor?: string
+  recover?: () => Promise<void>
+  reportTimeout?: number
+  startupTimeout?: number
+}
 
 const platform = process.argv[2] as ReactNativePlatform
 if (platform !== 'android' && platform !== 'ios') { throw new Error('Usage: tsx e2e/react-native/run-native.ts <android|ios>') }
@@ -66,32 +74,59 @@ async function waitForMetro(metro: ReturnType<typeof execa>, timeout = 120_000) 
   throw new Error('Timed out waiting for Metro on port 8081')
 }
 
-async function waitForReportOrExit(marker: string, run: ReturnType<typeof execa>, metro: ReturnType<typeof execa>, timeout = 240_000, cssHmrColor?: string, recover?: () => Promise<void>) {
+async function waitForReportOrExit(marker: string, run: ReturnType<typeof execa>, metro: ReturnType<typeof execa>, options: ReportWaitOptions = {}) {
+  const {
+    cssHmrColor,
+    recover,
+    reportTimeout = 240_000,
+    startupTimeout = reportTimeout,
+  } = options
   const started = Date.now()
   let runCompletedAt: number | undefined
   let bundleCompletedAt: number | undefined
   let recovered = false
-  while (Date.now() - started < timeout) {
+  while (true) {
+    const now = Date.now()
     const envelope = reports.find(item => item.hmrMarker === marker && (!cssHmrColor || item.cssHmrColor === cssHmrColor))
     if (envelope) { return envelope }
     if (typeof run.exitCode === 'number' && run.exitCode !== 0) { throw new TypeError(`expo run:${platform} exited with code ${run.exitCode}; see ${path.resolve(artifacts, 'expo-run.log')}`) }
-    if (run.exitCode === 0 && !runCompletedAt) { runCompletedAt = Date.now() }
+    if (run.exitCode === 0 && !runCompletedAt) { runCompletedAt = now }
     if (recover && runCompletedAt && !recovered) {
       if (!bundleCompletedAt) {
         const metroLog = await fs.readFile(metroLogPath, 'utf8').catch(() => '')
-        if (metroLog.includes(`${platform === 'ios' ? 'iOS' : 'Android'} Bundled`)) { bundleCompletedAt = Date.now() }
+        if (metroLog.includes(`${platform === 'ios' ? 'iOS' : 'Android'} Bundled`)) { bundleCompletedAt = now }
       }
-      const bundleGraceElapsed = bundleCompletedAt && Date.now() - bundleCompletedAt >= 30_000
-      const fallbackElapsed = Date.now() - runCompletedAt >= 180_000
-      if (bundleGraceElapsed || fallbackElapsed) {
+      const state = evaluateNativeWait({
+        bundleCompletedAt,
+        now,
+        recovered,
+        recoveryDelay: 180_000,
+        reportTimeout,
+        runCompletedAt,
+        startedAt: started,
+        startupTimeout,
+      })
+      if (state.shouldRecover) {
         await recover()
         recovered = true
       }
     }
     if (typeof metro.exitCode === 'number') { throw new TypeError(`Metro exited with code ${metro.exitCode}; see ${path.resolve(artifacts, 'metro.log')}`) }
+    const state = evaluateNativeWait({
+      bundleCompletedAt,
+      now,
+      recovered,
+      recoveryDelay: 180_000,
+      reportTimeout,
+      runCompletedAt,
+      startedAt: started,
+      startupTimeout,
+    })
+    if (state.timedOut) {
+      throw new Error(`Timed out waiting for ${platform} ${state.phase} marker=${marker} css=${cssHmrColor ?? 'any'}`)
+    }
     await new Promise(resolve => setTimeout(resolve, 500))
   }
-  throw new Error(`Timed out waiting for ${platform} runtime report marker=${marker} css=${cssHmrColor ?? 'any'}`)
 }
 
 async function fileHash(file: string) {
@@ -310,7 +345,12 @@ async function main() {
   let completed = false
   try {
     // 首次原生构建包含 CocoaPods/Gradle 依赖准备，不能使用 HMR 的短超时。
-    const baseline = await waitForReportOrExit('rn-hmr-baseline', run, metro, 1_200_000, '#10b981', () => relaunchRuntime(device, runtimeHost))
+    const baseline = await waitForReportOrExit('rn-hmr-baseline', run, metro, {
+      cssHmrColor: '#10b981',
+      recover: () => relaunchRuntime(device, runtimeHost),
+      reportTimeout: 300_000,
+      startupTimeout: 1_800_000,
+    })
     const baselineReport = withNativeEnvironment(baseline.report, nativeEnvironment)
     validateReactNativeReport(baselineReport, platform)
     await waitForRuntimePaint()
@@ -319,7 +359,7 @@ async function main() {
 
     const updated = originalMarker.replace('rn-hmr-baseline', 'rn-hmr-updated').replace('bg-emerald-500', 'bg-rose-500')
     await fs.writeFile(markerFile, updated, 'utf8')
-    const hmr = await waitForReportOrExit('rn-hmr-updated', run, metro, 120_000, '#10b981')
+    const hmr = await waitForReportOrExit('rn-hmr-updated', run, metro, { cssHmrColor: '#10b981', reportTimeout: 120_000 })
     const hmrReport = withNativeEnvironment(hmr.report, nativeEnvironment)
     validateReactNativeReport(hmrReport, platform)
     await waitForRuntimePaint()
@@ -328,7 +368,7 @@ async function main() {
     const updatedCss = originalCss.replace('#10b981', '#f59e0b')
     if (updatedCss === originalCss) { throw new Error('CSS HMR probe color was not found') }
     await fs.writeFile(cssFile, updatedCss, 'utf8')
-    const cssHmr = await waitForReportOrExit('rn-hmr-updated', run, metro, 120_000, '#f59e0b')
+    const cssHmr = await waitForReportOrExit('rn-hmr-updated', run, metro, { cssHmrColor: '#f59e0b', reportTimeout: 120_000 })
     const cssHmrReport = withNativeEnvironment(cssHmr.report, nativeEnvironment)
     validateReactNativeReport(cssHmrReport, platform)
     await waitForRuntimePaint()

@@ -8,7 +8,7 @@ on:
       - 'packages/weapp-tailwindcss/src/generator/**'
       - 'examples/react-native-expo/**'
       - 'e2e/react-native/**'
-      - e2e/react-native-compatibility.test.ts
+      - 'e2e/react-native-*.test.ts'
       - package.json
       - pnpm-lock.yaml
       - .github/workflows/react-native-compatibility.yml
