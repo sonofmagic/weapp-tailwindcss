@@ -2,6 +2,10 @@
   dir: packages/lynx
   intents:
     - lynx-tailwind-v4-compat
+"@weapp-tailwindcss/react-native@0.2.5":
+  dir: packages/react-native
+  intents:
+    - calm-react-native-compatibility
 weapp-tailwindcss@5.3.1:
   dir: packages/weapp-tailwindcss
   intents:
@@ -10,3 +14,9 @@ weapp-tailwindcss@5.3.2:
   dir: packages/weapp-tailwindcss
   intents:
     - bright-harmony-vdom
+weapp-tailwindcss@5.3.3:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - bright-variants-cascade
+    - fuzzy-layouts-match
+    - slick-bears-sleep

@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 5.3.3
+
+### Patch Changes
+
+- 修复 uni-app x H5 局部 Tailwind 工具类的级联优先级，确保 `dark` 等条件变体能够覆盖同一元素上的基础工具类。
+
+- 支持通过 `uniAppX.componentLocalStyles.componentMatcher` 和 `pageMatcher` 为 `layouts` 等自定义目录启用局部 Tailwind 样式，并保持 Web、原生 App 与鸿蒙构建的路径匹配行为一致。
+
+- 修复 uni-app x H5 中已进入构建图但未命中显式 Tailwind 正向源码范围的页面，暗色等 variant 任意值类无法生成和同步转译的问题。
+
 ## 5.3.2
 
 ### Patch Changes
