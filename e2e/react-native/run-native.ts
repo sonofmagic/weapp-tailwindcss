@@ -23,6 +23,7 @@ const artifacts = path.resolve(repoRoot, `e2e/.artifacts/react-native-${platform
 const reportsDir = path.resolve(repoRoot, 'e2e/react-native/reports')
 const markerFile = path.resolve(exampleRoot, 'src/hmr-marker.ts')
 const cssFile = path.resolve(exampleRoot, 'global.css')
+const metroLogPath = path.resolve(artifacts, 'metro.log')
 const reports: ReportEnvelope[] = []
 const updateBaseline = process.env['RN_UPDATE_BASELINE'] === '1'
 
@@ -68,15 +69,24 @@ async function waitForMetro(metro: ReturnType<typeof execa>, timeout = 120_000) 
 async function waitForReportOrExit(marker: string, run: ReturnType<typeof execa>, metro: ReturnType<typeof execa>, timeout = 240_000, cssHmrColor?: string, recover?: () => Promise<void>) {
   const started = Date.now()
   let runCompletedAt: number | undefined
+  let bundleCompletedAt: number | undefined
   let recovered = false
   while (Date.now() - started < timeout) {
     const envelope = reports.find(item => item.hmrMarker === marker && (!cssHmrColor || item.cssHmrColor === cssHmrColor))
     if (envelope) { return envelope }
     if (typeof run.exitCode === 'number' && run.exitCode !== 0) { throw new TypeError(`expo run:${platform} exited with code ${run.exitCode}; see ${path.resolve(artifacts, 'expo-run.log')}`) }
     if (run.exitCode === 0 && !runCompletedAt) { runCompletedAt = Date.now() }
-    if (recover && runCompletedAt && !recovered && Date.now() - runCompletedAt >= 60_000) {
-      await recover()
-      recovered = true
+    if (recover && runCompletedAt && !recovered) {
+      if (!bundleCompletedAt) {
+        const metroLog = await fs.readFile(metroLogPath, 'utf8').catch(() => '')
+        if (metroLog.includes(`${platform === 'ios' ? 'iOS' : 'Android'} Bundled`)) { bundleCompletedAt = Date.now() }
+      }
+      const bundleGraceElapsed = bundleCompletedAt && Date.now() - bundleCompletedAt >= 30_000
+      const fallbackElapsed = Date.now() - runCompletedAt >= 180_000
+      if (bundleGraceElapsed || fallbackElapsed) {
+        await recover()
+        recovered = true
+      }
     }
     if (typeof metro.exitCode === 'number') { throw new TypeError(`Metro exited with code ${metro.exitCode}; see ${path.resolve(artifacts, 'metro.log')}`) }
     await new Promise(resolve => setTimeout(resolve, 500))
@@ -115,6 +125,22 @@ async function captureFailureDiagnostics(device: string) {
       const window = await execa('adb', ['-s', device, 'exec-out', 'cat', '/sdcard/window.xml'], { reject: false })
       await fs.writeFile(path.resolve(artifacts, 'window-failure.xml'), window.stdout, 'utf8')
     }
+  }
+  else {
+    const simulatorLog = await execa('xcrun', [
+      'simctl',
+      'spawn',
+      device,
+      'log',
+      'show',
+      '--style',
+      'compact',
+      '--last',
+      '30m',
+      '--predicate',
+      'process == "weapptailwindcssRN" OR subsystem BEGINSWITH "com.facebook.react" OR eventMessage CONTAINS "com.weapptailwindcss.rncompat"',
+    ], { reject: false })
+    await fs.writeFile(path.resolve(artifacts, 'simulator.log'), `${simulatorLog.stdout}\n${simulatorLog.stderr}`, 'utf8')
   }
   try { await capture('failure.png', device) }
   catch { /* 设备未启动时没有可用截图。 */ }
@@ -222,7 +248,7 @@ async function main() {
     await execa('adb', ['-s', device, 'logcat', '-c'], { reject: false })
   }
   const logFile = await fs.open(path.resolve(artifacts, 'expo-run.log'), 'w')
-  const metroLogFile = await fs.open(path.resolve(artifacts, 'metro.log'), 'w')
+  const metroLogFile = await fs.open(metroLogPath, 'w')
   const androidStudioJavaHome = '/Applications/Android Studio.app/Contents/jbr/Contents/Home'
   const hasAndroidStudioJava = process.platform === 'darwin'
     ? await fs.access(androidStudioJavaHome).then(() => true, () => false)
