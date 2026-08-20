@@ -62,6 +62,8 @@ module.exports = function (api) {
 
 Expo only configures Metro once; it will automatically connect source scanning, manifest generation and Babel JSX transform, without having to write a second copy of `classNameSet` by hand. Static `className="flex items-center"` will be compiled into a pre-generated StyleSheet lookup and will not call the generic `tw()` in render; dynamic `className={condition ? "bg-red-500" : "bg-blue-500"}` will remain as a controlled `tw(...)` call. Normal inline `style` covers Tailwind class, `!important` class covers inline style. Non-Expo or custom Metro scenes can still use `@weapp-tailwindcss/react-native/babel` explicitly.
 
+Android and iOS bundles resolve `react` and `react-native` from the app `projectRoot`, preventing linked workspace packages from introducing a second React Native runtime that does not match the native binary. Web keeps Expo's normal platform resolver and its `react-native-web` mapping.
+
 ## Runtime and boundaries
 
 The Metro virtual module will inject the manifest, `Platform.OS` and `Appearance` color modes into the runtime, so the `dark:`, `ios:`, `android:`, `native:` variants can select rules according to the current environment. The compiler covers common layout, flex, spacing, sizing, colors, typography, border, radius, opacity, transform, shadow and arbitrary values; browser preflight ignores them by default. Unsupported CSS features will generate Chinese warnings, which can be checked in `manifest.warnings`.

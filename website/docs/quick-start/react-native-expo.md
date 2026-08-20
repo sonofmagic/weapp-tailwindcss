@@ -62,6 +62,8 @@ module.exports = function (api) {
 
 Expo 只配置一次 Metro；它会把 source 扫描、manifest 生成和 Babel JSX transform 自动接起来，不再手写第二份 `classNameSet`。静态 `className="flex items-center"` 会编译为预生成的 StyleSheet lookup，不会在 render 中调用通用 `tw()`；动态 `className={condition ? "bg-red-500" : "bg-blue-500"}` 才会保留为受控的 `tw(...)` 调用。普通 inline `style` 覆盖 Tailwind class，`!important` class 覆盖 inline style。非 Expo 或定制 Metro 场景仍可显式使用 `@weapp-tailwindcss/react-native/babel`。
 
+Android 与 iOS bundle 中的 `react`、`react-native` 会从应用 `projectRoot` 解析，避免 linked workspace 包带入与原生二进制不一致的第二份 React Native runtime。Web 端仍使用 Expo 原有的平台 resolver，不会绕过 `react-native-web` 映射。
+
 ## 运行时与边界
 
 Metro virtual module 会把 manifest、`Platform.OS` 和 `Appearance` 颜色模式注入 runtime，因此 `dark:`、`ios:`、`android:`、`native:` 变体可以按当前环境选择规则。编译器覆盖常用 layout、flex、spacing、sizing、colors、typography、border、radius、opacity、transform、shadow 和 arbitrary values；浏览器 preflight 默认忽略。只有明确识别的 React Native style 属性会进入 manifest，不支持或未知的 CSS 声明会产生中文 warning，不会原样透传给 `StyleSheet.create`。

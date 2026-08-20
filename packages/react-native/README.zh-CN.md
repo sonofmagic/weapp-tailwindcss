@@ -27,6 +27,8 @@ module.exports = withWeappTailwindcss(config, {
 
 Metro 会扫描源码、生成精确候选集合和 manifest，并把 Babel JSX transform 接入现有 Expo transformer。无需维护第二份 `classNameSet`。
 
+在 Android 与 iOS 上，Metro 集成会从应用 `projectRoot` 解析 `react` 和 `react-native`，避免 linked workspace 包把与原生二进制不一致的第二份 React Native runtime 打入 bundle。Web 端继续保留 Expo 原有的平台 resolver 行为。
+
 ## 运行模型
 
 - 静态 `className` 编译为预生成的 StyleSheet lookup，不在 render 中调用 `tw()`。

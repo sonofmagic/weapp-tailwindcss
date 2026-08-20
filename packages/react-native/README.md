@@ -27,6 +27,8 @@ module.exports = withWeappTailwindcss(config, {
 
 Metro scans sources, builds the exact candidate set and manifest, and connects the Babel JSX transform to the existing Expo transformer. You do not need to maintain a second `classNameSet`.
 
+On Android and iOS, the Metro integration resolves `react` and `react-native` from the app `projectRoot`. This keeps linked workspace packages from bundling a second React Native runtime that does not match the native binary. Expo's normal platform resolver remains unchanged on Web.
+
 ## Runtime model
 
 - Static `className` values compile to pre-generated StyleSheet lookups without calling `tw()` during render.

@@ -56,7 +56,17 @@ export interface NativeManifestPaths {
 }
 
 const registry = new Map<string, RegisteredManifest>()
+const appRootSingletonModules = new Set(['react', 'react-native'])
 let nextId = 0
+
+function packageNameFromModuleId(moduleName: string) {
+  const segments = moduleName.split('/')
+  return moduleName.startsWith('@') ? segments.slice(0, 2).join('/') : segments[0]
+}
+
+function shouldResolveFromAppRoot(moduleName: string, platform?: string) {
+  return platform !== 'web' && appRootSingletonModules.has(packageNameFromModuleId(moduleName))
+}
 
 /** 为 Metro worker 提供不依赖进程内 registry 的 manifest 入口。 */
 export function getManifestPathsForProjectRoot(projectRoot: string): NativeManifestPaths {
@@ -228,8 +238,8 @@ export function withWeappTailwindcss<T extends MetroConfigLike>(config: T | Prom
       return { type: 'sourceFile', filePath: entry.virtualPath }
     }
     const resolverContext = context as MetroResolverContext
-    // 虚拟模块位于系统临时目录，依赖解析必须锚定项目根目录，避免 monorepo 中加载另一份 React Native。
-    const anchoredContext = resolverContext.originModulePath === entry.virtualPath
+    // React 核心包必须与原生工程使用同一实例；workspace symlink 不能从包目录加载另一套 peer。
+    const anchoredContext = resolverContext.originModulePath === entry.virtualPath || shouldResolveFromAppRoot(moduleName, platform)
       ? { ...resolverContext, originModulePath: path.join(entry.projectRoot, 'package.json') }
       : resolverContext
     return originalResolver?.(anchoredContext, moduleName, platform)

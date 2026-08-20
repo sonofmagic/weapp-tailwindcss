@@ -57,6 +57,57 @@ describe('Expo Metro integration', () => {
     expect(resolvedOrigin).toBe(path.join(projectRoot, 'package.json'))
   })
 
+  it.each(['react', 'react/jsx-runtime', 'react-native', 'react-native/Libraries/Utilities/Platform'])('resolves singleton module %s from projectRoot', (moduleName) => {
+    const projectRoot = path.resolve('fixtures/react-native-app')
+    let resolvedOrigin = ''
+    const config = withWeappTailwindcss({
+      resolver: {
+        resolveRequest(context) {
+          resolvedOrigin = (context as { originModulePath: string }).originModulePath
+          return { type: 'empty' }
+        },
+      },
+    }, { projectRoot })
+
+    config.resolver?.resolveRequest?.({ originModulePath: path.resolve('packages/workspace-package/index.js') }, moduleName, 'ios')
+
+    expect(resolvedOrigin).toBe(path.join(projectRoot, 'package.json'))
+  })
+
+  it('preserves the importer for packages whose names only resemble a singleton', () => {
+    const importer = path.resolve('packages/workspace-package/index.js')
+    let resolvedOrigin = ''
+    const config = withWeappTailwindcss({
+      resolver: {
+        resolveRequest(context) {
+          resolvedOrigin = (context as { originModulePath: string }).originModulePath
+          return { type: 'empty' }
+        },
+      },
+    }, { projectRoot: path.resolve('fixtures/react-native-app') })
+
+    config.resolver?.resolveRequest?.({ originModulePath: importer }, 'react-native-web', 'web')
+
+    expect(resolvedOrigin).toBe(importer)
+  })
+
+  it.each(['react', 'react-native'])('preserves the Web resolver graph for %s', (moduleName) => {
+    const importer = path.resolve('packages/workspace-package/index.js')
+    let resolvedOrigin = ''
+    const config = withWeappTailwindcss({
+      resolver: {
+        resolveRequest(context) {
+          resolvedOrigin = (context as { originModulePath: string }).originModulePath
+          return { type: 'empty' }
+        },
+      },
+    }, { projectRoot: path.resolve('fixtures/react-native-app') })
+
+    config.resolver?.resolveRequest?.({ originModulePath: importer }, moduleName, 'web')
+
+    expect(resolvedOrigin).toBe(importer)
+  })
+
   it('passes the virtual manifest through the original Expo transformer', async () => {
     const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'weapp-tailwindcss-rn-transformer-'))
     try {

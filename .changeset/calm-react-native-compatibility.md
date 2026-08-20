@@ -9,3 +9,5 @@
 Metro transformer 在未透传自定义 id 或 manifest 路径时也会按项目根目录等待异步样式生成完成，并通过跨进程 ready 标记同步 manifest 与 virtual module，避免构建速度较慢或 HMR 刷新时使用空 manifest 导致静态 className 未被转换。
 
 React Native 类型增强入口改为纯类型依赖，不再从 workspace 包目录额外加载另一份 React Native 运行时，避免 Metro bundle 与 Expo 原生二进制使用不同 patch 版本后出现原生模块注册表为空的问题。
+
+Android 与 iOS 的 Metro resolver 进一步把 `react`、`react-native` 及其子路径锚定到应用项目根目录，确保 linked workspace 包与原生二进制共用同一份 React Native runtime；Web 保留 Expo 原有的平台解析与 `react-native-web` 映射。
