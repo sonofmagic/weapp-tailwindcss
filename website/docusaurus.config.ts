@@ -177,6 +177,7 @@ const config: Config = {
           {
             filename: 'llms-api.txt',
             includePatterns: [
+              isEnglishBuild ? 'config/**' : 'docs/config/**',
               isEnglishBuild ? 'options/**' : 'docs/options/**',
               isEnglishBuild ? 'api/**' : 'docs/api/**',
               isEnglishBuild ? 'issues/**' : 'docs/issues/**',

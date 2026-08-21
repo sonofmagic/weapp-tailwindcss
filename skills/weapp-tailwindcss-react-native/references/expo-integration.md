@@ -2,7 +2,7 @@
 
 ## 支持基线
 
-- `@weapp-tailwindcss/react-native` 0.2.2。
+- `@weapp-tailwindcss/react-native` 0.2.5。
 - Expo SDK 54+、React 19、React Native 0.81+。
 - Tailwind CSS 4。
 - 业务项目按该包 manifest 使用 Node `>=22.12.0`；只有参与本 monorepo 开发时才遵守根 manifest 的更严格版本。

@@ -27,6 +27,10 @@
     "message": "🛠️ Tools and CLI",
     "description": "The label for category '🛠️ 工具与 CLI' in sidebar 'tutorialSidebar'"
   },
+  "sidebar.tutorialSidebar.category.框架配置参考": {
+    "message": "Framework configuration references",
+    "description": "The label for category '框架配置参考' in sidebar 'tutorialSidebar'"
+  },
   "sidebar.tutorialSidebar.link.谁在使用？": {
     "message": "Who is using it?",
     "description": "The label for link '谁在使用？' in sidebar 'tutorialSidebar', linking to 'https://github.com/sonofmagic/weapp-tailwindcss/issues/270'"
@@ -462,5 +466,45 @@
   "sidebar.tailwindcssSidebar.doc.Subpackage Tailwind entry isolation": {
     "message": "Subpackage Tailwind entry isolation",
     "description": "The label for the doc item 'Subpackage Tailwind entry isolation' in sidebar 'tailwindcssSidebar', linking to the doc quick-start/independent-pkg"
+  },
+  "sidebar.tutorialSidebar.category.Quick start": {
+    "message": "Quick start",
+    "description": "The label for category 'Quick start' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Tools and CLI": {
+    "message": "Tools and CLI",
+    "description": "The label for category 'Tools and CLI' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Framework configuration references": {
+    "message": "Framework configuration references",
+    "description": "The label for category 'Framework configuration references' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Compatibility and advanced topics": {
+    "message": "Compatibility and advanced topics",
+    "description": "The label for category 'Compatibility and advanced topics' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Community and contributing": {
+    "message": "Community and contributing",
+    "description": "The label for category 'Community and contributing' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.doc.config-uni-app-x": {
+    "message": "uni-app x",
+    "description": "The label for the doc item 'uni-app x' in sidebar 'tutorialSidebar', linking to the doc config/uni-app-x"
+  },
+  "sidebar.tutorialSidebar.doc.config-react-lynx": {
+    "message": "ReactLynx / Rspeedy",
+    "description": "The label for the doc item 'ReactLynx / Rspeedy' in sidebar 'tutorialSidebar', linking to the doc config/react-lynx"
+  },
+  "sidebar.tutorialSidebar.doc.config-react-native": {
+    "message": "React Native / Expo",
+    "description": "The label for the doc item 'React Native / Expo' in sidebar 'tutorialSidebar', linking to the doc config/react-native"
+  },
+  "sidebar.tutorialSidebar.doc.Templates": {
+    "message": "Templates",
+    "description": "The label for the doc item 'Templates' in sidebar 'tutorialSidebar', linking to the doc community/templates"
+  },
+  "sidebar.tailwindcssSidebar.doc.UnoCSS syntax compatibility": {
+    "message": "UnoCSS syntax compatibility",
+    "description": "The label for the doc item 'UnoCSS syntax compatibility' in sidebar 'tailwindcssSidebar', linking to the doc tailwindcss/unocss-compatibility"
   }
 }

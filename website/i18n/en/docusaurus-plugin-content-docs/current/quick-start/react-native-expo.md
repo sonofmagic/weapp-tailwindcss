@@ -20,6 +20,8 @@ keywords:
 
 `@weapp-tailwindcss/react-native` is a standalone React Native compiler package. It reuses `weapp-tailwindcss`'s Tailwind CSS v4 source scan and candidate collection, and compiles the generated raw CSS into an in-memory RN style manifest; the runtime does not depend on NativeWind or `react-native-css`.
 
+See the [React Native / Expo configuration reference](../config/react-native) for Metro input modes, manifest fields, and custom Metro setups.
+
 ## Install
 
 ```bash

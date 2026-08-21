@@ -1,11 +1,13 @@
 ---
 name: weapp-tailwindcss-lynx
-description: 为 ReactLynx + Rspeedy 配置 @weapp-tailwindcss/lynx 0.2.1 与 Tailwind CSS 4，覆盖 Rspeedy plugin、Lynx 原生 CSS、静态 className、theme 变量静态化、任意值、encoder 警告和 iOS/Android 运行端验证。Use for ReactLynx, Rspeedy, Lynx native CSS, arbitrary value compatibility, or Lynx bundle styling；不用于 React Native、uni-app App、Web 或普通小程序构建。
+description: 为 ReactLynx + Rspeedy 配置 @weapp-tailwindcss/lynx 0.3.2 与 Tailwind CSS 4，覆盖 Rspeedy plugin、Lynx 原生 CSS、静态 className、theme 变量静态化、任意值、encoder 警告和 iOS/Android 运行端验证。Use for ReactLynx, Rspeedy, Lynx native CSS, arbitrary value compatibility, or Lynx bundle styling；不用于 React Native、uni-app App、Web 或普通小程序构建。
 ---
 
 # weapp-tailwindcss Lynx
 
 通过 Rspeedy/Rspack 构建图生成 Lynx 原生运行时可消费的 Tailwind CSS，保留 ReactLynx `className`，不引入运行时样式表或 JSX 转换。
+
+完整的 `generator`、`rspack` 和固定平台字段见站点的 [ReactLynx / Rspeedy 配置参考](https://tw.icebreaker.top/zh-cn/docs/config/react-lynx)。
 
 ## 工作流
 

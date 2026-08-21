@@ -2,7 +2,7 @@
 
 ## 支持基线
 
-- `@weapp-tailwindcss/lynx` 0.2.1。
+- `@weapp-tailwindcss/lynx` 0.3.2。
 - `@lynx-js/rspeedy` >=0.16.0。
 - Tailwind CSS 4、Node >=22.12.0。
 - 只覆盖 ReactLynx + Rspeedy 原生输出，不覆盖 Rspeedy Web 或非 React Lynx 框架。

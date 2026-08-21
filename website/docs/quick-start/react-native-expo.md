@@ -20,6 +20,8 @@ keywords:
 
 `@weapp-tailwindcss/react-native` 是独立的 React Native 编译器包。它复用 `weapp-tailwindcss` 的 Tailwind CSS v4 source 扫描和候选集合，将生成的原始 CSS 编译为内存中的 RN style manifest；运行时不依赖 NativeWind 或 `react-native-css`。
 
+Metro 输入模式、manifest 字段和自定义 Metro 配置见 [React Native / Expo 配置参考](../config/react-native)。
+
 ## 安装
 
 ```bash

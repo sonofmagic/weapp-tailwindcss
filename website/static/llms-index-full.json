@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-15T19:11:25.821Z",
+  "generatedAt": "2026-08-21T02:02:50.726Z",
   "locale": "zh-CN",
   "contentTier": "full",
   "siteUrl": "https://tw.icebreaker.top/zh-cn",
   "totals": {
-    "all": 142,
-    "docs": 138,
+    "all": 145,
+    "docs": 141,
     "blog": 4
   },
   "documents": [
@@ -1555,7 +1555,8 @@
         "Taro"
       ],
       "headings": [
-        "分组入口"
+        "分组入口",
+        "框架配置参考"
       ],
       "source": "docs/api/interfaces/UserDefinedOptions.md"
     },
@@ -2814,6 +2815,138 @@
         "更多模板"
       ],
       "source": "docs/community/templates.mdx"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:config/react-lynx",
+      "locale": "zh-CN",
+      "contentTier": "full",
+      "productArea": "config",
+      "title": "ReactLynx / Rspeedy 配置参考",
+      "description": "ReactLynx、Rspeedy 与 @weapp-tailwindcss/lynx 的 Tailwind CSS 4 配置项和 Lynx encoder 边界。",
+      "summary": "本页说明 @weapp-tailwindcss/lynx 的构建配置。快速接入示例见 ReactLynx / Rspeedy 指南。",
+      "url": "/zh-cn/docs/config/react-lynx",
+      "canonical": "https://tw.icebreaker.top/zh-cn/docs/config/react-lynx",
+      "alternates": {
+        "en-US": "https://tw.icebreaker.top/docs/config/react-lynx",
+        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/config/react-lynx",
+        "x-default": "https://tw.icebreaker.top/docs/config/react-lynx"
+      },
+      "keywords": [
+        "ReactLynx",
+        "Rspeedy",
+        "Lynx",
+        "Tailwind CSS 4",
+        "配置项",
+        "配置参考",
+        "config",
+        "react lynx",
+        "weapp-tailwindcss",
+        "跨端",
+        "小程序",
+        "uni-app",
+        "Taro",
+        "React Native"
+      ],
+      "headings": [
+        "支持基线",
+        "安装",
+        "最小配置",
+        "`pluginLynxTailwindcss()` 配置项",
+        "CSS 与候选",
+        "Encoder 兼容边界",
+        "验证"
+      ],
+      "source": "docs/config/react-lynx.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:config/react-native",
+      "locale": "zh-CN",
+      "contentTier": "full",
+      "productArea": "config",
+      "title": "React Native / Expo 配置参考",
+      "description": "React Native、Expo、Metro 与 @weapp-tailwindcss/react-native 的 Tailwind CSS 4 配置项和 manifest 运行模型。",
+      "summary": "本页说明 @weapp-tailwindcss/react-native 的 Metro、Babel 和 manifest 配置。接入流程见 React Native / Expo 快速开始。",
+      "url": "/zh-cn/docs/config/react-native",
+      "canonical": "https://tw.icebreaker.top/zh-cn/docs/config/react-native",
+      "alternates": {
+        "en-US": "https://tw.icebreaker.top/docs/config/react-native",
+        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/config/react-native",
+        "x-default": "https://tw.icebreaker.top/docs/config/react-native"
+      },
+      "keywords": [
+        "React Native",
+        "Expo",
+        "Metro",
+        "Babel",
+        "React Native manifest",
+        "Tailwind CSS 4",
+        "配置项",
+        "React",
+        "Native",
+        "配置参考",
+        "config",
+        "weapp-tailwindcss",
+        "跨端",
+        "小程序",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "支持基线",
+        "安装",
+        "Metro 配置",
+        "CSS 入口与 Babel",
+        "运行模型与 manifest",
+        "边界与验证"
+      ],
+      "source": "docs/config/react-native.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:config/uni-app-x",
+      "locale": "zh-CN",
+      "contentTier": "full",
+      "productArea": "config",
+      "title": "uni-app x 配置参考",
+      "description": "uni-app x、HBuilderX 与 weapp-tailwindcss 的 Tailwind CSS 4 配置项、默认值和多端边界。",
+      "summary": "本页集中说明 uniAppX() preset 的配置项。接入步骤见 uni-app x 快速开始。",
+      "url": "/zh-cn/docs/config/uni-app-x",
+      "canonical": "https://tw.icebreaker.top/zh-cn/docs/config/uni-app-x",
+      "alternates": {
+        "en-US": "https://tw.icebreaker.top/docs/config/uni-app-x",
+        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/config/uni-app-x",
+        "x-default": "https://tw.icebreaker.top/docs/config/uni-app-x"
+      },
+      "keywords": [
+        "uni-app x",
+        "HBuilderX",
+        "uniAppX",
+        "Tailwind CSS 4",
+        "配置项",
+        "uni-app",
+        "配置参考",
+        "config",
+        "uni app x",
+        "weapp-tailwindcss",
+        "跨端",
+        "小程序",
+        "Taro",
+        "React Native",
+        "Lynx"
+      ],
+      "headings": [
+        "支持基线",
+        "安装",
+        "最小配置",
+        "`uniAppX()` 配置项",
+        "局部样式与 uvue 兼容",
+        "Tailwind CSS 入口",
+        "多端边界",
+        "验证"
+      ],
+      "source": "docs/config/uni-app-x.md"
     },
     {
       "kind": "doc",

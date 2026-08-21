@@ -16,6 +16,8 @@ keywords:
 
 `@weapp-tailwindcss/lynx` 通过 Rspeedy 的 Rspack 生命周期生成 Lynx 可消费的普通 CSS。它保留 ReactLynx 原生 `className`，不引入运行时样式表或 JSX 转换。
 
+配置项、固定字段和 encoder 边界见 [ReactLynx / Rspeedy 配置参考](../../config/react-lynx)。
+
 ## 安装
 
 ```bash npm2yarn

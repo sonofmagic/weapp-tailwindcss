@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-15T18:55:52.005Z",
+  "generatedAt": "2026-08-21T01:55:33.511Z",
   "locale": "en-US",
   "contentTier": "primary",
   "siteUrl": "https://tw.icebreaker.top",
@@ -352,7 +352,8 @@
         "cross-platform"
       ],
       "headings": [
-        "Group entry"
+        "Group entry",
+        "Framework configuration references"
       ],
       "source": "i18n/en/docs/api/interfaces/UserDefinedOptions.md"
     },

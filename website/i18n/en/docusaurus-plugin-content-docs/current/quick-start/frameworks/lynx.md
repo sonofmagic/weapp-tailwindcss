@@ -22,6 +22,8 @@ keywords:
 
 `@weapp-tailwindcss/lynx` uses Rspeedy's Rspack lifecycle to generate standard CSS that Lynx can consume. It preserves ReactLynx's native `className` and does not introduce a runtime stylesheet or JSX transform.
 
+See the [ReactLynx / Rspeedy configuration reference](../../config/react-lynx) for options, fixed fields, and encoder boundaries.
+
 ## Install
 
 ```bash npm2yarn

@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-15T03:21:26.179Z",
+  "generatedAt": "2026-08-21T01:55:33.511Z",
   "locale": "zh-CN",
   "contentTier": "primary",
   "siteUrl": "https://tw.icebreaker.top/zh-cn",
@@ -352,7 +352,8 @@
         "Taro"
       ],
       "headings": [
-        "分组入口"
+        "分组入口",
+        "框架配置参考"
       ],
       "source": "docs/api/interfaces/UserDefinedOptions.md"
     },

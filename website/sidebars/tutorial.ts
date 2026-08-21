@@ -134,6 +134,34 @@ const tutorialSidebar: SidebarConfig = [
   },
   {
     type: 'category',
+    label: '框架配置参考',
+    collapsed: false,
+    items: [
+      {
+        type: 'doc',
+        id: 'config/uni-app-x',
+        key: 'config-uni-app-x',
+        label: 'uni-app x',
+        customProps: { frameworkLogo: 'uni-app-x' },
+      },
+      {
+        type: 'doc',
+        id: 'config/react-lynx',
+        key: 'config-react-lynx',
+        label: 'ReactLynx / Rspeedy',
+        customProps: { frameworkLogo: 'lynx' },
+      },
+      {
+        type: 'doc',
+        id: 'config/react-native',
+        key: 'config-react-native',
+        label: 'React Native / Expo',
+        customProps: { frameworkLogo: 'expo' },
+      },
+    ],
+  },
+  {
+    type: 'category',
     label: '兼容与进阶',
     collapsed: true,
     items: [

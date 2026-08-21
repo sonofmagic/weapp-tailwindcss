@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-15T19:26:00.170Z",
+  "generatedAt": "2026-08-21T02:02:50.726Z",
   "locale": "en-US",
   "contentTier": "full",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 139,
-    "docs": 138,
+    "all": 142,
+    "docs": 141,
     "blog": 1
   },
   "documents": [
@@ -1412,7 +1412,8 @@
         "cross-platform"
       ],
       "headings": [
-        "Group entry"
+        "Group entry",
+        "Framework configuration references"
       ],
       "source": "i18n/en/docs/api/interfaces/UserDefinedOptions.md"
     },
@@ -2671,6 +2672,138 @@
         "More templates"
       ],
       "source": "i18n/en/docs/community/templates.mdx"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:config/react-lynx",
+      "locale": "en-US",
+      "contentTier": "full",
+      "productArea": "config",
+      "title": "ReactLynx / Rspeedy Configuration Reference",
+      "description": "Configuration options and Lynx encoder boundaries for ReactLynx, Rspeedy, and @weapp-tailwindcss/lynx.",
+      "summary": "This page documents @weapp-tailwindcss/lynx. For a complete setup example, see the ReactLynx / Rspeedy guide.",
+      "url": "/docs/config/react-lynx",
+      "canonical": "https://tw.icebreaker.top/docs/config/react-lynx",
+      "alternates": {
+        "en-US": "https://tw.icebreaker.top/docs/config/react-lynx",
+        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/config/react-lynx",
+        "x-default": "https://tw.icebreaker.top/docs/config/react-lynx"
+      },
+      "keywords": [
+        "ReactLynx",
+        "Rspeedy",
+        "Lynx",
+        "Tailwind CSS 4",
+        "configuration",
+        "Reference",
+        "config",
+        "react lynx",
+        "weapp-tailwindcss",
+        "cross-platform",
+        "mini app",
+        "uni-app",
+        "Taro",
+        "React Native"
+      ],
+      "headings": [
+        "Support baseline",
+        "Install",
+        "Minimal configuration",
+        "`pluginLynxTailwindcss()` options",
+        "CSS and candidates",
+        "Encoder boundaries",
+        "Validation"
+      ],
+      "source": "i18n/en/docs/config/react-lynx.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:config/react-native",
+      "locale": "en-US",
+      "contentTier": "full",
+      "productArea": "config",
+      "title": "React Native / Expo Configuration Reference",
+      "description": "Tailwind CSS 4 configuration options and manifest behavior for React Native, Expo, Metro, and @weapp-tailwindcss/react-native.",
+      "summary": "This page documents the Metro, Babel, and manifest configuration for @weapp-tailwindcss/react-native. For the setup flow, see the React Native / Expo quick start.",
+      "url": "/docs/config/react-native",
+      "canonical": "https://tw.icebreaker.top/docs/config/react-native",
+      "alternates": {
+        "en-US": "https://tw.icebreaker.top/docs/config/react-native",
+        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/config/react-native",
+        "x-default": "https://tw.icebreaker.top/docs/config/react-native"
+      },
+      "keywords": [
+        "React Native",
+        "Expo",
+        "Metro",
+        "Babel",
+        "React Native manifest",
+        "Tailwind CSS 4",
+        "configuration",
+        "React",
+        "Native",
+        "Reference",
+        "config",
+        "weapp-tailwindcss",
+        "cross-platform",
+        "mini app",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "Support baseline",
+        "Install",
+        "Metro configuration",
+        "CSS entry and Babel",
+        "Runtime model and manifest",
+        "Boundaries and validation"
+      ],
+      "source": "i18n/en/docs/config/react-native.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:config/uni-app-x",
+      "locale": "en-US",
+      "contentTier": "full",
+      "productArea": "config",
+      "title": "uni-app x Configuration Reference",
+      "description": "Configuration options, defaults, and cross-platform boundaries for uni-app x, HBuilderX, and weapp-tailwindcss.",
+      "summary": "This page documents the uniAppX() preset. For the setup flow, see the uni-app x quick start.",
+      "url": "/docs/config/uni-app-x",
+      "canonical": "https://tw.icebreaker.top/docs/config/uni-app-x",
+      "alternates": {
+        "en-US": "https://tw.icebreaker.top/docs/config/uni-app-x",
+        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/config/uni-app-x",
+        "x-default": "https://tw.icebreaker.top/docs/config/uni-app-x"
+      },
+      "keywords": [
+        "uni-app x",
+        "HBuilderX",
+        "uniAppX",
+        "Tailwind CSS 4",
+        "configuration",
+        "uni-app",
+        "Reference",
+        "config",
+        "uni app x",
+        "weapp-tailwindcss",
+        "cross-platform",
+        "mini app",
+        "Taro",
+        "React Native",
+        "Lynx"
+      ],
+      "headings": [
+        "Support baseline",
+        "Install",
+        "Minimal configuration",
+        "`uniAppX()` options",
+        "Local styles and uvue compatibility",
+        "Tailwind entry",
+        "Cross-platform boundaries",
+        "Validation"
+      ],
+      "source": "i18n/en/docs/config/uni-app-x.md"
     },
     {
       "kind": "doc",
