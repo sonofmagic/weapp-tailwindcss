@@ -10,6 +10,9 @@ declare global {
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'https://tw.icebreaker.top/'
 const localeStorageKey = 'weapp-tailwindcss:website:locale'
+const uiStorageKey = 'weapp-tailwindcss:website:ui'
+const githubStarsCacheKey = 'weapp-tailwindcss:github-stars:sonofmagic/weapp-tailwindcss'
+const npmVersionCacheKey = 'weapp-tailwindcss:latest-version'
 
 interface ViewportCase {
   name: string
@@ -253,6 +256,108 @@ test.describe('homepage hero layout', () => {
       '/docs/quick-start/react-native-expo',
       '/docs/quick-start/frameworks/lynx',
     ])
+
+    await expect(page.locator('.home-support__anchor-label')).toHaveText('Tailwind CSS')
+    await expect(page.locator('.home-support__anchor-values strong')).toHaveText(['@source'])
+    await expect(page.locator('.home-support__track dt')).toHaveText(['Frameworks', 'Builders', 'Runtime'])
+    await expect(page.locator('.home-support__track').nth(0).locator('dd strong')).toHaveText(['uni-app', 'Taro', 'React Native', 'Lynx'])
+    await expect(page.locator('.home-support__track').nth(1).locator('dd strong')).toHaveText(['Webpack', 'Vite', 'Metro', 'Rspeedy'])
+    await expect(page.locator('.home-support__track').nth(2).locator('dd strong')).toHaveText(['merge', 'cva', 'variants'])
+  })
+
+  test('desktop support tracks keep an asymmetric readable layout', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto(baseURL, {
+      waitUntil: 'networkidle',
+    })
+
+    const support = page.locator('.home-support')
+    const anchor = support.locator('.home-support__anchor')
+    const tracks = support.locator('.home-support__tracks')
+
+    await expect(support).toBeVisible()
+    await expect(anchor.locator('.home-support__anchor-label')).toHaveText('Tailwind CSS')
+    await expect(anchor.locator('.home-support__anchor-values strong')).toHaveText(['@source'])
+    await expect(tracks.locator('.home-support__track')).toHaveCount(3)
+    await expect(tracks.locator('dt')).toHaveText(['框架', '构建器', '运行时'])
+    await expect(support.locator('nav')).toHaveCount(0)
+    await expect(support.locator('.home-facts__item, .home-facts__routes')).toHaveCount(0)
+
+    const geometry = await support.evaluate((element) => {
+      const anchorElement = element.querySelector<HTMLElement>('.home-support__anchor')!
+      const tracksElement = element.querySelector<HTMLElement>('.home-support__tracks')!
+      const supportRect = element.getBoundingClientRect()
+      const anchorRect = anchorElement.getBoundingClientRect()
+      const tracksRect = tracksElement.getBoundingClientRect()
+      return {
+        anchorHeight: anchorRect.height,
+        anchorRatio: anchorRect.width / supportRect.width,
+        anchorRight: anchorRect.right,
+        supportLeft: supportRect.left,
+        supportRight: supportRect.right,
+        tracksHeight: tracksRect.height,
+        tracksLeft: tracksRect.left,
+      }
+    })
+
+    expect(geometry.anchorRatio).toBeGreaterThan(0.31)
+    expect(geometry.anchorRatio).toBeLessThan(0.37)
+    expect(Math.abs(geometry.anchorHeight - geometry.tracksHeight)).toBeLessThanOrEqual(1)
+    expect(Math.abs(geometry.anchorRight - geometry.tracksLeft)).toBeLessThanOrEqual(1)
+    expect(geometry.supportLeft).toBeGreaterThanOrEqual(0)
+    expect(geometry.supportRight).toBeLessThanOrEqual(1440)
+
+    await page.setViewportSize({ width: 1280, height: 720 })
+    await expect.poll(async () => support.evaluate(element => element.getBoundingClientRect().top)).toBeLessThan(720)
+  })
+
+  test('support signals retain cached data and UI switch behavior', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
+    await page.addInitScript(({ githubKey, npmKey, settingsKey }) => {
+      const expires = Date.now() + 60_000
+      if (!window.sessionStorage.getItem(githubKey)) {
+        window.sessionStorage.setItem(githubKey, JSON.stringify({ value: 1234, expires }))
+      }
+      if (!window.sessionStorage.getItem(npmKey)) {
+        window.sessionStorage.setItem(npmKey, JSON.stringify({
+          value: { version: '9.9.9', publishedAt: null },
+          expires,
+        }))
+      }
+      if (!window.localStorage.getItem(settingsKey)) {
+        window.localStorage.setItem(settingsKey, JSON.stringify({
+          homepage: { githubBadge: true, npmVersionBadge: true },
+        }))
+      }
+    }, {
+      githubKey: githubStarsCacheKey,
+      npmKey: npmVersionCacheKey,
+      settingsKey: uiStorageKey,
+    })
+    await page.goto(baseURL, { waitUntil: 'networkidle' })
+
+    await expect(page.locator('.ui-homepage-github-badge')).toContainText('1.2k')
+    await expect(page.locator('.ui-homepage-npm-version-badge')).toContainText('v9.9.9')
+
+    await page.evaluate((settingsKey) => {
+      const stored = JSON.parse(window.localStorage.getItem(settingsKey) ?? '{}') as {
+        homepage?: Record<string, unknown>
+      }
+      window.localStorage.setItem(settingsKey, JSON.stringify({
+        ...stored,
+        homepage: {
+          ...stored.homepage,
+          githubBadge: false,
+          npmVersionBadge: false,
+        },
+      }))
+    }, uiStorageKey)
+    await page.reload({ waitUntil: 'networkidle' })
+
+    await expect(page.locator('.ui-homepage-github-badge')).toHaveCount(0)
+    await expect(page.locator('.ui-homepage-npm-version-badge')).toHaveCount(0)
+    await expect(page.locator('.home-support__track')).toHaveCount(3)
   })
 
   test('React Native and Lynx platform links reach their localized documentation', async ({ page }) => {
@@ -298,6 +403,18 @@ test.describe('homepage hero layout', () => {
     expect(colors.color).toBe('rgb(255, 255, 255)')
   })
 
+  test('Lynx logo remains visible in dark mode', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
+    await page.addInitScript(() => {
+      window.localStorage.setItem('theme', 'dark')
+    })
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' })
+
+    const lynxLogo = page.locator('.home-hero__platform-logo--lynx')
+    await expect(lynxLogo).toBeVisible()
+    await expect.poll(async () => lynxLogo.evaluate(element => getComputedStyle(element).filter)).toContain('invert(1)')
+  })
+
   test('mobile hero actions fit without horizontal overflow', async ({ page }) => {
     await setStoredLocale(page, 'zh-cn')
     await page.setViewportSize({ width: 390, height: 844 })
@@ -324,6 +441,28 @@ test.describe('homepage hero layout', () => {
     expect(actionBoxes).toHaveLength(3)
     for (const box of actionBoxes) {
       expect(box.height).toBeGreaterThanOrEqual(40)
+      expect(box.left).toBeGreaterThanOrEqual(0)
+      expect(box.right).toBeLessThanOrEqual(390)
+    }
+
+    const supportGeometry = await page.locator('.home-support').evaluate((element) => {
+      const anchorRect = element.querySelector<HTMLElement>('.home-support__anchor')!.getBoundingClientRect()
+      const tracksRect = element.querySelector<HTMLElement>('.home-support__tracks')!.getBoundingClientRect()
+      const trackRects = Array.from(element.querySelectorAll<HTMLElement>('.home-support__track'))
+        .map((track) => {
+          const rect = track.getBoundingClientRect()
+          return { left: rect.left, right: rect.right }
+        })
+      return {
+        anchorBottom: anchorRect.bottom,
+        tracksTop: tracksRect.top,
+        trackRects,
+      }
+    })
+
+    expect(Math.abs(supportGeometry.anchorBottom - supportGeometry.tracksTop)).toBeLessThanOrEqual(1)
+    expect(supportGeometry.trackRects).toHaveLength(3)
+    for (const box of supportGeometry.trackRects) {
       expect(box.left).toBeGreaterThanOrEqual(0)
       expect(box.right).toBeLessThanOrEqual(390)
     }

@@ -32,13 +32,6 @@ interface EntryItem {
   icon: string
 }
 
-interface RouteItem {
-  href: string
-  label: string
-  description: string
-  icon: string
-}
-
 interface PlatformIconItem {
   id: keyof typeof platformIconContent
   label: string
@@ -48,7 +41,7 @@ interface PlatformIconItem {
 const homepageCopy = {
   'zh-cn': {
     facts: [
-      { label: 'Tailwind', values: ['CSS 4', '@source'], icon: 'icon-[mdi--tailwind]' },
+      { label: 'Tailwind CSS', values: ['@source'], icon: 'icon-[mdi--tailwind]' },
       {
         label: '框架',
         values: ['uni-app', 'Taro', 'React Native', 'Lynx'],
@@ -57,26 +50,6 @@ const homepageCopy = {
       { label: '构建器', values: ['Webpack', 'Vite', 'Metro', 'Rspeedy'], icon: 'icon-[mdi--hammer-wrench]' },
       { label: '运行时', values: ['merge', 'cva', 'variants'], icon: 'icon-[mdi--function-variant]' },
     ] satisfies FactItem[],
-    routeLinks: [
-      {
-        href: '/docs/quick-start/install',
-        label: '快速开始',
-        description: '从 CSS-first 入口接入当前版本。',
-        icon: 'icon-[mdi--numeric-4-box-outline]',
-      },
-      {
-        href: '/docs/quick-start/frameworks/uni-app-vite',
-        label: '框架接入',
-        description: '按 uni-app、Taro、Mpx、Weapp-vite 或原生选择路线。',
-        icon: 'icon-[mdi--transit-connection-variant]',
-      },
-      {
-        href: '/docs/api/interfaces/UserDefinedOptions',
-        label: '配置参考',
-        description: '直接查看插件选项、默认值和类型入口。',
-        icon: 'icon-[mdi--api]',
-      },
-    ] satisfies RouteItem[],
     capabilities: [
       {
         title: '精确转译',
@@ -154,7 +127,6 @@ const homepageCopy = {
       communityEntry: '加入技术交流群',
     },
     factsAria: '支持矩阵',
-    routesAria: '接入路线',
     capabilitiesTitle: '守住工程边界，接管生成与转译',
     capabilitiesSummary: '复用 Tailwind CSS 4 输入，把源码扫描、样式生成、类名转义和运行时工具放在一条工程链路里。',
     buildToolsTitle: '构建器接管 Tailwind 生成',
@@ -166,7 +138,7 @@ const homepageCopy = {
   },
   'en': {
     facts: [
-      { label: 'Tailwind', values: ['CSS 4', '@source'], icon: 'icon-[mdi--tailwind]' },
+      { label: 'Tailwind CSS', values: ['@source'], icon: 'icon-[mdi--tailwind]' },
       {
         label: 'Frameworks',
         values: ['uni-app', 'Taro', 'React Native', 'Lynx'],
@@ -175,26 +147,6 @@ const homepageCopy = {
       { label: 'Builders', values: ['Webpack', 'Vite', 'Metro', 'Rspeedy'], icon: 'icon-[mdi--hammer-wrench]' },
       { label: 'Runtime', values: ['merge', 'cva', 'variants'], icon: 'icon-[mdi--function-variant]' },
     ] satisfies FactItem[],
-    routeLinks: [
-      {
-        href: '/docs/quick-start/install',
-        label: 'Quick Start',
-        description: 'Start from the CSS-first entry for the current version.',
-        icon: 'icon-[mdi--numeric-4-box-outline]',
-      },
-      {
-        href: '/docs/intro',
-        label: 'Introduction',
-        description: 'Understand the runtime constraints and the transformation pipeline.',
-        icon: 'icon-[mdi--book-open-page-variant-outline]',
-      },
-      {
-        href: '/blog',
-        label: 'Release Notes',
-        description: 'Read English release notes and compatibility updates.',
-        icon: 'icon-[mdi--newspaper-variant-outline]',
-      },
-    ] satisfies RouteItem[],
     capabilities: [
       {
         title: 'Precise transforms',
@@ -273,7 +225,6 @@ const homepageCopy = {
       communityHref: 'https://github.com/sonofmagic/weapp-tailwindcss/discussions',
     },
     factsAria: 'Support matrix',
-    routesAria: 'Setup routes',
     capabilitiesTitle: 'Keep firm engineering boundaries and own generation plus transforms',
     capabilitiesSummary: 'Reuse Tailwind CSS 4 input while keeping source scanning, style generation, class escaping, and runtime utilities in one engineering pipeline.',
     buildToolsTitle: 'Builders own Tailwind generation',
@@ -300,6 +251,7 @@ function HomepageHeader() {
   const { homepage } = useUiManagement()
   const locale = useCurrentSiteLocale()
   const copy = homepageCopy[locale]
+  const [tailwindFact, ...supportFacts] = copy.facts
 
   return (
     <main className="home-v5">
@@ -391,45 +343,43 @@ function HomepageHeader() {
       </section>
 
       {homepage.platformTags && (
-        <section className="ui-homepage-platform-tags home-facts" aria-label={copy.factsAria}>
-          {copy.facts.map((fact, index) => (
-            <div className="home-facts__item" key={fact.label}>
-              <div className="home-facts__heading">
-                <i aria-hidden="true" className={fact.icon}></i>
-                <span>{fact.label}</span>
-                <small aria-hidden="true">
-                  0
-                  {index + 1}
-                </small>
-              </div>
-              <div className="home-facts__values">
-                {fact.values.map(value => (
-                  <strong key={value}>{value}</strong>
-                ))}
-              </div>
+        <section className="ui-homepage-platform-tags home-support" aria-label={copy.factsAria}>
+          <div className="home-support__anchor">
+            <div className="home-support__anchor-label">
+              <i aria-hidden="true" className={tailwindFact.icon}></i>
+              <span>{tailwindFact.label}</span>
             </div>
-          ))}
-          <nav className="home-facts__routes" aria-label={copy.routesAria}>
-            {copy.routeLinks.map(route => (
-              <Link className="home-facts__route" to={route.href} key={route.href}>
-                <i aria-hidden="true" className={route.icon}></i>
-                <span>
-                  <strong>{route.label}</strong>
-                  <small>{route.description}</small>
-                </span>
-              </Link>
+            <div className="home-support__anchor-values">
+              {tailwindFact.values.map(value => (
+                <strong key={value}>{value}</strong>
+              ))}
+            </div>
+            {(homepage.githubBadge || homepage.npmVersionBadge) && (
+              <div className="home-support__signals">
+                {homepage.githubBadge && (
+                  <HeroGithubBadge className="ui-homepage-github-badge" />
+                )}
+                {homepage.npmVersionBadge && (
+                  <HeroVersionBadge className="ui-homepage-npm-version-badge" />
+                )}
+              </div>
+            )}
+          </div>
+          <dl className="home-support__tracks">
+            {supportFacts.map(fact => (
+              <div className="home-support__track" key={fact.label}>
+                <dt>
+                  <i aria-hidden="true" className={fact.icon}></i>
+                  <span>{fact.label}</span>
+                </dt>
+                <dd>
+                  {fact.values.map(value => (
+                    <strong key={value}>{value}</strong>
+                  ))}
+                </dd>
+              </div>
             ))}
-          </nav>
-          {(homepage.githubBadge || homepage.npmVersionBadge) && (
-            <div className="home-facts__signals">
-              {homepage.githubBadge && (
-                <HeroGithubBadge className="ui-homepage-github-badge" />
-              )}
-              {homepage.npmVersionBadge && (
-                <HeroVersionBadge className="ui-homepage-npm-version-badge" />
-              )}
-            </div>
-          )}
+          </dl>
         </section>
       )}
 
