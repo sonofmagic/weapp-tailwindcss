@@ -1,5 +1,6 @@
 ---
 sidebar: aiSidebar
+audience: maintainer
 title: AI generates small program code
 description: This page is about using AI to quickly build small programs. I hope it can help everyone continuously improve their development efficiency.
 keywords:
@@ -45,6 +46,10 @@ npx skills add sonofmagic/skills \
 The original `weapp-tailwindcss` name continues to serve as the lightweight coordination entry, and the old installation commands will not become invalid.
 
 For detailed instructions, see: [Skill (Skill System)](/docs/ai/basics/skill)
+
+:::warning Maintainers only
+The following commands are for repository contributors and documentation maintainers, not for integrating `weapp-tailwindcss` into an application.
+:::
 
 ## How to contribute
 

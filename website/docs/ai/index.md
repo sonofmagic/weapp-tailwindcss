@@ -1,5 +1,6 @@
 ---
 sidebar: aiSidebar
+audience: maintainer
 title: AI 生成小程序代码
 description: 本页面为使用 AI 快速构建小程序的专题，希望能够帮助大家不断的提升自己的开发效率
 keywords:
@@ -45,6 +46,10 @@ npx skills add sonofmagic/skills \
 原来的 `weapp-tailwindcss` 名称继续作为轻量协调入口，旧安装命令不会失效。
 
 详细说明见：[Skill（技能系统）](/docs/ai/basics/skill)
+
+:::warning 仅供仓库维护者
+以下命令用于贡献者和网站维护者，不是普通项目的接入步骤。
+:::
 
 ## 如何参与贡献
 

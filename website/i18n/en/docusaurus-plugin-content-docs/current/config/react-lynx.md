@@ -106,12 +106,11 @@ Do not construct `w-[${width}px]`; Tailwind cannot discover the final token duri
 
 ## Validation
 
-```bash
-pnpm --filter @weapp-tailwindcss/lynx test
-pnpm --filter @weapp-tailwindcss/example-react-lynx build
-pnpm e2e:lynx
-pnpm e2e:lynx:android
-pnpm e2e:lynx:ios
-```
+Run the development or build command provided by your own Rspeedy project's `package.json`, then verify:
+
+- Tailwind rules enter the CSS bundle, raw `className` values remain usable, and no mini-program safe classes are generated.
+- Encoder logs and the final bundle do not unexpectedly remove target utilities or selectors.
+- Android and iOS targets separately cover layout, pseudo-classes, media queries, gradients, and arbitrary values.
+- Unsupported properties and complex selectors produce clear warnings, with Lynx runtime behavior as the final authority.
 
 Static bundles, encoder logs, and Android/iOS reports prove generation, retention, and runtime support separately.

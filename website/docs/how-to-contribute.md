@@ -1,5 +1,6 @@
 ---
 title: 如何贡献
+audience: maintainer
 description: 其实非常简单，你不一定需要贡献代码，你提一个 issue，回答一个问题，写一篇相关的文章，这些都是为项目做贡献，无需拘泥于具体的形式。
 keywords:
   - 如何贡献
@@ -123,6 +124,10 @@ Why？
 - `*`: `src` 其他一些文件，大多是一些导出文件
 
 想了解当前 Tailwind 生成、设计 token 与组件封装边界，参阅 [Tailwind 设计理念](./tailwindcss/tailwind-core)。
+
+:::warning 仅供仓库维护者
+本页的本地调试、构建和测试说明只适用于贡献仓库代码或文档的维护者，不是业务项目接入步骤。
+:::
 
 ## 如何本地调试
 

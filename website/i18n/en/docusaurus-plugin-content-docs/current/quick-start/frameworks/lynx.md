@@ -92,25 +92,16 @@ A full `@import "tailwindcss"` includes browser preflight. Rspeedy may report an
 
 ## Validation and example
 
-The complete repository example is available under [`examples/react-lynx`](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/examples/react-lynx). Repository contributors can run:
+The complete repository example is available under [`examples/react-lynx`](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/examples/react-lynx) for project structure and CSS entry reference. Your Rspeedy project should use its own development or build command.
 
-```bash
-pnpm --filter @weapp-tailwindcss/lynx test
-pnpm --filter @weapp-tailwindcss/example-react-lynx build
-pnpm e2e:lynx
-```
-
-`examples/react-lynx` is a multi-page compatibility lab pinned to Tailwind CSS `4.3.3`, Lynx Engine `4.0.1`, bundle `engineVersion: '3.9'`, and `@lynx-js/css-defines` `0.0.16`. Representative cases cover every official utility family, variant kind, directive, and arbitrary syntax branch.
+`examples/react-lynx` is pinned to Tailwind CSS `4.3.3`, Lynx Engine `4.0.1`, bundle `engineVersion: '3.9'`, and `@lynx-js/css-defines` `0.0.16`. Representative cases cover every official utility family, variant kind, directive, and arbitrary syntax branch.
 
 The static gate records Tailwind generation and Lynx encoder retention separately. Cross-platform support is determined only by runtime reports from Pixel 7/API 35 and iPhone 16 Pro/iOS 18.5; css-defines cannot replace runtime evidence:
 
-```bash
-pnpm e2e:lynx:android
-pnpm e2e:lynx:ios
-pnpm e2e:lynx:native
-pnpm e2e:lynx:update
-```
+In your own Android and iOS targets, verify:
 
-The updater requires complete reports from both platforms for the same catalog and Engine version. Missing cases, regressions, and newly supported behavior require explicit review.
+- Tailwind rules enter the bundle and the encoder does not unexpectedly remove target utilities or selectors.
+- Runtime layout, pseudo-classes, media queries, gradients, and arbitrary values match expectations.
+- Unsupported properties, complex selectors, and device differences are recorded explicitly; a successful generation step does not replace runtime validation.
 
 The current integration only covers ReactLynx + Rspeedy build targets. It does not cover Rspeedy Web output, non-React Lynx frameworks, or React Native-style runtime style mapping.

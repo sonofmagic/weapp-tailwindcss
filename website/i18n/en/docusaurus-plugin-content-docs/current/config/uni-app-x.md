@@ -59,20 +59,20 @@ export default defineConfig({
 
 ## `uniAppX()` options
 
-| Option                 | Type                      | Default                | Description                                                                                                       |
-| ---------------------- | ------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `base`                 | `string`                  | Required               | Project root. Derive it from the config file URL so HBuilderX working-directory changes do not affect resolution. |
-| `cssEntries`           | `string[]`                | Auto-detected          | Tailwind CSS 4 entries. List every entry for multi-entry or split-style builds; absolute paths are recommended.   |
-| `rem2rpx`              | `boolean                  | object`                | —                                                                                                                 | Convert `rem` to `rpx`; this is a top-level preset option.                                             |
-| `unitsToPx`            | `boolean                  | object`                | —                                                                                                                 | Configure length-unit conversion to `px`.                                                              |
-| `unitConversion`       | `object                   | false`                 | —                                                                                                                 | Configure shared or platform-specific CSS unit conversion.                                             |
-| `generator`            | `object                   | false`                 | Inferred                                                                                                          | Tailwind generator settings. Web/H5 automatically uses `target: 'web'` and Web compatibility handling. |
-| `uniAppX`              | `boolean                  | object`                | Enabled for native App                                                                                            | Controls uvue/App handling, local styles, and unsupported utilities.                                   |
-| `componentLocalStyles` | `boolean                  | object`                | `true`                                                                                                            | Shortcut for `uniAppX.componentLocalStyles`.                                                           |
-| `uvueUnsupported`      | `'error'                  | 'warn'                 | 'silent'`                                                                                                         | `'warn'`                                                                                               | Controls handling of unsupported uvue utilities. |
-| `customAttributes`     | `ICustomAttributes`       | —                      | Adds class-name transformation rules for template attributes beyond `class`.                                      |
-| `resolve`              | `PackageResolvingOptions` | Project `node_modules` | Adds custom Tailwind package resolution paths.                                                                    |
-| `rawOptions`           | `UserDefinedOptions`      | —                      | Passes through core options not covered by preset shortcuts.                                                      |
+| Option                 | Type                            | Default                | Description                                                                                                       |
+| ---------------------- | ------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `base`                 | `string`                        | Required               | Project root. Derive it from the config file URL so HBuilderX working-directory changes do not affect resolution. |
+| `cssEntries`           | `string[]`                      | Auto-detected          | Tailwind CSS 4 entries. List every entry for multi-entry or split-style builds; absolute paths are recommended.   |
+| `rem2rpx`              | `boolean \| object`             | —                      | Convert `rem` to `rpx`; this is a top-level preset option.                                                        |
+| `unitsToPx`            | `boolean \| object`             | —                      | Configure length-unit conversion to `px`.                                                                         |
+| `unitConversion`       | `object \| false`               | —                      | Configure shared or platform-specific CSS unit conversion.                                                        |
+| `generator`            | `object \| false`               | Inferred               | Tailwind generator settings. Web/H5 automatically uses `target: 'web'` and Web compatibility handling.            |
+| `uniAppX`              | `boolean \| object`             | Enabled for native App | Controls uvue/App handling, local styles, and unsupported utilities.                                              |
+| `componentLocalStyles` | `boolean \| object`             | `true`                 | Shortcut for `uniAppX.componentLocalStyles`.                                                                      |
+| `uvueUnsupported`      | `'error' \| 'warn' \| 'silent'` | `'warn'`               | Controls handling of unsupported uvue utilities.                                                                  |
+| `customAttributes`     | `ICustomAttributes`             | —                      | Adds class-name transformation rules for template attributes beyond `class`.                                      |
+| `resolve`              | `PackageResolvingOptions`       | Project `node_modules` | Adds custom Tailwind package resolution paths.                                                                    |
+| `rawOptions`           | `UserDefinedOptions`            | —                      | Passes through core options not covered by preset shortcuts.                                                      |
 
 `rem2rpx`, `unitsToPx`, and `unitConversion` belong at the preset top level, not under `cssOptions`.
 
@@ -127,12 +127,9 @@ Import it in the global `App.uvue` style block:
 
 ## Validation
 
-```bash
-pnpm e2e:hbuilderx:local:web
-pnpm e2e:hbuilderx:local:mp
-pnpm e2e:hbuilderx:local:android
-pnpm e2e:hbuilderx:local:ios
-pnpm e2e:hbuilderx:local:harmony
-```
+Run the corresponding development or build flow in your own HBuilderX project, then verify:
 
-HBuilderX, simulators, and devices are local-only dependencies. Validate real platform directories, CSS suffixes, and runtime behavior separately; an H5 build alone is not evidence for native App support.
+- Web, mini-program, Android, iOS, and HarmonyOS produce the real target artifacts with the expected CSS suffixes and entry files.
+- `cssEntries` points to an entry actually imported by the project, and the scan range covers pages, components, and layouts.
+- Unit conversion, `componentLocalStyles`, `uvueUnsupported`, and `customAttributes` match each target's limitations.
+- HBuilderX, simulators, or devices show the same result as the build artifacts; an H5 build alone is not evidence for native App support.

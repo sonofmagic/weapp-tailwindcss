@@ -111,11 +111,9 @@ if (manifest.warnings.length) {
 - 浏览器 preflight、selector 状态和未知 CSS 属性不会自动降级为 RN style。
 - Expo Web 只作为 smoke test；最终应在 Android/iOS 模拟器或真机验证布局、颜色模式和平台变体。
 
-```bash
-pnpm --filter @weapp-tailwindcss/react-native test
-pnpm --filter @weapp-tailwindcss/react-native build
-pnpm --filter @weapp-tailwindcss/example-react-native-expo build
-pnpm e2e:react-native-compatibility
-pnpm e2e:react-native:android
-pnpm e2e:react-native:ios
-```
+请在自己的 Expo 或 React Native 项目中运行项目 `package.json` 提供的开发或构建命令，并按以下清单验收：
+
+- Metro 能加载 CSS 入口并生成 manifest，代表性 class 能在静态 lookup 中命中。
+- `manifest.warnings` 中的不支持声明已经被发现并完成取舍，不要把 warning 当成可用样式。
+- Expo Web 只用于快速检查；Android 与 iOS 模拟器或真机都要检查布局、颜色模式和平台变体。
+- 修改 CSS 或源码后，Metro HMR 能刷新 manifest，静态 class lookup 没有指向旧样式。

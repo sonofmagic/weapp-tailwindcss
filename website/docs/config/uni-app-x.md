@@ -63,13 +63,13 @@ export default defineConfig({
 | --- | --- | --- | --- |
 | `base` | `string` | 必填 | uni-app x 工程根目录。建议使用 `fileURLToPath(import.meta.url)` 推导，避免 HBuilderX 改变工作目录。 |
 | `cssEntries` | `string[]` | 自动识别 | Tailwind CSS 4 入口。多入口时全部列出，建议传绝对路径。 |
-| `rem2rpx` | `boolean | object` | — | 将 `rem` 转为 `rpx`，属于 preset 顶层配置。 |
-| `unitsToPx` | `boolean | object` | — | 长度单位转 `px` 的配置。 |
-| `unitConversion` | `object | false` | — | 按平台或统一规则转换 CSS 单位。 |
-| `generator` | `object | false` | 自动推断 | Tailwind 生成器配置。Web/H5 会自动使用 `target: 'web'` 与 Web 兼容处理。 |
-| `uniAppX` | `boolean | object` | 原生 App 自动启用 | 控制 uvue/App 适配、局部样式和不兼容 utility 处理。 |
-| `componentLocalStyles` | `boolean | object` | `true` | `uniAppX.componentLocalStyles` 的快捷入口。 |
-| `uvueUnsupported` | `'error' | 'warn' | 'silent'` | `'warn'` | uvue 不支持的 utility 如何处理。 |
+| `rem2rpx` | `boolean \| object` | — | 将 `rem` 转为 `rpx`，属于 preset 顶层配置。 |
+| `unitsToPx` | `boolean \| object` | — | 长度单位转 `px` 的配置。 |
+| `unitConversion` | `object \| false` | — | 按平台或统一规则转换 CSS 单位。 |
+| `generator` | `object \| false` | 自动推断 | Tailwind 生成器配置。Web/H5 会自动使用 `target: 'web'` 与 Web 兼容处理。 |
+| `uniAppX` | `boolean \| object` | 原生 App 自动启用 | 控制 uvue/App 适配、局部样式和不兼容 utility 处理。 |
+| `componentLocalStyles` | `boolean \| object` | `true` | `uniAppX.componentLocalStyles` 的快捷入口。 |
+| `uvueUnsupported` | `'error' \| 'warn' \| 'silent'` | `'warn'` | uvue 不支持的 utility 如何处理。 |
 | `customAttributes` | `ICustomAttributes` | — | 为 `class` 之外的模板属性增加类名转译。 |
 | `resolve` | `PackageResolvingOptions` | 工程 `node_modules` | 自定义 Tailwind 包解析路径。 |
 | `rawOptions` | `UserDefinedOptions` | — | 透传未被 preset 快捷入口覆盖的核心配置。 |
@@ -127,12 +127,9 @@ uniAppX({
 
 ## 验证
 
-```bash
-pnpm e2e:hbuilderx:local:web
-pnpm e2e:hbuilderx:local:mp
-pnpm e2e:hbuilderx:local:android
-pnpm e2e:hbuilderx:local:ios
-pnpm e2e:hbuilderx:local:harmony
-```
+请在自己的 HBuilderX 项目中运行对应平台的开发或构建流程，并按以下清单验收：
 
-HBuilderX、模拟器和设备链路只在本地运行。验收时分别检查真实平台目录、CSS 后缀和 Web/App 的运行时效果，不要只用 H5 构建成功作为原生结论。
+- Web、小程序、Android、iOS 和鸿蒙分别生成实际目标产物，检查真实 CSS 后缀和入口文件。
+- `cssEntries` 指向的入口确实被项目引入，扫描范围覆盖页面、组件和布局源码。
+- 单位转换、`componentLocalStyles`、`uvueUnsupported` 与 `customAttributes` 的结果符合目标平台限制。
+- HBuilderX、模拟器或设备中的运行时效果与构建产物一致，不要只用 H5 构建成功作为原生结论。

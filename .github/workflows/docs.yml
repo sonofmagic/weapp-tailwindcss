@@ -41,6 +41,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check docs audience
+        run: pnpm --filter @weapp-tailwindcss/website check:docs-audience
+
       - name: Run few_keywords gate
         run: pnpm --filter @weapp-tailwindcss/website seo:few-keywords
 

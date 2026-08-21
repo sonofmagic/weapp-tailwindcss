@@ -1,5 +1,6 @@
 ---
 title: How to contribute
+audience: maintainer
 description: >-
   It's actually very simple. You don't necessarily need to contribute code. You raise an issue, answer a question, and
   write a related article. These are all contributions to the project, and there is no need to stick to specific forms.
@@ -133,6 +134,10 @@ There are more evolutions here, which is equivalent to adding multiple postcss p
 - `*`: `src` Some other files, mostly export files
 
 For the current Tailwind generation, design-token, and component-boundary model, see [Tailwind design principles](./tailwindcss/tailwind-core).
+
+:::warning Maintainers only
+The local debugging, build, and test instructions on this page are for repository contributors and maintainers, not for application integration.
+:::
 
 ## How to debug locally
 

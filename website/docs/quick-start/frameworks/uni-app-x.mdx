@@ -71,8 +71,8 @@ import run from '../../uni-app-x/assets/run.png'
 | --- | --- | --- | --- |
 | Tailwind CSS 4 | `@import "tailwindcss" source(none);` | CSS 入口里的 `@source` | HBuilderX Web、微信小程序、Android、iOS、鸿蒙 |
 
-:::info 本地 E2E
-HBuilderX 依赖本机安装环境，所以 Web/小程序/App E2E 都在本地运行。仓库里对应的命令是 `pnpm e2e:hbuilderx:local:web`、`pnpm e2e:hbuilderx:local:mp`、`pnpm e2e:hbuilderx:local:android`、`pnpm e2e:hbuilderx:local:ios` 和 `pnpm e2e:hbuilderx:local:harmony`。
+:::info 平台验证
+HBuilderX 依赖本机安装环境。请在自己的项目中分别运行 Web、小程序、Android、iOS 和鸿蒙目标，并检查真实产物与运行时结果。
 :::
 
 ## 最快开始
@@ -193,17 +193,12 @@ Tailwind CSS 4 使用 CSS-first 入口。入口文件应放在项目根目录或
 
 <img className="h-60" src={run} alt="运行" />
 
-本仓库的本地验证命令：
+请按目标平台完成以下验收：
 
-```bash npm2yarn
-pnpm e2e:hbuilderx:local:web
-pnpm e2e:hbuilderx:local:mp
-pnpm e2e:hbuilderx:local:android
-pnpm e2e:hbuilderx:local:ios
-pnpm e2e:hbuilderx:local:harmony
-```
-
-这些命令依赖本机 HBuilderX、模拟器和 Xcode，不放进 CI/CD。
+- 检查实际输出目录、CSS 后缀和入口文件，不要假设所有平台都生成同名 CSS。
+- 确认 `cssEntries` 与 `@source` 覆盖真实页面、组件和布局源码。
+- 在 HBuilderX、模拟器或设备中检查单位转换、局部样式、平台变体和不支持语法的运行时表现。
+- 修改源码后确认 HBuilderX 或对应构建工具的增量更新仍能生成新样式。
 
 ### 7) 编辑器智能提示
 

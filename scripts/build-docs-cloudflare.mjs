@@ -26,6 +26,7 @@ function run(command, args) {
 
 async function main() {
   await run(packageManager, ['install', '--frozen-lockfile'])
+  await run(packageManager, ['--filter', '@weapp-tailwindcss/website', 'check:docs-audience'])
   await run(packageManager, ['--filter', '@weapp-tailwindcss/website', 'seo:few-keywords'])
   await run(packageManager, ['--filter', '@weapp-tailwindcss/website', 'build'])
   await run(packageManager, ['--filter', '@weapp-tailwindcss/website', 'seo:quality:strict'])

@@ -106,12 +106,11 @@ Lynx 推荐只引入 theme 和 utilities，避免浏览器 preflight 带来的 `
 
 ## 验证
 
-```bash
-pnpm --filter @weapp-tailwindcss/lynx test
-pnpm --filter @weapp-tailwindcss/example-react-lynx build
-pnpm e2e:lynx
-pnpm e2e:lynx:android
-pnpm e2e:lynx:ios
-```
+请在自己的 Rspeedy 项目中运行项目 `package.json` 提供的开发或构建命令，并按以下清单验收：
+
+- Tailwind 规则进入 CSS bundle，原始 `className` 保持可用，未生成小程序 safe class。
+- encoder 日志和最终 bundle 都没有误删目标 utility 或 selector。
+- Android 与 iOS 目标分别验证布局、伪类、媒体查询、渐变和任意值等边界能力。
+- 对不支持的属性和复杂 selector 保留明确 warning，并以 Lynx 真实运行时结果为准。
 
 静态 bundle、encoder 日志和 Android/iOS 实机报告分别证明生成、保留和运行时支持，不能互相替代。

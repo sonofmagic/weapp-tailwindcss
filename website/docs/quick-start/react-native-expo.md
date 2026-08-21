@@ -84,13 +84,9 @@ Tailwind 仍由 `weapp-tailwindcss` generator 生成，不要同时注册 `@tail
 
 ## 验证
 
-```bash
-pnpm --filter @weapp-tailwindcss/react-native test
-pnpm --filter @weapp-tailwindcss/react-native build
-pnpm --filter @weapp-tailwindcss/example-react-native-expo build
-pnpm --filter @weapp-tailwindcss/example-react-native-expo test
-pnpm e2e:react-native-compatibility
-pnpm e2e:react-native:web
-pnpm e2e:react-native:android
-pnpm e2e:react-native:ios
-```
+在自己的 Expo 项目中运行 `package.json` 提供的开发或构建命令，然后确认：
+
+- CSS 入口被 Metro 加载，静态 `className` 能命中生成的 StyleSheet lookup。
+- `manifest.warnings` 中的 warning 已被检查，未知 CSS 不会被误认为 RN 样式。
+- Expo Web 只作为 smoke test；Android 和 iOS 模拟器或真机都能正确渲染布局、颜色模式和平台变体。
+- 修改 CSS 或源码后 HMR 能刷新 manifest，动态 class 仍只解析已生成的候选集合。

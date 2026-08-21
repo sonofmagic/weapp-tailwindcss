@@ -111,11 +111,9 @@ if (manifest.warnings.length) {
 - Browser preflight, selector state, and unknown CSS properties are not automatically downgraded to React Native styles.
 - Treat Expo Web as a smoke test; validate layout, color scheme, and platform variants on Android/iOS simulators or devices.
 
-```bash
-pnpm --filter @weapp-tailwindcss/react-native test
-pnpm --filter @weapp-tailwindcss/react-native build
-pnpm --filter @weapp-tailwindcss/example-react-native-expo build
-pnpm e2e:react-native-compatibility
-pnpm e2e:react-native:android
-pnpm e2e:react-native:ios
-```
+Run the development or build command provided by your own Expo or React Native project's `package.json`, then verify:
+
+- Metro loads the CSS entry and generates a manifest whose representative classes hit the static lookup.
+- Unsupported declarations in `manifest.warnings` are reviewed instead of being treated as usable styles.
+- Expo Web is only a smoke test; verify layout, color scheme, and platform variants on Android and iOS simulators or devices.
+- After CSS or source changes, Metro HMR refreshes the manifest without pointing static lookups at stale styles.

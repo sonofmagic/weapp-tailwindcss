@@ -82,6 +82,10 @@ jobs:
         if: needs.detect-website-changes.outputs.website_changed == 'true'
         run: pnpm install --frozen-lockfile
 
+      - name: Docs audience gate (website)
+        if: needs.detect-website-changes.outputs.website_changed == 'true'
+        run: pnpm --filter @weapp-tailwindcss/website check:docs-audience
+
       - name: few_keywords Gate (website)
         if: needs.detect-website-changes.outputs.website_changed == 'true'
         run: pnpm --filter @weapp-tailwindcss/website seo:few-keywords

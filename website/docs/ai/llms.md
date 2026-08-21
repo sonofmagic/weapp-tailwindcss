@@ -1,5 +1,6 @@
 ---
 sidebar: aiSidebar
+audience: maintainer
 title: LLM 友好文档 (llms.txt)
 description: LLM 友好文档 (llms.txt)，覆盖 AI 工作流、提示词和工程化实践。
 keywords:
@@ -22,6 +23,10 @@ keywords:
 # LLM 友好文档 (llms.txt)
 
 ## 生成方式
+
+:::warning 仅供仓库维护者
+本节描述文档站生成流程，不是使用 `weapp-tailwindcss` 的项目构建步骤。
+:::
 
 1. 在仓库根目录执行 `pnpm --filter @weapp-tailwindcss/website build`（或 `cd website && pnpm build`）。
 2. 构建后，`website/build/` 会生成：

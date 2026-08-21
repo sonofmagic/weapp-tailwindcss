@@ -40,7 +40,7 @@ The current documentation targets Tailwind CSS 4. The `uniAppX()` preset delegat
 | --- | --- | --- | --- |
 | Tailwind CSS 4 | `@import "tailwindcss" source(none);` | `@source` rules in the CSS entry | HBuilderX Web, WeChat Mini Program, Android, iOS, and HarmonyOS |
 
-The repository's local HBuilderX E2E suite covers uni-app x on the Web, WeChat Mini Program, Android, iOS, and HarmonyOS. Mini Program and App E2E runs depend on local HBuilderX, developer tools, or simulators, so they only run locally.
+HBuilderX depends on the local installation. In your own project, run the Web, mini-program, Android, iOS, and HarmonyOS targets separately and inspect the real artifacts and runtime results.
 
 :::warning Capability Boundary
 `uvue` Do not rely on `gap`, `gap-x-*`, and `gap-y-*` on the native app. These layout capabilities are currently not supported.
@@ -51,15 +51,6 @@ The repository's local HBuilderX E2E suite covers uni-app x on the Web, WeChat M
 ## Quickest start
 
 Use the [verified uni-app x + Tailwind CSS 4 demo](https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v4) and follow its README. Do not use the old `icebreaker-template/uni-app-x-hbuilderx` as the starting point for a new project.
-
-```bash npm2yarn
-npm run e2e:hbuilderx:local
-npm run e2e:hbuilderx:local:web
-npm run e2e:hbuilderx:local:mp
-npm run e2e:hbuilderx:local:android
-npm run e2e:hbuilderx:local:ios
-npm run e2e:hbuilderx:local:harmony
-```
 
 ## Manual integration
 
@@ -190,4 +181,4 @@ Install `dcloud-ide.hbuilderx-language-services` for language hints, navigation,
 
 ### Running the project
 
-HBuilderX remains the source of truth for uni-app x running and building. For command-line automation, use the HBuilderX CLI; this repository's local E2E suite launches Web, mini-program, and App targets through `hbuilderx launch`.
+HBuilderX remains the source of truth for uni-app x running and building. For command-line automation, use the HBuilderX CLI documented by DCloud; validate each target's output directory, CSS suffix, and runtime behavior separately.

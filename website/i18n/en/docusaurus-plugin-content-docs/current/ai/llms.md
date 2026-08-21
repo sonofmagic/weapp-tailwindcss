@@ -1,5 +1,6 @@
 ---
 sidebar: aiSidebar
+audience: maintainer
 title: LLM Friendly Documentation (llms.txt)
 description: >-
   LLM Friendly Documentation (llms.txt): Current concepts, configuration guidance, and practical examples for
@@ -24,6 +25,10 @@ keywords:
 # LLM friendly documentation (llms.txt)
 
 ## Generation method
+
+:::warning Maintainers only
+This section describes the documentation-site generation flow, not application build steps for `weapp-tailwindcss` users.
+:::
 
 1. Execute `pnpm --filter @weapp-tailwindcss/website build` (or `cd website && pnpm build`) in the warehouse root directory.
 2. After building, `website/build/` will generate:

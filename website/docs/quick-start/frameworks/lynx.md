@@ -86,25 +86,16 @@ Tailwind 能生成 CSS 不代表 Lynx 支持每个属性和选择器。当前 Ly
 
 ## 验证与示例
 
-仓库中的完整示例位于 [`examples/react-lynx`](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/examples/react-lynx)。仓库开发者可以运行：
+仓库中的完整示例位于 [`examples/react-lynx`](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/examples/react-lynx)，可以用来对照项目结构和 CSS 入口。你的 Rspeedy 项目应使用自己的开发或构建命令。
 
-```bash
-pnpm --filter @weapp-tailwindcss/lynx test
-pnpm --filter @weapp-tailwindcss/example-react-lynx build
-pnpm e2e:lynx
-```
-
-`examples/react-lynx` 已扩展为多页面兼容性实验室，固定 Tailwind CSS `4.3.3`、Lynx Engine `4.0.1`、bundle `engineVersion: '3.9'` 与 `@lynx-js/css-defines` `0.0.16`。catalog 使用代表值覆盖官方 utility 功能族、variant、指令和任意语法分支。
+示例固定 Tailwind CSS `4.3.3`、Lynx Engine `4.0.1`、bundle `engineVersion: '3.9'` 与 `@lynx-js/css-defines` `0.0.16`。catalog 使用代表值覆盖官方 utility 功能族、variant、指令和任意语法分支。
 
 静态 gate 分别记录 Tailwind 是否生成规则和 Lynx encoder 是否保留规则。双端支持只由固定 Pixel 7/API 35 与 iPhone 16 Pro/iOS 18.5 的 runtime 报告决定，`css-defines` 不能替代运行时结论：
 
-```bash
-pnpm e2e:lynx:android
-pnpm e2e:lynx:ios
-pnpm e2e:lynx:native
-pnpm e2e:lynx:update
-```
+请在自己的 Android 与 iOS 目标中分别检查：
 
-基线更新器要求同一 catalog 与 Engine 版本的完整双端报告；缺失 case、能力退化或意外新增支持都需要显式审查。
+- Tailwind 规则已经进入 bundle，encoder 没有误删目标 utility 或 selector。
+- 运行时布局、伪类、媒体查询、渐变和任意值与预期一致。
+- 不支持的属性、复杂 selector 和设备差异都有明确记录；“生成成功”不能替代真实运行时验收。
 
 当前集成只覆盖 ReactLynx + Rspeedy 构建目标，不覆盖 Rspeedy Web 输出、非 React Lynx 框架或 React Native 风格的运行时样式映射。
