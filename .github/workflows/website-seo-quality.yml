@@ -39,26 +39,39 @@ jobs:
             exit 0
           fi
 
-          if git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- website/ | grep -q .; then
-            echo "website_changed=true" >> "$GITHUB_OUTPUT"
-          else
+          if git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- website/; then
             echo "website_changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "website_changed=true" >> "$GITHUB_OUTPUT"
           fi
 
   seo-quality:
     name: SEO Quality Gate
     needs: detect-website-changes
-    if: needs.detect-website-changes.outputs.website_changed == 'true'
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
+      - name: Require change detection
+        if: needs.detect-website-changes.result != 'success'
+        run: |
+          echo "::error::website change detection failed."
+          exit 1
+
+      - name: Skip when website is unchanged
+        if: needs.detect-website-changes.outputs.website_changed != 'true'
+        run: echo "No website changes detected; SEO checks are not required for this change."
+
       - name: Check out code
+        if: needs.detect-website-changes.outputs.website_changed == 'true'
         uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v4
+        if: needs.detect-website-changes.outputs.website_changed == 'true'
 
       - name: Setup Node.js environment
+        if: needs.detect-website-changes.outputs.website_changed == 'true'
         uses: actions/setup-node@v6
         with:
           node-version: 22
@@ -66,12 +79,15 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
+        if: needs.detect-website-changes.outputs.website_changed == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: few_keywords Gate (website)
+        if: needs.detect-website-changes.outputs.website_changed == 'true'
         run: pnpm --filter @weapp-tailwindcss/website seo:few-keywords
 
       - name: SEO Quality Gate (website)
+        if: needs.detect-website-changes.outputs.website_changed == 'true'
         run: pnpm --filter @weapp-tailwindcss/website seo:quality:strict
 
       - name: SEO Status Note
