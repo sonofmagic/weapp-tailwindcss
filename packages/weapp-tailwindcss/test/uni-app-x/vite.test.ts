@@ -29,6 +29,41 @@ vi.mock('@/uni-app-x/transform', () => ({
   transformUVue: transformUVueMock,
 }))
 
+const preprocessorSources = {
+  scss: [
+    '$up-checkbox-icon-wrap-margin-right: 6px !default;',
+    '.up-checkbox {',
+    '  margin-right: $up-checkbox-icon-wrap-margin-right;',
+    '  @apply text-white;',
+    '}',
+  ].join('\n'),
+  sass: [
+    '$up-checkbox-icon-wrap-margin-right: 6px !default',
+    '.up-checkbox',
+    '  margin-right: $up-checkbox-icon-wrap-margin-right',
+    '  @apply text-white',
+  ].join('\n'),
+  less: [
+    '@up-checkbox-icon-wrap-margin-right: 6px;',
+    '.up-checkbox {',
+    '  margin-right: @up-checkbox-icon-wrap-margin-right;',
+    '  @apply text-white;',
+    '}',
+  ].join('\n'),
+  styl: [
+    '$up-checkbox-icon-wrap-margin-right = 6px',
+    '.up-checkbox',
+    '  margin-right $up-checkbox-icon-wrap-margin-right',
+    '  @apply text-white',
+  ].join('\n'),
+  stylus: [
+    '$up-checkbox-icon-wrap-margin-right = 6px',
+    '.up-checkbox',
+    '  margin-right $up-checkbox-icon-wrap-margin-right',
+    '  @apply text-white',
+  ].join('\n'),
+} as const
+
 function createAsset(source: string): OutputAsset {
   return {
     type: 'asset',
@@ -450,7 +485,7 @@ describe('uni-app-x vite plugins', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
-  it('leaves mini-program SCSS variables and local @apply to the framework preprocessor', async () => {
+  it.each(Object.entries(preprocessorSources))('leaves mini-program %s variables and local @apply to the framework preprocessor', async ([lang, source]) => {
     const styleHandler = vi.fn()
     const generateCss = vi.fn()
     const plugins = createUniAppXPlugins({
@@ -472,14 +507,7 @@ describe('uni-app-x vite plugins', () => {
       } as ResolvedConfig),
     })
     const preCssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
-    const id = '/uni_modules/uview-ultra/components/up-checkbox/up-checkbox.uvue?vue&type=style&index=0&scoped=abc&lang.scss'
-    const source = [
-      '$up-checkbox-icon-wrap-margin-right: 6px !default;',
-      '.up-checkbox {',
-      '  margin-right: $up-checkbox-icon-wrap-margin-right;',
-      '  @apply text-white;',
-      '}',
-    ].join('\n')
+    const id = `/uni_modules/uview-ultra/components/up-checkbox/up-checkbox.uvue?vue&type=style&index=0&scoped=abc&lang=${lang}`
 
     const result = await preCssPlugin!.transform?.(source, id)
 
