@@ -1,20 +1,20 @@
 ---
 title: ReactLynx / Rspeedy Configuration Reference
-description: Configuration options and Lynx encoder boundaries for ReactLynx, Rspeedy, and @weapp-tailwindcss/lynx.
+description: Configuration responsibilities, Rspack loader usage, and Lynx encoder boundaries for ReactLynx, Rspeedy, and @weapp-tailwindcss/lynx.
 keywords:
   - ReactLynx
   - Rspeedy
   - Lynx
   - Tailwind CSS 4
-  - configuration
   - Rspack
+  - CSS loader
   - encoder
   - native CSS
 ---
 
 # ReactLynx / Rspeedy Configuration Reference
 
-This page documents `@weapp-tailwindcss/lynx`. For a complete setup example, see the [ReactLynx / Rspeedy guide](../quick-start/frameworks/lynx).
+This page explains every Lynx-specific option in `pluginLynxTailwindcss()`. Start with the [ReactLynx / Rspeedy guide](../quick-start/frameworks/lynx) for initial setup.
 
 ## Support baseline
 
@@ -22,15 +22,7 @@ This page documents `@weapp-tailwindcss/lynx`. For a complete setup example, see
 - `@lynx-js/rspeedy` `>=0.16.0`
 - Tailwind CSS `4.x`
 - Node.js `>=22.12.0`
-- ReactLynx + Rspeedy native builds only; not Rspeedy Web, non-React Lynx, or React Native.
-
-## Install
-
-```bash npm2yarn
-npm install -D @weapp-tailwindcss/lynx tailwindcss
-```
-
-The project must also have its existing `@lynx-js/rspeedy`, `@lynx-js/react-rsbuild-plugin`, and ReactLynx dependencies.
+- ReactLynx + Rspeedy native builds only; Rspeedy Web, non-React Lynx, and React Native are out of scope
 
 ## Minimal configuration
 
@@ -53,64 +45,122 @@ export default defineConfig({
 @source "./**/*.{ts,tsx}";
 ```
 
-The plugin fixes `platform: 'lynx'`, `generator.target: 'web'`, and Lynx-compatible CSS output. ReactLynx `className` remains unchanged; no mini-program safe class, runtime stylesheet, or JSX transform is added.
+The plugin fixes `platform: 'lynx'`, `generator.target: 'web'`, and Lynx-compatible Web CSS output. ReactLynx keeps the original `className`; it does not create mini-program safe classes or a React Native style manifest.
 
-## `pluginLynxTailwindcss()` options
+## Option index
 
-| Option                            | Type                                 | Default           | Description                                                        |
-| --------------------------------- | ------------------------------------ | ----------------- | ------------------------------------------------------------------ |
-| Core options                      | `Omit<UserDefinedOptions, 'platform' | 'generator'>`     | `{}`                                                               | Inherits core scanning, CSS, matcher, and lifecycle options. Platform fields are owned by the plugin. |
-| `generator`                       | `LynxGeneratorOptions                | false`            | Inferred                                                           | Overrides non-target generator fields; `target` is always fixed to `web`.                             |
-| `rspack`                          | `PatchRspackConfigOptions`           | CSS patch enabled | Controls Rspeedy/Rspack CSS loader patching.                       |
-| `rspack.cssImportRewriteLoader`   | `boolean                             | object`           | `true`                                                             | Injects the import rewrite loader. The plugin forces `generateCss: true`; pass `false` to disable it. |
-| `rspack.removeLightningCssLoader` | `boolean`                            | `false`           | Removes the built-in Lightning CSS loader when explicitly enabled. |
+| Option                                                                | Type                            | Default                | Description                                  |
+| --------------------------------------------------------------------- | ------------------------------- | ---------------------- | -------------------------------------------- |
+| [`generator`](#generator)                                             | `LynxGeneratorOptions \| false` | Fixed Lynx settings    | Override non-target generator fields         |
+| [`rspack`](#rspack)                                                   | `PatchRspackConfigOptions`      | CSS rule patch enabled | Control Rspeedy/Rspack loader patches        |
+| [`rspack.cssImportRewriteLoader`](#rspack-cssimportrewriteloader)     | `boolean \| object`             | `true`                 | Inject the Tailwind CSS entry rewrite loader |
+| [`rspack.removeLightningCssLoader`](#rspack-removelightningcssloader) | `boolean`                       | `false`                | Remove the built-in Lightning CSS loader     |
 
-The following values are owned by the plugin and cannot switch the build to mini-program or React Native output:
+The plugin also inherits core [`UserDefinedOptions`](/docs/api/interfaces/UserDefinedOptions). Common fields include `cssEntries`, `cssOptions`, cache, file matchers, and lifecycle callbacks. The adapter owns `platform`, `rewriteCssImports`, `generator.target`, and the Lynx style platform; those fields cannot switch output to mini-program or React Native.
+
+## Option details
+
+### `generator` {#generator}
+
+**Purpose** Adjust generator fields that the Lynx adapter does not fix, such as additional style options. The adapter always overwrites `target: 'web'`, `webCompat: true`, and its internal `cssOptions.platform: 'lynx'`.
+
+**When to use** Usually leave it unset. Use it only for non-target advanced generator options whose effects have been verified in final CSS and encoder logs.
+
+**Usage** Add a non-target generation setting when needed:
 
 ```ts
-{
-  platform: 'lynx',
-  rewriteCssImports: true,
+pluginLynxTailwindcss({
   generator: {
-    target: 'web',
-    webCompat: true,
     styleOptions: {
-      cssOptions: { platform: 'lynx' },
+      cssOptions: { cssCalc: true },
     },
+  },
+})
+```
+
+**Caution** The Lynx wrapper overwrites `target: 'weapp'` and `webCompat: false` if supplied. In this wrapper, `generator: false` only clears user generator fields; it does not disable the Lynx generation pipeline created by the adapter.
+
+### `rspack` {#rspack}
+
+**Purpose** Pass `PatchRspackConfigOptions` to the Rspeedy Rspack patch, which locates real CSS rules and adjusts loader order.
+
+**When to use** Defaults fit standard Rspeedy. Pass an object only for a custom CSS rule, a replacement loader path, or a verified Lightning CSS conflict.
+
+**Usage** Keep all Rspack details in one object:
+
+```ts
+pluginLynxTailwindcss({
+  rspack: {
+    cssImportRewriteLoader: true,
+    removeLightningCssLoader: false,
+  },
+})
+```
+
+**Caution** This object patches matching CSS rules. It does not replace registration of the core generation plugin by `pluginLynxTailwindcss()`.
+
+### `rspack.cssImportRewriteLoader` {#rspack-cssimportrewriteloader}
+
+**Purpose** Inject an entry rewrite loader into the Rspeedy CSS chain so `weapp-tailwindcss` generates Tailwind imports, with `generateCss: true` enforced.
+
+**When to use** Keep the default `true`. Disable it only when the Rspack config already installs an equivalent loader or a custom pipeline explicitly owns Tailwind entry generation.
+
+**Usage** A custom loader path and extra options are supported; the adapter still merges `generateCss: true`:
+
+```ts
+rspack: {
+  cssImportRewriteLoader: {
+    loader: require.resolve('./custom-css-loader.cjs'),
+    options: { tailwindcssImportRewriteRuntimeKey: 'lynx-runtime' },
   },
 }
 ```
 
+**Caution** With `false`, the plugin does not compensate for a missing CSS generation entry. Use it only when the module graph already has an explicit replacement.
+
+### `rspack.removeLightningCssLoader` {#rspack-removelightningcssloader}
+
+**Purpose** Remove `builtin:lightningcss-loader` from matching Rspack CSS rules.
+
+**When to use** Keep the default. Enable it only when the encoder or another loader fully replaces Lightning CSS and logs prove that it deletes or corrupts a required rule.
+
+**Usage** Set it under `rspack`:
+
+```ts
+rspack: { removeLightningCssLoader: true }
+```
+
+**Caution** Removing it changes minification, syntax lowering, and the browser CSS processing chain. It is not a general way to silence warnings; compare the final bundle and device result before and after.
+
 ## CSS and candidates
 
-Import only theme and utilities to avoid browser preflight warnings such as `:root`, `:host`, and `:where(...)`. Arbitrary values must be complete static candidates:
+Lynx should normally import theme and utilities only, avoiding unrelated warnings from browser preflight rules such as `:root`, `:host`, and `:where(...)`. Arbitrary values must be complete static candidates:
 
 ```tsx
 <view className="w-[123px] h-[45rpx] rounded-[18px] bg-[#123456]" />
 ```
 
-For dynamic cases, enumerate complete classes or register them in CSS:
+Enumerate complete dynamic states or register them in CSS:
 
 ```css
 @source inline("w-[120px] w-[240px] bg-[#123456]");
 ```
 
-Do not construct `w-[${width}px]`; Tailwind cannot discover the final token during the build.
+Do not construct `w-[${width}px]`; Tailwind cannot know the final token at build time.
 
-## Encoder boundaries
+## Three evidence layers
 
-- Unsupported properties such as `padding-inline` and `mask-type` may be removed; use physical-direction utilities such as `pl-*` and `pr-*`.
-- Selectors containing complex `:is()` or `:where()` may be removed.
-- Pseudo-elements, hover, dark, data, supports, media queries, and complex gradients require validation on the Lynx target runtime.
-- “Generated by Tailwind” only proves that the generator emitted a rule; it does not prove encoder retention or device support.
+| Layer               | Check                                                         | Evidence                                       |
+| ------------------- | ------------------------------------------------------------- | ---------------------------------------------- |
+| Tailwind generation | The CSS bundle contains the target rule                       | Candidate scanning and generation succeeded    |
+| Lynx encoder        | Encoder logs and encoded CSS retain the property and selector | The encoder did not delete the rule            |
+| Device runtime      | Android/iOS pixels, layout, and interaction states            | The current Lynx runtime supports the behavior |
+
+`padding-inline`, complex `:is()` / `:where()`, pseudo-elements, hover, dark, data, supports, media queries, and complex gradients must pass all three layers. Generated Tailwind CSS does not replace encoder and device evidence.
 
 ## Validation
 
-Run the development or build command provided by your own Rspeedy project's `package.json`, then verify:
-
-- Tailwind rules enter the CSS bundle, raw `className` values remain usable, and no mini-program safe classes are generated.
-- Encoder logs and the final bundle do not unexpectedly remove target utilities or selectors.
-- Android and iOS targets separately cover layout, pseudo-classes, media queries, gradients, and arbitrary values.
-- Unsupported properties and complex selectors produce clear warnings, with Lynx runtime behavior as the final authority.
-
-Static bundles, encoder logs, and Android/iOS reports prove generation, retention, and runtime support separately.
+- Original `className` values remain usable, with no mini-program safe classes or RN manifest.
+- The CSS import rewrite loader is in the rule actually used by the build, and Tailwind rules enter the final bundle.
+- Encoder warnings are compared against encoded CSS, and unsupported logical properties are replaced by Lynx-compatible physical properties.
+- Android and iOS separately verify layout, arbitrary values, pseudo-classes, media queries, and gradients.
