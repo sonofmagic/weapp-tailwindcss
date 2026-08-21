@@ -9,6 +9,7 @@ import process from 'node:process'
 import path from 'pathe'
 import { chromium } from 'playwright'
 import { afterEach, describe, it } from 'vitest'
+import { writeFilePreserveEol } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
 import { resolveChromeExecutable } from './hbuilderx-local/process'
 import { webViteHmrCases } from './web-vite-demo-hmr-cases'
 
@@ -206,7 +207,7 @@ async function mutateSource(item: WebViteHmrCase, sourceFile: string, kind: Sour
   if (next === current) {
     throw new Error(`${item.name} Web HMR 源码替换没有产生变化`)
   }
-  await fs.writeFile(sourceFile, next, 'utf8')
+  await writeFilePreserveEol(sourceFile, next, current)
   return {
     previous: current,
     next,
@@ -281,9 +282,9 @@ async function runWebIconifyHmr(page: Page, item: WebViteHmrCase, sourceFile: st
     throw new Error(`${item.name} Web Iconify HMR probe 缺少 before content class`)
   }
   const sourceWithUpdatedContent = sourceWithProbe.replace(iconifyBeforeContentClass, iconifyAfterContentClass)
-  await fs.writeFile(sourceFile, sourceWithProbe, 'utf8')
+  await writeFilePreserveEol(sourceFile, sourceWithProbe, original)
   await waitForIconifyCss(page, item, iconifyBeforeContentClass)
-  await fs.writeFile(sourceFile, sourceWithUpdatedContent, 'utf8')
+  await writeFilePreserveEol(sourceFile, sourceWithUpdatedContent, original)
   await waitForIconifyCss(page, item, iconifyAfterContentClass)
 }
 
@@ -464,9 +465,9 @@ async function waitForTitleHmrAfterMutation(page: Page, item: WebViteHmrCase, so
     firstError = error
   }
 
-  await fs.writeFile(sourceFile, mutation.previous, 'utf8')
+  await writeFilePreserveEol(sourceFile, mutation.previous, mutation.previous)
   await wait(500)
-  await fs.writeFile(sourceFile, mutation.next, 'utf8')
+  await writeFilePreserveEol(sourceFile, mutation.next, mutation.previous)
 
   const elapsedMs = Date.now() - startedAt
   try {
@@ -702,7 +703,7 @@ describe('demo/web source HMR', () => {
     const hmrMessages = collectViteHmrMessages(page)
     const original = await fs.readFile(sourceFile, 'utf8')
     restoreSource = async () => {
-      await fs.writeFile(sourceFile, original, 'utf8')
+      await writeFilePreserveEol(sourceFile, original, original)
     }
     await page.goto(baseUrl, {
       waitUntil: 'domcontentloaded',
@@ -765,7 +766,7 @@ describe('demo/web source HMR', () => {
     const original = await fs.readFile(sourceFile, 'utf8')
     const flow = createTailwindClassFlowMutation(item, original)
     restoreSource = async () => {
-      await fs.writeFile(sourceFile, original, 'utf8')
+      await writeFilePreserveEol(sourceFile, original, original)
     }
     await page.goto(baseUrl, {
       waitUntil: 'domcontentloaded',
@@ -793,7 +794,7 @@ describe('demo/web source HMR', () => {
 
     const addMessageStart = hmrMessages.length
     await measureHmrLatency(`${item.name} class add`, async () => {
-      await fs.writeFile(sourceFile, flow.addedSource, 'utf8')
+      await writeFilePreserveEol(sourceFile, flow.addedSource, original)
       await waitForFlowElementStyle(page, item, flow.selector, {
         backgroundColor: 'rgb(255, 255, 255)',
         borderTopColor: 'rgb(0, 255, 0)',
@@ -808,7 +809,7 @@ describe('demo/web source HMR', () => {
 
     const modifyMessageStart = hmrMessages.length
     await measureHmrLatency(`${item.name} class modify`, async () => {
-      await fs.writeFile(sourceFile, flow.modifiedSource, 'utf8')
+      await writeFilePreserveEol(sourceFile, flow.modifiedSource, original)
       await waitForFlowElementStyle(page, item, flow.selector, {
         backgroundColor: 'rgb(255, 255, 255)',
         borderTopColor: 'rgb(255, 0, 170)',
@@ -823,7 +824,7 @@ describe('demo/web source HMR', () => {
 
     const removeClassMessageStart = hmrMessages.length
     await measureHmrLatency(`${item.name} class remove`, async () => {
-      await fs.writeFile(sourceFile, flow.removedClassSource, 'utf8')
+      await writeFilePreserveEol(sourceFile, flow.removedClassSource, original)
       await waitForFlowElementStyle(page, item, flow.selector, {
         backgroundColor: 'rgb(255, 255, 255)',
         borderTopColor: originalState.borderTopColor,
@@ -838,7 +839,7 @@ describe('demo/web source HMR', () => {
 
     const rollbackMessageStart = hmrMessages.length
     await measureHmrLatency(`${item.name} class rollback`, async () => {
-      await fs.writeFile(sourceFile, original, 'utf8')
+      await writeFilePreserveEol(sourceFile, original, original)
       await waitForFlowElementStyle(page, item, flow.selector, {
         backgroundColor: 'rgb(255, 255, 255)',
         borderTopColor: originalState.borderTopColor,
