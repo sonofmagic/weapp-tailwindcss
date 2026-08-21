@@ -367,6 +367,21 @@ async function assertMiniProgramOutput(
       expectContent(await readUtf8(target), entries, `${item.name} ${file}`)
     }
   }
+  if (item.outputNotContains) {
+    for (const [file, entries] of Object.entries(item.outputNotContains)) {
+      const target = path.resolve(outputRoot, file)
+      expect(await waitForFile(target, hbuilderxTimeoutMs), `${item.name} 缺少产物 ${file}`).toBe(true)
+      const content = await readUtf8(target)
+      for (const entry of entries) {
+        if (typeof entry === 'string') {
+          expect(content, `${item.name} ${file} 不应包含 ${entry}`).not.toContain(entry)
+        }
+        else {
+          expect(content, `${item.name} ${file} 不应匹配 ${entry}`).not.toMatch(entry)
+        }
+      }
+    }
+  }
   if (item.cssNotContains) {
     for (const entry of item.cssNotContains) {
       if (typeof entry === 'string') {

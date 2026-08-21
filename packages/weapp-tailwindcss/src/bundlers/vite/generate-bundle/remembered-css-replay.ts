@@ -7,6 +7,7 @@ import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/cs
 import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
 import { normalizeMiniProgramGeneratorCssSource, normalizeMiniProgramImportShell } from '../../shared/generator-css/output-import-shell'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
+import { isSourcePreprocessorRequest } from '../../shared/style-requests'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { createRuntimeAffectingSourceSignature } from '../runtime-affecting-signature'
 import { isHTMLRequest } from '../utils'
@@ -86,7 +87,7 @@ interface ProcessRememberedCssReplayOptions {
 
 export function shouldSkipRawRememberedCssSource(rawSource: string, sourceFile: string) {
   const cleanSourceFile = sourceFile.replace(/[?#].*$/, '')
-  return SOURCE_STYLE_OUTPUT_EXT_RE.test(cleanSourceFile)
+  return (SOURCE_STYLE_OUTPUT_EXT_RE.test(cleanSourceFile) || isSourcePreprocessorRequest(sourceFile))
     && !canProcessViteSourceStyleAsCss(rawSource, sourceFile)
 }
 

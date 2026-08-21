@@ -53,20 +53,25 @@ export function hasSfcStyleSources(source: string) {
   return extractSfcStyleSources(source).length > 0
 }
 
+function resolveSfcStyleBlockLang(attrs: string) {
+  const match = SFC_LANG_STYLE_ATTR_RE.exec(attrs)
+  return match?.[1] ?? match?.[2] ?? match?.[3]
+}
+
 function resolveSfcStyleHandlerSourceFile(sourceFile: string, styleBlocks: SfcStyleBlock[]) {
   const scopedStyleBlock = styleBlocks.find(style => style.scoped)
   return scopedStyleBlock
-    ? `${sourceFile}?vue&type=style&index=${scopedStyleBlock.index}&scoped=true`
+    ? [
+        `${sourceFile}?vue&type=style&index=${scopedStyleBlock.index}&scoped=true`,
+        ...resolveSfcStyleBlockLang(scopedStyleBlock.attrs)
+          ? [`lang=${encodeURIComponent(resolveSfcStyleBlockLang(scopedStyleBlock.attrs)!)}`]
+          : [],
+      ].join('&')
     : sourceFile
 }
 
 function normalizeSfcStyleSourceForCompare(source: string) {
   return source.replace(/\r\n?/g, '\n').trim()
-}
-
-function resolveSfcStyleBlockLang(attrs: string) {
-  const match = SFC_LANG_STYLE_ATTR_RE.exec(attrs)
-  return match?.[1] ?? match?.[2] ?? match?.[3]
 }
 
 function createSfcStyleRequest(sourceFile: string, styleBlock: SfcStyleBlock) {

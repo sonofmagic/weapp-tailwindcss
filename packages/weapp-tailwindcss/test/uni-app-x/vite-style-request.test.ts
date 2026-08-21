@@ -1,4 +1,4 @@
-import { normalizeRelativeTailwindReferences } from '@/uni-app-x/vite/style-request'
+import { isPreprocessorRequest, normalizeRelativeTailwindReferences, resolvePreprocessorTransform } from '@/uni-app-x/vite/style-request'
 
 describe('uni-app-x vite style request', () => {
   it('resolves relative Tailwind references from the source SFC', () => {
@@ -22,5 +22,41 @@ describe('uni-app-x vite style request', () => {
       '@reference "/project/main.css";',
     ].join('\n')
     expect(normalizeRelativeTailwindReferences(source, '/project/pages/index.uvue')).toBe(source)
+  })
+
+  it.each([
+    ['微信小程序', '/project/components/up-checkbox.uvue?vue&type=style&index=0&lang.scss'],
+    ['H5', '/project/components/up-checkbox.uvue?vue&type=style&index=0&lang.scss'],
+  ])('leaves %s preprocessor requests to the framework', (_target, id) => {
+    const source = [
+      '$up-checkbox-icon-wrap-margin-right: 6px !default;',
+      '.up-checkbox { @apply text-white; }',
+    ].join('\n')
+
+    expect(resolvePreprocessorTransform(source, id, 'scss', {
+      isIosPlatform: false,
+      isNativeAppStyleTarget: false,
+    })).toEqual({ result: undefined })
+  })
+
+  it.each([
+    '/project/components/up-checkbox.uvue?vue&type=style&index=0&lang.scss',
+    '/project/components/up-checkbox.uvue?vue=&type=style&index=0&lang=scss',
+    '/project/components/up-checkbox.lang.less.css',
+    '/project/styles/up-checkbox.scss?direct',
+  ])('recognizes preprocessor request form %s', (id) => {
+    expect(isPreprocessorRequest(id)).toBe(true)
+  })
+
+  it('keeps Native preprocessor requests in the local @apply pipeline', () => {
+    expect(resolvePreprocessorTransform(
+      '.up-checkbox { @apply text-white; }',
+      '/project/components/up-checkbox.uvue?vue&type=style&index=0&lang.scss',
+      'scss',
+      {
+        isIosPlatform: false,
+        isNativeAppStyleTarget: true,
+      },
+    )).toBeUndefined()
   })
 })

@@ -6,6 +6,7 @@
 	import Issue1019StyleKey from '../../components/issue-1019-style-key/issue-1019-style-key.uvue'
 	import Issue1021Cell from '../../components/issue-1021-cell/issue-1021-cell.uvue'
 	import ZPagingProbe from '../../components/z-paging-probe/z-paging-probe.uvue'
+	import UpCheckbox from '../../uni_modules/uview-ultra/components/up-checkbox/up-checkbox.uvue'
 
 	const buttonColors = [
 		'bg-[#000]',
@@ -34,6 +35,7 @@
 			Issue1019Button,
 			Issue1019StyleKey,
 			Issue1021Cell,
+			UpCheckbox,
 			WeappTailwindcss,
 			ZPagingProbe,
 		},
@@ -71,6 +73,7 @@
 		<Issue1019StyleKey />
 		<Issue1021Cell />
 		<ZPagingProbe />
+		<UpCheckbox />
 		<a-navbar
 			leftClass="issue-navbar-left bg-primary w-[100rpx] h-[100rpx] px-[30rpx]"
 			rightClass="issue-navbar-right bg-[#102938] w-[100rpx] h-[100rpx] p-[12rpx]"

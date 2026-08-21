@@ -149,6 +149,7 @@ describe('uni-app-x vite plugins', () => {
       styleHandler,
       jsHandler: vi.fn(),
       ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      isNativeAppStyleTarget: () => true,
       getResolvedConfig: () => ({
         command: 'build',
         build: { outDir: '/project/unpackage/dist/dev/.uvue/app-android', watch: false },
@@ -385,6 +386,7 @@ describe('uni-app-x vite plugins', () => {
       generateCss,
       jsHandler: vi.fn(),
       ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      isNativeAppStyleTarget: () => true,
       getResolvedConfig: () => ({
         command: 'build',
         build: { outDir: '/project/unpackage/dist/dev/.uvue/app-android', watch: false },
@@ -439,6 +441,44 @@ describe('uni-app-x vite plugins', () => {
       '@import "../../libs/css/components.scss";',
       '.up-line {}',
       '.wtu-transform { @apply transform; }',
+    ].join('\n')
+
+    const result = await preCssPlugin!.transform?.(source, id)
+
+    expect(result).toBeUndefined()
+    expect(generateCss).not.toHaveBeenCalled()
+    expect(styleHandler).not.toHaveBeenCalled()
+  })
+
+  it('leaves mini-program SCSS variables and local @apply to the framework preprocessor', async () => {
+    const styleHandler = vi.fn()
+    const generateCss = vi.fn()
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      isIosPlatform: false,
+      mainCssChunkMatcher: vi.fn(() => false),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler,
+      generateCss,
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      isNativeAppStyleTarget: () => false,
+      isWebGeneratorTarget: () => false,
+      getResolvedConfig: () => ({
+        command: 'build',
+        build: { outDir: '/project/unpackage/dist/dev/mp-weixin', watch: false },
+      } as ResolvedConfig),
+    })
+    const preCssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
+    const id = '/uni_modules/uview-ultra/components/up-checkbox/up-checkbox.uvue?vue&type=style&index=0&scoped=abc&lang.scss'
+    const source = [
+      '$up-checkbox-icon-wrap-margin-right: 6px !default;',
+      '.up-checkbox {',
+      '  margin-right: $up-checkbox-icon-wrap-margin-right;',
+      '  @apply text-white;',
+      '}',
     ].join('\n')
 
     const result = await preCssPlugin!.transform?.(source, id)
