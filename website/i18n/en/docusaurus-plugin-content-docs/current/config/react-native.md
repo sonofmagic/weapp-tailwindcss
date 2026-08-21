@@ -9,6 +9,9 @@ keywords:
   - React Native manifest
   - Tailwind CSS 4
   - configuration
+  - React Native styles
+  - manifest warnings
+  - platform variants
 ---
 
 # React Native / Expo Configuration Reference

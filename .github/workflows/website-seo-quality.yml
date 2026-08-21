@@ -38,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: few_keywords Gate (website)
+        run: pnpm --filter @weapp-tailwindcss/website seo:few-keywords
+
       - name: SEO Quality Gate (website)
         run: pnpm --filter @weapp-tailwindcss/website seo:quality:strict
 
@@ -47,6 +50,7 @@ jobs:
           {
             echo "## Website SEO Quality"
             echo "- 本工作流独立执行 website SEO 严格门禁。"
+            echo "- website 变更先执行 \`seo:few-keywords\`，提前拦截 keywords 数量不足。"
             echo "- 当前执行命令：\`pnpm --filter @weapp-tailwindcss/website seo:quality:strict\`。"
             echo "- 触发条件：PR、主分支推送命中 website 目录变更，或手动触发。"
           } >> "$GITHUB_STEP_SUMMARY"

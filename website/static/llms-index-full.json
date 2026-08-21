@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-21T02:02:50.726Z",
+  "generatedAt": "2026-08-21T02:27:42.092Z",
   "locale": "zh-CN",
   "contentTier": "full",
   "siteUrl": "https://tw.icebreaker.top/zh-cn",
@@ -2838,6 +2838,9 @@
         "Lynx",
         "Tailwind CSS 4",
         "配置项",
+        "Rspack",
+        "encoder",
+        "原生 CSS",
         "配置参考",
         "config",
         "react lynx",
@@ -2845,8 +2848,7 @@
         "跨端",
         "小程序",
         "uni-app",
-        "Taro",
-        "React Native"
+        "Taro"
       ],
       "headings": [
         "支持基线",
@@ -2883,15 +2885,15 @@
         "React Native manifest",
         "Tailwind CSS 4",
         "配置项",
+        "React Native styles",
+        "manifest warnings",
+        "platform variants",
         "React",
         "Native",
         "配置参考",
         "config",
         "weapp-tailwindcss",
-        "跨端",
-        "小程序",
-        "uni-app",
-        "Taro"
+        "跨端"
       ],
       "headings": [
         "支持基线",
@@ -2925,6 +2927,9 @@
         "uniAppX",
         "Tailwind CSS 4",
         "配置项",
+        "Vite",
+        "uvue",
+        "单位转换",
         "uni-app",
         "配置参考",
         "config",
@@ -2932,9 +2937,7 @@
         "weapp-tailwindcss",
         "跨端",
         "小程序",
-        "Taro",
-        "React Native",
-        "Lynx"
+        "Taro"
       ],
       "headings": [
         "支持基线",

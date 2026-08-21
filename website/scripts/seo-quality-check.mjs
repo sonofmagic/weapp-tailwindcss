@@ -6,6 +6,7 @@ function parseArgs(argv) {
   const options = {
     strict: false,
     maxIssues: 0,
+    only: '',
   }
   for (const arg of argv) {
     if (arg === '--strict') {
@@ -14,6 +15,10 @@ function parseArgs(argv) {
     }
     if (arg.startsWith('--max-issues=')) {
       options.maxIssues = Number(arg.slice('--max-issues='.length)) || 0
+      continue
+    }
+    if (arg.startsWith('--only=')) {
+      options.only = arg.slice('--only='.length).trim()
     }
   }
   return options
@@ -24,12 +29,16 @@ const scans = seoLocales.flatMap(locale => [
   scanSeoQuality(locale.docsRoot, `${locale.id}:docs`),
   scanSeoQuality(locale.blogRoot, `${locale.id}:blog`),
 ])
-const issues = scans.flatMap(scan => scan.issues)
+const filteredScans = scans.map(scan => ({
+  ...scan,
+  issues: scan.issues.filter(issue => !options.only || issue.type === options.only),
+}))
+const issues = filteredScans.flatMap(scan => scan.issues)
 
 const grouped = summarizeByType(issues)
 
 console.table([
-  ...scans.map(scan => ({ scope: scan.label, files: scan.files.length, issues: scan.issues.length })),
+  ...filteredScans.map(scan => ({ scope: scan.label, files: scan.files.length, issues: scan.issues.length })),
   { scope: 'all', files: scans.reduce((total, scan) => total + scan.files.length, 0), issues: issues.length },
 ])
 

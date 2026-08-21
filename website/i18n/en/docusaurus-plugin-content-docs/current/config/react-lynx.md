@@ -7,6 +7,9 @@ keywords:
   - Lynx
   - Tailwind CSS 4
   - configuration
+  - Rspack
+  - encoder
+  - native CSS
 ---
 
 # ReactLynx / Rspeedy Configuration Reference

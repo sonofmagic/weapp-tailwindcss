@@ -7,6 +7,9 @@ keywords:
   - uniAppX
   - Tailwind CSS 4
   - 配置项
+  - Vite
+  - uvue
+  - 单位转换
 ---
 
 # uni-app x 配置参考

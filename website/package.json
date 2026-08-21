@@ -40,6 +40,7 @@
     "seo:keywords:normalize": "node scripts/seo-normalize-keywords.mjs --write",
     "seo:quality": "node scripts/seo-quality-check.mjs",
     "seo:quality:strict": "node scripts/seo-quality-check.mjs --strict",
+    "seo:few-keywords": "node scripts/seo-quality-check.mjs --strict --only=few_keywords",
     "seo:quality:report": "node scripts/seo-quality-report.mjs",
     "geo:index": "node scripts/generate-geo-index.mjs",
     "verify:deployment": "tsx scripts/verify-deployment-assets.ts",

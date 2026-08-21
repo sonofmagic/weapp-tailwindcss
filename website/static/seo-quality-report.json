@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-21T01:55:33.732Z",
+  "generatedAt": "2026-08-21T02:27:42.311Z",
   "totals": {
     "files": 287,
-    "issues": 6
+    "issues": 0
   },
   "coverage": {
     "en": {
@@ -18,8 +18,8 @@
     }
   },
   "issuesByLocale": {
-    "en": 3,
-    "zh-cn": 3
+    "en": 0,
+    "zh-cn": 0
   },
   "geo": {
     "en": {
@@ -35,45 +35,6 @@
     "valid": true,
     "issues": []
   },
-  "issueTypes": {
-    "few_keywords": 6
-  },
-  "issues": [
-    {
-      "type": "few_keywords",
-      "file": "config/react-lynx.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "config/react-native.md",
-      "message": "keywords 数量偏少（7）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "config/uni-app-x.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "config/react-lynx.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "zh-cn:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "config/react-native.md",
-      "message": "keywords 数量偏少（7）",
-      "scope": "zh-cn:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "config/uni-app-x.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "zh-cn:docs"
-    }
-  ]
+  "issueTypes": {},
+  "issues": []
 }

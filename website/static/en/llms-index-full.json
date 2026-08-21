@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-21T02:02:50.726Z",
+  "generatedAt": "2026-08-21T02:27:42.092Z",
   "locale": "en-US",
   "contentTier": "full",
   "siteUrl": "https://tw.icebreaker.top",
@@ -2695,6 +2695,9 @@
         "Lynx",
         "Tailwind CSS 4",
         "configuration",
+        "Rspack",
+        "encoder",
+        "native CSS",
         "Reference",
         "config",
         "react lynx",
@@ -2702,8 +2705,7 @@
         "cross-platform",
         "mini app",
         "uni-app",
-        "Taro",
-        "React Native"
+        "Taro"
       ],
       "headings": [
         "Support baseline",
@@ -2740,15 +2742,15 @@
         "React Native manifest",
         "Tailwind CSS 4",
         "configuration",
+        "React Native styles",
+        "manifest warnings",
+        "platform variants",
         "React",
         "Native",
         "Reference",
         "config",
         "weapp-tailwindcss",
-        "cross-platform",
-        "mini app",
-        "uni-app",
-        "Taro"
+        "cross-platform"
       ],
       "headings": [
         "Support baseline",
@@ -2782,6 +2784,9 @@
         "uniAppX",
         "Tailwind CSS 4",
         "configuration",
+        "Vite",
+        "uvue",
+        "unit conversion",
         "uni-app",
         "Reference",
         "config",
@@ -2789,9 +2794,7 @@
         "weapp-tailwindcss",
         "cross-platform",
         "mini app",
-        "Taro",
-        "React Native",
-        "Lynx"
+        "Taro"
       ],
       "headings": [
         "Support baseline",
