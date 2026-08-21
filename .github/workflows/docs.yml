@@ -1,17 +1,7 @@
-name: Build and Deploy Docs Worker
+name: Validate Docs Worker
 
 on:
   pull_request:
-    paths:
-      - .github/workflows/docs.yml
-      - 'website/**'
-      - 'packages/**'
-      - 'packages-runtime/**'
-      - pnpm-lock.yaml
-  push:
-    branches:
-      - main
-      - next
     paths:
       - .github/workflows/docs.yml
       - 'website/**'
@@ -24,18 +14,16 @@ permissions:
   contents: read
 
 concurrency:
-  group: docs-worker-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
+  group: docs-worker-validation-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
-    name: Build${{ github.event_name == 'pull_request' && ' and dry-run' || ' and deploy' }}
+  build-and-validate:
+    name: Build and validate
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      SITE_URL: ${{ github.ref == 'refs/heads/next' && 'https://next.tw.icebreaker.top' || 'https://tw.icebreaker.top' }}
+      SITE_URL: https://tw.icebreaker.top
 
     steps:
       - name: Check out code
@@ -67,31 +55,3 @@ jobs:
 
       - name: Validate Worker bundle
         run: pnpm --filter @weapp-tailwindcss/website deploy:worker:dry-run
-
-      - name: Require Cloudflare credentials
-        if: github.event_name != 'pull_request' && (env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '')
-        run: |
-          echo "::error::CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID are required for Workers deployment."
-          exit 1
-
-      - name: Deploy production Worker
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        working-directory: website
-        run: pnpm run deploy:worker
-
-      - name: Deploy next Worker
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/next'
-        working-directory: website
-        run: pnpm run deploy:worker:next
-
-      - name: Verify production deployment
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        working-directory: website
-        run: |
-          pnpm run verify:deployment -- https://tw.icebreaker.top
-          pnpm run verify:deployment -- https://weapp-tw.icebreaker.top --canonical-origin https://tw.icebreaker.top
-
-      - name: Verify next deployment
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/next'
-        working-directory: website
-        run: pnpm run verify:deployment -- https://next.tw.icebreaker.top
