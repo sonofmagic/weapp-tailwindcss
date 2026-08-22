@@ -133,6 +133,7 @@ describe('useToggleTheme', () => {
     expect(options).toMatchObject({
       duration: 400,
       easing: 'ease-in',
+      fill: 'forwards',
       pseudoElement: '::view-transition-new(root)',
     })
   })
@@ -164,6 +165,7 @@ describe('useToggleTheme', () => {
     const [keyframes, options] = animate.mock.calls[0]
     expect(keyframes.clipPath[0]).toBe('circle(0px at 100px 120px)')
     expect(options).toMatchObject({
+      fill: 'forwards',
       pseudoElement: '::view-transition-new(root)',
     })
   })
@@ -232,6 +234,7 @@ describe('useToggleTheme', () => {
     expect(keyframes.clipPath[0]).toMatch(/^circle\(.+px at 100px 120px\)$/)
     expect(keyframes.clipPath[1]).toBe('circle(0px at 100px 120px)')
     expect(options).toMatchObject({
+      fill: 'forwards',
       pseudoElement: '::view-transition-old(root)',
     })
   })
