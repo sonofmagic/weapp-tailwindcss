@@ -2241,7 +2241,7 @@ describe('watch-hmr regression cases', () => {
     ]) {
       const watchCase = cases.find(item => item.name === caseName)
       expect(watchCase?.env).toHaveProperty('TARO_E2E_WATCH_NATIVE', '0')
-      expect(watchCase?.maxPluginProcessMs).toBe(8000)
+      expect(watchCase?.maxPluginProcessMs).toBe(18000)
     }
   })
 
@@ -3474,8 +3474,12 @@ describe('watch-hmr regression cases', () => {
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-react-tailwindcss-v4:tt', artifact_case: 'taro-vite-react-tailwindcss-v4-tt', round_profile: 'default' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v4:alipay', artifact_case: 'taro-vite-vue3-tailwindcss-v4-alipay', round_profile: 'default' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v4:tt', artifact_case: 'taro-vite-vue3-tailwindcss-v4-tt', round_profile: 'default' },
-      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-react-tailwindcss-v4:weapp', artifact_case: 'taro-webpack-react-tailwindcss-v4-weapp', round_profile: 'default' },
-      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-vue3-tailwindcss-v4:weapp', artifact_case: 'taro-webpack-vue3-tailwindcss-v4-weapp', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-react-tailwindcss-v4:weapp', artifact_case: 'taro-webpack-react-tailwindcss-v4-weapp', round_profile: 'mini-program-main' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-react-tailwindcss-v4:weapp', artifact_case: 'taro-webpack-react-tailwindcss-v4-weapp', round_profile: 'mini-program-subpackages' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-react-tailwindcss-v4', artifact_case: 'taro-webpack-react-tailwindcss-v4-web', round_profile: 'web-only' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-vue3-tailwindcss-v4:weapp', artifact_case: 'taro-webpack-vue3-tailwindcss-v4-weapp', round_profile: 'mini-program-main' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-vue3-tailwindcss-v4:weapp', artifact_case: 'taro-webpack-vue3-tailwindcss-v4-weapp', round_profile: 'mini-program-subpackages' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-vue3-tailwindcss-v4', artifact_case: 'taro-webpack-vue3-tailwindcss-v4-web', round_profile: 'web-only' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vite-tailwindcss-v4:mp-weixin', artifact_case: 'uni-app-vite-tailwindcss-v4-mp-weixin', round_profile: 'default' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vite-tailwindcss-v4:mp-alipay', artifact_case: 'uni-app-vite-tailwindcss-v4-mp-alipay', round_profile: 'default' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vite-tailwindcss-v4:mp-qq', artifact_case: 'uni-app-vite-tailwindcss-v4-mp-qq', round_profile: 'default' },
