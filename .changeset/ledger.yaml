@@ -6,6 +6,11 @@
   dir: packages/react-native
   intents:
     - calm-react-native-compatibility
+theme-transition@2.1.0:
+  dir: packages-runtime/theme-transition
+  intents:
+    - calm-theme-transition-snapshots
+    - gentle-theme-transition-presets
 weapp-tailwindcss@5.3.1:
   dir: packages/weapp-tailwindcss
   intents:
