@@ -5,10 +5,17 @@ import routes from '../routes.json'
 declare global {
   interface Window {
     __themeTransitionAnimations?: Array<{
+      clipPath: string[]
+      duration?: number
+      easing?: string
       fill?: string
       pseudoElement?: string
     }>
     __themeTransitionCalls?: number
+    __themeTransitionClicks?: Array<{
+      clientX: number
+      clientY: number
+    }>
   }
 }
 
@@ -80,6 +87,70 @@ async function setNavigatorLanguages(page: Parameters<typeof test>[0]['page'], l
       get: () => values,
     })
   }, languages)
+}
+
+async function instrumentThemeTransitions(
+  page: Parameters<typeof test>[0]['page'],
+  initialTheme: 'dark' | 'light' = 'dark',
+) {
+  await page.addInitScript((theme) => {
+    window.localStorage.setItem('theme', theme)
+
+    document.addEventListener('click', (event) => {
+      const path = event.composedPath()
+      const toggle = Array.from(document.querySelectorAll('button[aria-label*="浅色/暗黑模式"]'))
+        .find(button => path.includes(button) || (button.parentElement !== null && path.includes(button.parentElement)))
+      if (toggle) {
+        window.__themeTransitionClicks = [
+          ...(window.__themeTransitionClicks ?? []),
+          {
+            clientX: event.clientX,
+            clientY: event.clientY,
+          },
+        ]
+      }
+    }, true)
+
+    const nativeAnimate = Element.prototype.animate
+    Element.prototype.animate = function animate(keyframes, options) {
+      const animation = nativeAnimate.call(this, keyframes, options)
+      if (options && typeof options === 'object' && 'pseudoElement' in options) {
+        const pseudoElement = String(options.pseudoElement ?? '')
+        if (pseudoElement.includes('view-transition')) {
+          const resolvedKeyframes = animation.effect instanceof KeyframeEffect
+            ? animation.effect.getKeyframes()
+            : []
+          window.__themeTransitionAnimations = [
+            ...(window.__themeTransitionAnimations ?? []),
+            {
+              clipPath: resolvedKeyframes.map(keyframe => String(keyframe.clipPath)),
+              duration: typeof options.duration === 'number' ? options.duration : undefined,
+              easing: options.easing,
+              fill: options.fill,
+              pseudoElement,
+            },
+          ]
+        }
+      }
+      return animation
+    }
+
+    const nativeStartViewTransition = document.startViewTransition?.bind(document)
+    if (nativeStartViewTransition) {
+      document.startViewTransition = (callback) => {
+        window.__themeTransitionCalls = (window.__themeTransitionCalls ?? 0) + 1
+        return nativeStartViewTransition(callback)
+      }
+    }
+  }, initialTheme)
+}
+
+function expectClipPathCenter(clipPath: string[], coordinates: { clientX: number, clientY: number }) {
+  const center = `at ${coordinates.clientX}px ${coordinates.clientY}px)`
+  expect(clipPath.length).toBeGreaterThanOrEqual(2)
+  for (const keyframe of clipPath) {
+    expect(keyframe).toContain(center)
+  }
 }
 
 test.describe('homepage hero layout', () => {
@@ -740,39 +811,12 @@ test.describe('mobile navbar sidebar', () => {
 })
 
 test.describe('color mode transition strategy', () => {
-  test('desktop keeps both theme transition end states until their snapshots are removed', async ({ browserName, page }) => {
+  test('desktop uses real pointer coordinates and degrades pointerless activation', async ({ browserName, page }) => {
     test.skip(browserName !== 'chromium', 'The native View Transition path is verified in Chromium')
 
     await setStoredLocale(page, 'zh-cn')
     await page.setViewportSize({ width: 1440, height: 900 })
-    await page.addInitScript(() => {
-      window.localStorage.setItem('theme', 'dark')
-
-      const nativeAnimate = Element.prototype.animate
-      Element.prototype.animate = function animate(keyframes, options) {
-        if (options && typeof options === 'object' && 'pseudoElement' in options) {
-          const pseudoElement = String(options.pseudoElement ?? '')
-          if (pseudoElement.includes('view-transition')) {
-            window.__themeTransitionAnimations = [
-              ...(window.__themeTransitionAnimations ?? []),
-              {
-                fill: options.fill,
-                pseudoElement,
-              },
-            ]
-          }
-        }
-        return nativeAnimate.call(this, keyframes, options)
-      }
-
-      const nativeStartViewTransition = document.startViewTransition?.bind(document)
-      if (nativeStartViewTransition) {
-        document.startViewTransition = (callback) => {
-          window.__themeTransitionCalls = (window.__themeTransitionCalls ?? 0) + 1
-          return nativeStartViewTransition(callback)
-        }
-      }
-    })
+    await instrumentThemeTransitions(page)
     await page.goto(baseURL, {
       waitUntil: 'networkidle',
     })
@@ -792,7 +836,34 @@ test.describe('color mode transition strategy', () => {
     await expect.poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme-transition'))).toBeNull()
     await expect.poll(() => page.evaluate(() => window.localStorage.getItem('theme'))).toBe('light')
 
-    await toggle.click()
+    expect(await page.evaluate(() => ({
+      animations: window.__themeTransitionAnimations ?? [],
+      calls: window.__themeTransitionCalls ?? 0,
+    }))).toEqual({
+      animations: [],
+      calls: 0,
+    })
+
+    await toggle.focus()
+    await page.keyboard.press('Enter')
+
+    await expect(html).toHaveAttribute('data-theme', 'dark')
+    await expect.poll(() => page.evaluate(() => window.localStorage.getItem('theme'))).toBe('dark')
+    expect(await page.evaluate(() => window.__themeTransitionCalls ?? 0)).toBe(0)
+
+    const toggleBox = await toggle.boundingBox()
+    expect(toggleBox).not.toBeNull()
+    if (!toggleBox) {
+      return
+    }
+
+    await page.mouse.click(toggleBox.x + 2, toggleBox.y + 2)
+
+    await expect(html).toHaveAttribute('data-theme', 'light')
+    await expect.poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme-transition'))).toBeNull()
+    await expect.poll(() => page.evaluate(() => window.localStorage.getItem('theme'))).toBe('light')
+
+    await page.mouse.click(toggleBox.x + toggleBox.width - 2, toggleBox.y + toggleBox.height - 2)
 
     await expect(html).toHaveAttribute('data-theme', 'dark')
     await expect.poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme-transition'))).toBeNull()
@@ -801,19 +872,83 @@ test.describe('color mode transition strategy', () => {
     const transitionState = await page.evaluate(() => ({
       animations: window.__themeTransitionAnimations ?? [],
       calls: window.__themeTransitionCalls ?? 0,
+      clicks: window.__themeTransitionClicks ?? [],
+      liveAnimations: document.getAnimations({ subtree: true }).filter((animation) => {
+        const pseudoElement = animation.effect instanceof KeyframeEffect
+          ? animation.effect.pseudoElement
+          : null
+        return pseudoElement?.includes('view-transition') && animation.playState !== 'idle'
+      }).length,
     }))
-    expect(transitionState).toEqual({
-      animations: [
-        {
-          fill: 'forwards',
-          pseudoElement: '::view-transition-old(root)',
-        },
-        {
-          fill: 'forwards',
-          pseudoElement: '::view-transition-new(root)',
-        },
-      ],
-      calls: 2,
+
+    expect(transitionState.clicks.slice(0, 3)).toEqual([
+      { clientX: 0, clientY: 0 },
+      { clientX: 0, clientY: 0 },
+      { clientX: 0, clientY: 0 },
+    ])
+    const pointerClicks = transitionState.clicks.slice(3)
+    expect(pointerClicks).toHaveLength(2)
+    expect(transitionState.calls).toBe(2)
+    expect(transitionState.liveAnimations).toBe(0)
+    expect(transitionState.animations).toHaveLength(2)
+
+    const [fromDark, toDark] = transitionState.animations
+    expect(fromDark).toMatchObject({
+      duration: 400,
+      easing: 'ease-in',
+      fill: 'forwards',
+      pseudoElement: '::view-transition-old(root)',
+    })
+    expect(fromDark.clipPath[0]).toMatch(/^circle\(.+px at /)
+    expect(fromDark.clipPath.at(-1)).toMatch(/^circle\(0px at /)
+    expectClipPathCenter(fromDark.clipPath, pointerClicks[0])
+
+    expect(toDark).toMatchObject({
+      duration: 400,
+      easing: 'ease-in',
+      fill: 'forwards',
+      pseudoElement: '::view-transition-new(root)',
+    })
+    expect(toDark.clipPath[0]).toMatch(/^circle\(0px at /)
+    expect(toDark.clipPath.at(-1)).toMatch(/^circle\(.+px at /)
+    expectClipPathCenter(toDark.clipPath, pointerClicks[1])
+  })
+
+  test('desktop releases theme transition animations across repeated toggles', async ({ browserName, page }) => {
+    test.skip(browserName !== 'chromium', 'The native View Transition path is verified in Chromium')
+
+    await setStoredLocale(page, 'zh-cn')
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await instrumentThemeTransitions(page)
+    await page.goto(baseURL, {
+      waitUntil: 'networkidle',
+    })
+
+    const html = page.locator('html')
+    const toggle = page.locator('button[aria-label*="浅色/暗黑模式"]:visible')
+
+    for (let index = 0; index < 20; index++) {
+      const expectedTheme = index % 2 === 0 ? 'light' : 'dark'
+      await toggle.click()
+      await expect(html).toHaveAttribute('data-theme', expectedTheme)
+      await expect.poll(() => page.evaluate(() => window.localStorage.getItem('theme'))).toBe(expectedTheme)
+      await expect.poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme-transition'))).toBeNull()
+      await expect.poll(() => page.evaluate(() => document.getAnimations({ subtree: true }).filter((animation) => {
+        const pseudoElement = animation.effect instanceof KeyframeEffect
+          ? animation.effect.pseudoElement
+          : null
+        return pseudoElement?.includes('view-transition') && animation.playState !== 'idle'
+      }).length)).toBe(0)
+    }
+
+    expect(await page.evaluate(() => ({
+      animations: window.__themeTransitionAnimations?.length ?? 0,
+      calls: window.__themeTransitionCalls ?? 0,
+      transitionAttribute: document.documentElement.getAttribute('data-theme-transition'),
+    }))).toEqual({
+      animations: 20,
+      calls: 20,
+      transitionAttribute: null,
     })
   })
 
