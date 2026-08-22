@@ -210,7 +210,7 @@ jobs:
           pnpm exec playwright install chromium
 
       - name: E2E Static
-        run: pnpm ci:memory --label e2e-static-${{ matrix.shard }}-${{ matrix.shard_total }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm e2e:static --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}
+        run: pnpm ci:memory --label e2e-static-${{ matrix.shard }}-${{ matrix.shard_total }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm e2e:static --exclude e2e/apps-generator-mode-compare.test.ts --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}
 
       - name: Upload CI memory reports
         if: always()
@@ -229,6 +229,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - case_name: apps-generator
+            command: pnpm e2e:apps-generator
           - case_name: generator-web-parity
             command: pnpm e2e:generator-parity
           - case_name: lynx-rspeedy

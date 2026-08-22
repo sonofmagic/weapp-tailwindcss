@@ -20,3 +20,7 @@ weapp-tailwindcss@5.3.3:
     - bright-variants-cascade
     - fuzzy-layouts-match
     - slick-bears-sleep
+weapp-tailwindcss@5.3.4:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - social-geckos-roll
