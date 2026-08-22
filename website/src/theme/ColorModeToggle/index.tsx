@@ -57,7 +57,7 @@ function Toggler(props: Props) {
     },
   })
 
-  async function runAppearanceTransition(event: MouseEvent<HTMLDivElement>) {
+  async function runAppearanceTransition(clientX: number, clientY: number) {
     if (isTransitioning.current) {
       return
     }
@@ -65,8 +65,8 @@ function Toggler(props: Props) {
     isTransitioning.current = true
     try {
       await toggleTheme({
-        clientX: event.clientX,
-        clientY: event.clientY,
+        clientX,
+        clientY,
       })
     }
     finally {
@@ -80,7 +80,10 @@ function Toggler(props: Props) {
       return
     }
 
-    void runAppearanceTransition(event)
+    const rect = event.currentTarget.getBoundingClientRect()
+    const clientX = rect.left + rect.width / 2
+    const clientY = rect.top + rect.height / 2
+    void runAppearanceTransition(clientX, clientY)
   }
 
   return (

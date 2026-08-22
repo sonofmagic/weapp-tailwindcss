@@ -5,6 +5,7 @@ import routes from '../routes.json'
 declare global {
   interface Window {
     __themeTransitionAnimations?: Array<{
+      clipPath: string[]
       fill?: string
       pseudoElement?: string
     }>
@@ -753,9 +754,16 @@ test.describe('color mode transition strategy', () => {
         if (options && typeof options === 'object' && 'pseudoElement' in options) {
           const pseudoElement = String(options.pseudoElement ?? '')
           if (pseudoElement.includes('view-transition')) {
+            const propertyKeyframes = Array.isArray(keyframes) ? undefined : keyframes
+            const clipPath = propertyKeyframes?.clipPath
             window.__themeTransitionAnimations = [
               ...(window.__themeTransitionAnimations ?? []),
               {
+                clipPath: Array.isArray(clipPath)
+                  ? clipPath.map(value => String(value))
+                  : typeof clipPath === 'string'
+                    ? [clipPath]
+                    : [],
                 fill: options.fill,
                 pseudoElement,
               },
@@ -779,6 +787,20 @@ test.describe('color mode transition strategy', () => {
 
     const html = page.locator('html')
     const toggle = page.locator('button[aria-label*="浅色/暗黑模式"]:visible')
+    const transitionGeometry = await toggle.evaluate((element) => {
+      const rect = element.parentElement!.getBoundingClientRect()
+      const x = rect.left + rect.width / 2
+      const y = rect.top + rect.height / 2
+      const radius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y),
+      )
+      return {
+        center: { x, y },
+        expandedClipPath: `circle(${radius}px at ${x}px ${y}px)`,
+        collapsedClipPath: `circle(0px at ${x}px ${y}px)`,
+      }
+    })
 
     expect(await page.evaluate(() => typeof document.startViewTransition)).toBe('function')
 
@@ -794,9 +816,34 @@ test.describe('color mode transition strategy', () => {
     await expect.poll(() => page.evaluate(() => document.getAnimations().filter((animation) => {
       return animation.effect?.pseudoElement?.includes('view-transition')
     }).length)).toBe(0)
+    expect(await page.evaluate(() => window.__themeTransitionCalls ?? 0)).toBe(1)
+
+    const programmaticAnimation = await page.evaluate(() => window.__themeTransitionAnimations?.[0])
+    expect(programmaticAnimation).toEqual({
+      clipPath: [transitionGeometry.expandedClipPath, transitionGeometry.collapsedClipPath],
+      fill: 'forwards',
+      pseudoElement: '::view-transition-old(root)',
+    })
+
+    const toggleBox = await toggle.boundingBox()
+    expect(toggleBox).not.toBeNull()
+    await page.mouse.click(toggleBox!.x + 1, toggleBox!.y + 1)
+    await expect(html).toHaveAttribute('data-theme', 'dark')
+    await expect.poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme-transition'))).toBeNull()
+    await expect.poll(() => page.evaluate(() => window.localStorage.getItem('theme'))).toBe('dark')
+    await expect.poll(() => page.evaluate(() => document.getAnimations().filter((animation) => {
+      return animation.effect?.pseudoElement?.includes('view-transition')
+    }).length)).toBe(0)
+
+    const edgeClickAnimation = await page.evaluate(() => window.__themeTransitionAnimations?.[1])
+    expect(edgeClickAnimation).toEqual({
+      clipPath: [transitionGeometry.collapsedClipPath, transitionGeometry.expandedClipPath],
+      fill: 'forwards',
+      pseudoElement: '::view-transition-new(root)',
+    })
 
     for (let index = 0; index < 20; index += 1) {
-      const expectedTheme = index % 2 === 0 ? 'dark' : 'light'
+      const expectedTheme = index % 2 === 0 ? 'light' : 'dark'
       await toggle.click()
       await expect(html).toHaveAttribute('data-theme', expectedTheme)
       await expect.poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme-transition'))).toBeNull()
@@ -810,13 +857,30 @@ test.describe('color mode transition strategy', () => {
       animations: window.__themeTransitionAnimations ?? [],
       calls: window.__themeTransitionCalls ?? 0,
     }))
-    expect(transitionState.calls).toBe(21)
-    expect(transitionState.animations).toHaveLength(21)
+    expect(transitionState.calls).toBe(22)
+    expect(transitionState.animations).toHaveLength(22)
     expect(transitionState.animations.every(animation => animation.fill === 'forwards')).toBe(true)
+    expect(transitionState.animations.every(animation => animation.clipPath.every((clipPath) => {
+      return clipPath.endsWith(`at ${transitionGeometry.center.x}px ${transitionGeometry.center.y}px)`)
+    }))).toBe(true)
     expect(new Set(transitionState.animations.map(animation => animation.pseudoElement))).toEqual(new Set([
       '::view-transition-old(root)',
       '::view-transition-new(root)',
     ]))
+    for (const animation of transitionState.animations) {
+      if (animation.pseudoElement === '::view-transition-new(root)') {
+        expect(animation.clipPath).toEqual([
+          transitionGeometry.collapsedClipPath,
+          transitionGeometry.expandedClipPath,
+        ])
+      }
+      else {
+        expect(animation.clipPath).toEqual([
+          transitionGeometry.expandedClipPath,
+          transitionGeometry.collapsedClipPath,
+        ])
+      }
+    }
   })
 
   test('reduced motion skips view transitions for theme changes', async ({ page }) => {
