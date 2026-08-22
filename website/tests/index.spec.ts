@@ -4,6 +4,10 @@ import routes from '../routes.json'
 
 declare global {
   interface Window {
+    __themeTransitionAnimations?: Array<{
+      fill?: string
+      pseudoElement?: string
+    }>
     __themeTransitionCalls?: number
   }
 }
@@ -736,9 +740,87 @@ test.describe('mobile navbar sidebar', () => {
 })
 
 test.describe('color mode transition strategy', () => {
-  test('desktop uses a short view transition for theme changes', async ({ page }) => {
+  test('desktop keeps both theme transition end states until their snapshots are removed', async ({ browserName, page }) => {
+    test.skip(browserName !== 'chromium', 'The native View Transition path is verified in Chromium')
+
     await setStoredLocale(page, 'zh-cn')
     await page.setViewportSize({ width: 1440, height: 900 })
+    await page.addInitScript(() => {
+      window.localStorage.setItem('theme', 'dark')
+
+      const nativeAnimate = Element.prototype.animate
+      Element.prototype.animate = function animate(keyframes, options) {
+        if (options && typeof options === 'object' && 'pseudoElement' in options) {
+          const pseudoElement = String(options.pseudoElement ?? '')
+          if (pseudoElement.includes('view-transition')) {
+            window.__themeTransitionAnimations = [
+              ...(window.__themeTransitionAnimations ?? []),
+              {
+                fill: options.fill,
+                pseudoElement,
+              },
+            ]
+          }
+        }
+        return nativeAnimate.call(this, keyframes, options)
+      }
+
+      const nativeStartViewTransition = document.startViewTransition?.bind(document)
+      if (nativeStartViewTransition) {
+        document.startViewTransition = (callback) => {
+          window.__themeTransitionCalls = (window.__themeTransitionCalls ?? 0) + 1
+          return nativeStartViewTransition(callback)
+        }
+      }
+    })
+    await page.goto(baseURL, {
+      waitUntil: 'networkidle',
+    })
+
+    const html = page.locator('html')
+    const toggle = page.locator('button[aria-label*="浅色/暗黑模式"]:visible')
+
+    expect(await page.evaluate(() => typeof document.startViewTransition)).toBe('function')
+
+    await toggle.evaluate((element) => {
+      const button = element as HTMLButtonElement
+      button.click()
+      button.click()
+    })
+
+    await expect(html).toHaveAttribute('data-theme', 'light')
+    await expect.poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme-transition'))).toBeNull()
+    await expect.poll(() => page.evaluate(() => window.localStorage.getItem('theme'))).toBe('light')
+
+    await toggle.click()
+
+    await expect(html).toHaveAttribute('data-theme', 'dark')
+    await expect.poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme-transition'))).toBeNull()
+    await expect.poll(() => page.evaluate(() => window.localStorage.getItem('theme'))).toBe('dark')
+
+    const transitionState = await page.evaluate(() => ({
+      animations: window.__themeTransitionAnimations ?? [],
+      calls: window.__themeTransitionCalls ?? 0,
+    }))
+    expect(transitionState).toEqual({
+      animations: [
+        {
+          fill: 'forwards',
+          pseudoElement: '::view-transition-old(root)',
+        },
+        {
+          fill: 'forwards',
+          pseudoElement: '::view-transition-new(root)',
+        },
+      ],
+      calls: 2,
+    })
+  })
+
+  test('reduced motion skips view transitions for theme changes', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.addInitScript(() => {
       window.localStorage.setItem('theme', 'dark')
       Object.defineProperty(document, 'startViewTransition', {
@@ -762,7 +844,27 @@ test.describe('color mode transition strategy', () => {
 
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
     const calls = await page.evaluate(() => window.__themeTransitionCalls ?? 0)
-    expect(calls).toBe(1)
+    expect(calls).toBe(0)
+  })
+
+  test('missing View Transition API falls back to a direct theme change', async ({ page }) => {
+    await setStoredLocale(page, 'zh-cn')
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.addInitScript(() => {
+      window.localStorage.setItem('theme', 'dark')
+      Object.defineProperty(document, 'startViewTransition', {
+        configurable: true,
+        value: undefined,
+      })
+    })
+    await page.goto(baseURL, {
+      waitUntil: 'networkidle',
+    })
+
+    await page.locator('button[aria-label*="浅色/暗黑模式"]:visible').click()
+
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+    await expect.poll(() => page.evaluate(() => window.localStorage.getItem('theme'))).toBe('light')
   })
 
   test('non fine-pointer environments skip view transitions for theme changes', async ({ page }) => {
