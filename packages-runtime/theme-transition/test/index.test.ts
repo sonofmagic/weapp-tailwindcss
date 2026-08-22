@@ -17,10 +17,17 @@ function createDeferred<T = void>() {
 }
 
 function createDocumentMock(options: {
+  animationCancelError?: Error
   animationFinished?: Promise<void>
   transitionFinished?: Promise<void>
 } = {}) {
+  const cancel = vi.fn(() => {
+    if (options.animationCancelError) {
+      throw options.animationCancelError
+    }
+  })
   const animate = vi.fn(() => ({
+    cancel,
     finished: options.animationFinished ?? Promise.resolve(),
   }))
   const attributes = new Map<string, string>()
@@ -65,6 +72,7 @@ function createDocumentMock(options: {
 
   return {
     animate,
+    cancel,
     documentLike,
     documentElement,
     startViewTransition,
@@ -100,7 +108,7 @@ describe('useToggleTheme', () => {
 
   it('runs view transition when supported', async () => {
     let dark = false
-    const { documentLike, startViewTransition, animate } = createDocumentMock()
+    const { documentLike, startViewTransition, animate, cancel } = createDocumentMock()
 
     const { toggleTheme, isAppearanceTransition, capabilities, environment } = useToggleTheme({
       toggle: () => {
@@ -118,6 +126,7 @@ describe('useToggleTheme', () => {
 
     expect(startViewTransition).toHaveBeenCalledOnce()
     expect(animate).toHaveBeenCalledOnce()
+    expect(cancel).toHaveBeenCalledOnce()
 
     expect(dark).toBe(true)
 
@@ -174,7 +183,7 @@ describe('useToggleTheme', () => {
     let dark = false
     const animationFinished = createDeferred()
     const transitionFinished = createDeferred()
-    const { documentLike, documentElement, style } = createDocumentMock({
+    const { documentLike, documentElement, style, cancel } = createDocumentMock({
       animationFinished: animationFinished.promise,
       transitionFinished: transitionFinished.promise,
     })
@@ -200,11 +209,43 @@ describe('useToggleTheme', () => {
 
     expect(documentElement.getAttribute('data-theme-transition')).toBe('to-dark')
     expect(style.getPropertyValue('--theme-transition-radius')).not.toBe('')
+    expect(cancel).not.toHaveBeenCalled()
 
     transitionFinished.resolve()
     await task
 
+    expect(cancel).toHaveBeenCalledOnce()
     expect(documentElement.getAttribute('data-theme-transition')).toBeNull()
+    expect(style.getPropertyValue('--theme-transition-radius')).toBe('')
+  })
+
+  it('cleans transition state when releasing the animation throws', async () => {
+    const animationCancelError = new Error('cancel failed')
+    const warn = vi.fn()
+    const toggle = vi.fn()
+    const { cancel, documentElement, documentLike, style } = createDocumentMock({
+      animationCancelError,
+    })
+
+    const { toggleTheme } = useToggleTheme({
+      toggle,
+      isCurrentDark: () => false,
+      document: documentLike,
+      window: windowMock,
+      logger: { warn },
+    })
+
+    await expect(toggleTheme({ clientX: 100, clientY: 120 })).resolves.toBeUndefined()
+
+    expect(toggle).toHaveBeenCalledOnce()
+    expect(cancel).toHaveBeenCalledOnce()
+    expect(warn).toHaveBeenCalledWith(
+      '[theme-transition] Failed to release theme transition animation.',
+      animationCancelError,
+    )
+    expect(documentElement.getAttribute('data-theme-transition')).toBeNull()
+    expect(style.getPropertyValue('--theme-transition-x')).toBe('')
+    expect(style.getPropertyValue('--theme-transition-y')).toBe('')
     expect(style.getPropertyValue('--theme-transition-radius')).toBe('')
   })
 

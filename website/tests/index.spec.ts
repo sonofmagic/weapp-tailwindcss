@@ -740,7 +740,7 @@ test.describe('mobile navbar sidebar', () => {
 })
 
 test.describe('color mode transition strategy', () => {
-  test('desktop keeps both theme transition end states until their snapshots are removed', async ({ browserName, page }) => {
+  test('desktop releases completed theme transition animations across repeated changes', async ({ browserName, page }) => {
     test.skip(browserName !== 'chromium', 'The native View Transition path is verified in Chromium')
 
     await setStoredLocale(page, 'zh-cn')
@@ -791,30 +791,32 @@ test.describe('color mode transition strategy', () => {
     await expect(html).toHaveAttribute('data-theme', 'light')
     await expect.poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme-transition'))).toBeNull()
     await expect.poll(() => page.evaluate(() => window.localStorage.getItem('theme'))).toBe('light')
+    await expect.poll(() => page.evaluate(() => document.getAnimations().filter((animation) => {
+      return animation.effect?.pseudoElement?.includes('view-transition')
+    }).length)).toBe(0)
 
-    await toggle.click()
-
-    await expect(html).toHaveAttribute('data-theme', 'dark')
-    await expect.poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme-transition'))).toBeNull()
-    await expect.poll(() => page.evaluate(() => window.localStorage.getItem('theme'))).toBe('dark')
+    for (let index = 0; index < 20; index += 1) {
+      const expectedTheme = index % 2 === 0 ? 'dark' : 'light'
+      await toggle.click()
+      await expect(html).toHaveAttribute('data-theme', expectedTheme)
+      await expect.poll(() => page.evaluate(() => document.documentElement.getAttribute('data-theme-transition'))).toBeNull()
+      await expect.poll(() => page.evaluate(() => window.localStorage.getItem('theme'))).toBe(expectedTheme)
+      await expect.poll(() => page.evaluate(() => document.getAnimations().filter((animation) => {
+        return animation.effect?.pseudoElement?.includes('view-transition')
+      }).length)).toBe(0)
+    }
 
     const transitionState = await page.evaluate(() => ({
       animations: window.__themeTransitionAnimations ?? [],
       calls: window.__themeTransitionCalls ?? 0,
     }))
-    expect(transitionState).toEqual({
-      animations: [
-        {
-          fill: 'forwards',
-          pseudoElement: '::view-transition-old(root)',
-        },
-        {
-          fill: 'forwards',
-          pseudoElement: '::view-transition-new(root)',
-        },
-      ],
-      calls: 2,
-    })
+    expect(transitionState.calls).toBe(21)
+    expect(transitionState.animations).toHaveLength(21)
+    expect(transitionState.animations.every(animation => animation.fill === 'forwards')).toBe(true)
+    expect(new Set(transitionState.animations.map(animation => animation.pseudoElement))).toEqual(new Set([
+      '::view-transition-old(root)',
+      '::view-transition-new(root)',
+    ]))
   })
 
   test('reduced motion skips view transitions for theme changes', async ({ page }) => {

@@ -176,6 +176,7 @@ export function useToggleTheme(options: UseToggleThemeOptions): UseToggleThemeRe
     const { clipPath, reverseClipPath } = createClipPathKeyframes({ x, y, endRadius })
 
     let transitionWorkExecuted = false
+    let animation: Animation | undefined
     let cleanupTransitionState: (() => void) | undefined
     try {
       const isDark = Boolean(isCurrentDark?.())
@@ -193,7 +194,7 @@ export function useToggleTheme(options: UseToggleThemeOptions): UseToggleThemeRe
 
       await transition.ready
 
-      const animation = environment.target.animate?.(
+      animation = environment.target.animate?.(
         {
           clipPath: isDark ? reverseClipPath : clipPath,
         },
@@ -217,6 +218,12 @@ export function useToggleTheme(options: UseToggleThemeOptions): UseToggleThemeRe
       }
     }
     finally {
+      try {
+        animation?.cancel()
+      }
+      catch (error) {
+        logger?.warn?.('[theme-transition] Failed to release theme transition animation.', error)
+      }
       cleanupTransitionState?.()
     }
   }
