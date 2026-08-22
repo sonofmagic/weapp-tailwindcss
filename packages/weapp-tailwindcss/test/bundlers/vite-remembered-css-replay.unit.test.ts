@@ -40,6 +40,20 @@ describe('bundlers/vite remembered css replay', () => {
     expect(shouldSkipRawRememberedCssSource('.a { color: turquoise; }', sourceFile)).toBe(false)
   })
 
+  it.each(['lang.scss', 'lang=scss'])('skips uncompiled SFC preprocessor requests using %s before remembered css replay', async (langQuery) => {
+    const { shouldSkipRawRememberedCssSource } = await import('@/bundlers/vite/generate-bundle/remembered-css-replay')
+    const sourceFile = `/repo/uni_modules/uview-ultra/components/up-checkbox/up-checkbox.uvue?vue&type=style&index=0&${langQuery}`
+
+    expect(shouldSkipRawRememberedCssSource(
+      '$up-checkbox-icon-wrap-margin-right: 6px !default;\n.up-checkbox { margin-right: $up-checkbox-icon-wrap-margin-right; }',
+      sourceFile,
+    )).toBe(true)
+    expect(shouldSkipRawRememberedCssSource(
+      '.up-checkbox { margin-right: 6px; }',
+      sourceFile,
+    )).toBe(false)
+  })
+
   it('skips source trace preparation when remembered replay signature is fresh', async () => {
     const { processRememberedCssReplay } = await import('@/bundlers/vite/generate-bundle/remembered-css-replay')
     const cssTaskFactories: Array<() => Promise<void>> = []

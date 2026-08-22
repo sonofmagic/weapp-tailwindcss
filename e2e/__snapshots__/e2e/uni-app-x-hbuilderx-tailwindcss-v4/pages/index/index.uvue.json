@@ -1,6 +1,6 @@
 {
   "file": "pages/index/index.uvue",
-  "count": 97,
+  "count": 98,
   "tokens": [
     "any-hover:bg-slate-800",
     "bg-[#000]",
@@ -22,6 +22,7 @@
     "bg-[#ccc]",
     "bg-[#ddd]",
     "bg-[#e0f2fe]",
+    "bg-[#eccc68]",
     "bg-[#eee]",
     "bg-[#f21903]",
     "bg-[#fff]",
@@ -33,7 +34,7 @@
     "border-slate-200",
     "border-solid",
     "border-t",
-    "dark:bg-zinc-900",
+    "dark:bg-[#3498db]",
     "dark:bg-zinc-950",
     "dark:text-zinc-50",
     "flex",

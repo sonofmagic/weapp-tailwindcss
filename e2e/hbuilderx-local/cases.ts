@@ -20,6 +20,7 @@ export interface MiniProgramCase {
   cssContains: Array<string | RegExp>
   cssNotContains?: Array<string | RegExp>
   outputContains?: Record<string, Array<string | RegExp>>
+  outputNotContains?: Record<string, Array<string | RegExp>>
   workflow: HBuilderXWorkflowCoverage
 }
 
@@ -333,6 +334,8 @@ function createUniAppXHBuilderXMiniProgramCase(options: {
 }): MiniProgramCase {
   const platformFiles = miniProgramPlatformFiles[options.platform]
   const templateExtension = platformFiles.templateFiles.main.split('.').at(-1)!
+  const componentOutputBase = 'uni_modules/uview-ultra/components/up-checkbox/up-checkbox'
+  const componentStyleFile = `${componentOutputBase}${platformFiles.cssExtensions[0]}`
   return {
     name: withMiniProgramPlatformName(options.name, options.platform),
     platform: options.platform,
@@ -358,9 +361,18 @@ function createUniAppXHBuilderXMiniProgramCase(options: {
       'app.json': ['"root": "sub-normal"', '"root": "sub-independent"', '"independent": true'],
       'components/BindClass.js': ['__scopeId', 'data-v-'],
       [`components/BindClass.${templateExtension}`]: ['issue-822-component-child', /data-v-[\da-f]+/],
+      [`${componentOutputBase}.${templateExtension}`]: ['issue-1095-up-checkbox'],
+      [componentStyleFile]: [/margin-right:\s*6px/, /color:\s*#fff/],
       [platformFiles.templateFiles.main]: ['issue-902-theme-probe'],
       [platformFiles.templateFiles.independent]: ['bg-independent-subpackage-marker'],
       [platformFiles.templateFiles.normal]: ['bg-normal-subpackage-marker'],
+    },
+    outputNotContains: {
+      [componentStyleFile]: [
+        /\$up-checkbox-icon-wrap-margin-right\s*:/,
+        /!default/,
+        /@apply/,
+      ],
     },
     workflow: uniAppXHBuilderXWorkflow,
   }

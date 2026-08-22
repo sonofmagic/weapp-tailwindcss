@@ -240,7 +240,6 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       const preprocessor = resolvePreprocessorTransform(styleCode, id, query.lang, {
         isIosPlatform,
         isNativeAppStyleTarget: isNativeAppStyleTarget(),
-        isWebGeneratorTarget: isWebGeneratorTarget(),
       })
       if (preprocessor) {
         return preprocessor.result ?? (styleCode !== code ? { code: styleCode, map: null } : undefined)

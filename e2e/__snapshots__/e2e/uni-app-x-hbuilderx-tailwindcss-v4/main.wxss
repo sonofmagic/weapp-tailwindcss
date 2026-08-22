@@ -55,7 +55,6 @@ wx-root-portal-content {
   --color-gray-200: rgb(229, 231, 235);
   --color-gray-600: rgb(74, 85, 101);
   --color-zinc-50: rgb(250, 250, 250);
-  --color-zinc-900: rgb(24, 24, 27);
   --color-zinc-950: rgb(9, 9, 11);
   --color-white: #fff;
   --spacing: 8rpx;
@@ -345,6 +344,9 @@ wx-root-portal-content {
 .bg-_b_he0f2fe_B {
   background-color: #e0f2fe;
 }
+.bg-_b_heccc68_B {
+  background-color: #eccc68;
+}
 .bg-_b_heee_B {
   background-color: #eee;
 }
@@ -525,11 +527,11 @@ wx-root-portal-content {
   --tw-content: '现在，让我们继续神奇的 tailwindcss HMR 回归之旅吧！';
   content: var(--tw-content);
 }
-.dark_cbg-zinc-900.theme-dark {
-  background-color: var(--color-zinc-900);
+.dark_cbg-_b_h3498db_B.theme-dark {
+  background-color: #3498db;
 }
-.theme-dark .dark_cbg-zinc-900 {
-  background-color: var(--color-zinc-900);
+.theme-dark .dark_cbg-_b_h3498db_B {
+  background-color: #3498db;
 }
 .dark_cbg-zinc-950.theme-dark {
   background-color: var(--color-zinc-950);
