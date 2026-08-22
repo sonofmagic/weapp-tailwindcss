@@ -160,12 +160,13 @@ describe('ci workflows', () => {
     expect(staticJob.strategy.matrix.shard_total).toEqual([3])
     expect(staticRuns.join('\n')).toContain('pnpm exec playwright install chromium')
     expect(hasStepRunCommand(staticRuns, 'pnpm build:ci')).toBe(true)
-    expect(hasStepRunCommand(staticRuns, 'pnpm e2e:static --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}')).toBe(true)
+    expect(hasStepRunCommand(staticRuns, 'pnpm e2e:static --exclude e2e/apps-generator-mode-compare.test.ts --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}')).toBe(true)
     expect(hasStepRunCommand(focusedRuns, 'pnpm build:ci')).toBe(true)
     expect(hasStepRunCommand(multiplatformRuns, 'pnpm build:ci')).toBe(true)
 
     expect(workflow.jobs['e2e-focused'].strategy['fail-fast']).toBe(false)
     expect(matrixCaseNames(focusedRows)).toEqual([
+      'apps-generator',
       'generator-web-parity',
       'lynx-rspeedy',
       'preprocessor-source',
@@ -181,6 +182,7 @@ describe('ci workflows', () => {
       'watch-hmr-coverage-contract',
     ])
     expect(focusedRows.map(row => row.command)).toEqual([
+      'pnpm e2e:apps-generator',
       'pnpm e2e:generator-parity',
       'pnpm e2e:lynx',
       'pnpm e2e:preprocessor',
