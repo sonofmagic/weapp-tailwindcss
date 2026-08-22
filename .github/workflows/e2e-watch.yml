@@ -945,7 +945,7 @@ jobs:
         run: pnpm e2e:uni-app-css-post-hmr
 
   nightly-full-regression:
-    name: e2e-watch-nightly (${{ matrix.runner_label }}-node${{ matrix['node-version'] || 22 }}-${{ matrix.watch_case }}-${{ matrix.round_profile }})
+    name: e2e-watch-nightly (${{ matrix.runner_label }}-node${{ matrix['node-version'] || 22 }}-${{ matrix.artifact_case || matrix.watch_case }}-${{ matrix.round_profile }})
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.run_pr_quick_gate != true)
     strategy:
       fail-fast: false
@@ -971,15 +971,36 @@ jobs:
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '6000'
             watch_command_timeout_ms: '720000'
+          # Taro Webpack polling-build 每次变更都会启动完整构建。issue33 按主包与分包拆开，
+          # 避免串行 workload 在完成所有有效断言前命中命令级超时。
           - os: macos-latest
             runner_label: macos
             watch_case: taro-webpack-react-tailwindcss-v4
+            artifact_case: taro-webpack-react-tailwindcss-v4-issue33-main
             round_profile: issue33
             watch_save_snapshots: '1'
-            timeout_minutes: 70
+            watch_mini_program_only: '1'
+            watch_mini_program_scope: main-package
+            watch_max_attempts: '1'
+            timeout_minutes: 35
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
-            watch_command_timeout_ms: '1800000'
+            watch_max_plugin_process_ms: '18000'
+            watch_command_timeout_ms: '1500000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: taro-webpack-react-tailwindcss-v4
+            artifact_case: taro-webpack-react-tailwindcss-v4-issue33-subpackages
+            round_profile: issue33
+            watch_save_snapshots: '1'
+            watch_mini_program_only: '1'
+            watch_mini_program_scope: subpackages
+            watch_max_attempts: '1'
+            timeout_minutes: 30
+            watch_timeout_ms: '600000'
+            watch_poll_ms: '40'
+            watch_max_plugin_process_ms: '24000'
+            watch_command_timeout_ms: '1200000'
           - os: macos-latest
             runner_label: macos
             watch_case: taro-vite-vue3-tailwindcss-v4
@@ -1086,26 +1107,88 @@ jobs:
             watch_poll_ms: '40'
             watch_max_plugin_process_ms: '10000'
             watch_command_timeout_ms: '1800000'
+          # 微信小程序 default profile 同样按主包、分包和 Web 拆分。小程序 shard 保留
+          # polling full-build 性能门禁，Web shard 独立验证浏览器 HMR。
           - os: macos-latest
             runner_label: macos
             watch_case: taro-webpack-react-tailwindcss-v4:weapp
             artifact_case: taro-webpack-react-tailwindcss-v4-weapp
-            round_profile: default
+            round_profile: mini-program-main
             watch_save_snapshots: '1'
-            timeout_minutes: 70
+            watch_mini_program_only: '1'
+            watch_mini_program_scope: main-package
+            watch_max_attempts: '1'
+            timeout_minutes: 35
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
-            watch_command_timeout_ms: '1800000'
+            watch_max_plugin_process_ms: '18000'
+            watch_command_timeout_ms: '1500000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: taro-webpack-react-tailwindcss-v4:weapp
+            artifact_case: taro-webpack-react-tailwindcss-v4-weapp
+            round_profile: mini-program-subpackages
+            watch_save_snapshots: '1'
+            watch_mini_program_only: '1'
+            watch_mini_program_scope: subpackages
+            watch_max_attempts: '1'
+            timeout_minutes: 30
+            watch_timeout_ms: '600000'
+            watch_poll_ms: '40'
+            watch_max_plugin_process_ms: '24000'
+            watch_command_timeout_ms: '1200000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: taro-webpack-react-tailwindcss-v4
+            artifact_case: taro-webpack-react-tailwindcss-v4-web
+            round_profile: web-only
+            watch_save_snapshots: '1'
+            watch_web_only: '1'
+            watch_max_attempts: '1'
+            timeout_minutes: 25
+            watch_timeout_ms: '600000'
+            watch_poll_ms: '40'
+            watch_command_timeout_ms: '1200000'
           - os: macos-latest
             runner_label: macos
             watch_case: taro-webpack-vue3-tailwindcss-v4:weapp
             artifact_case: taro-webpack-vue3-tailwindcss-v4-weapp
-            round_profile: default
+            round_profile: mini-program-main
             watch_save_snapshots: '1'
-            timeout_minutes: 70
+            watch_mini_program_only: '1'
+            watch_mini_program_scope: main-package
+            watch_max_attempts: '1'
+            timeout_minutes: 35
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
-            watch_command_timeout_ms: '1800000'
+            watch_max_plugin_process_ms: '18000'
+            watch_command_timeout_ms: '1500000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: taro-webpack-vue3-tailwindcss-v4:weapp
+            artifact_case: taro-webpack-vue3-tailwindcss-v4-weapp
+            round_profile: mini-program-subpackages
+            watch_save_snapshots: '1'
+            watch_mini_program_only: '1'
+            watch_mini_program_scope: subpackages
+            watch_max_attempts: '1'
+            timeout_minutes: 30
+            watch_timeout_ms: '600000'
+            watch_poll_ms: '40'
+            watch_max_plugin_process_ms: '24000'
+            watch_command_timeout_ms: '1200000'
+          - os: macos-latest
+            runner_label: macos
+            watch_case: taro-webpack-vue3-tailwindcss-v4
+            artifact_case: taro-webpack-vue3-tailwindcss-v4-web
+            round_profile: web-only
+            watch_save_snapshots: '1'
+            watch_web_only: '1'
+            watch_max_attempts: '1'
+            timeout_minutes: 25
+            watch_timeout_ms: '600000'
+            watch_poll_ms: '40'
+            watch_command_timeout_ms: '1200000'
           - os: macos-latest
             runner_label: macos
             watch_case: uni-app-vite-tailwindcss-v4:mp-weixin

@@ -925,6 +925,82 @@ describe('e2e watch workflow', () => {
     )
   })
 
+  it('splits macOS Taro Webpack nightly workloads by runtime boundary', () => {
+    const { workflow } = readWorkflow('e2e-watch.yml')
+    const job = workflow.jobs['nightly-full-regression']
+    const rows: Array<Record<string, unknown>> = job.strategy.matrix.include
+    const issue33Rows = rows.filter((row) => {
+      return row.runner_label === 'macos'
+        && row.watch_case === 'taro-webpack-react-tailwindcss-v4'
+        && row.round_profile === 'issue33'
+    })
+
+    expect(job.name).toContain('${{ matrix.artifact_case || matrix.watch_case }}')
+    expect(issue33Rows).toEqual([
+      expect.objectContaining({
+        artifact_case: 'taro-webpack-react-tailwindcss-v4-issue33-main',
+        watch_mini_program_only: '1',
+        watch_mini_program_scope: 'main-package',
+        watch_max_attempts: '1',
+        timeout_minutes: 35,
+        watch_max_plugin_process_ms: '18000',
+        watch_command_timeout_ms: '1500000',
+      }),
+      expect.objectContaining({
+        artifact_case: 'taro-webpack-react-tailwindcss-v4-issue33-subpackages',
+        watch_mini_program_only: '1',
+        watch_mini_program_scope: 'subpackages',
+        watch_max_attempts: '1',
+        timeout_minutes: 30,
+        watch_max_plugin_process_ms: '24000',
+        watch_command_timeout_ms: '1200000',
+      }),
+    ])
+
+    for (const framework of ['react', 'vue3']) {
+      const baseCase = `taro-webpack-${framework}-tailwindcss-v4`
+      const platformCase = `${baseCase}:weapp`
+      const platformRows = rows.filter(row => row.watch_case === platformCase)
+      const webRows = rows.filter((row) => {
+        return row.watch_case === baseCase && row.round_profile === 'web-only'
+      })
+
+      expect(platformRows).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          round_profile: 'mini-program-main',
+          watch_mini_program_only: '1',
+          watch_mini_program_scope: 'main-package',
+          watch_max_attempts: '1',
+          timeout_minutes: 35,
+          watch_max_plugin_process_ms: '18000',
+          watch_command_timeout_ms: '1500000',
+        }),
+        expect.objectContaining({
+          round_profile: 'mini-program-subpackages',
+          watch_mini_program_only: '1',
+          watch_mini_program_scope: 'subpackages',
+          watch_max_attempts: '1',
+          timeout_minutes: 30,
+          watch_max_plugin_process_ms: '24000',
+          watch_command_timeout_ms: '1200000',
+        }),
+      ]))
+      expect(platformRows).toHaveLength(2)
+      expect(webRows).toEqual([
+        expect.objectContaining({
+          artifact_case: `${baseCase}-web`,
+          watch_web_only: '1',
+          watch_max_attempts: '1',
+          timeout_minutes: 25,
+          watch_command_timeout_ms: '1200000',
+        }),
+      ])
+      expect(rows.some((row) => {
+        return row.watch_case === platformCase && row.round_profile === 'default'
+      })).toBe(false)
+    }
+  })
+
   it('runs the uni-app scoped CSS post regression in PR watch CI', () => {
     const { workflow } = readWorkflow('e2e-watch.yml')
     const runs = stepRuns(workflow, 'uni-app-css-post-hmr')
@@ -1164,15 +1240,6 @@ describe('e2e watch workflow', () => {
         watch_timeout_ms: '280000',
         watch_max_plugin_process_ms: '6000',
         watch_command_timeout_ms: '720000',
-      },
-      {
-        os: 'macos-latest',
-        runner_label: 'macos',
-        watch_case: 'taro-webpack-react-tailwindcss-v4',
-        round_profile: 'issue33',
-        timeout_minutes: 70,
-        watch_timeout_ms: '600000',
-        watch_command_timeout_ms: '1800000',
       },
       {
         os: 'windows-latest',

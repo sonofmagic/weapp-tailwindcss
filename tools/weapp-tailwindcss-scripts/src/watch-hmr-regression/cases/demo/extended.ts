@@ -37,9 +37,9 @@ const taroViteWatchEnv = {
 
 // Taro Vite 使用同一 compiler 的增量构建，预算覆盖 native watch 中的 CSS replay 与转译。
 const taroViteNativeWatchPluginProcessBudgetMs = 10000
-// Taro Webpack polling-build 每次变更都会启动新的完整构建，采样覆盖冷态 CSS 生成与转译，
-// 不等同于同一 compiler 内的增量插件耗时；与 e2e:taro:mp 专项脚本保持一致。
-const taroPollingBuildPluginProcessBudgetMs = 8000
+// Taro Webpack polling-build 每次变更都会启动新的完整构建，采样覆盖冷态多入口 CSS 生成与转译，
+// 不等同于同一 compiler 内的增量插件耗时；预算按 hosted runner 的稳定 p95 保留余量。
+const taroPollingBuildPluginProcessBudgetMs = 18000
 const webDomMarkerAttr = 'data-tw-watch-web-dom="1"'
 const taroMiniProgramPlatforms: TaroMiniProgramWatchPlatform[] = ['weapp', 'alipay', 'tt']
 const uniAppMiniProgramPlatforms: UniAppMiniProgramWatchPlatform[] = ['mp-weixin', 'mp-alipay', 'mp-qq', 'mp-toutiao']
