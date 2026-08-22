@@ -200,6 +200,7 @@ export function useToggleTheme(options: UseToggleThemeOptions): UseToggleThemeRe
         {
           duration,
           easing,
+          fill: 'forwards',
           pseudoElement: isDark
             ? '::view-transition-old(root)'
             : '::view-transition-new(root)',
