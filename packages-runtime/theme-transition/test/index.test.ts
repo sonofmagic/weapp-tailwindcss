@@ -303,6 +303,53 @@ describe('useToggleTheme', () => {
     expect(capabilities.hasViewTransition).toBe(true)
   })
 
+  it('skips view transitions for pointerless zero coordinates without invoking fallback coordinates', async () => {
+    let dark = false
+    const toggle = vi.fn(() => {
+      dark = !dark
+    })
+    const fallbackCoordinates = vi.fn(() => ({ x: 512, y: 384 }))
+    const { documentLike, startViewTransition, animate } = createDocumentMock()
+
+    const { toggleTheme } = useToggleTheme({
+      toggle,
+      isCurrentDark: () => dark,
+      document: documentLike,
+      window: windowMock,
+      fallbackCoordinates,
+    })
+
+    await toggleTheme({ clientX: 0, clientY: 0 })
+
+    expect(startViewTransition).not.toHaveBeenCalled()
+    expect(animate).not.toHaveBeenCalled()
+    expect(fallbackCoordinates).not.toHaveBeenCalled()
+    expect(toggle).toHaveBeenCalledOnce()
+    expect(dark).toBe(true)
+  })
+
+  it.each([
+    { clientX: 0, clientY: 120 },
+    { clientX: 100, clientY: 0 },
+  ])('keeps viewport edge coordinates animatable: $clientX,$clientY', async (coordinates) => {
+    const { documentLike, startViewTransition, animate } = createDocumentMock()
+
+    const { toggleTheme } = useToggleTheme({
+      toggle: vi.fn(),
+      isCurrentDark: () => false,
+      document: documentLike,
+      window: windowMock,
+    })
+
+    await toggleTheme(coordinates)
+
+    expect(startViewTransition).toHaveBeenCalledOnce()
+    expect(animate).toHaveBeenCalledOnce()
+    expect(animate.mock.calls[0][0].clipPath[0]).toBe(
+      `circle(0px at ${coordinates.clientX}px ${coordinates.clientY}px)`,
+    )
+  })
+
   it('warns and falls back when view transition throws before executing work', async () => {
     let dark = false
     const warn = vi.fn()
