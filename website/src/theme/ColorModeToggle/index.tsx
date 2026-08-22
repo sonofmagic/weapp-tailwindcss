@@ -47,6 +47,7 @@ function shouldUseAppearanceTransition() {
 function Toggler(props: Props) {
   const isTransitioning = useRef(false)
   const { toggleTheme } = useToggleTheme({
+    preset: 'fade',
     isCurrentDark() {
       return props.value === 'dark'
     },

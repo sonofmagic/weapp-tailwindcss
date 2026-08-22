@@ -9,7 +9,9 @@ declare global {
       duration?: number
       easing?: string
       fill?: string
+      opacity: string[]
       pseudoElement?: string
+      transform: string[]
     }>
     __themeTransitionCalls?: number
     __themeTransitionClicks?: Array<{
@@ -127,7 +129,9 @@ async function instrumentThemeTransitions(
               duration: typeof options.duration === 'number' ? options.duration : undefined,
               easing: options.easing,
               fill: options.fill,
+              opacity: resolvedKeyframes.map(keyframe => String(keyframe.opacity)),
               pseudoElement,
+              transform: resolvedKeyframes.map(keyframe => String(keyframe.transform)),
             },
           ]
         }
@@ -143,14 +147,6 @@ async function instrumentThemeTransitions(
       }
     }
   }, initialTheme)
-}
-
-function expectClipPathCenter(clipPath: string[], coordinates: { clientX: number, clientY: number }) {
-  const center = `at ${coordinates.clientX}px ${coordinates.clientY}px)`
-  expect(clipPath.length).toBeGreaterThanOrEqual(2)
-  for (const keyframe of clipPath) {
-    expect(keyframe).toContain(center)
-  }
 }
 
 test.describe('homepage hero layout', () => {
@@ -811,7 +807,7 @@ test.describe('mobile navbar sidebar', () => {
 })
 
 test.describe('color mode transition strategy', () => {
-  test('desktop uses real pointer coordinates and degrades pointerless activation', async ({ browserName, page }) => {
+  test('desktop uses the fade preset and degrades pointerless activation', async ({ browserName, page }) => {
     test.skip(browserName !== 'chromium', 'The native View Transition path is verified in Chromium')
 
     await setStoredLocale(page, 'zh-cn')
@@ -894,24 +890,24 @@ test.describe('color mode transition strategy', () => {
 
     const [fromDark, toDark] = transitionState.animations
     expect(fromDark).toMatchObject({
-      duration: 400,
-      easing: 'ease-in',
+      duration: 240,
+      easing: 'ease-in-out',
       fill: 'forwards',
+      opacity: ['1', '0'],
       pseudoElement: '::view-transition-old(root)',
     })
-    expect(fromDark.clipPath[0]).toMatch(/^circle\(.+px at /)
-    expect(fromDark.clipPath.at(-1)).toMatch(/^circle\(0px at /)
-    expectClipPathCenter(fromDark.clipPath, pointerClicks[0])
+    expect(fromDark.clipPath).toEqual(['undefined', 'undefined'])
+    expect(fromDark.transform).toEqual(['undefined', 'undefined'])
 
     expect(toDark).toMatchObject({
-      duration: 400,
-      easing: 'ease-in',
+      duration: 240,
+      easing: 'ease-in-out',
       fill: 'forwards',
+      opacity: ['0', '1'],
       pseudoElement: '::view-transition-new(root)',
     })
-    expect(toDark.clipPath[0]).toMatch(/^circle\(0px at /)
-    expect(toDark.clipPath.at(-1)).toMatch(/^circle\(.+px at /)
-    expectClipPathCenter(toDark.clipPath, pointerClicks[1])
+    expect(toDark.clipPath).toEqual(['undefined', 'undefined'])
+    expect(toDark.transform).toEqual(['undefined', 'undefined'])
   })
 
   test('desktop releases theme transition animations across repeated toggles', async ({ browserName, page }) => {
@@ -944,10 +940,12 @@ test.describe('color mode transition strategy', () => {
     expect(await page.evaluate(() => ({
       animations: window.__themeTransitionAnimations?.length ?? 0,
       calls: window.__themeTransitionCalls ?? 0,
+      presetAttribute: document.documentElement.getAttribute('data-theme-transition-preset'),
       transitionAttribute: document.documentElement.getAttribute('data-theme-transition'),
     }))).toEqual({
       animations: 20,
       calls: 20,
+      presetAttribute: null,
       transitionAttribute: null,
     })
   })
