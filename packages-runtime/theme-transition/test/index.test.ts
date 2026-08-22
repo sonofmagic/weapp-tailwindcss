@@ -155,6 +155,7 @@ describe('useToggleTheme', () => {
     const { toggleTheme } = useToggleTheme({
       toggle: () => {
         states.push(documentElement.getAttribute('data-theme-transition'))
+        expect(documentElement.getAttribute('data-theme-transition-preset')).toBe('circle')
         expect(style.getPropertyValue('--theme-transition-x')).toBe('100px')
         expect(style.getPropertyValue('--theme-transition-y')).toBe('120px')
         dark = !dark
@@ -168,6 +169,7 @@ describe('useToggleTheme', () => {
 
     expect(states).toEqual(['to-dark'])
     expect(documentElement.getAttribute('data-theme-transition')).toBeNull()
+    expect(documentElement.getAttribute('data-theme-transition-preset')).toBeNull()
     expect(style.getPropertyValue('--theme-transition-x')).toBe('')
     expect(style.removeProperty).toHaveBeenCalledWith('--theme-transition-radius')
 
@@ -177,6 +179,31 @@ describe('useToggleTheme', () => {
       fill: 'forwards',
       pseudoElement: '::view-transition-new(root)',
     })
+  })
+
+  it('uses preset timing unless the caller overrides it', async () => {
+    const { documentLike, animate } = createDocumentMock()
+    const { toggleTheme } = useToggleTheme({
+      document: documentLike,
+      duration: 180,
+      easing: 'linear',
+      isCurrentDark: () => false,
+      preset: 'fade',
+      toggle: vi.fn(),
+      window: windowMock,
+    })
+
+    await toggleTheme({ clientX: 100, clientY: 120 })
+
+    expect(animate).toHaveBeenCalledWith(
+      { opacity: [0, 1] },
+      expect.objectContaining({
+        duration: 180,
+        easing: 'linear',
+        fill: 'forwards',
+        pseudoElement: '::view-transition-new(root)',
+      }),
+    )
   })
 
   it('keeps transition state until the browser view transition finishes', async () => {
@@ -216,6 +243,7 @@ describe('useToggleTheme', () => {
 
     expect(cancel).toHaveBeenCalledOnce()
     expect(documentElement.getAttribute('data-theme-transition')).toBeNull()
+    expect(documentElement.getAttribute('data-theme-transition-preset')).toBeNull()
     expect(style.getPropertyValue('--theme-transition-radius')).toBe('')
   })
 
@@ -244,6 +272,7 @@ describe('useToggleTheme', () => {
       animationCancelError,
     )
     expect(documentElement.getAttribute('data-theme-transition')).toBeNull()
+    expect(documentElement.getAttribute('data-theme-transition-preset')).toBeNull()
     expect(style.getPropertyValue('--theme-transition-x')).toBe('')
     expect(style.getPropertyValue('--theme-transition-y')).toBe('')
     expect(style.getPropertyValue('--theme-transition-radius')).toBe('')
