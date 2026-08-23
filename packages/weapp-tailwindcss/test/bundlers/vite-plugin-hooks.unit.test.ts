@@ -653,7 +653,7 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
 
   it('generates build css in a pre transform before Vite PostCSS and asset finalization', async () => {
     const context = createContext({
-      appType: 'h5',
+      appType: 'native',
       generator: {
         target: 'web',
       },
@@ -674,8 +674,12 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     const sourcePluginIndex = plugins.findIndex(plugin => plugin.name === `${vitePluginName}:source-candidates`)
     const buildPluginIndex = plugins.findIndex(plugin => plugin.name === `${vitePluginName}:generate:build`)
     const finalizerPluginIndex = plugins.findIndex(plugin => plugin.name === 'weapp-tailwindcss:adaptor:css-finalizer')
+    const sourcePlugin = plugins[sourcePluginIndex] as Plugin
     const buildPlugin = plugins[buildPluginIndex] as Plugin
 
+    const applySourceCandidates = sourcePlugin.apply
+    expect(applySourceCandidates).toBeTypeOf('function')
+    expect(typeof applySourceCandidates === 'function' && applySourceCandidates({ build: {} }, { command: 'build', mode: 'production' })).toBe(false)
     expect(buildPlugin).toMatchObject({
       apply: 'build',
       enforce: 'pre',
@@ -717,6 +721,25 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
 
     expect(mocks.generateTailwindV4Css).toHaveBeenCalledTimes(1)
     expect(output.source).not.toContain('weapp-tailwindcss vite-generated-css')
+  })
+
+  it('keeps source candidates enabled for Generic Web production source tracing', async () => {
+    const context = createContext({
+      appType: 'native',
+      cssSourceTrace: true,
+      generator: {
+        target: 'web',
+      },
+      tailwindcssBasedir: '/project',
+    })
+    setCurrentContext(context)
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()!
+    const sourcePlugin = getPlugin(plugins, 'source-candidates')
+
+    const applySourceCandidates = sourcePlugin.apply
+    expect(applySourceCandidates).toBeTypeOf('function')
+    expect(typeof applySourceCandidates === 'function' && applySourceCandidates({ build: {} }, { command: 'build', mode: 'production' })).toBe(true)
   })
 
   it('keeps mini-program build css generation in the final asset pipeline', async () => {

@@ -21,7 +21,7 @@ import { isTailwindV4CssEntry, normalizeCssEntries } from '@/tailwindcss/v4/css-
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
-import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
+import { annotateCssSourceTrace, createCssTokenSourceMap, isCssSourceTraceEnabled } from '../../shared/css-source-trace'
 import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '../../shared/generated-css-marker'
 import { normalizeMiniProgramGeneratorCssSource } from '../../shared/generator-css/output-import-shell'
 import { createHmrTimingRecorder } from '../../shared/hmr-timing'
@@ -57,7 +57,7 @@ import { sameStringList } from './framework-runtime-options'
 import { createFrameworkSourceCandidatesPlugin } from './framework-source-candidates-plugin'
 import { createFrameworkSourceScanSession, syncFrameworkSourceCandidatesForHotUpdate } from './framework-source-scan-session'
 import { createFrameworkTailwindRootCss } from './framework-tailwind-root-css'
-import { createGenericWebProductionBundleHooks } from './generic-web-production-fast-path'
+import { createGenericWebProductionBundleHooks, createGenericWebProductionSourceCandidatesApply } from './generic-web-production-fast-path'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss'); const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir); const generatorPlaceholderCssFile = path.join(weappTailwindcssPackageDir, 'generator-placeholder.css'); const ENV_PLATFORM_KEYS = ['UNI_PLATFORM', 'UNI_UTS_PLATFORM', 'TARO_ENV', 'MPX_CURRENT_TARGET_MODE', 'MPX_CLI_MODE']
@@ -464,7 +464,7 @@ ${tracedCss}`
     tailwindRootCssModuleIds,
     transformEarlyMiniProgramCss,
     viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles,
-  })
+  }, createGenericWebProductionSourceCandidatesApply({ frameworkName: frameworkBranch.frameworkName, getIsWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, requiresSourceCandidateState: isCssSourceTraceEnabled(opts) }))
   const postPlugin = createFrameworkPostPlugin({
     api: {
       registerProcessedCssAsset(entry: {
