@@ -24,6 +24,6 @@
     "@types/react": "~19.1.10",
     "tailwindcss": "catalog:tailwindcss4",
     "typescript": "^5.9.0",
-    "vitest": "^4.1.0"
+    "vitest": "catalog:vitest"
   }
 }

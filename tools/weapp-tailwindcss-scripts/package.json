@@ -22,9 +22,9 @@
     "test:watch-hmr": "node --import tsx src/watch-hmr-regression/index.ts"
   },
   "dependencies": {
-    "@csstools/css-color-parser": "^4.1.10",
-    "@csstools/css-parser-algorithms": "^4.0.0",
-    "@csstools/css-tokenizer": "^4.0.0",
+    "@csstools/css-color-parser": "catalog:csstools",
+    "@csstools/css-parser-algorithms": "catalog:csstools",
+    "@csstools/css-tokenizer": "catalog:csstools",
     "@weapp-core/escape": "~8.0.0",
     "colorette": "^2.0.20",
     "del": "^8.0.1",

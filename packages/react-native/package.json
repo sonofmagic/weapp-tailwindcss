@@ -106,6 +106,6 @@
     "@babel/core": "catalog:babel8",
     "@types/react": "catalog:react19",
     "react": "catalog:react19",
-    "vitest": "^4.1.0"
+    "vitest": "catalog:vitest"
   }
 }
