@@ -283,6 +283,6 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^6.0.7
   weappVite:
-    weapp-vite: ^6.21.0
+    weapp-vite: ^6.22.0
   wrangler:
     wrangler: ^4.125.0
