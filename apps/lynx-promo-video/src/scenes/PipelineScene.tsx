@@ -1,3 +1,4 @@
+import type { PromoCopy } from '../config'
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion'
 import { eyebrowStyle, SceneShell, titleStyle } from '../components/SceneShell'
 import { COLORS } from '../config'
@@ -10,13 +11,13 @@ const pipeline = [
   { label: 'Lynx bundle', detail: 'native runtime' },
 ] as const
 
-export function PipelineScene() {
+export function PipelineScene({ copy }: { copy: PromoCopy['pipeline'] }) {
   const frame = useCurrentFrame()
   const { fps } = useVideoConfig()
   return (
     <SceneShell>
-      <div style={eyebrowStyle}>构建阶段完成转换</div>
-      <h2 style={{ ...titleStyle, marginTop: 20 }}>CSS 留在构建图里</h2>
+      <div style={eyebrowStyle}>{copy.eyebrow}</div>
+      <h2 style={{ ...titleStyle, marginTop: 20 }}>{copy.title}</h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(9, auto)', alignItems: 'center', justifyContent: 'space-between', marginTop: 120 }}>
         {pipeline.map((item, index) => {
           const progress = spring({ frame: frame - 24 - index * 24, fps, config: { damping: 18, stiffness: 110 } })
@@ -34,7 +35,7 @@ export function PipelineScene() {
         })}
       </div>
       <div style={{ marginTop: 76, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: `1px solid ${COLORS.border}`, paddingTop: 28 }}>
-        <div style={{ color: COLORS.muted, fontSize: 21 }}>Theme 变量在构建期静态化，应用动态变量保持不变。</div>
+        <div style={{ color: COLORS.muted, fontSize: 21 }}>{copy.note}</div>
         <div className="mono" style={{ color: COLORS.green, fontSize: 19 }}>main.lynx.bundle</div>
       </div>
     </SceneShell>

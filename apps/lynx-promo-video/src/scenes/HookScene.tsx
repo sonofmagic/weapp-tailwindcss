@@ -1,10 +1,11 @@
+import type { PromoCopy } from '../config'
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion'
 import { BrandMarks } from '../components/BrandMarks'
 import { DeviceCapture } from '../components/DeviceCapture'
 import { SceneShell } from '../components/SceneShell'
 import { COLORS } from '../config'
 
-export function HookScene() {
+export function HookScene({ copy }: { copy: PromoCopy['hook'] }) {
   const frame = useCurrentFrame()
   const { fps } = useVideoConfig()
   const deviceProgress = spring({ frame: frame - 12, fps, config: { damping: 18, stiffness: 105 } })
@@ -14,9 +15,9 @@ export function HookScene() {
       <div>
         <BrandMarks />
         <h1 style={{ margin: '54px 0 0', maxWidth: 940, fontSize: 86, lineHeight: 1.08, fontWeight: 730, letterSpacing: 0 }}>
-          Tailwind CSS 4
+          {copy.title[0]}
           <br />
-          <span style={{ color: COLORS.green }}>进入 Lynx 原生应用</span>
+          <span style={{ color: COLORS.green }}>{copy.title[1]}</span>
         </h1>
         <div className="mono" style={{ marginTop: 38, color: COLORS.muted, fontSize: 23 }}>
           className=

@@ -1,10 +1,11 @@
+import type { PromoCopy } from '../config'
 import { interpolate, useCurrentFrame } from 'remotion'
 import { CodeLine, CodeWindow, functionName, keyword, stringValue } from '../components/CodeWindow'
 import { eyebrowStyle, SceneShell, titleStyle } from '../components/SceneShell'
 import { typedText, TypingCursor } from '../components/Typing'
 import { COLORS } from '../config'
 
-export function ConfigScene() {
+export function ConfigScene({ copy }: { copy: PromoCopy['config'] }) {
   const frame = useCurrentFrame()
   const reveal = Math.floor(interpolate(frame, [18, 135], [1, 7], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }))
   const activeLine = 'pluginLynxTailwindcss()'
@@ -45,8 +46,8 @@ export function ConfigScene() {
   ]
   return (
     <SceneShell>
-      <div style={eyebrowStyle}>一个 Rspeedy 插件</div>
-      <h2 style={{ ...titleStyle, marginTop: 20, fontSize: 64 }}>接入只需要一处配置</h2>
+      <div style={eyebrowStyle}>{copy.eyebrow}</div>
+      <h2 style={{ ...titleStyle, marginTop: 20, fontSize: 64 }}>{copy.title}</h2>
       <div style={{ display: 'grid', gridTemplateColumns: '1.35fr 0.65fr', gap: 48, marginTop: 54, alignItems: 'stretch' }}>
         <CodeWindow title="lynx.config.ts">
           {lines.slice(0, reveal).map((line, index) => (
@@ -71,7 +72,7 @@ export function ConfigScene() {
             <br />
             Tailwind CSS 4
           </div>
-          <div style={{ borderLeft: `3px solid ${COLORS.blue}`, paddingLeft: 20, color: COLORS.muted, fontSize: 21, lineHeight: 1.55 }}>插件进入既有 Rspack 生命周期，不改变组件写法。</div>
+          <div style={{ borderLeft: `3px solid ${COLORS.blue}`, paddingLeft: 20, color: COLORS.muted, fontSize: 21, lineHeight: 1.55 }}>{copy.note}</div>
         </div>
       </div>
     </SceneShell>

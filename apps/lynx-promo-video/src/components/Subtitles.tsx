@@ -1,9 +1,10 @@
+import type { PromoLocale } from '../config'
 import { interpolate, useCurrentFrame } from 'remotion'
 import { COLORS, sceneAtFrame } from '../config'
 
-export function Subtitles() {
+export function Subtitles({ locale }: { locale: PromoLocale }) {
   const frame = useCurrentFrame()
-  const scene = sceneAtFrame(frame)
+  const scene = sceneAtFrame(frame, locale)
   if (!scene) {
     return null
   }

@@ -3,15 +3,15 @@ import { Img, staticFile } from 'remotion'
 import { BrandMarks } from '../components/BrandMarks'
 import { COLORS } from '../config'
 
-export function LynxPromoCover({ packageName }: LynxPromoProps) {
+export function LynxPromoCover({ packageName, copy }: LynxPromoProps) {
   return (
     <div style={{ width: '100%', height: '100%', padding: '96px 112px', display: 'grid', gridTemplateColumns: '1.18fr 0.82fr', alignItems: 'center', gap: 80, overflow: 'hidden', background: COLORS.background, color: COLORS.text }}>
       <div>
         <BrandMarks size={72} />
         <h1 style={{ margin: '54px 0 0', fontSize: 88, lineHeight: 1.08, fontWeight: 740, letterSpacing: 0 }}>
-          Tailwind CSS 4
+          {copy.hook.title[0]}
           <br />
-          <span style={{ color: COLORS.green }}>进入 Lynx 原生应用</span>
+          <span style={{ color: COLORS.green }}>{copy.hook.title[1]}</span>
         </h1>
         <div className="mono" style={{ marginTop: 44, color: COLORS.muted, fontSize: 24 }}>{packageName}</div>
       </div>

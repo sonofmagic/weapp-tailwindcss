@@ -52,7 +52,8 @@ async function main() {
   const files = await sourceFiles(path.join(appRoot, 'src'))
   const contents = await Promise.all([
     ...files.map(file => fs.readFile(file, 'utf8')),
-    fs.readFile(path.join(appRoot, 'lynx-promo-zh.srt'), 'utf8'),
+    fs.readFile(path.join(appRoot, 'lynx-promo-zh.srt'), 'utf8').catch(() => ''),
+    fs.readFile(path.join(appRoot, 'lynx-promo-en.srt'), 'utf8').catch(() => ''),
   ])
   const glyphs = [...new Set(contents.join(''))]
     .sort((a, b) => (a.codePointAt(0) ?? 0) - (b.codePointAt(0) ?? 0))

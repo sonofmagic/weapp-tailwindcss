@@ -1,9 +1,9 @@
-import type { EvidenceSummary } from '../src/config'
+import type { EvidenceSummary, PromoLocale } from '../src/config'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import QRCode from 'qrcode'
-import { DOCS_URL, scenes } from '../src/config'
+import { getPromoCopy, scenes, VIDEO } from '../src/config'
 import { appRoot, publicDir, repoRoot } from './paths'
 
 interface CompatibilityBaseline {
@@ -13,12 +13,28 @@ interface CompatibilityBaseline {
 }
 
 function srtTimestamp(frames: number) {
-  const milliseconds = Math.round(frames / 30 * 1000)
+  const milliseconds = Math.round(frames / VIDEO.fps * 1000)
   const hours = Math.floor(milliseconds / 3_600_000)
   const minutes = Math.floor(milliseconds % 3_600_000 / 60_000)
   const seconds = Math.floor(milliseconds % 60_000 / 1000)
   const millis = milliseconds % 1000
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')},${String(millis).padStart(3, '0')}`
+}
+
+function vttTimestamp(frames: number) {
+  return srtTimestamp(frames).replace(',', '.')
+}
+
+function subtitleFile(locale: PromoLocale, format: 'srt' | 'vtt') {
+  const copy = getPromoCopy(locale)
+  const entries = scenes.map((scene, index) => {
+    const start = scene.from + 8
+    const end = scene.from + scene.duration - 8
+    const timestamp = format === 'srt' ? `${srtTimestamp(start)} --> ${srtTimestamp(end)}` : `${vttTimestamp(start)} --> ${vttTimestamp(end)}`
+    const prefix = format === 'srt' ? `${index + 1}\n` : ''
+    return `${prefix}${timestamp}\n${copy.narration[scene.id]}\n`
+  }).join('\n')
+  return format === 'vtt' ? `WEBVTT\n\n${entries}` : `${entries}`
 }
 
 async function latestCompatibilityScreenshot() {
@@ -62,7 +78,8 @@ async function main() {
     fs.copyFile(path.join(repoRoot, 'assets', 'logo-square.svg'), path.join(brandDir, 'weapp-tailwindcss.svg')),
     fs.copyFile(path.join(repoRoot, 'website', 'src', 'assets', 'framework-logos', 'lynx.svg'), path.join(brandDir, 'lynx.svg')),
     fs.writeFile(path.join(generatedDir, 'evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`),
-    QRCode.toFile(path.join(brandDir, 'docs-qr.png'), DOCS_URL, { width: 552, margin: 2, color: { dark: '#0b0f10', light: '#f2f7f5' } }),
+    QRCode.toFile(path.join(brandDir, 'docs-qr.png'), getPromoCopy('zh').docsUrl, { width: 552, margin: 2, color: { dark: '#0b0f10', light: '#f2f7f5' } }),
+    QRCode.toFile(path.join(brandDir, 'docs-qr-en.png'), getPromoCopy('en').docsUrl, { width: 552, margin: 2, color: { dark: '#0b0f10', light: '#f2f7f5' } }),
   ])
 
   const screenshot = await latestCompatibilityScreenshot()
@@ -70,12 +87,10 @@ async function main() {
     await fs.copyFile(screenshot, path.join(captureDir, 'compatibility-lab.png'))
   }
 
-  const srt = scenes.map((scene, index) => {
-    const start = scene.from + 8
-    const end = scene.from + scene.duration - 8
-    return `${index + 1}\n${srtTimestamp(start)} --> ${srtTimestamp(end)}\n${scene.subtitle}\n`
-  }).join('\n')
-  await fs.writeFile(path.join(appRoot, 'lynx-promo-zh.srt'), srt)
+  await Promise.all((['zh', 'en'] as const).flatMap(locale => [
+    fs.writeFile(path.join(appRoot, `lynx-promo-${locale}.srt`), subtitleFile(locale, 'srt')),
+    fs.writeFile(path.join(appRoot, `lynx-promo-${locale}.vtt`), subtitleFile(locale, 'vtt')),
+  ]))
   process.stdout.write(`${JSON.stringify({ evidence, compatibilityScreenshot: screenshot ?? null }, null, 2)}\n`)
 }
 

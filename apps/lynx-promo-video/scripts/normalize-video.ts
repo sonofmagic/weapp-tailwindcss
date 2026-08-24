@@ -1,10 +1,15 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import process from 'node:process'
 import { execa } from 'execa'
 import { outputDir } from './paths'
 
-const input = path.join(outputDir, 'lynx-promo-zh-1080p.mp4')
-const temporary = path.join(outputDir, 'lynx-promo-zh-1080p.normalized.mp4')
+const locale = process.argv[2] ?? 'zh'
+if (locale !== 'zh' && locale !== 'en') {
+  throw new Error(`Unsupported locale: ${locale}`)
+}
+const input = path.join(outputDir, `lynx-promo-${locale}-1080p.mp4`)
+const temporary = path.join(outputDir, `lynx-promo-${locale}-1080p.normalized.mp4`)
 
 await execa('ffmpeg', [
   '-y',

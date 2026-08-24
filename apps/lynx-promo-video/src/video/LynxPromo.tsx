@@ -11,28 +11,27 @@ import { HookScene } from '../scenes/HookScene'
 import { NativeScene } from '../scenes/NativeScene'
 import { PipelineScene } from '../scenes/PipelineScene'
 
-const sceneComponents = {
-  hook: HookScene,
-  config: ConfigScene,
-  classname: ClassNameScene,
-  pipeline: PipelineScene,
-  native: NativeScene,
-} as const
-
 export function LynxPromo(props: LynxPromoProps) {
+  const { copy, locale } = props
   return (
     <AbsoluteFill style={{ background: '#0b0f10' }}>
       <Audio src={staticFile('audio/ambient.wav')} volume={0.045} />
       {scenes.map((scene, index) => {
-        const Component = sceneComponents[scene.id as keyof typeof sceneComponents]
+        const narrationFile = staticFile(`audio/narration/${locale}/${String(index + 1).padStart(2, '0')}-${scene.id}.mp3`)
         return (
           <Sequence key={scene.id} from={scene.from} durationInFrames={scene.duration}>
-            {Component ? <Component /> : scene.id === 'evidence' ? <EvidenceScene evidence={props.evidence} /> : <CtaScene packageName={props.packageName} docsUrl={props.docsUrl} />}
-            <Audio src={staticFile(`audio/narration/${String(index + 1).padStart(2, '0')}-${scene.id}.mp3`)} volume={1} />
+            {scene.id === 'hook' && <HookScene copy={copy.hook} />}
+            {scene.id === 'config' && <ConfigScene copy={copy.config} />}
+            {scene.id === 'classname' && <ClassNameScene copy={copy.classname} />}
+            {scene.id === 'pipeline' && <PipelineScene copy={copy.pipeline} />}
+            {scene.id === 'native' && <NativeScene copy={copy.native} />}
+            {scene.id === 'evidence' && <EvidenceScene evidence={props.evidence} copy={copy.evidence} />}
+            {scene.id === 'cta' && <CtaScene packageName={props.packageName} docsUrl={props.docsUrl} copy={copy.cta} qrAsset={locale === 'en' ? 'brand/docs-qr-en.png' : 'brand/docs-qr.png'} />}
+            <Audio src={narrationFile} volume={1} />
           </Sequence>
         )
       })}
-      <Subtitles />
+      <Subtitles locale={locale} />
     </AbsoluteFill>
   )
 }

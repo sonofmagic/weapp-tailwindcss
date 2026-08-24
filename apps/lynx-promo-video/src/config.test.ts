@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { sceneAtFrame, scenes, VIDEO } from './config'
+import { getPromoCopy, promoCopies, sceneAtFrame, scenes, VIDEO } from './config'
 
 describe('promo timeline', () => {
   it('fills the complete composition without gaps or overlap', () => {
@@ -16,5 +16,19 @@ describe('promo timeline', () => {
     expect(sceneAtFrame(149)?.id).toBe('hook')
     expect(sceneAtFrame(150)?.id).toBe('config')
     expect(sceneAtFrame(1799)?.id).toBe('cta')
+  })
+
+  it('keeps both locale copy sets complete and aligned', () => {
+    for (const locale of ['zh', 'en'] as const) {
+      expect(Object.keys(promoCopies[locale].narration)).toHaveLength(scenes.length)
+      expect(promoCopies[locale].docsUrl).toContain('tw.icebreaker.top')
+    }
+    expect(sceneAtFrame(150, 'en')?.subtitle).toBe(getPromoCopy('en').narration.config)
+    expect(sceneAtFrame(150, 'zh')?.subtitle).toBe(getPromoCopy('zh').narration.config)
+  })
+
+  it('keeps English natural-language copy free of Chinese characters', () => {
+    const english = JSON.stringify(promoCopies.en)
+    expect(english).not.toMatch(/[\u3400-\u9FFF]/u)
   })
 })
