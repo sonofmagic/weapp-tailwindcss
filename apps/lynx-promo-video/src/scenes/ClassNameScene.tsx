@@ -2,6 +2,7 @@ import { interpolate, useCurrentFrame } from 'remotion'
 import { CodeLine, CodeWindow, stringValue } from '../components/CodeWindow'
 import { DeviceCapture } from '../components/DeviceCapture'
 import { eyebrowStyle, SceneShell } from '../components/SceneShell'
+import { typedText, TypingCursor } from '../components/Typing'
 import { COLORS } from '../config'
 
 const classSteps = [
@@ -13,6 +14,7 @@ const classSteps = [
 export function ClassNameScene() {
   const frame = useCurrentFrame()
   const step = Math.min(2, Math.floor(frame / 88))
+  const typedClassName = typedText(classSteps[step], frame, step * 88 + 12, 34)
   const deviceOpacity = interpolate(frame, [22, 52], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
   return (
     <SceneShell style={{ display: 'grid', gridTemplateColumns: '1.25fr 0.75fr', gap: 78, alignItems: 'center' }}>
@@ -23,7 +25,9 @@ export function ClassNameScene() {
           <CodeLine>{'<view'}</CodeLine>
           <CodeLine active indent={1}>
             className=
-            <span style={stringValue}>{`"${classSteps[step]}"`}</span>
+            <span style={stringValue}>{`"${typedClassName}`}</span>
+            <TypingCursor frame={frame} />
+            {typedClassName.length === classSteps[step].length ? <span style={stringValue}>"</span> : null}
           </CodeLine>
           <CodeLine indent={1}>{'>'}</CodeLine>
           <CodeLine indent={1}>{'<text className="text-[#75dfa6]">Bundle ready</text>'}</CodeLine>

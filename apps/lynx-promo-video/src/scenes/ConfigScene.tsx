@@ -1,11 +1,14 @@
 import { interpolate, useCurrentFrame } from 'remotion'
 import { CodeLine, CodeWindow, functionName, keyword, stringValue } from '../components/CodeWindow'
 import { eyebrowStyle, SceneShell, titleStyle } from '../components/SceneShell'
+import { typedText, TypingCursor } from '../components/Typing'
 import { COLORS } from '../config'
 
 export function ConfigScene() {
   const frame = useCurrentFrame()
   const reveal = Math.floor(interpolate(frame, [18, 135], [1, 7], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }))
+  const activeLine = 'pluginLynxTailwindcss()'
+  const activeText = typedText(activeLine, frame, 72, 42)
   const lines = [
     <>
       <span style={keyword}>import</span>
@@ -47,7 +50,17 @@ export function ConfigScene() {
       <div style={{ display: 'grid', gridTemplateColumns: '1.35fr 0.65fr', gap: 48, marginTop: 54, alignItems: 'stretch' }}>
         <CodeWindow title="lynx.config.ts">
           {lines.slice(0, reveal).map((line, index) => (
-            <CodeLine key={index} active={index === 5} indent={index === 5 ? 1 : 0}>{line}</CodeLine>
+            <CodeLine key={index} active={index === 5} indent={index === 5 ? 1 : 0}>
+              {index === 5 && (
+                <>
+                  plugins: [
+                  <span style={functionName}>{activeText}</span>
+                  {activeText.length === activeLine.length && ']'}
+                  <TypingCursor frame={frame} />
+                </>
+              )}
+              {index !== 5 && line}
+            </CodeLine>
           ))}
         </CodeWindow>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '10px 0' }}>

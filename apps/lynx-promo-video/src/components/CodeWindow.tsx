@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { COLORS } from '../config'
 
-export function CodeWindow({ title, children, style }: { title: string, children: ReactNode, style?: React.CSSProperties }) {
+export function CodeWindow({ title, children, style }: { title: string, children: ReactNode, style?: CSSProperties }) {
   return (
     <div
       style={{
@@ -16,7 +16,7 @@ export function CodeWindow({ title, children, style }: { title: string, children
       <div style={{ display: 'flex', alignItems: 'center', height: 54, padding: '0 22px', borderBottom: `1px solid ${COLORS.border}`, color: COLORS.muted, fontFamily: 'JetBrains Mono Variable, monospace', fontSize: 17 }}>
         {title}
       </div>
-      <div className="mono" style={{ padding: '26px 28px', fontSize: 21, lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>
+      <div className="mono" style={{ minHeight: 280, padding: '26px 28px', fontSize: 21, lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>
         {children}
       </div>
     </div>
