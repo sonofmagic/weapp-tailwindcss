@@ -96,6 +96,16 @@ const label = 'hi'
     expect(jsHandler).toHaveBeenCalled()
   })
 
+  it('ignores empty external WXS script blocks', () => {
+    const jsHandler: JsHandler = vi.fn(source => ({ code: source }))
+    const code = `<script module="touch" lang="wxs" src="../../libs/use/useTouch/touch.wxs"></script>
+<script module="wxs" lang="wxs" src="./WX.wxs"></script>`
+
+    const result = transformUVue(code, 'external-wxs.uvue', jsHandler, new Set())
+    expect(result?.code).toBe(code)
+    expect(jsHandler).not.toHaveBeenCalled()
+  })
+
   it('transforms object literal class bindings with whitespace', () => {
     const { jsHandler } = getCompilerContext()
     const runtimeSet = new Set<string>([

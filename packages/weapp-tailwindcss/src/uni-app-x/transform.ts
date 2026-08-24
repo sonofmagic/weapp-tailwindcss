@@ -346,7 +346,7 @@ export function transformUVue(
       })
     }
 
-    if (descriptor.script) {
+    if (descriptor.script && descriptor.script.start < descriptor.script.end) {
       localStyleCollector?.collectRuntimeClasses(descriptor.script.content)
       const { code } = jsHandler(descriptor.script.content, runtimeSet ?? new Set(), defaultCreateJsHandlerOptions)
       ms.update(
@@ -355,7 +355,7 @@ export function transformUVue(
         localStyleCollector ? localStyleCollector.rewriteTransformedCode(code) : code,
       )
     }
-    if (descriptor.scriptSetup) {
+    if (descriptor.scriptSetup && descriptor.scriptSetup.start < descriptor.scriptSetup.end) {
       localStyleCollector?.collectRuntimeClasses(descriptor.scriptSetup.content)
       const { code } = jsHandler(descriptor.scriptSetup.content, runtimeSet ?? new Set(), defaultCreateJsHandlerOptions)
       ms.update(
