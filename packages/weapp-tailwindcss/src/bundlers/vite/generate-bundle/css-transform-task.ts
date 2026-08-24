@@ -41,6 +41,7 @@ export interface ExecuteViteCssTransformTaskOptions {
   outputFile: string
   previousCss?: string | undefined
   rawSource: string
+  rawSourceAlreadyGenerated?: boolean | undefined
   removeRootCoveredCssFromScopedAsset: (css: string) => string
   runtime: Set<string>
   runtimeState: TailwindV4GenerationCoreInput['runtimeState']
@@ -53,6 +54,7 @@ export interface ExecuteViteCssTransformTaskOptions {
 
 function resolveGeneratorUserRawSource(options: ExecuteViteCssTransformTaskOptions) {
   const bundleUserRawSource = options.vitePipelineCssAsset
+    && options.rawSourceAlreadyGenerated !== true
     && !hasBundlerGeneratedCssMarker(options.rawSource)
     && normalizeCssSourceForCompare(options.rawSource)
     !== normalizeCssSourceForCompare(options.generatorRawSource)

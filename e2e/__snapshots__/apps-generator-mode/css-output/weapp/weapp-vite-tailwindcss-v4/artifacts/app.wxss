@@ -493,8 +493,7 @@ wx-button {
     color: var(--color-slate-100);
   }
 }
-/* Main style shell. Tailwind v4 source directives live in tailwind.css. */
-/* Tailwind v4 root entry intentionally uses plain CSS. */
+/* Main style shell. Tailwind v4 source directives live in tailwind.css. */ /* Tailwind v4 root entry intentionally uses plain CSS. */
 wx-button {
   background: #444;
 }
@@ -525,5 +524,4 @@ abc {
     transform: scale(0.96);
   }
 }
-/* Main style shell. Tailwind v4 source directives live in tailwind.css. */
-/* Tailwind v4 root entry intentionally uses plain CSS. */
+/* Main style shell. Tailwind v4 source directives live in tailwind.css. */ /* Tailwind v4 root entry intentionally uses plain CSS. */

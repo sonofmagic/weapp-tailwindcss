@@ -11,7 +11,7 @@ import { hasSelfAcceptingNonStyleHotModule, mergeHotModulesByIdentity, resolveHo
 import { isSourceCandidateRequest } from '../source-candidates'
 import { cleanUrl, isCSSRequest } from '../utils'
 
-export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
+export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plugin['apply']): Plugin {
   const hasDifferentHotModules = (left: ModuleNode[], right: ModuleNode[]) => left.length !== right.length
     || left.some((mod, index) => mod !== right[index])
   const hasTemplateHotSourceModule = (modules: Array<{ id?: string | null, url?: string | null }>) => modules.some((mod) => {
@@ -46,6 +46,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any): Plugin {
   }
   return {
     name: `${vitePluginName}:source-candidates`,
+    apply,
     enforce: 'pre',
     async load(id) {
       if (

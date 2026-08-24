@@ -1,7 +1,7 @@
 import type { OutputAsset } from 'rollup'
 import { describe, expect, it, vi } from 'vitest'
 import { resolveViteCssCompositionPlan } from '@/bundlers/vite/generate-bundle/css-composition-plan'
-import { resolveViteCssSourcePlan } from '@/bundlers/vite/generate-bundle/css-source-plan'
+import { isAnonymousConfiguredSubpackageCssOutputReplay, resolveViteCssSourcePlan } from '@/bundlers/vite/generate-bundle/css-source-plan'
 import { resolveRememberedCssSourcePlan } from '@/bundlers/vite/generate-bundle/remembered-css-plan'
 
 function createAsset(fileName: string, source = ''): OutputAsset {
@@ -213,6 +213,44 @@ describe('vite css source plan', () => {
       sourceFile,
     }])
     expect(plan.usedConfiguredSourceFiles).toEqual([sourceFile])
+  })
+
+  it('identifies anonymous configured output replays without classifying source-owned assets', () => {
+    const sourceFile = '/repo/src/sub-independent/pages/index.css'
+    const plan = {
+      forceNonMainChunk: false,
+      hasUsableTailwindSource: true,
+      outputFile: 'sub-independent/pages/index.wxss',
+      resolution: 'configured' as const,
+      resolvedFromTemporarySource: false,
+      sources: [{
+        outputFile: 'sub-independent/pages/index.wxss',
+        rawSource: '@import "tailwindcss";',
+        sourceFile,
+      }],
+      usedConfiguredSourceFiles: [sourceFile],
+    }
+    const options = {
+      assetSourceFile: 'sub-independent/pages/index.wxss',
+      configuredSourceFileKeys: new Set([sourceFile]),
+      file: 'sub-independent/pages/index.wxss',
+      isSubpackageOutput: true,
+      normalizeConfiguredSourceFile: (file: string) => file,
+      originalFileNames: [] as string[],
+      plan,
+    }
+
+    expect(isAnonymousConfiguredSubpackageCssOutputReplay(options)).toBe(true)
+    expect(isAnonymousConfiguredSubpackageCssOutputReplay({
+      ...options,
+      assetSourceFile: sourceFile,
+      originalFileNames: [sourceFile],
+    })).toBe(false)
+    expect(isAnonymousConfiguredSubpackageCssOutputReplay({
+      ...options,
+      file: 'app.wxss',
+      isSubpackageOutput: false,
+    })).toBe(false)
   })
 
   it('resolves a source style from the compilation snapshot', async () => {
