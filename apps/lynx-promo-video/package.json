@@ -1,0 +1,41 @@
+{
+  "name": "@weapp-tailwindcss/lynx-promo-video",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "assets": "tsx scripts/prepare-assets.ts && tsx scripts/generate-ambient.ts",
+    "capture": "tsx scripts/capture-native.ts all",
+    "capture:android": "tsx scripts/capture-native.ts android",
+    "capture:ios": "tsx scripts/capture-native.ts ios",
+    "voice": "tsx scripts/generate-narration.ts",
+    "studio": "pnpm assets && remotion studio src/index.ts",
+    "render": "pnpm assets && remotion render src/index.ts LynxPromo out/lynx-promo-zh-1080p.mp4 --codec=h264 --pixel-format=yuv420p --audio-codec=aac --audio-bitrate=192k && tsx scripts/normalize-video.ts",
+    "render:cover": "pnpm assets && remotion still src/index.ts LynxPromoCover out/lynx-promo-cover-1920x1080.png",
+    "render:frames": "pnpm assets && tsx scripts/render-keyframes.ts",
+    "fonts": "tsx scripts/prepare-fonts.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "verify": "pnpm test && pnpm typecheck && tsx scripts/verify-media.ts"
+  },
+  "dependencies": {
+    "@fontsource-variable/jetbrains-mono": "5.2.8",
+    "@fontsource-variable/noto-sans-sc": "5.2.8",
+    "@remotion/media": "4.0.516",
+    "qrcode": "1.5.4",
+    "react": "catalog:react19",
+    "react-dom": "catalog:react19",
+    "remotion": "4.0.516"
+  },
+  "devDependencies": {
+    "@remotion/cli": "4.0.516",
+    "@types/node": "catalog:typesNode2410",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "catalog:react19",
+    "@types/react-dom": "catalog:react19",
+    "execa": "^9.6.1",
+    "tsx": "catalog:tsx",
+    "typescript": "^5.9.0",
+    "vitest": "catalog:vitest"
+  }
+}

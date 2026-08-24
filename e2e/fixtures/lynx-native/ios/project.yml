@@ -15,3 +15,10 @@ targets:
         CODE_SIGNING_ALLOWED: NO
         CLANG_ENABLE_MODULES: YES
     dependencies: []
+schemes:
+  LynxCompatibilityHost:
+    build:
+      targets:
+        LynxCompatibilityHost: all
+    run:
+      config: Debug
