@@ -142,20 +142,4 @@ describe('vite css transform task', () => {
       userRawSource: '.layer {}\nmini:user:.user {}',
     }))
   })
-
-  it('does not restore a prior generated bundle result as user css', async () => {
-    const generateCss = vi.fn(async () => undefined)
-    await executeViteCssTransformTask(createOptions({
-      generateCss,
-      generatorRawSource: '@import "tailwindcss";',
-      generatorUserLayerRawSource: '.layer {}',
-      rawSource: '.already-generated {}',
-      rawSourceAlreadyGenerated: true,
-      vitePipelineCssAsset: true,
-    }))
-
-    expect(generateCss).toHaveBeenCalledWith(expect.objectContaining({
-      userRawSource: '.layer {}',
-    }))
-  })
 })

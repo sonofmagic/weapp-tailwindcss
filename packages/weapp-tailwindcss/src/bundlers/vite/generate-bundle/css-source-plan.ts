@@ -32,24 +32,6 @@ export interface ViteCssSourcePlan extends RememberedCssSourcePlan {
     | 'unresolved'
 }
 
-export function isAnonymousConfiguredSubpackageCssOutputReplay(options: {
-  assetSourceFile: string
-  configuredSourceFileKeys: ReadonlySet<string>
-  file: string
-  isSubpackageOutput: boolean
-  normalizeConfiguredSourceFile: (file: string) => string
-  originalFileNames?: readonly string[] | undefined
-  plan: ViteCssSourcePlan
-}) {
-  return options.isSubpackageOutput
-    && (options.originalFileNames?.length ?? 0) === 0
-    && normalizeOutputPathKey(options.assetSourceFile) === normalizeOutputPathKey(options.file)
-    && options.plan.hasUsableTailwindSource
-    && options.plan.sources.some(source =>
-      options.configuredSourceFileKeys.has(options.normalizeConfiguredSourceFile(source.sourceFile)),
-    )
-}
-
 function hasTailwindPluginDirective(source: string) {
   return /@plugin\b/.test(source)
 }

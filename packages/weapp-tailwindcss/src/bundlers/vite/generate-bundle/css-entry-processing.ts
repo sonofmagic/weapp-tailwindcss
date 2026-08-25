@@ -1,4 +1,3 @@
-import { isAnonymousConfiguredSubpackageCssOutputReplay } from './css-source-plan'
 import { scheduleViteCssTransform } from './transform-scheduling'
 
 export async function processViteCssBundleEntry(options: any) {
@@ -194,11 +193,8 @@ export async function processViteCssBundleEntry(options: any) {
     debug('css skip raw source style asset: %s -> %s', file, outputFile)
     return
   }
-  const viteProcessedCssRecord = getViteProcessedCssAssetResult?.(file)
-  const hasViteProcessedCssRecord = viteProcessedCssRecord != null
-  const hasViteProcessedCssAssetMarker = isViteProcessedCssAsset?.(originalSource, file) === true
-  let rawSourceAlreadyGenerated = hasViteProcessedCssAssetMarker
-  const viteProcessedCssAsset = rawSourceAlreadyGenerated || hasViteProcessedCssRecord
+  const hasViteProcessedCssRecord = getViteProcessedCssAssetResult?.(file) != null
+  const viteProcessedCssAsset = isViteProcessedCssAsset?.(originalSource, file) === true || hasViteProcessedCssRecord
   const cssAssetIdentity = resolveCssAssetIdentity?.(originalSource, file) ?? {
     kind: viteProcessedCssAsset ? 'bundler-generated' : 'user',
   }
@@ -273,19 +269,6 @@ export async function processViteCssBundleEntry(options: any) {
     sourceRoot: opts.tailwindcssBasedir,
     temporaryOutput: isTemporaryCssAssetFile(outputFile),
   })
-  rawSourceAlreadyGenerated = rawSourceAlreadyGenerated || (
-    opts.appType === 'weapp-vite'
-    && isAnonymousConfiguredSubpackageCssOutputReplay({
-      assetSourceFile,
-      configuredSourceFileKeys: configuredTailwindV4CssSourceFileKeysForScope,
-      file,
-      isSubpackageOutput: currentSubpackageRoots != null
-        && isSubpackageOutputFile(file, currentSubpackageRoots),
-      normalizeConfiguredSourceFile: normalizeConfiguredTailwindV4CssEntryFileKey,
-      originalFileNames: originalSource.originalFileNames,
-      plan: cssSourcePlan,
-    })
-  )
   outputFile = cssSourcePlan.outputFile
   activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
   let outputCssHandlerOptions = getCssHandlerOptions(outputFile)
@@ -469,7 +452,6 @@ export async function processViteCssBundleEntry(options: any) {
     outputFile,
     processViteCssCacheTask,
     rawSource,
-    rawSourceAlreadyGenerated,
     recordCssAssetResult,
     recordViteProcessedCssAssetResult,
     rememberedCssRuntimeSignature,
