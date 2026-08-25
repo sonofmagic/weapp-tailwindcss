@@ -46,14 +46,15 @@ function createAlias(fileId: string, utility: string, index: number) {
   return `wtu-${createStableHash(`${fileId}:${utility}`)}-${index.toString(36)}`
 }
 
-function serializeApplyUtility(utility: string) {
+function serializeApplyUtility(utility: string, options: { web?: boolean } = {}) {
+  const importantSuffix = options.web ? '!' : '#{\'!\'}'
   if (utility.startsWith('!') && !utility.startsWith('\\!')) {
-    return `${utility.slice(1)}#{'!'}`
+    return `${utility.slice(1)}${importantSuffix}`
   }
   if (!utility.endsWith('!') || utility.endsWith('\\!')) {
     return utility
   }
-  return `${utility.slice(0, -1)}#{'!'}`
+  return `${utility.slice(0, -1)}${importantSuffix}`
 }
 
 function isRuntimeCandidate(candidate: string, runtimeSet?: Set<string>) {
@@ -302,7 +303,7 @@ export class UniAppXComponentLocalStyleCollector {
         ? `${localSelector}, :deep(.${alias})`
         : localSelector
       lines.push(`${selector} {`)
-      lines.push(`  @apply ${serializeApplyUtility(utility)};`)
+      lines.push(`  @apply ${serializeApplyUtility(utility, options)};`)
       lines.push('}')
     }
     return `${lines.join('\n')}\n`
