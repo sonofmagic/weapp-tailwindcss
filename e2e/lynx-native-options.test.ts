@@ -1,8 +1,13 @@
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { parseNativeRunArgs } from './lynx/native-options'
+import { iosPodInstallArguments, parseNativeRunArgs } from './lynx/native-options'
 
 describe('native Lynx runner options', () => {
+  it('avoids refreshing the full CocoaPods Specs CDN by default', () => {
+    expect(iosPodInstallArguments(false)).toEqual(['install'])
+    expect(iosPodInstallArguments(true)).toEqual(['install', '--repo-update'])
+  })
+
   it('preserves the compatibility-report defaults', () => {
     expect(parseNativeRunArgs(['android'], '/workspace')).toEqual({
       platform: 'android',

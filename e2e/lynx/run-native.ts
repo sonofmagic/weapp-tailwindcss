@@ -6,7 +6,7 @@ import process from 'node:process'
 import { execa } from 'execa'
 import { buildCompatibilityBundle } from './build'
 import { exampleDir, repoRoot } from './catalog'
-import { parseNativeRunArgs } from './native-options'
+import { iosPodInstallArguments, parseNativeRunArgs } from './native-options'
 import { defaultReportPath, nativeReportConclusion, validateNativeReport } from './reports'
 
 const options = parseNativeRunArgs(process.argv.slice(2), process.cwd())
@@ -261,7 +261,8 @@ async function runIos(hostDir: string, artifactDir: string) {
     }
   }
   else {
-    await command(process.env['LYNX_POD'] ?? 'pod', ['install', '--repo-update'], hostDir, 600_000)
+    // Podfile 已固定 Lynx 版本，CI 不需要每次刷新整个 Specs CDN。
+    await command(process.env['LYNX_POD'] ?? 'pod', iosPodInstallArguments(), hostDir, 600_000)
   }
   await command('xcrun', ['simctl', 'bootstatus', 'booted', '-b'], hostDir, 120_000)
   const deviceId = process.env['LYNX_IOS_DEVICE_ID'] ?? await bootedIosDeviceId(hostDir)

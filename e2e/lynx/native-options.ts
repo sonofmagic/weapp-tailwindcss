@@ -11,6 +11,10 @@ export interface NativeRunOptions {
   captureDurationSeconds: number
 }
 
+export function iosPodInstallArguments(repoUpdate = process.env['LYNX_IOS_POD_REPO_UPDATE'] === '1') {
+  return repoUpdate ? ['install', '--repo-update'] : ['install']
+}
+
 function optionValue(argv: string[], name: string) {
   const index = argv.indexOf(name)
   if (index === -1) {
