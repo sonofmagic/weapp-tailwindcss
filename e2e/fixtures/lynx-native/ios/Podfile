@@ -5,6 +5,10 @@ platform :ios, '15.0'
 target 'LynxCompatibilityHost' do
   use_frameworks! :linkage => :static
   pod 'Lynx', '4.0.1', :subspecs => ['Framework']
+  # 固定 Lynx 的传递依赖，避免 CocoaPods 为无约束依赖扫描 nightly podspec。
+  pod 'LynxBase', '4.0.1', :subspecs => ['Framework']
+  pod 'LynxServiceAPI', '4.0.1'
+  pod 'PrimJS', '4.0.0', :subspecs => ['napi/env', 'napi/jsc', 'napi/quickjs', 'quickjs']
 end
 
 post_install do |installer|
