@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 5.3.5
+
+### Patch Changes
+
+- 修复 uni-app x SFC 中空内容的外链 WXS `<script>` 导致构建失败的问题。
+
+- 优化 Generic Vite Web 非 watch 生产构建，跳过未被消费的 source candidate 扫描与模块级跟踪，同时保留开发、watch、跨框架及 CSS 来源追踪链路；升级 weapp-vite 6.22 后迁移独立分包样式构建并保留单次生成回归。
+
 ## 5.3.4
 
 ### Patch Changes

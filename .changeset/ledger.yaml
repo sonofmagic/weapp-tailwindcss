@@ -29,3 +29,8 @@ weapp-tailwindcss@5.3.4:
   dir: packages/weapp-tailwindcss
   intents:
     - social-geckos-roll
+weapp-tailwindcss@5.3.5:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - empty-wxs-script
+    - funky-keys-greet
