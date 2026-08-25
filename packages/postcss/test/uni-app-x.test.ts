@@ -6,6 +6,24 @@ import { createStyleHandler, postcss } from '@/index'
 const INVALID_UNI_APP_X_BASE_SELECTOR_RE = /(^|,)\s*(?:\*|view|text|::before|::after|:before|:after|::backdrop)\s*(?=,|\{)/m
 
 describe('uni-app-x', () => {
+  it('accepts Web local important apply syntax', async () => {
+    const styleHandler = createStyleHandler({
+      appType: 'uni-app-x',
+      uniAppX: true,
+      majorVersion: 4,
+    })
+    const options = {
+      appType: 'uni-app-x' as const,
+      uniAppX: true,
+    }
+    const result = await styleHandler('.wtu-important { @apply mt-6!; }', options)
+
+    expect(result.css).toContain('@apply mt-6!;')
+    await expect(
+      styleHandler(".wtu-important { @apply mt-6#{'!'}; }", options),
+    ).rejects.toThrow('Unknown word')
+  })
+
   it('css', async () => {
     const styleHandler = createStyleHandler({
       // uniAppX: true,

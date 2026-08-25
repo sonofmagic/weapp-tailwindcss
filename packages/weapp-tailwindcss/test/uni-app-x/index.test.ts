@@ -3,6 +3,7 @@ import { createGetCase, fixturesRootPath } from '#test/util'
 import process from 'node:process'
 import { beforeEach, afterEach } from 'vitest'
 import { vi } from 'vitest'
+import { createStyleHandler } from '@weapp-tailwindcss/postcss'
 import { getCompilerContext } from '@/context'
 import { transformUVue } from '@/uni-app-x'
 import {
@@ -260,6 +261,37 @@ const condition = true
     expect(styleBlock).toContain("@apply w-[100rpx]#{'!'};")
     expect(styleBlock).not.toContain('@apply !w-[100rpx];')
     expect(result?.code).not.toContain('class="!w-[100rpx]"')
+  })
+
+  it('serializes important utilities with CSS-safe syntax for Web local styles', async () => {
+    const { jsHandler } = getCompilerContext({ uniAppX: true })
+    const onWebLocalStyleRules = vi.fn()
+    const runtimeSet = new Set(['!mt-6', 'mt-6!'])
+    const result = transformUVue(
+      '<template><view class="!mt-6 mt-6!">Web important</view></template>\n<style scoped>.author { color: red; }</style>',
+      '/src/pages/index/index.uvue',
+      jsHandler,
+      runtimeSet,
+      {
+        enablePageLocalStyle: true,
+        onWebLocalStyleRules,
+      },
+    )
+
+    const styleRules = onWebLocalStyleRules.mock.calls[0]?.[0] as string | undefined
+    expect(result?.code).not.toContain('class="!mt-6 mt-6!"')
+    expect(styleRules).toContain('@apply mt-6!;')
+    expect(styleRules).not.toContain("#{'!'}")
+
+    const styleHandler = createStyleHandler({
+      appType: 'uni-app-x',
+      uniAppX: true,
+      majorVersion: 4,
+    })
+    await expect(styleHandler(styleRules!, {
+      appType: 'uni-app-x',
+      uniAppX: true,
+    })).resolves.toBeDefined()
   })
 
   it('honors disabledDefaultTemplateHandler with custom class rules', () => {
