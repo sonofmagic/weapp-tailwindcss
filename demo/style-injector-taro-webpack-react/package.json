@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "pnpm run build:weapp",
-    "build:weapp": "taro build --type weapp",
+    "build:weapp": "node ../../scripts/taro-build-guard.mjs",
     "build:h5": "cross-env BROWSERSLIST_ENV=production taro build --type h5",
     "dev": "cross-env WEAPP_TW_HMR_TIMING=1 pnpm run dev:weapp",
     "dev:weapp": "cross-env WEAPP_TW_HMR_TIMING=1 taro build --type weapp --watch",

@@ -147,6 +147,7 @@ describe('benchmark ci report', () => {
       relevant: false,
       relevantFiles: [],
       ignoredReleaseMetadataFiles: releaseFiles.sort(),
+      ignoredNonPerformanceFiles: [],
     })
 
     manifests.set('packages/weapp-tailwindcss/package.json', {
@@ -169,6 +170,42 @@ describe('benchmark ci report', () => {
     const manualRangeResult = await classifyChangedPerformanceFiles(releaseFiles, async file => manifests.get(file))
 
     expect(manualRangeResult.relevantFiles).toEqual(['packages/build-all/package.json'])
+  })
+
+  it('keeps Taro build guard script changes outside the blocking performance guard', async () => {
+    const { classifyChangedPerformanceFiles } = await import('../../../../benchmark/version-compare/scripts/change-relevance.mjs')
+    const files = ['demo/style-injector-taro-vite-react/package.json']
+    const manifests = new Map([
+      [files[0], {
+        baseline: {
+          name: '@weapp-tailwindcss-demo/style-injector-taro-vite-react',
+          scripts: {
+            'build:weapp': 'taro build --type weapp',
+            'build:h5': 'taro build --type h5',
+          },
+        },
+        current: {
+          name: '@weapp-tailwindcss-demo/style-injector-taro-vite-react',
+          scripts: {
+            'build:weapp': 'node ../../scripts/taro-build-guard.mjs',
+            'build:h5': 'taro build --type h5',
+          },
+        },
+      }],
+    ])
+
+    const result = await classifyChangedPerformanceFiles(files, async file => manifests.get(file))
+
+    expect(result).toEqual({
+      relevant: false,
+      relevantFiles: [],
+      ignoredReleaseMetadataFiles: [],
+      ignoredNonPerformanceFiles: files,
+    })
+
+    manifests.get(files[0]).current.dependencies = { taro: '^4.0.0' }
+    const dependencyResult = await classifyChangedPerformanceFiles(files, async file => manifests.get(file))
+    expect(dependencyResult.relevantFiles).toEqual(files)
   })
 
   it('formats benchmark shard regressions as actionable GitHub annotations', async () => {

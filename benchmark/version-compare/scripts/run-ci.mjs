@@ -504,7 +504,7 @@ async function main() {
   const raw = JSON.parse(await fs.readFile(rawPath, 'utf8'))
   const performanceChanges = baselineRef
     ? await classifyPerformanceChanges(repoRoot, baselineRef)
-    : { relevant: true, relevantFiles: performanceRelevantPaths, ignoredReleaseMetadataFiles: [] }
+    : { relevant: true, relevantFiles: performanceRelevantPaths, ignoredReleaseMetadataFiles: [], ignoredNonPerformanceFiles: [] }
   const performanceRelevantChanges = performanceChanges.relevant
   if (baselineRef && !process.argv.includes('--skip-core-metrics')) {
     const coreMetricSpecs = [
@@ -585,8 +585,11 @@ async function main() {
     }
     const relevantFiles = summarizeFiles(performanceChanges.relevantFiles)
     const ignoredFiles = summarizeFiles(performanceChanges.ignoredReleaseMetadataFiles)
-    const informationalReason = ignoredFiles
-      ? `PR 仅修改版本号或内部包发布范围等发版元数据：${ignoredFiles}`
+    const ignoredNonPerformanceFiles = summarizeFiles(performanceChanges.ignoredNonPerformanceFiles)
+    const informationalReason = ignoredNonPerformanceFiles
+      ? `PR 仅修改不影响性能的构建守卫文件：${ignoredNonPerformanceFiles}`
+      : ignoredFiles
+        ? `PR 仅修改版本号或内部包发布范围等发版元数据：${ignoredFiles}`
       : 'PR 未修改性能相关源码、依赖或 demo'
     summary.performanceGuard = performanceRelevantChanges
       ? { ...performanceGuard, blocking: true, relevantChanges: performanceChanges.relevantFiles }
@@ -594,6 +597,7 @@ async function main() {
     process.stdout.write(`[benchmark] performance guard mode: ${performanceRelevantChanges ? 'blocking' : 'informational'}\n`)
     process.stdout.write(`[benchmark] performance relevant files: ${relevantFiles || 'none'}\n`)
     process.stdout.write(`[benchmark] ignored release metadata files: ${ignoredFiles || 'none'}\n`)
+    process.stdout.write(`[benchmark] ignored non-performance files: ${ignoredNonPerformanceFiles || 'none'}\n`)
   }
   const markdown = toMarkdown(summary, baselineRef || baseline)
   await fs.writeFile(summaryPath, `${JSON.stringify(summary, null, 2)}\n`, 'utf8')
