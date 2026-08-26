@@ -138,7 +138,7 @@ catalogs:
     react-dom: ^18.3.1
   react19:
     '@types/react': ^19.2.18
-    '@types/react-dom': 19.2.4
+    '@types/react-dom': 19.2.5
     react: ^19.2.8
     react-dom: ^19.2.8
   reactRefresh018:
