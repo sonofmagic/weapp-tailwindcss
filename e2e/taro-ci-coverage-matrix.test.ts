@@ -12,6 +12,10 @@ const coreTaroDemos = [
   'taro-webpack-react-tailwindcss-v4',
   'taro-webpack-vue3-tailwindcss-v4',
 ] as const
+const styleInjectorTaroDemos = [
+  'style-injector-taro-vite-react',
+  'style-injector-taro-webpack-react',
+] as const
 const taroViteDemoConfigs = [
   'taro-vite-react-tailwindcss-v4',
   'taro-vite-vue3-tailwindcss-v4',
@@ -61,6 +65,13 @@ function taroHmrCaseName(name: string) {
 }
 
 describe('Taro CI coverage matrix', () => {
+  it('guards style-injector Taro mini-program builds in aggregate CI', () => {
+    for (const name of styleInjectorTaroDemos) {
+      const scripts = demoPackageJson(name).scripts ?? {}
+      expect(scripts['build:weapp'], `${name} mini-program build should use the guarded Taro build entry`).toContain('taro-build-guard.mjs')
+    }
+  })
+
   it('declares the four core Taro demos with mini-program and H5 build/dev scripts', () => {
     const entries = DEMO_COVERAGE_MATRIX
       .filter(item => item.framework === 'taro-react' || item.framework === 'taro-vue3')
