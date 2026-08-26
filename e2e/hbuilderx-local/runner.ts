@@ -357,7 +357,10 @@ async function assertMiniProgramOutput(
   ).toBeGreaterThan(0)
   const runtimeStyleEntry = await resolveMiniProgramRuntimeStyleEntry(outputRoot, item.cssExtensions)
   expect(runtimeStyleEntry, `${item.name} 无法唯一识别小程序运行时根样式入口`).toBeTruthy()
-  const css = await readReachableMiniProgramStyles(outputRoot, runtimeStyleEntry!, item.cssExtensions)
+  // 根入口需要沿导入链验证；分包样式由页面路由加载，不会出现在根入口的导入图中。
+  const runtimeCss = await readReachableMiniProgramStyles(outputRoot, runtimeStyleEntry!, item.cssExtensions)
+  expect(runtimeCss, `${item.name} 根样式入口不可读`).not.toBe('')
+  const css = (await Promise.all(styleFiles.map(readUtf8))).join('\n')
 
   expectContent(css, item.cssContains, item.name)
   if (item.outputContains) {
