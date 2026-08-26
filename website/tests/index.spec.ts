@@ -21,7 +21,7 @@ declare global {
   }
 }
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'https://tw.icebreaker.top/'
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'https://tw.weapp.dev/'
 const localeStorageKey = 'weapp-tailwindcss:website:locale'
 const uiStorageKey = 'weapp-tailwindcss:website:ui'
 const githubStarsCacheKey = 'weapp-tailwindcss:github-stars:sonofmagic/weapp-tailwindcss'

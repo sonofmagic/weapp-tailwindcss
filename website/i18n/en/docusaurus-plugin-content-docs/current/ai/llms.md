@@ -43,18 +43,18 @@ This section describes the documentation-site generation flow, not application b
 
 ## Online address
 
-- `https://tw.icebreaker.top/llms.txt`
-- `https://tw.icebreaker.top/llms-full.txt`
-- `https://tw.icebreaker.top/llms-index.json`
-- `https://tw.icebreaker.top/llms-index-full.json`
-- `https://tw.icebreaker.top/llms-quickstart.txt`
-- `https://tw.icebreaker.top/llms-api.txt`
+- `https://tw.weapp.dev/llms.txt`
+- `https://tw.weapp.dev/llms-full.txt`
+- `https://tw.weapp.dev/llms-index.json`
+- `https://tw.weapp.dev/llms-index-full.json`
+- `https://tw.weapp.dev/llms-quickstart.txt`
+- `https://tw.weapp.dev/llms-api.txt`
 
 English assets are served from the site root, while Chinese assets use the `/zh-cn` prefix.
 
 ## Example prompt words for AI
 
-> You can read the entry and configuration instructions of weapp-tailwindcss from https://tw.icebreaker.top/llms-quickstart.txt and https://tw.icebreaker.top/llms-api.txt Please cite the relevant links when answering.
+> You can read the entry and configuration instructions of weapp-tailwindcss from https://tw.weapp.dev/llms-quickstart.txt and https://tw.weapp.dev/llms-api.txt Please cite the relevant links when answering.
 
 ## Offline use
 

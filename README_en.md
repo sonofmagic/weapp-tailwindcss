@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://tw.icebreaker.top">
+  <a href="https://tw.weapp.dev">
     <img src="./assets/logo.png" alt="weapp-tailwindcss logo" width="128">
   </a>
 </p>
@@ -15,10 +15,10 @@
 </p>
 
 <p align="center">
-  <a href="https://tw.icebreaker.top">Website</a> ·
-  <a href="https://tw.icebreaker.top/docs/intro">Docs</a> ·
-  <a href="https://tw.icebreaker.top/docs/quick-start/install">Quick Start</a> ·
-  <a href="https://tw.icebreaker.top/docs/tools/weapp-tw-cli">CLI</a> ·
+  <a href="https://tw.weapp.dev">Website</a> ·
+  <a href="https://tw.weapp.dev/docs/intro">Docs</a> ·
+  <a href="https://tw.weapp.dev/docs/quick-start/install">Quick Start</a> ·
+  <a href="https://tw.weapp.dev/docs/tools/weapp-tw-cli">CLI</a> ·
   <a href="https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo">Examples</a>
 </p>
 
@@ -97,7 +97,7 @@ export default defineConfig({
 })
 ```
 
-See the [framework integration guides](https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite) for Webpack, Rspack, Gulp, Taro, uni-app, Mpx, and native mini-program projects.
+See the [framework integration guides](https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-vite) for Webpack, Rspack, Gulp, Taro, uni-app, Mpx, and native mini-program projects.
 
 ## CLI
 
@@ -115,7 +115,7 @@ pnpm exec weapp-tw -i src/app.css -o dist/app.wxss --target weapp
 
 The CLI defaults to `web` and supports stdin/stdout, watch mode, native watchers, `--poll`, minify, optimize, source maps, and `canonicalize`. `--target weapp` is CSS-only: it does not scan or rewrite WXML, JS, TS, JSX, or TSX, and it does not replace a full project builder integration.
 
-See the complete [weapp-tw CLI guide](https://tw.icebreaker.top/docs/tools/weapp-tw-cli) for all options and compatibility commands.
+See the complete [weapp-tw CLI guide](https://tw.weapp.dev/docs/tools/weapp-tw-cli) for all options and compatibility commands.
 
 ## Choose The Right Package
 
@@ -144,18 +144,18 @@ See the complete [weapp-tw CLI guide](https://tw.icebreaker.top/docs/tools/weapp
 
 ## Documentation And Examples
 
-- [Official website](https://tw.icebreaker.top)
-- [Install and quick start](https://tw.icebreaker.top/docs/quick-start/install)
-- [Tailwind CSS v4 guide](https://tw.icebreaker.top/docs/tailwindcss/v4-reference)
-- [Framework integrations](https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite)
-- [React Native / Expo](https://tw.icebreaker.top/docs/quick-start/react-native-expo)
-- [ReactLynx / Rspeedy](https://tw.icebreaker.top/docs/quick-start/frameworks/lynx)
-- [uni-app x configuration reference](https://tw.icebreaker.top/docs/config/uni-app-x)
-- [ReactLynx / Rspeedy configuration reference](https://tw.icebreaker.top/docs/config/react-lynx)
-- [React Native / Expo configuration reference](https://tw.icebreaker.top/docs/config/react-native)
-- [Multi-platform guide](https://tw.icebreaker.top/docs/multi-platform)
-- [API reference](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
-- [CLI guide](https://tw.icebreaker.top/docs/tools/weapp-tw-cli)
+- [Official website](https://tw.weapp.dev)
+- [Install and quick start](https://tw.weapp.dev/docs/quick-start/install)
+- [Tailwind CSS v4 guide](https://tw.weapp.dev/docs/tailwindcss/v4-reference)
+- [Framework integrations](https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-vite)
+- [React Native / Expo](https://tw.weapp.dev/docs/quick-start/react-native-expo)
+- [ReactLynx / Rspeedy](https://tw.weapp.dev/docs/quick-start/frameworks/lynx)
+- [uni-app x configuration reference](https://tw.weapp.dev/docs/config/uni-app-x)
+- [ReactLynx / Rspeedy configuration reference](https://tw.weapp.dev/docs/config/react-lynx)
+- [React Native / Expo configuration reference](https://tw.weapp.dev/docs/config/react-native)
+- [Multi-platform guide](https://tw.weapp.dev/docs/multi-platform)
+- [API reference](https://tw.weapp.dev/docs/api/interfaces/UserDefinedOptions)
+- [CLI guide](https://tw.weapp.dev/docs/tools/weapp-tw-cli)
 - [Framework examples](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo)
 - [React Native and Lynx examples](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/examples)
 - [Mirror documentation](https://ice-tw.netlify.app/)
@@ -183,7 +183,7 @@ The original single-skill command remains available:
 npx skills add sonofmagic/skills --skill weapp-tailwindcss
 ```
 
-Read more in the [Skill documentation](https://tw.icebreaker.top/docs/ai/basics/skill).
+Read more in the [Skill documentation](https://tw.weapp.dev/docs/ai/basics/skill).
 
 ## Contributing
 

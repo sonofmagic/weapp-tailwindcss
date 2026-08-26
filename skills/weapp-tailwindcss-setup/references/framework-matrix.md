@@ -21,7 +21,7 @@
 | --- | --- | --- |
 | uni-app CLI Vue3 Vite | `vite.config.ts`，位于 `uni()` 后 | `weapp-tailwindcss/vite`；显式绝对 `cssEntries` |
 | HBuilderX Vue3 Vite | 项目 `vite.config.[jt]s` | HBuilderX 5.11+；基于配置文件位置解析绝对路径 |
-| uni-app x | Vite + `uniAppX()` preset | 纯 CSS 入口；Android/iOS/Harmony 不是 Web target；详见 [uni-app x 配置参考](https://tw.icebreaker.top/zh-cn/docs/config/uni-app-x) |
+| uni-app x | Vite + `uniAppX()` preset | 纯 CSS 入口；Android/iOS/Harmony 不是 Web target；详见 [uni-app x 配置参考](https://tw.weapp.dev/zh-cn/docs/config/uni-app-x) |
 | Taro Webpack 5 | `config/index` 的 `mini.webpackChain` 与 `h5.webpackChain` | 两端都注册；复用同一 options |
 | Taro Vite | `config/index` 的 `compiler.vitePlugins` | 不放在只被小程序加载的独立 `vite.config.ts` |
 | Mpx | Webpack 配置 | 设置 `appType: 'mpx'`；显式入口 |
@@ -30,8 +30,8 @@
 | 原生流式构建 | Gulp/Vinyl | 使用 `weapp-tailwindcss/gulp`，不要绕开 stream graph |
 | 单 CSS 入口/脚本 | `@weapp-tailwindcss/cli` | 默认 Web；`--target weapp` 仅转换生成 CSS |
 | 自研构建器 | Core/generator | 改用 `$weapp-tailwindcss-custom-build` |
-| Expo/React Native | Metro | 改用 `$weapp-tailwindcss-react-native`，详见 [React Native / Expo 配置参考](https://tw.icebreaker.top/zh-cn/docs/config/react-native) |
-| ReactLynx/Rspeedy | Rspeedy plugin | 改用 `$weapp-tailwindcss-lynx`，详见 [ReactLynx / Rspeedy 配置参考](https://tw.icebreaker.top/zh-cn/docs/config/react-lynx) |
+| Expo/React Native | Metro | 改用 `$weapp-tailwindcss-react-native`，详见 [React Native / Expo 配置参考](https://tw.weapp.dev/zh-cn/docs/config/react-native) |
+| ReactLynx/Rspeedy | Rspeedy plugin | 改用 `$weapp-tailwindcss-lynx`，详见 [ReactLynx / Rspeedy 配置参考](https://tw.weapp.dev/zh-cn/docs/config/react-lynx) |
 
 ## Vite 与 uni-app
 

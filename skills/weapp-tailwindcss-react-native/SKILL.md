@@ -7,7 +7,7 @@ description: 为 Expo/React Native 配置 @weapp-tailwindcss/react-native 0.2.5 
 
 使用独立 Native 编译器把 Tailwind CSS 4 候选编译为 React Native style manifest，不套用小程序 CSS 产物链。
 
-完整的 Metro 配置字段和 manifest 参考见站点的 [React Native / Expo 配置参考](https://tw.icebreaker.top/zh-cn/docs/config/react-native)。
+完整的 Metro 配置字段和 manifest 参考见站点的 [React Native / Expo 配置参考](https://tw.weapp.dev/zh-cn/docs/config/react-native)。
 
 ## 工作流
 

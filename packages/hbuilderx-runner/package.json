@@ -5,6 +5,7 @@
   "description": "HBuilderX runner utilities for cross-platform uni-app Tailwind CSS workflows. 跨端 uni-app Tailwind CSS 工作流的 HBuilderX 运行器工具。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
+  "homepage": "https://tw.weapp.dev/docs/quick-start/frameworks/hbuilderx",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",

@@ -14,7 +14,7 @@ pnpm dev
 
 ## Playwright 截图测试
 
-Playwright 用来对官网的所有路由做截图回归，现在同时覆盖桌面视口与移动端（Chromium 模拟 iPhone 12）。默认会访问生产站点 `https://tw.icebreaker.top/`，也可以通过 `PLAYWRIGHT_BASE_URL` 指定自己的预览地址（例如 `http://192.168.10.4:4000/`）来验证局域网环境。
+Playwright 用来对官网的所有路由做截图回归，现在同时覆盖桌面视口与移动端（Chromium 模拟 iPhone 12）。默认会访问生产站点 `https://tw.weapp.dev/`，也可以通过 `PLAYWRIGHT_BASE_URL` 指定自己的预览地址（例如 `http://192.168.10.4:4000/`）来验证局域网环境。
 
 ```bash
 # 在仓库根目录执行
@@ -35,7 +35,23 @@ pnpm build
 
 ```
 
-<https://tw.icebreaker.top/>
+<https://tw.weapp.dev/>
+
+## Cloudflare 域名迁移
+
+生产 Worker 通过 `wrangler.jsonc` 的 Custom Domain 使用 `tw.weapp.dev`，预览 Worker 使用 `next.tw.weapp.dev`。旧 hostname 保持 Cloudflare 代理和证书，在 Cloudflare **Rules → Redirect Rules** 中配置以下永久重定向，并开启保留 query string：
+
+```text
+http*://tw.icebreaker.top/*     -> https://tw.weapp.dev/${2}       (301)
+http*://weapp-tw.icebreaker.top/* -> https://tw.weapp.dev/${2}     (301)
+http*://next.tw.icebreaker.top/* -> https://next.tw.weapp.dev/${2} (301)
+```
+
+先部署并验证新域，再启用旧域重定向。迁移验收命令如下：
+
+```bash
+pnpm --filter @weapp-tailwindcss/website verify:domain-migration
+```
 
 ## Showcase 数据同步
 

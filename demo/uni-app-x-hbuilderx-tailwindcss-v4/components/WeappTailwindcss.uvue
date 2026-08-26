@@ -10,7 +10,7 @@ export default {
 		<view
 			>
 			<text class="text-2xl underline text-center">
-				tw.icebreaker.top
+				tw.weapp.dev
 			</text>
 
 		</view>

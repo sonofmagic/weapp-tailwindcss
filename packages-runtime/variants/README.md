@@ -32,4 +32,4 @@ Use `create({ escape: false })` for raw class output or pass a runtime Tailwind 
 
 ## Documentation
 
-See the [runtime utilities documentation](https://tw.icebreaker.top/docs/community/merge/overview) for escaping and merge behavior.
+See the [runtime utilities documentation](https://tw.weapp.dev/docs/community/merge/overview) for escaping and merge behavior.

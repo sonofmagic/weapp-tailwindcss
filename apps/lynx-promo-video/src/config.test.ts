@@ -21,7 +21,7 @@ describe('promo timeline', () => {
   it('keeps both locale copy sets complete and aligned', () => {
     for (const locale of ['zh', 'en'] as const) {
       expect(Object.keys(promoCopies[locale].narration)).toHaveLength(scenes.length)
-      expect(promoCopies[locale].docsUrl).toContain('tw.icebreaker.top')
+      expect(promoCopies[locale].docsUrl).toContain('tw.weapp.dev')
     }
     expect(sceneAtFrame(150, 'en')?.subtitle).toBe(getPromoCopy('en').narration.config)
     expect(sceneAtFrame(150, 'zh')?.subtitle).toBe(getPromoCopy('zh').narration.config)

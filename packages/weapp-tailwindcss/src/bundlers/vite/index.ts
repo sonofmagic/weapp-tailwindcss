@@ -14,7 +14,7 @@ export type { WeappTailwindcssVitePlugin } from './shared/create-framework-plugi
 /**
  * @name WeappTailwindcss
  * @description Vite 入口只负责早期识别框架分支，具体插件组合由各 framework 目录拥有。
- * @link https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite
+ * @link https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-vite
  */
 export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwindcssVitePlugin[] | undefined {
   const hasExplicitAppType = typeof options.appType === 'string' && options.appType.trim().length > 0

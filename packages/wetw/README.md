@@ -6,4 +6,4 @@ This package is a component registry and generation CLI. It resolves components 
 
 ## Website
 
-For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.icebreaker.top).
+For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.weapp.dev).

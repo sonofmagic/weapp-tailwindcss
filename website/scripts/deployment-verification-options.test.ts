@@ -3,9 +3,9 @@ import { parseDeploymentVerificationOptions } from './deployment-verification-op
 
 describe('parseDeploymentVerificationOptions', () => {
   it('默认使用待验证站点作为 canonical origin', () => {
-    expect(parseDeploymentVerificationOptions(['--', 'https://tw.icebreaker.top'])).toEqual({
-      canonicalOrigin: 'https://tw.icebreaker.top',
-      siteUrl: new URL('https://tw.icebreaker.top'),
+    expect(parseDeploymentVerificationOptions(['--', 'https://tw.weapp.dev'])).toEqual({
+      canonicalOrigin: 'https://tw.weapp.dev',
+      siteUrl: new URL('https://tw.weapp.dev'),
     })
   })
 
@@ -13,9 +13,9 @@ describe('parseDeploymentVerificationOptions', () => {
     expect(parseDeploymentVerificationOptions([
       'https://migration-weapp-tailwindcss.example.workers.dev',
       '--canonical-origin',
-      'https://tw.icebreaker.top/',
+      'https://tw.weapp.dev/',
     ])).toEqual({
-      canonicalOrigin: 'https://tw.icebreaker.top',
+      canonicalOrigin: 'https://tw.weapp.dev',
       siteUrl: new URL('https://migration-weapp-tailwindcss.example.workers.dev'),
     })
   })
@@ -23,8 +23,8 @@ describe('parseDeploymentVerificationOptions', () => {
   it('支持等号形式的 canonical origin 参数', () => {
     expect(parseDeploymentVerificationOptions([
       'https://weapp-tw.icebreaker.top',
-      '--canonical-origin=https://tw.icebreaker.top',
-    ]).canonicalOrigin).toBe('https://tw.icebreaker.top')
+      '--canonical-origin=https://tw.weapp.dev',
+    ]).canonicalOrigin).toBe('https://tw.weapp.dev')
   })
 
   it('拒绝缺少值和未知参数', () => {

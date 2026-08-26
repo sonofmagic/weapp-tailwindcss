@@ -9,6 +9,10 @@
   "routes": [
     {
       "custom_domain": true,
+      "pattern": "tw.weapp.dev"
+    },
+    {
+      "custom_domain": true,
       "pattern": "tw.icebreaker.top"
     },
     {
@@ -20,6 +24,10 @@
     "next": {
       "name": "weapp-tailwindcss-next",
       "routes": [
+        {
+          "custom_domain": true,
+          "pattern": "next.tw.weapp.dev"
+        },
         {
           "custom_domain": true,
           "pattern": "next.tw.icebreaker.top"

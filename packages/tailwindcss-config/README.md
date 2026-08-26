@@ -6,4 +6,4 @@ This package searches for and loads Tailwind CSS configuration files across Java
 
 ## Website
 
-For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.icebreaker.top).
+For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.weapp.dev).

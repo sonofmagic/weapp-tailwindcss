@@ -5,6 +5,7 @@
   "description": "Style entry injection for cross-platform mini-program and Web builds. 面向小程序与 Web 跨端构建的样式入口注入工具。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
+  "homepage": "https://tw.weapp.dev/docs/quick-start/independent-pkg",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",

@@ -5,6 +5,7 @@
   "description": "Vite diagnostics for cross-platform uni-app x Tailwind CSS builds. 用于跨端 uni-app x Tailwind CSS 构建的 Vite 调试工具。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
+  "homepage": "https://tw.weapp.dev/docs/config/uni-app-x",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",

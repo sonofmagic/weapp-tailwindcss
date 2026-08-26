@@ -22,7 +22,7 @@
 | React Native / Expo | `@weapp-tailwindcss/react-native` |
 | ReactLynx / Rspeedy | `@weapp-tailwindcss/lynx` |
 
-从[安装指南](https://tw.icebreaker.top/zh-cn/docs/quick-start/install)开始，或在[中文官网](https://tw.icebreaker.top/zh-cn/)按框架选择接入方式。
+从[安装指南](https://tw.weapp.dev/zh-cn/docs/quick-start/install)开始，或在[中文官网](https://tw.weapp.dev/zh-cn/)按框架选择接入方式。
 
 ## Tailwind CSS 4 入口
 
@@ -46,7 +46,7 @@ pnpm exec weapp-tw -i src/input.css -o dist/output.css --watch
 
 CLI 默认生成 Web CSS。`--target weapp` 只进行小程序 CSS 兼容转换；完整 WXML、JavaScript 与 WXSS 项目仍需使用构建器集成。watch 默认使用 `@parcel/watcher` 原生事件，也可以通过 `--poll` 显式切换轮询。
 
-source map、stdin/stdout、watch 与 `canonicalize` 的完整用法见 [CLI 指南](https://tw.icebreaker.top/zh-cn/docs/tools/weapp-tw-cli)。
+source map、stdin/stdout、watch 与 `canonicalize` 的完整用法见 [CLI 指南](https://tw.weapp.dev/zh-cn/docs/tools/weapp-tw-cli)。
 
 ## 运行环境
 
@@ -55,9 +55,9 @@ source map、stdin/stdout、watch 与 `canonicalize` 的完整用法见 [CLI 指
 
 ## 社区与支持
 
-- [官方文档](https://tw.icebreaker.top)
+- [官方文档](https://tw.weapp.dev)
 - [GitHub Issues](https://github.com/sonofmagic/weapp-tailwindcss/issues)
-- [技术交流群](https://tw.icebreaker.top/zh-cn/docs/community/group)
+- [技术交流群](https://tw.weapp.dev/zh-cn/docs/community/group)
 
 ## License
 

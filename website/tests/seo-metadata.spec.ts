@@ -1,12 +1,12 @@
 import process from 'node:process'
 import { expect, test } from '@playwright/test'
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'https://tw.icebreaker.top/'
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'https://tw.weapp.dev/'
 
 test.describe('SEO and GEO metadata', () => {
   for (const [pathname, canonical] of [
-    ['/docs/intro', 'https://tw.icebreaker.top/docs/intro'],
-    ['/zh-cn/docs/intro', 'https://tw.icebreaker.top/zh-cn/docs/intro'],
+    ['/docs/intro', 'https://tw.weapp.dev/docs/intro'],
+    ['/zh-cn/docs/intro', 'https://tw.weapp.dev/zh-cn/docs/intro'],
   ]) {
     test(`${pathname} exposes one canonical and a linked entity graph`, async ({ page }) => {
       const response = await page.goto(new URL(pathname, baseURL).toString(), { waitUntil: 'domcontentloaded' })
@@ -14,7 +14,7 @@ test.describe('SEO and GEO metadata', () => {
       await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical)
       await expect(page.locator('link[rel="alternate"][hreflang="en-US"]')).toHaveCount(1)
       await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveCount(1)
-      await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute('href', 'https://tw.icebreaker.top/docs/intro')
+      await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute('href', 'https://tw.weapp.dev/docs/intro')
       await expect(page.locator('meta[name="geo.region"], meta[name="ICBM"]')).toHaveCount(0)
 
       const html = await response?.text() ?? ''

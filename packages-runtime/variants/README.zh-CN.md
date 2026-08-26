@@ -32,4 +32,4 @@ const className = button({ intent: 'primary' })
 
 ## 文档
 
-转义与合并行为见[运行时工具文档](https://tw.icebreaker.top/zh-cn/docs/community/merge/overview)。
+转义与合并行为见[运行时工具文档](https://tw.weapp.dev/zh-cn/docs/community/merge/overview)。

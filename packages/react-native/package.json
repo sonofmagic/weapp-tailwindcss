@@ -4,6 +4,7 @@
   "version": "0.2.8",
   "description": "Tailwind CSS compiler and Expo Metro integration for cross-platform React Native apps. 面向跨端 React Native 应用的 Tailwind CSS 编译器与 Expo Metro 集成。",
   "license": "MIT",
+  "homepage": "https://tw.weapp.dev/docs/quick-start/react-native-expo",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",

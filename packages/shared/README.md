@@ -6,4 +6,4 @@ This package is the shared utility layer used by multiple weapp-tailwindcss pack
 
 ## Website
 
-For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.icebreaker.top).
+For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.weapp.dev).

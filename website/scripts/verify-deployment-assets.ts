@@ -96,6 +96,25 @@ async function verifyGeoAssets(siteUrl: URL, canonicalOrigin: string) {
   }
 }
 
+async function verifyMachineReadableAssets(siteUrl: URL, canonicalOrigin: string) {
+  const assets = [
+    '/llms.txt',
+    '/llms-full.txt',
+    '/llms-quickstart.txt',
+    '/llms-api.txt',
+    '/wetw/registry.json',
+  ]
+  for (const pathname of assets) {
+    const response = await expectStatus(siteUrl, pathname, 200)
+    const content = await response.text()
+    if (pathname !== '/wetw/registry.json') {
+      assert(content.includes(canonicalOrigin), `${pathname} does not reference the canonical origin`)
+    }
+    assert(!content.includes('tw.icebreaker.top'), `${pathname} still contains the legacy origin`)
+    assert(!content.includes('next.tw.icebreaker.top'), `${pathname} still contains the legacy preview origin`)
+  }
+}
+
 async function verifyOnce(siteUrl: URL, canonicalOrigin: string, assets: Awaited<ReturnType<typeof getExpectedHashedAssets>>) {
   await verifyHtmlMetadata(siteUrl, canonicalOrigin, '/', 'en-US')
   await verifyHtmlMetadata(siteUrl, canonicalOrigin, '/docs/intro', 'en-US')
@@ -115,6 +134,7 @@ async function verifyOnce(siteUrl: URL, canonicalOrigin: string, assets: Awaited
   await verifySitemap(siteUrl, canonicalOrigin, '/sitemap.xml', 'en-US')
   await verifySitemap(siteUrl, canonicalOrigin, '/zh-cn/sitemap.xml', 'zh-CN')
   await verifyGeoAssets(siteUrl, canonicalOrigin)
+  await verifyMachineReadableAssets(siteUrl, canonicalOrigin)
 
   const homepage = await (await fetchNoCache(new URL('/', siteUrl))).text()
   for (const asset of assets) {

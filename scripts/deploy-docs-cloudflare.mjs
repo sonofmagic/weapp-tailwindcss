@@ -31,8 +31,11 @@ async function main() {
   }
 
   await run(packageManager, ['--filter', '@weapp-tailwindcss/website', 'deploy:worker'])
-  await run(packageManager, ['--filter', '@weapp-tailwindcss/website', 'verify:deployment', '--', 'https://tw.icebreaker.top'])
-  await run(packageManager, ['--filter', '@weapp-tailwindcss/website', 'verify:deployment', '--', 'https://weapp-tw.icebreaker.top', '--canonical-origin', 'https://tw.icebreaker.top'])
+  await run(packageManager, ['--filter', '@weapp-tailwindcss/website', 'verify:deployment', '--', 'https://tw.weapp.dev'])
+  await run(packageManager, ['--filter', '@weapp-tailwindcss/website', 'build:next'])
+  await run(packageManager, ['--filter', '@weapp-tailwindcss/website', 'deploy:worker:next'])
+  await run(packageManager, ['--filter', '@weapp-tailwindcss/website', 'verify:deployment', '--', 'https://next.tw.weapp.dev'])
+  await run(packageManager, ['--filter', '@weapp-tailwindcss/website', 'verify:domain-migration'])
 }
 
 main().catch((error) => {

@@ -2,7 +2,7 @@ import process from 'node:process'
 import { expect, test } from '@playwright/test'
 import routes from '../routes.json'
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'https://tw.icebreaker.top/'
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'https://tw.weapp.dev/'
 const CHINESE_TEXT_RE = /[\u3000-\u303F\u3400-\u9FFF\uF900-\uFAFF\uFE10-\uFE1F\uFF01-\uFF60]/
 
 function assertContainsNoChinese(value: string, context: string) {

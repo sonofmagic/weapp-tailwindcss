@@ -7,7 +7,7 @@ description: 为 ReactLynx + Rspeedy 配置 @weapp-tailwindcss/lynx 0.3.2 与 Ta
 
 通过 Rspeedy/Rspack 构建图生成 Lynx 原生运行时可消费的 Tailwind CSS，保留 ReactLynx `className`，不引入运行时样式表或 JSX 转换。
 
-完整的 `generator`、`rspack` 和固定平台字段见站点的 [ReactLynx / Rspeedy 配置参考](https://tw.icebreaker.top/zh-cn/docs/config/react-lynx)。
+完整的 `generator`、`rspack` 和固定平台字段见站点的 [ReactLynx / Rspeedy 配置参考](https://tw.weapp.dev/zh-cn/docs/config/react-lynx)。
 
 ## 工作流
 

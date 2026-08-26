@@ -1,9 +1,9 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-21T01:55:33.511Z",
+  "generatedAt": "2026-08-26T07:27:22.741Z",
   "locale": "zh-CN",
   "contentTier": "primary",
-  "siteUrl": "https://tw.icebreaker.top/zh-cn",
+  "siteUrl": "https://tw.weapp.dev/zh-cn",
   "totals": {
     "all": 83,
     "docs": 83,
@@ -20,11 +20,11 @@
       "description": "weapp-tailwindcss API 首页，提供配置项分组和接口索引。",
       "summary": "weapp-tailwindcss API 首页，提供配置项分组和接口索引。",
       "url": "/zh-cn/docs/api",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api",
-        "x-default": "https://tw.icebreaker.top/docs/api"
+        "en-US": "https://tw.weapp.dev/docs/api",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api",
+        "x-default": "https://tw.weapp.dev/docs/api"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -60,11 +60,11 @@
       "description": "Tailwind 运行时行为配置。",
       "summary": "Tailwind 运行时行为配置。",
       "url": "/zh-cn/docs/api/interfaces/ApplyOptions",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/ApplyOptions",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/ApplyOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/ApplyOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/ApplyOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/ApplyOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/ApplyOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/ApplyOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/ApplyOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -102,11 +102,11 @@
       "description": "Tailwind 类名缓存配置。",
       "summary": "Tailwind 类名缓存配置。",
       "url": "/zh-cn/docs/api/interfaces/CacheOptions",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/CacheOptions",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CacheOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/CacheOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/CacheOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/CacheOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CacheOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CacheOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CacheOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -147,11 +147,11 @@
       "description": "ExtractOptions 的类型说明，列出公开属性、参数和使用边界。",
       "summary": "类名提取结果的输出配置。",
       "url": "/zh-cn/docs/api/interfaces/ExtractOptions",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/ExtractOptions",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/ExtractOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/ExtractOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/ExtractOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/ExtractOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/ExtractOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/ExtractOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/ExtractOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -191,11 +191,11 @@
       "description": "按 Tailwind 版本划分的运行时配置。",
       "summary": "按 Tailwind 版本划分的运行时配置。",
       "url": "/zh-cn/docs/api/interfaces/TailwindCssOptions",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/TailwindCssOptions",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/TailwindCssOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/TailwindCssOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/TailwindCssOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/TailwindCssOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/TailwindCssOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -237,11 +237,11 @@
       "description": "Tailwind CSS 运行时根配置。",
       "summary": "Tailwind CSS 运行时根配置。",
       "url": "/zh-cn/docs/api/interfaces/TailwindCssRuntimeOptions",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/TailwindCssRuntimeOptions",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/TailwindCssRuntimeOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssRuntimeOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/TailwindCssRuntimeOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssRuntimeOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/TailwindCssRuntimeOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/TailwindCssRuntimeOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/TailwindCssRuntimeOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -282,11 +282,11 @@
       "description": "Tailwind CSS v4 提取配置。",
       "summary": "Tailwind CSS v4 提取配置。",
       "url": "/zh-cn/docs/api/interfaces/TailwindV4Options",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/TailwindV4Options",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/TailwindV4Options",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/TailwindV4Options",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/TailwindV4Options",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/TailwindV4Options"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/TailwindV4Options",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/TailwindV4Options",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/TailwindV4Options"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -327,11 +327,11 @@
       "description": "UserDefinedOptions 配置总览，按源码分组列出可传入的插件选项。",
       "summary": "UserDefinedOptions 配置总览，按源码分组列出可传入的插件选项。",
       "url": "/zh-cn/docs/api/interfaces/UserDefinedOptions",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/UserDefinedOptions",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/UserDefinedOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/UserDefinedOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/UserDefinedOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/UserDefinedOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/UserDefinedOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -367,11 +367,11 @@
       "description": "weapp-tailwindcss 生成器的调用配置。",
       "summary": "weapp-tailwindcss 生成器的调用配置。",
       "url": "/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateOptions",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateOptions",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerateOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerateOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerateOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerateOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -413,11 +413,11 @@
       "description": "weapp-tailwindcss 生成器的输出结果。",
       "summary": "weapp-tailwindcss 生成器的输出结果。",
       "url": "/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateResult",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateResult",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateResult",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerateResult",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateResult",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerateResult"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerateResult",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateResult",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerateResult"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -462,11 +462,11 @@
       "description": "weapp-tailwindcss 统一生成器实例。",
       "summary": "weapp-tailwindcss 统一生成器实例。",
       "url": "/zh-cn/docs/api/interfaces/WeappTailwindcssGenerator",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssGenerator",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssGenerator",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerator",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssGenerator",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerator"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerator",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssGenerator",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerator"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -505,11 +505,11 @@
       "description": "WeappTailwindcssGeneratorTarget 的类型说明，列出公开属性、参数和使用边界。",
       "summary": "WeappTailwindcssGeneratorTarget 的类型说明，列出公开属性、参数和使用边界。",
       "url": "/zh-cn/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGeneratorTarget"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGeneratorTarget"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -545,11 +545,11 @@
       "description": "WeappTailwindcssPostcssPluginOptions，包含配置项、接口定义与参数说明。",
       "summary": "weapp-tailwindcss PostCSS 插件配置。",
       "url": "/zh-cn/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -595,11 +595,11 @@
       "description": "WeappTailwindcssStyleInjectorOptions 的类型说明，列出公开属性、参数和使用边界。",
       "summary": "string | string[] | null | undefined",
       "url": "/zh-cn/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -645,11 +645,11 @@
       "description": "⚙️ 一般配置：6 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。",
       "summary": "本页收录 6 个配置项，来源于 UserDefinedOptions。",
       "url": "/zh-cn/docs/api/options/general",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/options/general",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/options/general",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/options/general",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/options/general",
-        "x-default": "https://tw.icebreaker.top/docs/api/options/general"
+        "en-US": "https://tw.weapp.dev/docs/api/options/general",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/options/general",
+        "x-default": "https://tw.weapp.dev/docs/api/options/general"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -691,11 +691,11 @@
       "description": "✅ 重要配置：20 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。",
       "summary": "本页收录 20 个配置项，来源于 UserDefinedOptions。",
       "url": "/zh-cn/docs/api/options/important",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/options/important",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/options/important",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/options/important",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/options/important",
-        "x-default": "https://tw.icebreaker.top/docs/api/options/important"
+        "en-US": "https://tw.weapp.dev/docs/api/options/important",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/options/important",
+        "x-default": "https://tw.weapp.dev/docs/api/options/important"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -741,11 +741,11 @@
       "description": "🧭 生命周期：4 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。",
       "summary": "本页收录 4 个配置项，来源于 UserDefinedOptions。",
       "url": "/zh-cn/docs/api/options/lifecycle",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/options/lifecycle",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/options/lifecycle",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/options/lifecycle",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/options/lifecycle",
-        "x-default": "https://tw.icebreaker.top/docs/api/options/lifecycle"
+        "en-US": "https://tw.weapp.dev/docs/api/options/lifecycle",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/options/lifecycle",
+        "x-default": "https://tw.weapp.dev/docs/api/options/lifecycle"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -785,11 +785,11 @@
       "description": "🧩 文件匹配：7 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。",
       "summary": "本页收录 7 个配置项，来源于 UserDefinedOptions。",
       "url": "/zh-cn/docs/api/options/matchers",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/options/matchers",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/options/matchers",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/options/matchers",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/options/matchers",
-        "x-default": "https://tw.icebreaker.top/docs/api/options/matchers"
+        "en-US": "https://tw.weapp.dev/docs/api/options/matchers",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/options/matchers",
+        "x-default": "https://tw.weapp.dev/docs/api/options/matchers"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -832,11 +832,11 @@
       "description": "其他接口索引，列出 12 个 weapp-tailwindcss 运行时接口和补充类型。",
       "summary": "以下接口用于补充配置或运行时能力，本页面仅提供索引。",
       "url": "/zh-cn/docs/api/other-interfaces",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/api/other-interfaces",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/other-interfaces",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/other-interfaces",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/other-interfaces",
-        "x-default": "https://tw.icebreaker.top/docs/api/other-interfaces"
+        "en-US": "https://tw.weapp.dev/docs/api/other-interfaces",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/other-interfaces",
+        "x-default": "https://tw.weapp.dev/docs/api/other-interfaces"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -869,11 +869,11 @@
       "description": "weapp-tailwindcss 使用 Tailwind CSS 4 为 Web、小程序、App WebView、React Native 与 Lynx 生成目标端产物。",
       "summary": "weapp-tailwindcss 是 Tailwind CSS 4 的跨端编译与构建集成层。它根据目标端生成 Web CSS、小程序兼容 CSS、App WebView 样式，并为 React Native 与 Lynx 集成提供共享的候选类和 token 基础。",
       "url": "/zh-cn/docs/intro",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/intro",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/intro",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/intro",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/intro",
-        "x-default": "https://tw.icebreaker.top/docs/intro"
+        "en-US": "https://tw.weapp.dev/docs/intro",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/intro",
+        "x-default": "https://tw.weapp.dev/docs/intro"
       },
       "keywords": [
         "简介",
@@ -908,11 +908,11 @@
       "description": "目前微信开发者工具会默认开启代码自动热重载 compileHotReLoad 功能，这个功能在原生开发中表现良好，但在 uni-app 和 taro 等的框架中，存在一定的问题，参见 issues#37，所以如果你遇到了此类问题，建议关闭 compileHotReLoad 功能。",
       "summary": "目前微信开发者工具会默认开启代码自动热重载 compileHotReLoad 功能，这个功能在原生开发中表现良好，但在 uni-app 和 taro 等的框架中，存在一定的问题，参见 issues#37，所以如果你遇到了此类问题，建议关闭 compileHotReLoad 功能。",
       "url": "/zh-cn/docs/issues",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues",
-        "x-default": "https://tw.icebreaker.top/docs/issues"
+        "en-US": "https://tw.weapp.dev/docs/issues",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues",
+        "x-default": "https://tw.weapp.dev/docs/issues"
       },
       "keywords": [
         "常见问题",
@@ -957,11 +957,11 @@
       "description": "解决在项目中使用 Tailwind CSS `@apply` 时的编辑器告警问题，并提供 VSCode 配置示例。",
       "summary": "我们以 vscode 为例",
       "url": "/zh-cn/docs/issues/at-apply",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/at-apply",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/at-apply",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/at-apply",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/at-apply",
-        "x-default": "https://tw.icebreaker.top/docs/issues/at-apply"
+        "en-US": "https://tw.weapp.dev/docs/issues/at-apply",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/at-apply",
+        "x-default": "https://tw.weapp.dev/docs/issues/at-apply"
       },
       "keywords": [
         "常见问题",
@@ -997,11 +997,11 @@
       "description": "Tailwindcss 默认会把所有的元素的盒模型，设置为 border-box",
       "summary": "Tailwindcss 默认会把所有的元素的盒模型，设置为 border-box",
       "url": "/zh-cn/docs/issues/box-sizing",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/box-sizing",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/box-sizing",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/box-sizing",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/box-sizing",
-        "x-default": "https://tw.icebreaker.top/docs/issues/box-sizing"
+        "en-US": "https://tw.weapp.dev/docs/issues/box-sizing",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/box-sizing",
+        "x-default": "https://tw.weapp.dev/docs/issues/box-sizing"
       },
       "keywords": [
         "常见问题",
@@ -1036,11 +1036,11 @@
       "description": "排查 Taro、uni-app 等小程序项目中 Tailwind CSS 变量丢失导致的渐变、阴影等样式失效问题。",
       "summary": "在 Taro、uni-app 等小程序项目中，可能会遇到 Tailwind CSS 变量丢失的问题。",
       "url": "/zh-cn/docs/issues/css-vars",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/css-vars",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/css-vars",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/css-vars",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/css-vars",
-        "x-default": "https://tw.icebreaker.top/docs/issues/css-vars"
+        "en-US": "https://tw.weapp.dev/docs/issues/css-vars",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/css-vars",
+        "x-default": "https://tw.weapp.dev/docs/issues/css-vars"
       },
       "keywords": [
         "常见问题",
@@ -1078,11 +1078,11 @@
       "description": "使用 weapp-tailwindcss doctor 快速检查 Node.js、Tailwind CSS、框架依赖和构建器配置。",
       "summary": "当项目出现样式未生成、JS 中的 class 未转义、CSS 入口没有被扫描、插件没有在目标端生效等问题时，可以先运行 doctor 命令收集项目配置状态。",
       "url": "/zh-cn/docs/issues/doctor",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/doctor",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/doctor",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/doctor",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/doctor",
-        "x-default": "https://tw.icebreaker.top/docs/issues/doctor"
+        "en-US": "https://tw.weapp.dev/docs/issues/doctor",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/doctor",
+        "x-default": "https://tw.weapp.dev/docs/issues/doctor"
       },
       "keywords": [
         "常见问题",
@@ -1124,11 +1124,11 @@
       "description": "自定义组件使用 externalClasses 时 tailwindcss 样式拆分的问题与解决方案。",
       "summary": "在封装原生自定义组件时经常会用到外部样式类（externalClasses）。例如：",
       "url": "/zh-cn/docs/issues/externalClasses",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/externalClasses",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/externalClasses",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/externalClasses",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/externalClasses",
-        "x-default": "https://tw.icebreaker.top/docs/issues/externalClasses"
+        "en-US": "https://tw.weapp.dev/docs/issues/externalClasses",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/externalClasses",
+        "x-default": "https://tw.weapp.dev/docs/issues/externalClasses"
       },
       "keywords": [
         "externalClasses",
@@ -1166,11 +1166,11 @@
       "description": "使用并在 prettier 注册 prettier-plugin-tailwindcss",
       "summary": "使用并在 prettier 注册 prettier-plugin-tailwindcss",
       "url": "/zh-cn/docs/issues/format",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/format",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/format",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/format",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/format",
-        "x-default": "https://tw.icebreaker.top/docs/issues/format"
+        "en-US": "https://tw.weapp.dev/docs/issues/format",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/format",
+        "x-default": "https://tw.weapp.dev/docs/issues/format"
       },
       "keywords": [
         "常见问题",
@@ -1206,11 +1206,11 @@
       "description": "在 tailwindcss 中，我们常常会这样写:",
       "summary": "在 tailwindcss 中，我们常常会这样写:",
       "url": "/zh-cn/docs/issues/group-and-peer",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/group-and-peer",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/group-and-peer",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/group-and-peer",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/group-and-peer",
-        "x-default": "https://tw.icebreaker.top/docs/issues/group-and-peer"
+        "en-US": "https://tw.weapp.dev/docs/issues/group-and-peer",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/group-and-peer",
+        "x-default": "https://tw.weapp.dev/docs/issues/group-and-peer"
       },
       "keywords": [
         "常见问题",
@@ -1247,11 +1247,11 @@
       "description": "weapp-tailwindcss 是允许你在 js 中编写任意值的，而且 weapp-tailwindcss 会自动帮你做好任意值的转译。",
       "summary": "weapp-tailwindcss 是允许你在 js 中编写任意值的，而且 weapp-tailwindcss 会自动帮你做好任意值的转译。",
       "url": "/zh-cn/docs/issues/js-string-invalid",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/js-string-invalid",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/js-string-invalid",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/js-string-invalid",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/js-string-invalid",
-        "x-default": "https://tw.icebreaker.top/docs/issues/js-string-invalid"
+        "en-US": "https://tw.weapp.dev/docs/issues/js-string-invalid",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/js-string-invalid",
+        "x-default": "https://tw.weapp.dev/docs/issues/js-string-invalid"
       },
       "keywords": [
         "常见问题",
@@ -1286,11 +1286,11 @@
       "description": "在 monorepo 由于存在 hoist 机制，可能会导致 weapp-tailwindcss 和 tailwindcss 通信受阻，这时候需要显式的去指定 tailwindcss 的路径",
       "summary": "在 monorepo 由于存在 hoist 机制，可能会导致 weapp-tailwindcss 和 tailwindcss 通信受阻，这时候需要显式的去指定 tailwindcss 的路径",
       "url": "/zh-cn/docs/issues/monorepo",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/monorepo",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/monorepo",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/monorepo",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/monorepo",
-        "x-default": "https://tw.icebreaker.top/docs/issues/monorepo"
+        "en-US": "https://tw.weapp.dev/docs/issues/monorepo",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/monorepo",
+        "x-default": "https://tw.weapp.dev/docs/issues/monorepo"
       },
       "keywords": [
         "常见问题",
@@ -1325,11 +1325,11 @@
       "description": "在微信小程序中，darkMode 设置为 class/ selector 后，dark:className 类选择器在 button 上无效，看生成样式只作用于 view 和 text 标签",
       "summary": "在微信小程序中，darkMode 设置为 class/ selector 后，dark:className 类选择器在 button 上无效，看生成样式只作用于 view 和 text 标签",
       "url": "/zh-cn/docs/issues/more-tags",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/more-tags",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/more-tags",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/more-tags",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/more-tags",
-        "x-default": "https://tw.icebreaker.top/docs/issues/more-tags"
+        "en-US": "https://tw.weapp.dev/docs/issues/more-tags",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/more-tags",
+        "x-default": "https://tw.weapp.dev/docs/issues/more-tags"
       },
       "keywords": [
         "常见问题",
@@ -1362,11 +1362,11 @@
       "description": "创建项目 test-miniapp, 进入项目目录并初始化 package.json",
       "summary": "创建项目 test-miniapp, 进入项目目录并初始化 package.json",
       "url": "/zh-cn/docs/issues/native-toutiao",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/native-toutiao",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/native-toutiao",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/native-toutiao",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/native-toutiao",
-        "x-default": "https://tw.icebreaker.top/docs/issues/native-toutiao"
+        "en-US": "https://tw.weapp.dev/docs/issues/native-toutiao",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/native-toutiao",
+        "x-default": "https://tw.weapp.dev/docs/issues/native-toutiao"
       },
       "keywords": [
         "常见问题",
@@ -1407,11 +1407,11 @@
       "description": "在不使用 weapp-tailwindcss 的情况下，你直接写这样的 rpx 写法：",
       "summary": "在不使用 weapp-tailwindcss 的情况下，你直接写这样的 rpx 写法：",
       "url": "/zh-cn/docs/issues/rpx-ambiguities",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/rpx-ambiguities",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/rpx-ambiguities",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/rpx-ambiguities",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/rpx-ambiguities",
-        "x-default": "https://tw.icebreaker.top/docs/issues/rpx-ambiguities"
+        "en-US": "https://tw.weapp.dev/docs/issues/rpx-ambiguities",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/rpx-ambiguities",
+        "x-default": "https://tw.weapp.dev/docs/issues/rpx-ambiguities"
       },
       "keywords": [
         "常见问题",
@@ -1450,11 +1450,11 @@
       "description": "在 taro webpack5 环境下，这个插件和外置额外安装的 terser-webpack-plugin 一起使用，会导致插件转义功能失效",
       "summary": "在 taro webpack5 环境下，这个插件和外置额外安装的 terser-webpack-plugin 一起使用，会导致插件转义功能失效",
       "url": "/zh-cn/docs/issues/taro-terser",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/taro-terser",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/taro-terser",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/taro-terser",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/taro-terser",
-        "x-default": "https://tw.icebreaker.top/docs/issues/taro-terser"
+        "en-US": "https://tw.weapp.dev/docs/issues/taro-terser",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/taro-terser",
+        "x-default": "https://tw.weapp.dev/docs/issues/taro-terser"
       },
       "keywords": [
         "常见问题",
@@ -1491,11 +1491,11 @@
       "description": "在使用 tailwindcss 的时候，编译到 h5 平台，使用 uni.toast / taro.toast 时，出现下列的效果",
       "summary": "在使用 tailwindcss 的时候，编译到 h5 平台，使用 uni.toast / taro.toast 时，出现下列的效果",
       "url": "/zh-cn/docs/issues/toast-svg-bug",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/toast-svg-bug",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/toast-svg-bug",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/toast-svg-bug",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/toast-svg-bug",
-        "x-default": "https://tw.icebreaker.top/docs/issues/toast-svg-bug"
+        "en-US": "https://tw.weapp.dev/docs/issues/toast-svg-bug",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/toast-svg-bug",
+        "x-default": "https://tw.weapp.dev/docs/issues/toast-svg-bug"
       },
       "keywords": [
         "常见问题",
@@ -1528,11 +1528,11 @@
       "description": "说明 uni-app Vite 运行到 Android 和 iOS App WebView 后，dark:bg-red-300、text-[45rpx] 这类带特殊字符的 Tailwind class 是否真的不被支持，以及 weapp-tailwindcss 为什么仍会输出 safe class。",
       "summary": "结论先说清楚：普通 uni-app Vite 运行到 Android / iOS App WebView 后，WebView 的 DOM/CSSOM 本身并不是完全不支持 dark:bg-red-300、text-[45rpx] 这类带 :、[、] 的 class。只要 class 原样进入 DOM，并且 CSS selector 做了标准 CSS 转义，例如 .dark\\:bg-red-300、.text-\\[45rpx\\]，真实…",
       "url": "/zh-cn/docs/issues/uni-app-vite-app-special-classes",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/uni-app-vite-app-special-classes",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/uni-app-vite-app-special-classes",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/uni-app-vite-app-special-classes",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/uni-app-vite-app-special-classes",
-        "x-default": "https://tw.icebreaker.top/docs/issues/uni-app-vite-app-special-classes"
+        "en-US": "https://tw.weapp.dev/docs/issues/uni-app-vite-app-special-classes",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/uni-app-vite-app-special-classes",
+        "x-default": "https://tw.weapp.dev/docs/issues/uni-app-vite-app-special-classes"
       },
       "keywords": [
         "常见问题",
@@ -1572,11 +1572,11 @@
       "description": "Taro 项目同时使用 NutUI、@tarojs/plugin-html 和 weapp-tailwindcss 时的 CSS 变量处理方式。",
       "summary": "Taro 项目使用 NutUI 的 Vue 或 React 版本时，通常会同时启用 @tarojs/plugin-html。",
       "url": "/zh-cn/docs/issues/use-with-nutui",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/use-with-nutui",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/use-with-nutui",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/use-with-nutui",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/use-with-nutui",
-        "x-default": "https://tw.icebreaker.top/docs/issues/use-with-nutui"
+        "en-US": "https://tw.weapp.dev/docs/issues/use-with-nutui",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/use-with-nutui",
+        "x-default": "https://tw.weapp.dev/docs/issues/use-with-nutui"
       },
       "keywords": [
         "常见问题",
@@ -1612,11 +1612,11 @@
       "description": "taro 使用 Taroify 的共同注意点:",
       "summary": "taro 使用 Taroify 的共同注意点:",
       "url": "/zh-cn/docs/issues/use-with-taroify",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/use-with-taroify",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/use-with-taroify",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/use-with-taroify",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/use-with-taroify",
-        "x-default": "https://tw.icebreaker.top/docs/issues/use-with-taroify"
+        "en-US": "https://tw.weapp.dev/docs/issues/use-with-taroify",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/use-with-taroify",
+        "x-default": "https://tw.weapp.dev/docs/issues/use-with-taroify"
       },
       "keywords": [
         "常见问题",
@@ -1654,11 +1654,11 @@
       "description": "说明 weapp-tailwindcss 与 wot-design-uni 搭配时的配置要点与常见兼容问题处理方式。",
       "summary": "说明 weapp-tailwindcss 与 wot-design-uni 搭配时的配置要点与常见兼容问题处理方式。",
       "url": "/zh-cn/docs/issues/use-with-wot-design-uni",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/issues/use-with-wot-design-uni",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/use-with-wot-design-uni",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/use-with-wot-design-uni",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/use-with-wot-design-uni",
-        "x-default": "https://tw.icebreaker.top/docs/issues/use-with-wot-design-uni"
+        "en-US": "https://tw.weapp.dev/docs/issues/use-with-wot-design-uni",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/use-with-wot-design-uni",
+        "x-default": "https://tw.weapp.dev/docs/issues/use-with-wot-design-uni"
       },
       "keywords": [
         "常见问题",
@@ -1691,11 +1691,11 @@
       "description": "weapp-tailwindcss v4 项目升级到 v5 的迁移清单，覆盖依赖、Tailwind 入口、构建插件、H5/Web 与 uni-app x。",
       "summary": "v5 最大的变化不是 API 名字，而是职责边界变了。",
       "url": "/zh-cn/docs/migrations/v5",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/migrations/v5",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/migrations/v5",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/migrations/v5",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/migrations/v5",
-        "x-default": "https://tw.icebreaker.top/docs/migrations/v5"
+        "en-US": "https://tw.weapp.dev/docs/migrations/v5",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/migrations/v5",
+        "x-default": "https://tw.weapp.dev/docs/migrations/v5"
       },
       "keywords": [
         "迁移",
@@ -1741,11 +1741,11 @@
       "description": "weapp-tailwindcss 可用配置概览",
       "summary": "该章节的详细配置已经迁移至 API / 配置项文档。",
       "url": "/zh-cn/docs/options",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/options",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/options",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/options",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/options",
-        "x-default": "https://tw.icebreaker.top/docs/options"
+        "en-US": "https://tw.weapp.dev/docs/options",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/options",
+        "x-default": "https://tw.weapp.dev/docs/options"
       },
       "keywords": [
         "配置项",
@@ -1778,11 +1778,11 @@
       "description": "arbitrary values 是 Tailwind CSS v4 的核心能力之一，本页介绍其在跨端样式中的使用方式。",
       "summary": "arbitrary values 是 Tailwind CSS v4 的核心能力。使用 CSS-first 入口后，可以直接在模板和 @apply 中使用带类型提示的任意值。",
       "url": "/zh-cn/docs/options/arbitrary-values",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/options/arbitrary-values",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/options/arbitrary-values",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/options/arbitrary-values",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/options/arbitrary-values",
-        "x-default": "https://tw.icebreaker.top/docs/options/arbitrary-values"
+        "en-US": "https://tw.weapp.dev/docs/options/arbitrary-values",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/options/arbitrary-values",
+        "x-default": "https://tw.weapp.dev/docs/options/arbitrary-values"
       },
       "keywords": [
         "配置项",
@@ -1815,11 +1815,11 @@
       "description": "默认对所有 jsx、js、wxml、wxss 中出现的 tailwindcss 运行时工具类进行转化，如果不需要转化可以使用 weappTwIgnore 标识符来进行忽略:",
       "summary": "默认对所有 jsx、js、wxml、wxss 中出现的 tailwindcss 运行时工具类进行转化，如果不需要转化可以使用 weappTwIgnore 标识符来进行忽略:",
       "url": "/zh-cn/docs/options/comments",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/options/comments",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/options/comments",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/options/comments",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/options/comments",
-        "x-default": "https://tw.icebreaker.top/docs/options/comments"
+        "en-US": "https://tw.weapp.dev/docs/options/comments",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/options/comments",
+        "x-default": "https://tw.weapp.dev/docs/options/comments"
       },
       "keywords": [
         "配置项",
@@ -1852,11 +1852,11 @@
       "description": "weapp-tailwindcss 同时提供 ESM 与 CommonJS 入口，并内置多个二级导出以适配 webpack、Vite、Gulp、Tailwind 宏等不同组合。下面按用途分类进行说明。",
       "summary": "weapp-tailwindcss 同时提供 ESM 与 CommonJS 入口，并内置多个二级导出以适配 webpack、Vite、Gulp、Tailwind 宏等不同组合。下面按用途分类进行说明。",
       "url": "/zh-cn/docs/options/exports",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/options/exports",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/options/exports",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/options/exports",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/options/exports",
-        "x-default": "https://tw.icebreaker.top/docs/options/exports"
+        "en-US": "https://tw.weapp.dev/docs/options/exports",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/options/exports",
+        "x-default": "https://tw.weapp.dev/docs/options/exports"
       },
       "keywords": [
         "配置项",
@@ -1894,11 +1894,11 @@
       "description": "weapp-tailwindcss/reset 提供可组合的 reset 插件，支持 preset、内置组件 reset 与自定义扩展。",
       "summary": "weapp-tailwindcss/reset 提供一组面向小程序生态的 reset 插件能力，默认会：",
       "url": "/zh-cn/docs/options/reset",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/options/reset",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/options/reset",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/options/reset",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/options/reset",
-        "x-default": "https://tw.icebreaker.top/docs/options/reset"
+        "en-US": "https://tw.weapp.dev/docs/options/reset",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/options/reset",
+        "x-default": "https://tw.weapp.dev/docs/options/reset"
       },
       "keywords": [
         "配置项",
@@ -1936,11 +1936,11 @@
       "description": "对于 web 来说，多主题色的需求是非常常见的，比如 暗黑模式 就是一个极其常见的需求，",
       "summary": "对于 web 来说，多主题色的需求是非常常见的，比如 暗黑模式 就是一个极其常见的需求，",
       "url": "/zh-cn/docs/quick-start/apply-themes",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/apply-themes",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/apply-themes",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/apply-themes",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/apply-themes",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/apply-themes"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/apply-themes",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/apply-themes",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/apply-themes"
       },
       "keywords": [
         "快速开始",
@@ -1979,11 +1979,11 @@
       "description": "通过 cssOptions 配置 px2rpx 和 unitsToPx，处理小程序、多端和 uni-app x 场景里的单位转换。",
       "summary": "最常见的情况是 rem 转 rpx，直接在 WeappTailwindcss 的 cssOptions 里开启 rem2rpx：",
       "url": "/zh-cn/docs/quick-start/css-unit-transform",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/css-unit-transform",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/css-unit-transform",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/css-unit-transform",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/css-unit-transform",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/css-unit-transform"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/css-unit-transform",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/css-unit-transform",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/css-unit-transform"
       },
       "keywords": [
         "快速开始",
@@ -2019,11 +2019,11 @@
       "description": "使用 weapp-tailwindcss/core 在自研构建器或脚本中处理 Tailwind CSS、小程序模板与 JavaScript，并正确维护运行时类名集合。",
       "summary": "weapp-tailwindcss/core 提供不依赖 Vite、Webpack 或 Gulp 生命周期的文本转换 API。它适合自研构建器、批处理脚本、构建平台适配器，以及需要直接管理内存产物的工具。",
       "url": "/zh-cn/docs/quick-start/frameworks/api",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/api",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/api",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/api",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/api",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/api"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/api",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/api",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/api"
       },
       "keywords": [
         "Node.js API",
@@ -2069,11 +2069,11 @@
       "description": "HBuilderX Vue3 Vite 项目接入 Tailwind CSS 4 与 weapp-tailwindcss 的配置方式，以及 Vue2 Webpack 存量项目的处理建议。",
       "summary": "这条路线适合 HBuilderX 创建的 Vue3 Vite 项目。HBuilderX 会改变运行时的 process.cwd()，所以扫描路径和 cssEntries 都建议使用绝对路径。",
       "url": "/zh-cn/docs/quick-start/frameworks/hbuilderx",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/hbuilderx",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/hbuilderx",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/hbuilderx",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/hbuilderx",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/hbuilderx"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/hbuilderx",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/hbuilderx",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/hbuilderx"
       },
       "keywords": [
         "快速开始",
@@ -2110,11 +2110,11 @@
       "description": "在 ReactLynx + Rspeedy 项目中接入 Tailwind CSS 4 与 weapp-tailwindcss。",
       "summary": "@weapp-tailwindcss/lynx 通过 Rspeedy 的 Rspack 生命周期生成 Lynx 可消费的普通 CSS。它保留 ReactLynx 原生 className，不引入运行时样式表或 JSX 转换。",
       "url": "/zh-cn/docs/quick-start/frameworks/lynx",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/lynx",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/lynx",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/lynx",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/lynx",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/lynx"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/lynx",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/lynx",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/lynx"
       },
       "keywords": [
         "Lynx",
@@ -2154,11 +2154,11 @@
       "description": "Mpx 项目接入 Tailwind CSS 4 与 weapp-tailwindcss。",
       "summary": "Mpx 使用 Webpack 链路，应显式配置 cssEntries，让 weapp-tailwindcss 稳定定位 Tailwind CSS 入口。",
       "url": "/zh-cn/docs/quick-start/frameworks/mpx",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/mpx",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/mpx",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/mpx",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/mpx",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/mpx"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/mpx",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/mpx",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/mpx"
       },
       "keywords": [
         "快速开始",
@@ -2196,11 +2196,11 @@
       "description": "模板项目 weapp-tailwindcss-gulp-template(gulp打包)",
       "summary": "模板项目 weapp-tailwindcss-gulp-template(gulp打包)",
       "url": "/zh-cn/docs/quick-start/frameworks/native",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/native",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/native",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/native",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/native",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/native"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/native",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/native",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/native"
       },
       "keywords": [
         "快速开始",
@@ -2238,11 +2238,11 @@
       "description": "Taro Webpack / Vite 项目接入 Tailwind CSS 4 与 weapp-tailwindcss。",
       "summary": "Taro v4 可以走 Webpack，也可以走 Vite。新项目优先选 Webpack，问题少一些；Taro Vite 可以用，但更适合已有项目排障。",
       "url": "/zh-cn/docs/quick-start/frameworks/taro",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/taro",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/taro",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/taro",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/taro",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/taro"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/taro",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/taro",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/taro"
       },
       "keywords": [
         "快速开始",
@@ -2282,11 +2282,11 @@
       "description": "uni-app CLI Vue3 Vite 项目接入 Tailwind CSS 4 与 weapp-tailwindcss。",
       "summary": "当前文档面向 tailwindcss@4。当前文档仅维护 Tailwind CSS 4 接入说明。",
       "url": "/zh-cn/docs/quick-start/frameworks/uni-app-vite",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/uni-app-vite",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/uni-app-vite",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/uni-app-vite",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-vite",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/uni-app-vite",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-vite"
       },
       "keywords": [
         "快速开始",
@@ -2328,11 +2328,11 @@
       "description": "在 HBuilderX 的 uni-app x 项目中接入 Tailwind CSS 4 与 weapp-tailwindcss，并覆盖 Web、小程序、Android、iOS 与鸿蒙。",
       "summary": "uni-app x 使用 HBuilderX 和 @dcloudio/vite-plugin-uni。建议配合内置的 uniAppX 预设使用。",
       "url": "/zh-cn/docs/quick-start/frameworks/uni-app-x",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/uni-app-x",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/uni-app-x",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-x",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/uni-app-x",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-x"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-x",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/uni-app-x",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-x"
       },
       "keywords": [
         "快速开始",
@@ -2378,11 +2378,11 @@
       "description": "使用 cssEntries、@source 与内置 styleInjector，让主包、普通分包和独立分包分别生成自己的 Tailwind CSS 样式入口。",
       "summary": "小程序拆分主包、普通分包和独立分包后，通常不希望把所有 Tailwind 工具类复制到每一份样式产物中。更合理的结果是：",
       "url": "/zh-cn/docs/quick-start/independent-pkg",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/independent-pkg",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/independent-pkg",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/independent-pkg",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/independent-pkg",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/independent-pkg"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/independent-pkg",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/independent-pkg",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/independent-pkg"
       },
       "keywords": [
         "tailwindcss",
@@ -2425,11 +2425,11 @@
       "description": "安装 Tailwind CSS 与 weapp-tailwindcss。",
       "summary": "这一页只处理包安装。框架注册方式放到下一章，CLI 的完整参数见 weapp-tw CLI 使用指南。",
       "url": "/zh-cn/docs/quick-start/install",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/install",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/install",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/install",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/install",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/install"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/install",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/install",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/install"
       },
       "keywords": [
         "快速开始",
@@ -2465,11 +2465,11 @@
       "description": "tailwindcss-intellisense 在 v4 中必须看到 @import \"tailwindcss\" 才会将工作区视为 Tailwind 根文件。",
       "summary": "tailwindcss-intellisense 在 Tailwind CSS 4 中必须看到 @import \"tailwindcss\" 才会将工作区视为 Tailwind 根文件。生成模式也推荐在真实入口直接写 @import 'tailwindcss';，再由 WeappTailwindcss 输出小程序目标 CSS。",
       "url": "/zh-cn/docs/quick-start/intelliSense",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/intelliSense",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/intelliSense",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/intelliSense",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/intelliSense",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/intelliSense"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/intelliSense",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/intelliSense",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/intelliSense"
       },
       "keywords": [
         "快速开始",
@@ -2509,11 +2509,11 @@
       "description": "原生微信小程序项目接入 Tailwind CSS 4 与 weapp-tailwindcss 的安装与配置步骤。",
       "summary": "本教程演示原生微信小程序 JS 模板接入 tailwindcss@4 与 weapp-tailwindcss 的方式。重点是两件事：源码要进入 Tailwind 扫描范围，小程序目标转译交给 weapp-tailwindcss。",
       "url": "/zh-cn/docs/quick-start/native/0.install",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/native/0.install",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/native/0.install",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/native/0.install",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/native/0.install",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/native/0.install"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/native/0.install",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/native/0.install",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/native/0.install"
       },
       "keywords": [
         "快速开始",
@@ -2554,11 +2554,11 @@
       "description": "这样 weapp-tailwindcss 和 weapp-vite 就被安装在你的本地了",
       "summary": "这样 weapp-tailwindcss 和 weapp-vite 就被安装在你的本地了",
       "url": "/zh-cn/docs/quick-start/native/1.install-plugin",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/native/1.install-plugin",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/native/1.install-plugin",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/native/1.install-plugin",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/native/1.install-plugin",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/native/1.install-plugin"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/native/1.install-plugin",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/native/1.install-plugin",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/native/1.install-plugin"
       },
       "keywords": [
         "快速开始",
@@ -2600,11 +2600,11 @@
       "description": "使用 @weapp-tailwindcss/react-native 将 Tailwind CSS v4 编译为 React Native styles。",
       "summary": "@weapp-tailwindcss/react-native 是独立的 React Native 编译器包。它复用 weapp-tailwindcss 的 Tailwind CSS v4 source 扫描和候选集合，将生成的原始 CSS 编译为内存中的 RN style manifest；运行时不依赖 NativeWind 或 react-native-css。",
       "url": "/zh-cn/docs/quick-start/react-native-expo",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/react-native-expo",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/react-native-expo",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/react-native-expo",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/react-native-expo",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/react-native-expo"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/react-native-expo",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/react-native-expo",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/react-native-expo"
       },
       "keywords": [
         "React Native",
@@ -2643,11 +2643,11 @@
       "description": "在 uni-app 多端项目中使用 Tailwind CSS v4 的 @custom-variant，为原子类生成平台条件编译样式。",
       "summary": "Tailwind CSS v4 可以直接用 @custom-variant 描述 uni-app 的条件编译分支，不再需要额外声明 weapp-tailwindcss/css-macro。它适合多端项目里少量平台差异样式，比如“微信小程序蓝色，H5 橙色”，或者“非微信小程序隐藏某个样式分支”。",
       "url": "/zh-cn/docs/quick-start/uni-app-css-macro",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/uni-app-css-macro",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/uni-app-css-macro",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/uni-app-css-macro",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/uni-app-css-macro",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/uni-app-css-macro"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/uni-app-css-macro",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/uni-app-css-macro",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/uni-app-css-macro"
       },
       "keywords": [
         "快速开始",
@@ -2689,11 +2689,11 @@
       "description": "Tailwind CSS 4 把配置入口移到 CSS：主题变量与自定义工具都可以用原生语法声明。weapp-tailwindcss 已经适配这套编译流程。本篇用 30 分钟搭好一套 tailwi…",
       "summary": "Tailwind CSS 4 把配置入口移到 CSS：主题变量与自定义工具都可以用原生语法声明。weapp-tailwindcss 已经适配这套编译流程。本篇用 30 分钟搭好一套 tailwindcss@4 + weapp-tailwindcss 的基础开发环境，并说明几个必须看懂的配置点。",
       "url": "/zh-cn/docs/quick-start/v4/tutorial",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/v4/tutorial",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/v4/tutorial",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/v4/tutorial",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/v4/tutorial",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/v4/tutorial",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/v4/tutorial"
       },
       "keywords": [
         "快速开始",
@@ -2735,11 +2735,11 @@
       "description": "Tailwind CSS 4 带来了更强大的原生语法，但在小程序环境中仍需平衡兼容性与团队协作。本篇从工程化视角出发，帮助你在真实项目中稳定地落地、优化与维护。",
       "summary": "Tailwind CSS 4 带来了更强大的原生语法，但在小程序环境中仍需平衡兼容性与团队协作。本篇从工程化视角出发，帮助你在真实项目中稳定地落地、优化与维护。",
       "url": "/zh-cn/docs/quick-start/v4/tutorial/advanced",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/v4/tutorial/advanced",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/v4/tutorial/advanced",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial/advanced",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/v4/tutorial/advanced",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial/advanced"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/v4/tutorial/advanced",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/v4/tutorial/advanced",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/v4/tutorial/advanced"
       },
       "keywords": [
         "快速开始",
@@ -2778,11 +2778,11 @@
       "description": "基础环境搭建完成后，真正的挑战来自“如何把抽象的原子类应用到真实业务”。本篇精选小程序常见的页面模块，结合 tailwindcss@4 的新指令，总结出一套从设计拆解到代码落地的流程。",
       "summary": "基础环境搭建完成后，真正的挑战来自“如何把抽象的原子类应用到真实业务”。本篇精选小程序常见的页面模块，结合 tailwindcss@4 的新指令，总结出一套从设计拆解到代码落地的流程。",
       "url": "/zh-cn/docs/quick-start/v4/tutorial/workflow",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/v4/tutorial/workflow",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/v4/tutorial/workflow",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial/workflow",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/v4/tutorial/workflow",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial/workflow"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/v4/tutorial/workflow",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/v4/tutorial/workflow",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/v4/tutorial/workflow"
       },
       "keywords": [
         "快速开始",
@@ -2822,11 +2822,11 @@
       "description": "在纯 Web / Vite 项目中直接使用 weapp-tailwindcss 生成浏览器原生 Tailwind CSS。",
       "summary": "weapp-tailwindcss 可以直接用于纯 Web 项目。它适合小程序、H5/Web 共用同一套 Tailwind CSS 生成链路，或者在普通 Vite Web 项目里验证浏览器原生输出。",
       "url": "/zh-cn/docs/quick-start/web",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/web",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/web",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/web",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/web",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/web"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/web",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/web",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/web"
       },
       "keywords": [
         "Web",
@@ -2863,11 +2863,11 @@
       "description": "介绍 weapp-tailwindcss 对 wxs/sjs 的转义处理能力、适用版本与相关配置项。",
       "summary": "介绍 weapp-tailwindcss 对 wxs/sjs 的转义处理能力、适用版本与相关配置项。",
       "url": "/zh-cn/docs/quick-start/wxs",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/quick-start/wxs",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/wxs",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/wxs",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/wxs",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/wxs"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/wxs",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/wxs",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/wxs"
       },
       "keywords": [
         "快速开始",
@@ -2900,11 +2900,11 @@
       "description": "从历史演进到 Tailwind 实战与 AI 友好工作流的技术分享索引",
       "summary": "2. Tailwind 设计理念",
       "url": "/zh-cn/docs/tailwindcss",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss"
       },
       "keywords": [
         "tailwindcss",
@@ -2946,11 +2946,11 @@
       "description": "提示模板、校验链与 React/Vue 示例运行方式",
       "summary": "如果你准备马上把这套方法用起来，最小可行版本其实很简单：",
       "url": "/zh-cn/docs/tailwindcss/ai-friendly-and-demos",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/ai-friendly-and-demos",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/ai-friendly-and-demos",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/ai-friendly-and-demos",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/ai-friendly-and-demos",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/ai-friendly-and-demos"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/ai-friendly-and-demos",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/ai-friendly-and-demos",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/ai-friendly-and-demos"
       },
       "keywords": [
         "tailwindcss",
@@ -2996,11 +2996,11 @@
       "description": "传统 CSS 架构的命名规则、设计思想与示例",
       "summary": "传统 CSS 架构的命名规则、设计思想与示例",
       "url": "/zh-cn/docs/tailwindcss/bem-and-oocss",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/bem-and-oocss",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/bem-and-oocss",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/bem-and-oocss",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/bem-and-oocss",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/bem-and-oocss"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/bem-and-oocss",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/bem-and-oocss",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/bem-and-oocss"
       },
       "keywords": [
         "tailwindcss",
@@ -3038,11 +3038,11 @@
       "description": "设计 token、variants、性能与代码评审清单",
       "summary": "所以这一页不是教你“还能再写哪些类”，而是帮你建立一套不容易失控的使用方式。",
       "url": "/zh-cn/docs/tailwindcss/best-practices",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/best-practices",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/best-practices",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/best-practices",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/best-practices",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/best-practices"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/best-practices",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/best-practices",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/best-practices"
       },
       "keywords": [
         "tailwindcss",
@@ -3088,11 +3088,11 @@
       "description": "为什么会有 CSS，它如何从字体颜色到布局体系，再到原子化与多运行时协作",
       "summary": "为什么会有 CSS，它如何从字体颜色到布局体系，再到原子化与多运行时协作",
       "url": "/zh-cn/docs/tailwindcss/css-origin-evolution",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/css-origin-evolution",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/css-origin-evolution",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/css-origin-evolution",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/css-origin-evolution",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/css-origin-evolution"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/css-origin-evolution",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/css-origin-evolution",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/css-origin-evolution"
       },
       "keywords": [
         "tailwindcss",
@@ -3132,11 +3132,11 @@
       "description": "同一 UI 在 Raw CSS、Sass、CSS Modules、CSS-in-JS、Tailwind、Headless + cva/tv 下的代码与预期产物",
       "summary": "预期产物：单一 CSS，无拆分；全局命名容易冲突。",
       "url": "/zh-cn/docs/tailwindcss/demos",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/demos",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/demos",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/demos",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/demos",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/demos"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/demos",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/demos",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/demos"
       },
       "keywords": [
         "tailwindcss",
@@ -3181,11 +3181,11 @@
       "description": "去重、变体工厂与从设计到产物的闭环",
       "summary": "如果你在手机上只扫一眼，这一节的核心其实就是一句话：没有 tailwind-merge，组件开放 className 往往就不够可靠。",
       "url": "/zh-cn/docs/tailwindcss/merge-and-variants",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/merge-and-variants",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/merge-and-variants",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/merge-and-variants",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/merge-and-variants",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/merge-and-variants"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/merge-and-variants",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/merge-and-variants",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/merge-and-variants"
       },
       "keywords": [
         "tailwindcss",
@@ -3231,11 +3231,11 @@
       "description": "回顾 PostCSS 的发展、核心机制与对现代 CSS 的贡献，并梳理常用插件与最佳实践。",
       "summary": "回顾 PostCSS 的发展、核心机制与对现代 CSS 的贡献，并梳理常用插件与最佳实践。",
       "url": "/zh-cn/docs/tailwindcss/postcss",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/postcss",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/postcss",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/postcss",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/postcss",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/postcss"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/postcss",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/postcss",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/postcss"
       },
       "keywords": [
         "tailwindcss",
@@ -3278,11 +3278,11 @@
       "description": "复制即用的组件模式、Radix + Tailwind + merge 架构带来的行业影响",
       "summary": "1) 设计 tokens：通过 Tailwind 主题或 CSS 变量定义颜色、半径、间距。",
       "url": "/zh-cn/docs/tailwindcss/shadcn-ui",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/shadcn-ui",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/shadcn-ui",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/shadcn-ui",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/shadcn-ui",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/shadcn-ui"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/shadcn-ui",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/shadcn-ui",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/shadcn-ui"
       },
       "keywords": [
         "tailwindcss",
@@ -3323,11 +3323,11 @@
       "description": "在微前端、组件库或第三方嵌入场景避免样式互相污染的可选方案与工作原理",
       "summary": "在微前端、组件库或第三方嵌入场景避免样式互相污染的可选方案与工作原理",
       "url": "/zh-cn/docs/tailwindcss/style-isolation",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/style-isolation",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/style-isolation",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/style-isolation",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/style-isolation",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/style-isolation"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/style-isolation",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/style-isolation",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/style-isolation"
       },
       "keywords": [
         "tailwindcss",
@@ -3369,11 +3369,11 @@
       "description": "Tailwind 本质是把设计 token 压成原子类，再让组件接口重新长出语义",
       "summary": "换句话说，这里的“入口”更适合作为推荐工程实践来理解，而不是 Tailwind 唯一正确的使用方式。",
       "url": "/zh-cn/docs/tailwindcss/tailwind-core",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/tailwind-core",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/tailwind-core",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/tailwind-core",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/tailwind-core",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/tailwind-core"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/tailwind-core",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/tailwind-core",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/tailwind-core"
       },
       "keywords": [
         "tailwindcss",
@@ -3417,11 +3417,11 @@
       "description": "生态、类型提示、merge 去重、运行时与迁移成本的取舍",
       "summary": "1) 是否要复用现成组件/范式？要 → Tailwind；无所谓 → 继续。",
       "url": "/zh-cn/docs/tailwindcss/tailwind-vs-unocss",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/tailwind-vs-unocss",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/tailwind-vs-unocss",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/tailwind-vs-unocss",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/tailwind-vs-unocss",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/tailwind-vs-unocss"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/tailwind-vs-unocss",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/tailwind-vs-unocss",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/tailwind-vs-unocss"
       },
       "keywords": [
         "tailwindcss",
@@ -3462,11 +3462,11 @@
       "description": "说明如何在 weapp-tailwindcss 中开启部分 UnoCSS class 写法兼容，以及当前支持边界。",
       "summary": "weapp-tailwindcss 仍然使用 Tailwind CSS 作为样式生成引擎。unocss 配置只负责兼容一部分常见的 UnoCSS class 写法，默认关闭。",
       "url": "/zh-cn/docs/tailwindcss/unocss-compatibility",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/unocss-compatibility",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/unocss-compatibility",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/unocss-compatibility",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/unocss-compatibility",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/unocss-compatibility"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/unocss-compatibility",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/unocss-compatibility",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/unocss-compatibility"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -3504,11 +3504,11 @@
       "description": "weapp-tailwindcss 默认 Tailwind CSS 4 生成模式下的工程细节、兼容性与排障说明。",
       "summary": "本页只维护 Tailwind CSS 4 默认生成模式相关说明。",
       "url": "/zh-cn/docs/tailwindcss/v4-reference",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/v4-reference",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/v4-reference",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/v4-reference",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/v4-reference",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/v4-reference"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/v4-reference",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/v4-reference",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/v4-reference"
       },
       "keywords": [
         "默认 v4 模式",
@@ -3554,11 +3554,11 @@
       "description": "对比 weapp-tailwindcss v5 generator 与 Tailwind 官方 Vite 插件的能力映射",
       "summary": "v5 generator 的目标不是替代 Tailwind CSS v4 的 CSS-first 语义，而是在同一份 Tailwind 输入上增加小程序专用输出能力。target: 'web' 应与官方 Tailwind 浏览器产物保持同源；target: 'weapp' 则在同一 classSet 基础上生成小程序需要且兼容的 CSS。",
       "url": "/zh-cn/docs/tailwindcss/v5-official-plugin-parity",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/v5-official-plugin-parity",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/v5-official-plugin-parity",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/v5-official-plugin-parity",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/v5-official-plugin-parity",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/v5-official-plugin-parity"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/v5-official-plugin-parity",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/v5-official-plugin-parity",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/v5-official-plugin-parity"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -3595,11 +3595,11 @@
       "description": "使用 weapp-tw 构建 Tailwind CSS、监听文件、生成 source map、规范化候选类，并按需输出小程序兼容 CSS。",
       "summary": "@weapp-tailwindcss/cli 独立发布 weapp-tw 和 weapp-tailwindcss 两个等价命令。构建命令默认输出 Web CSS，并对齐当前 Tailwind CSS CLI 的输入、输出、watch、优化和 source map 行为。",
       "url": "/zh-cn/docs/tools/weapp-tw-cli",
-      "canonical": "https://tw.icebreaker.top/zh-cn/docs/tools/weapp-tw-cli",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/tools/weapp-tw-cli",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tools/weapp-tw-cli",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tools/weapp-tw-cli",
-        "x-default": "https://tw.icebreaker.top/docs/tools/weapp-tw-cli"
+        "en-US": "https://tw.weapp.dev/docs/tools/weapp-tw-cli",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tools/weapp-tw-cli",
+        "x-default": "https://tw.weapp.dev/docs/tools/weapp-tw-cli"
       },
       "keywords": [
         "weapp-tw",

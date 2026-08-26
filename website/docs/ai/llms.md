@@ -40,18 +40,18 @@ keywords:
 
 ## 线上地址
 
-- `https://tw.icebreaker.top/llms.txt`
-- `https://tw.icebreaker.top/llms-full.txt`
-- `https://tw.icebreaker.top/zh-cn/llms-index.json`
-- `https://tw.icebreaker.top/zh-cn/llms-index-full.json`
-- `https://tw.icebreaker.top/llms-quickstart.txt`
-- `https://tw.icebreaker.top/llms-api.txt`
+- `https://tw.weapp.dev/llms.txt`
+- `https://tw.weapp.dev/llms-full.txt`
+- `https://tw.weapp.dev/zh-cn/llms-index.json`
+- `https://tw.weapp.dev/zh-cn/llms-index-full.json`
+- `https://tw.weapp.dev/llms-quickstart.txt`
+- `https://tw.weapp.dev/llms-api.txt`
 
 中文资产统一位于 `/zh-cn`，英文资产位于站点根路径。
 
 ## 给 AI 的示例提示词
 
-> 你可以从 https://tw.icebreaker.top/llms-quickstart.txt 和 https://tw.icebreaker.top/llms-api.txt 读取 weapp-tailwindcss 的入门与配置说明，回答时请引用相关链接。
+> 你可以从 https://tw.weapp.dev/llms-quickstart.txt 和 https://tw.weapp.dev/llms-api.txt 读取 weapp-tailwindcss 的入门与配置说明，回答时请引用相关链接。
 
 ## 离线使用
 

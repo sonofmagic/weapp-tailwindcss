@@ -127,4 +127,4 @@ weapp-tw patch             # Shorthand alias
 - TypeScript strict mode
 - repoctl with pnpm change intents for versioning and release management
 - Commitlint enforces conventional commits
-- Primary documentation is in Chinese (tw.icebreaker.top)
+- Primary documentation is in Chinese (tw.weapp.dev)

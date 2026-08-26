@@ -1,9 +1,9 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-21T01:55:33.511Z",
+  "generatedAt": "2026-08-26T07:27:22.741Z",
   "locale": "en-US",
   "contentTier": "primary",
-  "siteUrl": "https://tw.icebreaker.top",
+  "siteUrl": "https://tw.weapp.dev",
   "totals": {
     "all": 83,
     "docs": 83,
@@ -20,11 +20,11 @@
       "description": "weapp-tailwindcss API home page, providing configuration item grouping and interface index.",
       "summary": "weapp-tailwindcss API home page, providing configuration item grouping and interface index.",
       "url": "/docs/api",
-      "canonical": "https://tw.icebreaker.top/docs/api",
+      "canonical": "https://tw.weapp.dev/docs/api",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api",
-        "x-default": "https://tw.icebreaker.top/docs/api"
+        "en-US": "https://tw.weapp.dev/docs/api",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api",
+        "x-default": "https://tw.weapp.dev/docs/api"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -60,11 +60,11 @@
       "description": "Tailwind runtime behavior configuration.",
       "summary": "Tailwind runtime behavior configuration.",
       "url": "/docs/api/interfaces/ApplyOptions",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/ApplyOptions",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/ApplyOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/ApplyOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/ApplyOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/ApplyOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/ApplyOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/ApplyOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/ApplyOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -102,11 +102,11 @@
       "description": "Tailwind class name cache configuration.",
       "summary": "Tailwind class name cache configuration.",
       "url": "/docs/api/interfaces/CacheOptions",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/CacheOptions",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/CacheOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/CacheOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/CacheOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/CacheOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CacheOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CacheOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CacheOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -147,11 +147,11 @@
       "description": "Type description for ExtractOptions, listing public properties, parameters, and usage boundaries.",
       "summary": "Output configuration for class name extraction results.",
       "url": "/docs/api/interfaces/ExtractOptions",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/ExtractOptions",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/ExtractOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/ExtractOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/ExtractOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/ExtractOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/ExtractOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/ExtractOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/ExtractOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -191,11 +191,11 @@
       "description": "Runtime configuration by Tailwind version.",
       "summary": "Runtime configuration by Tailwind version.",
       "url": "/docs/api/interfaces/TailwindCssOptions",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssOptions",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/TailwindCssOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/TailwindCssOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/TailwindCssOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/TailwindCssOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/TailwindCssOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -237,11 +237,11 @@
       "description": "Tailwind CSS runtime root configuration.",
       "summary": "Tailwind CSS runtime root configuration.",
       "url": "/docs/api/interfaces/TailwindCssRuntimeOptions",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssRuntimeOptions",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/TailwindCssRuntimeOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssRuntimeOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/TailwindCssRuntimeOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/TailwindCssRuntimeOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/TailwindCssRuntimeOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/TailwindCssRuntimeOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/TailwindCssRuntimeOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -282,11 +282,11 @@
       "description": "Tailwind CSS v4 extraction configuration.",
       "summary": "Tailwind CSS v4 extraction configuration.",
       "url": "/docs/api/interfaces/TailwindV4Options",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/TailwindV4Options",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/TailwindV4Options",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/TailwindV4Options",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/TailwindV4Options",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/TailwindV4Options"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/TailwindV4Options",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/TailwindV4Options",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/TailwindV4Options"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -327,11 +327,11 @@
       "description": "UserDefinedOptions configuration overview, lists the plug-in options that can be passed in by source code group.",
       "summary": "UserDefinedOptions configuration overview, lists the plug-in options that can be passed in by source code group.",
       "url": "/docs/api/interfaces/UserDefinedOptions",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/UserDefinedOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/UserDefinedOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/UserDefinedOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/UserDefinedOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/UserDefinedOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -367,11 +367,11 @@
       "description": "Invocation configuration of weapp-tailwindcss generator.",
       "summary": "Invocation configuration of weapp-tailwindcss generator.",
       "url": "/docs/api/interfaces/WeappTailwindcssGenerateOptions",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerateOptions",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerateOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerateOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerateOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerateOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerateOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -413,11 +413,11 @@
       "description": "The output of the weapp-tailwindcss generator.",
       "summary": "The output of the weapp-tailwindcss generator.",
       "url": "/docs/api/interfaces/WeappTailwindcssGenerateResult",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerateResult",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerateResult",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerateResult",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateResult",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerateResult"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerateResult",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssGenerateResult",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerateResult"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -462,11 +462,11 @@
       "description": "weapp-tailwindcss unified generator instance.",
       "summary": "weapp-tailwindcss unified generator instance.",
       "url": "/docs/api/interfaces/WeappTailwindcssGenerator",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerator",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerator",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerator",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssGenerator",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGenerator"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerator",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssGenerator",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGenerator"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -505,11 +505,11 @@
       "description": "Type description for WeappTailwindcssGeneratorTarget, listing public properties, parameters, and usage boundaries.",
       "summary": "Type description for WeappTailwindcssGeneratorTarget, listing public properties, parameters, and usage boundaries.",
       "url": "/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssGeneratorTarget"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssGeneratorTarget",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssGeneratorTarget"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -545,11 +545,11 @@
       "description": "WeappTailwindcssPostcssPluginOptions: API contracts, types, and integration details for cross-platform Tailwind CSS workflows.",
       "summary": "weapp-tailwindcss PostCSS plugin configuration.",
       "url": "/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -595,11 +595,11 @@
       "description": "Type description for WeappTailwindcssStyleInjectorOptions, listing public properties, parameters, and usage boundaries.",
       "summary": "string | string[] | null | undefined",
       "url": "/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
-      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
-        "x-default": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions"
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -645,11 +645,11 @@
       "description": "⚙️ General configuration: 6 UserDefinedOptions configuration items, including type, default value and source code description.",
       "summary": "This page contains 6 configuration items, sourced from UserDefinedOptions.",
       "url": "/docs/api/options/general",
-      "canonical": "https://tw.icebreaker.top/docs/api/options/general",
+      "canonical": "https://tw.weapp.dev/docs/api/options/general",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/options/general",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/options/general",
-        "x-default": "https://tw.icebreaker.top/docs/api/options/general"
+        "en-US": "https://tw.weapp.dev/docs/api/options/general",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/options/general",
+        "x-default": "https://tw.weapp.dev/docs/api/options/general"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -691,11 +691,11 @@
       "description": "✅ Important configuration: 20 UserDefinedOptions configuration items, including type, default value and source code description.",
       "summary": "This page contains 20 configuration items, sourced from UserDefinedOptions.",
       "url": "/docs/api/options/important",
-      "canonical": "https://tw.icebreaker.top/docs/api/options/important",
+      "canonical": "https://tw.weapp.dev/docs/api/options/important",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/options/important",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/options/important",
-        "x-default": "https://tw.icebreaker.top/docs/api/options/important"
+        "en-US": "https://tw.weapp.dev/docs/api/options/important",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/options/important",
+        "x-default": "https://tw.weapp.dev/docs/api/options/important"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -741,11 +741,11 @@
       "description": "🧭 Life cycle: 4 UserDefinedOptions configuration items, including type, default value and source code description.",
       "summary": "This page contains 4 configuration items, sourced from UserDefinedOptions.",
       "url": "/docs/api/options/lifecycle",
-      "canonical": "https://tw.icebreaker.top/docs/api/options/lifecycle",
+      "canonical": "https://tw.weapp.dev/docs/api/options/lifecycle",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/options/lifecycle",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/options/lifecycle",
-        "x-default": "https://tw.icebreaker.top/docs/api/options/lifecycle"
+        "en-US": "https://tw.weapp.dev/docs/api/options/lifecycle",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/options/lifecycle",
+        "x-default": "https://tw.weapp.dev/docs/api/options/lifecycle"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -785,11 +785,11 @@
       "description": "🧩 File matching: 7 UserDefinedOptions configuration items, including type, default value and source code description.",
       "summary": "This page contains 7 configuration items, sourced from UserDefinedOptions.",
       "url": "/docs/api/options/matchers",
-      "canonical": "https://tw.icebreaker.top/docs/api/options/matchers",
+      "canonical": "https://tw.weapp.dev/docs/api/options/matchers",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/options/matchers",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/options/matchers",
-        "x-default": "https://tw.icebreaker.top/docs/api/options/matchers"
+        "en-US": "https://tw.weapp.dev/docs/api/options/matchers",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/options/matchers",
+        "x-default": "https://tw.weapp.dev/docs/api/options/matchers"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -832,11 +832,11 @@
       "description": "Additional interfaces index, listing 12 weapp-tailwindcss runtime interfaces and supplementary types.",
       "summary": "The following interfaces are used to supplement configuration or runtime capabilities. This page only provides an index.",
       "url": "/docs/api/other-interfaces",
-      "canonical": "https://tw.icebreaker.top/docs/api/other-interfaces",
+      "canonical": "https://tw.weapp.dev/docs/api/other-interfaces",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/api/other-interfaces",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/api/other-interfaces",
-        "x-default": "https://tw.icebreaker.top/docs/api/other-interfaces"
+        "en-US": "https://tw.weapp.dev/docs/api/other-interfaces",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/other-interfaces",
+        "x-default": "https://tw.weapp.dev/docs/api/other-interfaces"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -869,11 +869,11 @@
       "description": "weapp-tailwindcss compiles Tailwind CSS 4 for Web, mini programs, App WebView, React Native, and Lynx targets.",
       "summary": "weapp-tailwindcss is the cross-platform compiler and build integration layer for Tailwind CSS 4. It generates browser CSS, mini-program-compatible CSS, and App WebView styles, while sharing candidate and token foundatio…",
       "url": "/docs/intro",
-      "canonical": "https://tw.icebreaker.top/docs/intro",
+      "canonical": "https://tw.weapp.dev/docs/intro",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/intro",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/intro",
-        "x-default": "https://tw.icebreaker.top/docs/intro"
+        "en-US": "https://tw.weapp.dev/docs/intro",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/intro",
+        "x-default": "https://tw.weapp.dev/docs/intro"
       },
       "keywords": [
         "introduction",
@@ -908,11 +908,11 @@
       "description": "Currently, the WeChat developer tools enable the code automatic hot reloading compileHotReLoad function by default. This function performs well in native development, but there are certain problems in frameworks such as uni-app and taro. See issues#37. Therefore, if you encounter such problems, it is recommended to turn off the compileHotReLoad function.",
       "summary": "Currently, the WeChat developer tools enable the code automatic hot reloading compileHotReLoad function by default. This function performs well in native development, but there are certain problems in frameworks such as…",
       "url": "/docs/issues",
-      "canonical": "https://tw.icebreaker.top/docs/issues",
+      "canonical": "https://tw.weapp.dev/docs/issues",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues",
-        "x-default": "https://tw.icebreaker.top/docs/issues"
+        "en-US": "https://tw.weapp.dev/docs/issues",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues",
+        "x-default": "https://tw.weapp.dev/docs/issues"
       },
       "keywords": [
         "FAQ",
@@ -958,11 +958,11 @@
       "description": "Solve the editor warning problem when using Tailwind CSS `@apply` in the project, and provide VSCode configuration examples.",
       "summary": "Let’s take vscode as an example",
       "url": "/docs/issues/at-apply",
-      "canonical": "https://tw.icebreaker.top/docs/issues/at-apply",
+      "canonical": "https://tw.weapp.dev/docs/issues/at-apply",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/at-apply",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/at-apply",
-        "x-default": "https://tw.icebreaker.top/docs/issues/at-apply"
+        "en-US": "https://tw.weapp.dev/docs/issues/at-apply",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/at-apply",
+        "x-default": "https://tw.weapp.dev/docs/issues/at-apply"
       },
       "keywords": [
         "FAQ",
@@ -998,11 +998,11 @@
       "description": "Tailwindcss sets the box model of all elements to border-box by default.",
       "summary": "Tailwindcss will set the box model of all elements to border-box by default",
       "url": "/docs/issues/box-sizing",
-      "canonical": "https://tw.icebreaker.top/docs/issues/box-sizing",
+      "canonical": "https://tw.weapp.dev/docs/issues/box-sizing",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/box-sizing",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/box-sizing",
-        "x-default": "https://tw.icebreaker.top/docs/issues/box-sizing"
+        "en-US": "https://tw.weapp.dev/docs/issues/box-sizing",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/box-sizing",
+        "x-default": "https://tw.weapp.dev/docs/issues/box-sizing"
       },
       "keywords": [
         "FAQ",
@@ -1037,11 +1037,11 @@
       "description": "Troubleshoot style failure issues such as gradients and shadows caused by the loss of Tailwind CSS variables in small program projects such as Taro and uni-app.",
       "summary": "In small program projects such as Taro and uni-app, you may encounter the problem of Tailwind CSS variables being lost.",
       "url": "/docs/issues/css-vars",
-      "canonical": "https://tw.icebreaker.top/docs/issues/css-vars",
+      "canonical": "https://tw.weapp.dev/docs/issues/css-vars",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/css-vars",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/css-vars",
-        "x-default": "https://tw.icebreaker.top/docs/issues/css-vars"
+        "en-US": "https://tw.weapp.dev/docs/issues/css-vars",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/css-vars",
+        "x-default": "https://tw.weapp.dev/docs/issues/css-vars"
       },
       "keywords": [
         "FAQ",
@@ -1079,11 +1079,11 @@
       "description": "Use weapp-tailwindcss doctor to quickly check Node.js, Tailwind CSS, framework dependencies, and builder configurations.",
       "summary": "When the project has problems such as styles not being generated, classes in JS not being escaped, CSS entries not being scanned, plug-ins not taking effect on the target, etc., you can first run the doctor command to c…",
       "url": "/docs/issues/doctor",
-      "canonical": "https://tw.icebreaker.top/docs/issues/doctor",
+      "canonical": "https://tw.weapp.dev/docs/issues/doctor",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/doctor",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/doctor",
-        "x-default": "https://tw.icebreaker.top/docs/issues/doctor"
+        "en-US": "https://tw.weapp.dev/docs/issues/doctor",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/doctor",
+        "x-default": "https://tw.weapp.dev/docs/issues/doctor"
       },
       "keywords": [
         "FAQ",
@@ -1125,11 +1125,11 @@
       "description": "Problems and solutions for tailwindcss style splitting when custom components use externalClasses.",
       "summary": "External style classes (externalClasses) are often used when encapsulating native custom components. For example:",
       "url": "/docs/issues/externalClasses",
-      "canonical": "https://tw.icebreaker.top/docs/issues/externalClasses",
+      "canonical": "https://tw.weapp.dev/docs/issues/externalClasses",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/externalClasses",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/externalClasses",
-        "x-default": "https://tw.icebreaker.top/docs/issues/externalClasses"
+        "en-US": "https://tw.weapp.dev/docs/issues/externalClasses",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/externalClasses",
+        "x-default": "https://tw.weapp.dev/docs/issues/externalClasses"
       },
       "keywords": [
         "externalClasses",
@@ -1167,11 +1167,11 @@
       "description": "Use and register prettier-plugin-tailwindcss in prettier",
       "summary": "Use and register with prettier prettier-plugin-tailwindcss",
       "url": "/docs/issues/format",
-      "canonical": "https://tw.icebreaker.top/docs/issues/format",
+      "canonical": "https://tw.weapp.dev/docs/issues/format",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/format",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/format",
-        "x-default": "https://tw.icebreaker.top/docs/issues/format"
+        "en-US": "https://tw.weapp.dev/docs/issues/format",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/format",
+        "x-default": "https://tw.weapp.dev/docs/issues/format"
       },
       "keywords": [
         "FAQ",
@@ -1207,11 +1207,11 @@
       "description": "In tailwindcss, we often write like this:",
       "summary": "In tailwindcss, we often write like this:",
       "url": "/docs/issues/group-and-peer",
-      "canonical": "https://tw.icebreaker.top/docs/issues/group-and-peer",
+      "canonical": "https://tw.weapp.dev/docs/issues/group-and-peer",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/group-and-peer",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/group-and-peer",
-        "x-default": "https://tw.icebreaker.top/docs/issues/group-and-peer"
+        "en-US": "https://tw.weapp.dev/docs/issues/group-and-peer",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/group-and-peer",
+        "x-default": "https://tw.weapp.dev/docs/issues/group-and-peer"
       },
       "keywords": [
         "FAQ",
@@ -1248,11 +1248,11 @@
       "description": "weapp-tailwindcss allows you to write any value in js, and weapp-tailwindcss will automatically help you translate any value.",
       "summary": "weapp-tailwindcss allows you to write any value in js, and weapp-tailwindcss will automatically help you translate any value.",
       "url": "/docs/issues/js-string-invalid",
-      "canonical": "https://tw.icebreaker.top/docs/issues/js-string-invalid",
+      "canonical": "https://tw.weapp.dev/docs/issues/js-string-invalid",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/js-string-invalid",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/js-string-invalid",
-        "x-default": "https://tw.icebreaker.top/docs/issues/js-string-invalid"
+        "en-US": "https://tw.weapp.dev/docs/issues/js-string-invalid",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/js-string-invalid",
+        "x-default": "https://tw.weapp.dev/docs/issues/js-string-invalid"
       },
       "keywords": [
         "FAQ",
@@ -1287,11 +1287,11 @@
       "description": "Due to the hoist mechanism in monorepo, the communication between weapp-tailwindcss and tailwindcss may be blocked. In this case, you need to explicitly specify the path of tailwindcss.",
       "summary": "In monorepo, due to the existence of the hoist mechanism, the communication between weapp-tailwindcss and tailwindcss may be blocked. In this case, you need to explicitly specify the path of tailwindcss.",
       "url": "/docs/issues/monorepo",
-      "canonical": "https://tw.icebreaker.top/docs/issues/monorepo",
+      "canonical": "https://tw.weapp.dev/docs/issues/monorepo",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/monorepo",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/monorepo",
-        "x-default": "https://tw.icebreaker.top/docs/issues/monorepo"
+        "en-US": "https://tw.weapp.dev/docs/issues/monorepo",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/monorepo",
+        "x-default": "https://tw.weapp.dev/docs/issues/monorepo"
       },
       "keywords": [
         "FAQ",
@@ -1326,11 +1326,11 @@
       "description": "In the WeChat applet, after darkMode is set to class/selector, the dark:className class selector is invalid on the button. It can be seen that the generated style only affects the view and text tags.",
       "summary": "In the WeChat applet, after darkMode is set to class/",
       "url": "/docs/issues/more-tags",
-      "canonical": "https://tw.icebreaker.top/docs/issues/more-tags",
+      "canonical": "https://tw.weapp.dev/docs/issues/more-tags",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/more-tags",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/more-tags",
-        "x-default": "https://tw.icebreaker.top/docs/issues/more-tags"
+        "en-US": "https://tw.weapp.dev/docs/issues/more-tags",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/more-tags",
+        "x-default": "https://tw.weapp.dev/docs/issues/more-tags"
       },
       "keywords": [
         "FAQ",
@@ -1363,11 +1363,11 @@
       "description": "Create the project test-miniapp, enter the project directory and initialize package.json",
       "summary": "Create project test-miniapp, enter the project directory and initialize package.json",
       "url": "/docs/issues/native-toutiao",
-      "canonical": "https://tw.icebreaker.top/docs/issues/native-toutiao",
+      "canonical": "https://tw.weapp.dev/docs/issues/native-toutiao",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/native-toutiao",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/native-toutiao",
-        "x-default": "https://tw.icebreaker.top/docs/issues/native-toutiao"
+        "en-US": "https://tw.weapp.dev/docs/issues/native-toutiao",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/native-toutiao",
+        "x-default": "https://tw.weapp.dev/docs/issues/native-toutiao"
       },
       "keywords": [
         "FAQ",
@@ -1408,11 +1408,11 @@
       "description": "Without using weapp-tailwindcss, you can directly write rpx like this:",
       "summary": "Without using weapp-tailwindcss, you can directly write rpx like this:",
       "url": "/docs/issues/rpx-ambiguities",
-      "canonical": "https://tw.icebreaker.top/docs/issues/rpx-ambiguities",
+      "canonical": "https://tw.weapp.dev/docs/issues/rpx-ambiguities",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/rpx-ambiguities",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/rpx-ambiguities",
-        "x-default": "https://tw.icebreaker.top/docs/issues/rpx-ambiguities"
+        "en-US": "https://tw.weapp.dev/docs/issues/rpx-ambiguities",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/rpx-ambiguities",
+        "x-default": "https://tw.weapp.dev/docs/issues/rpx-ambiguities"
       },
       "keywords": [
         "FAQ",
@@ -1451,11 +1451,11 @@
       "description": "In the taro webpack5 environment, using this plug-in with the externally installed terser-webpack-plugin will cause the plug-in escaping function to become invalid.",
       "summary": "In the environment of taro",
       "url": "/docs/issues/taro-terser",
-      "canonical": "https://tw.icebreaker.top/docs/issues/taro-terser",
+      "canonical": "https://tw.weapp.dev/docs/issues/taro-terser",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/taro-terser",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/taro-terser",
-        "x-default": "https://tw.icebreaker.top/docs/issues/taro-terser"
+        "en-US": "https://tw.weapp.dev/docs/issues/taro-terser",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/taro-terser",
+        "x-default": "https://tw.weapp.dev/docs/issues/taro-terser"
       },
       "keywords": [
         "FAQ",
@@ -1492,11 +1492,11 @@
       "description": "When using tailwindcss, compile to h5 platform, and use uni.toast / taro.toast, the following effects will appear",
       "summary": "When using tailwindcss, compile to the h5 platform, and use uni.toast / taro.toast, the following effects will occur",
       "url": "/docs/issues/toast-svg-bug",
-      "canonical": "https://tw.icebreaker.top/docs/issues/toast-svg-bug",
+      "canonical": "https://tw.weapp.dev/docs/issues/toast-svg-bug",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/toast-svg-bug",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/toast-svg-bug",
-        "x-default": "https://tw.icebreaker.top/docs/issues/toast-svg-bug"
+        "en-US": "https://tw.weapp.dev/docs/issues/toast-svg-bug",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/toast-svg-bug",
+        "x-default": "https://tw.weapp.dev/docs/issues/toast-svg-bug"
       },
       "keywords": [
         "FAQ",
@@ -1529,11 +1529,11 @@
       "description": "Explain whether Tailwind classes with special characters such as dark:bg-red-300 and text-[45rpx] are really not supported after running uni-app Vite into Android and iOS App WebView, and why weapp-tailwindcss still outputs the safe class.",
       "summary": "The conclusion should be clear first: after ordinary uni-app Vite is run into Android/iOS App WebView, the DOM/CSSOM of WebView itself does not completely support dark:bg-red-300, text-[45rpx] and other classes with :,…",
       "url": "/docs/issues/uni-app-vite-app-special-classes",
-      "canonical": "https://tw.icebreaker.top/docs/issues/uni-app-vite-app-special-classes",
+      "canonical": "https://tw.weapp.dev/docs/issues/uni-app-vite-app-special-classes",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/uni-app-vite-app-special-classes",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/uni-app-vite-app-special-classes",
-        "x-default": "https://tw.icebreaker.top/docs/issues/uni-app-vite-app-special-classes"
+        "en-US": "https://tw.weapp.dev/docs/issues/uni-app-vite-app-special-classes",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/uni-app-vite-app-special-classes",
+        "x-default": "https://tw.weapp.dev/docs/issues/uni-app-vite-app-special-classes"
       },
       "keywords": [
         "FAQ",
@@ -1573,11 +1573,11 @@
       "description": "How the Taro project handles CSS variables when using NutUI, @tarojs/plugin-html and weapp-tailwindcss at the same time.",
       "summary": "When a Taro project uses the Vue or React version of NutUI, @tarojs/plugin-html is usually enabled at the same time.",
       "url": "/docs/issues/use-with-nutui",
-      "canonical": "https://tw.icebreaker.top/docs/issues/use-with-nutui",
+      "canonical": "https://tw.weapp.dev/docs/issues/use-with-nutui",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/use-with-nutui",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/use-with-nutui",
-        "x-default": "https://tw.icebreaker.top/docs/issues/use-with-nutui"
+        "en-US": "https://tw.weapp.dev/docs/issues/use-with-nutui",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/use-with-nutui",
+        "x-default": "https://tw.weapp.dev/docs/issues/use-with-nutui"
       },
       "keywords": [
         "FAQ",
@@ -1613,11 +1613,11 @@
       "description": "taro Common points to note when using Taroify:",
       "summary": "taro Common points to note when using Taroify:",
       "url": "/docs/issues/use-with-taroify",
-      "canonical": "https://tw.icebreaker.top/docs/issues/use-with-taroify",
+      "canonical": "https://tw.weapp.dev/docs/issues/use-with-taroify",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/use-with-taroify",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/use-with-taroify",
-        "x-default": "https://tw.icebreaker.top/docs/issues/use-with-taroify"
+        "en-US": "https://tw.weapp.dev/docs/issues/use-with-taroify",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/use-with-taroify",
+        "x-default": "https://tw.weapp.dev/docs/issues/use-with-taroify"
       },
       "keywords": [
         "FAQ",
@@ -1655,11 +1655,11 @@
       "description": "Explain the configuration points and common compatibility problem handling methods when combining weapp-tailwindcss with wot-design-uni.",
       "summary": "Explain the configuration points and common compatibility problem handling methods when combining weapp-tailwindcss with wot-design-uni.",
       "url": "/docs/issues/use-with-wot-design-uni",
-      "canonical": "https://tw.icebreaker.top/docs/issues/use-with-wot-design-uni",
+      "canonical": "https://tw.weapp.dev/docs/issues/use-with-wot-design-uni",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/issues/use-with-wot-design-uni",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/issues/use-with-wot-design-uni",
-        "x-default": "https://tw.icebreaker.top/docs/issues/use-with-wot-design-uni"
+        "en-US": "https://tw.weapp.dev/docs/issues/use-with-wot-design-uni",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/use-with-wot-design-uni",
+        "x-default": "https://tw.weapp.dev/docs/issues/use-with-wot-design-uni"
       },
       "keywords": [
         "FAQ",
@@ -1692,11 +1692,11 @@
       "description": "Migration checklist for upgrading the weapp-tailwindcss v4 project to v5, covering dependencies, Tailwind entry, build plug-ins, H5/Web and uni-app x.",
       "summary": "The biggest change in v5 is not the API name, but the change in the boundaries of responsibilities.",
       "url": "/docs/migrations/v5",
-      "canonical": "https://tw.icebreaker.top/docs/migrations/v5",
+      "canonical": "https://tw.weapp.dev/docs/migrations/v5",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/migrations/v5",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/migrations/v5",
-        "x-default": "https://tw.icebreaker.top/docs/migrations/v5"
+        "en-US": "https://tw.weapp.dev/docs/migrations/v5",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/migrations/v5",
+        "x-default": "https://tw.weapp.dev/docs/migrations/v5"
       },
       "keywords": [
         "migrate",
@@ -1742,11 +1742,11 @@
       "description": "Overview of available configurations for weapp-tailwindcss",
       "summary": "The detailed configuration of this chapter has been moved to API / Configuration Item Document.",
       "url": "/docs/options",
-      "canonical": "https://tw.icebreaker.top/docs/options",
+      "canonical": "https://tw.weapp.dev/docs/options",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/options",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/options",
-        "x-default": "https://tw.icebreaker.top/docs/options"
+        "en-US": "https://tw.weapp.dev/docs/options",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/options",
+        "x-default": "https://tw.weapp.dev/docs/options"
       },
       "keywords": [
         "Configuration items",
@@ -1779,11 +1779,11 @@
       "description": "Arbitrary values are a core Tailwind CSS v4 capability for cross-platform styles.",
       "summary": "arbitrary values are a core Tailwind CSS v4 capability. With a CSS-first entry, you can use typed arbitrary values in templates and @apply.",
       "url": "/docs/options/arbitrary-values",
-      "canonical": "https://tw.icebreaker.top/docs/options/arbitrary-values",
+      "canonical": "https://tw.weapp.dev/docs/options/arbitrary-values",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/options/arbitrary-values",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/options/arbitrary-values",
-        "x-default": "https://tw.icebreaker.top/docs/options/arbitrary-values"
+        "en-US": "https://tw.weapp.dev/docs/options/arbitrary-values",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/options/arbitrary-values",
+        "x-default": "https://tw.weapp.dev/docs/options/arbitrary-values"
       },
       "keywords": [
         "Configuration items",
@@ -1816,11 +1816,11 @@
       "description": "By default, all tailwindcss runtime tool classes appearing in jsx, js, wxml, and wxss are converted. If conversion is not required, you can use the weappTwIgnore identifier to ignore it:",
       "summary": "By default, all jsx runtime tool classes appearing in js, wxml, wxss, and",
       "url": "/docs/options/comments",
-      "canonical": "https://tw.icebreaker.top/docs/options/comments",
+      "canonical": "https://tw.weapp.dev/docs/options/comments",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/options/comments",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/options/comments",
-        "x-default": "https://tw.icebreaker.top/docs/options/comments"
+        "en-US": "https://tw.weapp.dev/docs/options/comments",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/options/comments",
+        "x-default": "https://tw.weapp.dev/docs/options/comments"
       },
       "keywords": [
         "Configuration items",
@@ -1853,11 +1853,11 @@
       "description": "weapp-tailwindcss provides both ESM and CommonJS entrances, and has multiple built-in secondary exports to adapt to different combinations of webpack, Vite, Gulp, Tailwind macros, etc. The following is a description based on usage classification.",
       "summary": "weapp-tailwindcss provides both ESM and CommonJS entrances, and has multiple built-in secondary exports to adapt to different combinations of webpack, Vite, Gulp, Tailwind macros, etc. The following is a description bas…",
       "url": "/docs/options/exports",
-      "canonical": "https://tw.icebreaker.top/docs/options/exports",
+      "canonical": "https://tw.weapp.dev/docs/options/exports",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/options/exports",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/options/exports",
-        "x-default": "https://tw.icebreaker.top/docs/options/exports"
+        "en-US": "https://tw.weapp.dev/docs/options/exports",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/options/exports",
+        "x-default": "https://tw.weapp.dev/docs/options/exports"
       },
       "keywords": [
         "Configuration items",
@@ -1895,11 +1895,11 @@
       "description": "weapp-tailwindcss/reset provides a composable reset plug-in that supports preset, built-in component reset and custom extensions.",
       "summary": "weapp-tailwindcss/reset provides a set of reset plug-in capabilities for the mini program ecosystem. By default, it will:",
       "url": "/docs/options/reset",
-      "canonical": "https://tw.icebreaker.top/docs/options/reset",
+      "canonical": "https://tw.weapp.dev/docs/options/reset",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/options/reset",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/options/reset",
-        "x-default": "https://tw.icebreaker.top/docs/options/reset"
+        "en-US": "https://tw.weapp.dev/docs/options/reset",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/options/reset",
+        "x-default": "https://tw.weapp.dev/docs/options/reset"
       },
       "keywords": [
         "Configuration items",
@@ -1937,11 +1937,11 @@
       "description": "For the web, the need for multiple theme colors is very common. For example, dark mode is an extremely common need.",
       "summary": "For web, the need for multiple theme colors is very common. For example, dark mode is an extremely common need.",
       "url": "/docs/quick-start/apply-themes",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/apply-themes",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/apply-themes",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/apply-themes",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/apply-themes",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/apply-themes"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/apply-themes",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/apply-themes",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/apply-themes"
       },
       "keywords": [
         "quick start",
@@ -1980,11 +1980,11 @@
       "description": "Configure px2rpx and unitsToPx through cssOptions to handle unit conversion in applet, multi-terminal and uni-app x scenarios.",
       "summary": "The most common situation is to convert rem to rpx and directly open WeappTailwindcss in cssOptions of rem2rpx:",
       "url": "/docs/quick-start/css-unit-transform",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/css-unit-transform",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/css-unit-transform",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/css-unit-transform",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/css-unit-transform",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/css-unit-transform"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/css-unit-transform",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/css-unit-transform",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/css-unit-transform"
       },
       "keywords": [
         "quick start",
@@ -2020,11 +2020,11 @@
       "description": "Use weapp-tailwindcss/core to handle Tailwind CSS, applet templates, and JavaScript in self-developed builders or scripts, and correctly maintain runtime class name collections.",
       "summary": "weapp-tailwindcss/core provides a text conversion API that does not rely on the Vite, Webpack or Gulp lifecycle. It is suitable for self-developed builders, batch scripts, build platform adapters, and tools that need to…",
       "url": "/docs/quick-start/frameworks/api",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/api",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/frameworks/api",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/api",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/api",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/api"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/api",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/api",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/api"
       },
       "keywords": [
         "Node.js API",
@@ -2070,11 +2070,11 @@
       "description": "How to configure the HBuilderX Vue3 Vite project to access Tailwind CSS 4 and weapp-tailwindcss, as well as suggestions for processing Vue2 Webpack stock projects.",
       "summary": "This route is suitable for Vue3 Vite projects created by HBuilderX. HBuilderX will change process.cwd() at runtime, so it is recommended to use absolute paths for both scan paths and cssEntries.",
       "url": "/docs/quick-start/frameworks/hbuilderx",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/hbuilderx",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/frameworks/hbuilderx",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/hbuilderx",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/hbuilderx",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/hbuilderx"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/hbuilderx",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/hbuilderx",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/hbuilderx"
       },
       "keywords": [
         "quick start",
@@ -2111,11 +2111,11 @@
       "description": "Integrate Tailwind CSS 4 and weapp-tailwindcss into a ReactLynx and Rspeedy project.",
       "summary": "@weapp-tailwindcss/lynx uses Rspeedy's Rspack lifecycle to generate standard CSS that Lynx can consume. It preserves ReactLynx's native className and does not introduce a runtime stylesheet or JSX transform.",
       "url": "/docs/quick-start/frameworks/lynx",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/lynx",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/frameworks/lynx",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/lynx",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/lynx",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/lynx"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/lynx",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/lynx",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/lynx"
       },
       "keywords": [
         "Lynx",
@@ -2153,11 +2153,11 @@
       "description": "The Mpx project integrates Tailwind CSS 4 and weapp-tailwindcss.",
       "summary": "Mpx uses Webpack link, cssEntries should be configured explicitly so that weapp-tailwindcss can stably locate the Tailwind CSS entry.",
       "url": "/docs/quick-start/frameworks/mpx",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/mpx",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/frameworks/mpx",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/mpx",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/mpx",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/mpx"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/mpx",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/mpx",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/mpx"
       },
       "keywords": [
         "quick start",
@@ -2195,11 +2195,11 @@
       "description": "Template project weapp-tailwindcss-gulp-template (gulp packaging)",
       "summary": "Template project weapp-tailwindcss-gulp-template(gulp packaging)",
       "url": "/docs/quick-start/frameworks/native",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/native",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/frameworks/native",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/native",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/native",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/native"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/native",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/native",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/native"
       },
       "keywords": [
         "quick start",
@@ -2237,11 +2237,11 @@
       "description": "The Taro Webpack / Vite project integrates Tailwind CSS 4 and weapp-tailwindcss.",
       "summary": "Taro v4 can use Webpack or Vite. For new projects, Webpack is preferred, as it has fewer problems; Taro Vite can be used, but it is more suitable for troubleshooting existing projects.",
       "url": "/docs/quick-start/frameworks/taro",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/taro",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/frameworks/taro",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/taro",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/taro",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/taro"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/taro",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/taro",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/taro"
       },
       "keywords": [
         "quick start",
@@ -2281,11 +2281,11 @@
       "description": "The uni-app CLI Vue3 Vite project integrates Tailwind CSS 4 and weapp-tailwindcss.",
       "summary": "The current documentation is for tailwindcss@4. The current documentation only maintains Tailwind CSS 4 access instructions.",
       "url": "/docs/quick-start/frameworks/uni-app-vite",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-vite",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/uni-app-vite",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-vite",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/uni-app-vite",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-vite"
       },
       "keywords": [
         "quick start",
@@ -2327,11 +2327,11 @@
       "description": "HBuilderX uni-app x project integrates Tailwind CSS 4 and weapp-tailwindcss.",
       "summary": "uni-app x uses HBuilderX and @dcloudio/vite-plugin-uni. It is recommended to use it with the built-in uniAppX preset.",
       "url": "/docs/quick-start/frameworks/uni-app-x",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-x",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-x",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-x",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/uni-app-x",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-x"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-x",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/uni-app-x",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-x"
       },
       "keywords": [
         "quick start",
@@ -2377,11 +2377,11 @@
       "description": "Use cssEntries, @source and the built-in styleInjector to let the main package, ordinary sub-package and independent sub-package generate their own Tailwind CSS style entries.",
       "summary": "After the applet is split into the main package, ordinary sub-package and independent sub-package, it is usually not desirable to copy all Tailwind tool classes into each style product. A more reasonable result is:",
       "url": "/docs/quick-start/independent-pkg",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/independent-pkg",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/independent-pkg",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/independent-pkg",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/independent-pkg",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/independent-pkg"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/independent-pkg",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/independent-pkg",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/independent-pkg"
       },
       "keywords": [
         "tailwindcss",
@@ -2424,11 +2424,11 @@
       "description": "Install Tailwind CSS and weapp-tailwindcss.",
       "summary": "This page only covers package installation. Framework-specific registration comes in the next chapter; see the weapp-tw CLI guide for the complete CLI reference.",
       "url": "/docs/quick-start/install",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/install",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/install",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/install",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/install",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/install"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/install",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/install",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/install"
       },
       "keywords": [
         "quick start",
@@ -2464,11 +2464,11 @@
       "description": "tailwindcss-intellisense In v4 you must see @import \"tailwindcss\" to treat the workspace as a Tailwind root file.",
       "summary": "tailwindcss-intellisense You must see @import \"tailwindcss\" in Tailwind CSS 4 for the workspace to be considered the Tailwind root file. In the generation mode, it is also recommended to directly write @import 'tailwind…",
       "url": "/docs/quick-start/intelliSense",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/intelliSense",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/intelliSense",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/intelliSense",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/intelliSense",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/intelliSense"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/intelliSense",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/intelliSense",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/intelliSense"
       },
       "keywords": [
         "quick start",
@@ -2508,11 +2508,11 @@
       "description": "Installation and configuration steps for native WeChat applet projects to access Tailwind CSS 4 and weapp-tailwindcss.",
       "summary": "This tutorial demonstrates how to connect the native WeChat applet JS template to tailwindcss@4 and weapp-tailwindcss. The key points are two things: the source code must enter the Tailwind scanning range, and the mini…",
       "url": "/docs/quick-start/native/0.install",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/native/0.install",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/native/0.install",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/native/0.install",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/native/0.install",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/native/0.install"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/native/0.install",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/native/0.install",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/native/0.install"
       },
       "keywords": [
         "quick start",
@@ -2553,11 +2553,11 @@
       "description": "This way weapp-tailwindcss and weapp-vite will be installed locally.",
       "summary": "In the project directory, execute:",
       "url": "/docs/quick-start/native/1.install-plugin",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/native/1.install-plugin",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/native/1.install-plugin",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/native/1.install-plugin",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/native/1.install-plugin",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/native/1.install-plugin"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/native/1.install-plugin",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/native/1.install-plugin",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/native/1.install-plugin"
       },
       "keywords": [
         "quick start",
@@ -2599,11 +2599,11 @@
       "description": "Compile Tailwind CSS v4 to React Native styles using @weapp-tailwindcss/react-native.",
       "summary": "@weapp-tailwindcss/react-native is a standalone React Native compiler package. It reuses weapp-tailwindcss's Tailwind CSS v4 source scan and candidate collection, and compiles the generated raw CSS into an in-memory RN…",
       "url": "/docs/quick-start/react-native-expo",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/react-native-expo",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/react-native-expo",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/react-native-expo",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/react-native-expo",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/react-native-expo"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/react-native-expo",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/react-native-expo",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/react-native-expo"
       },
       "keywords": [
         "React Native",
@@ -2642,11 +2642,11 @@
       "description": "Use @custom-variant of Tailwind CSS v4 in uni-app multi-end project to generate platform conditional compilation styles for atomic classes.",
       "summary": "Tailwind CSS v4 can directly use @custom-variant to describe the conditional compilation branch of uni-app, and no additional declaration of weapp-tailwindcss/css-macro is needed. It is suitable for a small number of pl…",
       "url": "/docs/quick-start/uni-app-css-macro",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/uni-app-css-macro",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/uni-app-css-macro",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/uni-app-css-macro",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/uni-app-css-macro",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/uni-app-css-macro"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/uni-app-css-macro",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/uni-app-css-macro",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/uni-app-css-macro"
       },
       "keywords": [
         "quick start",
@@ -2688,11 +2688,11 @@
       "description": "Tailwind CSS 4 moves the configuration entry to CSS: theme variables and custom tools can be declared using native syntax. weapp-tailwindcss has adapted to this compilation process. This article takes 30 minutes to build a tailwi...",
       "summary": "Tailwind CSS 4 moves the configuration entry to CSS: theme variables and custom tools can be declared using native syntax. weapp-tailwindcss has adapted to this compilation process. This article takes 30 minutes to set…",
       "url": "/docs/quick-start/v4/tutorial",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/v4/tutorial",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/v4/tutorial",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/v4/tutorial",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/v4/tutorial",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/v4/tutorial"
       },
       "keywords": [
         "quick start",
@@ -2734,11 +2734,11 @@
       "description": "Tailwind CSS 4 brings more powerful native syntax, but it still needs to balance compatibility and team collaboration in a small program environment. This article starts from an engineering perspective to help you stably implement, optimize and maintain it in real projects.",
       "summary": "Tailwind CSS 4 brings more powerful native syntax, but it still needs to balance compatibility and team collaboration in a small program environment. This article starts from an engineering perspective to help you stabl…",
       "url": "/docs/quick-start/v4/tutorial/advanced",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial/advanced",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/v4/tutorial/advanced",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial/advanced",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/v4/tutorial/advanced",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial/advanced"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/v4/tutorial/advanced",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/v4/tutorial/advanced",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/v4/tutorial/advanced"
       },
       "keywords": [
         "quick start",
@@ -2777,11 +2777,11 @@
       "description": "After the basic environment is built, the real challenge comes from \"how to apply abstract atomic classes to real business.\" This article selects common page modules of small programs, combines them with the new instructions of tailwindcss@4, and summarizes a set of processes from design disassembly to code implementation.",
       "summary": "After the basic environment is built, the real challenge comes from \"how to apply abstract atomic classes to real business.\" This article selects common page modules of mini programs, combines them with the new instruct…",
       "url": "/docs/quick-start/v4/tutorial/workflow",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial/workflow",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/v4/tutorial/workflow",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial/workflow",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/v4/tutorial/workflow",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/v4/tutorial/workflow"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/v4/tutorial/workflow",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/v4/tutorial/workflow",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/v4/tutorial/workflow"
       },
       "keywords": [
         "quick start",
@@ -2821,11 +2821,11 @@
       "description": "Use weapp-tailwindcss directly in pure Web/Vite projects to generate browser-native Tailwind CSS.",
       "summary": "weapp-tailwindcss can be used directly in pure web projects. It is suitable for small programs and H5/Web to share the same set of Tailwind CSS generated links, or for verifying browser native output in ordinary Vite We…",
       "url": "/docs/quick-start/web",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/web",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/web",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/web",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/web",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/web"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/web",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/web",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/web"
       },
       "keywords": [
         "Web",
@@ -2862,11 +2862,11 @@
       "description": "Introducing weapp-tailwindcss's escaping capabilities, applicable versions, and related configuration items for wxs/sjs.",
       "summary": "Introducing weapp-tailwindcss's escaping capabilities, applicable versions, and related configuration items for wxs/sjs.",
       "url": "/docs/quick-start/wxs",
-      "canonical": "https://tw.icebreaker.top/docs/quick-start/wxs",
+      "canonical": "https://tw.weapp.dev/docs/quick-start/wxs",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/quick-start/wxs",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/quick-start/wxs",
-        "x-default": "https://tw.icebreaker.top/docs/quick-start/wxs"
+        "en-US": "https://tw.weapp.dev/docs/quick-start/wxs",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/quick-start/wxs",
+        "x-default": "https://tw.weapp.dev/docs/quick-start/wxs"
       },
       "keywords": [
         "quick start",
@@ -2899,11 +2899,11 @@
       "description": "Technology sharing index from historical evolution to Tailwind actual combat and AI-friendly workflow",
       "summary": "Read in this order:",
       "url": "/docs/tailwindcss",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss"
       },
       "keywords": [
         "tailwindcss",
@@ -2946,11 +2946,11 @@
       "description": "Prompt template, verification chain and React/Vue example running method",
       "summary": "If you are ready to use this method right away, the minimum viable version is actually very simple:",
       "url": "/docs/tailwindcss/ai-friendly-and-demos",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/ai-friendly-and-demos",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/ai-friendly-and-demos",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/ai-friendly-and-demos",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/ai-friendly-and-demos",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/ai-friendly-and-demos"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/ai-friendly-and-demos",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/ai-friendly-and-demos",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/ai-friendly-and-demos"
       },
       "keywords": [
         "tailwindcss",
@@ -2996,11 +2996,11 @@
       "description": "Naming rules, design ideas and examples of traditional CSS architecture",
       "summary": "Naming rules, design ideas and examples of traditional CSS architecture",
       "url": "/docs/tailwindcss/bem-and-oocss",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/bem-and-oocss",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/bem-and-oocss",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/bem-and-oocss",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/bem-and-oocss",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/bem-and-oocss"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/bem-and-oocss",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/bem-and-oocss",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/bem-and-oocss"
       },
       "keywords": [
         "tailwindcss",
@@ -3038,11 +3038,11 @@
       "description": "Design tokens, variants, performance and code review checklists",
       "summary": "So this page does not teach you \"what other classes can you write\", but helps you establish a set of usage methods that are not easy to get out of control.",
       "url": "/docs/tailwindcss/best-practices",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/best-practices",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/best-practices",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/best-practices",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/best-practices",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/best-practices"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/best-practices",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/best-practices",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/best-practices"
       },
       "keywords": [
         "tailwindcss",
@@ -3088,11 +3088,11 @@
       "description": "Why CSS exists, and how it goes from font color to layout system to atomization and multi-runtime collaboration",
       "summary": "Why CSS exists, and how it goes from font color to layout system to atomization and multi-runtime collaboration",
       "url": "/docs/tailwindcss/css-origin-evolution",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/css-origin-evolution",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/css-origin-evolution",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/css-origin-evolution",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/css-origin-evolution",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/css-origin-evolution"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/css-origin-evolution",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/css-origin-evolution",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/css-origin-evolution"
       },
       "keywords": [
         "tailwindcss",
@@ -3132,11 +3132,11 @@
       "description": "Code and expected products of the same UI under Raw CSS, Sass, CSS Modules, CSS-in-JS, Tailwind, Headless + cva/tv",
       "summary": "Expected product: Single CSS, no splitting; global naming is prone to conflicts.",
       "url": "/docs/tailwindcss/demos",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/demos",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/demos",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/demos",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/demos",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/demos"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/demos",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/demos",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/demos"
       },
       "keywords": [
         "tailwindcss",
@@ -3181,11 +3181,11 @@
       "description": "Deduplication, variant factory and closed loop from design to product",
       "summary": "If you just glance at it on your mobile phone, the core of this section is actually one sentence: without tailwind-merge, component opening className is often not reliable enough.",
       "url": "/docs/tailwindcss/merge-and-variants",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/merge-and-variants",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/merge-and-variants",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/merge-and-variants",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/merge-and-variants",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/merge-and-variants"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/merge-and-variants",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/merge-and-variants",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/merge-and-variants"
       },
       "keywords": [
         "tailwindcss",
@@ -3231,11 +3231,11 @@
       "description": "Review the development, core mechanism and contribution of PostCSS to modern CSS, and sort out commonly used plug-ins and best practices.",
       "summary": "Review the development, core mechanism and contribution of PostCSS to modern CSS, and sort out commonly used plug-ins and best practices.",
       "url": "/docs/tailwindcss/postcss",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/postcss",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/postcss",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/postcss",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/postcss",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/postcss"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/postcss",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/postcss",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/postcss"
       },
       "keywords": [
         "tailwindcss",
@@ -3278,11 +3278,11 @@
       "description": "The industry impact brought by the ready-to-copy component model and Radix + Tailwind + merge architecture",
       "summary": "1) Design tokens: Define color, radius, and spacing through Tailwind theme or CSS variables.",
       "url": "/docs/tailwindcss/shadcn-ui",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/shadcn-ui",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/shadcn-ui",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/shadcn-ui",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/shadcn-ui",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/shadcn-ui"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/shadcn-ui",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/shadcn-ui",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/shadcn-ui"
       },
       "keywords": [
         "tailwindcss",
@@ -3323,11 +3323,11 @@
       "description": "Options and working principles to avoid mutual contamination of styles in micro-frontends, component libraries or third-party embedding scenarios",
       "summary": "Options and working principles to avoid mutual contamination of styles in micro-frontends, component libraries or third-party embedding scenarios",
       "url": "/docs/tailwindcss/style-isolation",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/style-isolation",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/style-isolation",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/style-isolation",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/style-isolation",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/style-isolation"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/style-isolation",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/style-isolation",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/style-isolation"
       },
       "keywords": [
         "tailwindcss",
@@ -3370,11 +3370,11 @@
       "description": "The essence of Tailwind is to compress the design token into an atomic class, and then let the component interface grow semantics again",
       "summary": "In other words, the \"entry\" here is more suitable to be understood as a recommended engineering practice, rather than the only correct way to use Tailwind.",
       "url": "/docs/tailwindcss/tailwind-core",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/tailwind-core",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/tailwind-core",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/tailwind-core",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/tailwind-core",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/tailwind-core"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/tailwind-core",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/tailwind-core",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/tailwind-core"
       },
       "keywords": [
         "tailwindcss",
@@ -3418,11 +3418,11 @@
       "description": "Ecology, type hints, merge deduplication, trade-offs between runtime and migration costs",
       "summary": "1) Do you want to reuse existing components/paradigms? Do → Tailwind; Doesn't matter → Continue.",
       "url": "/docs/tailwindcss/tailwind-vs-unocss",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/tailwind-vs-unocss",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/tailwind-vs-unocss",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/tailwind-vs-unocss",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/tailwind-vs-unocss",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/tailwind-vs-unocss"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/tailwind-vs-unocss",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/tailwind-vs-unocss",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/tailwind-vs-unocss"
       },
       "keywords": [
         "tailwindcss",
@@ -3463,11 +3463,11 @@
       "description": "Enable selected UnoCSS class-writing patterns in weapp-tailwindcss and understand the supported boundaries.",
       "summary": "weapp-tailwindcss still uses Tailwind CSS as the style generation engine. The unocss option only enables compatibility with selected common UnoCSS class-writing patterns and is disabled by default.",
       "url": "/docs/tailwindcss/unocss-compatibility",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/unocss-compatibility",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/unocss-compatibility",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/unocss-compatibility",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/unocss-compatibility",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/unocss-compatibility"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/unocss-compatibility",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/unocss-compatibility",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/unocss-compatibility"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -3505,11 +3505,11 @@
       "description": "weapp-tailwindcss Project details, compatibility and troubleshooting instructions for the default Tailwind CSS 4 build mode.",
       "summary": "This page only maintains instructions related to the default generation mode of Tailwind CSS 4.",
       "url": "/docs/tailwindcss/v4-reference",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/v4-reference",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/v4-reference",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/v4-reference",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/v4-reference",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/v4-reference"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/v4-reference",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/v4-reference",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/v4-reference"
       },
       "keywords": [
         "Default v4 mode",
@@ -3555,11 +3555,11 @@
       "description": "Compare the capability mapping of weapp-tailwindcss v5 generator and Tailwind official Vite plug-in",
       "summary": "The goal of the v5 generator is not to replace the CSS-first semantics of Tailwind CSS v4, but to add small program-specific output capabilities to the same Tailwind input. target: 'web' should maintain the same origin…",
       "url": "/docs/tailwindcss/v5-official-plugin-parity",
-      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/v5-official-plugin-parity",
+      "canonical": "https://tw.weapp.dev/docs/tailwindcss/v5-official-plugin-parity",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tailwindcss/v5-official-plugin-parity",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tailwindcss/v5-official-plugin-parity",
-        "x-default": "https://tw.icebreaker.top/docs/tailwindcss/v5-official-plugin-parity"
+        "en-US": "https://tw.weapp.dev/docs/tailwindcss/v5-official-plugin-parity",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/v5-official-plugin-parity",
+        "x-default": "https://tw.weapp.dev/docs/tailwindcss/v5-official-plugin-parity"
       },
       "keywords": [
         "weapp-tailwindcss",
@@ -3596,11 +3596,11 @@
       "description": "Build Tailwind CSS, watch files, generate source maps, canonicalize candidates, and optionally emit mini-program-compatible CSS with weapp-tw.",
       "summary": "@weapp-tailwindcss/cli independently publishes the equivalent weapp-tw and weapp-tailwindcss commands. The build command emits Web CSS by default and follows the current Tailwind CSS CLI contract for input, output, watc…",
       "url": "/docs/tools/weapp-tw-cli",
-      "canonical": "https://tw.icebreaker.top/docs/tools/weapp-tw-cli",
+      "canonical": "https://tw.weapp.dev/docs/tools/weapp-tw-cli",
       "alternates": {
-        "en-US": "https://tw.icebreaker.top/docs/tools/weapp-tw-cli",
-        "zh-CN": "https://tw.icebreaker.top/zh-cn/docs/tools/weapp-tw-cli",
-        "x-default": "https://tw.icebreaker.top/docs/tools/weapp-tw-cli"
+        "en-US": "https://tw.weapp.dev/docs/tools/weapp-tw-cli",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/tools/weapp-tw-cli",
+        "x-default": "https://tw.weapp.dev/docs/tools/weapp-tw-cli"
       },
       "keywords": [
         "weapp-tw",

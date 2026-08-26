@@ -34,4 +34,4 @@ Use `create({ escape: false })` when the target runtime accepts raw Tailwind cla
 
 ## Documentation
 
-See the [runtime utilities documentation](https://tw.icebreaker.top/docs/community/merge/overview) for the shared escaping model.
+See the [runtime utilities documentation](https://tw.weapp.dev/docs/community/merge/overview) for the shared escaping model.

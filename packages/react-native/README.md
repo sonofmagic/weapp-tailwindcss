@@ -27,7 +27,7 @@ module.exports = withWeappTailwindcss(config, {
 
 Metro scans sources, builds the exact candidate set and manifest, and connects the Babel JSX transform to the existing Expo transformer. You do not need to maintain a second `classNameSet`.
 
-`withWeappTailwindcss` accepts `projectRoot`, `input`, `css`, `manifest`, `classSet`, `sourceGlobs`, and `watchFiles`. See the [React Native / Expo configuration reference](https://tw.icebreaker.top/docs/config/react-native) for the full field list, manifest shape, and non-Expo Metro usage.
+`withWeappTailwindcss` accepts `projectRoot`, `input`, `css`, `manifest`, `classSet`, `sourceGlobs`, and `watchFiles`. See the [React Native / Expo configuration reference](https://tw.weapp.dev/docs/config/react-native) for the full field list, manifest shape, and non-Expo Metro usage.
 
 On Android and iOS, the Metro integration resolves `react` and `react-native` from the app `projectRoot`. This keeps linked workspace packages from bundling a second React Native runtime that does not match the native binary. Expo's normal platform resolver remains unchanged on Web.
 
@@ -51,6 +51,6 @@ This package generates React Native style manifests. It does not emit Web CSS or
 
 ## Documentation
 
-See the [React Native and Expo guide](https://tw.icebreaker.top/docs/quick-start/react-native-expo) for the complete setup.
+See the [React Native and Expo guide](https://tw.weapp.dev/docs/quick-start/react-native-expo) for the complete setup.
 
 The repository compatibility lab reuses the 118-case Tailwind catalog across Expo Web, Android, and iOS. Run `pnpm e2e:react-native:all` for the complete gate, or use `pnpm e2e:react-native-compatibility`, `pnpm e2e:react-native:web`, `pnpm e2e:react-native:android`, and `pnpm e2e:react-native:ios` separately to reproduce its static, runtime, screenshot, and separate TSX/CSS HMR gates. Use `pnpm e2e:react-native:update` only when intentionally refreshing static evidence.

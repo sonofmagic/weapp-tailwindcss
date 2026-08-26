@@ -34,4 +34,4 @@ const className = button({ intent: 'secondary' })
 
 ## 文档
 
-共享转义模型见[运行时工具文档](https://tw.icebreaker.top/zh-cn/docs/community/merge/overview)。
+共享转义模型见[运行时工具文档](https://tw.weapp.dev/zh-cn/docs/community/merge/overview)。

@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      SITE_URL: https://tw.icebreaker.top
+      SITE_URL: https://tw.weapp.dev
 
     steps:
       - name: Check out code

@@ -5,7 +5,7 @@ import { getBuildLocale } from './buildLocale'
 // eslint-disable-next-line node/prefer-global/process -- 此模块也会进入浏览器 bundle，需安全访问可选的 Node 全局
 const envSiteUrl = globalThis.process?.env.SITE_URL
 
-export const siteUrl = (envSiteUrl || 'https://tw.icebreaker.top').replace(/\/$/, '')
+export const siteUrl = (envSiteUrl || 'https://tw.weapp.dev').replace(/\/$/, '')
 export const siteName = 'weapp-tailwindcss'
 export const organizationId = `${siteUrl}/#organization`
 export const websiteId = `${siteUrl}/#website`

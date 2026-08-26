@@ -5,7 +5,7 @@
   "description": "Tailwind CSS core plugin extractor for cross-platform integrations. 面向跨端集成的 Tailwind CSS 核心插件提取器。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
-  "homepage": "https://tw.icebreaker.top",
+  "homepage": "https://tw.weapp.dev",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",

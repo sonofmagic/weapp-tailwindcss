@@ -55,4 +55,4 @@ const exitCode = await runCli(['-i', 'src/input.css', '-o', 'dist/output.css'])
 
 ## 文档
 
-完整参数、stdin/stdout、source map、watch 与 `canonicalize` 用法见 [CLI 使用指南](https://tw.icebreaker.top/zh-cn/docs/tools/weapp-tw-cli)。
+完整参数、stdin/stdout、source map、watch 与 `canonicalize` 用法见 [CLI 使用指南](https://tw.weapp.dev/zh-cn/docs/tools/weapp-tw-cli)。

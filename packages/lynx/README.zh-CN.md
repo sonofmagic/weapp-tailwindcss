@@ -35,7 +35,7 @@ export default defineConfig({
 
 `pluginLynxTailwindcss` 固定使用 `platform: 'lynx'`、`generator.target: 'web'` 与 Lynx 原生兼容输出。Tailwind v4 theme 变量会在构建期静态化，确保 `bg-sky-500`、`p-6`、`text-lg` 等标准 utility 能进入 Lynx 原生样式表；应用自行定义的动态 CSS 变量保持不变。
 
-完整的 `generator`、`rspack`、CSS loader 和 encoder 配置项见 [ReactLynx / Rspeedy 配置参考](https://tw.icebreaker.top/zh-cn/docs/config/react-lynx)。
+完整的 `generator`、`rspack`、CSS loader 和 encoder 配置项见 [ReactLynx / Rspeedy 配置参考](https://tw.weapp.dev/zh-cn/docs/config/react-lynx)。
 
 当前集成支持 ReactLynx + Rspeedy 与 Tailwind CSS v4；不覆盖 Rspeedy Web 输出、非 React Lynx 框架或 React Native 风格的运行时样式映射。
 

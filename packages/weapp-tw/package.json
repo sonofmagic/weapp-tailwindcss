@@ -5,6 +5,7 @@
   "description": "Reserved cross-platform Tailwind CSS package name. 跨端 Tailwind CSS 预留包名。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
+  "homepage": "https://tw.weapp.dev/docs/tools/weapp-tw-cli",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",

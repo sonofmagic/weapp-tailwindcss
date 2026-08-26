@@ -5,7 +5,7 @@
   "description": "Cross-platform utility-first UI components for Tailwind CSS. 面向跨端 Tailwind CSS 的 utility-first UI 组件库。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "ISC",
-  "homepage": "https://tw.icebreaker.top/docs/community/ui",
+  "homepage": "https://tw.weapp.dev/docs/community/packages-runtime",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",

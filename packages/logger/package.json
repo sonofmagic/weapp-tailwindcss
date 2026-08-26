@@ -5,6 +5,7 @@
   "description": "Shared logging utilities for the weapp-tailwindcss cross-platform toolchain. weapp-tailwindcss 跨端工具链的共享日志工具。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
+  "homepage": "https://tw.weapp.dev",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",

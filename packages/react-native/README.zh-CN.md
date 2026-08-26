@@ -27,7 +27,7 @@ module.exports = withWeappTailwindcss(config, {
 
 Metro 会扫描源码、生成精确候选集合和 manifest，并把 Babel JSX transform 接入现有 Expo transformer。无需维护第二份 `classNameSet`。
 
-`withWeappTailwindcss` 支持 `projectRoot`、`input`、`css`、`manifest`、`classSet`、`sourceGlobs` 和 `watchFiles`。完整字段、manifest 结构和非 Expo Metro 用法见 [React Native / Expo 配置参考](https://tw.icebreaker.top/zh-cn/docs/config/react-native)。
+`withWeappTailwindcss` 支持 `projectRoot`、`input`、`css`、`manifest`、`classSet`、`sourceGlobs` 和 `watchFiles`。完整字段、manifest 结构和非 Expo Metro 用法见 [React Native / Expo 配置参考](https://tw.weapp.dev/zh-cn/docs/config/react-native)。
 
 在 Android 与 iOS 上，Metro 集成会从应用 `projectRoot` 解析 `react` 和 `react-native`，避免 linked workspace 包把与原生二进制不一致的第二份 React Native runtime 打入 bundle。Web 端继续保留 Expo 原有的平台 resolver 行为。
 
@@ -51,6 +51,6 @@ Metro 会扫描源码、生成精确候选集合和 manifest，并把 Babel JSX 
 
 ## 文档
 
-完整接入说明见 [React Native / Expo 指南](https://tw.icebreaker.top/zh-cn/docs/quick-start/react-native-expo)。
+完整接入说明见 [React Native / Expo 指南](https://tw.weapp.dev/zh-cn/docs/quick-start/react-native-expo)。
 
 仓库兼容性实验室在 Expo Web、Android、iOS 三端复用同一份 118 项 Tailwind catalog。运行 `pnpm e2e:react-native:all` 可执行完整三端门禁；也可分别运行 `pnpm e2e:react-native-compatibility`、`pnpm e2e:react-native:web`、`pnpm e2e:react-native:android` 和 `pnpm e2e:react-native:ios` 复现静态、运行时、截图以及独立的 TSX/CSS HMR 门禁。只有明确要刷新静态证据时才运行 `pnpm e2e:react-native:update`。

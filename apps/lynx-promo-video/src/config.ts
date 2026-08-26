@@ -18,8 +18,8 @@ export const COLORS = {
   blue: '#0ea5e9',
 } as const
 
-export const DOCS_URL_ZH = 'https://tw.icebreaker.top/zh-cn/docs/quick-start/frameworks/lynx'
-export const DOCS_URL_EN = 'https://tw.icebreaker.top/docs/quick-start/frameworks/lynx'
+export const DOCS_URL_ZH = 'https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/lynx'
+export const DOCS_URL_EN = 'https://tw.weapp.dev/docs/quick-start/frameworks/lynx'
 export const DOCS_URL = DOCS_URL_ZH
 
 export const scenes = [

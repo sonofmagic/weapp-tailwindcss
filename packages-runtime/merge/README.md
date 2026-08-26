@@ -33,4 +33,4 @@ Use the `slim` entry for a smaller preconfigured class-group set or `lite` when 
 
 ## Documentation
 
-See the [merge guide](https://tw.icebreaker.top/docs/community/merge/overview) for configuration and migration details.
+See the [merge guide](https://tw.weapp.dev/docs/community/merge/overview) for configuration and migration details.

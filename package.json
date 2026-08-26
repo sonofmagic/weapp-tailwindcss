@@ -7,7 +7,7 @@
   "description": "把tailwindcss jit引擎，带给小程序开发者们! bring tailwindcss jit engine to miniprogram developers!",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
-  "homepage": "https://tw.icebreaker.top",
+  "homepage": "https://tw.weapp.dev",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git"
@@ -223,6 +223,7 @@
     "templates:update-deps": "tsx scripts/update-template-deps.ts",
     "generate:readme": "pnpm docs:packages:check",
     "docs:packages:check": "node scripts/check-package-readmes.mjs",
+    "check:package-homepages": "node scripts/verify-package-homepages.mjs",
     "docs:api": "tsx website/scripts/generate-api-docs.ts",
     "format": "prettier --check \"src/**/*.{ts,js}\" -w",
     "format:test": "prettier --check \"test/**/*.test.{ts,js}\" -w",

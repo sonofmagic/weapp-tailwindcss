@@ -33,4 +33,4 @@ const { twMerge } = create({ escape: false })
 
 ## 文档
 
-配置与迁移说明见 [merge 指南](https://tw.icebreaker.top/zh-cn/docs/community/merge/overview)。
+配置与迁移说明见 [merge 指南](https://tw.weapp.dev/zh-cn/docs/community/merge/overview)。

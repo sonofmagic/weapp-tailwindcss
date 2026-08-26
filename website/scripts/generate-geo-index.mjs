@@ -14,7 +14,7 @@ import {
 } from './seo-shared.mjs'
 import { writeStableJson } from './write-stable-json.mjs'
 
-const siteUrl = (process.env.SITE_URL || 'https://tw.icebreaker.top').replace(/\/$/, '')
+const siteUrl = (process.env.SITE_URL || 'https://tw.weapp.dev').replace(/\/$/, '')
 const BACKSLASH_RE = /\\/g
 const EXTENSION_RE = /\.(md|mdx)$/i
 const TITLE_SEPARATOR_RE = /[-_]/g

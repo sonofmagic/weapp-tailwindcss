@@ -31,7 +31,7 @@ const GULP_COMPILATION_SCOPE_CACHE_MAX = 512
 /**
  * @name weapp-tw-gulp
  * @description native framework 的插件组合实现
- * @link https://tw.icebreaker.top/docs/quick-start/frameworks/native
+ * @link https://tw.weapp.dev/docs/quick-start/frameworks/native
  */
 export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
   const hasInitialTailwindCssRoots = hasConfiguredTailwindV4CssRoots(options)

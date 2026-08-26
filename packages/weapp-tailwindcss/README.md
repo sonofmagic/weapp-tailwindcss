@@ -22,7 +22,7 @@ Bring Tailwind CSS to every platform. `weapp-tailwindcss` is the core compiler a
 | React Native / Expo | `@weapp-tailwindcss/react-native` |
 | ReactLynx / Rspeedy | `@weapp-tailwindcss/lynx` |
 
-Start with the [installation guide](https://tw.icebreaker.top/docs/quick-start/install) or select a framework from the [documentation website](https://tw.icebreaker.top/).
+Start with the [installation guide](https://tw.weapp.dev/docs/quick-start/install) or select a framework from the [documentation website](https://tw.weapp.dev/).
 
 ## Tailwind CSS 4 entry
 
@@ -46,7 +46,7 @@ pnpm exec weapp-tw -i src/input.css -o dist/output.css --watch
 
 The CLI generates Web CSS by default. `--target weapp` performs CSS-only mini-program compatibility conversion; complete WXML, JavaScript, and WXSS projects still require a bundler integration. Watch mode uses `@parcel/watcher` native events by default and supports explicit polling with `--poll`.
 
-See the [CLI guide](https://tw.icebreaker.top/docs/tools/weapp-tw-cli) for source maps, stdin/stdout, watch mode, and `canonicalize`.
+See the [CLI guide](https://tw.weapp.dev/docs/tools/weapp-tw-cli) for source maps, stdin/stdout, watch mode, and `canonicalize`.
 
 ## Runtime requirements
 
@@ -55,7 +55,7 @@ See the [CLI guide](https://tw.icebreaker.top/docs/tools/weapp-tw-cli) for sourc
 
 ## Community and support
 
-- [Documentation](https://tw.icebreaker.top/)
+- [Documentation](https://tw.weapp.dev/)
 - [GitHub Issues](https://github.com/sonofmagic/weapp-tailwindcss/issues)
 - [GitHub Discussions](https://github.com/sonofmagic/weapp-tailwindcss/discussions)
 

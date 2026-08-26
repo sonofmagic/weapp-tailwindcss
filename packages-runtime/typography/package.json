@@ -5,7 +5,7 @@
   "description": "Tailwind CSS Typography plugin and markup transforms for cross-platform apps. 面向跨端应用的 Tailwind CSS Typography 插件与标记转换工具。",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
-  "homepage": "https://tw.icebreaker.top/docs/community/typography",
+  "homepage": "https://tw.weapp.dev/docs/community/plugins",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
