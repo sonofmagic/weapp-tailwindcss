@@ -90,6 +90,7 @@ export function createUniAppXVitePlugins(options: UserDefinedOptions | InternalU
       ensureRuntimeClassSet: context.ensureRuntimeClassSet,
       generateCss: context.generateCss,
       getResolvedConfig: context.getResolvedConfig,
+      hmrCssModuleVersions: context.hmrCssModuleVersions,
       isEnabled: context.isEnabled,
       isIosPlatform: context.isIosPlatform,
       isNativeAppStyleTarget: context.isNativeAppStyleTarget,
@@ -103,6 +104,7 @@ export function createUniAppXVitePlugins(options: UserDefinedOptions | InternalU
       tailwindRootCssModuleIds: context.tailwindRootCssModuleIds,
       uniAppX: context.uniAppX,
       viteProcessedCssSourceFiles: context.viteProcessedCssSourceFiles,
+      webCssEntryDiagnostics: context.webCssEntryDiagnostics,
     }),
   })
 }

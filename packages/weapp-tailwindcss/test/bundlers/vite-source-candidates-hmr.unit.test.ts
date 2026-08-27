@@ -158,16 +158,7 @@ describe('Vite source candidate HMR transactions', () => {
         expect.objectContaining({ path: '/pages/index.uvue' }),
       ]),
     })
-    expect(wsSend).toHaveBeenCalledWith({
-      type: 'update',
-      updates: expect.arrayContaining([
-        expect.objectContaining({
-          acceptedPath: '/main.css?direct',
-          path: '/main.css?direct',
-          type: 'js-update',
-        }),
-      ]),
-    })
+    expect(wsSend).not.toHaveBeenCalled()
   })
 
   it('keeps a regular candidate update in the same Web source and CSS transaction', async () => {
@@ -228,16 +219,7 @@ describe('Vite source candidate HMR transactions', () => {
 
     expect(result).toEqual([pageModule, cssModule])
     await Promise.resolve()
-    expect(wsSend).toHaveBeenCalledWith({
-      type: 'update',
-      updates: expect.arrayContaining([
-        expect.objectContaining({
-          acceptedPath: '/main.css?direct',
-          path: '/main.css?direct',
-          type: 'js-update',
-        }),
-      ]),
-    })
+    expect(wsSend).not.toHaveBeenCalled()
   })
 
   it('falls back to a full reload for a Nuxt route transaction without the page module', async () => {

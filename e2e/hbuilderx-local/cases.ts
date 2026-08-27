@@ -32,6 +32,10 @@ export interface HmrSourceMutation {
   cssContains?: Array<string | RegExp>
   expectOutputRefresh?: boolean
   file: string
+  replace?: {
+    from: string
+    to: string
+  }
   touch?: boolean
 }
 
@@ -1198,8 +1202,11 @@ export const webCases: WebCase[] = [
           styles: { backgroundColor: 'rgb(16, 41, 56)', color: 'rgb(247, 251, 255)', marginTop: '800px', width: '173px' },
         }],
         sourceMutation: {
-          file: 'main.css',
-          touch: true,
+          file: 'pages/index/index.uvue',
+          replace: {
+            from: '@reference "../../main.css";',
+            to: '@import "../../main.css";',
+          },
         },
       },
       {
