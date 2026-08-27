@@ -948,6 +948,63 @@ export const uniAppXAppCases: AppCase[] = [
     runtimeLogContains: ['App Launch'],
     logNotContains: [...issue1002AppLogNotContains, ...iconifyNativeLogNotContains, ...nativeScopedAuthorLogNotContains],
   },
+  {
+    name: 'uni-app-x-harmony-vapor-tailwindcss-v4 harmony vapor',
+    platform: 'app-harmony',
+    projectDir: 'demo/uni-app-x-harmony-vapor-tailwindcss-v4',
+    outputDir: 'unpackage/dist/dev/.app-harmony',
+    outputDirCandidates: [
+      'unpackage/dist/dev/.app-harmony',
+      'unpackage/dist/dev/app-harmony',
+    ],
+    sourceFile: 'pages/index/index.uvue',
+    markerAnchor: '<view class="issue-1119-vapor',
+    markerClass: 'issue-1119-vapor leading-[26px] text-[18px] text-black bg-[#0e7490]',
+    markerText: 'issue-1119-vapor-leading-26px',
+    hmrMarkerClass: 'issue-1119-vapor leading-[26px] text-[18px] text-black bg-[#164e63]',
+    hmrMarkerText: 'issue-1119-vapor-hmr-leading-26px',
+    launchArgs: defaultHarmonyLaunchArgs,
+    launchEnv: {
+      UNI_APP_X_DOM2: 'true',
+    },
+    requiredFiles: [
+      'manifest.json',
+      'app-service.js',
+      'App.uvue',
+      'assets/pages/index/index.js',
+      'bytes/GenPagesIndexIndexSharedData.style.bytes',
+    ],
+    transformedFiles: [
+      'unpackage/dist/dev/.app-harmony/App.uvue',
+    ],
+    transformedOutputFiles: [
+      'assets/pages/index/index.js',
+    ],
+    transformedContains: [
+      'issue-1119-vapor-leading-26px',
+      /\.leading-_b26px_B\s*\{[\s\S]*?--tw-leading:\s*26px;[\s\S]*?line-height:\s*26px;/,
+    ],
+    transformedNotContains: [
+      'leading-[26px]',
+    ],
+    styleOutputFiles: [
+      'bytes/GenPagesIndexIndexSharedData.style.bytes',
+    ],
+    styleContains: [
+      'wtu-',
+      '--tw-leading',
+      '26px',
+    ],
+    styleNotContains: [
+      'leading-[26px]',
+    ],
+    hmrTransformedContains: [
+      'issue-1119-vapor-hmr-leading-26px',
+      'wtu-',
+    ],
+    runtimeLogContains: ['App Launch', '蒸汽模式', '当前视图层编译目标'],
+    logNotContains: [...issue1002AppLogNotContains, ...iconifyNativeLogNotContains, ...nativeScopedAuthorLogNotContains],
+  },
 ]
 
 export const webCases: WebCase[] = [

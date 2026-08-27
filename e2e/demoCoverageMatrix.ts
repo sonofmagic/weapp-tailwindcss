@@ -43,6 +43,7 @@ export interface DemoCoverageEntry {
   sourceShape: 'native' | 'tsx' | 'vue-sfc' | 'mpx-sfc' | 'uvue' | 'web-tsx' | 'web-vue-sfc'
   sfcBlocks: Array<'template' | 'script' | 'style'>
   hbuilderxLocal: boolean
+  skipVisualHmr?: boolean
   platforms: DemoPlatformCoverage[]
 }
 
@@ -390,6 +391,15 @@ function uniAppXPlatforms(name: string): DemoPlatformCoverage[] {
   ]
 }
 
+function uniAppXVaporPlatforms(name: string): DemoPlatformCoverage[] {
+  return [local('app-harmony', {
+    devScript: 'dev:app-harmony',
+    evidence: 'hbuilderx local Harmony Vapor case',
+    command: `E2E_HBUILDERX_LOCAL=1 E2E_HBUILDERX_APP_PLATFORM=app-harmony E2E_HBUILDERX_CASE='${name} harmony vapor' pnpm e2e:hbuilderx:local:harmony`,
+    reason: 'Vapor 模式依赖 HBuilderX 5.24 与在线 Harmony 设备，使用独立 case 验证编译日志、产物和运行时截图。',
+  })]
+}
+
 function weappVitePlatforms(name: string): DemoPlatformCoverage[] {
   return [automated('weapp', {
     buildScript: 'build',
@@ -509,6 +519,7 @@ export const DEMO_COVERAGE_MATRIX = [
   entry({ name: 'subpackage-uni-app-vite-tailwindcss-v4', packageJson: pkg('subpackage-uni-app-vite-tailwindcss-v4'), framework: 'uni-app', builder: 'vite', tailwindcss: 'v4', sourceShape: 'vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: subpackageUniAppPlatforms('subpackage-uni-app-vite-tailwindcss-v4') }),
   entry({ name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4', packageJson: pkg('uni-app-vite-vue3-hbuilderx-tailwindcss-v4'), framework: 'uni-app', builder: 'vite-hbuilderx', tailwindcss: 'v4', sourceShape: 'vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: true, platforms: uniAppHBuilderXPlatforms('uni-app-vite-vue3-hbuilderx-tailwindcss-v4') }),
   entry({ name: 'uni-app-x-hbuilderx-tailwindcss-v4', packageJson: pkg('uni-app-x-hbuilderx-tailwindcss-v4'), framework: 'uni-app-x', builder: 'hbuilderx', tailwindcss: 'v4', sourceShape: 'uvue', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: true, platforms: uniAppXPlatforms('uni-app-x-hbuilderx-tailwindcss-v4') }),
+  entry({ name: 'uni-app-x-harmony-vapor-tailwindcss-v4', packageJson: pkg('uni-app-x-harmony-vapor-tailwindcss-v4'), framework: 'uni-app-x', builder: 'hbuilderx-vapor', tailwindcss: 'v4', sourceShape: 'uvue', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: true, skipVisualHmr: true, platforms: uniAppXVaporPlatforms('uni-app-x-harmony-vapor-tailwindcss-v4') }),
   entry({ name: 'weapp-vite-tailwindcss-v4', packageJson: pkg('weapp-vite-tailwindcss-v4'), framework: 'weapp-vite', builder: 'vite', tailwindcss: 'v4', sourceShape: 'native', sfcBlocks: [], hbuilderxLocal: false, platforms: weappVitePlatforms('weapp-vite-tailwindcss-v4') }),
   entry({ name: 'web/react-vite-tailwindcss-v4', packageJson: pkg('web/react-vite-tailwindcss-v4'), framework: 'web-vite-react', builder: 'vite', tailwindcss: 'v4', sourceShape: 'web-tsx', sfcBlocks: [], hbuilderxLocal: false, platforms: webPlatforms('web/react-vite-tailwindcss-v4') }),
   entry({ name: 'web/vue-vite-tailwindcss-v4', packageJson: pkg('web/vue-vite-tailwindcss-v4'), framework: 'web-vite-vue', builder: 'vite', tailwindcss: 'v4', sourceShape: 'web-vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: webPlatforms('web/vue-vite-tailwindcss-v4') }),
