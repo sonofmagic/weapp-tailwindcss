@@ -42,13 +42,7 @@ export function isSfcStyleSourceRequest(request: string | undefined) {
   if (typeof request !== 'string' || request.length === 0) {
     return false
   }
-  const normalized = stripHash(request)
-  const queryIndex = normalized.indexOf('?')
-  const pathname = queryIndex === -1 ? normalized : normalized.slice(0, queryIndex)
-  if (SFC_SOURCE_EXT_RE.test(pathname)) {
-    return true
-  }
-  return queryIndex !== -1 && VUE_STYLE_QUERY_RE.test(normalized.slice(queryIndex + 1))
+  return SFC_SOURCE_EXT_RE.test(stripRequestQuery(request))
 }
 
 export function isSourcePreprocessorRequest(request: string | undefined, lang?: string) {

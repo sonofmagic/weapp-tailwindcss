@@ -258,9 +258,10 @@ function normalizeTailwindV4CssEntrySources(
   const remainingCssEntries: string[] = []
   const cssSources: NonNullable<TailwindV4SourceOptions['cssSources']> = []
   for (const cssEntry of cssEntries) {
-    const file = path.resolve(cssEntry)
+    const normalizedCssEntry = cssEntry.replace(/[?#].*$/, '')
+    const file = path.resolve(normalizedCssEntry)
     if (!existsSync(file)) {
-      remainingCssEntries.push(cssEntry)
+      remainingCssEntries.push(normalizedCssEntry)
       continue
     }
     const base = path.dirname(file)

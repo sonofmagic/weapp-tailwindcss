@@ -39,6 +39,29 @@ describe('tailwind v4 source options', () => {
     expect(packageJsonOptions?.cssSources?.[0]?.css).toContain('#tw')
   })
 
+  it('removes Vite request queries before treating css entries as file paths', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-query-entry-'))
+    const cssEntry = path.join(root, 'src/app.css')
+    const missingEntry = path.join(root, 'src/missing.css')
+    await mkdir(path.dirname(cssEntry), { recursive: true })
+    await writeFile(cssEntry, '@import "tailwindcss";')
+
+    const options = normalizeTailwindV4SourceOptions({
+      projectRoot: root,
+      cssEntries: [
+        `${cssEntry}?vue&type=style&index=0&src=true&lang.css`,
+        `${missingEntry}?direct`,
+      ],
+    })
+
+    expect(options?.cssSources?.[0]).toMatchObject({
+      file: cssEntry,
+      base: path.dirname(cssEntry),
+      dependencies: [cssEntry],
+    })
+    expect(options?.cssEntries).toEqual([missingEntry])
+  })
+
   it('normalizes configured source files, bases, and runtime fallbacks', () => {
     const root = path.resolve('/virtual/project')
     const options = normalizeTailwindV4SourceOptions({
