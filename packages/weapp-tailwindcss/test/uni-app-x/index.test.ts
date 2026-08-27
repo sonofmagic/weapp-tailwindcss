@@ -263,6 +263,35 @@ const condition = true
     expect(result?.code).not.toContain('class="!w-[100rpx]"')
   })
 
+  it('uses a Sass-safe marker for native important local styles', () => {
+    const { jsHandler } = getCompilerContext({ uniAppX: true })
+    const result = transformUVue(
+      '<template><view class="!mt-6 mt-6!">native important</view></template>\n<style lang="scss" scoped>.author { @apply !mt-6 mt-6!; }</style>',
+      '/src/pages/index/index.uvue',
+      jsHandler,
+      new Set(['!mt-6', 'mt-6!']),
+      { enablePageLocalStyle: true, native: true },
+    )
+
+    expect(result?.code).not.toContain('class="!mt-6 mt-6!"')
+    expect(result?.code).toContain('@apply mt-6__weapp_tw_important__ mt-6__weapp_tw_important__;')
+  })
+
+  it('normalizes important utilities across a complete uvue fixture', async () => {
+    const { jsHandler } = getCompilerContext({ uniAppX: true })
+    const source = await getCase('uni-app-x/issue-1113.uvue')
+    const result = transformUVue(
+      source,
+      '/src/pages/issue-1113/index.uvue',
+      jsHandler,
+      new Set(['!mt-6', 'mt-6!']),
+      { enablePageLocalStyle: true, native: true },
+    )
+
+    expect(result?.code).not.toContain('class="!mt-6 mt-6!"')
+    expect(result?.code).toContain('@apply mt-6__weapp_tw_important__ mt-6__weapp_tw_important__;')
+  })
+
   it('serializes important utilities with CSS-safe syntax for Web local styles', async () => {
     const { jsHandler } = getCompilerContext({ uniAppX: true })
     const onWebLocalStyleRules = vi.fn()
@@ -292,6 +321,20 @@ const condition = true
       appType: 'uni-app-x',
       uniAppX: true,
     })).resolves.toBeDefined()
+  })
+
+  it('uses a Sass-safe marker for Web-generated local style blocks', () => {
+    const { jsHandler } = getCompilerContext({ uniAppX: true })
+    const result = transformUVue(
+      '<template><view class="!mt-6">Web generated style</view></template>',
+      '/src/pages/index/index.uvue',
+      jsHandler,
+      new Set(['!mt-6']),
+      { enablePageLocalStyle: true, onWebLocalStyleRules: vi.fn() },
+    )
+
+    expect(result?.code).toContain('@apply mt-6__weapp_tw_important__;')
+    expect(result?.code).not.toContain('@apply mt-6!;')
   })
 
   it('honors disabledDefaultTemplateHandler with custom class rules', () => {
