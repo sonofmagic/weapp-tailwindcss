@@ -42,6 +42,19 @@ import './style.css'
 
 ## Register Vite plugin
 
+Pure Vite Web projects continue to use the main entry. An unmarked Generic Vite project automatically selects the Web target after Vite resolves its configuration; the entry CSS still needs to be imported by the application, and the plugin discovers the root stylesheet from Vite's module graph.
+
+```ts title="vite.config.ts"
+import { defineConfig } from 'vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [WeappTailwindcss()],
+})
+```
+
+For small-program compatibility, framework extensions, or explicit multiple entries, continue using the same entry with explicit options. Historical Generic mini-program projects should set `generator.target: 'weapp'` or `platform` explicitly.
+
 For pure web projects, it is recommended to configure `generator.target: 'web'` explicitly. The result generated in this way will retain the browser's native Tailwind CSS selector and will not generate the class escaped by the mini program.
 
 ```ts title="vite.config.ts"

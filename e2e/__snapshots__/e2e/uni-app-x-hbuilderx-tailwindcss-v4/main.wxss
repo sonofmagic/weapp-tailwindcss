@@ -227,9 +227,6 @@ wx-root-portal-content {
 .rounded {
   border-radius: 8rpx;
 }
-.rounded-_b10rpx_B {
-  border-radius: 10rpx;
-}
 .rounded-_b20px_B {
   border-radius: 20px;
 }

@@ -75,7 +75,7 @@ export function createFrameworkPostPlugin(options: any): Plugin {
           }
         }
         if (options.shouldInferAppType && resolvedRoot) {
-          const nextAppType = resolveImplicitAppTypeFromViteRoot(resolvedRoot)
+          const nextAppType = resolveImplicitAppTypeFromViteRoot(resolvedRoot, { searchUp: false })
           if (nextAppType && options.opts.appType !== nextAppType) {
             const previousAppType = options.opts.appType
             options.opts.appType = nextAppType
@@ -83,6 +83,23 @@ export function createFrameworkPostPlugin(options: any): Plugin {
             options.debug('align appType with vite root: %s -> %s', previousAppType ?? 'undefined', nextAppType)
             shouldRefreshRuntime = true
           }
+        }
+        if (
+          options.frameworkName === 'generic'
+          && !options.hasExplicitGeneratorTarget
+          && options.opts.generator !== false
+          && options.opts.appType === undefined
+          && options.opts.platform === undefined
+          && options.opts.cssOptions?.platform === undefined
+          && !options.resolveViteStylePlatform()
+        ) {
+          const generator = options.opts.generator && typeof options.opts.generator === 'object'
+            ? options.opts.generator
+            : {}
+          options.opts.generator = { ...generator, target: 'web' }
+          logger.info('Generic Vite 项目未指定目标，自动使用 generator.target -> web')
+          options.debug('default generic vite generator target to web after configResolved')
+          shouldRefreshRuntime = true
         }
         if (shouldRefreshRuntime) {
           await options.refreshRuntimeState(true)

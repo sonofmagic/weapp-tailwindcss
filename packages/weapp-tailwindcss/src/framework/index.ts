@@ -412,4 +412,9 @@ export function detectAppType(options: DetectAppTypeOptions = {}): DetectableApp
   }
 }
 
-export const resolveImplicitAppTypeFromViteRoot = (root: string) => detectAppType({ root })
+export function resolveImplicitAppTypeFromViteRoot(root: string, options: { searchUp?: boolean } = {}) {
+  return detectAppType({
+    root,
+    searchUp: options.searchUp,
+  })
+}

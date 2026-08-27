@@ -42,7 +42,18 @@ import './style.css'
 
 ## 注册 Vite 插件
 
-纯 Web 项目建议显式配置 `generator.target: 'web'`。这样生成结果会保留浏览器原生 Tailwind CSS 选择器，不会生成小程序转义后的 class。
+纯 Vite Web 项目继续使用主入口。无框架、平台标记的 Generic Vite 项目会在 Vite 配置解析后自动使用 Web target；入口 CSS 仍需由应用实际导入，插件会从 Vite 模块图发现根样式。
+
+```ts title="vite.config.ts"
+import { defineConfig } from 'vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [WeappTailwindcss()],
+})
+```
+
+需要兼容小程序、框架扩展或显式多入口时，仍可在同一入口中手动指定配置。历史 Generic 小程序项目应显式配置 `generator.target: 'weapp'` 或 `platform`，以保留小程序语义。
 
 ```ts title="vite.config.ts"
 import path from 'node:path'

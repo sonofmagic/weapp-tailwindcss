@@ -16,7 +16,7 @@ import {
   sleep,
   spawnPnpm,
 } from './session'
-import { waitFor, writeFilePreserveEol } from './text'
+import { waitFor, writeWatchedFilePreserveEol } from './text'
 import { resolveReloadAcceptAttemptTimeout, resolveWebCompileSettleTimeoutMs, waitForWebCompileSettled } from './web-compile-settle'
 
 const LOCAL_URL_RE = /https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])\S*/i
@@ -460,7 +460,7 @@ async function runSourceClassReplacementSequence(
     process.stdout.write(
       `[watch-hmr] ${watchCase.label} web source-replacement=${item.label} from=${item.from} to=${item.to}\n`,
     )
-    await writeFilePreserveEol(config.sourceFile, nextSource, sourceOriginal)
+    await writeWatchedFilePreserveEol(config.sourceFile, nextSource, sourceOriginal)
 
     let verifiedCssIncludes: string[] = []
     let lastError = ''
@@ -544,10 +544,10 @@ async function runSourceDomReplacementSequence(
       pollMs: options.pollMs,
       message: `[${watchCase.label}] web source DOM replacement base node was not ready: ${item.label}`,
     }, hotUpdateStartedAt)
-    await writeFilePreserveEol(config.sourceFile, mutation.next, sourceOriginal)
+    await writeWatchedFilePreserveEol(config.sourceFile, mutation.next, sourceOriginal)
     if (config.touchCssEntryOnSourceMutation !== false && config.cssEntryFile && cssEntryOriginal != null) {
       // Taro H5 的 TSX HMR 只更新页面模块；触碰 CSS 入口以复用框架真实的 app.css 热更新链路。
-      await writeFilePreserveEol(
+      await writeWatchedFilePreserveEol(
         config.cssEntryFile,
         `${cssEntryOriginal.trimEnd()}\n:root { --weapp-tailwindcss-watch-dom-replacement: ${hotUpdateStartedAt}; }\n`,
         cssEntryOriginal,
@@ -690,7 +690,7 @@ async function runWebIconifyHmr(
   process.stdout.write(
     `[watch-hmr] ${watchCase.label} web iconify-hmr phase=inject icons=${iconClassTokens.join(' | ')}\n`,
   )
-  await writeFilePreserveEol(config.sourceFile, sourceWithProbe, sourceOriginal)
+  await writeWatchedFilePreserveEol(config.sourceFile, sourceWithProbe, sourceOriginal)
   await waitFor(
     async () => {
       try {
@@ -714,7 +714,7 @@ async function runWebIconifyHmr(
   process.stdout.write(
     `[watch-hmr] ${watchCase.label} web iconify-hmr phase=content content=${afterContentClass}\n`,
   )
-  await writeFilePreserveEol(config.sourceFile, sourceWithUpdatedContent, sourceOriginal)
+  await writeWatchedFilePreserveEol(config.sourceFile, sourceWithUpdatedContent, sourceOriginal)
   const hotUpdateEffectiveMs = await waitFor(
     async () => {
       try {
@@ -1085,9 +1085,9 @@ export async function runWebHmr(
 
     const initialReadyMs = Date.now() - startedAt
     const hotUpdateStartedAt = Date.now()
-    await writeFilePreserveEol(config.sourceFile, mutatedSource, sourceOriginal)
+    await writeWatchedFilePreserveEol(config.sourceFile, mutatedSource, sourceOriginal)
     if (config.touchCssEntryOnSourceMutation !== false && config.cssEntryFile && cssEntryOriginal != null) {
-      await writeFilePreserveEol(
+      await writeWatchedFilePreserveEol(
         config.cssEntryFile,
         createCssEntryContent(cssEntryOriginal, marker, mutation.classLiteral),
         cssEntryOriginal,
@@ -1139,7 +1139,7 @@ export async function runWebHmr(
 
     const rollbackStartedAt = Date.now()
     const rollbackExpectedStyle = resolveRollbackExpectedStyle(config)
-    await writeFilePreserveEol(
+    await writeWatchedFilePreserveEol(
       config.sourceFile,
       config.injectMarkerElement
         ? createWebRollbackSourceMutation(config, sourceOriginal, marker)
@@ -1147,7 +1147,7 @@ export async function runWebHmr(
       sourceOriginal,
     )
     if (config.touchCssEntryOnSourceMutation !== false && config.cssEntryFile && cssEntryOriginal != null) {
-      await writeFilePreserveEol(
+      await writeWatchedFilePreserveEol(
         config.cssEntryFile,
         config.injectMarkerElement
           ? createCssEntryContent(cssEntryOriginal, marker, resolveRollbackClassLiteral(config))
@@ -1260,9 +1260,9 @@ export async function runWebHmr(
   }
   finally {
     try {
-      await writeFilePreserveEol(config.sourceFile, sourceOriginal, sourceOriginal)
+      await writeWatchedFilePreserveEol(config.sourceFile, sourceOriginal, sourceOriginal)
       if (config.cssEntryFile && cssEntryOriginal != null) {
-        await writeFilePreserveEol(config.cssEntryFile, cssEntryOriginal, cssEntryOriginal)
+        await writeWatchedFilePreserveEol(config.cssEntryFile, cssEntryOriginal, cssEntryOriginal)
       }
     }
     catch {

@@ -118,6 +118,7 @@ import {
   readFileWithRetry,
   waitFor,
   writeFilePreserveEol,
+  writeWatchedFilePreserveEol,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
 import {
   createWebHmrReloadRecovery,
@@ -485,6 +486,32 @@ describe('watch-hmr regression text helpers', () => {
     const after = await stat(file)
 
     expect(after.mtimeMs).toBeGreaterThan(before.mtimeMs)
+  })
+
+  it('preserves watched file identity across consecutive in-place mutations', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-identity-'))
+    tempDirs.push(tempDir)
+    const file = path.join(tempDir, 'sample.tsx')
+    await writeFile(file, 'const state = "initial"\n', 'utf8')
+    const before = await stat(file)
+    const rename = vi.spyOn(fs, 'rename')
+
+    try {
+      await writeWatchedFilePreserveEol(file, 'const state = "updated"\n', 'const state = "initial"\n')
+      const afterFirstMutation = await stat(file)
+      await writeWatchedFilePreserveEol(file, 'const state = "rollback"\n', 'const state = "initial"\n')
+      const afterRollback = await stat(file)
+
+      expect(rename).not.toHaveBeenCalled()
+      expect(afterFirstMutation.ino).toBe(before.ino)
+      expect(afterRollback.ino).toBe(before.ino)
+      expect(afterFirstMutation.mtimeMs).toBeGreaterThan(before.mtimeMs)
+      expect(afterRollback.mtimeMs).toBeGreaterThan(afterFirstMutation.mtimeMs)
+      expect(await readFile(file, 'utf8')).toBe('const state = "rollback"\n')
+    }
+    finally {
+      rename.mockRestore()
+    }
   })
 
   it('keeps the previous source readable until an atomic watch mutation is ready', async () => {

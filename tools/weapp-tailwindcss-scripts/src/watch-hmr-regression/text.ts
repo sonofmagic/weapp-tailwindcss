@@ -94,10 +94,12 @@ export async function writeFilePreserveEol(
   options: {
     retries?: number
     retryDelayMs?: number
+    writeMode?: 'atomic-replace' | 'in-place'
   } = {},
 ) {
   const retries = options.retries ?? 12
   const retryDelayMs = options.retryDelayMs ?? 100
+  const writeMode = options.writeMode ?? 'atomic-replace'
   const alignedContent = alignContentEol(content, source)
 
   for (let attempt = 0; attempt <= retries; attempt += 1) {
@@ -116,11 +118,20 @@ export async function writeFilePreserveEol(
       catch {
       }
 
-      await fs.writeFile(temporaryFile, alignedContent, {
-        encoding: 'utf8',
-        ...(previousMode == null ? {} : { mode: previousMode }),
-      })
-      await fs.rename(temporaryFile, file)
+      if (writeMode === 'in-place') {
+        await fs.writeFile(file, alignedContent, {
+          encoding: 'utf8',
+          flag: 'w',
+          ...(previousMode == null ? {} : { mode: previousMode }),
+        })
+      }
+      else {
+        await fs.writeFile(temporaryFile, alignedContent, {
+          encoding: 'utf8',
+          ...(previousMode == null ? {} : { mode: previousMode }),
+        })
+        await fs.rename(temporaryFile, file)
+      }
       const currentStats = await fs.stat(file)
       if (currentStats.mtimeMs <= previousMtime) {
         const nextMtime = new Date(previousMtime + 10)
@@ -136,6 +147,15 @@ export async function writeFilePreserveEol(
       await sleep(retryDelayMs)
     }
   }
+}
+
+/**
+ * 更新 dev server 正在监听的文件时保留文件身份，避免连续原子替换使 watcher 仍绑定旧文件。
+ */
+export async function writeWatchedFilePreserveEol(file: string, content: string, source: string) {
+  await writeFilePreserveEol(file, content, source, {
+    writeMode: 'in-place',
+  })
 }
 
 export async function waitFor(

@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-26T07:27:22.741Z",
+  "generatedAt": "2026-08-27T05:51:58.851Z",
   "locale": "zh-CN",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
@@ -4197,6 +4197,7 @@
       "headings": [
         "核心插件入口",
         "配置、工具与周边",
+        "Generic Vite Web",
         "样式资源",
         "其他导出"
       ],
