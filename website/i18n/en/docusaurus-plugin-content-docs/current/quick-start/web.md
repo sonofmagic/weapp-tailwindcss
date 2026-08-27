@@ -42,20 +42,18 @@ import './style.css'
 
 ## Register Vite plugin
 
-Pure Vite Web projects can use the dedicated entry. It fixes the Generic + Web profile and does not require `appType`, `generator.target`, `tailwindcssBasedir`, or `cssEntries`; the entry CSS still needs to be imported by the application, and the plugin discovers the root stylesheet from Vite's module graph.
+Pure Vite Web projects continue to use the main entry. An unmarked Generic Vite project automatically selects the Web target after Vite resolves its configuration; the entry CSS still needs to be imported by the application, and the plugin discovers the root stylesheet from Vite's module graph.
 
 ```ts title="vite.config.ts"
 import { defineConfig } from 'vite'
-import weappTailwindcssWeb from 'weapp-tailwindcss/vite/web'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig({
-  plugins: [weappTailwindcssWeb()],
+  plugins: [WeappTailwindcss()],
 })
 ```
 
-Pass `false` or `{ minify: false }` to `optimize` to disable Vite CSS minification while inspecting generated output.
-
-For small-program compatibility, framework extensions, or explicit multiple entries, continue using the main entry with explicit options:
+For small-program compatibility, framework extensions, or explicit multiple entries, continue using the same entry with explicit options. Historical Generic mini-program projects should set `generator.target: 'weapp'` or `platform` explicitly.
 
 For pure web projects, it is recommended to configure `generator.target: 'web'` explicitly. The result generated in this way will retain the browser's native Tailwind CSS selector and will not generate the class escaped by the mini program.
 

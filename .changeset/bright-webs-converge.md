@@ -2,4 +2,4 @@
 "weapp-tailwindcss": minor
 ---
 
-新增 `weapp-tailwindcss/vite/web` 与 `WeappTailwindcssWeb` Generic Web 专用入口，固定使用 Web 目标并兼容 Vite CSS 优化配置；标准 Vite Web 项目无需再配置框架类型和生成目标。
+统一 `weapp-tailwindcss/vite` 主入口的多端适配：无框架标记的 Generic Vite 项目默认使用 Web target，并在配置解析后按真实环境选择 uni-app、Taro、weapp-vite 与小程序能力；显式目标和平台配置保持优先。
