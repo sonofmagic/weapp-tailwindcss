@@ -107,6 +107,69 @@ function matrixCaseNames(rows: Array<Record<string, unknown>>) {
 }
 
 describe('ci workflows', () => {
+  it('keeps pnpm updates within the verified compatibility boundaries', () => {
+    const workspace = YAML.parse(readText('pnpm-workspace.yaml')) as {
+      update?: { ignoreDeps?: string[] }
+    }
+    const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
+
+    expect(workspace.update?.ignoreDeps).toEqual([
+      '@babel/*',
+      'babel-*',
+      '@tarojs/*',
+      'eslint-config-taro',
+      '@dcloudio/*',
+      '@mpxjs/*',
+      '@expo/*',
+      'expo',
+      '@react-native/*',
+      '@react-native-community/*',
+      '@react-native-picker/*',
+      '@rnx-kit/*',
+      'react-native',
+      'react-native-*',
+      'metro*',
+      'react',
+      'react-dom',
+      'react-refresh',
+      '@types/react',
+      '@types/react-dom',
+      'vite',
+      '@vitejs/plugin-*',
+      'vite-plugin-*',
+      'vite4',
+      'vite5',
+      'vite6',
+      'vite7',
+      'vite8',
+      'rollup',
+      'webpack',
+      'webpack-dev-server',
+      'typescript',
+      'typescript-eslint',
+      '@typescript-eslint/*',
+      'vue',
+      '@vue/*',
+      'vue-i18n',
+      'vue-router',
+      'vue-tsc',
+      'pinia',
+      '@nutui/*',
+      'c12',
+      'cac',
+      'execa',
+      'jsdom',
+      '@types/jsdom',
+      'pako',
+      '@types/pako',
+      '@types/gulp-replace',
+      'gulp-util',
+      'unplugin-vue-router',
+    ])
+    expect(packageJson.scripts['up:pkg:latest']).toBe('node scripts/pnpm-smart-proxy.mjs up -rLi')
+    expect(packageJson.scripts['up:pkg']).toBe('node scripts/pnpm-smart-proxy.mjs up -ri')
+  })
+
   it('keeps the core CI quality gate on package changes', () => {
     const { workflow } = readWorkflow('ci.yml')
 

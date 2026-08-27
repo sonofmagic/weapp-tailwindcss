@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  appendUpdateIgnoreSelectors,
   createPnpmEnv,
+  readUpdateIgnoreDeps,
   refreshUpdateMetadataCache,
   shouldRefreshMetadataCache,
   UPDATE_METADATA_CACHE_PATTERNS,
@@ -13,6 +15,27 @@ describe('pnpm-smart-proxy', () => {
     expect(shouldRefreshMetadataCache(['update', '-r'])).toBe(true)
     expect(shouldRefreshMetadataCache(['install'])).toBe(false)
     expect(shouldRefreshMetadataCache(['run', 'build'])).toBe(false)
+  })
+
+  it('loads update ignores and appends pnpm negative selectors', () => {
+    const ignoreDeps = readUpdateIgnoreDeps({
+      readFileSyncImpl: () => `
+update:
+  ignoreDeps:
+    - vite
+    - '@tarojs/*'
+`,
+      workspaceManifestPath: 'pnpm-workspace.yaml',
+    })
+
+    expect(ignoreDeps).toEqual(['vite', '@tarojs/*'])
+    expect(appendUpdateIgnoreSelectors(['up', '-rLi'], ignoreDeps)).toEqual([
+      'up',
+      '-rLi',
+      '!vite',
+      '!@tarojs/*',
+    ])
+    expect(appendUpdateIgnoreSelectors(['install'], ignoreDeps)).toEqual(['install'])
   })
 
   it('deletes all pnpm metadata cache before dependency updates', () => {

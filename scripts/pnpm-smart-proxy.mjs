@@ -1,13 +1,18 @@
 import { spawn, spawnSync } from 'node:child_process'
+import fs from 'node:fs'
 import net from 'node:net'
+import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
+import YAML from 'yaml'
 
 const DEFAULT_PROXY_HOST = '127.0.0.1'
 const DEFAULT_PROXY_PORT = 10808
 const DEFAULT_PROXY_URL = `http://${DEFAULT_PROXY_HOST}:${DEFAULT_PROXY_PORT}`
 const CONNECT_TIMEOUT_MS = 500
 const UPDATE_COMMANDS = new Set(['up', 'update'])
+const dirname = path.dirname(fileURLToPath(import.meta.url))
+const WORKSPACE_MANIFEST_PATH = path.resolve(dirname, '../pnpm-workspace.yaml')
 
 export const UPDATE_METADATA_CACHE_PATTERNS = ['*']
 
@@ -52,6 +57,33 @@ export function canConnect({ host, port }) {
 
 export function shouldRefreshMetadataCache(args) {
   return args.some(arg => UPDATE_COMMANDS.has(arg))
+}
+
+export function readUpdateIgnoreDeps({
+  readFileSyncImpl = fs.readFileSync,
+  workspaceManifestPath = WORKSPACE_MANIFEST_PATH,
+} = {}) {
+  const workspace = YAML.parse(readFileSyncImpl(workspaceManifestPath, 'utf8'))
+  const ignoreDeps = workspace?.update?.ignoreDeps
+
+  if (!Array.isArray(ignoreDeps) || !ignoreDeps.every(dependency => typeof dependency === 'string')) {
+    throw new TypeError('pnpm-workspace.yaml 中的 update.ignoreDeps 必须是字符串数组')
+  }
+
+  return ignoreDeps
+}
+
+export function appendUpdateIgnoreSelectors(args, ignoreDeps) {
+  if (!shouldRefreshMetadataCache(args)) {
+    return [...args]
+  }
+
+  const existingSelectors = new Set(args)
+  const ignoreSelectors = ignoreDeps
+    .map(dependency => `!${dependency}`)
+    .filter(selector => !existingSelectors.has(selector))
+
+  return [...args, ...ignoreSelectors]
 }
 
 export function createPnpmEnv(sourceEnv, { proxyAvailable, proxy }) {
@@ -100,7 +132,13 @@ export async function main({
   spawnSyncImpl = spawnSync,
   canConnectImpl = canConnect,
 } = {}) {
-  if (shouldRefreshMetadataCache(argv) && !refreshUpdateMetadataCache({ spawnSyncImpl })) {
+  const isUpdateCommand = shouldRefreshMetadataCache(argv)
+  // pnpm 11.24 尚未把 workspace 的 update 配置传入 update 命令，需显式追加负向 selector。
+  const pnpmArgs = isUpdateCommand
+    ? appendUpdateIgnoreSelectors(argv, readUpdateIgnoreDeps())
+    : argv
+
+  if (isUpdateCommand && !refreshUpdateMetadataCache({ spawnSyncImpl })) {
     process.exit(1)
   }
 
@@ -116,7 +154,7 @@ export async function main({
       : `[pnpm-smart-proxy] 本地代理未开放，直连 registry：${proxy.host}:${proxy.port}`,
   )
 
-  const child = spawnImpl('pnpm', [...proxyArgs, ...argv], {
+  const child = spawnImpl('pnpm', [...proxyArgs, ...pnpmArgs], {
     env: createPnpmEnv(env, { proxyAvailable, proxy }),
     shell: false,
     stdio: 'inherit',

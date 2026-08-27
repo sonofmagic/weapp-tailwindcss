@@ -36,6 +36,67 @@ minimumReleaseAge: 0
 minimumReleaseAgeExclude:
   - prettier@3.9.3
 
+update:
+  ignoreDeps:
+    # Taro 4.2.1 仍依赖 Babel 7，需与 Taro 成组迁移。
+    - '@babel/*'
+    - 'babel-*'
+    - '@tarojs/*'
+    - eslint-config-taro
+    # DCloud 与 Mpx 依赖各自框架工具链，禁止跨主版本自动升级。
+    - '@dcloudio/*'
+    - '@mpxjs/*'
+    # Taro RN runner 固定 Expo 50、React 18 与 React Native 0.73。
+    - '@expo/*'
+    - expo
+    - '@react-native/*'
+    - '@react-native-community/*'
+    - '@react-native-picker/*'
+    - '@rnx-kit/*'
+    - react-native
+    - 'react-native-*'
+    - 'metro*'
+    - react
+    - react-dom
+    - react-refresh
+    - '@types/react'
+    - '@types/react-dom'
+    # Taro runner 当前分别约束 Vite 4 与 Webpack 5.91.0。
+    - vite
+    - '@vitejs/plugin-*'
+    - 'vite-plugin-*'
+    # 根 workspace 用 npm alias 保留多代 Vite，也必须按 alias 名冻结。
+    - vite4
+    - vite5
+    - vite6
+    - vite7
+    - vite8
+    - rollup
+    - webpack
+    - webpack-dev-server
+    # TypeScript、Vue 与组件库需要按框架兼容矩阵成组验证。
+    - typescript
+    - typescript-eslint
+    - '@typescript-eslint/*'
+    - vue
+    - '@vue/*'
+    - vue-i18n
+    - vue-router
+    - vue-tsc
+    - pinia
+    - '@nutui/*'
+    # 工具链主版本与类型包需在独立迁移任务中验证 Node 和运行时兼容性。
+    - c12
+    - cac
+    - execa
+    - jsdom
+    - '@types/jsdom'
+    - pako
+    - '@types/pako'
+    - '@types/gulp-replace'
+    - gulp-util
+    - unplugin-vue-router
+
 versioning:
   fixed:
     - [weapp-tailwindcss, '@weapp-tailwindcss/cli']
