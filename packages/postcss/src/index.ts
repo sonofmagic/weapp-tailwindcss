@@ -45,6 +45,11 @@ export {
 } from './compat/tailwindcss-rpx'
 export { normalizeTailwindcssV4InfinityCalcCss } from './compat/tailwindcss-v4'
 export {
+  normalizeUniAppXImportantApplyForSass,
+  restoreUniAppXImportantApplyMarker,
+  UNI_APP_X_IMPORTANT_APPLY_MARKER,
+} from './compat/uni-app-x'
+export {
   type NormalizedWebCssCompatOptions,
   normalizeWebCssCompatOptions,
   transformWebCssCompat,

@@ -94,6 +94,7 @@
     "postcss-pxtrans": "^1.0.4",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
     "postcss-rule-unit-converter": "^0.2.3",
+    "postcss-scss": "^4.0.9",
     "postcss-selector-parser": "catalog:buildUtilities",
     "postcss-value-parser": "^4.2.0",
     "tailwindcss-config": "workspace:*"

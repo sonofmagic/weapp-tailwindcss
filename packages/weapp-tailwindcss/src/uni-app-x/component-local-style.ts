@@ -1,6 +1,7 @@
 import type { NodePath } from '@babel/traverse'
 import type { StringLiteral, TemplateElement } from '@babel/types'
 import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
+import { UNI_APP_X_IMPORTANT_APPLY_MARKER } from '@weapp-tailwindcss/postcss'
 import MagicString from 'magic-string'
 import { analyzeSource, babelParse } from '@/js/babel'
 import { isClassContextLiteralPath } from '@/js/class-context'
@@ -46,8 +47,12 @@ function createAlias(fileId: string, utility: string, index: number) {
   return `wtu-${createStableHash(`${fileId}:${utility}`)}-${index.toString(36)}`
 }
 
-function serializeApplyUtility(utility: string, options: { web?: boolean } = {}) {
-  const importantSuffix = options.web ? '!' : '#{\'!\'}'
+function serializeApplyUtility(utility: string, options: { native?: boolean, web?: boolean } = {}) {
+  const importantSuffix = options.native
+    ? UNI_APP_X_IMPORTANT_APPLY_MARKER
+    : options.web
+      ? '!'
+      : '#{\'!\'}'
   if (utility.startsWith('!') && !utility.startsWith('\\!')) {
     return `${utility.slice(1)}${importantSuffix}`
   }
@@ -283,14 +288,14 @@ export class UniAppXComponentLocalStyleCollector {
     return this.aliasByUtility.size > 0
   }
 
-  toStyleBlock(options: { web?: boolean } = {}) {
+  toStyleBlock(options: { native?: boolean, web?: boolean } = {}) {
     if (!this.hasStyles()) {
       return ''
     }
     return `<style scoped>\n${this.toStyleRules(options)}</style>\n`
   }
 
-  toStyleRules(options: { web?: boolean } = {}) {
+  toStyleRules(options: { native?: boolean, web?: boolean } = {}) {
     if (!this.hasStyles()) {
       return ''
     }
