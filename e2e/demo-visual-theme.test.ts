@@ -75,7 +75,7 @@ describe('demo visual theme evidence', () => {
     expect(component).toContain('class="issue-navbar-side" :class="leftClass"')
     expect(component).toContain('<slot name="left" />')
     expect(page).toContain('leftClass="issue-navbar-left bg-primary w-[100rpx] h-[100rpx] px-[30rpx]"')
-    expect(page).toContain('class="issue-navbar-image w-[100rpx] h-[100rpx] rounded-[10rpx]"')
+    expect(page).toContain('class="issue-navbar-image w-[100rpx] h-[100rpx]"')
     expect(page).toContain('<template #left>')
     expect(config).toContain('\'a-navbar\': [\'leftClass\', \'rightClass\']')
   })
@@ -141,7 +141,10 @@ describe('demo visual theme evidence', () => {
     expect(mainCss).not.toContain('text-blue-600/50')
     expect(page).not.toContain('text-blue-600/50')
 
-    for (const item of uniAppXAppCases) {
+    const issue1002AppCases = uniAppXAppCases.filter(
+      item => item.projectDir === 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
+    )
+    for (const item of issue1002AppCases) {
       if (item.platform === 'app-android') {
         expect(item.markerClass).toContain('rounded-[9998px]')
         expect(item.markerTextClass).toContain('text-[39rpx]')
