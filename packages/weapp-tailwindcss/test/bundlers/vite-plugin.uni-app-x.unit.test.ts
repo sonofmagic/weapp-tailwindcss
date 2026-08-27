@@ -932,6 +932,12 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     await getTransformHandler(nvuePlugin)?.call(nvuePlugin, '<template></template>', 'App.uvue')
     expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
-    expect(transformUVueMock).toHaveBeenCalledWith('<template></template>', 'App.uvue', currentContext.jsHandler, runtimeSets[1])
+    expect(transformUVueMock).toHaveBeenCalledWith(
+      '<template></template>',
+      'App.uvue',
+      currentContext.jsHandler,
+      runtimeSets[1],
+      expect.objectContaining({ native: true }),
+    )
   }, TEST_TIMEOUT_MS)
 })

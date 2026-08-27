@@ -1,19 +1,15 @@
 import type { RawSourceMap } from '@ampproject/remapping'
-import type { ExistingRawSourceMap, OutputAsset, SourceMap } from 'rollup'
+import type { ExistingRawSourceMap, SourceMap } from 'rollup'
 import type { Plugin, TransformResult } from 'vite'
 import type { CreateUniAppXPluginsOptions } from './vite/plugin-options'
-import type { ICreateCacheReturnType } from '@/cache'
-import type {
-  CreateJsHandlerOptions,
-  InternalUserDefinedOptions,
-  JsHandler,
-  LinkedJsModuleResult,
-} from '@/types'
 import path from 'node:path'
 import process from 'node:process'
-import { processCachedTask } from '@/bundlers/shared/cache'
+import {
+  normalizeUniAppXImportantApplyForSass,
+  restoreUniAppXImportantApplyMarker,
+} from '@weapp-tailwindcss/postcss'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
-import { toAbsoluteOutputPath } from '@/bundlers/shared/module-graph'
+import { extractSfcStyleBlocks } from '@/bundlers/vite/generate-bundle/sfc-style-source'
 import { parseVueRequest } from '@/bundlers/vite/query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest, normalizePath } from '@/bundlers/vite/utils'
 import { logger } from '@/logger'
@@ -21,7 +17,7 @@ import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { shouldEnablePageLocalStyle as isPageLocalStyleFile } from '@/uni-app-x/local-style-matcher'
 import { resolveUniUtsPlatform } from '@/utils'
 import { omitUndefined } from '@/utils/object'
-import { isUniAppXEnabled, resolveUniAppXOptions } from './options'
+import { resolveUniAppXOptions } from './options'
 import {
   collectUniAppXHarmonyApplyStyleSources,
   collectUniAppXHarmonyApplyUtilities,
@@ -38,6 +34,8 @@ import { createUniAppXNativeBuildTargetResolver } from './vite/native-target'
 import { isCssModuleExport, normalizeRelativeTailwindReferences, resolvePreprocessorTransform, resolveUniAppXCssTarget } from './vite/style-request'
 import { createUniAppXWebLocalStyleBridge } from './vite/web-local-style'
 
+export { createUniAppXAssetTask } from './vite/asset-task'
+
 type TransformUVue = typeof import('./transform')['transformUVue']
 let transformUVuePromise: Promise<TransformUVue> | undefined
 function loadTransformUVue(): Promise<TransformUVue> {
@@ -46,8 +44,8 @@ function loadTransformUVue(): Promise<TransformUVue> {
 }
 const UVUE_NVUE_QUERY_RE = /\.(?:uvue|nvue)(?:\?.*)?$/
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)$/
-function resolveUniAppXJsTransformEnabled(uniAppX: InternalUserDefinedOptions['uniAppX'] | undefined) {
-  return uniAppX === undefined ? true : isUniAppXEnabled(uniAppX)
+function hasUniAppXImportantApply(source: string) {
+  return extractSfcStyleBlocks(source).some(style => normalizeUniAppXImportantApplyForSass(style.source) !== style.source)
 }
 
 export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plugin[] {
@@ -92,6 +90,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     }
   }>()
   const nativeLocalStyleModuleIds = new Set<string>()
+  const knownSfcSources = new Map<string, string>()
   const webLocalStyle = createUniAppXWebLocalStyleBridge(isWebGeneratorTarget)
   let componentLocalStyleEnabled: boolean | undefined
   const isNativeAppBuildTarget = createUniAppXNativeBuildTargetResolver(getResolvedConfig)
@@ -169,7 +168,10 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (isCssModuleExport(code)) {
         return
       }
-      const sourceCode = normalizeRelativeTailwindReferences(code, id)
+      const sourceCode = normalizeRelativeTailwindReferences(
+        restoreUniAppXImportantApplyMarker(code),
+        id,
+      )
       const hasTailwindRoot = hasTailwindRootDirectives(sourceCode, { importFallback: true })
       const hasTailwindApply = hasTailwindApplyDirective(sourceCode)
       const shouldGenerateCss = hasTailwindRoot || hasTailwindApply
@@ -230,6 +232,22 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   const cssPrePlugin: Plugin = {
     name: 'weapp-tailwindcss:uni-app-x:css:pre',
     enforce: 'pre',
+    load: {
+      order: 'pre',
+      async handler(id) {
+        const { filename, query } = parseVueRequest(id)
+        if (!query.vue || query.type !== 'style' || !UVUE_NVUE_RE.test(filename)) {
+          return
+        }
+        const source = knownSfcSources.get(filename)
+        const style = source ? extractSfcStyleBlocks(source)[query.index ?? 0] : undefined
+        if (!style) {
+          return
+        }
+        const normalized = normalizeUniAppXImportantApplyForSass(style.source)
+        return normalized === style.source ? undefined : { code: normalized, map: null }
+      },
+    },
     async transform(code, id) {
       if (!isEnabled()) {
         return
@@ -237,14 +255,19 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       await runtimeState.readyPromise
       const { query } = parseVueRequest(id)
       const styleCode = query.vue && query.type === 'style' ? webLocalStyle.appendToStyle(code, id) : code
-      const preprocessor = resolvePreprocessorTransform(styleCode, id, query.lang, {
+      // Vite 热更新会绕过 SFC 主模块，直接把原始样式交给预处理器；先移除
+      // Sass 无法解析的 important utility 后，再由后续 CSS 阶段还原。
+      const preprocessorCode = query.vue && query.type === 'style'
+        ? normalizeUniAppXImportantApplyForSass(styleCode)
+        : styleCode
+      const preprocessor = resolvePreprocessorTransform(preprocessorCode, id, query.lang, {
         isIosPlatform,
         isNativeAppStyleTarget: isNativeAppStyleTarget(),
       })
       if (preprocessor) {
-        return preprocessor.result ?? (styleCode !== code ? { code: styleCode, map: null } : undefined)
+        return preprocessor.result ?? (preprocessorCode !== code ? { code: preprocessorCode, map: null } : undefined)
       }
-      return transformStyle(styleCode, id, query, this)
+      return transformStyle(preprocessorCode, id, query, this)
     },
   }
   const cssPlugin: Plugin = {
@@ -261,6 +284,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   const cssPlugins = [cssPlugin, cssPrePlugin]
 
   async function transformSfc(code: string, id: string, context: { addWatchFile?: (id: string) => void }) {
+    knownSfcSources.set(cleanUrl(id), code)
     if (isNativeAppBuildTarget(id)) {
       nativeLocalStyleModuleIds.add(id)
       nativeLocalStyleModuleIds.add(cleanUrl(id))
@@ -285,6 +309,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       ...(disabledDefaultTemplateHandler ? { disabledDefaultTemplateHandler } : {}),
       ...(enableComponentLocalStyle ? { enableComponentLocalStyle } : {}),
       ...(enablePageLocalStyle ? { enablePageLocalStyle } : {}),
+      native: true,
       pageMatcher: resolvedUniAppXOptions.componentLocalStyles.pageMatcher,
       ...(isWebGeneratorTarget() && customAttributesEntities.length > 0 ? { webCustomAttributeDeep: true } : {}),
       ...(isWebGeneratorTarget() ? { onWebLocalStyleRules: (rules: string) => webLocalStyle.remember(id, rules) } : {}),
@@ -322,7 +347,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       },
     },
     handleHotUpdate: {
-      order: 'post',
+      order: 'pre',
       async handler(ctx) {
         if (!isEnabled() || getResolvedConfig()?.command !== 'serve') {
           return
@@ -331,7 +356,12 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
           return
         }
         if (isWebGeneratorTarget() && UVUE_NVUE_RE.test(ctx.file) && typeof ctx.read === 'function') {
-          await transformSfc(await ctx.read(), ctx.file, this)
+          const source = await ctx.read()
+          if (hasUniAppXImportantApply(source)) {
+            ctx.server.ws.send({ type: 'full-reload', path: ctx.file })
+            return []
+          }
+          await transformSfc(source, ctx.file, this)
         }
         return webLocalStyle.handleHotUpdate(ctx) ?? nativeHmrReloader.handleHotUpdate(ctx)
       },
@@ -418,82 +448,4 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     nvuePlugin,
     stylePlaceholderPlugin,
   ]
-}
-type ApplyLinkedResults = (linked: Record<string, LinkedJsModuleResult> | undefined) => void
-
-interface CreateUniAppXAssetTaskOptions {
-  cache: ICreateCacheReturnType
-  hashKey?: string
-  hashSalt?: string
-  createHandlerOptions: (absoluteFilename: string, extra?: CreateJsHandlerOptions) => CreateJsHandlerOptions
-  debug: (format: string, ...args: unknown[]) => void
-  jsHandler: JsHandler
-  onUpdate: (filename: string, oldVal: string, newVal: string) => void
-  runtimeSet: Set<string>
-  applyLinkedResults: ApplyLinkedResults
-  uniAppX?: InternalUserDefinedOptions['uniAppX']
-  getAssetSource?: (file: string) => string | undefined
-  getCssSources?: () => Iterable<string | undefined>
-  injectStylePlaceholder?: boolean
-}
-
-export function createUniAppXAssetTask(
-  file: string,
-  originalSource: OutputAsset,
-  outDir: string,
-  options: CreateUniAppXAssetTaskOptions,
-) {
-  return async () => {
-    const {
-      cache,
-      hashKey,
-      createHandlerOptions,
-      debug,
-      getAssetSource,
-      getCssSources,
-      injectStylePlaceholder = true,
-      jsHandler,
-      onUpdate,
-      runtimeSet,
-      applyLinkedResults,
-    } = options
-    const absoluteFile = toAbsoluteOutputPath(file, outDir)
-    const rawSource = originalSource.source.toString()
-    const rawHashSource = options.hashSalt
-      ? `${rawSource}\n/*${options.hashSalt}*/`
-      : rawSource
-    await processCachedTask<string>({
-      cache,
-      cacheKey: file,
-      hashKey,
-      rawSource: rawHashSource,
-      applyResult(source) {
-        originalSource.source = source
-      },
-      onCacheHit() {
-        debug('js cache hit: %s', file)
-      },
-      async transform() {
-        const currentSource = originalSource.source.toString()
-        const { code, linked } = await jsHandler(currentSource, runtimeSet, createHandlerOptions(absoluteFile, {
-          uniAppX: resolveUniAppXJsTransformEnabled(options.uniAppX),
-          babelParserOptions: {
-            plugins: [
-              'typescript',
-            ],
-            sourceType: 'unambiguous',
-          },
-        }))
-        const nextCode = injectStylePlaceholder
-          ? injectUniAppXStylePlaceholder(file, code, getAssetSource, getCssSources?.())
-          : code
-        onUpdate(file, currentSource, nextCode)
-        debug('js handle: %s', file)
-        applyLinkedResults(linked)
-        return {
-          result: nextCode,
-        }
-      },
-    })
-  }
 }
