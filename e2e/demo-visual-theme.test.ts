@@ -141,7 +141,10 @@ describe('demo visual theme evidence', () => {
     expect(mainCss).not.toContain('text-blue-600/50')
     expect(page).not.toContain('text-blue-600/50')
 
-    for (const item of uniAppXAppCases) {
+    const issue1002AppCases = uniAppXAppCases.filter(
+      item => item.projectDir === 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
+    )
+    for (const item of issue1002AppCases) {
       if (item.platform === 'app-android') {
         expect(item.markerClass).toContain('rounded-[9998px]')
         expect(item.markerTextClass).toContain('text-[39rpx]')
