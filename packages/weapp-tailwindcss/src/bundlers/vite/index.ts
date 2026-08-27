@@ -131,7 +131,7 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
   ;(opts as any).__internalViteRawExplicitGeneratorTarget = Boolean(options.generator && typeof options.generator === 'object' && Object.hasOwn(options.generator, 'target'))
 
   // 显式 basedir 是可信的项目边界，可在工厂阶段避免重复构造 runtime；其余情况等待真实 Vite root。
-  const initialFramework = resolveViteFrameworkProfile({
+  const initialProfile = resolveViteFrameworkProfile({
     appType: opts.appType,
     detectEnv: true,
     env: process.env,
@@ -140,7 +140,8 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
       : undefined,
     searchUp: false,
     uniAppX: opts.uniAppX,
-  }).frameworkName
+  })
+  const initialFramework = initialProfile.frameworkName
   ;(opts as any).__internalViteCapabilityProfile = { ...frameworkViteCapabilityProfile }
   const initialFactory = {
     'generic': createGenericVitePlugins,
@@ -152,6 +153,10 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
   const initialPlugins = initialFactory(opts)
   if (!initialPlugins) {
     return undefined
+  }
+  if ((opts as any).__internalViteRawExplicitTailwindcssBasedir && initialFramework !== 'generic') {
+    // 显式 basedir 已给出可信项目边界，保留原 framework 链路的 hook 身份与调用开销。
+    return initialPlugins
   }
   const knownFrameworkPlugins: Plugin[] = [
     {
@@ -202,7 +207,10 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
     const effectiveAppType = options.appType
       ?? (effectiveGenerator && typeof effectiveGenerator === 'object' && effectiveGenerator.target === 'web' ? undefined : opts.appType)
     const profile = resolveViteProfile({ ...options, appType: effectiveAppType, generator: effectiveGenerator, platform: options.platform ?? opts.platform, cssOptions: options.cssOptions ?? opts.cssOptions, uniAppX: options.uniAppX ?? opts.uniAppX }, config, environmentName)
-    if (profile.appType && !options.appType && effectiveAppType === undefined) {
+    if (profile.appType
+      && profile.appType !== initialProfile.appType
+      && !options.appType
+      && effectiveAppType === undefined) {
       opts.appType = profile.appType
       logger.info('根据 Vite 项目根目录自动推断 appType -> %s', profile.appType)
     }

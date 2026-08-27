@@ -124,4 +124,34 @@ describe('vite 单入口 dispatcher', () => {
       await rm(root, { recursive: true, force: true })
     }
   })
+
+  it('可信 basedir 与真实 root 的 profile 一致时由原 framework hook 刷新 runtime', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-dispatcher-weapp-vite-'))
+    await writeFile(path.join(root, 'package.json'), JSON.stringify({
+      devDependencies: {
+        'weapp-vite': '4.2.1',
+      },
+    }), 'utf8')
+
+    try {
+      const context = createContext({ appType: undefined, generator: undefined, tailwindcssBasedir: root })
+      setCurrentContext(context)
+      const { WeappTailwindcss } = await import('@/bundlers/vite')
+      const plugins = WeappTailwindcss({ tailwindcssBasedir: root })!
+      const post = findPlugin(plugins, ':post')!
+      await post.configResolved?.call(post, {
+        command: 'build',
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as ResolvedConfig)
+
+      expect(context.appType).toBe('weapp-vite')
+      expect(context.refreshTailwindcssRuntime).toHaveBeenCalledTimes(1)
+    }
+    finally {
+      resetVitePluginTestContext()
+      await rm(root, { recursive: true, force: true })
+    }
+  })
 })
