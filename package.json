@@ -53,6 +53,7 @@
     "deploy:docs:worker": "pnpm --filter @weapp-tailwindcss/website deploy:worker",
     "deploy:docs:worker:next": "pnpm --filter @weapp-tailwindcss/website deploy:worker:next",
     "deploy:docs:cloudflare": "node scripts/deploy-docs-cloudflare.mjs",
+    "deploy:docs:cloudflare:next": "node scripts/deploy-docs-cloudflare.mjs --target=next",
     "build:apps": "echo \"apps workspace has no demo projects\"",
     "build:ci": "pnpm --filter weapp-tailwindcss... --filter \"./packages-runtime/*\" --filter \"./packages/lynx\" run build",
     "ci:memory": "node scripts/ci-memory-guard.mjs",

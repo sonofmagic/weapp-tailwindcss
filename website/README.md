@@ -41,6 +41,13 @@ pnpm build
 
 生产 Worker 通过 `wrangler.jsonc` 的 Custom Domain 使用 `tw.weapp.dev`，预览 Worker 使用 `next.tw.weapp.dev`。旧 hostname 保持 Cloudflare 代理和证书，在 Cloudflare **Rules → Redirect Rules** 中配置以下永久重定向，并开启保留 query string：
 
+Cloudflare Connected Builds 必须按 Worker 拆分部署入口，不能在绑定生产 Worker 的构建中继续部署预览 Worker，否则平台会把预览配置强制覆盖到生产 Worker：
+
+```text
+weapp-tailwindcss      -> pnpm run deploy:docs:cloudflare
+weapp-tailwindcss-next -> pnpm run deploy:docs:cloudflare:next
+```
+
 ```text
 http*://tw.icebreaker.top/*     -> https://tw.weapp.dev/${2}       (301)
 http*://weapp-tw.icebreaker.top/* -> https://tw.weapp.dev/${2}     (301)
