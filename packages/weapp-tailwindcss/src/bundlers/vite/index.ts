@@ -71,7 +71,7 @@ function resolveViteProfile(options: UserDefinedOptions, config: ResolvedConfig,
   if (explicitAppType) {
     frameworkName = resolveViteFrameworkProfile({ appType: explicitAppType, uniAppX: options.uniAppX }).frameworkName
   }
-  else if (rawTarget === 'web' || rawTarget === 'weapp' || rawTarget === 'app') {
+  else if (rawTarget === 'web') {
     frameworkName = 'generic'
   }
   else {
@@ -148,11 +148,33 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
     return undefined
   }
   const knownFrameworkPlugins: Plugin[] = [
-    { name: 'weapp-tailwindcss:taro-alipay-browserslist-asset', enforce: 'pre' },
-    { name: 'weapp-tailwindcss:uni-app-x:css:pre', enforce: 'pre' },
-    { name: 'weapp-tailwindcss:uni-app-x:css' },
-    { name: 'weapp-tailwindcss:uni-app-x:nvue' },
-    { name: 'weapp-tailwindcss:uni-app-x:style-placeholder' },
+    {
+      name: 'weapp-tailwindcss:taro-alipay-browserslist-asset',
+      enforce: 'pre',
+      generateBundle() {},
+    },
+    {
+      name: 'weapp-tailwindcss:uni-app-x:css:pre',
+      enforce: 'pre',
+      transform() {},
+    },
+    {
+      name: 'weapp-tailwindcss:uni-app-x:css',
+      transform() {},
+    },
+    {
+      name: 'weapp-tailwindcss:uni-app-x:nvue',
+      enforce: 'pre',
+      buildStart() {},
+      transform: { order: 'pre', handler() {} },
+      handleHotUpdate: { order: 'post', handler() {} },
+      watchChange() {},
+    },
+    {
+      name: 'weapp-tailwindcss:uni-app-x:style-placeholder',
+      enforce: 'post',
+      generateBundle: { order: 'post', handler() {} },
+    },
   ]
   const initialNames = new Set(initialPlugins.map(plugin => plugin.name))
   const pluginTemplates = [
