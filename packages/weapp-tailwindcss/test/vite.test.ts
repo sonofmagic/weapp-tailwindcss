@@ -70,6 +70,7 @@ describe.skipIf(isCI)('vite', () => {
         plugins: [
           twv(),
           WeappTailwindcss({
+            generator: { target: 'weapp' },
             tailwindcssBasedir: tailwindcss4Basedir,
             tailwindcss: {
               packageName: 'tailwindcss',

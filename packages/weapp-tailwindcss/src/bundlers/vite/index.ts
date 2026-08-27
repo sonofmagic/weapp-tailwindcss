@@ -71,17 +71,10 @@ function resolveViteProfile(options: UserDefinedOptions, config: ResolvedConfig,
   if (explicitAppType) {
     frameworkName = resolveViteFrameworkProfile({ appType: explicitAppType, uniAppX: options.uniAppX }).frameworkName
   }
-  else if (rawTarget === 'web') {
-    frameworkName = 'generic'
-  }
   else {
     const detected = resolveViteFrameworkProfile({ detectEnv: true, env: process.env, root, searchUp: false, uniAppX: options.uniAppX })
     frameworkName = detected.frameworkName
     appType = detected.appType
-    if (platformFamily(selectedPlatform) === 'web') {
-      frameworkName = 'generic'
-      appType = undefined
-    }
     if (frameworkName === 'generic' && platformFamily(selectedPlatform) !== 'web') {
       appType = resolveImplicitAppTypeFromViteRoot(root, { searchUp: false })
       frameworkName = resolveViteFrameworkProfile({ appType, uniAppX: options.uniAppX }).frameworkName
@@ -89,6 +82,10 @@ function resolveViteProfile(options: UserDefinedOptions, config: ResolvedConfig,
   }
 
   const family = platformFamily(selectedPlatform ?? (config.build?.outDir ? path.basename(path.normalize(config.build.outDir)) : undefined))
+  const shouldKeepFrameworkAppType = rawTarget !== 'web' && family !== 'web'
+  if (!explicitAppType && !shouldKeepFrameworkAppType) {
+    appType = undefined
+  }
   const isGenericWeb = frameworkName === 'generic'
     && !explicitAppType
     && rawTarget !== 'weapp'
@@ -133,8 +130,17 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
   ;(opts as any).__internalViteRawExplicitTailwindcssBasedir = typeof options.tailwindcssBasedir === 'string' && options.tailwindcssBasedir.trim().length > 0
   ;(opts as any).__internalViteRawExplicitGeneratorTarget = Boolean(options.generator && typeof options.generator === 'object' && Object.hasOwn(options.generator, 'target'))
 
-  // 显式 appType 已在上下文中确定时可直接使用对应分支；其余情况只建立 Generic 占位形状。
-  const initialFramework = resolveViteFrameworkProfile({ appType: opts.appType, uniAppX: opts.uniAppX }).frameworkName
+  // 显式 basedir 是可信的项目边界，可在工厂阶段避免重复构造 runtime；其余情况等待真实 Vite root。
+  const initialFramework = resolveViteFrameworkProfile({
+    appType: opts.appType,
+    detectEnv: true,
+    env: process.env,
+    root: typeof options.tailwindcssBasedir === 'string' && options.tailwindcssBasedir.trim().length > 0
+      ? path.resolve(options.tailwindcssBasedir)
+      : undefined,
+    searchUp: false,
+    uniAppX: opts.uniAppX,
+  }).frameworkName
   ;(opts as any).__internalViteCapabilityProfile = { ...frameworkViteCapabilityProfile }
   const initialFactory = {
     'generic': createGenericVitePlugins,

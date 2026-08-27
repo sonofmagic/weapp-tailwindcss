@@ -91,4 +91,37 @@ describe('vite 单入口 dispatcher', () => {
       await rm(root, { recursive: true, force: true })
     }
   })
+
+  it('显式 Web target 保留可信 basedir 推断出的 Taro framework 能力', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-dispatcher-taro-web-'))
+    await writeFile(path.join(root, 'package.json'), JSON.stringify({
+      dependencies: {
+        '@tarojs/taro': '4.2.1',
+      },
+    }), 'utf8')
+
+    try {
+      const context = createContext({ appType: undefined, generator: { target: 'web' } })
+      setCurrentContext(context)
+      const { WeappTailwindcss } = await import('@/bundlers/vite')
+      const plugins = WeappTailwindcss({
+        generator: { target: 'web' },
+        tailwindcssBasedir: root,
+      })!
+      const post = findPlugin(plugins, ':post')!
+      await post.configResolved?.call(post, {
+        command: 'build',
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as ResolvedConfig)
+
+      expect(context.appType).toBeUndefined()
+      expect(plugins.some(plugin => plugin.name === 'weapp-tailwindcss:taro-alipay-browserslist-asset')).toBe(true)
+    }
+    finally {
+      resetVitePluginTestContext()
+      await rm(root, { recursive: true, force: true })
+    }
+  })
 })
