@@ -3,6 +3,7 @@ import type { SourceMapInput } from 'rollup'
 import type { TransformResult } from 'vite'
 import type { CreateJsHandlerOptions, ICustomAttributesEntities, JsHandler } from '@/types'
 import { NodeTypes, parse as parseTemplate } from '@vue/compiler-dom'
+import { normalizeUniAppXImportantApplyForSass } from '@weapp-tailwindcss/postcss'
 import MagicString from 'magic-string'
 import { generateCode, replaceWxml } from '@/wxml'
 import { createAttributeMatcher } from '@/wxml/custom-attributes'
@@ -130,6 +131,7 @@ interface TransformUVueOptions {
   enableComponentLocalStyle?: boolean
   enablePageLocalStyle?: boolean
   pageMatcher?: (id: string) => boolean
+  native?: boolean
   webCustomAttributeDeep?: boolean
   onWebLocalStyleRules?: (rules: string) => void
 }
@@ -273,6 +275,14 @@ export function transformUVue(
   const matchCustomAttribute = createAttributeMatcher(customAttributesEntities)
   const ms = new MagicString(code)
   const descriptor = parseSfc(code)
+  if (options.native || options.onWebLocalStyleRules) {
+    for (const style of descriptor.styles) {
+      const normalized = normalizeUniAppXImportantApplyForSass(style.content)
+      if (normalized !== style.content) {
+        ms.update(style.start, style.end, normalized)
+      }
+    }
+  }
   const localStyleCollector = shouldEnableLocalStyle(id, options)
     ? new UniAppXComponentLocalStyleCollector(id, runtimeSet)
     : undefined
@@ -372,10 +382,14 @@ export function transformUVue(
       }
       else if (scopedStyle) {
         const separator = scopedStyle.content.endsWith('\n') ? '' : '\n'
-        ms.appendLeft(scopedStyle.end, `${separator}${localStyleCollector.toStyleRules()}`)
+        ms.appendLeft(scopedStyle.end, `${separator}${localStyleCollector.toStyleRules({ native: options.native })}`)
       }
       else {
-        ms.append(`\n${localStyleCollector.toStyleBlock({ web: Boolean(options.onWebLocalStyleRules) })}`)
+        // 新增的局部样式块会单独进入预处理器，important utility 统一使用中间标记。
+        ms.append(`\n${localStyleCollector.toStyleBlock({
+          native: options.native || Boolean(options.onWebLocalStyleRules),
+          web: Boolean(options.onWebLocalStyleRules),
+        })}`)
       }
     }
   }

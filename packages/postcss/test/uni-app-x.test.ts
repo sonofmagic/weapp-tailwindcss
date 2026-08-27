@@ -1,11 +1,20 @@
 import fs from 'fs-extra'
 import path from 'pathe'
+import { normalizeUniAppXImportantApplyForSass, restoreUniAppXImportantApplyMarker } from '@/compat/uni-app-x'
 import { applyUniAppXUvueCompatibility } from '@/compat/uni-app-x-uvue'
 import { createStyleHandler, postcss } from '@/index'
 
 const INVALID_UNI_APP_X_BASE_SELECTOR_RE = /(^|,)\s*(?:\*|view|text|::before|::after|:before|:after|::backdrop)\s*(?=,|\{)/m
 
 describe('uni-app-x', () => {
+  it('round-trips important apply utilities across Sass and PostCSS', () => {
+    const source = '.probe { @apply !mt-6 mt-6! text-sm; }'
+    const sassSafe = normalizeUniAppXImportantApplyForSass(source)
+
+    expect(sassSafe).toContain('@apply mt-6__weapp_tw_important__ mt-6__weapp_tw_important__ text-sm;')
+    expect(restoreUniAppXImportantApplyMarker(sassSafe)).toContain('@apply mt-6! mt-6! text-sm;')
+  })
+
   it('accepts Web local important apply syntax', async () => {
     const styleHandler = createStyleHandler({
       appType: 'uni-app-x',

@@ -4405,6 +4405,9 @@ importers:
       postcss-rule-unit-converter:
         specifier: ^0.2.3
         version: 0.2.3(postcss@8.5.26)
+      postcss-scss:
+        specifier: ^4.0.9
+        version: 4.0.9(postcss@8.5.26)
       postcss-selector-parser:
         specifier: catalog:buildUtilities
         version: 7.1.5

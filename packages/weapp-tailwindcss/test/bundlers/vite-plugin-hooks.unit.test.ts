@@ -356,9 +356,10 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
       '/project/pages/index/index.uvue',
       context.jsHandler,
       expect.any(Set),
-      {
+      expect.objectContaining({
         enablePageLocalStyle: true,
-      },
+        native: true,
+      }),
     )
     expect(result?.code).toContain('uvue:/project/pages/index/index.uvue:')
   })
