@@ -36,6 +36,10 @@ describe('benchmark ci report', () => {
     const { benchmarkProjects } = await import('../../../../benchmark/version-compare/scripts/projects.mjs')
 
     const repoRoot = path.resolve(__dirname, '../../../..')
+    // 仅依赖本机 HBuilderX 与 Harmony 设备的复现项目不进入通用版本 benchmark。
+    const localOnlyBenchmarkExemptProjects = new Set([
+      'demo/uni-app-x-harmony-vapor-tailwindcss-v4',
+    ])
     const collectPackageDirs = (dir: string): string[] => {
       return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
         const full = path.join(dir, entry.name)
@@ -62,8 +66,12 @@ describe('benchmark ci report', () => {
       .filter(project => !project.startsWith('demo/style-injector-'))
       .filter(project => project !== 'demo/web/nuxt-vite-tailwindcss-v4')
       .filter(project => !project.startsWith('demo/web/') || project.includes('-vite-'))
+      .filter(project => !localOnlyBenchmarkExemptProjects.has(project))
     const benchmarkProjectDirs = Array.from(new Set(benchmarkProjects.map(project => project.project))).sort()
 
+    for (const project of localOnlyBenchmarkExemptProjects) {
+      expect(fs.existsSync(path.join(repoRoot, project, 'package.json')), `${project} should remain a real demo project`).toBe(true)
+    }
     expect(benchmarkProjectDirs).toEqual(demoProjects)
     expect(benchmarkProjects.map(project => project.key)).toEqual(expect.arrayContaining([
       'demo-web-react-vite-tailwindcss-v4__web',
