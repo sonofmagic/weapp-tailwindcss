@@ -187,6 +187,16 @@ function createUniAppXTargets(project: string): MultiplatformTarget[] {
   }))
 }
 
+function createUniAppXVaporTargets(project: string): MultiplatformTarget[] {
+  return [target({
+    framework: 'uni-app-x',
+    projectDir: `demo/${project}`,
+    platform: 'app-harmony',
+    coverage: 'local',
+    reason: 'Harmony Vapor 产物依赖本地 HBuilderX 5.24 与在线 Harmony 设备，使用独立 Vapor case 验证。',
+  })]
+}
+
 export const MULTIPLATFORM_TARGETS: MultiplatformTarget[] = [
   ...createGulpTargets('gulp-tailwindcss-v4'),
   ...createUniAppTargets('uni-app-vite-tailwindcss-v4', uniAppV4Platforms),
@@ -242,4 +252,5 @@ export const MULTIPLATFORM_TARGETS: MultiplatformTarget[] = [
     coverage: 'default-ci',
   }),
   ...createUniAppXTargets('uni-app-x-hbuilderx-tailwindcss-v4'),
+  ...createUniAppXVaporTargets('uni-app-x-harmony-vapor-tailwindcss-v4'),
 ]

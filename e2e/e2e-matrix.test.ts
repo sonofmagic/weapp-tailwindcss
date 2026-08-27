@@ -222,7 +222,7 @@ function collectDemoWeappTailwindcssConfigFiles() {
 
 function readDemoSource(entry: { name: string }) {
   const demoRoot = path.resolve(__dirname, '../demo', entry.name)
-  const ignoredDirs = new Set(['node_modules', 'dist', 'unpackage', '.vite', '.turbo'])
+  const ignoredDirs = new Set(['node_modules', 'dist', 'unpackage', '.debug', '.vite', '.turbo'])
   const sourceExts = new Set(['.css', '.js', '.jsx', '.mpx', '.scss', '.ts', '.tsx', '.uvue', '.vue', '.wxml'])
   const parts: string[] = []
 
@@ -548,6 +548,7 @@ describe('e2e matrix', () => {
       .filter(item => !item.name.startsWith('web/'))
       .filter(item => !item.name.startsWith('subpackage-'))
       .filter(item => item.framework !== 'style-injector')
+      .filter(item => !item.skipVisualHmr)
       .map(item => item.name)
       .sort()
     const ideCaseNames = getFrameworkIdeCases().map(item => item.name).sort()
@@ -628,6 +629,7 @@ describe('e2e matrix', () => {
       .filter(item => !item.name.startsWith('web/'))
       .filter(item => !item.name.startsWith('subpackage-'))
       .filter(item => item.framework !== 'style-injector')
+      .filter(item => !item.skipVisualHmr)
       .map(item => item.name)
       .sort()
     const expectedH5Names = DEMO_COVERAGE_MATRIX

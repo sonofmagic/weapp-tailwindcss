@@ -49,6 +49,7 @@ const localOnlyDemoProjects = new Set([
   'demo/subpackage-taro-webpack-react-tailwindcss-v4',
   'demo/subpackage-uni-app-vite-tailwindcss-v4',
   'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+  'demo/uni-app-x-harmony-vapor-tailwindcss-v4',
   'demo/uni-app-x-hbuilderx-tailwindcss-v4',
 ])
 function isIssueRegressionDemoProject(project: string) {

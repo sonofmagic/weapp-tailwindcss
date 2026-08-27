@@ -319,13 +319,20 @@ describe('uni-app-x style asset helpers', () => {
     expect(styleExportToUtsMap({
       btn: { '': { 'font-size': '12px', color: 'rgb(1, 2, 3)' } },
     })).toContain('"fontSize", 12')
+    expect(styleExportToUtsMap({
+      'leading-_b26px_B': { '': { '--tw-leading': '26px', 'line-height': '26px' } },
+    })).toBe('[_uM([["leading-_b26px_B", _pS(_uM([["-TwLeading", 26], ["lineHeight", 26]]))]])]')
   })
 
   it('creates and merges style values from css, app styles, and apply sources', () => {
-    const utilityStyles = cssSourceToStyleValue('.flex{display:flex}.w-\\[12px\\]{width:12px}')!
+    const utilityStyles = cssSourceToStyleValue('.flex{display:flex}.w-\\[12px\\]{width:12px}.leading-_b26px_B{--tw-leading:26px;line-height:26px}')!
     expect(cssSourceToStyleValue('.broken{')).toBeUndefined()
     expect(utilityStyles.flex['']).toMatchObject({ display: 'flex' })
     expect(utilityStyles['w-[12px]']['']).toMatchObject({ width: 12 })
+    expect(utilityStyles['leading-_b26px_B']['']).toMatchObject({
+      '-TwLeading': 26,
+      lineHeight: 26,
+    })
     expect(mergeStyleValues(undefined, { local: { '': { color: 'red' } } })?.local[''].color).toBe('red')
 
     const appSource = 'const GenAppStyles = [_uM([["app", _pS(_uM([["color", "red"]]))], ["unused", _pS(_uM([["color", "blue"]]))]])]'

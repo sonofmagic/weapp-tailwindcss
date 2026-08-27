@@ -200,6 +200,7 @@ describeFrameworkCi('framework support matrix ci', () => {
       'uni-app-x-hbuilderx-tailwindcss-v4 android',
       'uni-app-x-hbuilderx-tailwindcss-v4 ios',
       'uni-app-x-hbuilderx-tailwindcss-v4 harmony',
+      'uni-app-x-harmony-vapor-tailwindcss-v4 harmony vapor',
     ])
     for (const item of appCases) {
       expect(item.transformedContains.length, `${item.name} should verify initial App dev output`).toBeGreaterThan(0)
