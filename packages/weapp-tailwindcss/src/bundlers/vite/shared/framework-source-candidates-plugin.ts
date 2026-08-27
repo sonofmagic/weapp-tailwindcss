@@ -87,7 +87,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
             options.rememberTailwindRootCssModule(id)
           }
         }
-        if (!options.shouldOwnTailwindGeneration || !isSourceCandidateRequest(id) || !shouldCollectTransformedSourceCandidates(id)) {
+        if (!options.shouldOwnTailwindGeneration || options.collectSourceCandidates === false || !isSourceCandidateRequest(id) || !shouldCollectTransformedSourceCandidates(id)) {
           return shouldReturnTransformedCode ? { code: transformedCode, map: null } : undefined
         }
         return options.hmrTimingRecorder.measure('sourceCandidates.transform', async () => {
@@ -107,7 +107,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
     async watchChange(id, change) {
       recordCompilationDependencyChanges(options.runtimeState, createCompilationDependencyChanges([path.resolve(cleanUrl(id))]))
       await options.hmrTimingRecorder.measure('sourceCandidates.watchChange', async () => {
-        if (options.shouldOwnTailwindGeneration && isSourceCandidateRequest(id)) {
+        if (options.shouldOwnTailwindGeneration && options.collectSourceCandidates !== false && isSourceCandidateRequest(id)) {
           options.invalidateRecordedGeneratorCandidates()
         }
         if (options.sourceScanSession.isDependency(id)) {
@@ -137,7 +137,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
       async handler(ctx) {
         recordCompilationDependencyChanges(options.runtimeState, createCompilationDependencyChanges([path.resolve(cleanUrl(ctx.file))]))
         return options.hmrTimingRecorder.measure('sourceCandidates.handleHotUpdate', async () => {
-          const isSourceCandidateHotUpdate = options.shouldOwnTailwindGeneration && isSourceCandidateRequest(ctx.file)
+          const isSourceCandidateHotUpdate = options.shouldOwnTailwindGeneration && options.collectSourceCandidates !== false && isSourceCandidateRequest(ctx.file)
           if (isSourceCandidateHotUpdate && isSourceStyleRequest(ctx.file)) {
             for (const mod of ctx.modules) {
               for (const id of [mod.id, mod.url, mod.file]) {

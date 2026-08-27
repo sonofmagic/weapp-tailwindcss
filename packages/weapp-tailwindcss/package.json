@@ -56,6 +56,11 @@
       "import": "./dist/vite.js",
       "require": "./dist/vite.cjs"
     },
+    "./vite/web": {
+      "types": "./dist/vite/web.d.ts",
+      "import": "./dist/vite/web.js",
+      "require": "./dist/vite/web.cjs"
+    },
     "./webpack": {
       "types": "./dist/webpack.d.ts",
       "import": "./dist/webpack.js",

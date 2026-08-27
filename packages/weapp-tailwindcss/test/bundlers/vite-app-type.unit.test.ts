@@ -93,4 +93,17 @@ describe('resolveImplicitAppTypeFromViteRoot', () => {
 
     expect(resolveImplicitAppTypeFromViteRoot(rootDir)).toBe('mpx')
   })
+
+  it('can stop framework detection at the nearest Vite package boundary', async () => {
+    const rootDir = await createProjectRoot({})
+    const childDir = path.join(rootDir, 'packages', 'web')
+    await mkdir(childDir, { recursive: true })
+    await writeFile(path.join(rootDir, 'package.json'), JSON.stringify({
+      dependencies: { 'weapp-vite': '^6.0.0' },
+    }), 'utf8')
+    await writeFile(path.join(childDir, 'package.json'), JSON.stringify({ name: 'web' }), 'utf8')
+
+    expect(resolveImplicitAppTypeFromViteRoot(childDir, { searchUp: false })).toBeUndefined()
+    expect(resolveImplicitAppTypeFromViteRoot(childDir)).toBe('weapp-vite')
+  })
 })

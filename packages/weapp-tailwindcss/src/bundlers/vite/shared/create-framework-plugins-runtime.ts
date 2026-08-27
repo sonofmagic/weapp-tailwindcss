@@ -1,4 +1,5 @@
 /* eslint-disable style/max-statements-per-line, style/no-mixed-operators */
+import type { ViteCapabilityProfile } from '../capability-profile'
 import { Buffer } from 'node:buffer'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -27,6 +28,7 @@ import { normalizeMiniProgramGeneratorCssSource } from '../../shared/generator-c
 import { createHmrTimingRecorder } from '../../shared/hmr-timing'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
+import { frameworkViteCapabilityProfile } from '../capability-profile'
 import { createViteCssAssetIdentityResolver } from '../css-asset-identity'
 import { createViteCssFinalizerOutputPlugin } from '../css-finalizer'
 import { createViteCssMemory } from '../css-memory'
@@ -73,6 +75,7 @@ function isWebOrNativeAppPlatform(platform) { return platform === 'h5' || platfo
 function isInternalUserDefinedOptions(options) { return typeof options.onLoad === 'function' && typeof options.mainCssChunkMatcher === 'function' && typeof options.tailwindRuntime === 'object' && typeof options.refreshTailwindcssRuntime === 'function' }
 function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
   debug('create vite framework plugins framework=%s', frameworkBranch.frameworkName)
+  const capability: ViteCapabilityProfile = options.__internalViteCapabilityProfile ?? frameworkViteCapabilityProfile
   const rawOptions = options.__internalViteRawOptions ?? options
   const hasExplicitAppType = typeof options.__internalViteRawExplicitAppType === 'boolean' ? options.__internalViteRawExplicitAppType : typeof options.appType === 'string' && options.appType.trim().length > 0
   const hasExplicitTailwindcssBasedir = typeof options.__internalViteRawExplicitTailwindcssBasedir === 'boolean' ? options.__internalViteRawExplicitTailwindcssBasedir : typeof options.tailwindcssBasedir === 'string' && options.tailwindcssBasedir.trim().length > 0
@@ -95,7 +98,7 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
   const refreshTailwindRuntime = refreshTailwindcssRuntime
   const frameworkCssPipelineStrategy = frameworkBranch.cssPipelineStrategy
   const uniAppXEnabled = frameworkBranch.isRuntimeClassSetFeatureEnabled?.({ uniAppX }) === true
-  const shouldEnableFrameworkExtraPlugins = () => frameworkBranch.createExtraPlugins !== void 0
+  const shouldEnableFrameworkExtraPlugins = () => capability.frameworkExtras && frameworkBranch.createExtraPlugins !== void 0
   const disabledOptions = resolvePluginDisabledState(disabled)
   const tailwindcssMajorVersion = initialTailwindRuntime.majorVersion ?? 0
   if (!disabledOptions.plugin && tailwindcssMajorVersion !== 4) {
@@ -423,7 +426,7 @@ ${tracedCss}`
       await discoverAndRegisterAutoCssSources()
     } await sourceScanSession.sync()
   }
-  const extraPlugins = frameworkBranch.createExtraPlugins?.({ customAttributesEntities, disabledDefaultTemplateHandler, ensureRuntimeClassSet, generateCss: generateTailwindCssForVitePipeline, getResolvedConfig, isEnabled: shouldEnableFrameworkExtraPlugins, isIosPlatform: extraPluginPlatform.isIosPlatform === true, isNativeAppStyleTarget: () => frameworkCssPipelineStrategy?.isNativeAppStyleTarget?.(createCssPipelineContext()) === true, isWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, jsHandler, mainCssChunkMatcher, registerModuleGraphCandidates, runtimeState, styleHandler, syncSourceCandidatesForHotUpdate, tailwindRootCssModuleIds, uniAppX, viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles }) ?? []
+  const extraPlugins = capability.frameworkExtras ? frameworkBranch.createExtraPlugins?.({ customAttributesEntities, disabledDefaultTemplateHandler, ensureRuntimeClassSet, generateCss: generateTailwindCssForVitePipeline, getResolvedConfig, isEnabled: shouldEnableFrameworkExtraPlugins, isIosPlatform: extraPluginPlatform.isIosPlatform === true, isNativeAppStyleTarget: () => frameworkCssPipelineStrategy?.isNativeAppStyleTarget?.(createCssPipelineContext()) === true, isWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, jsHandler, mainCssChunkMatcher, registerModuleGraphCandidates, runtimeState, styleHandler, syncSourceCandidatesForHotUpdate, tailwindRootCssModuleIds, uniAppX, viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles }) ?? [] : []
   const installFrameworkWatchCssCacheAdapter = async (config) => {
     if (!shouldAdaptFrameworkWatchCss()) {
       return
@@ -438,33 +441,17 @@ ${tracedCss}`
       debug('adapt uni-app watch css before vite:css-post cache')
     }
   }
+  /* eslint-disable antfu/consistent-list-newline */
   const sourceCandidatesPlugin = createFrameworkSourceCandidatesPlugin({
-    cssMemory,
-    hasUserCssLayerBlocks,
-    hmrCandidateState,
-    hmrTimingRecorder,
-    invalidateRecordedGeneratorCandidates,
-    isCurrentWebLikeStylePlatform,
-    isNuxtPageHotModule,
-    isUniViteProject,
-    isWebOrNativeAppPlatform,
-    prepareTailwindGeneration,
-    preGenerateBundleHook,
-    refreshRuntimeStateForAutoCssSources,
-    refreshTailwindRootCssSource,
-    rememberOriginalCssLayerSource,
-    rememberTailwindRootCssModule,
-    resolveCurrentGeneratorBranch,
-    resolveCurrentGeneratorOptions,
-    resolveViteStylePlatform,
-    runtimeState,
-    shouldOwnTailwindGeneration,
-    sourceCandidateCollector,
-    sourceScanSession,
-    tailwindRootCssModuleIds,
-    transformEarlyMiniProgramCss,
-    viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles,
+    cssMemory, hasUserCssLayerBlocks, hmrCandidateState, hmrTimingRecorder, invalidateRecordedGeneratorCandidates,
+    isCurrentWebLikeStylePlatform, isNuxtPageHotModule, isUniViteProject, isWebOrNativeAppPlatform,
+    prepareTailwindGeneration, preGenerateBundleHook, refreshRuntimeStateForAutoCssSources, refreshTailwindRootCssSource,
+    rememberOriginalCssLayerSource, rememberTailwindRootCssModule, resolveCurrentGeneratorBranch, resolveCurrentGeneratorOptions,
+    resolveViteStylePlatform, runtimeState, shouldOwnTailwindGeneration, sourceCandidateCollector, sourceScanSession,
+    tailwindRootCssModuleIds, transformEarlyMiniProgramCss, viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles,
+    collectSourceCandidates: capability.sourceCandidates,
   }, createGenericWebProductionSourceCandidatesApply({ frameworkName: frameworkBranch.frameworkName, getIsWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, requiresSourceCandidateState: isCssSourceTraceEnabled(opts) }))
+  /* eslint-enable antfu/consistent-list-newline */
   const postPlugin = createFrameworkPostPlugin({
     api: {
       registerProcessedCssAsset(entry: {
@@ -484,17 +471,24 @@ ${tracedCss}`
     generateBundleHook,
     generatorPlaceholderCssFile,
     hasExplicitTailwindcssBasedir,
+    hasExplicitGeneratorTarget: typeof options.__internalViteRawExplicitGeneratorTarget === 'boolean' ? options.__internalViteRawExplicitGeneratorTarget : false,
+    frameworkName: frameworkBranch.frameworkName,
     hmrTimingRecorder,
     opts,
+    resolveViteStylePlatform,
     refreshRuntimeState,
     setResolvedConfig: (config) => { resolvedConfig = config },
     shouldInferAppType,
     shouldOwnTailwindGeneration,
     syncCssEntriesFromAnchor,
   })
-  const plugins = [...orderFrameworkSourceCandidatePlugins(extraPlugins, rewritePlugins, sourceCandidatesPlugin, frameworkBranch.sourceCandidatesBeforeExtraPlugin), ...createViteCssGenerationPlugins({ generateCss: generateTailwindCssForVitePipeline, getCommand: () => resolvedConfig?.command, onTailwindRootCss: registerTailwindRootCss, shouldDeferGeneration: shouldDeferFrameworkPreTransformGeneration, shouldGenerate: () => shouldOwnTailwindGeneration, shouldGenerateBuild: () => resolveCurrentGeneratorBranch().isWeb }), createViteServeJsTransformPlugin({ createHandlerOptions: file => serveJsHandlerOptions(file, frameworkCssPipelineStrategy?.getServeJsHandlerOptions?.({ ...createCssPipelineContext(), file })), getCommand: () => resolvedConfig?.command, jsHandler, shouldTransform: () => shouldOwnTailwindGeneration && (frameworkCssPipelineStrategy?.shouldTransformServeJs?.(createCssPipelineContext()) ?? !resolveCurrentGeneratorBranch().isWeb), transformRuntime: ensureRuntimeClassSet }), { name: `${vitePluginName}:watch-css-cache`, configResolved: { order: 'post', handler: installFrameworkWatchCssCacheAdapter } }, postPlugin]
+  const sourceAndRewritePlugins = orderFrameworkSourceCandidatePlugins(extraPlugins, rewritePlugins, sourceCandidatesPlugin, frameworkBranch.sourceCandidatesBeforeExtraPlugin)
+  const serveJsPlugin = capability.serveJsTransform ? createViteServeJsTransformPlugin({ createHandlerOptions: file => serveJsHandlerOptions(file, frameworkCssPipelineStrategy?.getServeJsHandlerOptions?.({ ...createCssPipelineContext(), file })), getCommand: () => resolvedConfig?.command, jsHandler, shouldTransform: () => shouldOwnTailwindGeneration && (frameworkCssPipelineStrategy?.shouldTransformServeJs?.(createCssPipelineContext()) ?? !resolveCurrentGeneratorBranch().isWeb), transformRuntime: ensureRuntimeClassSet }) : undefined
+  const plugins = [...sourceAndRewritePlugins, ...createViteCssGenerationPlugins({ generateCss: generateTailwindCssForVitePipeline, getCommand: () => resolvedConfig?.command, onTailwindRootCss: registerTailwindRootCss, shouldDeferGeneration: shouldDeferFrameworkPreTransformGeneration, shouldGenerate: () => shouldOwnTailwindGeneration, shouldGenerateBuild: () => resolveCurrentGeneratorBranch().isWeb }), ...(serveJsPlugin ? [serveJsPlugin] : []), { name: `${vitePluginName}:watch-css-cache`, configResolved: { order: 'post', handler: installFrameworkWatchCssCacheAdapter } }, postPlugin]
   plugins.push(cssFinalizerOutputPlugin)
-  plugins.push(...createBuiltinViteStyleInjectorPlugins(styleInjector, () => frameworkBranch.styleInjectorDelegate))
+  if (capability.styleInjector) {
+    plugins.push(...createBuiltinViteStyleInjectorPlugins(styleInjector, () => frameworkBranch.styleInjectorDelegate))
+  }
   return plugins
 }
 export { createViteFrameworkPlugins }

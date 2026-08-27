@@ -29,6 +29,7 @@ weapp-tailwindcss 同时提供 ESM 与 CommonJS 入口，并内置多个二级�
 | `weapp-tailwindcss` | 聚合入口：生成器、Webpack / Vite 历史插件名等常用工厂齐备 | `import { createWeappTailwindcssGenerator } from 'weapp-tailwindcss'`
 | `weapp-tailwindcss/webpack` | webpack@5 适配入口（uni-app CLI、mpx、原生小程序等） | `const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')`
 | `weapp-tailwindcss/vite` | Vite 插件入口（Taro Vite、weapp-vite 等） | `import { WeappTailwindcss } from 'weapp-tailwindcss/vite'`
+| `weapp-tailwindcss/vite/web` | Generic Vite Web 专用入口，固定 Web 目标并跳过小程序框架探测 | `import tailwindcss from 'weapp-tailwindcss/vite/web'`
 | `weapp-tailwindcss/core` | 暴露 `createContext` 等底层 API，可自定义 transform 流程 | `import { createContext } from 'weapp-tailwindcss/core'`
 
 ## 配置、工具与周边
@@ -47,6 +48,20 @@ weapp-tailwindcss 同时提供 ESM 与 CommonJS 入口，并内置多个二级�
 | `weapp-tailwindcss/package.json` | 包元数据 | 读取版本号等信息
 
 > 补充：如果你需要的是“可直接导入的静态 reset 样式资源”，请使用独立包 [`@weapp-tailwindcss/reset`](/docs/community/reset)，而不是这里的 `weapp-tailwindcss/reset` 插件入口。
+
+### Generic Vite Web
+
+标准 Vite Web 或 SSR 项目可以使用专用入口，无需配置 `appType`、`generator.target` 或 `tailwindcssBasedir`：
+
+```ts
+import tailwindcss from 'weapp-tailwindcss/vite/web'
+
+export default {
+  plugins: [tailwindcss()],
+}
+```
+
+该入口只接管 Tailwind Web CSS 生成和必要的 HMR；小程序模板/JS 转译、分包样式和平台 CSS 适配不会进入 Web 生产热路径。需要关闭生成优化时可传入 `optimize: false` 或 `{ minify: false }`。
 
 :::tip 插件命名
 Vite、Webpack 与 Gulp 入口都导出 `WeappTailwindcss` 和 `weappTailwindcss` 两个别名。文档推荐使用大写 `WeappTailwindcss`；小写 `weappTailwindcss` 适合偏函数式命名的项目。

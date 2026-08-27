@@ -20,6 +20,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const hasExplicitAppType = typeof options.appType === 'string' && options.appType.trim().length > 0
   const hasExplicitTailwindcssBasedir = typeof options.tailwindcssBasedir === 'string'
     && options.tailwindcssBasedir.trim().length > 0
+  const hasExplicitGeneratorTarget = options.generator !== undefined
+    && options.generator !== false
+    && typeof options.generator === 'object'
+    && Object.hasOwn(options.generator, 'target')
   const opts = getCompilerContext({
     ...options,
     __internalDeferMissingCssEntriesWarning: true,
@@ -27,6 +31,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   ;(opts as any).__internalViteRawOptions = options
   ;(opts as any).__internalViteRawExplicitAppType = hasExplicitAppType
   ;(opts as any).__internalViteRawExplicitTailwindcssBasedir = hasExplicitTailwindcssBasedir
+  ;(opts as any).__internalViteRawExplicitGeneratorTarget = hasExplicitGeneratorTarget
   const profile = resolveViteFrameworkProfile({
     appType: opts.appType,
     detectEnv: true,

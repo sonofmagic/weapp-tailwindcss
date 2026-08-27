@@ -42,6 +42,21 @@ import './style.css'
 
 ## 注册 Vite 插件
 
+纯 Vite Web 项目可以使用专用入口。它固定 Generic + Web profile，不需要填写 `appType`、`generator.target`、`tailwindcssBasedir` 或 `cssEntries`；入口 CSS 仍需由应用实际导入，插件会从 Vite 模块图发现根样式。
+
+```ts title="vite.config.ts"
+import { defineConfig } from 'vite'
+import weappTailwindcssWeb from 'weapp-tailwindcss/vite/web'
+
+export default defineConfig({
+  plugins: [weappTailwindcssWeb()],
+})
+```
+
+`optimize` 可传 `false` 或 `{ minify: false }` 关闭 Vite CSS 压缩，便于检查生成结果。
+
+需要兼容小程序、框架扩展或显式多入口时，继续使用主入口并手动指定配置：
+
 纯 Web 项目建议显式配置 `generator.target: 'web'`。这样生成结果会保留浏览器原生 Tailwind CSS 选择器，不会生成小程序转义后的 class。
 
 ```ts title="vite.config.ts"

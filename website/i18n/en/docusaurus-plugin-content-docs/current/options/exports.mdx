@@ -35,6 +35,7 @@ weapp-tailwindcss provides both ESM and CommonJS entrances, and has multiple bui
 |
 | `weapp-tailwindcss/webpack` | webpack@5 adaptation entrance (uni-app CLI, mpx, native applets, etc.) |
 | `weapp-tailwindcss/vite` | Vite plug-in entrance (Taro Vite, weapp-vite, etc.) | `import { WeappTailwindcss } from 'weapp-tailwindcss/vite'`
+| `weapp-tailwindcss/vite/web` | Generic Vite Web entry with a fixed Web target and no mini-program framework detection | `import tailwindcss from 'weapp-tailwindcss/vite/web'`
 | `weapp-tailwindcss/core` | Expose underlying APIs such as `createContext` and customize the transform process |
 
 ## Configuration, tools and peripherals
@@ -53,6 +54,20 @@ weapp-tailwindcss provides both ESM and CommonJS entrances, and has multiple bui
 | `weapp-tailwindcss/package.json` | Package metadata | Read version number and other information
 
 > Supplement: If you need "static reset style resources that can be directly imported", please use the independent package [`@weapp-tailwindcss/reset`](/docs/community/reset) instead of the `weapp-tailwindcss/reset` plug-in entry here.
+
+### Generic Vite Web
+
+Standard Vite Web or SSR projects can use the dedicated entry without configuring `appType`, `generator.target`, or `tailwindcssBasedir`:
+
+```ts
+import tailwindcss from 'weapp-tailwindcss/vite/web'
+
+export default {
+  plugins: [tailwindcss()],
+}
+```
+
+This entry owns Tailwind Web CSS generation and the required HMR path only. Mini-program template/JS transforms, subpackage styles, and platform CSS adapters stay out of the Web production hot path. Pass `optimize: false` or `{ minify: false }` to disable generated CSS optimization.
 
 :::tip plugin naming
 Vite, Webpack and Gulp entries all export the two aliases `WeappTailwindcss` and `weappTailwindcss`. The document recommends using uppercase `WeappTailwindcss`; lowercase `weappTailwindcss` is suitable for projects with partial functional naming.
