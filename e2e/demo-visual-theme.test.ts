@@ -75,7 +75,7 @@ describe('demo visual theme evidence', () => {
     expect(component).toContain('class="issue-navbar-side" :class="leftClass"')
     expect(component).toContain('<slot name="left" />')
     expect(page).toContain('leftClass="issue-navbar-left bg-primary w-[100rpx] h-[100rpx] px-[30rpx]"')
-    expect(page).toContain('class="issue-navbar-image w-[100rpx] h-[100rpx] rounded-[10rpx]"')
+    expect(page).toContain('class="issue-navbar-image w-[100rpx] h-[100rpx]"')
     expect(page).toContain('<template #left>')
     expect(config).toContain('\'a-navbar\': [\'leftClass\', \'rightClass\']')
   })
