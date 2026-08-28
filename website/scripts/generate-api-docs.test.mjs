@@ -34,6 +34,15 @@ describe('generate-api-docs SEO frontmatter', () => {
     expect(frontmatter.description).toBe('DisabledOptions 的类型说明，列出公开属性、参数和使用边界。')
   })
 
+  it('writes plain text descriptions when JSDoc uses inline code', () => {
+    const frontmatter = buildInterfaceSeoFrontmatter({
+      name: 'PostcssPluginOptions',
+      description: '`weapp-tailwindcss` PostCSS 插件配置。',
+    })
+
+    expect(frontmatter.description).toBe('weapp-tailwindcss PostCSS 插件配置。')
+  })
+
   it('provides strong metadata for generated index pages', () => {
     const userDefinedOptions = buildUserDefinedOptionsOverviewFrontmatter({
       description: 'UserDefinedOptions 配置总览，按源码分组列出可传入的插件选项。',

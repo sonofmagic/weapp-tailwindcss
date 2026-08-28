@@ -180,6 +180,10 @@ function normalizeSeoText(value: string): string {
   return value.replace(WHITESPACE_COLLAPSE_RE, ' ').trim()
 }
 
+function normalizeSeoDescription(value: string): string {
+  return normalizeSeoText(value.replace(BACKTICK_RE, ''))
+}
+
 function uniqKeywords(values: string[]): string[] {
   const seen = new Set<string>()
   const normalized: string[] = []
@@ -240,7 +244,7 @@ function pushFrontmatter(
 
 export function buildInterfaceSeoFrontmatter(doc: InterfaceDoc) {
   const fallbackDescription = `${doc.name} 的类型说明，列出公开属性、参数和使用边界。`
-  const rawDescription = normalizeSeoText(doc.description || '')
+  const rawDescription = normalizeSeoDescription(doc.description || '')
   const description = rawDescription.length >= 16 ? rawDescription : fallbackDescription
   return {
     title: doc.name,
