@@ -932,6 +932,7 @@ export const uniAppXAppCases: AppCase[] = [
     transformedContains: [
       ...harmonyInitialTransformedContains,
       'hbuilderx-app-dynamic-v4-harmony',
+      'issue-1125-tailwind',
       /"issue-822-component-child"\s*:\s*\{\s*""\s*:\s*\{\s*"borderTopWidth"\s*:\s*2/,
       /"borderTopStyle"\s*:\s*"solid"/,
       /"borderTopColor"\s*:\s*"#7c3aed"/,
@@ -946,8 +947,9 @@ export const uniAppXAppCases: AppCase[] = [
       /"fontSize":"32rpx"/,
       /"fontSize":"40rpx"/,
       /"color":"#fff(?:fff)?"/,
+      /"wtu-[^"]+":\{"":\{[^}]*"--tw-leading":"26px"[^}]*"lineHeight":"26px"[^}]*"-TwLeading":26/,
     ],
-    transformedNotContains: issue1002HarmonyStyleNotContains,
+    transformedNotContains: [...issue1002HarmonyStyleNotContains, 'leading-[26px]'],
     hmrTransformedContains: [...harmonyHmrTransformedContains, 'hbuilderx-app-hmr-v4-harmony'],
     runtimeLogContains: ['App Launch'],
     logNotContains: [...issue1002AppLogNotContains, ...iconifyNativeLogNotContains, ...nativeScopedAuthorLogNotContains],

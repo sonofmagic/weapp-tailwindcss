@@ -2191,6 +2191,23 @@ describe('uni-app-x vite plugins', () => {
     expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-c":{"":{"width":173}}')
   })
 
+  it('preserves length units for harmony vdom line-height styles', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("text", { class: "leading-_b26px_B" }, "issue-1125-vdom-leading-26px")}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+    }
+
+    const changed = injectUniAppXHarmonyBundleStyles(bundle, {
+      cssSources: [
+        '.leading-_b26px_B { --tw-leading: 26px; line-height: 26px; }',
+      ],
+    })
+
+    expect(changed).toBe(true)
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"leading-_b26px_B":{"":{"-TwLeading":26,"lineHeight":"26px"}}')
+    expect(bundle['assets/pages/index/index.js'].code).not.toContain('leading-[26px]')
+  })
+
   it('hydrates harmony chunk styles from uni-app-x style export css sources', () => {
     const bundle = {
       'assets/App.js': createChunk('const _style_0 = {};'),

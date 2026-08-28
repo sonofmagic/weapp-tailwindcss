@@ -10,6 +10,7 @@ const STRING_LITERAL_RE = /(['"`])((?:\\.|(?!\1)[\s\S])*?)\1/g
 const SFC_STYLE_BLOCK_RE = /<style\b[^>]*>([\s\S]*?)<\/style>/gi
 const STYLE_EXPORT_PREFIX_RE = /^\s*export\s+default\s+/
 const CLASS_SELECTOR_PREFIX_RE = /^\.((?:\\[^\n\r\f]|[\w-])+)(?=$|[.:#[])/
+const STRING_STYLE_PROPERTIES = new Set(['lineHeight'])
 
 type StyleDeclarations = Record<string, string | number>
 export type StyleValue = Record<string, Record<string, StyleDeclarations>>
@@ -44,19 +45,19 @@ function toCamelCase(prop: string) {
   return prop.replace(/-([a-z])/g, (_, char: string) => char.toUpperCase())
 }
 
-function normalizeValue(value: string) {
+function normalizeValue(prop: string, value: string) {
   const trimmed = value.trim()
-  if (/^-?\d+(?:\.\d+)?px$/.test(trimmed)) {
+  if (!STRING_STYLE_PROPERTIES.has(toCamelCase(prop)) && /^-?\d+(?:\.\d+)?px$/.test(trimmed)) {
     return Number(trimmed.slice(0, -2))
   }
   return trimmed.replace(/\s*,\s*/g, ',')
 }
 
-function normalizeStyleValue(value: string | number) {
+function normalizeStyleValue(prop: string, value: string | number) {
   if (typeof value === 'number') {
-    return value
+    return STRING_STYLE_PROPERTIES.has(toCamelCase(prop)) ? String(value) : value
   }
-  return normalizeValue(value)
+  return normalizeValue(prop, value)
 }
 
 function unescapeCssClassSelector(className: string) {
@@ -112,7 +113,7 @@ export function styleExportToUtsMap(styleExport: StyleValue) {
       continue
     }
     const declarationEntries = Object.entries(declarations).map(([prop, value]) => {
-      return `[${JSON.stringify(toCamelCase(prop))}, ${JSON.stringify(normalizeStyleValue(value))}]`
+      return `[${JSON.stringify(toCamelCase(prop))}, ${JSON.stringify(normalizeStyleValue(prop, value))}]`
     })
     if (declarationEntries.length === 0) {
       continue
@@ -204,7 +205,7 @@ function cssToStyleExport(source: string): StyleValue | undefined {
       }
       const declarations: Record<string, string | number> = {}
       rule.walkDecls((decl) => {
-        declarations[toCamelCase(decl.prop)] = normalizeValue(decl.value)
+        declarations[toCamelCase(decl.prop)] = normalizeValue(decl.prop, decl.value)
       })
       if (Object.keys(declarations).length > 0) {
         result[match[1]] = { '': declarations }

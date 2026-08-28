@@ -93,6 +93,12 @@
 			<view class="mt-[8px] h-[48px] w-[48px] rounded-full bg-[#f21903]" />
 			<text class="issue-1002-apply">issue-1002 scoped apply</text>
 		</view>
+		<view class="issue-1125-vdom-probe mt-[12px] flex w-full flex-col bg-[#102938] p-[12px]">
+			<text id="issue-1125-tailwind" class="w-[220px] leading-[26px] text-[14px] text-[#f7fbff]">issue-1125 Tailwind line 1
+issue-1125 Tailwind line 2</text>
+			<text id="issue-1125-native" class="issue-1125-native mt-[8px] w-[220px] text-[14px] text-[#f7fbff]">issue-1125 native line 1
+issue-1125 native line 2</text>
+		</view>
 		<view class="issue-902-theme-probe issue-902-theme-scope bg-primary p-[12px] text-white">
 			<text>issue 902 theme variable</text>
 		</view>
@@ -161,5 +167,9 @@
 
 	.issue-1002-apply {
 		@apply text-xs text-white rounded-full bg-[#164e63];
+	}
+
+	.issue-1125-native {
+		line-height: 26px;
 	}
 </style>

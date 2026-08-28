@@ -100,6 +100,9 @@ wx-root-portal-content {
 .mt-_b8px_B {
   margin-top: 8px;
 }
+.mt-_b12px_B {
+  margin-top: 12px;
+}
 .mt-_b13_d14758px_B {
   margin-top: 13.14758px;
 }
@@ -184,6 +187,9 @@ wx-root-portal-content {
 .w-_b173px_B {
   width: 173px;
 }
+.w-_b220px_B {
+  width: 220px;
+}
 .w-_b222_d222px_B {
   width: 222.222px;
 }
@@ -226,6 +232,9 @@ wx-root-portal-content {
 }
 .rounded {
   border-radius: 8rpx;
+}
+.rounded-_b10rpx_B {
+  border-radius: 10rpx;
 }
 .rounded-_b20px_B {
   border-radius: 20px;
@@ -461,6 +470,9 @@ wx-root-portal-content {
   font-size: var(--text-xs);
   line-height: var(--tw-leading, var(--text-xs--line-height));
 }
+.text-_b14px_B {
+  font-size: 14px;
+}
 .text-_b26px_B {
   font-size: 26px;
 }
@@ -475,6 +487,10 @@ wx-root-portal-content {
 }
 .text-_b93_d54rpx_B {
   font-size: 93.54rpx;
+}
+.leading-_b26px_B {
+  --tw-leading: 26px;
+  line-height: 26px;
 }
 .text-_b_h70ed0a_B {
   color: #70ed0a;
