@@ -1,6 +1,6 @@
-# uni-app-x-harmony-vapor-tailwindcss-v4
+# uni-app-x-vapor-tailwindcss-v4
 
-`uni-app x + Harmony Vapor + Tailwind CSS v4` 的 #1119 最小回归 demo。
+`uni-app x + Vapor + Tailwind CSS v4` 的 #1119 最小回归 demo。
 
 ## 关键配置
 

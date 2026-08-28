@@ -408,7 +408,7 @@ const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
 ])
 const noFunctionValidationCases = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
-  'uni-app-x-hbuilderx-tailwindcss-v4',
+  'uni-app-x-vdom-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
@@ -418,7 +418,7 @@ const referenceDirectiveRequiredCases = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-  'uni-app-x-hbuilderx-tailwindcss-v4',
+  'uni-app-x-vdom-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-vite-vue3-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
@@ -554,7 +554,7 @@ export function resolveCaseName() {
     || value === 'mpx-tailwindcss-v4'
     || configuredWatchCaseNames.has(value as ConcreteWatchCaseName)
     || value === 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
-    || value === 'uni-app-x-hbuilderx-tailwindcss-v4'
+    || value === 'uni-app-x-vdom-tailwindcss-v4'
     || value === 'weapp-vite-tailwindcss-v4'
     || value === 'both'
     || value === 'all'
@@ -1311,7 +1311,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       expect(styleMetric).toBeUndefined()
     }
 
-    if (item.name === 'uni-app-vite-tailwindcss-v4' || item.name === 'uni-app-x-hbuilderx-tailwindcss-v4') {
+    if (item.name === 'uni-app-vite-tailwindcss-v4' || item.name === 'uni-app-x-vdom-tailwindcss-v4') {
       const userReportedHotUpdate = item.userReportedHotUpdate
       expect(userReportedHotUpdate, `[${item.project}] should include the user reported hot-update scenario`).toBeDefined()
       if (!userReportedHotUpdate) {

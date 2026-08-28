@@ -251,6 +251,6 @@ export const MULTIPLATFORM_TARGETS: MultiplatformTarget[] = [
     platform: 'h5',
     coverage: 'default-ci',
   }),
-  ...createUniAppXTargets('uni-app-x-hbuilderx-tailwindcss-v4'),
-  ...createUniAppXVaporTargets('uni-app-x-harmony-vapor-tailwindcss-v4'),
+  ...createUniAppXTargets('uni-app-x-vdom-tailwindcss-v4'),
+  ...createUniAppXVaporTargets('uni-app-x-vapor-tailwindcss-v4'),
 ]

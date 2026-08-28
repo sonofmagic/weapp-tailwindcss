@@ -321,18 +321,31 @@ describe('uni-app-x style asset helpers', () => {
     })).toContain('"fontSize", 12')
     expect(styleExportToUtsMap({
       'leading-_b26px_B': { '': { '--tw-leading': '26px', 'line-height': '26px' } },
-    })).toBe('[_uM([["leading-_b26px_B", _pS(_uM([["-TwLeading", 26], ["lineHeight", 26]]))]])]')
+    })).toBe('[_uM([["leading-_b26px_B", _pS(_uM([["-TwLeading", 26], ["lineHeight", "26px"]]))]])]')
+    expect(styleExportToUtsMap({
+      unitless: { '': { lineHeight: 1.5, width: 26 } },
+    })).toContain('["lineHeight", "1.5"], ["width", 26]')
   })
 
   it('creates and merges style values from css, app styles, and apply sources', () => {
-    const utilityStyles = cssSourceToStyleValue('.flex{display:flex}.w-\\[12px\\]{width:12px}.leading-_b26px_B{--tw-leading:26px;line-height:26px}')!
+    const utilityStyles = cssSourceToStyleValue([
+      '.flex{display:flex}',
+      '.w-\\[12px\\]{width:12px}',
+      '.leading-_b26px_B{--tw-leading:26px;line-height:26px}',
+      '.leading-_b1d5_B{--tw-leading:1.5;line-height:1.5}',
+      '.leading-_b52rpx_B{--tw-leading:52rpx;line-height:52rpx}',
+      '.text-xs{font-size:24rpx;line-height:1.33333}',
+    ].join(''))!
     expect(cssSourceToStyleValue('.broken{')).toBeUndefined()
     expect(utilityStyles.flex['']).toMatchObject({ display: 'flex' })
     expect(utilityStyles['w-[12px]']['']).toMatchObject({ width: 12 })
     expect(utilityStyles['leading-_b26px_B']['']).toMatchObject({
       '-TwLeading': 26,
-      lineHeight: 26,
+      lineHeight: '26px',
     })
+    expect(utilityStyles['leading-_b1d5_B'][''].lineHeight).toBe('1.5')
+    expect(utilityStyles['leading-_b52rpx_B'][''].lineHeight).toBe('52rpx')
+    expect(utilityStyles['text-xs']['']).toMatchObject({ fontSize: '24rpx', lineHeight: '1.33333' })
     expect(mergeStyleValues(undefined, { local: { '': { color: 'red' } } })?.local[''].color).toBe('red')
 
     const appSource = 'const GenAppStyles = [_uM([["app", _pS(_uM([["color", "red"]]))], ["unused", _pS(_uM([["color", "blue"]]))]])]'
@@ -353,6 +366,13 @@ describe('uni-app-x style asset helpers', () => {
     expect(createMergedStyleValue('const cls = "app"', undefined, { app: { '': { color: 'red' } } })?.app[''].color).toBe('red')
     expect(createMergedStyleValue('const cls = "app"', { app: { '': { color: 'blue' } } }, { app: { '': { color: 'red' } } })).toEqual({
       app: { '': { color: 'red' } },
+    })
+    expect(createMergedStyleValue('const cls = "leading-_b26px_B"', {
+      'leading-_b26px_B': { '': { color: 'blue' } },
+    }, {
+      'leading-_b26px_B': { '': { lineHeight: '26px' } },
+    })).toEqual({
+      'leading-_b26px_B': { '': { color: 'blue', lineHeight: '26px' } },
     })
     expect(createMergedStyleValue('const cls = "app"', {
       app: { '': { color: 'blue', padding: 12 }, dark: { color: 'white' } },

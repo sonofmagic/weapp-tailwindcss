@@ -28,7 +28,7 @@ jobs:
             timeout_minutes: 30
           - case_name: uni-app-vite-vue3-hbuilderx-tailwindcss-v4
             timeout_minutes: 30
-          - case_name: uni-app-x-hbuilderx-tailwindcss-v4
+          - case_name: uni-app-x-vdom-tailwindcss-v4
             timeout_minutes: 35
           - case_name: taro-webpack-react-tailwindcss-v4
             timeout_minutes: 35

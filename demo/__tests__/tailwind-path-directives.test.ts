@@ -23,7 +23,7 @@ const directiveRE = /@(config|source)\s+(not\s+)?["']([^"']+)["']/g
 const subpackageRoots = ['sub-normal', 'sub-independent'] as const
 // Harmony Vapor 最小复现只验证 App 样式注入，不承载小程序分包隔离契约。
 const subpackageCoverageExemptDemoProjects = new Set([
-  'uni-app-x-harmony-vapor-tailwindcss-v4',
+  'uni-app-x-vapor-tailwindcss-v4',
 ])
 
 function stripCssComments(source: string) {

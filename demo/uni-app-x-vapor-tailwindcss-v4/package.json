@@ -1,9 +1,9 @@
 {
-  "name": "@weapp-tailwindcss-demo/uni-app-x-harmony-vapor-tailwindcss-v4",
+  "name": "@weapp-tailwindcss-demo/uni-app-x-vapor-tailwindcss-v4",
   "private": true,
   "type": "module",
   "version": "0.0.0",
-  "description": "uni-app x Harmony Vapor regression demo for leading-[26px].",
+  "description": "uni-app x Vapor regression demo for line-height serialization parity.",
   "author": "icebreaker <hi@sonofmagic.top>",
   "license": "MIT",
   "scripts": {

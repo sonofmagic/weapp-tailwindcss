@@ -155,7 +155,7 @@ function mutateUniAppXOptionsDataWithTemplateConsumer(
 
 function createUniAppXHBuilderXCase(baseCwd: string): WatchCase {
   const version = 'v4'
-  const projectName = `uni-app-x-hbuilderx-tailwindcss-${version}` as const
+  const projectName = `uni-app-x-vdom-tailwindcss-${version}` as const
   const outputRoot = `demo/${projectName}/unpackage/dist/dev/mp-weixin`
   const pageSource = path.resolve(baseCwd, `demo/${projectName}/pages/index/index.uvue`)
 

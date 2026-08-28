@@ -68,7 +68,8 @@ function isHBuilderXMiniProgramProject(root: string, pkg?: { name?: string }) {
   const normalizedRoot = root.replaceAll('\\', '/')
   return name.includes('hbuilderx-tailwindcss')
     || normalizedRoot.includes('/uni-app-vite-vue3-hbuilderx-tailwindcss-')
-    || normalizedRoot.includes('/uni-app-x-hbuilderx-tailwindcss-')
+    || normalizedRoot.includes('/uni-app-x-vdom-tailwindcss-')
+    || normalizedRoot.includes('/uni-app-x-vapor-tailwindcss-')
 }
 
 function isIdeUniAppViteMiniProgramProject(root: string, pkg?: { name?: string }) {

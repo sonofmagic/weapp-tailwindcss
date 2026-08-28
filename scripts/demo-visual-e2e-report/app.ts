@@ -32,7 +32,9 @@ import {
   resolveHdcCommand,
   wait,
 } from '../../e2e/hbuilderx-local/process.ts'
+import { findForbiddenRuntimeLogs, findMissingRuntimeLogs, resolveAppRuntimeLogContract } from '../../e2e/hbuilderx-local/render-mode.ts'
 import { createHBuilderXProjectAlias } from '../hbuilderx-project-alias.mjs'
+import { captureAndAnalyzeHarmonyLayout } from './harmony-layout.ts'
 import { finalizeHarmonyAppOutput } from './harmony-output.ts'
 import { resolveHmrScreenshotPath, resolveHmrStepScreenshotPath, resolveScreenshotPath } from './screenshots.ts'
 import {
@@ -133,6 +135,22 @@ function hasNoContent(source: string, entries: Array<string | RegExp> | undefine
     }
     return !entry.test(source)
   })
+}
+
+async function waitForAppRuntimeLogContract(item: AppCase, logs: string[], ensureRunning: () => void) {
+  const contract = resolveAppRuntimeLogContract(item)
+  if (contract.contains.length === 0) {
+    return contract
+  }
+  const startedAt = Date.now()
+  while (Date.now() - startedAt < appReadyTimeoutMs) {
+    ensureRunning()
+    if (findMissingRuntimeLogs(logs.join(''), contract.contains).length === 0) {
+      return contract
+    }
+    await wait(pollIntervalMs)
+  }
+  throw new Error(`${item.name} 未进入目标 App 渲染模式：expected=${contract.contains.map(String).join(' | ')}`)
 }
 
 async function findReadyAppOutputRoot(item: AppCase, projectRoot: string, expected: Array<string | RegExp>, styleExpected?: Array<string | RegExp>) {
@@ -651,6 +669,7 @@ async function runAppCaseVariant(
   let projectAlias: Awaited<ReturnType<typeof createHBuilderXProjectAlias>> | undefined
   let beforeScreenshotEvidence: Record<string, unknown> | undefined
   let afterScreenshotEvidence: Record<string, unknown> | undefined
+  let harmonyLayoutEvidence: Awaited<ReturnType<typeof captureAndAnalyzeHarmonyLayout>> | undefined
 
   try {
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: prepare\n`)
@@ -716,9 +735,19 @@ async function runAppCaseVariant(
     const initialExpected = [...item.transformedContains, ...(item.compiledStyleContains ?? [])]
     const initialOutputRoot = await waitForAppOutputRoot(item, projectRoot, initialExpected, appOutputTimeoutMs, ensureInitialRunning, item.styleContains)
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: initial output ${initialOutputRoot}\n`)
+    const runtimeLogContract = await waitForAppRuntimeLogContract(item, launch.logs, ensureInitialRunning)
     await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot before\n`)
     beforeScreenshotEvidence = await waitForAppScreenshotReady(item, hmrBeforeScreenshot, toolEnv, `${item.name} HMR 前`, ensureInitialRunning, item.markerClass)
+    if (item.platform === 'app-harmony' && item.harmonyRuntimeTextPairs?.length) {
+      const layoutFile = path.join(path.dirname(hmrBeforeScreenshot), 'layout.json')
+      harmonyLayoutEvidence = await captureAndAnalyzeHarmonyLayout({
+        deviceId: resolveHarmonyScreenshotDeviceId(item),
+        file: layoutFile,
+        pairs: item.harmonyRuntimeTextPairs,
+        timeoutMs: harmonyScreenshotTimeoutMs,
+      })
+    }
 
     const ensureHmrRunning = ensureInitialRunning
     const hmrSteps: VisualHmrStepResult[] = []
@@ -778,6 +807,10 @@ async function runAppCaseVariant(
     }
     await fs.copyFile(previousAfterScreenshot, hmrAfterScreenshot)
     await fs.copyFile(hmrAfterScreenshot, screenshot)
+    const forbiddenRuntimeLogs = findForbiddenRuntimeLogs(launch.logs.join(''), runtimeLogContract.notContains)
+    if (forbiddenRuntimeLogs.length > 0) {
+      throw new Error(`${item.name} 出现互斥 App 渲染模式日志：${forbiddenRuntimeLogs.map(String).join(' | ')}`)
+    }
 
     results.push({
       name,
@@ -799,7 +832,9 @@ async function runAppCaseVariant(
           before: beforeScreenshotEvidence,
         },
         hmrOutputRoot,
+        harmonyLayout: harmonyLayoutEvidence,
         launchArgs: item.launchArgs,
+        renderMode: item.renderMode,
       },
     })
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: passed\n`)

@@ -2454,7 +2454,7 @@ describe('watch-hmr regression cases', () => {
   })
 
   it('keeps uni-app x Options API script and in-place class replacement HMR coverage', () => {
-    const uniAppXCase = buildUniAppHBuilderXCases('/repo').find(watchCase => watchCase.name === 'uni-app-x-hbuilderx-tailwindcss-v4')
+    const uniAppXCase = buildUniAppHBuilderXCases('/repo').find(watchCase => watchCase.name === 'uni-app-x-vdom-tailwindcss-v4')
     const source = [
       '<script lang="uts">',
       'export default {',
@@ -3152,7 +3152,7 @@ describe('watch-hmr regression cases', () => {
     const guardedCases = [
       'uni-app-vite-tailwindcss-v4',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-      'uni-app-x-hbuilderx-tailwindcss-v4',
+      'uni-app-x-vdom-tailwindcss-v4',
     ]
 
     for (const caseName of guardedCases) {

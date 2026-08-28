@@ -30,7 +30,7 @@ const context: RuntimeContext = {
 const uniH5Cases = [
   'uni-app-vite-tailwindcss-v4',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-  'uni-app-x-hbuilderx-tailwindcss-v4',
+  'uni-app-x-vdom-tailwindcss-v4',
 ].map(name => ({
   name,
   projectDir: `demo/${name}`,

@@ -308,7 +308,7 @@ describe('e2e matrix', () => {
       'taro-vite-vue3-tailwindcss-v4',
       'issue-uview-plus-cssentries',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-      'uni-app-x-hbuilderx-tailwindcss-v4',
+      'uni-app-x-vdom-tailwindcss-v4',
     ]))
   })
 
@@ -565,7 +565,7 @@ describe('e2e matrix', () => {
 
   it('keeps every automated mini-program demo in the dynamic arbitrary-value CSS regression', () => {
     const regressionCaseNames = E2E_PROJECTS
-      .filter(item => !item.name.includes('hbuilderx'))
+      .filter(item => !DEMO_COVERAGE_MATRIX.find(entry => entry.name === item.name)?.hbuilderxLocal)
       .map(item => item.name)
       .sort()
     const expectedNames = DEMO_COVERAGE_MATRIX
@@ -622,7 +622,7 @@ describe('e2e matrix', () => {
       ...webViteHmrCoverageCaseNames.map(name => name.replace(/^web /, 'web/').replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v')),
       'uni-app-vite-tailwindcss-v4',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-      'uni-app-x-hbuilderx-tailwindcss-v4',
+      'uni-app-x-vdom-tailwindcss-v4',
     ].sort()
 
     const expectedWeappNames = DEMO_COVERAGE_MATRIX
@@ -691,7 +691,7 @@ describe('e2e matrix', () => {
     expect(scripts['e2e:app:visual']).toContain('--app-only --fail-on-incomplete')
     expect(scripts['e2e:hbuilderx:local:harmony']).toContain('E2E_HBUILDERX_APP_PLATFORM=app-harmony')
     expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_LOCAL=1')
-    expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_CASE=uni-app-vite-vue3-hbuilderx-tailwindcss-v4,uni-app-x-hbuilderx-tailwindcss-v4')
+    expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_CASE=uni-app-vite-vue3-hbuilderx-tailwindcss-v4,uni-app-x-vdom-tailwindcss-v4')
     expect(scripts['e2e:hbuilderx:local:demo:mp']).toContain('E2E_HBUILDERX_CASE_GROUP=mp')
     expect(scripts['e2e:hbuilderx:local:demo:mp-extra']).toBe('pnpm e2e:hbuilderx:local:demo:mp-alipay && pnpm e2e:hbuilderx:local:demo:mp-baidu && pnpm e2e:hbuilderx:local:demo:mp-toutiao')
     expect(scripts['e2e:hbuilderx:local:demo:mp-alipay']).toContain('E2E_HBUILDERX_MP_PLATFORM=mp-alipay')
@@ -786,8 +786,8 @@ describe('e2e matrix', () => {
       ['subpackage-uni-app-vite-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
       ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', ['mp-weixin', 'mp-alipay', 'mp-baidu', 'mp-toutiao', 'h5', 'app-android', 'app-ios']],
       ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', ['mp-weixin', 'mp-alipay', 'mp-baidu', 'mp-toutiao', 'h5', 'app-android', 'app-ios']],
-      ['uni-app-x-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios', 'app-harmony']],
-      ['uni-app-x-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios', 'app-harmony']],
+      ['uni-app-x-vdom-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios', 'app-harmony']],
+      ['uni-app-x-vdom-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios', 'app-harmony']],
     ])
 
     for (const [name, platforms] of expectedPlatformsByName) {
@@ -822,10 +822,10 @@ describe('e2e matrix', () => {
         if (platform.staticCoverage === 'exempt' && platform.hmrCoverage === 'exempt') {
           continue
         }
-        if (entry.name.includes('hbuilderx') && entry.framework === 'uni-app') {
+        if (entry.hbuilderxLocal && entry.framework === 'uni-app') {
           continue
         }
-        if (entry.name.includes('hbuilderx') && entry.framework === 'uni-app-x' && platform.platform === 'h5') {
+        if (entry.hbuilderxLocal && entry.framework === 'uni-app-x' && platform.platform === 'h5') {
           continue
         }
         expect(targets.has(`${entry.name}:${platform.platform}`), `${entry.name} ${platform.platform} should be in MULTIPLATFORM_TARGETS`).toBe(true)
@@ -919,7 +919,7 @@ describe('e2e matrix', () => {
       'taro-vite-vue3-tailwindcss-v4',
       'uni-app-vite-tailwindcss-v4',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-      'uni-app-x-hbuilderx-tailwindcss-v4',
+      'uni-app-x-vdom-tailwindcss-v4',
       'weapp-vite-tailwindcss-v4',
     ])
   })

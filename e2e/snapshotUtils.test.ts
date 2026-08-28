@@ -72,12 +72,12 @@ describe('normalizeCssSnapshot', () => {
     const sourceFile = path.join(
       tmpdir(),
       'weapp-tailwindcss-hbuilderx-projects',
-      'uni-app-x-hbuilderx-tailwindcss-v4-886dbfe1d9-26409',
+      'uni-app-x-vdom-tailwindcss-v4-886dbfe1d9-26409',
       'App.uvue',
     )
     const marker = `/*! weapp-tailwindcss vite-generated-css:${encodeURIComponent(sourceFile)} */`
 
-    expect(normalizeGeneratedCssSourceMarkers(marker, '/workspace/demo/uni-app-x-hbuilderx-tailwindcss-v4')).toBe(
+    expect(normalizeGeneratedCssSourceMarkers(marker, '/workspace/demo/uni-app-x-vdom-tailwindcss-v4')).toBe(
       '/*! weapp-tailwindcss vite-generated-css:%3Cproject-root%3E%2FApp.uvue */',
     )
   })

@@ -1,4 +1,4 @@
-# uni-app-x-hbuilderx-tailwindcss-v4 微信小程序端内存报告
+# uni-app-x-vdom-tailwindcss-v4 微信小程序端内存报告
 
 - framework: uni-app-x
 - builder: hbuilderx

@@ -1,6 +1,6 @@
-# uni-app-x-hbuilderx-tailwindcss-v4
+# uni-app-x-vdom-tailwindcss-v4
 
-`uni-app x + HBuilderX + Tailwind CSS v4` demo.
+`uni-app x + VDOM + Tailwind CSS v4` demo。
 
 ## 关键配置
 
