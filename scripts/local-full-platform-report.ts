@@ -222,6 +222,8 @@ function buildProfileSteps(profile: string): LocalFullRunStep[] {
       env: {
         DEMO_WEAPP_MEMORY_CASE: miniCases.join(','),
         WEAPP_TW_HMR_MEMORY_DEBUG: '1',
+        // 本机全端报告与 CI watch 矩阵使用同一插件处理预算，避免把平台启动/编译开销误判为产品回归。
+        E2E_WATCH_MAX_PLUGIN_PROCESS_MS: process.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS ?? '6000',
         ...(fastHmr ? { E2E_WATCH_MAIN_STYLE_ONLY: '1' } : {}),
       },
       artifactFiles: [
