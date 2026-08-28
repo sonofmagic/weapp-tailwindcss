@@ -27,6 +27,11 @@ interface SourceCandidateScanCacheEntry {
   eligibleFiles: string[]
   snapshot: SourceCandidateScanSnapshot
 }
+interface PendingSourceCandidateFileChange {
+  file: string
+  source?: string
+  event: 'create' | 'update' | 'delete'
+}
 type SourceScanResult = NonNullable<Awaited<ReturnType<typeof resolveViteSourceScanEntries>>>
 
 const sourceCandidateScanSnapshotCache = new LRUCache<string, SourceCandidateScanCacheEntry>({
@@ -76,6 +81,11 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
   const pendingSourceCandidateSyncs = new Set<Promise<unknown>>()
   const pendingSourceCandidateSyncByFile = new Map<string, Promise<any>>()
   const pendingHotUpdateChangeByFile = new Map<string, ViteSourceCandidateChange>()
+  const pendingChangedFiles = new Map<string, PendingSourceCandidateFileChange>()
+  let pendingChangedFilesFlush: Promise<Map<string, ViteSourceCandidateChange | undefined>> | undefined
+  let isFlushingChangedFiles = false
+  let cacheDirty = false
+  let cachedCollectorRevision: number | undefined
 
   const normalizeDependency = (file: string) => path.normalize(path.resolve(cleanUrl(file)))
   const isDependency = (file: string) => sourceScanDependencies.has(normalizeDependency(file))
@@ -119,12 +129,24 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     if (!sourceCandidateScanSignature) {
       return
     }
+    if (isFlushingChangedFiles) {
+      cacheDirty = true
+      return
+    }
+    const collectorRevision = options.sourceCandidateCollector.getRevision?.()
+    if (!cacheDirty
+      && cachedCollectorRevision !== undefined
+      && collectorRevision === cachedCollectorRevision) {
+      return
+    }
     const entry = {
       eligibleFiles: [...sourceScanEligibleFiles],
       snapshot: options.sourceCandidateCollector.snapshot(),
     }
     sourceCandidateScanCache.set(sourceCandidateScanSignature, entry)
     sourceCandidateScanSnapshotCache.set(sourceCandidateScanSignature, entry)
+    cachedCollectorRevision = collectorRevision
+    cacheDirty = false
   }
 
   const updateSourceScanMatchers = (eligibleFiles: Iterable<string>) => {
@@ -226,8 +248,17 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
   }
 
   const waitForPendingSyncs = async () => {
-    while (pendingSourceCandidateSyncs.size > 0) {
-      await Promise.all(pendingSourceCandidateSyncs)
+    while (true) {
+      if (!pendingChangedFilesFlush && pendingChangedFiles.size === 0 && pendingSourceCandidateSyncs.size === 0) {
+        break
+      }
+      await pendingChangedFilesFlush
+      if (pendingChangedFiles.size > 0) {
+        await flushChangedFiles()
+      }
+      if (pendingSourceCandidateSyncs.size > 0) {
+        await Promise.all(pendingSourceCandidateSyncs)
+      }
     }
   }
 
@@ -258,7 +289,7 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     return previous
   }
 
-  const syncChangedFile = async (id: string, sourceOverride?: string) => {
+  const syncChangedFileNow = async (id: string, sourceOverride?: string, event: PendingSourceCandidateFileChange['event'] = 'update') => {
     if (!options.shouldOwnTailwindGeneration || !options.isCandidateRequest(id)) {
       return undefined
     }
@@ -298,6 +329,14 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
       return syncChangedFile(id, sourceOverride)
     }
     const previousSource = options.sourceCandidateCollector.source(file)
+    if (event === 'delete') {
+      const change = options.sourceCandidateCollector.remove(file)
+      cacheDirty = true
+      const appliedChange = options.hmrCandidateState.apply(options.hmrCandidateState.createChange(file, change, {
+        runtimeAffecting: runtimeAffectingByDependency,
+      }))
+      return rememberHotUpdateChange(appliedChange)
+    }
     const task = (sourceOverride === undefined
       ? options.sourceCandidateCollector.syncCurrentFile(id)
       : options.sourceCandidateCollector.syncCurrentSource(id, sourceOverride))
@@ -306,7 +345,10 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
         return undefined
       })
       .then((change) => {
-        cacheCurrent()
+        cacheDirty = true
+        if (!isFlushingChangedFiles) {
+          cacheCurrent()
+        }
         const runtimeAffectingBySource = hasFrameworkHmrRuntimeSourceChange(
           file,
           previousSource,
@@ -332,12 +374,61 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     })
   }
 
+  const queueChangedFile = (change: Omit<PendingSourceCandidateFileChange, 'file'> & { id: string }) => {
+    const file = cleanUrl(change.id)
+    const previous = pendingChangedFiles.get(file)
+    if (!previous) {
+      pendingChangedFiles.set(file, { ...change, file })
+      return
+    }
+    previous.event = change.event
+    if (change.source !== undefined) {
+      previous.source = change.source
+    }
+  }
+
+  const flushChangedFiles = async () => {
+    if (pendingChangedFilesFlush) {
+      const activeFlush = pendingChangedFilesFlush
+      const result = await activeFlush
+      return pendingChangedFiles.size > 0 ? flushChangedFiles() : result
+    }
+    if (pendingChangedFiles.size === 0) {
+      return new Map<string, ViteSourceCandidateChange | undefined>()
+    }
+    const changes = [...pendingChangedFiles.values()]
+    pendingChangedFiles.clear()
+    isFlushingChangedFiles = true
+    pendingChangedFilesFlush = Promise.all(changes.map(async change => [
+      change.file,
+      await syncChangedFileNow(change.file, change.source, change.event),
+    ] as const))
+      .then(entries => new Map(entries))
+      .finally(() => {
+        isFlushingChangedFiles = false
+        pendingChangedFilesFlush = undefined
+        cacheCurrent()
+      })
+    return pendingChangedFilesFlush
+  }
+
+  const syncChangedFile = async (id: string, sourceOverride?: string) => {
+    const file = cleanUrl(id)
+    const existingTask = pendingSourceCandidateSyncByFile.get(file)
+    if (existingTask) {
+      await existingTask
+      return syncChangedFile(id, sourceOverride)
+    }
+    return syncChangedFileNow(file, sourceOverride)
+  }
+
   return {
     cacheCurrent,
     consumeHotUpdateChange: (id: string) => pendingHotUpdateChangeByFile.delete(cleanUrl(id)),
     getStats: () => ({
       pendingSourceCandidateSyncByFile: pendingSourceCandidateSyncByFile.size,
       pendingSourceCandidateSyncs: pendingSourceCandidateSyncs.size,
+      pendingChangedFiles: pendingChangedFiles.size,
       pendingHotUpdateChangeByFile: pendingHotUpdateChangeByFile.size,
       sourceCandidateScanCache: sourceCandidateScanCache.size,
     }),
@@ -345,6 +436,8 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     isDependency,
     // 首次 source scan 完成前保留 Vite 原有的 transform 行为；sync() 完成后由统一 matcher 负责边界判断。
     matches: (file: string) => sourceScanMatcher?.(file) ?? true,
+    queueChangedFile,
+    flushChangedFiles,
     shouldDiscoverAutoCssSources,
     sync,
     syncChangedFile,

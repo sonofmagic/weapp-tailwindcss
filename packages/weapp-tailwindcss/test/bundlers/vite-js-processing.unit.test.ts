@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { createJsHandlerOptionsFactory } from '@/bundlers/vite/generate-bundle/js-handler-options'
-import { processJsBundleEntry } from '@/bundlers/vite/generate-bundle/js-processing'
+import { processJsBundleEntry, replayCleanJsBundleEntry } from '@/bundlers/vite/generate-bundle/js-processing'
 import { createTransformFilter, createTransformFilterSignature, shouldSkipViteJsChunkTransform } from '@/bundlers/vite/generate-bundle/transform-filter'
 import { createCache } from '@/cache'
 import { createRollupChunk } from './vite-plugin.testkit'
@@ -126,6 +126,38 @@ describe('bundlers/vite js processing', () => {
     expect(chunk.code).toBe(cached)
     expect(jsTaskFactories).toHaveLength(0)
     expect(linkedByEntry.get(file)).toEqual(new Set())
+  })
+
+  it('plans a cached clean chunk without creating a js handler task or replacing linked state', () => {
+    const cache = createCache()
+    const file = 'assets/clean.js'
+    const source = 'const cls = "text-red-500"'
+    const sourceHash = cache.computeHash(source)
+    const runtimeSignature = 'runtime:stable'
+    const processHash = `${sourceHash}:${runtimeSignature}:transform-filter:include:none;exclude:none`
+    const cached = 'const cls = "tw-text-red-500"'
+    cache.set(file, cached)
+    cache.setHashValue(`${file}:js`, { changed: false, hash: processHash })
+    const chunk = { ...createRollupChunk(source), fileName: file }
+    const metrics = createMetrics()
+    const rememberProcessCacheKey = vi.fn()
+
+    const replayed = replayCleanJsBundleEntry({
+      cache,
+      debug: vi.fn(),
+      entry: { file, output: chunk, source, type: 'js' },
+      metrics,
+      rememberProcessCacheKey,
+      snapshot: createSnapshot(file, sourceHash) as any,
+      transformFilterSignature: 'include:none;exclude:none',
+      transformRuntimeSignature: runtimeSignature,
+      useIncrementalMode: true,
+    })
+
+    expect(replayed).toBe(true)
+    expect(chunk.code).toBe(cached)
+    expect(metrics.js.cacheHits).toBe(1)
+    expect(rememberProcessCacheKey).toHaveBeenCalledWith(file, `${file}:js`)
   })
 
   it('skips js ast work when all chunk modules match transform.exclude', async () => {

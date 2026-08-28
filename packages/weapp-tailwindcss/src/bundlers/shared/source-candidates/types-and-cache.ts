@@ -29,6 +29,7 @@ export interface SourceCandidateStore {
   clearScan: () => void
   resetScan: () => void
   clear: () => void
+  getRevision: () => number
 }
 
 export interface SourceCandidateCollector extends SourceCandidateStore {}
