@@ -23,9 +23,3 @@ keywords:
 - [🧩 文件匹配](../options/matchers.md) (7)
 - [🧭 生命周期](../options/lifecycle.md) (4)
 - [⚙️ 一般配置](../options/general.md) (6)
-
-## 框架配置参考
-
-- [uni-app x](../../config/uni-app-x)
-- [ReactLynx / Rspeedy](../../config/react-lynx)
-- [React Native / Expo](../../config/react-native)

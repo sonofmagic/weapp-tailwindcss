@@ -4,6 +4,21 @@ import { getCompilerContext } from '@/context'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 
+export { createCompiler } from './core/compiler'
+export type {
+  Compiler,
+  CompilerCacheReuseState,
+  CompilerGenerateRequest,
+  CompilerGenerateResult,
+  CompilerSnapshot,
+  CompilerSnapshotRoot,
+  CompilerSourcePattern,
+  CompilerTarget,
+  CompilerTemplateTransformOptions,
+  CreateCompilerOptions,
+  CreateCompilerSnapshotRequest,
+} from './core/compiler'
+
 type RuntimeJsTransformOptions = { runtimeSet?: Set<string> } & CreateJsHandlerOptions
 
 export interface GetRuntimeSetOptions {

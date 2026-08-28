@@ -116,6 +116,19 @@ describe('generate-api-docs source extraction', () => {
     expect(rendered).not.toContain('__@toStringTag')
     expect(rendered).not.toContain('#### size')
   })
+
+  it('renders scalar union aliases as type definitions', () => {
+    const project = new Project({ useInMemoryFileSystem: true })
+    const sourceFile = project.createSourceFile('api-fixture.ts', `
+      export type CompilerTarget = 'tailwind' | 'weapp' | 'web'
+    `)
+    const doc = buildInterfaceDoc('CompilerTarget', sourceFile.getTypeAliasOrThrow('CompilerTarget'))
+    const rendered = renderInterfaceDoc(doc)
+
+    expect(doc?.properties).toEqual([])
+    expect(rendered).toContain(`type CompilerTarget = 'tailwind' | 'weapp' | 'web'`)
+    expect(rendered).not.toContain('### length')
+  })
 })
 
 describe('generate-api-docs type links', () => {

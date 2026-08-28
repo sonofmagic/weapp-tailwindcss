@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-27T05:51:58.851Z",
+  "generatedAt": "2026-08-28T17:28:40.663Z",
   "locale": "zh-CN",
   "contentTier": "primary",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
   "totals": {
-    "all": 83,
-    "docs": 83,
+    "all": 94,
+    "docs": 94,
     "blog": 0
   },
   "documents": [
@@ -136,6 +136,505 @@
         "driver?"
       ],
       "source": "docs/api/interfaces/CacheOptions.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/Compiler",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "api",
+      "title": "Compiler",
+      "description": "Compiler 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "CreateCompilerSnapshotRequest",
+      "url": "/zh-cn/docs/api/interfaces/Compiler",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/Compiler",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/Compiler",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/Compiler",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/Compiler"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "接口文档",
+        "配置项",
+        "小程序",
+        "tailwindcss",
+        "微信小程序",
+        "Compiler",
+        "Compiler 接口",
+        "Compiler 类型定义",
+        "TypeScript",
+        "interfaces",
+        "Tailwind CSS 4",
+        "跨端",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "属性",
+        "createSnapshot()",
+        "dispose()",
+        "generate()",
+        "invalidate()",
+        "mergeSnapshots()",
+        "remove()",
+        "transformCss()",
+        "transformCssRoot()",
+        "transformJavaScript()",
+        "transformTemplate()"
+      ],
+      "source": "docs/api/interfaces/Compiler.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CompilerCacheReuseState",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "api",
+      "title": "CompilerCacheReuseState",
+      "description": "CompilerCacheReuseState 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "是否命中了上一次解析后的 source 指纹。",
+      "url": "/zh-cn/docs/api/interfaces/CompilerCacheReuseState",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerCacheReuseState",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CompilerCacheReuseState",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerCacheReuseState",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CompilerCacheReuseState"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "接口文档",
+        "配置项",
+        "小程序",
+        "tailwindcss",
+        "微信小程序",
+        "CompilerCacheReuseState",
+        "CompilerCacheReuseState 接口",
+        "CompilerCacheReuseState 类型定义",
+        "TypeScript",
+        "interfaces",
+        "Tailwind CSS 4",
+        "跨端",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "属性",
+        "source",
+        "engine",
+        "output"
+      ],
+      "source": "docs/api/interfaces/CompilerCacheReuseState.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CompilerGenerateRequest",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "api",
+      "title": "CompilerGenerateRequest",
+      "description": "CompilerGenerateRequest 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "传给小程序 CSS 兼容转换器的额外配置。",
+      "url": "/zh-cn/docs/api/interfaces/CompilerGenerateRequest",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerGenerateRequest",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CompilerGenerateRequest",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerGenerateRequest",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CompilerGenerateRequest"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "接口文档",
+        "配置项",
+        "小程序",
+        "tailwindcss",
+        "微信小程序",
+        "CompilerGenerateRequest",
+        "CompilerGenerateRequest 接口",
+        "CompilerGenerateRequest 类型定义",
+        "TypeScript",
+        "interfaces",
+        "Tailwind CSS 4",
+        "跨端",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "属性",
+        "styleOptions?",
+        "id",
+        "target?",
+        "source?",
+        "sourceOptions?",
+        "incrementalCache?",
+        "bareArbitraryValues?",
+        "scanSources?",
+        "candidates?",
+        "sources?"
+      ],
+      "source": "docs/api/interfaces/CompilerGenerateRequest.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CompilerGenerateResult",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "api",
+      "title": "CompilerGenerateResult",
+      "description": "CompilerGenerateResult 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "是否命中了上一次解析后的 source 指纹。",
+      "url": "/zh-cn/docs/api/interfaces/CompilerGenerateResult",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerGenerateResult",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CompilerGenerateResult",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerGenerateResult",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CompilerGenerateResult"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "接口文档",
+        "配置项",
+        "小程序",
+        "tailwindcss",
+        "微信小程序",
+        "CompilerGenerateResult",
+        "CompilerGenerateResult 接口",
+        "CompilerGenerateResult 类型定义",
+        "TypeScript",
+        "interfaces",
+        "Tailwind CSS 4",
+        "跨端",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "属性",
+        "cache",
+        "classSet",
+        "dependencies",
+        "rawCandidates",
+        "revision",
+        "snapshot",
+        "sources",
+        "target",
+        "css",
+        "rawCss",
+        "incrementalCss?"
+      ],
+      "source": "docs/api/interfaces/CompilerGenerateResult.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CompilerSnapshot",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "api",
+      "title": "CompilerSnapshot",
+      "description": "CompilerSnapshot 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "一次生成事务的只读转换凭据。",
+      "url": "/zh-cn/docs/api/interfaces/CompilerSnapshot",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerSnapshot",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CompilerSnapshot",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerSnapshot",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CompilerSnapshot"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "接口文档",
+        "配置项",
+        "小程序",
+        "tailwindcss",
+        "微信小程序",
+        "CompilerSnapshot",
+        "CompilerSnapshot 接口",
+        "CompilerSnapshot 类型定义",
+        "TypeScript",
+        "interfaces",
+        "Tailwind CSS 4",
+        "跨端",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "属性",
+        "classSet",
+        "dependencies",
+        "roots",
+        "sources",
+        "target"
+      ],
+      "source": "docs/api/interfaces/CompilerSnapshot.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CompilerSnapshotRoot",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "api",
+      "title": "CompilerSnapshotRoot",
+      "description": "CompilerSnapshotRoot 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "CompilerSnapshotRoot 的类型说明，列出公开属性、参数和使用边界。",
+      "url": "/zh-cn/docs/api/interfaces/CompilerSnapshotRoot",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerSnapshotRoot",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CompilerSnapshotRoot",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerSnapshotRoot",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CompilerSnapshotRoot"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "接口文档",
+        "配置项",
+        "小程序",
+        "tailwindcss",
+        "微信小程序",
+        "CompilerSnapshotRoot",
+        "CompilerSnapshotRoot 接口",
+        "CompilerSnapshotRoot 类型定义",
+        "TypeScript",
+        "interfaces",
+        "Tailwind CSS 4",
+        "跨端",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "属性",
+        "id",
+        "revision"
+      ],
+      "source": "docs/api/interfaces/CompilerSnapshotRoot.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CompilerSourcePattern",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "api",
+      "title": "CompilerSourcePattern",
+      "description": "CompilerSourcePattern 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "glob 规则的基准目录。",
+      "url": "/zh-cn/docs/api/interfaces/CompilerSourcePattern",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerSourcePattern",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CompilerSourcePattern",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerSourcePattern",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CompilerSourcePattern"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "接口文档",
+        "配置项",
+        "小程序",
+        "tailwindcss",
+        "微信小程序",
+        "CompilerSourcePattern",
+        "CompilerSourcePattern 接口",
+        "CompilerSourcePattern 类型定义",
+        "TypeScript",
+        "interfaces",
+        "Tailwind CSS 4",
+        "跨端",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "属性",
+        "base",
+        "pattern",
+        "negated"
+      ],
+      "source": "docs/api/interfaces/CompilerSourcePattern.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CompilerTarget",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "api",
+      "title": "CompilerTarget",
+      "description": "CompilerTarget 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "CompilerTarget 的类型说明，列出公开属性、参数和使用边界。",
+      "url": "/zh-cn/docs/api/interfaces/CompilerTarget",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerTarget",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CompilerTarget",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerTarget",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CompilerTarget"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "接口文档",
+        "配置项",
+        "小程序",
+        "tailwindcss",
+        "微信小程序",
+        "CompilerTarget",
+        "CompilerTarget 接口",
+        "CompilerTarget 类型定义",
+        "TypeScript",
+        "interfaces",
+        "Tailwind CSS 4",
+        "跨端",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "类型"
+      ],
+      "source": "docs/api/interfaces/CompilerTarget.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CompilerTemplateTransformOptions",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "api",
+      "title": "CompilerTemplateTransformOptions",
+      "description": "CompilerTemplateTransformOptions 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "CreateJsHandlerOptions",
+      "url": "/zh-cn/docs/api/interfaces/CompilerTemplateTransformOptions",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerTemplateTransformOptions",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CompilerTemplateTransformOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerTemplateTransformOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CompilerTemplateTransformOptions"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "接口文档",
+        "配置项",
+        "小程序",
+        "tailwindcss",
+        "微信小程序",
+        "CompilerTemplateTransformOptions",
+        "CompilerTemplateTransformOptions 接口",
+        "CompilerTemplateTransformOptions 类型定义",
+        "TypeScript",
+        "interfaces",
+        "Tailwind CSS 4",
+        "跨端",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "属性",
+        "keepEOL?",
+        "customAttributesEntities?",
+        "escapeMap?",
+        "inlineWxs?",
+        "jsHandler()?",
+        "disabledDefaultTemplateHandler?",
+        "quote?",
+        "ignoreHead?",
+        "wrapExpression?"
+      ],
+      "source": "docs/api/interfaces/CompilerTemplateTransformOptions.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CreateCompilerOptions",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "api",
+      "title": "CreateCompilerOptions",
+      "description": "CreateCompilerOptions 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "控制 Tailwind 自定义长度单位支持。",
+      "url": "/zh-cn/docs/api/interfaces/CreateCompilerOptions",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CreateCompilerOptions",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CreateCompilerOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CreateCompilerOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CreateCompilerOptions"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "接口文档",
+        "配置项",
+        "小程序",
+        "tailwindcss",
+        "微信小程序",
+        "CreateCompilerOptions",
+        "CreateCompilerOptions 接口",
+        "CreateCompilerOptions 类型定义",
+        "TypeScript",
+        "interfaces",
+        "Tailwind CSS 4",
+        "跨端",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "0.重要配置",
+        "supportCustomLengthUnits?",
+        "appType?",
+        "arbitraryValues?",
+        "unocss?",
+        "jsPreserveClass()?",
+        "replaceRuntimePackages?",
+        "disabled?",
+        "rewriteCssImports?",
+        "generator?",
+        "customAttributes?",
+        "customReplaceDictionary?"
+      ],
+      "source": "docs/api/interfaces/CreateCompilerOptions.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CreateCompilerSnapshotRequest",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "api",
+      "title": "CreateCompilerSnapshotRequest",
+      "description": "CreateCompilerSnapshotRequest 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "CreateCompilerSnapshotRequest 的类型说明，列出公开属性、参数和使用边界。",
+      "url": "/zh-cn/docs/api/interfaces/CreateCompilerSnapshotRequest",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CreateCompilerSnapshotRequest",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CreateCompilerSnapshotRequest",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CreateCompilerSnapshotRequest",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CreateCompilerSnapshotRequest"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "接口文档",
+        "配置项",
+        "小程序",
+        "tailwindcss",
+        "微信小程序",
+        "CreateCompilerSnapshotRequest",
+        "CreateCompilerSnapshotRequest 接口",
+        "CreateCompilerSnapshotRequest 类型定义",
+        "TypeScript",
+        "interfaces",
+        "Tailwind CSS 4",
+        "跨端",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "属性",
+        "classSet",
+        "dependencies?",
+        "id",
+        "revision?",
+        "sources?",
+        "target?"
+      ],
+      "source": "docs/api/interfaces/CreateCompilerSnapshotRequest.md"
     },
     {
       "kind": "doc",
@@ -352,8 +851,7 @@
         "Taro"
       ],
       "headings": [
-        "分组入口",
-        "框架配置参考"
+        "分组入口"
       ],
       "source": "docs/api/interfaces/UserDefinedOptions.md"
     },
@@ -395,11 +893,11 @@
         "属性",
         "target?",
         "styleOptions?",
-        "candidates?",
-        "sources?",
         "incrementalCache?",
         "bareArbitraryValues?",
-        "scanSources?"
+        "scanSources?",
+        "candidates?",
+        "sources?"
       ],
       "source": "docs/api/interfaces/WeappTailwindcssGenerateOptions.md"
     },
@@ -439,16 +937,16 @@
       ],
       "headings": [
         "属性",
-        "classSet",
-        "rawCandidates",
-        "dependencies",
-        "sources",
-        "root",
         "css",
         "rawCss",
         "incrementalCss?",
         "incrementalRawCss?",
-        "target"
+        "target",
+        "classSet",
+        "rawCandidates",
+        "dependencies",
+        "sources",
+        "root"
       ],
       "source": "docs/api/interfaces/WeappTailwindcssGenerateResult.md"
     },
@@ -489,9 +987,10 @@
       "headings": [
         "属性",
         "generate()",
+        "source",
+        "dispose()?",
         "loadDesignSystem()",
-        "validateCandidates()",
-        "source"
+        "validateCandidates()"
       ],
       "source": "docs/api/interfaces/WeappTailwindcssGenerator.md"
     },
@@ -530,8 +1029,7 @@
         "Taro"
       ],
       "headings": [
-        "属性",
-        "length"
+        "类型"
       ],
       "source": "docs/api/interfaces/WeappTailwindcssGeneratorTarget.md"
     },
@@ -542,7 +1040,7 @@
       "contentTier": "primary",
       "productArea": "api",
       "title": "WeappTailwindcssPostcssPluginOptions",
-      "description": "WeappTailwindcssPostcssPluginOptions，包含配置项、接口定义与参数说明。",
+      "description": "`weapp-tailwindcss` PostCSS 插件配置。",
       "summary": "weapp-tailwindcss PostCSS 插件配置。",
       "url": "/zh-cn/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
@@ -723,11 +1221,11 @@
         "arbitraryValues",
         "unocss",
         "jsPreserveClass",
-        "disabled",
         "replaceRuntimePackages",
+        "disabled",
         "rewriteCssImports",
-        "customAttributes",
-        "customReplaceDictionary"
+        "generator",
+        "customAttributes"
       ],
       "source": "docs/api/options/important.md"
     },
@@ -829,7 +1327,7 @@
       "contentTier": "primary",
       "productArea": "api",
       "title": "🗂️ 其他接口",
-      "description": "其他接口索引，列出 12 个 weapp-tailwindcss 运行时接口和补充类型。",
+      "description": "其他接口索引，列出 23 个 weapp-tailwindcss 运行时接口和补充类型。",
       "summary": "以下接口用于补充配置或运行时能力，本页面仅提供索引。",
       "url": "/zh-cn/docs/api/other-interfaces",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/api/other-interfaces",
@@ -2018,7 +2516,7 @@
       "productArea": "quick-start",
       "title": "Node.js API",
       "description": "使用 weapp-tailwindcss/core 在自研构建器或脚本中处理 Tailwind CSS、小程序模板与 JavaScript，并正确维护运行时类名集合。",
-      "summary": "weapp-tailwindcss/core 提供不依赖 Vite、Webpack 或 Gulp 生命周期的文本转换 API。它适合自研构建器、批处理脚本、构建平台适配器，以及需要直接管理内存产物的工具。",
+      "summary": "weapp-tailwindcss/core 提供不依赖 Vite、Webpack 或 Gulp 生命周期的框架 compiler 与文本转换 API。新集成使用 createCompiler() 管理 Tailwind 生成 root、revision 和不可变 snapshot；createContext() 保留原有自动 runtime 模式。",
       "url": "/zh-cn/docs/quick-start/frameworks/api",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/api",
       "alternates": {
@@ -2028,6 +2526,8 @@
       },
       "keywords": [
         "Node.js API",
+        "createCompiler",
+        "snapshot",
         "createContext",
         "transformJs",
         "transformWxml",
@@ -2040,14 +2540,13 @@
         "自研构建器",
         "快速开始",
         "安装",
-        "配置",
-        "Node.js",
-        "API"
+        "配置"
       ],
       "headings": [
         "先理解职责边界",
+        "`createCompiler()` 框架 API",
         "配置 Tailwind CSS 入口",
-        "API 一览",
+        "`createContext()` 兼容 API",
         "推荐调用时序",
         "完整文件处理示例",
         "`getRuntimeSet()` 刷新选项",
@@ -2055,8 +2554,7 @@
         "精确忽略冲突字符串",
         "局部保护",
         "全局规则",
-        "返回值与错误处理",
-        "`transformWxss()`"
+        "返回值与错误处理"
       ],
       "source": "docs/quick-start/frameworks/api.md"
     },
