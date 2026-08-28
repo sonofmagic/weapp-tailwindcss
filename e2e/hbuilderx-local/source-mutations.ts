@@ -18,13 +18,21 @@ export async function appendHmrSourceMutation(projectRoot: string, mutation: Hmr
   const file = path.resolve(projectRoot, mutation.file)
   const source = await readUtf8(file)
   const separator = source.endsWith('\n') ? '' : '\n'
-  const nextSource = typeof mutation.append === 'string'
-    ? `${source}${separator}${mutation.append.trimEnd()}\n`
-    : mutation.touch
-      ? `${source}${separator}\n`
-      : undefined
+  let nextSource: string | undefined
+  if (mutation.replace) {
+    if (!source.includes(mutation.replace.from)) {
+      throw new Error(`HMR 源码变更找不到替换目标：${mutation.file}`)
+    }
+    nextSource = source.replace(mutation.replace.from, mutation.replace.to)
+  }
+  else if (typeof mutation.append === 'string') {
+    nextSource = `${source}${separator}${mutation.append.trimEnd()}\n`
+  }
+  else if (mutation.touch) {
+    nextSource = `${source}${separator}\n`
+  }
   if (nextSource === undefined) {
-    throw new Error(`HMR 源码变更缺少 append 或 touch：${mutation.file}`)
+    throw new Error(`HMR 源码变更缺少 append、replace 或 touch：${mutation.file}`)
   }
   await fs.writeFile(file, nextSource, 'utf8')
   return file

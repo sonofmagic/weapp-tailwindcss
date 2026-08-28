@@ -11438,4 +11438,68 @@ describe('bundlers/shared generator css', () => {
       css: expect.stringContaining(`@config "${configFile}";`),
     }))
   })
+
+  it('resolves imported SFC @config from its configured cssSource file', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-sfc-import-config-'))
+    const mainCssFile = path.join(root, 'main.css')
+    const configFile = path.join(root, 'tailwind.config.js')
+    const pageFile = path.join(root, 'pages/index/index.uvue')
+    const mainCss = '@import "tailwindcss" source(none);\n@config "./tailwind.config.js";'
+    const flattenedCss = `${mainCss}\n.probe { @apply flex; }`
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await writeFile(mainCssFile, mainCss)
+    await writeFile(configFile, 'export default {}')
+    await writeFile(pageFile, '<style scoped>\n@import "../../main.css";\n.probe { @apply flex; }\n</style>')
+    const resolveTailwindV4Source = vi.fn(async (options: any = {}) => ({
+      projectRoot: root,
+      base: options.base ?? root,
+      baseFallbacks: [],
+      css: options.css ?? '@import "tailwindcss";',
+      dependencies: [],
+      version: 4,
+    }))
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      resolveTailwindV4Source,
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: root,
+        cwd: root,
+        base: root,
+        baseFallbacks: [root],
+        cssSources: [{
+          file: mainCssFile,
+          base: root,
+          css: mainCss,
+        }],
+      })),
+    }))
+    const { resolveGeneratorSource } = await import('@/bundlers/shared/generator-css/source-resolver')
+
+    const source = await resolveGeneratorSource(
+      4,
+      { tailwindRuntime: { majorVersion: 4 } as any },
+      flattenedCss,
+      `${pageFile}?vue&type=style&index=0&scoped=abc&lang.css`,
+      {
+        isMainChunk: false,
+        majorVersion: 4,
+        postcssOptions: { options: { from: pageFile } },
+      } as any,
+      normalizeGeneratorOptions(),
+      {
+        cssSources: [{
+          file: pageFile,
+          base: path.dirname(pageFile),
+          css: flattenedCss,
+        }],
+      },
+    )
+
+    expect(source?.css).toContain(`@config "${configFile}";`)
+    expect(source?.css).toContain('.probe { @apply flex; }')
+    expect(source?.css).not.toContain(path.join(path.dirname(pageFile), 'tailwind.config.js'))
+    expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+      base: root,
+      css: expect.stringContaining(`@config "${configFile}";`),
+    }))
+  })
 })

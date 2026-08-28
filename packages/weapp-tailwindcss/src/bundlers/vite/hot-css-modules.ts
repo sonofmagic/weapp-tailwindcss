@@ -53,6 +53,7 @@ async function resolveHotModulesByIds(
 export async function resolveHotTailwindCssModules(
   ctx: HmrContext,
   tailwindRootCssModuleIds: Iterable<string | null | undefined>,
+  selectModules?: (modules: ModuleNode[]) => ModuleNode[],
 ) {
   const root = ctx.server.config?.root ?? process.cwd()
   const outDir = ctx.server.config?.build?.outDir
@@ -88,10 +89,11 @@ export async function resolveHotTailwindCssModules(
       }
     }
   }
-  for (const mod of modules) {
+  const selectedModules = selectModules?.(modules) ?? modules
+  for (const mod of selectedModules) {
     ctx.server.moduleGraph.invalidateModule(mod)
   }
-  return modules
+  return selectedModules
 }
 
 export async function resolveHotSourceModulesByIds(
@@ -231,6 +233,12 @@ function includesHotModule(modules: ModuleNode[], target: ModuleNode, root: stri
   })
 }
 
+function includesHotId(modules: ModuleNode[], targetId: string, root: string) {
+  return modules.some(mod => [mod.id, mod.url, mod.file].some(moduleId => (
+    hasSameViteModuleIdentity(targetId, moduleId, root)
+  )))
+}
+
 function createSupplementalHotUpdate(hotUrl: string, timestamp: number) {
   return {
     type: 'js-update' as const,
@@ -254,11 +262,15 @@ export function sendSupplementalCssHotUpdates(
   cssModules: ModuleNode[],
   fallbackCssIds: Iterable<string> = [],
   fallbackSourceIds: Iterable<string> = [],
+  handledModules: ModuleNode[] = ctx.modules,
 ) {
   const seenUrls = new Set<string>()
   const root = ctx.server.config?.root ?? process.cwd()
   const updates: Array<ReturnType<typeof createSupplementalHotUpdate>> = []
   for (const id of fallbackSourceIds) {
+    if (includesHotId(handledModules, id, root)) {
+      continue
+    }
     const hotUrl = resolveCssHotUrl(id, root)
     if (!hotUrl || seenUrls.has(hotUrl)) {
       continue
@@ -267,7 +279,7 @@ export function sendSupplementalCssHotUpdates(
     updates.push(createSupplementalHotUpdate(hotUrl, ctx.timestamp))
   }
   for (const id of fallbackCssIds) {
-    if (!isSourceStyleRequest(id)) {
+    if (!isSourceStyleRequest(id) || includesHotId(handledModules, id, root)) {
       continue
     }
     const hotUrl = resolveCssHotUrl(id, root)
@@ -278,7 +290,7 @@ export function sendSupplementalCssHotUpdates(
     updates.push(createSupplementalHotUpdate(hotUrl, ctx.timestamp))
   }
   for (const mod of cssModules) {
-    if (includesHotModule(ctx.modules, mod, root)) {
+    if (includesHotModule(handledModules, mod, root)) {
       continue
     }
     const moduleHotUrl = resolveModuleHotUrl(mod)

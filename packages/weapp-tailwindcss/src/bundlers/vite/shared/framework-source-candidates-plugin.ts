@@ -191,8 +191,14 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
           const hotTailwindCssModuleIds = isSourceStyleRequest(ctx.file)
             ? [ctx.file]
             : options.tailwindRootCssModuleIds
-          const cssModules = await resolveHotTailwindCssModules(ctx, hotTailwindCssModuleIds)
           const hotRoot = ctx.server.config?.root ?? process.cwd()
+          const cssModules = await resolveHotTailwindCssModules(
+            ctx,
+            hotTailwindCssModuleIds,
+            options.hmrCssModuleVersions
+              ? modules => options.hmrCssModuleVersions.filterModules(modules, ctx.timestamp, hotRoot)
+              : undefined,
+          )
           const sourceModules = isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)
             ? await resolveHotSourceModules(ctx)
             : ctx.modules
@@ -260,11 +266,16 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
             ...options.tailwindRootCssModuleIds,
             ...options.viteProcessedCssSourceFiles,
           ])
+          const currentSupplementalCssFallbackIds = options.hmrCssModuleVersions?.filterIds(
+            supplementalCssFallbackIds,
+            ctx.timestamp,
+            hotRoot,
+          ) ?? supplementalCssFallbackIds
           if (options.hmrCandidateState.hasPendingChange()) {
-            options.hmrCandidateState.armTargets(cssModules, supplementalCssFallbackIds)
+            options.hmrCandidateState.armTargets(cssModules, currentSupplementalCssFallbackIds)
           }
-          if (shouldSendSupplementalCssHotUpdates) {
-            sendSupplementalCssHotUpdates(ctx, cssModules, supplementalCssFallbackIds)
+          if (shouldSendSupplementalCssHotUpdates && cssModules.length === 0) {
+            sendSupplementalCssHotUpdates(ctx, [], currentSupplementalCssFallbackIds)
           }
           if (isWebLikeHotUpdate && isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)) {
             return cssModules.length > 0
@@ -277,6 +288,9 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
           return cssModules.length > 0 ? mergeHotModulesByIdentity(hotRoot, ctx.modules, cssModules) : undefined
         }, { emit: false })
       },
+    },
+    closeBundle() {
+      options.hmrCssModuleVersions?.clear()
     },
     async buildStart() {
       await options.hmrTimingRecorder.measure('sourceCandidates.buildStart', options.prepareTailwindGeneration, { emit: false })

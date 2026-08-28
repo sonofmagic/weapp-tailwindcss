@@ -474,6 +474,26 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(result?.code).not.toContain('@config')
   })
 
+  it('preserves relative @config directives that came from an imported SFC style source', async () => {
+    const generateTailwindCss = vi.fn(async () => undefined)
+    const onTailwindRootCss = vi.fn()
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      generateTailwindCss,
+      onTailwindRootCss,
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: false,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    const transform = getTransformHandler(rewritePlugin!)
+    const source = '@import "tailwindcss";\n@config "./tailwind.config.js";'
+    const id = '/project/pages/index/index.uvue?vue&type=style&index=0&scoped=abc&lang.css'
+
+    await transform?.(source, id)
+
+    expect(onTailwindRootCss).toHaveBeenCalledWith(id, source)
+    expect(generateTailwindCss).toHaveBeenCalledWith(id, source, expect.anything())
+  })
+
   it('normalizes relative @config directives from scss source files before generation', async () => {
     const generateTailwindCss = vi.fn(async () => undefined)
     const onTailwindRootCss = vi.fn()

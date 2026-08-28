@@ -236,6 +236,7 @@ export async function resolveTailwindV4SourceSideEntrySource(
   sourceOptions: ReturnType<typeof resolveTailwindV4SourceOptionsFromRuntime>,
   generatorOptions: NormalizedWeappTailwindcssGeneratorOptions | undefined,
   file: string,
+  currentCss?: string,
 ) {
   if (!resolvedEntrySource) {
     return undefined
@@ -252,13 +253,13 @@ export async function resolveTailwindV4SourceSideEntrySource(
   )
   const css = createTailwindV4SourceReferenceSource(
     normalizeConfigDirective(
-      prependConfigDirective(resolvedEntrySource.css, generatorOptions?.config),
+      prependConfigDirective(currentCss ?? resolvedEntrySource.css, generatorOptions?.config),
       config,
     ),
     resolvedSourceOptions,
   )
   const source = await resolveTailwindV4Source(createSingleTailwindV4SourceOptions(resolvedSourceOptions, {
-    base: resolvedEntrySource.base,
+    base: currentCss && config ? path.dirname(config) : resolvedEntrySource.base,
     css,
     cssEntries: [resolvedEntrySource.file],
   }))

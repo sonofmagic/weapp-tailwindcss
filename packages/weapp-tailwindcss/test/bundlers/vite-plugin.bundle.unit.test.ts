@@ -1333,7 +1333,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(createdSources[0]?.css).not.toContain('../../../tailwind.config.js')
   }, TEST_TIMEOUT_MS)
 
-  it('preserves Vite vue hmr result while supplementing Tailwind root css updates for web target', async () => {
+  it('keeps the Tailwind root CSS in the normal Vite Web HMR transaction', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-hmr-root-css-'))
     createdDirs.push(root)
     const pageFile = path.join(root, 'src/pages/index/index.vue')
@@ -1442,14 +1442,15 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(result).toEqual([vueModule, cssModule])
     expect(invalidateModule).toHaveBeenCalledWith(cssModule)
     await Promise.resolve()
+    expect(wsSend).toHaveBeenCalledTimes(1)
     expect(wsSend).toHaveBeenCalledWith({
       type: 'update',
       updates: [
         {
-          acceptedPath: styleId,
+          acceptedPath: '/src/pages/index/index.vue',
           explicitImportRequired: false,
           isWithinCircularImport: false,
-          path: styleId,
+          path: '/src/pages/index/index.vue',
           timestamp: 123456,
           type: 'js-update',
         },
@@ -2266,19 +2267,18 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       sourceModule,
       expect.objectContaining({ id: cssFile, url: '/app.css' }),
     ])
+    expect(wsSend).toHaveBeenCalledTimes(1)
     expect(wsSend).toHaveBeenCalledWith({
       type: 'update',
-      updates: expect.arrayContaining([
-        expect.objectContaining({
-          acceptedPath: '/app.css',
-          path: '/app.css',
-          type: expect.stringMatching(/^(?:css|js)-update$/),
-        }),
-      ]),
+      updates: [expect.objectContaining({
+        acceptedPath: '/src/pages/index/index.tsx',
+        path: '/src/pages/index/index.tsx',
+        type: 'js-update',
+      })],
     })
   }, TEST_TIMEOUT_MS)
 
-  it('lets uni-app H5 vue source hot updates continue while sending supplemental Tailwind css updates', async () => {
+  it('keeps uni-app H5 source and Tailwind CSS in one normal Vite HMR transaction', async () => {
     const previousUniPlatform = process.env.UNI_PLATFORM
     process.env.UNI_PLATFORM = 'h5'
     try {
@@ -2397,14 +2397,15 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       })
       expect(invalidateModule).toHaveBeenCalledWith(cssModule)
       await Promise.resolve()
+      expect(wsSend).toHaveBeenCalledTimes(1)
       expect(wsSend).toHaveBeenCalledWith({
         type: 'update',
         updates: [
           {
-            acceptedPath: styleId,
+            acceptedPath: '/src/pages/index/index.vue',
             explicitImportRequired: false,
             isWithinCircularImport: false,
-            path: styleId,
+            path: '/src/pages/index/index.vue',
             timestamp: 123456,
             type: 'js-update',
           },
@@ -2737,19 +2738,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(result).toEqual([vueModule, cssModule])
     expect(invalidateModule).toHaveBeenCalledWith(cssModule)
     await Promise.resolve()
-    expect(wsSend).toHaveBeenCalledWith({
-      type: 'update',
-      updates: [
-        {
-          acceptedPath: styleId,
-          explicitImportRequired: false,
-          isWithinCircularImport: false,
-          path: styleId,
-          timestamp: 123456,
-          type: 'js-update',
-        },
-      ],
-    })
+    expect(wsSend).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('regenerates serve css hmr from updated wxml expression candidates', async () => {

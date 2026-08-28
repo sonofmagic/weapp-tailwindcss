@@ -49,6 +49,7 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
 
   beforeEach(() => {
     vi.resetModules()
+    vi.doUnmock('@/bundlers/vite/shared/configured-css-entry-observer')
     resetVitePluginTestContext()
     mocks.generateTailwindV4Css.mockReset()
     mocks.generateTailwindV4Css.mockResolvedValue({
@@ -57,6 +58,51 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
       classSet: new Set(['generated']),
       target: 'weapp',
     })
+  })
+
+  it('observes configured web css entries only when Vite transforms their style modules', async () => {
+    const cssFile = '/project/main.css'
+    const observer = {
+      dispose: vi.fn(),
+      flush: vi.fn(),
+      observe: vi.fn(),
+      observeSourceImports: vi.fn(),
+      requestCheck: vi.fn(),
+    }
+    vi.doMock('@/bundlers/vite/shared/configured-css-entry-observer', () => ({
+      createConfiguredCssEntryDiagnostics: vi.fn(() => ({
+        observer,
+        plugin: {
+          name: `${vitePluginName}:configured-css-entry-observer`,
+          transform(_code: string, id: string) {
+            observer.observe(id)
+          },
+        },
+      })),
+    }))
+    const context = createContext({
+      appType: 'uni-app-x',
+      cssEntries: [cssFile],
+      generator: { target: 'web' },
+      tailwindcssBasedir: '/project',
+    })
+    setCurrentContext(context)
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()!
+    const css = '@import "tailwindcss";'
+    const serveCssPlugin = getPlugin(plugins, 'generate:serve')
+
+    await getTransformHandler(serveCssPlugin)?.call(
+      { addWatchFile: vi.fn() },
+      css,
+      cssFile,
+    )
+    expect(observer.observe).not.toHaveBeenCalled()
+
+    const entryObserverPlugin = getPlugin(plugins, 'configured-css-entry-observer')
+    await getTransformHandler(entryObserverPlugin)?.call(entryObserverPlugin, css, `${cssFile}?direct`)
+    expect(observer.observe).toHaveBeenCalledOnce()
+    expect(observer.observe).toHaveBeenCalledWith(`${cssFile}?direct`)
   })
 
   it('drives source candidate transform, watch change, hot update, build start, and post config hooks', async () => {
@@ -650,6 +696,74 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     )
     expect(jsResult).toBeUndefined()
     expect(context.jsHandler).not.toHaveBeenCalled()
+  })
+
+  it('serializes concurrent generation for the same Vite style module', async () => {
+    const context = createContext({
+      appType: 'uni-app-x',
+      generator: { target: 'web' },
+      tailwindcssBasedir: '/project',
+    })
+    setCurrentContext(context)
+    let releaseFirst!: () => void
+    let markFirstStarted!: () => void
+    const firstPending = new Promise<void>((resolve) => {
+      releaseFirst = resolve
+    })
+    const firstStarted = new Promise<void>((resolve) => {
+      markFirstStarted = resolve
+    })
+    let activeGenerations = 0
+    let maxActiveGenerations = 0
+    mocks.generateTailwindV4Css.mockImplementation(async () => {
+      activeGenerations += 1
+      maxActiveGenerations = Math.max(maxActiveGenerations, activeGenerations)
+      if (mocks.generateTailwindV4Css.mock.calls.length === 1) {
+        markFirstStarted()
+        await firstPending
+      }
+      activeGenerations -= 1
+      return {
+        css: '.generated{color:red}',
+        dependencies: [],
+        classSet: new Set(['generated']),
+        target: 'web',
+      }
+    })
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()!
+    const postPlugin = getPlugin(plugins, 'post')
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: '/project',
+      plugins: [{ name: 'vite:css' }],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/web' },
+    } as ResolvedConfig)
+    const serveCssPlugin = getPlugin(plugins, 'generate:serve')
+    const serveCssHmrPlugin = getPlugin(plugins, 'generate:serve-hmr')
+    const transform = getTransformHandler(serveCssPlugin)!
+    const transformHmr = getTransformHandler(serveCssHmrPlugin)!
+    const source = '@import "tailwindcss";'
+    const id = '/project/pages/index/index.uvue?vue&type=style&index=0&scoped=abc&lang.css'
+    const hmrCode = `const __vite__css = ${JSON.stringify(source)};\n__vite__updateStyle(__vite__id, __vite__css)`
+
+    const first = transform.call(serveCssPlugin, source, id)
+    await firstStarted
+    const second = transformHmr.call(serveCssHmrPlugin, hmrCode, `${id}&t=2`)
+    await Promise.resolve()
+
+    expect(mocks.generateTailwindV4Css).toHaveBeenCalledTimes(1)
+    releaseFirst()
+    const results = await Promise.all([first, second])
+
+    expect(mocks.generateTailwindV4Css).toHaveBeenCalledTimes(2)
+    expect(maxActiveGenerations).toBe(1)
+    expect(results).toEqual([
+      expect.objectContaining({ code: expect.stringContaining('.generated{color:red}') }),
+      expect.objectContaining({ code: expect.stringContaining('.generated{color:red}') }),
+    ])
   })
 
   it('generates build css in a pre transform before Vite PostCSS and asset finalization', async () => {

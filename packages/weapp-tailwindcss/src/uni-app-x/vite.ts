@@ -61,6 +61,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     syncSourceCandidatesForHotUpdate,
     tailwindRootCssModuleIds = [],
     generateCss,
+    hmrCssModuleVersions,
     jsHandler,
     ensureRuntimeClassSet,
     getResolvedConfig,
@@ -69,6 +70,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     isWebGeneratorTarget = () => resolveUniUtsPlatform().isWeb,
     uniAppX,
     viteProcessedCssSourceFiles = [],
+    webCssEntryDiagnostics,
   } = options
   const resolvedUniAppXOptions = resolveUniAppXOptions(uniAppX)
   const utsPlatform = resolveUniUtsPlatform()
@@ -91,7 +93,8 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   }>()
   const nativeLocalStyleModuleIds = new Set<string>()
   const knownSfcSources = new Map<string, string>()
-  const webLocalStyle = createUniAppXWebLocalStyleBridge(isWebGeneratorTarget)
+  const pendingSfcTransforms = new Map<string, Promise<TransformResult | undefined>>()
+  const webLocalStyle = createUniAppXWebLocalStyleBridge(isWebGeneratorTarget, hmrCssModuleVersions)
   let componentLocalStyleEnabled: boolean | undefined
   const isNativeAppBuildTarget = createUniAppXNativeBuildTargetResolver(getResolvedConfig)
   const nativeHmrReloader = createUniAppXNativeHmrReloader({
@@ -253,7 +256,10 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         return
       }
       await runtimeState.readyPromise
-      const { query } = parseVueRequest(id)
+      const { filename, query } = parseVueRequest(id)
+      if (query.vue && query.type === 'style') {
+        await pendingSfcTransforms.get(cleanUrl(filename))
+      }
       const styleCode = query.vue && query.type === 'style' ? webLocalStyle.appendToStyle(code, id) : code
       // Vite 热更新会绕过 SFC 主模块，直接把原始样式交给预处理器；先移除
       // Sass 无法解析的 important utility 后，再由后续 CSS 阶段还原。
@@ -285,6 +291,11 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
 
   async function transformSfc(code: string, id: string, context: { addWatchFile?: (id: string) => void }) {
     knownSfcSources.set(cleanUrl(id), code)
+    if (isWebGeneratorTarget()) {
+      for (const style of extractSfcStyleBlocks(code)) {
+        webCssEntryDiagnostics?.observeSourceImports(style.source, id)
+      }
+    }
     if (isNativeAppBuildTarget(id)) {
       nativeLocalStyleModuleIds.add(id)
       nativeLocalStyleModuleIds.add(cleanUrl(id))
@@ -312,7 +323,14 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       native: true,
       pageMatcher: resolvedUniAppXOptions.componentLocalStyles.pageMatcher,
       ...(isWebGeneratorTarget() && customAttributesEntities.length > 0 ? { webCustomAttributeDeep: true } : {}),
-      ...(isWebGeneratorTarget() ? { onWebLocalStyleRules: (rules: string) => webLocalStyle.remember(id, rules) } : {}),
+      ...(isWebGeneratorTarget()
+        ? {
+            onWebLocalStyleRules: (rules: string) => {
+              webLocalStyle.remember(id, rules)
+              webCssEntryDiagnostics?.requestCheck()
+            },
+          }
+        : {}),
     })
     const result = Object.keys(transformOptions).length > 0
       ? transformUVue(code, id, jsHandler, currentRuntimeSet, transformOptions)
@@ -323,6 +341,18 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     harmonyApply.rememberSource(result.code, id)
     const expandedCode = await harmonyApply.expandStyles(result.code, id, context)
     return expandedCode === result.code ? result : { code: expandedCode, map: null }
+  }
+
+  function runTransformSfc(code: string, id: string, context: { addWatchFile?: (id: string) => void }) {
+    const file = cleanUrl(id)
+    const pending = transformSfc(code, id, context)
+    pendingSfcTransforms.set(file, pending)
+    void pending.finally(() => {
+      if (pendingSfcTransforms.get(file) === pending) {
+        pendingSfcTransforms.delete(file)
+      }
+    })
+    return pending
   }
 
   const nvuePlugin: Plugin = {
@@ -343,11 +373,11 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         if (!UVUE_NVUE_QUERY_RE.test(id)) {
           return
         }
-        return transformSfc(code, id, this)
+        return runTransformSfc(code, id, this)
       },
     },
     handleHotUpdate: {
-      order: 'pre',
+      order: 'post',
       async handler(ctx) {
         if (!isEnabled() || getResolvedConfig()?.command !== 'serve') {
           return
@@ -361,7 +391,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
             ctx.server.ws.send({ type: 'full-reload', path: ctx.file })
             return []
           }
-          await transformSfc(source, ctx.file, this)
+          await runTransformSfc(source, ctx.file, this)
         }
         return webLocalStyle.handleHotUpdate(ctx) ?? nativeHmrReloader.handleHotUpdate(ctx)
       },
@@ -379,6 +409,14 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       }
       // 针对 `vite build --watch` 的增量构建刷新运行时类集
       await ensureRuntimeClassSet(true)
+    },
+    buildEnd() {
+      if (isWebGeneratorTarget()) {
+        webCssEntryDiagnostics?.flush()
+      }
+    },
+    closeBundle() {
+      webCssEntryDiagnostics?.dispose()
     },
   }
 

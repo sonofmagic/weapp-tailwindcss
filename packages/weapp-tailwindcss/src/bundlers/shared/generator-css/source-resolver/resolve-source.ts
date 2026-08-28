@@ -5,6 +5,7 @@ import type { NormalizedWeappTailwindcssGeneratorOptions } from '@/generator'
 import path from 'node:path'
 import { resolveTailwindV4Source, resolveTailwindV4SourceFromRuntime } from '@/generator'
 import { omitUndefined } from '@/utils/object'
+import { isSfcStyleSourceRequest } from '../../style-requests'
 import { normalizeConfigDirective, prependConfigDirective } from '../config-directive'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, resolveCssEntrySource } from '../directives'
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../markers'
@@ -80,8 +81,17 @@ export async function resolveGeneratorSource(
     ? resolveSourceSideCssEntrySource(file, normalizedSourceOptions as SourceStyleMatchOptions, { removeConfig: false })
     : undefined
   const shouldPreferMatchedSourceSideCssSource = sourceSideEntrySource?.file
-    && normalizedSourceOptions.cssEntries?.some(cssEntry =>
-      path.resolve(cssEntry.replace(/[?#].*$/, '')) === path.resolve(sourceSideEntrySource.file!),
+    && (
+      sourceOptions?.cssEntries?.some(cssEntry =>
+        path.resolve(cssEntry.replace(/[?#].*$/, '')) === path.resolve(sourceSideEntrySource.file!),
+      )
+      || (
+        isSfcStyleSourceRequest(file)
+        && sourceOptions?.cssSources?.some(cssSource =>
+          typeof cssSource.file === 'string'
+          && path.resolve(cssSource.file.replace(/[?#].*$/, '')) === path.resolve(sourceSideEntrySource.file!),
+        )
+      )
     )
   const sourceSideCssSource = shouldPreferMatchedSourceSideCssSource
     ? await resolveTailwindV4SourceSideEntrySource(
@@ -89,6 +99,7 @@ export async function resolveGeneratorSource(
         normalizedSourceOptions,
         generatorOptions,
         file,
+        rawSource,
       )
     : undefined
   if (sourceSideCssSource) {

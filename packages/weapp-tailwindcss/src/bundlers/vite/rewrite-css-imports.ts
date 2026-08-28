@@ -6,6 +6,7 @@ import { vitePluginName } from '@/constants'
 import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '../shared/css-imports'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, normalizeTailwindConfigDirectives } from '../shared/generator-css/directives'
 import { isSourceStyleRequest } from '../shared/style-requests'
+import { isSfcStyleSourceFile } from './generate-bundle/sfc-style-source'
 import { cleanUrl, isCSSRequest } from './utils'
 
 function joinPosixPath(base: string, subpath: string) {
@@ -77,7 +78,7 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
           return null
         }
         const file = cleanUrl(id)
-        const normalizedCode = hasTailwindRootDirectives(code) || code.includes('@config')
+        const normalizedCode = !isSfcStyleSourceFile(file) && (hasTailwindRootDirectives(code) || code.includes('@config'))
           ? normalizeTailwindConfigDirectives(code, path.dirname(file))
           : code
         await options.onCssSourceTransform?.(id, normalizedCode)

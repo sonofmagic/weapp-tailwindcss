@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import {
+  hasTailwindRootDirectives,
   hasTailwindSourceDirectives,
   parseImportRequest,
   resolveCssEntrySource,
@@ -314,7 +315,7 @@ function extractStyleDirectiveSourcesDeep(
   seen: Set<string>,
 ): Array<{ source: string, file: string }> {
   const ownSources = extractStyleDirectiveSources(source)
-  if (ownSources.length > 0) {
+  if (ownSources.some(styleSource => hasTailwindRootDirectives(styleSource, { importFallback: true }))) {
     return ownSources.map(styleSource => ({ source: styleSource, file: sourceFile }))
   }
 
@@ -333,7 +334,9 @@ function extractStyleDirectiveSourcesDeep(
     catch {
     }
   }
-  return sources
+  return sources.length > 0
+    ? sources
+    : ownSources.map(styleSource => ({ source: styleSource, file: sourceFile }))
 }
 
 export interface SourceSideCssEntrySource {

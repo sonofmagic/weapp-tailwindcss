@@ -1,6 +1,7 @@
 import type { HmrContext, Plugin, ResolvedConfig } from 'vite'
 import type { ViteFrameworkName } from '../../framework-selector'
 import type { createViteRuntimeClassSet } from '../runtime-class-set'
+import type { ViteHmrCssModuleVersionTracker } from './framework-hmr-module-version'
 import type { ViteFrameworkCssPipelineStrategy, ViteFrameworkExtraPluginPlatform, ViteFrameworkRuntimeFeatureContext } from './framework-strategy'
 import type { getCompilerContext } from '@/context'
 import type { toCustomAttributesEntities } from '@/context/custom-attributes'
@@ -34,6 +35,7 @@ export interface ViteFrameworkExtraPluginContext {
   ensureRuntimeClassSet: (...args: any[]) => Promise<Set<string>>
   generateCss: (...args: any[]) => Promise<string | undefined>
   getResolvedConfig: () => ResolvedConfig | undefined
+  hmrCssModuleVersions: ViteHmrCssModuleVersionTracker
   isEnabled: () => boolean
   isIosPlatform: boolean
   isNativeAppStyleTarget: () => boolean
@@ -47,6 +49,12 @@ export interface ViteFrameworkExtraPluginContext {
   tailwindRootCssModuleIds: Set<string>
   uniAppX: ReturnType<typeof getCompilerContext>['uniAppX']
   viteProcessedCssSourceFiles: Iterable<string>
+  webCssEntryDiagnostics: {
+    dispose: () => void
+    flush: () => void
+    observeSourceImports: (source: string, sourceId: string) => void
+    requestCheck: () => void
+  }
 }
 
 function wrapPluginHook(

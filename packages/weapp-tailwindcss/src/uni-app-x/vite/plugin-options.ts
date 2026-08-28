@@ -1,4 +1,5 @@
 import type { HmrContext, ResolvedConfig } from 'vite'
+import type { ViteHmrCssModuleVersionTracker } from '@/bundlers/vite/shared/framework-hmr-module-version'
 import type {
   AppType,
   ICustomAttributesEntities,
@@ -25,10 +26,17 @@ export interface CreateUniAppXPluginsOptions {
   jsHandler: JsHandler
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
   getResolvedConfig: () => ResolvedConfig | undefined
+  hmrCssModuleVersions?: ViteHmrCssModuleVersionTracker | undefined
   isIosPlatform?: boolean
   isNativeAppStyleTarget?: (() => boolean) | undefined
   isWebGeneratorTarget?: (() => boolean) | undefined
   isEnabled?: (() => boolean) | undefined
   uniAppX?: InternalUserDefinedOptions['uniAppX']
   viteProcessedCssSourceFiles?: Iterable<string> | undefined
+  webCssEntryDiagnostics?: {
+    dispose: () => void
+    flush: () => void
+    observeSourceImports: (source: string, sourceId: string) => void
+    requestCheck: () => void
+  } | undefined
 }

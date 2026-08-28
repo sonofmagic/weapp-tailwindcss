@@ -1025,6 +1025,12 @@ describe('uni-app-x vite plugins', () => {
     const ensureRuntimeClassSet = vi.fn(async () => new Set(['text-red-500']))
     const invalidateModule = vi.fn()
     const send = vi.fn()
+    const webCssEntryDiagnostics = {
+      dispose: vi.fn(),
+      flush: vi.fn(),
+      observeSourceImports: vi.fn(),
+      requestCheck: vi.fn(),
+    }
     const plugins = createUniAppXPlugins({
       appType: 'uni-app-x',
       customAttributesEntities: [['a-navbar', ['leftClass']]],
@@ -1038,6 +1044,7 @@ describe('uni-app-x vite plugins', () => {
       isWebGeneratorTarget: () => true,
       tailwindRootCssModuleIds: new Set(['/project/main.css']),
       viteProcessedCssSourceFiles: new Set(['/project/main.css']),
+      webCssEntryDiagnostics,
     })
     const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
     const cssPrePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
@@ -1061,6 +1068,8 @@ describe('uni-app-x vite plugins', () => {
       },
     } as unknown as HmrContext
 
+    expect(nvuePlugin?.handleHotUpdate).toMatchObject({ order: 'post' })
+
     await nvuePlugin!.buildStart?.()
     ensureRuntimeClassSet.mockClear()
     transformUVueMock.mockImplementation((_code, _id, _jsHandler, _runtimeSet, options) => {
@@ -1074,6 +1083,7 @@ describe('uni-app-x vite plugins', () => {
     expect(ensureRuntimeClassSet).toHaveBeenCalledWith(true)
     expect(invalidateModule).toHaveBeenCalledWith(styleModule)
     expect(send).not.toHaveBeenCalled()
+    expect(webCssEntryDiagnostics.requestCheck).toHaveBeenCalledTimes(1)
     const styleResult = await getTransformHandler(cssPrePlugin)?.call(
       cssPrePlugin,
       '.author { color: red; }',
@@ -1081,6 +1091,73 @@ describe('uni-app-x vite plugins', () => {
     ) as TransformResult
     expect(styleResult).toEqual({
       code: '.author { color: red; }\n.wtu-hmr { @apply text-red-500; }\n',
+      map: null,
+    })
+
+    await nvuePlugin!.buildEnd?.()
+    await nvuePlugin!.closeBundle?.()
+    expect(webCssEntryDiagnostics.flush).toHaveBeenCalledTimes(1)
+    expect(webCssEntryDiagnostics.dispose).toHaveBeenCalledTimes(1)
+  })
+
+  it('waits for concurrent SFC local style collection before transforming its style module', async () => {
+    let releaseCandidates!: () => void
+    const candidatesReady = new Promise<void>((resolve) => {
+      releaseCandidates = resolve
+    })
+    const registerModuleGraphCandidates = vi.fn(async () => {
+      await candidatesReady
+      return new Set(['bg-primary'])
+    })
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      mainCssChunkMatcher: vi.fn(() => true),
+      registerModuleGraphCandidates,
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler: vi.fn(),
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet: vi.fn(async () => new Set(['bg-primary'])),
+      getResolvedConfig: () => ({ command: 'serve', root: '/project' } as ResolvedConfig),
+      isWebGeneratorTarget: () => true,
+      uniAppX: {
+        enabled: true,
+        componentLocalStyles: {
+          enabled: true,
+          onlyWhenStyleIsolationVersion2: false,
+        },
+      },
+    })
+    const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
+    const cssPrePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
+    transformUVueMock.mockImplementation((_code, _id, _jsHandler, _runtimeSet, options) => {
+      const bridge = (options as { onWebLocalStyleRules?: (rules: string) => void }).onWebLocalStyleRules
+      bridge?.('.wtu-concurrent { @apply bg-primary; }\n')
+      return { code: 'transformed', map: null } as TransformResult
+    })
+
+    const sfcTransform = getTransformHandler(nvuePlugin)?.call(
+      nvuePlugin,
+      '<template><view class="bg-primary" /></template><style scoped>.author { color: red; }</style>',
+      '/project/pages/index/index.uvue',
+    )
+    await vi.waitFor(() => expect(registerModuleGraphCandidates).toHaveBeenCalled())
+    let styleTransformSettled = false
+    const styleTransform = getTransformHandler(cssPrePlugin)?.call(
+      cssPrePlugin,
+      '.author { color: red; }',
+      '/project/pages/index/index.uvue?vue&type=style&index=0&scoped=abc&lang.scss',
+    ).finally(() => {
+      styleTransformSettled = true
+    })
+    await Promise.resolve()
+    expect(styleTransformSettled).toBe(false)
+
+    releaseCandidates()
+    await sfcTransform
+    await expect(styleTransform).resolves.toEqual({
+      code: '.author { color: red; }\n.wtu-concurrent { @apply bg-primary; }\n',
       map: null,
     })
   })
