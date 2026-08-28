@@ -1,12 +1,23 @@
 ---
 title: CompilerGenerateResult
-description: CSS generation result, incremental metadata, and immutable transaction snapshot.
+description: 'CSS generation result, incremental metadata, and immutable transaction snapshot.'
 keywords:
   - weapp-tailwindcss
   - API
   - compiler result
   - incremental CSS
   - TypeScript
+  - reference
+  - options
+  - CompilerGenerateResult
+  - interfaces
+  - Tailwind CSS 4
+  - cross-platform
+  - mini app
+  - uni-app
+  - Taro
+  - React Native
+  - Lynx
 ---
 
 # CompilerGenerateResult

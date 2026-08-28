@@ -7,6 +7,17 @@ keywords:
   - compiler snapshot
   - class set
   - TypeScript
+  - reference
+  - options
+  - CompilerSnapshot
+  - interfaces
+  - Tailwind CSS 4
+  - cross-platform
+  - mini app
+  - uni-app
+  - Taro
+  - React Native
+  - Lynx
 ---
 
 # CompilerSnapshot

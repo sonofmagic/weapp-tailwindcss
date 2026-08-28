@@ -7,6 +7,17 @@ keywords:
   - source pattern
   - Tailwind Scanner
   - TypeScript
+  - reference
+  - options
+  - CompilerSourcePattern
+  - interfaces
+  - Tailwind CSS 4
+  - cross-platform
+  - mini app
+  - uni-app
+  - Taro
+  - React Native
+  - Lynx
 ---
 
 # CompilerSourcePattern

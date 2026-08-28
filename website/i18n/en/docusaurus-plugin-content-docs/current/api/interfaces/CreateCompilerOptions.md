@@ -7,6 +7,17 @@ keywords:
   - createCompiler
   - compiler options
   - TypeScript
+  - reference
+  - options
+  - CreateCompilerOptions
+  - interfaces
+  - Tailwind CSS 4
+  - cross-platform
+  - mini app
+  - uni-app
+  - Taro
+  - React Native
+  - Lynx
 ---
 
 # CreateCompilerOptions

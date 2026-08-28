@@ -7,6 +7,17 @@ keywords:
   - compiler cache
   - incremental generation
   - TypeScript
+  - reference
+  - options
+  - CompilerCacheReuseState
+  - interfaces
+  - Tailwind CSS 4
+  - cross-platform
+  - mini app
+  - uni-app
+  - Taro
+  - React Native
+  - Lynx
 ---
 
 # CompilerCacheReuseState

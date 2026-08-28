@@ -7,6 +7,17 @@ keywords:
   - compiler root
   - revision
   - TypeScript
+  - reference
+  - options
+  - CompilerSnapshotRoot
+  - interfaces
+  - Tailwind CSS 4
+  - cross-platform
+  - mini app
+  - uni-app
+  - Taro
+  - React Native
+  - Lynx
 ---
 
 # CompilerSnapshotRoot

@@ -7,6 +7,17 @@ keywords:
   - compiler generation
   - Tailwind CSS
   - TypeScript
+  - reference
+  - options
+  - CompilerGenerateRequest
+  - interfaces
+  - Tailwind CSS 4
+  - cross-platform
+  - mini app
+  - uni-app
+  - Taro
+  - React Native
+  - Lynx
 ---
 
 # CompilerGenerateRequest

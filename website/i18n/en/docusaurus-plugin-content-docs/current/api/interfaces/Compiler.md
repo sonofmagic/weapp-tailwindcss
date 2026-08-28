@@ -1,12 +1,22 @@
 ---
 title: Compiler
-description: Framework compiler methods for generation, immutable snapshots, transforms, invalidation, and lifecycle management.
+description: 'Framework compiler methods for generation, immutable snapshots, transforms, invalidation, and lifecycle management.'
 keywords:
   - weapp-tailwindcss
   - API
   - Compiler
   - framework integration
   - TypeScript
+  - reference
+  - options
+  - interfaces
+  - Tailwind CSS 4
+  - cross-platform
+  - mini app
+  - uni-app
+  - Taro
+  - React Native
+  - Lynx
 ---
 
 # Compiler

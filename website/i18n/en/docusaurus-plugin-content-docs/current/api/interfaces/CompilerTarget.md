@@ -7,6 +7,17 @@ keywords:
   - compiler target
   - Tailwind CSS
   - TypeScript
+  - reference
+  - options
+  - CompilerTarget
+  - interfaces
+  - Tailwind CSS 4
+  - cross-platform
+  - mini app
+  - uni-app
+  - Taro
+  - React Native
+  - Lynx
 ---
 
 # CompilerTarget
