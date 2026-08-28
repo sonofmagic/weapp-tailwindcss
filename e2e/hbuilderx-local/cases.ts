@@ -1,3 +1,4 @@
+import type { AppRenderMode } from './render-mode'
 import process from 'node:process'
 
 export const rawTailwindDirectiveRE = /@(import\s+["']tailwindcss|tailwind|apply|theme|source)\b[^;\n{}]*[;{]/
@@ -59,6 +60,14 @@ export interface AndroidRuntimeStyleExpectation {
   width: number
 }
 
+export interface HarmonyRuntimeTextPair {
+  tailwindText: string
+  nativeText: string
+  maxHeightDifference?: number
+  tailwindLayoutNodeIndex?: number
+  nativeLayoutNodeIndex?: number
+}
+
 export interface AppCase {
   name: string
   platform: AppPlatform
@@ -91,6 +100,9 @@ export interface AppCase {
   styleNotContains?: Array<string | RegExp>
   hmrStyleContains?: Array<string | RegExp>
   runtimeLogContains?: Array<string | RegExp>
+  runtimeLogNotContains?: Array<string | RegExp>
+  renderMode?: AppRenderMode
+  harmonyRuntimeTextPairs?: HarmonyRuntimeTextPair[]
   runtime?: AndroidRuntimeStyleExpectation
   logNotContains?: Array<string | RegExp>
 }
@@ -898,6 +910,7 @@ export const uniAppXAppCases: AppCase[] = [
   },
   {
     name: 'uni-app-x-hbuilderx-tailwindcss-v4 harmony',
+    renderMode: 'vdom',
     platform: 'app-harmony',
     projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
     outputDir: 'unpackage/dist/dev/.app-harmony',
@@ -948,14 +961,37 @@ export const uniAppXAppCases: AppCase[] = [
       /"fontSize":"40rpx"/,
       /"color":"#fff(?:fff)?"/,
       /"wtu-[^"]+":\{"":\{[^}]*"--tw-leading":"26px"[^}]*"lineHeight":"26px"[^}]*"-TwLeading":26/,
+      /"lineHeight":"52rpx"/,
+      /"lineHeight":"1\.625"/,
+      /"lineHeight":"1\.42857"/,
+      /"width":220/,
+      /"issue-1125-local-merge":\{"":\{[^}]*"paddingLeft":3/,
     ],
-    transformedNotContains: [...issue1002HarmonyStyleNotContains, 'leading-[26px]'],
-    hmrTransformedContains: [...harmonyHmrTransformedContains, 'hbuilderx-app-hmr-v4-harmony'],
+    transformedNotContains: [
+      ...issue1002HarmonyStyleNotContains,
+      'leading-[26px]',
+      'leading-[52rpx]',
+      'leading-[1.625]',
+    ],
+    hmrTransformedContains: [
+      ...harmonyHmrTransformedContains,
+      'hbuilderx-app-hmr-v4-harmony',
+      /"lineHeight":"26px"/,
+      /"lineHeight":"52rpx"/,
+      /"lineHeight":"1\.625"/,
+    ],
+    harmonyRuntimeTextPairs: [{
+      tailwindText: 'issue-1125 Tailwind line 1 issue-1125 Tailwind line 2',
+      nativeText: 'issue-1125 native line 1 issue-1125 native line 2',
+      tailwindLayoutNodeIndex: 18,
+      nativeLayoutNodeIndex: 19,
+    }],
     runtimeLogContains: ['App Launch'],
     logNotContains: [...issue1002AppLogNotContains, ...iconifyNativeLogNotContains, ...nativeScopedAuthorLogNotContains],
   },
   {
     name: 'uni-app-x-harmony-vapor-tailwindcss-v4 harmony vapor',
+    renderMode: 'vapor',
     platform: 'app-harmony',
     projectDir: 'demo/uni-app-x-harmony-vapor-tailwindcss-v4',
     outputDir: 'unpackage/dist/dev/.app-harmony',
@@ -964,11 +1000,13 @@ export const uniAppXAppCases: AppCase[] = [
       'unpackage/dist/dev/app-harmony',
     ],
     sourceFile: 'pages/index/index.uvue',
-    markerAnchor: '<view class="issue-1119-vapor',
-    markerClass: 'issue-1119-vapor leading-[26px] text-[18px] text-black bg-[#0e7490]',
-    markerText: 'issue-1119-vapor-leading-26px',
-    hmrMarkerClass: 'issue-1119-vapor leading-[26px] text-[18px] text-black bg-[#164e63]',
-    hmrMarkerText: 'issue-1119-vapor-hmr-leading-26px',
+    markerAnchor: '<view class="issue-1125-vapor-probe',
+    markerClass: 'hbuilderx-app-native-hmr-probe flex h-[41px] w-[173px] items-center justify-center bg-[#0e7490]',
+    markerTextClass: 'text-[18px] leading-[26px] text-white',
+    markerText: 'issue-1125-vapor-leading-26px',
+    hmrMarkerClass: 'hbuilderx-app-native-hmr-probe mt-[19px] flex h-[41px] w-[173px] items-center justify-center bg-[#164e63]',
+    hmrMarkerTextClass: 'text-[18px] leading-[26px] text-white',
+    hmrMarkerText: 'issue-1125-vapor-hmr-leading-26px',
     launchArgs: defaultHarmonyLaunchArgs,
     launchEnv: {
       UNI_APP_X_DOM2: 'true',
@@ -978,6 +1016,7 @@ export const uniAppXAppCases: AppCase[] = [
       'app-service.js',
       'App.uvue',
       'assets/pages/index/index.js',
+      'bytes/GenPagesIndexIndexSharedData.bytes',
       'bytes/GenPagesIndexIndexSharedData.style.bytes',
     ],
     transformedFiles: [
@@ -985,13 +1024,19 @@ export const uniAppXAppCases: AppCase[] = [
     ],
     transformedOutputFiles: [
       'assets/pages/index/index.js',
+      'bytes/GenPagesIndexIndexSharedData.bytes',
     ],
     transformedContains: [
-      'issue-1119-vapor-leading-26px',
+      'issue-1125-vapor-leading-26px',
       /\.leading-_b26px_B\s*\{[\s\S]*?--tw-leading:\s*26px;[\s\S]*?line-height:\s*26px;/,
+      /--tw-leading:\s*52rpx;[\s\S]*?line-height:\s*52rpx;/,
+      /--tw-leading:\s*1\.625;[\s\S]*?line-height:\s*1\.625;/,
+      /width:\s*220px/,
     ],
     transformedNotContains: [
       'leading-[26px]',
+      'leading-[52rpx]',
+      'leading-[1.625]',
     ],
     styleOutputFiles: [
       'bytes/GenPagesIndexIndexSharedData.style.bytes',
@@ -1000,15 +1045,30 @@ export const uniAppXAppCases: AppCase[] = [
       'wtu-',
       '--tw-leading',
       '26px',
+      '52rpx',
+      '1.625',
+      'issue-1125-local-merge',
     ],
     styleNotContains: [
       'leading-[26px]',
+      'leading-[52rpx]',
+      'leading-[1.625]',
     ],
     hmrTransformedContains: [
-      'issue-1119-vapor-hmr-leading-26px',
+      'issue-1125-vapor-hmr-leading-26px',
       'wtu-',
+      /line-height:\s*26px/,
+      /line-height:\s*52rpx/,
+      /line-height:\s*1\.625/,
     ],
-    runtimeLogContains: ['App Launch', '蒸汽模式', '当前视图层编译目标'],
+    hmrStyleContains: ['--tw-leading', '26px', '52rpx', '1.625', 'issue-1125-local-merge'],
+    harmonyRuntimeTextPairs: [{
+      tailwindText: 'issue-1125 Vapor Tailwind line 1 issue-1125 Vapor Tailwind line 2',
+      nativeText: 'issue-1125 Vapor native line 1 issue-1125 Vapor native line 2',
+      tailwindLayoutNodeIndex: 18,
+      nativeLayoutNodeIndex: 19,
+    }],
+    runtimeLogContains: ['App Launch'],
     logNotContains: [...issue1002AppLogNotContains, ...iconifyNativeLogNotContains, ...nativeScopedAuthorLogNotContains],
   },
 ]

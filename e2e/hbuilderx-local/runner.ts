@@ -32,6 +32,7 @@ import {
   resolveIosSimulatorDeviceId,
   wait,
 } from './process'
+import { findMissingRuntimeLogs, resolveAppRuntimeLogContract } from './render-mode'
 import { appendHmrSourceMutation, createHmrOutputSnapshot, createHmrSourceRestore, haveHmrOutputsChanged } from './source-mutations'
 import { collectMiniProgramStyleFiles, readReachableMiniProgramStyles, resolveMiniProgramRuntimeStyleEntry } from './styles'
 import { runWebHmr } from './web'
@@ -147,18 +148,19 @@ async function waitForAppRuntimeLogs(
   logs: string[],
   ensureRunning: () => void,
 ) {
-  if (!item.runtimeLogContains?.length) {
+  const contract = resolveAppRuntimeLogContract(item)
+  if (contract.contains.length === 0) {
     return
   }
   const startedAt = Date.now()
   while (Date.now() - startedAt < hbuilderxAppTimeoutMs) {
     ensureRunning()
-    if (hasContent(logs.join(''), item.runtimeLogContains)) {
+    if (findMissingRuntimeLogs(logs.join(''), contract.contains).length === 0) {
       return
     }
     await wait(pollIntervalMs)
   }
-  throw new Error(`${item.name} 未在 ${hbuilderxAppTimeoutMs}ms 内进入真实 App 运行时\nexpected=${item.runtimeLogContains.map(String).join(' | ')}\nrecentHBuilderXLogs=${formatRecentLogs(logs, 8000)}`)
+  throw new Error(`${item.name} 未在 ${hbuilderxAppTimeoutMs}ms 内进入真实 App 运行时或目标渲染模式\nexpected=${contract.contains.map(String).join(' | ')}\nrecentHBuilderXLogs=${formatRecentLogs(logs, 8000)}`)
 }
 
 async function resolveAppOutputRoot(item: AppCase) {
@@ -782,6 +784,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     }
     await assertAppOutputHasNoUnsupportedContent(item, hmrOutputRoot)
     expectNoContent(logs.join(''), item.logNotContains, `${item.name} HBuilderX 日志`)
+    expectNoContent(logs.join(''), resolveAppRuntimeLogContract(item).notContains, `${item.name} HBuilderX 渲染模式日志`)
 
     await stopAppLaunch(child, closed)
     child = undefined

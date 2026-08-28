@@ -93,12 +93,16 @@
 			<view class="mt-[8px] h-[48px] w-[48px] rounded-full bg-[#f21903]" />
 			<text class="issue-1002-apply">issue-1002 scoped apply</text>
 		</view>
-		<view class="issue-1125-vdom-probe mt-[12px] flex w-full flex-col bg-[#102938] p-[12px]">
-			<text id="issue-1125-tailwind" class="w-[220px] leading-[26px] text-[14px] text-[#f7fbff]">issue-1125 Tailwind line 1
+			<view class="issue-1125-vdom-probe mt-[12px] flex w-full flex-col bg-[#102938] p-[12px]">
+				<text id="issue-1125-tailwind" class="w-[220px] leading-[26px] text-[14px] text-[#f7fbff]">issue-1125 Tailwind line 1
 issue-1125 Tailwind line 2</text>
-			<text id="issue-1125-native" class="issue-1125-native mt-[8px] w-[220px] text-[14px] text-[#f7fbff]">issue-1125 native line 1
+				<text id="issue-1125-native" class="issue-1125-native mt-[8px] w-[220px] text-[14px] text-[#f7fbff]">issue-1125 native line 1
 issue-1125 native line 2</text>
-		</view>
+				<text id="issue-1125-rpx" class="mt-[8px] w-[220px] leading-[52rpx] text-[14px] text-[#f7fbff]">issue-1125 leading 52rpx</text>
+				<text id="issue-1125-unitless" class="mt-[8px] w-[220px] leading-[1.625] text-[14px] text-[#f7fbff]">issue-1125 leading unitless</text>
+				<text id="issue-1125-default" class="mt-[8px] w-[220px] text-sm text-[#f7fbff]">issue-1125 default text leading</text>
+				<text id="issue-1125-local-merge" class="issue-1125-local-merge mt-[8px] w-[220px] leading-[26px] text-[14px] text-[#f7fbff]">issue-1125 local and generated merge</text>
+			</view>
 		<view class="issue-902-theme-probe issue-902-theme-scope bg-primary p-[12px] text-white">
 			<text>issue 902 theme variable</text>
 		</view>
@@ -171,5 +175,9 @@ issue-1125 native line 2</text>
 
 	.issue-1125-native {
 		line-height: 26px;
+	}
+
+	.issue-1125-local-merge {
+		padding-left: 3px;
 	}
 </style>

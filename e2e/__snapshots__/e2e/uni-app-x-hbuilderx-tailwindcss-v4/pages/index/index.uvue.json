@@ -1,6 +1,6 @@
 {
   "file": "pages/index/index.uvue",
-  "count": 103,
+  "count": 105,
   "tokens": [
     "any-hover:bg-slate-800",
     "bg-[#000]",
@@ -48,7 +48,9 @@
     "h-[48px]",
     "items-center",
     "justify-center",
+    "leading-[1.625]",
     "leading-[26px]",
+    "leading-[52rpx]",
     "mt-2",
     "mt-3",
     "mt-4",

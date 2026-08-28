@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "version": "0.0.0",
-  "description": "uni-app x Harmony Vapor regression demo for leading-[26px].",
+  "description": "uni-app x Harmony Vapor regression demo for line-height serialization parity.",
   "author": "icebreaker <hi@sonofmagic.top>",
   "license": "MIT",
   "scripts": {
