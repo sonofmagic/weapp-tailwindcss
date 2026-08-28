@@ -3421,7 +3421,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
 
-  demo/uni-app-x-harmony-vapor-tailwindcss-v4:
+  demo/uni-app-x-vapor-tailwindcss-v4:
     dependencies:
       '@dcloudio/uni-app':
         specifier: 3.0.0-alpha-5020220260725001
@@ -3476,7 +3476,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
 
-  demo/uni-app-x-hbuilderx-tailwindcss-v4:
+  demo/uni-app-x-vdom-tailwindcss-v4:
     dependencies:
       '@dcloudio/uni-app':
         specifier: 3.0.0-alpha-5020220260725001

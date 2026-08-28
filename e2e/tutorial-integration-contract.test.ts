@@ -54,6 +54,6 @@ describe('website tutorial integration contract', () => {
     expect(source).not.toMatch(/cssOptions:\s*\{\s*rem2rpx:/)
     expect(source).not.toContain('href="https://github.com/icebreaker-template/uni-app-x-hbuilderx"')
 
-    expect(read('demo/uni-app-x-hbuilderx-tailwindcss-v4/App.uvue')).toContain('@import \'./main.css\';')
+    expect(read('demo/uni-app-x-vdom-tailwindcss-v4/App.uvue')).toContain('@import \'./main.css\';')
   })
 })

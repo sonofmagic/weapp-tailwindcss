@@ -38,7 +38,7 @@ describe('benchmark ci report', () => {
     const repoRoot = path.resolve(__dirname, '../../../..')
     // 仅依赖本机 HBuilderX 与 Harmony 设备的复现项目不进入通用版本 benchmark。
     const localOnlyBenchmarkExemptProjects = new Set([
-      'demo/uni-app-x-harmony-vapor-tailwindcss-v4',
+      'demo/uni-app-x-vapor-tailwindcss-v4',
     ])
     const collectPackageDirs = (dir: string): string[] => {
       return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -93,10 +93,10 @@ describe('benchmark ci report', () => {
     const taroMpWeixinProjects = benchmarkProjects.filter(project => project.key.includes('taro') && project.target === 'mp-weixin')
     expect(taroMpWeixinProjects.every(project => project.buildEnv?.TARO_BUILD_STRICT === '1')).toBe(true)
     expect(taroMpWeixinProjects.every(project => project.hmrMode === 'watch')).toBe(true)
-    const realDevServerTargets = benchmarkProjects.filter(project => (project.target === 'h5' || project.target === 'web') && !project.key.includes('hbuilderx'))
+    const realDevServerTargets = benchmarkProjects.filter(project => (project.target === 'h5' || project.target === 'web') && !project.key.includes('hbuilderx') && !project.key.includes('uni-app-x-vdom'))
     expect(realDevServerTargets.every(project => project.hmrMode === 'watch')).toBe(true)
     expect(realDevServerTargets.every(project => project.hmrDriver === 'dev-server')).toBe(true)
-    expect(benchmarkProjects.filter(project => project.target === 'h5' && project.key.includes('hbuilderx')).every(project => project.hmrMode === 'unsupported')).toBe(true)
+    expect(benchmarkProjects.filter(project => project.target === 'h5' && (project.key.includes('hbuilderx') || project.key.includes('uni-app-x-vdom'))).every(project => project.hmrMode === 'unsupported')).toBe(true)
   })
 
   it('keeps benchmark working copies free from stale build outputs', async () => {

@@ -21,8 +21,8 @@ describe('Harmony VDOM and Vapor render mode coverage', () => {
     const vdomContract = resolveAppRuntimeLogContract(vdom ?? {})
     const vaporContract = resolveAppRuntimeLogContract(vapor ?? {})
 
-    expect(vdom?.name).toContain('harmony')
-    expect(vapor?.name).toContain('harmony vapor')
+    expect(vdom?.name).toContain('vdom')
+    expect(vapor?.name).toContain('vapor')
     expect(vapor?.requiredFiles).toContain('bytes/GenPagesIndexIndexSharedData.bytes')
     expect(vapor?.transformedOutputFiles).toContain('bytes/GenPagesIndexIndexSharedData.bytes')
     expect(findMissingRuntimeLogs('App Launch\n当前项目运行在VDOM模式', vdomContract.contains)).toEqual([])
@@ -35,8 +35,8 @@ describe('Harmony VDOM and Vapor render mode coverage', () => {
 
   it('keeps the issue #1125 semantic probe corpus aligned between VDOM and Vapor demos', async () => {
     const [vdom, vapor] = await Promise.all([
-      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/pages/index/index.uvue'), 'utf8'),
-      fs.readFile(path.resolve('demo/uni-app-x-harmony-vapor-tailwindcss-v4/pages/index/index.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/pages/index/index.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-vapor-tailwindcss-v4/pages/index/index.uvue'), 'utf8'),
     ])
 
     for (const utility of issue1125ProbeUtilities) {

@@ -30,7 +30,7 @@ import {
 const IDE_LIVE_PAGE_VISIBILITY_RELAXED_CASES = new Set<WatchCase['name']>([
   'taro-webpack-react-tailwindcss-v4',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-  'uni-app-x-hbuilderx-tailwindcss-v4',
+  'uni-app-x-vdom-tailwindcss-v4',
 ])
 
 async function withDevToolsRelaunchTimeout<T>(options: CliOptions, pageUrl: string, task: Promise<T>) {

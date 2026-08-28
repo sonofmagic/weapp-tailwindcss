@@ -50,13 +50,13 @@ describe('demo visual theme evidence', () => {
 
   it('keeps the uni-app x App entry valid for native App compilation', async () => {
     const files = [
-      'demo/uni-app-x-hbuilderx-tailwindcss-v4/App.uvue',
-      'demo/uni-app-x-hbuilderx-tailwindcss-v4/pages/index/index.uvue',
-      'demo/uni-app-x-hbuilderx-tailwindcss-v4/components/BindClass.uvue',
-      'demo/uni-app-x-hbuilderx-tailwindcss-v4/components/WeappTailwindcss.uvue',
-      'demo/uni-app-x-hbuilderx-tailwindcss-v4/components/a-navbar/a-navbar.uvue',
-      'demo/uni-app-x-hbuilderx-tailwindcss-v4/sub-normal/pages/index.uvue',
-      'demo/uni-app-x-hbuilderx-tailwindcss-v4/sub-independent/pages/index.uvue',
+      'demo/uni-app-x-vdom-tailwindcss-v4/App.uvue',
+      'demo/uni-app-x-vdom-tailwindcss-v4/pages/index/index.uvue',
+      'demo/uni-app-x-vdom-tailwindcss-v4/components/BindClass.uvue',
+      'demo/uni-app-x-vdom-tailwindcss-v4/components/WeappTailwindcss.uvue',
+      'demo/uni-app-x-vdom-tailwindcss-v4/components/a-navbar/a-navbar.uvue',
+      'demo/uni-app-x-vdom-tailwindcss-v4/sub-normal/pages/index.uvue',
+      'demo/uni-app-x-vdom-tailwindcss-v4/sub-independent/pages/index.uvue',
     ]
     for (const file of files) {
       const source = await fs.readFile(path.resolve(file), 'utf8')
@@ -67,9 +67,9 @@ describe('demo visual theme evidence', () => {
 
   it('keeps the uni-app x navbar slot and custom class prop regression probe', async () => {
     const [component, page, config] = await Promise.all([
-      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/components/a-navbar/a-navbar.uvue'), 'utf8'),
-      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/pages/index/index.uvue'), 'utf8'),
-      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/vite.config.ts'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/components/a-navbar/a-navbar.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/pages/index/index.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/vite.config.ts'), 'utf8'),
     ])
 
     expect(component).toContain('class="issue-navbar-side" :class="leftClass"')
@@ -84,9 +84,9 @@ describe('demo visual theme evidence', () => {
     const android = uniAppXAppCases.find(item => item.platform === 'app-android')
     const ios = uniAppXAppCases.find(item => item.platform === 'app-ios')
     const harmony = uniAppXAppCases.find(item => item.platform === 'app-harmony')
-    const miniProgram = miniProgramCases.find(item => item.name === 'uni-app-x-hbuilderx-tailwindcss-v4')
-    const web = webCases.find(item => item.name === 'uni-app-x-hbuilderx-tailwindcss-v4')
-    const component = await fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/components/BindClass.uvue'), 'utf8')
+    const miniProgram = miniProgramCases.find(item => item.name === 'uni-app-x-vdom-tailwindcss-v4')
+    const web = webCases.find(item => item.name === 'uni-app-x-vdom-tailwindcss-v4')
+    const component = await fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/components/BindClass.uvue'), 'utf8')
 
     expect(component).toContain('class="issue-822-component-child h-[200px] w-full bg-[#87add3]"')
     expect(component).toContain('class="text-[#111111]"')
@@ -125,9 +125,9 @@ describe('demo visual theme evidence', () => {
 
   it('keeps issue #1002 utilities in the uni-app x native runtime probes', async () => {
     const [component, mainCss, page] = await Promise.all([
-      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/components/BindClass.uvue'), 'utf8'),
-      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/main.css'), 'utf8'),
-      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/pages/index/index.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/components/BindClass.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/main.css'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/pages/index/index.uvue'), 'utf8'),
     ])
 
     for (const utility of ['text-xs', 'text-sm', 'text-base', 'text-xl', 'text-white', 'rounded-full']) {
@@ -142,7 +142,7 @@ describe('demo visual theme evidence', () => {
     expect(page).not.toContain('text-blue-600/50')
 
     const issue1002AppCases = uniAppXAppCases.filter(
-      item => item.projectDir === 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
+      item => item.projectDir === 'demo/uni-app-x-vdom-tailwindcss-v4',
     )
     for (const item of issue1002AppCases) {
       if (item.platform === 'app-android') {
@@ -194,8 +194,8 @@ describe('demo visual theme evidence', () => {
 
   it('keeps uview-ultra and z-paging scoped author css probes intact', async () => {
     const [button, paging] = await Promise.all([
-      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/components/issue-1019-button/issue-1019-button.uvue'), 'utf8'),
-      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/components/z-paging-probe/z-paging-probe.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/components/issue-1019-button/issue-1019-button.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/components/z-paging-probe/z-paging-probe.uvue'), 'utf8'),
     ])
 
     for (const source of [button, paging]) {
@@ -217,7 +217,7 @@ describe('demo visual theme evidence', () => {
   })
 
   it('keeps issue #822 component-local styles enabled for both isolation versions', async () => {
-    const config = await fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/vite.config.ts'), 'utf8')
+    const config = await fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/vite.config.ts'), 'utf8')
     expect(config).toContain('uniAppX({')
     expect(config).toContain('componentLocalStyles: {')
     expect(config).toContain('enabled: true')
@@ -226,9 +226,9 @@ describe('demo visual theme evidence', () => {
 
   it('keeps native App builds outside the Iconify CSS module graph', async () => {
     const [app, config, iconify] = await Promise.all([
-      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/App.uvue'), 'utf8'),
-      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/vite.config.ts'), 'utf8'),
-      fs.readFile(path.resolve('demo/uni-app-x-hbuilderx-tailwindcss-v4/main.iconify.css'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/App.uvue'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/vite.config.ts'), 'utf8'),
+      fs.readFile(path.resolve('demo/uni-app-x-vdom-tailwindcss-v4/main.iconify.css'), 'utf8'),
     ])
     expect(app).toContain('/*  #ifndef  APP  */\n@import \'./main.iconify.css\';\n/*  #endif  */')
     expect(config).toContain('process.env.UNI_UTS_PLATFORM?.startsWith(\'app-\')')

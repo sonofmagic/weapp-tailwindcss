@@ -15,7 +15,7 @@ export type ConcreteWatchCaseName
     | 'taro-vite-vue3-tailwindcss-v4'
     | 'uni-app-vite-tailwindcss-v4'
     | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
-    | 'uni-app-x-hbuilderx-tailwindcss-v4'
+    | 'uni-app-x-vdom-tailwindcss-v4'
     | 'weapp-vite-tailwindcss-v4'
 export type TaroMiniProgramWatchPlatform = 'weapp' | 'alipay' | 'tt'
 export type UniAppMiniProgramWatchPlatform = 'mp-weixin' | 'mp-alipay' | 'mp-qq' | 'mp-toutiao'
@@ -890,7 +890,7 @@ export const STYLE_APPLY_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-  'uni-app-x-hbuilderx-tailwindcss-v4',
+  'uni-app-x-vdom-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
@@ -898,7 +898,7 @@ export const STYLE_APPLY_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
 
 export const STYLE_FUNCTION_UNSUPPORTED_CASES = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
-  'uni-app-x-hbuilderx-tailwindcss-v4',
+  'uni-app-x-vdom-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
@@ -908,7 +908,7 @@ export const STYLE_REFERENCE_REQUIRED_CASES = new Set<ConcreteWatchCaseName>([
   'gulp-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-  'uni-app-x-hbuilderx-tailwindcss-v4',
+  'uni-app-x-vdom-tailwindcss-v4',
   'mpx-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-vite-vue3-tailwindcss-v4',

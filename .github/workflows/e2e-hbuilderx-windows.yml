@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - .github/workflows/e2e-hbuilderx-windows.yml
-      - demo/uni-app-x-hbuilderx-tailwindcss-v4/**
+      - demo/uni-app-x-vdom-tailwindcss-v4/**
       - e2e/**
       - packages/hbuilderx-runner/**
       - packages/postcss/**
@@ -94,14 +94,14 @@ jobs:
 
       - name: Run H5 HMR
         env:
-          E2E_HBUILDERX_CASE: uni-app-x-hbuilderx-tailwindcss-v4
+          E2E_HBUILDERX_CASE: uni-app-x-vdom-tailwindcss-v4
           E2E_HBUILDERX_CHROME_PATH: ${{ vars.E2E_HBUILDERX_CHROME_PATH }}
           E2E_HBUILDERX_RUNTIME_EVIDENCE_ROOT: .e2e-runtime/${{ matrix.channel }}
         run: pnpm e2e:hbuilderx:h5
 
       - name: Run Android real-device HMR
         env:
-          E2E_HBUILDERX_CASE: uni-app-x-hbuilderx-tailwindcss-v4
+          E2E_HBUILDERX_CASE: uni-app-x-vdom-tailwindcss-v4
           E2E_HBUILDERX_RUNTIME_EVIDENCE_ROOT: .e2e-runtime/${{ matrix.channel }}
         run: pnpm e2e:hbuilderx:android
 
@@ -113,4 +113,4 @@ jobs:
           if-no-files-found: warn
           path: |
             .e2e-runtime/${{ matrix.channel }}/**
-            demo/uni-app-x-hbuilderx-tailwindcss-v4/unpackage/dist/dev/**
+            demo/uni-app-x-vdom-tailwindcss-v4/unpackage/dist/dev/**

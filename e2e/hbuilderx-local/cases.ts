@@ -411,8 +411,8 @@ export const miniProgramCases: MiniProgramCase[] = [
     tailwindcss: 'v4',
   }),
   ...createUniAppXHBuilderXMiniProgramCases({
-    name: 'uni-app-x-hbuilderx-tailwindcss-v4',
-    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
+    name: 'uni-app-x-vdom-tailwindcss-v4',
+    projectDir: 'demo/uni-app-x-vdom-tailwindcss-v4',
   }),
 ]
 
@@ -594,9 +594,9 @@ export const uniAppAppCases: AppCase[] = [
 
 export const uniAppXAppCases: AppCase[] = [
   {
-    name: 'uni-app-x-hbuilderx-tailwindcss-v4 android',
+    name: 'uni-app-x-vdom-tailwindcss-v4 android',
     platform: 'app-android',
-    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
+    projectDir: 'demo/uni-app-x-vdom-tailwindcss-v4',
     outputDir: '.debug/bundle-post/asset',
     outputDirCandidates: [
       '.debug/bundle-post/asset',
@@ -859,9 +859,9 @@ export const uniAppXAppCases: AppCase[] = [
     ],
   },
   {
-    name: 'uni-app-x-hbuilderx-tailwindcss-v4 ios',
+    name: 'uni-app-x-vdom-tailwindcss-v4 ios',
     platform: 'app-ios',
-    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
+    projectDir: 'demo/uni-app-x-vdom-tailwindcss-v4',
     outputDir: '.debug/bundle-post/chunk',
     outputDirCandidates: [
       '.debug/bundle-post/chunk',
@@ -909,10 +909,10 @@ export const uniAppXAppCases: AppCase[] = [
     logNotContains: [...issue1002AppLogNotContains, ...iconifyNativeLogNotContains, ...nativeScopedAuthorLogNotContains],
   },
   {
-    name: 'uni-app-x-hbuilderx-tailwindcss-v4 harmony',
+    name: 'uni-app-x-vdom-tailwindcss-v4 harmony',
     renderMode: 'vdom',
     platform: 'app-harmony',
-    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
+    projectDir: 'demo/uni-app-x-vdom-tailwindcss-v4',
     outputDir: 'unpackage/dist/dev/.app-harmony',
     outputDirCandidates: [
       'unpackage/dist/dev/.app-harmony',
@@ -990,10 +990,10 @@ export const uniAppXAppCases: AppCase[] = [
     logNotContains: [...issue1002AppLogNotContains, ...iconifyNativeLogNotContains, ...nativeScopedAuthorLogNotContains],
   },
   {
-    name: 'uni-app-x-harmony-vapor-tailwindcss-v4 harmony vapor',
+    name: 'uni-app-x-vapor-tailwindcss-v4 harmony vapor',
     renderMode: 'vapor',
     platform: 'app-harmony',
-    projectDir: 'demo/uni-app-x-harmony-vapor-tailwindcss-v4',
+    projectDir: 'demo/uni-app-x-vapor-tailwindcss-v4',
     outputDir: 'unpackage/dist/dev/.app-harmony',
     outputDirCandidates: [
       'unpackage/dist/dev/.app-harmony',
@@ -1118,8 +1118,8 @@ export const webCases: WebCase[] = [
     ],
   },
   {
-    name: 'uni-app-x-hbuilderx-tailwindcss-v4',
-    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
+    name: 'uni-app-x-vdom-tailwindcss-v4',
+    projectDir: 'demo/uni-app-x-vdom-tailwindcss-v4',
     sourceFile: 'pages/index/index.uvue',
     markerAnchor: '<BindClass />',
     initialCssPath: '/main.css?direct',

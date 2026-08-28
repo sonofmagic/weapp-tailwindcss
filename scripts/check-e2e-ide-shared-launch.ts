@@ -136,7 +136,7 @@ async function main() {
   assert(relaxedCases, 'frameworkIdeClassHotUpdate.ts must declare IDE_LIVE_PAGE_VISIBILITY_RELAXED_CASES.')
   const cases = stringElements(relaxedCases)
   assert(
-    cases.filter(item => item === 'uni-app-x-hbuilderx-tailwindcss-v4').length === 1,
+    cases.filter(item => item === 'uni-app-x-vdom-tailwindcss-v4').length === 1,
     'uni-app x IDE HMR must remain a single-session case and must not reopen the DevTools project.',
   )
   assert(new Set(cases).size === cases.length, 'IDE relaxed visibility cases must not contain duplicates.')
