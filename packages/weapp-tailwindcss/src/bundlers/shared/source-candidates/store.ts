@@ -1,9 +1,32 @@
 import type { ScanSourceCandidateRootOptions, SourceCandidateCollectorOptions, SourceCandidateCollectorSnapshot, SourceCandidateFilterOptions, SourceCandidateStore } from './types-and-cache'
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import { readFile } from 'node:fs/promises'
-import { isFileExcludedByTailwindSourceEntries, isFileMatchedByTailwindSourceEntries, resolveSourceScanPath } from '@/tailwindcss/source-scan'
+import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
 import { resolveSourceCandidateScanFiles } from './scan-root'
+import { createCandidateSnapshot, restoreCandidateSnapshot } from './snapshot'
+import { mergeSourcesByPriority } from './source-priority'
 import { addCandidateSet, cleanUrl, createSourceCandidateContentCacheKey, diffCandidateSets, extractCandidates, isSourceCandidateRequest, removeCandidateSet, resolveSourceCandidateExtension, sourceCandidateContentCache } from './types-and-cache'
+import { collectCandidateSources, collectCandidateValues } from './views'
+
+const SOURCE_CANDIDATE_FILE_MEMO_MAX = 4096
+
+interface FileCandidateMemo {
+  extension: string
+  source: string
+  candidates: Set<string>
+}
+
+function areSetsEqual(left: Set<string> | undefined, right: Set<string>) {
+  if (!left || left.size !== right.size) {
+    return false
+  }
+  for (const value of right) {
+    if (!left.has(value)) {
+      return false
+    }
+  }
+  return true
+}
 
 export function createSourceCandidateStore(options: SourceCandidateCollectorOptions = {}): SourceCandidateStore {
   const candidatesById = new Map<string, Set<string>>()
@@ -16,10 +39,18 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
   const cssSourceById = new Map<string, string>()
   const moduleSourceById = new Map<string, string>()
   const candidateCount = new Map<string, number>()
+  const fileCandidateMemo = new Map<string, FileCandidateMemo>()
   let inlineIncludedCandidates = new Set<string>()
   let inlineExcludedCandidates = new Set<string>()
+  let revision = 0
 
-  async function resolveCandidates(source: string, extension: string) {
+  async function resolveCandidates(id: string, source: string, extension: string) {
+    const normalizedId = cleanUrl(id)
+    const memoKey = `${normalizedId}\0${extension}`
+    const memo = fileCandidateMemo.get(memoKey)
+    if (memo?.source === source) {
+      return new Set(memo.candidates)
+    }
     const contentCacheKey = createSourceCandidateContentCacheKey(
       extension,
       source,
@@ -29,13 +60,26 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
       options.extractor,
     )
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
-    if (cachedCandidates) {
-      return new Set(cachedCandidates)
+    const nextCandidates = cachedCandidates
+      ? new Set(cachedCandidates)
+      : await extractCandidates(source, extension, options)
+    if (!cachedCandidates) {
+      sourceCandidateContentCache.set(contentCacheKey, [...nextCandidates])
     }
-
-    const nextCandidates = await extractCandidates(source, extension, options)
-    sourceCandidateContentCache.set(contentCacheKey, [...nextCandidates])
-    return nextCandidates
+    fileCandidateMemo.delete(memoKey)
+    fileCandidateMemo.set(memoKey, {
+      candidates: new Set(nextCandidates),
+      extension,
+      source,
+    })
+    while (fileCandidateMemo.size > SOURCE_CANDIDATE_FILE_MEMO_MAX) {
+      const oldest = fileCandidateMemo.keys().next().value
+      if (oldest === undefined) {
+        break
+      }
+      fileCandidateMemo.delete(oldest)
+    }
+    return new Set(nextCandidates)
   }
 
   function isCandidateVisible(candidate: string) {
@@ -57,31 +101,43 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
 
   async function sync(id: string, source: string) {
     const normalizedId = cleanUrl(id)
+    if (scanSourceById.get(normalizedId) !== source) {
+      revision++
+    }
     scanSourceById.set(normalizedId, source)
     const extension = resolveSourceCandidateExtension(normalizedId)
-    replaceScanLayer(normalizedId, await resolveCandidates(source, extension))
+    replaceScanLayer(normalizedId, await resolveCandidates(normalizedId, source, extension))
   }
 
   async function syncCss(id: string, source: string) {
     const normalizedId = cleanUrl(id)
+    if (cssSourceById.get(normalizedId) !== source) {
+      revision++
+    }
     cssSourceById.set(normalizedId, source)
-    replaceCssLayer(normalizedId, await resolveCandidates(source, 'css'))
+    replaceCssLayer(normalizedId, await resolveCandidates(normalizedId, source, 'css'))
   }
 
   async function syncModuleSource(id: string, source: string) {
     const normalizedId = cleanUrl(id)
+    if (moduleSourceById.get(normalizedId) !== source) {
+      revision++
+    }
     moduleSourceById.set(normalizedId, source)
     const extension = resolveSourceCandidateExtension(normalizedId)
-    const candidates = await resolveCandidates(source, extension)
+    const candidates = await resolveCandidates(normalizedId, source, extension)
     replaceModuleLayer(normalizedId, candidates)
     return new Set(candidates)
   }
 
   async function merge(id: string, source: string) {
     const normalizedId = cleanUrl(id)
+    if (transformSourceById.get(normalizedId) !== source) {
+      revision++
+    }
     transformSourceById.set(normalizedId, source)
     const extension = resolveSourceCandidateExtension(normalizedId)
-    replaceTransformLayer(normalizedId, await resolveCandidates(source, extension))
+    replaceTransformLayer(normalizedId, await resolveCandidates(normalizedId, source, extension))
   }
 
   async function syncFile(id: string) {
@@ -105,7 +161,12 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     const normalizedId = cleanUrl(id)
     const previousFileCandidates = new Set(candidatesById.get(normalizedId) ?? [])
     const extension = resolveSourceCandidateExtension(normalizedId)
-    const nextCandidates = await resolveCandidates(source, extension)
+    const layerStateChanged = scanSourceById.get(normalizedId) !== source
+      || (extension !== 'css' && (transformSourceById.has(normalizedId) || cssSourceById.has(normalizedId) || moduleSourceById.has(normalizedId)))
+    if (layerStateChanged) {
+      revision++
+    }
+    const nextCandidates = await resolveCandidates(normalizedId, source, extension)
     const affectedCandidates = new Set([
       ...previousFileCandidates,
       ...nextCandidates,
@@ -165,6 +226,10 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
   function replaceFinal(id: string, nextCandidates: Set<string>) {
     const normalizedId = cleanUrl(id)
     const previousCandidates = candidatesById.get(normalizedId)
+    if (areSetsEqual(previousCandidates, nextCandidates)) {
+      return
+    }
+    revision++
     if (previousCandidates) {
       removeCandidateSet(candidateCount, previousCandidates)
       candidatesById.delete(normalizedId)
@@ -232,12 +297,26 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
   }
 
   function syncInline(inlineCandidates: TailwindInlineSourceCandidates | undefined) {
-    inlineIncludedCandidates = new Set(inlineCandidates?.included ?? [])
-    inlineExcludedCandidates = new Set(inlineCandidates?.excluded ?? [])
+    const nextIncluded = new Set(inlineCandidates?.included ?? [])
+    const nextExcluded = new Set(inlineCandidates?.excluded ?? [])
+    if (!areSetsEqual(inlineIncludedCandidates, nextIncluded) || !areSetsEqual(inlineExcludedCandidates, nextExcluded)) {
+      revision++
+    }
+    inlineIncludedCandidates = nextIncluded
+    inlineExcludedCandidates = nextExcluded
   }
 
   function remove(id: string) {
     const normalizedId = cleanUrl(id)
+    const hadState = candidatesById.has(normalizedId)
+      || scanCandidatesById.has(normalizedId)
+      || transformCandidatesById.has(normalizedId)
+      || cssCandidatesById.has(normalizedId)
+      || moduleCandidatesById.has(normalizedId)
+      || scanSourceById.has(normalizedId)
+      || transformSourceById.has(normalizedId)
+      || cssSourceById.has(normalizedId)
+      || moduleSourceById.has(normalizedId)
     const affectedCandidates = new Set(candidatesById.get(normalizedId) ?? [])
     const previousVisibleCandidates = collectVisibleCandidates(affectedCandidates)
     scanCandidatesById.delete(normalizedId)
@@ -248,12 +327,21 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     transformSourceById.delete(normalizedId)
     cssSourceById.delete(normalizedId)
     moduleSourceById.delete(normalizedId)
+    for (const key of fileCandidateMemo.keys()) {
+      if (key.startsWith(`${normalizedId}\0`)) {
+        fileCandidateMemo.delete(key)
+      }
+    }
     const previousCandidates = candidatesById.get(normalizedId)
     if (!previousCandidates) {
+      if (hadState) {
+        revision++
+      }
       return diffCandidateSets(previousVisibleCandidates, new Set())
     }
     removeCandidateSet(candidateCount, previousCandidates)
     candidatesById.delete(normalizedId)
+    revision++
     return diffCandidateSets(
       previousVisibleCandidates,
       collectVisibleCandidates(affectedCandidates),
@@ -269,87 +357,25 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
   }
 
   function sources() {
-    return mergeSourcesByPriority().entries()
+    return mergeSourcesByPriority(moduleSourceById, transformSourceById, cssSourceById, scanSourceById).entries()
   }
 
   function values() {
-    const values = new Set([
-      ...candidateCount.keys(),
-      ...inlineIncludedCandidates,
-    ])
-    for (const candidate of inlineExcludedCandidates) {
-      values.delete(candidate)
-    }
-    return values
+    return collectCandidateValues({ candidatesById, moduleCandidatesById, candidateCount, inlineIncludedCandidates, inlineExcludedCandidates })
   }
 
   function valuesForEntries(entries: TailwindSourceEntry[] | undefined, options: SourceCandidateFilterOptions = {}) {
-    if (entries === undefined) {
-      if (!options.excludeEntries?.length) {
-        return values()
-      }
-    }
-    const filtered = new Set<string>()
-    for (const [id, candidates] of candidatesById) {
-      const isActiveModule = moduleCandidatesById.has(id)
-      if (entries !== undefined && (isActiveModule
-        ? isFileExcludedByTailwindSourceEntries(id, entries)
-        : entries.length === 0 || !isFileMatchedByTailwindSourceEntries(id, entries))) {
-        continue
-      }
-      if (options.excludeEntries?.length && isFileMatchedByTailwindSourceEntries(id, options.excludeEntries)) {
-        continue
-      }
-      for (const candidate of candidates) {
-        filtered.add(candidate)
-      }
-    }
-    for (const candidate of inlineIncludedCandidates) {
-      filtered.add(candidate)
-    }
-    for (const candidate of inlineExcludedCandidates) {
-      filtered.delete(candidate)
-    }
-    return filtered
+    return collectCandidateValues({ candidatesById, moduleCandidatesById, candidateCount, inlineIncludedCandidates, inlineExcludedCandidates }, entries, options.excludeEntries)
   }
 
   function sourcesForEntries(entries: TailwindSourceEntry[] | undefined, options: SourceCandidateFilterOptions = {}) {
-    const sources = new Map<string, Set<string>>()
-    const addCandidateSource = (candidate: string, id: string | undefined) => {
-      let candidateSources = sources.get(candidate)
-      if (!candidateSources) {
-        candidateSources = new Set()
-        sources.set(candidate, candidateSources)
-      }
-      if (id) {
-        candidateSources.add(id)
-      }
-    }
-
-    for (const [id, candidates] of candidatesById) {
-      const isActiveModule = moduleCandidatesById.has(id)
-      if (entries !== undefined && (isActiveModule
-        ? isFileExcludedByTailwindSourceEntries(id, entries)
-        : entries.length === 0 || !isFileMatchedByTailwindSourceEntries(id, entries))) {
-        continue
-      }
-      if (options.excludeEntries?.length && isFileMatchedByTailwindSourceEntries(id, options.excludeEntries)) {
-        continue
-      }
-      for (const candidate of candidates) {
-        addCandidateSource(candidate, id)
-      }
-    }
-    for (const candidate of inlineIncludedCandidates) {
-      addCandidateSource(candidate, undefined)
-    }
-    for (const candidate of inlineExcludedCandidates) {
-      sources.delete(candidate)
-    }
-    return sources
+    return collectCandidateSources({ candidatesById, moduleCandidatesById, candidateCount, inlineIncludedCandidates, inlineExcludedCandidates }, entries, options.excludeEntries)
   }
 
   function clear() {
+    if (candidateCount.size > 0 || fileCandidateMemo.size > 0 || inlineIncludedCandidates.size > 0 || inlineExcludedCandidates.size > 0) {
+      revision++
+    }
     candidatesById.clear()
     scanCandidatesById.clear()
     transformCandidatesById.clear()
@@ -362,93 +388,40 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     candidateCount.clear()
     inlineIncludedCandidates.clear()
     inlineExcludedCandidates.clear()
+    fileCandidateMemo.clear()
   }
 
   function clearScan() {
+    const hadState = scanCandidatesById.size > 0 || inlineIncludedCandidates.size > 0 || inlineExcludedCandidates.size > 0
     for (const id of scanCandidatesById.keys()) {
       scanCandidatesById.delete(id)
       recompute(id)
     }
     inlineIncludedCandidates.clear()
     inlineExcludedCandidates.clear()
+    if (hadState) {
+      revision++
+    }
   }
 
   function resetScan() {
+    const hadState = inlineIncludedCandidates.size > 0 || inlineExcludedCandidates.size > 0
     inlineIncludedCandidates.clear()
     inlineExcludedCandidates.clear()
+    if (hadState) {
+      revision++
+    }
   }
 
   function snapshot(): SourceCandidateCollectorSnapshot {
-    return {
-      candidatesById: [...candidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
-      cssCandidatesById: [...cssCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
-      cssSourceById: [...cssSourceById.entries()],
-      moduleCandidatesById: [...moduleCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
-      moduleSourceById: [...moduleSourceById.entries()],
-      scanCandidatesById: [...scanCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
-      scanSourceById: [...scanSourceById.entries()],
-      sourceById: [...mergeSourcesByPriority().entries()],
-      transformCandidatesById: [...transformCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
-      transformSourceById: [...transformSourceById.entries()],
-      inlineExcludedCandidates: [...inlineExcludedCandidates],
-      inlineIncludedCandidates: [...inlineIncludedCandidates],
-    }
+    return createCandidateSnapshot({ candidatesById, scanCandidatesById, transformCandidatesById, cssCandidatesById, moduleCandidatesById, scanSourceById, transformSourceById, cssSourceById, moduleSourceById, inlineIncludedCandidates, inlineExcludedCandidates })
   }
 
   function restore(snapshot: SourceCandidateCollectorSnapshot) {
-    clear()
-    inlineExcludedCandidates = new Set(snapshot.inlineExcludedCandidates)
-    inlineIncludedCandidates = new Set(snapshot.inlineIncludedCandidates)
-    const scanEntries = snapshot.scanCandidatesById ?? snapshot.candidatesById
-    for (const [id, candidates] of scanEntries) {
-      const candidateSet = new Set(candidates)
-      if (candidateSet.size === 0) {
-        continue
-      }
-      scanCandidatesById.set(id, candidateSet)
-    }
-    for (const [id, candidates] of snapshot.transformCandidatesById ?? []) {
-      const candidateSet = new Set(candidates)
-      if (candidateSet.size === 0) {
-        continue
-      }
-      transformCandidatesById.set(id, candidateSet)
-    }
-    for (const [id, candidates] of snapshot.cssCandidatesById ?? []) {
-      const candidateSet = new Set(candidates)
-      if (candidateSet.size === 0) {
-        continue
-      }
-      cssCandidatesById.set(id, candidateSet)
-    }
-    for (const [id, candidates] of snapshot.moduleCandidatesById ?? []) {
-      const candidateSet = new Set(candidates)
-      if (candidateSet.size === 0) {
-        continue
-      }
-      moduleCandidatesById.set(id, candidateSet)
-    }
-    for (const [id, source] of snapshot.scanSourceById ?? snapshot.sourceById ?? []) {
-      scanSourceById.set(id, source)
-    }
-    for (const [id, source] of snapshot.transformSourceById ?? []) {
-      transformSourceById.set(id, source)
-    }
-    for (const [id, source] of snapshot.cssSourceById ?? []) {
-      cssSourceById.set(id, source)
-    }
-    for (const [id, source] of snapshot.moduleSourceById ?? []) {
-      moduleSourceById.set(id, source)
-    }
-    const ids = new Set([
-      ...scanCandidatesById.keys(),
-      ...transformCandidatesById.keys(),
-      ...cssCandidatesById.keys(),
-      ...moduleCandidatesById.keys(),
-    ])
-    for (const id of ids) {
-      recompute(id)
-    }
+    restoreCandidateSnapshot({ candidatesById, scanCandidatesById, transformCandidatesById, cssCandidatesById, moduleCandidatesById, scanSourceById, transformSourceById, cssSourceById, moduleSourceById, inlineIncludedCandidates, inlineExcludedCandidates }, snapshot, clear, recompute, (included, excluded) => {
+      inlineIncludedCandidates = included
+      inlineExcludedCandidates = excluded
+    })
   }
 
   return {
@@ -474,22 +447,6 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     clearScan,
     resetScan,
     clear,
-  }
-
-  function mergeSourcesByPriority() {
-    const sources = new Map<string, string>()
-    for (const [id, source] of moduleSourceById) {
-      sources.set(id, source)
-    }
-    for (const [id, source] of transformSourceById) {
-      sources.set(id, source)
-    }
-    for (const [id, source] of cssSourceById) {
-      sources.set(id, source)
-    }
-    for (const [id, source] of scanSourceById) {
-      sources.set(id, source)
-    }
-    return sources
+    getRevision: () => revision,
   }
 }

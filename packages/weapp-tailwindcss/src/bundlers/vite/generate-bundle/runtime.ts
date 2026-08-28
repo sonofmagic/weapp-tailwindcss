@@ -42,7 +42,7 @@ import { processHtmlBundleEntry } from './html-processing'
 import { createJsEntryResolver } from './js-entries'
 import { createJsHandlerOptionsFactory } from './js-handler-options'
 import { createLinkedUpdateHelpers } from './js-linking'
-import { processJsBundleEntry } from './js-processing'
+import { processJsBundleEntry, replayCleanJsBundleEntry } from './js-processing'
 import { createEmptyMetrics, measureElapsed } from './metrics'
 import { logBundleProcessPlan } from './process-plan'
 import { resolveRememberedCssSourceForTest } from './remembered-css'
@@ -454,6 +454,9 @@ function createGenerateBundleHook(context): any {
       }
       if (!shouldTransformJsBundle) {
         debug('js skip web target: %s', file)
+        continue
+      }
+      if (replayCleanJsBundleEntry({ cache, debug, entry, metrics, rememberProcessCacheKey, snapshot, transformFilterSignature, transformRuntimeSignature, useIncrementalMode })) {
         continue
       }
       processJsBundleEntry({ applyLinkedUpdates, bundle, cache, createHandlerOptions, debug, deferUniAppXStylePlaceholder: opts.appType === 'uni-app-x', disableJsPrecheck: envFlags.disableJsPrecheck, entry, getJsEntry, jsHandler, jsTaskFactories, linkedByEntry, metrics, onUpdate, outDir, processFiles, rememberProcessCacheKey, runtimeSignature, snapshot, transformFilterSignature, shouldSkipAstTransform: transformFilter ? chunk => shouldSkipViteJsChunkTransform(chunk, transformFilter) : void 0, slowJsAstWarnMs: envFlags.slowJsAstWarnMs, timeTask, transformRuntime, transformRuntimeSignature, uniAppX, useIncrementalMode })

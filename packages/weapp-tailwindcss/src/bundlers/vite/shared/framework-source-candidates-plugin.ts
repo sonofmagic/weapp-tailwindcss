@@ -115,11 +115,17 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
         }
         if (change.event === 'delete') {
           const file = cleanUrl(id)
-          const sourceCandidateChange = options.sourceCandidateCollector.remove(file)
-          options.sourceScanSession.cacheCurrent()
-          options.hmrCandidateState.apply(options.hmrCandidateState.createChange(file, sourceCandidateChange, {
-            runtimeAffecting: options.sourceScanSession.isDependency(file),
-          }))
+          if (typeof options.sourceScanSession.queueChangedFile === 'function') {
+            options.sourceScanSession.queueChangedFile({ event: 'delete', id: file })
+            queueMicrotask(() => void options.sourceScanSession.flushChangedFiles())
+          }
+          else {
+            const sourceCandidateChange = options.sourceCandidateCollector.remove(file)
+            options.sourceScanSession.cacheCurrent()
+            options.hmrCandidateState.apply(options.hmrCandidateState.createChange(file, sourceCandidateChange, {
+              runtimeAffecting: options.sourceScanSession.isDependency(file),
+            }))
+          }
           return
         }
         const changedSource = options.shouldOwnTailwindGeneration && isSourceCandidateRequest(id) && isCSSRequest(id)
@@ -129,7 +135,13 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
           options.rememberOriginalCssLayerSource(id, changedSource)
           await options.refreshTailwindRootCssSource(id, changedSource)
         }
-        await options.sourceScanSession.syncChangedFile(id, changedSource)
+        if (typeof options.sourceScanSession.queueChangedFile === 'function') {
+          options.sourceScanSession.queueChangedFile({ event: change.event === 'create' ? 'create' : 'update', id, source: changedSource })
+          queueMicrotask(() => void options.sourceScanSession.flushChangedFiles())
+        }
+        else {
+          await options.sourceScanSession.syncChangedFile(id, changedSource)
+        }
       }, { emit: false })
     },
     handleHotUpdate: {
@@ -154,7 +166,9 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
             options.rememberOriginalCssLayerSource(ctx.file, hotSource)
             await options.refreshTailwindRootCssSource(ctx.file, hotSource)
           }
-          const sourceCandidateChange = await options.sourceScanSession.syncChangedFile(ctx.file, hotSource)
+          const sourceCandidateChange = typeof options.sourceScanSession.queueChangedFile === 'function'
+            ? (options.sourceScanSession.queueChangedFile({ event: 'update', id: ctx.file, source: hotSource }), await options.sourceScanSession.flushChangedFiles()).get(cleanUrl(ctx.file))
+            : await options.sourceScanSession.syncChangedFile(ctx.file, hotSource)
           options.sourceScanSession.consumeHotUpdateChange(ctx.file)
           const isWebLikeHotUpdate = options.isCurrentWebLikeStylePlatform()
           let canUseHmrCandidateAppend = false

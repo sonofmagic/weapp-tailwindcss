@@ -39,6 +39,21 @@ describe('bundlers/vite source candidates', () => {
     expect(collector.values()).toEqual(new Set(['text-[23px]', 'bg-[#123456]']))
   })
 
+  it('reuses extraction across scan and transform layers for the same file source', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const extractor = vi.fn((source: string) => source.split(/\s+/).filter(Boolean))
+    const collector = createSourceCandidateCollector({ extractor })
+    const file = '/project/pages/index.vue'
+    const source = '<view class="text-red-500" />'
+
+    await collector.sync(file, source)
+    await collector.merge(file, source)
+    await collector.syncCurrentSource(file, source)
+
+    expect(extractor).toHaveBeenCalledTimes(1)
+    expect(collector.getRevision()).toBeGreaterThan(0)
+  })
+
   it('exposes a shared source candidate store API for bundlers', async () => {
     const { createSourceCandidateStore } = await import('@/bundlers/vite/source-candidates')
     const store = createSourceCandidateStore()
