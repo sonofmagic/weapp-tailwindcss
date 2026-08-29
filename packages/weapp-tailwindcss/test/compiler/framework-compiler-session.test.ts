@@ -41,27 +41,6 @@ describe('FrameworkCompilerSession', () => {
     await session.removeScope('scope:sub')
   })
 
-  it('让同一 root 的并发生成沿 compiler 队列串行提交 revision', async () => {
-    const session = new FrameworkCompilerSession({} as any)
-    sessions.push(session)
-    const [first, second] = await Promise.all([
-      session.generate('scope', 'source', await source, {
-        candidates: ['p-4'],
-        scanSources: false,
-        target: 'weapp',
-      }),
-      session.generate('scope', 'source', await source, {
-        candidates: ['m-2'],
-        scanSources: false,
-        target: 'weapp',
-      }),
-    ])
-
-    expect(first.snapshot.roots[0]?.id).toBe(second.snapshot.roots[0]?.id)
-    expect(second.revision).toBe(first.revision + 1)
-    expect(second.snapshot.classSet.has('m-2')).toBe(true)
-  })
-
   it('释放后拒绝新的生成任务，并且 dispose 幂等', async () => {
     const session = new FrameworkCompilerSession({} as any)
     await session.dispose()

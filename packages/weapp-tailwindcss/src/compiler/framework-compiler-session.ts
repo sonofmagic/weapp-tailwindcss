@@ -18,6 +18,8 @@ import { createCompiler } from '../core/compiler/compiler'
 export class FrameworkCompilerSession {
   readonly compiler: Compiler
   private readonly scopeRoots = new Map<string, Set<string>>()
+  private readonly activeRoots = new Set<string>()
+  private transactionId = 0
   private disposed = false
 
   constructor(options: InternalUserDefinedOptions) {
@@ -38,20 +40,32 @@ export class FrameworkCompilerSession {
       throw new Error('FrameworkCompilerSession 已释放。')
     }
     const stableId = this.rootId(scopeId, sourceId)
+    const id = this.activeRoots.has(stableId)
+      ? `${stableId}:transaction-${++this.transactionId}`
+      : stableId
     let roots = this.scopeRoots.get(scopeId)
     if (!roots) {
       roots = new Set()
       this.scopeRoots.set(scopeId, roots)
     }
     roots.add(stableId)
-    return this.compiler.generate({
-      ...request,
-      id: stableId,
-      source: {
-        ...source,
-        dependencies: source.dependencies ?? [],
-      },
-    })
+    this.activeRoots.add(stableId)
+    try {
+      return await this.compiler.generate({
+        ...request,
+        id,
+        source: {
+          ...source,
+          dependencies: source.dependencies ?? [],
+        },
+      })
+    }
+    finally {
+      this.activeRoots.delete(stableId)
+      if (id !== stableId) {
+        await this.compiler.remove(id)
+      }
+    }
   }
 
   async syncScope(scopeId: string, sourceIds: Iterable<string>) {
