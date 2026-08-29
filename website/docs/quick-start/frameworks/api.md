@@ -95,6 +95,8 @@ const affectedRoots = compiler.invalidate(changedModuleIds)
 
 snapshot 的公开 classSet 是不可变视图，转换热路径会 O(1) 取得隔离的内部 Set。不要把 snapshot 展开后自行拼接集合，也不要用启发式候选补齐未命中的业务字符串。
 
+官方 Vite、Webpack、Rspack 和 Gulp 适配器的默认 `graph` 路径共享同一个 compiler session：适配器仍负责模块图、watch/HMR、分包可达性和 asset 写回，Core 只接收明确的 source、依赖和 candidates。第三方框架可以复用此边界，不需要把 bundler 类型或文件系统路径引入 Core。
+
 ## 配置 Tailwind CSS 入口
 
 Tailwind CSS v4 项目应给 `cssEntries` 传入绝对路径。入口用于识别 `@import "tailwindcss"`、`@source` 与 `@config`，但它仍然必须由你的构建流程实际加载。

@@ -95,6 +95,8 @@ const affectedRoots = compiler.invalidate(changedModuleIds)
 
 The public classSet is immutable and isolated. Transform hot paths retrieve the internal Set in O(1); do not rebuild snapshots with heuristic candidates.
 
+The default `graph` path of the official Vite, Webpack, Rspack, and Gulp adapters shares one compiler session. Adapters still own the module graph, watch/HMR scheduling, subpackage reachability, and asset writeback; Core receives only explicit sources, dependencies, and candidates. Third-party frameworks can follow the same boundary without importing bundler types or treating module IDs as filesystem paths.
+
 ## Configure Tailwind CSS entry
 
 Tailwind CSS v4 projects should pass the absolute path to `cssEntries`. The entry is used to identify `@import "tailwindcss"`, `@source` and `@config`, but it still must be actually loaded by your build process.

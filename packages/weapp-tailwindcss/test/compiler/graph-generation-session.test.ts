@@ -187,4 +187,34 @@ describe('graph generation compilation session', () => {
     expect(result?.metadata.revision).toBe(2)
     expect(compiler.consumeCompilationScopeChanges(runtimeState, 'app.css')).toBeUndefined()
   })
+
+  it('在 graph 模式下使用 compiler 完整 CSS，不回放 legacy previousCss', async () => {
+    vi.stubEnv('WEAPP_TAILWINDCSS_COMPILER', 'graph')
+    const generate = vi.fn(async (options: any) => ({
+      css: `.${[...options.candidates][0]}{display:block}`,
+      rawCss: `.${[...options.candidates][0]}{display:block}`,
+      incrementalCss: '',
+      target: 'web',
+      classSet: new Set(options.candidates),
+      rawCandidates: new Set(options.candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+    vi.doMock('@/generator', () => createGeneratorModule(generate))
+    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    const runtimeState = {
+      tailwindRuntime: { majorVersion: 4 },
+      readyPromise: Promise.resolve(),
+    }
+
+    const result = await generateTailwindV4Css({
+      ...createOptions(runtimeState, ['new']),
+      previousCss: '.old{display:none}',
+      previousClassSet: new Set(['old']),
+    })
+
+    expect(result?.css).toBe('.new{display:block}')
+    expect(result?.classSet).toEqual(new Set(['new']))
+  })
 })

@@ -2,9 +2,11 @@ import type { GeneratorSourceRecord } from '../source-resolver'
 import type { GenerateCssByGeneratorResult } from '../types'
 import type { GeneratorPipelineExecutionContext, GeneratorPipelineOutputContext } from './context'
 import type { CompilationScopeDependency } from '@/compiler'
+import type { CompilerSnapshot } from '@/core/compiler'
 import process from 'node:process'
 import { getCompilationSessionPool } from '@/compiler'
 import { runCompilerOwnerActivity } from '@/compiler/compiler-owner-state'
+import { getFrameworkCompilerSession } from '@/compiler/framework-compiler-session'
 import { getTailwindGenerationSessionPool } from '@/compiler/tailwind-generation-session-pool'
 import { shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
@@ -95,6 +97,9 @@ async function executeGeneratorPipelineWithOwner(
     useMiniProgramCssBranch,
   } = context
   await runtimeState.readyPromise
+  const compilerSession = options.compilation?.enabled
+    ? getFrameworkCompilerSession(runtimeState, opts)
+    : undefined
   const currentCssCandidates = collectGeneratorCssCandidates(generatorRawSource)
   const isolateCurrentCssCandidates = shouldIsolateCurrentTailwindV4CssCandidates(
     majorVersion,
@@ -200,8 +205,11 @@ async function executeGeneratorPipelineWithOwner(
   }), sourceConcurrency)).filter((item): item is NonNullable<typeof item> => Boolean(item))
   const generatePreparedInputs = async (candidateSets?: Map<string, Set<string>>) => {
     return runWithConcurrency(preparedGenerationInputs.map(input => async () => {
-      const currentCandidates = candidateSets?.get(input.sourceId) ?? input.generatorRuntime
-      const generated = await generationSession.generate(input.generatorSource, {
+      const projectedCandidates = candidateSets?.get(input.sourceId)
+      const currentCandidates = projectedCandidates
+        ? new Set([...input.generatorRuntime, ...projectedCandidates])
+        : input.generatorRuntime
+      const generateOptions = {
         bareArbitraryValues: generatorOptions.bareArbitraryValues,
         candidates: currentCandidates,
         incrementalCache: options.incrementalCache ?? true,
@@ -215,7 +223,27 @@ async function executeGeneratorPipelineWithOwner(
             ),
         styleOptions: generatorStyleOptions,
         target: generatorOptions.target,
-      })
+      }
+      let generated
+      if (compilerSession && input.generatorSource) {
+        try {
+          generated = await compilerSession.generate(
+            options.compilation?.scope.id ?? options.outputFile ?? file,
+            input.sourceId,
+            input.generatorSource,
+            generateOptions,
+          )
+        }
+        catch (error) {
+          if (!(error instanceof TypeError) || !String(error.message).includes('dependencies')) {
+            throw error
+          }
+          generated = await generationSession.generate(input.generatorSource, generateOptions)
+        }
+      }
+      else {
+        generated = await generationSession.generate(input.generatorSource, generateOptions)
+      }
       return {
         generated,
         sourceId: input.sourceId,
@@ -238,6 +266,13 @@ async function executeGeneratorPipelineWithOwner(
       })),
       preserveDeletedCss: options.compilation.preserveDeletedCss,
     }, async (compilation) => {
+      if (compilerSession && options.compilation?.changes) {
+        compilerSession.invalidate(options.compilation.changes.map(change => change.id))
+      }
+      await compilerSession?.syncScope(
+        options.compilation?.scope.id ?? options.outputFile ?? file,
+        preparedGenerationInputs.map(input => input.sourceId),
+      )
       const results = await generatePreparedInputs(compilation.candidatesBySource)
       const merged = mergeGeneratorResults(results.map(result => result.generated))
       return merged
@@ -248,6 +283,16 @@ async function executeGeneratorPipelineWithOwner(
               resolveCompilationDependencies(result.generated.dependencies),
             ] as const),
             generated: merged,
+            ...(compilerSession
+              ? (() => {
+                  const snapshots = results
+                    .map(result => result.generated.snapshot)
+                    .filter((snapshot): snapshot is CompilerSnapshot => snapshot !== undefined)
+                  return snapshots.length > 0
+                    ? { snapshot: compilerSession.mergeSnapshots(snapshots) }
+                    : {}
+                })()
+              : {}),
           }
         : undefined
     })
@@ -260,6 +305,12 @@ async function executeGeneratorPipelineWithOwner(
       return undefined
     }
     generated = execution.value?.generated
+    if (generated && execution.value?.snapshot) {
+      generated = {
+        ...generated,
+        snapshot: execution.value.snapshot as CompilerSnapshot,
+      }
+    }
     compilationRevision = execution.compilation.revision
   }
   else {
@@ -321,6 +372,15 @@ async function executeGeneratorPipelineWithOwner(
   })
   const outputContext: GeneratorPipelineOutputContext = {
     ...context,
+    ...(compilerSession && options.compilation?.preserveDeletedCss !== true
+      ? {
+          options: {
+            ...context.options,
+            previousClassSet: undefined,
+            previousCss: undefined,
+          },
+        }
+      : {}),
     configuredContainerCompat,
     filterGeneratedApplyOnlyCss,
     generated,

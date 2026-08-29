@@ -1,6 +1,7 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV4CssSource } from './source-resolver/types'
 import type { CompilationDependencyChange, SourceScope } from '@/compiler'
+import type { CompilerSnapshot } from '@/core/compiler'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 
@@ -42,10 +43,11 @@ export interface GenerateCssByGeneratorOptions {
 
 export interface GenerateCssByGeneratorResult {
   css: string
-  classSet: Set<string>
+  classSet: ReadonlySet<string>
   target: string
   source: 'generator'
   dependencies: string[]
+  snapshot?: CompilerSnapshot | undefined
   incremental?: boolean | undefined
   metadata?: {
     file: string

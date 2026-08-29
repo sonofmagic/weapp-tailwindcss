@@ -1143,7 +1143,7 @@ describe('v5 vite generator bundle', () => {
     const secondBundle = createBundle('const className = "bg-[#112233]"; const stamp = 2')
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
     expect((secondBundle['app.css'] as OutputAsset).source).toBe('.bg-_b_h112233_B{background-color:#112233}')
-    expect(generateMock).toHaveBeenCalledTimes(2)
+    expect(generateMock).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
   it('regenerates v4 main css when template candidates change but the css asset source is stable', async () => {

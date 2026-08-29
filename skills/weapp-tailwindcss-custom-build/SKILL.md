@@ -18,6 +18,8 @@ description: 将 weapp-tailwindcss 集成到自研构建器或高级流水线，
 7. 让初始扫描、transform 与 HMR 共用 Scanner 的文件范围和显式外部 source，不另建宽泛 glob。
 8. 通过 bundler API 写回产物和 source map，不直接修改输出目录。
 
+官方 Vite、Webpack、Rspack 与 Gulp 适配器的 graph 路径已经共享 compiler session：每个插件 owner 只创建一个 compiler，按 scope 投影可达 root 的 snapshot。第三方框架可以复用同样的时序，但必须继续拥有自己的模块图、watch 调度和 asset/Vinyl 写回；不要把 bundler 对象传入 core，也不要把 module ID 当作文件系统路径。
+
 ## 不可破坏的边界
 
 - `createCompiler()` 管理 Tailwind root 会话、revision 和不可变 snapshot；它不接管模块图可达性、watch 调度或产物写回。

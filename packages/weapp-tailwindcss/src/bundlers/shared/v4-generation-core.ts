@@ -2,6 +2,7 @@ import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from
 import type { CompilationDependencyChange, CompilerShadowReport, CssStage, GenerationArtifact, SourceScope } from '@/compiler'
 import type { InternalUserDefinedOptions } from '@/types'
 import { consumeCompilationScopeChanges, createCompilerShadowReport, createCssFragment, createGenerationArtifact, getCompilerShadowRunRevision, mergeCompilationDependencyChanges, recordCompilerShadowReport, resolveCompilerMode } from '@/compiler'
+import { getFrameworkCompilerSession } from '@/compiler/framework-compiler-session'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { adaptGeneratedCssWithFrameworkPipeline, adaptGeneratedCssWithFrameworkRootPipeline, hasFrameworkPostcssOptions } from './framework-postcss'
 import { generateCssByGenerator } from './generator-css'
@@ -147,6 +148,12 @@ async function generateTailwindV4CssWithImplementation(
         majorVersion,
         rawCandidates: options.runtime,
         styleHandler: options.styleHandler,
+        ...(implementation.frameworkAdapter === 'graph' && generated.snapshot
+          ? {
+              compiler: getFrameworkCompilerSession(options.runtimeState, options.opts).compiler,
+              snapshot: generated.snapshot,
+            }
+          : {}),
       })
     : generated.css
   const css = isVueScopedStyleRequest(resolvePostcssRequestOption(options.cssHandlerOptions))

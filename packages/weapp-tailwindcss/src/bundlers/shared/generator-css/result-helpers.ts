@@ -41,7 +41,7 @@ export function isCssAlreadyRepresentedByMarkers(css: string, source: string) {
 }
 
 function mergeGeneratedCssClassSet(
-  classSet: Set<string>,
+  classSet: ReadonlySet<string>,
   candidates: Iterable<string>,
   css: string,
   escapeMap: Record<string, string> | undefined,
@@ -55,7 +55,7 @@ function mergeGeneratedCssClassSet(
 
 export function resolveGeneratedCssClassSet(
   target: string,
-  classSet: Set<string>,
+  classSet: ReadonlySet<string>,
   candidates: Iterable<string>,
   css: string,
   escapeMap: Record<string, string> | undefined,
