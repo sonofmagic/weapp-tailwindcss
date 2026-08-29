@@ -59,6 +59,7 @@ import { orderFrameworkSourceCandidatePlugins } from './framework-plugin-order'
 import { createFrameworkPostPlugin } from './framework-post-plugin'
 import { createFrameworkProcessedCssRegistry } from './framework-processed-css-registry'
 import { sameStringList } from './framework-runtime-options'
+import { collectConfiguredCssEntries, inferPlatformFromOutDir, isInternalUserDefinedOptions, isNuxtPageHotModule, isWebOrNativeAppPlatform } from './framework-runtime-utils'
 import { createFrameworkSourceCandidatesPlugin } from './framework-source-candidates-plugin'
 import { createFrameworkSourceScanSession, syncFrameworkSourceCandidatesForHotUpdate } from './framework-source-scan-session'
 import { createFrameworkTailwindRootCss } from './framework-tailwind-root-css'
@@ -66,16 +67,6 @@ import { createGenericWebProductionBundleHooks, createGenericWebProductionSource
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss'); const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir); const generatorPlaceholderCssFile = path.join(weappTailwindcssPackageDir, 'generator-placeholder.css'); const ENV_PLATFORM_KEYS = ['UNI_PLATFORM', 'UNI_UTS_PLATFORM', 'TARO_ENV', 'MPX_CURRENT_TARGET_MODE', 'MPX_CLI_MODE']
-function collectConfiguredCssEntries(options) { const runtimeCssEntries = options.tailwindcssRuntimeOptions?.tailwindcss?.v4?.cssEntries; const entries = [...Array.isArray(options.cssEntries) ? options.cssEntries : [], ...Array.isArray(options.tailwindcss?.v4?.cssEntries) ? options.tailwindcss.v4.cssEntries : [], ...Array.isArray(runtimeCssEntries) ? runtimeCssEntries : []].filter(item => typeof item === 'string' && item.length > 0); return entries.length > 0 ? [...new Set(entries)] : void 0 }
-function inferPlatformFromOutDir(outDir) {
-  const segment = outDir ? path.basename(path.normalize(outDir)) : void 0; if (!segment) {
-    return void 0
-  } const normalized = segment.trim().toLowerCase(); if (normalized === 'h5' || normalized === 'web' || normalized === 'app' || normalized === 'app-plus' || normalized.startsWith('app-') || normalized.startsWith('mp-') || normalized.startsWith('quickapp-webview')) {
-    return normalized
-  } return void 0
-}
-function isWebOrNativeAppPlatform(platform) { return platform === 'h5' || platform === 'web' || platform?.startsWith('web-') === true || platform === 'app' || platform === 'app-plus' || platform?.startsWith('app-') === true }
-function isInternalUserDefinedOptions(options) { return typeof options.onLoad === 'function' && typeof options.mainCssChunkMatcher === 'function' && typeof options.tailwindRuntime === 'object' && typeof options.refreshTailwindcssRuntime === 'function' }
 function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
   debug('create vite framework plugins framework=%s', frameworkBranch.frameworkName)
   const capability: ViteCapabilityProfile = options.__internalViteCapabilityProfile ?? frameworkViteCapabilityProfile
@@ -241,15 +232,6 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
   const isWatchBuild = () => resolvedConfig?.command === 'build' && resolvedConfig.build.watch != null
   const isWatchLikeBuild = () => isWatchBuild() || resolvedConfig?.command === 'serve' || process.env['WEAPP_TW_WATCH_REGRESSION'] === '1' || process.env['WEAPP_TW_HMR_TIMING'] === '1'
   const isCurrentWebLikeStylePlatform = () => { const platform = resolveViteStylePlatform(); return platform ? isWebOrNativeAppPlatform(platform) : resolveCurrentGeneratorBranch().isWeb }
-  const isNuxtPageHotModule = (id) => {
-    if (typeof id !== 'string') {
-      return false
-    } const cleanId = cleanUrl(id).replace(/%2F/gi, '/'); if (cleanId.includes('virtual:nuxt:') && /(?:^|\/)routes\.mjs$/.test(cleanId)) {
-      return true
-    } if (!/[?&]macro=true(?:&|$)/.test(id)) {
-      return false
-    } return cleanId.includes('/pages/') && /\.(?:vue|tsx?|jsx?)$/.test(cleanId)
-  }
   const normalizeGeneratedCssCacheFile = file => normalizeVitePersistentCacheKey(cleanUrl(file))
   const hmrCandidateState = createViteHmrCandidateState({
     cleanGeneratedCssByFile,
