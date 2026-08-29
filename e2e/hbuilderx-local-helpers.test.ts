@@ -56,6 +56,15 @@ describe('HBuilderX local helpers', () => {
         },
       })
       expect(await fs.readFile(file, 'utf8')).toBe('@import "./main.css";\n')
+
+      await appendHmrSourceMutation(root, {
+        file: 'theme.css',
+        replace: {
+          from: '@import "tailwindcss";',
+          to: '@import "./main.css";',
+        },
+      })
+      expect(await fs.readFile(file, 'utf8')).toBe('@import "./main.css";\n')
     }
     finally {
       await fs.rm(root, { force: true, recursive: true })
