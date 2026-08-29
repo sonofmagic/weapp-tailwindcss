@@ -372,7 +372,7 @@ async function executeGeneratorPipelineWithOwner(
   })
   const outputContext: GeneratorPipelineOutputContext = {
     ...context,
-    ...(compilerSession
+    ...(compilerSession && options.compilation?.preserveDeletedCss !== true
       ? {
           options: {
             ...context.options,
