@@ -286,6 +286,12 @@ async function rewriteHmrMarker(file: string, anchors: string[], steps: WebHmrSt
   await fs.writeFile(file, next, 'utf8')
 }
 
+async function waitForHmrMarker(page: Page, markerText: string) {
+  await page.waitForFunction(text => document.body?.textContent?.includes(text), markerText, {
+    timeout: serverTimeoutMs,
+  })
+}
+
 export async function runWebHmr(
   projectRoot: string,
   sourceFile: string,
@@ -350,6 +356,7 @@ export async function runWebHmr(
     const hmrCss: string[] = []
     for (const [index, step] of hmrSteps.entries()) {
       await rewriteHmrMarker(sourceFile, markerAnchors, hmrSteps, index)
+      await waitForHmrMarker(page, step.markerText)
       if (step.sourceMutation) {
         await appendHmrSourceMutation(projectRoot, step.sourceMutation)
         if (step.sourceMutation.cssContains?.length) {

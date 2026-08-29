@@ -20,10 +20,16 @@ export async function appendHmrSourceMutation(projectRoot: string, mutation: Hmr
   const separator = source.endsWith('\n') ? '' : '\n'
   let nextSource: string | undefined
   if (mutation.replace) {
-    if (!source.includes(mutation.replace.from)) {
+    if (source.includes(mutation.replace.from)) {
+      nextSource = source.replace(mutation.replace.from, mutation.replace.to)
+    }
+    else if (source.includes(mutation.replace.to)) {
+      // HMR 测试可能在上次中断后留下目标状态，重复执行时保持幂等。
+      return file
+    }
+    else {
       throw new Error(`HMR 源码变更找不到替换目标：${mutation.file}`)
     }
-    nextSource = source.replace(mutation.replace.from, mutation.replace.to)
   }
   else if (typeof mutation.append === 'string') {
     nextSource = `${source}${separator}${mutation.append.trimEnd()}\n`

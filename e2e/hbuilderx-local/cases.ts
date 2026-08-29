@@ -1258,7 +1258,7 @@ export const webCases: WebCase[] = [
       {
         markerClass: 'hbuilderx-web-hmr-probe mt-200 bg-[#102938] text-[#f7fbff] w-[173px]',
         markerText: 'hbuilderx-web-hmr-v4-mt-200',
-        cssContains: [/\.mt-200\s*\{/, /background-color:\s*#102938/, /width:\s*173px/],
+        cssContains: [/margin-top:\s*(?:calc\(0\.25rem\s*\*\s*200\)|800px)/, /background-color:\s*#102938/, /width:\s*173px/],
         runtimeStyles: [{
           selector: '.hbuilderx-web-hmr-probe',
           styles: { backgroundColor: 'rgb(16, 41, 56)', color: 'rgb(247, 251, 255)', marginTop: '800px', width: '173px' },
