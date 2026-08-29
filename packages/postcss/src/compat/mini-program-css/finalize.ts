@@ -30,7 +30,7 @@ export type { FinalizeMiniProgramCssOptions } from './finalize-options'
 export { insertHoistedRules } from './hoist'
 export { collectPreflightRules } from './preflight'
 
-function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniProgramCssOptions = {}) {
+export function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniProgramCssOptions = {}) {
   const shouldInjectTailwindcssV4Defaults = options.isTailwindcssV4 === true
   const tailwindcssV4DefaultNodes = shouldInjectTailwindcssV4Defaults
     ? createMissingCssVarsV4Nodes(root, collectUsedTailwindcssV4Variables(root))
@@ -39,6 +39,9 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   unwrapTailwindSourceMedia(root)
   removeTailwindGenerationDirectives(root)
   root.walkAtRules('property', (atRule) => {
+    atRule.remove()
+  })
+  root.walkAtRules('supports', (atRule) => {
     atRule.remove()
   })
   removeSpecificityPlaceholders(root)

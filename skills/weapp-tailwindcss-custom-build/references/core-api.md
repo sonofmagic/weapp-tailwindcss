@@ -33,7 +33,7 @@ const generated = await compiler.generate({
 
 1. 框架从模块图确定一个逻辑样式 root 及其实际 candidates。
 2. `generate()` 生成 `web`、`weapp` 或 `tailwind` CSS，并提交递增 revision。
-3. 框架运行自己的 PostCSS 后，把同一个 `snapshot` 交给 `transformCss()` 或 `transformCssRoot()`。
+3. 框架运行自己的 PostCSS 后，把同一个 `snapshot` 交给 `transformCss()` 或 `transformCssRoot()`；小程序目标默认执行 CSS 最终化，也可传入 `finalize: false` 保留构建期 at-rule。
 4. 从模块图投影实际可达的样式 root，用 `mergeSnapshots()` 合并普通分包；独立分包保持独立 snapshot。
 5. `transformTemplate()` 与 `transformJavaScript()` 消费投影后的同一 snapshot。
 6. 检查 JS `error`、`map`、`linked`，再通过 bundler API 写回。
@@ -51,7 +51,9 @@ await compiler.remove(removedRootId)
 await compiler.dispose()
 ```
 
-`invalidate()` 精确匹配 root/dependency ID，不规范化 module ID。`remove()` 和 `dispose()` 幂等，等待进行中的工作结束；开始释放后拒绝新任务。
+`invalidate()` 同时精确匹配 root/dependency ID，并按 snapshot 中的 `sources` glob 匹配文件变化；root/dependency ID 仍不规范化。`remove()` 和 `dispose()` 幂等，等待进行中的工作结束；开始释放后拒绝新任务。
+
+`sourceOptions.cssSources` 可传入内存 CSS source 及其 `base`、`file`、`dependencies`，适合 virtual module 和尚未写回磁盘的 HMR 内容。
 
 ## 返回值与错误
 

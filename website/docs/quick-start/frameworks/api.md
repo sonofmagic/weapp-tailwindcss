@@ -74,12 +74,13 @@ const jsResult = await compiler.transformJavaScript(rawJs, generated.snapshot)
 | `generate(request)` | 按 opaque root `id` 生成 `web`、`weapp` 或 Tailwind 原始 CSS；返回 revision、增量 CSS、依赖、source patterns、缓存复用状态和 snapshot |
 | `createSnapshot(request)` | 接入其他 Tailwind 生成链已经验证过的 classSet；输入集合会被隔离 |
 | `mergeSnapshots(snapshots)` | 确定性合并模块图实际可达的 root；拒绝同 root 冲突 revision、冲突内容和混合 target |
-| `transformCss()` | 转换字符串 CSS，不扫描 runtime classSet |
-| `transformCssRoot()` | 转换 PostCSS Root；不修改输入，输出 AST 不与缓存共享 |
+| `finalizeCss()` / `finalizeCssRoot()` | 将 CSS 或 PostCSS Root 最终化为可交给小程序工具的样式；Root 输入会先 clone |
+| `transformCss()` | 转换字符串 CSS；`snapshot.target === 'weapp'` 时默认清理 Tailwind 构建期 at-rule，可用 `finalize: false` 关闭 |
+| `transformCssRoot()` | 转换 PostCSS Root；同样遵循 `finalize` 选项，且不修改输入 |
 | `transformTemplate()` | 只转换 snapshot 精确命中的静态 class 和表达式候选 |
 | `transformJavaScript()` | 返回现有 `JsHandlerResult`，保留 `error`、`map` 和 `linked` |
-| `invalidate(ids)` | 精确匹配 root/dependency ID，返回需要重新生成的 root；不做路径或 query 规范化 |
-| `remove(id)` / `dispose()` | 幂等等待进行中工作，并释放 root/generator/Scanner 状态 |
+| `invalidate(ids)` | 精确匹配 root/dependency ID，并按 `snapshot.sources` 做 glob-aware 文件匹配；只在 glob 匹配边界剥离 query |
+| `remove(id)` / `dispose()` | 幂等等待进行中工作，并释放 root/generator/Scanner 状态；自动淘汰可通过 `onRootEvicted` 观察 |
 
 同一 root 的 `generate()` 串行提交，不同 root 可以并行。candidate-only 更新复用 engine；CSS 或配置依赖失效后替换会话。生成失败不会替换上一次成功 snapshot。开始 `dispose()` 后所有新任务都会被拒绝。
 

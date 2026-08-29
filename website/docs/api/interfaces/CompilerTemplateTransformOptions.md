@@ -88,3 +88,11 @@ keywords:
 ### wrapExpression?
 
 > 可选 | **wrapExpression**: `boolean`
+
+***
+
+### filename?
+
+> 可选 | **filename**: `string`
+
+当前正在转换的模板模块标识。

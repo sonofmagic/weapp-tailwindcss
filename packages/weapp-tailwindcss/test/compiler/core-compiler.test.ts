@@ -18,6 +18,34 @@ async function createSource() {
 }
 
 describe('createCompiler', () => {
+  it('finalizes mini-program CSS by default and exposes explicit finalizers', async () => {
+    const compiler = createCompiler()
+    const weapp = compiler.createSnapshot({ classSet: [], id: 'root:weapp', target: 'weapp' })
+    const tailwind = compiler.createSnapshot({ classSet: [], id: 'root:tailwind', target: 'tailwind' })
+    const source = '@plugin "@iconify/tailwind4" { prefixes: mdi; }\n@source "./**/*.vue";\n.card { display: flex; }'
+
+    const finalized = await compiler.transformCss(source, weapp)
+    expect(finalized.css).not.toContain('@plugin')
+    expect(finalized.css).not.toContain('@source')
+
+    const optedOut = await compiler.transformCss(source, weapp, { finalize: false })
+    expect(optedOut.css).toContain('@plugin')
+    expect(optedOut.css).toContain('@source')
+
+    const rawTailwind = await compiler.transformCss(source, tailwind)
+    expect(rawTailwind.css).toContain('@plugin')
+    expect(rawTailwind.css).toContain('@source')
+
+    const rootInput = postcss.parse(source)
+    const rootBefore = rootInput.toString()
+    const finalizedRoot = compiler.finalizeCssRoot(rootInput, { isTailwindcssV4: true })
+    expect(rootInput.toString()).toBe(rootBefore)
+    expect(finalizedRoot.toString()).not.toContain('@plugin')
+    expect(compiler.finalizeCss(source, { isTailwindcssV4: true })).not.toContain('@source')
+
+    await compiler.dispose()
+  })
+
   it('uses one explicit snapshot for generation and every transform', async () => {
     const compiler = createCompiler()
     const source = await createSource()
@@ -196,6 +224,46 @@ describe('createCompiler', () => {
     await compiler.dispose()
     await compiler.dispose()
     expect(() => compiler.createSnapshot({ classSet: [], id: 'after-dispose' })).toThrow('已释放')
+  }, 30000)
+
+  it('invalidates roots when changed files match snapshot source globs', async () => {
+    const compiler = createCompiler()
+    const source = await createSource()
+    const generated = await compiler.generate({
+      candidates: ['p-4'],
+      id: 'source-glob-root',
+      scanSources: [
+        { base: '/repo/src', negated: false, pattern: '**/*.{vue,js}' },
+        { base: '/repo/src', negated: true, pattern: '**/generated/**' },
+      ],
+      source,
+    })
+
+    expect(generated.snapshot.sources).toEqual([
+      { base: '/repo/src', negated: false, pattern: '**/*.{vue,js}' },
+      { base: '/repo/src', negated: true, pattern: '**/generated/**' },
+    ])
+    expect(compiler.invalidate(['/repo/src/pages/index.vue?vue&type=template'])).toEqual(['source-glob-root'])
+    expect(compiler.invalidate(['/repo/src/generated/cache.js'])).toEqual([])
+    expect(compiler.invalidate(['/repo/outside/index.vue'])).toEqual([])
+    expect(compiler.invalidate(['virtual:source-glob-root'])).toEqual([])
+
+    await compiler.dispose()
+  }, 30000)
+
+  it('matches Windows source globs without normalizing opaque IDs', async () => {
+    const compiler = createCompiler()
+    const source = await createSource()
+    await compiler.generate({
+      candidates: ['p-4'],
+      id: 'windows-source-root',
+      scanSources: [{ base: 'C:\\repo\\src', negated: false, pattern: '**/*.vue' }],
+      source,
+    })
+
+    expect(compiler.invalidate(['C:\\repo\\src\\pages\\index.vue?vue&type=template'])).toEqual(['windows-source-root'])
+    expect(compiler.invalidate(['C:/repo/src/pages/index.vue'])).toEqual(['windows-source-root'])
+    await compiler.dispose()
   }, 30000)
 
   it('resolves sourceOptions once and reuses the resolved source for the same request object', async () => {

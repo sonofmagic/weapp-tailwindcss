@@ -1,5 +1,6 @@
 import type {
   Document,
+  FinalizeMiniProgramCssOptions,
   IStyleHandlerOptions,
   Result as PostcssResult,
   Root,
@@ -87,16 +88,25 @@ export interface CreateCompilerSnapshotRequest {
 
 export type CompilerTemplateTransformOptions = Omit<ITemplateHandlerOptions, 'classSetMode' | 'runtimeSet'>
 
+export type CompilerCssTransformOptions = Partial<IStyleHandlerOptions> & {
+  /** 是否在样式兼容转换后执行小程序 CSS 最终化。 */
+  finalize?: boolean | undefined
+}
+
 export type CreateCompilerOptions = UserDefinedOptions & {
   compiler?: {
     /** 长期未使用且没有进行中任务的 root 会话上限。 */
     maxRoots?: number | undefined
+    /** root 因超过 maxRoots 被淘汰并释放后触发。 */
+    onRootEvicted?: ((id: string) => void) | undefined
   } | undefined
 }
 
 export interface Compiler {
   createSnapshot: (request: CreateCompilerSnapshotRequest) => CompilerSnapshot
   dispose: () => Promise<void>
+  finalizeCss: (css: string, options?: FinalizeMiniProgramCssOptions) => string
+  finalizeCssRoot: (root: Root, options?: FinalizeMiniProgramCssOptions) => Root
   generate: (request: CompilerGenerateRequest) => Promise<CompilerGenerateResult>
   invalidate: (ids: Iterable<string>) => readonly string[]
   mergeSnapshots: (snapshots: Iterable<CompilerSnapshot>) => CompilerSnapshot
@@ -104,12 +114,12 @@ export interface Compiler {
   transformCss: (
     css: string,
     snapshot: CompilerSnapshot,
-    options?: Partial<IStyleHandlerOptions>,
+    options?: CompilerCssTransformOptions,
   ) => Promise<PostcssResult<Root | Document>>
   transformCssRoot: (
     root: Root,
     snapshot: CompilerSnapshot,
-    options?: Partial<IStyleHandlerOptions>,
+    options?: CompilerCssTransformOptions,
   ) => Promise<PostcssResult<Root>>
   transformJavaScript: (
     source: string,

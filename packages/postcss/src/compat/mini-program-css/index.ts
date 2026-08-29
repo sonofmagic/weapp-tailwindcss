@@ -8,6 +8,7 @@ export { consumeCascadeLayers } from './cascade-layers'
 export {
   finalizeMiniProgramCss,
   type FinalizeMiniProgramCssOptions,
+  finalizeMiniProgramCssRoot,
   hoistTailwindPreflightBase,
 } from './finalize'
 export {

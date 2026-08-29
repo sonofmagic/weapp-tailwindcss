@@ -141,6 +141,21 @@ describe('tailwindcss source scan', () => {
     expect(isFileExcludedByTailwindSourceEntries('/project/src/ignored/a.wxml', entries)).toBe(true)
     expect(isFileMatchedByTailwindSourceEntries('/project/src/index.wxml', undefined)).toBe(true)
     expect(isFileMatchedByTailwindSourceEntries('/project/src/ignored/a.wxml', entries)).toBe(false)
+    const windowsEntries = [
+      {
+        base: 'C:\\workspace\\src',
+        negated: false,
+        pattern: '**/*.tsx',
+      },
+      {
+        base: 'C:\\workspace\\src',
+        negated: true,
+        pattern: 'ignored/**',
+      },
+    ]
+    expect(isFileMatchedByTailwindSourceEntries('C:\\workspace\\src\\pages\\index.tsx', windowsEntries)).toBe(true)
+    expect(isFileMatchedByTailwindSourceEntries('C:\\workspace\\src\\ignored\\index.tsx', windowsEntries)).toBe(false)
+    expect(isFileMatchedByTailwindSourceEntries('D:\\workspace\\src\\pages\\index.tsx', windowsEntries)).toBe(false)
     expect(createTailwindSourceEntryMatcher(undefined)).toBeUndefined()
     expect(createTailwindSourceEntryMatcher(entries)?.('/project/src/index.wxml')).toBe(true)
     expect(resolveTailwindV4CssSourceBase({ base: '/base', file: '/file.css' }, '/fallback')).toBe('/base')

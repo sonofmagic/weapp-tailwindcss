@@ -1,8 +1,9 @@
 import type { CompilerGenerationCacheEntry } from './generation-cache'
 import type { CompilerCompilationCacheEntry } from './generation-state'
-import type { CompilerSnapshot } from './types'
+import type { CompilerSnapshot, CompilerSourcePattern } from './types'
 import type { TailwindV4ResolvedSource, WeappTailwindcssGenerator } from '@/generator'
 import { DefaultCompilationSession } from '@/compiler/session'
+import { isFileMatchedByTailwindSourceEntries } from '@/tailwindcss/source-scan'
 
 export interface CompilerRootSession {
   accepting: boolean
@@ -22,6 +23,7 @@ export interface CompilerRootSession {
   source?: TailwindV4ResolvedSource | undefined
   sourceFingerprint?: string | undefined
   sourceInput?: object | undefined
+  sources: CompilerSourcePattern[]
 }
 
 function disposeGenerator(generator: WeappTailwindcssGenerator | undefined) {
@@ -33,7 +35,10 @@ export class CompilerRootStore {
   private readonly releasing = new Map<string, Promise<void>>()
   private readonly roots = new Map<string, CompilerRootSession>()
 
-  constructor(private readonly maxRoots: number) {}
+  constructor(
+    private readonly maxRoots: number,
+    private readonly onRootEvicted?: ((id: string) => void) | undefined,
+  ) {}
 
   get(id: string) {
     if (!id) {
@@ -54,7 +59,7 @@ export class CompilerRootStore {
     if (this.roots.size >= this.maxRoots) {
       const oldest = [...this.roots.values()].find(entry => entry.pendingCount === 0)
       if (oldest) {
-        void this.remove(oldest.id)
+        void this.remove(oldest.id, true)
       }
     }
     const entry: CompilerRootSession = {
@@ -68,6 +73,7 @@ export class CompilerRootStore {
       invalidation: 0,
       pending: Promise.resolve(),
       pendingCount: 0,
+      sources: [],
     }
     this.roots.set(id, entry)
     return entry
@@ -89,6 +95,10 @@ export class CompilerRootStore {
     }
   }
 
+  attachSources(entry: CompilerRootSession, sources: Iterable<CompilerSourcePattern>) {
+    entry.sources = [...sources]
+  }
+
   invalidate(ids: Iterable<string>) {
     const affected = new Set<string>()
     for (const id of ids) {
@@ -98,6 +108,12 @@ export class CompilerRootStore {
       }
       for (const rootId of this.dependencyRoots.get(id) ?? []) {
         affected.add(rootId)
+      }
+      const sourcePath = stripSourceQuery(id)
+      for (const sourceRoot of this.roots.values()) {
+        if (sourceRoot.accepting && sourceRoot.sources.length > 0 && isFileMatchedByTailwindSourceEntries(sourcePath, sourceRoot.sources)) {
+          affected.add(sourceRoot.id)
+        }
       }
     }
     for (const rootId of affected) {
@@ -115,11 +131,11 @@ export class CompilerRootStore {
       if (!oldest) {
         return
       }
-      void this.remove(oldest.id)
+      void this.remove(oldest.id, true)
     }
   }
 
-  remove(id: string) {
+  remove(id: string, notifyEvicted = false) {
     const pendingRelease = this.releasing.get(id)
     if (pendingRelease) {
       return pendingRelease
@@ -142,6 +158,10 @@ export class CompilerRootStore {
       entry.source = undefined
       entry.sourceInput = undefined
       entry.sourceFingerprint = undefined
+      entry.sources = []
+      if (notifyEvicted) {
+        this.onRootEvicted?.(id)
+      }
     }).finally(() => {
       this.releasing.delete(id)
     })
@@ -167,4 +187,8 @@ export class CompilerRootStore {
     }
     entry.dependencies.clear()
   }
+}
+
+function stripSourceQuery(id: string) {
+  return id.replace(/[?#].*$/, '')
 }

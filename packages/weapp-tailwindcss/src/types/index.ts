@@ -153,6 +153,8 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
   // 是否转译首字母，默认转译，传入 true 不转
   ignoreHead?: boolean | undefined
   wrapExpression?: boolean | undefined
+  /** 当前正在转换的模板模块标识。 */
+  filename?: string | undefined
 }
 
 export interface InternalUserDefinedOptions extends InternalUserDefinedOptionsBase {

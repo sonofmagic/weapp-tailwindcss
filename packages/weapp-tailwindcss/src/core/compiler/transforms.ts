@@ -1,6 +1,7 @@
 import type { StyleHandler } from '@weapp-tailwindcss/postcss'
-import type { Compiler, CompilerSnapshot } from './types'
+import type { Compiler, CompilerCssTransformOptions, CompilerSnapshot } from './types'
 import type { UserDefinedOptions } from '@/types'
+import { finalizeMiniProgramCssRoot } from '@weapp-tailwindcss/postcss'
 import { getCompilerContext } from '@/context'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { getInternalCompilerSnapshot } from './snapshot'
@@ -22,6 +23,24 @@ function resolveStyleOptions(options?: Parameters<StyleHandler>[1]) {
   return options?.isMainChunk === undefined
     ? { ...options, isMainChunk: true }
     : options
+}
+
+function resolveCssTransformOptions(options?: CompilerCssTransformOptions) {
+  const { finalize: _finalize, ...styleOptions } = options ?? {}
+  return {
+    finalize: _finalize,
+    styleOptions: resolveStyleOptions(styleOptions),
+  }
+}
+
+function finalizeResultRoot(result: Awaited<ReturnType<StyleHandler>>, snapshot: CompilerSnapshot, shouldFinalize: boolean) {
+  if (!shouldFinalize || result.root.type !== 'root') {
+    return
+  }
+  finalizeMiniProgramCssRoot(result.root, {
+    isTailwindcssV4: snapshot.target === 'weapp',
+  })
+  result.css = result.root.toString()
 }
 
 interface CreateCompilerTransformsOptions {
@@ -71,13 +90,24 @@ export function createCompilerTransforms({ ensureActive, track, userOptions }: C
   function transformCss(css: string, snapshot: CompilerSnapshot, options?: Parameters<Compiler['transformCss']>[2]) {
     ensureActive()
     getInternalCompilerSnapshot(snapshot)
-    return track(styleHandler(css, resolveStyleOptions(options)).then(clonePostcssResult))
+    const resolved = resolveCssTransformOptions(options)
+    const shouldFinalize = resolved.finalize ?? snapshot.target === 'weapp'
+    return track(styleHandler(css, resolved.styleOptions).then((result) => {
+      const cloned = clonePostcssResult(result)
+      finalizeResultRoot(cloned, snapshot, shouldFinalize)
+      return cloned
+    }))
   }
 
   function transformCssRoot(root: Parameters<Compiler['transformCssRoot']>[0], snapshot: CompilerSnapshot, options?: Parameters<Compiler['transformCssRoot']>[2]) {
     ensureActive()
     getInternalCompilerSnapshot(snapshot)
-    return track(styleHandler.transformRoot(root, resolveStyleOptions(options)))
+    const resolved = resolveCssTransformOptions(options)
+    const shouldFinalize = resolved.finalize ?? snapshot.target === 'weapp'
+    return track(styleHandler.transformRoot(root, resolved.styleOptions).then((result) => {
+      finalizeResultRoot(result, snapshot, shouldFinalize)
+      return result
+    }))
   }
 
   function transformJavaScript(source: string, snapshot: CompilerSnapshot, options?: Parameters<Compiler['transformJavaScript']>[2]) {

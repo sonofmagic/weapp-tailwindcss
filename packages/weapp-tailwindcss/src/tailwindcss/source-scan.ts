@@ -91,7 +91,7 @@ export const FULL_SOURCE_SCAN_PATTERN = createSourceScanPattern(FULL_SOURCE_SCAN
 export const FULL_SOURCE_SCAN_EXTENSION_RE = new RegExp(`\\.(?:${FULL_SOURCE_SCAN_EXTENSIONS.map(extension => extension.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})$`)
 
 export function toPosixPath(value: string) {
-  return value.split(path.sep).join('/')
+  return value.split(path.sep).join('/').split(path.win32.sep).join('/')
 }
 
 export function resolveSourceScanPath(value: string) {
@@ -104,22 +104,39 @@ export function resolveSourceScanPath(value: string) {
   }
 }
 
+function resolveSourceScanPathWithApi(value: string, pathApi: Pick<typeof path, 'resolve'>) {
+  const resolved = pathApi.resolve(value)
+  try {
+    return realpathSync.native(resolved)
+  }
+  catch {
+    return resolved
+  }
+}
+
 function normalizeEntryPattern(entry: TailwindSourceEntry) {
-  return path.isAbsolute(entry.pattern)
-    ? toPosixPath(path.relative(resolveSourceScanPath(entry.base), entry.pattern))
+  const pathApi = isWindowsPath(entry.base) || isWindowsPath(entry.pattern) ? path.win32 : path
+  return pathApi.isAbsolute(entry.pattern)
+    ? toPosixPath(pathApi.relative(pathApi.resolve(entry.base), entry.pattern))
     : entry.pattern
 }
 
 function isFileMatchedByTailwindSourceEntry(file: string, entry: TailwindSourceEntry) {
-  const relative = toPosixPath(path.relative(resolveSourceScanPath(entry.base), file))
-  return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
+  const pathApi = isWindowsPath(entry.base) || isWindowsPath(file) ? path.win32 : path
+  const base = resolveSourceScanPathWithApi(entry.base, pathApi)
+  const relative = toPosixPath(pathApi.relative(base, file))
+  return relative && !relative.startsWith('../') && !pathApi.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
+}
+
+function isWindowsPath(value: string) {
+  return /^[A-Z]:[\\/]/i.test(value) || value.includes('\\')
 }
 
 export function isFileExcludedByTailwindSourceEntries(file: string, entries: TailwindSourceEntry[] | undefined) {
   if (!entries?.length) {
     return false
   }
-  const resolvedFile = resolveSourceScanPath(file)
+  const resolvedFile = resolveSourceScanMatcherFile(file, entries)
   return entries.some(entry => entry.negated && isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
 }
 
@@ -127,9 +144,9 @@ export function isFileMatchedByTailwindSourceEntries(file: string, entries: Tail
   if (!entries?.length) {
     return true
   }
+  const resolvedFile = resolveSourceScanMatcherFile(file, entries)
   const positiveEntries = entries.filter(entry => !entry.negated)
   const negativeEntries = entries.filter(entry => entry.negated)
-  const resolvedFile = resolveSourceScanPath(file)
   if (positiveEntries.length === 0) {
     return !negativeEntries.some(entry => isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
   }
@@ -138,6 +155,13 @@ export function isFileMatchedByTailwindSourceEntries(file: string, entries: Tail
     return false
   }
   return !negativeEntries.some(entry => isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
+}
+
+function resolveSourceScanMatcherFile(file: string, entries: TailwindSourceEntry[]) {
+  const useWindowsApi = isWindowsPath(file) || entries.some(entry => isWindowsPath(entry.base) || isWindowsPath(entry.pattern))
+  return useWindowsApi
+    ? resolveSourceScanPathWithApi(file, path.win32)
+    : resolveSourceScanPath(file)
 }
 
 export function createTailwindSourceEntryMatcher(entries: TailwindSourceEntry[] | undefined) {
