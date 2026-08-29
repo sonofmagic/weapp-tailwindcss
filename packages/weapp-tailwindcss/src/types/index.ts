@@ -139,6 +139,10 @@ export interface ICommonReplaceOptions {
 }
 
 export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
+  /**
+   * `exact` 仅转换 runtimeSet 精确命中的静态 class；默认 `all` 保持旧 API 行为。
+   */
+  classSetMode?: 'all' | 'exact' | undefined
   customAttributesEntities?: ICustomAttributesEntities | undefined
   escapeMap?: Record<string, string> | undefined
   inlineWxs?: boolean | undefined

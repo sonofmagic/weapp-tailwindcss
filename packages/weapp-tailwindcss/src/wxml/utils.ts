@@ -1,4 +1,5 @@
 import type { ITemplateHandlerOptions } from '../types'
+import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { createAttributeMatcher, isPropsMatch } from './custom-attributes'
 import { generateCode } from './utils/codegen'
 import { customTemplateHandler } from './utils/custom-template'
@@ -16,8 +17,16 @@ export function createTemplateHandler(options: Omit<ITemplateHandlerOptions, 'ru
   let cachedRuntimeSet: Set<string> | undefined
   let cachedOptionsWithRuntimeSet: Required<ITemplateHandlerOptions> | undefined
 
-  return (rawSource: string, opt?: Pick<ITemplateHandlerOptions, 'runtimeSet'>) => {
+  return (rawSource: string, opt?: ITemplateHandlerOptions) => {
     const runtimeSet = opt?.runtimeSet
+    if (opt && Object.keys(opt).some(key => key !== 'runtimeSet')) {
+      const resolvedOptions = defuOverrideArray(opt, defaultOptions)
+      return customTemplateHandler(
+        rawSource,
+        resolvedOptions,
+        opt.customAttributesEntities === undefined ? cachedMatcher : undefined,
+      )
+    }
     if (runtimeSet === undefined) {
       return customTemplateHandler(rawSource, defaultOptions, cachedMatcher)
     }

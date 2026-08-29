@@ -35,7 +35,7 @@ weapp-tailwindcss provides both ESM and CommonJS entrances, and has multiple bui
 |
 | `weapp-tailwindcss/webpack` | webpack@5 adaptation entrance (uni-app CLI, mpx, native applets, etc.) |
 | `weapp-tailwindcss/vite` | Vite plug-in entrance (Taro Vite, weapp-vite, etc.) | `import { WeappTailwindcss } from 'weapp-tailwindcss/vite'`
-| `weapp-tailwindcss/core` | Expose underlying APIs such as `createContext` and customize the transform process |
+| `weapp-tailwindcss/core` | Exposes framework-level `createCompiler` and the compatible `createContext` API for generation, snapshots, and transforms | `import { createCompiler } from 'weapp-tailwindcss/core'`
 
 ## Configuration, tools and peripherals
 
