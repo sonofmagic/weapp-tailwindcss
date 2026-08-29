@@ -1,5 +1,15 @@
 # @weapp-tailwindcss/variants
 
+## 0.2.5
+
+### Patch Changes
+
+- 将公开 npm 包的主页和相关文档入口迁移到新的 `https://tw.weapp.dev` 域名，并补齐缺失的包主页元数据。
+
+- Updated dependencies:
+  - @weapp-tailwindcss/merge@2.2.3
+  - @weapp-tailwindcss/runtime@0.1.8
+
 ## 0.2.4
 
 ### Patch Changes

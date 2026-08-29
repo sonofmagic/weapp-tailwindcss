@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-28T17:28:40.663Z",
+  "generatedAt": "2026-08-29T07:21:16.207Z",
   "locale": "zh-CN",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
@@ -2243,7 +2243,7 @@
       "contentTier": "primary",
       "productArea": "api",
       "title": "WeappTailwindcssPostcssPluginOptions",
-      "description": "`weapp-tailwindcss` PostCSS 插件配置。",
+      "description": "weapp-tailwindcss PostCSS 插件配置。",
       "summary": "weapp-tailwindcss PostCSS 插件配置。",
       "url": "/zh-cn/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/WeappTailwindcssPostcssPluginOptions",

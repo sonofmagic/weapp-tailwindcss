@@ -4,6 +4,15 @@
 
 ### Patch Changes
 
+- Updated dependencies:
+  - @weapp-tailwindcss/cva@0.1.9
+  - @weapp-tailwindcss/merge@2.2.3
+  - @weapp-tailwindcss/variants@0.2.5
+
+## 0.0.9
+
+### Patch Changes
+
 - 📦 **Dependencies** [`c2ba271`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c2ba271ac62ba851c23549a8de1038a71bb868d6)
   → `@weapp-tailwindcss/cva@0.1.8`, `@weapp-tailwindcss/merge@2.2.2`, `@weapp-tailwindcss/variants@0.2.4`
 

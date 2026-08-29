@@ -1,5 +1,20 @@
 # @weapp-tailwindcss/postcss
 
+## 3.2.12
+
+### Patch Changes
+
+- 将公开 npm 包的主页和相关文档入口迁移到新的 `https://tw.weapp.dev` 域名，并补齐缺失的包主页元数据。
+
+- 修复 uni-app x 中 important utility 与局部 Sass `@apply` 在 Web、Android Vapor 等目标间编译不一致的问题。
+
+- 升级 PostCSS 处理链使用的 CSS 颜色解析与预设环境依赖。
+
+- Updated dependencies:
+  - @weapp-tailwindcss/postcss-calc@1.0.5
+  - @weapp-tailwindcss/shared@2.0.3
+  - tailwindcss-config@2.0.4
+
 ## 3.2.11
 
 ### Patch Changes
