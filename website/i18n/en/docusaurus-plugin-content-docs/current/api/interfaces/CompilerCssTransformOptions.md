@@ -7,6 +7,9 @@ keywords:
   - "compiler"
   - "CSS"
   - "TypeScript"
+  - "Tailwind CSS"
+  - "mini-program"
+  - "PostCSS"
 ---
 
 # CompilerCssTransformOptions
