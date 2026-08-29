@@ -328,8 +328,22 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
     const pendingHmrChange = transient ? void 0 : hmrCandidateState.resolve(generatorCode, file)
     const forceFullHmrCssRegeneration = hmrCandidateState.shouldForceFullRegeneration(file, pendingHmrChange !== undefined)
     const runtime = hookContext?.sourceCandidates === undefined
-      ? fullRuntime
+      ? new Set(fullRuntime)
       : new Set(hookContext.sourceCandidates)
+    if (pendingHmrChange) {
+      for (const candidate of pendingHmrChange.addedCandidates) {
+        runtime.add(candidate)
+      }
+    }
+    const getGenerationSourceCandidatesForEntries = pendingHmrChange
+      ? (entries, options2) => {
+          const candidates = new Set(getSourceCandidatesForEntries(entries, options2))
+          for (const candidate of pendingHmrChange.addedCandidates) {
+            candidates.add(candidate)
+          }
+          return candidates
+        }
+      : getSourceCandidatesForEntries
     const importShellCss = resolveViteServeRootMiniProgramImportShell({ css: generatorTransformCode, cssPipelineContext, cssPipelineStrategy: frameworkCssPipelineStrategy, isWebGeneratorTarget: currentGeneratorBranch.isWeb, outputFile })
     if (importShellCss !== void 0) {
       cleanGeneratedCssByFile.set(fileKey, importShellCss)
@@ -365,7 +379,7 @@ ${previousTracedCss}`
     const previousCss = pendingHmrChange && !forceFullHmrCssRegeneration ? cleanGeneratedCssByFile.get(fileKey) : void 0
     const previousGeneratorCss = previousCss && !currentGeneratorBranch.isWeb ? normalizeMiniProgramGeneratorCssSource(previousCss, outputFile) : previousCss
     const hmrDebugState = hmrCandidateState.snapshotDebugState()
-    const generated = await hmrTimingRecorder.measure(`generateCss.${resolvedConfig?.command ?? 'unknown'}`, () => generateTailwindV4Css({ opts, runtimeState, runtime, rawSource: generatorTransformCode, file, outputFile, cssHandlerOptions, cssUserHandlerOptions: transformCssHandlerOptions.getCssUserHandlerOptions(requestFile), cssSources: transientCssSource ? [transientCssSource] : void 0, getSourceCandidatesForEntries, generatorPlatform: resolveGeneratorPlatform(), styleHandler, debug, previousCss: previousGeneratorCss, previousClassSet: pendingHmrChange && !forceFullHmrCssRegeneration ? generatedClassSetByFile.get(fileKey) : void 0, deferEmptyScopedCssSource: shouldDeferEmptyScopedCssSource, deferCssAdaptation: !transient && !currentGeneratorBranch.isWeb && !shouldAdaptFrameworkWatchCss(), disableSourceScan: hookContext?.disableSourceScan === true, cssStage: hookContext?.cssStage, restoreLocalCssImports: !currentGeneratorBranch.isWeb }), { file, memoryDebug: { cleanCacheHit: cleanGeneratedCssByFile.has(fileKey), forceFullHmrCssRegeneration, ...hmrDebugState, pendingResolved: pendingHmrChange !== void 0, runtimeCandidates: runtime.size, target: currentGeneratorOptions.target } })
+    const generated = await hmrTimingRecorder.measure(`generateCss.${resolvedConfig?.command ?? 'unknown'}`, () => generateTailwindV4Css({ opts, runtimeState, runtime, rawSource: generatorTransformCode, file, outputFile, cssHandlerOptions, cssUserHandlerOptions: transformCssHandlerOptions.getCssUserHandlerOptions(requestFile), cssSources: transientCssSource ? [transientCssSource] : void 0, getSourceCandidatesForEntries: getGenerationSourceCandidatesForEntries, generatorPlatform: resolveGeneratorPlatform(), styleHandler, debug, previousCss: previousGeneratorCss, previousClassSet: pendingHmrChange && !forceFullHmrCssRegeneration ? generatedClassSetByFile.get(fileKey) : void 0, deferEmptyScopedCssSource: shouldDeferEmptyScopedCssSource, deferCssAdaptation: !transient && !currentGeneratorBranch.isWeb && !shouldAdaptFrameworkWatchCss(), disableSourceScan: hookContext?.disableSourceScan === true, cssStage: hookContext?.cssStage, restoreLocalCssImports: !currentGeneratorBranch.isWeb }), { file, memoryDebug: { cleanCacheHit: cleanGeneratedCssByFile.has(fileKey), forceFullHmrCssRegeneration, ...hmrDebugState, pendingResolved: pendingHmrChange !== void 0, runtimeCandidates: runtime.size, target: currentGeneratorOptions.target } })
     if (!generated) {
       if (pendingHmrChange) {
         hmrCandidateState.finishTarget(file)

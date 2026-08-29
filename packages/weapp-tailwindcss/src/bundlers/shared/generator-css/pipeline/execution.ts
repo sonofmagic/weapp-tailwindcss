@@ -205,7 +205,10 @@ async function executeGeneratorPipelineWithOwner(
   }), sourceConcurrency)).filter((item): item is NonNullable<typeof item> => Boolean(item))
   const generatePreparedInputs = async (candidateSets?: Map<string, Set<string>>) => {
     return runWithConcurrency(preparedGenerationInputs.map(input => async () => {
-      const currentCandidates = candidateSets?.get(input.sourceId) ?? input.generatorRuntime
+      const projectedCandidates = candidateSets?.get(input.sourceId)
+      const currentCandidates = projectedCandidates
+        ? new Set([...input.generatorRuntime, ...projectedCandidates])
+        : input.generatorRuntime
       const generateOptions = {
         bareArbitraryValues: generatorOptions.bareArbitraryValues,
         candidates: currentCandidates,
@@ -369,6 +372,15 @@ async function executeGeneratorPipelineWithOwner(
   })
   const outputContext: GeneratorPipelineOutputContext = {
     ...context,
+    ...(compilerSession
+      ? {
+          options: {
+            ...context.options,
+            previousClassSet: undefined,
+            previousCss: undefined,
+          },
+        }
+      : {}),
     configuredContainerCompat,
     filterGeneratedApplyOnlyCss,
     generated,
