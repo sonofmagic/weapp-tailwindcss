@@ -7,6 +7,7 @@ import type {
   CreateCompilerOptions,
 } from './types'
 import type { UserDefinedOptions } from '@/types'
+import { finalizeMiniProgramCss, finalizeMiniProgramCssRoot } from '@weapp-tailwindcss/postcss'
 import { createWeappTailwindcssGenerator, resolveTailwindV4Source } from '@/generator'
 import { createCompilerGenerationCacheKey, isSameCompilerGenerationCacheKey, reuseCompilerGenerationResult } from './generation-cache'
 import { commitCompilerGeneration, prepareCompilerGeneration } from './generation-state'
@@ -25,7 +26,7 @@ const DEFAULT_MAX_ROOTS = 128
 export function createCompiler(options: CreateCompilerOptions = {}): Compiler {
   const { compiler: compilerOptions, ...userOptions } = options
   const maxRoots = Math.max(1, Math.floor(compilerOptions?.maxRoots ?? DEFAULT_MAX_ROOTS))
-  const rootStore = new CompilerRootStore(maxRoots)
+  const rootStore = new CompilerRootStore(maxRoots, compilerOptions?.onRootEvicted)
   const activeTasks = new Set<Promise<unknown>>()
   let lifecycle: 'active' | 'disposing' | 'disposed' = 'active'
   let disposePromise: Promise<void> | undefined
@@ -158,6 +159,7 @@ export function createCompiler(options: CreateCompilerOptions = {}): Compiler {
       entry.appliedInvalidation = invalidation
       entry.latestSnapshot = snapshot
       rootStore.attachDependencies(entry, dependencies)
+      rootStore.attachSources(entry, sources)
       if (!engineReused && previousGenerator !== generator) {
         previousGenerator?.dispose?.()
       }
@@ -211,6 +213,18 @@ export function createCompiler(options: CreateCompilerOptions = {}): Compiler {
     return createRegisteredCompilerSnapshot(request)
   }
 
+  function finalizeCss(css: string, options?: Parameters<Compiler['finalizeCss']>[1]) {
+    ensureActive()
+    return finalizeMiniProgramCss(css, options)
+  }
+
+  function finalizeCssRoot(root: Parameters<Compiler['finalizeCssRoot']>[0], options?: Parameters<Compiler['finalizeCssRoot']>[1]) {
+    ensureActive()
+    const cloned = root.clone()
+    finalizeMiniProgramCssRoot(cloned, options)
+    return cloned
+  }
+
   function mergeSnapshots(snapshots: Iterable<CompilerSnapshot>) {
     ensureActive()
     return mergeRegisteredCompilerSnapshots(snapshots)
@@ -246,6 +260,8 @@ export function createCompiler(options: CreateCompilerOptions = {}): Compiler {
   return {
     createSnapshot,
     dispose,
+    finalizeCss,
+    finalizeCssRoot,
     generate,
     invalidate,
     mergeSnapshots,

@@ -19,6 +19,8 @@ export { transformLynxCssCompat } from './compat/lynx-css'
 export {
   consumeCascadeLayers,
   finalizeMiniProgramCss,
+  type FinalizeMiniProgramCssOptions,
+  finalizeMiniProgramCssRoot,
   hasMiniProgramCssSpecificityPlaceholders,
   hoistTailwindPreflightBase,
   normalizeMiniProgramGeneratedCssForPostcss,

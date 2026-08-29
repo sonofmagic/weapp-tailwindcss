@@ -4,10 +4,10 @@ import { getCompilerContext } from '@/context'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 
-export { createCompiler } from './core/compiler'
 export type {
   Compiler,
   CompilerCacheReuseState,
+  CompilerCssTransformOptions,
   CompilerGenerateRequest,
   CompilerGenerateResult,
   CompilerSnapshot,
@@ -18,6 +18,14 @@ export type {
   CreateCompilerOptions,
   CreateCompilerSnapshotRequest,
 } from './core/compiler'
+export { createCompiler } from './core/compiler'
+export {
+  finalizeMiniProgramCss,
+  finalizeMiniProgramCssRoot,
+  postcss,
+  removeTailwindSourceDirectivesRoot,
+} from '@weapp-tailwindcss/postcss'
+export type { FinalizeMiniProgramCssOptions } from '@weapp-tailwindcss/postcss'
 
 type RuntimeJsTransformOptions = { runtimeSet?: Set<string> } & CreateJsHandlerOptions
 

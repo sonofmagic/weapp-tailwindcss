@@ -91,7 +91,7 @@ export const FULL_SOURCE_SCAN_PATTERN = createSourceScanPattern(FULL_SOURCE_SCAN
 export const FULL_SOURCE_SCAN_EXTENSION_RE = new RegExp(`\\.(?:${FULL_SOURCE_SCAN_EXTENSIONS.map(extension => extension.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})$`)
 
 export function toPosixPath(value: string) {
-  return value.split(path.sep).join('/')
+  return value.split(path.sep).join('/').split(path.win32.sep).join('/')
 }
 
 export function resolveSourceScanPath(value: string) {
@@ -105,22 +105,29 @@ export function resolveSourceScanPath(value: string) {
 }
 
 function normalizeEntryPattern(entry: TailwindSourceEntry) {
-  return path.isAbsolute(entry.pattern)
-    ? toPosixPath(path.relative(resolveSourceScanPath(entry.base), entry.pattern))
+  const pathApi = isWindowsPath(entry.base) || isWindowsPath(entry.pattern) ? path.win32 : path
+  return pathApi.isAbsolute(entry.pattern)
+    ? toPosixPath(pathApi.relative(pathApi.resolve(entry.base), entry.pattern))
     : entry.pattern
 }
 
 function isFileMatchedByTailwindSourceEntry(file: string, entry: TailwindSourceEntry) {
-  const relative = toPosixPath(path.relative(resolveSourceScanPath(entry.base), file))
-  return relative && !relative.startsWith('../') && !path.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
+  const pathApi = isWindowsPath(entry.base) || isWindowsPath(file) ? path.win32 : path
+  const base = pathApi === path.win32 ? pathApi.resolve(entry.base) : resolveSourceScanPath(entry.base)
+  const resolvedFile = pathApi === path.win32 ? pathApi.resolve(file) : resolveSourceScanPath(file)
+  const relative = toPosixPath(pathApi.relative(base, resolvedFile))
+  return relative && !relative.startsWith('../') && !pathApi.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
+}
+
+function isWindowsPath(value: string) {
+  return path.win32.isAbsolute(value) || value.includes('\\')
 }
 
 export function isFileExcludedByTailwindSourceEntries(file: string, entries: TailwindSourceEntry[] | undefined) {
   if (!entries?.length) {
     return false
   }
-  const resolvedFile = resolveSourceScanPath(file)
-  return entries.some(entry => entry.negated && isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
+  return entries.some(entry => entry.negated && isFileMatchedByTailwindSourceEntry(file, entry))
 }
 
 export function isFileMatchedByTailwindSourceEntries(file: string, entries: TailwindSourceEntry[] | undefined) {
@@ -129,15 +136,14 @@ export function isFileMatchedByTailwindSourceEntries(file: string, entries: Tail
   }
   const positiveEntries = entries.filter(entry => !entry.negated)
   const negativeEntries = entries.filter(entry => entry.negated)
-  const resolvedFile = resolveSourceScanPath(file)
   if (positiveEntries.length === 0) {
-    return !negativeEntries.some(entry => isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
+    return !negativeEntries.some(entry => isFileMatchedByTailwindSourceEntry(file, entry))
   }
-  const matchesPositive = positiveEntries.some(entry => isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
+  const matchesPositive = positiveEntries.some(entry => isFileMatchedByTailwindSourceEntry(file, entry))
   if (!matchesPositive) {
     return false
   }
-  return !negativeEntries.some(entry => isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
+  return !negativeEntries.some(entry => isFileMatchedByTailwindSourceEntry(file, entry))
 }
 
 export function createTailwindSourceEntryMatcher(entries: TailwindSourceEntry[] | undefined) {

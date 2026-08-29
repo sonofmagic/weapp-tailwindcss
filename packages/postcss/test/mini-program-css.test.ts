@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   finalizeMiniProgramCss,
+  finalizeMiniProgramCssRoot,
   hasMiniProgramCssSpecificityPlaceholders,
   hoistTailwindPreflightBase,
   normalizeMiniProgramPrefixedDeclaration,
@@ -42,6 +43,14 @@ import {
 } from '../src/compat/mini-program-css/root-cleanups'
 
 describe('mini-program css cleanup', () => {
+  it('finalizes an existing PostCSS root in place', () => {
+    const source = '@plugin "example";\n@source "./src";\n@supports (display: grid) { .grid { display: grid; } }\n.card { display: flex; }'
+    const root = postcss.parse(source)
+    finalizeMiniProgramCssRoot(root)
+    expect(root.toString()).toBe(finalizeMiniProgramCss(source))
+    expect(root.toString()).toBe('.card { display: flex; }')
+  })
+
   it('covers mini-program predicate helper branches', () => {
     const root = postcss.parse([
       'button{appearance:button}',

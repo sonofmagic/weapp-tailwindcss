@@ -2,7 +2,7 @@
 title: "🗂️ 其他接口"
 sidebar_label: "🗂️ 其他接口"
 sidebar_position: 2
-description: "其他接口索引，列出 23 个 weapp-tailwindcss 运行时接口和补充类型。"
+description: "其他接口索引，列出 24 个 weapp-tailwindcss 运行时接口和补充类型。"
 keywords:
   - "weapp-tailwindcss"
   - "API"
@@ -23,6 +23,7 @@ keywords:
 - [CacheOptions](./interfaces/CacheOptions.md) - Tailwind 类名缓存配置。
 - [Compiler](./interfaces/Compiler.md)
 - [CompilerCacheReuseState](./interfaces/CompilerCacheReuseState.md)
+- [CompilerCssTransformOptions](./interfaces/CompilerCssTransformOptions.md)
 - [CompilerGenerateRequest](./interfaces/CompilerGenerateRequest.md)
 - [CompilerGenerateResult](./interfaces/CompilerGenerateResult.md)
 - [CompilerSnapshot](./interfaces/CompilerSnapshot.md) - 一次生成事务的只读转换凭据。

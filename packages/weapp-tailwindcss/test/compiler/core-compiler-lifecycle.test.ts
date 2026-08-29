@@ -26,6 +26,7 @@ function generated(candidates: Iterable<string> = [], target = 'weapp') {
 describe('createCompiler lifecycle', () => {
   afterEach(() => {
     vi.doUnmock('@/generator')
+    vi.doUnmock('@/context')
     vi.resetModules()
   })
 
@@ -233,6 +234,46 @@ describe('createCompiler lifecycle', () => {
 
     await compiler.dispose()
     expect(disposals.get('source-b')).toHaveBeenCalledTimes(1)
+  })
+
+  it('notifies after automatic root eviction but not explicit removal', async () => {
+    const evicted = vi.fn()
+    vi.doMock('@/generator', async (importOriginal) => ({
+      ...await importOriginal<typeof import('@/generator')>(),
+      createWeappTailwindcssGenerator: (source: typeof sourceA) => ({
+        dispose: vi.fn(),
+        generate: async (options: { candidates?: Iterable<string>, target?: string }) => generated(options.candidates, options.target),
+        source,
+        validateCandidates: vi.fn(),
+      }),
+    }))
+    const { createCompiler } = await import('@/core/compiler')
+    const compiler = createCompiler({ compiler: { maxRoots: 1, onRootEvicted: evicted } })
+
+    await compiler.generate({ candidates: ['p-4'], id: 'root-a', source: sourceA as any })
+    await compiler.generate({ candidates: ['m-2'], id: 'root-b', source: sourceB as any })
+    await vi.waitFor(() => expect(evicted).toHaveBeenCalledWith('root-a'))
+    await compiler.remove('root-b')
+    expect(evicted).toHaveBeenCalledTimes(1)
+    await compiler.dispose()
+  })
+
+  it('passes template filename context to custom handlers', async () => {
+    const templateHandler = vi.fn(async (source: string) => source)
+    vi.doMock('@/context', () => ({
+      getCompilerContext: () => ({
+        jsHandler: vi.fn(),
+        styleHandler: Object.assign(vi.fn(), { transformRoot: vi.fn() }),
+        templateHandler,
+      }),
+    }))
+    const { createCompiler } = await import('@/core/compiler')
+    const compiler = createCompiler()
+    const snapshot = compiler.createSnapshot({ classSet: [], id: 'template-root' })
+
+    await compiler.transformTemplate('<view />', snapshot, { filename: '/repo/src/pages/index.wxml' })
+    expect(templateHandler).toHaveBeenCalledWith('<view />', expect.objectContaining({ filename: '/repo/src/pages/index.wxml' }))
+    await compiler.dispose()
   })
 
   it('returns to the root limit after parallel work settles', async () => {

@@ -703,4 +703,4 @@ Babel 8 链路要求 Node `^22.18.0 || >=24.11.0`。OXC 加载失败时仍会自
 
 ### compiler?
 
-> 可选 | **compiler**: `{ maxRoots?: number | undefined; }`
+> 可选 | **compiler**: `{ maxRoots?: number | undefined; onRootEvicted?: ((id: string) => void) | undefined; }`

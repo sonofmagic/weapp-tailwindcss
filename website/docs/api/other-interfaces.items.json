@@ -3,6 +3,7 @@
   "api/interfaces/CacheOptions",
   "api/interfaces/Compiler",
   "api/interfaces/CompilerCacheReuseState",
+  "api/interfaces/CompilerCssTransformOptions",
   "api/interfaces/CompilerGenerateRequest",
   "api/interfaces/CompilerGenerateResult",
   "api/interfaces/CompilerSnapshot",

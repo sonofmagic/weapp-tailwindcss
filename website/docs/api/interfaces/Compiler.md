@@ -45,6 +45,46 @@ keywords:
 
 ***
 
+### finalizeCss()
+
+> **finalizeCss()**: `(css: string, options?: FinalizeMiniProgramCssOptions) => string`
+
+#### 参数
+
+##### css
+
+`string`
+
+##### options?
+
+`any`
+
+#### 返回
+
+`string`
+
+***
+
+### finalizeCssRoot()
+
+> **finalizeCssRoot()**: `(root: Root, options?: FinalizeMiniProgramCssOptions) => Root`
+
+#### 参数
+
+##### root
+
+`Root`
+
+##### options?
+
+`any`
+
+#### 返回
+
+`Root`
+
+***
+
 ### generate()
 
 > **generate()**: `(request: CompilerGenerateRequest) => Promise<CompilerGenerateResult>`
@@ -111,7 +151,7 @@ keywords:
 
 ### transformCss()
 
-> **transformCss()**: `(css: string, snapshot: CompilerSnapshot, options?: Partial<IStyleHandlerOptions>) => Promise<PostcssResult<Root | Document>>`
+> **transformCss()**: `(css: string, snapshot: CompilerSnapshot, options?: CompilerCssTransformOptions) => Promise<PostcssResult<Root | Document>>`
 
 #### 参数
 
@@ -125,7 +165,7 @@ keywords:
 
 ##### options?
 
-`Partial<IStyleHandlerOptions>`
+[`CompilerCssTransformOptions`](./CompilerCssTransformOptions.md)
 
 #### 返回
 
@@ -135,7 +175,7 @@ keywords:
 
 ### transformCssRoot()
 
-> **transformCssRoot()**: `(root: Root, snapshot: CompilerSnapshot, options?: Partial<IStyleHandlerOptions>) => Promise<PostcssResult<Root>>`
+> **transformCssRoot()**: `(root: Root, snapshot: CompilerSnapshot, options?: CompilerCssTransformOptions) => Promise<PostcssResult<Root>>`
 
 #### 参数
 
@@ -149,7 +189,7 @@ keywords:
 
 ##### options?
 
-`Partial<IStyleHandlerOptions>`
+[`CompilerCssTransformOptions`](./CompilerCssTransformOptions.md)
 
 #### 返回
 
