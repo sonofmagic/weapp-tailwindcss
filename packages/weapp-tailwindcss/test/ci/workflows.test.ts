@@ -306,8 +306,12 @@ describe('ci workflows', () => {
     expect(releaseGateWorkflow.jobs['release-gate']['timeout-minutes']).toBe(30)
 
     const watchRows: Array<Record<string, unknown>> = watchWorkflow.jobs['pr-quick-gate'].strategy.matrix.include
-    expect(watchRows.every(row => Number(row.timeout_minutes) <= 30)).toBe(true)
-    expect(watchRows.every(row => Number(row.watch_command_timeout_ms) <= 1_500_000)).toBe(true)
+    const extendedWindowsToutiaoRows = watchRows.filter(row => row.os === 'windows-latest' && row.watch_case === 'uni-app-vite-tailwindcss-v4:mp-toutiao')
+    const standardWatchRows = watchRows.filter(row => !extendedWindowsToutiaoRows.includes(row))
+    expect(extendedWindowsToutiaoRows).toHaveLength(1)
+    expect(extendedWindowsToutiaoRows[0]).toMatchObject({ timeout_minutes: 60, watch_command_timeout_ms: '3000000' })
+    expect(standardWatchRows.every(row => Number(row.timeout_minutes) <= 30)).toBe(true)
+    expect(standardWatchRows.every(row => Number(row.watch_command_timeout_ms) <= 1_500_000)).toBe(true)
     for (const jobName of ['root-style-import-shell-hmr', 'uni-app-css-post-hmr']) {
       expect(
         watchWorkflow.jobs[jobName]['timeout-minutes'],
@@ -1347,8 +1351,12 @@ describe('e2e watch workflow', () => {
       },
     ]
 
-    expect(prRows.every(row => Number(row.timeout_minutes) <= 30)).toBe(true)
-    expect(prRows.every(row => Number(row.watch_command_timeout_ms) <= 1_500_000)).toBe(true)
+    const extendedWindowsToutiaoRows = prRows.filter(row => row.os === 'windows-latest' && row.watch_case === 'uni-app-vite-tailwindcss-v4:mp-toutiao')
+    const standardPrRows = prRows.filter(row => !extendedWindowsToutiaoRows.includes(row))
+    expect(extendedWindowsToutiaoRows).toHaveLength(1)
+    expect(extendedWindowsToutiaoRows[0]).toMatchObject({ timeout_minutes: 60, watch_command_timeout_ms: '3000000' })
+    expect(standardPrRows.every(row => Number(row.timeout_minutes) <= 30)).toBe(true)
+    expect(standardPrRows.every(row => Number(row.watch_command_timeout_ms) <= 1_500_000)).toBe(true)
 
     for (const budget of slowMacosUniAppPrBudgets) {
       expect(prRows).toContainEqual(expect.objectContaining({
