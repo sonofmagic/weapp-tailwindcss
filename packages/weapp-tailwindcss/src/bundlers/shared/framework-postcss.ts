@@ -1,6 +1,7 @@
 import type { AcceptedPlugin } from '@weapp-tailwindcss/postcss'
 import type { IStyleHandlerOptions, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
 import type { GenerateCssByGeneratorResult } from './generator-css'
+import type { Compiler, CompilerSnapshot } from '@/core/compiler'
 import type { InternalUserDefinedOptions } from '@/types'
 import { removeTailwindPostcssPlugins } from '@weapp-tailwindcss/postcss'
 import { composeGenerationArtifact, createCssFragment, createGenerationArtifact, createStylePlatformAdapter } from '@/compiler'
@@ -216,19 +217,28 @@ export async function adaptGeneratedCssWithFrameworkRootPipeline(
     majorVersion: number
     rawCandidates: Iterable<string>
     styleHandler: InternalUserDefinedOptions['styleHandler']
+    compiler?: Compiler | undefined
+    snapshot?: CompilerSnapshot | undefined
   },
 ): Promise<string> {
   const handlerOptions = createGeneratedCssHandlerOptions(owner, options.cssHandlerOptions, options.file)
-  const handled = typeof options.styleHandler.transformRoot === 'function'
-    ? composeGenerationArtifact(await createStylePlatformAdapter({
-        id: generated.target === 'web' ? 'web' : 'mini-program',
-        styleHandler: options.styleHandler,
-        styleOptions: handlerOptions,
-      }).transform(
-        createFrameworkReplayArtifact(generated, options),
-        { stage: 'framework-processed' },
-      ))
-    : await options.styleHandler(generated.css, handlerOptions)
+  const replayArtifact = createFrameworkReplayArtifact(generated, options)
+  const handled = options.compiler && options.snapshot
+    ? composeGenerationArtifact(await (async () => {
+        for (const fragment of replayArtifact.fragments) {
+          const result = await options.compiler!.transformCssRoot(fragment.root, options.snapshot!, handlerOptions)
+          fragment.root = result.root.clone()
+          fragment.stage = 'framework-processed'
+        }
+        return replayArtifact
+      })())
+    : typeof options.styleHandler.transformRoot === 'function'
+      ? composeGenerationArtifact(await createStylePlatformAdapter({
+          id: generated.target === 'web' ? 'web' : 'mini-program',
+          styleHandler: options.styleHandler,
+          styleOptions: handlerOptions,
+        }).transform(replayArtifact, { stage: 'framework-processed' }))
+      : await options.styleHandler(generated.css, handlerOptions)
   const preflightMode = generated.metadata?.preflightMode
   const injectPreflight = preflightMode?.inject ?? options.cssHandlerOptions.isMainChunk
   const preservePreflight = preflightMode?.preserve ?? options.cssHandlerOptions.isMainChunk

@@ -27,6 +27,8 @@ const generated = await compiler.generate({
 
 一个构建周期复用一个 compiler；文件系统路径用 `node:path` 构造，示例中的 root ID 则是无需规范化的逻辑 module ID。
 
+官方 Vite、Webpack、Rspack 和 Gulp 适配器在默认 graph 模式下也复用这一 compiler session。它们只把构建图确认的 source、依赖和 candidates 交给 core，并由各自的 bundler API 写回 CSS/模板/JavaScript；第三方适配器可以采用相同模型，但不应把模块图或产物所有权转移给 core。
+
 ## 调用时序
 
 1. 框架从模块图确定一个逻辑样式 root 及其实际 candidates。
