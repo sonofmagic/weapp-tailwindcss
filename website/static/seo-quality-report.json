@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-28T17:21:19.364Z",
+  "generatedAt": "2026-08-29T07:21:17.766Z",
   "totals": {
     "files": 309,
-    "issues": 12
+    "issues": 0
   },
   "coverage": {
     "en": {
@@ -18,8 +18,8 @@
     }
   },
   "issuesByLocale": {
-    "en": 11,
-    "zh-cn": 1
+    "en": 0,
+    "zh-cn": 0
   },
   "geo": {
     "en": {
@@ -35,82 +35,6 @@
     "valid": true,
     "issues": []
   },
-  "issueTypes": {
-    "few_keywords": 11,
-    "invalid_description": 1
-  },
-  "issues": [
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/Compiler.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/CompilerCacheReuseState.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/CompilerGenerateRequest.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/CompilerGenerateResult.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/CompilerSnapshot.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/CompilerSnapshotRoot.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/CompilerSourcePattern.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/CompilerTarget.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/CompilerTemplateTransformOptions.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/CreateCompilerOptions.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "api/interfaces/CreateCompilerSnapshotRequest.md",
-      "message": "keywords 数量偏少（5）",
-      "scope": "en:docs"
-    },
-    {
-      "type": "invalid_description",
-      "file": "api/interfaces/WeappTailwindcssPostcssPluginOptions.md",
-      "message": "description 包含列表、代码、URL、Markdown 或残句",
-      "scope": "zh-cn:docs"
-    }
-  ]
+  "issueTypes": {},
+  "issues": []
 }

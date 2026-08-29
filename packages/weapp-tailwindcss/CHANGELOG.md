@@ -1,5 +1,39 @@
 # weapp-tailwindcss
 
+## 5.4.0
+
+### Minor Changes
+
+- 统一 `weapp-tailwindcss/vite` 主入口的多端适配：无框架标记的 Generic Vite 项目默认使用 Web target，并在配置解析后按真实环境选择 uni-app、Taro、weapp-vite 与小程序能力；显式目标和平台配置保持优先。
+
+- 新增稳定的 `weapp-tailwindcss/core` 框架 compiler API，支持按样式 root 复用 Tailwind 生成会话、显式不可变 snapshot、增量 CSS、精确依赖失效、多 root 合并以及一致的 CSS、模板和 JavaScript 转换事务。
+
+### Patch Changes
+
+- 官方 Vite、Webpack、Rspack 与 Gulp 适配器在 graph 模式下共享长期复用的 compiler session，使用同一份 snapshot 完成增量 CSS、模板和 JavaScript 转换，减少重复生成与运行时集合扫描，并在 owner 释放时完整回收 root 状态。
+
+- 将公开 npm 包的主页和相关文档入口迁移到新的 `https://tw.weapp.dev` 域名，并补齐缺失的包主页元数据。
+
+- 修复 uni-app x Web 中 Tailwind CSS 主题变量、scoped 页面样式与并发 HMR 更新丢失的问题，并在配置入口未进入 Web 样式构建链路时给出明确告警。
+
+- 修复 uni-app x 中 important utility 与局部 Sass `@apply` 在 Web、Android Vapor 等目标间编译不一致的问题。
+
+- 升级 OXC 解析器依赖，保持核心转译链与最新类型定义一致。
+
+- 优化 Vite 小程序构建中的 source-candidates 扫描、批量 HMR 同步和增量 bundle 入口规划，减少重复候选提取与 clean entry 全图处理。
+
+  Related to #1127
+
+- 修复 uni-app x Harmony VDOM 中 `leading-*` 行高值被错误转换为数字，导致样式不生效的问题。
+
+- Updated dependencies:
+  - @weapp-tailwindcss/logger@2.0.3
+  - @weapp-tailwindcss/postcss@3.2.12
+  - @weapp-tailwindcss/reset@0.1.4
+  - @weapp-tailwindcss/shared@2.0.3
+  - tailwindcss-config@2.0.4
+  - weapp-style-injector@1.0.4
+
 ## 5.3.6
 
 ### Patch Changes

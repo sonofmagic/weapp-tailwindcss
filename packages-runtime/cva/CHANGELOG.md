@@ -1,5 +1,14 @@
 # @weapp-tailwindcss/cva
 
+## 0.1.9
+
+### Patch Changes
+
+- 将公开 npm 包的主页和相关文档入口迁移到新的 `https://tw.weapp.dev` 域名，并补齐缺失的包主页元数据。
+
+- Updated dependencies:
+  - @weapp-tailwindcss/runtime@0.1.8
+
 ## 0.1.8
 
 ### Patch Changes
