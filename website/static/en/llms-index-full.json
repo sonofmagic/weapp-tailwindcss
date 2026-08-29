@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-28T17:21:19.091Z",
+  "generatedAt": "2026-08-29T18:10:33.558Z",
   "locale": "en-US",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev",
   "totals": {
-    "all": 153,
-    "docs": 152,
+    "all": 154,
+    "docs": 153,
     "blog": 1
   },
   "documents": [
@@ -1286,6 +1286,47 @@
         "output"
       ],
       "source": "i18n/en/docs/api/interfaces/CompilerCacheReuseState.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CompilerCssTransformOptions",
+      "locale": "en-US",
+      "contentTier": "primary",
+      "productArea": "api",
+      "title": "CompilerCssTransformOptions",
+      "description": "Options for transforming CSS through the core compiler.",
+      "summary": "Options accepted by Compiler.transformCss() and Compiler.transformCssRoot().",
+      "url": "/docs/api/interfaces/CompilerCssTransformOptions",
+      "canonical": "https://tw.weapp.dev/docs/api/interfaces/CompilerCssTransformOptions",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CompilerCssTransformOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerCssTransformOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CompilerCssTransformOptions"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "compiler",
+        "CSS",
+        "TypeScript",
+        "Tailwind CSS",
+        "mini-program",
+        "PostCSS",
+        "reference",
+        "options",
+        "CompilerCssTransformOptions",
+        "interfaces",
+        "Tailwind CSS 4",
+        "cross-platform",
+        "mini app",
+        "uni-app"
+      ],
+      "headings": [
+        "Properties",
+        "finalize?",
+        "isMainChunk?"
+      ],
+      "source": "i18n/en/docs/api/interfaces/CompilerCssTransformOptions.md"
     },
     {
       "kind": "doc",

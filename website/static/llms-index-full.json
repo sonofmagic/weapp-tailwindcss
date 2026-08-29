@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-29T07:21:16.207Z",
+  "generatedAt": "2026-08-29T18:10:33.558Z",
   "locale": "zh-CN",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
   "totals": {
-    "all": 156,
-    "docs": 152,
+    "all": 157,
+    "docs": 153,
     "blog": 4
   },
   "documents": [
@@ -1378,14 +1378,15 @@
         "属性",
         "createSnapshot()",
         "dispose()",
+        "finalizeCss()",
+        "finalizeCssRoot()",
         "generate()",
         "invalidate()",
         "mergeSnapshots()",
         "remove()",
         "transformCss()",
         "transformCssRoot()",
-        "transformJavaScript()",
-        "transformTemplate()"
+        "transformJavaScript()"
       ],
       "source": "docs/api/interfaces/Compiler.md"
     },
@@ -1430,6 +1431,56 @@
         "output"
       ],
       "source": "docs/api/interfaces/CompilerCacheReuseState.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:api/interfaces/CompilerCssTransformOptions",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "api",
+      "title": "CompilerCssTransformOptions",
+      "description": "CompilerCssTransformOptions 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "IPropValue[]",
+      "url": "/zh-cn/docs/api/interfaces/CompilerCssTransformOptions",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerCssTransformOptions",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/api/interfaces/CompilerCssTransformOptions",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/api/interfaces/CompilerCssTransformOptions",
+        "x-default": "https://tw.weapp.dev/docs/api/interfaces/CompilerCssTransformOptions"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "接口文档",
+        "配置项",
+        "小程序",
+        "tailwindcss",
+        "微信小程序",
+        "CompilerCssTransformOptions",
+        "CompilerCssTransformOptions 接口",
+        "CompilerCssTransformOptions 类型定义",
+        "TypeScript",
+        "interfaces",
+        "Tailwind CSS 4",
+        "跨端",
+        "uni-app",
+        "Taro"
+      ],
+      "headings": [
+        "属性",
+        "isMainChunk?",
+        "cssPreflight?",
+        "cssInjectPreflight()?",
+        "escapeMap?",
+        "finalize?",
+        "appType?",
+        "ctx?",
+        "postcssOptions?",
+        "cssOptions?",
+        "uniAppX?",
+        "uniAppXCssTarget?"
+      ],
+      "source": "docs/api/interfaces/CompilerCssTransformOptions.md"
     },
     {
       "kind": "doc",
@@ -1740,7 +1791,8 @@
         "disabledDefaultTemplateHandler?",
         "quote?",
         "ignoreHead?",
-        "wrapExpression?"
+        "wrapExpression?",
+        "filename?"
       ],
       "source": "docs/api/interfaces/CompilerTemplateTransformOptions.md"
     },
@@ -2530,7 +2582,7 @@
       "contentTier": "primary",
       "productArea": "api",
       "title": "🗂️ 其他接口",
-      "description": "其他接口索引，列出 23 个 weapp-tailwindcss 运行时接口和补充类型。",
+      "description": "其他接口索引，列出 24 个 weapp-tailwindcss 运行时接口和补充类型。",
       "summary": "以下接口用于补充配置或运行时能力，本页面仅提供索引。",
       "url": "/zh-cn/docs/api/other-interfaces",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/api/other-interfaces",
@@ -6561,7 +6613,7 @@
       "productArea": "tailwindcss",
       "title": "PostCSS：插件化 CSS 引擎、历史地位与生态",
       "description": "回顾 PostCSS 的发展、核心机制与对现代 CSS 的贡献，并梳理常用插件与最佳实践。",
-      "summary": "回顾 PostCSS 的发展、核心机制与对现代 CSS 的贡献，并梳理常用插件与最佳实践。",
+      "summary": "@weapp-tailwindcss/postcss 提供字符串和 AST 两种最终化入口，用于移除 @plugin、@source、@theme、@utility 等构建期指令，并完成小程序不支持语法的兼容处理：",
       "url": "/zh-cn/docs/tailwindcss/postcss",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/tailwindcss/postcss",
       "alternates": {
@@ -6596,6 +6648,7 @@
         "对 CSS 的贡献与影响",
         "与其他方案的边界",
         "典型配置与顺序示例",
+        "小程序 CSS 最终化 API",
         "调试、性能与迁移建议"
       ],
       "source": "docs/tailwindcss/postcss.mdx"
