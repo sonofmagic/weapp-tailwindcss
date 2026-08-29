@@ -124,8 +124,7 @@ function normalizeEntryPattern(entry: TailwindSourceEntry) {
 function isFileMatchedByTailwindSourceEntry(file: string, entry: TailwindSourceEntry) {
   const pathApi = isWindowsPath(entry.base) || isWindowsPath(file) ? path.win32 : path
   const base = resolveSourceScanPathWithApi(entry.base, pathApi)
-  const resolvedFile = resolveSourceScanPathWithApi(file, pathApi)
-  const relative = toPosixPath(pathApi.relative(base, resolvedFile))
+  const relative = toPosixPath(pathApi.relative(base, file))
   return relative && !relative.startsWith('../') && !pathApi.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
 }
 
@@ -137,23 +136,32 @@ export function isFileExcludedByTailwindSourceEntries(file: string, entries: Tai
   if (!entries?.length) {
     return false
   }
-  return entries.some(entry => entry.negated && isFileMatchedByTailwindSourceEntry(file, entry))
+  const resolvedFile = resolveSourceScanMatcherFile(file, entries)
+  return entries.some(entry => entry.negated && isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
 }
 
 export function isFileMatchedByTailwindSourceEntries(file: string, entries: TailwindSourceEntry[] | undefined) {
   if (!entries?.length) {
     return true
   }
+  const resolvedFile = resolveSourceScanMatcherFile(file, entries)
   const positiveEntries = entries.filter(entry => !entry.negated)
   const negativeEntries = entries.filter(entry => entry.negated)
   if (positiveEntries.length === 0) {
-    return !negativeEntries.some(entry => isFileMatchedByTailwindSourceEntry(file, entry))
+    return !negativeEntries.some(entry => isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
   }
-  const matchesPositive = positiveEntries.some(entry => isFileMatchedByTailwindSourceEntry(file, entry))
+  const matchesPositive = positiveEntries.some(entry => isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
   if (!matchesPositive) {
     return false
   }
-  return !negativeEntries.some(entry => isFileMatchedByTailwindSourceEntry(file, entry))
+  return !negativeEntries.some(entry => isFileMatchedByTailwindSourceEntry(resolvedFile, entry))
+}
+
+function resolveSourceScanMatcherFile(file: string, entries: TailwindSourceEntry[]) {
+  const useWindowsApi = isWindowsPath(file) || entries.some(entry => isWindowsPath(entry.base) || isWindowsPath(entry.pattern))
+  return useWindowsApi
+    ? resolveSourceScanPathWithApi(file, path.win32)
+    : resolveSourceScanPath(file)
 }
 
 export function createTailwindSourceEntryMatcher(entries: TailwindSourceEntry[] | undefined) {
