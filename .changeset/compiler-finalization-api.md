@@ -1,5 +1,5 @@
 ---
-"weapp-tailwindcss": minor
+"weapp-tailwindcss": patch
 "@weapp-tailwindcss/postcss": minor
 ---
 
