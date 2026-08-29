@@ -11,19 +11,21 @@ description: 将 weapp-tailwindcss 集成到自研构建器或高级流水线，
 
 1. 先判断官方 Vite/Webpack/Rspack/Gulp 入口是否已满足需求；普通项目转到 `$weapp-tailwindcss-setup`。
 2. 确认调用方拥有的生命周期、模块图、CSS 生成结果、asset API、watch 事件和 source map 能力。
-3. 读取 [references/core-api.md](references/core-api.md) 设计 `createContext()` 的创建、刷新和转换时序。
+3. 读取 [references/core-api.md](references/core-api.md) 设计 `createCompiler()` 的 root、snapshot、失效和转换时序；仅在兼容旧自动 runtime 流程时使用 `createContext()`。
 4. 涉及全局/分包样式注入时再读取 [references/style-injection.md](references/style-injection.md)。
 5. 在 `load`、`transform`、loader result、compilation、bundle asset 或 stream/Vinyl 对象中维护源码和产物关系。
-6. watch 中先刷新 Tailwind runtime/class set，再转换受影响模板和 JavaScript；配置变化使用完整 refresh，普通源码变化使用 collect。
+6. watch 中把精确 dependency/module ID 交给 `invalidate()`，只重新生成返回的 root，再用新 snapshot 转换实际可达的模板和 JavaScript。
 7. 让初始扫描、transform 与 HMR 共用 Scanner 的文件范围和显式外部 source，不另建宽泛 glob。
 8. 通过 bundler API 写回产物和 source map，不直接修改输出目录。
 
 ## 不可破坏的边界
 
-- `createContext()` 只转换传入的内存文本；它不扫描输出目录、不替代 Tailwind 入口导入、不替调用方写文件。
-- 同一构建周期复用上下文，保证 CSS、模板和 JS 使用同一 runtime set。
+- `createCompiler()` 管理 Tailwind root 会话、revision 和不可变 snapshot；它不接管模块图可达性、watch 调度或产物写回。
+- 同一构建周期复用 compiler，并让 CSS、模板和 JS 显式消费同一 snapshot。
+- `createContext()` 继续兼容自动 runtime 收集模式，不要把两种状态模型混在同一事务中。
 - `transformWxss()`、`transformWxml()`、`transformJs()` 返回类型不同，必须分别处理错误和 map。
-- 运行时集合来自 Tailwind 生成/验证结果，不把扫描到的所有字符串直接塞入集合。
+- snapshot classSet 来自 Tailwind 生成/验证结果，不把扫描到的所有字符串直接塞入集合。
+- module ID 是 opaque 值；`invalidate()` 不会替调用方规范化 POSIX、Windows、virtual ID 或 query。
 - 入口发现若确需文件系统扫描，集中在明确扫描层并测试；不要在 `generateBundle` 等后置阶段临时读源码。
 - Rspack rule condition 解析必须覆盖函数与组合条件，补丁保持幂等并仅作用于目标 CSS rule。
 

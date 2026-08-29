@@ -1,18 +1,18 @@
 ---
-title: WeappTailwindcssPostcssPluginOptions
-description: WeappTailwindcssPostcssPluginOptions，包含配置项、接口定义与参数说明。
+title: "WeappTailwindcssPostcssPluginOptions"
+description: "weapp-tailwindcss PostCSS 插件配置。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - WeappTailwindcssPostcssPluginOptions
-  - WeappTailwindcssPostcssPluginOptions 接口
-  - WeappTailwindcssPostcssPluginOptions 类型定义
-  - TypeScript
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "WeappTailwindcssPostcssPluginOptions"
+  - "WeappTailwindcssPostcssPluginOptions 接口"
+  - "WeappTailwindcssPostcssPluginOptions 类型定义"
+  - "TypeScript"
 ---
 
 # WeappTailwindcssPostcssPluginOptions

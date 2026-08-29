@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-21T09:22:02.192Z",
+  "generatedAt": "2026-08-28T17:21:19.364Z",
   "totals": {
-    "files": 287,
-    "issues": 0
+    "files": 309,
+    "issues": 12
   },
   "coverage": {
     "en": {
@@ -18,23 +18,99 @@
     }
   },
   "issuesByLocale": {
-    "en": 0,
-    "zh-cn": 0
+    "en": 11,
+    "zh-cn": 1
   },
   "geo": {
     "en": {
-      "primary": 83,
-      "full": 142
+      "primary": 94,
+      "full": 153
     },
     "zh-cn": {
-      "primary": 83,
-      "full": 145
+      "primary": 94,
+      "full": 156
     }
   },
   "routeConsistency": {
     "valid": true,
     "issues": []
   },
-  "issueTypes": {},
-  "issues": []
+  "issueTypes": {
+    "few_keywords": 11,
+    "invalid_description": 1
+  },
+  "issues": [
+    {
+      "type": "few_keywords",
+      "file": "api/interfaces/Compiler.md",
+      "message": "keywords 数量偏少（5）",
+      "scope": "en:docs"
+    },
+    {
+      "type": "few_keywords",
+      "file": "api/interfaces/CompilerCacheReuseState.md",
+      "message": "keywords 数量偏少（5）",
+      "scope": "en:docs"
+    },
+    {
+      "type": "few_keywords",
+      "file": "api/interfaces/CompilerGenerateRequest.md",
+      "message": "keywords 数量偏少（5）",
+      "scope": "en:docs"
+    },
+    {
+      "type": "few_keywords",
+      "file": "api/interfaces/CompilerGenerateResult.md",
+      "message": "keywords 数量偏少（5）",
+      "scope": "en:docs"
+    },
+    {
+      "type": "few_keywords",
+      "file": "api/interfaces/CompilerSnapshot.md",
+      "message": "keywords 数量偏少（5）",
+      "scope": "en:docs"
+    },
+    {
+      "type": "few_keywords",
+      "file": "api/interfaces/CompilerSnapshotRoot.md",
+      "message": "keywords 数量偏少（5）",
+      "scope": "en:docs"
+    },
+    {
+      "type": "few_keywords",
+      "file": "api/interfaces/CompilerSourcePattern.md",
+      "message": "keywords 数量偏少（5）",
+      "scope": "en:docs"
+    },
+    {
+      "type": "few_keywords",
+      "file": "api/interfaces/CompilerTarget.md",
+      "message": "keywords 数量偏少（5）",
+      "scope": "en:docs"
+    },
+    {
+      "type": "few_keywords",
+      "file": "api/interfaces/CompilerTemplateTransformOptions.md",
+      "message": "keywords 数量偏少（5）",
+      "scope": "en:docs"
+    },
+    {
+      "type": "few_keywords",
+      "file": "api/interfaces/CreateCompilerOptions.md",
+      "message": "keywords 数量偏少（5）",
+      "scope": "en:docs"
+    },
+    {
+      "type": "few_keywords",
+      "file": "api/interfaces/CreateCompilerSnapshotRequest.md",
+      "message": "keywords 数量偏少（5）",
+      "scope": "en:docs"
+    },
+    {
+      "type": "invalid_description",
+      "file": "api/interfaces/WeappTailwindcssPostcssPluginOptions.md",
+      "message": "description 包含列表、代码、URL、Markdown 或残句",
+      "scope": "zh-cn:docs"
+    }
+  ]
 }

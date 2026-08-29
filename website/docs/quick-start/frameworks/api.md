@@ -3,6 +3,8 @@ title: Node.js API
 description: '使用 weapp-tailwindcss/core 在自研构建器或脚本中处理 Tailwind CSS、小程序模板与 JavaScript，并正确维护运行时类名集合。'
 keywords:
   - Node.js API
+  - createCompiler
+  - snapshot
   - createContext
   - transformJs
   - transformWxml
@@ -16,7 +18,7 @@ keywords:
 ---
 # Node.js API
 
-`weapp-tailwindcss/core` 提供不依赖 Vite、Webpack 或 Gulp 生命周期的文本转换 API。它适合自研构建器、批处理脚本、构建平台适配器，以及需要直接管理内存产物的工具。
+`weapp-tailwindcss/core` 提供不依赖 Vite、Webpack 或 Gulp 生命周期的框架 compiler 与文本转换 API。新集成使用 `createCompiler()` 管理 Tailwind 生成 root、revision 和不可变 snapshot；`createContext()` 保留原有自动 runtime 模式。
 
 :::caution 高阶入口
 
@@ -39,6 +41,59 @@ Core API 只处理传入的内存文本，不会扫描输出目录、替你写�
 | watch / HMR | 复用同一个上下文中的运行时缓存 | 监听源码和配置变化，并在变化后重新收集运行时集合 |
 
 Tailwind CSS v4 的样式生成必须继续由 `weapp-tailwindcss` 链路接管。不要为 Core API 额外注册 `@tailwindcss/postcss` 或 `@tailwindcss/vite` 作为生成兜底。
+
+## `createCompiler()` 框架 API
+
+`createCompiler()` 适合 vite-plugin-taro、weapp-vite 一类已经拥有模块图和产物生命周期的框架。它复用 Tailwind engine、Scanner、candidate index 和 source graph，但不会猜测源码目录、规范化 module ID 或直接写构建输出。
+
+```ts
+import path from 'node:path'
+import { createCompiler } from 'weapp-tailwindcss/core'
+
+const projectRoot = process.cwd()
+const compiler = createCompiler({ appType: 'taro' })
+const generated = await compiler.generate({
+  id: 'virtual:tailwind/main',
+  sourceOptions: {
+    projectRoot,
+    cssEntries: [path.resolve(projectRoot, 'src/tailwind.css')],
+  },
+  candidates: ['p-4', 'w-[10px]'],
+  scanSources: false,
+  target: 'web',
+})
+
+// 框架可先运行自己的 PostCSS，再把 Root 与同一 snapshot 交回 compiler。
+const cssResult = await compiler.transformCss(generated.css, generated.snapshot)
+const template = await compiler.transformTemplate(rawTemplate, generated.snapshot)
+const jsResult = await compiler.transformJavaScript(rawJs, generated.snapshot)
+```
+
+| 方法 | 关键契约 |
+| --- | --- |
+| `generate(request)` | 按 opaque root `id` 生成 `web`、`weapp` 或 Tailwind 原始 CSS；返回 revision、增量 CSS、依赖、source patterns、缓存复用状态和 snapshot |
+| `createSnapshot(request)` | 接入其他 Tailwind 生成链已经验证过的 classSet；输入集合会被隔离 |
+| `mergeSnapshots(snapshots)` | 确定性合并模块图实际可达的 root；拒绝同 root 冲突 revision、冲突内容和混合 target |
+| `transformCss()` | 转换字符串 CSS，不扫描 runtime classSet |
+| `transformCssRoot()` | 转换 PostCSS Root；不修改输入，输出 AST 不与缓存共享 |
+| `transformTemplate()` | 只转换 snapshot 精确命中的静态 class 和表达式候选 |
+| `transformJavaScript()` | 返回现有 `JsHandlerResult`，保留 `error`、`map` 和 `linked` |
+| `invalidate(ids)` | 精确匹配 root/dependency ID，返回需要重新生成的 root；不做路径或 query 规范化 |
+| `remove(id)` / `dispose()` | 幂等等待进行中工作，并释放 root/generator/Scanner 状态 |
+
+同一 root 的 `generate()` 串行提交，不同 root 可以并行。candidate-only 更新复用 engine；CSS 或配置依赖失效后替换会话。生成失败不会替换上一次成功 snapshot。开始 `dispose()` 后所有新任务都会被拒绝。
+
+普通分包通常合并主包与当前分包 snapshot；独立分包只使用自己的 snapshot：
+
+```ts
+const normalSnapshot = compiler.mergeSnapshots([main.snapshot, subpackage.snapshot])
+const independentSnapshot = independent.snapshot
+
+const affectedRoots = compiler.invalidate(changedModuleIds)
+// 框架根据 affectedRoots 调度下一轮 generate，并通过 bundler API 写回产物。
+```
+
+snapshot 的公开 classSet 是不可变视图，转换热路径会 O(1) 取得隔离的内部 Set。不要把 snapshot 展开后自行拼接集合，也不要用启发式候选补齐未命中的业务字符串。
 
 ## 配置 Tailwind CSS 入口
 
@@ -67,7 +122,7 @@ const ctx = createContext({
 
 多入口、分包或独立分包项目应列出全部真实入口。`cssEntries` 等价于 `tailwindcss.v4.cssEntries` 的快捷配置。完整配置类型见 [`UserDefinedOptions`](/docs/api/interfaces/UserDefinedOptions) 和 [`cssEntries`](/docs/api/options/important#cssentries)。
 
-## API 一览
+## `createContext()` 兼容 API
 
 `createContext(options)` 返回的四个方法共享同一份 Tailwind 运行时状态与类名集合。
 

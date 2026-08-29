@@ -29,7 +29,7 @@ weapp-tailwindcss 同时提供 ESM 与 CommonJS 入口，并内置多个二级�
 | `weapp-tailwindcss` | 聚合入口：生成器、Webpack / Vite 历史插件名等常用工厂齐备 | `import { createWeappTailwindcssGenerator } from 'weapp-tailwindcss'`
 | `weapp-tailwindcss/webpack` | webpack@5 适配入口（uni-app CLI、mpx、原生小程序等） | `const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')`
 | `weapp-tailwindcss/vite` | Vite 插件入口（Taro Vite、weapp-vite 等） | `import { WeappTailwindcss } from 'weapp-tailwindcss/vite'`
-| `weapp-tailwindcss/core` | 暴露 `createContext` 等底层 API，可自定义 transform 流程 | `import { createContext } from 'weapp-tailwindcss/core'`
+| `weapp-tailwindcss/core` | 暴露框架级 `createCompiler` 与兼容的 `createContext`，可管理生成、snapshot 和 transform 事务 | `import { createCompiler } from 'weapp-tailwindcss/core'`
 
 ## 配置、工具与周边
 

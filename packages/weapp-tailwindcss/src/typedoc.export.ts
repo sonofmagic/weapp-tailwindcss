@@ -1,4 +1,17 @@
 export type {
+  Compiler,
+  CompilerCacheReuseState,
+  CompilerGenerateRequest,
+  CompilerGenerateResult,
+  CompilerSnapshot,
+  CompilerSnapshotRoot,
+  CompilerSourcePattern,
+  CompilerTarget,
+  CompilerTemplateTransformOptions,
+  CreateCompilerOptions,
+  CreateCompilerSnapshotRequest,
+} from './core'
+export type {
   WeappTailwindcssGenerateOptions,
   WeappTailwindcssGenerateResult,
   WeappTailwindcssGenerator,
