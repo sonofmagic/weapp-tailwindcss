@@ -104,6 +104,16 @@ export function resolveSourceScanPath(value: string) {
   }
 }
 
+function resolveSourceScanPathWithApi(value: string, pathApi: Pick<typeof path, 'resolve'>) {
+  const resolved = pathApi.resolve(value)
+  try {
+    return realpathSync.native(resolved)
+  }
+  catch {
+    return resolved
+  }
+}
+
 function normalizeEntryPattern(entry: TailwindSourceEntry) {
   const pathApi = isWindowsPath(entry.base) || isWindowsPath(entry.pattern) ? path.win32 : path
   return pathApi.isAbsolute(entry.pattern)
@@ -113,14 +123,14 @@ function normalizeEntryPattern(entry: TailwindSourceEntry) {
 
 function isFileMatchedByTailwindSourceEntry(file: string, entry: TailwindSourceEntry) {
   const pathApi = isWindowsPath(entry.base) || isWindowsPath(file) ? path.win32 : path
-  const base = pathApi === path.win32 ? pathApi.resolve(entry.base) : resolveSourceScanPath(entry.base)
-  const resolvedFile = pathApi === path.win32 ? pathApi.resolve(file) : resolveSourceScanPath(file)
+  const base = resolveSourceScanPathWithApi(entry.base, pathApi)
+  const resolvedFile = resolveSourceScanPathWithApi(file, pathApi)
   const relative = toPosixPath(pathApi.relative(base, resolvedFile))
   return relative && !relative.startsWith('../') && !pathApi.isAbsolute(relative) && micromatch.isMatch(relative, normalizeEntryPattern(entry))
 }
 
 function isWindowsPath(value: string) {
-  return path.win32.isAbsolute(value) || value.includes('\\')
+  return /^[A-Z]:[\\/]/i.test(value) || value.includes('\\')
 }
 
 export function isFileExcludedByTailwindSourceEntries(file: string, entries: TailwindSourceEntry[] | undefined) {
