@@ -63,7 +63,7 @@ import { collectConfiguredCssEntries, inferPlatformFromOutDir, isInternalUserDef
 import { createFrameworkSourceCandidatesPlugin } from './framework-source-candidates-plugin'
 import { createFrameworkSourceScanSession, syncFrameworkSourceCandidatesForHotUpdate } from './framework-source-scan-session'
 import { createFrameworkTailwindRootCss } from './framework-tailwind-root-css'
-import { createGenericWebProductionBundleHooks, createGenericWebProductionSourceCandidatesApply } from './generic-web-production-fast-path'
+import { createGenericWebProductionBundleHooks, createGenericWebProductionSourceCandidatesApply, shouldSkipGenericWebProductionSourceCandidates } from './generic-web-production-fast-path'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss'); const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir); const generatorPlaceholderCssFile = path.join(weappTailwindcssPackageDir, 'generator-placeholder.css'); const ENV_PLATFORM_KEYS = ['UNI_PLATFORM', 'UNI_UTS_PLATFORM', 'TARO_ENV', 'MPX_CURRENT_TARGET_MODE', 'MPX_CLI_MODE']
@@ -451,6 +451,13 @@ ${tracedCss}`
     resolveViteStylePlatform, runtimeState, shouldOwnTailwindGeneration, sourceCandidateCollector, sourceScanSession,
     tailwindRootCssModuleIds, transformEarlyMiniProgramCss, viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles,
     collectSourceCandidates: capability.sourceCandidates,
+    shouldSkipSourceCandidateState: () => shouldSkipGenericWebProductionSourceCandidates({
+      command: resolvedConfig?.command,
+      frameworkName: frameworkBranch.frameworkName,
+      isWebGeneratorTarget: resolveCurrentGeneratorBranch().isWeb,
+      requiresSourceCandidateState: isCssSourceTraceEnabled(opts),
+      watch: resolvedConfig?.build?.watch,
+    }),
   }, createGenericWebProductionSourceCandidatesApply({ frameworkName: frameworkBranch.frameworkName, getIsWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, requiresSourceCandidateState: isCssSourceTraceEnabled(opts) }))
   /* eslint-enable antfu/consistent-list-newline */
   const postPlugin = createFrameworkPostPlugin({

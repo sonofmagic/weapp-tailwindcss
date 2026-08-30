@@ -12,6 +12,7 @@ import { isSourceCandidateRequest } from '../source-candidates'
 import { cleanUrl, isCSSRequest } from '../utils'
 
 export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plugin['apply']): Plugin {
+  const shouldSkipSourceCandidateState = () => options.shouldSkipSourceCandidateState?.() === true
   const hasDifferentHotModules = (left: ModuleNode[], right: ModuleNode[]) => left.length !== right.length
     || left.some((mod, index) => mod !== right[index])
   const hasTemplateHotSourceModule = (modules: Array<{ id?: string | null, url?: string | null }>) => modules.some((mod) => {
@@ -51,6 +52,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
     async load(id) {
       if (
         !options.shouldOwnTailwindGeneration
+        || shouldSkipSourceCandidateState()
         || options.isWebOrNativeAppPlatform(options.resolveViteStylePlatform())
         || !isCSSRequest(id)
         || !shouldCollectTransformedSourceCandidates(id)
@@ -73,6 +75,9 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
     transform: {
       order: 'pre',
       async handler(code, id) {
+        if (shouldSkipSourceCandidateState()) {
+          return
+        }
         if (options.hasUserCssLayerBlocks(code)) {
           options.rememberOriginalCssLayerSource(id, code)
         }
@@ -87,7 +92,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
             options.rememberTailwindRootCssModule(id)
           }
         }
-        if (!options.shouldOwnTailwindGeneration || options.collectSourceCandidates === false || !isSourceCandidateRequest(id) || !shouldCollectTransformedSourceCandidates(id)) {
+        if (!options.shouldOwnTailwindGeneration || shouldSkipSourceCandidateState() || options.collectSourceCandidates === false || !isSourceCandidateRequest(id) || !shouldCollectTransformedSourceCandidates(id)) {
           return shouldReturnTransformedCode ? { code: transformedCode, map: null } : undefined
         }
         return options.hmrTimingRecorder.measure('sourceCandidates.transform', async () => {
@@ -105,6 +110,9 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
       },
     },
     async watchChange(id, change) {
+      if (shouldSkipSourceCandidateState()) {
+        return
+      }
       recordCompilationDependencyChanges(options.runtimeState, createCompilationDependencyChanges([path.resolve(cleanUrl(id))]))
       await options.hmrTimingRecorder.measure('sourceCandidates.watchChange', async () => {
         if (options.shouldOwnTailwindGeneration && options.collectSourceCandidates !== false && isSourceCandidateRequest(id)) {
@@ -147,6 +155,9 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
     handleHotUpdate: {
       order: 'post',
       async handler(ctx) {
+        if (shouldSkipSourceCandidateState()) {
+          return
+        }
         recordCompilationDependencyChanges(options.runtimeState, createCompilationDependencyChanges([path.resolve(cleanUrl(ctx.file))]))
         return options.hmrTimingRecorder.measure('sourceCandidates.handleHotUpdate', async () => {
           const isSourceCandidateHotUpdate = options.shouldOwnTailwindGeneration && options.collectSourceCandidates !== false && isSourceCandidateRequest(ctx.file)
@@ -307,8 +318,16 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
       options.hmrCssModuleVersions?.clear()
     },
     async buildStart() {
+      if (shouldSkipSourceCandidateState()) {
+        return
+      }
       await options.hmrTimingRecorder.measure('sourceCandidates.buildStart', options.prepareTailwindGeneration, { emit: false })
     },
-    generateBundle: options.preGenerateBundleHook,
+    async generateBundle(...args: any[]) {
+      if (shouldSkipSourceCandidateState()) {
+        return
+      }
+      return options.preGenerateBundleHook?.apply(this, args)
+    },
   }
 }
