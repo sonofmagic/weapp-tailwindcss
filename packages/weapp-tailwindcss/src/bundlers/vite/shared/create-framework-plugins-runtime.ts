@@ -231,6 +231,7 @@ function createViteFrameworkPlugins(options = {}, frameworkBranch): any {
   const getSourceCandidateSourcesForEntries = (entries, options2) => sourceCandidateCollector.sourcesForEntries(entries, options2)
   const isWatchBuild = () => resolvedConfig?.command === 'build' && resolvedConfig.build.watch != null
   const isWatchLikeBuild = () => isWatchBuild() || resolvedConfig?.command === 'serve' || process.env['WEAPP_TW_WATCH_REGRESSION'] === '1' || process.env['WEAPP_TW_HMR_TIMING'] === '1'
+  const shouldSkipSourceCandidateState = () => shouldSkipGenericWebProductionSourceCandidates({ command: resolvedConfig?.command, frameworkName: frameworkBranch.frameworkName, isWebGeneratorTarget: resolveCurrentGeneratorBranch().isWeb, requiresSourceCandidateState: isCssSourceTraceEnabled(opts), watch: resolvedConfig?.build?.watch })
   const isCurrentWebLikeStylePlatform = () => { const platform = resolveViteStylePlatform(); return platform ? isWebOrNativeAppPlatform(platform) : resolveCurrentGeneratorBranch().isWeb }
   const normalizeGeneratedCssCacheFile = file => normalizeVitePersistentCacheKey(cleanUrl(file))
   const hmrCandidateState = createViteHmrCandidateState({
@@ -451,13 +452,7 @@ ${tracedCss}`
     resolveViteStylePlatform, runtimeState, shouldOwnTailwindGeneration, sourceCandidateCollector, sourceScanSession,
     tailwindRootCssModuleIds, transformEarlyMiniProgramCss, viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles,
     collectSourceCandidates: capability.sourceCandidates,
-    shouldSkipSourceCandidateState: () => shouldSkipGenericWebProductionSourceCandidates({
-      command: resolvedConfig?.command,
-      frameworkName: frameworkBranch.frameworkName,
-      isWebGeneratorTarget: resolveCurrentGeneratorBranch().isWeb,
-      requiresSourceCandidateState: isCssSourceTraceEnabled(opts),
-      watch: resolvedConfig?.build?.watch,
-    }),
+    shouldSkipSourceCandidateState,
   }, createGenericWebProductionSourceCandidatesApply({ frameworkName: frameworkBranch.frameworkName, getIsWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, requiresSourceCandidateState: isCssSourceTraceEnabled(opts) }))
   /* eslint-enable antfu/consistent-list-newline */
   const postPlugin = createFrameworkPostPlugin({
