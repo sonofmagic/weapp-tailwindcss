@@ -6,6 +6,8 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { getCompilerContext } from '@/context'
+import { logRuntimeTailwindcssVersion } from '@/tailwindcss/runtime-logs'
+import { logTailwindcssTarget } from '@/tailwindcss/targets'
 import { resolveViteFrameworkProfile } from '../framework-selector'
 import { createGenericWebViteCapabilityProfile, frameworkViteCapabilityProfile } from './capability-profile'
 import { createGenericVitePlugins } from './frameworks/generic'
@@ -123,8 +125,29 @@ function invokeHook(plugin: Plugin | undefined, hookName: HookName, thisArg: unk
   return undefined
 }
 
+function emitDeferredRuntimeLogs(
+  opts: ReturnType<typeof getCompilerContext>,
+  profile: { isGenericWeb: boolean },
+  rawOptions: UserDefinedOptions,
+) {
+  const hasExplicitLogLevel = Object.hasOwn(rawOptions, 'logLevel')
+  if (!opts.tailwindRuntime || !Object.hasOwn(opts.tailwindRuntime, 'packageInfo')) {
+    return
+  }
+  if (profile.isGenericWeb && !hasExplicitLogLevel) {
+    // 成功的 Generic Web 构建默认不输出运行时 info。
+    return
+  }
+  logTailwindcssTarget(opts.tailwindRuntime, opts.tailwindcssBasedir)
+  logRuntimeTailwindcssVersion(
+    opts.tailwindcssBasedir,
+    opts.tailwindRuntime?.packageInfo?.rootPath,
+    opts.tailwindRuntime?.packageInfo?.version,
+  )
+}
+
 function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlugin[] | undefined {
-  const opts = getCompilerContext({ ...options, __internalDeferMissingCssEntriesWarning: true } as UserDefinedOptions)
+  const opts = getCompilerContext({ ...options, __internalDeferMissingCssEntriesWarning: true, __internalViteDeferRuntimeLogs: true } as UserDefinedOptions)
   ;(opts as any).__internalViteRawOptions = options
   ;(opts as any).__internalViteRawExplicitAppType = typeof options.appType === 'string' && options.appType.trim().length > 0
   ;(opts as any).__internalViteRawExplicitTailwindcssBasedir = typeof options.tailwindcssBasedir === 'string' && options.tailwindcssBasedir.trim().length > 0
@@ -156,6 +179,7 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
   }
   if ((opts as any).__internalViteRawExplicitTailwindcssBasedir && initialFramework !== 'generic') {
     // 显式 basedir 已给出可信项目边界，保留原 framework 链路的 hook 身份与调用开销。
+    emitDeferredRuntimeLogs(opts, { isGenericWeb: false }, options)
     return initialPlugins
   }
   const knownFrameworkPlugins: Plugin[] = [
@@ -207,12 +231,13 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
     const effectiveAppType = options.appType
       ?? (effectiveGenerator && typeof effectiveGenerator === 'object' && effectiveGenerator.target === 'web' ? undefined : opts.appType)
     const profile = resolveViteProfile({ ...options, appType: effectiveAppType, generator: effectiveGenerator, platform: options.platform ?? opts.platform, cssOptions: options.cssOptions ?? opts.cssOptions, uniAppX: options.uniAppX ?? opts.uniAppX }, config, environmentName)
+    emitDeferredRuntimeLogs(opts, profile, options)
     if (profile.appType
       && profile.appType !== initialProfile.appType
       && !options.appType
       && effectiveAppType === undefined) {
       opts.appType = profile.appType
-      logger.info('根据 Vite 项目根目录自动推断 appType -> %s', profile.appType)
+      logger.debug('根据 Vite 项目根目录自动推断 appType -> %s', profile.appType)
     }
     if (profile.isGenericWeb
       && !opts.generator

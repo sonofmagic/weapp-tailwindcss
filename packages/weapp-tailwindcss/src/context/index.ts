@@ -183,12 +183,14 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
   applyLoggerLevel(ctx.logLevel)
 
   const tailwindRuntime = createTailwindcssRuntimeFromContext(ctx) as TailwindcssRuntimeLike
-  logTailwindcssTarget(tailwindRuntime, ctx.tailwindcssBasedir)
-  logRuntimeTailwindcssVersion(
-    ctx.tailwindcssBasedir,
-    tailwindRuntime.packageInfo?.rootPath,
-    tailwindRuntime.packageInfo?.version,
-  )
+  if ((opts as any)?.__internalViteDeferRuntimeLogs !== true) {
+    logTailwindcssTarget(tailwindRuntime, ctx.tailwindcssBasedir)
+    logRuntimeTailwindcssVersion(
+      ctx.tailwindcssBasedir,
+      tailwindRuntime.packageInfo?.rootPath,
+      tailwindRuntime.packageInfo?.version,
+    )
+  }
 
   if ((opts as any)?.__internalDeferMissingCssEntriesWarning !== true) {
     warnMissingCssEntries(ctx, tailwindRuntime)
