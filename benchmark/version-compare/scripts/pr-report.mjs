@@ -419,8 +419,14 @@ export function limitComment(markdown, maxBytes = MAX_COMMENT_BYTES) {
   const bytes = Buffer.byteLength(markdown, 'utf8')
   if (bytes <= maxBytes) return { markdown, truncated: false }
   const suffix = '\n\n> 评论内容过长，已截断；请查看完整 artifact。\n'
-  let end = markdown.length
-  while (end > 0 && Buffer.byteLength(`${markdown.slice(0, end)}${suffix}`, 'utf8') > maxBytes) end -= 1
+  let low = 0
+  let high = markdown.length
+  while (low < high) {
+    const middle = Math.ceil((low + high) / 2)
+    if (Buffer.byteLength(`${markdown.slice(0, middle)}${suffix}`, 'utf8') <= maxBytes) low = middle
+    else high = middle - 1
+  }
+  const end = low
   return { markdown: `${markdown.slice(0, end)}${suffix}`, truncated: true }
 }
 
