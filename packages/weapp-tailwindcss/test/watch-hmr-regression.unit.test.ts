@@ -961,6 +961,56 @@ describe('watch-hmr regression text helpers', () => {
     expect(elapsed).toBeGreaterThanOrEqual(0)
   })
 
+  it('waits for CSS outputs when a compile success signal arrives first', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-css-lag-'))
+    tempDirs.push(tempDir)
+    const wxmlFile = path.join(tempDir, 'index.wxml')
+    const jsFile = path.join(tempDir, 'index.js')
+    const styleFile = path.join(tempDir, 'app.wxss')
+    await Promise.all([
+      writeFilePreserveEol(wxmlFile, '<view />', '<view />'),
+      writeFilePreserveEol(jsFile, 'Page({})', 'Page({})'),
+      writeFilePreserveEol(styleFile, '.baseline{}', '.baseline{}'),
+    ])
+
+    await new Promise(resolve => setTimeout(resolve, 40))
+    const phaseStartedAt = Date.now()
+    let compileSuccessAt = 0
+    setTimeout(() => {
+      compileSuccessAt = Date.now()
+      void writeFilePreserveEol(jsFile, 'Page({ ready: true })', 'Page({})').catch(() => undefined)
+    }, 20)
+    setTimeout(() => {
+      void rm(styleFile, { force: true }).catch(() => undefined)
+    }, 100)
+    setTimeout(() => {
+      void writeFilePreserveEol(styleFile, '.updated{color:red}', '.baseline{}').catch(() => undefined)
+    }, 900)
+
+    await waitForCompileSettled(
+      {
+        label: 'demo/uni-app-vite-tailwindcss-v4',
+        outputWxml: wxmlFile,
+        outputJs: jsFile,
+        outputStyleCandidates: [styleFile],
+        globalStyleCandidates: [styleFile],
+      } as any,
+      {
+        timeoutMs: 3_000,
+        pollMs: 20,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+        lastCompileSuccessAt: () => compileSuccessAt,
+        pluginProcessSamplesSince: () => [],
+      } as any,
+      phaseStartedAt,
+    )
+
+    expect(compileSuccessAt).toBeGreaterThan(phaseStartedAt)
+    await expect(readFile(styleFile, 'utf8')).resolves.toBe('.updated{color:red}')
+  })
+
   it('waits for added-class rollback compilation to settle before returning', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-added-class-rollback-'))
     tempDirs.push(tempDir)
