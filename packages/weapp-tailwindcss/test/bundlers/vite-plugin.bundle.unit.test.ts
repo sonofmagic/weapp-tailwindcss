@@ -15506,7 +15506,7 @@ page {
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
-    const loggerInfoSpy = vi.spyOn(loggerModule.logger, 'info').mockImplementation(() => {})
+    const loggerDebugSpy = vi.spyOn(loggerModule.logger, 'debug').mockImplementation(() => {})
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'build',
@@ -15516,7 +15516,7 @@ page {
     } as ResolvedConfig)
 
     expect(currentContext.appType).toBe('taro')
-    expect(loggerInfoSpy).toHaveBeenCalledWith('根据 Vite 项目根目录自动推断 appType -> %s', 'taro')
+    expect(loggerDebugSpy).toHaveBeenCalledWith('根据 Vite 项目根目录自动推断 appType -> %s', 'taro')
 
     const bundle = {
       'app.wxss': {
@@ -15555,7 +15555,7 @@ page {
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
-    const loggerInfoSpy = vi.spyOn(loggerModule.logger, 'info').mockImplementation(() => {})
+    const loggerDebugSpy = vi.spyOn(loggerModule.logger, 'debug').mockImplementation(() => {})
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'build',
@@ -15565,7 +15565,41 @@ page {
     } as ResolvedConfig)
 
     expect(currentContext.appType).toBeUndefined()
-    expect(loggerInfoSpy).not.toHaveBeenCalledWith('根据 Vite 项目根目录自动推断 appType -> %s', 'weapp-vite')
+    expect(loggerDebugSpy).not.toHaveBeenCalledWith('根据 Vite 项目根目录自动推断 appType -> %s', 'weapp-vite')
+  })
+
+  it('does not emit runtime Tailwind info logs for implicit Generic Web builds', async () => {
+    vi.doUnmock('@/bundlers/vite/resolve-app-type')
+    const loggerModule = await import('@weapp-tailwindcss/logger')
+    const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-generic-log-root-'))
+    createdDirs.push(projectRoot)
+
+    setCurrentContext(createContext({
+      appType: undefined,
+      tailwindRuntime: {
+        packageInfo: {
+          rootPath: path.join(projectRoot, 'node_modules', 'tailwindcss'),
+          version: '4.3.3',
+        },
+      },
+    }))
+    const loggerInfoSpy = vi.spyOn(loggerModule.logger, 'info').mockImplementation(() => {})
+    const loggerSuccessSpy = vi.spyOn(loggerModule.logger, 'success').mockImplementation(() => {})
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: projectRoot,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    expect(loggerInfoSpy).not.toHaveBeenCalledWith('%s 使用 Tailwind CSS%s', 'Weapp-tailwindcss', ' (v4.3.3)')
+    expect(loggerSuccessSpy).not.toHaveBeenCalled()
   })
 
   it('defaults uni-app H5 serve mode to web generator target without mini-program appType inference', async () => {
@@ -15593,7 +15627,7 @@ page {
       const plugins = WeappTailwindcss()
       const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
       expect(postPlugin).toBeTruthy()
-      const loggerInfoSpy = vi.spyOn(loggerModule.logger, 'info').mockImplementation(() => {})
+      const loggerDebugSpy = vi.spyOn(loggerModule.logger, 'debug').mockImplementation(() => {})
 
       await (postPlugin.configResolved as any)?.call(postPlugin, {
         command: 'serve',
@@ -15604,7 +15638,7 @@ page {
 
       expect(currentContext.generator?.target).toBeUndefined()
       expect(currentContext.appType).toBeUndefined()
-      expect(loggerInfoSpy).not.toHaveBeenCalledWith('根据 Vite 项目根目录自动推断 appType -> %s', expect.any(String))
+      expect(loggerDebugSpy).not.toHaveBeenCalledWith('根据 Vite 项目根目录自动推断 appType -> %s', expect.any(String))
     }
     finally {
       if (previousUniPlatform === undefined) {

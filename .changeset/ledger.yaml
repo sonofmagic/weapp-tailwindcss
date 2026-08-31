@@ -48,6 +48,10 @@
     - bright-package-homepages
     - clever-issues-1113
     - metal-geese-work
+"@weapp-tailwindcss/postcss@3.3.0":
+  dir: packages/postcss
+  intents:
+    - compiler-finalization-api
 "@weapp-tailwindcss/react-native@0.2.5":
   dir: packages/react-native
   intents:
@@ -144,6 +148,10 @@ weapp-tailwindcss@5.4.0:
     - fifty-papayas-camp
     - quiet-issue-1127
     - soft-lines-flow
+weapp-tailwindcss@5.4.1:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - compiler-finalization-api
 weapp-tw@0.0.3:
   dir: packages/weapp-tw
   intents:
