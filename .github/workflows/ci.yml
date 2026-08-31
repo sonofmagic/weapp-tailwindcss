@@ -169,6 +169,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      # 静态 E2E 会写入共享 demo 产物目录；同一 checkout 内并发 shard
+      # 会互相覆盖 dist 和快照，导致非确定性的产物断言失败。
+      max-parallel: 1
       matrix:
         shard: [1, 2, 3]
         shard_total: [3]

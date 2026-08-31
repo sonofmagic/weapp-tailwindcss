@@ -219,6 +219,7 @@ describe('ci workflows', () => {
     expect(hasStepRunCommand(qualityRuns, 'pnpm build:ci')).toBe(true)
     expect(staticJob['timeout-minutes']).toBe(15)
     expect(staticJob.strategy['fail-fast']).toBe(false)
+    expect(staticJob.strategy['max-parallel']).toBe(1)
     expect(staticJob.strategy.matrix.shard).toEqual([1, 2, 3])
     expect(staticJob.strategy.matrix.shard_total).toEqual([3])
     expect(staticRuns.join('\n')).toContain('pnpm exec playwright install chromium chromium-headless-shell')

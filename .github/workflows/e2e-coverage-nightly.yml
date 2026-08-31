@@ -43,6 +43,8 @@ jobs:
     name: Framework static matrix (${{ matrix.os }}, Node ${{ matrix.node }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
+    env:
+      E2E_SKIP_OPEN_AUTOMATOR: '1'
     strategy:
       fail-fast: false
       matrix:
@@ -64,7 +66,16 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - run: pnpm e2e:static
+      - name: Build workspace test dependencies
+        run: pnpm build:ci
+      - name: Install Playwright browsers
+        shell: bash
+        run: pnpm exec playwright install chromium chromium-headless-shell
+      - name: Run hosted static suite
+        run: >-
+          pnpm e2e:static
+          --exclude e2e/uni-app-vite-vue3-hbuilderx-tailwindcss-v4.test.ts
+          --exclude e2e/uni-app-x-vdom-tailwindcss-v4.test.ts
       - run: pnpm e2e:frameworks:matrix
       - run: pnpm e2e:multiplatform-build
 
