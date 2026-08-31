@@ -15,6 +15,9 @@ describe('vite 单入口 dispatcher', () => {
     setCurrentContext(context)
     const { WeappTailwindcss } = await import('@/bundlers/vite')
     const plugins = WeappTailwindcss()
+    const sourceCandidates = findPlugin(plugins, ':source-candidates')!
+    expect(sourceCandidates.apply).toBeTypeOf('function')
+    expect(typeof sourceCandidates.apply === 'function' && sourceCandidates.apply({ build: {} }, { command: 'build', mode: 'production' })).toBe(true)
     const post = findPlugin(plugins, ':post')!
     await post.configResolved?.call(post, {
       command: 'build',
@@ -24,6 +27,7 @@ describe('vite 单入口 dispatcher', () => {
     } as ResolvedConfig)
 
     expect(context.generator).toMatchObject({ target: 'web' })
+    expect(typeof sourceCandidates.apply === 'function' && sourceCandidates.apply({ build: {} }, { command: 'build', mode: 'production' })).toBe(false)
     const js = findPlugin(plugins, ':js:serve')
     const jsResult = await js?.transform?.call(js, 'const cls = "text-red-500"', '/project/main.ts')
     expect(jsResult).toBeUndefined()

@@ -13,6 +13,26 @@ function getTransformHandler(plugin: ReturnType<typeof createFrameworkSourceCand
 }
 
 describe('Vite source candidate HMR transactions', () => {
+  it('skips source candidate lifecycle work after Generic Web production profile resolves', async () => {
+    const prepareTailwindGeneration = vi.fn()
+    const preGenerateBundleHook = vi.fn()
+    const plugin = createFrameworkSourceCandidatesPlugin({
+      hmrTimingRecorder: { measure: (_name: string, task: () => unknown) => task() },
+      preGenerateBundleHook,
+      prepareTailwindGeneration,
+      shouldSkipSourceCandidateState: () => true,
+    })
+
+    await plugin.buildStart?.call(plugin)
+    await plugin.generateBundle?.call(plugin, {}, {})
+    await expect(getTransformHandler(plugin)?.call(plugin, 'const cls = "text-red-500"', '/project/src/page.ts')).resolves.toBeUndefined()
+    await plugin.watchChange?.('/project/src/page.ts', { event: 'update' } as any)
+    await getHandleHotUpdateHandler(plugin)?.call(plugin, { file: '/project/src/page.ts' } as any)
+
+    expect(prepareTailwindGeneration).not.toHaveBeenCalled()
+    expect(preGenerateBundleHook).not.toHaveBeenCalled()
+  })
+
   it('keeps weapp-vite sidecar requests out of source candidate memory', async () => {
     const rememberKnownSfcSource = vi.fn()
     const rememberTailwindRootCssModule = vi.fn()
