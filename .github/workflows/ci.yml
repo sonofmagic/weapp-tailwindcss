@@ -251,6 +251,8 @@ jobs:
             command: pnpm e2e:demo-user-workflow
           - case_name: demo-platform-output-matrix
             command: pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts
+          - case_name: coverage-contract
+            command: pnpm e2e:coverage:contract
           - case_name: issues-977-978
             command: pnpm e2e:issues-977-978
           - case_name: vite-web-hmr-unit
