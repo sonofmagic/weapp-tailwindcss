@@ -102,7 +102,7 @@
   "devDependencies": {
     "@csstools/postcss-is-pseudo-class": "^6.0.0",
     "fast-check": "^4.9.0",
-    "postcss-calc": "link:packages/postcss-calc",
+    "postcss-calc": "link:../postcss-calc",
     "postcss-custom-properties": "^15.0.1"
   }
 }

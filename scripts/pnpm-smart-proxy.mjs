@@ -14,6 +14,9 @@ const UPDATE_COMMANDS = new Set(['up', 'update'])
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const WORKSPACE_MANIFEST_PATH = path.resolve(dirname, '../pnpm-workspace.yaml')
 
+/** @typedef {(filePath: import('node:fs').PathLike, options: { encoding: BufferEncoding }) => string} ReadFileSyncImpl */
+/** @typedef {(command: string, args: string[], options: import('node:child_process').SpawnSyncOptions) => { status: number | null, error?: Error }} SpawnSyncImpl */
+
 export const UPDATE_METADATA_CACHE_PATTERNS = ['*']
 
 export function parseProxyUrl(value) {
@@ -59,6 +62,9 @@ export function shouldRefreshMetadataCache(args) {
   return args.some(arg => UPDATE_COMMANDS.has(arg))
 }
 
+/**
+ * @param {{ readFileSyncImpl?: ReadFileSyncImpl, workspaceManifestPath?: string }} options
+ */
 export function readUpdateIgnoreDeps({
   readFileSyncImpl = fs.readFileSync,
   workspaceManifestPath = WORKSPACE_MANIFEST_PATH,
@@ -104,6 +110,9 @@ export function createPnpmEnv(sourceEnv, { proxyAvailable, proxy }) {
   return env
 }
 
+/**
+ * @param {{ spawnSyncImpl?: SpawnSyncImpl }} options
+ */
 export function refreshUpdateMetadataCache({ spawnSyncImpl = spawnSync } = {}) {
   console.log('[pnpm-smart-proxy] 更新前刷新 pnpm metadata cache')
 

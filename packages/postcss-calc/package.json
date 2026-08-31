@@ -53,7 +53,7 @@
     "@eslint/js": "^10.0.1",
     "@types/node": "catalog:typesNode2410",
     "eslint": "catalog:eslint10",
-    "eslint-config-prettier": "^10.1.5",
+    "eslint-config-prettier": "^10.1.8",
     "jison-gho": "0.6.1-216",
     "postcss": "^8.5.26",
     "prettier": "catalog:prettier371",

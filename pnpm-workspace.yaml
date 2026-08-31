@@ -142,7 +142,7 @@ catalogs:
   babelRuntime7284tilde:
     '@babel/runtime': ^7.29.2
   baselineBrowserMapping:
-    baseline-browser-mapping: ^2.11.19
+    baseline-browser-mapping: ^2.11.20
   classVarianceAuthority:
     class-variance-authority: ^0.7.1
   clsx:
@@ -150,7 +150,7 @@ catalogs:
   crossEnv:
     cross-env: ^10.1.0
   csstools:
-    '@csstools/css-color-parser': ^4.2.1
+    '@csstools/css-color-parser': ^4.2.2
     '@csstools/css-parser-algorithms': ^4.0.0
     '@csstools/css-tokenizer': ^4.0.0
   egoistTailwindcssIcons:
@@ -165,12 +165,12 @@ catalogs:
     '@iconify-json/bi': ^1.2.7
     '@iconify-json/line-md': ^1.2.16
     '@iconify-json/logos': ^1.2.13
-    '@iconify-json/lucide': ^1.2.126
+    '@iconify-json/lucide': ^1.2.127
     '@iconify-json/mdi': ^1.2.3
     '@iconify-json/mdi-light': ^1.2.2
     '@iconify-json/svg-spinners': ^1.2.4
   inquirerPrompts:
-    '@inquirer/prompts': ^8.6.0
+    '@inquirer/prompts': ^8.7.0
   lucideReact0555:
     lucide-react: ^1.14.0
   lucideVueNext0555:
@@ -188,7 +188,7 @@ catalogs:
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
   postcssUtilities:
-    es-toolkit: ^1.51.0
+    es-toolkit: ^1.52.0
     postcss-preset-env: ^11.5.0
   prettier371:
     prettier: ^3.9.6
@@ -205,7 +205,7 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   rsbuild2:
-    '@rsbuild/core': ^2.2.0
+    '@rsbuild/core': ^2.2.1
     '@rsbuild/plugin-react': ^2.1.0
     '@rsbuild/plugin-vue': ^2.0.1
   sass195:
@@ -292,11 +292,11 @@ catalogs:
   metroReactNativeBabelPreset077:
     metro-react-native-babel-preset: 0.77.0
   terser:
-    terser: ^5.51.0
+    terser: ^5.51.2
   tsx:
-    tsx: ^4.23.12
+    tsx: ^4.23.13
   typesNode2410:
-    '@types/node': ^26.3.0
+    '@types/node': ^26.4.0
   typescript59:
     typescript: ^6.0.3
   typescript59tilde:
@@ -306,7 +306,7 @@ catalogs:
     '@typescript-eslint/parser': ^8.61.1
     typescript-eslint: ^8.59.3
   uviewPlus:
-    uview-plus: ^3.8.112
+    uview-plus: ^3.8.113
   vite4:
     vite: ^4.5.14
   vite52:
@@ -342,8 +342,8 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^6.0.8
+    weapp-ide-cli: ^6.1.0
   weappVite:
-    weapp-vite: ^6.23.0
+    weapp-vite: ^6.25.1
   wrangler:
-    wrangler: ^4.126.0
+    wrangler: ^4.127.1
