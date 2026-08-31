@@ -36,7 +36,7 @@
     "@tarojs/vite-runner": "catalog:taro4",
     "@types/node": "catalog:typesNode2410",
     "@types/react": "catalog:react18",
-    "@types/webpack-env": "^1.18.8",
+    "@types/webpack-env": "catalog:webpackTools",
     "@vitejs/plugin-react": "catalog:vitePluginReact4",
     "babel-preset-taro": "catalog:taro4",
     "postcss": "catalog:postcss85",

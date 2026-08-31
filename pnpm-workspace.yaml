@@ -149,6 +149,19 @@ catalogs:
     clsx: ^2.1.1
   crossEnv:
     cross-env: ^10.1.0
+  gulp5:
+    '@types/gulp': ^4.0.18
+    '@types/gulp-debug': ^2.0.36
+    '@types/gulp-if': ^3.0.5
+    '@types/gulp-plumber': ^0.0.37
+    '@types/gulp-postcss': ^8.0.6
+    '@types/gulp-rename': ^2.0.7
+    '@types/gulp-sass': ^6.0.0
+    gulp: ^5.0.1
+    gulp-if: ^3.0.0
+    gulp-postcss: ^10.0.0
+    gulp-rename: ^2.1.0
+    gulp-typescript: ^6.0.0-alpha.1
   csstools:
     '@csstools/css-color-parser': ^4.2.2
     '@csstools/css-parser-algorithms': ^4.0.0
@@ -345,5 +358,12 @@ catalogs:
     weapp-ide-cli: ^6.1.0
   weappVite:
     weapp-vite: ^6.25.1
+  webpackTools:
+    '@pmmmwh/react-refresh-webpack-plugin': ^0.6.3
+    '@types/webpack-env': ^1.18.8
+    css-loader: ^7.1.5
+    tsconfig-paths-webpack-plugin: ^4.2.0
+    webpack-cli: ^7.2.3
+    webpack-dev-server: ^5.2.6
   wrangler:
     wrangler: ^4.127.1
