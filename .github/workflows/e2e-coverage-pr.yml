@@ -34,13 +34,13 @@ jobs:
         run: pnpm e2e:runner:health
       - name: Coverage contract
         run: pnpm e2e:coverage:contract
-      - name: Generate strict PR certificate
-        run: pnpm e2e:coverage:report --source ci --out e2e/.artifacts/coverage/pr-report.json
-      - name: Upload coverage evidence
+      - name: Generate hosted coverage diagnostic
+        run: pnpm e2e:coverage:report --source aggregate --include-baselines --out e2e/.artifacts/coverage/pr-diagnostic-report.json
+      - name: Upload coverage diagnostic
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-certificate-${{ github.sha }}
+          name: coverage-diagnostic-${{ github.sha }}
           path: e2e/.artifacts/coverage/**
           if-no-files-found: error
           retention-days: 14

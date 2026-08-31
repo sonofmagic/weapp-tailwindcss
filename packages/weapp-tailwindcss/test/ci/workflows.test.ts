@@ -415,6 +415,20 @@ describe('ci workflows', () => {
     expect(compatibilityRuns).toContain('test/watch-hmr-coverage-matrix.unit.test.ts')
   })
 
+  it('keeps hosted coverage reports diagnostic until complete evidence executors are available', () => {
+    const { workflow: prWorkflow, source: prSource } = readWorkflow('e2e-coverage-pr.yml')
+    const { workflow: nightlyWorkflow, source: nightlySource } = readWorkflow('e2e-coverage-nightly.yml')
+    const prRuns = stepRuns(prWorkflow, 'coverage-gate').join('\n')
+    const nightlyRuns = stepRuns(nightlyWorkflow, 'contract').join('\n')
+
+    expect(prRuns).toContain('pnpm e2e:coverage:report --source aggregate --include-baselines')
+    expect(nightlyRuns).toContain('pnpm e2e:coverage:report --source aggregate --include-baselines')
+    expect(prSource).toContain('coverage-diagnostic-${{ github.sha }}')
+    expect(nightlySource).toContain('coverage-diagnostic-${{ github.sha }}')
+    expect(prSource).not.toContain('--source ci')
+    expect(nightlySource).not.toContain('--source nightly')
+  })
+
   it('keeps a lightweight cross-platform e2e watch gate in CI', () => {
     const { workflow } = readWorkflow('ci.yml')
     const job = workflow.jobs['e2e-watch']
