@@ -9,7 +9,7 @@ import {
   normalizeCssDeclaration,
   readFileIfExists,
   waitFor,
-  writeFilePreserveEol,
+  writeWatchedFilePreserveEol,
 } from '../text'
 import { assertNoUnsupportedMiniProgramCssImport, collectPluginProcessMetrics, createStyleMutationPayload, expandOutputFileEntries, waitForCompileSettled } from './shared'
 
@@ -88,7 +88,7 @@ export async function runStyleMutation(
 
   const baselineOutputCandidateMtimes = await collectOutputCandidateMtimes()
   const hotUpdateStartedAt = Date.now()
-  await writeFilePreserveEol(sourcePath, mutatedSource, sourceOriginal)
+  await writeWatchedFilePreserveEol(sourcePath, mutatedSource, sourceOriginal)
   await touchImporterFiles(importerFiles)
   const hotUpdateOutputMs = await waitForOutputCandidateMtimeChanged(
     baselineOutputCandidateMtimes,
@@ -179,7 +179,7 @@ export async function runStyleMutation(
 
   const outputCandidateMtimesAfterHotUpdate = await collectOutputCandidateMtimes()
   const rollbackStartedAt = Date.now()
-  await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
+  await writeWatchedFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
   await touchImporterFiles(importerFiles)
   const rollbackOutputMs = await waitForOutputCandidateMtimeChanged(
     outputCandidateMtimesAfterHotUpdate,
