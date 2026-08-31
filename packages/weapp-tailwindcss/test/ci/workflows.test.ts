@@ -170,6 +170,18 @@ describe('ci workflows', () => {
     expect(packageJson.scripts['up:pkg']).toBe('node scripts/pnpm-smart-proxy.mjs up -ri')
   })
 
+  it('uses a simulator-reachable Metro host for Expo iOS CI', () => {
+    const { workflow } = readWorkflow('react-native-compatibility.yml')
+    const iosSteps: Array<Record<string, unknown>> = workflow.jobs.ios.steps
+    const runStep = iosSteps.find(step => step.name === 'Run Expo iOS compatibility')
+
+    expect(runStep).toMatchObject({
+      env: { RN_IOS_HOST: '127.0.0.1' },
+      run: 'pnpm e2e:react-native:ios',
+    })
+    expect(readText('e2e/react-native/run-native.ts')).toContain("runtimeHost !== '127.0.0.1' ? '--lan' : '--localhost'")
+  })
+
   it('keeps the core CI quality gate on package changes', () => {
     const { workflow } = readWorkflow('ci.yml')
 
