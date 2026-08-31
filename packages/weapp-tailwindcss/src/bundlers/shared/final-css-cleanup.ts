@@ -105,10 +105,18 @@ export function hasEmptyAtRuleBlockCandidate(css: string) {
   return false
 }
 
+function stripTrailingUnclosedTailwindSourceMedia(css: string) {
+  return css.replace(/\r?\n\s*@media\s+source\([^)]*\)\s*\{\s*$/, '')
+}
+
 /**
  * 在小程序样式进入最终产物图时递归清理空的块级 at-rule。
  */
 export function finalizeMiniProgramCssStructure(css: string) {
+  const repaired = stripTrailingUnclosedTailwindSourceMedia(css)
+  if (repaired !== css) {
+    return repaired
+  }
   if (!hasEmptyAtRuleBlockCandidate(css)) {
     return css
   }

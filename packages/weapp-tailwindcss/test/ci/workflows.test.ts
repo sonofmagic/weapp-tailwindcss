@@ -190,7 +190,7 @@ describe('ci workflows', () => {
     expect(hasStepRunCommand(qualityRuns, 'pnpm build:ci')).toBe(true)
     expectPlaywrightInstallRetry(
       unitRuns.find(run => run.includes('playwright install chromium'))!,
-      'pnpm exec playwright install chromium',
+      'pnpm exec playwright install chromium chromium-headless-shell',
     )
     expect(hasStepRunCommand(unitRuns, 'pnpm build:ci')).toBe(true)
     expect(unitRuns.join('\n')).toContain('pnpm exec vitest run --shard=${{ matrix.shard }}/${{ matrix.shard_total }}')
@@ -221,7 +221,7 @@ describe('ci workflows', () => {
     expect(staticJob.strategy['fail-fast']).toBe(false)
     expect(staticJob.strategy.matrix.shard).toEqual([1, 2, 3])
     expect(staticJob.strategy.matrix.shard_total).toEqual([3])
-    expect(staticRuns.join('\n')).toContain('pnpm exec playwright install chromium')
+    expect(staticRuns.join('\n')).toContain('pnpm exec playwright install chromium chromium-headless-shell')
     expect(hasStepRunCommand(staticRuns, 'pnpm build:ci')).toBe(true)
     expect(hasStepRunCommand(staticRuns, 'pnpm e2e:static --exclude e2e/apps-generator-mode-compare.test.ts --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}')).toBe(true)
     expect(hasStepRunCommand(focusedRuns, 'pnpm build:ci')).toBe(true)
@@ -240,6 +240,7 @@ describe('ci workflows', () => {
       'uni-h5-dev-hmr',
       'demo-user-workflow',
       'demo-platform-output-matrix',
+      'coverage-contract',
       'issues-977-978',
       'vite-web-hmr-unit',
       'watch-hmr-coverage-contract',
@@ -256,6 +257,7 @@ describe('ci workflows', () => {
       'pnpm e2e:uni:h5-dev',
       'pnpm e2e:demo-user-workflow',
       'pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts',
+      'pnpm e2e:coverage:contract',
       'pnpm e2e:issues-977-978',
       'pnpm --filter weapp-tailwindcss exec vitest run test/bundlers/vite-plugin.bundle.unit.test.ts -t "keeps the full web runtime" --coverage.enabled=false',
       'pnpm --filter weapp-tailwindcss exec vitest run test/watch-hmr-coverage-matrix.unit.test.ts --coverage.enabled=false',
@@ -280,7 +282,7 @@ describe('ci workflows', () => {
     for (const jobName of ['e2e-static', 'e2e-focused', 'e2e-multiplatform'] as const) {
       const installRun = stepRuns(workflow, jobName).find(run => run.includes('playwright install chromium'))
       expect(installRun, `${jobName} should install Playwright Chromium`).toBeDefined()
-      expectPlaywrightInstallRetry(installRun!, 'pnpm exec playwright install chromium')
+      expectPlaywrightInstallRetry(installRun!, 'pnpm exec playwright install chromium chromium-headless-shell')
     }
   })
 
@@ -441,7 +443,7 @@ describe('ci workflows', () => {
     expect(stepRuns(workflow, 'e2e-watch')).toContain('pnpm e2e:watch')
     expectPlaywrightInstallRetry(
       stepRuns(workflow, 'e2e-watch').find(run => run.includes('playwright install chromium'))!,
-      'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium',
+      'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium chromium-headless-shell',
     )
     expect(runStep.env.E2E_WATCH_WEB_ONLY).toBe("${{ matrix.watch_web_only || '0' }}")
     expect(runStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
@@ -544,7 +546,7 @@ describe('ci workflows', () => {
     expect(workflow.permissions['id-token']).toBe('write')
     expect(workflow.env.NPM_CONFIG_PROVENANCE).toBe(true)
     expect(workflow.env.npm_config_registry).toBe('https://registry.npmjs.org')
-    expectPlaywrightInstallRetry(playwrightStep.run, 'pnpm exec playwright install chromium')
+    expectPlaywrightInstallRetry(playwrightStep.run, 'pnpm exec playwright install chromium chromium-headless-shell')
     expect(releaseSteps.indexOf(playwrightStep)).toBeLessThan(releaseSteps.indexOf(releaseStep))
     expect(releaseStep.run).toBe('pnpm exec repo release ci')
     expect(releaseStep.env.GITHUB_TOKEN).toContain('secrets.REPOCTL_RELEASE_TOKEN || secrets.CHANGESETS_RELEASE_TOKEN || github.token')
@@ -962,7 +964,7 @@ describe('e2e watch workflow', () => {
     })
     expectPlaywrightInstallRetry(
       stepRuns(workflow, 'pr-quick-gate').find(run => run.includes('playwright install chromium'))!,
-      'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium',
+      'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium chromium-headless-shell',
     )
   })
 
@@ -988,7 +990,7 @@ describe('e2e watch workflow', () => {
     expect(stepRuns(workflow, 'nightly-full-regression')).toContain('pnpm e2e:watch')
     expectPlaywrightInstallRetry(
       stepRuns(workflow, 'nightly-full-regression').find(run => run.includes('playwright install chromium'))!,
-      'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium',
+      'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium chromium-headless-shell',
     )
   })
 

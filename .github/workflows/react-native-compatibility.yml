@@ -35,13 +35,13 @@ jobs:
       - name: Install Playwright Chromium
         run: |
           for attempt in 1 2 3 4; do
-            if pnpm exec playwright install chromium; then
+            if pnpm exec playwright install chromium chromium-headless-shell; then
               exit 0
             fi
             echo "Playwright Chromium install failed, retrying (${attempt}/4)"
             sleep $((attempt * 10))
           done
-          pnpm exec playwright install chromium
+          pnpm exec playwright install chromium chromium-headless-shell
       - run: pnpm e2e:react-native-compatibility
       - run: pnpm e2e:react-native:web
       - uses: actions/upload-artifact@v4

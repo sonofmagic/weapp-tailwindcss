@@ -30,6 +30,12 @@ describe('final mini-program css cleanup', () => {
     expect(finalizeMiniProgramCssStructure(source)).toBe(source)
   })
 
+  it('removes a trailing unclosed Tailwind source media marker', () => {
+    const source = '.keep { color: red; }\n@media source(none) {\n'
+
+    expect(finalizeMiniProgramCssStructure(source)).toBe('.keep { color: red; }')
+  })
+
   it('returns css without candidates before parsing', () => {
     const source = `${'/* generated token */'.repeat(25)}\n.keep { color: red; }`
     const startedAt = performance.now()

@@ -199,7 +199,8 @@ const HBUILDERX_PROJECT_ALIAS_SEGMENT_RE = /^.+-[a-f\d]{10}-\d+$/
 
 export function normalizeGeneratedCssSourceMarkers(source: string, projectRoot: string) {
   const normalizedProjectRoot = resolveRealSnapshotPath(projectRoot)
-  return source.replace(GENERATED_CSS_SOURCE_MARKER_RE, (marker, prefix, encodedSource, suffix) => {
+  const withoutTrailingSourceMedia = source.replace(/\n\s*@media\s+source\([^)]*\)\s*\{\s*$/, '')
+  return withoutTrailingSourceMedia.replace(GENERATED_CSS_SOURCE_MARKER_RE, (marker, prefix, encodedSource, suffix) => {
     try {
       const sourceFile = decodeURIComponent(encodedSource)
       const relativeSource = safeRelative(normalizedProjectRoot, resolveRealSnapshotPath(sourceFile))

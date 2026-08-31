@@ -781,13 +781,13 @@ jobs:
         shell: bash
         run: |
           for attempt in 1 2 3 4; do
-            if pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium; then
+            if pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium chromium-headless-shell; then
               exit 0
             fi
             echo "Playwright Chromium install failed, retrying (${attempt}/4)"
             sleep $((attempt * 10))
           done
-          pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium
+          pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium chromium-headless-shell
 
       - name: Build watch suite package dependencies
         run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build
@@ -1349,13 +1349,13 @@ jobs:
         shell: bash
         run: |
           for attempt in 1 2 3 4; do
-            if pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium; then
+            if pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium chromium-headless-shell; then
               exit 0
             fi
             echo "Playwright Chromium install failed, retrying (${attempt}/4)"
             sleep $((attempt * 10))
           done
-          pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium
+          pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium chromium-headless-shell
 
       - name: Build watch suite package dependencies
         run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build

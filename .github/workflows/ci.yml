@@ -121,13 +121,13 @@ jobs:
       - name: Install Playwright Chromium
         run: |
           for attempt in 1 2 3 4; do
-            if pnpm exec playwright install chromium; then
+            if pnpm exec playwright install chromium chromium-headless-shell; then
               exit 0
             fi
             echo "Playwright Chromium install failed, retrying (${attempt}/4)"
             sleep $((attempt * 10))
           done
-          pnpm exec playwright install chromium
+          pnpm exec playwright install chromium chromium-headless-shell
 
       - name: Test repository shard
         run: pnpm ci:memory --label unit-test-${{ matrix.shard }}-${{ matrix.shard_total }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm exec vitest run --shard=${{ matrix.shard }}/${{ matrix.shard_total }}
@@ -201,13 +201,13 @@ jobs:
       - name: Install Playwright browsers
         run: |
           for attempt in 1 2 3 4; do
-            if pnpm exec playwright install chromium; then
+            if pnpm exec playwright install chromium chromium-headless-shell; then
               exit 0
             fi
             echo "Playwright Chromium install failed, retrying (${attempt}/4)"
             sleep $((attempt * 10))
           done
-          pnpm exec playwright install chromium
+          pnpm exec playwright install chromium chromium-headless-shell
 
       - name: E2E Static
         run: pnpm ci:memory --label e2e-static-${{ matrix.shard }}-${{ matrix.shard_total }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm e2e:static --exclude e2e/apps-generator-mode-compare.test.ts --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}
@@ -289,13 +289,13 @@ jobs:
       - name: Install Playwright browsers
         run: |
           for attempt in 1 2 3 4; do
-            if pnpm exec playwright install chromium; then
+            if pnpm exec playwright install chromium chromium-headless-shell; then
               exit 0
             fi
             echo "Playwright Chromium install failed, retrying (${attempt}/4)"
             sleep $((attempt * 10))
           done
-          pnpm exec playwright install chromium
+          pnpm exec playwright install chromium chromium-headless-shell
 
       - name: Run focused e2e
         run: pnpm ci:memory --label e2e-focused-${{ matrix.case_name }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- ${{ matrix.command }}
@@ -352,13 +352,13 @@ jobs:
       - name: Install Playwright browsers
         run: |
           for attempt in 1 2 3 4; do
-            if pnpm exec playwright install chromium; then
+            if pnpm exec playwright install chromium chromium-headless-shell; then
               exit 0
             fi
             echo "Playwright Chromium install failed, retrying (${attempt}/4)"
             sleep $((attempt * 10))
           done
-          pnpm exec playwright install chromium
+          pnpm exec playwright install chromium chromium-headless-shell
 
       - name: Run multiplatform e2e
         run: pnpm ci:memory --label e2e-multiplatform-${{ matrix.case_name }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- ${{ matrix.command }}
@@ -452,13 +452,13 @@ jobs:
         shell: bash
         run: |
           for attempt in 1 2 3 4; do
-            if pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium; then
+            if pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium chromium-headless-shell; then
               exit 0
             fi
             echo "Playwright Chromium install failed, retrying (${attempt}/4)"
             sleep $((attempt * 10))
           done
-          pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium
+          pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium chromium-headless-shell
 
       - name: Build watch suite package dependencies
         run: pnpm build:ci

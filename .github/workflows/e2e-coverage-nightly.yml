@@ -81,7 +81,7 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install chromium
+      - run: pnpm exec playwright install chromium chromium-headless-shell
       - run: pnpm e2e:react-native-compatibility
       - run: pnpm e2e:react-native:web
       - run: pnpm e2e:lynx
