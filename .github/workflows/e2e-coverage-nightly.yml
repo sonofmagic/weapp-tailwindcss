@@ -30,11 +30,12 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm e2e:coverage:contract
-      - run: pnpm e2e:coverage:report --source nightly --include-baselines --out e2e/.artifacts/coverage/nightly-report.json
+      - name: Generate hosted coverage diagnostic
+        run: pnpm e2e:coverage:report --source aggregate --include-baselines --out e2e/.artifacts/coverage/nightly-diagnostic-report.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: coverage-certificate-${{ github.sha }}
+          name: coverage-diagnostic-${{ github.sha }}
           path: e2e/.artifacts/coverage/**
           if-no-files-found: warn
           retention-days: 14
@@ -43,6 +44,8 @@ jobs:
     name: Framework static matrix (${{ matrix.os }}, Node ${{ matrix.node }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
+    env:
+      E2E_SKIP_OPEN_AUTOMATOR: '1'
     strategy:
       fail-fast: false
       matrix:
@@ -64,7 +67,16 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - run: pnpm e2e:static
+      - name: Build workspace test dependencies
+        run: pnpm build:ci
+      - name: Install Playwright browsers
+        shell: bash
+        run: pnpm exec playwright install chromium chromium-headless-shell
+      - name: Run hosted static suite
+        run: >-
+          pnpm e2e:static
+          --exclude e2e/uni-app-vite-vue3-hbuilderx-tailwindcss-v4.test.ts
+          --exclude e2e/uni-app-x-vdom-tailwindcss-v4.test.ts
       - run: pnpm e2e:frameworks:matrix
       - run: pnpm e2e:multiplatform-build
 

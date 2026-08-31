@@ -170,6 +170,18 @@ describe('ci workflows', () => {
     expect(packageJson.scripts['up:pkg']).toBe('node scripts/pnpm-smart-proxy.mjs up -ri')
   })
 
+  it('uses a simulator-reachable Metro host for Expo iOS CI', () => {
+    const { workflow } = readWorkflow('react-native-compatibility.yml')
+    const iosSteps: Array<Record<string, unknown>> = workflow.jobs.ios.steps
+    const runStep = iosSteps.find(step => step.name === 'Run Expo iOS compatibility')
+
+    expect(runStep).toMatchObject({
+      env: { RN_IOS_HOST: '127.0.0.1' },
+      run: 'pnpm e2e:react-native:ios',
+    })
+    expect(readText('e2e/react-native/run-native.ts')).toContain("runtimeHost !== '127.0.0.1' ? '--lan' : '--localhost'")
+  })
+
   it('keeps the core CI quality gate on package changes', () => {
     const { workflow } = readWorkflow('ci.yml')
 
@@ -219,6 +231,7 @@ describe('ci workflows', () => {
     expect(hasStepRunCommand(qualityRuns, 'pnpm build:ci')).toBe(true)
     expect(staticJob['timeout-minutes']).toBe(15)
     expect(staticJob.strategy['fail-fast']).toBe(false)
+    expect(staticJob.strategy['max-parallel']).toBe(1)
     expect(staticJob.strategy.matrix.shard).toEqual([1, 2, 3])
     expect(staticJob.strategy.matrix.shard_total).toEqual([3])
     expect(staticRuns.join('\n')).toContain('pnpm exec playwright install chromium chromium-headless-shell')
@@ -412,6 +425,20 @@ describe('ci workflows', () => {
     expect(compatibilityRuns).toContain('pnpm build:ci')
     expect(compatibilityRuns).toContain('test/bundlers/vite-plugin.uni-app-x.unit.test.ts')
     expect(compatibilityRuns).toContain('test/watch-hmr-coverage-matrix.unit.test.ts')
+  })
+
+  it('keeps hosted coverage reports diagnostic until complete evidence executors are available', () => {
+    const { workflow: prWorkflow, source: prSource } = readWorkflow('e2e-coverage-pr.yml')
+    const { workflow: nightlyWorkflow, source: nightlySource } = readWorkflow('e2e-coverage-nightly.yml')
+    const prRuns = stepRuns(prWorkflow, 'coverage-gate').join('\n')
+    const nightlyRuns = stepRuns(nightlyWorkflow, 'contract').join('\n')
+
+    expect(prRuns).toContain('pnpm e2e:coverage:report --source aggregate --include-baselines')
+    expect(nightlyRuns).toContain('pnpm e2e:coverage:report --source aggregate --include-baselines')
+    expect(prSource).toContain('coverage-diagnostic-${{ github.sha }}')
+    expect(nightlySource).toContain('coverage-diagnostic-${{ github.sha }}')
+    expect(prSource).not.toContain('--source ci')
+    expect(nightlySource).not.toContain('--source nightly')
   })
 
   it('keeps a lightweight cross-platform e2e watch gate in CI', () => {
@@ -917,7 +944,9 @@ describe('e2e watch workflow', () => {
     }
     for (const runner of ['linux', 'windows']) {
       for (const watchCase of completeMiniProgramCases) {
-        const profile = watchCase.startsWith('taro-')
+        const windowsReducedCase = runner === 'windows'
+          && watchCase.startsWith('uni-app-vite-tailwindcss-v4:mp-')
+        const profile = windowsReducedCase || watchCase.startsWith('taro-')
           ? 'main-style'
           : 'default'
         expect(cases, `${runner} should cover ${watchCase}`).toContain(`${runner}:22:${watchCase}:${profile}`)

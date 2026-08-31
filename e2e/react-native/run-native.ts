@@ -329,7 +329,8 @@ async function main() {
     ...(platform === 'android' ? { ANDROID_HOME: androidHome } : {}),
   }
   if (javaHome) { env.PATH = `${path.join(javaHome, 'bin')}${path.delimiter}${process.env['PATH'] ?? ''}` }
-  const metroHost = platform === 'ios' ? '--lan' : '--localhost'
+  // iOS Simulator 与宿主机共享网络栈时使用 localhost，避免 CI 的虚拟网卡地址无法被 simctl openurl 访问。
+  const metroHost = platform === 'ios' && runtimeHost !== '127.0.0.1' ? '--lan' : '--localhost'
   const metro = execa('pnpm', ['--filter', '@weapp-tailwindcss/example-react-native-expo', 'exec', 'expo', 'start', metroHost, '--port', '8081', '--clear'], {
     cwd: repoRoot,
     env,

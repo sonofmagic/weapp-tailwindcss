@@ -250,16 +250,30 @@ export async function waitForCompileSettled(
   options: CliOptions,
   session: WatchSession,
   phaseStartedAt: number,
+  settleOutputCandidates?: string[],
 ) {
+  // 编译成功日志可能早于 bundler 写完 CSS；默认同时观察当前 case 声明的样式产物。
+  // 取所有信号中最后一次发生的时间，确保快照不会落在中间产物状态。
+  const outputCandidates = (settleOutputCandidates ?? [
+    watchCase.outputWxml,
+    watchCase.outputJs,
+    ...(watchCase.outputStyleCandidates ?? []),
+    ...(watchCase.globalStyleCandidates ?? []),
+  ])
+    .filter((candidate): candidate is string => typeof candidate === 'string' && candidate.length > 0)
   const stableWindowMs = Math.min(Math.max(options.pollMs * 2, 600), 1500)
   const timeoutMs = resolveCompileSettleTimeoutMs(options)
+  const initialOutputEntries = await expandOutputFileEntries(outputCandidates)
+  const requiredOutputEntries = new Set<string>()
+  for (const candidate of initialOutputEntries) {
+    if (await getMtime(candidate) > 0) {
+      requiredOutputEntries.add(candidate)
+    }
+  }
+  let observedMissingRequiredOutput = false
   return waitFor(
     async () => {
       const lastCompileSuccessAt = session.lastCompileSuccessAt()
-      if (lastCompileSuccessAt > 0 && lastCompileSuccessAt >= phaseStartedAt) {
-        return Date.now() - lastCompileSuccessAt >= stableWindowMs
-      }
-
       const pluginProcessSamples = session.pluginProcessSamplesSince?.(phaseStartedAt) ?? []
       const latestPluginTotalAt = Math.max(
         0,
@@ -267,18 +281,25 @@ export async function waitForCompileSettled(
           .filter(sample => sample.metric === 'total' || sample.phase === 'total')
           .map(sample => sample.at),
       )
-      if (latestPluginTotalAt > 0 && latestPluginTotalAt >= phaseStartedAt) {
-        return Date.now() - latestPluginTotalAt >= stableWindowMs
+      const resolvedOutputCandidates = await expandOutputFileEntries(outputCandidates)
+      const outputMtimes = await Promise.all(resolvedOutputCandidates.map(candidate => getMtime(candidate)))
+      if (requiredOutputEntries.size > 0) {
+        const currentOutputs = new Set(resolvedOutputCandidates.filter((_, index) => outputMtimes[index] > 0))
+        for (const candidate of requiredOutputEntries) {
+          if (!currentOutputs.has(candidate)) {
+            observedMissingRequiredOutput = true
+            break
+          }
+        }
+        if (observedMissingRequiredOutput && [...requiredOutputEntries].some(candidate => !currentOutputs.has(candidate))) {
+          return false
+        }
       }
-
-      const [wxmlMtime, jsMtime] = await Promise.all([
-        getMtime(watchCase.outputWxml),
-        getMtime(watchCase.outputJs),
-      ])
-      const latestOutputMtime = Math.max(wxmlMtime, jsMtime)
-      return latestOutputMtime > 0
-        && latestOutputMtime >= phaseStartedAt
-        && Date.now() - latestOutputMtime >= stableWindowMs
+      const latestOutputMtime = Math.max(0, ...outputMtimes)
+      const latestSignalAt = Math.max(lastCompileSuccessAt, latestPluginTotalAt, latestOutputMtime)
+      return latestSignalAt > 0
+        && latestSignalAt >= phaseStartedAt
+        && Date.now() - latestSignalAt >= stableWindowMs
     },
     {
       timeoutMs,

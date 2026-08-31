@@ -117,7 +117,10 @@ jobs:
           echo "RN_IOS_DEVICE_ID=$udid" >> "$GITHUB_ENV"
           xcrun simctl boot "$udid"
           xcrun simctl bootstatus "$udid" -b
-      - run: pnpm e2e:react-native:ios
+      - name: Run Expo iOS compatibility
+        env:
+          RN_IOS_HOST: 127.0.0.1
+        run: pnpm e2e:react-native:ios
       - uses: actions/upload-artifact@v4
         if: always()
         with:
