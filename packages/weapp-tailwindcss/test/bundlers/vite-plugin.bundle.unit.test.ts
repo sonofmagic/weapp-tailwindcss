@@ -9390,6 +9390,7 @@ const trace = "at App.vue:4"
 
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.css'),
+      cssSourceTrace: true,
       tailwindcss: {
         v4: {
           cssEntries: [cssEntry],
