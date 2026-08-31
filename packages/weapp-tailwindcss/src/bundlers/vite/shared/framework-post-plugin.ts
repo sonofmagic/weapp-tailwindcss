@@ -79,7 +79,7 @@ export function createFrameworkPostPlugin(options: any): Plugin {
           if (nextAppType && options.opts.appType !== nextAppType) {
             const previousAppType = options.opts.appType
             options.opts.appType = nextAppType
-            logger.info('根据 Vite 项目根目录自动推断 appType -> %s', nextAppType)
+            logger.debug('根据 Vite 项目根目录自动推断 appType -> %s', nextAppType)
             options.debug('align appType with vite root: %s -> %s', previousAppType ?? 'undefined', nextAppType)
             shouldRefreshRuntime = true
           }
@@ -97,7 +97,7 @@ export function createFrameworkPostPlugin(options: any): Plugin {
             ? options.opts.generator
             : {}
           options.opts.generator = { ...generator, target: 'web' }
-          logger.info('Generic Vite 项目未指定目标，自动使用 generator.target -> web')
+          logger.debug('Generic Vite 项目未指定目标，自动使用 generator.target -> web')
           options.debug('default generic vite generator target to web after configResolved')
           shouldRefreshRuntime = true
         }

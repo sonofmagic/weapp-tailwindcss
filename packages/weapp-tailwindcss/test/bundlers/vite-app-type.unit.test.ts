@@ -106,4 +106,14 @@ describe('resolveImplicitAppTypeFromViteRoot', () => {
     expect(resolveImplicitAppTypeFromViteRoot(childDir, { searchUp: false })).toBeUndefined()
     expect(resolveImplicitAppTypeFromViteRoot(childDir)).toBe('weapp-vite')
   })
+
+  it('finds the nearest package when Vite root points into its src directory', async () => {
+    const rootDir = await createProjectRoot({
+      dependencies: { '@tarojs/runtime': '^4.0.0' },
+    })
+    const srcDir = path.join(rootDir, 'src')
+    await mkdir(srcDir, { recursive: true })
+
+    expect(resolveImplicitAppTypeFromViteRoot(srcDir, { searchUp: false })).toBe('taro')
+  })
 })
