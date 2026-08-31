@@ -91,12 +91,12 @@
     "postcss": "catalog:postcss85tilde",
     "postcss-load-config": "catalog:buildUtilities",
     "postcss-preset-env": "catalog:postcssUtilities",
-    "postcss-pxtrans": "^1.0.4",
+    "postcss-pxtrans": "catalog:postcssCompat",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
-    "postcss-rule-unit-converter": "^0.2.3",
-    "postcss-scss": "^4.0.9",
+    "postcss-rule-unit-converter": "catalog:postcssCompat",
+    "postcss-scss": "catalog:postcssCompat",
     "postcss-selector-parser": "catalog:buildUtilities",
-    "postcss-value-parser": "^4.2.0",
+    "postcss-value-parser": "catalog:postcssCompat",
     "tailwindcss-config": "workspace:*"
   },
   "devDependencies": {

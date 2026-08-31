@@ -27,8 +27,8 @@
     "@csstools/css-tokenizer": "catalog:csstools",
     "@weapp-core/escape": "~8.0.0",
     "colorette": "^2.0.20",
-    "del": "^8.0.1",
-    "execa": "^9.6.1",
+    "del": "catalog:tooling",
+    "execa": "catalog:tooling",
     "fast-glob": "catalog:buildUtilities",
     "fs-extra": "catalog:buildUtilities",
     "lightningcss": "^1.33.0",
@@ -36,7 +36,7 @@
     "picocolors": "catalog:buildUtilities",
     "postcss": "catalog:postcss85",
     "tailwindcss": "catalog:tailwindcss4",
-    "traverse": "^0.6.11"
+    "traverse": "catalog:tooling"
   },
   "devDependencies": {
     "@types/node": "catalog:typesNode2410",

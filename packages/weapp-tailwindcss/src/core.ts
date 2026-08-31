@@ -3,7 +3,10 @@ import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { getCompilerContext } from '@/context'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tailwindcss/runtime'
+import { createCompilerRuntimeState } from './compiler/runtime-state'
 
+export { createCompilationEventBus, createCompilerRuntimeState } from './compiler'
+export type { CompilationEvent, CompilerHost, CompilerRuntimeState } from './compiler'
 export type {
   Compiler,
   CompilerCacheReuseState,
@@ -70,11 +73,11 @@ export function createContext(options: UserDefinedOptions = {}) {
   const readyPromise = createTailwindRuntimeReadyPromise(initialTailwindRuntime)
 
   let runtimeSet = new Set<string>()
-  const runtimeState = {
+  const runtimeState = createCompilerRuntimeState({
     tailwindRuntime: initialTailwindRuntime,
     readyPromise,
     refreshTailwindcssRuntime,
-  }
+  })
   const defaultJsHandlerOptionsCache = new Map<number, CreateJsHandlerOptions>()
 
   function getDefaultJsHandlerOptions(majorVersion = runtimeState.tailwindRuntime.majorVersion) {

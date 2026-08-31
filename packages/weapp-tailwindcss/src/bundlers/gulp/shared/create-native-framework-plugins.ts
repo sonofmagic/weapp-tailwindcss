@@ -8,6 +8,7 @@ import { hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalize
 import { createSourceCandidateCollector } from '@/bundlers/shared/source-candidates'
 import { resolveSourceScanEntries } from '@/bundlers/shared/source-scan'
 import { beginCompilerShadowRun as beginShadowRun, createCompilationDependencyChanges, createRuntimeCompilationBuildState, disposeCompilerOwner, finalizeCompilerShadowRun, getCompilationScopeDependencyRevision, getCompilerShadowRunSnapshot, invalidateCompilationScope, recordCompilationDependencyChanges, removeRuntimeCompilationBuildStateFiles, updateRuntimeCompilationBuildState } from '@/compiler'
+import { createCompilerRuntimeState } from '@/compiler/runtime-state'
 import { getCompilerContext } from '@/context'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { createDebug } from '@/debug'
@@ -47,11 +48,11 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
   const readyPromise = createTailwindRuntimeReadyPromise(initialTailwindRuntime)
 
   let runtimeSet = new Set<string>()
-  const runtimeState = {
+  const runtimeState = createCompilerRuntimeState({
     tailwindRuntime: initialTailwindRuntime,
     readyPromise,
     refreshTailwindcssRuntime,
-  }
+  })
   const defaultStyleHandlerOptionsCache = new Map<number | 'unknown', Partial<IStyleHandlerOptions>>()
   let cachedDefaultTemplateHandlerOptions: Partial<ITemplateHandlerOptions> | undefined
   let cachedDefaultTemplateRuntimeSet: Set<string> | undefined

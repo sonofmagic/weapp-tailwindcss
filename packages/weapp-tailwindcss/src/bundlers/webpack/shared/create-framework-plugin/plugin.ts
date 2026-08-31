@@ -7,6 +7,7 @@ import type { WebpackStyleInjectorDelegateFactory } from '@/style-injector/inter
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
+import { createCompilerRuntimeState } from '@/compiler/runtime-state'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createBuiltinWebpackStyleInjectorPlugin } from '@/style-injector/internal'
@@ -95,11 +96,11 @@ export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
     }
     setupWebpackWatchOutputIgnore(compiler)
     const readyPromise = createTailwindRuntimeReadyPromise(initialTailwindRuntime)
-    const runtimeState = {
+    const runtimeState = createCompilerRuntimeState({
       tailwindRuntime: initialTailwindRuntime,
       readyPromise,
       refreshTailwindcssRuntime: refreshTailwindRuntime,
-    }
+    })
 
     let runtimeSetPrepared = false
     let runtimeSetSignature: string | undefined

@@ -126,7 +126,28 @@ catalogs:
     picocolors: ^1.1.1
     postcss-load-config: ^6.0.1
     postcss-selector-parser: ^7.1.5
+    vite-plugin-dts: ^4.5.4
     yaml: ^2.9.0
+  compilerUtilities:
+    comment-json: ^5.0.0
+    oxc-parser: ^0.147.0
+    oxc-walker: ^1.1.1
+    semver: ~7.8.5
+  postcssCompat:
+    postcss-pxtrans: ^1.0.4
+    postcss-rule-unit-converter: ^0.2.3
+    postcss-scss: ^4.0.9
+    postcss-value-parser: ^4.2.0
+  runtimeVariants:
+    tailwind-variants: ^3.3.1
+  runtimeLodash:
+    lodash.castarray: ^4.4.0
+    lodash.isplainobject: ^4.0.6
+    lodash.merge: ^4.6.2
+  tooling:
+    del: ^8.0.1
+    execa: ^9.6.1
+    traverse: ^0.6.11
   babelCore7285:
     '@babel/core': ^7.29.7
   babel8:

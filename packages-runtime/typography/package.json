@@ -61,9 +61,9 @@
   },
   "dependencies": {
     "htmlparser2": "catalog:buildUtilities",
-    "lodash.castarray": "^4.4.0",
-    "lodash.isplainobject": "^4.0.6",
-    "lodash.merge": "^4.6.2",
+    "lodash.castarray": "catalog:runtimeLodash",
+    "lodash.isplainobject": "catalog:runtimeLodash",
+    "lodash.merge": "catalog:runtimeLodash",
     "magic-string": "catalog:buildUtilities",
     "postcss-selector-parser": "catalog:buildUtilities"
   },

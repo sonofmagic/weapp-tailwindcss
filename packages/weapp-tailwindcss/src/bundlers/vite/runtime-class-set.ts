@@ -1,6 +1,7 @@
 import type { BundleSnapshot } from './bundle-state'
 import type { InternalUserDefinedOptions } from '@/types'
 import process from 'node:process'
+import { createCompilerRuntimeState } from '@/compiler/runtime-state'
 import {
   collectRuntimeClassSet,
   createTailwindRuntimeReadyPromise,
@@ -31,11 +32,11 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
     debug,
   } = options
   const readyPromise = createTailwindRuntimeReadyPromise(initialTailwindRuntime)
-  const runtimeState = {
+  const runtimeState = createCompilerRuntimeState({
     tailwindRuntime: initialTailwindRuntime,
     readyPromise,
     refreshTailwindcssRuntime,
-  }
+  })
   const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager({
     bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
     escapeMap: opts.escapeMap,

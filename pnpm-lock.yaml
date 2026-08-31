@@ -87,6 +87,9 @@ catalogs:
     postcss-selector-parser:
       specifier: ^7.1.5
       version: 7.1.5
+    vite-plugin-dts:
+      specifier: ^4.5.4
+      version: 4.5.4
     yaml:
       specifier: ^2.9.0
       version: 2.9.0
@@ -98,6 +101,19 @@ catalogs:
     clsx:
       specifier: ^2.1.1
       version: 2.1.1
+  compilerUtilities:
+    comment-json:
+      specifier: ^5.0.0
+      version: 5.0.0
+    oxc-parser:
+      specifier: ^0.147.0
+      version: 0.147.0
+    oxc-walker:
+      specifier: ^1.1.1
+      version: 1.1.1
+    semver:
+      specifier: ~7.8.5
+      version: 7.8.5
   crossEnv:
     cross-env:
       specifier: ^10.1.0
@@ -211,6 +227,19 @@ catalogs:
     postcss:
       specifier: ^8.5.26
       version: 8.5.26
+  postcssCompat:
+    postcss-pxtrans:
+      specifier: ^1.0.4
+      version: 1.0.4
+    postcss-rule-unit-converter:
+      specifier: ^0.2.3
+      version: 0.2.3
+    postcss-scss:
+      specifier: ^4.0.9
+      version: 4.0.9
+    postcss-value-parser:
+      specifier: ^4.2.0
+      version: 4.2.0
   postcssRem:
     postcss-rem-to-responsive-pixel:
       specifier: ^7.0.5
@@ -311,6 +340,20 @@ catalogs:
     '@rsbuild/plugin-vue':
       specifier: ^2.0.1
       version: 2.0.1
+  runtimeLodash:
+    lodash.castarray:
+      specifier: ^4.4.0
+      version: 4.4.0
+    lodash.isplainobject:
+      specifier: ^4.0.6
+      version: 4.0.6
+    lodash.merge:
+      specifier: ^4.6.2
+      version: 4.6.2
+  runtimeVariants:
+    tailwind-variants:
+      specifier: ^3.3.1
+      version: 3.3.1
   sass195:
     sass:
       specifier: ^1.103.1
@@ -454,6 +497,16 @@ catalogs:
     terser:
       specifier: ^5.51.2
       version: 5.51.2
+  tooling:
+    del:
+      specifier: ^8.0.1
+      version: 8.0.1
+    execa:
+      specifier: ^9.6.1
+      version: 9.6.1
+    traverse:
+      specifier: ^0.6.11
+      version: 0.6.11
   tsx:
     tsx:
       specifier: ^4.23.13
@@ -4208,13 +4261,13 @@ importers:
         specifier: catalog:buildUtilities
         version: 12.0.0
       lodash.castarray:
-        specifier: ^4.4.0
+        specifier: catalog:runtimeLodash
         version: 4.4.0
       lodash.isplainobject:
-        specifier: ^4.0.6
+        specifier: catalog:runtimeLodash
         version: 4.0.6
       lodash.merge:
-        specifier: ^4.6.2
+        specifier: catalog:runtimeLodash
         version: 4.6.2
       magic-string:
         specifier: catalog:buildUtilities
@@ -4236,7 +4289,7 @@ importers:
         specifier: workspace:*
         version: link:../variants
       tailwind-variants:
-        specifier: ^3.3.1
+        specifier: catalog:runtimeVariants
         version: 3.3.1(tailwind-merge@3.6.0)(tailwindcss@4.3.3)
     devDependencies:
       '@storybook/addon-a11y':
@@ -4276,8 +4329,8 @@ importers:
         specifier: catalog:vite724
         version: 7.3.6(@types/node@26.4.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.103.1)(sass@1.103.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.0)
       vite-plugin-dts:
-        specifier: ^4.5.4
-        version: 4.5.4(@types/node@26.4.0)(rollup@4.63.0)(supports-color@10.2.2)(typescript@6.0.3)(vite@7.3.6(@types/node@26.4.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.103.1)(sass@1.103.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.0))
+        specifier: catalog:buildUtilities
+        version: 4.5.4(@types/node@26.4.0)(rollup@4.63.1)(supports-color@10.2.2)(typescript@6.0.3)(vite@7.3.6(@types/node@26.4.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.103.1)(sass@1.103.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.0))
 
   packages-runtime/variants:
     dependencies:
@@ -4288,7 +4341,7 @@ importers:
         specifier: workspace:*
         version: link:../runtime
       tailwind-variants:
-        specifier: ^3.3.1
+        specifier: catalog:runtimeVariants
         version: 3.3.1(tailwind-merge@3.6.0)(tailwindcss@4.3.3)
 
   packages/babel:
@@ -4508,22 +4561,22 @@ importers:
         specifier: catalog:postcssUtilities
         version: 11.5.0(postcss@8.5.26)
       postcss-pxtrans:
-        specifier: ^1.0.4
+        specifier: catalog:postcssCompat
         version: 1.0.4(postcss@8.5.26)
       postcss-rem-to-responsive-pixel:
         specifier: catalog:postcssRem
         version: 7.0.5(postcss@8.5.26)
       postcss-rule-unit-converter:
-        specifier: ^0.2.3
+        specifier: catalog:postcssCompat
         version: 0.2.3(postcss@8.5.26)
       postcss-scss:
-        specifier: ^4.0.9
+        specifier: catalog:postcssCompat
         version: 4.0.9(postcss@8.5.26)
       postcss-selector-parser:
         specifier: catalog:buildUtilities
         version: 7.1.5
       postcss-value-parser:
-        specifier: ^4.2.0
+        specifier: catalog:postcssCompat
         version: 4.2.0
       tailwindcss-config:
         specifier: workspace:*
@@ -4724,7 +4777,7 @@ importers:
         specifier: workspace:*
         version: link:../shared
       comment-json:
-        specifier: ^5.0.0
+        specifier: catalog:compilerUtilities
         version: 5.0.0
       debug:
         specifier: catalog:buildUtilities
@@ -4751,13 +4804,13 @@ importers:
         specifier: catalog:buildUtilities
         version: 4.0.8
       oxc-parser:
-        specifier: ^0.147.0
+        specifier: catalog:compilerUtilities
         version: 0.147.0
       oxc-walker:
-        specifier: ^1.1.1
+        specifier: catalog:compilerUtilities
         version: 1.1.1(@oxc-project/types@0.147.0)(oxc-parser@0.147.0)(rolldown@1.2.6)
       semver:
-        specifier: ~7.8.5
+        specifier: catalog:compilerUtilities
         version: 7.8.5
       tailwindcss-config:
         specifier: workspace:*
@@ -5162,10 +5215,10 @@ importers:
         specifier: ^2.0.20
         version: 2.0.20
       del:
-        specifier: ^8.0.1
+        specifier: catalog:tooling
         version: 8.0.1
       execa:
-        specifier: ^9.6.1
+        specifier: catalog:tooling
         version: 9.6.1
       fast-glob:
         specifier: catalog:buildUtilities
@@ -5189,7 +5242,7 @@ importers:
         specifier: catalog:tailwindcss4
         version: 4.3.3
       traverse:
-        specifier: ^0.6.11
+        specifier: catalog:tooling
         version: 0.6.11
     devDependencies:
       '@types/node':
@@ -13896,15 +13949,6 @@ packages:
       rollup:
         optional: true
 
-  '@rollup/pluginutils@5.3.0':
-    resolution: {integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-
   '@rollup/pluginutils@5.4.0':
     resolution: {integrity: sha512-MfPp06CjRLfXQ3wY0R8vJDYBy/MvVcc9OulEfR0B8Iv9ko+GCNaRZ+EpJYFl27LhKsZK0o420sYCRHCjfCgeUg==}
     engines: {node: '>=14.0.0'}
@@ -16950,14 +16994,6 @@ packages:
 
   '@volar/typescript@2.4.15':
     resolution: {integrity: sha512-2aZ8i0cqPGjXb4BhkMsPYDkkuc2ZQ6yOpqwAuNwUoncELqoy5fRgOQtLR9gB0g902iS0NAkvpIzs27geVyVdPg==}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
-  '@volar/typescript@2.4.27':
-    resolution: {integrity: sha512-eWaYCcl/uAPInSK2Lze6IqVWaBu/itVqR5InXcHXFyles4zO++Mglt3oxdgj75BDcv1Knr9Y93nowS8U3wqhxg==}
     peerDependencies:
       typescript: '*'
     peerDependenciesMeta:
@@ -48444,14 +48480,6 @@ snapshots:
     optionalDependencies:
       rollup: 4.63.1
 
-  '@rollup/pluginutils@5.3.0(rollup@4.63.0)':
-    dependencies:
-      '@types/estree': 1.0.8
-      estree-walker: 2.0.2
-      picomatch: 4.0.7
-    optionalDependencies:
-      rollup: 4.63.0
-
   '@rollup/pluginutils@5.4.0(rollup@4.63.0)':
     dependencies:
       '@types/estree': 1.0.9
@@ -53640,14 +53668,6 @@ snapshots:
     optionalDependencies:
       typescript: 6.0.3
 
-  '@volar/typescript@2.4.27(typescript@6.0.3)':
-    dependencies:
-      '@volar/language-core': 2.4.27
-      path-browserify: 1.0.1
-      vscode-uri: 3.1.0
-    optionalDependencies:
-      typescript: 6.0.3
-
   '@volar/typescript@2.4.28(typescript@6.0.3)':
     dependencies:
       '@volar/language-core': 2.4.28
@@ -54696,9 +54716,9 @@ snapshots:
   '@vue/language-core@2.2.0(typescript@6.0.3)':
     dependencies:
       '@volar/language-core': 2.4.28
-      '@vue/compiler-dom': 3.5.41
+      '@vue/compiler-dom': 3.5.42
       '@vue/compiler-vue2': 2.7.16
-      '@vue/shared': 3.5.41
+      '@vue/shared': 3.5.42
       alien-signals: 0.4.14
       minimatch: 9.0.9
       muggle-string: 0.4.1
@@ -75246,11 +75266,11 @@ snapshots:
       typescript: 6.0.3
       vue-tsc: 3.3.11(typescript@6.0.3)
 
-  vite-plugin-dts@4.5.4(@types/node@26.4.0)(rollup@4.63.0)(supports-color@10.2.2)(typescript@6.0.3)(vite@7.3.6(@types/node@26.4.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.103.1)(sass@1.103.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.0)):
+  vite-plugin-dts@4.5.4(@types/node@26.4.0)(rollup@4.63.1)(supports-color@10.2.2)(typescript@6.0.3)(vite@7.3.6(@types/node@26.4.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.103.1)(sass@1.103.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.0)):
     dependencies:
       '@microsoft/api-extractor': 7.55.2(@types/node@26.4.0)
-      '@rollup/pluginutils': 5.3.0(rollup@4.63.0)
-      '@volar/typescript': 2.4.27(typescript@6.0.3)
+      '@rollup/pluginutils': 5.4.0(rollup@4.63.1)
+      '@volar/typescript': 2.4.28(typescript@6.0.3)
       '@vue/language-core': 2.2.0(typescript@6.0.3)
       compare-versions: 6.1.1
       debug: 4.4.3(supports-color@10.2.2)
