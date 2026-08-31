@@ -36,6 +36,7 @@ env:
   npm_config_registry: https://registry.npmjs.org
 
 permissions:
+  actions: read
   contents: write
   pull-requests: write
   id-token: write
@@ -77,6 +78,27 @@ jobs:
             sleep $((attempt * 10))
           done
           pnpm exec playwright install chromium
+
+      - name: Download same-commit coverage certificate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_CERTIFICATE_RUN_ID: ${{ vars.RELEASE_CERTIFICATE_RUN_ID }}
+        run: |
+          run_id="$RELEASE_CERTIFICATE_RUN_ID"
+          if [ -z "$run_id" ]; then
+            run_id="$(gh run list --workflow e2e-coverage-nightly.yml --commit "$GITHUB_SHA" --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
+          fi
+          test -n "$run_id" || { echo "No successful same-commit coverage workflow run" >&2; exit 1; }
+          rm -rf e2e/.artifacts/release-certificate
+          mkdir -p e2e/.artifacts/release-certificate
+          gh run download "$run_id" --name "coverage-certificate-$GITHUB_SHA" --dir e2e/.artifacts/release-certificate
+
+      - name: Validate release certificate
+        shell: bash
+        run: |
+          report="$(find e2e/.artifacts/release-certificate -type f \( -name 'nightly-report.json' -o -name 'pr-report.json' -o -name 'coverage-report.json' \) -print -quit)"
+          test -n "$report" || { echo "Coverage report is missing from certificate artifact" >&2; exit 1; }
+          pnpm e2e:coverage:release-gate --report "$report"
 
       - name: Run repo release CI
         env:

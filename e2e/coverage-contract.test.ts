@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { COVERAGE_LAYERS, COVERAGE_REGISTRY, validateCoverageRegistry } from './coverageRegistry'
-import { createCoverageReport, validateCoverageReport } from './coverageReport'
+import { createCoverageReport, validateCoverageReport, validateReleaseCertificate } from './coverageReport'
+
+const testIdentity = {
+  commitSha: 'a'.repeat(40),
+  treeSha: 'b'.repeat(40),
+  lockfileSha: 'c'.repeat(64),
+  registryHash: 'd'.repeat(64),
+  catalogHashes: { 'react-native': 'e'.repeat(64), 'lynx': 'f'.repeat(64) },
+  toolchain: { node: 'v22.12.0', pnpm: '10.0.0', runnerOs: 'linux' },
+}
 
 describe('多端 coverage registry contract', () => {
   it('keeps every cell unique and every layer executable', () => {
@@ -19,7 +28,7 @@ describe('多端 coverage registry contract', () => {
     const report = createCoverageReport([], 'aggregate')
     expect(report.summary.requiredUnverified).toBeGreaterThan(0)
     expect(report.summary.coveragePercent).toBeLessThan(100)
-    expect(() => validateCoverageReport({ ...report, source: 'ci' })).toThrow(/required coverage/)
+    expect(() => validateCoverageReport({ ...report, source: 'ci' })).toThrow(/identity|required coverage/)
   })
 
   it('requires reasons for unsupported evidence and rejects unknown cells', () => {
@@ -35,8 +44,8 @@ describe('多端 coverage registry contract', () => {
       cellId: 'react-native/web/layout-columns',
       layer: 'negative',
       status: 'unsupported',
-      executor: 'test',
-      evidenceSchema: 'negative-v1',
+      executor: 'pnpm e2e:react-native:web',
+      evidenceSchema: 'react-native-negative-v1',
       reason: '明确不支持',
     }], 'aggregate')
     const item = report.cells.find(item => item.cellId === 'react-native/web/layout-columns' && item.layer === 'negative')
@@ -56,11 +65,59 @@ describe('多端 coverage registry contract', () => {
       cellId: 'react-native/web/layout-columns',
       layer: 'negative' as const,
       status: 'unsupported' as const,
-      executor: 'test',
-      evidenceSchema: 'negative-v1',
+      executor: 'pnpm e2e:react-native:web',
+      evidenceSchema: 'react-native-negative-v1',
       reason: '明确不支持',
     }
     expect(() => createCoverageReport([evidence, evidence], 'aggregate')).toThrow(/duplicate coverage evidence input/)
     expect(() => createCoverageReport([{ ...evidence, cellId: 'missing' }], 'aggregate')).toThrow(/unknown cell/)
+  })
+
+  it('requires a release certificate to be identity-bound, signed, and artifact-backed', () => {
+    const registry = [{
+      id: 'demo/test:web',
+      source: 'demo' as const,
+      project: 'test',
+      framework: 'vue',
+      builder: 'vite',
+      tailwindcss: 'v4' as const,
+      platform: 'web',
+      runtime: 'web',
+      renderMode: 'default' as const,
+      subpackage: false,
+      layers: Object.fromEntries(COVERAGE_LAYERS.map(layer => [layer, {
+        status: layer === 'hmr' ? 'not-applicable' as const : 'ci-required' as const,
+        executor: 'test',
+        evidenceSchema: `${layer}-v1`,
+        ...(layer === 'hmr' ? { reason: '测试单元不提供 HMR。' } : {}),
+      }])) as typeof COVERAGE_REGISTRY[number]['layers'],
+    }]
+    const evidence = registry.flatMap(cell => COVERAGE_LAYERS.map(layer => ({
+      cellId: cell.id,
+      layer,
+      status: layer === 'hmr' ? 'not-applicable' as const : 'passed' as const,
+      executor: 'test',
+      evidenceSchema: `${layer}-v1`,
+      ...(layer === 'hmr'
+        ? {}
+        : {
+            identity: testIdentity,
+            artifactManifest: [{ path: 'package.json', sha256: '0'.repeat(64), kind: 'manifest' as const }],
+          }),
+    })))
+    const report = createCoverageReport(evidence, 'ci', registry, {
+      identity: testIdentity,
+      requiredBy: 'release',
+      signature: {
+        algorithm: 'cosign-blob',
+        identity: 'release@example.invalid',
+        bundleSha256: '1'.repeat(64),
+        verified: true,
+      },
+    })
+    expect(() => validateReleaseCertificate(report, { ...testIdentity, commitSha: '0'.repeat(40) }, registry)).toThrow(/identity/)
+    expect(() => validateReleaseCertificate({ ...report, signature: undefined }, testIdentity, registry)).toThrow(/signature/)
+    expect(() => validateReleaseCertificate({ ...report, requiredBy: 'pr' }, testIdentity, registry)).toThrow(/requiredBy/)
+    expect(() => validateReleaseCertificate({ ...report, cells: report.cells.map(item => item.layer === 'static' ? { ...item, artifactManifest: undefined } : item) }, testIdentity, registry)).toThrow(/artifact manifest/)
   })
 })

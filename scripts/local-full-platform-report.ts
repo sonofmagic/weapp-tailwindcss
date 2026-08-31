@@ -5,6 +5,7 @@ import { spawn } from 'node:child_process'
 import { copyFile, mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
+import { collectCoverageIdentity } from '../e2e/coverageIdentity'
 import { createCoverageReport, readCommittedCompatibilityEvidence } from '../e2e/coverageReport'
 import { DEMO_COVERAGE_MATRIX } from '../e2e/demoCoverageMatrix'
 import { createDemoE2eMemoryReport, sampleProcessTree, summarizeMemorySamples } from './demo-e2e-memory'
@@ -790,7 +791,7 @@ function renderMarkdown(report: LocalFullRunReport) {
     '',
     '- 该报告统计本机命令进程树 RSS，不包含已在命令外常驻的 IDE/模拟器进程。',
     '- 全端平台数据来自覆盖矩阵、weapp memory summary、HMR full report 与本脚本的 per-platform build step；没有实测的 local/optional 平台会保留为 local/not-run/exempt。',
-    '- `coverage-report.json` 使用 coverage-report.v2 契约记录每个 cell 的 executor、evidence schema、状态和 required 未验证数量；blocked/not-run 不计为通过。',
+    '- `coverage-report.json` 使用 coverage-report.v3 契约记录每个 cell 的 executor、evidence schema、状态、checkout identity 和 required 未验证数量；blocked/not-run 不计为通过。',
     '- runtime/HMR 列既承载真实端到端 HMR 数据，也承载 H5 dev CSS 运行态验证数据；source/note 会标明具体来源。',
     '- HMR 细分耗时请看同目录下复制或生成的 HMR report；端到端 HMR、H5 dev 运行态耗时与插件处理耗时是不同口径。',
     '- optional step 失败会保留在报告中，便于说明本机缺少 SDK/设备/IDE 时的覆盖边界。',
@@ -846,7 +847,9 @@ async function writeReport(report: LocalFullRunReport, outputDir: string) {
     })
   }
   evidence.push(...await readCommittedCompatibilityEvidence(process.cwd()))
-  const coverageReport = createCoverageReport(evidence, 'local')
+  const coverageReport = createCoverageReport(evidence, 'local', undefined, {
+    identity: await collectCoverageIdentity(process.cwd()),
+  })
   await writeFile(path.join(outputDir, 'coverage-report.json'), `${JSON.stringify(coverageReport, null, 2)}\n`, 'utf8')
 }
 

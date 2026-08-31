@@ -1,10 +1,14 @@
+import type { CoverageIdentity } from './coverageIdentity'
 import type { CoverageCell, CoverageLayer, CoverageStatus } from './coverageRegistry'
+import { createHash } from 'node:crypto'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { compareCoverageIdentity } from './coverageIdentity'
 import { COVERAGE_LAYERS, COVERAGE_REGISTRY, validateCoverageRegistry } from './coverageRegistry'
 
-export const COVERAGE_REPORT_SCHEMA_VERSION = 2 as const
+export const COVERAGE_REPORT_SCHEMA_VERSION = 3 as const
 export type CoverageResultStatus = 'passed' | 'failed' | 'blocked' | 'not-run' | 'not-applicable' | 'unsupported'
+const COVERAGE_RESULT_STATUSES: readonly CoverageResultStatus[] = ['passed', 'failed', 'blocked', 'not-run', 'not-applicable', 'unsupported']
 
 export interface CoverageEvidence {
   cellId: string
@@ -15,13 +19,31 @@ export interface CoverageEvidence {
   reason?: string
   checkpoints?: string[]
   artifacts?: string[]
+  artifactManifest?: CoverageArtifact[]
   environment?: Record<string, string | number | boolean>
+  identity?: CoverageIdentity
+}
+
+export interface CoverageArtifact {
+  path: string
+  sha256: string
+  kind: 'log' | 'screenshot' | 'bundle' | 'source-map' | 'manifest' | 'other'
+}
+
+export interface CoverageSignature {
+  algorithm: 'cosign-blob'
+  identity: string
+  bundleSha256: string
+  verified: boolean
 }
 
 export interface CoverageReport {
   schemaVersion: typeof COVERAGE_REPORT_SCHEMA_VERSION
   generatedAt: string
   source: 'ci' | 'nightly' | 'local' | 'aggregate'
+  identity?: CoverageIdentity
+  requiredBy?: 'pr' | 'nightly' | 'release'
+  signature?: CoverageSignature
   cells: CoverageEvidence[]
   summary: {
     total: number
@@ -34,6 +56,12 @@ export interface CoverageReport {
     requiredUnverified: number
     coveragePercent: number
   }
+}
+
+export interface CoverageReportOptions {
+  identity?: CoverageIdentity
+  requiredBy?: CoverageReport['requiredBy']
+  signature?: CoverageSignature
 }
 
 function requiredStatus(status: CoverageStatus): boolean {
@@ -122,7 +150,7 @@ export async function readCommittedCompatibilityEvidence(repoRoot: string): Prom
   return evidence
 }
 
-export function createCoverageReport(evidence: readonly CoverageEvidence[] = [], source: CoverageReport['source'] = 'aggregate', registry: readonly CoverageCell[] = COVERAGE_REGISTRY): CoverageReport {
+export function createCoverageReport(evidence: readonly CoverageEvidence[] = [], source: CoverageReport['source'] = 'aggregate', registry: readonly CoverageCell[] = COVERAGE_REGISTRY, options: CoverageReportOptions = {}): CoverageReport {
   validateCoverageRegistry(registry)
   const expected = registry.flatMap(cell => COVERAGE_LAYERS.map(layer => resultForCell(cell, layer)))
   const byKey = new Map(expected.map(item => [`${item.cellId}:${item.layer}`, item]))
@@ -143,9 +171,80 @@ export function createCoverageReport(evidence: readonly CoverageEvidence[] = [],
     schemaVersion: COVERAGE_REPORT_SCHEMA_VERSION,
     generatedAt: new Date().toISOString(),
     source,
+    ...(options.identity ? { identity: options.identity } : {}),
+    ...(options.requiredBy ? { requiredBy: options.requiredBy } : {}),
+    ...(options.signature ? { signature: options.signature } : {}),
     cells,
     summary: summarize(cells, registry),
   }
+}
+
+export function validateReleaseCertificate(report: CoverageReport, expectedIdentity: CoverageIdentity, registry: readonly CoverageCell[] = COVERAGE_REGISTRY) {
+  validateCoverageReport(report, registry)
+  if (report.source !== 'ci' && report.source !== 'nightly' && report.source !== 'local') {
+    throw new Error('release certificate must come from ci, nightly or local source')
+  }
+  if (!report.identity || !compareCoverageIdentity(report.identity, expectedIdentity)) {
+    throw new Error('release certificate identity does not match current commit/toolchain')
+  }
+  if (report.requiredBy !== 'release') {
+    throw new Error('release certificate must be marked requiredBy=release')
+  }
+  if (!report.signature?.verified || report.signature.algorithm !== 'cosign-blob' || !report.signature.identity || !/^[a-f0-9]{64}$/.test(report.signature.bundleSha256)) {
+    throw new Error('release certificate signature is missing or invalid')
+  }
+  const required = new Set(registry.flatMap(cell => COVERAGE_LAYERS
+    .filter(layer => ['ci-required', 'ci-nightly', 'local-required', 'unsupported-verified'].includes(cell.layers[layer].status))
+    .map(layer => `${cell.id}:${layer}`)))
+  const seen = new Set<string>()
+  for (const item of report.cells) {
+    const key = `${item.cellId}:${item.layer}`
+    if (!required.has(key)) {
+      continue
+    }
+    if (item.status !== 'passed' && item.status !== 'unsupported') {
+      throw new Error(`${key} is not verified for release`)
+    }
+    if (!item.artifactManifest?.length) {
+      throw new Error(`${key} is missing release artifact manifest`)
+    }
+    if (!item.identity || !compareCoverageIdentity(item.identity, expectedIdentity)) {
+      throw new Error(`${key} evidence identity mismatch`)
+    }
+    seen.add(key)
+  }
+  if (seen.size !== required.size) {
+    throw new Error(`release certificate is missing ${required.size - seen.size} required evidence cells`)
+  }
+  return report
+}
+
+export async function verifyCoverageArtifacts(report: CoverageReport, repoRoot: string) {
+  const failures: string[] = []
+  for (const item of report.cells) {
+    for (const artifact of item.artifactManifest ?? []) {
+      const relativePath = path.relative(repoRoot, path.resolve(repoRoot, artifact.path))
+      if (path.isAbsolute(artifact.path) || relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
+        failures.push(`${item.cellId}:${item.layer} has unsafe artifact path ${artifact.path}`)
+        continue
+      }
+      const file = path.resolve(repoRoot, artifact.path)
+      try {
+        const data = await fs.readFile(file)
+        const hash = createHash('sha256').update(data).digest('hex')
+        if (hash !== artifact.sha256) {
+          failures.push(`${item.cellId}:${item.layer} artifact checksum mismatch: ${artifact.path}`)
+        }
+      }
+      catch {
+        failures.push(`${item.cellId}:${item.layer} artifact is missing: ${artifact.path}`)
+      }
+    }
+  }
+  if (failures.length > 0) {
+    throw new Error(`release artifacts are invalid:\n${failures.join('\n')}`)
+  }
+  return report
 }
 
 export function validateCoverageReport(report: CoverageReport, registry: readonly CoverageCell[] = COVERAGE_REGISTRY) {
@@ -171,6 +270,18 @@ export function validateCoverageReport(report: CoverageReport, registry: readonl
     if (!item.executor || !item.evidenceSchema) {
       throw new Error(`${key} missing executor/evidenceSchema`)
     }
+    if (!COVERAGE_RESULT_STATUSES.includes(item.status)) {
+      throw new Error(`${key} has unknown result status: ${String(item.status)}`)
+    }
+    const contract = registry.find(cell => cell.id === item.cellId)?.layers[item.layer]
+    if (!contract || item.executor !== contract.executor || item.evidenceSchema !== contract.evidenceSchema) {
+      throw new Error(`${key} executor/evidenceSchema does not match registry contract`)
+    }
+    for (const artifact of item.artifactManifest ?? []) {
+      if (!/^[a-f0-9]{64}$/.test(artifact.sha256) || !artifact.path) {
+        throw new Error(`${key} has invalid artifact manifest entry`)
+      }
+    }
     if ((item.status === 'blocked' || item.status === 'failed' || item.status === 'unsupported') && !item.reason) {
       throw new Error(`${key} ${item.status} requires reason`)
     }
@@ -181,6 +292,9 @@ export function validateCoverageReport(report: CoverageReport, registry: readonl
   const expectedSummary = summarize(report.cells, registry)
   if (JSON.stringify(expectedSummary) !== JSON.stringify(report.summary)) {
     throw new Error('coverage report summary is stale or inconsistent')
+  }
+  if (report.source !== 'aggregate' && !report.identity) {
+    throw new Error(`${report.source} coverage report must include checkout identity`)
   }
   const requiredUnverified = report.summary.requiredUnverified
   if (requiredUnverified !== 0 && (report.source === 'ci' || report.source === 'nightly')) {

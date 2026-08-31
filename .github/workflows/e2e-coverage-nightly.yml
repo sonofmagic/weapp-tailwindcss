@@ -1,6 +1,9 @@
 name: E2E Coverage Nightly
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: '30 18 * * *'
   workflow_dispatch:
@@ -27,11 +30,11 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm e2e:coverage:contract
-      - run: pnpm e2e:coverage:report --source aggregate --include-baselines --out e2e/.artifacts/coverage/nightly-report.json
+      - run: pnpm e2e:coverage:report --source nightly --include-baselines --out e2e/.artifacts/coverage/nightly-report.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: e2e-coverage-contract-${{ github.run_id }}
+          name: coverage-certificate-${{ github.sha }}
           path: e2e/.artifacts/coverage/**
           if-no-files-found: warn
           retention-days: 14
