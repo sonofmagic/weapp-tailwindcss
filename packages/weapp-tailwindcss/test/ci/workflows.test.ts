@@ -944,7 +944,9 @@ describe('e2e watch workflow', () => {
     }
     for (const runner of ['linux', 'windows']) {
       for (const watchCase of completeMiniProgramCases) {
-        const profile = watchCase.startsWith('taro-')
+        const windowsReducedCase = runner === 'windows'
+          && (watchCase === 'uni-app-vite-tailwindcss-v4:mp-weixin' || watchCase === 'uni-app-vite-tailwindcss-v4:mp-alipay')
+        const profile = windowsReducedCase || watchCase.startsWith('taro-')
           ? 'main-style'
           : 'default'
         expect(cases, `${runner} should cover ${watchCase}`).toContain(`${runner}:22:${watchCase}:${profile}`)
