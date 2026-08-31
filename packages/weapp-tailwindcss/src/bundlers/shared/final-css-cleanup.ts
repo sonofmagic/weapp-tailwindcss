@@ -1,4 +1,4 @@
-import { postcss, removeEmptyAtRules } from '@weapp-tailwindcss/postcss'
+import { postcss, removeEmptyAtRules, repairTrailingUnclosedTailwindSourceMedia } from '@weapp-tailwindcss/postcss'
 
 function isAtRuleNameCharacter(code: number) {
   return code === 45
@@ -105,32 +105,25 @@ export function hasEmptyAtRuleBlockCandidate(css: string) {
   return false
 }
 
-function stripTrailingUnclosedTailwindSourceMedia(css: string) {
-  return css.replace(/\r?\n\s*@media\s+source\([^)]*\)\s*\{\s*$/, '')
-}
-
 /**
  * 在小程序样式进入最终产物图时递归清理空的块级 at-rule。
  */
 export function finalizeMiniProgramCssStructure(css: string) {
-  const repaired = stripTrailingUnclosedTailwindSourceMedia(css)
-  if (repaired !== css) {
+  const repaired = repairTrailingUnclosedTailwindSourceMedia(css)
+  if (!hasEmptyAtRuleBlockCandidate(repaired)) {
     return repaired
   }
-  if (!hasEmptyAtRuleBlockCandidate(css)) {
-    return css
-  }
   try {
-    const root = postcss.parse(css)
+    const root = postcss.parse(repaired)
     let removed = 0
     let passRemoved = 0
     do {
       passRemoved = removeEmptyAtRules(root)
       removed += passRemoved
     } while (passRemoved > 0)
-    return removed > 0 ? root.toString() : css
+    return removed > 0 ? root.toString() : repaired
   }
   catch {
-    return css
+    return repaired
   }
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createStyleHandler, finalizeMiniProgramCss, normalizeMiniProgramGeneratedCssForPostcss, pruneMiniProgramGeneratedCss } from '../src'
+import { createStyleHandler, finalizeMiniProgramCss, normalizeMiniProgramGeneratedCssForPostcss, pruneMiniProgramGeneratedCss, repairTrailingUnclosedTailwindSourceMedia } from '../src'
 
 describe('mini-program generated css cleanup', () => {
   it('preserves statement at-rules while removing empty block at-rules', () => {
@@ -408,6 +408,27 @@ describe('mini-program generated css cleanup', () => {
     expect(css).not.toContain('@config')
     expect(css).not.toContain('@source')
     expect(css).not.toMatch(/^\s*\}\s*$/m)
+  })
+
+  it('strictly repairs only a trailing unclosed Tailwind source media marker', () => {
+    expect(repairTrailingUnclosedTailwindSourceMedia('.keep{color:red}\n@media source(none) {\r\n')).toBe('.keep{color:red}')
+    expect(repairTrailingUnclosedTailwindSourceMedia('@media source("./src") {\n')).toBe('')
+    expect(repairTrailingUnclosedTailwindSourceMedia('@media screen {\n')).toBe('@media screen {\n')
+    expect(repairTrailingUnclosedTailwindSourceMedia('.keep{color:red}\n@media source(none) { /* comment */')).toBe('.keep{color:red}\n@media source(none) { /* comment */')
+    expect(repairTrailingUnclosedTailwindSourceMedia('.keep{color:red}\n@media source("./src") {\n.next{color:blue}')).toBe('.keep{color:red}\n@media source("./src") {\n.next{color:blue}')
+    expect(repairTrailingUnclosedTailwindSourceMedia('.keep{color:red}\n@media source("./src) {\n')).toBe('.keep{color:red}\n@media source("./src) {\n')
+    expect(repairTrailingUnclosedTailwindSourceMedia('.keep{color:red}\n@media source(url("./src")) {\n')).toBe('.keep{color:red}')
+    expect(repairTrailingUnclosedTailwindSourceMedia('/*\n@media source(none) {\n')).toBe('/*\n@media source(none) {\n')
+  })
+
+  it('repairs trailing source media before PostCSS finalization', () => {
+    const css = finalizeMiniProgramCss([
+      '@media screen {}',
+      '.keep{color:red}',
+      '@media source(none) {\n',
+    ].join('\n'), { isTailwindcssV4: true })
+
+    expect(css).toBe('.keep{color:red}')
   })
 
   it('synthesizes configured mini-program preflight when generator css misses base reset', () => {

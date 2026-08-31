@@ -6,6 +6,7 @@ import { removeUnsupportedCascadeLayers, removeUnsupportedMiniProgramAtRules } f
 import {
   hasTailwindcssV4Signal,
   removeTailwindGenerationDirectives,
+  repairTrailingUnclosedTailwindSourceMedia,
   TAILWIND_V4_BANNER_RE,
   unwrapTailwindSourceMedia,
 } from './directives'
@@ -110,16 +111,17 @@ export function hoistTailwindPreflightBase(css: string) {
 }
 
 export function finalizeMiniProgramCss(css: string, options: FinalizeMiniProgramCssOptions = {}) {
+  const repairedCss = repairTrailingUnclosedTailwindSourceMedia(css)
   let isTailwindcssV4 = options.isTailwindcssV4
   if (isTailwindcssV4 === undefined) {
     try {
-      isTailwindcssV4 = hasTailwindcssV4Signal(css)
+      isTailwindcssV4 = hasTailwindcssV4Signal(repairedCss)
     }
     catch {
-      isTailwindcssV4 = TAILWIND_V4_BANNER_RE.test(css)
+      isTailwindcssV4 = TAILWIND_V4_BANNER_RE.test(repairedCss)
     }
   }
-  const cleanedCss = removeUnsupportedMiniProgramAtRules(css)
+  const cleanedCss = removeUnsupportedMiniProgramAtRules(repairedCss)
   try {
     const root = postcss.parse(cleanedCss)
     finalizeMiniProgramCssRoot(root, { ...options, isTailwindcssV4 })

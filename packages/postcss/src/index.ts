@@ -29,6 +29,7 @@ export {
   removeUnsupportedAtSupports,
   removeUnsupportedCascadeLayers,
   removeUnsupportedMiniProgramAtRules,
+  repairTrailingUnclosedTailwindSourceMedia,
   stripMiniProgramCssSpecificityPlaceholders,
   unwrapUnsupportedCascadeLayers,
 } from './compat/mini-program-css'

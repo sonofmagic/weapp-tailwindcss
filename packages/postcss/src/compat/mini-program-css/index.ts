@@ -5,6 +5,7 @@ export {
   unwrapUnsupportedCascadeLayers,
 } from './at-rules'
 export { consumeCascadeLayers } from './cascade-layers'
+export { repairTrailingUnclosedTailwindSourceMedia } from './directives'
 export {
   finalizeMiniProgramCss,
   type FinalizeMiniProgramCssOptions,

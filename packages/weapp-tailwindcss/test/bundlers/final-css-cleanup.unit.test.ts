@@ -31,7 +31,7 @@ describe('final mini-program css cleanup', () => {
   })
 
   it('removes a trailing unclosed Tailwind source media marker', () => {
-    const source = '.keep { color: red; }\n@media source(none) {\n'
+    const source = '@media screen {}\n.keep { color: red; }\n@media source(none) {\n'
 
     expect(finalizeMiniProgramCssStructure(source)).toBe('.keep { color: red; }')
   })
