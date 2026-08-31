@@ -901,6 +901,37 @@ describe('watch-hmr regression text helpers', () => {
     expect(elapsed).toBeGreaterThanOrEqual(0)
   })
 
+  it('allows style compile settle to observe CSS output mtimes', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-style-settle-'))
+    tempDirs.push(tempDir)
+    const styleFile = path.join(tempDir, 'index.wxss')
+    await writeFilePreserveEol(styleFile, '.anchor{}', '.anchor{}')
+    const phaseStartedAt = Date.now()
+
+    await new Promise(resolve => setTimeout(resolve, 20))
+    await writeFilePreserveEol(styleFile, '.anchor{color:red}', '.anchor{}')
+
+    const elapsed = await waitForCompileSettled(
+      {
+        label: 'demo/weapp-vite-tailwindcss-v4',
+        outputWxml: '/missing/index.wxml',
+        outputJs: '/missing/index.js',
+      } as any,
+      {
+        timeoutMs: 2_000,
+        pollMs: 20,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+        lastCompileSuccessAt: () => 0,
+      } as any,
+      phaseStartedAt,
+      [styleFile],
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
   it('allows style-only compile settle to use a stable plugin total sample', async () => {
     const pluginTotalAt = Date.now() - 700
     const elapsed = await waitForCompileSettled(

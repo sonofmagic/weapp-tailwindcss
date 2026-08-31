@@ -226,7 +226,7 @@ export async function runStyleMutation(
       `[watch-hmr] ${watchCase.label} mutation=style rollback marker still present in candidate outputs, fallback to output latency metric\n`,
     )
   }
-  await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
+  await waitForCompileSettled(watchCase, options, session, rollbackStartedAt, verifyOutputCandidates)
   const rollbackPluginMetrics = collectPluginProcessMetrics(session, rollbackStartedAt)
 
   process.stdout.write(

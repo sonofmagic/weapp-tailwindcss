@@ -250,7 +250,10 @@ export async function waitForCompileSettled(
   options: CliOptions,
   session: WatchSession,
   phaseStartedAt: number,
+  settleOutputCandidates?: string[],
 ) {
+  const outputCandidates = (settleOutputCandidates ?? [watchCase.outputWxml, watchCase.outputJs])
+    .filter((candidate): candidate is string => typeof candidate === 'string' && candidate.length > 0)
   const stableWindowMs = Math.min(Math.max(options.pollMs * 2, 600), 1500)
   const timeoutMs = resolveCompileSettleTimeoutMs(options)
   return waitFor(
@@ -271,11 +274,9 @@ export async function waitForCompileSettled(
         return Date.now() - latestPluginTotalAt >= stableWindowMs
       }
 
-      const [wxmlMtime, jsMtime] = await Promise.all([
-        getMtime(watchCase.outputWxml),
-        getMtime(watchCase.outputJs),
-      ])
-      const latestOutputMtime = Math.max(wxmlMtime, jsMtime)
+      const resolvedOutputCandidates = await expandOutputFileEntries(outputCandidates)
+      const outputMtimes = await Promise.all(resolvedOutputCandidates.map(candidate => getMtime(candidate)))
+      const latestOutputMtime = Math.max(0, ...outputMtimes)
       return latestOutputMtime > 0
         && latestOutputMtime >= phaseStartedAt
         && Date.now() - latestOutputMtime >= stableWindowMs
