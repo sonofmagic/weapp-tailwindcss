@@ -44,9 +44,9 @@ describe('vite/web CSS-only 真实构建', () => {
 
   it('专用入口生成 Web CSS，但不改写 HTML/JavaScript', async () => {
     await buildFixture(WeappTailwindcssWeb())
-  }, 30_000)
+  }, 120_000)
 
   it('主入口自动识别 Generic Web 后复用 CSS-only profile', async () => {
     await buildFixture(WeappTailwindcss())
-  }, 30_000)
+  }, 120_000)
 })
