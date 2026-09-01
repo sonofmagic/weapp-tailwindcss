@@ -594,9 +594,14 @@ describe('ci workflows', () => {
     expect(source).not.toContain('NODE_AUTH_TOKEN:')
   })
 
-  it('requires an explicit same-commit release certificate run', () => {
-    const { source } = readWorkflow('release.yml')
+  it('requires a certificate only for explicit release publishing', () => {
+    const { source, workflow } = readWorkflow('release.yml')
+    const releaseSteps: Array<Record<string, any>> = workflow.jobs.release.steps
+    const downloadStep = releaseSteps.find(step => step.name === 'Download same-commit coverage certificate')
+    const validateStep = releaseSteps.find(step => step.name === 'Validate release certificate')
 
+    expect(downloadStep.if).toBe("inputs.mode == 'publish' || inputs.mode == 'publish-unpublished'")
+    expect(validateStep.if).toBe("inputs.mode == 'publish' || inputs.mode == 'publish-unpublished'")
     expect(source).toContain('RELEASE_CERTIFICATE_RUN_ID: ${{ vars.RELEASE_CERTIFICATE_RUN_ID }}')
     expect(source).toContain('Release certificate is not configured')
     expect(source).toContain('gh run view "$run_id" --json headSha,status,conclusion')
