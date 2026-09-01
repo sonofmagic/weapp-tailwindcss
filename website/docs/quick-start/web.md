@@ -42,7 +42,18 @@ import './style.css'
 
 ## 注册 Vite 插件
 
-纯 Vite Web 项目继续使用主入口。无框架、平台标记的 Generic Vite 项目会在 Vite 配置解析后自动使用 Web target；入口 CSS 仍需由应用实际导入，插件会从 Vite 模块图发现根样式。
+纯 Vite Web 项目推荐使用专用入口。它固定 Web target，不会继承 monorepo 上层的小程序框架标记；入口 CSS 仍需由应用实际导入。
+
+```ts title="vite.config.ts"
+import { defineConfig } from 'vite'
+import { WeappTailwindcssWeb } from 'weapp-tailwindcss/vite/web'
+
+export default defineConfig({
+  plugins: [WeappTailwindcssWeb()],
+})
+```
+
+也可以继续使用主入口。无框架、平台标记的 Generic Vite 项目会在 Vite 配置解析后自动使用 Web target，入口 CSS 会从 Vite 模块图发现：
 
 ```ts title="vite.config.ts"
 import { defineConfig } from 'vite'

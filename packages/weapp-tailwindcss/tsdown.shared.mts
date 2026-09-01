@@ -11,6 +11,7 @@ export const runtimeEntries = {
   'gulp': 'src/gulp.ts',
   'generator': 'src/generator/index.ts',
   'vite': 'src/vite.ts',
+  'vite/web': 'src/vite-web.ts',
   'postcss': 'src/postcss.ts',
   'defaults': 'src/defaults.ts',
   'framework': 'src/framework/index.ts',

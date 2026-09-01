@@ -35,6 +35,60 @@ describe('vite 单入口 dispatcher', () => {
     resetVitePluginTestContext()
   })
 
+  it('Generic Web 显式 cssEntries 仍保持 Web profile', async () => {
+    const context = createContext({
+      appType: undefined,
+      generator: undefined,
+      platform: undefined,
+      cssOptions: undefined,
+      cssEntries: ['/project/src/app.css'],
+    })
+    setCurrentContext(context)
+    const { WeappTailwindcss } = await import('@/bundlers/vite')
+    const plugins = WeappTailwindcss()!
+    const post = findPlugin(plugins, ':post')!
+    await post.configResolved?.call(post, {
+      command: 'build',
+      root: '/project',
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    expect(context.generator).toMatchObject({ target: 'web' })
+    const js = findPlugin(plugins, ':js:serve')
+    const jsResult = await js?.transform?.call(js, 'const cls = "text-red-500"', '/project/main.ts')
+    expect(jsResult).toBeUndefined()
+    expect(context.jsHandler).not.toHaveBeenCalled()
+    resetVitePluginTestContext()
+  })
+
+  it('vite/web 入口固定 Generic Web 并忽略外层框架环境', async () => {
+    const context = createContext({
+      appType: 'taro',
+      generator: { target: 'web' },
+      platform: 'web',
+    })
+    setCurrentContext(context)
+    const { WeappTailwindcssWeb } = await import('@/vite-web')
+    const plugins = WeappTailwindcssWeb()
+    const post = findPlugin(plugins, ':post')!
+    await post.configResolved?.call(post, {
+      command: 'build',
+      root: '/project',
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    expect(context.generator).toMatchObject({ target: 'web' })
+    expect(context.platform).toBe('web')
+    expect(plugins.some(plugin => plugin.name === 'weapp-tailwindcss:taro-alipay-browserslist-asset')).toBe(false)
+    const js = findPlugin(plugins, ':js:serve')
+    const jsResult = await js?.transform?.call(js, 'const cls = "text-red-500"', '/project/main.ts')
+    expect(jsResult).toBeUndefined()
+    expect(context.jsHandler).not.toHaveBeenCalled()
+    resetVitePluginTestContext()
+  })
+
   it('显式小程序 target 保留主入口的历史插件能力', async () => {
     const context = createContext({ appType: undefined, generator: { target: 'weapp' } })
     setCurrentContext(context)

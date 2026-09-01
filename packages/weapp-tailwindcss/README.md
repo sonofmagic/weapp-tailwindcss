@@ -16,13 +16,23 @@ Bring Tailwind CSS to every platform. `weapp-tailwindcss` is the core compiler a
 
 | Target | Recommended entry |
 | --- | --- |
-| Web / H5 | `weapp-tailwindcss/vite`, Webpack/Rspack integration, or `@weapp-tailwindcss/cli` |
+| Web / H5 | `weapp-tailwindcss/vite/web` for plain Vite, or `weapp-tailwindcss/vite`, Webpack/Rspack integration |
 | uni-app / uni-app x | Vite or Webpack integration selected by the framework build chain |
 | Taro / Mpx / native mini programs | Vite, Webpack, Rspack, or Gulp integration |
 | React Native / Expo | `@weapp-tailwindcss/react-native` |
 | ReactLynx / Rspeedy | `@weapp-tailwindcss/lynx` |
 
 Start with the [installation guide](https://tw.weapp.dev/docs/quick-start/install) or select a framework from the [documentation website](https://tw.weapp.dev/).
+
+Plain Vite Web projects can use the dedicated entry to pin the Web target and avoid inheriting framework detection from an enclosing monorepo:
+
+```ts
+import { WeappTailwindcssWeb } from 'weapp-tailwindcss/vite/web'
+
+export default {
+  plugins: [WeappTailwindcssWeb()],
+}
+```
 
 ## Tailwind CSS 4 entry
 

@@ -16,13 +16,23 @@
 
 | 目标 | 推荐入口 |
 | --- | --- |
-| Web / H5 | `weapp-tailwindcss/vite`、Webpack/Rspack 集成或 `@weapp-tailwindcss/cli` |
+| Web / H5 | `weapp-tailwindcss/vite/web`（普通 Vite）或 `weapp-tailwindcss/vite`、Webpack/Rspack 集成 |
 | uni-app / uni-app x | 按框架构建链选择 Vite 或 Webpack 集成 |
 | Taro / Mpx / 原生小程序 | Vite、Webpack、Rspack 或 Gulp 集成 |
 | React Native / Expo | `@weapp-tailwindcss/react-native` |
 | ReactLynx / Rspeedy | `@weapp-tailwindcss/lynx` |
 
 从[安装指南](https://tw.weapp.dev/zh-cn/docs/quick-start/install)开始，或在[中文官网](https://tw.weapp.dev/zh-cn/)按框架选择接入方式。
+
+普通 Vite Web 项目可以使用轻量入口，固定 Web target，不会因为 monorepo 上层依赖而误判为小程序框架：
+
+```ts
+import { WeappTailwindcssWeb } from 'weapp-tailwindcss/vite/web'
+
+export default {
+  plugins: [WeappTailwindcssWeb()],
+}
+```
 
 ## Tailwind CSS 4 入口
 

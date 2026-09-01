@@ -87,6 +87,8 @@ npx weapp-tailwindcss doctor --cwd ./demo/uni-app-vue3-vite
 
 如果项目已有 `postcss.config.*`，只保留业务自己的非 Tailwind 插件。Tailwind CSS 4.x 的入口 CSS 使用 `@import "tailwindcss"` 与 `@source`；应通过 `cssEntries` 显式传给 `WeappTailwindcss`，并使用项目根目录解析出的绝对路径。`cssEntries` 不是替代 import 的开关，入口 CSS 仍然要被框架纳入构建图。
 
+仅存在 `postcss.config.*` 不会触发这项警告。`doctor` 只有在配置文件实际引用 `@tailwindcss/postcss` 或 `@tailwindcss/vite` 时，才会报告重复生成器，并在 JSON 输出中提供 `code: "duplicate-tailwind-generator"` 与配置文件证据。
+
 ### 未检测到 tailwind.config.*
 
 Tailwind CSS 4 支持 CSS-first 配置，未检测到 `tailwind.config.*` 不一定是问题。如果 JS 字符串中的 class 没有被识别，需要检查 CSS 入口中的 `@source`。

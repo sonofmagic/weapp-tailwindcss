@@ -56,3 +56,5 @@ const exitCode = await runCli(['-i', 'src/input.css', '-o', 'dist/output.css'])
 ## 文档
 
 完整参数、stdin/stdout、source map、watch 与 `canonicalize` 用法见 [CLI 使用指南](https://tw.weapp.dev/zh-cn/docs/tools/weapp-tw-cli)。
+
+接入或升级排障时，可以运行 `weapp-tw doctor`。它会检查实际配置中是否注册了官方 Tailwind 生成器；仅存在普通 PostCSS 配置不会触发重复生成警告。
