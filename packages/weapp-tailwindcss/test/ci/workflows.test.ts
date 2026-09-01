@@ -441,6 +441,16 @@ describe('ci workflows', () => {
     expect(nightlySource).not.toContain('--source nightly')
   })
 
+  it('keeps nightly hosted static invocation cross-platform', () => {
+    const { workflow } = readWorkflow('e2e-coverage-nightly.yml')
+    const runStep = workflow.jobs['framework-matrix'].steps.find((step: Record<string, unknown>) => {
+      return step.name === 'Run hosted static suite'
+    })
+
+    expect(runStep.run).toBe('pnpm e2e:static')
+    expect(workflow.jobs['framework-matrix'].env.E2E_SKIP_OPEN_AUTOMATOR).toBe('1')
+  })
+
   it('keeps a lightweight cross-platform e2e watch gate in CI', () => {
     const { workflow } = readWorkflow('ci.yml')
     const job = workflow.jobs['e2e-watch']
