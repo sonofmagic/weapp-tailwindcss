@@ -80,6 +80,7 @@ jobs:
           pnpm exec playwright install chromium chromium-headless-shell
 
       - name: Download same-commit coverage certificate
+        if: inputs.mode == 'publish' || inputs.mode == 'publish-unpublished'
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_CERTIFICATE_RUN_ID: ${{ vars.RELEASE_CERTIFICATE_RUN_ID }}
@@ -112,6 +113,7 @@ jobs:
           gh run download "$run_id" --name "$certificate_name" --dir e2e/.artifacts/release-certificate
 
       - name: Validate release certificate
+        if: inputs.mode == 'publish' || inputs.mode == 'publish-unpublished'
         shell: bash
         run: |
           report="$(find e2e/.artifacts/release-certificate -type f \( -name 'nightly-report.json' -o -name 'pr-report.json' -o -name 'coverage-report.json' \) -print -quit)"

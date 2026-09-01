@@ -594,9 +594,14 @@ describe('ci workflows', () => {
     expect(source).not.toContain('NODE_AUTH_TOKEN:')
   })
 
-  it('requires an explicit same-commit release certificate run', () => {
-    const { source } = readWorkflow('release.yml')
+  it('requires a certificate only for explicit release publishing', () => {
+    const { source, workflow } = readWorkflow('release.yml')
+    const releaseSteps: Array<Record<string, any>> = workflow.jobs.release.steps
+    const downloadStep = releaseSteps.find(step => step.name === 'Download same-commit coverage certificate')
+    const validateStep = releaseSteps.find(step => step.name === 'Validate release certificate')
 
+    expect(downloadStep.if).toBe("inputs.mode == 'publish' || inputs.mode == 'publish-unpublished'")
+    expect(validateStep.if).toBe("inputs.mode == 'publish' || inputs.mode == 'publish-unpublished'")
     expect(source).toContain('RELEASE_CERTIFICATE_RUN_ID: ${{ vars.RELEASE_CERTIFICATE_RUN_ID }}')
     expect(source).toContain('Release certificate is not configured')
     expect(source).toContain('gh run view "$run_id" --json headSha,status,conclusion')
@@ -651,6 +656,26 @@ describe('ci workflows', () => {
       return step.uses === 'actions/download-artifact@v4'
         && (step.with as Record<string, unknown>)?.pattern === 'benchmark-performance-*'
     })).toBe(true)
+  })
+
+  it('grants the PR benchmark reporter permission to publish pull request comments', () => {
+    const { source, workflow } = readWorkflow('benchmark-pr-report.yml')
+    const commentStep = workflow.jobs.publish.steps.find((step: Record<string, unknown>) => {
+      return step.name === 'Update PR comment'
+    })
+
+    expect(workflow.permissions).toMatchObject({
+      actions: 'read',
+      contents: 'read',
+      'pull-requests': 'write',
+    })
+    expect(workflow.permissions.issues).toBeUndefined()
+    expect(commentStep).toMatchObject({
+      uses: 'actions/github-script@v7',
+    })
+    expect(String(commentStep.if)).toContain("steps.report.outcome == 'success'")
+    expect(commentStep['continue-on-error']).not.toBe(true)
+    expect(source).toContain('github.rest.issues.createComment')
   })
 
   it('delegates the complete package lifecycle to repoctl', () => {

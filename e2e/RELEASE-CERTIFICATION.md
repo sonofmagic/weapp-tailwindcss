@@ -23,13 +23,13 @@ pnpm e2e:local:full-report --profile full
 
 ## Release gate
 
-release workflow 只下载与 `$GITHUB_SHA` 相同的 `coverage-certificate-$GITHUB_SHA` artifact，然后执行：
+只有显式执行 `publish` 或 `publish-unpublished` 时，release workflow 才下载与 `$GITHUB_SHA` 相同的 `coverage-certificate-$GITHUB_SHA` artifact，然后执行：
 
 ```bash
 pnpm e2e:coverage:release-gate --report <coverage-report.json>
 ```
 
-validator 会重新计算 summary，检查 registry/catalog/toolchain identity、required layer、artifact checksum 和 cosign 签名元数据。没有同 SHA 的认证 artifact、没有 local-required 证据或签名校验失败时，`repo release ci` 不会执行。
+validator 会重新计算 summary，检查 registry/catalog/toolchain identity、required layer、artifact checksum 和 cosign 签名元数据。显式发布模式没有同 SHA 的认证 artifact、没有 local-required 证据或签名校验失败时，`repo release ci` 不会执行。默认 `auto` 和 `prepare` 模式跳过该门禁，可正常创建 release PR。
 
 认证 artifact 必须来自仓库变量 `RELEASE_CERTIFICATE_RUN_ID` 指定的已完成成功 workflow run。Release 不会自动选择 nightly run：hosted nightly 当前只上传诊断 artifact，且在发布启动时可能仍处于运行状态，自动选择会造成竞态并可能把诊断报告误当认证证书。生成本地/自托管认证报告后，应将上传该 artifact 的 workflow run ID 写入 `RELEASE_CERTIFICATE_RUN_ID`，并确保其 head SHA 等于发布 commit。
 
