@@ -178,6 +178,9 @@ export function createViteCssGenerationPlugins(options: ViteCssGenerationOptions
       if (!hasViteCssGenerationDirective(extracted.css)) {
         return
       }
+      if (options.shouldDeferGeneration?.(id, extracted.css)) {
+        return
+      }
       if (hasViteServeCssRootDirective(extracted.css)) {
         await options.onTailwindRootCss?.(id, extracted.css)
       }
