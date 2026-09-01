@@ -1075,6 +1075,38 @@ describe('benchmark ci report', () => {
     }))
   })
 
+  it('does not block when neither watch HMR side provides plugin timing samples', async () => {
+    const { buildSummary, evaluatePerformanceGuard } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
+    const baselineLabel = 'base:main'
+    const currentLabel = 'current:feature'
+    const summary = buildSummary({
+      generatedAt: '2026-07-14T00:00:00.000Z',
+      options: { buildRuns: 1, hmrRuns: 3, timeoutMs: 180000 },
+      rows: [
+        {
+          version: baselineLabel,
+          key: 'demo-weapp-vite-tailwindcss-v4__mp-weixin',
+          hmrMode: 'watch',
+          hmrMs: [100, 90, 80],
+          hmrPluginMs: [],
+          hmrMemory: { peakRssMb: 100, steadyRssMb: 90 },
+          summary: { hmr: { p95: 100 }, hmrPeakRssMb: { median: 100 }, hmrSteadyRssMb: { median: 90 } },
+        },
+        {
+          version: currentLabel,
+          key: 'demo-weapp-vite-tailwindcss-v4__mp-weixin',
+          hmrMode: 'watch',
+          hmrMs: [100, 90, 80],
+          hmrPluginMs: [],
+          hmrMemory: { peakRssMb: 100, steadyRssMb: 90 },
+          summary: { hmr: { p95: 100 }, hmrPeakRssMb: { median: 100 }, hmrSteadyRssMb: { median: 90 } },
+        },
+      ],
+    }, baselineLabel, currentLabel)
+
+    expect(evaluatePerformanceGuard(summary).passed).toBe(true)
+  })
+
   it('uses every post-ready HMR sample and keeps noisy framework end-to-end timing informational', async () => {
     const { buildSummary, evaluatePerformanceGuard, toMarkdown } = await import('../../../../benchmark/version-compare/scripts/ci-report.mjs')
     const baselineLabel = 'base:main'
