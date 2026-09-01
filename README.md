@@ -43,7 +43,7 @@
 
 | 目标端 | 推荐入口 | 适用场景 |
 | --- | --- | --- |
-| Web / H5 | `weapp-tailwindcss/vite`、`/webpack`、`/rspack`、`/gulp` 或 Node API | 浏览器 CSS、H5 和普通 Web 构建 |
+| Web / H5 | `weapp-tailwindcss/vite/web`（CSS-only）或 `weapp-tailwindcss/vite`、`/webpack`、`/rspack`、`/gulp`、Node API | 浏览器 CSS、H5 和普通 Web 构建 |
 | 小程序 | 对应构建器入口，或 `@weapp-tailwindcss/cli --target weapp` | 微信、支付宝、抖音、QQ 等小程序 CSS |
 | App WebView | `weapp-tailwindcss` 的框架集成 | uni-app、Taro 等框架的 App WebView 构建 |
 | uni-app x | `weapp-tailwindcss/vite` | Android、iOS 与 HarmonyOS 原生应用构建 |
@@ -74,28 +74,22 @@ pnpm add -D tailwindcss weapp-tailwindcss
 
 ### 3. 注册构建器插件
 
-以 Vite 为例，先注册框架插件，再注册 `WeappTailwindcss`：
+以 Vite 为例，纯 Web 项目使用 CSS-only 入口：
 
 ```ts
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
-import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
-
-const projectRoot = dirname(fileURLToPath(import.meta.url))
+import { WeappTailwindcssWeb } from 'weapp-tailwindcss/vite/web'
 
 export default defineConfig({
   plugins: [
-    // 先放你的框架插件，例如 uni()。
-    WeappTailwindcss({
-      cssEntries: [resolve(projectRoot, 'src/app.css')],
-      cssOptions: {
-        rem2rpx: true,
-      },
-    }),
+    WeappTailwindcssWeb(),
   ],
 })
 ```
+
+`vite/web` 只处理 Tailwind CSS 生成、CSS transform、CSS HMR 和 Web CSS 收尾，不注册 JS/template 转译、框架扩展、分包或小程序 finalizer。`styleInjector` 默认关闭，只有显式配置时才启用 Web 适配器。SSR、library mode、`optimizeDeps`、`cssMinify` 和 sourcemap 继续由 Vite 管理；CSS 入口必须实际 import 到 Vite 模块图中。
+
+需要同时支持小程序、框架扩展或多入口时，继续使用 `weapp-tailwindcss/vite` 主入口，并显式指定 `generator.target` 或 `platform`。无标记的 Generic Vite 项目会在 Vite 配置解析后自动复用 Web CSS-only profile。
 
 Webpack、Rspack、Gulp、Taro、uni-app、Mpx 和原生小程序的完整配置见[框架接入指南](https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/uni-app-vite)。
 

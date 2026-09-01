@@ -6,7 +6,7 @@ import {
 } from '../../shared/generator-css/directives'
 import { hasUserCssLayerBlocks } from '../../shared/generator-css/user-css'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
-import { normalizeCssSourceForCompare } from './css-output'
+import { normalizeCssSourceForCompare } from '../css-output'
 import { mergeRememberedCssSources } from './remembered-css'
 import { hasTailwindGenerationSource } from './sfc-style-source'
 

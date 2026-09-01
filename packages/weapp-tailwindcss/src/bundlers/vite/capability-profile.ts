@@ -4,6 +4,8 @@ import type { UserDefinedOptions } from '@/types'
 /** Vite 插件链按运行场景拆分的能力开关。 */
 export interface ViteCapabilityProfile {
   name: 'framework' | 'generic-web'
+  /** 是否只装配 CSS 生成链路，不注册 JS/template 和小程序产物处理。 */
+  cssOnly?: boolean
   frameworkName: ViteFrameworkName
   generatorTarget: 'web' | 'weapp' | 'app' | undefined
   platformFamily: 'web' | 'native-app' | 'mini-program' | 'unknown'
@@ -31,6 +33,7 @@ export const frameworkViteCapabilityProfile: ViteCapabilityProfile = {
 export function createGenericWebViteCapabilityProfile(options: UserDefinedOptions): ViteCapabilityProfile {
   return {
     name: 'generic-web',
+    cssOnly: true,
     frameworkName: 'generic',
     generatorTarget: 'web',
     platformFamily: 'web',

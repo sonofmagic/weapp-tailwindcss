@@ -28,6 +28,7 @@ describe('vite 单入口 dispatcher', () => {
 
     expect(context.generator).toMatchObject({ target: 'web' })
     expect(typeof sourceCandidates.apply === 'function' && sourceCandidates.apply({ build: {} }, { command: 'build', mode: 'production' })).toBe(false)
+    expect(plugins.some(plugin => plugin.name === 'weapp-tailwindcss:adaptor:web-css-finalizer')).toBe(true)
     const js = findPlugin(plugins, ':js:serve')
     const jsResult = await js?.transform?.call(js, 'const cls = "text-red-500"', '/project/main.ts')
     expect(jsResult).toBeUndefined()
@@ -82,10 +83,31 @@ describe('vite 单入口 dispatcher', () => {
     expect(context.generator).toMatchObject({ target: 'web' })
     expect(context.platform).toBe('web')
     expect(plugins.some(plugin => plugin.name === 'weapp-tailwindcss:taro-alipay-browserslist-asset')).toBe(false)
+    expect(plugins.some(plugin => plugin.name === 'weapp-tailwindcss:adaptor:web-css-finalizer')).toBe(true)
+    expect(plugins.some(plugin => plugin.name === 'weapp-tailwindcss:adaptor:css-finalizer')).toBe(false)
+    expect(plugins.some(plugin => plugin.name?.includes(':js:serve'))).toBe(false)
+    expect(plugins.some(plugin => plugin.name?.includes('style-injector'))).toBe(false)
     const js = findPlugin(plugins, ':js:serve')
     const jsResult = await js?.transform?.call(js, 'const cls = "text-red-500"', '/project/main.ts')
     expect(jsResult).toBeUndefined()
     expect(context.jsHandler).not.toHaveBeenCalled()
+    resetVitePluginTestContext()
+  })
+
+  it('vite/web 只在显式配置时注册 Web style injector', async () => {
+    const context = createContext({
+      appType: undefined,
+      generator: { target: 'web' },
+      platform: 'web',
+      styleInjector: true,
+    })
+    setCurrentContext(context)
+    const { WeappTailwindcssWeb } = await import('@/vite-web')
+    const plugins = WeappTailwindcssWeb()
+
+    expect(plugins.some(plugin => plugin.name === 'weapp-tailwindcss:web-style-injector-pre')).toBe(true)
+    expect(plugins.some(plugin => plugin.name === 'weapp-tailwindcss:web-style-injector')).toBe(true)
+    expect(plugins.some(plugin => plugin.name === 'weapp-tailwindcss:style-injector-pre')).toBe(false)
     resetVitePluginTestContext()
   })
 

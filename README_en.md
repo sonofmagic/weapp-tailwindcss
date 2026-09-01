@@ -43,7 +43,7 @@ The goal is simple: use one Tailwind input and generate the correct artifact for
 
 | Target | Recommended entry | Use it for |
 | --- | --- | --- |
-| Web / H5 | `weapp-tailwindcss/vite`, `/webpack`, `/rspack`, `/gulp`, or the Node API | Browser CSS, H5, and regular Web builds |
+| Web / H5 | `weapp-tailwindcss/vite/web` (CSS-only), `weapp-tailwindcss/vite`, `/webpack`, `/rspack`, `/gulp`, or the Node API | Browser CSS, H5, and regular Web builds |
 | Mini programs | The matching builder entry, or `@weapp-tailwindcss/cli --target weapp` | WeChat, Alipay, Douyin, QQ, and other mini-program CSS |
 | App WebView | `weapp-tailwindcss` framework integrations | App WebView builds from frameworks such as uni-app and Taro |
 | uni-app x | `weapp-tailwindcss/vite` | Native Android, iOS, and HarmonyOS application builds |
@@ -74,28 +74,22 @@ The entry must be imported by the project. `cssEntries` tells the generator whic
 
 ### 3. Register the builder integration
 
-With Vite, register the framework plugin first and `WeappTailwindcss` after it:
+For a pure Web project, use the CSS-only Vite entry:
 
 ```ts
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
-import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
-
-const projectRoot = dirname(fileURLToPath(import.meta.url))
+import { WeappTailwindcssWeb } from 'weapp-tailwindcss/vite/web'
 
 export default defineConfig({
   plugins: [
-    // Put your framework plugin here first, for example uni().
-    WeappTailwindcss({
-      cssEntries: [resolve(projectRoot, 'src/app.css')],
-      cssOptions: {
-        rem2rpx: true,
-      },
-    }),
+    WeappTailwindcssWeb(),
   ],
 })
 ```
+
+`vite/web` only handles Tailwind CSS generation, CSS transforms, CSS HMR, and Web CSS finalization. It does not register JavaScript/template transforms, framework extensions, subpackage processing, or mini-program finalizers. The built-in `styleInjector` is disabled by default and is enabled only when explicitly configured. SSR, library mode, `optimizeDeps`, `cssMinify`, and sourcemaps remain Vite responsibilities; the CSS entry must be imported into Vite's module graph.
+
+When the same build also needs mini-program output, framework extensions, or multiple entries, use the main `weapp-tailwindcss/vite` entry and set `generator.target` or `platform` explicitly. An unmarked Generic Vite project automatically reuses the Web CSS-only profile after Vite resolves its configuration.
 
 See the [framework integration guides](https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-vite) for Webpack, Rspack, Gulp, Taro, uni-app, Mpx, and native mini-program projects.
 

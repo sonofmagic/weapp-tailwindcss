@@ -1,5 +1,5 @@
 import type { UserDefinedOptions } from './types'
-import { WeappTailwindcss } from './bundlers/vite'
+import { createGenericWebVitePlugins } from './bundlers/vite/frameworks/generic/web'
 
 /**
  * 创建面向普通 Vite Web 项目的 Tailwind 插件。
@@ -11,7 +11,7 @@ export function WeappTailwindcssWeb(options: UserDefinedOptions = {}) {
   const generator = options.generator && typeof options.generator === 'object'
     ? { ...options.generator, target: 'web' as const }
     : { target: 'web' as const }
-  return WeappTailwindcss({
+  return createGenericWebVitePlugins({
     ...options,
     appType: undefined,
     platform: 'web',

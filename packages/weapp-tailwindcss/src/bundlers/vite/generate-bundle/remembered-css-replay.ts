@@ -9,10 +9,10 @@ import { normalizeMiniProgramGeneratorCssSource, normalizeMiniProgramImportShell
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { isSourcePreprocessorRequest } from '../../shared/style-requests'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
+import { canProcessViteSourceStyleAsCss, SOURCE_STYLE_OUTPUT_EXT_RE } from '../css-output'
 import { createRuntimeAffectingSourceSignature } from '../runtime-affecting-signature'
 import { isHTMLRequest } from '../utils'
 import { applyViteAssetEmissionPlan } from './asset-emission-plan'
-import { canProcessViteSourceStyleAsCss, SOURCE_STYLE_OUTPUT_EXT_RE } from './css-output'
 import { createCssRuntimeSignature } from './css-share-scope'
 import { measureElapsed } from './metrics'
 import { collectRememberedCssReplayGroups, createRememberedCssRuntimeSignature, mergeRememberedCssSources } from './remembered-css'
@@ -51,8 +51,8 @@ interface ProcessRememberedCssReplayOptions {
   emitOrReplayCssAsset: (fileName: string, source: string) => OutputAsset | undefined
   generatorRuntime: Set<string>
   generatorPlatform?: string | undefined
-  getCssHandlerOptions: (file: string) => ReturnType<ReturnType<typeof import('./css-handler-options').createCssHandlerOptionsCache>['getCssHandlerOptions']>
-  getCssUserHandlerOptions: (file: string) => ReturnType<ReturnType<typeof import('./css-handler-options').createCssHandlerOptionsCache>['getCssUserHandlerOptions']>
+  getCssHandlerOptions: (file: string) => ReturnType<ReturnType<typeof import('../css-handler-options').createCssHandlerOptionsCache>['getCssHandlerOptions']>
+  getCssUserHandlerOptions: (file: string) => ReturnType<ReturnType<typeof import('../css-handler-options').createCssHandlerOptionsCache>['getCssUserHandlerOptions']>
   getRememberedCssSignature?: ((file: string) => string | undefined) | undefined
   getRememberedCssSources?: (() => Iterable<[string, RememberedCssSource]>) | undefined
   frameworkRootImportShellTargetByFile?: ReadonlyMap<string, string> | undefined
