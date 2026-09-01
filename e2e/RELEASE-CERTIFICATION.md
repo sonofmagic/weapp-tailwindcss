@@ -31,4 +31,6 @@ pnpm e2e:coverage:release-gate --report <coverage-report.json>
 
 validator 会重新计算 summary，检查 registry/catalog/toolchain identity、required layer、artifact checksum 和 cosign 签名元数据。没有同 SHA 的认证 artifact、没有 local-required 证据或签名校验失败时，`repo release ci` 不会执行。
 
+认证 artifact 必须来自仓库变量 `RELEASE_CERTIFICATE_RUN_ID` 指定的已完成成功 workflow run。Release 不会自动选择 nightly run：hosted nightly 当前只上传诊断 artifact，且在发布启动时可能仍处于运行状态，自动选择会造成竞态并可能把诊断报告误当认证证书。生成本地/自托管认证报告后，应将上传该 artifact 的 workflow run ID 写入 `RELEASE_CERTIFICATE_RUN_ID`，并确保其 head SHA 等于发布 commit。
+
 GitHub branch protection 应将 `Multiplatform Coverage Gate` 和 `Release Certificate Gate` 设为 required check，并通过受保护 Environment 配置审批。self-hosted runner 尚未配置前，发布认证会保持阻断，这是预期行为。

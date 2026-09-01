@@ -85,13 +85,31 @@ jobs:
           RELEASE_CERTIFICATE_RUN_ID: ${{ vars.RELEASE_CERTIFICATE_RUN_ID }}
         run: |
           run_id="$RELEASE_CERTIFICATE_RUN_ID"
-          if [ -z "$run_id" ]; then
-            run_id="$(gh run list --workflow e2e-coverage-nightly.yml --commit "$GITHUB_SHA" --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
-          fi
-          test -n "$run_id" || { echo "No successful same-commit coverage workflow run" >&2; exit 1; }
+          test -n "$run_id" || {
+            echo "Release certificate is not configured. Set RELEASE_CERTIFICATE_RUN_ID to a completed run that uploaded the signed certificate artifact for this commit." >&2
+            exit 1
+          }
+          run_metadata="$(gh run view "$run_id" --json headSha,status,conclusion)"
+          run_head_sha="$(jq -r '.headSha' <<<"$run_metadata")"
+          run_status="$(jq -r '.status' <<<"$run_metadata")"
+          run_conclusion="$(jq -r '.conclusion' <<<"$run_metadata")"
+          test "$run_head_sha" = "$GITHUB_SHA" || {
+            echo "Release certificate run $run_id belongs to $run_head_sha, expected $GITHUB_SHA" >&2
+            exit 1
+          }
+          test "$run_status" = completed && test "$run_conclusion" = success || {
+            echo "Release certificate run $run_id is not a successful completed run (status=$run_status conclusion=$run_conclusion)" >&2
+            exit 1
+          }
+          certificate_name="coverage-certificate-$GITHUB_SHA"
+          certificate_artifact="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id/artifacts" --paginate --jq '.artifacts[] | select(.expired == false) | .name' | grep -Fx "$certificate_name" || true)"
+          test "$certificate_artifact" = "$certificate_name" || {
+            echo "Run $run_id did not upload the required $certificate_name artifact" >&2
+            exit 1
+          }
           rm -rf e2e/.artifacts/release-certificate
           mkdir -p e2e/.artifacts/release-certificate
-          gh run download "$run_id" --name "coverage-certificate-$GITHUB_SHA" --dir e2e/.artifacts/release-certificate
+          gh run download "$run_id" --name "$certificate_name" --dir e2e/.artifacts/release-certificate
 
       - name: Validate release certificate
         shell: bash

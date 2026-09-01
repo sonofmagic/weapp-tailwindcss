@@ -584,6 +584,19 @@ describe('ci workflows', () => {
     expect(source).not.toContain('NODE_AUTH_TOKEN:')
   })
 
+  it('requires an explicit same-commit release certificate run', () => {
+    const { source } = readWorkflow('release.yml')
+
+    expect(source).toContain('RELEASE_CERTIFICATE_RUN_ID: ${{ vars.RELEASE_CERTIFICATE_RUN_ID }}')
+    expect(source).toContain('Release certificate is not configured')
+    expect(source).toContain('gh run view "$run_id" --json headSha,status,conclusion')
+    expect(source).toContain('test "$run_head_sha" = "$GITHUB_SHA"')
+    expect(source).toContain('test "$run_status" = completed && test "$run_conclusion" = success')
+    expect(source).toContain('certificate_name="coverage-certificate-$GITHUB_SHA"')
+    expect(source).toContain('did not upload the required $certificate_name artifact')
+    expect(source).not.toContain('gh run list --workflow e2e-coverage-nightly.yml')
+  })
+
   it('runs release verification and npmmirror sync through repoctl hooks', () => {
     const config = readText('repoctl.config.ts')
     const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
