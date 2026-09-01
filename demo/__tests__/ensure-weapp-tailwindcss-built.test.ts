@@ -67,6 +67,14 @@ describe('ensure-weapp-tailwindcss-built', () => {
     ]))
   })
 
+  it('为嵌套 vite/web 导出保留声明构建标记', () => {
+    const packageJson = JSON.parse(readFileSync(path.join(process.cwd(), 'packages/weapp-tailwindcss/package.json'), 'utf8'))
+    const entryDtsScript = readFileSync(path.join(process.cwd(), 'tools/weapp-tailwindcss-scripts/src/create-entry-dts.ts'), 'utf8')
+
+    expect(packageJson.exports['./vite/web'].types).toBe('./dist/vite/web.d.ts')
+    expect(entryDtsScript).toContain("'vite/web.d.ts'")
+  })
+
   it('只在公共入口缺失或源码更新后触发重建', () => {
     const packageRoot = createPackageFixture('./dist/index.mjs')
     const sourceFile = path.join(packageRoot, 'src/index.ts')
