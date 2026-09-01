@@ -441,6 +441,16 @@ describe('ci workflows', () => {
     expect(nightlySource).not.toContain('--source nightly')
   })
 
+  it('keeps nightly hosted static invocation cross-platform', () => {
+    const { workflow } = readWorkflow('e2e-coverage-nightly.yml')
+    const runStep = workflow.jobs['framework-matrix'].steps.find((step: Record<string, unknown>) => {
+      return step.name === 'Run hosted static suite'
+    })
+
+    expect(runStep.run).toBe('pnpm e2e:static')
+    expect(workflow.jobs['framework-matrix'].env.E2E_SKIP_OPEN_AUTOMATOR).toBe('1')
+  })
+
   it('keeps a lightweight cross-platform e2e watch gate in CI', () => {
     const { workflow } = readWorkflow('ci.yml')
     const job = workflow.jobs['e2e-watch']
@@ -582,6 +592,19 @@ describe('ci workflows', () => {
     expect(source).not.toContain('changesets/action')
     expect(source).not.toContain('NPM_TOKEN:')
     expect(source).not.toContain('NODE_AUTH_TOKEN:')
+  })
+
+  it('requires an explicit same-commit release certificate run', () => {
+    const { source } = readWorkflow('release.yml')
+
+    expect(source).toContain('RELEASE_CERTIFICATE_RUN_ID: ${{ vars.RELEASE_CERTIFICATE_RUN_ID }}')
+    expect(source).toContain('Release certificate is not configured')
+    expect(source).toContain('gh run view "$run_id" --json headSha,status,conclusion')
+    expect(source).toContain('test "$run_head_sha" = "$GITHUB_SHA"')
+    expect(source).toContain('test "$run_status" = completed && test "$run_conclusion" = success')
+    expect(source).toContain('certificate_name="coverage-certificate-$GITHUB_SHA"')
+    expect(source).toContain('did not upload the required $certificate_name artifact')
+    expect(source).not.toContain('gh run list --workflow e2e-coverage-nightly.yml')
   })
 
   it('runs release verification and npmmirror sync through repoctl hooks', () => {

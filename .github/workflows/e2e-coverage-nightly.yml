@@ -73,10 +73,7 @@ jobs:
         shell: bash
         run: pnpm exec playwright install chromium chromium-headless-shell
       - name: Run hosted static suite
-        run: >-
-          pnpm e2e:static
-          --exclude e2e/uni-app-vite-vue3-hbuilderx-tailwindcss-v4.test.ts
-          --exclude e2e/uni-app-x-vdom-tailwindcss-v4.test.ts
+        run: pnpm e2e:static
       - run: pnpm e2e:frameworks:matrix
       - run: pnpm e2e:multiplatform-build
 
