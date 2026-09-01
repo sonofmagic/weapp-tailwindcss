@@ -10,6 +10,10 @@ const communitySidebar: SidebarConfig = [
   },
   {
     type: 'doc',
+    id: 'reference/support-matrix',
+  },
+  {
+    type: 'doc',
     id: 'icons/index',
   },
   {

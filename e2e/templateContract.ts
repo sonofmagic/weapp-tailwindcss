@@ -1,0 +1,2 @@
+export const TEMPLATE_PACKAGE_MANAGER = 'pnpm@11.8.0'
+export const TEMPLATE_WEAPP_TAILWINDCSS_RANGE = '^5.1.3'

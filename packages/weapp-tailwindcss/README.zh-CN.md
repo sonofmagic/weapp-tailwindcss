@@ -34,6 +34,8 @@ export default {
 }
 ```
 
+仓库提供 [Generic Vite](../../templates/generic-vite-tailwindcss-v4)、[uni-app](../../templates/uni-app-tailwindcss-v4)、[Taro Vite](../../templates/taro-vite-tailwindcss-v4) 和 [weapp-vite](../../templates/weapp-vite-tailwindcss-v4) 四个 canonical 模板，可直接安装并运行 smoke 构建。
+
 ## Tailwind CSS 4 入口
 
 CSS 入口必须被应用构建图实际引入。需要稳定识别入口时，通过 `cssEntries` 配置从项目根目录解析出的绝对路径，但不要把它当成 CSS import 的替代品。
