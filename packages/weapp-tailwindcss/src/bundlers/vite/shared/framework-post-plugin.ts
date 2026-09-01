@@ -122,10 +122,12 @@ export function createFrameworkPostPlugin(options: any): Plugin {
         )
       }, { emit: false })
     },
-    generateBundle: {
+  }
+  if (typeof options.generateBundleHook === 'function') {
+    plugin.generateBundle = {
       order: 'post',
       handler: options.generateBundleHook,
-    },
+    }
   }
   if (options.api) {
     plugin.api = options.api

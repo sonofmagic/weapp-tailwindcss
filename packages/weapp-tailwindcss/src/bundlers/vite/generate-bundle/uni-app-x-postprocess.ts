@@ -1,5 +1,5 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
-import type { CssHandlerOptionsCache } from './css-handler-options'
+import type { CssHandlerOptionsCache } from '../css-handler-options'
 import type { GenerateBundleContext } from './types'
 import { AssetEmissionPlan } from '@/compiler'
 import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtilities, createUniAppXBundleAssetSourceGetter, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles, injectUniAppXStylePlaceholder } from '@/uni-app-x/style-asset'

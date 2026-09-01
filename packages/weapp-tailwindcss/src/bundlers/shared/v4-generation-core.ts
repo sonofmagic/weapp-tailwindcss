@@ -11,6 +11,8 @@ import { resolvePostcssRequestOption } from './generator-css/source-resolver/pos
 import { isVueScopedStyleRequest, stripRequestQuery } from './style-requests'
 
 export interface TailwindV4GenerationCoreInput extends GenerateCssByGeneratorOptions {
+  /** CSS-only 构建不需要 compiler graph/shadow artifact，固定使用 legacy 输出。 */
+  compilerMode?: 'legacy' | undefined
   compilationChanges?: CompilationDependencyChange[] | undefined
   frameworkPostcssOwner?: InternalUserDefinedOptions | undefined
   cssStage?: CssStage | undefined
@@ -180,7 +182,7 @@ async function generateTailwindV4CssWithImplementation(
 export async function generateTailwindV4Css(
   options: TailwindV4GenerationCoreInput,
 ): Promise<TailwindV4GenerationCoreResult | undefined> {
-  const mode = resolveCompilerMode()
+  const mode = options.compilerMode ?? resolveCompilerMode()
   const generationOptions = resolveGenerationOptions(options, mode)
   if (mode === 'legacy') {
     return generateTailwindV4CssWithImplementation(generationOptions, {

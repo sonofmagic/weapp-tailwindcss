@@ -4815,6 +4815,9 @@ importers:
       tailwindcss-config:
         specifier: workspace:*
         version: link:../tailwindcss-config
+      vite:
+        specifier: ^5.2.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
+        version: 7.2.7(@types/node@26.4.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.103.1)(sass@1.103.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.0)
       weapp-style-injector:
         specifier: workspace:*
         version: link:../weapp-style-injector

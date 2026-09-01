@@ -2,7 +2,7 @@ import type { TailwindV4GenerationCoreInput, TailwindV4GenerationCoreResult } fr
 import { hasBundlerGeneratedCssMarker } from '../../shared/generated-css-marker'
 import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
-import { normalizeCssSourceForCompare } from './css-output'
+import { normalizeCssSourceForCompare } from '../css-output'
 import { hasTailwindGenerationSource } from './sfc-style-source'
 
 export type ViteCssTransformTaskKind = 'tailwind' | 'web' | 'import-shell' | 'style'

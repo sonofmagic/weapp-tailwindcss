@@ -2,8 +2,8 @@ import type { OutputAsset } from 'rollup'
 import type { RememberedCssSource } from './types'
 import type { InternalUserDefinedOptions } from '@/types'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
+import { CSS_SOURCE_OUTPUT_EXT_RE, resolveViteCssPipelineOutputFileFromSourceFile } from '../css-output'
 import { getActiveViteSourceOutputRelationOwner } from '../source-output-relations'
-import { CSS_SOURCE_OUTPUT_EXT_RE, resolveViteCssPipelineOutputFileFromSourceFile } from './css-output'
 
 export function createRememberedCssRuntimeSignature(cssRuntimeSignature: string, cssRuntimeAffectingHash: string) {
   return `${cssRuntimeSignature}:${cssRuntimeAffectingHash}`

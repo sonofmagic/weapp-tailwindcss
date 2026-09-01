@@ -116,6 +116,7 @@ describe.skipIf(isCI)('vite', () => {
       plugins: [
         twv(),
         WeappTailwindcss({
+          generator: { target: 'weapp' },
           tailwindcssBasedir: tailwindcss4Basedir,
           cssEntries: [path.join(root, 'index.css')],
         }),
@@ -151,6 +152,7 @@ describe.skipIf(isCI)('vite', () => {
       root,
       plugins: [
         WeappTailwindcss({
+          generator: { target: 'weapp' },
           tailwindcssBasedir: tailwindcss4Basedir,
           cssEntries: [path.join(root, 'index.css')],
         }),

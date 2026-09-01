@@ -27,7 +27,7 @@ export interface FinalizeGenerateBundleOptions {
   formatIteration: number
   generatorCandidateSignature: string
   generatorRuntime: Set<string>
-  getCssHandlerOptions: (file: string) => ReturnType<ReturnType<typeof import('./css-handler-options').createCssHandlerOptionsCache>['getCssHandlerOptions']>
+  getCssHandlerOptions: (file: string) => ReturnType<ReturnType<typeof import('../../css-handler-options').createCssHandlerOptionsCache>['getCssHandlerOptions']>
   getSourceCandidateSourcesForEntries: GenerateBundleContext['getSourceCandidateSourcesForEntries']
   getSourceCandidatesForEntries: GenerateBundleContext['getSourceCandidatesForEntries']
   getViteCssCacheStats: GenerateBundleContext['getViteCssCacheStats']

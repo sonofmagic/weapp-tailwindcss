@@ -131,7 +131,42 @@ exports[`vite test > vite common build twice for cache 1`] = `
 `;
 
 exports[`vite test > vite common build twice for cache 2`] = `
-"/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+".flex {
+  display: flex;
+}
+.grid {
+  display: grid;
+}
+.h-\\[99px\\] {
+  height: 99px;
+}
+.h-\\[100px\\] {
+  height: 100px;
+}
+.w-\\[1\\.5rem\\] {
+  width: 1.5rem;
+}
+.w-\\[55px\\] {
+  width: 55px;
+}
+.w-\\[99px\\] {
+  width: 99px;
+}
+.w-\\[100px\\] {
+  width: 100px;
+}
+.bg-\\[\\#929292\\] {
+  background-color: #929292;
+}
+.bg-\\[red\\] {
+  background-color: red;
+}
+.bg-\\[url\\(\\'https\\:\\/\\/xxx\\.com\\/xx\\.webp\\'\\)\\] {
+  background-image: url(https://xxx.com/xx.webp);
+}
+.bg-\\[url\\(\\'https\\:\\/\\/yyy\\.com\\/xx\\.webp\\'\\)\\] {
+  background-image: url(https://yyy.com/xx.webp);
+}
 "
 `;
 

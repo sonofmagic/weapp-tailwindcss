@@ -11,6 +11,7 @@ import { logTailwindcssTarget } from '@/tailwindcss/targets'
 import { resolveViteFrameworkProfile } from '../framework-selector'
 import { createGenericWebViteCapabilityProfile, frameworkViteCapabilityProfile } from './capability-profile'
 import { createGenericVitePlugins } from './frameworks/generic'
+import { createGenericWebVitePlugins } from './frameworks/generic/web'
 import { createTaroVitePlugins } from './frameworks/taro'
 import { createUniAppVitePlugins } from './frameworks/uni-app'
 import { createUniAppXVitePlugins } from './frameworks/uni-app-x'
@@ -61,6 +62,7 @@ function resolveEnvironmentName(context: unknown): string {
 }
 
 function resolveViteProfile(options: UserDefinedOptions, config: ResolvedConfig, environmentName: string) {
+  const forceGenericWeb = (options as UserDefinedOptions & { __internalViteForceGenericWeb?: boolean }).__internalViteForceGenericWeb === true
   const rawTarget = options.generator && typeof options.generator === 'object' ? options.generator.target : undefined
   const explicitPlatform = options.cssOptions?.platform ?? options.platform
   const envPlatform = process.env['UNI_PLATFORM'] ?? process.env['UNI_UTS_PLATFORM']
@@ -70,7 +72,11 @@ function resolveViteProfile(options: UserDefinedOptions, config: ResolvedConfig,
 
   let frameworkName = 'generic' as ReturnType<typeof resolveViteFrameworkProfile>['frameworkName']
   let appType = explicitAppType
-  if (explicitAppType) {
+  if (forceGenericWeb) {
+    frameworkName = 'generic'
+    appType = undefined
+  }
+  else if (explicitAppType) {
     frameworkName = resolveViteFrameworkProfile({ appType: explicitAppType, uniAppX: options.uniAppX }).frameworkName
   }
   else {
@@ -89,14 +95,16 @@ function resolveViteProfile(options: UserDefinedOptions, config: ResolvedConfig,
     appType = undefined
   }
   const isGenericWeb = frameworkName === 'generic'
-    && !explicitAppType
+    && (forceGenericWeb || !explicitAppType)
     && rawTarget !== 'weapp'
     && rawTarget !== 'app'
-    && !(Array.isArray(options.cssEntries) && options.cssEntries.length > 0)
     && family !== 'mini-program'
+  const cssOnlyGenericWeb = isGenericWeb
+    && (forceGenericWeb || (rawTarget === undefined && explicitAppType === undefined && selectedPlatform === undefined))
   const capability = isGenericWeb
     ? {
         ...createGenericWebViteCapabilityProfile(options),
+        cssOnly: cssOnlyGenericWeb,
         sourceCandidates: options.generator && typeof options.generator === 'object' && options.generator.target === 'web'
           ? true
           : createGenericWebViteCapabilityProfile(options).sourceCandidates,
@@ -154,8 +162,9 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
   ;(opts as any).__internalViteRawExplicitGeneratorTarget = Boolean(options.generator && typeof options.generator === 'object' && Object.hasOwn(options.generator, 'target'))
 
   // 显式 basedir 是可信的项目边界，可在工厂阶段避免重复构造 runtime；其余情况等待真实 Vite root。
+  const forceGenericWeb = (options as UserDefinedOptions & { __internalViteForceGenericWeb?: boolean }).__internalViteForceGenericWeb === true
   const initialProfile = resolveViteFrameworkProfile({
-    appType: opts.appType,
+    appType: forceGenericWeb ? undefined : opts.appType,
     detectEnv: true,
     env: process.env,
     root: typeof options.tailwindcssBasedir === 'string' && options.tailwindcssBasedir.trim().length > 0
@@ -164,8 +173,10 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
     searchUp: false,
     uniAppX: opts.uniAppX,
   })
-  const initialFramework = initialProfile.frameworkName
-  ;(opts as any).__internalViteCapabilityProfile = { ...frameworkViteCapabilityProfile }
+  const initialFramework = forceGenericWeb ? 'generic' : initialProfile.frameworkName
+  ;(opts as any).__internalViteCapabilityProfile = forceGenericWeb
+    ? createGenericWebViteCapabilityProfile(options)
+    : { ...frameworkViteCapabilityProfile }
   const initialFactory = {
     'generic': createGenericVitePlugins,
     'taro': createTaroVitePlugins,
@@ -212,12 +223,16 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
     },
   ]
   const initialNames = new Set(initialPlugins.map(plugin => plugin.name))
+  const genericWebPlugins = initialFramework === 'generic' && !forceGenericWeb && !opts.appType
+    ? (createGenericWebVitePlugins(opts) ?? [])
+    : []
   const pluginTemplates = [
     ...initialPlugins,
-    ...(initialFramework === 'generic' && !opts.appType && initialPlugins.length > 1
+    ...genericWebPlugins,
+    ...(initialFramework === 'generic' && !forceGenericWeb && !opts.appType && initialPlugins.length > 1
       ? knownFrameworkPlugins.filter(plugin => !initialNames.has(plugin.name))
       : []),
-  ]
+  ].filter((plugin, index, plugins) => plugins.findIndex(candidate => candidate.name === plugin.name) === index)
   let activePlugins = initialPlugins as Plugin[]
   let resolved = false
 
@@ -240,7 +255,7 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
       logger.debug('根据 Vite 项目根目录自动推断 appType -> %s', profile.appType)
     }
     if (profile.isGenericWeb
-      && !opts.generator
+      && (opts.generator === undefined || (typeof opts.generator === 'object' && !Object.hasOwn(opts.generator, 'target')))
       && opts.generator !== false
       && !options.platform
       && !options.cssOptions?.platform
@@ -255,14 +270,16 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
     else {
       ;(opts as any).__internalViteCapabilityProfile = profile.capability
     }
-    const factory = {
-      'generic': createGenericVitePlugins,
-      'taro': createTaroVitePlugins,
-      'uni-app': createUniAppVitePlugins,
-      'uni-app-x': createUniAppXVitePlugins,
-      'weapp-vite': createWeappVitePlugins,
-    }[profile.frameworkName]
-    if (profile.frameworkName !== initialFramework) {
+    const factory = profile.capability.cssOnly
+      ? createGenericWebVitePlugins
+      : {
+          'generic': createGenericVitePlugins,
+          'taro': createTaroVitePlugins,
+          'uni-app': createUniAppVitePlugins,
+          'uni-app-x': createUniAppXVitePlugins,
+          'weapp-vite': createWeappVitePlugins,
+        }[profile.frameworkName]
+    if (profile.frameworkName !== initialFramework || profile.capability.cssOnly) {
       activePlugins = (factory(opts) ?? []) as Plugin[]
     }
   }

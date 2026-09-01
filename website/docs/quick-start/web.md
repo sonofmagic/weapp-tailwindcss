@@ -42,7 +42,22 @@ import './style.css'
 
 ## 注册 Vite 插件
 
-纯 Vite Web 项目继续使用主入口。无框架、平台标记的 Generic Vite 项目会在 Vite 配置解析后自动使用 Web target；入口 CSS 仍需由应用实际导入，插件会从 Vite 模块图发现根样式。
+纯 Vite Web 项目推荐使用专用入口。它固定 Web target，不会继承 monorepo 上层的小程序框架标记；入口 CSS 仍需由应用实际导入。
+
+```ts title="vite.config.ts"
+import { defineConfig } from 'vite'
+import { WeappTailwindcssWeb } from 'weapp-tailwindcss/vite/web'
+
+export default defineConfig({
+  plugins: [WeappTailwindcssWeb()],
+})
+```
+
+`vite/web` 是 CSS-only 入口：它只处理 Tailwind CSS 生成、CSS transform、CSS HMR、入口诊断和 Web CSS 收尾，不会注册 JavaScript/template 转译、框架扩展、分包或小程序产物处理。内置 `styleInjector` 默认关闭；只有显式传入 `styleInjector` 时才启用 Web 适配器。
+
+SSR、library mode、`optimizeDeps`、`cssMinify` 和 sourcemap 继续由 Vite 管理。只有实际进入 Vite CSS 模块图的样式才会生成 Tailwind CSS，`cssEntries` 不能替代应用对 CSS 的 import。
+
+也可以继续使用主入口。无框架、平台标记的 Generic Vite 项目会在 Vite 配置解析后自动使用 Web target，入口 CSS 会从 Vite 模块图发现：
 
 ```ts title="vite.config.ts"
 import { defineConfig } from 'vite'

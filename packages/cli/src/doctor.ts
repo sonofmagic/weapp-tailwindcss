@@ -6,6 +6,17 @@ import process from 'node:process'
 import semver from 'semver'
 import { WEAPP_TW_REQUIRED_NODE_VERSION_RANGE } from './constants'
 import { CONFIG_FILES, FRAMEWORK_DEPS } from './doctor/constants'
+import {
+  extractConfiguredCssEntries,
+  extractConfiguredOption,
+  extractCssSources,
+  extractGeneratorTarget,
+  findConfiguredTailwindOwners,
+  readConfigText,
+  resolveSourceProbePath,
+  SUPPORTED_APP_TYPES,
+  SUPPORTED_GENERATOR_TARGETS,
+} from './doctor/semantics'
 
 function tryReadJson<T>(file: string): T | undefined {
   try {
@@ -67,7 +78,11 @@ function detectFrameworks(deps: Record<string, string>) {
 }
 
 function addCheck(checks: DoctorCheck[], check: DoctorCheck) {
-  checks.push(check)
+  checks.push({
+    ...check,
+    code: check.code ?? check.id,
+    evidence: check.evidence ?? [],
+  })
 }
 
 function summarizeChecks(checks: DoctorCheck[]): Record<DoctorCheckStatus, number> {
@@ -101,13 +116,24 @@ export function createDoctorReport(options: DoctorOptions = {}): DoctorReport {
   const checks: DoctorCheck[] = []
   const packageManager = detectPackageManager(cwd, pkg)
   const frameworks = detectFrameworks(deps)
-  const tailwindcssVersion = readDependencyVersion(cwd, 'tailwindcss')
-  const weappTailwindcssVersion = readDependencyVersion(cwd, 'weapp-tailwindcss')
+  const tailwindcssVersion = hasDependency(deps, 'tailwindcss')
+    ? readDependencyVersion(cwd, 'tailwindcss')
+    : undefined
+  const weappTailwindcssVersion = hasDependency(deps, 'weapp-tailwindcss')
+    ? readDependencyVersion(cwd, 'weapp-tailwindcss')
+    : undefined
   const tailwindMajor = getMajorVersion(tailwindcssVersion) ?? getDependencyMajor(deps, 'tailwindcss')
   const tailwindConfig = findFirstExisting(cwd, CONFIG_FILES.tailwind)
   const postcssConfig = findFirstExisting(cwd, CONFIG_FILES.postcss)
   const viteConfig = findFirstExisting(cwd, CONFIG_FILES.vite)
   const webpackConfig = findFirstExisting(cwd, CONFIG_FILES.webpack)
+  const tailwindOwners = findConfiguredTailwindOwners(cwd, [postcssConfig, viteConfig, webpackConfig])
+  const cssEntries = [postcssConfig, viteConfig, webpackConfig]
+    .map(file => ({ file, source: readConfigText(cwd, file) }))
+    .flatMap(({ file, source }) => extractConfiguredCssEntries(source).map(entry => ({ file, entry })))
+  const buildConfigs = [postcssConfig, viteConfig, webpackConfig]
+    .map(file => ({ file, source: readConfigText(cwd, file) }))
+    .filter((item): item is { file: string, source: string } => Boolean(item.file && item.source))
 
   addCheck(checks, pkg
     ? {
@@ -215,14 +241,140 @@ export function createDoctorReport(options: DoctorOptions = {}): DoctorReport {
         suggestion: '如果通过 PostCSS 接入，请补充 postcss.config.*；如果通过 Vite/Taro 插件接入，可忽略此项。',
       })
 
-  if (tailwindMajor === 4 && postcssConfig && !hasDependency(deps, '@tailwindcss/postcss')) {
+  if (tailwindMajor === 4 && tailwindOwners.owners.size > 0) {
     addCheck(checks, {
-      id: 'tailwindcss-v4-postcss',
-      title: 'Tailwind v4 PostCSS',
+      id: 'tailwindcss-generator-owner',
+      title: 'Tailwind 生成器归属',
       status: 'warn',
-      message: 'Tailwind CSS v4 项目存在 PostCSS 配置，但未检测到 @tailwindcss/postcss。',
-      suggestion: '如果 PostCSS 配置中仍直接使用 tailwindcss，请迁移到 @tailwindcss/postcss。',
+      message: `检测到官方 Tailwind ${[...tailwindOwners.owners].join(' 与 ')} 生成器配置。生成模式下不要与 WeappTailwindcss 同时运行两套 Tailwind 生成器。`,
+      suggestion: '移除 @tailwindcss/vite 或 @tailwindcss/postcss 的生成配置，仅保留 WeappTailwindcss；PostCSS 中可以继续保留其他业务插件。',
+      code: 'duplicate-tailwind-generator',
+      evidence: tailwindOwners.evidence,
     })
+  }
+
+  if (tailwindMajor === 4 && cssEntries.length > 0) {
+    const missingEntries = cssEntries.filter(({ entry }) => !existsSync(path.resolve(cwd, entry)))
+    const entriesWithoutTailwindImport = cssEntries.filter(({ entry }) => {
+      if (!existsSync(path.resolve(cwd, entry))) {
+        return false
+      }
+      try {
+        const source = readFileSync(path.resolve(cwd, entry), 'utf8')
+        return !/@import\s+["']tailwindcss["']/u.test(source)
+          && !/@import\s+["']tailwindcss\//u.test(source)
+      }
+      catch {
+        return false
+      }
+    })
+    if (missingEntries.length > 0) {
+      addCheck(checks, {
+        id: 'tailwind-css-entry',
+        title: 'Tailwind CSS 入口',
+        status: 'error',
+        message: `配置了不存在的 cssEntries：${missingEntries.map(item => item.entry).join(', ')}。`,
+        suggestion: '请将 cssEntries 改为项目根目录解析出的绝对路径，或确认入口文件已创建。',
+        code: 'missing-css-entry',
+        evidence: missingEntries.map(item => item.file).filter((file): file is string => Boolean(file)),
+      })
+    }
+    if (entriesWithoutTailwindImport.length > 0) {
+      addCheck(checks, {
+        id: 'tailwind-css-entry-import',
+        title: 'Tailwind CSS 入口内容',
+        status: 'warn',
+        message: `cssEntries 指向的文件未发现 @import "tailwindcss"：${entriesWithoutTailwindImport.map(item => item.entry).join(', ')}。`,
+        suggestion: '请在纯 CSS 入口中加入 @import "tailwindcss"，并确保该文件被应用构建图实际引入。',
+        code: 'missing-tailwind-import',
+        evidence: entriesWithoutTailwindImport.map(item => path.resolve(cwd, item.entry)),
+      })
+    }
+
+    const sourceDiagnostics = cssEntries.flatMap(({ entry }) => {
+      const cssFile = path.resolve(cwd, entry)
+      if (!existsSync(cssFile)) {
+        return []
+      }
+      let source: string
+      try {
+        source = readFileSync(cssFile, 'utf8')
+      }
+      catch {
+        return []
+      }
+      const directives = extractCssSources(source)
+      const diagnostics: DoctorCheck[] = []
+      if (!directives.some(directive => !directive.excluded)) {
+        diagnostics.push({
+          id: 'tailwind-css-source',
+          title: 'Tailwind CSS 来源范围',
+          status: 'warn',
+          message: `${entry} 未发现 @source，Tailwind 可能无法扫描项目源码。`,
+          suggestion: '请在 CSS 入口中加入覆盖实际源码目录的 @source；仅配置 cssEntries 不会替代源码扫描声明。',
+          code: 'missing-tailwind-source',
+          evidence: [cssFile],
+        })
+      }
+      for (const directive of directives) {
+        if (directive.inline || directive.excluded) {
+          continue
+        }
+        const probePath = resolveSourceProbePath(cssFile, directive.value)
+        if (!existsSync(probePath)) {
+          diagnostics.push({
+            id: 'tailwind-css-source-path',
+            title: 'Tailwind @source 路径',
+            status: 'warn',
+            message: `@source ${directive.value} 的路径不存在或无法从入口解析。`,
+            suggestion: '请按 CSS 入口所在目录修正 @source 相对路径，或确认源码目录已经创建。',
+            code: 'invalid-tailwind-source',
+            evidence: [cssFile, probePath],
+          })
+        }
+      }
+      return diagnostics
+    })
+    sourceDiagnostics.forEach(check => addCheck(checks, check))
+  }
+
+  for (const { file, source } of buildConfigs) {
+    const appType = extractConfiguredOption(source, 'appType')
+    if (appType && !SUPPORTED_APP_TYPES.has(appType)) {
+      addCheck(checks, {
+        id: 'app-type',
+        title: 'appType 配置',
+        status: 'error',
+        message: `${file} 使用了不受支持的 appType：${appType}。`,
+        suggestion: '请改为 uni-app、uni-app-x、taro、mpx、weapp-vite 或其他公开支持的 appType。',
+        code: 'invalid-app-type',
+        evidence: [file],
+      })
+    }
+    const target = extractGeneratorTarget(source)
+    if (target && !SUPPORTED_GENERATOR_TARGETS.has(target)) {
+      addCheck(checks, {
+        id: 'generator-target',
+        title: '生成目标',
+        status: 'error',
+        message: `${file} 使用了不受支持的 generator.target：${target}。`,
+        suggestion: '请使用 web、weapp 或 app；普通 Vite Web 项目推荐使用 web。',
+        code: 'invalid-generator-target',
+        evidence: [file],
+      })
+    }
+    const platform = extractConfiguredOption(source, 'platform')
+    if (platform && target && ((platform === 'web' && target !== 'web') || (platform !== 'web' && target === 'web'))) {
+      addCheck(checks, {
+        id: 'generator-platform',
+        title: '生成目标与平台',
+        status: 'warn',
+        message: `${file} 的 platform=${platform} 与 generator.target=${target} 可能不一致。`,
+        suggestion: '请让 platform 与 generator.target 指向同一运行端，或删除不必要的显式覆盖以使用自动推断。',
+        code: 'generator-target-platform-conflict',
+        evidence: [file],
+      })
+    }
   }
 
   addCheck(checks, frameworks.length > 0

@@ -4,8 +4,8 @@ import type { InternalUserDefinedOptions } from '@/types'
 import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
 import { AssetEmissionPlan } from '@/compiler'
 import { isSourceStyleRequest } from '../../shared/style-requests'
+import { canProcessViteSourceStyleAsCss, resolveViteCssOutputFile, resolveViteCssPipelineOutputFileFromSourceFile, SOURCE_STYLE_OUTPUT_EXT_RE } from '../css-output'
 import { applyViteAssetEmissionPlan } from './asset-emission-plan'
-import { canProcessViteSourceStyleAsCss, resolveViteCssOutputFile, resolveViteCssPipelineOutputFileFromSourceFile, SOURCE_STYLE_OUTPUT_EXT_RE } from './css-output'
 import { createCssImportShell, createRootMiniProgramOriginStyleOutputFile, isRootMiniProgramStyleOutputFile, shouldKeepRootMiniProgramStyleAsImportShell, shouldMoveRootMiniProgramStyleToImportShellOrigin } from './root-style-output'
 
 export function resolveCssBundleOutputFile(options: {

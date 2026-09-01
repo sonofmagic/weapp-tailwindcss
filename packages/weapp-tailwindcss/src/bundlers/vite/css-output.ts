@@ -2,8 +2,8 @@ import type { InternalUserDefinedOptions } from '@/types'
 import { existsSync, realpathSync } from 'node:fs'
 import path from 'node:path'
 import { postcss } from '@weapp-tailwindcss/postcss'
-import { normalizeOutputPathKey } from '../../shared/module-graph'
-import { isCSSRequest } from '../utils'
+import { normalizeOutputPathKey } from '../shared/module-graph'
+import { isCSSRequest } from './utils'
 
 export const SOURCE_STYLE_OUTPUT_EXT_RE = /\.(?:less|sass|scss|styl|stylus|pcss|postcss)$/i
 export const CSS_SOURCE_OUTPUT_EXT_RE = /\.(?:css|less|sass|scss|styl|stylus|pcss|postcss)$/i

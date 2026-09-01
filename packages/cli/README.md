@@ -53,6 +53,8 @@ const exitCode = await runCli(['-i', 'src/input.css', '-o', 'dist/output.css'])
 
 Importing the package does not execute the CLI. `runCli` follows the same stdout, stderr, and `process.exitCode` behavior as the binary.
 
+Use `weapp-tw doctor` when integrating or upgrading a project. It only reports duplicate Tailwind generation when a configuration actually references `@tailwindcss/vite` or `@tailwindcss/postcss`; a plain PostCSS config is not treated as an error.
+
 ## Documentation
 
 See the [CLI guide](https://tw.weapp.dev/docs/tools/weapp-tw-cli) for all options, stdin/stdout, source maps, watch mode, and `canonicalize`.

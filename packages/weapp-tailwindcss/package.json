@@ -56,6 +56,11 @@
       "import": "./dist/vite.js",
       "require": "./dist/vite.cjs"
     },
+    "./vite/web": {
+      "types": "./dist/vite/web.d.ts",
+      "import": "./dist/vite/web.js",
+      "require": "./dist/vite/web.cjs"
+    },
     "./webpack": {
       "types": "./dist/webpack.d.ts",
       "import": "./dist/webpack.js",
@@ -212,10 +217,14 @@
     "registry": "https://registry.npmjs.org"
   },
   "peerDependencies": {
-    "@mpxjs/webpack-plugin": ">=2.0.0 <3.0.0"
+    "@mpxjs/webpack-plugin": ">=2.0.0 <3.0.0",
+    "vite": "^5.2.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
   },
   "peerDependenciesMeta": {
     "@mpxjs/webpack-plugin": {
+      "optional": true
+    },
+    "vite": {
       "optional": true
     }
   },

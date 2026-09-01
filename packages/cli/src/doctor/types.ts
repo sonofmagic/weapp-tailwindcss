@@ -6,6 +6,10 @@ export interface DoctorCheck {
   status: DoctorCheckStatus
   message: string
   suggestion?: string | undefined
+  /** 供 CI 或 issue 自动归类的稳定诊断编码。 */
+  code?: string | undefined
+  /** 支撑该诊断的配置文件或路径证据。 */
+  evidence?: string[] | undefined
 }
 
 export interface DoctorReport {

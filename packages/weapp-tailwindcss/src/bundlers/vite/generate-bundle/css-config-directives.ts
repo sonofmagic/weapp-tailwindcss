@@ -2,9 +2,9 @@ import type { InternalUserDefinedOptions } from '@/types'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { resolveTailwindV4CssSourceBase } from '@/tailwindcss/source-scan'
+import { normalizeCssSourceForCompare } from '../css-output'
 import { slash } from '../utils'
 import { collectConfiguredTailwindV4CssSources } from './configured-css-sources'
-import { normalizeCssSourceForCompare } from './css-output'
 import { hasMatchingStyleFileBase, isMatchingCssSourceFile } from './style-matching'
 
 function isPackageJsonImportRequest(request: string) {

@@ -36,20 +36,28 @@ export async function getLatestVersionInRange(packageName: string, versionRange:
   return filteredVersions.at(-1) ?? response['dist-tags'].latest
 }
 
-// 默认需要安装的开发依赖：tailwindcss、postcss、autoprefixer、weapp-tailwindcss
+export type InitMode = 'v4' | 'legacy'
+
+// v5 生成模式只需要 Tailwind CSS 与 weapp-tailwindcss，避免叠加官方生成插件。
 export const defaultDevDeps = {
   'tailwindcss': '4',
+  'weapp-tailwindcss': '5',
+}
+
+export const legacyDevDeps = {
+  'tailwindcss': '3',
   'postcss': '8',
   'autoprefixer': '10',
   'weapp-tailwindcss': '4',
 }
 
-export async function getDevDepsVersions(options?: FetchOptions) {
+export async function getDevDepsVersions(options?: FetchOptions, mode: InitMode = 'v4') {
+  const deps = mode === 'legacy' ? legacyDevDeps : defaultDevDeps
   return Object.fromEntries(await Promise.all(
-    Object.entries(defaultDevDeps).map(
+    Object.entries(deps).map(
       async (x) => {
         return [x[0], `^${await getLatestVersionInRange(...x, options)}`]
       },
     ),
-  )) as typeof defaultDevDeps
+  )) as typeof defaultDevDeps | typeof legacyDevDeps
 }

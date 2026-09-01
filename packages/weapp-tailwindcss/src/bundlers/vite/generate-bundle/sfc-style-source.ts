@@ -6,7 +6,7 @@ import { isTailwindV4CssEntry } from '@/tailwindcss/v4/css-entries'
 import { hasTailwindApplyDirective, hasTailwindNonRootGenerationDirectives, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../../shared/generator-css/directives'
 import { scoreTailwindV4CssSourceFileMatch } from '../../shared/generator-css/source-resolver/matching'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
-import { CSS_SOURCE_OUTPUT_EXT_RE } from './css-output'
+import { CSS_SOURCE_OUTPUT_EXT_RE } from '../css-output'
 import { scoreMatchingStyleFileBase } from './style-matching'
 
 const SFC_STYLE_SOURCE_EXTENSIONS = ['.vue', '.uvue', '.nvue', '.svelte', '.mpx'] as const
