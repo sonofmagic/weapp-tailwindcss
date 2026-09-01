@@ -653,6 +653,26 @@ describe('ci workflows', () => {
     })).toBe(true)
   })
 
+  it('grants the PR benchmark reporter permission to publish pull request comments', () => {
+    const { source, workflow } = readWorkflow('benchmark-pr-report.yml')
+    const commentStep = workflow.jobs.publish.steps.find((step: Record<string, unknown>) => {
+      return step.name === 'Update PR comment'
+    })
+
+    expect(workflow.permissions).toMatchObject({
+      actions: 'read',
+      contents: 'read',
+      'pull-requests': 'write',
+    })
+    expect(workflow.permissions.issues).toBeUndefined()
+    expect(commentStep).toMatchObject({
+      uses: 'actions/github-script@v7',
+    })
+    expect(String(commentStep.if)).toContain("steps.report.outcome == 'success'")
+    expect(commentStep['continue-on-error']).not.toBe(true)
+    expect(source).toContain('github.rest.issues.createComment')
+  })
+
   it('delegates the complete package lifecycle to repoctl', () => {
     const { source, workflow } = readWorkflow('release.yml')
     const { workflow: releaseGateWorkflow } = readWorkflow('release-gate.yml')
