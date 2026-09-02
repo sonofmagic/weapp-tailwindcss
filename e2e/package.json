@@ -8,7 +8,7 @@
   },
   "scripts": {},
   "dependencies": {
-    "@lynx-js/css-defines": "0.0.16",
+    "@lynx-js/css-defines": "0.0.17",
     "@lynx-js/tasm": "0.0.52",
     "@tailwindcss-mangle/config": "^8.0.1",
     "prettier": "catalog:prettier371",
