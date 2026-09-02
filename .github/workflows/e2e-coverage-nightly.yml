@@ -46,6 +46,7 @@ jobs:
     timeout-minutes: 45
     env:
       E2E_SKIP_OPEN_AUTOMATOR: '1'
+      E2E_SKIP_HBUILDERX: '1'
     strategy:
       fail-fast: false
       matrix:

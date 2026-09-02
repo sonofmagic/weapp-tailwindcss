@@ -57,6 +57,13 @@ describe('Expo Metro integration', () => {
     expect(resolvedOrigin).toBe(path.join(projectRoot, 'package.json'))
   })
 
+  it('pins the Web React singleton through Metro extraNodeModules', () => {
+    const projectRoot = path.resolve('fixtures/react-native-app')
+    const config = withWeappTailwindcss({}, { projectRoot })
+    expect(config.resolver?.extraNodeModules?.react).toBe(path.join(projectRoot, 'node_modules/react'))
+    expect(config.resolver?.extraNodeModules?.['react-dom']).toBe(path.join(projectRoot, 'node_modules/react-dom'))
+  })
+
   it.each(['react', 'react/jsx-runtime', 'react-native', 'react-native/Libraries/Utilities/Platform'])('resolves singleton module %s from projectRoot', (moduleName) => {
     const projectRoot = path.resolve('fixtures/react-native-app')
     let resolvedOrigin = ''
@@ -91,8 +98,9 @@ describe('Expo Metro integration', () => {
     expect(resolvedOrigin).toBe(importer)
   })
 
-  it.each(['react', 'react-native'])('preserves the Web resolver graph for %s', (moduleName) => {
+  it('resolves the Web React singleton from the project root', () => {
     const importer = path.resolve('packages/workspace-package/index.js')
+    const configRoot = path.resolve(__dirname, '../../examples/react-native-expo')
     let resolvedOrigin = ''
     const config = withWeappTailwindcss({
       resolver: {
@@ -101,9 +109,29 @@ describe('Expo Metro integration', () => {
           return { type: 'empty' }
         },
       },
-    }, { projectRoot: path.resolve('fixtures/react-native-app') })
+    }, { projectRoot: configRoot })
 
-    config.resolver?.resolveRequest?.({ originModulePath: importer }, moduleName, 'web')
+    const resolved = config.resolver?.resolveRequest?.({ originModulePath: importer }, 'react', 'web') as { type: string, filePath: string }
+
+    expect(resolved.type).toBe('sourceFile')
+    expect(String(resolved.filePath)).toMatch(/(?:^|[\\/])react[\\/]index\.js$/)
+    expect(resolvedOrigin).toBe('')
+  })
+
+  it('preserves the Web resolver graph for react-native', () => {
+    const importer = path.resolve('packages/workspace-package/index.js')
+    let resolvedOrigin = ''
+    const configRoot = path.resolve('fixtures/react-native-app')
+    const config = withWeappTailwindcss({
+      resolver: {
+        resolveRequest(context) {
+          resolvedOrigin = (context as { originModulePath: string }).originModulePath
+          return { type: 'empty' }
+        },
+      },
+    }, { projectRoot: configRoot })
+
+    config.resolver?.resolveRequest?.({ originModulePath: importer }, 'react-native', 'web')
 
     expect(resolvedOrigin).toBe(importer)
   })

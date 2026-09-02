@@ -3,6 +3,7 @@
 import type { NativeStyleManifest } from './types'
 import { createHash } from 'node:crypto'
 import fs from 'node:fs'
+import { createRequire } from 'node:module'
 import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
@@ -13,6 +14,7 @@ export const VIRTUAL_MANIFEST_MODULE = '@weapp-tailwindcss/react-native/virtual'
 
 export interface MetroConfigLike {
   resolver?: {
+    extraNodeModules?: Record<string, string>
     sourceExts?: string[]
     resolveRequest?: (context: unknown, moduleName: string, platform?: string) => unknown
     [key: string]: unknown
@@ -56,7 +58,7 @@ export interface NativeManifestPaths {
 }
 
 const registry = new Map<string, RegisteredManifest>()
-const appRootSingletonModules = new Set(['react', 'react-native'])
+const appRootSingletonModules = new Set(['react'])
 let nextId = 0
 
 function packageNameFromModuleId(moduleName: string) {
@@ -65,7 +67,24 @@ function packageNameFromModuleId(moduleName: string) {
 }
 
 function shouldResolveFromAppRoot(moduleName: string, platform?: string) {
-  return platform !== 'web' && appRootSingletonModules.has(packageNameFromModuleId(moduleName))
+  const packageName = packageNameFromModuleId(moduleName)
+  if (appRootSingletonModules.has(packageName)) {
+    return true
+  }
+  return platform !== 'web' && packageName === 'react-native'
+}
+
+function resolveAppRootSingleton(projectRoot: string, moduleName: string, platform?: string) {
+  if (platform !== 'web' || !['react', 'react-dom'].includes(packageNameFromModuleId(moduleName))) {
+    return undefined
+  }
+  try {
+    const requireFromProject = createRequire(path.join(projectRoot, 'package.json'))
+    return { type: 'sourceFile', filePath: requireFromProject.resolve(moduleName) }
+  }
+  catch {
+    return undefined
+  }
 }
 
 /** 为 Metro worker 提供不依赖进程内 registry 的 manifest 入口。 */
@@ -237,6 +256,10 @@ export function withWeappTailwindcss<T extends MetroConfigLike>(config: T | Prom
     if (moduleName === VIRTUAL_MANIFEST_MODULE) {
       return { type: 'sourceFile', filePath: entry.virtualPath }
     }
+    const appRootSingleton = resolveAppRootSingleton(entry.projectRoot, moduleName, platform)
+    if (appRootSingleton) {
+      return appRootSingleton
+    }
     const resolverContext = context as MetroResolverContext
     // React 核心包必须与原生工程使用同一实例；workspace symlink 不能从包目录加载另一套 peer。
     const anchoredContext = resolverContext.originModulePath === entry.virtualPath || shouldResolveFromAppRoot(moduleName, platform)
@@ -244,6 +267,7 @@ export function withWeappTailwindcss<T extends MetroConfigLike>(config: T | Prom
       : resolverContext
     return originalResolver?.(anchoredContext, moduleName, platform)
       ?? resolverContext.resolveRequest?.(anchoredContext, moduleName, platform)
+      ?? resolveAppRootSingleton(entry.projectRoot, moduleName, platform)
   }
   return {
     ...resolvedConfig,
@@ -259,6 +283,14 @@ export function withWeappTailwindcss<T extends MetroConfigLike>(config: T | Prom
     },
     resolver: {
       ...resolvedConfig.resolver,
+      // Metro may resolve React from a dependency's nested peer context. Pin
+      // the Web singleton to the app's dependency graph so React DOM and
+      // React Native Web share the dispatcher used by the application.
+      extraNodeModules: {
+        ...resolvedConfig.resolver?.extraNodeModules,
+        'react': path.resolve(entry.projectRoot, 'node_modules/react'),
+        'react-dom': path.resolve(entry.projectRoot, 'node_modules/react-dom'),
+      },
       sourceExts: sourceExts.includes('css') ? sourceExts : [...sourceExts, 'css'],
       resolveRequest: virtualResolver,
     },

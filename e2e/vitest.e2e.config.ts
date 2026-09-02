@@ -67,7 +67,8 @@ export default defineConfig({
     ],
   },
   test: {
-    include: [path.resolve(__dirname, './*.test.ts')],
+    // 保持 glob 为 POSIX 形式；Windows 绝对路径中的反斜杠会导致 Vitest 无法匹配测试文件。
+    include: ['e2e/*.test.ts'],
     reporters: ['default', path.resolve(__dirname, './progress-reporter.ts')],
     testTimeout: 36_000_000,
     globals: true,
