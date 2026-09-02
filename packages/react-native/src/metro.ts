@@ -111,6 +111,7 @@ function virtualModuleCode(manifest: NativeStyleManifest) {
 
 function writeVirtualModule(entry: RegisteredManifest) {
   fs.mkdirSync(path.dirname(entry.virtualPath), { recursive: true })
+  fs.mkdirSync(path.dirname(entry.manifestPath), { recursive: true })
   fs.writeFileSync(entry.virtualPath, virtualModuleCode(entry.manifest), 'utf8')
   fs.writeFileSync(entry.manifestPath, JSON.stringify(entry.manifest), 'utf8')
 }

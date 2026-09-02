@@ -23,7 +23,9 @@ describe('Expo Metro integration', () => {
     expect(getVirtualModuleCode(resolved.filePath)).toContain('"display":"flex"')
     expect(getVirtualModuleCode(resolved.filePath)).toContain('setStyleSheetFactory(StyleSheet.create)')
     const id = (config.transformer as Record<string, unknown>).weappTailwindcssMetroId as string
-    expect((config.transformer as Record<string, unknown>).weappTailwindcssManifestPath).toContain('.manifest.json')
+    const manifestPath = (config.transformer as Record<string, unknown>).weappTailwindcssManifestPath as string
+    expect(manifestPath).toContain('.manifest.json')
+    expect(fs.existsSync(manifestPath)).toBe(true)
     expect((config.transformer as Record<string, unknown>).weappTailwindcssManifestReadyPath).toContain('.manifest.ready')
     expect((config.transformer as Record<string, unknown>).weappTailwindcssVirtualModulePath).toContain('.js')
     await expect(getRegisteredManifest(id)).resolves.toMatchObject({ staticLookup: { flex: expect.any(Array) } })
