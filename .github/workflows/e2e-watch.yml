@@ -866,7 +866,7 @@ jobs:
 
       - name: Upload e2e watch reports (always)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-watch-hmr-pr-${{ matrix.runner_label }}-node${{ matrix['node-version'] || 22 }}-${{ matrix.artifact_case || matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
           path: |
@@ -878,7 +878,7 @@ jobs:
 
       - name: Upload e2e watch failure artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-watch-hmr-pr-failure-${{ matrix.runner_label }}-node${{ matrix['node-version'] || 22 }}-${{ matrix.artifact_case || matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
           path: |
@@ -1426,7 +1426,7 @@ jobs:
 
       - name: Upload e2e watch reports (always)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-watch-hmr-nightly-${{ matrix.runner_label }}-node${{ matrix['node-version'] || 22 }}-${{ matrix.artifact_case || matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
           path: |
@@ -1438,7 +1438,7 @@ jobs:
 
       - name: Upload e2e watch failure artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-watch-hmr-nightly-failure-${{ matrix.runner_label }}-node${{ matrix['node-version'] || 22 }}-${{ matrix.artifact_case || matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
           path: |

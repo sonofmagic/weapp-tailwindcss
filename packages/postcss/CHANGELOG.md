@@ -1,5 +1,13 @@
 # @weapp-tailwindcss/postcss
 
+## 3.3.1
+
+### Patch Changes
+
+- 统一跨构建器编译状态与生命周期协议，新增可复用的 compiler host、事件总线和 runtime state，同时收敛 PostCSS、编译器和运行时衍生包的依赖版本 catalog，保持现有导入路径兼容。
+
+- 统一处理 Tailwind source media 尾部残片，避免非法 CSS 进入小程序最终产物。
+
 ## 3.3.0
 
 ### Minor Changes

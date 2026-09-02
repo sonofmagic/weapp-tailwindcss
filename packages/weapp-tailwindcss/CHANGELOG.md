@@ -1,5 +1,28 @@
 # weapp-tailwindcss
 
+## 5.5.0
+
+### Minor Changes
+
+- 改善开发体验：新增固定 Generic Web target 的 `weapp-tailwindcss/vite/web` 入口，修正 `doctor` 对官方 Tailwind 生成器和 CSS 入口的诊断，并将初始化器默认切换为 Tailwind CSS 4 CSS-first 流程；旧版初始化配置改为通过 `mode: 'legacy'` 显式启用。
+
+- 统一跨构建器编译状态与生命周期协议，新增可复用的 compiler host、事件总线和 runtime state，同时收敛 PostCSS、编译器和运行时衍生包的依赖版本 catalog，保持现有导入路径兼容。
+
+- 将 `weapp-tailwindcss/vite/web` 拆分为真正的 Generic Web CSS-only 管线：默认只处理 CSS 生成与 HMR，不注册 JS/template、框架扩展、分包和小程序收尾；主入口识别为 Generic Web 后复用相同 profile，`styleInjector` 改为显式 opt-in。
+
+### Patch Changes
+
+- 升级兼容范围内的工作区依赖，迁移 Tailwind CSS 4 测试辅助工具的可选配置处理，并修正 PostCSS 本地 `postcss-calc` 链接路径。
+
+- 修复 uni-app x Web 热更新将完整 `.uvue` 源码误交给 PostCSS 解析，导致模板插值触发 `Unknown word` 警告的问题。
+
+- 修复多端 CI 构建依赖闭包、Playwright headless 浏览器安装和小程序样式产物收尾，避免兼容性测试因缺少构建入口或残留 CSS 哨兵失败。
+
+- 统一处理 Tailwind source media 尾部残片，避免非法 CSS 进入小程序最终产物。
+
+- Updated dependencies:
+  - @weapp-tailwindcss/postcss@3.3.1
+
 ## 5.4.2
 
 ### Patch Changes

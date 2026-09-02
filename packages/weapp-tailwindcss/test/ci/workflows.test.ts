@@ -7,6 +7,7 @@ import YAML from 'yaml'
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(dirname, '../../../..')
 const workflowsRoot = path.join(repoRoot, '.github/workflows')
+const uploadArtifactAction = 'actions/upload-artifact@v7'
 
 function readWorkflow(filename: string) {
   const source = fs.readFileSync(path.join(workflowsRoot, filename), 'utf8')
@@ -493,7 +494,7 @@ describe('ci workflows', () => {
     expect(runStep.env.E2E_WATCH_WEB_ONLY).toBe("${{ matrix.watch_web_only || '0' }}")
     expect(runStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
     const uploadSteps = job.steps.filter((step: Record<string, unknown>) => {
-      return step.uses === 'actions/upload-artifact@v4'
+      return step.uses === uploadArtifactAction
     })
     expect(uploadSteps).toHaveLength(2)
     for (const step of uploadSteps) {
@@ -503,7 +504,7 @@ describe('ci workflows', () => {
     }
     expect(job.steps.some((step: Record<string, unknown>) => {
       const withConfig = step.with as Record<string, unknown> | undefined
-      return step.uses === 'actions/upload-artifact@v4'
+      return step.uses === uploadArtifactAction
         && typeof withConfig?.path === 'string'
         && withConfig.path.includes('e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md')
     })).toBe(true)
@@ -763,7 +764,7 @@ describe('ci workflows', () => {
     expect(runs).toContain('--result-dir .tmp/benchmark-ci/result')
     expect(job.steps.some((step: Record<string, unknown>) => {
       const withConfig = step.with as Record<string, unknown> | undefined
-      return step.uses === 'actions/upload-artifact@v4'
+      return step.uses === uploadArtifactAction
         && withConfig?.name === 'benchmark-performance-${{ matrix.case_name }}'
     })).toBe(true)
   })
@@ -1631,7 +1632,7 @@ describe('e2e watch workflow', () => {
     const uploadSteps = [
       ...workflow.jobs['pr-quick-gate'].steps,
       ...workflow.jobs['nightly-full-regression'].steps,
-    ].filter((step: Record<string, unknown>) => step.uses === 'actions/upload-artifact@v4')
+    ].filter((step: Record<string, unknown>) => step.uses === uploadArtifactAction)
 
     expect(uploadSteps.length).toBe(4)
     for (const step of uploadSteps) {
@@ -1651,7 +1652,7 @@ describe('e2e watch workflow', () => {
       expect(runs).toContain('node .github/scripts/e2e-watch-report.cjs job-summary')
       expect(job.steps.some((step: Record<string, unknown>) => {
         const withConfig = step.with as Record<string, unknown> | undefined
-        return step.uses === 'actions/upload-artifact@v4'
+        return step.uses === uploadArtifactAction
           && typeof withConfig?.path === 'string'
           && withConfig.path.includes('e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md')
       })).toBe(true)
