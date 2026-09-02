@@ -75,7 +75,7 @@ function shouldResolveFromAppRoot(moduleName: string, platform?: string) {
 }
 
 function resolveAppRootSingleton(projectRoot: string, moduleName: string, platform?: string) {
-  if (platform !== 'web' || !['react', 'react-dom'].includes(packageNameFromModuleId(moduleName))) {
+  if (platform !== 'web' || !['react', 'react-dom', 'react-native-web'].includes(packageNameFromModuleId(moduleName))) {
     return undefined
   }
   try {
