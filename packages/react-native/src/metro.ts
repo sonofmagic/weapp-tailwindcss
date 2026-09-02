@@ -1,4 +1,4 @@
-/* eslint-disable style/max-statements-per-line */
+/* eslint-disable no-console, style/max-statements-per-line */
 
 import type { NativeStyleManifest } from './types'
 import { createHash } from 'node:crypto'

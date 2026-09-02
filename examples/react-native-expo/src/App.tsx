@@ -1,4 +1,4 @@
-/* eslint-disable node/prefer-global/process */
+/* eslint-disable no-console, node/prefer-global/process */
 
 import { tw } from '@weapp-tailwindcss/react-native/runtime'
 import { useEffect, useMemo, useRef, useState } from 'react'
