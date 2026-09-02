@@ -32,7 +32,7 @@ jobs:
       - run: pnpm e2e:coverage:contract
       - name: Generate hosted coverage diagnostic
         run: pnpm e2e:coverage:report --source aggregate --include-baselines --out e2e/.artifacts/coverage/nightly-diagnostic-report.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: coverage-diagnostic-${{ github.sha }}
@@ -95,7 +95,7 @@ jobs:
       - run: pnpm e2e:react-native-compatibility
       - run: pnpm e2e:react-native:web
       - run: pnpm e2e:lynx
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: e2e-coverage-native-${{ github.run_id }}

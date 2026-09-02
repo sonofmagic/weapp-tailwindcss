@@ -73,7 +73,7 @@ jobs:
 
       - name: Upload CI memory reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ci-memory-quality-static-${{ github.run_id }}
           path: e2e/benchmark/ci-memory/**
@@ -141,7 +141,7 @@ jobs:
 
       - name: Upload CI memory reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ci-memory-unit-${{ matrix.shard }}-${{ github.run_id }}
           path: e2e/benchmark/ci-memory/**
@@ -217,7 +217,7 @@ jobs:
 
       - name: Upload CI memory reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ci-memory-e2e-static-${{ matrix.shard }}-${{ github.run_id }}
           path: e2e/benchmark/ci-memory/**
@@ -305,7 +305,7 @@ jobs:
 
       - name: Upload CI memory reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ci-memory-e2e-focused-${{ matrix.case_name }}-${{ github.run_id }}
           path: e2e/benchmark/ci-memory/**
@@ -368,7 +368,7 @@ jobs:
 
       - name: Upload CI memory reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ci-memory-e2e-multiplatform-${{ matrix.case_name }}-${{ github.run_id }}
           path: e2e/benchmark/ci-memory/**
@@ -517,7 +517,7 @@ jobs:
 
       - name: Upload e2e watch reports (always)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-watch-hmr-ci-${{ matrix.runner_label }}-node${{ matrix.node-version }}-${{ matrix.artifact_case || matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
           path: |
@@ -529,7 +529,7 @@ jobs:
 
       - name: Upload e2e watch failure artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-watch-hmr-ci-failure-${{ matrix.runner_label }}-node${{ matrix.node-version }}-${{ matrix.artifact_case || matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
           path: |

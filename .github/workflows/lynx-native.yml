@@ -52,7 +52,7 @@ jobs:
             echo 'The hosted Ubuntu Android emulator is diagnostic-only because this runner has no KVM hardware acceleration.'
             echo 'Artifacts remain available for investigation; the submitted arm64 simulator report remains the authoritative Android baseline.'
           } >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: lynx-android-${{ github.run_id }}
@@ -82,7 +82,7 @@ jobs:
           xcrun simctl boot "$udid"
           xcrun simctl bootstatus "$udid" -b
       - run: pnpm e2e:lynx:ios
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: lynx-ios-${{ github.run_id }}

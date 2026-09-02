@@ -131,7 +131,7 @@ jobs:
       - name: Upload aggregate report artifact
         id: upload
         if: always() && steps.metadata.outputs.stale != 'true' && steps.metadata.outputs.pr_number != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pr-benchmark-report-${{ steps.metadata.outputs.pr_number }}-${{ steps.metadata.outputs.head_sha }}
           path: .tmp/benchmark-pr-report/output/**
