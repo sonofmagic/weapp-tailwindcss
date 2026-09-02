@@ -1,12 +1,25 @@
 import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
+import type { AddressInfo } from 'node:net'
 import os from 'node:os'
 import path from 'node:path'
-import { build } from 'vite'
+import { build, createServer } from 'vite'
 import { describe, expect, it } from 'vitest'
 import { WeappTailwindcss } from '@/bundlers/vite'
 import { WeappTailwindcssWeb } from '@/vite-web'
 
 describe('vite/web CSS-only 真实构建', () => {
+  async function waitForCss(url: string, predicate: (css: string) => boolean) {
+    const deadline = Date.now() + 10_000
+    while (Date.now() < deadline) {
+      const css = await fetch(url).then(response => response.text())
+      if (predicate(css)) {
+        return css
+      }
+      await new Promise(resolve => setTimeout(resolve, 100))
+    }
+    throw new Error(`等待 CSS 更新超时：${url}`)
+  }
+
   async function buildFixture(plugins: ReturnType<typeof WeappTailwindcssWeb>) {
     const root = await mkdtemp(path.join(process.cwd(), '.tmp-vite-web-css-only-'))
     try {
@@ -48,5 +61,39 @@ describe('vite/web CSS-only 真实构建', () => {
 
   it('主入口自动识别 Generic Web 后复用 CSS-only profile', async () => {
     await buildFixture(WeappTailwindcss())
+  }, 120_000)
+
+  it('专用入口在候选源码变化后重新生成 CSS', async () => {
+    const root = await mkdtemp(path.join(process.cwd(), '.tmp-vite-web-css-only-hmr-'))
+    const sourceFile = path.join(root, 'main.ts')
+    const initialSource = 'import "./main.css"; console.log("text-red-500")'
+    const updatedSource = 'import "./main.css"; console.log("text-emerald-400")'
+    await writeFile(path.join(root, 'index.html'), '<script type="module" src="/main.ts"></script>')
+    await writeFile(path.join(root, 'main.css'), '@import "tailwindcss";\n@source "./main.ts";')
+    await writeFile(sourceFile, initialSource)
+
+    const server = await createServer({
+      root,
+      configFile: false,
+      logLevel: 'silent',
+      plugins: WeappTailwindcssWeb(),
+      server: { host: '127.0.0.1', port: 0 },
+    })
+    try {
+      await server.listen()
+      const address = server.httpServer?.address() as AddressInfo
+      const cssUrl = `http://127.0.0.1:${address.port}/main.css`
+      await waitForCss(cssUrl, css => css.includes('.text-red-500'))
+
+      await writeFile(sourceFile, updatedSource)
+      await waitForCss(cssUrl, css => css.includes('.text-emerald-400'))
+
+      await writeFile(sourceFile, initialSource)
+      await waitForCss(cssUrl, css => !css.includes('.text-emerald-400'))
+    }
+    finally {
+      await server.close()
+      await rm(root, { recursive: true, force: true })
+    }
   }, 120_000)
 })

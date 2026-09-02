@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
-import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcssWeb } from 'weapp-tailwindcss/vite/web'
 
 export default defineConfig({
-  plugins: [WeappTailwindcss({ generator: { target: 'web' } })],
+  plugins: [WeappTailwindcssWeb()],
 })

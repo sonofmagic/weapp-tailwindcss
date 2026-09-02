@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-01T10:22:54.873Z",
+  "generatedAt": "2026-09-02T17:59:10.472Z",
   "locale": "en-US",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev",
@@ -3160,8 +3160,8 @@
       "contentTier": "full",
       "productArea": "community",
       "title": "🔥Templates for each framework",
-      "description": "When your configuration is incorrect, you can also refer to the reference. The version marked with 🔥 is the recommended version.",
-      "summary": "When you configure it incorrectly, you can also refer to the reference. The version with the 🔥 mark is the recommended version.",
+      "description": "Runnable Tailwind CSS 4 templates using the latest weapp-tailwindcss integration for Vite, uni-app, Taro, Mpx, and native mini programs.",
+      "summary": "These templates use the Tailwind CSS 4 CSS-first entry and delegate CSS generation to weapp-tailwindcss@5.5.0. Templates marked with 🔥 also run through the repository's canonical build gate. See the support matrix for…",
       "url": "/docs/community/templates",
       "canonical": "https://tw.weapp.dev/docs/community/templates",
       "alternates": {
@@ -3172,8 +3172,7 @@
       "keywords": [
         "Community",
         "template",
-        "Case",
-        "Templates for each frame",
+        "case studies",
         "templates",
         "weapp-tailwindcss",
         "tailwindcss",
@@ -3182,22 +3181,18 @@
         "uni-app",
         "taro",
         "mpx",
-        "case studies",
         "for",
         "each",
-        "framework"
+        "framework",
+        "Tailwind CSS 4",
+        "cross-platform"
       ],
       "headings": [
-        "Repository canonical templates",
+        "Generic Vite Web",
         "uni-app",
-        "Building with `uni-app cli` `vscode` Development",
-        "Building and developing with `hbuilderx`",
-        "tarojs",
-        "Building with `tarojs` `vscode` development",
-        "native",
-        "Native applet development template",
-        "`tailwindcss@4`",
-        "More templates"
+        "Taro",
+        "Mpx",
+        "Native mini program"
       ],
       "source": "i18n/en/docs/community/templates.mdx"
     },
@@ -4942,9 +4937,9 @@
       "locale": "en-US",
       "contentTier": "primary",
       "productArea": "quick-start",
-      "title": "Native development (packaging solution)",
-      "description": "Template project weapp-tailwindcss-gulp-template (gulp packaging)",
-      "summary": "Template project weapp-tailwindcss-gulp-template(gulp packaging)",
+      "title": "Native development with weapp-vite",
+      "description": "Build native mini programs with weapp-vite and Tailwind CSS 4",
+      "summary": "For native mini programs built with Vite, see the pure native weapp-vite guide and the weapp-vite Tailwind CSS 4 template. This documentation only maintains the Tailwind CSS 4 integration.",
       "url": "/docs/quick-start/frameworks/native",
       "canonical": "https://tw.weapp.dev/docs/quick-start/frameworks/native",
       "alternates": {
@@ -4971,7 +4966,6 @@
         "development"
       ],
       "headings": [
-        "gulp template",
         "weapp-vite template",
         "Isolation of component styles",
         "vscode tailwindcss smart prompt settings"

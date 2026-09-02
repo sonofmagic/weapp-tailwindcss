@@ -19,6 +19,7 @@ import { createViteWebCssFinalizerOutputPlugin } from '../css-finalizer/web-plug
 import { createCssHandlerOptionsCache } from '../css-handler-options'
 import { createViteCssMemory } from '../css-memory'
 import { resolveViteCssPipelineOutputFile } from '../css-output'
+import { mergeHotModulesByIdentity, resolveHotTailwindCssModules } from '../hot-css-modules'
 import { createRewriteCssImportsPlugins, hasVitePipelineTailwindGenerationDirective } from '../rewrite-css-imports'
 import { createViteRuntimeClassSet } from '../runtime-class-set'
 import { createViteCssGenerationPlugins } from '../serve-css-generation'
@@ -274,6 +275,16 @@ function createFrameworkSourceCandidatesPluginForCssOnly(options: any): Plugin {
       options.invalidateRecordedGeneratorCandidates()
       await options.sourceScanSession.syncChangedFile(ctx.file, await ctx.read?.())
       await options.sourceScanSession.waitForPendingSyncs()
+      await options.refreshRuntimeStateForAutoCssSources(true)
+      const root = ctx.server.config?.root ?? process.cwd()
+      const cssModules = await resolveHotTailwindCssModules(
+        ctx,
+        options.tailwindRootCssModuleIds,
+        modules => options.hmrCssModuleVersions.filterModules(modules, ctx.timestamp, root),
+      )
+      return cssModules.length > 0
+        ? mergeHotModulesByIdentity(root, ctx.modules, cssModules)
+        : undefined
     },
   }
 }

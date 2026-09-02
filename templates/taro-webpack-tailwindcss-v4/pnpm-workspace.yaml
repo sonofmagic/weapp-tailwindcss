@@ -11,5 +11,5 @@ allowBuilds:
   sharp: true
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
-  - '@weapp-tailwindcss/postcss@3.0.4'
-  - weapp-tailwindcss@5.0.7
+  - '@weapp-tailwindcss/postcss@3.3.1'
+  - weapp-tailwindcss@5.5.0

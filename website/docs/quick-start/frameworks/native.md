@@ -1,6 +1,6 @@
 ---
-title: 原生开发(打包方案)
-description: 模板项目 weapp-tailwindcss-gulp-template(gulp打包)
+title: 原生开发（weapp-vite）
+description: 使用 weapp-vite 与 Tailwind CSS 4 构建原生小程序
 keywords:
   - 快速开始
   - 安装
@@ -18,7 +18,7 @@ keywords:
   - taro
   - mpx
 ---
-# 原生开发(打包方案)
+# 原生开发（weapp-vite）
 
 :::warning
 这是原生开发的打包方案。如果你需要纯原生方案，请查看 [快速开始（纯原生）](/docs/quick-start/native/install)。
@@ -34,13 +34,9 @@ keywords:
 另外这些模板，只需要稍微改一下产物后缀，调整 `@source` 扫描范围就可以适配百度，头条，京东...各个平台。
 :::
 
-## gulp 模板
-
-模板项目 [weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/gulp-app)
-
 ## weapp-vite 模板
 
-如果你希望原生小程序也走 Vite 构建，推荐查看 [纯原生 weapp-vite 接入](/docs/quick-start/native/install)。当前文档面向 `tailwindcss@4`。当前文档仅维护 Tailwind CSS 4 接入说明。
+如果你希望原生小程序走 Vite 构建，推荐查看 [纯原生 weapp-vite 接入](/docs/quick-start/native/install)和 [weapp-vite Tailwind CSS 4 模板](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/templates/weapp-vite-tailwindcss-v4)。当前文档仅维护 Tailwind CSS 4 接入说明。
 
 然后在 `vite.config.ts` 中注册 `weapp-tailwindcss/vite`：
 

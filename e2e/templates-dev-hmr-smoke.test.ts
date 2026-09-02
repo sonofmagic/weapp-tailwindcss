@@ -56,24 +56,14 @@ const templateDevHmrCases: TemplateDevHmrCase[] = [
     devScript: 'dev:weapp',
     devCommand: ['exec', 'node', '../../scripts/taro-e2e-watch.mjs'],
     devEnv: { TARO_E2E_WATCH_NATIVE: '0' },
-    sourceFile: template === 'taro-vue3-tailwind-vscode-template'
-      ? 'src/pages/index/index.vue'
-      : 'src/pages/index/index.tsx',
+    sourceFile: 'src/pages/index/index.tsx',
     outputFiles: ['dist/pages/index/index.wxml', 'dist/pages/index/index.js', 'dist/app.wxss'],
     sourceNeedle: template.includes('vite')
       ? '更轻的多端样式工作台'
-      : template.includes('vue3')
-        ? '组件库也能保持原子风格'
-        : template.includes('webpack')
-          ? '经典工程里的现代页面骨架'
-          : 'React 小程序原子设计模板',
+      : '经典工程里的现代页面骨架',
     replacement: template.includes('vite')
       ? '更轻的多端样式工作台 HMR'
-      : template.includes('vue3')
-        ? '组件库也能保持原子风格 HMR'
-        : template.includes('webpack')
-          ? '经典工程里的现代页面骨架 HMR'
-          : 'React 小程序原子设计模板 HMR',
+      : '经典工程里的现代页面骨架 HMR',
     expectedOutput: 'HMR',
   })),
   ...[
@@ -83,22 +73,10 @@ const templateDevHmrCases: TemplateDevHmrCase[] = [
     template,
     devScript: 'dev:mp-weixin',
     devCommand: ['exec', 'node', '../../scripts/uni-e2e-watch.mjs'],
-    sourceFile: template === 'uni-app-vite-vue3-tailwind-vscode-template'
-      ? 'src/components/sections/ExperienceLab.vue'
-      : 'src/pages/index/index.vue',
-    outputFiles: template === 'uni-app-vite-vue3-tailwind-vscode-template'
-      ? [
-          'dist/build/mp-weixin/components/sections/ExperienceLab.wxml',
-          'dist/build/mp-weixin/components/sections/ExperienceLab.js',
-          'dist/build/mp-weixin/components/sections/ExperienceLab.wxss',
-        ]
-      : ['dist/build/mp-weixin/pages/index/index.wxml', 'dist/build/mp-weixin/pages/index/index.js', 'dist/build/mp-weixin/app.wxss'],
-    sourceNeedle: template === 'uni-app-tailwindcss-v4'
-      ? '小程序里的原子设计基座'
-      : 'Tailwind 原子能力搭配 Pinia/uni-api',
-    replacement: template === 'uni-app-tailwindcss-v4'
-      ? '小程序里的原子设计基座 HMR'
-      : 'Tailwind 原子能力搭配 Pinia/uni-api HMR',
+    sourceFile: 'src/pages/index/index.vue',
+    outputFiles: ['dist/build/mp-weixin/pages/index/index.wxml', 'dist/build/mp-weixin/pages/index/index.js', 'dist/build/mp-weixin/app.wxss'],
+    sourceNeedle: '小程序里的原子设计基座',
+    replacement: '小程序里的原子设计基座 HMR',
     expectedOutput: 'HMR',
   })),
   ...[
