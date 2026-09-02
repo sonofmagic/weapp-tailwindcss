@@ -938,7 +938,7 @@ describe('tailwindcss v4 engine', () => {
     expect(second.css).toContain('.text-_b88rpx_B')
   })
 
-  it('uses mini-program-safe Tailwind v4 default color variables for native v4 weapp output', { timeout: 300_000 }, async () => {
+  it('uses mini-program-safe Tailwind v4 default color variables for native v4 weapp output', async () => {
     const source = await resolveTailwindV4Source({
       css: `
         @import "tailwindcss";
@@ -953,6 +953,8 @@ describe('tailwindcss v4 engine', () => {
 
     const result = await engine.generate({
       candidates: ['bg-blue-500', 'text-red-500'],
+      // 该用例只验证默认主题变量，避免无关的 monorepo 源码扫描造成资源竞争。
+      scanSources: false,
     })
 
     expect(result.css).toContain('--color-blue-500: rgb(50, 128, 255)')
