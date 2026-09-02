@@ -15,6 +15,9 @@ describe('Expo Metro integration', () => {
     const resolved = config.resolver?.resolveRequest?.({}, VIRTUAL_MANIFEST_MODULE, 'ios') as { type: string, filePath: string }
     expect(resolved.type).toBe('sourceFile')
     expect(fs.existsSync(resolved.filePath)).toBe(true)
+    const relativeVirtualPath = path.relative(path.resolve(process.cwd()), resolved.filePath)
+    expect(relativeVirtualPath.startsWith('..')).toBe(false)
+    expect(path.isAbsolute(relativeVirtualPath)).toBe(false)
     expect(config.watchFolders).toContain(path.dirname(resolved.filePath))
     expect(config.transformerPath).toContain('metro-transformer')
     expect(getVirtualModuleCode(resolved.filePath)).toContain('"display":"flex"')

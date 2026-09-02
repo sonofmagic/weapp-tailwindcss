@@ -115,6 +115,14 @@ function writeVirtualModule(entry: RegisteredManifest) {
   fs.writeFileSync(entry.manifestPath, JSON.stringify(entry.manifest), 'utf8')
 }
 
+/**
+ * Metro worker 会把文件路径先相对化再恢复为绝对路径。虚拟模块必须位于
+ * 项目根目录内，否则 Windows 跨盘符路径会被错误拼接成 `D:\\C:\\...`。
+ */
+function getVirtualModulePath(projectRoot: string, id: string) {
+  return path.join(projectRoot, 'node_modules', '.cache', 'weapp-tailwindcss-native', `${id}.js`)
+}
+
 function markManifestPending(entry: RegisteredManifest) {
   fs.rmSync(entry.manifestReadyPath, { force: true })
 }
@@ -146,7 +154,7 @@ function register(options: WeappReactNativeMetroOptions) {
     version: 0,
     manifest: options.manifest ?? (options.css ? compileNativeStylesheet(options.css, { classSet: options.classSet }) : emptyManifest()),
     projectRoot,
-    virtualPath: path.join(os.tmpdir(), 'weapp-tailwindcss-native', `${id}.js`),
+    virtualPath: getVirtualModulePath(projectRoot, id),
     manifestPath: manifestPaths.manifestPath,
     manifestReadyPath: manifestPaths.manifestReadyPath,
     ready: Promise.resolve(),
