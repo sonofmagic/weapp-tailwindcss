@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { buildCases } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import { CANONICAL_TEMPLATE_CASES } from './canonicalTemplateMatrix'
 import {
   DEMO_COVERAGE_MATRIX,
   discoverDemoPackageNames,
@@ -259,6 +260,15 @@ function hasBuildOutputEvidence(name: string, platform: string, cases: Map<strin
 }
 
 describe('e2e matrix', () => {
+  it('keeps every canonical template mapped to a runnable CSS entry', () => {
+    for (const item of CANONICAL_TEMPLATE_CASES) {
+      const root = path.resolve(__dirname, '..', 'templates', item.template)
+      expect(fs.existsSync(path.join(root, 'package.json')), `${item.template} should include package.json`).toBe(true)
+      expect(fs.existsSync(path.join(root, item.cssEntry)), `${item.template} should include ${item.cssEntry}`).toBe(true)
+      expect(fs.existsSync(path.join(root, 'pnpm-lock.yaml')), `${item.template} should include pnpm-lock.yaml`).toBe(true)
+    }
+  })
+
   it('covers every CI-compatible uni-app Vite root import shell demo and platform', () => {
     const cases = createRootStyleImportShellHmrCases('/repo')
     const casesByProject = new Map<string, typeof cases>()

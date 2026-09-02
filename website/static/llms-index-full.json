@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-29T18:10:33.558Z",
+  "generatedAt": "2026-09-01T10:22:54.873Z",
   "locale": "zh-CN",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
   "totals": {
-    "all": 157,
-    "docs": 153,
+    "all": 158,
+    "docs": 154,
     "blog": 4
   },
   "documents": [
@@ -3354,6 +3354,7 @@
         "React Native"
       ],
       "headings": [
+        "仓库内 canonical 模板",
         "uni-app",
         "使用 `uni-app cli` 进行构建 `vscode` 开发",
         "使用 `hbuilderx` 进行构建和开发",
@@ -5797,6 +5798,43 @@
       ],
       "headings": [],
       "source": "docs/quick-start/wxs.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:reference/support-matrix",
+      "locale": "zh-CN",
+      "contentTier": "full",
+      "productArea": "reference",
+      "title": "支持矩阵",
+      "description": "weapp-tailwindcss 的构建、开发、HMR 与多平台验证覆盖。",
+      "summary": "只有存在可执行证据的能力才会标记为“已验证”。“未覆盖”表示仓库没有自动化或本地验证证据。",
+      "url": "/zh-cn/docs/reference/support-matrix",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/reference/support-matrix",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/reference/support-matrix",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/reference/support-matrix",
+        "x-default": "https://tw.weapp.dev/docs/reference/support-matrix"
+      },
+      "keywords": [
+        "支持矩阵",
+        "Vite",
+        "uni-app",
+        "Taro",
+        "weapp-vite",
+        "Tailwind CSS",
+        "HMR",
+        "构建覆盖",
+        "reference",
+        "support matrix",
+        "weapp-tailwindcss",
+        "Tailwind CSS 4",
+        "跨端",
+        "小程序",
+        "React Native",
+        "Lynx"
+      ],
+      "headings": [],
+      "source": "docs/reference/support-matrix.md"
     },
     {
       "kind": "doc",

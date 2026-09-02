@@ -114,3 +114,5 @@ npx weapp-tailwindcss doctor --json
 | 复现命令 | `pnpm dev:mp-weixin` |
 
 这样可以更快判断问题属于依赖安装、Tailwind 扫描范围、PostCSS 注册、插件禁用条件还是小程序端限制。
+
+不同框架、构建器和目标端的已验证范围见[支持矩阵](/docs/reference/support-matrix)。矩阵中的“未覆盖”表示当前没有可复现的自动化或本地证据，不代表理论上一定不支持。

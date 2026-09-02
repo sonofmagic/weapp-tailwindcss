@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-29T18:10:33.558Z",
+  "generatedAt": "2026-09-01T10:22:54.873Z",
   "locale": "en-US",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev",
   "totals": {
-    "all": 154,
-    "docs": 153,
+    "all": 155,
+    "docs": 154,
     "blog": 1
   },
   "documents": [
@@ -3188,6 +3188,7 @@
         "framework"
       ],
       "headings": [
+        "Repository canonical templates",
         "uni-app",
         "Building with `uni-app cli` `vscode` Development",
         "Building and developing with `hbuilderx`",
@@ -5638,6 +5639,43 @@
       ],
       "headings": [],
       "source": "i18n/en/docs/quick-start/wxs.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:reference/support-matrix",
+      "locale": "en-US",
+      "contentTier": "full",
+      "productArea": "reference",
+      "title": "Support Matrix",
+      "description": "Verified build, development, HMR, and platform coverage for weapp-tailwindcss.",
+      "summary": "Only capabilities backed by executable evidence are marked as verified. not covered means the repository has no automated or local evidence for that capability.",
+      "url": "/docs/reference/support-matrix",
+      "canonical": "https://tw.weapp.dev/docs/reference/support-matrix",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/reference/support-matrix",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/reference/support-matrix",
+        "x-default": "https://tw.weapp.dev/docs/reference/support-matrix"
+      },
+      "keywords": [
+        "support matrix",
+        "Vite",
+        "uni-app",
+        "Taro",
+        "weapp-vite",
+        "Tailwind CSS",
+        "HMR",
+        "build coverage",
+        "Support",
+        "Matrix",
+        "reference",
+        "weapp-tailwindcss",
+        "Tailwind CSS 4",
+        "cross-platform",
+        "mini app",
+        "React Native"
+      ],
+      "headings": [],
+      "source": "i18n/en/docs/reference/support-matrix.md"
     },
     {
       "kind": "doc",

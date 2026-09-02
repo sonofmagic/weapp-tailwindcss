@@ -60,3 +60,5 @@ SSR, library mode, `optimizeDeps`, `cssMinify` and sourcemaps remain Vite respon
 For small-program compatibility, framework extensions, or explicit multiple entries, continue using the main `weapp-tailwindcss/vite` entry with explicit options. Historical Generic mini-program projects should set `generator.target: 'weapp'` or `platform` explicitly.
 
 After selecting this link, do not register `@tailwindcss/vite` or `@tailwindcss/postcss` at the same time to generate the same Tailwind CSS. Multi-end frameworks such as Taro H5, uni-app H5, Mpx Web, Weapp-vite Web, etc. will automatically switch to the `web` target according to environment variables; explicit configuration is recommended for custom web builds or pure Vite projects. For more target judgment rules, see [Cross-multi-terminal development CSS compatibility] (/docs/multi-platform).
+
+Runnable Generic Vite, uni-app, Taro, and weapp-vite examples are available in the [repository canonical templates](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/templates). See the [support matrix](/docs/reference/support-matrix) for build and HMR evidence.

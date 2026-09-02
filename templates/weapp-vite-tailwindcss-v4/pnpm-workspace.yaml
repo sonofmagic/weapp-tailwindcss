@@ -1,0 +1,8 @@
+packages:
+  - .
+allowBuilds:
+  '@swc/core': true
+  esbuild: true
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - weapp-tailwindcss@5.1.3

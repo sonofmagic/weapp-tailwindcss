@@ -22,6 +22,17 @@ import TemplateLink from '@site/src/components/TemplateLink'
 
 当你配置不对的时候，也可以参考参考, 其中带有 🔥 标志的为推荐使用版本
 
+## 仓库内 canonical 模板
+
+以下模板随仓库维护，并由 PR 静态门禁执行安装和构建 smoke；它们与下方由社区仓库同步的模板分开维护。
+
+- [Generic Vite Web](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/templates/generic-vite-tailwindcss-v4)
+- [uni-app + Vue 3](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/templates/uni-app-tailwindcss-v4)
+- [Taro + Vite + React](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/templates/taro-vite-tailwindcss-v4)
+- [weapp-vite 原生小程序](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/templates/weapp-vite-tailwindcss-v4)
+
+canonical 模板统一使用 `@import "tailwindcss"` 和 `@source`，Tailwind 样式只由 `weapp-tailwindcss` 生成，不要同时注册 `@tailwindcss/postcss` 或 `@tailwindcss/vite`。
+
 :::tip
 假如你遇到网络问题，无法登陆 `Github` 的时候，你可以使用 `Gitee`。
 

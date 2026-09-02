@@ -25,6 +25,17 @@ import TemplateLink from '@site/src/components/TemplateLink'
 
 When you configure it incorrectly, you can also refer to the reference. The version with the 🔥 mark is the recommended version.
 
+## Repository canonical templates
+
+The following templates are maintained in this repository and run through the required PR smoke gate. They are separate from the community repositories synchronized below.
+
+- [Generic Vite Web](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/templates/generic-vite-tailwindcss-v4)
+- [uni-app + Vue 3](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/templates/uni-app-tailwindcss-v4)
+- [Taro + Vite + React](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/templates/taro-vite-tailwindcss-v4)
+- [weapp-vite native mini program](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/templates/weapp-vite-tailwindcss-v4)
+
+Canonical templates use `@import "tailwindcss"` and `@source`. Tailwind CSS is generated only by `weapp-tailwindcss`; do not register `@tailwindcss/postcss` or `@tailwindcss/vite` in the same build.
+
 :::tip
 If you encounter network problems and cannot log in to `Github`, you can use `Gitee`.
 

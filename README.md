@@ -93,6 +93,17 @@ export default defineConfig({
 
 Webpack、Rspack、Gulp、Taro、uni-app、Mpx 和原生小程序的完整配置见[框架接入指南](https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/uni-app-vite)。
 
+## Canonical 模板
+
+仓库内提供可独立安装和验证的最小模板：
+
+- [Generic Vite Web](./templates/generic-vite-tailwindcss-v4)
+- [uni-app + Vue 3](./templates/uni-app-tailwindcss-v4)
+- [Taro + Vite + React](./templates/taro-vite-tailwindcss-v4)
+- [weapp-vite 原生小程序](./templates/weapp-vite-tailwindcss-v4)
+
+这些模板只使用 `weapp-tailwindcss` 生成 Tailwind CSS，不要再叠加 `@tailwindcss/postcss` 或 `@tailwindcss/vite`。完整的自动化支持范围见[支持矩阵](./website/docs/reference/support-matrix.md)。
+
 ## CLI
 
 需要独立 CSS 构建、watch 或 canonicalize 时，安装 `@weapp-tailwindcss/cli`：

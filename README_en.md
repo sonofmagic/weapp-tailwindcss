@@ -93,6 +93,17 @@ When the same build also needs mini-program output, framework extensions, or mul
 
 See the [framework integration guides](https://tw.weapp.dev/docs/quick-start/frameworks/uni-app-vite) for Webpack, Rspack, Gulp, Taro, uni-app, Mpx, and native mini-program projects.
 
+## Canonical Templates
+
+The repository includes independently installable and verifiable minimal templates:
+
+- [Generic Vite Web](./templates/generic-vite-tailwindcss-v4)
+- [uni-app + Vue 3](./templates/uni-app-tailwindcss-v4)
+- [Taro + Vite + React](./templates/taro-vite-tailwindcss-v4)
+- [weapp-vite native mini program](./templates/weapp-vite-tailwindcss-v4)
+
+These templates use `weapp-tailwindcss` as the only Tailwind CSS generator. Do not add `@tailwindcss/postcss` or `@tailwindcss/vite`. See the [support matrix](./website/i18n/en/docusaurus-plugin-content-docs/current/reference/support-matrix.md) for automated and local evidence.
+
 ## CLI
 
 For standalone CSS builds, watch mode, or canonicalization, install `@weapp-tailwindcss/cli`:

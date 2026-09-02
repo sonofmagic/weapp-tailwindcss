@@ -34,6 +34,8 @@ export default {
 }
 ```
 
+The repository provides four canonical templates: [Generic Vite](../../templates/generic-vite-tailwindcss-v4), [uni-app](../../templates/uni-app-tailwindcss-v4), [Taro Vite](../../templates/taro-vite-tailwindcss-v4), and [weapp-vite](../../templates/weapp-vite-tailwindcss-v4). Each can be installed independently and verified with the template smoke build.
+
 ## Tailwind CSS 4 entry
 
 Your CSS entry must be imported by the application build graph. Configure `cssEntries` with absolute paths resolved from the project root when stable entry discovery is required, but do not treat it as a replacement for importing the CSS file.
