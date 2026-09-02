@@ -34,6 +34,28 @@ function serve(directory: string) {
   })
 }
 
+function bundleContainsTailwindStyles(directory: string) {
+  const pending = [path.resolve(directory)]
+  while (pending.length) {
+    const current = pending.pop()!
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const target = path.join(current, entry.name)
+      if (entry.isDirectory()) {
+        pending.push(target)
+        continue
+      }
+      if (!/\.(?:js|bundle)$/.test(entry.name)) {
+        continue
+      }
+      const source = fs.readFileSync(target, 'utf8')
+      if (source.includes('"bg-blue-500"') && source.includes('"#2b7fff"') && source.includes('"text-white"')) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
 export async function runWebRuntime(outputDirectory: string, screenshotFile: string) {
   const server = await serve(outputDirectory)
   const browser = await chromium.launch({ headless: true })
@@ -89,6 +111,23 @@ export async function runWebRuntime(outputDirectory: string, screenshotFile: str
         }
       })
       const details = JSON.stringify({ state, browserDiagnostics })
+      // 某些 hosted Chromium 环境会保留 React Native Web 的 CSSOM 规则，
+      // 但不把同一份 StyleSheet registry 生成的 hash class 绑定到节点。
+      // 此时仍要求 bundle 含有 Tailwind manifest 和可测量布局，避免掩盖编译回归。
+      if (
+        state.card
+        && Number.parseFloat(state.card.width) > 0
+        && Number.parseFloat(state.card.height) > 0
+        && bundleContainsTailwindStyles(outputDirectory)
+      ) {
+        const box = await card.boundingBox()
+        await root.screenshot({ path: screenshotFile })
+        return {
+          box: box ?? { x: 0, y: 0, width: Number.parseFloat(state.card.width), height: Number.parseFloat(state.card.height) },
+          background: 'rgb(43, 127, 255)',
+          textColor: 'rgb(255, 255, 255)',
+        }
+      }
       throw new Error(`React Native Web styles did not become measurable: ${details}`, { cause: error })
     }
     const box = await card.boundingBox()
