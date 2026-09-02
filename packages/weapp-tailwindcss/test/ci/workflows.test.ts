@@ -372,6 +372,14 @@ describe('ci workflows', () => {
     expect(readText('demo/weapp-vite-tailwindcss-v4/tailwind.css')).toContain('@import "tailwindcss" source(none);')
   })
 
+  it('builds the generator dependency chain before React Native Web smoke', () => {
+    const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
+    const script = packageJson.scripts['e2e:react-native-compatibility']
+
+    expect(script).toContain('pnpm --filter weapp-tailwindcss... run build')
+    expect(script.indexOf('pnpm --filter weapp-tailwindcss... run build')).toBeLessThan(script.indexOf('pnpm --filter @weapp-tailwindcss/react-native build'))
+  })
+
   it('keeps @tailwindcss-mangle/engine managed by the workspace catalog', () => {
     const workspace = YAML.parse(readText('pnpm-workspace.yaml')) as {
       catalogs?: Record<string, Record<string, string>>
