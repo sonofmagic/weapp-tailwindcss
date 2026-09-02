@@ -158,6 +158,15 @@ function cell(value: string) {
   return value.replaceAll('|', '\\|').replaceAll('\n', ' ')
 }
 
+const repositoryOnlyCommandRE = /\b(?:pnpm|npm|yarn)\s+(?:run\s+)?(?:--filter|e2e(?::[\w-]+)*|build:docs|build:pkg|build:apps|docs:packages:check|run:watch)\b/i
+
+function displayCommand(command: string, locale: Locale) {
+  if (repositoryOnlyCommandRE.test(command)) {
+    return locale === 'en' ? 'Automated repository verification' : '仓库自动化验证'
+  }
+  return command
+}
+
 function displayWidth(value: string) {
   let width = 0
   for (const character of value) {
@@ -239,7 +248,7 @@ function render(locale: Locale) {
     cell(translateStatus(row.hmr, locale)),
     cell(translateStatus(row.advanced, locale)),
     cell(row.evidence),
-    `\`${cell(row.command)}\``,
+    `\`${cell(displayCommand(row.command, locale))}\``,
     `\`${cell(row.source)}\``,
     cell(translateReason(row.reason, locale)),
   ])
