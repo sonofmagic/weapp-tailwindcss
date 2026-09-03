@@ -67,6 +67,21 @@ const templateIdeCases: TemplateIdeCase[] = [
       'project.config.json',
     ],
   })),
+  {
+    name: 'weapp-vite-tailwindcss-v4 weixin',
+    template: 'weapp-vite-tailwindcss-v4',
+    command: ['pnpm', 'run', 'build'],
+    projectPath: '.',
+    miniprogramRoot: 'dist',
+    appJson: 'dist/app.json',
+    requiredFiles: [
+      'project.config.json',
+      'dist/app.js',
+      'dist/app.json',
+      'dist/app.wxss',
+      'dist/pages/index/index.wxml',
+    ],
+  },
 ]
 
 const localOnlyIdeCases: TemplateIdeLocalOnlyCase[] = [

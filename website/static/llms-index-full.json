@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-01T10:22:54.873Z",
+  "generatedAt": "2026-09-03T01:53:45.359Z",
   "locale": "zh-CN",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
@@ -3326,8 +3326,8 @@
       "contentTier": "full",
       "productArea": "community",
       "title": "🔥各个框架的模板",
-      "description": "当你配置不对的时候，也可以参考参考, 其中带有 🔥 标志的为推荐使用版本",
-      "summary": "当你配置不对的时候，也可以参考参考, 其中带有 🔥 标志的为推荐使用版本",
+      "description": "Tailwind CSS 4 与最新版 weapp-tailwindcss 的可运行模板，覆盖 uni-app、Taro、Mpx 和原生小程序。",
+      "summary": "以下模板统一使用 Tailwind CSS 4 CSS-first 入口，并由 weapp-tailwindcss@5.5.0 接管样式生成。带有 🔥 标志的模板同时纳入仓库 canonical 构建门禁；完整验证范围见支持矩阵。",
       "url": "/zh-cn/docs/community/templates",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/community/templates",
       "alternates": {
@@ -3354,16 +3354,10 @@
         "React Native"
       ],
       "headings": [
-        "仓库内 canonical 模板",
         "uni-app",
-        "使用 `uni-app cli` 进行构建 `vscode` 开发",
-        "使用 `hbuilderx` 进行构建和开发",
-        "tarojs",
-        "使用 `tarojs` 进行构建 `vscode` 开发",
-        "native",
-        "原生小程序开发模板",
-        "`tailwindcss@4`",
-        "更多模板"
+        "Taro",
+        "Mpx",
+        "原生小程序"
       ],
       "source": "docs/community/templates.mdx"
     },
@@ -5101,9 +5095,9 @@
       "locale": "zh-CN",
       "contentTier": "primary",
       "productArea": "quick-start",
-      "title": "原生开发(打包方案)",
-      "description": "模板项目 weapp-tailwindcss-gulp-template(gulp打包)",
-      "summary": "模板项目 weapp-tailwindcss-gulp-template(gulp打包)",
+      "title": "原生开发（weapp-vite）",
+      "description": "使用 weapp-vite 与 Tailwind CSS 4 构建原生小程序",
+      "summary": "原生小程序推荐使用 weapp-vite 官网，通过下面的命令创建项目：",
       "url": "/zh-cn/docs/quick-start/frameworks/native",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/native",
       "alternates": {
@@ -5127,11 +5121,10 @@
         "uni-app",
         "taro",
         "mpx",
-        "Tailwind CSS 4"
+        "weapp-vite"
       ],
       "headings": [
-        "gulp 模板",
-        "weapp-vite 模板",
+        "weapp-vite",
         "组件样式的隔离性",
         "vscode tailwindcss 智能提示设置"
       ],

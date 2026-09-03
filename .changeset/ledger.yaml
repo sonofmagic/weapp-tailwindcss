@@ -2,6 +2,10 @@
   dir: packages/cli
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/cli@5.5.0":
+  dir: packages/cli
+  intents:
+    - dx-vite-doctor-init
 "@weapp-tailwindcss/cva@0.1.9":
   dir: packages-runtime/cva
   intents:
@@ -22,6 +26,10 @@
   dir: packages/init
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/init@2.0.0":
+  dir: packages/init
+  intents:
+    - dx-vite-doctor-init
 "@weapp-tailwindcss/logger@2.0.3":
   dir: packages/logger
   intents:
@@ -52,6 +60,11 @@
   dir: packages/postcss
   intents:
     - compiler-finalization-api
+"@weapp-tailwindcss/postcss@3.3.1":
+  dir: packages/postcss
+  intents:
+    - steady-compiler-boundary
+    - strict-tailwind-source-media
 "@weapp-tailwindcss/react-native@0.2.5":
   dir: packages/react-native
   intents:
@@ -76,14 +89,26 @@
   dir: packages-runtime/typography
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/typography@1.0.5":
+  dir: packages-runtime/typography
+  intents:
+    - steady-compiler-boundary
 "@weapp-tailwindcss/ui@0.0.12":
   dir: packages-runtime/ui
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/ui@0.0.13":
+  dir: packages-runtime/ui
+  intents:
+    - steady-compiler-boundary
 "@weapp-tailwindcss/variants@0.2.5":
   dir: packages-runtime/variants
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/variants@0.2.6":
+  dir: packages-runtime/variants
+  intents:
+    - steady-compiler-boundary
 tailwindcss-config@2.0.4:
   dir: packages/tailwindcss-config
   intents:
@@ -157,6 +182,16 @@ weapp-tailwindcss@5.4.2:
   intents:
     - quick-web-candidates-skip
     - quiet-vite-boundary
+weapp-tailwindcss@5.5.0:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - bright-deps-migrate
+    - dx-vite-doctor-init
+    - issue-1144-uvue-hmr
+    - steady-compiler-boundary
+    - strict-ci-platform-gates
+    - strict-tailwind-source-media
+    - web-css-only
 weapp-tw@0.0.3:
   dir: packages/weapp-tw
   intents:

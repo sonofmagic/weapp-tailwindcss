@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-29T18:10:33.558Z",
+  "generatedAt": "2026-09-03T01:50:02.349Z",
   "locale": "zh-CN",
   "contentTier": "primary",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
@@ -2743,9 +2743,9 @@
       "locale": "zh-CN",
       "contentTier": "primary",
       "productArea": "quick-start",
-      "title": "原生开发(打包方案)",
-      "description": "模板项目 weapp-tailwindcss-gulp-template(gulp打包)",
-      "summary": "模板项目 weapp-tailwindcss-gulp-template(gulp打包)",
+      "title": "原生开发（weapp-vite）",
+      "description": "使用 weapp-vite 与 Tailwind CSS 4 构建原生小程序",
+      "summary": "原生小程序推荐使用 weapp-vite 官网，通过下面的命令创建项目：",
       "url": "/zh-cn/docs/quick-start/frameworks/native",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/native",
       "alternates": {
@@ -2769,11 +2769,10 @@
         "uni-app",
         "taro",
         "mpx",
-        "Tailwind CSS 4"
+        "weapp-vite"
       ],
       "headings": [
-        "gulp 模板",
-        "weapp-vite 模板",
+        "weapp-vite",
         "组件样式的隔离性",
         "vscode tailwindcss 智能提示设置"
       ],

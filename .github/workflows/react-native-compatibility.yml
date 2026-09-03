@@ -44,7 +44,7 @@ jobs:
           pnpm exec playwright install chromium chromium-headless-shell
       - run: pnpm e2e:react-native-compatibility
       - run: pnpm e2e:react-native:web
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: react-native-web-${{ github.run_id }}
@@ -87,7 +87,7 @@ jobs:
           disable-animations: true
           disable-spellchecker: true
           script: RN_ANDROID_DEVICE_ID=emulator-5554 RN_ANDROID_BINARY=examples/react-native-expo/android/app/build/outputs/apk/debug/app-debug.apk pnpm e2e:react-native:android
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: react-native-android-${{ github.run_id }}
@@ -121,7 +121,7 @@ jobs:
         env:
           RN_IOS_HOST: 127.0.0.1
         run: pnpm e2e:react-native:ios
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: react-native-ios-${{ github.run_id }}

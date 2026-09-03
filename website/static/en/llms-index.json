@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-08-29T18:10:33.558Z",
+  "generatedAt": "2026-09-03T01:50:02.349Z",
   "locale": "en-US",
   "contentTier": "primary",
   "siteUrl": "https://tw.weapp.dev",
@@ -2719,9 +2719,9 @@
       "locale": "en-US",
       "contentTier": "primary",
       "productArea": "quick-start",
-      "title": "Native development (packaging solution)",
-      "description": "Template project weapp-tailwindcss-gulp-template (gulp packaging)",
-      "summary": "Template project weapp-tailwindcss-gulp-template(gulp packaging)",
+      "title": "Native development with weapp-vite",
+      "description": "Build native mini programs with weapp-vite and Tailwind CSS 4",
+      "summary": "For native mini programs, use the weapp-vite website and create a project with:",
       "url": "/docs/quick-start/frameworks/native",
       "canonical": "https://tw.weapp.dev/docs/quick-start/frameworks/native",
       "alternates": {
@@ -2748,8 +2748,7 @@
         "development"
       ],
       "headings": [
-        "gulp template",
-        "weapp-vite template",
+        "weapp-vite",
         "Isolation of component styles",
         "vscode tailwindcss smart prompt settings"
       ],

@@ -43,7 +43,7 @@ const repoRoot = path.resolve(__dirname, '..')
 const templatesRoot = path.resolve(repoRoot, 'templates')
 const canonicalTemplateNames = new Set(
   CANONICAL_TEMPLATE_CASES
-    .filter(item => item.template === 'generic-vite-tailwindcss-v4' || item.template === 'weapp-vite-tailwindcss-v4')
+    .filter(item => item.template === 'weapp-vite-tailwindcss-v4')
     .map(item => item.template),
 )
 
@@ -166,7 +166,7 @@ function createUniMiniBuildCase(template: string, platform: keyof typeof uniMini
       `${outputDir}/${output.styleFile}`,
       `${outputDir}/${output.pageFile}`,
     ],
-    styleFiles: [`${outputDir}/${output.styleFile}`, `${outputDir}/common`],
+    styleFiles: [outputDir],
     textFiles: [`${outputDir}/${output.pageFile}`],
   }
 }
@@ -502,6 +502,9 @@ describe('templates build smoke', () => {
     expect(await fs.readFile(path.resolve(root, '.npmrc'), 'utf8')).toContain('registry=https://registry.npmjs.org/')
 
     expect(deps['weapp-tailwindcss']).toBe(TEMPLATE_WEAPP_TAILWINDCSS_RANGE)
+    expect(deps['@tailwindcss/postcss'], `${item.name} should not register the official PostCSS generator`).toBeUndefined()
+    expect(deps['@tailwindcss/vite'], `${item.name} should not register the official Vite generator`).toBeUndefined()
+    expect(pkg.scripts?.postinstall ?? '', `${item.name} should not patch Tailwind CSS`).not.toMatch(/weapp-tw\s+patch/u)
 
     if (Object.keys(deps).some(name => name.startsWith('@dcloudio/'))) {
       expect(pkg.scripts?.['up:pkg'], `${item.name} should keep @dcloudio upgrade out of generic package upgrade`).toContain('"!@dcloudio/*"')
