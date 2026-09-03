@@ -11,6 +11,9 @@ function isCssWordChar(code: number) {
     || code === 95
 }
 
+// 先用原生正则排除绝大多数不含空块的 CSS，避免每次 HMR 都逐字符扫描完整产物。
+const EMPTY_CSS_BLOCK_RE = /\{(?:[\t\n\f\r ]|\/\*(?:[^*]|\*(?!\/))*\*\/)*\}/
+
 function findCssPreludeStart(css: string, start: number, end: number) {
   let cursor = start
   while (cursor < end) {
@@ -50,6 +53,9 @@ function isKeyframesAtRule(css: string, start: number, end: number) {
 }
 
 export function hasEmptyCssBlockCandidate(css: string) {
+  if (!EMPTY_CSS_BLOCK_RE.test(css)) {
+    return false
+  }
   const blocks: Array<{
     hasContent: boolean
     isKeyframesContainer: boolean

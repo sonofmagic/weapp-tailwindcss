@@ -12,6 +12,12 @@ describe('final mini-program css cleanup', () => {
     expect(hasEmptyCssBlockCandidate('@custom "value;{}"; .keep { color: red }')).toBe(false)
   })
 
+  it('ignores large non-empty css without entering the structural scan', () => {
+    const source = `${'.keep { color: red; }\n'.repeat(10_000)}.tail { margin: 0; }`
+
+    expect(hasEmptyCssBlockCandidate(source)).toBe(false)
+  })
+
   it('recursively removes empty selector rules and block at-rules', () => {
     const source = [
       '@media (prefers-color-scheme: light) {}',
