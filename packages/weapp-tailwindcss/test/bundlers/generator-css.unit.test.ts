@@ -6143,8 +6143,8 @@ describe('bundlers/shared generator css', () => {
     vi.doMock('@/generator', () => ({
       createWeappTailwindcssGenerator: vi.fn(() => ({
         generate: vi.fn(async () => ({
-          css: '.main-only{}.sub-normal-only{}.sub-independent-only{}',
-          rawCss: '.main-only{}.sub-normal-only{}.sub-independent-only{}',
+          css: '.main-only{display:block}.sub-normal-only{display:block}.sub-independent-only{display:block}',
+          rawCss: '.main-only{display:block}.sub-normal-only{display:block}.sub-independent-only{display:block}',
           target: 'weapp',
           classSet: runtimeSet,
           dependencies: [],
@@ -8222,10 +8222,10 @@ describe('bundlers/shared generator css', () => {
   it('does not append unrelated generated raw css when a Tailwind v4 cssSource is path matched', async () => {
     const appCss = '@import "tailwindcss" source(none);\n@source "./pages/**/*.{ts,tsx}";'
     const subCss = '@import "tailwindcss" source(none);\n@source "./sub-independent/**/*.{ts,tsx}";'
-    const rawAppGeneratedCss = '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */\n.main-only{}'
+    const rawAppGeneratedCss = '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */\n.main-only{display:block}'
     const generateMock = vi.fn(async () => ({
-      css: '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */\n.sub-only{}',
-      rawCss: '.sub-only{}',
+      css: '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */\n.sub-only{display:block}',
+      rawCss: '.sub-only{display:block}',
       target: 'weapp',
       classSet: new Set(['sub-only']),
       dependencies: [],

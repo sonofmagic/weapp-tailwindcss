@@ -26,6 +26,7 @@ export {
   normalizeMiniProgramGeneratedCssForPostcss,
   pruneMiniProgramGeneratedCss,
   removeEmptyAtRules,
+  removeEmptyRules,
   removeUnsupportedAtSupports,
   removeUnsupportedCascadeLayers,
   removeUnsupportedMiniProgramAtRules,

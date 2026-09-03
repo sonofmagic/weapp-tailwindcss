@@ -79,6 +79,10 @@ function isEffectivelyEmptyContainer(container: postcss.Container) {
   return container.nodes !== undefined && container.nodes.every(node => node.type === 'comment')
 }
 
+function isKeyframeStepRule(rule: postcss.Rule) {
+  return rule.parent?.type === 'atrule' && rule.parent.name.toLowerCase().endsWith('keyframes')
+}
+
 export function removeEmptyAtRules(root: postcss.Root) {
   let removed = 0
   const visit = (container: postcss.Container) => {
@@ -115,6 +119,20 @@ function removeEmptyAtRuleAncestors(parent: postcss.Container | undefined) {
     parent.remove()
     parent = nextParent?.type === 'atrule' ? nextParent : undefined
   }
+}
+
+export function removeEmptyRules(root: postcss.Root) {
+  let removed = 0
+  root.walkRules((rule) => {
+    if (isKeyframeStepRule(rule) || !rule.parent || !isEffectivelyEmptyContainer(rule)) {
+      return
+    }
+    const parent = rule.parent
+    rule.remove()
+    removeEmptyAtRuleAncestors(parent)
+    removed++
+  })
+  return removed
 }
 
 export function removeUnsupportedBrowserSelectors(root: postcss.Root) {

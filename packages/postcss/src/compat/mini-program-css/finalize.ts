@@ -15,6 +15,7 @@ import { collectPreflightRules, createPreflightResetRule } from './preflight'
 import {
   removeDisplayP3Declarations,
   removeEmptyAtRules,
+  removeEmptyRules,
   removeEmptyStandardDeclarations,
   removeRootSpecificityPlaceholders,
   removeSpecificityPlaceholders,
@@ -87,6 +88,7 @@ export function finalizeMiniProgramCssRoot(root: postcss.Root, options: Finalize
   const hoistedRules = themeRule ? [...preflightRules, themeRule] : preflightRules
   insertHoistedRules(root, mergeEquivalentHoistedRules(hoistedRules), hoistAnchor)
   if (options.removeEmptyAtRuleAncestors !== false) {
+    removeEmptyRules(root)
     removeEmptyAtRules(root)
   }
   else {
