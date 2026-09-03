@@ -10,6 +10,7 @@ import { chromium } from 'playwright'
 
 import {
   collectProcessOutput,
+  createLocalHBuilderXRunner,
   fetchText,
   findFreePort,
   joinUrl,
@@ -40,8 +41,18 @@ export function clearDevProcess() {
   devProcess = undefined
 }
 
+function unsetVitestEnv(env: Record<string, string | undefined>) {
+  env.VITEST = undefined
+  for (const key of Object.keys(process.env)) {
+    if (key.startsWith('VITEST_')) {
+      env[key] = undefined
+    }
+  }
+  return env
+}
+
 function createDevServer(projectRoot: string, port: number) {
-  const childEnv: Record<string, string | undefined> = {
+  const childEnv = unsetVitestEnv({
     BROWSER: 'none',
     BROWSERSLIST_ENV: 'development',
     NODE_ENV: 'development',
@@ -54,13 +65,7 @@ function createDevServer(projectRoot: string, port: number) {
     UNI_CLI_SERVER_PORT: String(port),
     CHOKIDAR_USEPOLLING: process.env['CHOKIDAR_USEPOLLING'] ?? '1',
     CHOKIDAR_INTERVAL: process.env['CHOKIDAR_INTERVAL'] ?? '50',
-  }
-  childEnv['VITEST'] = undefined
-  for (const key of Object.keys(process.env)) {
-    if (key.startsWith('VITEST_')) {
-      childEnv[key] = undefined
-    }
-  }
+  })
 
   const child = spawnPnpm(projectRoot, [
     'exec',
@@ -75,6 +80,66 @@ function createDevServer(projectRoot: string, port: number) {
   ], childEnv)
   devProcess = child
   return child
+}
+
+async function createHBuilderXDevServer(projectRoot: string) {
+  const env = unsetVitestEnv({
+    BROWSER: 'none',
+    WEAPP_TW_HMR_TIMING: '1',
+    WEAPP_TW_WATCH_REGRESSION: '1',
+    VITE_WEAPP_TW_WATCH_REGRESSION: '1',
+  })
+  const hbuilderx = await createLocalHBuilderXRunner(projectRoot, env)
+  const projectOptions = {
+    cwd: projectRoot,
+    env,
+    timeoutMs: serverTimeoutMs,
+  }
+  await hbuilderx.closeProject({ ...projectOptions, allowFailure: true })
+  const closedProjects = await hbuilderx.run({
+    ...projectOptions,
+    args: ['project', 'list'],
+  })
+  const projectName = path.basename(projectRoot)
+  const countProjectEntries = (output: string) => output
+    .split(/\r?\n/)
+    .filter((line) => {
+      const entry = line.trim()
+      const nameStart = entry.indexOf(' - ')
+      const typeStart = entry.lastIndexOf('(')
+      return nameStart >= 0
+        && typeStart > nameStart
+        && entry.slice(nameStart + 3, typeStart) === projectName
+    })
+    .length
+  const closedProjectCount = countProjectEntries(closedProjects.output)
+  await hbuilderx.openProject(projectOptions)
+  const startedAt = Date.now()
+  const registrationLogs: string[] = []
+  let registered = false
+  while (Date.now() - startedAt < serverTimeoutMs) {
+    const listed = await hbuilderx.run({
+      ...projectOptions,
+      args: ['project', 'list'],
+      allowFailure: true,
+    })
+    registrationLogs.push(...listed.logs)
+    if (listed.exit.code === 0 && countProjectEntries(listed.output) > closedProjectCount) {
+      registered = true
+      break
+    }
+    await wait(pollIntervalMs)
+  }
+  if (!registered) {
+    throw new Error(`等待 HBuilderX 项目注册超时：${projectRoot}\n${registrationLogs.join('').slice(-20_000)}`)
+  }
+  const launch = hbuilderx.spawn({
+    args: ['launch', 'web', '--project', projectRoot, '--browser', 'Chrome'],
+    cwd: projectRoot,
+    env,
+  })
+  devProcess = launch.child
+  return launch
 }
 
 async function waitForUrl(url: string, child: ChildProcess, logs: string[], timeoutMs = serverTimeoutMs) {
@@ -292,6 +357,31 @@ async function waitForHmrMarker(page: Page, markerText: string) {
   })
 }
 
+async function waitForInitialPageText(page: Page, entries: string[], logs: string[], diagnostics: WebPageDiagnostics) {
+  if (entries.length === 0) {
+    return
+  }
+  try {
+    await page.waitForFunction((expected) => {
+      const text = document.body?.textContent ?? ''
+      return expected.every(entry => text.includes(entry))
+    }, entries, {
+      timeout: serverTimeoutMs,
+    })
+  }
+  catch (error) {
+    const bodyText = await page.locator('body').textContent().catch(() => undefined)
+    const pageHtml = await page.content().catch(() => undefined)
+    throw new Error([
+      `等待 Web 初始页面文本超时：${entries.join(', ')}`,
+      `body=${JSON.stringify(bodyText)}`,
+      `html=${pageHtml ?? ''}`,
+      `diagnostics=${JSON.stringify(diagnostics)}`,
+      `serverLogs=${logs.join('').slice(-20_000)}`,
+    ].join('\n'), { cause: error })
+  }
+}
+
 export async function runWebHmr(
   projectRoot: string,
   sourceFile: string,
@@ -302,11 +392,14 @@ export async function runWebHmr(
   initialRuntimeStyles: WebRuntimeStyleAssertion[] | undefined,
   persistentRuntimeStyles: WebRuntimeStyleAssertion[] | undefined,
   hmrSteps: WebHmrStep[],
+  launchWithHBuilderX = false,
+  initialTextContains: string[] = [],
 ) {
   const port = await findFreePort()
   await runPnpm(projectRoot, ['run', 'predev:h5'], serverTimeoutMs)
-  const child = createDevServer(projectRoot, port)
-  const logs = collectProcessOutput(child)
+  const hbuilderxLaunch = launchWithHBuilderX ? await createHBuilderXDevServer(projectRoot) : undefined
+  const child = hbuilderxLaunch?.child ?? createDevServer(projectRoot, port)
+  const logs = hbuilderxLaunch?.logs ?? collectProcessOutput(child)
   const baseUrl = `http://127.0.0.1:${port}/`
   const executablePath = await resolveChromeExecutable()
   const browser = await chromium.launch({
@@ -346,6 +439,7 @@ export async function runWebHmr(
     })
     await page.goto(joinUrl(ready.baseUrl, '/'), { waitUntil: 'domcontentloaded' })
     await page.waitForFunction(() => document.readyState !== 'loading')
+    await waitForInitialPageText(page, initialTextContains, logs, diagnostics)
 
     await waitForRuntimeStyles(page, initialRuntimeStyles, 'initial', logs, diagnostics, true)
     const initialCss = await waitForCss(joinUrl(ready.baseUrl, initialCssPath), initialCssContains, child, logs)

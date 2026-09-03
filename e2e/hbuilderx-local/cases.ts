@@ -121,14 +121,17 @@ export function resolveAppHmrSteps(item: AppCase): AppHmrStep[] {
 export interface WebCase {
   name: string
   projectDir: string
+  launchWithHBuilderX?: boolean
   sourceFile: string
   markerAnchor: string
   markerAnchorCandidates?: string[]
   initialCssPath: string
   hmrCssPath: string
   initialCssContains: Array<string | RegExp>
+  initialTextContains?: string[]
   initialRuntimeStyles?: WebRuntimeStyleAssertion[]
   persistentRuntimeStyles?: WebRuntimeStyleAssertion[]
+  serverLogContains?: Array<string | RegExp>
   serverLogNotContains?: Array<string | RegExp>
   hmrSteps: WebHmrStep[]
   workflow: HBuilderXWorkflowCoverage
@@ -1078,6 +1081,7 @@ export const webCases: WebCase[] = [
   {
     name: 'issue-1144-uni-app-x-web',
     projectDir: 'demo/issue-1144-uni-app-x-web',
+    launchWithHBuilderX: true,
     sourceFile: 'pages/index/index.uvue',
     markerAnchor: '<text class="text-content text-2xl font-bold text-white/70 text-blue-300/35">',
     initialCssPath: '/main.css?direct',
@@ -1086,6 +1090,11 @@ export const webCases: WebCase[] = [
       'weapp-tailwindcss uni-app-x web preflight reset',
       'uni-app uni-view',
       /\.bg-page\s*\{/,
+    ],
+    initialTextContains: ['全端主题'],
+    serverLogContains: [
+      /HBuilderX Version:\s*5\./,
+      /编译器版本：5\.\d+（uni-app x）VDOM模式/,
     ],
     serverLogNotContains: ['Unknown word', '[plugin:vite:css]'],
     hmrSteps: [
