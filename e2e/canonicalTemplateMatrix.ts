@@ -18,21 +18,6 @@ export interface CanonicalTemplateCase {
 
 export const CANONICAL_TEMPLATE_CASES = [
   {
-    name: 'generic-vite-tailwindcss-v4',
-    template: 'generic-vite-tailwindcss-v4',
-    kind: 'web',
-    framework: 'generic',
-    builder: 'vite',
-    target: 'web',
-    cssEntry: 'src/style.css',
-    buildCommand: ['build'],
-    outputDir: 'dist',
-    requiredFiles: ['dist/index.html'],
-    styleTargets: ['dist/assets'],
-    textTargets: ['dist/index.html'],
-    source: 'templates',
-  },
-  {
     name: 'uni-app-tailwindcss-v4 mp-weixin',
     template: 'uni-app-tailwindcss-v4',
     kind: 'mini-program',

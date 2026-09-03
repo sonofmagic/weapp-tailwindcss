@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-02T17:59:10.472Z",
+  "generatedAt": "2026-09-03T01:53:45.359Z",
   "locale": "zh-CN",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
@@ -3326,7 +3326,7 @@
       "contentTier": "full",
       "productArea": "community",
       "title": "🔥各个框架的模板",
-      "description": "Tailwind CSS 4 与最新版 weapp-tailwindcss 的可运行模板，覆盖 Vite、uni-app、Taro、Mpx 和原生小程序。",
+      "description": "Tailwind CSS 4 与最新版 weapp-tailwindcss 的可运行模板，覆盖 uni-app、Taro、Mpx 和原生小程序。",
       "summary": "以下模板统一使用 Tailwind CSS 4 CSS-first 入口，并由 weapp-tailwindcss@5.5.0 接管样式生成。带有 🔥 标志的模板同时纳入仓库 canonical 构建门禁；完整验证范围见支持矩阵。",
       "url": "/zh-cn/docs/community/templates",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/community/templates",
@@ -3354,7 +3354,6 @@
         "React Native"
       ],
       "headings": [
-        "Generic Vite Web",
         "uni-app",
         "Taro",
         "Mpx",
@@ -5098,7 +5097,7 @@
       "productArea": "quick-start",
       "title": "原生开发（weapp-vite）",
       "description": "使用 weapp-vite 与 Tailwind CSS 4 构建原生小程序",
-      "summary": "如果你希望原生小程序走 Vite 构建，推荐查看 纯原生 weapp-vite 接入和 weapp-vite Tailwind CSS 4 模板。当前文档仅维护 Tailwind CSS 4 接入说明。",
+      "summary": "原生小程序推荐使用 weapp-vite 官网，通过下面的命令创建项目：",
       "url": "/zh-cn/docs/quick-start/frameworks/native",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/native",
       "alternates": {
@@ -5125,7 +5124,7 @@
         "weapp-vite"
       ],
       "headings": [
-        "weapp-vite 模板",
+        "weapp-vite",
         "组件样式的隔离性",
         "vscode tailwindcss 智能提示设置"
       ],

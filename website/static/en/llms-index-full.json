@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-02T17:59:10.472Z",
+  "generatedAt": "2026-09-03T01:53:45.359Z",
   "locale": "en-US",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev",
@@ -3160,7 +3160,7 @@
       "contentTier": "full",
       "productArea": "community",
       "title": "🔥Templates for each framework",
-      "description": "Runnable Tailwind CSS 4 templates using the latest weapp-tailwindcss integration for Vite, uni-app, Taro, Mpx, and native mini programs.",
+      "description": "Runnable Tailwind CSS 4 templates using the latest weapp-tailwindcss integration for uni-app, Taro, Mpx, and native mini programs.",
       "summary": "These templates use the Tailwind CSS 4 CSS-first entry and delegate CSS generation to weapp-tailwindcss@5.5.0. Templates marked with 🔥 also run through the repository's canonical build gate. See the support matrix for…",
       "url": "/docs/community/templates",
       "canonical": "https://tw.weapp.dev/docs/community/templates",
@@ -3188,7 +3188,6 @@
         "cross-platform"
       ],
       "headings": [
-        "Generic Vite Web",
         "uni-app",
         "Taro",
         "Mpx",
@@ -4939,7 +4938,7 @@
       "productArea": "quick-start",
       "title": "Native development with weapp-vite",
       "description": "Build native mini programs with weapp-vite and Tailwind CSS 4",
-      "summary": "For native mini programs built with Vite, see the pure native weapp-vite guide and the weapp-vite Tailwind CSS 4 template. This documentation only maintains the Tailwind CSS 4 integration.",
+      "summary": "For native mini programs, use the weapp-vite website and create a project with:",
       "url": "/docs/quick-start/frameworks/native",
       "canonical": "https://tw.weapp.dev/docs/quick-start/frameworks/native",
       "alternates": {
@@ -4966,7 +4965,7 @@
         "development"
       ],
       "headings": [
-        "weapp-vite template",
+        "weapp-vite",
         "Isolation of component styles",
         "vscode tailwindcss smart prompt settings"
       ],

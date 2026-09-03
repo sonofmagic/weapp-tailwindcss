@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-02T17:59:10.472Z",
+  "generatedAt": "2026-09-03T01:50:02.349Z",
   "locale": "zh-CN",
   "contentTier": "primary",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
@@ -2745,7 +2745,7 @@
       "productArea": "quick-start",
       "title": "原生开发（weapp-vite）",
       "description": "使用 weapp-vite 与 Tailwind CSS 4 构建原生小程序",
-      "summary": "如果你希望原生小程序走 Vite 构建，推荐查看 纯原生 weapp-vite 接入和 weapp-vite Tailwind CSS 4 模板。当前文档仅维护 Tailwind CSS 4 接入说明。",
+      "summary": "原生小程序推荐使用 weapp-vite 官网，通过下面的命令创建项目：",
       "url": "/zh-cn/docs/quick-start/frameworks/native",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/quick-start/frameworks/native",
       "alternates": {
@@ -2772,7 +2772,7 @@
         "weapp-vite"
       ],
       "headings": [
-        "weapp-vite 模板",
+        "weapp-vite",
         "组件样式的隔离性",
         "vscode tailwindcss 智能提示设置"
       ],

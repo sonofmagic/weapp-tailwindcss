@@ -97,7 +97,6 @@ Webpack、Rspack、Gulp、Taro、uni-app、Mpx 和原生小程序的完整配置
 
 仓库内提供可独立安装和验证的最小模板：
 
-- [Generic Vite Web](./templates/generic-vite-tailwindcss-v4)
 - [uni-app + Vue 3](./templates/uni-app-tailwindcss-v4)
 - [Taro + Vite + React](./templates/taro-vite-tailwindcss-v4)
 - [weapp-vite 原生小程序](./templates/weapp-vite-tailwindcss-v4)

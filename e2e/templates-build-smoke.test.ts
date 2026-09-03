@@ -43,7 +43,7 @@ const repoRoot = path.resolve(__dirname, '..')
 const templatesRoot = path.resolve(repoRoot, 'templates')
 const canonicalTemplateNames = new Set(
   CANONICAL_TEMPLATE_CASES
-    .filter(item => item.template === 'generic-vite-tailwindcss-v4' || item.template === 'weapp-vite-tailwindcss-v4')
+    .filter(item => item.template === 'weapp-vite-tailwindcss-v4')
     .map(item => item.template),
 )
 

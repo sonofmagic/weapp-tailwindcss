@@ -36,9 +36,15 @@ Before changing the template toolchain process, please make sure you are familia
 In addition, these templates only need to slightly change the product suffix and adjust the `@source` scanning range to adapt to Baidu, Toutiao, JD... various platforms.
 :::
 
-## weapp-vite template
+## weapp-vite
 
-For native mini programs built with Vite, see the [pure native weapp-vite guide](/docs/quick-start/native/install) and the [weapp-vite Tailwind CSS 4 template](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/templates/weapp-vite-tailwindcss-v4). This documentation only maintains the Tailwind CSS 4 integration.
+For native mini programs, use the [weapp-vite website](https://vite.icebreaker.top/) and create a project with:
+
+```bash
+pnpm create weapp-vite
+```
+
+After creating the project, follow the official documentation to add Tailwind CSS 4 and `weapp-tailwindcss/vite`.
 
 Then register `vite.config.ts` in `weapp-tailwindcss/vite`:
 

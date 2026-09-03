@@ -97,7 +97,6 @@ See the [framework integration guides](https://tw.weapp.dev/docs/quick-start/fra
 
 The repository includes independently installable and verifiable minimal templates:
 
-- [Generic Vite Web](./templates/generic-vite-tailwindcss-v4)
 - [uni-app + Vue 3](./templates/uni-app-tailwindcss-v4)
 - [Taro + Vite + React](./templates/taro-vite-tailwindcss-v4)
 - [weapp-vite native mini program](./templates/weapp-vite-tailwindcss-v4)

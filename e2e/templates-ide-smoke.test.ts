@@ -86,10 +86,6 @@ const templateIdeCases: TemplateIdeCase[] = [
 
 const localOnlyIdeCases: TemplateIdeLocalOnlyCase[] = [
   {
-    name: 'generic-vite-tailwindcss-v4',
-    reason: 'Generic Vite 模板只构建 Web 产物，不适用微信开发者工具 automator。',
-  },
-  {
     name: 'uni-app-hbuilderx-tailwindcss-v4',
     reason: '该模板没有可离线 CLI 构建脚本，需要在 HBuilderX 中导入后运行，不能用 WeChat DevTools automator 覆盖。',
   },

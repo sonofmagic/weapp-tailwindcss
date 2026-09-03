@@ -20,7 +20,7 @@ keywords:
 
 ### 模板 template
 
-当前维护的模板统一使用 Tailwind CSS 4 和最新版 `weapp-tailwindcss`。请从[模板项目](/docs/community/templates)选择 Generic Vite、uni-app、Taro、Mpx 或 weapp-vite 方案。
+当前维护的模板统一使用 Tailwind CSS 4 和最新版 `weapp-tailwindcss`。请从[模板项目](/docs/community/templates)选择 uni-app、Taro、Mpx 或 weapp-vite 方案。
 
 ### tailwindcss plugin
 

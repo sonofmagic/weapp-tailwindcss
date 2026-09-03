@@ -21,7 +21,7 @@ keywords:
 
 ### template template
 
-Maintained templates now use Tailwind CSS 4 and the latest `weapp-tailwindcss`. Choose a Generic Vite, uni-app, Taro, Mpx, or weapp-vite setup from the [template catalog](/docs/community/templates).
+Maintained templates now use Tailwind CSS 4 and the latest `weapp-tailwindcss`. Choose a uni-app, Taro, Mpx, or weapp-vite setup from the [template catalog](/docs/community/templates).
 
 ### tailwindcss plugin
 

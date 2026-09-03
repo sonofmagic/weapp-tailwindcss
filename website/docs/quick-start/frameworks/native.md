@@ -34,9 +34,15 @@ keywords:
 另外这些模板，只需要稍微改一下产物后缀，调整 `@source` 扫描范围就可以适配百度，头条，京东...各个平台。
 :::
 
-## weapp-vite 模板
+## weapp-vite
 
-如果你希望原生小程序走 Vite 构建，推荐查看 [纯原生 weapp-vite 接入](/docs/quick-start/native/install)和 [weapp-vite Tailwind CSS 4 模板](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/templates/weapp-vite-tailwindcss-v4)。当前文档仅维护 Tailwind CSS 4 接入说明。
+原生小程序推荐使用 [weapp-vite 官网](https://vite.icebreaker.top/)，通过下面的命令创建项目：
+
+```bash
+pnpm create weapp-vite
+```
+
+创建项目后，再按官网文档接入 Tailwind CSS 4 和 `weapp-tailwindcss/vite`。
 
 然后在 `vite.config.ts` 中注册 `weapp-tailwindcss/vite`：
 

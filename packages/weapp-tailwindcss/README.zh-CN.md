@@ -34,7 +34,7 @@ export default {
 }
 ```
 
-仓库提供 [Generic Vite](../../templates/generic-vite-tailwindcss-v4)、[uni-app](../../templates/uni-app-tailwindcss-v4)、[Taro Vite](../../templates/taro-vite-tailwindcss-v4) 和 [weapp-vite](../../templates/weapp-vite-tailwindcss-v4) 四个 canonical 模板，可直接安装并运行 smoke 构建。
+仓库提供 [uni-app](../../templates/uni-app-tailwindcss-v4)、[Taro Vite](../../templates/taro-vite-tailwindcss-v4) 和 [weapp-vite](../../templates/weapp-vite-tailwindcss-v4) 三个 canonical 模板，可直接安装并运行 smoke 构建。
 
 ## Tailwind CSS 4 入口
 
