@@ -814,7 +814,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
 
 export async function verifyWebHmr(item: WebCase) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
-  const result = await runWebHmr(projectRoot, path.resolve(projectRoot, item.sourceFile), resolveWebMarkerAnchors(item), item.initialCssPath, item.hmrCssPath, item.initialCssContains, item.initialRuntimeStyles, item.persistentRuntimeStyles, item.hmrSteps)
+  const result = await runWebHmr(projectRoot, path.resolve(projectRoot, item.sourceFile), resolveWebMarkerAnchors(item), item.initialCssPath, item.hmrCssPath, item.initialCssContains, item.initialRuntimeStyles, item.persistentRuntimeStyles, item.hmrSteps, item.launchWithHBuilderX, item.initialTextContains)
 
   expect(result.pageHtml, `${item.name} Web 首页应可访问`).toContain('<!DOCTYPE html>')
   expect(result.pageErrors, `${item.name} Web 页面不应产生控制台错误`).toEqual([])
@@ -825,4 +825,6 @@ export async function verifyWebHmr(item: WebCase) {
   for (const css of result.hmrCss) {
     expect(css, `${item.name} HMR CSS 不应保留 Tailwind 原始指令`).not.toMatch(rawTailwindDirectiveRE)
   }
+  expectContent(result.serverLogs, item.serverLogContains ?? [], `${item.name} Web HBuilderX 服务日志`)
+  expectNoContent(result.serverLogs, item.serverLogNotContains, `${item.name} Web Vite 服务日志`)
 }

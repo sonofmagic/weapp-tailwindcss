@@ -141,8 +141,8 @@ describe('uni-app-x vite plugins', () => {
       getResolvedConfig: () => currentConfig,
       isEnabled: () => enabled,
     })
-    const cssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css')
     const preCssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
+    const cssPlugin = plugins.find((p): p is Plugin => Boolean(p.name?.includes(':css')))
     const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
     const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
 
@@ -297,6 +297,79 @@ describe('uni-app-x vite plugins', () => {
         uniAppXCssTarget: 'uvue',
       }),
     )
+  })
+
+  it('extracts the requested style block from a full uni-app x SFC HMR payload', async () => {
+    const styleHandler = vi.fn(async (code: string, options?: Record<string, unknown>) => ({
+      css: `css:${code}`,
+      map: {
+        toJSON: () => ({
+          version: 3,
+          file: options?.postcssOptions?.options?.from ?? '',
+          sources: [options?.postcssOptions?.options?.from ?? ''],
+          names: [],
+          mappings: '',
+          sourcesContent: [code],
+        }),
+      },
+    }))
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      mainCssChunkMatcher: vi.fn(() => false),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler,
+      generateCss: vi.fn(async () => undefined),
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      getResolvedConfig: () => ({ command: 'serve', build: { outDir: 'dist/dev/h5', watch: false } } as ResolvedConfig),
+      isWebGeneratorTarget: () => true,
+    })
+    const cssPrePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
+    const id = '/project/pages/index/index.uvue?vue&type=style&index=1&scoped=true&lang.css&direct'
+    const source = [
+      '<template><text>{{ theme.themeClass }}</text></template>',
+      '<style>.root { color: red; }</style>',
+      '<style scoped>.content { @apply flex; }</style>',
+    ].join('\n')
+
+    const result = await getTransformHandler(cssPrePlugin)?.call(cssPrePlugin, source, id)
+
+    expect(result).toEqual(expect.objectContaining({ code: 'css:.content { @apply flex; }' }))
+    expect(styleHandler).toHaveBeenCalledWith(
+      '.content { @apply flex; }',
+      expect.objectContaining({ postcssOptions: expect.any(Object) }),
+    )
+    expect(styleHandler.mock.calls[0]?.[0]).not.toContain('<template>')
+  })
+
+  it('skips Vite CSS HMR wrappers in the uni-app x CSS transformer', async () => {
+    const styleHandler = vi.fn()
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      mainCssChunkMatcher: vi.fn(() => false),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler,
+      generateCss: vi.fn(),
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      getResolvedConfig: () => ({ command: 'serve', build: { outDir: 'dist/dev/h5', watch: false } } as ResolvedConfig),
+      isWebGeneratorTarget: () => true,
+    })
+    const cssPrePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
+    const cssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css')
+    const id = '/project/pages/index/index.uvue?vue&type=style&index=1&scoped=true&lang.css&direct'
+    const hmrCode = [
+      `const __vite__css = ${JSON.stringify('<style scoped>.content { @apply flex; }</style>')}`,
+      '__vite__updateStyle(__vite__id, __vite__css)',
+    ].join('\n')
+
+    await expect(getTransformHandler(cssPrePlugin)?.call(cssPrePlugin, hmrCode, id)).resolves.toBeUndefined()
+    await expect(getTransformHandler(cssPlugin)?.call(cssPlugin, hmrCode, id)).resolves.toBeUndefined()
+    expect(styleHandler).not.toHaveBeenCalled()
   })
 
   it('skips pre hook for preprocessor styles and runs after preprocess', async () => {

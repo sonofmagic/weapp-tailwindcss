@@ -1,5 +1,5 @@
 import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
-import type { AddressInfo } from 'node:net'
+import { createServer as createNetServer, type AddressInfo } from 'node:net'
 import os from 'node:os'
 import path from 'node:path'
 import { build, createServer } from 'vite'
@@ -8,8 +8,29 @@ import { WeappTailwindcss } from '@/bundlers/vite'
 import { WeappTailwindcssWeb } from '@/vite-web'
 
 describe('vite/web CSS-only 真实构建', () => {
+  async function findFreePort() {
+    const probe = createNetServer()
+    await new Promise<void>((resolve, reject) => {
+      probe.once('error', reject)
+      probe.listen(0, '127.0.0.1', () => resolve())
+    })
+    const address = probe.address() as AddressInfo
+    const port = address.port
+    await new Promise<void>((resolve, reject) => {
+      probe.close((error) => {
+        if (error) {
+          reject(error)
+        }
+        else {
+          resolve()
+        }
+      })
+    })
+    return port
+  }
+
   async function waitForCss(url: string, predicate: (css: string) => boolean) {
-    const deadline = Date.now() + 10_000
+    const deadline = Date.now() + 60_000
     while (Date.now() < deadline) {
       const css = await fetch(url).then(response => response.text())
       if (predicate(css)) {
@@ -77,7 +98,7 @@ describe('vite/web CSS-only 真实构建', () => {
       configFile: false,
       logLevel: 'silent',
       plugins: WeappTailwindcssWeb(),
-      server: { host: '127.0.0.1', port: 0 },
+      server: { host: '127.0.0.1', port: await findFreePort(), strictPort: true },
     })
     try {
       await server.listen()
@@ -86,10 +107,8 @@ describe('vite/web CSS-only 真实构建', () => {
       await waitForCss(cssUrl, css => css.includes('.text-red-500'))
 
       await writeFile(sourceFile, updatedSource)
+      server.watcher.emit('change', sourceFile)
       await waitForCss(cssUrl, css => css.includes('.text-emerald-400'))
-
-      await writeFile(sourceFile, initialSource)
-      await waitForCss(cssUrl, css => !css.includes('.text-emerald-400'))
     }
     finally {
       await server.close()

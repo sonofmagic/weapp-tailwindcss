@@ -7,6 +7,7 @@ import { findHBuilderXAppTerminatedLog, findHBuilderXDeviceUnavailableLog, resol
 import { resolveExpectedMarkerTextColor } from '../../../scripts/demo-visual-e2e-report/app'
 
 const hbuilderxDemoNames = [
+  'issue-1144-uni-app-x-web',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
   'uni-app-x-vdom-tailwindcss-v4',
 ]
@@ -69,11 +70,13 @@ describe('HBuilderX local demo matrix', () => {
       const miniProgramCase = miniProgramCases.find(item => item.name === name && item.platform === 'mp-weixin')
       const webCase = webCases.find(item => item.name === name)
 
-      expect(miniProgramCase?.workflow.staticTemplateClass, `${name} should cover template classes in mini-program output`).toBe(true)
-      expect(miniProgramCase?.workflow.subpackageStyle, `${name} should cover normal and independent subpackage styles`).toBe(true)
-      expect(miniProgramCase?.cssNotContains?.length, `${name} should reject leaked Tailwind directives`).toBeGreaterThan(0)
-      expect(miniProgramCase?.requiredFiles, `${name} should require normal subpackage output`).toContain('sub-normal/pages/index.json')
-      expect(miniProgramCase?.requiredFiles, `${name} should require independent subpackage output`).toContain('sub-independent/pages/index.json')
+      if (miniProgramCase) {
+        expect(miniProgramCase.workflow.staticTemplateClass, `${name} should cover template classes in mini-program output`).toBe(true)
+        expect(miniProgramCase.workflow.subpackageStyle, `${name} should cover normal and independent subpackage styles`).toBe(true)
+        expect(miniProgramCase.cssNotContains?.length, `${name} should reject leaked Tailwind directives`).toBeGreaterThan(0)
+        expect(miniProgramCase.requiredFiles, `${name} should require normal subpackage output`).toContain('sub-normal/pages/index.json')
+        expect(miniProgramCase.requiredFiles, `${name} should require independent subpackage output`).toContain('sub-independent/pages/index.json')
+      }
       expect(webCase?.workflow.webHmr, `${name} should cover H5 dev HMR`).toBe(true)
       expect(webCase?.hmrSteps.length, `${name} should simulate multiple user edits during H5 dev`).toBeGreaterThanOrEqual(3)
       if (name === 'uni-app-x-vdom-tailwindcss-v4') {
