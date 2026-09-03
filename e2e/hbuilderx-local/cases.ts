@@ -129,6 +129,7 @@ export interface WebCase {
   initialCssContains: Array<string | RegExp>
   initialRuntimeStyles?: WebRuntimeStyleAssertion[]
   persistentRuntimeStyles?: WebRuntimeStyleAssertion[]
+  serverLogNotContains?: Array<string | RegExp>
   hmrSteps: WebHmrStep[]
   workflow: HBuilderXWorkflowCoverage
 }
@@ -1074,6 +1075,33 @@ export const uniAppXAppCases: AppCase[] = [
 ]
 
 export const webCases: WebCase[] = [
+  {
+    name: 'issue-1144-uni-app-x-web',
+    projectDir: 'demo/issue-1144-uni-app-x-web',
+    sourceFile: 'pages/index/index.uvue',
+    markerAnchor: '<text class="text-content text-2xl font-bold text-white/70 text-blue-300/35">',
+    initialCssPath: '/main.css?direct',
+    hmrCssPath: '/main.css?direct',
+    initialCssContains: [
+      'weapp-tailwindcss uni-app-x web preflight reset',
+      'uni-app uni-view',
+      /\.bg-page\s*\{/,
+    ],
+    serverLogNotContains: ['Unknown word', '[plugin:vite:css]'],
+    hmrSteps: [
+      {
+        markerClass: 'hbuilderx-web-hmr-probe bg-[#0f5132] text-[#f8fafc] w-[188px]',
+        markerText: 'issue-1144-uni-app-x-web-hmr-step-1',
+        cssContains: [/background-color:\s*#0f5132/, /color:\s*#f8fafc/, /width:\s*188px/],
+      },
+      {
+        markerClass: 'hbuilderx-web-hmr-probe bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',
+        markerText: 'issue-1144-uni-app-x-web-hmr-step-2',
+        cssContains: [/background-color:\s*#7c2d12/, /color:\s*#ecfeff/, /height:\s*37px/, /margin-top:\s*11px/],
+      },
+    ],
+    workflow: uniAppXHBuilderXWorkflow,
+  },
   {
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
     projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4',

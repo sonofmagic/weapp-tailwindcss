@@ -825,4 +825,5 @@ export async function verifyWebHmr(item: WebCase) {
   for (const css of result.hmrCss) {
     expect(css, `${item.name} HMR CSS 不应保留 Tailwind 原始指令`).not.toMatch(rawTailwindDirectiveRE)
   }
+  expectNoContent(result.serverLogs, item.serverLogNotContains, `${item.name} Web Vite 服务日志`)
 }

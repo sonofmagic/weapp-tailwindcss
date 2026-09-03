@@ -381,6 +381,7 @@ export async function runWebHmr(
       pageHtml: ready.text,
       pageOverlayText,
       pageWarnings: diagnostics.warnings,
+      serverLogs: logs.join(''),
     }
   }
   finally {

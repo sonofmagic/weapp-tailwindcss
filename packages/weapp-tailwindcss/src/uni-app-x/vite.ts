@@ -44,6 +44,23 @@ function loadTransformUVue(): Promise<TransformUVue> {
 }
 const UVUE_NVUE_QUERY_RE = /\.(?:uvue|nvue)(?:\?.*)?$/
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)$/
+const VITE_CSS_HMR_MODULE_RE = /\b(?:const\s+__vite__css\s*=|__vite__updateStyle\s*\()/
+
+function resolveUniAppXStyleSource(code: string, query: ReturnType<typeof parseVueRequest>['query']) {
+  if (!query.vue || query.type !== 'style') {
+    return { code }
+  }
+  if (VITE_CSS_HMR_MODULE_RE.test(code)) {
+    return { skip: true as const }
+  }
+  const styleBlocks = extractSfcStyleBlocks(code)
+  if (styleBlocks.length === 0) {
+    return { code }
+  }
+  const style = styleBlocks[query.index ?? 0]
+  return style ? { code: style.source } : { skip: true as const }
+}
+
 function hasUniAppXImportantApply(source: string) {
   return extractSfcStyleBlocks(source).some(style => normalizeUniAppXImportantApplyForSass(style.source) !== style.source)
 }
@@ -167,6 +184,11 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   async function transformStyle(code: string, id: string, query?: ReturnType<typeof parseVueRequest>['query'], hookContext?: { addWatchFile?: (id: string) => void }) {
     const isNativeStyle = isNativeAppBuildTarget(id)
     const parsed = query ?? parseVueRequest(id).query
+    const resolvedSource = resolveUniAppXStyleSource(code, parsed)
+    if (resolvedSource.skip) {
+      return
+    }
+    code = resolvedSource.code
     if (isCSSRequest(id) || (parsed.vue && parsed.type === 'style')) {
       if (isCssModuleExport(code)) {
         return
@@ -260,7 +282,11 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (query.vue && query.type === 'style') {
         await pendingSfcTransforms.get(cleanUrl(filename))
       }
-      const styleCode = query.vue && query.type === 'style' ? webLocalStyle.appendToStyle(code, id) : code
+      const resolvedSource = resolveUniAppXStyleSource(code, query)
+      if (resolvedSource.skip) {
+        return
+      }
+      const styleCode = query.vue && query.type === 'style' ? webLocalStyle.appendToStyle(resolvedSource.code, id) : resolvedSource.code
       // Vite 热更新会绕过 SFC 主模块，直接把原始样式交给预处理器；先移除
       // Sass 无法解析的 important utility 后，再由后续 CSS 阶段还原。
       const preprocessorCode = query.vue && query.type === 'style'
