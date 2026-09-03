@@ -14,6 +14,18 @@
   dir: packages/debug-uni-app-x
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/e2e@0.0.0":
+  dir: e2e
+  intents:
+    - salty-icons-repeat
+"@weapp-tailwindcss/example-react-lynx-promo@0.0.0":
+  dir: examples/react-lynx-promo
+  intents:
+    - salty-icons-repeat
+"@weapp-tailwindcss/example-react-lynx@0.1.2":
+  dir: examples/react-lynx
+  intents:
+    - salty-icons-repeat
 "@weapp-tailwindcss/experimental@0.0.36":
   dir: packages/experimental
   intents:
@@ -34,6 +46,10 @@
   dir: packages/logger
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/lynx-promo-video@0.0.0":
+  dir: apps/lynx-promo-video
+  intents:
+    - salty-icons-repeat
 "@weapp-tailwindcss/lynx@0.3.0":
   dir: packages/lynx
   intents:
@@ -65,6 +81,10 @@
   intents:
     - steady-compiler-boundary
     - strict-tailwind-source-media
+"@weapp-tailwindcss/postcss@3.3.2":
+  dir: packages/postcss
+  intents:
+    - issue-1152-empty-selector
 "@weapp-tailwindcss/react-native@0.2.5":
   dir: packages/react-native
   intents:
@@ -109,6 +129,10 @@
   dir: packages-runtime/variants
   intents:
     - steady-compiler-boundary
+"@weapp-tailwindcss/website@1.0.65":
+  dir: website
+  intents:
+    - salty-icons-repeat
 tailwindcss-config@2.0.4:
   dir: packages/tailwindcss-config
   intents:
@@ -134,6 +158,10 @@ weapp-style-injector@1.0.4:
   dir: packages/weapp-style-injector
   intents:
     - bright-package-homepages
+weapp-tailwindcss-monorepo@0.0.0:
+  dir: ""
+  intents:
+    - salty-icons-repeat
 weapp-tailwindcss@5.3.1:
   dir: packages/weapp-tailwindcss
   intents:
@@ -192,6 +220,11 @@ weapp-tailwindcss@5.5.0:
     - strict-ci-platform-gates
     - strict-tailwind-source-media
     - web-css-only
+weapp-tailwindcss@5.5.1:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - issue-1152-empty-selector
+    - quiet-uvue-hmr-1144
 weapp-tw@0.0.3:
   dir: packages/weapp-tw
   intents:

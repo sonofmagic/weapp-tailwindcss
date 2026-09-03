@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/cli
 
+## 5.5.1
+
+### Patch Changes
+
+- Updated dependencies:
+  - weapp-tailwindcss@5.5.1
+
 ## 5.5.0
 
 ### Minor Changes

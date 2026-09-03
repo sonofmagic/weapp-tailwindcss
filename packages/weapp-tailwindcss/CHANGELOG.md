@@ -1,5 +1,16 @@
 # weapp-tailwindcss
 
+## 5.5.1
+
+### Patch Changes
+
+- 清理小程序最终样式中的空选择器规则，避免无效的 `:is(...)` 语法进入 WXSS 产物。Refs #1152
+
+- 修复 uni-app x Web 热更新将完整 `.uvue` 源码误交给 PostCSS 解析，导致模板插值触发 `Unknown word` 警告的问题。Refs #1144
+
+- Updated dependencies:
+  - @weapp-tailwindcss/postcss@3.3.2
+
 ## 5.5.0
 
 ### Minor Changes

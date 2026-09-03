@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.0
+
+### Patch Changes
+
+- upgrade deps
+
 ## Unreleased
 
 ## 目前项目已经启用了 changeset 生成日志，对应的日志见：

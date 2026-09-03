@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 3.3.2
+
+### Patch Changes
+
+- 清理小程序最终样式中的空选择器规则，避免无效的 `:is(...)` 语法进入 WXSS 产物。Refs #1152
+
 ## 3.3.1
 
 ### Patch Changes
