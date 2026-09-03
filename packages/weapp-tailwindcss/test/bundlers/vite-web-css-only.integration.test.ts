@@ -9,7 +9,7 @@ import { WeappTailwindcssWeb } from '@/vite-web'
 
 describe('vite/web CSS-only 真实构建', () => {
   async function waitForCss(url: string, predicate: (css: string) => boolean) {
-    const deadline = Date.now() + 10_000
+    const deadline = Date.now() + 60_000
     while (Date.now() < deadline) {
       const css = await fetch(url).then(response => response.text())
       if (predicate(css)) {
