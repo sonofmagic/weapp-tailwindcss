@@ -32,6 +32,7 @@ import { createUniAppXHarmonyApplyExpander } from './vite/harmony-apply'
 import { createUniAppXNativeHmrReloader } from './vite/native-hmr'
 import { createUniAppXNativeBuildTargetResolver } from './vite/native-target'
 import { isCssModuleExport, normalizeRelativeTailwindReferences, resolvePreprocessorTransform, resolveUniAppXCssTarget } from './vite/style-request'
+import { hasUniAppXImportantApply, resolveUniAppXStyleSource } from './vite/style-source'
 import { createUniAppXWebLocalStyleBridge } from './vite/web-local-style'
 
 export { createUniAppXAssetTask } from './vite/asset-task'
@@ -44,27 +45,6 @@ function loadTransformUVue(): Promise<TransformUVue> {
 }
 const UVUE_NVUE_QUERY_RE = /\.(?:uvue|nvue)(?:\?.*)?$/
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)$/
-const VITE_CSS_HMR_MODULE_RE = /\b(?:const\s+__vite__css\s*=|__vite__updateStyle\s*\()/
-
-function resolveUniAppXStyleSource(code: string, query: ReturnType<typeof parseVueRequest>['query']) {
-  if (!query.vue || query.type !== 'style') {
-    return { code }
-  }
-  if (VITE_CSS_HMR_MODULE_RE.test(code)) {
-    return { skip: true as const }
-  }
-  const styleBlocks = extractSfcStyleBlocks(code)
-  if (styleBlocks.length === 0) {
-    return { code }
-  }
-  const style = styleBlocks[query.index ?? 0]
-  return style ? { code: style.source } : { skip: true as const }
-}
-
-function hasUniAppXImportantApply(source: string) {
-  return extractSfcStyleBlocks(source).some(style => normalizeUniAppXImportantApplyForSass(style.source) !== style.source)
-}
-
 export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plugin[] {
   const {
     appType,
@@ -413,7 +393,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         }
         if (isWebGeneratorTarget() && UVUE_NVUE_RE.test(ctx.file) && typeof ctx.read === 'function') {
           const source = await ctx.read()
-          if (hasUniAppXImportantApply(source)) {
+          if (hasUniAppXImportantApply(source, normalizeUniAppXImportantApplyForSass)) {
             ctx.server.ws.send({ type: 'full-reload', path: ctx.file })
             return []
           }
