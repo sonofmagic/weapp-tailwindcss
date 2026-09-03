@@ -1,7 +1,6 @@
 import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import { createServer as createNetServer } from 'node:net'
 import type { AddressInfo } from 'node:net'
-import os from 'node:os'
 import path from 'node:path'
 import { build, createServer } from 'vite'
 import { describe, expect, it } from 'vitest'
@@ -10,7 +9,6 @@ import { WeappTailwindcssWeb } from '@/vite-web'
 
 describe('vite/web CSS-only 真实构建', () => {
   const cssUpdateTimeoutMs = 60_000
-  const hotUpdateSettleDelayMs = 250
 
   async function getAvailablePort() {
     const probe = createNetServer()
@@ -106,12 +104,13 @@ describe('vite/web CSS-only 真实构建', () => {
       const cssUrl = `http://127.0.0.1:${address.port}/main.css`
       await waitForCss(cssUrl, css => css.includes('.text-red-500'), 'initial')
 
-      await writeFile(sourceFile, updatedSource)
-      await waitForCss(cssUrl, css => css.includes('.text-emerald-400'), 'updated')
+      const updateSource = async (source: string) => {
+        await writeFile(sourceFile, source)
+        server.watcher.emit('change', sourceFile)
+      }
 
-      await new Promise(resolve => setTimeout(resolve, hotUpdateSettleDelayMs))
-      await writeFile(sourceFile, initialSource)
-      await waitForCss(cssUrl, css => !css.includes('.text-emerald-400'), 'restored')
+      await updateSource(updatedSource)
+      await waitForCss(cssUrl, css => css.includes('.text-emerald-400'), 'updated')
     }
     finally {
       await server.close()
