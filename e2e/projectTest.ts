@@ -4,7 +4,7 @@ import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
-import { collectEmptyBlockAtRules } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/css-integrity'
+import { collectEmptyCssBlocks } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/css-integrity'
 import { ensureProjectBuilt } from './projectBuild'
 import { isE2EProjectSupportedOnPlatform } from './projectEntries'
 import { clearTailwindPatchTaskCache, collectCssSnapshots, formatWxml, getProjectCssSnapshotFiles, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, twPatch, wait } from './shared'
@@ -378,8 +378,8 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
     for (const file of await collectMiniProgramStyleOutputs(outputStyleRoot)) {
       const source = await fs.readFile(file, 'utf8')
       expect(
-        collectEmptyBlockAtRules(source),
-        `${entry.name}/${path.relative(projectPath, file)} should not emit empty block at-rules`,
+        collectEmptyCssBlocks(source),
+        `${entry.name}/${path.relative(projectPath, file)} should not emit empty CSS blocks`,
       ).toEqual([])
     }
   }

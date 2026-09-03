@@ -699,12 +699,40 @@ describe('mini-program css cleanup', () => {
     expect(css).toBe('@media screen{/* incremental placeholder */}')
   })
 
+  it('keeps empty selector placeholders when recursive cleanup is disabled', () => {
+    const source = ':is(page,.tw-root,wx-root-portal-content){/* incremental placeholder */}'
+    const css = finalizeMiniProgramCss(source, {
+      cssPreflight: false,
+      removeEmptyAtRuleAncestors: false,
+    })
+
+    expect(css).toBe(source)
+  })
+
   it('recursively removes empty at-rule ancestors for complete css output', () => {
     const css = finalizeMiniProgramCss('@media screen{@supports (display:grid){}}', {
       cssPreflight: false,
     })
 
     expect(css).toBe('')
+  })
+
+  it('removes empty selectors and their empty ancestors from complete css output', () => {
+    const css = finalizeMiniProgramCss([
+      ':is(page,.tw-root,wx-root-portal-content){}',
+      '@media screen{.removed{/* declarations removed */}}',
+      '.keep{color:red}',
+    ].join('\n'), {
+      cssPreflight: false,
+    })
+
+    expect(css).toBe('.keep{color:red}')
+  })
+
+  it('preserves empty keyframe steps in complete css output', () => {
+    const source = '@keyframes spin{0%{}to{transform:rotate(1turn)}}'
+
+    expect(finalizeMiniProgramCss(source, { cssPreflight: false })).toBe(source)
   })
 
   it('prunes browser-only generated css while preserving useful mini-program selectors', () => {

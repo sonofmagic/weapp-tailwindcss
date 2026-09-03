@@ -1,6 +1,6 @@
 import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
-import { createServer as createNetServer, type AddressInfo } from 'node:net'
-import os from 'node:os'
+import { createServer as createNetServer } from 'node:net'
+import type { AddressInfo } from 'node:net'
 import path from 'node:path'
 import { build, createServer } from 'vite'
 import { describe, expect, it } from 'vitest'
@@ -8,29 +8,26 @@ import { WeappTailwindcss } from '@/bundlers/vite'
 import { WeappTailwindcssWeb } from '@/vite-web'
 
 describe('vite/web CSS-only 真实构建', () => {
-  async function findFreePort() {
+  const cssUpdateTimeoutMs = 60_000
+
+  async function getAvailablePort() {
     const probe = createNetServer()
     await new Promise<void>((resolve, reject) => {
       probe.once('error', reject)
-      probe.listen(0, '127.0.0.1', () => resolve())
+      probe.listen(0, '127.0.0.1', resolve)
     })
-    const address = probe.address() as AddressInfo
+    const address = probe.address()
+    if (!address || typeof address === 'string') {
+      await new Promise<void>((resolve, reject) => probe.close(error => error ? reject(error) : resolve()))
+      throw new Error('无法获取临时测试端口')
+    }
     const port = address.port
-    await new Promise<void>((resolve, reject) => {
-      probe.close((error) => {
-        if (error) {
-          reject(error)
-        }
-        else {
-          resolve()
-        }
-      })
-    })
+    await new Promise<void>((resolve, reject) => probe.close(error => error ? reject(error) : resolve()))
     return port
   }
 
-  async function waitForCss(url: string, predicate: (css: string) => boolean) {
-    const deadline = Date.now() + 60_000
+  async function waitForCss(url: string, predicate: (css: string) => boolean, label: string) {
+    const deadline = Date.now() + cssUpdateTimeoutMs
     while (Date.now() < deadline) {
       const css = await fetch(url).then(response => response.text())
       if (predicate(css)) {
@@ -38,7 +35,7 @@ describe('vite/web CSS-only 真实构建', () => {
       }
       await new Promise(resolve => setTimeout(resolve, 100))
     }
-    throw new Error(`等待 CSS 更新超时：${url}`)
+    throw new Error(`等待 CSS 更新超时：${label} ${url}`)
   }
 
   async function buildFixture(plugins: ReturnType<typeof WeappTailwindcssWeb>) {
@@ -93,22 +90,27 @@ describe('vite/web CSS-only 真实构建', () => {
     await writeFile(path.join(root, 'main.css'), '@import "tailwindcss";\n@source "./main.ts";')
     await writeFile(sourceFile, initialSource)
 
+    const port = await getAvailablePort()
     const server = await createServer({
       root,
       configFile: false,
       logLevel: 'silent',
       plugins: WeappTailwindcssWeb(),
-      server: { host: '127.0.0.1', port: await findFreePort(), strictPort: true },
+      server: { host: '127.0.0.1', port, strictPort: true },
     })
     try {
       await server.listen()
       const address = server.httpServer?.address() as AddressInfo
       const cssUrl = `http://127.0.0.1:${address.port}/main.css`
-      await waitForCss(cssUrl, css => css.includes('.text-red-500'))
+      await waitForCss(cssUrl, css => css.includes('.text-red-500'), 'initial')
 
-      await writeFile(sourceFile, updatedSource)
-      server.watcher.emit('change', sourceFile)
-      await waitForCss(cssUrl, css => css.includes('.text-emerald-400'))
+      const updateSource = async (source: string) => {
+        await writeFile(sourceFile, source)
+        server.watcher.emit('change', sourceFile)
+      }
+
+      await updateSource(updatedSource)
+      await waitForCss(cssUrl, css => css.includes('.text-emerald-400'), 'updated')
     }
     finally {
       await server.close()

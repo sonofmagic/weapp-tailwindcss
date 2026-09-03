@@ -3,7 +3,7 @@ import type { CollectViteProcessedCssAssetOptions } from './markers-imports'
 import type { InternalUserDefinedOptions } from '@/types'
 import { isMiniProgramLocalCssImportRequest, parseTailwindCssDirectiveRequest, postcss } from '@weapp-tailwindcss/postcss'
 import path from 'pathe'
-import { hasEmptyAtRuleBlockCandidate } from '../../shared/final-css-cleanup'
+import { hasEmptyCssBlockCandidate } from '../../shared/final-css-cleanup'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { appendCss, collectImportedStyleFiles, createCssAssetPipelineContext, getAssetFile, isStyleImportRequest, readAssetSource } from './markers-imports'
 import { isMiniProgramStyleOutputFile, isRootStyleOutputFile } from './style-files'
@@ -72,7 +72,7 @@ export function restoreCssImportAtRules(source: string, filtered: string, file?:
 }
 
 export function removeCommentOnlyAtRules(css: string) {
-  if (!hasEmptyAtRuleBlockCandidate(css)) {
+  if (!hasEmptyCssBlockCandidate(css)) {
     return css
   }
   try {

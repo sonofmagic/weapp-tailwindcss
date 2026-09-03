@@ -20,5 +20,6 @@ export {
 export {
   hasMiniProgramCssSpecificityPlaceholders,
   removeEmptyAtRules,
+  removeEmptyRules,
   stripMiniProgramCssSpecificityPlaceholders,
 } from './root-cleanups'

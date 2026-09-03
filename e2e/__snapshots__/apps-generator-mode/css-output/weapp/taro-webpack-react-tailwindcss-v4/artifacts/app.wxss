@@ -303,28 +303,6 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --radius-lg: 0.5rem;
 }
-.nut-tag-close {
-}
-.nut-searchbar-disabled {
-}
-.nut-range-disabled .nut-range-button-wrapper,
-.nut-range-disabled .nut-range-button-wrapper-left,
-.nut-range-disabled .nut-range-button-wrapper-right {
-}
-.nut-rate.disabled .nut-rate-item-icon {
-}
-.nut-rate.readonly .nut-rate-item-icon {
-}
-.nut-grid-item-content-clickable {
-}
-.nut-cell-clickable {
-}
-.nut-calendarcard-day.header {
-}
-.nut-calendarcard-day.prev,
-.nut-calendarcard-day.next,
-.nut-calendarcard-day.disabled {
-}
 @font-face {
   font-display: swap;
   font-family: JDZH-Regular;

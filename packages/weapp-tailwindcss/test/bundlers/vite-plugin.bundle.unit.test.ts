@@ -3532,8 +3532,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         ? ['bg-normal']
         : [...options.candidates]
       return {
-        css: candidates.map(candidate => `.${candidate}{}`).join('\n'),
-        rawCss: candidates.map(candidate => `.${candidate}{}`).join('\n'),
+        css: candidates.map(candidate => `.${candidate}{display:block}`).join('\n'),
+        rawCss: candidates.map(candidate => `.${candidate}{display:block}`).join('\n'),
       target: 'weapp',
         classSet: new Set(candidates),
       dependencies: [],
@@ -3609,11 +3609,11 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const generatedCandidateSets = generateMock.mock.calls.map(call => [...call[0].candidates])
     expect(generatedCandidateSets).toContainEqual(['bg-main'])
     expect(String(bundle['app.css'].source)).toBe('')
-    expect(String(bundle['src/app.css'].source)).toContain('.bg-main{}')
-    expect(String(bundle['src/app.css'].source)).not.toContain('.bg-normal{}')
+    expect(String(bundle['src/app.css'].source)).toContain('.bg-main{display:block}')
+    expect(String(bundle['src/app.css'].source)).not.toContain('.bg-normal{display:block}')
     expect(String(bundle['subpackages/normal/pages/entry/index.css'].source)).toBe('')
-    expect(String(bundle['src/subpackages/normal/pages/entry/index.css'].source)).toContain('.bg-normal{}')
-    expect(String(bundle['src/subpackages/normal/pages/entry/index.css'].source)).not.toContain('.bg-main{}')
+    expect(String(bundle['src/subpackages/normal/pages/entry/index.css'].source)).toContain('.bg-normal{display:block}')
+    expect(String(bundle['src/subpackages/normal/pages/entry/index.css'].source)).not.toContain('.bg-main{display:block}')
   }, TEST_TIMEOUT_MS)
 
   it('scans Tailwind v4 @config content for vite source candidates', async () => {
@@ -3626,8 +3626,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     await writeFile(configFile, 'module.exports = { content: ["./pages/**/*.{wxml,ts}"] }\n', 'utf8')
     await writeFile(pageFile, '<view class="bg-[#010721] text-[35px] h-[29px]">ok</view>\n', 'utf8')
     const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
-      css: [...options.candidates].map(candidate => `.${replaceWxml(candidate)}{}`).join(''),
-      rawCss: [...options.candidates].map(candidate => `.${candidate}{}`).join(''),
+      css: [...options.candidates].map(candidate => `.${replaceWxml(candidate)}{display:block}`).join(''),
+      rawCss: [...options.candidates].map(candidate => `.${candidate}{display:block}`).join(''),
       target: 'weapp',
       classSet: new Set(options.candidates),
       dependencies: [cssEntry, configFile],
@@ -3712,8 +3712,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     await writeFile(featureBCss, '@config "./tailwind.config.cjs";\n@tailwind utilities;\n', 'utf8')
 
     const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
-      css: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join(''),
-      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join(''),
+      css: [...options.candidates].sort().map(candidate => `.${candidate}{display:block}`).join(''),
+      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{display:block}`).join(''),
       target: 'weapp',
       classSet: new Set(options.candidates),
       dependencies: [],
@@ -3790,12 +3790,12 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const featureAOutput = String(bundle['src/features/a/index.css'].source)
     const featureBOutput = String(bundle['src/features/b/index.css'].source)
-    expect(featureAOutput).toContain('.bg-feature-a{}')
-    expect(featureAOutput).not.toContain('.bg-feature-b{}')
-    expect(featureAOutput).not.toContain('.bg-global{}')
-    expect(featureBOutput).toContain('.bg-feature-b{}')
-    expect(featureBOutput).not.toContain('.bg-feature-a{}')
-    expect(featureBOutput).not.toContain('.bg-global{}')
+    expect(featureAOutput).toContain('.bg-feature-a{display:block}')
+    expect(featureAOutput).not.toContain('.bg-feature-b{display:block}')
+    expect(featureAOutput).not.toContain('.bg-global{display:block}')
+    expect(featureBOutput).toContain('.bg-feature-b{display:block}')
+    expect(featureBOutput).not.toContain('.bg-feature-a{display:block}')
+    expect(featureBOutput).not.toContain('.bg-global{display:block}')
   }, TEST_TIMEOUT_MS)
 
   it('generates Tailwind v4 css entries from their own @source and @config content in main-package directories', async () => {
@@ -3815,8 +3815,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     await writeFile(featureBCss, '@import "tailwindcss" source(none);\n@config "./tailwind.config.cjs";\n', 'utf8')
 
     const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
-      css: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join(''),
-      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join(''),
+      css: [...options.candidates].sort().map(candidate => `.${candidate}{display:block}`).join(''),
+      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{display:block}`).join(''),
       target: 'weapp',
       classSet: new Set(options.candidates),
       dependencies: [],
@@ -3909,12 +3909,12 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const featureAOutput = String(bundle['src/features/a/index.css'].source)
     const featureBOutput = String(bundle['src/features/b/index.css'].source)
-    expect(featureAOutput).toContain('.bg-feature-a{}')
-    expect(featureAOutput).not.toContain('.bg-feature-b{}')
-    expect(featureAOutput).not.toContain('.bg-global{}')
-    expect(featureBOutput).toContain('.bg-feature-b{}')
-    expect(featureBOutput).not.toContain('.bg-feature-a{}')
-    expect(featureBOutput).not.toContain('.bg-global{}')
+    expect(featureAOutput).toContain('.bg-feature-a{display:block}')
+    expect(featureAOutput).not.toContain('.bg-feature-b{display:block}')
+    expect(featureAOutput).not.toContain('.bg-global{display:block}')
+    expect(featureBOutput).toContain('.bg-feature-b{display:block}')
+    expect(featureBOutput).not.toContain('.bg-feature-a{display:block}')
+    expect(featureBOutput).not.toContain('.bg-global{display:block}')
   }, TEST_TIMEOUT_MS)
 
   it('keeps explicit Tailwind v4 @source candidates when inferred local source candidates are empty', async () => {
@@ -4984,7 +4984,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const processedCss = '.graph-source-root{}'
+    const processedCss = '.graph-source-root{display:block}'
     registerProcessedCssAsset(postPlugin, {
       css: processedCss,
       injectIntoMain: true,
@@ -5003,7 +5003,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         originalFileNames: [path.join(root, 'src/app.css')],
       },
       'app.wxss': {
-        ...createRollupAsset('.app{}'),
+        ...createRollupAsset('.app{display:block}'),
         fileName: 'app.wxss',
       },
     }
@@ -5013,7 +5013,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
     expect(appCss).toContain('view,text,::after,::before')
-    expect(appCss).toContain('.app{}')
+    expect(appCss).toContain('.app{display:block}')
     expect(appCss).toContain(processedCss)
   }, TEST_TIMEOUT_MS)
 
@@ -6065,7 +6065,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const processedCss = '.independent-only{}'
+    const processedCss = '.independent-only{display:block}'
     registerProcessedCssAsset(postPlugin, {
       css: processedCss,
       outputFile: 'sub-independent/pages/index.wxss',
@@ -6111,7 +6111,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-remember-loop-'))
     createdDirs.push(root)
     const sourceFile = path.join(root, 'pages/index/index.scss')
-    const sourceCss = '@tailwind utilities;\n.text-red-500{}'
+    const sourceCss = '@tailwind utilities;\n.text-red-500{display:block}'
 
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
@@ -6816,8 +6816,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       build: { outDir: 'dist' },
     } as ResolvedConfig)
 
-    const independentCss = '.independent-only{}'
-    const normalCss = '.normal-only{}'
+    const independentCss = '.independent-only{display:block}'
+    const normalCss = '.normal-only{display:block}'
     const independentSource = path.join(root, 'sub-independent/pages/index.css')
     const normalSource = path.join(root, 'sub-normal/pages/index.css')
     registerProcessedCssAsset(postPlugin, {
@@ -6950,7 +6950,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     createdDirs.push(root)
     const subCssFile = path.join(root, 'miniprogram/sub-normal/pages/index.css')
     const rawSubCss = '@config "../../../tailwind.config.sub-normal.js";\n@tailwind utilities;'
-    const processedSubCss = '.bg-normal-subpackage-marker{}'
+    const processedSubCss = '.bg-normal-subpackage-marker{display:block}'
     await writeFile(path.join(root, 'tailwind.config.js'), 'module.exports = { content: [] }\n', 'utf8')
     await writeFile(path.join(root, 'tailwind.config.sub-normal.js'), 'module.exports = { content: [] }\n', 'utf8')
     const runtimeSet = new Set(['global-regenerated'])
@@ -7196,8 +7196,8 @@ module.exports = {
       rawSource: string
     }) => {
       const css = options.file.includes('sub-independent')
-        ? '.bg-independent-subpackage-marker{}.before_ccontent-_b_aindependent_a_B::before{}'
-        : '.bg-normal-subpackage-marker{}.before_ccontent-_b_anormal_a_B::before{}'
+        ? '.bg-independent-subpackage-marker{display:block}.before_ccontent-_b_aindependent_a_B::before{display:block}'
+        : '.bg-normal-subpackage-marker{display:block}.before_ccontent-_b_anormal_a_B::before{display:block}'
       return createMockGeneratorCssResult(css, 4)
     })
     vi.resetModules()
@@ -10070,8 +10070,8 @@ const trace = "at App.vue:4"
     const runtimeSet = new Set<string>()
     const rawTailwindCss = '/*! weapp-tailwindcss generator-placeholder */'
     const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
-      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      css: [...candidates].sort().map(candidate => `.${candidate}{display:block}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{display:block}`).join('\n'),
       target: 'weapp',
       classSet: new Set(candidates),
       dependencies: [],
@@ -10145,7 +10145,7 @@ const trace = "at App.vue:4"
     const candidates = generateMock.mock.calls.at(-1)?.[0].candidates as Set<string>
     expect(candidates).toContain('text-[188rpx]')
     expect(candidates).toContain('font-bold')
-    expect(String((bundle['app.css'] as OutputAsset).source)).toContain('.text-[188rpx]{}')
+    expect(String((bundle['app.css'] as OutputAsset).source)).toContain('.text-[188rpx]{display:block}')
   }, TEST_TIMEOUT_MS)
 
   it('finalizes css assets emitted after the main generateBundle pass through Rollup output plugins', async () => {
@@ -12236,8 +12236,8 @@ const cls = "w-[1.5px]"
 
   it('replays clean css results when only script candidates change in incremental runs', async () => {
     const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
-      css: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      css: [...options.candidates].sort().map(candidate => `.${candidate}{display:block}`).join('\n'),
+      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{display:block}`).join('\n'),
       target: 'weapp',
       classSet: new Set(options.candidates),
       rawCandidates: new Set(options.candidates),
@@ -14967,7 +14967,7 @@ ${utilities}
       for (const candidate of missingCandidates) {
         generatedCandidates.add(candidate)
       }
-      const createCss = (items: string[]) => items.map(candidate => `.${candidate}{}`).join('\n')
+      const createCss = (items: string[]) => items.map(candidate => `.${candidate}{display:block}`).join('\n')
       return {
         css: createCss(candidates),
         rawCss: createCss(candidates),
@@ -15056,7 +15056,7 @@ ${utilities}
     const secondCss = (secondBundle['app.wxss'] as OutputAsset).source.toString()
 
     expect(generateMock).toHaveBeenCalledTimes(2)
-    expect(secondCss).toBe(`${firstCss}\n.text-[#222222]{}`)
+    expect(secondCss).toBe(`${firstCss}\n.text-[#222222]{display:block}`)
     expect(secondCss).toContain('text-[#111111]')
     expect(secondCss).toContain('text-[#222222]')
     expect(currentContext.styleHandler).not.toHaveBeenCalled()
@@ -15070,7 +15070,7 @@ ${utilities}
       for (const candidate of missingCandidates) {
         generatedCandidates.add(candidate)
       }
-      const createCss = (items: string[]) => items.map(candidate => `.${candidate}{}`).join('\n')
+      const createCss = (items: string[]) => items.map(candidate => `.${candidate}{display:block}`).join('\n')
       const preflight = 'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;}'
       return {
         css: `${preflight}\n${createCss(candidates)}`,
@@ -15162,7 +15162,7 @@ ${utilities}
     expect(generateMock).toHaveBeenCalledTimes(2)
     expect(firstCss.match(/box-sizing:border-box/g) ?? []).toHaveLength(1)
     expect(secondCss.match(/box-sizing:border-box/g) ?? []).toHaveLength(1)
-    expect(secondCss).toBe(`${firstCss}\n.text-[#222222]{}`)
+    expect(secondCss).toBe(`${firstCss}\n.text-[#222222]{display:block}`)
     expect(currentContext.styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
@@ -15174,7 +15174,7 @@ ${utilities}
       for (const candidate of missingCandidates) {
         generatedCandidates.add(candidate)
       }
-      const createCss = (items: string[]) => items.map(candidate => `.${candidate}{}`).join('\n')
+      const createCss = (items: string[]) => items.map(candidate => `.${candidate}{display:block}`).join('\n')
       return {
         css: createCss([...generatedCandidates].sort()),
         rawCss: createCss([...generatedCandidates].sort()),
@@ -15264,7 +15264,7 @@ ${utilities}
     const secondCss = (secondBundle['app.wxss'] as OutputAsset).source.toString()
 
     expect(generateMock).toHaveBeenCalledTimes(2)
-    expect(secondCss).toBe(`${firstCss}\n.text-[#222222]{}`)
+    expect(secondCss).toBe(`${firstCss}\n.text-[#222222]{display:block}`)
     expect(secondCss).toContain('text-[#111111]')
     expect(secondCss).toContain('text-[#222222]')
   }, TEST_TIMEOUT_MS)
