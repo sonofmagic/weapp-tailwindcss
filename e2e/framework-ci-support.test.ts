@@ -178,6 +178,7 @@ describeFrameworkCi('framework support matrix ci', () => {
     ])
     expect(Object.values(uniAppXHBuilderXUnsupportedMiniProgramPlatforms).every(reason => reason.includes('HBuilderX stable/alpha'))).toBe(true)
     expect(webCases.map(item => item.name)).toEqual([
+      'issue-1144-uni-app-x-web',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
       'uni-app-x-vdom-tailwindcss-v4',
     ])

@@ -121,14 +121,18 @@ export function resolveAppHmrSteps(item: AppCase): AppHmrStep[] {
 export interface WebCase {
   name: string
   projectDir: string
+  launchWithHBuilderX?: boolean
   sourceFile: string
   markerAnchor: string
   markerAnchorCandidates?: string[]
   initialCssPath: string
   hmrCssPath: string
   initialCssContains: Array<string | RegExp>
+  initialTextContains?: string[]
   initialRuntimeStyles?: WebRuntimeStyleAssertion[]
   persistentRuntimeStyles?: WebRuntimeStyleAssertion[]
+  serverLogContains?: Array<string | RegExp>
+  serverLogNotContains?: Array<string | RegExp>
   hmrSteps: WebHmrStep[]
   workflow: HBuilderXWorkflowCoverage
 }
@@ -1074,6 +1078,56 @@ export const uniAppXAppCases: AppCase[] = [
 ]
 
 export const webCases: WebCase[] = [
+  {
+    name: 'issue-1144-uni-app-x-web',
+    projectDir: 'demo/issue-1144-uni-app-x-web',
+    launchWithHBuilderX: true,
+    sourceFile: 'pages/index/index.uvue',
+    markerAnchor: '<text class="text-content text-2xl font-bold text-white/70 text-blue-300/35">',
+    initialCssPath: '/main.css?direct',
+    hmrCssPath: '/main.css?direct',
+    initialCssContains: [
+      'weapp-tailwindcss uni-app-x web preflight reset',
+      'uni-app uni-view',
+      /\.bg-page\s*\{/,
+    ],
+    initialTextContains: ['全端主题'],
+    serverLogContains: [
+      /HBuilderX Version:\s*5\./,
+      /编译器版本：5\.\d+（uni-app x）VDOM模式/,
+    ],
+    serverLogNotContains: ['Unknown word', '[plugin:vite:css]'],
+    hmrSteps: [
+      {
+        markerClass: 'hbuilderx-web-hmr-probe bg-[#0f5132] text-[#f8fafc] w-[188px]',
+        markerText: 'issue-1144-uni-app-x-web-hmr-step-1',
+        cssContains: [/background-color:\s*#0f5132/, /color:\s*#f8fafc/, /width:\s*188px/],
+        runtimeStyles: [{
+          selector: '.hbuilderx-web-hmr-probe',
+          styles: { backgroundColor: 'rgb(15, 81, 50)', color: 'rgb(248, 250, 252)', width: '188px' },
+        }],
+      },
+      {
+        markerClass: 'hbuilderx-web-hmr-probe bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',
+        markerText: 'issue-1144-uni-app-x-web-hmr-step-2',
+        cssContains: [/background-color:\s*#7c2d12/, /color:\s*#ecfeff/, /height:\s*37px/, /margin-top:\s*11px/],
+        runtimeStyles: [{
+          selector: '.hbuilderx-web-hmr-probe',
+          styles: { backgroundColor: 'rgb(124, 45, 18)', color: 'rgb(236, 254, 255)', height: '37px', marginTop: '11px' },
+        }],
+      },
+      {
+        markerClass: 'hbuilderx-web-hmr-probe bg-[#4338ca] text-[#fef3c7] w-[221px] rounded-[13px]',
+        markerText: 'issue-1144-uni-app-x-web-hmr-step-3',
+        cssContains: [/background-color:\s*#4338ca/, /color:\s*#fef3c7/, /width:\s*221px/, /border-radius:\s*13px/],
+        runtimeStyles: [{
+          selector: '.hbuilderx-web-hmr-probe',
+          styles: { backgroundColor: 'rgb(67, 56, 202)', borderRadius: '13px', color: 'rgb(254, 243, 199)', width: '221px' },
+        }],
+      },
+    ],
+    workflow: uniAppXHBuilderXWorkflow,
+  },
   {
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
     projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4',

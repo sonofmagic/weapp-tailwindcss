@@ -518,6 +518,12 @@ export const DEMO_COVERAGE_MATRIX = [
   entry({ name: 'uni-app-vite-tailwindcss-v4', packageJson: pkg('uni-app-vite-tailwindcss-v4'), framework: 'uni-app', builder: 'vite', tailwindcss: 'v4', sourceShape: 'vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: uniAppPlatforms('uni-app-vite-tailwindcss-v4', uniAppV4Platforms) }),
   entry({ name: 'subpackage-uni-app-vite-tailwindcss-v4', packageJson: pkg('subpackage-uni-app-vite-tailwindcss-v4'), framework: 'uni-app', builder: 'vite', tailwindcss: 'v4', sourceShape: 'vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: subpackageUniAppPlatforms('subpackage-uni-app-vite-tailwindcss-v4') }),
   entry({ name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4', packageJson: pkg('uni-app-vite-vue3-hbuilderx-tailwindcss-v4'), framework: 'uni-app', builder: 'vite-hbuilderx', tailwindcss: 'v4', sourceShape: 'vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: true, platforms: uniAppHBuilderXPlatforms('uni-app-vite-vue3-hbuilderx-tailwindcss-v4') }),
+  entry({ name: 'issue-1144-uni-app-x-web', packageJson: pkg('issue-1144-uni-app-x-web'), framework: 'uni-app-x', builder: 'hbuilderx', tailwindcss: 'v4', sourceShape: 'uvue', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: true, platforms: [local('h5', {
+    devScript: 'dev:h5',
+    evidence: 'HBuilderX local Web HMR case',
+    command: 'E2E_HBUILDERX_LOCAL=1 E2E_HBUILDERX_CASE=issue-1144-uni-app-x-web pnpm e2e:hbuilderx:local:web',
+    reason: 'Issue #1144 专用 uni-app x Web HMR 回归链路。',
+  })] }),
   entry({ name: 'uni-app-x-vdom-tailwindcss-v4', packageJson: pkg('uni-app-x-vdom-tailwindcss-v4'), framework: 'uni-app-x', builder: 'hbuilderx', tailwindcss: 'v4', sourceShape: 'uvue', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: true, platforms: uniAppXPlatforms('uni-app-x-vdom-tailwindcss-v4') }),
   entry({ name: 'uni-app-x-vapor-tailwindcss-v4', packageJson: pkg('uni-app-x-vapor-tailwindcss-v4'), framework: 'uni-app-x', builder: 'hbuilderx-vapor', tailwindcss: 'v4', sourceShape: 'uvue', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: true, skipVisualHmr: true, platforms: uniAppXVaporPlatforms('uni-app-x-vapor-tailwindcss-v4') }),
   entry({ name: 'weapp-vite-tailwindcss-v4', packageJson: pkg('weapp-vite-tailwindcss-v4'), framework: 'weapp-vite', builder: 'vite', tailwindcss: 'v4', sourceShape: 'native', sfcBlocks: [], hbuilderxLocal: false, platforms: weappVitePlatforms('weapp-vite-tailwindcss-v4') }),
@@ -566,7 +572,7 @@ export function discoverDemoPackageNames() {
     }
     const rootPkg = path.join(demoRoot, dirent.name, 'package.json')
     if (fs.existsSync(rootPkg)) {
-      if (dirent.name.startsWith('issue-')) {
+      if (dirent.name.startsWith('issue-') && dirent.name !== 'issue-1144-uni-app-x-web') {
         continue
       }
       names.push(dirent.name)

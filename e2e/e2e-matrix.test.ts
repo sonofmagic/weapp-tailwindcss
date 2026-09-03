@@ -342,6 +342,9 @@ describe('e2e matrix', () => {
 
   it('requires every demo package to install the Iconify HMR regression dependencies', () => {
     for (const packageJson of discoverAllDemoPackageJsonFiles()) {
+      if (packageJson.startsWith('demo/issue-')) {
+        continue
+      }
       const pkg = readDemoPackageJson(packageJson)
       const dependencies = {
         ...(pkg.dependencies ?? {}),
@@ -431,6 +434,9 @@ describe('e2e matrix', () => {
       if (entry.name.startsWith('web/')) {
         continue
       }
+      if (entry.name.startsWith('issue-')) {
+        continue
+      }
       const pkg = readDemoPackageJson(entry.packageJson)
       const dependencies = {
         ...(pkg.dependencies ?? {}),
@@ -512,6 +518,9 @@ describe('e2e matrix', () => {
       if (dependencies.tailwindcss !== 'catalog:tailwindcss4' || !dependencies['weapp-tailwindcss']) {
         continue
       }
+      if (name.startsWith('issue-')) {
+        continue
+      }
       if (dependencies['@tailwindcss/postcss'] !== 'catalog:tailwindcss4') {
         missing.push(name)
       }
@@ -556,6 +565,7 @@ describe('e2e matrix', () => {
 
     const demoNames = DEMO_COVERAGE_MATRIX
       .filter(item => !item.name.startsWith('web/'))
+      .filter(item => !item.name.startsWith('issue-'))
       .filter(item => !item.name.startsWith('subpackage-'))
       .filter(item => item.framework !== 'style-injector')
       .filter(item => !item.skipVisualHmr)
@@ -632,11 +642,13 @@ describe('e2e matrix', () => {
       ...webViteHmrCoverageCaseNames.map(name => name.replace(/^web /, 'web/').replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v')),
       'uni-app-vite-tailwindcss-v4',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+      'issue-1144-uni-app-x-web',
       'uni-app-x-vdom-tailwindcss-v4',
     ].sort()
 
     const expectedWeappNames = DEMO_COVERAGE_MATRIX
       .filter(item => !item.name.startsWith('web/'))
+      .filter(item => !item.name.startsWith('issue-'))
       .filter(item => !item.name.startsWith('subpackage-'))
       .filter(item => item.framework !== 'style-injector')
       .filter(item => !item.skipVisualHmr)
