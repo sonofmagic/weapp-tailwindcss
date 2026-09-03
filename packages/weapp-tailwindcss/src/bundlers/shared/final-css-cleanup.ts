@@ -5,10 +5,15 @@ function isCssWhitespace(code: number) {
 }
 
 export function hasEmptyCssBlockCandidate(css: string) {
-  const blockContent: boolean[] = []
+  const blocks: Array<{
+    hasContent: boolean
+    isKeyframesContainer: boolean
+    isKeyframeStep: boolean
+  }> = []
   let parenthesisDepth = 0
   let quote = 0
   let squareBracketDepth = 0
+  let statementStart = 0
   for (let index = 0; index < css.length; index++) {
     const code = css.charCodeAt(index)
     if (quote !== 0) {
@@ -22,14 +27,14 @@ export function hasEmptyCssBlockCandidate(css: string) {
     }
     if (code === 34 || code === 39) {
       quote = code
-      if (blockContent.length > 0) {
-        blockContent[blockContent.length - 1] = true
+      if (blocks.length > 0) {
+        blocks[blocks.length - 1].hasContent = true
       }
       continue
     }
     if (code === 92) {
-      if (blockContent.length > 0) {
-        blockContent[blockContent.length - 1] = true
+      if (blocks.length > 0) {
+        blocks[blocks.length - 1].hasContent = true
       }
       index++
       continue
@@ -59,21 +64,40 @@ export function hasEmptyCssBlockCandidate(css: string) {
       continue
     }
     if (code === 123 && parenthesisDepth === 0 && squareBracketDepth === 0) {
-      blockContent.push(false)
+      const prelude = css
+        .slice(statementStart, index)
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .trim()
+      const isAtRule = prelude.startsWith('@')
+      const isKeyframesContainer = isAtRule && /@(?:-\w+-)?keyframes\b/i.test(prelude)
+      blocks.push({
+        hasContent: false,
+        isKeyframesContainer,
+        isKeyframeStep: !isAtRule && blocks.at(-1)?.isKeyframesContainer === true,
+      })
+      statementStart = index + 1
       continue
     }
     if (code === 125 && parenthesisDepth === 0 && squareBracketDepth === 0) {
-      const hasContent = blockContent.pop()
-      if (hasContent === false) {
+      const block = blocks.pop()
+      if (!block) {
+        continue
+      }
+      if (!block.hasContent && !block.isKeyframeStep) {
         return true
       }
-      if (blockContent.length > 0) {
-        blockContent[blockContent.length - 1] = true
+      if (blocks.length > 0) {
+        blocks[blocks.length - 1].hasContent = true
       }
+      statementStart = index + 1
       continue
     }
-    if (!isCssWhitespace(code) && blockContent.length > 0) {
-      blockContent[blockContent.length - 1] = true
+    if (code === 59 && parenthesisDepth === 0 && squareBracketDepth === 0) {
+      statementStart = index + 1
+      continue
+    }
+    if (!isCssWhitespace(code) && blocks.length > 0) {
+      blocks[blocks.length - 1].hasContent = true
     }
   }
   return false
