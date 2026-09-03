@@ -4,6 +4,51 @@ function isCssWhitespace(code: number) {
   return code === 9 || code === 10 || code === 12 || code === 13 || code === 32
 }
 
+function isCssWordChar(code: number) {
+  return (code >= 48 && code <= 57)
+    || (code >= 65 && code <= 90)
+    || (code >= 97 && code <= 122)
+    || code === 95
+}
+
+function findCssPreludeStart(css: string, start: number, end: number) {
+  let cursor = start
+  while (cursor < end) {
+    while (cursor < end && isCssWhitespace(css.charCodeAt(cursor))) {
+      cursor++
+    }
+    if (css.charCodeAt(cursor) !== 47 || css.charCodeAt(cursor + 1) !== 42) {
+      return cursor
+    }
+    const commentEnd = css.indexOf('*/', cursor + 2)
+    if (commentEnd < 0 || commentEnd + 2 > end) {
+      return end
+    }
+    cursor = commentEnd + 2
+  }
+  return end
+}
+
+function isKeyframesAtRule(css: string, start: number, end: number) {
+  let cursor = start + 1
+  if (css.charCodeAt(cursor) === 45) {
+    cursor++
+    const prefixStart = cursor
+    while (cursor < end && isCssWordChar(css.charCodeAt(cursor))) {
+      cursor++
+    }
+    if (cursor === prefixStart || css.charCodeAt(cursor) !== 45) {
+      return false
+    }
+    cursor++
+  }
+  if (cursor + 9 > end || css.slice(cursor, cursor + 9).toLowerCase() !== 'keyframes') {
+    return false
+  }
+  const next = css.charCodeAt(cursor + 9)
+  return !isCssWordChar(next)
+}
+
 export function hasEmptyCssBlockCandidate(css: string) {
   const blocks: Array<{
     hasContent: boolean
@@ -64,16 +109,13 @@ export function hasEmptyCssBlockCandidate(css: string) {
       continue
     }
     if (code === 123 && parenthesisDepth === 0 && squareBracketDepth === 0) {
-      const prelude = css
-        .slice(statementStart, index)
-        .replace(/\/\*[\s\S]*?\*\//g, '')
-        .trim()
-      const isAtRule = prelude.startsWith('@')
-      const isKeyframesContainer = isAtRule && /@(?:-\w+-)?keyframes\b/i.test(prelude)
+      const preludeStart = findCssPreludeStart(css, statementStart, index)
+      const isAtRule = css.charCodeAt(preludeStart) === 64
+      const isKeyframesContainer = isAtRule && isKeyframesAtRule(css, preludeStart, index)
       blocks.push({
         hasContent: false,
         isKeyframesContainer,
-        isKeyframeStep: !isAtRule && blocks.at(-1)?.isKeyframesContainer === true,
+        isKeyframeStep: !isAtRule && blocks[blocks.length - 1]?.isKeyframesContainer === true,
       })
       statementStart = index + 1
       continue

@@ -8,6 +8,7 @@ describe('final mini-program css cleanup', () => {
     expect(hasEmptyCssBlockCandidate('@media screen { @supports (display: grid) { /* removed */ } }')).toBe(true)
     expect(hasEmptyCssBlockCandidate('@supports (background: url(data:image/svg+xml;utf8,test)) {}')).toBe(true)
     expect(hasEmptyCssBlockCandidate('@keyframes spin { 0% {} to { transform: rotate(1turn); } }')).toBe(false)
+    expect(hasEmptyCssBlockCandidate('/* prefix */ @-webkit-keyframes spin { 0% {} }')).toBe(false)
     expect(hasEmptyCssBlockCandidate('@custom "value;{}"; .keep { color: red }')).toBe(false)
   })
 
