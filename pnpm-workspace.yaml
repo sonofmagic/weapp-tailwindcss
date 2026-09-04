@@ -109,7 +109,7 @@ overrides:
 
 catalogs:
   autoprefixer10:
-    autoprefixer: ^10.5.4
+    autoprefixer: ^10.5.5
   buildUtilities:
     '@parcel/watcher': ^2.6.0
     debug: ~4.4.3
@@ -190,7 +190,7 @@ catalogs:
   egoistTailwindcssIcons:
     '@egoist/tailwindcss-icons': ^1.9.2
   eslint10:
-    eslint: ^10.9.1
+    eslint: ^10.10.0
   eslintPluginReact:
     eslint-plugin-react: ^7.37.5
   eslintPluginReactHooks:
@@ -251,7 +251,7 @@ catalogs:
     '@storybook/react-vite': ^10.6.0
     storybook: ^10.6.0
   stylelint1625:
-    stylelint: ^17.14.1
+    stylelint: ^17.15.0
   swc:
     '@swc/core': ^1.16.1
   tailwindMerge:
