@@ -144,7 +144,7 @@ async function runFrameworkIdeProbe(entryName: string, timeoutMs: number, relaun
   }
 }
 
-describeFrameworkIde.sequential('framework support matrix ide', () => {
+describeFrameworkIde('framework support matrix ide', () => {
   it('keeps non-IDE framework cases documented as explicit exemptions', () => {
     for (const entry of getFrameworkIdeExemptCases()) {
       expect(entry.ide.reason?.length).toBeGreaterThan(0)

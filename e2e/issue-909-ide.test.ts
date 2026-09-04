@@ -378,7 +378,7 @@ async function assertIssue928GradientRuntime(miniProgram: any, options: Issue928
   }
 }
 
-describeIde.sequential('issues 909/916/928 IDE runtime', () => {
+describeIde('issues 909/916/928 IDE runtime', () => {
   let miniProgram: any
 
   beforeAll(async () => {
@@ -590,7 +590,7 @@ describeIde.sequential('issues 909/916/928 IDE runtime', () => {
   }, 120_000)
 })
 
-describeIde.sequential('issue 928 Tailwind v4 IDE runtime', () => {
+describeIde('issue 928 Tailwind v4 IDE runtime', () => {
   let miniProgram: any
 
   beforeAll(async () => {

@@ -213,7 +213,7 @@ function isDevToolsPageStackTimeout(error: unknown) {
   return /DevTools did not respond to protocol method App\.getPageStack/i.test(text)
 }
 
-describe.sequential('templates ide smoke', () => {
+describe('templates ide smoke', () => {
   it('keeps non-WeChat-DevTools template IDE coverage documented', async () => {
     const covered = new Set([
       ...templateIdeCases.map(item => item.template),

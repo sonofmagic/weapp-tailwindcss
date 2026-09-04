@@ -334,7 +334,7 @@ const cases: SourceMutationCase[] = [
   },
 ]
 
-describe.sequential('tailwindcss v4 source hmr regression', () => {
+describe('tailwindcss v4 source hmr regression', () => {
   for (const testCase of cases) {
     it(`${testCase.title} template add/modify/delete/rollback`, async () => {
       const projectRoot = testCase.createIsolatedProjectRoot

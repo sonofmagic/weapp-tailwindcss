@@ -157,7 +157,7 @@ async function waitForHmrOutput(root: string, item: TemplateDevHmrCase, mutatedA
   )
 }
 
-describe.sequential('templates dev hmr smoke', () => {
+describe('templates dev hmr smoke', () => {
   it.each(templateDevHmrCases.filter(item => shouldRunCase(item.name)))('$name updates dev output after source edit', async (item) => {
     if (process.env['E2E_TEMPLATE_HMR_SKIP'] === '1') {
       return

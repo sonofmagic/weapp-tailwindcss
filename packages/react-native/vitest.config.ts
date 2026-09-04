@@ -9,8 +9,8 @@ export default defineConfig({
     alias: [
       { find: '@', replacement: path.resolve(__dirname, './src') },
     ],
-  },
-  benchmark: {
-    include: ['benchmark/**/*.{bench,benchmark}.{ts,tsx}'],
+    benchmark: {
+      include: ['benchmark/**/*.{bench,benchmark}.{ts,tsx}'],
+    },
   },
 })

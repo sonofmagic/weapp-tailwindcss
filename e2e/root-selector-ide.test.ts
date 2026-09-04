@@ -115,7 +115,7 @@ async function writeEvidence(evidence: unknown) {
   )
 }
 
-describeIde.sequential('root selector IDE runtime', () => {
+describeIde('root selector IDE runtime', () => {
   let miniProgram: any
 
   beforeAll(async () => {

@@ -183,7 +183,7 @@
     "test": "vitest run",
     "test:dev": "vitest",
     "test:ui": "vitest --ui",
-    "bench": "vitest bench --config ./vitest.config.ts",
+    "bench": "vitest bench --config ./vitest.config.ts --reporter=default --reporter=json --outputFile.json=benchmark/bench-report.json",
     "bench:core-compiler": "node --expose-gc --import tsx benchmark/core-compiler.ts",
     "bench:vite-perf": "pnpm --filter @weapp-tailwindcss/scripts bench:vite-perf",
     "bench:vite-perf:summary": "pnpm --filter @weapp-tailwindcss/scripts bench:vite-perf:summary",

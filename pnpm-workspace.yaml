@@ -360,9 +360,9 @@ catalogs:
   vitePluginVue6:
     '@vitejs/plugin-vue': ^6.0.8
   vitest:
-    '@vitest/coverage-v8': ~4.1.11
-    '@vitest/ui': ~4.1.11
-    vitest: ~4.1.11
+    '@vitest/coverage-v8': ~5.0.0
+    '@vitest/ui': ~5.0.0
+    vitest: ~5.0.0
   vue2:
     vue: ^2.7.16
   vue3:

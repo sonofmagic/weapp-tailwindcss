@@ -166,7 +166,7 @@ describe('jsHandler', () => {
     expect(code).toBe('const p = \'text-_b12px_B\';const n = `${p} \\n\\n  flex  \\n\\n  bg-_bred_B \'`')
   })
 
-  it.each(testTable)('$name TemplateElement case 0', async () => {
+  it.each(testTable)("'$name' TemplateElement case 0", async () => {
     const set: Set<string> = new Set()
     set.add('text-[12px]')
     set.add('text-[199px]')
@@ -178,7 +178,7 @@ describe('jsHandler', () => {
     expect(code).toMatchSnapshot()
   })
 
-  it.each(testTable)('$name mpx jit classNames', async () => {
+  it.each(testTable)("'$name' mpx jit classNames", async () => {
     const testCase = `data: {
       classNames: "text-[#123456] text-[50px] bg-[#fff]"
     }`
@@ -226,7 +226,7 @@ const duplicated = 'text/event-stream'`
     expect(code).toBe(source)
   })
 
-  it.each(testTable)('$name img url case', async () => {
+  it.each(testTable)("'$name' img url case", async () => {
     const testCase = `data: {
       classNames: "bg-[url('https://ylnav.com/assets/images/vu/divider-gray.webp')]"
     }`

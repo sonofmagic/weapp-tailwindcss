@@ -71,7 +71,7 @@ async function clearBuildState(root: string) {
   await fs.rm(path.resolve(root, 'node_modules/.vite'), { recursive: true, force: true })
 }
 
-describe.sequential('canonical template build smoke', () => {
+describe('canonical template build smoke', () => {
   it('keeps every canonical template directory represented in the matrix', async () => {
     const packageFiles = await fg('*/package.json', { cwd: templatesRoot, onlyFiles: true })
     const canonicalNames = new Set(CANONICAL_TEMPLATE_CASES.map(item => item.template))

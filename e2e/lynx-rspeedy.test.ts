@@ -11,7 +11,7 @@ import { analyzeStaticEvidence } from './lynx/static-evidence'
 const bundlePath = path.join(exampleDir, 'dist', 'main.lynx.bundle')
 let encoderLog = ''
 
-describe.sequential('ReactLynx Rspeedy compatibility evidence', () => {
+describe('ReactLynx Rspeedy compatibility evidence', () => {
   it('builds the public Lynx package and a development bundle with inspectable CSS', async () => {
     const build = await buildCompatibilityBundle()
     encoderLog = build.encoderLog

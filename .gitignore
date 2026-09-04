@@ -108,10 +108,12 @@ stats/*.html
 packages/weapp-tailwindcss/stats/*.html
 benchmark/app/public/data/
 benchmark/framework-compare/projects/
+benchmark/tailwindcss4/bench-report.json
 e2e/benchmark/e2e-watch-hmr/
 
 .DS_Store
 coverage-vitest
+.vitest/
 docs
 
 miniprogram_npm

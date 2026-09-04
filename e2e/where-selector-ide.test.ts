@@ -203,7 +203,7 @@ async function writeEvidence(fileName: string, evidence: unknown) {
   await fs.writeFile(path.resolve(artifactDir, fileName), `${JSON.stringify(evidence, null, 2)}\n`)
 }
 
-describeIde.sequential('where selector IDE runtime', () => {
+describeIde('where selector IDE runtime', () => {
   afterAll(async () => {
     await cleanupDevTools()
   })

@@ -43,7 +43,7 @@ describe('tailwind complex syntax corpus', () => {
 })
 
 describe('template expressions with complex syntax', () => {
-  it.each(expressionCases)('$label', ({ input }) => {
+  it.each(expressionCases)("'$label'", ({ input }) => {
     const output = templateReplacer(input, {
       escapeMap: MappingChars2String,
     })
