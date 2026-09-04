@@ -20,6 +20,7 @@ permissions:
 jobs:
   quality-static:
     name: Quality Static Gate (ubuntu-latest, 22)
+    if: github.event_name != 'pull_request'
     timeout-minutes: 20
     runs-on: ubuntu-latest
     # Remote Caching enabled - configure TURBO_TOKEN and TURBO_TEAM in repository settings
@@ -82,6 +83,7 @@ jobs:
 
   unit-tests:
     name: Unit Test Gate (${{ matrix.shard }}/${{ matrix.shard_total }}, ubuntu-latest, 22)
+    if: github.event_name != 'pull_request'
     timeout-minutes: 20
     runs-on: ubuntu-latest
     strategy:
@@ -150,7 +152,7 @@ jobs:
 
   quality:
     name: Quality Gate (ubuntu-latest, 22)
-    if: always()
+    if: github.event_name != 'pull_request'
     needs: [quality-static, unit-tests]
     timeout-minutes: 5
     runs-on: ubuntu-latest
@@ -165,6 +167,7 @@ jobs:
 
   e2e-static:
     name: E2E Static Gate (${{ matrix.shard }}/${{ matrix.shard_total }}, ubuntu-latest, 22)
+    if: github.event_name != 'pull_request'
     timeout-minutes: 15
     runs-on: ubuntu-latest
     strategy:
@@ -226,6 +229,7 @@ jobs:
 
   e2e-focused:
     name: E2E Focused Gate (${{ matrix.case_name }})
+    if: github.event_name != 'pull_request'
     timeout-minutes: 20
     runs-on: ubuntu-latest
     strategy:
@@ -314,6 +318,7 @@ jobs:
 
   e2e-multiplatform:
     name: E2E Multiplatform Gate (${{ matrix.case_name }})
+    if: github.event_name != 'pull_request'
     timeout-minutes: ${{ matrix.timeout_minutes }}
     runs-on: ubuntu-latest
     strategy:
@@ -377,6 +382,7 @@ jobs:
 
   e2e-watch:
     name: E2E Watch Gate (${{ matrix.runner_label }}, ${{ matrix.watch_case }}, ${{ matrix.round_profile }})
+    if: github.event_name != 'pull_request'
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.timeout_minutes }}
     strategy:
@@ -540,6 +546,7 @@ jobs:
 
   compatibility:
     name: Compatibility Gate (${{ matrix.os }}, ${{ matrix.node-version }}, ${{ matrix.scenario }})
+    if: github.event_name != 'pull_request'
     timeout-minutes: 15
     strategy:
       fail-fast: false

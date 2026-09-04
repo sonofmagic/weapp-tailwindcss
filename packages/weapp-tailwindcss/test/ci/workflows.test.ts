@@ -108,6 +108,64 @@ function matrixCaseNames(rows: Array<Record<string, unknown>>) {
 }
 
 describe('ci workflows', () => {
+  it('defines a stable PR gate with cross-platform smoke coverage', () => {
+    const { workflow, source } = readWorkflow('pr-gate.yml')
+    const platformJob = workflow.jobs['platform-watch']
+    const rows: Array<Record<string, unknown>> = platformJob.strategy.matrix.include
+    const runners = rows.map(row => row.runner_label)
+
+    expect(workflow.on.pull_request.types).toEqual([
+      'opened',
+      'synchronize',
+      'reopened',
+      'ready_for_review',
+    ])
+    expect(runners).toEqual(expect.arrayContaining(['linux', 'macos', 'windows']))
+    expect(rows).toEqual(expect.arrayContaining([
+      expect.objectContaining({ runner_label: 'macos', case_name: 'uni-app-vite-tailwindcss-v4:mp-weixin', web_only: '0' }),
+    ]))
+    expect(platformJob.strategy['fail-fast']).toBe(false)
+    expect(workflow.jobs['pr-gate'].needs).toEqual(['scope', 'quality', 'core-smoke', 'platform-watch'])
+    expect(source).toContain('test "$result" = success || test "$result" = skipped')
+    expect(source).toContain('pr-gate-package-build-${{ github.run_id }}')
+  })
+
+  it('keeps heavyweight legacy CI jobs out of pull requests', () => {
+    const { workflow } = readWorkflow('ci.yml')
+    for (const jobName of ['quality-static', 'unit-tests', 'e2e-static', 'e2e-focused', 'e2e-multiplatform', 'e2e-watch', 'compatibility']) {
+      expect(workflow.jobs[jobName].if, `${jobName} should be push/manual only`).toBe("github.event_name != 'pull_request'")
+    }
+  })
+
+  it('gates expensive workflows by scope and keeps website validation in one job', () => {
+    const { workflow: benchmark } = readWorkflow('benchmark.yml')
+    const { workflow: releaseGate } = readWorkflow('release-gate.yml')
+    const { workflow: coveragePr } = readWorkflow('e2e-coverage-pr.yml')
+    const { workflow: coverageNightly } = readWorkflow('e2e-coverage-nightly.yml')
+    const { workflow: docs } = readWorkflow('docs.yml')
+    const { source: websiteSource } = readWorkflow('website-seo-quality.yml')
+
+    expect(benchmark.on.pull_request.paths).toEqual(expect.arrayContaining([
+      'benchmark/**',
+      'packages/weapp-tailwindcss/src/bundlers/**',
+      'packages/weapp-tailwindcss/src/generator/**',
+    ]))
+    expect(releaseGate.on.pull_request.paths).toEqual(expect.arrayContaining([
+      'package.json',
+      'repoctl.config.ts',
+      'packages/*/package.json',
+    ]))
+    expect(coveragePr.on.pull_request).toBeUndefined()
+    expect(coverageNightly.on.push).toBeUndefined()
+    expect(docs.on.pull_request).toBeUndefined()
+    expect(websiteSource).toContain('Build website')
+    expect(websiteSource).toContain('Verify Worker routing locally')
+    expect(websiteSource).toContain('Validate Worker bundle')
+    const sharedSetup = readText('.github/actions/setup-pnpm/action.yml')
+    expect(sharedSetup).toContain('key: playwright-${{ runner.os }}-${{ hashFiles(\'pnpm-lock.yaml\') }}')
+    expect(sharedSetup).toContain('pnpm install --frozen-lockfile')
+  })
+
   it('keeps pnpm updates within the verified compatibility boundaries', () => {
     const workspace = YAML.parse(readText('pnpm-workspace.yaml')) as {
       update?: { ignoreDeps?: string[] }
@@ -649,8 +707,8 @@ describe('ci workflows', () => {
     expect(job['timeout-minutes']).toContain('|| 45')
     expect(matrixInclude).toContain('needs.benchmark-matrix.outputs.include')
     expect(job.env.BENCH_ONLY).toBe('${{ matrix.bench_only }}')
-    expect(job.env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '3'")
-    expect(job.env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '6'")
+    expect(job.env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '1'")
+    expect(job.env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '3'")
     expect(runCommand).toContain('--baseline-ref')
     expect(runCommand).toContain('--only "$BENCH_ONLY"')
     expect(workflow.jobs['current-vs-published'].needs).toBe('benchmark-shard')
@@ -716,7 +774,7 @@ describe('ci workflows', () => {
     expect(packageJson.scripts['pr:rc']).toBe('repo release pre enter rc')
     expect(packageJson.scripts['pr:next']).toBe('repo release pre enter next')
     expect(packageJson.scripts['pr:exit']).toBe('repo release pre exit')
-    expect(packageJson.devDependencies.repoctl).toBe('^5.4.6')
+    expect(packageJson.devDependencies.repoctl).toBe('^5.4.7')
     expect(packageJson.devDependencies['@changesets/cli']).toBeUndefined()
     expect(packageJson.devDependencies['@changesets/changelog-github']).toBeUndefined()
     expect(packageJson.devDependencies['@icebreakers/changelog-github']).toBeUndefined()
@@ -754,8 +812,8 @@ describe('ci workflows', () => {
     expect(job['timeout-minutes']).toContain("github.event_name == 'pull_request' && 30")
     expect(job['timeout-minutes']).toContain('|| 45')
     expect(job.env.WEAPP_TW_BENCH_BASELINE).toContain('auto')
-    expect(job.env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '3'")
-    expect(job.env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '6'")
+    expect(job.env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '1'")
+    expect(job.env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '3'")
     expect(job.env.BENCH_ONLY).toBe('${{ matrix.bench_only }}')
     expect(runs).toContain('pnpm install --frozen-lockfile')
     expect(runs).toContain('pnpm perf:guard --')

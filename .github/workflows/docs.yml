@@ -1,13 +1,6 @@
 name: Validate Docs Worker
 
 on:
-  pull_request:
-    paths:
-      - .github/workflows/docs.yml
-      - 'website/**'
-      - 'packages/**'
-      - 'packages-runtime/**'
-      - pnpm-lock.yaml
   workflow_dispatch:
 
 permissions:

@@ -1,9 +1,6 @@
 name: E2E Coverage Nightly
 
 on:
-  push:
-    branches:
-      - main
   schedule:
     - cron: '30 18 * * *'
   workflow_dispatch:

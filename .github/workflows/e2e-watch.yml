@@ -38,7 +38,7 @@ permissions:
 jobs:
   pr-quick-gate:
     name: e2e-watch-pr (${{ matrix.runner_label }}-node${{ matrix['node-version'] || 22 }}-${{ matrix.watch_case }}-${{ matrix.round_profile }})
-    if: (github.event_name == 'pull_request' && github.event.pull_request.draft == false) || (github.event_name == 'workflow_dispatch' && inputs.run_pr_quick_gate == true)
+    if: github.event_name == 'workflow_dispatch' && inputs.run_pr_quick_gate == true
     strategy:
       fail-fast: false
       matrix:
@@ -889,7 +889,7 @@ jobs:
 
   root-style-import-shell-hmr:
     name: root-style-shell-hmr (${{ matrix.project }})
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: false
       matrix:
@@ -929,7 +929,7 @@ jobs:
 
   uni-app-css-post-hmr:
     name: uni-app-css-post-hmr (issue-uview-plus-cssentries)
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.draft == false)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: windows-latest
     timeout-minutes: 30
 

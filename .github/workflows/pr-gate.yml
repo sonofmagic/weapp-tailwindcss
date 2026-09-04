@@ -1,0 +1,162 @@
+name: PR Gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+concurrency:
+  group: pr-gate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  scope:
+    name: Resolve PR scope
+    runs-on: ubuntu-latest
+    outputs:
+      core: ${{ steps.scope.outputs.core }}
+      watch: ${{ steps.scope.outputs.watch }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - id: scope
+        env:
+          GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+        run: node scripts/ci/resolve-pr-scope.mjs --github-output "$GITHUB_OUTPUT"
+
+  prepare-build:
+    name: Prepare Ubuntu package build
+    needs: scope
+    if: needs.scope.outputs.core == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-pnpm
+      - name: Build package dependency closure
+        run: pnpm ci:memory --label pr-gate-build --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm build:ci
+      - name: Upload package build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: pr-gate-package-build-${{ github.run_id }}
+          path: |
+            packages/**/dist/**
+            packages/**/build/**
+            packages-runtime/**/dist/**
+            packages-runtime/**/build/**
+          if-no-files-found: error
+          retention-days: 1
+
+  quality:
+    name: PR quality and unit tests
+    needs: [scope, prepare-build]
+    if: needs.scope.outputs.core == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-pnpm
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr-gate-package-build-${{ github.run_id }}
+          path: .
+      - name: Lint
+        if: matrix.shard == 1
+        run: pnpm lint
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install chromium chromium-headless-shell
+      - name: Unit tests
+        run: pnpm ci:memory --label pr-gate-unit-${{ matrix.shard }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm exec vitest run --shard=${{ matrix.shard }}/3
+
+  core-smoke:
+    name: Ubuntu core smoke
+    needs: [scope, prepare-build]
+    if: needs.scope.outputs.core == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-pnpm
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr-gate-package-build-${{ github.run_id }}
+          path: .
+      - run: pnpm exec playwright install chromium chromium-headless-shell
+      - name: Run core smoke suite
+        run: >
+          pnpm e2e:generator-parity &&
+          pnpm e2e:web-css-preservation &&
+          pnpm e2e:multiplatform-build
+
+  platform-watch:
+    name: Platform watch smoke (${{ matrix.runner_label }}, ${{ matrix.case_name }})
+    needs: [scope]
+    if: needs.scope.outputs.watch == 'true'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            runner_label: linux
+            case_name: uni-app-vite-tailwindcss-v4
+            web_only: '1'
+          - os: macos-latest
+            runner_label: macos
+            case_name: uni-app-vite-tailwindcss-v4
+            web_only: '1'
+          - os: macos-latest
+            runner_label: macos
+            case_name: uni-app-vite-tailwindcss-v4:mp-weixin
+            web_only: '0'
+          - os: windows-latest
+            runner_label: windows
+            case_name: uni-app-vite-tailwindcss-v4
+            web_only: '1'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-pnpm
+      - name: Build watch dependencies for this OS
+        run: pnpm build:ci
+      - name: Install Playwright Chromium
+        run: pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium chromium-headless-shell
+      - name: Run platform watch smoke
+        env:
+          E2E_WATCH_CASE: ${{ matrix.case_name }}
+          E2E_WATCH_WEB_ONLY: ${{ matrix.web_only }}
+          E2E_WATCH_MAX_ATTEMPTS: '1'
+          E2E_WATCH_ROUND_PROFILE: default
+          E2E_WATCH_TIMEOUT_MS: '420000'
+          E2E_WATCH_COMMAND_TIMEOUT_MS: '720000'
+          E2E_WATCH_SAVE_SNAPSHOTS: '1'
+          NODE_OPTIONS: --max-old-space-size=6144
+        run: pnpm e2e:watch
+
+  pr-gate:
+    name: PR Gate
+    if: always()
+    needs: [scope, quality, core-smoke, platform-watch]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require enabled PR checks
+        env:
+          SCOPE_RESULT: ${{ needs.scope.result }}
+          QUALITY_RESULT: ${{ needs.quality.result }}
+          SMOKE_RESULT: ${{ needs.core-smoke.result }}
+          PLATFORM_RESULT: ${{ needs.platform-watch.result }}
+        run: |
+          test "$SCOPE_RESULT" = success
+          for result in "$QUALITY_RESULT" "$SMOKE_RESULT" "$PLATFORM_RESULT"; do
+            test "$result" = success || test "$result" = skipped
+          done

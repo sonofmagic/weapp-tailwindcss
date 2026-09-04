@@ -3,6 +3,13 @@ name: Benchmark
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - benchmark/**
+      - packages/weapp-tailwindcss/src/bundlers/**
+      - packages/weapp-tailwindcss/src/generator/**
+      - packages/postcss/src/**
+      - .github/workflows/benchmark.yml
+      - pnpm-lock.yaml
   push:
     branches:
       - main
@@ -69,8 +76,8 @@ jobs:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
       WEAPP_TW_BENCH_BASELINE: ${{ github.event.inputs.baseline || 'auto' }}
-      BENCH_BUILD_RUNS: ${{ github.event_name == 'pull_request' && '3' || github.event.inputs.build_runs || '3' }}
-      BENCH_HMR_RUNS: ${{ github.event_name == 'pull_request' && '6' || github.event.inputs.hmr_runs || '5' }}
+      BENCH_BUILD_RUNS: ${{ github.event_name == 'pull_request' && '1' || github.event.inputs.build_runs || '3' }}
+      BENCH_HMR_RUNS: ${{ github.event_name == 'pull_request' && '3' || github.event.inputs.hmr_runs || '5' }}
       BENCH_ONLY: ${{ matrix.bench_only }}
 
     steps:

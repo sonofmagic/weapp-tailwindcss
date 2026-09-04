@@ -39,7 +39,7 @@ jobs:
             exit 0
           fi
 
-          if git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- website/; then
+          if git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- website/ packages/ packages-runtime/ .github/workflows/docs.yml; then
             echo "website_changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "website_changed=true" >> "$GITHUB_OUTPUT"
@@ -93,6 +93,18 @@ jobs:
       - name: SEO Quality Gate (website)
         if: needs.detect-website-changes.outputs.website_changed == 'true'
         run: pnpm --filter @weapp-tailwindcss/website seo:quality:strict
+
+      - name: Build website
+        if: needs.detect-website-changes.outputs.website_changed == 'true'
+        run: pnpm --filter @weapp-tailwindcss/website build
+
+      - name: Verify Worker routing locally
+        if: needs.detect-website-changes.outputs.website_changed == 'true'
+        run: pnpm --filter @weapp-tailwindcss/website test:worker
+
+      - name: Validate Worker bundle
+        if: needs.detect-website-changes.outputs.website_changed == 'true'
+        run: pnpm --filter @weapp-tailwindcss/website deploy:worker:dry-run
 
       - name: SEO Status Note
         if: always()

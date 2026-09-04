@@ -3,9 +3,15 @@ name: Release Gate
 on:
   pull_request:
     types: [opened, synchronize]
-    paths-ignore:
-      - '**/*.md'
-      - '.changeset/**'
+    paths:
+      - package.json
+      - pnpm-lock.yaml
+      - repoctl.config.ts
+      - packages/*/package.json
+      - packages-runtime/*/package.json
+      - scripts/verify-packed-packages.mjs
+      - scripts/release-certificate.ts
+      - .github/workflows/release-gate.yml
   workflow_dispatch:
 
 concurrency:
