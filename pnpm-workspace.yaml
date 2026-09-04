@@ -378,7 +378,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^6.1.2
   weappVite:
-    weapp-vite: ^7.0.3
+    weapp-vite: ^7.0.4
   webpackTools:
     '@pmmmwh/react-refresh-webpack-plugin': ^0.6.3
     '@types/webpack-env': ^1.18.8
