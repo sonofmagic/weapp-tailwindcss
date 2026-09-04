@@ -82,6 +82,8 @@ describe('tsdown build layout', () => {
     expect(cjsNeverBundle?.('postcss')).toBe(true)
     expect(cjsNeverBundle?.('webpack')).toBe(true)
     expect(runtimeCjsConfig.deps?.onlyBundle).toBe(false)
+    expect(runtimeEsmConfig.deps?.resolveDepSubpath).toBe(true)
+    expect(runtimeCjsConfig.deps?.resolveDepSubpath).toBe(true)
   })
 
   it('keeps declaration builds from emitting workspace dependency dts into source folders', () => {

@@ -91,6 +91,7 @@ export function createTsdownConfigs(options: WatchAwareOptions = {}) {
       shims: true,
       format: ['esm'],
       deps: {
+        resolveDepSubpath: true,
         neverBundle: externalizeEsmRuntimeDeps,
         onlyBundle: false,
       },
@@ -105,6 +106,7 @@ export function createTsdownConfigs(options: WatchAwareOptions = {}) {
       shims: true,
       format: ['cjs'],
       deps: {
+        resolveDepSubpath: true,
         alwaysBundle: bundleCjsRuntimeDeps,
         neverBundle: externalizeCommonRuntimeDeps,
         onlyBundle: false,

@@ -35,6 +35,7 @@ export function createPostcssTsdownConfigs(options: WatchAwareOptions = {}) {
       format: ['esm'],
       clean: !options.watch,
       deps: {
+        resolveDepSubpath: true,
         neverBundle: postcssEsmOnlyDependencies,
         onlyBundle: false,
       },
@@ -44,6 +45,7 @@ export function createPostcssTsdownConfigs(options: WatchAwareOptions = {}) {
       format: ['cjs'],
       clean: false,
       deps: {
+        resolveDepSubpath: true,
         neverBundle: postcssEsmOnlyDependencies,
         onlyBundle: false,
       },

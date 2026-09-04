@@ -23,6 +23,8 @@ describe('postcss tsdown config', () => {
     expect(cjs.clean).toBe(false)
     expect(cjs.dts).toBe(false)
     expect(cjs.deps?.neverBundle).toBe(postcssEsmOnlyDependencies)
+    expect(esm.deps?.resolveDepSubpath).toBe(true)
+    expect(cjs.deps?.resolveDepSubpath).toBe(true)
     expect(matchesDependency(postcssEsmOnlyDependencies, '@csstools/css-color-parser')).toBe(true)
     expect(matchesDependency(postcssEsmOnlyDependencies, 'postcss-preset-env')).toBe(true)
     expect(matchesDependency(postcssEsmOnlyDependencies, 'postcss-rule-unit-converter')).toBe(false)

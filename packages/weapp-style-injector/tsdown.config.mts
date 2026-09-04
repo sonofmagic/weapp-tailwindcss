@@ -16,6 +16,7 @@ export default defineConfig({
   clean: true,
   dts: false,
   deps: {
+    resolveDepSubpath: true,
     neverBundle: ['vite'],
   },
   outExtensions({ format }) {
