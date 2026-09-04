@@ -4,6 +4,15 @@
 
 ### Patch Changes
 
+- upgrade deps
+
+- Updated dependencies:
+  - @weapp-tailwindcss/lynx@0.3.10
+
+## 0.1.2
+
+### Patch Changes
+
 - Updated dependencies:
   - @weapp-tailwindcss/lynx@0.3.9
 

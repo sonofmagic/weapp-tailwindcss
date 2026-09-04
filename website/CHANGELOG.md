@@ -4,6 +4,15 @@
 
 ### Patch Changes
 
+- upgrade deps
+
+- Updated dependencies:
+  - weapp-tailwindcss@5.5.1
+
+## 1.0.65
+
+### Patch Changes
+
 - Updated dependencies:
   - @weapp-tailwindcss/variants@0.2.6
   - weapp-tailwindcss@5.5.0
