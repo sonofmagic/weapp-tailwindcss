@@ -125,7 +125,7 @@ catalogs:
     pathe: ^2.0.3
     picocolors: ^1.1.1
     postcss-load-config: ^6.0.1
-    postcss-selector-parser: ^7.1.5
+    postcss-selector-parser: ^7.1.6
     vite-plugin-dts: ^4.5.4
     yaml: ^2.9.0
   compilerUtilities:
@@ -163,7 +163,7 @@ catalogs:
   babelRuntime7284tilde:
     '@babel/runtime': ^7.29.2
   baselineBrowserMapping:
-    baseline-browser-mapping: ^2.11.20
+    baseline-browser-mapping: ^2.11.21
   classVarianceAuthority:
     class-variance-authority: ^0.7.1
   clsx:
@@ -199,12 +199,12 @@ catalogs:
     '@iconify-json/bi': ^1.2.7
     '@iconify-json/line-md': ^1.2.16
     '@iconify-json/logos': ^1.2.13
-    '@iconify-json/lucide': ^1.2.128
+    '@iconify-json/lucide': ^1.2.129
     '@iconify-json/mdi': ^1.2.3
     '@iconify-json/mdi-light': ^1.2.2
     '@iconify-json/svg-spinners': ^1.2.4
   inquirerPrompts:
-    '@inquirer/prompts': ^8.7.0
+    '@inquirer/prompts': ^8.7.1
   lucideReact0555:
     lucide-react: ^1.14.0
   lucideVueNext0555:
@@ -212,9 +212,9 @@ catalogs:
   miniApiTypings:
     miniprogram-api-typings: ^5.2.3
   postcss85:
-    postcss: ^8.5.26
+    postcss: ^8.5.28
   postcss85tilde:
-    postcss: ^8.5.26
+    postcss: ^8.5.28
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem:
@@ -239,17 +239,17 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   rsbuild2:
-    '@rsbuild/core': ^2.2.2
+    '@rsbuild/core': ^2.2.3
     '@rsbuild/plugin-react': ^2.1.0
     '@rsbuild/plugin-vue': ^2.0.1
   sass195:
-    sass: ^1.103.1
-    sass-embedded: ^1.103.1
+    sass: ^1.104.0
+    sass-embedded: ^1.104.0
   storybook:
-    '@storybook/addon-a11y': ^10.5.10
-    '@storybook/react': ^10.5.10
-    '@storybook/react-vite': ^10.5.10
-    storybook: ^10.5.10
+    '@storybook/addon-a11y': ^10.6.0
+    '@storybook/react': ^10.6.0
+    '@storybook/react-vite': ^10.6.0
+    storybook: ^10.6.0
   stylelint1625:
     stylelint: ^17.14.1
   swc:
@@ -340,7 +340,7 @@ catalogs:
     '@typescript-eslint/parser': ^8.61.1
     typescript-eslint: ^8.59.3
   uviewPlus:
-    uview-plus: ^3.8.113
+    uview-plus: ^3.8.117
   vite4:
     vite: ^4.5.14
   vite52:
@@ -376,9 +376,9 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^6.1.1
+    weapp-ide-cli: ^6.1.2
   weappVite:
-    weapp-vite: ^7.0.1
+    weapp-vite: ^7.0.3
   webpackTools:
     '@pmmmwh/react-refresh-webpack-plugin': ^0.6.3
     '@types/webpack-env': ^1.18.8
@@ -387,4 +387,4 @@ catalogs:
     webpack-cli: ^7.2.3
     webpack-dev-server: ^5.2.6
   wrangler:
-    wrangler: ^4.128.0
+    wrangler: ^4.129.0
