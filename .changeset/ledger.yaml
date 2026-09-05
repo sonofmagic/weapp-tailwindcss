@@ -14,6 +14,10 @@
   dir: packages/debug-uni-app-x
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/debug-uni-app-x@1.0.6":
+  dir: packages/debug-uni-app-x
+  intents:
+    - bright-tests-migrate
 "@weapp-tailwindcss/e2e@0.0.0":
   dir: e2e
   intents:
@@ -66,6 +70,10 @@
   dir: packages/postcss-calc
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/postcss-calc@1.0.6":
+  dir: packages/postcss-calc
+  intents:
+    - calm-teams-tickle
 "@weapp-tailwindcss/postcss@3.2.12":
   dir: packages/postcss
   intents:
@@ -132,6 +140,7 @@
 "@weapp-tailwindcss/website@1.0.65":
   dir: website
   intents:
+    - calm-teams-tickle
     - salty-icons-repeat
 tailwindcss-config@2.0.4:
   dir: packages/tailwindcss-config
@@ -161,6 +170,7 @@ weapp-style-injector@1.0.4:
 weapp-tailwindcss-monorepo@0.0.0:
   dir: ""
   intents:
+    - calm-teams-tickle
     - salty-icons-repeat
 weapp-tailwindcss@5.3.1:
   dir: packages/weapp-tailwindcss
@@ -225,6 +235,10 @@ weapp-tailwindcss@5.5.1:
   intents:
     - issue-1152-empty-selector
     - quiet-uvue-hmr-1144
+weapp-tailwindcss@5.5.2:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - curly-uvue-hmr
 weapp-tw@0.0.3:
   dir: packages/weapp-tw
   intents:

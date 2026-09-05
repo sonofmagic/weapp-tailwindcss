@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/debug-uni-app-x
 
+## 1.0.6
+
+### Patch Changes
+
+- 稳定 uni-app x 调试插件的 bundle 产物索引顺序，提升调试文件与元数据的一致性。
+
 ## 1.0.5
 
 ### Patch Changes
