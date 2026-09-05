@@ -253,7 +253,7 @@ catalogs:
   stylelint1625:
     stylelint: ^17.15.0
   swc:
-    '@swc/core': ^1.16.1
+    '@swc/core': ^1.16.2
   tailwindMerge:
     tailwind-merge: ^3.6.0
   tailwindMerge2:
@@ -340,7 +340,7 @@ catalogs:
     '@typescript-eslint/parser': ^8.61.1
     typescript-eslint: ^8.59.3
   uviewPlus:
-    uview-plus: ^3.8.117
+    uview-plus: ^3.8.119
   vite4:
     vite: ^4.5.14
   vite52:

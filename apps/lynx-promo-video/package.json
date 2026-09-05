@@ -29,14 +29,14 @@
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "5.3.0",
     "@fontsource-variable/noto-sans-sc": "5.3.0",
-    "@remotion/media": "4.0.520",
+    "@remotion/media": "4.0.521",
     "qrcode": "1.5.4",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
-    "remotion": "4.0.520"
+    "remotion": "4.0.521"
   },
   "devDependencies": {
-    "@remotion/cli": "4.0.520",
+    "@remotion/cli": "4.0.521",
     "@types/node": "catalog:typesNode2410",
     "@types/qrcode": "^1.5.6",
     "@types/react": "catalog:react19",
