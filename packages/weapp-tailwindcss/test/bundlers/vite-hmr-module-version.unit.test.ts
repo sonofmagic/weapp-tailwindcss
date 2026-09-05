@@ -5,6 +5,22 @@ import { createViteHmrCssModuleVersionFilterPlugin, createViteHmrCssModuleVersio
 import { createUniAppXWebLocalStyleBridge } from '@/uni-app-x/vite/web-local-style'
 
 describe('Vite CSS HMR module versions', () => {
+  it('replaces and clears Web local style rules for repeated SFC transforms', () => {
+    const bridge = createUniAppXWebLocalStyleBridge(() => true)
+    const styleId = '/project/pages/index/index.uvue?vue&type=style&index=0&scoped=abc'
+
+    bridge.remember('/project/pages/index/index.uvue', '.wtu-p-0 { @apply p-0!; }')
+    expect(bridge.appendToStyle('.author {}', styleId)).toContain('@apply p-0!;')
+
+    bridge.remember('/project/pages/index/index.uvue', '.wtu-p-10 { @apply p-10!; }')
+    const replaced = bridge.appendToStyle('.author {}', styleId)
+    expect(replaced).toContain('@apply p-10!;')
+    expect(replaced).not.toContain('@apply p-0!;')
+
+    bridge.remember('/project/pages/index/index.uvue', '')
+    expect(bridge.appendToStyle('.author {}', styleId)).toBe('.author {}')
+  })
+
   it('rejects an older transaction for the same normalized style module', () => {
     const root = path.resolve('/project')
     const pageFile = path.join(root, 'pages/index.uvue')

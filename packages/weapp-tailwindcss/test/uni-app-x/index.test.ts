@@ -337,6 +337,51 @@ const condition = true
     expect(result?.code).not.toContain('@apply mt-6!;')
   })
 
+  it('recomputes dynamic custom-attribute important utilities across HMR rounds', () => {
+    const { jsHandler } = getCompilerContext({ uniAppX: true })
+    const rulesByRound: string[] = []
+    const runtimeSet = new Set(['p-0!', 'p-10!', 'p-4!'])
+
+    for (const utility of ['p-0!', 'p-10!', 'p-4!', 'p-0!']) {
+      const onWebLocalStyleRules = vi.fn((rules: string) => rulesByRound.push(rules))
+      const result = transformUVue(
+        `<template><view :pt="{ root: '${utility}' }">dynamic</view></template><style scoped>.author { color: red; }</style>`,
+        '/src/pages/index/index.uvue',
+        jsHandler,
+        runtimeSet,
+        {
+          customAttributesEntities: [['view', ['pt']]],
+          enablePageLocalStyle: true,
+          onWebLocalStyleRules,
+        },
+      )
+
+      expect(result?.code).toContain('wtu-')
+      expect(onWebLocalStyleRules).toHaveBeenCalledTimes(1)
+    }
+
+    expect(rulesByRound).toHaveLength(4)
+    expect(rulesByRound[0]).toContain('@apply p-0!;')
+    expect(rulesByRound[1]).toContain('@apply p-10!;')
+    expect(rulesByRound[1]).not.toContain('@apply p-0!;')
+    expect(rulesByRound[2]).toContain('@apply p-4!;')
+    expect(rulesByRound[3]).toContain('@apply p-0!;')
+
+    const clearRules = vi.fn()
+    transformUVue(
+      `<template><view :pt="{ root: 'p-0!' }">cleared</view></template><style scoped>.author { color: red; }</style>`,
+      '/src/pages/index/index.uvue',
+      jsHandler,
+      new Set(),
+      {
+        customAttributesEntities: [['view', ['pt']]],
+        enablePageLocalStyle: true,
+        onWebLocalStyleRules: clearRules,
+      },
+    )
+    expect(clearRules).toHaveBeenCalledWith('')
+  })
+
   it('honors disabledDefaultTemplateHandler with custom class rules', () => {
     const { jsHandler } = getCompilerContext()
     const runtimeSet = new Set<string>([

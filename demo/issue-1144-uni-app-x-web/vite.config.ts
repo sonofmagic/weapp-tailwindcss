@@ -17,6 +17,9 @@ export default defineConfig({
 			uniAppX({
 				base: projectRoot,
 				cssEntries: [mainCss],
+				customAttributes: {
+					'*': ['pt']
+				},
 				rem2rpx: true
 			})
 		),

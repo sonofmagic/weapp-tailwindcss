@@ -8,7 +8,7 @@
 
 1. 使用 Node.js 22.12+ 和 HBuilderX（包含 uni-app x Web 工具链）安装仓库依赖。
 2. 在仓库根目录执行 `pnpm --filter @weapp-tailwindcss-demo/issue-1144-uni-app-x-web run dev:h5`。真实 HBuilderX 回归分别运行 `HBUILDERX_CHANNEL=stable E2E_HBUILDERX_CASE=issue-1144-uni-app-x-web pnpm e2e:hbuilderx:h5` 和 `HBUILDERX_CHANNEL=alpha E2E_HBUILDERX_CASE=issue-1144-uni-app-x-web pnpm e2e:hbuilderx:h5`；切换前先关闭另一个 HBuilderX 实例。
-3. 打开首页后编辑 `pages/index/index.uvue` 模板中的文字并保存。
+3. 打开首页后编辑 `pages/index/index.uvue` 模板中的文字并保存。页面中的探针同时覆盖直接使用 `class="mt-24!"`，以及 `:pt="{ root: 'p-0!' }"` 依次改为 `p-10!`、`p-4!`、再改回 `p-0!` 的三轮 Web HMR。
 
 首次加载和保存后的 HMR 页面都应正常更新；Vite 页面不应出现错误遮罩，HBuilderX/Vite 日志不应出现 `Unknown word` 或 `[plugin:vite:css]` PostCSS 警告，生成 CSS 也不应残留 Tailwind 原始指令。
 
