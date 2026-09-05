@@ -24,6 +24,17 @@ describe('多端 coverage registry contract', () => {
     }
   })
 
+  it('requires an explicit normal dev contract for every demo platform', () => {
+    for (const cell of COVERAGE_REGISTRY.filter(item => item.source === 'demo')) {
+      const dev = cell.layers.dev
+      expect(dev.executor, `${cell.id}:dev`).toBeTruthy()
+      expect(dev.evidenceSchema, `${cell.id}:dev`).toBe('demo-dev-v1')
+      if (dev.status === 'not-applicable' || dev.status === 'unsupported-verified') {
+        expect(dev.reason, `${cell.id}:dev exemption should include a reason`).toBeTruthy()
+      }
+    }
+  })
+
   it('does not treat blocked or not-run required cells as passing', () => {
     const report = createCoverageReport([], 'aggregate')
     expect(report.summary.requiredUnverified).toBeGreaterThan(0)
