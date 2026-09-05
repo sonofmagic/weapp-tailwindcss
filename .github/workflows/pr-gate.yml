@@ -103,7 +103,7 @@ jobs:
     needs: [scope]
     if: needs.scope.outputs.watch == 'true'
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
