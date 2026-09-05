@@ -1,6 +1,9 @@
 <template>
 	<view :class="[theme.themeClass, 'bg-page px-20 py-24']">
 		<text class="text-content text-2xl font-bold text-white/70 text-blue-300/35">全端主题</text>
+		<view class="issue-1144-important-probe mt-24!" :pt="{ root: 'p-0!' }">
+			<text class="text-content text-sm">重要 utility HMR 探针</text>
+		</view>
 		<text class="mt-6 text-content-muted text-sm">
 			{{ theme.themeClass }} · {{ theme.modePreference }} · {{ theme.resolvedMode }}
 		</text>

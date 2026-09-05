@@ -1092,6 +1092,10 @@ export const webCases: WebCase[] = [
       /\.bg-page\s*\{/,
     ],
     initialTextContains: ['全端主题'],
+    persistentRuntimeStyles: [{
+      selector: '.issue-1144-important-probe',
+      styles: { marginTop: '96px' },
+    }],
     serverLogContains: [
       /HBuilderX Version:\s*5\./,
       /编译器版本：5\.\d+（uni-app x）VDOM模式/,
@@ -1106,6 +1110,10 @@ export const webCases: WebCase[] = [
           selector: '.hbuilderx-web-hmr-probe',
           styles: { backgroundColor: 'rgb(15, 81, 50)', color: 'rgb(248, 250, 252)', width: '188px' },
         }],
+        sourceMutation: {
+          file: 'pages/index/index.uvue',
+          replace: { from: 'root: \'p-0!\'', to: 'root: \'p-10!\'' },
+        },
       },
       {
         markerClass: 'hbuilderx-web-hmr-probe bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',
@@ -1115,6 +1123,10 @@ export const webCases: WebCase[] = [
           selector: '.hbuilderx-web-hmr-probe',
           styles: { backgroundColor: 'rgb(124, 45, 18)', color: 'rgb(236, 254, 255)', height: '37px', marginTop: '11px' },
         }],
+        sourceMutation: {
+          file: 'pages/index/index.uvue',
+          replace: { from: 'root: \'p-10!\'', to: 'root: \'p-4!\'' },
+        },
       },
       {
         markerClass: 'hbuilderx-web-hmr-probe bg-[#4338ca] text-[#fef3c7] w-[221px] rounded-[13px]',
@@ -1124,6 +1136,10 @@ export const webCases: WebCase[] = [
           selector: '.hbuilderx-web-hmr-probe',
           styles: { backgroundColor: 'rgb(67, 56, 202)', borderRadius: '13px', color: 'rgb(254, 243, 199)', width: '221px' },
         }],
+        sourceMutation: {
+          file: 'pages/index/index.uvue',
+          replace: { from: 'root: \'p-4!\'', to: 'root: \'p-0!\'' },
+        },
       },
     ],
     workflow: uniAppXHBuilderXWorkflow,

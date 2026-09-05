@@ -392,6 +392,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
           return
         }
         if (isWebGeneratorTarget() && UVUE_NVUE_RE.test(ctx.file) && typeof ctx.read === 'function') {
+          // 完整 SFC 更新会取代此前可能排队的 CSS HMR 事务，避免版本过滤器
+          // 把当前样式模块误判为旧事务而丢弃。
+          hmrCssModuleVersions?.clear()
           const source = await ctx.read()
           if (hasUniAppXImportantApply(source, normalizeUniAppXImportantApplyForSass)) {
             ctx.server.ws.send({ type: 'full-reload', path: ctx.file })

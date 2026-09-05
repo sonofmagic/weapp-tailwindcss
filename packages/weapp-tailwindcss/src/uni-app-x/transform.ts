@@ -375,22 +375,23 @@ export function transformUVue(
       )
     }
 
-    if (localStyleCollector?.hasStyles()) {
-      const scopedStyle = descriptor.styles.findLast(style => STYLE_SCOPED_RE.test(style.attrs))
-      if (scopedStyle && options.onWebLocalStyleRules) {
-        options.onWebLocalStyleRules(localStyleCollector.toStyleRules({ web: true }))
-      }
-      else if (scopedStyle) {
-        const separator = scopedStyle.content.endsWith('\n') ? '' : '\n'
-        ms.appendLeft(scopedStyle.end, `${separator}${localStyleCollector.toStyleRules({ native: options.native })}`)
-      }
-      else {
-        // 新增的局部样式块会单独进入预处理器，important utility 统一使用中间标记。
-        ms.append(`\n${localStyleCollector.toStyleBlock({
-          native: options.native || Boolean(options.onWebLocalStyleRules),
-          web: Boolean(options.onWebLocalStyleRules),
-        })}`)
-      }
+    const scopedStyle = descriptor.styles.findLast(style => STYLE_SCOPED_RE.test(style.attrs))
+    if (localStyleCollector && options.onWebLocalStyleRules && scopedStyle) {
+      // 每次 SFC 变换都覆盖桥接缓存；当前没有局部规则时也要清除上一轮结果。
+      options.onWebLocalStyleRules(localStyleCollector.hasStyles()
+        ? localStyleCollector.toStyleRules({ web: true })
+        : '')
+    }
+    else if (localStyleCollector?.hasStyles() && scopedStyle) {
+      const separator = scopedStyle.content.endsWith('\n') ? '' : '\n'
+      ms.appendLeft(scopedStyle.end, `${separator}${localStyleCollector.toStyleRules({ native: options.native })}`)
+    }
+    else if (localStyleCollector?.hasStyles()) {
+      // 新增的局部样式块会单独进入预处理器，important utility 统一使用中间标记。
+      ms.append(`\n${localStyleCollector.toStyleBlock({
+        native: options.native || Boolean(options.onWebLocalStyleRules),
+        web: Boolean(options.onWebLocalStyleRules),
+      })}`)
     }
   }
   const result: TransformResult = {

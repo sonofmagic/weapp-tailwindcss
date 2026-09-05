@@ -10,6 +10,8 @@ import { collectUniAppXHarmonyApplyStyleSources, createUniAppXHarmonyApplyGenera
 import { createUniAppXAssetTask, createUniAppXPlugins } from '@/uni-app-x/vite'
 import { createUniAppXHarmonyApplyExpander } from '@/uni-app-x/vite/harmony-apply'
 import { clearUniAppXStyleIsolationCache } from '@/uni-app-x/style-isolation'
+import { resolveUniAppXStyleSource } from '@/uni-app-x/vite/style-source'
+import { createViteHmrCssModuleVersionTracker } from '@/bundlers/vite/shared/framework-hmr-module-version'
 
 /** 将平台路径转为 posix 格式，与源码 normalizePath 行为一致 */
 function toPosix(p: string): string {
@@ -370,6 +372,15 @@ describe('uni-app-x vite plugins', () => {
     await expect(getTransformHandler(cssPrePlugin)?.call(cssPrePlugin, hmrCode, id)).resolves.toBeUndefined()
     await expect(getTransformHandler(cssPlugin)?.call(cssPlugin, hmrCode, id)).resolves.toBeUndefined()
     expect(styleHandler).not.toHaveBeenCalled()
+  })
+
+  it('skips CSS HMR wrappers before query parsing when the request is not a Vue style module', () => {
+    const hmrCode = [
+      `const __vite__css = ${JSON.stringify('<template><view class="mt-24!" /></template>')}`,
+      '__vite__updateStyle(__vite__id, __vite__css)',
+    ].join('\n')
+
+    expect(resolveUniAppXStyleSource(hmrCode, {} as any)).toEqual({ skip: true })
   })
 
   it('skips pre hook for preprocessor styles and runs after preprocess', async () => {
@@ -1104,6 +1115,7 @@ describe('uni-app-x vite plugins', () => {
       observeSourceImports: vi.fn(),
       requestCheck: vi.fn(),
     }
+    const hmrCssModuleVersions = createViteHmrCssModuleVersionTracker()
     const plugins = createUniAppXPlugins({
       appType: 'uni-app-x',
       customAttributesEntities: [['a-navbar', ['leftClass']]],
@@ -1118,6 +1130,7 @@ describe('uni-app-x vite plugins', () => {
       tailwindRootCssModuleIds: new Set(['/project/main.css']),
       viteProcessedCssSourceFiles: new Set(['/project/main.css']),
       webCssEntryDiagnostics,
+      hmrCssModuleVersions,
     })
     const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
     const cssPrePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css:pre')
@@ -1126,9 +1139,11 @@ describe('uni-app-x vite plugins', () => {
       id: '/project/pages/index/index.uvue?vue&type=style&index=0&scoped=abc&lang.scss',
       url: '/pages/index/index.uvue?vue&type=style&index=0&scoped=abc&lang.scss',
     }
+    hmrCssModuleVersions.filterModules([styleModule as any], 200, '/project')
     const context = {
       file: '/project/pages/index/index.uvue',
       modules: [pageModule],
+      timestamp: 100,
       read: vi.fn(async () => '<template><a-navbar leftClass="text-red-500" /></template><style scoped>.author { color: red; }</style>'),
       server: {
         config: { root: '/project' },

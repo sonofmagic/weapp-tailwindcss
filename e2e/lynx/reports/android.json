@@ -692,7 +692,7 @@
     {
       "id": "variant-group-peer",
       "status": "unsupported",
-      "reason": "encoder 删除 selector：.peer-checked\\:opacity-100:is(:where(.peer):checked~*)",
+      "reason": "encoder 删除 selector：.peer-checked\\:opacity-100:is(:where(.peer):checked~*), .peer-checked\\:opacity-100:is(:where(.peer):checked~*)",
       "checkpoints": [
         {
           "name": "generated",
@@ -903,7 +903,7 @@
     {
       "id": "directive-variant",
       "status": "unsupported",
-      "reason": "encoder 删除 selector：.theme-midnight\\:bg-black:where(.theme-midnight,.theme-midnight *), .lynx-at-variant:where(.theme-midnight,.theme-midnight *)",
+      "reason": "encoder 删除 selector：.theme-midnight\\:bg-black:where(.theme-midnight,.theme-midnight *), .theme-midnight\\:bg-black:where(.theme-midnight,.theme-midnight *), .lynx-at-variant:where(.theme-midnight,.theme-midnight *), .lynx-at-variant:where(.theme-midnight,.theme-midnight *)",
       "checkpoints": [
         {
           "name": "generated",
@@ -1308,7 +1308,7 @@
     {
       "id": "border-divide",
       "status": "unsupported",
-      "reason": "encoder 删除 selector：:where(.divide-y-2>:not(:last-child)), :where(.divide-dashed>:not(:last-child)), :where(.divide-\\[\\#64748b\\]>:not(:last-child))",
+      "reason": "encoder 删除 selector：:where(.divide-y-2>:not(:last-child)), :where(.divide-y-2>:not(:last-child)), :where(.divide-dashed>:not(:last-child)), :where(.divide-dashed>:not(:last-child)), :where(.divide-\\[\\#64748b\\]>:not(:last-child)), :where(.divide-\\[\\#64748b\\]>:not(:last-child))",
       "checkpoints": [
         {
           "name": "generated",
