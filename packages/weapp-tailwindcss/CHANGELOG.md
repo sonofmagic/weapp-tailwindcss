@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 5.5.2
+
+### Patch Changes
+
+- 修复 uni-app x Web 端重要 utility 在连续 HMR 更新中的局部样式缓存、CSS 模块失效和 Sass 预处理边界。
+
+- Updated dependencies:
+  - @weapp-tailwindcss/postcss@3.3.3
+
 ## 5.5.1
 
 ### Patch Changes

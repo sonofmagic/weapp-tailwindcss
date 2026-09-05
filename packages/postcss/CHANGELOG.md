@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/postcss
 
+## 3.3.3
+
+### Patch Changes
+
+- Updated dependencies:
+  - @weapp-tailwindcss/postcss-calc@1.0.6
+
 ## 3.3.2
 
 ### Patch Changes

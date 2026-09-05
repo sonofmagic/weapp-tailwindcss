@@ -4,6 +4,12 @@
 
 ### Patch Changes
 
+- deps upgrade
+
+## 0.0.0
+
+### Patch Changes
+
 - upgrade deps
 
 ## Unreleased
