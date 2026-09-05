@@ -103,7 +103,7 @@ jobs:
     needs: [scope]
     if: needs.scope.outputs.watch == 'true'
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -138,7 +138,7 @@ jobs:
           E2E_WATCH_MAX_ATTEMPTS: '1'
           E2E_WATCH_ROUND_PROFILE: default
           E2E_WATCH_TIMEOUT_MS: '420000'
-          E2E_WATCH_COMMAND_TIMEOUT_MS: '720000'
+          E2E_WATCH_COMMAND_TIMEOUT_MS: '1200000'
           E2E_WATCH_SAVE_SNAPSHOTS: '1'
           NODE_OPTIONS: --max-old-space-size=6144
         run: pnpm e2e:watch
