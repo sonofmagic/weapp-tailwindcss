@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "catalogHash": "a8c3b45f993d9aa28782f308fc959a09e160d67a9097d11b1bc6a8a38b93c886",
-  "generatedAt": "2026-08-17T06:33:50.823Z",
+  "generatedAt": "2026-09-04T19:42:49.051Z",
   "versions": {
     "tailwindcss": "4.3.3",
     "lynxEngine": "4.0.1",
@@ -1324,7 +1324,7 @@
       "generated": true,
       "bundled": false,
       "failureStage": "encoder",
-      "reason": "encoder 删除 selector：.peer-checked\\:opacity-100:is(:where(.peer):checked~*)",
+      "reason": "encoder 删除 selector：.peer-checked\\:opacity-100:is(:where(.peer):checked~*), .peer-checked\\:opacity-100:is(:where(.peer):checked~*)",
       "generatedDeclarations": [
         {
           "property": "display",
@@ -1649,7 +1649,7 @@
       "generated": true,
       "bundled": false,
       "failureStage": "encoder",
-      "reason": "encoder 删除 selector：.theme-midnight\\:bg-black:where(.theme-midnight,.theme-midnight *), .lynx-at-variant:where(.theme-midnight,.theme-midnight *)",
+      "reason": "encoder 删除 selector：.theme-midnight\\:bg-black:where(.theme-midnight,.theme-midnight *), .theme-midnight\\:bg-black:where(.theme-midnight,.theme-midnight *), .lynx-at-variant:where(.theme-midnight,.theme-midnight *), .lynx-at-variant:where(.theme-midnight,.theme-midnight *)",
       "generatedDeclarations": [
         {
           "property": "background-color",
@@ -2507,7 +2507,7 @@
       "generated": true,
       "bundled": false,
       "failureStage": "encoder",
-      "reason": "encoder 删除 selector：:where(.divide-y-2>:not(:last-child)), :where(.divide-dashed>:not(:last-child)), :where(.divide-\\[\\#64748b\\]>:not(:last-child))",
+      "reason": "encoder 删除 selector：:where(.divide-y-2>:not(:last-child)), :where(.divide-y-2>:not(:last-child)), :where(.divide-dashed>:not(:last-child)), :where(.divide-dashed>:not(:last-child)), :where(.divide-\\[\\#64748b\\]>:not(:last-child)), :where(.divide-\\[\\#64748b\\]>:not(:last-child))",
       "generatedDeclarations": [
         {
           "property": "border-bottom-width",

@@ -3,7 +3,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import postcss from 'postcss'
 import { compatibilityCases } from '../../examples/react-lynx/src/compatibility/catalog'
-import { compatibilityVersions, exampleDir, getCatalogHash, readCssDefinesProperties } from './catalog'
+import { compatibilityVersions, getCatalogHash, lynxIntermediateDir, readCssDefinesProperties } from './catalog'
 
 interface EncodedDeclaration {
   name: string
@@ -131,8 +131,8 @@ function parseEncoderRemovals(log: string) {
 }
 
 export async function analyzeStaticEvidence(generatedAt = new Date().toISOString(), encoderLog = ''): Promise<StaticEvidenceReport> {
-  const generatedCssPath = path.join(exampleDir, 'dist', '.rspeedy', 'main', 'main.css')
-  const tasmPath = path.join(exampleDir, 'dist', '.rspeedy', 'main', 'tasm.json')
+  const generatedCssPath = path.join(lynxIntermediateDir, 'main.css')
+  const tasmPath = path.join(lynxIntermediateDir, 'tasm.json')
   const [generatedCss, tasmSource, cssDefinesProperties] = await Promise.all([
     fs.readFile(generatedCssPath, 'utf8'),
     fs.readFile(tasmPath, 'utf8'),

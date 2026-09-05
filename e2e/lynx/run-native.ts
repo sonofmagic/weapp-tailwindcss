@@ -5,7 +5,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
 import { buildCompatibilityBundle } from './build'
-import { exampleDir, repoRoot } from './catalog'
+import { exampleDir, lynxIntermediateDir, repoRoot } from './catalog'
 import { iosPodInstallArguments, parseNativeRunArgs } from './native-options'
 import { defaultReportPath, nativeReportConclusion, validateNativeReport } from './reports'
 
@@ -335,7 +335,7 @@ async function main() {
   ]
   if (!options.captureOnly && build) {
     stagedArtifacts.push(
-      fs.copyFile(path.join(exampleDir, 'dist', '.rspeedy', 'main', 'main.css'), path.join(artifactDir, 'main.css')),
+      fs.copyFile(path.join(lynxIntermediateDir, 'main.css'), path.join(artifactDir, 'main.css')),
       fs.writeFile(path.join(artifactDir, 'encoder.log'), build.encoderLog),
     )
   }

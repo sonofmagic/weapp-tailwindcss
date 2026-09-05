@@ -5,7 +5,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import staticEvidenceJson from '../examples/react-lynx/src/compatibility/static-evidence.json'
 import { buildCompatibilityBundle } from './lynx/build'
-import { compatibilityDir, exampleDir, getCatalogHash, repoRoot } from './lynx/catalog'
+import { compatibilityDir, exampleDir, getCatalogHash, lynxIntermediateDir, repoRoot } from './lynx/catalog'
 import { analyzeStaticEvidence } from './lynx/static-evidence'
 
 const bundlePath = path.join(exampleDir, 'dist', 'main.lynx.bundle')
@@ -17,8 +17,8 @@ describe('ReactLynx Rspeedy compatibility evidence', () => {
     encoderLog = build.encoderLog
     const [bundle, css, tasm] = await Promise.all([
       fs.readFile(bundlePath),
-      fs.readFile(path.join(exampleDir, 'dist', '.rspeedy', 'main', 'main.css'), 'utf8'),
-      fs.readFile(path.join(exampleDir, 'dist', '.rspeedy', 'main', 'tasm.json'), 'utf8'),
+      fs.readFile(path.join(lynxIntermediateDir, 'main.css'), 'utf8'),
+      fs.readFile(path.join(lynxIntermediateDir, 'tasm.json'), 'utf8'),
     ])
     expect(bundle.byteLength).toBeGreaterThan(1024)
     expect(css).toContain('tailwindcss v4.3.3')

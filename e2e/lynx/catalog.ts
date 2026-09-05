@@ -8,6 +8,7 @@ import { officialFeatureManifest } from '../../examples/react-lynx/src/compatibi
 export const repoRoot = path.resolve(import.meta.dirname, '../..')
 export const exampleDir = path.join(repoRoot, 'examples', 'react-lynx')
 export const compatibilityDir = path.join(exampleDir, 'src', 'compatibility')
+export const lynxIntermediateDir = path.join(exampleDir, 'dist', '.lynx', 'main')
 export const compatibilityVersions = {
   tailwindcss: '4.3.3',
   lynxEngine: '4.0.1',
