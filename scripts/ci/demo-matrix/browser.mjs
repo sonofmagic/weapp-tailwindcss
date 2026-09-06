@@ -18,8 +18,10 @@ export async function openBrowser(url, session, artifactDir) {
   let transientModuleFailure
   let startupReloads = 0
   let lastInspection
-  page.on('framenavigated', (frame) => {
-    if (frame === page.mainFrame()) {
+  page.on('response', (response) => {
+    const request = response.request()
+    // hash/history 路由仍使用原文档和连接，只有新主文档响应重置状态。
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame() && response.status() >= 200 && response.status() < 300) {
       documentVersion++
       pendingModules.clear()
       transportReady = false

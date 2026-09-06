@@ -21,6 +21,7 @@ regressions:
   - scripts/ci/demo-matrix/source-file.test.mjs
   - packages/postcss/test/css-rule-matcher.test.ts
   - packages/weapp-tailwindcss/test/bundlers/framework-css-composition.test.ts
+  - scripts/ci/demo-matrix/rollup-watch.test.mjs
 ---
 
 # Windows 标准 utility 缺失与 demo 跨系统验收
@@ -94,3 +95,11 @@ Windows 定向日志进一步确认，每轮循环的变更文件都是 Taro 虚
 Windows Vue 京东的 add 轮次已输出新增类名，但 Vite 在写出 app-origin.jxss 时出现 EBUSY，验收程序同时在复制正在写入的目录。分包 Webpack 抖音也在新一轮 sealing 阶段停滞。Taro 的非 Web 验收现在等待本轮构建完成、恢复监听后，再归档和检查；旧轮次完成日志、正在构建和失败日志都不能放行。新增三项 Windows 三次连续专项验收 Vue H5、京东与分包抖音，完整矩阵和性能门禁仍须由最终提交完成，以上本地结果不代表全量 CI 已通过。
 
 同一轮 Linux uni 在替换完成后未对 add 产生新的编译日志。增加 uni 编译完成与首轮 watcher ready 检查，并在三次连续专项中加入 Ubuntu。真实 Rollup 文件 watcher 连续替换回归在本机通过，因此暂不将 Linux 失联归因于原子替换；该回归和真实 uni 的 Linux 结果仍需远端确认。最后一次本地 main 对照的临时副本缺失 Taro CLI 文件，基线行失败，该次计时不作为性能通过证据。
+
+`f79e6d8a2` 的 Ubuntu uni 专项仍在第二次修改后不再编译。Linux 容器中的真实 Rollup 4.63.0 对照明确缩小了条件：单纯文件监听能连续更新，但文件同时被普通模块和虚拟模块的 transform dependency 引用时，第二次原子替换不再触发构建，且无需加载 weapp-tailwindcss。旧测试只覆盖单一 watcher，本机模拟 os.platform 也不能替代 Linux inode 事件。Rollup 的 FileWatcher 为两种依赖创建独立 Chokidar watcher，底层共享句柄仍指向被替换的 inode。依赖补丁让同一构建任务共用 watcher，同时按依赖集合保持 transform cache 失效；CJS/ESM 真实回归在未修复版本均因第二次修改超时失败，补丁后直接导入、虚拟模块更新及删除重建全部通过。该补丁属于仓库构建依赖，不属于最初 Windows utility 缺陷，也不随本库 npm 包自动应用。
+
+同一提交的 Windows Vue Vite H5 和分包 Webpack H5 已收到连接握手，却仍被判断为传输未就绪。Playwright 的 framenavigated 也包含 hash/history 路由跳转，旧实现因此清空仍在使用的文档连接。真实 Vite 页面先握手再切换两种路由，在修复前稳定超时；改为只在新主文档响应时重置后通过，已有整页重载回归继续通过。两个真实 H5 demo 的生产、连续修改和刷新本地复验通过原基线。
+
+`f79e6d8a2` 的五类性能门禁最终通过；Taro Webpack 首次构建峰值曾单独越界 16.89%，同次稳态内存、HMR 内存和处理时长没有同步回退，同提交复测通过。保留首次失败，不将一次峰值差异归因为已证实的产品回归。后续新增依赖补丁和浏览器修复仍须使用新提交重新验收完整三系统矩阵。
+
+补丁后真实 uni 微信在 Linux 容器中完成生产、开发首编译、replace、add、restore，均通过原语义基线。容器复用相同版本的 JavaScript 依赖并补齐 Linux 原生模块，只作为本地定位证据，不冒充冻结安装成功；最初容器全量冻结安装因网络失败，最终干净安装仍交由 Ubuntu/Windows/macOS CI 验收。Rollup 补充目录型 transform dependency 回归，要求子文件变化正确使目录消费方失效，避免合并 watcher 改变原有语义。

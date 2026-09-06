@@ -5,6 +5,49 @@ import { createServer } from 'vite'
 import { expect, it } from 'vitest'
 import { openBrowser } from './browser.mjs'
 
+it('preserves the development transport across hash and history route changes', async () => {
+  const root = await realpath(await mkdtemp(path.join(tmpdir(), 'demo-matrix-routes-')))
+  const server = await createServer({
+    root,
+    configFile: false,
+    logLevel: 'silent',
+    server: { host: '127.0.0.1', port: 0 },
+    plugins: [{
+      name: 'client-routed-page',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.url !== '/') {
+            return next()
+          }
+          res.setHeader('Content-Type', 'text/html')
+          res.end(`<script type="module" src="/@vite/client"></script><script type="module">
+            const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
+            await wait(500)
+            location.hash = '/home'
+            await wait(100)
+            history.replaceState({}, '', '/home#/profile')
+            document.body.innerHTML = '<div id="tw-matrix-height">ready</div>'
+          </script><body></body>`)
+        })
+      },
+    }],
+  })
+  let browser
+  const deadline = Date.now() + 5000
+  try {
+    await server.listen()
+    browser = await openBrowser(server.resolvedUrls.local[0], {
+      ensureRunning() { expect(Date.now()).toBeLessThan(deadline) },
+    }, root)
+    expect(browser.events).toContain('debug: [vite] connected.')
+  }
+  finally {
+    await browser?.close()
+    await server.close()
+    await rm(root, { recursive: true, force: true })
+  }
+}, 10_000)
+
 it('does not restart a page whose initialization exceeds the probe polling interval', async () => {
   const root = await realpath(await mkdtemp(path.join(tmpdir(), 'demo-matrix-browser-')))
   let navigations = 0
