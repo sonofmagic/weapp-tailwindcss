@@ -39,7 +39,7 @@ export interface RuntimeCompilationBuildState {
   runtimeAffectingHashByFile: Map<string, string>
   linkedByEntry: Map<string, Set<string>>
   dependentsByLinkedFile: Map<string, Set<string>>
-  bundleMarkupCandidatesByFile: Map<string, Set<string>>
+  bundleMarkupCandidatesByFile: Map<string, { sourceFile: string, candidates: Set<string> }>
   generatorCandidateSignature?: string | undefined
 }
 

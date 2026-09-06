@@ -4,7 +4,7 @@ import { DEFAULT_PARSE_CACHE_MAX_ENTRIES, DEFAULT_PARSE_CACHE_MAX_SOURCE_LENGTH 
 import { noop } from './utils'
 
 const CSS_FILE_PATTERN = /.+\.(?:wx|ac|jx|tt|q|c|ty)ss$/
-const HTML_FILE_PATTERN = /.+\.(?:(?:wx|ax|jx|ks|tt|q|ty|xhs)ml|swan)$/
+const HTML_FILE_PATTERN = /.+\.(?:(?:wx|ax|jx|ks|tt|q|qx|ty|xhs)ml|swan)$/
 const JS_FILE_PATTERN = /.+\.[cm]?js?$/
 
 const alwaysFalse = () => false

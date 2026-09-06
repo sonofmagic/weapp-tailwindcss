@@ -5235,6 +5235,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           ...actual,
           createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
             generate: vi.fn((options: { candidates: Set<string>, target: string }) => generateMock(options, source)),
+            validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
           })),
         }
       })

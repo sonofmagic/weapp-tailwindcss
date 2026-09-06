@@ -34,6 +34,7 @@ export const DEFAULT_SOURCE_SCAN_EXTENSIONS = [
   'ksml',
   'ttml',
   'qml',
+  'qxml',
   'tyml',
   'xhsml',
   'swan',
@@ -66,6 +67,7 @@ export const FULL_SOURCE_SCAN_EXTENSIONS = [
   'ksml',
   'ttml',
   'qml',
+  'qxml',
   'tyml',
   'xhsml',
   'swan',
@@ -95,22 +97,26 @@ export function toPosixPath(value: string) {
 }
 
 export function resolveSourceScanPath(value: string) {
-  const resolved = path.resolve(value)
-  try {
-    return realpathSync.native(resolved)
-  }
-  catch {
-    return resolved
-  }
+  return resolveSourceScanPathWithApi(value, path)
 }
 
-function resolveSourceScanPathWithApi(value: string, pathApi: Pick<typeof path, 'resolve'>) {
+function resolveSourceScanPathWithApi(value: string, pathApi: Pick<typeof path, 'resolve' | 'dirname' | 'basename' | 'join'>) {
   const resolved = pathApi.resolve(value)
-  try {
-    return realpathSync.native(resolved)
-  }
-  catch {
-    return resolved
+  let current = resolved
+  const missing: string[] = []
+  while (true) {
+    try {
+      return pathApi.join(realpathSync.native(current), ...missing.reverse())
+    }
+    catch (error) {
+      const parent = pathApi.dirname(current)
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT' || parent === current) {
+        return resolved
+      }
+      // 删除后的路径仍沿现存父目录解析，保持符号链接工作区中的源码身份。
+      missing.push(pathApi.basename(current))
+      current = parent
+    }
   }
 }
 

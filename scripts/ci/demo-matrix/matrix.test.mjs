@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { authoredClasses, authoredCss } from './authored.mjs'
@@ -10,6 +11,14 @@ import { cssClasses, inspectStyles } from './output.mjs'
 import { insertProbe } from './probe.mjs'
 
 describe('portable demo matrix', () => {
+  it('keeps the UTS Linux binary installable without changing other platform constraints', () => {
+    const { hooks } = createRequire(import.meta.url)('../../../.pnpmfile.cjs')
+    const manifest = { name: '@dcloudio/uts-linux-x64-gnu', version: '3.0.0-alpha-5020220260725001', os: ['linux'], cpu: ['x64'], libc: ['gnu'] }
+    expect(hooks.readPackage({ ...manifest })).toEqual({ ...manifest, libc: ['glibc'] })
+    const musl = { ...manifest, name: '@dcloudio/uts-linux-x64-musl', libc: ['musl'] }
+    expect(hooks.readPackage({ ...musl })).toEqual(musl)
+  })
+
   it('rejects Metro bootstrap without an application and page', () => {
     expect(() => inspectNativeContents(['__d(function(g,r,i,a,m,e,d){},1,[]);'.repeat(300)])).toThrow('register the application')
     expect(() => inspectNativeContents(['AppRegistry.registerComponent("app",()=>App)'])).toThrow('page probe')

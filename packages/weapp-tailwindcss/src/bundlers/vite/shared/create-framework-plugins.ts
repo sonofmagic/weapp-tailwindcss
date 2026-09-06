@@ -86,7 +86,7 @@ function wrapPluginCloseBundle(hook: unknown, dispose: () => void) {
         return await hook.apply(this, args)
       }
       finally {
-        dispose()
+        dispose.call(this)
       }
     }
   }
@@ -98,7 +98,7 @@ function wrapPluginCloseBundle(hook: unknown, dispose: () => void) {
           return await hook.handler.apply(this, args)
         }
         finally {
-          dispose()
+          dispose.call(this)
         }
       },
     }
@@ -137,7 +137,12 @@ export function createViteFrameworkPlugins(
   }))
   const cleanupPlugin = wrappedPlugins.at(-1)
   if (cleanupPlugin) {
-    cleanupPlugin.closeBundle = wrapPluginCloseBundle(cleanupPlugin.closeBundle, relationOwner.dispose)
+    cleanupPlugin.closeBundle = wrapPluginCloseBundle(cleanupPlugin.closeBundle, function (this: { meta?: { watchMode?: boolean } }) {
+      if (!this.meta?.watchMode) {
+        relationOwner.dispose()
+      }
+    })
+    cleanupPlugin.closeWatcher = wrapPluginCloseBundle(cleanupPlugin.closeWatcher, relationOwner.dispose)
   }
   return wrappedPlugins
 }

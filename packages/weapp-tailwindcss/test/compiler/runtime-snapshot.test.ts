@@ -72,7 +72,7 @@ describe('compiler runtime snapshot', () => {
     state.sourceHashByFile.set('entry.js', 'entry-hash')
     state.sourceHashByFile.set('shared.js', 'shared-hash')
     state.runtimeAffectingHashByFile.set('shared.js', 'runtime-hash')
-    state.bundleMarkupCandidatesByFile.set('shared.js', new Set(['flex']))
+    state.bundleMarkupCandidatesByFile.set('shared.js', { sourceFile: '/project/shared.ts', candidates: new Set(['flex']) })
     state.linkedByEntry.set('entry.js', new Set(['shared.js']))
     state.dependentsByLinkedFile.set('shared.js', new Set(['entry.js']))
 

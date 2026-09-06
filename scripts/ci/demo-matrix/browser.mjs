@@ -33,7 +33,10 @@ export async function openBrowser(url, session, artifactDir) {
     await until(async () => {
       const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 15_000 })
       assert.ok(response?.ok(), url)
+    }, session)
+    await until(async () => {
       await page.locator('#tw-matrix-height').waitFor({ timeout: 5000 })
+      await page.waitForLoadState('networkidle', { timeout: 15_000 })
     }, session)
     await until(() => assert.ok(transportReady, 'Development update transport is not ready'), session)
     return {
@@ -100,6 +103,7 @@ export async function openBrowser(url, session, artifactDir) {
   }
   catch (error) {
     await writeFile(path.join(artifactDir, 'browser-errors.json'), JSON.stringify(events, null, 2))
+    await writeFile(path.join(artifactDir, 'browser-failure.html'), await page.content()).catch(() => {})
     await page.screenshot({ path: path.join(artifactDir, 'browser-failure.png') }).catch(() => {})
     await browser.close()
     throw error

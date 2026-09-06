@@ -623,6 +623,8 @@ overrides:
   jiti: 2.7.0
   postcss-calc: link:packages/postcss-calc
 
+pnpmfileChecksum: sha256-VIhHxkE3DlYGW4jpmh5YBZoirXpyRMuq7rJOkofCfW8=
+
 importers:
 
   .:
@@ -8239,7 +8241,7 @@ packages:
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
-    libc: [gnu]
+    libc: [glibc]
 
   '@dcloudio/uts-linux-x64-musl@3.0.0-alpha-5020220260725001':
     resolution: {integrity: sha512-7TlPr2vudzQKEbrKFL0TPJFoME0MQxWhT9qQaSu+bYYok/0s23UwDGVXP+dfRwyBlKQIhJm5JoakNgWEO3O2Wg==}

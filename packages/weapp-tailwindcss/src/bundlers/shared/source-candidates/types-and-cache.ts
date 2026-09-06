@@ -10,7 +10,7 @@ export interface SourceCandidateStore {
   syncSource: (id: string, source: string) => Promise<void>
   sync: (id: string, source: string) => Promise<void>
   syncCss: (id: string, source: string) => Promise<void>
-  syncModuleSource: (id: string, source: string) => Promise<Set<string>>
+  syncModuleSource: (id: string, source: string, extension?: string) => Promise<Set<string>>
   merge: (id: string, source: string) => Promise<void>
   syncFile: (id: string) => Promise<void>
   syncCurrentSource: (id: string, source: string) => Promise<SourceCandidateChange>

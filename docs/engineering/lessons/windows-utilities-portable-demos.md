@@ -9,6 +9,10 @@ regressions:
   - packages/weapp-tailwindcss/test/bundlers/vite-css-output-imports.test.ts
   - packages/weapp-style-injector/test/index.test.ts
   - scripts/ci/demo-matrix/matrix.test.mjs
+  - packages/weapp-tailwindcss/test/bundlers/vite-plugin.template-delete-watch.test.ts
+  - packages/weapp-tailwindcss/test/bundlers/vite-serve-mini-target.integration.test.ts
+  - packages/weapp-tailwindcss/test/tailwindcss/source-scan-path-identity.test.ts
+  - scripts/ci/demo-matrix/browser.test.mjs
 ---
 
 # Windows 标准 utility 缺失与 demo 跨系统验收
@@ -27,11 +31,21 @@ RN 的“非空 bundle”判断不充分，9 KB 的 Metro 启动代码也会通�
 
 样式注入 Taro demo 的子包路由修正为实际文件位置，补齐 Web HTML 启动模板。没有用手写 spacing、safelist 或官方 Tailwind 插件掩盖生成问题。
 
+扩展 CI 暴露了 main 中删除模板测试的假通过：重建将 `app.css` 的旧规则移到 `app.wxss`，原测试仅检查前者。保留真实产物后缀后，测试揭示 watch 首轮结束过早释放源码归属、源码键与产物键混用，以及符号链接目录下文件删除前后的 realpath 身份变化。现在产物候选同时保存输出键和源码归属，显式删除只清除对应产物；watch 关系存活到 watcher 关闭；不存在的路径沿现存父目录解析。运行时集合也在移除旧候选前剔除上轮来源，避免把删除的候选重新当作基线。回归同时检查全部样式产物与模板实际类名，覆盖默认扫描和显式 source、axml 和 qxml。
+
+Generic Vite 的小程序目标在 serve 时没有 generateBundle 收尾，不能推迟 CSS 适配；新增任意值的 JS 也必须使用当前模块经生成器验证的集合。真实服务回归确认首编译和新增后的 CSS/JS 一致，并保留业务字符串不被转译的断言。quickapp 的 qxml 补入模板、扫描和候选识别。SSR 探针等待首屏依赖请求结束后才修改源码，避免依赖预构建尚未完成时就把传输连接成功当作可更新状态。
+
+浏览器启动验收把导航和探针等待放在同一重试循环，会每隔五秒重启尚未完成初始化的页面；带 hash 的重复导航还可能返回空响应。现在成功导航后只轮询探针与网络就绪，用延迟六秒初始化的真实 Vite 页面验证不会再次导航。失败时同时保存 DOM、浏览器事件和截图，后续 Windows 运行继续验证这一改动对实际 Taro demo 的效果。
+
+Linux 干净安装发现上游 UTS 原生包将 libc 标记为 `gnu`，pnpm 11 按 `glibc` 筛选而跳过该可选依赖。仓库 pnpm readPackage 钩子仅纠正此包的错误元数据，锁文件记录 glibc 与钩子校验值，不改变包版本或完整性。uni-app x 的诊断包同时加入 CI 构建入口，避免本机已有 dist 掩盖干净构建缺失。Windows 的 Taro Harmony hybrid 基线发现 demo 的 designWidth 路径正则只匹配双反斜杠，导致同一页面使用不同设计尺寸；改用 path API 比较目录身份。
+
 ## 验证
 
 原始修复提交 `de58576bada6a50976883c173fec61c0a21dd911` 的 [Windows Node 22/24 与 Ubuntu 专项](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34023069668) 已通过；Windows 先复现发布版 5.5.1 缺失，再验证修复包恢复全部规则。该运行不代表扩展矩阵通过。
 
 扩展前同步 main `4f914160e40df93900469f91a0c5ab1235c22b8d`，保留用户工作区。本地执行 `pnpm build:ci`，Vite/Rspack/loader/import 定向回归 279 项通过，样式注入 89 项通过。全部目标使用 [统一运行器](../../../scripts/ci/demo-matrix/README.md) 生成生产语义基线并验收正常 dev、替换、新增、删除、Web 刷新；原生与 WebView 按声明边界验收。当前文档保持 partial，待本次提交的三系统 CI 证据完成后更新。
+
+扩展 CI 失败后的定向复验：六个 Vite/plugin/source 套件 255 项通过，源码候选 32 项通过，默认/显式扫描与 axml/qxml 删除模板 4 项通过，矩阵及真实浏览器等待 9 项通过。`pnpm build:ci`、`pnpm lint`、`pnpm agents:check` 和冻结安装通过。Taro React 两种构建器的对应基线已限定项目重新生成，无语义差异；随后正常模式复验微信、Harmony hybrid、React/Vue Vite 小程序与分包 Taro H5 全部通过，没有使用更新参数。
 
 ## 适用边界
 

@@ -45,6 +45,7 @@ describe('defaults getDefaultOptions', () => {
 
     expect(typeof options.htmlMatcher === 'function' && options.htmlMatcher('foo.wxml')).toBe(true)
     expect(typeof options.htmlMatcher === 'function' && options.htmlMatcher('foo.axml')).toBe(true)
+    expect(typeof options.htmlMatcher === 'function' && options.htmlMatcher('foo.qxml')).toBe(true)
     expect(typeof options.htmlMatcher === 'function' && options.htmlMatcher('foo.html')).toBe(false)
 
     expect(typeof options.jsMatcher === 'function' && options.jsMatcher('foo.js')).toBe(true)

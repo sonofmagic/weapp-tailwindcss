@@ -20,6 +20,7 @@ jobs:
       - uses: ./.github/actions/setup-pnpm
         with:
           node-version: 24
+      - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:demo:matrix
       - id: catalog
         shell: bash

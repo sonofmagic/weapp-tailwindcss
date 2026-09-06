@@ -118,13 +118,13 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
     replaceCssLayer(normalizedId, await resolveCandidates(normalizedId, source, 'css'))
   }
 
-  async function syncModuleSource(id: string, source: string) {
+  async function syncModuleSource(id: string, source: string, sourceExtension?: string) {
     const normalizedId = cleanUrl(id)
     if (moduleSourceById.get(normalizedId) !== source) {
       revision++
     }
     moduleSourceById.set(normalizedId, source)
-    const extension = resolveSourceCandidateExtension(normalizedId)
+    const extension = sourceExtension ?? resolveSourceCandidateExtension(normalizedId)
     const candidates = await resolveCandidates(normalizedId, source, extension)
     replaceModuleLayer(normalizedId, candidates)
     return new Set(candidates)

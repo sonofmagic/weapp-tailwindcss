@@ -710,11 +710,11 @@ export function styleInjectorUniAppMiniCase(options: {
       },
       {
         file: `${outputDir}/sub-normal/scss.wxss`,
-        contains: ['@layer theme, base, components, utilities', '.injector-uni-scss-entry'],
+        contains: ['.injector-uni-scss-entry', '#0891b2'],
       },
       {
         file: `${outputDir}/sub-normal/less.wxss`,
-        contains: ['@layer theme, base, components, utilities', '.injector-uni-less-entry'],
+        contains: ['.injector-uni-less-entry', '#9333ea'],
       },
       {
         file: `${outputDir}/sub-normal/component.wxss`,
@@ -799,11 +799,11 @@ export function styleInjectorUniAppH5Case(options: {
       },
       {
         file: 'dist/build/h5/sub-normal/scss.css',
-        contains: ['@layer theme, base, components, utilities', '.injector-uni-scss-entry'],
+        contains: ['.injector-uni-scss-entry', '#0891b2'],
       },
       {
         file: 'dist/build/h5/sub-normal/less.css',
-        contains: ['@layer theme, base, components, utilities', '.injector-uni-less-entry'],
+        contains: ['.injector-uni-less-entry', '#9333ea'],
       },
       {
         file: 'dist/build/h5/sub-normal/component.css',

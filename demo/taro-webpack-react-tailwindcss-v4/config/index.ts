@@ -1,4 +1,4 @@
-import { resolve } from 'node:path'
+import { resolve, win32 } from 'node:path'
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
@@ -58,13 +58,13 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
     designWidth: taroPlatform.isWeb
       ? 750
       : (input) => {
-          const file = typeof input?.file === 'string' ? input.file.replace(/\\\\+/g, '/') : ''
-          if (file.includes('/pages/issue-998/')) {
+          const file = typeof input?.file === 'string' ? win32.normalize(input.file) : ''
+          if (win32.dirname(file) === win32.resolve(projectRoot, 'src/pages/issue-998')) {
             return 375
           }
           // 配置 NutUI 375 尺寸
           // @ts-ignore
-          if (input?.file?.replace(/\\+/g, '/').indexOf('@nutui') > -1) {
+          if (file.includes('@nutui')) {
             return 375
           }
           // 全局使用 Taro 默认的 750 尺寸
