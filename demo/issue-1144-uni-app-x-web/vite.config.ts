@@ -1,3 +1,4 @@
+import { realpathSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
@@ -11,7 +12,17 @@ const mainCss = resolve(projectRoot, 'main.css')
 const uni = (uniModule as typeof uniModule & { default?: typeof uniModule }).default ?? uniModule
 
 export default defineConfig({
+	server: { host: '127.0.0.1' },
 	plugins: [
+		{
+			name: 'issue-1144-server-identity',
+			configureServer(server) {
+				server.middlewares.use('/__issue1144_identity', (_request, response) => {
+					response.setHeader('Content-Type', 'application/json')
+					response.end(JSON.stringify({ root: realpathSync(projectRoot) }))
+				})
+			}
+		},
 		uni(),
 		WeappTailwindcss(
 			uniAppX({

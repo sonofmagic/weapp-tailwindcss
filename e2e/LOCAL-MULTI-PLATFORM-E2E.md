@@ -19,7 +19,7 @@
 ### 2.1 仓库和 Node
 
 ```bash
-node --version                 # >= 22.12.0
+node --version                 # 对照根 package.json 的 engines
 corepack pnpm --version
 pnpm install
 pnpm prepare

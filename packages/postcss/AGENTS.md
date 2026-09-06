@@ -22,8 +22,8 @@
 ## 推荐验证命令
 
 - `pnpm --filter @weapp-tailwindcss/postcss test`
-- `pnpm --filter @weapp-tailwindcss/postcss vitest run -u`（仅在确认预期变更时）
-- 针对单模块：`pnpm --filter @weapp-tailwindcss/postcss vitest run test/<case>.test.ts`
+- `pnpm --filter @weapp-tailwindcss/postcss exec vitest run -u`（仅在确认预期变更时）
+- 针对单模块：`pnpm --filter @weapp-tailwindcss/postcss exec vitest run test/<case>.test.ts`
 
 ## 测试补充要求
 

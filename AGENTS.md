@@ -1,13 +1,13 @@
-# Repository Guidelines (Root Short Version)
+# Repository Guidelines
 
 ## 适用范围与优先级
-- 本文件是仓库级“短版总则”。
-- 规则优先级：就近目录 `AGENTS.md` > 上级目录 `AGENTS.md` > 本文件。
+- 本文件维护仓库级安全边界和入口；领域细节放在就近规则，任务闭环见 [工程流程](docs/engineering/agent-workflow.md)。
+- 领域规则由就近 `AGENTS.md` 补充；不得削弱上级安全边界。规则相互矛盾时先说明冲突并暂停相关写入，不自行选择较宽松解释。
 - 开始改动前，先确认目标目录是否有更近一级 `AGENTS.md`。
 - 执行任何任务前必须先做“最近规则检查”：从当前目录向上查找最近的 `AGENTS.md` 并先读取，再开始修改或执行命令。
 
 ## 全局硬规则
-- 统一使用 `pnpm`，禁止切换 npm/yarn；Node 版本 `>=22.12.0`。
+- 统一使用 `pnpm`，禁止切换 npm/yarn；Node 与 pnpm 版本以根 `package.json` 的 `engines` / `packageManager` 为准。
 - 代码默认 TypeScript + ESM，缩进 2 空格。
 - 文件超过约 300 行优先按目录拆分（如 `feature/a.ts`），避免 `feature.a.ts`。
 - 测试默认 Vitest；修复缺陷或改行为必须补回归测试。
@@ -37,9 +37,8 @@
 - 提交前只暂存当前任务拥有的文件；除非用户明确要求“提交所有代码”，否则禁止用 `git add -A` 混入其他代理或用户的改动。
 
 ## 仓库常用命令
-- `pnpm install`
+- `pnpm install --frozen-lockfile`
 - `pnpm build`
-- `pnpm build:apps`
 - `pnpm build:pkgs`
 - `pnpm build:docs`
 - `pnpm test`
@@ -47,25 +46,26 @@
 - `pnpm test:plugins`
 - `pnpm e2e`
 - `pnpm run:watch`
+- `pnpm agents:check`
 
-## uni-app / uni-app x 多端运行经验
-- 先区分项目入口：普通 `uni-app Vite` demo 优先用项目 `package.json` 里的 `pnpm run dev:*` / `build:*` 脚本；`uni-app x`、`uni-app HBuilderX` 模板、App Android/iOS/Harmony 真机或模拟器链路优先通过 HBuilderX CLI（仓库脚本里通常是 `pnpm exec hbuilderx ...`）运行。
-- Web/H5：普通 `uni-app Vite` 使用 CLI 跑 `uni` / `uni build` 即可，验证重点是浏览器页面、HMR、最终 CSS 中 Tailwind v4 由 `weapp-tailwindcss` 生成；不要为 H5/Web 问题临时接入 `@tailwindcss/vite` 或 `@tailwindcss/postcss` 兜底。
-- 小程序：普通 `uni-app Vite` 优先用 CLI 跑 `uni -p mp-*` 或对应 npm script；HBuilderX 模板小程序用 HBuilderX 工作流。验证不要只看 `app.wxss` 这类固定文件名，应检查真实平台后缀和输出目录，例如 `dist/dev/mp-weixin`、`unpackage/dist/dev/mp-weixin`、`app.acss`、`app.ttss`、`main.wxss`、分包样式文件等。
-- Android / iOS App：普通 `uni-app Vite` 的 App 产物常见输出为 `dist/dev/app-plus` 或 `dist/build/app`；HBuilderX 模板常见输出为 `unpackage/dist/dev/app-plus`。用 HBuilderX 运行到 Android/iOS 前，默认先停止当前运行任务，再重新 launch 目标平台；尤其是 Android 与 iOS 之间切换时，避免旧运行基座、旧 WebView、旧日志或旧输出目录残留误导验证。运行到设备时必须记录实际命中的输出目录，不要假设目录名。截图脚本可能把 HBuilder 启动页误判为 ready，必要时结合 logcat、iOS simulator log、WebView CDP、页面可视探针或运行时面板确认真实页面已渲染。
-- Harmony App：通常走 HBuilderX / uni-app x 链路，输出目录可能是 `unpackage/dist/dev/app-harmony`、`.uvue/app-harmony` 或 Harmony 打包中间目录；验证时同时检查 JS/UTS/UVUE 产物、样式产物和设备截图。不要把 Android/iOS 的 `app-plus` 路径硬套到 Harmony。
-- CLI 与 HBuilderX 的边界：CLI 适合普通 Vite 构建、H5/Web、常规小程序静态产物检查；HBuilderX 适合 App Android/iOS/Harmony、uni-app x、以及需要 IDE 编译器或运行基座参与的链路。两者输出目录、日志来源、HMR 行为和运行时 WebView 都可能不同，问题复现必须写清楚用的是 CLI 还是 HBuilderX。
-- App WebView 兼容结论要来自真实运行时：Android 记录 System WebView/Chromium 版本，iOS 记录 WKWebView/WebKit/Safari bundle 版本，Harmony 记录设备与 HBuilderX/DevEco 相关版本。不要只凭构建通过判断运行端 CSS 兼容。
-- Tailwind 特殊类名在 App 端排查时要分清两层：WebView/view 层是否能保留并匹配 raw class，以及 `weapp-tailwindcss` 构建链是否把 JS class 与 CSS selector 同步转成 safe class。最终产物断言优先看 safe class（如 `dark_cbg-*`、`text-_b..._B`），raw class 只作为兼容探针或第三方透传场景验证。
+## 多端运行
+
+- 普通 uni-app Vite 按 demo 脚本运行；uni-app x 与 HBuilderX 模板优先使用 HBuilderX 链路。CLI 证据不能替代 IDE 或设备证据。
+- 平台输出、切换设备、进程归属、WebView 版本、safe class 与截图验收统一遵循 [本地多端手册](e2e/LOCAL-MULTI-PLATFORM-E2E.md)，不要把单机经验复制到根规则。
 
 ## 目录规则路由
-- `packages/*`：`packages/AGENTS.md`
-- `packages-runtime/*`：`packages-runtime/AGENTS.md`
-- `apps/*`：`apps/AGENTS.md`
-- `demo/*`：`demo/AGENTS.md`
-- `website/*`：`website/AGENTS.md`
-- `e2e/*`：`e2e/AGENTS.md`
-- `scripts/*`：`scripts/AGENTS.md`
+
+- `packages/**`：[packages 规则](packages/AGENTS.md)
+- `packages-runtime/**`：[packages-runtime 规则](packages-runtime/AGENTS.md)
+- `apps/**`：[apps 规则](apps/AGENTS.md)
+- `demo/**`：[demo 规则](demo/AGENTS.md)
+- `website/**`：[website 规则](website/AGENTS.md)
+- `e2e/**`：[e2e 规则](e2e/AGENTS.md)
+- `scripts/**`：[scripts 规则](scripts/AGENTS.md)
+- `tools/**`：[tools 规则](tools/AGENTS.md)
+- `examples/**`：[examples 规则](examples/AGENTS.md)
+- `starter/**`：[starter 规则](starter/AGENTS.md)
+- 全部层级见 [规则索引](docs/engineering/agent-index.md)；进入目录后继续查找更近一级规则。
 
 ## 本地多端 E2E 入口
 - H5、微信小程序、Android、iOS、Harmony 的本地 E2E、HBuilderX、设备环境、截图、HMR、结构探针和阻塞记录统一遵循 [`e2e/LOCAL-MULTI-PLATFORM-E2E.md`](e2e/LOCAL-MULTI-PLATFORM-E2E.md)。换电脑时只重新配置工具链和设备 ID，不在规则文件或测试中写入本机绝对路径。

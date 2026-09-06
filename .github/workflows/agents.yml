@@ -1,0 +1,20 @@
+name: Agent Workflow Contract
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  agents:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-pnpm
+      - run: pnpm agents:test
+      - run: pnpm agents:check

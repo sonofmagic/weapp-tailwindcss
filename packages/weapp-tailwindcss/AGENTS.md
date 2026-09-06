@@ -3,7 +3,7 @@
 ## 适用范围
 
 - 本文件仅适用于 `packages/weapp-tailwindcss`。
-- 若与仓库根 `AGENTS.md` 冲突，以“更严格且更近一级”的规则为准。
+- 本文件补充根规则；发现冲突时按根规则的冲突处理流程执行，不削弱上级安全边界。
 
 ## 包定位与目录
 
@@ -38,7 +38,7 @@
 
 - `pnpm --filter weapp-tailwindcss test`
 - `pnpm --filter weapp-tailwindcss test:dev`
-- 针对单文件回归：`pnpm --filter weapp-tailwindcss vitest run test/js/<case>.test.ts`
+- 针对单文件回归：`pnpm --filter weapp-tailwindcss exec vitest run test/js/<case>.test.ts`
 
 ## 提交前检查
 
