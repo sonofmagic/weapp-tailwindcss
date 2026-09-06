@@ -33,7 +33,8 @@ it('preserves the development transport across hash and history route changes', 
     }],
   })
   let browser
-  const deadline = Date.now() + 5000
+  // Windows CI 的浏览器冷启动也计入预算，路由状态丢失仍必须有界失败。
+  const deadline = Date.now() + 20_000
   try {
     await server.listen()
     browser = await openBrowser(server.resolvedUrls.local[0], {
@@ -46,7 +47,7 @@ it('preserves the development transport across hash and history route changes', 
     await server.close()
     await rm(root, { recursive: true, force: true })
   }
-}, 10_000)
+}, 30_000)
 
 it('does not restart a page whose initialization exceeds the probe polling interval', async () => {
   const root = await realpath(await mkdtemp(path.join(tmpdir(), 'demo-matrix-browser-')))
