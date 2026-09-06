@@ -3,6 +3,7 @@ import { createWriteStream } from 'node:fs'
 import { createServer } from 'node:net'
 import process from 'node:process'
 import { setTimeout as delay } from 'node:timers/promises'
+import { stripVTControlCharacters } from 'node:util'
 import { execa } from 'execa'
 
 export function developmentEnvironment(env) {
@@ -82,6 +83,31 @@ export async function until(check, session, timeout = 180_000) {
     await delay(300)
   }
   throw new Error(`${lastError?.stack}\n${session?.log() ?? ''}`)
+}
+
+export function assertViteWatchBuildComplete(log, offset = 0) {
+  const current = stripVTControlCharacters(log.slice(offset))
+  const completed = [...current.matchAll(/built in [\d.]+\s*m?s\./g)].at(-1)
+  assert.ok(completed && completed.index > current.lastIndexOf('build started...'), 'Vite has not finished writing this build')
+}
+
+export function assertTaroWatchBuildComplete(log, offset = 0) {
+  if (log.includes('watching for file changes')) {
+    return assertViteWatchBuildComplete(log, offset)
+  }
+  const current = stripVTControlCharacters(log.slice(offset))
+  const completed = current.lastIndexOf('Compiled successfully')
+  const lastProgress = Math.max(...['setup (', 'building (', 'sealing ('].map(phase => current.lastIndexOf(phase)))
+  assert.ok(completed >= 0 && current.lastIndexOf('Watching...') > completed && completed > lastProgress, 'Taro has not completed this compilation and resumed watching')
+}
+
+export function assertUniWatchBuildComplete(log, offset = 0) {
+  const current = stripVTControlCharacters(log.slice(offset))
+  const completed = current.lastIndexOf('Build complete. Watching for changes')
+  assert.ok(completed >= 0 && completed > current.lastIndexOf('Compiling...'), 'uni-app has not completed this compilation')
+  if (offset === 0) {
+    assert.match(current, /ready in \d+ms\./, 'uni-app watcher is not ready')
+  }
 }
 
 export async function complete(session, timeout = 600_000) {

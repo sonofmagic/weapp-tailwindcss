@@ -20,6 +20,7 @@ regressions:
   - packages/weapp-tailwindcss/test/bundlers/webpack-watch-dependencies.test.ts
   - scripts/ci/demo-matrix/source-file.test.mjs
   - packages/postcss/test/css-rule-matcher.test.ts
+  - packages/weapp-tailwindcss/test/bundlers/framework-css-composition.test.ts
 ---
 
 # Windows 标准 utility 缺失与 demo 跨系统验收
@@ -83,3 +84,13 @@ Windows 定向日志进一步确认，每轮循环的变更文件都是 Taro 虚
 同一提交的 macOS 分包 H5 已渲染初始探针并收到开发通道握手，却持续等待全页面 networkidle。截图保留了 Webpack 上游依赖警告遮罩；全页面网络静默不能作为应用启动完成的必要条件。浏览器改为等待探针、本地 script/stylesheet 请求完成和开发通道握手，随后仍逐轮检查真实 CSS 与计算样式。真实 Vite 回归同时保留一个持续后台请求和一个延迟脚本，要求前者不阻塞、后者必须加载完毕。本地分包 H5 与 uni SSR 全部阶段复验通过，未更新基线。
 
 性能门禁连续报告 Vite HMR 回退，不能当作单次计时噪声忽略。分阶段计时发现 CSS 清理对同一份主样式逐个比较候选时重复规范化和解析。改为在单次清理内复用不可变主样式的惰性索引；候选 AST 中规则文本已不存在时，直接排除不可能的结构键匹配。无全局缓存，不跨 HMR 保留旧内容。回归覆盖大样式批量比较、条件规则、important、变量回退及不同版本隔离。相同本机和参数的两轮采样中，稳态清理从 371–388ms 降至 192–220ms，插件 HMR 从 1670–1774ms 降至 1409–1531ms；这是本地优化前后证据，不替代远端 main 对照门禁。
+
+`382614d56` 的两组 Windows 专项各完成三次全流程，[运行记录](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34053170103)均成功。但同一提交的完整矩阵仍失败，性能门禁也报告 Taro Vite 回退。只复用比较索引不足以解决根因：重新展开的 NutUI CSS 仍是 px，框架 bundle 中的同源 CSS 已转换成 rpx，生成阶段比较后将其当成缺失样式再次追加，约 299 KB 主样式膨胀到 507 KB。
+
+修正内部输入契约，将原始用户样式和框架已处理的 bundle CSS 分开传递；生成样式完成框架重放后，再将 bundle 样式完成小程序清理并合并。避免重复执行框架插件，保持源顺序，同时清理经过选择器转换后才可识别的旧主题块。最小真实生成回归在 legacy/graph 两条管线均复现重复的 16rpx 声明；修复后只保留一次，并保留后续 32rpx 覆盖、未参与原始生成的用户规则、原始样式的框架转换和单次插件执行语义。本地 Taro React 微信、Vue 京东全流程通过原语义基线，未通过修改基线接受错误主题值。
+
+同一提交的 Vite H5 在预构建触发整页重载后保留了旧 document 的待加载请求，探针已渲染仍永远等不到请求集合清空。请求和传输状态现在随主 document 重置，旧 WebSocket 消息不参与新页面的就绪判断；真实 Vite 回归覆盖旧请求挂起、页面重载和新页面延迟脚本。Windows Vue H5 还记录到本地模块请求 ERR_NO_BUFFER_SPACE，启动检查先等待 HTTP 服务可用，并仅对明确的瞬时模块传输错误进行一次带日志的重载；重复失败仍失败，正常慢初始化不重载。
+
+Windows Vue 京东的 add 轮次已输出新增类名，但 Vite 在写出 app-origin.jxss 时出现 EBUSY，验收程序同时在复制正在写入的目录。分包 Webpack 抖音也在新一轮 sealing 阶段停滞。Taro 的非 Web 验收现在等待本轮构建完成、恢复监听后，再归档和检查；旧轮次完成日志、正在构建和失败日志都不能放行。新增三项 Windows 三次连续专项验收 Vue H5、京东与分包抖音，完整矩阵和性能门禁仍须由最终提交完成，以上本地结果不代表全量 CI 已通过。
+
+同一轮 Linux uni 在替换完成后未对 add 产生新的编译日志。增加 uni 编译完成与首轮 watcher ready 检查，并在三次连续专项中加入 Ubuntu。真实 Rollup 文件 watcher 连续替换回归在本机通过，因此暂不将 Linux 失联归因于原子替换；该回归和真实 uni 的 Linux 结果仍需远端确认。最后一次本地 main 对照的临时副本缺失 Taro CLI 文件，基线行失败，该次计时不作为性能通过证据。

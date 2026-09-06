@@ -1,9 +1,11 @@
 import { watch } from 'node:fs'
 import { chmod, mkdtemp, readdir, readFile, realpath, rm, stat } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import os from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
-import { expect, it } from 'vitest'
+import { expect, it, vi } from 'vitest'
+import { repo } from './catalog.mjs'
 import { replaceSourceFile } from './source-file.mjs'
 
 it('publishes complete source revisions to a real watcher across consecutive replacements', async () => {
@@ -41,3 +43,37 @@ it('publishes complete source revisions to a real watcher across consecutive rep
     await rm(dir, { recursive: true, force: true })
   }
 })
+
+it('keeps Rollup file watchers attached through consecutive revisions', async () => {
+  const demoRequire = createRequire(path.join(repo, 'demo/uni-app-vite-tailwindcss-v4/package.json'))
+  const viteRequire = createRequire(demoRequire.resolve('vite/package.json'))
+  const rollup = viteRequire('rollup')
+  const directory = await realpath(await mkdtemp(path.join(os.tmpdir(), 'demo-source-rollup-')))
+  const file = path.join(directory, 'entry.js')
+  const output = path.join(directory, 'bundle.js')
+  const platform = vi.spyOn(os, 'platform').mockReturnValue('linux')
+  let watcher
+  let builds = 0
+  try {
+    await replaceSourceFile(file, 'export const value = "initial"')
+    watcher = rollup.watch({ input: file, output: { file: output, format: 'es' }, watch: { chokidar: { useFsEvents: false } } })
+    watcher.on('event', (event) => {
+      if (event.code === 'BUNDLE_END') {
+        builds++
+        void event.result.close()
+      }
+    })
+    await expect.poll(() => builds).toBe(1)
+    for (const revision of ['replace', 'add', 'restore']) {
+      const previous = builds
+      await replaceSourceFile(file, `export const value = "${revision}"`)
+      await expect.poll(() => builds, { timeout: 5000 }).toBeGreaterThan(previous)
+      expect(await readFile(output, 'utf8')).toContain(`"${revision}"`)
+    }
+  }
+  finally {
+    await watcher?.close()
+    platform.mockRestore()
+    await rm(directory, { recursive: true, force: true })
+  }
+}, 20_000)

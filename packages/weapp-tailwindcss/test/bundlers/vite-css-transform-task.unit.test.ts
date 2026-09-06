@@ -139,7 +139,8 @@ describe('vite css transform task', () => {
 
     expect(generateCss).toHaveBeenCalledWith(expect.objectContaining({
       restoreLocalCssImports: false,
-      userRawSource: '.layer {}\nmini:user:.user {}',
+      userRawSource: '.layer {}',
+      frameworkProcessedUserCss: 'mini:user:.user {}',
     }))
   })
 })

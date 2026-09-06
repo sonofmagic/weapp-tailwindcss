@@ -1,4 +1,4 @@
-name: Windows Demo Watch Diagnostic
+name: Demo Watch Diagnostic
 
 on:
   pull_request:
@@ -18,8 +18,8 @@ permissions:
 
 jobs:
   watch:
-    name: Windows repeated watch (${{ matrix.case }})
-    runs-on: windows-latest
+    name: Repeated watch (${{ matrix.os || 'windows-latest' }}, ${{ matrix.case }})
+    runs-on: ${{ matrix.os || 'windows-latest' }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -27,6 +27,12 @@ jobs:
         case:
           - subpackage-taro-webpack-react-tailwindcss-v4:h5
           - taro-webpack-vue3-tailwindcss-v4:weapp
+          - taro-vite-vue3-tailwindcss-v4:jd
+          - taro-vite-vue3-tailwindcss-v4:h5
+          - subpackage-taro-webpack-react-tailwindcss-v4:tt
+        include:
+          - case: uni-app-vite-tailwindcss-v4:mp-weixin
+            os: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
@@ -47,7 +53,9 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=6144
           DEMO_CASE: ${{ matrix.case }}
         run: |
-          export NODE_OPTIONS="$NODE_OPTIONS --require=$GITHUB_WORKSPACE/scripts/ci/demo-matrix/watch-diagnostic.cjs"
+          if [[ "$DEMO_CASE" == *webpack* ]]; then
+            export NODE_OPTIONS="$NODE_OPTIONS --require=$GITHUB_WORKSPACE/scripts/ci/demo-matrix/watch-diagnostic.cjs"
+          fi
           for attempt in 1 2 3; do
             DEMO_MATRIX_ARTIFACT_DIR="e2e/.artifacts/watch-diagnostic/$attempt" pnpm e2e:demo:matrix "$DEMO_CASE" || exit 1
           done

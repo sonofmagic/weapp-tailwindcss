@@ -9,7 +9,7 @@ import { cases, checkCatalog, commands, coverage, isWeb, matrix, repo } from './
 import { inspectNative } from './native.mjs'
 import { inspectFiles } from './output.mjs'
 import { insertProbe } from './probe.mjs'
-import { complete, developmentEnvironment, freePort, start, until } from './process.mjs'
+import { assertTaroWatchBuildComplete, assertUniWatchBuildComplete, complete, developmentEnvironment, freePort, start, until } from './process.mjs'
 import { replaceSourceFile } from './source-file.mjs'
 
 const args = process.argv.slice(2)
@@ -121,6 +121,7 @@ async function runCase(item) {
     for (const round of ['initial', 'replace', 'add', 'restore']) {
       assert.ok(!interrupted, 'Matrix interrupted')
       console.log(`[demo-matrix] ${new Date().toISOString()} ${item.id} begin ${round}`)
+      const buildLogOffset = round === 'initial' ? 0 : session.log().length
       if (round !== 'initial') {
         if (authoredFile) {
           await replaceSourceFile(authoredFile, `${originalAuthored ?? ''}\n${authoredCss(item, round)}`)
@@ -130,6 +131,12 @@ async function runCase(item) {
       result.rounds[round] = await until(async () => {
         if (browser) {
           return browser.inspect(item, round)
+        }
+        if (item.family === 'taro') {
+          assertTaroWatchBuildComplete(session.log(), buildLogOffset)
+        }
+        else if (item.family === 'uni') {
+          assertUniWatchBuildComplete(session.log(), buildLogOffset)
         }
         const snapshotDir = path.join(artifactDir, round)
         // 构建器可能在下一轮清理产物；检查归档副本，避免结果与证据分属不同轮次。

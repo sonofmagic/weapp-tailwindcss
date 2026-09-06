@@ -14,16 +14,36 @@ export async function openBrowser(url, session, artifactDir) {
   const pendingModules = new Set()
   const origin = new URL(url).origin
   let transportReady = false
+  let documentVersion = 0
+  let transientModuleFailure
+  let startupReloads = 0
   let lastInspection
+  page.on('framenavigated', (frame) => {
+    if (frame === page.mainFrame()) {
+      documentVersion++
+      pendingModules.clear()
+      transportReady = false
+      transientModuleFailure = undefined
+    }
+  })
   page.on('request', (request) => {
     if (new URL(request.url()).origin === origin && ['script', 'stylesheet'].includes(request.resourceType())) {
       pendingModules.add(request)
     }
   })
   page.on('requestfinished', request => pendingModules.delete(request))
-  page.on('requestfailed', request => pendingModules.delete(request))
+  page.on('requestfailed', (request) => {
+    if (pendingModules.has(request) && /ERR_NO_BUFFER_SPACE|ERR_EMPTY_RESPONSE/.test(request.failure()?.errorText ?? '')) {
+      transientModuleFailure = `${request.url()}: ${request.failure()?.errorText}`
+    }
+    pendingModules.delete(request)
+  })
   page.on('websocket', (socket) => {
+    const socketDocumentVersion = documentVersion
     socket.on('framereceived', ({ payload }) => {
+      if (socketDocumentVersion !== documentVersion) {
+        return
+      }
       try {
         const message = JSON.parse(String(payload))
         if (['connected', 'ok', 'still-ok', 'warnings'].includes(message.type)) {
@@ -40,10 +60,21 @@ export async function openBrowser(url, session, artifactDir) {
   })
   try {
     await until(async () => {
+      const response = await fetch(url, { signal: AbortSignal.timeout(5000) })
+      await response.arrayBuffer()
+      assert.ok(response.ok, url)
+    }, session)
+    await until(async () => {
       const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 15_000 })
       assert.ok(response?.ok(), url)
     }, session)
     await until(async () => {
+      if (transientModuleFailure) {
+        assert.equal(startupReloads, 0, `Module transport failed again after startup recovery: ${transientModuleFailure}`)
+        events.push(`startup-reload: ${transientModuleFailure}`)
+        startupReloads++
+        await page.reload({ waitUntil: 'domcontentloaded', timeout: 15_000 })
+      }
       await page.locator('#tw-matrix-height').waitFor({ timeout: 5000 })
       assert.equal(pendingModules.size, 0, `Local modules still loading: ${[...pendingModules].map(request => request.url()).join(', ')}`)
     }, session)
