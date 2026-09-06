@@ -73,3 +73,5 @@ Windows 定向日志进一步确认，每轮循环的变更文件都是 Taro 虚
 继续沿 watcher 事件定位，发现矩阵运行器强加 `WATCHPACK_POLLING=50`。Watchpack 的目录轮询持续更新扫描完成时间，虚拟文件在磁盘上始终不存在；只要编译耗时跨过轮询间隔，下一次挂载就再次发出 `watch (missing on attach)`，循环重建。没有 weapp-tailwindcss 插件的真实 Webpack + Taro 所用 webpack-virtual-modules 最小场景即可复现：100ms 编译配合 50ms 轮询，8 秒产生 36 次构建；默认 watcher 首轮处理一次缺失通知后稳定。矩阵回归在修复前因空闲期间 6 次重建失败。运行器移除强制 Watchpack/Chokidar polling，验收 demo 默认开发配置；回归还验证真正修改虚拟模块会触发重建并再次稳定。Windows 专项保留事件来源和 watcher 身份日志，连续三轮验收与完整 Gate 仍须通过，不用单次页面成功替代稳定性证据。
 
 不新增 AGENTS 规则。现有路径边界、构建图、真实消费和连续更新要求已覆盖本问题，新增可执行门禁保证清单完整、阶段执行与提交身份，防止日志退出码或旧产物再次形成错误结论。
+
+默认 watcher 的补充验收发现 Mpx 在样式检查通过后开始下一轮清理，归档复制 `project.config.json` 时出现 ENOENT。现在非 Web 每轮先重新复制产物，再对副本验收实际类名、当前标识和样式引用图，复制或语义未就绪时保持原有有界等待；最终报告与归档来自同一副本，避免实时目录变化造成错配。Windows 的浏览器等待回归还触发 libuv 文件监听路径断言，临时 Vite 根目录改为 realpath 后，同一 Windows 套件 13 项全部通过。专项 checkout 显式使用 PR head，使报告与最终提交身份一致。

@@ -125,14 +125,22 @@ async function runCase(item) {
         }
         await writeFile(sourceFile, await insertProbe(original, item, round))
       }
-      result.rounds[round] = await until(() => browser ? browser.inspect(item, round) : inspectFiles(outputDir, item, round), session)
+      result.rounds[round] = await until(async () => {
+        if (browser) {
+          return browser.inspect(item, round)
+        }
+        const snapshotDir = path.join(artifactDir, round)
+        // 构建器可能在下一轮清理产物；检查归档副本，避免结果与证据分属不同轮次。
+        await rm(snapshotDir, { recursive: true, force: true })
+        await cp(outputDir, snapshotDir, { recursive: true })
+        return inspectFiles(snapshotDir, item, round)
+      }, session)
       if (round === 'initial' && item.family === 'gulp') {
         await until(() => assert.ok(session.log().includes('watching for changes'), 'Gulp watcher is not ready'), session)
       }
       if (browser) {
         await browser.screenshot(round)
       }
-      else { await cp(outputDir, path.join(artifactDir, round), { recursive: true }) }
     }
     if (browser) {
       await browser.reload()
