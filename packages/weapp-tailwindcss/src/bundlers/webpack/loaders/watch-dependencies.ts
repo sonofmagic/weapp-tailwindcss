@@ -1,7 +1,9 @@
+import type { Compiler } from 'webpack'
 import { statSync } from 'node:fs'
 import path from 'node:path'
 
 interface WebpackWatchDependencyLoaderContext {
+  fs?: Pick<NonNullable<Compiler['inputFileSystem']>, 'stat'>
   addDependency?: (file: string) => void
   addMissingDependency?: (file: string) => void
   addContextDependency?: (context: string) => void
@@ -16,20 +18,31 @@ export function registerWebpackWatchFile(
   file: string,
 ) {
   const resolved = normalizeWebpackWatchPath(file)
-  try {
-    const stats = statSync(resolved)
-    if (stats.isDirectory()) {
+  const register = (error?: NodeJS.ErrnoException | null, stats?: { isDirectory: () => boolean }) => {
+    if (stats?.isDirectory()) {
       loaderContext.addContextDependency?.(resolved)
-      return
     }
-    loaderContext.addDependency?.(resolved)
-  }
-  catch {
-    if (loaderContext.addMissingDependency) {
+    else if (error && ['ENOENT', 'ENOTDIR'].includes(error.code ?? '') && loaderContext.addMissingDependency) {
       loaderContext.addMissingDependency(resolved)
-      return
     }
-    loaderContext.addDependency?.(resolved)
+    else {
+      loaderContext.addDependency?.(resolved)
+    }
+  }
+  // 虚拟模块仅存在于构建器输入文件系统，不能用磁盘状态判定为缺失。
+  if (loaderContext.fs?.stat) {
+    return new Promise<void>((resolve) => {
+      loaderContext.fs!.stat(resolved, (error, stats) => {
+        register(error, stats)
+        resolve()
+      })
+    })
+  }
+  try {
+    register(null, statSync(resolved))
+  }
+  catch (error) {
+    register(error as NodeJS.ErrnoException)
   }
 }
 

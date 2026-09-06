@@ -93,6 +93,28 @@ describe('bundlers/runtime classset loader', () => {
     expect(addContextDependency).toHaveBeenCalledWith('/workspace/src/components')
   })
 
+  it.each([false, true])('waits for input filesystem dependency registration with async metadata=%s', async (asyncMetadata) => {
+    const file = path.resolve('virtual-entry.js')
+    const addDependency = vi.fn()
+    const addMissingDependency = vi.fn()
+    let completeStat: (() => void) | undefined
+    const dependencies = { files: [file] }
+    const result = loader.call({
+      fs: { stat: (_file: string, callback: any) => { completeStat = () => callback(null, { isDirectory: () => false }) } },
+      addDependency,
+      addMissingDependency,
+      getOptions: () => ({ getWatchDependencies: () => asyncMetadata ? Promise.resolve(dependencies) : dependencies }),
+    } as any, '.app {}')
+    expect(result).toBeInstanceOf(Promise)
+    await Promise.resolve()
+    expect(addDependency).not.toHaveBeenCalled()
+    expect(completeStat).toBeTypeOf('function')
+    completeStat!()
+    expect(await result).toBe('.app {}')
+    expect(addDependency).toHaveBeenCalledWith(file)
+    expect(addMissingDependency).not.toHaveBeenCalled()
+  })
+
   it('registers directory dependencies as webpack context dependencies', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-runtime-loader-'))
     tempDirs.push(tempDir)

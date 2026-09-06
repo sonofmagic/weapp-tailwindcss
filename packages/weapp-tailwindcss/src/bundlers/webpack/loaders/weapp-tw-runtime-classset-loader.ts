@@ -110,21 +110,24 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
   }
   const maybePromise = opt?.getClassSet?.()
   const applyWatchDependencies = (dependencies: RuntimeLoaderWatchDependencies | void) => {
+    const pending: Promise<void>[] = []
     for (const file of dependencies?.files ?? []) {
-      registerWebpackWatchFile(this, file)
+      const registration = registerWebpackWatchFile(this, file)
+      if (registration) {
+        pending.push(registration)
+      }
     }
     for (const context of dependencies?.contexts ?? []) {
       registerWebpackWatchContext(this, context)
     }
+    return pending.length ? Promise.all(pending).then(() => {}) : undefined
   }
   const resolveWatchDependencies = () => {
     const dependencies = opt?.getWatchDependencies?.()
     if (isPromiseLike<RuntimeLoaderWatchDependencies | void>(dependencies)) {
-      return Promise.resolve(dependencies).then((value) => {
-        applyWatchDependencies(value)
-      })
+      return Promise.resolve(dependencies).then(applyWatchDependencies)
     }
-    applyWatchDependencies(dependencies)
+    return applyWatchDependencies(dependencies)
   }
   if (isPromiseLike<void>(maybePromise)) {
     return Promise.resolve(maybePromise).then(async () => {
@@ -132,7 +135,10 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
       return normalizeRuntimeCssSource(source)
     })
   }
-  resolveWatchDependencies()
+  const watchDependencies = resolveWatchDependencies()
+  if (watchDependencies) {
+    return watchDependencies.then(() => normalizeRuntimeCssSource(source))
+  }
   return normalizeRuntimeCssSource(source)
 }
 

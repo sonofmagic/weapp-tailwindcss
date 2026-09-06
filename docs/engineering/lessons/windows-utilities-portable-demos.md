@@ -16,6 +16,7 @@ regressions:
   - packages/weapp-tailwindcss/test/bundlers/webpack-discarded-css.integration.test.ts
   - packages/weapp-tailwindcss/test/bundlers/webpack-watch-output.test.ts
   - scripts/ci/demo-matrix/output.test.mjs
+  - packages/weapp-tailwindcss/test/bundlers/webpack-watch-dependencies.test.ts
 ---
 
 # Windows 标准 utility 缺失与 demo 跨系统验收
@@ -65,5 +66,7 @@ core smoke 的旧样式注入断言已按当前源码同步：检查 SCSS/Less �
 28 个 demo 登记 107 个 CLI 组合。Node 24 全量覆盖 Windows/macOS/Linux，Node 22 覆盖关键集成。保持 RN/native disabled 边界；构建证据不能替代设备、原生桥接和 HBuilderX IDE。uni-app-x-vapor 没有可移植 CLI，仅列出限制，不伪造通过。
 
 ## 规则评估
+
+Windows 定向日志进一步确认，每轮循环的变更文件都是 Taro 虚拟入口 `app.boot.js`。监听注册层用 Node 磁盘 `statSync` 判断依赖是否存在，虚拟模块只存在于 Webpack 输入文件系统，被误标为 missing dependency；Webpack 看见该虚拟模块存在后再次触发构建。修复改用 loader 的 `fs.stat`，并等待异步注册完成后结束 loader。使用真实 webpack-virtual-modules 创建任意名称入口的回归先复现错误分类，再验证文件、目录和实际缺失项；无需识别 Taro 文件名或忽略虚拟模块。输出目录 glob 修复解决的是独立路径缺陷，不能替代本次输入文件系统边界修复。
 
 不新增 AGENTS 规则。现有路径边界、构建图、真实消费和连续更新要求已覆盖本问题，新增可执行门禁保证清单完整、阶段执行与提交身份，防止日志退出码或旧产物再次形成错误结论。
