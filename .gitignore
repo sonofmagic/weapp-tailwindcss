@@ -115,6 +115,9 @@ e2e/benchmark/e2e-watch-hmr/
 coverage-vitest
 .vitest/
 docs
+!/docs/
+/docs/*
+!/docs/engineering/
 
 miniprogram_npm
 .cloudbase

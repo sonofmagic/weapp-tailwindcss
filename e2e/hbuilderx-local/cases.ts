@@ -1,5 +1,6 @@
 import type { AppRenderMode } from './render-mode'
 import process from 'node:process'
+import { issue1144InitialStyles, issue1144Steps } from './issue-1144'
 
 export const rawTailwindDirectiveRE = /@(import\s+["']tailwindcss|tailwind|apply|theme|source)\b[^;\n{}]*[;{]/
 const unsafeMiniProgramSelectorFragments = ['.i-\\[', '.before\\:'] as const
@@ -119,6 +120,7 @@ export function resolveAppHmrSteps(item: AppCase): AppHmrStep[] {
 }
 
 export interface WebCase {
+  serverIdentityPath?: string
   name: string
   projectDir: string
   launchWithHBuilderX?: boolean
@@ -165,6 +167,7 @@ const uniAppXHBuilderXWorkflow = {
 } satisfies HBuilderXWorkflowCoverage
 
 export interface WebHmrStep {
+  reload?: boolean
   markerClass: string
   markerText: string
   cssContains: Array<string | RegExp>
@@ -174,6 +177,7 @@ export interface WebHmrStep {
 
 export interface WebRuntimeStyleAssertion {
   selector: string
+  classFromText?: boolean
   scopeAttribute?: RegExp
   styles: Record<string, string | RegExp>
 }
@@ -1080,6 +1084,7 @@ export const uniAppXAppCases: AppCase[] = [
 export const webCases: WebCase[] = [
   {
     name: 'issue-1144-uni-app-x-web',
+    serverIdentityPath: '/__issue1144_identity',
     projectDir: 'demo/issue-1144-uni-app-x-web',
     launchWithHBuilderX: true,
     sourceFile: 'pages/index/index.uvue',
@@ -1092,56 +1097,17 @@ export const webCases: WebCase[] = [
       /\.bg-page\s*\{/,
     ],
     initialTextContains: ['全端主题'],
+    initialRuntimeStyles: issue1144InitialStyles,
     persistentRuntimeStyles: [{
       selector: '.issue-1144-important-probe',
-      styles: { marginTop: '96px' },
+      styles: { marginTop: '24px' },
     }],
     serverLogContains: [
       /HBuilderX Version:\s*5\./,
       /编译器版本：5\.\d+（uni-app x）VDOM模式/,
     ],
-    serverLogNotContains: ['Unknown word', '[plugin:vite:css]'],
-    hmrSteps: [
-      {
-        markerClass: 'hbuilderx-web-hmr-probe bg-[#0f5132] text-[#f8fafc] w-[188px]',
-        markerText: 'issue-1144-uni-app-x-web-hmr-step-1',
-        cssContains: [/background-color:\s*#0f5132/, /color:\s*#f8fafc/, /width:\s*188px/],
-        runtimeStyles: [{
-          selector: '.hbuilderx-web-hmr-probe',
-          styles: { backgroundColor: 'rgb(15, 81, 50)', color: 'rgb(248, 250, 252)', width: '188px' },
-        }],
-        sourceMutation: {
-          file: 'pages/index/index.uvue',
-          replace: { from: 'root: \'p-0!\'', to: 'root: \'p-10!\'' },
-        },
-      },
-      {
-        markerClass: 'hbuilderx-web-hmr-probe bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',
-        markerText: 'issue-1144-uni-app-x-web-hmr-step-2',
-        cssContains: [/background-color:\s*#7c2d12/, /color:\s*#ecfeff/, /height:\s*37px/, /margin-top:\s*11px/],
-        runtimeStyles: [{
-          selector: '.hbuilderx-web-hmr-probe',
-          styles: { backgroundColor: 'rgb(124, 45, 18)', color: 'rgb(236, 254, 255)', height: '37px', marginTop: '11px' },
-        }],
-        sourceMutation: {
-          file: 'pages/index/index.uvue',
-          replace: { from: 'root: \'p-10!\'', to: 'root: \'p-4!\'' },
-        },
-      },
-      {
-        markerClass: 'hbuilderx-web-hmr-probe bg-[#4338ca] text-[#fef3c7] w-[221px] rounded-[13px]',
-        markerText: 'issue-1144-uni-app-x-web-hmr-step-3',
-        cssContains: [/background-color:\s*#4338ca/, /color:\s*#fef3c7/, /width:\s*221px/, /border-radius:\s*13px/],
-        runtimeStyles: [{
-          selector: '.hbuilderx-web-hmr-probe',
-          styles: { backgroundColor: 'rgb(67, 56, 202)', borderRadius: '13px', color: 'rgb(254, 243, 199)', width: '221px' },
-        }],
-        sourceMutation: {
-          file: 'pages/index/index.uvue',
-          replace: { from: 'root: \'p-4!\'', to: 'root: \'p-0!\'' },
-        },
-      },
-    ],
+    serverLogNotContains: ['Unknown word', '[plugin:vite:css]', 'reading \'scoped\''],
+    hmrSteps: issue1144Steps(),
     workflow: uniAppXHBuilderXWorkflow,
   },
   {
