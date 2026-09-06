@@ -14,6 +14,8 @@
 
 普通 utility 同时检查 `h-8`、`h-20`、`h-50`、`mt-2`、`flex`、`text-slate-500`、spacing 定义或内联值一致性，以及任意值和透明色对照。期望间距来自配置与实际产物，按倍数检查，不能拿某个模板的默认数值套用所有 demo。页面探针同时具有唯一 id、本轮标记、文本和真实 class 属性，孤立字符串不能充当消费证据。
 
+静态基线只记录探针实际引用的 spacing 变量；已内联的规则检查数值与倍数，主题中残留的未使用声明不参与等价比较。完整 CSS 仍随 artifact 保存；任何规则引用 `var(--spacing)` 却没有定义时必须失败。
+
 Taro 目标包括 weapp、swan、alipay、tt、h5、qq、jd、harmony-hybrid、rn；分包 demo 按现有脚本覆盖五个目标。uni 主 demo 覆盖九个小程序、H5/SSR、三种 quickapp-webview 和 app；其他 uni demo 按现有 CLI 登记。Mpx 覆盖 wx/ali/swan/tt/dd，Gulp 覆盖 weapp/tt，Web Vite/Webpack/Rsbuild 同时覆盖 web/weapp 模式，另含 Vite 7 和 Nuxt。
 
 ## 本地执行

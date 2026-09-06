@@ -15,6 +15,7 @@ regressions:
   - scripts/ci/demo-matrix/browser.test.mjs
   - packages/weapp-tailwindcss/test/bundlers/webpack-discarded-css.integration.test.ts
   - packages/weapp-tailwindcss/test/bundlers/webpack-watch-output.test.ts
+  - scripts/ci/demo-matrix/output.test.mjs
 ---
 
 # Windows 标准 utility 缺失与 demo 跨系统验收
@@ -56,6 +57,8 @@ Release Gate 的 Docusaurus SSR 构建还暴露了无 PostCSS loader 的 SCSS �
 core smoke 的旧样式注入断言已按当前源码同步：检查 SCSS/Less 的实际颜色与 Taro 的页面路由，Mpx/uni 和 Taro 相关目标分别定向复验通过。Vite 增量单测的空 CSS mock 改为有效声明，避免正常 CSS 优化删除空规则导致假失败，29 项回归通过。
 
 ## 适用边界
+
+提交 `7a6f922e5` 的 Windows 分包 Taro H5 完整轮次已通过，确认 watch 输出路径修复的实际效果。该轮 macOS 的 issue-1144 uni-app x 生产基线则只有一个差异：探针规则均为相同内联值，但 CSS 额外保留了未引用的 `--spacing: .25rem`。原比较器收集全部主题变量，将与探针无关的声明当成语义差异。修正后只在探针引用 `var(--spacing)` 时记录并强制要求定义；内联规则继续逐项检查存在性、属性值和间距倍数。回归先复现旧比较器误报，再同时证明缺失变量、缺失 utility 和错误内联倍数仍失败。完整产物保留原始声明，语义基线不再依赖优化器是否清理未使用的主题元数据。
 
 28 个 demo 登记 107 个 CLI 组合。Node 24 全量覆盖 Windows/macOS/Linux，Node 22 覆盖关键集成。保持 RN/native disabled 边界；构建证据不能替代设备、原生桥接和 HBuilderX IDE。uni-app-x-vapor 没有可移植 CLI，仅列出限制，不伪造通过。
 

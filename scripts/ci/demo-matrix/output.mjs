@@ -74,7 +74,8 @@ export function inspectStyles(styles, item, round = 'initial', consumed = {}) {
   if (round === 'add') {
     assert.ok(result[`w-[${values.added}]`].includes(values.added))
   }
-  if (Object.values(result).flat().some(value => value.includes('var(--spacing)'))) {
+  const usesSpacing = Object.values(result).flat().some(value => value.includes('var(--spacing)'))
+  if (usesSpacing) {
     assert.ok(variables.size > 0, `${item.id}: missing spacing dependency`)
   }
   const inlineSpacing = []
@@ -92,7 +93,8 @@ export function inspectStyles(styles, item, round = 'initial', consumed = {}) {
     assert.ok(spacing.value > 0 && spacing.unit === inlineSpacing[0].unit
       && Math.abs(spacing.value - inlineSpacing[0].value) < 0.001, `${item.id}: inconsistent spacing multiples`)
   }
-  return { rules: result, spacing: [...variables].sort() }
+  // 已内联的探针值不依赖主题中剩余的 spacing 声明。
+  return { rules: result, spacing: usesSpacing ? [...variables].sort() : [] }
 }
 
 export async function inspectFiles(output, item, round) {
