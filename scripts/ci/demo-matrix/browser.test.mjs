@@ -1,4 +1,4 @@
-import { mkdtemp, rm } from 'node:fs/promises'
+import { mkdtemp, realpath, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { createServer } from 'vite'
@@ -6,7 +6,7 @@ import { expect, it } from 'vitest'
 import { openBrowser } from './browser.mjs'
 
 it('does not restart a page whose initialization exceeds the probe polling interval', async () => {
-  const root = await mkdtemp(path.join(tmpdir(), 'demo-matrix-browser-'))
+  const root = await realpath(await mkdtemp(path.join(tmpdir(), 'demo-matrix-browser-')))
   let navigations = 0
   const server = await createServer({
     root,
