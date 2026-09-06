@@ -14,6 +14,7 @@ import { normalizeEmptyTailwindCustomVariants } from '@/bundlers/shared/generato
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { filterTailwindV4CssSourceRoots } from '@/tailwindcss/v4/css-sources'
 import { omitUndefined } from '@/utils/object'
+import { parseCssImportSpecifier, quoteCssImportSpecifier } from './css-import'
 
 const require = createRequire(import.meta.url)
 
@@ -110,41 +111,6 @@ function isBarePackageSpecifier(specifier: string) {
 
 function isPackageJsonImportSpecifier(specifier: string | undefined) {
   return typeof specifier === 'string' && specifier.startsWith('#')
-}
-
-function parseCssImportSpecifier(params: string) {
-  const value = params.trim()
-  const quoted = /^(['"])(.*?)\1/.exec(value)
-  if (quoted) {
-    const specifier = quoted[2]
-    if (specifier === undefined) {
-      return undefined
-    }
-    return {
-      quote: quoted[1],
-      raw: quoted[0],
-      specifier,
-    }
-  }
-
-  const url = /^url\(\s*(?:(['"])(.*?)\1|([^'")\s]+))\s*\)/.exec(value)
-  if (!url) {
-    return undefined
-  }
-
-  const specifier = url[2] ?? url[3]
-  if (specifier === undefined) {
-    return undefined
-  }
-  return {
-    quote: url[1],
-    raw: url[0],
-    specifier,
-  }
-}
-
-function quoteCssImportSpecifier(specifier: string, quote = '"') {
-  return `${quote}${specifier.replaceAll('\\', '\\\\').replaceAll(quote, `\\${quote}`)}${quote}`
 }
 
 function createTailwindV4CssImportSpecifierSet(packageName: string | undefined) {

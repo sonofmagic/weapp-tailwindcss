@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { postcss } from '@weapp-tailwindcss/postcss'
+import { parseCssImportSpecifier } from '../css-import'
 import { createTailwindV4DefaultColorThemeCss } from '../tailwind-v4-default-colors'
 
 const require = createRequire(import.meta.url)
@@ -36,7 +37,7 @@ function resolveTailwindV4ThemeCssFromImport(css: string) {
     if (resolved) {
       return
     }
-    const specifier = parseCssImportSpecifier(rule.params)
+    const specifier = parseCssImportSpecifier(rule.params)?.specifier
     if (!specifier || !path.isAbsolute(specifier) || path.basename(specifier) !== 'index.css') {
       return
     }
@@ -83,19 +84,8 @@ function applyMiniProgramTailwindV4DefaultColorCss(css: string, source: Tailwind
   return `${css.slice(0, insertionIndex)}\n${themeCss}\n${css.slice(insertionIndex)}`
 }
 
-function parseCssImportSpecifier(params: string) {
-  const value = params.trim()
-  const quoted = /^(['"])(.*?)\1/.exec(value)
-  if (quoted) {
-    return quoted[2]
-  }
-
-  const url = /^url\(\s*(?:(['"])(.*?)\1|([^'")\s]+))\s*\)/.exec(value)
-  return url?.[2] ?? url?.[3]
-}
-
 function isTailwindCssPreflightImport(params: string) {
-  const specifier = parseCssImportSpecifier(params)
+  const specifier = parseCssImportSpecifier(params)?.specifier
   return specifier === 'tailwindcss/preflight.css' || specifier === 'tailwindcss/preflight'
 }
 

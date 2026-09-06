@@ -172,10 +172,44 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=6144
         run: pnpm e2e:dev:smoke
 
+  windows-utilities:
+    name: Default utilities (${{ matrix.os }}, Node ${{ matrix.node }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            node: 22
+          - os: windows-latest
+            node: 24
+          - os: ubuntu-latest
+            node: 24
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Build package on this OS
+        run: pnpm --filter weapp-tailwindcss... --filter @weapp-tailwindcss/postcss-calc run build
+      - name: Check CSS import paths and source generation
+        run: pnpm --filter weapp-tailwindcss exec vitest run test/tailwindcss/v4-import-paths.test.ts test/tailwindcss/v4-engine.test.ts
+      - name: Reproduce published version and verify packed fix
+        run: pnpm e2e:windows-utilities
+      - name: Upload utility output evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: default-utilities-${{ matrix.os }}-node${{ matrix.node }}
+          path: e2e/.artifacts/windows-utilities/**
+          if-no-files-found: error
+          retention-days: 14
+
   pr-gate:
     name: PR Gate
     if: always()
-    needs: [scope, quality, core-smoke, platform-watch, platform-dev]
+    needs: [scope, quality, core-smoke, platform-watch, platform-dev, windows-utilities]
     runs-on: ubuntu-latest
     steps:
       - name: Require enabled PR checks
@@ -185,8 +219,10 @@ jobs:
           SMOKE_RESULT: ${{ needs.core-smoke.result }}
           PLATFORM_RESULT: ${{ needs.platform-watch.result }}
           DEV_RESULT: ${{ needs.platform-dev.result }}
+          UTILITIES_RESULT: ${{ needs.windows-utilities.result }}
         run: |
           test "$SCOPE_RESULT" = success
+          test "$UTILITIES_RESULT" = success
           for result in "$QUALITY_RESULT" "$SMOKE_RESULT" "$PLATFORM_RESULT" "$DEV_RESULT"; do
             test "$result" = success || test "$result" = skipped
           done

@@ -4789,6 +4789,9 @@ importers:
       '@babel/types':
         specifier: catalog:babel8
         version: 8.0.4
+      '@csstools/css-tokenizer':
+        specifier: catalog:csstools
+        version: 4.0.0
       '@tailwindcss-mangle/engine':
         specifier: catalog:tailwindcssMangleEngine
         version: 0.2.0(tailwindcss@4.3.3)
