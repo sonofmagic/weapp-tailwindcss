@@ -9,7 +9,7 @@ import { cases, checkCatalog, commands, coverage, isWeb, matrix, repo } from './
 import { inspectNative } from './native.mjs'
 import { inspectFiles } from './output.mjs'
 import { insertProbe } from './probe.mjs'
-import { complete, freePort, start, until } from './process.mjs'
+import { complete, developmentEnvironment, freePort, start, until } from './process.mjs'
 
 const args = process.argv.slice(2)
 checkCatalog()
@@ -112,14 +112,7 @@ async function runCase(item) {
       return result
     }
     await rm(outputDir, { recursive: true, force: true })
-    session = start(command.dev, dir, {
-      ...command.env,
-      NODE_ENV: 'development',
-      BROWSERSLIST_ENV: 'development',
-      WATCHPACK_POLLING: '50',
-      CHOKIDAR_USEPOLLING: '1',
-      CHOKIDAR_INTERVAL: '50',
-    }, path.join(artifactDir, 'dev-live.log'))
+    session = start(command.dev, dir, developmentEnvironment(command.env), path.join(artifactDir, 'dev-live.log'))
     activeSession = session
     if (isWeb(item) || item.name.startsWith('web/')) {
       browser = await openBrowser(`http://127.0.0.1:${port}${item.route ?? '/'}`, session, artifactDir)

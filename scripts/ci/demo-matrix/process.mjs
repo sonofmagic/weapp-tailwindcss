@@ -5,6 +5,14 @@ import process from 'node:process'
 import { setTimeout as delay } from 'node:timers/promises'
 import { execa } from 'execa'
 
+export function developmentEnvironment(env) {
+  return {
+    ...env,
+    NODE_ENV: 'development',
+    BROWSERSLIST_ENV: 'development',
+  }
+}
+
 export async function freePort() {
   const server = createServer()
   await new Promise((resolve, reject) => {

@@ -27,6 +27,9 @@ jobs:
           node-version: 24
       - run: pnpm build:ci
       - run: pnpm exec playwright install chromium
+      - run: pnpm test:demo:matrix
+        env:
+          CI: '1'
       - name: Repeat full production and live update acceptance
         shell: bash
         env:
@@ -34,6 +37,7 @@ jobs:
           DEBUG: weapp-tw
           NODE_OPTIONS: --max-old-space-size=6144
         run: |
+          export NODE_OPTIONS="$NODE_OPTIONS --require=$GITHUB_WORKSPACE/scripts/ci/demo-matrix/watch-diagnostic.cjs"
           for attempt in 1 2 3; do
             DEMO_MATRIX_ARTIFACT_DIR="e2e/.artifacts/watch-diagnostic/$attempt" pnpm e2e:demo:matrix subpackage-taro-webpack-react-tailwindcss-v4:h5 || exit 1
           done

@@ -16,6 +16,7 @@ regressions:
   - packages/weapp-tailwindcss/test/bundlers/webpack-discarded-css.integration.test.ts
   - packages/weapp-tailwindcss/test/bundlers/webpack-watch-output.test.ts
   - scripts/ci/demo-matrix/output.test.mjs
+  - scripts/ci/demo-matrix/watch.test.mjs
   - packages/weapp-tailwindcss/test/bundlers/webpack-watch-dependencies.test.ts
 ---
 
@@ -67,6 +68,8 @@ core smoke 的旧样式注入断言已按当前源码同步：检查 SCSS/Less �
 
 ## 规则评估
 
-Windows 定向日志进一步确认，每轮循环的变更文件都是 Taro 虚拟入口 `app.boot.js`。监听注册层用 Node 磁盘 `statSync` 判断依赖是否存在，虚拟模块只存在于 Webpack 输入文件系统，被误标为 missing dependency；Webpack 看见该虚拟模块存在后再次触发构建。修复改用 loader 的 `fs.stat`，并等待异步注册完成后结束 loader。使用真实 webpack-virtual-modules 创建任意名称入口的回归先复现错误分类，再验证文件、目录和实际缺失项；无需识别 Taro 文件名或忽略虚拟模块。输出目录 glob 修复解决的是独立路径缺陷，不能替代本次输入文件系统边界修复。
+Windows 定向日志进一步确认，每轮循环的变更文件都是 Taro 虚拟入口 `app.boot.js`。监听注册层用 Node 磁盘 `statSync` 判断依赖是否存在，虚拟模块只存在于 Webpack 输入文件系统，被误标为 missing dependency。修复改用 loader 的 `fs.stat`，并等待异步注册完成后结束 loader。真实 webpack-virtual-modules 回归证实错误分类，但 `4a13f660f` 的三轮 Windows 专项在第二轮仍失败，第一轮通过时也持续空转编译；此前把分类错误直接认定为循环根因的结论不成立。
+
+继续沿 watcher 事件定位，发现矩阵运行器强加 `WATCHPACK_POLLING=50`。Watchpack 的目录轮询持续更新扫描完成时间，虚拟文件在磁盘上始终不存在；只要编译耗时跨过轮询间隔，下一次挂载就再次发出 `watch (missing on attach)`，循环重建。没有 weapp-tailwindcss 插件的真实 Webpack + Taro 所用 webpack-virtual-modules 最小场景即可复现：100ms 编译配合 50ms 轮询，8 秒产生 36 次构建；默认 watcher 首轮处理一次缺失通知后稳定。矩阵回归在修复前因空闲期间 6 次重建失败。运行器移除强制 Watchpack/Chokidar polling，验收 demo 默认开发配置；回归还验证真正修改虚拟模块会触发重建并再次稳定。Windows 专项保留事件来源和 watcher 身份日志，连续三轮验收与完整 Gate 仍须通过，不用单次页面成功替代稳定性证据。
 
 不新增 AGENTS 规则。现有路径边界、构建图、真实消费和连续更新要求已覆盖本问题，新增可执行门禁保证清单完整、阶段执行与提交身份，防止日志退出码或旧产物再次形成错误结论。
