@@ -21,6 +21,7 @@ it.each(['cjs', 'esm'].flatMap(format => ['file', 'directory'].map(dependency =>
   let watcher
   let builds = 0
   let errors = 0
+  let inspection = 0
   try {
     await mkdir(dataDir)
     await replaceSourceFile(entry, 'export { default as value } from "./data/value.json"; export { default as derived } from "virtual:derived"')
@@ -53,10 +54,14 @@ it.each(['cjs', 'esm'].flatMap(format => ['file', 'directory'].map(dependency =>
       }
     })
     const inspect = async (value, previous) => {
-      await expect.poll(() => builds, { timeout: 5000 }).toBeGreaterThan(previous)
-      const module = await import(`${pathToFileURL(output).href}?revision=${builds}`)
-      expect(module.value).toBe(value)
-      expect(module.derived).toBe(value * 2)
+      // 目录事件可能排队触发多次构建，计数增加不能证明本轮产物写完。
+      await expect.poll(async () => {
+        if (builds <= previous) {
+          return undefined
+        }
+        const module = await import(`${pathToFileURL(output).href}?inspection=${++inspection}`)
+        return { value: module.value, derived: module.derived }
+      }, { timeout: 5000 }).toEqual({ value, derived: value * 2 })
     }
     await inspect(0, 0)
     for (const value of [1, 2, 3]) {
