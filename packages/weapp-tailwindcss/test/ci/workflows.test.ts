@@ -125,7 +125,15 @@ describe('ci workflows', () => {
       expect.objectContaining({ runner_label: 'macos', case_name: 'uni-app-vite-tailwindcss-v4:mp-weixin', web_only: '0' }),
     ]))
     expect(platformJob.strategy['fail-fast']).toBe(false)
-    expect(workflow.jobs['pr-gate'].needs).toEqual(['scope', 'quality', 'core-smoke', 'platform-watch'])
+    const platformDevJob = workflow.jobs['platform-dev']
+    expect(platformDevJob.strategy['fail-fast']).toBe(false)
+    expect(platformDevJob.strategy.matrix.include).toEqual(expect.arrayContaining([
+      expect.objectContaining({ runner_label: 'linux' }),
+      expect.objectContaining({ runner_label: 'macos' }),
+      expect.objectContaining({ runner_label: 'windows' }),
+    ]))
+    expect(platformDevJob.steps.some((step: Record<string, unknown>) => String(step.run ?? '').includes('e2e:dev:smoke'))).toBe(true)
+    expect(workflow.jobs['pr-gate'].needs).toEqual(['scope', 'quality', 'core-smoke', 'platform-watch', 'platform-dev'])
     expect(source).toContain('test "$result" = success || test "$result" = skipped')
     expect(source).toContain('pr-gate-package-build-${{ github.run_id }}')
   })

@@ -24,9 +24,17 @@ export type DemoCoverageStatus = 'automated' | 'local' | 'exempt'
 export interface DemoPlatformCoverage {
   platform: string
   buildScript?: string
+  buildCommand: string
+  buildEvidence: string
   devScript?: string
+  devCommand: string
+  devEvidence: string
   staticCoverage: DemoCoverageStatus
+  /** 正常开发服务首次编译与可访问性覆盖状态。 */
+  devCoverage: DemoCoverageStatus
   hmrCoverage: DemoCoverageStatus
+  hmrCommand: string
+  hmrEvidence: string
   devHmrSnapshotCoverage: DemoCoverageStatus
   rootStyleShellHmrCoverage?: DemoCoverageStatus
   evidence: string
@@ -57,8 +65,15 @@ function automated(platform: string, options: {
 }): DemoPlatformCoverage {
   return {
     platform,
+    buildCommand: options.buildScript ? `pnpm run ${options.buildScript}` : options.command,
+    buildEvidence: options.evidence,
+    devCommand: options.devScript ? `pnpm run ${options.devScript}` : options.command,
+    devEvidence: options.devScript ? '开发服务首次编译、进程存活与错误日志 smoke' : options.evidence,
     staticCoverage: 'automated',
+    devCoverage: 'automated',
     hmrCoverage: 'automated',
+    hmrCommand: options.command,
+    hmrEvidence: options.evidence,
     devHmrSnapshotCoverage: 'automated',
     ...(options.buildScript ? { buildScript: options.buildScript } : {}),
     ...(options.devScript ? { devScript: options.devScript } : {}),
@@ -74,12 +89,21 @@ function local(platform: string, options: {
   command: string
   reason: string
   staticCoverage?: DemoCoverageStatus
+  devCoverage?: DemoCoverageStatus
   hmrCoverage?: DemoCoverageStatus
 }): DemoPlatformCoverage {
+  const devCoverage = options.devCoverage ?? (options.devScript ? (options.staticCoverage === 'automated' ? 'automated' : 'local') : 'exempt')
   return {
     platform,
+    buildCommand: options.buildScript ? `pnpm run ${options.buildScript}` : options.command,
+    buildEvidence: options.evidence,
+    devCommand: options.devScript ? `pnpm run ${options.devScript}` : options.command,
+    devEvidence: options.devScript ? '开发服务首次编译、进程存活与错误日志 smoke' : options.evidence,
     staticCoverage: options.staticCoverage ?? 'local',
+    devCoverage,
     hmrCoverage: options.hmrCoverage ?? 'local',
+    hmrCommand: options.command,
+    hmrEvidence: options.evidence,
     devHmrSnapshotCoverage: options.hmrCoverage ?? 'local',
     ...(options.buildScript ? { buildScript: options.buildScript } : {}),
     ...(options.devScript ? { devScript: options.devScript } : {}),

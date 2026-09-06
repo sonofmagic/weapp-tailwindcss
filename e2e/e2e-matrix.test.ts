@@ -384,12 +384,31 @@ describe('e2e matrix', () => {
       const pkg = readDemoPackageJson(entry.packageJson)
       expect(entry.platforms.length, `${entry.name} should declare at least one platform`).toBeGreaterThan(0)
       for (const platform of entry.platforms) {
+        expect(platform.buildCommand, `${entry.name} ${platform.platform} should document build command`).toBeTruthy()
+        expect(platform.buildEvidence, `${entry.name} ${platform.platform} should document build evidence`).toBeTruthy()
+        expect(platform.devCommand, `${entry.name} ${platform.platform} should document dev command`).toBeTruthy()
+        expect(platform.devEvidence, `${entry.name} ${platform.platform} should document dev evidence`).toBeTruthy()
+        expect(platform.hmrCommand, `${entry.name} ${platform.platform} should document HMR command`).toBeTruthy()
+        expect(platform.hmrEvidence, `${entry.name} ${platform.platform} should document HMR evidence`).toBeTruthy()
+        if (platform.staticCoverage === 'automated') {
+          expect(platform.buildScript, `${entry.name} ${platform.platform} automated build should expose a build script`).toBeTruthy()
+        }
         expect(platform.command.length, `${entry.name} ${platform.platform} should document a validation command`).toBeGreaterThan(0)
         expect(platform.evidence.length, `${entry.name} ${platform.platform} should document validation evidence`).toBeGreaterThan(0)
         expect(
           platform.devHmrSnapshotCoverage,
           `${entry.name} ${platform.platform} dev/HMR snapshot coverage should match its HMR execution status`,
         ).toBe(platform.hmrCoverage)
+        expect(
+          platform.devCoverage,
+          `${entry.name} ${platform.platform} should declare normal dev coverage`,
+        ).toBeTruthy()
+        if (platform.devCoverage === 'exempt') {
+          expect(platform.reason?.length, `${entry.name} ${platform.platform} dev exemption should explain why`).toBeGreaterThan(0)
+        }
+        if (platform.devCoverage !== 'exempt') {
+          expect(platform.devScript, `${entry.name} ${platform.platform} covered dev target should expose a dev script`).toBeTruthy()
+        }
         if (platform.buildScript) {
           expect(
             pkg.scripts?.[scriptName(platform.buildScript)],

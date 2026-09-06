@@ -6,7 +6,7 @@ import path from 'node:path'
 import { compareCoverageIdentity } from './coverageIdentity'
 import { COVERAGE_LAYERS, COVERAGE_REGISTRY, validateCoverageRegistry } from './coverageRegistry'
 
-export const COVERAGE_REPORT_SCHEMA_VERSION = 3 as const
+export const COVERAGE_REPORT_SCHEMA_VERSION = 4 as const
 export type CoverageResultStatus = 'passed' | 'failed' | 'blocked' | 'not-run' | 'not-applicable' | 'unsupported'
 const COVERAGE_RESULT_STATUSES: readonly CoverageResultStatus[] = ['passed', 'failed', 'blocked', 'not-run', 'not-applicable', 'unsupported']
 
@@ -134,7 +134,7 @@ export async function readCommittedCompatibilityEvidence(repoRoot: string): Prom
         const cellId = `${item.source}/${platform}/${result.id}`
         const status: CoverageResultStatus = result.status === 'supported' ? 'passed' : 'unsupported'
         const reason = result.reason ?? (status === 'unsupported' ? '兼容性 catalog 明确标记为 unsupported。' : undefined)
-        for (const layerName of ['static', 'runtime', 'visual', 'negative'] as const) {
+        for (const layerName of ['static', 'dev', 'runtime', 'visual', 'negative'] as const) {
           evidence.push({
             cellId,
             layer: layerName,

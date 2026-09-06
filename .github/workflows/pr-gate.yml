@@ -143,10 +143,39 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=6144
         run: pnpm e2e:watch
 
+  platform-dev:
+    name: Platform dev startup smoke (${{ matrix.runner_label }})
+    needs: [scope]
+    if: needs.scope.outputs.core == 'true'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            runner_label: linux
+          - os: macos-latest
+            runner_label: macos
+          - os: windows-latest
+            runner_label: windows
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-pnpm
+      - name: Build dev dependencies for this OS
+        run: pnpm build:ci
+      - name: Run normal dev startup smoke
+        env:
+          E2E_DEV_STARTUP_RUN: '1'
+          E2E_DEV_STARTUP_CASE: weapp-vite-tailwindcss-v4
+          E2E_DEV_STARTUP_TIMEOUT_MS: '180000'
+          NODE_OPTIONS: --max-old-space-size=6144
+        run: pnpm e2e:dev:smoke
+
   pr-gate:
     name: PR Gate
     if: always()
-    needs: [scope, quality, core-smoke, platform-watch]
+    needs: [scope, quality, core-smoke, platform-watch, platform-dev]
     runs-on: ubuntu-latest
     steps:
       - name: Require enabled PR checks
@@ -155,8 +184,9 @@ jobs:
           QUALITY_RESULT: ${{ needs.quality.result }}
           SMOKE_RESULT: ${{ needs.core-smoke.result }}
           PLATFORM_RESULT: ${{ needs.platform-watch.result }}
+          DEV_RESULT: ${{ needs.platform-dev.result }}
         run: |
           test "$SCOPE_RESULT" = success
-          for result in "$QUALITY_RESULT" "$SMOKE_RESULT" "$PLATFORM_RESULT"; do
+          for result in "$QUALITY_RESULT" "$SMOKE_RESULT" "$PLATFORM_RESULT" "$DEV_RESULT"; do
             test "$result" = success || test "$result" = skipped
           done

@@ -3,7 +3,7 @@ import { compatibilityCases as lynxCases } from '../examples/react-lynx/src/comp
 import { DEMO_COVERAGE_MATRIX } from './demoCoverageMatrix'
 import { compatibilityCases as reactNativeCases } from './react-native/catalog'
 
-export const COVERAGE_LAYERS = ['static', 'runtime', 'hmr', 'visual', 'negative'] as const
+export const COVERAGE_LAYERS = ['static', 'dev', 'runtime', 'hmr', 'visual', 'negative'] as const
 export type CoverageLayer = typeof COVERAGE_LAYERS[number]
 
 export const COVERAGE_STATUSES = [
@@ -69,8 +69,9 @@ function layer(
 }
 
 function demoCell(project: string, entry: typeof DEMO_COVERAGE_MATRIX[number], platform: DemoPlatformCoverage): CoverageCell {
-  const local = entry.hbuilderxLocal || platform.staticCoverage === 'local' || platform.hmrCoverage === 'local'
+  const local = entry.hbuilderxLocal || platform.staticCoverage === 'local' || platform.devCoverage === 'local' || platform.hmrCoverage === 'local'
   const staticStatus = explicitStatus(platform.staticCoverage, local)
+  const devStatus = explicitStatus(platform.devCoverage, local)
   const runtimeStatus = explicitStatus(platform.hmrCoverage, local)
   const hmrStatus = explicitStatus(platform.hmrCoverage, local)
   const visualStatus = platform.hmrCoverage === 'automated'
@@ -94,6 +95,7 @@ function demoCell(project: string, entry: typeof DEMO_COVERAGE_MATRIX[number], p
     subpackage,
     layers: {
       static: layer(staticStatus, platform.command, 'demo-static-v1', reasonForLegacy(platform.staticCoverage, platform)),
+      dev: layer(devStatus, platform.command, 'demo-dev-v1', reasonForLegacy(platform.devCoverage, platform)),
       runtime: layer(runtimeStatus, platform.command, 'demo-runtime-v1', legacyReason),
       hmr: layer(hmrStatus, platform.command, 'demo-hmr-v1', legacyReason),
       visual: layer(visualStatus, platform.command, 'demo-visual-v1', legacyReason),
@@ -117,6 +119,7 @@ function compatibilityCell(source: 'react-native' | 'lynx', project: string, fra
     subpackage: false,
     layers: {
       static: layer(source === 'lynx' && isNative ? 'ci-nightly' : 'ci-required', executor, `${source}-static-v1`),
+      dev: layer(isNative ? 'ci-nightly' : 'ci-required', executor, `${source}-dev-v1`),
       runtime: layer(isNative ? 'ci-nightly' : 'ci-required', executor, `${source}-runtime-v1`),
       hmr: layer('not-applicable', 'catalog:no-hmr', `${source}-hmr-v1`, '该原生兼容性 catalog 当前验证静态/运行时，不提供 HMR 语义。'),
       visual: layer(isNative ? 'ci-nightly' : 'ci-required', executor, `${source}-visual-v1`),
