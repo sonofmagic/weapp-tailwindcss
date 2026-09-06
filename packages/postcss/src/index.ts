@@ -204,6 +204,7 @@ export {
 export * from './types'
 export {
   containsCssAfterMinify,
+  createCssRuleMatcher,
   dedupeCoveredCssRules,
   filterExistingCssRules,
   mergeCoveredCssRuleDeclarations,

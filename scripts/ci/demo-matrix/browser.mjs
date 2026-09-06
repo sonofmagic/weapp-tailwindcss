@@ -11,8 +11,17 @@ export async function openBrowser(url, session, artifactDir) {
   const browser = await chromium.launch()
   const page = await browser.newPage({ viewport: { width: 1200, height: 900 } })
   const events = []
+  const pendingModules = new Set()
+  const origin = new URL(url).origin
   let transportReady = false
   let lastInspection
+  page.on('request', (request) => {
+    if (new URL(request.url()).origin === origin && ['script', 'stylesheet'].includes(request.resourceType())) {
+      pendingModules.add(request)
+    }
+  })
+  page.on('requestfinished', request => pendingModules.delete(request))
+  page.on('requestfailed', request => pendingModules.delete(request))
   page.on('websocket', (socket) => {
     socket.on('framereceived', ({ payload }) => {
       try {
@@ -36,7 +45,7 @@ export async function openBrowser(url, session, artifactDir) {
     }, session)
     await until(async () => {
       await page.locator('#tw-matrix-height').waitFor({ timeout: 5000 })
-      await page.waitForLoadState('networkidle', { timeout: 15_000 })
+      assert.equal(pendingModules.size, 0, `Local modules still loading: ${[...pendingModules].map(request => request.url()).join(', ')}`)
     }, session)
     await until(() => assert.ok(transportReady, 'Development update transport is not ready'), session)
     return {

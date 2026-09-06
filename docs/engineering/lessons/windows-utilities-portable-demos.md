@@ -18,6 +18,8 @@ regressions:
   - scripts/ci/demo-matrix/output.test.mjs
   - scripts/ci/demo-matrix/watch.test.mjs
   - packages/weapp-tailwindcss/test/bundlers/webpack-watch-dependencies.test.ts
+  - scripts/ci/demo-matrix/source-file.test.mjs
+  - packages/postcss/test/css-rule-matcher.test.ts
 ---
 
 # Windows 标准 utility 缺失与 demo 跨系统验收
@@ -75,3 +77,9 @@ Windows 定向日志进一步确认，每轮循环的变更文件都是 Taro 虚
 不新增 AGENTS 规则。现有路径边界、构建图、真实消费和连续更新要求已覆盖本问题，新增可执行门禁保证清单完整、阶段执行与提交身份，防止日志退出码或旧产物再次形成错误结论。
 
 默认 watcher 的补充验收发现 Mpx 在样式检查通过后开始下一轮清理，归档复制 `project.config.json` 时出现 ENOENT。现在非 Web 每轮先重新复制产物，再对副本验收实际类名、当前标识和样式引用图，复制或语义未就绪时保持原有有界等待；最终报告与归档来自同一副本，避免实时目录变化造成错配。Windows 的浏览器等待回归还触发 libuv 文件监听路径断言，临时 Vite 根目录改为 realpath 后，同一 Windows 套件 13 项全部通过。专项 checkout 显式使用 PR head，使报告与最终提交身份一致。
+
+`028c6530d` 的 Linux Taro Vite Vue 支付宝在 restore 阶段读取到被异步 writeFile 截断、尚未写完的 Vue 文件，报错“至少需要 template 或 script”。矩阵源码更新改为同目录临时文件写完后原子替换，保留权限；真实目录 watcher 连续观察五个大文件版本，只允许完整内容。原子替换后，本地 Taro Vue Webpack 微信、Vite 支付宝、React Vite/webpack 微信和 Gulp 完整阶段通过。该提交的 Windows Vue 恢复阶段也失败，但没有同样的解析报错，不能直接归为同一原因；Windows 连续专项增加该目标和每轮时间戳，继续验收。
+
+同一提交的 macOS 分包 H5 已渲染初始探针并收到开发通道握手，却持续等待全页面 networkidle。截图保留了 Webpack 上游依赖警告遮罩；全页面网络静默不能作为应用启动完成的必要条件。浏览器改为等待探针、本地 script/stylesheet 请求完成和开发通道握手，随后仍逐轮检查真实 CSS 与计算样式。真实 Vite 回归同时保留一个持续后台请求和一个延迟脚本，要求前者不阻塞、后者必须加载完毕。本地分包 H5 与 uni SSR 全部阶段复验通过，未更新基线。
+
+性能门禁连续报告 Vite HMR 回退，不能当作单次计时噪声忽略。分阶段计时发现 CSS 清理对同一份主样式逐个比较候选时重复规范化和解析。改为在单次清理内复用不可变主样式的惰性索引；候选 AST 中规则文本已不存在时，直接排除不可能的结构键匹配。无全局缓存，不跨 HMR 保留旧内容。回归覆盖大样式批量比较、条件规则、important、变量回退及不同版本隔离。相同本机和参数的两轮采样中，稳态清理从 371–388ms 降至 192–220ms，插件 HMR 从 1670–1774ms 降至 1409–1531ms；这是本地优化前后证据，不替代远端 main 对照门禁。

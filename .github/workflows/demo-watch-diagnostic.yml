@@ -18,9 +18,15 @@ permissions:
 
 jobs:
   watch:
-    name: Windows subpackage H5 repeated watch
+    name: Windows repeated watch (${{ matrix.case }})
     runs-on: windows-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        case:
+          - subpackage-taro-webpack-react-tailwindcss-v4:h5
+          - taro-webpack-vue3-tailwindcss-v4:weapp
     steps:
       - uses: actions/checkout@v6
         with:
@@ -39,15 +45,16 @@ jobs:
           CI: '1'
           DEBUG: weapp-tw
           NODE_OPTIONS: --max-old-space-size=6144
+          DEMO_CASE: ${{ matrix.case }}
         run: |
           export NODE_OPTIONS="$NODE_OPTIONS --require=$GITHUB_WORKSPACE/scripts/ci/demo-matrix/watch-diagnostic.cjs"
           for attempt in 1 2 3; do
-            DEMO_MATRIX_ARTIFACT_DIR="e2e/.artifacts/watch-diagnostic/$attempt" pnpm e2e:demo:matrix subpackage-taro-webpack-react-tailwindcss-v4:h5 || exit 1
+            DEMO_MATRIX_ARTIFACT_DIR="e2e/.artifacts/watch-diagnostic/$attempt" pnpm e2e:demo:matrix "$DEMO_CASE" || exit 1
           done
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: windows-subpackage-watch-diagnostic
+          name: windows-watch-diagnostic-${{ strategy.job-index }}
           path: e2e/.artifacts/watch-diagnostic/**
           if-no-files-found: error
           retention-days: 14

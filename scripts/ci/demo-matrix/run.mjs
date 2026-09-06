@@ -10,6 +10,7 @@ import { inspectNative } from './native.mjs'
 import { inspectFiles } from './output.mjs'
 import { insertProbe } from './probe.mjs'
 import { complete, developmentEnvironment, freePort, start, until } from './process.mjs'
+import { replaceSourceFile } from './source-file.mjs'
 
 const args = process.argv.slice(2)
 checkCatalog()
@@ -76,9 +77,9 @@ async function runCase(item) {
   await mkdir(artifactDir, { recursive: true })
   try {
     if (authoredFile) {
-      await writeFile(authoredFile, `${originalAuthored ?? ''}\n${authoredCss(item, 'initial')}`)
+      await replaceSourceFile(authoredFile, `${originalAuthored ?? ''}\n${authoredCss(item, 'initial')}`)
     }
-    await writeFile(sourceFile, await insertProbe(original, item, 'initial'))
+    await replaceSourceFile(sourceFile, await insertProbe(original, item, 'initial'))
     await rm(outputDir, { recursive: true, force: true })
     session = start(command.build, dir, { ...command.env, NODE_ENV: 'production', BROWSERSLIST_ENV: 'production' }, path.join(artifactDir, 'build-live.log'))
     activeSession = session
@@ -119,11 +120,12 @@ async function runCase(item) {
     }
     for (const round of ['initial', 'replace', 'add', 'restore']) {
       assert.ok(!interrupted, 'Matrix interrupted')
+      console.log(`[demo-matrix] ${new Date().toISOString()} ${item.id} begin ${round}`)
       if (round !== 'initial') {
         if (authoredFile) {
-          await writeFile(authoredFile, `${originalAuthored ?? ''}\n${authoredCss(item, round)}`)
+          await replaceSourceFile(authoredFile, `${originalAuthored ?? ''}\n${authoredCss(item, round)}`)
         }
-        await writeFile(sourceFile, await insertProbe(original, item, round))
+        await replaceSourceFile(sourceFile, await insertProbe(original, item, round))
       }
       result.rounds[round] = await until(async () => {
         if (browser) {
@@ -135,6 +137,7 @@ async function runCase(item) {
         await cp(outputDir, snapshotDir, { recursive: true })
         return inspectFiles(snapshotDir, item, round)
       }, session)
+      console.log(`[demo-matrix] ${new Date().toISOString()} ${item.id} verified ${round}`)
       if (round === 'initial' && item.family === 'gulp') {
         await until(() => assert.ok(session.log().includes('watching for changes'), 'Gulp watcher is not ready'), session)
       }
@@ -162,12 +165,12 @@ async function runCase(item) {
       await writeFile(path.join(artifactDir, 'session.log'), session.log())
       await session.stop()
     }
-    await writeFile(sourceFile, original)
+    await replaceSourceFile(sourceFile, original)
     if (authoredFile) {
       if (originalAuthored === undefined) {
         await rm(authoredFile, { force: true })
       }
-      else { await writeFile(authoredFile, originalAuthored) }
+      else { await replaceSourceFile(authoredFile, originalAuthored) }
     }
     activeSession = undefined
     await writeFile(path.join(artifactDir, 'result.json'), JSON.stringify(result, null, 2))

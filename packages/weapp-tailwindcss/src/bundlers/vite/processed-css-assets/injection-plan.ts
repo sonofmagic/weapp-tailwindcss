@@ -2,7 +2,7 @@ import type { OutputBundle } from 'rollup'
 import type { ComparableCssCoverage } from './coverage'
 import type { InjectViteProcessedCssAssetOptions } from './markers-imports'
 import type { InternalUserDefinedOptions } from '@/types'
-import { containsCssAfterMinify, filterExistingCssRules, postcss } from '@weapp-tailwindcss/postcss'
+import { createCssRuleMatcher, postcss } from '@weapp-tailwindcss/postcss'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { shouldPreserveFrameworkRootMiniProgramImportShell } from '../generate-bundle/root-style-output'
 import { isSubpackageOutputFile } from '../generate-bundle/subpackages'
@@ -319,6 +319,7 @@ export function removeCoveredInjectedSourceAssets(
   }
   const recordFileKeys = new Set(removableRecords.map(record => normalizeOutputPathKey(record.file)))
   const recordCss = new Set(removableRecords.map(record => record.css.trim()))
+  const targetMatcher = createCssRuleMatcher(targetCss)
   let removed = 0
   for (const [candidateFile, candidateOutput] of Object.entries(bundle)) {
     if (candidateOutput.type !== 'asset') {
@@ -338,11 +339,11 @@ export function removeCoveredInjectedSourceAssets(
         candidateSource.length > 0
         && (
           recordCss.has(candidateSource)
-          || containsCssAfterMinify(targetCss, candidateSource)
+          || targetMatcher.contains(candidateSource)
           || (
             targetIsRootWebStyle
             && candidateIsRootWebStyle
-            && !hasNonCommentCss(filterExistingCssRules(targetCss, candidateSource).trim())
+            && !hasNonCommentCss(targetMatcher.filter(candidateSource).trim())
           )
         )
       )
