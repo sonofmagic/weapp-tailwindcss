@@ -1,7 +1,16 @@
 name: Windows Demo Watch Diagnostic
 
 on:
+  pull_request:
+    paths:
+      - .github/workflows/demo-watch-diagnostic.yml
+      - packages/weapp-tailwindcss/src/bundlers/webpack/**
+      - demo/subpackage-taro-webpack-react-tailwindcss-v4/**
   workflow_dispatch:
+
+concurrency:
+  group: windows-watch-diagnostic-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
