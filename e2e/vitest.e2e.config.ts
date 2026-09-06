@@ -67,6 +67,8 @@ export default defineConfig({
     ],
   },
   test: {
+    // 基线更新必须显式传入 -u；本地非 CI 也不能自动创建快照。
+    update: 'none',
     // 保持 glob 为 POSIX 形式；Windows 绝对路径中的反斜杠会导致 Vitest 无法匹配测试文件。
     include: ['e2e/*.test.ts'],
     reporters: ['default', path.resolve(__dirname, './progress-reporter.ts')],

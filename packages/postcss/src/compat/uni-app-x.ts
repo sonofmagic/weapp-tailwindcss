@@ -51,7 +51,8 @@ function rewriteApplyParams(params: string, marker: string) {
 /** 将 Sass 不可直接解析的 important utility 改写成跨预处理器中间形式。 */
 export function normalizeUniAppXImportantApplyForSass(css: string) {
   try {
-    const root = postcss.parse(css, { from: undefined, syntax: scssSyntax })
+    // postcss.parse 不读取 syntax 选项；必须直接使用 SCSS parser 保留行内注释和插值。
+    const root = scssSyntax.parse(css, { from: undefined })
     let changed = false
     root.walkAtRules('apply', (rule) => {
       const params = rewriteApplyParams(rule.params, UNI_APP_X_IMPORTANT_APPLY_MARKER)
@@ -60,7 +61,7 @@ export function normalizeUniAppXImportantApplyForSass(css: string) {
         changed = true
       }
     })
-    return changed ? root.toString() : css
+    return changed ? root.toString(scssSyntax.stringify) : css
   }
   catch {
     return css
