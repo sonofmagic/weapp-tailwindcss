@@ -14,7 +14,7 @@ import { resolveRuntimeBranch } from '@/runtime-branch'
 import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, patchMpxLoaderResolve } from '@/shared/mpx'
 import { captureResolvedFrameworkPostcssOptions, collectFrameworkPostcssOptionsFromLoaderEntries } from '../../shared/framework-postcss'
 import { deleteWebpackLoaderRuntime, setWebpackLoaderRuntime } from '../loaders/runtime-registry'
-import { createDefaultLoaderAnchorFinders } from '../shared/loader-anchors'
+import { createDefaultLoaderAnchorFinders, findCssPreprocessorIndex } from '../shared/loader-anchors'
 import { hasLoaderEntry, isCssLikeModuleResource } from './shared'
 
 interface SetupWebpackV5LoadersOptions {
@@ -226,9 +226,11 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
       if (rewriteAnchorIdx === -1 && classSetAnchorIdx === -1 && !isCssModule) {
         return
       }
+      const preprocessorIndex = findCssPreprocessorIndex(loaderEntries)
       const anchorlessInsert = (entry: any, position: 'before' | 'after') => {
         if (position === 'after') {
-          loaderEntries.push(entry)
+          // 没有 CSS 消费 loader 时，仍要等预处理器把 SCSS/Less 编译成 CSS。
+          loaderEntries.splice(preprocessorIndex === -1 ? loaderEntries.length : preprocessorIndex, 0, entry)
         }
         else {
           loaderEntries.unshift(entry)

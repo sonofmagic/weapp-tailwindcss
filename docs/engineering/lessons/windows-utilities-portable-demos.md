@@ -13,6 +13,7 @@ regressions:
   - packages/weapp-tailwindcss/test/bundlers/vite-serve-mini-target.integration.test.ts
   - packages/weapp-tailwindcss/test/tailwindcss/source-scan-path-identity.test.ts
   - scripts/ci/demo-matrix/browser.test.mjs
+  - packages/weapp-tailwindcss/test/bundlers/webpack-discarded-css.integration.test.ts
 ---
 
 # Windows 标准 utility 缺失与 demo 跨系统验收
@@ -39,6 +40,8 @@ Generic Vite 的小程序目标在 serve 时没有 generateBundle 收尾，不�
 
 Linux 干净安装发现上游 UTS 原生包将 libc 标记为 `gnu`，pnpm 11 按 `glibc` 筛选而跳过该可选依赖。仓库 pnpm readPackage 钩子仅纠正此包的错误元数据，锁文件记录 glibc 与钩子校验值，不改变包版本或完整性。uni-app x 的诊断包同时加入 CI 构建入口，避免本机已有 dist 掩盖干净构建缺失。Windows 的 Taro Harmony hybrid 基线发现 demo 的 designWidth 路径正则只匹配双反斜杠，导致同一页面使用不同设计尺寸；改用 path API 比较目录身份。
 
+Release Gate 的 Docusaurus SSR 构建还暴露了无 PostCSS loader 的 SCSS 链路：生成 loader 被放到 Sass 编译之前，CSS parser 遇到 `//` 注释报错。插入位置现在优先使用 PostCSS/css-loader 的 CSS 消费边界，否则使用 Sass/Less/Stylus 的输出边界。真实 Webpack 回归必须加载已构建插件，因为直接导入源码时相邻 loader 产物不存在，可能未注入 loader 而假通过。回归同时覆盖 CSS 正常输出与 SSR 丢弃输出，修复前已复现同一解析错误，修复后 170 项 Webpack 回归及 Docusaurus 英文生产构建通过。
+
 ## 验证
 
 原始修复提交 `de58576bada6a50976883c173fec61c0a21dd911` 的 [Windows Node 22/24 与 Ubuntu 专项](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34023069668) 已通过；Windows 先复现发布版 5.5.1 缺失，再验证修复包恢复全部规则。该运行不代表扩展矩阵通过。
@@ -46,6 +49,8 @@ Linux 干净安装发现上游 UTS 原生包将 libc 标记为 `gnu`，pnpm 11 �
 扩展前同步 main `4f914160e40df93900469f91a0c5ab1235c22b8d`，保留用户工作区。本地执行 `pnpm build:ci`，Vite/Rspack/loader/import 定向回归 279 项通过，样式注入 89 项通过。全部目标使用 [统一运行器](../../../scripts/ci/demo-matrix/README.md) 生成生产语义基线并验收正常 dev、替换、新增、删除、Web 刷新；原生与 WebView 按声明边界验收。当前文档保持 partial，待本次提交的三系统 CI 证据完成后更新。
 
 扩展 CI 失败后的定向复验：六个 Vite/plugin/source 套件 255 项通过，源码候选 32 项通过，默认/显式扫描与 axml/qxml 删除模板 4 项通过，矩阵及真实浏览器等待 9 项通过。`pnpm build:ci`、`pnpm lint`、`pnpm agents:check` 和冻结安装通过。Taro React 两种构建器的对应基线已限定项目重新生成，无语义差异；随后正常模式复验微信、Harmony hybrid、React/Vue Vite 小程序与分包 Taro H5 全部通过，没有使用更新参数。
+
+core smoke 的旧样式注入断言已按当前源码同步：检查 SCSS/Less 的实际颜色与 Taro 的页面路由，Mpx/uni 和 Taro 相关目标分别定向复验通过。Vite 增量单测的空 CSS mock 改为有效声明，避免正常 CSS 优化删除空规则导致假失败，29 项回归通过。
 
 ## 适用边界
 
