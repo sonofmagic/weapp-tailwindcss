@@ -186,6 +186,8 @@ jobs:
             node: 24
           - os: ubuntu-latest
             node: 24
+          - os: macos-latest
+            node: 24
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-pnpm
@@ -206,10 +208,16 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  portable-demos:
+    name: Portable demos
+    needs: scope
+    if: needs.scope.outputs.core == 'true'
+    uses: ./.github/workflows/demo-matrix.yml
+
   pr-gate:
     name: PR Gate
     if: always()
-    needs: [scope, quality, core-smoke, platform-watch, platform-dev, windows-utilities]
+    needs: [scope, quality, core-smoke, platform-watch, platform-dev, windows-utilities, portable-demos]
     runs-on: ubuntu-latest
     steps:
       - name: Require enabled PR checks
@@ -220,9 +228,14 @@ jobs:
           PLATFORM_RESULT: ${{ needs.platform-watch.result }}
           DEV_RESULT: ${{ needs.platform-dev.result }}
           UTILITIES_RESULT: ${{ needs.windows-utilities.result }}
+          DEMOS_ENABLED: ${{ needs.scope.outputs.core }}
+          DEMOS_RESULT: ${{ needs.portable-demos.result }}
         run: |
           test "$SCOPE_RESULT" = success
           test "$UTILITIES_RESULT" = success
+          if test "$DEMOS_ENABLED" = true; then
+            test "$DEMOS_RESULT" = success
+          fi
           for result in "$QUALITY_RESULT" "$SMOKE_RESULT" "$PLATFORM_RESULT" "$DEV_RESULT"; do
             test "$result" = success || test "$result" = skipped
           done

@@ -211,10 +211,17 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     if (!rememberedCssSource) {
       continue
     }
-    const { rawSource, sourceFile } = rememberedCssSource
+    const { sourceFile } = rememberedCssSource
+    const rawSource = isWebGeneratorTarget
+      ? rememberedCssSource.rawSource
+      : normalizeMiniProgramImportShell(rememberedCssSource.rawSource, {
+          cssOnly: true,
+          outputFile,
+          outputFiles: [...bundleFiles, ...lastCssResultByFile.keys()],
+        })
     const generatorRawSource = isWebGeneratorTarget
       ? rawSource
-      : normalizeMiniProgramGeneratorCssSource(rawSource, outputFile)
+      : normalizeMiniProgramGeneratorCssSource(rawSource, outputFile, [...bundleFiles, ...lastCssResultByFile.keys()])
     activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
     activeViteCssCacheFiles.add(normalizeViteCssCacheKey(sourceFile))
     const outputCssHandlerOptions = getCssHandlerOptions(rememberedOutputFile)
@@ -334,7 +341,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
         }
         metrics.css.elapsed += measureElapsed(start)
         metrics.css.transformed++
-        onUpdate(outputFile, rawSource, css)
+        onUpdate(outputFile, rememberedCssSource.rawSource, css)
         debug('css replay preserve local import shell: %s', outputFile)
       }))
       continue
@@ -388,7 +395,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       }
       metrics.css.elapsed += measureElapsed(start)
       metrics.css.transformed++
-      onUpdate(outputFile, rawSource, css)
+      onUpdate(outputFile, rememberedCssSource.rawSource, css)
       debug('css replay handle: %s', outputFile)
     }))
   }

@@ -1,6 +1,7 @@
 import type webpack from 'webpack'
 import type { WebpackCssImportRewriteLoaderOptions } from './runtime-registry'
 import { Buffer } from 'node:buffer'
+import { normalizeResolvedTailwindcssImports } from '@/bundlers/shared/css-imports'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
 import {
   generateCssForWebpackPipeline,
@@ -13,7 +14,10 @@ const WeappTwCssGenerationLoader: webpack.LoaderDefinitionFunction<WebpackCssImp
   source: string | Buffer,
 ) {
   const options = resolveWebpackCssPipelineLoaderOptions(this.getOptions())
-  const input = Buffer.isBuffer(source) ? source.toString('utf-8') : source
+  const input = normalizeResolvedTailwindcssImports(
+    Buffer.isBuffer(source) ? source.toString('utf-8') : source,
+    options?.tailwindcssImportRewrite?.pkgDir,
+  )
   const shouldGenerate = hasTailwindRootDirectives(input, { importFallback: true })
     || hasTailwindApplyDirective(input)
   if (!shouldGenerate) {

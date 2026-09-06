@@ -204,6 +204,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       }
     },
     rn: {
+      entry: 'app.rn',
       appName: 'taroDemo',
       postcss: {
         cssModules: {

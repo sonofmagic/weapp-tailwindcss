@@ -41,6 +41,8 @@
     "predev:ios": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
   },
   "dependencies": {
+    "@react-native-community/slider": "catalog:reactNativeSlider442",
+    "@react-native-picker/picker": "catalog:reactNativePicker261",
     "@babel/runtime": "catalog:babelRuntime7284",
     "@tarojs/components": "catalog:taro4",
     "@tarojs/components-rn": "catalog:taro4rn",
@@ -61,7 +63,14 @@
     "expo": "catalog:expo50",
     "react": "catalog:react18",
     "react-dom": "catalog:react18",
-    "react-native": "catalog:reactNative073"
+    "react-native": "catalog:reactNative073",
+    "react-native-device-info": "catalog:reactNativeDeviceInfo14",
+    "react-native-gesture-handler": "catalog:reactNativeGestureHandler214",
+    "react-native-pager-view": "catalog:reactNativePagerView623",
+    "react-native-root-siblings": "catalog:reactNativeRootSiblings5",
+    "react-native-screens": "catalog:reactNativeScreens329",
+    "react-native-svg": "catalog:reactNativeSvg141",
+    "react-native-webview": "catalog:reactNativeWebview136"
   },
   "devDependencies": {
     "@babel/core": "catalog:babelCore7285",

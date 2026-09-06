@@ -88,7 +88,8 @@ function resolveStyleOutputExtensionFromMatcher(
   if (!cssMatcher || !stem) {
     return undefined
   }
-  return COMMON_MINI_PROGRAM_STYLE_OUTPUT_EXTENSIONS.find(extension => cssMatcher(`${stem}${extension}`))
+  const extensions = COMMON_MINI_PROGRAM_STYLE_OUTPUT_EXTENSIONS.filter(extension => cssMatcher(`${stem}${extension}`))
+  return extensions.length === 1 ? extensions[0] : undefined
 }
 
 function resolveStyleOutputFileFromFiles(

@@ -12491,7 +12491,7 @@ ${generatedBanner}`
 
     const nextAppCss = (secondBundle['app.wxss'] as OutputAsset).source.toString()
     const nextAppOriginCss = (secondBundle['app-origin.wxss'] as OutputAsset).source.toString()
-    expect(nextAppCss).toContain('@import "app-origin.wxss";')
+    expect(nextAppCss).toContain('@import "./app-origin.wxss";')
     expect(nextAppCss).not.toContain('text-[#222222]')
     expect(nextAppOriginCss).toContain('/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */')
     expect(nextAppOriginCss).not.toContain('text-[#222222]')

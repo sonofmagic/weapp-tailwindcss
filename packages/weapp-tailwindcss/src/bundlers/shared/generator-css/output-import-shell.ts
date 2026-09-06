@@ -1,5 +1,6 @@
 import type { Node } from 'postcss'
 import { postcss } from '@weapp-tailwindcss/postcss'
+import { parseCssImportSpecifier, quoteCssImportSpecifier } from '@/tailwindcss/v4-engine/css-import'
 import { parseImportRequest } from './directives'
 import { isPureLocalCssImportWrapper } from './local-imports'
 
@@ -17,10 +18,29 @@ function normalizeMiniProgramOutputImportRequest(request: string) {
   return `./${request}`
 }
 
-export function normalizeMiniProgramImportShell(css: string) {
-  return css.replace(MINI_PROGRAM_OUTPUT_IMPORT_RE, (_match, prefix: string, quote: string, request: string, suffix: string) => {
-    return `${prefix}${quote}${normalizeMiniProgramOutputImportRequest(request)}${quote}${suffix}`
+export function normalizeMiniProgramImportShell(css: string, output?: { outputFile: string, outputFiles: Iterable<string>, cssOnly?: boolean }) {
+  const normalized = output?.cssOnly
+    ? css
+    : css.replace(MINI_PROGRAM_OUTPUT_IMPORT_RE, (_match, prefix: string, quote: string, request: string, suffix: string) => {
+        return `${prefix}${quote}${normalizeMiniProgramOutputImportRequest(request)}${quote}${suffix}`
+      })
+  if (!output || !normalized.includes('@import')) {
+    return normalized
+  }
+  // .css 也可能是小程序产物；仅依据当前或已记录的 bundle 身份规范化，不能改写源码包请求。
+  const files = new Set([...output.outputFiles].map(normalizeOutputPath))
+  const root = postcss.parse(normalized)
+  root.walkAtRules('import', (rule) => {
+    const parsed = parseCssImportSpecifier(rule.params)
+    if (!parsed || (output.cssOnly && !/\.css(?:$|[?#])/i.test(parsed.specifier)) || !files.has(resolveOutputImportRequest(output.outputFile, parsed.specifier))) {
+      return
+    }
+    const request = normalizeMiniProgramOutputImportRequest(parsed.specifier)
+    if (request !== parsed.specifier) {
+      rule.params = rule.params.replace(parsed.raw, quoteCssImportSpecifier(request, parsed.quote))
+    }
   })
+  return root.toString()
 }
 
 function normalizeOutputPath(file: string) {
@@ -73,11 +93,12 @@ function isMiniProgramOutputImport(node: Node) {
 }
 
 function isSelfMiniProgramOutputImport(outputFile: string, node: Node) {
-  if (!isMiniProgramOutputImport(node) || node.type !== 'atrule') {
+  if (node.type !== 'atrule' || node.name !== 'import') {
     return false
   }
-  const request = parseImportRequest(node.params)
+  const request = parseCssImportSpecifier(node.params)?.specifier
   return request !== undefined
+    && /\.(?:css|wxss|acss|ttss|qss|jxss|tyss)(?:$|[?#])/i.test(request)
     && resolveOutputImportRequest(outputFile, request) === normalizeOutputPath(outputFile)
 }
 
@@ -109,8 +130,8 @@ export function removeMiniProgramOutputImports(css: string) {
   return removeMiniProgramOutputImportsBy(css, isMiniProgramOutputImport)
 }
 
-export function normalizeMiniProgramGeneratorCssSource(css: string, outputFile?: string | undefined) {
-  const normalized = normalizeMiniProgramImportShell(css)
+export function normalizeMiniProgramGeneratorCssSource(css: string, outputFile?: string | undefined, outputFiles?: Iterable<string>) {
+  const normalized = normalizeMiniProgramImportShell(css, outputFile && outputFiles ? { outputFile, outputFiles } : undefined)
   if (outputFile) {
     return removeSelfMiniProgramOutputImports(normalized, outputFile)
   }

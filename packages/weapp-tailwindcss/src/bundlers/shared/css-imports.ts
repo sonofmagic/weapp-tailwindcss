@@ -1,8 +1,34 @@
 import type { AppType } from '@/types'
 import path from 'node:path'
+import { postcss } from '@weapp-tailwindcss/postcss'
+import { parseCssImportSpecifier, quoteCssImportSpecifier } from '@/tailwindcss/v4-engine/css-import'
 
 const tailwindcssImportRE = /^(?:tailwindcss|weapp-tailwindcss)(?:\/.*)?$/
 const tailwindcssCssImportStatementRE = /(@import\s+(?:url\(\s*)?)(["'])((?:tailwindcss|weapp-tailwindcss)(?:\/[^"']*)?\$?)(\2\s*\)?)/gi
+
+export function normalizeResolvedTailwindcssImports(code: string, pkgDir: string | undefined) {
+  if (!pkgDir) {
+    return code
+  }
+  const paths = /^[a-z]:[\\/]|^\\\\/i.test(pkgDir) ? path.win32 : path.posix
+  const root = postcss.parse(code)
+  let changed = false
+  root.walkAtRules('import', (rule) => {
+    const parsed = parseCssImportSpecifier(rule.params)
+    if (!parsed || !paths.isAbsolute(parsed.specifier)) {
+      return
+    }
+    const subpath = paths.relative(pkgDir, parsed.specifier)
+    if (!['index.css', 'theme.css', 'utilities.css', 'preflight.css'].includes(subpath)) {
+      return
+    }
+    // loader 解析后的包文件在生成边界恢复为包请求，不能作为浏览器 import 重新输出。
+    const request = subpath === 'index.css' ? 'tailwindcss' : `tailwindcss/${subpath}`
+    rule.params = rule.params.replace(parsed.raw, () => quoteCssImportSpecifier(request, parsed.quote))
+    changed = true
+  })
+  return changed ? root.toString() : code
+}
 
 export interface ResolveTailwindcssImportOptions {
   join?: ((base: string, subpath: string) => string) | undefined

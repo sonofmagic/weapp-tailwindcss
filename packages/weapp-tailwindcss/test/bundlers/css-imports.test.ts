@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import postcss from 'postcss'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
+import { normalizeResolvedTailwindcssImports, resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
 import { rewriteLocalCssImportRequestsForOutput } from '@/bundlers/shared/generator-css/local-imports'
 import loader, { transformCssImportRewriteSource } from '@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader'
@@ -14,6 +14,17 @@ function joinPosixPath(base: string, subpath: string) {
 }
 
 describe('bundlers/shared css-imports', () => {
+  it.each([
+    ['/workspace/node_modules/weapp-tailwindcss', '/workspace/node_modules/weapp-tailwindcss'],
+    ['C:\\project space\\node_modules\\weapp-tailwindcss', 'C:/project space/node_modules/weapp-tailwindcss'],
+    ['\\\\server\\share\\weapp-tailwindcss', '//server/share/weapp-tailwindcss'],
+  ])('restores only resolved generator package files at the loader boundary: %s', (directory, cssDirectory) => {
+    const source = `@import url("${cssDirectory}/theme.css") layer(theme);\n@import "${cssDirectory}/utilities.css" layer(utilities) source(none);\n@import "./theme.css";\n@import "${cssDirectory}/../other/theme.css";`
+    expect(normalizeResolvedTailwindcssImports(source, directory)).toBe(`@import "tailwindcss/theme.css" layer(theme);\n@import "tailwindcss/utilities.css" layer(utilities) source(none);\n@import "./theme.css";\n@import "${cssDirectory}/../other/theme.css";`)
+    const escaped = directory.replaceAll('\\', '\\\\')
+    expect(normalizeResolvedTailwindcssImports(`@import "${escaped}/index.css";`, directory)).toBe('@import "tailwindcss";')
+  })
+
   const pkgDir = '/virtual/weapp-tailwindcss'
   const createdDirs: string[] = []
 

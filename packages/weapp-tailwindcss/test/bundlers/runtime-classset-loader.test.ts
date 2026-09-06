@@ -8,6 +8,27 @@ import { deleteWebpackLoaderRuntime, setWebpackLoaderRuntime } from '@/bundlers/
 describe('bundlers/runtime classset loader', () => {
   const tempDirs: string[] = []
 
+  it.each([
+    '// extracted by mini-css-extract-plugin\nexport {};\nif(module.hot) {(function() {})()}',
+    'var ___CSS_LOADER_EXPORT___ = ___CSS_LOADER_API_IMPORT___(); export default ___CSS_LOADER_EXPORT___;',
+  ])('does not overwrite generated CSS with loader JavaScript', (source) => {
+    const updateGeneratedCss = vi.fn()
+    const result = loader.call({
+      resourcePath: '/virtual/entry.css',
+      getOptions: () => ({ updateGeneratedCss }),
+    } as any, source)
+    expect(result).toBe(source)
+    expect(updateGeneratedCss).not.toHaveBeenCalled()
+  })
+
+  it.each(['module.exports = ___CSS_LOADER_EXPORT___;', 'export default ___CSS_LOADER_EXPORT___;'])('preserves css-loader JavaScript with %s', async (exports) => {
+    const source = `// Imports\nvar ___CSS_LOADER_EXPORT___ = ___CSS_LOADER_API_IMPORT___(false);\n___CSS_LOADER_EXPORT___.push([module.id, "@layer theme { :root { --spacing: 1rem } }", ""]);\n${exports}`
+    const context = { getOptions: () => ({ getClassSet: async () => {} }) } as any
+    expect(await loader.call(context, source)).toBe(source)
+    const buffer = Buffer.from(source)
+    expect(await loader.call(context, buffer)).toBe(buffer)
+  })
+
   afterEach(() => {
     delete process.env.WEAPP_TW_LOADER_DEBUG
     vi.restoreAllMocks()

@@ -27,7 +27,7 @@ function normalizeRuntimeCssSource(source: string | Buffer) {
 }
 
 function shouldCleanRuntimeCss(css: string) {
-  return css.includes('@layer') || css.includes('@theme')
+  return !isWebpackCssLoaderRuntimeSource(css) && (css.includes('@layer') || css.includes('@theme'))
 }
 
 function cleanRuntimeCss(css: string) {
@@ -96,10 +96,13 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
   const runtime = getWebpackLoaderRuntime(rawOptions?.weappTailwindcssRuntimeKey)
   const opt = runtime?.classSet ?? rawOptions
   if (this.resourcePath) {
-    opt?.updateGeneratedCss?.({
-      file: this.resourcePath,
-      css: Buffer.isBuffer(source) ? source.toString('utf8') : source,
-    })
+    const sourceText = Buffer.isBuffer(source) ? source.toString('utf8') : source
+    if (!isWebpackCssLoaderRuntimeSource(sourceText)) {
+      opt?.updateGeneratedCss?.({
+        file: this.resourcePath,
+        css: sourceText,
+      })
+    }
     opt?.registerCssSourceFile?.({
       file: this.resourcePath,
       css: resolveRegisteredCssSource(this.resourcePath, source),

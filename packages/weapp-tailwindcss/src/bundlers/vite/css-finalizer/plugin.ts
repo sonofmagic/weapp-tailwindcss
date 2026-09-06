@@ -17,6 +17,7 @@ import { normalizeMiniProgramGeneratorCssSource } from '../../shared/generator-c
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from '../generate-bundle'
 import { applyViteAssetEmissionPlan } from '../generate-bundle/asset-emission-plan'
+import { linkEntryChunkStyles } from '../generate-bundle/entry-style-graph'
 import { finalizeMiniProgramCssAssetStructures } from '../generate-bundle/final-css-assets'
 import { normalizeRootMiniProgramImportShellAssets } from '../generate-bundle/finalize'
 import { linkFrameworkRootStyleToRuntimeEntry, restoreFrameworkRootMiniProgramImportShellAssets } from '../generate-bundle/root-style-output'
@@ -142,6 +143,21 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         const trackFinalCssAssetUpdate = (file: string, original: string, generated: string) => {
           finalCssAssetFiles.add(file)
           opts.onUpdate(file, original, generated)
+        }
+        const linkEntryStyles = () => {
+          if (isWebGeneratorTarget) {
+            return
+          }
+          linkEntryChunkStyles(bundle, {
+            matchesCss: opts.cssMatcher,
+            onUpdate: trackFinalCssAssetUpdate,
+            resolveOutputFile: (id) => {
+              if (!opts.cssMatcher(id) || id.includes('?')) {
+                return undefined
+              }
+              return resolveViteCssPipelineOutputFile(id, opts, rootDir, false, false, sourceRoot, resolveMiniProgramStyleOutputExtension({ files: Object.keys(bundle) }), Object.keys(bundle))
+            },
+          })
         }
         restoreFrameworkRootMiniProgramImportShellAssets(bundle, {
           debug,
@@ -289,6 +305,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           await injectHarmonyBundleStyles(runtime)
           collectViteProcessedCssAssets()
           injectViteProcessedCssIntoMainCss()
+          linkEntryStyles()
           normalizeRootMiniProgramImportShellAssets(bundle, {
             cssMatcher: opts.cssMatcher,
             debug,
@@ -455,6 +472,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         await injectHarmonyBundleStyles()
         collectViteProcessedCssAssets()
         injectViteProcessedCssIntoMainCss()
+        linkEntryStyles()
         normalizeRootMiniProgramImportShellAssets(bundle, {
           cssMatcher: opts.cssMatcher,
           debug,

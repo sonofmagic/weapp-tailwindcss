@@ -5,6 +5,7 @@ import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
 import { AssetEmissionPlan } from '@/compiler'
 import { parseImportRequest } from '../../shared/generator-css/directives'
 import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
+import { isRootStyleOutputFile } from '../processed-css-assets/style-files'
 import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 
 export function isRootMiniProgramStyleOutputFile(file: string) {
@@ -72,7 +73,7 @@ export function shouldPreserveFrameworkRootMiniProgramImportShell(options: {
 }) {
   return !options.isWebGeneratorTarget
     && options.matchesCss
-    && isRootMiniProgramStyleOutputFile(options.file)
+    && isRootStyleOutputFile(options.file)
     && isPureLocalCssImportWrapper(options.css)
     && shouldKeepRootMiniProgramStyleAsImportShell(options.shouldKeep())
 }
@@ -116,7 +117,7 @@ export function resolveFrameworkRootImportShellPlan(
     return {
       isCurrentImportShell,
       reusableTarget: options.rememberedTarget,
-      targetToRemember: importedFile && isRootMiniProgramStyleOutputFile(importedFile)
+      targetToRemember: importedFile && isRootStyleOutputFile(importedFile)
         ? importedFile
         : undefined,
     }
@@ -179,8 +180,8 @@ export function restoreFrameworkRootMiniProgramImportShellAssets(
     if (
       !options.matchesCss(sourceFile)
       || !options.matchesCss(targetFile)
-      || !isRootMiniProgramStyleOutputFile(sourceFile)
-      || !isRootMiniProgramStyleOutputFile(targetFile)
+      || !isRootStyleOutputFile(sourceFile)
+      || !isRootStyleOutputFile(targetFile)
       || normalizeOutputPathKey(sourceFile) === normalizeOutputPathKey(targetFile)
     ) {
       continue

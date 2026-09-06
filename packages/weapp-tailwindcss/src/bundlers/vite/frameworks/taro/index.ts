@@ -36,12 +36,16 @@ function createTaroAlipayBrowserslistAssetPlugin(): Plugin {
 }
 
 export function createTaroVitePlugins(options: UserDefinedOptions | InternalUserDefinedOptions = {}) {
+  const plugins = createViteFrameworkPlugins(options, {
+    frameworkName: 'taro',
+    cssPipelineStrategy: taroCssPipelineStrategy,
+    styleInjectorDelegate: viteStyleInjectorDelegates.taro,
+  })
+  if (!plugins) {
+    return undefined
+  }
   return [
     createTaroAlipayBrowserslistAssetPlugin(),
-    ...createViteFrameworkPlugins(options, {
-      frameworkName: 'taro',
-      cssPipelineStrategy: taroCssPipelineStrategy,
-      styleInjectorDelegate: viteStyleInjectorDelegates.taro,
-    }),
+    ...plugins,
   ]
 }

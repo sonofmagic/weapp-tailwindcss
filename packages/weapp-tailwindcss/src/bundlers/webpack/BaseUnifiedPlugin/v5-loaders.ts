@@ -261,11 +261,17 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
         && !isLynxMainThreadCss
       ) {
         const existingIndex = loaderEntries.findIndex(entry => entry.loader?.includes?.(runtimeCssImportRewriteLoader))
+        const existingOptions = existingIndex === -1 ? undefined : loaderEntries[existingIndex]?.options
+        const generateInRegisteredLoader = typeof existingOptions === 'object' && existingOptions !== null
+          && 'generateCss' in existingOptions && existingOptions.generateCss === true
         const rewriteLoaderEntry = existingIndex !== -1
           ? {
               ...loaderEntries.splice(existingIndex, 1)[0],
               loader: runtimeCssImportRewriteLoader,
-              options: cssImportRewriteLoaderOptions,
+              options: {
+                ...cssImportRewriteLoaderOptions,
+                generateCss: cssImportRewriteLoaderOptions.generateCss || generateInRegisteredLoader,
+              },
             }
           : createCssImportRewriteLoaderEntry()
         if (rewriteLoaderEntry) {
