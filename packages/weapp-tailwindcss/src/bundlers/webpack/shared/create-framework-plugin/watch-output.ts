@@ -26,7 +26,7 @@ export function shouldKeepPreviousWebpackCssSource(
 function normalizeIgnoredList(ignored: WebpackWatchOptions['ignored']): WebpackWatchIgnoredItem[] {
   const items: unknown[] = Array.isArray(ignored) ? [...ignored] : [ignored]
   return items.filter((item): item is WebpackWatchIgnoredItem =>
-    typeof item === 'string' || item instanceof RegExp || typeof item === 'function',
+    (typeof item === 'string' && item.length > 0) || item instanceof RegExp || typeof item === 'function',
   )
 }
 
@@ -34,20 +34,25 @@ function createOutputIgnoredPredicate(
   ignoredList: WebpackWatchIgnoredItem[],
   ignoredPath: string,
 ) {
+  const paths = path.win32.isAbsolute(ignoredPath) && !path.posix.isAbsolute(ignoredPath) ? path.win32 : path
+  const contains = (directory: string, file: string) => {
+    const relative = paths.relative(directory, file)
+    return relative === '' || (relative !== '..' && !relative.startsWith(`..${paths.sep}`) && !paths.isAbsolute(relative))
+  }
   const predicate: OutputIgnoredPredicate = (file: string) => {
-    const resolvedFile = path.resolve(file)
-    if (resolvedFile === ignoredPath || resolvedFile.startsWith(`${ignoredPath}${path.sep}`)) {
+    const resolvedFile = paths.resolve(file)
+    if (contains(ignoredPath, resolvedFile)) {
       return true
     }
 
     const normalizedFile = file.replace(/\\/g, '/')
     return ignoredList.some((item) => {
       if (typeof item === 'string') {
-        const resolvedItem = path.resolve(item)
-        if (resolvedFile === resolvedItem || resolvedFile.startsWith(`${resolvedItem}${path.sep}`)) {
+        const resolvedItem = paths.resolve(item)
+        if (contains(resolvedItem, resolvedFile)) {
           return true
         }
-        return micromatch.isMatch(normalizedFile, item)
+        return micromatch.isMatch(normalizedFile, [item, `${item}/**`], { dot: true })
       }
       if (item instanceof RegExp) {
         return item.test(normalizedFile)
@@ -67,22 +72,15 @@ function appendIgnoredPath(ignored: WebpackWatchOptions['ignored'], ignoredPath:
     return ignored
   }
 
-  const ignoredList = normalizeIgnoredList(ignored)
-  const hasNonStringIgnoredRule = ignoredList.some(item => typeof item !== 'string')
-  if (hasNonStringIgnoredRule) {
-    return createOutputIgnoredPredicate(ignoredList, ignoredPath)
-  }
-
-  if (ignoredList.some(item => typeof item === 'string' && path.resolve(item) === ignoredPath)) {
-    return ignored
-  }
-  return [...ignoredList, ignoredPath]
+  // Watchpack 将字符串解释成 glob，输出目录必须保留字面路径语义。
+  return createOutputIgnoredPredicate(normalizeIgnoredList(ignored), ignoredPath)
 }
 
 export function setupWebpackWatchOutputIgnore(compiler: Compiler) {
   const appendOutputIgnoredPath = (watchOptions?: WebpackWatchOptions, outputPath?: string) => {
     const resolvedOutputPath = outputPath || compiler.outputPath || compiler.options?.output?.path
-    const outputDir = resolvedOutputPath ? path.resolve(resolvedOutputPath) : undefined
+    const paths = resolvedOutputPath && path.win32.isAbsolute(resolvedOutputPath) && !path.posix.isAbsolute(resolvedOutputPath) ? path.win32 : path
+    const outputDir = resolvedOutputPath ? paths.resolve(resolvedOutputPath) : undefined
     if (!outputDir) {
       return watchOptions
     }
