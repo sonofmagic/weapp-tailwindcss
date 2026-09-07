@@ -3,6 +3,7 @@ import path from 'node:path'
 import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { replaceWxml } from '@/wxml'
+import { parseUniAppXStyleSource } from './source-parser'
 
 const GEN_APP_STYLES_RE = /const\s+GenAppStyles\s*=\s*\[_uM\(\[([\s\S]*?)\]\)\]/
 const STYLE_ENTRY_RE = /\[\s*("((?:\\.|[^"\\])+)")\s*,\s*(_pS\(_uM\(\[[\s\S]*?\]\)\))\s*\]/g
@@ -251,7 +252,7 @@ export function createStyleValueFromApplySources(sources: string[], utilityStyle
     for (const styleSource of styleSources) {
       let root: postcss.Root
       try {
-        root = postcss.parse(styleSource)
+        root = parseUniAppXStyleSource(styleSource)
       }
       catch {
         continue
@@ -290,15 +291,15 @@ export function createStyleValueFromApplySources(sources: string[], utilityStyle
 }
 
 function resolveReferencePaths(styleSource: string, sourceId?: string) {
-  if (!sourceId || !styleSource.includes('@reference')) {
-    return styleSource
-  }
   let root: postcss.Root
   try {
-    root = postcss.parse(styleSource)
+    root = parseUniAppXStyleSource(styleSource)
   }
   catch {
     return styleSource
+  }
+  if (!sourceId || !styleSource.includes('@reference')) {
+    return root.toString()
   }
   const cleanSourceId = sourceId.replace(/\?.*$/, '')
   const pathApi = /^[a-z]:[\\/]/i.test(cleanSourceId) ? path.win32 : path
@@ -336,7 +337,7 @@ export function collectUniAppXHarmonyApplyUtilitiesFromSources(sources: Iterable
     for (const styleSource of collectUniAppXHarmonyApplyStyleSourcesFromSource(source)) {
       let root: postcss.Root
       try {
-        root = postcss.parse(styleSource)
+        root = parseUniAppXStyleSource(styleSource)
       }
       catch {
         continue

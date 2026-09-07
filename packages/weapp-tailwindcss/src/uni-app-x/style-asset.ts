@@ -1,12 +1,13 @@
+import type { postcss } from '@weapp-tailwindcss/postcss'
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { HarmonyStyleInjectOptions } from './style-asset/harmony-global'
-import { postcss } from '@weapp-tailwindcss/postcss'
 import { expandUniAppXHarmonyApplyStyles } from './style-asset/harmony-apply'
 import {
   injectUniAppXHarmonyGlobalStyles,
   resolveStyleAssetFile,
   resolveStylePlaceholderFallbackFiles,
 } from './style-asset/harmony-global'
+import { parseUniAppXStyleSource } from './style-asset/source-parser'
 import {
   collectChunkMapSourcesContent,
   collectUniAppXHarmonyApplyStyleSourcesFromSource,
@@ -57,7 +58,7 @@ export function createUniAppXHarmonyApplyGeneratorSource(
   return applyStyleSources.map((source) => {
     let root: postcss.Root
     try {
-      root = postcss.parse(source)
+      root = parseUniAppXStyleSource(source)
     }
     catch {
       return source

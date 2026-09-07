@@ -7,6 +7,12 @@
 			}
 		},
 		{
+			"path": "pages/issue-1164/index",
+			"style": {
+				"navigationBarTitleText": "Issue 1164"
+			}
+		},
+		{
 			"path": "pages/issue-1160/index",
 			"style": {
 				"navigationBarTitleText": "Issue 1160"

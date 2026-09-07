@@ -15,6 +15,7 @@ import {
   shouldEnableComponentLocalStyle,
   shouldEnablePageLocalStyle,
 } from './local-style-matcher'
+import { isUniAppXStyleSourceEmpty } from './style-asset/source-parser'
 
 interface SfcBlock {
   content: string
@@ -384,7 +385,12 @@ export function transformUVue(
       )
     }
 
-    const scopedStyle = descriptor.styles.findLast(style => STYLE_SCOPED_RE.test(style.attrs))
+    const scopedStyle = descriptor.styles.findLast(style => STYLE_SCOPED_RE.test(style.attrs)
+      && (!options.onWebLocalStyleRules || !isUniAppXStyleSourceEmpty(style.content)))
+    if (localStyleCollector && options.onWebLocalStyleRules && descriptor.template && !scopedStyle) {
+      // 空作者块可能被框架移除；改用独立载体前清除上一轮回放内容。
+      options.onWebLocalStyleRules('')
+    }
     if (localStyleCollector && options.onWebLocalStyleRules && scopedStyle) {
       // 每次 SFC 变换都覆盖桥接缓存；当前没有局部规则时也要清除上一轮结果。
       options.onWebLocalStyleRules(localStyleCollector.hasStyles()
