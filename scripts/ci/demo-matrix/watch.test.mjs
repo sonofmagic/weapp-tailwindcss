@@ -3,7 +3,25 @@ import process from 'node:process'
 import { execa } from 'execa'
 import { expect, it } from 'vitest'
 import { repo } from './catalog.mjs'
-import { assertTaroWatchBuildComplete, assertUniWatchBuildComplete, assertViteWatchBuildComplete, developmentEnvironment } from './process.mjs'
+import { assertGulpWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, assertViteWatchBuildComplete, developmentEnvironment } from './process.mjs'
+
+it('waits for Gulp to finish all streams before copying output or starting another edit', () => {
+  const initial = '[03:19:19] Finished \'copyWXML\' after 29 ms\n[03:19:19] Starting \'compileTsFiles\'...\n'
+  const ready = `${initial}[03:19:20] watching for changes\n`
+  const changed = '[03:19:20] src\\pages\\index\\index.ttml is changed\n'
+  const copied = '[weapp-tailwindcss:hmr] {"bundler":"gulp","phase":"html","file":"index.ttml"}\n'
+  const completed = `${ready}${changed}${copied}[03:19:20] build complete\n`
+  expect(() => assertGulpWatchBuildComplete(initial)).toThrow()
+  expect(() => assertGulpWatchBuildComplete(ready)).not.toThrow()
+  expect(() => assertGulpWatchBuildComplete(ready, ready.length)).toThrow()
+  expect(() => assertGulpWatchBuildComplete(`${ready}${changed}${copied}`, ready.length)).toThrow()
+  expect(() => assertGulpWatchBuildComplete(completed, ready.length)).not.toThrow()
+  for (const event of ['changed', 'added', 'deleted']) {
+    expect(() => assertGulpWatchBuildComplete(`${completed}src\\index.ttml is ${event}\n`, ready.length)).toThrow()
+  }
+  expect(() => assertGulpWatchBuildComplete(`${completed}src\\index.ttml changed failed EBUSY: locked\n`, ready.length)).toThrow()
+  expect(() => assertGulpWatchBuildComplete(completed, completed.length)).toThrow()
+})
 
 it('waits for uni-app startup and the current incremental compilation', () => {
   const initial = 'Compiling...\nDONE  Build complete. Watching for changes...\n'

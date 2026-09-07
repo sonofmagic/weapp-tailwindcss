@@ -110,6 +110,13 @@ export function assertUniWatchBuildComplete(log, offset = 0) {
   }
 }
 
+export function assertGulpWatchBuildComplete(log, offset = 0) {
+  const current = stripVTControlCharacters(log.slice(offset))
+  const completed = Math.max(current.lastIndexOf('build complete'), offset === 0 ? current.lastIndexOf('watching for changes') : -1)
+  const pending = Math.max(...[' is changed', ' is added', ' is deleted', ' failed '].map(event => current.lastIndexOf(event)))
+  assert.ok(completed >= 0 && completed > pending, 'Gulp has not completed this compilation and resumed watching')
+}
+
 export async function complete(session, timeout = 600_000) {
   let timer
   try {

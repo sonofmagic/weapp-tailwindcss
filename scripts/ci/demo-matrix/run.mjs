@@ -9,7 +9,7 @@ import { cases, checkCatalog, commands, coverage, isWeb, matrix, repo } from './
 import { inspectNative } from './native.mjs'
 import { inspectFiles } from './output.mjs'
 import { insertProbe } from './probe.mjs'
-import { assertTaroWatchBuildComplete, assertUniWatchBuildComplete, complete, developmentEnvironment, freePort, start, until } from './process.mjs'
+import { assertGulpWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, complete, developmentEnvironment, freePort, start, until } from './process.mjs'
 import { replaceSourceFile } from './source-file.mjs'
 
 const args = process.argv.slice(2)
@@ -138,6 +138,9 @@ async function runCase(item) {
         else if (item.family === 'uni') {
           assertUniWatchBuildComplete(session.log(), buildLogOffset)
         }
+        else if (item.family === 'gulp') {
+          assertGulpWatchBuildComplete(session.log(), buildLogOffset)
+        }
         const snapshotDir = path.join(artifactDir, round)
         // 构建器可能在下一轮清理产物；检查归档副本，避免结果与证据分属不同轮次。
         await rm(snapshotDir, { recursive: true, force: true })
@@ -145,9 +148,6 @@ async function runCase(item) {
         return inspectFiles(snapshotDir, item, round)
       }, session)
       console.log(`[demo-matrix] ${new Date().toISOString()} ${item.id} verified ${round}`)
-      if (round === 'initial' && item.family === 'gulp') {
-        await until(() => assert.ok(session.log().includes('watching for changes'), 'Gulp watcher is not ready'), session)
-      }
       if (browser) {
         await browser.screenshot(round)
       }

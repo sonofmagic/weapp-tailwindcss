@@ -30,6 +30,7 @@ jobs:
           - taro-vite-vue3-tailwindcss-v4:jd
           - taro-vite-vue3-tailwindcss-v4:h5
           - subpackage-taro-webpack-react-tailwindcss-v4:tt
+          - gulp-tailwindcss-v4:tt
         include:
           - case: uni-app-vite-tailwindcss-v4:mp-weixin
             os: ubuntu-latest
