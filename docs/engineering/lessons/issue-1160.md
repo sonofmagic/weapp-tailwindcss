@@ -6,6 +6,7 @@ regressions:
   - packages/weapp-tailwindcss/test/uni-app-x/border-preflight.test.ts
   - e2e/issue-1160-static.test.ts
   - e2e/issue-1160-mini-static.test.ts
+  - scripts/ci/demo-matrix/source-file-retry.test.mjs
 ---
 
 # Issue #1160：uni-app x 单边边框默认值与组件样式顺序
@@ -137,6 +138,22 @@ PR #1163 提交后补跑全量核心测试，3412 项通过 / 35 跳过，
 另有一项源码行数门禁失败：新增选项使 vite.ts 达到 508 行。
 将边框选项组装迁入已有 border-preflight 模块后，行数门禁与
 uni-app x 回归共 168 项通过；不提高行数阈值，也不改变边框行为。
+随后全量核心复跑为 3413 项通过 / 35 跳过。
+
+CI 的 Windows / Node 24 Issue #1144 HMR 在 add 阶段遇到
+`rename temporary -> index.uvue` 的 `EPERM`；initial 和 replace 已通过。
+原子替换原先只执行一次 rename，没有处理 Windows 读取句柄的短暂占用。
+在同一文件替换边界为 Windows 的 EPERM/EACCES/EBUSY 增加最多 20 次、
+每次 100ms 的重试；保留原文件与同一份完整临时文件，最终失败仍抛出原错误并清理临时文件。
+没有退回截断写入，也没有扩大 HMR 验收超时或重试整个测试。
+
+`CI=1 pnpm test:demo:matrix` 为 35 项通过，包含真实 watcher/Rollup 验证，
+以及占用恢复、持续错误、非 Windows 错误和非重试错误的文件完整性验证。
+`CI=1 pnpm e2e:demo:matrix issue-1144-uni-app-x-web:h5` 在本机通过
+既有 static 基线、initial/replace/add/restore 与刷新，源码已恢复；定向 ESLint 通过。
+另一个 Windows Mpx 微信任务在首次 HMR 时 watch 进程以 0 提前退出，
+没有编译错误；同任务 ali/swan/tt 通过，本地 `CI=1 pnpm e2e:demo:matrix mpx-tailwindcss-v4:wx`
+也通过，尚不能将 Windows 提前退出归因于文件占用修复，继续以远端复跑核实。
 
 ## 规则评估
 
