@@ -107,3 +107,5 @@ Windows Vue 京东的 add 轮次已输出新增类名，但 Vite 在写出 app-o
 `194915f27` 的 Ubuntu 连续专项完成冻结安装、26 项回归以及三次真实 uni 全流程。Windows 新增目录依赖测试读取到上一轮值或空模块：目录事件可排队触发多次构建，构建计数增加后立即读取可能撞上下一轮写入。回归改为有界等待本轮直接值与派生值同时正确，每次使用新模块 URL 避免缓存半成品；仍保留编译计数与超时要求，原版失联不能因此通过。
 
 `66a36ae11` 的四项 Rollup 回归已在 Windows 通过，六组连续专项中的五组完成三次全流程。剩余分包 H5 在启动浏览器回归时超过五秒总预算，尚未进入 demo 构建；该期限从浏览器冷启动前开始计算，不代表路由语义失败。测试预算调整为二十秒并保留三十秒外层期限、路由切换及连接握手断言，继续以最终提交的完整 CI 验收。
+
+最终提交的 portable matrix 曾出现报告与 gate SHA 不一致：PR 事件的 head 在排队期间变化，reusable workflow 同时读取 `pull_request.head.sha` 和 `github.sha`，导致 gate 拿到旧 head。所有 matrix checkout、报告校验和 gate 现统一使用 workflow 的 `github.sha`，每次运行只接受同一提交的完整产物。
