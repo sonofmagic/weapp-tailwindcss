@@ -40,6 +40,14 @@ export function createUniAppXBorderPreflight(options?: CssPreflightOptions) {
   return rule.toString()
 }
 
+export function resolveUniAppXBorderPreflightOptions(
+  options: { cssPreflight?: CssPreflightOptions, cssPreflightRange?: 'all' },
+  isWeb: boolean,
+) {
+  const borderPreflight = isWeb ? undefined : createUniAppXBorderPreflight(options.cssPreflight)
+  return borderPreflight ? { borderPreflight, borderPreflightRange: options.cssPreflightRange } : {}
+}
+
 export function shouldInjectBorderPreflight(node: ElementNode, range?: 'all') {
   return range === 'all'
     ? !['template', 'slot', 'block'].includes(node.tag)
