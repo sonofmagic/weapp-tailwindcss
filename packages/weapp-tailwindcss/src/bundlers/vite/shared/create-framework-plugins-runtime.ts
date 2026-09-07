@@ -1,5 +1,6 @@
 /* eslint-disable style/max-statements-per-line, style/no-mixed-operators */
 import type { ViteCapabilityProfile } from '../capability-profile'
+import type { InternalUserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -431,7 +432,7 @@ ${tracedCss}`
       await discoverAndRegisterAutoCssSources()
     } await sourceScanSession.sync()
   }
-  const extraPlugins = capability.frameworkExtras ? frameworkBranch.createExtraPlugins?.({ customAttributesEntities, disabledDefaultTemplateHandler, ensureRuntimeClassSet, generateCss: generateTailwindCssForVitePipeline, getResolvedConfig, hmrCssModuleVersions, isEnabled: shouldEnableFrameworkExtraPlugins, isIosPlatform: extraPluginPlatform.isIosPlatform === true, isNativeAppStyleTarget: () => frameworkCssPipelineStrategy?.isNativeAppStyleTarget?.(createCssPipelineContext()) === true, isWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, jsHandler, mainCssChunkMatcher, registerModuleGraphCandidates, runtimeState, styleHandler, syncSourceCandidatesForHotUpdate, tailwindRootCssModuleIds, uniAppX, viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles, webCssEntryDiagnostics }) ?? [] : []
+  const extraPlugins = capability.frameworkExtras ? frameworkBranch.createExtraPlugins?.({ cssPreflight: (opts as InternalUserDefinedOptions).cssPreflight, cssPreflightRange: (opts as InternalUserDefinedOptions).cssPreflightRange, customAttributesEntities, disabledDefaultTemplateHandler, ensureRuntimeClassSet, generateCss: generateTailwindCssForVitePipeline, getResolvedConfig, hmrCssModuleVersions, isEnabled: shouldEnableFrameworkExtraPlugins, isIosPlatform: extraPluginPlatform.isIosPlatform === true, isNativeAppStyleTarget: () => frameworkCssPipelineStrategy?.isNativeAppStyleTarget?.(createCssPipelineContext()) === true, isWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, jsHandler, mainCssChunkMatcher, registerModuleGraphCandidates, runtimeState, styleHandler, syncSourceCandidatesForHotUpdate, tailwindRootCssModuleIds, uniAppX, viteProcessedCssSourceFiles: processedCssRegistry.sourceFiles, webCssEntryDiagnostics }) ?? [] : []
   const installFrameworkWatchCssCacheAdapter = async (config) => {
     if (!shouldAdaptFrameworkWatchCss()) {
       return

@@ -10,6 +10,8 @@ import type {
 export interface CreateUniAppXPluginsOptions {
   appType: AppType
   customAttributesEntities: ICustomAttributesEntities
+  cssPreflight?: InternalUserDefinedOptions['cssPreflight']
+  cssPreflightRange?: InternalUserDefinedOptions['cssPreflightRange']
   disabledDefaultTemplateHandler: boolean | undefined
   mainCssChunkMatcher: NonNullable<InternalUserDefinedOptions['mainCssChunkMatcher']>
   registerModuleGraphCandidates?: ((id: string, source: string) => Promise<Set<string>>) | undefined

@@ -17,6 +17,7 @@ import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { shouldEnablePageLocalStyle as isPageLocalStyleFile } from '@/uni-app-x/local-style-matcher'
 import { resolveUniUtsPlatform } from '@/utils'
 import { omitUndefined } from '@/utils/object'
+import { createUniAppXBorderPreflight } from './border-preflight'
 import { resolveUniAppXOptions } from './options'
 import {
   collectUniAppXHarmonyApplyStyleSources,
@@ -320,6 +321,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       : runtimeSet
     nativeHmrReloader.remember(currentRuntimeSet)
     const transformUVue = await loadTransformUVue()
+    const borderPreflight = isWebGeneratorTarget()
+      ? undefined
+      : createUniAppXBorderPreflight(options.cssPreflight)
     const transformOptions = omitUndefined({
       componentMatcher: resolvedUniAppXOptions.componentLocalStyles.componentMatcher,
       ...(customAttributesEntities.length > 0 ? { customAttributesEntities } : {}),
@@ -327,6 +331,12 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       ...(enableComponentLocalStyle ? { enableComponentLocalStyle } : {}),
       ...(enablePageLocalStyle ? { enablePageLocalStyle } : {}),
       native: true,
+      ...(borderPreflight
+        ? {
+            borderPreflight,
+            borderPreflightRange: options.cssPreflightRange,
+          }
+        : {}),
       pageMatcher: resolvedUniAppXOptions.componentLocalStyles.pageMatcher,
       ...(isWebGeneratorTarget() && customAttributesEntities.length > 0 ? { webCustomAttributeDeep: true } : {}),
       ...(isWebGeneratorTarget()
