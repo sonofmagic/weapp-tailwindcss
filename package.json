@@ -44,6 +44,9 @@
     "node": "^22.18.0 || >=24.11.0"
   },
   "scripts": {
+    "e2e:windows-utilities": "node scripts/ci/windows-utilities.mjs",
+    "e2e:demo:matrix": "node scripts/ci/demo-matrix/run.mjs",
+    "test:demo:matrix": "vitest run -c scripts/ci/demo-matrix/vitest.config.mts --update=none",
     "agents:check": "node scripts/agents/check.mjs",
     "agents:test": "vitest run -c scripts/agents/vitest.config.mts",
     "build": "cross-env WEAPP_TW_SKIP_AUTO_BUILD=1 WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD=1 WEAPP_TW_SKIP_INTERACTIVE_UNI_BUILD=1 turbo run build",
@@ -57,7 +60,7 @@
     "deploy:docs:cloudflare": "node scripts/deploy-docs-cloudflare.mjs",
     "deploy:docs:cloudflare:next": "node scripts/deploy-docs-cloudflare.mjs --target=next",
     "build:apps": "echo \"apps workspace has no demo projects\"",
-    "build:ci": "pnpm --filter weapp-tailwindcss... --filter @weapp-tailwindcss/postcss-calc --filter @weapp-tailwindcss/react-native --filter \"./packages-runtime/*\" --filter \"./packages/lynx\" run build",
+    "build:ci": "pnpm --filter weapp-tailwindcss... --filter @weapp-tailwindcss/postcss-calc --filter @weapp-tailwindcss/react-native --filter @weapp-tailwindcss/debug-uni-app-x --filter \"./packages-runtime/*\" --filter \"./packages/lynx\" run build",
     "ci:memory": "node scripts/ci-memory-guard.mjs",
     "build:pkgs": "turbo run build --filter=./packages/* --filter=./packages-runtime/*",
     "build:demo": "cross-env WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD=1 WEAPP_TW_SKIP_INTERACTIVE_UNI_BUILD=1 turbo run build --filter=./demo/*",

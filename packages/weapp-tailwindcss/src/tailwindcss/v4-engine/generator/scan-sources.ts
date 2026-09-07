@@ -2,6 +2,7 @@ import type { TailwindV4GenerateOptions, TailwindV4ResolvedSource, TailwindV4Sou
 import path from 'node:path'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { resolveCssSourceEntries, resolveTailwindSourceEntry } from '@/tailwindcss/source-scan'
+import { isTailwindCssImport, parseImportSourceParam } from '../css-import'
 
 type TailwindV4ResolvedScanSources = TailwindV4GenerateOptions['scanSources']
 
@@ -46,35 +47,6 @@ const TAILWIND_V4_DEFAULT_IGNORED_SOURCE_PATTERNS = [
   '**/.env',
   '**/.env.*',
 ]
-
-function parseImportSourceParam(params: string) {
-  const match = /\bsource\(\s*(none|(['"])(.*?)\2)\s*\)/.exec(params)
-  if (!match) {
-    return undefined
-  }
-  return {
-    none: match[1] === 'none',
-    sourcePath: match[3],
-  }
-}
-
-function parseCssImportSpecifier(params: string) {
-  const value = params.trim()
-  const quoted = /^(['"])(.*?)\1/.exec(value)
-  if (quoted) {
-    return quoted[2]
-  }
-
-  const url = /^url\(\s*(?:(['"])(.*?)\1|([^'")\s]+))\s*\)/.exec(value)
-  return url?.[2] ?? url?.[3]
-}
-
-function isTailwindCssImport(params: string) {
-  const specifier = parseCssImportSpecifier(params)
-  return specifier === 'tailwindcss'
-    || specifier?.startsWith('tailwindcss/')
-    || specifier?.replaceAll('\\', '/').endsWith('/tailwindcss/index.css')
-}
 
 function resolveSourceBase(base: string, sourcePath: string) {
   return path.isAbsolute(sourcePath) ? sourcePath : path.resolve(base, sourcePath)

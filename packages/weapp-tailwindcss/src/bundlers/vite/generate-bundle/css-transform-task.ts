@@ -51,8 +51,8 @@ export interface ExecuteViteCssTransformTaskOptions {
   vitePipelineCssAsset: boolean
 }
 
-function resolveGeneratorUserRawSource(options: ExecuteViteCssTransformTaskOptions) {
-  const bundleUserRawSource = options.vitePipelineCssAsset
+function resolveBundleUserRawSource(options: ExecuteViteCssTransformTaskOptions) {
+  return options.vitePipelineCssAsset
     && !hasBundlerGeneratedCssMarker(options.rawSource)
     && normalizeCssSourceForCompare(options.rawSource)
     !== normalizeCssSourceForCompare(options.generatorRawSource)
@@ -65,10 +65,6 @@ function resolveGeneratorUserRawSource(options: ExecuteViteCssTransformTaskOptio
         options.outputFile,
       )
     : undefined
-
-  return [options.generatorUserLayerRawSource, bundleUserRawSource]
-    .filter(source => typeof source === 'string' && source.trim().length > 0)
-    .join('\n')
 }
 
 export async function executeViteCssTransformTask(
@@ -82,13 +78,17 @@ export async function executeViteCssTransformTask(
     || (!options.isWebGeneratorTarget && hasBundlerGeneratedCssMarker(options.rawSource))
 
   if (shouldGenerateCssWithCore) {
-    const generatorUserRawSource = resolveGeneratorUserRawSource(options)
+    const bundleUserRawSource = resolveBundleUserRawSource(options)
+    const generatorUserRawSource = [options.generatorUserLayerRawSource, options.isWebGeneratorTarget ? bundleUserRawSource : undefined]
+      .filter(source => typeof source === 'string' && source.trim().length > 0)
+      .join('\n')
     const generated = await (options.generateCss ?? generateTailwindV4Css)({
       cssHandlerOptions: options.generatorCssHandlerOptions,
       cssStage: 'framework-processed',
       cssUserHandlerOptions: options.cssUserHandlerOptions,
       debug: options.debug,
       file: options.generatorSourceFile,
+      frameworkProcessedUserCss: options.isWebGeneratorTarget ? undefined : bundleUserRawSource,
       generatorPlatform: options.generatorPlatform,
       getSourceCandidatesForEntries: options.getSourceCandidatesForEntries,
       opts: options.opts,

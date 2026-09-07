@@ -16,9 +16,9 @@ interface FrameworkModuleCandidateRegistrarOptions {
 }
 
 export function createFrameworkModuleCandidateRegistrar(options: FrameworkModuleCandidateRegistrarOptions) {
-  return async (id: string, source: string) => {
+  return async (id: string, source: string, extension?: string) => {
     await options.runtimeState.readyPromise
-    const candidates = await options.sourceCandidateCollector.syncModuleSource(id, source)
+    const candidates = await options.sourceCandidateCollector.syncModuleSource(id, source, extension)
     options.invalidateRecordedGeneratorCandidates()
     options.cacheCurrent()
     const cssHandlerOptions = options.getCssHandlerOptions(id)

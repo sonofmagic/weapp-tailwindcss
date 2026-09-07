@@ -9,6 +9,7 @@ import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 import { createCssImportShell, createRootMiniProgramOriginStyleOutputFile, isRootMiniProgramStyleOutputFile, shouldKeepRootMiniProgramStyleAsImportShell, shouldMoveRootMiniProgramStyleToImportShellOrigin } from './root-style-output'
 
 export function resolveCssBundleOutputFile(options: {
+  assetOutputFile?: string | undefined
   bundleFiles: string[]
   defaultStyleOutputExtension: string
   file: string
@@ -31,6 +32,7 @@ export function resolveCssBundleOutputFile(options: {
   let outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget, shouldPreserveAppCssExtension, defaultStyleOutputExtension, bundleFiles)
   if (
     outputFile === file
+    && normalizeOutputPathKey(options.assetOutputFile ?? file) === normalizeOutputPathKey(file)
     && isRootMiniProgramStyleOutputFile(file)
     && shouldMoveRootMiniProgramStyleToImportShellOrigin(
       cssPipelineStrategy?.shouldMoveRootMiniProgramStyleToImportShellOrigin?.({
@@ -167,7 +169,7 @@ export interface CssAssetOutputPlan {
 export function resolveCssAssetOutputPlan(
   options: ResolveCssAssetOutputPlanOptions,
 ): CssAssetOutputPlan {
-  let outputFile = resolveCssBundleOutputFile(options)
+  let outputFile = resolveCssBundleOutputFile({ ...options, assetOutputFile: options.rootImportShellOutputFile })
   const reusedRootImportShellTarget = Boolean(
     options.rootImportShellTarget
     && !options.isWebGeneratorTarget

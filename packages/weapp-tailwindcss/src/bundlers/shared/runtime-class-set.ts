@@ -236,6 +236,8 @@ export function createRuntimeClassSetManager(
 
     runtimeSignature = nextSignature
     const nextBaseClassSet = options.baseClassSet
+      ? createNonSourceBaseClassSet(options.baseClassSet, candidateCountByClass)
+      : undefined
     const canUseBaseWithoutInitialFullScan = Boolean(fullRebuild
       && !hadTrackedRuntimeFiles
       && options.skipInitialFullScanWithBase === true

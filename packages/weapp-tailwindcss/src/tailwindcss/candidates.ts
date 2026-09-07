@@ -25,6 +25,7 @@ const TEMPLATE_SOURCE_CANDIDATE_EXTENSIONS = new Set([
   'ksml',
   'ttml',
   'qml',
+  'qxml',
   'tyml',
   'xhsml',
   'swan',

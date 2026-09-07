@@ -388,3 +388,6 @@ catalogs:
     webpack-dev-server: ^5.2.6
   wrangler:
     wrangler: ^4.129.0
+
+patchedDependencies:
+  rollup@4.63.0: patches/rollup@4.63.0.patch

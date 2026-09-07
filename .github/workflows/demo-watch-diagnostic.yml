@@ -1,0 +1,69 @@
+name: Demo Watch Diagnostic
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/demo-watch-diagnostic.yml
+      - packages/weapp-tailwindcss/src/bundlers/webpack/**
+      - demo/subpackage-taro-webpack-react-tailwindcss-v4/**
+      - scripts/ci/demo-matrix/**
+  workflow_dispatch:
+
+concurrency:
+  group: windows-watch-diagnostic-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    name: Repeated watch (${{ matrix.os || 'windows-latest' }}, ${{ matrix.case }})
+    runs-on: ${{ matrix.os || 'windows-latest' }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        case:
+          - subpackage-taro-webpack-react-tailwindcss-v4:h5
+          - taro-webpack-vue3-tailwindcss-v4:weapp
+          - taro-vite-vue3-tailwindcss-v4:jd
+          - taro-vite-vue3-tailwindcss-v4:h5
+          - subpackage-taro-webpack-react-tailwindcss-v4:tt
+          - gulp-tailwindcss-v4:tt
+        include:
+          - case: uni-app-vite-tailwindcss-v4:mp-weixin
+            os: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: 24
+      - run: pnpm build:ci
+      - run: pnpm exec playwright install chromium
+      - run: pnpm test:demo:matrix
+        env:
+          CI: '1'
+      - name: Repeat full production and live update acceptance
+        shell: bash
+        env:
+          CI: '1'
+          DEBUG: weapp-tw
+          NODE_OPTIONS: --max-old-space-size=6144
+          DEMO_CASE: ${{ matrix.case }}
+        run: |
+          if [[ "$DEMO_CASE" == *webpack* ]]; then
+            export NODE_OPTIONS="$NODE_OPTIONS --require=$GITHUB_WORKSPACE/scripts/ci/demo-matrix/watch-diagnostic.cjs"
+          fi
+          for attempt in 1 2 3; do
+            DEMO_MATRIX_ARTIFACT_DIR="e2e/.artifacts/watch-diagnostic/$attempt" pnpm e2e:demo:matrix "$DEMO_CASE" || exit 1
+          done
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: windows-watch-diagnostic-${{ strategy.job-index }}
+          path: e2e/.artifacts/watch-diagnostic/**
+          if-no-files-found: error
+          retention-days: 14

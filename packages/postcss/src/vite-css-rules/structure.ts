@@ -67,24 +67,30 @@ export function getCssRuleStructuralKeyWithSelectorKey(rule: postcss.Rule, selec
   ].join('|')
 }
 
-export function getCssRuleContentKey(rule: postcss.Rule) {
+export function getCssRuleContentKey(rule: postcss.Rule, content = normalizeCssForContainment(rule.toString())) {
   const structuralKey = getCssRuleStructuralKey(rule)
   if (!structuralKey) {
     return undefined
   }
   return [
     structuralKey,
-    normalizeCssForContainment(rule.toString()),
+    content,
   ].join('|')
 }
 
-export function collectCssRuleContentKeys(css: string) {
+export function collectCssRuleContentKeys(css: string, requiredBaseContent?: string) {
   const keys = new Set<string>()
   try {
     const root = postcss.parse(css)
     root.walkRules((rule) => {
-      const key = getCssRuleContentKey(rule)
+      const content = normalizeCssForContainment(rule.toString())
+      const key = getCssRuleContentKey(rule, content)
       if (key) {
+        // 结构键包含完整规则文本；文本缺失时不可能被主样式的结构键集合覆盖。
+        if (requiredBaseContent !== undefined && !requiredBaseContent.includes(content)) {
+          keys.clear()
+          return false
+        }
         keys.add(key)
       }
     })

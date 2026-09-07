@@ -1,3 +1,4 @@
+import { normalizeMiniProgramImportShell } from '../../shared/generator-css/output-import-shell'
 import { scheduleViteCssTransform } from './transform-scheduling'
 
 export async function processViteCssBundleEntry(options: any) {
@@ -129,7 +130,14 @@ export async function processViteCssBundleEntry(options: any) {
   } = options
   metrics.css.total++
   const assetSourceFile = resolveAssetSourceFile(originalSource, file)
-  const rawSource = normalizeRelativeCssConfigDirectives(originalEntrySource, assetSourceFile, outDir, opts)
+  const outputSource = isWebGeneratorTarget
+    ? originalEntrySource
+    : normalizeMiniProgramImportShell(originalEntrySource, {
+        cssOnly: true,
+        outputFile: originalSource.fileName || file,
+        outputFiles: [...bundleFiles, ...lastCssResultByFile.keys()],
+      })
+  const rawSource = normalizeRelativeCssConfigDirectives(outputSource, assetSourceFile, outDir, opts)
   const currentRawSourceHasExplicitScanContext = rawSource.includes('@source') || rawSource.includes('@config')
   const cssPipelineContext2 = { ...createInitialCssPipelineContext(file), bundle }
   const rootImportShellOutputFile = resolveReplayCssOutputFile(outDir, originalSource.fileName || file)
@@ -182,7 +190,10 @@ export async function processViteCssBundleEntry(options: any) {
     })),
   })
   let outputFile = cssAssetOutputPlan.outputFile
-  const resolveMatchedOutputFileForCurrentAsset = cssAssetOutputPlan.resolveMatchedOutputFile
+  const resolveMatchedOutputFileForCurrentAsset = (sourceFile: string) => {
+    const matched = cssAssetOutputPlan.resolveMatchedOutputFile(sourceFile)
+    return matched ? frameworkRootImportShellTargetByFile.get(matched) ?? matched : matched
+  }
   const resolvedFromConfiguredOriginalCssEntry = cssAssetOutputPlan.resolvedFromConfiguredOriginalCssEntry
   if (cssAssetOutputPlan.reusedRootImportShellTarget) {
     debug('css reuse framework root import shell target: %s -> %s', rootImportShellOutputFile, outputFile)

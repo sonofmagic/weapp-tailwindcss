@@ -204,6 +204,9 @@ export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
         watchRunObserved = true
       }
       const changedFiles = collectWatchChangedFiles()
+      if (markWatchRun && debug.enabled) {
+        debug('webpack watch changed files=%O', [...changedFiles])
+      }
       runtimeRefreshRequiredForCompilation = runtimeRefreshRequiredForCompilation
         || hasRuntimeDependencyChanges(changedFiles)
     }

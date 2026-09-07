@@ -1,4 +1,4 @@
-import { mkdir, rm, writeFile } from 'node:fs/promises'
+import { mkdir, realpath, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -63,6 +63,18 @@ describe('bundlers/vite source candidates', () => {
 
     expect(store.values()).toEqual(new Set(['text-[24rpx]', 'bg-[#123456]']))
     expect(store.source('/project/pages/index.wxml')).toBe('<view class="text-[24rpx]"></view>')
+  })
+
+  it('extracts compiled SFC modules as JavaScript while preserving their source identity', async () => {
+    const { createSourceCandidateStore } = await import('@/bundlers/vite/source-candidates')
+    const store = createSourceCandidateStore()
+    const root = await realpath(await createTempDir('weapp-tw-compiled-sfc'))
+    const file = path.join(root, 'page.vue')
+    const source = 'export function render() { return "h-[64rpx] bg-white/70" }'
+    expect(await store.syncModuleSource(file, source, 'js')).toEqual(new Set(['h-[64rpx]', 'bg-white/70']))
+    expect(store.sourcesForEntries([]).get('h-[64rpx]')).toEqual(new Set([file]))
+    store.remove(file)
+    expect(store.values()).toEqual(new Set())
   })
 
   it('collects configured custom template attributes as Tailwind v4 source candidates', async () => {

@@ -111,7 +111,7 @@ function createGenerateBundleHook(context): any {
     const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType) ?? resolveSourceRootFromBundleGraph(resolvedConfig, bundle)
     const outDir = resolvedConfig?.build?.outDir ? path.resolve(rootDir, resolvedConfig.build.outDir) : rootDir
     const defaultStyleOutputExtension = resolveMiniProgramStyleOutputExtension({ files: Object.keys(bundle) })
-    const normalizeMiniProgramGeneratorRawSource = (source, outputFile) => { return isWebGeneratorTarget ? source : normalizeMiniProgramGeneratorCssSource(source, outputFile) }
+    const normalizeMiniProgramGeneratorRawSource = (source, outputFile) => { return isWebGeneratorTarget ? source : normalizeMiniProgramGeneratorCssSource(source, outputFile, [...Object.keys(bundle), ...lastCssResultByFile.keys()]) }
     await runtimeState.readyPromise
     debug('start')
     onStart()
@@ -164,6 +164,7 @@ function createGenerateBundleHook(context): any {
       currentSubpackageRoots,
       defaultStyleOutputExtension,
       entries: configuredTailwindV4CssSourceEntriesForScope,
+      rootImportShellTargets: frameworkRootImportShellTargetByFile,
       explicitCssEntryFiles: configuredTailwindV4ExplicitCssEntryFiles,
       isWebGeneratorTarget,
       opts,

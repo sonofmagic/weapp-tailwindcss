@@ -138,7 +138,7 @@ async function resolveWebpackLoaderSourceCandidates(
   })
   await Promise.all(scanFiles.map(async (file) => {
     const normalizedFile = resolveSourceScanPath(file)
-    registerWebpackWatchFile(loaderContext, normalizedFile)
+    await registerWebpackWatchFile(loaderContext, normalizedFile)
     await collector.syncFile(normalizedFile)
   }))
   const candidates = collector.valuesForEntries(resolved.entries)
@@ -214,7 +214,7 @@ export async function generateCssForWebpackPipeline(
   }
   rewriteOptions.markGeneratedCssSource?.(file)
   for (const dependency of generated.dependencies) {
-    registerWebpackWatchFile(loaderContext, dependency)
+    await registerWebpackWatchFile(loaderContext, dependency)
   }
   const generatedCssSource = removeTailwindSourceDirectives(generated.css, { importFallback: true })
   const generatedCss = (compilerOptions.cssOptions?.platform ?? compilerOptions.platform) === 'lynx'

@@ -232,6 +232,7 @@
     "@babel/parser": "catalog:babel8",
     "@babel/traverse": "catalog:babel8",
     "@babel/types": "catalog:babel8",
+    "@csstools/css-tokenizer": "catalog:csstools",
     "@tailwindcss-mangle/engine": "catalog:tailwindcssMangleEngine",
     "@vue/compiler-dom": "catalog:vue3",
     "@weapp-core/escape": "~8.0.0",

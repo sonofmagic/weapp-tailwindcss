@@ -38,7 +38,7 @@ function waitForWatchEnd(watcher: ViteBuildWatcher) {
   })
 }
 
-function emitWatchedTemplate(templateFile: string): Plugin {
+function emitWatchedTemplate(templateFile: string, templateOutput: string): Plugin {
   return {
     name: 'emit-watched-anonymous-template',
     async buildStart() {
@@ -47,7 +47,7 @@ function emitWatchedTemplate(templateFile: string): Plugin {
         const source = await readFile(templateFile, 'utf8')
         this.emitFile({
           type: 'asset',
-          fileName: 'views/card.axml',
+          fileName: templateOutput,
           source,
         })
       }
@@ -60,18 +60,19 @@ function emitWatchedTemplate(templateFile: string): Plugin {
   }
 }
 
-async function createFixtureRoot() {
+async function createFixtureRoot(explicitSource: boolean, extension: string) {
   const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tailwindcss-vite-template-delete-'))
   createdDirs.push(root)
   const viewsDir = path.join(root, 'views')
   await mkdir(viewsDir, { recursive: true })
   const cssFile = path.join(root, 'app.css')
-  const templateFile = path.join(viewsDir, 'card.axml')
+  const templateOutput = `views/card.${extension}`
+  const templateFile = path.join(viewsDir, `card.${extension}`)
   await Promise.all([
     writeFile(path.join(root, 'app.ts'), 'import "./app.css"\n'),
     writeFile(cssFile, [
       '@import "tailwindcss";',
-      '@source "./views/card.axml";',
+      explicitSource ? `@source "./${templateOutput}";` : '',
       '',
     ].join('\n')),
     writeFile(templateFile, `<view class="${rawCandidate}">card</view>\n`),
@@ -80,6 +81,7 @@ async function createFixtureRoot() {
     cssFile,
     root,
     templateFile,
+    templateOutput,
   }
 }
 
@@ -88,14 +90,15 @@ describe('bundlers/vite template delete watch', () => {
     await Promise.all(createdDirs.splice(0).map(dir => rm(dir, { recursive: true, force: true })))
   })
 
-  it('removes candidates owned by an anonymous template asset after source deletion', async () => {
-    const { cssFile, root, templateFile } = await createFixtureRoot()
+  it.each([true, false].flatMap(explicit => ['axml', 'qxml'].map(extension => ({ explicit, extension }))))('removes anonymous $extension candidates with explicit source=$explicit', async ({ explicit, extension }) => {
+    const { cssFile, root, templateFile, templateOutput } = await createFixtureRoot(explicit, extension)
     const distCssFile = path.join(root, 'dist/app.css')
+    let emittedStyles = new Map<string, string>()
     const watcher = await build({
       root,
       logLevel: 'silent',
       plugins: [
-        emitWatchedTemplate(templateFile),
+        emitWatchedTemplate(templateFile, templateOutput),
         ...WeappTailwindcss({
           appType: 'weapp-vite',
           cssEntries: [cssFile],
@@ -112,6 +115,17 @@ describe('bundlers/vite template delete watch', () => {
             },
           },
         }) ?? [],
+        {
+          name: 'inspect-emitted-style-identity',
+          generateBundle: {
+            order: 'post',
+            handler(_options, bundle) {
+              emittedStyles = new Map(Object.entries(bundle).flatMap(([file, output]) =>
+                output.type === 'asset' && /\.(?:css|wxss|acss)$/.test(file) ? [[file, String(output.source)]] : [],
+              ))
+            },
+          },
+        },
       ],
       build: {
         minify: false,
@@ -130,12 +144,18 @@ describe('bundlers/vite template delete watch', () => {
     try {
       await waitForWatchEnd(watcher)
       expect(await readFile(distCssFile, 'utf8')).toContain(`.${transformedCandidate}`)
-      await access(path.join(root, 'dist/views/card.axml'))
+      const emittedTemplate = path.join(root, 'dist', templateOutput)
+      await access(emittedTemplate)
+      expect(await readFile(emittedTemplate, 'utf8')).toContain(transformedCandidate)
 
       const rebuild = waitForWatchEnd(watcher)
       await unlink(templateFile)
       await rebuild
 
+      expect([...emittedStyles.keys()]).toEqual(['app.css'])
+      for (const css of emittedStyles.values()) {
+        expect(css).not.toContain(`.${transformedCandidate}`)
+      }
       expect(await readFile(distCssFile, 'utf8')).not.toContain(`.${transformedCandidate}`)
     }
     finally {

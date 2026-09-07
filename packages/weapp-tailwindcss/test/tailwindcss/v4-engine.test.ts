@@ -1256,7 +1256,7 @@ describe('tailwindcss v4 engine', () => {
     const result = await engine.generate()
 
     expect(result.classSet).toEqual(new Set(['bg-red-500']))
-    expect(result.sources).toEqual(expect.arrayContaining([
+    expect(result.sources.map(entry => ({ ...entry, base: path.normalize(entry.base) }))).toEqual(expect.arrayContaining([
       {
         base: srcDir,
         pattern: '**/*.html',
@@ -1427,7 +1427,7 @@ describe('tailwindcss v4 engine', () => {
 
     const result = await engine.generate()
 
-    expect(source.base).toBe(cssDir)
+    expect(path.normalize(source.base)).toBe(cssDir)
     expect(result.classSet).toEqual(new Set(['bg-blue-500', 'bg-red-500', 'w-4']))
     expect(result.rawCss).toContain('.bg-red-500')
     expect(result.rawCss).toContain('.w-4')
@@ -1466,8 +1466,8 @@ describe('tailwindcss v4 engine', () => {
     await writeFile(page, '<view class="bg-blue-500"></view>', 'utf8')
     const updated = await generate()
 
-    expect(initial.dependencies).toContain(cssEntry)
-    expect(updated.dependencies).toContain(cssEntry)
+    expect(initial.dependencies.map(file => path.normalize(file))).toContain(cssEntry)
+    expect(updated.dependencies.map(file => path.normalize(file))).toContain(cssEntry)
     expect(initial.classSet).toEqual(new Set(['bg-red-500']))
     expect(updated.classSet).toEqual(new Set(['bg-blue-500']))
     expect(updated.rawCss).toContain('.bg-blue-500')
@@ -1515,8 +1515,8 @@ describe('tailwindcss v4 engine', () => {
     const engine = createTailwindV4Engine(source)
     const result = await engine.generate({ candidates: ['w-4'] })
 
-    expect(source.base).toBe(root)
-    expect(result.dependencies).toContain(cssEntry)
+    expect(path.normalize(source.base)).toBe(root)
+    expect(result.dependencies.map(file => path.normalize(file))).toContain(cssEntry)
     expect(result.classSet).toEqual(new Set(['w-4']))
     expect(result.css).toContain('.w-4')
   })
@@ -1609,36 +1609,39 @@ describe('tailwindcss v4 engine', () => {
   })
 
   it('keeps cssEntries source options aligned with engine defaults', async () => {
+    const projectRoot = path.resolve('/workspace/app')
+    const customBase = path.resolve('/custom/base')
+    const cssEntry = path.join(projectRoot, 'src', 'app.css')
     const implicitPatchOptions = {
-      projectRoot: '/workspace/app',
+      projectRoot,
       tailwindcss: {
-        cwd: '/workspace/app',
+        cwd: projectRoot,
         packageName: 'tailwindcss',
         v4: {
-          cssEntries: ['/workspace/app/src/app.css'],
+          cssEntries: [cssEntry],
         },
       },
     } satisfies TailwindCssRuntimeOptions
     const explicitPatchOptions = {
-      projectRoot: '/workspace/app',
+      projectRoot,
       tailwindcss: {
-        cwd: '/workspace/app',
+        cwd: projectRoot,
         packageName: 'tailwindcss',
         v4: {
-          base: '/custom/base',
-          cssEntries: ['/workspace/app/src/app.css'],
+          base: customBase,
+          cssEntries: [cssEntry],
         },
       },
     } satisfies TailwindCssRuntimeOptions
     const implicitBaseOptions = resolveTailwindV4SourceOptionsFromRuntime({
       options: {
-        projectRoot: '/workspace/app',
+        projectRoot,
         tailwind: {
-          cwd: '/workspace/app',
+          cwd: projectRoot,
           v4: {
-            base: '/workspace/app',
+            base: projectRoot,
             hasUserDefinedSources: false,
-            cssEntries: ['/workspace/app/src/app.css'],
+            cssEntries: [cssEntry],
           },
         },
       },
@@ -1646,14 +1649,14 @@ describe('tailwindcss v4 engine', () => {
     } as any)
     const explicitBaseOptions = resolveTailwindV4SourceOptionsFromRuntime({
       options: {
-        projectRoot: '/workspace/app',
+        projectRoot,
         tailwind: {
-          cwd: '/workspace/app',
+          cwd: projectRoot,
           v4: {
-            base: '/workspace/app',
-            configuredBase: '/custom/base',
+            base: projectRoot,
+            configuredBase: customBase,
             hasUserDefinedSources: false,
-            cssEntries: ['/workspace/app/src/app.css'],
+            cssEntries: [cssEntry],
           },
         },
       },
@@ -1667,19 +1670,19 @@ describe('tailwindcss v4 engine', () => {
     const explicitPatchSource = await resolveTailwindV4SourceFromRuntimeOptions(explicitPatchOptions)
 
     expect(implicitBaseOptions.base).toBeUndefined()
-    expect(explicitBaseOptions.base).toBe('/custom/base')
-    expect(rawExplicitBaseOptions.base).toBe('/custom/base')
-    expect(implicitBaseOptions.cssEntries).toEqual(['/workspace/app/src/app.css'])
-    expect(explicitBaseOptions.cssEntries).toEqual(['/workspace/app/src/app.css'])
+    expect(explicitBaseOptions.base).toBe(customBase)
+    expect(rawExplicitBaseOptions.base).toBe(customBase)
+    expect(implicitBaseOptions.cssEntries).toEqual([cssEntry])
+    expect(explicitBaseOptions.cssEntries).toEqual([cssEntry])
     expect(implicitBaseOptions.baseFallbacks).toEqual([
-      '/workspace/app',
+      projectRoot,
     ])
     expect(explicitBaseOptions.baseFallbacks).toEqual([
-      '/custom/base',
-      '/workspace/app',
+      customBase,
+      projectRoot,
     ])
-    expect(implicitPatchSource.base).toBe('/workspace/app/src')
-    expect(explicitPatchSource.base).toBe('/custom/base')
+    expect(path.normalize(implicitPatchSource.base)).toBe(path.join(projectRoot, 'src'))
+    expect(path.normalize(explicitPatchSource.base)).toBe(customBase)
   })
 
   it('passes configured v4 source entries through for bundler generation', () => {
@@ -1713,12 +1716,13 @@ describe('tailwindcss v4 engine', () => {
   })
 
   it('normalizes runtime cssSources @config relative to their source file', () => {
-    const cssFile = '/workspace/app/src/sub-normal/pages/index.css'
+    const projectRoot = path.resolve('/workspace/app')
+    const cssFile = path.join(projectRoot, 'src', 'sub-normal', 'pages', 'index.css')
     const options = resolveTailwindV4SourceOptionsFromRuntime({
       options: {
-        projectRoot: '/workspace/app',
+        projectRoot,
         tailwind: {
-          cwd: '/workspace/app',
+          cwd: projectRoot,
           v4: {
             cssSources: [{
               file: cssFile,
@@ -1733,7 +1737,7 @@ describe('tailwindcss v4 engine', () => {
     expect(options.cssSources?.[0]).toEqual(expect.objectContaining({
       file: cssFile,
       base: path.dirname(cssFile),
-      css: expect.stringContaining('@config "/workspace/app/tailwind.config.sub-normal.js";'),
+      css: expect.stringContaining(`@config "${path.join(projectRoot, 'tailwind.config.sub-normal.js').replaceAll(path.sep, '/')}";`),
     }))
   })
 
@@ -1771,7 +1775,7 @@ describe('tailwindcss v4 engine', () => {
       cssEntries: ['missing.css'],
     })
 
-    expect(source.dependencies).toEqual([cssEntry])
+    expect(source.dependencies.map(file => path.normalize(file))).toEqual([cssEntry])
     expect(source.css).toBe('@import "missing.css";')
   })
 

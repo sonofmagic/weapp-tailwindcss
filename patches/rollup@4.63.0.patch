@@ -1,0 +1,140 @@
+diff --git a/dist/es/shared/watch.js b/dist/es/shared/watch.js
+index d4b9f53b9c7732a04ed2de7ad74b010dcee68275..fcc20b236f423b1626c1b36bead586cdcc83cc7f 100644
+--- a/dist/es/shared/watch.js
++++ b/dist/es/shared/watch.js
+@@ -9569,50 +9569,43 @@ const chokidar = /*@__PURE__*/getDefaultExportFromCjs(chokidarExports);
+ 
+ class FileWatcher {
+     constructor(task, chokidarOptions) {
+-        this.transformWatchers = new Map();
++        this.transformDependencies = new Set();
+         this.chokidarOptions = chokidarOptions;
+         this.task = task;
+-        this.watcher = this.createWatcher(null);
++        this.watcher = this.createWatcher();
+     }
+     close() {
+         this.watcher.close();
+-        for (const watcher of this.transformWatchers.values()) {
+-            watcher.close();
+-        }
+     }
+     unwatch(id) {
+         this.watcher.unwatch(id);
+-        const transformWatcher = this.transformWatchers.get(id);
+-        if (transformWatcher) {
+-            this.transformWatchers.delete(id);
+-            transformWatcher.close();
+-        }
++        this.transformDependencies.delete(id);
+     }
+     watch(id, isTransformDependency) {
+         if (isTransformDependency) {
+-            const watcher = this.transformWatchers.get(id) ?? this.createWatcher(id);
+-            watcher.add(id);
+-            this.transformWatchers.set(id, watcher);
+-        }
+-        else {
+-            this.watcher.add(id);
++            this.transformDependencies.add(id);
+         }
++        this.watcher.add(id);
+     }
+-    createWatcher(transformWatcherId) {
++    createWatcher() {
+         const task = this.task;
+         const isLinux = platform() === 'linux';
+         const isFreeBSD = platform() === 'freebsd';
+-        const isTransformDependency = transformWatcherId !== null;
+         const handleChange = (id, event) => {
+-            const changedId = transformWatcherId || id;
+             if (isLinux || isFreeBSD) {
+                 // unwatching and watching fixes an issue with chokidar where on certain systems,
+                 // a file that was unlinked and immediately recreated would create a change event
+                 // but then no longer any further events
+-                watcher.unwatch(changedId);
+-                watcher.add(changedId);
++                watcher.unwatch(id);
++                watcher.add(id);
++            }
++            task.invalidate(id, { event, isTransformDependency: this.transformDependencies.has(id) });
++            for (const dependency of this.transformDependencies) {
++                const relative = path.relative(dependency, id);
++                if (relative && relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative)) {
++                    task.invalidate(dependency, { event, isTransformDependency: true });
++                }
+             }
+-            task.invalidate(changedId, { event, isTransformDependency });
+         };
+         const watcher = chokidar
+             .watch([], this.chokidarOptions)
+diff --git a/dist/shared/watch.js b/dist/shared/watch.js
+index 4b52a95c895a3bb13482e8a36308ee963adeef0e..42b4125f484f63631ac1e6f04a7e04a3bfd86e0a 100644
+--- a/dist/shared/watch.js
++++ b/dist/shared/watch.js
+@@ -30,50 +30,43 @@ require('events');
+ 
+ class FileWatcher {
+     constructor(task, chokidarOptions) {
+-        this.transformWatchers = new Map();
++        this.transformDependencies = new Set();
+         this.chokidarOptions = chokidarOptions;
+         this.task = task;
+-        this.watcher = this.createWatcher(null);
++        this.watcher = this.createWatcher();
+     }
+     close() {
+         this.watcher.close();
+-        for (const watcher of this.transformWatchers.values()) {
+-            watcher.close();
+-        }
+     }
+     unwatch(id) {
+         this.watcher.unwatch(id);
+-        const transformWatcher = this.transformWatchers.get(id);
+-        if (transformWatcher) {
+-            this.transformWatchers.delete(id);
+-            transformWatcher.close();
+-        }
++        this.transformDependencies.delete(id);
+     }
+     watch(id, isTransformDependency) {
+         if (isTransformDependency) {
+-            const watcher = this.transformWatchers.get(id) ?? this.createWatcher(id);
+-            watcher.add(id);
+-            this.transformWatchers.set(id, watcher);
+-        }
+-        else {
+-            this.watcher.add(id);
++            this.transformDependencies.add(id);
+         }
++        this.watcher.add(id);
+     }
+-    createWatcher(transformWatcherId) {
++    createWatcher() {
+         const task = this.task;
+         const isLinux = node_os.platform() === 'linux';
+         const isFreeBSD = node_os.platform() === 'freebsd';
+-        const isTransformDependency = transformWatcherId !== null;
+         const handleChange = (id, event) => {
+-            const changedId = transformWatcherId || id;
+             if (isLinux || isFreeBSD) {
+                 // unwatching and watching fixes an issue with chokidar where on certain systems,
+                 // a file that was unlinked and immediately recreated would create a change event
+                 // but then no longer any further events
+-                watcher.unwatch(changedId);
+-                watcher.add(changedId);
++                watcher.unwatch(id);
++                watcher.add(id);
++            }
++            task.invalidate(id, { event, isTransformDependency: this.transformDependencies.has(id) });
++            for (const dependency of this.transformDependencies) {
++                const relative = path.relative(dependency, id);
++                if (relative && relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative)) {
++                    task.invalidate(dependency, { event, isTransformDependency: true });
++                }
+             }
+-            task.invalidate(changedId, { event, isTransformDependency });
+         };
+         const watcher = index.chokidar
+             .watch([], this.chokidarOptions)

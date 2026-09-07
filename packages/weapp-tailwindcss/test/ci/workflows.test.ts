@@ -133,9 +133,31 @@ describe('ci workflows', () => {
       expect.objectContaining({ runner_label: 'windows' }),
     ]))
     expect(platformDevJob.steps.some((step: Record<string, unknown>) => String(step.run ?? '').includes('e2e:dev:smoke'))).toBe(true)
-    expect(workflow.jobs['pr-gate'].needs).toEqual(['scope', 'quality', 'core-smoke', 'platform-watch', 'platform-dev'])
+    expect(workflow.jobs['pr-gate'].needs).toEqual(['scope', 'quality', 'core-smoke', 'platform-watch', 'platform-dev', 'windows-utilities', 'portable-demos'])
     expect(source).toContain('test "$result" = success || test "$result" = skipped')
     expect(source).toContain('pr-gate-package-build-${{ github.run_id }}')
+  })
+
+  it('requires current-commit portable demo evidence in the PR gate', () => {
+    const { workflow: gate, source } = readWorkflow('pr-gate.yml')
+    expect(gate.jobs['portable-demos'].uses).toBe('./.github/workflows/demo-matrix.yml')
+    expect(gate.jobs['portable-demos'].if).toBe("needs.scope.outputs.core == 'true'")
+    expect(source).toContain('test "$DEMOS_RESULT" = success')
+    expect(source).toContain('test "$UTILITIES_RESULT" = success')
+    const { workflow } = readWorkflow('demo-matrix.yml')
+    expect(workflow.jobs.demos.strategy['fail-fast']).toBe(false)
+    expect(workflow.jobs.demos['timeout-minutes']).toBeLessThanOrEqual(30)
+    expect(workflow.jobs.demos.steps[0].with.ref).toBe('${{ github.event.pull_request.head.sha || github.sha }}')
+    const runs = stepRuns(workflow, 'demos')
+    expect(runs).toContain('pnpm build:ci')
+    expect(runs).toContain('pnpm e2e:demo:matrix')
+    expect(runs.join('\n')).not.toMatch(/--(?:update|build-only)/)
+    expect(workflow.jobs.gate.needs).toEqual(['catalog', 'demos'])
+    expect(workflow.jobs.gate.if).toBe('always()')
+    const evidence = stepRuns(workflow, 'gate').join('\n')
+    expect(evidence).toContain('test "$CATALOG_RESULT" = success')
+    expect(evidence).toContain('test "$DEMOS_RESULT" = success')
+    expect(evidence).toContain('node scripts/ci/demo-matrix/gate.mjs')
   })
 
   it('keeps heavyweight legacy CI jobs out of pull requests', () => {

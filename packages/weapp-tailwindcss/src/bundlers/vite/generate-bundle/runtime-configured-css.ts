@@ -112,6 +112,7 @@ export function createConfiguredCssSourceRegistry(
 }
 
 export interface CreateConfiguredCssRootResolversOptions {
+  rootImportShellTargets?: ReadonlyMap<string, string> | undefined
   bundle: OutputBundle
   bundleFiles: string[]
   cssPipelineContext: ViteFrameworkCssPipelineContext
@@ -188,6 +189,9 @@ export function createConfiguredCssRootResolvers(
     const matchedOutputEntries = generationEntries.filter(entry => (
       normalizeOutputPathKey(resolveEntryOutputFile(entry.file).replace(/[?#].*$/, ''))
       === normalizeOutputPathKey(outputFile.replace(/[?#].*$/, ''))
+      || ((originalFileNames?.length ?? 0) === 0
+        && normalizeOutputPathKey(options.rootImportShellTargets?.get(resolveEntryOutputFile(entry.file)) ?? '')
+        === normalizeOutputPathKey(outputFile.replace(/[?#].*$/, '')))
     ))
     if (matchedOutputEntries.length === 1) {
       return matchedOutputEntries[0]

@@ -675,7 +675,7 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
       file: '/project/src/app.css',
       outputFile: 'src/app.css',
       cssSources: expect.any(Array),
-      deferCssAdaptation: true,
+      deferCssAdaptation: false,
     }))
 
     const hmrCode = 'const __vite__css = "@import \\"tailwindcss\\";\\n.page{}";\n__vite__updateStyle(__vite__id, __vite__css)'

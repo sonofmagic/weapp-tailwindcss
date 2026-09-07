@@ -627,10 +627,6 @@ function parentImportPathTo(scopeFile: string) {
   return new RegExp(`@import\\s+["']\\.\\./${scopeFile.replace('.', '\\.')}["']`)
 }
 
-function tailwindCssImport() {
-  return /@import\s+["']tailwindcss["']/
-}
-
 function cssSelector(value: string) {
   const escaped = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   return new RegExp(`${escaped}(?=[\\s,{.:#>+~\\[]|$)`)
@@ -710,11 +706,11 @@ export function styleInjectorUniAppMiniCase(options: {
       },
       {
         file: `${outputDir}/sub-normal/scss.wxss`,
-        contains: ['@layer theme, base, components, utilities', '.injector-uni-scss-entry'],
+        contains: ['.injector-uni-scss-entry', '#0891b2'],
       },
       {
         file: `${outputDir}/sub-normal/less.wxss`,
-        contains: ['@layer theme, base, components, utilities', '.injector-uni-less-entry'],
+        contains: ['.injector-uni-less-entry', '#9333ea'],
       },
       {
         file: `${outputDir}/sub-normal/component.wxss`,
@@ -799,11 +795,11 @@ export function styleInjectorUniAppH5Case(options: {
       },
       {
         file: 'dist/build/h5/sub-normal/scss.css',
-        contains: ['@layer theme, base, components, utilities', '.injector-uni-scss-entry'],
+        contains: ['.injector-uni-scss-entry', '#0891b2'],
       },
       {
         file: 'dist/build/h5/sub-normal/less.css',
-        contains: ['@layer theme, base, components, utilities', '.injector-uni-less-entry'],
+        contains: ['.injector-uni-less-entry', '#9333ea'],
       },
       {
         file: 'dist/build/h5/sub-normal/component.css',
@@ -890,11 +886,11 @@ export function styleInjectorMpxMiniCase(options: {
       },
       {
         file: 'dist/wx/sub-normal/scss.wxss',
-        contains: [tailwindCssImport(), '.injector-mpx-scss-entry'],
+        contains: ['#0891b2', '.injector-mpx-scss-entry'],
       },
       {
         file: 'dist/wx/sub-normal/less.wxss',
-        contains: [tailwindCssImport(), '.injector-mpx-less-entry'],
+        contains: ['#9333ea', '.injector-mpx-less-entry'],
       },
       {
         file: 'dist/wx/sub-independent/pages/index.wxss',
@@ -938,12 +934,12 @@ export function styleInjectorTaroMiniCase(options: {
       'dist/sub-normal/index.wxss',
       'dist/sub-normal/scss.wxss',
       'dist/sub-normal/less.wxss',
-      'dist/sub-normal/pages/index.wxss',
+      'dist/sub-normal/pages/index/index.wxss',
       ...(isVite
-        ? ['dist/sub-independent/index.wxss', 'dist/sub-independent/pages/index.wxss']
+        ? ['dist/sub-independent/index.wxss', 'dist/sub-independent/pages/index/index.wxss']
         : [
             'dist/sub-independent/index.wxss',
-            'dist/sub-independent/pages/index.wxss',
+            'dist/sub-independent/pages/index/index.wxss',
           ]),
     ],
     styleFiles: ['dist'],
@@ -966,7 +962,7 @@ export function styleInjectorTaroMiniCase(options: {
         notContains: [cssSelector(normalMarker), cssSelector(independentMarker)],
       },
       {
-        file: 'dist/sub-normal/pages/index.wxss',
+        file: 'dist/sub-normal/pages/index/index.wxss',
         contains: [importPathTo('index.wxss'), importPathTo('scss.wxss'), importPathTo('less.wxss')],
         notContains: [cssSelector(independentMarker)],
       },
@@ -977,14 +973,14 @@ export function styleInjectorTaroMiniCase(options: {
       },
       {
         file: 'dist/sub-normal/scss.wxss',
-        contains: [tailwindCssImport(), scssMarker],
+        contains: ['#0891b2', scssMarker],
       },
       {
         file: 'dist/sub-normal/less.wxss',
-        contains: [tailwindCssImport(), lessMarker],
+        contains: ['#9333ea', lessMarker],
       },
       {
-        file: 'dist/sub-independent/pages/index.wxss',
+        file: 'dist/sub-independent/pages/index/index.wxss',
         contains: [importPathTo('index.wxss')],
         notContains: [cssSelector(normalMarker)],
       },

@@ -2052,9 +2052,9 @@ describe('v5 vite generator bundle', () => {
 
     const runtimeSet = new Set<string>()
     const generateMock = vi.fn(async ({ candidates, target }: { candidates: Set<string>, target: string }) => ({
-      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      incrementalCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      css: [...candidates].sort().map(candidate => `.${candidate}{--test-probe:1}`).join('\n'),
+      incrementalCss: [...candidates].sort().map(candidate => `.${candidate}{--test-probe:1}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{--test-probe:1}`).join('\n'),
       target,
       classSet: new Set(candidates),
       dependencies: [],
@@ -2122,7 +2122,7 @@ describe('v5 vite generator bundle', () => {
 
     const serveTransform = getTransformHandler(serveGenerationPlugin)
     const firstResult = await serveTransform?.call(serveGenerationPlugin, '@tailwind utilities;', cssFile)
-    expect(String((firstResult as any)?.code)).toContain('.text-slate-800{}')
+    expect(String((firstResult as any)?.code)).toContain('.text-slate-800')
 
     await writeFile(sourceFile, '<template><view class="bg-red-500"></view></template>', 'utf8')
     const cssModule = { id: cssFile }
@@ -2144,8 +2144,8 @@ describe('v5 vite generator bundle', () => {
     expect(generateMock.mock.calls.at(-1)?.[0]?.scanSources).toBe(false)
     expect([...secondCandidates]).toEqual(['bg-red-500'])
     const secondCss = String((secondResult as any)?.code)
-    expect(secondCss).toContain('.text-slate-800{}')
-    expect(secondCss).toContain('.bg-red-500{}')
+    expect(secondCss).toContain('.text-slate-800')
+    expect(secondCss).toContain('.bg-red-500')
   }, TEST_TIMEOUT_MS)
 
   it('falls back to full weapp target dev hmr generation when user layer css cannot append incrementally', async () => {
@@ -2161,9 +2161,9 @@ describe('v5 vite generator bundle', () => {
 
     const runtimeSet = new Set<string>()
     const generateMock = vi.fn(async ({ candidates, target }: { candidates: Set<string>, target: string }) => ({
-      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      incrementalCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      css: [...candidates].sort().map(candidate => `.${candidate}{--test-probe:1}`).join('\n'),
+      incrementalCss: [...candidates].sort().map(candidate => `.${candidate}{--test-probe:1}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{--test-probe:1}`).join('\n'),
       target,
       classSet: new Set(candidates),
       dependencies: [],
@@ -2257,9 +2257,9 @@ describe('v5 vite generator bundle', () => {
     const secondCandidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
     expect([...secondCandidates].sort()).toEqual(['bg-red-500', 'p-4'])
     const secondCss = String((secondResult as any)?.code)
-    expect(secondCss).not.toContain('.text-slate-800{}')
-    expect(secondCss).toContain('.bg-red-500{}')
-    expect(secondCss).toContain('.p-4{}')
+    expect(secondCss).not.toContain('.text-slate-800')
+    expect(secondCss).toContain('.bg-red-500')
+    expect(secondCss).toContain('.p-4')
   }, TEST_TIMEOUT_MS)
 
   it('fully regenerates weapp target dev hmr css when preserveDeletedCss is disabled', async () => {
@@ -2272,9 +2272,9 @@ describe('v5 vite generator bundle', () => {
 
     const runtimeSet = new Set<string>()
     const generateMock = vi.fn(async ({ candidates, target }: { candidates: Set<string>, target: string }) => ({
-      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      incrementalCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      css: [...candidates].sort().map(candidate => `.${candidate}{--test-probe:1}`).join('\n'),
+      incrementalCss: [...candidates].sort().map(candidate => `.${candidate}{--test-probe:1}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{--test-probe:1}`).join('\n'),
       target,
       classSet: new Set(candidates),
       dependencies: [],
@@ -2372,8 +2372,8 @@ describe('v5 vite generator bundle', () => {
     const secondCandidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
     expect([...secondCandidates]).toEqual(['bg-red-500'])
     const secondCss = String((secondResult as any)?.code)
-    expect(secondCss).not.toContain('.text-slate-800{}')
-    expect(secondCss).toContain('.bg-red-500{}')
+    expect(secondCss).not.toContain('.text-slate-800')
+    expect(secondCss).toContain('.bg-red-500')
   }, TEST_TIMEOUT_MS)
 
   it('honors Tailwind v4 @config content negation when scanning vite source candidates', async () => {
