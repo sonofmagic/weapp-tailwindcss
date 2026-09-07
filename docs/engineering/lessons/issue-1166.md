@@ -6,6 +6,7 @@ regressions:
   - packages/postcss/test/infinity-radius.test.ts
   - packages/weapp-tailwindcss/test/bundlers/webpack-infinity-radius.test.ts
   - e2e/issue-1166-webpack-radius.test.ts
+  - packages/weapp-tailwindcss/test/ci/packed-runtime-dependencies.test.ts
 ---
 
 # Issue 1166：Webpack 无限圆角的 PostCSS 交接边界
@@ -37,6 +38,13 @@ Webpack 在返回下游 loader 和登记生成 CSS 之前调用 helper，
 375 设计宽度页面得到 19998rpx。验收应断言有效有限长度，
 不能把最终值固定为 9999px。
 
+PR 的跨平台隔离消费检查最初只打包主包，安装时拉取已发布的旧
+PostCSS 包，因而缺少新增 helper。消费验证现在按 manifest 收集
+workspace 运行时依赖闭包，一并打包并覆盖安装，包含 scoped calc，
+排除 devDependencies。pnpm 11 的 overrides 写入消费项目的
+`pnpm-workspace.yaml`；`file:` 依赖使用路径说明符并保留空格，
+不能按文件 URL 百分号编码，否则带空格的临时目录无法安装。
+
 ## 验证
 
 - `pnpm install --frozen-lockfile`、`pnpm build:pkgs`：通过，30 个构建任务实际执行。
@@ -49,6 +57,8 @@ Webpack 在返回下游 loader 和登记生成 CSS 之前调用 helper，
 - `E2E_PROJECT_FILTER='^taro-webpack-react-tailwindcss-v4$' pnpm e2e:static:u e2e/taro-webpack-react-tailwindcss-v4.test.ts`：10 项通过，重新生成对应项目基线；提交的变化包括圆角单位、方向圆角及新增页面类名。
 - `E2E_PROJECT_FILTER='^taro-webpack-react-tailwindcss-v4$' pnpm e2e:static e2e/taro-webpack-react-tailwindcss-v4.test.ts`：重新构建后 10 项通过，未更新快照。该测试入口会先清理输出，曾误用 `E2E_SKIP_BUILD=1` 导致缺失产物；正常复查应保留构建。
 - PostCSS 构建产物的 ESM/CJS 导出均可调用新 helper，类型声明随包构建生成。
+- `pnpm --filter weapp-tailwindcss exec vitest run test/ci/packed-runtime-dependencies.test.ts --coverage.enabled=false --update=none`：10 项通过，覆盖依赖闭包、循环与缺失依赖，以及 POSIX/Windows、根目录、盘符、相对路径和空格。
+- `pnpm e2e:windows-utilities`：在本地 macOS 实际运行通过，已发布基线与候选依赖闭包的开发/生产四种构建均通过全部产物断言；两个修改的 CI 脚本通过 ESLint。
 - `pnpm test --coverage.enabled=false --update=none`：5,093 项通过、45 项既有跳过；`pnpm lint` 通过。
 - `E2E_WATCH_MINI_PROGRAM_ONLY=1 E2E_WATCH_CASE=taro-webpack-react-tailwindcss-v4 E2E_WATCH_COMMAND_TIMEOUT_MS=900000 pnpm e2e:watch`：原生 dev 启动检查通过。轮询重建覆盖主页面模板、脚本、样式、内容以及普通/独立分包，底层 runner 全部通过并生成完整报告；外层命令先到达 900 秒超时，故该命令整体记为失败。随后使用现有 `assertHotUpdateReport` 独立复核完整报告，通过所有断言，不重复执行已经完成的重建。
 - 原生 watch 专项：执行 demo 的 `pnpm --filter @weapp-tailwindcss-demo/taro-webpack-react-tailwindcss-v4 dev:weapp`，以 `WATCHPACK_POLLING=100` 保持同一进程，依次把 `rounded-t-full` 替换为 `rounded-b-full`、删除该方向类、恢复原类。四次编译均成功；每轮遍历实际 `.wxss` 产物，断言新类圆角为正有限长度、旧方向类消失，完整日志无 calc 词法警告。验证后恢复源码并结束自建进程。探针同时读取 stdout/stderr，Webpack 完成信息会出现在 stderr，不能只监听 stdout。
