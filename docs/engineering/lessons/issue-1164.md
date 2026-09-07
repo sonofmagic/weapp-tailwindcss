@@ -4,6 +4,7 @@ issue: https://github.com/sonofmagic/weapp-tailwindcss/issues/1164
 baseline: 686a8cc9019a25c756d8d50288c2e4a1ea177c78
 regressions:
   - packages/weapp-tailwindcss/test/uni-app-x/harmony-scss-comments.test.ts
+  - packages/weapp-tailwindcss/test/uni-app-x/vite-style-requests.test.ts
   - e2e/issue-1164-static.test.ts
 ---
 
@@ -37,11 +38,20 @@ Harmony 为原生样式对象提前展开局部 `@apply`，发生在 Sass 预处
 H5 生产产物对照又暴露了空作者块的生命周期问题：
 模板已生成局部别名，但空白或纯注释 scoped 块可能不产生可用样式请求。
 因此这类 Web SFC 改用现有独立 style block 分支，继续使用 `:global` 保持 specificity。
-切换载体时清空之前的 Web 回放内容。
+完整 SFC 变换统一更新 Web 回放内容，包括独立生成的样式载体。
 
 验证中曾把“没有 scoped 块”直接用于清空缓存，导致原始 style 子请求也清空
 完整 SFC 的规则。浏览器计算样式和生产断言发现了这个错误。
-最终仅完整模板对应的 SFC 可以执行这项清空，并添加子请求不能清空缓存的回归。
+最终仅完整模板对应的 SFC 可以更新这份状态，并添加子请求不能清空缓存的回归。
+
+PR 的三系统 demo 矩阵进一步发现 Issue 1144 页面在首次 HMR 后丢失局部样式。
+该页面使用非 scoped 作者块，生成的独立 scoped 块不在框架的原始描述符中。
+框架为样式子请求返回完整 SFC 时，旧链路用带查询参数的 ID 重复生成别名，
+覆盖主模块缓存；仅补回放规则仍不足以处理绕过 load 的样式变换。
+修复后由完整 SFC 的 transform 缓存追加样式块的源码与实际索引，
+load 和 transform 都从该缓存提供生成块；样式子请求不再进入 SFC 主模块转译。
+生成块自行携带规则，作者块桥接不重复注入。跨 POSIX、Windows、根目录和相对 ID
+的回归覆盖连续更新与删除，Issue 1144 完整 H5 矩阵在本地复现失败后通过。
 
 ## 验证
 
@@ -75,12 +85,13 @@ pnpm exec cross-env CI=1 E2E_PROJECT_FILTER=uni-app-x-vdom-tailwindcss-v4 E2E_IS
 pnpm exec cross-env CI=1 E2E_PROJECT_FILTER=uni-app-x-vdom-tailwindcss-v4 E2E_SKIP_OPEN_AUTOMATOR=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/uni-app-x-vdom-tailwindcss-v4.test.ts -u
 pnpm exec cross-env CI=1 E2E_PROJECT_FILTER=uni-app-x-vdom-tailwindcss-v4 E2E_SKIP_OPEN_AUTOMATOR=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/uni-app-x-vdom-tailwindcss-v4.test.ts --update=none
 pnpm e2e:demo:matrix uni-app-x-vdom-tailwindcss-v4:h5
+pnpm e2e:demo:matrix issue-1144-uni-app-x-web:h5
 pnpm release status
 pnpm agents:check
 git diff --check
 ```
 
-核心测试 3430 通过、35 跳过，矩阵 34 通过。聚合包构建 30 个任务成功，
+核心测试 3437 通过、35 跳过，矩阵 34 通过。聚合包构建 30 个任务成功，
 没有命中缓存；build-all 没有输出文件的既有提示单独保留。
 Issue 1164 的 H5、Harmony 与微信专项基线三项通过，不包含构建哈希、
 本机路径或设备 ID。设备相关测试未启用环境变量时明确跳过。

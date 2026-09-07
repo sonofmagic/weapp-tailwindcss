@@ -387,21 +387,17 @@ export function transformUVue(
 
     const scopedStyle = descriptor.styles.findLast(style => STYLE_SCOPED_RE.test(style.attrs)
       && (!options.onWebLocalStyleRules || !isUniAppXStyleSourceEmpty(style.content)))
-    if (localStyleCollector && options.onWebLocalStyleRules && descriptor.template && !scopedStyle) {
-      // 空作者块可能被框架移除；改用独立载体前清除上一轮回放内容。
-      options.onWebLocalStyleRules('')
-    }
-    if (localStyleCollector && options.onWebLocalStyleRules && scopedStyle) {
-      // 每次 SFC 变换都覆盖桥接缓存；当前没有局部规则时也要清除上一轮结果。
+    if (localStyleCollector && options.onWebLocalStyleRules && descriptor.template) {
+      // 所有 Web 载体都需要回放缓存；HMR 可能绕过主模块直接重编译样式请求。
       options.onWebLocalStyleRules(localStyleCollector.hasStyles()
         ? localStyleCollector.toStyleRules({ web: true })
         : '')
     }
-    else if (localStyleCollector?.hasStyles() && scopedStyle) {
+    if (localStyleCollector?.hasStyles() && scopedStyle && !options.onWebLocalStyleRules) {
       const separator = scopedStyle.content.endsWith('\n') ? '' : '\n'
       ms.appendLeft(scopedStyle.end, `${separator}${localStyleCollector.toStyleRules({ native: options.native })}`)
     }
-    else if (localStyleCollector?.hasStyles()) {
+    else if (localStyleCollector?.hasStyles() && !scopedStyle) {
       // 新增的局部样式块会单独进入预处理器，important utility 统一使用中间标记。
       ms.append(`\n${localStyleCollector.toStyleBlock({
         native: options.native || Boolean(options.onWebLocalStyleRules),

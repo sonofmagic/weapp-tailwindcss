@@ -11,6 +11,7 @@ import {
 import { createUniAppXHarmonyApplyGeneratorSource, expandUniAppXHarmonyApplyStyles } from '@/uni-app-x/style-asset'
 import { transformUVue } from '@/uni-app-x/transform'
 import { createUniAppXHarmonyApplyExpander } from '@/uni-app-x/vite/harmony-apply'
+import { createUniAppXWebLocalStyleBridge } from '@/uni-app-x/vite/web-local-style'
 
 const generatedCss = '.probe { background-color: #ff7a00; border-radius: 9999px; }'
 const apply = '.probe { @apply bg-[#ff7a00] rounded-full; }'
@@ -34,7 +35,28 @@ describe('issue 1164 Harmony scoped SCSS comments', () => {
     })!.code!
     expect(output).toContain('@apply bg-[#ff7a00];')
     expect(output).toMatch(/:global\(\.wtu-/)
-    expect(remember).toHaveBeenCalledWith('')
+    expect(remember).toHaveBeenCalledWith(expect.stringContaining('@apply bg-[#ff7a00];'))
+  })
+
+  it.each(['', '<style scoped>//\n</style>', '<style lang="scss">.author { color: red; }</style>'])('replays generated Web carriers across HMR with %j', (authorStyle) => {
+    const bridge = createUniAppXWebLocalStyleBridge(() => true)
+    const id = '/project/components/Probe.uvue'
+    const styleId = `${id}?vue&type=style&index=1&scoped=probe&lang.css`
+    const options = {
+      enableComponentLocalStyle: true,
+      onWebLocalStyleRules: (rules: string) => bridge.remember(id, rules),
+    }
+    for (const utility of ['h-8', 'h-12', 'h-8']) {
+      const source = `<template><view class="${utility}" /></template>${authorStyle}`
+      const output = transformUVue(source, id, createJsHandler({}), new Set([utility]), options)!.code!
+      expect(output).toContain(`@apply ${utility};`)
+      transformUVue('.author { color: red; }', styleId, createJsHandler({}), new Set(), options)
+      const replayed = bridge.appendToStyle('', styleId)
+      expect(replayed).toContain(`@apply ${utility};`)
+      expect(replayed).not.toContain(`@apply ${utility === 'h-8' ? 'h-12' : 'h-8'};`)
+    }
+    transformUVue(`<template><view /></template>${authorStyle}`, id, createJsHandler({}), new Set(), options)
+    expect(bridge.appendToStyle('', styleId)).toBe('')
   })
 
   it('connects template aliases to native declarations through the real Tailwind compiler', async () => {
