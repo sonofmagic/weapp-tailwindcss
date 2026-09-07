@@ -72,6 +72,9 @@ pnpm lint
 pnpm exec cross-env CI=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts --update=none
 pnpm exec cross-env CI=1 E2E_PROJECT_FILTER=uni-app-x-vdom-tailwindcss-v4 E2E_ISSUE_1164_HARMONY=1 E2E_ISSUE_1164_MINI=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/issue-1164-static.test.ts -u
 pnpm exec cross-env CI=1 E2E_PROJECT_FILTER=uni-app-x-vdom-tailwindcss-v4 E2E_ISSUE_1164_HARMONY=1 E2E_ISSUE_1164_MINI=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/issue-1164-static.test.ts --update=none
+pnpm exec cross-env CI=1 E2E_PROJECT_FILTER=uni-app-x-vdom-tailwindcss-v4 E2E_SKIP_OPEN_AUTOMATOR=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/uni-app-x-vdom-tailwindcss-v4.test.ts -u
+pnpm exec cross-env CI=1 E2E_PROJECT_FILTER=uni-app-x-vdom-tailwindcss-v4 E2E_SKIP_OPEN_AUTOMATOR=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/uni-app-x-vdom-tailwindcss-v4.test.ts --update=none
+pnpm e2e:demo:matrix uni-app-x-vdom-tailwindcss-v4:h5
 pnpm release status
 pnpm agents:check
 git diff --check
@@ -79,8 +82,14 @@ git diff --check
 
 核心测试 3430 通过、35 跳过，矩阵 34 通过。聚合包构建 30 个任务成功，
 没有命中缓存；build-all 没有输出文件的既有提示单独保留。
-静态基线只更新 Issue 1164 的 H5、Harmony 与微信产物，不包含构建哈希、
+Issue 1164 的 H5、Harmony 与微信专项基线三项通过，不包含构建哈希、
 本机路径或设备 ID。设备相关测试未启用环境变量时明确跳过。
+同时刷新该 demo 通用 static 基线并以禁止更新方式重跑通过，补齐新页面的类名与来源记录。
+通用基线也包含最新 main 已有的 Issue 1160 边框来源及 utility；旧快照中额外的
+主题覆盖和重复 preflight/注释不再出现在当前冻结构建产物中，主入口仍保留完整主题声明。
+本机执行通用 static 时暂时移除构建后全局关闭微信开发者工具的清理调用，
+避免打断共享 IDE 会话；编译与快照断言完整执行，测试后已恢复脚本，不提交该临时调整。
+H5 demo 矩阵生产基线、dev 首编译、连续替换/新增/恢复及刷新检查全部通过。
 截图与原始日志在忽略目录 `e2e/.artifacts/issue-1164`，不进入发布包。
 
 ## 适用边界
