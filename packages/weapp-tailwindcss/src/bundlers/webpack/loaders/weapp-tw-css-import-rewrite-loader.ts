@@ -5,7 +5,7 @@ import { Buffer } from 'node:buffer'
 import path from 'node:path'
 import process from 'node:process'
 import { inspect } from 'node:util'
-import { filterExistingCssRules, transformLynxCssCompat } from '@weapp-tailwindcss/postcss'
+import { filterExistingCssRules, normalizeTailwindcssV4InfinityRadiusCss, transformLynxCssCompat } from '@weapp-tailwindcss/postcss'
 import { ensurePosix } from '@weapp-tailwindcss/shared'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
@@ -224,9 +224,13 @@ export async function generateCssForWebpackPipeline(
   const missingBareUserCss = bareUserCss.trim().length === 0
     ? ''
     : filterExistingCssRules(generatedCss, bareUserCss)
-  const css = missingBareUserCss.trim().length === 0
+  const combinedCss = missingBareUserCss.trim().length === 0
     ? generatedCss
     : `${generatedCss}\n${missingBareUserCss}`
+  // 先消除旧版 calc 无法解析的无限圆角，其余适配仍留在最终产物阶段。
+  const css = generatorTarget === 'weapp' && runtimeState.tailwindRuntime.majorVersion === 4
+    ? normalizeTailwindcssV4InfinityRadiusCss(combinedCss)
+    : combinedCss
   if (process.env['WEAPP_TW_LOADER_DEBUG']) {
     process.stdout.write(`[weapp-tw-css-import-rewrite-loader] generated ${inspect({
       classes: generated.classSet.size,

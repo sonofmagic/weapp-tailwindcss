@@ -48,6 +48,7 @@ export {
   type TailwindcssRpxToRemOptions,
 } from './compat/tailwindcss-rpx'
 export { normalizeTailwindcssV4InfinityCalcCss } from './compat/tailwindcss-v4'
+export { normalizeTailwindcssV4InfinityRadiusCss } from './compat/tailwindcss-v4/infinity-radius'
 export {
   normalizeUniAppXImportantApplyForSass,
   restoreUniAppXImportantApplyMarker,
