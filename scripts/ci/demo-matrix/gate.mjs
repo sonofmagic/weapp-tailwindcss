@@ -35,7 +35,9 @@ export function verifyReports(reports, expectedMatrix, sha) {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const sha = process.env.DEMO_MATRIX_SHA
+  assert.match(sha ?? '', /^[a-f\d]{40}$/i, 'DEMO_MATRIX_SHA must identify the tested checkout')
   const files = await fg('**/report.json', { cwd: process.argv[2], absolute: true })
   const reports = await Promise.all(files.map(async file => JSON.parse(await readFile(file, 'utf8'))))
-  console.log(`Verified ${verifyReports(reports, matrix(), process.env.GITHUB_SHA)} demo/OS/Node results`)
+  console.log(`Verified ${verifyReports(reports, matrix(), sha)} demo/OS/Node results`)
 }

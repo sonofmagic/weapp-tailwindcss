@@ -1,6 +1,9 @@
-import { readFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
+import process from 'node:process'
+import { execa } from 'execa'
 import { describe, expect, it } from 'vitest'
 import { authoredClasses, authoredCss } from './authored.mjs'
 import { cases, checkCatalog, coverage, demos, matrix, repo, requiredPhases } from './catalog.mjs'
@@ -66,6 +69,45 @@ describe('portable demo matrix', () => {
   it('decodes CSS class escapes and rejects a standard-utility regression', () => {
     expect(cssClasses('.h-\\[64px\\], .bg-emerald-50\\/80')).toEqual(['h-[64px]', 'bg-emerald-50/80'])
     expect(() => inspectStyles(['.h-\\[64px\\]{height:64px}'], cases[0])).toThrow('missing h-8')
+  })
+
+  it('validates CLI reports against the tested head independently of the Actions merge SHA', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'demo-matrix-gate-'))
+    const head = 'a'.repeat(40)
+    const merge = 'b'.repeat(40)
+    const platforms = { 'windows-latest': 'win32', 'macos-latest': 'darwin', 'ubuntu-latest': 'linux' }
+    try {
+      for (const [index, job] of matrix().include.entries()) {
+        const report = {
+          sha: head,
+          pnpm: '11.25.0',
+          node: `v${job.node}.0.0`,
+          os: platforms[job.os],
+          expected: job.cases,
+          results: job.cases.map((id) => {
+            const item = cases.find(item => item.id === id)
+            return { id, coverage: coverage(item), status: 'passed', rounds: Object.fromEntries(requiredPhases(item).map(phase => [phase, {}])) }
+          }),
+        }
+        const directory = path.join(root, String(index))
+        await mkdir(directory)
+        await writeFile(path.join(directory, 'report.json'), JSON.stringify(report))
+      }
+      const run = sha => execa(process.execPath, [path.join(repo, 'scripts/ci/demo-matrix/gate.mjs'), root], {
+        env: { GITHUB_SHA: merge, DEMO_MATRIX_SHA: sha },
+        reject: false,
+      })
+      const valid = await run(head)
+      expect(valid.exitCode, valid.stderr).toBe(0)
+      expect(valid.stdout).toContain(`Verified ${matrix().include.flatMap(job => job.cases).length} demo/OS/Node results`)
+      const stale = await run(merge)
+      expect(stale.exitCode).not.toBe(0)
+      expect(stale.stderr).toContain('different commit')
+      const missing = await run('')
+      expect(missing.exitCode).not.toBe(0)
+      expect(missing.stderr).toContain('DEMO_MATRIX_SHA must identify the tested checkout')
+    }
+    finally { await rm(root, { recursive: true, force: true }) }
   })
 
   it('fails closed for absent, skipped, duplicate, stale or incomplete evidence', () => {

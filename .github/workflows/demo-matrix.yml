@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: ./.github/actions/setup-pnpm
         with:
           node-version: 24
@@ -40,7 +40,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node }}
@@ -71,7 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: ./.github/actions/setup-pnpm
         with:
           node-version: 24
@@ -83,7 +83,7 @@ jobs:
         env:
           CATALOG_RESULT: ${{ needs.catalog.result }}
           DEMOS_RESULT: ${{ needs.demos.result }}
-          GITHUB_SHA: ${{ github.sha }}
+          DEMO_MATRIX_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         shell: bash
         run: |
           test "$CATALOG_RESULT" = success

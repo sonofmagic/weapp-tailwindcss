@@ -108,4 +108,4 @@ Windows Vue 京东的 add 轮次已输出新增类名，但 Vite 在写出 app-o
 
 `66a36ae11` 的四项 Rollup 回归已在 Windows 通过，六组连续专项中的五组完成三次全流程。剩余分包 H5 在启动浏览器回归时超过五秒总预算，尚未进入 demo 构建；该期限从浏览器冷启动前开始计算，不代表路由语义失败。测试预算调整为二十秒并保留三十秒外层期限、路由切换及连接握手断言，继续以最终提交的完整 CI 验收。
 
-最终提交的 portable matrix 曾出现报告与 gate SHA 不一致：PR 事件的 head 在排队期间变化，reusable workflow 同时读取 `pull_request.head.sha` 和 `github.sha`，导致 gate 拿到旧 head。所有 matrix checkout、报告校验和 gate 现统一使用 workflow 的 `github.sha`，每次运行只接受同一提交的完整产物。
+`ab5e1283f` 的 159 个 demo job 和性能门禁全部成功，但最终报告 gate 比较 SHA 失败，连带阻断 PR Gate。GitHub API 确认 `dbfc7dc` 是该 head 的临时合并提交，并非排队导致的旧 head；先前“事件 head 变化”的判断不成立。GitHub 保留变量 `GITHUB_SHA` 不能通过 step env 覆盖，日志虽显示声明的 head，Node 进程仍读取合并 SHA。checkout 继续使用 PR head，gate 改用独立 `DEMO_MATRIX_SHA` 严格核对报告。真实 CLI 回归在不同 merge/head 环境下检查完整报告成功、错提交失败及缺少验收 SHA 失败，不通过接受任意报告身份绕过门禁。
