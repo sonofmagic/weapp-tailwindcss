@@ -17,6 +17,7 @@ import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { shouldEnablePageLocalStyle as isPageLocalStyleFile } from '@/uni-app-x/local-style-matcher'
 import { resolveUniUtsPlatform } from '@/utils'
 import { omitUndefined } from '@/utils/object'
+import { resolveUniAppXBorderPreflightOptions } from './border-preflight'
 import { resolveUniAppXOptions } from './options'
 import {
   collectUniAppXHarmonyApplyStyleSources,
@@ -327,6 +328,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       ...(enableComponentLocalStyle ? { enableComponentLocalStyle } : {}),
       ...(enablePageLocalStyle ? { enablePageLocalStyle } : {}),
       native: true,
+      ...resolveUniAppXBorderPreflightOptions(options, isWebGeneratorTarget()),
       pageMatcher: resolvedUniAppXOptions.componentLocalStyles.pageMatcher,
       ...(isWebGeneratorTarget() && customAttributesEntities.length > 0 ? { webCustomAttributeDeep: true } : {}),
       ...(isWebGeneratorTarget()

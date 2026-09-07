@@ -7,6 +7,7 @@ import { normalizeUniAppXImportantApplyForSass } from '@weapp-tailwindcss/postcs
 import MagicString from 'magic-string'
 import { generateCode, replaceWxml } from '@/wxml'
 import { createAttributeMatcher } from '@/wxml/custom-attributes'
+import { injectBorderPreflightClass, shouldInjectBorderPreflight } from './border-preflight'
 import {
   UniAppXComponentLocalStyleCollector,
 } from './component-local-style'
@@ -132,6 +133,8 @@ interface TransformUVueOptions {
   enablePageLocalStyle?: boolean
   pageMatcher?: (id: string) => boolean
   native?: boolean
+  borderPreflight?: string
+  borderPreflightRange?: 'all'
   webCustomAttributeDeep?: boolean
   onWebLocalStyleRules?: (rules: string) => void
 }
@@ -353,7 +356,13 @@ export function transformUVue(
             }
           }
         }
+        if (options.borderPreflight && shouldInjectBorderPreflight(node, options.borderPreflightRange)) {
+          injectBorderPreflightClass(ms, node, templateOffset)
+        }
       })
+      if (options.borderPreflight && !descriptor.styles.some(style => style.content.includes(options.borderPreflight!))) {
+        ms.prepend(`<style>\n${options.borderPreflight}\n</style>\n`)
+      }
     }
 
     if (descriptor.script && descriptor.script.start < descriptor.script.end) {

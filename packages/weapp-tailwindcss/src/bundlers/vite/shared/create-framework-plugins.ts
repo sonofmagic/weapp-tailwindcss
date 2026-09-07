@@ -30,6 +30,8 @@ export interface ViteFrameworkBranchContext {
 }
 
 export interface ViteFrameworkExtraPluginContext {
+  cssPreflight: InternalUserDefinedOptions['cssPreflight']
+  cssPreflightRange: InternalUserDefinedOptions['cssPreflightRange']
   customAttributesEntities: ReturnType<typeof toCustomAttributesEntities>
   disabledDefaultTemplateHandler: boolean | undefined
   ensureRuntimeClassSet: (...args: any[]) => Promise<Set<string>>

@@ -5,6 +5,12 @@
 			"style": {
 				"navigationBarTitleText": "uni-app x"
 			}
+		},
+		{
+			"path": "pages/issue-1160/index",
+			"style": {
+				"navigationBarTitleText": "Issue 1160"
+			}
 		}
 	],
 	"subPackages": [
