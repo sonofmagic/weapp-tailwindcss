@@ -67,6 +67,7 @@
 <template>
 	<scroll-view class="content-scroll" scroll-y :scroll-into-view="hmrScrollTarget">
 	<view class="content">
+		<navigator url="/pages/issue-1164/index"><text>Issue 1164 SCSS comments</text></navigator>
 		<navigator url="/pages/issue-1160/index"><text>Issue 1160 border</text></navigator>
 		<WeappTailwindcss />
 		<BindClass />

@@ -1,4 +1,5 @@
 import { postcss } from '@weapp-tailwindcss/postcss'
+import { parseUniAppXStyleSource } from './source-parser'
 
 const SFC_STYLE_BLOCK_RE = /(<style\b[^>]*>)([\s\S]*?)(<\/style>)/gi
 
@@ -33,7 +34,7 @@ export function expandUniAppXHarmonyApplyStyles(source: string, generatedCss: st
     }
     let root: postcss.Root
     try {
-      root = postcss.parse(styleSource)
+      root = parseUniAppXStyleSource(styleSource)
     }
     catch {
       return block

@@ -4878,6 +4878,9 @@ importers:
       oxc-walker:
         specifier: catalog:compilerUtilities
         version: 1.1.1(@oxc-project/types@0.148.0)(oxc-parser@0.148.0)(rolldown@1.2.7)
+      postcss-scss:
+        specifier: catalog:postcssCompat
+        version: 4.0.9(postcss@8.5.28)
       semver:
         specifier: catalog:compilerUtilities
         version: 7.8.5

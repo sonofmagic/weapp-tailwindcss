@@ -33,7 +33,7 @@ import { createUniAppXHarmonyApplyExpander } from './vite/harmony-apply'
 import { createUniAppXNativeHmrReloader } from './vite/native-hmr'
 import { createUniAppXNativeBuildTargetResolver } from './vite/native-target'
 import { isCssModuleExport, normalizeRelativeTailwindReferences, resolvePreprocessorTransform, resolveUniAppXCssTarget } from './vite/style-request'
-import { hasUniAppXImportantApply, resolveUniAppXStyleSource } from './vite/style-source'
+import { createUniAppXSfcStyleSources, hasUniAppXImportantApply, resolveUniAppXStyleSource } from './vite/style-source'
 import { createUniAppXWebLocalStyleBridge } from './vite/web-local-style'
 
 export { createUniAppXAssetTask } from './vite/asset-task'
@@ -90,7 +90,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     }
   }>()
   const nativeLocalStyleModuleIds = new Set<string>()
-  const knownSfcSources = new Map<string, string>()
+  const sfcStyleSources = createUniAppXSfcStyleSources()
   const pendingSfcTransforms = new Map<string, Promise<TransformResult | undefined>>()
   const webLocalStyle = createUniAppXWebLocalStyleBridge(isWebGeneratorTarget, hmrCssModuleVersions)
   let componentLocalStyleEnabled: boolean | undefined
@@ -245,13 +245,8 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         if (!query.vue || query.type !== 'style' || !UVUE_NVUE_RE.test(filename)) {
           return
         }
-        const source = knownSfcSources.get(filename)
-        const style = source ? extractSfcStyleBlocks(source)[query.index ?? 0] : undefined
-        if (!style) {
-          return
-        }
-        const normalized = normalizeUniAppXImportantApplyForSass(style.source)
-        return normalized === style.source ? undefined : { code: normalized, map: null }
+        await pendingSfcTransforms.get(cleanUrl(filename))
+        return sfcStyleSources.load(filename, query.index ?? 0)
       },
     },
     async transform(code, id) {
@@ -263,11 +258,13 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (query.vue && query.type === 'style') {
         await pendingSfcTransforms.get(cleanUrl(filename))
       }
-      const resolvedSource = resolveUniAppXStyleSource(code, query)
+      const resolvedSource = resolveUniAppXStyleSource(code, query, sfcStyleSources.getGenerated(filename, query.index ?? 0))
       if (resolvedSource.skip) {
         return
       }
-      const styleCode = query.vue && query.type === 'style' ? webLocalStyle.appendToStyle(resolvedSource.code, id) : resolvedSource.code
+      const styleCode = query.vue && query.type === 'style' && !sfcStyleSources.hasGenerated(filename)
+        ? webLocalStyle.appendToStyle(resolvedSource.code, id)
+        : resolvedSource.code
       // Vite 热更新会绕过 SFC 主模块，直接把原始样式交给预处理器；先移除
       // Sass 无法解析的 important utility 后，再由后续 CSS 阶段还原。
       const preprocessorCode = query.vue && query.type === 'style'
@@ -297,7 +294,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   const cssPlugins = [cssPlugin, cssPrePlugin]
 
   async function transformSfc(code: string, id: string, context: { addWatchFile?: (id: string) => void }) {
-    knownSfcSources.set(cleanUrl(id), code)
+    sfcStyleSources.rememberSource(id, code)
     if (isWebGeneratorTarget()) {
       for (const style of extractSfcStyleBlocks(code)) {
         webCssEntryDiagnostics?.observeSourceImports(style.source, id)
@@ -343,6 +340,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     const result = Object.keys(transformOptions).length > 0
       ? transformUVue(code, id, jsHandler, currentRuntimeSet, transformOptions)
       : transformUVue(code, id, jsHandler, currentRuntimeSet)
+    sfcStyleSources.rememberGenerated(id, isWebGeneratorTarget() ? result?.code ?? '' : '')
     if (!result?.code) {
       return result
     }
@@ -378,7 +376,8 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         if (!isEnabled()) {
           return
         }
-        if (!UVUE_NVUE_QUERY_RE.test(id)) {
+        const { query } = parseVueRequest(id)
+        if (!UVUE_NVUE_QUERY_RE.test(id) || (query.vue && query.type === 'style')) {
           return
         }
         return runTransformSfc(code, id, this)

@@ -251,6 +251,7 @@
     "micromatch": "catalog:buildUtilities",
     "oxc-parser": "catalog:compilerUtilities",
     "oxc-walker": "catalog:compilerUtilities",
+    "postcss-scss": "catalog:postcssCompat",
     "semver": "catalog:compilerUtilities",
     "tailwindcss-config": "workspace:*",
     "weapp-style-injector": "workspace:*",
