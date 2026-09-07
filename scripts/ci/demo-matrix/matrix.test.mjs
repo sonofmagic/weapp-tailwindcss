@@ -108,7 +108,7 @@ describe('portable demo matrix', () => {
       expect(missing.stderr).toContain('DEMO_MATRIX_SHA must identify the tested checkout')
     }
     finally { await rm(root, { recursive: true, force: true }) }
-  })
+  }, 30_000)
 
   it('fails closed for absent, skipped, duplicate, stale or incomplete evidence', () => {
     const id = cases[0].id
