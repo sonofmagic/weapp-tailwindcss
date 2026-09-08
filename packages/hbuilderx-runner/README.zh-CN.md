@@ -48,6 +48,8 @@ await launch.stop()
 
 macOS 默认路径为 `/Applications/HBuilderX.app/Contents/MacOS/cli` 和 `/Applications/HBuilderX-Alpha.app/Contents/MacOS/cli`。Windows/Linux 的非标准安装请设置 `HBUILDERX_CLI_PATH`。
 
+`resolveHBuilderXCli` 只返回已配置且存在的路径，不查询运行进程；`resolveHBuilderXCliInfo` 还需要返回 `isRunning`，因此保留操作系统查询。已配置路径的 runner 通过原生 CLI 的 host 握手连接实例。
+
 当同一 CLI 匹配到多个 host 时，runner 会拒绝猜测。请设置 `HBUILDERX_HOST`，或向 `createHBuilderXRunner` 传入 `host`。
 
 部分 HBuilderX 版本自身会拒绝 stable 与 Alpha 跨版本并行运行。runner 不会擅自关闭当前实例；目标版本无法启动时会抛出 `cli-instance-mismatch`，请关闭冲突实例后重试。

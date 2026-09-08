@@ -20,7 +20,6 @@ import {
   resolveIosSimulatorDeviceId,
   selectPreferredIosSimulatorDevice,
   resolveHBuilderXCli,
-  resolveHBuilderXCliInfo,
   runCommand,
   selectHBuilderXCliCandidatesForChannel,
 } from '../src'
@@ -139,11 +138,6 @@ describe('hbuilderx-runner', () => {
     const cli = path.join(dir, process.platform === 'win32' ? 'cli.cmd' : 'cli')
     await writeFile(cli, '', 'utf8')
     await expect(resolveHBuilderXCli([path.join(dir, 'missing'), cli])).resolves.toBe(cli)
-    await expect(resolveHBuilderXCliInfo([cli], { HBUILDERX_CLI_PATH: cli } as NodeJS.ProcessEnv)).resolves.toMatchObject({
-      path: cli,
-      isRunning: false,
-      source: 'env',
-    })
   })
 
   it('orders stable and Alpha default installations by channel', () => {
@@ -174,14 +168,10 @@ describe('hbuilderx-runner', () => {
     const dir = await mkdtemp(path.join(tmpdir(), 'hbuilderx-explicit-'))
     const cli = path.join(dir, 'custom-cli')
     await writeFile(cli, '', 'utf8')
-    await expect(resolveHBuilderXCliInfo({
+    await expect(resolveHBuilderXCli({
       channel: 'alpha',
       env: { HBUILDERX_CLI_PATH: cli } as NodeJS.ProcessEnv,
-    })).resolves.toMatchObject({
-      path: cli,
-      source: 'env',
-      channel: 'unknown',
-    })
+    })).resolves.toBe(cli)
   })
 
   it('extracts HBuilderX executables from process listings', () => {

@@ -2,6 +2,8 @@ import type { HBuilderXCommandOptions } from '../src/types'
 import { spawnSync } from 'node:child_process'
 import { beforeEach, expect, it, vi } from 'vitest'
 import { fileExists } from '../src/fs'
+import process from 'node:process'
+import { resolveHBuilderXCli, resolveHBuilderXCliInfo } from '../src/hbuilderx'
 import { createHBuilderXRunner } from '../src/hbuilderx/runner'
 import { runCommand } from '../src/process'
 
@@ -138,4 +140,19 @@ it('IDE 启动后 host 始终未注册时保留超时分类', async () => {
   finally {
     now.mockRestore()
   }
+})
+
+it.each(['candidate', 'env'] as const)('解析显式 %s 路径不依赖操作系统进程枚举', async (source) => {
+  await expect(resolveHBuilderXCli(source === 'candidate'
+    ? { candidates: [cli], env: {} }
+    : { env: { HBUILDERX_CLI_PATH: cli } })).resolves.toBe(cli)
+  expect(spawnSync).not.toHaveBeenCalled()
+  expect(runCommand).not.toHaveBeenCalled()
+})
+
+it('信息查询 API 保留真实运行状态语义，纯路径 API 仍校验 channel', async () => {
+  vi.mocked(spawnSync).mockReturnValueOnce({ status: 0, stdout: process.platform === 'win32' ? '[]' : '', stderr: '' } as ReturnType<typeof spawnSync>)
+  await expect(resolveHBuilderXCliInfo({ candidates: [cli], channel: 'alpha', env: { HBUILDERX_CLI_PATH: cli } })).resolves.toMatchObject({ path: cli, isRunning: false, source: 'env', channel: 'unknown' })
+  expect(spawnSync).toHaveBeenCalledOnce()
+  await expect(resolveHBuilderXCli({ candidates: [cli], env: { HBUILDERX_CHANNEL: 'invalid' } })).rejects.toThrow('channel')
 })
