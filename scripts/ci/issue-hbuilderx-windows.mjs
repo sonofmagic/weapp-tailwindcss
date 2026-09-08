@@ -5,6 +5,7 @@ import { version as osVersion, release, tmpdir } from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { setTimeout as delay } from 'node:timers/promises'
+import { traceHBuilderXCLI } from './hbuilderx-cli-trace.mjs'
 
 if (process.platform !== 'win32') {
   throw new Error('该入口用于真实 Windows HBuilderX 验证，不能用平台模拟代替。')
@@ -70,6 +71,7 @@ if (!await exists(cli)) {
 if (process.env.GITHUB_ACTIONS !== 'true') {
   throw new Error('Windows IDE 初始化入口仅用于独立 GitHub runner')
 }
+await traceHBuilderXCLI(path.join(installRoot, directory), artifactRoot)
 await command(cli, ['open'], 'open')
 let actualVersion = ''
 for (let attempt = 0; attempt < 30; attempt++) {

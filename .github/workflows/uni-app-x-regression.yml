@@ -84,7 +84,7 @@ jobs:
       - name: Install browser
         run: pnpm exec playwright install chromium
       - name: Cache official HBuilderX toolchain
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: ${{ runner.temp }}/issue-hbuilderx-${{ matrix.version }}
           key: issue-hbuilderx-win-${{ matrix.version }}-v2
