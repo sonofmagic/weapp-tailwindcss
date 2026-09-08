@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   watch:
-    name: Repeated watch (${{ matrix.os || 'windows-latest' }}, ${{ matrix.case }})
+    name: Repeated watch (${{ matrix.os || 'windows-latest' }}, Node ${{ matrix.node || 24 }}, ${{ matrix.case }})
     runs-on: ${{ matrix.os || 'windows-latest' }}
     timeout-minutes: 30
     strategy:
@@ -32,6 +32,12 @@ jobs:
           - subpackage-taro-webpack-react-tailwindcss-v4:tt
           - gulp-tailwindcss-v4:tt
         include:
+          - case: mpx-tailwindcss-v4:wx
+            os: windows-latest
+            node: 22
+          - case: mpx-tailwindcss-v4:wx
+            os: windows-latest
+            node: 24
           - case: uni-app-vite-tailwindcss-v4:mp-weixin
             os: ubuntu-latest
     steps:
@@ -40,7 +46,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 24
+          node-version: ${{ matrix.node || 24 }}
       - run: pnpm build:ci
       - run: pnpm exec playwright install chromium
       - run: pnpm test:demo:matrix
@@ -54,6 +60,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=6144
           DEMO_CASE: ${{ matrix.case }}
         run: |
+          export NODE_OPTIONS="$NODE_OPTIONS --trace-exit --trace-uncaught --require=$GITHUB_WORKSPACE/scripts/ci/demo-matrix/process-diagnostic.cjs"
           if [[ "$DEMO_CASE" == *webpack* ]]; then
             export NODE_OPTIONS="$NODE_OPTIONS --require=$GITHUB_WORKSPACE/scripts/ci/demo-matrix/watch-diagnostic.cjs"
           fi
