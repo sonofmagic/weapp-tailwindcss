@@ -61,7 +61,7 @@ it.each(['cjs', 'esm'].flatMap(format => ['file', 'directory'].map(dependency =>
         }
         const module = await import(`${pathToFileURL(output).href}?inspection=${++inspection}`)
         return { value: module.value, derived: module.derived }
-      }, { timeout: 5000 }).toEqual({ value, derived: value * 2 })
+      }, { timeout: 5000, interval: 1 }).toEqual({ value, derived: value * 2 })
     }
     await inspect(0, 0)
     for (const value of [1, 2, 3]) {
