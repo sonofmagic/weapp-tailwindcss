@@ -3,6 +3,7 @@
   [Parameter(Mandatory = $true)][string]$ArtifactRoot
 )
 $ErrorActionPreference = 'Stop'
+[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 if ($env:GITHUB_ACTIONS -ne 'true') { throw '首次引导仅允许在独立 GitHub runner 操作' }
 Add-Type -AssemblyName UIAutomationClient
 Add-Type -AssemblyName UIAutomationTypes
@@ -54,7 +55,7 @@ function Get-StartButtons($Elements) {
   # 名称来自官方语言包 dialog.button.startuse，不操作其他对话框。
   @($Elements | Where-Object {
     $_.Current.ControlType -eq [System.Windows.Automation.ControlType]::Button -and
-    $_.Current.Name.Replace('&', '').Trim() -in @('Enjoy It', 'Enjoy It Alt+E', '开始体验') -and
+    $_.Current.Name.Replace('&', '').Trim() -in @('Enjoy It', 'Enjoy It Alt+E', 'Enjoy It Enter', '开始体验') -and
     $_.Current.IsEnabled -and -not $_.Current.IsOffscreen
   })
 }

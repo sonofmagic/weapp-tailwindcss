@@ -7,7 +7,7 @@ on:
         description: 选择实际 IDE 验证场景
         type: choice
         default: all
-        options: [all, 1170-LF, 1170-CRLF, 1144-options, 1144-setup]
+        options: [all, 1170-LF, 1170-CRLF, 1144-options, 1144-setup, vanilla-cli]
       compare_before:
         description: 独立构建修复前版本并复现首次保存丢样式
         type: boolean
@@ -84,7 +84,7 @@ jobs:
       - name: Install browser
         run: pnpm exec playwright install chromium
       - name: Cache official HBuilderX toolchain
-        uses: actions/cache/restore@v4
+        uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/issue-hbuilderx-${{ matrix.version }}
           key: issue-hbuilderx-win-${{ matrix.version }}-v2
@@ -98,7 +98,11 @@ jobs:
         run: |
           pnpm --filter weapp-tailwindcss exec vitest run test/uni-app-x/vite-style-requests.test.ts --update=none
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          node scripts/ci/issue-hbuilderx-verify.mjs
+          if ($env:E2E_WINDOWS_CASE -eq 'vanilla-cli') {
+            node scripts/ci/hbuilderx-vanilla.mjs
+          } else {
+            node scripts/ci/issue-hbuilderx-verify.mjs
+          }
           exit $LASTEXITCODE
       - name: Preserve current-source evidence before the baseline build
         if: ${{ !cancelled() && steps.ide.outcome == 'success' }}

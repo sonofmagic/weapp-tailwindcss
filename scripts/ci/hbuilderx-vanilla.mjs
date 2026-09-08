@@ -1,0 +1,119 @@
+import assert from 'node:assert/strict'
+import { spawn, spawnSync } from 'node:child_process'
+import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
+import process from 'node:process'
+import { setTimeout as delay } from 'node:timers/promises'
+import { stripVTControlCharacters } from 'node:util'
+import { chromium } from 'playwright'
+
+assert.equal(process.platform, 'win32')
+assert.equal(process.env.GITHUB_ACTIONS, 'true')
+const cli = process.env.HBUILDERX_CLI_PATH
+assert.ok(cli)
+const artifacts = path.resolve('e2e', '.artifacts', 'issue-hbuilderx-windows', 'vanilla')
+const root = await mkdtemp(path.join(tmpdir(), '原生项目 & CLI-'))
+await mkdir(artifacts, { recursive: true })
+await mkdir(path.join(root, 'pages', 'index'), { recursive: true })
+await writeFile(path.join(root, 'manifest.json'), JSON.stringify({ 'name': 'vanilla-cli-boundary', 'appid': '__UNI__WTCLITEST', 'versionName': '1.0.0', 'versionCode': '100', 'uni-app-x': {}, 'vueVersion': '3' }))
+await writeFile(path.join(root, 'pages.json'), JSON.stringify({ pages: [{ path: 'pages/index/index' }], globalStyle: { navigationBarTitleText: 'Vanilla CLI boundary' } }))
+await writeFile(path.join(root, 'App.uvue'), '<script>export default { onLaunch() {} }</script>')
+await writeFile(path.join(root, 'main.uts'), 'import App from \'./App.uvue\'\nimport { createSSRApp } from \'vue\'\nexport function createApp() { return { app: createSSRApp(App) } }\n')
+
+function start(args) {
+  const child = spawn(cli, args, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] })
+  let output = ''
+  for (const stream of [child.stdout, child.stderr]) {
+    stream.on('data', (chunk) => {
+      output += chunk.toString()
+    })
+  }
+  child.on('error', (error) => {
+    output += String(error)
+  })
+  const closed = new Promise(resolve => child.once('close', code => resolve(code)))
+  return { child, closed, log: () => output }
+}
+
+async function stop(session) {
+  if (session.child.exitCode === null) {
+    spawnSync('taskkill', ['/pid', String(session.child.pid), '/t', '/f'], { timeout: 5000, windowsHide: true })
+  }
+  await Promise.race([session.closed, delay(5000)])
+}
+
+async function command(args) {
+  const session = start(args)
+  let timeout
+  try {
+    const code = await Promise.race([session.closed, new Promise((resolve) => {
+      timeout = setTimeout(resolve, 20_000, 'timeout')
+    })])
+    assert.equal(code, 0, `${args.join(' ')}: ${session.log()}`)
+    return session.log()
+  }
+  finally {
+    clearTimeout(timeout)
+    await stop(session)
+  }
+}
+
+const hosts = (await command(['listhost'])).trim().split(/\r?\n/).filter(Boolean)
+assert.equal(hosts.length, 1)
+const hostArgs = ['--host', hosts[0]]
+const browser = await chromium.launch()
+const page = await browser.newPage()
+const results = []
+try {
+  for (const [mode, iteration] of ['physical', 'junction'].flatMap(mode => Array.from({ length: 8 }, (_, index) => [mode, index + 1]))) {
+    const project = mode === 'physical' ? root : path.join(artifacts, `原生别名 & ${iteration}`)
+    if (mode === 'junction') {
+      await symlink(root, project, 'junction')
+    }
+    const marker = `vanilla-${mode}-${iteration}`
+    await writeFile(path.join(root, 'pages', 'index', 'index.uvue'), `<template><view><text>${marker}</text></view></template><script setup></script><style scoped>view { padding: 10px; }</style>`)
+    await command(['project', 'open', '--path', project, ...hostArgs])
+    await command(['project', 'list', ...hostArgs])
+    const session = start(['launch', 'web', '--project', project, '--browser', 'Chrome', ...hostArgs])
+    const deadline = Date.now() + 120_000
+    let loaded = false
+    try {
+      while (Date.now() < deadline) {
+        const url = stripVTControlCharacters(session.log()).match(/http:\/\/(?:localhost|127\.0\.0\.1):\d+\//)?.[0]
+        if (url) {
+          try {
+            await page.goto(url, { timeout: 5000 })
+            loaded = (await page.locator('body').textContent()).includes(marker)
+            if (loaded) {
+              break
+            }
+          }
+          catch { /* 编译器报告地址后等待对应页面真正加载。 */ }
+        }
+        assert.equal(session.child.exitCode, null, session.log())
+        await delay(300)
+      }
+      results.push({ mode, iteration, loaded, project })
+      await writeFile(path.join(artifacts, 'results.json'), JSON.stringify(results, null, 2))
+      await writeFile(path.join(artifacts, `${mode}-${iteration}.log`), session.log())
+      console.log(JSON.stringify(results.at(-1)))
+      if (!loaded) {
+        spawnSync('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.resolve('scripts', 'ci', 'issue-hbuilderx-diagnostics.ps1')], {
+          env: { ...process.env, E2E_HBUILDERX_DIAGNOSTIC_DIR: path.join(artifacts, 'native') },
+          timeout: 30_000,
+        })
+      }
+      assert.ok(loaded, '未使用 weapp-tailwindcss 或仓库 runner 的原生项目启动失败')
+      await page.screenshot({ path: path.join(artifacts, `${mode}-${iteration}.png`) })
+    }
+    finally {
+      await stop(session)
+      await command(['project', 'close', '--path', project, ...hostArgs])
+      if (mode === 'junction') {
+        await rm(project, { force: true, recursive: true })
+      }
+    }
+  }
+}
+finally { await browser.close() }
