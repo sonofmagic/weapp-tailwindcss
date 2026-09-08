@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
+import { createManagedIdeSession } from './issue-hbuilderx-session.mjs'
 
 const root = path.resolve('e2e', '.artifacts', 'issue-hbuilderx-windows')
 await mkdir(root, { recursive: true })
@@ -22,17 +23,36 @@ if (selected.length === 0) {
   throw new Error(`未知 Windows 验收场景：${process.env.E2E_WINDOWS_CASE}`)
 }
 for (const [iteration, [name, file, filter]] of Array.from({ length: repeats }, (_, index) => selected.map(item => [index + 1, item])).flat()) {
-  // 每个场景使用独立 Vitest 进程，因此项目别名也独立；保留 IDE 自身的正常生命周期。
-  const result = await execa('pnpm', ['exec', 'vitest', 'run', '-c', 'e2e/vitest.e2e.config.ts', file, '-t', filter, '--update=none'], {
-    all: true,
-    reject: false,
-    timeout: 420_000,
-  }).catch(error => error)
-  await writeFile(path.join(root, `${iteration}-${name}.log`), result.all ?? String(result))
-  console.log((result.all ?? '').slice(-6000))
-  results.push({ iteration, name, exitCode: result.exitCode ?? null, timedOut: result.timedOut ?? false })
+  const session = await createManagedIdeSession(root, `${iteration}-${name}`)
+  let result
+  let cleanupError
+  try {
+    await session.start()
+    // 场景内保留连续保存与刷新；不同场景不共享原生 IDE 进程状态。
+    result = await execa('pnpm', ['exec', 'vitest', 'run', '-c', 'e2e/vitest.e2e.config.ts', file, '-t', filter, '--update=none'], {
+      all: true,
+      reject: false,
+      timeout: 420_000,
+    })
+  }
+  catch (error) {
+    result = error
+  }
+  finally {
+    try {
+      await session.stop()
+    }
+    catch (error) {
+      cleanupError = error
+    }
+  }
+  const output = `${result.all ?? String(result)}${cleanupError ? `\n${cleanupError.stack ?? cleanupError}` : ''}`
+  await writeFile(path.join(root, `${iteration}-${name}.log`), output)
+  console.log(output.slice(-6000))
+  const exitCode = cleanupError ? 1 : result.exitCode ?? null
+  results.push({ iteration, name, exitCode, timedOut: result.timedOut ?? false })
   await writeFile(path.join(root, 'latest.json'), JSON.stringify(results, null, 2))
-  if (result.exitCode !== 0) {
+  if (exitCode !== 0) {
     // 失败立即交付现场；修复后重新完整验收，不以重试覆盖本轮失败。
     break
   }
