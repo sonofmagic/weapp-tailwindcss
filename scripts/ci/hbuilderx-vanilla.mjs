@@ -8,16 +8,19 @@ import { setTimeout as delay } from 'node:timers/promises'
 import { stripVTControlCharacters } from 'node:util'
 import { chromium } from 'playwright'
 
-assert.equal(process.platform, 'win32')
-assert.equal(process.env.GITHUB_ACTIONS, 'true')
+assert.ok(['win32', 'darwin'].includes(process.platform))
+assert.ok(process.env.GITHUB_ACTIONS === 'true' || process.env.E2E_HBUILDERX_VANILLA === '1')
+const repeats = process.env.GITHUB_ACTIONS === 'true' ? 8 : 1
 const cli = process.env.HBUILDERX_CLI_PATH
 assert.ok(cli)
 const artifacts = path.resolve('e2e', '.artifacts', 'issue-hbuilderx-windows', 'vanilla')
 const root = await mkdtemp(path.join(tmpdir(), '原生项目 & CLI-'))
+const aliases = await mkdtemp(path.join(tmpdir(), '原生别名 & CLI-'))
 await mkdir(artifacts, { recursive: true })
 await mkdir(path.join(root, 'pages', 'index'), { recursive: true })
 await writeFile(path.join(root, 'manifest.json'), JSON.stringify({ 'name': 'vanilla-cli-boundary', 'appid': '__UNI__WTCLITEST', 'versionName': '1.0.0', 'versionCode': '100', 'uni-app-x': {}, 'vueVersion': '3' }))
 await writeFile(path.join(root, 'pages.json'), JSON.stringify({ pages: [{ path: 'pages/index/index' }], globalStyle: { navigationBarTitleText: 'Vanilla CLI boundary' } }))
+await writeFile(path.join(root, 'index.html'), '<!DOCTYPE html><html><head><meta charset="UTF-8"><!--preload-links--><!--app-context--></head><body><div id="app"><!--app-html--></div><script type="module" src="/main"></script></body></html>')
 await writeFile(path.join(root, 'App.uvue'), '<script>export default { onLaunch() {} }</script>')
 await writeFile(path.join(root, 'main.uts'), 'import App from \'./App.uvue\'\nimport { createSSRApp } from \'vue\'\nexport function createApp() { return { app: createSSRApp(App) } }\n')
 
@@ -38,7 +41,12 @@ function start(args) {
 
 async function stop(session) {
   if (session.child.exitCode === null) {
-    spawnSync('taskkill', ['/pid', String(session.child.pid), '/t', '/f'], { timeout: 5000, windowsHide: true })
+    if (process.platform === 'win32') {
+      spawnSync('taskkill', ['/pid', String(session.child.pid), '/t', '/f'], { timeout: 5000, windowsHide: true })
+    }
+    else {
+      session.child.kill('SIGTERM')
+    }
   }
   await Promise.race([session.closed, delay(5000)])
 }
@@ -66,15 +74,25 @@ const browser = await chromium.launch()
 const page = await browser.newPage()
 const results = []
 try {
-  for (const [mode, iteration] of ['physical', 'junction'].flatMap(mode => Array.from({ length: 8 }, (_, index) => [mode, index + 1]))) {
-    const project = mode === 'physical' ? root : path.join(artifacts, `原生别名 & ${iteration}`)
+  for (const [mode, iteration] of ['physical', 'junction'].flatMap(mode => Array.from({ length: repeats }, (_, index) => [mode, index + 1]))) {
+    const project = mode === 'physical' ? root : path.join(aliases, `project-${iteration}`)
     if (mode === 'junction') {
-      await symlink(root, project, 'junction')
+      await symlink(root, project, process.platform === 'win32' ? 'junction' : 'dir')
     }
     const marker = `vanilla-${mode}-${iteration}`
     await writeFile(path.join(root, 'pages', 'index', 'index.uvue'), `<template><view><text>${marker}</text></view></template><script setup></script><style scoped>view { padding: 10px; }</style>`)
     await command(['project', 'open', '--path', project, ...hostArgs])
-    await command(['project', 'list', ...hostArgs])
+    let registered = false
+    const registrationDeadline = Date.now() + 20_000
+    while (Date.now() < registrationDeadline) {
+      const listed = await command(['project', 'list', ...hostArgs])
+      if (listed.includes(` - ${path.basename(project)}(`)) {
+        registered = true
+        break
+      }
+      await delay(300)
+    }
+    assert.ok(registered, `项目未注册：${project}`)
     const session = start(['launch', 'web', '--project', project, '--browser', 'Chrome', ...hostArgs])
     const deadline = Date.now() + 120_000
     let loaded = false
@@ -94,11 +112,11 @@ try {
         assert.equal(session.child.exitCode, null, session.log())
         await delay(300)
       }
-      results.push({ mode, iteration, loaded, project })
+      results.push({ platform: process.platform, mode, iteration, loaded, project })
       await writeFile(path.join(artifacts, 'results.json'), JSON.stringify(results, null, 2))
       await writeFile(path.join(artifacts, `${mode}-${iteration}.log`), session.log())
       console.log(JSON.stringify(results.at(-1)))
-      if (!loaded) {
+      if (!loaded && process.platform === 'win32') {
         spawnSync('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.resolve('scripts', 'ci', 'issue-hbuilderx-diagnostics.ps1')], {
           env: { ...process.env, E2E_HBUILDERX_DIAGNOSTIC_DIR: path.join(artifacts, 'native') },
           timeout: 30_000,
@@ -108,6 +126,7 @@ try {
       await page.screenshot({ path: path.join(artifacts, `${mode}-${iteration}.png`) })
     }
     finally {
+      await writeFile(path.join(artifacts, `${mode}-${iteration}.log`), session.log())
       await stop(session)
       await command(['project', 'close', '--path', project, ...hostArgs])
       if (mode === 'junction') {
