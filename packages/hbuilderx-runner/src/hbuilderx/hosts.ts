@@ -1,6 +1,6 @@
 import type { HBuilderXCommandResult, HBuilderXIssueKind, HBuilderXResolvedChannel } from '../types'
 import { wait } from '../fs'
-import { formatRecentLogs } from '../logs'
+import { createTimeoutIssue, formatRecentLogs } from '../logs'
 import { HBuilderXCommandError, runCommand } from '../process'
 
 const ansiRE = new RegExp(`${String.fromCharCode(27)}\\[[\\d;]*m`, 'g')
@@ -67,7 +67,15 @@ export async function connectHBuilderXHost(options: HostOptions) {
   const command = async (args: string[], maxTimeoutMs = 10_000) => {
     const remaining = deadline - Date.now()
     if (remaining <= 0) {
-      throw new Error(`HBuilderX host 连接超时：${cliPath}, cwd=${cwd}\n${formatRecentLogs(logs)}`)
+      throw new HBuilderXCommandError(`HBuilderX host 连接超时：${cliPath} ${args.join(' ')}\ncwd=${cwd}\nexit=null\nissue=timeout\n${formatRecentLogs(logs)}`, {
+        command: cliPath,
+        args,
+        cwd,
+        exit: { code: null, signal: null },
+        logs,
+        output: formatRecentLogs(logs),
+        issue: createTimeoutIssue(),
+      })
     }
     const result = await runCommand({ command: cliPath, args, cwd, env, timeoutMs: Math.min(remaining, maxTimeoutMs), allowFailure: true })
     logs.push(...result.logs)
@@ -86,7 +94,11 @@ export async function connectHBuilderXHost(options: HostOptions) {
   }
   const probe = async () => {
     const listed = await command(['listhost'])
-    assertCommand(listed)
+    // 原生 CLI 用诊断文本表示没有实例；该有效协议响应可以带非零退出码。
+    const absent = listed.issue.kind !== 'timeout' && /HBuilderX is not detected running\. Please execute cli open/i.test(stripAnsi(listed.output))
+    if (!absent) {
+      assertCommand(listed)
+    }
     const hosts = parseHBuilderXHosts(listed.output)
     const compatible: Array<{ host: string, version: string, channel: HBuilderXResolvedChannel }> = []
     for (const host of explicitHost ? [explicitHost] : hosts) {

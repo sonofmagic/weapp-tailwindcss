@@ -95,3 +95,29 @@ it('所有 host 命令共享启动截止时间', async () => {
     now.mockRestore()
   }
 })
+
+it('识别原生 CLI 的未启动响应，但不把同文本的超时当作确认', async () => {
+  let opened = false
+  onCommand = ({ args }) => {
+    if (args[0] === 'open') {
+      opened = true
+    }
+    return opened ? {} : { code: 1, output: 'HBuilderX is not detected running. Please execute cli open to start HBuilderX and try again' }
+  }
+  await expect(createHBuilderXRunner({ hbuilderxCliPath: cli })).resolves.toMatchObject({ resolution: { host: 'host-a' } })
+  vi.mocked(runCommand).mockClear()
+  onCommand = () => ({ code: null, kind: 'timeout', output: 'HBuilderX is not detected running. Please execute cli open to start HBuilderX and try again' })
+  await expect(createHBuilderXRunner({ hbuilderxCliPath: cli })).rejects.toMatchObject({ result: { issue: { kind: 'timeout' } } })
+  expect(vi.mocked(runCommand).mock.calls.some(([options]) => options.args[0] === 'open')).toBe(false)
+})
+
+it('启动期限耗尽后不再发命令，保留标准 timeout 分类', async () => {
+  const now = vi.spyOn(Date, 'now').mockReturnValueOnce(1000).mockReturnValueOnce(1100)
+  try {
+    await expect(createHBuilderXRunner({ hbuilderxCliPath: cli, timeoutMs: 100 })).rejects.toMatchObject({ result: { issue: { kind: 'timeout' } } })
+    expect(runCommand).not.toHaveBeenCalled()
+  }
+  finally {
+    now.mockRestore()
+  }
+})

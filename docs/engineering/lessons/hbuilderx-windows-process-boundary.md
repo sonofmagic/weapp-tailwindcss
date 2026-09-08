@@ -4,6 +4,9 @@ issue: https://github.com/sonofmagic/weapp-tailwindcss/issues/1170
 baseline: 8a71397c9d3f8a799a64e6e8f418c7847818d9fb
 regressions:
   - packages/hbuilderx-runner/test/process.test.ts
+  - packages/hbuilderx-runner/test/discovery.test.ts
+  - packages/hbuilderx-runner/test/discovery-windows.test.ts
+  - packages/hbuilderx-runner/test/host-connection.test.ts
   - e2e/hbuilderx-project-alias.test.ts
   - e2e/issue-1144-stable.test.ts
   - packages/weapp-tailwindcss/test/uni-app-x/style-reference-paths.test.ts
@@ -58,6 +61,29 @@ mock module graph 也必须使用同一个绝对文件路径身份；本次调�
 原生参数用例覆盖中文、空格、空参数、尾部反斜杠、引号、括号、管道、`&` 与字面量环境变量表达式；Windows 另测 PATH 下的 cmd shim。
 Windows IDE 每个版本重复两轮完整场景，失败保留现场且不自动重试。Server 2025 的结论不冒充用户 Windows 11 原机、Vapor 或原生 App 验收。
 本次没有改 demo 或样式 fixture；此前新增 #1170 的 static 基线已重新生成并以禁止更新模式通过。
+
+## Windows 实例发现与连接边界
+
+现代 Windows 不一定安装 WMIC。旧实现查询失败直接返回空列表，导致 runner 对已有 IDE 再次执行 `open`。
+现改为 Windows 自带 PowerShell 与进程 API，使用 JSON 传递路径，避免 CSV 丢失逗号、中文或 UNC 路径；
+查询错误与有效空列表分开处理。实际 Windows 回归创建位于中文、空格、逗号和 `&` 目录的临时
+`HBuilderX.exe`，确认无 WMIC 时仍能找到同目录 CLI，并只清理测试自身进程。
+
+真实 IDE 压测进一步暴露：即便改用进程 API，PowerShell 查询仍可能超时。
+因此不能让显式配置路径的连接依赖操作系统进程枚举。内部将路径选择与 host 握手分开：
+显式 candidate/环境变量直接定位 CLI，使用 `listhost` 和 `version --host` 确认实例；
+只有有效空列表才执行一次 `open`，随后等待 host 注册。命令失败、超时、版本不匹配和歧义都不会触发重复启动。
+未配置路径时仍通过运行进程发现安装位置，公开路径解析 API 保留原有 `isRunning` 行为。
+
+`host-connection.test.ts` 覆盖显式 candidate/env、已有 host、空列表后注册、只启动一次、版本不匹配、
+多个 host、显式绑定、CLI 失败、超时、缺失 candidate 和统一截止时间。
+本地 runner 42 项通过、2 个 Windows 专用用例跳过，ESM/CJS 与声明构建通过。
+[34251949634](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34251949634) 的前一版发现实现
+已经通过三系统 × Node 22/24，但 Windows stable 在查询时超时，alpha 第二场景在编译服务创建前超时。
+这些失败不能当作样式问题复现，也不能因个别场景通过而声称连续原生验收完成。
+host 连接实现 `52dcaed93` 在 macOS alpha 完成两轮、8 个场景，共 100 次保存和 44 次刷新，全部通过。
+命令为 `CI=1 HBUILDERX_CHANNEL=alpha E2E_ISSUE_1170_WEB=1 E2E_ISSUE_1144_ALPHA=1 E2E_WINDOWS_REPEATS=2 E2E_WINDOWS_CASE=all node scripts/ci/issue-hbuilderx-verify.mjs`，CLI 路径由环境变量传入。
+日志为 `verify-1170-1144/macos-host-handshake.log`；Windows 最终原生结果待补充。
 
 ## 规则评估
 
