@@ -1,3 +1,5 @@
+import path from 'node:path'
+import { normalizePath } from 'vite'
 import type { OutputAsset, OutputChunk } from 'rollup'
 import { describe, expect, it } from 'vitest'
 import {
@@ -116,8 +118,8 @@ describe('uni-app-x style asset helpers', () => {
 @reference "../../main.css";
 .card { @apply px-4; }
 </style>
-`, '/project/pages/index/index.uvue')).toEqual([
-      '@reference "/project/main.css";\n.card { @apply px-4; }',
+`, normalizePath(path.resolve('/project/pages/index/index.uvue')))).toEqual([
+      `@reference "${normalizePath(path.resolve('/project/main.css'))}";\n.card { @apply px-4; }`,
     ])
   })
 

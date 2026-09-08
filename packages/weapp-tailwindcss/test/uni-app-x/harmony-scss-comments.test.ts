@@ -1,3 +1,5 @@
+import path from 'node:path'
+import { normalizePath } from 'vite'
 import { createStyleHandler, postcss } from '@weapp-tailwindcss/postcss'
 import { compileString } from 'sass'
 import { compile } from 'tailwindcss'
@@ -126,10 +128,10 @@ ${apply}
   })
 
   it.each([
-    ['/project/views/probe.uvue', '/project/main.css'],
+    [normalizePath(path.resolve('/project/views/probe.uvue')), normalizePath(path.resolve('/project/main.css'))],
     ['C:\\project\\views\\probe.uvue', 'C:/project/main.css'],
     ['C:/project/views/probe.uvue?vue&type=style&lang.scss', 'C:/project/main.css'],
-    ['/probe.uvue', '/main.css'],
+    [normalizePath(path.resolve('/probe.uvue')), normalizePath(path.resolve('/main.css'))],
   ])('resolves references after comments for %s', (id, expected) => {
     const [source] = collectUniAppXHarmonyApplyStyleSourcesFromSource(`<style lang="scss">//\n@reference "../main.css";\n${apply}</style>`, id)
     expect(source).toContain(`@reference "${expected}";`)

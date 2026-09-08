@@ -1,8 +1,8 @@
 import type { OutputChunk, SourceMap } from 'rollup'
-import path from 'node:path'
 import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { replaceWxml } from '@/wxml'
+import { resolveStyleReferencePath } from '../style-reference-path'
 import { parseUniAppXStyleSource } from './source-parser'
 
 const GEN_APP_STYLES_RE = /const\s+GenAppStyles\s*=\s*\[_uM\(\[([\s\S]*?)\]\)\]/
@@ -302,7 +302,6 @@ function resolveReferencePaths(styleSource: string, sourceId?: string) {
     return root.toString()
   }
   const cleanSourceId = sourceId.replace(/\?.*$/, '')
-  const pathApi = /^[a-z]:[\\/]/i.test(cleanSourceId) ? path.win32 : path
   root.walkAtRules('reference', (rule) => {
     const quote = rule.params[0]
     if (quote !== '"' && quote !== '\'') {
@@ -316,7 +315,7 @@ function resolveReferencePaths(styleSource: string, sourceId?: string) {
     if (!referencePath.startsWith('.')) {
       return
     }
-    const resolvedPath = pathApi.resolve(pathApi.dirname(cleanSourceId), referencePath).replaceAll('\\', '/')
+    const resolvedPath = resolveStyleReferencePath(cleanSourceId, referencePath)
     rule.params = `${quote}${resolvedPath}${quote}${rule.params.slice(closingQuoteIndex + 1)}`
   })
   return root.toString()

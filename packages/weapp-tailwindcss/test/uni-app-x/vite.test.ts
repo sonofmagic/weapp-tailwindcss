@@ -906,9 +906,12 @@ describe('uni-app-x vite plugins', () => {
   })
 
   it('invalidates and returns deduplicated Tailwind CSS modules for uvue hot updates', async () => {
+    const projectRoot = path.resolve('/project')
+    const sourceFile = toPosix(path.join(projectRoot, 'pages', 'index', 'index.uvue'))
+    const cssFile = toPosix(path.join(projectRoot, 'main.css'))
     const runtimeSet = new Set(['text-red-500'])
-    const sourceModule = { id: '/project/pages/index/index.uvue', url: '/pages/index/index.uvue' }
-    const cssModule = { file: '/project/main.css', id: '/project/main.css?direct', url: '/main.css?direct' }
+    const sourceModule = { id: sourceFile, url: '/pages/index/index.uvue' }
+    const cssModule = { file: cssFile, id: `${cssFile}?direct`, url: '/main.css?direct' }
     const invalidateModule = vi.fn()
     const plugins = createUniAppXPlugins({
       appType: 'uni-app-x',
@@ -921,20 +924,20 @@ describe('uni-app-x vite plugins', () => {
       ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
       getResolvedConfig: () => ({
         command: 'serve',
-        build: { outDir: '/project/unpackage/dist/dev/.uvue/app-android', watch: false },
+        build: { outDir: path.join(projectRoot, 'unpackage', 'dist', 'dev', '.uvue', 'app-android'), watch: false },
       } as ResolvedConfig),
-      tailwindRootCssModuleIds: new Set(['/project/main.css']),
-      viteProcessedCssSourceFiles: new Set(['/project/main.css']),
+      tailwindRootCssModuleIds: new Set([cssFile]),
+      viteProcessedCssSourceFiles: new Set([cssFile]),
     })
     const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
     const context = {
-      file: '/project/pages/index/index.uvue',
+      file: sourceFile,
       modules: [sourceModule, cssModule],
       server: {
-        config: { root: '/project' },
+        config: { root: projectRoot },
         moduleGraph: {
           getModuleById: vi.fn(() => undefined),
-          getModulesByFile: vi.fn((file: string) => file === '/project/main.css' ? new Set([cssModule]) : undefined),
+          getModulesByFile: vi.fn((file: string) => file === cssFile ? new Set([cssModule]) : undefined),
           invalidateModule,
         },
       },
@@ -948,6 +951,9 @@ describe('uni-app-x vite plugins', () => {
   })
 
   it('synchronizes candidates before retransforms for Native add, delete, and rollback updates', async () => {
+    const projectRoot = path.resolve('/project')
+    const sourceFile = toPosix(path.join(projectRoot, 'pages', 'index', 'index.uvue'))
+    const cssFile = toPosix(path.join(projectRoot, 'main.css'))
     const order: string[] = []
     let runtimeSet = new Set(['text-red-500'])
     const ensureRuntimeClassSet = vi.fn(async () => {
@@ -959,14 +965,14 @@ describe('uni-app-x vite plugins', () => {
     })
     const send = vi.fn()
     const sourceModule = {
-      file: '/project/pages/index/index.uvue',
-      id: '/project/pages/index/index.uvue',
+      file: sourceFile,
+      id: sourceFile,
       url: '/pages/index/index.uvue',
       isSelfAccepting: true,
     }
     const cssModule = {
-      file: '/project/main.css',
-      id: '/project/main.css?direct',
+      file: cssFile,
+      id: `${cssFile}?direct`,
       url: '/main.css?direct',
     }
     const invalidateModule = vi.fn((mod: { file: string }) => {
@@ -984,17 +990,17 @@ describe('uni-app-x vite plugins', () => {
       syncSourceCandidatesForHotUpdate,
       getResolvedConfig: () => ({
         command: 'serve',
-        root: '/project',
-        build: { outDir: '/project/unpackage/dist/dev/.uvue/app-android', watch: false },
+        root: projectRoot,
+        build: { outDir: path.join(projectRoot, 'unpackage', 'dist', 'dev', '.uvue', 'app-android'), watch: false },
       } as ResolvedConfig),
-      tailwindRootCssModuleIds: new Set(['/project/main.css']),
+      tailwindRootCssModuleIds: new Set([cssFile]),
     })
     const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
     const context = {
-      file: '/project/pages/index/index.uvue',
+      file: sourceFile,
       modules: [sourceModule],
       server: {
-        config: { root: '/project' },
+        config: { root: projectRoot },
         moduleGraph: {
           getModuleById: vi.fn((id: string) => id === sourceModule.id ? sourceModule : undefined),
           getModulesByFile: vi.fn((file: string) => {
@@ -1032,17 +1038,20 @@ describe('uni-app-x vite plugins', () => {
   })
 
   it('retransforms loaded Native local style modules when a Tailwind root changes the candidate signature', async () => {
+    const projectRoot = path.resolve('/project')
+    const sourceFile = toPosix(path.join(projectRoot, 'pages', 'index', 'index.uvue'))
+    const cssFile = toPosix(path.join(projectRoot, 'main.css'))
     let runtimeSet = new Set(['text-red-500'])
     const ensureRuntimeClassSet = vi.fn(async () => new Set(runtimeSet))
     const pageModule = {
-      file: '/project/pages/index/index.uvue',
-      id: '/project/pages/index/index.uvue',
+      file: sourceFile,
+      id: sourceFile,
       url: '/pages/index/index.uvue',
       isSelfAccepting: true,
     }
     const cssModule = {
-      file: '/project/main.css',
-      id: '/project/main.css?direct',
+      file: cssFile,
+      id: `${cssFile}?direct`,
       url: '/main.css?direct',
     }
     const invalidateModule = vi.fn()
@@ -1058,10 +1067,10 @@ describe('uni-app-x vite plugins', () => {
       syncSourceCandidatesForHotUpdate: vi.fn(),
       getResolvedConfig: () => ({
         command: 'serve',
-        root: '/project',
-        build: { outDir: '/project/unpackage/dist/dev/.uvue/app-android', watch: false },
+        root: projectRoot,
+        build: { outDir: path.join(projectRoot, 'unpackage', 'dist', 'dev', '.uvue', 'app-android'), watch: false },
       } as ResolvedConfig),
-      tailwindRootCssModuleIds: new Set(['/project/main.css']),
+      tailwindRootCssModuleIds: new Set([cssFile]),
     })
     const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
     transformUVueMock.mockReturnValue({ code: 'transformed', map: null } as TransformResult)
@@ -1070,11 +1079,11 @@ describe('uni-app-x vite plugins', () => {
 
     runtimeSet = new Set(['text-red-500', 'issue-1021-hmr'])
     const modules = await getHotUpdateHandler(nvuePlugin)?.call(nvuePlugin, {
-      file: '/project/main.css',
+      file: cssFile,
       modules: [cssModule],
       read: vi.fn(async () => '@theme { --color-issue-1021-hmr: #0f5132; }'),
       server: {
-        config: { root: '/project' },
+        config: { root: projectRoot },
         moduleGraph: {
           getModuleById: vi.fn((id: string) => {
             if (id === pageModule.id) {
@@ -1557,7 +1566,7 @@ describe('uni-app-x vite plugins', () => {
     const originalPlatform = process.env.UNI_UTS_PLATFORM
     process.env.UNI_UTS_PLATFORM = 'app-harmony'
     try {
-      const generateCss = vi.fn(async () => '.issue-1002-apply { border-radius: calc(infinity * 1px); font-size: var(--text-xs); color: var(--color-white); }')
+      const generateCss = vi.fn(async (_id: string) => '.issue-1002-apply { border-radius: calc(infinity * 1px); font-size: var(--text-xs); color: var(--color-white); }')
       const styleHandler = vi.fn(async () => ({
         css: '.issue-1002-apply { border-top-left-radius: 9999px; border-bottom-left-radius: 9999px; font-size: 24rpx; color: #fff; }',
         map: { toJSON: () => ({ version: 3, sources: [], names: [], mappings: '' }) },
@@ -1589,14 +1598,17 @@ describe('uni-app-x vite plugins', () => {
       expect(result.code).not.toContain('calc(infinity')
       expect(result.map).toBeNull()
       expect(generateCss).toHaveBeenCalledWith(
-        expect.stringMatching(/^\/project\/uni-app-x-harmony-apply-[a-z0-9]+\.css$/),
-        '@reference "/project/main.css";\n.issue-1002-apply { @apply rounded-full text-xs text-white; }',
+        expect.any(String),
+        `@reference "${toPosix(path.resolve('/project/main.css'))}";\n.issue-1002-apply { @apply rounded-full text-xs text-white; }`,
         expect.objectContaining({
           disableSourceScan: true,
           sourceCandidates: [],
           transient: true,
         }),
       )
+      const generatedId = generateCss.mock.calls[0]![0] as string
+      expect(path.dirname(generatedId)).toBe(path.resolve('/project'))
+      expect(path.basename(generatedId)).toMatch(/^uni-app-x-harmony-apply-[a-z0-9]+\.css$/)
       expect(styleHandler).toHaveBeenCalledWith(
         expect.stringContaining('calc(infinity'),
         expect.objectContaining({ uniAppXCssTarget: 'uvue' }),
