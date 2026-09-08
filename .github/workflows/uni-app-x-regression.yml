@@ -73,7 +73,6 @@ jobs:
       E2E_HBUILDERX_WEB_TIMEOUT_MS: '120000'
       E2E_WINDOWS_CASE: ${{ inputs.runtime_case || 'all' }}
       E2E_WINDOWS_REPEATS: '2'
-      E2E_HBUILDERX_ALIAS_ROOT: ${{ runner.temp }}/HBuilderX 中文 & 项目
     steps:
       - uses: actions/checkout@v6
       - run: git config core.longpaths true
@@ -94,6 +93,8 @@ jobs:
         run: node scripts/ci/issue-hbuilderx-windows.mjs
       - name: Verify path ownership and real Web HMR
         shell: pwsh
+        env:
+          E2E_HBUILDERX_ALIAS_ROOT: ${{ runner.temp }}/HBuilderX 中文 & 项目
         run: |
           pnpm --filter weapp-tailwindcss exec vitest run test/uni-app-x/vite-style-requests.test.ts --update=none
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
