@@ -7,10 +7,10 @@ const root = path.resolve('e2e', '.artifacts', 'issue-hbuilderx-windows')
 await mkdir(root, { recursive: true })
 const channel = process.env.HBUILDERX_CHANNEL
 const cases = [
+  ['1144-setup', `e2e/issue-1144-${channel}.test.ts`, 'keeps setup lifecycle'],
   ['1170-LF', 'e2e/issue-1170-web.test.ts', 'preserves LF styles'],
   ['1170-CRLF', 'e2e/issue-1170-web.test.ts', 'preserves CRLF styles'],
   ['1144-options', `e2e/issue-1144-${channel}.test.ts`, 'keeps options lifecycle'],
-  ['1144-setup', `e2e/issue-1144-${channel}.test.ts`, 'keeps setup lifecycle'],
 ]
 const results = []
 const repeats = Number(process.env.E2E_WINDOWS_REPEATS ?? 1)
