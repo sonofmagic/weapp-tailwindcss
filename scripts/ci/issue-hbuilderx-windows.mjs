@@ -5,7 +5,6 @@ import { version as osVersion, release, tmpdir } from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { setTimeout as delay } from 'node:timers/promises'
-import { prepareHBuilderXCIFirstRun } from './hbuilderx-profile.mjs'
 
 if (process.platform !== 'win32') {
   throw new Error('该入口用于真实 Windows HBuilderX 验证，不能用平台模拟代替。')
@@ -71,8 +70,6 @@ if (!await exists(cli)) {
 if (process.env.GITHUB_ACTIONS !== 'true') {
   throw new Error('Windows IDE 初始化入口仅用于独立 GitHub runner')
 }
-const firstRun = await prepareHBuilderXCIFirstRun(process.env.APPDATA)
-await writeFile(path.join(artifactRoot, 'first-run.json'), JSON.stringify(firstRun, null, 2))
 await command(cli, ['open'], 'open')
 let actualVersion = ''
 for (let attempt = 0; attempt < 30; attempt++) {
@@ -85,6 +82,19 @@ for (let attempt = 0; attempt < 30; attempt++) {
 if (!actualVersion.includes(version)) {
   throw new Error(`Windows IDE 版本不匹配：${actualVersion}`)
 }
+await command('powershell.exe', [
+  '-NoLogo',
+  '-NoProfile',
+  '-NonInteractive',
+  '-ExecutionPolicy',
+  'Bypass',
+  '-File',
+  path.resolve('scripts', 'ci', 'hbuilderx-first-run.ps1'),
+  '-Executable',
+  path.join(installRoot, directory, 'HBuilderX.exe'),
+  '-ArtifactRoot',
+  path.join(artifactRoot, 'first-run'),
+], 'first-run', 60_000)
 // version 由原生 CLI 提供，返回时插件宿主可能尚未注册安装命令。
 await delay(5000)
 for (const plugin of ['uniapp-cli-vite', 'uniappx-launcher', 'compile-dart-sass', 'chrome-base']) {

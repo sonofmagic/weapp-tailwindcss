@@ -48,7 +48,7 @@ jobs:
       - run: pnpm --filter @weapp-tailwindcss/hbuilderx-runner test --update=none
       - run: pnpm --filter weapp-tailwindcss... run build
       - run: pnpm --filter weapp-tailwindcss exec vitest run test/uni-app-x --update=none
-      - run: pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/issue-1144-runner.test.ts e2e/hbuilderx-project-alias.test.ts e2e/hbuilderx-profile.test.ts --update=none
+      - run: pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/issue-1144-runner.test.ts e2e/hbuilderx-project-alias.test.ts --update=none
 
   windows-uni-app-x:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
