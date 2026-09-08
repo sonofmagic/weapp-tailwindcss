@@ -1,0 +1,41 @@
+name: Uni-app x portable regressions
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/uni-app-x-regression.yml
+      - packages/hbuilderx-runner/**
+      - packages/weapp-tailwindcss/src/uni-app-x/**
+      - packages/weapp-tailwindcss/test/uni-app-x/**
+      - e2e/hbuilderx-local/**
+      - e2e/issue-11*
+
+permissions:
+  contents: read
+
+concurrency:
+  group: uni-app-x-regression-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  portable:
+    name: Portable (${{ matrix.os }}, Node ${{ matrix.node }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [22, 24]
+    env:
+      CI: '1'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node }}
+      - run: pnpm --filter @weapp-tailwindcss/hbuilderx-runner test --update=none
+      - run: pnpm --filter weapp-tailwindcss... run build
+      - run: pnpm --filter weapp-tailwindcss exec vitest run test/uni-app-x --update=none
+      - run: pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/issue-1144-runner.test.ts e2e/hbuilderx-project-alias.test.ts --update=none
