@@ -11,23 +11,24 @@ regressions:
 
 # 最新主分支对 #1170 与 #1144 的独立验证
 
-## 最终判定
+## 当前判定
 
-不能把“两项问题在 Windows 的所有边界都已根治”作为本轮结论。
-#1170 的截图最小复现在 Windows 5.24、5.25-alpha 均取得旧版首次保存失败、最新版 LF/CRLF 全部通过的证据，
-支持 #1169 修复了这条生命周期根因。#1144 Options 在两个 Windows IDE 版本各完成 16 次保存、2 次刷新；
-原始 setup 脚本在连续场景和全新 IDE 单独启动中都未能启动 Web 服务，无法验收其首次页面和后续 HMR。
-这属于明确的验证阻塞，尚不能归因于 weapp-tailwindcss 或 HBuilderX；没有把启动超时冒充样式缺陷复现。
+#1170 已在 Windows HBuilderX 5.24、5.25-alpha 取得旧版首次保存失败、最新版 LF/CRLF 全部通过的证据，
+支持 #1169 修复了这条生命周期根因。#1144 Options 和原始 setup 在两个 Windows IDE 版本均完成
+16 次保存、2 次刷新。第六轮补验前仅增加失败现场采集，没有修改样式实现或启动行为；
+因此第四、五轮 setup 启动超时属于非必现的启动异常，不能把第六轮通过归功于某个样式补丁。
+这些历史失败及其归因边界仍保留在下文。
 
 | 环境 | #1170 修复前 | #1170 最新 | #1144 最新 Options | #1144 最新 setup |
 | --- | --- | --- | --- | --- |
-| Windows Server 2025 + HBuilderX 5.24 | CRLF 首次保存静默丢样式 | LF/CRLF 各 9 次保存/刷新通过 | 16 次保存、2 次刷新通过 | 新 IDE 单独启动仍超时 |
-| Windows Server 2025 + HBuilderX 5.25-alpha | CRLF 首次保存静默丢样式 | LF/CRLF 各 9 次保存/刷新通过 | 16 次保存、2 次刷新通过 | 新 IDE 单独启动仍超时 |
+| Windows Server 2025 + HBuilderX 5.24 | CRLF 首次保存静默丢样式 | LF/CRLF 各 9 次保存/刷新通过 | 16 次保存、2 次刷新通过 | 第六轮 16 次保存、2 次刷新通过 |
+| Windows Server 2025 + HBuilderX 5.25-alpha | CRLF 首次保存静默丢样式 | LF/CRLF 各 9 次保存/刷新通过 | 16 次保存、2 次刷新通过 | 第六轮 16 次保存、2 次刷新通过 |
 | macOS + HBuilderX 5.24 | LF 首次保存静默丢样式 | LF 9 次保存/刷新通过 | 16 次保存、2 次刷新通过 | 16 次保存、2 次刷新通过 |
 | macOS + HBuilderX 5.25-alpha | LF 首次保存静默丢样式 | LF/CRLF 各 9 次保存/刷新通过 | 16 次保存、2 次刷新通过 | 16 次保存、2 次刷新通过 |
 
 Windows 是实际 IDE、内置编译器和浏览器运行，并非只模拟路径；宿主为 Server 2025，不是用户的 Windows 11 原机。
-本轮源码基线为 `46411420c`，不代表 npm 已发布同样的修复。产品实现未在本次验收中调整。
+样式源码基线为 `46411420c`，不代表 npm 已发布同样的修复。本次继续修复的独立 Windows 进程参数缺陷见
+[进程边界记录](hbuilderx-windows-process-boundary.md)，没有把 runner 修复冒充 #1169 的样式修复。
 
 ## 症状
 
@@ -189,6 +190,20 @@ Windows 使用官方 5.24、5.25-alpha ZIP，在 GitHub 托管 Windows Server 20
 最终保留已实际运行的 Windows 独立场景入口，不添加未经验证的界面模式兜底。
 对照只有首次加载正常、首次保存 marker 与正文更新、背景透明且浏览器无错误才算复现；
 构建或服务启动失败不能作为修复前失败证据。
+
+## 第六轮与持续回归
+
+[34239968019](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34239968019) 在相同的
+Windows stable/alpha 上单独运行原始 setup，两者均完成 16 次保存、2 次刷新，并取得完整截图、CSS、
+服务身份及空浏览器 errors/warnings。目录为 `windows-sixth-stable/` 与 `windows-sixth-alpha/`。
+该提交只增加超时后的原生进程、端口、窗口与日志采集，成功路径没有改动。
+所以此前“setup 无法验收”的结论已被新证据补齐，但超时的具体 IDE/IPC 责任点仍未建立。
+
+正式入口现为 `.github/workflows/uni-app-x-regression.yml`：
+三系统 × Node 22/24 运行 runner、uni-app x 与路径回归；Windows 两个官方 IDE 每次各重复两轮
+LF/CRLF、Options/setup，项目别名位于中文、空格与 `&` 路径中，失败不得重试为绿色。
+手动 `compare_before=true` 可以独立构建旧版本复现首次保存丢样式；常规 PR 不重复安装旧版依赖。
+`latest.json` 逐项持久化，即使后续进程超时也保留已完成的结果；IDE 超时现场在清理前采集。
 
 ## 规则评估
 
