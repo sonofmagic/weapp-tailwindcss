@@ -13,8 +13,9 @@ export function createHBuilderXProjectAliasName(projectRoot, processId = process
 
 export async function createHBuilderXProjectAlias(projectRoot, aliasRoot = join(tmpdir(), 'weapp-tailwindcss-hbuilderx-projects')) {
   const projectName = createHBuilderXProjectAliasName(projectRoot)
-  const projectPath = join(aliasRoot, projectName)
-  await mkdir(aliasRoot, { recursive: true })
+  const aliasDirectory = resolve(aliasRoot)
+  const projectPath = join(aliasDirectory, projectName)
+  await mkdir(aliasDirectory, { recursive: true })
   await rm(projectPath, { recursive: true, force: true })
   await symlink(resolve(projectRoot), projectPath, process.platform === 'win32' ? 'junction' : 'dir')
   return {

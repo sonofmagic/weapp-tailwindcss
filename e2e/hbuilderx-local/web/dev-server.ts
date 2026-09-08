@@ -93,7 +93,7 @@ export async function createHBuilderXDevServer(projectRoot: string) {
       throw new Error(`等待 HBuilderX 项目注册超时：${identity.projectPath}`)
     }
     const launch = hbuilderx.spawn({
-      args: ['launch', 'web', '--project', identity.projectName, '--browser', 'Chrome'],
+      args: ['launch', 'web', '--project', identity.projectPath, '--browser', 'Chrome'],
       cwd: projectRoot,
       env,
     })
