@@ -259,8 +259,17 @@ export async function runWebHmr(
     finally {
       await cleanupWebHmrSession({
         closeBrowser: async () => browser?.close(),
-        stopServer: () => {
-          if (child) {
+        stopServer: async () => {
+          if (hbuilderxLaunch) {
+            try {
+              const stopped = await hbuilderxLaunch.stopServer()
+              await fs.writeFile(path.join(artifactRoot, 'server-stop.json'), JSON.stringify(stopped, null, 2))
+            }
+            finally {
+              clearDevProcess()
+            }
+          }
+          else if (child) {
             killProcessTree(child)
             clearDevProcess()
           }

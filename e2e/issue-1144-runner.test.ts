@@ -95,7 +95,8 @@ it.each(['none', 'browser', 'server', 'source'])('清理阶段先断开浏览器
         throw new Error(failure)
       }
     },
-    stopServer: () => {
+    stopServer: async () => {
+      await Promise.resolve()
       expect(browserOpen).toBe(false)
       serverRunning = false
       if (failure === 'server') {

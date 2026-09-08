@@ -32,6 +32,10 @@ for (const [iteration, [name, file, filter]] of Array.from({ length: repeats }, 
   console.log((result.all ?? '').slice(-6000))
   results.push({ iteration, name, exitCode: result.exitCode ?? null, timedOut: result.timedOut ?? false })
   await writeFile(path.join(root, 'latest.json'), JSON.stringify(results, null, 2))
+  if (result.exitCode !== 0) {
+    // 失败立即交付现场；修复后重新完整验收，不以重试覆盖本轮失败。
+    break
+  }
 }
 await writeFile(path.join(root, 'latest.json'), JSON.stringify(results, null, 2))
 if (results.some(result => result.exitCode !== 0)) {
