@@ -20,11 +20,11 @@ const source = `<template>
 <style lang="scss" scoped></style>
 `
 
-async function withReproduction(action: () => Promise<void>) {
+async function withReproduction(action: () => Promise<void>, eol = '\n') {
   const file = path.join(projectRoot, 'pages', 'index', 'index.uvue')
   const original = await readFile(file, 'utf8')
   try {
-    await writeFile(file, source)
+    await writeFile(file, source.replaceAll('\n', eol))
     await action()
   }
   finally {
@@ -42,7 +42,7 @@ function runtimeStyles(width = '200px') {
 const run = process.env['E2E_ISSUE_1170_WEB'] === '1' ? describe : describe.skip
 
 run('issue #1170 empty scoped SCSS Web lifecycle', () => {
-  it('preserves styles after text-only saves, class replacement and browser refresh', async () => {
+  it.each(['LF', 'CRLF'])('preserves %s styles after text-only saves, class replacement and browser refresh', async (lineEnding) => {
     await withReproduction(async () => {
       const item = webCases.find(item => item.name === 'issue-1144-uni-app-x-web')!
       const hmrSteps: WebHmrStep[] = Array.from({ length: 6 }, (_, index) => ({
@@ -81,7 +81,7 @@ run('issue #1170 empty scoped SCSS Web lifecycle', () => {
         persistentRuntimeStyles: [],
         hmrSteps,
       })
-    })
+    }, lineEnding === 'CRLF' ? '\r\n' : '\n')
   }, 360_000)
 })
 

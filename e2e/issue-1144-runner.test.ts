@@ -2,11 +2,20 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { expect, it } from 'vitest'
+import { webCases } from './hbuilderx-local/cases'
 import { withIssue1144Setup } from './hbuilderx-local/issue-1144-source'
 import { cleanupWebHmrSession } from './hbuilderx-local/web/cleanup'
 import { assertServerIdentity, sameSourceFile } from './hbuilderx-local/web/identity'
 import { rewriteHmrMarker } from './hbuilderx-local/web/source'
 import config from './vitest.e2e.config'
+
+it.each(['编译器版本：', 'Compiler version: '])('Web 编译器身份接受 IDE 本地化日志：%s', (prefix) => {
+  const item = webCases.find(item => item.name === 'issue-1144-uni-app-x-web')!
+  const compiler = item.serverLogContains?.find(entry => entry instanceof RegExp && entry.source.includes('VDOM')) as RegExp
+  expect(`${prefix}5.24（uni-app x）VDOM模式`).toMatch(compiler)
+  expect(`${prefix}5.24（uni-app x）Vapor模式`).not.toMatch(compiler)
+  expect(`${prefix}4.24（uni-app x）VDOM模式`).not.toMatch(compiler)
+})
 
 it('alpha setup 运行失败后恢复 App 与页面的原始内容', async () => {
   const root = await mkdtemp(path.join(tmpdir(), 'issue-1144-setup-'))

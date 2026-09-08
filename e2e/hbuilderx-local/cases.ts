@@ -1104,7 +1104,7 @@ export const webCases: WebCase[] = [
     }],
     serverLogContains: [
       /HBuilderX Version:\s*5\./,
-      /编译器版本：5\.\d+（uni-app x）VDOM模式/,
+      /(?:编译器版本：|Compiler version: )5\.\d+（uni-app x）VDOM模式/,
     ],
     serverLogNotContains: ['Unknown word', '[plugin:vite:css]', 'reading \'scoped\''],
     hmrSteps: issue1144Steps(),
