@@ -25,7 +25,16 @@ await writeFile(path.join(root, 'App.uvue'), '<script>export default { onLaunch(
 await writeFile(path.join(root, 'main.uts'), 'import App from \'./App.uvue\'\nimport { createSSRApp } from \'vue\'\nexport function createApp() { return { app: createSSRApp(App) } }\n')
 
 function start(args) {
-  const child = spawn(cli, args, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] })
+  const viaPowerShell = process.env.E2E_WINDOWS_CASE === 'vanilla-powershell'
+  const executable = viaPowerShell ? 'pwsh.exe' : cli
+  const launchArgs = viaPowerShell
+    ? ['-NoLogo', '-NoProfile', '-NonInteractive', '-File', path.resolve('scripts', 'ci', 'hbuilderx-vanilla-shell.ps1')]
+    : args
+  const child = spawn(executable, launchArgs, {
+    cwd: root,
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env: viaPowerShell ? { ...process.env, E2E_HBUILDERX_VANILLA_INVOCATION: JSON.stringify({ executable: cli, args }) } : process.env,
+  })
   let output = ''
   for (const stream of [child.stdout, child.stderr]) {
     stream.on('data', (chunk) => {
@@ -51,13 +60,37 @@ async function stop(session) {
   await Promise.race([session.closed, delay(5000)])
 }
 
+function diagnose(label) {
+  if (process.platform !== 'win32') {
+    return
+  }
+  spawnSync('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.resolve('scripts', 'ci', 'issue-hbuilderx-diagnostics.ps1')], {
+    env: { ...process.env, E2E_HBUILDERX_DIAGNOSTIC_DIR: path.join(artifacts, label) },
+    timeout: 30_000,
+  })
+}
+
+let commandIndex = 0
 async function command(args) {
+  const index = ++commandIndex
+  const startedAt = Date.now()
   const session = start(args)
   let timeout
   try {
     const code = await Promise.race([session.closed, new Promise((resolve) => {
       timeout = setTimeout(resolve, 20_000, 'timeout')
     })])
+    await writeFile(path.join(artifacts, `command-${index}.json`), JSON.stringify({
+      args,
+      pid: session.child.pid,
+      code,
+      elapsedMs: Date.now() - startedAt,
+      output: session.log(),
+    }, null, 2))
+    if (code !== 0) {
+      // 项目重新打开也可能挂起，必须在终止失败命令前采集原生现场。
+      diagnose(`command-${index}-failure`)
+    }
     assert.equal(code, 0, `${args.join(' ')}: ${session.log()}`)
     return session.log()
   }
@@ -116,11 +149,8 @@ try {
       await writeFile(path.join(artifacts, 'results.json'), JSON.stringify(results, null, 2))
       await writeFile(path.join(artifacts, `${mode}-${iteration}.log`), session.log())
       console.log(JSON.stringify(results.at(-1)))
-      if (!loaded && process.platform === 'win32') {
-        spawnSync('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.resolve('scripts', 'ci', 'issue-hbuilderx-diagnostics.ps1')], {
-          env: { ...process.env, E2E_HBUILDERX_DIAGNOSTIC_DIR: path.join(artifacts, 'native') },
-          timeout: 30_000,
-        })
+      if (!loaded) {
+        diagnose(`${mode}-${iteration}-failure`)
       }
       assert.ok(loaded, '未使用 weapp-tailwindcss 或仓库 runner 的原生项目启动失败')
       await page.screenshot({ path: path.join(artifacts, `${mode}-${iteration}.png`) })

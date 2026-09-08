@@ -121,6 +121,24 @@ stable 的 setup、LF 通过，CRLF 在编译器创建前失败。控件树显�
 其中 alpha 首个真实目录项目成功渲染；终止 CLI、关闭项目后，第二次 `project open` 无输出并在 20 秒截止时间超时，
 尚未进入 junction 阶段。这证明无需 Tailwind 插件或仓库 runner 也能触发原生启停问题，
 但失败位置是项目重新打开，不能直接等同此前 `launch web` 的编译器创建前挂起。
+同轮 stable 第一次真实目录 `launch web` 即无输出，120 秒内未建立 Web 服务；现场包含仍存活的 CLI、
+IDE 和插件宿主，未创建编译器。首次向导已经关闭，项目已注册，尚未执行任何项目关闭或 junction 操作。
+这证明编译器创建前挂起也可在完全不加载 Tailwind 的官方最小项目中出现；不能通过修改样式插件修复这一已隔离现象。
+六个跨平台矩阵全部通过，包含实际 Windows 进程发现和三系统真实 Chromium hash 导航回归。
+
+最小对照可在 Windows 上执行（工作目录为本仓库，使用已安装的官方 HBuilderX，当前只运行一个对应版本）：
+
+```powershell
+$env:HBUILDERX_CLI_PATH = (Resolve-Path '<HBuilderX 安装目录>\cli.exe').Path
+$env:E2E_HBUILDERX_VANILLA = '1'
+& $env:HBUILDERX_CLI_PATH open
+pnpm exec node scripts/ci/hbuilderx-vanilla.mjs
+```
+
+本地入口每种路径执行一次，GitHub runner 每种执行八次；每轮使用新页面标识防止误连旧构建。
+命令参数、PID、退出码、耗时、原始输出与失败桌面/进程现场保存在 `e2e/.artifacts/issue-hbuilderx-windows/vanilla/`。
+原始 34273608659 的 alpha 项目重新打开失败只留下任务日志，后续补齐所有短命令失败前的现场采集，避免只覆盖 launch 超时。
+此入口用于诊断，既不替代完整样式验收，也不把失败转成通过。
 
 另补齐 host 初始化截止时间耗尽的错误分类：空 host 在 `open` 后始终未注册时返回 `timeout`，不再误报版本不匹配。
 新增用例修复前失败、修复后通过；runner 43 项通过、2 项 Windows 专用跳过，ESM/CJS 和声明构建通过。
