@@ -29,9 +29,7 @@ async function command(executable, args, name, timeout = 120_000) {
   for (const stream of [child.stdout, child.stderr]) {
     stream.on('data', (chunk) => {
       output += chunk.toString()
-      if (name !== 'help') {
-        process.stdout.write(chunk)
-      }
+      process.stdout.write(chunk)
     })
   }
   let timer
@@ -68,10 +66,6 @@ if (!await exists(cli)) {
   if (directory !== 'HBuilderX') {
     await rename(path.join(installRoot, 'HBuilderX'), path.join(installRoot, directory))
   }
-}
-if (process.env.HBUILDERX_RESTART === '1') {
-  process.env.HBUILDERX_OWNED_EXE = path.join(installRoot, directory, 'HBuilderX.exe')
-  await command('pwsh', ['-NoProfile', '-Command', 'Get-CimInstance Win32_Process | Where-Object { $_.ExecutablePath -eq $env:HBUILDERX_OWNED_EXE } | ForEach-Object { taskkill /PID $_.ProcessId /T /F }'], 'stop-owned-ide')
 }
 await command(cli, ['open'], 'open')
 let actualVersion = ''

@@ -13,7 +13,11 @@ const cases = [
   ['1144-setup', `e2e/issue-1144-${channel}.test.ts`, 'keeps setup lifecycle'],
 ]
 const results = []
-for (const [name, file, filter] of cases) {
+const selected = cases.filter(([name]) => !process.env.E2E_WINDOWS_CASE || process.env.E2E_WINDOWS_CASE === 'all' || process.env.E2E_WINDOWS_CASE === name)
+if (selected.length === 0) {
+  throw new Error(`未知 Windows 验收场景：${process.env.E2E_WINDOWS_CASE}`)
+}
+for (const [name, file, filter] of selected) {
   // 每个场景使用独立 Vitest 进程，因此项目别名也独立；保留 IDE 自身的正常生命周期。
   const result = await execa('pnpm', ['exec', 'vitest', 'run', '-c', 'e2e/vitest.e2e.config.ts', file, '-t', filter, '--update=none'], {
     all: true,

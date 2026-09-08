@@ -14,6 +14,11 @@ on:
         type: choice
         default: portable-watch
         options: [portable-watch, issues-1170-1144]
+      runtime_case:
+        description: Windows IDE 场景，可单独补验未完成的启动会话
+        type: choice
+        default: all
+        options: [all, 1170-LF, 1170-CRLF, 1144-options, 1144-setup]
 
 concurrency:
   group: windows-watch-diagnostic-${{ inputs.scenario == 'issues-1170-1144' && github.run_id || github.event.pull_request.number || github.ref }}
@@ -103,6 +108,7 @@ jobs:
       E2E_ISSUE_1144_STABLE: ${{ matrix.channel == 'stable' && '1' || '0' }}
       E2E_ISSUE_1144_ALPHA: ${{ matrix.channel == 'alpha' && '1' || '0' }}
       E2E_HBUILDERX_WEB_TIMEOUT_MS: '120000'
+      E2E_WINDOWS_CASE: ${{ inputs.runtime_case || 'all' }}
     steps:
       - uses: actions/checkout@v6
       - run: git config core.longpaths true
@@ -139,7 +145,7 @@ jobs:
           if-no-files-found: error
           retention-days: 14
       - name: Reproduce the pre-fix failure on the same Windows IDE
-        if: ${{ !cancelled() && steps.ide.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.ide.outcome == 'success' && (inputs.runtime_case == 'all' || inputs.runtime_case == '') }}
         run: node scripts/ci/issue-hbuilderx-compare.mjs
       - uses: actions/upload-artifact@v7
         if: always()
