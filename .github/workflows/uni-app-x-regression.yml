@@ -7,7 +7,7 @@ on:
         description: 选择实际 IDE 验证场景
         type: choice
         default: all
-        options: [all, 1170-LF, 1170-CRLF, 1144-options, 1144-setup, vanilla-cli, vanilla-powershell]
+        options: [all, 1170-LF, 1170-CRLF, 1144-options, 1144-setup, vanilla-cli, vanilla-powershell, vanilla-file]
       compare_before:
         description: 独立构建修复前版本并复现首次保存丢样式
         type: boolean
@@ -104,7 +104,7 @@ jobs:
         run: |
           pnpm --filter weapp-tailwindcss exec vitest run test/uni-app-x/vite-style-requests.test.ts --update=none
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          if ($env:E2E_WINDOWS_CASE -in @('vanilla-cli', 'vanilla-powershell')) {
+          if ($env:E2E_WINDOWS_CASE -in @('vanilla-cli', 'vanilla-powershell', 'vanilla-file')) {
             node scripts/ci/hbuilderx-vanilla.mjs
           } else {
             node scripts/ci/issue-hbuilderx-verify.mjs

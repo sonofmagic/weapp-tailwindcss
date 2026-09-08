@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawn, spawnSync } from 'node:child_process'
+import { closeSync, openSync, readFileSync } from 'node:fs'
 import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
@@ -24,19 +25,27 @@ await writeFile(path.join(root, 'index.html'), '<!DOCTYPE html><html><head><meta
 await writeFile(path.join(root, 'App.uvue'), '<script>export default { onLaunch() {} }</script>')
 await writeFile(path.join(root, 'main.uts'), 'import App from \'./App.uvue\'\nimport { createSSRApp } from \'vue\'\nexport function createApp() { return { app: createSSRApp(App) } }\n')
 
+let sessionIndex = 0
 function start(args) {
   const viaPowerShell = process.env.E2E_WINDOWS_CASE === 'vanilla-powershell'
   const executable = viaPowerShell ? 'pwsh.exe' : cli
   const launchArgs = viaPowerShell
     ? ['-NoLogo', '-NoProfile', '-NonInteractive', '-File', path.resolve('scripts', 'ci', 'hbuilderx-vanilla-shell.ps1')]
     : args
+  const outputFile = process.env.E2E_WINDOWS_CASE === 'vanilla-file'
+    ? path.join(artifacts, `native-output-${++sessionIndex}.log`)
+    : undefined
+  const outputFd = outputFile ? openSync(outputFile, 'w') : undefined
   const child = spawn(executable, launchArgs, {
     cwd: root,
-    stdio: ['ignore', 'pipe', 'pipe'],
+    stdio: outputFd === undefined ? ['ignore', 'pipe', 'pipe'] : ['ignore', outputFd, outputFd],
     env: viaPowerShell ? { ...process.env, E2E_HBUILDERX_VANILLA_INVOCATION: JSON.stringify({ executable: cli, args }) } : process.env,
   })
+  if (outputFd !== undefined) {
+    closeSync(outputFd)
+  }
   let output = ''
-  for (const stream of [child.stdout, child.stderr]) {
+  for (const stream of [child.stdout, child.stderr].filter(Boolean)) {
     stream.on('data', (chunk) => {
       output += chunk.toString()
     })
@@ -45,7 +54,7 @@ function start(args) {
     output += String(error)
   })
   const closed = new Promise(resolve => child.once('close', code => resolve(code)))
-  return { child, closed, log: () => output }
+  return { child, closed, log: () => outputFile ? readFileSync(outputFile, 'utf8') + output : output }
 }
 
 async function stop(session) {
