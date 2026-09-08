@@ -10,6 +10,8 @@ regressions:
 
 # Issue 1164：Harmony scoped SCSS 行注释
 
+2026-09-08 补充：[5.25 alpha 与 Harmony 更新证据](uni-app-x-alpha-hmr.md) 已验证原始 setup，并用无插件原生对照区分符号链接失败、增量重启和纯 HMR。以下保留本次历史修复证据；未验证边界以后续记录为准。
+
 ## 症状
 
 uni-app x、weapp-tailwindcss 5.5.1、Tailwind CSS 4.3.3。

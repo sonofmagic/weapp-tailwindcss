@@ -18,6 +18,8 @@ import {
   resolveAdbCommand,
 } from '../../e2e/hbuilderx-local/android-runtime.ts'
 import { resolveAppHmrSteps } from '../../e2e/hbuilderx-local/cases.ts'
+import { captureHarmonyRuntimeEvidence, waitForHarmonyRuntimeEvidence } from '../../e2e/hbuilderx-local/harmony-runtime.ts'
+import { observeHmrStep } from '../../e2e/hbuilderx-local/hmr-lifecycle.ts'
 import {
   assertAndroidToolchain,
   assertHarmonyToolchain,
@@ -666,6 +668,8 @@ async function runAppCaseVariant(
   const sourceFile = path.resolve(projectRoot, item.sourceFile)
   let activeSourceFile = sourceFile
   let launch: ReturnType<typeof startAppLaunch> | undefined
+  let harmonyFailureEvidence: Parameters<typeof captureHarmonyRuntimeEvidence>[0] | undefined
+  let hmrLifecycle: ReturnType<typeof observeHmrStep> | undefined
   let projectAlias: Awaited<ReturnType<typeof createHBuilderXProjectAlias>> | undefined
   let beforeScreenshotEvidence: Record<string, unknown> | undefined
   let afterScreenshotEvidence: Record<string, unknown> | undefined
@@ -749,7 +753,19 @@ async function runAppCaseVariant(
       })
     }
 
-    const ensureHmrRunning = ensureInitialRunning
+    const initialHarmony = item.platform === 'app-harmony'
+      ? await waitForHarmonyRuntimeEvidence({
+          deviceId: resolveHarmonyScreenshotDeviceId(item),
+          directory: path.join(path.dirname(hmrBeforeScreenshot), 'runtime-initial'),
+          marker: item.markerText,
+          timeoutMs: appOutputTimeoutMs,
+          ensureRunning: ensureInitialRunning,
+        })
+      : undefined
+    const ensureHmrRunning = () => {
+      ensureInitialRunning()
+      hmrLifecycle?.assertNoFallback()
+    }
     const hmrSteps: VisualHmrStepResult[] = []
     let previousAfterScreenshot = hmrBeforeScreenshot
     let hmrOutputRoot = initialOutputRoot
@@ -758,6 +774,10 @@ async function runAppCaseVariant(
       const stepAfterScreenshot = resolveHmrStepScreenshotPath(context, name, platform, step.name, 'after', variant.key)
       await fs.mkdir(path.dirname(stepBeforeScreenshot), { recursive: true })
       await fs.copyFile(previousAfterScreenshot, stepBeforeScreenshot)
+      hmrLifecycle?.assertNoFallback()
+      hmrLifecycle?.dispose()
+      hmrLifecycle = item.platform === 'app-harmony' ? observeHmrStep(launch.child) : undefined
+      harmonyFailureEvidence = initialHarmony ? { deviceId: resolveHarmonyScreenshotDeviceId(item), directory: path.join(path.dirname(stepAfterScreenshot), `runtime-${step.name}`), marker: step.markerText } : undefined
       process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write hmr marker ${step.name}\n`)
       await writeAppMarker(activeSourceFile, resolveAppMarkerAnchors(item), {
         className: step.markerClass,
@@ -780,6 +800,17 @@ async function runAppCaseVariant(
       await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
       process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot after ${step.name}\n`)
       const evidence = await waitForAppScreenshotReady(item, stepAfterScreenshot, toolEnv, `${item.name} HMR ${step.name} 后`, ensureHmrRunning, step.markerClass)
+      await hmrLifecycle?.waitForCompletion(appOutputTimeoutMs, ensureHmrRunning)
+      const harmonyRuntime = initialHarmony
+        ? await waitForHarmonyRuntimeEvidence({
+            deviceId: resolveHarmonyScreenshotDeviceId(item),
+            directory: path.join(path.dirname(stepAfterScreenshot), `runtime-${step.name}`),
+            marker: step.markerText,
+            previousPid: initialHarmony.pid,
+            timeoutMs: appOutputTimeoutMs,
+            ensureRunning: ensureHmrRunning,
+          })
+        : undefined
       const expectedMarkerColor = parseHexColorFromClass(step.markerClass)
       const beforeMarker = expectedMarkerColor
         ? await analyzeScreenshotColorPresence(stepBeforeScreenshot, expectedMarkerColor)
@@ -790,6 +821,7 @@ async function runAppCaseVariant(
       if (markerColorDelta != null && markerColorDelta <= 100) {
         throw new Error(`${item.name} HMR ${step.name} 目标背景色像素未明显增加：before=${beforeMarker?.matchingPixels} after=${evidence.marker?.matchingPixels}`)
       }
+      hmrLifecycle?.assertNoFallback()
       hmrSteps.push({
         afterScreenshot: stepAfterScreenshot,
         beforeScreenshot: stepBeforeScreenshot,
@@ -797,6 +829,7 @@ async function runAppCaseVariant(
         evidence: {
           ...evidence,
           markerColorDelta,
+          harmonyRuntime,
         },
         expectedBackgroundColor: step.markerClass.match(/bg-\[(#[0-9a-f]{6})\]/i)?.[1] ?? '',
         marker: step.markerText,
@@ -805,6 +838,7 @@ async function runAppCaseVariant(
       afterScreenshotEvidence = evidence
       previousAfterScreenshot = stepAfterScreenshot
     }
+    hmrLifecycle?.assertNoFallback()
     await fs.copyFile(previousAfterScreenshot, hmrAfterScreenshot)
     await fs.copyFile(hmrAfterScreenshot, screenshot)
     const forbiddenRuntimeLogs = findForbiddenRuntimeLogs(launch.logs.join(''), runtimeLogContract.notContains)
@@ -843,6 +877,11 @@ async function runAppCaseVariant(
     launch = undefined
   }
   catch (error) {
+    if (harmonyFailureEvidence) {
+      await captureHarmonyRuntimeEvidence(harmonyFailureEvidence).catch((captureError) => {
+        process.stderr.write(`Harmony 失败现场取证也失败：${captureError}\n`)
+      })
+    }
     const launchLog = launch?.logs.join('').trim()
     results.push({
       name,
@@ -859,6 +898,7 @@ async function runAppCaseVariant(
     })
   }
   finally {
+    hmrLifecycle?.dispose()
     await stopAppLaunch(launch)
     if (item.platform === 'app-android') {
       cleanupAndroidAppRuntime(shared?.toolEnv ?? {}, resolveAndroidScreenshotDeviceId(item))

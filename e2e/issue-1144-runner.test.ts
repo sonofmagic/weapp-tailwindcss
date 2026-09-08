@@ -1,10 +1,34 @@
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { expect, it } from 'vitest'
+import { withIssue1144Setup } from './hbuilderx-local/issue-1144-source'
 import { assertServerIdentity, sameSourceFile } from './hbuilderx-local/web/identity'
 import { rewriteHmrMarker } from './hbuilderx-local/web/source'
 import config from './vitest.e2e.config'
+
+it('alpha setup 运行失败后恢复 App 与页面的原始内容', async () => {
+  const root = await mkdtemp(path.join(tmpdir(), 'issue-1144-setup-'))
+  const page = path.join(root, 'pages', 'index', 'index.uvue')
+  const app = path.join(root, 'App.uvue')
+  const original = '<template><view /></template><script lang="uts">export default {}</script><style>// author</style>'
+  try {
+    await mkdir(path.dirname(page), { recursive: true })
+    await writeFile(app, original)
+    await writeFile(page, original)
+    await expect(withIssue1144Setup(root, async () => {
+      expect(await readFile(page, 'utf8')).toContain('import PtProbe')
+      expect(await readFile(app, 'utf8')).toContain('onLaunch(')
+      expect(await readFile(page, 'utf8')).toContain('<style>// author</style>')
+      throw new Error('模拟运行失败')
+    })).rejects.toThrow('模拟运行失败')
+    expect(await readFile(app, 'utf8')).toBe(original)
+    expect(await readFile(page, 'utf8')).toBe(original)
+  }
+  finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})
 
 it('E2E 默认不写入快照', () => {
   expect(config.test?.update).toBe('none')
