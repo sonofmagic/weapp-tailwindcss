@@ -10,6 +10,17 @@ type VueStyleQuery = ReturnType<typeof parseVueRequest>['query']
 export function createUniAppXSfcStyleSources() {
   const authoredByFile = new Map<string, ReturnType<typeof extractSfcStyleBlocks>>()
   const generatedByFile = new Map<string, Map<number, string>>()
+  const generatedIndicesByFile = new Map<string, Set<number>>()
+  function getGenerated(id: string, index: number) {
+    const file = cleanUrl(id)
+    if (authoredByFile.get(file)?.[index]) {
+      return
+    }
+    // 已从当前 SFC 删除的生成块仍可能被模块图请求；返回空 CSS 使旧样式失效，
+    // 不能把其所有权交还给只认识原始描述符的框架 loader。
+    return generatedByFile.get(file)?.get(index)
+      ?? (generatedIndicesByFile.get(file)?.has(index) ? '' : undefined)
+  }
   return {
     rememberSource(id: string, source: string) {
       authoredByFile.set(cleanUrl(id), extractSfcStyleBlocks(source))
@@ -18,17 +29,18 @@ export function createUniAppXSfcStyleSources() {
       const file = cleanUrl(id)
       const authoredCount = authoredByFile.get(file)?.length ?? 0
       const generated = new Map<number, string>()
+      const generatedIndices = generatedIndicesByFile.get(file) ?? new Set<number>()
       // 原始描述符不包含追加块；保留主模块生成的实际索引和源码。
       for (const [index, style] of extractSfcStyleBlocks(source).entries()) {
         if (index >= authoredCount) {
           generated.set(index, style.source)
+          generatedIndices.add(index)
         }
       }
       generatedByFile.set(file, generated)
+      generatedIndicesByFile.set(file, generatedIndices)
     },
-    getGenerated(id: string, index: number) {
-      return generatedByFile.get(cleanUrl(id))?.get(index)
-    },
+    getGenerated,
     hasGenerated(id: string) {
       return Boolean(generatedByFile.get(cleanUrl(id))?.size)
     },
@@ -36,7 +48,7 @@ export function createUniAppXSfcStyleSources() {
       const file = cleanUrl(id)
       const style = authoredByFile.get(file)?.[index]
       if (!style) {
-        const generated = generatedByFile.get(file)?.get(index)
+        const generated = getGenerated(file, index)
         return generated === undefined ? undefined : { code: generated, map: null }
       }
       const normalized = normalizeUniAppXImportantApplyForSass(style.source)

@@ -12,7 +12,6 @@ import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers
 import { extractSfcStyleBlocks } from '@/bundlers/vite/generate-bundle/sfc-style-source'
 import { parseVueRequest } from '@/bundlers/vite/query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest, normalizePath } from '@/bundlers/vite/utils'
-import { logger } from '@/logger'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { shouldEnablePageLocalStyle as isPageLocalStyleFile } from '@/uni-app-x/local-style-matcher'
 import { resolveUniUtsPlatform } from '@/utils'
@@ -32,9 +31,10 @@ import { retainUniAppXAuthorApplyCss } from './vite/author-apply'
 import { createUniAppXHarmonyApplyExpander } from './vite/harmony-apply'
 import { createUniAppXNativeHmrReloader } from './vite/native-hmr'
 import { createUniAppXNativeBuildTargetResolver } from './vite/native-target'
-import { isCssModuleExport, normalizeRelativeTailwindReferences, resolvePreprocessorTransform, resolveUniAppXCssTarget } from './vite/style-request'
-import { createUniAppXSfcStyleSources, hasUniAppXImportantApply, resolveUniAppXStyleSource } from './vite/style-source'
+import { isCssModuleExport, normalizeRelativeTailwindReferences, reportStyleWarnings, resolvePreprocessorTransform, resolveUniAppXCssTarget } from './vite/style-request'
+import { createUniAppXSfcStyleSources, resolveUniAppXStyleSource } from './vite/style-source'
 import { createUniAppXWebLocalStyleBridge } from './vite/web-local-style'
+import { createUniAppXWebSfcHmr } from './vite/web-sfc-hmr'
 
 export { createUniAppXAssetTask } from './vite/asset-task'
 
@@ -92,6 +92,11 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   const nativeLocalStyleModuleIds = new Set<string>()
   const sfcStyleSources = createUniAppXSfcStyleSources()
   const pendingSfcTransforms = new Map<string, Promise<TransformResult | undefined>>()
+  const webSfcHmr = createUniAppXWebSfcHmr({
+    isEnabled: () => isEnabled() && isWebGeneratorTarget() && getResolvedConfig()?.command === 'serve',
+    transform: (source, id) => runTransformSfc(source, id, {}),
+    hmrCssModuleVersions,
+  })
   const webLocalStyle = createUniAppXWebLocalStyleBridge(isWebGeneratorTarget, hmrCssModuleVersions)
   let componentLocalStyleEnabled: boolean | undefined
   const isNativeAppBuildTarget = createUniAppXNativeBuildTargetResolver(getResolvedConfig)
@@ -154,12 +159,6 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       cssHandlerOptionsCache.set(cacheKey, styleHandlerOptions)
     }
     return styleHandlerOptions
-  }
-  function reportStyleWarnings(result: Awaited<ReturnType<typeof styleHandler>>) {
-    const warnings = typeof result.warnings === 'function' ? result.warnings() : []
-    for (const warning of warnings) {
-      logger.warn(warning.toString())
-    }
   }
 
   async function transformStyle(code: string, id: string, query?: ReturnType<typeof parseVueRequest>['query'], hookContext?: { addWatchFile?: (id: string) => void }) {
@@ -238,6 +237,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   const cssPrePlugin: Plugin = {
     name: 'weapp-tailwindcss:uni-app-x:css:pre',
     enforce: 'pre',
+    handleHotUpdate: { order: 'pre', handler: ctx => webSfcHmr.prepare(ctx) },
     load: {
       order: 'pre',
       async handler(id) {
@@ -258,11 +258,12 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (query.vue && query.type === 'style') {
         await pendingSfcTransforms.get(cleanUrl(filename))
       }
-      const resolvedSource = resolveUniAppXStyleSource(code, query, sfcStyleSources.getGenerated(filename, query.index ?? 0))
+      const generatedSource = sfcStyleSources.getGenerated(filename, query.index ?? 0)
+      const resolvedSource = resolveUniAppXStyleSource(code, query, generatedSource)
       if (resolvedSource.skip) {
         return
       }
-      const styleCode = query.vue && query.type === 'style' && !sfcStyleSources.hasGenerated(filename)
+      const styleCode = query.vue && query.type === 'style' && generatedSource === undefined && !sfcStyleSources.hasGenerated(filename)
         ? webLocalStyle.appendToStyle(resolvedSource.code, id)
         : resolvedSource.code
       // Vite 热更新会绕过 SFC 主模块，直接把原始样式交给预处理器；先移除
@@ -277,7 +278,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (preprocessor) {
         return preprocessor.result ?? (preprocessorCode !== code ? { code: preprocessorCode, map: null } : undefined)
       }
-      return transformStyle(preprocessorCode, id, query, this)
+      const result = await transformStyle(preprocessorCode, id, query, this)
+      // 提取或清空 style 来源本身也是转换，即使当前 CSS 不需要 Tailwind 处理。
+      return result ?? (preprocessorCode !== code ? { code: preprocessorCode, map: null } : undefined)
     },
   }
   const cssPlugin: Plugin = {
@@ -380,6 +383,11 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         if (!UVUE_NVUE_QUERY_RE.test(id) || (query.vue && query.type === 'style')) {
           return
         }
+        // Web 子模块已经由完整 SFC 编译得到，不能再次登记为 SFC、覆盖样式来源
+        // 或替换正在等待的主模块事务；原生模板子请求仍由原生转换链处理。
+        if (isWebGeneratorTarget() && query.vue && query.type) {
+          return
+        }
         return runTransformSfc(code, id, this)
       },
     },
@@ -392,16 +400,8 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         if (!UVUE_NVUE_RE.test(ctx.file) && !isCSSRequest(ctx.file)) {
           return
         }
-        if (isWebGeneratorTarget() && UVUE_NVUE_RE.test(ctx.file) && typeof ctx.read === 'function') {
-          // 完整 SFC 更新会取代此前可能排队的 CSS HMR 事务，避免版本过滤器
-          // 把当前样式模块误判为旧事务而丢弃。
-          hmrCssModuleVersions?.clear()
-          const source = await ctx.read()
-          if (hasUniAppXImportantApply(source, normalizeUniAppXImportantApplyForSass)) {
-            ctx.server.ws.send({ type: 'full-reload', path: ctx.file })
-            return []
-          }
-          await runTransformSfc(source, ctx.file, this)
+        if (await webSfcHmr.finish(ctx)) {
+          return []
         }
         return webLocalStyle.handleHotUpdate(ctx) ?? nativeHmrReloader.handleHotUpdate(ctx)
       },
