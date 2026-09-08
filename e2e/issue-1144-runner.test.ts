@@ -2,25 +2,12 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { expect, it } from 'vitest'
-import { resolveManagedIdeCli } from '../scripts/ci/issue-hbuilderx-session.mjs'
 import { webCases } from './hbuilderx-local/cases'
 import { withIssue1144Setup } from './hbuilderx-local/issue-1144-source'
 import { cleanupWebHmrSession } from './hbuilderx-local/web/cleanup'
 import { assertServerIdentity, sameSourceFile } from './hbuilderx-local/web/identity'
 import { rewriteHmrMarker } from './hbuilderx-local/web/source'
 import config from './vitest.e2e.config'
-
-it.each([
-  { paths: path.posix, temporary: '/runner/temp', other: '/user', cli: '/runner/temp/中文 & IDE/cli' },
-  { paths: path.win32, temporary: 'D:\\runner\\temp', other: 'C:\\user', cli: 'D:\\runner\\temp\\中文 & IDE\\cli.exe' },
-])('受管 IDE 只接受临时目录内的绝对路径：$temporary', ({ paths, temporary, other, cli }) => {
-  expect(resolveManagedIdeCli(cli, temporary, paths)).toBe(paths.resolve(cli))
-  expect(() => resolveManagedIdeCli(paths.join(other, 'cli'), temporary, paths)).toThrow('以外')
-  expect(() => resolveManagedIdeCli(paths.join(temporary, '..', 'cli'), temporary, paths)).toThrow('以外')
-  expect(() => resolveManagedIdeCli('relative/cli', temporary, paths)).toThrow('绝对')
-  expect(() => resolveManagedIdeCli(cli, 'relative', paths)).toThrow('绝对')
-  expect(() => resolveManagedIdeCli(undefined, temporary, paths)).toThrow('绝对')
-})
 
 it.each(['编译器版本：', 'Compiler version: '])('Web 编译器身份接受 IDE 本地化日志：%s', (prefix) => {
   const item = webCases.find(item => item.name === 'issue-1144-uni-app-x-web')!

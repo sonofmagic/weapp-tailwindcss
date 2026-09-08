@@ -262,8 +262,7 @@ export async function runWebHmr(
         stopServer: async () => {
           if (hbuilderxLaunch) {
             try {
-              const stopped = await hbuilderxLaunch.stopServer()
-              await fs.writeFile(path.join(artifactRoot, 'server-stop.json'), JSON.stringify(stopped, null, 2))
+              await hbuilderxLaunch.stop()
             }
             finally {
               clearDevProcess()

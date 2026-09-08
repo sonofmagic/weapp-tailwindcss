@@ -95,21 +95,39 @@ export function extractHBuilderXExecutableFromProcessOutput(output: string, plat
 }
 
 export async function findRunningHBuilderXCliCandidates(platform: NodeJS.Platform = process.platform) {
-  const result = platform === 'win32'
-    ? spawnSync('wmic', ['process', 'where', 'name=\'HBuilderX.exe\'', 'get', 'executablepath', '/format:csv'], { encoding: 'utf8', windowsHide: true })
-    : spawnSync('ps', ['-ax', '-o', 'command='], { encoding: 'utf8' })
+  const command = platform === 'win32' ? 'powershell.exe' : 'ps'
+  const args = platform === 'win32'
+    ? ['-NoProfile', '-NonInteractive', '-Command', [
+        '$ErrorActionPreference = \'Stop\'',
+        '[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)',
+        `ConvertTo-Json -Compress -InputObject @(Get-CimInstance Win32_Process -Filter "Name = 'HBuilderX.exe'" | Where-Object { $_.ExecutablePath } | Select-Object -ExpandProperty ExecutablePath)`,
+      ].join('; ')]
+    : ['-ax', '-o', 'command=']
+  const result = spawnSync(command, args, { encoding: 'utf8', windowsHide: true, timeout: 10_000 })
 
   if (result.error || result.status !== 0) {
-    return []
+    // 无法查询与没有实例是不同状态；误报后再次 open 可能干扰现有 IDE 会话。
+    throw new Error(`HBuilderX 进程探测失败：${command}, exit=${result.status}, cwd=${process.cwd()}\n${result.error?.message ?? result.stderr}`)
   }
 
-  const executables = extractHBuilderXExecutablesFromProcessOutput(`${result.stdout ?? ''}${result.stderr ?? ''}`, platform)
+  let executables: string[]
+  if (platform === 'win32') {
+    const values: unknown = JSON.parse(result.stdout.replace(/^\uFEFF/, '').trim())
+    if (!Array.isArray(values) || values.some(value => typeof value !== 'string')) {
+      throw new Error('HBuilderX CIM 进程探测返回了无效路径列表')
+    }
+    executables = values.filter(value => value.toLowerCase().endsWith('hbuilderx.exe'))
+  }
+  else {
+    executables = extractHBuilderXExecutablesFromProcessOutput(result.stdout, platform)
+  }
+  const paths = platform === 'win32' ? path.win32 : path
   const candidates: string[] = []
   for (const executable of executables) {
     if (!(await fileExists(executable))) {
       continue
     }
-    const cli = path.join(path.dirname(executable), platform === 'win32' ? 'cli.exe' : 'cli')
+    const cli = paths.join(paths.dirname(executable), platform === 'win32' ? 'cli.exe' : 'cli')
     if (await fileExists(cli)) {
       candidates.push(cli)
     }

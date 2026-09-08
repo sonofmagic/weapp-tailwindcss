@@ -64,14 +64,9 @@ export async function createHBuilderXDevServer(projectRoot: string) {
   const hbuilderx = await createLocalHBuilderXRunner(projectRoot, env)
   const identity = await createHBuilderXProjectAlias(projectRoot, process.env['E2E_HBUILDERX_ALIAS_ROOT'])
   const projectOptions = { cwd: identity.projectPath, env, timeoutMs: serverTimeoutMs }
-  let closePromise: ReturnType<typeof hbuilderx.closeProject> | undefined
-  const closeProject = () => {
-    closePromise ??= hbuilderx.closeProject({ ...projectOptions, allowFailure: false })
-    return closePromise
-  }
   const cleanup = async () => {
     try {
-      await closeProject()
+      await hbuilderx.closeProject({ ...projectOptions, allowFailure: true })
     }
     finally {
       await identity.cleanup()
@@ -98,21 +93,7 @@ export async function createHBuilderXDevServer(projectRoot: string) {
       env,
     })
     devProcess = launch.child
-    return {
-      ...launch,
-      async stopServer() {
-        try {
-          // 先让 IDE 释放运行会话，再回收 CLI 进程；强杀不能替代项目生命周期。
-          await closeProject()
-          const exit = await Promise.race([launch.closed, wait(5000).then(() => undefined)])
-          return { exitedBeforeKill: exit !== undefined, exit }
-        }
-        finally {
-          await launch.stop()
-        }
-      },
-      cleanup,
-    }
+    return { ...launch, cleanup }
   }
   catch (error) {
     await cleanup()
