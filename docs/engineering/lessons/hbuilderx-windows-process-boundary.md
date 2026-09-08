@@ -141,6 +141,14 @@ pnpm exec node scripts/ci/hbuilderx-vanilla.mjs
 原始 34273608659 的 alpha 项目重新打开失败只留下任务日志，后续补齐所有短命令失败前的现场采集，避免只覆盖 launch 超时。
 此入口用于诊断，既不替代完整样式验收，也不把失败转成通过。
 
+[34275130420](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34275130420) 进一步使用 PowerShell 7
+直接调用官方 CLI，以对照 Node 直接启动的句柄与控制台边界。Stable 真实目录 8 次、junction 8 次全部通过；
+alpha 真实目录 8 次、junction 前两次通过，第三个 junction 再次出现空 launch 日志、CLI 存活但没有编译器的超时。
+失败现场确认 CLI 的参数完整，仍未加载 Tailwind。该结果否定了“用 PowerShell 包一层即可稳定修复”的结论，
+没有把该诊断包装器接入产品 runner。它不能独立证明 junction 是根因，因为上一轮真实目录首次启动也失败。
+后续需要依据官方 CLI/插件宿主的真实启动协议定位，不能用一次通过、增加重试或变更样式生成器替代根因证据。
+
+
 另补齐 host 初始化截止时间耗尽的错误分类：空 host 在 `open` 后始终未注册时返回 `timeout`，不再误报版本不匹配。
 新增用例修复前失败、修复后通过；runner 43 项通过、2 项 Windows 专用跳过，ESM/CJS 和声明构建通过。
 
@@ -172,8 +180,15 @@ macOS demo matrix 的 hash 导航误判已独立修复，真实浏览器前后�
 不把两条流共享到一个解码器，也不在业务正则里尝试补救乱码。
 
 本地 runner 48 项通过、2 项 Windows 专用跳过，ESM/CJS/声明构建通过。
+更新后的 runner 再经 macOS HBuilderX alpha 5.25 实际运行 #1170 的 LF 连续保存、类替换和刷新场景通过：
+`CI=1 HBUILDERX_CHANNEL=alpha E2E_ISSUE_1170_WEB=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/issue-1170-web.test.ts -t 'preserves LF styles' --update=none`，
+CLI 路径由环境变量传入，日志为 `verify-1170-1144/macos-utf8-1170.log`。
 这是跨平台日志输入边界缺陷，不是官方 CLI 空日志挂起的根因；空日志对照本身完全没有导入该函数。
 没有修改 demo 或样式 fixture，因此本轮不需要重新生成 static 基线。
+
+PR 提交 `e4b542299` 的 iOS CI 原生编译成功（0 errors / 0 warnings），随后 `xcrun simctl openurl`
+以 `NSPOSIXErrorDomain code=60` 超时退出，尚未进入 RN 兼容性断言。
+原始 Expo 日志保留为 `verify-1170-1144/pr-e4-ios/expo-run.log`；不能将这一轮计为 iOS 验收通过。
 
 ## 规则评估
 
