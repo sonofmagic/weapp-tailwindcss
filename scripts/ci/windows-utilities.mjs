@@ -13,7 +13,10 @@ import { inspectOutput, verifyOutput } from './windows-utilities-output.mjs'
 const repo = fileURLToPath(new URL('../../', import.meta.url))
 const fixture = path.join(repo, 'e2e/fixtures/taro-webpack-default-utilities')
 const reportDir = path.join(repo, 'e2e/.artifacts/windows-utilities')
+const publishedVersion = process.env.WEAPP_TW_VERIFY_PUBLISHED_VERSION
+assert.ok(!publishedVersion || /^\d+\.\d+\.\d+$/.test(publishedVersion), '发布验收必须指定精确稳定版本')
 const update = process.argv.includes('--update')
+assert.ok(!publishedVersion || !update, '发布验收禁止更新基线')
 assert.ok(!update || !process.env.CI, 'CI must not update the baseline')
 const temporary = await mkdtemp(path.join(tmpdir(), 'weapp-1159 space-'))
 const project = path.join(temporary, 'project')
@@ -117,26 +120,48 @@ async function verify(label, expectRegression) {
 try {
   await cp(fixture, project, { recursive: true })
   assert.equal((await runPnpm(['--version'])).trim(), '11.25.0')
-  await writeFile(path.join(reportDir, 'published-install.log'), await runPnpm(['install', '--frozen-lockfile']))
-  await verify('published-5.5.1', process.platform === 'win32')
+  if (publishedVersion) {
+    const manifestFile = path.join(project, 'package.json')
+    const manifest = JSON.parse(await readFile(manifestFile, 'utf8'))
+    manifest.devDependencies['weapp-tailwindcss'] = publishedVersion
+    await writeFile(manifestFile, JSON.stringify(manifest, null, 2))
+    const workspaceFile = path.join(project, 'pnpm-workspace.yaml')
+    const workspace = parse(await readFile(workspaceFile, 'utf8'))
+    // 本入口专门验收刚发布的版本，时龄仅在独立消费目录取消限制。
+    workspace.minimumReleaseAge = 0
+    await writeFile(workspaceFile, stringify(workspace))
+    // 独立目录只从 registry 解析发布包，不打包本地依赖闭包。
+    await writeFile(path.join(reportDir, 'release-lock.log'), await runPnpm(['install', '--lockfile-only', '--ignore-scripts']))
+    await writeFile(path.join(reportDir, 'release-install.log'), await runPnpm(['install', '--frozen-lockfile']))
+    await cp(path.join(project, 'pnpm-lock.yaml'), path.join(reportDir, 'release-lock.yaml'))
+    const require = createRequire(manifestFile)
+    const entry = require.resolve('weapp-tailwindcss/webpack')
+    assert.equal(require('weapp-tailwindcss/package.json').version, publishedVersion)
+    await writeFile(path.join(reportDir, 'release-resolution.json'), JSON.stringify({ version: publishedVersion, entry }, null, 2))
+    await verify(`npm-${publishedVersion}`, false)
+  }
+  else {
+    await writeFile(path.join(reportDir, 'published-install.log'), await runPnpm(['install', '--frozen-lockfile']))
+    await verify('published-5.5.1', process.platform === 'win32')
 
-  const packDir = path.join(temporary, 'packed')
-  await mkdir(packDir)
-  const candidates = await packRuntimeDependencies(repo, 'weapp-tailwindcss', packDir, project, runPnpm)
-  const manifestFile = path.join(project, 'package.json')
-  const manifest = JSON.parse(await readFile(manifestFile, 'utf8'))
-  manifest.devDependencies['weapp-tailwindcss'] = candidates['weapp-tailwindcss']
-  await writeFile(manifestFile, JSON.stringify(manifest, null, 2))
-  const workspaceFile = path.join(project, 'pnpm-workspace.yaml')
-  const workspace = parse(await readFile(workspaceFile, 'utf8'))
-  workspace.overrides = { ...workspace.overrides, ...candidates }
-  await writeFile(workspaceFile, stringify(workspace))
-  await writeFile(path.join(reportDir, 'candidate-packages.json'), JSON.stringify(candidates, null, 2))
-  // 候选包及运行时 workspace 依赖来自同一提交，冻结安装后仍不依赖 workspace 链接。
-  await writeFile(path.join(reportDir, 'candidate-lock.log'), await runPnpm(['install', '--lockfile-only', '--ignore-scripts']))
-  await writeFile(path.join(reportDir, 'candidate-install.log'), await runPnpm(['install', '--frozen-lockfile']))
-  await cp(path.join(project, 'pnpm-lock.yaml'), path.join(reportDir, 'candidate-lock.yaml'))
-  await verify('candidate', false)
+    const packDir = path.join(temporary, 'packed')
+    await mkdir(packDir)
+    const candidates = await packRuntimeDependencies(repo, 'weapp-tailwindcss', packDir, project, runPnpm)
+    const manifestFile = path.join(project, 'package.json')
+    const manifest = JSON.parse(await readFile(manifestFile, 'utf8'))
+    manifest.devDependencies['weapp-tailwindcss'] = candidates['weapp-tailwindcss']
+    await writeFile(manifestFile, JSON.stringify(manifest, null, 2))
+    const workspaceFile = path.join(project, 'pnpm-workspace.yaml')
+    const workspace = parse(await readFile(workspaceFile, 'utf8'))
+    workspace.overrides = { ...workspace.overrides, ...candidates }
+    await writeFile(workspaceFile, stringify(workspace))
+    await writeFile(path.join(reportDir, 'candidate-packages.json'), JSON.stringify(candidates, null, 2))
+    // 候选包及运行时 workspace 依赖来自同一提交，冻结安装后仍不依赖 workspace 链接。
+    await writeFile(path.join(reportDir, 'candidate-lock.log'), await runPnpm(['install', '--lockfile-only', '--ignore-scripts']))
+    await writeFile(path.join(reportDir, 'candidate-install.log'), await runPnpm(['install', '--frozen-lockfile']))
+    await cp(path.join(project, 'pnpm-lock.yaml'), path.join(reportDir, 'candidate-lock.yaml'))
+    await verify('candidate', false)
+  }
 }
 finally {
   await rm(temporary, { recursive: true, force: true })
