@@ -121,3 +121,21 @@ it('启动期限耗尽后不再发命令，保留标准 timeout 分类', async (
     now.mockRestore()
   }
 })
+
+it('IDE 启动后 host 始终未注册时保留超时分类', async () => {
+  hosts = []
+  const now = vi.spyOn(Date, 'now')
+    .mockReturnValueOnce(1000)
+    .mockReturnValueOnce(1020)
+    .mockReturnValueOnce(1040)
+    .mockReturnValueOnce(1060)
+    .mockReturnValueOnce(1080)
+    .mockReturnValue(1100)
+  try {
+    await expect(createHBuilderXRunner({ hbuilderxCliPath: cli, timeoutMs: 100 })).rejects.toMatchObject({ result: { issue: { kind: 'timeout' } } })
+    expect(vi.mocked(runCommand).mock.calls.map(([options]) => options.args)).toEqual([['listhost'], ['open'], ['listhost']])
+  }
+  finally {
+    now.mockRestore()
+  }
+})

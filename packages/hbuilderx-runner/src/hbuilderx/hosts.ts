@@ -64,18 +64,19 @@ export async function connectHBuilderXHost(options: HostOptions) {
   const { cliPath, cwd, env, expectedChannel, explicitHost } = options
   const deadline = Date.now() + options.timeoutMs
   const logs: string[] = []
+  const timeoutError = (args: string[]) => new HBuilderXCommandError(`HBuilderX host 连接超时：${cliPath} ${args.join(' ')}\ncwd=${cwd}\nexit=null\nissue=timeout\n${formatRecentLogs(logs)}`, {
+    command: cliPath,
+    args,
+    cwd,
+    exit: { code: null, signal: null },
+    logs,
+    output: formatRecentLogs(logs),
+    issue: createTimeoutIssue(),
+  })
   const command = async (args: string[], maxTimeoutMs = 10_000) => {
     const remaining = deadline - Date.now()
     if (remaining <= 0) {
-      throw new HBuilderXCommandError(`HBuilderX host 连接超时：${cliPath} ${args.join(' ')}\ncwd=${cwd}\nexit=null\nissue=timeout\n${formatRecentLogs(logs)}`, {
-        command: cliPath,
-        args,
-        cwd,
-        exit: { code: null, signal: null },
-        logs,
-        output: formatRecentLogs(logs),
-        issue: createTimeoutIssue(),
-      })
+      throw timeoutError(args)
     }
     const result = await runCommand({ command: cliPath, args, cwd, env, timeoutMs: Math.min(remaining, maxTimeoutMs), allowFailure: true })
     logs.push(...result.logs)
@@ -135,5 +136,5 @@ export async function connectHBuilderXHost(options: HostOptions) {
     }
     await wait(Math.min(500, Math.max(0, deadline - Date.now())))
   } while (Date.now() < deadline)
-  throw createRunnerError(cliPath, cwd, ['listhost'], 'cli-instance-mismatch', `未找到与 ${expectedChannel} CLI 匹配的 HBuilderX host`, '请检查目标实例启动日志。', logs)
+  throw timeoutError(['listhost'])
 }
