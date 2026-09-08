@@ -128,6 +128,16 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           node scripts/ci/issue-hbuilderx-verify.mjs
           exit $LASTEXITCODE
+      - name: Preserve current-source evidence before the baseline build
+        if: ${{ !cancelled() && steps.ide.outcome == 'success' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-current-issues-1170-1144-${{ matrix.channel }}
+          path: |
+            e2e/.artifacts/issue-hbuilderx-windows/**
+            e2e/.artifacts/web-hmr/**
+          if-no-files-found: error
+          retention-days: 14
       - name: Reproduce the pre-fix failure on the same Windows IDE
         if: ${{ !cancelled() && steps.ide.outcome == 'success' }}
         run: node scripts/ci/issue-hbuilderx-compare.mjs

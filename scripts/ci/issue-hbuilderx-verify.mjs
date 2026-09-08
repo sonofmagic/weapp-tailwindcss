@@ -14,11 +14,7 @@ const cases = [
 ]
 const results = []
 for (const [name, file, filter] of cases) {
-  // Windows CLI 被终止后可能保留 IDE 运行会话；每个场景使用重新启动的专属 IDE。
-  await execa(process.execPath, ['scripts/ci/issue-hbuilderx-windows.mjs'], {
-    env: { HBUILDERX_RESTART: '1' },
-    stdio: 'inherit',
-  })
+  // 每个场景使用独立 Vitest 进程，因此项目别名也独立；保留 IDE 自身的正常生命周期。
   const result = await execa('pnpm', ['exec', 'vitest', 'run', '-c', 'e2e/vitest.e2e.config.ts', file, '-t', filter, '--update=none'], {
     all: true,
     reject: false,

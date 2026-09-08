@@ -44,11 +44,6 @@ for (const file of ['e2e/hbuilderx-local', 'e2e/issue-1170-web.test.ts']) {
 }
 await required('pnpm', ['install', '--frozen-lockfile'], 'install-baseline')
 await required('pnpm', ['--filter', 'weapp-tailwindcss...', 'run', 'build'], 'build-baseline')
-await execa(process.execPath, ['scripts/ci/issue-hbuilderx-windows.mjs'], {
-  cwd: repo,
-  env: { HBUILDERX_RESTART: '1' },
-  stdio: 'inherit',
-})
 const result = await run('pnpm', [
   'exec',
   'vitest',
