@@ -85,20 +85,17 @@ for (let attempt = 0; attempt < 30; attempt++) {
 if (!actualVersion.includes(version)) {
   throw new Error(`Windows IDE 版本不匹配：${actualVersion}`)
 }
-let commandsReady = false
-for (let attempt = 0; attempt < 60; attempt++) {
-  const help = await command(cli, ['help'], 'help')
-  if (help.includes('installPlugin')) {
-    commandsReady = true
-    break
-  }
-  await delay(1000)
-}
-if (!commandsReady) {
-  throw new Error('IDE 已启动，但插件提供的 installPlugin 命令尚未注册。')
-}
+// version 由原生 CLI 提供，返回时插件宿主可能尚未注册安装命令。
+await delay(5000)
 for (const plugin of ['uniapp-cli-vite', 'uniappx-launcher', 'compile-dart-sass', 'chrome-base']) {
-  const output = await command(cli, ['installPlugin', '--name', plugin], `install-${plugin}`, 600_000)
+  let output = ''
+  for (let attempt = 0; attempt < 30; attempt++) {
+    output = await command(cli, ['installPlugin', '--name', plugin], `install-${plugin}-${attempt}`, 600_000)
+    if (!/does not exist|当前命令执行错误/.test(output)) {
+      break
+    }
+    await delay(1000)
+  }
   if (/does not exist|当前命令执行错误|安装失败/.test(output)) {
     throw new Error(`插件安装未完成：${plugin}\n${output}`)
   }
