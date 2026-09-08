@@ -54,7 +54,7 @@ function Get-StartButtons($Elements) {
   # 名称来自官方语言包 dialog.button.startuse，不操作其他对话框。
   @($Elements | Where-Object {
     $_.Current.ControlType -eq [System.Windows.Automation.ControlType]::Button -and
-    $_.Current.Name.Replace('&', '').Trim() -in @('Enjoy It', '开始体验') -and
+    $_.Current.Name.Replace('&', '').Trim() -in @('Enjoy It', 'Enjoy It Alt+E', '开始体验') -and
     $_.Current.IsEnabled -and -not $_.Current.IsOffscreen
   })
 }
@@ -69,6 +69,8 @@ if ($elements.Count -eq 0) { throw 'IDE 未暴露窗口，无法确认首次界�
 Save-IdeState 'before' $elements
 $buttons = @(Get-StartButtons $elements)
 if ($buttons.Count -gt 1) { throw '首次引导按钮不唯一，拒绝猜测操作目标' }
+$themeVisible = @($elements | Where-Object { $_.Current.Name -eq 'Select your favorite theme' }).Count -gt 0
+if ($themeVisible -and $buttons.Count -eq 0) { throw '首次主题向导仍显示，但没有识别到完成按钮' }
 $invoked = $false
 if ($buttons.Count -eq 1) {
   $pattern = $null
@@ -81,10 +83,11 @@ if ($buttons.Count -eq 1) {
   do {
     Start-Sleep -Milliseconds 500
     $elements = @(Get-IdeElements)
-    $remaining = @(Get-StartButtons $elements)
+    $remaining = @($elements | Where-Object { $_.Current.Name -eq 'Select your favorite theme' }) + @(Get-StartButtons $elements)
   } while ($remaining.Count -gt 0 -and [DateTime]::UtcNow -lt $deadline)
   if ($remaining.Count -gt 0) { throw '首次引导调用后仍未关闭' }
 }
 Save-IdeState 'after' $elements
-@{ invoked = $invoked; elementCount = $elements.Count; executable = $Executable } |
-  ConvertTo-Json | Tee-Object -FilePath (Join-Path $ArtifactRoot 'result.json')
+$result = @{ invoked = $invoked; elementCount = $elements.Count; executable = $Executable } | ConvertTo-Json
+$result | Set-Content -Encoding utf8 (Join-Path $ArtifactRoot 'result.json')
+Write-Output $result
