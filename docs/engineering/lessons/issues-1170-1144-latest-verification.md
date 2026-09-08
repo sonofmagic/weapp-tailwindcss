@@ -11,6 +11,24 @@ regressions:
 
 # 最新主分支对 #1170 与 #1144 的独立验证
 
+## 最终判定
+
+不能把“两项问题在 Windows 的所有边界都已根治”作为本轮结论。
+#1170 的截图最小复现在 Windows 5.24、5.25-alpha 均取得旧版首次保存失败、最新版 LF/CRLF 全部通过的证据，
+支持 #1169 修复了这条生命周期根因。#1144 Options 在两个 Windows IDE 版本各完成 16 次保存、2 次刷新；
+原始 setup 脚本在连续场景和全新 IDE 单独启动中都未能启动 Web 服务，无法验收其首次页面和后续 HMR。
+这属于明确的验证阻塞，尚不能归因于 weapp-tailwindcss 或 HBuilderX；没有把启动超时冒充样式缺陷复现。
+
+| 环境 | #1170 修复前 | #1170 最新 | #1144 最新 Options | #1144 最新 setup |
+| --- | --- | --- | --- | --- |
+| Windows Server 2025 + HBuilderX 5.24 | CRLF 首次保存静默丢样式 | LF/CRLF 各 9 次保存/刷新通过 | 16 次保存、2 次刷新通过 | 新 IDE 单独启动仍超时 |
+| Windows Server 2025 + HBuilderX 5.25-alpha | CRLF 首次保存静默丢样式 | LF/CRLF 各 9 次保存/刷新通过 | 16 次保存、2 次刷新通过 | 新 IDE 单独启动仍超时 |
+| macOS + HBuilderX 5.24 | LF 首次保存静默丢样式 | LF 9 次保存/刷新通过 | 16 次保存、2 次刷新通过 | 16 次保存、2 次刷新通过 |
+| macOS + HBuilderX 5.25-alpha | LF 首次保存静默丢样式 | LF/CRLF 各 9 次保存/刷新通过 | 16 次保存、2 次刷新通过 | 16 次保存、2 次刷新通过 |
+
+Windows 是实际 IDE、内置编译器和浏览器运行，并非只模拟路径；宿主为 Server 2025，不是用户的 Windows 11 原机。
+本轮源码基线为 `46411420c`，不代表 npm 已发布同样的修复。产品实现未在本次验收中调整。
+
 ## 症状
 
 2026-09-08 获取 origin/main，主 checkout 从 `6873b33a5` 快进至上述提交，
@@ -109,9 +127,68 @@ static 共 3 项通过。ESLint、规则检查和 diff 检查通过。
 稳定版 #1170 完成 9 次保存和刷新；#1144 Options/setup 各 16 次保存和两次刷新，全部通过。
 稳定版使用 `E2E_ISSUE_1144_STABLE=1 HBUILDERX_CHANNEL=stable` 与 `e2e/issue-1144-stable.test.ts`，
 #1170 复用相同用例并设置 `HBUILDERX_CHANNEL=stable`；日志为 `1144-stable.log`、`1170-stable.log`。
-Windows HBuilderX 正通过官方安装包和 GitHub Windows 托管主机补测，尚未得出运行结果。
+Windows HBuilderX 的真实运行与边界补验证据见下节。
 Vapor 和用户未提供的完整 #1170 项目仍未验收。
 未发布 npm、未向 Issue 发送评论、未关闭 Issue。
+
+## 边界补验（2026-09-08）
+
+- macOS 稳定版 5.24 同样完成修复前对照：首次正常，第一次纯文字保存后静默丢样式。
+  证据在 `e2e/.artifacts/verify-1170-1144/1170-before-stable/`；随后恢复本机原有 alpha IDE。
+- #1170 加入 LF、CRLF 参数化源码，已有 marker 的替换不改变换行符。
+  alpha 实际 IDE 两种源码各完成 9 次保存、9 次刷新，合计 18 次保存和刷新。
+  日志为 `1170-line-endings.log`；新增边界后的 static 单独 `--update=all` 生成、
+  再以 `--update=none` 验证，基线无变化，日志为 `static-line-endings-update.log`、`static-line-endings-check.log`。
+- 样式归属生命周期覆盖 POSIX、Windows 正反斜杠、中文加空格目录、UNC、盘符根目录、POSIX 根目录与相对路径，8 组通过。
+  每组包含三轮变更、script/setup/template/custom 子请求、生成索引移除和作者复用，未用路径启发式兜底。
+- 中英文 IDE 编译器日志回归共 11 项 runner 测试通过，错误编译器大版本和 Vapor 模式仍拒绝匹配。
+
+Windows 使用官方 5.24、5.25-alpha ZIP，在 GitHub 托管 Windows Server 2025 10.0.26100 上安装
+`uniapp-cli-vite`、`uniappx-launcher`、`compile-dart-sass`，浏览器为 Playwright Chromium。
+这是真实 Windows IDE 进程；不等价于用户 Windows 11 原机，也不等价于 Web Vapor 或原生端验收。
+
+第一轮 [34231077851](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34231077851)
+暴露验收环境问题：alpha 的内置插件命令尚未注册时 `installPlugin` 输出错误但退出 0；
+稳定版 #1170 已完成全部 9 轮保存与刷新，最终被只匹配中文编译器日志的断言误判，
+随后复用 IDE 的会话未能再次启动服务。这些不算产品缺陷复现。
+启动脚本已等待插件命令注册、检查安装结果与真实编译器文件；
+验收日志同时支持中英文而保留版本与 VDOM 模式约束。
+
+第二轮 [34232870829](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34232870829)
+分别因冷启动 `cli help` 阻塞与插件安装超时未进入页面；随后改用有界实际安装重试。
+第三轮 [34233924823](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34233924823)
+成功安装两种官方 IDE，但强制重启后的 CLI 就绪不稳定。
+稳定版修复前独立工作树已完成 CRLF 原例复现：首次加载正常，第一次文字保存后
+宽度 1280px、颜色黑、背景透明、字号 16px，正文与 marker 均更新，浏览器 errors/warnings 为空。
+`windows-third-stable/issue-hbuilderx-windows/before/comparison.json` 的 `reproduced` 为 `true`，
+并有 `initial.png`、`final.png`、服务身份和完整请求日志。
+该运行的稳定版对照步骤成功；alpha 的重复初始化未完成，已停止被后续会话方案取代的剩余任务。
+真实编译器使用内置 Node 22.22.2、Vite 5.2.8；runner Node 为 24.19.0。
+
+第四轮 [34235453291](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34235453291)
+使用独立 Vitest 进程与项目别名，保持 IDE 正常运行，分别验证 LF、CRLF、Options、setup，
+并在修复前构建前提前上传最新源码的证据。
+5.24 与 5.25-alpha 均已通过 #1170 LF、CRLF 各 9 次保存和刷新，以及 #1144 Options 的
+16 次保存、2 次刷新；每个 IDE 共 34 次保存、20 次刷新，浏览器 errors/warnings 均为空。
+对应目录为 `windows-fourth-stable-current/`、`windows-fourth-alpha-current/`。
+两者的 setup 场景均在 Web 服务启动前超时，没有进入样式断言。
+第五轮 [34236790675](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34236790675)
+通过 `runtime_case=1144-setup` 在新 IDE 上单独补验该边界，避免重复已通过的场景。
+第五轮两套 IDE 仍在约 120 秒后报 `等待路径超时`；完整诊断没有编译日志、请求和首次截图，
+不能判定为样式断言失败，也不能写成 setup 通过。原始材料为 `windows-fifth-stable-current/`、
+`windows-fifth-alpha-current/`。
+
+第四轮的两项修复前对照步骤均成功复现旧版缺陷，`comparison.json` 均为 `reproduced: true`，
+材料为 `windows-fourth-stable/issue-hbuilderx-windows/before/` 与
+`windows-fourth-alpha/issue-hbuilderx-windows/before/`。
+整个 workflow 因 setup 超时呈失败，需按场景与对照 JSON 阅读，不能把 workflow 总状态当成 #1170 的结论。
+
+另试验了官方 `launch web --ui true`，该命令立即退出并要求用 `logcat` 取日志；
+本机加入日志快照轮询后仍提示尚未启动项目，未取得可用界面运行证据。
+该替代方案没有推广到 Windows 或保留为正式验收入口；日志为 `1144-ui-alpha.log`。
+最终保留已实际运行的 Windows 独立场景入口，不添加未经验证的界面模式兜底。
+对照只有首次加载正常、首次保存 marker 与正文更新、背景透明且浏览器无错误才算复现；
+构建或服务启动失败不能作为修复前失败证据。
 
 ## 规则评估
 
