@@ -26,6 +26,7 @@ import {
 import { appendHmrSourceMutation, createHmrSourceRestore } from './source-mutations'
 import { cleanupWebHmrSession } from './web/cleanup'
 import { clearDevProcess, createDevServer, createHBuilderXDevServer } from './web/dev-server'
+import { captureHBuilderXFailure } from './web/diagnostics'
 import { assertServerIdentity, sameSourceFile } from './web/identity'
 import { readRuntimeStyles, waitForHmrMarker, waitForInitialPageText, waitForRuntimeStyles } from './web/runtime'
 import { rewriteHmrMarker } from './web/source'
@@ -241,6 +242,9 @@ export async function runWebHmr(
     }
   }
   catch (error) {
+    if (launchWithHBuilderX) {
+      await captureHBuilderXFailure(artifactRoot)
+    }
     await fs.writeFile(path.join(artifactRoot, 'failure.txt'), error instanceof Error ? error.stack ?? error.message : String(error))
     throw error
   }
