@@ -73,7 +73,8 @@ Windows IDE 每个版本重复两轮完整场景，失败保留现场且不自�
 因此不能让显式配置路径的连接依赖操作系统进程枚举。内部将路径选择与 host 握手分开：
 显式 candidate/环境变量直接定位 CLI，使用 `listhost` 和 `version --host` 确认实例；
 只有有效空列表才执行一次 `open`，随后等待 host 注册。命令失败、超时、版本不匹配和歧义都不会触发重复启动。
-未配置路径时仍通过运行进程发现安装位置，公开路径解析 API 保留原有 `isRunning` 行为。
+未配置路径时仍通过运行进程发现安装位置。只返回路径的 `resolveHBuilderXCli` 对显式配置不再枚举进程；
+需要 `isRunning` 元数据的 `resolveHBuilderXCliInfo` 保留真实探测语义。两类 API 分别覆盖，避免单纯读取路径竞争 PowerShell 查询。
 
 `host-connection.test.ts` 覆盖显式 candidate/env、已有 host、空列表后注册、只启动一次、版本不匹配、
 多个 host、显式绑定、CLI 失败、超时、缺失 candidate 和统一截止时间。
@@ -84,6 +85,64 @@ Windows IDE 每个版本重复两轮完整场景，失败保留现场且不自�
 host 连接实现 `52dcaed93` 在 macOS alpha 完成两轮、8 个场景，共 100 次保存和 44 次刷新，全部通过。
 命令为 `CI=1 HBUILDERX_CHANNEL=alpha E2E_ISSUE_1170_WEB=1 E2E_ISSUE_1144_ALPHA=1 E2E_WINDOWS_REPEATS=2 E2E_WINDOWS_CASE=all node scripts/ci/issue-hbuilderx-verify.mjs`，CLI 路径由环境变量传入。
 日志为 `verify-1170-1144/macos-host-handshake.log`；Windows 最终原生结果待补充。
+
+## 首次界面与测试环境就绪
+
+[34255683114](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34255683114) 将 setup 放到最前面：
+alpha 的 setup、LF 通过，CRLF 在编译器创建前失败；stable 的首个 setup 失败。
+这排除了“只在第四次启动失败”的固定解释，也不能把源码 setup 当作必现触发条件。
+同一提交在 macOS 完成 setup 优先的两轮 8 场景、100 次保存、44 次刷新，日志为 `macos-setup-first.log`。
+
+stable 的失败桌面截图直接显示首次主题选择向导和 `Enjoy it` 按钮仍打开，尽管 CLI 版本、插件安装、host 和项目注册已经成功。
+版本响应不代表 GUI 首次初始化完成。曾依据 macOS 配置预置 Windows 用户目录的
+`HBuilder X.ini` 中 `[uistate] first=false`，但 [34257224817](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34257224817)
+两套 IDE 都只通过首个 setup，随后 LF 启动失败；六个跨平台矩阵通过。该配置不能证明 Windows 首次引导关闭，已移除实现及专用测试。
+
+后续诊断改为在独立 GitHub runner 上按安装路径定位唯一 HBuilderX 进程，保存首次界面的 UI Automation 控件树和截图，
+只对官方语言包 `dialog.button.startuse` 对应的“开始体验 / Enjoy It”按钮使用语义调用，再验证按钮消失。
+不猜测坐标、不操作其他对话框，也不将界面操作当作样式修复。诊断运行
+[34260388484](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34260388484) 中，alpha 完成两轮 8 场景；
+stable 的 setup、LF 通过，CRLF 在编译器创建前失败。控件树显示按钮名称包含 `Alt+E` 快捷键后缀，首次匹配遗漏，向导仍显示。
+
+修正后 [34262127231](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34262127231) 记录 `invoked: true`，
+截图和控件树确认首次向导关闭，但 alpha 仍在 setup 通过后的 LF 启动失败，两套 IDE 都没有完成连续验收。
+因此首次向导不是间歇性启动失败的已证实根因，不能以此前一次 alpha 全部通过宣布稳定修复。
+
+尝试在独立诊断安装中加入上游 CLI 请求日志时，官方插件完整性校验检测到修改并中止初始化。
+[34264849325](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34264849325) 仅作为被拒绝的诊断实验保留；
+插桩代码已全部移除，未绕过校验，也未将修改后的工具链写入缓存。
+后续用未修改的官方 IDE 和不导入 weapp-tailwindcss/仓库 runner 的最小项目，对照真实目录与 Windows junction 的反复启停，
+首次运行 [34266683948](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34266683948) 在两套 IDE 上都启动了编译器，
+随后因最小项目遗漏 `index.html` 而退出；这不是原始启动挂起的复现。补齐官方 Web 入口，并把别名放到临时目录的独立兄弟目录后，
+本地未修改的 macOS alpha 已通过真实目录和别名各一次启动、浏览器唯一标识验证与关闭。
+命令为 `CI=1 E2E_HBUILDERX_VANILLA=1 node scripts/ci/hbuilderx-vanilla.mjs`，CLI 由环境变量传入。
+修正后的 Windows 对照运行是 [34273608659](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34273608659)，
+计划每套 IDE 依次执行真实目录 8 次、独立 junction 8 次；保留失败现场，不自动重试。
+其中 alpha 首个真实目录项目成功渲染；终止 CLI、关闭项目后，第二次 `project open` 无输出并在 20 秒截止时间超时，
+尚未进入 junction 阶段。这证明无需 Tailwind 插件或仓库 runner 也能触发原生启停问题，
+但失败位置是项目重新打开，不能直接等同此前 `launch web` 的编译器创建前挂起。
+
+另补齐 host 初始化截止时间耗尽的错误分类：空 host 在 `open` 后始终未注册时返回 `timeout`，不再误报版本不匹配。
+新增用例修复前失败、修复后通过；runner 43 项通过、2 项 Windows 专用跳过，ESM/CJS 和声明构建通过。
+
+尝试官方 `launch web --compile true` 后，服务在第一次编译就绪时立即停止，无法承载 HMR，因此没有保留此替代方式。
+正式验收继续使用 IDE 原生启动、原始日志与真实浏览器计算样式。
+
+## 本轮 CI 补验
+
+PR 冷构建改为三次采样后，同步工作流契约中仍要求一次采样的两处旧断言，43 项 workflow 测试通过。
+[34255683248](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34255683248) 的首次性能运行中，
+四个分片通过，weapp-vite 稳态 RSS 从 599.38 MB 到 670.21 MB（+11.82%），耗时与 HMR 基本持平。
+原始报告保留为 `verify-1170-1144/benchmark-weapp-latest/`；本地同基线三次构建、三次 HMR 的阻断门禁通过，
+报告为 `benchmark-local-result/`。远端同提交 attempt 2 的全部性能分片及聚合门禁通过：weapp-vite 构建耗时 +0.61%、
+HMR P95 -0.02%，构建稳态 RSS 600.76 → 656.95 MB（+9.35%、+56.19 MB），未达到既有 64 MB 绝对下限。
+复测报告保留为 `benchmark-weapp-second/`，首次失败证据继续保留，不声称内存波动已经根治。
+没有调整 5% 阈值、64 MB 下限或置信规则。
+
+显式路径 API 的两项新增回归修复前失败、修复后通过；元数据 API 另有保留进程探测的回归。
+最新本地 runner 46 项通过、2 项 Windows 专用跳过，ESM/CJS 和声明构建通过。
+macOS demo matrix 的 hash 导航误判已独立修复，真实浏览器前后对照与受影响 demo 验收见
+[导航验证记录](demo-matrix-hash-navigation.md)。
 
 ## 规则评估
 
