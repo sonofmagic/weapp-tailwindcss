@@ -4531,7 +4531,15 @@ importers:
         specifier: ^1.33.0
         version: 1.33.0
 
-  packages/hbuilderx-runner: {}
+  packages/hbuilderx-runner:
+    dependencies:
+      cross-spawn:
+        specifier: ^7.0.6
+        version: 7.0.6
+    devDependencies:
+      '@types/cross-spawn':
+        specifier: ^6.0.6
+        version: 6.0.6
 
   packages/init:
     dependencies:
@@ -16161,6 +16169,9 @@ packages:
 
   '@types/d3@7.4.3':
     resolution: {integrity: sha512-lZXZ9ckh5R8uiFVt8ogUNf+pIrK4EsWrx2Np75WvF/eTpJ0FMHNhjXk8CKEx/+gpHbNQyJWehbFaTvqmHWB3ww==}
+
+  '@types/cross-spawn@6.0.6':
+    resolution: {integrity: sha512-fXRhhUkG4H3TQk5dBhQ7m/JDdSNHKwR2BBia62lhwEIq9xGiQKLxd6LymNhn47SjXhsUEPmxi+PKw2OkW4LLjA==}
 
   '@types/debug@4.1.13':
     resolution: {integrity: sha512-KSVgmQmzMwPlmtljOomayoR89W4FynCAi3E8PPs7vmDVPe84hT+vGPKkJfThkmXs0x0jAaa9U8uW8bbfyS2fWw==}
@@ -52232,6 +52243,10 @@ snapshots:
       '@types/d3-timer': 3.0.2
       '@types/d3-transition': 3.0.9
       '@types/d3-zoom': 3.0.8
+
+  '@types/cross-spawn@6.0.6':
+    dependencies:
+      '@types/node': 26.4.1
 
   '@types/debug@4.1.13':
     dependencies:

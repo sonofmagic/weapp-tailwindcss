@@ -11,8 +11,7 @@ export function createHBuilderXProjectAliasName(projectRoot, processId = process
   return `${projectName}-${rootHash}-${processId}`
 }
 
-export async function createHBuilderXProjectAlias(projectRoot) {
-  const aliasRoot = join(tmpdir(), 'weapp-tailwindcss-hbuilderx-projects')
+export async function createHBuilderXProjectAlias(projectRoot, aliasRoot = join(tmpdir(), 'weapp-tailwindcss-hbuilderx-projects')) {
   const projectName = createHBuilderXProjectAliasName(projectRoot)
   const projectPath = join(aliasRoot, projectName)
   await mkdir(aliasRoot, { recursive: true })

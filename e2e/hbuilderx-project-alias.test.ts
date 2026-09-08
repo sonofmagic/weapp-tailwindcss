@@ -25,7 +25,7 @@ describe('HBuilderX project alias', () => {
     const projectRoot = await fs.mkdtemp(path.join(tmpdir(), 'hbuilderx-project-alias-source-'))
     const sourceFile = path.join(projectRoot, 'pages.uvue')
     await fs.writeFile(sourceFile, 'before')
-    const alias = await createHBuilderXProjectAlias(projectRoot)
+    const alias = await createHBuilderXProjectAlias(projectRoot, path.join(projectRoot, '中文 & aliases'))
     try {
       await fs.writeFile(path.join(alias.projectPath, 'pages.uvue'), 'after')
       expect(await fs.readFile(sourceFile, 'utf8')).toBe('after')

@@ -8,20 +8,9 @@ on:
       - demo/subpackage-taro-webpack-react-tailwindcss-v4/**
       - scripts/ci/demo-matrix/**
   workflow_dispatch:
-    inputs:
-      scenario:
-        description: 选择常规 watch 或 uni-app x Issue 的 Windows IDE 验证
-        type: choice
-        default: portable-watch
-        options: [portable-watch, issues-1170-1144]
-      runtime_case:
-        description: Windows IDE 场景，可单独补验未完成的启动会话
-        type: choice
-        default: all
-        options: [all, 1170-LF, 1170-CRLF, 1144-options, 1144-setup]
 
 concurrency:
-  group: windows-watch-diagnostic-${{ inputs.scenario == 'issues-1170-1144' && github.run_id || github.event.pull_request.number || github.ref }}
+  group: windows-watch-diagnostic-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -29,7 +18,6 @@ permissions:
 
 jobs:
   watch:
-    if: github.event_name != 'workflow_dispatch' || inputs.scenario != 'issues-1170-1144'
     name: Repeated watch (${{ matrix.os || 'windows-latest' }}, Node ${{ matrix.node || 24 }}, ${{ matrix.case }})
     runs-on: ${{ matrix.os || 'windows-latest' }}
     timeout-minutes: 30
@@ -84,75 +72,5 @@ jobs:
         with:
           name: windows-watch-diagnostic-${{ strategy.job-index }}
           path: e2e/.artifacts/watch-diagnostic/**
-          if-no-files-found: error
-          retention-days: 14
-
-  windows-uni-app-x:
-    if: github.event_name == 'workflow_dispatch' && inputs.scenario == 'issues-1170-1144'
-    name: Windows HBuilderX ${{ matrix.channel }} issues 1170 and 1144
-    runs-on: windows-latest
-    timeout-minutes: 40
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - channel: stable
-            version: 5.24.2026081301
-          - channel: alpha
-            version: 5.25.2026082902-alpha
-    env:
-      CI: '1'
-      HBUILDERX_CHANNEL: ${{ matrix.channel }}
-      HBUILDERX_VERSION: ${{ matrix.version }}
-      E2E_ISSUE_1170_WEB: '1'
-      E2E_ISSUE_1144_STABLE: ${{ matrix.channel == 'stable' && '1' || '0' }}
-      E2E_ISSUE_1144_ALPHA: ${{ matrix.channel == 'alpha' && '1' || '0' }}
-      E2E_HBUILDERX_WEB_TIMEOUT_MS: '120000'
-      E2E_WINDOWS_CASE: ${{ inputs.runtime_case || 'all' }}
-    steps:
-      - uses: actions/checkout@v6
-      - run: git config core.longpaths true
-      - uses: ./.github/actions/setup-pnpm
-        with:
-          node-version: '24'
-      - name: Build current source and dependencies
-        run: pnpm --filter weapp-tailwindcss... run build
-      - name: Install browser
-        run: pnpm exec playwright install chromium
-      - name: Cache official HBuilderX toolchain
-        uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/issue-hbuilderx-${{ matrix.version }}
-          key: issue-hbuilderx-win-${{ matrix.version }}-v2
-      - name: Prepare official Windows IDE
-        id: ide
-        run: node scripts/ci/issue-hbuilderx-windows.mjs
-      - name: Verify path ownership and real Web HMR
-        shell: pwsh
-        run: |
-          pnpm --filter weapp-tailwindcss exec vitest run test/uni-app-x/vite-style-requests.test.ts --update=none
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          node scripts/ci/issue-hbuilderx-verify.mjs
-          exit $LASTEXITCODE
-      - name: Preserve current-source evidence before the baseline build
-        if: ${{ !cancelled() && steps.ide.outcome == 'success' }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: windows-current-issues-1170-1144-${{ matrix.channel }}
-          path: |
-            e2e/.artifacts/issue-hbuilderx-windows/**
-            e2e/.artifacts/web-hmr/**
-          if-no-files-found: error
-          retention-days: 14
-      - name: Reproduce the pre-fix failure on the same Windows IDE
-        if: ${{ !cancelled() && steps.ide.outcome == 'success' && (inputs.runtime_case == 'all' || inputs.runtime_case == '') }}
-        run: node scripts/ci/issue-hbuilderx-compare.mjs
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: windows-issues-1170-1144-${{ matrix.channel }}
-          path: |
-            e2e/.artifacts/issue-hbuilderx-windows/**
-            e2e/.artifacts/web-hmr/**
           if-no-files-found: error
           retention-days: 14

@@ -62,7 +62,7 @@ export async function createHBuilderXDevServer(projectRoot: string) {
     VITE_WEAPP_TW_WATCH_REGRESSION: '1',
   })
   const hbuilderx = await createLocalHBuilderXRunner(projectRoot, env)
-  const identity = await createHBuilderXProjectAlias(projectRoot)
+  const identity = await createHBuilderXProjectAlias(projectRoot, process.env['E2E_HBUILDERX_ALIAS_ROOT'])
   const projectOptions = { cwd: identity.projectPath, env, timeoutMs: serverTimeoutMs }
   const cleanup = async () => {
     try {
