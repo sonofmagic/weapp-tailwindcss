@@ -9,7 +9,10 @@ import { expect, it } from 'vitest'
 import webpack from 'webpack'
 
 const require = createRequire(import.meta.url)
-const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+const productRequire = process.env['E2E_RELEASE_PROJECT_ROOT']
+  ? createRequire(path.join(process.env['E2E_RELEASE_PROJECT_ROOT'], 'package.json'))
+  : require
+const { WeappTailwindcss } = productRequire('weapp-tailwindcss/webpack')
 
 it.each(['weapp', 'web'] as const)('issue #1166: preserves the %s loader handoff with upstream postcss-calc 8.2.4', async (target) => {
   const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-issue-1166-'))

@@ -11,7 +11,7 @@ import { createHBuilderXProjectAlias } from '../scripts/hbuilderx-project-alias.
 import { runPnpm } from './hbuilderx-local/process'
 
 const project = 'uni-app-x-vdom-tailwindcss-v4'
-const projectRoot = path.resolve(__dirname, '../demo', project)
+const projectRoot = path.resolve(process.env['E2E_RELEASE_PROJECT_ROOT'] ?? path.resolve(__dirname, '../demo', project))
 const filter = process.env['E2E_PROJECT_FILTER']
 const included = !filter || new RegExp(filter).test(project)
 const selectorParser = createRequire(path.resolve(__dirname, '../packages/postcss/package.json'))('postcss-selector-parser')

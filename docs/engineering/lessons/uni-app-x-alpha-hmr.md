@@ -13,6 +13,8 @@ regressions:
 
 # uni-app x：5.25 alpha 与 Harmony 更新证据
 
+2026-09-08 发布后补充：[npm 5.5.2 验收](npm-5.5.2-verification.md) 在 Options 第 9 轮再次发现 PostCSS Unknown word；本页本地构建通过不能外推为 5.5.2 发布包全部通过。Harmony 原帖样式与原生增量重启边界已用发布包重验。
+
 ## 症状
 
 本记录补齐 [Issue 1144 记录](issue-1144.md) 中未验证的 alpha / 原始 setup 环境，以及 [Issue 1164 记录](issue-1164.md) 中“产物更新但自动重装”的边界。旧记录的 Sass、SCSS 解析修复仍有效；本次没有复现需要新增产品解析补丁的失败。

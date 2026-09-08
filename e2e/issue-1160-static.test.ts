@@ -13,7 +13,7 @@ const project = 'uni-app-x-vdom-tailwindcss-v4'
 const selectorParser = createRequire(path.resolve(__dirname, '../packages/postcss/package.json'))('postcss-selector-parser')
 
 it.skipIf(Boolean(filter && !new RegExp(filter).test(project)))('issue #1160 keeps border combinations connected to production CSS', async () => {
-  const projectRoot = path.resolve(__dirname, '../demo', project)
+  const projectRoot = path.resolve(process.env['E2E_RELEASE_PROJECT_ROOT'] ?? path.resolve(__dirname, '../demo', project))
   await runPnpm(projectRoot, ['exec', 'cross-env', 'UNI_INPUT_DIR=.', 'uni', 'build'], 120_000)
   const files = await fg('**/*.{js,css}', { cwd: path.join(projectRoot, 'dist/build/h5'), absolute: true })
   const classes = new Map<string, Set<string>>()

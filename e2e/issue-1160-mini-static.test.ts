@@ -15,7 +15,7 @@ const enabled = process.env['E2E_ISSUE_1160_MINI'] === '1' && (!filter || new Re
 const selectorParser = createRequire(path.resolve(__dirname, '../packages/postcss/package.json'))('postcss-selector-parser')
 
 it.skipIf(!enabled)('issue #1160 preserves component border defaults in HBuilderX mini output', async () => {
-  const projectRoot = path.resolve(__dirname, '../demo', project)
+  const projectRoot = path.resolve(process.env['E2E_RELEASE_PROJECT_ROOT'] ?? path.resolve(__dirname, '../demo', project))
   const alias = await createHBuilderXProjectAlias(projectRoot)
   const runner = await createLocalHBuilderXRunner(projectRoot)
   try {
