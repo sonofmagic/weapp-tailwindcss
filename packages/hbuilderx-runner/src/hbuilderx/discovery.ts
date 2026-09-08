@@ -100,7 +100,7 @@ export async function findRunningHBuilderXCliCandidates(platform: NodeJS.Platfor
     ? ['-NoProfile', '-NonInteractive', '-Command', [
         '$ErrorActionPreference = \'Stop\'',
         '[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)',
-        `ConvertTo-Json -Compress -InputObject @(Get-CimInstance Win32_Process -Filter "Name = 'HBuilderX.exe'" | Where-Object { $_.ExecutablePath } | Select-Object -ExpandProperty ExecutablePath)`,
+        `ConvertTo-Json -Compress -InputObject @([System.Diagnostics.Process]::GetProcessesByName('HBuilderX') | ForEach-Object { $_.MainModule.FileName })`,
       ].join('; ')]
     : ['-ax', '-o', 'command=']
   const result = spawnSync(command, args, { encoding: 'utf8', windowsHide: true, timeout: 10_000 })
@@ -114,14 +114,14 @@ export async function findRunningHBuilderXCliCandidates(platform: NodeJS.Platfor
   if (platform === 'win32') {
     const values: unknown = JSON.parse(result.stdout.replace(/^\uFEFF/, '').trim())
     if (!Array.isArray(values) || values.some(value => typeof value !== 'string')) {
-      throw new Error('HBuilderX CIM 进程探测返回了无效路径列表')
+      throw new Error('HBuilderX Windows 进程探测返回了无效路径列表')
     }
     executables = values.filter(value => value.toLowerCase().endsWith('hbuilderx.exe'))
   }
   else {
     executables = extractHBuilderXExecutablesFromProcessOutput(result.stdout, platform)
   }
-  const paths = platform === 'win32' ? path.win32 : path
+  const paths = platform === 'win32' ? path.win32 : path.posix
   const candidates: string[] = []
   for (const executable of executables) {
     if (!(await fileExists(executable))) {

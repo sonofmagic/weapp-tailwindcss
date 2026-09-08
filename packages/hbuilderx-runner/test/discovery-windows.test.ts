@@ -7,7 +7,7 @@ import process from 'node:process'
 import { expect, it } from 'vitest'
 import { findRunningHBuilderXCliCandidates } from '../src/hbuilderx/discovery'
 
-it.skipIf(process.platform !== 'win32')('真实 Windows CIM 识别带特殊字符路径中的运行进程', async () => {
+it.skipIf(process.platform !== 'win32')('真实 Windows 识别带特殊字符路径中的运行进程', async () => {
   const directory = await mkdtemp(path.join(tmpdir(), '中文, 空格 & HBuilderX-'))
   const executable = path.join(directory, 'HBuilderX.exe')
   const cli = path.join(directory, 'cli.exe')
