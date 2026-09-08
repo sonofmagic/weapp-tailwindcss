@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'
+import { readFile, rm } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
@@ -6,7 +6,8 @@ import fg from 'fast-glob'
 import { JSDOM } from 'jsdom'
 import postcss from 'postcss'
 import { expect, it } from 'vitest'
-import { runPnpm } from './hbuilderx-local/process'
+import { createHBuilderXProjectAlias } from '../scripts/hbuilderx-project-alias.mjs'
+import { createLocalHBuilderXRunner } from './hbuilderx-local/process'
 
 const project = 'uni-app-x-vdom-tailwindcss-v4'
 const filter = process.env['E2E_PROJECT_FILTER']
@@ -15,7 +16,21 @@ const selectorParser = createRequire(path.resolve(__dirname, '../packages/postcs
 
 it.skipIf(!enabled)('issue #1160 preserves component border defaults in HBuilderX mini output', async () => {
   const projectRoot = path.resolve(__dirname, '../demo', project)
-  await runPnpm(path.resolve(__dirname, '..'), ['exec', 'hbuilderx', 'launch', 'mp-weixin', '--project', projectRoot, '--compile', 'true'], 120_000)
+  const alias = await createHBuilderXProjectAlias(projectRoot)
+  const runner = await createLocalHBuilderXRunner(projectRoot)
+  try {
+    await runner.run({ args: ['project', 'open', '--path', alias.projectPath] })
+    await rm(path.join(projectRoot, 'unpackage', 'dist', 'dev', 'mp-weixin'), { recursive: true, force: true })
+    await runner.run({ args: ['launch', 'mp-weixin', '--project', alias.projectName, '--compile', 'true'], timeoutMs: 120_000 })
+    await verifyOutput(projectRoot)
+  }
+  finally {
+    await runner.run({ args: ['project', 'close', '--path', alias.projectPath], allowFailure: true }).catch(() => undefined)
+    await alias.cleanup()
+  }
+}, 150_000)
+
+async function verifyOutput(projectRoot: string) {
   const output = path.join(projectRoot, 'unpackage/dist/dev/mp-weixin')
   const files = await fg('**/*.wxml', { cwd: output, absolute: true })
   const evidence: Record<string, string[]> = {}
@@ -58,4 +73,4 @@ it.skipIf(!enabled)('issue #1160 preserves component border defaults in HBuilder
   expect(evidence['issue-1160-pair']).toContain('border-left-width:2px')
   expect(evidence['issue-1160-override']).toContain('border-top-width:0px')
   await expect(`${JSON.stringify(evidence, null, 2)}\n`).toMatchFileSnapshot('__snapshots__/issue-1160/mini-borders.json')
-}, 150_000)
+}

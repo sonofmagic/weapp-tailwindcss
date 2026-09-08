@@ -12,6 +12,8 @@ regressions:
 
 # Issue #1144：SCSS important 与可靠 HMR 验收
 
+2026-09-08 补充：[5.25 alpha 与 Harmony 更新证据](uni-app-x-alpha-hmr.md) 已验证原始 setup，并用无插件原生对照区分符号链接失败、增量重启和纯 HMR。以下保留本次历史修复证据；未验证边界以后续记录为准。
+
 ## 症状
 
 [用户最新评论](https://github.com/sonofmagic/weapp-tailwindcss/issues/1144#issuecomment-5551182026)（2026-09-05 更新）包含两类 Web 症状：多次切换 `:pt="{ root: 'p-0!' }"` / `p-10!` 后不再更新，刷新也无效；新增 `mt-24!` 后报错。截图中使用 HBuilderX 5.25 alpha，错误是 `[plugin:vite:css] [sass] expected ";"`，位置为生成的 `@apply mt-24!`。

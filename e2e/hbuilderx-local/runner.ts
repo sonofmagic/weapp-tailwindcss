@@ -15,6 +15,8 @@ import {
   waitForAndroidRuntimeEvidence,
 } from './android-runtime'
 import { rawTailwindDirectiveRE, resolveAppHmrSteps } from './cases'
+import { captureHarmonyRuntimeEvidence, waitForHarmonyRuntimeEvidence } from './harmony-runtime'
+import { observeHmrStep } from './hmr-lifecycle'
 import {
   assertAndroidToolchain,
   assertHarmonyToolchain,
@@ -611,6 +613,8 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
   let projectAlias: string | undefined
   let cleanupProjectAlias: (() => Promise<void>) | undefined
   let restore: (() => Promise<void>) | undefined
+  let harmonyFailureEvidence: Parameters<typeof captureHarmonyRuntimeEvidence>[0] | undefined
+  let hmrLifecycle: ReturnType<typeof observeHmrStep> | undefined
   let child: ChildProcess | undefined
   try {
     restore = await createHmrSourceRestore([
@@ -697,6 +701,17 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
           'weapp-tailwindcss-hbuilderx-runtime',
           `${process.pid}-${item.name.replace(/[^\w-]+/g, '-')}`,
         )
+    const harmonyDeviceIndex = launchArgs.indexOf('--deviceId')
+    const harmonyDeviceId = harmonyDeviceIndex >= 0 ? launchArgs[harmonyDeviceIndex + 1] : undefined
+    const initialHarmony = item.platform === 'app-harmony'
+      ? await waitForHarmonyRuntimeEvidence({
+          deviceId: harmonyDeviceId,
+          directory: path.resolve(runtimeEvidenceRoot, 'initial'),
+          marker: item.markerText,
+          timeoutMs: hbuilderxAppTimeoutMs,
+          ensureRunning: ensureLaunchRunning,
+        })
+      : undefined
     let previousRuntimeScreenshot: string | undefined
     if (item.platform === 'app-android' && item.runtime) {
       const initialScreenshot = path.resolve(runtimeEvidenceRoot, 'initial.png')
@@ -722,6 +737,10 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     }
     let hmrOutputRoot = initialOutputRoot
     for (const step of resolveAppHmrSteps(item)) {
+      hmrLifecycle?.assertNoFallback()
+      hmrLifecycle?.dispose()
+      hmrLifecycle = item.platform === 'app-harmony' ? observeHmrStep(child) : undefined
+      harmonyFailureEvidence = initialHarmony ? { deviceId: harmonyDeviceId, directory: path.resolve(runtimeEvidenceRoot, step.name), marker: step.markerText } : undefined
       process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} start\n`)
       if (step.sourceMutation) {
         const shouldWaitForOutputRefresh = step.sourceMutation.expectOutputRefresh !== false
@@ -751,6 +770,21 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
           `recentHBuilderXLogs=${formatRecentLogs(logs, 4000)}`,
         ].join('\n')
       }, step.styleContains, [...(item.transformedNotContains ?? []), ...(step.transformedNotContains ?? [])])
+      await hmrLifecycle?.waitForCompletion(hbuilderxAppTimeoutMs, ensureLaunchRunning)
+      if (initialHarmony) {
+        const evidence = await waitForHarmonyRuntimeEvidence({
+          deviceId: harmonyDeviceId,
+          directory: path.resolve(runtimeEvidenceRoot, step.name),
+          marker: step.markerText,
+          previousPid: initialHarmony.pid,
+          timeoutMs: hbuilderxAppTimeoutMs,
+          ensureRunning: () => {
+            ensureLaunchRunning()
+            hmrLifecycle?.assertNoFallback()
+          },
+        })
+        process.stdout.write(`${JSON.stringify({ step: step.name, runtimeEvidence: evidence })}\n`)
+      }
       if (item.platform === 'app-android' && step.runtime) {
         const screenshot = path.resolve(runtimeEvidenceRoot, `${step.name}.png`)
         const evidence = await waitForAndroidRuntimeEvidence({
@@ -780,7 +814,8 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       else if (item.platform === 'app-android') {
         process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} 未配置 Android 运行时探针，保留产物/HMR 断言\n`)
       }
-      process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} passed\n`)
+      hmrLifecycle?.assertNoFallback()
+      process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} 产物与传输检查通过\n`)
     }
     await assertAppOutputHasNoUnsupportedContent(item, hmrOutputRoot)
     expectNoContent(logs.join(''), item.logNotContains, `${item.name} HBuilderX 日志`)
@@ -788,8 +823,18 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
 
     await stopAppLaunch(child, closed)
     child = undefined
+    hmrLifecycle?.assertNoFallback()
+  }
+  catch (error) {
+    if (harmonyFailureEvidence) {
+      await captureHarmonyRuntimeEvidence(harmonyFailureEvidence).catch((captureError) => {
+        process.stderr.write(`Harmony 失败现场取证也失败：${captureError}\n`)
+      })
+    }
+    throw error
   }
   finally {
+    hmrLifecycle?.dispose()
     if (child) {
       const closed = new Promise<void>((resolve) => {
         child?.once('close', () => resolve())

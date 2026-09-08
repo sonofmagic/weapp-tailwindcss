@@ -5,12 +5,12 @@ import { parseSync, traverse } from '@babel/core'
 import fg from 'fast-glob'
 import postcss from 'postcss'
 import { expect, it } from 'vitest'
+import { withIssue1144Setup } from './hbuilderx-local/issue-1144-source'
 import { runPnpm } from './hbuilderx-local/process'
 
 const filter = process.env['E2E_PROJECT_FILTER']
 
-it.skipIf(Boolean(filter && !new RegExp(filter).test('issue-1144-uni-app-x-web')))('issue #1144 production output keeps pt and important CSS connected', async () => {
-  const projectRoot = path.resolve(__dirname, '../demo/issue-1144-uni-app-x-web')
+async function verifyProduction(projectRoot: string) {
   await runPnpm(projectRoot, ['exec', 'cross-env', 'UNI_INPUT_DIR=.', 'uni', 'build'], 120_000)
   const outputRoot = path.join(projectRoot, 'dist/build/h5')
   const files = await fg('**/*.{js,css}', { cwd: outputRoot, absolute: true })
@@ -34,8 +34,13 @@ it.skipIf(Boolean(filter && !new RegExp(filter).test('issue-1144-uni-app-x-web')
         if (node.key.name === 'class' && node.value.type === 'StringLiteral' && node.value.value.includes('issue-1144-important-probe')) {
           classes.margin = node.value.value.split(/\s+/).find(value => value.startsWith('wtu-'))!
         }
-        if (node.key.name === 'pt' && node.value.type === 'ObjectExpression') {
-          for (const property of node.value.properties) {
+        // UTS setup 编译器用构造调用承载对象字面量；沿实际 pt 值读取相同的 root。
+        const value = node.value.type === 'NewExpression'
+          && node.value.callee.type === 'Identifier' && node.value.callee.name === 'UTSJSONObject'
+          ? node.value.arguments[0]
+          : node.value
+        if (node.key.name === 'pt' && value?.type === 'ObjectExpression') {
+          for (const property of value.properties) {
             if (property.type === 'ObjectProperty' && property.key.type === 'Identifier' && property.key.name === 'root' && property.value.type === 'StringLiteral') {
               classes.padding = property.value.value
             }
@@ -61,4 +66,14 @@ it.skipIf(Boolean(filter && !new RegExp(filter).test('issue-1144-uni-app-x-web')
   expect(evidence.margin).toContain('margin-top: 24px !important')
   expect(evidence.padding).toContain('padding: 0 !important')
   await expect(`${JSON.stringify(evidence, null, 2)}\n`).toMatchFileSnapshot('__snapshots__/issue-1144-web/important.json')
+}
+
+it.skipIf(Boolean(filter && !new RegExp(filter).test('issue-1144-uni-app-x-web'))).each(['options', 'setup'])('issue #1144 production output keeps %s pt and important CSS connected', async (script) => {
+  const projectRoot = path.resolve(__dirname, '../demo/issue-1144-uni-app-x-web')
+  if (script === 'setup') {
+    await withIssue1144Setup(projectRoot, () => verifyProduction(projectRoot))
+  }
+  else {
+    await verifyProduction(projectRoot)
+  }
 }, 150_000)
