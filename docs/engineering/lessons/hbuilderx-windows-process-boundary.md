@@ -4,6 +4,7 @@ issue: https://github.com/sonofmagic/weapp-tailwindcss/issues/1170
 baseline: 8a71397c9d3f8a799a64e6e8f418c7847818d9fb
 regressions:
   - packages/hbuilderx-runner/test/process.test.ts
+  - packages/hbuilderx-runner/test/log-output.test.ts
   - packages/hbuilderx-runner/test/discovery.test.ts
   - packages/hbuilderx-runner/test/discovery-windows.test.ts
   - packages/hbuilderx-runner/test/host-connection.test.ts
@@ -161,6 +162,18 @@ HMR P95 -0.02%，构建稳态 RSS 600.76 → 656.95 MB（+9.35%、+56.19 MB）�
 最新本地 runner 46 项通过、2 项 Windows 专用跳过，ESM/CJS 和声明构建通过。
 macOS demo matrix 的 hash 导航误判已独立修复，真实浏览器前后对照与受影响 demo 验收见
 [导航验证记录](demo-matrix-hash-navigation.md)。
+
+## UTF-8 管道分块边界
+
+`collectProcessOutput` 原先直接对每个 Buffer 调用 `toString()`。操作系统管道不保证数据块落在字符边界，
+中文项目名或错误短语可能被截成替换字符，导致诊断文本损坏，甚至错过原有错误分类。
+两项确定性回归分别覆盖所有 UTF-8 字节分割位置和 stdout/stderr 交错输出，修复前均失败。
+现在在每条 Readable 流上独立设置 UTF-8 解码，由 Node 保留尚未完整的多字节字符，再交给原有日志缓冲。
+不把两条流共享到一个解码器，也不在业务正则里尝试补救乱码。
+
+本地 runner 48 项通过、2 项 Windows 专用跳过，ESM/CJS/声明构建通过。
+这是跨平台日志输入边界缺陷，不是官方 CLI 空日志挂起的根因；空日志对照本身完全没有导入该函数。
+没有修改 demo 或样式 fixture，因此本轮不需要重新生成 static 基线。
 
 ## 规则评估
 
