@@ -1,7 +1,6 @@
 import type {
   HBuilderXChannel,
   HBuilderXCliResolution,
-  HBuilderXCliResolutionSource,
   HBuilderXCliResolveOptions,
   HBuilderXResolvedChannel,
 } from '../types'
@@ -10,8 +9,9 @@ import path from 'node:path'
 import process from 'node:process'
 import { fileExists } from '../fs'
 
-export const macOSStableCli = '/Applications/HBuilderX.app/Contents/MacOS/cli'
-export const macOSAlphaCli = '/Applications/HBuilderX-Alpha.app/Contents/MacOS/cli'
+import { macOSAlphaCli, macOSStableCli, resolveConfiguredCli } from './configured-cli'
+
+export { macOSAlphaCli, macOSStableCli } from './configured-cli'
 
 function unique(items: string[]) {
   return [...new Set(items)]
@@ -155,16 +155,6 @@ export function selectHBuilderXCliCandidatesForChannel(items: string[], channel:
   return items.filter(item => inferHBuilderXChannel(item) === channel)
 }
 
-function resolveCandidateSource(candidate: string, env: NodeJS.ProcessEnv): HBuilderXCliResolutionSource {
-  if (candidate === env.HBUILDERX_CLI_PATH) {
-    return 'env'
-  }
-  if (candidate === macOSStableCli || candidate === macOSAlphaCli) {
-    return 'default-path'
-  }
-  return 'candidate'
-}
-
 async function firstExisting(items: string[]) {
   for (const item of items) {
     if (await fileExists(item)) {
@@ -179,25 +169,12 @@ export async function resolveHBuilderXCliInfoFromOptions(options: HBuilderXCliRe
   const channel = resolveHBuilderXChannel(options.channel ?? env.HBUILDERX_CHANNEL)
   const running = await findRunningHBuilderXCliCandidates()
 
-  if (options.candidates) {
-    const candidate = await firstExisting(options.candidates)
-    if (candidate) {
-      return {
-        path: candidate,
-        isRunning: running.some(item => normalizeFile(item) === normalizeFile(candidate)),
-        source: resolveCandidateSource(candidate, env),
-        channel: inferHBuilderXChannel(candidate),
-      }
-    }
-    throw new Error('未找到显式指定的 HBuilderX CLI candidate。')
-  }
-
-  if (env.HBUILDERX_CLI_PATH && await fileExists(env.HBUILDERX_CLI_PATH)) {
+  const configured = await resolveConfiguredCli(options)
+  if (configured) {
     return {
-      path: env.HBUILDERX_CLI_PATH,
-      isRunning: running.some(item => normalizeFile(item) === normalizeFile(env.HBUILDERX_CLI_PATH!)),
-      source: 'env',
-      channel: inferHBuilderXChannel(env.HBUILDERX_CLI_PATH),
+      ...configured,
+      isRunning: running.some(item => normalizeFile(item) === normalizeFile(configured.path)),
+      channel: inferHBuilderXChannel(configured.path),
     }
   }
 
