@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict'
-import { cp, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { execa } from 'execa'
+import { parse, stringify } from 'yaml'
+import { packRuntimeDependencies } from './pack-runtime-dependencies.mjs'
 import { inspectOutput, verifyOutput } from './windows-utilities-output.mjs'
 
 const repo = fileURLToPath(new URL('../../', import.meta.url))
@@ -120,14 +122,17 @@ try {
 
   const packDir = path.join(temporary, 'packed')
   await mkdir(packDir)
-  await runPnpm(['pack', '--pack-destination', packDir], path.join(repo, 'packages/weapp-tailwindcss'))
-  const tarballs = (await readdir(packDir)).filter(file => file.endsWith('.tgz'))
-  assert.equal(tarballs.length, 1)
+  const candidates = await packRuntimeDependencies(repo, 'weapp-tailwindcss', packDir, project, runPnpm)
   const manifestFile = path.join(project, 'package.json')
   const manifest = JSON.parse(await readFile(manifestFile, 'utf8'))
-  manifest.devDependencies['weapp-tailwindcss'] = `file:${path.join(packDir, tarballs[0]).replaceAll(path.sep, '/')}`
+  manifest.devDependencies['weapp-tailwindcss'] = candidates['weapp-tailwindcss']
   await writeFile(manifestFile, JSON.stringify(manifest, null, 2))
-  // 只替换待测包，先生成对应锁文件，再严格冻结安装；不依赖 workspace 链接。
+  const workspaceFile = path.join(project, 'pnpm-workspace.yaml')
+  const workspace = parse(await readFile(workspaceFile, 'utf8'))
+  workspace.overrides = { ...workspace.overrides, ...candidates }
+  await writeFile(workspaceFile, stringify(workspace))
+  await writeFile(path.join(reportDir, 'candidate-packages.json'), JSON.stringify(candidates, null, 2))
+  // 候选包及运行时 workspace 依赖来自同一提交，冻结安装后仍不依赖 workspace 链接。
   await writeFile(path.join(reportDir, 'candidate-lock.log'), await runPnpm(['install', '--lockfile-only', '--ignore-scripts']))
   await writeFile(path.join(reportDir, 'candidate-install.log'), await runPnpm(['install', '--frozen-lockfile']))
   await cp(path.join(project, 'pnpm-lock.yaml'), path.join(reportDir, 'candidate-lock.yaml'))

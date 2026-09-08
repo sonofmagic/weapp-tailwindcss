@@ -270,6 +270,7 @@ wx-root-portal-content {
   --color-yellow-300: #ffe02e;
   --color-emerald-400: #00d294;
   --color-cyan-500: #00b7d7;
+  --color-blue-200: #bedbff;
   --color-blue-500: #3080ff;
   --color-purple-500: #ac4bff;
   --color-purple-800: #6e11b0;
@@ -10979,11 +10980,21 @@ wx-root-portal-content {
 }
 /* tokens: rounded-full <= src/pages/index/index.tsx */
 .rounded-full {
-  border-radius: 9999px;
+  border-radius: 9999rpx;
 }
 /* tokens: rounded-full! <= src/pages/index/index.tsx */
 .rounded-full_e {
-  border-radius: 9999px !important;
+  border-radius: 9999rpx !important;
+}
+/* tokens: rounded-s-full <= src/pages/index/index.tsx */
+.rounded-s-full {
+  border-bottom-left-radius: 9999rpx;
+  border-top-left-radius: 9999rpx;
+}
+/* tokens: rounded-t-full <= src/pages/index/index.tsx */
+.rounded-t-full {
+  border-top-left-radius: 9999rpx;
+  border-top-right-radius: 9999rpx;
 }
 /* tokens: bg-[#0977ee] <= src/pages/index/index.tsx */
 .bg-_b_h0977ee_B {
@@ -10992,6 +11003,14 @@ wx-root-portal-content {
 /* tokens: bg-[#534312] <= src/pages/index/index.tsx */
 .bg-_b_h534312_B {
   background-color: #534312;
+}
+/* tokens: bg-blue-200 <= src/pages/index/index.tsx */
+.bg-blue-200 {
+  background-color: var(--color-blue-200);
+}
+/* tokens: bg-blue-500 <= src/pages/index/index.tsx */
+.bg-blue-500 {
+  background-color: var(--color-blue-500);
 }
 /* tokens: bg-purple-800 <= src/pages/index/index.tsx */
 .bg-purple-800 {
