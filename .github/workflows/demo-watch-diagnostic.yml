@@ -16,7 +16,7 @@ on:
         options: [portable-watch, issues-1170-1144]
 
 concurrency:
-  group: windows-watch-diagnostic-${{ github.event.pull_request.number || github.ref }}
+  group: windows-watch-diagnostic-${{ inputs.scenario == 'issues-1170-1144' && github.run_id || github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
