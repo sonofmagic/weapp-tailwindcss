@@ -25,6 +25,12 @@ export async function createManagedIdeSession(artifactRoot, name) {
   const cleanupScript = fileURLToPath(new URL('./issue-hbuilderx-session.ps1', import.meta.url))
   const evidence = []
   const persist = () => writeFile(path.join(artifactRoot, `${name}-ide-session.json`), JSON.stringify(evidence, null, 2))
+  async function diagnose() {
+    await execa('pwsh', ['-NoProfile', '-File', fileURLToPath(new URL('./issue-hbuilderx-diagnostics.ps1', import.meta.url))], {
+      timeout: 30_000,
+      env: { E2E_HBUILDERX_DIAGNOSTIC_DIR: path.join(artifactRoot, `${name}-startup`) },
+    }).catch(error => console.error('IDE 启动现场采集失败', error.message))
+  }
   async function stop() {
     const result = await execa('pwsh', ['-NoProfile', '-File', cleanupScript, '-CliPath', cli], { timeout: 45_000 })
     evidence.push({ action: 'stop', processes: JSON.parse(result.stdout) })
@@ -34,18 +40,28 @@ export async function createManagedIdeSession(artifactRoot, name) {
     async start() {
       // 插件安装与每个场景各自拥有 IDE 会话；不把上轮插件宿主状态带入新场景。
       await stop()
-      await execa(cli, ['open'], { timeout: 30_000 })
-      const deadline = Date.now() + 60_000
-      while (Date.now() < deadline) {
-        const result = await execa(cli, ['help'], { timeout: 15_000 })
-        if (/launch web/.test(result.stdout)) {
-          evidence.push({ action: 'ready', time: new Date().toISOString() })
-          await persist()
-          return
+      const startedAt = Date.now()
+      try {
+        await execa(cli, ['open'], { timeout: 30_000 })
+        const deadline = Date.now() + 60_000
+        while (Date.now() < deadline) {
+          // 命令查询共享注册阶段的总预算，不能被更短的嵌套超时提前终止。
+          const result = await execa(cli, ['help'], { timeout: Math.max(1, deadline - Date.now()) })
+          if (/launch web/.test(result.stdout)) {
+            evidence.push({ action: 'ready', time: new Date().toISOString(), durationMs: Date.now() - startedAt })
+            await persist()
+            return
+          }
+          await delay(500)
         }
-        await delay(500)
+        throw new Error('本轮 IDE 插件命令未在限定时间内注册')
       }
-      throw new Error('本轮 IDE 插件命令未在限定时间内注册')
+      catch (error) {
+        evidence.push({ action: 'startup-failed', durationMs: Date.now() - startedAt, message: error.message })
+        await persist()
+        await diagnose()
+        throw error
+      }
     },
     stop,
   }
