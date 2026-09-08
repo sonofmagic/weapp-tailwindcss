@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { expect, it } from 'vitest'
 import { withIssue1144Setup } from './hbuilderx-local/issue-1144-source'
+import { cleanupWebHmrSession } from './hbuilderx-local/web/cleanup'
 import { assertServerIdentity, sameSourceFile } from './hbuilderx-local/web/identity'
 import { rewriteHmrMarker } from './hbuilderx-local/web/source'
 import config from './vitest.e2e.config'
@@ -70,4 +71,45 @@ it('一次保存同时替换真实 pt 与 marker，失败时不写入半成品',
   finally {
     await rm(dir, { recursive: true, force: true })
   }
+})
+
+it.each(['none', 'browser', 'server', 'source'])('清理阶段先断开浏览器，且 %s 失败后仍恢复项目', async (failure) => {
+  let serverRunning = true
+  let browserOpen = true
+  let sourceRestored = false
+  let projectClosed = false
+  const result = cleanupWebHmrSession({
+    closeBrowser: async () => {
+      expect(serverRunning).toBe(true)
+      browserOpen = false
+      if (failure === 'browser') {
+        throw new Error(failure)
+      }
+    },
+    stopServer: () => {
+      expect(browserOpen).toBe(false)
+      serverRunning = false
+      if (failure === 'server') {
+        throw new Error(failure)
+      }
+    },
+    restoreSource: async () => {
+      expect(serverRunning).toBe(false)
+      sourceRestored = true
+      if (failure === 'source') {
+        throw new Error(failure)
+      }
+    },
+    closeProject: async () => {
+      expect(sourceRestored).toBe(true)
+      projectClosed = true
+    },
+  })
+  if (failure === 'none') {
+    await expect(result).resolves.toBeUndefined()
+  }
+  else {
+    await expect(result).rejects.toThrow(failure)
+  }
+  expect(projectClosed).toBe(true)
 })

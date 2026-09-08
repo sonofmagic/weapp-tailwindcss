@@ -2,6 +2,7 @@ import path from 'node:path'
 import { normalizeTailwindcssV4InfinityCalcCss } from '@weapp-tailwindcss/postcss'
 import { isSourcePreprocessorRequest } from '@/bundlers/shared/style-requests'
 import { cleanUrl } from '@/bundlers/vite/utils'
+import { logger } from '@/logger'
 
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)$/
 const CSS_MODULE_EXPORT_RE = /^\s*export\s+default\s+(?:\{|\w|\[\])/
@@ -55,5 +56,12 @@ export function resolvePreprocessorTransform(
   }
   if (!options.isNativeAppStyleTarget) {
     return { result: undefined }
+  }
+}
+
+export function reportStyleWarnings(result: { warnings?: () => { toString: () => string }[] }) {
+  const warnings = typeof result.warnings === 'function' ? result.warnings() : []
+  for (const warning of warnings) {
+    logger.warn(warning.toString())
   }
 }

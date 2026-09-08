@@ -24,6 +24,7 @@ import {
   wait,
 } from './process'
 import { appendHmrSourceMutation, createHmrSourceRestore } from './source-mutations'
+import { cleanupWebHmrSession } from './web/cleanup'
 import { clearDevProcess, createDevServer, createHBuilderXDevServer } from './web/dev-server'
 import { assertServerIdentity, sameSourceFile } from './web/identity'
 import { readRuntimeStyles, waitForHmrMarker, waitForInitialPageText, waitForRuntimeStyles } from './web/runtime'
@@ -252,21 +253,17 @@ export async function runWebHmr(
       }
     }
     finally {
-      if (child) {
-        killProcessTree(child)
-        clearDevProcess()
-      }
-      try {
-        await restore?.()
-      }
-      finally {
-        try {
-          await browser?.close()
-        }
-        finally {
-          await hbuilderxLaunch?.cleanup()
-        }
-      }
+      await cleanupWebHmrSession({
+        closeBrowser: async () => browser?.close(),
+        stopServer: () => {
+          if (child) {
+            killProcessTree(child)
+            clearDevProcess()
+          }
+        },
+        restoreSource: async () => restore?.(),
+        closeProject: async () => hbuilderxLaunch?.cleanup(),
+      })
     }
   }
 }
