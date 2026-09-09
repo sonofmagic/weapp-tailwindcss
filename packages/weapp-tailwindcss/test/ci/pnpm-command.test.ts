@@ -24,4 +24,16 @@ describe('pnpm command', () => {
       shell: true,
     })
   })
+
+  it('falls back to the pnpm executable when npm_execpath is native', () => {
+    expect(createPnpmCommand(['exec', 'vite'], {
+      platform: 'linux',
+      execPath: '/usr/bin/node',
+      npmExecPath: '/opt/pnpm/pnpm',
+    })).toEqual({
+      command: 'pnpm',
+      args: ['exec', 'vite'],
+      shell: false,
+    })
+  })
 })
