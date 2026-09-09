@@ -172,17 +172,17 @@ function normalizeTailwindV4CssSourceDirectives(css: string, base: string) {
   }
   let changed = false
   root.walkAtRules('source', (rule) => {
-    const match = rule.params.match(/^("([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)')(.*)$/)
+    const match = rule.params.match(/^(not\s+)?("([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)')(.*)$/)
     if (!match) {
       return
     }
-    const specifier = match[2] ?? match[3]
+    const specifier = match[3] ?? match[4]
     if (!specifier?.startsWith('.')) {
       return
     }
     const resolved = path.resolve(base, specifier)
     const quote = match[2] === undefined ? '\'' : '"'
-    rule.params = `${quote}${resolved}${quote}${match[4] ?? ''}`
+    rule.params = `${match[1] ?? ''}${quote}${resolved}${quote}${match[5] ?? ''}`
     changed = true
   })
   return changed ? root.toString() : css
@@ -253,7 +253,7 @@ function normalizeTailwindV4CssEntrySources(
   const remainingCssEntries: string[] = []
   const cssSources: NonNullable<TailwindV4SourceOptions['cssSources']> = []
   const visited = new Set<string>()
-  const collectCssSource = (file: string) => {
+  const collectCssSource = (file: string, nested = false) => {
     const normalizedFile = path.resolve(file)
     if (visited.has(normalizedFile) || !existsSync(normalizedFile)) {
       return
@@ -270,10 +270,12 @@ function normalizeTailwindV4CssEntrySources(
         ? path.resolve(base, entrySource.configRequest)
         : entrySource?.config
     const css = normalizeTailwindV4CssPackageImports(
-      normalizeTailwindV4CssSourceDirectives(
-        normalizeEmptyTailwindCustomVariants(normalizeConfigDirective(rawCss, config)),
-        base,
-      ),
+      nested
+        ? normalizeTailwindV4CssSourceDirectives(
+            normalizeEmptyTailwindCustomVariants(normalizeConfigDirective(rawCss, config)),
+            base,
+          )
+        : normalizeEmptyTailwindCustomVariants(normalizeConfigDirective(rawCss, config)),
       packageName,
     )
     cssSources.push({
@@ -301,7 +303,7 @@ function normalizeTailwindV4CssEntrySources(
         : [importedFile, `${importedFile}.css`, `${importedFile}.pcss`, `${importedFile}.scss`, `${importedFile}.sass`]
       const resolved = candidates.find(candidate => existsSync(candidate))
       if (resolved) {
-        collectCssSource(resolved)
+        collectCssSource(resolved, true)
       }
     })
   }
