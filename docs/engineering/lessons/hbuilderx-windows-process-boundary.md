@@ -203,7 +203,27 @@ alpha 八次真实目录和两次 junction 启动成功后，第二次 junction 
 后续失败现场在原进程、窗口、端口与日志采集之后，追加 listhost/version/project list 三项只读请求，
 每项最多五秒并记录 PID、错误、状态与输出到 `cli-health.json`。
 这用于区分原客户端挂起与其他客户端同样无法获得响应，不重试或更改原操作的判定。
-本地 macOS alpha 的三项实际请求均返回 0；Windows 失败现场结果待最新原生任务补充。
+本地 macOS alpha 的三项实际请求均返回 0。
+
+最新 PR `c229957b4` 的 [34294165871](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34294165871)
+六个系统与 Node 组合全部通过。Stable 在准备 IDE 的 version 查询就空输出、120 秒超时，未进入样式测试；
+alpha 的 #1144 setup 连续保存通过后，#1170 LF 的 launch 空日志、没有 Web 服务。
+保持原失败客户端时，另外三个客户端的 listhost/version/project list 分别在 66/56/57 毫秒内成功返回，
+对应项目仍已注册。这排除整个原生宿主都无法处理请求，但仍不能区分原 launch 客户端和插件 RPC 链路。
+
+## 继承 stdin 对照
+
+官方 [dcloudio/hbuilderx-cli 的包装器](https://github.com/dcloudio/hbuilderx-cli/blob/main/lib/hbuilderx.js)
+捕获输出时使用继承的 stdin。独立诊断仅将 stdin 从 ignore 改成 inherit，
+保持 stdout/stderr 管道、原生参数、截止时间与重复次数。本地 macOS 真实目录和别名启动均通过。
+
+[34294835402](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34294835402) 在 Windows 上仍失败：
+stable 八次真实目录、一次 junction 页面渲染成功后，关闭该 junction 项目时空日志、20 秒超时；
+alpha 两次真实目录渲染成功后，第二次关闭也空日志、20 秒超时，尚未进入 junction 阶段。
+两套 IDE 失败时另外三个只读 CLI 客户端都在 34–50 毫秒内返回 0。
+因此继承 stdin 不能作为完整启停修复，也不能凭本轮 launch 都通过认定启动挂起消失。
+该模式只用于诊断，没有改动产品 runner。后续应依据原失败客户端与宿主的实际等待位置继续定位，
+不要继续重试已否定的 shell、输出文件或输入句柄包装。
 
 ## 规则评估
 
