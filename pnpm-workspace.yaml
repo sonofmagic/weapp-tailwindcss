@@ -105,7 +105,6 @@ versioning:
 
 overrides:
   jiti: 2.7.0
-  postcss-calc: link:packages/postcss-calc
 
 catalogs:
   autoprefixer10:
