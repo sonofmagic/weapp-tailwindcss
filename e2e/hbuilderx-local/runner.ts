@@ -871,6 +871,9 @@ export async function verifyWebHmr(item: WebCase, attached?: AttachedWebServer) 
   for (const css of result.hmrCss) {
     expect(css, `${item.name} HMR CSS 不应保留 Tailwind 原始指令`).not.toMatch(rawTailwindDirectiveRE)
   }
+  if (item.nativeIdeVersionRequired && !attached) {
+    expect(result.serverLogs, `${item.name} CLI 应提供原生 IDE 版本`).toMatch(/HBuilderX Version:\s*5\./)
+  }
   expectContent(result.serverLogs, item.serverLogContains ?? [], `${item.name} Web HBuilderX 服务日志`)
   expectNoContent(result.serverLogs, item.serverLogNotContains, `${item.name} Web Vite 服务日志`)
 }

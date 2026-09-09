@@ -112,6 +112,7 @@ it.skipIf(!enabled)('连接 IDE 手动启动的单场景服务并验收真实 HM
     }, null, 2))
     console.log(`源码已准备：${options.case} / ${channel}\n请在对应 HBuilderX 中打开 ${projectRoot}，停止旧运行后点击「运行到浏览器」。\n等待新服务 ${baseUrl}，最多 5 分钟。\n测试完成后请将完整 IDE 控制台日志导出至 ${logFile}。\n异常中断恢复：pnpm e2e:hbuilderx:attach --recover "${journal}"`)
     const identity = await waitForAttachedServer(attachment, projectRoot, item.serverIdentityPath!, 300_000)
+    await writeFile(path.join(artifactRoot, 'server-identity.json'), JSON.stringify(identity, null, 2))
     attachment.instanceId = identity.instanceId
     await verifyWebHmr(item, attachment)
   }

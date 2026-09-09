@@ -28,12 +28,15 @@ export async function readAttachedLog(server: Pick<AttachedWebServer, 'logFile' 
   if (!log.includes(`[wt-acceptance] ${server.runId}`)) {
     throw new Error('IDE 日志缺少本轮启动标识，请导出本次运行的完整控制台日志')
   }
-  const version = log.match(/HBuilderX Version:\s*(5\.[\w.-]+)/)?.[1]
-  if (!version || version.includes('alpha') !== (server.channel === 'alpha')) {
+  const prefix = `[wt-ide-version] ${server.runId} `
+  const versions = log.split(/\r?\n/).filter(line => line.includes(prefix)).map(line => line.slice(line.indexOf(prefix) + prefix.length).trim())
+  const version = versions[0]
+  if (!version || versions.some(value => value !== version)
+    || !/^5\.\d+\.\d+(?:-alpha)?$/.test(version) || version.includes('alpha') !== (server.channel === 'alpha')) {
     throw new Error('IDE 日志的版本或 channel 不匹配')
   }
-  const compiler = log.match(/(?:编译器版本：|Compiler version: )([\d.]+)（uni-app x）VDOM模式/)?.[1]
-  if (!compiler || !version.startsWith(`${compiler}.`)) {
+  const compilers = [...log.matchAll(/(?:编译器版本：|Compiler version: )([\d.]+)\s*[（(]uni-app x[）)]\s*(\w+)模式/g)]
+  if (!compilers.length || compilers.some(([, compiler, mode]) => !version.startsWith(`${compiler}.`) || mode !== 'VDOM')) {
     throw new Error('IDE 日志缺少匹配版本的 uni-app x VDOM 编译器')
   }
   return log

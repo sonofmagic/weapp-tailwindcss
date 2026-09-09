@@ -133,6 +133,7 @@ export interface WebCase {
   initialTextContains?: string[]
   initialRuntimeStyles?: WebRuntimeStyleAssertion[]
   persistentRuntimeStyles?: WebRuntimeStyleAssertion[]
+  nativeIdeVersionRequired?: boolean
   serverLogContains?: Array<string | RegExp>
   serverLogNotContains?: Array<string | RegExp>
   hmrSteps: WebHmrStep[]
@@ -1102,9 +1103,9 @@ export const webCases: WebCase[] = [
       selector: '.issue-1144-important-probe',
       styles: { marginTop: '24px' },
     }],
+    nativeIdeVersionRequired: true,
     serverLogContains: [
-      /HBuilderX Version:\s*5\./,
-      /(?:编译器版本：|Compiler version: )5\.\d+（uni-app x）VDOM模式/,
+      /(?:编译器版本：|Compiler version: )5\.\d+\s*[（(]uni-app x[）)]\s*VDOM模式/,
     ],
     serverLogNotContains: ['Unknown word', '[plugin:vite:css]', 'reading \'scoped\''],
     hmrSteps: issue1144Steps(),

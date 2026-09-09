@@ -18,6 +18,7 @@ import { SourceTransaction } from './hbuilderx-local/web/transaction'
 const cleanups: (() => Promise<unknown>)[] = []
 afterEach(async () => {
   vi.restoreAllMocks()
+  vi.unstubAllEnvs()
   for (const cleanup of cleanups.splice(0).reverse()) {
     await cleanup()
   }
@@ -109,13 +110,16 @@ it('无响应服务在请求期限内失败，等待旧服务也有总期限', a
 it('日志必须来自本轮和正确 channel/VDOM，不能用旧输出填充证据', async () => {
   const { server } = await fixture()
   await expect(readAttachedLog(server)).rejects.toThrow()
-  const log = 'HBuilderX Version: 5.25.2026082902-alpha\n编译器版本：5.25（uni-app x）VDOM模式\n[wt-acceptance] fresh-run\n'
-  for (const bad of [log.replace('fresh-run', 'old-run'), log.replace('-alpha', ''), log.replace('VDOM', 'Vapor'), log.replace('编译器版本：5.25', '编译器版本：5.24')]) {
+  const log = '[wt-ide-version] fresh-run 5.25.2026082902-alpha\n编译器版本：5.25（uni-app x）VDOM模式\n[wt-acceptance] fresh-run\n'
+  for (const bad of [log.replace('fresh-run', 'old-run'), log.replace('-alpha', ''), log.replace('VDOM', 'Vapor'), log.replace('编译器版本：5.25', '编译器版本：5.24'), log.replace('5.25.2026082902-alpha', 'unavailable'), log.replace('[wt-ide-version] fresh-run', '[wt-ide-version] old-run'), `${log}编译器版本：5.25（uni-app x）Vapor模式`, `${log}[wt-ide-version] fresh-run unavailable`]) {
     await writeFile(server.logFile, bad)
     await expect(readAttachedLog(server)).rejects.toThrow()
   }
   await writeFile(server.logFile, log)
   expect(await readAttachedLog(server)).toBe(log)
+  const guiLog = log.replace('（uni-app x）VDOM', '(uni-app x) VDOM')
+  await writeFile(server.logFile, guiLog)
+  expect(await readAttachedLog(server)).toBe(guiLog)
 })
 
 it('服务启动后冻结验收标识，后来改登记文件不会冒充新服务', async () => {
@@ -123,7 +127,8 @@ it('服务启动后冻结验收标识，后来改登记文件不会冒充新服�
   const sessionFile = path.join(root, '.hbuilderx-acceptance.json')
   await writeFile(sessionFile, JSON.stringify({ runId: 'first' }))
   let handler: any
-  vi.spyOn(console, 'log').mockImplementation(() => {})
+  vi.stubEnv('HX_Version', '5.25.2026082902-alpha')
+  const log = vi.spyOn(console, 'log').mockImplementation(() => {})
   issue1144IdentityPlugin(root).configureServer({ middlewares: { use: (_path: string, middleware: any) => {
     handler = middleware
   } } })
@@ -131,6 +136,7 @@ it('服务启动后冻结验收标识，后来改登记文件不会冒充新服�
   const end = vi.fn()
   handler({ url: '/' }, { setHeader: vi.fn(), end })
   expect(JSON.parse(end.mock.calls[0]![0]).runId).toBe('first')
+  expect(log).toHaveBeenCalledWith('[wt-ide-version] first 5.25.2026082902-alpha')
 })
 
 it('失败后按字节恢复 CRLF，保留持久恢复记录直到恢复成功', async () => {
@@ -173,6 +179,7 @@ it('写入前落盘的下一版本可恢复，拒绝跨项目和非法账本', a
 
 it('真实 Vite 与浏览器执行连接模式，保存和刷新后校验样式且保留外部服务', async () => {
   const { root, server, journal } = await fixture()
+  vi.stubEnv('HX_Version', '5.25.2026082902-alpha')
   const html = path.join(root, 'index.html')
   const original = '<!DOCTYPE html><html><head><link rel="icon" href="data:,"></head><body><view class="hbuilderx-web-hmr-probe">initial</view><style>view { display: block; width: 10px; }</style></body></html>'
   await writeFile(html, original)
@@ -191,7 +198,7 @@ it('真实 Vite 与浏览器执行连接模式，保存和刷新后校验样式�
   server.writeSource = (file, content) => transaction.write(file, content)
   server.instanceId = (await checkAttachedIdentity(server, root, '/__issue1144_identity')).instanceId
   // 这里只验证验收器；合成日志不能作为真实 HBuilderX 验收证据。
-  const prefix = 'HBuilderX Version: 5.25.2026082902-alpha\n编译器版本：5.25（uni-app x）VDOM模式\n'
+  const prefix = '编译器版本：5.25（uni-app x）VDOM模式\n'
   let pending = Promise.resolve()
   spy.mockImplementation((value) => {
     logs.push(String(value))

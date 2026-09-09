@@ -26,6 +26,10 @@ Windows 官方 CLI 在未加载 Tailwind 的最小项目中仍有间歇挂起，
 - `CI=1 E2E_ISSUE_1170_STATIC=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/issue-1170-web.test.ts e2e/issue-1144-static.test.ts --update=all` 单独生成基线，再将末尾参数改为 `--update=none` 复验；3 项生产样式检查通过，2 项原生 Web 用例明确跳过，基线内容无变化。
 - actionlint 对修改工作流通过；仅排除原有自托管标签 hbuilderx/android 的未知标签提示。`pnpm agents:check` 通过。
 
+macOS Alpha 5.25.2026082902-alpha 实际点击「运行到浏览器 → Chrome」：#1170 LF 初始加载、9 次保存及刷新浏览器断言完成；本轮未能导出完整控制台日志，整体验收按缺失日志失败，源码自动恢复，IDE 服务仍存活后由操作者点击停止。此前另一次准备在导入 IDE 项目期间超时，也成功恢复。不能把这两次失败写成完整连接模式通过。
+
+真实 GUI 控制台没有 CLI 专有的 `HBuilderX Version:` 行，纠正了此前合成日志掩盖的契约错误：连接模式记录实际 `HX_Version` 元数据并标注独立来源；CLI 模式保留原版本行断言。原生编译器日志兼容括号和空白差异，仍严格校验版本及 VDOM。
+
 ## 适用边界
 
 入口和步骤见[本地多端手册](../../../e2e/LOCAL-MULTI-PLATFORM-E2E.md)。Windows 交互桌面的连接验收尚待取得；本机合成服务、portable 和历史原生证据不能代替新增模式的实际验收。必须区分样式修复、runner 跨平台修复与原生 CLI 挂起。
