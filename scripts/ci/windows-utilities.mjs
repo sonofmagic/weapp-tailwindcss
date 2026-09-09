@@ -116,7 +116,7 @@ async function verify(label, expectRegression) {
 
 try {
   await cp(fixture, project, { recursive: true })
-  assert.equal((await runPnpm(['--version'])).trim(), '11.25.0')
+  assert.equal((await runPnpm(['--version'])).trim(), '12.3.4')
   await writeFile(path.join(reportDir, 'published-install.log'), await runPnpm(['install', '--frozen-lockfile']))
   await verify('published-5.5.1', process.platform === 'win32')
 
