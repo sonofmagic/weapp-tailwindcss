@@ -36,9 +36,10 @@ function start(args) {
     ? path.join(artifacts, `native-output-${++sessionIndex}.log`)
     : undefined
   const outputFd = outputFile ? openSync(outputFile, 'w') : undefined
+  const stdin = process.env.E2E_WINDOWS_CASE === 'vanilla-stdin' ? 'inherit' : 'ignore'
   const child = spawn(executable, launchArgs, {
     cwd: root,
-    stdio: outputFd === undefined ? ['ignore', 'pipe', 'pipe'] : ['ignore', outputFd, outputFd],
+    stdio: outputFd === undefined ? [stdin, 'pipe', 'pipe'] : [stdin, outputFd, outputFd],
     env: viaPowerShell ? { ...process.env, E2E_HBUILDERX_VANILLA_INVOCATION: JSON.stringify({ executable: cli, args }) } : process.env,
   })
   if (outputFd !== undefined) {
