@@ -190,6 +190,21 @@ PR 提交 `e4b542299` 的 iOS CI 原生编译成功（0 errors / 0 warnings）�
 以 `NSPOSIXErrorDomain code=60` 超时退出，尚未进入 RN 兼容性断言。
 原始 Expo 日志保留为 `verify-1170-1144/pr-e4-ios/expo-run.log`；不能将这一轮计为 iOS 验收通过。
 
+## 普通文件输出对照
+
+[34292675347](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34292675347) 在未修改的官方 IDE、
+无 Tailwind/仓库 runner 的最小项目中，将原生 stdout/stderr 指向同一普通文件描述符。
+Stable 三次真实目录启动和页面标识验证成功后，第三次 `project close` 无输出、20 秒超时；
+alpha 八次真实目录和两次 junction 启动成功后，第二次 junction 的 `project close` 同样超时。
+因此不能将普通文件输出作为完整启停修复；本轮失败发生在关闭命令，不能冒充 launch 挂起。
+对应 `command-10.json`、`command-31.json` 保留参数、PID、截止时间及失败前 IDE/进程/端口现场。
+文件输出模式仅为诊断选择，未接入产品 runner。
+
+后续失败现场在原进程、窗口、端口与日志采集之后，追加 listhost/version/project list 三项只读请求，
+每项最多五秒并记录 PID、错误、状态与输出到 `cli-health.json`。
+这用于区分原客户端挂起与其他客户端同样无法获得响应，不重试或更改原操作的判定。
+本地 macOS alpha 的三项实际请求均返回 0；Windows 失败现场结果待最新原生任务补充。
+
 ## 规则评估
 
 不新增 AGENTS 规则。现有跨平台参数、真实运行和失败证据要求足够，以可执行回归补齐遗漏。

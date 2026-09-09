@@ -40,3 +40,6 @@ foreach ($root in $roots) {
   }
 }
 $inventory | ConvertTo-Json | Set-Content -Encoding utf8 (Join-Path $artifactRoot 'native-log-paths.json')
+
+# 原现场采集完毕后再发只读请求，不重试原始失败操作。
+node (Join-Path $PSScriptRoot 'hbuilderx-cli-health.mjs')
