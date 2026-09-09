@@ -12,6 +12,7 @@ import { normalizeConfigDirective } from '@/bundlers/shared/generator-css/config
 import { normalizeTailwindConfigDirectives, resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
 import { normalizeEmptyTailwindCustomVariants } from '@/bundlers/shared/generator-css/user-css'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
+import { parseSourceFileParam } from '@/tailwindcss/source-scan'
 import { filterTailwindV4CssSourceRoots } from '@/tailwindcss/v4/css-sources'
 import { omitUndefined } from '@/utils/object'
 import { parseCssImportSpecifier, quoteCssImportSpecifier } from './css-import'
@@ -159,6 +160,26 @@ function normalizeTailwindV4CssPackageImports(css: string, packageName: string |
   return changed ? root.toString() : css
 }
 
+function normalizeTailwindV4CssSourcePaths(css: string, base: string) {
+  let root: postcss.Root
+  try {
+    root = postcss.parse(css)
+  }
+  catch {
+    return css
+  }
+  let changed = false
+  root.walkAtRules('source', (rule) => {
+    const parsed = parseSourceFileParam(rule.params)
+    if (!parsed || path.isAbsolute(parsed.sourcePath)) {
+      return
+    }
+    rule.params = `${parsed.negated ? 'not ' : ''}${JSON.stringify(path.resolve(base, parsed.sourcePath))}`
+    changed = true
+  })
+  return changed ? root.toString() : css
+}
+
 function normalizeTailwindV4CssSources(
   cssSources: TailwindV4SourceOptions['cssSources'],
   packageName: string | undefined,
@@ -223,15 +244,15 @@ function normalizeTailwindV4CssEntrySources(
 
   const remainingCssEntries: string[] = []
   const cssSources: NonNullable<TailwindV4SourceOptions['cssSources']> = []
-  for (const cssEntry of cssEntries) {
-    const normalizedCssEntry = cssEntry.replace(/[?#].*$/, '')
-    const file = path.resolve(normalizedCssEntry)
-    if (!existsSync(file)) {
-      remainingCssEntries.push(normalizedCssEntry)
-      continue
+  const visited = new Set<string>()
+  const collectCssSource = (file: string) => {
+    const normalizedFile = path.resolve(file)
+    if (visited.has(normalizedFile) || !existsSync(normalizedFile)) {
+      return
     }
-    const base = path.dirname(file)
-    const rawCss = readFileSync(file, 'utf8')
+    visited.add(normalizedFile)
+    const base = path.dirname(normalizedFile)
+    const rawCss = readFileSync(normalizedFile, 'utf8')
     const entrySource = resolveCssEntrySource(rawCss, base, {
       removeConfig: false,
     })
@@ -241,15 +262,49 @@ function normalizeTailwindV4CssEntrySources(
         ? path.resolve(base, entrySource.configRequest)
         : entrySource?.config
     const css = normalizeTailwindV4CssPackageImports(
-      normalizeEmptyTailwindCustomVariants(normalizeConfigDirective(rawCss, config)),
+      normalizeTailwindV4CssSourcePaths(
+        normalizeEmptyTailwindCustomVariants(normalizeConfigDirective(rawCss, config)),
+        base,
+      ),
       packageName,
     )
     cssSources.push({
-      file,
+      file: normalizedFile,
       base,
       css,
-      dependencies: [file],
+      dependencies: [normalizedFile],
     })
+
+    let root: postcss.Root
+    try {
+      root = postcss.parse(rawCss)
+    }
+    catch {
+      return
+    }
+    root.walkAtRules('import', (rule) => {
+      const parsed = parseCssImportSpecifier(rule.params)
+      if (!parsed || !parsed.specifier.startsWith('.') || parsed.specifier.includes('\\')) {
+        return
+      }
+      const importedFile = path.resolve(base, parsed.specifier)
+      const candidates = path.extname(importedFile)
+        ? [importedFile]
+        : [importedFile, `${importedFile}.css`, `${importedFile}.pcss`, `${importedFile}.scss`, `${importedFile}.sass`]
+      const resolved = candidates.find(candidate => existsSync(candidate))
+      if (resolved) {
+        collectCssSource(resolved)
+      }
+    })
+  }
+  for (const cssEntry of cssEntries) {
+    const normalizedCssEntry = cssEntry.replace(/[?#].*$/, '')
+    const file = path.resolve(normalizedCssEntry)
+    if (!existsSync(file)) {
+      remainingCssEntries.push(normalizedCssEntry)
+      continue
+    }
+    collectCssSource(file)
   }
 
   return {

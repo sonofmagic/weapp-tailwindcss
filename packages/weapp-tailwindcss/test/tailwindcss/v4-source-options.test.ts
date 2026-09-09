@@ -39,6 +39,31 @@ describe('tailwind v4 source options', () => {
     expect(packageJsonOptions?.cssSources?.[0]?.css).toContain('#tw')
   })
 
+  it('keeps nested css imports as independent source roots', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-nested-source-'))
+    const appEntry = path.join(root, 'app.css')
+    const nestedEntry = path.join(root, 'styles/tailwind.css')
+    await mkdir(path.dirname(nestedEntry), { recursive: true })
+    await writeFile(appEntry, '@import "./styles/tailwind.css";')
+    await writeFile(nestedEntry, [
+      '@import "tailwindcss" source(none);',
+      '@source "./pages/**/*.{wxml,ts}";',
+    ].join('\n'))
+
+    const options = normalizeTailwindV4SourceOptions({
+      projectRoot: root,
+      cssEntries: [appEntry],
+    })
+
+    expect(options?.cssSources).toHaveLength(2)
+    expect(options?.cssSources?.map(source => source.file)).toEqual([appEntry, nestedEntry])
+    expect(options?.cssSources?.[1]).toMatchObject({
+      base: path.dirname(nestedEntry),
+      dependencies: [nestedEntry],
+    })
+    expect(options?.cssSources?.[1]?.css).toContain(`@source ${JSON.stringify(path.join(path.dirname(nestedEntry), 'pages/**/*.{wxml,ts}'))}`)
+  })
+
   it('removes Vite request queries before treating css entries as file paths', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-query-entry-'))
     const cssEntry = path.join(root, 'src/app.css')
