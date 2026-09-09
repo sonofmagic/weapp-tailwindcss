@@ -7,8 +7,12 @@ import { expect, it } from 'vitest'
 import { repo } from './catalog.mjs'
 import { replaceSourceFile } from './source-file.mjs'
 
-it.each(['cjs', 'esm'].flatMap(format => ['file', 'directory'].map(dependency => ({ format, dependency }))))('keeps module and transform dependencies live after atomic replacement ($format, $dependency)', async ({ format, dependency }) => {
-  const demoRequire = createRequire(path.join(repo, 'demo/uni-app-vite-tailwindcss-v4/package.json'))
+const scenarios = ['uni-app-vite-tailwindcss-v4', 'issue-uview-plus-cssentries'].flatMap(demo =>
+  ['cjs', 'esm'].flatMap(format => ['file', 'directory'].map(dependency => ({ demo, format, dependency }))),
+)
+
+it.each(scenarios)('keeps module and transform dependencies live after atomic replacement ($demo, $format, $dependency)', async ({ demo, format, dependency }) => {
+  const demoRequire = createRequire(path.join(repo, 'demo', demo, 'package.json'))
   const viteRequire = createRequire(demoRequire.resolve('vite/package.json'))
   const rollup = format === 'cjs'
     ? viteRequire('rollup')
