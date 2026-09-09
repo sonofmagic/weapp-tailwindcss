@@ -42,6 +42,7 @@ jobs:
             sleep $((attempt * 10))
           done
           pnpm exec playwright install chromium chromium-headless-shell
+      - run: pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/react-native-ci.test.ts --update=none
       - run: pnpm e2e:react-native-compatibility
       - run: pnpm e2e:react-native:web
       - uses: actions/upload-artifact@v7
@@ -76,8 +77,15 @@ jobs:
           pnpm --filter @weapp-tailwindcss/example-react-native-expo exec expo prebuild --platform android --no-install
           cd examples/react-native-expo/android
           ./gradlew app:assembleDebug -PreactNativeArchitectures=x86_64
+      - name: Enable hardware acceleration for the current runner
+        shell: bash
+        run: |
+          sudo setfacl -m "u:$(id -un):rw" /dev/kvm
+          test -r /dev/kvm && test -w /dev/kvm
       - uses: reactivecircus/android-emulator-runner@v2
         with:
+          disable-linux-hw-accel: false
+          pre-emulator-launch-script: '"$ANDROID_HOME/emulator/emulator" -accel-check'
           api-level: 30
           arch: x86_64
           profile: pixel_2

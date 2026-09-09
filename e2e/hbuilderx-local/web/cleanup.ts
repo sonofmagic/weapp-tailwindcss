@@ -1,6 +1,6 @@
 interface WebHmrCleanup {
   closeBrowser: () => Promise<unknown>
-  stopServer: () => void
+  stopServer: () => unknown | Promise<unknown>
   restoreSource: () => Promise<unknown>
   closeProject: () => Promise<unknown>
 }
@@ -12,7 +12,7 @@ export async function cleanupWebHmrSession(actions: WebHmrCleanup) {
   }
   finally {
     try {
-      actions.stopServer()
+      await actions.stopServer()
     }
     finally {
       try {

@@ -9,7 +9,16 @@ function hook(plugin: Plugin, name: 'load' | 'transform' | 'handleHotUpdate') {
   return typeof value === 'object' ? value.handler : value
 }
 
-it.each(['/project/Probe.uvue', 'C:\\project\\Probe.uvue', '/Probe.uvue', 'components/Probe.uvue'])('keeps generated Web style requests owned by their SFC: %s', async (id) => {
+it.each([
+  '/project/Probe.uvue',
+  'C:\\project\\Probe.uvue',
+  'C:/project/Probe.uvue',
+  'C:\\工作目录 with spaces\\components\\Probe.uvue',
+  '\\\\server\\share\\components\\Probe.uvue',
+  'D:\\Probe.uvue',
+  '/Probe.uvue',
+  'components/Probe.uvue',
+])('keeps generated Web style requests owned by their SFC: %s', async (id) => {
   const plugins = createUniAppXPlugins({
     appType: 'uni-app-x',
     customAttributesEntities: [],

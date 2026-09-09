@@ -9,6 +9,8 @@ import { coverage, isWeb } from './catalog.mjs'
 import { consumedClasses } from './consumption.mjs'
 import { arbitraryValues, probeClasses } from './probe.mjs'
 
+const mpxExtensions = { wx: ['.wxml', '.wxss'], ali: ['.axml', '.acss'], swan: ['.swan', '.css'], tt: ['.ttml', '.ttss'], dd: ['.ddml', '.ddss'] }
+
 const compact = value => value.replace(/\s+/g, '')
 export function cssClasses(selector) {
   const tokens = tokenize({ css: selector })
@@ -99,10 +101,18 @@ export function inspectStyles(styles, item, round = 'initial', consumed = {}) {
 
 export async function inspectFiles(output, item, round) {
   const files = await fg('**/*', { cwd: output, absolute: true, onlyFiles: true })
-  const styleFiles = files.filter(file => /\.(?:css|wxss|acss|ttss|qss|jxss|ddss|swan\.css)$/.test(file))
+  let styleFiles = files.filter(file => /\.(?:css|wxss|acss|ttss|qss|jxss|ddss|swan\.css)$/.test(file))
   const texts = await Promise.all(files.filter(file => /\.(?:js|html|wxml|axml|ttml|qml|qxml|swan|ddml|jxml|ksml|xhsml|ux)$/.test(file)).map(async file => ({ file, text: await readFile(file, 'utf8') })))
-  const probeFiles = texts.filter(entry => entry.text.includes(`tw-matrix-${round}-height`))
+  let probeFiles = texts.filter(entry => entry.text.includes(`tw-matrix-${round}-height`))
   assert.ok(probeFiles.length, `${item.id}: missing current render marker ${round}`)
+  if (item.family === 'mpx') {
+    // 验收本轮标识所在的真实平台模板，不能让其他平台产物或 JS 字符串替代。
+    const [template, style] = mpxExtensions[item.target] ?? []
+    probeFiles = probeFiles.filter(entry => path.extname(entry.file) === template)
+    styleFiles = styleFiles.filter(file => path.extname(file) === style)
+    assert.ok(template && probeFiles.length, `${item.id}: expected ${item.target} template ${template}`)
+    assert.ok(style && styleFiles.length, `${item.id}: expected ${item.target} stylesheet ${style}`)
+  }
   const consumed = await consumedClasses(probeFiles, item, round)
   let relevant = styleFiles
   // 小程序只沿全局样式与当前页面的 import 图验收，避免其他分包掩盖缺失。
@@ -130,5 +140,6 @@ export async function inspectFiles(output, item, round) {
     }
     relevant = [...reached]
   }
-  return inspectStyles(await Promise.all(relevant.map(file => readFile(file, 'utf8'))), item, round, consumed)
+  const result = inspectStyles(await Promise.all(relevant.map(file => readFile(file, 'utf8'))), item, round, consumed)
+  return item.family === 'mpx' ? { ...result, platform: item.target } : result
 }

@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict')
-const { mkdtemp, realpath, rm } = require('node:fs/promises')
+const { mkdtemp, realpath, rm, writeFile } = require('node:fs/promises')
 const { createRequire } = require('node:module')
 const { tmpdir } = require('node:os')
 const path = require('node:path')
@@ -13,15 +13,23 @@ const VirtualModulesPlugin = taroRequire('webpack-virtual-modules')
 
 async function main() {
   const root = await realpath(await mkdtemp(path.join(tmpdir(), 'demo-virtual-watch-')))
+  // 明确包边界，避免解析器监听共享临时目录中的缺失 package.json。
+  await writeFile(path.join(root, 'package.json'), JSON.stringify({ private: true, type: 'module' }))
   const file = path.join(root, 'virtual-entry.js')
   const modules = new VirtualModulesPlugin({ [file]: 'export default 42' })
-  const compiler = webpack({ mode: 'development', context: root, entry: file, output: { path: path.join(root, 'dist') }, plugins: [modules] })
+  const compiler = webpack({ mode: 'development', context: root, entry: './virtual-entry.js', output: { path: path.join(root, 'dist') }, plugins: [modules] })
   // 编译跨过轮询间隔，稳定复现虚拟文件被重复报告缺失的条件。
   compiler.hooks.beforeCompile.tapPromise('BuildDuration', () => delay(100))
+  const invalidations = []
+  compiler.hooks.invalid.tap('WatchEvidence', file => invalidations.push(file))
   let builds = 0
   let buildError
   const watcher = compiler.watch({ aggregateTimeout: 100 }, (error, stats) => {
     builds++
+    const missing = [...(stats?.compilation.missingDependencies ?? [])]
+    if (missing.length) {
+      buildError = new Error(`Virtual fixture has unexpected missing dependencies: ${JSON.stringify(missing)}`)
+    }
     if (error || stats.hasErrors()) {
       buildError = error ?? new Error(stats.toString({ all: false, errors: true }))
     }
@@ -38,7 +46,7 @@ async function main() {
     await waitForBuild(0)
     await delay(1500)
     const initialBuilds = builds
-    assert.ok(initialBuilds <= 2, `Idle virtual module repeatedly rebuilt: ${initialBuilds}`)
+    assert.ok(initialBuilds <= 2, `Idle virtual module repeatedly rebuilt: ${initialBuilds}; invalidations=${JSON.stringify(invalidations)}`)
     modules.writeModule(file, 'export default 84')
     await waitForBuild(initialBuilds)
     const updatedBuilds = builds

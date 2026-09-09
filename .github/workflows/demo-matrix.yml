@@ -53,6 +53,7 @@ jobs:
           DEMO_MATRIX_CASES: ${{ toJSON(matrix.cases) }}
           CI: '1'
           NODE_OPTIONS: --max-old-space-size=6144
+          DEMO_MATRIX_PROCESS_DIAGNOSTICS: '1'
         run: pnpm e2e:demo:matrix
       - name: Upload logs and output evidence
         if: always()

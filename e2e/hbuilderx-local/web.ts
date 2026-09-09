@@ -1,47 +1,41 @@
-import type { Buffer } from 'node:buffer'
-import type { ChildProcess } from 'node:child_process'
 import type { Browser, Page } from 'playwright'
 import type { WebHmrStep, WebRuntimeStyleAssertion } from './cases'
+import type { AttachedWebServer } from './web/attached'
 import type { WebPageDiagnostics } from './web/runtime'
+import type { WebServerSession } from './web/session'
 
-import { appendFileSync } from 'node:fs'
 import fs from 'node:fs/promises'
 
-import path from 'pathe'
+import path from 'node:path'
 import { chromium } from 'playwright'
 
 import {
-  collectProcessOutput,
   fetchText,
-  findFreePort,
   joinUrl,
-  killProcessTree,
   pollIntervalMs,
   resolveBaseUrls,
   resolveChromeExecutable,
-  runPnpm,
   serverTimeoutMs,
   wait,
 } from './process'
 import { appendHmrSourceMutation, createHmrSourceRestore } from './source-mutations'
 import { cleanupWebHmrSession } from './web/cleanup'
-import { clearDevProcess, createDevServer, createHBuilderXDevServer } from './web/dev-server'
+import { captureHBuilderXFailure } from './web/diagnostics'
 import { assertServerIdentity, sameSourceFile } from './web/identity'
 import { readRuntimeStyles, waitForHmrMarker, waitForInitialPageText, waitForRuntimeStyles } from './web/runtime'
+import { createWebSession } from './web/session'
 import { rewriteHmrMarker } from './web/source'
 
 export { clearDevProcess, getDevProcess } from './web/dev-server'
 
-async function waitForUrl(url: string, child: ChildProcess, logs: string[], timeoutMs = serverTimeoutMs) {
+async function waitForUrl(url: string, session: WebServerSession, logs: string[], timeoutMs = serverTimeoutMs) {
   let lastError: unknown
   const startedAt = Date.now()
 
   while (Date.now() - startedAt < timeoutMs) {
-    if (child.exitCode != null) {
-      throw new Error(`dev:h5 提前退出，exit=${child.exitCode}\n${logs.join('')}`)
-    }
+    await session.ensureRunning()
     try {
-      return await fetchText(url)
+      return await fetchText(url, Math.max(1, timeoutMs - (Date.now() - startedAt)))
     }
     catch (error) {
       lastError = error
@@ -52,7 +46,7 @@ async function waitForUrl(url: string, child: ChildProcess, logs: string[], time
   throw new Error(`等待 URL 超时：${url}\nlast=${lastError instanceof Error ? lastError.message : String(lastError)}\n${logs.join('')}`)
 }
 
-async function waitForPath(baseUrl: string, requestPath: string, child: ChildProcess, logs: string[], timeoutMs = serverTimeoutMs) {
+async function waitForPath(baseUrl: string, requestPath: string, session: WebServerSession, logs: string[], timeoutMs = serverTimeoutMs) {
   let lastError: unknown
   const startedAt = Date.now()
 
@@ -61,14 +55,12 @@ async function waitForPath(baseUrl: string, requestPath: string, child: ChildPro
       try {
         return {
           baseUrl: candidate,
-          text: await waitForUrl(joinUrl(candidate, requestPath), child, logs, pollIntervalMs * 2),
+          text: await waitForUrl(joinUrl(candidate, requestPath), session, logs, pollIntervalMs * 2),
         }
       }
       catch (error) {
         lastError = error
-        if (child.exitCode != null) {
-          throw error
-        }
+        await session.ensureRunning()
       }
     }
     await wait(pollIntervalMs)
@@ -77,11 +69,11 @@ async function waitForPath(baseUrl: string, requestPath: string, child: ChildPro
   throw new Error(`等待路径超时：${requestPath}\nlast=${lastError instanceof Error ? lastError.message : String(lastError)}\n${logs.join('')}`)
 }
 
-async function waitForCss(url: string, entries: Array<string | RegExp>, child: ChildProcess, logs: string[]) {
+async function waitForCss(url: string, entries: Array<string | RegExp>, session: WebServerSession, logs: string[]) {
   const startedAt = Date.now()
   let latest = ''
   while (Date.now() - startedAt < serverTimeoutMs) {
-    latest = await waitForUrl(url, child, logs, pollIntervalMs * 2)
+    latest = await waitForUrl(url, session, logs, pollIntervalMs * 2)
     const ok = entries.every((entry) => {
       return typeof entry === 'string' ? latest.includes(entry) : entry.test(latest)
     })
@@ -109,51 +101,27 @@ export async function runWebHmr(
   launchWithHBuilderX = false,
   initialTextContains: string[] = [],
   serverIdentityPath?: string,
+  attached?: AttachedWebServer,
 ) {
-  const port = await findFreePort()
-  const artifactRoot = path.resolve(__dirname, '../.artifacts/web-hmr', `${path.basename(projectRoot)}-${Date.now()}`)
+  const artifactRoot = attached?.artifactRoot ?? path.resolve(__dirname, '../.artifacts/web-hmr', `${path.basename(projectRoot)}-${Date.now()}`)
   await fs.mkdir(artifactRoot, { recursive: true })
   const logFile = path.join(artifactRoot, 'server.log')
   await fs.writeFile(logFile, '')
-  let hbuilderxLaunch: Awaited<ReturnType<typeof createHBuilderXDevServer>> | undefined
-  let child: ChildProcess | undefined
+  let session: WebServerSession | undefined
   let browser: Browser | undefined
   let page: Page | undefined
   const diagnostics: WebPageDiagnostics = { errors: [], requests: [], warnings: [] }
   let restore: (() => Promise<void>) | undefined
 
   try {
-    await runPnpm(projectRoot, ['run', 'predev:h5'], serverTimeoutMs)
-    hbuilderxLaunch = launchWithHBuilderX ? await createHBuilderXDevServer(projectRoot) : undefined
-    child = hbuilderxLaunch?.child ?? createDevServer(projectRoot, port)
-    const logs = hbuilderxLaunch?.logs ?? collectProcessOutput(child)
-    // runner 的内存日志是滚动窗口；验收必须保留开始版本和中途错误的完整记录。
-    let logBytes = 0
-    let logError: unknown
-    const captureLog = (chunk: Buffer) => {
-      if (logError) {
-        return
-      }
-      try {
-        logBytes += chunk.length
-        if (logBytes > 32 * 1024 * 1024) {
-          throw new Error('Web 验证日志超过 32 MiB，停止以避免不完整证据')
-        }
-        appendFileSync(logFile, chunk)
-      }
-      catch (error) {
-        logError = error
-      }
-    }
-    child.stdout?.on('data', captureLog)
-    child.stderr?.on('data', captureLog)
-    const baseUrl = `http://127.0.0.1:${port}/`
+    session = await createWebSession(projectRoot, launchWithHBuilderX, logFile, attached, serverIdentityPath)
+    const { logs, baseUrl } = session
     const executablePath = await resolveChromeExecutable()
     browser = await chromium.launch({
       ...(executablePath ? { executablePath } : {}),
       headless: true,
     })
-    const ready = await waitForPath(baseUrl, '/', child, logs)
+    const ready = await waitForPath(baseUrl, '/', session, logs)
     if (serverIdentityPath) {
       const identity = JSON.parse(await fetchText(joinUrl(ready.baseUrl, serverIdentityPath)))
       assertServerIdentity(identity, await fs.realpath(projectRoot))
@@ -186,29 +154,32 @@ export async function runWebHmr(
     await waitForInitialPageText(page, initialTextContains, logs, diagnostics)
 
     await waitForRuntimeStyles(page, initialRuntimeStyles, 'initial', logs, diagnostics, true)
-    const initialCss = await waitForCss(joinUrl(ready.baseUrl, initialCssPath), initialCssContains, child, logs)
+    const initialCss = await waitForCss(joinUrl(ready.baseUrl, initialCssPath), initialCssContains, session, logs)
     await fs.writeFile(path.join(artifactRoot, 'initial.css'), initialCss)
     await page.screenshot({ path: path.join(artifactRoot, 'initial.png') })
-    restore = await createHmrSourceRestore([
-      sourceFile,
-      ...hmrSteps.flatMap(step => step.sourceMutation ? [path.resolve(projectRoot, step.sourceMutation.file)] : []),
-    ])
+    restore = attached
+      ? undefined
+      : await createHmrSourceRestore([
+          sourceFile,
+          ...hmrSteps.flatMap(step => step.sourceMutation ? [path.resolve(projectRoot, step.sourceMutation.file)] : []),
+        ])
     const hmrCss: string[] = []
     for (const [index, step] of hmrSteps.entries()) {
+      await session.ensureRunning()
       const sameFileReplace = step.sourceMutation?.replace && sameSourceFile(projectRoot, step.sourceMutation.file, sourceFile)
       if (step.sourceMutation && !sameFileReplace) {
-        await appendHmrSourceMutation(projectRoot, step.sourceMutation)
+        await appendHmrSourceMutation(projectRoot, step.sourceMutation, attached?.writeSource)
         if (step.sourceMutation.cssContains?.length) {
-          hmrCss.push(await waitForCss(joinUrl(ready.baseUrl, hmrCssPath), step.sourceMutation.cssContains, child, logs))
+          hmrCss.push(await waitForCss(joinUrl(ready.baseUrl, hmrCssPath), step.sourceMutation.cssContains, session, logs))
         }
       }
-      await rewriteHmrMarker(sourceFile, markerAnchors, hmrSteps, index, sameFileReplace ? step.sourceMutation?.replace : undefined)
+      await rewriteHmrMarker(sourceFile, markerAnchors, hmrSteps, index, sameFileReplace ? step.sourceMutation?.replace : undefined, attached?.writeSource)
       await waitForHmrMarker(page, step.markerText)
       await waitForRuntimeStyles(page, [
         ...(persistentRuntimeStyles ?? []),
         ...(step.runtimeStyles ?? []),
       ], `hmr:${step.markerText}`, logs, diagnostics)
-      const css = await waitForCss(joinUrl(ready.baseUrl, hmrCssPath), step.cssContains, child, logs)
+      const css = await waitForCss(joinUrl(ready.baseUrl, hmrCssPath), step.cssContains, session, logs)
       hmrCss.push(css)
       await fs.writeFile(path.join(artifactRoot, `save-${index + 1}.css`), css)
       await page.screenshot({ path: path.join(artifactRoot, `save-${index + 1}.png`) })
@@ -226,9 +197,7 @@ export async function runWebHmr(
     const pageOverlayText = await errorOverlay.count() > 0
       ? await errorOverlay.first().textContent()
       : undefined
-    if (logError) {
-      throw logError
-    }
+    await session.ensureRunning()
 
     return {
       hmrCss,
@@ -237,10 +206,16 @@ export async function runWebHmr(
       pageHtml: ready.text,
       pageOverlayText,
       pageWarnings: diagnostics.warnings,
-      serverLogs: await fs.readFile(logFile, 'utf8'),
+      serverLogs: await session.readLogs(),
     }
   }
   catch (error) {
+    if (attached) {
+      await fs.copyFile(attached.logFile, logFile).catch(() => {})
+    }
+    if (launchWithHBuilderX && !attached) {
+      await captureHBuilderXFailure(artifactRoot)
+    }
     await fs.writeFile(path.join(artifactRoot, 'failure.txt'), error instanceof Error ? error.stack ?? error.message : String(error))
     throw error
   }
@@ -255,14 +230,9 @@ export async function runWebHmr(
     finally {
       await cleanupWebHmrSession({
         closeBrowser: async () => browser?.close(),
-        stopServer: () => {
-          if (child) {
-            killProcessTree(child)
-            clearDevProcess()
-          }
-        },
+        stopServer: async () => session?.stop(),
         restoreSource: async () => restore?.(),
-        closeProject: async () => hbuilderxLaunch?.cleanup(),
+        closeProject: async () => session?.closeProject(),
       })
     }
   }

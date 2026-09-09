@@ -47,6 +47,8 @@ The default channel is `auto`. Resolution uses this precedence:
 
 The macOS defaults are `/Applications/HBuilderX.app/Contents/MacOS/cli` and `/Applications/HBuilderX-Alpha.app/Contents/MacOS/cli`. Set `HBUILDERX_CLI_PATH` for non-standard Windows/Linux installations.
 
+`resolveHBuilderXCli` returns an explicitly configured existing path without querying running processes. `resolveHBuilderXCliInfo` also reports `isRunning`, so it still queries the operating system. A configured runner connects through the native CLI host handshake.
+
 If one CLI matches multiple hosts, the runner reports an ambiguity instead of guessing. Set `HBUILDERX_HOST` or pass `host` to `createHBuilderXRunner`.
 
 Some HBuilderX releases reject concurrent stable and Alpha processes. The runner never closes an existing instance automatically; it reports `cli-instance-mismatch` when the target edition cannot start, so close the conflicting instance before retrying.

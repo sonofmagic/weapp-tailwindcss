@@ -13,6 +13,7 @@ export async function openBrowser(url, session, artifactDir) {
   const events = []
   const pendingModules = new Set()
   const origin = new URL(url).origin
+  let documentResponse
   let transportReady = false
   let documentVersion = 0
   let transientModuleFailure
@@ -21,6 +22,9 @@ export async function openBrowser(url, session, artifactDir) {
   page.on('response', (response) => {
     const request = response.request()
     // hash/history 路由仍使用原文档和连接，只有新主文档响应重置状态。
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame()) {
+      documentResponse = response
+    }
     if (request.isNavigationRequest() && request.frame() === page.mainFrame() && response.status() >= 200 && response.status() < 300) {
       documentVersion++
       pendingModules.clear()
@@ -29,6 +33,9 @@ export async function openBrowser(url, session, artifactDir) {
     }
   })
   page.on('request', (request) => {
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame()) {
+      documentResponse = undefined
+    }
     if (new URL(request.url()).origin === origin && ['script', 'stylesheet'].includes(request.resourceType())) {
       pendingModules.add(request)
     }
@@ -68,7 +75,13 @@ export async function openBrowser(url, session, artifactDir) {
     }, session)
     await until(async () => {
       const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 15_000 })
-      assert.ok(response?.ok(), url)
+      // 开发重载可能中断首次 goto；随后同一 hash 导航没有新的 HTTP 响应。
+      const targetDocument = new URL(url)
+      targetDocument.hash = ''
+      const currentDocument = response === null && page.url() === url && documentResponse?.url() === targetDocument.href
+        ? documentResponse
+        : response
+      assert.ok(currentDocument?.ok(), url)
     }, session)
     await until(async () => {
       if (transientModuleFailure) {

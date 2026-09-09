@@ -1,13 +1,12 @@
-import path from 'node:path'
 import { normalizeTailwindcssV4InfinityCalcCss } from '@weapp-tailwindcss/postcss'
 import { isSourcePreprocessorRequest } from '@/bundlers/shared/style-requests'
 import { cleanUrl } from '@/bundlers/vite/utils'
 import { logger } from '@/logger'
+import { resolveStyleReferencePath } from '../style-reference-path'
 
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)$/
 const CSS_MODULE_EXPORT_RE = /^\s*export\s+default\s+(?:\{|\w|\[\])/
 const RELATIVE_REFERENCE_RE = /@reference\s+(["'])(\.\.?[\\/][^"']+)\1\s*;?/g
-const WINDOWS_ABSOLUTE_PATH_RE = /^[a-z]:[\\/]/i
 
 export function isPreprocessorRequest(id: string, lang?: string): boolean {
   return isSourcePreprocessorRequest(id, lang)
@@ -26,10 +25,8 @@ export function normalizeRelativeTailwindReferences(code: string, id: string) {
     return code
   }
   const sourceFile = cleanUrl(id)
-  const pathApi = WINDOWS_ABSOLUTE_PATH_RE.test(sourceFile) ? path.win32 : path
-  const sourceDir = pathApi.dirname(sourceFile)
   return code.replace(RELATIVE_REFERENCE_RE, (_full, quote: string, request: string) => {
-    const resolved = pathApi.resolve(sourceDir, request).replace(/\\/g, '/')
+    const resolved = resolveStyleReferencePath(sourceFile, request)
     return `@reference ${quote}${resolved}${quote};`
   })
 }

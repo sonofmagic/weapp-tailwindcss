@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
+import process from 'node:process'
 import { describe, expect, it } from 'vitest'
 import { createHBuilderXProjectAlias, createHBuilderXProjectAliasName } from '../scripts/hbuilderx-project-alias.mjs'
 
@@ -21,12 +22,14 @@ describe('HBuilderX project alias', () => {
     expect(first).not.toBe(second)
   })
 
-  it('keeps source mutations on the imported alias path and real project in sync', async () => {
+  it.each(['absolute', 'relative'])('%s 别名根目录返回绝对路径并保持源码同步', async (mode) => {
     const projectRoot = await fs.mkdtemp(path.join(tmpdir(), 'hbuilderx-project-alias-source-'))
     const sourceFile = path.join(projectRoot, 'pages.uvue')
     await fs.writeFile(sourceFile, 'before')
-    const alias = await createHBuilderXProjectAlias(projectRoot)
+    const aliasRoot = path.join(projectRoot, '中文 & aliases')
+    const alias = await createHBuilderXProjectAlias(projectRoot, mode === 'relative' ? path.relative(process.cwd(), aliasRoot) : aliasRoot)
     try {
+      expect(path.isAbsolute(alias.projectPath)).toBe(true)
       await fs.writeFile(path.join(alias.projectPath, 'pages.uvue'), 'after')
       expect(await fs.readFile(sourceFile, 'utf8')).toBe('after')
     }

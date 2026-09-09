@@ -1,7 +1,8 @@
 import type { ChildProcess } from 'node:child_process'
 import type { CommandExit, HBuilderXCommandOptions, HBuilderXCommandResult, SpawnedHBuilderXCommand } from './types'
-import { spawn, spawnSync } from 'node:child_process'
+import { spawnSync } from 'node:child_process'
 import process from 'node:process'
+import spawn from 'cross-spawn'
 import { wait } from './fs'
 import { classifyHBuilderXOutput, collectProcessOutput, createTimeoutIssue, formatRecentLogs } from './logs'
 
@@ -70,7 +71,6 @@ export function spawnCommand(options: HBuilderXCommandOptions): SpawnedHBuilderX
   const child = spawn(options.command, options.args, {
     cwd: options.cwd,
     detached: options.detached ?? process.platform !== 'win32',
-    shell: process.platform === 'win32',
     stdio: options.stdio === 'inherit' ? 'inherit' : ['ignore', 'pipe', 'pipe'],
     env: {
       ...process.env,
@@ -79,6 +79,8 @@ export function spawnCommand(options: HBuilderXCommandOptions): SpawnedHBuilderX
     },
   })
   const logs = options.stdio === 'inherit' ? [] : collectProcessOutput(child)
+  // 启动失败也走 close/结果分类，避免 error 事件使调用方进程直接退出。
+  child.on('error', error => logs.push(`${error.message}\n`))
   let exit: CommandExit | undefined
   const closed = new Promise<CommandExit>((resolve) => {
     child.on('close', (code, signal) => {
