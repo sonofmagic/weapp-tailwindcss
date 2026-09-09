@@ -4,6 +4,7 @@ import type {
   HBuilderXCliResolveOptions,
   HBuilderXResolvedChannel,
 } from '../types'
+import { Buffer } from 'node:buffer'
 import { spawnSync } from 'node:child_process'
 import path from 'node:path'
 import process from 'node:process'
@@ -97,26 +98,42 @@ export function extractHBuilderXExecutableFromProcessOutput(output: string, plat
 export async function findRunningHBuilderXCliCandidates(platform: NodeJS.Platform = process.platform) {
   const command = platform === 'win32' ? 'powershell.exe' : 'ps'
   const args = platform === 'win32'
-    ? ['-NoProfile', '-NonInteractive', '-Command', [
+    ? ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', [
         '$ErrorActionPreference = \'Stop\'',
         '[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)',
-        `ConvertTo-Json -Compress -InputObject @([System.Diagnostics.Process]::GetProcessesByName('HBuilderX') | ForEach-Object { $_.MainModule.FileName })`,
+        // 只使用语言和 .NET API，避免 ConvertTo-Json 首次自动加载 Utility 模块及扫描模块路径。
+        `$PSModuleAutoLoadingPreference = 'None'`,
+        `[Console]::Error.WriteLine('process-discovery: querying')`,
+        `$paths = [System.Collections.Generic.List[string]]::new()`,
+        `foreach ($p in [System.Diagnostics.Process]::GetProcessesByName('HBuilderX')) { try { $paths.Add([Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($p.MainModule.FileName))) } finally { $p.Dispose() } }`,
+        `[Console]::Error.WriteLine('process-discovery: complete')`,
+        `[Console]::WriteLine('WT-HBUILDERX-PROCESSES/1')`,
+        `[Console]::WriteLine([string]::Join([Environment]::NewLine, $paths))`,
+        `[Console]::WriteLine('END')`,
       ].join('; ')]
     : ['-ax', '-o', 'command=']
-  const result = spawnSync(command, args, { encoding: 'utf8', windowsHide: true, timeout: 10_000 })
+  const result = spawnSync(command, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, timeout: 10_000, maxBuffer: 1024 * 1024 })
 
   if (result.error || result.status !== 0) {
     // 无法查询与没有实例是不同状态；误报后再次 open 可能干扰现有 IDE 会话。
-    throw new Error(`HBuilderX 进程探测失败：${command}, exit=${result.status}, cwd=${process.cwd()}\n${result.error?.message ?? result.stderr}`)
+    throw new Error(`HBuilderX 进程探测失败：${command}, exit=${result.status}, signal=${result.signal}, cwd=${process.cwd()}\n${result.error?.message ?? ''}\n${result.stderr ?? ''}\n${result.stdout ?? ''}`)
   }
 
   let executables: string[]
   if (platform === 'win32') {
-    const values: unknown = JSON.parse(result.stdout.replace(/^\uFEFF/, '').trim())
-    if (!Array.isArray(values) || values.some(value => typeof value !== 'string')) {
-      throw new Error('HBuilderX Windows 进程探测返回了无效路径列表')
+    const lines = result.stdout.replace(/^\uFEFF/, '').trim().split(/\r?\n/)
+    if (lines.shift() !== 'WT-HBUILDERX-PROCESSES/1' || lines.pop() !== 'END') {
+      throw new Error('HBuilderX Windows 进程探测返回了不完整的路径列表')
     }
-    executables = values.filter(value => value.toLowerCase().endsWith('hbuilderx.exe'))
+    executables = lines.filter(Boolean).map((line) => {
+      const bytes = Buffer.from(line, 'base64')
+      const executable = bytes.toString('utf8')
+      // 拒绝损坏的数据、相对路径与目录；不能将解析失败当作没有运行实例。
+      if (bytes.toString('base64') !== line || !Buffer.from(executable).equals(bytes) || !path.win32.isAbsolute(executable) || path.win32.parse(executable).root.length < 3 || path.win32.basename(executable).toLowerCase() !== 'hbuilderx.exe') {
+        throw new Error('HBuilderX Windows 进程探测返回了无效路径列表')
+      }
+      return executable
+    })
   }
   else {
     executables = extractHBuilderXExecutablesFromProcessOutput(result.stdout, platform)
