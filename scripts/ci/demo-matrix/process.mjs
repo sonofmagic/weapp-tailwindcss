@@ -28,6 +28,11 @@ export async function freePort() {
 export function start(args, cwd, env, logFile) {
   let log = ''
   const output = logFile ? createWriteStream(logFile) : undefined
+  if (process.env.DEMO_MATRIX_PROCESS_DIAGNOSTICS === '1') {
+    // 使用文件 URL 跨越子进程 cwd、Windows 盘符和空格边界。
+    const diagnostic = new URL('./process-diagnostic.cjs', import.meta.url).href
+    env = { ...env, NODE_OPTIONS: `${env.NODE_OPTIONS ?? process.env.NODE_OPTIONS ?? ''} --trace-exit --trace-uncaught --import=${diagnostic}` }
+  }
   const child = execa('pnpm', args, { cwd, env: { CI: '1', ...env }, detached: process.platform !== 'win32', reject: false })
   for (const stream of [child.stdout, child.stderr]) {
     stream.on('data', (data) => {

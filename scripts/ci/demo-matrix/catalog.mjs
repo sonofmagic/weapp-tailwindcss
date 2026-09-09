@@ -70,7 +70,7 @@ export function commands(item, port = 5173) {
   }
   if (family === 'mpx') {
     env.MPX_CURRENT_TARGET_MODE = target
-    return { build: ['exec', 'mpx-cli-service', 'build', '--mode', target], dev: ['exec', 'mpx-cli-service', 'serve', '--mode', target], env, output: 'dist' }
+    return { build: ['exec', 'mpx-cli-service', 'build', '--targets', target], dev: ['exec', 'mpx-cli-service', 'serve', '--targets', target], env, output: 'dist' }
   }
   if (family === 'gulp') {
     env.PLATFORM = target

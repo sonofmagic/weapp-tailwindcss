@@ -31,5 +31,6 @@
   "spacing": [
     ".25rem",
     "8rpx"
-  ]
+  ],
+  "platform": "wx"
 }

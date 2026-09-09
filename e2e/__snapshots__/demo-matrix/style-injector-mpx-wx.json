@@ -10,5 +10,6 @@
       "#123456"
     ]
   },
-  "coverage": "authored-styles"
+  "coverage": "authored-styles",
+  "platform": "wx"
 }

@@ -1,8 +1,26 @@
 import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
-import { expect, it } from 'vitest'
+import { expect, it, vi } from 'vitest'
 import { repo } from './catalog.mjs'
+import { start } from './process.mjs'
+
+it('通过文件 URL 在子目录启动的进程中记录退出并保留 Node 参数', async () => {
+  vi.stubEnv('DEMO_MATRIX_PROCESS_DIAGNOSTICS', '1')
+  const session = start(['exec', 'node', '-e', 'console.log(process.env.NODE_OPTIONS)'], path.join(repo, 'demo', 'mpx-tailwindcss-v4'), { NODE_OPTIONS: '--stack-trace-limit=30' })
+  try {
+    const result = await session.done
+    expect(result.exitCode).toBe(0)
+    expect(session.log()).toContain('--stack-trace-limit=30')
+    expect(session.log()).toContain('--import=file:')
+    expect(session.log()).toContain('"event":"beforeExit"')
+    expect(() => session.ensureRunning()).toThrow()
+  }
+  finally {
+    await session.stop()
+    vi.unstubAllEnvs()
+  }
+})
 
 it.each([
   { source: 'Promise.resolve()', code: 0, events: ['start', 'beforeExit', 'exit'] },
