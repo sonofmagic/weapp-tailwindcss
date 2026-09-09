@@ -390,3 +390,4 @@ catalogs:
 
 patchedDependencies:
   rollup@4.63.0: patches/rollup@4.63.0.patch
+  rollup@4.63.1: patches/rollup@4.63.1.patch

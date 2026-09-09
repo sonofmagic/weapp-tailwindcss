@@ -11,8 +11,10 @@ const demoRequire = createRequire(path.join(repo, 'demo/uni-app-vite-tailwindcss
 const viteRequire = createRequire(demoRequire.resolve('vite/package.json'))
 const rollupDist = path.dirname(viteRequire.resolve('rollup'))
 
-it('deduplicates identical notifications without dropping new file states', async () => {
-  const { chokidar } = viteRequire(path.join(rollupDist, 'shared/index.js'))
+it.each(['uni-app-vite-tailwindcss-v4', 'issue-uview-plus-cssentries'])('deduplicates identical notifications without dropping new file states (%s)', async (demo) => {
+  const requireDemo = createRequire(path.join(repo, 'demo', demo, 'package.json'))
+  const requireVite = createRequire(requireDemo.resolve('vite/package.json'))
+  const { chokidar } = requireVite(path.join(path.dirname(requireVite.resolve('rollup')), 'shared/index.js'))
   const watcher = chokidar.watch([], { ignoreInitial: true })
   const file = path.join(tmpdir(), 'rollup-change-probe.json')
   const events = []

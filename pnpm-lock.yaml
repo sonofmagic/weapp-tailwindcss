@@ -727,6 +727,7 @@ pnpmfileChecksum: sha256-VIhHxkE3DlYGW4jpmh5YBZoirXpyRMuq7rJOkofCfW8=
 
 patchedDependencies:
   rollup@4.63.0: 4f732dcaad5986ffbe82caa0236c5ece50738873705cb399aa2f0a4dd15ed375
+  rollup@4.63.1: 160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0
 
 importers:
 
@@ -1100,7 +1101,7 @@ importers:
         version: 6.1.3
       rollup:
         specifier: ^4.63.0
-        version: 4.63.1
+        version: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
       sass:
         specifier: catalog:sass195
         version: 1.104.0
@@ -48967,7 +48968,7 @@ snapshots:
 
   '@rollup/plugin-alias@6.0.0(rollup@4.63.1)':
     optionalDependencies:
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   '@rollup/plugin-babel@6.1.0(@babel/core@7.29.7(supports-color@10.2.2))(@types/babel__core@7.20.5)(rollup@4.63.1)(supports-color@10.2.2)':
     dependencies:
@@ -48976,7 +48977,7 @@ snapshots:
       '@rollup/pluginutils': 5.4.0(rollup@4.63.1)
     optionalDependencies:
       '@types/babel__core': 7.20.5
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
     transitivePeerDependencies:
       - supports-color
 
@@ -48989,7 +48990,7 @@ snapshots:
       is-reference: 1.2.1
       magic-string: 0.30.21
     optionalDependencies:
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   '@rollup/plugin-commonjs@29.0.3(rollup@4.63.1)':
     dependencies:
@@ -49001,7 +49002,7 @@ snapshots:
       magic-string: 0.30.21
       picomatch: 4.0.7
     optionalDependencies:
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   '@rollup/plugin-inject@5.0.5(rollup@4.63.1)':
     dependencies:
@@ -49009,13 +49010,13 @@ snapshots:
       estree-walker: 2.0.2
       magic-string: 0.30.21
     optionalDependencies:
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   '@rollup/plugin-json@6.1.0(rollup@4.63.1)':
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.63.1)
     optionalDependencies:
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   '@rollup/plugin-node-resolve@15.3.1(rollup@4.63.1)':
     dependencies:
@@ -49025,7 +49026,7 @@ snapshots:
       is-module: 1.0.0
       resolve: 1.22.12
     optionalDependencies:
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   '@rollup/plugin-node-resolve@16.0.3(rollup@4.63.1)':
     dependencies:
@@ -49035,21 +49036,21 @@ snapshots:
       is-module: 1.0.0
       resolve: 1.22.12
     optionalDependencies:
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   '@rollup/plugin-replace@5.0.7(rollup@4.63.1)':
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.63.1)
       magic-string: 0.30.21
     optionalDependencies:
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   '@rollup/plugin-replace@6.0.3(rollup@4.63.1)':
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.63.1)
       magic-string: 0.30.21
     optionalDependencies:
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   '@rollup/plugin-terser@0.4.4(rollup@4.63.1)':
     dependencies:
@@ -49057,7 +49058,7 @@ snapshots:
       smob: 1.5.0
       terser: 5.51.2
     optionalDependencies:
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   '@rollup/plugin-terser@1.0.0(rollup@4.63.1)':
     dependencies:
@@ -49065,7 +49066,7 @@ snapshots:
       smob: 1.6.2
       terser: 5.51.2
     optionalDependencies:
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   '@rollup/pluginutils@5.1.0(rollup@4.14.3)':
     dependencies:
@@ -49081,7 +49082,7 @@ snapshots:
       estree-walker: 2.0.2
       picomatch: 2.3.2
     optionalDependencies:
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   '@rollup/pluginutils@5.4.0(rollup@4.63.1)':
     dependencies:
@@ -49089,7 +49090,7 @@ snapshots:
       estree-walker: 2.0.2
       picomatch: 4.0.7
     optionalDependencies:
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   '@rollup/rollup-android-arm-eabi@4.14.3':
     optional: true
@@ -51885,7 +51886,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.18
       html-webpack-plugin: 5.6.8(@rspack/core@1.7.11(@swc/helpers@0.5.23))(webpack@5.105.4)
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
       vue: 3.5.42(typescript@6.0.3)
       webpack: 5.105.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@8.0.10(postcss@8.5.28))(csso@5.0.5)(esbuild@0.21.5)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.28)(uglify-js@3.19.3)(webpack-cli@7.2.3)
       webpack-chain: 6.5.1
@@ -51903,7 +51904,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.18
       html-webpack-plugin: 5.6.8(@rspack/core@2.2.2(@swc/helpers@0.5.23))(webpack@5.105.4)
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
       vue: 3.5.42(typescript@6.0.3)
       webpack: 5.105.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@8.0.10(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.28)(uglify-js@3.19.3)(webpack-cli@7.2.3)
       webpack-chain: 6.5.1
@@ -66900,7 +66901,7 @@ snapshots:
       pkg-types: 2.3.3
       pretty-bytes: 7.1.2
       radix3: 1.1.2
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
       rollup-plugin-visualizer: 7.1.1(rolldown@1.2.7)(rollup@4.63.1)
       scule: 1.3.0
       semver: 7.8.5
@@ -71457,7 +71458,7 @@ snapshots:
       yargs: 18.1.0
     optionalDependencies:
       rolldown: 1.2.7
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
 
   rollup-pluginutils@2.8.2:
     dependencies:
@@ -71525,7 +71526,7 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.63.0
       fsevents: 2.3.3
 
-  rollup@4.63.1:
+  rollup@4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0):
     dependencies:
       '@types/estree': 1.0.9
     optionalDependencies:
@@ -74547,7 +74548,7 @@ snapshots:
       '@rspack/core': 2.2.2(@swc/helpers@0.5.23)
       esbuild: 0.28.2
       rolldown: 1.2.7
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
       vite: 7.3.6(@types/node@26.5.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.0)(sass@1.104.0)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.0)
       webpack: 5.105.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@8.0.10(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.28)(uglify-js@3.19.3)(webpack-cli@7.2.3)
     optional: true
@@ -74561,7 +74562,7 @@ snapshots:
       '@rspack/core': 2.2.3(@swc/helpers@0.5.23)
       esbuild: 0.28.2
       rolldown: 1.2.7
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
       vite: 7.3.6(@types/node@26.5.0)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.0)(sass@1.104.0)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.0)
       webpack: 5.105.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@8.0.10(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.28)(uglify-js@3.19.3)(webpack-cli@7.2.3)
 
@@ -74574,7 +74575,7 @@ snapshots:
       '@rspack/core': 2.2.3(@swc/helpers@0.5.23)
       esbuild: 0.28.2
       rolldown: 1.2.7
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
       vite: 8.2.2(@types/node@26.5.0)(esbuild@0.28.2)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.104.0)(sass@1.104.0)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.0)
       webpack: 5.105.4(@swc/core@1.16.2(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@8.0.10(postcss@8.5.28))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.28)(uglify-js@3.19.3)(webpack-cli@7.2.3)
 
@@ -75112,7 +75113,7 @@ snapshots:
     dependencies:
       esbuild: 0.21.5
       postcss: 8.5.28
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
     optionalDependencies:
       '@types/node': 26.5.0
       fsevents: 2.3.3
@@ -75129,7 +75130,7 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.7)
       picomatch: 4.0.7
       postcss: 8.5.28
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
       tinyglobby: 0.2.17
     optionalDependencies:
       '@types/node': 26.5.0
@@ -75171,7 +75172,7 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
       postcss: 8.5.28
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
       tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 26.5.0
@@ -75192,7 +75193,7 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
       postcss: 8.5.28
-      rollup: 4.63.1
+      rollup: 4.63.1(patch_hash=160d2781493503218c8f97a2da6b816fa2f8d96b6f5b10c07910753c0e7e02f0)
       tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 26.5.0

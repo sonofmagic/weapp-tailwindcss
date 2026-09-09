@@ -7,7 +7,7 @@ import { inspectStyles } from './output.mjs'
 import { probeClasses } from './probe.mjs'
 import { until } from './process.mjs'
 
-export async function openBrowser(url, session, artifactDir) {
+export async function openBrowser(url, session, artifactDir, { vueHydration = false } = {}) {
   const browser = await chromium.launch()
   const page = await browser.newPage({ viewport: { width: 1200, height: 900 } })
   const events = []
@@ -92,6 +92,11 @@ export async function openBrowser(url, session, artifactDir) {
       }
       await page.locator('#tw-matrix-height').waitFor({ timeout: 5000 })
       assert.equal(pendingModules.size, 0, `Local modules still loading: ${[...pendingModules].map(request => request.url()).join(', ')}`)
+      if (vueHydration) {
+        // SSR HTML 可能先于异步页面模块出现；等待探针所属组件挂载，才开始保存源码。
+        const mounted = await page.locator('#tw-matrix-height').evaluate(element => element.__vueParentComponent?.isMounted === true)
+        assert.ok(mounted, 'SSR probe component has not completed Vue hydration')
+      }
     }, session)
     await until(() => assert.ok(transportReady, 'Development update transport is not ready'), session)
     return {

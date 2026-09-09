@@ -117,7 +117,7 @@ async function runCase(item) {
     session = start(command.dev, dir, developmentEnvironment(command.env), path.join(artifactDir, 'dev-live.log'))
     activeSession = session
     if (isWeb(item) || item.name.startsWith('web/')) {
-      browser = await openBrowser(`http://127.0.0.1:${port}${item.route ?? '/'}`, session, artifactDir)
+      browser = await openBrowser(`http://127.0.0.1:${port}${item.route ?? '/'}`, session, artifactDir, { vueHydration: item.family === 'uni' && item.target === 'h5:ssr' })
     }
     for (const round of ['initial', 'replace', 'add', 'restore']) {
       assert.ok(!interrupted, 'Matrix interrupted')

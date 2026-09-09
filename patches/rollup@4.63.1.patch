@@ -1,0 +1,160 @@
+diff --git a/dist/es/shared/watch.js b/dist/es/shared/watch.js
+--- a/dist/es/shared/watch.js
++++ b/dist/es/shared/watch.js
+@@ -9254,2 +9254,9 @@
+-	    const isThrottled = !this._throttle(EV_CHANGE, path, 50);
+-	    if (isThrottled) return this;
++	    // 只合并同一文件状态的重复通知，不丢弃窗口内的新版本。
++	    const previous = this._throttled.get(EV_CHANGE)?.get(path);
++	    const stats = val1;
++	    if (previous?.stats && stats && ['dev', 'ino', 'size', 'mtimeMs', 'ctimeMs'].some(key => previous.stats[key] !== stats[key])) {
++	      previous.clear();
++	    }
++	    const throttle = this._throttle(EV_CHANGE, path, 50);
++	    if (!throttle) return this;
++	    throttle.stats = stats;
+@@ -9620 +9627 @@
+-        this.transformWatchers = new Map();
++        this.transformDependencies = new Set();
+@@ -9623 +9630 @@
+-        this.watcher = this.createWatcher(null);
++        this.watcher = this.createWatcher();
+@@ -9627,3 +9633,0 @@
+-        for (const watcher of this.transformWatchers.values()) {
+-            watcher.close();
+-        }
+@@ -9633,5 +9637 @@
+-        const transformWatcher = this.transformWatchers.get(id);
+-        if (transformWatcher) {
+-            this.transformWatchers.delete(id);
+-            transformWatcher.close();
+-        }
++        this.transformDependencies.delete(id);
+@@ -9641,3 +9641 @@
+-            const watcher = this.transformWatchers.get(id) ?? this.createWatcher(id);
+-            watcher.add(id);
+-            this.transformWatchers.set(id, watcher);
++            this.transformDependencies.add(id);
+@@ -9645,3 +9643 @@
+-        else {
+-            this.watcher.add(id);
+-        }
++        this.watcher.add(id);
+@@ -9649 +9645 @@
+-    createWatcher(transformWatcherId) {
++    createWatcher() {
+@@ -9653 +9648,0 @@
+-        const isTransformDependency = transformWatcherId !== null;
+@@ -9655 +9649,0 @@
+-            const changedId = transformWatcherId || id;
+@@ -9660,2 +9654,2 @@
+-                watcher.unwatch(changedId);
+-                watcher.add(changedId);
++                watcher.unwatch(id);
++                watcher.add(id);
+@@ -9663 +9657,7 @@
+-            task.invalidate(changedId, { event, isTransformDependency });
++            task.invalidate(id, { event, isTransformDependency: this.transformDependencies.has(id) });
++            for (const dependency of this.transformDependencies) {
++                const relative = path.relative(dependency, id);
++                if (relative && relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative)) {
++                    task.invalidate(dependency, { event, isTransformDependency: true });
++                }
++            }
+@@ -9787,0 +9788 @@
++        this.invalidatedTransformDependencies = new Set();
+@@ -9812,0 +9814 @@
++            this.invalidatedTransformDependencies.add(id);
+@@ -9826,0 +9829,2 @@
++        // 新一轮消费现有缓存；本轮构建期间到达的失效必须保留给下一轮。
++        this.invalidatedTransformDependencies.clear();
+@@ -9881,0 +9886,6 @@
++        // 新缓存不能覆盖构建期间对旧缓存标记的失效。
++        for (const module of this.cache.modules) {
++            if (module.transformDependencies.some(id => this.invalidatedTransformDependencies.has(id))) {
++                module.originalCode = null;
++            }
++        }
+diff --git a/dist/shared/watch.js b/dist/shared/watch.js
+--- a/dist/shared/watch.js
++++ b/dist/shared/watch.js
+@@ -33 +33 @@
+-        this.transformWatchers = new Map();
++        this.transformDependencies = new Set();
+@@ -36 +36 @@
+-        this.watcher = this.createWatcher(null);
++        this.watcher = this.createWatcher();
+@@ -40,3 +39,0 @@
+-        for (const watcher of this.transformWatchers.values()) {
+-            watcher.close();
+-        }
+@@ -46,5 +43 @@
+-        const transformWatcher = this.transformWatchers.get(id);
+-        if (transformWatcher) {
+-            this.transformWatchers.delete(id);
+-            transformWatcher.close();
+-        }
++        this.transformDependencies.delete(id);
+@@ -54,9 +47,5 @@
+-            const watcher = this.transformWatchers.get(id) ?? this.createWatcher(id);
+-            watcher.add(id);
+-            this.transformWatchers.set(id, watcher);
+-        }
+-        else {
+-            this.watcher.add(id);
+-        }
+-    }
+-    createWatcher(transformWatcherId) {
++            this.transformDependencies.add(id);
++        }
++        this.watcher.add(id);
++    }
++    createWatcher() {
+@@ -66 +54,0 @@
+-        const isTransformDependency = transformWatcherId !== null;
+@@ -68 +55,0 @@
+-            const changedId = transformWatcherId || id;
+@@ -73,4 +60,10 @@
+-                watcher.unwatch(changedId);
+-                watcher.add(changedId);
+-            }
+-            task.invalidate(changedId, { event, isTransformDependency });
++                watcher.unwatch(id);
++                watcher.add(id);
++            }
++            task.invalidate(id, { event, isTransformDependency: this.transformDependencies.has(id) });
++            for (const dependency of this.transformDependencies) {
++                const relative = path.relative(dependency, id);
++                if (relative && relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative)) {
++                    task.invalidate(dependency, { event, isTransformDependency: true });
++                }
++            }
+@@ -200,0 +194 @@
++        this.invalidatedTransformDependencies = new Set();
+@@ -225,0 +220 @@
++            this.invalidatedTransformDependencies.add(id);
+@@ -239,0 +235,2 @@
++        // 新一轮消费现有缓存；本轮构建期间到达的失效必须保留给下一轮。
++        this.invalidatedTransformDependencies.clear();
+@@ -294,0 +292,6 @@
++        // 新缓存不能覆盖构建期间对旧缓存标记的失效。
++        for (const module of this.cache.modules) {
++            if (module.transformDependencies.some(id => this.invalidatedTransformDependencies.has(id))) {
++                module.originalCode = null;
++            }
++        }
+diff --git a/dist/shared/index.js b/dist/shared/index.js
+--- a/dist/shared/index.js
++++ b/dist/shared/index.js
+@@ -9250,2 +9250,9 @@
+-	    const isThrottled = !this._throttle(EV_CHANGE, path, 50);
+-	    if (isThrottled) return this;
++	    // 只合并同一文件状态的重复通知，不丢弃窗口内的新版本。
++	    const previous = this._throttled.get(EV_CHANGE)?.get(path);
++	    const stats = val1;
++	    if (previous?.stats && stats && ['dev', 'ino', 'size', 'mtimeMs', 'ctimeMs'].some(key => previous.stats[key] !== stats[key])) {
++	      previous.clear();
++	    }
++	    const throttle = this._throttle(EV_CHANGE, path, 50);
++	    if (!throttle) return this;
++	    throttle.stats = stats;
