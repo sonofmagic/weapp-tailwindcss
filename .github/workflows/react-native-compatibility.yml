@@ -76,8 +76,15 @@ jobs:
           pnpm --filter @weapp-tailwindcss/example-react-native-expo exec expo prebuild --platform android --no-install
           cd examples/react-native-expo/android
           ./gradlew app:assembleDebug -PreactNativeArchitectures=x86_64
+      - name: Enable hardware acceleration for the current runner
+        shell: bash
+        run: |
+          sudo setfacl -m "u:$(id -un):rw" /dev/kvm
+          test -r /dev/kvm && test -w /dev/kvm
+          "$ANDROID_HOME/emulator/emulator" -accel-check
       - uses: reactivecircus/android-emulator-runner@v2
         with:
+          disable-linux-hw-accel: false
           api-level: 30
           arch: x86_64
           profile: pixel_2
