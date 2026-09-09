@@ -4764,7 +4764,7 @@ importers:
         specifier: ^4.9.0
         version: 4.9.0
       postcss-calc:
-        specifier: link:../postcss-calc
+        specifier: link:packages/postcss-calc
         version: link:../postcss-calc
       postcss-custom-properties:
         specifier: ^15.0.1
