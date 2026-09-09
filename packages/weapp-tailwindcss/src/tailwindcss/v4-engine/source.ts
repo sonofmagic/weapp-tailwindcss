@@ -159,6 +159,35 @@ function normalizeTailwindV4CssPackageImports(css: string, packageName: string |
   return changed ? root.toString() : css
 }
 
+function normalizeTailwindV4CssSourceDirectives(css: string, base: string) {
+  if (!css.includes('@source')) {
+    return css
+  }
+  let root: postcss.Root
+  try {
+    root = postcss.parse(css)
+  }
+  catch {
+    return css
+  }
+  let changed = false
+  root.walkAtRules('source', (rule) => {
+    const match = rule.params.match(/^("([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)')(.*)$/)
+    if (!match) {
+      return
+    }
+    const specifier = match[2] ?? match[3]
+    if (!specifier?.startsWith('.')) {
+      return
+    }
+    const resolved = path.resolve(base, specifier)
+    const quote = match[2] === undefined ? '\'' : '"'
+    rule.params = `${quote}${resolved}${quote}${match[4] ?? ''}`
+    changed = true
+  })
+  return changed ? root.toString() : css
+}
+
 function normalizeTailwindV4CssSources(
   cssSources: TailwindV4SourceOptions['cssSources'],
   packageName: string | undefined,
@@ -241,7 +270,10 @@ function normalizeTailwindV4CssEntrySources(
         ? path.resolve(base, entrySource.configRequest)
         : entrySource?.config
     const css = normalizeTailwindV4CssPackageImports(
-      normalizeEmptyTailwindCustomVariants(normalizeConfigDirective(rawCss, config)),
+      normalizeTailwindV4CssSourceDirectives(
+        normalizeEmptyTailwindCustomVariants(normalizeConfigDirective(rawCss, config)),
+        base,
+      ),
       packageName,
     )
     cssSources.push({
