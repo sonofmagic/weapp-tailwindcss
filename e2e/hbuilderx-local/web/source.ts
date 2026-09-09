@@ -6,7 +6,7 @@ function resolveAnchor(source: string, anchors: string[]) {
   return anchors.find(anchor => source.includes(anchor))
 }
 
-export async function rewriteHmrMarker(file: string, anchors: string[], steps: WebHmrStep[], stepIndex: number, replacement?: { from: string, to: string }) {
+export async function rewriteHmrMarker(file: string, anchors: string[], steps: WebHmrStep[], stepIndex: number, replacement?: { from: string, to: string }, writeSource = async (target: string, content: string) => fs.writeFile(target, content, 'utf8')) {
   let source = await readUtf8(file)
   const persistentMarkerRE = /<view class="[^"]*\bhbuilderx-web-hmr-probe\b[^"]*">[^<]*<\/view>/
   const step = steps[stepIndex]
@@ -22,7 +22,7 @@ export async function rewriteHmrMarker(file: string, anchors: string[], steps: W
   }
   const persistentMarker = `<view class="hbuilderx-web-hmr-probe ${step.markerClass.replace(/\bhbuilderx-web-hmr-probe\b/g, '').trim()}">${step.markerText}</view>`
   if (persistentMarkerRE.test(source)) {
-    await fs.writeFile(file, source.replace(persistentMarkerRE, persistentMarker), 'utf8')
+    await writeSource(file, source.replace(persistentMarkerRE, persistentMarker))
     return
   }
   const markerRE = /\n\t\t<view class="[^"]+">hbuilderx-web-hmr-[^<]+<\/view>/g
@@ -34,5 +34,5 @@ export async function rewriteHmrMarker(file: string, anchors: string[], steps: W
   }
   const insertion = persistentMarker
   const next = `${cleaned.slice(0, index)}${insertion}\n\t\t${cleaned.slice(index)}`
-  await fs.writeFile(file, next, 'utf8')
+  await writeSource(file, next)
 }

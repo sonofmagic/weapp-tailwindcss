@@ -1,5 +1,6 @@
 import type { ChildProcess } from 'node:child_process'
 import type { AppCase, MiniProgramCase, WebCase } from './cases'
+import type { AttachedWebServer } from './web/attached'
 
 import { createHash } from 'node:crypto'
 import fs from 'node:fs/promises'
@@ -857,9 +858,9 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
   }
 }
 
-export async function verifyWebHmr(item: WebCase) {
+export async function verifyWebHmr(item: WebCase, attached?: AttachedWebServer) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
-  const result = await runWebHmr(projectRoot, path.resolve(projectRoot, item.sourceFile), resolveWebMarkerAnchors(item), item.initialCssPath, item.hmrCssPath, item.initialCssContains, item.initialRuntimeStyles, item.persistentRuntimeStyles, item.hmrSteps, item.launchWithHBuilderX, item.initialTextContains, item.serverIdentityPath)
+  const result = await runWebHmr(projectRoot, path.resolve(projectRoot, item.sourceFile), resolveWebMarkerAnchors(item), item.initialCssPath, item.hmrCssPath, item.initialCssContains, item.initialRuntimeStyles, item.persistentRuntimeStyles, item.hmrSteps, item.launchWithHBuilderX, item.initialTextContains, item.serverIdentityPath, attached)
 
   expect(result.pageHtml, `${item.name} Web 首页应可访问`).toContain('<!DOCTYPE html>')
   expect(result.pageErrors, `${item.name} Web 页面不应产生控制台错误`).toEqual([])

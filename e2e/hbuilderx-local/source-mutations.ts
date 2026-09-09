@@ -14,7 +14,7 @@ interface HmrOutputSignature {
 
 export type HmrOutputSnapshot = Map<string, HmrOutputSignature>
 
-export async function appendHmrSourceMutation(projectRoot: string, mutation: HmrSourceMutation) {
+export async function appendHmrSourceMutation(projectRoot: string, mutation: HmrSourceMutation, writeSource = async (target: string, content: string) => fs.writeFile(target, content, 'utf8')) {
   const file = path.resolve(projectRoot, mutation.file)
   const source = await readUtf8(file)
   const separator = source.endsWith('\n') ? '' : '\n'
@@ -40,7 +40,7 @@ export async function appendHmrSourceMutation(projectRoot: string, mutation: Hmr
   if (nextSource === undefined) {
     throw new Error(`HMR 源码变更缺少 append、replace 或 touch：${mutation.file}`)
   }
-  await fs.writeFile(file, nextSource, 'utf8')
+  await writeSource(file, nextSource)
   return file
 }
 

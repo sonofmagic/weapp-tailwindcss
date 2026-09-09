@@ -224,3 +224,28 @@ pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts
 只提交源码、测试、规则/手册和必要的 changeset。`e2e/.artifacts`、设备截图、HBuilderX 临时目录和本机日志默认不提交；在 PR 中提供报告路径、命令摘要和阻塞原因即可。所有新增 demo 或 static fixture 的改动必须同时更新对应基线。
 
 这份手册发生流程变化时，先修改本文件，再同步根 `AGENTS.md`/`e2e/AGENTS.md` 的入口或约束；不要把同一条设备经验复制到多个互相漂移的文档中。
+## IDE 手动启动后的 Web 自动验收
+
+原生 HBuilderX 工作流只接受手动触发；PR 继续运行三系统 × Node 22/24 的 portable 回归。已知 CLI 间歇挂起独立记录，手动工作流失败仍保留失败状态。
+
+针对 #1170 / #1144，可在独立且复现项目没有未提交修改的 worktree 中运行：
+
+```sh
+pnpm e2e:hbuilderx:attach --case 1170-LF --channel alpha --url http://localhost:5173/ --log ./e2e/.artifacts/ide-current.log
+```
+
+入口先构建当前依赖、备份源码并准备场景，然后输出项目绝对路径。此时在对应版本的 HBuilderX 打开该项目，停止该项目旧运行，通过「运行到浏览器」启动，确保 URL 与参数一致。验收器最多等待 5 分钟，确认服务启动时捕获的本轮标识后自动连接；请勿在验收期间编辑项目文件或启动另一轮验收。
+
+浏览器断言完成后，终端会提示导出日志。将本次 IDE 控制台完整日志保存到 `--log` 指定的文件（UTF-8、项目源码目录之外），包含原生 IDE/编译器版本、VDOM 模式及本轮 `[wt-acceptance]`、`[wt-acceptance-complete]` 两个标识。仅当日志与浏览器证据均通过时报告成功；旧日志、缺失版本、Vapor 输出或未完成的日志不能代替验收。
+
+分别选择 `1170-LF`、`1170-CRLF`、`1144-options`、`1144-setup`，stable/alpha 各独立执行两轮。每个场景都先准备，再经 IDE 重新启动，以区分首次加载与增量。#1170 每轮验证 6 次文字保存、3 次类替换及每次刷新；#1144 复用 16 次保存和刷新断言。
+
+结果写入 `e2e/.artifacts/hbuilderx-attach/`，包含提交 SHA、系统、实例身份、CSS、截图、计算样式、浏览器诊断和 IDE 日志。验收器只关闭自身创建的浏览器并恢复源码，不关闭 IDE、不终止外部服务、不发送 CLI 请求。完成后由操作者在 IDE 停止本次运行。
+
+强制中断后，使用终端打印的恢复账本路径：
+
+```sh
+pnpm e2e:hbuilderx:attach --recover <恢复账本路径>
+```
+
+恢复前逐文件校验内容；发现外部修改时保留账本和文件，人工比对后处理，不强制覆盖。Windows 尚未取得实际交互桌面证据时标记“待验收”；macOS、portable 或合成服务测试通过均不能代替 Windows 原生证据。连接模式通过也不代表 CLI 启停挂起已解决。
