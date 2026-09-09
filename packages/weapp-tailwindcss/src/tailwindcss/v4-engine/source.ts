@@ -12,7 +12,6 @@ import { normalizeConfigDirective } from '@/bundlers/shared/generator-css/config
 import { normalizeTailwindConfigDirectives, resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
 import { normalizeEmptyTailwindCustomVariants } from '@/bundlers/shared/generator-css/user-css'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
-import { parseSourceFileParam } from '@/tailwindcss/source-scan'
 import { filterTailwindV4CssSourceRoots } from '@/tailwindcss/v4/css-sources'
 import { omitUndefined } from '@/utils/object'
 import { parseCssImportSpecifier, quoteCssImportSpecifier } from './css-import'
@@ -160,26 +159,6 @@ function normalizeTailwindV4CssPackageImports(css: string, packageName: string |
   return changed ? root.toString() : css
 }
 
-function normalizeTailwindV4CssSourcePaths(css: string, base: string) {
-  let root: postcss.Root
-  try {
-    root = postcss.parse(css)
-  }
-  catch {
-    return css
-  }
-  let changed = false
-  root.walkAtRules('source', (rule) => {
-    const parsed = parseSourceFileParam(rule.params)
-    if (!parsed || path.isAbsolute(parsed.sourcePath)) {
-      return
-    }
-    rule.params = `${parsed.negated ? 'not ' : ''}${JSON.stringify(path.resolve(base, parsed.sourcePath))}`
-    changed = true
-  })
-  return changed ? root.toString() : css
-}
-
 function normalizeTailwindV4CssSources(
   cssSources: TailwindV4SourceOptions['cssSources'],
   packageName: string | undefined,
@@ -262,10 +241,7 @@ function normalizeTailwindV4CssEntrySources(
         ? path.resolve(base, entrySource.configRequest)
         : entrySource?.config
     const css = normalizeTailwindV4CssPackageImports(
-      normalizeTailwindV4CssSourcePaths(
-        normalizeEmptyTailwindCustomVariants(normalizeConfigDirective(rawCss, config)),
-        base,
-      ),
+      normalizeEmptyTailwindCustomVariants(normalizeConfigDirective(rawCss, config)),
       packageName,
     )
     cssSources.push({
