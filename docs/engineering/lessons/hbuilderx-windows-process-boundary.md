@@ -11,6 +11,25 @@ regressions:
   - e2e/hbuilderx-project-alias.test.ts
   - e2e/issue-1144-stable.test.ts
   - packages/weapp-tailwindcss/test/uni-app-x/style-reference-paths.test.ts
+verification:
+  - claim: "继承 stdin 对照在页面渲染成功后仍出现 project close 空日志超时"
+    kind: "native"
+    status: "failed"
+    sha: "d87fea520ac37af46246ba7d212e6807cd626910"
+    environment: "GitHub Windows / HBuilderX stable 5.24、alpha 5.25"
+    url: "https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34294835402"
+  - claim: "Windows/macOS/Linux × Node 22/24 六组 portable 回归通过；不替代原生桌面验收"
+    kind: "ci"
+    status: "passed"
+    sha: "7623470bddfb3e3ada51cefbdbd6527015867220"
+    environment: "GitHub hosted Windows、macOS、Linux / Node 22、24"
+    url: "https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34309551585"
+  - claim: "通过 IDE 点击运行后的 Windows 两轮连接验收"
+    kind: "native"
+    status: "pending"
+    sha: "7623470bddfb3e3ada51cefbdbd6527015867220"
+    environment: "Windows 11 交互桌面 / HBuilderX stable、alpha"
+    reason: "没有可用交互桌面完成该模式的逐场景两轮验收；portable 和历史 CLI 结果不能替代"
 ---
 
 # Windows HBuilderX 进程参数边界
@@ -78,7 +97,7 @@ Windows IDE 每个版本重复两轮完整场景，失败保留现场且不自�
 ## Windows 实例发现与连接边界
 
 现代 Windows 不一定安装 WMIC。旧实现查询失败直接返回空列表，导致 runner 对已有 IDE 再次执行 `open`。
-现改为 Windows 自带 PowerShell 与进程 API，使用 JSON 传递路径，避免 CSV 丢失逗号、中文或 UNC 路径；
+该阶段改为 Windows 自带 PowerShell 与进程 API，使用 JSON 传递路径，避免 CSV 丢失逗号、中文或 UNC 路径；
 查询错误与有效空列表分开处理。实际 Windows 回归创建位于中文、空格、逗号和 `&` 目录的临时
 `HBuilderX.exe`，确认无 WMIC 时仍能找到同目录 CLI，并只清理测试自身进程。
 
@@ -236,6 +255,10 @@ alpha 两次真实目录渲染成功后，第二次关闭也空日志、20 秒�
 因此继承 stdin 不能作为完整启停修复，也不能凭本轮 launch 都通过认定启动挂起消失。
 该模式只用于诊断，没有改动产品 runner。后续应依据原失败客户端与宿主的实际等待位置继续定位，
 不要继续重试已否定的 shell、输出文件或输入句柄包装。
+
+## 最终状态补充
+
+最终 `7623470bd` 的[六组 portable 回归](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34309551585)全部通过。进程路径传输后续已改用带完整性标识的 Base64 列表，并取消 PowerShell 模块自动加载；上文 JSON 为历史阶段，最终实现及超时证据见[进程探测记录](windows-process-discovery-cold-start.md)。CLI 最后一次 stdin 对照的第一失败阶段仍是成功渲染后的 `project close`：空日志、20 秒超时，其他只读请求正常；具体客户端或 RPC 内部等待位置未知。新的 Windows IDE 连接模式缺少交互桌面验收属于另一条阻塞，不能替代该故障描述。
 
 ## 规则评估
 

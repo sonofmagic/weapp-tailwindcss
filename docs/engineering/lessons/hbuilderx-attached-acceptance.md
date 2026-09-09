@@ -5,6 +5,25 @@ baseline: 2f7318b022c5ea2ff00750ff6121e44b6a275e1d
 regressions:
   - e2e/hbuilderx-attach.test.ts
   - e2e/issue-hbuilderx-attach.test.ts
+verification:
+  - claim: "Windows/macOS/Linux × Node 22/24 六组 portable 回归通过；不替代原生桌面验收"
+    kind: "ci"
+    status: "passed"
+    sha: "7623470bddfb3e3ada51cefbdbd6527015867220"
+    environment: "GitHub hosted Windows、macOS、Linux / Node 22、24"
+    url: "https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34309551585"
+  - claim: "通过 IDE 点击运行后的 Windows 两轮连接验收"
+    kind: "native"
+    status: "pending"
+    sha: "7623470bddfb3e3ada51cefbdbd6527015867220"
+    environment: "Windows 11 交互桌面 / HBuilderX stable、alpha"
+    reason: "没有可用交互桌面完成该模式的逐场景两轮验收；portable 和历史 CLI 结果不能替代"
+  - claim: "macOS stable 两轮与 alpha 完整第二轮连接验收"
+    kind: "native"
+    status: "pending"
+    sha: "7623470bddfb3e3ada51cefbdbd6527015867220"
+    environment: "macOS / HBuilderX stable 5.24、alpha 5.25"
+    reason: "alpha 首轮四场景完成；剩余轮次未完成，不能由 CI 通过或 PR 合并补足"
 ---
 
 # 原生 IDE 启动与 Web HMR 验收分离
@@ -43,7 +62,7 @@ macOS Alpha 首轮最终结果：
 
 每项原始证据位于 `e2e/.artifacts/hbuilderx-attach/<channel>-<case>-<标识>/`，日志来自原生控制台的可访问文本原样保存，记录了 `HX_Version`、编译器、VDOM 和起止标识。LF 在 `6f2d368f5`，其余三项在 `7b50dcb58` 执行，二者被测产品和连接代码相同，后者仅新增 watcher 夹具与报告变更。第二轮 LF 因 GUI 未启动新服务而等待超时、源码恢复；stable 两轮、alpha 完整第二轮及 Windows 交互验收尚未完成，不能声称计划矩阵已全通过。
 
-该提交的 portable 六个系统/Node 组合全部成功，Windows 原生 job 为 skipped，self-hosted 原生工作流未由 PR 触发。完整 PR 其它自动任务仍继续跟进。
+最终被测提交 `7623470bd` 的 [portable 六组回归](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34309551585)及 [React Native 三端 CI](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34309551591)均成功；Windows 原生 job 为 skipped，self-hosted 原生工作流未由 PR 触发。PR #1172 已合并；已授权跟进任务随后应用户要求停用并核对为 PAUSED。这些状态不补足原生验收矩阵。
 
 ## 适用边界
 

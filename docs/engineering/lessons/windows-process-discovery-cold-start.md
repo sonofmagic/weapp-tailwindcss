@@ -6,6 +6,19 @@ regressions:
   - packages/hbuilderx-runner/test/discovery.test.ts
   - packages/hbuilderx-runner/test/discovery-windows.test.ts
   - packages/hbuilderx-runner/test/host-connection.test.ts
+verification:
+  - claim: "Windows Node 22 的进程探测超过 10 秒期限"
+    kind: "ci"
+    status: "failed"
+    sha: "5ce6db93e80baf1bbaacb6a6fc080ac223c52c15"
+    environment: "GitHub windows-latest / Node 22"
+    url: "https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34306912103/job/102325400331"
+  - claim: "Windows/macOS/Linux × Node 22/24 六组 portable 回归通过；不替代原生桌面验收"
+    kind: "ci"
+    status: "passed"
+    sha: "7623470bddfb3e3ada51cefbdbd6527015867220"
+    environment: "GitHub hosted Windows、macOS、Linux / Node 22、24"
+    url: "https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34309551585"
 ---
 
 # Windows 进程探测的冷启动依赖与失败证据
@@ -24,9 +37,11 @@ regressions:
 
 本地执行包内 Vitest、构建和定向 ESLint；真实 Windows 进程用例仍由 Node 22/24 自动矩阵执行。新增截断列表、路径损坏、盘符根目录、相对盘符路径、UNC、BOM、阶段日志与信号回归。macOS 本地通过不替代 Windows 实测。cc6b30f96 的 Windows Node 22/24 真实进程用例分别在 5065/2755 ms 通过，但 host-connection 的另一份 mock 仍返回旧 JSON 协议，导致该 job 失败。本次同步该 fixture，并把信息查询测试改成显式三平台分支；在 macOS 上旧 fixture 的 win32 分支已复现失败，修正后本地完整包测试 58 项通过，2 项平台用例跳过。该遗漏说明依赖 process.platform 的模拟用例不能只运行当前宿主分支。
 
+最终 `7623470bd` 的[六组 portable 回归](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34309551585)全部通过，包括真实 Windows 进程与 API 协议验证。这补齐最终执行结果，不将首次超时的内部阶段升级为已确认根因。
+
 ## 适用边界
 
-这是 runner 的操作系统进程查询，不调用 HBuilderX CLI，不证明 CLI 间歇挂起已修复。后续以当前提交的 Windows 自动检查记录实际结果；如再超时，根据阶段证据继续定位。
+这是 runner 的操作系统进程查询，不调用 HBuilderX CLI，不证明 CLI 间歇挂起已修复。本记录的通过结论仅对应上述提交与运行；若再出现超时，仍需根据阶段证据继续定位。
 
 ## 规则评估
 
