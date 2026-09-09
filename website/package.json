@@ -100,7 +100,7 @@
     "cross-env": "catalog:crossEnv",
     "docusaurus-plugin-llms": "^0.6.0",
     "docusaurus-plugin-sass": "^0.2.7",
-    "docusaurus-plugin-typedoc": "1.4.2",
+    "docusaurus-plugin-typedoc": "1.4.3",
     "dotenv": "^17.4.2",
     "gray-matter": "^4.0.3",
     "js-yaml": "^5.4.1",
