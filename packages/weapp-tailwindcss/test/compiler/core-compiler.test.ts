@@ -1,9 +1,12 @@
 import { postcss } from '@weapp-tailwindcss/postcss'
 import path from 'node:path'
 import { mkdir, mkdtemp, symlink, writeFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import { createCompiler } from '@/core/compiler'
 import { resolveTailwindV4Source } from '@/generator'
+
+const require = createRequire(import.meta.url)
 
 const MINIMAL_THEME_CSS = `
 @theme default {
@@ -27,7 +30,7 @@ describe('createCompiler', () => {
     const tailwindCss = path.join(root, 'styles/tailwind.css')
     await mkdir(path.join(root, 'styles/pages'), { recursive: true })
     await mkdir(path.join(root, 'node_modules'), { recursive: true })
-    await symlink(path.resolve(process.cwd(), '../../node_modules/tailwindcss'), path.join(root, 'node_modules/tailwindcss'), 'dir')
+    await symlink(path.dirname(require.resolve('tailwindcss/package.json')), path.join(root, 'node_modules/tailwindcss'), 'dir')
     await writeFile(appCss, '@import "./styles/tailwind.css";')
     await writeFile(tailwindCss, [
       '@import "tailwindcss" source(none);',
