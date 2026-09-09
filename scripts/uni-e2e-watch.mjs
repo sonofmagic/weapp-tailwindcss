@@ -12,13 +12,14 @@ const useNativeWatch = process.env.UNI_E2E_WATCH_NATIVE === '1'
 const uniPlatform = process.env.UNI_E2E_WATCH_PLATFORM || 'mp-weixin'
 
 function spawnPnpm(args, options = {}) {
-  const { command, args: commandArgs } = createPnpmCommand(args)
+  const { command, args: commandArgs, shell } = createPnpmCommand(args)
   return spawn(command, commandArgs, {
     cwd: process.cwd(),
     env: {
       ...process.env,
       ...options.env,
     },
+    shell,
     stdio: options.stdio ?? ['ignore', 'pipe', 'pipe'],
   })
 }
