@@ -7,6 +7,7 @@ import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { execa } from 'execa'
 import { parse, stringify } from 'yaml'
+import { readPnpmVersion } from '../pnpm-version.mjs'
 import { packRuntimeDependencies } from './pack-runtime-dependencies.mjs'
 import { inspectOutput, verifyOutput } from './windows-utilities-output.mjs'
 
@@ -116,7 +117,7 @@ async function verify(label, expectRegression) {
 
 try {
   await cp(fixture, project, { recursive: true })
-  assert.equal((await runPnpm(['--version'])).trim(), '11.25.0')
+  assert.equal((await runPnpm(['--version'])).trim(), readPnpmVersion(path.join(project, 'package.json')), 'pnpm version must match the reproduction fixture')
   await writeFile(path.join(reportDir, 'published-install.log'), await runPnpm(['install', '--frozen-lockfile']))
   await verify('published-5.5.1', process.platform === 'win32')
 

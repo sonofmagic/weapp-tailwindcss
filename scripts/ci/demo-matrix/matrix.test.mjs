@@ -5,6 +5,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
 import { describe, expect, it } from 'vitest'
+import { readPnpmVersion } from '../../pnpm-version.mjs'
 import { authoredClasses, authoredCss } from './authored.mjs'
 import { cases, checkCatalog, coverage, demos, matrix, repo, requiredPhases } from './catalog.mjs'
 import { consumedClasses } from './consumption.mjs'
@@ -80,7 +81,7 @@ describe('portable demo matrix', () => {
       for (const [index, job] of matrix().include.entries()) {
         const report = {
           sha: head,
-          pnpm: '11.25.0',
+          pnpm: readPnpmVersion(),
           node: `v${job.node}.0.0`,
           os: platforms[job.os],
           expected: job.cases,
@@ -113,8 +114,9 @@ describe('portable demo matrix', () => {
   it('fails closed for absent, skipped, duplicate, stale or incomplete evidence', () => {
     const id = cases[0].id
     const expected = { include: [{ os: 'windows-latest', node: 24, cases: [id] }] }
-    const passed = { sha: 'head', pnpm: '11.25.0', node: 'v24.19.0', os: 'win32', expected: [id], results: [{ id, coverage: 'utilities', status: 'passed', rounds: Object.fromEntries(['production', 'initial', 'replace', 'add', 'restore'].map(round => [round, {}])) }] }
+    const passed = { sha: 'head', pnpm: readPnpmVersion(), node: 'v24.19.0', os: 'win32', expected: [id], results: [{ id, coverage: 'utilities', status: 'passed', rounds: Object.fromEntries(['production', 'initial', 'replace', 'add', 'restore'].map(round => [round, {}])) }] }
     expect(verifyReports([passed], expected, 'head')).toBe(1)
+    expect(() => verifyReports([{ ...passed, pnpm: '0.0.0' }], expected, 'head')).toThrow('pnpm version must match root packageManager')
     expect(() => verifyReports([], expected, 'head')).toThrow()
     expect(() => verifyReports([passed, passed], expected, 'head')).toThrow('Duplicate')
     expect(() => verifyReports([passed], expected, 'new-head')).toThrow('different commit')
@@ -130,7 +132,7 @@ describe('portable demo matrix', () => {
     expect(coverage(hybrid)).toBe('webview-build')
     expect(requiredPhases(hybrid)).toEqual(['production'])
     expect(requiredPhases(cases.find(item => item.target === 'h5'))).toContain('refresh')
-    const report = { sha: 'head', pnpm: '11.25.0', node: 'v24.19.0', os: 'win32', expected: [native.id], results: [{ id: native.id, coverage: 'native-build', status: 'passed', rounds: { production: { javascript: true } } }] }
+    const report = { sha: 'head', pnpm: readPnpmVersion(), node: 'v24.19.0', os: 'win32', expected: [native.id], results: [{ id: native.id, coverage: 'native-build', status: 'passed', rounds: { production: { javascript: true } } }] }
     const expected = { include: [{ os: 'windows-latest', node: 24, cases: [native.id] }] }
     expect(verifyReports([report], expected, 'head')).toBe(1)
     expect(() => verifyReports([{ ...report, results: [{ ...report.results[0], coverage: 'utilities' }] }], expected, 'head')).toThrow('Incorrect coverage')

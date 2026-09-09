@@ -1,3 +1,4 @@
+import path from 'node:path'
 import process from 'node:process'
 
 export function createPnpmCommand(
@@ -11,10 +12,12 @@ export function createPnpmCommand(
     : process.env.npm_execpath
 
   if (npmExecPath) {
+    const extension = (platform === 'win32' ? path.win32 : path.posix).extname(npmExecPath).toLowerCase()
+    const javascript = ['.js', '.cjs', '.mjs'].includes(extension)
     return {
-      command: execPath,
-      args: [npmExecPath, ...args],
-      shell: false,
+      command: javascript ? execPath : npmExecPath,
+      args: javascript ? [npmExecPath, ...args] : args,
+      shell: platform === 'win32' && ['.cmd', '.bat'].includes(extension),
     }
   }
 
