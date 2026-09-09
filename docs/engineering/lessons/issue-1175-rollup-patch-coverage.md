@@ -19,6 +19,8 @@ PR #1175 的 Ubuntu uview demo 在 replace 阶段通过后，add 阶段不再触
 
 扩展真实依赖链回归后，4.63.1 的文件状态去重及 CJS/ESM 构建期间失效测试均失败，4.63.0 通过。按 4.63.1 发布文件重新生成同等补丁，同时注册两个版本并同步锁文件。测试通过各 demo 的 Vite 解析 Rollup，避免只测试固定旧版本。
 
+构建期间失效用例在进入 transform 后立即发布下一版本，可能早于原生事件去重窗口结束。该用例使用真实 polling watcher 观察状态变化，以独立验证缓存生命周期；原生 watcher 的连续原子替换仍由 `rollup-watch.test.mjs` 验证。相同 polling 用例在未打补丁的 4.63.1 上仍然失败，在打补丁版本上通过。
+
 ## 验证
 
 - `pnpm exec vitest run -c scripts/ci/demo-matrix/vitest.config.mts scripts/ci/demo-matrix/rollup-invalidation.test.mjs scripts/ci/demo-matrix/rollup-watch.test.mjs --update=none`：修复前 4.63.1 三项失效回归失败；修复后两个版本的 14 项回归通过。

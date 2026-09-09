@@ -57,7 +57,12 @@ describe.each(['uni-app-vite-tailwindcss-v4', 'issue-uview-plus-cssentries'])('%
       watcher = rollup.watch({
         input: entry,
         output: { file: output, format: 'es' },
-        watch: { onInvalidate(id) { invalidated.push(id) } },
+        watch: {
+        // 该用例验证构建期间的缓存失效；polling 保证两轮状态都能跨过原生事件去重窗口。
+        // 原子替换后的原生监听连续性由 rollup-watch.test.mjs 独立覆盖。
+          chokidar: { usePolling: true, interval: 10 },
+          onInvalidate(id) { invalidated.push(id) },
+        },
         plugins: [{
           name: 'inflight-transform-dependency',
           resolveId(id) { return id === 'virtual:derived' ? id : null },
