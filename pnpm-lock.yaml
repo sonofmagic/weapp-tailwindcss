@@ -722,7 +722,6 @@ catalogs:
 
 overrides:
   jiti: 2.7.0
-  postcss-calc: link:packages/postcss-calc
 
 pnpmfileChecksum: sha256-VIhHxkE3DlYGW4jpmh5YBZoirXpyRMuq7rJOkofCfW8=
 
@@ -4763,9 +4762,6 @@ importers:
       fast-check:
         specifier: ^4.9.0
         version: 4.9.0
-      postcss-calc:
-        specifier: link:../postcss-calc
-        version: link:../postcss-calc
       postcss-custom-properties:
         specifier: ^15.0.1
         version: 15.0.1(postcss@8.5.28)
@@ -28117,6 +28113,23 @@ packages:
     engines: {node: '>=20.19.0'}
     peerDependencies:
       postcss: ^8.4
+
+  postcss-calc@10.1.1:
+    resolution: {integrity: sha512-NYEsLHh8DgG/PRH2+G9BTuUdtf9ViS+vdoQ0YA5OQdGsfN4ztiwtDWNtBl9EKeqNMFnIu8IKZ0cLxEQ5r5KVMw==}
+    engines: {node: ^18.12 || ^20.9 || >=22.0}
+    peerDependencies:
+      postcss: ^8.4.38
+
+  postcss-calc@8.2.4:
+    resolution: {integrity: sha512-SmWMSJmB8MRnnULldx0lQIyhSNvuDl9HfrZkaqqE/WHAhToYsAvDq+yAsA/kIyINDszOp3Rh0GFoNuH5Ypsm3Q==}
+    peerDependencies:
+      postcss: ^8.2.2
+
+  postcss-calc@9.0.1:
+    resolution: {integrity: sha512-TipgjGyzP5QzEhsOZUaIkeO5mKeMFpebWzRogWG/ysonUlnHcq5aJe0jOjpfzUU8PeSaBQnrE8ehR0QA5vs8PQ==}
+    engines: {node: ^14 || ^16 || >=18.0}
+    peerDependencies:
+      postcss: ^8.2.2
 
   postcss-clamp@4.1.0:
     resolution: {integrity: sha512-ry4b1Llo/9zz+PKC+030KUnPITTJAHeOwjfAyyB60eT0AorGLdzp52s31OsPRHRf8NchkgFoG2y6fCfn1IV1Ow==}
@@ -57954,7 +57967,7 @@ snapshots:
       css-declaration-sorter: 6.4.1(postcss@8.5.28)
       cssnano-utils: 3.1.0(postcss@8.5.28)
       postcss: 8.5.28
-      postcss-calc: link:packages/postcss-calc
+      postcss-calc: 8.2.4(postcss@8.5.28)
       postcss-colormin: 5.3.1(postcss@8.5.28)
       postcss-convert-values: 5.1.3(postcss@8.5.28)
       postcss-discard-comments: 5.1.2(postcss@8.5.28)
@@ -57988,7 +58001,7 @@ snapshots:
       css-declaration-sorter: 7.4.0(postcss@8.5.28)
       cssnano-utils: 4.0.2(postcss@8.5.28)
       postcss: 8.5.28
-      postcss-calc: link:packages/postcss-calc
+      postcss-calc: 9.0.1(postcss@8.5.28)
       postcss-colormin: 6.1.0(postcss@8.5.28)
       postcss-convert-values: 6.1.0(postcss@8.5.28)
       postcss-discard-comments: 6.0.2(postcss@8.5.28)
@@ -58022,7 +58035,7 @@ snapshots:
       css-declaration-sorter: 7.4.0(postcss@8.5.28)
       cssnano-utils: 5.0.3(postcss@8.5.28)
       postcss: 8.5.28
-      postcss-calc: link:packages/postcss-calc
+      postcss-calc: 10.1.1(postcss@8.5.28)
       postcss-colormin: 7.0.10(postcss@8.5.28)
       postcss-convert-values: 7.0.12(postcss@8.5.28)
       postcss-discard-comments: 7.0.8(postcss@8.5.28)
@@ -58055,7 +58068,7 @@ snapshots:
       browserslist: 4.28.9
       cssnano-utils: 6.0.4(postcss@8.5.28)
       postcss: 8.5.28
-      postcss-calc: link:packages/postcss-calc
+      postcss-calc: 10.1.1(postcss@8.5.28)
       postcss-colormin: 8.0.5(postcss@8.5.28)
       postcss-convert-values: 8.0.4(postcss@8.5.28)
       postcss-discard-comments: 8.0.4(postcss@8.5.28)
@@ -68313,6 +68326,24 @@ snapshots:
     dependencies:
       postcss: 8.5.28
       postcss-selector-parser: 7.1.6
+
+  postcss-calc@10.1.1(postcss@8.5.28):
+    dependencies:
+      postcss: 8.5.28
+      postcss-selector-parser: 7.1.6
+      postcss-value-parser: 4.2.0
+
+  postcss-calc@8.2.4(postcss@8.5.28):
+    dependencies:
+      postcss: 8.5.28
+      postcss-selector-parser: 6.1.4
+      postcss-value-parser: 4.2.0
+
+  postcss-calc@9.0.1(postcss@8.5.28):
+    dependencies:
+      postcss: 8.5.28
+      postcss-selector-parser: 6.1.4
+      postcss-value-parser: 4.2.0
 
   postcss-clamp@4.1.0(postcss@8.5.28):
     dependencies:

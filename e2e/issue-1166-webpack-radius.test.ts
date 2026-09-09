@@ -24,7 +24,7 @@ it.each(['weapp', 'web'] as const)('issue #1166: preserves the %s loader handoff
         'tailwindcss': '4.3.3',
       },
     }))
-    // 独立消费目录不继承 workspace 的 postcss-calc override。
+    // 独立消费目录固定真实上游版本，不依赖仓库内安装的计算器。
     await execa('pnpm', ['install', '--ignore-scripts', '--config.minimumReleaseAge=0'], { cwd: root })
     const consumerRequire = createRequire(manifest)
     expect(consumerRequire('postcss-calc/package.json').version).toBe('8.2.4')
