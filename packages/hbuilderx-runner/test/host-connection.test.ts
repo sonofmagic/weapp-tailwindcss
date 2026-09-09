@@ -150,9 +150,16 @@ it.each(['candidate', 'env'] as const)('解析显式 %s 路径不依赖操作系
   expect(runCommand).not.toHaveBeenCalled()
 })
 
-it('信息查询 API 保留真实运行状态语义，纯路径 API 仍校验 channel', async () => {
-  vi.mocked(spawnSync).mockReturnValueOnce({ status: 0, stdout: process.platform === 'win32' ? '[]' : '', stderr: '' } as ReturnType<typeof spawnSync>)
-  await expect(resolveHBuilderXCliInfo({ candidates: [cli], channel: 'alpha', env: { HBUILDERX_CLI_PATH: cli } })).resolves.toMatchObject({ path: cli, isRunning: false, source: 'env', channel: 'unknown' })
-  expect(spawnSync).toHaveBeenCalledOnce()
-  await expect(resolveHBuilderXCli({ candidates: [cli], env: { HBUILDERX_CHANNEL: 'invalid' } })).rejects.toThrow('channel')
+it.each(['win32', 'darwin', 'linux'] as const)('%s 信息查询 API 保留真实运行状态语义，纯路径 API 仍校验 channel', async (platform) => {
+  const descriptor = Object.getOwnPropertyDescriptor(process, 'platform')!
+  Object.defineProperty(process, 'platform', { value: platform })
+  try {
+    vi.mocked(spawnSync).mockReturnValueOnce({ status: 0, stdout: platform === 'win32' ? 'WT-HBUILDERX-PROCESSES/1\r\n\r\nEND\r\n' : '', stderr: '' } as ReturnType<typeof spawnSync>)
+    await expect(resolveHBuilderXCliInfo({ candidates: [cli], channel: 'alpha', env: { HBUILDERX_CLI_PATH: cli } })).resolves.toMatchObject({ path: cli, isRunning: false, source: 'env', channel: 'unknown' })
+    expect(spawnSync).toHaveBeenCalledOnce()
+    await expect(resolveHBuilderXCli({ candidates: [cli], env: { HBUILDERX_CHANNEL: 'invalid' } })).rejects.toThrow('channel')
+  }
+  finally {
+    Object.defineProperty(process, 'platform', descriptor)
+  }
 })

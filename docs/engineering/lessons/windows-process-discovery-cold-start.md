@@ -5,6 +5,7 @@ baseline: 5ce6db93e80baf1bbaacb6a6fc080ac223c52c15
 regressions:
   - packages/hbuilderx-runner/test/discovery.test.ts
   - packages/hbuilderx-runner/test/discovery-windows.test.ts
+  - packages/hbuilderx-runner/test/host-connection.test.ts
 ---
 
 # Windows 进程探测的冷启动依赖与失败证据
@@ -21,7 +22,7 @@ regressions:
 
 ## 验证
 
-本地执行包内 Vitest、构建和定向 ESLint；真实 Windows 进程用例仍由 Node 22/24 自动矩阵执行。新增截断列表、路径损坏、盘符根目录、相对盘符路径、UNC、BOM、阶段日志与信号回归。macOS 本地通过不替代 Windows 实测。
+本地执行包内 Vitest、构建和定向 ESLint；真实 Windows 进程用例仍由 Node 22/24 自动矩阵执行。新增截断列表、路径损坏、盘符根目录、相对盘符路径、UNC、BOM、阶段日志与信号回归。macOS 本地通过不替代 Windows 实测。cc6b30f96 的 Windows Node 22/24 真实进程用例分别在 5065/2755 ms 通过，但 host-connection 的另一份 mock 仍返回旧 JSON 协议，导致该 job 失败。本次同步该 fixture，并把信息查询测试改成显式三平台分支；在 macOS 上旧 fixture 的 win32 分支已复现失败，修正后本地完整包测试 58 项通过，2 项平台用例跳过。该遗漏说明依赖 process.platform 的模拟用例不能只运行当前宿主分支。
 
 ## 适用边界
 
