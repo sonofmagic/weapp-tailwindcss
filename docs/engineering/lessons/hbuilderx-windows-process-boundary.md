@@ -15,6 +15,18 @@ regressions:
 
 # Windows HBuilderX 进程参数边界
 
+## 公开 CI 案例与当前诊断边界（2026-09-09 核实）
+
+HBuilderX 有公开的 CI 使用案例，不能把当前 Windows 间歇挂起概括为“不支持 CI”。
+
+- [官方 CLI 概述](https://hx.dcloud.net.cn/cli/README)明确说明 Linux CLI 于 2025 年 1 月推出，用于持续集成、自动化发布；目前官方说明测试过 Ubuntu。这是原生 CLI 的支持路径，不是可视化编辑器。
+- [官方运行模式说明](https://hx.dcloud.net.cn/cli/launch-app?id=launch-ui)说明 HBuilderX 5.11+ 的默认 `--ui false` 在终端完成编译与运行，适合 CI、脚本自动化；`--ui true` 由 IDE 界面接管。不能依据早期文章断言当前所有 CLI 工作都要求交互桌面。
+- [DCloud 社区 Windows/Jenkins 对照](https://ask.dcloud.net.cn/question/139056)：作者在同一 Windows 10 机器上，以 SYSTEM 或登录用户启动 Agent 服务均失败；在登录桌面通过 JNLP 或 `java -jar agent.jar` 启动 Agent 后发行成功。同帖还报告多条 CLI 命令中途卡住，官方回复只说明未复现，没有给出通用根治补丁。更换服务用户名不等于切换到交互会话。
+- [KOPS 实践记录（2024-04-10）](https://www.kops.cc/archives/hbuilder-project-build-with-container.html)描述 Linux Jenkins 调用 Windows Jenkins、后者运行 HBuilderX CLI 的真实架构，也报告偶发打不开项目、需重启 IDE。作者最终迁移普通 uni-app 到 Vue CLI；这不能替代本任务 uni-app x 的 Windows 原生 HMR 验收。文中“仅支持 Windows/macOS”早于官方 Linux CLI，现已过时。
+- [公开 Actions 配置](https://github.com/schizobulia/cli-test/blob/fc186b4a390fc6ca74bb2c3c29f226fa827a794a/.github/workflows/hx-build.yml)确实调用官方 Linux HBuilderX 的 `open`、`project open` 与 `launch app-android --compile true`，但查询到的最近 7 次运行全部 cancelled；只能证明有人尝试集成，不能当作稳定运行的证据。
+
+当前现场已有 Windows IDE/Chrome 窗口，挂起时新 CLI 的只读命令仍能响应；因此服务会话问题只能作为待排查条件，不能直接认定是本次根因。新增现场记录包含 runner/CLI/IDE 的 SessionId、诊断进程的 UserInteractive、原生线程状态与 WaitReason。初始化 `version` 超时也在杀死原客户端前采集，不再只留下空日志。线程等待本身不证明死锁，后续仍需结合等待链或调用栈定位具体请求；该改动只加强证据，不改变超时判定、重试策略或产品 runner。
+
 ## 症状
 
 扩展 #1170 / #1144 验收时，真实 Windows Node 22、24 均暴露 runner 的进程参数缺陷：

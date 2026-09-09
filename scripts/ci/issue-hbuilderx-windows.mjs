@@ -38,6 +38,15 @@ async function command(executable, args, name, timeout = 120_000) {
       child.once('error', reject)
       child.once('close', resolve)
       timer = setTimeout(() => {
+        // 初始化也可能卡在原生请求；终止前采集会话和线程，保留原始超时结果。
+        if (executable === cli) {
+          const diagnostic = spawnSync('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.resolve('scripts', 'ci', 'issue-hbuilderx-diagnostics.ps1')], {
+            env: { ...process.env, HBUILDERX_CLI_PATH: cli, E2E_HBUILDERX_DIAGNOSTIC_DIR: path.join(artifactRoot, `${name}-failure`) },
+            timeout: 30_000,
+            windowsHide: true,
+          })
+          output += `\n初始化诊断状态：${JSON.stringify({ status: diagnostic.status, signal: diagnostic.signal, error: diagnostic.error?.message })}\n`
+        }
         spawnSync('taskkill', ['/pid', String(child.pid), '/t', '/f'], { windowsHide: true, timeout: 5000 })
         reject(new Error(`${name} 超过 ${timeout}ms`))
       }, timeout)

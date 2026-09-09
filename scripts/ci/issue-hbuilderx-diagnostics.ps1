@@ -2,15 +2,42 @@ $ErrorActionPreference = 'Continue'
 $artifactRoot = $env:E2E_HBUILDERX_DIAGNOSTIC_DIR
 New-Item -ItemType Directory -Force -Path $artifactRoot | Out-Null
 Get-CimInstance Win32_Process |
-  Where-Object { $_.Name -match 'HBuilder|node|cli|chrome|cmd|conhost' } |
-  Select-Object Name, ProcessId, ParentProcessId, ExecutablePath, CommandLine |
+  Where-Object { $_.Name -match 'HBuilder|node|cli|chrome|cmd|conhost|Runner|powershell|pwsh' } |
+  Select-Object Name, ProcessId, ParentProcessId, SessionId, ExecutablePath, CommandLine |
   ConvertTo-Json -Depth 4 | Set-Content -Encoding utf8 (Join-Path $artifactRoot 'processes.json')
 Get-NetTCPConnection -State Listen |
   Select-Object LocalAddress, LocalPort, OwningProcess |
   ConvertTo-Json | Set-Content -Encoding utf8 (Join-Path $artifactRoot 'ports.json')
 Get-Process | Where-Object { $_.MainWindowTitle } |
-  Select-Object Id, ProcessName, MainWindowTitle |
+  Select-Object Id, ProcessName, SessionId, MainWindowTitle |
   ConvertTo-Json | Set-Content -Encoding utf8 (Join-Path $artifactRoot 'windows.json')
+
+# 用户名相同不代表处于同一交互会话；线程等待原因只作为现场数据，不据此认定死锁。
+$currentProcess = [System.Diagnostics.Process]::GetCurrentProcess()
+[ordered]@{
+  ProcessId = $currentProcess.Id
+  SessionId = $currentProcess.SessionId
+  UserInteractive = [Environment]::UserInteractive
+  SessionName = $env:SESSIONNAME
+  Identity = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+} | ConvertTo-Json | Set-Content -Encoding utf8 (Join-Path $artifactRoot 'session.json')
+$nativeThreads = foreach ($nativeProcess in (Get-Process -Name HBuilderX, cli -ErrorAction SilentlyContinue)) {
+  foreach ($nativeThread in $nativeProcess.Threads) {
+    try {
+      $state = $nativeThread.ThreadState
+      [ordered]@{
+        ProcessId = $nativeProcess.Id
+        SessionId = $nativeProcess.SessionId
+        ThreadId = $nativeThread.Id
+        State = [string]$state
+        WaitReason = if ($state -eq [System.Diagnostics.ThreadState]::Wait) { [string]$nativeThread.WaitReason } else { $null }
+      }
+    } catch {
+      [ordered]@{ ProcessId = $nativeProcess.Id; ThreadId = $nativeThread.Id; Error = $_.Exception.Message }
+    }
+  }
+}
+@($nativeThreads) | ConvertTo-Json -Depth 4 | Set-Content -Encoding utf8 (Join-Path $artifactRoot 'native-threads.json')
 
 # 仅在独立的 GitHub Windows runner 中采集当前 IDE 桌面。
 Add-Type -AssemblyName System.Windows.Forms
