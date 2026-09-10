@@ -2,7 +2,6 @@ import { spawn } from 'node:child_process'
 import { readdir, stat } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
-
 import { createPnpmCommand } from './pnpm-command.mjs'
 
 const READY_RE = /Build complete|Watching for changes|ready in \d+/i

@@ -3,7 +3,6 @@ import { readdir, stat } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { pathToFileURL } from 'node:url'
-
 import { createPnpmCommand } from './pnpm-command.mjs'
 
 const READY_RE = /开发服务已就绪|dev(?:elopment)? server ready|ready in \d+/i

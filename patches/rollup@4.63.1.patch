@@ -1,7 +1,10 @@
 diff --git a/dist/es/shared/watch.js b/dist/es/shared/watch.js
 --- a/dist/es/shared/watch.js
 +++ b/dist/es/shared/watch.js
-@@ -9254,2 +9254,9 @@
+@@ -9251,8 +9251,15 @@
+ 	  }
+ 
+ 	  if (event === EV_CHANGE) {
 -	    const isThrottled = !this._throttle(EV_CHANGE, path, 50);
 -	    if (isThrottled) return this;
 +	    // 只合并同一文件状态的重复通知，不丢弃窗口内的新版本。
@@ -13,46 +16,64 @@ diff --git a/dist/es/shared/watch.js b/dist/es/shared/watch.js
 +	    const throttle = this._throttle(EV_CHANGE, path, 50);
 +	    if (!throttle) return this;
 +	    throttle.stats = stats;
-@@ -9620 +9627 @@
+ 	  }
+ 
+ 	  if (opts.alwaysStat && val1 === undefined &&
+@@ -9617,50 +9624,43 @@
+ 
+ class FileWatcher {
+     constructor(task, chokidarOptions) {
 -        this.transformWatchers = new Map();
 +        this.transformDependencies = new Set();
-@@ -9623 +9630 @@
+         this.chokidarOptions = chokidarOptions;
+         this.task = task;
 -        this.watcher = this.createWatcher(null);
 +        this.watcher = this.createWatcher();
-@@ -9627,3 +9633,0 @@
+     }
+     close() {
+         this.watcher.close();
 -        for (const watcher of this.transformWatchers.values()) {
 -            watcher.close();
 -        }
-@@ -9633,5 +9637 @@
+     }
+     unwatch(id) {
+         this.watcher.unwatch(id);
 -        const transformWatcher = this.transformWatchers.get(id);
 -        if (transformWatcher) {
 -            this.transformWatchers.delete(id);
 -            transformWatcher.close();
 -        }
 +        this.transformDependencies.delete(id);
-@@ -9641,3 +9641 @@
+     }
+     watch(id, isTransformDependency) {
+         if (isTransformDependency) {
 -            const watcher = this.transformWatchers.get(id) ?? this.createWatcher(id);
 -            watcher.add(id);
 -            this.transformWatchers.set(id, watcher);
 +            this.transformDependencies.add(id);
-@@ -9645,3 +9643 @@
+         }
 -        else {
 -            this.watcher.add(id);
 -        }
 +        this.watcher.add(id);
-@@ -9649 +9645 @@
+     }
 -    createWatcher(transformWatcherId) {
 +    createWatcher() {
-@@ -9653 +9648,0 @@
+         const task = this.task;
+         const isLinux = platform() === 'linux';
+         const isFreeBSD = platform() === 'freebsd';
 -        const isTransformDependency = transformWatcherId !== null;
-@@ -9655 +9649,0 @@
+         const handleChange = (id, event) => {
 -            const changedId = transformWatcherId || id;
-@@ -9660,2 +9654,2 @@
+             if (isLinux || isFreeBSD) {
+                 // unwatching and watching fixes an issue with chokidar where on certain systems,
+                 // a file that was unlinked and immediately recreated would create a change event
+                 // but then no longer any further events
 -                watcher.unwatch(changedId);
 -                watcher.add(changedId);
 +                watcher.unwatch(id);
 +                watcher.add(id);
-@@ -9663 +9657,7 @@
+             }
 -            task.invalidate(changedId, { event, isTransformDependency });
 +            task.invalidate(id, { event, isTransformDependency: this.transformDependencies.has(id) });
 +            for (const dependency of this.transformDependencies) {
@@ -61,41 +82,78 @@ diff --git a/dist/es/shared/watch.js b/dist/es/shared/watch.js
 +                    task.invalidate(dependency, { event, isTransformDependency: true });
 +                }
 +            }
-@@ -9787,0 +9788 @@
+         };
+         const watcher = chokidar
+             .watch([], this.chokidarOptions)
+@@ -9785,6 +9785,7 @@
+         this.watchFiles = [];
+         this.closed = false;
+         this.invalidated = true;
 +        this.invalidatedTransformDependencies = new Set();
-@@ -9812,0 +9814 @@
+         this.watched = new Set();
+         this.watcher = watcher;
+         this.options = options;
+@@ -9810,6 +9811,7 @@
+     invalidate(id, details) {
+         this.invalidated = true;
+         if (details.isTransformDependency) {
 +            this.invalidatedTransformDependencies.add(id);
-@@ -9826,0 +9829,2 @@
+             for (const module of this.cache.modules) {
+                 if (!module.transformDependencies.includes(id))
+                     continue;
+@@ -9824,6 +9826,8 @@
+         if (!this.invalidated)
+             return;
+         this.invalidated = false;
 +        // 新一轮消费现有缓存；本轮构建期间到达的失效必须保留给下一轮。
 +        this.invalidatedTransformDependencies.clear();
-@@ -9881,0 +9886,6 @@
+         const options = {
+             ...this.options,
+             cache: this.cache
+@@ -9879,6 +9883,12 @@
+         this.watched = new Set();
+         this.watchFiles = result.watchFiles;
+         this.cache = result.cache;
 +        // 新缓存不能覆盖构建期间对旧缓存标记的失效。
 +        for (const module of this.cache.modules) {
 +            if (module.transformDependencies.some(id => this.invalidatedTransformDependencies.has(id))) {
 +                module.originalCode = null;
 +            }
 +        }
+         for (const id of this.watchFiles) {
+             this.watchFile(id);
+         }
 diff --git a/dist/shared/watch.js b/dist/shared/watch.js
 --- a/dist/shared/watch.js
 +++ b/dist/shared/watch.js
-@@ -33 +33 @@
+@@ -30,50 +30,43 @@
+ 
+ class FileWatcher {
+     constructor(task, chokidarOptions) {
 -        this.transformWatchers = new Map();
 +        this.transformDependencies = new Set();
-@@ -36 +36 @@
+         this.chokidarOptions = chokidarOptions;
+         this.task = task;
 -        this.watcher = this.createWatcher(null);
 +        this.watcher = this.createWatcher();
-@@ -40,3 +39,0 @@
+     }
+     close() {
+         this.watcher.close();
 -        for (const watcher of this.transformWatchers.values()) {
 -            watcher.close();
 -        }
-@@ -46,5 +43 @@
+     }
+     unwatch(id) {
+         this.watcher.unwatch(id);
 -        const transformWatcher = this.transformWatchers.get(id);
 -        if (transformWatcher) {
 -            this.transformWatchers.delete(id);
 -            transformWatcher.close();
 -        }
 +        this.transformDependencies.delete(id);
-@@ -54,9 +47,5 @@
+     }
+     watch(id, isTransformDependency) {
+         if (isTransformDependency) {
 -            const watcher = this.transformWatchers.get(id) ?? this.createWatcher(id);
 -            watcher.add(id);
 -            this.transformWatchers.set(id, watcher);
@@ -110,11 +168,16 @@ diff --git a/dist/shared/watch.js b/dist/shared/watch.js
 +        this.watcher.add(id);
 +    }
 +    createWatcher() {
-@@ -66 +54,0 @@
+         const task = this.task;
+         const isLinux = node_os.platform() === 'linux';
+         const isFreeBSD = node_os.platform() === 'freebsd';
 -        const isTransformDependency = transformWatcherId !== null;
-@@ -68 +55,0 @@
+         const handleChange = (id, event) => {
 -            const changedId = transformWatcherId || id;
-@@ -73,4 +60,10 @@
+             if (isLinux || isFreeBSD) {
+                 // unwatching and watching fixes an issue with chokidar where on certain systems,
+                 // a file that was unlinked and immediately recreated would create a change event
+                 // but then no longer any further events
 -                watcher.unwatch(changedId);
 -                watcher.add(changedId);
 -            }
@@ -129,24 +192,54 @@ diff --git a/dist/shared/watch.js b/dist/shared/watch.js
 +                    task.invalidate(dependency, { event, isTransformDependency: true });
 +                }
 +            }
-@@ -200,0 +194 @@
+         };
+         const watcher = index.chokidar
+             .watch([], this.chokidarOptions)
+@@ -198,6 +191,7 @@
+         this.watchFiles = [];
+         this.closed = false;
+         this.invalidated = true;
 +        this.invalidatedTransformDependencies = new Set();
-@@ -225,0 +220 @@
+         this.watched = new Set();
+         this.watcher = watcher;
+         this.options = options;
+@@ -223,6 +217,7 @@
+     invalidate(id, details) {
+         this.invalidated = true;
+         if (details.isTransformDependency) {
 +            this.invalidatedTransformDependencies.add(id);
-@@ -239,0 +235,2 @@
+             for (const module of this.cache.modules) {
+                 if (!module.transformDependencies.includes(id))
+                     continue;
+@@ -237,6 +232,8 @@
+         if (!this.invalidated)
+             return;
+         this.invalidated = false;
 +        // 新一轮消费现有缓存；本轮构建期间到达的失效必须保留给下一轮。
 +        this.invalidatedTransformDependencies.clear();
-@@ -294,0 +292,6 @@
+         const options = {
+             ...this.options,
+             cache: this.cache
+@@ -292,6 +289,12 @@
+         this.watched = new Set();
+         this.watchFiles = result.watchFiles;
+         this.cache = result.cache;
 +        // 新缓存不能覆盖构建期间对旧缓存标记的失效。
 +        for (const module of this.cache.modules) {
 +            if (module.transformDependencies.some(id => this.invalidatedTransformDependencies.has(id))) {
 +                module.originalCode = null;
 +            }
 +        }
+         for (const id of this.watchFiles) {
+             this.watchFile(id);
+         }
 diff --git a/dist/shared/index.js b/dist/shared/index.js
 --- a/dist/shared/index.js
 +++ b/dist/shared/index.js
-@@ -9250,2 +9250,9 @@
+@@ -9247,8 +9247,15 @@
+ 	  }
+ 
+ 	  if (event === EV_CHANGE) {
 -	    const isThrottled = !this._throttle(EV_CHANGE, path, 50);
 -	    if (isThrottled) return this;
 +	    // 只合并同一文件状态的重复通知，不丢弃窗口内的新版本。
@@ -158,3 +251,6 @@ diff --git a/dist/shared/index.js b/dist/shared/index.js
 +	    const throttle = this._throttle(EV_CHANGE, path, 50);
 +	    if (!throttle) return this;
 +	    throttle.stats = stats;
+ 	  }
+ 
+ 	  if (opts.alwaysStat && val1 === undefined &&

@@ -1,5 +1,18 @@
-import path from 'node:path'
+import { readFileSync } from 'node:fs'
 import process from 'node:process'
+
+function isNodeScript(file) {
+  if (!file) {
+    return false
+  }
+  try {
+    const header = readFileSync(file, { encoding: 'utf8', flag: 'r' }).slice(0, 256)
+    return header.startsWith('#!') || /\.(?:c|m)?js$/i.test(file)
+  }
+  catch {
+    return /\.(?:c|m)?js$/i.test(file)
+  }
+}
 
 export function createPnpmCommand(
   args,
@@ -11,13 +24,11 @@ export function createPnpmCommand(
     ? options.npmExecPath
     : process.env.npm_execpath
 
-  if (npmExecPath) {
-    const extension = (platform === 'win32' ? path.win32 : path.posix).extname(npmExecPath).toLowerCase()
-    const javascript = ['.js', '.cjs', '.mjs'].includes(extension)
+  if (npmExecPath && isNodeScript(npmExecPath)) {
     return {
-      command: javascript ? execPath : npmExecPath,
-      args: javascript ? [npmExecPath, ...args] : args,
-      shell: platform === 'win32' && ['.cmd', '.bat'].includes(extension),
+      command: execPath,
+      args: [npmExecPath, ...args],
+      shell: false,
     }
   }
 
