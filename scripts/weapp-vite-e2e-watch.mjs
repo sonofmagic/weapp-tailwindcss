@@ -3,9 +3,9 @@ import { readdir, stat } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { pathToFileURL } from 'node:url'
+import { createPnpmCommand } from './pnpm-command.mjs'
 
 const READY_RE = /开发服务已就绪|dev(?:elopment)? server ready|ready in \d+/i
-const pnpmExecPath = process.env.npm_execpath
 const sourceDirs = ['miniprogram', 'pages', 'packageA', 'packageB', 'sub-normal', 'sub-independent']
 const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
 const rootSourceFileRe = /^(?:app|tailwind\.config(?:\.[\w-]+)?)\.[cm]?[jt]s$|^app\.(?:wxss|css|s[ac]ss|less|json)$/i
@@ -23,25 +23,12 @@ export function resolveWatchPlatform(env = process.env) {
   return platform
 }
 
-function createPnpmCommand(args) {
-  if (pnpmExecPath) {
-    return {
-      command: process.execPath,
-      args: [pnpmExecPath, ...args],
-    }
-  }
-
-  return {
-    command: process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
-    args,
-  }
-}
-
 function spawnPnpm(args, options = {}) {
-  const { command, args: commandArgs } = createPnpmCommand(args)
+  const { command, args: commandArgs, shell } = createPnpmCommand(args)
   return spawn(command, commandArgs, {
     cwd: process.cwd(),
     env: process.env,
+    shell,
     stdio: options.stdio ?? ['ignore', 'pipe', 'pipe'],
   })
 }

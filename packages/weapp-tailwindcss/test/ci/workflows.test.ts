@@ -474,7 +474,7 @@ describe('ci workflows', () => {
       catalogs?: Record<string, Record<string, string>>
       overrides?: Record<string, string>
     }
-    const lockfile = YAML.parse(readText('pnpm-lock.yaml')) as {
+    const lockfile = YAML.parseAllDocuments(readText('pnpm-lock.yaml'))[1]?.toJS() as {
       catalogs?: Record<string, Record<string, { specifier?: string, version?: string }>>
       importers?: Record<string, {
         dependencies?: Record<string, { specifier?: string, version?: string }>
@@ -804,7 +804,7 @@ describe('ci workflows', () => {
     expect(packageJson.scripts['pr:rc']).toBe('repo release pre enter rc')
     expect(packageJson.scripts['pr:next']).toBe('repo release pre enter next')
     expect(packageJson.scripts['pr:exit']).toBe('repo release pre exit')
-    expect(packageJson.devDependencies.repoctl).toBe('^5.4.7')
+    expect(packageJson.devDependencies.repoctl).toBe('^5.4.9')
     expect(packageJson.devDependencies['@changesets/cli']).toBeUndefined()
     expect(packageJson.devDependencies['@changesets/changelog-github']).toBeUndefined()
     expect(packageJson.devDependencies['@icebreakers/changelog-github']).toBeUndefined()
