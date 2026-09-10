@@ -38,6 +38,10 @@
   dir: packages/hbuilderx-runner
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/hbuilderx-runner@0.1.4":
+  dir: packages/hbuilderx-runner
+  intents:
+    - twelve-aliens-fold
 "@weapp-tailwindcss/init@1.0.16":
   dir: packages/init
   intents:
@@ -255,6 +259,11 @@ weapp-tailwindcss@5.5.2:
     - issue-1164-harmony-scss-comments
     - khaki-wombats-pump
     - windows-default-utilities
+weapp-tailwindcss@5.5.3:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - sweet-pugs-dress
+    - wet-bananas-dress
 weapp-tw@0.0.3:
   dir: packages/weapp-tw
   intents:

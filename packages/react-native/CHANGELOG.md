@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/react-native
 
+## 0.2.15
+
+### Patch Changes
+
+- Updated dependencies:
+  - weapp-tailwindcss@5.5.3
+
 ## 0.2.14
 
 ### Patch Changes
