@@ -39,7 +39,7 @@ describe('tailwind v4 source options', () => {
     expect(packageJsonOptions?.cssSources?.[0]?.css).toContain('#tw')
   })
 
-  it('keeps nested css imports as independent source roots', async () => {
+  it('keeps nested css imports in one compile root with complete dependencies', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-nested-source-'))
     const appEntry = path.join(root, 'app.css')
     const nestedEntry = path.join(root, 'styles/tailwind.css')
@@ -55,13 +55,69 @@ describe('tailwind v4 source options', () => {
       cssEntries: [appEntry],
     })
 
-    expect(options?.cssSources).toHaveLength(2)
-    expect(options?.cssSources?.map(source => source.file)).toEqual([appEntry, nestedEntry])
-    expect(options?.cssSources?.[1]).toMatchObject({
-      base: path.dirname(nestedEntry),
-      dependencies: [nestedEntry],
+    expect(options?.cssSources).toHaveLength(1)
+    expect(options?.cssSources?.map(source => source.file)).toEqual([appEntry])
+    expect(options?.cssSources?.[0]).toMatchObject({
+      base: path.dirname(appEntry),
+      dependencies: [appEntry, nestedEntry],
     })
-    expect(options?.cssSources?.[1]?.css).toContain(`@source ${JSON.stringify(path.join(path.dirname(nestedEntry), 'pages/**/*.{wxml,ts}'))}`)
+    expect(options?.cssSources?.[0]?.css).toContain('@import "./styles/tailwind.css"')
+  })
+
+  it('deduplicates entries that are already reachable from another entry and preserves independent roots', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-entry-ownership-'))
+    const appEntry = path.join(root, 'app.css')
+    const nestedEntry = path.join(root, 'styles/tailwind.css')
+    const sideEntry = path.join(root, 'side.css')
+    await mkdir(path.dirname(nestedEntry), { recursive: true })
+    await writeFile(appEntry, '@import "./styles/tailwind.css";')
+    await writeFile(nestedEntry, '@import "tailwindcss" source(none);')
+    await writeFile(sideEntry, '@import "tailwindcss" source(none);\n.side{color:red}')
+
+    const options = normalizeTailwindV4SourceOptions({
+      projectRoot: root,
+      cssEntries: [nestedEntry, appEntry, sideEntry],
+    })
+
+    expect(options?.cssSources?.map(source => source.file)).toEqual([appEntry, sideEntry])
+    expect(options?.cssSources?.[0]?.dependencies).toEqual([appEntry, nestedEntry])
+    expect(options?.cssSources?.[1]?.dependencies).toEqual([sideEntry])
+  })
+
+  it('handles deep and cyclic imports without duplicating compile roots', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-entry-cycle-'))
+    const appEntry = path.join(root, 'app.css')
+    const firstEntry = path.join(root, 'styles/first.css')
+    const secondEntry = path.join(root, 'styles/second.css')
+    await mkdir(path.dirname(firstEntry), { recursive: true })
+    await writeFile(appEntry, '@import "./styles/first.css";\n.app{color:red}')
+    await writeFile(firstEntry, '@import "./second.css";\n.first{color:blue}')
+    await writeFile(secondEntry, '@import "./first.css";\n.second{color:green}')
+
+    const options = normalizeTailwindV4SourceOptions({
+      projectRoot: root,
+      cssEntries: [appEntry, secondEntry],
+    })
+
+    expect(options?.cssSources).toHaveLength(1)
+    expect(options?.cssSources?.[0]?.file).toBe(appEntry)
+    expect(options?.cssSources?.[0]?.dependencies).toEqual([appEntry, firstEntry, secondEntry])
+  })
+
+  it('resolves relative imports that use Windows separators on POSIX hosts', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-entry-windows-path-'))
+    const appEntry = path.join(root, 'app.css')
+    const nestedEntry = path.join(root, 'styles/tailwind.css')
+    await mkdir(path.dirname(nestedEntry), { recursive: true })
+    await writeFile(appEntry, '@import ".\\\\styles\\\\tailwind.css";')
+    await writeFile(nestedEntry, '.nested{color:red}')
+
+    const options = normalizeTailwindV4SourceOptions({
+      projectRoot: root,
+      cssEntries: [appEntry],
+    })
+
+    expect(options?.cssSources?.[0]?.dependencies).toEqual([appEntry, nestedEntry])
   })
 
   it('removes Vite request queries before treating css entries as file paths', async () => {

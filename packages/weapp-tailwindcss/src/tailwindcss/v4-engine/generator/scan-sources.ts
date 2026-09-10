@@ -1,4 +1,5 @@
 import type { TailwindV4GenerateOptions, TailwindV4ResolvedSource, TailwindV4SourcePattern } from '../types'
+import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { resolveCssSourceEntries, resolveTailwindSourceEntry } from '@/tailwindcss/source-scan'
@@ -81,18 +82,36 @@ async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSourc
   let importSourceBase: string | undefined
   let hasSourceNone = false
   let hasTailwindImport = false
-  const from = source.dependencies[0]
-  let root: postcss.Root
-  try {
-    root = postcss.parse(source.css, { from })
+  const sourcePatterns: TailwindV4SourcePattern[] = []
+  const definitions: Array<{ css: string, base: string, from?: string }> = [{
+    css: source.css,
+    base: source.base,
+    from: source.dependencies[0],
+  }]
+  for (const dependency of source.dependencies.slice(1)) {
+    if (!existsSync(dependency)) {
+      continue
+    }
+    try {
+      definitions.push({
+        css: readFileSync(dependency, 'utf8'),
+        base: path.dirname(dependency),
+        from: dependency,
+      })
+    }
+    catch {
+    }
   }
-  catch {
-    return undefined
-  }
-
-  root.walkAtRules((rule) => {
-    if (rule.name === 'import') {
-      if (!isTailwindCssImport(rule.params)) {
+  for (const definition of definitions) {
+    let root: postcss.Root
+    try {
+      root = postcss.parse(definition.css, { from: definition.from })
+    }
+    catch {
+      continue
+    }
+    root.walkAtRules((rule) => {
+      if (rule.name !== 'import' || !isTailwindCssImport(rule.params)) {
         return
       }
       hasTailwindImport = true
@@ -101,12 +120,11 @@ async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSourc
         hasSourceNone = true
       }
       if (sourceParam?.sourcePath) {
-        importSourceBase = resolveSourceBase(source.base, sourceParam.sourcePath)
+        importSourceBase = resolveSourceBase(definition.base, sourceParam.sourcePath)
       }
-    }
-  })
-
-  const sourcePatterns = await resolveCssSourceEntries(root, source.base, '**/*')
+    })
+    sourcePatterns.push(...await resolveCssSourceEntries(root, definition.base, '**/*'))
+  }
   if (!importSourceBase) {
     if (sourcePatterns.length > 0) {
       return [
