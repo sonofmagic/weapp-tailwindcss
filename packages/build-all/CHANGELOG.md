@@ -5,6 +5,13 @@
 ### Patch Changes
 
 - Updated dependencies:
+  - weapp-tailwindcss@5.5.3
+
+## 0.0.72
+
+### Patch Changes
+
+- Updated dependencies:
   - @weapp-tailwindcss/debug-uni-app-x@1.0.6
   - @weapp-tailwindcss/experimental@0.0.40
   - @weapp-tailwindcss/postcss@3.3.3
