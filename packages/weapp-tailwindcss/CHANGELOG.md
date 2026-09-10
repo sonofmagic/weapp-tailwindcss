@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 5.5.3
+
+### Patch Changes
+
+- 统一 Web 与 Harmony 的相对样式引用路径解析，保留 Windows UNC 共享目录与盘符根边界，避免跨平台解析网络模块时丢失共享根目录。
+
+- 修复 uni-app x Web 热更新时 SFC 描述符与生成样式块不同步的问题，隔离脚本子请求的样式缓存，并正确处理已移除的生成样式请求。Refs #1144。
+
 ## 5.5.2
 
 ### Patch Changes
