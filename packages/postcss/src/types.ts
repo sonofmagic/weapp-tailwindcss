@@ -186,6 +186,13 @@ export interface CssOptions {
 }
 
 export type IStyleHandlerOptions = {
+  /** 编译诊断回调；由上层 bundler 注入，保持 PostCSS 包与 compiler 解耦。 */
+  onDiagnostic?: (event: {
+    phase: 'postcss'
+    durationMs: number
+    cache?: { hit: boolean, key?: string }
+    error?: { name?: string, message: string }
+  }) => void | Promise<void>
   appType?: PostcssAppType | undefined
   ctx?: PostcssContext | undefined
   /**
