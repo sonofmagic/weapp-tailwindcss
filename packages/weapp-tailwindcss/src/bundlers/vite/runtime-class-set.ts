@@ -1,6 +1,7 @@
 import type { BundleSnapshot } from './bundle-state'
 import type { InternalUserDefinedOptions } from '@/types'
 import process from 'node:process'
+import { COMPILATION_EVENT_SCHEMA_VERSION } from '@/compiler/events'
 import { createCompilerRuntimeState } from '@/compiler/runtime-state'
 import {
   collectRuntimeClassSet,
@@ -87,6 +88,8 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
   }
 
   async function ensureRuntimeClassSet(force = false): Promise<Set<string>> {
+    const startedAt = performance.now()
+    const operationId = `vite-runtime-${Date.now()}-${runtimeState.revision}`
     const forceRuntimeRefresh = force || process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
     await refreshRuntimeState(force)
     await runtimeState.readyPromise
@@ -94,8 +97,8 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
       return runtimeSet
     }
 
+    const invalidation = resolveRuntimeRefreshOptions()
     if (forceRuntimeRefresh || !runtimeSetPromise) {
-      const invalidation = resolveRuntimeRefreshOptions()
       const task = collectRuntimeClassSet(runtimeState.tailwindRuntime, {
         force: forceRuntimeRefresh || invalidation.changed,
         skipRefresh: forceRuntimeRefresh,
@@ -107,6 +110,7 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
     const task = runtimeSetPromise!
     try {
       runtimeSet = await task
+      await runtimeState.events.emit({ schemaVersion: COMPILATION_EVENT_SCHEMA_VERSION, type: 'diagnostic', timestamp: new Date().toISOString(), adapter: 'vite', phase: 'candidate', revision: runtimeState.revision, operationId, durationMs: performance.now() - startedAt, cache: { hit: !forceRuntimeRefresh && !invalidation.changed } })
       return runtimeSet
     }
     finally {
@@ -126,6 +130,8 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
       transformOnly?: boolean | undefined
     } = {},
   ) {
+    const startedAt = performance.now()
+    const operationId = `vite-bundle-${Date.now()}-${runtimeState.revision}`
     const forceRuntimeRefresh = forceRefresh || process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
     const invalidation = resolveRuntimeRefreshOptions()
     const shouldRefreshRuntime = forceRuntimeRefresh || invalidation.changed
@@ -155,6 +161,7 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
           skipInitialFullScanWithBase: options.allowBaselineOnlyInitialSync,
         })
         runtimeSet = nextRuntimeSet
+        await runtimeState.events.emit({ schemaVersion: COMPILATION_EVENT_SCHEMA_VERSION, type: 'diagnostic', timestamp: new Date().toISOString(), adapter: 'vite', phase: 'candidate', revision: runtimeState.revision, operationId, durationMs: performance.now() - startedAt, cache: { hit: !shouldRefreshRuntime }, evidence: ['bundle-runtime-sync'] })
         return nextRuntimeSet
       }
       catch (error) {
@@ -176,6 +183,7 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
 
     try {
       runtimeSet = await task
+      await runtimeState.events.emit({ schemaVersion: COMPILATION_EVENT_SCHEMA_VERSION, type: 'diagnostic', timestamp: new Date().toISOString(), adapter: 'vite', phase: 'candidate', revision: runtimeState.revision, operationId, durationMs: performance.now() - startedAt, cache: { hit: false }, evidence: ['runtime-class-scan'] })
       return runtimeSet
     }
     finally {

@@ -81,6 +81,7 @@ function summarize(values) {
   }
   const sorted = [...values].sort((a, b) => a - b)
   const p95Index = Math.min(sorted.length - 1, Math.ceil(sorted.length * 0.95) - 1)
+  const p99Index = Math.min(sorted.length - 1, Math.ceil(sorted.length * 0.99) - 1)
   return {
     count: values.length,
     mean: mean(values),
@@ -88,12 +89,26 @@ function summarize(values) {
     min: sorted[0],
     max: sorted[sorted.length - 1],
     p95: sorted[p95Index],
+    p99: sorted[p99Index],
     stddev: stddev(values),
   }
 }
 
 function summarizeSteady(values) {
   return summarize(values.slice(1)) ?? summarize(values)
+}
+
+function summarizeTimingPhases(timings) {
+  const phases = new Map()
+  for (const timing of timings) {
+    const phase = timing?.phase
+    const durationMs = timing?.durationMs
+    if (typeof phase !== 'string' || typeof durationMs !== 'number' || !Number.isFinite(durationMs)) continue
+    const values = phases.get(phase) ?? []
+    values.push(durationMs)
+    phases.set(phase, values)
+  }
+  return Object.fromEntries([...phases].map(([phase, values]) => [phase, summarize(values)]))
 }
 
 function spawnPnpmWithEnv(cwd, args, env = {}, stdio = 'pipe') {
@@ -737,6 +752,7 @@ async function runCase(versionMeta, projectMeta, options) {
       hmrPluginSteady: summarizeSteady(hmrPluginMs),
       hmrPeakRssMb: summarize(hmrMemory?.count > 0 ? [hmrMemory.peakRssMb] : []),
       hmrSteadyRssMb: summarize(hmrMemory?.count > 0 ? [hmrMemory.steadyRssMb] : []),
+      phases: summarizeTimingPhases([...buildPluginTimings, ...hmrPluginTimings]),
     },
   }
 }

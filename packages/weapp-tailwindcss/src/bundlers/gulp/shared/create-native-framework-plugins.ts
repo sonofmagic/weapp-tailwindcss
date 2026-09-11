@@ -8,6 +8,7 @@ import { hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalize
 import { createSourceCandidateCollector } from '@/bundlers/shared/source-candidates'
 import { resolveSourceScanEntries } from '@/bundlers/shared/source-scan'
 import { beginCompilerShadowRun as beginShadowRun, createCompilationDependencyChanges, createRuntimeCompilationBuildState, disposeCompilerOwner, finalizeCompilerShadowRun, getCompilationScopeDependencyRevision, getCompilerShadowRunSnapshot, invalidateCompilationScope, recordCompilationDependencyChanges, removeRuntimeCompilationBuildStateFiles, updateRuntimeCompilationBuildState } from '@/compiler'
+import { COMPILATION_EVENT_SCHEMA_VERSION } from '@/compiler/events'
 import { createCompilerRuntimeState } from '@/compiler/runtime-state'
 import { getCompilerContext } from '@/context'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
@@ -53,6 +54,7 @@ export function createNativeGulpPlugins(options: UserDefinedOptions = {}) {
     readyPromise,
     refreshTailwindcssRuntime,
   })
+  void runtimeState.events.emit({ schemaVersion: COMPILATION_EVENT_SCHEMA_VERSION, type: 'diagnostic', timestamp: new Date().toISOString(), adapter: 'gulp', phase: 'emit', revision: runtimeState.revision, operationId: `gulp-init-${Date.now()}`, evidence: ['createNativeGulpPlugins'] })
   const defaultStyleHandlerOptionsCache = new Map<number | 'unknown', Partial<IStyleHandlerOptions>>()
   let cachedDefaultTemplateHandlerOptions: Partial<ITemplateHandlerOptions> | undefined
   let cachedDefaultTemplateRuntimeSet: Set<string> | undefined

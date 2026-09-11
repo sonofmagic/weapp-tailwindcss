@@ -7,6 +7,7 @@ import type { WebpackStyleInjectorDelegateFactory } from '@/style-injector/inter
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
+import { COMPILATION_EVENT_SCHEMA_VERSION } from '@/compiler/events'
 import { createCompilerRuntimeState } from '@/compiler/runtime-state'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
@@ -101,6 +102,7 @@ export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
       readyPromise,
       refreshTailwindcssRuntime: refreshTailwindRuntime,
     })
+    void runtimeState.events.emit({ schemaVersion: COMPILATION_EVENT_SCHEMA_VERSION, type: 'diagnostic', timestamp: new Date().toISOString(), adapter: 'webpack', phase: 'hmr', revision: runtimeState.revision, operationId: `webpack-init-${Date.now()}`, evidence: ['compiler.apply'] })
 
     let runtimeSetPrepared = false
     let runtimeSetSignature: string | undefined

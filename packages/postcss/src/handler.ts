@@ -2,6 +2,7 @@
 import type { Result as PostcssResult, Root } from 'postcss'
 import type { FeatureSignal } from './content-probe'
 import type { IStyleHandlerOptions, StyleHandler } from './types'
+import { performance } from 'node:perf_hooks'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { LRUCache } from 'lru-cache'
 import postcss from 'postcss'
@@ -129,16 +130,18 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
 
     const cachedResult = resultCache.get(cacheKey)
     if (cachedResult) {
+      void resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: 0, cache: { hit: true, key: cacheKey } })
       return Promise.resolve(cloneOutput ? cloneResult(cachedResult) : cachedResult)
     }
 
     const processor = processorCache.getProcessor(resolvedOptions, signal)
     const processOptions = processorCache.getProcessOptions(resolvedOptions)
 
+    const startedAt = performance.now()
     return processor.process(
       processInput,
       processOptions,
-    ).async().then((result) => {
+    ).async().then(async (result) => {
       const styleBranch = resolvePostcssFrameworkProfile(resolvedOptions)
       let finalResult = styleBranch.postprocess(result, resolvedOptions)
       if (resolvedOptions.isMainChunk !== false && finalResult.root) {
@@ -176,7 +179,11 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
       }
       // 缓存最终结果
       resultCache.set(cacheKey, finalResult)
+      await resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: performance.now() - startedAt, cache: { hit: false, key: cacheKey } })
       return cloneOutput ? cloneResult(finalResult) : finalResult
+    }).catch(async (error) => {
+      await resolvedOptions.onDiagnostic?.({ phase: 'postcss', durationMs: performance.now() - startedAt, cache: { hit: false, key: cacheKey }, error: { name: error instanceof Error ? error.name : undefined, message: error instanceof Error ? error.message : String(error) } })
+      throw error
     })
   }
 
