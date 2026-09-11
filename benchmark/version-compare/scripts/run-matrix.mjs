@@ -98,6 +98,19 @@ function summarizeSteady(values) {
   return summarize(values.slice(1)) ?? summarize(values)
 }
 
+function summarizeTimingPhases(timings) {
+  const phases = new Map()
+  for (const timing of timings) {
+    const phase = timing?.phase
+    const durationMs = timing?.durationMs
+    if (typeof phase !== 'string' || typeof durationMs !== 'number' || !Number.isFinite(durationMs)) continue
+    const values = phases.get(phase) ?? []
+    values.push(durationMs)
+    phases.set(phase, values)
+  }
+  return Object.fromEntries([...phases].map(([phase, values]) => [phase, summarize(values)]))
+}
+
 function spawnPnpmWithEnv(cwd, args, env = {}, stdio = 'pipe') {
   return spawn(process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm', args, {
     cwd,
@@ -739,6 +752,7 @@ async function runCase(versionMeta, projectMeta, options) {
       hmrPluginSteady: summarizeSteady(hmrPluginMs),
       hmrPeakRssMb: summarize(hmrMemory?.count > 0 ? [hmrMemory.peakRssMb] : []),
       hmrSteadyRssMb: summarize(hmrMemory?.count > 0 ? [hmrMemory.steadyRssMb] : []),
+      phases: summarizeTimingPhases([...buildPluginTimings, ...hmrPluginTimings]),
     },
   }
 }
