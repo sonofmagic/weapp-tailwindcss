@@ -44,6 +44,26 @@ export interface CompilationEventBus {
   clear: () => void
 }
 
+export interface CompilationEventReporter {
+  readonly events: readonly CompilationEvent[]
+  collect: CompilationEventListener
+  toJSONL: () => string
+  summarize: () => string
+  clear: () => void
+}
+
+/** 创建轻量事件收集器，可同时用于本地诊断和 CI JSONL 输出。 */
+export function createCompilationEventReporter(): CompilationEventReporter {
+  const events: CompilationEvent[] = []
+  return {
+    get events() { return events },
+    collect(event) { events.push(event) },
+    toJSONL() { return events.map(serializeCompilationEvent).join('\n') },
+    summarize() { return summarizeCompilationEvents(events) },
+    clear() { events.length = 0 },
+  }
+}
+
 export function redactCompilationPath(value: string, root = process.cwd()): string {
   const normalized = value.replaceAll('\\', path.sep)
   const relative = path.relative(root, normalized)
