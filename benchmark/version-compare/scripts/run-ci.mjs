@@ -545,6 +545,9 @@ async function main() {
   if (baselineRef) {
     let performanceGuard = evaluatePerformanceGuard(summary, {
       regressionPercent: parseNumber('--regression-percent', 5),
+      minimumTailRegressionSamples: parseNumber('--minimum-tail-samples', 2),
+      minimumTimingRegressionMs: parseNumber('--minimum-timing-ms', 10),
+      minimumMemoryRegressionMb: parseNumber('--minimum-memory-mb', 64),
     })
     if (
       performanceRelevantChanges

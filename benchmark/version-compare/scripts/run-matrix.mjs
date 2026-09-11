@@ -81,6 +81,7 @@ function summarize(values) {
   }
   const sorted = [...values].sort((a, b) => a - b)
   const p95Index = Math.min(sorted.length - 1, Math.ceil(sorted.length * 0.95) - 1)
+  const p99Index = Math.min(sorted.length - 1, Math.ceil(sorted.length * 0.99) - 1)
   return {
     count: values.length,
     mean: mean(values),
@@ -88,6 +89,7 @@ function summarize(values) {
     min: sorted[0],
     max: sorted[sorted.length - 1],
     p95: sorted[p95Index],
+    p99: sorted[p99Index],
     stddev: stddev(values),
   }
 }
