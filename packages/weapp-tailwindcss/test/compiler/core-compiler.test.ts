@@ -35,6 +35,7 @@ describe('createCompiler', () => {
     await writeFile(tailwindCss, [
       '@import "tailwindcss" source(none);',
       '@source "./pages/**/*.{wxml,ts}";',
+      '.sentinel { width: 11px; }',
     ].join('\n'))
     await writeFile(path.join(root, 'styles/pages/index.wxml'), '<view class="w-[37px] text-white" />')
     await writeFile(path.join(root, 'outside.wxml'), '<view class="w-[99px]" />')
@@ -54,6 +55,7 @@ describe('createCompiler', () => {
     expect(generated.classSet.has('text-white')).toBe(true)
     expect(generated.classSet.has('w-[99px]')).toBe(false)
     expect(generated.css).toContain('.w-\\[37px\\]')
+    expect(generated.css.match(/\.sentinel/g)?.length).toBe(1)
     await compiler.dispose()
   })
 
