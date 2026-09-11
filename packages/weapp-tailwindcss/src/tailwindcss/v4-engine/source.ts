@@ -81,6 +81,13 @@ function uniqueDefined(values: Array<string | undefined>) {
   return [...new Set(values.filter((value): value is string => typeof value === 'string' && value.length > 0))]
 }
 
+function resolveCssImportFile(base: string, specifier: string) {
+  const normalizedSpecifier = path.sep === '\\'
+    ? specifier.replaceAll('/', '\\')
+    : specifier.replaceAll('\\', '/')
+  return path.resolve(base, normalizedSpecifier)
+}
+
 function getProjectRoot(runtime: TailwindcssRuntimeLike) {
   return runtime.options?.projectRoot ?? process.cwd()
 }
@@ -159,35 +166,6 @@ function normalizeTailwindV4CssPackageImports(css: string, packageName: string |
   return changed ? root.toString() : css
 }
 
-function normalizeTailwindV4CssSourceDirectives(css: string, base: string) {
-  if (!css.includes('@source')) {
-    return css
-  }
-  let root: postcss.Root
-  try {
-    root = postcss.parse(css)
-  }
-  catch {
-    return css
-  }
-  let changed = false
-  root.walkAtRules('source', (rule) => {
-    const match = rule.params.match(/^(not\s+)?("([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)')(.*)$/)
-    if (!match) {
-      return
-    }
-    const specifier = match[3] ?? match[4]
-    if (!specifier?.startsWith('.')) {
-      return
-    }
-    const resolved = path.resolve(base, specifier)
-    const quote = match[2] === undefined ? '\'' : '"'
-    rule.params = `${match[1] ?? ''}${quote}${resolved}${quote}${match[5] ?? ''}`
-    changed = true
-  })
-  return changed ? root.toString() : css
-}
-
 function normalizeTailwindV4CssSources(
   cssSources: TailwindV4SourceOptions['cssSources'],
   packageName: string | undefined,
@@ -252,13 +230,48 @@ function normalizeTailwindV4CssEntrySources(
 
   const remainingCssEntries: string[] = []
   const cssSources: NonNullable<TailwindV4SourceOptions['cssSources']> = []
-  const visited = new Set<string>()
-  const collectCssSource = (file: string, nested = false) => {
+  const graphs = new Map<string, Set<string>>()
+  const collectCssGraph = (file: string, visiting = new Set<string>()): Set<string> => {
     const normalizedFile = path.resolve(file)
-    if (visited.has(normalizedFile) || !existsSync(normalizedFile)) {
-      return
+    const cached = graphs.get(normalizedFile)
+    if (cached) {
+      return cached
     }
-    visited.add(normalizedFile)
+    const graph = new Set<string>([normalizedFile])
+    graphs.set(normalizedFile, graph)
+    if (visiting.has(normalizedFile) || !existsSync(normalizedFile)) {
+      return graph
+    }
+    const nextVisiting = new Set(visiting).add(normalizedFile)
+    let root: postcss.Root
+    try {
+      root = postcss.parse(readFileSync(normalizedFile, 'utf8'))
+    }
+    catch {
+      return graph
+    }
+    const base = path.dirname(normalizedFile)
+    root.walkAtRules('import', (rule) => {
+      const parsed = parseCssImportSpecifier(rule.params)
+      if (!parsed || !parsed.specifier.startsWith('.')) {
+        return
+      }
+      const importedFile = resolveCssImportFile(base, parsed.specifier)
+      const candidates = path.extname(importedFile)
+        ? [importedFile]
+        : [importedFile, `${importedFile}.css`, `${importedFile}.pcss`, `${importedFile}.scss`, `${importedFile}.sass`]
+      const resolved = candidates.find(candidate => existsSync(candidate))
+      if (!resolved) {
+        return
+      }
+      for (const dependency of collectCssGraph(resolved, nextVisiting)) {
+        graph.add(dependency)
+      }
+    })
+    return graph
+  }
+  const createCssSource = (file: string, dependencies: Set<string>) => {
+    const normalizedFile = path.resolve(file)
     const base = path.dirname(normalizedFile)
     const rawCss = readFileSync(normalizedFile, 'utf8')
     const entrySource = resolveCssEntrySource(rawCss, base, {
@@ -270,43 +283,17 @@ function normalizeTailwindV4CssEntrySources(
         ? path.resolve(base, entrySource.configRequest)
         : entrySource?.config
     const css = normalizeTailwindV4CssPackageImports(
-      nested
-        ? normalizeTailwindV4CssSourceDirectives(
-            normalizeEmptyTailwindCustomVariants(normalizeConfigDirective(rawCss, config)),
-            base,
-          )
-        : normalizeEmptyTailwindCustomVariants(normalizeConfigDirective(rawCss, config)),
+      normalizeEmptyTailwindCustomVariants(normalizeConfigDirective(rawCss, config)),
       packageName,
     )
-    cssSources.push({
+    return {
       file: normalizedFile,
       base,
       css,
-      dependencies: [normalizedFile],
-    })
-
-    let root: postcss.Root
-    try {
-      root = postcss.parse(rawCss)
+      dependencies: [...dependencies],
     }
-    catch {
-      return
-    }
-    root.walkAtRules('import', (rule) => {
-      const parsed = parseCssImportSpecifier(rule.params)
-      if (!parsed || !parsed.specifier.startsWith('.') || parsed.specifier.includes('\\')) {
-        return
-      }
-      const importedFile = path.resolve(base, parsed.specifier)
-      const candidates = path.extname(importedFile)
-        ? [importedFile]
-        : [importedFile, `${importedFile}.css`, `${importedFile}.pcss`, `${importedFile}.scss`, `${importedFile}.sass`]
-      const resolved = candidates.find(candidate => existsSync(candidate))
-      if (resolved) {
-        collectCssSource(resolved, true)
-      }
-    })
   }
+  const rootEntries: string[] = []
   for (const cssEntry of cssEntries) {
     const normalizedCssEntry = cssEntry.replace(/[?#].*$/, '')
     const file = path.resolve(normalizedCssEntry)
@@ -314,7 +301,25 @@ function normalizeTailwindV4CssEntrySources(
       remainingCssEntries.push(normalizedCssEntry)
       continue
     }
-    collectCssSource(file)
+    rootEntries.push(file)
+  }
+
+  const entryGraphs = rootEntries.map(entry => [entry, collectCssGraph(entry)] as const)
+  const nestedEntries = new Set<string>()
+  for (const [entry] of entryGraphs) {
+    for (const [otherEntry, otherGraph] of entryGraphs) {
+      if (entry !== otherEntry && otherGraph.has(entry)) {
+        nestedEntries.add(entry)
+        break
+      }
+    }
+  }
+  const selectedEntries = entryGraphs.filter(([entry]) => !nestedEntries.has(entry))
+  const roots = selectedEntries.length > 0
+    ? selectedEntries
+    : entryGraphs.slice(0, 1)
+  for (const [rootEntry, dependencies] of roots) {
+    cssSources.push(createCssSource(rootEntry, dependencies))
   }
 
   return {
