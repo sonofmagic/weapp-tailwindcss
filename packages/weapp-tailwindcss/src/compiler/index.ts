@@ -1,5 +1,7 @@
 export * from './artifact'
+export * from './cache-telemetry'
 export * from './candidate-index'
+export * from './capabilities'
 export * from './compilation-change-coordinator'
 export * from './compilation-scope-graph'
 export * from './compilation-session-pool'

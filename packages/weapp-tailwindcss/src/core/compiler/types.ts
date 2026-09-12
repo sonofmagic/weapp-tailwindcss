@@ -5,6 +5,7 @@ import type {
   Result as PostcssResult,
   Root,
 } from '@weapp-tailwindcss/postcss'
+import type { CacheTelemetryCollector } from '@/compiler/cache-telemetry'
 import type {
   TailwindV4ResolvedSource,
   TailwindV4SourceOptions,
@@ -99,6 +100,8 @@ export type CreateCompilerOptions = UserDefinedOptions & {
     maxRoots?: number | undefined
     /** root 因超过 maxRoots 被淘汰并释放后触发。 */
     onRootEvicted?: ((id: string) => void) | undefined
+    /** 可选的缓存遥测采集器。 */
+    cacheTelemetry?: CacheTelemetryCollector | undefined
   } | undefined
 }
 

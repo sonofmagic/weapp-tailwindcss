@@ -26,6 +26,7 @@ const DEFAULT_MAX_ROOTS = 128
 export function createCompiler(options: CreateCompilerOptions = {}): Compiler {
   const { compiler: compilerOptions, ...userOptions } = options
   const maxRoots = Math.max(1, Math.floor(compilerOptions?.maxRoots ?? DEFAULT_MAX_ROOTS))
+  const cacheTelemetry = compilerOptions?.cacheTelemetry
   const rootStore = new CompilerRootStore(maxRoots, compilerOptions?.onRootEvicted)
   const activeTasks = new Set<Promise<unknown>>()
   let lifecycle: 'active' | 'disposing' | 'disposed' = 'active'
@@ -113,6 +114,15 @@ export function createCompiler(options: CreateCompilerOptions = {}): Compiler {
       && isSameCompilerGenerationCacheKey(entry.generationCache.key, generationCacheKey)
       ? entry.generationCache.result
       : undefined
+    cacheTelemetry?.record({
+      layer: 'tailwind-generation',
+      keyFingerprint: generationCacheKey.candidateSignature,
+      hit: reusableGeneration !== undefined,
+      invalidationReason: reusableGeneration === undefined && !engineReused ? 'source-change' : undefined,
+      entries: entry.generationCache ? 1 : 0,
+      revision: getLatestRevision(entry),
+      operationId: entry.id,
+    })
 
     try {
       const generated = reusableGeneration
