@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 import { execa } from 'execa'
 import { parse, stringify } from 'yaml'
 import { packRuntimeDependencies } from './pack-runtime-dependencies.mjs'
-import { declaredPackageManager, readPackageJson } from './version-contract.mjs'
+import { assertDependencyVersions, readInstalledDependencyVersions, readPackageJson, repositoryManifest, repositoryPackageManager } from './version-contract.mjs'
 import { inspectOutput, verifyOutput } from './windows-utilities-output.mjs'
 
 const repo = fileURLToPath(new URL('../../', import.meta.url))
@@ -91,15 +91,17 @@ async function build(mode, label) {
 }
 
 async function verify(label, expectRegression) {
-  const require = createRequire(path.join(project, 'package.json'))
-  const versions = Object.fromEntries(['weapp-tailwindcss', 'tailwindcss', '@tarojs/cli', 'webpack'].map(name =>
-    [name, require(`${name}/package.json`).version],
-  ))
+  const versions = await readInstalledDependencyVersions(project, ['weapp-tailwindcss', 'tailwindcss', '@tarojs/cli', 'webpack'])
   const manifest = await readPackageJson(path.join(project, 'package.json'))
-  if (/^\d+\.\d+\.\d+$/.test(manifest.devDependencies.tailwindcss)) {
-    assert.equal(versions.tailwindcss, manifest.devDependencies.tailwindcss)
+  const { 'weapp-tailwindcss': candidateVersion, ...toolchainVersions } = versions
+  assertDependencyVersions(manifest, toolchainVersions)
+  if (label === 'candidate') {
+    const candidate = await readPackageJson(path.join(repo, 'packages/weapp-tailwindcss/package.json'))
+    assert.equal(candidateVersion, candidate.version, '候选包版本必须来自当前提交')
   }
-  assert.equal(versions['@tarojs/cli'], manifest.devDependencies['@tarojs/cli'])
+  else {
+    assertDependencyVersions(manifest, { 'weapp-tailwindcss': candidateVersion })
+  }
   for (const mode of ['development', 'production']) {
     const output = await build(mode, label)
     reports.push({ label, mode, versions, expectRegression, output })
@@ -120,10 +122,13 @@ async function verify(label, expectRegression) {
 
 try {
   await cp(fixture, project, { recursive: true })
-  const fixtureManifest = await readPackageJson(path.join(fixture, 'package.json'))
-  assert.equal((await runPnpm(['--version'])).trim(), declaredPackageManager(fixtureManifest).version)
+  const fixtureManifest = await readPackageJson(path.join(project, 'package.json'))
+  // 仅临时副本跟随仓库工具链，历史依赖及冻结锁文件仍用于发布版回归。
+  fixtureManifest.packageManager = repositoryManifest.packageManager
+  await writeFile(path.join(project, 'package.json'), JSON.stringify(fixtureManifest, null, 2))
+  assert.equal((await runPnpm(['--version'])).trim(), repositoryPackageManager.version)
   await writeFile(path.join(reportDir, 'published-install.log'), await runPnpm(['install', '--frozen-lockfile']))
-  await verify('published-5.5.1', process.platform === 'win32')
+  await verify('published', process.platform === 'win32')
 
   const packDir = path.join(temporary, 'packed')
   await mkdir(packDir)

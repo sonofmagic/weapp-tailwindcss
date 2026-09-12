@@ -4,10 +4,11 @@ import { createTailwindV4Engine as createEngineTailwindV4Engine, extractRawCandi
 import { resolveCssMacroTailwindV4Source } from '../css-macro-source'
 import { transformTailwindV4CssByTarget } from '../miniprogram'
 import { createCompatibleSource } from './css-compat'
-import { collectCandidates, collectCustomPropertyValues, createIncrementalGenerateCacheKey, createIncrementalStyleOptions, createTailwindV4SourceCacheKey, hasRemovedCandidates, incrementalGenerateCache, mergeCustomPropertyValues, normalizeTargetRpxLengthCandidates, resolveStyleOptions, resolveTargetCandidates, runIncrementalGenerateTask, seedIncrementalGenerateCache, shouldRebuildIncrementalEntry } from './incremental-cache'
+import { collectCandidates, createIncrementalGenerateCacheKey, createIncrementalStyleOptions, createTailwindV4SourceCacheKey, hasRemovedCandidates, incrementalGenerateCache, mergeCustomPropertyValues, normalizeTargetRpxLengthCandidates, resolveStyleOptions, resolveTargetCandidates, runIncrementalGenerateTask, seedIncrementalGenerateCache, shouldRebuildIncrementalEntry } from './incremental-cache'
 import { createEngineSourceEntries, serializeTailwindGenerationArtifact, TailwindV4NativeSessionPool } from './native-session'
 import { restoreRpxLengthCandidates, restoreRpxLengthCssSelectors } from './rpx-candidates'
 import { resolveCompiledSourceRoot, resolveScanSources } from './scan-sources'
+import { resolveGenerationStyleContext } from './style-context'
 
 function isCssSyntaxError(error: unknown) {
   return error instanceof Error && error.name === 'CssSyntaxError'
@@ -86,12 +87,11 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       generatedCss,
       normalizedCandidates.restoreCandidates,
     )
-    const customPropertyValues = collectCustomPropertyValues(compatibleSource.css)
-    mergeCustomPropertyValues(customPropertyValues, rawCss)
-    const css = await transformTailwindV4CssByTarget(rawCss, target, {
-      ...resolvedStyleOptions,
-      customPropertyValues,
-    })
+    const css = await transformTailwindV4CssByTarget(
+      rawCss,
+      target,
+      resolveGenerationStyleContext(compatibleSource.css, rawCss, resolvedStyleOptions),
+    )
 
     return {
       classSet: restoreRpxLengthCandidates(classSet, normalizedCandidates.restoreCandidates),

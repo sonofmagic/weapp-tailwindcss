@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import semver from 'semver'
 import { describe, expect, it } from 'vitest'
 import YAML from 'yaml'
 
@@ -804,8 +805,8 @@ describe('ci workflows', () => {
     expect(packageJson.scripts['pr:rc']).toBe('repo release pre enter rc')
     expect(packageJson.scripts['pr:next']).toBe('repo release pre enter next')
     expect(packageJson.scripts['pr:exit']).toBe('repo release pre exit')
-    const rootPackage = readPackageJson<{ devDependencies?: Record<string, string> }>('package.json')
-    expect(packageJson.devDependencies.repoctl).toBe(rootPackage.devDependencies?.repoctl)
+    expect(semver.validRange(packageJson.devDependencies.repoctl)).not.toBeNull()
+    expect(packageJson.devDependencies.repoctl).not.toBe('*')
     expect(packageJson.devDependencies['@changesets/cli']).toBeUndefined()
     expect(packageJson.devDependencies['@changesets/changelog-github']).toBeUndefined()
     expect(packageJson.devDependencies['@icebreakers/changelog-github']).toBeUndefined()

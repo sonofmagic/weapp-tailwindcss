@@ -1,2 +1,5 @@
-export const TEMPLATE_PACKAGE_MANAGER = 'pnpm@12.4.1'
-export const TEMPLATE_WEAPP_TAILWINDCSS_RANGE = '^5.5.4'
+import packageManifest from '../packages/weapp-tailwindcss/package.json'
+import { repositoryManifest } from '../scripts/ci/version-contract.mjs'
+
+export const TEMPLATE_PACKAGE_MANAGER = repositoryManifest.packageManager
+export const TEMPLATE_WEAPP_TAILWINDCSS_RANGE = `^${packageManifest.version}`

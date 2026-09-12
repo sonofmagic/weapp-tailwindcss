@@ -12,7 +12,10 @@ export function getCalcPlugin(options: IStyleHandlerOptions): AcceptedPlugin | n
 
   if (options.cssCalc === true || Array.isArray(options.cssCalc)) {
     const calcOptions = Array.isArray(options.cssCalc)
-      ? { includeCustomProperties: options.cssCalc }
+      ? {
+          includeCustomProperties: options.cssCalc,
+          ...(options.customPropertyValues ? { customPropertyValues: options.customPropertyValues } : {}),
+        }
       : options.customPropertyValues
         ? {
             customPropertyValues: options.customPropertyValues,

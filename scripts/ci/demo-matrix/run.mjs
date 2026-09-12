@@ -3,7 +3,7 @@ import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
-import { declaredPackageManager, readPackageJson } from '../version-contract.mjs'
+import { repositoryPackageManager } from '../version-contract.mjs'
 import { authoredCss } from './authored.mjs'
 import { openBrowser } from './browser.mjs'
 import { cases, checkCatalog, commands, coverage, isWeb, matrix, repo } from './catalog.mjs'
@@ -43,8 +43,7 @@ const report = {
   expected: selected.map(item => item.id),
   results: [],
 }
-const rootManifest = await readPackageJson(path.join(repo, 'package.json'))
-assert.equal(report.pnpm, declaredPackageManager(rootManifest).version)
+assert.equal(report.pnpm, repositoryPackageManager.version)
 await mkdir(artifactRoot, { recursive: true })
 let interrupted = false
 let activeSession
