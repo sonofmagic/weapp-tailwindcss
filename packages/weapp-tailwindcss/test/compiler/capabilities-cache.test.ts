@@ -1,11 +1,18 @@
 import { describe, expect, it } from 'vitest'
-import { CandidateIndex, createCacheTelemetryCollector, createCapabilityDiagnostic, missingCapabilities } from '../../src/compiler'
+import { BUILTIN_ADAPTER_CAPABILITIES, CandidateIndex, createCacheTelemetryCollector, createCapabilityDiagnostic, missingCapabilities } from '../../src/compiler'
 
 describe('P1 能力契约与缓存遥测', () => {
   it('报告缺失能力并生成结构化诊断', () => {
     const actual = { adapter: 'test', version: '1', capabilities: ['diagnostics'] as const }
     expect(missingCapabilities(actual, ['diagnostics', 'watchUpdate'])).toEqual(['watchUpdate'])
     expect(createCapabilityDiagnostic(actual, ['watchUpdate'])?.error?.name).toBe('MissingCapability')
+  })
+  it('为四类 bundler 提供完整且一致的能力声明', () => {
+    const required = ['compilerHost', 'sourceCandidates', 'cssGeneration', 'assetEmission', 'watchUpdate', 'diagnostics'] as const
+    for (const capabilities of Object.values(BUILTIN_ADAPTER_CAPABILITIES)) {
+      expect(missingCapabilities(capabilities, required)).toEqual([])
+      expect(capabilities.version).toBe('1.0')
+    }
   })
   it('按层统计缓存命中率并保留失效原因', () => {
     const collector = createCacheTelemetryCollector()
