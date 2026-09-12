@@ -245,6 +245,7 @@
     "templates:sync": "tsx scripts/sync-templates.ts && pnpm templates:update-deps",
     "templates:push": "pnpm templates:update-deps && tsx scripts/push-templates.ts",
     "templates:update-deps": "tsx scripts/update-template-deps.ts",
+    "templates:upgrade": "pnpm templates:update-deps && pnpm e2e:templates && pnpm e2e:canonical-templates",
     "generate:readme": "pnpm docs:packages:check",
     "docs:packages:check": "node scripts/check-package-readmes.mjs",
     "check:package-homepages": "node scripts/verify-package-homepages.mjs",

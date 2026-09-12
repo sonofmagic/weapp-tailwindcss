@@ -436,6 +436,31 @@ async function resolveTailwindTargets(pkg: PackageJson): Promise<TailwindResolut
   }
 }
 
+async function resolveBabelTargets(pkg: PackageJson): Promise<TargetPackage[]> {
+  const names = new Set<string>()
+  for (const field of ['dependencies', 'devDependencies'] as const) {
+    for (const name of Object.keys(pkg[field] ?? {})) {
+      if (name.startsWith('@babel/')) {
+        names.add(name)
+      }
+    }
+  }
+
+  return Promise.all([...names].map(async (name) => {
+    const range = getPackageRange(pkg, name)
+    const minimum = range && !isExternalSpecifier(range) ? minVersion(range) : null
+    if (!minimum) {
+      return null
+    }
+    const version = await fetchVersionForMajor(name, minimum.major)
+    return {
+      name,
+      version,
+      range: `^${version}`,
+    }
+  })).then(targets => targets.filter((target): target is TargetPackage => target !== null))
+}
+
 async function runCommand(
   command: string,
   args: string[],
@@ -570,9 +595,11 @@ async function processTemplate(
   const indent = detectIndentation(raw)
   const pkg = JSON.parse(raw) as PackageJson
   const tailwindResolution = await resolveTailwindTargets(pkg)
+  const babelTargets = await resolveBabelTargets(pkg)
   const relevantTargets = dedupeTargets([
     ...filterTargetsForPackage(pkg, baseTargets),
     ...tailwindResolution.targets,
+    ...babelTargets,
   ])
   let packageManagerChanged = false
   if (ROOT_PNPM_PACKAGE_MANAGER && pkg.packageManager !== ROOT_PNPM_PACKAGE_MANAGER) {

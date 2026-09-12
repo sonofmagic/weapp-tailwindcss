@@ -20,9 +20,13 @@ import TemplateLink from '@site/src/components/TemplateLink'
 
 # 🔥各个框架的模板
 
-以下模板统一使用 Tailwind CSS 4 CSS-first 入口，并由 `weapp-tailwindcss@5.5.0` 接管样式生成。带有 🔥 标志的模板同时纳入仓库 canonical 构建门禁；完整验证范围见[支持矩阵](/docs/reference/support-matrix)。
+以下模板统一使用 Tailwind CSS 4 CSS-first 入口，并由 `weapp-tailwindcss@5.5.4` 接管样式生成。带有 🔥 标志的模板同时纳入仓库 canonical 构建门禁；完整验证范围见[支持矩阵](/docs/reference/support-matrix)。
 
 不要同时注册 `@tailwindcss/postcss` 或 `@tailwindcss/vite`，也不需要执行 `weapp-tw patch`。
+
+## 维护模板依赖
+
+仓库维护者可在根目录执行 `pnpm templates:upgrade`，按兼容矩阵升级 `templates.jsonc` 管理的全部模板依赖（包括 Babel），重新生成 pnpm 锁文件，并运行模板构建门禁。失败后可单独执行 `pnpm templates:update-deps` 重试依赖更新，再运行模板测试。
 
 ## uni-app
 

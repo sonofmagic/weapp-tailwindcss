@@ -2,7 +2,7 @@
   "name": "my-project",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.25.0",
+  "packageManager": "pnpm@12.4.1",
   "scripts": {
     "serve": "pnpm dev:h5",
     "build": "pnpm build:h5",
@@ -53,7 +53,7 @@
     "up:uni-app": "pnpm dlx @dcloudio/uvm@latest"
   },
   "dependencies": {
-    "@babel/runtime": "~7.29.2",
+    "@babel/runtime": "~7.29.7",
     "@dcloudio/uni-app": "2.0.2-5000720260410001",
     "@dcloudio/uni-app-plus": "2.0.2-5000720260410001",
     "@dcloudio/uni-h5": "2.0.2-5000720260410001",
@@ -114,7 +114,7 @@
     "typescript": "~6.0.3",
     "vue-template-compiler": ">= 2.6.14 < 2.7",
     "weapp-ide-cli": "^5.4.12",
-    "weapp-tailwindcss": "^5.5.0"
+    "weapp-tailwindcss": "^5.5.4"
   },
   "browserslist": [
     "Android >= 4.4",

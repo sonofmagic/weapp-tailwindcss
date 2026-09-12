@@ -18,9 +18,13 @@ import TemplateLink from '@site/src/components/TemplateLink'
 
 # 🔥Templates for each framework
 
-These templates use the Tailwind CSS 4 CSS-first entry and delegate CSS generation to `weapp-tailwindcss@5.5.0`. Templates marked with 🔥 also run through the repository's canonical build gate. See the [support matrix](/docs/reference/support-matrix) for the complete verification scope.
+These templates use the Tailwind CSS 4 CSS-first entry and delegate CSS generation to `weapp-tailwindcss@5.5.4`. Templates marked with 🔥 also run through the repository's canonical build gate. See the [support matrix](/docs/reference/support-matrix) for the complete verification scope.
 
 Do not register `@tailwindcss/postcss` or `@tailwindcss/vite` in the same build, and do not run `weapp-tw patch`.
+
+## Maintaining template dependencies
+
+Maintainers can run `pnpm templates:upgrade` from the repository root to upgrade dependencies (including Babel) for every template listed in `templates.jsonc`, regenerate pnpm lockfiles, and run the template build gates. If dependency resolution fails, retry with `pnpm templates:update-deps`, then run the template tests again.
 
 ## uni-app
 
