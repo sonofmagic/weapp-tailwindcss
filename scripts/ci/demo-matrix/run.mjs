@@ -42,7 +42,7 @@ const report = {
   expected: selected.map(item => item.id),
   results: [],
 }
-assert.equal(report.pnpm, '12.3.4')
+assert.equal(report.pnpm, '12.4.1')
 await mkdir(artifactRoot, { recursive: true })
 let interrupted = false
 let activeSession

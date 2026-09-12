@@ -13,7 +13,7 @@ export function verifyReports(reports, expectedMatrix, sha) {
   const actual = new Set()
   for (const report of reports) {
     assert.equal(report.sha, sha, 'Report belongs to a different commit')
-    assert.equal(report.pnpm, '12.3.4')
+    assert.equal(report.pnpm, '12.4.1')
     const node = Number(report.node.match(/^v(\d+)/)?.[1])
     assert.deepEqual(report.results.map(result => result.id).sort(), [...report.expected].sort())
     for (const result of report.results) {

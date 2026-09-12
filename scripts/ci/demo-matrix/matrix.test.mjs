@@ -80,7 +80,7 @@ describe('portable demo matrix', () => {
       for (const [index, job] of matrix().include.entries()) {
         const report = {
           sha: head,
-          pnpm: '12.3.4',
+          pnpm: '12.4.1',
           node: `v${job.node}.0.0`,
           os: platforms[job.os],
           expected: job.cases,
@@ -113,7 +113,7 @@ describe('portable demo matrix', () => {
   it('fails closed for absent, skipped, duplicate, stale or incomplete evidence', () => {
     const id = cases[0].id
     const expected = { include: [{ os: 'windows-latest', node: 24, cases: [id] }] }
-    const passed = { sha: 'head', pnpm: '12.3.4', node: 'v24.19.0', os: 'win32', expected: [id], results: [{ id, coverage: 'utilities', status: 'passed', rounds: Object.fromEntries(['production', 'initial', 'replace', 'add', 'restore'].map(round => [round, {}])) }] }
+    const passed = { sha: 'head', pnpm: '12.4.1', node: 'v24.19.0', os: 'win32', expected: [id], results: [{ id, coverage: 'utilities', status: 'passed', rounds: Object.fromEntries(['production', 'initial', 'replace', 'add', 'restore'].map(round => [round, {}])) }] }
     expect(verifyReports([passed], expected, 'head')).toBe(1)
     expect(() => verifyReports([], expected, 'head')).toThrow()
     expect(() => verifyReports([passed, passed], expected, 'head')).toThrow('Duplicate')
@@ -130,7 +130,7 @@ describe('portable demo matrix', () => {
     expect(coverage(hybrid)).toBe('webview-build')
     expect(requiredPhases(hybrid)).toEqual(['production'])
     expect(requiredPhases(cases.find(item => item.target === 'h5'))).toContain('refresh')
-    const report = { sha: 'head', pnpm: '12.3.4', node: 'v24.19.0', os: 'win32', expected: [native.id], results: [{ id: native.id, coverage: 'native-build', status: 'passed', rounds: { production: { javascript: true } } }] }
+    const report = { sha: 'head', pnpm: '12.4.1', node: 'v24.19.0', os: 'win32', expected: [native.id], results: [{ id: native.id, coverage: 'native-build', status: 'passed', rounds: { production: { javascript: true } } }] }
     const expected = { include: [{ os: 'windows-latest', node: 24, cases: [native.id] }] }
     expect(verifyReports([report], expected, 'head')).toBe(1)
     expect(() => verifyReports([{ ...report, results: [{ ...report.results[0], coverage: 'utilities' }] }], expected, 'head')).toThrow('Incorrect coverage')
