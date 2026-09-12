@@ -264,6 +264,13 @@ weapp-tailwindcss@5.5.3:
   intents:
     - sweet-pugs-dress
     - wet-bananas-dress
+weapp-tailwindcss@5.5.4:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - fix-1174-nested-css-root
+    - p1-contract-completion
+    - p1-engineering-enhancements
+    - p2-engineering-enhancements
 weapp-tw@0.0.3:
   dir: packages/weapp-tw
   intents:
