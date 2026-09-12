@@ -12,10 +12,15 @@ export function getCalcPlugin(options: IStyleHandlerOptions): AcceptedPlugin | n
   }
 
   if (options.cssCalc === true || Array.isArray(options.cssCalc)) {
-    return postcssCalc(EMPTY_CALC_OPTIONS)
+    const calcOptions = Array.isArray(options.cssCalc)
+      ? { includeCustomProperties: options.cssCalc }
+      : options.customPropertyValues ? { customPropertyValues: options.customPropertyValues } : EMPTY_CALC_OPTIONS
+    return postcssCalc(calcOptions)
   }
 
   return postcssCalc(
-    omit(options.cssCalc, ['includeCustomProperties']),
+    options.customPropertyValues
+      ? { ...omit(options.cssCalc, ['includeCustomProperties']), customPropertyValues: options.customPropertyValues }
+      : omit(options.cssCalc, ['includeCustomProperties']),
   )
 }

@@ -17,6 +17,16 @@ interface TransformOptions {
   precision: number;
   preserve: boolean;
   warnWhenCannotResolve: boolean;
+  customPropertyValues?: ReadonlyMap<string, string>;
+  includeCustomProperties?: (string | RegExp)[];
+}
+
+function shouldResolveProperty(name: string, options: TransformOptions) {
+  return options.includeCustomProperties?.some((entry) => {
+    if (typeof entry === 'string') return entry === name
+    entry.lastIndex = 0
+    return entry.test(name)
+  }) ?? false
 }
 
 type TransformNode = ChildNode & {
@@ -41,7 +51,13 @@ function transformValue(
       }
 
       // stringify calc expression and produce an AST
-      const contents = valueParser.stringify(node.nodes);
+      let contents = valueParser.stringify(node.nodes);
+      if (options.customPropertyValues) {
+        contents = contents.replace(/var\(\s*(--[\w-]+)\s*\)/g, (match, name: string) => {
+          if (!shouldResolveProperty(name, options)) return match;
+          return options.customPropertyValues?.get(name) ?? match;
+        });
+      }
       const ast = parser.parse(contents);
 
       // reduce AST to its simplest form, that is, either to a single value

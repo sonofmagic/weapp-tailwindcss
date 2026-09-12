@@ -4,7 +4,7 @@ import { createTailwindV4Engine as createEngineTailwindV4Engine, extractRawCandi
 import { resolveCssMacroTailwindV4Source } from '../css-macro-source'
 import { transformTailwindV4CssByTarget } from '../miniprogram'
 import { createCompatibleSource } from './css-compat'
-import { collectCandidates, createIncrementalGenerateCacheKey, createIncrementalStyleOptions, createTailwindV4SourceCacheKey, hasRemovedCandidates, incrementalGenerateCache, mergeCustomPropertyValues, normalizeTargetRpxLengthCandidates, resolveStyleOptions, resolveTargetCandidates, runIncrementalGenerateTask, seedIncrementalGenerateCache, shouldRebuildIncrementalEntry } from './incremental-cache'
+import { collectCandidates, collectCustomPropertyValues, createIncrementalGenerateCacheKey, createIncrementalStyleOptions, createTailwindV4SourceCacheKey, hasRemovedCandidates, incrementalGenerateCache, mergeCustomPropertyValues, normalizeTargetRpxLengthCandidates, resolveStyleOptions, resolveTargetCandidates, runIncrementalGenerateTask, seedIncrementalGenerateCache, shouldRebuildIncrementalEntry } from './incremental-cache'
 import { createEngineSourceEntries, serializeTailwindGenerationArtifact, TailwindV4NativeSessionPool } from './native-session'
 import { restoreRpxLengthCandidates, restoreRpxLengthCssSelectors } from './rpx-candidates'
 import { resolveCompiledSourceRoot, resolveScanSources } from './scan-sources'
@@ -86,7 +86,12 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       generatedCss,
       normalizedCandidates.restoreCandidates,
     )
-    const css = await transformTailwindV4CssByTarget(rawCss, target, resolvedStyleOptions)
+    const customPropertyValues = collectCustomPropertyValues(compatibleSource.css)
+    mergeCustomPropertyValues(customPropertyValues, rawCss)
+    const css = await transformTailwindV4CssByTarget(rawCss, target, {
+      ...resolvedStyleOptions,
+      customPropertyValues,
+    })
 
     return {
       classSet: restoreRpxLengthCandidates(classSet, normalizedCandidates.restoreCandidates),

@@ -44,7 +44,6 @@ describe('cssCalc defaults', () => {
     expect(css).toContain('-webkit-mask-image: var(--svg);')
     expect(css).toContain('mask-image: var(--svg);')
     expect(css).toContain('width: 16rpx;')
-    expect(css).toContain('--spacing: 8rpx;')
-    expect(css).not.toContain('width: calc(var(--spacing)*2);')
+    expect(css).toContain('width: calc(var(--spacing)*2);')
   })
 })

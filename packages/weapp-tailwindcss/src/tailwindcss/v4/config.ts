@@ -4,8 +4,8 @@ import { normalizeStringListOption } from '@/utils/options'
 import { isTailwindV4CssEntry } from './css-entries'
 import { hasConfiguredTailwindV4CssRoots } from './css-sources'
 
-// Tailwind v4 的间距工具依赖该主题变量；跨 CSS 资产处理时需要默认保留它。
-export const DEFAULT_CSS_CALC_CUSTOM_PROPERTIES: (string | RegExp)[] = ['--spacing']
+// 默认不限定变量名称，由用户通过 cssCalc 数组或 includeCustomProperties 指定。
+export const DEFAULT_CSS_CALC_CUSTOM_PROPERTIES: (string | RegExp)[] = []
 
 function includesToken(list: (string | RegExp)[], token: string | RegExp) {
   return list.some((candidate) => {

@@ -292,15 +292,15 @@ describe('getCalcPlugin', () => {
     expect(plugin?.postcssPlugin).toBe('mock-calc')
   })
 
-  it('reuses empty calc options for boolean and array modes', () => {
+  it('forwards array custom property selectors to calc', () => {
     calcMock.mockImplementation(options => ({ postcssPlugin: 'mock-calc', options }))
 
     getCalcPlugin(createOptions({ cssCalc: true }))
     getCalcPlugin(createOptions({ cssCalc: ['--keep'] }))
 
     expect(calcMock).toHaveBeenCalledTimes(2)
-    expect(calcMock.mock.calls[0]?.[0]).toBe(calcMock.mock.calls[1]?.[0])
     expect(calcMock.mock.calls[0]?.[0]).toEqual({})
+    expect(calcMock.mock.calls[1]?.[0]).toEqual({ includeCustomProperties: ['--keep'] })
   })
 })
 
