@@ -227,7 +227,7 @@ describe('getCompilerContext', () => {
     })
   })
 
-  it('keeps user provided arrays intact when no defaults defined', async () => {
+  it('appends the spacing variable to user provided arrays', async () => {
     createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '4.1.0' },
       majorVersion: 4,
@@ -240,8 +240,8 @@ describe('getCompilerContext', () => {
 
     const forwardedCalcOptions = (createHandlersFromContext.mock.calls[0] as any)?.[2]
 
-    expect(forwardedCalcOptions).toEqual(['--gap'])
-    expect(ctx.cssCalc).toEqual(['--gap'])
+    expect(forwardedCalcOptions).toEqual(['--gap', '--spacing'])
+    expect(ctx.cssCalc).toEqual(['--gap', '--spacing'])
   })
 
   it('stores normalized custom attribute entities on the compiler context', async () => {
