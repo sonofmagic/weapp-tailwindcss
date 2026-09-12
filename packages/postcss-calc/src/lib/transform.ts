@@ -30,7 +30,12 @@ function shouldResolveProperty(name: string, options: TransformOptions) {
 }
 
 function resolveCustomProperties(value: string, options: TransformOptions, stack = new Set<string>()): string {
-  if (!options.customPropertyValues || !options.includeCustomProperties?.length) return value
+  // 只有确实包含 var() 时才构造 value AST，避免普通 calc 声明承担额外开销。
+  if (
+    !options.customPropertyValues ||
+    !options.includeCustomProperties?.length ||
+    !value.includes('var(')
+  ) return value
   const parsed = valueParser(value)
   parsed.walk((node) => {
     if (node.type !== 'function' || node.value !== 'var') return
