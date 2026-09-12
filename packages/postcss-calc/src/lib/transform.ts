@@ -29,6 +29,28 @@ function shouldResolveProperty(name: string, options: TransformOptions) {
   }) ?? false
 }
 
+function resolveCustomProperties(value: string, options: TransformOptions, stack = new Set<string>()): string {
+  if (!options.customPropertyValues || !options.includeCustomProperties?.length) return value
+  const parsed = valueParser(value)
+  parsed.walk((node) => {
+    if (node.type !== 'function' || node.value !== 'var') return
+    const comma = node.nodes.findIndex(child => child.type === 'div' && child.value === ',')
+    const name = valueParser.stringify(comma >= 0 ? node.nodes.slice(0, comma) : node.nodes).trim()
+    if (!name.startsWith('--') || !shouldResolveProperty(name, options) || stack.has(name)) return
+    const resolved = options.customPropertyValues.get(name)
+    const fallback = comma >= 0 ? valueParser.stringify(node.nodes.slice(comma + 1)).trim() : undefined
+    const replacement = resolved !== undefined
+      ? resolveCustomProperties(resolved, options, new Set([...stack, name]))
+      : fallback
+    if (replacement === undefined) return
+    node.type = 'word'
+    node.value = replacement
+    delete node.nodes
+    return false
+  })
+  return parsed.toString()
+}
+
 type TransformNode = ChildNode & {
   value?: string;
   params?: string;
@@ -51,13 +73,7 @@ function transformValue(
       }
 
       // stringify calc expression and produce an AST
-      let contents = valueParser.stringify(node.nodes);
-      if (options.customPropertyValues) {
-        contents = contents.replace(/var\(\s*(--[\w-]+)\s*\)/g, (match, name: string) => {
-          if (!shouldResolveProperty(name, options)) return match;
-          return options.customPropertyValues?.get(name) ?? match;
-        });
-      }
+      const contents = resolveCustomProperties(valueParser.stringify(node.nodes), options);
       const ast = parser.parse(contents);
 
       // reduce AST to its simplest form, that is, either to a single value
