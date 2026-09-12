@@ -2,7 +2,6 @@
 import type { AcceptedPlugin } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import postcssCalc from '@weapp-tailwindcss/postcss-calc'
-import { omit } from 'es-toolkit'
 
 const EMPTY_CALC_OPTIONS = {}
 
@@ -14,13 +13,19 @@ export function getCalcPlugin(options: IStyleHandlerOptions): AcceptedPlugin | n
   if (options.cssCalc === true || Array.isArray(options.cssCalc)) {
     const calcOptions = Array.isArray(options.cssCalc)
       ? { includeCustomProperties: options.cssCalc }
-      : options.customPropertyValues ? { customPropertyValues: options.customPropertyValues } : EMPTY_CALC_OPTIONS
+      : options.customPropertyValues
+        ? {
+            customPropertyValues: options.customPropertyValues,
+            includeCustomProperties: [...options.customPropertyValues.keys()],
+          }
+        : EMPTY_CALC_OPTIONS
     return postcssCalc(calcOptions)
   }
 
   return postcssCalc(
-    options.customPropertyValues
-      ? { ...omit(options.cssCalc, ['includeCustomProperties']), customPropertyValues: options.customPropertyValues }
-      : omit(options.cssCalc, ['includeCustomProperties']),
+    {
+      ...options.cssCalc,
+      ...(options.customPropertyValues ? { customPropertyValues: options.customPropertyValues } : {}),
+    },
   )
 }
