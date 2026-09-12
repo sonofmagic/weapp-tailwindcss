@@ -1,3 +1,13 @@
+---
+status: verified
+issue: https://github.com/sonofmagic/weapp-tailwindcss/issues/1194
+baseline: 7df3fd58a
+regressions:
+  - packages/postcss/test/calc.test.ts
+  - packages/postcss-calc/test/index.test.ts
+  - packages/postcss/test/pluginHelpers.test.ts
+---
+
 # Issue #1194：跨 CSS 资产预计算自定义属性
 
 ## 问题
