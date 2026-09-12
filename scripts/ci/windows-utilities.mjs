@@ -22,7 +22,7 @@ const reports = []
 await mkdir(reportDir, { recursive: true })
 
 async function runPnpm(args, cwd = project) {
-  const result = await execa('pnpm', ['--config.minimum-release-age=0m', ...args], { cwd, env: { CI: 'true' }, timeout: 600_000 })
+  const result = await execa('pnpm', ['--config.minimum-release-age=1', ...args], { cwd, env: { CI: 'true' }, timeout: 600_000 })
   return result.stdout
 }
 
