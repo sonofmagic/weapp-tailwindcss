@@ -2,16 +2,16 @@
   "spacing": "8rpx",
   "standard": {
     "h-8": {
-      "height": "calc(var(--spacing)*8)"
+      "height": "64rpx"
     },
     "h-20": {
-      "height": "calc(var(--spacing)*20)"
+      "height": "160rpx"
     },
     "h-50": {
-      "height": "calc(var(--spacing)*50)"
+      "height": "400rpx"
     },
     "mt-2": {
-      "margin-top": "calc(var(--spacing)*2)"
+      "margin-top": "16rpx"
     },
     "flex": {
       "display": "flex"

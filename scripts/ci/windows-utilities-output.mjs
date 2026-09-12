@@ -80,10 +80,10 @@ export function verifyOutput(result, expectRegression) {
     return
   }
   assert.equal(result.spacing, '8rpx')
-  for (const height of [8, 20, 50]) {
-    assert.equal(result.standard[`h-${height}`].height, `calc(var(--spacing)*${height})`)
+  for (const [height, expected] of [[8, '64rpx'], [20, '160rpx'], [50, '400rpx']]) {
+    assert.equal(result.standard[`h-${height}`].height, expected)
   }
-  assert.equal(result.standard['mt-2']['margin-top'], 'calc(var(--spacing)*2)')
+  assert.equal(result.standard['mt-2']['margin-top'], '16rpx')
   assert.equal(result.standard.flex.display, 'flex')
   assert.ok(result.standard['text-slate-500'].color)
 }
