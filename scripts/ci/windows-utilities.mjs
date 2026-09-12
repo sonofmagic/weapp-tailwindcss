@@ -22,7 +22,7 @@ const reports = []
 await mkdir(reportDir, { recursive: true })
 
 async function runPnpm(args, cwd = project) {
-  const result = await execa('pnpm', ['--config.minimum-release-age=0', ...args], { cwd, env: { CI: 'true' }, timeout: 600_000 })
+  const result = await execa('pnpm', ['--config.minimum-release-age=0m', ...args], { cwd, env: { CI: 'true' }, timeout: 600_000 })
   return result.stdout
 }
 
@@ -140,7 +140,7 @@ try {
   // 候选包及运行时 workspace 依赖来自同一提交，冻结安装后仍不依赖 workspace 链接。
   // 临时项目重新解析候选包时允许当前 registry 的新鲜版本，避免 release age
   // 窗口在 CI 运行期间阻塞与本次验证无关的锁文件生成。
-  await writeFile(path.join(reportDir, 'candidate-lock.log'), await runPnpm(['install', '--lockfile-only', '--ignore-scripts', '--config.minimum-release-age=0']))
+  await writeFile(path.join(reportDir, 'candidate-lock.log'), await runPnpm(['install', '--lockfile-only', '--ignore-scripts']))
   await writeFile(path.join(reportDir, 'candidate-install.log'), await runPnpm(['install', '--frozen-lockfile']))
   await cp(path.join(project, 'pnpm-lock.yaml'), path.join(reportDir, 'candidate-lock.yaml'))
   await verify('candidate', false)
