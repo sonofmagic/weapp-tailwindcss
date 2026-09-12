@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/lynx
 
+## 0.3.13
+
+### Patch Changes
+
+- Updated dependencies:
+  - weapp-tailwindcss@5.5.4
+
 ## 0.3.12
 
 ### Patch Changes

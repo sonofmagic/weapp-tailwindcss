@@ -5,6 +5,13 @@
 ### Patch Changes
 
 - Updated dependencies:
+  - weapp-tailwindcss@5.5.4
+
+## 0.0.72
+
+### Patch Changes
+
+- Updated dependencies:
   - weapp-tailwindcss@5.5.3
 
 ## 0.0.72
