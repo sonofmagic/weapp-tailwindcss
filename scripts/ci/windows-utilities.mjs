@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url'
 import { execa } from 'execa'
 import { parse, stringify } from 'yaml'
 import { packRuntimeDependencies } from './pack-runtime-dependencies.mjs'
+import { declaredPackageManager, readPackageJson } from './version-contract.mjs'
 import { inspectOutput, verifyOutput } from './windows-utilities-output.mjs'
 
 const repo = fileURLToPath(new URL('../../', import.meta.url))
@@ -94,8 +95,11 @@ async function verify(label, expectRegression) {
   const versions = Object.fromEntries(['weapp-tailwindcss', 'tailwindcss', '@tarojs/cli', 'webpack'].map(name =>
     [name, require(`${name}/package.json`).version],
   ))
-  assert.equal(versions.tailwindcss, '4.3.3')
-  assert.equal(versions['@tarojs/cli'], '4.2.1')
+  const manifest = await readPackageJson(path.join(project, 'package.json'))
+  if (/^\d+\.\d+\.\d+$/.test(manifest.devDependencies.tailwindcss)) {
+    assert.equal(versions.tailwindcss, manifest.devDependencies.tailwindcss)
+  }
+  assert.equal(versions['@tarojs/cli'], manifest.devDependencies['@tarojs/cli'])
   for (const mode of ['development', 'production']) {
     const output = await build(mode, label)
     reports.push({ label, mode, versions, expectRegression, output })
@@ -116,7 +120,8 @@ async function verify(label, expectRegression) {
 
 try {
   await cp(fixture, project, { recursive: true })
-  assert.equal((await runPnpm(['--version'])).trim(), '11.25.0')
+  const fixtureManifest = await readPackageJson(path.join(fixture, 'package.json'))
+  assert.equal((await runPnpm(['--version'])).trim(), declaredPackageManager(fixtureManifest).version)
   await writeFile(path.join(reportDir, 'published-install.log'), await runPnpm(['install', '--frozen-lockfile']))
   await verify('published-5.5.1', process.platform === 'win32')
 

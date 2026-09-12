@@ -4,16 +4,19 @@ import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import fg from 'fast-glob'
+import { declaredPackageManager, readPackageJson } from '../version-contract.mjs'
 import { cases, coverage, matrix, requiredPhases } from './catalog.mjs'
 
 const platforms = { 'ubuntu-latest': 'linux', 'windows-latest': 'win32', 'macos-latest': 'darwin' }
+const repo = fileURLToPath(new URL('../../../', import.meta.url))
+const rootManifest = await readPackageJson(path.join(repo, 'package.json'))
 
 export function verifyReports(reports, expectedMatrix, sha) {
   const expected = new Set(expectedMatrix.include.flatMap(job => job.cases.map(id => `${platforms[job.os]}:${job.node}:${id}`)))
   const actual = new Set()
   for (const report of reports) {
     assert.equal(report.sha, sha, 'Report belongs to a different commit')
-    assert.equal(report.pnpm, '12.4.1')
+    assert.equal(report.pnpm, declaredPackageManager(rootManifest).version)
     const node = Number(report.node.match(/^v(\d+)/)?.[1])
     assert.deepEqual(report.results.map(result => result.id).sort(), [...report.expected].sort())
     for (const result of report.results) {
