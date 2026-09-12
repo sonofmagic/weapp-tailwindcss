@@ -85,11 +85,49 @@ export function appendUpdateIgnoreSelectors(args, ignoreDeps) {
   }
 
   const existingSelectors = new Set(args)
+  const packageScoped = isWeappPackageScopedUpdate(args)
   const ignoreSelectors = ignoreDeps
+    .filter(dependency => !(packageScoped && isBabelIgnoreSelector(dependency)))
     .map(dependency => `!${dependency}`)
     .filter(selector => !existingSelectors.has(selector))
 
   return [...args, ...ignoreSelectors]
+}
+
+/** 判断更新是否明确限定在本仓库可独立升级的包。 */
+export function isWeappPackageScopedUpdate(args) {
+  const selectors = []
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index]
+    if (arg === '--filter' || arg === '-F') {
+      if (args[index + 1]) {
+        selectors.push(args[index + 1])
+      }
+      index += 1
+    }
+    else if (arg.startsWith('--filter=')) {
+      selectors.push(arg.slice('--filter='.length))
+    }
+    else if (arg.startsWith('-F')) {
+      selectors.push(arg.slice(2))
+    }
+  }
+
+  return selectors.some(selector => (
+    selector === 'packages'
+    || selector === 'packages-runtime'
+    || selector === './packages'
+    || selector === './packages-runtime'
+    || selector.startsWith('packages/')
+    || selector.startsWith('packages-runtime/')
+    || selector.startsWith('./packages/')
+    || selector.startsWith('./packages-runtime/')
+    || selector.startsWith('@weapp-tailwindcss/')
+  ))
+}
+
+function isBabelIgnoreSelector(selector) {
+  return selector === '@babel/*' || selector === 'babel-*'
 }
 
 export function createPnpmEnv(sourceEnv, { proxyAvailable, proxy }) {

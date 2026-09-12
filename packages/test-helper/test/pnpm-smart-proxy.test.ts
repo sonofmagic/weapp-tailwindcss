@@ -7,6 +7,7 @@ import {
   refreshUpdateMetadataCache,
   shouldRefreshMetadataCache,
   UPDATE_METADATA_CACHE_PATTERNS,
+  isWeappPackageScopedUpdate,
 } from '../../../scripts/pnpm-smart-proxy.mjs'
 
 describe('pnpm-smart-proxy', () => {
@@ -36,6 +37,13 @@ update:
       '!@tarojs/*',
     ])
     expect(appendUpdateIgnoreSelectors(['install'], ignoreDeps)).toEqual(['install'])
+    expect(appendUpdateIgnoreSelectors([
+      'up', '-rLi', '--filter', './packages/*',
+    ], ['@babel/*', 'babel-*', '@tarojs/*'])).toEqual([
+      'up', '-rLi', '--filter', './packages/*', '!@tarojs/*',
+    ])
+    expect(isWeappPackageScopedUpdate(['up', '--filter=@weapp-tailwindcss/babel'])).toBe(true)
+    expect(isWeappPackageScopedUpdate(['up', '--filter', '@tarojs/*'])).toBe(false)
   })
 
   it('deletes all pnpm metadata cache before dependency updates', () => {

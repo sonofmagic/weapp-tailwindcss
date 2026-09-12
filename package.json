@@ -287,8 +287,8 @@
     "script:sync": "repo ws upgrade",
     "script:clean": "repo ws clean",
     "commitlint": "commitlint --edit",
-    "up:pkg:latest": "node scripts/pnpm-smart-proxy.mjs up -rLi",
-    "up:pkg": "node scripts/pnpm-smart-proxy.mjs up -ri",
+    "up:pkg:latest": "node scripts/pnpm-smart-proxy.mjs up -rLi --filter './packages/*' --filter './packages-runtime/*'",
+    "up:pkg": "node scripts/pnpm-smart-proxy.mjs up -ri --filter './packages/*' --filter './packages-runtime/*'",
     "up:uniapp": "pnpx @dcloudio/uvm@latest"
   },
   "publishConfig": {
