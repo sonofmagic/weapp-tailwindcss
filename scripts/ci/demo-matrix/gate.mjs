@@ -4,6 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import fg from 'fast-glob'
+import { readPnpmVersion } from '../../pnpm-version.mjs'
 import { cases, coverage, matrix, requiredPhases } from './catalog.mjs'
 
 const platforms = { 'ubuntu-latest': 'linux', 'windows-latest': 'win32', 'macos-latest': 'darwin' }
@@ -13,7 +14,7 @@ export function verifyReports(reports, expectedMatrix, sha) {
   const actual = new Set()
   for (const report of reports) {
     assert.equal(report.sha, sha, 'Report belongs to a different commit')
-    assert.equal(report.pnpm, '12.3.4')
+    assert.equal(report.pnpm, readPnpmVersion(), 'pnpm version must match root packageManager')
     const node = Number(report.node.match(/^v(\d+)/)?.[1])
     assert.deepEqual(report.results.map(result => result.id).sort(), [...report.expected].sort())
     for (const result of report.results) {

@@ -26,9 +26,9 @@ export function resolveWatchPlatform(env = process.env) {
 function spawnPnpm(args, options = {}) {
   const { command, args: commandArgs, shell } = createPnpmCommand(args)
   return spawn(command, commandArgs, {
+    shell,
     cwd: process.cwd(),
     env: process.env,
-    shell,
     stdio: options.stdio ?? ['ignore', 'pipe', 'pipe'],
   })
 }
