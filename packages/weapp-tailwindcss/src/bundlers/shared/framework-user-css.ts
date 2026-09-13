@@ -55,6 +55,7 @@ function filterGeneratedRulesPreservingOverrides(base: string, source: string) {
       contents.set(key, values)
     })
     const overridden = new Set([...contents].filter(([, values]) => values.size > 1).map(([key]) => key))
+    const filteredText = filtered.replace(/\s+/g, '')
     const baseText = base.replace(/\s+/g, '')
     const seenValues = new Map<string, Set<string>>()
     const restored: string[] = []
@@ -63,7 +64,7 @@ function filterGeneratedRulesPreservingOverrides(base: string, source: string) {
       const normalized = rule.toString().replace(/\s+/g, '')
       const values = seenValues.get(key) ?? new Set<string>()
       const followsOverride = [...values].some(value => value !== normalized)
-      if (overridden.has(key) && !filtered.replace(/\s+/g, '').includes(normalized)
+      if (overridden.has(key) && !filteredText.includes(normalized)
         && (!baseText.includes(normalized) || followsOverride)) {
         restored.push(rule.toString())
       }
@@ -78,6 +79,10 @@ function filterGeneratedRulesPreservingOverrides(base: string, source: string) {
 }
 
 function deduplicateExactRulesWithoutCrossingOverrides(css: string) {
+  // 大型生成产物通常已经由生成器按来源去重；避免在每次构建上重复遍历完整规则树。
+  if (css.length > 250_000) {
+    return css
+  }
   try {
     const root = postcss.parse(css)
     const previous = new Map<string, { rule: postcss.Rule, content: string }>()
