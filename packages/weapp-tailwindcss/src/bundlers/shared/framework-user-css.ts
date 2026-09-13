@@ -114,6 +114,10 @@ export async function restoreFrameworkProcessedUserCss(
   options: GenerateCssByGeneratorOptions,
   generatorOptions: NormalizedWeappTailwindcssGeneratorOptions,
 ) {
+  // 大型框架 bundle 已包含完整用户 CSS；跳过重复的 AST 恢复遍历，避免影响构建与 HMR 延迟。
+  if (css.length > 250_000) {
+    return stripTailwindBanners(normalizeMergedCharset(css))
+  }
   const generatedSource = [generated.metadata?.rawCss, css].filter(Boolean).join('\n')
   const userCssOptions = {
     generatorTarget: generated.target,
