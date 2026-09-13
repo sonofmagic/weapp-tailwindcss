@@ -168,6 +168,11 @@ describe('merge behavior reference', () => {
     // 场景 2: 原始类名输入且数字变体不在首位
     expect(merge('p-1 2xl:p-2 2xl:p-4')).toBe(`p-1 ${esc('2xl:p-4')}`)
   })
+
+  it('supports whitespace-separated numeric-leading variants', () => {
+    expect(merge('_2xl_cp-2\t_2xl_cp-4')).toBe('_2xl_cp-4')
+    expect(merge('_2xl_cp-2\n_2xl_cp-4')).toBe('_2xl_cp-4')
+  })
 })
 
 describe('runtime metadata', () => {

@@ -49,7 +49,7 @@ function transformTokens(value: string, transformFn: (token: string) => string):
   if (!value) {
     return value
   }
-  if (!value.includes(' ')) {
+  if (!/\s/.test(value)) {
     return transformFn(value)
   }
   return value.split(/\s+/).filter(Boolean).map(transformFn).join(' ')
