@@ -48,7 +48,7 @@ regressions:
 - Taro coverage、模板范围和 canonical smoke：3 文件、20 项通过。
 - `pnpm --filter weapp-tailwindcss build`：通过，真实 demo 使用本 worktree 的新构建。
 - `CI=1 pnpm e2e:static --shard=1/3 --update=none`：21 文件、118 测试通过；6 文件、18 测试跳过。
-- static 第二、第三分片及 apps-generator：验证中，完成后更新记录。
+- static 三个分片和 apps-generator 已完成禁止更新复核：分别 107/122/130 项通过，既有跳过 18/10/3。
 - `pnpm typecheck`：未通过。当前与未修改基线各 445 条诊断，按文件和错误码对比无新增。不能据此宣称严格类型全绿。
 - ESLint：使用仓库默认范围检查改动代码；对新增测试与框架组合测试额外取消忽略进行检查。全仓默认忽略的历史 demo/大型测试文件不能冒充已通过强制 lint。
 
@@ -78,7 +78,7 @@ regressions:
 - issue-977/978：8 项通过；Taro coverage contract 7 项、模板 contract 9 项、canonical smoke 4 项通过。
 - generator 的基线更新限定 Taro Vite React/Vue v4 与 uni-app Vite v4；汇总 JSON/中英文报告只同步这三个项目构建产生的字节数，选择器列表和其它项目未变。
 - 最终实现的 Taro React/Vue、uni-app、uni-app x 与层顺序 E2E：5 文件、14 项通过；uni-app x 使用本机 HBuilderX Alpha 5.25.2026082902-alpha CLI 构建，没有将其视为设备验收。
-- static 分片与完整 generator 集合完成后补录。
+- static 三个分片和完整 generator 集合已在最终 core banner 修复及工作区依赖覆盖后重新验证通过；weapp-vite 独立 banner 基线另行更新并复核。
 
 ### 验证
 
