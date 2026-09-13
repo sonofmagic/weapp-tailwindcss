@@ -7,6 +7,7 @@ import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { adaptGeneratedCssWithFrameworkPipeline, adaptGeneratedCssWithFrameworkRootPipeline, hasFrameworkPostcssOptions } from './framework-postcss'
 import { restoreFrameworkProcessedUserCss } from './framework-user-css'
 import { generateCssByGenerator } from './generator-css'
+import { stripTailwindBanners } from './generator-css/markers'
 import { resolveGeneratedCssClassSet } from './generator-css/result-helpers'
 import { preferScopedGeneratedCssRules } from './generator-css/scoped-rules'
 import { resolvePostcssRequestOption } from './generator-css/source-resolver/postcss-source'
@@ -168,9 +169,9 @@ async function generateTailwindV4CssWithImplementation(
   const composedCss = shouldReplayFrameworkPostcss && options.frameworkProcessedUserCss
     ? await restoreFrameworkProcessedUserCss(adaptedCss, generated, options.frameworkProcessedUserCss, options, normalizedGeneratorOptions)
     : adaptedCss
-  const css = isVueScopedStyleRequest(resolvePostcssRequestOption(options.cssHandlerOptions))
+  const css = stripTailwindBanners(isVueScopedStyleRequest(resolvePostcssRequestOption(options.cssHandlerOptions))
     ? preferScopedGeneratedCssRules(composedCss)
-    : composedCss
+    : composedCss)
   const classSet = options.frameworkProcessedUserCss
     ? resolveGeneratedCssClassSet(generated.target, generated.classSet, options.runtime, css, options.opts.escapeMap, options.previousClassSet)
     : generated.classSet

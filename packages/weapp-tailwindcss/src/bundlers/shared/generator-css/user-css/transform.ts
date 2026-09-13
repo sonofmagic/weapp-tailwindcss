@@ -3,6 +3,7 @@ import type { InternalUserDefinedOptions } from '@/types'
 import { filterExistingCssRules } from '@weapp-tailwindcss/postcss'
 import { removeUnsupportedMiniProgramAtRules } from '../../css-cleanup'
 import { removeTailwindSourceDirectives } from '../directives'
+import { stripTailwindBanners } from '../markers'
 import { removeTailwindApplyAtRules } from './at-rules'
 import { removeTailwindV4GeneratedUserCssArtifacts } from './generated-cleanup'
 import { collectBareSelectorUserCss, isCommentOnlyCss, removeProcessedMiniProgramUnsupportedCss, removeTailwindV4GeneratorAtRules, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments, unwrapMiniProgramCascadeLayers } from './source-fragments'
@@ -15,6 +16,7 @@ export async function transformGeneratorUserCss(
     cssUserHandlerOptions: IStyleHandlerOptions
     styleHandler: InternalUserDefinedOptions['styleHandler']
     importFallback: boolean
+    generatedSource?: string | undefined
     processed?: boolean | undefined
   },
 ) {
@@ -30,6 +32,7 @@ export async function transformGeneratorUserCss(
               ...options.cssUserHandlerOptions,
             }),
           ),
+          options.generatedSource,
         )
       : source
     return stripUnmatchedTailwindSourceMediaCloseFragments(
@@ -54,7 +57,7 @@ export async function transformGeneratorUserCss(
     stripUnmatchedTailwindSourceMediaCloseFragments(
       stripTailwindSourceMediaFragments(
         options.generatorTarget === 'weapp'
-          ? removeTailwindV4GeneratedUserCssArtifacts(removeUnsupportedMiniProgramAtRules(unwrapMiniProgramCascadeLayers(cleanedSource)))
+          ? removeTailwindV4GeneratedUserCssArtifacts(removeUnsupportedMiniProgramAtRules(unwrapMiniProgramCascadeLayers(stripTailwindBanners(cleanedSource))), options.generatedSource)
           : cleanedSource,
       ),
     ),
@@ -76,8 +79,8 @@ export async function transformGeneratorUserCss(
     ...options.generatorStyleOptions,
     ...options.cssUserHandlerOptions,
   })
-  const transformedCss = removeTailwindV4GeneratedUserCssArtifacts(removeUnsupportedMiniProgramAtRules(css))
-  const bareSelectorUserCss = collectBareSelectorUserCss(userSource)
+  const transformedCss = removeTailwindV4GeneratedUserCssArtifacts(removeUnsupportedMiniProgramAtRules(stripTailwindBanners(css)), options.generatedSource)
+  const bareSelectorUserCss = collectBareSelectorUserCss(userSource, transformedCss)
   const missingBareSelectorUserCss = bareSelectorUserCss.trim().length > 0
     ? filterExistingCssRules(transformedCss, bareSelectorUserCss)
     : ''

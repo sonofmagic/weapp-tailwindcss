@@ -273,7 +273,7 @@ export async function appendLegacyCompatCss(
   styleHandler: InternalUserDefinedOptions['styleHandler'],
   cssHandlerOptions: IStyleHandlerOptions,
   generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
-  options: { preserveSelectorOverrides?: boolean | undefined } = {},
+  options: { preserveSelectorOverrides?: boolean | undefined, generatedSource?: string | undefined } = {},
 ) {
   const resolvedCompatSource = resolveLegacyCompatCssSource(rawSource)
   const normalizedCompatSource = generatorTarget === 'weapp'
@@ -302,6 +302,7 @@ export async function appendLegacyCompatCss(
   }
   const transformedCompatCss = removeTailwindV4GeneratedUserCssArtifacts(
     removeDuplicatedViteMarkers(removeUnsupportedMiniProgramAtRules(compatCss), css),
+    options.generatedSource ?? css,
   )
   const cleanedCompatCss = options.preserveSelectorOverrides
     ? filterExistingCssRules(css, transformedCompatCss)

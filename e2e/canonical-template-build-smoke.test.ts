@@ -4,7 +4,7 @@ import fg from 'fast-glob'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { CANONICAL_TEMPLATE_CASES } from './canonicalTemplateMatrix'
-import { TEMPLATE_PACKAGE_MANAGER, TEMPLATE_WEAPP_TAILWINDCSS_RANGE } from './templateContract'
+import { isTemplateVersionCompatible, TEMPLATE_PACKAGE_MANAGER } from './templateContract'
 
 const repoRoot = path.resolve(__dirname, '..')
 const templatesRoot = path.resolve(repoRoot, 'templates')
@@ -90,7 +90,7 @@ describe('canonical template build smoke', () => {
     const deps = { ...pkg.dependencies, ...pkg.devDependencies }
     expect(pkg.packageManager, `${item.name} should pin pnpm`).toBe(TEMPLATE_PACKAGE_MANAGER)
     expect(deps.tailwindcss, `${item.name} should use Tailwind CSS v4`).toMatch(/^\^4\./)
-    expect(deps['weapp-tailwindcss'], `${item.name} should use the current v5 template range`).toBe(TEMPLATE_WEAPP_TAILWINDCSS_RANGE)
+    expect(isTemplateVersionCompatible(deps['weapp-tailwindcss']), `${item.name} should accept the current stable version`).toBe(true)
     expect(deps['@tailwindcss/postcss'], `${item.name} must not register the official PostCSS generator`).toBeUndefined()
     expect(deps['@tailwindcss/vite'], `${item.name} must not register the official Vite generator`).toBeUndefined()
     const cssEntry = await fs.readFile(path.resolve(root, item.cssEntry), 'utf8')

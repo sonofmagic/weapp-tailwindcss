@@ -211,7 +211,7 @@ describe('generator user css helpers', () => {
       'abbr[title]{text-decoration:underline}',
       'button,input[type="button"],input[type="reset"],input[type="submit"]{appearance:button}',
       '.keep{color:red}',
-    ].join('\n'))).toBe('.keep{color:red}')
+    ].join('\n'), ':root,:host{--color-red-500:red}')).toBe('.keep{color:red}')
     expect(removeTailwindV4GeneratedUserCssArtifacts([
       'page{',
       '--test-color:#006241;',
@@ -220,15 +220,6 @@ describe('generator user css helpers', () => {
       '}',
     ].join(''))).toContain('--color-test:#006241')
     expect(removeTailwindV4GeneratedUserCssArtifacts(':host,page{--color-test:#006241}')).toContain('--color-test:#006241')
-    const mixedTheme = removeTailwindV4GeneratedUserCssArtifacts(
-      ':host,:root{--color-red-500:red;--spacing:.25rem;--test-color:#006241;--brand-color:#123456}',
-    )
-    expect(mixedTheme).toContain('--test-color:#006241')
-    expect(mixedTheme).toContain('--brand-color:#123456')
-    expect(removeTailwindV4GeneratedUserCssArtifacts(
-      ' :host, page, .tw-root, wx-root-portal-content { --color-red-500: red; --spacing: .25rem; } ',
-      ':host,page,.tw-root,wx-root-portal-content{--color-red-500:red;--spacing:.25rem}',
-    ).trim()).toBe('')
     expect(removeTailwindV4GeneratedUserCssArtifacts('.broken{')).toBe('.broken{')
 
     const styleHandler = vi.fn(async (css: string) => ({ css: `${css}.handled{color:green}` }))

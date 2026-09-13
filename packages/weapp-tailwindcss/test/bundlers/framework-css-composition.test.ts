@@ -13,14 +13,15 @@ describe('framework CSS composition', () => {
     const directory = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-framework-css-'))
     try {
       const file = path.join(directory, 'entry.css')
-      const vendor = '.vendor{width:16px;--framework-pass:0}.vendor-alt{height:24px;-webkit-transform:translateY(-50%);transform:translateY(-50%)}'
-      const source = '@import "./vendor.css";\n@tailwind utilities;'
+      const vendor = '@charset "UTF-8";.vendor{width:16px;--framework-pass:0}.vendor-alt{height:24px;-webkit-transform:translateY(-50%);transform:translateY(-50%)}'
+      const source = '@import "./vendor.css";\n@import "tailwindcss";'
       await writeFile(path.join(directory, 'vendor.css'), vendor)
       await writeFile(file, source)
       const opts = getCompilerContext({
         tailwindcssBasedir: process.cwd(),
         generator: { target: 'weapp' },
         cssPreflight: false,
+        rem2rpx: true,
       })
       const framework = {
         postcssPlugin: 'test-framework-units',
@@ -40,10 +41,10 @@ describe('framework CSS composition', () => {
           tailwindRuntime: opts.tailwindRuntime,
           readyPromise: Promise.resolve(),
         },
-        runtime: new Set(['flex']),
+        runtime: new Set(['flex', 'gap-1']),
         rawSource: source,
         userRawSource: '.raw-user{height:10px}',
-        frameworkProcessedUserCss: `.before{width:1rpx}\n@media source(none){/*! weapp-tailwindcss generator-placeholder */}\n:root{--spacing:.25rem}${processedVendor}\n.vendor{width:32rpx}.bundle-only{height:8rpx;--framework-pass:1}`,
+        frameworkProcessedUserCss: `.before{width:1rpx}\n@media source(none){/*! weapp-tailwindcss generator-placeholder */}\n:root{--spacing:0.25rem;--test-color:#006241;--brand-color:#123456;--color-custom:purple;--radius-custom:.5rem}${processedVendor}\n.vendor{width:32rpx}.vendor{width:16rpx;--framework-pass:1}.bundle-only{height:8rpx;--framework-pass:1}`,
         file,
         cssStage: 'framework-processed',
         cssHandlerOptions: { majorVersion: 4, isMainChunk: false, sourceOptions: { cssEntries: [file], sourceFile: file } },
@@ -54,23 +55,53 @@ describe('framework CSS composition', () => {
       })
       expect(result).toBeDefined()
       const root = postcss.parse(result!.css)
+      const charsets: string[] = []
+      root.walkAtRules('charset', (rule) => {
+        charsets.push(rule.params)
+      })
+      expect(charsets).toEqual(['"UTF-8"'])
+      expect(root.first?.type).toBe('atrule')
+      expect(result!.css).toMatch(/^@charset "UTF-8";/)
       const widths: string[] = []
       root.walkRules('.vendor', (rule) => {
-        rule.walkDecls('width', (declaration) => { widths.push(declaration.value) })
+        rule.walkDecls('width', (declaration) => {
+          widths.push(declaration.value)
+        })
       })
-      expect(widths).toEqual(['16rpx', '32rpx'])
+      expect(widths).toEqual(['16rpx', '32rpx', '16rpx'])
       const alternatives: string[] = []
-      root.walkRules('.vendor-alt', rule => { alternatives.push(rule.toString()) })
+      root.walkRules('.vendor-alt', (rule) => {
+        alternatives.push(rule.toString())
+      })
       expect(alternatives).toHaveLength(1)
       expect(result!.css).toContain('.bundle-only')
       const passes: string[] = []
-      root.walkDecls('--framework-pass', (declaration) => { passes.push(declaration.value) })
-      expect(passes).toEqual(['1', '1'])
+      root.walkDecls('--framework-pass', (declaration) => {
+        passes.push(declaration.value)
+      })
+      expect(passes).toEqual(['1', '1', '1'])
       expect(result!.css).toMatch(/\.raw-user\s*\{\s*height:\s*10rpx/)
       expect(result!.css.indexOf('.before')).toBeLessThan(result!.css.indexOf('.vendor'))
       expect(result!.css).toContain('.flex')
       expect(result!.css).not.toMatch(/(?<=\d)px\b/)
-      expect(result!.css).not.toContain('--spacing:.25rem')
+      const themeValues: string[] = []
+      root.walkDecls('--spacing', (decl) => {
+        themeValues.push(decl.value)
+      })
+      expect(themeValues).toEqual(['8rpx'])
+      const customRadius: string[] = []
+      root.walkDecls('--radius-custom', (decl) => {
+        customRadius.push(decl.value)
+      })
+      expect(customRadius).toEqual(['16rpx'])
+      expect(result!.css).not.toContain('--radius-custom:.5rem')
+      for (const [property, value] of [['--test-color', '#006241'], ['--brand-color', '#123456'], ['--color-custom', 'purple']]) {
+        const values: string[] = []
+        root.walkDecls(property, (decl) => {
+          values.push(decl.value)
+        })
+        expect(values).toEqual([value])
+      }
     }
     finally {
       vi.unstubAllEnvs()

@@ -783,6 +783,7 @@ overrides:
 pnpmfileChecksum: sha256-VIhHxkE3DlYGW4jpmh5YBZoirXpyRMuq7rJOkofCfW8=
 
 patchedDependencies:
+  '@icebreakers/monorepo@5.5.0': 68e78146e7d6d2bb10ffa11b462d5c221f9cef119d21f7858a7f7410ffcab1c6
   rollup@4.63.0: 4f732dcaad5986ffbe82caa0236c5ece50738873705cb399aa2f0a4dd15ed375
   rollup@4.63.1: c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0
 
@@ -43460,7 +43461,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@icebreakers/monorepo@5.5.0(e1f2fcdbbf8b150ff58377c25b466b73)':
+  '@icebreakers/monorepo@5.5.0(patch_hash=68e78146e7d6d2bb10ffa11b462d5c221f9cef119d21f7858a7f7410ffcab1c6)(e1f2fcdbbf8b150ff58377c25b466b73)':
     dependencies:
       '@icebreakers/commitlint-config': 4.1.0(conventional-changelog-conventionalcommits@10.4.0)
       '@icebreakers/eslint-config': 8.0.0(@next/eslint-plugin-next@16.2.4)(@unocss/eslint-plugin@66.6.8(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint-plugin-jsx-a11y@6.10.2(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2)))(eslint-plugin-pnpm@1.9.1(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2)))(eslint-plugin-vuejs-accessibility@2.5.0(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))(globals@17.11.0)(supports-color@10.2.2))(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))(postcss@8.5.28)(stylelint-config-html@2.0.0(postcss-html@2.0.0(postcss@8.5.28))(stylelint@17.15.0(supports-color@10.2.2)(typescript@6.0.3)))(stylelint@17.15.0(supports-color@10.2.2)(typescript@6.0.3))(supports-color@10.2.2)(tailwindcss@4.3.3)(ts-declaration-location@1.0.7(typescript@6.0.3))(typescript@6.0.3)(vitest@5.0.0)
@@ -71704,7 +71705,7 @@ snapshots:
 
   repoctl@5.5.0(72b7fd14b5b727a2ce27bf7b0e2edbc6):
     dependencies:
-      '@icebreakers/monorepo': 5.5.0(e1f2fcdbbf8b150ff58377c25b466b73)
+      '@icebreakers/monorepo': 5.5.0(patch_hash=68e78146e7d6d2bb10ffa11b462d5c221f9cef119d21f7858a7f7410ffcab1c6)(e1f2fcdbbf8b150ff58377c25b466b73)
     optionalDependencies:
       '@commitlint/cli': 21.2.2(@types/node@26.5.1)(conventional-commits-parser@7.1.2)(typescript@6.0.3)
       eslint: 10.10.0(jiti@2.7.0)(supports-color@10.2.2)

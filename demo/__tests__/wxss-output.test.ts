@@ -425,6 +425,18 @@ describe('demo wxss artifacts', () => {
     expect(countDuplicateSelectorRules(duplicateInjection, TAILWIND_V4_ROOT_SELECTORS)).toBe(1)
   })
 
+  it.each(RAW_SNIPPETS)('检测 $label 的完整违规规则', ({ label, css }) => {
+    const signature = FORBIDDEN_SNIPPETS.find(snippet => snippet.label === label)!.signature
+    expect(getRuleSignatures(`.before{color:red}@media screen{${css}}.after{color:blue}`)).toContain(signature)
+  })
+
+  it('多选择器和声明必须完整匹配', () => {
+    const bold = FORBIDDEN_SNIPPETS.find(snippet => snippet.label === 'b/strong bold')!.signature
+    expect(getRuleSignatures('b, strong { font-weight: bolder; }')).toContain(bold)
+    expect(getRuleSignatures('.b, .strong { font-weight: bolder; }')).not.toContain(bold)
+    expect(getRuleSignatures('b, strong { font-weight: normal; }')).not.toContain(bold)
+  })
+
   it('matches forbidden selectors exactly without treating utility classes as global tags', () => {
     const globalTag = getRuleSignatures('small { font-size: 80%; }')
     const utilityClass = getRuleSignatures('.small { font-size: 80%; }')

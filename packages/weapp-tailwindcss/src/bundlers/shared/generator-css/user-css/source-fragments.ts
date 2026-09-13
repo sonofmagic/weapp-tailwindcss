@@ -131,9 +131,29 @@ function hasClassSelector(selector: string) {
   return /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i.test(selector)
 }
 
-export function collectBareSelectorUserCss(source: string) {
+export function collectBareSelectorUserCss(source: string, transformedCss?: string) {
   try {
     const root = postcss.parse(source)
+    const representedSelectors = new Set<string>()
+    const rootSelectors = new Set([':root', ':host', 'page', '.tw-root', 'wx-root-portal-content'])
+    const selectorKey = (rule: postcss.Rule, selector: string) => {
+      const context: string[] = []
+      let parent = rule.parent
+      while (parent && parent.type !== 'root') {
+        if (parent.type === 'atrule') {
+          context.unshift(`@${parent.name} ${parent.params}`)
+        }
+        parent = parent.parent
+      }
+      return JSON.stringify([...context, rootSelectors.has(selector.trim()) ? ':root' : selector.trim()])
+    }
+    if (transformedCss !== undefined) {
+      postcss.parse(transformedCss).walkRules((rule) => {
+        for (const selector of rule.selectors) {
+          representedSelectors.add(selectorKey(rule, selector))
+        }
+      })
+    }
     let changed = false
     root.walkAtRules('import', (rule) => {
       rule.remove()
@@ -141,7 +161,8 @@ export function collectBareSelectorUserCss(source: string) {
     })
     root.walkRules((rule) => {
       const selectors = rule.selectors?.length ? rule.selectors : [rule.selector]
-      if (selectors.some(selector => hasClassSelector(selector))) {
+      if (selectors.some(selector => hasClassSelector(selector))
+        || selectors.every(selector => representedSelectors.has(selectorKey(rule, selector)))) {
         rule.remove()
         changed = true
       }

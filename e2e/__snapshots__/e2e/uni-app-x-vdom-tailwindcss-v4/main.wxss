@@ -84,18 +84,6 @@ wx-root-portal-content {
   color: #fff;
   font-size: 26px;
 }
-.template-corpus-apply {
-  display: flex;
-  align-items: center;
-  border-radius: 20px;
-  background-color: #9e58e9;
-  padding-left: 18px;
-  padding-right: 18px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  color: #fff;
-  font-size: 26px;
-}
 .my-3 {
   margin-top: calc(var(--spacing) * 3);
   margin-bottom: calc(var(--spacing) * 3);
@@ -659,6 +647,7 @@ wx-root-portal-content {
 }
 page {
   height: 100%;
+
   display: flex;
   flex-direction: column;
 }
@@ -671,11 +660,14 @@ ad-rewarded-video,
 ad,
 animation-view,
 audio,
-button,
 camera,
 canvas,
 checkbox-group,
+button,
 checkbox,
+picker-view,
+radio,
+slider,
 cover-image,
 cover-view,
 custom-tab-bar,
@@ -697,13 +689,10 @@ navigation-bar,
 navigator,
 open-data,
 page-meta,
-picker-view,
 picker,
 radio-group,
-radio,
 rich-text,
 scroll-view,
-slider,
 sticky-header,
 sticky-section,
 swiper-item,
