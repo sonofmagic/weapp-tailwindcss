@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/experimental
 
+## 0.0.41
+
+### Patch Changes
+
+- Updated dependencies:
+  - @weapp-tailwindcss/postcss@3.3.4
+
 ## 0.0.40
 
 ### Patch Changes
