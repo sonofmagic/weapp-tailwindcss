@@ -139,6 +139,26 @@ function isTailwindGeneratedThemeRule(selector: string, node: { nodes?: any[] | 
   return node.nodes?.some(child => child.type === 'decl' && /^--(?:color|spacing|text|font|default|radius|tw-)/.test(child.prop)) ?? false
 }
 
+function collectGeneratedThemeDeclarations(source: string) {
+  const declarations = new Set<string>()
+  try {
+    const root = postcss.parse(source)
+    root.walkRules((rule) => {
+      const selector = rule.selector.replace(/\s+/g, ' ').trim()
+      if (!isTailwindGeneratedThemeScopeSelector(selector)) {
+        return
+      }
+      for (const child of rule.nodes ?? []) {
+        if (child.type === 'decl') {
+          declarations.add(`${child.prop}:${child.value}${child.important ? '!important' : ''}`)
+        }
+      }
+    })
+  }
+  catch {}
+  return declarations
+}
+
 function isTailwindGeneratedPreflightRule(selector: string, node: { nodes?: any[] | undefined }) {
   if (
     selector === 'view,text,::after,::before'
@@ -166,7 +186,7 @@ function isTailwindGeneratedPreflightRule(selector: string, node: { nodes?: any[
   return false
 }
 
-export function removeTailwindV4GeneratedUserCssArtifacts(source: string) {
+export function removeTailwindV4GeneratedUserCssArtifacts(source: string, generatedSource?: string) {
   try {
     const root = postcss.parse(source)
     let changed = false
@@ -177,12 +197,36 @@ export function removeTailwindV4GeneratedUserCssArtifacts(source: string) {
       comment.remove()
       changed = true
     })
+    const generatedDeclarations = generatedSource ? collectGeneratedThemeDeclarations(generatedSource) : undefined
     root.walkRules((rule) => {
       const selector = rule.selector.replace(/\s+/g, ' ').trim()
-      if (
-        isTailwindGeneratedThemeRule(selector, rule)
-        || isTailwindGeneratedPreflightRule(selector, rule)
-      ) {
+      if (isTailwindGeneratedThemeRule(selector, rule) && generatedDeclarations) {
+        for (const child of [...(rule.nodes ?? [])]) {
+          if (child.type === 'decl' && (generatedDeclarations.has(`${child.prop}:${child.value}${child.important ? '!important' : ''}`)
+            || (/^(?:--color|--spacing|--text|--font|--default|--radius|--tw-)/.test(child.prop) && !/^--(?:test|brand|my)-/.test(child.prop)))) {
+            child.remove()
+          }
+        }
+        if ((rule.nodes ?? []).some(child => child.type === 'decl')) {
+          return
+        }
+        rule.remove()
+        changed = true
+        return
+      }
+      if (isTailwindGeneratedThemeRule(selector, rule) && !generatedDeclarations) {
+        for (const child of [...(rule.nodes ?? [])]) {
+          if (child.type === 'decl' && /^(?:--color|--spacing|--text|--font|--default|--radius|--tw-)/.test(child.prop) && !/^--(?:test|brand|my)-/.test(child.prop)) {
+            child.remove()
+          }
+        }
+        if (!(rule.nodes ?? []).some(child => child.type === 'decl')) {
+          rule.remove()
+          changed = true
+        }
+        return
+      }
+      if (isTailwindGeneratedThemeRule(selector, rule) || isTailwindGeneratedPreflightRule(selector, rule)) {
         rule.remove()
         changed = true
       }

@@ -44,7 +44,7 @@ export async function restoreFrameworkProcessedUserCss(
       options.runtimeState.tailwindRuntime.majorVersion,
       options.opts.cssPreflight,
       { injectPreflight: false, preservePreflight: generated.metadata?.preflightMode?.preserve, styleOptions: options.cssHandlerOptions },
-    ))
+    ), generated.metadata?.rawCss)
   }
   const userSource = normalizeUserSource(source)
   const ordered = splitRawSourceByGeneratedCssOrder(userSource, generated.metadata?.rawCss ?? '')

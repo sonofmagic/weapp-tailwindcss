@@ -143,7 +143,8 @@ describe('Taro CI coverage matrix', () => {
       const config = configFiles(name).map(readText).join('\n')
       expect(config, `${name} should preserve numeric designWidth for H5`).toContain('designWidth: taroPlatform.isWeb')
       expect(config, `${name} should preserve the original H5 design width`).toContain('? 750')
-      expect(config, `${name} should retain the issue 998 file-aware mini-program branch`).toContain('file.includes(\'/pages/issue-998/\')')
+      expect(config, `${name} should retain the issue 998 file-aware mini-program branch`).toMatch(/win32\.normalize\(input\.file\)/)
+      expect(config, `${name} should resolve issue 998 against projectRoot`).toMatch(/win32\.dirname\(file\).*win32\.resolve\(projectRoot, ['"]src\/pages\/issue-998['"]\)/s)
     }
   })
 
