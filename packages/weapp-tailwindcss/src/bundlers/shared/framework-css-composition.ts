@@ -5,9 +5,19 @@ function nodeContent(node: postcss.ChildNode): string {
     case 'decl':
       return `decl\u0000${node.prop}\u0000${node.value}\u0000${node.important ? '1' : '0'}`
     case 'rule':
-      return `rule\u0000${node.selectors.map(selector => selector.trim()).join('\u0001')}\u0000${node.nodes.filter(child => child.type !== 'comment').map(nodeContent).join('\u0002')}`
+      return `rule\u0000${node.selectors.map(selector => selector.trim()).join('\u0001')}\u0000${node.nodes.reduce<string[]>((parts, child) => {
+        if (child.type !== 'comment') {
+          parts.push(nodeContent(child))
+        }
+        return parts
+      }, []).join('\u0002')}`
     case 'atrule':
-      return `atrule\u0000${node.name}\u0000${node.params}\u0000${node.nodes?.filter(child => child.type !== 'comment').map(nodeContent).join('\u0002') ?? ''}`
+      return `atrule\u0000${node.name}\u0000${node.params}\u0000${node.nodes?.reduce<string[]>((parts, child) => {
+        if (child.type !== 'comment') {
+          parts.push(nodeContent(child))
+        }
+        return parts
+      }, []).join('\u0002') ?? ''}`
     default:
       return `comment\u0000${node.text}`
   }
@@ -97,6 +107,13 @@ function matchOrderedPrefix(rules: RuleRecord[], positions: Map<string, number[]
 
 /** 保留生成侧已确定的层位置；框架侧重复选择器及其间的覆盖区间按原顺序恢复。 */
 export function composeFrameworkProcessedCss(before: string, generated: string, after: string) {
+  // 常见的纯生成路径无需解析 AST；框架样式为空时直接返回，避免构建插件额外分配大量节点。
+  if (!before.trim() && !after.trim()) {
+    return generated
+  }
+  if (!generated.trim()) {
+    return [before, after].filter(value => value.trim()).join('\n')
+  }
   const inputs = [before, generated, after]
   try {
     const roots = inputs.map(css => postcss.parse(css))
