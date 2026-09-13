@@ -4,7 +4,7 @@ import { normalizeStringListOption } from '@/utils/options'
 import { isTailwindV4CssEntry } from './css-entries'
 import { hasConfiguredTailwindV4CssRoots } from './css-sources'
 
-// 默认保留列表暂为空，后续若有新增默认变量再补充到该数组
+// 默认不限定变量名称，由用户通过 cssCalc 数组或 includeCustomProperties 指定。
 export const DEFAULT_CSS_CALC_CUSTOM_PROPERTIES: (string | RegExp)[] = []
 
 function includesToken(list: (string | RegExp)[], token: string | RegExp) {

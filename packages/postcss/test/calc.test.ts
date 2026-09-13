@@ -302,6 +302,27 @@ describe('calc', () => {
     expect(css).toMatchSnapshot()
   })
 
+  it('Issue #1194: Tailwind v4 spacing 在 :root/:host 中预计算', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      cssCalc: ['--spacing'],
+    })
+    const { css } = await styleHandler(`:root, :host {
+  --spacing: .25rem;
+  --other: 2px;
+}
+.gap-2 { gap: calc(var(--spacing) * 2); }
+.p-2 { padding: calc(var(--spacing) * 2); }
+.mt-2 { margin-top: calc(var(--spacing) * 2); }
+.other { width: calc(var(--other) * 2); }`)
+    expect(css).toContain('gap: 0.5rem;')
+    expect(css).toContain('padding: 0.5rem;')
+    expect(css).toContain('margin-top: 0.5rem;')
+    expect(css).toContain('--spacing: .25rem;')
+    expect(css).toContain('--other: 2px;')
+    expect(css).toContain('width: calc(var(--other)*2);')
+  })
+
   it('移除逻辑简写(margin-inline/padding-inline)展开后交错的 calc 残留', async () => {
     const code = `page,
 :root {

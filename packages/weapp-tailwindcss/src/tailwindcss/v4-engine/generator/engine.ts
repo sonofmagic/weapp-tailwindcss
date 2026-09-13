@@ -8,6 +8,7 @@ import { collectCandidates, createIncrementalGenerateCacheKey, createIncremental
 import { createEngineSourceEntries, serializeTailwindGenerationArtifact, TailwindV4NativeSessionPool } from './native-session'
 import { restoreRpxLengthCandidates, restoreRpxLengthCssSelectors } from './rpx-candidates'
 import { resolveCompiledSourceRoot, resolveScanSources } from './scan-sources'
+import { resolveGenerationStyleContext } from './style-context'
 
 function isCssSyntaxError(error: unknown) {
   return error instanceof Error && error.name === 'CssSyntaxError'
@@ -86,7 +87,11 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       generatedCss,
       normalizedCandidates.restoreCandidates,
     )
-    const css = await transformTailwindV4CssByTarget(rawCss, target, resolvedStyleOptions)
+    const css = await transformTailwindV4CssByTarget(
+      rawCss,
+      target,
+      resolveGenerationStyleContext(compatibleSource.css, rawCss, resolvedStyleOptions),
+    )
 
     return {
       classSet: restoreRpxLengthCandidates(classSet, normalizedCandidates.restoreCandidates),

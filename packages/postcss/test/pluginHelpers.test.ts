@@ -277,7 +277,7 @@ describe('getCalcPlugin', () => {
     expect(calcMock).not.toHaveBeenCalled()
   })
 
-  it('omits includeCustomProperties when forwarding options', () => {
+  it('forwards includeCustomProperties when forwarding options', () => {
     calcMock.mockImplementation(options => ({ postcssPlugin: 'mock-calc', options }))
 
     const plugin = getCalcPlugin(createOptions({
@@ -288,19 +288,29 @@ describe('getCalcPlugin', () => {
     })) as Plugin | null
 
     expect(calcMock).toHaveBeenCalledTimes(1)
-    expect(calcMock).toHaveBeenCalledWith({ precision: 6 })
+    expect(calcMock).toHaveBeenCalledWith({ includeCustomProperties: ['--keep'], precision: 6 })
     expect(plugin?.postcssPlugin).toBe('mock-calc')
   })
 
-  it('reuses empty calc options for boolean and array modes', () => {
+  it('uses mapped custom properties for boolean mode', () => {
+    calcMock.mockImplementation(options => ({ postcssPlugin: 'mock-calc', options }))
+    const values = new Map([['--theme-space', '1rem']])
+    getCalcPlugin(createOptions({ cssCalc: true, customPropertyValues: values }))
+    expect(calcMock).toHaveBeenCalledWith({
+      customPropertyValues: values,
+      includeCustomProperties: ['--theme-space'],
+    })
+  })
+
+  it('forwards array custom property selectors to calc', () => {
     calcMock.mockImplementation(options => ({ postcssPlugin: 'mock-calc', options }))
 
     getCalcPlugin(createOptions({ cssCalc: true }))
     getCalcPlugin(createOptions({ cssCalc: ['--keep'] }))
 
     expect(calcMock).toHaveBeenCalledTimes(2)
-    expect(calcMock.mock.calls[0]?.[0]).toBe(calcMock.mock.calls[1]?.[0])
     expect(calcMock.mock.calls[0]?.[0]).toEqual({})
+    expect(calcMock.mock.calls[1]?.[0]).toEqual({ includeCustomProperties: ['--keep'] })
   })
 })
 

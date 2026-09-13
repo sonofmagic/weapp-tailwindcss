@@ -183,7 +183,7 @@ export function resolveStyleOptions(source: TailwindV4ResolvedSource, options: P
   return hasCssMacroTailwindV4Source(source.css) ? withCssMacroStyleOptions(options) : options
 }
 
-function collectCustomPropertyValues(css: string) {
+export function collectCustomPropertyValues(css: string) {
   const values = new Map<string, string>()
   try {
     const root = postcss.parse(css)

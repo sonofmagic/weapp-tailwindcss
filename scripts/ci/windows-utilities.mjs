@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url'
 import { execa } from 'execa'
 import { parse, stringify } from 'yaml'
 import { packRuntimeDependencies } from './pack-runtime-dependencies.mjs'
+import { assertDependencyVersions, readInstalledDependencyVersions, readPackageJson, repositoryManifest, repositoryPackageManager } from './version-contract.mjs'
 import { inspectOutput, verifyOutput } from './windows-utilities-output.mjs'
 
 const repo = fileURLToPath(new URL('../../', import.meta.url))
@@ -21,7 +22,7 @@ const reports = []
 await mkdir(reportDir, { recursive: true })
 
 async function runPnpm(args, cwd = project) {
-  const result = await execa('pnpm', args, { cwd, env: { CI: 'true' }, timeout: 600_000 })
+  const result = await execa('pnpm', ['--config.minimum-release-age=1', ...args], { cwd, env: { CI: 'true' }, timeout: 600_000 })
   return result.stdout
 }
 
@@ -90,12 +91,17 @@ async function build(mode, label) {
 }
 
 async function verify(label, expectRegression) {
-  const require = createRequire(path.join(project, 'package.json'))
-  const versions = Object.fromEntries(['weapp-tailwindcss', 'tailwindcss', '@tarojs/cli', 'webpack'].map(name =>
-    [name, require(`${name}/package.json`).version],
-  ))
-  assert.equal(versions.tailwindcss, '4.3.3')
-  assert.equal(versions['@tarojs/cli'], '4.2.1')
+  const versions = await readInstalledDependencyVersions(project, ['weapp-tailwindcss', 'tailwindcss', '@tarojs/cli', 'webpack'])
+  const manifest = await readPackageJson(path.join(project, 'package.json'))
+  const { 'weapp-tailwindcss': candidateVersion, ...toolchainVersions } = versions
+  assertDependencyVersions(manifest, toolchainVersions)
+  if (label === 'candidate') {
+    const candidate = await readPackageJson(path.join(repo, 'packages/weapp-tailwindcss/package.json'))
+    assert.equal(candidateVersion, candidate.version, '候选包版本必须来自当前提交')
+  }
+  else {
+    assertDependencyVersions(manifest, { 'weapp-tailwindcss': candidateVersion })
+  }
   for (const mode of ['development', 'production']) {
     const output = await build(mode, label)
     reports.push({ label, mode, versions, expectRegression, output })
@@ -116,9 +122,13 @@ async function verify(label, expectRegression) {
 
 try {
   await cp(fixture, project, { recursive: true })
-  assert.equal((await runPnpm(['--version'])).trim(), '11.25.0')
+  const fixtureManifest = await readPackageJson(path.join(project, 'package.json'))
+  // 仅临时副本跟随仓库工具链，历史依赖及冻结锁文件仍用于发布版回归。
+  fixtureManifest.packageManager = repositoryManifest.packageManager
+  await writeFile(path.join(project, 'package.json'), JSON.stringify(fixtureManifest, null, 2))
+  assert.equal((await runPnpm(['--version'])).trim(), repositoryPackageManager.version)
   await writeFile(path.join(reportDir, 'published-install.log'), await runPnpm(['install', '--frozen-lockfile']))
-  await verify('published-5.5.1', process.platform === 'win32')
+  await verify('published', process.platform === 'win32')
 
   const packDir = path.join(temporary, 'packed')
   await mkdir(packDir)
@@ -133,6 +143,8 @@ try {
   await writeFile(workspaceFile, stringify(workspace))
   await writeFile(path.join(reportDir, 'candidate-packages.json'), JSON.stringify(candidates, null, 2))
   // 候选包及运行时 workspace 依赖来自同一提交，冻结安装后仍不依赖 workspace 链接。
+  // 临时项目重新解析候选包时允许当前 registry 的新鲜版本，避免 release age
+  // 窗口在 CI 运行期间阻塞与本次验证无关的锁文件生成。
   await writeFile(path.join(reportDir, 'candidate-lock.log'), await runPnpm(['install', '--lockfile-only', '--ignore-scripts']))
   await writeFile(path.join(reportDir, 'candidate-install.log'), await runPnpm(['install', '--frozen-lockfile']))
   await cp(path.join(project, 'pnpm-lock.yaml'), path.join(reportDir, 'candidate-lock.yaml'))
