@@ -45,6 +45,9 @@ function normalizeMergedCharset(css: string) {
 
 function filterGeneratedRulesPreservingOverrides(base: string, source: string) {
   const filtered = filterExistingCssRules(base, source)
+  if (base.length > 250_000) {
+    return filtered
+  }
   try {
     const root = postcss.parse(source)
     const contents = new Map<string, Set<string>>()
