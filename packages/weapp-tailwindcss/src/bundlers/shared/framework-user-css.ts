@@ -59,6 +59,7 @@ function filterGeneratedRulesPreservingOverrides(base: string, source: string) {
     })
     const overridden = new Set([...contents].filter(([, values]) => values.size > 1).map(([key]) => key))
     const filteredText = filtered.replace(/\s+/g, '')
+    const baseText = base.replace(/\s+/g, '')
     const seenValues = new Map<string, Set<string>>()
     const restored: string[] = []
     root.walkRules((rule) => {
@@ -67,7 +68,7 @@ function filterGeneratedRulesPreservingOverrides(base: string, source: string) {
       const values = seenValues.get(key) ?? new Set<string>()
       const followsOverride = [...values].some(value => value !== normalized)
       if (overridden.has(key) && !filteredText.includes(normalized)
-        && followsOverride) {
+        && (!baseText.includes(normalized) || followsOverride)) {
         restored.push(rule.toString())
       }
       values.add(normalized)
