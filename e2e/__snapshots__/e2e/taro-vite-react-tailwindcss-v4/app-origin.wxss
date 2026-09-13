@@ -704,6 +704,259 @@ wx-root-portal-content {
   font-style: normal;
   font-display: swap;
 }
+@keyframes nutFadeIn {
+  0% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes nutFadeOut {
+  0% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.nutFade-enter-active,
+.nutFadeIn,
+.nutFade-leave-active,
+.nutFadeOut {
+  animation-duration: 0.25s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+.nutFade-enter-active,
+.nutFadeIn {
+  animation-name: nutFadeIn;
+}
+.nutFade-leave-active,
+.nutFadeOut {
+  animation-name: nutFadeOut;
+}
+@keyframes nutZoomIn {
+  0% {
+    opacity: 0;
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes nutZoomOut {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+  to {
+    opacity: 0;
+  }
+}
+.nutZoom-enter-active,
+.nutZoomIn,
+.nutZoom-leave-active,
+.nutZoomOut {
+  animation-duration: 0.25s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+.nutZoom-enter-active,
+.nutZoomIn {
+  animation-name: nutZoomIn;
+}
+.nutZoom-leave-active,
+.nutZoomOut {
+  animation-name: nutZoomOut;
+}
+@keyframes nutEaseIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes nutEaseOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+.nutEase-enter-active,
+.nutEaseIn,
+.nutEase-leave-active,
+.nutEaseOut {
+  animation-duration: 0.25s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+.nutEase-enter-active,
+.nutEaseIn {
+  animation-name: nutEaseIn;
+}
+.nutEase-leave-active,
+.nutEaseOut {
+  animation-name: nutEaseOut;
+}
+@keyframes nutDropIn {
+  0% {
+    opacity: 0;
+    transform: scaleY(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+@keyframes nutDropOut {
+  0% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  to {
+    opacity: 0;
+    transform: scaleY(0.8);
+  }
+}
+.nutDrop-enter-active,
+.nutDropIn,
+.nutDrop-leave-active,
+.nutDropOut {
+  animation-duration: 0.25s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+.nutDrop-enter-active,
+.nutDropIn {
+  animation-name: nutDropIn;
+}
+.nutDrop-leave-active,
+.nutDropOut {
+  animation-name: nutDropOut;
+}
+.nutRotate-enter-active,
+.nutRotateIn,
+.nutRotate-leave-active,
+.nutRotateOut {
+  animation-duration: 0.25s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+.nutRotate-enter-active,
+.nutRotateIn {
+  animation-name: nutRotateIn;
+}
+.nutRotate-leave-active,
+.nutRotateOut {
+  animation-name: nutRotateOut;
+}
+@keyframes nutJump {
+  to {
+    transform: scale3d(0.8, 1, 0.9) translateY(-10rpx);
+  }
+}
+@keyframes nutJumpOne {
+  50% {
+    transform: scale3d(0.8, 1, 0.9) translateY(-10rpx);
+  }
+  to {
+    transform: scaleZ(1) translateY(0);
+  }
+}
+@keyframes nutBlink {
+  0% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes nutBreathe {
+  0%,
+  to {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+@keyframes nutFlash {
+  0%,
+  50%,
+  to {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+@keyframes nutBounce {
+  0%,
+  20%,
+  53%,
+  to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translateZ(0);
+  }
+  40%,
+  43% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -30rpx, 0) scaleY(1.1);
+  }
+  70% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -15rpx, 0) scaleY(1.05);
+  }
+  80% {
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translateZ(0) scaleY(0.95);
+  }
+  90% {
+    transform: translate3d(0, -4rpx, 0) scaleY(1.02);
+  }
+}
+@keyframes nutShake {
+  0% {
+    transform: translate(0);
+  }
+  6.5% {
+    transform: translate(-6rpx) rotateY(-9deg);
+  }
+  18.5% {
+    transform: translate(5rpx) rotateY(7deg);
+  }
+  31.5% {
+    transform: translate(-3rpx) rotateY(-5deg);
+  }
+  43.5% {
+    transform: translate(2rpx) rotateY(3deg);
+  }
+  50% {
+    transform: translate(0);
+  }
+}
+.nut-watermark {
+  position: absolute;
+  z-index: var(--nutui-watermark-z-index, 1200);
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  background-repeat: repeat;
+}
 .nut-uploader {
   position: relative;
   display: -ms-flexbox;
@@ -1611,6 +1864,16 @@ wx-root-portal-content {
   justify-content: center;
   min-height: var(--nutui-steps-base-head-height, 14rpx);
 }
+.nut-step-title {
+  position: relative;
+  z-index: 1;
+  height: 14rpx;
+  line-height: 14rpx;
+  font-size: var(--nutui-steps-base-title-font-size, var(--nutui-font-size-s, 12rpx));
+  color: var(--nutui-steps-base-title-color, var(--nutui-color-title, #1a1a1a));
+  overflow: hidden;
+  white-space: nowrap;
+}
 .nut-space {
   display: -ms-flexbox;
   display: flex;
@@ -2308,6 +2571,16 @@ wx-root-portal-content {
   height: var(--nutui-progress-height, 10rpx);
   background: var(--nutui-progress-background, var(--nutui-color-background, #f2f3f5));
 }
+.nut-progress-outer .nut-progress-active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--nutui-progress-border-radius, 12rpx);
+  animation: progressActive 2s ease-in-out infinite;
+}
 .nut-progress-inner {
   height: 100%;
   display: -ms-flexbox;
@@ -2628,6 +2901,16 @@ wx-root-portal-content {
   color: #fff;
   background-color: var(--nutui-pagination-lite-background-color, rgba(0, 0, 0, 0.45));
   border-radius: var(--nutui-pagination-lite-radius, var(--nutui-radius-xs, 4rpx));
+}
+.nut-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--nutui-overlay-bg-color, var(--nutui-color-mask, rgba(0, 0, 0, 0.7)));
 }
 .nut-numberkeyboard {
   width: 100%;
@@ -4991,263 +5274,6 @@ wx-root-portal-content {
   font-weight: var(--font-weight-semibold);
   font-size: 26rpx;
   color: var(--color-white);
-}
-@font-face {
-  font-family: JDZH-Regular;
-  src: url(data:font/ttf;base64,<stable>) format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: JDZH-Bold;
-  src: url(data:font/ttf;base64,<stable>) format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@keyframes nutFadeIn {
-  0% {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@keyframes nutFadeOut {
-  0% {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-.nutFade-enter-active,
-.nutFadeIn,
-.nutFade-leave-active,
-.nutFadeOut {
-  animation-duration: 0.25s;
-  animation-fill-mode: both;
-  animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
-}
-.nutFade-enter-active,
-.nutFadeIn {
-  animation-name: nutFadeIn;
-}
-.nutFade-leave-active,
-.nutFadeOut {
-  animation-name: nutFadeOut;
-}
-@keyframes nutZoomIn {
-  0% {
-    opacity: 0;
-    transform: scale3d(0.3, 0.3, 0.3);
-  }
-  50% {
-    opacity: 1;
-  }
-}
-@keyframes nutZoomOut {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-    transform: scale3d(0.3, 0.3, 0.3);
-  }
-  to {
-    opacity: 0;
-  }
-}
-.nutZoom-enter-active,
-.nutZoomIn,
-.nutZoom-leave-active,
-.nutZoomOut {
-  animation-duration: 0.25s;
-  animation-fill-mode: both;
-  animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
-}
-.nutZoom-enter-active,
-.nutZoomIn {
-  animation-name: nutZoomIn;
-}
-.nutZoom-leave-active,
-.nutZoomOut {
-  animation-name: nutZoomOut;
-}
-@keyframes nutEaseIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-@keyframes nutEaseOut {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-}
-.nutEase-enter-active,
-.nutEaseIn,
-.nutEase-leave-active,
-.nutEaseOut {
-  animation-duration: 0.25s;
-  animation-fill-mode: both;
-  animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
-}
-.nutEase-enter-active,
-.nutEaseIn {
-  animation-name: nutEaseIn;
-}
-.nutEase-leave-active,
-.nutEaseOut {
-  animation-name: nutEaseOut;
-}
-@keyframes nutDropIn {
-  0% {
-    opacity: 0;
-    transform: scaleY(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scaleY(1);
-  }
-}
-@keyframes nutDropOut {
-  0% {
-    opacity: 1;
-    transform: scaleY(1);
-  }
-  to {
-    opacity: 0;
-    transform: scaleY(0.8);
-  }
-}
-.nutDrop-enter-active,
-.nutDropIn,
-.nutDrop-leave-active,
-.nutDropOut {
-  animation-duration: 0.25s;
-  animation-fill-mode: both;
-  animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
-}
-.nutDrop-enter-active,
-.nutDropIn {
-  animation-name: nutDropIn;
-}
-.nutDrop-leave-active,
-.nutDropOut {
-  animation-name: nutDropOut;
-}
-.nutRotate-enter-active,
-.nutRotateIn,
-.nutRotate-leave-active,
-.nutRotateOut {
-  animation-duration: 0.25s;
-  animation-fill-mode: both;
-  animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
-}
-.nutRotate-enter-active,
-.nutRotateIn {
-  animation-name: nutRotateIn;
-}
-.nutRotate-leave-active,
-.nutRotateOut {
-  animation-name: nutRotateOut;
-}
-@keyframes nutJump {
-  to {
-    transform: scale3d(0.8, 1, 0.9) translateY(-10rpx);
-  }
-}
-@keyframes nutJumpOne {
-  50% {
-    transform: scale3d(0.8, 1, 0.9) translateY(-10rpx);
-  }
-  to {
-    transform: scaleZ(1) translateY(0);
-  }
-}
-@keyframes nutBlink {
-  0% {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@keyframes nutBreathe {
-  0%,
-  to {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-}
-@keyframes nutFlash {
-  0%,
-  50%,
-  to {
-    opacity: 1;
-  }
-  25%,
-  75% {
-    opacity: 0;
-  }
-}
-@keyframes nutBounce {
-  0%,
-  20%,
-  53%,
-  to {
-    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    transform: translateZ(0);
-  }
-  40%,
-  43% {
-    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    transform: translate3d(0, -30rpx, 0) scaleY(1.1);
-  }
-  70% {
-    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    transform: translate3d(0, -15rpx, 0) scaleY(1.05);
-  }
-  80% {
-    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    transform: translateZ(0) scaleY(0.95);
-  }
-  90% {
-    transform: translate3d(0, -4rpx, 0) scaleY(1.02);
-  }
-}
-@keyframes nutShake {
-  0% {
-    transform: translate(0);
-  }
-  6.5% {
-    transform: translate(-6rpx) rotateY(-9deg);
-  }
-  18.5% {
-    transform: translate(5rpx) rotateY(7deg);
-  }
-  31.5% {
-    transform: translate(-3rpx) rotateY(-5deg);
-  }
-  43.5% {
-    transform: translate(2rpx) rotateY(3deg);
-  }
-  50% {
-    transform: translate(0);
-  }
 }
 .nut-watermark {
   position: absolute;

@@ -307,11 +307,29 @@ input:where([type='button'], [type='reset'], [type='submit']),
 .rounded-full\! {
   border-radius: 9999px !important;
 }
+ /*tokens: rounded-s-full <= src/pages/index/index.tsx */
+.rounded-s-full {
+  border-start-start-radius: 9999px;
+  border-end-start-radius: 9999px;
+}
+ /*tokens: rounded-t-full <= src/pages/index/index.tsx */
+.rounded-t-full {
+  border-top-left-radius: 9999px;
+  border-top-right-radius: 9999px;
+}
 .bg-\[\#0977ee\] {
   background-color: #0977ee;
 }
 .bg-\[\#534312\] {
   background-color: #534312;
+}
+ /*tokens: bg-blue-200 <= src/pages/index/index.tsx */
+.bg-blue-200 {
+  background-color: rgb(190, 219, 255);
+}
+ /*tokens: bg-blue-500 <= src/pages/index/index.tsx */
+.bg-blue-500 {
+  background-color: rgb(50, 128, 255);
 }
  /*tokens: bg-purple-800 <= src/pages/index/index.tsx */
 .bg-purple-800 {

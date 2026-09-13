@@ -6,6 +6,8 @@ regressions:
   - packages/weapp-tailwindcss/test/bundlers/shared/generator-css/generated-cleanup.test.ts
   - packages/weapp-tailwindcss/test/bundlers/shared/generator-css/user-css.test.ts
   - packages/weapp-tailwindcss/test/bundlers/framework-css-composition.test.ts
+  - packages/weapp-tailwindcss/test/bundlers/framework-css-composition.unit.test.ts
+  - e2e/uni-app-vite-tailwindcss-v4-layer-output.test.ts
   - packages/weapp-tailwindcss/test/ci/repoctl-release.test.ts
   - demo/__tests__/wxss-output.test.ts
   - e2e/taro-ci-coverage-matrix.test.ts
@@ -29,15 +31,15 @@ regressions:
 1. WXSS 禁止片段改为 PostCSS AST 签名匹配，覆盖标签、类、伪类、多选择器和全部已有 Preflight 片段。
 2. 从生成阶段传递原始及转换后的声明来源，按条件上下文、属性、值和优先级清理。只有数值小数前导零被归一化；未知来源与用户覆盖保留。补齐删除声明后标记变化、单独 `:host` 的用户变量及空白格式回归。
 3. 用户样式转换之后，裸选择器补偿只补没有被转换结果表示的规则，避免重新插入原始 `rem`。
-4. 框架产物作为用户 CSS 顺序的权威来源，删除生成侧的重复副本，不删除框架侧的重复覆盖。真实生成器测试分别执行 legacy 与 graph，并精确验证用户变量、单位转换及重复规则顺序。
+4. 框架产物用于恢复用户 CSS 覆盖顺序，同时保留生成侧已经确定的层位置。早期无条件移动规则和按产物大小跳过恢复的做法均不正确，见下方补充纠正。真实生成器测试分别执行 legacy 与 graph，并精确验证用户变量、单位转换及重复规则顺序。
 5. 合并多个 CSS 输入后，只保留开头的一条 `@charset`；不在构建输出目录直接写文件。
 6. 模板按 semver 范围能否覆盖当前稳定版验收，不要求范围字符串一致。Taro 配置通过执行实际 AST 中的 `designWidth` 表达式验证 POSIX、Windows、相对路径、盘符和相邻目录。
 7. 为实际实现包 `@icebreakers/monorepo@5.5.0` 提交 pnpm patch。Release API 的重试限定四次，遵守限流等待，POST 响应不确定时先按 tag 查询；不重跑 npm publish。
 8. 显式 `release notes repair --create-missing --tag` 支持 dry-run。核对 npm 精确版本、本地与远端 tag、目标提交内的包名和版本，再复用原说明生成逻辑补建缺失 Release。
 
-## 验证
+## 初次修复阶段的验证记录
 
-本次在独立 `codex/ci-css-release-recovery` worktree 验证；以下均为当前修复的本地结果，不使用历史 CI 通过记录代替。
+本次在独立 `codex/ci-css-release-recovery` worktree 验证；以下是初次修复阶段的本地记录；最终实现的重新验证见后面的“本轮验证”。
 
 - `CI=1 pnpm test --update=none`：540 文件、5278 测试通过；5 文件、47 测试既有跳过。
 - CSS 定向集合：13 文件、288 测试通过；新增清理器、框架组合和 repoctl 集合另行复验，50 测试通过。
@@ -57,6 +59,39 @@ regressions:
 - 两套 NutUI 产物按选择器、条件上下文、声明属性和优先级统计，React 6707 项、Vue 5233 项，未缺失声明；大量 diff 来自重复副本减少和保留框架已处理的格式。
 - 对照 NutUI 原始 CSS，`.nut-tabs-titles-item-smile` 的 `bottom` 最后应为 `var(--nutui-tabs-titles-item-smile-bottom, -10%)`，`.nut-indicator-white .nut-indicator-line` 的 `opacity` 最后应为 `0`。旧基线的 `15%` 与 `1` 来自错误覆盖顺序；真实构建行为测试固定这两个纠正。
 - uni-app 保留的 `--test-color`、`--color-test`、字体与色彩变量来自 `App.vue`，runtime 的状态栏高度和窗口偏移仍在主样式中。
+
+## 补充纠正：大产物与层位置
+
+- 超过 250 KB 就跳过恢复会丢失框架来源、编码声明和用户规则，不能作为性能优化。移除全部大小短路，用条件上下文、选择器、声明值、优先级和声明顺序建立 AST 索引。
+- 将所有框架规则移到生成结果尾部也不正确：uni-app 的 `wx-button { background: #000 }` 和 components 层必须位于 utilities 之前。对覆盖序列保留生成侧已匹配前缀，从首次缺失处恢复框架侧后缀。
+- 逐条删除 PostCSS 节点会在大数组中反复移动元素，改为每个容器一次批量重建；主题来源声明延迟解析，并在同一恢复周期共享索引。相邻完全相同的规则在同一遍历中合并，保留被其它覆盖隔开的重复声明；先复现 uni-app x 的相邻组件规则重复，再修复并保持原 static 基线通过。
+- 命名层即使清空也必须保留首次声明位置，匿名层具有独立身份，不能跨输入合并。组合选择器的每一项都参与覆盖区间，避免 `.a,.b` 与 `.a` 被分别去重后颠倒顺序。两项新增用例均已先复现错误，再修复并通过。
+- Taro React v4 基线变化包括去除两条重复字体定义、动画块位置调整和保留四组声明顺序不同的 vendor 规则。按条件、选择器、属性、优先级和声明值比较，更新前后均为 6388 个唯一声明，无缺失、无最终值变化；NutUI 关键覆盖的真实构建断言通过。
+
+### 本轮验证（接续 5c1ddd676）
+
+- `CI=1 pnpm test --update=none`：541 文件、5292 测试通过；5 文件、47 测试既有跳过。
+- 清理器及组合单测包含 legacy/graph 各 8000 条填充规则；最终组合集合 14 项通过。WXSS 独立配置 34 项通过。
+- 核心包构建及新增/修改源文件、组合测试 ESLint 通过。
+- `pnpm typecheck` 仍有 445 条诊断，本轮修改文件无诊断；不将包构建通过等同于严格类型检查通过。
+- `CI=1 pnpm test:release`：222 项通过、4 项既有跳过。
+- issue-977/978：8 项通过；Taro coverage contract 7 项、模板 contract 9 项、canonical smoke 4 项通过。
+- generator 的基线更新限定 Taro Vite React/Vue v4 与 uni-app Vite v4；汇总 JSON/中英文报告只同步这三个项目构建产生的字节数，选择器列表和其它项目未变。
+- 最终实现的 Taro React/Vue、uni-app、uni-app x 与层顺序 E2E：5 文件、14 项通过；uni-app x 使用本机 HBuilderX Alpha 5.25.2026082902-alpha CLI 构建，没有将其视为设备验收。
+- static 分片与完整 generator 集合完成后补录。
+
+### 验证
+
+- 本轮完整单测、发布集合和冻结安装均通过；apps-generator 已单独更新并以禁止更新模式复核。
+- 静态分片、真实框架构建和环境型类型诊断分别记录在交付说明中；快照只在确认产物语义后更新。
+
+### 规模验证
+
+本地预热两轮后取七轮中位数，4000/8000/16000 条规则分别约 21/38/75 ms；输入约 163/327/661 KB。此前逐条删除的大数组移动开销已经消除。该测量用于确认规模趋势，不替代框架构建与 HMR 的 CI 性能门禁。
+
+```sh
+rtk proxy pnpm exec tsx --eval 'import { performance } from "node:perf_hooks"; import { composeFrameworkProcessedCss as compose } from "./packages/weapp-tailwindcss/src/bundlers/shared/framework-css-composition.ts"; for (const size of [4000,8000,16000]) { const source=Array.from({length:size},(_,i)=>`.vendor-${i}{color:rgb(1,2,3);height:1px}`).join(""); const generated=source+".utility{display:flex}"; const times=[]; for(let i=0;i<9;i++){const start=performance.now();compose("",generated,source);if(i>1)times.push(performance.now()-start)} times.sort((a,b)=>a-b); console.log({rules:size,bytes:generated.length,medianMs:times[3]}) }'
+```
 
 ## 适用边界
 

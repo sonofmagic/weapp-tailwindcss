@@ -857,6 +857,3 @@ wx-root-portal-content {
 [data-c-h='true'] {
   display: none !important;
 }
-wx-button {
-  background: #000;
-}

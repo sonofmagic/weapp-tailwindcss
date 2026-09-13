@@ -1,4 +1,5 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
+import type { GeneratedThemeDeclarationResolver } from './generated-cleanup'
 import type { InternalUserDefinedOptions } from '@/types'
 import { filterExistingCssRules } from '@weapp-tailwindcss/postcss'
 import { removeUnsupportedMiniProgramAtRules } from '../../css-cleanup'
@@ -16,7 +17,7 @@ export async function transformGeneratorUserCss(
     cssUserHandlerOptions: IStyleHandlerOptions
     styleHandler: InternalUserDefinedOptions['styleHandler']
     importFallback: boolean
-    generatedSource?: string | undefined
+    generatedSource?: string | GeneratedThemeDeclarationResolver | undefined
     processed?: boolean | undefined
   },
 ) {

@@ -170,6 +170,14 @@ function collectGeneratedThemeDeclarations(source: string) {
   return declarations
 }
 
+export type GeneratedThemeDeclarationResolver = () => ReadonlySet<string>
+
+/** 同一轮框架恢复共享声明索引；只有遇到根变量时才解析生成产物。 */
+export function createGeneratedThemeDeclarationResolver(source: string): GeneratedThemeDeclarationResolver {
+  let declarations: ReadonlySet<string> | undefined
+  return () => declarations ??= collectGeneratedThemeDeclarations(source)
+}
+
 function isTailwindGeneratedPreflightRule(selector: string, node: { nodes?: any[] | undefined }) {
   if (
     selector === 'view,text,::after,::before'
@@ -197,7 +205,7 @@ function isTailwindGeneratedPreflightRule(selector: string, node: { nodes?: any[
   return false
 }
 
-export function removeTailwindV4GeneratedUserCssArtifacts(source: string, generatedSource?: string) {
+export function removeTailwindV4GeneratedUserCssArtifacts(source: string, generatedSource?: string | GeneratedThemeDeclarationResolver) {
   try {
     const root = postcss.parse(source)
     let changed = false
@@ -208,12 +216,15 @@ export function removeTailwindV4GeneratedUserCssArtifacts(source: string, genera
       comment.remove()
       changed = true
     })
-    const generatedDeclarations = generatedSource ? collectGeneratedThemeDeclarations(generatedSource) : undefined
+    let generatedDeclarations: ReadonlySet<string> | undefined
     const overriddenProperties = new Set<string>()
     root.walkRules((rule) => {
       const selector = rule.selector.replace(/\s+/g, ' ').replace(/\s*,\s*/g, ',').trim()
       if (isTailwindGeneratedThemeScopeSelector(selector)
         || (TAILWIND_GENERATED_THEME_SCOPE_SELECTORS.has(selector) && rule.nodes.some(child => child.type === 'decl' && child.prop.startsWith('--')))) {
+        generatedDeclarations ??= typeof generatedSource === 'function'
+          ? generatedSource()
+          : generatedSource ? collectGeneratedThemeDeclarations(generatedSource) : new Set()
         // 只有生成阶段提供的精确声明能作为删除依据，未知来源的变量必须保留。
         for (const child of [...rule.nodes]) {
           if (child.type !== 'decl') {

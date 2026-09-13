@@ -8,13 +8,19 @@ import { generateTailwindV4Css } from '@/bundlers/shared/v4-generation-core'
 import { getCompilerContext } from '@/context'
 
 describe('framework CSS composition', () => {
-  it.each(['legacy', 'graph'] as const)('merges imported and bundled CSS only after framework conversion (%s)', async (mode) => {
+  it.each([
+    ['legacy', 0],
+    ['graph', 0],
+    ['legacy', 8_000],
+    ['graph', 8_000],
+  ] as const)('merges imported and bundled CSS only after framework conversion (%s, %i padding rules)', async (mode, paddingRules) => {
     vi.stubEnv('WEAPP_TAILWINDCSS_COMPILER', mode)
     const directory = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-framework-css-'))
     try {
       const file = path.join(directory, 'entry.css')
       const vendor = '@charset "UTF-8";.vendor{width:16px;--framework-pass:0}.vendor-alt{height:24px;-webkit-transform:translateY(-50%);transform:translateY(-50%)}'
-      const source = '@import "./vendor.css";\n@import "tailwindcss";'
+      const padding = Array.from({ length: paddingRules }, (_, index) => `.padding-${index}{color:rgb(1,2,3);height:1px}`).join('\n')
+      const source = `@import "./vendor.css";\n@import "tailwindcss";\n${padding}`
       await writeFile(path.join(directory, 'vendor.css'), vendor)
       await writeFile(file, source)
       const opts = getCompilerContext({
@@ -54,6 +60,9 @@ describe('framework CSS composition', () => {
         restoreLocalCssImports: false,
       })
       expect(result).toBeDefined()
+      if (paddingRules > 0) {
+        expect(result!.css.length).toBeGreaterThan(250_000)
+      }
       const root = postcss.parse(result!.css)
       const charsets: string[] = []
       root.walkAtRules('charset', (rule) => {

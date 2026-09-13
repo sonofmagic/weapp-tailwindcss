@@ -105,6 +105,7 @@ versioning:
 
 overrides:
   jiti: 2.7.0
+  weapp-vite>weapp-tailwindcss: workspace:*
 
 catalogs:
   autoprefixer10:
