@@ -1,15 +1,15 @@
 import { postcss } from '@weapp-tailwindcss/postcss'
 
-function nodeContent(node: postcss.ChildNode): unknown {
+function nodeContent(node: postcss.ChildNode): string {
   switch (node.type) {
     case 'decl':
-      return ['decl', node.prop, node.value, Boolean(node.important)]
+      return `decl\u0000${node.prop}\u0000${node.value}\u0000${node.important ? '1' : '0'}`
     case 'rule':
-      return ['rule', node.selectors.map(selector => selector.trim()), node.nodes.filter(child => child.type !== 'comment').map(nodeContent)]
+      return `rule\u0000${node.selectors.map(selector => selector.trim()).join('\u0001')}\u0000${node.nodes.filter(child => child.type !== 'comment').map(nodeContent).join('\u0002')}`
     case 'atrule':
-      return ['atrule', node.name, node.params, node.nodes?.filter(child => child.type !== 'comment').map(nodeContent)]
+      return `atrule\u0000${node.name}\u0000${node.params}\u0000${node.nodes?.filter(child => child.type !== 'comment').map(nodeContent).join('\u0002') ?? ''}`
     default:
-      return ['comment', node.text]
+      return `comment\u0000${node.text}`
   }
 }
 
@@ -20,11 +20,11 @@ function visitRules(
 ) {
   container.each((node) => {
     if (node.type === 'rule' || (node.type === 'atrule' && /^(?:font-face|(?:-\w+-)?keyframes)$/.test(node.name))) {
-      visit(node, JSON.stringify([context, nodeContent(node)]), context)
+      visit(node, `${context}\u0000${nodeContent(node)}`, context)
     }
     else if (node.type === 'atrule' && node.nodes && !(node.name === 'layer' && !node.params.trim())) {
       // 匿名层每次出现都建立独立层身份，不能跨输入匹配其中的规则。
-      visitRules(node, JSON.stringify([context, node.name, node.params]), visit)
+      visitRules(node, `${context}\u0000${node.name}\u0000${node.params}`, visit)
     }
   })
 }
