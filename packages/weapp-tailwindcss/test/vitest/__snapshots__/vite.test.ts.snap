@@ -209,10 +209,7 @@ exports[`vite test > vite common build twice for cache 4`] = `
 "
 `;
 
-exports[`vite test > vite common build twice for cache 5`] = `
-"/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
-"
-`;
+exports[`vite test > vite common build twice for cache 5`] = `""`;
 
 exports[`vite test > vite common build twice for cache 6`] = `
 "<!DOCTYPE html>
