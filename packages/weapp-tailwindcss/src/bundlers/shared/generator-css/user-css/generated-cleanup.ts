@@ -144,7 +144,7 @@ function collectGeneratedThemeDeclarations(source: string) {
   try {
     const root = postcss.parse(source)
     root.walkRules((rule) => {
-      const selector = rule.selector.replace(/\s+/g, ' ').trim()
+      const selector = rule.selector.replace(/\s+/g, ' ').replace(/\s*,\s*/g, ',').trim()
       if (!isTailwindGeneratedThemeScopeSelector(selector)) {
         return
       }
@@ -199,7 +199,7 @@ export function removeTailwindV4GeneratedUserCssArtifacts(source: string, genera
     })
     const generatedDeclarations = generatedSource ? collectGeneratedThemeDeclarations(generatedSource) : undefined
     root.walkRules((rule) => {
-      const selector = rule.selector.replace(/\s+/g, ' ').trim()
+      const selector = rule.selector.replace(/\s+/g, ' ').replace(/\s*,\s*/g, ',').trim()
       if (isTailwindGeneratedThemeRule(selector, rule) && generatedDeclarations) {
         for (const child of [...(rule.nodes ?? [])]) {
           if (child.type === 'decl' && (generatedDeclarations.has(`${child.prop}:${child.value}${child.important ? '!important' : ''}`)

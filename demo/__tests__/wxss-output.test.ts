@@ -432,6 +432,8 @@ describe('demo wxss artifacts', () => {
 
     expect(globalTag).toContain(forbiddenSignature)
     expect(utilityClass).not.toContain(forbiddenSignature)
+    expect(getRuleSignatures('.small:hover { font-size: 80%; }')).not.toContain(forbiddenSignature)
+    expect(getRuleSignatures('small, textarea { font-size: 80%; }')).not.toContain(forbiddenSignature)
   })
 })
 
