@@ -10,5 +10,12 @@ allowBuilds:
   sharp: true
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
+  - '@weapp-tailwindcss/*'
+  - weapp-vite
+  - wevu
+  - '@weapp-vite/*'
+  - '@weapp-core/*'
+  - '@wevu/*'
+  - repoctl
   - '@weapp-tailwindcss/postcss@3.3.3'
   - weapp-tailwindcss@5.5.5
