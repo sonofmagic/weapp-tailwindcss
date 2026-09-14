@@ -10,7 +10,7 @@ describe('发布包 manifest 校验', () => {
   it('发现全部公开 workspace 包', async () => {
     const packages = await getWorkspacePackages(workspaceRoot)
 
-    expect(packages).toHaveLength(26)
+    expect(packages).toHaveLength(27)
     expect(packages.map(pkg => pkg.manifest.name)).toEqual(expect.arrayContaining([
       'weapp-tailwindcss',
       '@weapp-tailwindcss/cli',

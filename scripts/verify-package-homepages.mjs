@@ -10,6 +10,7 @@ const packageGroups = ['packages', 'packages-runtime']
 const expectedHomepages = {
   '@weapp-tailwindcss/cli': '/docs/tools/weapp-tw-cli',
   '@weapp-tailwindcss/cva': '/docs/community/merge/cva-and-variants',
+  '@weapp-tailwindcss/cn': '/docs/community/merge/overview',
   '@weapp-tailwindcss/debug-uni-app-x': '/docs/config/uni-app-x',
   '@weapp-tailwindcss/experimental': '/',
   '@weapp-tailwindcss/hbuilderx-runner': '/docs/quick-start/frameworks/hbuilderx',
