@@ -255,7 +255,7 @@ catalogs:
   swc:
     '@swc/core': ^1.16.2
   tailwindMerge:
-    tailwind-merge: ^3.6.0
+    tailwind-merge: ^3.7.0
   tailwindMerge2:
     tailwind-merge: ^2.6.1
   tailwindcss4:
@@ -390,6 +390,5 @@ catalogs:
     wrangler: ^4.131.1
 
 patchedDependencies:
-  '@icebreakers/monorepo@5.5.0': patches/@icebreakers__monorepo@5.5.0.patch
   rollup@4.63.0: patches/rollup@4.63.0.patch
   rollup@4.63.1: patches/rollup@4.63.1.patch

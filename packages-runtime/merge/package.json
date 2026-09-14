@@ -119,7 +119,7 @@
   "dependencies": {
     "@weapp-core/escape": "^8.0.0",
     "@weapp-tailwindcss/runtime": "workspace:*",
-    "tailwind-merge": "catalog:tailwindMerge"
+    "tailwind-merge": "3.7.0"
   },
   "devDependencies": {
     "fast-check": "^4.10.0"

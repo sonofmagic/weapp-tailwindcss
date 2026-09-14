@@ -16,6 +16,6 @@
     "tailwindcss": "catalog:tailwindcss4",
     "typescript": "catalog:typescript59",
     "weapp-tailwindcss": "workspace:*",
-    "weapp-vite": "catalog:weappVite"
+    "weapp-vite": "7.1.2"
   }
 }
