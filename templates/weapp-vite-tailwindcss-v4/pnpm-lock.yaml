@@ -171,14 +171,14 @@ importers:
         version: 2.2.3
       weapp-vite:
         specifier: ^6.25.1
-        version: 6.25.1(@babel/core@8.0.1)(@oxc-project/types@0.147.0)(esbuild@0.28.2)(hono@4.13.5)(jiti@2.7.0)(miniprogram-api-typings@5.2.3)(rollup@4.63.1)(tailwindcss@4.3.3)(yaml@2.9.0)
+        version: 6.25.1(@babel/core@8.0.1)(@oxc-project/types@0.147.0)(esbuild@0.28.2)(hono@4.13.5)(jiti@2.7.0)(miniprogram-api-typings@5.2.3)(rollup@4.63.1)(tailwindcss@4.3.3)(yaml@2.9.1)
     devDependencies:
       tailwindcss:
         specifier: ^4.3.3
         version: 4.3.3
       weapp-tailwindcss:
         specifier: ^5.5.5
-        version: 5.5.5(@oxc-project/types@0.147.0)(jiti@2.7.0)(postcss@8.5.28)(rolldown@1.2.6)(tailwindcss@4.3.3)(vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0))
+        version: 5.5.5(@oxc-project/types@0.147.0)(jiti@2.7.0)(postcss@8.5.28)(rolldown@1.2.6)(tailwindcss@4.3.3)(vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
 
 packages:
 
@@ -2244,14 +2244,14 @@ packages:
     resolution: {integrity: sha512-iyOwS3/R07K1PJHn2VBq7Lb1FOXthyrzJHrF/csbtXc4QRANLmLLCRV95th1NXkY/7ty5lg1HwGHAChyA27Q8A==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
-  '@weapp-tailwindcss/postcss-calc@1.0.6':
-    resolution: {integrity: sha512-cgDYqWc+cfr+YYyWWVTZIDZPamQFoXSzFqHAr6VwM25UmmuqebKuCiaS9z2myVysCRFnEWNgOoweJ/BmBSiS+g==}
+  '@weapp-tailwindcss/postcss-calc@1.0.7':
+    resolution: {integrity: sha512-yOvqbdaJ3uri9HltpVpinxSForMnC1N7HXjxq5DwS8Si3wQK8DQCah1HQLPZxLO2D/ficIVKSI4Zn0tEuo9R3w==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       postcss: ^8.4.38
 
-  '@weapp-tailwindcss/postcss@3.3.3':
-    resolution: {integrity: sha512-CQN4p32nyQ/Hx4Qq6vFfMa19odYu8loRz5dR8C3ZJy7pN2SuJyfzuSzuiXpY/HfcDDX0MyJLEOfY11zBTlpcFQ==}
+  '@weapp-tailwindcss/postcss@3.3.4':
+    resolution: {integrity: sha512-lwYK0nqy5Hgt3bPNOb91KSg0j+rodRy5wPmv8cskMCXMDf5NcEaBC82eYSHJFampC4eMBZdUxr4BVlPX44GUzg==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
   '@weapp-tailwindcss/reset@0.1.4':
@@ -2475,13 +2475,6 @@ packages:
 
   array-timsort@1.0.3:
     resolution: {integrity: sha512-/+3GRL7dDAGEfM6TseQk/U+mi18TU2Ms9I3UlLdUMhz2hbvGNTKdj9xniwXfUqgYhHxRx0+8UnKkvlNwVU+cWQ==}
-
-  autoprefixer@10.5.4:
-    resolution: {integrity: sha512-MaU0U/za7N3r6brxD4YB/l4NSrFzLPlANv6wEuQVaIPlD3L4W9rFcQPbL/EilY9BHhHvhfcz3gInDLrEtWT4EA==}
-    engines: {node: ^10 || ^12 || >=14}
-    hasBin: true
-    peerDependencies:
-      postcss: ^8.1.0
 
   autoprefixer@10.5.6:
     resolution: {integrity: sha512-HiH4oYNc5+DQEx/b8FPfMj+WHH/WWUBmbN5r1Uf/ixtfyFkk+wGIlfJT/RD5eAyzlwkeYRtZUCI8qrEi26pl2g==}
@@ -2982,6 +2975,9 @@ packages:
 
   magic-string@1.2.3:
     resolution: {integrity: sha512-Bpb0W2TbLKOZ7vJnOUnVRGq3WL2p+ISV29M6hYPL1AFCpyKZpdr5ytiXoTSSxRVhg8YW7f65+6gbG8WG6PCa/g==}
+
+  magic-string@1.3.1:
+    resolution: {integrity: sha512-rm91zr2Ou+XueDTohjQQjdQEcYM6zVi8KVUCG8Ec3vHwUEKrhSdCNyfuIywkA6hcCAteIn0ZOtAHA6eGpiX+Pg==}
 
   merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
@@ -3571,7 +3567,7 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
 
   weapp-tailwindcss@5.5.5:
-    resolution: {integrity: sha512-+9qvSUAkfKOpZ//YOPJWULwFru7LHNwPV9J5GqADk44GZ8M0gSOCENs+1BYekG0GpozfVKiJpUzEwIP8jc2SdA==}
+    resolution: {integrity: sha512-1im7fXNLFy4zwHSeGHKuLJx22EdIQSUXqq6TwhvYeV6oxyrkkXUR1QTDY63Fqp5FkGe/eyfnucTBF4e54ndl+Q==}
     engines: {node: ^22.18.0 || >=24.11.0}
     peerDependencies:
       '@mpxjs/webpack-plugin': '>=2.0.0 <3.0.0'
@@ -3616,6 +3612,11 @@ packages:
 
   yaml@2.9.0:
     resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
+    engines: {node: '>= 14.6'}
+    hasBin: true
+
+  yaml@2.9.1:
+    resolution: {integrity: sha512-3NxN8+78OdzbT7C/WjGsyfPAtJaN3FNDsWxv7Y7mcDsT/oOmgW8BpyQQFFBnvZE3j9Y2Sdz1ULFLezL7Eb2yFw==}
     engines: {node: '>= 14.6'}
     hasBin: true
 
@@ -3680,7 +3681,7 @@ snapshots:
     dependencies:
       '@babel/compat-data': 8.0.0
       '@babel/helper-validator-option': 8.0.0
-      browserslist: 4.28.8
+      browserslist: 4.28.9
       lru-cache: 11.5.2
       semver: 7.8.5
 
@@ -4279,9 +4280,9 @@ snapshots:
 
   '@csstools/postcss-cascade-layers@6.0.0(postcss@8.5.28)':
     dependencies:
-      '@csstools/selector-specificity': 6.0.0(postcss-selector-parser@7.1.5)
+      '@csstools/selector-specificity': 6.0.0(postcss-selector-parser@7.1.6)
       postcss: 8.5.28
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   '@csstools/postcss-color-function-display-p3-linear@2.0.11(postcss@8.5.28)':
     dependencies:
@@ -4410,9 +4411,9 @@ snapshots:
 
   '@csstools/postcss-is-pseudo-class@6.0.0(postcss@8.5.28)':
     dependencies:
-      '@csstools/selector-specificity': 6.0.0(postcss-selector-parser@7.1.5)
+      '@csstools/selector-specificity': 6.0.0(postcss-selector-parser@7.1.6)
       postcss: 8.5.28
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   '@csstools/postcss-light-dark-function@3.0.4(postcss@8.5.28)':
     dependencies:
@@ -4525,7 +4526,7 @@ snapshots:
   '@csstools/postcss-scope-pseudo-class@5.0.0(postcss@8.5.28)':
     dependencies:
       postcss: 8.5.28
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   '@csstools/postcss-sign-functions@2.0.5(postcss@8.5.28)':
     dependencies:
@@ -4569,13 +4570,13 @@ snapshots:
     dependencies:
       postcss: 8.5.28
 
-  '@csstools/selector-resolve-nested@4.0.1(postcss-selector-parser@7.1.5)':
+  '@csstools/selector-resolve-nested@4.0.1(postcss-selector-parser@7.1.6)':
     dependencies:
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
-  '@csstools/selector-specificity@6.0.0(postcss-selector-parser@7.1.5)':
+  '@csstools/selector-specificity@6.0.0(postcss-selector-parser@7.1.6)':
     dependencies:
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   '@csstools/utilities@3.0.0(postcss@8.5.28)':
     dependencies:
@@ -5376,27 +5377,27 @@ snapshots:
       '@weapp-tailwindcss/runtime': 0.1.8
       tailwind-merge: 3.6.0
 
-  '@weapp-tailwindcss/postcss-calc@1.0.6(postcss@8.5.28)':
+  '@weapp-tailwindcss/postcss-calc@1.0.7(postcss@8.5.28)':
     dependencies:
       postcss: 8.5.28
       postcss-selector-parser: 7.1.6
       postcss-value-parser: 4.2.0
 
-  '@weapp-tailwindcss/postcss@3.3.3(jiti@2.7.0)(tailwindcss@4.3.3)(yaml@2.9.0)':
+  '@weapp-tailwindcss/postcss@3.3.4(jiti@2.7.0)(tailwindcss@4.3.3)(yaml@2.9.1)':
     dependencies:
       '@csstools/css-color-parser': 4.2.2(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-tokenizer': 4.0.0
       '@tailwindcss-mangle/engine': 0.2.0(tailwindcss@4.3.3)
       '@weapp-core/escape': 8.0.0
-      '@weapp-tailwindcss/postcss-calc': 1.0.6(postcss@8.5.28)
+      '@weapp-tailwindcss/postcss-calc': 1.0.7(postcss@8.5.28)
       '@weapp-tailwindcss/shared': 2.0.3
       autoprefixer: 10.5.6(postcss@8.5.28)
       es-toolkit: 1.52.0
       lru-cache: 11.5.2
       micromatch: 4.0.8
       postcss: 8.5.28
-      postcss-load-config: 6.0.1(jiti@2.7.0)(postcss@8.5.28)(yaml@2.9.0)
+      postcss-load-config: 6.0.1(jiti@2.7.0)(postcss@8.5.28)(yaml@2.9.1)
       postcss-preset-env: 11.5.2(postcss@8.5.28)
       postcss-pxtrans: 1.0.4(postcss@8.5.28)
       postcss-rem-to-responsive-pixel: 7.0.5(postcss@8.5.28)
@@ -5629,15 +5630,6 @@ snapshots:
 
   array-timsort@1.0.3: {}
 
-  autoprefixer@10.5.4(postcss@8.5.28):
-    dependencies:
-      browserslist: 4.28.8
-      caniuse-lite: 1.0.30001810
-      fraction.js: 5.3.4
-      picocolors: 1.1.1
-      postcss: 8.5.28
-      postcss-value-parser: 4.2.0
-
   autoprefixer@10.5.6(postcss@8.5.28):
     dependencies:
       browserslist: 4.28.9
@@ -5705,13 +5697,13 @@ snapshots:
   css-blank-pseudo@8.0.2(postcss@8.5.28):
     dependencies:
       postcss: 8.5.28
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   css-has-pseudo@8.0.1(postcss@8.5.28):
     dependencies:
-      '@csstools/selector-specificity': 6.0.0(postcss-selector-parser@7.1.5)
+      '@csstools/selector-specificity': 6.0.0(postcss-selector-parser@7.1.6)
       postcss: 8.5.28
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
       postcss-value-parser: 4.2.0
 
   css-prefers-color-scheme@11.0.1(postcss@8.5.28):
@@ -6056,6 +6048,10 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.6.0
 
+  magic-string@1.3.1:
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.6.0
+
   merge2@1.4.1: {}
 
   merge@2.1.1: {}
@@ -6193,7 +6189,7 @@ snapshots:
   postcss-attribute-case-insensitive@8.0.0(postcss@8.5.28):
     dependencies:
       postcss: 8.5.28
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   postcss-clamp@4.1.0(postcss@8.5.28):
     dependencies:
@@ -6244,12 +6240,12 @@ snapshots:
       '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-tokenizer': 4.0.0
       postcss: 8.5.28
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   postcss-dir-pseudo-class@10.0.0(postcss@8.5.28):
     dependencies:
       postcss: 8.5.28
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   postcss-double-position-gradients@7.0.4(postcss@8.5.28):
     dependencies:
@@ -6261,12 +6257,12 @@ snapshots:
   postcss-focus-visible@11.0.0(postcss@8.5.28):
     dependencies:
       postcss: 8.5.28
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   postcss-focus-within@10.0.1(postcss@8.5.28):
     dependencies:
       postcss: 8.5.28
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   postcss-font-variant@5.0.0(postcss@8.5.28):
     dependencies:
@@ -6291,13 +6287,13 @@ snapshots:
       '@csstools/utilities': 3.0.0(postcss@8.5.28)
       postcss: 8.5.28
 
-  postcss-load-config@6.0.1(jiti@2.7.0)(postcss@8.5.28)(yaml@2.9.0):
+  postcss-load-config@6.0.1(jiti@2.7.0)(postcss@8.5.28)(yaml@2.9.1):
     dependencies:
       lilconfig: 3.1.3
     optionalDependencies:
       jiti: 2.7.0
       postcss: 8.5.28
-      yaml: 2.9.0
+      yaml: 2.9.1
 
   postcss-logical@9.0.0(postcss@8.5.28):
     dependencies:
@@ -6306,10 +6302,10 @@ snapshots:
 
   postcss-nesting@14.0.1(postcss@8.5.28):
     dependencies:
-      '@csstools/selector-resolve-nested': 4.0.1(postcss-selector-parser@7.1.5)
-      '@csstools/selector-specificity': 6.0.0(postcss-selector-parser@7.1.5)
+      '@csstools/selector-resolve-nested': 4.0.1(postcss-selector-parser@7.1.6)
+      '@csstools/selector-specificity': 6.0.0(postcss-selector-parser@7.1.6)
       postcss: 8.5.28
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   postcss-opacity-percentage@3.0.0(postcss@8.5.28):
     dependencies:
@@ -6382,8 +6378,8 @@ snapshots:
       '@csstools/postcss-text-decoration-shorthand': 5.0.5(postcss@8.5.28)
       '@csstools/postcss-trigonometric-functions': 5.0.5(postcss@8.5.28)
       '@csstools/postcss-unset-value': 5.0.0(postcss@8.5.28)
-      autoprefixer: 10.5.4(postcss@8.5.28)
-      browserslist: 4.28.8
+      autoprefixer: 10.5.6(postcss@8.5.28)
+      browserslist: 4.28.9
       css-blank-pseudo: 8.0.2(postcss@8.5.28)
       css-has-pseudo: 8.0.1(postcss@8.5.28)
       css-prefers-color-scheme: 11.0.1(postcss@8.5.28)
@@ -6418,7 +6414,7 @@ snapshots:
   postcss-pseudo-class-any-link@11.0.0(postcss@8.5.28):
     dependencies:
       postcss: 8.5.28
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   postcss-pxtrans@1.0.4(postcss@8.5.28):
     dependencies:
@@ -6450,7 +6446,7 @@ snapshots:
   postcss-selector-not@9.0.0(postcss@8.5.28):
     dependencies:
       postcss: 8.5.28
-      postcss-selector-parser: 7.1.5
+      postcss-selector-parser: 7.1.6
 
   postcss-selector-parser@7.1.5:
     dependencies:
@@ -6699,28 +6695,28 @@ snapshots:
 
   vite-plugin-performance@2.0.1: {}
 
-  vite-tsconfig-paths@6.1.1(typescript@6.0.3)(vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0)):
+  vite-tsconfig-paths@6.1.1(typescript@6.0.3)(vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)):
     dependencies:
       debug: 4.4.3
       globrex: 0.1.2
       tsconfck: 3.1.6(typescript@6.0.3)
-      vite: 8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0)
+      vite: 8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0):
+  vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
-      postcss: 8.5.26
+      postcss: 8.5.28
       rolldown: 1.2.6
       tinyglobby: 0.2.17
     optionalDependencies:
       esbuild: 0.28.2
       fsevents: 2.3.3
       jiti: 2.7.0
-      yaml: 2.9.0
+      yaml: 2.9.1
 
   vscode-uri@3.2.0: {}
 
@@ -6763,7 +6759,7 @@ snapshots:
       '@weapp-tailwindcss/shared': 2.0.3
       micromatch: 4.0.8
 
-  weapp-tailwindcss@5.5.5(@oxc-project/types@0.147.0)(jiti@2.7.0)(postcss@8.5.26)(rolldown@1.2.6)(tailwindcss@4.3.3)(vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0)):
+  weapp-tailwindcss@5.5.5(@oxc-project/types@0.147.0)(jiti@2.7.0)(postcss@8.5.26)(rolldown@1.2.6)(tailwindcss@4.3.3)(vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)):
     dependencies:
       '@babel/parser': 8.0.4
       '@babel/traverse': 8.0.4
@@ -6773,7 +6769,7 @@ snapshots:
       '@vue/compiler-dom': 3.5.42
       '@weapp-core/escape': 8.0.0
       '@weapp-tailwindcss/logger': 2.0.3
-      '@weapp-tailwindcss/postcss': 3.3.3(jiti@2.7.0)(tailwindcss@4.3.3)(yaml@2.9.0)
+      '@weapp-tailwindcss/postcss': 3.3.4(jiti@2.7.0)(tailwindcss@4.3.3)(yaml@2.9.1)
       '@weapp-tailwindcss/reset': 0.1.4(tailwindcss@4.3.3)
       '@weapp-tailwindcss/shared': 2.0.3
       comment-json: 5.0.0
@@ -6783,7 +6779,7 @@ snapshots:
       lightningcss: 1.33.0
       local-pkg: 1.2.1
       lru-cache: 11.5.2
-      magic-string: 1.2.3
+      magic-string: 1.3.1
       micromatch: 4.0.8
       oxc-parser: 0.149.0
       oxc-walker: 1.1.1(@oxc-project/types@0.147.0)(oxc-parser@0.149.0)(rolldown@1.2.6)
@@ -6791,9 +6787,9 @@ snapshots:
       semver: 7.8.5
       tailwindcss-config: 2.0.4
       weapp-style-injector: 1.0.5
-      yaml: 2.9.0
+      yaml: 2.9.1
     optionalDependencies:
-      vite: 8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0)
+      vite: 8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
     transitivePeerDependencies:
       - '@oxc-project/types'
       - jiti
@@ -6803,7 +6799,7 @@ snapshots:
       - tailwindcss
       - tsx
 
-  weapp-tailwindcss@5.5.5(@oxc-project/types@0.147.0)(jiti@2.7.0)(postcss@8.5.28)(rolldown@1.2.6)(tailwindcss@4.3.3)(vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0)):
+  weapp-tailwindcss@5.5.5(@oxc-project/types@0.147.0)(jiti@2.7.0)(postcss@8.5.28)(rolldown@1.2.6)(tailwindcss@4.3.3)(vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)):
     dependencies:
       '@babel/parser': 8.0.4
       '@babel/traverse': 8.0.4
@@ -6813,7 +6809,7 @@ snapshots:
       '@vue/compiler-dom': 3.5.42
       '@weapp-core/escape': 8.0.0
       '@weapp-tailwindcss/logger': 2.0.3
-      '@weapp-tailwindcss/postcss': 3.3.3(jiti@2.7.0)(tailwindcss@4.3.3)(yaml@2.9.0)
+      '@weapp-tailwindcss/postcss': 3.3.4(jiti@2.7.0)(tailwindcss@4.3.3)(yaml@2.9.1)
       '@weapp-tailwindcss/reset': 0.1.4(tailwindcss@4.3.3)
       '@weapp-tailwindcss/shared': 2.0.3
       comment-json: 5.0.0
@@ -6823,7 +6819,7 @@ snapshots:
       lightningcss: 1.33.0
       local-pkg: 1.2.1
       lru-cache: 11.5.2
-      magic-string: 1.2.3
+      magic-string: 1.3.1
       micromatch: 4.0.8
       oxc-parser: 0.149.0
       oxc-walker: 1.1.1(@oxc-project/types@0.147.0)(oxc-parser@0.149.0)(rolldown@1.2.6)
@@ -6831,9 +6827,9 @@ snapshots:
       semver: 7.8.5
       tailwindcss-config: 2.0.4
       weapp-style-injector: 1.0.5
-      yaml: 2.9.0
+      yaml: 2.9.1
     optionalDependencies:
-      vite: 8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0)
+      vite: 8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
     transitivePeerDependencies:
       - '@oxc-project/types'
       - jiti
@@ -6843,7 +6839,7 @@ snapshots:
       - tailwindcss
       - tsx
 
-  weapp-vite@6.25.1(@babel/core@8.0.1)(@oxc-project/types@0.147.0)(esbuild@0.28.2)(hono@4.13.5)(jiti@2.7.0)(miniprogram-api-typings@5.2.3)(rollup@4.63.1)(tailwindcss@4.3.3)(yaml@2.9.0):
+  weapp-vite@6.25.1(@babel/core@8.0.1)(@oxc-project/types@0.147.0)(esbuild@0.28.2)(hono@4.13.5)(jiti@2.7.0)(miniprogram-api-typings@5.2.3)(rollup@4.63.1)(tailwindcss@4.3.3)(yaml@2.9.1):
     dependencies:
       '@babel/preset-env': 8.0.2(@babel/core@8.0.1)
       '@babel/preset-typescript': 8.0.1(@babel/core@8.0.1)
@@ -6885,13 +6881,13 @@ snapshots:
       rolldown-require: 2.0.27(rolldown@1.2.6)(rollup@4.63.1)
       semver: 7.8.5
       typescript: 6.0.3
-      vite: 8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0)
+      vite: 8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
       vite-plugin-performance: 2.0.1
-      vite-tsconfig-paths: 6.1.1(typescript@6.0.3)(vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0))
+      vite-tsconfig-paths: 6.1.1(typescript@6.0.3)(vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
       vue: 3.5.42(typescript@6.0.3)
       vue-tsc: 3.3.11(typescript@6.0.3)
       weapp-ide-cli: 6.1.0
-      weapp-tailwindcss: 5.5.4(@oxc-project/types@0.147.0)(jiti@2.7.0)(postcss@8.5.26)(rolldown@1.2.6)(tailwindcss@4.3.3)(vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0))
+      weapp-tailwindcss: 5.5.5(@oxc-project/types@0.147.0)(jiti@2.7.0)(postcss@8.5.26)(rolldown@1.2.6)(tailwindcss@4.3.3)(vite@8.2.2(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
       wevu: 6.25.1(@babel/core@8.0.1)(miniprogram-api-typings@5.2.3)(rolldown@1.2.6)(rollup@4.63.1)(typescript@6.0.3)
     optionalDependencies:
       '@swc/core': 1.16.1
@@ -6944,6 +6940,8 @@ snapshots:
   ws@8.21.3: {}
 
   yaml@2.9.0: {}
+
+  yaml@2.9.1: {}
 
   yoctocolors@2.2.0: {}
 
