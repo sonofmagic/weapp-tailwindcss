@@ -56,6 +56,103 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
+:host {
+  line-height: 1.5;
+  tab-size: 4;
+  font-family: var(
+    --default-font-family,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    'Noto Sans',
+    Arial,
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji'
+  );
+  font-feature-settings: var(--default-font-feature-settings, normal);
+  font-variation-settings: var(--default-font-variation-settings, normal);
+}
+.hr {
+  height: 0;
+  color: inherit;
+  border-top-width: 1px;
+}
+abbr[title] {
+  text-decoration: underline;
+  text-decoration: underline dotted;
+}
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+.a {
+  color: inherit;
+  text-decoration: inherit;
+}
+.b,
+.strong {
+  font-weight: bolder;
+}
+.code,
+.pre {
+  font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
+  font-feature-settings: var(--default-mono-font-feature-settings, normal);
+  font-variation-settings: var(--default-mono-font-variation-settings, normal);
+  font-size: 1em;
+}
+.small {
+  font-size: 80%;
+}
+.table {
+  text-indent: 0;
+  border-color: inherit;
+  border-collapse: collapse;
+}
+:-moz-focusring:not(iframe) {
+  outline: auto;
+}
+.ol,
+.ul {
+  list-style: none;
+}
+.img,
+video,
+canvas,
+audio {
+  display: block;
+  vertical-align: middle;
+}
+.img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+button,
+input[type='button'],
+input[type='reset'],
+input[type='submit'] {
+  appearance: button;
+}
+button::after,
+wx-button::after {
+  display: none;
+  border: none;
+  content: '';
+}
+
+wx-button {
+  background: #000;
+}
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);
 }
@@ -249,20 +346,14 @@ wx-root-portal-content {
 }
 .bg-gradient-to-b {
   --tw-gradient-position: to bottom;
-  --tw-gradient-position: to bottom;
-  background-image: linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 .bg-gradient-to-t {
   --tw-gradient-position: to top;
-  --tw-gradient-position: to top;
-  background-image: linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 .bg-gradient-to-tr {
   --tw-gradient-position: to top right;
-  --tw-gradient-position: to top right;
-  background-image: linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 .from-_b_h2f73f1_B {
@@ -417,29 +508,6 @@ wx-root-portal-content {
     transform: scale(0.96);
   }
 }
-.from-_b_h2f73f1_B {
-  --tw-gradient-from: #2f73f1;
-  --tw-gradient-stops: var(--tw-gradient-via-stops, initial), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
-}
-.to-_b_h4bcefd_B {
-  --tw-gradient-to: #4bcefd;
-  --tw-gradient-stops: var(--tw-gradient-via-stops, initial), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
-}
-.transition-colors {
-  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
-  transition-timing-function: var(--tw-ease, initial);
-  transition-duration: var(--tw-duration, initial);
-}
-button::after,
-wx-button::after {
-  display: none;
-  border: none;
-  content: '';
-}
-
-wx-button {
-  background: #000;
-}
 
 wx-button {
   background: #444;
@@ -448,4 +516,3 @@ wx-button {
 abc {
   background: #222;
 }
-/*$vite$:1*/

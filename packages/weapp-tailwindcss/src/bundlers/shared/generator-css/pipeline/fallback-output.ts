@@ -30,6 +30,7 @@ export async function finalizeFallbackGeneratorCss(
   ) {
     const userCss = await transformGeneratorUserCss(generatedUserCssRawSource, {
       generatorTarget: generated.target,
+      generatedSource: generated.rawCss,
       generatorStyleOptions,
       cssUserHandlerOptions,
       styleHandler,
@@ -44,6 +45,7 @@ export async function finalizeFallbackGeneratorCss(
       const layerParts = splitUserCssLayerBlocks(generatorRawSource)
       const layerUserCss = await transformGeneratorUserCss(layerParts.layer, {
         generatorTarget: generated.target,
+        generatedSource: generated.rawCss,
         generatorStyleOptions,
         cssUserHandlerOptions,
         styleHandler,
@@ -71,6 +73,7 @@ export async function finalizeFallbackGeneratorCss(
         distinctUserLayerParts.layer,
         {
           generatorTarget: generated.target,
+          generatedSource: generated.rawCss,
           generatorStyleOptions,
           cssUserHandlerOptions,
           styleHandler,
@@ -99,6 +102,7 @@ export async function finalizeFallbackGeneratorCss(
         : generatedUserCssRawSource
       const userCss = await transformGeneratorUserCss(distinctUserCssRawSource, {
         generatorTarget: generated.target,
+        generatedSource: generated.rawCss,
         generatorStyleOptions,
         cssUserHandlerOptions,
         styleHandler,
@@ -116,12 +120,13 @@ export async function finalizeFallbackGeneratorCss(
       && hasGeneratedMarkers
       && !hasGeneratedCss
     ) {
-      const cleanedUserCssRawSource = removeTailwindV4GeneratedUserCssArtifacts(userCssRawSource)
+      const cleanedUserCssRawSource = removeTailwindV4GeneratedUserCssArtifacts(userCssRawSource, generated.rawCss)
       const cleanedUserCssRestSource = restoredDistinctUserLayerCss && hasUserCssLayerBlocks(cleanedUserCssRawSource)
         ? splitUserCssLayerBlocks(cleanedUserCssRawSource).rest
         : cleanedUserCssRawSource
       const userCss = await transformGeneratorUserCss(cleanedUserCssRestSource, {
         generatorTarget: generated.target,
+        generatedSource: generated.rawCss,
         generatorStyleOptions,
         cssUserHandlerOptions,
         styleHandler,
@@ -134,6 +139,7 @@ export async function finalizeFallbackGeneratorCss(
     else if (hasMatchedCssSourceFile && generated.target === 'weapp' && hasUserCssLayerBlocks(generatedUserCssRawSource)) {
       const layerUserCss = await transformGeneratorUserCss(splitUserCssLayerBlocks(generatedUserCssRawSource).layer, {
         generatorTarget: generated.target,
+        generatedSource: generated.rawCss,
         generatorStyleOptions,
         cssUserHandlerOptions,
         styleHandler,
@@ -177,6 +183,7 @@ export async function finalizeFallbackGeneratorCss(
     ) {
       const userCss = await transformGeneratorUserCss(generatedUserCssRawSource, {
         generatorTarget: generated.target,
+        generatedSource: generated.rawCss,
         generatorStyleOptions,
         cssUserHandlerOptions,
         styleHandler,
@@ -217,7 +224,7 @@ export async function finalizeFallbackGeneratorCss(
       styleHandler,
       cssHandlerOptions,
       generatorStyleOptions,
-      { preserveSelectorOverrides: shouldPreserveLegacyCompatSelectorOverrides },
+      { preserveSelectorOverrides: shouldPreserveLegacyCompatSelectorOverrides, generatedSource: generated.rawCss },
     )
     css = await appendLegacyContainerCompatCss(
       css,
@@ -243,6 +250,7 @@ export async function finalizeFallbackGeneratorCss(
       : generatedUserCssRawSource
     const userCss = await transformGeneratorUserCss(distinctUserCssRawSource, {
       generatorTarget: generated.target,
+      generatedSource: generated.rawCss,
       generatorStyleOptions,
       cssUserHandlerOptions,
       styleHandler,

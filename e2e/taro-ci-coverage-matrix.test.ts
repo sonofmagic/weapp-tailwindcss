@@ -1,5 +1,8 @@
 import fs from 'node:fs'
+import { posix, win32 } from 'node:path'
+import { runInNewContext } from 'node:vm'
 import path from 'pathe'
+import ts from 'typescript'
 import { describe, expect, it } from 'vitest'
 import { DEMO_COVERAGE_MATRIX } from './demoCoverageMatrix'
 import { E2E_PROJECTS } from './projectEntries'
@@ -138,13 +141,32 @@ describe('Taro CI coverage matrix', () => {
     }
   })
 
-  it('keeps H5 designWidth numeric while issue 998 uses file-aware mini-program sizing', () => {
-    for (const name of ['taro-vite-react-tailwindcss-v4', 'taro-webpack-react-tailwindcss-v4']) {
-      const config = configFiles(name).map(readText).join('\n')
-      expect(config, `${name} should preserve numeric designWidth for H5`).toContain('designWidth: taroPlatform.isWeb')
-      expect(config, `${name} should preserve the original H5 design width`).toContain('? 750')
-      expect(config, `${name} should retain the issue 998 file-aware mini-program branch`).toMatch(/win32\.normalize\(input\.file\)/)
-      expect(config, `${name} should resolve issue 998 against projectRoot`).toMatch(/win32\.dirname\(file\).*win32\.resolve\(projectRoot, ['"]src\/pages\/issue-998['"]\)/s)
+  it.each(['taro-vite-react-tailwindcss-v4', 'taro-webpack-react-tailwindcss-v4'])('验证 %s 的跨平台 designWidth 行为', (name) => {
+    const file = path.join(repoRoot, 'demo', name, 'config', 'index.ts')
+    const ast = ts.createSourceFile(file, readText(file), ts.ScriptTarget.Latest, true)
+    let expression: string | undefined
+    const visit = (node: ts.Node) => {
+      if (ts.isPropertyAssignment(node) && node.name.getText(ast) === 'designWidth') {
+        expression = node.initializer.getText(ast)
+      }
+      ts.forEachChild(node, visit)
+    }
+    visit(ast)
+    expect(expression).toBeDefined()
+    const evaluate = (isWeb: boolean, projectRoot: string) => runInNewContext(`(${expression})`, { taroPlatform: { isWeb }, win32, projectRoot }) as number | ((input?: { file?: string }) => number)
+    for (const root of ['/workspace/project', 'C:\\workspace\\project']) {
+      expect(evaluate(true, root)).toBe(750)
+      const width = evaluate(false, root) as (input?: { file?: string }) => number
+      expect(width({ file: win32.join(root, 'src', 'pages', 'issue-998', 'index.css') })).toBe(375)
+      if (root.startsWith('/')) {
+        expect(width({ file: posix.join(root, 'src', 'pages', 'issue-998', 'index.css') })).toBe(375)
+      }
+      expect(width({ file: 'src/pages/issue-998/index.css' })).toBe(375)
+      expect(width({ file: 'src\\pages\\issue-998\\index.css' })).toBe(375)
+      expect(width({ file: 'src/pages/issue-998-other/index.css' })).toBe(750)
+      expect(width({ file: 'src/pages/issue-998/child/index.css' })).toBe(750)
+      expect(width({ file: 'D:\\elsewhere\\src\\pages\\issue-998\\index.css' })).toBe(750)
+      expect(width()).toBe(750)
     }
   })
 

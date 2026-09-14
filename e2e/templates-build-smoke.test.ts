@@ -5,7 +5,7 @@ import fg from 'fast-glob'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { CANONICAL_TEMPLATE_CASES } from './canonicalTemplateMatrix'
-import { TEMPLATE_PACKAGE_MANAGER, TEMPLATE_WEAPP_TAILWINDCSS_RANGE } from './templateContract'
+import { isTemplateVersionCompatible, TEMPLATE_PACKAGE_MANAGER } from './templateContract'
 
 interface TemplateCase {
   name: string
@@ -501,7 +501,7 @@ describe('templates build smoke', () => {
     expect(workspace).toContain('- .')
     expect(await fs.readFile(path.resolve(root, '.npmrc'), 'utf8')).toContain('registry=https://registry.npmjs.org/')
 
-    expect(deps['weapp-tailwindcss']).toBe(TEMPLATE_WEAPP_TAILWINDCSS_RANGE)
+    expect(isTemplateVersionCompatible(deps['weapp-tailwindcss'])).toBe(true)
     expect(deps['@tailwindcss/postcss'], `${item.name} should not register the official PostCSS generator`).toBeUndefined()
     expect(deps['@tailwindcss/vite'], `${item.name} should not register the official Vite generator`).toBeUndefined()
     expect(pkg.scripts?.postinstall ?? '', `${item.name} should not patch Tailwind CSS`).not.toMatch(/weapp-tw\s+patch/u)

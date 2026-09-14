@@ -132,11 +132,22 @@ function isTailwindGeneratedThemeScopeSelector(selector: string) {
   )
 }
 
-function isTailwindGeneratedThemeRule(selector: string, node: { nodes?: any[] | undefined }) {
-  if (!isTailwindGeneratedThemeScopeSelector(selector)) {
-    return false
+function themeDeclarationContext(declaration: postcss.Declaration) {
+  const context: string[] = []
+  let parent = declaration.parent?.parent
+  while (parent && parent.type !== 'root') {
+    if (parent.type === 'atrule' && parent.name !== 'layer') {
+      context.unshift(`@${parent.name} ${parent.params}`)
+    }
+    parent = parent.parent
   }
-  return node.nodes?.some(child => child.type === 'decl' && /^--(?:color|spacing|text|font|default|radius|tw-)/.test(child.prop)) ?? false
+  return context
+}
+
+function themeDeclarationKey(declaration: postcss.Declaration) {
+  // 压缩器可能省略小数前的零；只规范化完整数值，避免改动字符串或 URL。
+  const value = declaration.value.trim().replace(/^(-?)0\.(\d+(?:[a-z]+|%)?)$/i, '$1.$2')
+  return JSON.stringify([themeDeclarationContext(declaration), declaration.prop, value, Boolean(declaration.important)])
 }
 
 function collectGeneratedThemeDeclarations(source: string) {
@@ -150,13 +161,21 @@ function collectGeneratedThemeDeclarations(source: string) {
       }
       for (const child of rule.nodes ?? []) {
         if (child.type === 'decl') {
-          declarations.add(`${child.prop}:${child.value}${child.important ? '!important' : ''}`)
+          declarations.add(themeDeclarationKey(child))
         }
       }
     })
   }
   catch {}
   return declarations
+}
+
+export type GeneratedThemeDeclarationResolver = () => ReadonlySet<string>
+
+/** 同一轮框架恢复共享声明索引；只有遇到根变量时才解析生成产物。 */
+export function createGeneratedThemeDeclarationResolver(source: string): GeneratedThemeDeclarationResolver {
+  let declarations: ReadonlySet<string> | undefined
+  return () => declarations ??= collectGeneratedThemeDeclarations(source)
 }
 
 function isTailwindGeneratedPreflightRule(selector: string, node: { nodes?: any[] | undefined }) {
@@ -186,7 +205,7 @@ function isTailwindGeneratedPreflightRule(selector: string, node: { nodes?: any[
   return false
 }
 
-export function removeTailwindV4GeneratedUserCssArtifacts(source: string, generatedSource?: string) {
+export function removeTailwindV4GeneratedUserCssArtifacts(source: string, generatedSource?: string | GeneratedThemeDeclarationResolver) {
   try {
     const root = postcss.parse(source)
     let changed = false
@@ -197,36 +216,36 @@ export function removeTailwindV4GeneratedUserCssArtifacts(source: string, genera
       comment.remove()
       changed = true
     })
-    const generatedDeclarations = generatedSource ? collectGeneratedThemeDeclarations(generatedSource) : undefined
+    let generatedDeclarations: ReadonlySet<string> | undefined
+    const overriddenProperties = new Set<string>()
     root.walkRules((rule) => {
       const selector = rule.selector.replace(/\s+/g, ' ').replace(/\s*,\s*/g, ',').trim()
-      if (isTailwindGeneratedThemeRule(selector, rule) && generatedDeclarations) {
-        for (const child of [...(rule.nodes ?? [])]) {
-          if (child.type === 'decl' && (generatedDeclarations.has(`${child.prop}:${child.value}${child.important ? '!important' : ''}`)
-            || (/^(?:--color|--spacing|--text|--font|--default|--radius|--tw-)/.test(child.prop) && !/^--(?:test|brand|my)-/.test(child.prop)))) {
+      if (isTailwindGeneratedThemeScopeSelector(selector)
+        || (TAILWIND_GENERATED_THEME_SCOPE_SELECTORS.has(selector) && rule.nodes.some(child => child.type === 'decl' && child.prop.startsWith('--')))) {
+        generatedDeclarations ??= typeof generatedSource === 'function'
+          ? generatedSource()
+          : generatedSource ? collectGeneratedThemeDeclarations(generatedSource) : new Set()
+        // 只有生成阶段提供的精确声明能作为删除依据，未知来源的变量必须保留。
+        for (const child of [...rule.nodes]) {
+          if (child.type !== 'decl') {
+            continue
+          }
+          const propertyKey = JSON.stringify([themeDeclarationContext(child), child.prop])
+          if (generatedDeclarations?.has(themeDeclarationKey(child)) && !overriddenProperties.has(propertyKey)) {
             child.remove()
+            changed = true
+          }
+          else {
+            overriddenProperties.add(propertyKey)
           }
         }
-        if ((rule.nodes ?? []).some(child => child.type === 'decl')) {
-          return
-        }
-        rule.remove()
-        changed = true
-        return
-      }
-      if (isTailwindGeneratedThemeRule(selector, rule) && !generatedDeclarations) {
-        for (const child of [...(rule.nodes ?? [])]) {
-          if (child.type === 'decl' && /^(?:--color|--spacing|--text|--font|--default|--radius|--tw-)/.test(child.prop) && !/^--(?:test|brand|my)-/.test(child.prop)) {
-            child.remove()
-          }
-        }
-        if (!(rule.nodes ?? []).some(child => child.type === 'decl')) {
+        if (rule.nodes.length === 0) {
           rule.remove()
           changed = true
         }
         return
       }
-      if (isTailwindGeneratedThemeRule(selector, rule) || isTailwindGeneratedPreflightRule(selector, rule)) {
+      if (isTailwindGeneratedPreflightRule(selector, rule)) {
         rule.remove()
         changed = true
       }

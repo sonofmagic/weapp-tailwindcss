@@ -875,6 +875,7 @@ describe('bundlers/shared generator css', () => {
       '@keyframes weappTwUserUiRotation{to{transform:rotate(360deg)}}',
     ].join('\n'), {
       generatorTarget: 'weapp',
+      generatedSource: ':root,:host{--color-slate-900:#0f172a;--font-sans:ui-sans-serif;--default-font-family:var(--font-sans)}',
       generatorStyleOptions: {},
       cssUserHandlerOptions: {} as any,
       styleHandler,
@@ -1022,6 +1023,7 @@ describe('bundlers/shared generator css', () => {
       styleHandler,
       {} as any,
       {},
+      { generatedSource: ':root,:host{--font-sans:ui-sans-serif;--default-font-family:var(--font-sans)}' },
     )
 
     expect(css).toContain('.bg-page-marker')

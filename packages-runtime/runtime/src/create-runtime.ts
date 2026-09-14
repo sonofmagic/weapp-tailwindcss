@@ -41,8 +41,27 @@ const CACHE_LIMIT = 256
 
 const UNESCAPE_RE = /u[0-9a-f]{3,}/i
 
+function hasWhitespace(value: string) {
+  return value.includes(' ')
+    || value.includes('\t')
+    || value.includes('\n')
+    || value.includes('\r')
+    || value.includes('\f')
+    || value.includes('\v')
+}
+
 function shouldUnescape(value: string) {
   return value.includes('_') || UNESCAPE_RE.test(value)
+}
+
+function transformTokens(value: string, transformFn: (token: string) => string): string {
+  if (!value) {
+    return value
+  }
+  if (!hasWhitespace(value)) {
+    return transformFn(value)
+  }
+  return value.split(/\s+/).filter(Boolean).map(transformFn).join(' ')
 }
 
 function wrapClassAggregator(
@@ -72,7 +91,7 @@ function wrapClassAggregator(
       return cached
     }
 
-    const normalized = shouldUnescape(rawInput) ? transformers.unescape(rawInput) : rawInput
+    const normalized = shouldUnescape(rawInput) ? transformTokens(rawInput, transformers.unescape) : rawInput
     let metadata: unknown
     let preparedValue = normalized
     if (prepareValue) {
@@ -88,7 +107,7 @@ function wrapClassAggregator(
     const merged = fn(preparedValue)
     const restored = restoreValue ? restoreValue(merged, metadata) : merged
 
-    const escaped = transformers.escape(restored)
+    const escaped = transformTokens(restored, transformers.escape)
 
     if (cache.size >= CACHE_LIMIT) {
       const firstEntry = cache.keys().next()

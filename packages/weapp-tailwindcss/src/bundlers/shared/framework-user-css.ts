@@ -1,8 +1,11 @@
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css'
 import type { NormalizedWeappTailwindcssGeneratorOptions } from '@/generator'
-import { filterExistingCssRules, postcss } from '@weapp-tailwindcss/postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
+import { composeFrameworkProcessedCss } from './framework-css-composition'
 import { createCssSourceOrderAppend, finalizeMiniProgramGeneratorCss, resolveGeneratorStyleOptions, splitRawSourceByGeneratedCssOrder } from './generator-css/generation-helpers'
+import { stripTailwindBanners } from './generator-css/markers'
 import { removeTailwindV4GeneratedUserCssArtifacts, splitUserCssLayerBlocks, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments, transformGeneratorUserCss } from './generator-css/user-css'
+import { createGeneratedThemeDeclarationResolver } from './generator-css/user-css/generated-cleanup'
 import { reorderMarkedUserLayerComponentsCss, wrapUserLayerComponentsCss } from './generator-css/user-layer-order'
 
 function normalizeUserSource(source: string) {
@@ -27,8 +30,10 @@ export async function restoreFrameworkProcessedUserCss(
   options: GenerateCssByGeneratorOptions,
   generatorOptions: NormalizedWeappTailwindcssGeneratorOptions,
 ) {
+  const generatedSource = createGeneratedThemeDeclarationResolver([generated.metadata?.rawCss, css].filter(Boolean).join('\n'))
   const userCssOptions = {
     generatorTarget: generated.target,
+    generatedSource,
     generatorStyleOptions: resolveGeneratorStyleOptions(options.opts, options.cssHandlerOptions, generatorOptions.styleOptions),
     cssUserHandlerOptions: options.cssUserHandlerOptions,
     styleHandler: options.styleHandler,
@@ -44,14 +49,13 @@ export async function restoreFrameworkProcessedUserCss(
       options.runtimeState.tailwindRuntime.majorVersion,
       options.opts.cssPreflight,
       { injectPreflight: false, preservePreflight: generated.metadata?.preflightMode?.preserve, styleOptions: options.cssHandlerOptions },
-    ), generated.metadata?.rawCss)
+    ), generatedSource)
   }
   const userSource = normalizeUserSource(source)
   const ordered = splitRawSourceByGeneratedCssOrder(userSource, generated.metadata?.rawCss ?? '')
     ?? { before: '', after: userSource }
   // 已经过框架转换的 CSS 不再重放框架插件；双方完成小程序适配后再比较和合并。
-  const before = filterExistingCssRules(css, await transform(ordered.before))
-  const withBefore = createCssSourceOrderAppend(before, css)
-  const after = filterExistingCssRules(withBefore, await transform(ordered.after))
-  return reorderMarkedUserLayerComponentsCss(createCssSourceOrderAppend(withBefore, after))
+  const before = await transform(ordered.before)
+  const after = await transform(ordered.after)
+  return stripTailwindBanners(reorderMarkedUserLayerComponentsCss(composeFrameworkProcessedCss(before, css, after)))
 }

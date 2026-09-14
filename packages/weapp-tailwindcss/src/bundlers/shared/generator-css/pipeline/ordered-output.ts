@@ -58,6 +58,7 @@ export async function finalizeOrderedGeneratorCss(
     }
     const userCssOptions = {
       generatorTarget: generated.target,
+      generatedSource: generated.rawCss,
       generatorStyleOptions,
       cssUserHandlerOptions,
       styleHandler,
@@ -137,7 +138,7 @@ export async function finalizeOrderedGeneratorCss(
           styleHandler,
           cssHandlerOptions,
           generatorStyleOptions,
-          { preserveSelectorOverrides: shouldPreserveLegacyCompatSelectorOverrides },
+          { preserveSelectorOverrides: shouldPreserveLegacyCompatSelectorOverrides, generatedSource: generated.rawCss },
         )
         if (!isolateCurrentCssCandidates) {
           css = await appendLegacyContainerCompatCss(

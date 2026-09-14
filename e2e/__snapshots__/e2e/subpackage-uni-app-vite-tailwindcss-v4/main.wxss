@@ -50,13 +50,6 @@ wx-root-portal-content {
   --text-base: 32rpx;
   --font-weight-bold: 700;
   --radius-lg: 16rpx;
-  --status-bar-height: 25px;
-  --top-window-height: 0px;
-  --window-top: 0px;
-  --window-bottom: 0px;
-  --window-left: 0px;
-  --window-right: 0px;
-  --window-magin: 0px;
 }
 /* tokens: i-[mdi--github-circle] <= <tailwind generated> */
 .i-_bmdi--github-circle_B {
@@ -136,6 +129,18 @@ wx-root-portal-content {
   .dark_cbg-zinc-950 {
     background-color: var(--color-zinc-950);
   }
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --status-bar-height: 25px;
+  --top-window-height: 0px;
+  --window-top: 0px;
+  --window-bottom: 0px;
+  --window-left: 0px;
+  --window-right: 0px;
+  --window-magin: 0px;
 }
 [data-c-h='true'] {
   display: none !important;

@@ -58,7 +58,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
     designWidth: taroPlatform.isWeb
       ? 750
       : (input) => {
-          const file = typeof input?.file === 'string' ? win32.normalize(input.file) : ''
+          const file = typeof input?.file === 'string' ? win32.resolve(projectRoot, input.file) : ''
           if (win32.dirname(file) === win32.resolve(projectRoot, 'src/pages/issue-998')) {
             return 375
           }

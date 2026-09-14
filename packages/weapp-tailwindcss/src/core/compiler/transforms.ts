@@ -34,12 +34,22 @@ function resolveCssTransformOptions(options?: CompilerCssTransformOptions) {
 }
 
 function finalizeResultRoot(result: Awaited<ReturnType<StyleHandler>>, snapshot: CompilerSnapshot, shouldFinalize: boolean) {
-  if (!shouldFinalize || result.root.type !== 'root') {
+  if (!shouldFinalize) {
     return
   }
-  finalizeMiniProgramCssRoot(result.root, {
-    isTailwindcssV4: snapshot.target === 'weapp',
-  })
+  if (result.root.type === 'root') {
+    finalizeMiniProgramCssRoot(result.root, {
+      isTailwindcssV4: snapshot.target === 'weapp',
+    })
+  }
+  if (snapshot.target === 'weapp') {
+    // 公开 core 入口也遵循小程序产物约定；保留其它版权注释和声明中的字面量。
+    result.root.walkComments((comment) => {
+      if (/^!\s*tailwindcss v/i.test(comment.text)) {
+        comment.remove()
+      }
+    })
+  }
   result.css = result.root.toString()
 }
 

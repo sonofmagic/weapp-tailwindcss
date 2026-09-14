@@ -103,7 +103,7 @@
     "docusaurus-plugin-typedoc": "1.4.3",
     "dotenv": "^17.4.2",
     "gray-matter": "^4.0.3",
-    "js-yaml": "^5.4.1",
+    "js-yaml": "^5.4.2",
     "mini-svg-data-uri": "^1.4.4",
     "node-loader": "^2.1.0",
     "sass": "catalog:sass195",
