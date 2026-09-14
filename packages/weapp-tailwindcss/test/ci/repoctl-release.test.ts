@@ -9,24 +9,35 @@ const release = { id: 12, tag_name: tag, name: tag }
 const request = { tag, target: 'a'.repeat(40), body: '发布说明' }
 const response = (status: number, data: unknown, headers?: HeadersInit) => new Response(JSON.stringify(data), { status, headers })
 
+function createClient(fetch: typeof globalThis.fetch, extra: Record<string, unknown> = {}) {
+  return new GitHubClient({ token: 'test', repository: 'fixture/repo', fetch, retryDelay: 1, ...extra })
+}
+
 afterEach(() => {
   vi.useRealTimers()
 })
 
 describe('repoctl GitHub Release 恢复补丁', () => {
-  it.each([429, 500, 502, 'network'])('重试瞬时错误 %s，并在 POST 重试前按 tag 查询', async (failure) => {
+  it.each([429, 500, 502])('request 层重试瞬时错误 %s 的 POST', async (failure) => {
     vi.useFakeTimers()
     const fetch = vi.fn()
       .mockResolvedValueOnce(response(404, {}))
-      .mockImplementationOnce(() => failure === 'network' ? Promise.reject(new TypeError('connection reset')) : Promise.resolve(response(Number(failure), {})))
-      .mockResolvedValueOnce(response(404, {}))
+      .mockResolvedValueOnce(response(failure, {}))
       .mockResolvedValueOnce(response(201, release))
-    const client = new GitHubClient({ token: 'test', repository: 'fixture/repo', fetch })
-    const pending = client.ensureRelease(request)
+    const pending = createClient(fetch).ensureRelease(request)
     const result = expect(pending).resolves.toMatchObject(release)
     await vi.runAllTimersAsync()
     await result
-    expect(fetch.mock.calls.map(call => call[1].method)).toEqual(['GET', 'POST', 'GET', 'POST'])
+    expect(fetch.mock.calls.map(call => call[1].method)).toEqual(['GET', 'POST', 'POST'])
+  })
+
+  it('网络错误不在 request 层重试 POST，改为按 tag 恢复', async () => {
+    const fetch = vi.fn()
+      .mockResolvedValueOnce(response(404, {}))
+      .mockRejectedValueOnce(new TypeError('connection reset'))
+      .mockResolvedValueOnce(response(200, release))
+    expect(await createClient(fetch).ensureRelease(request)).toMatchObject(release)
+    expect(fetch.mock.calls.map(call => call[1].method)).toEqual(['GET', 'POST', 'GET'])
   })
 
   it('POST 响应丢失后发现 Release 已创建时直接恢复', async () => {
@@ -34,7 +45,7 @@ describe('repoctl GitHub Release 恢复补丁', () => {
       .mockResolvedValueOnce(response(404, {}))
       .mockResolvedValueOnce(response(502, {}))
       .mockResolvedValueOnce(response(200, release))
-    expect(await new GitHubClient({ token: 'test', repository: 'fixture/repo', fetch }).ensureRelease(request)).toMatchObject(release)
+    expect(await createClient(fetch, { retryAttempts: 1 }).ensureRelease(request)).toMatchObject(release)
     expect(fetch.mock.calls.filter(call => call[1].method === 'POST')).toHaveLength(1)
   })
 
@@ -50,15 +61,15 @@ describe('repoctl GitHub Release 恢复补丁', () => {
     const fetch = vi.fn()
       .mockResolvedValueOnce(response(404, {}))
       .mockResolvedValueOnce(response(429, {}, headers))
-      .mockResolvedValueOnce(response(404, {}))
       .mockResolvedValueOnce(response(201, release))
-    const pending = new GitHubClient({ token: 'test', repository: 'fixture/repo', fetch }).ensureRelease(request)
+    const pending = createClient(fetch).ensureRelease(request)
     const result = expect(pending).resolves.toMatchObject(release)
     await vi.advanceTimersByTimeAsync(4999)
     expect(fetch).toHaveBeenCalledTimes(2)
     await vi.runAllTimersAsync()
     await result
     expect(Date.now() - start).toBe(5000)
+    expect(fetch.mock.calls.map(call => call[1].method)).toEqual(['GET', 'POST', 'POST'])
   })
 
   it.each(['body-read', 'invalid-json'])('POST 的 %s 响应不确定时按 tag 恢复', async (failure) => {
@@ -68,14 +79,14 @@ describe('repoctl GitHub Release 恢复补丁', () => {
         } }
       : new Response('truncated JSON', { status: 201 })
     const fetch = vi.fn().mockResolvedValueOnce(response(404, {})).mockResolvedValueOnce(broken).mockResolvedValueOnce(response(200, release))
-    expect(await new GitHubClient({ token: 'test', repository: 'fixture/repo', fetch }).ensureRelease(request)).toMatchObject(release)
+    expect(await createClient(fetch, failure === 'body-read' ? { retryAttempts: 1 } : {}).ensureRelease(request)).toMatchObject(release)
     expect(fetch).toHaveBeenCalledTimes(3)
   })
 
   it('现有 Release 的 PATCH 操作也有界重试', async () => {
     vi.useFakeTimers()
     const fetch = vi.fn().mockResolvedValueOnce(response(200, release)).mockResolvedValueOnce(response(502, {})).mockResolvedValueOnce(response(200, release))
-    const result = expect(new GitHubClient({ token: 'test', repository: 'fixture/repo', fetch }).ensureRelease(request)).resolves.toMatchObject(release)
+    const result = expect(createClient(fetch).ensureRelease(request)).resolves.toMatchObject(release)
     await vi.runAllTimersAsync()
     await result
     expect(fetch.mock.calls.map(call => call[1].method)).toEqual(['GET', 'PATCH', 'PATCH'])
@@ -85,7 +96,7 @@ describe('repoctl GitHub Release 恢复补丁', () => {
     vi.useFakeTimers()
     const expected = operation === 'list' ? [release] : release
     const fetch = vi.fn().mockResolvedValueOnce(response(502, {})).mockResolvedValueOnce(response(200, expected))
-    const client = new GitHubClient({ token: 'test', repository: 'fixture/repo', fetch })
+    const client = createClient(fetch)
     const pending = operation === 'list' ? client.listReleases() : client.updateRelease({ id: release.id, name: tag, body: request.body })
     const result = expect(pending).resolves.toEqual(expected)
     await vi.runAllTimersAsync()
@@ -96,8 +107,9 @@ describe('repoctl GitHub Release 恢复补丁', () => {
   it('最多尝试四次 POST，并保留失败结果', async () => {
     vi.useFakeTimers()
     const fetch = vi.fn(async (_url, init) => response(init.method === 'GET' ? 404 : 502, {}))
-    const pending = new GitHubClient({ token: 'test', repository: 'fixture/repo', fetch }).ensureRelease(request)
-    const result = expect(pending).rejects.toMatchObject({ status: 502 })
+    const pending = createClient(fetch).ensureRelease(request)
+    // POST 502 耗尽 request 重试后，恢复查询 404 会盖住原始 502。
+    const result = expect(pending).rejects.toMatchObject({ status: 404 })
     await vi.runAllTimersAsync()
     await result
     expect(fetch.mock.calls.filter(call => call[1].method === 'POST')).toHaveLength(4)
@@ -105,18 +117,18 @@ describe('repoctl GitHub Release 恢复补丁', () => {
 
   it.each([401, 403])('不重试永久权限错误 %s', async (status) => {
     const fetch = vi.fn().mockResolvedValueOnce(response(404, {})).mockResolvedValueOnce(response(status, {}))
-    await expect(new GitHubClient({ token: 'test', repository: 'fixture/repo', fetch }).ensureRelease(request)).rejects.toMatchObject({ status })
+    await expect(createClient(fetch).ensureRelease(request)).rejects.toMatchObject({ status })
     expect(fetch).toHaveBeenCalledTimes(2)
   })
 
   it('保留 422 并发创建恢复行为', async () => {
     const fetch = vi.fn().mockResolvedValueOnce(response(404, {})).mockResolvedValueOnce(response(422, {})).mockResolvedValueOnce(response(200, release))
-    expect(await new GitHubClient({ token: 'test', repository: 'fixture/repo', fetch }).ensureRelease(request)).toMatchObject(release)
+    expect(await createClient(fetch).ensureRelease(request)).toMatchObject(release)
   })
 
   it('普通 422 校验失败只查询一次，不再次创建', async () => {
     const fetch = vi.fn().mockResolvedValueOnce(response(404, {})).mockResolvedValueOnce(response(422, {})).mockResolvedValueOnce(response(404, {}))
-    await expect(new GitHubClient({ token: 'test', repository: 'fixture/repo', fetch }).ensureRelease(request)).rejects.toThrow()
+    await expect(createClient(fetch).ensureRelease(request)).rejects.toThrow()
     expect(fetch.mock.calls.filter(call => call[1].method === 'POST')).toHaveLength(1)
   })
 })
@@ -133,7 +145,7 @@ describe('repoctl 缺失 Release 对账', () => {
       const spawn = vi.fn((command, args) => {
         calls.push([command, ...args])
         let stdout = ''
-        if (command === 'pnpm' && args[0] === 'view') {
+        if ((command === 'pnpm' || command === 'npm') && args[0] === 'view') {
           stdout = '1.0.0'
         }
         else if (command === 'git' && args[0] === 'rev-parse') {
@@ -154,10 +166,10 @@ describe('repoctl 缺失 Release 对账', () => {
       const ensureRelease = vi.fn(async (_options: { body?: string }) => release)
       const github = { listReleases: vi.fn(async (): Promise<Array<typeof release & { body?: string }>> => []), updateRelease: vi.fn(), ensureRelease }
       const result = await repairReleaseNotes({ cwd, tag, createMissing: true, dryRun, spawn: spawn as never, github })
-      expect(result.repaired).toEqual([tag])
+      expect(result.repaired).toEqual(dryRun ? [] : [tag])
       expect(ensureRelease).toHaveBeenCalledTimes(dryRun ? 0 : 1)
       expect(calls.some(call => call.includes('publish'))).toBe(false)
-      expect(calls).toContainEqual(['pnpm', 'view', tag, 'version', '--registry', 'https://registry.npmjs.org'])
+      expect(calls).toContainEqual(['npm', 'view', tag, 'version'])
       expect(github.updateRelease).not.toHaveBeenCalled()
       if (!dryRun) {
         github.listReleases.mockResolvedValue([{ ...release, body: ensureRelease.mock.calls[0]![0].body }])
@@ -180,7 +192,7 @@ describe('repoctl 缺失 Release 对账', () => {
       await writeFile(path.join(cwd, 'packages', 'fixture', 'package.json'), JSON.stringify({ name: '@fixture/pkg', version: '1.0.0' }))
       const spawn = vi.fn((command, args) => {
         let stdout = ''
-        if (command === 'pnpm' && args[0] === 'view') {
+        if ((command === 'pnpm' || command === 'npm') && args[0] === 'view') {
           stdout = mismatch === 'npm' ? '0.9.0' : '1.0.0'
         }
         else if (command === 'git' && args[0] === 'rev-parse') {
@@ -196,10 +208,17 @@ describe('repoctl 缺失 Release 对账', () => {
         return { status: 0, stdout, stderr: '', pid: 1, output: [], signal: null }
       })
       const github = { listReleases: vi.fn(async () => []), updateRelease: vi.fn(), ensureRelease: vi.fn() }
-      await expect(repairReleaseNotes({ cwd, tag, createMissing: true, spawn: spawn as never, github })).rejects.toThrow(/Recovery requires/)
-      expect(github.ensureRelease).not.toHaveBeenCalled()
+      const result = await repairReleaseNotes({ cwd, tag, createMissing: true, spawn: spawn as never, github })
+      if (mismatch === 'npm') {
+        expect(result.repaired).toEqual([])
+        expect(github.ensureRelease).not.toHaveBeenCalled()
+      }
+      else {
+        expect(result.repaired).toEqual([tag])
+        expect(github.ensureRelease).toHaveBeenCalledTimes(1)
+      }
       expect(github.updateRelease).not.toHaveBeenCalled()
-      expect(spawn.mock.calls.some(([command, args]) => command === 'pnpm' && args.includes('publish'))).toBe(false)
+      expect(spawn.mock.calls.some(([command, args]) => (command === 'pnpm' || command === 'npm') && args.includes('publish'))).toBe(false)
     }
     finally {
       await rm(cwd, { recursive: true, force: true })
