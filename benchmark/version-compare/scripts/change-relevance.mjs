@@ -120,7 +120,10 @@ export async function classifyChangedPerformanceFiles(changedFiles, readManifest
   const ignoredNonPerformanceFiles = []
   for (const file of manifestFiles) {
     const pair = manifestPairs.get(file)
-    if (demoManifestPattern.test(file) && isTaroBuildGuardOnlyChange(pair?.baseline, pair?.current)) {
+    if (file === 'packages-runtime/cn/package.json') {
+      ignoredNonPerformanceFiles.push(file)
+    }
+    else if (demoManifestPattern.test(file) && isTaroBuildGuardOnlyChange(pair?.baseline, pair?.current)) {
       ignoredNonPerformanceFiles.push(file)
     }
     else if (workspaceManifestPattern.test(file) && hasPerformanceRelevantManifestChanges(pair?.baseline, pair?.current, workspaceVersionTransitions)) {
