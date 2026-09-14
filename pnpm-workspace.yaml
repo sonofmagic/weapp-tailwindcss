@@ -109,7 +109,7 @@ overrides:
 
 catalogs:
   autoprefixer10:
-    autoprefixer: ^10.5.6
+    autoprefixer: ^10.6.0
   buildUtilities:
     '@parcel/watcher': ^2.6.0
     debug: ~4.4.3
@@ -163,7 +163,7 @@ catalogs:
   babelRuntime7284tilde:
     '@babel/runtime': ^7.29.2
   baselineBrowserMapping:
-    baseline-browser-mapping: ^2.11.22
+    baseline-browser-mapping: ^2.11.23
   classVarianceAuthority:
     class-variance-authority: ^0.7.1
   clsx:
@@ -184,7 +184,7 @@ catalogs:
     gulp-rename: ^2.1.0
     gulp-typescript: ^6.0.0-alpha.1
   csstools:
-    '@csstools/css-color-parser': ^4.2.2
+    '@csstools/css-color-parser': ^4.2.3
     '@csstools/css-parser-algorithms': ^4.0.0
     '@csstools/css-tokenizer': ^4.0.0
   egoistTailwindcssIcons:
@@ -199,7 +199,7 @@ catalogs:
     '@iconify-json/bi': ^1.2.7
     '@iconify-json/line-md': ^1.2.16
     '@iconify-json/logos': ^1.2.14
-    '@iconify-json/lucide': ^1.2.131
+    '@iconify-json/lucide': ^1.2.132
     '@iconify-json/mdi': ^1.2.3
     '@iconify-json/mdi-light': ^1.2.2
     '@iconify-json/svg-spinners': ^1.2.4
@@ -223,7 +223,7 @@ catalogs:
     postcss-rpx-transform: ^1.0.1
   postcssUtilities:
     es-toolkit: ^1.52.0
-    postcss-preset-env: ^11.5.2
+    postcss-preset-env: ^11.5.3
   prettier371:
     prettier: ^3.9.6
   react18:
@@ -378,7 +378,7 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^6.1.4
   weappVite:
-    weapp-vite: ^7.1.1
+    weapp-vite: ^7.1.2
   webpackTools:
     '@pmmmwh/react-refresh-webpack-plugin': ^0.6.3
     '@types/webpack-env': ^1.18.8

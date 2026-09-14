@@ -163,6 +163,10 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
+  autoprefixer10:
+    autoprefixer:
+      specifier: ^10.6.0
+      version: 10.6.0
   babel8:
     '@babel/core':
       specifier: ^8.0.1
@@ -191,6 +195,10 @@ catalogs:
     '@babel/runtime':
       specifier: ^7.29.7
       version: 7.29.7
+  baselineBrowserMapping:
+    baseline-browser-mapping:
+      specifier: ^2.11.23
+      version: 2.11.23
   buildUtilities:
     '@parcel/watcher':
       specifier: ^2.6.0
@@ -269,6 +277,9 @@ catalogs:
       specifier: ^10.1.0
       version: 10.1.0
   csstools:
+    '@csstools/css-color-parser':
+      specifier: ^4.2.3
+      version: 4.2.3
     '@csstools/css-parser-algorithms':
       specifier: ^4.0.0
       version: 4.0.0
@@ -342,6 +353,9 @@ catalogs:
     '@iconify-json/logos':
       specifier: ^1.2.14
       version: 1.2.14
+    '@iconify-json/lucide':
+      specifier: ^1.2.132
+      version: 1.2.132
     '@iconify-json/mdi':
       specifier: ^1.2.3
       version: 1.2.3
@@ -396,6 +410,9 @@ catalogs:
     es-toolkit:
       specifier: ^1.52.0
       version: 1.52.0
+    postcss-preset-env:
+      specifier: ^11.5.3
+      version: 11.5.3
   prettier371:
     prettier:
       specifier: ^3.9.6
@@ -523,6 +540,10 @@ catalogs:
     '@swc/core':
       specifier: ^1.16.2
       version: 1.16.2
+  tailwindMerge:
+    tailwind-merge:
+      specifier: ^3.7.0
+      version: 3.7.0
   tailwindcss4:
     '@tailwindcss/postcss':
       specifier: ^4.3.3
@@ -728,6 +749,10 @@ catalogs:
     weapp-ide-cli:
       specifier: ^6.1.4
       version: 6.1.4
+  weappVite:
+    weapp-vite:
+      specifier: ^7.1.2
+      version: 7.1.2
   webpackTools:
     '@pmmmwh/react-refresh-webpack-plugin':
       specifier: ^0.6.3
@@ -779,7 +804,7 @@ importers:
         specifier: ^21.2.2
         version: 21.2.2(@types/node@26.5.1)(conventional-commits-parser@7.1.2)(typescript@6.0.3)
       '@csstools/css-color-parser':
-        specifier: 4.2.3
+        specifier: catalog:csstools
         version: 4.2.3(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-parser-algorithms':
         specifier: catalog:csstools
@@ -941,7 +966,7 @@ importers:
         specifier: ^3.1.3
         version: 3.1.3
       autoprefixer:
-        specifier: 10.6.0
+        specifier: catalog:autoprefixer10
         version: 10.6.0(postcss@8.5.28)
       boxen:
         specifier: ^8.0.1
@@ -1112,7 +1137,7 @@ importers:
         specifier: ^8.2.1
         version: 8.2.1(@rspack/core@2.2.2(@swc/helpers@0.5.23))(postcss@8.5.28)(typescript@6.0.3)(webpack@5.105.4)
       postcss-preset-env:
-        specifier: 11.5.3
+        specifier: catalog:postcssUtilities
         version: 11.5.3(postcss@8.5.28)
       postcss-scss:
         specifier: ^4.0.9
@@ -1393,7 +1418,7 @@ importers:
         specifier: catalog:classVarianceAuthority
         version: 0.7.1
       tailwind-merge:
-        specifier: 3.7.0
+        specifier: catalog:tailwindMerge
         version: 3.7.0
       tailwind-variants:
         specifier: ^3.3.1
@@ -1464,7 +1489,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages-runtime/variants
       autoprefixer:
-        specifier: 10.6.0
+        specifier: catalog:autoprefixer10
         version: 10.6.0(postcss@8.5.28)
       cross-env:
         specifier: catalog:crossEnv
@@ -1990,7 +2015,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages-runtime/variants
       autoprefixer:
-        specifier: 10.6.0
+        specifier: catalog:autoprefixer10
         version: 10.6.0(postcss@8.5.28)
       eslint:
         specifier: catalog:eslint10
@@ -2105,7 +2130,7 @@ importers:
         specifier: workspace:^
         version: link:../../packages/postcss-calc
       autoprefixer:
-        specifier: 10.6.0
+        specifier: catalog:autoprefixer10
         version: 10.6.0(postcss@8.5.28)
       cross-env:
         specifier: catalog:crossEnv
@@ -3615,7 +3640,7 @@ importers:
         specifier: catalog:egoistTailwindcssIcons
         version: 1.9.2(tailwindcss@4.3.3)
       '@iconify-json/lucide':
-        specifier: 1.2.132
+        specifier: catalog:iconifyJson
         version: 1.2.132
       '@iconify-json/mdi':
         specifier: catalog:iconifyJson
@@ -3850,7 +3875,7 @@ importers:
         version: 4.18.1
     devDependencies:
       '@iconify-json/lucide':
-        specifier: 1.2.132
+        specifier: catalog:iconifyJson
         version: 1.2.132
       '@iconify-json/mdi':
         specifier: catalog:iconifyJson
@@ -3868,7 +3893,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages-runtime/variants
       autoprefixer:
-        specifier: 10.6.0
+        specifier: catalog:autoprefixer10
         version: 10.6.0(postcss@8.5.28)
       postcss:
         specifier: catalog:postcss85
@@ -3883,7 +3908,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: 7.1.2
+        specifier: catalog:weappVite
         version: 7.1.2(@babel/core@8.0.5)(@swc/helpers@0.5.23)(@types/node@26.5.1)(esbuild@0.28.2)(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))(hono@4.13.0)(jiti@2.7.0)(less@4.6.6)(miniprogram-api-typings@5.2.3)(oxc-resolver@11.21.2)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(supports-color@10.2.2)(terser@5.51.2)(tsx@4.23.13)(vitest@5.0.0)(yaml@2.9.1)
 
   demo/web/nuxt-vite-tailwindcss-v4:
@@ -4430,7 +4455,7 @@ importers:
         specifier: workspace:*
         version: link:../runtime
       tailwind-merge:
-        specifier: 3.7.0
+        specifier: catalog:tailwindMerge
         version: 3.7.0
     devDependencies:
       fast-check:
@@ -4727,7 +4752,7 @@ importers:
   packages/postcss:
     dependencies:
       '@csstools/css-color-parser':
-        specifier: 4.2.3
+        specifier: catalog:csstools
         version: 4.2.3(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-parser-algorithms':
         specifier: catalog:csstools
@@ -4748,7 +4773,7 @@ importers:
         specifier: workspace:*
         version: link:../shared
       autoprefixer:
-        specifier: 10.6.0
+        specifier: catalog:autoprefixer10
         version: 10.6.0(postcss@8.5.28)
       es-toolkit:
         specifier: catalog:postcssUtilities
@@ -4766,7 +4791,7 @@ importers:
         specifier: catalog:buildUtilities
         version: 6.0.1(jiti@2.7.0)(postcss@8.5.28)(tsx@4.23.13)(yaml@2.9.1)
       postcss-preset-env:
-        specifier: 11.5.3
+        specifier: catalog:postcssUtilities
         version: 11.5.3(postcss@8.5.28)
       postcss-pxtrans:
         specifier: catalog:postcssCompat
@@ -5408,13 +5433,13 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
       weapp-vite:
-        specifier: 7.1.2
+        specifier: catalog:weappVite
         version: 7.1.2(@babel/core@8.0.5)(@swc/helpers@0.5.23)(@types/node@26.5.1)(esbuild@0.28.2)(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))(hono@4.13.0)(jiti@2.7.0)(less@4.6.6)(miniprogram-api-typings@5.2.3)(oxc-resolver@11.21.2)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(supports-color@10.2.2)(terser@5.51.2)(tsx@4.23.13)(vitest@5.0.0)(yaml@2.9.1)
 
   tools/weapp-tailwindcss-scripts:
     dependencies:
       '@csstools/css-color-parser':
-        specifier: 4.2.3
+        specifier: catalog:csstools
         version: 4.2.3(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-parser-algorithms':
         specifier: catalog:csstools
@@ -5523,7 +5548,7 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0(react@19.2.8)
       tailwind-merge:
-        specifier: 3.7.0
+        specifier: catalog:tailwindMerge
         version: 3.7.0
       tailwind-variants:
         specifier: ^3.3.1
@@ -5596,10 +5621,10 @@ importers:
         specifier: catalog:react19
         version: 19.2.5(@types/react@19.2.18)
       autoprefixer:
-        specifier: 10.6.0
+        specifier: catalog:autoprefixer10
         version: 10.6.0(postcss@8.5.28)
       baseline-browser-mapping:
-        specifier: 2.11.23
+        specifier: catalog:baselineBrowserMapping
         version: 2.11.23
       cross-env:
         specifier: catalog:crossEnv

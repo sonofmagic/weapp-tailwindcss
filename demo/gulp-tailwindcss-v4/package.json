@@ -68,7 +68,7 @@
     "@types/node": "catalog:typesNode2410",
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",
-    "autoprefixer": "10.6.0",
+    "autoprefixer": "catalog:autoprefixer10",
     "cross-env": "catalog:crossEnv",
     "eslint": "catalog:eslint10",
     "gulp": "catalog:gulp5",
