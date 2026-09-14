@@ -29,8 +29,6 @@
     ]
   },
   "spacing": [
-    ".25rem",
-    "0.25rem",
     "8rpx"
   ],
   "platform": "dd"

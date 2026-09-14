@@ -211,7 +211,7 @@ describe('generator user css helpers', () => {
       'abbr[title]{text-decoration:underline}',
       'button,input[type="button"],input[type="reset"],input[type="submit"]{appearance:button}',
       '.keep{color:red}',
-    ].join('\n'))).toBe('.keep{color:red}')
+    ].join('\n'), ':root,:host{--color-red-500:red}')).toBe('.keep{color:red}')
     expect(removeTailwindV4GeneratedUserCssArtifacts([
       'page{',
       '--test-color:#006241;',

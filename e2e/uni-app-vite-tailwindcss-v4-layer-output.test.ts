@@ -66,6 +66,7 @@ describe('uni-app vite vue3 Tailwind v4 cascade layer output', () => {
     expect(css.match(/(?:^|[\n,{])\s*button::after/g), 'mp-weixin css should not replay base layer rules').toHaveLength(1)
     expect(css.match(/\.layer-card-v4/g), 'mp-weixin css should not replay component layer rules').toHaveLength(1)
     expect(css.match(/wx-button\s*\{\s*background:\s*#000/g), 'mp-weixin css should not replay layer declarations').toHaveLength(1)
+    expect(css.search(/wx-button\s*\{\s*background:\s*#000/), 'base background should precede utilities').toBeLessThan(utilityIndex)
     expect(css.match(/wx-button\s*\{\s*background:\s*#444/g), 'mp-weixin css should preserve the unlayered override').toHaveLength(1)
   }, 600_000)
 

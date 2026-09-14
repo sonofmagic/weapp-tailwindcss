@@ -35,6 +35,7 @@ export async function finalizeDeferredGeneratorCss(
 
       const userCssOptions = {
         generatorTarget: generated.target,
+        generatedSource: generated.rawCss,
         generatorStyleOptions,
         cssUserHandlerOptions,
         styleHandler,
