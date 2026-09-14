@@ -149,6 +149,10 @@ export {
   type ResolvedPipelineNode,
   type StyleProcessingPipeline,
 } from './pipeline'
+export {
+  applyConfiguredCssCalc,
+  type ApplyConfiguredCssCalcOptions,
+} from './plugins/applyConfiguredCssCalc'
 export { createFallbackPlaceholderReplacer } from './plugins/post/specificity-cleaner'
 export {
   getPostcssPluginName,
