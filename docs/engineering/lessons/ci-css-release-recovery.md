@@ -115,6 +115,27 @@ rtk proxy pnpm exec tsx --eval 'import { performance } from "node:perf_hooks"; i
 - 只交付补丁和恢复测试，本次没有运行 npm publish、推送发布 tag 或实际补建 Release。
 - 上游增强：[repoctl #887](https://github.com/sonofmagic/repoctl/issues/887)、[repoctl #888](https://github.com/sonofmagic/repoctl/issues/888)，关联 #848，不重复提出 provenance 问题。
 
+## AI 协作中的教训
+
+- **交付集合核对太晚。** 用户再次要求测试文件和 changeset，说明此前把“实现已提交”过早当成完整交付。以后提交前对照实际 diff 核对源码、反例测试、基线和中文 intent；验证结果必须说明测试的是哪个提交。
+- **修测试预期前先判断产物语义。** `.small` 误报应修 AST 检测边界；用户变量丢失与 NutUI 覆盖错序则是真实产物缺陷。不能把两类失败都归为快照过期。用声明来源、条件上下文、值、优先级和顺序判断，而非字符串子串、变量前缀或唯一声明数量。
+- **性能短路必须证明等价。** 按 250 KB 大小跳过恢复、生成输入为空时直接拼接都曾隐藏语义问题。可保留的优化是无框架输入时省去无意义解析，以及批量重建、共享索引、减少签名分配；空输入和大输入都应有行为回归。
+- **单次 RSS 波动不等于根因。** Taro Vite React 的一次样本比基线高 5.13%，阈值为 5%；同一 head 的失败分片复测与总门禁通过。这只能证明本次复测通过，不能声称噪声根因已证实或性能已达到最优。首次失败记录应与重试一起保留。
+- **等待开销和沟通需要收敛。** 本次多次等待 180–300 秒并重复报告排队数字，降低了可响应性；还曾把“未完成（包含运行中）”写成“排队”。以后单次等待不超过 60 秒，分开统计 queued/in_progress/completed，减少无行动价值的报数，优先汇报状态变化。GitHub 队列时间不能混入构建性能结论。
+- **取消与重试也有依赖。** 取消旧工作流曾联动取消 benchmark；以后先查 concurrency 和调用关系，再选择失败分片重试。远端新增 runtime 提交后，最终验证归属新 head，不能把本地旧 SHA 的全量测试包装成新 SHA 的本地验证。
+- **补丁必须有上游出口。** 本次本地 pnpm patch 是临时验证手段，不能替代 repoctl 修复。上游 Issue/PR、精确版本与移除条件应同时记录，用户无需再次追问才知道后续维护方式。
+
+## 最终 CI 核对与后续状态
+
+下列是 PR #1197 的历史验收证据，2026-09-14 沉淀时重新查询 GitHub 确认；不代表之后 main 上的新改动已通过同一验证。
+
+- 验证 head：`0d5c3dc2be8827ed08eeec708d9f7d82705c7de9`；[PR Gate 34799393321](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34799393321) 为 completed/success，179 个 job 成功。
+- PR 检查汇总为 196 个成功、12 个条件跳过、0 个失败、0 个未完成；包含性能门禁与 Release Gate。PR 已合并，merge commit 为 `d3a577850802bb3e0d5c32fbc9c66fae0d1485ba`。
+- 本地最终全量 5302 passed/47 skipped 对应本任务源码提交 `0ade9c5b728df8bb8aada10c1c3f354c4976c378`；远端后来整合 runtime 提交，使用上面的当前 head CI 作远端证据。此前严格类型检查 445 条诊断的限制仍保留，本记录维持 `partial`，不改写为所有验收维度全绿。
+- 性能首次失败与复测见 [Benchmark 34799392935](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/34799392935)。微基准的规模趋势和真实 CI 门禁承担不同证据范围。
+- 上游补充 [repoctl #893](https://github.com/sonofmagic/repoctl/issues/893)，[repoctl PR #894](https://github.com/sonofmagic/repoctl/pull/894) 已合并，修复响应体读取中断绕过重试的问题。#887/#888 保留各自的重试、对账需求范围，不能把 #894 合并等同于所有恢复能力交付。
+- 沉淀基线 main `ef28394f1` 的 manifest 已使用 `repoctl: ^5.5.3`，旧 `@icebreakers/monorepo@5.5.0` patch 及其 workspace 登记已移除。此前“以后删除 patch”的答复已滞后；后续回答应先核对当前 manifest 和补丁登记。这里仅确认仓库状态，不推断该版本已覆盖所有上游增强需求。
+
 ## 规则评估
 
-不新增 AGENTS 规则。现有生成来源、构建图、回归与基线规则足够，本次用持久行为测试补上执行缺口。
+初次修复未新增 AGENTS 规则，现有生成来源、构建图、回归与基线约束已足够。完成 CI 跟进后，将可复用的性能证明、当前 head 验收、有限重试、等待沟通、交付集合和上游补丁退出要求补到 [工程流程](../agent-workflow.md)。根规则已有该入口，不重复扩充根 AGENTS，也不为纯文档新增包 changeset。未来变更 CI 调度或发布工具时重新检查这些步骤的适用性。
