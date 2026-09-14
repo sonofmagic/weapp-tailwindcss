@@ -5,7 +5,7 @@ allowBuilds:
   core-js-pure: false
   esbuild: true
   sharp: true
-minimumReleaseAge: 1440
+minimumReleaseAge: 0
 minimumReleaseAgeExclude:
   - '@weapp-tailwindcss/*'
   - weapp-vite
