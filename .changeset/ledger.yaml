@@ -70,6 +70,10 @@
   dir: packages-runtime/merge
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/merge@2.2.4":
+  dir: packages-runtime/merge
+  intents:
+    - fix-runtime-numeric-leading-variants
 "@weapp-tailwindcss/postcss-calc@1.0.5":
   dir: packages/postcss-calc
   intents:
@@ -127,6 +131,10 @@
   dir: packages-runtime/runtime
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/runtime@0.1.9":
+  dir: packages-runtime/runtime
+  intents:
+    - fix-runtime-numeric-leading-variants
 "@weapp-tailwindcss/shared@2.0.3":
   dir: packages/shared
   intents:
