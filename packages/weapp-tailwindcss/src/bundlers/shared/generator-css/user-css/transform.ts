@@ -1,7 +1,7 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { GeneratedThemeDeclarationResolver } from './generated-cleanup'
 import type { InternalUserDefinedOptions } from '@/types'
-import { filterExistingCssRules } from '@weapp-tailwindcss/postcss'
+import { applyConfiguredCssCalc, filterExistingCssRules } from '@weapp-tailwindcss/postcss'
 import { removeUnsupportedMiniProgramAtRules } from '../../css-cleanup'
 import { removeTailwindSourceDirectives } from '../directives'
 import { stripTailwindBanners } from '../markers'
@@ -74,7 +74,15 @@ export async function transformGeneratorUserCss(
     return userSource
   }
   if (options.generatorTarget !== 'weapp') {
-    return userSource
+    return applyConfiguredCssCalc(userSource, {
+      cssCalc: options.generatorStyleOptions.cssOptions?.cssCalc
+        ?? options.generatorStyleOptions.cssCalc
+        ?? options.cssUserHandlerOptions.cssOptions?.cssCalc
+        ?? options.cssUserHandlerOptions.cssCalc,
+      customPropertyValues: options.generatorStyleOptions.customPropertyValues
+        ?? options.cssUserHandlerOptions.customPropertyValues,
+      contextCss: typeof options.generatedSource === 'string' ? options.generatedSource : undefined,
+    })
   }
   const { css } = await options.styleHandler(userSource, {
     ...options.generatorStyleOptions,

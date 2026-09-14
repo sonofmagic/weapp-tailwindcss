@@ -7,7 +7,10 @@ regressions:
   - packages/postcss-calc/test/index.test.ts
   - packages/postcss/test/pluginHelpers.test.ts
   - packages/postcss/test/calc-context.test.ts
+  - packages/postcss/test/applyConfiguredCssCalc.test.ts
   - packages/weapp-tailwindcss/test/tailwindcss/v4-style-context.test.ts
+  - packages/weapp-tailwindcss/test/tailwindcss/v4-engine-css-calc.test.ts
+  - packages/weapp-tailwindcss/test/bundlers/shared/generator-css/user-css.test.ts
   - scripts/ci/demo-matrix/version-contract.test.mjs
 ---
 
@@ -17,9 +20,13 @@ regressions:
 
 Tailwind CSS v4 会把主题变量和 utility CSS 分阶段生成。`cssCalc: ['--spacing']` 在单个 PostCSS 输入中可以生效，但在 Vite/uni-app 构建中，处理 utility CSS 时可能看不到变量声明，最终产物仍保留 `calc(var(--spacing) * 2)`。
 
+`5.5.5` 修好了 weapp 生成路径的变量映射透传，但 issue 原文的 uni-app Vite H5 仍失败：`generator.target: 'web'` 不跑 style handler，收集到的 `customPropertyValues` 被丢掉。
+
 ## 根因与纠正
 
 PostCSS 的 `postcss-preset-env` 只能解析当前 AST 中可见的自定义属性。Tailwind v4 生成器已经收集了 CSS 自定义属性值，但非增量生成路径没有把这份映射传给 calc 处理器；同时 calc 变量替换使用正则，无法安全处理 fallback、嵌套函数和变量链。
+
+web/H5 不能复用完整 `createStyleHandler()`，否则会把 `:root` 换成 `page` 并清理 hover/focus。web 路径改为调用 `applyConfiguredCssCalc()`，只预计算配置过的 `calc()` / `var()`，再交给现有 webCompat。
 
 ## 修复约束
 
@@ -32,11 +39,12 @@ PostCSS 的 `postcss-preset-env` 只能解析当前 AST 中可见的自定义属
 
 ## 验证
 
-1. 先用真实 `cssEntries` 运行 uni-app + Vite + Tailwind v4 构建，检查最终 CSS 资产，而不是只调用单个 PostCSS handler。
+1. 先用真实 `cssEntries` 运行 uni-app + Vite + Tailwind v4 **H5** 构建，检查最终 CSS 资产，而不是只调用单个 PostCSS handler 或只测 weapp 目标。
 2. 用最小 CSS 单测覆盖 `var(--foo)`、`var(--foo, fallback)`、变量链、循环引用和正则匹配。
-3. 同时验证增量和非增量 Tailwind v4 生成路径，确认自定义属性映射一致。
-4. 运行 `pnpm --filter @weapp-tailwindcss/postcss-calc test`、`pnpm --filter @weapp-tailwindcss/postcss test` 及相关 bundler/e2e static 基线。
+3. 同时验证 weapp/web、增量和非增量 Tailwind v4 生成路径，确认自定义属性映射一致。
+4. 运行 `pnpm --filter @weapp-tailwindcss/postcss-calc test`、`pnpm --filter @weapp-tailwindcss/postcss test`、`v4-engine-css-calc` 及相关 bundler 用例。
 5. 修改公开包时，changeset 必须覆盖每个实际变更的包，并用中文描述用户可见行为。
+6. 不要把完整小程序 style handler 接到 web 目标；H5 验收时临时打开 `cssCalc`，不要改 demo 默认配置以免抖动 e2e 基线。
 
 ## CI 版本契约与性能复查
 
@@ -50,7 +58,7 @@ PostCSS 的 `postcss-preset-env` 只能解析当前 AST 中可见的自定义属
 
 ## 适用边界
 
-本流程适用于 Tailwind v4 主题变量、跨 CSS 资产生成和 `cssCalc` 配置；无法确认变量作用域时不做静态替换。
+本流程适用于 Tailwind v4 主题变量、跨 CSS 资产生成和 `cssCalc` 配置，覆盖 weapp 与 web/H5 生成目标；无法确认变量作用域时不做静态替换。未配置 `cssCalc` 时 webCompat 仍保留运行时间距变量。
 
 ## 规则评估
 

@@ -326,4 +326,22 @@ describe('generator user css helpers', () => {
       importFallback: true,
     })).resolves.toBe('')
   })
+
+  it('precomputes configured cssCalc variables for web user css', async () => {
+    const styleHandler = vi.fn(async (css: string) => ({ css: `handled:${css}` }))
+    const css = await transformGeneratorUserCss('.raw-btn{gap:calc(var(--spacing) * 2)}', {
+      generatorTarget: 'web',
+      generatorStyleOptions: {
+        cssCalc: ['--spacing'],
+      },
+      cssUserHandlerOptions: {} as any,
+      styleHandler,
+      importFallback: true,
+      generatedSource: ':root{--spacing:.25rem}',
+    })
+
+    expect(styleHandler).not.toHaveBeenCalled()
+    expect(css).toMatch(/gap:\s*0\.5rem/)
+    expect(css).not.toMatch(/gap:\s*calc\(var\(--spacing\)/)
+  })
 })
