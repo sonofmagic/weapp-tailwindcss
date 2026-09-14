@@ -12,4 +12,4 @@ allowBuilds:
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
   - '@weapp-tailwindcss/postcss@3.3.3'
-  - weapp-tailwindcss@5.5.4
+  - weapp-tailwindcss@5.5.5
