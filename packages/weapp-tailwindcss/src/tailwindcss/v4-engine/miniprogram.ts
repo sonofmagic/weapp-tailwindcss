@@ -1,7 +1,7 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV4GenerateTarget } from './types'
 import type { AppType } from '@/types'
-import { createStyleHandler, normalizeTailwindcssWebRpxDeclarations, postcss, protectDynamicColorMixAlpha } from '@weapp-tailwindcss/postcss'
+import { applyConfiguredCssCalc, createStyleHandler, normalizeTailwindcssWebRpxDeclarations, postcss, protectDynamicColorMixAlpha } from '@weapp-tailwindcss/postcss'
 import { hasCssMacroStyleOptions, transformCssMacroCss } from '@/css-macro/auto'
 import { shouldUseUniAppWebRpxCompatibility } from '@/runtime-branch/generator-target-env'
 import { pruneMiniProgramGeneratedCss } from '../miniprogram'
@@ -88,7 +88,8 @@ export async function transformTailwindV4CssByTarget(
     ? transformCssMacroCss(css, options)
     : css
   const resolvedWebCss = await webCss
+  const calculatedWebCss = await applyConfiguredCssCalc(resolvedWebCss, options ?? {})
   return shouldUseUniAppWebRpxCompatibility(options?.appType)
-    ? transformTailwindV4WebRpxCss(resolvedWebCss)
-    : resolvedWebCss
+    ? transformTailwindV4WebRpxCss(calculatedWebCss)
+    : calculatedWebCss
 }
