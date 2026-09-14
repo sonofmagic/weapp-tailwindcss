@@ -111,9 +111,6 @@ export function composeFrameworkProcessedCss(before: string, generated: string, 
   if (!before.trim() && !after.trim()) {
     return generated
   }
-  if (!generated.trim()) {
-    return [before, after].filter(value => value.trim()).join('\n')
-  }
   const inputs = [before, generated, after]
   try {
     const roots = inputs.map(css => postcss.parse(css))

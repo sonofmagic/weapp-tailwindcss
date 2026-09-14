@@ -13,6 +13,7 @@ regressions:
   - e2e/taro-ci-coverage-matrix.test.ts
   - e2e/taro-vite-react-tailwindcss-v4.test.ts
   - e2e/template-contract.test.ts
+  - packages/weapp-tailwindcss/test/defaults.test.ts
 ---
 
 # CSS 清理、框架组合与发布恢复回归
@@ -94,6 +95,19 @@ rtk proxy pnpm exec tsx --eval 'import { performance } from "node:perf_hooks"; i
 ```
 
 ## 适用边界
+
+### Mpx 多平台及空生成输入复核
+
+- PR run `34790213574` 的 Mpx 各平台基线仍记录原始 `.25rem` 和转换后的 `8rpx`。在 `rem2rpx: true` 配置下，旧根规则被恢复后会覆盖已转换的值；当前四个平台产物仅保留 `8rpx`，用户 `--test-color` 和 `--color-test` 保留。
+- 钉钉还有独立问题：默认 matcher 不包含 `.ddml` / `.ddss`，使模板类名与样式适配跳过。补齐默认 matcher，并覆盖 POSIX、Windows 盘符、相对路径及非产物后缀。修复后真实 `.ddss` 保留 `8rpx` 和用户变量，模板类名与任意值样式消费验证通过。
+- 新增空输入回归发现：生成 CSS 为空时直接连接两侧框架 CSS 会保留重复 `@charset`。撤回这一条短路；两侧框架输入为空时仍直接返回生成产物，保留性能优化。
+- 两项缺陷先由新增单测复现，共 5 个失败；修复后 defaults、composition unit 和 legacy/graph 组合测试共 24 项通过。
+- 基线更新命令：`CI=1 pnpm e2e:demo:matrix mpx-tailwindcss-v4:wx mpx-tailwindcss-v4:ali mpx-tailwindcss-v4:swan mpx-tailwindcss-v4:tt mpx-tailwindcss-v4:dd --update --build-only`；钉钉 matcher 修复后单独重建该目标。审查后五个基线只删除未转换的 rem 值。
+- 禁止更新复验：`CI=1 pnpm e2e:demo:matrix mpx-tailwindcss-v4:wx mpx-tailwindcss-v4:ali mpx-tailwindcss-v4:swan mpx-tailwindcss-v4:tt mpx-tailwindcss-v4:dd`，五个平台全部通过生产构建、初始、替换、新增及恢复四轮 HMR；不将其视为真机证据。
+- 修改后的完整 `CI=1 pnpm test --update=none`：542 文件、5302 测试通过，5 文件、47 测试既有跳过；`CI=1 pnpm test:release`：222 测试通过、4 测试既有跳过。核心包构建、修改文件 ESLint、`pnpm agents:check`、`git diff --check` 通过；`pnpm release status` 仍只有核心包中文 patch intent，联动范围由已有发布策略决定。
+- `CI=1 E2E_PROJECT_FILTER='^mpx-tailwindcss-v4$' pnpm e2e:static --update=none`：64 文件、342 测试通过，15 文件、44 测试跳过。该入口仍执行共享 smoke/contract，包括 Taro H5、uni-app 层顺序和 runtime 变量；Mpx static 两项通过，无基线自动更新。
+
+### 发布与设备边界
 
 - 本地验证覆盖编译与产物；没有把 CLI 构建记为 IDE、设备或真机验收。
 - 中文 patch intent 只指定 `weapp-tailwindcss`。清理器及组合逻辑属于核心包，`@weapp-tailwindcss/postcss` 的源码和公共行为未改动，不单独增加其版本。

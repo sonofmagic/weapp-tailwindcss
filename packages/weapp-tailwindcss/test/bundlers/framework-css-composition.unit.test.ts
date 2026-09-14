@@ -3,6 +3,24 @@ import { describe, expect, it } from 'vitest'
 import { composeFrameworkProcessedCss } from '@/bundlers/shared/framework-css-composition'
 
 describe('framework CSS rule composition', () => {
+  it('preserves generated output verbatim when framework inputs are empty', () => {
+    const generated = '@charset "UTF-8";\n.vendor { color: red }\n.vendor { color: blue }'
+    expect(composeFrameworkProcessedCss(' \n', generated, '\t')).toBe(generated)
+  })
+
+  it('normalizes charset while preserving framework overrides when generated CSS is empty', () => {
+    const before = '@charset "UTF-8";.vendor{color:red}'
+    const after = '@charset "UTF-8";.vendor{color:blue}.vendor{color:red}'
+    const css = composeFrameworkProcessedCss(before, '', after)
+    expect(css.match(/@charset/g)).toHaveLength(1)
+    expect(css.startsWith('@charset "UTF-8";')).toBe(true)
+    const values: string[] = []
+    postcss.parse(css).walkDecls('color', (decl) => {
+      values.push(decl.value)
+    })
+    expect(values).toEqual(['red', 'blue', 'red'])
+  })
+
   it('keeps existing layer positions when the generated output contains the full override sequence', () => {
     const generated = '.base{color:red}.utility{color:green}.base{color:blue}'
     const source = '.base { color:red }.base { color:blue }'
