@@ -4437,6 +4437,22 @@ importers:
         specifier: catalog:vitest
         version: 5.0.0(@types/node@26.5.1)(@vitest/coverage-v8@5.0.0)(@vitest/ui@5.0.0)(jsdom@29.1.1)(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))
 
+  packages-runtime/cn:
+    dependencies:
+      '@weapp-tailwindcss/runtime':
+        specifier: workspace:*
+        version: link:../runtime
+      cn:
+        specifier: ^0.3.0
+        version: 0.3.0
+    devDependencies:
+      '@weapp-core/escape':
+        specifier: ^8.0.0
+        version: 8.0.0
+      tsd:
+        specifier: ^0.33.0
+        version: 0.33.0
+
   packages-runtime/cva:
     dependencies:
       '@weapp-tailwindcss/runtime':
@@ -19569,6 +19585,11 @@ packages:
   cmd-shim@6.0.3:
     resolution: {integrity: sha512-FMabTRlc5t5zjdenF6mS0MBeFZm0XqHqeOkcskKFb/LYCcRQ5fVgLOHVc4Lq9CqABd9zhjwPjMBCJvMCziSVtA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
+
+  cn@0.3.0:
+    resolution: {integrity: sha512-qRoU0ARrZD3Bbj1wKFftEKxPjSnzTEdFkf22NVhW+zU9D/wajhoP+qUZ5DChhhSOBCH1onV12hrmGqfu1+5Z2Q==}
+    engines: {node: '>=20'}
+    hasBin: true
 
   co@4.6.0:
     resolution: {integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==}
@@ -56988,6 +57009,8 @@ snapshots:
   cmd-extension@1.0.2: {}
 
   cmd-shim@6.0.3: {}
+
+  cn@0.3.0: {}
 
   co@4.6.0: {}
 

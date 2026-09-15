@@ -9,6 +9,7 @@
 - [examples/AGENTS.md](../../examples/AGENTS.md)
 - [examples/react-native-expo/AGENTS.md](../../examples/react-native-expo/AGENTS.md)
 - [packages-runtime/AGENTS.md](../../packages-runtime/AGENTS.md)
+- [packages-runtime/cn/AGENTS.md](../../packages-runtime/cn/AGENTS.md)
 - [packages-runtime/cva/AGENTS.md](../../packages-runtime/cva/AGENTS.md)
 - [packages-runtime/merge/AGENTS.md](../../packages-runtime/merge/AGENTS.md)
 - [packages-runtime/runtime/AGENTS.md](../../packages-runtime/runtime/AGENTS.md)
