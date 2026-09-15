@@ -18,11 +18,75 @@ function significantTokens(params: string) {
   )
 }
 
+function isCssWhitespace(char: string | undefined) {
+  return char === ' ' || char === '\t' || char === '\n' || char === '\r' || char === '\f'
+}
+
+function skipCssWhitespace(params: string, index: number) {
+  while (index < params.length && isCssWhitespace(params[index])) {
+    index++
+  }
+  return index
+}
+
+function parseSimpleQuotedSpecifier(params: string, start: number): CssImportSpecifier | undefined {
+  const quote = params[start]
+  if (quote !== '"' && quote !== '\'') {
+    return undefined
+  }
+  let index = start + 1
+  while (index < params.length) {
+    const char = params[index]
+    if (char === '\\' || char === '\n' || char === '\r') {
+      return undefined
+    }
+    if (char === quote) {
+      return {
+        specifier: params.slice(start + 1, index),
+        raw: params.slice(start, index + 1),
+        quote,
+      }
+    }
+    index++
+  }
+  return undefined
+}
+
+function parseSimpleImportSpecifier(params: string): CssImportSpecifier | undefined {
+  let index = skipCssWhitespace(params, 0)
+  const quoted = parseSimpleQuotedSpecifier(params, index)
+  if (quoted) {
+    return quoted
+  }
+  if (params.slice(index, index + 4).toLowerCase() !== 'url(') {
+    return undefined
+  }
+  const urlStart = index
+  index = skipCssWhitespace(params, index + 4)
+  const inner = parseSimpleQuotedSpecifier(params, index)
+  if (!inner) {
+    return undefined
+  }
+  index = skipCssWhitespace(params, index + inner.raw.length)
+  if (params[index] !== ')') {
+    return undefined
+  }
+  return {
+    specifier: inner.specifier,
+    raw: params.slice(urlStart, index + 1),
+    quote: inner.quote,
+  }
+}
+
 /**
  * 解析 `@import` / `@use` / `@forward` 参数中的请求串。
- * 必须走 CSS tokenizer，才能覆盖 escape、注释、`url()` 和残缺引号。
+ * 无 escape/注释的引号和 `url("...")` 走快路径；复杂输入才使用 CSS tokenizer。
  */
 export function parseCssImportSpecifier(params: string): CssImportSpecifier | undefined {
+  const simple = parseSimpleImportSpecifier(params)
+  if (simple) {
+    return simple
+  }
   const tokens = significantTokens(params)
   const first = tokens[0]
   if (!first || first[0] === TokenType.EOF) {

@@ -54,6 +54,24 @@ describe('css import syntax', () => {
     expect(parseTailwindCssDirectiveRequest('url("tailwindcss"')).toBeUndefined()
   })
 
+  it('uses a quoted fast path that still preserves trailing layer/source params', () => {
+    expect(parseCssImportSpecifier('  "tailwindcss" layer(theme)')).toEqual({
+      specifier: 'tailwindcss',
+      raw: '"tailwindcss"',
+      quote: '"',
+    })
+    expect(parseCssImportSpecifier('url( "./local.css" ) source(none)')).toEqual({
+      specifier: './local.css',
+      raw: 'url( "./local.css" )',
+      quote: '"',
+    })
+    expect(parseCssImportSpecifier('url(\'./theme.css\')')).toEqual({
+      specifier: './theme.css',
+      raw: 'url(\'./theme.css\')',
+      quote: '\'',
+    })
+  })
+
   it('covers ident, empty input and Windows path package entries', () => {
     expect(parseCssImportSpecifier('')).toBeUndefined()
     expect(parseCssImportSpecifier('   ')).toBeUndefined()
