@@ -15,12 +15,22 @@ export {
   protectDynamicColorMixAlpha,
   protectDynamicVarFallbacks,
 } from './compat/color-mix'
+export {
+  collectDedupedPostTransformCompatCss,
+  collectGeneratedSelectors,
+  inheritLegacyUnitConvertedDeclarations,
+  normalizeCompatSelectors,
+  removeGeneratedSelectorCompatCss,
+  removeTailwindApplyRules,
+} from './compat/legacy-css'
 export { transformLynxCssCompat } from './compat/lynx-css'
 export {
   consumeCascadeLayers,
   finalizeMiniProgramCss,
   type FinalizeMiniProgramCssOptions,
   finalizeMiniProgramCssRoot,
+  finalizeMiniProgramCssStructure,
+  hasEmptyCssBlockCandidate,
   hasMiniProgramCssSpecificityPlaceholders,
   hoistTailwindPreflightBase,
   normalizeMiniProgramGeneratedCssForPostcss,
@@ -49,11 +59,23 @@ export {
 } from './compat/tailwindcss-rpx'
 export { normalizeTailwindcssV4InfinityCalcCss } from './compat/tailwindcss-v4'
 export { normalizeTailwindcssV4InfinityRadiusCss } from './compat/tailwindcss-v4/infinity-radius'
+export { removeTailwindV4PreflightImports, removeUnsupportedThemeVendorKeyframes } from './compat/tailwindcss-v4/theme-source'
 export {
   normalizeUniAppXImportantApplyForSass,
   restoreUniAppXImportantApplyMarker,
   UNI_APP_X_IMPORTANT_APPLY_MARKER,
 } from './compat/uni-app-x'
+export {
+  createUniAppXBorderPreflight,
+  hoistUniAppXBorderPreflight,
+  UNI_APP_X_BORDER_PREFLIGHT_CLASS,
+} from './compat/uni-app-x-border'
+export {
+  collectCssApplyUtilities,
+  type CssClassStyleValue,
+  cssToClassStyleValue,
+  expandCssApplySourcesToStyleValue,
+} from './compat/uni-app-x-style-value'
 export {
   type NormalizedWebCssCompatOptions,
   normalizeWebCssCompatOptions,
@@ -164,10 +186,12 @@ export { postcss } from './postcss-runtime'
 export type {
   AcceptedPlugin,
   AtRule,
+  ChildNode,
   Container,
   Declaration,
   Document,
   Helpers,
+  Node,
   Plugin,
   PluginCreator,
   Node as PostcssNode,
@@ -206,6 +230,20 @@ export {
   type PostcssStyleTarget,
   type PostcssStyleTargetProfile,
 } from './style-targets'
+export {
+  type CssImportSourceParam,
+  type CssImportSpecifier,
+  isTailwindCssImport,
+  isUniAppXStyleSourceEmpty,
+  parseCssImportSpecifier,
+  parseCssSource,
+  parseImportSourceParam,
+  parseScssSource,
+  parseUniAppXStyleSource,
+  quoteCssImportSpecifier,
+  scss,
+  stringifyScssSource,
+} from './syntax'
 export * from './types'
 export {
   containsCssAfterMinify,

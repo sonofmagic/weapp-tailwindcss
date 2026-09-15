@@ -2,8 +2,7 @@ import type { TailwindV4GenerateTarget, TailwindV4ResolvedSource } from '../type
 import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import { postcss } from '@weapp-tailwindcss/postcss'
-import { parseCssImportSpecifier } from '../css-import'
+import { parseCssImportSpecifier, postcss, removeTailwindV4PreflightImports, removeUnsupportedThemeVendorKeyframes } from '@weapp-tailwindcss/postcss'
 import { createTailwindV4DefaultColorThemeCss } from '../tailwind-v4-default-colors'
 
 const require = createRequire(import.meta.url)
@@ -82,74 +81,6 @@ function applyMiniProgramTailwindV4DefaultColorCss(css: string, source: Tailwind
     return `${themeCss}\n${css}`
   }
   return `${css.slice(0, insertionIndex)}\n${themeCss}\n${css.slice(insertionIndex)}`
-}
-
-function isTailwindCssPreflightImport(params: string) {
-  const specifier = parseCssImportSpecifier(params)?.specifier
-  return specifier === 'tailwindcss/preflight.css' || specifier === 'tailwindcss/preflight'
-}
-
-function removeTailwindV4PreflightImports(css: string) {
-  if (!css.includes('preflight')) {
-    return css
-  }
-
-  let root: postcss.Root
-  try {
-    root = postcss.parse(css)
-  }
-  catch {
-    return css
-  }
-
-  let changed = false
-  root.walkAtRules('import', (rule) => {
-    if (isTailwindCssPreflightImport(rule.params)) {
-      rule.remove()
-      changed = true
-    }
-  })
-
-  return changed ? root.toString() : css
-}
-
-function hasThemeParent(rule: postcss.AtRule) {
-  let parent = rule.parent as postcss.Container | undefined
-  while (parent) {
-    if (parent.type === 'atrule' && (parent as postcss.AtRule).name === 'theme') {
-      return true
-    }
-    parent = parent.parent as postcss.Container | undefined
-  }
-  return false
-}
-
-function isVendorPrefixedKeyframes(rule: postcss.AtRule) {
-  return rule.name.startsWith('-') && rule.name.endsWith('keyframes')
-}
-
-function removeUnsupportedThemeVendorKeyframes(css: string) {
-  if (!css.includes('@theme') || !css.includes('@-')) {
-    return css
-  }
-
-  let root: postcss.Root
-  try {
-    root = postcss.parse(css)
-  }
-  catch {
-    return css
-  }
-
-  let changed = false
-  root.walkAtRules((rule) => {
-    if (isVendorPrefixedKeyframes(rule) && hasThemeParent(rule)) {
-      rule.remove()
-      changed = true
-    }
-  })
-
-  return changed ? root.toString() : css
 }
 
 export function createCompatibleSource(

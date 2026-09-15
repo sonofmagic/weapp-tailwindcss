@@ -4,6 +4,24 @@ import path from 'node:path'
 
 const repoRoot = path.resolve(import.meta.dirname, '../../../..')
 
+const forbiddenCssProcessingDeps = [
+  '@csstools/css-color-parser',
+  '@csstools/css-parser-algorithms',
+  '@csstools/css-tokenizer',
+  'autoprefixer',
+  'lightningcss',
+  'postcss',
+  'postcss-preset-env',
+  'postcss-pxtrans',
+  'postcss-rem-to-responsive-pixel',
+  'postcss-rule-unit-converter',
+  'postcss-scss',
+  'postcss-selector-parser',
+  'postcss-value-parser',
+] as const
+
+const forbiddenCssProcessingImportRe = /from\s+['"](?:postcss-scss|@csstools\/css-tokenizer|@csstools\/css-parser-algorithms|@csstools\/css-color-parser|postcss-selector-parser|postcss-value-parser|lightningcss|postcss)['"]/
+
 function readPackage(relativePath: string) {
   return JSON.parse(fs.readFileSync(path.join(repoRoot, relativePath), 'utf8')) as {
     name: string
@@ -11,6 +29,22 @@ function readPackage(relativePath: string) {
     devDependencies?: Record<string, string>
     peerDependencies?: Record<string, string>
   }
+}
+
+function collectTsFiles(dir: string): string[] {
+  const entries = fs.readdirSync(dir, { withFileTypes: true })
+  const files: string[] = []
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      files.push(...collectTsFiles(fullPath))
+      continue
+    }
+    if (entry.isFile() && entry.name.endsWith('.ts')) {
+      files.push(fullPath)
+    }
+  }
+  return files
 }
 
 describe('架构边界契约', () => {
@@ -56,5 +90,36 @@ describe('架构边界契约', () => {
     expect(packages[1].dependencies?.['postcss-scss']).toBe('catalog:postcssCompat')
     expect(packages[2].dependencies?.['tailwind-variants']).toBe('catalog:runtimeVariants')
     expect(packages[3].dependencies?.['lodash.merge']).toBe('catalog:runtimeLodash')
+  })
+
+  it('keeps CSS processing dependencies inside @weapp-tailwindcss/postcss', () => {
+    const main = readPackage('packages/weapp-tailwindcss/package.json')
+    const postcss = readPackage('packages/postcss/package.json')
+    const mainDeps = {
+      ...main.dependencies,
+      ...main.devDependencies,
+    }
+
+    for (const name of forbiddenCssProcessingDeps) {
+      expect(mainDeps[name], `${name} must not be a weapp-tailwindcss dependency`).toBeUndefined()
+    }
+
+    expect(main.dependencies?.['@weapp-tailwindcss/postcss']).toBe('workspace:*')
+    expect(postcss.dependencies?.['postcss-scss']).toBe('catalog:postcssCompat')
+    expect(postcss.dependencies?.['@csstools/css-tokenizer']).toBe('catalog:csstools')
+    expect(postcss.dependencies?.postcss).toBe('catalog:postcss85tilde')
+  })
+
+  it('does not import CSS processors from weapp-tailwindcss source', () => {
+    const srcRoot = path.join(repoRoot, 'packages/weapp-tailwindcss/src')
+    const hits = collectTsFiles(srcRoot)
+      .flatMap((file) => {
+        const content = fs.readFileSync(file, 'utf8')
+        return forbiddenCssProcessingImportRe.test(content)
+          ? [path.relative(repoRoot, file)]
+          : []
+      })
+
+    expect(hits).toEqual([])
   })
 })

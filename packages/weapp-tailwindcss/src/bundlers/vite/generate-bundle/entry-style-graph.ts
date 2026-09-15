@@ -1,8 +1,7 @@
 import type { OutputBundle } from 'rollup'
 import path from 'node:path'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { parseCssImportSpecifier, postcss, quoteCssImportSpecifier } from '@weapp-tailwindcss/postcss'
 import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
-import { parseCssImportSpecifier, quoteCssImportSpecifier } from '@/tailwindcss/v4-engine/css-import'
 
 export function linkEntryChunkStyles(bundle: OutputBundle, options: {
   matchesCss: (file: string) => boolean

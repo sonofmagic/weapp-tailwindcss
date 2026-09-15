@@ -1,6 +1,5 @@
-import type { Node } from 'postcss'
-import { postcss } from '@weapp-tailwindcss/postcss'
-import { parseCssImportSpecifier, quoteCssImportSpecifier } from '@/tailwindcss/v4-engine/css-import'
+import type { Node } from '@weapp-tailwindcss/postcss'
+import { parseCssImportSpecifier, postcss, quoteCssImportSpecifier } from '@weapp-tailwindcss/postcss'
 import { parseImportRequest } from './directives'
 import { isPureLocalCssImportWrapper } from './local-imports'
 

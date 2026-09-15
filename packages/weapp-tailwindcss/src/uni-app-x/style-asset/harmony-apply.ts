@@ -1,5 +1,4 @@
-import { postcss } from '@weapp-tailwindcss/postcss'
-import { parseUniAppXStyleSource } from './source-parser'
+import { parseUniAppXStyleSource, postcss } from '@weapp-tailwindcss/postcss'
 
 const SFC_STYLE_BLOCK_RE = /(<style\b[^>]*>)([\s\S]*?)(<\/style>)/gi
 

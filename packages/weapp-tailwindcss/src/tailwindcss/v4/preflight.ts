@@ -1,17 +1,7 @@
-import { postcss } from '@weapp-tailwindcss/postcss'
-
-export function parseCssImportSpecifier(params: string) {
-  const value = params.trim()
-  const quoted = /^(['"])(.*?)\1/.exec(value)
-  if (quoted) {
-    return quoted[2]
-  }
-  const url = /^url\(\s*(?:(['"])(.*?)\1|([^'")\s]+))\s*\)/.exec(value)
-  return url?.[2] ?? url?.[3]
-}
+import { parseCssImportSpecifier, postcss } from '@weapp-tailwindcss/postcss'
 
 function normalizeTailwindImportSpecifier(params: string) {
-  return parseCssImportSpecifier(params)?.replaceAll('\\', '/')
+  return parseCssImportSpecifier(params)?.specifier.replaceAll('\\', '/')
 }
 
 export function isTailwindV4CssImportParam(params: string) {

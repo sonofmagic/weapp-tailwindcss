@@ -1,4 +1,4 @@
-import type { AtRule, Declaration, Rule } from 'postcss'
+import type { AtRule, Declaration, Rule } from '@weapp-tailwindcss/postcss'
 
 const VUE_SCOPED_ATTR_RE = /\[data-v-[^\]]+\]/gi
 const VUE_SCOPED_CLASS_RE = /\.data-v-[\w-]+/gi

@@ -1,7 +1,6 @@
 import type { AppType } from '@/types'
 import path from 'node:path'
-import { postcss } from '@weapp-tailwindcss/postcss'
-import { parseCssImportSpecifier, quoteCssImportSpecifier } from '@/tailwindcss/v4-engine/css-import'
+import { parseCssImportSpecifier, postcss, quoteCssImportSpecifier } from '@weapp-tailwindcss/postcss'
 
 const tailwindcssImportRE = /^(?:tailwindcss|weapp-tailwindcss)(?:\/.*)?$/
 const tailwindcssCssImportStatementRE = /(@import\s+(?:url\(\s*)?)(["'])((?:tailwindcss|weapp-tailwindcss)(?:\/[^"']*)?\$?)(\2\s*\)?)/gi

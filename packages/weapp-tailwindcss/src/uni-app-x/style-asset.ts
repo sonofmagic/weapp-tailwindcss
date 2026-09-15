@@ -1,13 +1,13 @@
 import type { postcss } from '@weapp-tailwindcss/postcss'
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { HarmonyStyleInjectOptions } from './style-asset/harmony-global'
+import { parseUniAppXStyleSource } from '@weapp-tailwindcss/postcss'
 import { expandUniAppXHarmonyApplyStyles } from './style-asset/harmony-apply'
 import {
   injectUniAppXHarmonyGlobalStyles,
   resolveStyleAssetFile,
   resolveStylePlaceholderFallbackFiles,
 } from './style-asset/harmony-global'
-import { parseUniAppXStyleSource } from './style-asset/source-parser'
 import {
   collectChunkMapSourcesContent,
   collectUniAppXHarmonyApplyStyleSourcesFromSource,
