@@ -2,7 +2,7 @@ import path from 'node:path'
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { describe, expect, it } from 'vitest'
-import { isTailwindCssImport, parseCssImportSpecifier, parseImportSourceParam, quoteCssImportSpecifier } from '@/tailwindcss/v4-engine/css-import'
+import { isTailwindCssImport, parseCssImportSpecifier, parseImportSourceParam, quoteCssImportSpecifier } from '@weapp-tailwindcss/postcss'
 import { createTailwindV4Engine, resolveTailwindV4Source } from '@/tailwindcss/v4-engine'
 import { resolveCompiledSourceRoot, resolveScanSources } from '@/tailwindcss/v4-engine/generator/scan-sources'
 

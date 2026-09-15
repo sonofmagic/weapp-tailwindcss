@@ -4,7 +4,7 @@ import type { Node, Pseudo } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from '../types'
 import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
 import postcss from 'postcss'
-import scssSyntax from 'postcss-scss'
+import { parseScssSource, stringifyScssSource } from '../syntax/parse'
 
 /** native Sass 可解析、PostCSS 阶段再还原的 important utility 标记。 */
 export const UNI_APP_X_IMPORTANT_APPLY_MARKER = '__weapp_tw_important__'
@@ -52,7 +52,7 @@ function rewriteApplyParams(params: string, marker: string) {
 export function normalizeUniAppXImportantApplyForSass(css: string) {
   try {
     // postcss.parse 不读取 syntax 选项；必须直接使用 SCSS parser 保留行内注释和插值。
-    const root = scssSyntax.parse(css, { from: undefined })
+    const root = parseScssSource(css)
     let changed = false
     root.walkAtRules('apply', (rule) => {
       const params = rewriteApplyParams(rule.params, UNI_APP_X_IMPORTANT_APPLY_MARKER)
@@ -61,7 +61,7 @@ export function normalizeUniAppXImportantApplyForSass(css: string) {
         changed = true
       }
     })
-    return changed ? root.toString(scssSyntax.stringify) : css
+    return changed ? stringifyScssSource(root) : css
   }
   catch {
     return css

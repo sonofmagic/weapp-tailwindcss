@@ -1,5 +1,4 @@
-import scssParser from 'postcss-scss'
-
+import { scss as scssParser } from '@weapp-tailwindcss/postcss'
 import { createContext } from '@/core'
 
 describe('core', () => {

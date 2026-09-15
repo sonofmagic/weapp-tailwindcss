@@ -3,14 +3,22 @@
 ## 适用范围
 
 - 本文件适用于 `packages/postcss`。
-- 本包聚焦 CSS AST 级处理，不承担 JS/模板层的启发式纠错职责。
+- 本包是仓库内 CSS 语法解析、tokenize、AST 变换和 PostCSS 管线的唯一实现位置。
+- 本包聚焦 CSS AST 级处理，不承担 JS/模板层的启发式纠错职责，也不承担 bundler 生命周期或 Tailwind class 生成。
 
 ## 包内结构约定
 
+- `src/syntax/`：CSS/SCSS 解析、`@import` specifier tokenize/quote，以及对外暴露的 syntax API。
 - `src/plugins/`：插件实现与 pipeline 组装。
 - `src/compat/`：版本兼容与降级逻辑。
 - `src/selectorParser/`：选择器解析相关能力。
 - `src/utils/`：纯工具函数，保持无副作用、可单测。
+
+## 所有权
+
+- 新增 CSS parser/tokenizer/selector/value/compat 变换时写在本包并导出；禁止在 `packages/weapp-tailwindcss` 再实现一份。
+- `postcss-scss`、`@csstools/*`、`postcss-selector-parser`、`postcss-value-parser` 只作为本包依赖。
+- 主包可以通过本包 re-export 的 `postcss` 做编排级 parse/walk，但不能拥有这些 CSS 工具依赖。
 
 ## 变更原则
 
@@ -24,6 +32,7 @@
 - `pnpm --filter @weapp-tailwindcss/postcss test`
 - `pnpm --filter @weapp-tailwindcss/postcss exec vitest run -u`（仅在确认预期变更时）
 - 针对单模块：`pnpm --filter @weapp-tailwindcss/postcss exec vitest run test/<case>.test.ts`
+- 语法层回归：`pnpm --filter @weapp-tailwindcss/postcss exec vitest run test/syntax-css-import.test.ts`
 
 ## 测试补充要求
 

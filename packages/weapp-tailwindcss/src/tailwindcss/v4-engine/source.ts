@@ -7,14 +7,13 @@ import process from 'node:process'
 import {
   resolveTailwindV4Source as resolveEngineTailwindV4Source,
 } from '@tailwindcss-mangle/engine'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { parseCssImportSpecifier, postcss, quoteCssImportSpecifier } from '@weapp-tailwindcss/postcss'
 import { normalizeConfigDirective } from '@/bundlers/shared/generator-css/config-directive'
 import { normalizeTailwindConfigDirectives, resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
 import { normalizeEmptyTailwindCustomVariants } from '@/bundlers/shared/generator-css/user-css'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { filterTailwindV4CssSourceRoots } from '@/tailwindcss/v4/css-sources'
 import { omitUndefined } from '@/utils/object'
-import { parseCssImportSpecifier, quoteCssImportSpecifier } from './css-import'
 
 const require = createRequire(import.meta.url)
 

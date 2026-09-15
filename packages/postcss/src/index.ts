@@ -164,10 +164,12 @@ export { postcss } from './postcss-runtime'
 export type {
   AcceptedPlugin,
   AtRule,
+  ChildNode,
   Container,
   Declaration,
   Document,
   Helpers,
+  Node,
   Plugin,
   PluginCreator,
   Node as PostcssNode,
@@ -206,6 +208,20 @@ export {
   type PostcssStyleTarget,
   type PostcssStyleTargetProfile,
 } from './style-targets'
+export {
+  type CssImportSourceParam,
+  type CssImportSpecifier,
+  isTailwindCssImport,
+  isUniAppXStyleSourceEmpty,
+  parseCssImportSpecifier,
+  parseCssSource,
+  parseImportSourceParam,
+  parseScssSource,
+  parseUniAppXStyleSource,
+  quoteCssImportSpecifier,
+  scss,
+  stringifyScssSource,
+} from './syntax'
 export * from './types'
 export {
   containsCssAfterMinify,

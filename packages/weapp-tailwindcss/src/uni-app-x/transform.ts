@@ -3,7 +3,7 @@ import type { SourceMapInput } from 'rollup'
 import type { TransformResult } from 'vite'
 import type { CreateJsHandlerOptions, ICustomAttributesEntities, JsHandler } from '@/types'
 import { NodeTypes, parse as parseTemplate } from '@vue/compiler-dom'
-import { normalizeUniAppXImportantApplyForSass } from '@weapp-tailwindcss/postcss'
+import { isUniAppXStyleSourceEmpty, normalizeUniAppXImportantApplyForSass } from '@weapp-tailwindcss/postcss'
 import MagicString from 'magic-string'
 import { generateCode, replaceWxml } from '@/wxml'
 import { createAttributeMatcher } from '@/wxml/custom-attributes'
@@ -15,7 +15,6 @@ import {
   shouldEnableComponentLocalStyle,
   shouldEnablePageLocalStyle,
 } from './local-style-matcher'
-import { isUniAppXStyleSourceEmpty } from './style-asset/source-parser'
 
 interface SfcBlock {
   content: string

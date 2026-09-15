@@ -1,9 +1,8 @@
 import type { OutputChunk, SourceMap } from 'rollup'
 import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { parseUniAppXStyleSource, postcss } from '@weapp-tailwindcss/postcss'
 import { replaceWxml } from '@/wxml'
 import { resolveStyleReferencePath } from '../style-reference-path'
-import { parseUniAppXStyleSource } from './source-parser'
 
 const GEN_APP_STYLES_RE = /const\s+GenAppStyles\s*=\s*\[_uM\(\[([\s\S]*?)\]\)\]/
 const STYLE_ENTRY_RE = /\[\s*("((?:\\.|[^"\\])+)")\s*,\s*(_pS\(_uM\(\[[\s\S]*?\]\)\))\s*\]/g

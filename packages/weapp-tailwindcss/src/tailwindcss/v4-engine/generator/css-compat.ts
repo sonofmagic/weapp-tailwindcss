@@ -2,8 +2,7 @@ import type { TailwindV4GenerateTarget, TailwindV4ResolvedSource } from '../type
 import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import { postcss } from '@weapp-tailwindcss/postcss'
-import { parseCssImportSpecifier } from '../css-import'
+import { parseCssImportSpecifier, postcss } from '@weapp-tailwindcss/postcss'
 import { createTailwindV4DefaultColorThemeCss } from '../tailwind-v4-default-colors'
 
 const require = createRequire(import.meta.url)
