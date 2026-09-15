@@ -6,6 +6,11 @@
   dir: packages/cli
   intents:
     - dx-vite-doctor-init
+"@weapp-tailwindcss/cn@0.1.1":
+  dir: packages-runtime/cn
+  intents:
+    - add-cn-package
+    - cn-wrap-runtime-cache
 "@weapp-tailwindcss/cva@0.1.9":
   dir: packages-runtime/cva
   intents:
@@ -70,6 +75,10 @@
   dir: packages-runtime/merge
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/merge@2.2.4":
+  dir: packages-runtime/merge
+  intents:
+    - fix-runtime-numeric-leading-variants
 "@weapp-tailwindcss/postcss-calc@1.0.5":
   dir: packages/postcss-calc
   intents:
@@ -111,6 +120,13 @@
   dir: packages/postcss
   intents:
     - bright-spacing-calc
+"@weapp-tailwindcss/postcss@3.3.5":
+  dir: packages/postcss
+  intents:
+    - angry-wolves-look
+    - funny-deers-shine
+    - real-pens-wonder
+    - web-css-calc
 "@weapp-tailwindcss/react-native@0.2.5":
   dir: packages/react-native
   intents:
@@ -127,6 +143,11 @@
   dir: packages-runtime/runtime
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/runtime@0.1.9":
+  dir: packages-runtime/runtime
+  intents:
+    - cn-wrap-runtime-cache
+    - fix-runtime-numeric-leading-variants
 "@weapp-tailwindcss/shared@2.0.3":
   dir: packages/shared
   intents:
@@ -283,6 +304,14 @@ weapp-tailwindcss@5.5.5:
   dir: packages/weapp-tailwindcss
   intents:
     - bright-spacing-calc
+weapp-tailwindcss@5.5.6:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - angry-wolves-look
+    - funny-deers-shine
+    - real-pens-wonder
+    - tidy-css-cleanup
+    - web-css-calc
 weapp-tw@0.0.3:
   dir: packages/weapp-tw
   intents:

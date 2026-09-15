@@ -1,5 +1,13 @@
 # @weapp-tailwindcss/ui
 
+## 0.0.14
+
+### Patch Changes
+
+- Updated dependencies:
+  - @weapp-tailwindcss/merge@2.2.4
+  - @weapp-tailwindcss/variants@0.2.7
+
 ## 0.0.13
 
 ### Patch Changes
