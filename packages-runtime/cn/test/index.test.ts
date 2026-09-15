@@ -20,4 +20,11 @@ describe('cn', () => {
   it('保留非 Tailwind 类名', () => {
     expect(cn('custom-card', 'p-4', 'p-2')).toBe('custom-card p-2')
   })
+
+  it('同一输入重复调用结果稳定', () => {
+    const first = cn('p-4', 'p-2', 'hover:p-4')
+    const second = cn('p-4', 'p-2', 'hover:p-4')
+    expect(first).toBe(second)
+    expect(first).toBe(escapeClassName('p-2 hover:p-4'))
+  })
 })
