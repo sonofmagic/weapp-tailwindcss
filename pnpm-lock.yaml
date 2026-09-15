@@ -1370,6 +1370,43 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
 
+  benchmark/runtime-cn-vs-merge:
+    dependencies:
+      '@weapp-tailwindcss/cn':
+        specifier: workspace:*
+        version: link:../../packages-runtime/cn
+      '@weapp-tailwindcss/merge':
+        specifier: workspace:*
+        version: link:../../packages-runtime/merge
+      '@weapp-tailwindcss/runtime':
+        specifier: workspace:*
+        version: link:../../packages-runtime/runtime
+      clsx:
+        specifier: catalog:clsx
+        version: 2.1.1
+      cn:
+        specifier: ^0.3.0
+        version: 0.3.0
+      tailwind-merge:
+        specifier: catalog:tailwindMerge
+        version: 3.7.0
+    devDependencies:
+      '@types/node':
+        specifier: catalog:typesNode2410
+        version: 26.5.1
+      '@weapp-core/escape':
+        specifier: ^8.0.0
+        version: 8.0.0
+      esbuild:
+        specifier: ^0.28.2
+        version: 0.28.2
+      tsx:
+        specifier: catalog:tsx
+        version: 4.23.13
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+
   benchmark/tailwindcss-plugin-compare:
     devDependencies:
       '@tailwindcss/postcss':
