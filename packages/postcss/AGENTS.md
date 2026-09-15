@@ -10,7 +10,7 @@
 
 - `src/syntax/`：CSS/SCSS 解析、`@import` specifier tokenize/quote，以及对外暴露的 syntax API。
 - `src/plugins/`：插件实现与 pipeline 组装。
-- `src/compat/`：版本兼容与降级逻辑。
+- `src/compat/`：版本兼容与降级逻辑，包括 uni-app x 边框 preflight 与 Tailwind v4 theme source 变换。
 - `src/selectorParser/`：选择器解析相关能力。
 - `src/utils/`：纯工具函数，保持无副作用、可单测。
 
