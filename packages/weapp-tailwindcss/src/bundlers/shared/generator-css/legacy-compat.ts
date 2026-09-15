@@ -2,7 +2,7 @@ import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindResolvedSource } from '@/generator'
 import type { InternalUserDefinedOptions } from '@/types'
 import { readFileSync } from 'node:fs'
-import { filterExistingCssRules, postcss } from '@weapp-tailwindcss/postcss'
+import { filterExistingCssRules, postcss, removeTailwindApplyRules } from '@weapp-tailwindcss/postcss'
 import { removeUnsupportedMiniProgramAtRules } from '../css-cleanup'
 import { removeTailwindSourceDirectives, resolveCssEntrySource } from './directives'
 import { collectDedupedPostTransformCompatCss, collectGeneratedSelectors, removeDuplicatedViteMarkers, removeGeneratedSelectorCompatCss } from './legacy-selectors'
@@ -144,31 +144,7 @@ function closeTrailingUnclosedBlocks(source: string) {
   }
 }
 
-export function removeTailwindApplyRules(rawSource: string) {
-  try {
-    const root = postcss.parse(rawSource)
-    let removed = false
-    root.walkAtRules('apply', (rule) => {
-      const parent = rule.parent
-      if (parent?.type === 'rule') {
-        parent.remove()
-      }
-      else {
-        rule.remove()
-      }
-      removed = true
-    })
-    root.walkAtRules((rule) => {
-      if (rule.nodes && rule.nodes.length === 0) {
-        rule.remove()
-      }
-    })
-    return removed ? root.toString() : rawSource
-  }
-  catch {
-    return rawSource
-  }
-}
+export { removeTailwindApplyRules }
 
 function resolveLegacyCompatCssSource(rawSource: string) {
   const cached = legacyCompatSourceCache.get(rawSource)

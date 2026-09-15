@@ -15,12 +15,22 @@ export {
   protectDynamicColorMixAlpha,
   protectDynamicVarFallbacks,
 } from './compat/color-mix'
+export {
+  collectDedupedPostTransformCompatCss,
+  collectGeneratedSelectors,
+  inheritLegacyUnitConvertedDeclarations,
+  normalizeCompatSelectors,
+  removeGeneratedSelectorCompatCss,
+  removeTailwindApplyRules,
+} from './compat/legacy-css'
 export { transformLynxCssCompat } from './compat/lynx-css'
 export {
   consumeCascadeLayers,
   finalizeMiniProgramCss,
   type FinalizeMiniProgramCssOptions,
   finalizeMiniProgramCssRoot,
+  finalizeMiniProgramCssStructure,
+  hasEmptyCssBlockCandidate,
   hasMiniProgramCssSpecificityPlaceholders,
   hoistTailwindPreflightBase,
   normalizeMiniProgramGeneratedCssForPostcss,
@@ -60,6 +70,12 @@ export {
   hoistUniAppXBorderPreflight,
   UNI_APP_X_BORDER_PREFLIGHT_CLASS,
 } from './compat/uni-app-x-border'
+export {
+  collectCssApplyUtilities,
+  type CssClassStyleValue,
+  cssToClassStyleValue,
+  expandCssApplySourcesToStyleValue,
+} from './compat/uni-app-x-style-value'
 export {
   type NormalizedWebCssCompatOptions,
   normalizeWebCssCompatOptions,

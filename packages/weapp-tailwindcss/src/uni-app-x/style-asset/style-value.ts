@@ -1,7 +1,13 @@
+import type { Root } from '@weapp-tailwindcss/postcss'
 import type { OutputChunk, SourceMap } from 'rollup'
 import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
-import { parseUniAppXStyleSource, postcss } from '@weapp-tailwindcss/postcss'
-import { replaceWxml } from '@/wxml'
+import {
+  collectCssApplyUtilities,
+  cssToClassStyleValue,
+  expandCssApplySourcesToStyleValue,
+  parseUniAppXStyleSource,
+
+} from '@weapp-tailwindcss/postcss'
 import { resolveStyleReferencePath } from '../style-reference-path'
 
 const GEN_APP_STYLES_RE = /const\s+GenAppStyles\s*=\s*\[_uM\(\[([\s\S]*?)\]\)\]/
@@ -9,7 +15,6 @@ const STYLE_ENTRY_RE = /\[\s*("((?:\\.|[^"\\])+)")\s*,\s*(_pS\(_uM\(\[[\s\S]*?\]
 const STRING_LITERAL_RE = /(['"`])((?:\\.|(?!\1)[\s\S])*?)\1/g
 const SFC_STYLE_BLOCK_RE = /<style\b[^>]*>([\s\S]*?)<\/style>/gi
 const STYLE_EXPORT_PREFIX_RE = /^\s*export\s+default\s+/
-const CLASS_SELECTOR_PREFIX_RE = /^\.((?:\\[^\n\r\f]|[\w-])+)(?=$|[.:#[])/
 const STRING_STYLE_PROPERTIES = new Set(['lineHeight'])
 
 type StyleDeclarations = Record<string, string | number>
@@ -58,10 +63,6 @@ function normalizeStyleValue(prop: string, value: string | number) {
     return STRING_STYLE_PROPERTIES.has(toCamelCase(prop)) ? String(value) : value
   }
   return normalizeValue(prop, value)
-}
-
-function unescapeCssClassSelector(className: string) {
-  return className.replace(/\\([^\n\r\f0-9a-f])/gi, '$1')
 }
 
 export function parseStyleExport(source: string): StyleValue | undefined {
@@ -187,41 +188,10 @@ export function createUtsStyleArrayFromAppStyles(code: string, appSource?: strin
   return createUtsStyleArray([...used].map(className => entries.get(className)!).filter(Boolean))
 }
 
-function cssToStyleExport(source: string): StyleValue | undefined {
-  let root: postcss.Root
-  try {
-    root = postcss.parse(source)
-  }
-  catch {
-    return
-  }
-  const result: StyleValue = {}
-  root.walkRules((rule) => {
-    const selectors = rule.selectors ?? []
-    for (const selector of selectors) {
-      const match = selector.trim().match(CLASS_SELECTOR_PREFIX_RE)
-      if (!match?.[1]) {
-        continue
-      }
-      const declarations: Record<string, string | number> = {}
-      rule.walkDecls((decl) => {
-        declarations[toCamelCase(decl.prop)] = normalizeValue(decl.prop, decl.value)
-      })
-      if (Object.keys(declarations).length > 0) {
-        result[match[1]] = { '': declarations }
-        const className = unescapeCssClassSelector(match[1])
-        result[className] = { '': declarations }
-        result[replaceWxml(className)] = { '': declarations }
-      }
-    }
-  })
-  return Object.keys(result).length > 0 ? result : undefined
-}
-
 export function cssSourceToStyleValue(source: string) {
   return STYLE_EXPORT_PREFIX_RE.test(source)
     ? parseStyleExport(source)
-    : cssToStyleExport(source)
+    : cssToClassStyleValue(source)
 }
 
 export function mergeStyleValues(...items: Array<StyleValue | undefined>) {
@@ -249,48 +219,18 @@ export function createStyleValueFromApplySources(sources: string[], utilityStyle
       ? [...source.matchAll(SFC_STYLE_BLOCK_RE)].map(styleBlock => styleBlock[1] ?? '')
       : [source]
     for (const styleSource of styleSources) {
-      let root: postcss.Root
-      try {
-        root = parseUniAppXStyleSource(styleSource)
-      }
-      catch {
+      const applied = expandCssApplySourcesToStyleValue(styleSource, utilityStyles)
+      if (!applied) {
         continue
       }
-      root.walkRules((rule) => {
-        const applyRules = rule.nodes?.filter((node): node is postcss.AtRule => node.type === 'atrule' && node.name === 'apply') ?? []
-        if (applyRules.length === 0) {
-          return
-        }
-        const selectors = rule.selectors ?? [rule.selector]
-        for (const selector of selectors) {
-          const className = selector.trim().match(CLASS_SELECTOR_PREFIX_RE)?.[1]
-          if (!className) {
-            continue
-          }
-          const declarations: Record<string, string | number> = {}
-          for (const applyRule of applyRules) {
-            for (const utility of splitCandidateTokens(applyRule.params)) {
-              const utilityDeclarations = utilityStyles[utility]?.[''] ?? utilityStyles[replaceWxml(utility)]?.['']
-              if (utilityDeclarations) {
-                Object.assign(declarations, utilityDeclarations)
-              }
-            }
-          }
-          if (Object.keys(declarations).length > 0) {
-            const unescapedClassName = unescapeCssClassSelector(className)
-            result[className] = { '': declarations }
-            result[unescapedClassName] = { '': declarations }
-            result[replaceWxml(unescapedClassName)] = { '': declarations }
-          }
-        }
-      })
+      Object.assign(result, applied)
     }
   }
   return Object.keys(result).length > 0 ? result : undefined
 }
 
 function resolveReferencePaths(styleSource: string, sourceId?: string) {
-  let root: postcss.Root
+  let root: Root
   try {
     root = parseUniAppXStyleSource(styleSource)
   }
@@ -333,18 +273,9 @@ export function collectUniAppXHarmonyApplyUtilitiesFromSources(sources: Iterable
   const utilities = new Set<string>()
   for (const source of sources) {
     for (const styleSource of collectUniAppXHarmonyApplyStyleSourcesFromSource(source)) {
-      let root: postcss.Root
-      try {
-        root = parseUniAppXStyleSource(styleSource)
+      for (const utility of collectCssApplyUtilities(styleSource)) {
+        utilities.add(utility)
       }
-      catch {
-        continue
-      }
-      root.walkAtRules('apply', (rule) => {
-        for (const utility of splitCandidateTokens(rule.params)) {
-          utilities.add(utility)
-        }
-      })
     }
   }
   return utilities

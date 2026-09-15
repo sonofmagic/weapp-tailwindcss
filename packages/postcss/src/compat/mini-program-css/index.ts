@@ -7,6 +7,10 @@ export {
 export { consumeCascadeLayers } from './cascade-layers'
 export { repairTrailingUnclosedTailwindSourceMedia } from './directives'
 export {
+  finalizeMiniProgramCssStructure,
+  hasEmptyCssBlockCandidate,
+} from './empty-blocks'
+export {
   finalizeMiniProgramCss,
   type FinalizeMiniProgramCssOptions,
   finalizeMiniProgramCssRoot,
