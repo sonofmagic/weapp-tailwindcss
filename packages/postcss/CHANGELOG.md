@@ -1,5 +1,20 @@
 # @weapp-tailwindcss/postcss
 
+## 3.3.5
+
+### Patch Changes
+
+- 将 CSS 语法解析与 tokenize 收口到 @weapp-tailwindcss/postcss，主包不再直接依赖样式处理库
+
+- 将 legacy selector/unit、空块清理和 Harmony CSS style value 变换迁到 @weapp-tailwindcss/postcss
+
+- 将 uni-app x 边框 preflight 与 v4 theme CSS 变换迁到 @weapp-tailwindcss/postcss
+
+- 修复 Tailwind CSS v4 在 web/H5 生成路径中 `cssCalc` 无法预计算配置的 CSS 自定义属性的问题。
+
+  - 抽出仅计算 `calc()` / `var()` 的 `applyConfiguredCssCalc`，web 目标不再走会改写选择器的完整小程序 style handler。
+  - 完整生成、增量生成和 web 用户 CSS（含 `@apply`）都会消费生成器收集的变量映射；未匹配变量与循环引用仍保留运行时表达式。
+
 ## 3.3.4
 
 ### Patch Changes
