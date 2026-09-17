@@ -14,6 +14,7 @@ regressions:
   - scripts/ci/demo-matrix/version-contract.test.mjs
   - packages/weapp-tailwindcss/test/bundlers/vite-web-css-calc.test.ts
   - e2e/issue-1194-css-calc.test.ts
+  - packages/weapp-tailwindcss/test/source-line-limit.test.ts
 ---
 
 # Issue #1194：跨 CSS 资产预计算自定义属性
@@ -66,6 +67,12 @@ web/H5 不能复用完整 `createStyleHandler()`，否则会把 `:root` 换成 `
 
 ## CI 版本契约与性能复查
 
+- PR #1211 将 `e2e/issue-1194-css-calc.test.ts` 纳入 PR Gate 的 core smoke；全量 static 工作流在 PR 上默认跳过，不能依赖它验收新增用例。
+- 首次远端全量单测发现 `css-finalizer/plugin.ts` 增至 504 行。通过抽出重复的最终资产收尾逻辑到 `css-finalizer/final-assets.ts` 修复，保留原有小程序处理和 Web calc 的目标分支，不通过压缩排版规避限制。本地 `CI=1 pnpm exec vitest run --project=weapp-tailwindcss source-line-limit vite-css-finalizer vite-web-css-calc final-css-assets --update=none` 共 36 项通过，重建后的 H5 static 回归和类型检查也通过。
+- 首次 Taro Vite 小程序 Benchmark 报告插件构建中位数 `6094ms → 6610ms`（`+8.47%`），运行链接为 [Benchmark attempt 1](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/35204715795/attempts/1)。这条小程序路径不执行 Web calc，保留原始样本后只复测失败分片，不降低 5% 阈值。
+- 相同提交 `1d43e986c64184b9a0caf79d431954fe27c12dec`、相同配置的 [Benchmark attempt 2](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/35204715795/attempts/2) 通过，性能汇总门禁也通过。本次有限复测未重复观察到该回退，保留首轮失败作为边界记录，不以改阈值或连续重试替代定位。
+- 含收尾重构的本地工作树执行 `CI=1 pnpm perf:guard -- --baseline-ref 190cda97f100120833a383496db41bbc9980f031 --build-runs 3 --hmr-runs 3 --timeout 180000 --poll-interval 30 --only demo-taro-vite-react-tailwindcss-v4__mp-weixin --result-dir e2e/.artifacts/issue-1194/local-benchmark`，插件构建中位数 `2912ms → 2713ms`，门禁通过、违规项 0。本机 macOS/Node 24 的结果不替代远端 Ubuntu/Node 22 验收。
+
 - 根 `package.json#packageManager` 是 CI 的 pnpm 版本来源，模板同步与报告 gate 复用 `scripts/ci/version-contract.mjs`。完整性后缀不参与 CLI 版本比较。
 - 依赖断言使用 fixture manifest 的 semver 范围；精确版本自然要求完全一致。候选包版本使用当前 workspace manifest，发布版由冻结 lockfile 保持复现条件。
 - 切换发布版与候选包后，不能用同一个 Node 进程的 `require()` 缓存报告已安装版本。本地曾读到旧版 `5.5.1`，实际候选 tarball 为 `5.5.4`；现在直接读取安装目录元数据，并用切换符号链接的测试覆盖。
@@ -78,7 +85,7 @@ web/H5 不能复用完整 `createStyleHandler()`，否则会把 `:root` 换成 `
 
 本流程适用于 Tailwind v4 主题变量、跨 CSS 资产生成和 `cssCalc` 配置，覆盖 weapp 与 web/H5 生成目标；无法确认变量作用域时不做静态替换。未配置 `cssCalc` 时 webCompat 仍保留运行时间距变量。
 
-本次新增验收针对 H5 生产构建；没有执行浏览器交互、设备验证、开发服务器 HMR 或远端 CI。多个主题入口的跨资产歧义保持原表达式，后续若扩展必须依赖资产归属关系。
+初次本地验收针对 H5 生产构建，没有执行浏览器交互、设备验证或开发服务器 HMR；后续远端验证见 [PR #1211](https://github.com/sonofmagic/weapp-tailwindcss/pull/1211) 的最新提交检查，旧提交的通过不能替代最终提交。多个主题入口的跨资产歧义保持原表达式，后续若扩展必须依赖资产归属关系。
 
 ## 规则评估
 
