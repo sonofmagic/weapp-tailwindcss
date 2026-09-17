@@ -44,7 +44,7 @@ import { resolveGenerateBundleEnvFlags } from './env-flags'
 import { finalizeGenerateBundle } from './finalize'
 import { processHtmlBundleEntry } from './html-processing'
 import { createJsEntryResolver } from './js-entries'
-import { createJsHandlerOptionsFactory } from './js-handler-options'
+import { createJsHandlerOptionsFactory, resolveGenerateBundleJsFastPath } from './js-handler-options'
 import { createLinkedUpdateHelpers } from './js-linking'
 import { processJsBundleEntry, replayCleanJsBundleEntry } from './js-processing'
 import { createEmptyMetrics, measureElapsed } from './metrics'
@@ -206,7 +206,8 @@ function createGenerateBundleHook(context: GenerateBundleContext) {
     const jsEntries = snapshot.jsEntries
     const getJsEntry = createJsEntryResolver(jsEntries)
     const transformFilterSignature = createTransformFilterSignature(opts.transform)
-    const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
+    const jsFastPath = resolveGenerateBundleJsFastPath({ experimentalJsFastPath: opts.experimentalJsFastPath, useIncrementalMode })
+    const moduleGraphOptions = jsFastPath.moduleGraphEnabled ? createBundleModuleGraphOptions(outDir, jsEntries) : undefined
     const hasRuntimeAffectingChanges = hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
     const runtimeStart = performance.now()
     const forceV4RuntimeRefreshBySource = forceRuntimeRefreshBySource
@@ -290,7 +291,7 @@ function createGenerateBundleHook(context: GenerateBundleContext) {
       : createCandidateSignature(transformRuntime)
     const shouldProcessTailwindGeneration = !useIncrementalMode || hasRuntimeAffectingChanges || generatorCandidatesChanged || snapshot.processFiles.css.size > 0
     const { applyLinkedUpdates, pendingLinkedUpdates } = createLinkedUpdateHelpers({ jsEntries, onUpdate, debug })
-    const createBaseHandlerOptions = createJsHandlerOptionsFactory({ getExperimentalJsFastPath: () => opts.experimentalJsFastPath ?? (resolvedConfig?.build?.watch != null ? 'oxc' : false), getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion, moduleGraph: moduleGraphOptions })
+    const createBaseHandlerOptions = createJsHandlerOptionsFactory({ getExperimentalJsFastPath: () => jsFastPath.experimentalJsFastPath, getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion, moduleGraph: moduleGraphOptions })
     const resolveFrameworkJsHandlerOptions = (absoluteFilename: string) => context.cssPipelineStrategy?.getServeJsHandlerOptions?.({ ...cssPipelineContext, file: absoluteFilename })
     const createHandlerOptions = (absoluteFilename: string, extra?: CreateJsHandlerOptions) => { const frameworkExtra = resolveFrameworkJsHandlerOptions(absoluteFilename); return createBaseHandlerOptions(absoluteFilename, frameworkExtra || extra ? { ...frameworkExtra, ...extra } : void 0) }
     const linkedByEntry = useIncrementalMode ? new Map<string, Set<string>>() : void 0

@@ -179,7 +179,6 @@ async function generateTailwindV4CssWithImplementation(
     ? createCoreArtifact({ ...generated, classSet }, css, options)
     : undefined
   const {
-    snapshot: _snapshot,
     compileAuthorCssFunctions: _compileAuthorCssFunctions,
     ...generatedRest
   } = generated
