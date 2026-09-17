@@ -105,18 +105,31 @@ export async function findRunningHBuilderXCliCandidates(platform: NodeJS.Platfor
         `$PSModuleAutoLoadingPreference = 'None'`,
         `[Console]::Error.WriteLine('process-discovery: querying')`,
         `$paths = [System.Collections.Generic.List[string]]::new()`,
-        `foreach ($p in [System.Diagnostics.Process]::GetProcessesByName('HBuilderX')) { try { $paths.Add([Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($p.MainModule.FileName))) } finally { $p.Dispose() } }`,
+        `foreach ($p in [System.Diagnostics.Process]::GetProcessesByName('HBuilderX')) { try { $paths.Add([Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($p.MainModule.FileName))) } catch {} finally { $p.Dispose() } }`,
         `[Console]::Error.WriteLine('process-discovery: complete')`,
         `[Console]::WriteLine('WT-HBUILDERX-PROCESSES/1')`,
         `[Console]::WriteLine([string]::Join([Environment]::NewLine, $paths))`,
         `[Console]::WriteLine('END')`,
       ].join('; ')]
     : ['-ax', '-o', 'command=']
-  const result = spawnSync(command, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, timeout: 10_000, maxBuffer: 1024 * 1024 })
+  const timeout = 15_000
+  const maxAttempts = platform === 'win32' ? 3 : 1
+  let result: ReturnType<typeof spawnSync> | undefined
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    result = spawnSync(command, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, timeout, maxBuffer: 1024 * 1024 })
+    if (!result.error && result.status === 0) {
+      break
+    }
+    const timedOut = result.signal === 'SIGTERM'
+      || (result.error as NodeJS.ErrnoException | undefined)?.code === 'ETIMEDOUT'
+    if (!timedOut || attempt === maxAttempts - 1) {
+      break
+    }
+  }
 
-  if (result.error || result.status !== 0) {
+  if (!result || result.error || result.status !== 0) {
     // 无法查询与没有实例是不同状态；误报后再次 open 可能干扰现有 IDE 会话。
-    throw new Error(`HBuilderX 进程探测失败：${command}, exit=${result.status}, signal=${result.signal}, cwd=${process.cwd()}\n${result.error?.message ?? ''}\n${result.stderr ?? ''}\n${result.stdout ?? ''}`)
+    throw new Error(`HBuilderX 进程探测失败：${command}, exit=${result?.status}, signal=${result?.signal}, cwd=${process.cwd()}\n${result?.error?.message ?? ''}\n${result?.stderr ?? ''}\n${result?.stdout ?? ''}`)
   }
 
   let executables: string[]

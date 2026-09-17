@@ -24,4 +24,4 @@ it.skipIf(process.platform !== 'win32')('真实 Windows 识别带特殊字符路
     await closed
     await rm(directory, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 })
   }
-}, 20_000)
+}, 60_000)
