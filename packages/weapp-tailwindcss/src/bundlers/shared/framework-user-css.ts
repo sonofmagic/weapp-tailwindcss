@@ -9,6 +9,9 @@ import { createGeneratedThemeDeclarationResolver } from './generator-css/user-cs
 import { reorderMarkedUserLayerComponentsCss, wrapUserLayerComponentsCss } from './generator-css/user-layer-order'
 
 export function normalizeFrameworkProcessedUserCss(source: string) {
+  if (!source.includes('source(')) {
+    return source
+  }
   try {
     const root = postcss.parse(source)
     root.walkAtRules('media', (rule) => {
@@ -32,6 +35,7 @@ export async function restoreFrameworkProcessedUserCss(
 ) {
   const generatedSource = createGeneratedThemeDeclarationResolver([generated.metadata?.rawCss, css].filter(Boolean).join('\n'))
   const userCssOptions = {
+    compileAuthorCssFunctions: generated.compileAuthorCssFunctions,
     generatorTarget: generated.target,
     generatedSource,
     generatorStyleOptions: resolveGeneratorStyleOptions(options.opts, options.cssHandlerOptions, generatorOptions.styleOptions),

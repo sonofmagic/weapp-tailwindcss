@@ -402,7 +402,11 @@ async function executeGeneratorPipelineWithOwner(
   }
   const withCompilationMetadata = (result: GenerateCssByGeneratorResult | undefined) => {
     if (result && frameworkProcessedUserCss !== undefined) {
-      result = { ...result, frameworkProcessedUserCss }
+      result = {
+        ...result,
+        compileAuthorCssFunctions,
+        frameworkProcessedUserCss,
+      }
     }
     if (!result || compilationRevision === undefined) {
       return result

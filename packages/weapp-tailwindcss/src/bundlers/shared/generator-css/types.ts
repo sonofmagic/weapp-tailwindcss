@@ -47,6 +47,8 @@ export interface GenerateCssByGeneratorResult {
   css: string
   /** 已使用本轮 Tailwind 配置展开函数的框架作者样式。 */
   frameworkProcessedUserCss?: string | undefined
+  /** 供 restore 在去掉生成段后编译作者函数。 */
+  compileAuthorCssFunctions?: ((css: string) => Promise<string>) | undefined
   classSet: ReadonlySet<string>
   target: string
   source: 'generator'

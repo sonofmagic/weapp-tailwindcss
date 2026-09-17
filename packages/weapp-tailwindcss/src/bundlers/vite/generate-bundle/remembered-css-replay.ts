@@ -213,7 +213,12 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     }
     const { sourceFile } = rememberedCssSource
     // 产物已包含该文件时无需重放，避免先做 scoped runtime / candidate signature。
-    if (bundleFiles.includes(rememberedOutputFile) || bundleFiles.includes(sourceFile)) {
+    if (
+      normalizedBundleFiles.has(normalizeOutputPathKey(rememberedOutputFile))
+      || normalizedBundleFiles.has(normalizeOutputPathKey(sourceFile))
+      || bundleFiles.includes(rememberedOutputFile)
+      || bundleFiles.includes(sourceFile)
+    ) {
       continue
     }
     const rawSource = isWebGeneratorTarget

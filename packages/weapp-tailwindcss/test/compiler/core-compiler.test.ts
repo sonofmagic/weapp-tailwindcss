@@ -4,6 +4,7 @@ import { mkdir, mkdtemp, symlink, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import { createCompiler } from '@/core/compiler'
+import { getInternalCompilerSnapshot } from '@/core/compiler/snapshot'
 import { resolveTailwindV4Source } from '@/generator'
 
 const require = createRequire(import.meta.url)
@@ -214,6 +215,7 @@ describe('createCompiler', () => {
     expect([...reachable.classSet]).toEqual(['m-[2px]', 'w-[10px]'])
     expect(reachable.dependencies).toEqual(['C:\\repo\\tailwind.config.ts', 'virtual:theme'])
     expect(reachable.classSet.has('should-not-leak')).toBe(false)
+    expect(getInternalCompilerSnapshot(reachable).fingerprint.length).toBe(32)
 
     const normalJs = await compiler.transformJavaScript('const c = "m-[2px] text-[13px]"', reachable)
     const independentJs = await compiler.transformJavaScript('const c = "m-[2px] text-[13px]"', independent)
