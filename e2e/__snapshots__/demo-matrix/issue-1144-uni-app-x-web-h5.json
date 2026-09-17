@@ -16,7 +16,7 @@
       "flex"
     ],
     "text-slate-500": [
-      "#62748e"
+      "var(--color-slate-500,rgb(98,116,142))"
     ],
     "h-[64px]": [
       "64px"
