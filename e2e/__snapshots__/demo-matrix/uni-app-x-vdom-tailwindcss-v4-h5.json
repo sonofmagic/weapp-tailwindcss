@@ -1,22 +1,22 @@
 {
   "rules": {
     "h-8": [
-      "2rem"
+      "calc(var(--spacing,.25rem)*8)"
     ],
     "h-20": [
-      "5rem"
+      "calc(var(--spacing,.25rem)*20)"
     ],
     "h-50": [
-      "12.5rem"
+      "calc(var(--spacing,.25rem)*50)"
     ],
     "mt-2": [
-      ".5rem"
+      "calc(var(--spacing,.25rem)*2)"
     ],
     "flex": [
       "flex"
     ],
     "text-slate-500": [
-      "#62748e"
+      "var(--color-slate-500,rgb(98,116,142))"
     ],
     "h-[64px]": [
       "64px"
@@ -28,5 +28,7 @@
       "rgba(236,253,245,.8)"
     ]
   },
-  "spacing": []
+  "spacing": [
+    ".25rem"
+  ]
 }

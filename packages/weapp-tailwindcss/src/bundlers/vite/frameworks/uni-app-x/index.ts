@@ -67,7 +67,7 @@ export const uniAppXCssPipelineStrategy: ViteFrameworkCssPipelineStrategy = {
       ? context.defaultWebCssCompat(css)
       : css
     const output = withUniAppXWebPreflightReset(
-      context.removeScopedPreflight(webCss),
+      context.removeScopedPreflight(webCss, { preserveRuntimeProperties: context.currentGeneratorBranch.isWeb }),
       context.currentGeneratorBranch.isWeb,
     )
     return context.currentGeneratorBranch.isWeb ? output : hoistUniAppXBorderPreflight(output)

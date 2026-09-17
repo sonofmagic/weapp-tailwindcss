@@ -1,6 +1,6 @@
 import type { OutputBundle } from 'rollup'
 import type { CssAssetMarkerMatcher, CssAssetResultRecorder } from './markers-imports'
-import { postcss, removeUnusedMiniProgramContentInit } from '@weapp-tailwindcss/postcss'
+import { isTailwindRuntimePropertyRule, postcss, removeUnusedMiniProgramContentInit } from '@weapp-tailwindcss/postcss'
 import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
 import { isSubpackageOutputFile } from '../generate-bundle/subpackages'
 import { collectRootStyleBundleCssSources, getAssetFile, hasNonCommentCss, isCssOutputFile, isMatchingGeneratedCssMarkerFile, normalizeMarkerOutputFile, readAssetSource } from './markers-imports'
@@ -93,7 +93,7 @@ export function isRuleCoveredByRootCss(rule: postcss.Rule, coverage: ReturnType<
     })
 }
 
-function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: string[]) {
+function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: string[], preserveRuntimeProperties = false) {
   if (!hasVueScopedAttr(css)) {
     return css
   }
@@ -109,6 +109,9 @@ function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: stri
       }
     })
     root.walkRules((rule) => {
+      if (preserveRuntimeProperties && isTailwindRuntimePropertyRule(rule)) {
+        return
+      }
       if (
         isRuleCoveredByRootCss(rule, coverage)
         || (
@@ -127,7 +130,7 @@ function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: stri
     root.walkAtRules((atRule) => {
       if (
         coverage.atRules.has(createAtRuleCoverageKey(atRule))
-        || isLikelyTailwindPropertyAtRule(atRule)
+        || (!preserveRuntimeProperties && isLikelyTailwindPropertyAtRule(atRule))
         || isLikelyTailwindLayerOrderAtRule(atRule)
       ) {
         atRule.remove()
@@ -146,8 +149,8 @@ function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: stri
   }
 }
 
-export function removeScopedTailwindPreflightCss(css: string) {
-  return removeScopedCssCoveredByRootStyleSources(css, [])
+export function removeScopedTailwindPreflightCss(css: string, options?: { preserveRuntimeProperties?: boolean }) {
+  return removeScopedCssCoveredByRootStyleSources(css, [], options?.preserveRuntimeProperties)
 }
 
 export function collectSingleViteGeneratedCssMarkerFile(rawSource: string) {

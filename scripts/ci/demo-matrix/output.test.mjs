@@ -31,3 +31,10 @@ it('still rejects missing utilities and inconsistent inline spacing', () => {
   expect(() => inspectStyles([inlineCss.replace('.h-50 { height: 50px }', '')], item)).toThrow('missing h-50')
   expect(() => inspectStyles([inlineCss.replace('height: 8px', 'height: 16px')], item)).toThrow('inconsistent spacing multiples')
 })
+
+it('accepts dynamic Web spacing with a dimension fallback but rejects invalid fallback', () => {
+  const css = inlineCss.replace('height: 8px', 'height: calc(var(--spacing, .25rem) * 8)')
+  expect(inspectStyles([css], item).rules['h-8']).toEqual(['calc(var(--spacing,.25rem)*8)'])
+  expect(inspectStyles([`:root { --spacing: 1px } ${css}`], item).spacing).toEqual(['1px'])
+  expect(() => inspectStyles([css.replace('.25rem', 'red')], item)).toThrow('invalid h-8')
+})

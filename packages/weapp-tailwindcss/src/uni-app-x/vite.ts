@@ -1,17 +1,17 @@
-import type { RawSourceMap } from '@ampproject/remapping'
-import type { ExistingRawSourceMap, SourceDescription } from 'rollup'
+import type { SourceDescription } from 'rollup'
 import type { Plugin } from 'vite'
 import type { CreateUniAppXPluginsOptions } from './vite/plugin-options'
 import path from 'node:path'
 import process from 'node:process'
 import {
   normalizeUniAppXImportantApplyForSass,
+  postcss,
   restoreUniAppXImportantApplyMarker,
 } from '@weapp-tailwindcss/postcss'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
 import { extractSfcStyleBlocks } from '@/bundlers/vite/generate-bundle/sfc-style-source'
 import { parseVueRequest } from '@/bundlers/vite/query'
-import { cleanUrl, formatPostcssSourceMap, isCSSRequest, normalizePath } from '@/bundlers/vite/utils'
+import { cleanUrl, isCSSRequest } from '@/bundlers/vite/utils'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { shouldEnablePageLocalStyle as isPageLocalStyleFile } from '@/uni-app-x/local-style-matcher'
 import { resolveUniUtsPlatform } from '@/utils'
@@ -32,6 +32,7 @@ import { createUniAppXHarmonyApplyExpander } from './vite/harmony-apply'
 import { createUniAppXNativeHmrReloader } from './vite/native-hmr'
 import { createUniAppXNativeBuildTargetResolver } from './vite/native-target'
 import { isCssModuleExport, normalizeRelativeTailwindReferences, reportStyleWarnings, resolvePreprocessorTransform, resolveUniAppXCssTarget } from './vite/style-request'
+import { createUniAppXStyleResult } from './vite/style-result'
 import { createUniAppXSfcStyleSources, resolveUniAppXStyleSource } from './vite/style-source'
 import { createUniAppXWebLocalStyleBridge } from './vite/web-local-style'
 import { createUniAppXWebSfcHmr } from './vite/web-sfc-hmr'
@@ -203,24 +204,18 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         : undefined
       const styleCode = typeof generatedCss === 'string' && generatedCss.trim().length > 0
         ? hasTailwindApply && !hasTailwindRoot
-          ? retainUniAppXAuthorApplyCss(generatedCss, sourceCode)
+          ? retainUniAppXAuthorApplyCss(generatedCss, sourceCode, { preserveRuntimeProperties: isWebGeneratorTarget() })
           : generatedCss
         : sourceCode
       const styleHandlerOptions = getStyleHandlerOptions(
         id,
         isNativeStyle && hasTailwindRoot ? 'tailwind-root' : isNativeStyle ? 'author-apply' : undefined,
       )
-      const postcssResult = await styleHandler(styleCode, styleHandlerOptions)
-      reportStyleWarnings(postcssResult)
-      const rawPostcssMap = postcssResult.map.toJSON()
-      const postcssMap = await formatPostcssSourceMap(
-        rawPostcssMap as Omit<RawSourceMap, 'version'> as ExistingRawSourceMap,
-        normalizePath(cleanUrl(id)),
-      )
-      return {
-        code: postcssResult.css,
-        map: JSON.stringify(postcssMap),
-      } satisfies Pick<SourceDescription, 'code' | 'map'>
+      // Web 生成结果已完成目标转换，只生成映射，避免再次套用小程序选择器与变量降级。
+      const postcssResult = isWebGeneratorTarget() && typeof generatedCss === 'string' && generatedCss.trim().length > 0
+        ? await postcss().process(styleCode, styleHandlerOptions.postcssOptions.options)
+        : await styleHandler(styleCode, styleHandlerOptions)
+      return createUniAppXStyleResult(id, postcssResult)
     }
   }
 
