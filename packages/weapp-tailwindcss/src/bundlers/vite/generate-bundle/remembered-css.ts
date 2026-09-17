@@ -9,6 +9,11 @@ export function createRememberedCssRuntimeSignature(cssRuntimeSignature: string,
   return `${cssRuntimeSignature}:${cssRuntimeAffectingHash}`
 }
 
+/** 入口重放的干净生成结果，避免和已合并框架贡献的产物缓存混用。 */
+export function createGeneratedReplayCacheKey(outputFile: string) {
+  return `${normalizeOutputPathKey(outputFile)}::__generated_replay__`
+}
+
 export function resolveRememberedCssSourceForTest(
   sources: Iterable<[string, RememberedCssSource]> | undefined,
   outputFile: string,

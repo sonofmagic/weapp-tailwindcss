@@ -155,7 +155,6 @@ describe('bundlers/vite remembered css replay root shell', () => {
 
     // 最终产物缓存可能已经合并本轮随后删除的框架规则，不能当作入口源缓存。
     lastCssResultByFile.set('app-origin.wxss', generatedCss + '\n.removed-framework-rule{color:red}')
-    generateTailwindV4Css.mockResolvedValueOnce({ css: generatedCss, dependencies: [] })
     const cachedReplayTasks: Array<() => Promise<void>> = []
     const cachedReplayUpdates: typeof pendingRememberedCssReplayUpdates = []
     await processRememberedCssReplay({
@@ -172,9 +171,27 @@ describe('bundlers/vite remembered css replay root shell', () => {
 
     expect(cachedReplayTasks).toHaveLength(1)
     await cachedReplayTasks[0]!()
+    expect(generateTailwindV4Css).toHaveBeenCalledTimes(1)
+    expect(cachedReplayUpdates).toEqual(pendingRememberedCssReplayUpdates)
+
+    rememberedCssSignatures.clear()
+    generateTailwindV4Css.mockResolvedValueOnce({ css: generatedCss, dependencies: [] })
+    const staleReplayTasks: Array<() => Promise<void>> = []
+    await processRememberedCssReplay({
+      ...options,
+      bundle: {
+        'app-origin.wxss': {
+          ...bundle['app-origin.wxss'],
+          source: '.fresh-framework-bundle{color:blue}',
+        },
+      },
+      cssTaskFactories: staleReplayTasks,
+      pendingRememberedCssReplayUpdates: [],
+    })
+    expect(staleReplayTasks).toHaveLength(1)
+    await staleReplayTasks[0]!()
     expect(generateTailwindV4Css).toHaveBeenLastCalledWith(expect.objectContaining({ previousCss: undefined }))
     expect(generateTailwindV4Css).toHaveBeenCalledTimes(2)
-    expect(cachedReplayUpdates).toEqual(pendingRememberedCssReplayUpdates)
 
     // 同轮框架样式会写入目标时，配置入口重放必须合并，不能覆盖基础样式。
     const contributionUpdates: typeof pendingRememberedCssReplayUpdates = []

@@ -15,7 +15,7 @@ import { isHTMLRequest } from '../utils'
 import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 import { createCssRuntimeSignature } from './css-share-scope'
 import { measureElapsed } from './metrics'
-import { collectRememberedCssReplayGroups, createRememberedCssRuntimeSignature, mergeRememberedCssSources } from './remembered-css'
+import { collectRememberedCssReplayGroups, createGeneratedReplayCacheKey, createRememberedCssRuntimeSignature, mergeRememberedCssSources } from './remembered-css'
 import { registerGeneratorDependencies } from './rollup-assets'
 import { isRootMiniProgramStyleOutputFile, shouldPreserveFrameworkRootMiniProgramImportShell } from './root-style-output'
 import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTraceMap } from './scoped-generator'
@@ -267,7 +267,13 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     const shouldMergeReplayIntoFrameworkRootTarget = hasCurrentFrameworkContribution
       || (outputFile !== rememberedOutputFile
         && normalizedBundleFiles.has(normalizeOutputPathKey(outputFile)))
-    // 最终产物缓存包含框架贡献；合并入口重放时必须从入口源码重新生成，避免回滚后复活旧规则。
+    const generatedReplayKey = createGeneratedReplayCacheKey(outputFile)
+    activeViteCssCacheFiles.add(generatedReplayKey)
+    const cachedGeneratedReplayCss = allRememberedSignaturesFresh && shouldMergeReplayIntoFrameworkRootTarget
+      ? lastCssResultByFile.get(generatedReplayKey)
+      : undefined
+    // 源码签名未变且无需合并框架贡献时，跳过重放。
+    // 需要合并时复用干净生成缓存，避免把已混入框架规则的产物缓存当作增量基线。
     if (allRememberedSignaturesFresh && !shouldMergeReplayIntoFrameworkRootTarget) {
       continue
     }
@@ -335,6 +341,27 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       }))
       continue
     }
+    if (cachedGeneratedReplayCss) {
+      cssTaskFactories.push(() => timeTask('css.replay', async () => {
+        const start = performance.now()
+        lastCssRawSourceHashByFile.set(outputFile, rawSourceHash)
+        for (const key of rememberedKeys) {
+          setRememberedCssSignature?.(key, rememberedCssRuntimeSignature)
+        }
+        recordCssAssetResult?.(outputFile, cachedGeneratedReplayCss)
+        pendingRememberedCssReplayUpdates.push(...createRememberedCssReplayUpdates(
+          cachedGeneratedReplayCss,
+          sourceFile,
+          outputFile,
+          true,
+        ))
+        metrics.css.elapsed += measureElapsed(start)
+        metrics.css.cacheHits++
+        onUpdate(outputFile, rememberedCssSource.rawSource, cachedGeneratedReplayCss)
+        debug('css replay reuse generated cache: %s bytes=%d', outputFile, cachedGeneratedReplayCss.length)
+      }))
+      continue
+    }
     cssTaskFactories.push(() => timeTask('css.replay', async () => {
       const start = performance.now()
       const generated = await generateTailwindV4Css({
@@ -356,6 +383,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       const css = annotateCss(generated?.css ?? (await styleHandler(generatorRawSource, cssHandlerOptions)).css)
       lastCssRawSourceHashByFile.set(outputFile, rawSourceHash)
       rememberLastCssResult(lastCssResultByFile, lastCssSourceHashByFile, outputFile, css, cssRuntimeAffectingHash)
+      rememberLastCssResult(lastCssResultByFile, lastCssSourceHashByFile, generatedReplayKey, css, cssRuntimeAffectingHash)
       for (const key of rememberedKeys) {
         setRememberedCssSignature?.(key, rememberedCssRuntimeSignature)
       }
