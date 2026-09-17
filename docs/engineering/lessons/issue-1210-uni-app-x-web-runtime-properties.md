@@ -8,6 +8,7 @@ regressions:
   - packages/weapp-tailwindcss/test/bundlers/uni-app-x-web-runtime-cleanup.test.ts
   - e2e/issue-1210-web.test.ts
   - scripts/ci/demo-matrix/output.test.mjs
+  - packages/weapp-tailwindcss/test/source-line-limit.test.ts
 ---
 
 # uni-app x H5 渐变和阴影的运行时变量丢失
@@ -49,6 +50,12 @@ Refs #1210。
 - 未运行原生设备验收；原生分支的证据仅限自动测试。
 
 原始证据位于忽略目录 `e2e/.artifacts/issue-1210/`：`portable`、`production` 包含每轮 CSS、计算样式、截图；`hbuilderx` 和 `hbuilderx-first-attempt` 包含两次 IDE 日志及失败截图；类型检查基线和当前日志分别保留。demo matrix 的构建副本和日志位于 `e2e/.artifacts/demo-matrix/uni-app-x-vdom-tailwindcss-v4-h5/`。
+
+### PR 首轮 CI 纠正
+
+[PR #1212](https://github.com/sonofmagic/weapp-tailwindcss/pull/1212) 首轮发现 `uni-app-x/vite.ts` 达到 504 行，触发已有 500 行源码门禁。本地先运行 `test/source-line-limit.test.ts` 重现，再将样式结果及 sourcemap 封装提取到 `vite/style-result.ts`，复用已有 Web/native 回归验证行为不变。先前定向测试没有包含该仓库级门禁，后续验证加入它。
+
+首轮远端性能样本中，weapp-vite 构建中位数增加 5.90%（约 192ms），Taro Vite 插件构建中位数增加 5.59%（367ms）。同一源码与基线的本地独立副本以三次构建、三次 HMR 采样，按现有 5% 门禁计算，两项均通过。它们仍不能代替远端结果，也不能据此断定噪声根因；保留首次日志与本地样本，在 PR 中记录最终提交及其 CI 结果。没有放宽门禁或修改性能基线。
 
 ## 适用边界
 
