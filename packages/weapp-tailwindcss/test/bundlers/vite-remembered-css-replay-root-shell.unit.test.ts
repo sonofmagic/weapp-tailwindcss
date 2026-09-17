@@ -228,4 +228,57 @@ describe('bundlers/vite remembered css replay root shell', () => {
       new Map([['nested\\app.wxss', 'app-origin.wxss']]),
     )).toBe('app-origin.wxss')
   })
+
+  it('skips scoped runtime work when the remembered file is already in the bundle', async () => {
+    const { processRememberedCssReplay } = await import('@/bundlers/vite/generate-bundle/remembered-css-replay')
+    const createScopedGeneratorRuntime = vi.fn(async () => new Set(['fresh']))
+    const cssTaskFactories: Array<() => Promise<void>> = []
+    await processRememberedCssReplay({
+      activeViteCssCacheFiles: new Set<string>(),
+      addWatchFile: vi.fn(),
+      bundle: {},
+      bundleFiles: ['app.wxss'],
+      cache: { computeHash: (source: string) => `hash:${source}` },
+      changedCssFiles: new Set(),
+      createScopedGeneratorRuntime,
+      createScopedSourceCandidateGetter: vi.fn(() => undefined),
+      createScopedSourceCandidateSourceGetter: vi.fn(() => undefined),
+      cssPipelineContext: { opts: { cssMatcher: (file: string) => file.endsWith('.wxss') } } as any,
+      cssPipelineStrategy: {},
+      cssTaskFactories,
+      debug: vi.fn(),
+      defaultStyleOutputExtension: '.wxss',
+      emitOrReplayCssAsset: vi.fn(),
+      generatorRuntime: new Set(['fresh']),
+      getCssHandlerOptions: vi.fn(() => ({ isMainChunk: true })),
+      getCssUserHandlerOptions: vi.fn(() => ({})),
+      getRememberedCssSources: () => new Map([
+        ['app.wxss', {
+          outputFile: 'app.wxss',
+          rawSource: '@import "tailwindcss";',
+          sourceFile: '/repo/src/app.css',
+        }],
+      ]),
+      isNativeAppStyleTarget: false,
+      isWebGeneratorTarget: false,
+      lastCssRawSourceHashByFile: new Map(),
+      lastCssResultByFile: new Map(),
+      lastCssSourceHashByFile: new Map(),
+      metrics: { css: { total: 0, transformed: 0, cacheHits: 0, elapsed: 0 } },
+      onUpdate: vi.fn(),
+      opts: { cssMatcher: (file: string) => file.endsWith('.wxss'), htmlMatcher: () => false },
+      pendingRememberedCssReplayUpdates: [],
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      rootDir: '/repo',
+      runtimeState: { tailwindRuntime: { majorVersion: 4 } },
+      shouldPreserveAppCssExtension: false,
+      sourceRoot: undefined,
+      styleHandler: vi.fn(),
+      timeTask: async (_name: string, task: () => Promise<void>) => task(),
+      useIncrementalMode: false,
+    } as any)
+    expect(createScopedGeneratorRuntime).not.toHaveBeenCalled()
+    expect(cssTaskFactories).toHaveLength(0)
+  })
 })

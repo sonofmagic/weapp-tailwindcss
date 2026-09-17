@@ -212,6 +212,10 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       continue
     }
     const { sourceFile } = rememberedCssSource
+    // 产物已包含该文件时无需重放，避免先做 scoped runtime / candidate signature。
+    if (bundleFiles.includes(rememberedOutputFile) || bundleFiles.includes(sourceFile)) {
+      continue
+    }
     const rawSource = isWebGeneratorTarget
       ? rememberedCssSource.rawSource
       : normalizeMiniProgramImportShell(rememberedCssSource.rawSource, {
@@ -257,9 +261,6 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       : undefined
     const allRememberedSignaturesFresh = rememberedKeys.length > 0
       && rememberedKeys.every(key => getRememberedCssSignature?.(key) === rememberedCssRuntimeSignature)
-    if (bundleFiles.includes(rememberedOutputFile) || bundleFiles.includes(sourceFile)) {
-      continue
-    }
     const hasCurrentFrameworkContribution = [...frameworkRootImportShellTargetByFile ?? []].some(([file, target]) =>
       normalizeOutputPathKey(target) === normalizeOutputPathKey(outputFile)
       && normalizedBundleFiles.has(normalizeOutputPathKey(file)),
