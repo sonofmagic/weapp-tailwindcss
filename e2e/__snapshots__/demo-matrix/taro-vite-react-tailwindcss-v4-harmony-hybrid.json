@@ -27,11 +27,12 @@
       "25rem"
     ],
     "bg-emerald-50/80": [
-      "color-mix(insrgb,oklch(97.9%.021166.113)80%,transparent)"
+      "color-mix(insrgb,oklch(97.9%0.021166.113)80%,transparent)"
     ]
   },
   "spacing": [
     ".25rem",
-    ".2rem"
+    "0.25rem",
+    "0.2rem"
   ]
 }
