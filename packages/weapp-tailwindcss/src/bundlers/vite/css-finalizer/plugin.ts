@@ -18,12 +18,13 @@ import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from '../generate-bundle'
 import { applyViteAssetEmissionPlan } from '../generate-bundle/asset-emission-plan'
 import { linkEntryChunkStyles } from '../generate-bundle/entry-style-graph'
-import { finalizeMiniProgramCssAssetStructures } from '../generate-bundle/final-css-assets'
 import { normalizeRootMiniProgramImportShellAssets } from '../generate-bundle/finalize'
 import { linkFrameworkRootStyleToRuntimeEntry, restoreFrameworkRootMiniProgramImportShellAssets } from '../generate-bundle/root-style-output'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '../processed-css-assets'
 import { isHTMLRequest } from '../utils'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from '../weapp-vite-config'
+import { finalizeWebCssCalc } from './css-calc'
+import { finalizeCssAssets } from './final-assets'
 import { tryFinalizeGenericWebCss } from './generic-web-fast-path'
 import { collectViteProcessedCssSources, createCssHandlerOptions, finalizeWebCss, inferPlatformFromViteOutDir, registerGeneratorDependencies, shouldGenerateCssByGenerator } from './options'
 
@@ -135,6 +136,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           rootDir,
           sourceRoot,
         })) {
+          await finalizeWebCssCalc(bundle, context)
           finalizeCompilerShadowRun(runtimeState)
           finishTiming()
           return
@@ -312,14 +314,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             onUpdate: trackFinalCssAssetUpdate,
             recordCssAssetResult,
           })
-          finalizeMiniProgramCssAssetStructures(bundle, {
-            cssMatcher: opts.cssMatcher,
-            debug,
-            files: finalCssAssetFiles,
-            isWebGeneratorTarget,
-            onUpdate: opts.onUpdate,
-            recordCssAssetResult,
-          })
+          await finalizeCssAssets(bundle, context, isWebGeneratorTarget, finalCssAssetFiles)
           finalizeCompilerShadowRun(runtimeState)
           finishTiming()
           return
@@ -479,14 +474,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           onUpdate: trackFinalCssAssetUpdate,
           recordCssAssetResult,
         })
-        finalizeMiniProgramCssAssetStructures(bundle, {
-          cssMatcher: opts.cssMatcher,
-          debug,
-          files: finalCssAssetFiles,
-          isWebGeneratorTarget,
-          onUpdate: opts.onUpdate,
-          recordCssAssetResult,
-        })
+        await finalizeCssAssets(bundle, context, isWebGeneratorTarget, finalCssAssetFiles)
         finalizeCompilerShadowRun(runtimeState)
         recordTiming('assets.write', writeStartedAt)
         finishTiming()
