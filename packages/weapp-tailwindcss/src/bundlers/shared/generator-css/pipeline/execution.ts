@@ -362,6 +362,7 @@ async function executeGeneratorPipelineWithOwner(
     }
     return filterApplyOnlyGeneratedCss(css, generatorRawSource, {
       preserveVariables: generated.target !== 'web',
+      preserveRuntimeProperties: generated.target === 'web' && opts.appType === 'uni-app-x',
     })
   }
   const preflightMode = resolveMiniProgramPreflightModeForGeneratorCss(opts, {

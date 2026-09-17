@@ -6,6 +6,7 @@ import path from 'node:path'
 import process from 'node:process'
 import {
   normalizeUniAppXImportantApplyForSass,
+  postcss,
   restoreUniAppXImportantApplyMarker,
 } from '@weapp-tailwindcss/postcss'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
@@ -203,14 +204,17 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         : undefined
       const styleCode = typeof generatedCss === 'string' && generatedCss.trim().length > 0
         ? hasTailwindApply && !hasTailwindRoot
-          ? retainUniAppXAuthorApplyCss(generatedCss, sourceCode)
+          ? retainUniAppXAuthorApplyCss(generatedCss, sourceCode, { preserveRuntimeProperties: isWebGeneratorTarget() })
           : generatedCss
         : sourceCode
       const styleHandlerOptions = getStyleHandlerOptions(
         id,
         isNativeStyle && hasTailwindRoot ? 'tailwind-root' : isNativeStyle ? 'author-apply' : undefined,
       )
-      const postcssResult = await styleHandler(styleCode, styleHandlerOptions)
+      // Web 生成结果已完成目标转换，只生成映射，避免再次套用小程序选择器与变量降级。
+      const postcssResult = isWebGeneratorTarget() && typeof generatedCss === 'string' && generatedCss.trim().length > 0
+        ? await postcss().process(styleCode, styleHandlerOptions.postcssOptions.options)
+        : await styleHandler(styleCode, styleHandlerOptions)
       reportStyleWarnings(postcssResult)
       const rawPostcssMap = postcssResult.map.toJSON()
       const postcssMap = await formatPostcssSourceMap(

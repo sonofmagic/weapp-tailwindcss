@@ -84,7 +84,7 @@ export interface ViteFrameworkCssPipelineStrategy {
   shouldTransformServeJs?: (context: ViteFrameworkCssPipelineContext) => boolean
   transformGeneratedCss?: (css: string, context: ViteFrameworkCssPipelineContext & {
     defaultWebCssCompat: (css: string) => string
-    removeScopedPreflight: (css: string) => string
+    removeScopedPreflight: (css: string, options?: { preserveRuntimeProperties?: boolean }) => string
     shouldApplyWebCssCompat: boolean
   }) => string
 }

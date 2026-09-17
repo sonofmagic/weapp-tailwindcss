@@ -6,6 +6,12 @@
 				"navigationBarTitleText": "uni-app x"
 			}
 		},
+		// #ifdef H5
+		{
+			"path": "pages/issue-1210/index",
+			"style": { "navigationBarTitleText": "Issue 1210" }
+		},
+		// #endif
 		{
 			"path": "pages/issue-1164/index",
 			"style": {

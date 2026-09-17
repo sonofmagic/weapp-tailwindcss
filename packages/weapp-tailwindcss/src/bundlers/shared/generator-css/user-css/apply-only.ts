@@ -1,4 +1,4 @@
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { isTailwindRuntimePropertyRule, postcss } from '@weapp-tailwindcss/postcss'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '../directives'
 import { preferScopedGeneratedCssRules } from '../scoped-rules'
 import { collectApplyOnlySourceSelectors, hasOnlyApplyBackedSourceRules, isEmptyCustomVariantBlock, normalizeGeneratedSelector, removeCssComments } from './user-layers'
@@ -29,6 +29,7 @@ export function filterApplyOnlyGeneratedCss(
   source: string,
   options: {
     preserveVariables?: boolean | undefined
+    preserveRuntimeProperties?: boolean | undefined
     preferScopedRules?: boolean | undefined
   } = {},
 ) {
@@ -57,6 +58,9 @@ export function filterApplyOnlyGeneratedCss(
         })
       })
       const isVariableRule = rule.nodes?.some(node => node.type === 'decl' && node.prop.startsWith('--'))
+      if (options.preserveRuntimeProperties && isTailwindRuntimePropertyRule(rule)) {
+        return
+      }
       if (!isApplySelector && (!preserveVariables || !isVariableRule)) {
         rule.remove()
       }

@@ -76,13 +76,19 @@ export function inspectStyles(styles, item, round = 'initial', consumed = {}) {
   if (round === 'add') {
     assert.ok(result[`w-[${values.added}]`].includes(values.added))
   }
-  const usesSpacing = Object.values(result).flat().some(value => value.includes('var(--spacing)'))
-  if (usesSpacing) {
+  const usesSpacing = Object.values(result).flat().some(value => value.includes('var(--spacing'))
+  const requiresSpacing = Object.values(result).flat().some(value => value.includes('var(--spacing)'))
+  if (requiresSpacing) {
     assert.ok(variables.size > 0, `${item.id}: missing spacing dependency`)
   }
   const inlineSpacing = []
   for (const [name, multiple] of [[probes.height, Number(probes.height.slice(2))], ['h-20', 20], ['h-50', 50], ['mt-2', 2]]) {
-    assert.ok(result[name].some(value => value.includes(`var(--spacing)*${multiple}`) || value.includes(`${multiple}*var(--spacing)`)
+    // Web 保留动态变量与合法尺寸 fallback；浏览器阶段继续验证最终计算尺寸。
+    const normalized = result[name].map(value => value.replace(/var\(--spacing,([^()]+)\)/g, (match, fallback) => {
+      const dimension = numericDimension(fallback)
+      return dimension && dimension.value > 0 ? 'var(--spacing)' : match
+    }))
+    assert.ok(normalized.some(value => value.includes(`var(--spacing)*${multiple}`) || value.includes(`${multiple}*var(--spacing)`)
       || numericDimension(value)), `${item.id}: invalid ${name}: ${result[name]}`)
     for (const value of result[name]) {
       const numeric = numericDimension(value)

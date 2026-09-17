@@ -68,6 +68,7 @@ export {
   restoreUniAppXImportantApplyMarker,
   UNI_APP_X_IMPORTANT_APPLY_MARKER,
 } from './compat/uni-app-x'
+export { isTailwindRuntimePropertyRule, retainUniAppXAuthorApplyCss } from './compat/uni-app-x-author-apply'
 export {
   createUniAppXBorderPreflight,
   hoistUniAppXBorderPreflight,
