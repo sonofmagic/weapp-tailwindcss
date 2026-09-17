@@ -24,6 +24,7 @@ import { linkFrameworkRootStyleToRuntimeEntry, restoreFrameworkRootMiniProgramIm
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '../processed-css-assets'
 import { isHTMLRequest } from '../utils'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from '../weapp-vite-config'
+import { finalizeWebCssCalc } from './css-calc'
 import { tryFinalizeGenericWebCss } from './generic-web-fast-path'
 import { collectViteProcessedCssSources, createCssHandlerOptions, finalizeWebCss, inferPlatformFromViteOutDir, registerGeneratorDependencies, shouldGenerateCssByGenerator } from './options'
 
@@ -135,6 +136,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           rootDir,
           sourceRoot,
         })) {
+          await finalizeWebCssCalc(bundle, context)
           finalizeCompilerShadowRun(runtimeState)
           finishTiming()
           return
@@ -320,6 +322,9 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             onUpdate: opts.onUpdate,
             recordCssAssetResult,
           })
+          if (isWebGeneratorTarget) {
+            await finalizeWebCssCalc(bundle, context)
+          }
           finalizeCompilerShadowRun(runtimeState)
           finishTiming()
           return
@@ -487,6 +492,9 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           onUpdate: opts.onUpdate,
           recordCssAssetResult,
         })
+        if (isWebGeneratorTarget) {
+          await finalizeWebCssCalc(bundle, context)
+        }
         finalizeCompilerShadowRun(runtimeState)
         recordTiming('assets.write', writeStartedAt)
         finishTiming()
