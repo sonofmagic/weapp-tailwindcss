@@ -4,13 +4,14 @@ import type { CssFinalizerContext } from './options'
 import path from 'node:path'
 import process from 'node:process'
 import { disposeCompilerOwner, finalizeCompilerShadowRun } from '@/compiler'
+import { finalizeWebCssCalc } from './css-calc'
 import { tryFinalizeGenericWebCss } from './generic-web-fast-path'
 
 /**
  * Generic Web 专用 CSS finalizer。
  *
- * 该插件只处理已经在 CSS transform 阶段记录的 CSS asset，不扫描或改写
- * HTML、JavaScript、模板和小程序分包产物。
+ * 该插件复用 CSS transform 阶段记录的 CSS asset，显式开启 cssCalc 时也处理
+ * 最终资产中的普通 CSS；不扫描或改写 HTML、JavaScript、模板和小程序分包产物。
  */
 export function createViteWebCssFinalizerOutputPlugin(context: CssFinalizerContext): Plugin {
   return {
@@ -66,6 +67,7 @@ export function createViteWebCssFinalizerOutputPlugin(context: CssFinalizerConte
         if (!finalized) {
           context.debug('Generic Web CSS finalizer skipped: no unique processed CSS asset')
         }
+        await finalizeWebCssCalc(bundle, context)
         finalizeCompilerShadowRun(context.runtimeState)
         context.hmrTimingRecorder?.record('webCssFinalizer.total', performance.now() - startedAt)
       },
