@@ -1,6 +1,6 @@
 import type { OutputBundle } from 'rollup'
 import type { CssAssetMarkerMatcher, CssAssetResultRecorder } from './markers-imports'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { postcss, removeUnusedMiniProgramContentInit } from '@weapp-tailwindcss/postcss'
 import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
 import { isSubpackageOutputFile } from '../generate-bundle/subpackages'
 import { collectRootStyleBundleCssSources, getAssetFile, hasNonCommentCss, isCssOutputFile, isMatchingGeneratedCssMarkerFile, normalizeMarkerOutputFile, readAssetSource } from './markers-imports'
@@ -251,6 +251,7 @@ export function removeCssCoveredByRootStyleBundleSources(
       changed = true
     })
     if (changed) {
+      removeUnusedMiniProgramContentInit(root)
       nextCss = root.toString().trim()
     }
   }

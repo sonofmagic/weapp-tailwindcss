@@ -125,6 +125,7 @@ export class UniAppXComponentLocalStyleCollector {
   constructor(
     private readonly fileId: string,
     private readonly runtimeSet?: Set<string>,
+    private readonly includeVariants = false,
   ) {}
 
   private ensureAlias(utility: string) {
@@ -134,8 +135,10 @@ export class UniAppXComponentLocalStyleCollector {
     }
     const alias = createAlias(this.fileId, utility, this.aliasByUtility.size)
     this.aliasByUtility.set(utility, alias)
-    this.aliasByLookup.set(utility, alias)
-    this.aliasByLookup.set(replaceWxml(utility), alias)
+    // 局部变体补充页面级层叠，同时保留全局变体类的既有运行时身份。
+    const replacement = hasTopLevelVariant(utility) ? `${replaceWxml(utility)} ${alias}` : alias
+    this.aliasByLookup.set(utility, replacement)
+    this.aliasByLookup.set(replaceWxml(utility), replacement)
     return alias
   }
 
@@ -149,10 +152,13 @@ export class UniAppXComponentLocalStyleCollector {
       if (!isRuntimeCandidate(candidate, this.runtimeSet)) {
         continue
       }
-      rewritten = rewritten.replace(
-        candidate,
-        hasTopLevelVariant(candidate) ? replaceWxml(candidate) : this.ensureAlias(candidate),
-      )
+      if (!this.includeVariants && hasTopLevelVariant(candidate)) {
+        rewritten = rewritten.replace(candidate, replaceWxml(candidate))
+      }
+      else {
+        this.ensureAlias(candidate)
+        rewritten = rewritten.replace(candidate, this.aliasByLookup.get(candidate)!)
+      }
     }
     return rewritten
   }
@@ -196,7 +202,7 @@ export class UniAppXComponentLocalStyleCollector {
           if (!candidate || !classContext || !isRuntimeCandidate(candidate, this.runtimeSet)) {
             continue
           }
-          if (!hasTopLevelVariant(candidate)) {
+          if (this.includeVariants || !hasTopLevelVariant(candidate)) {
             this.ensureAlias(candidate)
             if (options.deep) {
               this.deepUtilities.add(candidate)
@@ -301,7 +307,7 @@ export class UniAppXComponentLocalStyleCollector {
     }
     const lines: string[] = []
     for (const [utility, alias] of this.aliasByUtility) {
-      // H5 的 Vue scoped 编译会把 :where(.alias) 展开为带 scope attribute 的选择器，
+      // Vue scoped 编译会额外注入作用域类或属性，
       // 重新抬高特异性；使用 :global 保持局部 alias 的单类选择器特异性。
       const localSelector = options.web ? `:global(.${alias})` : `.${alias}`
       const selector = this.deepUtilities.has(utility)

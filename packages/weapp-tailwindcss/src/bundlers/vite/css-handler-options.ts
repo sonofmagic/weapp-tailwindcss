@@ -18,7 +18,7 @@ type CssHandlerOptions = IStyleHandlerOptions & {
 }
 
 interface CssHandlerOptionsCacheOptions {
-  getAppType: () => InternalUserDefinedOptions['appType']
+  getAppType: () => InternalUserDefinedOptions['appType'] | undefined
   mainCssChunkMatcher: InternalUserDefinedOptions['mainCssChunkMatcher']
   getMajorVersion: () => number | undefined
   getOutputRoot?: (() => string | undefined) | undefined

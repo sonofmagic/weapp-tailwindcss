@@ -1,4 +1,4 @@
-import type { DetectableAppType } from './index'
+import type { AppType } from '@/types'
 
 const MPX_TO_UNI_PLATFORM: Record<string, string> = {
   ali: 'mp-alipay',
@@ -12,7 +12,7 @@ const MPX_TO_UNI_PLATFORM: Record<string, string> = {
 
 export function normalizeFrameworkStylePlatform(
   platform: string | undefined,
-  appType: DetectableAppType | undefined,
+  appType: AppType | undefined,
 ) {
   const normalized = platform?.trim().toLowerCase()
   if (!normalized) {

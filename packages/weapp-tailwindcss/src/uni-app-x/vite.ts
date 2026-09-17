@@ -1,6 +1,6 @@
 import type { RawSourceMap } from '@ampproject/remapping'
-import type { ExistingRawSourceMap, SourceMap } from 'rollup'
-import type { Plugin, TransformResult } from 'vite'
+import type { ExistingRawSourceMap, SourceDescription } from 'rollup'
+import type { Plugin } from 'vite'
 import type { CreateUniAppXPluginsOptions } from './vite/plugin-options'
 import path from 'node:path'
 import process from 'node:process'
@@ -91,7 +91,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   }>()
   const nativeLocalStyleModuleIds = new Set<string>()
   const sfcStyleSources = createUniAppXSfcStyleSources()
-  const pendingSfcTransforms = new Map<string, Promise<TransformResult | undefined>>()
+  const pendingSfcTransforms = new Map<string, Promise<Pick<SourceDescription, 'code' | 'map'> | undefined>>()
   const webSfcHmr = createUniAppXWebSfcHmr({
     isEnabled: () => isEnabled() && isWebGeneratorTarget() && getResolvedConfig()?.command === 'serve',
     transform: (source, id) => runTransformSfc(source, id, {}),
@@ -196,7 +196,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
             {
               ...hookContext,
               disableSourceScan: isNativeSfcAuthorStyle && hasTailwindApply && !hasTailwindRoot,
-              sourceCandidates: isNativeSfcAuthorStyle && hasTailwindApply && !hasTailwindRoot ? [] : undefined,
+              ...(isNativeSfcAuthorStyle && hasTailwindApply && !hasTailwindRoot ? { sourceCandidates: [] } : {}),
               transient: isNativeSfcAuthorStyle && hasTailwindApply && !hasTailwindRoot,
             },
           )
@@ -219,8 +219,8 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       )
       return {
         code: postcssResult.css,
-        map: postcssMap as SourceMap,
-      } as TransformResult
+        map: JSON.stringify(postcssMap),
+      } satisfies Pick<SourceDescription, 'code' | 'map'>
     }
   }
 
@@ -328,6 +328,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       ...(enableComponentLocalStyle ? { enableComponentLocalStyle } : {}),
       ...(enablePageLocalStyle ? { enablePageLocalStyle } : {}),
       native: true,
+      localStyleVariants: !isNativeAppBuildTarget(id) && !isWebGeneratorTarget() ? true : undefined,
       ...resolveUniAppXBorderPreflightOptions(options, isWebGeneratorTarget()),
       pageMatcher: resolvedUniAppXOptions.componentLocalStyles.pageMatcher,
       ...(isWebGeneratorTarget() && customAttributesEntities.length > 0 ? { webCustomAttributeDeep: true } : {}),

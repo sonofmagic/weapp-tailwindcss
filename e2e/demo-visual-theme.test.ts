@@ -3,10 +3,10 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { PNG } from 'pngjs'
 import { describe, expect, it } from 'vitest'
-import { createArtifactVisualSeed, createPortAwareCommand, disableDevToolsCompileHotReload, miniProgramPageMatchesRoute, miniProgramProjectStartsAtRoute } from '../scripts/demo-visual-e2e-report/cases'
+import { createPortAwareCommand, disableDevToolsCompileHotReload, miniProgramPageMatchesRoute, miniProgramProjectStartsAtRoute } from '../scripts/demo-visual-e2e-report/cases'
 import { parseWechatDevToolsWindowBounds } from '../scripts/demo-visual-e2e-report/ide'
 import { createHmrComparisons, mergeCaseResults } from '../scripts/demo-visual-e2e-report/report'
-import { analyzeThemeCss, countDarkPixels } from '../scripts/demo-visual-e2e-report/theme'
+import { analyzeThemeCss, collectMiniProgramThemeScreenshotEvidence, countDarkPixels, countThemeColorPixels } from '../scripts/demo-visual-e2e-report/theme'
 import { miniProgramCases, rawTailwindDirectiveRE, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
 
 describe('demo visual theme evidence', () => {
@@ -40,12 +40,6 @@ describe('demo visual theme evidence', () => {
     expect(parseWechatDevToolsWindowBounds('10, 20, 1200, 800')).toBe('10,20,1200,800')
     expect(() => parseWechatDevToolsWindowBounds('10,20,0,800')).toThrow('窗口尺寸无效')
     expect(() => parseWechatDevToolsWindowBounds('not-bounds')).toThrow('无法解析')
-  })
-
-  it('derives diagnostic visual evidence from the built artifact state', () => {
-    const before = createArtifactVisualSeed([{ content: '.bg-red{}', file: 'app.wxss' }])
-    const after = createArtifactVisualSeed([{ content: '.bg-blue{}', file: 'app.wxss' }])
-    expect(before).not.toBe(after)
   })
 
   it('keeps the uni-app x App entry valid for native App compilation', async () => {
@@ -375,5 +369,37 @@ describe('demo visual theme evidence', () => {
       withinLimit: false,
     })
     await fs.rm(artifactRoot, { recursive: true, force: true })
+  })
+})
+
+describe('theme screenshot evidence boundaries', () => {
+  it('does not use unrelated dark pixels to pass a missing target background', async () => {
+    const png = new PNG({ width: 100, height: 200 })
+    for (let index = 0; index < png.data.length; index += 4) {
+      png.data.set([255, 255, 255, 255], index)
+    }
+    for (let y = 100; y < 200; y++) {
+      for (let x = 0; x < 100; x++) {
+        png.data.set([0, 0, 0, 255], (y * 100 + x) * 4)
+      }
+    }
+    const node = {
+      offset: async () => ({ left: 10, top: 10 }),
+      size: async () => ({ width: 60, height: 60 }),
+    }
+    const page = { size: async () => ({ width: 100, height: 800 }), $: async () => node }
+    await expect(collectMiniProgramThemeScreenshotEvidence(page, png)).rejects.toThrow('暗色像素不足')
+  })
+})
+
+describe('explicit theme fixture colors', () => {
+  it('matches the configured blue fixture and rejects a dark substitute', () => {
+    const png = new PNG({ width: 10, height: 10 })
+    for (let offset = 0; offset < png.data.length; offset += 4) {
+      png.data.set([52, 152, 219, 255], offset)
+    }
+    const rect = { left: 0, top: 0, width: 10, height: 10 }
+    expect(countThemeColorPixels(png, rect, [52, 152, 219])).toBe(100)
+    expect(countThemeColorPixels(png, rect, [9, 9, 11])).toBe(0)
   })
 })

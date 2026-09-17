@@ -1,6 +1,5 @@
-/*! weapp-tailwindcss vite-generated-css:%3Cproject-root%3E%2Fsrc%2Fpages%2Fissue-998%2Findex.css */ /*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @layer properties;
-@layer theme,base,components,utilities;
+@layer theme, base, components, utilities;
 @layer theme {
   :root,
   :host {
@@ -446,7 +445,7 @@
     background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
     background-image: linear-gradient(var(--tw-gradient-stops));
   }
- /*tokens: bg-gradient-to-r <= src/app.css, src/pages/index/index.tsx */
+ /*tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
   .bg-gradient-to-r {
     --tw-gradient-position: to right in oklab;
     background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
@@ -479,7 +478,7 @@
       var(--tw-gradient-to) var(--tw-gradient-to-position)
     );
   }
- /*tokens: to-blue-500 <= src/app.css, src/pages/index/index.tsx */
+ /*tokens: to-blue-500 <= src/pages/index/index.tsx */
   .to-blue-500 {
     --tw-gradient-to: var(--color-blue-500);
     --tw-gradient-stops: var(
@@ -502,7 +501,7 @@
       var(--tw-gradient-to) var(--tw-gradient-to-position)
     );
   }
- /*tokens: p-4 <= src/pages/index/index.tsx, src/pages/issue-998/index.css, src/pages/issue-998/index.tsx */
+ /*tokens: p-4 <= src/pages/index/index.tsx, src/pages/issue-998/index.tsx */
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
@@ -564,7 +563,7 @@
   .text-slate-900 {
     color: var(--color-slate-900);
   }
- /*tokens: text-white <= src/app.css, src/pages/index/index.tsx */
+ /*tokens: text-white <= src/pages/index/index.tsx */
   .text-white {
     color: var(--color-white);
   }
@@ -588,17 +587,26 @@
     content: var(--tw-content) !important;
   }
  /*tokens: dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
-  .dark\:bg-zinc-900.theme-dark,
+  .dark\:bg-zinc-900.theme-dark {
+    background-color: var(--color-zinc-900);
+  }
+ /*tokens: theme-dark <= src/pages/index/index.tsx | dark:bg-zinc-900 <= src/pages/index/index.tsx */
   .theme-dark .dark\:bg-zinc-900 {
     background-color: var(--color-zinc-900);
   }
  /*tokens: dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
-  .dark\:bg-zinc-950.theme-dark,
+  .dark\:bg-zinc-950.theme-dark {
+    background-color: var(--color-zinc-950);
+  }
+ /*tokens: theme-dark <= src/pages/index/index.tsx | dark:bg-zinc-950 <= src/pages/index/index.tsx */
   .theme-dark .dark\:bg-zinc-950 {
     background-color: var(--color-zinc-950);
   }
  /*tokens: dark:text-zinc-50 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
-  .dark\:text-zinc-50.theme-dark,
+  .dark\:text-zinc-50.theme-dark {
+    color: var(--color-zinc-50);
+  }
+ /*tokens: theme-dark <= src/pages/index/index.tsx | dark:text-zinc-50 <= src/pages/index/index.tsx */
   .theme-dark .dark\:text-zinc-50 {
     color: var(--color-zinc-50);
   }

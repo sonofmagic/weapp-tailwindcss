@@ -1,5 +1,5 @@
 import type { ParseError, ParseResult } from '@babel/parser'
-import type { NodePath, TraverseOptions } from '@babel/traverse'
+import type { NodePath, TraverseOptions, Visitor } from '@babel/traverse'
 import type { CallExpression, ExportDeclaration, File, ImportDeclaration, Node, StringLiteral, TemplateElement } from '@babel/types'
 import type { IJsHandlerOptions, JsHandlerResult } from '../types'
 import type { EvalHandler } from './evalTransforms'
@@ -156,7 +156,7 @@ export function analyzeSource(
         }
       }
 
-  const traverseOptions: TraverseOptions<Node> = {
+  const traverseOptions: TraverseOptions & Visitor<Node> = {
     StringLiteral: {
       enter(p) {
         if (isEvalPath(p.parentPath)) {

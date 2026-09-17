@@ -1,3 +1,4 @@
+import type { RememberedCssSource } from './types'
 import { normalizeMiniProgramImportShell } from '../../shared/generator-css/output-import-shell'
 import { scheduleViteCssTransform } from './transform-scheduling'
 
@@ -143,7 +144,7 @@ export async function processViteCssBundleEntry(options: any) {
   const rootImportShellOutputFile = resolveReplayCssOutputFile(outDir, originalSource.fileName || file)
   const rootImportShellPlan = resolveFrameworkRootImportShellPlan({
     assetSourceFile,
-    configuredTargetFiles: getConfiguredTailwindV4CssSourceEntries().map(entry => resolveMatchedCssSourceOutputFile(entry.file)),
+    configuredTargetFiles: getConfiguredTailwindV4CssSourceEntries().map((entry: { file: string }) => resolveMatchedCssSourceOutputFile(entry.file)),
     file,
     isMainChunk: opts.mainCssChunkMatcher(rootImportShellOutputFile, opts.appType),
     isWebGeneratorTarget,
@@ -210,7 +211,7 @@ export async function processViteCssBundleEntry(options: any) {
     kind: viteProcessedCssAsset ? 'bundler-generated' : 'user',
   }
   let resolvedFromTemporaryCssAsset = false
-  const applyCssResult = (source) => {
+  const applyCssResult = (source: string) => {
     applyCssResultToBundle({
       assetSourceFile,
       bundle,
@@ -261,8 +262,8 @@ export async function processViteCssBundleEntry(options: any) {
     getSourceStyleSources: getSourceCandidateSources,
     hasExplicitConfiguredRootSource: hasExplicitConfiguredRootCssEntryForOutput(outputFile),
     inferenceSourceRoot: sourceRoot,
-    isConfiguredSourceProcessed: sourceFile => hasViteProcessedCssResultForSource(sourceFile, getViteProcessedCssAssetResults),
-    isConfiguredSourceUsed: sourceFile => usedConfiguredTailwindV4CssSourceFiles.has(normalizeOutputPathKey(sourceFile)),
+    isConfiguredSourceProcessed: (sourceFile: string) => hasViteProcessedCssResultForSource(sourceFile, getViteProcessedCssAssetResults),
+    isConfiguredSourceUsed: (sourceFile: string) => usedConfiguredTailwindV4CssSourceFiles.has(normalizeOutputPathKey(sourceFile)),
     isCurrentRootMiniProgramStyleOutput,
     normalizeConfiguredSourceFile: normalizeConfiguredTailwindV4CssEntryFileKey,
     originalSource,
@@ -272,7 +273,7 @@ export async function processViteCssBundleEntry(options: any) {
     rawSource,
     resolveConfiguredRootSource: () => resolveConfiguredRootCssSourceStyle(outputFile, configuredTailwindV4CssSourceEntries, originalSource.originalFileNames),
     resolveMatchedOutputFile: resolveMatchedOutputFileForCurrentAsset,
-    resolveTemporarySource: (temporaryOutputFile, temporaryRawSource) => temporaryCssAssetSourceResolver.resolve(temporaryOutputFile, temporaryRawSource),
+    resolveTemporarySource: (temporaryOutputFile: string, temporaryRawSource?: string) => temporaryCssAssetSourceResolver.resolve(temporaryOutputFile, temporaryRawSource),
     selectConfiguredRootSource: () => selectConfiguredRootCssSourceEntry(outputFile, configuredTailwindV4CssSourceEntries, originalSource.originalFileNames),
     shouldKeepCurrentRootOutput: shouldKeepCurrentRootCssOutputForConfiguredSource,
     shouldKeepRootImportShell: shouldKeepCurrentRootMiniProgramStyleOutputAsImportShell,
@@ -326,7 +327,7 @@ export async function processViteCssBundleEntry(options: any) {
       ...cssPipelineContext2,
       file: rootImportShellOutputFile,
     })),
-    shouldSkipRememberedSource: (remembered) => {
+    shouldSkipRememberedSource: (remembered: RememberedCssSource) => {
       const shouldSkip = shouldSkipRawRememberedCssSource(remembered.rawSource, remembered.sourceFile)
       if (shouldSkip) {
         debug('css skip raw remembered source style: %s -> %s', remembered.sourceFile, outputFile)
@@ -363,8 +364,8 @@ export async function processViteCssBundleEntry(options: any) {
   const sourceTraceTokenSources = sourceTraceSources ? createCssTokenSourceMap(sourceTraceSources, opts) : void 0
   const sourceTraceSignature = createCssSourceTraceCacheSignature(sourceTraceTokenSources, opts)
   const scopedGeneratorRuntime = await createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, generatorRawSource, generatorSourceFile)
-  const annotateCss = css => annotateCssSourceTrace(css, { opts, tokenSources: sourceTraceTokenSources })
-  const removeRootCoveredCssFromScopedAsset = (css) => {
+  const annotateCss = (css: string) => annotateCssSourceTrace(css, { opts, tokenSources: sourceTraceTokenSources })
+  const removeRootCoveredCssFromScopedAsset = (css: string) => {
     const normalizedOutputFile = normalizeOutputPathKey(outputFile.replace(/[?#].*$/, ''))
     const isRootOrSubpackageCss = !normalizedOutputFile.includes('/')
       || (
@@ -407,7 +408,7 @@ export async function processViteCssBundleEntry(options: any) {
   const trackedGeneratorCandidateSignature = shouldTrackGeneratorRuntime ? createCandidateSignature(scopedGeneratorRuntime) : 'generator:stable'
   const scopedGeneratorCandidateSignature = shouldTrackGeneratorRuntime ? await createScopedGeneratorCandidateSignature(generatorRawSource, generatorSourceFile, trackedGeneratorCandidateSignature, scopedSourceCandidateGetter, { includeFallbackSignature: generatorCssHandlerOptions.isMainChunk, majorVersion: runtimeState.tailwindRuntime.majorVersion }) : trackedGeneratorCandidateSignature
   const linkedImpactSignature = isRuntimeLinkedCss ? resolveViteCssLinkedImpactSignature({ changedHtmlFiles: snapshot.runtimeAffectingChangedByType.html, changedJsFiles: snapshot.runtimeAffectingChangedByType.js, runtimeAffectingSignatureByFile: snapshot.runtimeAffectingSignatureByFile }) : ''
-  const cssTransformCachePlan = resolveViteCssTransformCachePlan({ cssIsMainChunk: cssHandlerOptions2.isMainChunk === true, cssRuntimeAffectingHash, cssShareScope, linkedImpactSignature, outputFile, runtimeSignature, scopedGeneratorCandidateSignature, sourceTraceSignature, tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion })
+  const cssTransformCachePlan = resolveViteCssTransformCachePlan({ cssBundleSourceHash: isWebGeneratorTarget ? cache.computeHash(rawSource) : undefined, cssIsMainChunk: cssHandlerOptions2.isMainChunk === true, cssRuntimeAffectingHash, cssShareScope, linkedImpactSignature, outputFile, runtimeSignature, scopedGeneratorCandidateSignature, sourceTraceSignature, tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion })
   const { cssCacheKey, cssHashKey, cssSharedCacheKey, cssTaskHash, rememberedCssRuntimeSignature } = cssTransformCachePlan
   if (shouldReplayLastCss) {
     const lastCss = getLastCssResult(lastCssResultByFile, outputFile, file)

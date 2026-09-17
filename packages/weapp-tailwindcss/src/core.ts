@@ -99,7 +99,7 @@ export function createContext(options: UserDefinedOptions = {}) {
       revision: runtimeState.revision,
       operationId,
       durationMs: performance.now() - startedAt,
-      error: error ? { name: error instanceof Error ? error.name : undefined, message: error instanceof Error ? error.message : String(error) } : undefined,
+      ...(error ? { error: { ...(error instanceof Error ? { name: error.name } : {}), message: error instanceof Error ? error.message : String(error) } } : {}),
     })
   }
 

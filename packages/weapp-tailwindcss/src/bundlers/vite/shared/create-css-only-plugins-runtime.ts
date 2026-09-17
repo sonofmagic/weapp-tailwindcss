@@ -1,4 +1,5 @@
 import type { Plugin, ResolvedConfig } from 'vite'
+import type { CssStage } from '@/compiler'
 import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -123,7 +124,7 @@ export function createCssOnlyVitePlugins(
   const generatedCssByFile = new Map<string, string>()
   const generateCss = createFrameworkCssGenerationQueue(
     id => cleanUrl(id),
-    async (id, code, hookContext) => {
+    async (id: string, code: string, hookContext?: { sourceCandidates?: Iterable<string>, cssStage?: CssStage | undefined, addWatchFile?: (file: string) => void }) => {
       if (!shouldGenerate || !isCSSRequest(id)) {
         return undefined
       }
@@ -211,7 +212,7 @@ export function createCssOnlyVitePlugins(
     opts,
     resolveViteStylePlatform: () => 'web',
     refreshRuntimeState: async () => { await refreshRuntimeState(true) },
-    setResolvedConfig: (config) => { resolvedConfig = config },
+    setResolvedConfig: (config: ResolvedConfig) => { resolvedConfig = config },
     shouldInferAppType: false,
     shouldOwnTailwindGeneration: shouldGenerate,
     syncCssEntriesFromAnchor: () => false,

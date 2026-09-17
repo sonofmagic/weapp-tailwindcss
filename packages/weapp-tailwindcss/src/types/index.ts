@@ -1,5 +1,5 @@
 import type { ParseError, ParserOptions } from '@babel/parser'
-import type { CssPreflightOptions, Document, IStyleHandlerOptions, Result as PostcssResult, Root } from '@weapp-tailwindcss/postcss'
+import type { CssPreflightOptions, IStyleHandlerOptions, StyleHandler } from '@weapp-tailwindcss/postcss'
 import type { SourceMap } from 'magic-string'
 import type { ICreateCacheReturnType } from '../cache'
 import type { ItemOrItemArray } from './base'
@@ -158,9 +158,10 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
 }
 
 export interface InternalUserDefinedOptions extends InternalUserDefinedOptionsBase {
+  customAttributesEntities: ICustomAttributesEntities
   supportCustomLengthUnits: LengthUnitsRuntimeOptions | boolean
   templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => Promise<string>
-  styleHandler: (rawSource: string, options?: IStyleHandlerOptions) => Promise<PostcssResult<Root | Document>>
+  styleHandler: StyleHandler
   jsHandler: JsHandler
   escapeMap: Record<string, string>
   customReplaceDictionary: Record<string, string>

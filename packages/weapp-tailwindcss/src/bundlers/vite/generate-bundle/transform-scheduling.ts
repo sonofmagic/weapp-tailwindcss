@@ -125,7 +125,7 @@ export function scheduleViteCssTransform(options: any) {
   }
 
   cssTaskFactories.push(() => timeTask('css', () => processViteCssCacheTask({
-    applyResult(source) {
+    applyResult(source: string) {
       applyViteCssCacheResult({
         applyCssResult,
         cssRuntimeAffectingHash,
@@ -153,10 +153,10 @@ export function scheduleViteCssTransform(options: any) {
       metrics.css.cacheHits++
       debug('css shared hit: %s', file)
     },
-    onSharedResult(sharedCss) {
+    onSharedResult(sharedCss: string) {
       onUpdate(file, rawSource, sharedCss)
     },
-    onTransformResult(css) {
+    onTransformResult(css: string) {
       onUpdate(outputFile, rawSource, css)
       debug('css handle: %s', outputFile)
     },

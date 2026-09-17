@@ -1,7 +1,8 @@
+import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import { cleanUrl } from '../utils'
 
-export function collectConfiguredCssEntries(options) {
+export function collectConfiguredCssEntries(options: UserDefinedOptions) {
   const runtimeCssEntries = options.tailwindcssRuntimeOptions?.tailwindcss?.v4?.cssEntries
   const entries = [
     ...(Array.isArray(options.cssEntries) ? options.cssEntries : []),
@@ -11,7 +12,7 @@ export function collectConfiguredCssEntries(options) {
   return entries.length > 0 ? [...new Set(entries)] : void 0
 }
 
-export function inferPlatformFromOutDir(outDir) {
+export function inferPlatformFromOutDir(outDir: string | undefined) {
   const segment = outDir ? path.basename(path.normalize(outDir)) : void 0
   if (!segment) {
     return void 0
@@ -23,15 +24,15 @@ export function inferPlatformFromOutDir(outDir) {
   return void 0
 }
 
-export function isWebOrNativeAppPlatform(platform) {
+export function isWebOrNativeAppPlatform(platform: string | undefined) {
   return platform === 'h5' || platform === 'web' || platform?.startsWith('web-') === true || platform === 'app' || platform === 'app-plus' || platform?.startsWith('app-') === true
 }
 
-export function isInternalUserDefinedOptions(options) {
-  return typeof options.onLoad === 'function' && typeof options.mainCssChunkMatcher === 'function' && typeof options.tailwindRuntime === 'object' && typeof options.refreshTailwindcssRuntime === 'function'
+export function isInternalUserDefinedOptions(options: UserDefinedOptions | InternalUserDefinedOptions): options is InternalUserDefinedOptions {
+  return typeof options.onLoad === 'function' && typeof options.mainCssChunkMatcher === 'function' && 'tailwindRuntime' in options && typeof options.tailwindRuntime === 'object' && 'refreshTailwindcssRuntime' in options && typeof options.refreshTailwindcssRuntime === 'function'
 }
 
-export function isNuxtPageHotModule(id) {
+export function isNuxtPageHotModule(id: unknown) {
   if (typeof id !== 'string') {
     return false
   }

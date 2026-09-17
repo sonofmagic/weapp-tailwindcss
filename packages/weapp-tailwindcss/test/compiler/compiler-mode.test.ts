@@ -20,10 +20,10 @@ function createGenerationOptions(debug = vi.fn()) {
   }
 }
 
-function createGeneratedResult(css: string) {
+function createGeneratedResult(css: string, target = 'web') {
   return {
     css,
-    target: 'web',
+    target,
     classSet: new Set(['p-4']),
     dependencies: [],
     source: 'generator' as const,
@@ -118,11 +118,11 @@ describe('compiler mode', () => {
     expect(result?.metadata.file).toBe(physicalFile)
   })
 
-  it('uses the root framework adapter in graph mode', async () => {
+  it.each(['weapp', 'web'])('uses the %s framework adapter in graph mode', async (target) => {
     process.env[COMPILER_MODE_ENV] = 'graph'
     const generateCssByGenerator = vi.fn(async (options: { deferCssAdaptation?: boolean }) => {
-      expect(options.deferCssAdaptation).toBe(true)
-      return createGeneratedResult('.token { color: framework-token; }')
+      expect(options.deferCssAdaptation).toBe(target === 'weapp')
+      return createGeneratedResult('.token { color: framework-token; }', target)
     })
     vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
     const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
@@ -138,11 +138,16 @@ describe('compiler mode', () => {
     )
     const owner = {
       cssPreflight: false,
-      generator: { target: 'weapp' },
+      generator: { target },
       styleHandler,
     } as any
     captureFrameworkPostcssOptions(owner, {
-      plugins: [{ postcssPlugin: 'framework-plugin' }],
+      plugins: [{
+        postcssPlugin: 'framework-plugin',
+        Declaration(decl: any) {
+          decl.value = decl.value.replace('framework-token', 'processed-token')
+        },
+      }],
     })
 
     const result = await generateTailwindV4Css({
@@ -153,7 +158,8 @@ describe('compiler mode', () => {
       styleHandler,
     })
 
-    expect(transformRoot).toHaveBeenCalledTimes(1)
+    expect(transformRoot).toHaveBeenCalledTimes(target === 'weapp' ? 1 : 0)
+    expect(styleHandler).not.toHaveBeenCalled()
     expect(result?.css).toContain('processed-token')
     expect(result?.artifact.fragments[0]?.root.toString()).toContain('processed-token')
   })

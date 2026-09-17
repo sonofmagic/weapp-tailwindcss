@@ -30,6 +30,7 @@ export async function finalizeFallbackGeneratorCss(
   ) {
     const userCss = await transformGeneratorUserCss(generatedUserCssRawSource, {
       generatorTarget: generated.target,
+      compileAuthorCssFunctions: context.compileAuthorCssFunctions,
       generatedSource: generated.rawCss,
       generatorStyleOptions,
       cssUserHandlerOptions,
@@ -45,6 +46,7 @@ export async function finalizeFallbackGeneratorCss(
       const layerParts = splitUserCssLayerBlocks(generatorRawSource)
       const layerUserCss = await transformGeneratorUserCss(layerParts.layer, {
         generatorTarget: generated.target,
+        compileAuthorCssFunctions: context.compileAuthorCssFunctions,
         generatedSource: generated.rawCss,
         generatorStyleOptions,
         cssUserHandlerOptions,
@@ -73,6 +75,7 @@ export async function finalizeFallbackGeneratorCss(
         distinctUserLayerParts.layer,
         {
           generatorTarget: generated.target,
+          compileAuthorCssFunctions: context.compileAuthorCssFunctions,
           generatedSource: generated.rawCss,
           generatorStyleOptions,
           cssUserHandlerOptions,
@@ -102,6 +105,7 @@ export async function finalizeFallbackGeneratorCss(
         : generatedUserCssRawSource
       const userCss = await transformGeneratorUserCss(distinctUserCssRawSource, {
         generatorTarget: generated.target,
+        compileAuthorCssFunctions: context.compileAuthorCssFunctions,
         generatedSource: generated.rawCss,
         generatorStyleOptions,
         cssUserHandlerOptions,
@@ -126,6 +130,7 @@ export async function finalizeFallbackGeneratorCss(
         : cleanedUserCssRawSource
       const userCss = await transformGeneratorUserCss(cleanedUserCssRestSource, {
         generatorTarget: generated.target,
+        compileAuthorCssFunctions: context.compileAuthorCssFunctions,
         generatedSource: generated.rawCss,
         generatorStyleOptions,
         cssUserHandlerOptions,
@@ -139,6 +144,7 @@ export async function finalizeFallbackGeneratorCss(
     else if (hasMatchedCssSourceFile && generated.target === 'weapp' && hasUserCssLayerBlocks(generatedUserCssRawSource)) {
       const layerUserCss = await transformGeneratorUserCss(splitUserCssLayerBlocks(generatedUserCssRawSource).layer, {
         generatorTarget: generated.target,
+        compileAuthorCssFunctions: context.compileAuthorCssFunctions,
         generatedSource: generated.rawCss,
         generatorStyleOptions,
         cssUserHandlerOptions,
@@ -183,6 +189,7 @@ export async function finalizeFallbackGeneratorCss(
     ) {
       const userCss = await transformGeneratorUserCss(generatedUserCssRawSource, {
         generatorTarget: generated.target,
+        compileAuthorCssFunctions: context.compileAuthorCssFunctions,
         generatedSource: generated.rawCss,
         generatorStyleOptions,
         cssUserHandlerOptions,
@@ -203,7 +210,7 @@ export async function finalizeFallbackGeneratorCss(
       classSet: resolveGeneratedCssClassSet(generated.target, generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap, options.previousClassSet),
       target: generated.target,
       source: 'generator',
-      dependencies: generated.dependencies,
+      dependencies: [...generated.dependencies],
       metadata: {
         file,
         majorVersion,
@@ -224,7 +231,7 @@ export async function finalizeFallbackGeneratorCss(
       styleHandler,
       cssHandlerOptions,
       generatorStyleOptions,
-      { preserveSelectorOverrides: shouldPreserveLegacyCompatSelectorOverrides, generatedSource: generated.rawCss },
+      { preserveSelectorOverrides: shouldPreserveLegacyCompatSelectorOverrides, generatedSource: generated.rawCss, compileAuthorCssFunctions: context.compileAuthorCssFunctions },
     )
     css = await appendLegacyContainerCompatCss(
       css,
@@ -250,6 +257,7 @@ export async function finalizeFallbackGeneratorCss(
       : generatedUserCssRawSource
     const userCss = await transformGeneratorUserCss(distinctUserCssRawSource, {
       generatorTarget: generated.target,
+      compileAuthorCssFunctions: context.compileAuthorCssFunctions,
       generatedSource: generated.rawCss,
       generatorStyleOptions,
       cssUserHandlerOptions,
@@ -272,7 +280,7 @@ export async function finalizeFallbackGeneratorCss(
     classSet: resolveGeneratedCssClassSet(generated.target, generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap, options.previousClassSet),
     target: generated.target,
     source: 'generator',
-    dependencies: generated.dependencies,
+    dependencies: [...generated.dependencies],
     metadata: {
       file,
       majorVersion,

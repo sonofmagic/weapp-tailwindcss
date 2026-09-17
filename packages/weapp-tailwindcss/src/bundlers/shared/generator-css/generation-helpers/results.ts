@@ -1,5 +1,5 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import type { createWeappTailwindcssGenerator } from '@/generator'
+import type { CompilerGenerateResult, CompilerSnapshot } from '@/core/compiler'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../directives'
 import { splitGeneratorPlaceholderCssBySourceOrder, splitTailwindGeneratedCssByBanner, splitTailwindV4GeneratedCssBySourceOrder } from '../markers'
 import { deduplicateGeneratedCssRules } from './source-order'
@@ -111,4 +111,6 @@ export function mergeGeneratorResults(generatedResults: GeneratorResult[]) {
     sources: generatedResults.flatMap(item => item.sources),
   }
 }
-type GeneratorResult = Awaited<ReturnType<ReturnType<typeof createWeappTailwindcssGenerator>['generate']>>
+export type GeneratorResult = Omit<CompilerGenerateResult, 'cache' | 'revision' | 'snapshot'> & {
+  snapshot?: CompilerSnapshot | undefined
+}

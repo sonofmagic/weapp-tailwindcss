@@ -107,6 +107,7 @@ describe('tailwindcss runtime factory internals', () => {
         tailwindcss: {
           packageName: 'tailwindcss',
           version: 4,
+          v4: { bareArbitraryValues: { units: ['px'] } },
         },
       },
     })
@@ -114,6 +115,11 @@ describe('tailwindcss runtime factory internals', () => {
     expect(runtime.getClassSetSync?.()).toEqual(new Set())
     const extracted = await runtime.extract({ removeUniversalSelector: true, write: false })
 
+    expect(resolveValidTailwindV4Candidates).toHaveBeenCalledWith(
+      { design: true },
+      expect.any(Set),
+      { bareArbitraryValues: { units: ['px'] } },
+    )
     expect(extracted.classSet.has('text-red-500')).toBe(true)
     expect(extracted.classSet.has('flex')).toBe(true)
     expect(extracted.classSet.has('grid')).toBe(false)

@@ -249,18 +249,19 @@ export async function appendLegacyCompatCss(
   styleHandler: InternalUserDefinedOptions['styleHandler'],
   cssHandlerOptions: IStyleHandlerOptions,
   generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
-  options: { preserveSelectorOverrides?: boolean | undefined, generatedSource?: string | undefined } = {},
+  options: { preserveSelectorOverrides?: boolean | undefined, generatedSource?: string | undefined, compileAuthorCssFunctions?: ((css: string) => Promise<string>) | undefined } = {},
 ) {
   const resolvedCompatSource = resolveLegacyCompatCssSource(rawSource)
   const normalizedCompatSource = generatorTarget === 'weapp'
     ? removeMiniProgramContainerCompatCss(resolvedCompatSource)
     : resolvedCompatSource
-  const compatSource = options.preserveSelectorOverrides
+  const filteredCompatSource = options.preserveSelectorOverrides
     ? normalizedCompatSource
     : removeGeneratedSelectorCompatCss(normalizedCompatSource, css)
-  if (compatSource.trim().length === 0) {
+  if (filteredCompatSource.trim().length === 0) {
     return css
   }
+  const compatSource = await options.compileAuthorCssFunctions?.(filteredCompatSource) ?? filteredCompatSource
   if (generatorTarget !== 'weapp') {
     return createCssAppend(css, compatSource)
   }

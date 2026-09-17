@@ -320,16 +320,16 @@ export function createMergedStyleValues(code: string, localStyles: StyleValue[],
     }
     const indexes = merged.flatMap((style, index) => style[className] ? [index] : [])
     if (indexes.length === 0) {
-      merged[0][className] = mergeStyleEntry(undefined, generatedStyle)
+      merged[0]![className] = mergeStyleEntry(undefined, generatedStyle)
       changed = true
       continue
     }
     for (const index of indexes) {
-      const next = mergeStyleEntry(merged[index][className], generatedStyle)
-      if (JSON.stringify(merged[index][className]) === JSON.stringify(next)) {
+      const next = mergeStyleEntry(merged[index]![className], generatedStyle)
+      if (JSON.stringify(merged[index]![className]) === JSON.stringify(next)) {
         continue
       }
-      merged[index][className] = next
+      merged[index]![className] = next
       changed = true
     }
   }

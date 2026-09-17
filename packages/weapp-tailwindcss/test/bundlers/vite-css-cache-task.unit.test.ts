@@ -21,6 +21,48 @@ function createOutputAsset(): OutputAsset {
 }
 
 describe('vite css cache task', () => {
+  it('invalidates aggregate web CSS when an ordinary module changes with stable candidates', async () => {
+    const cache = createCache()
+    const sharedResultCache = new Map<string, Promise<string>>()
+    const applied: string[] = []
+    const transform = vi.fn(async (source: string) => source)
+    const run = async (source: string) => {
+      const plan = resolveViteCssTransformCachePlan({
+        cssIsMainChunk: true,
+        cssRuntimeAffectingHash: 'unchanged-tailwind-source',
+        cssBundleSourceHash: cache.computeHash(source),
+        cssShareScope: 'web-root',
+        linkedImpactSignature: '',
+        outputFile: 'assets/index.css',
+        runtimeSignature: 'runtime',
+        scopedGeneratorCandidateSignature: 'flex',
+        sourceTraceSignature: '',
+        tailwindcssMajorVersion: 4,
+      })
+      await processViteCssCacheTask({
+        applyResult: result => applied.push(result),
+        cache,
+        cacheKey: plan.cssCacheKey,
+        hashKey: plan.cssHashKey,
+        onCacheHit: vi.fn(),
+        onSharedCacheHit: vi.fn(),
+        onSharedResult: vi.fn(),
+        onTransformResult: vi.fn(),
+        sharedCacheKey: plan.cssSharedCacheKey,
+        sharedResultCache,
+        taskHash: plan.cssTaskHash,
+        transform: () => transform(source),
+      })
+    }
+    const first = '.flex{display:flex}.ordinary{color:red}'
+    const second = '.flex{display:flex}.ordinary{color:blue}'
+    await run(first)
+    await run(second)
+    await run(first)
+    expect(applied).toEqual([first, second, first])
+    expect(transform).toHaveBeenCalledTimes(2)
+  })
+
   it('applies cached css to the last-result and remembered source owners', () => {
     const applyCssResult = vi.fn()
     const markCssAssetProcessed = vi.fn()

@@ -337,7 +337,7 @@ export interface StyleHandler {
   /**
    * 处理调用方持有的 CSS AST。输入 Root 不会被原地修改，返回结果也不会与内部缓存共享可变节点。
    */
-  transformRoot: (root: Root, opt?: Partial<IStyleHandlerOptions>) => Promise<PostcssResult>
+  transformRoot: (root: Root, opt?: Partial<IStyleHandlerOptions>) => Promise<PostcssResult<Root>>
   // getPipeline 允许外部在不同配置下获取预组装的流水线信息
   getPipeline: (opt?: Partial<IStyleHandlerOptions>) => StyleProcessingPipeline
 }

@@ -252,7 +252,9 @@ describe('uni-app-x vite plugins', () => {
     expect(result?.code).toBe(`css:${source}`)
     // formatPostcssSourceMap 使用 path.resolve 后转 posix，Windows 下会带盘符
     const expectedFooCss = toPosix(path.resolve(path.dirname('/foo.css'), '/foo.css'))
-    expect((result?.map as any)?.sources).toContain(expectedFooCss)
+    const sourceMap = typeof result?.map === 'string' ? JSON.parse(result.map) : result?.map
+    expect(sourceMap?.sources).toContain(expectedFooCss)
+    expect(sourceMap?.sourcesContent).toEqual([source])
   })
 
   it('treats imported Native Tailwind roots as global css when the SFC request is not a main chunk', async () => {
@@ -846,6 +848,7 @@ describe('uni-app-x vite plugins', () => {
         customAttributesEntities,
         disabledDefaultTemplateHandler: true,
         native: true,
+        localStyleVariants: true,
       },
     )
     expect(transformResult).toEqual({ code: 'transformed', map: null })
@@ -1332,6 +1335,7 @@ describe('uni-app-x vite plugins', () => {
         {
           enableComponentLocalStyle: true,
           native: true,
+          localStyleVariants: true,
         },
       )
     }
@@ -1384,6 +1388,7 @@ describe('uni-app-x vite plugins', () => {
           componentMatcher,
           enableComponentLocalStyle: true,
           native: true,
+          localStyleVariants: true,
           pageMatcher,
         },
     )
@@ -1662,6 +1667,7 @@ describe('uni-app-x vite plugins', () => {
         runtimeSet,
         {
           native: true,
+          localStyleVariants: true,
         },
       )
     }

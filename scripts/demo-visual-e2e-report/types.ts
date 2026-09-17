@@ -58,3 +58,9 @@ export interface MiniProgramHmrVisualConfig {
   steps: VisualHmrStep[]
   mutate: (step: VisualHmrStep, previous?: MiniProgramHmrMutation) => Promise<MiniProgramHmrMutation>
 }
+
+export interface MiniProgramThemeExpectation {
+  manualClass: string
+  backgroundColor: [number, number, number]
+  scrollContainer?: string
+}

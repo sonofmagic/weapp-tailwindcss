@@ -74,6 +74,27 @@ it('超时保留阶段日志、信号和底层错误，仍然拒绝探测', asyn
     stderr: 'process-discovery: querying',
   } as ReturnType<typeof spawnSync>)
   await expect(findRunningHBuilderXCliCandidates('win32')).rejects.toThrow(/signal=SIGTERM[\s\S]*ETIMEDOUT[\s\S]*process-discovery: querying/)
+  expect(vi.mocked(spawnSync)).toHaveBeenCalledTimes(3)
+})
+
+it('Windows 探测超时时重试，成功后不再报错', async () => {
+  vi.mocked(spawnSync)
+    .mockReturnValueOnce({
+      status: null,
+      signal: 'SIGTERM',
+      error: Object.assign(new Error('spawnSync powershell.exe ETIMEDOUT'), { code: 'ETIMEDOUT' }),
+      stdout: '',
+      stderr: 'process-discovery: querying',
+    } as ReturnType<typeof spawnSync>)
+    .mockReturnValueOnce({
+      status: 0,
+      stdout: processOutput(['C:\\中文, 空格 & IDE\\HBuilderX.exe']),
+      stderr: 'process-discovery: complete',
+    } as ReturnType<typeof spawnSync>)
+  await expect(findRunningHBuilderXCliCandidates('win32')).resolves.toEqual([
+    'C:\\中文, 空格 & IDE\\cli.exe',
+  ])
+  expect(vi.mocked(spawnSync)).toHaveBeenCalledTimes(2)
 })
 
 it('识别盘符根目录中的 IDE', async () => {

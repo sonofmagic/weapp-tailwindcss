@@ -56,7 +56,9 @@ export function expandUniAppXHarmonyApplyStyles(source: string, generatedCss: st
       return block
     }
     if (!root.toString().includes('@apply')) {
-      root.walkAtRules('reference', rule => rule.remove())
+      root.walkAtRules('reference', (rule) => {
+        rule.remove()
+      })
     }
     return `${open}${root.toString()}${close}`
   })

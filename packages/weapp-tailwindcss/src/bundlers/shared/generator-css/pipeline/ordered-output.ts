@@ -33,7 +33,7 @@ export async function finalizeOrderedGeneratorCss(
       classSet: resolveGeneratedCssClassSet(generated.target, generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap, options.previousClassSet),
       target: generated.target,
       source: 'generator',
-      dependencies: generated.dependencies,
+      dependencies: [...generated.dependencies],
       incremental: true,
       metadata: {
         file,
@@ -58,6 +58,7 @@ export async function finalizeOrderedGeneratorCss(
     }
     const userCssOptions = {
       generatorTarget: generated.target,
+      compileAuthorCssFunctions: context.compileAuthorCssFunctions,
       generatedSource: generated.rawCss,
       generatorStyleOptions,
       cssUserHandlerOptions,
@@ -138,7 +139,7 @@ export async function finalizeOrderedGeneratorCss(
           styleHandler,
           cssHandlerOptions,
           generatorStyleOptions,
-          { preserveSelectorOverrides: shouldPreserveLegacyCompatSelectorOverrides, generatedSource: generated.rawCss },
+          { preserveSelectorOverrides: shouldPreserveLegacyCompatSelectorOverrides, generatedSource: generated.rawCss, compileAuthorCssFunctions: context.compileAuthorCssFunctions },
         )
         if (!isolateCurrentCssCandidates) {
           css = await appendLegacyContainerCompatCss(
@@ -168,7 +169,7 @@ export async function finalizeOrderedGeneratorCss(
       classSet: resolveGeneratedCssClassSet(generated.target, generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap, options.previousClassSet),
       target: generated.target,
       source: 'generator',
-      dependencies: generated.dependencies,
+      dependencies: [...generated.dependencies],
       metadata: {
         file,
         majorVersion,

@@ -5,7 +5,7 @@ import { consumeCompilationScopeChanges, createCompilerShadowReport, createCssFr
 import { getFrameworkCompilerSession } from '@/compiler/framework-compiler-session'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { adaptGeneratedCssWithFrameworkPipeline, adaptGeneratedCssWithFrameworkRootPipeline, hasFrameworkPostcssOptions } from './framework-postcss'
-import { restoreFrameworkProcessedUserCss } from './framework-user-css'
+import { normalizeFrameworkProcessedUserCss, restoreFrameworkProcessedUserCss } from './framework-user-css'
 import { generateCssByGenerator } from './generator-css'
 import { resolveGeneratedCssClassSet } from './generator-css/result-helpers'
 import { preferScopedGeneratedCssRules } from './generator-css/scoped-rules'
@@ -18,8 +18,6 @@ export interface TailwindV4GenerationCoreInput extends GenerateCssByGeneratorOpt
   compilationChanges?: CompilationDependencyChange[] | undefined
   frameworkPostcssOwner?: InternalUserDefinedOptions | undefined
   cssStage?: CssStage | undefined
-  /** 框架已转换的 bundle CSS，与待生成的原始源码分别传递。 */
-  frameworkProcessedUserCss?: string | undefined
   outputFile?: string | undefined
   onCompilerShadowReport?: ((report: CompilerShadowReport) => void) | undefined
   scope?: SourceScope | undefined
@@ -86,7 +84,7 @@ function createCoreArtifact(
       stage: 'adapted',
     }),
   ], {
-    classSet: generated.classSet,
+    classSet: new Set(generated.classSet),
     rawCandidates: options.runtime,
     dependencies: generated.dependencies,
     sourceEntries: options.cssHandlerOptions.sourceOptions?.cssEntries ?? [],
@@ -111,9 +109,9 @@ async function generateTailwindV4CssWithImplementation(
   })
   const shouldReplayFrameworkPostcss = options.cssStage === 'framework-processed'
     && hasFrameworkPostcssOptions(frameworkPostcssOwner)
-    && normalizedGeneratorOptions.target === 'weapp'
+
   const generationInput = !shouldReplayFrameworkPostcss && options.frameworkProcessedUserCss
-    ? { ...options, userRawSource: [options.userRawSource, options.frameworkProcessedUserCss].filter(Boolean).join('\n') }
+    ? { ...options, userRawSource: [options.userRawSource, options.frameworkProcessedUserCss].filter(Boolean).join('\n'), frameworkProcessedUserCss: undefined }
     : options
   const scope = options.scope ?? {
     id: options.outputFile ?? options.file,
@@ -123,6 +121,9 @@ async function generateTailwindV4CssWithImplementation(
     shouldReplayFrameworkPostcss
       ? {
           ...generationInput,
+          frameworkProcessedUserCss: options.frameworkProcessedUserCss === undefined
+            ? undefined
+            : normalizeFrameworkProcessedUserCss(options.frameworkProcessedUserCss),
           compilation: implementation.frameworkAdapter === 'graph'
             ? {
                 enabled: true,
@@ -131,7 +132,7 @@ async function generateTailwindV4CssWithImplementation(
                 ...(options.compilationChanges === undefined ? {} : { changes: options.compilationChanges }),
               }
             : undefined,
-          deferCssAdaptation: true,
+          deferCssAdaptation: normalizedGeneratorOptions.target === 'weapp',
         }
       : {
           ...generationInput,
@@ -166,19 +167,23 @@ async function generateTailwindV4CssWithImplementation(
       })
     : generated.css
   const composedCss = shouldReplayFrameworkPostcss && options.frameworkProcessedUserCss
-    ? await restoreFrameworkProcessedUserCss(adaptedCss, generated, options.frameworkProcessedUserCss, options, normalizedGeneratorOptions)
+    ? await restoreFrameworkProcessedUserCss(adaptedCss, generated, generated.frameworkProcessedUserCss ?? options.frameworkProcessedUserCss, options, normalizedGeneratorOptions)
     : adaptedCss
   const css = isVueScopedStyleRequest(resolvePostcssRequestOption(options.cssHandlerOptions))
     ? preferScopedGeneratedCssRules(composedCss)
     : composedCss
   const classSet = options.frameworkProcessedUserCss
     ? resolveGeneratedCssClassSet(generated.target, generated.classSet, options.runtime, css, options.opts.escapeMap, options.previousClassSet)
-    : generated.classSet
+    : new Set(generated.classSet)
   const artifact = implementation.emitArtifact
     ? createCoreArtifact({ ...generated, classSet }, css, options)
     : undefined
+  const {
+    compileAuthorCssFunctions: _compileAuthorCssFunctions,
+    ...generatedRest
+  } = generated
   return {
-    ...generated,
+    ...generatedRest,
     ...(artifact ? { artifact } : {}),
     css,
     classSet,

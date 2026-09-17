@@ -1,9 +1,10 @@
 import type { AcceptedPlugin } from '@weapp-tailwindcss/postcss'
-import type { IStyleHandlerOptions, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
+import type { LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
 import type { GenerateCssByGeneratorResult } from './generator-css'
+import type { BundlerStyleHandlerOptions as IStyleHandlerOptions } from './style-handler-options'
 import type { Compiler, CompilerSnapshot } from '@/core/compiler'
 import type { InternalUserDefinedOptions } from '@/types'
-import { removeTailwindPostcssPlugins } from '@weapp-tailwindcss/postcss'
+import { processFrameworkCss, removeTailwindPostcssPlugins } from '@weapp-tailwindcss/postcss'
 import { composeGenerationArtifact, createCssFragment, createGenerationArtifact, createStylePlatformAdapter } from '@/compiler'
 import { finalizeMiniProgramGeneratorCss } from './generator-css/generation-helpers'
 
@@ -170,7 +171,7 @@ function createFrameworkReplayArtifact(
       stage: 'raw',
     }),
   ], {
-    classSet: generated.classSet,
+    classSet: new Set(generated.classSet),
     rawCandidates: new Set(options.rawCandidates),
     dependencies: generated.dependencies,
     sourceEntries: options.cssHandlerOptions.sourceOptions?.cssEntries ?? [],
@@ -188,10 +189,11 @@ export async function adaptGeneratedCssWithFrameworkPipeline(
     styleHandler: InternalUserDefinedOptions['styleHandler']
   },
 ): Promise<string> {
-  const handled = await options.styleHandler(
-    generated.css,
-    createGeneratedCssHandlerOptions(owner, options.cssHandlerOptions, options.file),
-  )
+  const handlerOptions = createGeneratedCssHandlerOptions(owner, options.cssHandlerOptions, options.file)
+  if (generated.target === 'web') {
+    return (await processFrameworkCss(generated.css, handlerOptions.postcssOptions!)).css
+  }
+  const handled = await options.styleHandler(generated.css, handlerOptions)
   const preflightMode = generated.metadata?.preflightMode
   const injectPreflight = preflightMode?.inject ?? options.cssHandlerOptions.isMainChunk
   const preservePreflight = preflightMode?.preserve ?? options.cssHandlerOptions.isMainChunk
@@ -222,6 +224,9 @@ export async function adaptGeneratedCssWithFrameworkRootPipeline(
   },
 ): Promise<string> {
   const handlerOptions = createGeneratedCssHandlerOptions(owner, options.cssHandlerOptions, options.file)
+  if (generated.target === 'web') {
+    return (await processFrameworkCss(generated.css, handlerOptions.postcssOptions!)).css
+  }
   const replayArtifact = createFrameworkReplayArtifact(generated, options)
   const handled = options.compiler && options.snapshot
     ? composeGenerationArtifact(await (async () => {

@@ -35,6 +35,7 @@ export async function finalizeDeferredGeneratorCss(
 
       const userCssOptions = {
         generatorTarget: generated.target,
+        compileAuthorCssFunctions: context.compileAuthorCssFunctions,
         generatedSource: generated.rawCss,
         generatorStyleOptions,
         cssUserHandlerOptions,
@@ -71,13 +72,14 @@ export async function finalizeDeferredGeneratorCss(
     }
     const canAppendIncrementalCss = generated.target !== 'weapp' || !hasUserCssLayerBlocks(generatorRawSource)
     const incrementalRawCss = generated.incrementalRawCss ?? generated.incrementalCss
+    const previousCss = options.previousCss
     const shouldAppendIncrementalCss = canAppendIncrementalCss
-      && typeof options.previousCss === 'string'
+      && typeof previousCss === 'string'
       && typeof incrementalRawCss === 'string'
     const normalizedCss = shouldAppendIncrementalCss
       ? incrementalRawCss.trim().length > 0
-        ? createCssAppend(options.previousCss, await normalizeDeferredGeneratedCss(incrementalRawCss))
-        : options.previousCss
+        ? createCssAppend(previousCss, await normalizeDeferredGeneratedCss(incrementalRawCss))
+        : previousCss
       : await normalizeDeferredGeneratedCss(generated.rawCss ?? generated.css)
     const intermediateCss = shouldAppendIncrementalCss
       ? normalizedCss
@@ -99,7 +101,7 @@ export async function finalizeDeferredGeneratorCss(
       ),
       target: generated.target,
       source: 'generator',
-      dependencies: generated.dependencies,
+      dependencies: [...generated.dependencies],
       incremental: shouldAppendIncrementalCss,
       metadata: {
         file,

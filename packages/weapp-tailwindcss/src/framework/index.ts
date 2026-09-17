@@ -4,7 +4,7 @@ import process from 'node:process'
 
 export type DetectableAppType = 'mpx' | 'taro' | 'uni-app' | 'uni-app-vite' | 'uni-app-x' | 'weapp-vite'
 
-export type FrameworkEnv = Partial<Record<
+export type FrameworkEnv = Record<string, string | undefined> & Partial<Record<
   | 'MPX_CLI_MODE'
   | 'MPX_CURRENT_TARGET_MODE'
   | 'NODE_PATH'

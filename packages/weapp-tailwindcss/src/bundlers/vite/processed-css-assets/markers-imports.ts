@@ -144,16 +144,17 @@ function removeTailwindSourceMediaWrappersFallback(css: string) {
     .replace(/@media\s+source\([^)]*\)\s*\{\s*\}/gi, '')
 }
 
-export function removeTailwindEntryDirectivesFromCss(css: string) {
+export function removeTailwindEntryDirectivesFromCss(css: string, preserveCssLayers = false) {
   try {
     const source = stripGeneratorPlaceholderMarkers(css)
     const root = postcss.parse(source)
     const removedMediaWrappers = removeTailwindSourceMediaWrappersRoot(root)
-    const removedTailwindDirectives = removeTailwindSourceDirectivesRoot(root)
+    const removedTailwindDirectives = removeTailwindSourceDirectivesRoot(root, { preserveCssLayers })
     return removedMediaWrappers || removedTailwindDirectives ? root.toString() : source
   }
   catch {
-    return removeTailwindSourceDirectives(removeTailwindSourceMediaWrappersFallback(css))
+    const source = removeTailwindSourceMediaWrappersFallback(css)
+    return preserveCssLayers ? source : removeTailwindSourceDirectives(source)
   }
 }
 

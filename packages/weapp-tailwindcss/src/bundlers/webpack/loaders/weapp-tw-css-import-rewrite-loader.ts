@@ -83,7 +83,7 @@ function createCssHandlerOptions(
   file: string,
   appType?: AppType,
 ) {
-  const tailwindOptions = resolveTailwindcssOptions(options.tailwindRuntimeOptions)
+  const tailwindOptions = resolveTailwindcssOptions(options.tailwindcssRuntimeOptions)
   const cssEntries = [
     ...(options.cssEntries ?? []),
     ...(tailwindOptions?.v4?.cssEntries ?? []),

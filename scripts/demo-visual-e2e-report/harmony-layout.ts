@@ -1,4 +1,5 @@
 import type { HarmonyRuntimeTextPair } from '../../e2e/hbuilderx-local/cases.ts'
+import type { HarmonyDomProbe } from '../../e2e/hbuilderx-local/harmony-dom-probe.ts'
 import { spawnSync } from 'node:child_process'
 import fs from 'node:fs/promises'
 import process from 'node:process'
@@ -86,6 +87,33 @@ export function analyzeHarmonyRuntimeTextPairs(root: HarmonyLayoutNode, pairs: H
         type: tailwindNode?.attributes?.type,
       },
     }
+  })
+}
+
+/** DOM API 返回逻辑像素；换算为设备像素后使用同一视觉误差门槛。 */
+export function analyzeHarmonyDomTextPairs(probe: HarmonyDomProbe, pairs: HarmonyRuntimeTextPair[]) {
+  const resolveNode = (text: string) => {
+    const matches = probe.nodes.filter(node => normalizeLayoutText(node.text) === normalizeLayoutText(text))
+    const node = matches.length === 1 ? matches[0] : undefined
+    if (!node || node.rect.width <= 0 || node.rect.height <= 0) {
+      throw new Error(`Harmony DOM 缺少唯一且已布局的 line-height 对照节点：${text}`)
+    }
+    const { left, top, width, height } = node.rect
+    const scale = probe.pixelRatio
+    return {
+      bounds: { minX: left * scale, minY: top * scale, maxX: (left + width) * scale, maxY: (top + height) * scale, width: width * scale, height: height * scale },
+      text: normalizeLayoutText(node.text),
+      type: node.tagName,
+    }
+  }
+  return pairs.map((pair) => {
+    const tailwind = resolveNode(pair.tailwindText)
+    const native = resolveNode(pair.nativeText)
+    const heightDifference = Math.abs(tailwind.bounds.height - native.bounds.height)
+    if (heightDifference > (pair.maxHeightDifference ?? 1)) {
+      throw new Error(`Harmony line-height 对照高度不一致：tailwind=${tailwind.bounds.height}px native=${native.bounds.height}px diff=${heightDifference}px`)
+    }
+    return { heightDifference, native, tailwind }
   })
 }
 

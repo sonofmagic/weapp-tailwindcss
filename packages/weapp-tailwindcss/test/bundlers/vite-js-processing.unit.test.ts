@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createJsHandlerOptionsFactory } from '@/bundlers/vite/generate-bundle/js-handler-options'
+import { createJsHandlerOptionsFactory, resolveGenerateBundleJsFastPath } from '@/bundlers/vite/generate-bundle/js-handler-options'
 import { processJsBundleEntry, replayCleanJsBundleEntry } from '@/bundlers/vite/generate-bundle/js-processing'
 import { createTransformFilter, createTransformFilterSignature, shouldSkipViteJsChunkTransform } from '@/bundlers/vite/generate-bundle/transform-filter'
 import { createCache } from '@/cache'
@@ -60,6 +60,24 @@ describe('bundlers/vite js processing', () => {
     experimentalJsFastPath = 'oxc'
     expect(createHandlerOptions('/repo/dist/index.js')).toMatchObject({
       experimentalJsFastPath: 'oxc',
+    })
+  })
+
+  it('uses oxc in production generateBundle and keeps moduleGraph only for incremental rebuilds', () => {
+    expect(resolveGenerateBundleJsFastPath({ useIncrementalMode: false })).toEqual({
+      experimentalJsFastPath: 'oxc',
+      moduleGraphEnabled: false,
+    })
+    expect(resolveGenerateBundleJsFastPath({ useIncrementalMode: true })).toEqual({
+      experimentalJsFastPath: 'oxc',
+      moduleGraphEnabled: true,
+    })
+    expect(resolveGenerateBundleJsFastPath({
+      experimentalJsFastPath: false,
+      useIncrementalMode: false,
+    })).toEqual({
+      experimentalJsFastPath: false,
+      moduleGraphEnabled: false,
     })
   })
 

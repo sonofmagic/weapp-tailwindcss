@@ -94,7 +94,7 @@ export function createConfiguredCssSourceRegistry(
       fallbackFile?: string | undefined,
     ) => normalizeRelativeCssConfigDirectives(
       source,
-      sourceFile || fallbackFile,
+      sourceFile || (fallbackFile ?? ''),
       options.outDir,
       options.opts,
     ),

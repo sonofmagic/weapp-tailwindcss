@@ -243,7 +243,7 @@ export function injectUniAppXHarmonyGlobalStyles(
   if (mergedStyles) {
     let nextCode = code
     for (let index = parseableLocalStyles.length - 1; index >= 0; index--) {
-      const decl = parseableLocalStyles[index].decl
+      const decl = parseableLocalStyles[index]!.decl
       nextCode = `${nextCode.slice(0, decl.objectStart)}${JSON.stringify(mergedStyles[index])}${nextCode.slice(decl.objectEnd)}`
     }
     return nextCode

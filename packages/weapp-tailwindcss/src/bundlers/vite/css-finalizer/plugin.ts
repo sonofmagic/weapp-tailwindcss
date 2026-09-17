@@ -301,8 +301,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         recordTiming('assets.enumerate', enumerateStartedAt)
 
         if (entries.length === 0) {
-          const runtime = getRecordedGeneratorCandidates?.() ?? getSourceCandidates?.() ?? await ensureRuntimeClassSet()
-          await injectHarmonyBundleStyles(runtime)
+          await injectHarmonyBundleStyles()
           collectViteProcessedCssAssets()
           injectViteProcessedCssIntoMainCss()
           linkEntryStyles()

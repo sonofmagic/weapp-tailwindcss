@@ -1,6 +1,5 @@
 import type { AttributeNode, DirectiveNode, ParentNode } from '@vue/compiler-dom'
-import type { SourceMapInput } from 'rollup'
-import type { TransformResult } from 'vite'
+import type { SourceDescription, SourceMapInput } from 'rollup'
 import type { CreateJsHandlerOptions, ICustomAttributesEntities, JsHandler } from '@/types'
 import { NodeTypes, parse as parseTemplate } from '@vue/compiler-dom'
 import { isUniAppXStyleSourceEmpty, normalizeUniAppXImportantApplyForSass } from '@weapp-tailwindcss/postcss'
@@ -15,6 +14,8 @@ import {
   shouldEnableComponentLocalStyle,
   shouldEnablePageLocalStyle,
 } from './local-style-matcher'
+
+type UniAppXTransformResult = Pick<SourceDescription, 'code' | 'map'>
 
 interface SfcBlock {
   content: string
@@ -133,6 +134,7 @@ interface TransformUVueOptions {
   enablePageLocalStyle?: boolean
   pageMatcher?: (id: string) => boolean
   native?: boolean
+  localStyleVariants?: boolean
   borderPreflight?: string
   borderPreflightRange?: 'all'
   webCustomAttributeDeep?: boolean
@@ -214,7 +216,7 @@ function parseSfc(code: string): ParsedSfc {
   const descriptor: ParsedSfc = { errors: [], styles: [] }
 
   for (const match of code.matchAll(SFC_BLOCK_RE)) {
-    const type = match[1]
+    const type = match[1]!
     const attrs = match[2] ?? ''
     const blockStart = match.index ?? 0
     const contentStart = blockStart + match[0].length
@@ -270,7 +272,7 @@ export function transformUVue(
   jsHandler: JsHandler,
   runtimeSet?: Set<string>,
   options: TransformUVueOptions = {},
-): undefined | TransformResult {
+): undefined | UniAppXTransformResult {
   if (!UVUE_NVUE_RE.test(id)) {
     return
   }
@@ -287,7 +289,7 @@ export function transformUVue(
     }
   }
   const localStyleCollector = shouldEnableLocalStyle(id, options)
-    ? new UniAppXComponentLocalStyleCollector(id, runtimeSet)
+    ? new UniAppXComponentLocalStyleCollector(id, runtimeSet, options.localStyleVariants)
     : undefined
   if (descriptor.errors.length === 0) {
     if (descriptor.template?.ast) {
@@ -384,7 +386,7 @@ export function transformUVue(
       )
     }
 
-    const scopedStyle = descriptor.styles.findLast(style => STYLE_SCOPED_RE.test(style.attrs)
+    const scopedStyle = [...descriptor.styles].reverse().find(style => STYLE_SCOPED_RE.test(style.attrs)
       && (!options.onWebLocalStyleRules || !isUniAppXStyleSourceEmpty(style.content)))
     if (localStyleCollector && options.onWebLocalStyleRules && descriptor.template) {
       // 所有 Web 载体都需要回放缓存；HMR 可能绕过主模块直接重编译样式请求。
@@ -394,7 +396,7 @@ export function transformUVue(
     }
     if (localStyleCollector?.hasStyles() && scopedStyle && !options.onWebLocalStyleRules) {
       const separator = scopedStyle.content.endsWith('\n') ? '' : '\n'
-      ms.appendLeft(scopedStyle.end, `${separator}${localStyleCollector.toStyleRules({ native: options.native })}`)
+      ms.appendLeft(scopedStyle.end, `${separator}${localStyleCollector.toStyleRules({ native: options.native === true })}`)
     }
     else if (localStyleCollector?.hasStyles() && !scopedStyle) {
       // 新增的局部样式块会单独进入预处理器，important utility 统一使用中间标记。
@@ -404,7 +406,7 @@ export function transformUVue(
       })}`)
     }
   }
-  const result: TransformResult = {
+  const result: UniAppXTransformResult = {
     code: ms.toString(),
     map: null,
   }

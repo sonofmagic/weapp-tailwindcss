@@ -8,6 +8,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
+import { stopOwnedProcess } from './process'
 import { chromium } from 'playwright'
 import type { ReactNativeReport } from './catalog'
 import { validateReactNativeReport } from './reports'
@@ -90,6 +91,7 @@ async function main() {
   const logFile = await fs.open(path.resolve(artifacts, 'metro.log'), 'w')
   const expo = execa('pnpm', ['--filter', '@weapp-tailwindcss/example-react-native-expo', 'exec', 'expo', 'start', '--web', '--localhost', '--port', '8082', '--clear'], {
     cwd: repoRoot,
+    detached: process.platform !== 'win32',
     env: {
       ...process.env,
       CI: '0',
@@ -165,7 +167,7 @@ async function main() {
     await fs.writeFile(markerFile, originalMarker, 'utf8')
     await fs.writeFile(cssFile, originalCss, 'utf8')
     await browser?.close()
-    expo.kill('SIGTERM')
+    await stopOwnedProcess(expo)
     await expo.catch(() => undefined)
     await logFile.close()
     await reporter.close()

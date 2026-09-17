@@ -1,4 +1,5 @@
 import postcss from 'postcss'
+import { normalizeClassPresenceSelectors } from './class-presence'
 import { repairTrailingUnclosedTailwindSourceMedia } from './directives'
 import { removeEmptyAtRules, removeEmptyRules } from './root-cleanups'
 
@@ -153,21 +154,22 @@ export function hasEmptyCssBlockCandidate(css: string) {
   return false
 }
 
-/** 在小程序样式进入最终产物图时递归清理无语义的空 CSS 块。 */
+/** 在小程序样式进入最终产物图时规范化等价选择器并递归清理空 CSS 块。 */
 export function finalizeMiniProgramCssStructure(css: string) {
   const repaired = repairTrailingUnclosedTailwindSourceMedia(css)
-  if (!hasEmptyCssBlockCandidate(repaired)) {
+  if (!/\[\s*class\s*\]/.test(repaired) && !hasEmptyCssBlockCandidate(repaired)) {
     return repaired
   }
   try {
     const root = postcss.parse(repaired)
+    const selectorsChanged = normalizeClassPresenceSelectors(root)
     let removed = 0
     let passRemoved = 0
     do {
       passRemoved = removeEmptyRules(root) + removeEmptyAtRules(root)
       removed += passRemoved
     } while (passRemoved > 0)
-    return removed > 0 ? root.toString() : repaired
+    return removed > 0 || selectorsChanged ? root.toString() : repaired
   }
   catch {
     return repaired

@@ -11,11 +11,11 @@ export { customTemplateHandler, generateCode, templateReplacer }
 export function createTemplateHandler(options: Omit<ITemplateHandlerOptions, 'runtimeSet'> = {}) {
   // 预构建 attribute matcher，避免每次处理文件都重建
   const cachedMatcher = createAttributeMatcher(
-    (options as ITemplateHandlerOptions).customAttributesEntities,
+    options.customAttributesEntities,
   )
-  const defaultOptions = options as Required<ITemplateHandlerOptions>
+  const defaultOptions: ITemplateHandlerOptions = options
   let cachedRuntimeSet: Set<string> | undefined
-  let cachedOptionsWithRuntimeSet: Required<ITemplateHandlerOptions> | undefined
+  let cachedOptionsWithRuntimeSet: ITemplateHandlerOptions | undefined
 
   return (rawSource: string, opt?: ITemplateHandlerOptions) => {
     const runtimeSet = opt?.runtimeSet
@@ -36,7 +36,7 @@ export function createTemplateHandler(options: Omit<ITemplateHandlerOptions, 'ru
       cachedOptionsWithRuntimeSet = {
         ...defaultOptions,
         runtimeSet,
-      } as Required<ITemplateHandlerOptions>
+      }
     }
 
     return customTemplateHandler(rawSource, cachedOptionsWithRuntimeSet, cachedMatcher)

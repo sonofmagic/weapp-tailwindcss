@@ -2,6 +2,21 @@ import { describe, expect, it } from 'vitest'
 import { createStyleHandler, postcss } from '@/index'
 
 describe('style handler root api', () => {
+  it('rejects a plugin replacing a single root with a document', async () => {
+    const handler = createStyleHandler({
+      postcssOptions: {
+        plugins: [{
+          postcssPlugin: 'replace-with-document',
+          OnceExit(_root, { result }) {
+            result.root = postcss.document({ nodes: [postcss.root()] })
+          },
+        }],
+      },
+    })
+    await expect(handler.transformRoot(postcss.parse('.box { color: red }')))
+      .rejects.toThrow('single PostCSS Root')
+  })
+
   it('does not mutate the input root', async () => {
     const handler = createStyleHandler({
       cssOptions: {

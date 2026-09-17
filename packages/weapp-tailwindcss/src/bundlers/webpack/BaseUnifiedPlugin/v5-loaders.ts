@@ -207,7 +207,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
         )
       let rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
       const classSetAnchorIdx = findClassSetAnchor(loaderEntries)
-      const isCssModule = isCssLikeModuleResource(module.resource, compilerOptions.cssMatcher, appType)
+      const isCssModule = isCssLikeModuleResource(module.resource, compilerOptions.cssMatcher)
       if (isCssModule) {
         const frameworkPostcssOptions = collectFrameworkPostcssOptionsFromLoaderEntries(loaderEntries, _loaderContext)
         if (frameworkPostcssOptions) {
@@ -265,7 +265,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
         const existingIndex = loaderEntries.findIndex(entry => entry.loader?.includes?.(runtimeCssImportRewriteLoader))
         const existingOptions = existingIndex === -1 ? undefined : loaderEntries[existingIndex]?.options
         const generateInRegisteredLoader = typeof existingOptions === 'object' && existingOptions !== null
-          && 'generateCss' in existingOptions && existingOptions.generateCss === true
+          && 'generateCss' in existingOptions && existingOptions['generateCss'] === true
         const rewriteLoaderEntry = existingIndex !== -1
           ? {
               ...loaderEntries.splice(existingIndex, 1)[0],

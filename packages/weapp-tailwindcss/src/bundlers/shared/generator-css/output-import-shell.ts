@@ -1,4 +1,4 @@
-import type { Node } from '@weapp-tailwindcss/postcss'
+import type { ChildNode } from '@weapp-tailwindcss/postcss'
 import { parseCssImportSpecifier, postcss, quoteCssImportSpecifier } from '@weapp-tailwindcss/postcss'
 import { parseImportRequest } from './directives'
 import { isPureLocalCssImportWrapper } from './local-imports'
@@ -82,7 +82,7 @@ function resolveOutputImportRequest(file: string, request: string) {
   return normalizeOutputPath(baseDir ? `${baseDir}/${cleanRequest}` : cleanRequest)
 }
 
-function isMiniProgramOutputImport(node: Node) {
+function isMiniProgramOutputImport(node: ChildNode) {
   if (node.type !== 'atrule' || node.name !== 'import') {
     return false
   }
@@ -91,7 +91,7 @@ function isMiniProgramOutputImport(node: Node) {
     && MINI_PROGRAM_OUTPUT_STYLE_RE.test(request)
 }
 
-function isSelfMiniProgramOutputImport(outputFile: string, node: Node) {
+function isSelfMiniProgramOutputImport(outputFile: string, node: ChildNode) {
   if (node.type !== 'atrule' || node.name !== 'import') {
     return false
   }
@@ -101,7 +101,7 @@ function isSelfMiniProgramOutputImport(outputFile: string, node: Node) {
     && resolveOutputImportRequest(outputFile, request) === normalizeOutputPath(outputFile)
 }
 
-function removeMiniProgramOutputImportsBy(css: string, predicate: (node: Node) => boolean) {
+function removeMiniProgramOutputImportsBy(css: string, predicate: (node: ChildNode) => boolean) {
   if (!css.includes('@import')) {
     return css
   }

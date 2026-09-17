@@ -7,6 +7,7 @@ export {
   type ResolvePostcssStyleBranchOptions,
   resolvePostcssStyleBranchProfile,
 } from './branches'
+export { createAuthorSelectorMatcher } from './compat/author-selector'
 export {
   type DynamicColorMixAlphaProtection,
   type DynamicColorMixAlphaProtectionOptions,
@@ -40,6 +41,7 @@ export {
   removeUnsupportedAtSupports,
   removeUnsupportedCascadeLayers,
   removeUnsupportedMiniProgramAtRules,
+  removeUnusedMiniProgramContentInit,
   repairTrailingUnclosedTailwindSourceMedia,
   stripMiniProgramCssSpecificityPlaceholders,
   unwrapUnsupportedCascadeLayers,
@@ -58,6 +60,7 @@ export {
   type TailwindcssRpxToRemOptions,
 } from './compat/tailwindcss-rpx'
 export { normalizeTailwindcssV4InfinityCalcCss } from './compat/tailwindcss-v4'
+export { compileTailwindAuthorFunctions, createTailwindAuthorFunctionProbe } from './compat/tailwindcss-v4/author-functions'
 export { normalizeTailwindcssV4InfinityRadiusCss } from './compat/tailwindcss-v4/infinity-radius'
 export { removeTailwindV4PreflightImports, removeUnsupportedThemeVendorKeyframes } from './compat/tailwindcss-v4/theme-source'
 export {
@@ -95,6 +98,7 @@ export {
   withCssMacroStyleOptions,
 } from './css-macro/auto'
 export { CSS_MACRO_POSTCSS_PLUGIN_NAME, default as cssMacroPostcssPlugin } from './css-macro/postcss'
+export { processFrameworkCss } from './framework-pipeline'
 export {
   type PostcssFrameworkProfile,
   type PostcssFrameworkStrategy,

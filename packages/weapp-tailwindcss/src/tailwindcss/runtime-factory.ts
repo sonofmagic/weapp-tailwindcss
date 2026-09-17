@@ -15,10 +15,7 @@ import { postcss } from '@weapp-tailwindcss/postcss'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { findNearestPackageRoot } from '@/context/workspace'
 import { omitUndefined } from '@/utils/object'
-import {
-  normalizeExtendLengthUnits,
-  normalizeTailwindcssRuntimeOptions,
-} from './runtime-options'
+import { normalizeExtendLengthUnits, normalizeTailwindcssRuntimeOptions, resolveRuntimeBareArbitraryValues } from './runtime-options'
 import {
   createDefaultResolvePaths,
   findTailwindConfig,
@@ -191,9 +188,10 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
       return typeof entry === 'string' ? entry : entry.rawCandidate
     }).filter((entry): entry is string => typeof entry === 'string' && entry.length > 0))
     const source = resolveCssMacroTailwindV4Source(await resolveTailwindV4SourceFromRuntime(runtime))
+    const bareArbitraryValues = resolveRuntimeBareArbitraryValues(runtime.options)
     const designSystem = await loadTailwindV4DesignSystem(source)
     const candidates = new Set(resolveValidTailwindV4Candidates(designSystem, rawCandidates, {
-      ...(source.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: source.bareArbitraryValues }),
+      ...(bareArbitraryValues === undefined ? {} : { bareArbitraryValues }),
     }))
     await collectTailwindV4CssCandidates(candidates)
     return applyClassSetFilter(candidates)

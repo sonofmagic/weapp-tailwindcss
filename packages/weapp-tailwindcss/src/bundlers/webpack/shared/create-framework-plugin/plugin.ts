@@ -46,7 +46,7 @@ export interface WebpackFrameworkBranchContext {
 
 export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
-  appType?: AppType
+  appType: AppType | undefined
   private hasInitialTailwindCssRoots: boolean
   private frameworkBranch: WebpackFrameworkBranchContext
 

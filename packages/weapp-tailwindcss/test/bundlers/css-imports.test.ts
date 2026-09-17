@@ -293,7 +293,8 @@ describe('bundlers/shared css-imports', () => {
           compilerOptions: {
             appType: 'taro',
             generator: {},
-            mainCssChunkMatcher: () => true,
+            mainCssChunkMatcher: () => false,
+            tailwindcssRuntimeOptions: { tailwindcss: { v4: { cssEntries: ['/repo/website/src/css/custom.css'] } } },
             styleHandler: async (css: string) => ({ css }),
           },
           getRuntimeSet: async () => new Set(['bg-brand', 'rounded-full', 'dark:text-foreground']),

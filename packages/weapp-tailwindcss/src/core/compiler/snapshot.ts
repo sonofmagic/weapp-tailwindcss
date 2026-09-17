@@ -5,6 +5,7 @@ import type {
   CompilerTarget,
   CreateCompilerSnapshotRequest,
 } from './types'
+import { md5Hash } from '@/cache/md5'
 
 interface InternalSnapshotRoot extends CompilerSnapshotRoot {
   fingerprint: string
@@ -24,7 +25,7 @@ const snapshotRegistry = new WeakMap<CompilerSnapshot, InternalCompilerSnapshot>
 
 class ImmutableSetView<T> implements ReadonlySet<T> {
   constructor(values: Iterable<T>) {
-    readonlySetValues.set(this, new Set(values))
+    readonlySetValues.set(this, values instanceof Set ? values : new Set(values))
     Object.freeze(this)
   }
 
@@ -84,6 +85,10 @@ function uniqueSortedSources(sources: Iterable<CompilerSourcePattern>) {
   return Object.freeze([...values.entries()].sort(([left], [right]) => left.localeCompare(right)).map(([, value]) => value))
 }
 
+function createFingerprint(parts: Iterable<string>) {
+  return md5Hash([...parts].join('\0'))
+}
+
 function createRootFingerprint(
   root: CompilerSnapshotRoot,
   target: CompilerTarget,
@@ -91,14 +96,14 @@ function createRootFingerprint(
   dependencies: Iterable<string>,
   sources: Iterable<CompilerSourcePattern>,
 ) {
-  return [
+  return createFingerprint([
     root.id,
     String(root.revision),
     target,
     ...[...classSet].sort(),
     ...dependencies,
     ...[...sources].map(sourceKey),
-  ].join('\0')
+  ])
 }
 
 function createSnapshotFromState(
@@ -111,14 +116,14 @@ function createSnapshotFromState(
       .sort((left, right) => left.id.localeCompare(right.id))
       .map(({ id, revision }) => Object.freeze({ id, revision })),
   )
-  const classSet = reusableClassSet ?? new Set(state.classSet)
-  const fingerprint = [
+  const classSet = reusableClassSet ?? (state.classSet instanceof Set ? state.classSet : new Set(state.classSet))
+  const fingerprint = createFingerprint([
     state.target,
     ...[...state.roots.values()].map(root => `${root.id}\0${root.revision}\0${root.fingerprint}`).sort(),
     ...[...classSet].sort(),
     ...state.dependencies,
     ...state.sources.map(sourceKey),
-  ].join('\0')
+  ])
   const snapshot = Object.freeze({
     classSet: reusableClassSetView ?? new ImmutableSetView(classSet),
     dependencies: state.dependencies,

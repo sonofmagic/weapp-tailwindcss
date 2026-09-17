@@ -191,8 +191,10 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     return processSource(rawSource, undefined, false, opt)
   }) as StyleHandler
 
-  handler.transformRoot = (root, opt) => {
-    return processSource(root.toString(), root, true, opt)
+  handler.transformRoot = async (root, opt) => {
+    const result = await processSource(root.toString(), root, true, opt)
+    assertRootResult(result)
+    return result
   }
 
   handler.getPipeline = (opt?: Partial<IStyleHandlerOptions>) => {
@@ -201,4 +203,11 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
   }
 
   return handler
+}
+
+/** 单个 Root 的变换不得返回多文档结果，避免破坏调用方的产物归属。 */
+function assertRootResult(result: PostcssResult): asserts result is PostcssResult<Root> {
+  if (result.root.type !== 'root') {
+    throw new TypeError('StyleHandler.transformRoot must return a single PostCSS Root.')
+  }
 }

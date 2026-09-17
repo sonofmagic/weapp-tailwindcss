@@ -19,7 +19,7 @@ export function classifyHmrStep(output: string) {
 }
 
 /** 在首次运行完成后、源码写入前监听，保留本轮全部日志，避免滚动窗口丢失失败。 */
-export function observeHmrStep(child: ChildProcess) {
+export function observeHmrStep(child: ChildProcess, platform: 'app-android' | 'app-ios' | 'app-harmony' = 'app-harmony') {
   const outputs = { stdout: '', stderr: '' }
   let overflow = false
   const subscribe = (name: 'stdout' | 'stderr') => {
@@ -48,6 +48,12 @@ export function observeHmrStep(child: ChildProcess) {
   return {
     assertNoFallback,
     async waitForCompletion(timeoutMs: number, ensureRunning: () => void) {
+      // Android/iOS 由产物与运行时探针确认更新，但仍须持续拒绝重启回退。
+      if (platform !== 'app-harmony') {
+        ensureRunning()
+        assertNoFallback()
+        return
+      }
       const startedAt = Date.now()
       while (Date.now() - startedAt < timeoutMs) {
         ensureRunning()

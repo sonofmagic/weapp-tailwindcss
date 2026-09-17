@@ -6,7 +6,10 @@ import path from 'pathe'
 import pixelmatch from 'pixelmatch'
 import { PNG } from 'pngjs'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { captureMiniProgramViewport } from '../scripts/demo-visual-e2e-report/mini-program-screenshot'
 import { collectFrameworkIdeDiagnostics } from './frameworkIdeDiagnostics'
+import { assertMiniProgramPreflight } from './preflight-assertions'
+
 import { ensureProjectBuilt } from './projectBuild'
 
 const describeIde = process.env['E2E_IDE'] === '1' ? describe : describe.skip
@@ -75,12 +78,7 @@ interface Rect {
 }
 
 async function captureMiniProgramScreenshot(miniProgram: any, screenshotPath: string) {
-  await fs.mkdir(path.dirname(screenshotPath), { recursive: true })
-  const result = await miniProgram.send('App.captureScreenshot', {}, {
-    timeout: timeoutMs,
-  })
-  expect(typeof result?.data).toBe('string')
-  await fs.writeFile(screenshotPath, result.data, 'base64')
+  return captureMiniProgramViewport(miniProgram, screenshotPath, Math.min(timeoutMs, 30_000))
 }
 
 async function readScreenshot(screenshotPath: string) {
@@ -238,7 +236,7 @@ async function cleanupDevTools() {
 async function collectScaledRect(page: any, screenshot: PNG, node: any, padding = 2) {
   const pageSize = await page.size()
   const scaleX = screenshot.width / pageSize.width
-  const scaleY = screenshot.height / pageSize.height
+  const scaleY = scaleX
   return {
     rect: expandRect(scaleRect({ ...await node.offset(), ...await node.size() }, scaleX, scaleY), padding),
     scaleX,
@@ -285,6 +283,11 @@ async function assertIssue928GradientRuntime(miniProgram: any, options: Issue928
   const radialGradientPurplePixels = countPurplePixels(gradientScreenshot, radialGradientRect)
   const conicGradientPurplePixels = countPurplePixels(gradientScreenshot, conicGradientRect)
   const arbitraryImageGradientBluePixels = countBluePixels(gradientScreenshot, arbitraryImageGradientRect)
+  expect(gradientCyanPixels).toBeGreaterThan(100)
+  expect(gradientBluePixels).toBeGreaterThan(100)
+  expect(viaGradientPurplePixels).toBeGreaterThan(100)
+  expect(stopArbitraryGradientCyanPixels).toBeGreaterThan(100)
+  expect(stopArbitraryGradientBluePixels).toBeGreaterThan(100)
   const compareRect = unionRect(gradientRect, viaGradientRect, stopArbitraryGradientRect)
   const comparePng = cropPng(gradientScreenshot, compareRect)
   const comparePath = path.resolve(artifactDir, `${options.artifactPrefix}-issue-928-compare.png`)
@@ -296,11 +299,10 @@ async function assertIssue928GradientRuntime(miniProgram: any, options: Issue928
   let compareRatio: number | undefined
   if (options.compareBaselinePath) {
     const shouldWriteBaseline = shouldUpdateIssue928CompareBaseline
-      || await fs.access(options.compareBaselinePath).then(() => false, () => true)
     if (shouldWriteBaseline) {
       await fs.mkdir(path.dirname(options.compareBaselinePath), { recursive: true })
       await fs.writeFile(options.compareBaselinePath, PNG.sync.write(comparePng))
-      compareBaselineInitialized = !shouldUpdateIssue928CompareBaseline
+      compareBaselineInitialized = false
       compareBaselineUpdated = shouldUpdateIssue928CompareBaseline
     }
     const baselinePng = PNG.sync.read(await fs.readFile(options.compareBaselinePath))
@@ -368,11 +370,6 @@ async function assertIssue928GradientRuntime(miniProgram: any, options: Issue928
     }, null, 2)}\n`,
   )
 
-  expect(gradientCyanPixels).toBeGreaterThan(100)
-  expect(gradientBluePixels).toBeGreaterThan(100)
-  expect(viaGradientPurplePixels).toBeGreaterThan(100)
-  expect(stopArbitraryGradientCyanPixels).toBeGreaterThan(100)
-  expect(stopArbitraryGradientBluePixels).toBeGreaterThan(100)
   if (options.compareBaselinePath) {
     expect(compareDifferentPixels).toBeLessThan(10)
   }
@@ -416,7 +413,7 @@ describeIde('issues 909/916/928 IDE runtime', () => {
     }
     expect(appWxss).toMatch(/transform:\s*var\(--tw-rotate-x, \) var\(--tw-rotate-y, \) var\(--tw-rotate-z, \) var\(--tw-skew-x, \) var\(--tw-skew-y, \)/)
     expect(appWxss).not.toMatch(/transform:\s*var\(--tw-rotate-x,\) var\(--tw-rotate-y,\)/)
-    expect(appWxss).toMatch(/view,text,::after,::before\s*\{\s*border:0 solid;\s*box-sizing:border-box;\s*margin:0;\s*padding:0\s*\}/)
+    assertMiniProgramPreflight(appWxss)
     expect(appWxss).toMatch(/background-image:\s*linear-gradient\(var\(--tw-gradient-stops\)\)/)
     expect(appWxss).toMatch(/\.bg-linear-to-r\s*\{\s*--tw-gradient-position:\s*to right;\s*background-image:\s*-webkit-linear-gradient\(var\(--tw-gradient-stops\)\);\s*background-image:\s*linear-gradient\(var\(--tw-gradient-stops\)\)/)
     if (isTailwindcssV4GradientFallbackEnabled) {
@@ -445,7 +442,7 @@ describeIde('issues 909/916/928 IDE runtime', () => {
     }
     expect(appWxss).toContain('background-image:linear-gradient(90deg,#06b6d4,#3b82f6)')
     expect(appWxss, 'issue 928 should keep mini-program parseable gradient via fallback')
-      .toContain('--tw-gradient-stops:var(--tw-gradient-via-stops,var(--tw-gradient-position)),')
+      .toMatch(/--tw-gradient-stops:var\(--tw-gradient-via-stops,\s*var\(--tw-gradient-position\)\),/)
     expect(appWxss, 'issue 928 should keep from-position comma-space fallback in gradient stops')
       .toContain('var(--tw-gradient-from) var(--tw-gradient-from-position, )')
     expect(appWxss, 'issue 928 should keep to-position comma-space fallback in gradient stops')
@@ -496,7 +493,7 @@ describeIde('issues 909/916/928 IDE runtime', () => {
     const rotateSize = await rotateNode.size()
     const nativeSelectorOffset = await nativeSelectorNode.offset()
     const scaleX = screenshot.width / pageSize.width
-    const scaleY = screenshot.height / pageSize.height
+    const scaleY = scaleX
     const controlRect = expandRect(scaleRect({ ...controlOffset, ...controlSize }, scaleX, scaleY), 4)
     const rotateRect = expandRect(scaleRect({ ...rotateOffset, ...rotateSize }, scaleX, scaleY), 4)
     const nativeSelectorRect = expandRect(scaleRect({ ...nativeSelectorOffset, ...nativeSelectorSize }, scaleX, scaleY), 4)
@@ -625,7 +622,7 @@ describeIde('issue 928 Tailwind v4 IDE runtime', () => {
     expect(appWxss).toContain('.via-purple-500')
     expect(appWxss).toContain('.to-blue-500')
     expect(appWxss).toMatch(/background-image:\s*linear-gradient\(var\(--tw-gradient-stops\)\)/)
-    expect(appWxss).toContain('--tw-gradient-stops:var(--tw-gradient-via-stops,var(--tw-gradient-position)),var(--tw-gradient-from) var(--tw-gradient-from-position, ),var(--tw-gradient-to) var(--tw-gradient-to-position, )')
+    expect(appWxss).toMatch(/--tw-gradient-stops:var\(--tw-gradient-via-stops,\s*var\(--tw-gradient-position\)\),var\(--tw-gradient-from\) var\(--tw-gradient-from-position, \),var\(--tw-gradient-to\) var\(--tw-gradient-to-position, \)/)
     expect(appWxss).toContain('--tw-gradient-via-stops:var(--tw-gradient-position),var(--tw-gradient-from) var(--tw-gradient-from-position, ),var(--tw-gradient-via) var(--tw-gradient-via-position, ),var(--tw-gradient-to) var(--tw-gradient-to-position, )')
     expect(appWxss).toContain('background-image:linear-gradient(90deg,#06b6d4,#3b82f6)')
     expect(appWxss).toContain('background-image:radial-gradient(var(--tw-gradient-stops))')

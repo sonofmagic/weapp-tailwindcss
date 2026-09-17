@@ -8,7 +8,10 @@ import { removeTailwindV4GeneratedUserCssArtifacts, splitUserCssLayerBlocks, str
 import { createGeneratedThemeDeclarationResolver } from './generator-css/user-css/generated-cleanup'
 import { reorderMarkedUserLayerComponentsCss, wrapUserLayerComponentsCss } from './generator-css/user-layer-order'
 
-function normalizeUserSource(source: string) {
+export function normalizeFrameworkProcessedUserCss(source: string) {
+  if (!source.includes('source(')) {
+    return source
+  }
   try {
     const root = postcss.parse(source)
     root.walkAtRules('media', (rule) => {
@@ -32,6 +35,7 @@ export async function restoreFrameworkProcessedUserCss(
 ) {
   const generatedSource = createGeneratedThemeDeclarationResolver([generated.metadata?.rawCss, css].filter(Boolean).join('\n'))
   const userCssOptions = {
+    compileAuthorCssFunctions: generated.compileAuthorCssFunctions,
     generatorTarget: generated.target,
     generatedSource,
     generatorStyleOptions: resolveGeneratorStyleOptions(options.opts, options.cssHandlerOptions, generatorOptions.styleOptions),
@@ -51,7 +55,7 @@ export async function restoreFrameworkProcessedUserCss(
       { injectPreflight: false, preservePreflight: generated.metadata?.preflightMode?.preserve, styleOptions: options.cssHandlerOptions },
     ), generatedSource)
   }
-  const userSource = normalizeUserSource(source)
+  const userSource = normalizeFrameworkProcessedUserCss(source)
   const ordered = splitRawSourceByGeneratedCssOrder(userSource, generated.metadata?.rawCss ?? '')
     ?? { before: '', after: userSource }
   // 已经过框架转换的 CSS 不再重放框架插件；双方完成小程序适配后再比较和合并。

@@ -93,7 +93,7 @@ export async function resolveGeneratorSource(
         )
       )
     )
-  const sourceSideCssSource = shouldPreferMatchedSourceSideCssSource
+  const sourceSideCssSource = normalizedSourceOptions && shouldPreferMatchedSourceSideCssSource
     ? await resolveTailwindV4SourceSideEntrySource(
         sourceSideEntrySource,
         normalizedSourceOptions,

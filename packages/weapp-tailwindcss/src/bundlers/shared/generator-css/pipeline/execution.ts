@@ -21,6 +21,7 @@ import { removeMatchingLocalCssImports } from '../local-imports'
 import { stripTailwindBanner } from '../markers'
 import { resolveGeneratorSourceEntries, resolveGeneratorSources } from '../source-resolver'
 import { filterApplyOnlyGeneratedCss, shouldFilterApplyOnlyGeneratedCss } from '../user-css'
+import { createAuthorCssFunctionCompiler } from '../user-css/compile-functions'
 import { finalizeDeferredGeneratorCss } from './deferred-output'
 import { finalizeFallbackGeneratorCss } from './fallback-output'
 import { finalizeOrderedGeneratorCss } from './ordered-output'
@@ -286,7 +287,7 @@ async function executeGeneratorPipelineWithOwner(
             ...(compilerSession
               ? (() => {
                   const snapshots = results
-                    .map(result => result.generated.snapshot)
+                    .map(result => 'snapshot' in result.generated ? result.generated.snapshot : undefined)
                     .filter((snapshot): snapshot is CompilerSnapshot => snapshot !== undefined)
                   return snapshots.length > 0
                     ? { snapshot: compilerSession.mergeSnapshots(snapshots) }
@@ -370,6 +371,10 @@ async function executeGeneratorPipelineWithOwner(
     explicitCssSource: hasExplicitCssSource,
     primaryCssSource: hasOnlyPrimaryCssSource || hasPreflightCssSource || hasPreflightRawSource,
   })
+  const compileAuthorCssFunctions = createAuthorCssFunctionCompiler(preparedGenerationInputs.map(input => input.generatorSource), generationSession)
+  const frameworkProcessedUserCss = options.frameworkProcessedUserCss === undefined
+    ? undefined
+    : await compileAuthorCssFunctions(options.frameworkProcessedUserCss)
   const outputContext: GeneratorPipelineOutputContext = {
     ...context,
     ...(compilerSession && options.compilation?.preserveDeletedCss !== true
@@ -381,6 +386,7 @@ async function executeGeneratorPipelineWithOwner(
           },
         }
       : {}),
+    compileAuthorCssFunctions,
     configuredContainerCompat,
     filterGeneratedApplyOnlyCss,
     generated,
@@ -394,13 +400,22 @@ async function executeGeneratorPipelineWithOwner(
     runtimeWithCurrentCss,
     shouldFilterApplyOnlyCss,
   }
-  const withCompilationMetadata = (result: typeof generated | undefined) => {
+  const withCompilationMetadata = (result: GenerateCssByGeneratorResult | undefined) => {
+    if (result && frameworkProcessedUserCss !== undefined) {
+      result = {
+        ...result,
+        compileAuthorCssFunctions,
+        frameworkProcessedUserCss,
+      }
+    }
     if (!result || compilationRevision === undefined) {
       return result
     }
     return {
       ...result,
+      ...(generated.snapshot ? { snapshot: generated.snapshot } : {}),
       metadata: {
+        file,
         ...result.metadata,
         revision: compilationRevision,
       },

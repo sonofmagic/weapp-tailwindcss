@@ -27,7 +27,7 @@ export async function finalizeWebpackProcessAssets(context: any) {
     cacheKeys: activeProcessCacheKeys,
     hashKeys: activeProcessHashKeys,
   })
-  const activeCssFiles = new Set(groupedEntries.css.map(([file]) => file))
+  const activeCssFiles = new Set<string>(groupedEntries.css.map(([file]: [string, unknown]) => file))
   pruneWebpackCssHandlerOptionCaches(
     cssHandlerOptionsCache,
     cssUserHandlerOptionsCache,

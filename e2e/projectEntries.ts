@@ -84,6 +84,7 @@ export const E2E_PROJECTS = ([
   },
   {
     name: 'uni-app-x-vdom-tailwindcss-v4',
+    theme: { manualClass: 'dark_cbg-_b_h3498db_B', backgroundColor: [52, 152, 219], scrollContainer: '.content-scroll' },
     projectPath: 'uni-app-x-vdom-tailwindcss-v4/unpackage/dist/dev/mp-weixin',
     cssFile: 'app.wxss',
     requiresHBuilderX: true,

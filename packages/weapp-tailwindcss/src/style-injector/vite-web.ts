@@ -1,16 +1,8 @@
 import type { Plugin } from 'vite'
 import type { WeappTailwindcssStyleInjectorUserOptions } from './options'
 import { weappStyleInjector } from 'weapp-style-injector/vite'
+import { getViteHookHandler } from '@/bundlers/vite/plugin-hook'
 import { normalizeStyleInjectorOptions } from './options'
-
-function getHandler(hook: Plugin['transform'] | Plugin['generateBundle'] | undefined) {
-  if (typeof hook === 'function') {
-    return hook
-  }
-  if (hook && typeof hook === 'object' && typeof hook.handler === 'function') {
-    return hook.handler
-  }
-}
 
 /** Generic Web 专用 style injector，避免引入其他构建器和框架适配。 */
 export function createBuiltinViteWebStyleInjectorPlugins(
@@ -21,18 +13,18 @@ export function createBuiltinViteWebStyleInjectorPlugins(
     return []
   }
   const injector = weappStyleInjector(normalized)
-  const transform = getHandler(injector.transform)
-  const generateBundle = getHandler(injector.generateBundle)
+  const transform = getViteHookHandler(injector.transform)
+  const generateBundle = getViteHookHandler(injector.generateBundle)
   return [
     {
       name: 'weapp-tailwindcss:web-style-injector-pre',
       apply: 'build',
       enforce: 'pre',
       configResolved(config) {
-        injector.configResolved?.(config)
+        return getViteHookHandler(injector.configResolved)?.call(this, config)
       },
-      async buildStart() {
-        await injector.buildStart?.call(this, {})
+      async buildStart(buildOptions) {
+        await getViteHookHandler(injector.buildStart)?.call(this, buildOptions)
       },
       async transform(code, id, options2) {
         return transform?.call(this, code, id, options2)
@@ -43,7 +35,7 @@ export function createBuiltinViteWebStyleInjectorPlugins(
       apply: 'build',
       enforce: 'post',
       configResolved(config) {
-        injector.configResolved?.(config)
+        return getViteHookHandler(injector.configResolved)?.call(this, config)
       },
       async generateBundle(outputOptions, bundle, isWrite) {
         await generateBundle?.call(this, outputOptions, bundle, isWrite)

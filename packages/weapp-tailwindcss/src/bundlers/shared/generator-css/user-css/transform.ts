@@ -12,6 +12,7 @@ import { collectBareSelectorUserCss, isCommentOnlyCss, removeProcessedMiniProgra
 export async function transformGeneratorUserCss(
   source: string,
   options: {
+    compileAuthorCssFunctions?: ((css: string) => Promise<string>) | undefined
     generatorTarget: string
     generatorStyleOptions: Partial<IStyleHandlerOptions>
     cssUserHandlerOptions: IStyleHandlerOptions
@@ -25,17 +26,18 @@ export async function transformGeneratorUserCss(
     return ''
   }
   if (options.processed) {
+    const compiledSource = await options.compileAuthorCssFunctions?.(source) ?? source
     const cleanedSource = options.generatorTarget === 'weapp'
       ? removeTailwindV4GeneratedUserCssArtifacts(
           unwrapMiniProgramCascadeLayers(
-            removeProcessedMiniProgramUnsupportedCss(source, {
+            removeProcessedMiniProgramUnsupportedCss(compiledSource, {
               ...options.generatorStyleOptions,
               ...options.cssUserHandlerOptions,
             }),
           ),
           options.generatedSource,
         )
-      : source
+      : compiledSource
     return stripUnmatchedTailwindSourceMediaCloseFragments(
       stripTailwindSourceMediaFragments(
         removeTailwindV4GeneratorAtRules(cleanedSource),
@@ -66,7 +68,8 @@ export async function transformGeneratorUserCss(
       importFallback: options.importFallback,
     },
   )
-  const userSource = stripUnmatchedTailwindSourceMediaCloseFragments(removeTailwindApplyAtRules(sanitizedSource))
+  const authorSource = stripUnmatchedTailwindSourceMediaCloseFragments(removeTailwindApplyAtRules(sanitizedSource))
+  const userSource = await options.compileAuthorCssFunctions?.(authorSource) ?? authorSource
   if (userSource.trim().length === 0) {
     return ''
   }
