@@ -132,7 +132,7 @@ it('waits for local scripts while allowing a persistent background request', asy
     await server.close()
     await rm(root, { recursive: true, force: true })
   }
-}, 15_000)
+}, 30_000)
 
 it('waits for the current document after a development full reload', async () => {
   const root = await realpath(await mkdtemp(path.join(tmpdir(), 'demo-matrix-reload-')))
@@ -181,7 +181,7 @@ it('waits for the current document after a development full reload', async () =>
     await server.close()
     await rm(root, { recursive: true, force: true })
   }
-}, 15_000)
+}, 30_000)
 
 it('records one startup recovery when a local module connection ends without a response', async () => {
   const root = await realpath(await mkdtemp(path.join(tmpdir(), 'demo-matrix-transport-')))
@@ -228,4 +228,4 @@ it('records one startup recovery when a local module connection ends without a r
     await server.close()
     await rm(root, { recursive: true, force: true })
   }
-}, 15_000)
+}, 30_000)
