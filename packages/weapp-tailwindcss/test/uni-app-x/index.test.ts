@@ -694,6 +694,21 @@ const active = true
     expect(result?.code).toMatch(/<style scoped>\n:global\(\.wtu-[\w-]+\)/)
   })
 
+  it.each(['<style scoped>.author{color:red}</style>', ''])('includes mini-program variants in the same local cascade as base utilities', (style) => {
+    const jsHandler: JsHandler = (code: string) => ({ code })
+    const result = transformUVue(
+      `<template><view class="bg-[#eccc68] dark:bg-[#3498db]" /></template>
+${style}`,
+      '/project/pages/theme.uvue',
+      jsHandler,
+      new Set(['bg-[#eccc68]', 'dark:bg-[#3498db]']),
+      { enablePageLocalStyle: true, localStyleVariants: true },
+    )
+    expect(result?.code).toContain('@apply bg-[#eccc68]')
+    expect(result?.code).toContain('dark_cbg-_b_h3498db_B')
+    expect(result?.code).toContain('@apply dark:bg-[#3498db]')
+  })
+
   it('keeps variant utilities on the global platform pipeline for app-harmony pages', () => {
     process.env.UNI_UTS_PLATFORM = 'app-harmony'
     const { jsHandler } = getCompilerContext({

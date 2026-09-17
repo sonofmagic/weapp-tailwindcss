@@ -331,7 +331,7 @@ export function resolveSourceStyleSourceFromOutputFile(
   sourceRoot: string | undefined,
   getSourceStyleSource: ((file: string) => string | undefined) | undefined,
   getSourceStyleSources: (() => Iterable<[string, string]>) | undefined,
-  configuredSourceEntries: Iterable<[string, string]> | undefined,
+  configuredSourceEntries: Iterable<readonly [string, string]> | undefined,
   debug: (format: string, ...args: unknown[]) => void,
 ): RememberedCssSource | undefined {
   let sourceFile = resolveSourceStyleFileFromSiblingChunk(outputFile, snapshot, outputRoot, sourceRoot, debug)

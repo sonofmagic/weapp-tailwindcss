@@ -16,7 +16,7 @@ export function createCssAssetEmitter(
       && output.type === 'asset'
       && normalizeOutputPathKey(('fileName' in output && typeof output.fileName === 'string' ? output.fileName : bundleFile)) === fileNameKey,
     )?.[1]
-    if (existing && typeof existing === 'object' && 'type' in existing && existing.type === 'asset') {
+    if (existing && typeof existing === 'object' && 'type' in existing && existing.type === 'asset' && 'source' in existing) {
       existing.source = source
       return existing as OutputAsset
     }

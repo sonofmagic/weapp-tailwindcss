@@ -1,8 +1,10 @@
+import type { HarmonyDomProbe } from './harmony-dom-probe'
 import { spawnSync } from 'node:child_process'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { setTimeout } from 'node:timers/promises'
+import { hasHarmonyDomMarker } from './harmony-dom-probe'
 import { resolveHdcCommand } from './process'
 
 interface LayoutNode {
@@ -25,6 +27,7 @@ interface HarmonyEvidenceOptions {
   deviceId?: string | undefined
   directory: string
   marker: string
+  readDomProbe?: () => HarmonyDomProbe | undefined
 }
 
 export async function captureHarmonyRuntimeEvidence(options: HarmonyEvidenceOptions) {
@@ -51,7 +54,11 @@ export async function captureHarmonyRuntimeEvidence(options: HarmonyEvidenceOpti
     run('shell', 'snapshot_display', '-f', `${remote}.jpeg`)
     run('file', 'recv', `${remote}.jpeg`, screenshot)
     const afterPid = run('shell', 'pidof', bundle)
-    const evidence = { pid, afterPid, layout, screenshot, marker: options.marker, markerFound: hasHarmonyMarker(root, options.marker) }
+    const dom = options.readDomProbe?.()
+    const markerFound = options.readDomProbe
+      ? hasHarmonyDomMarker(dom, options.marker)
+      : hasHarmonyMarker(root, options.marker)
+    const evidence = { pid, afterPid, layout, screenshot, marker: options.marker, markerFound, ...(dom ? { dom } : {}) }
     await writeFile(path.join(options.directory, 'state.json'), `${JSON.stringify(evidence, null, 2)}\n`)
     return evidence
   }

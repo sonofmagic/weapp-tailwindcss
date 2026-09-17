@@ -5,7 +5,29 @@ import { describe, expect, it } from 'vitest'
 import { assertHarmonyProcessUnchanged, hasHarmonyMarker } from './hbuilderx-local/harmony-runtime'
 import { classifyHmrStep, observeHmrStep } from './hbuilderx-local/hmr-lifecycle'
 
-describe('Harmony HMR 生命周期验收', () => {
+describe('原生 HMR 生命周期验收', () => {
+  it.each(['app-android', 'app-ios'] as const)('%s 产物与传输完成后重启不能被计作 HMR', async (platform) => {
+    const stdout = new PassThrough()
+    const stderr = new PassThrough()
+    const child = Object.assign(new ChildProcess(), { stdout, stderr })
+    // 首次启动不属于保存过程；只观察首次运行就绪后的增量。
+    stdout.emit('data', 'App Launch\n')
+    const observer = observeHmrStep(child, platform)
+    try {
+      stdout.emit('data', '编译完成\n热更新传输完成\n')
+      await observer.waitForCompletion(100, () => {})
+      expect(observer.assertNoFallback).not.toThrow()
+      stderr.emit('data', '\u001B[0mApp Launch\u001B[0m at App.uvue:6\n')
+      expect(observer.assertNoFallback).toThrow('restarted')
+      await expect(observer.waitForCompletion(100, () => {})).rejects.toThrow('restarted')
+    }
+    finally {
+      observer.dispose()
+    }
+    expect(stdout.listenerCount('data')).toBe(0)
+    expect(stderr.listenerCount('data')).toBe(0)
+  })
+
   it('设备必须出现本轮 marker，并保持同一个有效运行进程', () => {
     const tree = { children: [{ attributes: { text: 'save-2' } }] }
     expect(hasHarmonyMarker(tree, 'save-1')).toBe(false)

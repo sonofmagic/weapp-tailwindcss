@@ -1,9 +1,7 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import { collectCustomPropertyValues, mergeCustomPropertyValues } from './incremental-cache'
 
-type GenerationStyleOptions = Partial<IStyleHandlerOptions> & {
-  cssOptions?: Partial<IStyleHandlerOptions>
-}
+type GenerationStyleOptions = Partial<IStyleHandlerOptions>
 
 export function resolveGenerationStyleContext(
   sourceCss: string,

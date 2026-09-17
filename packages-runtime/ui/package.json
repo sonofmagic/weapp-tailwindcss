@@ -68,7 +68,7 @@
   },
   "scripts": {
     "build": "vite build && tsdown",
-    "build:watch": "vite build --watch",
+    "build:watch": "tsdown --watch --on-success \"vite build --watch --emptyOutDir=false\"",
     "test": "vitest run",
     "test:dev": "vitest",
     "tsd": "tsd --typings dist/variants.d.ts --files test-d/variants.test-d.ts && tsd --typings dist/preset.d.ts --files test-d/preset.test-d.ts && tsd --typings dist/components/index.d.ts --files test-d/components.test-d.ts && tsd --typings dist/hooks/index.d.ts --files test-d/hooks.test-d.ts && tsd --typings dist/utils/index.d.ts --files test-d/utils.test-d.ts && tsd --typings dist/adapters/index.d.ts --files test-d/adapters.test-d.ts",
@@ -135,7 +135,6 @@
     "@storybook/addon-a11y": "catalog:storybook",
     "@storybook/react": "catalog:storybook",
     "@storybook/react-vite": "catalog:storybook",
-    "@tailwindcss/vite": "catalog:tailwindcss4",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
     "react": "catalog:react18",
@@ -144,6 +143,6 @@
     "tailwindcss": "catalog:tailwindcss4",
     "typescript": "catalog:typescript59",
     "vite": "catalog:vite724",
-    "vite-plugin-dts": "catalog:buildUtilities"
+    "weapp-tailwindcss": "workspace:*"
   }
 }

@@ -13,6 +13,7 @@ import type { ReactNativePlatform, ReactNativeReport } from './catalog'
 import { findAndroidAnrWaitTap } from './android-window'
 import { getHttpText } from './native-http'
 import { evaluateNativeWait } from './native-wait'
+import { stopOwnedProcess } from './process'
 import { validateReactNativeReport } from './reports'
 
 interface ReportEnvelope { hmrMarker: string, cssHmrColor: string, report: ReactNativeReport }
@@ -333,27 +334,30 @@ async function main() {
   const metroHost = platform === 'ios' && runtimeHost !== '127.0.0.1' ? '--lan' : '--localhost'
   const metro = execa('pnpm', ['--filter', '@weapp-tailwindcss/example-react-native-expo', 'exec', 'expo', 'start', metroHost, '--port', '8081', '--clear'], {
     cwd: repoRoot,
+    detached: process.platform !== 'win32',
     env,
     stdout: metroLogFile.createWriteStream(),
     stderr: metroLogFile.createWriteStream(),
     reject: false,
   })
-  await waitForMetro(metro)
-  const runArgs = ['--filter', '@weapp-tailwindcss/example-react-native-expo', 'exec', 'expo', 'run', platform === 'android' ? 'android' : 'ios', '--no-bundler']
-  const expoDevice = platform === 'android' ? await androidExpoDevice(device) : device
-  runArgs.push('--device', expoDevice)
-  if (platform === 'android' && process.env['RN_ANDROID_BINARY']) {
-    runArgs.push('--binary', path.resolve(repoRoot, process.env['RN_ANDROID_BINARY']))
-  }
-  const run = execa('pnpm', runArgs, {
-    cwd: repoRoot,
-    env,
-    stdout: logFile.createWriteStream(),
-    stderr: logFile.createWriteStream(),
-    reject: false,
-  })
+  let run: ReturnType<typeof execa> | undefined
   let completed = false
   try {
+    await waitForMetro(metro)
+    const runArgs = ['--filter', '@weapp-tailwindcss/example-react-native-expo', 'exec', 'expo', 'run', platform === 'android' ? 'android' : 'ios', '--no-bundler']
+    const expoDevice = platform === 'android' ? await androidExpoDevice(device) : device
+    runArgs.push('--device', expoDevice)
+    if (platform === 'android' && process.env['RN_ANDROID_BINARY']) {
+      runArgs.push('--binary', path.resolve(repoRoot, process.env['RN_ANDROID_BINARY']))
+    }
+    run = execa('pnpm', runArgs, {
+      cwd: repoRoot,
+      detached: process.platform !== 'win32',
+      env,
+      stdout: logFile.createWriteStream(),
+      stderr: logFile.createWriteStream(),
+      reject: false,
+    })
     // 首次原生构建包含 CocoaPods/Gradle 依赖准备，不能使用 HMR 的短超时。
     const baseline = await waitForReportOrExit('rn-hmr-baseline', run, metro, {
       cssHmrColor: '#10b981',
@@ -410,9 +414,9 @@ async function main() {
     if (!completed) { await captureFailureDiagnostics(device) }
     await fs.writeFile(markerFile, originalMarker, 'utf8')
     await fs.writeFile(cssFile, originalCss, 'utf8')
-    run.kill('SIGTERM')
-    await run.catch(() => undefined)
-    metro.kill('SIGTERM')
+    await stopOwnedProcess(run)
+    await run?.catch(() => undefined)
+    await stopOwnedProcess(metro)
     await metro.catch(() => undefined)
     await logFile.close()
     await metroLogFile.close()

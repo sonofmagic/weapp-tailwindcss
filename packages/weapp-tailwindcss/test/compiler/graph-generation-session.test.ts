@@ -93,6 +93,10 @@ describe('graph generation compilation session', () => {
     expect(generate).toHaveBeenNthCalledWith(2, expect.objectContaining({
       candidates: new Set(['m-2']),
     }))
+    expect(first?.snapshot).toBeDefined()
+    expect([...(first?.snapshot?.classSet ?? [])]).toEqual(['p-4'])
+    expect(second?.snapshot).toBeDefined()
+    expect([...(second?.snapshot?.classSet ?? [])]).toEqual(['m-2'])
     expect(first?.metadata.revision).toBe(1)
     expect(first?.artifact?.revision).toBe(1)
     expect(second?.metadata.revision).toBe(2)

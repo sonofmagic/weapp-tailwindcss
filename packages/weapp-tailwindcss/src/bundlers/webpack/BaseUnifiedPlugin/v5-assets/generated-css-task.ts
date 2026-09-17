@@ -98,9 +98,9 @@ export async function processWebpackGeneratedCssAsset(element: any, context: Web
         const sourceFile = cssHandlerOptions.sourceOptions?.sourceFile
         const sourceCss = sourceFile ? cssSources.get(path.resolve(sourceFile))?.css : undefined
         const isConfiguredCssSource = sourceFile !== undefined
-          && configuredCssEntryFiles.some(entry => path.resolve(entry) === path.resolve(sourceFile))
+          && configuredCssEntryFiles.some((entry: string) => path.resolve(entry) === path.resolve(sourceFile))
         const isConfiguredMainCssSource = sourceFile !== undefined
-          && configuredMainCssEntryFiles.some(entry => path.resolve(entry) === path.resolve(sourceFile))
+          && configuredMainCssEntryFiles.some((entry: string) => path.resolve(entry) === path.resolve(sourceFile))
         const sourceCssHasTailwindRoot = sourceCss !== undefined
           && hasTailwindRootDirectives(sourceCss, { importFallback: true })
         const shouldPreserveExistingPreflight = cssHandlerOptions.isMainChunk
@@ -417,7 +417,7 @@ export async function processWebpackGeneratedCssAsset(element: any, context: Web
           cssUserHandlerOptions: getCssUserHandlerOptions(file),
           compilationChanges: scopeCompilationChanges,
           frameworkPostcssOwner: compilerOptions,
-          cssStage: 'framework-processed',
+          cssStage: 'framework-processed' as const,
           getSourceCandidatesForEntries: webpackSourceCandidates?.getSourceCandidatesForEntries,
           sourceCandidates: scopedGeneratorRuntimeSet,
           restoreLocalCssImports: false,

@@ -97,7 +97,6 @@ function resolveViteProfile(options: UserDefinedOptions, config: ResolvedConfig,
   const isGenericWeb = frameworkName === 'generic'
     && (forceGenericWeb || !explicitAppType)
     && rawTarget !== 'weapp'
-    && rawTarget !== 'app'
     && family !== 'mini-program'
   const cssOnlyGenericWeb = isGenericWeb
     && (forceGenericWeb || (rawTarget === undefined && explicitAppType === undefined && selectedPlatform === undefined))
@@ -125,10 +124,10 @@ function resolveViteProfile(options: UserDefinedOptions, config: ResolvedConfig,
 function invokeHook(plugin: Plugin | undefined, hookName: HookName, thisArg: unknown, args: unknown[]) {
   const hook = plugin?.[hookName]
   if (typeof hook === 'function') {
-    return hook.apply(thisArg, args)
+    return Reflect.apply(hook, thisArg, args)
   }
   if (hook && typeof hook === 'object' && 'handler' in hook && typeof hook.handler === 'function') {
-    return hook.handler.apply(thisArg, args)
+    return Reflect.apply(hook.handler, thisArg, args)
   }
   return undefined
 }
@@ -256,7 +255,6 @@ function createDispatcher(options: UserDefinedOptions): WeappTailwindcssVitePlug
     }
     if (profile.isGenericWeb
       && (opts.generator === undefined || (typeof opts.generator === 'object' && !Object.hasOwn(opts.generator, 'target')))
-      && opts.generator !== false
       && !options.platform
       && !options.cssOptions?.platform
       && !process.env['UNI_PLATFORM']

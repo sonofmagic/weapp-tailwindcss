@@ -117,7 +117,19 @@ export function collectRememberedCssReplayGroups(
   styleOutputFiles?: Iterable<string> | undefined,
 ) {
   const groups = new Map<string, Array<{ key: string, remembered: RememberedCssSource }>>()
+  const outputFiles = [...styleOutputFiles ?? []]
+  const currentOutputs = new Set(outputFiles.map(normalizeOutputPathKey))
+  const relationOwner = getActiveViteSourceOutputRelationOwner()
   for (const [key, remembered] of sources ?? []) {
+    const ownedOutputs = [...relationOwner?.getOwnedOutputs(remembered.sourceFile) ?? []]
+      .filter(file => currentOutputs.has(normalizeOutputPathKey(file)) && opts.cssMatcher(file))
+    if (ownedOutputs.length === 1) {
+      const outputKey = normalizeOutputPathKey(ownedOutputs[0]!)
+      const group = groups.get(outputKey) ?? []
+      group.push({ key, remembered })
+      groups.set(outputKey, group)
+      continue
+    }
     const cleanSourceFile = remembered.sourceFile.replace(/[?#].*$/, '')
     const resolvedOutputFile = CSS_SOURCE_OUTPUT_EXT_RE.test(cleanSourceFile)
       ? resolveViteCssPipelineOutputFileFromSourceFile(
@@ -128,7 +140,7 @@ export function collectRememberedCssReplayGroups(
           preserveCssExtension,
           sourceRoot,
           styleOutputExtension,
-          styleOutputFiles,
+          outputFiles,
         )
       : resolveViteCssPipelineOutputFileFromSourceFile(
           remembered.outputFile,
@@ -138,7 +150,7 @@ export function collectRememberedCssReplayGroups(
           preserveCssExtension,
           sourceRoot,
           styleOutputExtension,
-          styleOutputFiles,
+          outputFiles,
         )
     const rememberedOutputFile = remembered.outputFile.replace(/[?#].*$/, '')
     const outputFile = opts.cssMatcher(rememberedOutputFile)

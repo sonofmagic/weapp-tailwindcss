@@ -476,7 +476,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           for (const [file, asset] of groupedEntries.css) {
             const currentAsset = compilation.getAsset(file)
             const rawSource = currentAsset?.source.source() ?? asset.source()
-            const source = stringifyWebpackSourceLike(rawSource)
+            const source = rawSource.toString()
             const finalized = finalizeWebpackCssAssetOutputSource(source, compilerOptions, isWebGeneratorTarget)
             updateAssetIfChanged(file, finalized)
           }

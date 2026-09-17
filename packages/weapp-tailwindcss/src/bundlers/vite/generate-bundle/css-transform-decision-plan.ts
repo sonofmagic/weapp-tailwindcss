@@ -110,6 +110,7 @@ export function resolveViteCssTransformDecisionPlan(
 }
 
 export interface ResolveViteCssTransformCachePlanOptions {
+  cssBundleSourceHash?: string | undefined
   cssIsMainChunk: boolean
   cssRuntimeAffectingHash: string
   cssShareScope: string
@@ -156,12 +157,14 @@ export function resolveViteCssTransformCachePlan(
       options.cssRuntimeAffectingHash,
       options.scopedGeneratorCandidateSignature,
       options.sourceTraceSignature,
+      ...(options.cssBundleSourceHash ? [options.cssBundleSourceHash] : []),
     ].join(':'),
     cssTaskHash: [
       options.cssRuntimeAffectingHash,
       options.scopedGeneratorCandidateSignature,
       options.sourceTraceSignature,
       options.linkedImpactSignature,
+      ...(options.cssBundleSourceHash ? [options.cssBundleSourceHash] : []),
     ].join(':'),
     rememberedCssRuntimeSignature,
   }

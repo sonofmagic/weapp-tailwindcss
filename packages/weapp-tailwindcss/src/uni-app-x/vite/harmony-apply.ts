@@ -97,7 +97,7 @@ export function createUniAppXHarmonyApplyExpander(options: CreateUniAppXHarmonyA
       cssFile,
       generatorSource,
       {
-        addWatchFile: hookContext.addWatchFile?.bind(hookContext),
+        ...(hookContext.addWatchFile ? { addWatchFile: hookContext.addWatchFile.bind(hookContext) } : {}),
         disableSourceScan: true,
         sourceCandidates: [],
         transient: true,

@@ -1,6 +1,5 @@
-/*! weapp-tailwindcss vite-generated-css:%3Cproject-root%3E%2Fsrc%2Fsub-independent%2Fpages%2Findex.css */ /*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @layer properties;
-@layer theme,base,components,utilities;
+@layer theme, base, components, utilities;
 @layer theme {
   :root,
   :host {

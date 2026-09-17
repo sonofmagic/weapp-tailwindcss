@@ -256,6 +256,7 @@
   },
   "devDependencies": {
     "@mpxjs/webpack-plugin": "^2.11.1",
+    "vite": "catalog:vite724",
     "webpack": "5.105.4"
   }
 }

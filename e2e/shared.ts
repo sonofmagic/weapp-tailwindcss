@@ -1,5 +1,6 @@
 import type { TailwindcssPatchOptions } from 'tailwindcss-patch'
 import type { TailwindCssRuntimeOptions } from '../packages/weapp-tailwindcss/src/tailwindcss/runtime-types'
+import type { MiniProgramThemeExpectation } from '../scripts/demo-visual-e2e-report/types'
 import { createRequire } from 'node:module'
 import process from 'node:process'
 import { format as formatMessage } from 'node:util'
@@ -91,6 +92,7 @@ interface E2EPatchOptions extends TailwindcssPatchOptions {
 type NormalizedPatchOptions = E2EPatchOptions
 
 export interface ProjectEntry {
+  theme?: MiniProgramThemeExpectation
   name: string
   projectPath: string
   cssFile: string

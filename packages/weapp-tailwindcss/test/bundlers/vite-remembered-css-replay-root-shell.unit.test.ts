@@ -153,6 +153,9 @@ describe('bundlers/vite remembered css replay root shell', () => {
       outputFile: 'app-origin.wxss',
     })
 
+    // 最终产物缓存可能已经合并本轮随后删除的框架规则，不能当作入口源缓存。
+    lastCssResultByFile.set('app-origin.wxss', generatedCss + '\n.removed-framework-rule{color:red}')
+    generateTailwindV4Css.mockResolvedValueOnce({ css: generatedCss, dependencies: [] })
     const cachedReplayTasks: Array<() => Promise<void>> = []
     const cachedReplayUpdates: typeof pendingRememberedCssReplayUpdates = []
     await processRememberedCssReplay({
@@ -167,9 +170,33 @@ describe('bundlers/vite remembered css replay root shell', () => {
       pendingRememberedCssReplayUpdates: cachedReplayUpdates,
     })
 
-    expect(cachedReplayTasks).toHaveLength(0)
-    expect(generateTailwindV4Css).toHaveBeenCalledTimes(1)
+    expect(cachedReplayTasks).toHaveLength(1)
+    await cachedReplayTasks[0]!()
+    expect(generateTailwindV4Css).toHaveBeenLastCalledWith(expect.objectContaining({ previousCss: undefined }))
+    expect(generateTailwindV4Css).toHaveBeenCalledTimes(2)
     expect(cachedReplayUpdates).toEqual(pendingRememberedCssReplayUpdates)
+
+    // 同轮框架样式会写入目标时，配置入口重放必须合并，不能覆盖基础样式。
+    const contributionUpdates: typeof pendingRememberedCssReplayUpdates = []
+    const emitContribution = vi.fn()
+    generateTailwindV4Css.mockResolvedValueOnce({ css: generatedCss, dependencies: [] })
+    const contributionTasks: Array<() => Promise<void>> = []
+    await processRememberedCssReplay({
+      ...options,
+      bundle: { 'framework.acss': { ...bundle['app-origin.wxss'], fileName: 'framework.acss', source: 'page{height:100%}' } },
+      bundleFiles: ['framework.acss'],
+      frameworkRootImportShellTargetByFile: new Map([['framework.acss', 'generated.acss']]),
+      opts: { cssMatcher: (file: string) => file.endsWith('.acss'), htmlMatcher: () => false },
+      getRememberedCssSources: () => new Map([['entry', {
+        outputFile: 'generated.acss', sourceFile: '/repo/theme.css', rawSource: '@import "tailwindcss";',
+      }]]),
+      cssTaskFactories: contributionTasks,
+      pendingRememberedCssReplayUpdates: contributionUpdates,
+      emitOrReplayCssAsset: emitContribution,
+    })
+    await Promise.all(contributionTasks.map(task => task()))
+    expect(emitContribution).not.toHaveBeenCalled()
+    expect(contributionUpdates).toContainEqual(expect.objectContaining({ outputFile: 'generated.acss', css: generatedCss, injectIntoMain: true }))
 
     lastCssResultByFile.clear()
     const cacheMissReplayTasks: Array<() => Promise<void>> = []

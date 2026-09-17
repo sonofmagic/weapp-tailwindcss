@@ -260,27 +260,16 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     if (bundleFiles.includes(rememberedOutputFile) || bundleFiles.includes(sourceFile)) {
       continue
     }
-    const shouldMergeReplayIntoFrameworkRootTarget = outputFile !== rememberedOutputFile
-      && normalizedBundleFiles.has(normalizeOutputPathKey(outputFile))
-    if (allRememberedSignaturesFresh) {
-      if (!shouldMergeReplayIntoFrameworkRootTarget) {
-        continue
-      }
-      else {
-        const cachedCss = getLastCssResult(lastCssResultByFile, outputFile)
-        if (cachedCss != null) {
-          pendingRememberedCssReplayUpdates.push(...createRememberedCssReplayUpdates(
-            cachedCss,
-            sourceFile,
-            outputFile,
-            true,
-          ))
-          metrics.css.cacheHits++
-          debug('css replay cached result into framework root target: %s', outputFile)
-          continue
-        }
-        debug('css replay framework root target cache miss, regenerate: %s', outputFile)
-      }
+    const hasCurrentFrameworkContribution = [...frameworkRootImportShellTargetByFile ?? []].some(([file, target]) =>
+      normalizeOutputPathKey(target) === normalizeOutputPathKey(outputFile)
+      && normalizedBundleFiles.has(normalizeOutputPathKey(file)),
+    )
+    const shouldMergeReplayIntoFrameworkRootTarget = hasCurrentFrameworkContribution
+      || (outputFile !== rememberedOutputFile
+        && normalizedBundleFiles.has(normalizeOutputPathKey(outputFile)))
+    // 最终产物缓存包含框架贡献；合并入口重放时必须从入口源码重新生成，避免回滚后复活旧规则。
+    if (allRememberedSignaturesFresh && !shouldMergeReplayIntoFrameworkRootTarget) {
+      continue
     }
     const sourceTraceSources = scopedSourceCandidateSourceGetter
       ? await createScopedGeneratorSourceTraceMap(generatorRawSource, sourceFile, scopedSourceCandidateSourceGetter)
@@ -362,7 +351,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
         generatorPlatform,
         styleHandler,
         debug,
-        previousCss,
+        previousCss: shouldMergeReplayIntoFrameworkRootTarget ? undefined : previousCss,
       })
       const css = annotateCss(generated?.css ?? (await styleHandler(generatorRawSource, cssHandlerOptions)).css)
       lastCssRawSourceHashByFile.set(outputFile, rawSourceHash)

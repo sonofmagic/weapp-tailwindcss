@@ -1,7 +1,9 @@
 import type { WatchCase } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import fs from 'node:fs/promises'
+import path from 'node:path'
 import { expandOutputFileEntries } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations'
 import { readFileIfExists } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
+import { readReachableMiniProgramStyleFiles } from './hbuilderx-local/styles'
 
 export type ArtifactKind = 'wxml' | 'js' | 'style'
 
@@ -22,14 +24,24 @@ export async function readArtifacts(watchCase: WatchCase): Promise<ArtifactSnaps
     ...styleFiles.map(file => ({ kind: 'style' as const, file })),
   ]
   const snapshots: ArtifactSnapshot[] = []
+  const visited = new Set<string>()
+  const styleExtensions = [...new Set(['.css', ...styleFiles.map(file => path.extname(file))])]
 
   for (const item of files) {
+    if (visited.has(item.file)) {
+      continue
+    }
     const content = await readFileIfExists(item.file)
     if (content != null) {
-      snapshots.push({
-        ...item,
-        content,
-      })
+      const reachable = item.kind === 'style'
+        ? await readReachableMiniProgramStyleFiles(watchCase.cwd, item.file, styleExtensions)
+        : [{ file: item.file, content }]
+      for (const source of reachable) {
+        if (!visited.has(source.file)) {
+          snapshots.push({ kind: item.kind, ...source })
+          visited.add(source.file)
+        }
+      }
     }
   }
   return snapshots

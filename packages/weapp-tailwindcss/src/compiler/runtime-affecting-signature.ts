@@ -82,20 +82,20 @@ function createJsRuntimeAffectingSignature(source: string) {
     const stack: AstNode[] = [ast as unknown as AstNode]
     while (stack.length > 0) {
       const node = stack.pop()!
-      if (node.type === 'StringLiteral' && typeof node.value === 'string') {
-        parts.push(`s:${node.value}`)
+      if (node.type === 'StringLiteral' && typeof node['value'] === 'string') {
+        parts.push(`s:${node['value']}`)
       }
       else if (
         node.type === 'TemplateElement'
-        && node.value
-        && typeof node.value === 'object'
-        && 'raw' in node.value
-        && typeof node.value.raw === 'string'
+        && node['value']
+        && typeof node['value'] === 'object'
+        && 'raw' in node['value']
+        && typeof node['value'].raw === 'string'
       ) {
-        parts.push(`t:${node.value.raw}`)
+        parts.push(`t:${node['value'].raw}`)
       }
-      else if (node.type === 'JSXText' && typeof node.value === 'string') {
-        const value = node.value.trim()
+      else if (node.type === 'JSXText' && typeof node['value'] === 'string') {
+        const value = node['value'].trim()
         if (value.length > 0) {
           parts.push(`x:${value}`)
         }

@@ -17,7 +17,7 @@ export class CandidateIndex {
       layer: 'candidate-index',
       keyFingerprint: createCompilerValueFingerprint(sourceId),
       hit: addedCandidates.size === 0 && removedCandidates.size === 0,
-      invalidationReason: addedCandidates.size || removedCandidates.size ? 'source-change' : undefined,
+      ...(addedCandidates.size || removedCandidates.size ? { invalidationReason: 'source-change' as const } : {}),
       entries: this.candidatesBySource.size,
       memoryBytes: [...this.candidatesBySource.values()].reduce((total, values) => total + values.size * 32, 0),
     })

@@ -1,6 +1,7 @@
 const BUNDLER_GENERATED_CSS_MARKER_RE = /\/\*!?\s*weapp-tailwindcss (?:gulp|vite|webpack)-generated-css(?:\s*:\s*[^\s*]+)?\s*\*\/\s*/i
 const BUNDLER_GENERATED_CSS_MARKER_GLOBAL_RE = /\/\*!?\s*weapp-tailwindcss (?:gulp|vite|webpack)-generated-css(?:\s*:\s*[^\s*]+)?\s*\*\/\s*/gi
 const BUNDLER_GENERATED_CSS_MARKER_CAPTURE_RE = /\/\*!?\s*weapp-tailwindcss (gulp|vite|webpack)-generated-css(?:\s*:\s*([^\s*]+))?\s*\*\/\s*/gi
+const BUNDLER_GENERATED_CSS_END_MARKER_GLOBAL_RE = /\/\*!?\s*weapp-tailwindcss (?:gulp|vite|webpack)-generated-css-end\s*:\s*[^\s*]+\s*\*\/\s*/gi
 const VITE_INTERNAL_CSS_MARKER_GLOBAL_RE = /\/\*\$vite\$:\d+\*\/\s*/g
 
 export interface BundlerGeneratedCssMarkerBlock {
@@ -13,6 +14,10 @@ export function createBundlerGeneratedCssMarker(bundler: 'gulp' | 'vite' | 'webp
   return `/*! weapp-tailwindcss ${bundler}-generated-css:${encodeURIComponent(file)} */`
 }
 
+export function createBundlerGeneratedCssEndMarker(bundler: 'gulp' | 'vite' | 'webpack', file: string) {
+  return `/*! weapp-tailwindcss ${bundler}-generated-css-end:${encodeURIComponent(file)} */`
+}
+
 export function hasBundlerGeneratedCssMarker(source: unknown) {
   return typeof source === 'string' && BUNDLER_GENERATED_CSS_MARKER_RE.test(source)
 }
@@ -20,6 +25,7 @@ export function hasBundlerGeneratedCssMarker(source: unknown) {
 export function stripBundlerGeneratedCssMarkers(source: string) {
   return source
     .replace(BUNDLER_GENERATED_CSS_MARKER_GLOBAL_RE, '')
+    .replace(BUNDLER_GENERATED_CSS_END_MARKER_GLOBAL_RE, '')
     .replace(VITE_INTERNAL_CSS_MARKER_GLOBAL_RE, '')
 }
 

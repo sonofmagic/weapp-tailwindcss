@@ -114,13 +114,14 @@ export function createCompiler(options: CreateCompilerOptions = {}): Compiler {
       && isSameCompilerGenerationCacheKey(entry.generationCache.key, generationCacheKey)
       ? entry.generationCache.result
       : undefined
+    const latestRevision = getLatestRevision(entry)
     cacheTelemetry?.record({
       layer: 'tailwind-generation',
       keyFingerprint: generationCacheKey.candidateSignature,
       hit: reusableGeneration !== undefined,
-      invalidationReason: reusableGeneration === undefined && !engineReused ? 'source-change' : undefined,
+      ...(reusableGeneration === undefined && !engineReused ? { invalidationReason: 'source-change' as const } : {}),
       entries: entry.generationCache ? 1 : 0,
-      revision: getLatestRevision(entry),
+      ...(latestRevision === undefined ? {} : { revision: latestRevision }),
       operationId: entry.id,
     })
 
@@ -129,7 +130,7 @@ export function createCompiler(options: CreateCompilerOptions = {}): Compiler {
         ? reuseCompilerGenerationResult(reusableGeneration)
         : await generator.generate({
             ...generateOptions,
-            candidates: prepared.explicitCandidates ? prepared.compilation.candidates : undefined,
+            ...(prepared.explicitCandidates ? { candidates: prepared.compilation.candidates } : {}),
             incrementalCache: generateOptions.incrementalCache ?? true,
             target: target === 'tailwind' ? 'web' : target,
           })

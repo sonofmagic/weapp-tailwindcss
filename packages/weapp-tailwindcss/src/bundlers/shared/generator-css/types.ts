@@ -1,4 +1,4 @@
-import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
+import type { BundlerStyleHandlerOptions } from '../style-handler-options'
 import type { TailwindV4CssSource } from './source-resolver/types'
 import type { CompilationDependencyChange, SourceScope } from '@/compiler'
 import type { CompilerSnapshot } from '@/core/compiler'
@@ -14,8 +14,8 @@ export interface GenerateCssByGeneratorOptions {
   runtime: Set<string>
   rawSource: string
   file: string
-  cssHandlerOptions: IStyleHandlerOptions
-  cssUserHandlerOptions: IStyleHandlerOptions
+  cssHandlerOptions: BundlerStyleHandlerOptions
+  cssUserHandlerOptions: BundlerStyleHandlerOptions
   cssSources?: TailwindV4CssSource[] | undefined
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   sourceCandidates?: Set<string> | undefined
@@ -31,6 +31,8 @@ export interface GenerateCssByGeneratorOptions {
   generatorPlatform?: string | undefined
   userRawSource?: string | undefined
   userRawSourceProcessed?: boolean | undefined
+  /** 框架已处理、需在最终合并前解析编译期函数的作者样式。 */
+  frameworkProcessedUserCss?: string | undefined
   forceGenerator?: boolean | undefined
   previousCss?: string | undefined
   previousClassSet?: Set<string> | undefined
@@ -43,6 +45,8 @@ export interface GenerateCssByGeneratorOptions {
 
 export interface GenerateCssByGeneratorResult {
   css: string
+  /** 已使用本轮 Tailwind 配置展开函数的框架作者样式。 */
+  frameworkProcessedUserCss?: string | undefined
   classSet: ReadonlySet<string>
   target: string
   source: 'generator'

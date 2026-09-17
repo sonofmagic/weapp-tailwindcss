@@ -70,11 +70,12 @@ function wrapPluginHook(
     }
   }
   if (hook && typeof hook === 'object' && 'handler' in hook && typeof hook.handler === 'function') {
+    const handler = hook.handler
     return {
       ...hook,
       handler(this: unknown, ...args: any[]) {
         before(...args)
-        return hook.handler.apply(this, args)
+        return handler.apply(this, args)
       },
     }
   }
@@ -93,11 +94,12 @@ function wrapPluginCloseBundle(hook: unknown, dispose: () => void) {
     }
   }
   if (hook && typeof hook === 'object' && 'handler' in hook && typeof hook.handler === 'function') {
+    const handler = hook.handler
     return {
       ...hook,
       async handler(this: unknown, ...args: any[]) {
         try {
-          return await hook.handler.apply(this, args)
+          return await handler.apply(this, args)
         }
         finally {
           dispose.call(this)
@@ -121,9 +123,9 @@ export function createViteFrameworkPlugins(
     relationOwner.dispose()
     return undefined
   }
-  const wrappedPlugins = plugins.map(plugin => ({
+  const wrappedPlugins = plugins.map((plugin: WeappTailwindcssVitePlugin) => ({
     ...plugin,
-    watchChange: wrapPluginHook(plugin.watchChange, (id: string, change: { event?: string } | undefined) => {
+    watchChange: wrapPluginHook(plugin['watchChange'], (id: string, change: { event?: string } | undefined) => {
       if (change?.event === 'delete') {
         relationOwner.removeSource(id)
       }
@@ -131,7 +133,7 @@ export function createViteFrameworkPlugins(
         relationOwner.observeSource(id)
       }
     }),
-    handleHotUpdate: wrapPluginHook(plugin.handleHotUpdate, (context: { file?: string } | undefined) => {
+    handleHotUpdate: wrapPluginHook(plugin['handleHotUpdate'], (context: { file?: string } | undefined) => {
       if (context?.file) {
         relationOwner.observeSource(context.file)
       }

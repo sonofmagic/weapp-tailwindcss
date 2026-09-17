@@ -85,7 +85,7 @@ async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSourc
   const definitions: Array<{ css: string, base: string, from?: string }> = [{
     css: source.css,
     base: source.base,
-    from: source.dependencies[0],
+    ...(source.dependencies[0] === undefined ? {} : { from: source.dependencies[0] }),
   }]
   for (const dependency of source.dependencies.slice(1)) {
     if (!existsSync(dependency)) {

@@ -1,3 +1,4 @@
+import type { sources } from 'webpack'
 import path from 'node:path'
 import { filterExistingCssRules } from '@weapp-tailwindcss/postcss'
 import { processCachedTask } from '../../../shared/cache'
@@ -22,7 +23,7 @@ export interface WebpackCssAssetTaskContext {
   [key: string]: any
 }
 
-export async function processWebpackProcessedCssAsset(element: any, context: WebpackCssAssetTaskContext) {
+export async function processWebpackProcessedCssAsset(element: [string, Pick<sources.Source, 'source'>], context: WebpackCssAssetTaskContext) {
   const { ConcatSource, assetHashByChunk, compilerOptions, configuredMainCssEntryFiles, createRuntimeSetHash, cssSourceTraceSignature, cssSources, cssTaskFactories, debug, enqueueTask, finalizeCssAssetSource, finalizeTracedCss, generatedCssSources, getCssHandlerOptions, getGeneratorRuntimeSet, hasConfiguredTailwindV4SourceRoots, isKnownWebpackProcessedCssAsset, isWebGeneratorTarget, isWebpackProcessedCssAsset, processedCssAssetSkipDecisionCache, rememberProcessCacheKey, runtimeAffectingSourceHash, updateAssetIfChanged, watchMode, webpackSourceCandidateSet, webpackSourceCandidateValueSignature, webpackSourceCandidates } = context
   const [file, originalSource] = element
 

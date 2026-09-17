@@ -1,4 +1,5 @@
 import type File from 'vinyl'
+import type { SourceCandidateCollector } from '@/bundlers/shared/source-candidates'
 import type { getCompilerContext } from '@/context'
 import type { TailwindRuntimeState } from '@/tailwindcss/runtime'
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, JsModuleGraphOptions } from '@/types'
@@ -34,18 +35,18 @@ export interface GulpFileTransformContext {
   debug: DebugFunction
   generatedCssPreflightModeByFile: Map<string, { inject: boolean, preserve: boolean }>
   getCompilationDependencyRevision: (scopeId: string) => number
-  getSourceCandidateGetter: () => ((entries?: unknown) => Set<string>) | undefined
-  getSourceCandidateSourceGetter: () => ((entries?: unknown) => Map<string, Set<string>>) | undefined
+  getSourceCandidateGetter: () => SourceCandidateCollector['valuesForEntries'] | undefined
+  getSourceCandidateSourceGetter: () => SourceCandidateCollector['sourcesForEntries'] | undefined
   getRuntimeSet: () => Set<string>
   gulpProcessCacheKeys: Set<string>
   opts: ReturnType<typeof getCompilerContext>
-  refreshGulpV4SourceCandidates: (forceRefresh?: boolean) => Promise<((entries?: unknown) => Set<string>) | undefined>
+  refreshGulpV4SourceCandidates: (forceRefresh?: boolean) => Promise<SourceCandidateCollector['valuesForEntries'] | undefined>
   refreshRuntimeSet: (options?: RuntimeRefreshOptions) => Promise<Set<string>>
   refreshRuntimeSetForSource: (file: File, rawSource: string, type: 'html' | 'js') => Promise<Set<string>>
   registerAutoCssSource: (file: File, rawSource: string) => Promise<boolean>
   rememberCompilationScope: (sourceFile: string, scopeId: string) => void
   resolveGulpStyleOutputExtension: (file: File) => string | undefined
-  resolveGulpTransformTimingDetails: (phase: string) => unknown
+  resolveGulpTransformTimingDetails: (phase: string) => Record<string, unknown>
   resolveModuleGraphOptions: (moduleGraph?: JsModuleGraphOptions) => JsModuleGraphOptions
   resolveWxmlHandlerOptions: (options?: Partial<ITemplateHandlerOptions>) => Partial<ITemplateHandlerOptions>
   resolveWxssFileHandlerOptions: (file: File, rawSource: string, options?: Partial<IStyleHandlerOptions>) => Partial<IStyleHandlerOptions>

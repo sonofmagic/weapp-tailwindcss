@@ -1,5 +1,6 @@
 import type { createWatchSession } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session'
 import type { CliOptions, WatchCase } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
+import type { ArtifactSnapshot } from './frameworkIdeHotUpdateArtifacts'
 import process from 'node:process'
 import {
   createStyleMutationPayload,
@@ -7,6 +8,7 @@ import {
   waitForOutputFilesUpdated,
 } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations'
 import {
+  findCssRuleBodies,
   findCssRuleBody,
   normalizeCssDeclaration,
   waitFor,
@@ -34,8 +36,8 @@ function getRollbackTimeoutMs(options: CliOptions) {
   return Math.min(options.timeoutMs, readNumberEnv('E2E_IDE_ROLLBACK_TIMEOUT_MS', 30_000))
 }
 
-function assertStyleOutput(
-  watchCase: WatchCase,
+export function assertStyleOutput(
+  watchCase: Pick<WatchCase, 'label'>,
   content: string,
   payload: ReturnType<typeof createStyleMutationPayload>,
 ) {
@@ -54,26 +56,30 @@ function assertStyleOutput(
     return
   }
 
-  const functionRule = findCssRuleBody(content, payload.functionNeedle)
-  if (!functionRule) {
+  const functionRules = findCssRuleBodies(content, payload.functionNeedle)
+  if (functionRules.length === 0) {
     throw new Error(`[${watchCase.label}] IDE style HMR output is missing Tailwind function rule ${payload.functionNeedle}`)
   }
 
-  const normalizedFunctionRule = normalizeCssDeclaration(functionRule)
+  const normalizedFunctionRules = functionRules.map(normalizeCssDeclaration)
   for (const forbidden of payload.forbiddenFunctionFragments) {
-    if (functionRule.includes(forbidden)) {
+    if (functionRules.some(rule => rule.includes(forbidden))) {
       throw new Error(`[${watchCase.label}] IDE style HMR did not resolve Tailwind function fragment ${forbidden}`)
     }
   }
   for (const expected of payload.expectedFunctionDeclarations) {
-    if (!normalizedFunctionRule.includes(normalizeCssDeclaration(expected))) {
+    if (!normalizedFunctionRules.some(rule => rule.includes(normalizeCssDeclaration(expected)))) {
       throw new Error(`[${watchCase.label}] IDE style HMR function output is missing declaration ${expected}`)
     }
   }
 }
 
-function resolveUpdatedStyleFiles(watchCase: WatchCase, baselineMtimes: Map<string, number>) {
-  return [...watchCase.outputStyleCandidates, ...watchCase.globalStyleCandidates]
+function resolveUpdatedStyleFiles(watchCase: WatchCase, baselineMtimes: Map<string, number>, artifacts: ArtifactSnapshot[]) {
+  return [...new Set([
+    ...watchCase.outputStyleCandidates,
+    ...watchCase.globalStyleCandidates,
+    ...artifacts.filter(item => item.kind === 'style').map(item => item.file),
+  ])]
     .filter(file => file.includes('*') || baselineMtimes.has(file))
 }
 
@@ -93,7 +99,7 @@ export async function runIdeStyleHotUpdate(
   await writeFilePreserveEol(sourceFile, mutatedSource, sourceOriginal)
   await waitForOutputFilesUpdated(
     watchCase,
-    resolveUpdatedStyleFiles(watchCase, baselineMtimes),
+    resolveUpdatedStyleFiles(watchCase, baselineMtimes, baselineArtifacts),
     baselineMtimes,
     options,
     session,

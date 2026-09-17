@@ -14,6 +14,11 @@ const platform: Platform = options.platform
 
 const fixtureDir = path.join(repoRoot, 'e2e', 'fixtures', 'lynx-native', platform)
 const applicationId = 'com.weapptailwindcss.lynxcompat'
+const androidDeviceId = process.env['LYNX_ANDROID_DEVICE_ID'] ?? process.env['ANDROID_SERIAL'] ?? 'emulator-5554'
+
+function adbArgs(args: string[]) {
+  return platform === 'android' ? ['-s', androidDeviceId, ...args] : args
+}
 
 async function command(name: string, args: string[], cwd: string, timeout = 300_000) {
   const result = await execa(name, args, {
@@ -52,7 +57,7 @@ function positiveNumber(value: unknown, fallback: number) {
 }
 
 async function androidEnvironment(source: NativePlatformReport): Promise<NativeRuntimeEnvironment> {
-  const getprop = async (name: string) => (await command('adb', ['shell', 'getprop', name], fixtureDir, 30_000)).trim()
+  const getprop = async (name: string) => (await command('adb', adbArgs(['shell', 'getprop', name]), fixtureDir, 30_000)).trim()
   const [deviceName, deviceModel, osVersion, osBuild, apiLevel, abi, displaySize, density] = await Promise.all([
     getprop('ro.product.name'),
     getprop('ro.product.model'),
@@ -60,8 +65,8 @@ async function androidEnvironment(source: NativePlatformReport): Promise<NativeR
     getprop('ro.build.id'),
     getprop('ro.build.version.sdk'),
     getprop('ro.product.cpu.abi'),
-    command('adb', ['shell', 'wm', 'size'], fixtureDir, 30_000),
-    command('adb', ['shell', 'wm', 'density'], fixtureDir, 30_000),
+    command('adb', adbArgs(['shell', 'wm', 'size']), fixtureDir, 30_000),
+    command('adb', adbArgs(['shell', 'wm', 'density']), fixtureDir, 30_000),
   ])
   const size = displaySize.match(/(\d+)x(\d+)/)
   const dpi = Number(density.match(/(\d+)/)?.[1])
@@ -126,14 +131,14 @@ async function enrichEnvironment(report: NativePlatformReport, hostDir: string) 
 
 async function collectAndroidArtifacts(artifactDir: string) {
   const directory = 'files/lynx-compat/artifacts'
-  const listing = await execa('adb', ['shell', 'run-as', applicationId, 'ls', directory], { reject: false })
+  const listing = await execa('adb', adbArgs(['shell', 'run-as', applicationId, 'ls', directory]), { reject: false })
   if (listing.exitCode !== 0) {
     return
   }
   const outputDir = path.join(artifactDir, 'crops')
   await fs.mkdir(outputDir, { recursive: true })
   for (const name of listing.stdout.split(/\r?\n/).filter(name => /^[a-z0-9-]+\.png$/.test(name))) {
-    const result = await execa('adb', ['exec-out', 'run-as', applicationId, 'cat', `${directory}/${name}`], { encoding: 'buffer', reject: false })
+    const result = await execa('adb', adbArgs(['exec-out', 'run-as', applicationId, 'cat', `${directory}/${name}`]), { encoding: 'buffer', reject: false })
     if (result.exitCode === 0 && result.stdout) {
       await fs.writeFile(path.join(outputDir, name), result.stdout)
     }
@@ -141,7 +146,7 @@ async function collectAndroidArtifacts(artifactDir: string) {
 }
 
 async function collectAndroidLogcat(artifactDir: string) {
-  const result = await execa('adb', ['logcat', '-d', '-t', '2500'], { all: true, encoding: 'utf8', reject: false })
+  const result = await execa('adb', adbArgs(['logcat', '-d', '-t', '2500']), { all: true, encoding: 'utf8', reject: false })
   await fs.writeFile(path.join(artifactDir, 'logcat.txt'), result.all ?? result.stdout ?? result.stderr ?? '')
 }
 
@@ -176,19 +181,19 @@ async function bootedIosDeviceId(hostDir: string) {
 
 async function recordAndroidVideo(hostDir: string, artifactDir: string) {
   const devicePath = '/sdcard/lynx-promo-capture.mp4'
-  await execa('adb', ['shell', 'rm', '-f', devicePath], { reject: false })
-  const recording = execa('adb', ['shell', 'screenrecord', '--time-limit', String(options.captureDurationSeconds), '--bit-rate', '6000000', devicePath], { reject: false })
+  await execa('adb', adbArgs(['shell', 'rm', '-f', devicePath]), { reject: false })
+  const recording = execa('adb', adbArgs(['shell', 'screenrecord', '--time-limit', String(options.captureDurationSeconds), '--bit-rate', '6000000', devicePath]), { reject: false })
   await wait(2600)
-  await execa('adb', ['shell', 'input', 'swipe', '540', '1480', '540', '720', '700'], { reject: false })
+  await execa('adb', adbArgs(['shell', 'input', 'swipe', '540', '1480', '540', '720', '700']), { reject: false })
   await wait(2200)
-  await execa('adb', ['shell', 'input', 'swipe', '540', '760', '540', '1320', '650'], { reject: false })
+  await execa('adb', adbArgs(['shell', 'input', 'swipe', '540', '760', '540', '1320', '650']), { reject: false })
   await recording
   await command('adb', ['pull', devicePath, path.join(artifactDir, 'raw.mp4')], hostDir, 120_000)
-  await execa('adb', ['shell', 'rm', '-f', devicePath], { reject: false })
+  await execa('adb', adbArgs(['shell', 'rm', '-f', devicePath]), { reject: false })
 }
 
 async function runAndroid(hostDir: string, artifactDir: string) {
-  await command('adb', ['get-state'], hostDir, 30_000)
+  await command('adb', adbArgs(['get-state']), hostDir, 30_000)
   const compileSdk = await installedAndroidCompileSdk()
   const gradleArguments = ['--project-dir', hostDir, ':app:assembleDebug', '--stacktrace']
   if (compileSdk) {
@@ -196,20 +201,20 @@ async function runAndroid(hostDir: string, artifactDir: string) {
   }
   await command(process.env['LYNX_GRADLE'] ?? 'gradle', gradleArguments, hostDir)
   const apkPath = path.join(hostDir, 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk')
-  await command('adb', ['install', '-r', apkPath], hostDir, 120_000)
-  await command('adb', ['shell', 'am', 'force-stop', applicationId], hostDir, 30_000)
-  await execa('adb', ['shell', 'run-as', applicationId, 'rm', '-f', 'files/lynx-compat/report.json'], { reject: false })
-  const hiddenErrorDialogs = (await command('adb', ['shell', 'settings', 'get', 'global', 'hide_error_dialogs'], hostDir, 30_000)).trim()
-  await command('adb', ['shell', 'settings', 'put', 'global', 'hide_error_dialogs', '1'], hostDir, 30_000)
+  await command('adb', adbArgs(['install', '-r', apkPath]), hostDir, 120_000)
+  await command('adb', adbArgs(['shell', 'am', 'force-stop', applicationId]), hostDir, 30_000)
+  await execa('adb', adbArgs(['shell', 'run-as', applicationId, 'rm', '-f', 'files/lynx-compat/report.json']), { reject: false })
+  const hiddenErrorDialogs = (await command('adb', adbArgs(['shell', 'settings', 'get', 'global', 'hide_error_dialogs']), hostDir, 30_000)).trim()
+  await command('adb', adbArgs(['shell', 'settings', 'put', 'global', 'hide_error_dialogs', '1']), hostDir, 30_000)
   try {
-    await execa('adb', ['shell', 'input', 'keyevent', 'KEYCODE_WAKEUP'], { reject: false })
-    await execa('adb', ['shell', 'wm', 'dismiss-keyguard'], { reject: false })
-    await execa('adb', ['shell', 'am', 'broadcast', '-a', 'android.intent.action.CLOSE_SYSTEM_DIALOGS'], { reject: false })
-    await execa('adb', ['shell', 'input', 'keyevent', 'KEYCODE_BACK'], { reject: false })
-    await command('adb', ['shell', 'am', 'start', '-W', '-n', `${applicationId}/.MainActivity`], hostDir, 60_000)
+    await execa('adb', adbArgs(['shell', 'input', 'keyevent', 'KEYCODE_WAKEUP']), { reject: false })
+    await execa('adb', adbArgs(['shell', 'wm', 'dismiss-keyguard']), { reject: false })
+    await execa('adb', adbArgs(['shell', 'am', 'broadcast', '-a', 'android.intent.action.CLOSE_SYSTEM_DIALOGS']), { reject: false })
+    await execa('adb', adbArgs(['shell', 'input', 'keyevent', 'KEYCODE_BACK']), { reject: false })
+    await command('adb', adbArgs(['shell', 'am', 'start', '-W', '-n', `${applicationId}/.MainActivity`]), hostDir, 60_000)
     if (options.captureOnly) {
       await wait(2200)
-      const screenshot = await execa('adb', ['exec-out', 'screencap', '-p'], { encoding: 'buffer', reject: false })
+      const screenshot = await execa('adb', adbArgs(['exec-out', 'screencap', '-p']), { encoding: 'buffer', reject: false })
       if (screenshot.exitCode !== 0 || !screenshot.stdout) {
         throw new Error('Unable to capture the Android promo screenshot.')
       }
@@ -218,11 +223,11 @@ async function runAndroid(hostDir: string, artifactDir: string) {
       return undefined
     }
     const report = await waitForReport(async () => {
-      const result = await execa('adb', ['shell', 'run-as', applicationId, 'cat', 'files/lynx-compat/report.json'], { reject: false })
+      const result = await execa('adb', adbArgs(['shell', 'run-as', applicationId, 'cat', 'files/lynx-compat/report.json']), { reject: false })
       return result.exitCode === 0 && result.stdout.trim().startsWith('{') ? result.stdout : undefined
     })
     const screenshotPath = path.join(artifactDir, 'screen.png')
-    const screenshot = await execa('adb', ['exec-out', 'screencap', '-p'], { encoding: 'buffer', reject: false })
+    const screenshot = await execa('adb', adbArgs(['exec-out', 'screencap', '-p']), { encoding: 'buffer', reject: false })
     if (screenshot.exitCode === 0 && screenshot.stdout) {
       await fs.writeFile(screenshotPath, screenshot.stdout)
     }
@@ -234,7 +239,7 @@ async function runAndroid(hostDir: string, artifactDir: string) {
     const restoreArguments = hiddenErrorDialogs === 'null'
       ? ['shell', 'settings', 'delete', 'global', 'hide_error_dialogs']
       : ['shell', 'settings', 'put', 'global', 'hide_error_dialogs', hiddenErrorDialogs]
-    await execa('adb', restoreArguments, { reject: false })
+    await execa('adb', adbArgs(restoreArguments), { reject: false })
   }
 }
 

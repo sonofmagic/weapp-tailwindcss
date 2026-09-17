@@ -7,7 +7,7 @@ import { hasTailwindApplyDirective, hasTailwindSourceDirectives, normalizeTailwi
 import { deduplicateGeneratedCssRules, finalizeMiniProgramGeneratorCss, shouldUseGeneratorForCurrentCss } from './generation-helpers'
 import { cleanLocalCssImportWrapperTailwindDirectives, cleanLocalCssImportWrapperTailwindDirectivesRoot, isPureLocalCssImportWrapper, isPureLocalCssImportWrapperRoot, restoreLocalCssImports, splitLocalCssImports, splitLocalCssImportsRoot } from './local-imports'
 import { createCssAppend, GENERATOR_PLACEHOLDER_MARKER_RE, hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, splitTailwindV4GeneratedCssBySourceOrder } from './markers'
-import { normalizeMiniProgramGeneratorCssSource } from './output-import-shell'
+import { normalizeMiniProgramGeneratorCssSource, removeMiniProgramOutputImports } from './output-import-shell'
 import { executeGeneratorPipeline } from './pipeline/execution'
 import { finalizeWebGeneratorCss, resolveGeneratedCssClassSet } from './result-helpers'
 import { normalizeCssSourceForCompare } from './source-resolver/matching'
@@ -104,7 +104,10 @@ export async function generateCssByGenerator(
       : css
   }
   const normalizeGeneratorSource = <T extends { css: string }>(source: T): T => {
-    const css = normalizeGeneratorCssSource(source.css)
+    // 产物导入由外层 localImports 重放，不能交给 Tailwind 按源码路径解析。
+    const css = useMiniProgramCssBranch
+      ? removeMiniProgramOutputImports(normalizeGeneratorCssSource(source.css))
+      : source.css
     return css === source.css
       ? source
       : {

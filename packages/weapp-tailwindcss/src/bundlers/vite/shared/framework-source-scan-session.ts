@@ -15,6 +15,7 @@ import { createSourceCandidateScanSignature } from '../source-candidate-scan-sig
 import { resolveViteSourceScanEntries } from '../source-scan'
 import { cleanUrl } from '../utils'
 import { hasFrameworkHmrRuntimeSourceChange } from './framework-hmr-runtime-signature'
+import { readViteHmrSource } from './hmr-source'
 
 const SOURCE_CANDIDATE_SCAN_CACHE_MAX = 8
 
@@ -56,7 +57,7 @@ export async function syncFrameworkSourceCandidatesForHotUpdate(
   ctx: HmrContext,
 ) {
   const source = typeof ctx.read === 'function'
-    ? await ctx.read().catch(() => undefined)
+    ? await readViteHmrSource(ctx)
     : undefined
   await sourceScanSession.syncChangedFile(ctx.file, source)
   await sourceScanSession.waitForPendingSyncs()
@@ -289,7 +290,7 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     return previous
   }
 
-  const syncChangedFileNow = async (id: string, sourceOverride?: string, event: PendingSourceCandidateFileChange['event'] = 'update') => {
+  const syncChangedFileNow = async (id: string, sourceOverride?: string, event: PendingSourceCandidateFileChange['event'] = 'update'): Promise<ViteSourceCandidateChange | undefined> => {
     if (!options.shouldOwnTailwindGeneration || !options.isCandidateRequest(id)) {
       return undefined
     }
@@ -387,7 +388,7 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     }
   }
 
-  const flushChangedFiles = async () => {
+  const flushChangedFiles = async (): Promise<Map<string, ViteSourceCandidateChange | undefined>> => {
     if (pendingChangedFilesFlush) {
       const activeFlush = pendingChangedFilesFlush
       const result = await activeFlush
@@ -412,7 +413,7 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
     return pendingChangedFilesFlush
   }
 
-  const syncChangedFile = async (id: string, sourceOverride?: string) => {
+  const syncChangedFile = async (id: string, sourceOverride?: string): Promise<ViteSourceCandidateChange | undefined> => {
     const file = cleanUrl(id)
     const existingTask = pendingSourceCandidateSyncByFile.get(file)
     if (existingTask) {

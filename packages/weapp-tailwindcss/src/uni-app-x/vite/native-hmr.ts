@@ -5,7 +5,7 @@ interface CreateUniAppXNativeHmrReloaderOptions {
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
   isNativeAppBuildTarget: (id?: string) => boolean
   localStyleModuleIds: Iterable<string>
-  syncSourceCandidates?: (ctx: HmrContext) => Promise<void>
+  syncSourceCandidates?: ((ctx: HmrContext) => Promise<void>) | undefined
   tailwindRootCssModuleIds: Iterable<string>
   viteProcessedCssSourceFiles: Iterable<string>
 }

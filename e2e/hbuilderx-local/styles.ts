@@ -38,11 +38,11 @@ export async function resolveMiniProgramRuntimeStyleEntry(root: string, extensio
   return candidates.length === 1 ? path.resolve(root, candidates[0]!.name) : undefined
 }
 
-export async function readReachableMiniProgramStyles(root: string, entryFile: string, extensions: string[]) {
+export async function readReachableMiniProgramStyleFiles(root: string, entryFile: string, extensions: string[]) {
   const normalizedRoot = path.resolve(root)
   const normalizedExtensions = new Set(extensions.map(extension => extension.toLowerCase()))
   const visited = new Set<string>()
-  const sources: string[] = []
+  const sources: Array<{ file: string, content: string }> = []
 
   async function visit(file: string) {
     const normalizedFile = path.resolve(file)
@@ -52,7 +52,7 @@ export async function readReachableMiniProgramStyles(root: string, entryFile: st
     }
     visited.add(normalizedFile)
     const source = await fs.readFile(normalizedFile, 'utf8')
-    sources.push(source)
+    sources.push({ file: normalizedFile, content: source })
     const importPattern = new RegExp(CSS_IMPORT_RE.source, CSS_IMPORT_RE.flags)
     for (const match of source.matchAll(importPattern)) {
       const request = match[1]?.split(/[?#]/, 1)[0]
@@ -67,5 +67,10 @@ export async function readReachableMiniProgramStyles(root: string, entryFile: st
   }
 
   await visit(entryFile)
-  return sources.join('\n')
+  return sources
+}
+
+export async function readReachableMiniProgramStyles(root: string, entryFile: string, extensions: string[]) {
+  const sources = await readReachableMiniProgramStyleFiles(root, entryFile, extensions)
+  return sources.map(source => source.content).join('\n')
 }

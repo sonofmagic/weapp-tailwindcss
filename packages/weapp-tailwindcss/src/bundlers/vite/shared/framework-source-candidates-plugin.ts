@@ -10,6 +10,7 @@ import { shouldCollectTransformedSourceCandidates } from '../css-memory'
 import { hasSelfAcceptingNonStyleHotModule, mergeHotModulesByIdentity, resolveHotSourceModules, resolveHotTailwindCssModules, sendFullReloadForUnresolvedHotUpdate, sendSupplementalCssHotUpdates } from '../hot-css-modules'
 import { isSourceCandidateRequest } from '../source-candidates'
 import { cleanUrl, isCSSRequest } from '../utils'
+import { readViteHmrSource } from './hmr-source'
 
 export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plugin['apply']): Plugin {
   const shouldSkipSourceCandidateState = () => options.shouldSkipSourceCandidateState?.() === true
@@ -47,7 +48,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
   }
   return {
     name: `${vitePluginName}:source-candidates`,
-    apply,
+    ...(apply === undefined ? {} : { apply }),
     enforce: 'pre',
     async load(id) {
       if (
@@ -171,7 +172,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
             }
           }
           const hotSource = isSourceCandidateHotUpdate && typeof ctx.read === 'function'
-            ? await ctx.read().catch(() => undefined)
+            ? await readViteHmrSource(ctx)
             : undefined
           if (typeof hotSource === 'string' && isCSSRequest(ctx.file)) {
             options.rememberOriginalCssLayerSource(ctx.file, hotSource)

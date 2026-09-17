@@ -1,10 +1,11 @@
+import type { PNG } from 'pngjs'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
 import { execa } from 'execa'
 import path from 'pathe'
-import { PNG } from 'pngjs'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { captureMiniProgramViewport } from '../scripts/demo-visual-e2e-report/mini-program-screenshot'
 import { collectFrameworkIdeDiagnostics } from './frameworkIdeDiagnostics'
 
 const describeIde = process.env['E2E_IDE'] === '1' ? describe : describe.skip
@@ -84,13 +85,7 @@ async function launchMiniProgram() {
 }
 
 async function captureMiniProgramScreenshot(miniProgram: any, screenshotPath: string) {
-  await fs.mkdir(path.dirname(screenshotPath), { recursive: true })
-  const result = await miniProgram.send('App.captureScreenshot', {}, {
-    timeout: Math.min(timeoutMs, 30_000),
-  })
-  expect(typeof result?.data).toBe('string')
-  await fs.writeFile(screenshotPath, result.data, 'base64')
-  return PNG.sync.read(await fs.readFile(screenshotPath))
+  return captureMiniProgramViewport(miniProgram, screenshotPath, Math.min(timeoutMs, 30_000))
 }
 
 function countColorPixels(png: PNG, matcher: ColorMatcher) {

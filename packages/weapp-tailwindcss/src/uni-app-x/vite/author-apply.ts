@@ -1,4 +1,4 @@
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { createAuthorSelectorMatcher, postcss } from '@weapp-tailwindcss/postcss'
 import { removeTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
 
 function normalizeSelector(selector: string) {
@@ -29,11 +29,12 @@ export function retainUniAppXAuthorApplyCss(generatedCss: string, authorCss: str
       }
     })
 
+    const matchesAuthorSelector = createAuthorSelectorMatcher(authorSelectors)
     const root = postcss.parse(generatedCss)
     let changed = false
     root.walkRules((rule) => {
       const selectors = rule.selectors ?? [rule.selector]
-      if (selectors.every(selector => authorSelectors.has(normalizeSelector(selector)))) {
+      if (selectors.every(selector => matchesAuthorSelector(normalizeSelector(selector)))) {
         return
       }
       rule.remove()

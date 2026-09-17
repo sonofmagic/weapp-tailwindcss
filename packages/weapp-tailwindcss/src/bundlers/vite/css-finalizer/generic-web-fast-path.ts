@@ -119,7 +119,7 @@ function resolveProcessedCssAssets(
         useAssetSource = true
       }
     }
-    if (!output && records.length === 1 && htmlOwnedAssets.length === 1) {
+    if (!output && records.length === 1 && htmlOwnedAssets.length === 1 && htmlOwnedAssets[0]) {
       output = htmlOwnedAssets[0]
       useAssetSource = hasTailwindGeneratedCss(output.original)
         || hasTailwindGeneratedCssMarkers(output.original)

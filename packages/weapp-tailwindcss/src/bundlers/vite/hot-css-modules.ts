@@ -60,7 +60,7 @@ export async function resolveHotTailwindCssModules(
     ? resolveViteModuleIdentity(ctx.server.config.build.outDir, root)
     : undefined
   const isHotSourceStyleModule = (id: string | null | undefined) => {
-    if (!isSourceStyleRequest(id)) {
+    if (typeof id !== 'string' || !isSourceStyleRequest(id)) {
       return false
     }
     const file = cleanUrl(id!)

@@ -9,7 +9,7 @@
   padding-inline: calc(var(--spacing, 0.25rem) * 4);
   padding-block: calc(var(--spacing, 0.25rem) * 3);
   color: var(--color-slate-700, rgb(49, 65, 88));
-}
+} /*! weapp-tailwindcss vite-generated-css-end:%2FUsers%2Ficebreaker%2FProjects%2Fgithub%2Fweapp-tailwindcss-codex%2Flocal-full-run-fixes%2Fdemo%2Funi-app-vite-tailwindcss-v4%2Fsrc%2Fcomponents%2FHelloWorld.vue */
  /*tokens: special-class-visual-probe <= src/pages/index/index.vue | dark <= src/pages/index/index.vue */
 .special-class-visual-probe.dark [class~='dark:bg-red-300'] {
   background-color: #fca5a5;

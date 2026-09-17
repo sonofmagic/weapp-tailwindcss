@@ -5,6 +5,7 @@ import { execa } from 'execa'
 import path from 'pathe'
 import { PNG } from 'pngjs'
 import { afterAll, describe, expect, it } from 'vitest'
+import { captureMiniProgramViewport } from '../scripts/demo-visual-e2e-report/mini-program-screenshot'
 import { collectFrameworkIdeDiagnostics } from './frameworkIdeDiagnostics'
 
 const describeIde = process.env['E2E_IDE'] === '1' ? describe : describe.skip
@@ -60,12 +61,7 @@ async function cleanupDevTools() {
 }
 
 async function captureMiniProgramScreenshot(miniProgram: any, screenshotPath: string) {
-  await fs.mkdir(path.dirname(screenshotPath), { recursive: true })
-  const result = await miniProgram.send('App.captureScreenshot', {}, {
-    timeout: Math.min(timeoutMs, 30_000),
-  })
-  expect(typeof result?.data).toBe('string')
-  await fs.writeFile(screenshotPath, result.data, 'base64')
+  return captureMiniProgramViewport(miniProgram, screenshotPath, Math.min(timeoutMs, 30_000))
 }
 
 async function readScreenshot(screenshotPath: string) {
@@ -137,7 +133,7 @@ async function collectNodePixels(page: any, screenshot: PNG, selector: string) {
   const targetSize = await target.size()
   const pageSize = await page.size()
   const scaleX = screenshot.width / pageSize.width
-  const scaleY = screenshot.height / pageSize.height
+  const scaleY = scaleX
   const targetRect = expandRect(scaleRect({ ...targetOffset, ...targetSize }, scaleX, scaleY), -4)
 
   return {

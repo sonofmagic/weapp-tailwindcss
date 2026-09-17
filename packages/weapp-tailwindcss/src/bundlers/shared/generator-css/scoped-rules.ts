@@ -68,10 +68,7 @@ function createCssNodeSignature(node: postcss.ChildNode): string {
       node.nodes?.map(createCssNodeSignature) ?? null,
     ])
   }
-  if (node.type === 'comment') {
-    return JSON.stringify(['comment', node.text])
-  }
-  return node.toString()
+  return JSON.stringify(['comment', node.text])
 }
 
 function createRuleBodySignature(rule: postcss.Rule) {
@@ -81,7 +78,7 @@ function createRuleBodySignature(rule: postcss.Rule) {
 function createRuleAtRuleContextSignature(rule: postcss.Rule) {
   const context: string[] = []
   let parent = rule.parent
-  while (parent && parent.type !== 'root' && parent.type !== 'document') {
+  while (parent && parent.type !== 'root') {
     if (parent.type === 'atrule') {
       context.unshift(JSON.stringify([parent.name, parent.params]))
     }

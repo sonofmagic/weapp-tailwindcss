@@ -54,7 +54,7 @@ export function createTailwindV4ApplyReferenceSource(css: string, sourceOptions:
 
 export function createTailwindV4SourceReferenceSource(
   css: string,
-  sourceOptions: { packageName?: string },
+  sourceOptions: { packageName?: string | undefined },
   referenceDirective?: string,
 ) {
   if (hasTailwindV4RootImport(css, sourceOptions)) {
@@ -72,7 +72,7 @@ export function createTailwindV4SourceReferenceSource(
   ].filter(Boolean).join('\n')
 }
 
-function hasTailwindV4RootImport(css: string, sourceOptions: { packageName?: string }) {
+function hasTailwindV4RootImport(css: string, sourceOptions: { packageName?: string | undefined }) {
   try {
     const root = postcss.parse(css)
     let found = false

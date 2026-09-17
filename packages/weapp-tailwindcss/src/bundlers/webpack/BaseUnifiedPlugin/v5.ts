@@ -15,7 +15,7 @@ export { weappTailwindcssPackageDir } from '../shared/create-framework-plugin'
  */
 export class WeappTailwindcss implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
-  appType?: AppType
+  appType: AppType | undefined
 
   constructor(options: UserDefinedOptions = {}) {
     this.options = getCompilerContext({

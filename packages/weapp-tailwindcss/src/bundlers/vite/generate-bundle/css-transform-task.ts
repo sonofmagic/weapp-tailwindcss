@@ -1,9 +1,11 @@
 import type { TailwindV4GenerationCoreInput, TailwindV4GenerationCoreResult } from '../../shared/v4-generation-core'
 import { hasBundlerGeneratedCssMarker } from '../../shared/generated-css-marker'
+import { hasTailwindRootDirectives } from '../../shared/generator-css/directives'
 import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { normalizeCssSourceForCompare } from '../css-output'
 import { hasTailwindGenerationSource } from './sfc-style-source'
+import { replaceWebCssModule } from './web-css-module'
 
 export type ViteCssTransformTaskKind = 'tailwind' | 'web' | 'import-shell' | 'style'
 
@@ -74,7 +76,10 @@ export async function executeViteCssTransformTask(
   const previousGeneratorCss = options.previousCss && !options.isWebGeneratorTarget
     ? options.normalizeMiniProgramGeneratorRawSource(options.previousCss, options.outputFile)
     : options.previousCss
-  const shouldGenerateCssWithCore = hasTailwindGenerationSource(options.generatorRawSource)
+  const shouldGenerateCssWithCore = (hasTailwindGenerationSource(options.generatorRawSource)
+    && (!options.isWebGeneratorTarget
+      || !hasBundlerGeneratedCssMarker(options.rawSource)
+      || hasTailwindRootDirectives(options.generatorRawSource, { importFallback: true })))
     || (!options.isWebGeneratorTarget && hasBundlerGeneratedCssMarker(options.rawSource))
 
   if (shouldGenerateCssWithCore) {
@@ -104,7 +109,11 @@ export async function executeViteCssTransformTask(
     })
     if (generated) {
       const css = options.removeRootCoveredCssFromScopedAsset(
-        options.annotateCss(options.transformWebTargetCss(generated.css)),
+        options.annotateCss(options.transformWebTargetCss(
+          options.isWebGeneratorTarget
+            ? replaceWebCssModule(options.rawSource, options.generatorSourceFile, generated.css) ?? generated.css
+            : generated.css,
+        )),
       )
       return {
         classSet: generated.classSet,
