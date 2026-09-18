@@ -201,6 +201,21 @@ React Native 的 CSS 到样式对象转换已迁入独立 `/native` 子入口。
 
 版本不匹配已解决；剩余的 App 纯 HMR 失败在迁移前可复现，不能归因为本次 CSS 归属迁移。尚未确定其在 IDE/编译器更新机制中的具体触发条件；未修改平台更新语义、断言或用户 IDE 设置，也未重新调度完整验收。此前性能比较使用的旧锁文件与旧 demo 编译器保持原记录，不将新编译器的定向结果并入性能样本。
 
+### HBuilderX 5.26 增量同步与应用生命周期
+
+对同一安装的编译器和 launcher 做只读检查，普通 uni-app Vue3 的重启存在明确的上游实现路径：
+
+1. `@dcloudio/uni-app-vite/dist/vue/plugin/index.js` 将 Vue 应用入口输出为 `APP_SERVICE_FILENAME`（`app-service.js`）。页面模板和 class 变更可以改变该服务入口。
+2. `@dcloudio/vite-plugin-uni/dist/cli/action.js` 的 `BUNDLE_END` 分支明确排除含 `APP_CONFIG_SERVICE` 或 `APP_SERVICE_FILENAME` 的 `hasIncrementalFiles`。这类变更不会通过普通文件增量分支输出 `FILES:`；有 `pages`、dex 等其他条件时另行分流，不能把结论扩展到所有 App 更新。
+3. HBuilderX `uniapp-extension/out/index.js` 的 `compileSuccess` 根据 `PAGES:` / `FILES:` 选择更新类型；没有这两类标记时使用 `ChangeType.ALL = -1` 和空文件列表。
+4. `launcher/out/main.js` 的 iOS 模拟器实现中，`isNeedFullUpdate` 在编译目录非空、文件列表为空时调用 `pushPackage(app, false)`，后者调用 `sendRefreshCmd(false, ...)`，实际写入 `<root cmd="restart">`。iOS 真机对应全量分支也显式发送 `restart`。
+
+该路径与已保存的“差量编译 → 同步程序文件成功 → App Launch”日志、迁移前同环境复现一致，解释了普通 uni-app Vue3 的应用生命周期为何重新执行。`App Launch` 本身不证明操作系统进程退出或重新安装；当前测试拒绝的是应用生命周期重启，同样不能据此称为保持运行状态的纯 HMR。上述源码位于本机 HBuilderX `5.26.2026091802` 的插件目录，只作只读证据，没有修改 IDE 插件或基座。
+
+[官方运行说明](https://uniapp.dcloud.net.cn/tutorial/run/run-app.html) 将动态代码同步称为“热刷新”或“热重载”，没有承诺该过程保留应用状态。不能仅凭这些术语把全量同步计为现有纯 HMR 断言通过，也不能伪造 `FILES:` 绕过编译器对服务入口变更的分类。
+
+本轮未重跑完整矩阵、未改测试门槛。普通 Vue3 的上游路径已定位；uni-app x 的分流条件及 Harmony 尚不能据此作相同结论。继续完整验收需要确认目标平台支持保留状态的更新路径，或由维护者明确采用平台原生热重载作为独立验收标准；当前 PR 保持草稿和部分验证状态，不将两种行为混为同一通过项。
+
 ### 真实框架性能对照
 
 在基线 `821f4dd4bea8c8b9426248ed56d5bb2717a6c821` 与迁移后 `ad8ec641be457402f916ba766b625d419473e44c` 的独立 checkout，使用同一锁文件、Node 24.18.0、pnpm 12.4.1 和各自 workspace 构建产物。命令为 `CI=1 pnpm exec node benchmark/version-compare/scripts/run-matrix.mjs --versions-file <版本列表> --build-runs 3 --hmr-runs 5 --only <五项目 key> --out <报告>`。每个版本采样 3 次构建、同一 watch 会话内 5 次更新；steady 中位数分别去掉第一次构建、第一次更新。进程树 RSS 含子进程；构建内存取三次峰值的中位数，HMR 内存为该 watch 会话峰值。
