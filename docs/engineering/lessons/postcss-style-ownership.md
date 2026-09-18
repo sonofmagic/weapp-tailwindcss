@@ -175,6 +175,21 @@ React Native 的 CSS 到样式对象转换已迁入独立 `/native` 子入口。
 
 本轮完整报告未启动，没有用刚完成的定向 H5、旧 computer use 或旧报告替代门禁。Android/iOS/Harmony 的完整产品验收仍未执行；环境探针通过不等于产品验收通过。恢复只需先恢复当前 Codex 浏览器授权，再新建 prepare；不需要再次升级 HBuilderX。当前目标保持进行中。
 
+### 浏览器恢复后的完整验收
+
+2026-09-18 在 `4603ee84876e26ee369fca637285e6ac3533b79b` 新建预检 `0dc8d5b0-3879-4d1a-a445-72774f2af964`，全部脚本探针和当前会话 computer use 通过。浏览器 `setValue` 后点击没有完成回执；改为键盘输入后，页面显示本轮完成标识。保存实际工具调用、输出、时间和截图，原始 JPEG 无缩放转换为 PNG，未修改门禁。
+
+执行 `CI=1 pnpm e2e:local:full-report --preflight-report e2e/.artifacts/preflight/0dc8d5b0-3879-4d1a-a445-72774f2af964/report.json --out-root .tmp/postcss-full-acceptance-resumed`，报告目录为 `.tmp/postcss-full-acceptance-resumed/2026-09-18T15-18-25-224Z/`：
+
+- 18 个已执行阶段中 17 通过，visual 阶段中断并记录失败。`build:ci`、五框架完整 watch、uni-app 14 平台产物检查通过；H5 dev 为 2 通过、1 过滤跳过。五框架 watch 用时 44 分 08 秒，原有 weapp-vite 构建回退和 uni-app build guard 的证据边界仍适用。
+- H5 六组项目各生成三步 HMR 截图，uni-app x 默认/v2 隔离各生成五步截图；没有重现上一轮的 H5 错误。微信运行日志记录 11 个 HMR case 通过，包括 uni-app x 两种隔离。visual runner 尚未执行最终图片汇总与跨端比较，不能把这些中间结果写成整体视觉验收通过，也不能复用旧 `report.json`。
+- 普通 uni-app Vite 的 Android 初始产物和页面就绪，增量产物更新后日志再次出现 `App Launch`，触发既有纯 HMR 禁止重启回退的检查。HBuilderX Vue3 的 Android/iOS 同样记录增量后的 `App Launch`；其编译器已为 5.26，因此该现象不能全部归因为旧编译器。
+- 普通 uni-app Vite 的 iOS 初始截图被版本不匹配弹窗遮挡：“本应用使用 HBuilderX5.15 编译……手机端 SDK 版本是 5.26”。实际项目依赖仍是 `@dcloudio/* 3.0.0-5010520260709002`，本地 `@dcloudio/vite-plugin-uni/package.json` 的 `uni-app.compilerVersion` 为 `5.15`；IDE 升级不会替换 CLI 项目的依赖。此项为工具链/运行时阻塞，不是 CSS 迁移失败的证明。
+- 发现上述截图后停止本任务 visual runner 与其唯一活动 CLI launch，保留 IDE/模拟器，用 preflight block 保存原因。runner 在汇总前将 App 错误暂存在内存而继续调度；确认阻塞时已开始 uni-app x iOS，随后中断，Harmony 未执行，三个后续专用设备阶段均未执行。原始 launch 日志及截图已复制到本轮报告；本轮不具备完整 App 通过证据。
+- 中断后仅恢复本任务确定产生的 `BindClass.uvue` 和 `manifest.json` 临时修改，恢复前逐字节确认符合测试变更，工作树回到干净状态。门禁服务关闭后外层释放会话报 `TypeError: fetch failed`，完整阶段报告已落盘；该清理错误不替代前述阻塞原因。
+
+恢复前需对齐普通 uni-app CLI 编译器与基座版本，并独立定位 App 增量重启；不能点击忽略弹窗、放宽纯 HMR 条件或反复运行完整矩阵取得偶然通过。依赖升级会影响 demo 与 static 基线，需单独审查其范围。PR 保持草稿，完整产品验收未完成。本轮只更新证据记录，没有新增产品修复或规则。
+
 ### 真实框架性能对照
 
 在基线 `821f4dd4bea8c8b9426248ed56d5bb2717a6c821` 与迁移后 `ad8ec641be457402f916ba766b625d419473e44c` 的独立 checkout，使用同一锁文件、Node 24.18.0、pnpm 12.4.1 和各自 workspace 构建产物。命令为 `CI=1 pnpm exec node benchmark/version-compare/scripts/run-matrix.mjs --versions-file <版本列表> --build-runs 3 --hmr-runs 5 --only <五项目 key> --out <报告>`。每个版本采样 3 次构建、同一 watch 会话内 5 次更新；steady 中位数分别去掉第一次构建、第一次更新。进程树 RSS 含子进程；构建内存取三次峰值的中位数，HMR 内存为该 watch 会话峰值。
@@ -195,4 +210,4 @@ React Native 的 CSS 到样式对象转换已迁入独立 `/native` 子入口。
 
 ## 规则评估
 
-不新增 AGENTS 规则。已有 CSS 所有权与 bundler 生命周期规则足够；扩大架构回归覆盖已迁移模块，以代码约束落实边界。尚未迁移的旧实现继续列为待办，不通过放宽规则将其视为完成。
+不新增 AGENTS 规则。已有 CSS 所有权与 bundler 生命周期规则足够；扩大架构回归覆盖已迁移模块，以代码约束落实边界。生产转换与保留编排的审计边界见上文；尚未完成的 App 验收保留为待办，不通过放宽规则将其视为完成。
