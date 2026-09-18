@@ -120,9 +120,7 @@ export function pruneMapToMaxSize<Key, Value>(map: Map<Key, Value>, maxSize: num
   }
 }
 
-export function stripTrailingLineWhitespace(source: string) {
-  return source.replace(/[ \t]+$/gm, '')
-}
+export { stripTrailingLineWhitespace } from '@weapp-tailwindcss/postcss'
 
 export function pruneWebpackCssHandlerOptionCaches(
   cssHandlerOptionsCache: Map<string, WebpackCssHandlerOptions>,

@@ -2,6 +2,10 @@ import postcss from 'postcss'
 import { removeTailwindV4GeneratedUserCssArtifacts } from '../tailwindcss-v4/user-css/generated-cleanup'
 
 const WEBPACK_TAILWIND_GENERATED_LAYER_NAMES = new Set(['theme', 'base', 'utilities'])
+
+export function stripTrailingLineWhitespace(source: string) {
+  return source.replace(/[ \t]+$/gm, '')
+}
 const WEBPACK_TAILWIND_UTILITY_RULE_MARKER_RE = /(?:^|[^\w-])\.[^,{]{0,512}(?:\\:|\\\[|\\#)/
 const WEBPACK_TAILWIND_UTILITY_PREFIX_RE = /^\.(?:-?(?:bg|text|border|ring|shadow|drop-shadow|[pmwhz]|px|py|pt|pr|pb|pl|mx|my|mt|mr|mb|ml|min-w|min-h|max-w|max-h|flex|grid|inline|block|hidden|rounded|opacity|translate|scale|rotate|skew|top|right|bottom|left|inset|gap|font|leading|tracking|underline|container)(?:[\-\\{]|$)|\\\[)/
 const WEBPACK_TAILWIND_BANNER_RE = /tailwindcss v4\./

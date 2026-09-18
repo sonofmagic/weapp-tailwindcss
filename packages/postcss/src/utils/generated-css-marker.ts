@@ -47,3 +47,26 @@ export function parseBundlerGeneratedCssMarkerBlocks(source: string): BundlerGen
   }
   return blocks
 }
+
+/** 仅替换 transform 阶段标记的模块区间，保留 bundler 合并的前后样式及其层叠顺序。 */
+export function replaceViteGeneratedCssModule(source: string, generated: string, matchesSource: (file: string) => boolean) {
+  const markers = [...source.matchAll(/\/\*!?\s*weapp-tailwindcss vite-generated-css(-end)?\s*:\s*([^\s*]+)\s*\*\//gi)]
+  let cursor = 0
+  let result = ''
+  let replaced = false
+  for (let index = 0; index < markers.length; index++) {
+    const start = markers[index]!
+    const end = markers[index + 1]
+    if (start[1] || !end?.[1] || start[2] !== end[2]) {
+      continue
+    }
+    if (!matchesSource(decodeURIComponent(start[2]!))) {
+      continue
+    }
+    result += source.slice(cursor, start.index) + generated
+    cursor = end.index! + end[0].length
+    replaced = true
+    index++
+  }
+  return replaced ? result + source.slice(cursor) : undefined
+}

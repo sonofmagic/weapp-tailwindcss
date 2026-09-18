@@ -9,6 +9,14 @@ export const TAILWIND_BANNER_RE = /\/\*!\s*tailwindcss v[^*]*\*\//i
 export const TAILWIND_BANNER_GLOBAL_RE = /\/\*!\s*tailwindcss v[^*]*\*\/\s*/gi
 export const VITE_MARKER_RE = /\/\*\$vite\$:[^*]*\*\//g
 
+export function removeDuplicatedViteMarkers(css: string, baseCss: string) {
+  if (!VITE_MARKER_RE.test(baseCss)) {
+    return css
+  }
+  VITE_MARKER_RE.lastIndex = 0
+  return css.replace(VITE_MARKER_RE, '')
+}
+
 export function createCssAppend(base: string, extra: string) {
   if (!base) {
     return extra

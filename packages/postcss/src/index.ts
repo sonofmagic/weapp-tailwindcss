@@ -79,6 +79,7 @@ export {
 export { normalizeTailwindcssV4InfinityRadiusCss } from './compat/tailwindcss-v4/infinity-radius'
 export { rewriteTailwindPackageImportStatements } from './compat/tailwindcss-v4/package-import-statements'
 export { includesTailwindV4PreflightDirective, isTailwindV4CssImportParam, isTailwindV4PreflightImportParam } from './compat/tailwindcss-v4/preflight-imports'
+export { normalizeRpxLengthCandidates, restoreRpxLengthCandidates, restoreRpxLengthCssSelectors } from './compat/tailwindcss-v4/rpx-candidates'
 export { insertTailwindThemeCss } from './compat/tailwindcss-v4/theme-injection'
 export { removeTailwindV4PreflightImports, removeUnsupportedThemeVendorKeyframes } from './compat/tailwindcss-v4/theme-source'
 export { normalizeTailwindV4RuntimeCss } from './compat/tailwindcss-v4/theme-source'
@@ -107,6 +108,7 @@ export {
 } from './compat/tailwindcss-v4/user-css/generated-cleanup'
 export { isCssAlreadyRepresentedByMarkers } from './compat/tailwindcss-v4/user-css/identity'
 export { createCssAppend, GENERATOR_PLACEHOLDER_MARKER_GLOBAL_RE, GENERATOR_PLACEHOLDER_MARKER_RE, hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, removeTailwindGeneratedCssByBanner, splitGeneratorPlaceholderCssBySourceOrder, splitTailwindGeneratedCssByBanner, splitTailwindV4GeneratedCss, splitTailwindV4GeneratedCssBySourceOrder, stripGeneratorPlaceholderMarkers, stripTailwindBanner, stripTailwindBanners, TAILWIND_BANNER_GLOBAL_RE, TAILWIND_BANNER_PREFIX_RE, TAILWIND_BANNER_RE, TAILWIND_GENERATED_CSS_MARKER_RE, TAILWIND_V4_BANNER_RE, VITE_MARKER_RE } from './compat/tailwindcss-v4/user-css/markers'
+export { removeDuplicatedViteMarkers } from './compat/tailwindcss-v4/user-css/markers'
 export { deduplicateGeneratedCssRules } from './compat/tailwindcss-v4/user-css/rule-deduplication'
 export { preferScopedGeneratedCssRulesRoot } from './compat/tailwindcss-v4/user-css/scoped-rules'
 export {
@@ -170,6 +172,7 @@ export {
 } from './compat/web-css'
 export { collectWebpackBareSelectorUserCss } from './compat/webpack-css/bare-selectors'
 export { isOnlyWebpackTailwindGeneratedPreflightCss, parseWebpackCssLayerNames, removeWebpackTailwindGeneratedAssetCss } from './compat/webpack-css/generated-cleanup'
+export { stripTrailingLineWhitespace } from './compat/webpack-css/generated-cleanup'
 export { collectGeneratedCssClassCandidates, collectWebpackAssetUserCssMarkers, collectWebpackCssRuleIdentityMarkers, hasAdditionalWebpackAssetUserCssMarkers, unescapeCssIdentifier } from './compat/webpack-css/identity'
 export { dedupeMiniProgramPreflightSelectorRules, ensureWebpackMiniProgramTwContentInit, hasMiniProgramPreflightSelector, removeMiniProgramPreflightSelectorRule, removeTailwindV4StandaloneHostPreflightRule } from './compat/webpack-css/preflight'
 export { isWebpackCssSourceRepresentedInAsset, isWebpackTailwindImportRequest, normalizeWebpackUserCssFallbackSource, removeWebpackGeneratorNonTailwindImports, removeWebpackUserCssFallbackImports } from './compat/webpack-css/user-source'
@@ -219,7 +222,7 @@ export {
   filterApplyOnlyGeneratedCss,
   filterApplyOnlyGeneratedCssRoot,
 } from './generator-plugin/apply-only'
-export { normalizeConfigDirective, prependConfigDirective } from './generator-plugin/config-directive'
+export { normalizeConfigDirective, prependConfigDirective, rewriteCssConfigRequests } from './generator-plugin/config-directive'
 export {
   analyzeTailwindCssDirectives,
   isTailwindCssGenerationDirective,
@@ -257,6 +260,7 @@ export {
   splitLocalCssImports,
   splitLocalCssImportsRoot,
 } from './generator-plugin/local-imports'
+
 export * from './handler'
 export { default as postcssHtmlTransform, type IOptions as PostcssHtmlTransformOptions } from './html-transform'
 export {
@@ -267,12 +271,12 @@ export {
   type ResolvedPipelineNode,
   type StyleProcessingPipeline,
 } from './pipeline'
-
 export {
   applyConfiguredCssCalc,
   type ApplyConfiguredCssCalcOptions,
 } from './plugins/applyConfiguredCssCalc'
 export { createFallbackPlaceholderReplacer } from './plugins/post/specificity-cleaner'
+
 export {
   getPostcssPluginName,
   removeTailwindPostcssPlugins,
@@ -298,9 +302,9 @@ export type {
   Root,
   Rule,
 } from './postcss-runtime'
-
 export { createInjectPreflight } from './preflight'
 export { selectorContainsPseudoClass } from './selectorParser/pseudo'
+
 export { internalCssSelectorReplacer } from './shared'
 export {
   collectCssInlineSourceCandidates,
@@ -324,7 +328,7 @@ export {
   toPosixPath,
 } from './source-scan'
 export { collectCssApplyCandidates, collectGeneratorCssCandidates, collectRuntimeApplyCandidates } from './source-scan/candidates'
-
+export { analyzeTailwindV4EntrySource, type TailwindV4EntrySourceAnalysis } from './source-scan/tailwind-v4/entry-source'
 export { analyzeTailwindV4Source } from './source-scan/tailwind-v4/fingerprint'
 export {
   createPostcssStyleTargetProfile,
@@ -345,12 +349,13 @@ export {
   scss,
   stringifyScssSource,
 } from './syntax'
-
 export { rewriteCssImportSpecifiers } from './syntax/rewrite-imports'
+
 export { canProcessSourceStyleAsCss } from './syntax/source-style'
 export * from './types'
 export { annotateCssTokenSources, type CssTokenSource, type CssTokenSourceMap } from './utils/css-source-trace'
 export { collectCustomPropertyValues, mergeCustomPropertyValues } from './utils/custom-property-values'
+export { replaceViteGeneratedCssModule } from './utils/generated-css-marker'
 export { type BundlerGeneratedCssMarkerBlock, createBundlerGeneratedCssEndMarker, createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker, parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from './utils/generated-css-marker'
 
 export {
