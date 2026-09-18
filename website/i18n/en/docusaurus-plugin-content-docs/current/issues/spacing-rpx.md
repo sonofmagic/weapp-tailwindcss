@@ -33,16 +33,24 @@ See [Issue #1214](https://github.com/sonofmagic/weapp-tailwindcss/issues/1214) f
 
 In a native WXSS control without Tailwind, `calc(1rpx * 32)` measured `32px`, while direct `32rpx` measured `16px`. This control used WeChat DevTools `2.02.2608070`, base library `3.17.3`, simulator window width `390`, and DPR `3`.
 
-A user also reported differences with odd spacing bases such as `1rpx` and `3rpx`, including these results:
+Additional native WXSS measurements in the same DevTools environment covered different bases and unit placement:
 
-| Expression       | User-reported size |
-| ---------------- | ------------------ |
-| `calc(1rpx * 8)` | `8px`              |
-| `calc(1 * 8rpx)` | `4px`              |
+| Expression       | Measured width |
+| ---------------- | -------------- |
+| `calc(1rpx * 8)` | `8px`          |
+| `calc(3rpx * 8)` | `8px`          |
+| `calc(2rpx * 8)` | `8px`          |
+| `calc(1 * 8rpx)` | `4px`          |
+| `calc(8 * 1rpx)` | `8px`          |
+| Direct `8rpx`    | `4px`          |
+| Direct `16rpx`   | `8px`          |
+| Direct `24rpx`   | `12px`         |
+| Direct `4px`     | `4px`          |
+| Direct `8px`     | `8px`          |
 
-This user report has not been independently retested and did not include device parameters or a measured value for `3rpx`. Both expressions should evaluate to a length of `8rpx`. The results are consistent with converting and rounding the operand that carries the unit before multiplication, but WeChat's internal algorithm is unconfirmed. The pixel values in this table are not a fixed conversion ratio for all devices.
+The earlier user report of `calc(1rpx * 8) = 8px` and `calc(1 * 8rpx) = 4px` has now been independently reproduced in this environment, with `3rpx` added. These results support an explanation in which the operand carrying the unit is converted or quantized before multiplication, amplifying its error. At a window width of 390, the theoretical ratio gives approximately `0.52px` per `rpx`; this does not establish that WeChat internally converts to `0.5px` and then rounds to `1px`. The exact algorithm and rounding stage remain unconfirmed. The pixel values in this table are not a fixed conversion ratio for all devices.
 
-Even bases are not guaranteed to avoid the issue: in the native control above, `calc(2rpx * 32)` and direct `64rpx` measured `32px` and `33px`, respectively. Simply choosing an even base is not a reliable workaround.
+`calc(3rpx * 8)` measured `8px`, while direct `24rpx` measured `12px`, showing that a direct final length avoids this intermediate discrepancy. Even bases are not guaranteed to avoid it: in the earlier native control, `calc(2rpx * 32)` and direct `64rpx` measured `32px` and `33px`, respectively.
 
 `calc(1 * 8rpx)` changes the numeric value carrying the unit; it does more than swap the operand order. These results do not establish that `calc(8 * 1rpx)` fixes the problem.
 
@@ -74,13 +82,13 @@ Combining `@theme inline` with `cssCalc: ['--spacing']` produced `32rpx` in memo
 
 ## Choosing between fixed sizes and runtime themes
 
-For fixed sizes, you can currently write the final `rpx` length directly:
+For fixed sizes that need accurate `calc` arithmetic, prefer `px` or a final length computed at build time. If you must retain an `rpx` base, consider larger or even values first, but any improvement depends on the device conversion ratio and requires testing on target devices. Even `rpx` values are not a guarantee. To avoid intermediate rpx conversion, write the final length directly:
 
 ```html
 <view style="width: 32rpx; padding: 4rpx"></view>
 ```
 
-You can also use arbitrary values such as `w-[32rpx]` and `p-[4rpx]`, checking that the final WXSS contains the corresponding direct lengths. Compute the complete size before WeChat converts it. Do not preconvert to px using one device's ratio or add empirical correction factors.
+You can also use arbitrary values such as `w-[32rpx]` and `p-[4rpx]`, checking that the final WXSS contains the corresponding direct lengths. For example, fixed pixel spacing can use `@theme { --spacing: 1px; }`; check that the final WXSS retains `px` rather than converting it back through `px2rpx`. This changes the design to a fixed pixel scale instead of scaling with the window width as `rpx` does. Do not preconvert rpx to px using one device's ratio or add empirical correction factors.
 
 If pages, components, or theme switches override `--spacing` at runtime, precomputation changes that behavior: a generated `width: 32rpx` no longer responds to `--spacing` updates. Inlining a fixed value through `@theme inline` also removes the runtime reference to that variable. Apply this strategy only to variables fixed at build time. For dynamic sizes, consider calculating the final length at runtime and updating the style instead of multiplying a very small rpx base in WXSS.
 
