@@ -169,6 +169,12 @@ React Native 的 CSS 到样式对象转换已迁入独立 `/native` 子入口。
 
 按规则用 `CI=1 E2E_SKIP_OPEN_AUTOMATOR=1 E2E_PROJECT_FILTER='^uni-app-x-vdom-tailwindcss-v4$' pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/uni-app-x-vdom-tailwindcss-v4.test.ts -u` 重新生成该项目 static 基线。HBuilderX 5.26 生成的 `main.wxss` 仅改变框架 reset 列表中 button/checkbox/picker-view/radio/slider 的顺序和一处空白，声明未变；其余 16 个输出文件无 diff。该差异来自升级后的框架输出，作为本轮基线记录。
 
+随后相同命令改为 `--update=none` 复核，1 文件、1 项通过。产品修正与验收脚本分别提交为 `f3ba345`、`baa57d7`，已推送 PR #1217。
+
+在 `baa57d7ce8f9eead9f72ee89208d69a3599b4b81` 重新执行全端 prepare，run ID 为 `3662e7cf-57b3-42f6-a8a0-092c056b7261`。base、微信、HBuilderX 5.26、iOS、Android、Harmony、Web 全部脚本探针通过；当前会话 `cua.getState()` 再次返回 `Browsers: Error: Codex auth token is unavailable`。已立即通知用户，并调用 `pnpm e2e:preflight block --report e2e/.artifacts/preflight/3662e7cf-57b3-42f6-a8a0-092c056b7261/report.json --reason '当前会话 cua.getState() 浏览器发现失败：Codex auth token is unavailable'` 保存阻断。命令按设计退出 1。
+
+本轮完整报告未启动，没有用刚完成的定向 H5、旧 computer use 或旧报告替代门禁。Android/iOS/Harmony 的完整产品验收仍未执行；环境探针通过不等于产品验收通过。恢复只需先恢复当前 Codex 浏览器授权，再新建 prepare；不需要再次升级 HBuilderX。当前目标保持进行中。
+
 ### 真实框架性能对照
 
 在基线 `821f4dd4bea8c8b9426248ed56d5bb2717a6c821` 与迁移后 `ad8ec641be457402f916ba766b625d419473e44c` 的独立 checkout，使用同一锁文件、Node 24.18.0、pnpm 12.4.1 和各自 workspace 构建产物。命令为 `CI=1 pnpm exec node benchmark/version-compare/scripts/run-matrix.mjs --versions-file <版本列表> --build-runs 3 --hmr-runs 5 --only <五项目 key> --out <报告>`。每个版本采样 3 次构建、同一 watch 会话内 5 次更新；steady 中位数分别去掉第一次构建、第一次更新。进程树 RSS 含子进程；构建内存取三次峰值的中位数，HMR 内存为该 watch 会话峰值。
