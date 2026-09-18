@@ -7,7 +7,7 @@ import process from 'node:process'
 import {
   resolveTailwindV4Source as resolveEngineTailwindV4Source,
 } from '@tailwindcss-mangle/engine'
-import { collectRpxThemeVariables, parseCssImportSpecifier, postcss, quoteCssImportSpecifier } from '@weapp-tailwindcss/postcss'
+import { collectRpxThemeVariables, parseCssImportSpecifier, postcss, rewriteCssImportSpecifiers } from '@weapp-tailwindcss/postcss'
 import { normalizeConfigDirective } from '@/bundlers/shared/generator-css/config-directive'
 import { normalizeTailwindConfigDirectives, resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
 import { normalizeEmptyTailwindCustomVariants } from '@/bundlers/shared/generator-css/user-css'
@@ -132,37 +132,10 @@ function normalizeTailwindV4CssPackageImports(css: string, packageName: string |
     return css
   }
 
-  let root: postcss.Root
-  try {
-    root = postcss.parse(css)
-  }
-  catch {
-    return css
-  }
-
   const importSpecifiers = createTailwindV4CssImportSpecifierSet(packageName)
-  let changed = false
-  root.walkAtRules((rule) => {
-    if (rule.name !== 'import' && rule.name !== 'reference') {
-      return
-    }
-    const parsed = parseCssImportSpecifier(rule.params)
-    if (!parsed || !importSpecifiers.has(parsed.specifier)) {
-      return
-    }
-    const cssEntryPoint = resolvePackageCssEntryPoint(`${parsed.specifier}/index.css`)
-    if (!cssEntryPoint) {
-      return
-    }
-
-    rule.params = rule.params.replace(
-      parsed.raw,
-      quoteCssImportSpecifier(cssEntryPoint, parsed.quote),
-    )
-    changed = true
-  })
-
-  return changed ? root.toString() : css
+  return rewriteCssImportSpecifiers(css, (specifier) => {
+    return importSpecifiers.has(specifier) ? resolvePackageCssEntryPoint(`${specifier}/index.css`) : undefined
+  }, { atRuleNames: ['import', 'reference'], tolerateInvalidCss: true })
 }
 
 function normalizeTailwindV4CssSources(

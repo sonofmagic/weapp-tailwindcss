@@ -7,6 +7,11 @@ regressions:
   - packages/postcss/test/style-transform-ownership.test.ts
   - packages/postcss/test/processed-css-transforms.test.ts
   - packages/postcss/test/webpack-css-transforms.test.ts
+  - packages/postcss/test/css-source-trace.test.ts
+  - packages/postcss/test/source-candidates.test.ts
+  - packages/postcss/test/tailwind-source-analysis.test.ts
+  - packages/postcss/test/rewrite-imports.test.ts
+  - packages/weapp-tailwindcss/test/bundlers/tailwind-v4-source-analysis.unit.test.ts
   - packages/weapp-tailwindcss/test/ci/architecture-contract.test.ts
   - packages/weapp-tailwindcss/test/bundlers/generator-css.unit.test.ts
   - packages/weapp-tailwindcss/test/bundlers/vite-processed-css-assets.unit.test.ts
@@ -33,6 +38,8 @@ regressions:
 | PostCSS `compat/scoped-css/` | 声明覆盖索引、scoped/preflight 判断与规则删除 |
 | PostCSS `compat/webpack-css/` | 保持现有 Webpack 链路语义的 CSS 兼容策略，不依赖 Webpack API |
 | PostCSS `compat/uni-app-x/` | Harmony apply 替换和 reference 声明改写 |
+| PostCSS `source-scan/` | CSS 候选提取、inline 展开与入口指纹；配置文件名通过调用方回调取得 |
+| PostCSS `syntax/` 与 `utils/css-source-trace.ts` | import 请求改写、CSS 合法性判断、源码追踪注释 |
 | 主包 | 平台与选项判断、bundle 遍历、产物写回、模块及文件身份、SFC 提取、运行时 classSet 策略 |
 
 主包保留原导入路径的 facade。reference/import 由主包提供路径解析回调，PostCSS 包只处理声明；构建插件仍通过 bundle/loader 等原有 API 返回结果。没有新增产物阶段源码读取或输出目录写入。
@@ -45,6 +52,10 @@ regressions:
 - Harmony 对生成规则建立只读索引，只在实际替换时克隆声明。500 个未命中规则的用例确认没有预先克隆；多次应用保持独立结果。
 - loader 的 theme 厂商 keyframes 清理与既有 PostCSS 实现共用 Root 入口。
 - Webpack preflight 复用选择器判断和已见属性集合，移除生成 layer 清理中完全相同的重复分支。
+- 运行时 apply 候选从两次解析缩减为一次，保留原有上下文判断、候选顺序与 important 处理；生成器仍沿用原来的 token 拆分语义。
+- Vite 每次入口选择缓存本次源码分析，显式指令与指纹共享 Root，原始输出只解析一次。缓存不跨调用，源码更新后的入口选择有独立回归。
+- 删除主包重复的 inline-source 展开、config/source 参数解析和 config 指令组装；复用已有 PostCSS 实现。source-scan 的文件、glob、符号链接规则仍留在主包，没有用较旧的 PostCSS 扫描副本覆盖它们。
+- import 改写统一接收解析回调，主包保留包位置和文件路径计算。替换字符串使用函数，确保文件名中的美元符号不会被当成 replacement 模板展开。
 
 迁移时发现两个不能直接合并的边界：空白 CSS 与纯注释 CSS 的返回语义不同；trace 注释清理带有既有文本触发条件。均保留原行为。此次不顺带重写历史 fallback 正则或扩大启发式匹配。
 
@@ -60,6 +71,14 @@ regressions:
 - 持久 benchmark 入口修正后 2 项通过；`pnpm agents:check` 为 0 errors，`pnpm release status` 确认两包中文 patch intent，`git diff --check` 通过。
 - 最后的 Webpack 简化再次运行 loader/资产回归：186 通过，PostCSS 定向用例 4 通过，PostCSS 构建通过。
 
+后续源码分析迁移的验证：
+
+- `CI=1 pnpm --filter @weapp-tailwindcss/postcss test --update=none`：88 文件，849 通过、3 个既有跳过。最后补充 config 与 CSS 合法性入口后，`test/tailwind-source-analysis.test.ts` 的 12 项通过。
+- `CI=1 pnpm --filter weapp-tailwindcss exec vitest run test/bundlers/css-source-trace.unit.test.ts test/bundlers/generator-css-candidates.unit.test.ts test/tailwindcss/runtime-factory.unit.test.ts test/tailwindcss/v4/runtime-factory.test.ts test/tailwindcss/v4/runtime-factory.integration.test.ts test/ci/architecture-contract.test.ts test/bundlers/tailwind-v4-source-analysis.unit.test.ts test/bundlers/vite-helpers.unit.test.ts test/bundlers/shared/generator-css test/uni-app-x/style-asset.test.ts test/uni-app-x/harmony-scss-comments.test.ts test/bundlers/css-imports.test.ts test/tailwindcss/v4-source-options.test.ts test/tailwindcss/v4-source-package-resolution.test.ts test/tailwindcss/v4-engine.test.ts test/tailwindcss/source-scan.unit.test.ts test/tailwindcss/source-scan-path-identity.test.ts --update=none`：26 文件，319 通过。
+- 最后复用 config/source 参数后，`CI=1 pnpm --filter weapp-tailwindcss exec vitest run test/tailwindcss/source-scan.unit.test.ts test/tailwindcss/source-scan-path-identity.test.ts test/bundlers/vite-source-scan-css-entries.test.ts test/bundlers/vite-css-output-imports.test.ts test/bundlers/generator-css.unit.test.ts test/ci/architecture-contract.test.ts --update=none`：6 文件，203 通过。
+- 新用例直接覆盖非法 CSS、无上下文候选、1000 条 apply 的完整扫描、注释幂等、Windows/POSIX 请求、插件选项指纹变化及 HMR 调用间不复用旧分析；没有修改 static fixture。
+- 两包 JS 与类型构建再次通过，迁移源码 ESLint 通过；`pnpm agents:check` 检查 48 个规则、41 份文档、309 个命令入口，0 errors，`git diff --check` 通过。
+
 微基准基线为上述 SHA 中主包的 `generator-css/scoped-rules.ts`。提取旧实现到临时目录，仅将 PostCSS import 重定向到与新实现相同的运行时；已核对其余源码完全一致。使用 `pnpm exec tsx` 执行比较，先断言新旧输出相等，再各预热 20 次，交替执行 30 组采样，每组 10 次：
 
 | 输入 | 旧实现中位耗时 | 新实现中位耗时 |
@@ -72,9 +91,8 @@ regressions:
 
 已迁移模块的架构测试约束主包不重新引入 AST 转换；它不是全仓迁移完成的证明。剩余审计包含：
 
-- CSS source trace 的选择器提取与注释插入。
-- Vite 入口指纹、source resolver 的 apply/reference 处理、运行时扫描中的 CSS 提取。
-- 样式输出判断与 CSS 合法性检查中解析/平台职责的边界。
+- source-scan 缓存 miss 的重复解析和 config 依赖收集。
+- 保留在主包的 parse/walk 需要逐项确认属于读取 import、依赖图或 artifact 编排；仅搜索数量减少不能证明边界正确。
 - 对所有字符串变换的审计，避免仅凭 parse/walk 搜索结果判定完成。
 - 既有 PostCSS 模块与本次迁入函数的重复实现及导出面整理。
 - 同配置的真实框架构建/HMR、峰值内存与对应 static 基线验证；全面全端验收必须先过当前会话环境预检。

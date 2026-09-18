@@ -1,3 +1,13 @@
+export function normalizeConfigDirective(css: string, config: string | undefined) {
+  if (!config || !/@config\s+/.test(css)) {
+    return css
+  }
+  return css.replace(
+    /@config\s+(["'])(.+?)\1\s*;?/,
+    `@config "${quoteCssString(toCssPath(config))}";`,
+  )
+}
+
 function quoteCssString(value: string) {
   return value.replaceAll('\\', '\\\\').replaceAll('"', '\\"')
 }

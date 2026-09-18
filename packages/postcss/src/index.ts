@@ -77,13 +77,16 @@ export {
   transformTailwindV4WebRpxCss,
 } from './compat/tailwindcss-v4/generated-output'
 export { normalizeTailwindcssV4InfinityRadiusCss } from './compat/tailwindcss-v4/infinity-radius'
+export { rewriteTailwindPackageImportStatements } from './compat/tailwindcss-v4/package-import-statements'
 export { includesTailwindV4PreflightDirective, isTailwindV4CssImportParam, isTailwindV4PreflightImportParam } from './compat/tailwindcss-v4/preflight-imports'
+export { insertTailwindThemeCss } from './compat/tailwindcss-v4/theme-injection'
 export { removeTailwindV4PreflightImports, removeUnsupportedThemeVendorKeyframes } from './compat/tailwindcss-v4/theme-source'
 export { normalizeTailwindV4RuntimeCss } from './compat/tailwindcss-v4/theme-source'
 export {
   filterTailwindV4ApplyOnlyGeneratedCss,
   normalizeEmptyTailwindCustomVariants,
 } from './compat/tailwindcss-v4/user-css/apply-only'
+export { createTailwindV4SourceReferenceSource, hasTailwindApplyContextDirective } from './compat/tailwindcss-v4/user-css/apply-reference'
 export {
   removeTailwindApplyAtRules,
   removeTailwindSourceMediaBlocks,
@@ -156,6 +159,7 @@ export {
   cssToClassStyleValue,
   expandCssApplySourcesToStyleValue,
 } from './compat/uni-app-x-style-value'
+export { collectCssReferenceDirectives, createUniAppXHarmonyApplyGeneratorSource } from './compat/uni-app-x/apply-source'
 export { createUniAppXHarmonyApplyCssExpander } from './compat/uni-app-x/harmony-apply'
 export { rewriteUniAppXStyleReferences } from './compat/uni-app-x/reference-paths'
 export {
@@ -215,7 +219,7 @@ export {
   filterApplyOnlyGeneratedCss,
   filterApplyOnlyGeneratedCssRoot,
 } from './generator-plugin/apply-only'
-
+export { normalizeConfigDirective, prependConfigDirective } from './generator-plugin/config-directive'
 export {
   analyzeTailwindCssDirectives,
   isTailwindCssGenerationDirective,
@@ -298,7 +302,6 @@ export type {
 export { createInjectPreflight } from './preflight'
 export { selectorContainsPseudoClass } from './selectorParser/pseudo'
 export { internalCssSelectorReplacer } from './shared'
-
 export {
   collectCssInlineSourceCandidates,
   createSourceScanPattern,
@@ -320,6 +323,9 @@ export {
   type TailwindSourceEntry,
   toPosixPath,
 } from './source-scan'
+export { collectCssApplyCandidates, collectGeneratorCssCandidates, collectRuntimeApplyCandidates } from './source-scan/candidates'
+
+export { analyzeTailwindV4Source } from './source-scan/tailwind-v4/fingerprint'
 export {
   createPostcssStyleTargetProfile,
   type PostcssStyleTarget,
@@ -339,7 +345,11 @@ export {
   scss,
   stringifyScssSource,
 } from './syntax'
+
+export { rewriteCssImportSpecifiers } from './syntax/rewrite-imports'
+export { canProcessSourceStyleAsCss } from './syntax/source-style'
 export * from './types'
+export { annotateCssTokenSources, type CssTokenSource, type CssTokenSourceMap } from './utils/css-source-trace'
 export { collectCustomPropertyValues, mergeCustomPropertyValues } from './utils/custom-property-values'
 export { type BundlerGeneratedCssMarkerBlock, createBundlerGeneratedCssEndMarker, createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker, parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from './utils/generated-css-marker'
 

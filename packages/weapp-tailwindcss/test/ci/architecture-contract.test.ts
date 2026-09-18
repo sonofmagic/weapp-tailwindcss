@@ -51,6 +51,17 @@ describe('架构边界契约', () => {
   it('keeps migrated CSS transforms and diagnostics behind the PostCSS facade', () => {
     for (const file of [
       'src/tailwindcss/v4-engine/miniprogram.ts',
+      'src/tailwindcss/runtime-factory.ts',
+      'src/tailwindcss/source-scan/inline-source.ts',
+      'src/bundlers/shared/css-source-trace.ts',
+      'src/bundlers/shared/css-imports.ts',
+      'src/bundlers/shared/generator-css/candidates.ts',
+      'src/bundlers/shared/generator-css/config-directive.ts',
+      'src/bundlers/vite/css-output.ts',
+      'src/bundlers/vite/generate-bundle/tailwind-v4-css-source.ts',
+      'src/bundlers/shared/generator-css/source-resolver/apply-reference.ts',
+      'src/uni-app-x/style-asset.ts',
+      'src/uni-app-x/vite/harmony-apply.ts',
       'src/tailwindcss/v4-engine/generator/incremental-cache.ts',
       'src/tailwindcss/v4/rpx-theme-warning.ts',
       'src/bundlers/shared/generator-css/scoped-rules.ts',
