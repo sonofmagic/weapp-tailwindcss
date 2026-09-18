@@ -15,6 +15,7 @@ import { assessNativeScreenshot } from './native-screenshot'
 import type { ReactNativePlatform, ReactNativeReport } from './catalog'
 import { androidScreenProbes, findAndroidAnrWaitTap } from './android-window'
 import { getHttpText } from './native-http'
+import { createExpoNativeEnvironment } from './native-environment'
 import { evaluateNativeWait } from './native-wait'
 import { stopOwnedProcess } from './process'
 import { createRuntimeArtifacts } from './runtime-artifacts'
@@ -353,9 +354,7 @@ async function main() {
       ? path.join(os.homedir(), 'Library', 'Android', 'sdk')
       : path.join(os.homedir(), 'Android', 'Sdk'))
   const env = {
-    ...process.env,
-    CI: '0',
-    EXPO_PUBLIC_RN_REPORT_URL: reportUrl,
+    ...createExpoNativeEnvironment(runtimeHost, reportUrl),
     ...(javaHome ? { JAVA_HOME: javaHome } : {}),
     ...(platform === 'android' ? { ANDROID_HOME: androidHome } : {}),
   }
