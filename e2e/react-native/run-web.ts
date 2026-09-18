@@ -9,6 +9,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { execa } from 'execa'
 import { stopOwnedProcess } from './process'
+import { createRuntimeArtifacts } from './runtime-artifacts'
 import { chromium } from 'playwright'
 import type { ReactNativeReport } from './catalog'
 import { validateReactNativeReport } from './reports'
@@ -17,7 +18,8 @@ interface ReportEnvelope { hmrMarker: string, cssHmrColor: string, report: React
 
 const repoRoot = path.resolve(import.meta.dirname, '../..')
 const exampleRoot = path.resolve(repoRoot, 'examples/react-native-expo')
-const artifacts = path.resolve(repoRoot, 'e2e/.artifacts/react-native-web')
+const artifactSession = await createRuntimeArtifacts(path.resolve(repoRoot, 'e2e/.artifacts/react-native-web'))
+const artifacts = artifactSession.directory
 const reportsDir = path.resolve(repoRoot, 'e2e/react-native/reports')
 const markerFile = path.resolve(exampleRoot, 'src/hmr-marker.ts')
 const cssFile = path.resolve(exampleRoot, 'global.css')
@@ -174,4 +176,9 @@ async function main() {
   }
 }
 
-await main()
+try {
+  await main()
+}
+finally {
+  await artifactSession.publish()
+}

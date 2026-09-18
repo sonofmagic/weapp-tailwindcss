@@ -3,8 +3,9 @@ import { createServer as createNetServer } from 'node:net'
 import type { AddressInfo } from 'node:net'
 import path from 'node:path'
 import { build, createServer } from 'vite'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { WeappTailwindcss } from '@/bundlers/vite'
+import * as tailwindRuntime from '@/tailwindcss/runtime'
 import { WeappTailwindcssWeb } from '@/vite-web'
 
 describe('vite/web CSS-only 真实构建', () => {
@@ -81,6 +82,17 @@ describe('vite/web CSS-only 真实构建', () => {
     await buildFixture(WeappTailwindcss())
   }, 120_000)
 
+  it('CSS-only 构建只消费源码候选，不额外生成项目级运行时类集合', async () => {
+    const collect = vi.spyOn(tailwindRuntime, 'collectRuntimeClassSet')
+    try {
+      await buildFixture(WeappTailwindcssWeb())
+      expect(collect).not.toHaveBeenCalled()
+    }
+    finally {
+      collect.mockRestore()
+    }
+  }, 120_000)
+
   it('专用入口在候选源码变化后重新生成 CSS', async () => {
     const root = await mkdtemp(path.join(process.cwd(), '.tmp-vite-web-css-only-hmr-'))
     const sourceFile = path.join(root, 'main.ts')
@@ -102,7 +114,8 @@ describe('vite/web CSS-only 真实构建', () => {
       await server.listen()
       const address = server.httpServer?.address() as AddressInfo
       const cssUrl = `http://127.0.0.1:${address.port}/main.css`
-      await waitForCss(cssUrl, css => css.includes('.text-red-500'), 'initial')
+      const initialCss = await waitForCss(cssUrl, css => css.includes('.text-red-500'), 'initial')
+      expect(initialCss).not.toContain('.text-emerald-400')
 
       const updateSource = async (source: string) => {
         await writeFile(sourceFile, source)
@@ -110,7 +123,10 @@ describe('vite/web CSS-only 真实构建', () => {
       }
 
       await updateSource(updatedSource)
-      await waitForCss(cssUrl, css => css.includes('.text-emerald-400'), 'updated')
+      await waitForCss(cssUrl, css => css.includes('.text-emerald-400') && !css.includes('.text-red-500'), 'updated')
+
+      await updateSource('import "./main.css"; console.log("候选已删除")')
+      await waitForCss(cssUrl, css => !css.includes('.text-emerald-400') && !css.includes('.text-red-500'), 'removed')
     }
     finally {
       await server.close()

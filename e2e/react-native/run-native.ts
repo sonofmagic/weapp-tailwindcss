@@ -1,6 +1,7 @@
 /* eslint-disable antfu/no-top-level-await, perfectionist/sort-imports, style/max-statements-per-line */
 
 import type { Server } from 'node:http'
+import type { NativeVisualProbe } from '../../examples/react-native-expo/src/visual-probes'
 import { Buffer } from 'node:buffer'
 import { createHash } from 'node:crypto'
 import { createServer } from 'node:http'
@@ -9,14 +10,17 @@ import path from 'node:path'
 import process from 'node:process'
 import os from 'node:os'
 import { execa } from 'execa'
+import { PNG } from 'pngjs'
+import { assessNativeScreenshot } from './native-screenshot'
 import type { ReactNativePlatform, ReactNativeReport } from './catalog'
-import { findAndroidAnrWaitTap } from './android-window'
+import { androidScreenProbes, findAndroidAnrWaitTap } from './android-window'
 import { getHttpText } from './native-http'
 import { evaluateNativeWait } from './native-wait'
 import { stopOwnedProcess } from './process'
+import { createRuntimeArtifacts } from './runtime-artifacts'
 import { validateReactNativeReport } from './reports'
 
-interface ReportEnvelope { hmrMarker: string, cssHmrColor: string, report: ReactNativeReport }
+interface ReportEnvelope { hmrMarker: string, cssHmrColor: string, report: ReactNativeReport, visualProbes: NativeVisualProbe[] }
 
 interface ReportWaitOptions {
   cssHmrColor?: string
@@ -30,7 +34,8 @@ if (platform !== 'android' && platform !== 'ios') { throw new Error('Usage: tsx 
 
 const repoRoot = path.resolve(import.meta.dirname, '../..')
 const exampleRoot = path.resolve(repoRoot, 'examples/react-native-expo')
-const artifacts = path.resolve(repoRoot, `e2e/.artifacts/react-native-${platform}`)
+const artifactSession = await createRuntimeArtifacts(path.resolve(repoRoot, `e2e/.artifacts/react-native-${platform}`))
+const artifacts = artifactSession.directory
 const reportsDir = path.resolve(repoRoot, 'e2e/react-native/reports')
 const markerFile = path.resolve(exampleRoot, 'src/hmr-marker.ts')
 const cssFile = path.resolve(exampleRoot, 'global.css')
@@ -136,10 +141,6 @@ async function fileHash(file: string) {
   return createHash('sha256').update(await fs.readFile(file)).digest('hex')
 }
 
-async function waitForRuntimePaint() {
-  await new Promise(resolve => setTimeout(resolve, 2_000))
-}
-
 async function capture(name: string, device: string) {
   const output = path.resolve(artifacts, name)
   if (platform === 'android') {
@@ -152,6 +153,35 @@ async function capture(name: string, device: string) {
   const stat = await fs.stat(output)
   if (stat.size < 1024) { throw new Error(`${platform} screenshot is unexpectedly small: ${stat.size}`) }
   return output
+}
+
+/** 运行时报告只证明 JS 状态；连续两帧的实测像素通过后才接受原生截图。 */
+async function captureVerified(name: string, device: string, envelope: ReportEnvelope) {
+  const started = Date.now()
+  const attempts: Array<{ elapsedMs: number, assessment: ReturnType<typeof assessNativeScreenshot> }> = []
+  let consecutive = 0
+  let probes = envelope.visualProbes
+  if (platform === 'android') {
+    await execa('adb', ['-s', device, 'shell', 'uiautomator', 'dump', '/sdcard/window.xml'])
+    const window = await execa('adb', ['-s', device, 'exec-out', 'cat', '/sdcard/window.xml'])
+    await fs.writeFile(path.resolve(artifacts, `${name}.window.xml`), window.stdout)
+    probes = androidScreenProbes(window.stdout, probes, envelope.report.environment.viewport.pixelRatio, envelope.hmrMarker, envelope.cssHmrColor)
+  }
+  try {
+    while (Date.now() - started < 30_000) {
+      const file = await capture(name, device)
+      const png = PNG.sync.read(await fs.readFile(file))
+      const assessment = assessNativeScreenshot(png, probes, envelope.report.environment.viewport.pixelRatio)
+      attempts.push({ elapsedMs: Date.now() - started, assessment })
+      consecutive = assessment.passed ? consecutive + 1 : 0
+      if (consecutive >= 2) { return file }
+      await new Promise(resolve => setTimeout(resolve, 500))
+    }
+    throw new Error(`Native screenshot did not match current runtime probes: ${name}; ${JSON.stringify(attempts.at(-1))}`)
+  }
+  finally {
+    await fs.writeFile(path.resolve(artifacts, `${name}.visual.json`), `${JSON.stringify({ probes, runtimeProbes: envelope.visualProbes, attempts }, null, 2)}\n`)
+  }
 }
 
 async function captureFailureDiagnostics(device: string) {
@@ -367,27 +397,24 @@ async function main() {
     })
     const baselineReport = withNativeEnvironment(baseline.report, nativeEnvironment)
     validateReactNativeReport(baselineReport, platform)
-    await waitForRuntimePaint()
     if (platform === 'android') { await assertAndroidMarker(device, 'rn-hmr-baseline') }
-    const beforeScreenshot = await capture('runtime-before.png', device)
+    const beforeScreenshot = await captureVerified('runtime-before.png', device, baseline)
 
     const updated = originalMarker.replace('rn-hmr-baseline', 'rn-hmr-updated').replace('bg-emerald-500', 'bg-rose-500')
     await fs.writeFile(markerFile, updated, 'utf8')
     const hmr = await waitForReportOrExit('rn-hmr-updated', run, metro, { cssHmrColor: '#10b981', reportTimeout: 120_000 })
     const hmrReport = withNativeEnvironment(hmr.report, nativeEnvironment)
     validateReactNativeReport(hmrReport, platform)
-    await waitForRuntimePaint()
     if (platform === 'android') { await assertAndroidMarker(device, 'rn-hmr-updated') }
-    const afterTsxScreenshot = await capture('runtime-tsx-after.png', device)
+    const afterTsxScreenshot = await captureVerified('runtime-tsx-after.png', device, hmr)
     const updatedCss = originalCss.replace('#10b981', '#f59e0b')
     if (updatedCss === originalCss) { throw new Error('CSS HMR probe color was not found') }
     await fs.writeFile(cssFile, updatedCss, 'utf8')
     const cssHmr = await waitForReportOrExit('rn-hmr-updated', run, metro, { cssHmrColor: '#f59e0b', reportTimeout: 120_000 })
     const cssHmrReport = withNativeEnvironment(cssHmr.report, nativeEnvironment)
     validateReactNativeReport(cssHmrReport, platform)
-    await waitForRuntimePaint()
     if (platform === 'android') { await assertAndroidMarker(device, 'rn-hmr-updated') }
-    const afterScreenshot = await capture('runtime-after.png', device)
+    const afterScreenshot = await captureVerified('runtime-after.png', device, cssHmr)
     const beforeHash = await fileHash(beforeScreenshot)
     const afterTsxHash = await fileHash(afterTsxScreenshot)
     const afterHash = await fileHash(afterScreenshot)
@@ -428,4 +455,9 @@ async function main() {
   }
 }
 
-await main()
+try {
+  await main()
+}
+finally {
+  await artifactSession.publish()
+}

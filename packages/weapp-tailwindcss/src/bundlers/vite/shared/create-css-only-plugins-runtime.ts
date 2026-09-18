@@ -81,7 +81,7 @@ export function createCssOnlyVitePlugins(
     disabledDefaultTemplateHandler: opts.disabledDefaultTemplateHandler,
     debug,
   })
-  const { runtimeState, ensureRuntimeClassSet, refreshRuntimeState } = runtimeClassSet
+  const { runtimeState, refreshRuntimeState } = runtimeClassSet
   const hmrCandidateState = createViteHmrCandidateState({
     cleanGeneratedCssByFile: new Map(),
     generatedClassSetByFile: new Map(),
@@ -93,7 +93,6 @@ export function createCssOnlyVitePlugins(
   let recordedCandidates: Set<string> | undefined
   const processedCssRegistry = createFrameworkProcessedCssRegistry()
   const processedCssAssets = new WeakSet<object>()
-  const tailwindRootCssModuleIds = new Set<string>()
   const sourceScanSession = createFrameworkSourceScanSession({
     cssMemory,
     debug,
@@ -106,7 +105,13 @@ export function createCssOnlyVitePlugins(
     shouldOwnTailwindGeneration: shouldGenerate,
     sourceCandidateCollector,
   })
-  const { refreshSource: refreshTailwindRootCssSource, register: registerTailwindRootCss, rememberModule: rememberTailwindRootCssModule } = createFrameworkTailwindRootCss({
+  async function collectCssSourceCandidates() {
+    await runtimeState.readyPromise
+    await sourceScanSession.waitForPendingSyncs()
+    // Web 只生成 CSS；候选来自构建图，CSS 声明的来源由生成器扫描，无需额外生成运行时类集合。
+    return sourceCandidateCollector.values()
+  }
+  const { moduleIds: tailwindRootCssModuleIds, refreshSource: refreshTailwindRootCssSource, register: registerTailwindRootCss, rememberModule: rememberTailwindRootCssModule } = createFrameworkTailwindRootCss({
     getImportFallback: () => resolveWebGeneratorOptions(opts).importFallback,
     refreshRuntimeState: async () => { await refreshRuntimeState(true) },
     registerAutoCssSource: async (id, css) => {
@@ -132,7 +137,7 @@ export function createCssOnlyVitePlugins(
       await sourceScanSession.waitForPendingSyncs()
       const file = cleanUrl(id)
       const outputFile = resolveViteCssPipelineOutputFile(file, opts, resolvedConfig?.root ?? process.cwd(), true, false, undefined)
-      const runtime = hookContext?.sourceCandidates ? new Set(hookContext.sourceCandidates) : await ensureRuntimeClassSet()
+      const runtime = hookContext?.sourceCandidates ? new Set(hookContext.sourceCandidates) : await collectCssSourceCandidates()
       const generated = await generateTailwindV4Css({
         opts,
         runtimeState,
@@ -220,7 +225,7 @@ export function createCssOnlyVitePlugins(
   const finalizer = createViteWebCssFinalizerOutputPlugin({
     opts,
     runtimeState,
-    ensureRuntimeClassSet,
+    ensureRuntimeClassSet: collectCssSourceCandidates,
     debug,
     frameworkName: 'generic',
     getResolvedConfig: () => resolvedConfig,
