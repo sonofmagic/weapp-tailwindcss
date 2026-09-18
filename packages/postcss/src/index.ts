@@ -52,7 +52,7 @@ export {
   filterApplyOnlyGeneratedCss,
   filterApplyOnlyGeneratedCssRoot,
 } from './generator-plugin/apply-only'
-export { normalizeConfigDirective, prependConfigDirective, rewriteCssConfigRequests } from './generator-plugin/config-directive'
+export { normalizeConfigDirective, prependConfigDirective, rewriteCssConfigRequests, stripTailwindConfigDirectives } from './generator-plugin/config-directive'
 export {
   analyzeTailwindCssDirectives,
   isTailwindCssGenerationDirective,

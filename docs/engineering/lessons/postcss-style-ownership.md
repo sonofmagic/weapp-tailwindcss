@@ -264,4 +264,10 @@ React Native 的 CSS 到样式对象转换已迁入独立 `/native` 子入口。
 
 ## 规则评估
 
+### 边界复查补充
+
+2026-09-19 复查发现 `bundlers/vite/rewrite-css-imports.ts` 仍拥有独占行 `@config` 指令的文本清理。此前“剩余字符串均为编排”的结论不够完整；现已将该函数迁入 PostCSS 的 `generator-plugin/config-directive.ts`，Vite 只调用导出。该函数位于预处理前，原样保留 Sass/未闭合源码兼容和行级匹配，不顺带改变历史空白行为。PostCSS 原 328 个运行时导出保持存在，新增 `stripTailwindConfigDirectives`。
+
+先把 Vite 入口加入架构契约，旧实现为 1 失败、6 通过；迁移后 `test/bundlers/vite-plugin.rewrite.unit.test.ts` 与 `test/ci/architecture-contract.test.ts` 共 31 项通过。PostCSS 的配置清理与 rpx 兼容共 10 项通过，覆盖 LF、CRLF、多个指令、Sass、空输入、内联/字符串及重复调用。测试初始空白预期错误，已执行 `git show HEAD:<旧入口>` 中的原函数确认原行为后修正预期；没有改变实现或更新样式快照。
+
 不新增 AGENTS 规则。已有 CSS 所有权与 bundler 生命周期规则足够；扩大架构回归覆盖已迁移模块，以代码约束落实边界。生产转换与保留编排的审计边界见上文；尚未完成的 App 验收保留为待办，不通过放宽规则将其视为完成。

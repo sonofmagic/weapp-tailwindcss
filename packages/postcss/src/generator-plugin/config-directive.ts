@@ -16,6 +16,11 @@ export function rewriteCssConfigRequests(source: string, resolve: (request: stri
   })
 }
 
+/** 保留 Vite 预处理前的行级清理语义，允许尚未编译的 Sass 等源码。 */
+export function stripTailwindConfigDirectives(code: string) {
+  return code.replace(/^\s*@config\s+(?:"[^"]+"|'[^']+')[^;\n]*;\s*$/gm, '')
+}
+
 function quoteCssString(value: string) {
   return value.replaceAll('\\', '\\\\').replaceAll('"', '\\"')
 }

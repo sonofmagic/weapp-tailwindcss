@@ -57,6 +57,7 @@ describe('架构边界契约', () => {
       'src/bundlers/shared/css-source-trace.ts',
       'src/bundlers/shared/source-scan/css-entries.ts',
       'src/bundlers/shared/css-imports.ts',
+      'src/bundlers/vite/rewrite-css-imports.ts',
       'src/bundlers/shared/generator-css/candidates.ts',
       'src/bundlers/shared/generator-css/config-directive.ts',
       'src/bundlers/shared/generator-css/legacy-selectors.ts',
