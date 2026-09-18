@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-03T01:50:02.349Z",
+  "generatedAt": "2026-09-18T07:05:50.413Z",
   "locale": "en-US",
   "contentTier": "primary",
   "siteUrl": "https://tw.weapp.dev",
   "totals": {
-    "all": 95,
-    "docs": 95,
+    "all": 96,
+    "docs": 96,
     "blog": 0
   },
   "documents": [
@@ -1562,7 +1562,7 @@
       "productArea": "issues",
       "title": "CSS variable invalidation problem",
       "description": "Troubleshoot style failure issues such as gradients and shadows caused by the loss of Tailwind CSS variables in small program projects such as Taro and uni-app.",
-      "summary": "In small program projects such as Taro and uni-app, you may encounter the problem of Tailwind CSS variables being lost.",
+      "summary": "If variables are present but settings such as --spacing: 1rpx or 3rpx produce incorrect dimensions or spacing, see WeChat --spacing and rpx calculation limits. That case requires checking runtime calculations; adding va…",
       "url": "/docs/issues/css-vars",
       "canonical": "https://tw.weapp.dev/docs/issues/css-vars",
       "alternates": {
@@ -1967,6 +1967,49 @@
         "See"
       ],
       "source": "i18n/en/docs/issues/rpx-ambiguities.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:issues/spacing-rpx",
+      "locale": "en-US",
+      "contentTier": "primary",
+      "productArea": "issues",
+      "title": "WeChat --spacing and rpx calculation limits",
+      "description": "Understand WeChat calc size differences with Tailwind CSS 4 rpx spacing, cssCalc limitations, and the tradeoff with runtime theme updates.",
+      "summary": "Tailwind CSS 4 accepts --spacing: 1rpx inside @theme. However, valid generated WXSS does not guarantee the same rendered size as a direct rpx length in WeChat mini programs. Utilities for dimensions, padding, and margin…",
+      "url": "/docs/issues/spacing-rpx",
+      "canonical": "https://tw.weapp.dev/docs/issues/spacing-rpx",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/issues/spacing-rpx",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/spacing-rpx",
+        "x-default": "https://tw.weapp.dev/docs/issues/spacing-rpx"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "Tailwind CSS 4",
+        "WeChat mini programs",
+        "spacing",
+        "rpx",
+        "calc",
+        "cssCalc",
+        "CSS variables",
+        "troubleshooting",
+        "compatibility",
+        "diagnostics",
+        "WeChat",
+        "--spacing",
+        "and",
+        "calculation",
+        "limits"
+      ],
+      "headings": [
+        "rpx conversion can amplify errors in the base length",
+        "cssCalc capabilities and known limitations",
+        "@theme inline does not automatically remove calc",
+        "Choosing between fixed sizes and runtime themes",
+        "Validation scope"
+      ],
+      "source": "i18n/en/docs/issues/spacing-rpx.md"
     },
     {
       "kind": "doc",

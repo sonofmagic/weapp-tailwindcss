@@ -34,6 +34,10 @@ const issuesSidebar: SidebarConfig = [
   },
   {
     type: 'doc',
+    id: 'issues/spacing-rpx',
+  },
+  {
+    type: 'doc',
     id: 'issues/rpx-ambiguities',
   },
   {

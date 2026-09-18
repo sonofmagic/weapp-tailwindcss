@@ -109,6 +109,10 @@ In other words, the "entry" here is more suitable to be understood as a recommen
 }
 ```
 
+:::warning rpx spacing in WeChat mini programs
+Setting the global `--spacing` to values such as `1rpx` or `3rpx` can produce size differences through generated runtime multiplication. `@theme inline` does not automatically compute the product. After successful precomputation to a static length, the property no longer responds to runtime overrides of `--spacing`. See [WeChat --spacing and rpx calculation limits](../issues/spacing-rpx.md).
+:::
+
 ## Middle section: Tailwind’s generation logic
 
 This layer can be split into two parts: one is how Tailwind generates classes, and the other is how the team adds boundaries to these classes.

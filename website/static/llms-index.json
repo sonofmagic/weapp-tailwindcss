@@ -1,12 +1,12 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-03T01:50:02.349Z",
+  "generatedAt": "2026-09-18T07:05:50.413Z",
   "locale": "zh-CN",
   "contentTier": "primary",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
   "totals": {
-    "all": 95,
-    "docs": 95,
+    "all": 96,
+    "docs": 96,
     "blog": 0
   },
   "documents": [
@@ -1584,7 +1584,7 @@
       "productArea": "issues",
       "title": "CSS 变量失效问题",
       "description": "排查 Taro、uni-app 等小程序项目中 Tailwind CSS 变量丢失导致的渐变、阴影等样式失效问题。",
-      "summary": "在 Taro、uni-app 等小程序项目中，可能会遇到 Tailwind CSS 变量丢失的问题。",
+      "summary": "如果变量已经生成，但 --spacing: 1rpx、3rpx 等配置导致尺寸或间距偏差，请查看 微信小程序 --spacing 与 rpx 计算限制。这种情况需要检查运行时计算，补充变量初始化区域不能直接解决。",
       "url": "/zh-cn/docs/issues/css-vars",
       "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/css-vars",
       "alternates": {
@@ -1989,6 +1989,49 @@
         "参见"
       ],
       "source": "docs/issues/rpx-ambiguities.md"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:issues/spacing-rpx",
+      "locale": "zh-CN",
+      "contentTier": "primary",
+      "productArea": "issues",
+      "title": "微信小程序 --spacing 与 rpx 计算限制",
+      "description": "说明 Tailwind CSS 4 的 --spacing 使用 rpx 时，微信小程序的 calc 尺寸偏差、cssCalc 预计算限制和运行时主题取舍。",
+      "summary": "Tailwind CSS 4 允许在 @theme 中设置 --spacing: 1rpx，但微信小程序中生成了合法 WXSS，不代表最终尺寸一定与直接写 rpx 相同。依赖该基数的尺寸、内外边距等工具类可能保留运行时乘法：",
+      "url": "/zh-cn/docs/issues/spacing-rpx",
+      "canonical": "https://tw.weapp.dev/zh-cn/docs/issues/spacing-rpx",
+      "alternates": {
+        "en-US": "https://tw.weapp.dev/docs/issues/spacing-rpx",
+        "zh-CN": "https://tw.weapp.dev/zh-cn/docs/issues/spacing-rpx",
+        "x-default": "https://tw.weapp.dev/docs/issues/spacing-rpx"
+      },
+      "keywords": [
+        "weapp-tailwindcss",
+        "Tailwind CSS 4",
+        "微信小程序",
+        "spacing",
+        "rpx",
+        "calc",
+        "cssCalc",
+        "CSS 变量",
+        "常见问题",
+        "故障排查",
+        "兼容性",
+        "--spacing",
+        "计算限制",
+        "issues",
+        "spacing rpx",
+        "跨端"
+      ],
+      "headings": [
+        "微信对 rpx 的换算可能放大基数误差",
+        "cssCalc 的能力与已知限制",
+        "@theme inline 不会自动消除 calc",
+        "固定尺寸与运行时主题如何选择",
+        "验证范围"
+      ],
+      "source": "docs/issues/spacing-rpx.md"
     },
     {
       "kind": "doc",
