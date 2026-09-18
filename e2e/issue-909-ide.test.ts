@@ -385,10 +385,7 @@ describeIde('issues 909/916/928 IDE runtime', () => {
     await cleanupDevTools()
     try {
       const automator = new Launcher()
-      miniProgram = await automator.launch({
-        projectPath: v4ProjectPath,
-        timeout: timeoutMs,
-      })
+      miniProgram = await automator.launch({ cliPath: process.env.E2E_PREFLIGHT_WECHAT_CLI, projectPath: v4ProjectPath, timeout: timeoutMs })
     }
     catch (error) {
       if (error instanceof Error) {
@@ -597,10 +594,7 @@ describeIde('issue 928 Tailwind v4 IDE runtime', () => {
     await cleanupDevTools()
     try {
       const automator = new Launcher()
-      miniProgram = await automator.launch({
-        projectPath: v3ProjectPath,
-        timeout: timeoutMs,
-      })
+      miniProgram = await automator.launch({ cliPath: process.env.E2E_PREFLIGHT_WECHAT_CLI, projectPath: v3ProjectPath, timeout: timeoutMs })
     }
     catch (error) {
       if (error instanceof Error) {

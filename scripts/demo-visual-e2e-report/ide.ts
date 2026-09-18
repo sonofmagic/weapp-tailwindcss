@@ -148,11 +148,7 @@ export async function launchMiniProgramInCleanDevTools(
     const launcher = new Launcher()
     try {
       process.stdout.write(`[weapp-hmr] ${name}: launch ${projectPath} port=${port} attempt=${attempt}/${retries + 1}\n`)
-      const miniProgram = await withTimeout(`${name} launch`, timeoutMs, launcher.launch({
-        projectPath,
-        port,
-        timeout: timeoutMs,
-      }))
+      const miniProgram = await withTimeout(`${name} launch`, timeoutMs, launcher.launch({ cliPath: process.env.E2E_PREFLIGHT_WECHAT_CLI, projectPath, port, timeout: timeoutMs }))
       return {
         miniProgram,
         port,
