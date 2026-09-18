@@ -674,7 +674,7 @@ const active = true
     )
 
     expect(result?.code).toContain('class="wtu-')
-    expect(result?.code).toContain('dark_cbg-_b_h3498db_B')
+    expect(result?.code).toContain('dark:bg-[#3498db]')
     expect(onWebLocalStyleRules).toHaveBeenCalledWith(expect.stringMatching(/:global\(\.wtu-[\w-]+\)/))
   })
 

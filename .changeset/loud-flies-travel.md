@@ -13,3 +13,5 @@
 将 React Native CSS 编译迁入独立 PostCSS native 子入口，保留原编译器 API、精确类名过滤、告警与稳定 ID；运行时不加载 CSS 编译依赖。
 
 将 injector 的纯指令插入和 LightningCSS 的实验性样式转换归入 PostCSS。模板依赖追踪仍由 injector 管理；LightningCSS 引擎仍只由实验入口加载，稳定入口不导入实验实现。
+
+修复完整验收中发现的既有 uni-app x Web 类名身份不一致：Web 模板与脚本保留生成器使用的原始变体类名，局部样式仍按精确候选生成别名，小程序转换行为保持不变。
