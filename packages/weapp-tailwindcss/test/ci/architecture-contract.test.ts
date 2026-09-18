@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
+import { build } from 'esbuild'
 
 const repoRoot = path.resolve(import.meta.dirname, '../../../..')
 
@@ -125,7 +126,11 @@ describe('架构边界契约', () => {
       const pkg = readPackage(file)
       const dependencies = Object.keys(pkg.dependencies ?? {})
       const forbidden = dependencies.filter(name => forbiddenForRuntime.has(name))
-      if (file === 'packages/react-native/package.json' || file === 'packages/lynx/package.json') {
+      if (file === 'packages/react-native/package.json') {
+        // 编译入口可以使用生成器和独立 CSS 编译子路径；运行时依赖闭包另行验证。
+        expect(forbidden.filter(name => name !== 'weapp-tailwindcss' && name !== '@weapp-tailwindcss/postcss')).toEqual([])
+      }
+      else if (file === 'packages/lynx/package.json') {
         // P2 抽出 generator 前保留根包 facade；禁止继续增加其它 bundler 直依赖。
         expect(forbidden.filter(name => name !== 'weapp-tailwindcss'), `${pkg.name} must not add direct bundler dependencies`).toEqual([])
       }
@@ -133,6 +138,25 @@ describe('架构边界契约', () => {
         expect(forbidden, `${pkg.name} must stay runtime-only`).toEqual([])
       }
     }
+  })
+
+  it('keeps the native runtime bundle free of compiler dependencies', async () => {
+    const entry = path.join(repoRoot, 'packages/react-native/src/runtime.ts')
+    const result = await build({
+      entryPoints: [entry],
+      bundle: true,
+      platform: 'browser',
+      format: 'esm',
+      write: false,
+      metafile: true,
+    })
+    expect(Object.keys(result.metafile.inputs).map(file => path.resolve(file))).toEqual([entry])
+    expect(Object.values(result.metafile.outputs).flatMap(output => output.imports)).toEqual([])
+
+    const compiler = fs.readFileSync(path.join(repoRoot, 'packages/react-native/src/compiler.ts'), 'utf8')
+    expect(compiler).toContain('@weapp-tailwindcss/postcss/native')
+    expect(compiler).not.toMatch(/postcss\.parse|\.walkDecls\(|\.walkRules\(/)
+    expect(readPackage('packages/react-native/package.json').dependencies?.postcss).toBeUndefined()
   })
 
   it('uses catalogs for shared compiler and runtime utility versions', () => {

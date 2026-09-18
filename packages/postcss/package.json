@@ -37,7 +37,12 @@
       "import": "./dist/css-macro/postcss.js",
       "require": "./dist/css-macro/postcss.cjs"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./native": {
+      "types": "./dist/native.d.ts",
+      "import": "./dist/native.js",
+      "require": "./dist/native.cjs"
+    }
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -56,6 +61,9 @@
       "*": [
         "./dist/*",
         "./dist/index.d.ts"
+      ],
+      "native": [
+        "./dist/native.d.ts"
       ]
     }
   },

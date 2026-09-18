@@ -3,6 +3,7 @@ status: partial
 issue: https://github.com/sonofmagic/weapp-tailwindcss/pull/1216
 baseline: 821f4dd4bea8c8b9426248ed56d5bb2717a6c821
 regressions:
+  - packages/postcss/test/native-compiler.test.ts
   - packages/postcss/test/tailwind-v4-user-css.test.ts
   - packages/postcss/test/style-transform-ownership.test.ts
   - packages/postcss/test/processed-css-transforms.test.ts
@@ -101,6 +102,8 @@ regressions:
 热点耗时约降低 57%。此前同配置样本为 16.65 ms / 7.11 ms。该结果只证明此输入上的热点改善，不代表真实框架构建/HMR 或峰值内存已改善。持久 benchmark 入口为 `pnpm --filter @weapp-tailwindcss/postcss exec vitest bench test/tailwind-v4-user-css.bench.ts --run`。
 
 ## 适用边界
+
+React Native 的 CSS 到样式对象转换已迁入独立 `/native` 子入口。Native 包继续持有 manifest ID、Babel/Metro 和运行时接口。迁移前后 `CI=1 pnpm --filter @weapp-tailwindcss/react-native test --update=none` 均为 5 文件、36 通过；`CI=1 pnpm --filter @weapp-tailwindcss/postcss exec vitest run test/native-compiler.test.ts --update=none` 为 4 通过，覆盖精确类名、important/顺序、告警和调用间独立性。两包构建及类型生成通过；架构回归为 6 通过，新增浏览器 bundle 依赖闭包检查，确认 runtime 仅包含自身代码、无编译依赖。
 
 已迁移模块的架构测试约束主包不重新引入 AST 转换；它不是全仓迁移完成的证明。剩余审计包含：
 

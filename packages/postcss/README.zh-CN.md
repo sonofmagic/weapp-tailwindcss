@@ -1,5 +1,7 @@
 # @weapp-tailwindcss/postcss
 
+独立入口 `@weapp-tailwindcss/postcss/native` 提供 `compileNativeCss(css, options)`，将 CSS 转成原生样式规则、变量和告警。React Native manifest ID、Tailwind 生成与运行时集成仍由 `@weapp-tailwindcss/react-native` 负责；导入其 `/runtime` 不会加载 CSS 编译器。
+
 > [English](./README.md) | 简体中文
 
 这个包是 weapp-tailwindcss 的 CSS 处理核心，负责小程序端的 PostCSS AST 转换、选择器兼容、平台差异处理和 Tailwind 输出后处理。

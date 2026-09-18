@@ -14,7 +14,7 @@ export const postcssEsmOnlyDependencies = [
 ]
 
 const sharedOptions = {
-  entry: ['src/index.ts', 'src/types.ts', 'src/html-transform.ts', 'src/css-macro/postcss.ts'],
+  entry: ['src/index.ts', 'src/types.ts', 'src/html-transform.ts', 'src/css-macro/postcss.ts', 'src/native.ts'],
   shims: true,
   dts: false,
   outputOptions: {
