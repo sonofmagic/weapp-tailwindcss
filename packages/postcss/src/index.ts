@@ -1,4 +1,3 @@
-// 统一导出入口，供外部调用端按需引用核心能力
 export {
   type PostcssAppType,
   type PostcssStyleBranch,
@@ -61,6 +60,12 @@ export {
 } from './compat/tailwindcss-rpx'
 export { normalizeTailwindcssV4InfinityCalcCss } from './compat/tailwindcss-v4'
 export { compileTailwindAuthorFunctions, createTailwindAuthorFunctionProbe } from './compat/tailwindcss-v4/author-functions'
+export {
+  normalizeTailwindV4GeneratedUrlValues,
+  transformTailwindV4CssToWeapp,
+  transformTailwindV4GeneratedCss,
+  transformTailwindV4WebRpxCss,
+} from './compat/tailwindcss-v4/generated-output'
 export { normalizeTailwindcssV4InfinityRadiusCss } from './compat/tailwindcss-v4/infinity-radius'
 export { removeTailwindV4PreflightImports, removeUnsupportedThemeVendorKeyframes } from './compat/tailwindcss-v4/theme-source'
 export {
@@ -99,6 +104,8 @@ export {
   withCssMacroStyleOptions,
 } from './css-macro/auto'
 export { CSS_MACRO_POSTCSS_PLUGIN_NAME, default as cssMacroPostcssPlugin } from './css-macro/postcss'
+// 统一导出入口，供外部调用端按需引用核心能力
+export { collectRpxThemeVariables, inspectRpxCalcUsage, type RpxCalcUsage } from './diagnostics/rpx-theme'
 export { processFrameworkCss } from './framework-pipeline'
 export {
   type PostcssFrameworkProfile,
@@ -250,6 +257,7 @@ export {
   stringifyScssSource,
 } from './syntax'
 export * from './types'
+export { collectCustomPropertyValues, mergeCustomPropertyValues } from './utils/custom-property-values'
 export {
   containsCssAfterMinify,
   createCssRuleMatcher,

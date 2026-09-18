@@ -11,6 +11,7 @@ import { getTailwindGenerationSessionPool } from '@/compiler/tailwind-generation
 import { shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { includesTailwindV4PreflightDirective } from '@/tailwindcss/v4/preflight'
+import { collectRpxThemeRiskSources, shouldCheckRpxThemeRisk } from '@/tailwindcss/v4/rpx-theme-warning'
 import { runWithConcurrency } from '../../run-tasks'
 import { isSourceStyleRequest } from '../../style-requests'
 import { collectGeneratorCssCandidates } from '../candidates'
@@ -402,6 +403,15 @@ async function executeGeneratorPipelineWithOwner(
     shouldFilterApplyOnlyCss,
   }
   const withCompilationMetadata = (result: GenerateCssByGeneratorResult | undefined) => {
+    if (result && shouldCheckRpxThemeRisk(runtimeState, generated.target, opts, options.generatorPlatform)) {
+      result.rpxThemeVariables = [...new Set([
+        ...preparedGenerationInputs.flatMap(input => input.generatorSource.rpxThemeVariables ?? []),
+        ...collectRpxThemeRiskSources([
+          generatorRawSource,
+          ...preparedGenerationInputs.map(input => input.generatorSource.css),
+        ]),
+      ])]
+    }
     if (result && frameworkProcessedUserCss !== undefined) {
       result = {
         ...result,
@@ -422,9 +432,8 @@ async function executeGeneratorPipelineWithOwner(
       },
     }
   }
-  if (options.deferCssAdaptation) {
-    return withCompilationMetadata(await finalizeDeferredGeneratorCss(outputContext))
-  }
-  const ordered = await finalizeOrderedGeneratorCss(outputContext)
-  return withCompilationMetadata(ordered ?? await finalizeFallbackGeneratorCss(outputContext))
+  const finalized = options.deferCssAdaptation
+    ? await finalizeDeferredGeneratorCss(outputContext)
+    : await finalizeOrderedGeneratorCss(outputContext) ?? await finalizeFallbackGeneratorCss(outputContext)
+  return withCompilationMetadata(finalized)
 }

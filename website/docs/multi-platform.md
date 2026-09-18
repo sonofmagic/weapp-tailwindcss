@@ -227,7 +227,15 @@ WeappTailwindcss({
 
 Tailwind CSS 4 下，CSS 变量与 `calc()` 的预计算默认关闭。这样可以避免 `var()` 中的大体积值被展开后，再被 Autoprefixer 复制到兼容声明中。例如图标插件生成的 `--svg` data URI 默认只会保留一份。
 
-需要解决部分机型对 `calc` 与 `rpx` 计算不一致的问题时，可以显式开启：
+:::warning 微信小程序的 --spacing 与 rpx 限制
+`--spacing: 1rpx` 可以生成工具类，但运行时 `calc` 的尺寸可能与直接 `rpx` 不同，原生 WXSS 对照也复现了 `3rpx` 基数的偏差。固定像素尺寸优先使用 `px`；需要随窗口缩放时，优先输出最终静态 `rpx` 长度。保留运行时基数时可以尝试较大或偶数 `rpx`，但偶数也不保证准确，仍需设备验证。在 `5.5.6` 的 uni-app 微信构建复现中，显式配置 `cssCalc: ['--spacing']` 仍可能保留表达式。以下预计算示例以成功取得变量值为前提，不能仅凭开启选项判断问题已解决。具体对照、版本范围和处理方式见 [微信小程序 --spacing 与 rpx 计算限制](./issues/spacing-rpx.md)。
+:::
+
+微信目标还会对 Tailwind CSS 4 的 `@theme` / `@theme inline` 中所有 `rpx` 自定义属性输出建议性构建 warning，不限于 `--spacing`。它不阻断构建，同一构建会话最多提示一次，watch/HMR 不重复输出。`logLevel: 'warn'` 保留提示，`'silent'` 或 `'error'` 隐藏提示。只有 `weapp` 输出且明确识别为微信平台时启用，H5/Web、其他平台及未知平台不提示。
+
+提示会区分主题变量本身、仍保留运行时 `calc` 的输出，以及未检测到相关表达式的输出。`cssCalc` 成功静态化后仍保留配置提醒；`@theme inline` 单独使用不保证静态化。诊断失败会跳过，未提示也不代表已验证安全。触发范围和设备验证边界见 [构建期风险提示](./issues/spacing-rpx.md#构建期风险提示)。
+
+需要对构建期已知的值预计算时，可以显式开启：
 
 ```ts
 WeappTailwindcss({
@@ -237,7 +245,7 @@ WeappTailwindcss({
 })
 ```
 
-启用后会补充一条预计算声明，并默认保留后面的原始 `var()` / `calc()` 声明。这样可以保持 CSS 级联兼容，但会让单个工具类出现两份等价的属性；如果目标小程序运行时会优先采用后续原始声明，或者你希望减小 CSS 体积，需要显式指定要清理的 CSS 变量。
+成功展开变量时，可以补充预计算声明并保留后面的原始 `var()` / `calc()` 声明。两条声明在目标运行时中的尺寸未必相同：后面的有效表达式仍可能覆盖静态值，因此仅增加 fallback 不保证消除微信的计算偏差。需要完全使用预计算结果时，应显式选择要处理的固定变量，并检查最终产物。
 
 例如 Tailwind CSS 4 生成：
 
@@ -251,7 +259,7 @@ page,
 }
 ```
 
-显式启用 `cssOptions.cssCalc` 后会补出预计算结果，并保留原声明：
+对上述可解析的根变量，显式启用 `cssOptions.cssCalc` 后可以补出预计算结果，并保留原声明：
 
 ```css
 page,
@@ -274,7 +282,7 @@ WeappTailwindcss({
 })
 ```
 
-此时匹配 `--spacing` 的原始 `var()` / `calc()` 声明会被删除，输出会变成：
+成功预计算后，匹配 `--spacing` 的原始 `var()` / `calc()` 声明会被清理，该示例输出为：
 
 ```css
 .h-2 {
@@ -303,6 +311,8 @@ WeappTailwindcss({
 })
 ```
 
+静态化后的属性不再响应运行时对 `--spacing` 的覆盖。页面、组件或主题切换需要动态修改该变量时，不要直接采用此配置来冻结它；单独设置 `@theme inline` 也不能保证消除 `calc`，详见上面的限制说明。
+
 如果需要明确关闭，也可以传入：
 
 ```ts
@@ -324,7 +334,7 @@ WeappTailwindcss({
 }
 ```
 
-开启 `cssCalc` 后，`weapp-tailwindcss` 会额外计算出 `8rpx`。默认保留原始变量声明时，最终会看到四条属性：
+沿用上面的 `--spacing: 8rpx`，当 `cssCalc` 成功展开根变量并保留原始声明时，会看到四条属性：
 
 ```css
 .mx-1 {
@@ -347,8 +357,8 @@ WeappTailwindcss({
 ```
 
 ```ts
-// 保留 rpx 预计算结果，同时删除 --spacing 对应的原始声明。
-// 适合需要兼容不完整支持 CSS 变量或 calc() 的小程序运行时。
+// 成功预计算后保留 rpx 结果，清理 --spacing 对应的原始声明。
+// 仅用于固定主题值，并检查最终产物是否完成预计算。
 WeappTailwindcss({
   cssOptions: {
     cssCalc: ['--spacing'],
@@ -356,7 +366,7 @@ WeappTailwindcss({
 })
 ```
 
-第二种配置的结果是：
+第二种配置成功预计算后的结果是：
 
 ```css
 .mx-1 {
@@ -365,7 +375,7 @@ WeappTailwindcss({
 }
 ```
 
-`cssCalc: false` 与 `cssCalc: ['--spacing']` 的区别是：前者不生成预计算 fallback，后者保留预计算的 `rpx` 结果但去掉重复的变量声明。修改后请重新执行目标端构建，并检查实际生成的 `app.wxss`、`app.ttss` 或对应平台 CSS 文件；如果关闭预计算后在低版本运行时出现间距失效，改用第二种配置。
+`cssCalc: false` 不生成预计算 fallback；`cssCalc: ['--spacing']` 则在成功预计算后保留静态结果并清理重复的变量声明。修改后请重新构建目标端，检查实际 WXSS/CSS 中的最终属性值，并在目标设备上与直接长度对照。若仍保留 `calc(var(--spacing) * N)`，请按 [已知限制](./issues/spacing-rpx.md) 排查，不要假定配置已生效。
 
 ## 多端单位转换
 

@@ -33,6 +33,10 @@ WeappTailwindcss({
 
 `true` 表示 `1rem = 32rpx`。这页只讲另外两种情况：`px` 转 `rpx`，以及多单位转 `px`。
 
+:::warning 微信小程序的 spacing 计算
+单位转换成功不代表 `calc(var(--spacing) * N)` 的尺寸一定正确。`--spacing` 使用 `1rpx`、`3rpx` 等基数时，微信运行时可能出现换算偏差；偶数基数也不能保证规避。`cssCalc` 的已知构建限制、`@theme inline` 和运行时主题的取舍，见 [微信小程序 --spacing 与 rpx 计算限制](../issues/spacing-rpx.md)。
+:::
+
 ## px 转 rpx
 
 从 `weapp-tailwindcss@4.3.0` 开始，插件内置了 [`postcss-pxtransform`](https://www.npmjs.com/package/postcss-pxtransform)。需要 `px` 转 `rpx` 时，在 `cssOptions` 中开启 `px2rpx`：

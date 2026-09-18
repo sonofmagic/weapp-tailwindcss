@@ -4,6 +4,7 @@ import type { InternalUserDefinedOptions } from '@/types'
 import { consumeCompilationScopeChanges, createCompilerShadowReport, createCssFragment, createGenerationArtifact, getCompilerShadowRunRevision, mergeCompilationDependencyChanges, recordCompilerShadowReport, resolveCompilerMode } from '@/compiler'
 import { getFrameworkCompilerSession } from '@/compiler/framework-compiler-session'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { shouldCheckRpxThemeRisk, warnRpxThemeRisk } from '@/tailwindcss/v4/rpx-theme-warning'
 import { adaptGeneratedCssWithFrameworkPipeline, adaptGeneratedCssWithFrameworkRootPipeline, hasFrameworkPostcssOptions } from './framework-postcss'
 import { normalizeFrameworkProcessedUserCss, restoreFrameworkProcessedUserCss } from './framework-user-css'
 import { generateCssByGenerator } from './generator-css'
@@ -175,6 +176,9 @@ async function generateTailwindV4CssWithImplementation(
   const classSet = options.frameworkProcessedUserCss
     ? resolveGeneratedCssClassSet(generated.target, generated.classSet, options.runtime, css, options.opts.escapeMap, options.previousClassSet)
     : new Set(generated.classSet)
+  if (shouldCheckRpxThemeRisk(options.runtimeState, generated.target, options.opts, options.generatorPlatform)) {
+    warnRpxThemeRisk(options.runtimeState, generated.rpxThemeVariables ?? [], css)
+  }
   const artifact = implementation.emitArtifact
     ? createCoreArtifact({ ...generated, classSet }, css, options)
     : undefined
