@@ -1295,7 +1295,7 @@ export const webCases: WebCase[] = [
       {
         markerClass: 'hbuilderx-web-hmr-probe mt-200 bg-[#102938] text-[#f7fbff] w-[173px]',
         markerText: 'hbuilderx-web-hmr-v4-mt-200',
-        cssContains: [/margin-top:\s*(?:calc\(0\.25rem\s*\*\s*200\)|800px)/, /background-color:\s*#102938/, /width:\s*173px/],
+        cssContains: [/margin-top:\s*(?:calc\((?:0\.25rem|var\(--spacing\))\s*\*\s*200\)|800px)/, /background-color:\s*#102938/, /width:\s*173px/],
         runtimeStyles: [{
           selector: '.hbuilderx-web-hmr-probe',
           styles: { backgroundColor: 'rgb(16, 41, 56)', color: 'rgb(247, 251, 255)', marginTop: '800px', width: '173px' },
@@ -1345,7 +1345,7 @@ export const webCases: WebCase[] = [
         markerText: 'hbuilderx-web-hmr-v4-rem-rpx',
         cssContains: [
           /background-color:\s*#0e7490/,
-          /\.mt-_b10rpx_B\s*\{[\s\S]*margin-top:\s*0\.3125rem/,
+          /\.mt-(?:_b10rpx_B|\\\[10rpx\\\])\s*\{[\s\S]*margin-top:\s*0\.3125rem/,
           /\.text-xs\s*\{[\s\S]*font-size:\s*(?:var\(--text-xs\)|0\.75rem)/,
         ],
         runtimeStyles: [{

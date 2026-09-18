@@ -3,6 +3,9 @@ status: partial
 issue: https://github.com/sonofmagic/weapp-tailwindcss/pull/1216
 baseline: 821f4dd4bea8c8b9426248ed56d5bb2717a6c821
 regressions:
+  - packages/weapp-tailwindcss/test/uni-app-x/web-class-identity.test.ts
+  - e2e/demo-visual-h5-theme.test.ts
+  - e2e/demo-visual-hmr-source.test.ts
   - packages/postcss/test/tailwind-directive-injection.test.ts
   - packages/postcss/test/native-compiler.test.ts
   - packages/postcss/test/tailwind-v4-user-css.test.ts
@@ -30,7 +33,7 @@ regressions:
 
 主包已经不再直接依赖 CSS parser，但仍通过 PostCSS re-export 实现样式转换。共享生成流程、Vite 产物处理、Webpack 兼容和 Harmony apply 混合了构建图编排与 CSS AST 操作，造成重复处理和边界难以检查。
 
-本次重构从 rpx warning PR 的实现提交分出独立分支，不扩大原 PR 的交付承诺。这里记录阶段证据；生产转换归属与剩余编排已审计，真实构建/HMR 性能验证尚未完成。
+本次重构从 rpx warning PR 的实现提交分出独立分支，不扩大原 PR 的交付承诺。生产转换归属与剩余编排已审计，真实构建/HMR 完成两轮性能对照；完整多端验收仍未完成。
 
 ## 根因与纠正
 
@@ -135,13 +138,54 @@ PostCSS 内部已共用 apply 选择器分析和 specificity placeholder 归一�
 
 React Native 的 CSS 到样式对象转换已迁入独立 `/native` 子入口。Native 包继续持有 manifest ID、Babel/Metro 和运行时接口。迁移前后 `CI=1 pnpm --filter @weapp-tailwindcss/react-native test --update=none` 均为 5 文件、36 通过；`CI=1 pnpm --filter @weapp-tailwindcss/postcss exec vitest run test/native-compiler.test.ts --update=none` 为 4 通过，覆盖精确类名、important/顺序、告警和调用间独立性。两包构建及类型生成通过；架构回归为 6 通过，新增浏览器 bundle 依赖闭包检查，确认 runtime 仅包含自身代码、无编译依赖。
 
-已迁移模块的架构测试约束主包不重新引入 AST 转换。生产转换、编排和开发辅助的归属见上表；同配置的真实框架构建/HMR、峰值内存与对应 static 基线仍待验证，不能用微基准代替。
+已迁移模块的架构测试约束主包不重新引入 AST 转换。生产转换、编排和开发辅助的归属见上表；真实框架性能对照见下文，不能用微基准代替完整验收。
 
 2026-09-18 在 `541473366cfa459acbf3cf5f7a54e50e350b943e` 执行 `pnpm e2e:preflight prepare`，本轮 run ID 为 `39875579-98db-4280-8bcb-79e0ba3be4a8`。Node/pnpm、微信真实 DevTools、iOS、Android、Harmony 和 Web 脚本探针通过；HBuilderX `cli version --host HBuilderX` 超时，探针报告 `issue=timeout; exit=SIGTERM`。同时，当前会话 `mcp__cua_repl.js` 调用 `cua.getState()` 返回 `Browsers: Error: Codex auth token is unavailable`。
 
 已按手册用 `pnpm e2e:preflight block --report e2e/.artifacts/preflight/39875579-98db-4280-8bcb-79e0ba3be4a8/report.json --reason "当前会话浏览器发现认证失败"` 记录阻断。该命令设计为非零退出。原始 JSON、Markdown、探针日志及截图位于同一忽略目录，没有修改门禁、关闭用户 IDE 或借用旧报告。恢复需修复当前 Codex 浏览器授权，并确认 HBuilderX 所选 host 的 CLI 可响应，然后重新 prepare；本轮报告不可复用。
 
-全面测试尚未启动，真实构建/HMR 和峰值内存没有取得结果。此前的包回归仍仅作为定向验证证据；没有等待远端 CI。剩余工作未完成前，目标保持进行中。
+上述为升级前的阻断记录。HBuilderX 升级到 `5.26.2026091802`、浏览器授权恢复后，在 `ad8ec641be457402f916ba766b625d419473e44c` 重新 prepare，run ID 为 `c117bf03-f1be-482f-99b8-aebfac670b34`。微信、HBuilderX、iOS、Android、Harmony、Web 与当前会话 computer use 均通过 verify；截图工具实际返回 JPEG，首次将其交给 PNG 专用校验器失败，保留原图并无缩放转换 PNG 后通过，没有修改门禁或证据时间。
+
+执行 `CI=1 pnpm e2e:local:full-report --preflight-report e2e/.artifacts/preflight/c117bf03-f1be-482f-99b8-aebfac670b34/report.json --out-root .tmp/postcss-full-acceptance`：
+
+- `build:ci` 通过；Mpx、Taro Webpack React/Vue3、uni-app Vite、weapp-vite 五套完整 watch 回归通过，含测试已有的 Web、分包与回滚场景。weapp-vite 使用既有构建回退入口，不能据此宣称原生 HMR 性能。
+- 五套进程树 HMR 峰值 RSS 依次为 4242、4279、3862、2641、3059 MB。这是功能回归运行中的观测值，包含子进程，不是前后性能比较。uni-app memory build 阶段被既有 guard 跳过，不能把该阶段的 1 MB 采样当作真实构建数据。
+- uni-app 的 14 项平台产物检查通过；H5 dev 为 2 通过、1 个过滤跳过。未更新 static 快照。
+- visual 阶段发现 HBuilderX Vue3 Web 第二步停留 step 1，以及 uni-app x Web 主题不生效，停止后续 Android/iOS/Harmony 验收。完整报告位于 `.tmp/postcss-full-acceptance/2026-09-18T12-48-15-156Z/`，不是全端通过。
+
+在独立 checkout 的基线 `821f4dd4bea8c8b9426248ed56d5bb2717a6c821` 用同一锁文件复现两个 H5 失败。第一项来自 visual 脚本累积插入多个同类探针，而断言始终读第一个；复用 `e2e/hbuilderx-local/web/source.ts` 的原位替换逻辑，新增回归先失败（两个探针），修改后通过，并验证 CRLF 与原始源码恢复。`CI=1 pnpm exec tsx scripts/demo-visual-e2e-report.ts --h5-only --filter '^uni-app-vite-vue3-hbuilderx-tailwindcss-v4$' --fail-on-incomplete` 真实三步 HMR 和截图通过。没有放宽断言。
+
+第二项基线缺陷：浏览器 DOM 的变体类为 `dark_cbg-zinc-950` / `dark_cbg-_b_h3498db_B`，加载的 CSS 选择器仍为 `dark\\:bg-zinc-950` / `dark\\:bg-\\[\\#3498db\\]`，无法命中。修复位于模板/JS 编排边界：Web 保留原始类名，局部样式收集器继续消费精确候选，JS handler 继续处理模块引用。新增静态 class、绑定表达式、script/script setup、未知候选和小程序兼容回归；先复现 2 项失败，修正后 uni-app x、Web cleanup 与架构共 231 项通过。
+
+同时 issue #1091 手动示例期望蓝色 `[52, 152, 219]`，不能沿用通用“接近黑色”的预期。H5 视觉检查复用项目已配置的颜色，同时保持根节点变暗与文字变亮的断言；新用例先失败，修正后视觉脚本 26 项通过。两处为基线既有问题，单独记录，不能归因为纯 CSS 迁移，也不能更换生成器或跳过主题检查。
+
+继续真实 H5 验证后，手动主题的计算背景为 `rgb(52, 152, 219)`、文字为 `rgb(250, 250, 250)`；后续检查暴露出 visual 脚本与共享用例漂移：390px 截图视口却使用 375px 基准尺寸，属性采集遗漏 padding/边框颜色/scope，且未执行步骤的 `sourceMutation`。改为显式 375px 视口，复用已有属性读取、匹配、源文件修改和恢复函数，热更新与刷新后均检查持久断言。新增回归覆盖所有涉及源码的恢复及 CRLF，没有修改产品尺寸。
+
+第一步热更新浏览器实测为背景 `rgb(16, 41, 56)`、margin-top `800px`、width `173px`。直接 CSS 使用 `calc(var(--spacing) * 200)`，原检查只接受 `calc(0.25rem * 200)` / `800px`；增加合法变量形式并保留运行时精确尺寸断言。最后一步接受生成器保留的原始 Web selector，同时仍校验 `0.3125rem`，不接受错误尺寸；超时错误补充 URL 与具体未命中规则。
+
+迁移后五项目 static 验证：`CI=1 E2E_SKIP_OPEN_AUTOMATOR=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/mpx-tailwindcss-v4.test.ts e2e/taro-webpack-react-tailwindcss-v4.test.ts e2e/taro-webpack-vue3-tailwindcss-v4.test.ts e2e/uni-app-vite-tailwindcss-v4.test.ts e2e/weapp-vite-tailwindcss-v4.test.ts --update=none`，5 文件、23 项通过，快照无变化。没有把该 static 验证当作设备运行证据。
+
+最终定向 H5 验证通过：`CI=1 pnpm exec tsx scripts/demo-visual-e2e-report.ts --h5-only --filter '^uni-app-x-vdom-tailwindcss-v4$' --fail-on-incomplete` 在默认隔离与 v2 隔离下各完成 5 步 HMR、刷新与截图检查。此前截图失败因 800px margin 将探针推到内部滚动容器视口外；新增滚入可见区域和边界检查后，保留原像素差异门槛并通过。HBuilderX Vue3 的同入口定向复核也通过。视觉脚本与矩阵回归最终为 4 文件、63 项通过。
+
+按规则用 `CI=1 E2E_SKIP_OPEN_AUTOMATOR=1 E2E_PROJECT_FILTER='^uni-app-x-vdom-tailwindcss-v4$' pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/uni-app-x-vdom-tailwindcss-v4.test.ts -u` 重新生成该项目 static 基线。HBuilderX 5.26 生成的 `main.wxss` 仅改变框架 reset 列表中 button/checkbox/picker-view/radio/slider 的顺序和一处空白，声明未变；其余 16 个输出文件无 diff。该差异来自升级后的框架输出，作为本轮基线记录。
+
+### 真实框架性能对照
+
+在基线 `821f4dd4bea8c8b9426248ed56d5bb2717a6c821` 与迁移后 `ad8ec641be457402f916ba766b625d419473e44c` 的独立 checkout，使用同一锁文件、Node 24.18.0、pnpm 12.4.1 和各自 workspace 构建产物。命令为 `CI=1 pnpm exec node benchmark/version-compare/scripts/run-matrix.mjs --versions-file <版本列表> --build-runs 3 --hmr-runs 5 --only <五项目 key> --out <报告>`。每个版本采样 3 次构建、同一 watch 会话内 5 次更新；steady 中位数分别去掉第一次构建、第一次更新。进程树 RSS 含子进程；构建内存取三次峰值的中位数，HMR 内存为该 watch 会话峰值。
+
+两轮先后顺序互换，共 20 条项目/版本记录，无 error。首轮 Mpx 与部分 Taro React 时段并发过短暂 H5 诊断，保留样本但不用它证明收益；第二轮全程串行，无其他测试构建。下表为第二轮基线 → 当前，时间单位 ms、RSS 单位 MB：
+
+| 项目（Tailwind v4 / 微信） | 构建 steady | HMR steady | 插件构建 / HMR steady | 构建峰值 RSS | HMR 峰值 RSS |
+| --- | --- | --- | --- | --- | --- |
+| Mpx | 5376 → 5376 | 2090 → 2073 | 497 → 502 / 632 → 628 | 1637 → 1633 | 2753 → 2742 |
+| Taro Webpack React | 11569 → 11520 | 2229 → 2451 | 3767 → 3743 / 861 → 867 | 1531 → 1532 | 2247 → 2249 |
+| Taro Webpack Vue3 | 11048 → 10981 | 2752 → 2737 | 2796 → 2786 / 1366 → 1374 | 1424 → 1440 | 2179 → 2183 |
+| uni-app Vite | 3716 → 3719 | 504 → 486 | 913 → 910 / 173 → 166 | 1066 → 1057 | 1226 → 1293 |
+| weapp-vite | 2692 → 2679 | 7025 → 7012 | 未提供插件计时 | 670 → 671 | 1478 → 1531 |
+
+原始报告为 `.tmp/postcss-performance/matrix.json` 与 `matrix-reversed.json`。首轮 Taro React HMR 为 2422 → 2233，第二轮为 2229 → 2451，快慢顺序反转；uni-app 的 HMR RSS 首轮 1387 → 1223、第二轮 1226 → 1293，同样不能据此宣称内存稳定下降。真实构建与插件处理整体接近，没有稳定的全框架提速结论。此次确定改善的是前述局部热点和入口重复解析；没有放宽阈值或反复重跑筛选有利样本。
+
+性能 runner 的 weapp-vite 配置为 `watch`，本次未设置 `WEAPP_VITE_E2E_WATCH_BUILD_FALLBACK`，与完整功能回归启用构建回退的配置不同；两类数字不能混用。性能采样在此次 Web 类名修复之前完成，该修复不参与上述数据。没有等待远端 CI，完整验收结束前目标保持进行中。
 
 ## 规则评估
 
