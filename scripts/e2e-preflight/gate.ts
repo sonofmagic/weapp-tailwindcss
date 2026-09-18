@@ -1,0 +1,102 @@
+import type { ProbeId } from './types'
+import { mkdir, writeFile } from 'node:fs/promises'
+import path from 'node:path'
+import process from 'node:process'
+import { readReport, request } from './client'
+import { collectIdentity } from './io'
+
+export function stageChecks(name: string): ProbeId[] {
+  if (/visual-weapp-h5-app/i.test(name)) {
+    return ['wechat', 'hbuilderx', 'ios', 'android', 'harmony', 'web']
+  }
+  const ids: ProbeId[] = []
+  for (const id of ['ios', 'android', 'harmony'] as const) {
+    if (name.toLowerCase().includes(id)) {
+      ids.push(id)
+    }
+  }
+  if (/hbuilderx/i.test(name)) {
+    ids.push('hbuilderx')
+  }
+  if (/wechat|mini-program|\bmp\b|weapp/i.test(name)) {
+    ids.push('wechat')
+  }
+  if (/h5|web|browser/i.test(name)) {
+    ids.push('web')
+  }
+  return [...new Set(ids)]
+}
+
+export function bindingEnvironment(bindings: Record<string, Record<string, string>>) {
+  const android = bindings.android?.device
+  const ios = bindings.ios?.device
+  const harmony = bindings.harmony?.device
+  const hx = bindings.hbuilderx
+  if (!android || !ios || !harmony || !hx?.command || !hx.host || !hx.channel) {
+    throw new Error('预检缺少目标绑定。')
+  }
+  return {
+    E2E_PREFLIGHT_WECHAT_CLI: bindings.wechat!.command!,
+    E2E_HBUILDERX_CHROME_PATH: bindings.web!.hbuilderxBrowser ?? bindings.web!.command!,
+    WEAPP_VITE_E2E_RUNTIME_PROVIDER: 'devtools',
+    E2E_SKIP_OPEN_AUTOMATOR: '0',
+    E2E_SKIP_BUILD: '0',
+    DEMO_VISUAL_IDE_CLEANUP: '0',
+    HBUILDERX_CLI_PATH: hx.command,
+    HBUILDERX_HOST: hx.host,
+    HBUILDERX_CHANNEL: hx.channel,
+    E2E_HBUILDERX_ANDROID_DEVICE_ID: android,
+    E2E_HBUILDERX_ANDROID_SCREENSHOT_DEVICE_ID: android,
+    E2E_HBUILDERX_IOS_DEVICE_ID: ios,
+    E2E_HBUILDERX_IOS_SCREENSHOT_TARGET: ios,
+    E2E_HBUILDERX_HARMONY_DEVICE_ID: harmony,
+    DEMO_VISUAL_HARMONY_DEVICE_ID: harmony,
+    DEMO_VISUAL_HARMONY_SCREENSHOT_DEVICE_ID: harmony,
+    HDC_PATH: bindings.harmony!.command!,
+    E2E_HBUILDERX_HARMONY_HDC_PATH: bindings.harmony!.command!,
+    DEMO_VISUAL_HARMONY_HDC_PATH: bindings.harmony!.command!,
+    PATH: path.isAbsolute(bindings.android!.command!) ? `${path.dirname(bindings.android!.command!)}${path.delimiter}${process.env.PATH ?? ''}` : process.env.PATH ?? '',
+    RN_ANDROID_DEVICE_ID: android,
+    RN_IOS_DEVICE_ID: ios,
+  }
+}
+
+async function recordBlock(root: string, error: unknown, stage?: string) {
+  const dir = path.join(root, 'e2e', '.artifacts', 'preflight', `blocked-${Date.now()}-${process.pid}`)
+  await mkdir(dir, { recursive: true })
+  const reason = String(error)
+  await writeFile(path.join(dir, 'report.json'), JSON.stringify({ status: 'blocked', reason, testsStarted: Boolean(stage), stage }, null, 2))
+  await writeFile(path.join(dir, 'report.md'), `# 全面测试已阻断\n\n${reason}\n\n${stage ? `未启动阶段 ${stage}，停止后续调度。` : '未启动测试子进程。'}请重新执行 prepare、当前会话 computer use 和 verify。\n`)
+  return dir
+}
+
+export async function enterFullTestGate(file?: string, root = process.cwd()) {
+  try {
+    if (!file) {
+      throw new Error('缺少 --preflight-report；先执行 pnpm e2e:preflight prepare 和 verify。')
+    }
+    const report = await readReport(file)
+    const identity = await collectIdentity(root)
+    const claimed = await request<{ lease: string, bindings: Record<string, Record<string, string>> }>(report, 'claim', { identity, consumer: `${process.pid}:${root}` })
+    const env = bindingEnvironment(claimed.bindings)
+    return {
+      env,
+      async check(stage: string) {
+        try {
+          await request(report, 'check', { identity: await collectIdentity(root), lease: claimed.lease, ids: stageChecks(stage) })
+        }
+        catch (error) {
+          const dir = await recordBlock(root, error, stage)
+          throw new Error(`全面测试已阻断，停止后续调度：${String(error)}；报告：${dir}；预检：${file}`)
+        }
+      },
+      async close() {
+        await request(report, 'finish', { lease: claimed.lease })
+      },
+    }
+  }
+  catch (error) {
+    const dir = await recordBlock(root, error)
+    throw new Error(`全面测试已阻断；未启动测试子进程。${String(error)}\n报告：${dir}`)
+  }
+}

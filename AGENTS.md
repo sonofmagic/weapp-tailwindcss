@@ -11,6 +11,7 @@
 - 代码默认 TypeScript + ESM，缩进 2 空格。
 - 文件超过约 300 行优先按目录拆分（如 `feature/a.ts`），避免 `feature.a.ts`。
 - 测试默认 Vitest；修复缺陷或改行为必须补回归测试。
+- AI 启动本地全面测试（包括手动编排全仓验收）前，必须完成本轮环境预检：微信 IDE、HBuilderX、iOS/Android/Harmony 模拟器、Web 和当前会话 computer use 全部通过。失败、超时、缺证或状态不明立即阻断并在当前对话通知用户；不得用 skip、optional、旧报告或降级替代放行。入口为 `pnpm e2e:preflight prepare`，操作与恢复统一见 [多端手册](e2e/LOCAL-MULTI-PLATFORM-E2E.md)。定向单测、预检回归及普通 CI 不要求全端环境。
 - 验证默认优先本地完成：凡是能通过本地 `pnpm`/Vitest/e2e/构建命令确认的问题，必须先在本地验证并记录命令；只有用户明确要求“PR CI/CD 验证”“盯 CI/CD”或远端环境是唯一可验证来源时，才长时间等待远端 CI/CD。
 - 新增或调整 demo、issue 复现页、样式输出回归用例时，必须重新生成对应项目的 e2e static 快照/产物基线，并在验证记录中说明对应项目与命令；禁止只改源码或 IDE 用例而遗漏 static 基线。
 - 本项目禁止使用 Prettier 做格式化；不要运行 `prettier`、`pnpm format` 或其它会调用 Prettier 的格式化命令。

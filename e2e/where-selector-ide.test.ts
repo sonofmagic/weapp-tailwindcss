@@ -91,10 +91,7 @@ async function runProbe(projectName: string, screenshotName: string, selectors: 
   let miniProgram: any
   try {
     await cleanupDevTools()
-    miniProgram = await automator.launch({
-      projectPath,
-      timeout: timeoutMs,
-    })
+    miniProgram = await automator.launch({ cliPath: process.env.E2E_PREFLIGHT_WECHAT_CLI, projectPath, timeout: timeoutMs })
     const page = await miniProgram.reLaunch(pageUrl)
     await page.waitFor(1000)
     const screenshotPath = path.resolve(artifactDir, screenshotName)

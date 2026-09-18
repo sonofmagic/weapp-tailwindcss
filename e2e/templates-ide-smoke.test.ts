@@ -262,7 +262,7 @@ describe('templates ide smoke', () => {
     let miniProgram: any
     try {
       await cleanupDevTools()
-      miniProgram = await automator.launch({ projectPath, timeout: launchTimeoutMs })
+      miniProgram = await automator.launch({ cliPath: process.env.E2E_PREFLIGHT_WECHAT_CLI, projectPath, timeout: launchTimeoutMs })
       const page = await miniProgram.reLaunch(pageUrl).catch((error: unknown) => {
         if (isDevToolsPageStackTimeout(error)) {
           return undefined

@@ -65,10 +65,7 @@ async function launchMiniProgram() {
     const automator = new Launcher()
     try {
       return await withTimeout(
-        automator.launch({
-          projectPath,
-          timeout: timeoutMs,
-        }),
+        automator.launch({ cliPath: process.env.E2E_PREFLIGHT_WECHAT_CLI, projectPath, timeout: timeoutMs }),
         launchAttemptTimeoutMs,
         `root selector DevTools launch attempt ${attempt}`,
       )
