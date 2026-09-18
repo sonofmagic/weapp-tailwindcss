@@ -1,10 +1,7 @@
 import { postcss } from '../../../postcss-runtime'
+import { normalizeGeneratedSelector } from '../../../utils/apply-source'
 
 const VUE_SCOPED_SELECTOR_RE = /\.data-v-[\w-]+|\[data-v-[^\]]+\]/g
-
-function normalizeGeneratedSelector(selector: string) {
-  return selector.replace(/:not\(#\\#\)/g, '').trim()
-}
 
 function normalizeVueScopedSelector(selector: string) {
   let scoped = false

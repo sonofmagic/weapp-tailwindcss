@@ -4868,6 +4868,9 @@ importers:
       fast-check:
         specifier: ^4.10.0
         version: 4.10.0
+      lightningcss:
+        specifier: ^1.33.0
+        version: 1.33.0
       postcss-custom-properties:
         specifier: ^15.0.1
         version: 15.0.1(postcss@8.5.28)
@@ -4984,6 +4987,9 @@ importers:
 
   packages/tailwindcss-injector:
     dependencies:
+      '@weapp-tailwindcss/postcss':
+        specifier: workspace:*
+        version: link:../postcss
       '@weapp-tailwindcss/shared':
         specifier: workspace:*
         version: link:../shared
@@ -4996,9 +5002,6 @@ importers:
       magic-string:
         specifier: catalog:buildUtilities
         version: 1.4.1
-      postcss:
-        specifier: catalog:postcss85
-        version: 8.5.28
       tailwindcss:
         specifier: catalog:tailwindcss4
         version: 4.3.3

@@ -42,6 +42,11 @@
       "types": "./dist/native.d.ts",
       "import": "./dist/native.js",
       "require": "./dist/native.cjs"
+    },
+    "./experimental/lightningcss": {
+      "types": "./dist/experimental/lightningcss/index.d.ts",
+      "import": "./dist/experimental/lightningcss/index.js",
+      "require": "./dist/experimental/lightningcss/index.cjs"
     }
   },
   "main": "./dist/index.cjs",
@@ -64,6 +69,9 @@
       ],
       "native": [
         "./dist/native.d.ts"
+      ],
+      "experimental/lightningcss": [
+        "./dist/experimental/lightningcss/index.d.ts"
       ]
     }
   },
@@ -83,6 +91,14 @@
     "release": "pnpm publish",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
+  },
+  "peerDependencies": {
+    "lightningcss": "^1.33.0"
+  },
+  "peerDependenciesMeta": {
+    "lightningcss": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@csstools/css-color-parser": "catalog:csstools",
@@ -110,6 +126,7 @@
   "devDependencies": {
     "@csstools/postcss-is-pseudo-class": "^6.0.0",
     "fast-check": "^4.10.0",
+    "lightningcss": "^1.33.0",
     "postcss-custom-properties": "^15.0.1"
   }
 }

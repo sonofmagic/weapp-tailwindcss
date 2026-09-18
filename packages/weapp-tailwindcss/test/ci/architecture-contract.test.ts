@@ -159,6 +159,41 @@ describe('架构边界契约', () => {
     expect(readPackage('packages/react-native/package.json').dependencies?.postcss).toBeUndefined()
   })
 
+  it('isolates experimental transforms and injector orchestration', async () => {
+    const experimentalEntry = path.join(repoRoot, 'packages/postcss/src/experimental/lightningcss/index.ts')
+    const experimental = await build({
+      entryPoints: [experimentalEntry],
+      bundle: true,
+      packages: 'external',
+      platform: 'node',
+      write: false,
+      metafile: true,
+    })
+    const imports = Object.values(experimental.metafile.outputs).flatMap(output => output.imports.map(item => item.path))
+    expect(imports).not.toContain('lightningcss')
+    const stable = await build({
+      entryPoints: [path.join(repoRoot, 'packages/postcss/src/index.ts')],
+      bundle: true,
+      packages: 'external',
+      platform: 'node',
+      write: false,
+      metafile: true,
+    })
+    const stableFiles = Object.keys(stable.metafile.inputs).map(file => path.resolve(file))
+    expect(stableFiles).not.toContain(experimentalEntry)
+    expect(stableFiles).not.toContain(path.join(repoRoot, 'packages/postcss/src/native.ts'))
+    expect(Object.values(stable.metafile.outputs).flatMap(output => output.imports.map(item => item.path))).not.toContain('lightningcss')
+    for (const name of ['options', 'selector-transform', 'selector-utils']) {
+      const source = fs.readFileSync(path.join(repoRoot, 'packages/experimental/src/lightningcss', name + '.ts'), 'utf8')
+      expect(source).toContain('@weapp-tailwindcss/postcss/experimental/lightningcss')
+      expect(source).not.toMatch(/function |=>/)
+    }
+    const injector = fs.readFileSync(path.join(repoRoot, 'packages/tailwindcss-injector/src/postcss.ts'), 'utf8')
+    expect(injector).toContain('injectTailwindDirectives')
+    expect(injector).not.toMatch(/root\.(insertAfter|prepend)|walkAtRules/)
+    expect(readPackage('packages/tailwindcss-injector/package.json').dependencies?.postcss).toBeUndefined()
+  })
+
   it('uses catalogs for shared compiler and runtime utility versions', () => {
     const workspace = fs.readFileSync(path.join(repoRoot, 'pnpm-workspace.yaml'), 'utf8')
     expect(workspace).toContain('compilerUtilities:')

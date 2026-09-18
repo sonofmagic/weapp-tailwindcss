@@ -3,6 +3,7 @@ import { filterTailwindV4ApplyOnlyGeneratedCss } from '../src/compat/tailwindcss
 import { preferScopedGeneratedCssRules, preferScopedGeneratedCssRulesRoot } from '../src/compat/tailwindcss-v4/user-css/scoped-rules'
 import { analyzeApplyOnlySource } from '../src/compat/tailwindcss-v4/user-css/user-layers'
 import { postcss } from '../src/postcss-runtime'
+import { collectApplyOnlyCssSelectorsRoot, filterApplyOnlyGeneratedCss } from '../src/generator-plugin/apply-only'
 
 describe('Tailwind v4 user CSS ownership and AST reuse', () => {
   afterEach(() => vi.restoreAllMocks())
@@ -26,6 +27,20 @@ describe('Tailwind v4 user CSS ownership and AST reuse', () => {
     )
     expect(output).toBe('.card[data-v-a]{display:flex}')
     expect(parse).toHaveBeenCalledTimes(2)
+  })
+
+  it('shares apply source analysis while retaining the two filtering contracts', () => {
+    const source = '.card:not(#\\#){@apply flex}.plain{color:red}'
+    const root = postcss.parse(source)
+    const before = root.toString()
+    const parse = vi.spyOn(postcss, 'parse')
+    const selectors = collectApplyOnlyCssSelectorsRoot(root)
+    expect(selectors).toEqual(new Set(['.card']))
+    expect(parse).not.toHaveBeenCalled()
+    expect(root.toString()).toBe(before)
+    const css = '/*keep*/.card{display:flex}.card:hover{color:red}.other{color:blue}'
+    expect(filterApplyOnlyGeneratedCss(css, selectors)).toBe('/*keep*/.card{display:flex}')
+    expect(filterTailwindV4ApplyOnlyGeneratedCss(css, source)).toBe('.card{display:flex}.card:hover{color:red}')
   })
 
   it('requires the same context, declarations and complete selector coverage', () => {

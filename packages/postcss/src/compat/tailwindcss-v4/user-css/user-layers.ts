@@ -1,4 +1,5 @@
 import { postcss } from '../../../postcss-runtime'
+import { analyzeApplyOnlySource } from '../../../utils/apply-source'
 
 export function splitUserCssLayerBlocks(source: string) {
   if (!source.includes('@layer')) {
@@ -111,35 +112,7 @@ export function extractGeneratedCssForUserLayerSelectors(css: string, userLayerS
   }
 }
 
-export function normalizeGeneratedSelector(selector: string) {
-  return selector.replace(/:not\(#\\#\)/g, '').trim()
-}
-
-/** 一次解析同时取得 apply 选择器和纯 apply 输入判定。 */
-export function analyzeApplyOnlySource(source: string) {
-  const selectors = new Set<string>()
-  let hasApplyRule = false
-  let hasNonApplyRule = false
-  try {
-    postcss.parse(source).walkRules((rule) => {
-      if (!rule.nodes?.some(node => node.type === 'atrule' && node.name === 'apply')) {
-        hasNonApplyRule = true
-        return
-      }
-      hasApplyRule = true
-      for (const selector of rule.selectors ?? [rule.selector]) {
-        const normalized = normalizeGeneratedSelector(selector)
-        if (normalized) {
-          selectors.add(normalized)
-        }
-      }
-    })
-  }
-  catch {
-    return { selectors, onlyApply: false }
-  }
-  return { selectors, onlyApply: hasApplyRule && !hasNonApplyRule }
-}
+export { analyzeApplyOnlySource, normalizeGeneratedSelector } from '../../../utils/apply-source'
 
 export function collectApplyOnlySourceSelectors(source: string) {
   return analyzeApplyOnlySource(source).selectors

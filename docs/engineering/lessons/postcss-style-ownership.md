@@ -3,6 +3,7 @@ status: partial
 issue: https://github.com/sonofmagic/weapp-tailwindcss/pull/1216
 baseline: 821f4dd4bea8c8b9426248ed56d5bb2717a6c821
 regressions:
+  - packages/postcss/test/tailwind-directive-injection.test.ts
   - packages/postcss/test/native-compiler.test.ts
   - packages/postcss/test/tailwind-v4-user-css.test.ts
   - packages/postcss/test/style-transform-ownership.test.ts
@@ -45,6 +46,9 @@ regressions:
 | PostCSS `source-scan/` | CSS 候选提取、inline 展开与入口指纹；配置文件名通过调用方回调取得 |
 | PostCSS `syntax/` 与 `utils/css-source-trace.ts` | import 请求改写、CSS 合法性判断、源码追踪注释 |
 | 主包 | 平台与选项判断、bundle 遍历、产物写回、模块及文件身份、SFC 提取、运行时 classSet 策略 |
+| PostCSS `/native` | CSS 到原生样式规则转换，不处理 manifest ID 或运行时 |
+| PostCSS `/experimental/lightningcss` | 实验 AST/选择器转换，不加载 LightningCSS 引擎，不从稳定入口导出 |
+| injector | 配置、源文件过滤、WXML 依赖追踪；纯指令插入调用 PostCSS |
 
 主包保留原导入路径的 facade。reference/import 由主包提供路径解析回调，PostCSS 包只处理声明；构建插件仍通过 bundle/loader 等原有 API 返回结果。没有新增产物阶段源码读取或输出目录写入。
 
@@ -102,6 +106,32 @@ regressions:
 热点耗时约降低 57%。此前同配置样本为 16.65 ms / 7.11 ms。该结果只证明此输入上的热点改善，不代表真实框架构建/HMR 或峰值内存已改善。持久 benchmark 入口为 `pnpm --filter @weapp-tailwindcss/postcss exec vitest bench test/tailwind-v4-user-css.bench.ts --run`。
 
 ## 适用边界
+
+进一步审计了主包剩余的 parse/walk，保留以下编排操作：
+
+| 入口 | 保留原因 |
+| --- | --- |
+| `compiler/artifact.ts` | 将输入转换为带来源、顺序和 scope 的 fragment，并克隆 artifact；不执行 CSS 兼容转换 |
+| `tailwindcss/source-scan.ts` | 从 Root 读取 source 后调用文件/glob 解析；CSS 参数解析已共用 PostCSS |
+| `v4-engine/source.ts` | 读取本地 import 图、配置文件身份与缓存，主题分析调用 PostCSS |
+| `generator/css-compat.ts` | 按 import 解析已安装 theme 文件；主题插入和转换调用 PostCSS |
+| `generator/scan-sources.ts` | 读取 source 指令并解析项目根与候选扫描范围 |
+| `generator-css/source-files.ts` | SFC 与本地样式依赖扫描，文件身份和解析策略留在扫描层 |
+| `configured-css-entry-observer.ts` | 记录模块/import 是否进入 Vite 构建图，管理诊断生命周期 |
+| `root-style-output.ts`、`entry-style-graph.ts` | 读取产物 import 边、检测环，并通过 bundle asset 组装引用 |
+| `generator-css/pipeline.ts` | 每次调用创建共享 Root，串联 PostCSS 转换与 Tailwind 生成 |
+| Webpack `memory-trace.ts` | 只读观测是否包含 preflight，服务内存诊断 |
+| uni-app x `vite.ts` | 对已变换文本生成 sourcemap，没有额外 CSS 处理插件 |
+
+非 AST 搜索还检查了 source-resolver、uni-app x 和 v4 source 相关字符串处理。剩余操作用于模块 query/路径、SFC/模板类名、alias 对应的 apply 输入组装、产物引用和 fallback theme 数据。它们不拥有 CSS parser 或样式兼容变换。CLI 调用 LightningCSS 的优化/map API 属于外部编译器编排，没有自定义 AST visitor；实验入口同样保留引擎加载，visitor 实现已迁移。独立 `postcss-calc` 是 PostCSS 依赖的计算器，不反向依赖主包；不能机械搬回造成循环依赖。
+
+私有 `test-helper` 使用官方编译器建立测试对照，theme-transition 的 scripts 只生成测试/开发资产；这些不是生产 CSS 管线，本轮没有把测试对照改成调用被测转换。它们仍有测试辅助用的注释删除或声明拼装，因此不能把本轮描述为“仓库内任何 CSS 操作均只剩一个目录”。
+
+PostCSS 内部已共用 apply 选择器分析和 specificity placeholder 归一化。generator 的精确筛选与 v4 的后缀筛选、注释处理保持不同。根入口兼容导出集中到 compat barrel，构建前后 328 个运行时导出完全一致；native 与实验子入口保持隔离。
+
+本轮额外验证：injector 迁移前后 29 项均通过，LightningCSS 对照 20 项均通过且快照未更新；新增指令锚点、顺序和幂等回归 3 项通过，架构回归 7 项通过。两包 JS/声明构建通过；injector 的声明构建曾输出非致命 emit 提示，最终声明文件存在。PostCSS 扩大回归首次因新测试重复转义 specificity placeholder 失败（867 通过、1 失败、3 跳过）；修正测试输入后该文件 5 项通过。没有放宽实现或更新快照。
+
+最终 PostCSS 回归为 92 文件、868 通过、3 个既有跳过；主包 generator、rpx warning、v4 engine 与架构定向回归为 14 文件、338 通过。PostCSS JS/声明构建和 ESLint 通过。规则检查为 48 个规则、41 份文档、310 个命令入口、0 errors，repoctl 已识别五个直接受影响公开包的中文 patch intent。
 
 React Native 的 CSS 到样式对象转换已迁入独立 `/native` 子入口。Native 包继续持有 manifest ID、Babel/Metro 和运行时接口。迁移前后 `CI=1 pnpm --filter @weapp-tailwindcss/react-native test --update=none` 均为 5 文件、36 通过；`CI=1 pnpm --filter @weapp-tailwindcss/postcss exec vitest run test/native-compiler.test.ts --update=none` 为 4 通过，覆盖精确类名、important/顺序、告警和调用间独立性。两包构建及类型生成通过；架构回归为 6 通过，新增浏览器 bundle 依赖闭包检查，确认 runtime 仅包含自身代码、无编译依赖。
 
