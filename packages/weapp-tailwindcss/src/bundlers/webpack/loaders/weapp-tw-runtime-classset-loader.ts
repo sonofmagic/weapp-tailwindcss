@@ -4,8 +4,7 @@ import { Buffer } from 'node:buffer'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { postcss } from '@weapp-tailwindcss/postcss'
-import { removeUnsupportedCascadeLayers } from '@/tailwindcss/remove-unsupported-css'
+import { normalizeTailwindV4RuntimeCss } from '@weapp-tailwindcss/postcss'
 import { isWebpackCssLoaderRuntimeSource } from '../shared/css-loader-runtime'
 import { getWebpackLoaderRuntime } from './runtime-registry'
 import { registerWebpackWatchContext, registerWebpackWatchFile } from './watch-dependencies'
@@ -21,30 +20,13 @@ function isPromiseLike<T>(value: unknown): value is PromiseLike<T> {
 function normalizeRuntimeCssSource(source: string | Buffer) {
   if (Buffer.isBuffer(source)) {
     const css = source.toString('utf8')
-    return shouldCleanRuntimeCss(css) ? Buffer.from(cleanRuntimeCss(css)) : source
+    return shouldCleanRuntimeCss(css) ? Buffer.from(normalizeTailwindV4RuntimeCss(css)) : source
   }
-  return shouldCleanRuntimeCss(source) ? cleanRuntimeCss(source) : source
+  return shouldCleanRuntimeCss(source) ? normalizeTailwindV4RuntimeCss(source) : source
 }
 
 function shouldCleanRuntimeCss(css: string) {
   return !isWebpackCssLoaderRuntimeSource(css) && (css.includes('@layer') || css.includes('@theme'))
-}
-
-function cleanRuntimeCss(css: string) {
-  const root = postcss.parse(css)
-  removeUnsupportedCascadeLayers(root)
-  removeUnsupportedThemeKeyframes(root)
-  return root.toString()
-}
-
-function removeUnsupportedThemeKeyframes(root: postcss.Root) {
-  root.walkAtRules('theme', (themeRule) => {
-    themeRule.walkAtRules((atRule) => {
-      if (atRule.name.startsWith('-') && atRule.name.endsWith('keyframes')) {
-        atRule.remove()
-      }
-    })
-  })
 }
 
 function resolveOriginalCssSource(file: string, source: string | Buffer) {

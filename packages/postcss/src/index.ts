@@ -23,6 +23,7 @@ export {
   removeGeneratedSelectorCompatCss,
   removeTailwindApplyRules,
 } from './compat/legacy-css'
+export { normalizeLegacyCompatCssSource, removeMiniProgramContainerCompatCss } from './compat/legacy-css/source-cleanup'
 export { transformLynxCssCompat } from './compat/lynx-css'
 export {
   consumeCascadeLayers,
@@ -45,10 +46,19 @@ export {
   stripMiniProgramCssSpecificityPlaceholders,
   unwrapUnsupportedCascadeLayers,
 } from './compat/mini-program-css'
+export { normalizeMiniProgramGeneratorCssSource, normalizeMiniProgramImportShell, removeMiniProgramOutputImports, removeSelfMiniProgramOutputImports } from './compat/mini-program-css/output-import-shell'
 export {
   normalizeMiniProgramPrefixedDeclaration,
   removeUnsupportedMiniProgramPrefixedAtRule,
 } from './compat/mini-program-prefixes'
+export { hasNonCommentCss, isCssImportOnly, removeCommentOnlyAtRules, restoreProcessedCssImports } from './compat/processed-css/cleanup'
+export { composeProcessedCssSources } from './compat/processed-css/composition'
+export { removeTailwindEntryDirectivesFromCss } from './compat/processed-css/entry-directives'
+export { collectImportedCssFiles, isStyleImportRequest, normalizeInjectableCssWithImports } from './compat/processed-css/imports'
+export { removeCssCoveredByRootStyleSources, removeScopedTailwindPreflightCss } from './compat/scoped-css/cleanup'
+export { collectRootScopedComparableCssCoverage, type ComparableCssCoverage, isRuleCoveredByRootCss } from './compat/scoped-css/coverage'
+export { removeCssRulesCoveredBySources } from './compat/scoped-css/covered-rules'
+export { hasScopedMiniProgramTailwindContentInitRule, hasScopedUniAppWebTailwindPreflightRule, hasUnscopedMiniProgramTailwindPreflightRule, hasVueScopedAttr, isLikelyTailwindGlobalRule, isLikelyTailwindLayerOrderAtRule, isLikelyTailwindPropertyAtRule, isScopedMiniProgramTailwindContentInitRule, isScopedUniAppWebTailwindPreflightRule, isScopedUniversalTailwindPreflightRule, isUnscopedMiniProgramTailwindPreflightRule, normalizeCssSignatureValue } from './compat/scoped-css/predicates'
 export {
   convertTailwindcssRpxDeclarationsToRem,
   convertTailwindcssRpxDeclarationToRem,
@@ -67,7 +77,68 @@ export {
   transformTailwindV4WebRpxCss,
 } from './compat/tailwindcss-v4/generated-output'
 export { normalizeTailwindcssV4InfinityRadiusCss } from './compat/tailwindcss-v4/infinity-radius'
+export { includesTailwindV4PreflightDirective, isTailwindV4CssImportParam, isTailwindV4PreflightImportParam } from './compat/tailwindcss-v4/preflight-imports'
 export { removeTailwindV4PreflightImports, removeUnsupportedThemeVendorKeyframes } from './compat/tailwindcss-v4/theme-source'
+export { normalizeTailwindV4RuntimeCss } from './compat/tailwindcss-v4/theme-source'
+export {
+  filterTailwindV4ApplyOnlyGeneratedCss,
+  normalizeEmptyTailwindCustomVariants,
+} from './compat/tailwindcss-v4/user-css/apply-only'
+export {
+  removeTailwindApplyAtRules,
+  removeTailwindSourceMediaBlocks,
+  terminateTailwindSourceAtRulesBeforeNextDirective,
+} from './compat/tailwindcss-v4/user-css/at-rules'
+export { collectRawSourceClassSelectors, normalizeCssClassSelector } from './compat/tailwindcss-v4/user-css/class-selectors'
+export { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindNonRootGenerationDirectives, hasTailwindRootDirectives, hasTailwindRootImportDirectives, hasTailwindSourceDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceDirectives, normalizeTailwindSourceForGenerator, parseImportRequest, removeTailwindSourceDirectives, resolveCssEntrySource } from './compat/tailwindcss-v4/user-css/directives'
+export { extractConfigRequestFromSource, extractTailwindDirectiveLines, extractTailwindSourceForPostcssFallback } from './compat/tailwindcss-v4/user-css/directives/fallback'
+export { composeFrameworkProcessedCss } from './compat/tailwindcss-v4/user-css/framework-composition'
+export { normalizeFrameworkProcessedUserCss } from './compat/tailwindcss-v4/user-css/framework-source'
+export {
+  createGeneratedThemeDeclarationResolver,
+  type GeneratedThemeDeclarationResolver,
+  removeBalancedAtRuleBlock,
+  removeTailwindV4GeneratedUserCssArtifacts,
+  removeTailwindV4GeneratorAtRulesFallback,
+  TAILWIND_V4_GENERATOR_AT_RULES,
+} from './compat/tailwindcss-v4/user-css/generated-cleanup'
+export { isCssAlreadyRepresentedByMarkers } from './compat/tailwindcss-v4/user-css/identity'
+export { createCssAppend, GENERATOR_PLACEHOLDER_MARKER_GLOBAL_RE, GENERATOR_PLACEHOLDER_MARKER_RE, hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, removeTailwindGeneratedCssByBanner, splitGeneratorPlaceholderCssBySourceOrder, splitTailwindGeneratedCssByBanner, splitTailwindV4GeneratedCss, splitTailwindV4GeneratedCssBySourceOrder, stripGeneratorPlaceholderMarkers, stripTailwindBanner, stripTailwindBanners, TAILWIND_BANNER_GLOBAL_RE, TAILWIND_BANNER_PREFIX_RE, TAILWIND_BANNER_RE, TAILWIND_GENERATED_CSS_MARKER_RE, TAILWIND_V4_BANNER_RE, VITE_MARKER_RE } from './compat/tailwindcss-v4/user-css/markers'
+export { deduplicateGeneratedCssRules } from './compat/tailwindcss-v4/user-css/rule-deduplication'
+export { preferScopedGeneratedCssRulesRoot } from './compat/tailwindcss-v4/user-css/scoped-rules'
+export {
+  preferScopedGeneratedCssRules,
+} from './compat/tailwindcss-v4/user-css/scoped-rules'
+export {
+  collectBareSelectorUserCss,
+  isCommentOnlyCss,
+  removeMiniProgramHoverSelectors,
+  removeMiniProgramInteractiveSelectors,
+  type RemoveMiniProgramInteractiveSelectorsOptions,
+  removeProcessedMiniProgramUnsupportedCss,
+  removeTailwindV4GeneratorAtRules,
+  stripTailwindSourceMediaFragments,
+  stripUnmatchedTailwindSourceMediaCloseFragments,
+  unwrapMiniProgramCascadeLayers,
+} from './compat/tailwindcss-v4/user-css/source-fragments'
+export { transformGeneratorUserCss } from './compat/tailwindcss-v4/user-css/transform'
+export {
+  extractMarkedUserLayerComponentsCss,
+  mergeMarkedUserLayerComponentsCss,
+  reorderMarkedUserLayerComponentsCss,
+  wrapUserLayerComponentsCss,
+} from './compat/tailwindcss-v4/user-css/user-layer-order'
+export { analyzeApplyOnlySource } from './compat/tailwindcss-v4/user-css/user-layers'
+export {
+  collectApplyOnlySourceSelectors,
+  extractGeneratedCssForUserLayerSelectors,
+  hasOnlyApplyBackedSourceRules,
+  hasUserCssLayerBlocks,
+  isEmptyCustomVariantBlock,
+  normalizeGeneratedSelector,
+  removeCssComments,
+  splitUserCssLayerBlocks,
+} from './compat/tailwindcss-v4/user-css/user-layers'
 export {
   normalizeUniAppXImportantApplyForSass,
   restoreUniAppXImportantApplyMarker,
@@ -85,12 +156,20 @@ export {
   cssToClassStyleValue,
   expandCssApplySourcesToStyleValue,
 } from './compat/uni-app-x-style-value'
+export { createUniAppXHarmonyApplyCssExpander } from './compat/uni-app-x/harmony-apply'
+export { rewriteUniAppXStyleReferences } from './compat/uni-app-x/reference-paths'
 export {
   type NormalizedWebCssCompatOptions,
   normalizeWebCssCompatOptions,
   transformWebCssCompat,
   transformWebCssSafeSelectors,
 } from './compat/web-css'
+export { collectWebpackBareSelectorUserCss } from './compat/webpack-css/bare-selectors'
+export { isOnlyWebpackTailwindGeneratedPreflightCss, parseWebpackCssLayerNames, removeWebpackTailwindGeneratedAssetCss } from './compat/webpack-css/generated-cleanup'
+export { collectGeneratedCssClassCandidates, collectWebpackAssetUserCssMarkers, collectWebpackCssRuleIdentityMarkers, hasAdditionalWebpackAssetUserCssMarkers, unescapeCssIdentifier } from './compat/webpack-css/identity'
+export { dedupeMiniProgramPreflightSelectorRules, ensureWebpackMiniProgramTwContentInit, hasMiniProgramPreflightSelector, removeMiniProgramPreflightSelectorRule, removeTailwindV4StandaloneHostPreflightRule } from './compat/webpack-css/preflight'
+export { isWebpackCssSourceRepresentedInAsset, isWebpackTailwindImportRequest, normalizeWebpackUserCssFallbackSource, removeWebpackGeneratorNonTailwindImports, removeWebpackUserCssFallbackImports } from './compat/webpack-css/user-source'
+export { hasWebpackTailwindSourceDirectives } from './compat/webpack-css/user-source'
 export {
   compileCssMacroConditionalComments,
   CSS_MACRO_STYLE_OPTIONS_MARKER,
@@ -136,6 +215,7 @@ export {
   filterApplyOnlyGeneratedCss,
   filterApplyOnlyGeneratedCssRoot,
 } from './generator-plugin/apply-only'
+
 export {
   analyzeTailwindCssDirectives,
   isTailwindCssGenerationDirective,
@@ -183,6 +263,7 @@ export {
   type ResolvedPipelineNode,
   type StyleProcessingPipeline,
 } from './pipeline'
+
 export {
   applyConfiguredCssCalc,
   type ApplyConfiguredCssCalcOptions,
@@ -213,9 +294,11 @@ export type {
   Root,
   Rule,
 } from './postcss-runtime'
+
 export { createInjectPreflight } from './preflight'
 export { selectorContainsPseudoClass } from './selectorParser/pseudo'
 export { internalCssSelectorReplacer } from './shared'
+
 export {
   collectCssInlineSourceCandidates,
   createSourceScanPattern,
@@ -258,6 +341,8 @@ export {
 } from './syntax'
 export * from './types'
 export { collectCustomPropertyValues, mergeCustomPropertyValues } from './utils/custom-property-values'
+export { type BundlerGeneratedCssMarkerBlock, createBundlerGeneratedCssEndMarker, createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker, parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from './utils/generated-css-marker'
+
 export {
   containsCssAfterMinify,
   createCssRuleMatcher,
