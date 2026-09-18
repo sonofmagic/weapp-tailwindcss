@@ -3595,56 +3595,56 @@ importers:
   demo/uni-app-vite-tailwindcss-v4:
     dependencies:
       '@dcloudio/uni-app':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@dcloudio/types@3.4.31)(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@dcloudio/types@3.4.31)(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-app-harmony':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-app-plus':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-components':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-h5':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-mp-alipay':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-mp-baidu':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@dcloudio/types@3.4.31)(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@dcloudio/types@3.4.31)(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-mp-harmony':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-mp-jd':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-mp-kuaishou':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-mp-lark':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-mp-qq':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-mp-toutiao':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-mp-vue':
-        specifier: 3.0.0-5000320260312001
-        version: 3.0.0-5000320260312001
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001
       '@dcloudio/uni-mp-weixin':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-mp-xhs':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-quickapp-webview':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       tailwindcss-core-plugins-extractor:
         specifier: workspace:*
         version: link:../../packages/tailwindcss-core-plugins-extractor
@@ -3659,17 +3659,17 @@ importers:
         specifier: ^3.4.8
         version: 3.4.31
       '@dcloudio/uni-automator':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(jest-environment-node@27.5.1)(jest@27.0.4(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(jest-environment-node@27.5.1)(jest@27.0.4(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-cli-shared':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       '@dcloudio/uni-stacktracey':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001
       '@dcloudio/vite-plugin-uni':
-        specifier: 3.0.0-5010520260709002
-        version: 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
+        specifier: 3.0.0-5020620260917001
+        version: 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
       '@egoist/tailwindcss-icons':
         specifier: catalog:egoistTailwindcssIcons
         version: 1.9.2(tailwindcss@4.3.3)
@@ -8175,32 +8175,32 @@ packages:
   '@dcloudio/types@3.4.31':
     resolution: {integrity: sha512-YAqOfJpcAwMs4Fagv2oP+iRHSCJOJoN8JUYyoRD6gwfANhsI9QaYj4/j22FzSopfHkqjX50B7YkG/VRAyz9OnA==}
 
-  '@dcloudio/uni-app-harmony@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-OnCEcteM+W1tQqWJLqJ/WVh9rAblCHLcVmKHYE63ACI4Ja38v2WTVNeiX96xTJLym602t7IUTlUKUXW+jPbKHQ==}
+  '@dcloudio/uni-app-harmony@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-BAinn7oOA4lxb8n7ze90BcgFs7x9Aght6CIcu3ITKnYoGpDUNfspwVzntoKYwueZDyOOPL5KThBzhsGhsuH20g==}
 
   '@dcloudio/uni-app-plus@3.0.0-5000720260410001':
     resolution: {integrity: sha512-8i8I0d2JwrbP9ShRNmmuiw2sC3aaUciTx1Uqqzx6OwKZm4zwAiUzp4dbWadyKxjdnuwzfNF4v664hAgLOoiUdg==}
 
-  '@dcloudio/uni-app-plus@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-lnMQgqnHYt+VRZ7LH+Tbi05SF6NuQYJ8KS08YDbdSyvyVXoUba3P7RLAYxNMtQqLqHjfnd+fzq1qI5FyW5wMVQ==}
+  '@dcloudio/uni-app-plus@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-EO6DDnMIQ/4t5OjOgwIfE/qtvJHIqDTGmu/Ui549TmQ488pAErM9i5WJTOjhOhX2xe1cOUEi6sP9yYETG/u+DQ==}
 
   '@dcloudio/uni-app-uts@3.0.0-5000720260410001':
     resolution: {integrity: sha512-SRtr9V7oSSWT3gmD72co36XLcUQrKWxA5YN9LWs6zfDaaOLHHNDnzDaf/Ozn57p+ixpfusawvJd06bS3r65Bag==}
 
-  '@dcloudio/uni-app-uts@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-XWHPaQZ1kROsUrfBGvakfyGucalLed0sxqsxOXfaYnf1EvuDKsdzD5NPbRYVYzKT9IpxJto7x9MsOiguu/v6kQ==}
+  '@dcloudio/uni-app-uts@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-DbeJww1g89ABUB+XBEN3Cru8n+QKtei/i7mtJLEac+Ko1Mi0EeZNMoYIDf011MAsdqyS3XMQ76DXvHT8GGgt+g==}
 
   '@dcloudio/uni-app-vite@3.0.0-5000720260410001':
     resolution: {integrity: sha512-qJJBIzBzhe9ogG3CTIANru5cBxGwHt4Qv+izrBD3bff03Zxq91z5LULcY+HrlFgRIDl7p7oCFpMyMQdEaIeDGw==}
 
-  '@dcloudio/uni-app-vite@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-GH4KpubRz8JjOUe0gVYN3RQJpr/1vVMd19umsraKBLP4dnGrMeeYpufT3Uxw0nuYse/R2Pupc96BxbRJvKhH4Q==}
+  '@dcloudio/uni-app-vite@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-Y2BfXC69jyrkWh7jDoFh9lCyyzp1TozEBG23EU4ytEUGF7YzwwHxE19pHZYYAULKpVGem8pQT4pLfMtG2C5ySA==}
 
   '@dcloudio/uni-app-vue@3.0.0-5000720260410001':
     resolution: {integrity: sha512-o/svSkAGrwnPOnM/WQfpLyiCt8sgogzubow9ze+h7f50kcTSTgJl1130Kk56D+YCLZBKMwXYXHWXyEZj+haYCA==}
 
-  '@dcloudio/uni-app-vue@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-3Qo327MnpffW+NqidysJi/1hOuyETLV0Iu4X3MaKnNYo8BFl0ihHlO7q9g1X3WkUQyHNnfwLgNGTrQ9kLM6L0w==}
+  '@dcloudio/uni-app-vue@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-IKEe0RWivbcR8V2X6TbjT2VKap48ktEmxmKc9CRr1Xtp9jRa4Sy+odi5WE2rE1yoJY2wCCcXevWjL58gw0B67A==}
 
   '@dcloudio/uni-app-x@0.7.114':
     resolution: {integrity: sha512-Kh6RVYmzx1mW9PSXXZmYJt2kanG7mRwKy6dQ0wH/D0EjHgWHsNbXuRQ6++xwc7KOChkoqnRWr68AiQTP1CcT0Q==}
@@ -8210,8 +8210,8 @@ packages:
     peerDependencies:
       '@dcloudio/types': 3.4.28
 
-  '@dcloudio/uni-app@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-yMfuGjj52VIgdG1VJ/YpQus3TyVnlc1JYt7rcqGfsSG+pPI7M/kTKSEIsXZ2acEPKH6hHYX/DC3k4wPdwf18Ag==}
+  '@dcloudio/uni-app@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-VKhrNv2J66/Bh0N/bru1MOfTP380ChP/MRkFR32qs/T7ORfnnAGZjHhaVcMhVxfRcehjZFBXYIYPO/GG4cSflA==}
     peerDependencies:
       '@dcloudio/types': 3.4.31
 
@@ -8220,8 +8220,8 @@ packages:
     peerDependencies:
       '@dcloudio/types': 3.4.31
 
-  '@dcloudio/uni-automator@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-9wIp9LnBcSzRDVn71LH3N+krXrZXZZDwGBaFUvHR09/J+cKUGSw246gRLwkgxX7U0rgDvD6S2JuZhZor1hlxnw==}
+  '@dcloudio/uni-automator@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-SwRRGrUASHO8Wyjf6+VaVojrpG2n6b654foeQL2vAYuocZB0NsUS8MibjwR6df/v0/yTTGqW7PVNs4O0WXSKFg==}
     peerDependencies:
       jest: 27.0.4
       jest-environment-node: 27.5.1
@@ -8230,8 +8230,8 @@ packages:
     resolution: {integrity: sha512-UW0eEjO+GgmHixnSfBJxpI1fTW+0VgyjPTFUL+L7zNtIpI8eLEQHrGEbAC8IIOi4hAkVN3riDk80Dg2i3KSGqA==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
-  '@dcloudio/uni-cli-shared@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-2zZvEQ5fAZpmWDR+u2BcKnuYNrzoWtHUgUG7ZtGaLwMJSowSOywHZRR/dokKuW89Ll5pFCJC32Q85ECkaq0y5A==}
+  '@dcloudio/uni-cli-shared@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-9qzRa7Xav4rEOt3Ixmj8E7Gm+m+L5tQ01KHAajEJptK5IJ7YvHjw7DVnzdv8D4PfKZZdWqmALUMN1vDgjFt2oQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
   '@dcloudio/uni-cli-shared@3.0.0-alpha-5020220260725001':
@@ -8241,8 +8241,8 @@ packages:
   '@dcloudio/uni-cloud@3.0.0-5000720260410001':
     resolution: {integrity: sha512-VGM8jhB3ol80mjvpSf+9gZApkYc2QDEk12ODTQKdQZbmjR33K7eqt8mpefErNYumnRmdQ4iL4oPArJ+O4GZpog==}
 
-  '@dcloudio/uni-cloud@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-/AGi0uKwEZzL58rPNjHTYPlH0TN5903ldyOJYMYWhwTvDftfAvoVI4rFrAmDTeVxF/eEsTSNr73Sh+gw0qTC2g==}
+  '@dcloudio/uni-cloud@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-yIjFG4jkj7FnwAqSBpzR1SIw7pU23f/ZbMjHhc1EMFJcEhtRqGCKenbjR8x8a2Qg2OJ3sh51w6HvY8uxUOKLTg==}
 
   '@dcloudio/uni-cloud@3.0.0-alpha-5020220260725001':
     resolution: {integrity: sha512-J3O+IsOk4x/mLu8dObqSGsEGzDhlyYZPEDzDAjwlZvQvzqhw3EUn6vSuzDW2XC5aD+sR52sdJDZleleFsPua2Q==}
@@ -8250,8 +8250,8 @@ packages:
   '@dcloudio/uni-components@3.0.0-5000720260410001':
     resolution: {integrity: sha512-ZwGKA1/mucO6SufgfN6JL1MFmeXFaEAoZUbXck8mvk/vwVduZHJeocWousF6bJtGMm23FM5ItG31KjcnwQpPjQ==}
 
-  '@dcloudio/uni-components@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-Pj8bPRjPwUKvFt3JOj1HDfEyz1Pejnq2lpJ3MWGnWQlATZgESfruWcglGt1+D8KJolrzodyXk8ffSXBEkn6moA==}
+  '@dcloudio/uni-components@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-bNC0qO8hVFOIahQ/rh7+JGPWjE9lbamcOfaYmNyHQ6tlcv790fY24Tk7uGmodotjoGEOILtwk+C+0AZGLoaJVA==}
 
   '@dcloudio/uni-components@3.0.0-alpha-5020220260725001':
     resolution: {integrity: sha512-en/2zVgx443KM98eH5Lxhikfb8sdp0otq4txrQn9J3BEIvXiTZxvCCdTudB81opIyTol/CcDYv1SkI1crxULfA==}
@@ -8259,8 +8259,8 @@ packages:
   '@dcloudio/uni-console@3.0.0-5000720260410001':
     resolution: {integrity: sha512-ropH7p+fk4tjnFEex2FRqNPzK2g8Fs9OixJmDoR7th+7VZJ13LICR1DMd9cbwtERDECSbs5AJSQ/GU6/UP4P0Q==}
 
-  '@dcloudio/uni-console@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-CXpJt726xYdtGSvDvEny5zsQllB1TY23aq6ShSj4CEkdoxz2+6fJxlFBdIHwcO55C5GWlZSqjQfUKC99bslNDw==}
+  '@dcloudio/uni-console@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-MXyattIoxyX0Nk7iVWkwAqkkL+N0vvi9fZhCMiRbJ1zev76j6TT2b47z+Z9PkHdWmI+3XIvgXDun/Kb7BaxvCQ==}
 
   '@dcloudio/uni-console@3.0.0-alpha-5020220260725001':
     resolution: {integrity: sha512-PEk1+ftfZFc64KjM201gA/6r1ySYiy6kMPP3imqiEDEnmBUGZURPFU/60JcKYPxY4Pw6gauGuyR8Yd9jFi3pBQ==}
@@ -8268,8 +8268,8 @@ packages:
   '@dcloudio/uni-h5-vite@3.0.0-5000720260410001':
     resolution: {integrity: sha512-wqbr6VMH89RPbtWGL1EkCNyz9krtbd1XeobfwWkHjlJZnrgw0kf5KJQcS1Pi5v+mSoUi2L+jloOzCUyGKVZ4VQ==}
 
-  '@dcloudio/uni-h5-vite@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-jUOvuSsu89TMM/S7ZieqyQI7fBSjDAMSHiH5RwBLFyYgp8ln8BtNtaDrlWBhrz+TXY7lGzRj2842+KM1PAn7VQ==}
+  '@dcloudio/uni-h5-vite@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-53JA8AzyVOATvGWAkyfV2th8XIweLhGrG9I1LlH3xR0Nqh5sNwet1Ri8uNbHyolMMY5rHNCikfQWen199GziCQ==}
 
   '@dcloudio/uni-h5-vite@3.0.0-alpha-5020220260725001':
     resolution: {integrity: sha512-OmStZymZbpks0WcbGHZT4ExSu5vBBqx5V62SllZLC8jksfxQpvXuLLdVgqywH2SFdESIxn9B8aNOvI2qdyxIZg==}
@@ -8277,8 +8277,8 @@ packages:
   '@dcloudio/uni-h5-vue@3.0.0-5000720260410001':
     resolution: {integrity: sha512-69fkZ1rMFE+RBGbQeBBOI/fa0jKBbJLZN3HSu/bZqGGeqjGZQz22FdH5luYXyQuNxxT+rXTIFQlV5Z+NM2hr/w==}
 
-  '@dcloudio/uni-h5-vue@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-lo/mZdF+NgJESVpJC7ec5MiEMbnY8hF9PNBLlvrsloqMiC8epvFcqCsNCe5QW/ZqQD7szS4vuC8lbqWs7rDfFA==}
+  '@dcloudio/uni-h5-vue@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-gZzwvNWeHvw9Eu5NWHgWqwWZ+Pdz4N21m6Qzy+Gk/SWkIb0Aw1+5/DUZkz9wOGTPN6RalkOU1qnqJQpqmWzRcg==}
 
   '@dcloudio/uni-h5-vue@3.0.0-alpha-5020220260725001':
     resolution: {integrity: sha512-KF/oeQlhoTpxskQlUNHmIUO/XOosTccne8OgGu617Fx1f/lUi00OX7CgyhRAqei5cjOBfi3E9CWJON8Pa3R2bg==}
@@ -8286,8 +8286,8 @@ packages:
   '@dcloudio/uni-h5@3.0.0-5000720260410001':
     resolution: {integrity: sha512-N2Cp08qRfICs5yjNQ3Jnz3E4iM0EsDsCbyISOfHDcXeBeDNHAV57ZFMwI0yB4OpGOFp+th8dW2V50t/LlIcqfw==}
 
-  '@dcloudio/uni-h5@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-a/PXypwJjJUa5iqufJ0PGt7+1H5KjUksHsv9p0r+naYj2pA8+MhIDnrLQJ36rAepgCRwkSV1K3WqxYJxVpdA0Q==}
+  '@dcloudio/uni-h5@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-DHpypp8rUmtKlMcB0Eid55dcEHoyWaeP0DgFCS6bcApzSvOX94khLkYRPXwGjjZ+E19MJJxM8oWj8LekFi/cDw==}
 
   '@dcloudio/uni-h5@3.0.0-alpha-5020220260725001':
     resolution: {integrity: sha512-BA8LGHfe4nSYNmA9TZEXwxUl0HcJpjcvoPnQG6+4tmp0mtB6i162semklUhYhEeDv0Qn4ayq8g1EugICfL7A5Q==}
@@ -8295,8 +8295,8 @@ packages:
   '@dcloudio/uni-i18n@3.0.0-5000720260410001':
     resolution: {integrity: sha512-6X/2eRqbAmQR1bUJpzCjr2xKXDY2+3rQWsvQ5RjwKQVFsz641GlVlUdxI6YwIZumGDRiCIz8T9eGfyIC6pGt9Q==}
 
-  '@dcloudio/uni-i18n@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-DktZWotqAOT1dtrGq+IO61LXW1z7FBxqh+Zl71BU2lgWcnjrPNdxJmbDOsDmlM+QuXPCial0VEyzCtJqqkvWjg==}
+  '@dcloudio/uni-i18n@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-+8RUB3t8eoq6pdSviXw26F7h1YxqGAxksQuvldn3OrII30RPCQ2nRILF6Qu0DD+tg+SuXLFWX3sEC94e2YScRw==}
 
   '@dcloudio/uni-i18n@3.0.0-alpha-5020220260725001':
     resolution: {integrity: sha512-if4BmCMIoDLU/OpA2a+xDXVwju9YIWmML3WF0CikGG5Ri532nW+2I7lBU2GuKu/SjSd8G5ITTkA2xCRXs4H6rQ==}
@@ -8304,44 +8304,44 @@ packages:
   '@dcloudio/uni-mp-alipay@3.0.0-5000720260410001':
     resolution: {integrity: sha512-09T0my/A3Vm6Qocuq7g6b/nvUECJF1cnEkfKuyrF9SAVwVOSAdsYdltoUpo3vkz0ktladKdRBwWXk26sQUz27A==}
 
-  '@dcloudio/uni-mp-alipay@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-hzgjdjMRXmUCPdlxt7937i2NzQlpELpr8soiNYl1u3DqhqSYGUB27D8K/ali1GfGzVj4Js+pykGp51bNuu4Nig==}
+  '@dcloudio/uni-mp-alipay@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-LVjyh6EWVAuqHefM883zr3Dta81t7Iia9dsYalQCa0NRgi29dVUgbda+hxfsz7KmxK9AU+bI+/5vo0cBnaqpKQ==}
 
-  '@dcloudio/uni-mp-baidu@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-M7RfgwoeRWdt8PoYgBu5GOkukVUpO0VoLqEl4cfERkmZtMe648wyTxbb18hP9PR+M3069tA35KsaZi+si5UlRQ==}
+  '@dcloudio/uni-mp-baidu@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-SxyyvYfXnJm3WhbSm7rOI//cEE2CADvHG9sAJKbMhmaGy40YfayDCFsg78Izsnklxd4mQl4gWNy/E0+X8X8ckg==}
 
   '@dcloudio/uni-mp-compiler@3.0.0-5000720260410001':
     resolution: {integrity: sha512-2+61GVODCLj8EOV3dhKQq8db8Ru8AHHv04Xm1bW188m3PbD6lh5hgGUc5HeKuQFdVxUzS4U0UtUtwGavPRc9ww==}
 
-  '@dcloudio/uni-mp-compiler@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-5svWqWCzyUMiSTwz2b6xo+QWcZryLm1C8z3clhbJwQUSGxopLzalUCorA8nJx/4zfG6QcxdKVp/O4GymXw9vbg==}
+  '@dcloudio/uni-mp-compiler@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-V24RvEEcnzyuZe43ylVgYg4d/EICcpLhXIYwBIigX0uSbrIGDIVOOoWBS1U5ewh83kZ5k5i6ppcZg5FTI10Mrg==}
 
-  '@dcloudio/uni-mp-harmony@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-tnTnalKVJGNKZ+AfXjGfSANGCTW70vBAMefS2OdjS7VSFHbWFeabyMt5wrdR9YFT6F74mb5+b/tgTHCOe1MH2w==}
+  '@dcloudio/uni-mp-harmony@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-+UTW9KKLmJWbhe7MwweyoASUUpxwspywpeuriYzL/9yjzVR89jNfwk/3nTYYe7U/eGSd9gENivZ147yo7yq+Eg==}
 
-  '@dcloudio/uni-mp-jd@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-+k1zkIjrJ+jCL9iYuLQelIXNYG59ZdwUsEpmRiycTV+w3UxWnPOm1XcviQHFGIbRZxslhh6h3TaxCAzU3kp30w==}
+  '@dcloudio/uni-mp-jd@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-QEHYfDRcdU9DOgU/239OiOqPJoyV/rHTdH7viCx07TrmBi1ltqcmMHujUBW9X+qnN0hq9MdkN5afjnItpJDYnA==}
 
-  '@dcloudio/uni-mp-kuaishou@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-3tFDaq+7yxKLGf7OtW8tdBGE1fTAONA9qnJi1EVun3FsL/PcaXRAZ0/OYzxTeALun5XEValrhASj7G68VAN6Yw==}
+  '@dcloudio/uni-mp-kuaishou@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-WHwxImpd+vsLvRWXyg7lNInGqKlyHUrizJtg3cweIA9emfCY7MnP3er+7yyH3Xud73usRJ/sC3f5XOsOWkeZWA==}
 
-  '@dcloudio/uni-mp-lark@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-W0K2GT2kn6e//QUflO/PpQYwAa3YN9w5Tfn9lpY0gIjiQwE5qt0WuEQz8GHLVPmMuysceOHHGFd8aMF/xu3UWQ==}
+  '@dcloudio/uni-mp-lark@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-FI0hAhvw/LEGR6gaD9W8mn1Mu8DBiEi1tKYNQoKztvjC4SdjrTYOwahY1TwejMdsYkRCW2xONy2cTpTJLfFvCw==}
 
-  '@dcloudio/uni-mp-qq@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-jELcC2N1O0rDE4RtQ8kFw5D8CY7C3drE1bWjxemc2Ee3p35q8HR1D6K5BtiZNrX2jtWJX9H0HHsfml7qnkA3DA==}
+  '@dcloudio/uni-mp-qq@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-KABQzDWevcpNZC9zc++uTh0P+l/ewKsjF//gOB4BHsywiAF8Krn49PxNaIng5vFIcA3mGjqKA0vLc5ZvZCcArg==}
 
   '@dcloudio/uni-mp-toutiao@3.0.0-5000720260410001':
     resolution: {integrity: sha512-obnJZ+lASqWFybC72DewGiN44TYJpcVEcQJL0CQYtv77+N5mLa7eiTd0H4vsl8IRF84qVNsz+QuBQgAn/w42QA==}
 
-  '@dcloudio/uni-mp-toutiao@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-i0sHzJYvh72hSNbszA/e7j1lTc7DTKBcxuxQODhr/GeJ/5aiwZnhnO6okZMaYmtMBFkS6+8BuoQHiZrnlgxEZQ==}
+  '@dcloudio/uni-mp-toutiao@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-i4OcxksIpo8zDuD0VmmUsN83pDonm/IfV+LyLuYTLC+fBpiPtDs3CYg3gf5gMMr/YZ1qMBDzHZny0OJ9dXm/+Q==}
 
   '@dcloudio/uni-mp-vite@3.0.0-5000720260410001':
     resolution: {integrity: sha512-SH0WF3RNiANzhankhqLJT0dPDnbty6mTjj8JUibrDcj3MwplO/jgmiRxECMFKJGmE//xfRlaZgDCAUX5tHj76w==}
 
-  '@dcloudio/uni-mp-vite@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-Sr+omTz9dqxRaXL0MgVJoxCX7s5Iouo0SQL86I55CdCaybACx9cr5y3idNoFkCHXQaycjg3U6ZQts9PeEUVlwg==}
+  '@dcloudio/uni-mp-vite@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-RzEvyT4Le2sjId4CYN32NEWewUSRmUMH0dhK0s7phSeH+wYTi18su0/XdcJALTu2UOMNsCw6VSfhG56NSc4rrg==}
 
   '@dcloudio/uni-mp-vue@3.0.0-5000320260312001':
     resolution: {integrity: sha512-ZaJNouC3R8Xk/vESet4AF5PPUpGhaQQPBWmpZMcNwvNw3NkCf6WmJeWOD1z/sdFLg1AQNhn4oSeJ2V0z60+Z7Q==}
@@ -8349,23 +8349,23 @@ packages:
   '@dcloudio/uni-mp-vue@3.0.0-5000720260410001':
     resolution: {integrity: sha512-IzPJ94VJdeo0OOdZ+Knz7RKXvxyw5t2gFo3ti072Xfh/nXIv4KgfcgkrofKHz1iYBwRZE/MYW92ZYwJt/2Q+1g==}
 
-  '@dcloudio/uni-mp-vue@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-ZdVsTcWQA6YFFXbQ5lqV1ghk81Nn6/TNCMs1EbTANMXtyCa/yboWrqBt7c+UENwheGQTqIMb+hdeqMx+XF3BQw==}
+  '@dcloudio/uni-mp-vue@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-M0sYXb8lcRW4ozNejDSSqPC8a18RWDysUtGNC4WDQq/Aj3OT2mzHnr7oHmAc5Cbm9TZOkDW5wC5B0s0BnTClZw==}
 
   '@dcloudio/uni-mp-weixin@3.0.0-5000720260410001':
     resolution: {integrity: sha512-mS9yLbBbPn2OWtMnKZgjuQuiJW/f1GW51qTqblWz/T6viHeYoReAge2UfOGCHEAgO/HVLK5vlm8eZLP3jnQOBA==}
 
-  '@dcloudio/uni-mp-weixin@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-Nmd8Gst6BnMbhouoc7JWZaYA8xCU9Wp+vu1/QTjn0f0nTUHKLXvQMV/itC9X9CLQiebLUpZ4BcsDaRIPHiFVhg==}
+  '@dcloudio/uni-mp-weixin@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-mMMHtfCkKa/3iV5Vov6PGj2OXCVK0TT6wAjmZPRqDbSe6KA6CTFlwM/xEhK55HbxaDU6IcCTFfwr0pQE0c0Kmg==}
 
-  '@dcloudio/uni-mp-xhs@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-5UJ8z1ERgxwrYpzCaYLdxL47YQGx760KujMGm9jkugit2VohF8Ok6BnpvUefV6xC0qtdCKC4gt5q1c6J1LUWrw==}
+  '@dcloudio/uni-mp-xhs@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-23q07vmj3/r6f0utJ1F/nF5omo9Vy6Q9JwSzfM6zJbgZ5ASxDcM77H/DfMww0Mcus9bJpkIdosi3UQT/u8xLFQ==}
 
   '@dcloudio/uni-nvue-styler@3.0.0-5000720260410001':
     resolution: {integrity: sha512-7eFvhU67IDBxfyLP5zUyRTQPzJFoJ0WeV7QNpgvJf4FznynAGLfZ0Rh8Zgan8vxWa+PSSbpooVQbjCYJXhq5lg==}
 
-  '@dcloudio/uni-nvue-styler@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-83M+uqEpokNqngpb47Qvc70FLp11oBDSMtgwsj2jphjMSyrFq7jPtIEcccQZJk+nJeo0XsJxNR3ZXOCigipOKw==}
+  '@dcloudio/uni-nvue-styler@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-RVrHGvzpGNrWTTLAeANZtfbFkoFV3XZIBvjcvwF0/+lT7a5z+9KAQT29Pd51VZFHEhGgRR4GyVbVVUquS+g+0g==}
 
   '@dcloudio/uni-nvue-styler@3.0.0-alpha-5020220260725001':
     resolution: {integrity: sha512-DSvhY09poQXiqxX/prWQNjP/EAtgmMOMb+ZbWk7T7ONJtxCsQfB00Vz7VcfHScEGxXSpcVPUrc9XfRI9Etj3Kw==}
@@ -8373,14 +8373,14 @@ packages:
   '@dcloudio/uni-push@3.0.0-5000720260410001':
     resolution: {integrity: sha512-oCmufDQ20AFxwBs7Aoz9BDWx1KMSW76bKU6AQ8YqM1MPxCDLif5d830Gwivc4rQFGlc3x7hYGh30r8/kl8FLbw==}
 
-  '@dcloudio/uni-push@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-WatifhlclLyjpnA8zu0CmKvNa2k2917idUe5sFsHyJyK3VNuvxBxbJ6gJnnMVKJDWTitHwUkoByPUapkdzdEHw==}
+  '@dcloudio/uni-push@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-X6jvClIroUc9lUoNpYAQe5UbUsl0WKiljqKtO2vaRRIzEGGKuMwbFLIpRRccoGNWHh+p2GJ9dKQM8KguFp341g==}
 
   '@dcloudio/uni-push@3.0.0-alpha-5020220260725001':
     resolution: {integrity: sha512-cHB2bWgBmjmP0tfaS/MW3mFKThqUfIZufgfbtFxAHeTusm5gtaCvW8wQKdw+oBkRofqi5ctg/KvDQu83wgG08A==}
 
-  '@dcloudio/uni-quickapp-webview@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-FNUcqr3xOFgLzq3KUBBNsRcszzBHjHCLdjo7xGVajzXe5y+efwlL69WUz15rMNs9oSoms+610BGHRYd+f6GxYA==}
+  '@dcloudio/uni-quickapp-webview@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-stVyKq02Kj0l/R7ceuNfy1b1OW3X176Xt6s18qVxZN2JQwRyJ8WhNz0vOD9ZQ5GQ3DLgj3shORd47XjI4t6oJw==}
 
   '@dcloudio/uni-shared@3.0.0-5000320260312001':
     resolution: {integrity: sha512-dWC2fPQktlac8Tx14WctFpDDfywFIwWFWkwUxeUtZw5UbbA9NqKBgoQjcYTcNz/oGw5iIrNtvo111a3gZLP0aA==}
@@ -8388,8 +8388,8 @@ packages:
   '@dcloudio/uni-shared@3.0.0-5000720260410001':
     resolution: {integrity: sha512-B51i5GohH5D6v4OgXQToESihIpmssBNSQAbiKdV10uQ/6u5TtyQkTtUKwdhjm+SY5xQSluV9sBpnB+LvYyWakg==}
 
-  '@dcloudio/uni-shared@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-+LvzWApQTNV+x7exXWNZcwmk6dAUhkpzjMqC8lYUZ4TnduoSq940XxEbPQEBR4ZELvKzhp18nyP3IzkQ97TSow==}
+  '@dcloudio/uni-shared@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-QYgG7OCZlHBtQ5rIDBFc/49JORKts/on8hhX/HfQONdtdNHtHpeSBvzlsiLJhnSKiiY8yrxHSWjsBcLg5U56xg==}
 
   '@dcloudio/uni-shared@3.0.0-alpha-5020220260725001':
     resolution: {integrity: sha512-daLwUEBbpX5ynewCk3wy2N36ZFs2IWG2Vd0sjN1+mYWTQrnqh3dACOB+aiN2I+wDau38hIWvpE+FJKx1uPD0pg==}
@@ -8397,14 +8397,14 @@ packages:
   '@dcloudio/uni-stacktracey@3.0.0-5000720260410001':
     resolution: {integrity: sha512-/PDrXioKUsxXUSIwcnjnJhbr7URyDfGH2skImF7KrDn3dYG+dN0WJQqPsWVwr5zr0p3kpr+uO42ce2fsT6yv5Q==}
 
-  '@dcloudio/uni-stacktracey@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-DPSKSWS2kfj1vzdiZC4Oulis/UvpHl/fBh0rjaH0CkjhVWqtIcxfOVwHzX0BWcjD8QKdLTIhE35co737YUCLRg==}
+  '@dcloudio/uni-stacktracey@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-IQvOBHrpWGpPXiR0ZE0fyhqXp/yqmGOI7rUZH7Ar3R7bqaCwm1LoKC0sO0uGpuUN+63tkjmO8b1Y2tNsGBDVjA==}
 
   '@dcloudio/uni-stat@3.0.0-5000720260410001':
     resolution: {integrity: sha512-6jDWTufAjGsdOPcfnSsB2ylaBosFj5+UqZch56NgDrHejasdJ5Pb+peqOP7zn/mlRCiYk0dWTi6ZhcUFJ8ZKDA==}
 
-  '@dcloudio/uni-stat@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-+adkx156iY4/B6JzttO0AJBi4PyJEByz+NlP5si72RSVbIYgrGXUsljuYM2vGgzIaVuyl5isilg8DozNNU57YA==}
+  '@dcloudio/uni-stat@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-mTfWF/JfqDQjAKmFadh2RVcknNC5pS1XU8CqCbXEwudJrJBQPs4fk7oK1MPtbzk2xl3S5kgTU8VGZocn8Fy+WQ==}
 
   '@dcloudio/uni-stat@3.0.0-alpha-5020220260725001':
     resolution: {integrity: sha512-MxxJDNNZZz6cWi1ZRBqEhfWiGfeybh/mXewRPL9LGyfqd2Cec251tdo1KMKBIsxOUf1JoXZtaIoRTZwpzS896A==}
@@ -8460,8 +8460,8 @@ packages:
     peerDependencies:
       vite: 5.2.8
 
-  '@dcloudio/vite-plugin-uni@3.0.0-5010520260709002':
-    resolution: {integrity: sha512-HynSNsicIj8KJ9OztI3hVcU7inFw/vzQGauqfzlLV+yBNRhAGqxx9WKN/NZiN6HVpOc8xTyICr0x4XlI7r7f7A==}
+  '@dcloudio/vite-plugin-uni@3.0.0-5020620260917001':
+    resolution: {integrity: sha512-xuvFhO8nvBZwfjodOFgppgVUtVM9hZZljZspQSJDNAE7/1loGGPb7hpoRroGLZ1nGeOknwxYWwtvELmxT4gVuA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
@@ -38519,10 +38519,10 @@ snapshots:
 
   '@dcloudio/types@3.4.31': {}
 
-  '@dcloudio/uni-app-harmony@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-app-harmony@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-app-uts': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-app-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-app-uts': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-app-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
       debug: 4.3.7(supports-color@10.2.2)
       fs-extra: 10.1.0
       licia: 1.41.1
@@ -38556,11 +38556,11 @@ snapshots:
       - vite
       - vue
 
-  '@dcloudio/uni-app-plus@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-app-plus@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-app-uts': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-app-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-app-vue': 3.0.0-5010520260709002
+      '@dcloudio/uni-app-uts': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-app-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-app-vue': 3.0.0-5020620260917001
       debug: 4.3.7(supports-color@10.2.2)
       fs-extra: 10.1.0
       licia: 1.41.1
@@ -38610,15 +38610,15 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-app-uts@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-app-uts@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
       '@babel/parser': 7.25.6
       '@babel/types': 7.25.6
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-console': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-i18n': 3.0.0-5010520260709002
-      '@dcloudio/uni-nvue-styler': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-console': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-i18n': 3.0.0-5020620260917001
+      '@dcloudio/uni-nvue-styler': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
       '@rollup/pluginutils': 5.1.0(rollup@4.14.3)
@@ -38668,12 +38668,12 @@ snapshots:
       - vite
       - vue
 
-  '@dcloudio/uni-app-vite@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-app-vite@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-i18n': 3.0.0-5010520260709002
-      '@dcloudio/uni-nvue-styler': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-i18n': 3.0.0-5020620260917001
+      '@dcloudio/uni-nvue-styler': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@rollup/pluginutils': 5.1.0(rollup@4.14.3)
       '@vitejs/plugin-vue': 5.2.4(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
       '@vue/compiler-dom': 3.4.21
@@ -38693,7 +38693,7 @@ snapshots:
 
   '@dcloudio/uni-app-vue@3.0.0-5000720260410001': {}
 
-  '@dcloudio/uni-app-vue@3.0.0-5010520260709002': {}
+  '@dcloudio/uni-app-vue@3.0.0-5020620260917001': {}
 
   '@dcloudio/uni-app-x@0.7.114': {}
 
@@ -38717,16 +38717,16 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-app@3.0.0-5010520260709002(@dcloudio/types@3.4.31)(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-app@3.0.0-5020620260917001(@dcloudio/types@3.4.31)(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
     dependencies:
       '@dcloudio/types': 3.4.31
-      '@dcloudio/uni-cloud': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-components': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-console': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-i18n': 3.0.0-5010520260709002
-      '@dcloudio/uni-push': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
-      '@dcloudio/uni-stat': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-cloud': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-components': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-console': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-i18n': 3.0.0-5020620260917001
+      '@dcloudio/uni-push': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
+      '@dcloudio/uni-stat': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       '@vue/shared': 3.4.21
     transitivePeerDependencies:
       - '@nuxt/kit'
@@ -38759,9 +38759,9 @@ snapshots:
       - vite
       - vue
 
-  '@dcloudio/uni-automator@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(jest-environment-node@27.5.1)(jest@27.0.4(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-automator@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(jest-environment-node@27.5.1)(jest@27.0.4(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       address: 1.2.2
       cross-env: 7.0.3
       debug: 4.3.7(supports-color@10.2.2)
@@ -38848,16 +38848,16 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-cli-shared@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-cli-shared@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@babel/code-frame': 7.24.7
       '@babel/core': 7.25.2(supports-color@10.2.2)
       '@babel/parser': 7.25.6
       '@babel/types': 7.25.6
-      '@dcloudio/uni-i18n': 3.0.0-5010520260709002
-      '@dcloudio/uni-nvue-styler': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-i18n': 3.0.0-5020620260917001
+      '@dcloudio/uni-nvue-styler': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@intlify/core-base': 9.1.9
       '@intlify/shared': 9.1.9
       '@intlify/vue-devtools': 9.1.9
@@ -38988,11 +38988,11 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-cloud@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-cloud@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-i18n': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-i18n': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/shared': 3.4.21
       fast-glob: 3.3.3
     transitivePeerDependencies:
@@ -39034,11 +39034,11 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-components@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-components@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cloud': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-h5': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-i18n': 3.0.0-5010520260709002
+      '@dcloudio/uni-cloud': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-h5': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-i18n': 3.0.0-5020620260917001
     transitivePeerDependencies:
       - '@nuxt/kit'
       - '@vueuse/core'
@@ -39077,9 +39077,9 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-console@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-console@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
       fs-extra: 10.1.0
     transitivePeerDependencies:
       - '@nuxt/kit'
@@ -39125,10 +39125,10 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-h5-vite@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-h5-vite@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@rollup/pluginutils': 5.1.0(rollup@4.14.3)
       '@vitejs/plugin-basic-ssl': 1.2.0(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))
       '@vue/compiler-dom': 3.4.21
@@ -39180,9 +39180,9 @@ snapshots:
     transitivePeerDependencies:
       - vue
 
-  '@dcloudio/uni-h5-vue@3.0.0-5010520260709002(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-h5-vue@3.0.0-5020620260917001(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/server-renderer': 3.4.21(vue@3.5.42(typescript@6.0.3))
     transitivePeerDependencies:
       - vue
@@ -39217,12 +39217,12 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-h5@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-h5@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-h5-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-h5-vue': 3.0.0-5010520260709002(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-i18n': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-h5-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-h5-vue': 3.0.0-5020620260917001(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-i18n': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/server-renderer': 3.4.21(vue@3.5.42(typescript@6.0.3))
       '@vue/shared': 3.4.21
       debug: 4.3.7(supports-color@10.2.2)
@@ -39267,7 +39267,7 @@ snapshots:
 
   '@dcloudio/uni-i18n@3.0.0-5000720260410001': {}
 
-  '@dcloudio/uni-i18n@3.0.0-5010520260709002': {}
+  '@dcloudio/uni-i18n@3.0.0-5020620260917001': {}
 
   '@dcloudio/uni-i18n@3.0.0-alpha-5020220260725001': {}
 
@@ -39289,13 +39289,13 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-mp-alipay@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-mp-alipay@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-compiler': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vue': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-compiler': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vue': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/compiler-core': 3.4.21
       '@vue/shared': 3.4.21
     transitivePeerDependencies:
@@ -39307,15 +39307,15 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-mp-baidu@3.0.0-5010520260709002(@dcloudio/types@3.4.31)(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-mp-baidu@3.0.0-5020620260917001(@dcloudio/types@3.4.31)(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-app': 3.0.0-5010520260709002(@dcloudio/types@3.4.31)(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-compiler': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vue': 3.0.0-5010520260709002
-      '@dcloudio/uni-mp-weixin': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-app': 3.0.0-5020620260917001(@dcloudio/types@3.4.31)(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-compiler': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vue': 3.0.0-5020620260917001
+      '@dcloudio/uni-mp-weixin': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/compiler-core': 3.4.21
       '@vue/shared': 3.4.21
       jimp: 0.10.3(debug@4.4.3(supports-color@10.2.2))
@@ -39357,13 +39357,13 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-mp-compiler@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-mp-compiler@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
       '@babel/generator': 7.25.6
       '@babel/parser': 7.25.6
       '@babel/types': 7.25.6
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/compiler-core': 3.4.21
       '@vue/compiler-dom': 3.4.21
       '@vue/shared': 3.4.21
@@ -39377,14 +39377,14 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-mp-harmony@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-mp-harmony@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-toutiao': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vue': 3.0.0-5010520260709002
-      '@dcloudio/uni-quickapp-webview': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-toutiao': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vue': 3.0.0-5020620260917001
+      '@dcloudio/uni-quickapp-webview': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/shared': 3.4.21
     transitivePeerDependencies:
       - '@nuxt/kit'
@@ -39395,13 +39395,13 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-mp-jd@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-mp-jd@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-compiler': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vue': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-compiler': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vue': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/shared': 3.4.21
     transitivePeerDependencies:
       - '@nuxt/kit'
@@ -39412,14 +39412,14 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-mp-kuaishou@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-mp-kuaishou@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-compiler': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vue': 3.0.0-5010520260709002
-      '@dcloudio/uni-mp-weixin': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-compiler': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vue': 3.0.0-5020620260917001
+      '@dcloudio/uni-mp-weixin': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/compiler-core': 3.4.21
       '@vue/shared': 3.4.21
     transitivePeerDependencies:
@@ -39434,14 +39434,14 @@ snapshots:
       - utf-8-validate
       - vue
 
-  '@dcloudio/uni-mp-lark@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-mp-lark@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-compiler': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-toutiao': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vue': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-compiler': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-toutiao': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vue': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/compiler-core': 3.4.21
       '@vue/shared': 3.4.21
     transitivePeerDependencies:
@@ -39453,13 +39453,13 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-mp-qq@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-mp-qq@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-compiler': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vue': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-compiler': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vue': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/shared': 3.4.21
       fs-extra: 10.1.0
     transitivePeerDependencies:
@@ -39489,13 +39489,13 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-mp-toutiao@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-mp-toutiao@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-compiler': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vue': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-compiler': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vue': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/compiler-core': 3.4.21
       '@vue/shared': 3.4.21
     transitivePeerDependencies:
@@ -39527,13 +39527,13 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-mp-vite@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-mp-vite@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-i18n': 3.0.0-5010520260709002
-      '@dcloudio/uni-mp-compiler': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vue': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-i18n': 3.0.0-5020620260917001
+      '@dcloudio/uni-mp-compiler': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vue': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/compiler-dom': 3.4.21
       '@vue/compiler-sfc': 3.4.21
       '@vue/shared': 3.4.21
@@ -39557,9 +39557,9 @@ snapshots:
       '@dcloudio/uni-shared': 3.0.0-5000720260410001
       '@vue/shared': 3.4.21
 
-  '@dcloudio/uni-mp-vue@3.0.0-5010520260709002':
+  '@dcloudio/uni-mp-vue@3.0.0-5020620260917001':
     dependencies:
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/shared': 3.4.21
 
   '@dcloudio/uni-mp-weixin@3.0.0-5000720260410001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
@@ -39587,13 +39587,13 @@ snapshots:
       - utf-8-validate
       - vue
 
-  '@dcloudio/uni-mp-weixin@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-mp-weixin@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(debug@4.4.3(supports-color@10.2.2))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-compiler': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vue': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-compiler': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vue': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/shared': 3.4.21
       jimp: 0.10.3(debug@4.4.3(supports-color@10.2.2))
       licia: 1.41.1
@@ -39612,13 +39612,13 @@ snapshots:
       - utf-8-validate
       - vue
 
-  '@dcloudio/uni-mp-xhs@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-mp-xhs@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-compiler': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vue': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-compiler': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vue': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/shared': 3.4.21
     transitivePeerDependencies:
       - '@nuxt/kit'
@@ -39636,7 +39636,7 @@ snapshots:
       postcss: 8.4.45
       tinycolor2: 1.6.0
 
-  '@dcloudio/uni-nvue-styler@3.0.0-5010520260709002':
+  '@dcloudio/uni-nvue-styler@3.0.0-5020620260917001':
     dependencies:
       '@vue/shared': 3.4.21
       parse-css-font: 4.0.0
@@ -39662,9 +39662,9 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-push@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-push@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
     transitivePeerDependencies:
       - '@nuxt/kit'
       - '@vueuse/core'
@@ -39686,12 +39686,12 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-quickapp-webview@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-quickapp-webview@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vite': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-mp-vue': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vite': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-mp-vue': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@vue/shared': 3.4.21
     transitivePeerDependencies:
       - '@nuxt/kit'
@@ -39710,7 +39710,7 @@ snapshots:
     dependencies:
       '@vue/shared': 3.4.21
 
-  '@dcloudio/uni-shared@3.0.0-5010520260709002':
+  '@dcloudio/uni-shared@3.0.0-5020620260917001':
     dependencies:
       '@vue/shared': 3.4.21
 
@@ -39720,7 +39720,7 @@ snapshots:
 
   '@dcloudio/uni-stacktracey@3.0.0-5000720260410001': {}
 
-  '@dcloudio/uni-stacktracey@3.0.0-5010520260709002': {}
+  '@dcloudio/uni-stacktracey@3.0.0-5020620260917001': {}
 
   '@dcloudio/uni-stat@3.0.0-5000720260410001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
@@ -39736,10 +39736,10 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/uni-stat@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/uni-stat@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))':
     dependencies:
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       debug: 4.3.7(supports-color@10.2.2)
     transitivePeerDependencies:
       - '@nuxt/kit'
@@ -39931,14 +39931,15 @@ snapshots:
       - ts-node
       - vue
 
-  '@dcloudio/vite-plugin-uni@3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
+  '@dcloudio/vite-plugin-uni@3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))':
     dependencies:
       '@babel/core': 7.25.2(supports-color@10.2.2)
       '@babel/plugin-syntax-import-meta': 7.10.4(@babel/core@7.25.2(supports-color@10.2.2))
       '@babel/plugin-transform-typescript': 7.29.7(@babel/core@7.25.2(supports-color@10.2.2))(supports-color@10.2.2)
-      '@dcloudio/uni-cli-shared': 3.0.0-5010520260709002(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
-      '@dcloudio/uni-nvue-styler': 3.0.0-5010520260709002
-      '@dcloudio/uni-shared': 3.0.0-5010520260709002
+      '@babel/types': 7.25.6
+      '@dcloudio/uni-cli-shared': 3.0.0-5020620260917001(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))(postcss@8.5.28)(rollup@4.14.3)(supports-color@10.2.2)(vue@3.5.42(typescript@6.0.3))
+      '@dcloudio/uni-nvue-styler': 3.0.0-5020620260917001
+      '@dcloudio/uni-shared': 3.0.0-5020620260917001
       '@rollup/pluginutils': 5.1.0(rollup@4.14.3)
       '@vitejs/plugin-legacy': 5.3.2(supports-color@10.2.2)(terser@5.51.2)(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))
       '@vitejs/plugin-vue': 5.2.4(vite@5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2))(vue@3.5.42(typescript@6.0.3))
@@ -39949,6 +39950,7 @@ snapshots:
       '@vue/shared': 3.4.21
       cac: 6.7.9
       debug: 4.3.7(supports-color@10.2.2)
+      es-module-lexer: 1.5.4
       estree-walker: 2.0.2
       express: 4.20.0(supports-color@10.2.2)
       fast-glob: 3.3.3
@@ -39957,6 +39959,7 @@ snapshots:
       jsonc-parser: 3.3.1
       magic-string: 0.30.11
       picocolors: 1.1.0
+      source-map-js: 1.2.1
       terser: 5.51.2
       unplugin-auto-import: 19.1.0(@nuxt/kit@4.5.2(magic-string@1.3.1)(magicast@0.5.4)(oxc-parser@0.148.0)(rolldown@1.2.7)(unplugin@3.3.0(@rspack/core@2.2.2(@swc/helpers@0.5.23))(esbuild@0.28.2)(rolldown@1.2.7)(rollup@4.63.1(patch_hash=c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0))(vite@7.3.6(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1))(webpack@5.105.4)))(@vueuse/core@14.2.1(vue@3.5.42(typescript@6.0.3)))
       vite: 5.2.8(@types/node@26.5.1)(less@4.6.6)(lightningcss@1.33.0)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)
