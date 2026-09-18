@@ -2,6 +2,7 @@ import type { DemoE2eMemorySample, DemoE2eMemoryStepReport } from './demo-e2e-me
 import { spawn } from 'node:child_process'
 import path from 'node:path'
 import process from 'node:process'
+import { fileURLToPath } from 'node:url'
 import {
   createDemoE2eMemoryReport,
 
@@ -9,6 +10,7 @@ import {
   summarizeMemorySamples,
   writeDemoE2eMemoryReport,
 } from './demo-e2e-memory'
+import { enterFullTestGate } from './e2e-preflight/gate'
 
 interface WorkflowStep {
   name: string
@@ -27,7 +29,7 @@ function formatStep(step: WorkflowStep, index: number, total: number) {
   return `[demo-e2e] ${index}/${total}${local} ${step.name}: ${step.command} ${step.args.join(' ')}\n`
 }
 
-async function runStep(step: WorkflowStep, index: number, total: number) {
+async function runStep(step: WorkflowStep, index: number, total: number, preflightEnv: Record<string, string> = {}) {
   process.stdout.write(formatStep(step, index, total))
   const startedAt = Date.now()
   const samples: DemoE2eMemorySample[] = []
@@ -36,6 +38,7 @@ async function runStep(step: WorkflowStep, index: number, total: number) {
     env: {
       ...process.env,
       ...step.env,
+      ...preflightEnv,
     },
     shell: process.platform === 'win32',
     stdio: 'inherit',
@@ -163,38 +166,48 @@ function createWorkflowSteps(includeLocal: boolean): WorkflowStep[] {
 
 async function main() {
   const includeLocal = hasFlag('--local')
-  const steps = createWorkflowSteps(includeLocal)
-  const stepReports: DemoE2eMemoryStepReport[] = []
-  let exitCode = 0
-  const writeReport = async () => {
-    const report = createDemoE2eMemoryReport({
-      repositoryRoot: process.cwd(),
-      includeLocal,
-      exitCode,
-      steps: stepReports,
-    })
-    const result = await writeDemoE2eMemoryReport({ report })
-    process.stdout.write(`[demo-e2e] memory report: ${path.relative(process.cwd(), result.markdownFile)}\n`)
-  }
-  for (const [index, step] of steps.entries()) {
-    try {
-      stepReports.push(await runStep(step, index + 1, steps.length))
-      await writeReport()
+  const reportIndex = process.argv.indexOf('--preflight-report')
+  const gate = includeLocal ? await enterFullTestGate(reportIndex < 0 ? undefined : process.argv[reportIndex + 1]) : undefined
+  try {
+    const steps = createWorkflowSteps(includeLocal)
+    const stepReports: DemoE2eMemoryStepReport[] = []
+    let exitCode = 0
+    const writeReport = async () => {
+      const report = createDemoE2eMemoryReport({
+        repositoryRoot: process.cwd(),
+        includeLocal,
+        exitCode,
+        steps: stepReports,
+      })
+      const result = await writeDemoE2eMemoryReport({ report })
+      process.stdout.write(`[demo-e2e] memory report: ${path.relative(process.cwd(), result.markdownFile)}\n`)
     }
-    catch (error) {
-      const stepReport = (error as { stepReport?: DemoE2eMemoryStepReport }).stepReport
-      if (stepReport) {
-        stepReports.push(stepReport)
+    for (const [index, step] of steps.entries()) {
+      try {
+        await gate?.check(step.name)
+        stepReports.push(await runStep(step, index + 1, steps.length, gate?.env))
+        await writeReport()
       }
-      exitCode = 1
-      await writeReport()
-      throw error
+      catch (error) {
+        const stepReport = (error as { stepReport?: DemoE2eMemoryStepReport }).stepReport
+        if (stepReport) {
+          stepReports.push(stepReport)
+        }
+        exitCode = 1
+        await writeReport()
+        throw error
+      }
     }
+    process.stdout.write('[demo-e2e] workflow passed\n')
   }
-  process.stdout.write('[demo-e2e] workflow passed\n')
+  finally {
+    await gate?.close()
+  }
 }
 
-main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.stack ?? error.message : String(error)}\n`)
-  process.exitCode = 1
-})
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    process.stderr.write(`${error instanceof Error ? error.stack ?? error.message : String(error)}\n`)
+    process.exitCode = 1
+  })
+}
