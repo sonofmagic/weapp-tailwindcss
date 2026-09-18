@@ -110,6 +110,21 @@ describe('架构边界契约', () => {
     expect(postcss.dependencies?.postcss).toBe('catalog:postcss85tilde')
   })
 
+  it('keeps the v4 engine independent from product adapters and legacy engines', () => {
+    const engine = readPackage('packages/engine/package.json')
+    const dependencies = { ...engine.dependencies, ...engine.devDependencies }
+    for (const name of ['@weapp-tailwindcss/postcss', 'weapp-tailwindcss', '@tailwindcss-mangle/engine', 'tailwindcss-patch', '@tailwindcss/vite', '@tailwindcss/postcss', 'tailwindcss-3']) {
+      expect(dependencies[name], name).toBeUndefined()
+    }
+    expect(engine.dependencies?.postcss).toBe('catalog:postcss85tilde')
+    expect(engine.dependencies?.['@tailwindcss/node']).toBe('catalog:tailwindcss4')
+    const sources = collectTsFiles(path.join(repoRoot, 'packages/engine/src'))
+      .map(file => fs.readFileSync(file, 'utf8'))
+    for (const source of sources) {
+      expect(source).not.toMatch(/@tailwindcss-mangle\/engine|from ['"](?:.*\/v3|@weapp-tailwindcss\/postcss|weapp-tailwindcss)['"]/)
+    }
+  })
+
   it('does not import CSS processors from weapp-tailwindcss source', () => {
     const srcRoot = path.join(repoRoot, 'packages/weapp-tailwindcss/src')
     const hits = collectTsFiles(srcRoot)

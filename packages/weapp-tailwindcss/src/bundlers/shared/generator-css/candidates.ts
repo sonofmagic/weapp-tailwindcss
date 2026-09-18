@@ -1,4 +1,4 @@
-import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
+import { splitCandidateTokens } from '@weapp-tailwindcss/engine'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { collectCssInlineSourceCandidates } from '@/tailwindcss/source-scan'
 

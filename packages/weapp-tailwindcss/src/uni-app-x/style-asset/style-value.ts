@@ -1,6 +1,6 @@
 import type { Root } from '@weapp-tailwindcss/postcss'
 import type { OutputChunk, SourceMap } from 'rollup'
-import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
+import { splitCandidateTokens } from '@weapp-tailwindcss/engine'
 import {
   collectCssApplyUtilities,
   cssToClassStyleValue,

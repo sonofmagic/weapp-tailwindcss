@@ -5,9 +5,9 @@ import type {
   TailwindGenerationSession,
   TailwindV4CandidateSource,
   TailwindV4ResolvedSource,
-} from '@tailwindcss-mangle/engine'
+} from '@weapp-tailwindcss/engine'
 import type { TailwindV4GenerateTarget } from '../types'
-import { createTailwindGenerationSession } from '@tailwindcss-mangle/engine'
+import { createTailwindGenerationSession } from '@weapp-tailwindcss/engine'
 
 type CreateTailwindGenerationSession = (
   source: TailwindV4ResolvedSource,

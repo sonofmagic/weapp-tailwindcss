@@ -1,9 +1,9 @@
-import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
+import type { TailwindV4CssSource } from '@weapp-tailwindcss/engine'
 import type { Root } from '@weapp-tailwindcss/postcss'
 import { realpathSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'
-import { resolveProjectSourceFiles } from '@tailwindcss-mangle/engine'
+import { resolveProjectSourceFiles } from '@weapp-tailwindcss/engine'
 import micromatch from 'micromatch'
 
 export interface TailwindSourceEntry {

@@ -7,7 +7,7 @@ const resolveTailwindV4SourceFromRuntime = vi.fn()
 const loggerWarn = vi.fn()
 const loggerError = vi.fn()
 
-vi.mock('@tailwindcss-mangle/engine', () => ({
+vi.mock('@weapp-tailwindcss/engine', () => ({
   extractProjectCandidatesWithPositions,
   resolveValidTailwindV4Candidates,
 }))

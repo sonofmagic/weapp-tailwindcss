@@ -886,8 +886,8 @@ describe('tailwindcss v4 engine', () => {
         sourceEntries: [],
       }
     })
-    vi.doMock('@tailwindcss-mangle/engine', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@tailwindcss-mangle/engine')>()
+    vi.doMock('@weapp-tailwindcss/engine', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@weapp-tailwindcss/engine')>()
       return {
         ...actual,
         createTailwindGenerationSession: vi.fn(() => ({

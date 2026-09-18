@@ -17,7 +17,7 @@
 
 ## 样式处理边界
 
-- CSS 语法解析、tokenize、selector/value parser、AST 变换和 PostCSS 管线由 `@weapp-tailwindcss/postcss` 拥有。
+- 除 `packages/engine` 的 Tailwind CSS 4 生成专用处理外，CSS 语法解析、tokenize、selector/value parser、AST 变换和 PostCSS 管线由 `@weapp-tailwindcss/postcss` 拥有。
 - 本包只消费 `@weapp-tailwindcss/postcss` 的导出；禁止直接依赖 `postcss-scss`、`@csstools/css-tokenizer`、`postcss-selector-parser`、`postcss-value-parser`、`lightningcss` 或 `postcss`。
 - 允许通过 `@weapp-tailwindcss/postcss` 的 `postcss` re-export 做编排级 `parse` + walk（读 `@import`、组装 artifact、决定注入位置）。
 - 禁止在本包新增 CSS parser/tokenizer 或 compat 变换实现；新增变换必须放进 `packages/postcss` 再从本包调用。

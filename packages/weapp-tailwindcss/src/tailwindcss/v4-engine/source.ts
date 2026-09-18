@@ -6,7 +6,7 @@ import path from 'node:path'
 import process from 'node:process'
 import {
   resolveTailwindV4Source as resolveEngineTailwindV4Source,
-} from '@tailwindcss-mangle/engine'
+} from '@weapp-tailwindcss/engine'
 import { parseCssImportSpecifier, postcss, quoteCssImportSpecifier } from '@weapp-tailwindcss/postcss'
 import { normalizeConfigDirective } from '@/bundlers/shared/generator-css/config-directive'
 import { normalizeTailwindConfigDirectives, resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
@@ -49,17 +49,11 @@ function resolvePackageCssEntryPoint(specifier: string) {
   }
 
   try {
-    let current = path.dirname(require.resolve('@tailwindcss-mangle/engine'))
-    while (true) {
-      const cssEntry = path.resolve(current, '..', 'tailwindcss', 'index.css')
-      if (isCssEntryPoint(cssEntry)) {
-        return cssEntry
-      }
-      const parent = path.dirname(current)
-      if (parent === current) {
-        break
-      }
-      current = parent
+    const engineRequire = createRequire(require.resolve('@weapp-tailwindcss/engine'))
+    const packageJson = engineRequire.resolve('tailwindcss/package.json')
+    const cssEntry = path.resolve(path.dirname(packageJson), 'index.css')
+    if (isCssEntryPoint(cssEntry)) {
+      return cssEntry
     }
   }
   catch {

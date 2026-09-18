@@ -3,7 +3,7 @@ import type { TailwindSourceEntry } from '../source-scan'
 import type { TailwindCandidateSource, WeappTailwindcssPostcssPluginOptions } from './types'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { extractValidCandidates } from '@tailwindcss-mangle/engine'
+import { extractValidCandidates } from '@weapp-tailwindcss/engine'
 import { loadConfig } from 'tailwindcss-config'
 import {
   collectCssInlineSourceCandidates,
