@@ -194,7 +194,7 @@ export function normalizeFontDataUrlsForSnapshot(source: string) {
   })
 }
 
-const GENERATED_CSS_SOURCE_MARKER_RE = /(\/\*!\s*weapp-tailwindcss vite-generated-css:)([^\s*]+)(\s*\*\/)/g
+const GENERATED_CSS_SOURCE_MARKER_RE = /(\/\*!\s*weapp-tailwindcss vite-generated-css(?:-end)?:)([^\s*]+)(\s*\*\/)/g
 const HBUILDERX_PROJECT_ALIAS_SEGMENT_RE = /^.+-[a-f\d]{10}-\d+$/
 
 export function normalizeGeneratedCssSourceMarkers(source: string, projectRoot: string) {

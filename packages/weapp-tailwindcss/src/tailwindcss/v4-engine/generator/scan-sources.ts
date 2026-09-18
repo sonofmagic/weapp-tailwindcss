@@ -124,30 +124,34 @@ async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSourc
     })
     sourcePatterns.push(...await resolveCssSourceEntries(root, definition.base, '**/*'))
   }
-  if (!importSourceBase) {
-    if (sourcePatterns.length > 0) {
-      return [
-        ...normalizeCssDefinedScanSources(source.base, sourcePatterns),
-        ...createDefaultIgnoredScanSources(source.base),
-      ]
-    }
-    if (hasSourceNone) {
-      return false
-    }
-    if (hasTailwindImport) {
-      const defaultBase = resolveDefaultSourceBase(source)
-      return [
-        await resolveTailwindSourceEntry('.', defaultBase, false, '**/*'),
-        ...createDefaultIgnoredScanSources(defaultBase),
-      ]
-    }
+  let entries: TailwindV4SourcePattern[]
+  if (importSourceBase) {
+    entries = [
+      await resolveTailwindSourceEntry('.', importSourceBase, false, '**/*'),
+      ...sourcePatterns,
+    ]
+  }
+  else if (sourcePatterns.length > 0) {
+    entries = normalizeCssDefinedScanSources(source.base, sourcePatterns)
+  }
+  else if (hasSourceNone) {
+    return false
+  }
+  else if (hasTailwindImport) {
+    entries = [await resolveTailwindSourceEntry('.', resolveDefaultSourceBase(source), false, '**/*')]
+  }
+  else {
     return undefined
   }
 
+  // 每个扫描根都应用默认排除，避免入口加载顺序改变兄弟目录的候选资格。
+  const scanBases = new Set([
+    importSourceBase ?? (sourcePatterns.length > 0 ? source.base : resolveDefaultSourceBase(source)),
+    ...entries.filter(entry => !entry.negated).map(entry => entry.base),
+  ])
   return [
-    await resolveTailwindSourceEntry('.', importSourceBase, false, '**/*'),
-    ...sourcePatterns,
-    ...createDefaultIgnoredScanSources(importSourceBase),
+    ...entries,
+    ...[...scanBases].flatMap(base => createDefaultIgnoredScanSources(base)),
   ]
 }
 

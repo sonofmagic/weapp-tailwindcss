@@ -4,7 +4,11 @@ import { spawn, spawnSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { assertWatchCommandActive } from './cancellation'
 import { resolvePnpmCommand } from './cli'
+import { createSpawnEnv, createWatchProcessEnv } from './environment'
+
+export { createSpawnEnv } from './environment'
 
 export async function sleep(ms: number) {
   await new Promise(resolve => setTimeout(resolve, ms))
@@ -198,31 +202,6 @@ function resolveCompileFatalError(line: string) {
   if (ERROR_RE.test(normalized) && EMFILE_RE.test(normalized)) {
     return normalized
   }
-}
-
-export function createSpawnEnv(
-  base: NodeJS.ProcessEnv,
-  extra: Record<string, string> = {},
-): NodeJS.ProcessEnv {
-  const merged: NodeJS.ProcessEnv = {
-    ...base,
-    ...extra,
-  }
-  const sanitized: NodeJS.ProcessEnv = {}
-
-  for (const [key, value] of Object.entries(merged)) {
-    if (typeof value !== 'string') {
-      continue
-    }
-    // Windows keeps internal drive-scoped entries like `=C:` in process.env,
-    // which can make child_process.spawn fail with EINVAL.
-    if (process.platform === 'win32' && key.includes('=')) {
-      continue
-    }
-    sanitized[key] = value
-  }
-
-  return sanitized
 }
 
 function resolvePnpmBinary() {
@@ -700,7 +679,7 @@ function isProcessAlive(pid: number | undefined) {
 }
 
 function createWatchSpawnEnv(extra: Record<string, string>) {
-  const env = createSpawnEnv(process.env, {
+  return createWatchProcessEnv(process.env, {
     WEAPP_TW_WATCH_REGRESSION: '1',
     // 回归模式优先稳定性。
     // 宿主机上 Webpack/Taro 的 fs.watch 很容易触发 EMFILE，
@@ -712,19 +691,6 @@ function createWatchSpawnEnv(extra: Record<string, string>) {
     NODE_OPTIONS: process.env['NODE_OPTIONS'] ?? '--max-old-space-size=8192',
     ...extra,
   })
-
-  for (const key of Object.keys(env)) {
-    if (key === 'VITEST' || key.startsWith('VITEST_')) {
-      delete env[key]
-    }
-  }
-  if (env['NODE_ENV'] === 'test') {
-    delete env['NODE_ENV']
-  }
-  if (env['BABEL_ENV'] === 'test') {
-    delete env['BABEL_ENV']
-  }
-  return env
 }
 
 export async function runPnpmCommand(cwd: string, args: string[], label: string) {
@@ -797,6 +763,7 @@ export function createWatchCommandSession(
   options: Pick<CliOptions, 'quietSass'>,
   env: Record<string, string> = {},
 ): WatchSession {
+  assertWatchCommandActive()
   cleanupExistingWatchProcesses(cwd)
   const lines: string[] = []
   const pluginProcessSamples: PluginProcessSample[] = []
@@ -936,6 +903,7 @@ export function createWatchCommandSession(
   child.stderr.on('data', collect)
 
   const ensureRunning = () => {
+    assertWatchCommandActive()
     if (compileFatalError) {
       throw new Error(`watch process reported fatal error: ${compileFatalError}`)
     }

@@ -2,12 +2,14 @@ import type { ConcreteOrPlatformWatchCaseName, WatchCaseArtifacts } from '../../
 import type { PerformanceBudgetFailure } from './performance-confirmation'
 import fs from 'node:fs/promises'
 import process from 'node:process'
-import { execa } from 'execa'
 import path from 'pathe'
 import { expect } from 'vitest'
 import { buildCases, demoWatchShardCases, getBaseWatchCaseName, isDemoWatchShardName, isLocalOnlyWatchCase } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import { createWatchProcessEnv } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/environment'
 import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import { assertDevHmrArtifactSnapshotGate } from '../../watchArtifactSnapshotGate'
+import { runWatchCommand } from './command'
+import { resolveWatchCommandScopes } from './command-scopes'
 import {
   listWatchHmrFailureLogs,
   readNewPerformanceBudgetFailure,
@@ -619,20 +621,8 @@ async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs:
   const maxAttempts = Math.max(1, toNumberEnv('E2E_WATCH_MAX_ATTEMPTS', 2))
   const confirmPerformanceBudget = toBoolEnv('E2E_WATCH_CONFIRM_PERFORMANCE_BUDGET', false)
   const heartbeatIntervalMs = Math.max(30_000, toNumberEnv('E2E_WATCH_HEARTBEAT_INTERVAL_MS', 60_000))
-  const env = { ...process.env }
+  const env = createWatchProcessEnv(process.env)
   let performanceBudgetConfirmation: PerformanceBudgetFailure | undefined
-
-  for (const key of Object.keys(env)) {
-    if (key === 'VITEST' || key.startsWith('VITEST_')) {
-      delete env[key]
-    }
-  }
-  if (env.NODE_ENV === 'test') {
-    delete env.NODE_ENV
-  }
-  if (env.BABEL_ENV === 'test') {
-    delete env.BABEL_ENV
-  }
 
   for (let attempt = 1; attempt <= maxAttempts + 1; attempt += 1) {
     const failureLogsBeforeAttempt = confirmPerformanceBudget
@@ -648,14 +638,11 @@ async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs:
     }, heartbeatIntervalMs)
 
     try {
-      await execa('pnpm', args, {
+      await runWatchCommand({
+        args,
         cwd,
-        stdio: 'inherit',
         env,
-        extendEnv: false,
-        timeout: commandTimeoutMs,
-        killSignal: 'SIGKILL',
-        forceKillAfterDelay: 1000,
+        timeoutMs: commandTimeoutMs,
       })
       if (performanceBudgetConfirmation) {
         process.stdout.write(
@@ -1590,12 +1577,27 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
   }
 }
 
-export async function runHotUpdateTarget(target: WatchCaseName) {
+export async function runHotUpdateTarget(target: WatchCaseName, scopeOverride?: string) {
   const cwd = path.resolve(__dirname, '../..')
   const caseName = resolveCaseName()
   const runTarget = isConcreteWatchCaseName(caseName) && getBaseWatchCaseName(caseName) === target
     ? caseName
     : target
+  if (scopeOverride === undefined) {
+    const selected = configuredWatchCasesByName.get(getBaseWatchCaseName(runTarget) ?? runTarget as ConcreteWatchCaseName)
+    const scopes = resolveWatchCommandScopes({
+      splitSubPackageWatchSessions: selected?.splitSubPackageWatchSessions === true,
+      requestedScope: process.env.E2E_WATCH_MINI_PROGRAM_SCOPE,
+      webOnly: isWebOnlyProfile(),
+      mainStyleOnly: toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false),
+    })
+    if (scopes.length > 1) {
+      for (const scope of scopes) {
+        await runHotUpdateTarget(target, scope)
+      }
+      return
+    }
+  }
   const timeoutMs = toNumberEnv('E2E_WATCH_TIMEOUT_MS', 240000)
   const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 40)
   const maxHotUpdateMs = toNumberEnv('E2E_WATCH_MAX_HOT_UPDATE_MS', timeoutMs)
@@ -1604,7 +1606,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
   const skipBuild = toBoolEnv('E2E_WATCH_SKIP_BUILD', true)
   const quietSass = toBoolEnv('E2E_WATCH_QUIET_SASS', true)
   const miniProgramOnly = toBoolEnv('E2E_WATCH_MINI_PROGRAM_ONLY', false)
-  const miniProgramScope = process.env.E2E_WATCH_MINI_PROGRAM_SCOPE
+  const miniProgramScope = scopeOverride ?? process.env.E2E_WATCH_MINI_PROGRAM_SCOPE
   const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
   const mainStyleSubPackageLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
   const reportFile = createReportFilePath(cwd, runTarget)

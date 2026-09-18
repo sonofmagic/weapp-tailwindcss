@@ -92,6 +92,9 @@ const config = createMonorepoEslintConfig(
 export default config
   .prepend(
     globalIgnores([
+      // 本地验收报告和参考源码不属于仓库维护的代码，避免扫描大型生成文件。
+      'e2e/reports/local-full-run/**',
+      'submodules/tailwindcss-mangle/**',
       '**/test-results/**',
       'website/test-results/',
       'website/test-results/**',

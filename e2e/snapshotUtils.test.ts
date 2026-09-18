@@ -40,13 +40,20 @@ describe('normalizeCssSnapshot', () => {
     ].join('\n'))).resolves.toContain('url(data:font/woff2;base64,<stable>) format(\'truetype\')')
   })
 
-  it('normalizes generated css source markers across worktree paths', () => {
-    const source = '/*! weapp-tailwindcss vite-generated-css:%2Ftmp%2Frepo-worktree%2Fdemo%2Fapp%2Fsrc%2Fapp.css */'
-
-    expect(normalizeGeneratedCssSourceMarkers(source, '/tmp/repo-worktree/demo/app')).toBe(
-      '/*! weapp-tailwindcss vite-generated-css:%3Cproject-root%3E%2Fsrc%2Fapp.css */',
-    )
-    expect(normalizeGeneratedCssSourceMarkers(source, '/tmp/other-project')).toBe(source)
+  it.each(['', '-end'])('规范化跨工作树 CSS 来源标记 %s，保留起止边界与项目外来源', (suffix) => {
+    for (const [root, file] of [
+      ['/workspace/demo/app', '/workspace/demo/app/src/app.css'],
+      ['C:\\workspace\\demo\\app', 'C:\\workspace\\demo\\app\\src\\app.css'],
+      ['C:\\', 'C:\\src\\app.css'],
+      ['/', '/src/app.css'],
+      ['demo/app', 'demo/app/src/app.css'],
+    ]) {
+      const source = `/*! weapp-tailwindcss vite-generated-css${suffix}:${encodeURIComponent(file!)} */`
+      expect(normalizeGeneratedCssSourceMarkers(source, root!)).toBe(
+        `/*! weapp-tailwindcss vite-generated-css${suffix}:%3Cproject-root%3E%2Fsrc%2Fapp.css */`,
+      )
+      expect(normalizeGeneratedCssSourceMarkers(source, '/other-project')).toBe(source)
+    }
   })
 
   it('normalizes generated css source markers through project aliases', async () => {

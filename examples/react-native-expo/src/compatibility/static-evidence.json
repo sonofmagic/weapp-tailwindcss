@@ -2060,7 +2060,7 @@
     "schemaVersion": 1,
     "platform": "web",
     "catalogHash": "0eeb44540e2e1d3a178c436b7cb98fd25e3ccca6366c043f0a5832eab9524efd",
-    "verifiedAt": "2026-08-19T16:11:02.384Z",
+    "verifiedAt": "2026-09-17T20:49:20.953Z",
     "versions": {
       "tailwindcss": "4.3.3",
       "expo": "54.0.37",
@@ -4231,6 +4231,7 @@
       "bg-[#123456]",
       "bg-blue-500",
       "bg-emerald-500",
+      "bg-slate-900",
       "rn-css-hmr-probe",
       "p-[13px]",
       "px-2",
@@ -4648,12 +4649,21 @@
           "id": "s45ca05b7c071"
         }
       ],
+      "bg-slate-900": [
+        {
+          "style": {
+            "backgroundColor": "#0f172b"
+          },
+          "order": 103,
+          "id": "sabe3e698cfb0"
+        }
+      ],
       "rn-css-hmr-probe": [
         {
           "style": {
             "backgroundColor": "#10b981"
           },
-          "order": 103,
+          "order": 104,
           "id": "s72b1e51a3eaa"
         }
       ],
@@ -4665,7 +4675,7 @@
             "paddingBottom": 13,
             "paddingLeft": 13
           },
-          "order": 130,
+          "order": 131,
           "id": "scb81b5722bfa"
         }
       ],
@@ -4674,7 +4684,7 @@
           "style": {
             "paddingHorizontal": 8
           },
-          "order": 131,
+          "order": 132,
           "id": "s5373dec465c3"
         }
       ],
@@ -4683,7 +4693,7 @@
           "style": {
             "paddingHorizontal": 16
           },
-          "order": 132,
+          "order": 133,
           "id": "s6c3095497978"
         }
       ],
@@ -4692,7 +4702,7 @@
           "style": {
             "paddingHorizontal": 7.5
           },
-          "order": 133,
+          "order": 134,
           "id": "s84a3d902930d"
         }
       ],
@@ -4701,7 +4711,7 @@
           "style": {
             "paddingRight": 7
           },
-          "order": 134,
+          "order": 135,
           "id": "s7db92899fa70"
         }
       ],
@@ -4710,7 +4720,7 @@
           "style": {
             "paddingLeft": 7
           },
-          "order": 135,
+          "order": 136,
           "id": "s32d454f62d24"
         }
       ],
@@ -4719,7 +4729,7 @@
           "style": {
             "textAlign": "center"
           },
-          "order": 136,
+          "order": 137,
           "id": "sbbaa3a3cf4bd"
         }
       ],
@@ -4728,7 +4738,7 @@
           "style": {
             "fontFamily": "var(--font-sans)"
           },
-          "order": 139,
+          "order": 140,
           "id": "sb836cfa93f9d"
         }
       ],
@@ -4737,7 +4747,7 @@
           "style": {
             "fontSize": 24
           },
-          "order": 140,
+          "order": 141,
           "id": "sd1a995b3b9fb"
         }
       ],
@@ -4746,7 +4756,7 @@
           "style": {
             "fontSize": 23
           },
-          "order": 141,
+          "order": 142,
           "id": "sf8123414aeac"
         }
       ],
@@ -4755,7 +4765,7 @@
           "style": {
             "lineHeight": 1.25
           },
-          "order": 142,
+          "order": 143,
           "id": "s85ca9dab405a"
         }
       ],
@@ -4764,7 +4774,7 @@
           "style": {
             "fontWeight": "var(--font-weight-bold)"
           },
-          "order": 143,
+          "order": 144,
           "id": "s0fbc970471de"
         }
       ],
@@ -4773,7 +4783,7 @@
           "style": {
             "letterSpacing": 1.92
           },
-          "order": 144,
+          "order": 145,
           "id": "sbaa3be2ba2ed"
         }
       ],
@@ -4782,7 +4792,7 @@
           "style": {
             "color": "#c31d6b"
           },
-          "order": 150,
+          "order": 151,
           "id": "s0c8da1cba7ca"
         }
       ],
@@ -4791,7 +4801,7 @@
           "style": {
             "color": "#0f172b"
           },
-          "order": 152,
+          "order": 153,
           "id": "s4366072e2b83"
         }
       ],
@@ -4800,7 +4810,7 @@
           "style": {
             "color": "#fff"
           },
-          "order": 153,
+          "order": 154,
           "id": "s75c63162ba25"
         }
       ],
@@ -4809,7 +4819,7 @@
           "style": {
             "textTransform": "uppercase"
           },
-          "order": 154,
+          "order": 155,
           "id": "s6b5c6ca654a4"
         }
       ],
@@ -4818,7 +4828,7 @@
           "style": {
             "fontStyle": "italic"
           },
-          "order": 155,
+          "order": 156,
           "id": "s4156994e0c82"
         }
       ],
@@ -4827,7 +4837,7 @@
           "style": {
             "textDecorationLine": "underline"
           },
-          "order": 159,
+          "order": 160,
           "id": "s9d14800845b1"
         }
       ],
@@ -4836,7 +4846,7 @@
           "style": {
             "textDecorationColor": "#e11d48"
           },
-          "order": 160,
+          "order": 161,
           "id": "s4e27ece86a9e"
         }
       ],
@@ -4845,7 +4855,7 @@
           "style": {
             "textDecorationStyle": "dashed"
           },
-          "order": 161,
+          "order": 162,
           "id": "se9a493b9c45c"
         }
       ],
@@ -4854,7 +4864,7 @@
           "style": {
             "opacity": 0.5
           },
-          "order": 168,
+          "order": 169,
           "id": "sc2b4e6782d47"
         }
       ],
@@ -4868,7 +4878,7 @@
             "shadowRadius": 0,
             "shadowColor": "#0000"
           },
-          "order": 171,
+          "order": 172,
           "id": "s612ab659d970"
         }
       ],
@@ -4882,7 +4892,7 @@
             "shadowRadius": 0,
             "shadowColor": "#0000"
           },
-          "order": 172,
+          "order": 173,
           "id": "s43b3e613106c"
         }
       ],
@@ -4896,7 +4906,7 @@
             "shadowRadius": 0,
             "shadowColor": "#0000"
           },
-          "order": 173,
+          "order": 174,
           "id": "s5a057b3216a9"
         }
       ],
@@ -4910,7 +4920,7 @@
             "shadowRadius": 0,
             "shadowColor": "#0000"
           },
-          "order": 174,
+          "order": 175,
           "id": "sd6f06b53c703"
         }
       ],
@@ -4920,7 +4930,7 @@
             "backgroundColor": "#0f172b"
           },
           "colorScheme": "dark",
-          "order": 224,
+          "order": 225,
           "id": "sfd96d33f5fae"
         }
       ],
@@ -4930,7 +4940,7 @@
             "color": "#ffffff"
           },
           "colorScheme": "dark",
-          "order": 225,
+          "order": 226,
           "id": "s53547874b9a9"
         }
       ],
@@ -4939,7 +4949,7 @@
           "style": {
             "paddingHorizontal": 8
           },
-          "order": 131,
+          "order": 132,
           "id": "s5373dec465c3",
           "platform": "android"
         }
@@ -4949,7 +4959,7 @@
           "style": {
             "paddingHorizontal": 16
           },
-          "order": 132,
+          "order": 133,
           "id": "s6c3095497978",
           "platform": "ios"
         }
@@ -6109,6 +6119,9 @@
       "s45ca05b7c071": {
         "backgroundColor": "#00bc7d"
       },
+      "sabe3e698cfb0": {
+        "backgroundColor": "#0f172b"
+      },
       "s72b1e51a3eaa": {
         "backgroundColor": "#10b981"
       },
@@ -6523,11 +6536,18 @@
         "order": 102,
         "id": "s45ca05b7c071"
       },
+      "sabe3e698cfb0": {
+        "style": {
+          "backgroundColor": "#0f172b"
+        },
+        "order": 103,
+        "id": "sabe3e698cfb0"
+      },
       "s72b1e51a3eaa": {
         "style": {
           "backgroundColor": "#10b981"
         },
-        "order": 103,
+        "order": 104,
         "id": "s72b1e51a3eaa"
       },
       "scb81b5722bfa": {
@@ -6537,14 +6557,14 @@
           "paddingBottom": 13,
           "paddingLeft": 13
         },
-        "order": 130,
+        "order": 131,
         "id": "scb81b5722bfa"
       },
       "s5373dec465c3": {
         "style": {
           "paddingHorizontal": 8
         },
-        "order": 131,
+        "order": 132,
         "id": "s5373dec465c3",
         "platform": "android"
       },
@@ -6552,7 +6572,7 @@
         "style": {
           "paddingHorizontal": 16
         },
-        "order": 132,
+        "order": 133,
         "id": "s6c3095497978",
         "platform": "ios"
       },
@@ -6560,133 +6580,133 @@
         "style": {
           "paddingHorizontal": 7.5
         },
-        "order": 133,
+        "order": 134,
         "id": "s84a3d902930d"
       },
       "s7db92899fa70": {
         "style": {
           "paddingRight": 7
         },
-        "order": 134,
+        "order": 135,
         "id": "s7db92899fa70"
       },
       "s32d454f62d24": {
         "style": {
           "paddingLeft": 7
         },
-        "order": 135,
+        "order": 136,
         "id": "s32d454f62d24"
       },
       "sbbaa3a3cf4bd": {
         "style": {
           "textAlign": "center"
         },
-        "order": 136,
+        "order": 137,
         "id": "sbbaa3a3cf4bd"
       },
       "sb836cfa93f9d": {
         "style": {
           "fontFamily": "var(--font-sans)"
         },
-        "order": 139,
+        "order": 140,
         "id": "sb836cfa93f9d"
       },
       "sd1a995b3b9fb": {
         "style": {
           "fontSize": 24
         },
-        "order": 140,
+        "order": 141,
         "id": "sd1a995b3b9fb"
       },
       "sf8123414aeac": {
         "style": {
           "fontSize": 23
         },
-        "order": 141,
+        "order": 142,
         "id": "sf8123414aeac"
       },
       "s85ca9dab405a": {
         "style": {
           "lineHeight": 1.25
         },
-        "order": 142,
+        "order": 143,
         "id": "s85ca9dab405a"
       },
       "s0fbc970471de": {
         "style": {
           "fontWeight": "var(--font-weight-bold)"
         },
-        "order": 143,
+        "order": 144,
         "id": "s0fbc970471de"
       },
       "sbaa3be2ba2ed": {
         "style": {
           "letterSpacing": 1.92
         },
-        "order": 144,
+        "order": 145,
         "id": "sbaa3be2ba2ed"
       },
       "s0c8da1cba7ca": {
         "style": {
           "color": "#c31d6b"
         },
-        "order": 150,
+        "order": 151,
         "id": "s0c8da1cba7ca"
       },
       "s4366072e2b83": {
         "style": {
           "color": "#0f172b"
         },
-        "order": 152,
+        "order": 153,
         "id": "s4366072e2b83"
       },
       "s75c63162ba25": {
         "style": {
           "color": "#fff"
         },
-        "order": 153,
+        "order": 154,
         "id": "s75c63162ba25"
       },
       "s6b5c6ca654a4": {
         "style": {
           "textTransform": "uppercase"
         },
-        "order": 154,
+        "order": 155,
         "id": "s6b5c6ca654a4"
       },
       "s4156994e0c82": {
         "style": {
           "fontStyle": "italic"
         },
-        "order": 155,
+        "order": 156,
         "id": "s4156994e0c82"
       },
       "s9d14800845b1": {
         "style": {
           "textDecorationLine": "underline"
         },
-        "order": 159,
+        "order": 160,
         "id": "s9d14800845b1"
       },
       "s4e27ece86a9e": {
         "style": {
           "textDecorationColor": "#e11d48"
         },
-        "order": 160,
+        "order": 161,
         "id": "s4e27ece86a9e"
       },
       "se9a493b9c45c": {
         "style": {
           "textDecorationStyle": "dashed"
         },
-        "order": 161,
+        "order": 162,
         "id": "se9a493b9c45c"
       },
       "sc2b4e6782d47": {
         "style": {
           "opacity": 0.5
         },
-        "order": 168,
+        "order": 169,
         "id": "sc2b4e6782d47"
       },
       "s612ab659d970": {
@@ -6698,7 +6718,7 @@
           "shadowRadius": 0,
           "shadowColor": "#0000"
         },
-        "order": 171,
+        "order": 172,
         "id": "s612ab659d970"
       },
       "s43b3e613106c": {
@@ -6710,7 +6730,7 @@
           "shadowRadius": 0,
           "shadowColor": "#0000"
         },
-        "order": 172,
+        "order": 173,
         "id": "s43b3e613106c"
       },
       "s5a057b3216a9": {
@@ -6722,7 +6742,7 @@
           "shadowRadius": 0,
           "shadowColor": "#0000"
         },
-        "order": 173,
+        "order": 174,
         "id": "s5a057b3216a9"
       },
       "sd6f06b53c703": {
@@ -6734,7 +6754,7 @@
           "shadowRadius": 0,
           "shadowColor": "#0000"
         },
-        "order": 174,
+        "order": 175,
         "id": "sd6f06b53c703"
       },
       "sfd96d33f5fae": {
@@ -6742,7 +6762,7 @@
           "backgroundColor": "#0f172b"
         },
         "colorScheme": "dark",
-        "order": 224,
+        "order": 225,
         "id": "sfd96d33f5fae"
       },
       "s53547874b9a9": {
@@ -6750,7 +6770,7 @@
           "color": "#ffffff"
         },
         "colorScheme": "dark",
-        "order": 225,
+        "order": 226,
         "id": "s53547874b9a9"
       }
     },
@@ -6877,6 +6897,9 @@
       ],
       "bg-emerald-500": [
         "s45ca05b7c071"
+      ],
+      "bg-slate-900": [
+        "sabe3e698cfb0"
       ],
       "rn-css-hmr-probe": [
         "s72b1e51a3eaa"

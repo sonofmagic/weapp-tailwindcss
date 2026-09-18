@@ -1,4 +1,5 @@
 @import './uvue.wxss';
+@import '/uvue.wxss';
 view,
 text,
 ::after,
@@ -12,6 +13,7 @@ wx-root-portal-content {
   --font-sans: 'inter', 'inter Fallback', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
   --font-mono: var(--font-plex-mono), monospace;
   --color-red-500: #fb2c36;
+  --color-cyan-500: #00b7d7;
   --color-blue-500: #3080ff;
   --color-slate-100: rgb(241, 245, 249);
   --color-slate-200: rgb(226, 232, 240);
@@ -35,6 +37,7 @@ wx-root-portal-content {
   --text-2xl: 48rpx;
   --text-2xl--line-height: calc(2 / 1.5);
   --radius-md: 12rpx;
+  --drop-shadow-md: 0 3px 3px rgba(0, 0, 0, 0.12);
   --default-font-family: var(--font-inter), system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
   --default-mono-font-family: var(--font-plex-mono), monospace;
   --test-color: #006241;
@@ -50,7 +53,6 @@ wx-root-portal-content {
   --color-green-500: #00c758;
   --color-emerald-500: #00bb7f;
   --color-teal-500: #00baa7;
-  --color-cyan-500: #00b7d7;
   --color-sky-500: #00a5ef;
   --color-indigo-500: #625fff;
   --color-violet-500: #8d54ff;
@@ -162,6 +164,9 @@ wx-root-portal-content {
 }
 .flex {
   display: flex;
+}
+.h-_b40px_B {
+  height: 40px;
 }
 .h-_b41px_B {
   height: 41px;
@@ -429,8 +434,32 @@ wx-root-portal-content {
   --tw-gradient-position: to bottom right;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
+.bg-gradient-to-r {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.from-cyan-500 {
+  --tw-gradient-from: var(--color-cyan-500);
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
+}
 .from-slate-900 {
   --tw-gradient-from: var(--color-slate-900);
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
+}
+.from-20_v {
+  --tw-gradient-from-position: 20%;
+}
+.via-red-500 {
+  --tw-gradient-via: var(--color-red-500);
+  --tw-gradient-via-stops:
+    var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-via) var(--tw-gradient-via-position,),
+    var(--tw-gradient-to) var(--tw-gradient-to-position,);
+  --tw-gradient-stops: var(--tw-gradient-via-stops);
+}
+.to-blue-500 {
+  --tw-gradient-to: var(--color-blue-500);
   --tw-gradient-stops:
     var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
 }
@@ -438,6 +467,9 @@ wx-root-portal-content {
   --tw-gradient-to: var(--color-slate-700);
   --tw-gradient-stops:
     var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
+}
+.to-80_v {
+  --tw-gradient-to-position: 80%;
 }
 .p-4 {
   padding: calc(var(--spacing) * 4);
@@ -610,9 +642,27 @@ wx-root-portal-content {
 .underline {
   text-decoration-line: underline;
 }
+.shadow-md {
+  --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 2px 4px -2px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
 .shadow-xl {
   --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.ring-2 {
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.shadow-red-500 {
+  --tw-shadow-color: rgb(251, 44, 54);
+}
+.ring-blue-500 {
+  --tw-ring-color: var(--color-blue-500);
+}
+.drop-shadow-md {
+  --tw-drop-shadow-size: drop-shadow(0 3px 3px var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.12)));
+  --tw-drop-shadow: drop-shadow(var(--drop-shadow-md));
 }
 .before_ccontent-_b_au_x73b0_u_x5728_u_xff0c_u_x8ba9_u_x6211_u_x4eec_u_x5f00_u_x59cb_u_x795e_u_x5947_u_x7684__tailwindcss_u_x5f00_u_x53d1_u_x4e4b_u_x65c5_u_x5427_u_xff01__a_B::before {
   --tw-content: '现在，让我们开始神奇的 tailwindcss 开发之旅吧！';
