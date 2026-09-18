@@ -30,7 +30,7 @@ regressions:
 
 主包已经不再直接依赖 CSS parser，但仍通过 PostCSS re-export 实现样式转换。共享生成流程、Vite 产物处理、Webpack 兼容和 Harmony apply 混合了构建图编排与 CSS AST 操作，造成重复处理和边界难以检查。
 
-本次重构从 rpx warning PR 的完成提交分出独立分支，不扩大原 PR 的交付承诺。这里记录阶段证据；全仓样式归属审计、真实构建/HMR 性能验证尚未完成。
+本次重构从 rpx warning PR 的实现提交分出独立分支，不扩大原 PR 的交付承诺。这里记录阶段证据；生产转换归属与剩余编排已审计，真实构建/HMR 性能验证尚未完成。
 
 ## 根因与纠正
 
@@ -135,14 +135,13 @@ PostCSS 内部已共用 apply 选择器分析和 specificity placeholder 归一�
 
 React Native 的 CSS 到样式对象转换已迁入独立 `/native` 子入口。Native 包继续持有 manifest ID、Babel/Metro 和运行时接口。迁移前后 `CI=1 pnpm --filter @weapp-tailwindcss/react-native test --update=none` 均为 5 文件、36 通过；`CI=1 pnpm --filter @weapp-tailwindcss/postcss exec vitest run test/native-compiler.test.ts --update=none` 为 4 通过，覆盖精确类名、important/顺序、告警和调用间独立性。两包构建及类型生成通过；架构回归为 6 通过，新增浏览器 bundle 依赖闭包检查，确认 runtime 仅包含自身代码、无编译依赖。
 
-已迁移模块的架构测试约束主包不重新引入 AST 转换；它不是全仓迁移完成的证明。剩余审计包含：
+已迁移模块的架构测试约束主包不重新引入 AST 转换。生产转换、编排和开发辅助的归属见上表；同配置的真实框架构建/HMR、峰值内存与对应 static 基线仍待验证，不能用微基准代替。
 
-- 保留在主包的 parse/walk 需要逐项确认属于读取 import、依赖图或 artifact 编排；仅搜索数量减少不能证明边界正确。
-- 对所有字符串变换的审计，避免仅凭 parse/walk 搜索结果判定完成。
-- 既有 PostCSS 模块与本次迁入函数的重复实现及导出面整理。
-- 同配置的真实框架构建/HMR、峰值内存与对应 static 基线验证；全面全端验收必须先过当前会话环境预检。
+2026-09-18 在 `541473366cfa459acbf3cf5f7a54e50e350b943e` 执行 `pnpm e2e:preflight prepare`，本轮 run ID 为 `39875579-98db-4280-8bcb-79e0ba3be4a8`。Node/pnpm、微信真实 DevTools、iOS、Android、Harmony 和 Web 脚本探针通过；HBuilderX `cli version --host HBuilderX` 超时，探针报告 `issue=timeout; exit=SIGTERM`。同时，当前会话 `mcp__cua_repl.js` 调用 `cua.getState()` 返回 `Browsers: Error: Codex auth token is unavailable`。
 
-本阶段没有执行真机或全端验收，也没有等待远端 CI。剩余工作未完成前，目标保持进行中。
+已按手册用 `pnpm e2e:preflight block --report e2e/.artifacts/preflight/39875579-98db-4280-8bcb-79e0ba3be4a8/report.json --reason "当前会话浏览器发现认证失败"` 记录阻断。该命令设计为非零退出。原始 JSON、Markdown、探针日志及截图位于同一忽略目录，没有修改门禁、关闭用户 IDE 或借用旧报告。恢复需修复当前 Codex 浏览器授权，并确认 HBuilderX 所选 host 的 CLI 可响应，然后重新 prepare；本轮报告不可复用。
+
+全面测试尚未启动，真实构建/HMR 和峰值内存没有取得结果。此前的包回归仍仅作为定向验证证据；没有等待远端 CI。剩余工作未完成前，目标保持进行中。
 
 ## 规则评估
 
