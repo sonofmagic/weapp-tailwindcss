@@ -192,6 +192,8 @@ React Native 的 CSS 到样式对象转换已迁入独立 `/native` 子入口。
 
 ### 对齐 CLI 编译器并隔离基线失败
 
+以下升级及 iOS 结果为拆分前的历史证据。编译器升级已移到独立草稿 [#1220](https://github.com/sonofmagic/weapp-tailwindcss/pull/1220)；#1217 的 demo 编译器恢复为原版本，以同编译器验证样式迁移。此前 5.26 的产物和运行时证据不作为恢复后旧编译器的通过证明，HBuilderX 基座版本匹配仍需由升级分支解决。
+
 2026-09-19 继续恢复时，通过 npm registry 确认 `@dcloudio/vite-plugin-uni@3.0.0-5020620260917001` 的 `uni-app.compilerVersion` 为 `5.26`。只将 `demo/uni-app-vite-tailwindcss-v4` 的 21 个同系列 `@dcloudio/*` 编译依赖对齐到该版本；包含原本混用 5.03 的 `uni-mp-vue`，保留 Vite 5.2.8。锁文件的 importer 只有该 demo 改变；pnpm 同时清理 15 个既有无引用的 Mpx/React Native peer snapshot，没有更改其他 importer。`pnpm install --frozen-lockfile --filter @weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v4` 通过。
 
 - `CI=1 E2E_SKIP_OPEN_AUTOMATOR=1 E2E_PROJECT_FILTER='^uni-app-vite-tailwindcss-v4$' pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/uni-app-vite-tailwindcss-v4.test.ts -u`：2 项通过，重新生成 13 个快照，无受跟踪产物差异。改为 `--update=none` 复核同样通过。
@@ -243,6 +245,27 @@ React Native 的 CSS 到样式对象转换已迁入独立 `/native` 子入口。
 同编译器下没有重现构建和 RSS 退化；换到 5.26 后构建耗时、RSS 和 HMR 均上升，支持将编译器升级视为独立影响因素。此实验不是新 head 的远端 CI 通过证据，也不能证明所有差异只来自某个上游函数；此前同锁文件的五框架对照仍单独保留。
 
 旧 head 的 Expo CI（run `35371160123`）有两项环境失败：Android 安装时 `StorageManagerService.allocateBytes` 访问空的 `PackageManagerInternal`，同段 logcat 有 `DeadSystemException: The system died`；iOS 在启动测试的 pnpm hook 阶段超时，尚未进入样式断言。原始日志及 Android artifact 保存在 `.tmp/pr1217-ci-before/`，不能据此修改样式实现或宣称 Native 回归通过。
+
+### 编译器拆分后的复核
+
+重放后的 head `09001e180` 在 run `35376941648` 再次失败：uni-app 构建 +14.68%、插件构建 +12.69%、HMR 插件 P95 +8.61%、HMR 峰值 RSS +14.73%。结合前述三组对照，将编译器升级拆为 #1220，保留其性能成本和草稿状态。#1217 的 demo manifest 与锁文件和升级前 `7d785c447` 完全一致；锁文件中的 PostCSS 迁移依赖继续保留。
+
+拆分后重新 `pnpm install --frozen-lockfile`，限定 uni-app 微信 static 执行 `-u` 重生成，再以 `--update=none` 复核，两次各 2 项通过、无受跟踪基线差异；`CI=1 E2E_MULTIPLATFORM_BUILD_CASE='^uni-app-vite-tailwindcss-v4 (mp-alipay|h5)$' pnpm e2e:multiplatform-build` 共 3 项通过。原日志为 `.tmp/pr1217-compiler-split-{install,static-update,static-verify,multiplatform}.log`。#1220 在独立 `main` 工作树也完成对应 install、包构建、static 重生成/复核和支付宝/H5 检查，详见该 PR 工程记录。
+
+当前样式源码为 `6accdd36b` 加编译器拆分改动，包构建包含新迁入的 config 清理。对基线 `821f4dd4b` 串行执行 `CI=1 pnpm exec node benchmark/version-compare/scripts/run-matrix.mjs --versions-file .tmp/pr1217-compiler-split-versions.json --build-runs 3 --hmr-runs 5 --only demo-uni-app-vite-tailwindcss-v4__mp-weixin --out .tmp/pr1217-compiler-split-matrix.json`，采样时未并行其他构建或测试，全部构建与更新成功：
+
+| 指标 | 基线 | 拆分后的 #1217 |
+| --- | --- | --- |
+| 构建中位数 ms | 3792.67 | 3770.61 |
+| 插件构建中位数 ms | 947 | 937 |
+| HMR steady 中位数 ms | 483.40 | 471.08 |
+| 构建峰值 RSS 中位数 MB | 1071.64 | 1054.72 |
+| HMR 峰值 RSS MB | 1290.25 | 1318.27 |
+| HMR steady RSS MB | 1274.86 | 1313.16 |
+
+使用仓库 `ci-report.mjs` 的 `buildSummary` 和 `evaluatePerformanceGuard` 对原始数据评估，参数与 CI 一致：5%、最少 2 次退化、最少 10 ms/64 MB，结果 `passed: true`、`violations: []`，保存在 `.tmp/pr1217-compiler-split-guard.json`。它证明本地 uni-app 样本未触发既有门槛，不能替代新 head 的全部远端矩阵，也不能把小幅差异宣称为稳定全框架提速。
+
+浏览器发现再次实测仍报 `Codex auth token is unavailable`，已即时通知维护者；完整多端验收没有启动或复用旧报告。目标保持未完成。
 
 ### 真实框架性能对照
 
