@@ -190,6 +190,17 @@ React Native 的 CSS 到样式对象转换已迁入独立 `/native` 子入口。
 
 恢复前需对齐普通 uni-app CLI 编译器与基座版本，并独立定位 App 增量重启；不能点击忽略弹窗、放宽纯 HMR 条件或反复运行完整矩阵取得偶然通过。依赖升级会影响 demo 与 static 基线，需单独审查其范围。PR 保持草稿，完整产品验收未完成。本轮只更新证据记录，没有新增产品修复或规则。
 
+### 对齐 CLI 编译器并隔离基线失败
+
+2026-09-19 继续恢复时，通过 npm registry 确认 `@dcloudio/vite-plugin-uni@3.0.0-5020620260917001` 的 `uni-app.compilerVersion` 为 `5.26`。只将 `demo/uni-app-vite-tailwindcss-v4` 的 21 个同系列 `@dcloudio/*` 编译依赖对齐到该版本；包含原本混用 5.03 的 `uni-mp-vue`，保留 Vite 5.2.8。锁文件的 importer 只有该 demo 改变；pnpm 同时清理 15 个既有无引用的 Mpx/React Native peer snapshot，没有更改其他 importer。`pnpm install --frozen-lockfile --filter @weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v4` 通过。
+
+- `CI=1 E2E_SKIP_OPEN_AUTOMATOR=1 E2E_PROJECT_FILTER='^uni-app-vite-tailwindcss-v4$' pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/uni-app-vite-tailwindcss-v4.test.ts -u`：2 项通过，重新生成 13 个快照，无受跟踪产物差异。改为 `--update=none` 复核同样通过。
+- `CI=1 E2E_MULTIPLATFORM_BUILD_CASE='^uni-app-vite-tailwindcss-v4 ' pnpm e2e:multiplatform-build`：15 项通过（含 14 平台构建及登记检查）；对应 H5 dev 定向测试为 2 通过、1 过滤跳过。
+- 用 `CI=1 DEMO_VISUAL_REPORT_RESET=1 pnpm exec tsx scripts/demo-visual-e2e-report.ts --ios-only --filter '^uni-app-vite-tailwindcss-v4$' --fail-on-incomplete` 做一次有界恢复诊断。日志确认编译器 5.26，iOS 初始截图不再出现版本不匹配弹窗，真实页面和初始样式探针通过；差量编译后仍有 `App Launch`，最终结果为 `纯 HMR 验收失败：restarted`。没有把初始页面恢复写成 HMR 成功。原始报告、截图和 launch 日志另存 `.tmp/uni-app-526-ios/`，执行日志为 `.tmp/uni-app-526-ios.log`。
+- 在独立基线 checkout `821f4dd4bea8c8b9426248ed56d5bb2717a6c821`，以同一 HBuilderX 5.26、同一 iOS 模拟器运行上述视觉命令，过滤改为 `^uni-app-vite-vue3-hbuilderx-tailwindcss-v4$`。基线同样在差量编译后再次记录 `App Launch`，相同生命周期断言失败；该断言与 App visual 实现未被本次迁移修改。日志为基线 checkout 的 `.tmp/baseline-hbuilderx-ios-lifecycle.log`。两次诊断均正常退出并恢复临时源码。
+
+版本不匹配已解决；剩余的 App 纯 HMR 失败在迁移前可复现，不能归因为本次 CSS 归属迁移。尚未确定其在 IDE/编译器更新机制中的具体触发条件；未修改平台更新语义、断言或用户 IDE 设置，也未重新调度完整验收。此前性能比较使用的旧锁文件与旧 demo 编译器保持原记录，不将新编译器的定向结果并入性能样本。
+
 ### 真实框架性能对照
 
 在基线 `821f4dd4bea8c8b9426248ed56d5bb2717a6c821` 与迁移后 `ad8ec641be457402f916ba766b625d419473e44c` 的独立 checkout，使用同一锁文件、Node 24.18.0、pnpm 12.4.1 和各自 workspace 构建产物。命令为 `CI=1 pnpm exec node benchmark/version-compare/scripts/run-matrix.mjs --versions-file <版本列表> --build-runs 3 --hmr-runs 5 --only <五项目 key> --out <报告>`。每个版本采样 3 次构建、同一 watch 会话内 5 次更新；steady 中位数分别去掉第一次构建、第一次更新。进程树 RSS 含子进程；构建内存取三次峰值的中位数，HMR 内存为该 watch 会话峰值。
