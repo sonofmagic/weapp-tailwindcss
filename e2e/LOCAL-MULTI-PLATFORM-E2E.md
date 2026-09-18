@@ -2,6 +2,74 @@
 
 这份手册是仓库内 H5、微信小程序、Android、iOS、Harmony 本地验收的唯一流程入口。它记录的是可迁移的流程和证据要求，不记录某台电脑的绝对路径、截图或设备名称。换电脑时只需要重新配置工具链和设备 ID。
 
+## 0. 全面测试前的强制预检
+
+本地全面验收必须先通过微信 IDE、HBuilderX、iOS、Android、Harmony、Web 和当前 AI 会话 computer use 的全部检查。此要求也适用于 AI 手动编排的全仓测试。`pnpm e2e:runner:health` 仅是 hosted/命令版本检查，不代表全端就绪；单项回归、普通 CI 和预检自身测试无需启动全部模拟器。
+
+### 准备与阻断
+
+在目标 worktree 中运行：
+
+```bash
+pnpm e2e:preflight prepare
+```
+
+命令生成 `e2e/.artifacts/preflight/<run-id>/report.json`、`report.md`、探针日志和截图。每条工具命令都有超时，每个平台 worker 有总超时；出现故障时保留一次有界诊断，然后非零退出，全面测试不启动。检查失败、超时、未知、缺证、平台不支持均阻断，不能按 skip/optional 通过。
+
+目标必须唯一：优先使用已有设备变量；多个目标时指定 `E2E_HBUILDERX_ANDROID_DEVICE_ID`、`E2E_HBUILDERX_IOS_DEVICE_ID`、`E2E_HBUILDERX_HARMONY_DEVICE_ID`。微信非默认安装位置通过 `E2E_PREFLIGHT_WECHAT_CLI` 配置；Windows 指向官方 `cli.bat`。HBuilderX 使用 `HBUILDERX_CLI_PATH`、`HBUILDERX_CHANNEL` 和 `HBUILDERX_HOST`。
+
+预检可安全启动目标明确的 HBuilderX、微信 IDE 和指定 iOS 模拟器。Android/Harmony 无在线目标时，由 AI 用当前 computer use 在已安装的 Android Studio/DevEco 中启动明确的模拟器，再重新 prepare；不能安装新设备或猜测多个候选中的一个。登录、授权、组件安装或用户会话冲突交给用户处理。微信使用本轮独立的临时原生探针项目，显式采用 DevTools provider；不会使用 headless runtime 替代 IDE，也不全局关闭 IDE。
+
+### 当前会话的 computer use 证据
+
+脚本探针通过后，prepare 保持前台服务，打印本轮 loopback 探针 URL。AI 必须使用当前会话实际可用的 computer use 工具：发现目标，读取页面，截图，在输入框输入页面上的 run ID，点击“验证”，再读取界面确认“完成：<run-id>”。不得用 Playwright、HTTP 请求或页面脚本代做此项；Web 脚本探针的交互不会写入 computer use 回执。
+
+把原始工具输出与 PNG 截图保存到本轮目录，再写入 `computer-use.json`：
+
+```json
+{
+  "runId": "本轮 run ID",
+  "provider": "实际工具名称",
+  "sessionId": "当前 AI 会话 ID",
+  "targetUrl": "prepare 打印的完整 URL",
+  "observedAt": "完成最后一次界面验证后的 ISO 时间",
+  "screenshot": "computer.png",
+  "observations": [
+    { "action": "discover", "toolCallId": "实际调用 ID", "transcript": "discover.txt" },
+    { "action": "read", "toolCallId": "实际调用 ID", "transcript": "read.txt" },
+    { "action": "screenshot", "toolCallId": "实际调用 ID", "transcript": "screenshot.txt" },
+    { "action": "input", "toolCallId": "实际调用 ID", "transcript": "input.txt" },
+    { "action": "click", "toolCallId": "实际调用 ID", "transcript": "click.txt" },
+    { "action": "verify", "toolCallId": "实际调用 ID", "transcript": "verify.txt" }
+  ]
+}
+```
+
+证据文件必须位于本轮目录，使用相对路径；文本保留对应调用 ID、run ID 和真实结果。一条工具调用包含多个动作时可以引用同一份输出。只有回执、截图、完整动作证据、同一工作树和新鲜时间同时满足才会放行；单独写 `passed: true` 无效。这个本地门禁用于防止缺证、误用和历史报告复用，不是对恶意伪造本地文件的安全认证服务。AI 对工具输出来源的真实性负责。
+
+若工具缺失、浏览器发现报认证错误、截图/操作不可用或无法保存证据，应立即通知用户，并用以下命令记录原始错误和结束本轮服务。此命令固定返回非零状态；脚本探针已失败、服务已退出时，也能补充失败记录。不能把“Playwright 可用”当作 computer use 通过。
+
+```bash
+pnpm e2e:preflight block --report <本轮-report.json> --reason "实际工具调用的原始错误"
+```
+
+### 验证、领取与恢复
+
+在另一个终端运行以下命令，将占位路径替换为本轮报告：
+
+```bash
+pnpm e2e:preflight verify --report <本轮-report.json>
+pnpm e2e:local:full-report --preflight-report <本轮-report.json>
+```
+
+也可以把本轮报告交给 `pnpm e2e:demo:workflow:local --preflight-report <本轮-report.json>`。两者只能选择一个消费同一报告；再次运行必须新建预检。prepare 前台服务要保持运行，测试结束后自动释放会话和锁。
+
+verify 会重新检查环境并合并 computer use 证据。全面入口在任何测试/构建子进程启动前，向活动预检服务领取一次性会话；所有检查必须在 15 分钟以内，且 checkout、SHA、源码、主机与相关配置一致。领取复查结束时再次验证时效和证据。修改 JSON、传入旧报告、关闭 prepare 服务均不能放行。测试进程固定已检查的设备 ID、微信 CLI、IDE host 和浏览器，进入设备阶段前再次检查；失败则停止后续调度。Web 同时检查测试默认 Chromium 与 HBuilderX 实际选用的浏览器；指定 `E2E_HBUILDERX_CHROME_PATH` 时不能回退到其他安装。HBuilderX 检查所选安装的编译器入口和运行基座，实际编译仍由门禁之后的测试验证。smoke/hmr-smoke 为独立局部验证，不构成全面验收。
+
+SIGINT/SIGTERM 等待本次 worker 结束后清理服务与锁，不按进程名称终止其他会话；已启动的 IDE/模拟器保留，不重置设备。全面测试消费进程退出时，prepare 将本轮标记失效并退出。强制终止 prepare 留下锁时，错误会列出锁路径、run ID 与 PID：先确认该 run ID 属于本任务且 PID 已退出，再只删除这一个锁；活动或归属不明的锁不能接管。中断、源码变更、设备/IDE 切换后重新 prepare。
+
+阻断通知使用当前对话与命令输出，至少写明：失败项、原始错误、已尝试的启动、未执行的测试、恢复动作、JSON/Markdown 报告位置。预检通过仅证明前置环境就绪，不代表编译、HMR 或业务验收通过。
+
 ## 1. 验收分层
 
 按下面的顺序执行，上一层失败时不要直接跳到截图层：

@@ -416,10 +416,9 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
 
   let miniProgram: any
   try {
-    miniProgram = await automator.launch({
+    miniProgram = await automator.launch({ cliPath: process.env.E2E_PREFLIGHT_WECHAT_CLI,
       // cliPath: 'C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat',
-      projectPath,
-    })
+      projectPath })
   }
   catch (error: any) {
     if (error?.code === 'EPERM' || EPERM_RE.test(error?.message ?? '')) {
