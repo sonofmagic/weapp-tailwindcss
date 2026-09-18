@@ -4,12 +4,14 @@ import { StringDecoder } from 'node:string_decoder'
 import { setTimeout } from 'node:timers/promises'
 import { stripVTControlCharacters } from 'node:util'
 
+export type AppUpdateMode = 'hmr' | 'native-reload'
+
 export function classifyHmrStep(output: string) {
   const text = stripVTControlCharacters(output)
   if (text.includes('热更新失败')) {
     return 'failed'
   }
-  if (/安装\s*\.hap\s*到/.test(text)) {
+  if (/安装\s*\.hap\s*到|正在安装(?:HBuilder|uni-app x)调试基座|(?:HBuilder|uni-app x)调试基座安装成功/.test(text)) {
     return 'reinstalled'
   }
   if (text.includes('App Launch')) {
@@ -19,7 +21,11 @@ export function classifyHmrStep(output: string) {
 }
 
 /** 在首次运行完成后、源码写入前监听，保留本轮全部日志，避免滚动窗口丢失失败。 */
-export function observeHmrStep(child: ChildProcess, platform: 'app-android' | 'app-ios' | 'app-harmony' = 'app-harmony') {
+export function observeHmrStep(
+  child: ChildProcess,
+  platform: 'app-android' | 'app-ios' | 'app-harmony' = 'app-harmony',
+  mode: AppUpdateMode = 'hmr',
+) {
   const outputs = { stdout: '', stderr: '' }
   let overflow = false
   const subscribe = (name: 'stdout' | 'stderr') => {
@@ -36,19 +42,30 @@ export function observeHmrStep(child: ChildProcess, platform: 'app-android' | 'a
   }
   const subscriptions = [subscribe('stdout'), subscribe('stderr')]
   const output = () => `${outputs.stdout}\n${outputs.stderr}`
+  const modeLabel = mode === 'native-reload' ? '原生热重载' : '纯 HMR'
+  const snapshot = () => ({
+    mode,
+    state: classifyHmrStep(output()),
+    appLaunchCount: stripVTControlCharacters(output()).match(/App Launch/g)?.length ?? 0,
+  })
   const assertNoFallback = () => {
     if (overflow) {
-      throw new Error('HMR 单轮日志超过 32 MiB，不能确认运行结果')
+      throw new Error(`${modeLabel} 单轮日志超过 32 MiB，不能确认运行结果`)
     }
     const state = classifyHmrStep(output())
+    if (mode === 'native-reload' && state === 'restarted') {
+      return
+    }
     if (state !== 'pending' && state !== 'updated') {
-      throw new Error(`纯 HMR 验收失败：${state}；增量重启或重装不能计作保持运行状态的更新\n${output()}`)
+      const reason = mode === 'native-reload' ? '更新失败或重装不能计作原生热重载' : '增量重启或重装不能计作保持运行状态的更新'
+      throw new Error(`${modeLabel} 验收失败：${state}；${reason}\n${output()}`)
     }
   }
   return {
     assertNoFallback,
+    snapshot,
     async waitForCompletion(timeoutMs: number, ensureRunning: () => void) {
-      // Android/iOS 由产物与运行时探针确认更新，但仍须持续拒绝重启回退。
+      // Android/iOS 由产物与运行时探针确认更新，生命周期策略由用例显式声明。
       if (platform !== 'app-harmony') {
         ensureRunning()
         assertNoFallback()

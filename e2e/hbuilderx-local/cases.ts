@@ -1,3 +1,4 @@
+import type { AppUpdateMode } from './hmr-lifecycle'
 import type { AppRenderMode } from './render-mode'
 import process from 'node:process'
 import { issue1144InitialStyles, issue1144Steps } from './issue-1144'
@@ -72,6 +73,8 @@ export interface HarmonyRuntimeTextPair {
 export interface AppCase {
   name: string
   platform: AppPlatform
+  /** 默认要求纯 HMR；只有确认上游更新机制的用例才允许原生热重载。 */
+  updateMode?: AppUpdateMode
   projectDir: string
   outputDir: string
   outputDirCandidates?: string[]
@@ -524,6 +527,7 @@ function createUniAppAppCases(options: {
     return {
       name: `${name} ${platformName}`,
       platform,
+      updateMode: 'native-reload',
       projectDir,
       outputDir,
       outputDirCandidates: createOutputDirCandidates(platform),

@@ -216,6 +216,34 @@ React Native 的 CSS 到样式对象转换已迁入独立 `/native` 子入口。
 
 本轮未重跑完整矩阵、未改测试门槛。普通 Vue3 的上游路径已定位；uni-app x 的分流条件及 Harmony 尚不能据此作相同结论。继续完整验收需要确认目标平台支持保留状态的更新路径，或由维护者明确采用平台原生热重载作为独立验收标准；当前 PR 保持草稿和部分验证状态，不将两种行为混为同一通过项。
 
+### 原生热重载独立验收
+
+2026-09-19 维护者明确选择“按平台原生热重载单独验收”。普通 uni-app Vue3 的 Android/iOS 用例因此显式声明 `updateMode: 'native-reload'`；未声明的用例仍使用纯 HMR，uni-app x 与 Harmony 不套用普通 Vue3 的结论。观察器只统计首次运行完成后的本轮日志，允许原生热重载重新执行应用生命周期，但两种模式均拒绝更新失败和基座重装。报告写入模式、状态、`App Launch` 次数，并把原生热重载步数与纯 HMR 步数分开统计。产物、运行时样式和截图阈值没有改变。
+
+- `CI=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/hbuilderx-hmr-lifecycle.test.ts e2e/demo-visual-update-mode.test.ts e2e/demo-visual-theme.test.ts --update=none`：3 文件、39 项通过，覆盖模式默认值、跨流分片、首次启动排除、Android/iOS 基座重装、更新失败及报告计数。改动文件 ESLint 和 `pnpm agents:check` 通过。
+- 有界 iOS 诊断直接调用共享 `runAppCase`，只选择 `demo/uni-app-vite-tailwindcss-v4` 的 iOS 用例，使用独立 `RuntimeContext.artifactRoot`，然后调用 `writeReport`。HBuilderX 为 `5.26.2026091802`，设备为 iPhone 17 Pro / iOS 26.5 模拟器；设备 ID `8FF8E968-BB02-4039-A25C-7C7EBCBDA402`。本轮 `hot-update` 的产物、运行时 marker/样式、前后截图均通过，生命周期为 `restarted`、`appLaunchCount: 1`，截图差异为 88,829 像素（26.99%）。只计作原生热重载。报告、截图和日志分别为 `.tmp/pr1217-native-reload-ios/report.json`、同目录 `screenshots/`、`.tmp/pr1217-native-reload-ios.log`。runner 正常退出并恢复临时源码。
+- 当前会话 `cua.getState()` 的浏览器发现返回 `Browsers: Error: Codex auth token is unavailable`；已即时通知维护者，未启动新一轮完整多端验收。原生 `cua.getApp('com.apple.iphonesimulator')` 能读取本次模拟器，不能代替全端 computer use 门禁。恢复完整验收仍需恢复浏览器授权并重新 prepare，不复用已消费报告。
+
+本次只调整生命周期验收和诊断元数据，没有修改 demo 源码或样式输出基线；编译器升级的 static 重生成与复核记录见上一节。
+
+### 合并基线与编译器性能归因
+
+#1216 合并后的 `main` 为 `d7feb9051c5c8f91979f583e5ac885434b81b253`，与原 #1216 head `821f4dd4bea8c8b9426248ed56d5bb2717a6c821` 的文件树完全一致。#1217 的 12 个提交已重放到该 `main`；`git range-diff` 全部为等价 patch，重放前后 head 文件树没有差异。
+
+旧 head `0ac220a494ca2e94b440afceb761b8b883776c9f` 的性能 CI（run `35371160167`）中，uni-app 构建中位数为 7808.10 → 8900.40 ms（+13.99%），插件耗时 +6.97%，峰值 RSS +11.62%。保留首次失败，未放宽 5% 门槛。
+
+为区分样式迁移与 demo 编译器升级，在三个独立 checkout 串行执行 `CI=1 pnpm exec node benchmark/version-compare/scripts/run-matrix.mjs --versions-file .tmp/pr1217-ci-before/compiler-versions.json --build-runs 3 --hmr-runs 3 --only demo-uni-app-vite-tailwindcss-v4__mp-weixin --out .tmp/pr1217-ci-before/compiler-matrix.json`。三个版本均无执行错误；迁移前为 `821f4dd4b`，迁移后旧编译器为 `7d785c447`，迁移后新编译器为 `aa45b6254`。后者未提交的生命周期诊断改动不参与性能构建。构建/插件/RSS 为三次中位数，HMR steady 去掉首次更新，原始样本全部保留：
+
+| 版本 | 构建 ms | 插件构建 ms | 构建峰值 RSS MB | HMR steady ms |
+| --- | --- | --- | --- | --- |
+| 迁移前 / 5.15 | 3813.81 | 966 | 1064.00 | 468.63 |
+| 迁移后 / 5.15 | 3708.59 | 920 | 1063.31 | 469.06 |
+| 迁移后 / 5.26 | 3968.69 | 994 | 1185.11 | 642.95 |
+
+同编译器下没有重现构建和 RSS 退化；换到 5.26 后构建耗时、RSS 和 HMR 均上升，支持将编译器升级视为独立影响因素。此实验不是新 head 的远端 CI 通过证据，也不能证明所有差异只来自某个上游函数；此前同锁文件的五框架对照仍单独保留。
+
+旧 head 的 Expo CI（run `35371160123`）有两项环境失败：Android 安装时 `StorageManagerService.allocateBytes` 访问空的 `PackageManagerInternal`，同段 logcat 有 `DeadSystemException: The system died`；iOS 在启动测试的 pnpm hook 阶段超时，尚未进入样式断言。原始日志及 Android artifact 保存在 `.tmp/pr1217-ci-before/`，不能据此修改样式实现或宣称 Native 回归通过。
+
 ### 真实框架性能对照
 
 在基线 `821f4dd4bea8c8b9426248ed56d5bb2717a6c821` 与迁移后 `ad8ec641be457402f916ba766b625d419473e44c` 的独立 checkout，使用同一锁文件、Node 24.18.0、pnpm 12.4.1 和各自 workspace 构建产物。命令为 `CI=1 pnpm exec node benchmark/version-compare/scripts/run-matrix.mjs --versions-file <版本列表> --build-runs 3 --hmr-runs 5 --only <五项目 key> --out <报告>`。每个版本采样 3 次构建、同一 watch 会话内 5 次更新；steady 中位数分别去掉第一次构建、第一次更新。进程树 RSS 含子进程；构建内存取三次峰值的中位数，HMR 内存为该 watch 会话峰值。
