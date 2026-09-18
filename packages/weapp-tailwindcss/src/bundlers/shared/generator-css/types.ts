@@ -45,6 +45,8 @@ export interface GenerateCssByGeneratorOptions {
 
 export interface GenerateCssByGeneratorResult {
   css: string
+  /** 当前生成入口中的 rpx 主题变量，交由最终适配阶段诊断。 */
+  rpxThemeVariables?: string[] | undefined
   /** 已使用本轮 Tailwind 配置展开函数的框架作者样式。 */
   frameworkProcessedUserCss?: string | undefined
   /** 供 restore 在去掉生成段后编译作者函数。 */

@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-18T07:05:50.413Z",
+  "generatedAt": "2026-09-18T10:05:46.458Z",
   "locale": "en-US",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev",
@@ -4131,6 +4131,7 @@
         "limits"
       ],
       "headings": [
+        "Build-time advisory warning",
         "rpx conversion can amplify errors in the base length",
         "cssCalc capabilities and known limitations",
         "@theme inline does not automatically remove calc",

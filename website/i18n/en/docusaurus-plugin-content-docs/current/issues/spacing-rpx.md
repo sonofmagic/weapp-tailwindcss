@@ -29,6 +29,27 @@ Tailwind CSS 4 accepts `--spacing: 1rpx` inside `@theme`. However, valid generat
 
 See [Issue #1214](https://github.com/sonofmagic/weapp-tailwindcss/issues/1214) for reproductions, environments, and fix progress. This page distinguishes WeChat runtime limitations from the build issue confirmed with `weapp-tailwindcss@5.5.6`. Check the actual output when using other versions.
 
+## Build-time advisory warning
+
+:::warning Advisory diagnosis, not a build failure
+When the generation target is `weapp` and configuration or framework environment identifies WeChat, the plugin inspects Tailwind CSS 4 `@theme` / `@theme inline` inputs. Custom properties containing an `rpx` value trigger a `[tailwindcss@4][rpx-theme]` warning. This includes `--spacing`, `--gap`, `--padding`, and even, negative, or fractional bases. Custom properties in ordinary style rules are outside this diagnosis.
+
+H5, ordinary Web, other mini programs, and builds with an unknown platform do not warn. The generic `weapp` output target alone does not identify WeChat. Diagnosis uses source and entry dependency information already available to generation; it does not scan arbitrary application CSS just to produce a warning.
+
+Each build session (`runtimeState`) emits at most one warning. Subsequent watch/HMR generations do not repeat it; a new session can warn again. Existing `logLevel` controls apply: `'warn'` retains it, while `'silent'` or `'error'` suppresses it. No new configuration is needed. Diagnosis does not change CSS, the class set, or the exit status.
+:::
+
+The message also reports the CSS state after the shared generation pipeline:
+
+| Result                                                                     | Meaning                                                                                                                           |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| An `rpx` theme variable was found                                          | A configuration compatibility advisory, not proof of incorrect dimensions                                                         |
+| A related `calc(var(--name) * ...)` or an inline `rpx` calculation remains | Runtime arithmetic needs closer verification; the inline hint does not establish that the expression came from the theme variable |
+| No related runtime `calc` was detected                                     | Current output may be static or may not use the variable; this does not verify every scope or device                              |
+| Output diagnosis could not complete                                        | Output analysis is skipped without failing the build or claiming safety                                                           |
+
+When `cssCalc` successfully precomputes and removes the original declaration, the message reflects that no related runtime expression was detected. `@theme inline` alone usually substitutes the literal and may leave `calc(3rpx * 8)`, which is not static `24rpx`. An unparseable source is skipped. One warning is not a complete inventory of every build artifact. Later minification or custom plugins may still change CSS; inspect final WXSS and verify on target devices.
+
 ## rpx conversion can amplify errors in the base length
 
 In a native WXSS control without Tailwind, `calc(1rpx * 32)` measured `32px`, while direct `32rpx` measured `16px`. This control used WeChat DevTools `2.02.2608070`, base library `3.17.3`, simulator window width `390`, and DPR `3`.

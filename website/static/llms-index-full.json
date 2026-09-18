@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-18T07:05:50.413Z",
+  "generatedAt": "2026-09-18T10:05:46.458Z",
   "locale": "zh-CN",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
@@ -4289,6 +4289,7 @@
         "跨端"
       ],
       "headings": [
+        "构建期风险提示",
         "微信对 rpx 的换算可能放大基数误差",
         "cssCalc 的能力与已知限制",
         "@theme inline 不会自动消除 calc",

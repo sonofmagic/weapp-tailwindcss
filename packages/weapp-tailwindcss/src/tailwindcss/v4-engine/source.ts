@@ -7,7 +7,7 @@ import process from 'node:process'
 import {
   resolveTailwindV4Source as resolveEngineTailwindV4Source,
 } from '@tailwindcss-mangle/engine'
-import { parseCssImportSpecifier, postcss, quoteCssImportSpecifier } from '@weapp-tailwindcss/postcss'
+import { collectRpxThemeVariables, parseCssImportSpecifier, postcss, quoteCssImportSpecifier } from '@weapp-tailwindcss/postcss'
 import { normalizeConfigDirective } from '@/bundlers/shared/generator-css/config-directive'
 import { normalizeTailwindConfigDirectives, resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
 import { normalizeEmptyTailwindCustomVariants } from '@/bundlers/shared/generator-css/user-css'
@@ -230,6 +230,7 @@ function normalizeTailwindV4CssEntrySources(
   const remainingCssEntries: string[] = []
   const cssSources: NonNullable<TailwindV4SourceOptions['cssSources']> = []
   const graphs = new Map<string, Set<string>>()
+  const themeVariables = new Map<string, string[]>()
   const collectCssGraph = (file: string, visiting = new Set<string>()): Set<string> => {
     const normalizedFile = path.resolve(file)
     const cached = graphs.get(normalizedFile)
@@ -249,6 +250,7 @@ function normalizeTailwindV4CssEntrySources(
     catch {
       return graph
     }
+    themeVariables.set(normalizedFile, collectRpxThemeVariables(root))
     const base = path.dirname(normalizedFile)
     root.walkAtRules('import', (rule) => {
       const parsed = parseCssImportSpecifier(rule.params)
@@ -290,6 +292,7 @@ function normalizeTailwindV4CssEntrySources(
       base,
       css,
       dependencies: [...dependencies],
+      rpxThemeVariables: [...new Set([...dependencies].flatMap(dependency => themeVariables.get(dependency) ?? []))],
     }
   }
   const rootEntries: string[] = []
@@ -439,9 +442,16 @@ export function resolveTailwindV4SourceOptionsFromRuntime(
   }) as TailwindV4SourceOptionsWithSources) as TailwindV4SourceOptionsWithSources
 }
 
-export function resolveTailwindV4Source(options?: TailwindV4SourceOptions): Promise<TailwindV4ResolvedSource> {
+export async function resolveTailwindV4Source(options?: TailwindV4SourceOptions): Promise<TailwindV4ResolvedSource> {
   const normalizedOptions = normalizeTailwindV4SourceOptions(options)
-  return resolveEngineTailwindV4Source(normalizedOptions) as Promise<TailwindV4ResolvedSource>
+  const source = await resolveEngineTailwindV4Source(normalizedOptions) as TailwindV4ResolvedSource
+  const variables = normalizedOptions?.cssSources?.flatMap(cssSource =>
+    (cssSource as { rpxThemeVariables?: string[] }).rpxThemeVariables ?? [],
+  ) ?? []
+  if (variables.length) {
+    source.rpxThemeVariables = [...new Set(variables)]
+  }
+  return source
 }
 
 export function resolveTailwindV4SourceFromRuntimeOptions(options?: {

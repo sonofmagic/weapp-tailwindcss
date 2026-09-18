@@ -48,6 +48,18 @@ function collectTsFiles(dir: string): string[] {
 }
 
 describe('架构边界契约', () => {
+  it('keeps migrated CSS transforms and diagnostics behind the PostCSS facade', () => {
+    for (const file of [
+      'src/tailwindcss/v4-engine/miniprogram.ts',
+      'src/tailwindcss/v4-engine/generator/incremental-cache.ts',
+      'src/tailwindcss/v4/rpx-theme-warning.ts',
+    ]) {
+      const source = fs.readFileSync(path.join(repoRoot, 'packages/weapp-tailwindcss', file), 'utf8')
+      expect(source).toContain('@weapp-tailwindcss/postcss')
+      expect(source).not.toMatch(/postcss\.parse|\.walkDecls\(|\.walkRules\(|\.walkAtRules\(/)
+    }
+  })
+
   it('keeps runtime and native packages independent from bundler packages', () => {
     const forbiddenForRuntime = new Set(['weapp-tailwindcss', '@weapp-tailwindcss/postcss', 'webpack', 'vite', 'rspack'])
     const packageFiles = [
