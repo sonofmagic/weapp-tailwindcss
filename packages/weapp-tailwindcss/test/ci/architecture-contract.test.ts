@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
+import { build } from 'esbuild'
 
 const repoRoot = path.resolve(import.meta.dirname, '../../../..')
 
@@ -48,6 +49,69 @@ function collectTsFiles(dir: string): string[] {
 }
 
 describe('架构边界契约', () => {
+  it('keeps migrated CSS transforms and diagnostics behind the PostCSS facade', () => {
+    for (const file of [
+      'src/tailwindcss/v4-engine/miniprogram.ts',
+      'src/tailwindcss/runtime-factory.ts',
+      'src/tailwindcss/source-scan/inline-source.ts',
+      'src/bundlers/shared/css-source-trace.ts',
+      'src/bundlers/shared/source-scan/css-entries.ts',
+      'src/bundlers/shared/css-imports.ts',
+      'src/bundlers/vite/rewrite-css-imports.ts',
+      'src/bundlers/shared/generator-css/candidates.ts',
+      'src/bundlers/shared/generator-css/config-directive.ts',
+      'src/bundlers/shared/generator-css/legacy-selectors.ts',
+      'src/tailwindcss/v4-engine/generator/rpx-candidates.ts',
+      'src/bundlers/vite/generate-bundle/css-config-directives.ts',
+      'src/bundlers/vite/generate-bundle/web-css-module.ts',
+      'src/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader.ts',
+      'src/bundlers/vite/css-output.ts',
+      'src/bundlers/vite/generate-bundle/tailwind-v4-css-source.ts',
+      'src/bundlers/shared/generator-css/source-resolver/apply-reference.ts',
+      'src/uni-app-x/style-asset.ts',
+      'src/uni-app-x/vite/harmony-apply.ts',
+      'src/tailwindcss/v4-engine/generator/incremental-cache.ts',
+      'src/tailwindcss/v4/rpx-theme-warning.ts',
+      'src/bundlers/shared/generator-css/scoped-rules.ts',
+      'src/bundlers/shared/generator-css/user-layer-order.ts',
+      'src/bundlers/shared/generator-css/user-css/apply-only.ts',
+      'src/bundlers/shared/generator-css/user-css/at-rules.ts',
+      'src/bundlers/shared/generator-css/user-css/generated-cleanup.ts',
+      'src/bundlers/shared/generator-css/user-css/source-fragments.ts',
+      'src/bundlers/shared/generator-css/user-css/user-layers.ts',
+      'src/bundlers/shared/generator-css/user-css/transform.ts',
+      'src/bundlers/shared/generator-css/directives.ts',
+      'src/bundlers/shared/generator-css/directives/fallback.ts',
+      'src/bundlers/shared/generator-css/markers.ts',
+      'src/bundlers/shared/generator-css/class-selectors.ts',
+      'src/bundlers/shared/generator-css/result-helpers.ts',
+      'src/bundlers/shared/framework-css-composition.ts',
+      'src/bundlers/shared/framework-user-css.ts',
+      'src/tailwindcss/v4/preflight.ts',
+      'src/bundlers/webpack/BaseUnifiedPlugin/v5-assets/pipeline-helpers/preflight-runtime.ts',
+      'src/bundlers/webpack/BaseUnifiedPlugin/v5-assets/pipeline-helpers/generated-css.ts',
+      'src/bundlers/webpack/BaseUnifiedPlugin/v5-assets/pipeline-helpers/user-css-markers.ts',
+      'src/bundlers/webpack/BaseUnifiedPlugin/v5-assets/pipeline-helpers/user-css.ts',
+      'src/bundlers/webpack/BaseUnifiedPlugin/v5-assets/pipeline-helpers/sources.ts',
+      'src/bundlers/webpack/loaders/weapp-tw-runtime-classset-loader.ts',
+      'src/bundlers/vite/processed-css-assets/cleanup.ts',
+      'src/bundlers/vite/processed-css-assets/markers-imports.ts',
+      'src/bundlers/vite/processed-css-assets/coverage.ts',
+      'src/bundlers/vite/processed-css-assets/scoped-tailwind-noise.ts',
+      'src/bundlers/vite/processed-css-assets/injection-plan.ts',
+      'src/bundlers/shared/generated-css-marker.ts',
+      'src/bundlers/shared/generator-css/generation-helpers/source-order.ts',
+      'src/bundlers/shared/generator-css/output-import-shell.ts',
+      'src/bundlers/shared/generator-css/legacy-compat.ts',
+      'src/uni-app-x/style-asset/harmony-apply.ts',
+      'src/uni-app-x/style-asset/style-value.ts',
+    ]) {
+      const source = fs.readFileSync(path.join(repoRoot, 'packages/weapp-tailwindcss', file), 'utf8')
+      expect(source).toContain('@weapp-tailwindcss/postcss')
+      expect(source).not.toMatch(/postcss\.parse|\.walkDecls\(|\.walkRules\(|\.walkAtRules\(/)
+    }
+  })
+
   it('keeps runtime and native packages independent from bundler packages', () => {
     const forbiddenForRuntime = new Set(['weapp-tailwindcss', '@weapp-tailwindcss/postcss', 'webpack', 'vite', 'rspack'])
     const packageFiles = [
@@ -63,7 +127,11 @@ describe('架构边界契约', () => {
       const pkg = readPackage(file)
       const dependencies = Object.keys(pkg.dependencies ?? {})
       const forbidden = dependencies.filter(name => forbiddenForRuntime.has(name))
-      if (file === 'packages/react-native/package.json' || file === 'packages/lynx/package.json') {
+      if (file === 'packages/react-native/package.json') {
+        // 编译入口可以使用生成器和独立 CSS 编译子路径；运行时依赖闭包另行验证。
+        expect(forbidden.filter(name => name !== 'weapp-tailwindcss' && name !== '@weapp-tailwindcss/postcss')).toEqual([])
+      }
+      else if (file === 'packages/lynx/package.json') {
         // P2 抽出 generator 前保留根包 facade；禁止继续增加其它 bundler 直依赖。
         expect(forbidden.filter(name => name !== 'weapp-tailwindcss'), `${pkg.name} must not add direct bundler dependencies`).toEqual([])
       }
@@ -71,6 +139,60 @@ describe('架构边界契约', () => {
         expect(forbidden, `${pkg.name} must stay runtime-only`).toEqual([])
       }
     }
+  })
+
+  it('keeps the native runtime bundle free of compiler dependencies', async () => {
+    const entry = path.join(repoRoot, 'packages/react-native/src/runtime.ts')
+    const result = await build({
+      entryPoints: [entry],
+      bundle: true,
+      platform: 'browser',
+      format: 'esm',
+      write: false,
+      metafile: true,
+    })
+    expect(Object.keys(result.metafile.inputs).map(file => path.resolve(file))).toEqual([entry])
+    expect(Object.values(result.metafile.outputs).flatMap(output => output.imports)).toEqual([])
+
+    const compiler = fs.readFileSync(path.join(repoRoot, 'packages/react-native/src/compiler.ts'), 'utf8')
+    expect(compiler).toContain('@weapp-tailwindcss/postcss/native')
+    expect(compiler).not.toMatch(/postcss\.parse|\.walkDecls\(|\.walkRules\(/)
+    expect(readPackage('packages/react-native/package.json').dependencies?.postcss).toBeUndefined()
+  })
+
+  it('isolates experimental transforms and injector orchestration', async () => {
+    const experimentalEntry = path.join(repoRoot, 'packages/postcss/src/experimental/lightningcss/index.ts')
+    const experimental = await build({
+      entryPoints: [experimentalEntry],
+      bundle: true,
+      packages: 'external',
+      platform: 'node',
+      write: false,
+      metafile: true,
+    })
+    const imports = Object.values(experimental.metafile.outputs).flatMap(output => output.imports.map(item => item.path))
+    expect(imports).not.toContain('lightningcss')
+    const stable = await build({
+      entryPoints: [path.join(repoRoot, 'packages/postcss/src/index.ts')],
+      bundle: true,
+      packages: 'external',
+      platform: 'node',
+      write: false,
+      metafile: true,
+    })
+    const stableFiles = Object.keys(stable.metafile.inputs).map(file => path.resolve(file))
+    expect(stableFiles).not.toContain(experimentalEntry)
+    expect(stableFiles).not.toContain(path.join(repoRoot, 'packages/postcss/src/native.ts'))
+    expect(Object.values(stable.metafile.outputs).flatMap(output => output.imports.map(item => item.path))).not.toContain('lightningcss')
+    for (const name of ['options', 'selector-transform', 'selector-utils']) {
+      const source = fs.readFileSync(path.join(repoRoot, 'packages/experimental/src/lightningcss', name + '.ts'), 'utf8')
+      expect(source).toContain('@weapp-tailwindcss/postcss/experimental/lightningcss')
+      expect(source).not.toMatch(/function |=>/)
+    }
+    const injector = fs.readFileSync(path.join(repoRoot, 'packages/tailwindcss-injector/src/postcss.ts'), 'utf8')
+    expect(injector).toContain('injectTailwindDirectives')
+    expect(injector).not.toMatch(/root\.(insertAfter|prepend)|walkAtRules/)
+    expect(readPackage('packages/tailwindcss-injector/package.json').dependencies?.postcss).toBeUndefined()
   })
 
   it('uses catalogs for shared compiler and runtime utility versions', () => {
@@ -123,6 +245,15 @@ describe('架构边界契约', () => {
     for (const source of sources) {
       expect(source).not.toMatch(/@tailwindcss-mangle\/engine|from ['"](?:.*\/v3|@weapp-tailwindcss\/postcss|weapp-tailwindcss)['"]/)
     }
+  })
+
+  it('keeps product source free of legacy engine references after code moves', () => {
+    const hits = ['engine', 'postcss', 'weapp-tailwindcss', 'cli']
+      .flatMap(name => collectTsFiles(path.join(repoRoot, 'packages', name, 'src')))
+      .filter(file => fs.readFileSync(file, 'utf8').includes('@tailwindcss-mangle/engine'))
+      .map(file => path.relative(repoRoot, file))
+
+    expect(hits).toEqual([])
   })
 
   it('does not import CSS processors from weapp-tailwindcss source', () => {

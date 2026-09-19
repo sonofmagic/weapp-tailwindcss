@@ -110,6 +110,10 @@ export function Button({ tone, size, className, ...props }) {
 }
 ```
 
+:::warning 微信小程序中的 rpx spacing
+把全局 `--spacing` 设置为 `1rpx`、`3rpx` 等值时，生成的运行时乘法可能产生尺寸偏差。`@theme inline` 不会自动完成乘法；成功预计算成静态长度后，属性也不再响应对 `--spacing` 的运行时覆盖。详见 [微信小程序 --spacing 与 rpx 计算限制](../issues/spacing-rpx.md)。
+:::
+
 ## 中段：Tailwind 的生成逻辑
 
 这一层可以拆成两部分看：一部分是 Tailwind 怎样生成类，另一部分是团队怎样给这些类加边界。

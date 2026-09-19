@@ -1,11 +1,10 @@
-import type { Root } from '@weapp-tailwindcss/postcss'
 import type { OutputChunk, SourceMap } from 'rollup'
 import { splitCandidateTokens } from '@weapp-tailwindcss/engine'
 import {
   collectCssApplyUtilities,
   cssToClassStyleValue,
   expandCssApplySourcesToStyleValue,
-  parseUniAppXStyleSource,
+  rewriteUniAppXStyleReferences,
 
 } from '@weapp-tailwindcss/postcss'
 import { resolveStyleReferencePath } from '../style-reference-path'
@@ -230,34 +229,10 @@ export function createStyleValueFromApplySources(sources: string[], utilityStyle
 }
 
 function resolveReferencePaths(styleSource: string, sourceId?: string) {
-  let root: Root
-  try {
-    root = parseUniAppXStyleSource(styleSource)
-  }
-  catch {
-    return styleSource
-  }
-  if (!sourceId || !styleSource.includes('@reference')) {
-    return root.toString()
-  }
-  const cleanSourceId = sourceId.replace(/\?.*$/, '')
-  root.walkAtRules('reference', (rule) => {
-    const quote = rule.params[0]
-    if (quote !== '"' && quote !== '\'') {
-      return
-    }
-    const closingQuoteIndex = rule.params.indexOf(quote, 1)
-    if (closingQuoteIndex <= 1) {
-      return
-    }
-    const referencePath = rule.params.slice(1, closingQuoteIndex)
-    if (!referencePath.startsWith('.')) {
-      return
-    }
-    const resolvedPath = resolveStyleReferencePath(cleanSourceId, referencePath)
-    rule.params = `${quote}${resolvedPath}${quote}${rule.params.slice(closingQuoteIndex + 1)}`
-  })
-  return root.toString()
+  const cleanSourceId = sourceId?.replace(/\?.*$/, '')
+  return rewriteUniAppXStyleReferences(styleSource, sourceId
+    ? reference => resolveStyleReferencePath(cleanSourceId!, reference)
+    : undefined)
 }
 
 export function collectUniAppXHarmonyApplyStyleSourcesFromSource(source: string, sourceId?: string) {

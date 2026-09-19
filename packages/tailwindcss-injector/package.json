@@ -57,11 +57,11 @@
     "types": "./dist/index.d.ts"
   },
   "dependencies": {
+    "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
     "fs-extra": "catalog:buildUtilities",
     "htmlparser2": "catalog:buildUtilities",
     "magic-string": "catalog:buildUtilities",
-    "postcss": "catalog:postcss85",
     "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-config": "workspace:*"
   }

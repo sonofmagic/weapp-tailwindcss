@@ -1,6 +1,7 @@
-import { postcss } from '@weapp-tailwindcss/postcss'
-import { collectCssApplyCandidates } from '../candidates'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives, parseImportRequest } from '../directives'
+import { createTailwindV4SourceReferenceSource, hasTailwindApplyContextDirective } from '@weapp-tailwindcss/postcss'
+import { hasTailwindRootDirectives } from '../directives'
+
+export { createTailwindV4SourceReferenceSource } from '@weapp-tailwindcss/postcss'
 
 interface TailwindV4ApplyReferenceSourceOptions {
   cssEntries?: string[] | undefined
@@ -27,22 +28,6 @@ function resolveTailwindV4ApplyReference(options: TailwindV4ApplyReferenceSource
   return references.size === 1 ? references.values().next().value : undefined
 }
 
-function hasTailwindApplyContextDirective(css: string) {
-  try {
-    let found = false
-    postcss.parse(css).walkAtRules((rule) => {
-      if (rule.name === 'theme' || rule.name === 'config') {
-        found = true
-        return false
-      }
-    })
-    return found
-  }
-  catch {
-    return false
-  }
-}
-
 export function createTailwindV4ApplyReferenceSource(css: string, sourceOptions: TailwindV4ApplyReferenceSourceOptions) {
   const reference = resolveTailwindV4ApplyReference(sourceOptions)
   return createTailwindV4SourceReferenceSource(
@@ -50,56 +35,4 @@ export function createTailwindV4ApplyReferenceSource(css: string, sourceOptions:
     sourceOptions,
     reference ? `@reference ${JSON.stringify(reference.replace(/\\/g, '/'))};` : undefined,
   )
-}
-
-export function createTailwindV4SourceReferenceSource(
-  css: string,
-  sourceOptions: { packageName?: string | undefined },
-  referenceDirective?: string,
-) {
-  if (hasTailwindV4RootImport(css, sourceOptions)) {
-    return css
-  }
-  const hasApplyDirective = hasTailwindApplyDirective(css)
-  if (!hasApplyDirective && !hasTailwindSourceDirectives(css, { importFallback: true })) {
-    return css
-  }
-  const utilities = hasApplyDirective ? collectCssApplyCandidates(css) : []
-  return [
-    referenceDirective ?? `@import "${sourceOptions.packageName ?? 'tailwindcss'}" source(none);`,
-    utilities.length > 0 ? `@source inline(${JSON.stringify(utilities.join(' '))});` : undefined,
-    css,
-  ].filter(Boolean).join('\n')
-}
-
-function hasTailwindV4RootImport(css: string, sourceOptions: { packageName?: string | undefined }) {
-  try {
-    const root = postcss.parse(css)
-    let found = false
-    root.walkAtRules((rule) => {
-      if (rule.name === 'tailwind') {
-        found = true
-        return false
-      }
-      if (rule.name !== 'import' && rule.name !== 'use' && rule.name !== 'forward') {
-        return
-      }
-      const request = parseImportRequest(rule.params)
-      if (
-        request === (sourceOptions.packageName ?? 'tailwindcss')
-        || request === 'tailwindcss'
-        || request === 'tailwindcss4'
-        || request?.startsWith('tailwindcss/')
-        || request?.startsWith('tailwindcss4/')
-      ) {
-        found = true
-        return false
-      }
-    })
-    return found
-  }
-  catch {
-    return /@(?:import|use|forward|tailwind)(?:[\s"'(;]|$)/.test(css)
-      && (css.includes('tailwindcss') || css.includes('tailwindcss4') || css.includes('weapp-tailwindcss'))
-  }
 }

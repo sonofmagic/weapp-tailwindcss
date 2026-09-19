@@ -1,7 +1,7 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV4DesignSystem, TailwindV4Engine, TailwindV4GenerateOptions, TailwindV4GenerateTarget, TailwindV4ResolvedSource, TailwindV4SourcePattern } from '../types'
 import fs from 'node:fs'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { collectCustomPropertyValues, mergeCustomPropertyValues } from '@weapp-tailwindcss/postcss'
 import { LRUCache } from 'lru-cache'
 import { hasCssMacroTailwindV4Source, withCssMacroStyleOptions } from '@/css-macro/auto'
 import { shouldUseUniAppWebRpxCompatibility } from '@/runtime-branch/generator-target-env'
@@ -183,27 +183,7 @@ export function resolveStyleOptions(source: TailwindV4ResolvedSource, options: P
   return hasCssMacroTailwindV4Source(source.css) ? withCssMacroStyleOptions(options) : options
 }
 
-export function collectCustomPropertyValues(css: string) {
-  const values = new Map<string, string>()
-  try {
-    const root = postcss.parse(css)
-    root.walkDecls((decl) => {
-      if (decl.prop.startsWith('--')) {
-        values.set(decl.prop, decl.value.trim())
-      }
-    })
-  }
-  catch {
-    // Ignore malformed cache context; the normal transformer will still process the current chunk.
-  }
-  return values
-}
-
-export function mergeCustomPropertyValues(target: Map<string, string>, css: string) {
-  for (const [prop, value] of collectCustomPropertyValues(css)) {
-    target.set(prop, value)
-  }
-}
+export { collectCustomPropertyValues, mergeCustomPropertyValues }
 
 function createStableTextSignature(input: string) {
   let hash = 2166136261

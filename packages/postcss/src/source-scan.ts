@@ -4,6 +4,7 @@ import { stat } from 'node:fs/promises'
 import path from 'node:path'
 import { resolveProjectSourceFiles } from '@weapp-tailwindcss/engine'
 import micromatch from 'micromatch'
+import { parseSourceFileParam } from './source-scan/params'
 
 export interface TailwindSourceEntry {
   base: string
@@ -146,12 +147,6 @@ export function createTailwindSourceEntryMatcher(entries: TailwindSourceEntry[] 
   return (file: string) => isFileMatchedByTailwindSourceEntries(file, entries)
 }
 
-export function parseConfigParam(params: string) {
-  const value = params.trim()
-  const match = /^(['"])(.+)\1$/.exec(value)
-  return match?.[2]
-}
-
 function isLegacyContentObject(value: unknown): value is LegacyContentObject {
   return typeof value === 'object' && value !== null && 'files' in value
 }
@@ -254,27 +249,6 @@ export async function resolveTailwindSourceEntry(
   }
 }
 
-export function parseSourceFileParam(params: string) {
-  const value = params.trim()
-  if (!value || value === 'none' || value.startsWith('inline(')) {
-    return undefined
-  }
-
-  const negated = value.startsWith('not ')
-  const sourceValue = negated ? value.slice(4).trim() : value
-  if (sourceValue.startsWith('inline(')) {
-    return undefined
-  }
-
-  const match = /^(['"])(.+)\1$/.exec(sourceValue)
-  return match?.[2]
-    ? {
-        negated,
-        sourcePath: match[2],
-      }
-    : undefined
-}
-
 export async function resolveCssSourceEntries(
   root: Root,
   base: string,
@@ -333,3 +307,5 @@ export async function expandTailwindSourceEntries(
 
   return [...files].filter(file => !isFileExcludedByTailwindSourceEntries(file, entries))
 }
+
+export { parseConfigParam, parseSourceFileParam } from './source-scan/params'

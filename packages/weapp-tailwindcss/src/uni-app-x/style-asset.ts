@@ -1,7 +1,6 @@
-import type { postcss } from '@weapp-tailwindcss/postcss'
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { HarmonyStyleInjectOptions } from './style-asset/harmony-global'
-import { parseUniAppXStyleSource } from '@weapp-tailwindcss/postcss'
+import { createUniAppXHarmonyApplyGeneratorSource as createHarmonyApplyGeneratorSource } from '@weapp-tailwindcss/postcss'
 import { expandUniAppXHarmonyApplyStyles } from './style-asset/harmony-apply'
 import {
   injectUniAppXHarmonyGlobalStyles,
@@ -55,22 +54,7 @@ export function createUniAppXHarmonyApplyGeneratorSource(
   applyStyleSources: string[],
   _applyUtilities: Iterable<string>,
 ) {
-  return applyStyleSources.map((source) => {
-    let root: postcss.Root
-    try {
-      root = parseUniAppXStyleSource(source)
-    }
-    catch {
-      return source
-    }
-    root.walkAtRules('reference', (rule) => {
-      const match = rule.params.match(/^(['"])(.+?)\1/)
-      if (match?.[2]?.startsWith('.')) {
-        rule.remove()
-      }
-    })
-    return root.toString()
-  }).join('\n')
+  return createHarmonyApplyGeneratorSource(applyStyleSources)
 }
 
 export function collectUniAppXHarmonyApplyUtilities(bundle: Record<string, BundleItem>) {

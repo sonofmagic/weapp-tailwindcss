@@ -2,22 +2,11 @@ import type { TailwindV4GenerateTarget, TailwindV4ResolvedSource } from '../type
 import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import { parseCssImportSpecifier, postcss, removeTailwindV4PreflightImports, removeUnsupportedThemeVendorKeyframes } from '@weapp-tailwindcss/postcss'
+import { insertTailwindThemeCss, parseCssImportSpecifier, postcss, removeTailwindV4PreflightImports, removeUnsupportedThemeVendorKeyframes } from '@weapp-tailwindcss/postcss'
 import { createTailwindV4DefaultColorThemeCss } from '../tailwind-v4-default-colors'
 
 const require = createRequire(import.meta.url)
 const tailwindThemeCssCache = new Map<string, string>()
-
-function findLeadingImportInsertionIndex(css: string) {
-  const importPattern = /(?:^|\n)\s*@import\b[^;]*;/g
-  let insertionIndex = 0
-  let match = importPattern.exec(css)
-  while (match !== null) {
-    insertionIndex = match.index + match[0].length
-    match = importPattern.exec(css)
-  }
-  return insertionIndex
-}
 
 function readCachedCss(file: string) {
   const cached = tailwindThemeCssCache.get(file)
@@ -76,11 +65,7 @@ function resolveTailwindV4DefaultThemeCss(source: TailwindV4ResolvedSource) {
 
 function applyMiniProgramTailwindV4DefaultColorCss(css: string, source: TailwindV4ResolvedSource) {
   const themeCss = resolveTailwindV4DefaultThemeCss(source)
-  const insertionIndex = findLeadingImportInsertionIndex(css)
-  if (insertionIndex === 0) {
-    return `${themeCss}\n${css}`
-  }
-  return `${css.slice(0, insertionIndex)}\n${themeCss}\n${css.slice(insertionIndex)}`
+  return insertTailwindThemeCss(css, themeCss)
 }
 
 export function createCompatibleSource(

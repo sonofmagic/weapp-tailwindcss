@@ -1,4 +1,3 @@
-// 统一导出入口，供外部调用端按需引用核心能力
 export {
   type PostcssAppType,
   type PostcssStyleBranch,
@@ -7,85 +6,7 @@ export {
   type ResolvePostcssStyleBranchOptions,
   resolvePostcssStyleBranchProfile,
 } from './branches'
-export { createAuthorSelectorMatcher } from './compat/author-selector'
-export {
-  type DynamicColorMixAlphaProtection,
-  type DynamicColorMixAlphaProtectionOptions,
-  type ModernColorValueNormalization,
-  normalizeModernColorValue,
-  protectDynamicColorMixAlpha,
-  protectDynamicVarFallbacks,
-} from './compat/color-mix'
-export {
-  collectDedupedPostTransformCompatCss,
-  collectGeneratedSelectors,
-  inheritLegacyUnitConvertedDeclarations,
-  normalizeCompatSelectors,
-  removeGeneratedSelectorCompatCss,
-  removeTailwindApplyRules,
-} from './compat/legacy-css'
-export { transformLynxCssCompat } from './compat/lynx-css'
-export {
-  consumeCascadeLayers,
-  finalizeMiniProgramCss,
-  type FinalizeMiniProgramCssOptions,
-  finalizeMiniProgramCssRoot,
-  finalizeMiniProgramCssStructure,
-  hasEmptyCssBlockCandidate,
-  hasMiniProgramCssSpecificityPlaceholders,
-  hoistTailwindPreflightBase,
-  normalizeMiniProgramGeneratedCssForPostcss,
-  pruneMiniProgramGeneratedCss,
-  removeEmptyAtRules,
-  removeEmptyRules,
-  removeUnsupportedAtSupports,
-  removeUnsupportedCascadeLayers,
-  removeUnsupportedMiniProgramAtRules,
-  removeUnusedMiniProgramContentInit,
-  repairTrailingUnclosedTailwindSourceMedia,
-  stripMiniProgramCssSpecificityPlaceholders,
-  unwrapUnsupportedCascadeLayers,
-} from './compat/mini-program-css'
-export {
-  normalizeMiniProgramPrefixedDeclaration,
-  removeUnsupportedMiniProgramPrefixedAtRule,
-} from './compat/mini-program-prefixes'
-export {
-  convertTailwindcssRpxDeclarationsToRem,
-  convertTailwindcssRpxDeclarationToRem,
-  convertTailwindcssRpxValueToRem,
-  normalizeTailwindcssRpxDeclaration,
-  normalizeTailwindcssRpxDeclarations,
-  normalizeTailwindcssWebRpxDeclarations,
-  type TailwindcssRpxToRemOptions,
-} from './compat/tailwindcss-rpx'
-export { normalizeTailwindcssV4InfinityCalcCss } from './compat/tailwindcss-v4'
-export { compileTailwindAuthorFunctions, createTailwindAuthorFunctionProbe } from './compat/tailwindcss-v4/author-functions'
-export { normalizeTailwindcssV4InfinityRadiusCss } from './compat/tailwindcss-v4/infinity-radius'
-export { removeTailwindV4PreflightImports, removeUnsupportedThemeVendorKeyframes } from './compat/tailwindcss-v4/theme-source'
-export {
-  normalizeUniAppXImportantApplyForSass,
-  restoreUniAppXImportantApplyMarker,
-  UNI_APP_X_IMPORTANT_APPLY_MARKER,
-} from './compat/uni-app-x'
-export { isTailwindRuntimePropertyRule, retainUniAppXAuthorApplyCss } from './compat/uni-app-x-author-apply'
-export {
-  createUniAppXBorderPreflight,
-  hoistUniAppXBorderPreflight,
-  UNI_APP_X_BORDER_PREFLIGHT_CLASS,
-} from './compat/uni-app-x-border'
-export {
-  collectCssApplyUtilities,
-  type CssClassStyleValue,
-  cssToClassStyleValue,
-  expandCssApplySourcesToStyleValue,
-} from './compat/uni-app-x-style-value'
-export {
-  type NormalizedWebCssCompatOptions,
-  normalizeWebCssCompatOptions,
-  transformWebCssCompat,
-  transformWebCssSafeSelectors,
-} from './compat/web-css'
+export * from './compat'
 export {
   compileCssMacroConditionalComments,
   CSS_MACRO_STYLE_OPTIONS_MARKER,
@@ -99,6 +20,8 @@ export {
   withCssMacroStyleOptions,
 } from './css-macro/auto'
 export { CSS_MACRO_POSTCSS_PLUGIN_NAME, default as cssMacroPostcssPlugin } from './css-macro/postcss'
+// 统一导出入口，供外部调用端按需引用核心能力
+export { collectRpxThemeVariables, inspectRpxCalcUsage, type RpxCalcUsage } from './diagnostics/rpx-theme'
 export { processFrameworkCss } from './framework-pipeline'
 export {
   type PostcssFrameworkProfile,
@@ -129,6 +52,7 @@ export {
   filterApplyOnlyGeneratedCss,
   filterApplyOnlyGeneratedCssRoot,
 } from './generator-plugin/apply-only'
+export { normalizeConfigDirective, prependConfigDirective, rewriteCssConfigRequests, stripTailwindConfigDirectives } from './generator-plugin/config-directive'
 export {
   analyzeTailwindCssDirectives,
   isTailwindCssGenerationDirective,
@@ -166,6 +90,7 @@ export {
   splitLocalCssImports,
   splitLocalCssImportsRoot,
 } from './generator-plugin/local-imports'
+
 export * from './handler'
 export { default as postcssHtmlTransform, type IOptions as PostcssHtmlTransformOptions } from './html-transform'
 export {
@@ -181,6 +106,7 @@ export {
   type ApplyConfiguredCssCalcOptions,
 } from './plugins/applyConfiguredCssCalc'
 export { createFallbackPlaceholderReplacer } from './plugins/post/specificity-cleaner'
+
 export {
   getPostcssPluginName,
   removeTailwindPostcssPlugins,
@@ -208,6 +134,7 @@ export type {
 } from './postcss-runtime'
 export { createInjectPreflight } from './preflight'
 export { selectorContainsPseudoClass } from './selectorParser/pseudo'
+
 export { internalCssSelectorReplacer } from './shared'
 export {
   collectCssInlineSourceCandidates,
@@ -230,6 +157,9 @@ export {
   type TailwindSourceEntry,
   toPosixPath,
 } from './source-scan'
+export { collectCssApplyCandidates, collectGeneratorCssCandidates, collectRuntimeApplyCandidates } from './source-scan/candidates'
+export { analyzeTailwindV4EntrySource, type TailwindV4EntrySourceAnalysis } from './source-scan/tailwind-v4/entry-source'
+export { analyzeTailwindV4Source } from './source-scan/tailwind-v4/fingerprint'
 export {
   createPostcssStyleTargetProfile,
   type PostcssStyleTarget,
@@ -249,7 +179,15 @@ export {
   scss,
   stringifyScssSource,
 } from './syntax'
+export { rewriteCssImportSpecifiers } from './syntax/rewrite-imports'
+
+export { canProcessSourceStyleAsCss } from './syntax/source-style'
 export * from './types'
+export { annotateCssTokenSources, type CssTokenSource, type CssTokenSourceMap } from './utils/css-source-trace'
+export { collectCustomPropertyValues, mergeCustomPropertyValues } from './utils/custom-property-values'
+export { replaceViteGeneratedCssModule } from './utils/generated-css-marker'
+export { type BundlerGeneratedCssMarkerBlock, createBundlerGeneratedCssEndMarker, createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker, parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from './utils/generated-css-marker'
+
 export {
   containsCssAfterMinify,
   createCssRuleMatcher,

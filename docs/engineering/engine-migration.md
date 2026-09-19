@@ -43,3 +43,25 @@
 ## 规则调整
 
 按确认的方案，将 Tailwind CSS 4 生成必需的 CSS 解析、`@source` 处理、选择器别名和产物 AST 划归 engine；平台兼容转换仍归 PostCSS。同步根规则、包规则、新 engine AGENTS 与规则索引，架构测试约束 engine 不反向依赖产品适配包、旧 engine 或官方生成插件。
+
+## 2026-09-19 合并主分支
+
+合并 `main` 的 `287239cd7`，纳入 PostCSS 样式归属调整和微信 rpx 主题风险诊断。4 处源码冲突保留新的 PostCSS facade 与扫描分析接口，同时使用 `@weapp-tailwindcss/engine`。新迁入的 `packages/postcss/src/source-scan/candidates.ts` 也切换为新 engine；架构测试新增四个产品包源码不得残留旧 engine 引用的检查，防止代码迁移绕过 manifest 约束。
+
+本轮主包严格类型检查首次发现主分支 rpx 诊断代码的 5 处 `TS4111`，将环境变量访问改为方括号写法，保持诊断行为和环境变量优先级不变，复验通过。
+
+本轮在相同 macOS 工作树完成以下定向验证，所有 Vitest 命令均设置 `CI=1` 并显式传入 `--update=none`：
+
+- `pnpm --filter @weapp-tailwindcss/cli... install --frozen-lockfile --ignore-scripts --offline`：通过，合并后的锁文件无需重新解析依赖。
+- `pnpm --filter @weapp-tailwindcss/cli... run build`：通过；类型修正后再次执行 `pnpm --filter weapp-tailwindcss build`，通过。
+- `pnpm --filter @weapp-tailwindcss/engine exec vitest run --update=none`：12 个文件、143 项通过。
+- `pnpm --filter @weapp-tailwindcss/postcss exec vitest run test/source-scan.test.ts test/source-candidates.test.ts test/generator-plugin.test.ts test/css-entry-source.test.ts test/tailwind-source-analysis.test.ts test/style-transform-ownership.test.ts test/rpx-theme.test.ts test/rpx-candidate-compat.test.ts --update=none`：8 个文件、57 项通过。
+- `pnpm --filter weapp-tailwindcss exec vitest run test/tailwindcss test/ci/architecture-contract.test.ts test/ci/workflows.test.ts test/bundlers/generator-css-candidates.unit.test.ts test/bundlers/css-entry-analysis.unit.test.ts test/bundlers/tailwind-v4-source-analysis.unit.test.ts test/bundlers/rpx-theme-warning.integration.test.ts test/bundlers/vite-source-scan.unit.test.ts test/bundlers/vite-source-scan-css-entries.test.ts test/bundlers/source-candidate-boundary.unit.test.ts test/bundlers/runtime-class-set-boundary.unit.test.ts --update=none`：58 个文件、441 项通过，保留 1 个文件内的 7 项既有跳过。
+- `pnpm --filter @weapp-tailwindcss/cli exec vitest run --update=none`：10 个文件、57 项通过，包含 build/watch。
+- 环境变量类型修正后复验 `test/tailwindcss/v4/rpx-theme-warning.test.ts` 和 `test/bundlers/rpx-theme-warning.integration.test.ts`：27 项通过。
+- `pnpm --filter @weapp-tailwindcss/engine typecheck`、主包 `tsc -p tsconfig.build.json --noEmit --noCheck false --pretty false`：通过。
+- 本轮修改源码的 ESLint：无错误；架构测试文件受仓库既有 ignore 规则排除，已通过 Vitest 验证。
+- 四包构建产物扫描未发现旧 engine 引用，四包根入口和主包 `/vite` 的 ESM/CJS 加载通过，主包 `/generator` 的 ESM/CJS 真实 v4 生成通过。
+- `pnpm agents:check`：49 份规则、43 份文档、339 条命令、0 错误；`git diff --check` 通过。
+
+本轮没有新增规则，也没有相对最新 `main` 修改 demo 或 static 基线。未重跑 PostCSS/CLI 的严格类型检查、tarball 安装检查、全仓测试或多端实机验收；前述既有类型错误与平台限制仍保留记录，不以定向验证替代全端预检。

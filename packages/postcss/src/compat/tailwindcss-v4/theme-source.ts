@@ -1,6 +1,7 @@
 import type { AtRule, Container, Root } from 'postcss'
 import postcss from 'postcss'
 import { parseCssImportSpecifier } from '../../syntax/css-import'
+import { removeUnsupportedCascadeLayers } from '../mini-program-css'
 
 function isTailwindCssPreflightImport(params: string) {
   const specifier = parseCssImportSpecifier(params)?.specifier
@@ -61,6 +62,11 @@ export function removeUnsupportedThemeVendorKeyframes(css: string) {
     return css
   }
 
+  return removeUnsupportedThemeVendorKeyframesRoot(root) ? root.toString() : css
+}
+
+/** 复用已有 AST，避免运行时样式清理重复解析。 */
+export function removeUnsupportedThemeVendorKeyframesRoot(root: Root) {
   let changed = false
   root.walkAtRules((rule) => {
     if (isVendorPrefixedKeyframes(rule) && hasThemeParent(rule)) {
@@ -69,5 +75,13 @@ export function removeUnsupportedThemeVendorKeyframes(css: string) {
     }
   })
 
-  return changed ? root.toString() : css
+  return changed
+}
+
+/** loader 调用端决定是否需要清理；非法 CSS 沿用原有抛错行为。 */
+export function normalizeTailwindV4RuntimeCss(css: string) {
+  const root = postcss.parse(css)
+  removeUnsupportedCascadeLayers(root)
+  removeUnsupportedThemeVendorKeyframesRoot(root)
+  return root.toString()
 }

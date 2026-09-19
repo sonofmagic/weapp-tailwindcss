@@ -37,6 +37,8 @@ export type TailwindV4CssSource = NonNullable<TailwindV4SourceOptions['cssSource
  * weapp-tailwindcss 在 Tailwind v4 engine source 基础上附加的运行时来源信息。
  */
 export interface TailwindV4ResolvedSource extends EngineTailwindV4ResolvedSource {
+  /** 源码扫描阶段从入口依赖图收集的 rpx 主题变量。 */
+  rpxThemeVariables?: string[] | undefined
   cwd?: string | undefined
   projectRoot: string
   cssSources?: TailwindV4CssSource[] | undefined

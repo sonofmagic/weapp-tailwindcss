@@ -1,3 +1,4 @@
+import type { AppUpdateMode } from './hmr-lifecycle'
 import type { AppRenderMode } from './render-mode'
 import process from 'node:process'
 import { issue1144InitialStyles, issue1144Steps } from './issue-1144'
@@ -72,6 +73,8 @@ export interface HarmonyRuntimeTextPair {
 export interface AppCase {
   name: string
   platform: AppPlatform
+  /** 默认要求纯 HMR；只有确认上游更新机制的用例才允许原生热重载。 */
+  updateMode?: AppUpdateMode
   projectDir: string
   outputDir: string
   outputDirCandidates?: string[]
@@ -524,6 +527,7 @@ function createUniAppAppCases(options: {
     return {
       name: `${name} ${platformName}`,
       platform,
+      updateMode: 'native-reload',
       projectDir,
       outputDir,
       outputDirCandidates: createOutputDirCandidates(platform),
@@ -1295,7 +1299,7 @@ export const webCases: WebCase[] = [
       {
         markerClass: 'hbuilderx-web-hmr-probe mt-200 bg-[#102938] text-[#f7fbff] w-[173px]',
         markerText: 'hbuilderx-web-hmr-v4-mt-200',
-        cssContains: [/margin-top:\s*(?:calc\(0\.25rem\s*\*\s*200\)|800px)/, /background-color:\s*#102938/, /width:\s*173px/],
+        cssContains: [/margin-top:\s*(?:calc\((?:0\.25rem|var\(--spacing\))\s*\*\s*200\)|800px)/, /background-color:\s*#102938/, /width:\s*173px/],
         runtimeStyles: [{
           selector: '.hbuilderx-web-hmr-probe',
           styles: { backgroundColor: 'rgb(16, 41, 56)', color: 'rgb(247, 251, 255)', marginTop: '800px', width: '173px' },
@@ -1345,7 +1349,7 @@ export const webCases: WebCase[] = [
         markerText: 'hbuilderx-web-hmr-v4-rem-rpx',
         cssContains: [
           /background-color:\s*#0e7490/,
-          /\.mt-_b10rpx_B\s*\{[\s\S]*margin-top:\s*0\.3125rem/,
+          /\.mt-(?:_b10rpx_B|\\\[10rpx\\\])\s*\{[\s\S]*margin-top:\s*0\.3125rem/,
           /\.text-xs\s*\{[\s\S]*font-size:\s*(?:var\(--text-xs\)|0\.75rem)/,
         ],
         runtimeStyles: [{

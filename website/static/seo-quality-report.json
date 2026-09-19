@@ -1,8 +1,8 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-09-01T10:22:55.114Z",
+  "generatedAt": "2026-09-18T07:05:50.639Z",
   "totals": {
-    "files": 313,
+    "files": 315,
     "issues": 0
   },
   "coverage": {
@@ -23,12 +23,12 @@
   },
   "geo": {
     "en": {
-      "primary": 95,
-      "full": 155
+      "primary": 96,
+      "full": 156
     },
     "zh-cn": {
-      "primary": 95,
-      "full": 158
+      "primary": 96,
+      "full": 159
     }
   },
   "routeConsistency": {

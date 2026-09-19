@@ -126,7 +126,12 @@ export class UniAppXComponentLocalStyleCollector {
     private readonly fileId: string,
     private readonly runtimeSet?: Set<string>,
     private readonly includeVariants = false,
+    private readonly preserveClassNames = false,
   ) {}
+
+  private runtimeClassName(utility: string) {
+    return this.preserveClassNames ? utility : replaceWxml(utility)
+  }
 
   private ensureAlias(utility: string) {
     const cached = this.aliasByUtility.get(utility)
@@ -136,7 +141,7 @@ export class UniAppXComponentLocalStyleCollector {
     const alias = createAlias(this.fileId, utility, this.aliasByUtility.size)
     this.aliasByUtility.set(utility, alias)
     // 局部变体补充页面级层叠，同时保留全局变体类的既有运行时身份。
-    const replacement = hasTopLevelVariant(utility) ? `${replaceWxml(utility)} ${alias}` : alias
+    const replacement = hasTopLevelVariant(utility) ? `${this.runtimeClassName(utility)} ${alias}` : alias
     this.aliasByLookup.set(utility, replacement)
     this.aliasByLookup.set(replaceWxml(utility), replacement)
     return alias
@@ -153,7 +158,7 @@ export class UniAppXComponentLocalStyleCollector {
         continue
       }
       if (!this.includeVariants && hasTopLevelVariant(candidate)) {
-        rewritten = rewritten.replace(candidate, replaceWxml(candidate))
+        rewritten = rewritten.replace(candidate, this.runtimeClassName(candidate))
       }
       else {
         this.ensureAlias(candidate)

@@ -245,6 +245,8 @@ App 端同时检查 transformed output、compiled style output 和真实截图�
 
 HMR 必须满足三件事：增量产物包含新 class、运行时页面发生预期变化、前后截图存在可解释的 diff。只有产物变了但截图没变，或截图变了但 marker 不对，都不能判定 HMR 通过。
 
+普通 uni-app Vue3 的 App 用例显式使用 `updateMode: 'native-reload'`：HBuilderX 5.26 在 `app-service.js` 变化时可能全量同步并重启应用生命周期。这类结果单独作为平台原生热重载验收，仍检查本轮产物、运行时和截图，报告记录 `App Launch` 次数，不计入纯 HMR 步数。默认模式仍是 `hmr`，uni-app x 与 Harmony 不自动放宽；两种模式均拒绝更新失败和重装。实现及回归见 `e2e/hbuilderx-local/hmr-lifecycle.ts`、`e2e/hbuilderx-hmr-lifecycle.test.ts` 和 `e2e/demo-visual-update-mode.test.ts`。
+
 ## 5. VDOM、Vapor 和 Harmony 特别规则
 
 - HBuilderX 日志中的 `VDOM模式` 或明确的 Vapor 标识才是模式证据；不要根据文件名猜测模式。
