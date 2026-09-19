@@ -1,5 +1,31 @@
 # @weapp-tailwindcss/postcss
 
+## 3.3.6
+
+### Patch Changes
+
+- 将共享生成流程、Vite 产物清理、Webpack 兼容和 Harmony apply 的样式变换归入 PostCSS 包，保留主包编排接口，减少重复解析、声明签名计算和未命中规则克隆。
+
+  继续统一源码追踪、主题与引用组装、import 改写、候选扫描和入口指纹；删除重复的 inline/config/source 解析，复用单次调用的 CSS 分析结果，同时保持文件解析、平台和构建会话归主包管理。
+
+  将 Vite 预处理前独占行的 `@config` 清理一并迁入 PostCSS，保留 Sass 源码兼容及原有换行语义。
+
+  将 React Native CSS 编译迁入独立 PostCSS native 子入口，保留原编译器 API、精确类名过滤、告警与稳定 ID；运行时不加载 CSS 编译依赖。
+
+  将 injector 的纯指令插入和 LightningCSS 的实验性样式转换归入 PostCSS。模板依赖追踪仍由 injector 管理；LightningCSS 引擎仍只由实验入口加载，稳定入口不导入实验实现。
+
+  修复完整验收中发现的既有 uni-app x Web 类名身份不一致：Web 模板与脚本保留生成器使用的原始变体类名，局部样式仍按精确候选生成别名，小程序转换行为保持不变。
+
+- 将公开 core 编译入口的 Tailwind banner 注释清理迁入 PostCSS 包，直接复用已有 AST，保留目标平台、finalize 开关、其它版权注释和声明字面量的既有行为。
+
+- 将 CSS 资源位置依赖分析迁入 PostCSS，通过 tokenizer 识别转义的 url 和 import，避免相对资源转换跨目录共享缓存，并排除字符串及注释中的伪资源语法。
+
+- 将 CSS 运行时签名归属 PostCSS，保留字符串空格、注释样文本及选择器关系，避免主题变量等有效修改被误判为排版变化而漏掉 HMR 缓存失效。
+
+- 统一 uni-app x 的样式属性名、数值单位与行高类型转换到 PostCSS，删除主包重复实现，减少重复属性名处理并保持 CSS 与 UTS 输出一致。
+
+- 为微信小程序的 Tailwind v4 rpx 主题变量增加每构建会话一次的建议性警告，区分运行时 calc 与静态输出；将相关生成样式转换及变量收集统一到 PostCSS 包，保持 CSS 和类名集合语义不变。
+
 ## 3.3.5
 
 ### Patch Changes

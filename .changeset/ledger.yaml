@@ -39,6 +39,10 @@
   dir: packages/experimental
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/experimental@0.0.43":
+  dir: packages/experimental
+  intents:
+    - loud-flies-travel
 "@weapp-tailwindcss/hbuilderx-runner@0.1.3":
   dir: packages/hbuilderx-runner
   intents:
@@ -133,6 +137,19 @@
     - shiny-waves-occur
     - web-css-calc
     - wide-cobras-open
+"@weapp-tailwindcss/postcss@3.3.6":
+  dir: packages/postcss
+  intents:
+    - loud-flies-travel
+    - postcss-core-banner-ownership
+    - postcss-css-location-analysis
+    - postcss-runtime-signature
+    - postcss-style-value-ownership
+    - tiny-tables-study
+"@weapp-tailwindcss/react-native@0.2.19":
+  dir: packages/react-native
+  intents:
+    - loud-flies-travel
 "@weapp-tailwindcss/react-native@0.2.5":
   dir: packages/react-native
   intents:
@@ -203,6 +220,10 @@ tailwindcss-injector@1.0.17:
   dir: packages/tailwindcss-injector
   intents:
     - bright-package-homepages
+tailwindcss-injector@1.0.18:
+  dir: packages/tailwindcss-injector
+  intents:
+    - loud-flies-travel
 theme-transition@2.1.0:
   dir: packages-runtime/theme-transition
   intents:
@@ -325,6 +346,16 @@ weapp-tailwindcss@5.5.6:
     - tidy-css-cleanup
     - web-css-calc
     - wide-cobras-open
+weapp-tailwindcss@5.5.7:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - loud-flies-travel
+    - postcss-author-function-boundaries
+    - postcss-core-banner-ownership
+    - postcss-css-location-analysis
+    - postcss-runtime-signature
+    - postcss-style-value-ownership
+    - tiny-tables-study
 weapp-tw@0.0.3:
   dir: packages/weapp-tw
   intents:
