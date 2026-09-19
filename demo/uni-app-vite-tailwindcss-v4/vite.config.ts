@@ -67,6 +67,12 @@ export default defineConfig(async () => {
         plugins: [],
       },
     },
+    build: {
+      terserOptions: {
+        // 独立分包增加小 chunk，限制 worker 数量以减少启动成本与峰值内存。
+        maxWorkers: 2,
+      },
+    },
     resolve: {
       alias: {
         // Force uni-app runtime to use the v3 build that still exports findComponentPropsData

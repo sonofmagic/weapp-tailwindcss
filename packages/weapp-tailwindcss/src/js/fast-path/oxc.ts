@@ -1,60 +1,15 @@
 import type { Program, StringLiteral, TemplateElement } from '@oxc-project/types'
 import type { IJsHandlerOptions, JsHandlerResult } from '../../types'
-import { createRequire } from 'node:module'
-import process from 'node:process'
 import MagicString from 'magic-string'
 import { walk } from 'oxc-walker'
 import { jsStringEscape } from '../js-string-escape'
 import { transformLiteralText } from '../literal-transform'
+import { loadOxcParser } from '../oxc-parser'
 
-type OxcParser = Pick<typeof import('oxc-parser'), 'parseSync'>
+export { isOxcParserRuntimeSupported } from '../oxc-parser'
 
 interface ReplacementContext {
   ms?: MagicString
-}
-
-const require = createRequire(import.meta.url)
-let oxcParser: OxcParser | false | undefined
-
-export function isOxcParserRuntimeSupported(version = process.versions.node) {
-  const match = /^(\d+)\.(\d+)(?:\.|$)/.exec(version)
-  if (!match) {
-    return false
-  }
-  const major = Number(match[1])
-  const minor = Number(match[2])
-  if (major === 20) {
-    return minor >= 19
-  }
-  if (major === 21) {
-    return false
-  }
-  if (major === 22) {
-    return minor >= 12
-  }
-  return major > 22
-}
-
-function loadOxcParser(): OxcParser | undefined {
-  if (!isOxcParserRuntimeSupported()) {
-    return undefined
-  }
-  if (oxcParser === false) {
-    return undefined
-  }
-  if (oxcParser) {
-    return oxcParser
-  }
-
-  try {
-    oxcParser = require('oxc-parser') as OxcParser
-  }
-  catch {
-    oxcParser = false
-    return undefined
-  }
-
-  return oxcParser
 }
 
 function hasValues<T>(values: T[] | undefined): values is T[] {
@@ -220,7 +175,7 @@ export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsH
     return undefined
   }
 
-  let result: ReturnType<OxcParser['parseSync']>
+  let result: ReturnType<typeof parser.parseSync>
   try {
     result = parser.parseSync(options.filename ?? 'weapp-tailwindcss.js', rawSource, {
       sourceType: getParserSourceType(options.babelParserOptions?.sourceType),

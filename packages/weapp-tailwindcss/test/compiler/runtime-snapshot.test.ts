@@ -21,6 +21,38 @@ function createEntry(file: string, source: string, type: 'html' | 'js' | 'css') 
 }
 
 describe('compiler runtime snapshot', () => {
+  it('avoids candidate parsing for excluded JS while preserving transforms and linked invalidation', () => {
+    const cache = createCache()
+    const state = createRuntimeCompilationBuildState()
+    const signature = vi.fn(createRuntimeAffectingSourceSignature)
+    const build = (source: string) => buildRuntimeCompilationSnapshot([
+      createEntry('entry.js', 'import "./dependency.js"', 'js'),
+      { ...createEntry('dependency.js', source, 'js'), runtimeCandidate: false },
+    ], state, {
+      computeHash: value => cache.computeHash(value),
+      createRuntimeAffectingSignature: signature,
+    })
+    const linked = new Map([['entry.js', new Set(['dependency.js'])]])
+    const source = 'export const cls = "w-[3rpx]"'
+    const first = build(source)
+    expect(first.processFiles.js).toEqual(new Set(['entry.js', 'dependency.js']))
+    expect(signature).toHaveBeenCalledTimes(1)
+    expect(signature).not.toHaveBeenCalledWith(source, 'js')
+    updateRuntimeCompilationBuildState(state, first, linked)
+
+    expect(build(source).runtimeAffectingChangedByType.js.size).toBe(0)
+    for (const next of [source.replace('3rpx', '5rpx'), `${source};`, '']) {
+      const snapshot = build(next)
+      expect(snapshot.processFiles.js).toEqual(new Set(['dependency.js', 'entry.js']))
+      expect(snapshot.runtimeAffectingChangedByType.js).toEqual(new Set(['dependency.js']))
+      expect(snapshot.linkedImpactsByEntry.get('entry.js')).toEqual(new Set(['dependency.js']))
+      updateRuntimeCompilationBuildState(state, snapshot, linked)
+    }
+    expect(signature).toHaveBeenCalledTimes(1)
+    removeRuntimeCompilationBuildStateFiles(state, ['dependency.js'])
+    expect(state.runtimeAffectingHashByFile.has('dependency.js')).toBe(false)
+  })
+
   it('invalidates CSS token changes while reusing hashes for unchanged sources', () => {
     const state = createRuntimeCompilationBuildState()
     const cache = createCache()
