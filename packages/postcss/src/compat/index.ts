@@ -49,7 +49,7 @@ export { analyzeApplyOnlySource, collectApplyOnlySourceSelectors, extractGenerat
 export { normalizeUniAppXImportantApplyForSass, restoreUniAppXImportantApplyMarker, UNI_APP_X_IMPORTANT_APPLY_MARKER } from './uni-app-x'
 export { isTailwindRuntimePropertyRule, retainUniAppXAuthorApplyCss } from './uni-app-x-author-apply'
 export { createUniAppXBorderPreflight, hoistUniAppXBorderPreflight, UNI_APP_X_BORDER_PREFLIGHT_CLASS } from './uni-app-x-border'
-export { collectCssApplyUtilities, type CssClassStyleValue, cssToClassStyleValue, expandCssApplySourcesToStyleValue } from './uni-app-x-style-value'
+export { collectCssApplyUtilities, type CssClassStyleValue, cssToClassStyleValue, expandCssApplySourcesToStyleValue, normalizeUniAppXStyleProperty, normalizeUniAppXStyleValue } from './uni-app-x-style-value'
 export { collectCssReferenceDirectives, createUniAppXHarmonyApplyGeneratorSource } from './uni-app-x/apply-source'
 export { createUniAppXHarmonyApplyCssExpander } from './uni-app-x/harmony-apply'
 export { rewriteUniAppXStyleReferences } from './uni-app-x/reference-paths'

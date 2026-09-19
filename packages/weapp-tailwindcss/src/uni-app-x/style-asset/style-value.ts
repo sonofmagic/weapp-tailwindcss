@@ -4,8 +4,9 @@ import {
   collectCssApplyUtilities,
   cssToClassStyleValue,
   expandCssApplySourcesToStyleValue,
+  normalizeUniAppXStyleProperty,
+  normalizeUniAppXStyleValue,
   rewriteUniAppXStyleReferences,
-
 } from '@weapp-tailwindcss/postcss'
 import { resolveStyleReferencePath } from '../style-reference-path'
 
@@ -14,7 +15,6 @@ const STYLE_ENTRY_RE = /\[\s*("((?:\\.|[^"\\])+)")\s*,\s*(_pS\(_uM\(\[[\s\S]*?\]
 const STRING_LITERAL_RE = /(['"`])((?:\\.|(?!\1)[\s\S])*?)\1/g
 const SFC_STYLE_BLOCK_RE = /<style\b[^>]*>([\s\S]*?)<\/style>/gi
 const STYLE_EXPORT_PREFIX_RE = /^\s*export\s+default\s+/
-const STRING_STYLE_PROPERTIES = new Set(['lineHeight'])
 
 type StyleDeclarations = Record<string, string | number>
 export type StyleValue = Record<string, Record<string, StyleDeclarations>>
@@ -43,25 +43,6 @@ function cloneStyleValue(style: StyleValue): StyleValue {
   return Object.fromEntries(
     Object.entries(style).map(([className, entry]) => [className, cloneStyleEntry(entry)]),
   )
-}
-
-function toCamelCase(prop: string) {
-  return prop.replace(/-([a-z])/g, (_, char: string) => char.toUpperCase())
-}
-
-function normalizeValue(prop: string, value: string) {
-  const trimmed = value.trim()
-  if (!STRING_STYLE_PROPERTIES.has(toCamelCase(prop)) && /^-?\d+(?:\.\d+)?px$/.test(trimmed)) {
-    return Number(trimmed.slice(0, -2))
-  }
-  return trimmed.replace(/\s*,\s*/g, ',')
-}
-
-function normalizeStyleValue(prop: string, value: string | number) {
-  if (typeof value === 'number') {
-    return STRING_STYLE_PROPERTIES.has(toCamelCase(prop)) ? String(value) : value
-  }
-  return normalizeValue(prop, value)
 }
 
 export function parseStyleExport(source: string): StyleValue | undefined {
@@ -113,7 +94,7 @@ export function styleExportToUtsMap(styleExport: StyleValue) {
       continue
     }
     const declarationEntries = Object.entries(declarations).map(([prop, value]) => {
-      return `[${JSON.stringify(toCamelCase(prop))}, ${JSON.stringify(normalizeStyleValue(prop, value))}]`
+      return `[${JSON.stringify(normalizeUniAppXStyleProperty(prop))}, ${JSON.stringify(normalizeUniAppXStyleValue(prop, value))}]`
     })
     if (declarationEntries.length === 0) {
       continue

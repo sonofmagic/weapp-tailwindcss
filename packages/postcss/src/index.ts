@@ -166,6 +166,7 @@ export {
   type PostcssStyleTargetProfile,
 } from './style-targets'
 export {
+  createCssRuntimeAffectingSignature,
   type CssImportSourceParam,
   type CssImportSpecifier,
   isTailwindCssImport,
@@ -179,6 +180,7 @@ export {
   scss,
   stringifyScssSource,
 } from './syntax'
+export { hasCssLocationDependencies } from './syntax/location-dependencies'
 export { rewriteCssImportSpecifiers } from './syntax/rewrite-imports'
 
 export { canProcessSourceStyleAsCss } from './syntax/source-style'
