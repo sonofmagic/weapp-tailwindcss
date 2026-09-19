@@ -33,6 +33,7 @@ const uniH5Cases = [
   'uni-app-x-vdom-tailwindcss-v4',
 ].map(name => ({
   name,
+  theme: E2E_PROJECTS.find(item => item.name === name)?.theme,
   projectDir: `demo/${name}`,
   command: ['run', 'dev:h5'],
   hmr: createUniH5HmrVisualConfig(repoRoot, name),

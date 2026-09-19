@@ -785,7 +785,7 @@ async function runAppCaseVariant(
       await fs.copyFile(previousAfterScreenshot, stepBeforeScreenshot)
       hmrLifecycle?.assertNoFallback()
       hmrLifecycle?.dispose()
-      hmrLifecycle = observeHmrStep(launch.child, item.platform)
+      hmrLifecycle = observeHmrStep(launch.child, item.platform, item.updateMode)
       harmonyFailureEvidence = initialHarmony ? { ...domOptions, deviceId: resolveHarmonyScreenshotDeviceId(item), directory: path.join(path.dirname(stepAfterScreenshot), `runtime-${step.name}`), marker: step.markerText } : undefined
       process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write hmr marker ${step.name}\n`)
       if (step.sourceMutation) {
@@ -858,6 +858,7 @@ async function runAppCaseVariant(
         classLiteral: [step.markerClass, step.markerTextClass].filter(Boolean).join(' '),
         evidence: {
           ...evidence,
+          updateLifecycle: hmrLifecycle.snapshot(),
           markerColorDelta,
           markerPixelChanges,
           harmonyRuntime,
@@ -884,12 +885,14 @@ async function runAppCaseVariant(
       platform,
       styleIsolationVariant: variant.key,
       status: 'passed',
+      updateMode: item.updateMode ?? 'hmr',
       screenshot,
       hmrBeforeScreenshot,
       hmrAfterScreenshot,
       hmrSteps,
       diagnostics: {
         hmr: {
+          mode: item.updateMode ?? 'hmr',
           markerText: hmrSteps.at(-1)?.marker,
           steps: hmrSteps,
         },
@@ -921,12 +924,14 @@ async function runAppCaseVariant(
       platform,
       styleIsolationVariant: variant.key,
       status: 'failed',
+      updateMode: item.updateMode ?? 'hmr',
       error: [error instanceof Error ? error.message : String(error), launchLog ? `HBuilderX launch log:\n${launchLog}` : '']
         .filter(Boolean)
         .join('\n'),
       diagnostics: {
         launchArgs: item.launchArgs,
         projectRoot,
+        updateLifecycle: hmrLifecycle?.snapshot(),
       },
     })
   }

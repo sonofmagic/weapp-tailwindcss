@@ -11,7 +11,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { extractProjectCandidatesWithPositions, resolveValidTailwindV4Candidates } from '@tailwindcss-mangle/engine'
 import { logger } from '@weapp-tailwindcss/logger'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { collectRuntimeApplyCandidates } from '@weapp-tailwindcss/postcss'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { findNearestPackageRoot } from '@/context/workspace'
 import { omitUndefined } from '@/utils/object'
@@ -159,29 +159,6 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
     return new Set([...classSet].filter(className => options.filter?.(className) !== false))
   }
 
-  function hasTailwindV4ApplyContext(css: string) {
-    if (!css.includes('@apply')) {
-      return false
-    }
-    try {
-      const root = postcss.parse(css)
-      let hasContext = false
-      root.walkAtRules((rule) => {
-        if (
-          rule.name === 'reference'
-          || rule.name === 'import'
-          || (rule.name === 'tailwind' && rule.params.trim() === 'utilities')
-        ) {
-          hasContext = true
-        }
-      })
-      return hasContext
-    }
-    catch {
-      return false
-    }
-  }
-
   async function collectClassSet() {
     const report = await collectContentTokens()
     const rawCandidates = new Set((report.entries as Array<{ rawCandidate?: string } | string>).map((entry) => {
@@ -204,21 +181,8 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
       ...(source.cssSources ?? []).map(cssSource => cssSource.css).filter((css): css is string => typeof css === 'string'),
     ]
     for (const css of cssList) {
-      if (!hasTailwindV4ApplyContext(css)) {
-        continue
-      }
-      try {
-        const root = postcss.parse(css)
-        root.walkAtRules('apply', (rule) => {
-          for (const candidate of rule.params.split(/\s+/)) {
-            const normalized = candidate.replace(/!important$/, '').trim()
-            if (normalized) {
-              candidates.add(normalized)
-            }
-          }
-        })
-      }
-      catch {
+      for (const candidate of collectRuntimeApplyCandidates(css)) {
+        candidates.add(candidate)
       }
     }
   }

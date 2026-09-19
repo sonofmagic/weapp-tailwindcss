@@ -64,22 +64,24 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
     const diff = renderDiffLinks(context, item)
     const comparison = renderComparison(item)
     const error = item.error ? item.error.split('\n')[0] : ''
-    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${screenshot} | ${themeLight} | ${themeManualDark} | ${hmrBefore} | ${hmrAfter} | ${hmrSteps} | ${diff} | ${comparison} | ${error} |`
+    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${item.updateMode ?? 'hmr'} | ${screenshot} | ${themeLight} | ${themeManualDark} | ${hmrBefore} | ${hmrAfter} | ${hmrSteps} | ${diff} | ${comparison} | ${error} |`
   })
   const rows = results.map((item) => {
     const screenshot = item.screenshot ? `[截图](${path.relative(context.artifactRoot, item.screenshot)})` : ''
     const themeLight = item.themeLightScreenshot ? `[亮色](${path.relative(context.artifactRoot, item.themeLightScreenshot)})` : ''
     const themeManualDark = item.themeManualDarkScreenshot ? `[手动暗色](${path.relative(context.artifactRoot, item.themeManualDarkScreenshot)})` : ''
-    const hmrBefore = item.hmrBeforeScreenshot ? `[HMR 前](${path.relative(context.artifactRoot, item.hmrBeforeScreenshot)})` : ''
-    const hmrAfter = item.hmrAfterScreenshot ? `[HMR 后](${path.relative(context.artifactRoot, item.hmrAfterScreenshot)})` : ''
+    const hmrBefore = item.hmrBeforeScreenshot ? `[更新前](${path.relative(context.artifactRoot, item.hmrBeforeScreenshot)})` : ''
+    const hmrAfter = item.hmrAfterScreenshot ? `[更新后](${path.relative(context.artifactRoot, item.hmrAfterScreenshot)})` : ''
     const hmrSteps = renderHmrStepTextLinks(context, item)
     const diff = renderDiffTextLinks(context, item)
     const comparison = renderComparison(item)
     const error = item.error ? item.error.split('\n')[0] : ''
-    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${screenshot} | ${themeLight} | ${themeManualDark} | ${hmrBefore} | ${hmrAfter} | ${hmrSteps} | ${diff} | ${comparison} | ${error} |`
+    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${item.updateMode ?? 'hmr'} | ${screenshot} | ${themeLight} | ${themeManualDark} | ${hmrBefore} | ${hmrAfter} | ${hmrSteps} | ${diff} | ${comparison} | ${error} |`
   })
-  const hmrPairs = results.filter(item => item.hmrBeforeScreenshot && item.hmrAfterScreenshot)
-  const hmrStepCount = results.reduce((total, item) => total + (item.hmrSteps?.length ?? 0), 0)
+  const hmrResults = results.filter(item => item.updateMode !== 'native-reload')
+  const reloadResults = results.filter(item => item.updateMode === 'native-reload')
+  const hmrPairs = hmrResults.filter(item => item.hmrBeforeScreenshot && item.hmrAfterScreenshot)
+  const hmrStepCount = hmrResults.reduce((total, item) => total + (item.hmrSteps?.length ?? 0), 0)
   await fs.writeFile(reportMd, [
     '# Demo Visual E2E Report',
     '',
@@ -93,18 +95,19 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
     `- Screenshots: ${results.filter(item => item.screenshot).length}`,
     `- HMR visual pairs: ${hmrPairs.length}`,
     `- HMR visual steps: ${hmrStepCount}`,
+    `- Native reload visual steps: ${reloadResults.reduce((total, item) => total + (item.hmrSteps?.length ?? 0), 0)}`,
     `- Cross-platform comparisons: ${comparisons.length}`,
     '',
     '## Visual Matrix',
     '',
-    '| Demo | Platform | Variant | Status | Screenshot | Theme Light | Theme Manual Dark | HMR Before | HMR After | HMR Steps | Diff | Comparison | Error |',
-    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+    '| Demo | Platform | Variant | Status | Update Mode | Screenshot | Theme Light | Theme Manual Dark | Update Before | Update After | Update Steps | Diff | Comparison | Error |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
     ...visualRows,
     '',
     '## Link Matrix',
     '',
-    '| Demo | Platform | Variant | Status | Screenshot | Theme Light | Theme Manual Dark | HMR Before | HMR After | HMR Steps | Diff | Comparison | Error |',
-    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+    '| Demo | Platform | Variant | Status | Update Mode | Screenshot | Theme Light | Theme Manual Dark | Update Before | Update After | Update Steps | Diff | Comparison | Error |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
     ...rows,
     '',
   ].join('\n'))
