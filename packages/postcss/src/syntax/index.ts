@@ -14,3 +14,4 @@ export {
   scss,
   stringifyScssSource,
 } from './parse'
+export { createCssRuntimeAffectingSignature } from './runtime-signature'

@@ -5,18 +5,22 @@ import postcss from 'postcss'
 import { parseUniAppXStyleSource } from '../syntax/parse'
 
 const CLASS_SELECTOR_PREFIX_RE = /^\.((?:\\[^\n\r\f]|[\w-])+)(?=$|[.:#[])/
-const STRING_STYLE_PROPERTIES = new Set(['lineHeight'])
+const STRING_STYLE_PROPERTIES = new Set(['lineHeight', 'line-height'])
 
 type StyleDeclarations = Record<string, string | number>
 export type CssClassStyleValue = Record<string, Record<string, StyleDeclarations>>
 
-function toCamelCase(prop: string) {
+export function normalizeUniAppXStyleProperty(prop: string) {
   return prop.replace(/-([a-z])/g, (_, char: string) => char.toUpperCase())
 }
 
-function normalizeValue(prop: string, value: string) {
+export function normalizeUniAppXStyleValue(prop: string, value: string | number) {
+  const keepString = STRING_STYLE_PROPERTIES.has(prop)
+  if (typeof value === 'number') {
+    return keepString ? String(value) : value
+  }
   const trimmed = value.trim()
-  if (!STRING_STYLE_PROPERTIES.has(toCamelCase(prop)) && /^-?\d+(?:\.\d+)?px$/.test(trimmed)) {
+  if (!keepString && /^-?\d+(?:\.\d+)?px$/.test(trimmed)) {
     return Number(trimmed.slice(0, -2))
   }
   return trimmed.replace(/\s*,\s*/g, ',')
@@ -56,7 +60,7 @@ export function cssToClassStyleValue(source: string): CssClassStyleValue | undef
       }
       const declarations: StyleDeclarations = {}
       rule.walkDecls((decl) => {
-        declarations[toCamelCase(decl.prop)] = normalizeValue(decl.prop, decl.value)
+        declarations[normalizeUniAppXStyleProperty(decl.prop)] = normalizeUniAppXStyleValue(decl.prop, decl.value)
       })
       if (Object.keys(declarations).length > 0) {
         assignClassStyleValue(result, match[1], declarations)

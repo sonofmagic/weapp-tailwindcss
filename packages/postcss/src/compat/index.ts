@@ -36,7 +36,7 @@ export { composeFrameworkProcessedCss } from './tailwindcss-v4/user-css/framewor
 export { normalizeFrameworkProcessedUserCss } from './tailwindcss-v4/user-css/framework-source'
 export { createGeneratedThemeDeclarationResolver, type GeneratedThemeDeclarationResolver, removeBalancedAtRuleBlock, removeTailwindV4GeneratedUserCssArtifacts, removeTailwindV4GeneratorAtRulesFallback, TAILWIND_V4_GENERATOR_AT_RULES } from './tailwindcss-v4/user-css/generated-cleanup'
 export { isCssAlreadyRepresentedByMarkers } from './tailwindcss-v4/user-css/identity'
-export { createCssAppend, GENERATOR_PLACEHOLDER_MARKER_GLOBAL_RE, GENERATOR_PLACEHOLDER_MARKER_RE, hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, removeDuplicatedViteMarkers, removeTailwindGeneratedCssByBanner, splitGeneratorPlaceholderCssBySourceOrder, splitTailwindGeneratedCssByBanner, splitTailwindV4GeneratedCss, splitTailwindV4GeneratedCssBySourceOrder, stripGeneratorPlaceholderMarkers, stripTailwindBanner, stripTailwindBanners, TAILWIND_BANNER_GLOBAL_RE, TAILWIND_BANNER_PREFIX_RE, TAILWIND_BANNER_RE, TAILWIND_GENERATED_CSS_MARKER_RE, TAILWIND_V4_BANNER_RE, VITE_MARKER_RE } from './tailwindcss-v4/user-css/markers'
+export { createCssAppend, GENERATOR_PLACEHOLDER_MARKER_GLOBAL_RE, GENERATOR_PLACEHOLDER_MARKER_RE, hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, removeDuplicatedViteMarkers, removeTailwindGeneratedCssByBanner, splitGeneratorPlaceholderCssBySourceOrder, splitTailwindGeneratedCssByBanner, splitTailwindV4GeneratedCss, splitTailwindV4GeneratedCssBySourceOrder, stripGeneratorPlaceholderMarkers, stripTailwindBanner, stripTailwindBannerComments, stripTailwindBanners, TAILWIND_BANNER_GLOBAL_RE, TAILWIND_BANNER_PREFIX_RE, TAILWIND_BANNER_RE, TAILWIND_GENERATED_CSS_MARKER_RE, TAILWIND_V4_BANNER_RE, VITE_MARKER_RE } from './tailwindcss-v4/user-css/markers'
 
 export { deduplicateGeneratedCssRules } from './tailwindcss-v4/user-css/rule-deduplication'
 export { preferScopedGeneratedCssRules, preferScopedGeneratedCssRulesRoot } from './tailwindcss-v4/user-css/scoped-rules'
@@ -49,7 +49,7 @@ export { analyzeApplyOnlySource, collectApplyOnlySourceSelectors, extractGenerat
 export { normalizeUniAppXImportantApplyForSass, restoreUniAppXImportantApplyMarker, UNI_APP_X_IMPORTANT_APPLY_MARKER } from './uni-app-x'
 export { isTailwindRuntimePropertyRule, retainUniAppXAuthorApplyCss } from './uni-app-x-author-apply'
 export { createUniAppXBorderPreflight, hoistUniAppXBorderPreflight, UNI_APP_X_BORDER_PREFLIGHT_CLASS } from './uni-app-x-border'
-export { collectCssApplyUtilities, type CssClassStyleValue, cssToClassStyleValue, expandCssApplySourcesToStyleValue } from './uni-app-x-style-value'
+export { collectCssApplyUtilities, type CssClassStyleValue, cssToClassStyleValue, expandCssApplySourcesToStyleValue, normalizeUniAppXStyleProperty, normalizeUniAppXStyleValue } from './uni-app-x-style-value'
 export { collectCssReferenceDirectives, createUniAppXHarmonyApplyGeneratorSource } from './uni-app-x/apply-source'
 export { createUniAppXHarmonyApplyCssExpander } from './uni-app-x/harmony-apply'
 export { rewriteUniAppXStyleReferences } from './uni-app-x/reference-paths'

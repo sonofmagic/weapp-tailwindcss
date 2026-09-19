@@ -73,10 +73,12 @@ describe('bundlers/vite runtime-affecting signature', () => {
 
   it('keeps template expression string content in js signature', () => {
     const first = createRuntimeAffectingSourceSignature(
+      // eslint-disable-next-line no-template-curly-in-string -- 被测源码需要保留模板插值。
       'const cls = `card ${active ? "text-[#123456]" : "text-[#111111]"}`',
       'js',
     )
     const second = createRuntimeAffectingSourceSignature(
+      // eslint-disable-next-line no-template-curly-in-string -- 被测源码需要保留模板插值。
       'const cls = `card ${active ? "text-[#654321]" : "text-[#111111]"}`',
       'js',
     )
@@ -104,6 +106,16 @@ describe('bundlers/vite runtime-affecting signature', () => {
     const second = createRuntimeAffectingSourceSignature('.card { color: blue; }', 'css')
 
     expect(first).not.toBe(second)
+  })
+
+  it.each([
+    ['.a { content: "a  b" }', '.a { content: "a b" }'],
+    ['.a { content: "/* visible */" }', '.a { content: "" }'],
+    ['.a :hover { color: red }', '.a:hover { color: red }'],
+  ])('preserves meaningful CSS differences: %s', (previous, next) => {
+    expect(createRuntimeAffectingSourceSignature(previous, 'css'))
+      .not
+      .toBe(createRuntimeAffectingSourceSignature(next, 'css'))
   })
 
   it('falls back to raw source when js parsing fails', () => {

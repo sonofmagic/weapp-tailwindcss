@@ -1,6 +1,6 @@
 import process from 'node:process'
 import { describe, expect, it, vi } from 'vitest'
-import { createAuthorCssFunctionCompiler, shouldCompileAuthorCssFunctions } from '@/bundlers/shared/generator-css/user-css/compile-functions'
+import { createAuthorCssFunctionCompiler } from '@/bundlers/shared/generator-css/user-css/compile-functions'
 import { TailwindGenerationSessionPool } from '@/compiler/tailwind-generation-session-pool'
 
 function source(color: string) {
@@ -42,18 +42,12 @@ describe('author function compiler context', () => {
     }
   })
 
-  it('compiles small author spacing functions and skips generated utility css', async () => {
-    expect(shouldCompileAuthorCssFunctions(`.x{padding:--spacing(3)}`)).toBe(true)
-    expect(shouldCompileAuthorCssFunctions(`.x{color:theme('colors.brand')}`)).toBe(true)
-    expect(shouldCompileAuthorCssFunctions(`/*! weapp-tailwindcss generator-placeholder */\n.x{color:theme('colors.brand')}`)).toBe(true)
-    expect(shouldCompileAuthorCssFunctions(`.a{padding:--spacing(1)}`.repeat(400))).toBe(false)
-    expect(shouldCompileAuthorCssFunctions(`/*! weapp-tailwindcss vite-generated-css:app.wxss */.a{padding:--spacing(1)}`)).toBe(false)
-
+  it('does not compile generated utility CSS without author functions', async () => {
     const session = new TailwindGenerationSessionPool()
     const generate = vi.spyOn(session, 'generate')
     try {
       const compile = createAuthorCssFunctionCompiler([source('#123456')], session)
-      const generatedCss = `/*! weapp-tailwindcss vite-generated-css:app.wxss */.a{padding:--spacing(1)}`.repeat(20)
+      const generatedCss = `/*! weapp-tailwindcss vite-generated-css:app.wxss */.a{padding:calc(var(--spacing) * 1)}`.repeat(200)
       await expect(compile(generatedCss)).resolves.toBe(generatedCss)
       expect(generate).not.toHaveBeenCalled()
     }

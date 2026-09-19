@@ -1,7 +1,7 @@
 import type { StyleHandler } from '@weapp-tailwindcss/postcss'
 import type { Compiler, CompilerCssTransformOptions, CompilerSnapshot } from './types'
 import type { UserDefinedOptions } from '@/types'
-import { finalizeMiniProgramCssRoot } from '@weapp-tailwindcss/postcss'
+import { finalizeMiniProgramCssRoot, stripTailwindBannerComments } from '@weapp-tailwindcss/postcss'
 import { getCompilerContext } from '@/context'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { getInternalCompilerSnapshot } from './snapshot'
@@ -43,12 +43,7 @@ function finalizeResultRoot(result: Awaited<ReturnType<StyleHandler>>, snapshot:
     })
   }
   if (snapshot.target === 'weapp') {
-    // 公开 core 入口也遵循小程序产物约定；保留其它版权注释和声明中的字面量。
-    result.root.walkComments((comment) => {
-      if (/^!\s*tailwindcss v/i.test(comment.text)) {
-        comment.remove()
-      }
-    })
+    stripTailwindBannerComments(result.root)
   }
   result.css = result.root.toString()
 }
