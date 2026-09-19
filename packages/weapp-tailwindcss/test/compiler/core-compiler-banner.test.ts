@@ -9,9 +9,12 @@ const source = `${banner}\n${vendor}\n.card{display:flex;content:"/*! tailwindcs
 describe('core compiler banner finalization', () => {
   it.each([
     ['weapp', undefined, false],
+    ['weapp', true, false],
     ['weapp', false, true],
     ['web', undefined, true],
+    ['web', true, true],
     ['tailwind', undefined, true],
+    ['tailwind', true, true],
   ] as const)('preserves target and explicit finalization semantics (%s, %s)', async (target, finalize, keepBanner) => {
     const compiler = createCompiler({ cssPreflight: false })
     try {

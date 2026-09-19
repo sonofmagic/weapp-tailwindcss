@@ -54,10 +54,20 @@ export function locateMarkerColor(image: PNG, color: MarkerColor, markerClass: s
       candidates.push({ bounds, matchingPixels: tail })
     }
   }
-  // 缺少几何约束时取主要区域；多个同形标记则拒绝猜测。
-  candidates.sort((a, b) => b.matchingPixels - a.matchingPixels)
-  const marker = expectedRatio && candidates.length !== 1 ? undefined : candidates[0]
-  return { bounds: marker?.bounds, color, matched: !!marker, matchingPixels: marker?.matchingPixels ?? 0, candidateCount: candidates.length }
+  // 文字轮廓可能隔出同色小区域；已被另一候选完整包围的区域不构成独立标记。
+  const regions = candidates.filter(candidate => !candidates.some(parent =>
+    parent !== candidate
+    && parent.bounds.minX <= candidate.bounds.minX
+    && parent.bounds.minY <= candidate.bounds.minY
+    && parent.bounds.maxX >= candidate.bounds.maxX
+    && parent.bounds.maxY >= candidate.bounds.maxY
+    && (parent.bounds.maxX - parent.bounds.minX) * (parent.bounds.maxY - parent.bounds.minY)
+    > (candidate.bounds.maxX - candidate.bounds.minX) * (candidate.bounds.maxY - candidate.bounds.minY),
+  ))
+  // 缺少几何约束时取主要区域；多个独立同形标记则拒绝猜测。
+  regions.sort((a, b) => b.matchingPixels - a.matchingPixels)
+  const marker = expectedRatio && regions.length !== 1 ? undefined : regions[0]
+  return { bounds: marker?.bounds, color, matched: !!marker, matchingPixels: marker?.matchingPixels ?? 0, candidateCount: regions.length }
 }
 
 /** 同色 HMR 比较标记区域的位置与形状变化，排除状态栏时钟等页面噪声。 */

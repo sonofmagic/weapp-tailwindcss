@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
 import { build } from 'esbuild'
+import { describe, expect, it } from 'vitest'
 
 const repoRoot = path.resolve(import.meta.dirname, '../../../..')
 
@@ -51,6 +51,7 @@ function collectTsFiles(dir: string): string[] {
 describe('架构边界契约', () => {
   it('keeps migrated CSS transforms and diagnostics behind the PostCSS facade', () => {
     for (const file of [
+      'src/core/compiler/transforms.ts',
       'src/tailwindcss/v4-engine/miniprogram.ts',
       'src/tailwindcss/runtime-factory.ts',
       'src/tailwindcss/source-scan/inline-source.ts',
@@ -108,7 +109,7 @@ describe('架构边界契约', () => {
     ]) {
       const source = fs.readFileSync(path.join(repoRoot, 'packages/weapp-tailwindcss', file), 'utf8')
       expect(source).toContain('@weapp-tailwindcss/postcss')
-      expect(source).not.toMatch(/postcss\.parse|\.walkDecls\(|\.walkRules\(|\.walkAtRules\(/)
+      expect(source).not.toMatch(/postcss\.parse|\.walkDecls\(|\.walkRules\(|\.walkAtRules\(|\.walkComments\(/)
     }
   })
 
@@ -185,7 +186,7 @@ describe('架构边界契约', () => {
     expect(stableFiles).not.toContain(path.join(repoRoot, 'packages/postcss/src/native.ts'))
     expect(Object.values(stable.metafile.outputs).flatMap(output => output.imports.map(item => item.path))).not.toContain('lightningcss')
     for (const name of ['options', 'selector-transform', 'selector-utils']) {
-      const source = fs.readFileSync(path.join(repoRoot, 'packages/experimental/src/lightningcss', name + '.ts'), 'utf8')
+      const source = fs.readFileSync(path.join(repoRoot, 'packages/experimental/src/lightningcss', `${name}.ts`), 'utf8')
       expect(source).toContain('@weapp-tailwindcss/postcss/experimental/lightningcss')
       expect(source).not.toMatch(/function |=>/)
     }
