@@ -1,6 +1,8 @@
 # @weapp-tailwindcss/engine
 
-Tailwind CSS 4 的候选提取、文件扫描和样式生成引擎，可独立使用，也供 `weapp-tailwindcss`、PostCSS 包与 CLI 复用。
+> English | [简体中文](./README.zh-CN.md)
+
+Candidate extraction, source scanning, and style generation for Tailwind CSS 4. Use this package independently or through `weapp-tailwindcss`, its PostCSS package, and CLI.
 
 ```ts
 import { createTailwindV4Engine, resolveTailwindV4Source } from '@weapp-tailwindcss/engine'
@@ -14,10 +16,10 @@ const result = await engine.generate({ candidates: ['flex', 'text-red-500'] })
 console.log(result.css)
 ```
 
-包根导出候选提取、位置报告、扫描工具和 v4 API；`@weapp-tailwindcss/engine/v4` 导出 v4 API。两者均支持 ESM、CJS 和 TypeScript。候选提取包括模板、JS 字符串、SFC 和 CSS `@apply`，保留源码位置及有效候选集合。
+The root entry exports candidate extraction, position reports, source scanning, and the v4 API. `@weapp-tailwindcss/engine/v4` exports the v4 API. Both entries support ESM, CJS, and TypeScript. Extract candidates from templates, JavaScript strings, SFCs, and CSS `@apply`, with source positions and valid candidate sets.
 
-支持 `@source`、多 CSS 来源、design system、裸任意值、增量生成会话与缓存释放。只支持 Tailwind CSS 4；不提供 v3、多版本分发、自定义生成器或 HTML parser 兼容入口。小程序平台兼容转换由 `@weapp-tailwindcss/postcss` 完成。
+Supports `@source`, multiple CSS sources, the design system, bare arbitrary values, incremental generation sessions, and cache disposal. Only Tailwind CSS 4 is supported. There are no v3, multi-version dispatcher, custom generator, or HTML parser compatibility entry points. Platform compatibility transforms belong to `@weapp-tailwindcss/postcss`.
 
-## 来源
+## Source
 
-源码及对应 v4、提取测试迁自 MIT 项目 [tailwindcss-mangle](https://github.com/sonofmagic/tailwindcss-mangle/tree/6bf58cebe073a06dfeac7ed44f55ecff50deb763/packages/engine)，对应 npm `@tailwindcss-mangle/engine@0.2.0` 的发布证明。保留原始 [MIT 许可证](./LICENSE)。本包独立维护，不在运行时依赖旧 engine 或本地 submodule。
+The source and corresponding v4 and extraction tests were migrated from the MIT-licensed [tailwindcss-mangle](https://github.com/sonofmagic/tailwindcss-mangle/tree/6bf58cebe073a06dfeac7ed44f55ecff50deb763/packages/engine) commit identified by the npm provenance for `@tailwindcss-mangle/engine@0.2.0`. The original [MIT license](./LICENSE) is retained. This package is maintained independently and does not depend on the old engine or a local submodule at runtime.

@@ -139,6 +139,20 @@ describe('ci workflows', () => {
     expect(source).toContain('pr-gate-package-build-${{ github.run_id }}')
   })
 
+  it('bounds PR unit test concurrency without relaxing memory or coverage gates', () => {
+    const { workflow } = readWorkflow('pr-gate.yml')
+    const quality = workflow.jobs.quality
+    const run = stepRuns(workflow, 'quality').find(run => run.includes('pnpm exec vitest run'))!
+
+    expect(quality.strategy.matrix.shard).toEqual([1, 2, 3])
+    expect(run).toContain('--max-rss-mb 5632 --max-rss-delta-mb 4608')
+    expect(run).toContain('--shard=${{ matrix.shard }}/3')
+    expect(run).toContain('--maxWorkers=2')
+    expect(run).toContain('--update=none')
+    expect(run).not.toMatch(/--(?:exclude|testNamePattern|passWithNoTests)/)
+    expect(quality['continue-on-error']).toBeUndefined()
+  })
+
   it('requires current-commit portable demo evidence in the PR gate', () => {
     const { workflow: gate, source } = readWorkflow('pr-gate.yml')
     expect(gate.jobs['portable-demos'].uses).toBe('./.github/workflows/demo-matrix.yml')
