@@ -1,11 +1,8 @@
 import type { RuntimeEntryType } from './runtime-snapshot'
+import { createCssRuntimeAffectingSignature } from '@weapp-tailwindcss/postcss'
 import { Parser } from 'htmlparser2'
 import { babelParse } from '@/js/babel/parse'
 
-const CSS_BLOCK_COMMENT_RE = /\/\*[\s\S]*?\*\//g
-const CSS_AROUND_PUNCTUATION_RE = /\s*([{}:;,>+~()])\s*/g
-const CSS_TRAILING_DECLARATION_SEMICOLON_RE = /;\}/g
-const CSS_WHITESPACE_RE = /\s+/g
 const JS_RUNTIME_AFFECTING_TEXT_HINT_RE = /["'`/]/
 const JS_INCOMPLETE_TRAILING_OPERATOR_RE = /(?:=>|[=+\-*%&|^!~?:,.({[\]])\s*$/
 const JS_AST_IGNORED_KEYS = new Set([
@@ -137,15 +134,6 @@ function createJsRuntimeAffectingSignature(source: string) {
     // 解析失败时退回原始源码，宁可多刷新也不要漏刷新。
     return source
   }
-}
-
-function createCssRuntimeAffectingSignature(source: string) {
-  return source
-    .replace(CSS_BLOCK_COMMENT_RE, '')
-    .replace(CSS_AROUND_PUNCTUATION_RE, '$1')
-    .replace(CSS_TRAILING_DECLARATION_SEMICOLON_RE, '}')
-    .replace(CSS_WHITESPACE_RE, ' ')
-    .trim()
 }
 
 export function createRuntimeAffectingSourceSignature(source: string, type: RuntimeEntryType) {

@@ -1,15 +1,15 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+import { createCache } from '@/cache'
 import {
   buildRuntimeCompilationSnapshot,
-  createRuntimeCompilationAffectingSignature,
   createRuntimeAffectingSourceSignature,
+  createRuntimeCompilationAffectingSignature,
   createRuntimeCompilationBuildState,
   createRuntimeCompilationSnapshot,
   removeRuntimeCompilationBuildStateFiles,
   resetRuntimeCompilationBuildState,
   updateRuntimeCompilationBuildState,
 } from '@/compiler'
-import { createCache } from '@/cache'
 
 function createEntry(file: string, source: string, type: 'html' | 'js' | 'css') {
   return {
@@ -21,6 +21,29 @@ function createEntry(file: string, source: string, type: 'html' | 'js' | 'css') 
 }
 
 describe('compiler runtime snapshot', () => {
+  it('invalidates CSS token changes while reusing hashes for unchanged sources', () => {
+    const state = createRuntimeCompilationBuildState()
+    const cache = createCache()
+    const signature = vi.fn(createRuntimeAffectingSourceSignature)
+    const build = (source: string) => {
+      const snapshot = buildRuntimeCompilationSnapshot([
+        createEntry('theme.css', source, 'css'),
+      ], state, {
+        computeHash: value => cache.computeHash(value),
+        createRuntimeAffectingSignature: signature,
+      })
+      updateRuntimeCompilationBuildState(state, snapshot, new Map())
+      return snapshot
+    }
+    const first = '@theme { --font-label: "A  B"; }'
+    build(first)
+    expect(build(first).runtimeAffectingChangedByType.css.size).toBe(0)
+    expect(signature).toHaveBeenCalledTimes(1)
+    expect(build('@theme{--font-label:"A  B"}').runtimeAffectingChangedByType.css.size).toBe(0)
+    expect(build('@theme{--font-label:"A B"}').runtimeAffectingChangedByType.css).toEqual(new Set(['theme.css']))
+    expect(build('@theme{}').runtimeAffectingChangedByType.css).toEqual(new Set(['theme.css']))
+  })
+
   it('creates explicit changed and process sets without bundler metadata', () => {
     const entries = [
       createEntry('pages/index.wxml', '<view class="foo" />', 'html'),
