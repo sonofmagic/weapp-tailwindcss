@@ -8,6 +8,9 @@ regressions:
   - packages/weapp-tailwindcss/test/compiler/runtime-snapshot.test.ts
   - packages/weapp-tailwindcss/test/bundlers/vite-runtime-affecting-signature.unit.test.ts
   - packages/weapp-tailwindcss/test/js/oxc-fast-path.test.ts
+  - packages/weapp-tailwindcss/test/js/oxc-module-graph.test.ts
+  - packages/weapp-tailwindcss/test/js/oxc-analysis-cache.test.ts
+  - packages/postcss/test/vite-css-rules-selector-prefilter.test.ts
 ---
 
 # uni-app CLI 编译器与 HBuilderX 5.26 对齐
@@ -24,7 +27,11 @@ regressions:
 
 CPU profile 显示，升级后的 JS 候选文本签名分析花费约 61 ms，其中约 48 ms 用于 Babel 解析；这部分完整 AST 随后不一定由 Oxc 转译链使用。签名分析现复用已有 Oxc 加载器，原生模块不可用、解析异常时仍回退 Babel。对构建图明确标为非候选的 JS，快照直接沿用源码哈希保守失效，不再为了候选文本比较建立 AST；JS 转译、关联模块失效和文件删除仍保留。
 
-生产构建沿用框架的 Terser 压缩器，将 demo 的 `terserOptions.maxWorkers` 限为 2，避免新增小 chunk 继续增加 worker 启动和内存成本。不调整压缩语义，不改变独立分包产物。
+首次修复曾将 Terser worker 限为 2，保持 39 个产物逐字节一致，但远端冷构建仍回归 9.95%，HMR peak / steady 分别回归 15.81% / 11.89%。随后单 worker 对照也更慢，因此未作为最终方案。最终仅在 demo 的小程序生产构建显式选择 uni-app CLI 支持的 `esbuild` 压缩器；开发模式、H5 和 App 沿用框架配置，独立分包继续包含独立运行时。JS 压缩文本会变化，不能再宣称全部产物逐字节一致。
+
+增量类集合变化时，内容未变的 vendor 仍需要按新 classSet 重新转译。Oxc 快路径改为缓存字面量的值和位置，容量上限 128 项、计费 2 MiB，超限源码只解析不缓存；完整 AST 不进入缓存。缓存键包含源码、语言和 sourceType，匹配与转义选项不进入解析事实，每次使用当前选项重新匹配。ESM 声明、忽略调用等仍回退 Babel；当前模块图不消费 CommonJS require 依赖，相关 chunk 可以使用 Oxc。
+
+Taro Vite 的 HMR 报告还暴露 preflight/theme 合并中的重复 selector 解析。两种匹配都要求多个独立选择器，因此不含逗号的单一选择器可以直接排除；其余内容继续由 selector AST 精确检查，覆盖转义、伪类和属性内逗号。此预筛属于 PostCSS 包，不在 bundler 中增加 CSS 解析。
 
 ## 适用边界
 
@@ -59,6 +66,18 @@ CPU profile 显示，升级后的 JS 候选文本签名分析花费约 61 ms，�
 
 本轮原始对照与 profile 保存在 #1220 工作树 `.tmp/pr1220-final-build.json`、`.tmp/pr1220-profiles/`；矩阵命令为 `node benchmark/version-compare/scripts/run-matrix.mjs --versions-file .tmp/pr1220-perf-result/versions.json --build-runs 3 --hmr-runs 0 --timeout 60000 --poll-interval 30 --only demo-uni-app-vite-tailwindcss-v4__mp-weixin --out .tmp/pr1220-final-build.json`。两份隔离副本使用各自锁文件和依赖，基线不应用本次优化。
 
+后续修复验证与限制：
+
+- `CI=1 pnpm --filter @weapp-tailwindcss/postcss test`：97 个文件通过，947 项通过，3 项既有条件跳过。
+- compiler、JS、运行时签名和架构边界定向回归：53 个文件通过，413 项通过，2 项既有条件跳过；缓存覆盖类集合增删、转义配置、解析模式、超限和淘汰。
+- CSS 回填与模块图回归：4 个文件、55 项通过。两个公开包构建、源码 ESLint、`pnpm agents:check` 和 `git diff --check` 通过。
+- 最终配置按上面的 static 命令重新生成并以 `--update=none` 复核，13 个快照无受跟踪差异；支付宝、H5 与矩阵登记共 3 项通过。
+- 同一份 204063 字符的独立分包 vendor，预热一次、七次改变 classSet：原快路径中位数 13.39 ms，紧凑缓存后 0.55 ms，每轮输出保持原文。微基准只证明重复解析成本，不代表端到端 HMR 通过。
+- `esbuild` 最终配置串行三次冷构建：基线 3895.78 ms，当前 3741.47 ms（约 -3.96%）；插件 975 → 1027 ms；峰值 RSS 中位数 1072.25 → 843.94 MB。原始报告 `.tmp/pr1220-esbuild-build.json` 保留全部样本，不能以总耗时改善代替独立插件门禁。
+- 本地 watch 仍有基线/当前共同的超时。模板删除单测在本地批量运行中失败、单独运行通过，远端当前修复前的三个单测分片全部通过；尚不能把本地失败认定为环境问题，亦不修改超时或断言消除失败。
+
+最终远端验收必须以最新提交的完整检查为准，保留原始失败报告；不重设性能基线、不放宽门槛、不删减独立分包功能。
+
 ## 规则评估
 
-沿用现有编译器/基座对齐、static 基线、性能门槛与完整多端预检规则，不新增或放宽 AGENTS 规则。私有 demo 的依赖升级不单独生成公开包 change intent；核心包签名分析优化提供中文 patch intent。
+沿用现有编译器/基座对齐、static 基线、性能门槛与完整多端预检规则，不新增或放宽 AGENTS 规则。私有 demo 的依赖升级不单独生成公开包 change intent；核心包和 PostCSS 优化提供中文 patch intent。
