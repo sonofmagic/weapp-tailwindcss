@@ -1,22 +1,20 @@
 import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
+import type { TailwindV4EntrySourceAnalysis } from '@weapp-tailwindcss/postcss'
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { UserDefinedOptions } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { analyzeTailwindV4EntrySource } from '@weapp-tailwindcss/postcss'
 import fg from 'fast-glob'
 import { loadConfig } from 'tailwindcss-config'
 import {
-  collectCssInlineSourceCandidates,
   FULL_SOURCE_SCAN_PATTERN,
   normalizeLegacyContentEntries,
-  parseConfigParam,
-  resolveCssSourceEntries,
+  resolveTailwindSourceEntry,
 } from '@/tailwindcss/source-scan'
 import { isTailwindV4CssEntry } from '@/tailwindcss/v4/css-entries'
 import { filterTailwindV4CssSourceRoots } from '@/tailwindcss/v4/css-sources'
-import { isTailwindV4CssImportParam, isTailwindV4PreflightImportParam } from '@/tailwindcss/v4/preflight'
 import { readStaticConfigContent } from '../static-config-content'
 
 const SOURCE_CANDIDATE_PATTERN = FULL_SOURCE_SCAN_PATTERN
@@ -36,17 +34,6 @@ export interface ResolvedTailwindV4CssEntries {
   includesPreflight: boolean
   inlineCandidates: TailwindInlineSourceCandidates
   dependencies: string[]
-}
-
-function parseImportSourceParam(params: string) {
-  const match = /\bsource\(\s*(none|(['"])(.*?)\2)\s*\)/.exec(params)
-  if (!match) {
-    return undefined
-  }
-  return {
-    none: match[1] === 'none',
-    sourcePath: match[3],
-  }
 }
 
 function resolveSourceBase(base: string, sourcePath: string) {
@@ -94,14 +81,8 @@ async function statConfigDependency(file: string): Promise<ConfigDependencySigna
   }
 }
 
-async function collectConfigDependencySignatures(root: postcss.Root, base: string) {
-  const configPaths = new Set<string>()
-  root.walkAtRules('config', (rule) => {
-    const configPath = parseConfigParam(rule.params)
-    if (configPath) {
-      configPaths.add(resolveConfigPath(base, configPath))
-    }
-  })
+async function collectConfigDependencySignatures(requests: string[], base: string) {
+  const configPaths = new Set(requests.map(request => resolveConfigPath(base, request)))
   return Promise.all([...configPaths].sort().map(statConfigDependency))
 }
 
@@ -131,14 +112,8 @@ export function mergeTailwindInlineSourceCandidates(
     : undefined
 }
 
-async function resolveConfigContentEntries(root: postcss.Root, base: string) {
-  const configPaths = new Set<string>()
-  root.walkAtRules('config', (rule) => {
-    const configPath = parseConfigParam(rule.params)
-    if (configPath) {
-      configPaths.add(resolveConfigPath(base, configPath))
-    }
-  })
+async function resolveConfigContentEntries(requests: string[], base: string) {
+  const configPaths = new Set(requests.map(request => resolveConfigPath(base, request)))
 
   const entries: TailwindSourceEntry[] = []
   for (const configPath of configPaths) {
@@ -170,46 +145,28 @@ async function resolveConfigContentEntries(root: postcss.Root, base: string) {
 }
 
 export async function resolveTailwindV4EntriesFromCss(css: string, base: string): Promise<ResolvedTailwindV4CssEntries | undefined> {
-  let root: postcss.Root
-  try {
-    root = postcss.parse(css)
-  }
-  catch {
-    return undefined
-  }
+  const analysis = analyzeTailwindV4EntrySource(css)
+  return analysis ? resolveTailwindV4EntriesFromAnalysis(analysis, base) : undefined
+}
 
-  let importSourceBase: string | undefined
-  let hasSourceNone = false
-  let hasTailwindCssImport = false
-  let includesPreflight = false
+async function resolveTailwindV4EntriesFromAnalysis(
+  analysis: TailwindV4EntrySourceAnalysis,
+  base: string,
+): Promise<ResolvedTailwindV4CssEntries | undefined> {
+  const { hasSourceNone, hasTailwindCssImport, includesPreflight, inlineCandidates, sourceRequests, importSourcePath } = analysis.getSourceDirectives()
+  const importSourceBase = importSourcePath
+    ? resolveSourceBase(base, importSourcePath)
+    : undefined
   const [sourceEntries, configEntries] = await Promise.all([
-    resolveCssSourceEntries(root, base, SOURCE_CANDIDATE_PATTERN),
-    resolveConfigContentEntries(root, base),
+    Promise.all(sourceRequests.map(request =>
+      resolveTailwindSourceEntry(request.sourcePath, base, request.negated, SOURCE_CANDIDATE_PATTERN))),
+    resolveConfigContentEntries(analysis.configRequests, base),
   ])
   const entries = [
     ...configEntries.entries,
     ...sourceEntries,
   ]
   const hasPositiveEntries = entries.some(entry => !entry.negated)
-  const inlineCandidates = collectCssInlineSourceCandidates(root)
-
-  root.walkAtRules('import', (rule) => {
-    if (!isTailwindV4CssImportParam(rule.params)) {
-      return
-    }
-    hasTailwindCssImport = true
-    includesPreflight ||= isTailwindV4PreflightImportParam(rule.params)
-    const sourceParam = parseImportSourceParam(rule.params)
-    if (sourceParam?.none) {
-      hasSourceNone = true
-    }
-    if (sourceParam?.sourcePath) {
-      importSourceBase = resolveSourceBase(base, sourceParam.sourcePath)
-    }
-  })
-  root.walkAtRules('tailwind', (rule) => {
-    includesPreflight ||= rule.params.trim() === 'base'
-  })
 
   if (importSourceBase) {
     return {
@@ -296,23 +253,20 @@ async function pathExistsAsFile(file: string) {
 }
 
 export async function resolveTailwindV4EntriesFromCssCached(css: string, base: string) {
-  let root: postcss.Root
-  try {
-    root = postcss.parse(css)
-  }
-  catch {
+  const analysis = analyzeTailwindV4EntrySource(css)
+  if (!analysis) {
     return undefined
   }
   const cacheKey = createCssEntriesCacheKey(
     css,
     base,
-    await collectConfigDependencySignatures(root, base),
+    await collectConfigDependencySignatures(analysis.configRequests, base),
   )
   const cached = tailwindV4CssEntriesCache.get(cacheKey)
   if (cached) {
     return cached
   }
-  const task = resolveTailwindV4EntriesFromCss(css, base).catch((error) => {
+  const task = resolveTailwindV4EntriesFromAnalysis(analysis, base).catch((error) => {
     tailwindV4CssEntriesCache.delete(cacheKey)
     throw error
   })
@@ -321,14 +275,11 @@ export async function resolveTailwindV4EntriesFromCssCached(css: string, base: s
 }
 
 export async function resolveTailwindConfigEntriesFromCssCached(css: string, base: string) {
-  let root: postcss.Root
-  try {
-    root = postcss.parse(css)
-  }
-  catch {
+  const analysis = analyzeTailwindV4EntrySource(css)
+  if (!analysis) {
     return undefined
   }
-  const dependencies = await collectConfigDependencySignatures(root, base)
+  const dependencies = await collectConfigDependencySignatures(analysis.configRequests, base)
   if (dependencies.length === 0) {
     return undefined
   }
@@ -337,7 +288,7 @@ export async function resolveTailwindConfigEntriesFromCssCached(css: string, bas
   if (cached) {
     return cached
   }
-  const task = resolveConfigContentEntries(root, base).then((resolved) => {
+  const task = resolveConfigContentEntries(analysis.configRequests, base).then((resolved) => {
     return {
       entries: [
         ...resolved.entries,

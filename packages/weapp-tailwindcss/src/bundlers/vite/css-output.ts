@@ -1,14 +1,13 @@
 import type { InternalUserDefinedOptions } from '@/types'
 import { existsSync, realpathSync } from 'node:fs'
 import path from 'node:path'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { canProcessSourceStyleAsCss } from '@weapp-tailwindcss/postcss'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { isCSSRequest } from './utils'
 
 export const SOURCE_STYLE_OUTPUT_EXT_RE = /\.(?:less|sass|scss|styl|stylus|pcss|postcss)$/i
 export const CSS_SOURCE_OUTPUT_EXT_RE = /\.(?:css|less|sass|scss|styl|stylus|pcss|postcss)$/i
 
-const SOURCE_STYLE_NON_CSS_SYNTAX_RE = /(?:^|\n)\s*(?:\/\/|\$[\w-]+\s*:|@(?:use|forward|mixin|include|function)\b)/
 const FALLBACK_STYLE_OUTPUT_EXTENSION = '.css'
 const COMMON_MINI_PROGRAM_STYLE_OUTPUT_EXTENSIONS = ['.wxss', '.acss', '.ttss', '.qss', '.jxss', '.tyss']
 
@@ -312,16 +311,7 @@ export function resolveViteCssPipelineOutputFileFromSourceFile(
 }
 
 export function canProcessViteSourceStyleAsCss(source: string, file: string) {
-  if (SOURCE_STYLE_NON_CSS_SYNTAX_RE.test(source)) {
-    return false
-  }
-  try {
-    postcss.parse(source, { from: file })
-    return true
-  }
-  catch {
-    return false
-  }
+  return canProcessSourceStyleAsCss(source, file)
 }
 
 export function normalizeCssSourceForCompare(css: string) {

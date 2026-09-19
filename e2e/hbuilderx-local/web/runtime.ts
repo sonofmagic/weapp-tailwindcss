@@ -15,7 +15,7 @@ function formatRuntimeStyleAssertions(assertions: WebRuntimeStyleAssertion[]) {
   }).join('; ')
 }
 
-function matchRuntimeStyles(actual: Record<string, string | string[]>, assertion: WebRuntimeStyleAssertion) {
+export function matchRuntimeStyles(actual: Record<string, string | string[]>, assertion: WebRuntimeStyleAssertion) {
   if (assertion.classFromText && (typeof actual.__textContent !== 'string'
     || !actual.__textContent || !Array.isArray(actual.__classList)
     || !actual.__classList.includes(actual.__textContent))) {

@@ -2,6 +2,7 @@ import type { Plugin } from 'vite'
 import type { CssStage } from '@/compiler'
 import type { AppType } from '@/types'
 import path from 'node:path'
+import { stripTailwindConfigDirectives } from '@weapp-tailwindcss/postcss'
 import { vitePluginName } from '@/constants'
 import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '../shared/css-imports'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, normalizeTailwindConfigDirectives } from '../shared/generator-css/directives'
@@ -40,10 +41,6 @@ interface RewriteCssImportsOptions {
   onCssSourceTransform?: ((id: string, code: string) => Promise<void> | void) | undefined
   shouldGenerateCss?: ((id: string, code: string) => boolean) | undefined
   shouldDeferGeneration?: ((id: string, code: string) => boolean) | undefined
-}
-
-function stripTailwindConfigDirectives(code: string) {
-  return code.replace(/^\s*@config\s+(?:"[^"]+"|'[^']+')[^;\n]*;\s*$/gm, '')
 }
 
 export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions): Plugin[] {

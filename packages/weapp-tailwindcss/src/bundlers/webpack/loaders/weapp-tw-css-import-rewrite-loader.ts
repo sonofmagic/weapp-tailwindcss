@@ -5,7 +5,7 @@ import { Buffer } from 'node:buffer'
 import path from 'node:path'
 import process from 'node:process'
 import { inspect } from 'node:util'
-import { filterExistingCssRules, normalizeTailwindcssV4InfinityRadiusCss, transformLynxCssCompat } from '@weapp-tailwindcss/postcss'
+import { filterExistingCssRules, normalizeTailwindcssV4InfinityRadiusCss, rewriteCssConfigRequests, transformLynxCssCompat } from '@weapp-tailwindcss/postcss'
 import { ensurePosix } from '@weapp-tailwindcss/shared'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
@@ -68,12 +68,12 @@ function normalizeCssConfigDirectives(source: string, resourcePath?: string) {
     return source
   }
   const base = path.dirname(resourcePath)
-  return source.replace(/@config\s+(["'])(.+?)\1\s*;?/g, (full, quote: string, request: string) => {
+  return rewriteCssConfigRequests(source, (request) => {
     if (path.isAbsolute(request) || isPackageJsonImportRequest(request)) {
-      return full
+      return undefined
     }
     const resolved = path.resolve(base, request)
-    return `@config ${quote}${ensurePosix(resolved)}${quote};`
+    return ensurePosix(resolved)
   })
 }
 

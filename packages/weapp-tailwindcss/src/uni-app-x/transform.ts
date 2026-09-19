@@ -43,14 +43,15 @@ function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
   }
 }
 
-function updateStaticAttribute(ms: MagicString, prop: AttributeNode, offset: number, content = prop.value?.content) {
+function updateStaticAttribute(ms: MagicString, prop: AttributeNode, offset: number, preserveClassNames: boolean) {
   if (!prop.value) {
     return
   }
   const start = offset + prop.value.loc.start.offset + 1
   const end = offset + prop.value.loc.end.offset - 1
   if (start < end) {
-    ms.update(start, end, replaceWxml(content ?? ''))
+    const content = prop.value.content
+    ms.update(start, end, preserveClassNames ? content : replaceWxml(content))
   }
 }
 
@@ -277,6 +278,9 @@ export function transformUVue(
     return
   }
   const { customAttributesEntities, disabledDefaultTemplateHandler = false } = options
+  const isWeb = Boolean(options.onWebLocalStyleRules)
+  // Web 生成器保留原始类名；只让局部样式收集器消费候选，JS handler 继续处理模块引用。
+  const jsRuntimeSet = isWeb ? new Set<string>() : runtimeSet
   const matchCustomAttribute = createAttributeMatcher(customAttributesEntities)
   const ms = new MagicString(code)
   const descriptor = parseSfc(code)
@@ -289,7 +293,7 @@ export function transformUVue(
     }
   }
   const localStyleCollector = shouldEnableLocalStyle(id, options)
-    ? new UniAppXComponentLocalStyleCollector(id, runtimeSet, options.localStyleVariants)
+    ? new UniAppXComponentLocalStyleCollector(id, runtimeSet, options.localStyleVariants, isWeb)
     : undefined
   if (descriptor.errors.length === 0) {
     if (descriptor.template?.ast) {
@@ -320,7 +324,7 @@ export function transformUVue(
               )
             }
             else {
-              updateStaticAttribute(ms, prop, templateOffset)
+              updateStaticAttribute(ms, prop, templateOffset, isWeb)
             }
             if (shouldHandleDefault) {
               continue
@@ -350,11 +354,11 @@ export function transformUVue(
                 jsHandler,
                 localStyleCollector,
                 options.webCustomAttributeDeep === true && shouldHandleCustom,
-                runtimeSet,
+                jsRuntimeSet,
               )
             }
             else {
-              updateDirectiveExpression(ms, prop, templateOffset, jsHandler, runtimeSet)
+              updateDirectiveExpression(ms, prop, templateOffset, jsHandler, jsRuntimeSet)
             }
           }
         }
@@ -369,7 +373,7 @@ export function transformUVue(
 
     if (descriptor.script && descriptor.script.start < descriptor.script.end) {
       localStyleCollector?.collectRuntimeClasses(descriptor.script.content)
-      const { code } = jsHandler(descriptor.script.content, runtimeSet ?? new Set(), defaultCreateJsHandlerOptions)
+      const { code } = jsHandler(descriptor.script.content, jsRuntimeSet ?? new Set(), defaultCreateJsHandlerOptions)
       ms.update(
         descriptor.script.start,
         descriptor.script.end,
@@ -378,7 +382,7 @@ export function transformUVue(
     }
     if (descriptor.scriptSetup && descriptor.scriptSetup.start < descriptor.scriptSetup.end) {
       localStyleCollector?.collectRuntimeClasses(descriptor.scriptSetup.content)
-      const { code } = jsHandler(descriptor.scriptSetup.content, runtimeSet ?? new Set(), defaultCreateJsHandlerOptions)
+      const { code } = jsHandler(descriptor.scriptSetup.content, jsRuntimeSet ?? new Set(), defaultCreateJsHandlerOptions)
       ms.update(
         descriptor.scriptSetup.start,
         descriptor.scriptSetup.end,

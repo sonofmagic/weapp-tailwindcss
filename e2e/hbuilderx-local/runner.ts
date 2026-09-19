@@ -711,7 +711,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     for (const step of resolveAppHmrSteps(item)) {
       hmrLifecycle?.assertNoFallback()
       hmrLifecycle?.dispose()
-      hmrLifecycle = observeHmrStep(child, item.platform)
+      hmrLifecycle = observeHmrStep(child, item.platform, item.updateMode)
       harmonyFailureEvidence = initialHarmony ? { ...domOptions, deviceId: harmonyDeviceId, directory: path.resolve(runtimeEvidenceRoot, step.name), marker: step.markerText } : undefined
       process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} start\n`)
       if (step.sourceMutation) {
@@ -788,6 +788,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
         process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} 未配置 Android 运行时探针，保留产物/HMR 断言\n`)
       }
       hmrLifecycle?.assertNoFallback()
+      process.stdout.write(`${JSON.stringify({ step: step.name, updateLifecycle: hmrLifecycle.snapshot() })}\n`)
       process.stdout.write(`[hbuilderx-app-hmr] ${item.name} step=${step.name} 产物与传输检查通过\n`)
     }
     await assertAppOutputHasNoUnsupportedContent(item, hmrOutputRoot)

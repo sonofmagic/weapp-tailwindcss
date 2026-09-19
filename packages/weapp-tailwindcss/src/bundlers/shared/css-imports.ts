@@ -1,32 +1,24 @@
 import type { AppType } from '@/types'
 import path from 'node:path'
-import { parseCssImportSpecifier, postcss, quoteCssImportSpecifier } from '@weapp-tailwindcss/postcss'
+import { rewriteCssImportSpecifiers, rewriteTailwindPackageImportStatements } from '@weapp-tailwindcss/postcss'
 
 const tailwindcssImportRE = /^(?:tailwindcss|weapp-tailwindcss)(?:\/.*)?$/
-const tailwindcssCssImportStatementRE = /(@import\s+(?:url\(\s*)?)(["'])((?:tailwindcss|weapp-tailwindcss)(?:\/[^"']*)?\$?)(\2\s*\)?)/gi
-
 export function normalizeResolvedTailwindcssImports(code: string, pkgDir: string | undefined) {
   if (!pkgDir) {
     return code
   }
   const paths = /^[a-z]:[\\/]|^\\\\/i.test(pkgDir) ? path.win32 : path.posix
-  const root = postcss.parse(code)
-  let changed = false
-  root.walkAtRules('import', (rule) => {
-    const parsed = parseCssImportSpecifier(rule.params)
-    if (!parsed || !paths.isAbsolute(parsed.specifier)) {
+  return rewriteCssImportSpecifiers(code, (specifier) => {
+    if (!paths.isAbsolute(specifier)) {
       return
     }
-    const subpath = paths.relative(pkgDir, parsed.specifier)
+    const subpath = paths.relative(pkgDir, specifier)
     if (!['index.css', 'theme.css', 'utilities.css', 'preflight.css'].includes(subpath)) {
       return
     }
     // loader 解析后的包文件在生成边界恢复为包请求，不能作为浏览器 import 重新输出。
-    const request = subpath === 'index.css' ? 'tailwindcss' : `tailwindcss/${subpath}`
-    rule.params = rule.params.replace(parsed.raw, () => quoteCssImportSpecifier(request, parsed.quote))
-    changed = true
+    return subpath === 'index.css' ? 'tailwindcss' : `tailwindcss/${subpath}`
   })
-  return changed ? root.toString() : code
 }
 
 export interface ResolveTailwindcssImportOptions {
@@ -71,17 +63,5 @@ export function rewriteTailwindcssImportsInCode(
   pkgDir: string,
   options?: ResolveTailwindcssImportOptions,
 ) {
-  let hasReplacements = false
-  const rewritten = code.replace(
-    tailwindcssCssImportStatementRE,
-    (full, prefix: string, quote: string, specifier: string, suffix: string) => {
-      const replacement = resolveTailwindcssImport(specifier, pkgDir, options)
-      if (!replacement) {
-        return full
-      }
-      hasReplacements = true
-      return `${prefix}${quote}${replacement}${suffix}`
-    },
-  )
-  return hasReplacements ? rewritten : undefined
+  return rewriteTailwindPackageImportStatements(code, specifier => resolveTailwindcssImport(specifier, pkgDir, options))
 }

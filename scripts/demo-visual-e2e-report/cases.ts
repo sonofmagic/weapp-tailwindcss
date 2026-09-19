@@ -35,6 +35,7 @@ import {
 } from './theme.ts'
 
 export interface H5Case {
+  theme?: Pick<MiniProgramThemeExpectation, 'backgroundColor'>
   name: string
   projectDir: string
   command: string[]
@@ -44,6 +45,7 @@ export interface H5Case {
 
 export interface H5HmrVisualConfig {
   label: string
+  viewport?: RuntimeContext['viewport']
   steps?: string[]
   mutate: (projectRoot: string, stepIndex: number) => Promise<() => Promise<void>>
   waitForReady?: (page: Page, url: string, logs: string[]) => Promise<Record<string, unknown> | undefined>
@@ -62,6 +64,9 @@ export interface MiniProgramCase {
 }
 
 export async function runH5Case(browser: Browser, item: H5Case, context: RuntimeContext, results: CaseResult[]) {
+  if (item.hmr?.viewport) {
+    context = { ...context, viewport: item.hmr.viewport }
+  }
   const projectRoot = path.resolve(context.repoRoot, item.projectDir)
   const originalManifest = await readManifest(projectRoot).catch(() => undefined)
   try {
@@ -112,7 +117,7 @@ async function runH5CaseVariant(
     if (!item.hmr) {
       const { diagnostics, page } = await prepareScreenshotPage(browser, resolvedUrl, context)
       try {
-        const theme = await collectH5ThemeEvidence(page)
+        const theme = await collectH5ThemeEvidence(page, item.theme)
         const captured = await capturePageScreenshot(page, screenshot, item.name)
         await fs.copyFile(screenshot, themeLightScreenshot)
         await captureH5ManualDarkScreenshot(page, themeManualDarkScreenshot)
@@ -140,7 +145,7 @@ async function runH5CaseVariant(
 
     const { diagnostics, page } = await prepareScreenshotPage(browser, resolvedUrl, context)
     try {
-      const theme = await collectH5ThemeEvidence(page)
+      const theme = await collectH5ThemeEvidence(page, item.theme)
       const themeLight = await capturePageScreenshot(page, themeLightScreenshot, `${item.name} theme light`)
       await captureH5ManualDarkScreenshot(page, themeManualDarkScreenshot)
       const initialEvidence = await item.hmr.waitForReady?.(page, resolvedUrl, logs)

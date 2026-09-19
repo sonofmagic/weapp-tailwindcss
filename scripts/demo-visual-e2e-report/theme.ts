@@ -116,7 +116,7 @@ function isLightText(value: string) {
   return Boolean((color && color.red > 220 && color.green > 220 && color.blue > 220) || (lightness !== undefined && lightness > 0.85))
 }
 
-function ensureH5ThemeEvidence(evidence: Awaited<ReturnType<typeof readH5ThemeEvidence>>) {
+function ensureH5ThemeEvidence(evidence: Awaited<ReturnType<typeof readH5ThemeEvidence>>, expectation?: Pick<MiniProgramThemeExpectation, 'backgroundColor'>) {
   if (!evidence.found) {
     throw new Error('H5 主题视觉回归缺少 .theme-mode-demo')
   }
@@ -131,9 +131,13 @@ function ensureH5ThemeEvidence(evidence: Awaited<ReturnType<typeof readH5ThemeEv
       `H5 theme-dark class 切换未让根示例变暗: background=${evidence.rootManualDark.backgroundColor}, color=${evidence.rootManualDark.color}`,
     )
   }
-  if (!isDarkColor(evidence.manualDark.backgroundColor) || !isLightText(evidence.manualDark.color)) {
+  const manualColor = parseRgb(evidence.manualDark.backgroundColor)
+  const matchesManualBackground = expectation
+    ? Boolean(manualColor && expectation.backgroundColor.every((channel, index) => channel === [manualColor.red, manualColor.green, manualColor.blue][index]))
+    : isDarkColor(evidence.manualDark.backgroundColor)
+  if (!matchesManualBackground || !isLightText(evidence.manualDark.color)) {
     throw new Error(
-      `H5 手动暗色示例未渲染为暗色: background=${evidence.manualDark.backgroundColor}, color=${evidence.manualDark.color}`,
+      `H5 手动暗色示例不符合主题预期: background=${evidence.manualDark.backgroundColor}, color=${evidence.manualDark.color}, expected=${expectation?.backgroundColor.join(',') ?? 'dark'}`,
     )
   }
 }
@@ -178,14 +182,14 @@ async function readH5ThemeEvidence(page: Page) {
   })()`)
 }
 
-export async function collectH5ThemeEvidence(page: Page) {
+export async function collectH5ThemeEvidence(page: Page, expectation?: Pick<MiniProgramThemeExpectation, 'backgroundColor'>) {
   const startedAt = Date.now()
   let evidence = await readH5ThemeEvidence(page)
   while (!evidence.found && Date.now() - startedAt < 30_000) {
     await page.waitForTimeout(150)
     evidence = await readH5ThemeEvidence(page)
   }
-  ensureH5ThemeEvidence(evidence)
+  ensureH5ThemeEvidence(evidence, expectation)
   return evidence
 }
 

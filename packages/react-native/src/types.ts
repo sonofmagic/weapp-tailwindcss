@@ -1,23 +1,10 @@
-export type NativePlatform = 'android' | 'ios' | 'native' | 'web'
+import type { NativeCompilerWarning, NativePlatform, NativeStyleRule } from '@weapp-tailwindcss/postcss/native'
+
+export type { CompileNativeStylesheetOptions, NativeCompilerWarning, NativePlatform, NativeStyleRule } from '@weapp-tailwindcss/postcss/native'
 
 export interface NativeStyleEnvironment {
   colorScheme?: 'light' | 'dark' | undefined
   platform?: NativePlatform | undefined
-}
-
-export interface NativeStyleRule {
-  style: Record<string, unknown>
-  colorScheme?: 'dark' | undefined
-  platform?: NativePlatform | undefined
-  important?: boolean | undefined
-  order?: number | undefined
-  id?: string | undefined
-}
-
-export interface NativeCompilerWarning {
-  className?: string | undefined
-  property?: string | undefined
-  message: string
 }
 
 export interface NativeStyleManifest {
@@ -32,11 +19,6 @@ export interface NativeStyleManifest {
   staticLookup?: Record<string, string[]>
   variables: Record<string, string>
   warnings: NativeCompilerWarning[]
-}
-
-export interface CompileNativeStylesheetOptions {
-  classSet?: Iterable<string> | undefined
-  ignorePreflight?: boolean | undefined
 }
 
 export type NativeClassValue = string | false | null | undefined | NativeClassValue[] | Record<string, boolean>
