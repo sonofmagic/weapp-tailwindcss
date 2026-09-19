@@ -52,6 +52,7 @@ describe('架构边界契约', () => {
   it('keeps migrated CSS transforms and diagnostics behind the PostCSS facade', () => {
     for (const file of [
       'src/core/compiler/transforms.ts',
+      'src/bundlers/vite/generate-bundle/css-share-scope.ts',
       'src/tailwindcss/v4-engine/miniprogram.ts',
       'src/tailwindcss/runtime-factory.ts',
       'src/tailwindcss/source-scan/inline-source.ts',
