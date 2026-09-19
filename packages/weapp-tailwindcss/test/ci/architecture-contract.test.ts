@@ -49,6 +49,13 @@ function collectTsFiles(dir: string): string[] {
 }
 
 describe('架构边界契约', () => {
+  it('keeps uni-app x property and value normalization in PostCSS', () => {
+    const source = fs.readFileSync(path.join(repoRoot, 'packages/weapp-tailwindcss/src/uni-app-x/style-asset/style-value.ts'), 'utf8')
+    expect(source).toContain('normalizeUniAppXStyleProperty')
+    expect(source).toContain('normalizeUniAppXStyleValue')
+    expect(source).not.toMatch(/STRING_STYLE_PROPERTIES|function (?:toCamelCase|normalizeValue|normalizeStyleValue)\(/)
+  })
+
   it('keeps migrated CSS transforms and diagnostics behind the PostCSS facade', () => {
     for (const file of [
       'src/core/compiler/transforms.ts',
