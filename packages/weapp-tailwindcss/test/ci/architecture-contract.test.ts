@@ -85,6 +85,7 @@ describe('架构边界契约', () => {
       'src/bundlers/shared/generator-css/scoped-rules.ts',
       'src/bundlers/shared/generator-css/user-layer-order.ts',
       'src/bundlers/shared/generator-css/user-css/apply-only.ts',
+      'src/bundlers/shared/generator-css/user-css/compile-functions.ts',
       'src/bundlers/shared/generator-css/user-css/at-rules.ts',
       'src/bundlers/shared/generator-css/user-css/generated-cleanup.ts',
       'src/bundlers/shared/generator-css/user-css/source-fragments.ts',
