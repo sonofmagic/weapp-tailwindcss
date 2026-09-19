@@ -166,6 +166,7 @@ export {
   type PostcssStyleTargetProfile,
 } from './style-targets'
 export {
+  createCssRuntimeAffectingSignature,
   type CssImportSourceParam,
   type CssImportSpecifier,
   isTailwindCssImport,
