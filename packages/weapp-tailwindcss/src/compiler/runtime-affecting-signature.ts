@@ -2,6 +2,7 @@ import type { RuntimeEntryType } from './runtime-snapshot'
 import { createCssRuntimeAffectingSignature } from '@weapp-tailwindcss/postcss'
 import { Parser } from 'htmlparser2'
 import { babelParse } from '@/js/babel/parse'
+import { tryCreateJsRuntimeAffectingSignature } from './runtime-affecting-signature/js'
 
 const JS_RUNTIME_AFFECTING_TEXT_HINT_RE = /["'`/]/
 const JS_INCOMPLETE_TRAILING_OPERATOR_RE = /(?:=>|[=+\-*%&|^!~?:,.({[\]])\s*$/
@@ -65,6 +66,11 @@ function createJsRuntimeAffectingSignature(source: string) {
     && !JS_INCOMPLETE_TRAILING_OPERATOR_RE.test(source)
   ) {
     return ''
+  }
+
+  const fastSignature = tryCreateJsRuntimeAffectingSignature(source)
+  if (fastSignature !== undefined) {
+    return fastSignature
   }
 
   try {

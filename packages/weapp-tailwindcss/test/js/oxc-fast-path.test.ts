@@ -282,7 +282,10 @@ describe('OXC JS fast path', () => {
     vi.doUnmock('@/js/babel')
   })
 
-  it('uses OXC for moduleGraph files without dependency edges', async () => {
+  it.each([
+    'const cls = "w-[100px]"',
+    'const vendor = require("./vendor.js"); const cls = "w-[100px]"',
+  ])('uses OXC for moduleGraph files without consumed dependency edges: %s', async (source) => {
     vi.resetModules()
     vi.doMock('@/js/babel', () => ({
       jsHandler: vi.fn(() => ({ code: 'babel-fallback' })),
@@ -297,7 +300,7 @@ describe('OXC JS fast path', () => {
       experimentalJsFastPath: 'oxc',
     })
 
-    const result = handler('const cls = "w-[100px]"', new Set(), {
+    const result = handler(source, new Set(), {
       filename: '/project/dist/index.js',
       moduleGraph: {
         resolve: vi.fn(),
