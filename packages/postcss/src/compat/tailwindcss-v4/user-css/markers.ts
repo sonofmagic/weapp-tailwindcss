@@ -1,3 +1,5 @@
+import type postcss from 'postcss'
+
 export const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
 export const TAILWIND_GENERATED_CSS_MARKER_RE = /\/\*!\s*tailwindcss v|@property\s+--tw-|--tw-|:not\(#\\#\)|\.[^,{]*(?:\\:|\\\[|\\#)|(?::root\s*,\s*:host|:host\s*,\s*page\s*,\s*\.tw-root\s*,\s*wx-root-portal-content)[^{]*\{[^}]*(?:--spacing\b|--(?:color|text|font|default|radius)-)/
 const TAILWIND_ESCAPED_UTILITY_MARKER_RE = /\.[^,{]{0,512}(?:\\:|\\\[|\\#)/
@@ -118,6 +120,15 @@ export function stripTailwindBanner(css: string) {
 
 export function stripTailwindBanners(css: string) {
   return css.replace(TAILWIND_BANNER_GLOBAL_RE, '')
+}
+
+/** 仅移除 AST 中的 Tailwind 版权注释，保留其它注释和声明字面量。 */
+export function stripTailwindBannerComments(root: postcss.Root | postcss.Document) {
+  root.walkComments((comment) => {
+    if (/^!\s*tailwindcss v/i.test(comment.text)) {
+      comment.remove()
+    }
+  })
 }
 
 export function stripGeneratorPlaceholderMarkers(css: string) {
