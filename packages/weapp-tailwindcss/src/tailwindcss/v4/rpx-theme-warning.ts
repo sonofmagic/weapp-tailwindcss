@@ -17,8 +17,8 @@ export function shouldCheckRpxThemeRisk(
   }
   const resolved = normalizeFrameworkStylePlatform(
     platform ?? opts.cssOptions?.platform ?? opts.platform
-    ?? process.env.UNI_UTS_PLATFORM ?? process.env.UNI_PLATFORM
-    ?? process.env.TARO_ENV ?? process.env.MPX_CURRENT_TARGET_MODE ?? process.env.MPX_CLI_MODE,
+    ?? process.env['UNI_UTS_PLATFORM'] ?? process.env['UNI_PLATFORM']
+    ?? process.env['TARO_ENV'] ?? process.env['MPX_CURRENT_TARGET_MODE'] ?? process.env['MPX_CLI_MODE'],
     opts.appType,
   )
   // weapp 是通用输出目标，只有明确的微信平台才启用微信运行时诊断。

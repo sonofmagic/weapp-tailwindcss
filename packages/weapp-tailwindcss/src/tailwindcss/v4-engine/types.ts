@@ -6,7 +6,7 @@ import type {
   TailwindV4SourceOptions as EngineTailwindV4SourceOptions,
   TailwindV4CandidateSource,
   TailwindV4DesignSystem,
-} from '@tailwindcss-mangle/engine'
+} from '@weapp-tailwindcss/engine'
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 
 export type TailwindV4GenerateTarget = 'weapp' | 'web'

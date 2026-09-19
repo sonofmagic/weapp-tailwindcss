@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@parcel/watcher": "catalog:buildUtilities",
-    "@tailwindcss-mangle/engine": "catalog:tailwindcssMangleEngine",
+    "@weapp-tailwindcss/engine": "workspace:*",
     "@weapp-tailwindcss/logger": "workspace:*",
     "fast-glob": "catalog:buildUtilities",
     "lightningcss": "catalog:buildUtilities",

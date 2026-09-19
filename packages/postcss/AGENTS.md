@@ -3,7 +3,7 @@
 ## 适用范围
 
 - 本文件适用于 `packages/postcss`。
-- 本包是仓库内 CSS 语法解析、tokenize、AST 变换和 PostCSS 管线的唯一实现位置。
+- 本包拥有通用 CSS 语法解析、tokenize、AST 变换和平台兼容 PostCSS 管线；Tailwind CSS 4 生成专用的 CSS 处理由 `packages/engine` 拥有。
 - 本包聚焦 CSS AST 级处理，不承担 JS/模板层的启发式纠错职责，也不承担 bundler 生命周期或 Tailwind class 生成。
 
 ## 包内结构约定

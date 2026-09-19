@@ -139,6 +139,20 @@ describe('ci workflows', () => {
     expect(source).toContain('pr-gate-package-build-${{ github.run_id }}')
   })
 
+  it('bounds PR unit test concurrency without relaxing memory or coverage gates', () => {
+    const { workflow } = readWorkflow('pr-gate.yml')
+    const quality = workflow.jobs.quality
+    const run = stepRuns(workflow, 'quality').find(run => run.includes('pnpm exec vitest run'))!
+
+    expect(quality.strategy.matrix.shard).toEqual([1, 2, 3])
+    expect(run).toContain('--max-rss-mb 5632 --max-rss-delta-mb 4608')
+    expect(run).toContain('--shard=${{ matrix.shard }}/3')
+    expect(run).toContain('--maxWorkers=2')
+    expect(run).toContain('--update=none')
+    expect(run).not.toMatch(/--(?:exclude|testNamePattern|passWithNoTests)/)
+    expect(quality['continue-on-error']).toBeUndefined()
+  })
+
   it('requires current-commit portable demo evidence in the PR gate', () => {
     const { workflow: gate, source } = readWorkflow('pr-gate.yml')
     expect(gate.jobs['portable-demos'].uses).toBe('./.github/workflows/demo-matrix.yml')
@@ -470,36 +484,27 @@ describe('ci workflows', () => {
     expect(script.indexOf('pnpm --filter weapp-tailwindcss... run build')).toBeLessThan(script.indexOf('pnpm --filter @weapp-tailwindcss/react-native build'))
   })
 
-  it('keeps @tailwindcss-mangle/engine managed by the workspace catalog', () => {
+  it('uses the workspace v4 engine in every product package', () => {
     const workspace = YAML.parse(readText('pnpm-workspace.yaml')) as {
       catalogs?: Record<string, Record<string, string>>
       overrides?: Record<string, string>
     }
     const lockfile = YAML.parseAllDocuments(readText('pnpm-lock.yaml'))[1]?.toJS() as {
-      catalogs?: Record<string, Record<string, { specifier?: string, version?: string }>>
       importers?: Record<string, {
         dependencies?: Record<string, { specifier?: string, version?: string }>
       }>
     }
-    const catalogVersion = workspace.catalogs?.tailwindcssMangleEngine?.['@tailwindcss-mangle/engine']
-    const tailwindVersion = lockfile.catalogs?.tailwindcss4?.tailwindcss?.version
-
-    expect(catalogVersion).toBeDefined()
-    expect(tailwindVersion).toBeDefined()
+    expect(workspace.catalogs?.tailwindcssMangleEngine).toBeUndefined()
     expect(workspace.overrides?.['@tailwindcss-mangle/engine']).toBeUndefined()
-    expect(lockfile.catalogs?.tailwindcssMangleEngine?.['@tailwindcss-mangle/engine']).toEqual({
-      specifier: catalogVersion,
-      version: catalogVersion,
-    })
-
-    for (const importer of ['packages/postcss', 'packages/weapp-tailwindcss'] as const) {
-      const packageJson = readPackageJson<{ dependencies?: Record<string, string> }>(`${importer}/package.json`)
-      const dependency = lockfile.importers?.[importer]?.dependencies?.['@tailwindcss-mangle/engine']
-
-      expect(packageJson.dependencies?.['@tailwindcss-mangle/engine'], importer)
-        .toBe('catalog:tailwindcssMangleEngine')
-      expect(dependency?.specifier, importer).toBe('catalog:tailwindcssMangleEngine')
-      expect(dependency?.version, importer).toBe(`${catalogVersion}(tailwindcss@${tailwindVersion})`)
+    for (const importer of ['packages/engine', 'packages/postcss', 'packages/weapp-tailwindcss', 'packages/cli']) {
+      const manifest = readPackageJson<{ dependencies?: Record<string, string> }>(`${importer}/package.json`)
+      expect(manifest.dependencies?.['@tailwindcss-mangle/engine']).toBeUndefined()
+      expect(lockfile.importers?.[importer]?.dependencies?.['@tailwindcss-mangle/engine']).toBeUndefined()
+      if (importer !== 'packages/engine') {
+        expect(manifest.dependencies?.['@weapp-tailwindcss/engine']).toBe('workspace:*')
+        expect(lockfile.importers?.[importer]?.dependencies?.['@weapp-tailwindcss/engine'])
+          .toEqual({ specifier: 'workspace:*', version: 'link:../engine' })
+      }
     }
   })
 

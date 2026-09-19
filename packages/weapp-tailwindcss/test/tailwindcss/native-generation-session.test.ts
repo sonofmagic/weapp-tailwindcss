@@ -1,4 +1,4 @@
-import type { TailwindGenerationSession } from '@tailwindcss-mangle/engine'
+import type { TailwindGenerationSession } from '@weapp-tailwindcss/engine'
 import { describe, expect, it, vi } from 'vitest'
 import { TailwindV4NativeSessionPool } from '@/tailwindcss/v4-engine/generator/native-session'
 

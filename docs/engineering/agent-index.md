@@ -23,6 +23,7 @@
 - [packages/build-all/AGENTS.md](../../packages/build-all/AGENTS.md)
 - [packages/cli/AGENTS.md](../../packages/cli/AGENTS.md)
 - [packages/debug-uni-app-x/AGENTS.md](../../packages/debug-uni-app-x/AGENTS.md)
+- [packages/engine/AGENTS.md](../../packages/engine/AGENTS.md)
 - [packages/experimental/AGENTS.md](../../packages/experimental/AGENTS.md)
 - [packages/hbuilderx-runner/AGENTS.md](../../packages/hbuilderx-runner/AGENTS.md)
 - [packages/init/AGENTS.md](../../packages/init/AGENTS.md)

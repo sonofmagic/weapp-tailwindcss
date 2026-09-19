@@ -23,10 +23,10 @@
 - 文件系统路径统一优先使用 `node:path` 的 `resolve`、`join`、`relative`、`normalize` 等 API，以及 `fileURLToPath` / `pathToFileURL` 处理 URL 转换；禁止通过字符串拼接、固定 `/`、`split('/')` 或单次替换反斜杠来实现通用文件系统路径逻辑。临时目录使用 `os.tmpdir()` / `mkdtemp`，禁止硬编码 `/tmp`。
 - 必须区分文件系统路径与 bundler module id、bundle asset name、URL/route 等逻辑路径：只有后者可在明确边界统一为 `/`；不得把规范化后的 module id 或 URL 直接当作文件系统路径。涉及路径解析、缓存 key、模块身份或产物归属的改动，至少覆盖 POSIX、Windows 反斜杠、盘符/根目录与相对路径回归用例。
 - Tailwind CSS v3/v4 的样式生成统一由 `weapp-tailwindcss` 接管；禁止通过 `tailwindcss@3` PostCSS 插件、`@tailwindcss/postcss` 或 `@tailwindcss/vite` 生成样式。
-- HBuilderX / uni-app x 链路必须避免引入会被 CJS 同步 `require()` 的 Tailwind 纯 ESM 官方插件依赖；Tailwind v4 相关能力应继续经 `weapp-tailwindcss/vite`、`tailwindcss-patch` 的动态加载链路接入，禁止用 `@tailwindcss/vite` 等 ESM-only 插件替代或兜底。
+- HBuilderX / uni-app x 链路必须避免引入会被 CJS 同步 `require()` 的 Tailwind 纯 ESM 官方插件依赖；Tailwind v4 相关能力应继续经 `weapp-tailwindcss/vite`、`@weapp-tailwindcss/engine` 的动态加载链路接入，禁止用 `@tailwindcss/vite` 等 ESM-only 插件替代或兜底。
 - 构建插件禁止用 `fs` 直接写入或改写构建输出目录；输出变更必须通过对应 bundler 的插件 API、bundle asset、`emitFile`、loader result 或 stream/file 对象完成，确保产物仍在同一个构建图里。
 - 修复构建器问题时必须从 bundler 的生命周期、模块图、产物图与 loader/plugin API 出发；禁止通过硬编码 `src`、`pages` 等项目布局推导源码路径，也禁止在 `generateBundle` 等后置阶段为了弥补状态缺失临时读取源码文件。需要源码内容时，应在 `load`、`transform`、`watchChange`、`handleHotUpdate` 等生命周期缓存，或使用 `ModuleInfo`、chunk metadata、loader result、source map、source-candidates 等构建图数据；确需文件系统扫描的入口发现逻辑必须集中在扫描层，并有回归测试覆盖。
-- `submodules/tailwindcss-mangle/` 只允许作为本地源码参考目录，不得加入 `pnpm-workspace.yaml`、`pnpm-lock.yaml`、CI/CD checkout、发布流程或仓库 submodule 追踪；`weapp-tailwindcss` 必须消费 npm 发布版 `tailwindcss-patch`。
+- `submodules/tailwindcss-mangle/` 只允许作为本地源码参考目录，不得加入 `pnpm-workspace.yaml`、`pnpm-lock.yaml`、CI/CD checkout、发布流程或仓库 submodule 追踪；需要 `tailwindcss-patch` 的测试与示例必须消费 npm 发布版。
 
 ## 多 Codex / 多代理协作
 - 同一个物理 checkout 只允许一个 Codex/代理执行写入型任务；多个 Codex 并发处理不同任务时，必须先为每个任务创建独立 `git worktree`。
@@ -75,7 +75,7 @@
 - `packages/weapp-tailwindcss` 的 JS 转译必须遵循 `classNameSet` 精确命中原则，禁止启发式兜底转译。
 - `packages/weapp-tailwindcss` 的 bundler 适配不得依赖硬编码目录或后置 `fs.readFile` 兜底来还原源码关系；源码关系必须来自构建图、插件生命周期缓存或明确的扫描层。
 - `packages/weapp-tailwindcss` 的样式注入、preflight、Tailwind 入口选择和分包样式隔离不得依赖硬编码文件名或输出路径片段；必须来自 CSS 内容、用户显式配置、构建图、loader/transform 阶段缓存或 source-candidates 元数据。
-- CSS 语法解析、tokenize、selector/value parser、AST 变换和 PostCSS 管线只允许实现在 `packages/postcss`；`packages/weapp-tailwindcss` 禁止直接依赖 `postcss-scss`、`@csstools/*`、`postcss-selector-parser`、`postcss-value-parser`、`lightningcss` 或 `postcss`，必须通过 `@weapp-tailwindcss/postcss` 消费。
+- 通用 CSS 语法解析、tokenize、selector/value parser、AST 变换和平台兼容 PostCSS 管线实现在 `packages/postcss`；`packages/engine` 仅允许实现 Tailwind CSS 4 生成必需的 CSS 解析、`@source` 处理、选择器别名转换和产物 AST，不承担平台兼容转换；`packages/weapp-tailwindcss` 禁止直接依赖 `postcss-scss`、`@csstools/*`、`postcss-selector-parser`、`postcss-value-parser`、`lightningcss` 或 `postcss`，必须通过 `@weapp-tailwindcss/postcss` 消费。
 - demo、Web/H5、watch 与 e2e 场景都必须遵守 Tailwind CSS 由 `weapp-tailwindcss` 生成的约束，不能为修复样式或 HMR 问题注册官方 Tailwind 生成插件。
 - 运行时封装（`packages-runtime/*`）改动需重点关注 escape/unescape、merge 兼容和缓存边界。
 - Release 工作流发布 npm 必须使用 trusted publishing/OIDC：发布 job 使用 Node 24 以满足 npm CLI 的 OIDC 支持要求，保留 `permissions.id-token: write` 与 provenance，禁止在发布步骤注入 `NPM_TOKEN` 或 `NODE_AUTH_TOKEN`。
