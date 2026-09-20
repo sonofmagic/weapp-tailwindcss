@@ -1,6 +1,8 @@
+import type { TailwindSourceEntry } from '@weapp-tailwindcss/source-scan'
 import type { Compiler } from 'webpack'
 import { statSync } from 'node:fs'
 import path from 'node:path'
+import { expandSourceEntryBraces, resolveSourceScanPath, resolveTailwindSourceEntry } from '@weapp-tailwindcss/source-scan'
 
 interface WebpackWatchDependencyLoaderContext {
   fs?: Pick<NonNullable<Compiler['inputFileSystem']>, 'stat'>
@@ -51,4 +53,20 @@ export function registerWebpackWatchContext(
   context: string,
 ) {
   loaderContext.addContextDependency?.(normalizeWebpackWatchPath(context))
+}
+
+export async function registerWebpackSourceContexts(
+  loaderContext: WebpackWatchDependencyLoaderContext,
+  options: { entries: TailwindSourceEntry[], explicit: boolean, root: string },
+) {
+  // 按静态 glob 前缀监听，避免配置 base 把 node_modules 和产物目录纳入递归快照。
+  const entries = await Promise.all(expandSourceEntryBraces(options.entries.filter(entry => !entry.negated))
+    .map(entry => resolveTailwindSourceEntry(entry.pattern, entry.base, false)))
+  const roots = new Set(entries.map(entry => entry.base))
+  if (!options.explicit && roots.size === 0) {
+    roots.add(options.root)
+  }
+  for (const root of roots) {
+    await registerWebpackWatchFile(loaderContext, resolveSourceScanPath(root))
+  }
 }

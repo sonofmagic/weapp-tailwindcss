@@ -11,6 +11,7 @@ regressions:
   - packages/weapp-tailwindcss/test/tailwindcss/v4/rpx-theme-warning.test.ts
   - packages/weapp-tailwindcss/test/vitest/vite.test.ts
   - packages/weapp-tailwindcss/test/ci/verify-packed-packages.test.ts
+  - packages/weapp-tailwindcss/test/bundlers/webpack-watch-dependencies.test.ts
 ---
 
 # 架构重构后的 CI 修复
@@ -37,6 +38,8 @@ PR Gate 的三个单测 shard 与 Release Gate 失败。测试仍 mock PostCSS �
 
 提交 8860422a9 的 Linux 性能门禁再次报告 Mpx 插件冷构建变慢；同一 SHA 有限重跑仍从 1135ms 增至 1694ms，不能归因为偶发噪声。CPU 对照发现新增 AsyncLocalStorage 在生成调用完成后一直保持启用。Node 22.23.2 的独立 Promise 微基准分别为未启用 7.7ms、调用结束但未停用 22.6ms、显式停用后 6.8ms。生成缓存现记录并发调用数量，最后一个调用结束后才执行 disable，成功和异常路径均释放；这只证明消除了上下文持续跟踪，实际构建收益仍以 demo 性能门禁为准。
 
+释放上下文后，三个 demo 各三次构建和 HMR 对照中，Mpx、Taro Vite 通过原判定，Taro Webpack 总构建仍慢 7.32%，HMR RSS 也超限。进一步对比真实 compilation 发现，新增目录依赖直接取配置来源的 base，将整个项目根目录纳入 Webpack 递归快照；CPU 采样同步出现额外文件哈希与 realpath 开销。现通过共享扫描包展开 brace 和 glob 静态前缀，监听真实来源目录，并把不存在的目录注册为 missing dependency。Taro 对照确认根目录监听被替换为配置指向的 src，未硬编码项目目录布局。
+
 ## 验证
 
 本轮使用 Node 25.6.1、pnpm 12.4.1，在独立 worktree 执行，正常 Vitest 运行均设置 CI=1 和 --update=none。
@@ -57,6 +60,7 @@ PR Gate 的三个单测 shard 与 Release Gate 失败。测试仍 mock PostCSS �
 上述批次有重叠，不累加为全仓测试数量。新提交远端门禁状态另行记录。
 
 - 异步上下文释放回归修复前失败，修复后 Node 22.23.2 的引擎 179 项测试、构建、类型检查、源码 ESLint 和架构检查通过。回归同时验证一个并发调用结束不会使另一个调用丢失配置上下文，以及异常结束仍会释放。
+- 来源目录回归修复前错误监听项目根，修复后 watcher 与 runtime classset loader 共 20 项通过；真实 Webpack/Rspack/Gulp 及主包/PostCSS 共享生成契约 35 项通过。主包构建、修改源码 ESLint、架构检查、agents:check 和 git diff --check 通过。覆盖多目录 brace、绝对 glob、重复目录去重、负规则、缺失目录、禁用自动扫描及默认扫描。
 
 ## 适用边界
 

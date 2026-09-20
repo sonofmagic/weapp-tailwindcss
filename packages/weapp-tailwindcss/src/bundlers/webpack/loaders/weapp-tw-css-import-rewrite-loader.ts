@@ -20,7 +20,7 @@ import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
 import { collectWebpackBareSelectorUserCss } from '../BaseUnifiedPlugin/v5-assets/pipeline-helpers'
 import { getLatestWebpackLoaderRuntime, getWebpackLoaderRuntime } from './runtime-registry'
-import { registerWebpackWatchContext, registerWebpackWatchFile } from './watch-dependencies'
+import { registerWebpackSourceContexts, registerWebpackWatchFile } from './watch-dependencies'
 
 interface CssImportRewriteLoaderOptions extends WebpackCssImportRewriteLoaderOptions {}
 
@@ -127,14 +127,7 @@ async function resolveWebpackLoaderSourceCandidates(
   })
   collector.syncInline(resolved.inlineCandidates)
   const outDir = loaderContext._compiler?.options.output.path
-  const scanRoots = new Set(resolved.entries.filter(entry => !entry.negated).map(entry => entry.base))
-  if (!resolved.explicit && scanRoots.size === 0) {
-    scanRoots.add(root)
-  }
-  // 目录依赖让尚未存在的来源文件也能触发 CSS 模块重编译。
-  for (const base of scanRoots) {
-    registerWebpackWatchContext(loaderContext, resolveSourceScanPath(base))
-  }
+  await registerWebpackSourceContexts(loaderContext, { ...resolved, root })
   for (const dependency of resolved.dependencies) {
     await registerWebpackWatchFile(loaderContext, dependency)
   }
