@@ -3,6 +3,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { createJiti } from 'jiti'
 import { lilconfig } from 'lilconfig'
+import { clearConfigModuleCache } from './module-cache.js'
 import { defuOverrideArray } from './utils.js'
 
 export interface LoadConfigOptions {
@@ -18,9 +19,11 @@ export type LoadConfigResult = null | {
 }
 
 export async function loadConfig(options?: Partial<LoadConfigOptions>): Promise<LoadConfigResult> {
-  // 转译缓存按源码哈希校验，模块仍重新执行以读取最新配置。
-  const jiti = createJiti(import.meta.url, { moduleCache: false, fsCache: true })
-  const load = (filename: string, source: string) => jiti.evalModule(source, { filename, forceTranspile: true })
+  const jiti = createJiti(import.meta.url, { moduleCache: true, fsCache: true })
+  const load = (filename: string, source: string) => {
+    clearConfigModuleCache(filename)
+    return jiti.evalModule(source, { filename })
+  }
   const { config, cwd, moduleName } = defuOverrideArray<LoadConfigOptions, Partial<LoadConfigOptions>[]>(
     options as LoadConfigOptions,
     {

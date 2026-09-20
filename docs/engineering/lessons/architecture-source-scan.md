@@ -34,7 +34,7 @@ PostCSS 提供 syntax、transform、plugin 子路径，原根入口保留。核�
 
 CLI 与 PostCSS 通过编译会话扫描，输出文件在扫描前排除。候选转换在验证前执行；删除候选时重建编译状态。配置每次加载独立 Jiti 并禁用缓存，CJS 强制转换，避免复用 native require 的旧对象。Tailwind 的绝对 config/plugin 请求转为相对请求，使用其依赖跟踪与失效协议；跨盘符路径保留绝对形式。
 
-上述缓存策略是首次实现，后续 PR 性能门禁证明它造成重复转换、模块执行和依赖遍历。现已由[CI 修复记录](architecture-ci-recovery.md)中的内容指纹缓存替代：Jiti 只禁用执行结果缓存，本地生成模块使用稳定绝对身份，未变更时共享模块；变化后仍经 Tailwind 的依赖失效协议加载。
+上述缓存策略是首次实现，后续 PR 性能门禁证明它造成重复转换、模块执行和依赖遍历。现已由[CI 修复记录](architecture-ci-recovery.md)中的内容指纹缓存替代：配置读取前清理本地模块图并保留 Jiti 转换缓存，本地生成模块使用稳定绝对身份，未变更时共享模块；变化后仍经 Tailwind 的依赖失效协议加载。
 
 新增用例曾明确失败：POSIX glob 转义被误认为 Windows 分隔符，src 外桥接模块绕过架构检查，source-scan 可类型引用 engine，旧引擎缺少 dispose。修复后同一批用例通过。共享来源生成用例同时暴露并修复配置 content 更新和绝对 glob 排除差异。
 

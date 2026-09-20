@@ -27,6 +27,8 @@ PR Gate 的三个单测 shard 与 Release Gate 失败。测试仍 mock PostCSS �
 
 此前为修复配置变更关闭全部 Jiti 缓存，并将所有绝对模块请求转成相对请求。Tailwind 对相对请求执行 cache-busting 和依赖遍历，多次编译、扫描及 design system 加载重复付出成本。现保留 Jiti 按源码哈希缓存的转换结果，执行结果仍不缓存。
 
+仅恢复转换缓存后，Linux CI 的 Mpx 冷构建插件仍从 1272ms 增至 1763ms。进一步检查发现强制转译 CommonJS 仍会引入转换器冷启动，而且禁用 Jiti moduleCache 不能清除原生 require 的间接依赖缓存。最终改为读取前清理配置及本地辅助模块图，CommonJS 原生加载，ESM/TS 由 Jiti 按语法决定转换。Jiti 包装父节点可能只被原生辅助模块的 parent 引用，清理时补充该关系；不清空已安装第三方依赖。
+
 引擎以稳定绝对路径标识本地 config/plugin，在异步调用上下文内复用最多 128 个模块，按本地依赖文件内容计算指纹。首次 CommonJS 加载复用已加载的 require 依赖图；ESM、TS 及变更后的模块通过 Tailwind 原有加载器处理。每次复用仍向编译器报告依赖，显式会话失效清空对应加载状态。原有全局加载 hook 被保留，引擎外请求不受接管。
 
 回归覆盖 CJS、MJS、TS、配置的间接依赖，以及保持文件长度和 mtime 不变的内容更新。ESM 的原生缓存协议通过构建后的 CJS 引擎验证，避免 Vitest 模块执行器代替真实 Node 加载器。
@@ -46,6 +48,9 @@ PR Gate 的三个单测 shard 与 Release Gate 失败。测试仍 mock PostCSS �
 - pnpm architecture:check：34 个包、1280 个生产源码文件通过；pnpm agents:check、pnpm release status 和 git diff --check 通过。
 - 使用 Node 22.19 复验全部 engine 测试，178 项通过；主包 v4-engine.test.ts 的 62 项通过。engine 构建、typecheck、源码 ESLint 及架构和规则检查再次通过。
 - 与 CI 相同主版本的 Node 22 下，Taro 三次 HMR 的稳态插件 P95 为基线 898ms、当前 888ms，未再现 Node 25 的耗时超限；该次 RSS 仍超限，需结合远端独立复测判断，不记为整体通过。
+- 配置加载器本地依赖图修复前，CJS/ESM/TS 的间接依赖更新用例失败；修复后配置包 15 项通过。主包 v4 engine、主包/PostCSS 共享来源与真实构建器共享来源共 97 项通过；配置包构建和源码 ESLint 通过；架构检查覆盖 1281 个源码文件。
+- 原生配置加载修复后，Node 22.19 的正式 perf:guard 对照通过：三个目标各三次构建、三次 HMR，沿用原阈值与统计规则，零阻断项。插件冷构建中位数 Mpx 596ms 到 548ms、Taro Webpack 4340ms 到 4330ms、uni-app Vite 1097ms 到 1127ms；总构建时间仍有波动，未宣称每个原始样本都更快。报告位于 .tmp/architecture-ci-performance-native。
+- 后续 CI 新增失败的 Taro Vite 使用同一隔离产物补做三次构建、三次 HMR，并用原 evaluatePerformanceGuard 评估通过；插件构建中位数 3047ms 到 2991ms，稳态 HMR P95 1755ms 到 1669ms。
 
 上述批次有重叠，不累加为全仓测试数量。新提交远端门禁状态另行记录。
 
