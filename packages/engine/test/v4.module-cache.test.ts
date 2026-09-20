@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from 'node:async_hooks'
 import fs from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import os from 'node:os'
@@ -10,6 +11,40 @@ import { withGenerationModuleCache } from '@/v4/module-cache'
 const { createTailwindGenerationSession, resolveTailwindV4Source } = createRequire(import.meta.url)('../dist/index.cjs') as typeof import('../src')
 
 describe('生成模块缓存', () => {
+  it('并发生成全部结束后停用异步上下文，并在失败后释放', async () => {
+    const disable = vi.spyOn(AsyncLocalStorage.prototype, 'disable')
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'generation-module-context-'))
+    const file = path.join(root, 'config.cjs')
+    const hooks = globalThis as typeof globalThis & { __tw_load?: (url: string) => unknown }
+    const previous = hooks.__tw_load
+    const loader = { loadModule: vi.fn(async () => ({ module: { marker: true } })) }
+    let resume!: () => void
+    const pending = new Promise<void>((resolve) => { resume = resolve })
+    try {
+      await fs.writeFile(file, 'module.exports = { marker: true }')
+      const second = withGenerationModuleCache(loader, async () => {
+        await pending
+        return hooks.__tw_load?.(pathToFileURL(file).href)
+      }, [file])
+      await withGenerationModuleCache(loader, async () => undefined)
+      expect(disable).not.toHaveBeenCalled()
+      resume()
+      expect(await second).toEqual({ default: { marker: true } })
+      expect(disable).toHaveBeenCalledTimes(1)
+      await expect(withGenerationModuleCache(loader, async () => {
+        throw new Error('generation failed')
+      })).rejects.toThrow('generation failed')
+      expect(disable).toHaveBeenCalledTimes(2)
+    }
+    finally {
+      resume()
+      disable.mockRestore()
+      if (previous) hooks.__tw_load = previous
+      else delete hooks.__tw_load
+      await fs.rm(root, { recursive: true, force: true })
+    }
+  })
+
   it.each([
     { extension: 'cjs', commonJs: true, extensionless: false },
     { extension: 'mjs', commonJs: false, extensionless: false },

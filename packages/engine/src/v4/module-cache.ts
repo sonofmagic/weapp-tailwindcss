@@ -30,6 +30,7 @@ const caches = new WeakMap<ModuleLoader, { revision: number, entries: Map<string
 let revision = 0
 const hooks = globalThis as typeof globalThis & { __tw_load?: ModuleHook }
 let installedHook: ModuleHook | undefined
+let activeContexts = 0
 const MODULE_CACHE_LIMIT = 128
 const require = createRequire(import.meta.url)
 
@@ -172,7 +173,7 @@ export function invalidateGenerationModuleCache() {
 }
 
 /** 仅在本引擎调用内复用本地模块；Tailwind 仍负责解析与依赖跟踪。 */
-export function withGenerationModuleCache<T>(loader: ModuleLoader, run: () => Promise<T>, files: string[] = [], onDependency?: (file: string) => void) {
+export async function withGenerationModuleCache<T>(loader: ModuleLoader, run: () => Promise<T>, files: string[] = [], onDependency?: (file: string) => void) {
   installHook()
   const resolved = files.map((file) => {
     for (const candidate of [file, `${file}.ts`, path.join(file, 'index.ts')]) {
@@ -184,5 +185,15 @@ export function withGenerationModuleCache<T>(loader: ModuleLoader, run: () => Pr
     }
     return resolveSourceScanPath(file)
   })
-  return context.run({ loader, files: new Set(resolved), onDependency }, run)
+  activeContexts += 1
+  try {
+    return await context.run({ loader, files: new Set(resolved), onDependency }, run)
+  }
+  finally {
+    // 仅在最后一个并发调用结束后关闭跟踪，避免后续构建持续承担 async_hooks 开销。
+    activeContexts -= 1
+    if (activeContexts === 0) {
+      context.disable()
+    }
+  }
 }

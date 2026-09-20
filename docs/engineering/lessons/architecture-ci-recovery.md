@@ -35,6 +35,8 @@ PR Gate 的三个单测 shard 与 Release Gate 失败。测试仍 mock PostCSS �
 
 新提交在 Linux/Windows 的默认工具类回归中暴露无 package.json 目录的边界：Node findPackageJSON 返回模块文件本身，不能直接按 JSON 读取。只在返回路径确为 package.json 时判断 type，其他情况交给原生模块加载和 CommonJS 依赖图判定。增加无清单目录的 JS 配置重载回归；同一主包失败用例修复前失败、修复后通过。
 
+提交 8860422a9 的 Linux 性能门禁再次报告 Mpx 插件冷构建变慢；同一 SHA 有限重跑仍从 1135ms 增至 1694ms，不能归因为偶发噪声。CPU 对照发现新增 AsyncLocalStorage 在生成调用完成后一直保持启用。Node 22.23.2 的独立 Promise 微基准分别为未启用 7.7ms、调用结束但未停用 22.6ms、显式停用后 6.8ms。生成缓存现记录并发调用数量，最后一个调用结束后才执行 disable，成功和异常路径均释放；这只证明消除了上下文持续跟踪，实际构建收益仍以 demo 性能门禁为准。
+
 ## 验证
 
 本轮使用 Node 25.6.1、pnpm 12.4.1，在独立 worktree 执行，正常 Vitest 运行均设置 CI=1 和 --update=none。
@@ -53,6 +55,8 @@ PR Gate 的三个单测 shard 与 Release Gate 失败。测试仍 mock PostCSS �
 - 后续 CI 新增失败的 Taro Vite 使用同一隔离产物补做三次构建、三次 HMR，并用原 evaluatePerformanceGuard 评估通过；插件构建中位数 3047ms 到 2991ms，稳态 HMR P95 1755ms 到 1669ms。
 
 上述批次有重叠，不累加为全仓测试数量。新提交远端门禁状态另行记录。
+
+- 异步上下文释放回归修复前失败，修复后 Node 22.23.2 的引擎 179 项测试、构建、类型检查、源码 ESLint 和架构检查通过。回归同时验证一个并发调用结束不会使另一个调用丢失配置上下文，以及异常结束仍会释放。
 
 ## 适用边界
 
