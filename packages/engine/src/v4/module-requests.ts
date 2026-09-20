@@ -1,10 +1,11 @@
 import path from 'node:path'
 import postcss from 'postcss'
 
-/** 相对请求让 Tailwind Node 跟踪模块依赖并使用其 ESM 缓存失效协议。 */
-export function normalizeGenerationModuleRequests(css: string, base: string) {
+/** 固定本地模块身份，依赖跟踪与刷新由生成模块缓存负责。 */
+export function prepareGenerationModuleRequests(css: string, base: string) {
+  const files: string[] = []
   if (!css.includes('@config') && !css.includes('@plugin')) {
-    return css
+    return { css, files }
   }
   const root = postcss.parse(css)
   root.walkAtRules((rule) => {
@@ -17,16 +18,12 @@ export function normalizeGenerationModuleRequests(css: string, base: string) {
     }
     const request = match[2]!
     const pathApi = /^[a-z]:[\\/]/i.test(base) || base.includes('\\') ? path.win32 : path
-    if (!pathApi.isAbsolute(request)) {
+    if (!pathApi.isAbsolute(request) && !request.startsWith('.')) {
       return
     }
-    const relative = pathApi.relative(base, request)
-    // 跨盘符不能表达为相对路径，保持原请求交给上游解析。
-    if (pathApi.isAbsolute(relative)) {
-      return
-    }
-    const specifier = relative.replaceAll('\\', '/')
-    rule.params = JSON.stringify(specifier.startsWith('.') ? specifier : `./${specifier}`)
+    const file = pathApi.resolve(base, request)
+    files.push(file)
+    rule.params = JSON.stringify(file.replaceAll('\\', '/'))
   })
-  return root.toString()
+  return { css: root.toString(), files }
 }

@@ -4,7 +4,7 @@ const styleHandlerFactory = vi.fn(() => vi.fn())
 const jsHandlerFactory = vi.fn(() => vi.fn())
 const templateHandlerFactory = vi.fn(() => vi.fn())
 
-vi.mock('@weapp-tailwindcss/postcss', () => ({
+vi.mock('@weapp-tailwindcss/postcss/transform', () => ({
   createStyleHandler: styleHandlerFactory,
 }))
 

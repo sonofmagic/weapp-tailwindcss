@@ -23,6 +23,7 @@ import {
   toGenerateOptions,
   toGenerationRequest,
 } from './generation-request.ts'
+import { invalidateGenerationModuleCache } from './module-cache.ts'
 import { compileTailwindV4Source, loadTailwindV4DesignSystem } from './node-adapter.ts'
 
 interface TailwindGenerationRuntime {
@@ -104,6 +105,7 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
       this.currentSource = change.source
     }
     clearRequireCache([...this.moduleDependencies])
+    invalidateGenerationModuleCache()
     this.moduleDependencies.clear()
     this.runtimes.clear()
     this.designSystemPromise = undefined

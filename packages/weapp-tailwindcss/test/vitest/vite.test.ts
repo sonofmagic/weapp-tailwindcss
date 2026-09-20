@@ -82,6 +82,7 @@ async function assertSnap(
       expect(normalizeHtmlAssetHashes(r)).toMatchSnapshot()
     }
   }
+  return res
 }
 
 function normalizeHtmlAssetHashes(html: string) {
@@ -134,7 +135,7 @@ describe('vite test', () => {
   it('vite common build twice for cache', async () => {
     let timeStart: number
     let timeTaken: number
-    await assertSnap(
+    const first = await assertSnap(
       weappTw({
         htmlMatcher,
         onStart() {
@@ -150,7 +151,7 @@ describe('vite test', () => {
       undefined,
       true,
     )
-    await assertSnap(
+    const second = await assertSnap(
       weappTw({
         htmlMatcher,
         onStart() {
@@ -166,6 +167,12 @@ describe('vite test', () => {
       undefined,
       true,
     )
+    const cssSource = (result: RollupOutput) => result.output
+      .filter(asset => asset.type === 'asset' && asset.fileName.endsWith('.css'))
+      .map(asset => asset.type === 'asset' ? asset.source.toString() : '')
+      .join('\n')
+    expect(cssSource(first)).toContain('display:flex')
+    expect(cssSource(second)).toBe(cssSource(first))
   })
 
   it('vite disabled build', async () => {

@@ -18,7 +18,8 @@ export type LoadConfigResult = null | {
 }
 
 export async function loadConfig(options?: Partial<LoadConfigOptions>): Promise<LoadConfigResult> {
-  const jiti = createJiti(import.meta.url, { moduleCache: false, fsCache: false })
+  // 转译缓存按源码哈希校验，模块仍重新执行以读取最新配置。
+  const jiti = createJiti(import.meta.url, { moduleCache: false, fsCache: true })
   const load = (filename: string, source: string) => jiti.evalModule(source, { filename, forceTranspile: true })
   const { config, cwd, moduleName } = defuOverrideArray<LoadConfigOptions, Partial<LoadConfigOptions>[]>(
     options as LoadConfigOptions,

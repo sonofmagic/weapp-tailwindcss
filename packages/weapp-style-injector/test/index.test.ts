@@ -159,6 +159,7 @@ describe('package exports', () => {
 
     expect(Object.keys(packageJson.exports).sort()).toEqual([
       '.',
+      './types',
       './vite',
       './vite/taro',
       './vite/uni-app',
