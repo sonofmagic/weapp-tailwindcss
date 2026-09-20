@@ -9,6 +9,9 @@ regressions:
   - packages/weapp-tailwindcss/test/tailwindcss/source-generation-contract.test.ts
   - packages/weapp-tailwindcss/test/ci/architecture-graph.test.ts
   - packages/weapp-tailwindcss/test/ci/architecture-package.test.ts
+  - packages/weapp-tailwindcss/test/ci/generation-ownership.test.ts
+  - packages/weapp-tailwindcss/test/bundlers/source-generation-contract.test.ts
+  - packages/postcss/test/css-scan-policy.test.ts
   - packages/weapp-tailwindcss/test/tailwindcss/engine-dispose.test.ts
   - packages/engine/test/v4.engine.test.ts
   - packages/cli/test/scan-watch.test.ts
@@ -66,6 +69,30 @@ CLI 与 PostCSS 通过编译会话扫描，输出文件在扫描前排除。候�
 - 设备探针失败后未进入当前会话 computer-use 验证；verify 与全面验收未运行。
 
 恢复需要有效微信 AppID、就绪的 HBuilderX 实例、明确的 iOS/Android/Harmony 设备以及可执行的 hdc，再重新 prepare 并完成当前会话的 computer-use 证据。PR 保持 Draft。本轮预检失败后未继续产品测试；此前定向结果只证明对应范围。
+
+## 后续职责收尾与复验
+
+首次提交仍把通用生成编排留在 bundlers/shared，兼容扫描路径仍分别组织来源，Webpack/Rspack/Gulp 也没有直接运行共享生成契约。后续审计确认这些缺口后，在同一个 PR 中补齐：
+
+- generation 接管来源准备、生成管线、会话协作及 CSS 结果组装；project-sources/candidates 接管候选集合与扫描缓存。旧路径只重导出，新增 AST 归属检查防止实现回流。
+- PostCSS 的 AST 来源描述与配置解析服务被主包兼容扫描和 PostCSS 兼容入口共同调用。auto、fallback、disabled 以及默认忽略项均为显式策略；配置 content 分组保留独立排除语义。
+- Webpack、Rspack、Gulp 的真实 compiler/loader/Vinyl 入口消费同一份生成契约，并在同一实例中检查来源变更。回归发现并修复 Gulp 显式空来源误扫描、watch 候选未失效，以及 Webpack/Rspack 未注册目录依赖导致新文件不触发 CSS 重建的问题。输出排除路径从 compiler 的 output.path 获取。
+
+本次收尾的本地证据（2026-09-20，各组有重叠）：
+
+- `pnpm architecture:check`：34 个包、1279 个生产源码文件通过；`pnpm typecheck`、source-scan typecheck 及 source-scan/PostCSS/主包构建通过。
+- `CI=1 pnpm --filter @weapp-tailwindcss/source-scan exec vitest run --update=none`：18 项通过。
+- PostCSS 的 css-scan-policy、generator-source-files、generator-plugin、tailwind-source-analysis、source-scan-contract 定向组：49 项通过。
+- 主包 generator-css.unit、shared/generator-css、v4-scan-source-boundaries 和共享生成定向组：271 项通过。后续真实构建器、主包/PostCSS 兼容和编译扫描、路径与候选资格契约组：71 项通过，其中真实构建器 15 项、主包/PostCSS 20 项。
+- 主包 compiler、会话释放、native-generation-session、v4 HMR、architecture-graph/contract/package、generation-ownership 与 source-line-limit：156 项通过；包含 ESM/CJS 与发布依赖闭包验证。归属规则扩大到全部迁移包装后单独复验通过。
+- JS 精确类名与 stale fallback、作者函数、CSS 组合和 Vite 扫描会话定向组：41 项通过。Gulp/Webpack/Rspack、候选边界与缓存定向组此前 222 项通过。
+- `CI=1 pnpm --filter @weapp-tailwindcss/cli exec vitest run test/scan-watch.test.ts test/source-generation-contract.test.ts --update=none`：6 项通过。
+- `CI=1 E2E_SKIP_OPEN_AUTOMATOR=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/gulp-tailwindcss-v4.test.ts e2e/weapp-vite-tailwindcss-v4.test.ts -u`：重建 21 份 static 基线，无版本库差异；随后以 `--update=none` 复验，6 项通过，覆盖分包隔离。该环境变量只关闭定向 static 的 IDE 自动打开。
+- `pnpm e2e:demo:matrix web/react-rsbuild-tailwindcss-v4:web --update` 后执行 `CI=1 pnpm e2e:demo:matrix web/react-rsbuild-tailwindcss-v4:web`：static 无差异，真实浏览器及同一 dev 进程的替换、新增、恢复阶段通过。`CI=1 pnpm e2e:demo:matrix gulp-tailwindcss-v4:weapp` 同样通过 static 与连续更新。
+- `CI=1 E2E_WEB_VITE_HMR_CASE='web react vite Tailwind v4' pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/web-vite-demo-hmr.test.ts --update=none`：2 项通过；本轮新增 108ms、替换 108ms、删除 214ms、回滚 2ms。
+- 修改生产源码与新增测试的 ESLint、`git diff --check`、`pnpm agents:check` 通过。归属规则使用根目录命令上下文。
+
+收尾后重新执行 `CI=1 pnpm e2e:preflight prepare`，run ID 为 `30913b3c-70e5-438f-bd6f-e7c27339ba41`。本轮独立微信探针仍返回 APPID_ERROR，HBuilderX 为 cli-instance-mismatch，iOS 未指定唯一目标、Android 无在线设备，Harmony hdc 为 ENOENT。base/Web 通过，computer-use、verify 和全面验收未运行。JSON、Markdown 与原始日志位于 `e2e/.artifacts/preflight/30913b3c-70e5-438f-bd6f-e7c27339ba41/`。失败后停止产品测试，PR 保持 Draft；恢复动作同上。此前 PostCSS 额外严格类型检查的 80 项已有错误仍不计为通过。
 
 ## 适用边界
 
