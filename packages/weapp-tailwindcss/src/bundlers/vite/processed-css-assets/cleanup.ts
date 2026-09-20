@@ -1,7 +1,7 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { CollectViteProcessedCssAssetOptions } from './markers-imports'
 import type { InternalUserDefinedOptions } from '@/types'
-import { isCssImportOnly, restoreProcessedCssImports } from '@weapp-tailwindcss/postcss'
+import { isCssImportOnly, restoreProcessedCssImports } from '@weapp-tailwindcss/postcss/transform'
 import path from 'pathe'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { collectImportedStyleFiles, createCssAssetPipelineContext, getAssetFile, readAssetSource } from './markers-imports'
@@ -11,7 +11,7 @@ export function restoreCssImportAtRules(source: string, filtered: string, file?:
   return restoreProcessedCssImports(source, filtered, file !== undefined && isMiniProgramStyleOutputFile(file))
 }
 
-export { removeCommentOnlyAtRules } from '@weapp-tailwindcss/postcss'
+export { removeCommentOnlyAtRules } from '@weapp-tailwindcss/postcss/transform'
 
 export function collectImportedBundleCssSources(bundle: OutputBundle, importedStyleFiles: Set<string>) {
   if (importedStyleFiles.size === 0) {

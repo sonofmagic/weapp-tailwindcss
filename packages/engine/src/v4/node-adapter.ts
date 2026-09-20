@@ -7,6 +7,7 @@ import type {
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { normalizeGenerationModuleRequests } from './module-requests.ts'
 
 interface TailwindV4CompiledSource {
   sources: TailwindV4SourcePattern[]
@@ -140,7 +141,7 @@ async function createTailwindV4DesignSystem(source: TailwindV4ResolvedSource): P
 
   for (const base of bases) {
     try {
-      return await node.__unstable__loadDesignSystem(source.css, { base })
+      return await node.__unstable__loadDesignSystem(normalizeGenerationModuleRequests(source.css, base), { base })
     }
     catch (error) {
       lastError = error
@@ -190,7 +191,7 @@ export async function compileTailwindV4Source(source: TailwindV4ResolvedSource) 
   for (const base of bases) {
     const dependencies = new Set(source.dependencies)
     try {
-      const compiled = await node.compile(source.css, {
+      const compiled = await node.compile(normalizeGenerationModuleRequests(source.css, base), {
         base,
         customCssResolver: createFallbackCssResolver([source.projectRoot, ...bases]),
         onDependency(dependency) {

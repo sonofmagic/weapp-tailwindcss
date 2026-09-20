@@ -4,7 +4,7 @@ import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy 
 import type { BundleMetrics } from '../metrics'
 import type { GenerateBundleContext, PendingRememberedCssReplayUpdate } from '../types'
 import path from 'node:path'
-import { transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss'
+import { transformWebCssCompat, transformWebCssSafeSelectors } from '@weapp-tailwindcss/postcss/transform'
 import { AssetEmissionPlan } from '@/compiler'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { isPureLocalCssImportWrapper } from '../../../shared/generator-css/local-imports'

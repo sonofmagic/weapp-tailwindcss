@@ -1,1 +1,1 @@
-export { collectCssApplyCandidates, collectGeneratorCssCandidates } from '@weapp-tailwindcss/postcss'
+export { collectCssApplyCandidates, collectGeneratorCssCandidates } from '@weapp-tailwindcss/postcss/transform'

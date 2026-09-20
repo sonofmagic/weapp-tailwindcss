@@ -9,4 +9,4 @@ export {
   stripTailwindSourceMediaFragments,
   stripUnmatchedTailwindSourceMediaCloseFragments,
   unwrapMiniProgramCascadeLayers,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'

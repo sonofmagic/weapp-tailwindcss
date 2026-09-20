@@ -1,7 +1,7 @@
-import { collectGeneratedCssClassCandidates } from '@weapp-tailwindcss/postcss'
+import { collectGeneratedCssClassCandidates } from '@weapp-tailwindcss/postcss/transform'
 import { isRuntimeTransformCandidate } from './runtime-candidates'
 
-export { collectWebpackCssRuleIdentityMarkers, hasAdditionalWebpackAssetUserCssMarkers, isOnlyWebpackTailwindGeneratedPreflightCss, parseWebpackCssLayerNames, removeWebpackTailwindGeneratedAssetCss, unescapeCssIdentifier } from '@weapp-tailwindcss/postcss'
+export { collectWebpackCssRuleIdentityMarkers, hasAdditionalWebpackAssetUserCssMarkers, isOnlyWebpackTailwindGeneratedPreflightCss, parseWebpackCssLayerNames, removeWebpackTailwindGeneratedAssetCss, unescapeCssIdentifier } from '@weapp-tailwindcss/postcss/transform'
 
 export function collectGeneratedCssRuntimeCandidates(source: string) {
   const candidates = collectGeneratedCssClassCandidates(source)
@@ -13,4 +13,4 @@ export function collectGeneratedCssRuntimeCandidates(source: string) {
   return candidates
 }
 
-export { hasWebpackTailwindSourceDirectives } from '@weapp-tailwindcss/postcss'
+export { hasWebpackTailwindSourceDirectives } from '@weapp-tailwindcss/postcss/transform'

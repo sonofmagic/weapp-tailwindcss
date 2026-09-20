@@ -47,6 +47,21 @@
       "types": "./dist/experimental/lightningcss/index.d.ts",
       "import": "./dist/experimental/lightningcss/index.js",
       "require": "./dist/experimental/lightningcss/index.cjs"
+    },
+    "./syntax": {
+      "types": "./dist/syntax.d.ts",
+      "import": "./dist/syntax.js",
+      "require": "./dist/syntax.cjs"
+    },
+    "./transform": {
+      "types": "./dist/transform.d.ts",
+      "import": "./dist/transform.js",
+      "require": "./dist/transform.cjs"
+    },
+    "./plugin": {
+      "types": "./dist/plugin.d.ts",
+      "import": "./dist/plugin.js",
+      "require": "./dist/plugin.cjs"
     }
   },
   "main": "./dist/index.cjs",
@@ -108,10 +123,10 @@
     "@weapp-tailwindcss/engine": "workspace:*",
     "@weapp-tailwindcss/postcss-calc": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
+    "@weapp-tailwindcss/source-scan": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "es-toolkit": "catalog:postcssUtilities",
     "lru-cache": "catalog:buildUtilities",
-    "micromatch": "catalog:buildUtilities",
     "postcss": "catalog:postcss85tilde",
     "postcss-load-config": "catalog:buildUtilities",
     "postcss-preset-env": "catalog:postcssUtilities",

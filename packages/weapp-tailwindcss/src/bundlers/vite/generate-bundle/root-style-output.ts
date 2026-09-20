@@ -1,6 +1,6 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import path from 'node:path'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { postcss } from '@weapp-tailwindcss/postcss/transform'
 import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
 import { AssetEmissionPlan } from '@/compiler'
 import { parseImportRequest } from '../../shared/generator-css/directives'

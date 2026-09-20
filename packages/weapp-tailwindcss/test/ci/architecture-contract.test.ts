@@ -65,7 +65,7 @@ describe('架构边界契约', () => {
       'src/tailwindcss/runtime-factory.ts',
       'src/tailwindcss/source-scan/inline-source.ts',
       'src/bundlers/shared/css-source-trace.ts',
-      'src/bundlers/shared/source-scan/css-entries.ts',
+      'src/project-sources/css-entries.ts',
       'src/bundlers/shared/css-imports.ts',
       'src/bundlers/vite/rewrite-css-imports.ts',
       'src/bundlers/shared/generator-css/candidates.ts',

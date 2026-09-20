@@ -2,7 +2,7 @@ import type { TailwindV4GenerateTarget, TailwindV4ResolvedSource } from '../type
 import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import { insertTailwindThemeCss, parseCssImportSpecifier, postcss, removeTailwindV4PreflightImports, removeUnsupportedThemeVendorKeyframes } from '@weapp-tailwindcss/postcss'
+import { insertTailwindThemeCss, parseCssImportSpecifier, postcss, removeTailwindV4PreflightImports, removeUnsupportedThemeVendorKeyframes } from '@weapp-tailwindcss/postcss/transform'
 import { createTailwindV4DefaultColorThemeCss } from '../tailwind-v4-default-colors'
 
 const require = createRequire(import.meta.url)

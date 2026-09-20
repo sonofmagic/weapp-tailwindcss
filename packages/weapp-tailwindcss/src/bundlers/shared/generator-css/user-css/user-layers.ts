@@ -7,4 +7,4 @@ export {
   normalizeGeneratedSelector,
   removeCssComments,
   splitUserCssLayerBlocks,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'

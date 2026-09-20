@@ -1,6 +1,6 @@
 import type { sources } from 'webpack'
 import path from 'node:path'
-import { filterExistingCssRules } from '@weapp-tailwindcss/postcss'
+import { filterExistingCssRules } from '@weapp-tailwindcss/postcss/transform'
 import { processCachedTask } from '../../../shared/cache'
 import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../../../shared/generated-css-marker'
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives } from '../../../shared/generator-css'

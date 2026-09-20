@@ -18,4 +18,4 @@ export {
   TAILWIND_GENERATED_CSS_MARKER_RE,
   TAILWIND_V4_BANNER_RE,
   VITE_MARKER_RE,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'

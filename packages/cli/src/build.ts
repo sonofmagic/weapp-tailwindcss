@@ -2,7 +2,6 @@ import { Buffer } from 'node:buffer'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
-import { compileTailwindV4Source, createTailwindV4CompiledSourceEntries, extractRawCandidatesWithPositions, normalizeTailwindV4ScannerSources, resolveProjectSourceFiles } from '@weapp-tailwindcss/engine'
 import { transform } from 'lightningcss'
 import { createWeappTailwindcssGenerator, resolveTailwindV4Source } from 'weapp-tailwindcss/generator'
 import { parseBuildArgs } from './build/args'
@@ -44,22 +43,14 @@ async function buildOnce(options: ReturnType<typeof parseBuildArgs>, stdinCss?: 
   const source = await resolveTailwindV4Source({ ...sourceOptions, css: inputCss })
   const generator = createWeappTailwindcssGenerator(source)
   try {
-    const { compiled, dependencies: compilerDependencies } = await compileTailwindV4Source(source)
-    const scanPatterns = createTailwindV4CompiledSourceEntries(compiled.root, compiled.sources, source.projectRoot)
-    const scanSources = normalizeTailwindV4ScannerSources(scanPatterns, source.projectRoot)
     const outputPath = options.output && options.output !== '-' ? path.resolve(options.output) : undefined
-    const sourceFiles = await resolveProjectSourceFiles({
-      cwd: source.projectRoot,
-      sources: scanSources,
-      filter: file => path.resolve(file) !== outputPath,
+    const result = await generator.generate({
+      target: options.target,
+      scanSources: true,
+      scanMode: 'compiled',
+      excludeFiles: outputPath ? [outputPath] : [],
+      incrementalCache: false,
     })
-    const candidateGroups = await Promise.all(sourceFiles.map(async (file) => {
-      const content = await fs.readFile(file, 'utf8')
-      const extension = path.extname(file).slice(1) || 'html'
-      return extractRawCandidatesWithPositions(content, extension)
-    }))
-    const candidates = new Set(candidateGroups.flat().map(candidate => candidate.rawCandidate))
-    const result = await generator.generate({ candidates, target: options.target, scanSources: false, incrementalCache: false })
     let css = result.css
     let map: Uint8Array | undefined
     if (options.minify || options.optimize || options.map) {
@@ -87,9 +78,7 @@ async function buildOnce(options: ReturnType<typeof parseBuildArgs>, stdinCss?: 
       dependencies: new Set([
         ...(options.input && options.input !== '-' ? [options.input] : []),
         ...source.dependencies,
-        ...compilerDependencies,
         ...result.dependencies,
-        ...sourceFiles,
       ]),
     }
   }

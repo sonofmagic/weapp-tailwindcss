@@ -30,8 +30,8 @@ export {
   finalizeMiniProgramCssRoot,
   postcss,
   removeTailwindSourceDirectivesRoot,
-} from '@weapp-tailwindcss/postcss'
-export type { FinalizeMiniProgramCssOptions } from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'
+export type { FinalizeMiniProgramCssOptions } from '@weapp-tailwindcss/postcss/transform'
 
 type RuntimeJsTransformOptions = { runtimeSet?: Set<string> } & CreateJsHandlerOptions
 

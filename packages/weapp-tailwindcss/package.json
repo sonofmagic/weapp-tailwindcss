@@ -218,10 +218,14 @@
   },
   "peerDependencies": {
     "@mpxjs/webpack-plugin": ">=2.0.0 <3.0.0",
+    "tailwindcss": "^4.0.0",
     "vite": "^5.2.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
   },
   "peerDependenciesMeta": {
     "@mpxjs/webpack-plugin": {
+      "optional": true
+    },
+    "tailwindcss": {
       "optional": true
     },
     "vite": {
@@ -239,6 +243,7 @@
     "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/reset": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
+    "@weapp-tailwindcss/source-scan": "workspace:*",
     "comment-json": "catalog:compilerUtilities",
     "debug": "catalog:buildUtilities",
     "fast-glob": "catalog:buildUtilities",

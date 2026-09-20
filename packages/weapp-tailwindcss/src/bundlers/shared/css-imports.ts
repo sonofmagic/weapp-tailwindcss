@@ -1,6 +1,6 @@
 import type { AppType } from '@/types'
 import path from 'node:path'
-import { rewriteCssImportSpecifiers, rewriteTailwindPackageImportStatements } from '@weapp-tailwindcss/postcss'
+import { rewriteCssImportSpecifiers, rewriteTailwindPackageImportStatements } from '@weapp-tailwindcss/postcss/transform'
 
 const tailwindcssImportRE = /^(?:tailwindcss|weapp-tailwindcss)(?:\/.*)?$/
 export function normalizeResolvedTailwindcssImports(code: string, pkgDir: string | undefined) {

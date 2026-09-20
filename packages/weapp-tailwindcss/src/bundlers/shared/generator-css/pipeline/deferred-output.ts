@@ -1,6 +1,6 @@
 import type { GenerateCssByGeneratorResult } from '../types'
 import type { GeneratorPipelineOutputContext } from './context'
-import { filterExistingCssRules, normalizeMiniProgramGeneratedCssForPostcss } from '@weapp-tailwindcss/postcss'
+import { filterExistingCssRules, normalizeMiniProgramGeneratedCssForPostcss } from '@weapp-tailwindcss/postcss/transform'
 import { hasCssMacroStyleOptions, hasCssMacroTailwindV4InternalAtRules, transformCssMacroCss } from '@/css-macro/auto'
 import { createCssSourceOrderAppend, splitRawSourceByGeneratedCssOrder } from '../generation-helpers'
 import { restoreLocalCssImports } from '../local-imports'

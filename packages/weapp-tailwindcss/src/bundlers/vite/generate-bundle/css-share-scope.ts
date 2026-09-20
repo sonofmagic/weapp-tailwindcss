@@ -1,6 +1,6 @@
 import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
-import { hasCssLocationDependencies } from '@weapp-tailwindcss/postcss'
+import { hasCssLocationDependencies } from '@weapp-tailwindcss/postcss/transform'
 import {
   hasTailwindSourceDirectives,
 } from '@/bundlers/shared/generator-css/directives'

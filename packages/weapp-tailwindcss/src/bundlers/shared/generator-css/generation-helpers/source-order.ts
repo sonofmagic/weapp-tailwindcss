@@ -1,1 +1,1 @@
-export { createCssSourceOrderAppend, deduplicateGeneratedCssRules } from '@weapp-tailwindcss/postcss'
+export { createCssSourceOrderAppend, deduplicateGeneratedCssRules } from '@weapp-tailwindcss/postcss/transform'

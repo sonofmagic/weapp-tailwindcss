@@ -1,10 +1,10 @@
 import type { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
-import { transformWebCssCompat } from '@weapp-tailwindcss/postcss'
+import { transformWebCssCompat } from '@weapp-tailwindcss/postcss/transform'
 import { collectGeneratedRawSourceCandidates } from './class-selectors'
 import { finalizeMiniProgramGeneratorCss } from './generation-helpers'
 import { createCssAppend } from './markers'
 
-export { isCssAlreadyRepresentedByMarkers } from '@weapp-tailwindcss/postcss'
+export { isCssAlreadyRepresentedByMarkers } from '@weapp-tailwindcss/postcss/transform'
 
 function mergeGeneratedCssClassSet(
   classSet: ReadonlySet<string>,

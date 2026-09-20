@@ -4,6 +4,7 @@ import type { TailwindCandidateSource, WeappTailwindcssPostcssPluginOptions } fr
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { extractValidCandidates } from '@weapp-tailwindcss/engine'
+import { createSourceScanPlan } from '@weapp-tailwindcss/source-scan'
 import { loadConfig } from 'tailwindcss-config'
 import {
   collectCssInlineSourceCandidates,
@@ -85,21 +86,17 @@ export async function collectAutoTailwindCandidates(
   const base = resolvePostcssBase(result, options)
   const projectRoot = resolvePostcssProjectRoot(result, options)
   const css = context.css ?? root.toString()
-  const sourceEntries = []
   const hasSourceNone = css.includes('source(none)')
   const shouldSkipAutoScan = isTailwindV4ApplyOnlyCss(root, css)
   const inlineCandidates = collectCssInlineSourceCandidates(root)
 
-  if (!hasSourceNone && !shouldSkipAutoScan) {
-    sourceEntries.push({
-      base,
-      negated: false,
-      pattern: POSTCSS_SOURCE_PATTERN,
-    })
-  }
-
-  sourceEntries.push(...(context.sourceEntries ?? await resolveCssSourceEntries(root, base, POSTCSS_SOURCE_PATTERN)))
-  const candidates = sourceEntries.length === 0
+  const sourceEntries = createSourceScanPlan({
+    base,
+    mode: hasSourceNone || shouldSkipAutoScan ? 'disabled' : 'auto',
+    pattern: POSTCSS_SOURCE_PATTERN,
+    entries: context.sourceEntries ?? await resolveCssSourceEntries(root, base, POSTCSS_SOURCE_PATTERN),
+  })
+  const candidates = !sourceEntries.some(entry => !entry.negated)
     ? []
     : await extractValidCandidates({
         base,

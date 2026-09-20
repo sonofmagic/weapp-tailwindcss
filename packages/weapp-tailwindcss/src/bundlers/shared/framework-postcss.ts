@@ -1,10 +1,10 @@
-import type { AcceptedPlugin } from '@weapp-tailwindcss/postcss'
+import type { AcceptedPlugin } from '@weapp-tailwindcss/postcss/transform'
 import type { LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
 import type { GenerateCssByGeneratorResult } from './generator-css'
 import type { BundlerStyleHandlerOptions as IStyleHandlerOptions } from './style-handler-options'
 import type { Compiler, CompilerSnapshot } from '@/core/compiler'
 import type { InternalUserDefinedOptions } from '@/types'
-import { processFrameworkCss, removeTailwindPostcssPlugins } from '@weapp-tailwindcss/postcss'
+import { processFrameworkCss, removeTailwindPostcssPlugins } from '@weapp-tailwindcss/postcss/transform'
 import { composeGenerationArtifact, createCssFragment, createGenerationArtifact, createStylePlatformAdapter } from '@/compiler'
 import { finalizeMiniProgramGeneratorCss } from './generator-css/generation-helpers'
 

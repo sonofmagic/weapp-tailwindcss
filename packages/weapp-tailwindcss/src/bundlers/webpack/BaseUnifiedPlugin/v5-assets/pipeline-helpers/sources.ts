@@ -190,4 +190,4 @@ export function shouldUseWebpackAssetAsGeneratorUserCss(
     )
 }
 
-export { collectWebpackBareSelectorUserCss } from '@weapp-tailwindcss/postcss'
+export { collectWebpackBareSelectorUserCss } from '@weapp-tailwindcss/postcss/transform'

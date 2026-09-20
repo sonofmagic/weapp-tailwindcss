@@ -1,6 +1,6 @@
 import type { OutputBundle } from 'rollup'
 import type { CollectViteProcessedCssAssetOptions, InjectViteProcessedCssAssetOptions } from './markers-imports'
-import { containsCssAfterMinify, filterExistingCssRules, mergeCoveredCssRuleDeclarations, mergeMiniProgramPreflightRuleDeclarations, mergeMiniProgramThemeScopeRuleDeclarations } from '@weapp-tailwindcss/postcss'
+import { containsCssAfterMinify, filterExistingCssRules, mergeCoveredCssRuleDeclarations, mergeMiniProgramPreflightRuleDeclarations, mergeMiniProgramThemeScopeRuleDeclarations } from '@weapp-tailwindcss/postcss/transform'
 import { stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
 import { extractMarkedUserLayerComponentsCss, mergeMarkedUserLayerComponentsCss } from '../../shared/generator-css/user-layer-order'
 import { normalizeOutputPathKey } from '../../shared/module-graph'

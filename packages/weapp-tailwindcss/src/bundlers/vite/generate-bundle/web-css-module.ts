@@ -1,4 +1,4 @@
-import { replaceViteGeneratedCssModule } from '@weapp-tailwindcss/postcss'
+import { replaceViteGeneratedCssModule } from '@weapp-tailwindcss/postcss/transform'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 
 export function replaceWebCssModule(source: string, sourceFile: string, generated: string) {

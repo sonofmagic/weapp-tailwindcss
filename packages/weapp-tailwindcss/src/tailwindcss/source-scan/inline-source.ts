@@ -2,4 +2,4 @@ export {
   collectCssInlineSourceCandidates,
   expandInlineSourceCandidatePattern,
   type TailwindInlineSourceCandidates,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'

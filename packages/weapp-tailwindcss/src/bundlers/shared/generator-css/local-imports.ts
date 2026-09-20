@@ -13,4 +13,4 @@ export {
   rewriteLocalCssImportRequestsForOutputRoot,
   splitLocalCssImports,
   splitLocalCssImportsRoot,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'

@@ -7,10 +7,7 @@ import process from 'node:process'
 import {
   resolveTailwindV4Source as resolveEngineTailwindV4Source,
 } from '@weapp-tailwindcss/engine'
-import { collectRpxThemeVariables, parseCssImportSpecifier, postcss, rewriteCssImportSpecifiers } from '@weapp-tailwindcss/postcss'
-import { normalizeConfigDirective } from '@/bundlers/shared/generator-css/config-directive'
-import { normalizeTailwindConfigDirectives, resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
-import { normalizeEmptyTailwindCustomVariants } from '@/bundlers/shared/generator-css/user-css'
+import { collectRpxThemeVariables, normalizeConfigDirective, normalizeEmptyTailwindCustomVariants, normalizeTailwindConfigDirectives, parseCssImportSpecifier, postcss, resolveCssEntrySource, rewriteCssImportSpecifiers } from '@weapp-tailwindcss/postcss/transform'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { filterTailwindV4CssSourceRoots } from '@/tailwindcss/v4/css-sources'
 import { omitUndefined } from '@/utils/object'

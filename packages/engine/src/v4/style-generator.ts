@@ -37,14 +37,20 @@ export async function generateTailwindV4Style(
 ): Promise<TailwindV4StyleGenerateResult> {
   const source = options.source ?? await resolveTailwindV4Source(createSourceOptions(options))
   const candidates = await collectTailwindV4StyleCandidates(options)
-  const result = await createTailwindV4Engine(source).generate({
-    candidates,
-    ...(options.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: options.bareArbitraryValues }),
-    ...(options.scanSources === undefined ? {} : { scanSources: options.scanSources }),
-  })
-  return {
-    ...result,
-    tokens: result.rawCandidates,
-    source,
+  const engine = createTailwindV4Engine(source)
+  try {
+    const result = await engine.generate({
+      candidates,
+      ...(options.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: options.bareArbitraryValues }),
+      ...(options.scanSources === undefined ? {} : { scanSources: options.scanSources }),
+    })
+    return {
+      ...result,
+      tokens: result.rawCandidates,
+      source,
+    }
+  }
+  finally {
+    engine.dispose?.()
   }
 }

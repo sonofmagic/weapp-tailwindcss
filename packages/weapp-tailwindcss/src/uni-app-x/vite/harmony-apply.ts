@@ -1,7 +1,7 @@
 import type { ResolvedConfig } from 'vite'
 import path from 'node:path'
 import process from 'node:process'
-import { collectCssReferenceDirectives } from '@weapp-tailwindcss/postcss'
+import { collectCssReferenceDirectives } from '@weapp-tailwindcss/postcss/transform'
 import { cleanUrl, normalizePath } from '@/bundlers/vite/utils'
 import {
   collectUniAppXHarmonyApplyStyleSourcesFromSource,

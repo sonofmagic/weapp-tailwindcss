@@ -1,12 +1,12 @@
-import type { CssTokenSource, CssTokenSourceMap } from '@weapp-tailwindcss/postcss'
+import type { CssTokenSource, CssTokenSourceMap } from '@weapp-tailwindcss/postcss/transform'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
-import { annotateCssTokenSources } from '@weapp-tailwindcss/postcss'
+import { annotateCssTokenSources } from '@weapp-tailwindcss/postcss/transform'
 import { replaceWxml } from '@/wxml'
 
-export type { CssTokenSource, CssTokenSourceMap } from '@weapp-tailwindcss/postcss'
+export type { CssTokenSource, CssTokenSourceMap } from '@weapp-tailwindcss/postcss/transform'
 
 export type CssSourceTraceGetter = (
   entries: TailwindSourceEntry[] | undefined,

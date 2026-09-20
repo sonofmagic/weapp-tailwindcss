@@ -1,6 +1,6 @@
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css'
 import type { NormalizedWeappTailwindcssGeneratorOptions } from '@/generator'
-import { normalizeFrameworkProcessedUserCss } from '@weapp-tailwindcss/postcss'
+import { normalizeFrameworkProcessedUserCss } from '@weapp-tailwindcss/postcss/transform'
 import { composeFrameworkProcessedCss } from './framework-css-composition'
 import { createCssSourceOrderAppend, finalizeMiniProgramGeneratorCss, resolveGeneratorStyleOptions, splitRawSourceByGeneratedCssOrder } from './generator-css/generation-helpers'
 import { stripTailwindBanners } from './generator-css/markers'

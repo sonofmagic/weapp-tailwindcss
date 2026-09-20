@@ -49,6 +49,9 @@ export interface TailwindV4ResolvedSource extends EngineTailwindV4ResolvedSource
  * Tailwind CSS v4 生成配置。
  */
 export interface TailwindV4GenerateOptions extends TailwindV4EngineGenerateOptions {
+  /** 使用生成会话的编译来源；适用于 CLI 等完整项目输入。 */
+  scanMode?: 'compiled' | undefined
+
   /**
    * 是否启用增量生成缓存。
    */

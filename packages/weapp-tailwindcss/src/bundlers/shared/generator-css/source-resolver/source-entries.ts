@@ -2,7 +2,7 @@ import type { GeneratorSourceRecord } from './metadata'
 import type { GeneratorSourceRuntimeState } from './types'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
-import { resolveTailwindV4EntriesFromCss } from '@/bundlers/shared/source-scan'
+import { resolveTailwindV4EntriesFromCss } from '@/project-sources'
 import { tryResolveTailwindV4SourceOptions } from './configuration'
 
 export async function resolveGeneratorSourceEntries(record: GeneratorSourceRecord, runtimeState?: GeneratorSourceRuntimeState) {

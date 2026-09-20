@@ -1,5 +1,7 @@
 # @weapp-tailwindcss/postcss
 
+The `/syntax`, `/transform`, and `/plugin` subpaths separate syntax helpers, CSS transformations, and PostCSS generation orchestration. Existing root exports remain available.
+
 > English | [简体中文](./README.zh-CN.md)
 
 This package is the CSS processing core of weapp-tailwindcss. It handles PostCSS AST transforms, selector compatibility, platform differences, and Tailwind output post-processing for mini programs.

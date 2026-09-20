@@ -3,7 +3,7 @@ import type { SourceCandidateStore } from '../../../../shared/source-candidates'
 import type { SetupWebpackV5ProcessAssetsHookOptions } from '../helpers'
 import type { resolveStyleOptionsFromContext } from '@/context/style-options'
 import type { TailwindcssRuntimeLike } from '@/types'
-import { hasMiniProgramPreflightSelector } from '@weapp-tailwindcss/postcss'
+import { hasMiniProgramPreflightSelector } from '@weapp-tailwindcss/postcss/transform'
 import { getDefaultCssPreflight } from '@/defaults'
 import { collectGeneratedCssRuntimeCandidates } from './generated-css'
 import { isRuntimeTransformCandidate } from './runtime-candidates'
@@ -41,7 +41,7 @@ export function resolveExistingWebpackCssPreflight(
     : undefined
 }
 
-export { dedupeMiniProgramPreflightSelectorRules, ensureWebpackMiniProgramTwContentInit, hasMiniProgramPreflightSelector, removeMiniProgramPreflightSelectorRule, removeTailwindV4StandaloneHostPreflightRule } from '@weapp-tailwindcss/postcss'
+export { dedupeMiniProgramPreflightSelectorRules, ensureWebpackMiniProgramTwContentInit, hasMiniProgramPreflightSelector, removeMiniProgramPreflightSelectorRule, removeTailwindV4StandaloneHostPreflightRule } from '@weapp-tailwindcss/postcss/transform'
 
 export interface WebpackSourceCandidateCache {
   getSourceCandidatesForEntries: SourceCandidateStore['valuesForEntries']
@@ -120,7 +120,7 @@ export function pruneMapToMaxSize<Key, Value>(map: Map<Key, Value>, maxSize: num
   }
 }
 
-export { stripTrailingLineWhitespace } from '@weapp-tailwindcss/postcss'
+export { stripTrailingLineWhitespace } from '@weapp-tailwindcss/postcss/transform'
 
 export function pruneWebpackCssHandlerOptionCaches(
   cssHandlerOptionsCache: Map<string, WebpackCssHandlerOptions>,

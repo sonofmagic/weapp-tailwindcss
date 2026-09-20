@@ -1,5 +1,5 @@
 import type { RuntimeEntryType } from './runtime-snapshot'
-import { createCssRuntimeAffectingSignature } from '@weapp-tailwindcss/postcss'
+import { createCssRuntimeAffectingSignature } from '@weapp-tailwindcss/postcss/transform'
 import { Parser } from 'htmlparser2'
 import { babelParse } from '@/js/babel/parse'
 import { tryCreateJsRuntimeAffectingSignature } from './runtime-affecting-signature/js'

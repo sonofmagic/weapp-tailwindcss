@@ -1,5 +1,5 @@
 import type { RawSourceMap } from '@ampproject/remapping'
-import type { postcss } from '@weapp-tailwindcss/postcss'
+import type { postcss } from '@weapp-tailwindcss/postcss/transform'
 import type { ExistingRawSourceMap, SourceDescription } from 'rollup'
 import { cleanUrl, formatPostcssSourceMap, normalizePath } from '@/bundlers/vite/utils'
 import { reportStyleWarnings } from './style-request'

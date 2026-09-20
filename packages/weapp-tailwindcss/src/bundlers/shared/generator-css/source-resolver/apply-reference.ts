@@ -1,7 +1,7 @@
-import { createTailwindV4SourceReferenceSource, hasTailwindApplyContextDirective } from '@weapp-tailwindcss/postcss'
+import { createTailwindV4SourceReferenceSource, hasTailwindApplyContextDirective } from '@weapp-tailwindcss/postcss/transform'
 import { hasTailwindRootDirectives } from '../directives'
 
-export { createTailwindV4SourceReferenceSource } from '@weapp-tailwindcss/postcss'
+export { createTailwindV4SourceReferenceSource } from '@weapp-tailwindcss/postcss/transform'
 
 interface TailwindV4ApplyReferenceSourceOptions {
   cssEntries?: string[] | undefined

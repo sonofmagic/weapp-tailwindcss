@@ -2,4 +2,4 @@ export {
   removeTailwindApplyAtRules,
   removeTailwindSourceMediaBlocks,
   terminateTailwindSourceAtRulesBeforeNextDirective,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'

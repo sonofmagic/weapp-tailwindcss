@@ -4,4 +4,4 @@ export {
   normalizeCompatSelectors,
   removeDuplicatedViteMarkers,
   removeGeneratedSelectorCompatCss,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'

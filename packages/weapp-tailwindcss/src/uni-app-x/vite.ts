@@ -7,7 +7,7 @@ import {
   normalizeUniAppXImportantApplyForSass,
   postcss,
   restoreUniAppXImportantApplyMarker,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
 import { extractSfcStyleBlocks } from '@/bundlers/vite/generate-bundle/sfc-style-source'
 import { parseVueRequest } from '@/bundlers/vite/query'

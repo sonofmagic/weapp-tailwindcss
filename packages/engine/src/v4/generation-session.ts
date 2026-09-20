@@ -8,6 +8,7 @@ import type {
   TailwindV4GenerateResult,
   TailwindV4ResolvedSource,
 } from './types.ts'
+import { clearRequireCache } from '@tailwindcss/node/require-cache'
 import {
   canonicalizeBareArbitraryValueCandidates,
   extractTailwindV4InlineSourceCandidates,
@@ -51,6 +52,7 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
   private readonly runtimes = new Map<boolean, Promise<TailwindGenerationRuntime>>()
   private designSystemPromise: Promise<TailwindV4DesignSystem> | undefined
   private disposed = false
+  private readonly moduleDependencies = new Set<string>()
 
   constructor(source: TailwindV4ResolvedSource) {
     this.currentSource = source
@@ -101,11 +103,15 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
     if (change.type === 'source') {
       this.currentSource = change.source
     }
+    clearRequireCache([...this.moduleDependencies])
+    this.moduleDependencies.clear()
     this.runtimes.clear()
     this.designSystemPromise = undefined
   }
 
   dispose() {
+    clearRequireCache([...this.moduleDependencies])
+    this.moduleDependencies.clear()
     this.runtimes.clear()
     this.designSystemPromise = undefined
     this.disposed = true
@@ -154,12 +160,17 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
     const options = toGenerateOptions(request)
     const compileSourceEntries = shouldCompileSourceEntries(options)
     let runtime = await this.getRuntime(compileSourceEntries)
-    const rawCandidates = await collectRawCandidates(
+    const sourceFiles: string[] = []
+    let rawCandidates = await collectRawCandidates(
       this.currentSource,
       options,
       runtime.compiled.root,
       runtime.compiled.sources,
+      files => sourceFiles.push(...files),
     )
+    if (request.prepareCandidates) {
+      rawCandidates = new Set(request.prepareCandidates(rawCandidates))
+    }
     const classSet = resolveValidTailwindV4Candidates(runtime.designSystem, rawCandidates, {
       ...(options.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: options.bareArbitraryValues }),
     })
@@ -178,7 +189,10 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
       options.bareArbitraryValues,
     )
     runtime.builtCandidates = new Set(buildCandidates)
-    const dependencies = Array.from(runtime.dependencies)
+    for (const dependency of runtime.dependencies) {
+      this.moduleDependencies.add(dependency)
+    }
+    const dependencies = [...new Set([...runtime.dependencies, ...sourceFiles])]
     return {
       css,
       classSet,

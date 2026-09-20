@@ -1,7 +1,7 @@
 import type { InternalUserDefinedOptions } from '@/types'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
-import { rewriteCssConfigRequests } from '@weapp-tailwindcss/postcss'
+import { rewriteCssConfigRequests } from '@weapp-tailwindcss/postcss/transform'
 import { resolveTailwindV4CssSourceBase } from '@/tailwindcss/source-scan'
 import { normalizeCssSourceForCompare } from '../css-output'
 import { slash } from '../utils'

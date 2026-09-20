@@ -11,4 +11,4 @@ export {
   parseImportRequest,
   removeTailwindSourceDirectives,
   resolveCssEntrySource,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'

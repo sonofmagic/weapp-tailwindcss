@@ -1,6 +1,6 @@
 import type { GenerateCssByGeneratorResult } from '../types'
 import type { GeneratorPipelineOutputContext } from './context'
-import { filterExistingCssRules } from '@weapp-tailwindcss/postcss'
+import { filterExistingCssRules } from '@weapp-tailwindcss/postcss/transform'
 import { hasTailwindApplyDirective } from '../directives'
 import { createCssSourceOrderAppend, shouldAppendWebBundleCssFallback, shouldFinalizeMarkedUserLayerComponentsCss } from '../generation-helpers'
 import { appendLegacyCompatCss, appendLegacyContainerCompatCss } from '../legacy-compat'

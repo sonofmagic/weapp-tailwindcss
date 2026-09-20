@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { hasAdditionalWebpackAssetUserCssMarkers, hasWebpackTailwindSourceDirectives } from './generated-css'
 
-export { isWebpackCssSourceRepresentedInAsset, isWebpackTailwindImportRequest, normalizeWebpackUserCssFallbackSource, removeWebpackGeneratorNonTailwindImports, removeWebpackUserCssFallbackImports } from '@weapp-tailwindcss/postcss'
+export { isWebpackCssSourceRepresentedInAsset, isWebpackTailwindImportRequest, normalizeWebpackUserCssFallbackSource, removeWebpackGeneratorNonTailwindImports, removeWebpackUserCssFallbackImports } from '@weapp-tailwindcss/postcss/transform'
 
 export function createWebpackGeneratorCssSource(
   file: string | undefined,
@@ -65,4 +65,4 @@ export function createWebpackUserCssSourceAppend(
     : undefined
 }
 
-export { composeProcessedCssSources as createWebpackGeneratorUserCssSourceAppend } from '@weapp-tailwindcss/postcss'
+export { composeProcessedCssSources as createWebpackGeneratorUserCssSourceAppend } from '@weapp-tailwindcss/postcss/transform'

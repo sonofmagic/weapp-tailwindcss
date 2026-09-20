@@ -1,5 +1,5 @@
 import type { ParseError, ParserOptions } from '@babel/parser'
-import type { CssPreflightOptions, IStyleHandlerOptions, StyleHandler } from '@weapp-tailwindcss/postcss'
+import type { CssPreflightOptions, IStyleHandlerOptions, StyleHandler } from '@weapp-tailwindcss/postcss/transform'
 import type { SourceMap } from 'magic-string'
 import type { ICreateCacheReturnType } from '../cache'
 import type { ItemOrItemArray } from './base'
@@ -30,7 +30,7 @@ export type { AppType, IArbitraryValues, ICustomAttributes, ICustomAttributesEnt
 
 // UserDefinedPostcssOptions：用户可配置的 PostCSS 选项
 export type { CssPreflightOptions, IStyleHandlerOptions, ItemOrItemArray }
-export type { WeappTailwindcssStyleInjectorOptions } from '@/style-injector/internal'
+export type { WeappTailwindcssStyleInjectorOptions } from '@/style-injector/options'
 
 export type RequiredDefined<T> = {
   [K in keyof T]-?: Exclude<T[K], undefined>

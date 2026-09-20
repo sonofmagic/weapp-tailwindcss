@@ -1,5 +1,7 @@
 # weapp-style-injector
 
+通过 `weapp-style-injector/types` 引用框架选项类型，可避免依赖 Vite、Webpack 适配器实现。
+
 > [English](./README.md) | 简体中文
 
 `weapp-style-injector` 用于在小程序构建产物中生成样式入口，并把入口通过 `@import` 注入匹配的页面或组件样式。它覆盖 Vite、Webpack、uni-app、Taro 和 Mpx 等常见构建场景。

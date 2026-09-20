@@ -2,7 +2,7 @@ import type { createEscapeFragments } from '../../../../shared/runtime-class-set
 import type { SetupWebpackV5ProcessAssetsHookOptions, WebpackSourceLike } from '../helpers'
 import type { WebpackCssHandlerOptions, WebpackSourceCandidateCache } from './preflight-runtime'
 import { MappingChars2String } from '@weapp-core/escape'
-import { dedupeCoveredCssRules } from '@weapp-tailwindcss/postcss'
+import { dedupeCoveredCssRules } from '@weapp-tailwindcss/postcss/transform'
 import { resolveStyleOptionsFromContext } from '@/context/style-options'
 import { finalizeMiniProgramCss, pruneMiniProgramGeneratedCss, stripMiniProgramCssSpecificityPlaceholders } from '../../../../shared/css-cleanup'
 import { createCssTokenSourceMap, isCssSourceTraceEnabled } from '../../../../shared/css-source-trace'

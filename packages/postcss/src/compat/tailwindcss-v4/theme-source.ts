@@ -1,7 +1,7 @@
 import type { AtRule, Container, Root } from 'postcss'
 import postcss from 'postcss'
 import { parseCssImportSpecifier } from '../../syntax/css-import'
-import { removeUnsupportedCascadeLayers } from '../mini-program-css'
+import { removeUnsupportedCascadeLayers } from '../mini-program-css/at-rules'
 
 function isTailwindCssPreflightImport(params: string) {
   const specifier = parseCssImportSpecifier(params)?.specifier

@@ -1,4 +1,4 @@
-import { collectRawSourceClassSelectors, normalizeCssClassSelector } from '@weapp-tailwindcss/postcss'
+import { collectRawSourceClassSelectors, normalizeCssClassSelector } from '@weapp-tailwindcss/postcss/transform'
 import { replaceWxml } from '@/wxml/shared'
 
 export { collectRawSourceClassSelectors }

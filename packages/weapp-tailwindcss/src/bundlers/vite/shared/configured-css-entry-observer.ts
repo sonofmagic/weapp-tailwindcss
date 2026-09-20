@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite'
 import path from 'node:path'
 import { logger } from '@weapp-tailwindcss/logger'
-import { parseTailwindCssDirectiveRequest, postcss } from '@weapp-tailwindcss/postcss'
+import { parseTailwindCssDirectiveRequest, postcss } from '@weapp-tailwindcss/postcss/transform'
 import { isSourceStyleRequest } from '../../shared/style-requests'
 import { resolveViteModuleIdentity } from '../module-identity'
 

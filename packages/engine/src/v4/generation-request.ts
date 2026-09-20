@@ -5,19 +5,22 @@ import type {
   TailwindV4ResolvedSource,
   TailwindV4SourcePattern,
 } from './types.ts'
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
+import { resolveSourceScanPath } from '@weapp-tailwindcss/source-scan'
 import postcss from 'postcss'
-import { extractRawCandidates, extractRawCandidatesWithPositions } from '../extraction/candidate-extractor.ts'
+import { extractRawCandidatesWithPositions } from '../extraction/candidate-extractor.ts'
+import { resolveProjectSourceFiles } from '../extraction/candidate-extractor/project.ts'
 import { extractTailwindV4InlineSourceCandidates } from './candidates.ts'
 import { createTailwindV4CompiledSourceEntries } from './source-scan.ts'
 
-export interface InternalGenerationRequest extends GenerationRequest {
-  scanSources?: TailwindV4GenerateOptions['scanSources']
-}
+export interface InternalGenerationRequest extends GenerationRequest {}
 
 export function toGenerationRequest(
   options: TailwindV4GenerateOptions | undefined,
 ): InternalGenerationRequest {
   return {
+    ...(options?.excludeFiles === undefined ? {} : { excludeFiles: options.excludeFiles }),
     ...(options?.candidates === undefined ? {} : { candidates: options.candidates }),
     ...(options?.sources === undefined
       ? {}
@@ -34,6 +37,7 @@ export function toGenerationRequest(
 
 export function toGenerateOptions(request: InternalGenerationRequest): TailwindV4GenerateOptions {
   return {
+    ...(request.excludeFiles === undefined ? {} : { excludeFiles: request.excludeFiles }),
     ...(request.candidates === undefined ? {} : { candidates: request.candidates }),
     ...(request.sourceEntries === undefined ? {} : { sources: request.sourceEntries }),
     ...(request.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: request.bareArbitraryValues }),
@@ -95,6 +99,7 @@ export async function collectRawCandidates(
   options: TailwindV4GenerateOptions | undefined,
   compiledRoot: TailwindV4GenerateResult['root'],
   compiledSources: TailwindV4SourcePattern[] = [],
+  onFiles?: (files: string[]) => void,
 ) {
   const rawCandidates = new Set<string>()
   const extractOptions = options?.bareArbitraryValues === undefined
@@ -113,9 +118,15 @@ export async function collectRawCandidates(
   }
 
   const filesystemSources = resolveScanSources(options, source, compiledRoot, compiledSources)
-  if (filesystemSources.length > 0) {
-    for (const candidate of await extractRawCandidates(filesystemSources, extractOptions)) {
-      rawCandidates.add(candidate)
+  if (filesystemSources.some(entry => !entry.negated)) {
+    const excluded = new Set((options?.excludeFiles ?? []).map(resolveSourceScanPath))
+    const files = await resolveProjectSourceFiles({ sources: filesystemSources, filter: file => !excluded.has(resolveSourceScanPath(file)) })
+    onFiles?.(files)
+    for (const file of files) {
+      const content = await readFile(file, 'utf8')
+      for (const candidate of await extractRawCandidatesWithPositions(content, path.extname(file).slice(1), extractOptions)) {
+        rawCandidates.add(candidate.rawCandidate)
+      }
     }
   }
 

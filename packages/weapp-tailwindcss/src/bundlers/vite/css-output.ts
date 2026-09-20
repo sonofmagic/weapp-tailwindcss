@@ -1,7 +1,7 @@
 import type { InternalUserDefinedOptions } from '@/types'
 import { existsSync, realpathSync } from 'node:fs'
 import path from 'node:path'
-import { canProcessSourceStyleAsCss } from '@weapp-tailwindcss/postcss'
+import { canProcessSourceStyleAsCss } from '@weapp-tailwindcss/postcss/transform'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { isCSSRequest } from './utils'
 

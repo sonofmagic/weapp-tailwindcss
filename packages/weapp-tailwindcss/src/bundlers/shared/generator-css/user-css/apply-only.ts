@@ -1,7 +1,7 @@
-import { analyzeApplyOnlySource } from '@weapp-tailwindcss/postcss'
+import { analyzeApplyOnlySource } from '@weapp-tailwindcss/postcss/transform'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '../directives'
 
-export { filterTailwindV4ApplyOnlyGeneratedCss as filterApplyOnlyGeneratedCss, normalizeEmptyTailwindCustomVariants } from '@weapp-tailwindcss/postcss'
+export { filterTailwindV4ApplyOnlyGeneratedCss as filterApplyOnlyGeneratedCss, normalizeEmptyTailwindCustomVariants } from '@weapp-tailwindcss/postcss/transform'
 
 export function shouldFilterApplyOnlyGeneratedCss(
   _majorVersion: number | undefined,

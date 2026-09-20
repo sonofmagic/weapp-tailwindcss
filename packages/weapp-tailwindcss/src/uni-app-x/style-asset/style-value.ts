@@ -7,7 +7,7 @@ import {
   normalizeUniAppXStyleProperty,
   normalizeUniAppXStyleValue,
   rewriteUniAppXStyleReferences,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'
 import { resolveStyleReferencePath } from '../style-reference-path'
 
 const GEN_APP_STYLES_RE = /const\s+GenAppStyles\s*=\s*\[_uM\(\[([\s\S]*?)\]\)\]/

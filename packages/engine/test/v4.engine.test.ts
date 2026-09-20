@@ -32,6 +32,16 @@ afterEach(async () => {
 })
 
 describe('Tailwind v4 engine', () => {
+  it('释放旧引擎包装持有的生成与校验会话', async () => {
+    const engine = createTailwindV4Engine(await createDefaultSource())
+    await engine.generate({ candidates: ['flex'] })
+    expect(engine.dispose).toBeTypeOf('function')
+    engine.dispose?.()
+    engine.dispose?.()
+    await expect(engine.generate({ candidates: ['grid'] })).rejects.toThrow('disposed')
+    await expect(engine.validateCandidates(['flex'])).rejects.toThrow('disposed')
+  })
+
   it('generates CSS from inline css and explicit candidates', async () => {
     const engine = createTailwindV4Engine(await createDefaultSource())
     const result = await engine.generate({

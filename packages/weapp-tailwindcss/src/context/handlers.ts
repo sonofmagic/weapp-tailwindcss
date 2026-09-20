@@ -1,5 +1,5 @@
 import type { ICustomAttributesEntities, InternalUserDefinedOptions } from '@/types'
-import { createStyleHandler } from '@weapp-tailwindcss/postcss'
+import { createStyleHandler } from '@weapp-tailwindcss/postcss/transform'
 import { createJsHandler } from '@/js'
 import { resolveUniAppXOptions } from '@/uni-app-x/options'
 import { createTemplateHandler } from '@/wxml'

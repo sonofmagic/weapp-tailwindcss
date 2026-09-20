@@ -7,7 +7,7 @@ import type {
   CreateCompilerOptions,
 } from './types'
 import type { UserDefinedOptions } from '@/types'
-import { finalizeMiniProgramCss, finalizeMiniProgramCssRoot } from '@weapp-tailwindcss/postcss'
+import { finalizeMiniProgramCss, finalizeMiniProgramCssRoot } from '@weapp-tailwindcss/postcss/transform'
 import { createWeappTailwindcssGenerator, resolveTailwindV4Source } from '@/generator'
 import { createCompilerGenerationCacheKey, isSameCompilerGenerationCacheKey, reuseCompilerGenerationResult } from './generation-cache'
 import { commitCompilerGeneration, prepareCompilerGeneration } from './generation-state'
@@ -109,7 +109,8 @@ export function createCompiler(options: CreateCompilerOptions = {}): Compiler {
       prepared.compilation.candidates,
       target,
     )
-    const reusableGeneration = engineReused
+    const reusableGeneration = request.scanMode !== 'compiled'
+      && engineReused
       && entry.generationCache
       && isSameCompilerGenerationCacheKey(entry.generationCache.key, generationCacheKey)
       ? entry.generationCache.result

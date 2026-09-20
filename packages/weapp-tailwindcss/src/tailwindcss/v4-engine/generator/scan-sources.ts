@@ -1,8 +1,10 @@
 import type { TailwindV4GenerateOptions, TailwindV4ResolvedSource, TailwindV4SourcePattern } from '../types'
 import { existsSync, readFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
 import path from 'node:path'
-import { isTailwindCssImport, parseImportSourceParam, postcss } from '@weapp-tailwindcss/postcss'
-import { resolveCssSourceEntries, resolveTailwindSourceEntry } from '@/tailwindcss/source-scan'
+import { isTailwindCssImport, parseImportSourceParam, postcss } from '@weapp-tailwindcss/postcss/transform'
+import { loadConfig } from 'tailwindcss-config'
+import { normalizeLegacyContentEntries, parseConfigParam, resolveCssSourceEntries, resolveTailwindSourceEntry } from '@/tailwindcss/source-scan'
 
 type TailwindV4ResolvedScanSources = TailwindV4GenerateOptions['scanSources']
 
@@ -60,8 +62,8 @@ function createDefaultIgnoredScanSources(base: string) {
   }))
 }
 
-function normalizeCssDefinedScanSources(base: string, entries: TailwindV4SourcePattern[]) {
-  return entries.length > 0 && entries.every(entry => entry.negated)
+function normalizeCssDefinedScanSources(base: string, entries: TailwindV4SourcePattern[], auto: boolean) {
+  return auto && entries.length > 0 && entries.every(entry => entry.negated)
     ? [
         {
           base,
@@ -123,6 +125,17 @@ async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSourc
       }
     })
     sourcePatterns.push(...await resolveCssSourceEntries(root, definition.base, '**/*'))
+    const configs: string[] = []
+    root.walkAtRules('config', (rule) => {
+      const request = parseConfigParam(rule.params)
+      if (request) {
+        configs.push(createRequire(path.join(definition.base, 'package.json')).resolve(request))
+      }
+    })
+    for (const config of configs) {
+      const loaded = await loadConfig({ config, cwd: path.dirname(config) })
+      sourcePatterns.push(...normalizeLegacyContentEntries(loaded?.config.content, path.dirname(config), { relativeBase: path.dirname(config) }))
+    }
   }
   let entries: TailwindV4SourcePattern[]
   if (importSourceBase) {
@@ -132,7 +145,7 @@ async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSourc
     ]
   }
   else if (sourcePatterns.length > 0) {
-    entries = normalizeCssDefinedScanSources(source.base, sourcePatterns)
+    entries = normalizeCssDefinedScanSources(source.base, sourcePatterns, !hasSourceNone)
   }
   else if (hasSourceNone) {
     return false

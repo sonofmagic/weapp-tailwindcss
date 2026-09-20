@@ -8,6 +8,9 @@
 
 ## 包内结构约定
 
+- `syntax`、`transform`、`plugin` 为独立公开子路径；根入口保持兼容。核心消费者不得经根聚合入口触达插件编排。
+- 来源指令由本包解析为共享扫描描述；路径、glob、匹配与分组由 `@weapp-tailwindcss/source-scan` 负责。
+
 - `src/syntax/`：CSS/SCSS 解析、`@import` specifier tokenize/quote，以及对外暴露的 syntax API。
 - `src/plugins/`：插件实现与 pipeline 组装。
 - `src/compat/`：版本兼容与降级逻辑，包括 uni-app x 边框 preflight、style value、legacy selector/unit 与 Tailwind v4 theme source 变换。

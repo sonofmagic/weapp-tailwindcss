@@ -1,4 +1,4 @@
-import { normalizeTailwindcssV4InfinityCalcCss } from '@weapp-tailwindcss/postcss'
+import { normalizeTailwindcssV4InfinityCalcCss } from '@weapp-tailwindcss/postcss/transform'
 import { isSourcePreprocessorRequest } from '@/bundlers/shared/style-requests'
 import { cleanUrl } from '@/bundlers/vite/utils'
 import { logger } from '@/logger'

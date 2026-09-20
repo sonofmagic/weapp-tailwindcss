@@ -1,5 +1,5 @@
 import { postcss } from '../../postcss-runtime'
-import { parseCssImportSpecifier } from '../../syntax'
+import { parseCssImportSpecifier } from '../../syntax/index'
 
 function normalizeTailwindImportSpecifier(params: string) {
   return parseCssImportSpecifier(params)?.specifier.replaceAll('\\', '/')

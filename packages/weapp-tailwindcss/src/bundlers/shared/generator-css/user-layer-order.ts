@@ -3,4 +3,4 @@ export {
   mergeMarkedUserLayerComponentsCss,
   reorderMarkedUserLayerComponentsCss,
   wrapUserLayerComponentsCss,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'
