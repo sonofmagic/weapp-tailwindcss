@@ -1,1 +1,1 @@
-export { normalizeConfigDirective, prependConfigDirective } from '@weapp-tailwindcss/postcss/transform'
+export * from '../../../generation/config-directive'

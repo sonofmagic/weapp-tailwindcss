@@ -9,7 +9,7 @@ const mocks = vi.hoisted(() => ({
   generateTailwindV4Css: vi.fn(),
 }))
 
-vi.mock('@/bundlers/shared/v4-generation-core', () => ({
+vi.mock('@/generation/service', () => ({
   generateTailwindV4Css: mocks.generateTailwindV4Css,
 }))
 

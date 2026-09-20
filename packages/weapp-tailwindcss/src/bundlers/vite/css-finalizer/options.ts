@@ -11,8 +11,8 @@ import { logger } from '@weapp-tailwindcss/logger'
 import { transformWebCssCompat } from '@weapp-tailwindcss/postcss/transform'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
-import { hasTailwindGeneratedCssMarkers } from '../../shared/generator-css'
-import { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindRootDirectives } from '../../shared/generator-css/directives'
+import { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindRootDirectives } from '../../../generation/directives'
+import { hasTailwindGeneratedCssMarkers } from '../../../generation/index'
 import { resolveViteWebCssCompatOptions, shouldApplyViteWebCssCompat } from '../web-css-compat'
 
 interface RememberedMainCssSource {

@@ -79,7 +79,7 @@ export function auditArchitecture(root: string) {
       }
     }
   }
-  const coreDirs = ['core', 'compiler', 'context', 'generator', 'tailwindcss', 'js', 'wxml', 'cache', 'project-sources']
+  const coreDirs = ['core', 'compiler', 'context', 'generator', 'generation', 'tailwindcss', 'js', 'wxml', 'cache', 'project-sources']
   const corePackages = ['source-scan', 'engine'].map(name => path.join(root, 'packages', name, 'src'))
   const postcssSource = path.join(root, 'packages', 'postcss', 'src')
   const starts = [...files].filter(file => corePackages.some(directory => inside(directory, file))

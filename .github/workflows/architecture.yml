@@ -19,6 +19,6 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm architecture:check
-      - run: pnpm --filter weapp-tailwindcss exec vitest run test/ci/architecture-graph.test.ts --update=none
+      - run: pnpm --filter weapp-tailwindcss exec vitest run test/ci/architecture-graph.test.ts test/ci/generation-ownership.test.ts --update=none
         env:
           CI: '1'

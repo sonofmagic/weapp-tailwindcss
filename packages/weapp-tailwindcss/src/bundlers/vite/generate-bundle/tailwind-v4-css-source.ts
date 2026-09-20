@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { analyzeTailwindV4Source } from '@weapp-tailwindcss/postcss/transform'
-import { scoreTailwindV4CssSourceFileMatch } from '@/bundlers/shared/generator-css/source-resolver/matching'
+import { scoreTailwindV4CssSourceFileMatch } from '@/generation/source-resolver/matching'
 import { hasTailwindGenerationSource } from './sfc-style-source'
 
 export interface TailwindV4GenerationCssSourceEntry {

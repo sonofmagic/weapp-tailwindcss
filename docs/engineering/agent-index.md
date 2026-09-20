@@ -43,6 +43,7 @@
 - [packages/weapp-style-injector/AGENTS.md](../../packages/weapp-style-injector/AGENTS.md)
 - [packages/weapp-tailwindcss/AGENTS.md](../../packages/weapp-tailwindcss/AGENTS.md)
 - [packages/weapp-tailwindcss/src/compiler/AGENTS.md](../../packages/weapp-tailwindcss/src/compiler/AGENTS.md)
+- [packages/weapp-tailwindcss/src/generation/AGENTS.md](../../packages/weapp-tailwindcss/src/generation/AGENTS.md)
 - [packages/weapp-tw/AGENTS.md](../../packages/weapp-tw/AGENTS.md)
 - [packages/weapptw/AGENTS.md](../../packages/weapptw/AGENTS.md)
 - [packages/wetw/AGENTS.md](../../packages/wetw/AGENTS.md)

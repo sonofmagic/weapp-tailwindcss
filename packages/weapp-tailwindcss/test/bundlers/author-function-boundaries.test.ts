@@ -1,6 +1,6 @@
 import process from 'node:process'
 import { describe, expect, it, vi } from 'vitest'
-import { createAuthorCssFunctionCompiler } from '@/bundlers/shared/generator-css/user-css/compile-functions'
+import { createAuthorCssFunctionCompiler } from '@/generation/user-css/compile-functions'
 import { TailwindGenerationSessionPool } from '@/compiler/tailwind-generation-session-pool'
 
 const source = {

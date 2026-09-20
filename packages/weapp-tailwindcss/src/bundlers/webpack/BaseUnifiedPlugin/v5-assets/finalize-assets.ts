@@ -1,5 +1,5 @@
+import { pushConcurrentTaskFactories } from '../../../../utils/run-tasks'
 import { emitHmrTiming } from '../../../shared/hmr-timing'
-import { pushConcurrentTaskFactories } from '../../../shared/run-tasks'
 import {
   pruneWebpackCssHandlerOptionCaches,
   resolveWebpackMemoryDebugStats,

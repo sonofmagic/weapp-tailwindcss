@@ -2,7 +2,7 @@ import type webpack from 'webpack'
 import type { WebpackCssImportRewriteLoaderOptions } from './runtime-registry'
 import { Buffer } from 'node:buffer'
 import { normalizeResolvedTailwindcssImports } from '@/bundlers/shared/css-imports'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/generation/directives'
 import {
   generateCssForWebpackPipeline,
   registerWebpackCssGeneratorSource,

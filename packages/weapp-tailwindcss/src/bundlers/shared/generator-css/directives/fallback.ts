@@ -1,5 +1,1 @@
-export {
-  extractConfigRequestFromSource,
-  extractTailwindDirectiveLines,
-  extractTailwindSourceForPostcssFallback,
-} from '@weapp-tailwindcss/postcss/transform'
+export * from '../../../../generation/directives/fallback'

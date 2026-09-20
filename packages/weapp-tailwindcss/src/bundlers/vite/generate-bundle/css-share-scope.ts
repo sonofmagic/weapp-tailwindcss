@@ -3,10 +3,10 @@ import path from 'node:path'
 import { hasCssLocationDependencies } from '@weapp-tailwindcss/postcss/transform'
 import {
   hasTailwindSourceDirectives,
-} from '@/bundlers/shared/generator-css/directives'
+} from '@/generation/directives'
 import {
   hasTailwindGeneratedCssMarkers,
-} from '@/bundlers/shared/generator-css/markers'
+} from '@/generation/markers'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 

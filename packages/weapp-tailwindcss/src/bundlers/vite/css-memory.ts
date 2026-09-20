@@ -1,7 +1,7 @@
 import type { RememberedCssSource } from './generate-bundle'
 import path from 'node:path'
+import { isSourceStyleRequest, stripRequestQuery } from '../../generation/style-requests'
 import { normalizeOutputPathKey } from '../shared/module-graph'
-import { isSourceStyleRequest, stripRequestQuery } from '../shared/style-requests'
 import { pruneMapToMaxSize, touchMapEntry } from './map-cache'
 import { parseVueRequest } from './query'
 import { getActiveViteSourceOutputRelationOwner } from './source-output-relations'

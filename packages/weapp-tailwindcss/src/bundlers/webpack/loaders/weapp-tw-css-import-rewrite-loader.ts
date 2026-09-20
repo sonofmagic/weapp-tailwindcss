@@ -9,18 +9,18 @@ import { filterExistingCssRules, normalizeTailwindcssV4InfinityRadiusCss, rewrit
 import { ensurePosix } from '@weapp-tailwindcss/shared'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindRootImportDirectives, normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
-import { createSourceCandidateStore, isSourceCandidateRequest } from '@/bundlers/shared/source-candidates'
-import { resolveSourceCandidateScanFiles } from '@/bundlers/shared/source-candidates/scan-root'
-import { generateTailwindV4Css } from '@/bundlers/shared/v4-generation-core'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindRootImportDirectives, normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } from '@/generation/directives'
+import { generateTailwindV4Css } from '@/generation/service'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveTailwindV4EntriesFromCssCached } from '@/project-sources'
+import { createSourceCandidateStore, isSourceCandidateRequest } from '@/project-sources/candidates'
+import { resolveSourceCandidateScanFiles } from '@/project-sources/candidates/scan-root'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
 import { collectWebpackBareSelectorUserCss } from '../BaseUnifiedPlugin/v5-assets/pipeline-helpers'
 import { getLatestWebpackLoaderRuntime, getWebpackLoaderRuntime } from './runtime-registry'
-import { registerWebpackWatchFile } from './watch-dependencies'
+import { registerWebpackWatchContext, registerWebpackWatchFile } from './watch-dependencies'
 
 interface CssImportRewriteLoaderOptions extends WebpackCssImportRewriteLoaderOptions {}
 
@@ -126,9 +126,18 @@ async function resolveWebpackLoaderSourceCandidates(
     disabledDefaultTemplateHandler: compilerOptions.disabledDefaultTemplateHandler,
   })
   collector.syncInline(resolved.inlineCandidates)
-  const outDir = loaderContext.rootContext
-    ? path.resolve(loaderContext.rootContext, 'dist')
-    : undefined
+  const outDir = loaderContext._compiler?.options.output.path
+  const scanRoots = new Set(resolved.entries.filter(entry => !entry.negated).map(entry => entry.base))
+  if (!resolved.explicit && scanRoots.size === 0) {
+    scanRoots.add(root)
+  }
+  // 目录依赖让尚未存在的来源文件也能触发 CSS 模块重编译。
+  for (const base of scanRoots) {
+    registerWebpackWatchContext(loaderContext, resolveSourceScanPath(base))
+  }
+  for (const dependency of resolved.dependencies) {
+    await registerWebpackWatchFile(loaderContext, dependency)
+  }
   const scanFiles = await resolveSourceCandidateScanFiles({
     entries: resolved.entries,
     explicit: resolved.explicit,

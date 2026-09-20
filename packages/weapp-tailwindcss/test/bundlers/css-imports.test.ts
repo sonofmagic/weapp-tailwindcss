@@ -6,7 +6,7 @@ import postcss from 'postcss'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { normalizeResolvedTailwindcssImports, resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
-import { rewriteLocalCssImportRequestsForOutput } from '@/bundlers/shared/generator-css/local-imports'
+import { rewriteLocalCssImportRequestsForOutput } from '@/generation/local-imports'
 import loader, { transformCssImportRewriteSource } from '@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader'
 
 function joinPosixPath(base: string, subpath: string) {
@@ -261,7 +261,7 @@ describe('bundlers/shared css-imports', () => {
         outputFile: options.outputFile,
       },
     }))
-    vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
+    vi.doMock('@/generation/service', () => ({
       generateTailwindV4Css,
     }))
     const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-generation-loader')
@@ -380,7 +380,7 @@ describe('bundlers/shared css-imports', () => {
         outputFile: '/repo/examples/react-lynx/src/global.css',
       },
     }))
-    vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
+    vi.doMock('@/generation/service', () => ({
       generateTailwindV4Css,
     }))
     const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
@@ -444,7 +444,7 @@ describe('bundlers/shared css-imports', () => {
   ] as const)('registers and rewrites %s CSS without generating a duplicate stylesheet', async (appType, resourcePath) => {
     vi.resetModules()
     const generateTailwindV4Css = vi.fn()
-    vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
+    vi.doMock('@/generation/service', () => ({
       generateTailwindV4Css,
     }))
     const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
@@ -509,7 +509,7 @@ describe('bundlers/shared css-imports', () => {
         outputFile: options.outputFile,
       },
     }))
-    vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
+    vi.doMock('@/generation/service', () => ({
       generateTailwindV4Css,
     }))
     const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-generation-loader')
@@ -605,7 +605,7 @@ describe('bundlers/shared css-imports', () => {
         outputFile: options.outputFile,
       },
     }))
-    vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
+    vi.doMock('@/generation/service', () => ({
       generateTailwindV4Css,
     }))
     const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-generation-loader')
@@ -685,7 +685,7 @@ describe('bundlers/shared css-imports', () => {
         outputFile: options.outputFile,
       },
     }))
-    vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
+    vi.doMock('@/generation/service', () => ({
       generateTailwindV4Css,
     }))
     const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-generation-loader')

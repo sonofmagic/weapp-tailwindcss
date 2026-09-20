@@ -1,10 +1,10 @@
 import type { sources } from 'webpack'
 import path from 'node:path'
 import { filterExistingCssRules } from '@weapp-tailwindcss/postcss/transform'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '../../../../generation/directives'
+import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives } from '../../../../generation/index'
 import { processCachedTask } from '../../../shared/cache'
 import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../../../shared/generated-css-marker'
-import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives } from '../../../shared/generator-css'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '../../../shared/generator-css/directives'
 import { isWebpackCssLoaderRuntimeSource } from '../../shared/css-loader-runtime'
 import { createRuntimeAwareCssHash } from '../shared'
 import {

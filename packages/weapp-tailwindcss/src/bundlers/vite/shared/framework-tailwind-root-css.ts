@@ -1,5 +1,5 @@
-import { hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
-import { isSourceStyleRequest } from '../../shared/style-requests'
+import { hasTailwindRootDirectives } from '@/generation/directives'
+import { isSourceStyleRequest } from '../../../generation/style-requests'
 import { resolveViteModuleIdentity } from '../module-identity'
 import { cleanUrl } from '../utils'
 

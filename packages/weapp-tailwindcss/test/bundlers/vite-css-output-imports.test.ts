@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { normalizeMiniProgramGeneratorCssSource, normalizeMiniProgramImportShell } from '@/bundlers/shared/generator-css/output-import-shell'
+import { normalizeMiniProgramGeneratorCssSource, normalizeMiniProgramImportShell } from '@/generation/output-import-shell'
 import { resolveCssBundleOutputFile } from '@/bundlers/vite/generate-bundle/css-output-helpers'
 import { resolveMiniProgramStyleOutputExtension } from '@/bundlers/vite/css-output'
 import { linkEntryChunkStyles } from '@/bundlers/vite/generate-bundle/entry-style-graph'

@@ -1,6 +1,6 @@
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { describe, expect, it } from 'vitest'
-import { composeFrameworkProcessedCss } from '@/bundlers/shared/framework-css-composition'
+import { composeFrameworkProcessedCss } from '@/generation/framework-css-composition'
 
 describe('framework CSS rule composition', () => {
   it('preserves generated output verbatim when framework inputs are empty', () => {

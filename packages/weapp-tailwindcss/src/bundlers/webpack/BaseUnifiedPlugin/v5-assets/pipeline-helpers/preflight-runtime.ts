@@ -1,5 +1,5 @@
-import type { TailwindV4CssSource } from '../../../../shared/generator-css/source-resolver/types'
-import type { SourceCandidateStore } from '../../../../shared/source-candidates'
+import type { TailwindV4CssSource } from '../../../../../generation/source-resolver/types'
+import type { SourceCandidateStore } from '../../../../../project-sources/candidates'
 import type { SetupWebpackV5ProcessAssetsHookOptions } from '../helpers'
 import type { resolveStyleOptionsFromContext } from '@/context/style-options'
 import type { TailwindcssRuntimeLike } from '@/types'

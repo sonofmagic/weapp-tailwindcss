@@ -1,14 +1,14 @@
+import type { SourceCandidateCollectorSnapshot, SourceCandidateStore } from '../../../../project-sources/candidates'
 import type { SourceCandidateScanRoot } from '../../../shared/source-candidate-scan-signature'
-import type { SourceCandidateCollectorSnapshot, SourceCandidateStore } from '../../../shared/source-candidates'
 import type { ResolvedSourceScan } from '../../../shared/source-scan'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import { readFile, stat } from 'node:fs/promises'
 import path from 'node:path'
 import { md5Hash } from '@/cache/md5'
 import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
+import { isSourceCandidateRequest } from '../../../../project-sources/candidates'
+import { resolveSourceCandidateScanFiles } from '../../../../project-sources/candidates/scan-root'
 import { createSourceCandidateScanSignature } from '../../../shared/source-candidate-scan-signature'
-import { isSourceCandidateRequest } from '../../../shared/source-candidates'
-import { resolveSourceCandidateScanFiles } from '../../../shared/source-candidates/scan-root'
 
 export interface WebpackSourceCandidateCacheRecord {
   getSourceCandidatesForEntries: SourceCandidateStore['valuesForEntries']

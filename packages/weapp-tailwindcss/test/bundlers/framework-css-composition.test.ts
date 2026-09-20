@@ -3,8 +3,8 @@ import os from 'node:os'
 import path from 'node:path'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { describe, expect, it, vi } from 'vitest'
-import { captureFrameworkPostcssOptions } from '@/bundlers/shared/framework-postcss'
-import { generateTailwindV4Css } from '@/bundlers/shared/v4-generation-core'
+import { captureFrameworkPostcssOptions } from '@/generation/framework-postcss'
+import { generateTailwindV4Css } from '@/generation/service'
 import { getCompilerContext } from '@/context'
 
 describe('framework CSS composition', () => {

@@ -6,6 +6,7 @@ import { afterEach, describe, it } from 'vitest'
 
 export interface SourceGenerationContractAdapter {
   generate: (root: string, css: string) => Promise<{ css: string, classSet?: Set<string> }>
+  dispose?: () => Promise<void>
 }
 
 /** 用真实文件、相同 CSS 和相同断言校验各生成入口的扫描语义。 */
@@ -13,6 +14,7 @@ export function sourceGenerationContract(name: string, api: SourceGenerationCont
   describe(`${name} 共享来源生成契约`, () => {
     const roots: string[] = []
     afterEach(async () => {
+      await api.dispose?.()
       await Promise.all(roots.splice(0).map(root => fs.rm(root, { recursive: true, force: true })))
     })
     async function fixture() {

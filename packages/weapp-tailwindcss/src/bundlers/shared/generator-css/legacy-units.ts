@@ -1,1 +1,1 @@
-export { inheritLegacyUnitConvertedDeclarations } from '@weapp-tailwindcss/postcss/transform'
+export * from '../../../generation/legacy-units'

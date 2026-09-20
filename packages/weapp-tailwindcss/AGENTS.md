@@ -13,7 +13,8 @@
   - `src/wxml/`：模板类名处理链路。
   - `src/js/`：JS AST 与模块图相关转译。
   - `src/context/`：上下文、缓存与配置汇总。
-  - `src/project-sources/`：与构建器无关的入口发现、配置来源与扫描缓存。
+  - `src/project-sources/`：与构建器无关的入口发现、配置来源、扫描缓存与候选状态。
+  - `src/generation/`：来源准备、生成会话协调、revision 与 CSS 结果组装；旧构建器内部路径仅保留兼容重导出。
   - `test/`：单测、集成、回归、性能相关用例。
 
 ## 样式处理边界

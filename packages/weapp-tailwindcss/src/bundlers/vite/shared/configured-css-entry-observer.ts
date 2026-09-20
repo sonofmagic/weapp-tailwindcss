@@ -2,7 +2,7 @@ import type { Plugin } from 'vite'
 import path from 'node:path'
 import { logger } from '@weapp-tailwindcss/logger'
 import { parseTailwindCssDirectiveRequest, postcss } from '@weapp-tailwindcss/postcss/transform'
-import { isSourceStyleRequest } from '../../shared/style-requests'
+import { isSourceStyleRequest } from '../../../generation/style-requests'
 import { resolveViteModuleIdentity } from '../module-identity'
 
 const WINDOWS_ABSOLUTE_PATH_RE = /^[a-z]:[\\/]/i

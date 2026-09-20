@@ -1,5 +1,5 @@
 import { retainUniAppXAuthorApplyCss as retainAuthorApplyCss } from '@weapp-tailwindcss/postcss/transform'
-import { removeTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
+import { removeTailwindSourceDirectives } from '@/generation/directives'
 
 export function retainUniAppXAuthorApplyCss(
   generatedCss: string,

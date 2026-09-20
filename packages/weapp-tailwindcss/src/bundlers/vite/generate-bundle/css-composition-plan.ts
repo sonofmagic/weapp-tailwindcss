@@ -3,8 +3,8 @@ import {
   hasTailwindApplyDirective,
   hasTailwindRootDirectives,
   hasTailwindSourceDirectives,
-} from '../../shared/generator-css/directives'
-import { hasUserCssLayerBlocks } from '../../shared/generator-css/user-css'
+} from '../../../generation/directives'
+import { hasUserCssLayerBlocks } from '../../../generation/user-css'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { normalizeCssSourceForCompare } from '../css-output'
 import { mergeRememberedCssSources } from './remembered-css'
