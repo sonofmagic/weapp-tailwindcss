@@ -1,52 +1,26 @@
 import { isTailwindV4CssImportParam, isTailwindV4PreflightImportParam } from '../../compat/tailwindcss-v4/preflight-imports'
 import { postcss } from '../../postcss-runtime'
-import { collectCssInlineSourceCandidates } from '../inline-source'
-import { parseConfigParam, parseSourceFileParam } from '../params'
-
-function parseImportSourceParam(params: string) {
-  const match = /\bsource\(\s*(none|(['"])(.*?)\2)\s*\)/.exec(params)
-  if (!match) {
-    return undefined
-  }
-  return {
-    none: match[1] === 'none',
-    sourcePath: match[3],
-  }
-}
+import { describeCssSources } from '../description'
+import { parseConfigParam } from '../params'
 
 function collectSourceDirectives(root: postcss.Root) {
-  const sourceRequests: Array<NonNullable<ReturnType<typeof parseSourceFileParam>>> = []
-  let importSourcePath: string | undefined
-  let hasSourceNone = false
-  let hasTailwindCssImport = false
+  const descriptor = describeCssSources(root, isTailwindV4CssImportParam)
   let includesPreflight = false
   root.walkAtRules((rule) => {
-    if (rule.name === 'source') {
-      const request = parseSourceFileParam(rule.params)
-      if (request) {
-        sourceRequests.push(request)
-      }
-    }
-    else if (rule.name === 'import' && isTailwindV4CssImportParam(rule.params)) {
-      hasTailwindCssImport = true
+    if (rule.name === 'import' && isTailwindV4CssImportParam(rule.params)) {
       includesPreflight ||= isTailwindV4PreflightImportParam(rule.params)
-      const sourceParam = parseImportSourceParam(rule.params)
-      hasSourceNone ||= sourceParam?.none === true
-      if (sourceParam?.sourcePath) {
-        importSourcePath = sourceParam.sourcePath
-      }
     }
     else if (rule.name === 'tailwind') {
       includesPreflight ||= rule.params.trim() === 'base'
     }
   })
   return {
-    sourceRequests,
-    importSourcePath,
-    hasSourceNone,
-    hasTailwindCssImport,
+    sourceRequests: descriptor.sources,
+    importSourcePath: descriptor.imports.findLast(item => item.sourcePath)?.sourcePath,
+    hasSourceNone: descriptor.imports.some(item => item.none),
+    hasTailwindCssImport: descriptor.imports.length > 0,
     includesPreflight,
-    inlineCandidates: collectCssInlineSourceCandidates(root),
+    inlineCandidates: descriptor.inlineCandidates,
   }
 }
 

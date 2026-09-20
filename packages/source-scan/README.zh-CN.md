@@ -17,7 +17,7 @@ const entries = createSourceScanPlan({
 const included = isFileMatchedByTailwindSourceEntries(file, entries)
 ```
 
-`auto` 添加默认来源，`explicit` 只使用给定来源，`disabled` 禁用自动扫描但保留显式来源。匹配辅助函数默认把纯排除列表视为过滤器；`requirePositive: true` 则要求正来源，供 engine 的历史匹配入口使用。文件枚举始终要求正来源，纯排除规则不会启动全项目扫描。
+`auto` 添加默认来源，`fallback` 仅在没有正向来源时补充默认根；`explicit` 只使用给定来源，`disabled` 禁用自动扫描但保留显式来源。`ignoredPatterns` 为每个来源根应用相同排除规则。匹配辅助函数默认把纯排除列表视为过滤器；`requirePositive: true` 则要求正来源，供 engine 的历史匹配入口使用。文件枚举始终要求正来源，纯排除规则不会启动全项目扫描。
 
 路径身份通过现存父目录解析符号链接，因此文件删除、重建前后保持一致。文件系统路径使用对应平台的 path API；仅 glob 与匹配边界使用正斜杠。默认模板扩展名包含 `.qxml`。
 

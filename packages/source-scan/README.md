@@ -17,7 +17,7 @@ const entries = createSourceScanPlan({
 const included = isFileMatchedByTailwindSourceEntries(file, entries)
 ```
 
-`auto` adds the default source, `explicit` uses only supplied sources, and `disabled` disables automatic discovery while preserving explicit sources. Matchers treat exclusion-only lists as filters unless `requirePositive: true` is supplied. File expansion always requires a positive source.
+`auto` adds the default source; `fallback` adds it only when no positive source is supplied. `explicit` uses only supplied sources, and `disabled` disables automatic discovery while preserving explicit sources. `ignoredPatterns` applies the same exclusions to each source root. Matchers treat exclusion-only lists as filters unless `requirePositive: true` is supplied. File expansion always requires a positive source.
 
 Path identity resolves existing ancestors, preserving symlink identity across deletion and recreation. Windows drive roots, UNC paths and separators are supported. The default template extensions include `.qxml`.
 

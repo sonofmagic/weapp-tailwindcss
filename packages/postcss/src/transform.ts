@@ -144,6 +144,8 @@ export {
   toPosixPath,
 } from './source-scan'
 export { collectCssApplyCandidates, collectGeneratorCssCandidates, collectRuntimeApplyCandidates } from './source-scan/candidates'
+export { describeCssSources } from './source-scan/description'
+export { type CssScanDefinition, type CssScanPolicy, resolveCssScanSources } from './source-scan/resolve'
 export { analyzeTailwindV4EntrySource, type TailwindV4EntrySourceAnalysis } from './source-scan/tailwind-v4/entry-source'
 export { analyzeTailwindV4Source } from './source-scan/tailwind-v4/fingerprint'
 export {
