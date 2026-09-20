@@ -73,6 +73,9 @@ jobs:
       - name: Lint
         if: matrix.shard == 1
         run: pnpm lint
+      - name: Architecture contract
+        if: matrix.shard == 1
+        run: pnpm architecture:check
       - name: Install Playwright Chromium
         run: pnpm exec playwright install chromium chromium-headless-shell
       - name: Unit tests
