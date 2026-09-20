@@ -1,5 +1,5 @@
 ---
-status: partial
+status: verified
 issue: https://github.com/sonofmagic/weapp-tailwindcss/pull/1218
 baseline: 9fc9b4f21ecb36637b63bfba301dbd284e8d8832
 regressions:
@@ -25,7 +25,7 @@ PR #1218 的 Expo iOS 检查在功能验证后报 `kill EPERM`。失败 job 为 
 - 修复前，定向回归复现同一调用栈：1 项失败、8 项通过。
 - 修复后，`CI=1 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/react-native-ci.test.ts --update=none`：9 项通过。
 - 新增 5 项覆盖终止后探测权限边界、首次终止拒绝、进程组消失、未知探测错误和超时强制清理。POSIX 进程组用例仅在 POSIX 平台执行，Windows 仍沿用原有 taskkill 分支。
-- 未执行本地 IDE/设备验收；当前修复的完整 iOS CI 结果待新提交验证。
+- 未执行本地 IDE/设备验收；提交 `e11cd6a78eb5c89a3ea56ba3ac279a52489aa5ba` 的 [React Native CI](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/35484338754) 中 Expo iOS 18.5、Android 11 和 Web 全部通过。
 
 ## 适用边界
 
