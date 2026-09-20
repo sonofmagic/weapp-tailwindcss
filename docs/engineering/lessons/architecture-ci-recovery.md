@@ -74,6 +74,12 @@ PR Gate 的三个单测 shard 与 Release Gate 失败。测试仍 mock PostCSS �
 
 ## 适用边界
 
+提交 1a67f5066 的性能分片首次 uni-app 构建耗时失败，一次失败项复测后耗时通过，但 HMR 峰值和稳态内存均超限，反向顺序确认仍失败，未继续重跑同一提交。本地分配采样显示重复 CSS AST 和 Tailwind 编译对象分配；会话在候选删除时重建编译器的同时重复创建 design system。现在仅重建累积候选的编译器，同一会话复用未失效的 design system；源码和依赖失效仍完整刷新。
+
+新增回归先确认删除候选重复加载 design system，再验证复用、删除后样式消失、重新添加恢复和依赖失效刷新。Node 22.23.2 的 engine 181 项、构建、类型检查和生产源码 ESLint 通过。uni-app 三次构建、三次 HMR 的原 evaluatePerformanceGuard 判定通过：插件构建中位数 1160ms 到 1186ms，HMR RSS 峰值 906.22MB 到 801.27MB、稳态 886.88MB 到 789.06MB。保留 .tmp/uni-session-memory.json 原始数据；本地通过不能替代新提交的 Linux CI 结果。
+
+Lynx iOS 首次在 simctl launch 阶段失败，一次失败项重试通过，未修改设备兼容性断言；新提交仍需检查独立工作流结果。
+
 缓存属于生成引擎的模块加载，不共享候选集合或 CSS 会话结果；会话释放仍独立进行。使用 Tailwind Node 的加载 hook 与依赖缓存协议，升级 Tailwind 时需要复验这些测试。未放宽性能阈值、跳过失败用例或改回官方样式生成插件。
 
 本地全端预检仍受微信 AppID、HBuilderX 实例和设备环境阻塞，未执行全面设备与 IDE 验收。PR 保持 Draft；定向 static 不替代设备验证。

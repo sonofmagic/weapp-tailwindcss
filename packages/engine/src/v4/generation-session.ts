@@ -125,7 +125,7 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
     }
   }
 
-  private getRuntime(compileSourceEntries: boolean) {
+  private getRuntime(compileSourceEntries: boolean, designSystem?: TailwindV4DesignSystem) {
     this.assertActive()
     const cached = this.runtimes.get(compileSourceEntries)
     if (cached) {
@@ -136,7 +136,7 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
       : stripCompiledSourceEntries(this.currentSource)
     const promise = Promise.all([
       compileTailwindV4Source(source),
-      loadTailwindV4DesignSystem(source, { cache: false }),
+      designSystem ?? loadTailwindV4DesignSystem(source, { cache: false }),
     ]).then(([compiledSource, designSystem]) => ({
       compiled: compiledSource.compiled,
       dependencies: compiledSource.dependencies,
@@ -152,9 +152,10 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
     return promise
   }
 
-  private async resetRuntime(compileSourceEntries: boolean) {
+  private async resetRuntime(compileSourceEntries: boolean, designSystem: TailwindV4DesignSystem) {
     this.runtimes.delete(compileSourceEntries)
-    return this.getRuntime(compileSourceEntries)
+    // 候选删除只影响累积输出；源码和配置未变时复用候选校验缓存。
+    return this.getRuntime(compileSourceEntries, designSystem)
   }
 
   private async generateInternal(request: InternalGenerationRequest): Promise<InternalGenerationResult> {
@@ -183,7 +184,7 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
 
     const buildCandidates = new Set(canonicalizeBareArbitraryValueCandidates(classSet, options.bareArbitraryValues))
     if ([...runtime.builtCandidates].some(candidate => !buildCandidates.has(candidate))) {
-      runtime = await this.resetRuntime(compileSourceEntries)
+      runtime = await this.resetRuntime(compileSourceEntries, runtime.designSystem)
     }
     const css = replaceBareArbitraryValueSelectors(
       runtime.compiled.build([...buildCandidates]),
