@@ -123,7 +123,18 @@ export async function collectRawCandidates(
     const files = await resolveProjectSourceFiles({ sources: filesystemSources, filter: file => !excluded.has(resolveSourceScanPath(file)) })
     onFiles?.(files)
     for (const file of files) {
-      const content = await readFile(file, 'utf8')
+      let content: string
+      try {
+        content = await readFile(file, 'utf8')
+      }
+      catch (error) {
+        // 枚举后文件或父目录可能被删除；保留依赖身份供后续重建使用。
+        const code = (error as NodeJS.ErrnoException)?.code
+        if (code === 'ENOENT' || code === 'ENOTDIR') {
+          continue
+        }
+        throw error
+      }
       for (const candidate of await extractRawCandidatesWithPositions(content, path.extname(file).slice(1), extractOptions)) {
         rawCandidates.add(candidate.rawCandidate)
       }
