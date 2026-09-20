@@ -69,6 +69,8 @@ PR Gate 的三个单测 shard 与 Release Gate 失败。测试仍 mock PostCSS �
 - 来源目录回归修复前错误监听项目根，修复后 watcher 与 runtime classset loader 共 20 项通过；真实 Webpack/Rspack/Gulp 及主包/PostCSS 共享生成契约 35 项通过。主包构建、修改源码 ESLint、架构检查、agents:check 和 git diff --check 通过。覆盖多目录 brace、绝对 glob、重复目录去重、负规则、缺失目录、禁用自动扫描及默认扫描。
 - 有限并发读取修复后，Node 22.23.2 的 engine 180 项测试、类型检查和构建通过；主包来源/缓存/真实构建器组 35 项与 CSS 来源/生成组 39 项通过，新增配置生命周期组所在文件 6 项通过。修改源码 ESLint、架构检查及规则检查通过。
 - 使用同一 perf:guard 隔离工作树更新 engine/主包产物后，执行 run-matrix.mjs，Mpx 与 Taro Webpack 各三次构建、三次 HMR。Mpx 插件中位数 602ms 到 426ms，Taro Webpack 4412ms 到 4161ms；Taro Webpack 原 evaluatePerformanceGuard 判定通过。Mpx 首次 RSS 超限，保留于 .tmp/scan-concurrent-performance.json；一次反向顺序确认的插件中位数 633ms 到 420ms，RSS 样本不再满足阻断置信条件，原判定通过，报告 .tmp/mpx-memory-confirmation.json。确认附带 Jiti/进程退出诊断，不将本地 RSS 波动解释为内存已改善，最终仍检查独立 CI runner。
+- 性能修复后，Mpx 与 Taro Webpack 独立 static 文件的 12 项通过。额外生成模式对照发现 Taro Webpack H5/compact 分片补出源码中的有效 border 候选及依赖变量，原报告未覆盖；限定 E2E_PROJECT_FILTER=^taro-webpack-react-tailwindcss-v4$ 执行 apps-generator-mode-compare.test.ts -u，重建 21 份基线，仅 7 个文件有差异，再以 --update=none 复验 11 项通过。保留主包和分包隔离断言，未修改 demo 源码。
+- static 初次误用聚合脚本时，部分测试未消费项目过滤变量而扩大调度，已中止且不计为通过；后续直接传入具体 Vitest 文件。设备/IDE 全面预检仍未通过，不以该中止批次或定向 static 替代全端验收。
 
 ## 适用边界
 
