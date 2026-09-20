@@ -1,5 +1,7 @@
 # weapp-tailwindcss 架构与工程增强审计
 
+> 2026-09-20 更新：基于 `5e96fdc16` 实施职责收敛，新增 source-scan、PostCSS 分层子路径、project-sources 和自动依赖图检查。当前所有权与兼容策略见[架构职责与依赖契约](architecture-responsibility.md)。以下保留 2026-09-11 的审计背景，不能代替本轮验证记录。
+
 > 审计基线：`c41a9076d`（main，2026-09-11）。本文是基于源码、测试、benchmark、规则和 skill 的静态审计；没有把未运行的跨平台设备链路当作已验证事实。
 
 ## 1. 当前架构
@@ -44,4 +46,3 @@
 ## 5. 限制
 
 本审计未执行完整 `pnpm test`、跨平台 IDE/设备 E2E 或远端 CI；因此没有给出绝对性能数值，也没有宣称 Windows、macOS、Linux、Harmony 和 HBuilderX 的当前行为完全一致。实施每个 Issue 时应按就近规则补定向测试，并记录真实环境证据。
-

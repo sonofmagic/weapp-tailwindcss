@@ -34,6 +34,7 @@
 - [packages/postcss/AGENTS.md](../../packages/postcss/AGENTS.md)
 - [packages/react-native/AGENTS.md](../../packages/react-native/AGENTS.md)
 - [packages/reset/AGENTS.md](../../packages/reset/AGENTS.md)
+- [packages/source-scan/AGENTS.md](../../packages/source-scan/AGENTS.md)
 - [packages/shared/AGENTS.md](../../packages/shared/AGENTS.md)
 - [packages/tailwindcss-config/AGENTS.md](../../packages/tailwindcss-config/AGENTS.md)
 - [packages/tailwindcss-core-plugins-extractor/AGENTS.md](../../packages/tailwindcss-core-plugins-extractor/AGENTS.md)
