@@ -1,3 +1,1 @@
-export {
-  transformGeneratorUserCss,
-} from '@weapp-tailwindcss/postcss'
+export * from '../../../../generation/user-css/transform'

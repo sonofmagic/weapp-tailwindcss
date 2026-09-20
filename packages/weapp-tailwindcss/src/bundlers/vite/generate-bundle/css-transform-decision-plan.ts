@@ -1,6 +1,6 @@
 import type { ViteCssAssetIdentityKind } from '../css-asset-identity'
+import { hasTailwindApplyDirective } from '../../../generation/directives'
 import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
-import { hasTailwindApplyDirective } from '../../shared/generator-css/directives'
 import { createCssRuntimeSignature } from './css-share-scope'
 import { createRememberedCssRuntimeSignature } from './remembered-css'
 import { hasTailwindGenerationSource } from './sfc-style-source'

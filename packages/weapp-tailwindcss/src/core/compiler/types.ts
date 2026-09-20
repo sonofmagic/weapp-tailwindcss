@@ -4,7 +4,7 @@ import type {
   IStyleHandlerOptions,
   Result as PostcssResult,
   Root,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'
 import type { CacheTelemetryCollector } from '@/compiler/cache-telemetry'
 import type {
   TailwindV4ResolvedSource,

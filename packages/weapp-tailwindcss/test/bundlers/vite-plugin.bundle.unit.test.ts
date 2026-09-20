@@ -213,7 +213,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     vi.doUnmock('node:fs/promises')
     vi.doUnmock('@/bundlers/vite/incremental-runtime-class-set')
     vi.doUnmock('@/bundlers/vite/source-scan')
-    vi.doUnmock('@/bundlers/shared/generator-css')
+    vi.doUnmock('@/generation/index')
     vi.doUnmock('@/generator')
     vi.doMock('@/bundlers/vite/resolve-app-type', () => ({
       resolveImplicitAppTypeFromViteRoot: vi.fn(() => undefined),
@@ -1838,8 +1838,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       return createMockGeneratorCssResult(css, 4)
     })
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -4671,8 +4671,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       return createMockGeneratorCssResult(css, 4)
     })
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -6671,8 +6671,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       }
     })
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -7202,8 +7202,8 @@ module.exports = {
       return createMockGeneratorCssResult(css, 4)
     })
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -7445,8 +7445,8 @@ module.exports = {
       }
     })
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -7599,8 +7599,8 @@ module.exports = {
       }
     })
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -11109,8 +11109,8 @@ const trace = "at App.vue:4"
     })
 
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -11269,8 +11269,8 @@ const trace = "at App.vue:4"
     })
 
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -12394,8 +12394,8 @@ const cls = "w-[1.5px]"
         packageName: 'tailwindcss',
       })),
     }))
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: vi.fn(async (options: { runtime: Set<string> }) => {
@@ -12705,8 +12705,8 @@ ${generatedBanner}`
       },
     }))
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -12805,8 +12805,8 @@ ${generatedBanner}`
       version: 4,
     }))
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -13421,8 +13421,8 @@ ${utilities}
       version: 4,
     }))
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -13819,8 +13819,8 @@ ${utilities}
       }
     })
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -13941,8 +13941,8 @@ ${utilities}
       return createMockGeneratorCssResult(css)
     })
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -14050,8 +14050,8 @@ ${utilities}
         rawSource: string
       }) => createMockGeneratorCssResult(`/* vite ${major} */\n${options.rawSource}`))
       vi.resetModules()
-      vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-        const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      vi.doMock('@/generation/index', async (importOriginal) => {
+        const actual = await importOriginal<typeof import('@/generation/index')>()
         return {
           ...actual,
           generateCssByGenerator: generateCssByGeneratorMock,
@@ -14251,8 +14251,8 @@ ${utilities}
       rawSource: string
     }) => createMockGeneratorCssResult(`/* generated */\n${options.rawSource}`))
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -14346,8 +14346,8 @@ ${utilities}
       return createMockGeneratorCssResult(css)
     })
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -16135,8 +16135,8 @@ const fallback = "bg-[#434332] px-[32px]"
       }
     })
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -16270,8 +16270,8 @@ const fallback = "bg-[#434332] px-[32px]"
       }
     })
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -16403,8 +16403,8 @@ const fallback = "bg-[#434332] px-[32px]"
       }
     })
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,
@@ -16534,8 +16534,8 @@ const fallback = "bg-[#434332] px-[32px]"
       }
     })
     vi.resetModules()
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         generateCssByGenerator: generateCssByGeneratorMock,

@@ -5,12 +5,12 @@ import { NodeTypes } from '@vue/compiler-dom'
 import {
   createUniAppXBorderPreflight,
   UNI_APP_X_BORDER_PREFLIGHT_CLASS,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'
 
 export {
   createUniAppXBorderPreflight,
   hoistUniAppXBorderPreflight,
-} from '@weapp-tailwindcss/postcss'
+} from '@weapp-tailwindcss/postcss/transform'
 
 export const BORDER_PREFLIGHT_CLASS = UNI_APP_X_BORDER_PREFLIGHT_CLASS
 

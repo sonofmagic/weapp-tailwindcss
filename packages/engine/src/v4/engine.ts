@@ -9,6 +9,9 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
   const session = createTailwindV4EngineGenerationSession(source)
   return {
     source,
+    dispose() {
+      session.dispose()
+    },
     loadDesignSystem() {
       return session.loadDesignSystem()
     },

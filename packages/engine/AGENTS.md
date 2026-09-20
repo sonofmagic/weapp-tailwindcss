@@ -14,6 +14,7 @@
 - 不依赖 `@weapp-tailwindcss/postcss`、主包、旧 engine 或 Tailwind 官方生成插件，保持依赖图单向。
 - 不恢复 v3 引擎、补丁机制、多版本分发或 HTML parser 兼容导出。
 - Node/Oxide 保持动态加载；ESM、CJS 和类型声明必须同时可用。
+- 路径身份、glob 和来源匹配通过 source-scan 复用；本包拥有文件枚举、候选提取、编译会话和依赖失效。
 - 文件系统路径使用 `node:path`；仅 glob、CSS import、报告等逻辑路径边界转换为 `/`。
 
 ## 测试要求

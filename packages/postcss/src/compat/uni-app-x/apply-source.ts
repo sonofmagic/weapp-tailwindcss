@@ -1,6 +1,6 @@
 import type { Root } from '../../postcss-runtime'
 import { postcss } from '../../postcss-runtime'
-import { parseUniAppXStyleSource } from '../../syntax'
+import { parseUniAppXStyleSource } from '../../syntax/index'
 
 export function createUniAppXHarmonyApplyGeneratorSource(
   applyStyleSources: string[],

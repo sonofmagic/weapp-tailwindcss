@@ -32,7 +32,8 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     const resolvedStyleOptions = resolveStyleOptions(generateSource, styleOptions)
     const cssMacroSource = resolveCssMacroTailwindV4Source(generateSource)
     const compatibleSource = createCompatibleSource(cssMacroSource, target)
-    const resolvedScanSources = await resolveScanSources(generateSource, scanSources)
+    const compiledScan = options.scanMode === 'compiled'
+    const resolvedScanSources = compiledScan ? undefined : await resolveScanSources(generateSource, scanSources)
     const filesystemCandidates = Array.isArray(resolvedScanSources)
       ? new Set(await extractRawCandidates(resolvedScanSources, {
           ...(patchOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: patchOptions.bareArbitraryValues }),
@@ -42,14 +43,24 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       ...collectCandidates(patchOptions.candidates),
       ...(filesystemCandidates ?? []),
     ]), target)
-    const normalizedCandidates = normalizeTargetRpxLengthCandidates(resolvedCandidates, target, resolvedStyleOptions)
+    let normalizedCandidates = normalizeTargetRpxLengthCandidates(resolvedCandidates, target, resolvedStyleOptions)
     const sourceId = compatibleSource.dependencies[0] ?? compatibleSource.base
     const generationRequest = {
+      ...(compiledScan
+        ? {
+            scanSources,
+            excludeFiles: options.excludeFiles ?? [],
+            prepareCandidates: (candidates: Set<string>) => {
+              normalizedCandidates = normalizeTargetRpxLengthCandidates(resolveTargetCandidates(candidates, target), target, resolvedStyleOptions)
+              return normalizedCandidates.candidates
+            },
+          }
+        : {}),
       ...(patchOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: patchOptions.bareArbitraryValues }),
       ...(patchOptions.sources === undefined
         ? {}
         : { sourceEntries: createEngineSourceEntries(patchOptions.sources, sourceId) }),
-      candidates: normalizedCandidates.candidates,
+      candidates: compiledScan ? resolvedCandidates : normalizedCandidates.candidates,
     }
     let generatedCss: string
     let classSet: Set<string>
@@ -68,19 +79,25 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       dependencies = artifact.dependencies
     }
     catch (error) {
-      if (!isCssSyntaxError(error)) {
+      if (compiledScan || !isCssSyntaxError(error)) {
         throw error
       }
-      const legacyResult = await createEngineTailwindV4Engine(compatibleSource).generate({
-        ...(patchOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: patchOptions.bareArbitraryValues }),
-        ...(patchOptions.sources === undefined ? {} : { sources: patchOptions.sources }),
-        candidates: normalizedCandidates.candidates,
-        scanSources: false,
-      })
-      generatedCss = legacyResult.css
-      classSet = legacyResult.classSet
-      rawCandidates = legacyResult.rawCandidates
-      dependencies = legacyResult.dependencies
+      const legacyEngine = createEngineTailwindV4Engine(compatibleSource)
+      try {
+        const legacyResult = await legacyEngine.generate({
+          ...(patchOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: patchOptions.bareArbitraryValues }),
+          ...(patchOptions.sources === undefined ? {} : { sources: patchOptions.sources }),
+          candidates: normalizedCandidates.candidates,
+          scanSources: false,
+        })
+        generatedCss = legacyResult.css
+        classSet = legacyResult.classSet
+        rawCandidates = legacyResult.rawCandidates
+        dependencies = legacyResult.dependencies
+      }
+      finally {
+        legacyEngine.dispose?.()
+      }
     }
     const sources = Array.isArray(resolvedScanSources) ? resolvedScanSources : []
     const rawCss = restoreRpxLengthCssSelectors(
@@ -253,7 +270,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
   }
 
   async function generate(options: TailwindV4GenerateOptions = {}) {
-    return options.incrementalCache
+    return options.incrementalCache && options.scanMode !== 'compiled'
       ? generateWithIncrementalCache(options)
       : generateOnce(source, options)
   }
@@ -264,6 +281,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     validateCandidates: validationEngine.validateCandidates,
     generate,
     dispose() {
+      validationEngine.dispose?.()
       generationSessions.dispose()
       for (const cacheKey of incrementalCacheKeys) {
         incrementalGenerateCache.delete(cacheKey)

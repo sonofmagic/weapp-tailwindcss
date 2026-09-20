@@ -78,7 +78,7 @@ describe('graph generation compilation session', () => {
       }
     })
     vi.doMock('@/generator', () => createGeneratorModule(generate))
-    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    const { generateTailwindV4Css } = await import('@/generation/service')
     const runtimeState = {
       tailwindRuntime: { majorVersion: 4 },
       readyPromise: Promise.resolve(),
@@ -133,7 +133,7 @@ describe('graph generation compilation session', () => {
       }
     })
     vi.doMock('@/generator', () => createGeneratorModule(generate))
-    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    const { generateTailwindV4Css } = await import('@/generation/service')
     const runtimeState = {
       tailwindRuntime: { majorVersion: 4 },
       readyPromise: Promise.resolve(),
@@ -168,7 +168,7 @@ describe('graph generation compilation session', () => {
     })
     vi.doMock('@/generator', () => createGeneratorModule(generate))
     const compiler = await import('@/compiler')
-    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    const { generateTailwindV4Css } = await import('@/generation/service')
     const runtimeState = {
       tailwindRuntime: { majorVersion: 4 },
       readyPromise: Promise.resolve(),
@@ -206,7 +206,7 @@ describe('graph generation compilation session', () => {
       root: null,
     }))
     vi.doMock('@/generator', () => createGeneratorModule(generate))
-    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    const { generateTailwindV4Css } = await import('@/generation/service')
     const runtimeState = {
       tailwindRuntime: { majorVersion: 4 },
       readyPromise: Promise.resolve(),

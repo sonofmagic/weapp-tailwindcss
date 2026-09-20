@@ -1,5 +1,5 @@
 import type { Root } from 'postcss'
-import { parseUniAppXStyleSource } from '../../syntax'
+import { parseUniAppXStyleSource } from '../../syntax/index'
 
 /** 路径身份由调用端解析，本包只改写 reference 声明。 */
 export function rewriteUniAppXStyleReferences(styleSource: string, resolveReference?: (request: string) => string) {

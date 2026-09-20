@@ -1,1 +1,1 @@
-export { collectWebpackAssetUserCssMarkers } from '@weapp-tailwindcss/postcss'
+export { collectWebpackAssetUserCssMarkers } from '@weapp-tailwindcss/postcss/transform'

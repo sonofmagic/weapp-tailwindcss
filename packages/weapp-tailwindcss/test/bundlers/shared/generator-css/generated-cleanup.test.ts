@@ -1,6 +1,6 @@
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { describe, expect, it } from 'vitest'
-import { removeTailwindV4GeneratedUserCssArtifacts as clean } from '@/bundlers/shared/generator-css/user-css'
+import { removeTailwindV4GeneratedUserCssArtifacts as clean } from '@/generation/user-css'
 
 const generated = '@layer theme { :root, :host { --color-red-500: red; --spacing: 0.25rem; } }'
 const selectors = [

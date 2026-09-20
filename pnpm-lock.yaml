@@ -4735,9 +4735,9 @@ importers:
       '@tailwindcss/oxide':
         specifier: catalog:tailwindcss4
         version: 4.3.3
-      micromatch:
-        specifier: catalog:buildUtilities
-        version: 4.0.8
+      '@weapp-tailwindcss/source-scan':
+        specifier: workspace:*
+        version: link:../source-scan
       postcss:
         specifier: catalog:postcss85tilde
         version: 8.5.28
@@ -4843,6 +4843,9 @@ importers:
       '@weapp-tailwindcss/shared':
         specifier: workspace:*
         version: link:../shared
+      '@weapp-tailwindcss/source-scan':
+        specifier: workspace:*
+        version: link:../source-scan
       autoprefixer:
         specifier: catalog:autoprefixer10
         version: 10.6.0(postcss@8.5.28)
@@ -4852,9 +4855,6 @@ importers:
       lru-cache:
         specifier: catalog:buildUtilities
         version: 11.5.2
-      micromatch:
-        specifier: catalog:buildUtilities
-        version: 4.0.8
       postcss:
         specifier: catalog:postcss85tilde
         version: 8.5.28
@@ -4995,6 +4995,12 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
 
+  packages/source-scan:
+    dependencies:
+      micromatch:
+        specifier: catalog:buildUtilities
+        version: 4.0.8
+
   packages/tailwindcss-config:
     dependencies:
       '@weapp-tailwindcss/shared':
@@ -5080,6 +5086,9 @@ importers:
       '@weapp-tailwindcss/shared':
         specifier: workspace:*
         version: link:../shared
+      '@weapp-tailwindcss/source-scan':
+        specifier: workspace:*
+        version: link:../source-scan
       comment-json:
         specifier: catalog:compilerUtilities
         version: 5.0.0
@@ -5113,6 +5122,9 @@ importers:
       semver:
         specifier: catalog:compilerUtilities
         version: 7.8.5
+      tailwindcss:
+        specifier: ^4.0.0
+        version: 4.3.3
       tailwindcss-config:
         specifier: workspace:*
         version: link:../tailwindcss-config

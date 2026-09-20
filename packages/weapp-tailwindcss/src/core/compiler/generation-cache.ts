@@ -12,6 +12,8 @@ interface CompilerGenerationCacheKey {
   candidateSignature: string
   incrementalCache: CompilerGenerateRequest['incrementalCache']
   scanSources: CompilerGenerateRequest['scanSources']
+  scanMode: CompilerGenerateRequest['scanMode']
+  excludeFilesFingerprint: string | undefined
   sourcesFingerprint: string | undefined
   styleOptionsFingerprint: string | undefined
   target: CompilerTarget
@@ -27,6 +29,8 @@ export function createCompilerGenerationCacheKey(
     candidateSignature: [...candidates].sort().join('\0'),
     incrementalCache: request.incrementalCache,
     scanSources: request.scanSources,
+    scanMode: request.scanMode,
+    excludeFilesFingerprint: request.excludeFiles === undefined ? undefined : createCompilerValueFingerprint(request.excludeFiles),
     sourcesFingerprint: request.sources === undefined
       ? undefined
       : createCompilerValueFingerprint(request.sources),
@@ -45,6 +49,8 @@ export function isSameCompilerGenerationCacheKey(
     && left.candidateSignature === right.candidateSignature
     && left.incrementalCache === right.incrementalCache
     && left.scanSources === right.scanSources
+    && left.scanMode === right.scanMode
+    && left.excludeFilesFingerprint === right.excludeFilesFingerprint
     && left.sourcesFingerprint === right.sourcesFingerprint
     && left.styleOptionsFingerprint === right.styleOptionsFingerprint
     && left.target === right.target

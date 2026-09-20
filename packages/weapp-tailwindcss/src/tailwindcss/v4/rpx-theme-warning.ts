@@ -1,7 +1,7 @@
 import type { InternalUserDefinedOptions } from '@/types'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
-import { collectRpxThemeVariables, inspectRpxCalcUsage } from '@weapp-tailwindcss/postcss'
+import { collectRpxThemeVariables, inspectRpxCalcUsage } from '@weapp-tailwindcss/postcss/transform'
 import { normalizeFrameworkStylePlatform } from '@/framework/platform'
 
 const warnedSessions = new WeakSet<object>()

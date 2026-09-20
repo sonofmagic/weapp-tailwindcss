@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isSfcStyleSourceRequest } from '@/bundlers/shared/style-requests'
+import { isSfcStyleSourceRequest } from '@/generation/style-requests'
 
 describe('style requests', () => {
   it('distinguishes SFC source files from external Vue style requests', () => {

@@ -7,6 +7,8 @@ import type {
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { withGenerationModuleCache } from './module-cache.ts'
+import { prepareGenerationModuleRequests } from './module-requests.ts'
 
 interface TailwindV4CompiledSource {
   sources: TailwindV4SourcePattern[]
@@ -15,6 +17,7 @@ interface TailwindV4CompiledSource {
 }
 
 interface TailwindV4NodeModule {
+  loadModule?: (id: string, base: string, onDependency: (dependency: string) => void) => Promise<{ module: unknown }>
   compile: (css: string, options: {
     base: string
     onDependency: (dependency: string) => void
@@ -140,7 +143,8 @@ async function createTailwindV4DesignSystem(source: TailwindV4ResolvedSource): P
 
   for (const base of bases) {
     try {
-      return await node.__unstable__loadDesignSystem(source.css, { base })
+      const prepared = prepareGenerationModuleRequests(source.css, base)
+      return await withGenerationModuleCache(node, () => node.__unstable__loadDesignSystem(prepared.css, { base }), prepared.files)
     }
     catch (error) {
       lastError = error
@@ -190,14 +194,13 @@ export async function compileTailwindV4Source(source: TailwindV4ResolvedSource) 
   for (const base of bases) {
     const dependencies = new Set(source.dependencies)
     try {
-      const compiled = await node.compile(source.css, {
+      const prepared = prepareGenerationModuleRequests(source.css, base)
+      const onDependency = (dependency: string) => dependencies.add(path.resolve(dependency))
+      const compiled = await withGenerationModuleCache(node, () => node.compile(prepared.css, {
         base,
         customCssResolver: createFallbackCssResolver([source.projectRoot, ...bases]),
-        onDependency(dependency) {
-          dependencies.add(path.resolve(dependency))
-        },
-      })
-
+        onDependency,
+      }), prepared.files, onDependency)
       return {
         compiled,
         dependencies,

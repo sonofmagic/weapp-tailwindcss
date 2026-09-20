@@ -1,6 +1,6 @@
 import type { ViteFrameworkCssPipelineStrategy } from '../../shared/framework-strategy'
 import type { InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/generation/directives'
 import { viteStyleInjectorDelegates } from '@/style-injector/internal'
 import { hoistUniAppXBorderPreflight } from '@/uni-app-x/border-preflight'
 import { isUniAppXHarmonyOutDir, isUniAppXNativeAppOutDir } from '@/uni-app-x/harmony'

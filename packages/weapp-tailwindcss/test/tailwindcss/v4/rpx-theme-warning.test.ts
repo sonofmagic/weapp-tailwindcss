@@ -1,5 +1,5 @@
 import { logger } from '@weapp-tailwindcss/logger'
-import * as css from '@weapp-tailwindcss/postcss'
+import * as css from '@weapp-tailwindcss/postcss/transform'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { collectRpxThemeRiskSources, shouldCheckRpxThemeRisk, warnRpxThemeRisk } from '@/tailwindcss/v4/rpx-theme-warning'
 

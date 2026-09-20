@@ -169,9 +169,9 @@ describe('tailwindcss source scan', () => {
 
     const absolute = await resolveTailwindSourceEntry('/project/src/pages/**/*.wxml', '/fallback', false)
     expect(absolute).toEqual({
-      base: path.parse('/project/src/pages/**/*.wxml').root,
+      base: path.resolve('/project/src/pages'),
       negated: false,
-      pattern: '/project/src/pages/**/*.wxml',
+      pattern: '**/*.wxml',
     })
     const absoluteFile = await resolveTailwindSourceEntry('/project/src/app.wxml', '/fallback', false)
     expect(absoluteFile).toEqual({

@@ -1,5 +1,5 @@
 import type { parseVueRequest } from '@/bundlers/vite/query'
-import { normalizeUniAppXImportantApplyForSass } from '@weapp-tailwindcss/postcss'
+import { normalizeUniAppXImportantApplyForSass } from '@weapp-tailwindcss/postcss/transform'
 import { extractSfcStyleBlocks } from '@/bundlers/vite/generate-bundle/sfc-style-source'
 import { cleanUrl } from '@/bundlers/vite/utils'
 

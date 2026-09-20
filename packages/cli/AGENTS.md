@@ -13,7 +13,7 @@
 ## 变更原则
 
 - 不把 CLI 实现或 bin 入口放回 `weapp-tailwindcss` 核心包。
-- 不依赖或调用 `@tailwindcss/cli`，不引入 `@parcel/watcher`；watch 保持跨平台轮询实现。
+- 不依赖或调用 `@tailwindcss/cli`。保留已有原生 watch 与跨平台轮询回退；候选扫描和生成调用统一核心会话。
 - 文件系统路径必须使用 `node:path`，并同时考虑 Windows、macOS 和 Linux。
 - `--target weapp` 保持 CSS-only 边界，不扫描或改写 WXML、JS、TS、JSX、TSX 或 WXSS 项目资源。
 - 包根导入不得自动执行 CLI；可执行入口只放在 `src/bin.ts`。
@@ -35,4 +35,4 @@
 ## 提交前检查
 
 - 确认 bin 指向可执行的 `dist/bin.cjs`，程序化入口具备 ESM/CJS 和类型声明。
-- 确认 `package.json`、lockfile、中文 changeset、README 与 website 用法一致。
+- 确认 `package.json`、lockfile、中文 change intent、README 与 website 用法一致。

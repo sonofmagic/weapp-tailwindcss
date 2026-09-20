@@ -1,6 +1,6 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { CssFinalizerContext } from './options'
-import { applyConfiguredCssCalc } from '@weapp-tailwindcss/postcss'
+import { applyConfiguredCssCalc } from '@weapp-tailwindcss/postcss/transform'
 import { collectViteProcessedCssSources } from './options'
 
 /** 在所有 CSS 资产完成组装后，为普通 Web 样式补齐显式启用的 calc 计算。 */

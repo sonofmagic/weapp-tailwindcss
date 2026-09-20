@@ -308,6 +308,10 @@
     border-top-left-radius: calc(infinity * 1px);
     border-top-right-radius: calc(infinity * 1px);
   }
+  .border {
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+  }
   .bg-\[\#0977ee\] {
     background-color: #0977ee;
   }
@@ -689,6 +693,11 @@
   syntax: '*';
   inherits: false;
 }
+@property --tw-border-style {
+  syntax: '*';
+  inherits: false;
+  initial-value: solid;
+}
 @property --tw-gradient-position {
   syntax: '*';
   inherits: false;
@@ -742,6 +751,7 @@
       --tw-rotate-z: initial;
       --tw-skew-x: initial;
       --tw-skew-y: initial;
+      --tw-border-style: solid;
       --tw-gradient-position: initial;
       --tw-gradient-from: #0000;
       --tw-gradient-via: #0000;
@@ -884,6 +894,11 @@
   syntax: '*';
   inherits: false;
 }
+@property --tw-border-style {
+  syntax: '*';
+  inherits: false;
+  initial-value: solid;
+}
 @property --tw-gradient-position {
   syntax: '*';
   inherits: false;
@@ -934,6 +949,7 @@
       --tw-rotate-z: initial;
       --tw-skew-x: initial;
       --tw-skew-y: initial;
+      --tw-border-style: solid;
       --tw-gradient-position: initial;
       --tw-gradient-from: #0000;
       --tw-gradient-via: #0000;
@@ -950,6 +966,7 @@
       --tw-rotate-z: initial;
       --tw-skew-x: initial;
       --tw-skew-y: initial;
+      --tw-border-style: solid;
       --tw-gradient-position: initial;
       --tw-gradient-from: #0000;
       --tw-gradient-via: #0000;
@@ -969,6 +986,7 @@
       --tw-rotate-z: initial;
       --tw-skew-x: initial;
       --tw-skew-y: initial;
+      --tw-border-style: solid;
       --tw-gradient-position: initial;
       --tw-gradient-from: #0000;
       --tw-gradient-via: #0000;

@@ -9,7 +9,7 @@ import type {
   UniAppStyleScopeInput,
   UniAppSubPackageConfig,
   WeappStyleInjectorOptions,
-} from 'weapp-style-injector'
+} from 'weapp-style-injector/types'
 
 import { omitUndefined } from '@/utils/object'
 

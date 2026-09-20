@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { captureFrameworkPostcssOptions } from '@/bundlers/shared/framework-postcss'
+import { captureFrameworkPostcssOptions } from '@/generation/framework-postcss'
 import { COMPILER_MODE_ENV, resolveCompilerMode } from '@/compiler/mode'
 
 function createGenerationOptions(debug = vi.fn()) {
@@ -44,7 +44,7 @@ describe('compiler mode', () => {
     else {
       process.env[COMPILER_MODE_ENV] = originalMode
     }
-    vi.doUnmock('@/bundlers/shared/generator-css')
+    vi.doUnmock('@/generation/index')
     vi.resetModules()
   })
 
@@ -61,8 +61,8 @@ describe('compiler mode', () => {
       expect(options.compilation?.enabled).toBe(true)
       return createGeneratedResult('.p-4 { padding: 1rem; }')
     })
-    vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
-    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    vi.doMock('@/generation/index', () => ({ generateCssByGenerator }))
+    const { generateTailwindV4Css } = await import('@/generation/service')
 
     const result = await generateTailwindV4Css(createGenerationOptions())
 
@@ -76,8 +76,8 @@ describe('compiler mode', () => {
       expect(options.compilation).toBeUndefined()
       return createGeneratedResult('.p-4 { padding: 1rem; }')
     })
-    vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
-    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    vi.doMock('@/generation/index', () => ({ generateCssByGenerator }))
+    const { generateTailwindV4Css } = await import('@/generation/service')
 
     const result = await generateTailwindV4Css(createGenerationOptions())
 
@@ -106,8 +106,8 @@ describe('compiler mode', () => {
         },
       }
     })
-    vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
-    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    vi.doMock('@/generation/index', () => ({ generateCssByGenerator }))
+    const { generateTailwindV4Css } = await import('@/generation/service')
 
     const result = await generateTailwindV4Css({
       ...createGenerationOptions(),
@@ -124,8 +124,8 @@ describe('compiler mode', () => {
       expect(options.deferCssAdaptation).toBe(target === 'weapp')
       return createGeneratedResult('.token { color: framework-token; }', target)
     })
-    vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
-    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    vi.doMock('@/generation/index', () => ({ generateCssByGenerator }))
+    const { generateTailwindV4Css } = await import('@/generation/service')
     const transformRoot = vi.fn(async (root: any) => {
       root.walkDecls((decl: any) => {
         decl.value = decl.value.replace('framework-token', 'processed-token')
@@ -170,8 +170,8 @@ describe('compiler mode', () => {
       expect(options.deferCssAdaptation).toBeUndefined()
       return createGeneratedResult('.token { color: raw-token; }')
     })
-    vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
-    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    vi.doMock('@/generation/index', () => ({ generateCssByGenerator }))
+    const { generateTailwindV4Css } = await import('@/generation/service')
     const transformRoot = vi.fn()
     const styleHandler = Object.assign(
       vi.fn(async (css: string) => ({ css })),
@@ -201,8 +201,8 @@ describe('compiler mode', () => {
   it('runs both implementations in shadow mode and returns legacy output', async () => {
     process.env[COMPILER_MODE_ENV] = 'shadow'
     const generateCssByGenerator = vi.fn(async () => createGeneratedResult('.p-4 { padding: 1rem; }'))
-    vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
-    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    vi.doMock('@/generation/index', () => ({ generateCssByGenerator }))
+    const { generateTailwindV4Css } = await import('@/generation/service')
     const { getCompilerShadowRunSnapshot } = await import('@/compiler')
     const debug = vi.fn()
     const onCompilerShadowReport = vi.fn()
@@ -236,8 +236,8 @@ describe('compiler mode', () => {
     const generateCssByGenerator = vi.fn()
       .mockResolvedValueOnce(createGeneratedResult('.p-4 { padding: 1rem; }'))
       .mockResolvedValueOnce(createGeneratedResult('.p-4 { padding: 2rem; }'))
-    vi.doMock('@/bundlers/shared/generator-css', () => ({ generateCssByGenerator }))
-    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    vi.doMock('@/generation/index', () => ({ generateCssByGenerator }))
+    const { generateTailwindV4Css } = await import('@/generation/service')
     const debug = vi.fn()
     const onCompilerShadowReport = vi.fn()
 

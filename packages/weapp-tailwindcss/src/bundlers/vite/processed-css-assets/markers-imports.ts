@@ -1,14 +1,14 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from '../shared/framework-strategy'
 import type { InternalUserDefinedOptions } from '@/types'
-import { collectImportedCssFiles, isStyleImportRequest, normalizeInjectableCssWithImports } from '@weapp-tailwindcss/postcss'
+import { collectImportedCssFiles, isStyleImportRequest, normalizeInjectableCssWithImports } from '@weapp-tailwindcss/postcss/transform'
 import path from 'pathe'
 import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { isCssOutputFile, isMiniProgramStyleOutputFile, isRootStyleOutputFile } from './style-files'
 
 export { isCssOutputFile } from './style-files'
-export { hasNonCommentCss, isStyleImportRequest, removeTailwindEntryDirectivesFromCss } from '@weapp-tailwindcss/postcss'
+export { hasNonCommentCss, isStyleImportRequest, removeTailwindEntryDirectivesFromCss } from '@weapp-tailwindcss/postcss/transform'
 
 export interface CssAssetMarkerMatcher {
   (asset: OutputAsset, file?: string): boolean

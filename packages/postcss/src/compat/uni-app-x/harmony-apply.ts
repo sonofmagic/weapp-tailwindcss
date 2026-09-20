@@ -1,5 +1,5 @@
 import postcss from 'postcss'
-import { parseUniAppXStyleSource } from '../../syntax'
+import { parseUniAppXStyleSource } from '../../syntax/index'
 
 /** 每份生成结果建立一次索引，仅在命中作者规则时克隆声明。 */
 export function createUniAppXHarmonyApplyCssExpander(generatedCss: string) {

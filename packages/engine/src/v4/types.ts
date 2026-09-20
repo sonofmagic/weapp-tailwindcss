@@ -37,6 +37,13 @@ export interface SourceEntry extends TailwindV4CandidateSource {
 }
 
 export interface GenerationRequest {
+  /** 使用当前编译会话解析的来源扫描，避免调用方预编译入口。 */
+  scanSources?: boolean | TailwindV4SourcePattern[]
+  /** 构建输出等明确不能作为输入的文件。 */
+  excludeFiles?: string[]
+  /** 平台适配器在验证候选之前归一化候选；不负责生成新来源。 */
+  prepareCandidates?: (candidates: Set<string>) => Iterable<string>
+
   candidates?: Iterable<string>
   sourceEntries?: SourceEntry[]
   /**
@@ -80,6 +87,9 @@ export interface TailwindGenerationSession {
 export interface TailwindV4StyleSource extends TailwindStyleSource {}
 
 export interface TailwindV4GenerateOptions {
+  /** 从候选扫描中排除的输出文件。 */
+  excludeFiles?: string[]
+
   candidates?: Iterable<string>
   sources?: TailwindV4CandidateSource[]
   /**
@@ -142,6 +152,8 @@ export interface TailwindV4DesignSystem {
 }
 
 export interface TailwindV4Engine {
+  /** 释放内部生成会话；可选以兼容自定义引擎实现。 */
+  dispose?: () => void
   source: TailwindV4ResolvedSource
   loadDesignSystem: () => Promise<TailwindV4DesignSystem>
   validateCandidates: (candidates: Iterable<string>) => Promise<Set<string>>

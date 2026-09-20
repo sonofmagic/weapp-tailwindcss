@@ -1,1 +1,1 @@
-export { composeFrameworkProcessedCss } from '@weapp-tailwindcss/postcss'
+export * from '../../generation/framework-css-composition'

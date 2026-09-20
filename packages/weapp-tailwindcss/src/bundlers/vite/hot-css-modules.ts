@@ -1,7 +1,7 @@
 import type { HmrContext, ModuleNode } from 'vite'
 import path from 'node:path'
 import process from 'node:process'
-import { isSourceStyleRequest } from '../shared/style-requests'
+import { isSourceStyleRequest } from '../../generation/style-requests'
 import { hasSameViteModuleIdentity, resolveViteModuleIdentity } from './module-identity'
 import { cleanUrl, slash } from './utils'
 

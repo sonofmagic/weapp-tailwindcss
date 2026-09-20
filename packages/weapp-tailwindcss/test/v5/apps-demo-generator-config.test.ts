@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { resolveCssEntrySource } from '@/bundlers/shared/generator-css'
+import { resolveCssEntrySource } from '@/generation/index'
 
 const repositoryRoot = path.resolve(__dirname, '../../../..')
 

@@ -8,6 +8,7 @@ import type {
   TailwindV4GenerateResult,
   TailwindV4ResolvedSource,
 } from './types.ts'
+import { clearRequireCache } from '@tailwindcss/node/require-cache'
 import {
   canonicalizeBareArbitraryValueCandidates,
   extractTailwindV4InlineSourceCandidates,
@@ -22,6 +23,7 @@ import {
   toGenerateOptions,
   toGenerationRequest,
 } from './generation-request.ts'
+import { invalidateGenerationModuleCache } from './module-cache.ts'
 import { compileTailwindV4Source, loadTailwindV4DesignSystem } from './node-adapter.ts'
 
 interface TailwindGenerationRuntime {
@@ -51,6 +53,7 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
   private readonly runtimes = new Map<boolean, Promise<TailwindGenerationRuntime>>()
   private designSystemPromise: Promise<TailwindV4DesignSystem> | undefined
   private disposed = false
+  private readonly moduleDependencies = new Set<string>()
 
   constructor(source: TailwindV4ResolvedSource) {
     this.currentSource = source
@@ -101,11 +104,16 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
     if (change.type === 'source') {
       this.currentSource = change.source
     }
+    clearRequireCache([...this.moduleDependencies])
+    invalidateGenerationModuleCache()
+    this.moduleDependencies.clear()
     this.runtimes.clear()
     this.designSystemPromise = undefined
   }
 
   dispose() {
+    clearRequireCache([...this.moduleDependencies])
+    this.moduleDependencies.clear()
     this.runtimes.clear()
     this.designSystemPromise = undefined
     this.disposed = true
@@ -117,7 +125,7 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
     }
   }
 
-  private getRuntime(compileSourceEntries: boolean) {
+  private getRuntime(compileSourceEntries: boolean, designSystem?: TailwindV4DesignSystem) {
     this.assertActive()
     const cached = this.runtimes.get(compileSourceEntries)
     if (cached) {
@@ -128,7 +136,7 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
       : stripCompiledSourceEntries(this.currentSource)
     const promise = Promise.all([
       compileTailwindV4Source(source),
-      loadTailwindV4DesignSystem(source, { cache: false }),
+      designSystem ?? loadTailwindV4DesignSystem(source, { cache: false }),
     ]).then(([compiledSource, designSystem]) => ({
       compiled: compiledSource.compiled,
       dependencies: compiledSource.dependencies,
@@ -144,9 +152,10 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
     return promise
   }
 
-  private async resetRuntime(compileSourceEntries: boolean) {
+  private async resetRuntime(compileSourceEntries: boolean, designSystem: TailwindV4DesignSystem) {
     this.runtimes.delete(compileSourceEntries)
-    return this.getRuntime(compileSourceEntries)
+    // 候选删除只影响累积输出；源码和配置未变时复用候选校验缓存。
+    return this.getRuntime(compileSourceEntries, designSystem)
   }
 
   private async generateInternal(request: InternalGenerationRequest): Promise<InternalGenerationResult> {
@@ -154,12 +163,17 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
     const options = toGenerateOptions(request)
     const compileSourceEntries = shouldCompileSourceEntries(options)
     let runtime = await this.getRuntime(compileSourceEntries)
-    const rawCandidates = await collectRawCandidates(
+    const sourceFiles: string[] = []
+    let rawCandidates = await collectRawCandidates(
       this.currentSource,
       options,
       runtime.compiled.root,
       runtime.compiled.sources,
+      files => sourceFiles.push(...files),
     )
+    if (request.prepareCandidates) {
+      rawCandidates = new Set(request.prepareCandidates(rawCandidates))
+    }
     const classSet = resolveValidTailwindV4Candidates(runtime.designSystem, rawCandidates, {
       ...(options.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: options.bareArbitraryValues }),
     })
@@ -170,7 +184,7 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
 
     const buildCandidates = new Set(canonicalizeBareArbitraryValueCandidates(classSet, options.bareArbitraryValues))
     if ([...runtime.builtCandidates].some(candidate => !buildCandidates.has(candidate))) {
-      runtime = await this.resetRuntime(compileSourceEntries)
+      runtime = await this.resetRuntime(compileSourceEntries, runtime.designSystem)
     }
     const css = replaceBareArbitraryValueSelectors(
       runtime.compiled.build([...buildCandidates]),
@@ -178,7 +192,10 @@ class TailwindGenerationSessionImpl implements TailwindV4EngineGenerationSession
       options.bareArbitraryValues,
     )
     runtime.builtCandidates = new Set(buildCandidates)
-    const dependencies = Array.from(runtime.dependencies)
+    for (const dependency of runtime.dependencies) {
+      this.moduleDependencies.add(dependency)
+    }
+    const dependencies = [...new Set([...runtime.dependencies, ...sourceFiles])]
     return {
       css,
       classSet,

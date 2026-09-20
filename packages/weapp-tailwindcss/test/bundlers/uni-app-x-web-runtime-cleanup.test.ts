@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { filterApplyOnlyGeneratedCss } from '@/bundlers/shared/generator-css/user-css/apply-only'
+import { filterApplyOnlyGeneratedCss } from '@/generation/user-css/apply-only'
 import { removeScopedTailwindPreflightCss } from '@/bundlers/vite/processed-css-assets'
 
 describe('uni-app x Web runtime properties across scoped cleanup', () => {

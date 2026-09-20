@@ -1,7 +1,7 @@
 import type { NodePath } from '@babel/traverse'
 import type { StringLiteral, TemplateElement } from '@babel/types'
 import { splitCandidateTokens } from '@weapp-tailwindcss/engine'
-import { UNI_APP_X_IMPORTANT_APPLY_MARKER } from '@weapp-tailwindcss/postcss'
+import { UNI_APP_X_IMPORTANT_APPLY_MARKER } from '@weapp-tailwindcss/postcss/transform'
 import MagicString from 'magic-string'
 import { analyzeSource, babelParse } from '@/js/babel'
 import { isClassContextLiteralPath } from '@/js/class-context'

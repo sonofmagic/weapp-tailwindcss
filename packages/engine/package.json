@@ -74,7 +74,7 @@
   "dependencies": {
     "@tailwindcss/node": "catalog:tailwindcss4",
     "@tailwindcss/oxide": "catalog:tailwindcss4",
-    "micromatch": "catalog:buildUtilities",
+    "@weapp-tailwindcss/source-scan": "workspace:*",
     "postcss": "catalog:postcss85tilde"
   },
   "devDependencies": {

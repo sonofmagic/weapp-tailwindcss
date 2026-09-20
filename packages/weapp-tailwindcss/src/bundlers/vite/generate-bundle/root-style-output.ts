@@ -1,10 +1,10 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import path from 'node:path'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { postcss } from '@weapp-tailwindcss/postcss/transform'
 import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
 import { AssetEmissionPlan } from '@/compiler'
-import { parseImportRequest } from '../../shared/generator-css/directives'
-import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
+import { parseImportRequest } from '../../../generation/directives'
+import { isPureLocalCssImportWrapper } from '../../../generation/local-imports'
 import { isRootStyleOutputFile } from '../processed-css-assets/style-files'
 import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 

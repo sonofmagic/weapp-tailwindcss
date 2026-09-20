@@ -1,5 +1,7 @@
 # weapp-style-injector
 
+Use `weapp-style-injector/types` for framework options without importing Vite or Webpack adapter implementations.
+
 > English | [简体中文](./README.zh-CN.md)
 
 `weapp-style-injector` generates style entry assets for mini program builds and injects them into matching page or component styles through `@import`. It supports common Vite, Webpack, uni-app, Taro, and Mpx build setups.

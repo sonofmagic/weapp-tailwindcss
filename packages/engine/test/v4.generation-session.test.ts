@@ -2,7 +2,8 @@ import { promises as fs } from 'node:fs'
 import { createRequire } from 'node:module'
 import os from 'node:os'
 import path from 'node:path'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import * as nodeAdapter from '@/v4/node-adapter'
 import {
   createTailwindGenerationSession,
   createTailwindV4Engine,
@@ -81,6 +82,26 @@ describe('Tailwind generation session', () => {
     expect(first.fragments[0]?.root.toString()).toContain('.bg-blue-500')
     expect(second.fragments[0]?.root.toString()).not.toContain('.bg-blue-500')
     expect(second.classSet).toEqual(new Set(['text-red-500']))
+  })
+
+  it('删除候选仅重建编译器，依赖失效仍刷新 design system', async () => {
+    const loadDesignSystem = vi.spyOn(nodeAdapter, 'loadTailwindV4DesignSystem')
+    const session = createTailwindGenerationSession(await createDefaultSource())
+    try {
+      await session.generate({ candidates: ['text-red-500', 'bg-blue-500'] })
+      const removed = await session.generate({ candidates: ['text-red-500'] })
+      expect(removed.fragments[0]?.root.toString()).not.toContain('.bg-blue-500')
+      expect(loadDesignSystem).toHaveBeenCalledTimes(1)
+      const restored = await session.generate({ candidates: ['text-red-500', 'bg-blue-500'] })
+      expect(restored.fragments[0]?.root.toString()).toContain('.bg-blue-500')
+      session.invalidate({ type: 'dependencies', paths: [] })
+      await session.generate({ candidates: ['bg-blue-500'] })
+      expect(loadDesignSystem).toHaveBeenCalledTimes(2)
+    }
+    finally {
+      session.dispose()
+      loadDesignSystem.mockRestore()
+    }
   })
 
   it('invalidates the compiled source and design system together', async () => {

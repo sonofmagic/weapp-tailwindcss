@@ -15,8 +15,8 @@ vi.mock('@/bundlers/shared/css-source-trace', async (importOriginal) => {
   }
 })
 
-vi.mock('@/bundlers/shared/v4-generation-core', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/bundlers/shared/v4-generation-core')>()
+vi.mock('@/generation/service', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/generation/service')>()
   return {
     ...actual,
     generateTailwindV4Css,

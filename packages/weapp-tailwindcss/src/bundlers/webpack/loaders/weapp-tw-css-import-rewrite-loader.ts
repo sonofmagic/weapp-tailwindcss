@@ -5,22 +5,22 @@ import { Buffer } from 'node:buffer'
 import path from 'node:path'
 import process from 'node:process'
 import { inspect } from 'node:util'
-import { filterExistingCssRules, normalizeTailwindcssV4InfinityRadiusCss, rewriteCssConfigRequests, transformLynxCssCompat } from '@weapp-tailwindcss/postcss'
+import { filterExistingCssRules, normalizeTailwindcssV4InfinityRadiusCss, rewriteCssConfigRequests, transformLynxCssCompat } from '@weapp-tailwindcss/postcss/transform'
 import { ensurePosix } from '@weapp-tailwindcss/shared'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindRootImportDirectives, normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
-import { createSourceCandidateStore, isSourceCandidateRequest } from '@/bundlers/shared/source-candidates'
-import { resolveSourceCandidateScanFiles } from '@/bundlers/shared/source-candidates/scan-root'
-import { resolveTailwindV4EntriesFromCssCached } from '@/bundlers/shared/source-scan'
-import { generateTailwindV4Css } from '@/bundlers/shared/v4-generation-core'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindRootImportDirectives, normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } from '@/generation/directives'
+import { generateTailwindV4Css } from '@/generation/service'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { resolveTailwindV4EntriesFromCssCached } from '@/project-sources'
+import { createSourceCandidateStore, isSourceCandidateRequest } from '@/project-sources/candidates'
+import { resolveSourceCandidateScanFiles } from '@/project-sources/candidates/scan-root'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
 import { collectWebpackBareSelectorUserCss } from '../BaseUnifiedPlugin/v5-assets/pipeline-helpers'
 import { getLatestWebpackLoaderRuntime, getWebpackLoaderRuntime } from './runtime-registry'
-import { registerWebpackWatchFile } from './watch-dependencies'
+import { registerWebpackSourceContexts, registerWebpackWatchFile } from './watch-dependencies'
 
 interface CssImportRewriteLoaderOptions extends WebpackCssImportRewriteLoaderOptions {}
 
@@ -126,9 +126,11 @@ async function resolveWebpackLoaderSourceCandidates(
     disabledDefaultTemplateHandler: compilerOptions.disabledDefaultTemplateHandler,
   })
   collector.syncInline(resolved.inlineCandidates)
-  const outDir = loaderContext.rootContext
-    ? path.resolve(loaderContext.rootContext, 'dist')
-    : undefined
+  const outDir = loaderContext._compiler?.options.output.path
+  await registerWebpackSourceContexts(loaderContext, { ...resolved, root })
+  for (const dependency of resolved.dependencies) {
+    await registerWebpackWatchFile(loaderContext, dependency)
+  }
   const scanFiles = await resolveSourceCandidateScanFiles({
     entries: resolved.entries,
     explicit: resolved.explicit,

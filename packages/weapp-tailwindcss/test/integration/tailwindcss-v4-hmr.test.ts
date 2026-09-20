@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css'
+import { normalizeTailwindSourceForGenerator } from '@/generation/index'
 import { getCompilerContext } from '@/context'
 import { collectRuntimeClassSet, createTailwindRuntimeReadyPromise } from '@/tailwindcss/runtime'
 

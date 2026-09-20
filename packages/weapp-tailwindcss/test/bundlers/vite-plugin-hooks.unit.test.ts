@@ -16,7 +16,7 @@ const mocks = vi.hoisted(() => ({
 }))
 const createdDirs: string[] = []
 
-vi.mock('@/bundlers/shared/v4-generation-core', () => ({
+vi.mock('@/generation/service', () => ({
   generateTailwindV4Css: mocks.generateTailwindV4Css,
 }))
 

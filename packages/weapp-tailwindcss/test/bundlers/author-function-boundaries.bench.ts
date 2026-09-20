@@ -1,6 +1,6 @@
 import process from 'node:process'
 import { it } from 'vitest'
-import { createAuthorCssFunctionCompiler } from '@/bundlers/shared/generator-css/user-css/compile-functions'
+import { createAuthorCssFunctionCompiler } from '@/generation/user-css/compile-functions'
 import { TailwindGenerationSessionPool } from '@/compiler/tailwind-generation-session-pool'
 
 it('compiles author functions in 1000 CSS rules', async ({ bench }) => {

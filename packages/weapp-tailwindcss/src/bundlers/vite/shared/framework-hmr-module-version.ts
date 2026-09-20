@@ -1,6 +1,6 @@
 import type { ModuleNode, Plugin } from 'vite'
 import process from 'node:process'
-import { isSourceStyleRequest } from '../../shared/style-requests'
+import { isSourceStyleRequest } from '../../../generation/style-requests'
 import { sendSupplementalCssHotUpdates } from '../hot-css-modules'
 import { resolveViteModuleIdentity } from '../module-identity'
 

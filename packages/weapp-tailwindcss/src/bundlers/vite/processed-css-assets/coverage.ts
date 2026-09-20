@@ -1,6 +1,6 @@
 import type { OutputBundle } from 'rollup'
 import type { CssAssetMarkerMatcher, CssAssetResultRecorder } from './markers-imports'
-import { collectRootScopedComparableCssCoverage, removeCssCoveredByRootStyleSources } from '@weapp-tailwindcss/postcss'
+import { collectRootScopedComparableCssCoverage, removeCssCoveredByRootStyleSources } from '@weapp-tailwindcss/postcss/transform'
 import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
 import { isSubpackageOutputFile } from '../generate-bundle/subpackages'
 import { collectRootStyleBundleCssSources, getAssetFile, isCssOutputFile, isMatchingGeneratedCssMarkerFile, normalizeMarkerOutputFile, readAssetSource } from './markers-imports'
@@ -9,7 +9,7 @@ import { isMiniProgramStyleOutputFile, isRootStyleOutputFile } from './style-fil
 
 export { normalizeCssSignatureValue } from './scoped-tailwind-noise'
 
-export { collectRootScopedComparableCssCoverage, type ComparableCssCoverage, isRuleCoveredByRootCss, removeScopedTailwindPreflightCss } from '@weapp-tailwindcss/postcss'
+export { collectRootScopedComparableCssCoverage, type ComparableCssCoverage, isRuleCoveredByRootCss, removeScopedTailwindPreflightCss } from '@weapp-tailwindcss/postcss/transform'
 
 export function prepareImportedCssCoverage(importedCssSources: string[]) {
   const sources = importedCssSources

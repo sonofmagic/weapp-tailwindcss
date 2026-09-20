@@ -1,3 +1,1 @@
-export {
-  preferScopedGeneratedCssRules,
-} from '@weapp-tailwindcss/postcss'
+export * from '../../../generation/scoped-rules'

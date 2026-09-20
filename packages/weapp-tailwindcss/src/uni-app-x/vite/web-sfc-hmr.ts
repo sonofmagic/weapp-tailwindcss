@@ -1,6 +1,6 @@
 import type { HmrContext } from 'vite'
 import type { ViteHmrCssModuleVersionTracker } from '@/bundlers/vite/shared/framework-hmr-module-version'
-import { normalizeUniAppXImportantApplyForSass } from '@weapp-tailwindcss/postcss'
+import { normalizeUniAppXImportantApplyForSass } from '@weapp-tailwindcss/postcss/transform'
 import { hasUniAppXImportantApply } from './style-source'
 
 interface WebSfcHmrOptions {

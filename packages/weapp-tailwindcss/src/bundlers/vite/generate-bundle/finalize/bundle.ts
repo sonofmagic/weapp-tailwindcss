@@ -1,7 +1,7 @@
 import type { ViteFrameworkCssPipelineContext } from '../../shared/framework-strategy'
 import type { FinalizeGenerateBundleOptions } from './root-import-shell'
 import { injectUniAppXHarmonyBundleStyles } from '@/uni-app-x/style-asset'
-import { runWithConcurrency } from '../../../shared/run-tasks'
+import { runWithConcurrency } from '../../../../utils/run-tasks'
 import { updateBundleBuildState } from '../../bundle-state'
 import { removeCssCoveredByRootStyleAssets, removeDuplicateUnlinkedRootCssAssetsReferencedByHtml } from '../../processed-css-assets'
 import { normalizeBundleFileNameKeysForTest } from '../bundle-file-names'

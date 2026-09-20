@@ -1,4 +1,4 @@
-import { createUniAppXHarmonyApplyCssExpander } from '@weapp-tailwindcss/postcss'
+import { createUniAppXHarmonyApplyCssExpander } from '@weapp-tailwindcss/postcss/transform'
 
 const SFC_STYLE_BLOCK_RE = /(<style\b[^>]*>)([\s\S]*?)(<\/style>)/gi
 

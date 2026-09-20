@@ -1,8 +1,8 @@
 import type { InternalUserDefinedOptions, IStyleHandlerOptions } from '@/types'
 import path from 'node:path'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
+import { stripRequestQuery } from '../../generation/style-requests'
 import { normalizeOutputPathKey } from '../shared/module-graph'
-import { stripRequestQuery } from '../shared/style-requests'
 
 type CssHandlerOptions = IStyleHandlerOptions & {
   postcssOptions: {

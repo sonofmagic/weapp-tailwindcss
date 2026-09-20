@@ -2,7 +2,7 @@ import type { ParserOptions } from '@babel/parser'
 import type { CssOptions, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
 import type { ICreateCacheReturnType } from '../../cache'
 import type { WeappTailwindcssGeneratorUserOptions } from '../../generator'
-import type { WeappTailwindcssStyleInjectorUserOptions } from '../../style-injector/internal'
+import type { WeappTailwindcssStyleInjectorUserOptions } from '../../style-injector/options'
 import type { AppType, IArbitraryValues, IUnocssCompatibilityOptions } from '../shared'
 import type { LengthUnitsRuntimeOptions, TailwindCssRuntimeOptions } from '@/tailwindcss/runtime-types'
 

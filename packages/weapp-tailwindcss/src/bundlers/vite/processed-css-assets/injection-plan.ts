@@ -1,7 +1,7 @@
 import type { OutputBundle } from 'rollup'
 import type { InjectViteProcessedCssAssetOptions } from './markers-imports'
 import type { InternalUserDefinedOptions } from '@/types'
-import { createCssRuleMatcher, removeCssRulesCoveredBySources } from '@weapp-tailwindcss/postcss'
+import { createCssRuleMatcher, removeCssRulesCoveredBySources } from '@weapp-tailwindcss/postcss/transform'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { shouldPreserveFrameworkRootMiniProgramImportShell } from '../generate-bundle/root-style-output'
 import { isSubpackageOutputFile } from '../generate-bundle/subpackages'
@@ -375,4 +375,4 @@ export function removeCssCoveredByImportedViteResults(
   )
 }
 
-export { removeCssRulesCoveredBySources } from '@weapp-tailwindcss/postcss'
+export { removeCssRulesCoveredBySources } from '@weapp-tailwindcss/postcss/transform'

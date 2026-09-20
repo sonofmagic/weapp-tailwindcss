@@ -202,8 +202,8 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
       'dark:bg-[#3498db]',
     ])
     const validateCandidatesByGenerator = vi.fn(async () => validatedCandidates)
-    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+    vi.doMock('@/generation/index', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generation/index')>()
       return {
         ...actual,
         validateCandidatesByGenerator,

@@ -2,7 +2,7 @@ import type { AttributeNode, DirectiveNode, ParentNode } from '@vue/compiler-dom
 import type { SourceDescription, SourceMapInput } from 'rollup'
 import type { CreateJsHandlerOptions, ICustomAttributesEntities, JsHandler } from '@/types'
 import { NodeTypes, parse as parseTemplate } from '@vue/compiler-dom'
-import { isUniAppXStyleSourceEmpty, normalizeUniAppXImportantApplyForSass } from '@weapp-tailwindcss/postcss'
+import { isUniAppXStyleSourceEmpty, normalizeUniAppXImportantApplyForSass } from '@weapp-tailwindcss/postcss/transform'
 import MagicString from 'magic-string'
 import { generateCode, replaceWxml } from '@/wxml'
 import { createAttributeMatcher } from '@/wxml/custom-attributes'

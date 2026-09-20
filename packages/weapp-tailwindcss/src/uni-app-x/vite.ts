@@ -7,11 +7,11 @@ import {
   normalizeUniAppXImportantApplyForSass,
   postcss,
   restoreUniAppXImportantApplyMarker,
-} from '@weapp-tailwindcss/postcss'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
+} from '@weapp-tailwindcss/postcss/transform'
 import { extractSfcStyleBlocks } from '@/bundlers/vite/generate-bundle/sfc-style-source'
 import { parseVueRequest } from '@/bundlers/vite/query'
 import { cleanUrl, isCSSRequest } from '@/bundlers/vite/utils'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/generation/directives'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { shouldEnablePageLocalStyle as isPageLocalStyleFile } from '@/uni-app-x/local-style-matcher'
 import { resolveUniUtsPlatform } from '@/utils'

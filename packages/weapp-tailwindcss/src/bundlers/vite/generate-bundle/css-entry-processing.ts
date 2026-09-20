@@ -1,5 +1,5 @@
 import type { RememberedCssSource } from './types'
-import { normalizeMiniProgramImportShell } from '../../shared/generator-css/output-import-shell'
+import { normalizeMiniProgramImportShell } from '../../../generation/output-import-shell'
 import { scheduleViteCssTransform } from './transform-scheduling'
 
 export async function processViteCssBundleEntry(options: any) {

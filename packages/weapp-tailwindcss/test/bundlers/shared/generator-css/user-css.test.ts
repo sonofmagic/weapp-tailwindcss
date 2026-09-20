@@ -14,7 +14,7 @@ import {
   stripTailwindSourceMediaFragments,
   stripUnmatchedTailwindSourceMediaCloseFragments,
   transformGeneratorUserCss,
-} from '@/bundlers/shared/generator-css/user-css'
+} from '@/generation/user-css'
 
 describe('generator user css helpers', () => {
   it('removes empty custom variants produced by platform preprocessors', () => {

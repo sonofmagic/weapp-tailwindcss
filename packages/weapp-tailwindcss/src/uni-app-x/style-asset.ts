@@ -1,6 +1,6 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { HarmonyStyleInjectOptions } from './style-asset/harmony-global'
-import { createUniAppXHarmonyApplyGeneratorSource as createHarmonyApplyGeneratorSource } from '@weapp-tailwindcss/postcss'
+import { createUniAppXHarmonyApplyGeneratorSource as createHarmonyApplyGeneratorSource } from '@weapp-tailwindcss/postcss/transform'
 import { expandUniAppXHarmonyApplyStyles } from './style-asset/harmony-apply'
 import {
   injectUniAppXHarmonyGlobalStyles,

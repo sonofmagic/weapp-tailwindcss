@@ -1,5 +1,7 @@
 # @weapp-tailwindcss/postcss
 
+`/syntax`、`/transform`、`/plugin` 子路径分别提供语法能力、CSS 转换和 PostCSS 生成编排。原根导出保持兼容。
+
 独立入口 `@weapp-tailwindcss/postcss/native` 提供 `compileNativeCss(css, options)`，将 CSS 转成原生样式规则、变量和告警。React Native manifest ID、Tailwind 生成与运行时集成仍由 `@weapp-tailwindcss/react-native` 负责；导入其 `/runtime` 不会加载 CSS 编译器。
 
 LightningCSS 实验转换放在 `@weapp-tailwindcss/postcss/experimental/lightningcss`，不由稳定根入口导出。实验包的原入口负责加载引擎，PostCSS 子入口只引用 LightningCSS 类型；可选 peer 仅供实验类型的消费方使用。

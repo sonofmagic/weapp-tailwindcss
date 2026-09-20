@@ -1,7 +1,7 @@
 import type { ChildNode } from 'postcss'
 import postcss from 'postcss'
 import { isPureLocalCssImportWrapper } from '../../generator-plugin/local-imports'
-import { parseCssImportSpecifier, quoteCssImportSpecifier } from '../../syntax'
+import { parseCssImportSpecifier, quoteCssImportSpecifier } from '../../syntax/index'
 import { parseImportRequest } from '../tailwindcss-v4/user-css/directives'
 
 const MINI_PROGRAM_OUTPUT_IMPORT_RE = /(@import\s+(?:url\(\s*)?)(["'])([^"']+\.(?:wxss|acss|ttss|qss|jxss|tyss)(?:[?#][^"']*)?)\2([^;]*;)/gi

@@ -1,6 +1,6 @@
 import type { OutputBundle } from 'rollup'
 import path from 'node:path'
-import { parseCssImportSpecifier, postcss, quoteCssImportSpecifier } from '@weapp-tailwindcss/postcss'
+import { parseCssImportSpecifier, postcss, quoteCssImportSpecifier } from '@weapp-tailwindcss/postcss/transform'
 import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
 
 export function linkEntryChunkStyles(bundle: OutputBundle, options: {

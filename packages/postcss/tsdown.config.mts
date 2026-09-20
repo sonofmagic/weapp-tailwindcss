@@ -14,7 +14,7 @@ export const postcssEsmOnlyDependencies = [
 ]
 
 const sharedOptions = {
-  entry: ['src/index.ts', 'src/types.ts', 'src/html-transform.ts', 'src/css-macro/postcss.ts', 'src/native.ts', 'src/experimental/lightningcss/index.ts'],
+  entry: ['src/index.ts', 'src/syntax.ts', 'src/transform.ts', 'src/plugin.ts', 'src/types.ts', 'src/html-transform.ts', 'src/css-macro/postcss.ts', 'src/native.ts', 'src/experimental/lightningcss/index.ts'],
   shims: true,
   dts: false,
   outputOptions: {
@@ -42,6 +42,19 @@ export function createPostcssTsdownConfigs(options: WatchAwareOptions = {}) {
     },
     {
       ...sharedOptions,
+      // 独立构建语法入口，避免 Rolldown 1.2 的 CJS 多入口分块 panic。
+      entry: sharedOptions.entry.filter(entry => entry !== 'src/syntax.ts'),
+      format: ['cjs'],
+      clean: false,
+      deps: {
+        resolveDepSubpath: true,
+        neverBundle: postcssEsmOnlyDependencies,
+        onlyBundle: false,
+      },
+    },
+    {
+      ...sharedOptions,
+      entry: ['src/syntax.ts'],
       format: ['cjs'],
       clean: false,
       deps: {
