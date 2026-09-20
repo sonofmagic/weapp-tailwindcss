@@ -1,4 +1,4 @@
-import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
+import type { TailwindV4CssSource } from '@weapp-tailwindcss/engine'
 import type { Compiler } from 'webpack'
 import type { WebpackFrameworkName } from '../../../framework-selector'
 import type { WebpackCssSourceRegistration, WebpackGeneratedCssRegistration } from '../../loaders/runtime-registry'

@@ -2,7 +2,7 @@
 import type { Result as PostcssResult, Rule } from 'postcss'
 import type { Node, Pseudo } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from '../types'
-import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
+import { splitCandidateTokens } from '@weapp-tailwindcss/engine'
 import postcss from 'postcss'
 import { parseScssSource, stringifyScssSource } from '../syntax/parse'
 

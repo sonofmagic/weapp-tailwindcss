@@ -76,7 +76,7 @@ jobs:
       - name: Install Playwright Chromium
         run: pnpm exec playwright install chromium chromium-headless-shell
       - name: Unit tests
-        run: pnpm ci:memory --label pr-gate-unit-${{ matrix.shard }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm exec vitest run --shard=${{ matrix.shard }}/3
+        run: pnpm ci:memory --label pr-gate-unit-${{ matrix.shard }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm exec vitest run --shard=${{ matrix.shard }}/3 --maxWorkers=2 --update=none
 
   core-smoke:
     name: Ubuntu core smoke

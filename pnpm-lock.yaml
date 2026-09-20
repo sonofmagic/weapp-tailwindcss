@@ -542,6 +542,12 @@ catalogs:
       specifier: ^3.7.0
       version: 3.7.0
   tailwindcss4:
+    '@tailwindcss/node':
+      specifier: ^4.3.3
+      version: 4.3.3
+    '@tailwindcss/oxide':
+      specifier: ^4.3.3
+      version: 4.3.3
     '@tailwindcss/postcss':
       specifier: ^4.3.3
       version: 4.3.3
@@ -551,10 +557,6 @@ catalogs:
     tailwindcss:
       specifier: ^4.3.3
       version: 4.3.3
-  tailwindcssMangleEngine:
-    '@tailwindcss-mangle/engine':
-      specifier: 0.2.0
-      version: 0.2.0
   tailwindcssPatch:
     tailwindcss-patch:
       specifier: 10.0.2
@@ -4687,9 +4689,9 @@ importers:
       '@parcel/watcher':
         specifier: catalog:buildUtilities
         version: 2.6.0
-      '@tailwindcss-mangle/engine':
-        specifier: catalog:tailwindcssMangleEngine
-        version: 0.2.0(tailwindcss@4.3.3)
+      '@weapp-tailwindcss/engine':
+        specifier: workspace:*
+        version: link:../engine
       '@weapp-tailwindcss/logger':
         specifier: workspace:*
         version: link:../logger
@@ -4724,6 +4726,28 @@ importers:
       vite:
         specifier: 7.2.7
         version: 7.2.7(@types/node@26.5.1)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.13)(yaml@2.9.1)
+
+  packages/engine:
+    dependencies:
+      '@tailwindcss/node':
+        specifier: catalog:tailwindcss4
+        version: 4.3.3
+      '@tailwindcss/oxide':
+        specifier: catalog:tailwindcss4
+        version: 4.3.3
+      micromatch:
+        specifier: catalog:buildUtilities
+        version: 4.0.8
+      postcss:
+        specifier: catalog:postcss85tilde
+        version: 8.5.28
+    devDependencies:
+      htmlparser2:
+        specifier: catalog:buildUtilities
+        version: 12.0.0
+      tailwindcss:
+        specifier: catalog:tailwindcss4
+        version: 4.3.3
 
   packages/experimental:
     dependencies:
@@ -4807,12 +4831,12 @@ importers:
       '@csstools/css-tokenizer':
         specifier: catalog:csstools
         version: 4.0.0
-      '@tailwindcss-mangle/engine':
-        specifier: catalog:tailwindcssMangleEngine
-        version: 0.2.0(tailwindcss@4.3.3)
       '@weapp-core/escape':
         specifier: ~8.0.0
         version: 8.0.0
+      '@weapp-tailwindcss/engine':
+        specifier: workspace:*
+        version: link:../engine
       '@weapp-tailwindcss/postcss-calc':
         specifier: workspace:*
         version: link:../postcss-calc
@@ -5035,15 +5059,15 @@ importers:
       '@babel/types':
         specifier: catalog:babel8
         version: 8.0.5
-      '@tailwindcss-mangle/engine':
-        specifier: catalog:tailwindcssMangleEngine
-        version: 0.2.0(tailwindcss@4.3.3)
       '@vue/compiler-dom':
         specifier: catalog:vue3
         version: 3.5.42
       '@weapp-core/escape':
         specifier: ~8.0.0
         version: 8.0.0
+      '@weapp-tailwindcss/engine':
+        specifier: workspace:*
+        version: link:../engine
       '@weapp-tailwindcss/logger':
         specifier: workspace:*
         version: link:../logger

@@ -1,6 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV4Engine, TailwindV4GenerateOptions, TailwindV4ResolvedSource } from '../types'
-import { createTailwindV4Engine as createEngineTailwindV4Engine, extractRawCandidates } from '@tailwindcss-mangle/engine'
+import { createTailwindV4Engine as createEngineTailwindV4Engine, extractRawCandidates } from '@weapp-tailwindcss/engine'
 import { resolveCssMacroTailwindV4Source } from '../css-macro-source'
 import { transformTailwindV4CssByTarget } from '../miniprogram'
 import { createCompatibleSource } from './css-compat'

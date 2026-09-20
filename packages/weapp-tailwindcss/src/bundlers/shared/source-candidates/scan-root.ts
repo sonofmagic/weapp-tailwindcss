@@ -1,6 +1,6 @@
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import path from 'node:path'
-import { resolveProjectSourceFiles } from '@tailwindcss-mangle/engine'
+import { resolveProjectSourceFiles } from '@weapp-tailwindcss/engine'
 import { isFileExcludedByTailwindSourceEntries, isFileMatchedByTailwindSourceEntries, resolveSourceScanPath, toPosixPath } from '@/tailwindcss/source-scan'
 
 const TAILWIND_V4_IGNORED_CONTENT_DIRS = [

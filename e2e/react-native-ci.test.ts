@@ -8,10 +8,60 @@ import { fileURLToPath } from 'node:url'
 import { afterEach, expect, it, vi } from 'vitest'
 import YAML from 'yaml'
 import { createExpoNativeEnvironment } from './react-native/native-environment'
+import { stopOwnedProcess } from './react-native/process'
 
 const workflowPath = fileURLToPath(new URL('../.github/workflows/react-native-compatibility.yml', import.meta.url))
 
-afterEach(() => vi.unstubAllEnvs())
+afterEach(() => {
+  vi.unstubAllEnvs()
+  vi.restoreAllMocks()
+})
+
+const ownedChild = { pid: 12345 } as Parameters<typeof stopOwnedProcess>[0]
+const processError = (code: string) => Object.assign(new Error(code), { code })
+
+it.skipIf(process.platform === 'win32')('终止后进程组已无可发送信号的成员时结束清理', async () => {
+  const kill = vi.spyOn(process, 'kill')
+    .mockReturnValueOnce(true)
+    .mockImplementation(() => { throw processError('EPERM') })
+  await expect(stopOwnedProcess(ownedChild)).resolves.toBeUndefined()
+  expect(kill.mock.calls[0]).toEqual([-12345, 'SIGTERM'])
+  expect(kill.mock.calls.slice(1).every(([, signal]) => signal === 0)).toBe(true)
+})
+
+it.skipIf(process.platform === 'win32')('首次终止的权限错误仍然传播', async () => {
+  vi.spyOn(process, 'kill').mockImplementation(() => {
+    throw processError('EPERM')
+  })
+  await expect(stopOwnedProcess(ownedChild)).rejects.toMatchObject({ code: 'EPERM' })
+})
+
+it.skipIf(process.platform === 'win32')('进程组不存在时不再发送信号', async () => {
+  const kill = vi.spyOn(process, 'kill').mockImplementation(() => {
+    throw processError('ESRCH')
+  })
+  await expect(stopOwnedProcess(ownedChild)).resolves.toBeUndefined()
+  expect(kill).toHaveBeenCalledTimes(1)
+})
+
+it.skipIf(process.platform === 'win32')('探测阶段的未知错误仍然传播', async () => {
+  vi.spyOn(process, 'kill')
+    .mockReturnValueOnce(true)
+    .mockImplementation(() => { throw processError('EINVAL') })
+  await expect(stopOwnedProcess(ownedChild)).rejects.toMatchObject({ code: 'EINVAL' })
+})
+
+it.skipIf(process.platform === 'win32')('宽限期结束后仍存活的本轮进程组必须强制结束', async () => {
+  const kill = vi.spyOn(process, 'kill').mockReturnValue(true)
+  vi.spyOn(Date, 'now').mockReturnValueOnce(0).mockReturnValue(6000)
+  await stopOwnedProcess(ownedChild)
+  expect(kill.mock.calls).toEqual([
+    [-12345, 'SIGTERM'],
+    [-12345, 0],
+    [-12345, 0],
+    [-12345, 'SIGKILL'],
+  ])
+})
 
 it.each(['127.0.0.1', '192.168.1.20'])('Expo 独立启动进程沿用显式宿主地址 %s', (host) => {
   const exampleRequire = createRequire(new URL('../examples/react-native-expo/package.json', import.meta.url))

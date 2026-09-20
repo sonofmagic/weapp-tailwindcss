@@ -9,7 +9,7 @@ import type { TailwindcssRuntimeLike } from '@/types'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
-import { extractProjectCandidatesWithPositions, resolveValidTailwindV4Candidates } from '@tailwindcss-mangle/engine'
+import { extractProjectCandidatesWithPositions, resolveValidTailwindV4Candidates } from '@weapp-tailwindcss/engine'
 import { logger } from '@weapp-tailwindcss/logger'
 import { collectRuntimeApplyCandidates } from '@weapp-tailwindcss/postcss'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
@@ -213,7 +213,7 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
       classSet = new Set([...classSet].filter(filter))
     }
     if (typeof options?.write === 'boolean') {
-      // `@tailwindcss-mangle/engine` 不写补丁产物；保留参数兼容。
+      // `@weapp-tailwindcss/engine` 不写补丁产物；保留参数兼容。
     }
     classSetCache = classSet
     return {

@@ -1,6 +1,6 @@
 import type { AtRule } from 'postcss'
-import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
 import { escape } from '@weapp-core/escape'
+import { splitCandidateTokens } from '@weapp-tailwindcss/engine'
 import postcss from 'postcss'
 import { parseUniAppXStyleSource } from '../syntax/parse'
 
