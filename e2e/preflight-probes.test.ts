@@ -5,7 +5,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { Launcher, MiniProgram } from '@weapp-vite/miniprogram-automator'
 import { chromium } from 'playwright'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { command } from '../scripts/e2e-preflight/io'
 import { base, hbuilderx, loggedIn, wechat } from '../scripts/e2e-preflight/probes/desktop'
 import { hbuilderxTools } from '../scripts/e2e-preflight/probes/hbuilderx-tools'
@@ -19,6 +19,17 @@ import { runOwnedWorker } from '../scripts/e2e-preflight/process'
 vi.mock('../scripts/e2e-preflight/io', async original => ({ ...await original<object>(), command: vi.fn() }))
 const run = vi.mocked(command)
 const dirs: string[] = []
+beforeEach(() => {
+  // 模拟设备由用例显式指定，不能继承全面验收绑定的真实设备。
+  for (const key of [
+    'E2E_HBUILDERX_ANDROID_DEVICE_ID',
+    'E2E_HBUILDERX_ANDROID_SCREENSHOT_DEVICE_ID',
+    'DEMO_VISUAL_ANDROID_DEVICE_ID',
+    'RN_ANDROID_DEVICE_ID',
+  ]) {
+    vi.stubEnv(key, undefined)
+  }
+})
 afterEach(async () => {
   vi.resetAllMocks()
   vi.restoreAllMocks()

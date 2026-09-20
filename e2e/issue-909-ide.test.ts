@@ -1,12 +1,12 @@
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
-import { execa } from 'execa'
 import path from 'pathe'
 import pixelmatch from 'pixelmatch'
 import { PNG } from 'pngjs'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { captureMiniProgramViewport } from '../scripts/demo-visual-e2e-report/mini-program-screenshot'
+import { closeWechatProject } from '../scripts/wechat-project-cleanup'
 import { collectFrameworkIdeDiagnostics } from './frameworkIdeDiagnostics'
 import { assertMiniProgramPreflight } from './preflight-assertions'
 
@@ -213,26 +213,6 @@ function toCssSelector(className: string) {
   return new RegExp(`\\.${className.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}\\s*\\{`)
 }
 
-const wait = (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout))
-
-async function cleanupDevTools() {
-  if (process.platform !== 'darwin') {
-    return
-  }
-  const timeout = Number(process.env['E2E_IDE_CLEANUP_TIMEOUT_MS'] ?? 5000)
-  await execa('osascript', ['-e', 'quit app "wechatwebdevtools"'], {
-    reject: false,
-    timeout,
-  }).catch(() => undefined)
-  await execa('pkill', ['-f', '/Applications/wechatwebdevtools.app'], {
-    reject: false,
-  }).catch(() => undefined)
-  await execa('pkill', ['-f', 'wechatwebdevtools Daemon'], {
-    reject: false,
-  }).catch(() => undefined)
-  await wait(800)
-}
-
 async function collectScaledRect(page: any, screenshot: PNG, node: any, padding = 2) {
   const pageSize = await page.size()
   const scaleX = screenshot.width / pageSize.width
@@ -382,7 +362,6 @@ describeIde('issues 909/916/928 IDE runtime', () => {
     if (process.env['E2E_SKIP_BUILD'] !== '1') {
       await ensureProjectBuilt(v4ProjectRoot)
     }
-    await cleanupDevTools()
     try {
       const automator = new Launcher()
       miniProgram = await automator.launch({ cliPath: process.env.E2E_PREFLIGHT_WECHAT_CLI, projectPath: v4ProjectPath, timeout: timeoutMs })
@@ -396,8 +375,7 @@ describeIde('issues 909/916/928 IDE runtime', () => {
   }, 180_000)
 
   afterAll(async () => {
-    await miniProgram?.close()
-    await cleanupDevTools()
+    await closeWechatProject(v4ProjectPath, miniProgram)
   })
 
   it('keeps Tailwind v4 transform, native selector and gradient utilities valid in WeChat DevTools', async () => {
@@ -591,7 +569,6 @@ describeIde('issue 928 Tailwind v4 IDE runtime', () => {
     if (process.env['E2E_SKIP_BUILD'] !== '1') {
       await ensureProjectBuilt(v3ProjectRoot)
     }
-    await cleanupDevTools()
     try {
       const automator = new Launcher()
       miniProgram = await automator.launch({ cliPath: process.env.E2E_PREFLIGHT_WECHAT_CLI, projectPath: v3ProjectPath, timeout: timeoutMs })
@@ -605,8 +582,7 @@ describeIde('issue 928 Tailwind v4 IDE runtime', () => {
   }, 180_000)
 
   afterAll(async () => {
-    await miniProgram?.close()
-    await cleanupDevTools()
+    await closeWechatProject(v3ProjectPath, miniProgram)
   })
 
   it('keeps Tailwind v4 gradient utilities valid in WeChat DevTools', async () => {

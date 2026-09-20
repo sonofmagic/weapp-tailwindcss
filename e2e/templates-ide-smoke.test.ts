@@ -4,7 +4,13 @@ import { Launcher } from '@weapp-vite/miniprogram-automator'
 import { execa } from 'execa'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
+import { captureMiniProgramViewport } from '../scripts/demo-visual-e2e-report/mini-program-screenshot'
+import { closeWechatProject } from '../scripts/wechat-project-cleanup'
+import { installFrameworkIdeRuntimeErrorCollector } from './frameworkIdeRuntimeErrors'
 import { clearProjectBuildState } from './projectTest'
+import { readTemplatePageConfig } from './template-ide/config'
+import { withTemplateAppId } from './template-ide/project-config'
+import { assertTemplatePageRendered } from './template-ide/runtime'
 
 interface TemplateIdeCase {
   name: string
@@ -14,6 +20,7 @@ interface TemplateIdeCase {
   miniprogramRoot: string
   appJson: string
   requiredFiles: string[]
+  nativePageConfig?: boolean
 }
 
 interface TemplateIdeLocalOnlyCase {
@@ -70,6 +77,7 @@ const templateIdeCases: TemplateIdeCase[] = [
   {
     name: 'weapp-vite-tailwindcss-v4 weixin',
     template: 'weapp-vite-tailwindcss-v4',
+    nativePageConfig: true,
     command: ['pnpm', 'run', 'build'],
     projectPath: '.',
     miniprogramRoot: 'dist',
@@ -134,58 +142,6 @@ async function runPnpm(args: string[], cwd: string) {
   })
 }
 
-async function cleanupDevTools() {
-  if (process.platform !== 'darwin') {
-    return
-  }
-  await execa('osascript', ['-e', 'quit app "wechatwebdevtools"'], {
-    reject: false,
-    timeout: closeTimeoutMs,
-  })
-  await execa('pkill', ['-f', '/Applications/wechatwebdevtools.app'], {
-    reject: false,
-  })
-  await execa('pkill', ['-f', 'wechatwebdevtools Daemon'], {
-    reject: false,
-  })
-}
-
-async function waitForPageWxml(page: any, timeoutMs = 10_000) {
-  const deadline = Date.now() + timeoutMs
-  let latest = ''
-  while (Date.now() < deadline) {
-    const pageEl = await page.$('page')
-    latest = await pageEl?.wxml() ?? ''
-    if (latest.length > 0) {
-      return latest
-    }
-    await page.waitFor(300)
-  }
-  return latest
-}
-
-async function captureRenderedWxml(miniProgram: any, page: any) {
-  const first = await waitForPageWxml(page)
-  if (first.length > 0) {
-    return first
-  }
-
-  const currentPage = await miniProgram.currentPage({ timeout: 12_000 }).catch(() => undefined)
-  if (!currentPage) {
-    return ''
-  }
-  return waitForPageWxml(currentPage, 5000)
-}
-
-async function tryCaptureRenderedWxml(miniProgram: any, page: any) {
-  try {
-    return await captureRenderedWxml(miniProgram, page)
-  }
-  catch {
-    return ''
-  }
-}
-
 function resolveComponentPath(miniprogramRoot: string, pageJsonFile: string, componentPath: string) {
   if (/^(?:plugin|dynamicLib|ext):\/\//.test(componentPath)) {
     return undefined
@@ -196,8 +152,8 @@ function resolveComponentPath(miniprogramRoot: string, pageJsonFile: string, com
   return path.resolve(path.dirname(pageJsonFile), componentPath)
 }
 
-async function expectUsingComponentsExist(name: string, miniprogramRoot: string, pageJsonFile: string) {
-  const pageConfig = await readJson<{ usingComponents?: Record<string, string> }>(pageJsonFile)
+async function expectUsingComponentsExist(name: string, miniprogramRoot: string, pageJsonFile: string, nativeSourceFile?: string) {
+  const pageConfig = await readTemplatePageConfig(pageJsonFile, nativeSourceFile)
   for (const [componentName, componentPath] of Object.entries(pageConfig.usingComponents ?? {})) {
     const resolved = resolveComponentPath(miniprogramRoot, pageJsonFile, componentPath)
     if (!resolved) {
@@ -206,11 +162,6 @@ async function expectUsingComponentsExist(name: string, miniprogramRoot: string,
     expect(await pathExists(`${resolved}.json`), `${name} usingComponents.${componentName} should emit ${resolved}.json`).toBe(true)
     expect(await pathExists(`${resolved}.wxml`), `${name} usingComponents.${componentName} should emit ${resolved}.wxml`).toBe(true)
   }
-}
-
-function isDevToolsPageStackTimeout(error: unknown) {
-  const text = error instanceof Error ? error.message : String(error)
-  return /DevTools did not respond to protocol method App\.getPageStack/i.test(text)
 }
 
 describe('templates ide smoke', () => {
@@ -254,39 +205,30 @@ describe('templates ide smoke', () => {
     const pageUrl = `/${pagePath}`
     expect(await pathExists(path.resolve(miniprogramRoot, `${pagePath}.js`)), `${item.name} should emit page js`).toBe(true)
     const pageJsonFile = path.resolve(miniprogramRoot, `${pagePath}.json`)
-    expect(await pathExists(pageJsonFile), `${item.name} should emit page json`).toBe(true)
     expect(await pathExists(path.resolve(miniprogramRoot, `${pagePath}.wxml`)), `${item.name} should emit page wxml`).toBe(true)
-    await expectUsingComponentsExist(item.name, miniprogramRoot, pageJsonFile)
+    await expectUsingComponentsExist(item.name, miniprogramRoot, pageJsonFile, item.nativePageConfig ? path.resolve(root, `${pagePath}.json`) : undefined)
 
     const automator = new Launcher()
-    let miniProgram: any
-    try {
-      await cleanupDevTools()
-      miniProgram = await automator.launch({ cliPath: process.env.E2E_PREFLIGHT_WECHAT_CLI, projectPath, timeout: launchTimeoutMs })
-      const page = await miniProgram.reLaunch(pageUrl).catch((error: unknown) => {
-        if (isDevToolsPageStackTimeout(error)) {
-          return undefined
-        }
+    const artifactDir = path.resolve(__dirname, '.artifacts/templates-ide', item.template)
+    await fs.mkdir(artifactDir, { recursive: true })
+    await withTemplateAppId(path.join(projectPath, 'project.config.json'), process.env.E2E_TEMPLATE_IDE_APP_ID, async () => {
+      let miniProgram: any
+      try {
+        miniProgram = await automator.launch({ cliPath: process.env.E2E_PREFLIGHT_WECHAT_CLI, projectPath, timeout: launchTimeoutMs })
+        const errors = installFrameworkIdeRuntimeErrorCollector(item.name, miniProgram)
+        const nodes = await assertTemplatePageRendered(miniProgram, pageUrl)
+        await fs.writeFile(path.join(artifactDir, 'rendered.json'), JSON.stringify({ pageUrl, nodes }, null, 2))
+        await captureMiniProgramViewport(miniProgram, path.join(artifactDir, 'rendered.png'), 15_000)
+        await errors.assertNoErrors('template rendered')
+      }
+      catch (error) {
+        await fs.writeFile(path.join(artifactDir, 'error.txt'), String(error))
+        await miniProgram?.screenshot({ path: path.join(artifactDir, 'failure.png') }).catch(() => undefined)
         throw error
-      })
-      if (!page) {
-        return
       }
-      expect(page, `${item.name} should relaunch ${pageUrl}`).toBeTruthy()
-      const wxml = await tryCaptureRenderedWxml(miniProgram, page)
-      if (wxml.length === 0) {
-        return
+      finally {
+        await closeWechatProject(projectPath, miniProgram, closeTimeoutMs)
       }
-      expect(wxml.length, `${item.name} should render page wxml in DevTools`).toBeGreaterThan(0)
-    }
-    finally {
-      if (miniProgram) {
-        await Promise.race([
-          miniProgram.close(),
-          new Promise(resolve => setTimeout(resolve, closeTimeoutMs)),
-        ]).catch(() => undefined)
-      }
-      await cleanupDevTools()
-    }
+    })
   }, 240_000)
 })

@@ -1,9 +1,8 @@
 import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
 import { execa } from 'execa'
+import { closeWechatProject } from '../wechat-project-cleanup.ts'
 import { findFreePort } from './process.ts'
-
-const defaultCloseTimeoutMs = 5000
 
 export function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -16,49 +15,6 @@ function readNumberEnv(name: string, fallback: number) {
   }
   const value = Number(raw)
   return Number.isFinite(value) ? value : fallback
-}
-
-function shouldCleanupWechatDevTools() {
-  return process.env['DEMO_VISUAL_IDE_CLEANUP'] !== '0'
-}
-
-export async function cleanupWechatDevTools() {
-  if (process.platform !== 'darwin' || !shouldCleanupWechatDevTools()) {
-    return
-  }
-  const timeout = readNumberEnv('DEMO_VISUAL_IDE_CLEANUP_TIMEOUT_MS', defaultCloseTimeoutMs)
-  try {
-    await execa('osascript', ['-e', 'quit app "wechatwebdevtools"'], {
-      timeout,
-    })
-  }
-  catch {}
-  await execa('pkill', ['-f', '/Applications/wechatwebdevtools.app'], {
-    reject: false,
-  }).catch(() => undefined)
-  await execa('pkill', ['-f', 'wechatwebdevtools Daemon'], {
-    reject: false,
-  }).catch(() => undefined)
-
-  const startedAt = Date.now()
-  while (Date.now() - startedAt < timeout) {
-    try {
-      await execa('pgrep', ['-f', 'wechat(web)?devtools'], {
-        timeout: 1000,
-      })
-      await wait(250)
-    }
-    catch {
-      return
-    }
-  }
-
-  await execa('pkill', ['-9', '-f', '/Applications/wechatwebdevtools.app'], {
-    reject: false,
-  }).catch(() => undefined)
-  await execa('pkill', ['-9', '-f', 'wechatwebdevtools Daemon'], {
-    reject: false,
-  }).catch(() => undefined)
 }
 
 export function parseWechatDevToolsWindowBounds(value: string) {
@@ -91,22 +47,6 @@ export async function captureWechatDevToolsWindow(screenshot: string) {
   const { stdout } = await execa('osascript', ['-e', script], { timeout: 5000 })
   const bounds = parseWechatDevToolsWindowBounds(stdout)
   await execa('screencapture', ['-x', '-R', bounds, screenshot], { timeout: 10_000 })
-}
-
-async function closeMiniProgram(miniProgram: any, name: string) {
-  if (!miniProgram) {
-    return
-  }
-  const timeoutMs = readNumberEnv('DEMO_VISUAL_IDE_CLOSE_TIMEOUT_MS', 10_000)
-  try {
-    await Promise.race([
-      miniProgram.close(),
-      wait(timeoutMs),
-    ])
-  }
-  catch (error) {
-    process.stderr.write(`[weapp-hmr] ${name}: close failed: ${error instanceof Error ? error.message : String(error)}\n`)
-  }
 }
 
 async function withTimeout<T>(label: string, timeoutMs: number, task: Promise<T>) {
@@ -142,7 +82,6 @@ export async function launchMiniProgramInCleanDevTools(
   let lastError: unknown
 
   for (let attempt = 1; attempt <= retries + 1; attempt++) {
-    await cleanupWechatDevTools()
     await wait(settleMs)
     const port = attempt === 1 ? preferredPort : await findFreePort()
     const launcher = new Launcher()
@@ -171,7 +110,7 @@ export async function launchMiniProgramInCleanDevTools(
           lastError = connectError
         }
       }
-      await cleanupWechatDevTools()
+      await closeWechatProject(projectPath)
       if (attempt > retries || !isRetryableLaunchError(lastError)) {
         throw lastError
       }
@@ -182,7 +121,6 @@ export async function launchMiniProgramInCleanDevTools(
   throw lastError instanceof Error ? lastError : new Error(String(lastError))
 }
 
-export async function closeMiniProgramAndCleanup(miniProgram: any, name: string) {
-  await closeMiniProgram(miniProgram, name)
-  await cleanupWechatDevTools()
+export async function closeMiniProgramAndCleanup(miniProgram: any, projectPath: string) {
+  await closeWechatProject(projectPath, miniProgram, readNumberEnv('DEMO_VISUAL_IDE_CLOSE_TIMEOUT_MS', 10_000))
 }

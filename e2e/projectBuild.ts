@@ -27,23 +27,6 @@ function wait(timeoutMs: number) {
   return new Promise(resolve => setTimeout(resolve, timeoutMs))
 }
 
-async function cleanupWechatDevToolsAfterHBuilderXBuild() {
-  if (process.platform !== 'darwin') {
-    return
-  }
-  await execa('osascript', ['-e', 'quit app "wechatwebdevtools"'], {
-    reject: false,
-    timeout: 5000,
-  }).catch(() => undefined)
-  await execa('pkill', ['-f', '/Applications/wechatwebdevtools.app'], {
-    reject: false,
-  }).catch(() => undefined)
-  await execa('pkill', ['-f', 'wechatwebdevtools Daemon'], {
-    reject: false,
-  }).catch(() => undefined)
-  await wait(500)
-}
-
 async function runHBuilderXCli(root: string, args: string[], env: Record<string, string | undefined>, timeoutMs: number) {
   const stdio = process.env['E2E_DEBUG_BUILD'] === '1' ? 'inherit' : 'pipe'
   try {
@@ -151,7 +134,6 @@ async function ensureHBuilderXMiniProgramBuilt(
   finally {
     await runHBuilderXCli(root, ['project', 'close', '--path', projectAlias.projectPath], childEnv, timeoutMs).catch(() => undefined)
     await projectAlias.cleanup()
-    await cleanupWechatDevToolsAfterHBuilderXBuild()
   }
 }
 

@@ -1,11 +1,11 @@
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
-import { execa } from 'execa'
 import path from 'pathe'
 import { PNG } from 'pngjs'
-import { afterAll, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { captureMiniProgramViewport } from '../scripts/demo-visual-e2e-report/mini-program-screenshot'
+import { closeWechatProject } from '../scripts/wechat-project-cleanup'
 import { collectFrameworkIdeDiagnostics } from './frameworkIdeDiagnostics'
 import { sampleSelectorPixels } from './where-selector/pixels'
 
@@ -42,25 +42,6 @@ function fixturePath(name: string) {
   return path.resolve(fixturesRoot, name)
 }
 
-const wait = (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout))
-
-async function cleanupDevTools() {
-  if (process.platform !== 'darwin') {
-    return
-  }
-  await execa('osascript', ['-e', 'quit app "wechatwebdevtools"'], {
-    reject: false,
-    timeout: closeTimeoutMs,
-  }).catch(() => undefined)
-  await execa('pkill', ['-f', '/Applications/wechatwebdevtools.app'], {
-    reject: false,
-  }).catch(() => undefined)
-  await execa('pkill', ['-f', 'wechatwebdevtools Daemon'], {
-    reject: false,
-  }).catch(() => undefined)
-  await wait(800)
-}
-
 async function captureMiniProgramScreenshot(miniProgram: any, screenshotPath: string) {
   return captureMiniProgramViewport(miniProgram, screenshotPath, Math.min(timeoutMs, 30_000))
 }
@@ -90,7 +71,6 @@ async function runProbe(projectName: string, screenshotName: string, selectors: 
   const automator = new Launcher()
   let miniProgram: any
   try {
-    await cleanupDevTools()
     miniProgram = await automator.launch({ cliPath: process.env.E2E_PREFLIGHT_WECHAT_CLI, projectPath, timeout: timeoutMs })
     const page = await miniProgram.reLaunch(pageUrl)
     await page.waitFor(1000)
@@ -127,8 +107,7 @@ async function runProbe(projectName: string, screenshotName: string, selectors: 
     throw error
   }
   finally {
-    await miniProgram?.close().catch(() => undefined)
-    await cleanupDevTools()
+    await closeWechatProject(projectPath, miniProgram, closeTimeoutMs)
   }
 }
 
@@ -138,10 +117,6 @@ async function writeEvidence(fileName: string, evidence: unknown) {
 }
 
 describeIde('where selector IDE runtime', () => {
-  afterAll(async () => {
-    await cleanupDevTools()
-  })
-
   it('checks raw :where support and verifies class-selector translation in WeChat DevTools', async () => {
     const raw = await runProbe('where-selector-raw-miniprogram', 'raw-where.png', {
       rawWhere: '.where-target',

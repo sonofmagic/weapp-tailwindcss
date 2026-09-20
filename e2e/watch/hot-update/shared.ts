@@ -4,11 +4,12 @@ import fs from 'node:fs/promises'
 import process from 'node:process'
 import path from 'pathe'
 import { expect } from 'vitest'
-import { buildCases, demoWatchShardCases, getBaseWatchCaseName, isDemoWatchShardName, isLocalOnlyWatchCase } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import { buildCases, demoWatchShardCases, getBaseWatchCaseName, isDemoWatchShardName, isLocalOnlyWatchCase, pickCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { createWatchProcessEnv } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/environment'
 import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import { assertDevHmrArtifactSnapshotGate } from '../../watchArtifactSnapshotGate'
 import { runWatchCommand } from './command'
+import { resolveWatchCommandTimeoutMs } from './command-budget'
 import { resolveWatchCommandScopes } from './command-scopes'
 import {
   listWatchHmrFailureLogs,
@@ -485,35 +486,6 @@ function toNumberEnv(name: string, fallback: number) {
   }
   const numeric = Number(value)
   return Number.isFinite(numeric) ? numeric : fallback
-}
-
-function resolveSelectedWatchCaseCount(target: WatchCaseName) {
-  if (target === 'all') {
-    return configuredWatchCases.length
-  }
-
-  if (target === 'demo') {
-    return configuredWatchCases.filter(item => item.group === target).length
-  }
-
-  if (isDemoWatchShardName(target)) {
-    return demoWatchShardCases[target].length
-  }
-
-  if (target === 'both') {
-    return bothCases.size
-  }
-
-  if (configuredWatchCases.some(item => item.name === target)) {
-    return 1
-  }
-
-  return isLocalOnlyWatchCase(target) ? 1 : 0
-}
-
-function resolveDefaultWatchCommandTimeoutMs(target: WatchCaseName, timeoutMs: number) {
-  const selectedCaseCount = Math.max(1, resolveSelectedWatchCaseCount(target))
-  return Math.max(timeoutMs * selectedCaseCount + 180_000, 240_000)
 }
 
 function createReportFilePath(cwd: string, target: WatchCaseName) {
@@ -1602,13 +1574,20 @@ export async function runHotUpdateTarget(target: WatchCaseName, scopeOverride?: 
   const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 40)
   const maxHotUpdateMs = toNumberEnv('E2E_WATCH_MAX_HOT_UPDATE_MS', timeoutMs)
   const maxPluginProcessMs = toNumberEnv('E2E_WATCH_MAX_PLUGIN_PROCESS_MS', DEFAULT_PLUGIN_PROCESS_BUDGET_MS)
-  const commandTimeoutMs = toNumberEnv('E2E_WATCH_COMMAND_TIMEOUT_MS', resolveDefaultWatchCommandTimeoutMs(runTarget, timeoutMs))
   const skipBuild = toBoolEnv('E2E_WATCH_SKIP_BUILD', true)
   const quietSass = toBoolEnv('E2E_WATCH_QUIET_SASS', true)
   const miniProgramOnly = toBoolEnv('E2E_WATCH_MINI_PROGRAM_ONLY', false)
   const miniProgramScope = scopeOverride ?? process.env.E2E_WATCH_MINI_PROGRAM_SCOPE
   const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
   const mainStyleSubPackageLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
+  const selectedCases = pickCases(buildCases(path.resolve(cwd, '..'), { includeLocalOnly: isLocalOnlyWatchCase(runTarget) }), runTarget)
+  const commandTimeoutMs = toNumberEnv('E2E_WATCH_COMMAND_TIMEOUT_MS', resolveWatchCommandTimeoutMs(selectedCases, timeoutMs, {
+    miniProgramScope,
+    miniProgramOnly,
+    webOnly: isWebOnlyProfile(),
+    mainStyleOnly,
+    mainStyleSubPackageLimit: mainStyleSubPackageLimit === undefined ? undefined : Number(mainStyleSubPackageLimit),
+  }))
   const reportFile = createReportFilePath(cwd, runTarget)
 
   const args = [
