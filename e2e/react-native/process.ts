@@ -9,7 +9,9 @@ function signalGroup(pid: number, signal: NodeJS.Signals | 0) {
     return true
   }
   catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ESRCH') {
+    const code = (error as NodeJS.ErrnoException).code
+    // SIGTERM 后可能只剩不可发送信号的进程组成员；探测 EPERM 不代表仍有本轮可清理进程。
+    if (code === 'ESRCH' || (signal === 0 && code === 'EPERM')) {
       return false
     }
     throw error
