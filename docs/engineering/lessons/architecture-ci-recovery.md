@@ -31,6 +31,8 @@ PR Gate 的三个单测 shard 与 Release Gate 失败。测试仍 mock PostCSS �
 
 回归覆盖 CJS、MJS、TS、配置的间接依赖，以及保持文件长度和 mtime 不变的内容更新。ESM 的原生缓存协议通过构建后的 CJS 引擎验证，避免 Vitest 模块执行器代替真实 Node 加载器。
 
+新提交在 Linux/Windows 的默认工具类回归中暴露无 package.json 目录的边界：Node findPackageJSON 返回模块文件本身，不能直接按 JSON 读取。只在返回路径确为 package.json 时判断 type，其他情况交给原生模块加载和 CommonJS 依赖图判定。增加无清单目录的 JS 配置重载回归；同一主包失败用例修复前失败、修复后通过。
+
 ## 验证
 
 本轮使用 Node 25.6.1、pnpm 12.4.1，在独立 worktree 执行，正常 Vitest 运行均设置 CI=1 和 --update=none。
@@ -42,6 +44,8 @@ PR Gate 的三个单测 shard 与 Release Gate 失败。测试仍 mock PostCSS �
 - 正式性能复验使用 perf:guard、基线 5e96fdc16ffe5a9c872ebb243e47372c2f2b09ed、三个原失败目标、build-runs=3、hmr-runs=3。Mpx 插件中位数 511ms 到 600ms，样本差异未满足阻断置信条件；Taro 插件稳态 P95 717ms 到 783ms，另有 Taro/uni-app HMR 内存四项超限，门禁未通过。
 - 对相同构建产物执行 current 到 baseline 的反向顺序 HMR 定向复测：内存超限未再现，Taro 插件稳态 P95 774ms 到 878ms，继续定位，不能将整体性能门禁记为通过。原始报告保存在忽略目录 .tmp/architecture-ci-performance-fixed。
 - pnpm architecture:check：34 个包、1280 个生产源码文件通过；pnpm agents:check、pnpm release status 和 git diff --check 通过。
+- 使用 Node 22.19 复验全部 engine 测试，178 项通过；主包 v4-engine.test.ts 的 62 项通过。engine 构建、typecheck、源码 ESLint 及架构和规则检查再次通过。
+- 与 CI 相同主版本的 Node 22 下，Taro 三次 HMR 的稳态插件 P95 为基线 898ms、当前 888ms，未再现 Node 25 的耗时超限；该次 RSS 仍超限，需结合远端独立复测判断，不记为整体通过。
 
 上述批次有重叠，不累加为全仓测试数量。新提交远端门禁状态另行记录。
 

@@ -42,7 +42,8 @@ function canUseCommonJsGraph(file: string) {
     return false
   }
   const manifest = findPackageJSON(pathToFileURL(file).href)
-  return !manifest || JSON.parse(readFileSync(manifest, 'utf8')).type !== 'module'
+  // 无 package.json 时，Node 的解析结果可能回退到模块文件本身。
+  return !manifest || path.basename(manifest) !== 'package.json' || JSON.parse(readFileSync(manifest, 'utf8')).type !== 'module'
 }
 
 function collectCommonJsDependencies(file: string, dependencies: Set<string>) {

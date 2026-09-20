@@ -17,7 +17,8 @@ describe('生成模块缓存', () => {
     { extension: 'js', commonJs: true, extensionless: true },
     { extension: 'js', commonJs: false, extensionless: false },
     { extension: 'ts', commonJs: false, extensionless: true },
-  ])('复用配置并刷新间接依赖：$extension / CJS=$commonJs / 省略扩展名=$extensionless', async ({ extension, commonJs, extensionless }) => {
+    { extension: 'js', commonJs: true, extensionless: false, manifest: false },
+  ])('复用配置并刷新间接依赖：$extension / CJS=$commonJs / 省略扩展名=$extensionless / manifest=$manifest', async ({ extension, commonJs, extensionless, manifest = true }) => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), 'generation-module-cache-'))
     const config = path.join(root, `tailwind.config.${extension}`)
     const helper = path.join(root, `color.${extension}`)
@@ -25,7 +26,9 @@ describe('生成模块缓存', () => {
     const globals = globalThis as typeof globalThis & Record<string, unknown>
     const prefix = commonJs ? 'module.exports =' : 'export default'
     try {
-      await fs.writeFile(path.join(root, 'package.json'), JSON.stringify({ type: commonJs ? 'commonjs' : 'module' }))
+      if (manifest) {
+        await fs.writeFile(path.join(root, 'package.json'), JSON.stringify({ type: commonJs ? 'commonjs' : 'module' }))
+      }
       await fs.writeFile(helper, `${prefix} '#112233'`)
       await fs.writeFile(config, [
         commonJs ? `const color = require('./color.${extension}')` : `import color from './color.${extension}'`,
