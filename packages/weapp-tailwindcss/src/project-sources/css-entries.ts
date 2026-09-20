@@ -2,7 +2,7 @@ import type { TailwindV4CssSource } from '@weapp-tailwindcss/engine'
 import type { TailwindV4EntrySourceAnalysis } from '@weapp-tailwindcss/postcss/transform'
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { UserDefinedOptions } from '@/types'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, statSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'
 import { analyzeTailwindV4EntrySource } from '@weapp-tailwindcss/postcss/transform'
@@ -63,9 +63,9 @@ function createDependencyExcludeEntries(files: Iterable<string>): TailwindSource
   }))
 }
 
-async function statConfigDependency(file: string): Promise<ConfigDependencySignature> {
+function statConfigDependency(file: string): ConfigDependencySignature {
   try {
-    const stats = await stat(file)
+    const stats = statSync(file)
     return {
       file,
       mtimeMs: stats.mtimeMs,
@@ -81,9 +81,10 @@ async function statConfigDependency(file: string): Promise<ConfigDependencySigna
   }
 }
 
-async function collectConfigDependencySignatures(requests: string[], base: string) {
+function collectConfigDependencySignatures(requests: string[], base: string) {
   const configPaths = new Set(requests.map(request => resolveConfigPath(base, request)))
-  return Promise.all([...configPaths].sort().map(statConfigDependency))
+  // 元数据检查与同步 CSS 读取保持在同一轮，避免缓存命中仍排队等待构建器 I/O。
+  return [...configPaths].sort().map(statConfigDependency)
 }
 
 export function mergeTailwindInlineSourceCandidates(
@@ -260,7 +261,7 @@ export async function resolveTailwindV4EntriesFromCssCached(css: string, base: s
   const cacheKey = createCssEntriesCacheKey(
     css,
     base,
-    await collectConfigDependencySignatures(analysis.configRequests, base),
+    collectConfigDependencySignatures(analysis.configRequests, base),
   )
   const cached = tailwindV4CssEntriesCache.get(cacheKey)
   if (cached) {
@@ -279,7 +280,7 @@ export async function resolveTailwindConfigEntriesFromCssCached(css: string, bas
   if (!analysis) {
     return undefined
   }
-  const dependencies = await collectConfigDependencySignatures(analysis.configRequests, base)
+  const dependencies = collectConfigDependencySignatures(analysis.configRequests, base)
   if (dependencies.length === 0) {
     return undefined
   }

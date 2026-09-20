@@ -78,42 +78,45 @@ export async function extractProjectCandidatesWithPositions(
   const entries: TailwindTokenLocation[] = []
   const skipped: TailwindTokenReport['skippedFiles'] = []
 
-  for (const file of files) {
-    let content: string
-    try {
-      content = await fs.readFile(file, 'utf8')
-    }
-    catch (error) {
-      skipped.push({
-        file,
-        reason: error instanceof Error ? error.message : 'Unknown error',
-      })
-      continue
-    }
-
-    const extension = toExtension(file)
-    const matches = scanner.getCandidatesWithPositions({
-      file,
-      content,
-      extension,
-    })
-
-    if (!matches.length) {
-      continue
-    }
-
-    const offsets = buildLineOffsets(content)
-
-    for (const match of matches) {
-      entries.push(createTokenLocation({
-        cwd,
+  // 分批读取避免串行 I/O 被构建任务反复打断，同时限制打开文件数和源码占用。
+  const batchSize = 32
+  for (let start = 0; start < files.length; start += batchSize) {
+    const batch = files.slice(start, start + batchSize)
+    const contents = await Promise.allSettled(batch.map(file => fs.readFile(file, 'utf8')))
+    for (const [index, file] of batch.entries()) {
+      const result = contents[index]!
+      if (result.status === 'rejected') {
+        skipped.push({
+          file,
+          reason: result.reason instanceof Error ? result.reason.message : 'Unknown error',
+        })
+        continue
+      }
+      const content = result.value
+      const extension = toExtension(file)
+      const matches = scanner.getCandidatesWithPositions({
         file,
         content,
         extension,
-        candidate: match.candidate,
-        position: match.position,
-        offsets,
-      }))
+      })
+
+      if (!matches.length) {
+        continue
+      }
+
+      const offsets = buildLineOffsets(content)
+
+      for (const match of matches) {
+        entries.push(createTokenLocation({
+          cwd,
+          file,
+          content,
+          extension,
+          candidate: match.candidate,
+          position: match.position,
+          offsets,
+        }))
+      }
     }
   }
 

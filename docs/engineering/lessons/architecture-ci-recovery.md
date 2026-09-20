@@ -12,6 +12,8 @@ regressions:
   - packages/weapp-tailwindcss/test/vitest/vite.test.ts
   - packages/weapp-tailwindcss/test/ci/verify-packed-packages.test.ts
   - packages/weapp-tailwindcss/test/bundlers/webpack-watch-dependencies.test.ts
+  - packages/engine/test/extraction.project-concurrency.test.ts
+  - packages/weapp-tailwindcss/test/bundlers/vite-source-scan-css-entries.test.ts
 ---
 
 # 架构重构后的 CI 修复
@@ -42,6 +44,10 @@ PR Gate 的三个单测 shard 与 Release Gate 失败。测试仍 mock PostCSS �
 
 ## 验证
 
+提交 9aaf6fe92 的 Linux 门禁仍报告 Mpx 插件中位数 1612ms 到 2660ms，以及 Taro Webpack 插件耗时和稳态 RSS 超限；Taro Vite、uni-app Vite、weapp-vite 分片通过。不能用此前本地 Node 22.19 的通过结果覆盖这次失败。与 CI 相同的 Node 22.23.2 本地三次对照也复现 Mpx 627ms 到 1021ms。
+
+分阶段诊断发现：候选报告逐文件 await 读取，使 Webpack 并行编译的同步工作反复插入扫描过程；CSS 来源缓存命中时仍等待异步 stat，进一步延迟来源准备。现候选读取以每批最多 32 个文件并发执行，按枚举顺序提取并记录读取失败；配置元数据使用与 CSS 读取相同的同步边界。70 文件回归先在串行实现失败，再验证并发有界、读取乱序、单文件删除及报告顺序；缓存回归覆盖配置修改、删除和重建。
+
 本轮使用 Node 25.6.1、pnpm 12.4.1，在独立 worktree 执行，正常 Vitest 运行均设置 CI=1 和 --update=none。
 
 - 原失败的 context、rpx warning、packed manifest 定向组 36 项通过；injector 导出组 89 项通过。
@@ -61,6 +67,8 @@ PR Gate 的三个单测 shard 与 Release Gate 失败。测试仍 mock PostCSS �
 
 - 异步上下文释放回归修复前失败，修复后 Node 22.23.2 的引擎 179 项测试、构建、类型检查、源码 ESLint 和架构检查通过。回归同时验证一个并发调用结束不会使另一个调用丢失配置上下文，以及异常结束仍会释放。
 - 来源目录回归修复前错误监听项目根，修复后 watcher 与 runtime classset loader 共 20 项通过；真实 Webpack/Rspack/Gulp 及主包/PostCSS 共享生成契约 35 项通过。主包构建、修改源码 ESLint、架构检查、agents:check 和 git diff --check 通过。覆盖多目录 brace、绝对 glob、重复目录去重、负规则、缺失目录、禁用自动扫描及默认扫描。
+- 有限并发读取修复后，Node 22.23.2 的 engine 180 项测试、类型检查和构建通过；主包来源/缓存/真实构建器组 35 项与 CSS 来源/生成组 39 项通过，新增配置生命周期组所在文件 6 项通过。修改源码 ESLint、架构检查及规则检查通过。
+- 使用同一 perf:guard 隔离工作树更新 engine/主包产物后，执行 run-matrix.mjs，Mpx 与 Taro Webpack 各三次构建、三次 HMR。Mpx 插件中位数 602ms 到 426ms，Taro Webpack 4412ms 到 4161ms；Taro Webpack 原 evaluatePerformanceGuard 判定通过。Mpx 首次 RSS 超限，保留于 .tmp/scan-concurrent-performance.json；一次反向顺序确认的插件中位数 633ms 到 420ms，RSS 样本不再满足阻断置信条件，原判定通过，报告 .tmp/mpx-memory-confirmation.json。确认附带 Jiti/进程退出诊断，不将本地 RSS 波动解释为内存已改善，最终仍检查独立 CI runner。
 
 ## 适用边界
 
