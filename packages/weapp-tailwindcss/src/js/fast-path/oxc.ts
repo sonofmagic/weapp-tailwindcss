@@ -1,60 +1,14 @@
-import type { Program, StringLiteral, TemplateElement } from '@oxc-project/types'
 import type { IJsHandlerOptions, JsHandlerResult } from '../../types'
-import { createRequire } from 'node:module'
-import process from 'node:process'
+import type { LiteralSpan } from './analysis'
 import MagicString from 'magic-string'
-import { walk } from 'oxc-walker'
 import { jsStringEscape } from '../js-string-escape'
 import { transformLiteralText } from '../literal-transform'
+import { getOxcSourceAnalysis } from './analysis'
 
-type OxcParser = Pick<typeof import('oxc-parser'), 'parseSync'>
+export { isOxcParserRuntimeSupported } from '../oxc-parser'
 
 interface ReplacementContext {
   ms?: MagicString
-}
-
-const require = createRequire(import.meta.url)
-let oxcParser: OxcParser | false | undefined
-
-export function isOxcParserRuntimeSupported(version = process.versions.node) {
-  const match = /^(\d+)\.(\d+)(?:\.|$)/.exec(version)
-  if (!match) {
-    return false
-  }
-  const major = Number(match[1])
-  const minor = Number(match[2])
-  if (major === 20) {
-    return minor >= 19
-  }
-  if (major === 21) {
-    return false
-  }
-  if (major === 22) {
-    return minor >= 12
-  }
-  return major > 22
-}
-
-function loadOxcParser(): OxcParser | undefined {
-  if (!isOxcParserRuntimeSupported()) {
-    return undefined
-  }
-  if (oxcParser === false) {
-    return undefined
-  }
-  if (oxcParser) {
-    return oxcParser
-  }
-
-  try {
-    oxcParser = require('oxc-parser') as OxcParser
-  }
-  catch {
-    oxcParser = false
-    return undefined
-  }
-
-  return oxcParser
 }
 
 function hasValues<T>(values: T[] | undefined): values is T[] {
@@ -78,7 +32,6 @@ function canAttemptOxcJsFastPath(options: IJsHandlerOptions) {
 
   return !options.generateMap
     && !options.wrapExpression
-    && !options.moduleGraph
     && !options.moduleSpecifierReplacements
     && hasSupportedClassMatchSource(options)
     && !hasValues(options.ignoreCallExpressionIdentifiers)
@@ -86,28 +39,8 @@ function canAttemptOxcJsFastPath(options: IJsHandlerOptions) {
 
 export function canUseOxcJsFastPath(options: IJsHandlerOptions) {
   return canAttemptOxcJsFastPath(options)
+    && !options.moduleGraph
     && !hasValues(options.ignoreTaggedTemplateExpressionIdentifiers)
-}
-
-function getParserLang(filename?: string) {
-  if (filename?.endsWith('.ts') || filename?.endsWith('.mts') || filename?.endsWith('.cts')) {
-    return 'ts'
-  }
-  if (filename?.endsWith('.tsx')) {
-    return 'tsx'
-  }
-  if (filename?.endsWith('.jsx')) {
-    return 'jsx'
-  }
-  return 'js'
-}
-
-function getParserSourceType(sourceType: unknown) {
-  return sourceType === 'script' || sourceType === 'module' ? sourceType : 'module'
-}
-
-function isRangeValid(start: unknown, end: unknown) {
-  return typeof start === 'number' && typeof end === 'number' && start < end
 }
 
 function getMagicString(rawSource: string, context: ReplacementContext) {
@@ -119,14 +52,10 @@ function getMagicString(rawSource: string, context: ReplacementContext) {
 
 function addStringLiteralReplacement(
   rawSource: string,
-  node: StringLiteral,
+  node: LiteralSpan,
   transformOptions: IJsHandlerOptions,
   context: ReplacementContext,
 ) {
-  if (typeof node.value !== 'string' || typeof node.raw !== 'string' || !isRangeValid(node.start, node.end)) {
-    return false
-  }
-
   const transformed = transformLiteralText(node.value, transformOptions, false)
   if (!transformed) {
     return false
@@ -144,14 +73,11 @@ function addStringLiteralReplacement(
 
 function addTemplateElementReplacement(
   rawSource: string,
-  node: TemplateElement,
+  node: LiteralSpan,
   transformOptions: IJsHandlerOptions,
   context: ReplacementContext,
 ) {
-  const raw = node.value?.raw
-  if (typeof raw !== 'string' || !isRangeValid(node.start, node.end)) {
-    return false
-  }
+  const raw = node.value
 
   const transformed = transformLiteralText(raw, transformOptions, false)
   if (!transformed || transformed === raw) {
@@ -172,39 +98,19 @@ function addTemplateElementReplacement(
 
 function applyReplacements(
   rawSource: string,
-  program: Program,
+  literals: LiteralSpan[],
   stringLiteralOptions: IJsHandlerOptions,
   templateLiteralOptions: IJsHandlerOptions,
   context: ReplacementContext,
 ) {
   let changed = false
-  walk(program, {
-    enter(node) {
-      if (node.type === 'Literal') {
-        changed = addStringLiteralReplacement(rawSource, node as StringLiteral, stringLiteralOptions, context) || changed
-        return
-      }
-      if (node.type === 'TemplateElement') {
-        changed = addTemplateElementReplacement(rawSource, node, templateLiteralOptions, context) || changed
-        this.skip()
-      }
-    },
-  })
+  for (const node of literals) {
+    changed = (node.kind === 'string'
+      ? addStringLiteralReplacement(rawSource, node, stringLiteralOptions, context)
+      : addTemplateElementReplacement(rawSource, node, templateLiteralOptions, context)) || changed
+  }
 
   return changed
-}
-
-function hasTaggedTemplateExpression(program: Program) {
-  let found = false
-  walk(program, {
-    enter(node) {
-      if (node.type === 'TaggedTemplateExpression') {
-        found = true
-        this.skip()
-      }
-    },
-  })
-  return found
 }
 
 export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult | undefined {
@@ -215,28 +121,16 @@ export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsH
     return undefined
   }
 
-  const parser = loadOxcParser()
-  if (!parser) {
+  const analysis = getOxcSourceAnalysis(rawSource, options)
+  if (!analysis) {
     return undefined
   }
-
-  let result: ReturnType<OxcParser['parseSync']>
-  try {
-    result = parser.parseSync(options.filename ?? 'weapp-tailwindcss.js', rawSource, {
-      sourceType: getParserSourceType(options.babelParserOptions?.sourceType),
-      lang: getParserLang(options.filename),
-    })
-  }
-  catch {
-    return undefined
-  }
-
-  if (!result.program || (Array.isArray(result.errors) && result.errors.length > 0)) {
+  if (options.moduleGraph && analysis.hasModuleDeclarations) {
     return undefined
   }
   if (
     hasValues(options.ignoreTaggedTemplateExpressionIdentifiers)
-    && hasTaggedTemplateExpression(result.program)
+    && analysis.hasTaggedTemplate
   ) {
     return undefined
   }
@@ -254,7 +148,7 @@ export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsH
         needEscaped: false,
       }
   const replacementContext: ReplacementContext = {}
-  if (!applyReplacements(rawSource, result.program, stringLiteralOptions, templateLiteralOptions, replacementContext)) {
+  if (!applyReplacements(rawSource, analysis.literals, stringLiteralOptions, templateLiteralOptions, replacementContext)) {
     return {
       code: rawSource,
     }
