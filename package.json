@@ -289,8 +289,8 @@
     "script:sync": "repo ws upgrade",
     "script:clean": "repo ws clean",
     "commitlint": "commitlint --edit",
-    "up:pkg:latest": "node scripts/pnpm-smart-proxy.mjs up -rLi --filter \"./packages/*\" --filter \"./packages-runtime/*\" --filter \"./demo/*\" --filter \"./demo/web/*\" --filter \"!./demo/*uni-app*\" --filter \"!./demo/issue-uview-plus-cssentries\"",
-    "up:pkg": "node scripts/pnpm-smart-proxy.mjs up -ri --filter \"./packages/*\" --filter \"./packages-runtime/*\" --filter \"./demo/*\" --filter \"./demo/web/*\" --filter \"!./demo/*uni-app*\" --filter \"!./demo/issue-uview-plus-cssentries\"",
+    "up:pkg:latest": "tsx scripts/update-packages.ts up -rLi --filter \"./packages/*\" --filter \"./packages-runtime/*\" --filter \"./demo/*\" --filter \"./demo/web/*\" --filter \"!./demo/*uni-app*\" --filter \"!./demo/issue-uview-plus-cssentries\"",
+    "up:pkg": "tsx scripts/update-packages.ts up -ri --filter \"./packages/*\" --filter \"./packages-runtime/*\" --filter \"./demo/*\" --filter \"./demo/web/*\" --filter \"!./demo/*uni-app*\" --filter \"!./demo/issue-uview-plus-cssentries\"",
     "up:uniapp": "pnpx @dcloudio/uvm@latest",
     "architecture:check": "tsx scripts/architecture/check.ts"
   },
