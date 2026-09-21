@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
 import path from 'pathe'
+import { closeWechatProject } from '../scripts/wechat-project-cleanup'
 import { collectFrameworkIdeDiagnostics } from './frameworkIdeDiagnostics'
 import { runFrameworkIdeHotUpdateProbe } from './frameworkIdeHotUpdate'
 import { installFrameworkIdeRuntimeErrorCollector } from './frameworkIdeRuntimeErrors'
@@ -109,23 +110,6 @@ async function withStageTimeout<T>(stage: string, task: Promise<T>, stageTimeout
   }
 }
 
-async function closeMiniProgram() {
-  if (!miniProgram) {
-    return
-  }
-  try {
-    await Promise.race([
-      miniProgram.close(),
-      new Promise<void>((resolve) => {
-        setTimeout(resolve, closeTimeoutMs)
-      }),
-    ])
-  }
-  catch (error) {
-    process.stderr.write(`Framework IDE probe close failed for ${supportCaseName}: ${String(error)}\n`)
-  }
-}
-
 async function main() {
   if (process.env['E2E_IDE_BUILD'] === '1') {
     const { ensureProjectBuilt } = await import('./projectBuild')
@@ -161,15 +145,18 @@ async function main() {
     await runtimeErrors.assertNoErrors('probe complete')
   }
   finally {
-    await closeMiniProgram()
-    await restoreProjectConfig()
+    try {
+      await closeWechatProject(launchProjectPath, miniProgram, closeTimeoutMs)
+    }
+    finally {
+      await restoreProjectConfig()
+    }
   }
 }
 
 main().then(() => {
   process.exit(0)
 }).catch(async (error) => {
-  await closeMiniProgram()
   await restoreProjectConfig()
   try {
     process.stderr.write(`${await collectFrameworkIdeDiagnostics(supportCaseName)}\n`)

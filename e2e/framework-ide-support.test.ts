@@ -54,43 +54,6 @@ function getProbeTiming(entryName: string) {
   }
 }
 
-async function cleanupDevTools() {
-  if (process.platform !== 'darwin') {
-    return
-  }
-  const timeout = Number(process.env['E2E_IDE_CLEANUP_TIMEOUT_MS'] ?? 5000)
-  try {
-    await execa('osascript', ['-e', 'quit app "wechatwebdevtools"'], {
-      timeout,
-    })
-  }
-  catch {}
-  await execa('pkill', ['-f', '/Applications/wechatwebdevtools.app'], {
-    reject: false,
-  }).catch(() => undefined)
-  await execa('pkill', ['-f', 'wechatwebdevtools Daemon'], {
-    reject: false,
-  }).catch(() => undefined)
-  const startedAt = Date.now()
-  while (Date.now() - startedAt < timeout) {
-    try {
-      await execa('pgrep', ['-f', 'wechat(web)?devtools'], {
-        timeout: 1000,
-      })
-      await wait(250)
-    }
-    catch {
-      return
-    }
-  }
-  await execa('pkill', ['-9', '-f', '/Applications/wechatwebdevtools.app'], {
-    reject: false,
-  }).catch(() => undefined)
-  await execa('pkill', ['-9', '-f', 'wechatwebdevtools Daemon'], {
-    reject: false,
-  }).catch(() => undefined)
-}
-
 function isTransientIdeError(error: unknown) {
   if (!error || typeof error !== 'object') {
     return false
@@ -187,7 +150,6 @@ describeFrameworkIde('framework support matrix ide', () => {
 
       for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
-          await cleanupDevTools()
           await wait(settleTimeoutMs)
           await runFrameworkIdeProbe(entry.name, timeoutMs, relaunchTimeoutMs, attemptTimeoutMs)
           return
@@ -199,7 +161,6 @@ describeFrameworkIde('framework support matrix ide', () => {
           process.stderr.write(`[e2e:ide] retry ${entry.name} after transient DevTools error (${attempt}/${maxAttempts - 1})\n${await collectFrameworkIdeDiagnostics(entry.name)}\n`)
         }
         finally {
-          await cleanupDevTools()
           await wait(settleTimeoutMs)
         }
       }

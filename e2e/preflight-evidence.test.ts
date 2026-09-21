@@ -75,6 +75,7 @@ describe('computer use 证据与身份', () => {
     const { report } = await setup()
     for (const [key, value] of Object.entries({ head: 'new', source: 'changed', host: 'another', config: { device: 'other' } })) {
       expect(() => assertIdentity(report.identity, { ...report.identity, [key]: value })).toThrow('已变化')
+      expect(() => assertIdentity(report.identity, { ...report.identity, [key]: value })).toThrow(`变化字段：${key}。`)
     }
   })
 })

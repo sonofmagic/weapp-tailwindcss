@@ -79,11 +79,13 @@ export function samePath(a: string, b: string, platform = process.platform) {
 }
 
 export function assertIdentity(expected: Identity, actual: Identity) {
-  if (!samePath(expected.root, actual.root, actual.platform as NodeJS.Platform)
-    || expected.head !== actual.head || expected.source !== actual.source
-    || expected.host !== actual.host || expected.platform !== actual.platform
-    || JSON.stringify(expected.config) !== JSON.stringify(actual.config)) {
-    throw new Error('预检 checkout、源码、主机或工具/设备配置已变化；必须重新 prepare。')
+  const changed = [
+    ...(!samePath(expected.root, actual.root, actual.platform as NodeJS.Platform) ? ['root'] : []),
+    ...(['head', 'source', 'host', 'platform'] as const).filter(key => expected[key] !== actual[key]),
+    ...(JSON.stringify(expected.config) !== JSON.stringify(actual.config) ? ['config'] : []),
+  ]
+  if (changed.length) {
+    throw new Error(`预检 checkout、源码、主机或工具/设备配置已变化；必须重新 prepare。变化字段：${changed.join(', ')}。`)
   }
 }
 

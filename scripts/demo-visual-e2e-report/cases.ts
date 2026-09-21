@@ -412,7 +412,7 @@ async function runMiniProgramCaseVariant(
     })
   }
   finally {
-    await closeMiniProgramAndCleanup(miniProgram, item.name)
+    await closeMiniProgramAndCleanup(miniProgram, projectPath)
   }
 }
 
@@ -433,6 +433,7 @@ async function runMiniProgramHmrCase(
   let miniProgram: any
   let session: WatchSession | undefined
   let mutation: MiniProgramHmrMutation | undefined
+  let ownedProjectPath: string | undefined
   let restoreProjectConfig: (() => Promise<void>) | undefined
 
   if (item.skipOpenAutomator) {
@@ -460,6 +461,7 @@ async function runMiniProgramHmrCase(
     await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
 
     const projectPath = await resolveMiniProgramWatchProjectPath(watchCase, item, context)
+    ownedProjectPath = projectPath
     restoreProjectConfig = await disableDevToolsCompileHotReload(projectPath)
     const launched = await launchMiniProgramInCleanDevTools(item.name, projectPath, port, caseTimeoutMs)
     miniProgram = launched.miniProgram
@@ -650,9 +652,15 @@ async function runMiniProgramHmrCase(
   }
   finally {
     await mutation?.restore().catch(() => undefined)
-    await closeMiniProgramAndCleanup(miniProgram, item.name)
-    await restoreProjectConfig?.().catch(() => undefined)
-    await session?.stop().catch(() => undefined)
+    try {
+      if (ownedProjectPath) {
+        await closeMiniProgramAndCleanup(miniProgram, ownedProjectPath)
+      }
+    }
+    finally {
+      await restoreProjectConfig?.().catch(() => undefined)
+      await session?.stop().catch(() => undefined)
+    }
   }
 }
 

@@ -353,12 +353,10 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-green-200: oklch(92.5% 0.084 155.995);
     --color-emerald-50: oklch(97.9% 0.021 166.113);
-    --color-emerald-100: oklch(95% 0.052 163.051);
     --color-emerald-200: oklch(90.5% 0.093 164.15);
     --color-emerald-500: oklch(69.6% 0.17 162.48);
     --color-emerald-600: oklch(59.6% 0.145 163.225);
     --color-emerald-700: oklch(50.8% 0.118 165.612);
-    --color-slate-50: oklch(98.4% 0.003 247.858);
     --color-slate-100: oklch(96.8% 0.007 247.896);
     --color-slate-200: oklch(92.9% 0.013 255.508);
     --color-slate-500: oklch(55.4% 0.046 257.417);
@@ -376,11 +374,6 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
     --text-sm--line-height: calc(1.25 / 0.875);
     --text-base: 1rem;
     --text-base--line-height: calc(1.5 / 1);
-    --text-lg: 1.125rem;
-    --text-lg--line-height: calc(1.75 / 1.125);
-    --text-xl: 1.25rem;
-    --text-xl--line-height: calc(1.75 / 1.25);
-    --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
     --default-font-family: var(--font-sans);
@@ -633,9 +626,6 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
   .mt-6 {
     margin-top: calc(var(--spacing) * 6);
   }
-  .mt-8 {
-    margin-top: calc(var(--spacing) * 8);
-  }
  /*tokens: ml-2 <= src/pages/index/index.vue */
   .ml-2 {
     margin-left: calc(var(--spacing) * 2);
@@ -721,9 +711,6 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
   .h-\[45px\] {
     height: 45px;
   }
-  .min-h-screen {
-    min-height: 100vh;
-  }
  /*tokens: w-12 <= src/pages/index/index.vue */
   .w-12 {
     width: calc(var(--spacing) * 12);
@@ -738,9 +725,6 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
   }
   .w-\[323px\] {
     width: 323px;
-  }
-  .flex-1 {
-    flex: 1;
   }
  /*tokens: flex-col <= src/pages/index/index.vue */
   .flex-col {
@@ -761,12 +745,6 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
  /*tokens: justify-between <= src/pages/index/index.vue */
   .justify-between {
     justify-content: space-between;
-  }
-  .justify-center {
-    justify-content: center;
-  }
-  .gap-1 {
-    gap: var(--spacing);
   }
  /*tokens: gap-2 <= src/components/HelloWorld.vue, src/pages/index/index.vue */
   .gap-2 {
@@ -869,9 +847,6 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
   .border-emerald-200 {
     border-color: var(--color-emerald-200);
   }
-.border-emerald-500 {
-    border-color: var(--color-emerald-500);
-  }
  /*tokens: border-slate-200 <= src/pages/index/index.vue */
   .border-slate-200 {
     border-color: var(--color-slate-200);
@@ -905,9 +880,6 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
   .bg-emerald-50 {
     background-color: var(--color-emerald-50);
   }
-  .bg-emerald-100 {
-    background-color: var(--color-emerald-100);
-  }
  /*tokens: bg-emerald-500 <= src/pages/index/index.vue */
   .bg-emerald-500 {
     background-color: var(--color-emerald-500);
@@ -934,9 +906,6 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
  /*tokens: bg-red-300 <= src/pages/index/index.vue */
   .bg-red-300 {
     background-color: var(--color-red-300);
-  }
-  .bg-slate-50 {
-    background-color: var(--color-slate-50);
   }
  /*tokens: bg-slate-900 <= src/pages/index/index.vue */
   .bg-slate-900 {
@@ -999,9 +968,6 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
-  .p-5 {
-    padding: calc(var(--spacing) * 5);
-  }
  /*tokens: px-3 <= src/pages/index/index.vue */
   .px-3 {
     padding-inline: calc(var(--spacing) * 3);
@@ -1028,9 +994,6 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
   .py-3 {
     padding-block: calc(var(--spacing) * 3);
   }
-  .py-6 {
-    padding-block: calc(var(--spacing) * 6);
-  }
   .py-\[24rpx\] {
     padding-block: 0.75rem;
   }
@@ -1047,18 +1010,10 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
     font-size: var(--text-base);
     line-height: var(--tw-leading, var(--text-base--line-height));
   }
-.text-lg {
-    font-size: var(--text-lg);
-    line-height: var(--tw-leading, var(--text-lg--line-height));
-  }
  /*tokens: text-sm <= src/pages/index/index.vue */
   .text-sm {
     font-size: var(--text-sm);
     line-height: var(--tw-leading, var(--text-sm--line-height));
-  }
-.text-xl {
-    font-size: var(--text-xl);
-    line-height: var(--tw-leading, var(--text-xl--line-height));
   }
  /*tokens: text-xs <= src/pages/index/index.vue */
   .text-\[100rpx\] {
@@ -1088,18 +1043,10 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
     --tw-leading: calc(var(--spacing) * 5);
     line-height: calc(var(--spacing) * 5);
   }
-.leading-6 {
-    --tw-leading: calc(var(--spacing) * 6);
-    line-height: calc(var(--spacing) * 6);
-  }
  /*tokens: font-bold <= src/pages/index/index.vue */
   .font-bold {
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
-  }
-.font-medium {
-    --tw-font-weight: var(--font-weight-medium);
-    font-weight: var(--font-weight-medium);
   }
  /*tokens: font-semibold <= src/pages/index/index.vue */
   .font-semibold {
@@ -1115,12 +1062,6 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
   }
 .text-\[\#123456\] {
     color: #123456;
-  }
-.text-\[\#929292\] {
-    color: #929292;
-  }
-.text-emerald-600 {
-    color: var(--color-emerald-600);
   }
  /*tokens: text-emerald-700 <= src/pages/index/index.vue */
   .text-emerald-700 {
@@ -1158,10 +1099,6 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
   .underline {
     text-decoration-line: underline;
   }
-  .shadow {
-    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
  /*tokens: shadow-sm <= src/pages/index/index.vue */
   .shadow-sm {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
@@ -1188,9 +1125,6 @@ uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
     content: var(--tw-content);
     --tw-content: 'good work!' !important;
     content: var(--tw-content) !important;
-  }
-  .active\:bg-emerald-50:active {
-    background-color: var(--color-emerald-50);
   }
  /*tokens: active:bg-emerald-600 <= src/pages/index/index.vue */
   .active\:bg-emerald-600:active {
