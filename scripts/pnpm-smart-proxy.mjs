@@ -113,7 +113,8 @@ export function isWeappPackageScopedUpdate(args) {
     }
   }
 
-  return selectors.some(selector => (
+  const includedSelectors = selectors.filter(selector => !selector.startsWith('!'))
+  return includedSelectors.length > 0 && includedSelectors.every(selector => (
     selector === 'packages'
     || selector === 'packages-runtime'
     || selector === './packages'

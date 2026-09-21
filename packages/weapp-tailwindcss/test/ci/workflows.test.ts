@@ -270,8 +270,8 @@ describe('ci workflows', () => {
       'gulp-util',
       'unplugin-vue-router',
     ])
-    expect(packageJson.scripts['up:pkg:latest']).toBe("node scripts/pnpm-smart-proxy.mjs up -rLi --filter './packages/*' --filter './packages-runtime/*'")
-    expect(packageJson.scripts['up:pkg']).toBe("node scripts/pnpm-smart-proxy.mjs up -ri --filter './packages/*' --filter './packages-runtime/*'")
+    expect(packageJson.scripts['up:pkg:latest']).toBe('node scripts/pnpm-smart-proxy.mjs up -rLi --filter "./packages/*" --filter "./packages-runtime/*" --filter "./demo/*" --filter "./demo/web/*" --filter "!./demo/*uni-app*" --filter "!./demo/issue-uview-plus-cssentries"')
+    expect(packageJson.scripts['up:pkg']).toBe('node scripts/pnpm-smart-proxy.mjs up -ri --filter "./packages/*" --filter "./packages-runtime/*" --filter "./demo/*" --filter "./demo/web/*" --filter "!./demo/*uni-app*" --filter "!./demo/issue-uview-plus-cssentries"')
   })
 
   it('uses a simulator-reachable Metro host for Expo iOS CI', () => {

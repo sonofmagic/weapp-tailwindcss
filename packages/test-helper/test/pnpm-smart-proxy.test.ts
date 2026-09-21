@@ -46,6 +46,16 @@ update:
     expect(isWeappPackageScopedUpdate(['up', '--filter', '@tarojs/*'])).toBe(false)
   })
 
+  it('keeps Babel frozen when package and demo filters are combined', () => {
+    const args = ['up', '-rLi', '--filter', './packages/*', '--filter=./demo/*']
+    expect(isWeappPackageScopedUpdate(args)).toBe(false)
+    expect(appendUpdateIgnoreSelectors(args, ['@babel/*', 'babel-*', '@dcloudio/*']))
+      .toEqual([...args, '!@babel/*', '!babel-*', '!@dcloudio/*'])
+    expect(isWeappPackageScopedUpdate(['up', '-F./packages/*', '-F./demo/web/*'])).toBe(false)
+    expect(isWeappPackageScopedUpdate(['up', '--filter', '!./demo/*'])).toBe(false)
+    expect(isWeappPackageScopedUpdate(['up', '--filter', './packages/*', '--filter', '!./packages/babel'])).toBe(true)
+  })
+
   it('deletes all pnpm metadata cache before dependency updates', () => {
     const calls: Array<{ args: string[], command: string, options: unknown }> = []
     const ok = refreshUpdateMetadataCache({
