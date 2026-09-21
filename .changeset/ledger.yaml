@@ -6,11 +6,20 @@
   dir: packages/cli
   intents:
     - dx-vite-doctor-init
+"@weapp-tailwindcss/cli@5.5.7":
+  dir: packages/cli
+  intents:
+    - ancient-cats-peel
+    - great-emus-refuse
 "@weapp-tailwindcss/cn@0.1.1":
   dir: packages-runtime/cn
   intents:
     - add-cn-package
     - cn-wrap-runtime-cache
+"@weapp-tailwindcss/cn@0.1.2":
+  dir: packages-runtime/cn
+  intents:
+    - khaki-donkeys-retire
 "@weapp-tailwindcss/cva@0.1.9":
   dir: packages-runtime/cva
   intents:
@@ -27,6 +36,12 @@
   dir: e2e
   intents:
     - salty-icons-repeat
+"@weapp-tailwindcss/engine@0.1.1":
+  dir: packages/engine
+  intents:
+    - ancient-cats-peel
+    - great-emus-refuse
+    - tidy-sources-survive-deletion
 "@weapp-tailwindcss/example-react-lynx-promo@0.0.0":
   dir: examples/react-lynx-promo
   intents:
@@ -39,6 +54,10 @@
   dir: packages/experimental
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/experimental@0.0.43":
+  dir: packages/experimental
+  intents:
+    - loud-flies-travel
 "@weapp-tailwindcss/hbuilderx-runner@0.1.3":
   dir: packages/hbuilderx-runner
   intents:
@@ -83,6 +102,10 @@
   dir: packages-runtime/merge
   intents:
     - fix-runtime-numeric-leading-variants
+"@weapp-tailwindcss/merge@2.2.5":
+  dir: packages-runtime/merge
+  intents:
+    - khaki-donkeys-retire
 "@weapp-tailwindcss/postcss-calc@1.0.5":
   dir: packages/postcss-calc
   intents:
@@ -133,6 +156,22 @@
     - shiny-waves-occur
     - web-css-calc
     - wide-cobras-open
+"@weapp-tailwindcss/postcss@3.3.6":
+  dir: packages/postcss
+  intents:
+    - ancient-cats-peel
+    - great-emus-refuse
+    - loud-flies-travel
+    - postcss-core-banner-ownership
+    - postcss-css-location-analysis
+    - postcss-runtime-signature
+    - postcss-style-value-ownership
+    - runtime-signature-native-analysis
+    - tiny-tables-study
+"@weapp-tailwindcss/react-native@0.2.19":
+  dir: packages/react-native
+  intents:
+    - loud-flies-travel
 "@weapp-tailwindcss/react-native@0.2.5":
   dir: packages/react-native
   intents:
@@ -158,6 +197,10 @@
   dir: packages/shared
   intents:
     - bright-package-homepages
+"@weapp-tailwindcss/source-scan@0.1.1":
+  dir: packages/source-scan
+  intents:
+    - great-emus-refuse
 "@weapp-tailwindcss/typography@1.0.4":
   dir: packages-runtime/typography
   intents:
@@ -195,6 +238,10 @@ tailwindcss-config@2.0.4:
   dir: packages/tailwindcss-config
   intents:
     - bright-package-homepages
+tailwindcss-config@2.0.5:
+  dir: packages/tailwindcss-config
+  intents:
+    - great-emus-refuse
 tailwindcss-core-plugins-extractor@0.2.2:
   dir: packages/tailwindcss-core-plugins-extractor
   intents:
@@ -203,6 +250,10 @@ tailwindcss-injector@1.0.17:
   dir: packages/tailwindcss-injector
   intents:
     - bright-package-homepages
+tailwindcss-injector@1.0.18:
+  dir: packages/tailwindcss-injector
+  intents:
+    - loud-flies-travel
 theme-transition@2.1.0:
   dir: packages-runtime/theme-transition
   intents:
@@ -220,6 +271,10 @@ weapp-style-injector@1.0.5:
   dir: packages/weapp-style-injector
   intents:
     - windows-default-utilities
+weapp-style-injector@1.0.6:
+  dir: packages/weapp-style-injector
+  intents:
+    - great-emus-refuse
 weapp-tailwindcss-monorepo@0.0.0:
   dir: ""
   intents:
@@ -325,6 +380,19 @@ weapp-tailwindcss@5.5.6:
     - tidy-css-cleanup
     - web-css-calc
     - wide-cobras-open
+weapp-tailwindcss@5.5.7:
+  dir: packages/weapp-tailwindcss
+  intents:
+    - ancient-cats-peel
+    - great-emus-refuse
+    - loud-flies-travel
+    - postcss-author-function-boundaries
+    - postcss-core-banner-ownership
+    - postcss-css-location-analysis
+    - postcss-runtime-signature
+    - postcss-style-value-ownership
+    - runtime-signature-native-analysis
+    - tiny-tables-study
 weapp-tw@0.0.3:
   dir: packages/weapp-tw
   intents:
