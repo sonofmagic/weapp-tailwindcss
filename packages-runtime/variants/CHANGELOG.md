@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/variants
 
+## 0.2.8
+
+### Patch Changes
+
+- Updated dependencies:
+  - @weapp-tailwindcss/merge@2.2.5
+
 ## 0.2.7
 
 ### Patch Changes

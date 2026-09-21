@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/cn
 
+## 0.1.2
+
+### Patch Changes
+
+- 修正 cn 与 merge 包主页链接，使其指向文档声明的实际路由。
+
 ## 0.1.1
 
 ### Patch Changes
