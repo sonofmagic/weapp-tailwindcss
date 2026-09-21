@@ -109,7 +109,7 @@ overrides:
 
 catalogs:
   autoprefixer10:
-    autoprefixer: ^10.6.0
+    autoprefixer: ^10.6.1
   buildUtilities:
     '@parcel/watcher': ^2.6.0
     debug: ~4.4.3
@@ -119,7 +119,7 @@ catalogs:
     htmlparser2: ^12.0.0
     local-pkg: ^1.2.1
     lightningcss: ^1.33.0
-    lru-cache: 11.5.2
+    lru-cache: 11.5.3
     magic-string: ^1.4.1
     micromatch: ^4.0.8
     pathe: ^2.0.3
@@ -186,11 +186,11 @@ catalogs:
   csstools:
     '@csstools/css-color-parser': ^4.2.3
     '@csstools/css-parser-algorithms': ^4.0.0
-    '@csstools/css-tokenizer': ^4.0.0
+    '@csstools/css-tokenizer': ^4.0.1
   egoistTailwindcssIcons:
     '@egoist/tailwindcss-icons': ^1.9.2
   eslint10:
-    eslint: ^10.10.0
+    eslint: ^10.11.0
   eslintPluginReact:
     eslint-plugin-react: ^7.37.5
   eslintPluginReactHooks:
@@ -225,7 +225,7 @@ catalogs:
     es-toolkit: ^1.52.0
     postcss-preset-env: ^11.5.3
   prettier371:
-    prettier: ^3.9.6
+    prettier: ^3.9.8
   react18:
     '@types/react': ^19.2.18
     '@types/react-dom': 18.2.7
@@ -330,7 +330,7 @@ catalogs:
   tsx:
     tsx: ^4.23.13
   typesNode2410:
-    '@types/node': ^26.5.1
+    '@types/node': ^26.6.2
   typescript59:
     typescript: ^6.0.3
   typescript59tilde:
@@ -362,7 +362,7 @@ catalogs:
   vitest:
     '@vitest/coverage-v8': ~5.0.0
     '@vitest/ui': ~5.0.0
-    vitest: ~5.0.0
+    vitest: ~5.0.1
   vue2:
     vue: ^2.7.16
   vue3:

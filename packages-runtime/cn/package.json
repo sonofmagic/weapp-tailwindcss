@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@weapp-tailwindcss/runtime": "workspace:*",
-    "cn": "^0.3.0"
+    "cn": "^0.3.2"
   },
   "devDependencies": {
     "@weapp-core/escape": "^8.0.0",
