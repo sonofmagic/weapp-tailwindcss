@@ -1,3 +1,4 @@
+import type { UserConfig } from 'tsdown'
 import { defineConfig } from 'tsdown'
 
 interface WatchAwareOptions {
@@ -5,12 +6,20 @@ interface WatchAwareOptions {
 }
 
 export const postcssEsmOnlyDependencies = [
-  /^@csstools\//,
   'css-blank-pseudo',
   'css-has-pseudo',
   'css-prefers-color-scheme',
   'postcss-selector-parser',
   'postcss-preset-env',
+]
+
+// 颜色解析链使用 instanceof 判断 AST，必须共享同一份 parser 实例。
+export const postcssColorDependencies = [
+  '@csstools/css-color-parser',
+  '@csstools/css-parser-algorithms',
+  '@csstools/css-tokenizer',
+  '@csstools/css-calc',
+  '@csstools/color-helpers',
 ]
 
 const sharedOptions = {
@@ -37,6 +46,7 @@ export function createPostcssTsdownConfigs(options: WatchAwareOptions = {}) {
       deps: {
         resolveDepSubpath: true,
         neverBundle: postcssEsmOnlyDependencies,
+        alwaysBundle: postcssColorDependencies,
         onlyBundle: false,
       },
     },
@@ -49,6 +59,7 @@ export function createPostcssTsdownConfigs(options: WatchAwareOptions = {}) {
       deps: {
         resolveDepSubpath: true,
         neverBundle: postcssEsmOnlyDependencies,
+        alwaysBundle: postcssColorDependencies,
         onlyBundle: false,
       },
     },
@@ -60,10 +71,11 @@ export function createPostcssTsdownConfigs(options: WatchAwareOptions = {}) {
       deps: {
         resolveDepSubpath: true,
         neverBundle: postcssEsmOnlyDependencies,
+        alwaysBundle: postcssColorDependencies,
         onlyBundle: false,
       },
     },
-  ]
+  ] satisfies UserConfig[]
 }
 
 export default defineConfig((options = {}) => createPostcssTsdownConfigs(options))
