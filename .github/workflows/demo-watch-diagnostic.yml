@@ -8,6 +8,11 @@ on:
       - demo/subpackage-taro-webpack-react-tailwindcss-v4/**
       - scripts/ci/demo-matrix/**
   workflow_dispatch:
+    inputs:
+      mpx:
+        description: 仅诊断 Mpx 微信与支付宝的监听生命周期
+        type: boolean
+        default: false
 
 concurrency:
   group: windows-watch-diagnostic-${{ github.event.pull_request.number || github.ref }}
@@ -24,22 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        case:
-          - subpackage-taro-webpack-react-tailwindcss-v4:h5
-          - taro-webpack-vue3-tailwindcss-v4:weapp
-          - taro-vite-vue3-tailwindcss-v4:jd
-          - taro-vite-vue3-tailwindcss-v4:h5
-          - subpackage-taro-webpack-react-tailwindcss-v4:tt
-          - gulp-tailwindcss-v4:tt
-        include:
-          - case: mpx-tailwindcss-v4:wx
-            os: windows-latest
-            node: 22
-          - case: mpx-tailwindcss-v4:wx
-            os: windows-latest
-            node: 24
-          - case: uni-app-vite-tailwindcss-v4:mp-weixin
-            os: ubuntu-latest
+        include: ${{ fromJSON(inputs.mpx && '[{"case":"mpx-tailwindcss-v4:wx","os":"windows-latest","node":22},{"case":"mpx-tailwindcss-v4:wx","os":"windows-latest","node":24},{"case":"mpx-tailwindcss-v4:ali","os":"windows-latest","node":22},{"case":"mpx-tailwindcss-v4:ali","os":"windows-latest","node":24}]' || '[{"case":"subpackage-taro-webpack-react-tailwindcss-v4:h5"},{"case":"taro-webpack-vue3-tailwindcss-v4:weapp"},{"case":"taro-vite-vue3-tailwindcss-v4:jd"},{"case":"taro-vite-vue3-tailwindcss-v4:h5"},{"case":"subpackage-taro-webpack-react-tailwindcss-v4:tt"},{"case":"gulp-tailwindcss-v4:tt"},{"case":"mpx-tailwindcss-v4:wx","os":"windows-latest","node":22},{"case":"mpx-tailwindcss-v4:wx","os":"windows-latest","node":24},{"case":"uni-app-vite-tailwindcss-v4:mp-weixin","os":"ubuntu-latest"}]') }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -59,6 +49,8 @@ jobs:
           DEBUG: weapp-tw
           NODE_OPTIONS: --max-old-space-size=6144
           DEMO_CASE: ${{ matrix.case }}
+          DEMO_MATRIX_PROCESS_DIAGNOSTICS: '1'
+          DEMO_MATRIX_WATCH_DIAGNOSTICS: ${{ startsWith(matrix.case, 'mpx-') && '1' || '0' }}
         run: |
           export NODE_OPTIONS="$NODE_OPTIONS --trace-exit --trace-uncaught --require=$GITHUB_WORKSPACE/scripts/ci/demo-matrix/process-diagnostic.cjs"
           if [[ "$DEMO_CASE" == *webpack* ]]; then

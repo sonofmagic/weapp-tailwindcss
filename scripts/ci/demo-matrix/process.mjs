@@ -33,6 +33,10 @@ export function start(args, cwd, env, logFile) {
     const diagnostic = new URL('./process-diagnostic.cjs', import.meta.url).href
     env = { ...env, NODE_OPTIONS: `${env.NODE_OPTIONS ?? process.env.NODE_OPTIONS ?? ''} --trace-exit --trace-uncaught --import=${diagnostic}` }
   }
+  if (process.env.DEMO_MATRIX_WATCH_DIAGNOSTICS === '1') {
+    const diagnostic = new URL('./watch-lifecycle-diagnostic.cjs', import.meta.url).href
+    env = { ...env, NODE_OPTIONS: `${env.NODE_OPTIONS ?? process.env.NODE_OPTIONS ?? ''} --import=${diagnostic}` }
+  }
   const child = execa('pnpm', args, { cwd, env: { CI: '1', ...env }, detached: process.platform !== 'win32', reject: false })
   for (const stream of [child.stdout, child.stderr]) {
     stream.on('data', (data) => {
