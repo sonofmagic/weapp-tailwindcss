@@ -390,5 +390,6 @@ catalogs:
     wrangler: ^4.131.1
 
 patchedDependencies:
+  '@mpxjs/vue-cli-plugin-mpx@2.2.30': patches/@mpxjs__vue-cli-plugin-mpx@2.2.30.patch
   rollup@4.63.0: patches/rollup@4.63.0.patch
   rollup@4.63.1: patches/rollup@4.63.1.patch

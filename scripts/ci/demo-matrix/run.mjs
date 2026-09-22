@@ -10,7 +10,8 @@ import { cases, checkCatalog, commands, coverage, isWeb, matrix, repo } from './
 import { inspectNative } from './native.mjs'
 import { inspectFiles } from './output.mjs'
 import { insertProbe } from './probe.mjs'
-import { assertGulpWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, complete, developmentEnvironment, freePort, start, until } from './process.mjs'
+import { assertGulpWatchBuildComplete, assertMpxWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, complete, developmentEnvironment, freePort, start, until } from './process.mjs'
+import { snapshotOutput } from './snapshot.mjs'
 import { replaceSourceFile } from './source-file.mjs'
 
 const args = process.argv.slice(2)
@@ -142,10 +143,13 @@ async function runCase(item) {
         else if (item.family === 'gulp') {
           assertGulpWatchBuildComplete(session.log(), buildLogOffset)
         }
+        else if (item.family === 'mpx') {
+          assertMpxWatchBuildComplete(session.log(), buildLogOffset)
+        }
         const snapshotDir = path.join(artifactDir, round)
         // 构建器可能在下一轮清理产物；检查归档副本，避免结果与证据分属不同轮次。
         await rm(snapshotDir, { recursive: true, force: true })
-        await cp(outputDir, snapshotDir, { recursive: true })
+        await snapshotOutput(outputDir, snapshotDir)
         return inspectFiles(snapshotDir, item, round)
       }, session)
       console.log(`[demo-matrix] ${new Date().toISOString()} ${item.id} verified ${round}`)

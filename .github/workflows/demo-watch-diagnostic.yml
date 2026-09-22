@@ -8,6 +8,11 @@ on:
       - demo/subpackage-taro-webpack-react-tailwindcss-v4/**
       - scripts/ci/demo-matrix/**
   workflow_dispatch:
+    inputs:
+      mpx:
+        description: 仅诊断 Mpx 微信与支付宝的监听生命周期
+        type: boolean
+        default: false
 
 concurrency:
   group: windows-watch-diagnostic-${{ github.event.pull_request.number || github.ref }}
@@ -17,6 +22,15 @@ permissions:
   contents: read
 
 jobs:
+  output-copy:
+    if: inputs.mpx
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: node scripts/ci/demo-matrix/fixtures/output-copy-race.cjs
   watch:
     name: Repeated watch (${{ matrix.os || 'windows-latest' }}, Node ${{ matrix.node || 24 }}, ${{ matrix.case }})
     runs-on: ${{ matrix.os || 'windows-latest' }}
@@ -24,22 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        case:
-          - subpackage-taro-webpack-react-tailwindcss-v4:h5
-          - taro-webpack-vue3-tailwindcss-v4:weapp
-          - taro-vite-vue3-tailwindcss-v4:jd
-          - taro-vite-vue3-tailwindcss-v4:h5
-          - subpackage-taro-webpack-react-tailwindcss-v4:tt
-          - gulp-tailwindcss-v4:tt
-        include:
-          - case: mpx-tailwindcss-v4:wx
-            os: windows-latest
-            node: 22
-          - case: mpx-tailwindcss-v4:wx
-            os: windows-latest
-            node: 24
-          - case: uni-app-vite-tailwindcss-v4:mp-weixin
-            os: ubuntu-latest
+        include: ${{ fromJSON(inputs.mpx && '[{"case":"mpx-tailwindcss-v4:wx","os":"windows-latest","node":22},{"case":"mpx-tailwindcss-v4:wx","os":"windows-latest","node":24},{"case":"mpx-tailwindcss-v4:ali","os":"windows-latest","node":22},{"case":"mpx-tailwindcss-v4:ali","os":"windows-latest","node":24}]' || '[{"case":"subpackage-taro-webpack-react-tailwindcss-v4:h5"},{"case":"taro-webpack-vue3-tailwindcss-v4:weapp"},{"case":"taro-vite-vue3-tailwindcss-v4:jd"},{"case":"taro-vite-vue3-tailwindcss-v4:h5"},{"case":"subpackage-taro-webpack-react-tailwindcss-v4:tt"},{"case":"gulp-tailwindcss-v4:tt"},{"case":"mpx-tailwindcss-v4:wx","os":"windows-latest","node":22},{"case":"mpx-tailwindcss-v4:wx","os":"windows-latest","node":24},{"case":"uni-app-vite-tailwindcss-v4:mp-weixin","os":"ubuntu-latest"}]') }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -49,6 +48,8 @@ jobs:
           node-version: ${{ matrix.node || 24 }}
       - run: pnpm build:ci
       - run: pnpm exec playwright install chromium
+      - if: inputs.mpx
+        run: node scripts/ci/demo-matrix/fixtures/mpx-fatal-watch.cjs recoverable
       - run: pnpm test:demo:matrix
         env:
           CI: '1'
@@ -59,10 +60,18 @@ jobs:
           DEBUG: weapp-tw
           NODE_OPTIONS: --max-old-space-size=6144
           DEMO_CASE: ${{ matrix.case }}
+          DEMO_MATRIX_PROCESS_DIAGNOSTICS: '1'
+          DEMO_MATRIX_WATCH_DIAGNOSTICS: ${{ startsWith(matrix.case, 'mpx-') && '1' || '0' }}
         run: |
           export NODE_OPTIONS="$NODE_OPTIONS --trace-exit --trace-uncaught --require=$GITHUB_WORKSPACE/scripts/ci/demo-matrix/process-diagnostic.cjs"
+          if [[ "$DEMO_CASE" == mpx-* ]]; then
+            unset DEBUG
+          fi
           if [[ "$DEMO_CASE" == *webpack* ]]; then
             export NODE_OPTIONS="$NODE_OPTIONS --require=$GITHUB_WORKSPACE/scripts/ci/demo-matrix/watch-diagnostic.cjs"
+          fi
+          if [[ "${{ inputs.mpx }}" == true ]]; then
+            export DEMO_MATRIX_CASES='["mpx-tailwindcss-v4:wx","mpx-tailwindcss-v4:ali","mpx-tailwindcss-v4:swan","mpx-tailwindcss-v4:tt"]'
           fi
           for attempt in 1 2 3; do
             DEMO_MATRIX_ARTIFACT_DIR="e2e/.artifacts/watch-diagnostic/$attempt" pnpm e2e:demo:matrix "$DEMO_CASE" || exit 1
