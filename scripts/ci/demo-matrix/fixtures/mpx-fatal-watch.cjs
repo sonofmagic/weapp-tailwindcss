@@ -9,7 +9,8 @@ const repo = path.resolve(__dirname, '../../../..')
 const projectRequire = createRequire(path.join(repo, 'demo', 'mpx-tailwindcss-v4', 'package.json'))
 const pluginRequire = createRequire(projectRequire.resolve('@mpxjs/vue-cli-plugin-mpx/package.json'))
 const webpack = pluginRequire('webpack')
-const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'mpx-fatal-watch-'))
+// Windows 临时目录可能是 8.3 别名，必须让 watcher 与文件事件使用同一条真实路径。
+const directory = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'mpx-fatal-watch-')))
 fs.writeFileSync(path.join(directory, 'entry.js'), 'module.exports = 1')
 process.on('exit', () => fs.rmSync(directory, { recursive: true, force: true }))
 

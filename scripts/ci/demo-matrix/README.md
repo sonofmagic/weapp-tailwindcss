@@ -45,6 +45,8 @@ pnpm e2e:demo:matrix issue-uview-plus-cssentries:mp-alipay
 
 Mpx CLI 2.2.30 的首轮就绪 Promise 不能接收后续致命错误；原版会吞掉错误，在 MultiCompiler 关闭所有 watcher 后以 0 退出。[CLI 补丁](../../../patches/@mpxjs__vue-cli-plugin-mpx@2.2.30.patch) 将增量致命错误独立报告并设置非零退出码，[真实 MultiCompiler 回归](./mpx-fatal-watch.test.mjs) 同时验证首轮失败和普通编译错误后的恢复。旧的 `dev:e2e-watch` 包装器也不再用定时器掩盖子进程退出。补丁仅作用于本仓库冻结安装，不随 npm 包发布；[上游实现](https://github.com/mpx-ecology/mpx-cli/blob/next/packages/vue-cli-plugin-mpx/commands/serve/mp.js) 发布等价修复后，复验上述回归再移除补丁与锁文件登记。
 
+动态产物通过 `snapshotOutput` 的共享读取句柄归档，避免 Windows CopyFileW 阻塞编译器写入；Mpx 需要本轮完成日志才开始读取。归档副本仍需通过当前轮次标识和样式断言，读取失败不能忽略。`fixtures/output-copy-race.cjs` 对照旧复制方式和新读取方式的真实并发写入，要求新方式零错误。
+
 `DEMO_MATRIX_WATCH_DIAGNOSTICS=1` 可记录真实文件 watcher 的创建/关闭调用栈和退出前的 Webpack 阶段，不创建保活句柄。手动触发 Demo Watch Diagnostic 的 `mpx` 输入会按原始 wx/ali/swan/tt 分片顺序在 Windows Node 22/24 复验；普通日志保持关闭以减少时序干扰。自然退出的原始错误仍需单独归因，重跑通过不代表首次故障已修复。
 
 静态语义基线位于 `e2e/__snapshots__/demo-matrix/`；完整产物、版本、SHA、执行命令、阶段结果、构建日志和浏览器截图位于 `e2e/.artifacts/demo-matrix/`。`DEMO_MATRIX_ARTIFACT_DIR` 可指定本地输出目录。
