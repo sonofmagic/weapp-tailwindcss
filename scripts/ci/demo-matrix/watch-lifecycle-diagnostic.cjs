@@ -56,6 +56,9 @@ if (webpackPath) {
       compiler.hooks[phase]?.tap('WatchLifecycleDiagnostic', (value) => {
         state.phase = phase
         state.activeWatchers = active.size
+        if (phase === 'failed') {
+          state.error = value?.stack ?? String(value)
+        }
         if (phase === 'done') {
           state.dependencies = { files: value.compilation.fileDependencies.size, contexts: value.compilation.contextDependencies.size, missing: value.compilation.missingDependencies.size }
         }

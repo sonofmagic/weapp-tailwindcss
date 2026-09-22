@@ -783,6 +783,7 @@ overrides:
 pnpmfileChecksum: sha256-VIhHxkE3DlYGW4jpmh5YBZoirXpyRMuq7rJOkofCfW8=
 
 patchedDependencies:
+  '@mpxjs/vue-cli-plugin-mpx@2.2.30': a26ae7412b1d225b09da9131a7271eb03aa6e17e9b0b3e83c7177bf1d4119eeb
   rollup@4.63.0: 4f732dcaad5986ffbe82caa0236c5ece50738873705cb399aa2f0a4dd15ed375
   rollup@4.63.1: c8c92d871ccf0418d1ba8b1f11a3371b706a1787f102194edb01d655e1ae84e0
 
@@ -2031,7 +2032,7 @@ importers:
         version: 2.11.0(@mpxjs/webpack-plugin@2.11.1(@mpxjs/core@2.11.1)(supports-color@10.2.2)(vue@2.7.16)(webpack@5.105.4))(supports-color@10.2.2)
       '@mpxjs/vue-cli-plugin-mpx':
         specifier: ^2.2.30
-        version: 2.2.30(6d45e83fbbad385e5b7e75687ea85af9)
+        version: 2.2.30(patch_hash=a26ae7412b1d225b09da9131a7271eb03aa6e17e9b0b3e83c7177bf1d4119eeb)(6d45e83fbbad385e5b7e75687ea85af9)
       '@mpxjs/vue-cli-plugin-mpx-typescript':
         specifier: ^2.2.30
         version: 2.2.30(typescript@6.0.3)(webpack@5.105.4)
@@ -2152,7 +2153,7 @@ importers:
         version: 2.2.30(@rspack/core@1.7.11(@swc/helpers@0.5.23))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@vue/compiler-sfc@3.5.42)(clean-css@5.3.3)(csso@5.0.5)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.28.2)(handlebars@4.7.9)(html-minifier-terser@7.2.0)(less-loader@12.3.0(@rspack/core@1.7.11(@swc/helpers@0.5.23))(less@4.6.6)(webpack@5.105.4))(lightningcss@1.33.0)(lodash@4.18.1)(prettier@3.9.8)(react@19.2.8)(sass-loader@17.0.1(@rspack/core@1.7.11(@swc/helpers@0.5.23))(sass-embedded@1.104.1)(sass@1.104.1)(webpack@5.105.4))(stylus-loader@8.1.2(@rspack/core@1.7.11(@swc/helpers@0.5.23))(stylus@0.63.0(supports-color@10.2.2))(webpack@5.105.4))(supports-color@10.2.2)(uglify-js@3.19.3)(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-cli@7.2.3)(webpack-sources@3.5.1)
       '@mpxjs/vue-cli-plugin-mpx':
         specifier: ^2.2.30
-        version: 2.2.30(6d45e83fbbad385e5b7e75687ea85af9)
+        version: 2.2.30(patch_hash=a26ae7412b1d225b09da9131a7271eb03aa6e17e9b0b3e83c7177bf1d4119eeb)(6d45e83fbbad385e5b7e75687ea85af9)
       '@mpxjs/vue-cli-plugin-mpx-typescript':
         specifier: ^2.2.30
         version: 2.2.30(typescript@6.0.3)(webpack@5.105.4)
@@ -5247,7 +5248,7 @@ importers:
         version: 2.2.30(@rspack/core@1.7.11(@swc/helpers@0.5.23))(@swc/core@1.16.2(@swc/helpers@0.5.23))(@vue/compiler-sfc@3.5.42)(clean-css@5.3.3)(csso@5.0.5)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.28.2)(handlebars@4.7.9)(html-minifier-terser@7.2.0)(less-loader@12.3.0(@rspack/core@1.7.11(@swc/helpers@0.5.23))(less@4.6.6)(webpack@5.110.2))(lightningcss@1.33.0)(lodash@4.18.1)(prettier@3.9.8)(react@19.2.8)(sass-loader@17.0.1(@rspack/core@1.7.11(@swc/helpers@0.5.23))(sass-embedded@1.104.1)(sass@1.104.1)(webpack@5.110.2))(stylus-loader@8.1.2(@rspack/core@1.7.11(@swc/helpers@0.5.23))(stylus@0.63.0(supports-color@10.2.2))(webpack@5.110.2))(supports-color@10.2.2)(uglify-js@3.19.3)(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-cli@7.2.3)(webpack-sources@3.5.1)
       '@mpxjs/vue-cli-plugin-mpx':
         specifier: ^2.2.2
-        version: 2.2.30(264b0421b14df812cccc9671425e724d)
+        version: 2.2.30(patch_hash=a26ae7412b1d225b09da9131a7271eb03aa6e17e9b0b3e83c7177bf1d4119eeb)(264b0421b14df812cccc9671425e724d)
       '@mpxjs/vue-cli-plugin-mpx-typescript':
         specifier: ^2.2.2
         version: 2.2.30(typescript@6.0.3)(webpack@5.110.2)
@@ -45537,7 +45538,7 @@ snapshots:
       - typescript
       - webpack
 
-  '@mpxjs/vue-cli-plugin-mpx@2.2.30(264b0421b14df812cccc9671425e724d)':
+  '@mpxjs/vue-cli-plugin-mpx@2.2.30(patch_hash=a26ae7412b1d225b09da9131a7271eb03aa6e17e9b0b3e83c7177bf1d4119eeb)(264b0421b14df812cccc9671425e724d)':
     dependencies:
       '@mpxjs/cli-shared-utils': 2.2.30
       '@mpxjs/webpack-plugin': 2.11.1(@mpxjs/core@2.11.1)(supports-color@10.2.2)(vue@2.7.16)(webpack@5.110.2)
@@ -45645,7 +45646,7 @@ snapshots:
       - webpack-cli
       - whiskers
 
-  '@mpxjs/vue-cli-plugin-mpx@2.2.30(6d45e83fbbad385e5b7e75687ea85af9)':
+  '@mpxjs/vue-cli-plugin-mpx@2.2.30(patch_hash=a26ae7412b1d225b09da9131a7271eb03aa6e17e9b0b3e83c7177bf1d4119eeb)(6d45e83fbbad385e5b7e75687ea85af9)':
     dependencies:
       '@mpxjs/cli-shared-utils': 2.2.30
       '@mpxjs/webpack-plugin': 2.11.1(@mpxjs/core@2.11.1)(supports-color@10.2.2)(vue@2.7.16)(webpack@5.105.4)
