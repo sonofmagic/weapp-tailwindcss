@@ -168,6 +168,10 @@
     - postcss-style-value-ownership
     - runtime-signature-native-analysis
     - tiny-tables-study
+"@weapp-tailwindcss/postcss@3.3.7":
+  dir: packages/postcss
+  intents:
+    - consistent-color-parser-instances
 "@weapp-tailwindcss/react-native@0.2.19":
   dir: packages/react-native
   intents:

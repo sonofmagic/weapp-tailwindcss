@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 3.3.7
+
+### Patch Changes
+
+- 将颜色解析器及其 AST 依赖一起打包，避免独立安装出现多份 parser 实例时丢失主题颜色和透明度工具类。
+
 ## 3.3.6
 
 ### Patch Changes

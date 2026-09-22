@@ -1,5 +1,12 @@
 # weapp-tailwindcss
 
+## 5.5.8
+
+### Patch Changes
+
+- Updated dependencies:
+  - @weapp-tailwindcss/postcss@3.3.7
+
 ## 5.5.7
 
 ### Patch Changes
