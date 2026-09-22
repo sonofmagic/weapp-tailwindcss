@@ -119,6 +119,12 @@ export function assertUniWatchBuildComplete(log, offset = 0) {
   }
 }
 
+export function assertMpxWatchBuildComplete(log, offset = 0) {
+  const current = stripVTControlCharacters(log.slice(offset))
+  const completed = [...current.matchAll(/Compiled (?:successfully|with some warnings)/g)].at(-1)
+  assert.ok(completed && completed.index > current.lastIndexOf('Compiling '), 'Mpx has not completed this compilation')
+}
+
 export function assertGulpWatchBuildComplete(log, offset = 0) {
   const current = stripVTControlCharacters(log.slice(offset))
   const completed = Math.max(current.lastIndexOf('build complete'), offset === 0 ? current.lastIndexOf('watching for changes') : -1)

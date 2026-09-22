@@ -23,6 +23,7 @@ it('Mpx 普通编译错误继续监听并允许下一轮恢复', async () => {
     timeout: 10_000,
   })
   expect(result.timedOut).toBe(false)
+  expect(result.exitCode, result.stderr || result.stdout).toBe(0)
   expect(result.stdout).toContain('recoverable-error')
   expect(result.stdout).toContain('recovered')
   expect(result.exitCode).toBe(0)

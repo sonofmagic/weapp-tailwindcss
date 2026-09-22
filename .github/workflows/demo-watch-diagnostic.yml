@@ -48,6 +48,8 @@ jobs:
           node-version: ${{ matrix.node || 24 }}
       - run: pnpm build:ci
       - run: pnpm exec playwright install chromium
+      - if: inputs.mpx
+        run: node scripts/ci/demo-matrix/fixtures/mpx-fatal-watch.cjs recoverable
       - run: pnpm test:demo:matrix
         env:
           CI: '1'

@@ -3,7 +3,20 @@ import process from 'node:process'
 import { execa } from 'execa'
 import { expect, it } from 'vitest'
 import { repo } from './catalog.mjs'
-import { assertGulpWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, assertViteWatchBuildComplete, developmentEnvironment } from './process.mjs'
+import { assertGulpWatchBuildComplete, assertMpxWatchBuildComplete, assertTaroWatchBuildComplete, assertUniWatchBuildComplete, assertViteWatchBuildComplete, developmentEnvironment } from './process.mjs'
+
+it('Mpx 必须完成当前编译才能归档产物，旧轮次与失败状态不能放行', () => {
+  const initial = '[info] Compiling Ali-development\n'
+  const ready = `${initial}\u001B[32m  Compiled successfully\u001B[0m\n`
+  expect(() => assertMpxWatchBuildComplete(initial)).toThrow()
+  expect(() => assertMpxWatchBuildComplete(ready)).not.toThrow()
+  expect(() => assertMpxWatchBuildComplete(ready, ready.length)).toThrow()
+  const pending = `${ready}${initial}`
+  expect(() => assertMpxWatchBuildComplete(pending)).toThrow()
+  expect(() => assertMpxWatchBuildComplete(`${pending}Compiled with some errors\n`)).toThrow()
+  expect(() => assertMpxWatchBuildComplete(`${pending}Compiled with some warnings\n`, ready.length)).not.toThrow()
+  expect(() => assertMpxWatchBuildComplete(`${pending}Compiled successfully\n`, ready.length)).not.toThrow()
+})
 
 it('waits for Gulp to finish all streams before copying output or starting another edit', () => {
   const initial = '[03:19:19] Finished \'copyWXML\' after 29 ms\n[03:19:19] Starting \'compileTsFiles\'...\n'
