@@ -32,7 +32,7 @@ style-injector-uni-app 的测试成功，但上传证据的 FinalizeArtifact 返
 
 旧 demo 包装器在回归模式下遇到子进程退出 0 会启动永久定时器，已通过真实子进程用例复现并移除。
 
-新增恢复夹具在 Windows Node 24 上另行暴露了 libuv 的 `!_wcsnicmp(filename, dir, dirlen)` 原生断言（[Node 上游记录](https://github.com/nodejs/node/issues/63638)）。临时目录的 8.3 别名需要先通过 realpath 解析，和已有真实 watcher 夹具采用同一边界；不降级 Node、不跳过 Windows 回归。这与原始退出码 0 的故障不同，原生断言会直接以非零退出。
+新增恢复夹具在 Windows Node 24 上另行暴露了 libuv 的 `!_wcsnicmp(filename, dir, dirlen)` 原生断言（[Node 上游记录](https://github.com/nodejs/node/issues/63638)、[libuv 复现与根因](https://github.com/libuv/libuv/issues/5010)）。临时目录的 8.3 别名需要先通过原生 realpath 解析；第一次误用了 JS 实现的 realpathSync，它不会展开这种别名，Windows 复验仍然崩溃。纠正为 realpathSync.native，与已有异步 realpath 夹具采用同一原生解析边界；不降级 Node、不跳过 Windows 回归。这与原始退出码 0 的故障不同，原生断言会直接以非零退出。
 
 ## 验证
 
