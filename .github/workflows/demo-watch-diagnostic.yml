@@ -53,8 +53,14 @@ jobs:
           DEMO_MATRIX_WATCH_DIAGNOSTICS: ${{ startsWith(matrix.case, 'mpx-') && '1' || '0' }}
         run: |
           export NODE_OPTIONS="$NODE_OPTIONS --trace-exit --trace-uncaught --require=$GITHUB_WORKSPACE/scripts/ci/demo-matrix/process-diagnostic.cjs"
+          if [[ "$DEMO_CASE" == mpx-* ]]; then
+            unset DEBUG
+          fi
           if [[ "$DEMO_CASE" == *webpack* ]]; then
             export NODE_OPTIONS="$NODE_OPTIONS --require=$GITHUB_WORKSPACE/scripts/ci/demo-matrix/watch-diagnostic.cjs"
+          fi
+          if [[ "${{ inputs.mpx }}" == true ]]; then
+            export DEMO_MATRIX_CASES='["mpx-tailwindcss-v4:wx","mpx-tailwindcss-v4:ali","mpx-tailwindcss-v4:swan","mpx-tailwindcss-v4:tt"]'
           fi
           for attempt in 1 2 3; do
             DEMO_MATRIX_ARTIFACT_DIR="e2e/.artifacts/watch-diagnostic/$attempt" pnpm e2e:demo:matrix "$DEMO_CASE" || exit 1
