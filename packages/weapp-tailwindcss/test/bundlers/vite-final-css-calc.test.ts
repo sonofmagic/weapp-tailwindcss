@@ -88,6 +88,26 @@ describe('Vite 最终 CSS 作用域静态化', () => {
     expect(bundle['utilities.acss'].source).toContain('width:32rpx')
   })
 
+  it('新资产即使恰好等于上一轮静态结果，也不恢复旧表达式', async () => {
+    const ctx = context()
+    const entrySource = '@import "./utilities.acss";@import "./author.acss";'
+    const bundle = {
+      'entry.acss': asset('entry.acss', entrySource),
+      'utilities.acss': asset('utilities.acss', utility),
+      'author.acss': asset('author.acss', '.scope{color:red}'),
+    }
+    await finalizeCssCalc(bundle, ctx, true)
+    const literal = String(bundle['utilities.acss'].source)
+    const nextBundle = {
+      'entry.acss': asset('entry.acss', entrySource),
+      'utilities.acss': asset('utilities.acss', literal),
+      'author.acss': asset('author.acss', '.scope{--spacing:2rpx}'),
+    }
+    await finalizeCssCalc(nextBundle, ctx, true)
+    expect(nextBundle['utilities.acss'].source).toBe(literal)
+    expect(nextBundle['utilities.acss'].source).toContain('width:32rpx')
+  })
+
   it('跨资产计算后才按配置转换单位和舍入', async () => {
     const ctx = context({ rem2rpx: { rootValue: 32, unitPrecision: 2, propList: ['*'], transformUnit: 'rpx' } })
     const bundle = {

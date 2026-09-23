@@ -6,6 +6,7 @@ import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
 import { collectCssCalcScopes } from './css-scope-graph'
 
 interface FinalizedCss {
+  asset: OutputAsset
   original: string
   final: string
 }
@@ -34,7 +35,7 @@ export async function finalizeCssCalc(bundle: OutputBundle, context: CssFinalize
   // Rollup/watch 可能重用上一轮资产对象；求值前恢复我们持有的原始表达式。
   for (const [file, asset] of assets) {
     const prior = previous.get(file)
-    if (prior && readSource(asset) === prior.final) {
+    if (prior?.asset === asset && readSource(asset) === prior.final) {
       asset.source = prior.original
     }
   }
@@ -61,7 +62,7 @@ export async function finalizeCssCalc(bundle: OutputBundle, context: CssFinalize
           postcssOptions: { options: { from: path.resolve(root ?? '.', outDir ?? '.', file) } },
         })
       : calculated
-    next.set(file, { original, final: css })
+    next.set(file, { asset, original, final: css })
     if (css !== original) {
       asset.source = css
       // 不把作用域求值后的结果写回生成缓存，下一轮作者 CSS 可能改变安全性。
