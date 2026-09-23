@@ -97,15 +97,23 @@ export function mergeGeneratorResults(generatedResults: GeneratorResult[]) {
     .map(item => item.incrementalRawCss)
     .filter((css): css is string => typeof css === 'string')
   const customPropertyValues = new Map<string, string>()
+  const conflictingProperties = new Set<string>()
   for (const result of generatedResults) {
     for (const [name, value] of result.customPropertyValues ?? []) {
+      if (customPropertyValues.has(name) && customPropertyValues.get(name) !== value) {
+        conflictingProperties.add(name)
+      }
       customPropertyValues.set(name, value)
     }
+  }
+  for (const name of conflictingProperties) {
+    customPropertyValues.delete(name)
   }
   return {
     ...firstGenerated,
     css: deduplicateGeneratedCssRules(generatedResults.map(item => item.css).join('\n')),
     rawCss: deduplicateGeneratedCssRules(generatedResults.map(item => item.rawCss).join('\n')),
+    customPropertyContextCss: generatedResults.map(item => item.customPropertyContextCss ?? item.rawCss).join('\n'),
     incrementalCss: incrementalCssResults.length === generatedResults.length
       ? incrementalCssResults.filter(Boolean).join('\n')
       : undefined,
@@ -115,7 +123,7 @@ export function mergeGeneratorResults(generatedResults: GeneratorResult[]) {
     classSet: new Set(generatedResults.flatMap(item => [...item.classSet])),
     dependencies: [...new Set(generatedResults.flatMap(item => item.dependencies))],
     sources: generatedResults.flatMap(item => item.sources),
-    ...(customPropertyValues.size > 0 ? { customPropertyValues } : {}),
+    customPropertyValues,
   }
 }
 export type GeneratorResult = Omit<CompilerGenerateResult, 'cache' | 'revision' | 'snapshot'> & {

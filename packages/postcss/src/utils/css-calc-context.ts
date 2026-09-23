@@ -15,9 +15,13 @@ export function isCssCalcThemeDeclaration(decl: Declaration) {
     || !rule.selectors.every(selector => MINI_PROGRAM_THEME_SCOPE_SELECTORS.has(selector.trim()))) {
     return false
   }
+  // 生成主题根可以包含兼容别名，但单独的局部别名不覆盖文档根。
+  if (!rule.selectors.some(selector => [':root', 'page'].includes(selector.trim()))) {
+    return false
+  }
   let parent = rule.parent
   while (parent && parent.type !== 'root') {
-    if (parent.type !== 'atrule' || parent.name !== 'layer') {
+    if (parent.type !== 'atrule' || parent.name.toLowerCase() !== 'layer') {
       return false
     }
     parent = parent.parent
@@ -28,7 +32,7 @@ export function isCssCalcThemeDeclaration(decl: Declaration) {
 function isSourceThemeDeclaration(decl: Declaration) {
   let parent = decl.parent
   while (parent && parent.type !== 'root') {
-    if (parent.type === 'atrule' && parent.name === 'theme') {
+    if (parent.type === 'atrule' && parent.name.toLowerCase() === 'theme') {
       return true
     }
     parent = parent.parent
@@ -57,8 +61,10 @@ export function analyzeCssCalcContext(css: string, explicitValues?: ReadonlyMap<
   const unsafeCustomProperties = new Set<string>()
   try {
     const root = postcss.parse(css)
-    root.walkAtRules('property', (rule) => {
-      unsafeCustomProperties.add(rule.params.trim())
+    root.walkAtRules((rule) => {
+      if (rule.name.toLowerCase() === 'property') {
+        unsafeCustomProperties.add(rule.params.trim())
+      }
     })
     root.walkDecls((decl) => {
       if (!decl.prop.startsWith('--') || isSourceThemeDeclaration(decl)) {

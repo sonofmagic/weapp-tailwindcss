@@ -4,11 +4,11 @@ import { createTailwindV4Engine as createEngineTailwindV4Engine, extractRawCandi
 import { resolveCssMacroTailwindV4Source } from '../css-macro-source'
 import { transformTailwindV4CssByTarget } from '../miniprogram'
 import { createCompatibleSource } from './css-compat'
-import { collectCandidates, createIncrementalGenerateCacheKey, createIncrementalStyleOptions, createTailwindV4SourceCacheKey, hasRemovedCandidates, incrementalGenerateCache, mergeCustomPropertyValues, normalizeTargetRpxLengthCandidates, resolveStyleOptions, resolveTargetCandidates, runIncrementalGenerateTask, seedIncrementalGenerateCache, shouldRebuildIncrementalEntry } from './incremental-cache'
+import { collectCandidates, createIncrementalGenerateCacheKey, createIncrementalStyleOptions, createTailwindV4SourceCacheKey, hasRemovedCandidates, incrementalGenerateCache, normalizeTargetRpxLengthCandidates, resolveStyleOptions, resolveTargetCandidates, runIncrementalGenerateTask, seedIncrementalGenerateCache, shouldRebuildIncrementalEntry } from './incremental-cache'
 import { createEngineSourceEntries, serializeTailwindGenerationArtifact, TailwindV4NativeSessionPool } from './native-session'
 import { restoreRpxLengthCandidates, restoreRpxLengthCssSelectors } from './rpx-candidates'
 import { resolveCompiledSourceRoot, resolveScanSources } from './scan-sources'
-import { resolveGenerationStyleContext } from './style-context'
+import { hasChangedCssCalcContext, resolveGenerationStyleContext } from './style-context'
 
 function isCssSyntaxError(error: unknown) {
   return error instanceof Error && error.name === 'CssSyntaxError'
@@ -120,6 +120,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       css,
       rawCss,
       target,
+      customPropertyContextCss: styleContext?.customPropertyContextCss,
       ...(styleContext?.customPropertyValues
         ? { customPropertyValues: new Map(styleContext.customPropertyValues) }
         : {}),
@@ -190,6 +191,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           classSet: new Set(cached.classSet),
           rawCandidates: new Set(cached.seenCandidates),
           customPropertyValues: new Map(cached.customPropertyValues),
+          customPropertyContextCss: resolveGenerationStyleContext(compatibleSource.css, cached.rawCss, styleOptions)?.customPropertyContextCss,
           dependencies: cached.dependencies,
           sources: cached.sources,
           root: cached.root,
@@ -230,10 +232,16 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           }
         }
         const rawCss = rawCssParts.join('\n')
+        const fullRawCss = [cached.rawCss, rawCss].filter(Boolean).join('\n')
+        if (hasChangedCssCalcContext(cached.rawCss, fullRawCss, styleOptions)) {
+          const generated = await generateOnce(cssMacroSource, options)
+          seedIncrementalGenerateCache({ compatibleSource, generated, requestedCandidates, styleOptions, target })
+          return generated
+        }
+        const styleContext = resolveGenerationStyleContext(compatibleSource.css, fullRawCss, styleOptions)
         const incrementalCss = rawCss.length > 0
           ? await transformTailwindV4CssByTarget(rawCss, target, {
-              ...createIncrementalStyleOptions(styleOptions),
-              customPropertyValues: cached.customPropertyValues,
+              ...createIncrementalStyleOptions(styleContext),
             } as Partial<IStyleHandlerOptions>)
           : ''
 
@@ -244,8 +252,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           cached.classSet.add(className)
         }
         cached.css = [cached.css, incrementalCss].filter(Boolean).join('\n')
-        cached.rawCss = [cached.rawCss, rawCss].filter(Boolean).join('\n')
-        mergeCustomPropertyValues(cached.customPropertyValues, incrementalCss)
+        cached.rawCss = fullRawCss
         return {
           css: cached.css,
           rawCss: cached.rawCss,
@@ -254,6 +261,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           classSet: new Set(cached.classSet),
           rawCandidates: new Set(cached.seenCandidates),
           customPropertyValues: new Map(cached.customPropertyValues),
+          customPropertyContextCss: styleContext?.customPropertyContextCss,
           dependencies: cached.dependencies,
           sources: cached.sources,
           root: cached.root,

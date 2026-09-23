@@ -107,7 +107,7 @@ export function collectCssCalcScopes(bundle: OutputBundle, options: {
         const trailingParams = params.slice(params.indexOf(parsed.raw) + parsed.raw.length).trim()
         let conditional = trailingParams.length > 0 || Boolean(rule.raws.between?.trim())
         let ancestor = rule.parent
-        while (ancestor && !conditional) {
+        while (ancestor && ancestor.type !== 'root' && !conditional) {
           conditional = ancestor.type === 'atrule'
           ancestor = ancestor.parent
         }

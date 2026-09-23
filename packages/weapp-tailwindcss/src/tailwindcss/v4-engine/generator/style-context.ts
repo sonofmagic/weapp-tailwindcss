@@ -1,23 +1,48 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import { collectCustomPropertyValues, mergeCustomPropertyValues } from './incremental-cache'
+import { analyzeCssCalcContext } from '@weapp-tailwindcss/postcss/transform'
 
 type GenerationStyleOptions = Partial<IStyleHandlerOptions>
+
+export function hasCssCalcVariables(options?: GenerationStyleOptions) {
+  const calc = options?.cssOptions?.cssCalc ?? options?.cssCalc
+  const include = Array.isArray(calc) ? calc : calc && typeof calc === 'object' ? calc.includeCustomProperties : undefined
+  return calc === true || Boolean(include?.length)
+}
 
 export function resolveGenerationStyleContext(
   sourceCss: string,
   generatedCss: string,
   options?: GenerationStyleOptions,
 ): GenerationStyleOptions | undefined {
-  const calc = options?.cssOptions?.cssCalc ?? options?.cssCalc
-  const include = Array.isArray(calc) ? calc : calc && typeof calc === 'object' ? calc.includeCustomProperties : undefined
   // 完整产物的颜色等兼容处理会读取当前 AST；仅 calc 显式需要变量时额外收集上下文。
-  if (calc !== true && !include?.length) {
+  if (!hasCssCalcVariables(options)) {
     return options
   }
-  const customPropertyValues = collectCustomPropertyValues(sourceCss)
-  mergeCustomPropertyValues(customPropertyValues, generatedCss)
-  for (const [name, value] of options?.customPropertyValues ?? []) {
-    customPropertyValues.set(name, value)
+  return {
+    ...options,
+    // 原始声明保留作用域身份，不能把推导值伪装成调用方显式常量。
+    customPropertyContextCss: [options?.customPropertyContextCss, sourceCss, generatedCss].filter(Boolean).join('\n'),
   }
-  return { ...options, customPropertyValues }
+}
+
+/** 新增候选改变静态变量资格时，需要重算已有规则，不能只追加新 CSS。 */
+export function hasChangedCssCalcContext(previousCss: string, nextCss: string, options?: GenerationStyleOptions) {
+  if (!hasCssCalcVariables(options)) {
+    return false
+  }
+  const calc = options?.cssOptions?.cssCalc ?? options?.cssCalc
+  const include = Array.isArray(calc) ? calc : calc && typeof calc === 'object' ? calc.includeCustomProperties : undefined
+  const selected = (name: string) => calc === true || include?.some((entry) => {
+    if (typeof entry === 'string') {
+      return entry === name
+    }
+    return new RegExp(entry.source, entry.flags).test(name)
+  })
+  const values = (css: string) => {
+    const context = [options?.customPropertyContextCss, css].filter(Boolean).join('\n')
+    return new Map([...analyzeCssCalcContext(context, options?.customPropertyValues ?? (calc && typeof calc === 'object' && !Array.isArray(calc) ? calc.customPropertyValues : undefined)).customPropertyValues].filter(([name]) => selected(name)))
+  }
+  const previous = values(previousCss)
+  const next = values(nextCss)
+  return previous.size !== next.size || [...previous].some(([name, value]) => next.get(name) !== value)
 }

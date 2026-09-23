@@ -30,10 +30,10 @@ describe('style processing pipeline', () => {
     const pipeline = createStylePipeline(options)
     const ids = pipeline.nodes.map(node => node.id)
     expect(ids).toEqual([
+      'pre:calc',
       'pre:core',
       'normal:preset-env',
       'normal:color-functional-fallback',
-      'normal:calc',
       'normal:px-transform',
       'normal:rem-transform',
       'normal:calc-duplicate-cleaner',
@@ -330,7 +330,7 @@ describe('signal-driven pipeline pruning', () => {
     expect(ids).toContain('normal:px-transform')
     expect(ids).toContain('normal:rem-transform')
     expect(ids).toContain('normal:unit-conversion')
-    expect(ids).toContain('normal:calc')
+    expect(ids).toContain('pre:calc')
     expect(ids).toContain('normal:calc-duplicate-cleaner')
     expect(ids).toContain('normal:custom-property-cleaner')
     expect(ids).toContain('pre:core')

@@ -5,10 +5,11 @@ import { runCompilerOwnerActivity } from '@/compiler/compiler-owner-state'
 import { getFrameworkCompilerSession } from '@/compiler/framework-compiler-session'
 import { getCompilationSessionPool } from '@/compiler/index'
 import { getTailwindGenerationSessionPool } from '@/compiler/tailwind-generation-session-pool'
+import { hasCssCalcVariables } from '@/tailwindcss/v4-engine/generator/style-context'
 import { includesTailwindV4PreflightDirective } from '@/tailwindcss/v4/preflight'
 import { collectRpxThemeRiskSources, shouldCheckRpxThemeRisk } from '@/tailwindcss/v4/rpx-theme-warning'
 import { runWithConcurrency } from '../../utils/run-tasks'
-import { mergeGeneratorResults, resolveMiniProgramPreflightModeForGeneratorCss, shouldScanTailwindV4Sources } from '../generation-helpers'
+import { resolveMiniProgramPreflightModeForGeneratorCss, shouldScanTailwindV4Sources } from '../generation-helpers'
 import { stripTailwindBanner } from '../markers'
 import { filterApplyOnlyGeneratedCss, shouldFilterApplyOnlyGeneratedCss } from '../user-css'
 import { createAuthorCssFunctionCompiler } from '../user-css/compile-functions'
@@ -17,6 +18,7 @@ import { finalizeFallbackGeneratorCss } from './fallback-output'
 import { finalizeOrderedGeneratorCss } from './ordered-output'
 
 import { prepareGeneratorInputs, resolveCompilationDependencies } from './preparation'
+import { mergeGeneratorResultsForOutput } from './style-context'
 
 export async function executeGeneratorPipeline(
   context: GeneratorPipelineExecutionContext,
@@ -42,6 +44,14 @@ async function executeGeneratorPipelineWithOwner(
     ? getFrameworkCompilerSession(runtimeState, opts)
     : undefined
   const { isolateCurrentCssCandidates, runtimeWithCurrentCss, generatorSourceRecords, generatorStyleOptions, configuredContainerCompat, sourceConcurrency, preparedGenerationInputs } = await prepareGeneratorInputs(context)
+  if (hasCssCalcVariables(generatorStyleOptions)) {
+    generatorStyleOptions.customPropertyContextCss = [
+      generatorStyleOptions.customPropertyContextCss,
+      context.generatedUserCssRawSource,
+      options.frameworkProcessedUserCss,
+      ...preparedGenerationInputs.map(input => input.generatorSource.css),
+    ].filter(Boolean).join('\n')
+  }
   const generatePreparedInputs = async (candidateSets?: Map<string, Set<string>>) => {
     return runWithConcurrency(preparedGenerationInputs.map(input => async () => {
       const projectedCandidates = candidateSets?.get(input.sourceId)
@@ -113,7 +123,7 @@ async function executeGeneratorPipelineWithOwner(
         preparedGenerationInputs.map(input => input.sourceId),
       )
       const results = await generatePreparedInputs(compilation.candidatesBySource)
-      const merged = mergeGeneratorResults(results.map(result => result.generated))
+      const merged = await mergeGeneratorResultsForOutput(results.map(result => result.generated), generatorStyleOptions)
       return merged
         ? {
             classSet: merged.classSet,
@@ -153,12 +163,16 @@ async function executeGeneratorPipelineWithOwner(
     compilationRevision = execution.compilation.revision
   }
   else {
-    generated = mergeGeneratorResults(
+    generated = await mergeGeneratorResultsForOutput(
       (await generatePreparedInputs()).map(result => result.generated),
+      generatorStyleOptions,
     )
   }
   if (!generated) {
     return undefined
+  }
+  if (generated.customPropertyContextCss) {
+    generatorStyleOptions.customPropertyContextCss = generated.customPropertyContextCss
   }
   debug(
     'tailwind generator result: %s rawBytes=%d cssBytes=%d candidates=%d',

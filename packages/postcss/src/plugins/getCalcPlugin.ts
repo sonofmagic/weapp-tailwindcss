@@ -25,24 +25,17 @@ export function getCalcPlugin(options: IStyleHandlerOptions): AcceptedPlugin | n
   const selectAll = options.cssCalc === true
   return {
     postcssPlugin: 'postcss-calc',
-    prepare(result) {
-      // prepare 早于主题选择器及层叠层改写，避免丢失作用域信息。
-      const context = analyzeCssCalcContext(
-        [contextCss, result.root.toString()].join('\n'),
-        explicitValues,
-      )
-      return {
-        Once(root, helpers) {
-          const includeCustomProperties = [...context.customPropertyValues.keys()]
-            .filter(name => selectAll || isSelected(name, includes))
-          const plugin = postcssCalc({
-            ...configured,
-            customPropertyValues: context.customPropertyValues,
-            includeCustomProperties,
-          }) as Plugin
-          return plugin.OnceExit?.(root, helpers)
-        },
-      }
+    Once(root, helpers) {
+      // 上游作者插件阶段已经完成；在主题作用域和单位改写前读取当前 AST。
+      const context = analyzeCssCalcContext([contextCss, root.toString()].join('\n'), explicitValues)
+      const includeCustomProperties = [...context.customPropertyValues.keys()]
+        .filter(name => selectAll || isSelected(name, includes))
+      const plugin = postcssCalc({
+        ...configured,
+        customPropertyValues: context.customPropertyValues,
+        includeCustomProperties,
+      }) as Plugin
+      return plugin.OnceExit?.(root, helpers)
     },
   }
 }

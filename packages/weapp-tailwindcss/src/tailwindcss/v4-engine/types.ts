@@ -98,6 +98,8 @@ export interface TailwindV4GenerateResult extends Omit<EngineTailwindV4GenerateR
   rawCss: string
   /** 构建期解析出的 CSS 自定义属性上下文，供延后小程序样式适配使用。 */
   customPropertyValues?: ReadonlyMap<string, string> | undefined
+  /** 保留变量声明作用域的原始上下文；推导声明不得当作显式常量覆盖。 */
+  customPropertyContextCss?: string | undefined
   /**
    * 本次增量新增的转换后 CSS。
    */

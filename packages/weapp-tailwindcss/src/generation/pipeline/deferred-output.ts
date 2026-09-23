@@ -24,8 +24,8 @@ export async function finalizeDeferredGeneratorCss(
         ? await normalizeMiniProgramGeneratedCssForPostcss(generationCss, {
             cssCalc: generatorStyleOptions.cssCalc,
             cssOptions: generatorStyleOptions.cssOptions,
-            customPropertyValues: generated.customPropertyValues ?? generatorStyleOptions.customPropertyValues,
-            contextCss: generated.rawCss,
+            customPropertyValues: generatorStyleOptions.customPropertyValues,
+            contextCss: generated.customPropertyContextCss ?? generated.rawCss,
             preservePreflight: true,
             preserveRawClassRules: true,
           })
