@@ -6,6 +6,7 @@ import parserModule from '../parser.cjs';
 import type { CalcNode } from '../parser';
 import reducer from './reducer.ts';
 import stringifier from './stringifier.ts';
+import { isCustomPropertyName } from './custom-properties.ts';
 
 const { parser } = parserModule;
 
@@ -30,27 +31,31 @@ function shouldResolveProperty(name: string, options: TransformOptions) {
 }
 
 function resolveCustomProperties(value: string, options: TransformOptions, stack = new Set<string>()): string {
+  const customPropertyValues = options.customPropertyValues
   // 只有确实包含 var() 时才构造 value AST，避免普通 calc 声明承担额外开销。
   if (
-    !options.customPropertyValues ||
+    !customPropertyValues ||
     !options.includeCustomProperties?.length ||
     !value.includes('var(')
   ) return value
   const parsed = valueParser(value)
-  parsed.walk((node) => {
+  parsed.walk((node, index, nodes) => {
     if (node.type !== 'function' || node.value !== 'var') return
     const comma = node.nodes.findIndex(child => child.type === 'div' && child.value === ',')
     const name = valueParser.stringify(comma >= 0 ? node.nodes.slice(0, comma) : node.nodes).trim()
-    if (!name.startsWith('--') || !shouldResolveProperty(name, options) || stack.has(name)) return
-    const resolved = options.customPropertyValues.get(name)
+    if (!isCustomPropertyName(name) || !shouldResolveProperty(name, options) || stack.has(name)) return
+    const resolved = customPropertyValues.get(name)
     const fallback = comma >= 0 ? valueParser.stringify(node.nodes.slice(comma + 1)).trim() : undefined
     const replacement = resolved !== undefined
       ? resolveCustomProperties(resolved, options, new Set([...stack, name]))
       : fallback
     if (replacement === undefined) return
-    node.type = 'word'
-    node.value = replacement
-    delete node.nodes
+    nodes[index] = {
+      type: 'word',
+      value: replacement,
+      sourceIndex: node.sourceIndex,
+      sourceEndIndex: node.sourceEndIndex,
+    }
     return false
   })
   return parsed.toString()

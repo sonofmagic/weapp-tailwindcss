@@ -2,6 +2,7 @@ import type { Declaration } from 'postcss'
 import postcss from 'postcss'
 import valueParser from 'postcss-value-parser'
 import { MINI_PROGRAM_THEME_SCOPE_SELECTORS } from '../compat/mini-program-css/selectors'
+import { decodeCssIdentifier, getCssAtRulePrelude, getCssCalcVariableReferences, getCssCustomPropertyName, isCssVarFunction } from './css-custom-property'
 
 export interface CssCalcContext {
   customPropertyValues: Map<string, string>
@@ -21,7 +22,7 @@ export function isCssCalcThemeDeclaration(decl: Declaration) {
   }
   let parent = rule.parent
   while (parent && parent.type !== 'root') {
-    if (parent.type !== 'atrule' || parent.name.toLowerCase() !== 'layer') {
+    if (parent.type !== 'atrule' || getCssAtRulePrelude(parent).name.toLowerCase() !== 'layer') {
       return false
     }
     parent = parent.parent
@@ -32,7 +33,7 @@ export function isCssCalcThemeDeclaration(decl: Declaration) {
 function isSourceThemeDeclaration(decl: Declaration) {
   let parent = decl.parent
   while (parent && parent.type !== 'root') {
-    if (parent.type === 'atrule' && parent.name.toLowerCase() === 'theme') {
+    if (parent.type === 'atrule' && getCssAtRulePrelude(parent).name.toLowerCase() === 'theme') {
       return true
     }
     parent = parent.parent
@@ -41,19 +42,11 @@ function isSourceThemeDeclaration(decl: Declaration) {
 }
 
 function getDependencies(value: string) {
-  const dependencies = new Set<string>()
-  valueParser(value).walk((node) => {
-    if (node.type === 'function' && node.value.toLowerCase() === 'var') {
-      const comma = node.nodes.findIndex(child => child.type === 'div' && child.value === ',')
-      const name = valueParser.stringify(comma < 0 ? node.nodes : node.nodes.slice(0, comma)).trim()
-      dependencies.add(name)
-    }
-  })
-  return dependencies
+  return new Set(getCssCalcVariableReferences(value).values())
 }
 
 function isCssWideValue(value: string) {
-  return /^(?:initial|inherit|unset|revert|revert-layer)$/i.test(value)
+  return /^(?:initial|inherit|unset|revert|revert-layer)$/i.test(decodeCssIdentifier(value) ?? value)
 }
 
 /**
@@ -66,21 +59,23 @@ export function analyzeCssCalcContext(css: string, explicitValues?: ReadonlyMap<
   try {
     const root = postcss.parse(css)
     root.walkAtRules((rule) => {
-      if (rule.name.toLowerCase() === 'property') {
-        unsafeCustomProperties.add(rule.params.trim())
+      const prelude = getCssAtRulePrelude(rule)
+      if (prelude.name.toLowerCase() === 'property') {
+        unsafeCustomProperties.add(getCssCustomPropertyName(prelude.params) ?? prelude.params.trim())
       }
     })
     root.walkDecls((decl) => {
-      if (!decl.prop.startsWith('--') || isSourceThemeDeclaration(decl)) {
+      const name = getCssCustomPropertyName(decl.prop)
+      if (!name || isSourceThemeDeclaration(decl)) {
         return
       }
       const value = decl.value.trim()
       if (!isCssCalcThemeDeclaration(decl) || isCssWideValue(value)
-        || (customPropertyValues.has(decl.prop) && customPropertyValues.get(decl.prop) !== value)) {
-        unsafeCustomProperties.add(decl.prop)
+        || (customPropertyValues.has(name) && customPropertyValues.get(name) !== value)) {
+        unsafeCustomProperties.add(name)
       }
       else {
-        customPropertyValues.set(decl.prop, value)
+        customPropertyValues.set(name, value)
       }
     })
   }
@@ -91,8 +86,9 @@ export function analyzeCssCalcContext(css: string, explicitValues?: ReadonlyMap<
 
   // 显式值只替换求值候选，源码依赖不能因此消失，否则会掩盖动态覆盖、循环和未解析别名。
   const dependencies = new Map([...customPropertyValues].map(([name, value]) => [name, getDependencies(value)]))
-  for (const [name, value] of explicitValues ?? []) {
-    if (!unsafeCustomProperties.has(name)) {
+  for (const [rawName, value] of explicitValues ?? []) {
+    const name = getCssCustomPropertyName(rawName)
+    if (name && !unsafeCustomProperties.has(name)) {
       customPropertyValues.set(name, value)
       dependencies.set(name, new Set([
         ...dependencies.get(name) ?? [],
@@ -128,11 +124,12 @@ export function analyzeCssCalcContext(css: string, explicitValues?: ReadonlyMap<
     if (dependencies.get(name)?.size) {
       const parsed = valueParser(value)
       parsed.walk((node, index, nodes) => {
-        if (node.type !== 'function' || node.value.toLowerCase() !== 'var') {
+        if (node.type !== 'function' || !isCssVarFunction(node.value)) {
           return
         }
         const comma = node.nodes.findIndex(child => child.type === 'div' && child.value === ',')
-        const dependency = valueParser.stringify(comma < 0 ? node.nodes : node.nodes.slice(0, comma)).trim()
+        const rawDependency = valueParser.stringify(comma < 0 ? node.nodes : node.nodes.slice(0, comma))
+        const dependency = getCssCustomPropertyName(rawDependency) ?? rawDependency.trim()
         nodes[index] = {
           type: 'word',
           value: customPropertyValues.get(dependency)!,

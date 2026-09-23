@@ -287,7 +287,7 @@ describe('getCalcPlugin', () => {
       },
     })) as Plugin | null
 
-    await postcss([plugin!]).process(':root { --keep: 1rpx }', { from: undefined })
+    await postcss([plugin!]).process(':root { --keep: 1rpx } .x { width: calc(var(--keep) * 2) }', { from: undefined })
     expect(calcMock).toHaveBeenCalledTimes(1)
     expect(calcMock).toHaveBeenCalledWith({ includeCustomProperties: ['--keep'], precision: 6, customPropertyValues: new Map([['--keep', '1rpx']]) })
     expect(plugin?.postcssPlugin).toBe('postcss-calc')

@@ -1,5 +1,5 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import { analyzeCssCalcContext, collectCustomPropertyValues, mergeCustomPropertyValues } from '@weapp-tailwindcss/postcss/transform'
+import { analyzeCssCalcContext, collectCustomPropertyValues, isCssCalcCustomPropertySelected, mergeCustomPropertyValues } from '@weapp-tailwindcss/postcss/transform'
 
 type GenerationStyleOptions = Partial<IStyleHandlerOptions>
 
@@ -46,12 +46,7 @@ export function hasChangedCssCalcContext(previousCss: string, nextCss: string, o
   }
   const calc = options?.cssOptions?.cssCalc ?? options?.cssCalc
   const include = Array.isArray(calc) ? calc : calc && typeof calc === 'object' ? calc.includeCustomProperties : undefined
-  const selected = (name: string) => calc === true || include?.some((entry) => {
-    if (typeof entry === 'string') {
-      return entry === name
-    }
-    return new RegExp(entry.source, entry.flags).test(name)
-  })
+  const selected = (name: string) => calc === true || isCssCalcCustomPropertySelected(name, include)
   const values = (css: string) => {
     const context = [options?.customPropertyContextCss, css].filter(Boolean).join('\n')
     return new Map([...analyzeCssCalcContext(context, options?.customPropertyValues ?? (calc && typeof calc === 'object' && !Array.isArray(calc) ? calc.customPropertyValues : undefined)).customPropertyValues].filter(([name]) => selected(name)))
