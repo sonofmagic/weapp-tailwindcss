@@ -16,6 +16,7 @@ import { annotateCssSourceTrace, createCssTokenSourceMap, isCssSourceTraceEnable
 import { createBundlerGeneratedCssMarker } from '../../shared/generated-css-marker'
 import { createHmrTimingRecorder } from '../../shared/hmr-timing'
 import { createViteCssAssetIdentityResolver } from '../css-asset-identity'
+import { createViteCssCalcStage } from '../css-calc-stage'
 import { createViteWebCssFinalizerOutputPlugin } from '../css-finalizer/web-plugin'
 import { createCssHandlerOptionsCache } from '../css-handler-options'
 import { createViteCssMemory } from '../css-memory'
@@ -50,7 +51,8 @@ export function createCssOnlyVitePlugins(
   options: UserDefinedOptions | InternalUserDefinedOptions = {},
 ): Plugin[] | undefined {
   const rawOptions = options as UserDefinedOptions
-  const opts = 'tailwindRuntime' in options
+  let resolvedConfig: ResolvedConfig | undefined
+  const originalOpts = 'tailwindRuntime' in options
     ? options as InternalUserDefinedOptions
     : getCompilerContext({
         ...rawOptions,
@@ -62,6 +64,8 @@ export function createCssOnlyVitePlugins(
         __internalDeferMissingCssEntriesWarning: true,
         __internalViteDeferRuntimeLogs: true,
       } as UserDefinedOptions)
+  const cssCalcStage = createViteCssCalcStage(originalOpts, () => resolvedConfig?.command === 'build')
+  const opts = cssCalcStage.options
   const disabled = opts.disabled === true || (typeof opts.disabled === 'object' && opts.disabled.plugin === true)
   const shouldGenerate = !disabled && resolveWebGeneratorOptions(opts).enabled
   const sourceCandidateCollector = createSourceCandidateCollector({
@@ -89,7 +93,6 @@ export function createCssOnlyVitePlugins(
     getGeneratorOptions: () => resolveWebGeneratorOptions(opts),
     isRuntimeAffectingSource: () => false,
   })
-  let resolvedConfig: ResolvedConfig | undefined
   let recordedCandidates: Set<string> | undefined
   const processedCssRegistry = createFrameworkProcessedCssRegistry()
   const processedCssAssets = new WeakSet<object>()
@@ -224,6 +227,7 @@ export function createCssOnlyVitePlugins(
   })
   const finalizer = createViteWebCssFinalizerOutputPlugin({
     opts,
+    getFinalCssCalcOptions: cssCalcStage.getFinalOptions,
     runtimeState,
     ensureRuntimeClassSet: collectCssSourceCandidates,
     debug,

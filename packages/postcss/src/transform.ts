@@ -91,6 +91,7 @@ export {
   applyConfiguredCssCalc,
   type ApplyConfiguredCssCalcOptions,
 } from './plugins/applyConfiguredCssCalc'
+export { applyConfiguredCssUnits, type ApplyConfiguredCssUnitsOptions } from './plugins/applyConfiguredCssUnits'
 export { createFallbackPlaceholderReplacer } from './plugins/post/specificity-cleaner'
 
 export {

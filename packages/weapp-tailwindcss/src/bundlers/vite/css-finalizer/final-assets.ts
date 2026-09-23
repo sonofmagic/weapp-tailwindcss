@@ -1,10 +1,10 @@
 import type { OutputBundle } from 'rollup'
 import type { CssFinalizerContext } from './options'
 import { finalizeMiniProgramCssAssetStructures } from '../generate-bundle/final-css-assets'
-import { finalizeWebCssCalc } from './css-calc'
+import { finalizeCssCalc, finalizeWebCssCalc } from './css-calc'
 
 /** 按生成目标统一收尾已组装的 CSS 资产，供空资产和常规分支复用。 */
-export function finalizeCssAssets(
+export async function finalizeCssAssets(
   bundle: OutputBundle,
   context: CssFinalizerContext,
   isWebGeneratorTarget: boolean,
@@ -21,4 +21,5 @@ export function finalizeCssAssets(
     onUpdate: context.opts.onUpdate,
     recordCssAssetResult: context.recordCssAssetResult,
   })
+  await finalizeCssCalc(bundle, context, true)
 }

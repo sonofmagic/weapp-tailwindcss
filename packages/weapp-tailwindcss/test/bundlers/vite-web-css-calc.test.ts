@@ -37,14 +37,15 @@ describe('Vite Web 最终资产的 cssCalc', () => {
     expect(output.source).toContain('width:calc(var(--other)*2)')
     expect(html.source).toBe(`<style>${css}</style>`)
     expect(ctx.opts.onUpdate).toHaveBeenCalledWith('screen.css', css, output.source)
-    expect(ctx.recordCssAssetResult).toHaveBeenCalledWith('screen.css', output.source)
+    expect(ctx.recordCssAssetResult).not.toHaveBeenCalled()
   })
 
-  it('从唯一生成记录补充跨资产变量，并优先使用当前资产的声明', async () => {
-    const output = asset('page.css', '.raw{gap:calc(var(--spacing)*2)}')
+  it('只从当前消费作用域补充跨资产变量，隔离无依赖关系的主题', async () => {
+    const output = asset('page.css', '@import "./theme.css";.raw{gap:calc(var(--spacing)*2)}')
+    const theme = asset('theme.css', ':root{--spacing:.375rem}')
     const local = asset('local.css', ':root{--spacing:2px}.local{gap:calc(var(--spacing)*2)}')
     const ctx = context(['--spacing'], [':root{--spacing:.375rem}'])
-    await finalizeWebCssCalc({ 'page.css': output, 'local.css': local }, ctx)
+    await finalizeWebCssCalc({ 'page.css': output, 'theme.css': theme, 'local.css': local }, ctx)
     expect(output.source).toContain('gap:0.75rem')
     expect(local.source).toContain('gap:4px')
   })
