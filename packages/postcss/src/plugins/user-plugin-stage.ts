@@ -9,6 +9,9 @@ export function createUserPluginStage(plugins: AcceptedPlugin[]): Plugin {
     async Once(root, { result }) {
       const processed = await processor.process(root, { ...result.opts, map: false }).async()
       result.messages.push(...processed.messages)
+      // 内层遍历的完成标记不能跨处理器复用，外层仍需处理根及全部子节点。
+      root.markDirty()
+      root.walk(node => node.markDirty())
     },
   }
 }
