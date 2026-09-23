@@ -23,6 +23,10 @@ export function resolveWatchPlatform(env = process.env) {
   return platform
 }
 
+export function shouldBuildBeforeDev(runFallbackBuild) {
+  return runFallbackBuild
+}
+
 function spawnPnpm(args, options = {}) {
   const { command, args: commandArgs, shell } = createPnpmCommand(args)
   return spawn(command, commandArgs, {
@@ -144,6 +148,13 @@ function hasSnapshotChanged(previous, next) {
 async function main() {
   const runFallbackBuild = process.env.WEAPP_VITE_E2E_WATCH_BUILD_FALLBACK === '1'
   const watchPlatform = resolveWatchPlatform()
+  // fallback 构建必须先完成，再启动 dev watcher。
+  // 如果两个进程同时写入 dist，微信 DevTools 可能在 common.js 尚未完整写入时
+  // 加载 appservice-hotreload，随后把旧模块缓存与新页面代码混合，产生误报的运行时异常。
+  if (shouldBuildBeforeDev(runFallbackBuild)) {
+    await runBuild()
+  }
+
   let resolveReady
   const ready = new Promise((resolve) => {
     resolveReady = resolve
@@ -234,7 +245,6 @@ async function main() {
         stop()
       })
     }, 250)
-    await runBuild()
   }
 }
 
