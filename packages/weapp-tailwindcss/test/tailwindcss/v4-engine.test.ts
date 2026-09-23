@@ -1,4 +1,5 @@
 import type { TailwindCssRuntimeOptions } from '@/tailwindcss/runtime-types'
+import type { TailwindV4ResolvedSource } from '@/tailwindcss/v4-engine'
 import { mkdir, mkdtemp, symlink, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
@@ -511,8 +512,8 @@ describe('tailwindcss v4 engine', () => {
   })
 
   it('treats scanned rpx arbitrary values as lengths for uni-app H5 web css', async () => {
-    const previousUniPlatform = process.env.UNI_PLATFORM
-    process.env.UNI_PLATFORM = 'h5'
+    const previousUniPlatform = process.env['UNI_PLATFORM']
+    process.env['UNI_PLATFORM'] = 'h5'
     try {
       const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-uni-h5-rpx-length-'))
       const pageFile = path.join(root, 'src/pages/index/index.vue')
@@ -550,10 +551,10 @@ describe('tailwindcss v4 engine', () => {
     }
     finally {
       if (previousUniPlatform === undefined) {
-        delete process.env.UNI_PLATFORM
+        delete process.env['UNI_PLATFORM']
       }
       else {
-        process.env.UNI_PLATFORM = previousUniPlatform
+        process.env['UNI_PLATFORM'] = previousUniPlatform
       }
     }
   })
@@ -593,7 +594,7 @@ describe('tailwindcss v4 engine', () => {
     const engine = createTailwindV4Engine(source)
 
     const first = await engine.generate({
-      candidates: ['text-[88rpx]'],
+      candidates: ['text-[18rpx]'],
       incrementalCache: true,
       scanSources: false,
       styleOptions: {
@@ -601,7 +602,7 @@ describe('tailwindcss v4 engine', () => {
       },
     })
     const second = await engine.generate({
-      candidates: ['text-[88rpx]', 'text-[188rpx]', 'text-[32.4rpx]'],
+      candidates: ['text-[18rpx]', 'text-[28rpx]', 'text-[32.4rpx]'],
       incrementalCache: true,
       scanSources: false,
       styleOptions: {
@@ -609,23 +610,23 @@ describe('tailwindcss v4 engine', () => {
       },
     })
 
-    expect(first.classSet).toEqual(new Set(['text-[88rpx]']))
-    expect(second.classSet).toEqual(new Set(['text-[88rpx]', 'text-[188rpx]', 'text-[32.4rpx]']))
-    expect(second.css).toContain('.text-_b88rpx_B')
-    expect(second.css).toContain('font-size: 88rpx')
-    expect(second.css).toContain('.text-_b188rpx_B')
-    expect(second.css).toContain('font-size: 188rpx')
+    expect(first.classSet).toEqual(new Set(['text-[18rpx]']))
+    expect(second.classSet).toEqual(new Set(['text-[18rpx]', 'text-[28rpx]', 'text-[32.4rpx]']))
+    expect(second.css).toContain('.text-_b18rpx_B')
+    expect(second.css).toContain('font-size: 18rpx')
+    expect(second.css).toContain('.text-_b28rpx_B')
+    expect(second.css).toContain('font-size: 28rpx')
     expect(second.css).toContain('.text-_b32_d4rpx_B')
     expect(second.css).toContain('font-size: 32.4rpx')
     expect(second.css).not.toContain('.text-_blength_c32_d4rpx_B')
-    expect(second.incrementalCss).toContain('.text-_b188rpx_B')
-    expect(second.incrementalCss).toContain('font-size: 188rpx')
+    expect(second.incrementalCss).toContain('.text-_b28rpx_B')
+    expect(second.incrementalCss).toContain('font-size: 28rpx')
     expect(second.incrementalCss).toContain('.text-_b32_d4rpx_B')
     expect(second.incrementalCss).toContain('font-size: 32.4rpx')
     expect(second.incrementalCss).not.toContain('.text-_blength_c32_d4rpx_B')
-    expect(second.incrementalCss).not.toContain('.text-_b88rpx_B')
-    expect(second.css.match(/\.text-_b88rpx_B/g) ?? []).toHaveLength(1)
-    expect(second.css.indexOf('.text-_b188rpx_B')).toBeGreaterThan(second.css.indexOf('.text-_b88rpx_B'))
+    expect(second.incrementalCss).not.toContain('.text-_b18rpx_B')
+    expect(second.css.match(/\.text-_b18rpx_B/g) ?? []).toHaveLength(1)
+    expect(second.css.indexOf('.text-_b28rpx_B')).toBeGreaterThan(second.css.indexOf('.text-_b18rpx_B'))
   })
 
   it('regenerates the v4 incremental cache when requested utilities are removed', async () => {
@@ -691,16 +692,13 @@ describe('tailwindcss v4 engine', () => {
 
     expect(first.classSet).toEqual(new Set(['text-[88rpx]', 'border-[10rpx]']))
     expect(second.classSet).toEqual(new Set(['text-[88rpx]', 'border-[10rpx]', 'text-[188rpx]', 'text-[32.4rpx]', 'bg-[10rpx]', 'outline-[5rpx]', 'ring-[8rpx]']))
+    expect(second.incrementalCss).toBeUndefined()
     expect(second.css).toContain('.text-\\[88rpx\\]')
     expect(second.css).toContain('font-size: 2.75rem')
     expect(second.css).toContain('.text-\\[188rpx\\]')
     expect(second.css).toContain('font-size: 5.875rem')
     expect(second.css).toContain('.text-\\[32\\.4rpx\\]')
     expect(second.css).toContain('font-size: 1.0125rem')
-    expect(second.incrementalCss).toContain('.text-\\[188rpx\\]')
-    expect(second.incrementalCss).toContain('font-size: 5.875rem')
-    expect(second.incrementalCss).toContain('.text-\\[32\\.4rpx\\]')
-    expect(second.incrementalCss).toContain('font-size: 1.0125rem')
     expect(second.css).toContain('.border-\\[10rpx\\]')
     expect(second.css).toContain('border-width: 0.3125rem')
     expect(second.css).toContain('.bg-\\[10rpx\\]')
@@ -709,14 +707,7 @@ describe('tailwindcss v4 engine', () => {
     expect(second.css).toContain('outline-width: 0.15625rem')
     expect(second.css).toContain('.ring-\\[8rpx\\]')
     expect(second.css).toContain('calc(0.25rem + var(--tw-ring-offset-width))')
-    expect(second.incrementalCss).toContain('.bg-\\[10rpx\\]')
-    expect(second.incrementalCss).toContain('background-size: 0.3125rem')
-    expect(second.incrementalCss).toContain('.outline-\\[5rpx\\]')
-    expect(second.incrementalCss).toContain('outline-width: 0.15625rem')
-    expect(second.incrementalCss).toContain('.ring-\\[8rpx\\]')
-    expect(second.incrementalCss).toContain('calc(0.25rem + var(--tw-ring-offset-width))')
     expect(second.css).not.toContain('text-\\[length\\:')
-    expect(second.incrementalCss).not.toContain('text-\\[length\\:')
     expect(second.css).not.toContain('border-\\[length\\:')
     expect(second.css).not.toContain('bg-\\[length\\:')
     expect(second.css).not.toContain('outline-\\[length\\:')
@@ -761,9 +752,10 @@ describe('tailwindcss v4 engine', () => {
       candidates: ['text-xs', 'mt-[10rpx]'],
     })
 
+    expect(second.incrementalCss).toBeUndefined()
     expect(first.css).toMatch(/\.text-xs\s*\{[\s\S]*font-size:\s*0\.75rem/)
-    expect(second.incrementalCss).toMatch(/\.mt-\\\[10rpx\\\]\s*\{[\s\S]*margin-top:\s*0\.3125rem/)
-    expect(second.incrementalCss).not.toContain('margin-top: 10rpx')
+    expect(second.css).toMatch(/\.mt-\\\[10rpx\\\]\s*\{[\s\S]*margin-top:\s*0\.3125rem/)
+    expect(second.css).not.toContain('margin-top: 10rpx')
   })
 
   it('remembers requested candidates that do not generate css in the v4 incremental cache', async () => {
@@ -862,10 +854,9 @@ describe('tailwindcss v4 engine', () => {
       },
     })
 
+    expect(second.incrementalCss).toBeUndefined()
     expect(second.css).toContain('.wx_cbg-blue-500')
     expect(second.css).toContain('.wx_cbg-red-500')
-    expect(second.incrementalCss).toContain('.wx_cbg-red-500')
-    expect(second.incrementalCss).not.toContain('.wx_cbg-blue-500')
   })
 
   it('dedupes concurrent v4 incremental generation for identical requests', async () => {
@@ -911,8 +902,7 @@ describe('tailwindcss v4 engine', () => {
       css: MINIMAL_THEME_CSS,
       dependencies: [],
       projectRoot: process.cwd(),
-      version: 4,
-    } as const
+    } satisfies TailwindV4ResolvedSource
 
     const [first, second] = await Promise.all([
       createMockedTailwindV4Engine(source).generate({
@@ -1922,13 +1912,14 @@ describe('tailwindcss v4 engine', () => {
       styleOptions,
     })
 
-    expect(result.incrementalCss).toMatch(/\.text-white\s*\{\s*color:\s*#fff/)
-    expect(result.incrementalCss).toMatch(/\.rounded-full\s*\{\s*border-radius:\s*9999px/)
-    expect(result.incrementalCss).not.toContain('var(--color-white)')
-    expect(result.incrementalCss).not.toMatch(/line-height:\s*calc\(/)
-    expect(result.incrementalCss).not.toContain('calc(infinity')
-    expect(result.incrementalCss).not.toContain('.tw-root')
-    expect(result.incrementalCss).not.toContain('view,text')
+    expect(result.incrementalCss).toBeUndefined()
+    expect(result.css).toMatch(/\.text-white\s*\{\s*color:\s*#fff/)
+    expect(result.css).toMatch(/\.rounded-full\s*\{\s*border-radius:\s*9999px/)
+    expect(result.css).not.toContain('var(--color-white)')
+    expect(result.css).not.toMatch(/line-height:\s*calc\(/)
+    expect(result.css).not.toContain('calc(infinity')
+    expect(result.css).not.toContain('.tw-root')
+    expect(result.css).not.toContain('view,text')
   })
 
   it('downgrades Tailwind v4 color-mix alpha colors for mini-program output', async () => {
@@ -1980,12 +1971,13 @@ describe('tailwindcss v4 engine', () => {
       scanSources: false,
     })
 
+    expect(result.incrementalCss).toBeUndefined()
     expect(result.css).toContain('background-color: var(--color-blue-500)')
     expect(result.css).toContain('color: rgba(255, 255, 255, 0.1)')
-    expect(result.incrementalCss).toContain('.text-white_f10')
-    expect(result.incrementalCss).toContain('view,text,::after,::before')
-    expect(result.incrementalCss).toContain('--tw-content')
-    expect(result.incrementalCss).not.toContain('box-sizing:border-box')
+    expect(result.css).toContain('.text-white_f10')
+    expect(result.css).toContain('view,text,::after,::before')
+    expect(result.css).toContain('--tw-content')
+    expect(result.css).not.toContain('box-sizing:border-box')
     expect(result.css).not.toContain('color-mix')
     expect(result.css).not.toContain('oklab')
     expect(result.css).not.toContain('oklch')

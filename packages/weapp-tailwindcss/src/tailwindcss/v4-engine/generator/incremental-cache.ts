@@ -152,7 +152,7 @@ export function resolveTargetCandidates(
 function collectSeenCandidates(
   generated: Pick<Awaited<ReturnType<TailwindV4Engine['generate']>>, 'rawCandidates' | 'classSet'>,
 ) {
-  return new Set(generated.classSet)
+  return new Set([...generated.rawCandidates, ...generated.classSet])
 }
 
 export function createIncrementalStyleOptions(

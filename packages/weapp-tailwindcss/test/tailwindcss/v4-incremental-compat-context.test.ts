@@ -26,8 +26,9 @@ describe('增量主题兼容上下文', () => {
     const candidates = ['w-32', 'p-4', 'text-white/10']
     const result = await engine.generate({ ...options, candidates })
 
-    expect(result.incrementalCss).toContain('color: rgba(255, 255, 255, 0.1)')
-    expect(result.incrementalCss).toMatch(/padding:\s*calc\(var\(--spacing\)\s*\*\s*4\)/)
+    expect(result.incrementalCss).toBeUndefined()
+    expect(result.css).toContain('color: rgba(255, 255, 255, 0.1)')
+    expect(result.css).toMatch(/padding:\s*calc\(var\(--spacing\)\s*\*\s*4\)/)
     expect(result.css).toMatch(/width:\s*calc\(var\(--spacing\)\s*\*\s*32\)/)
     expect(result.customPropertyValues?.size ?? 0).toBe(0)
 
@@ -35,9 +36,14 @@ describe('增量主题兼容上下文', () => {
     expect(cached.css).toBe(result.css)
     expect(cached.incrementalCss).toBe('')
     expect(cached.customPropertyValues?.size ?? 0).toBe(0)
+
+    await engine.generate({ ...options, candidates: ['w-32'] })
+    const appended = await engine.generate({ ...options, candidates: ['w-32', 'p-4'] })
+    expect(appended.incrementalCss).toMatch(/padding:\s*calc\(var\(--spacing\)\s*\*\s*4\)/)
+    expect(appended.customPropertyValues?.size ?? 0).toBe(0)
   })
 
-  it('增量颜色转换保留调用方显式值且不污染后续无显式值的生成', async () => {
+  it('完整与增量颜色结果一致，保留调用方映射且不污染后续生成', async () => {
     const source = await resolveTailwindV4Source({
       css: '@theme { --color-white: #fff; } @tailwind utilities;',
       base: process.cwd(),
@@ -48,7 +54,10 @@ describe('增量主题兼容上下文', () => {
     const options = { scanSources: false, incrementalCache: true, styleOptions: { customPropertyValues } }
     await engine.generate({ ...options, candidates: ['block'] })
     const result = await engine.generate({ ...options, candidates: ['block', 'text-white/10'] })
-    expect(result.incrementalCss).toContain('color: rgba(0, 0, 0, 0.1)')
+    expect(result.incrementalCss).toBeUndefined()
+    const full = await engine.generate({ ...options, incrementalCache: false, candidates: ['block', 'text-white/10'] })
+    expect(result.css).toBe(full.css)
+    expect(result.css).toContain('color: rgba(255, 255, 255, 0.1)')
     expect(result.customPropertyValues).toEqual(customPropertyValues)
 
     const independent = await engine.generate({
