@@ -44,17 +44,20 @@ export function compareLayout(utility: LayoutRects, reference: LayoutRects, wind
     const expectedPx = multiple * spacingRpx * windowWidth / 750
     const measured = actual[name]
     const referencePx = control[name]
-    // 允许浏览器布局在半个 CSS 像素范围内量化，但错误的零值或方向不能通过。
-    const tolerancePx = 0.51
+    // 同批矩形只容忍坐标相减的浮点误差；rpx 的原生量化由直接长度对照承接。
+    const tolerancePx = 0.000001
+    const expectedDirection = Math.sign(multiple)
     return {
       name,
       measured,
       referencePx,
       expectedPx,
+      theoreticalDeviationPx: measured - expectedPx,
+      referenceTheoreticalDeviationPx: referencePx - expectedPx,
       tolerancePx,
       passed: Math.abs(measured - referencePx) <= tolerancePx
-        && Math.abs(measured - expectedPx) <= tolerancePx
-        && Math.abs(referencePx - expectedPx) <= tolerancePx,
+        && Math.sign(measured) === expectedDirection
+        && Math.sign(referencePx) === expectedDirection,
     }
   })
   return { passed: comparisons.every(value => value.passed), comparisons }

@@ -1,5 +1,4 @@
-import type { MiniProgram, Page } from '@weapp-vite/miniprogram-automator'
-import type { LayoutRects } from './issue-1214/layout'
+import type { MiniProgram } from '@weapp-vite/miniprogram-automator'
 import { randomUUID } from 'node:crypto'
 import { mkdir, mkdtemp, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -11,23 +10,12 @@ import { wechatVersion } from '../scripts/e2e-preflight/probes/wechat-version'
 import { closeWechatProject } from '../scripts/wechat-project-cleanup'
 import { collectFrameworkIdeDiagnostics } from './frameworkIdeDiagnostics'
 import { createLayoutProject, runtimeSpacing } from './issue-1214/ide-project'
-import { compareLayout, layoutNodes } from './issue-1214/layout'
+import { compareLayout } from './issue-1214/layout'
 import { buildProject, readOutput } from './issue-1214/project'
+import { readLayoutRects } from './issue-1214/read-layout'
 
 const describeIde = process.env['E2E_IDE'] === '1' ? describe : describe.skip
 const artifactRoot = path.resolve(import.meta.dirname, '.artifacts', 'issue-1214-ide')
-
-async function readRects(page: Page, kind: 'utility' | 'reference'): Promise<LayoutRects> {
-  const entries = []
-  for (const name of layoutNodes) {
-    const node = await page.$(`#${kind}-${name}`)
-    if (!node) {
-      throw new Error(`尺寸对照页缺少 ${kind}-${name}`)
-    }
-    entries.push([name, { ...await node.offset(), ...await node.size() }])
-  }
-  return Object.fromEntries(entries)
-}
 
 describeIde('Issue #1214 微信 DevTools 实际尺寸', () => {
   it('工具类与直接最终 rpx 的宽高、padding、负 margin 和 gap 相等', async () => {
@@ -67,10 +55,9 @@ describeIde('Issue #1214 微信 DevTools 实际尺寸', () => {
         expect(system[field].length, `运行环境 ${field} 为空`).toBeGreaterThan(0)
       }
       expect(system.platform, '必须使用真实微信 DevTools provider').toBe('devtools')
-      const utility = await readRects(page, 'utility')
-      const reference = await readRects(page, 'reference')
+      const { utility, reference, rawRects } = await readLayoutRects(miniProgram!)
       const comparison = compareLayout(utility, reference, system.windowWidth, runtimeSpacing)
-      Object.assign(evidence, { utility, reference, comparison })
+      Object.assign(evidence, { utility, reference, rawRects, comparison, measurementSource: 'wx.createSelectorQuery().boundingClientRect()' })
       const screenshot = await captureMiniProgramViewport(miniProgram, screenshotPath, 30_000)
       Object.assign(evidence, { screenshot: screenshotPath, screenshotSize: { width: screenshot.width, height: screenshot.height } })
       expect(screenshot.width).toBeGreaterThan(0)
