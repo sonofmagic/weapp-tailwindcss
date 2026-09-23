@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-23T09:12:20.861Z",
+  "generatedAt": "2026-09-23T12:10:15.837Z",
   "locale": "zh-CN",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev/zh-cn",
@@ -4635,7 +4635,7 @@
         "不要重复注册 Tailwind 生成插件",
         "现代 CSS 与 App WebView 兼容",
         "CSS 变量计算模式",
-        "减少 `.mx-*` 的重复间距声明",
+        "检查最终间距声明",
         "多端单位转换"
       ],
       "source": "docs/multi-platform.md"

@@ -31,14 +31,16 @@ See [Issue #1214](https://github.com/sonofmagic/weapp-tailwindcss/issues/1214) f
 
 ## Current build fix
 
-The current mainline fixes the missing theme-variable context in the Tailwind CSS 4 mini-program deferred and incremental generation paths. When a build-time fixed variable is explicitly selected with `cssOptions.cssCalc: ['--spacing']`, the generator carries `customPropertyValues` and the complete raw CSS context into deferred processing, then evaluates it before mini-program theme scoping:
+The current fix preserves variable declarations and their scopes throughout Tailwind CSS 4 mini-program deferred and incremental generation. When a build-time fixed variable is explicitly selected with `cssOptions.cssCalc: ['--spacing']`, the generator checks whether static evaluation is safe before rewriting theme scopes, then computes the final length:
 
 ```css title="Declarations after static evaluation"
 .w-32 { width: 32rpx; }
 .p-4 { padding: 4rpx; }
 ```
 
-This fixes the library's context propagation and processing order, avoiding WeChat's intermediate runtime multiplication of a small `rpx` base. With `cssCalc` disabled or unconfigured, runtime overrides, unresolved variable chains, or later plugins that recreate the expression, the output can still retain `calc()`. A dynamic theme must not be frozen into static values.
+This fixes context propagation, scope analysis, and cache invalidation in the library, avoiding WeChat's intermediate runtime multiplication of a small `rpx` base. Local selector overrides, conditional declarations, or conflicting source values in a shared output keep the affected variables and their dependency chains as runtime expressions. Independent outputs do not share variable values. Theme or configuration changes cause affected rules to be recalculated during incremental generation.
+
+Static analysis cannot predict future JavaScript or inline-style changes. Select only variables that will remain fixed at runtime. Disabled or unconfigured `cssCalc`, unresolved variables, and later plugins that recreate expressions can still leave runtime `calc()`. This does not change WeChat's own conversion algorithm.
 
 ## Build-time advisory warning
 
@@ -100,8 +102,8 @@ WeappTailwindcss({
 
 The intended result is to reduce a known `calc(1rpx * 32)` to `32rpx`, so WeChat converts only the final length. Keep these limitations in mind:
 
-- **Precomputation needs variable values.** The current pipeline preserves values from the Tailwind v4 generation result and the complete `rawCss`, then evaluates fixed variables before rewriting mini-program theme selectors. With `--spacing: 1rpx` and `cssCalc: ['--spacing']`, deferred and incremental output can produce final lengths such as `32rpx`. Runtime overrides, unresolved variable chains, or variables that are not explicitly selected remain runtime expressions.
-- **The original declaration can override a static fallback.** `cssCalc: true` can retain a later `var()` / `calc()` declaration. When WeChat accepts that expression, it can override the static value even if the calculated size differs. The array form cleans up matching original declarations after successful precomputation; unresolved declarations cannot be assumed to have been replaced.
+- **Precomputation needs fixed variable context.** The pipeline retains the effective Tailwind v4 theme and complete raw declarations, then evaluates fixed variables before rewriting mini-program theme selectors. With `--spacing: 1rpx` and `cssCalc: ['--spacing']`, the output can contain final lengths such as `32rpx`. Known dynamic overrides, source conflicts, unresolved variables, and unselected variables remain expressions; a `var()` fallback alone does not make an unknown variable constant.
+- **Preserving the original declaration is a separate choice.** `cssCalc: true` and array options replace resolvable calculations by default. Object options with `preserve: true` retain the original declaration, which may override the static result. `cssCalc` no longer implicitly enables global variable expansion through `cssPresetEnv`. If you explicitly enable that independent feature, verify its output and dynamic-theme behavior separately.
 - **Unit conversion does not imply precomputation.** Enabling `rem2rpx` or `px2rpx`, or finding an `rpx` variable in the output, does not by itself establish that runtime `calc` has been removed.
 
 Inspect the final utility property value and any later declaration that could override it. Finding `--spacing: 1rpx` and the class name in WXSS is not enough.

@@ -228,7 +228,7 @@ WeappTailwindcss({
 Tailwind CSS 4 下，CSS 变量与 `calc()` 的预计算默认关闭。这样可以避免 `var()` 中的大体积值被展开后，再被 Autoprefixer 复制到兼容声明中。例如图标插件生成的 `--svg` data URI 默认只会保留一份。
 
 :::warning 微信小程序的 --spacing 与 rpx 限制
-`--spacing: 1rpx` 可以生成工具类，但运行时 `calc` 的尺寸可能与直接 `rpx` 不同，原生 WXSS 对照也复现了 `3rpx` 基数的偏差。固定像素尺寸优先使用 `px`；需要随窗口缩放时，优先输出最终静态 `rpx` 长度。保留运行时基数时可以尝试较大或偶数 `rpx`，但偶数也不保证准确，仍需设备验证。当前主线已修复小程序 deferred/incremental 链路丢失固定主题变量上下文的问题：显式配置 `cssCalc: ['--spacing']` 且变量可在构建期解析时，会在主题作用域改写前静态化为最终长度，例如 `--spacing: 1rpx` 下的 `w-32` 和 `p-4` 分别输出 `32rpx` 和 `4rpx`。动态覆盖、无法解析或未选择的变量仍可能保留表达式。具体对照、版本范围和处理方式见 [微信小程序 --spacing 与 rpx 计算限制](./issues/spacing-rpx.md)。
+`--spacing: 1rpx` 可以生成工具类，但运行时 `calc` 的尺寸可能与直接 `rpx` 不同，原生 WXSS 对照也复现了 `3rpx` 基数的偏差。固定像素尺寸优先使用 `px`；需要随窗口缩放时，优先输出最终静态 `rpx` 长度。保留运行时基数时可以尝试较大或偶数 `rpx`，但偶数也不保证准确，仍需设备验证。当前修复为小程序 deferred/incremental 链路保留固定主题变量及其作用域上下文：显式配置 `cssCalc: ['--spacing']` 且变量可在构建期解析时，会在主题作用域改写前静态化为最终长度，例如 `--spacing: 1rpx` 下的 `w-32` 和 `p-4` 分别输出 `32rpx` 和 `4rpx`。已知作用域覆盖、无法解析或未选择的变量保留表达式；JavaScript 和内联样式的未来修改无法由构建期预测。具体对照、版本范围和处理方式见 [微信小程序 --spacing 与 rpx 计算限制](./issues/spacing-rpx.md)。
 :::
 
 微信目标还会对 Tailwind CSS 4 的 `@theme` / `@theme inline` 中所有 `rpx` 自定义属性输出建议性构建 warning，不限于 `--spacing`。它不阻断构建，同一构建会话最多提示一次，watch/HMR 不重复输出。`logLevel: 'warn'` 保留提示，`'silent'` 或 `'error'` 隐藏提示。只有 `weapp` 输出且明确识别为微信平台时启用，H5/Web、其他平台及未知平台不提示。
@@ -245,34 +245,14 @@ WeappTailwindcss({
 })
 ```
 
-成功展开变量时，可以补充预计算声明并保留后面的原始 `var()` / `calc()` 声明。两条声明在目标运行时中的尺寸未必相同：后面的有效表达式仍可能覆盖静态值，因此仅增加 fallback 不保证消除微信的计算偏差。需要完全使用预计算结果时，应显式选择要处理的固定变量，并检查最终产物。
-
-例如 Tailwind CSS 4 生成：
+`cssCalc: true` 只对能够证明固定的变量计算 `calc()`，默认用静态结果替换原表达式。例如 Tailwind 生成的无条件根主题：
 
 ```css
-page,
-:root {
-  --spacing: 8rpx;
-}
-.h-2 {
-  height: calc(var(--spacing) * 2);
-}
+:root, :host { --spacing: 8rpx; }
+.h-2 { height: calc(var(--spacing) * 2); }
 ```
 
-对上述可解析的根变量，显式启用 `cssOptions.cssCalc` 后可以补出预计算结果，并保留原声明：
-
-```css
-page,
-:root {
-  --spacing: 8rpx;
-}
-.h-2 {
-  height: 16rpx;
-  height: calc(var(--spacing) * 2);
-}
-```
-
-如果你希望 `--spacing` 这类变量完全使用预计算结果，避免后续原始 `calc()` 覆盖兜底值，可以传入数组或对象：
+可以得到 `height: 16rpx`。为限制处理范围，推荐显式选择固定变量：
 
 ```ts
 WeappTailwindcss({
@@ -282,13 +262,7 @@ WeappTailwindcss({
 })
 ```
 
-成功预计算后，匹配 `--spacing` 的原始 `var()` / `calc()` 声明会被清理，该示例输出为：
-
-```css
-.h-2 {
-  height: 16rpx;
-}
-```
+数组也支持正则，例如 `cssCalc: [/^--(gap|spacing)$/]`。对象形式可配置计算选项：
 
 ```ts
 WeappTailwindcss({
@@ -301,31 +275,17 @@ WeappTailwindcss({
 })
 ```
 
-也可以使用正则：
+`preserve: true` 会同时保留原表达式；后面的有效 `calc()` 可能覆盖静态值，因此不能用该选项保证规避微信的运行时尺寸偏差。
 
-```ts
-WeappTailwindcss({
-  cssOptions: {
-    cssCalc: [/^--(gap|spacing)$/],
-  },
-})
-```
+同一输出中已知的局部选择器覆盖、条件规则或来源冲突会阻止相关变量及依赖链静态化。不同输出的上下文相互隔离，增量生成会在主题或配置变化后重新计算。无法解析、未选择的变量以及它们的 `var()` fallback 保留运行时语义。
 
-静态化后的属性不再响应运行时对 `--spacing` 的覆盖。页面、组件或主题切换需要动态修改该变量时，不要直接采用此配置来冻结它；单独设置 `@theme inline` 也不能保证消除 `calc`，详见上面的限制说明。
+构建期无法预测 JavaScript 或内联样式未来对变量的修改。只选择确定固定的变量；动态主题不应启用冻结策略。`@theme inline` 已移除变量引用，单独使用它仍不保证消除 `calc()`。
 
-如果需要明确关闭，也可以传入：
+关闭预计算使用 `cssCalc: false`，默认配置也是关闭状态。`cssCalc` 不再隐式启用 `cssPresetEnv` 的全局变量展开；显式启用该独立功能时，需要另行验证它的输出。
 
-```ts
-WeappTailwindcss({
-  cssOptions: {
-    cssCalc: false,
-  },
-})
-```
+### 检查最终间距声明
 
-### 减少 `.mx-*` 的重复间距声明
-
-例如使用 `mx-1` 时，Tailwind CSS 4 可能先生成变量形式：
+`cssCalc` 处理 `calc()` 内的变量，不会全局替换普通 `var()`。例如：
 
 ```css
 .mx-1 {
@@ -334,48 +294,9 @@ WeappTailwindcss({
 }
 ```
 
-沿用上面的 `--spacing: 8rpx`，当 `cssCalc` 成功展开根变量并保留原始声明时，会看到四条属性：
+这些直接变量引用保持原样，不会仅因开启 `cssCalc` 而增加静态 fallback。需要确定的直接长度时，可使用 `mx-[8rpx]` 等任意值。
 
-```css
-.mx-1 {
-  margin-left: 8rpx;
-  margin-right: 8rpx;
-  margin-left: var(--spacing);
-  margin-right: var(--spacing);
-}
-```
-
-按需求选择以下配置：
-
-```ts
-// 只保留 Tailwind 原始的 CSS 变量，关闭预计算，产物最少。
-WeappTailwindcss({
-  cssOptions: {
-    cssCalc: false,
-  },
-})
-```
-
-```ts
-// 成功预计算后保留 rpx 结果，清理 --spacing 对应的原始声明。
-// 仅用于固定主题值，并检查最终产物是否完成预计算。
-WeappTailwindcss({
-  cssOptions: {
-    cssCalc: ['--spacing'],
-  },
-})
-```
-
-第二种配置成功预计算后的结果是：
-
-```css
-.mx-1 {
-  margin-left: 8rpx;
-  margin-right: 8rpx;
-}
-```
-
-`cssCalc: false` 不生成预计算 fallback；`cssCalc: ['--spacing']` 则在成功预计算后保留静态结果并清理重复的变量声明。修改后请重新构建目标端，检查实际 WXSS/CSS 中的最终属性值，并在目标设备上与直接长度对照。若仍保留 `calc(var(--spacing) * N)`，请检查变量是否动态覆盖、是否能从完整主题上下文解析，以及是否有后续插件重新生成表达式；不要把静态化配置当作微信运行时算法的修复。
+重新构建后检查最终 WXSS/CSS 中的属性值和声明顺序，并在目标设备与直接长度对照。静态化修复属于库侧构建链路，不代表修复了微信运行时的换算算法。
 
 ## 多端单位转换
 

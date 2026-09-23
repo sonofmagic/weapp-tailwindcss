@@ -1,5 +1,6 @@
 ---
-status: verified
+status: superseded
+supersededBy: docs/engineering/lessons/issue-1214-static-context.md
 issue: https://github.com/sonofmagic/weapp-tailwindcss/issues/1214
 baseline: 66db3165a531eae4ca8311f9a4660b7b098f9783
 regressions:
@@ -8,6 +9,8 @@ regressions:
 ---
 
 # Issue #1214：小程序 deferred 构建中的 rpx 主题 calc
+
+> 此记录保留首次修复的验证结果，但“动态覆盖不会被冻结”的结论已被后续真实复现推翻。作用域、多来源及缓存的后续修复和当前验证边界见 [静态变量上下文复盘](issue-1214-static-context.md)。以下测试数量属于首次修复，不能作为后续全面验收证据。
 
 ## 症状
 

@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-09-23T09:12:20.861Z",
+  "generatedAt": "2026-09-23T12:10:15.837Z",
   "locale": "en-US",
   "contentTier": "full",
   "siteUrl": "https://tw.weapp.dev",
@@ -4477,7 +4477,7 @@
         "Do not register the Tailwind generation plug-in repeatedly",
         "Modern CSS compatible with App WebView",
         "CSS variable calculation mode",
-        "Reduce repeated spacing declarations of `.mx-*`",
+        "Inspect final spacing declarations",
         "Multiterminal unit conversion"
       ],
       "source": "i18n/en/docs/multi-platform.md"
