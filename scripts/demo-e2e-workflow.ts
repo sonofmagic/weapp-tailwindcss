@@ -116,6 +116,7 @@ function createWorkflowSteps(includeLocal: boolean, includeQuality: boolean): Wo
       name: 'WeChat DevTools IDE + visible hot update',
       command: 'pnpm',
       args: ['e2e:mp:ide'],
+      env: includeLocal ? { DEMO_VISUAL_REPORT_RESET: '1' } : undefined,
     },
     {
       name: 'demo mini-program watch hot-update',
@@ -152,12 +153,14 @@ function createWorkflowSteps(includeLocal: boolean, includeQuality: boolean): Wo
         name: 'HBuilderX uni-app/uni-app x Android HMR',
         command: 'pnpm',
         args: ['e2e:android'],
+        env: { DEMO_VISUAL_REPORT_RESET: '0' },
         local: true,
       },
       {
         name: 'HBuilderX uni-app/uni-app x iOS HMR',
         command: 'pnpm',
         args: ['e2e:ios'],
+        env: { DEMO_VISUAL_REPORT_RESET: '0' },
         local: true,
       },
       {
@@ -166,6 +169,16 @@ function createWorkflowSteps(includeLocal: boolean, includeQuality: boolean): Wo
         args: ['e2e:harmony'],
         local: true,
       },
+      ...(['h5', 'harmony'] as const).map(platform => ({
+        name: `visual-weapp-h5-app ${platform} screenshots and comparison`,
+        command: 'pnpm',
+        args: ['exec', 'tsx', 'scripts/demo-visual-e2e-report.ts', `--${platform}-only`, '--fail-on-incomplete'],
+        env: {
+          DEMO_VISUAL_REPORT_RESET: '0',
+          DEMO_VISUAL_MAX_CROSS_PLATFORM_DIFF_RATIO: '0.05',
+        },
+        local: true,
+      })),
     )
   }
   else {

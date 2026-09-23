@@ -85,6 +85,8 @@ describe('本地质量验证的全面测试门禁', () => {
       'pnpm e2e:android',
       'pnpm e2e:ios',
       'pnpm e2e:harmony',
+      'pnpm exec tsx scripts/demo-visual-e2e-report.ts --h5-only --fail-on-incomplete',
+      'pnpm exec tsx scripts/demo-visual-e2e-report.ts --harmony-only --fail-on-incomplete',
     ])
     const multiPlatformStep = mocks.spawn.mock.calls.find(([, args]) => args[0] === 'e2e:multiplatform-build')
     expect(multiPlatformStep?.[2].env).toMatchObject({
@@ -92,6 +94,16 @@ describe('本地质量验证的全面测试门禁', () => {
       E2E_MULTIPLATFORM_BUILD_CASE: '',
       E2E_MULTIPLATFORM_BUILD_SKIP_BUILD: '0',
     })
+    const visualStart = mocks.spawn.mock.calls.find(([, args]) => args[0] === 'e2e:mp:ide')
+    expect(visualStart?.[2].env.DEMO_VISUAL_REPORT_RESET).toBe('1')
+    for (const [, args, options] of mocks.spawn.mock.calls) {
+      if (args.includes('--h5-only') || args.includes('--harmony-only')) {
+        expect(options.env).toMatchObject({
+          DEMO_VISUAL_REPORT_RESET: '0',
+          DEMO_VISUAL_MAX_CROSS_PLATFORM_DIFF_RATIO: '0.05',
+        })
+      }
+    }
     expect(commands.filter(command => command === 'pnpm e2e:static')).toHaveLength(1)
     expect(commands).not.toContain('pnpm e2e:mp')
     expect(mocks.enter).toHaveBeenCalledExactlyOnceWith('current-report.json')
@@ -118,6 +130,20 @@ describe('本地质量验证的全面测试门禁', () => {
     expect(commands.at(-1)).toBe(failedCommand)
     expect(commands).not.toContain('e2e:mp:ide')
     expect(commands).not.toContain('e2e:hbuilderx:mp')
+    expect(gate.close).toHaveBeenCalledOnce()
+  })
+
+  it('H5 截图补齐失败后不采集 Harmony，不把缺证计为通过', async () => {
+    mocks.spawn.mockImplementation((_command: string, args: string[]) => {
+      const child = new EventEmitter()
+      queueMicrotask(() => child.emit('close', args.includes('--h5-only') ? 1 : 0))
+      return child
+    })
+    await expect(runDemoE2eWorkflow(['--local', '--quality'])).rejects.toThrow('failed with exit=1')
+    const commands = mocks.spawn.mock.calls.map(([, args]) => args.join(' '))
+    expect(commands.at(-1)).toContain('--h5-only --fail-on-incomplete')
+    expect(commands.some(command => command.includes('--harmony-only'))).toBe(false)
+    expect(mocks.writeReport.mock.calls.at(-1)?.[0].report.exitCode).toBe(1)
     expect(gate.close).toHaveBeenCalledOnce()
   })
 

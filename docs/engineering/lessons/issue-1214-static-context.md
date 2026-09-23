@@ -99,13 +99,21 @@ static 差异逐项对照后同步对应基线，不批量接受未知输出：T
 
 compiler 顺序断言修正后相关 27 项通过，触及文件的 lint、规则与 diff 检查通过，提交为 `a62aabcb3`。随后第七、八轮脚本预检的平台探针均通过，但当前会话创建 browser webview 连续超时：`Timed out waiting for the Browser webview to attach for this browser-use page`。关闭本任务七个失效标签后重试及一次可见空白页诊断均未恢复；两轮通过 `e2e:preflight block` 记录阻断，未启动全面测试。报告分别为 `e2e/.artifacts/preflight/54741c32-aa55-4b0c-b9f8-4ed4c34bdd86/report.json` 与 `e2e/.artifacts/preflight/451009ff-099e-46bc-bc53-b604399e227f/report.json`。需要恢复当前 computer use 连接后重新 prepare、六步真实操作和 verify；不复用已阻断报告，不以 Playwright 代替。
 
-截至交付，已复现的库侧缺陷均有修复与定向回归，但最新代码没有完成九项质量检查及 21 阶段全端工作流的最终一轮。完整 static、多平台构建及旧探针的原始尺寸证据只属于上述第五轮提交，不能当作后续全部增量修复的最终验收。后续微信 IDE 全套、demo watch/H5、HBuilderX 小程序/H5 与 Android/iOS/Harmony 运行时阶段仍需执行，草稿 PR 保留未完成状态。
+浏览器连接随后通过应用自带的面板工具恢复：打开浏览器返回 `queued`，切回当前任务后，新页面约 0.45 秒成功挂载。该现象表明连接受当前任务窗口是否显示影响；没有修改认证数据或替换 computer use。原始调用保存在 `e2e/.artifacts/issue-1214-browser-recovery.json`，第九轮重新完成 prepare、六步真实操作和 verify，报告为 `e2e/.artifacts/preflight/5a4117eb-576b-4daf-805c-fd8c8dec92c1/report.json`。
+
+第九轮对应提交 `026dcd7d4`：根构建 68/68 成功，全量单测 6406 通过、43 既有跳过，九项质量检查及 34 项矩阵断言全部通过。完整 static 为 112 文件、657 项通过，12 文件及 34 项按阶段配置跳过；#1214 的 11 项真实微信构建和两条 watch 流程通过。默认多平台的 51 个真实构建 case 与矩阵断言全部通过。
+
+本轮新 DevTools 探针实际运行通过，证据为 `e2e/.artifacts/issue-1214-ide/run-JdWsls/evidence.json` 和同目录 `layout.png`。DevTools 2.02.2608070、基础库 3.16.3、iPhone 12/13 (Pro) 模拟器、窗口宽 390、DPR 3；单批 14 个原生矩形显示工具类与直接 rpx 对照宽高均为 133px，padding/gap 均为 16px，负 margin 均为 -16px，六项对照全部通过。截图经人工检查两列一致，理论换算偏差只用于诊断。
+
+随后框架 IDE 套件 11 项通过、1 项失败，工作流在第 13 阶段停止。Taro Webpack React 首次瞬态错误经内置重试恢复，但重试日志未保留原始异常，无法确定首次失败阶段；不能把构建中间态缺文件推断成已证实根因。最终失败来自 weapp-vite 可见性回退中的 `reopenedContent.includes is not a function`。Taro Webpack React、HBuilderX uni-app Vue3 与 uni-app x 的既有用例仅取得产物级更新和运行时错误检查证据；实时页面可见性未验证，不计作完整 HMR 通过。其余微信 Issue/视觉用例以及第 14～21 阶段尚未启动。
+
+当前已复现的库侧缺陷通过最新完整单测、static、多平台构建和 #1214 原生尺寸对照。全面工作流仍待修复 IDE 验收代码后继续，草稿 PR 保留未完成状态；完整日志为 `e2e/.artifacts/issue-1214-full-ninth.log`。
 
 ## 适用边界
 
 静态分析不能预测未来 JavaScript、内联样式或外部运行时注入的变量覆盖。`cssCalc` 仍默认关闭，只应选择构建期固定变量；普通 `var()` 不会因为该配置被全局展开。显式开启其他变量替换插件的行为需另行验证。
 
-本次修复库侧的静态化与缓存链路，不修改微信的 `rpx` 换算算法。本轮 DevTools 尺寸和截图已取得，但旧探针的错误理论阈值导致该轮失败，新探针的真实复验仍待完成；微信 Android/iOS 真机和 Skyline 均未完成。旧 DevTools 证据只保留在 [原问题文档](../../../website/docs/issues/spacing-rpx.md)，不作为本轮通过证据。
+本次修复库侧的静态化与缓存链路，不修改微信的 `rpx` 换算算法。第九轮新 DevTools 探针的尺寸对照与截图已通过；微信 Android/iOS 真机和 Skyline 均未完成。旧 DevTools 证据只保留在 [原问题文档](../../../website/docs/issues/spacing-rpx.md)，不作为本轮通过证据。
 
 ## 规则评估
 

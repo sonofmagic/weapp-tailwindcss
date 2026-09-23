@@ -62,7 +62,7 @@ pnpm e2e:preflight verify --report <本轮-report.json>
 pnpm e2e:local:full-report --preflight-report <本轮-report.json>
 ```
 
-需要同时执行全仓质量检查与 demo 多端验收时，使用 `pnpm e2e:demo:workflow:local --quality --preflight-report <本轮-report.json>`。`--quality` 只允许与 `--local` 一起使用；根构建、全量单测、lint、类型、架构、文档、规则和 release 检查与后续多端阶段共享同一次门禁领取，任一步失败即停止。不要嵌套两个全面入口重复领取同一报告。
+需要同时执行全仓质量检查与 demo 多端验收时，使用 `pnpm e2e:demo:workflow:local --quality --preflight-report <本轮-report.json>`。`--quality` 只允许与 `--local` 一起使用；根构建、全量单测、lint、类型、架构、文档、规则和 release 检查与后续多端阶段共享同一次门禁领取，任一步失败即停止。不要嵌套两个全面入口重复领取同一报告。 本地 demo 工作流在本轮微信视觉阶段重置报告，后续 Android/iOS/H5/Harmony 合并本轮证据；最后补齐 H5、Harmony 截图，执行 `--fail-on-incomplete` 与 `0.05` 跨端差异门槛。没有对应 H5 case 的平台或模式仍需标明缺少跨端对照，不能仅凭工作流退出码宣称所有组合通过。
 
 demo 工作流在矩阵检查后先执行 static 快照和多平台构建产物断言，再进入微信 IDE、watch HMR 和 H5。多平台构建范围固定为矩阵中 `status: ci` 的可执行 case；普通 uni-app Vite 的 H5 构建与浏览器 HMR 通过 `e2e:uni:h5` 单独执行。矩阵中登记为 local 的额外平台仍按本次任务涉及范围选择专用入口。
 
