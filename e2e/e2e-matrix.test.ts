@@ -746,7 +746,7 @@ describe('e2e matrix', () => {
     expect(scripts['e2e:ci']).not.toContain('e2e:hbuilderx:local:demo:mp-extra')
     expect(workflow).toContain('writeDemoE2eMemoryReport')
     expect(workflow).toContain('sampleProcessTree')
-    expect(memoryReport).toContain("'e2e', '.artifacts', 'demo-e2e-memory'")
+    expect(memoryReport).toContain('\'e2e\', \'.artifacts\', \'demo-e2e-memory\'')
     expect(weappMemoryReport).toContain('buildScriptCommand')
     expect(weappMemoryReport).toContain('--filter')
     expect(weappMemoryReport).toContain('--from-raw')

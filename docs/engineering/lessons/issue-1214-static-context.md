@@ -41,6 +41,7 @@ regressions:
 - 作者 PostCSS 插件先完成全部 visitor，再分析 calc 上下文；单独 `.tw-root`、`:host` 和大小写不同的 `@property` 不得绕过安全判断。
 - 移除 `cssCalc` 隐式开启的全局变量展开及启发式原声明删除；保持用户显式 preset-env 配置和 `preserve: true` 的独立语义。
 - 可选 `--quality` 把质量检查和本地 demo 多端测试放在同一个真实预检会话内，缺证或失败即停止。
+- 真实 watch 进一步发现普通作者 CSS 没有进入小程序任务缓存签名，删除覆盖后仍输出旧声明；现在缓存包含本轮完整 bundle 原文，普通兼容处理结果也不能登记为生成来源。导入关系变化由实际模块图驱动。
 
 ## 验证
 
@@ -52,9 +53,13 @@ pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/issue-1214-rpx-calc.test.ts
 pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/demo-workflow-quality.test.ts e2e/preflight-gate.test.ts --update=none
 ```
 
-真实构建使用本工作树的 `weapp-tailwindcss` 产物：uni-app `3.0.0-5020620260917001`（Compiler 5.26 vue3）、Tailwind CSS 4.3.3、Vite 5.2.8、Vue 3.5.43、Node 24.18.0、pnpm 12.5.1。watch 覆盖同一服务中初始输出、主题修改、类名删除与重新添加，逐声明排除旧值；不同产物中的同值重复不当成陈旧样式。
+真实构建使用本工作树的 `weapp-tailwindcss` 产物：uni-app `3.0.0-5020620260917001`（Compiler 5.26 vue3）、Tailwind CSS 4.3.3、Vite 5.2.8、Vue 3.5.43、Node 24.18.0、pnpm 12.5.1。固定 `1/2/3/8rpx` 与小数、负值通过。watch 覆盖同一服务中初始输出、主题修改、类名删除与重新添加；另一同进程用例覆盖作者 CSS 未导入、加入导入、移除覆盖、恢复覆盖、删除导入、重建导入、再次移除覆盖七阶段，生成基线后不更新复验通过。逐声明排除旧值，不同产物中的同值重复不当成陈旧样式。
 
-全面验收入口为 `pnpm e2e:demo:workflow:local --quality --preflight-report <本轮-report.json>`，`e2e:ide:full` 显式包含 #1214 尺寸探针。初次 browser discovery 的 `Codex auth token is unavailable` 已恢复，后续完成真实 computer use 六步操作。预检另发现 HBuilderX 中文未启动提示被误判为 host，已补回归修复；Alpha CLI 与活动稳定版实例不匹配后，重新固定稳定版 5.26。Pura、Pixel_5、iPhone 17 Pro 的本轮脚本探针已取得，最终全面验收仍需新的 prepare/verify 和工作流结果。合成门禁回归不能充当设备证据，定向通过也不代表全面通过。
+全面验收入口为 `pnpm e2e:demo:workflow:local --quality --preflight-report <本轮-report.json>`，`e2e:ide:full` 显式包含 #1214 尺寸探针。初次 browser discovery 的 `Codex auth token is unavailable` 已恢复，后续完成真实 computer use 六步操作。预检另发现 HBuilderX 中文未启动提示被误判为 host，已补回归修复；Alpha CLI 与活动稳定版实例不匹配后，重新固定稳定版 5.26。Pura、Pixel_5、iPhone 17 Pro 的脚本探针和真实 computer use 在新一轮预检全部通过。
+
+首次全面工作流的 `pnpm build` 为 68/68 任务成功、0 缓存命中。根脚本沿用跳过交互式 Taro/uni 构建的设置；这个汇总不能代替对应 demo 的实际构建或设备验收。随后工作流把内存报告写进未忽略目录，门禁正确识别为源码变化并阻断后续阶段。报告已迁入 `e2e/.artifacts/demo-e2e-memory/`，新增真实临时 Git 仓库回归，证明反复写报告不改变源码身份，而修改源码仍会被检测；41 项报告、矩阵与门禁回归通过。修复后需重新预检和执行完整工作流，不复用该轮报告。合成门禁回归不能充当设备证据，定向通过也不代表全面通过。
+
+根构建还暴露 Gulp 启动脚本引用已不存在的 `tsx/dist/loader.cjs`，随后尝试一系列未安装的替代加载器。现在通过 Node 的公开 `--import tsx` 入口启动 Gulp，starter 微信/抖音构建、demo 抖音构建通过；`E2E_PROJECT_FILTER=gulp-tailwindcss-v4 pnpm e2e:static:u` 重新生成 14 份 static 产物，与受管基线无差异，随后不更新复验通过。Lynx 兼容性 catalog 的不支持选择器仍按现有文档记录，不把 encoder 丢弃的规则视为运行时支持。
 
 ## 适用边界
 
