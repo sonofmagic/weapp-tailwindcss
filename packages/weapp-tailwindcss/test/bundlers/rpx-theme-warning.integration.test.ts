@@ -4,13 +4,16 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { captureFrameworkPostcssOptions } from '@/generation/framework-postcss'
-import { generateTailwindV4Css } from '@/generation/service'
 import { disposeCompilerOwner } from '@/compiler'
 import { getCompilerContext } from '@/context'
+import { captureFrameworkPostcssOptions } from '@/generation/framework-postcss'
+import { generateTailwindV4Css } from '@/generation/service'
 
 describe('rpx warning with real Tailwind generation', () => {
-  afterEach(() => { vi.restoreAllMocks(); vi.unstubAllEnvs() })
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllEnvs()
+  })
 
   const scenarios = [
     { platform: 'mp-weixin', target: 'weapp', logLevel: 'warn', inline: false, calc: false, replay: false, warnings: 1 },
@@ -49,7 +52,9 @@ describe('rpx warning with real Tailwind generation', () => {
       const source = `@import "tailwindcss" source(none); ${imported ? '@import "./tokens.css";' : theme}`
       await writeFile(file, source)
       const input = {
-        opts, runtimeState, file,
+        opts,
+        runtimeState,
+        file,
         disableSourceScan: true,
         runtime: new Set(['p-8']),
         rawSource: source,
@@ -70,7 +75,7 @@ describe('rpx warning with real Tailwind generation', () => {
       expect(warn).toHaveBeenCalledTimes(scenario.warnings)
       if (scenario.warnings) {
         expect(warn.mock.calls[0]?.[0]).toContain('--spacing')
-        expect(warn.mock.calls[0]?.[0]).toContain(scenario.calc ? '未检测到相关运行时 calc' : '仍含运行时 calc')
+        expect(warn.mock.calls[0]?.[0]).toContain(scenario.calc ? '当前生成阶段未检测到相关 calc' : '当前生成阶段仍含 calc')
       }
       if (scenario.calc) {
         expect(first?.css).toMatch(/padding:\s*24rpx/)
