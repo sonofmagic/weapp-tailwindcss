@@ -22,7 +22,7 @@ export interface CompilerRootSession {
   pendingCount: number
   source?: TailwindV4ResolvedSource | undefined
   sourceFingerprint?: string | undefined
-  sourceInput?: object | undefined
+  sourceInputFingerprint?: string | undefined
   sources: CompilerSourcePattern[]
 }
 
@@ -156,7 +156,7 @@ export class CompilerRootStore {
       entry.generationCache = undefined
       entry.latestSnapshot = undefined
       entry.source = undefined
-      entry.sourceInput = undefined
+      entry.sourceInputFingerprint = undefined
       entry.sourceFingerprint = undefined
       entry.sources = []
       if (notifyEvicted) {
