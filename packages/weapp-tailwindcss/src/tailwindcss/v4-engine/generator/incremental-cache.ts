@@ -5,6 +5,7 @@ import { collectCustomPropertyValues, mergeCustomPropertyValues } from '@weapp-t
 import { LRUCache } from 'lru-cache'
 import { hasCssMacroTailwindV4Source, withCssMacroStyleOptions } from '@/css-macro/auto'
 import { shouldUseUniAppWebRpxCompatibility } from '@/runtime-branch/generator-target-env'
+import { stableSerialize } from '@/utils/stable-serialize'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '../candidates'
 import { loadTailwindV4DesignSystem } from '../design-system'
 import { normalizeRpxLengthCandidates } from './rpx-candidates'
@@ -57,29 +58,6 @@ export function hasRemovedCandidates(previousCandidates: Set<string>, nextCandid
   return false
 }
 
-function createStableJson(value: unknown): string {
-  if (value === undefined) {
-    return 'undefined'
-  }
-  if (value === null || typeof value !== 'object') {
-    return JSON.stringify(value)
-  }
-  if (value instanceof RegExp) {
-    return `RegExp(${JSON.stringify(value.source)},${JSON.stringify(value.flags)})`
-  }
-  if (value instanceof Map) {
-    const entries = [...value].map(([key, item]) => `[${createStableJson(key)},${createStableJson(item)}]`)
-    return `Map(${entries.sort().join(',')})`
-  }
-  if (Array.isArray(value)) {
-    return `[${value.map(item => createStableJson(item)).join(',')}]`
-  }
-  return `{${Object.keys(value).sort().map((key) => {
-    const record = value as Record<string, unknown>
-    return `${JSON.stringify(key)}:${createStableJson(record[key])}`
-  }).join(',')}}`
-}
-
 function createDependencyFingerprint(files: string[]) {
   return files.map((file) => {
     try {
@@ -96,7 +74,7 @@ export function createTailwindV4SourceCacheKey(source: TailwindV4ResolvedSource)
   return [
     source.projectRoot,
     source.base,
-    createStableJson(source.baseFallbacks),
+    stableSerialize(source.baseFallbacks),
     source.css,
     createDependencyFingerprint(source.dependencies),
   ].join('\0')
@@ -110,7 +88,7 @@ export function createIncrementalGenerateCacheKey(
   return [
     createTailwindV4SourceCacheKey(source),
     target,
-    createStableJson(styleOptions),
+    stableSerialize(styleOptions),
   ].join('\0')
 }
 

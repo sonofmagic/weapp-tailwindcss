@@ -3,6 +3,7 @@ import type { TailwindResolvedSource } from '@/generator/index'
 import type { InternalUserDefinedOptions } from '@/types/index'
 import { readFileSync } from 'node:fs'
 import { filterExistingCssRules, normalizeLegacyCompatCssSource, removeMiniProgramContainerCompatCss, removeTailwindApplyRules, removeUnsupportedMiniProgramAtRules } from '@weapp-tailwindcss/postcss/transform'
+import { stableSerialize } from '@/utils/stable-serialize'
 import { resolveCssEntrySource } from './directives'
 import { collectDedupedPostTransformCompatCss, collectGeneratedSelectors, removeDuplicatedViteMarkers, removeGeneratedSelectorCompatCss } from './legacy-selectors'
 import { createCssAppend } from './markers'
@@ -54,24 +55,8 @@ function setLimitedCacheValue(cache: Map<string, string>, key: string, value: st
   cache.set(key, value)
 }
 
-function createStableJson(value: unknown): string {
-  if (value === undefined) {
-    return 'undefined'
-  }
-  if (value === null || typeof value !== 'object') {
-    return JSON.stringify(value)
-  }
-  if (Array.isArray(value)) {
-    return `[${value.map(item => createStableJson(item)).join(',')}]`
-  }
-  return `{${Object.keys(value).sort().map((key) => {
-    const record = value as Record<string, unknown>
-    return `${JSON.stringify(key)}:${createStableJson(record[key])}`
-  }).join(',')}}`
-}
-
 function createLegacyCompatTransformCacheKey(source: string, options: IStyleHandlerOptions) {
-  return `${createStableJson(options)}\0${source}`
+  return `${stableSerialize(options)}\0${source}`
 }
 
 export { removeTailwindApplyRules }
