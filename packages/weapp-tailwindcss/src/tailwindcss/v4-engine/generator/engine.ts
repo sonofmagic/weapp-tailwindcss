@@ -8,7 +8,7 @@ import { collectCandidates, createIncrementalGenerateCacheKey, createIncremental
 import { createEngineSourceEntries, serializeTailwindGenerationArtifact, TailwindV4NativeSessionPool } from './native-session'
 import { restoreRpxLengthCandidates, restoreRpxLengthCssSelectors } from './rpx-candidates'
 import { resolveCompiledSourceRoot, resolveScanSources } from './scan-sources'
-import { hasChangedCssCalcContext, resolveGenerationStyleContext } from './style-context'
+import { hasChangedCssCalcContext, resolveGenerationStyleContext, resolveIncrementalStyleContext } from './style-context'
 
 function isCssSyntaxError(error: unknown) {
   return error instanceof Error && error.name === 'CssSyntaxError'
@@ -238,7 +238,9 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           seedIncrementalGenerateCache({ compatibleSource, generated, requestedCandidates, styleOptions, target })
           return generated
         }
-        const styleContext = resolveGenerationStyleContext(compatibleSource.css, fullRawCss, styleOptions)
+        const styleContext = target === 'weapp'
+          ? resolveIncrementalStyleContext(compatibleSource.css, fullRawCss, styleOptions)
+          : resolveGenerationStyleContext(compatibleSource.css, fullRawCss, styleOptions)
         const incrementalCss = rawCss.length > 0
           ? await transformTailwindV4CssByTarget(rawCss, target, {
               ...createIncrementalStyleOptions(styleContext),

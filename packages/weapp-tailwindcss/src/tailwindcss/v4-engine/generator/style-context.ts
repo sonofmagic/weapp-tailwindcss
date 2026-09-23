@@ -1,5 +1,5 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import { analyzeCssCalcContext } from '@weapp-tailwindcss/postcss/transform'
+import { analyzeCssCalcContext, collectCustomPropertyValues, mergeCustomPropertyValues } from '@weapp-tailwindcss/postcss/transform'
 
 type GenerationStyleOptions = Partial<IStyleHandlerOptions>
 
@@ -22,6 +22,20 @@ export function resolveGenerationStyleContext(
     ...options,
     // 原始声明保留作用域身份，不能把推导值伪装成调用方显式常量。
     customPropertyContextCss: [options?.customPropertyContextCss, sourceCss, generatedCss].filter(Boolean).join('\n'),
+  }
+}
+
+/** 增量 utility 不带主题声明；兼容转换单独补齐主题值，不能将其升级成 calc 常量。 */
+export function resolveIncrementalStyleContext(
+  sourceCss: string,
+  generatedCss: string,
+  options?: GenerationStyleOptions,
+): GenerationStyleOptions {
+  const customPropertyCompatibilityValues = collectCustomPropertyValues(sourceCss)
+  mergeCustomPropertyValues(customPropertyCompatibilityValues, generatedCss)
+  return {
+    ...resolveGenerationStyleContext(sourceCss, generatedCss, options),
+    customPropertyCompatibilityValues,
   }
 }
 
