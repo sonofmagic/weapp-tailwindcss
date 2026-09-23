@@ -7,12 +7,18 @@ const deferredKeys = ['cssCalc', 'rem2rpx', 'px2rpx', 'unitsToPx', 'unitConversi
 const deferredKeySet = new Set<PropertyKey>(deferredKeys)
 const deferredOptions = Object.fromEntries(deferredKeys.map(key => [key, false]))
 
+export interface ViteCssCalcStage {
+  options: InternalUserDefinedOptions
+  getFinalOptions: () => Partial<IStyleHandlerOptions> | undefined
+  shouldDefer: () => boolean
+}
+
 /** 构建中保留原始单位和表达式；最终输出阶段仍读取用户的真实配置。 */
 export function createViteCssCalcStage(
   original: InternalUserDefinedOptions,
   isBuild: () => boolean,
   getPlatform: () => string | undefined = () => undefined,
-) {
+): ViteCssCalcStage {
   const resolveFinalOptions = () => resolveStyleOptionsFromContext({
     ...original,
     platform: original.cssOptions?.platform ?? original.platform ?? getPlatform(),
