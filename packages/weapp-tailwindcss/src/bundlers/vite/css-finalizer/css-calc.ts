@@ -72,5 +72,5 @@ export async function finalizeCssCalc(bundle: OutputBundle, context: CssFinalize
 }
 
 export function finalizeWebCssCalc(bundle: OutputBundle, context: CssFinalizerContext) {
-  return finalizeCssCalc(bundle, context)
+  return finalizeCssCalc(bundle, context, true)
 }
