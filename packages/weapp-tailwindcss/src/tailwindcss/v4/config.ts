@@ -30,9 +30,8 @@ function ensureDefaultsIncluded(
   value: InternalUserDefinedOptions['cssCalc'],
 ): InternalUserDefinedOptions['cssCalc'] {
   if (value === true) {
-    return {
-      includeCustomProperties: [...DEFAULT_CSS_CALC_CUSTOM_PROPERTIES],
-    }
+    // true 表示选择所有可证明固定的变量，不能降为一个空白名单。
+    return true
   }
 
   if (Array.isArray(value)) {
