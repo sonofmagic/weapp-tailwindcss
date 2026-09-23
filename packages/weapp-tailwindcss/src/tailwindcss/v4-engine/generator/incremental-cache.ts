@@ -234,8 +234,11 @@ export function seedIncrementalGenerateCache(options: TailwindV4IncrementalCache
     options.target,
     options.styleOptions,
   )
-  const customPropertyValues = collectCustomPropertyValues(options.compatibleSource.css)
-  mergeCustomPropertyValues(customPropertyValues, options.generated.css)
+  const customPropertyValues = new Map(options.generated.customPropertyValues ?? [])
+  if (customPropertyValues.size === 0) {
+    mergeCustomPropertyValues(customPropertyValues, options.compatibleSource.css)
+    mergeCustomPropertyValues(customPropertyValues, options.generated.css)
+  }
   incrementalGenerateCache.set(cacheKey, {
     seenCandidates: collectSeenCandidates(options.generated),
     classSet: new Set(options.generated.classSet),

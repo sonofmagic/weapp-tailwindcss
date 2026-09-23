@@ -750,6 +750,48 @@ describe('bundlers/shared generator css', () => {
     expect(result?.css).not.toContain('.px-4{')
   })
 
+  it('precomputes configured rpx theme calc in deferred mini-program css', async () => {
+    const { generateTailwindV4Css } = await import('@/generation/service')
+    const result = await generateTailwindV4Css({
+      opts: {
+        cssOptions: {
+          cssCalc: ['--spacing'],
+        },
+        generator: {
+          target: 'weapp',
+        },
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['w-32', 'p-4']),
+      rawSource: [
+        '@import "tailwindcss" source(none);',
+        '@theme { --spacing: 1rpx; }',
+      ].join('\n'),
+      file: '/workspace/src/components/Spacing.scss',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        majorVersion: 4,
+        sourceOptions: {
+          requestFile: '/workspace/src/components/Spacing.vue?vue&type=style&index=0&scoped=true&lang=scss',
+        },
+      } as any,
+      cssUserHandlerOptions: {} as any,
+      styleHandler: vi.fn(),
+      debug: vi.fn(),
+      deferCssAdaptation: true,
+      generatorPlatform: 'mp-weixin',
+    })
+
+    expect(result?.css).toMatch(/width:\s*32rpx/)
+    expect(result?.css).toMatch(/padding:\s*4rpx/)
+    expect(result?.css).not.toContain('calc(var(--spacing)')
+  })
+
   it('matches hashed css assets back to their Tailwind v4 source css file', async () => {
     const { scoreTailwindV4CssSourceFileMatch } = await import('@/generation/source-resolver/matching')
     const score = scoreTailwindV4CssSourceFileMatch(

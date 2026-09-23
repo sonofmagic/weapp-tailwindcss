@@ -570,6 +570,36 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('.system-dark\\:bg-slate-900')
   })
 
+  it('precomputes configured custom property calc before mini-program theme scoping', async () => {
+    const css = await normalizeMiniProgramGeneratedCssForPostcss([
+      ':root{--spacing:1rpx}',
+      '.w-32{width:calc(var(--spacing)*32)}',
+    ].join(''), {
+      cssCalc: ['--spacing'],
+      preservePreflight: true,
+      preserveRawClassRules: true,
+    })
+
+    expect(css).toContain('width:32rpx')
+    expect(css).not.toContain('calc(var(--spacing)')
+    expect(css).toContain('page,.tw-root,wx-root-portal-content,:host{--spacing:1rpx}')
+  })
+
+  it('uses the full generated css as context for incremental custom property calc', async () => {
+    const css = await normalizeMiniProgramGeneratedCssForPostcss(
+      '.w-32{width:calc(var(--spacing)*32)}',
+      {
+        cssCalc: ['--spacing'],
+        contextCss: ':root{--spacing:1rpx}',
+        preservePreflight: true,
+        preserveRawClassRules: true,
+      },
+    )
+
+    expect(css).toContain('width:32rpx')
+    expect(css).not.toContain('calc(var(--spacing)')
+  })
+
   it('removes Tailwind container max-width media rules from pruned generated css', () => {
     const css = pruneMiniProgramGeneratedCss([
       '.container{width:100%}',

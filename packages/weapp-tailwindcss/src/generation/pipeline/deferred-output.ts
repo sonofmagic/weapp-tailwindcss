@@ -22,6 +22,10 @@ export async function finalizeDeferredGeneratorCss(
         : rawCss
       const normalizedCss = generated.target === 'weapp'
         ? await normalizeMiniProgramGeneratedCssForPostcss(generationCss, {
+            cssCalc: generatorStyleOptions.cssCalc,
+            cssOptions: generatorStyleOptions.cssOptions,
+            customPropertyValues: generated.customPropertyValues ?? generatorStyleOptions.customPropertyValues,
+            contextCss: generated.rawCss,
             preservePreflight: true,
             preserveRawClassRules: true,
           })

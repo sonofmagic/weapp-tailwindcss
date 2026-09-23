@@ -104,10 +104,11 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       generatedCss,
       normalizedCandidates.restoreCandidates,
     )
+    const styleContext = resolveGenerationStyleContext(compatibleSource.css, rawCss, resolvedStyleOptions)
     const css = await transformTailwindV4CssByTarget(
       rawCss,
       target,
-      resolveGenerationStyleContext(compatibleSource.css, rawCss, resolvedStyleOptions),
+      styleContext,
     )
 
     return {
@@ -119,6 +120,9 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       css,
       rawCss,
       target,
+      ...(styleContext?.customPropertyValues
+        ? { customPropertyValues: new Map(styleContext.customPropertyValues) }
+        : {}),
     }
   }
 
@@ -185,6 +189,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           incrementalRawCss: '',
           classSet: new Set(cached.classSet),
           rawCandidates: new Set(cached.seenCandidates),
+          customPropertyValues: new Map(cached.customPropertyValues),
           dependencies: cached.dependencies,
           sources: cached.sources,
           root: cached.root,
@@ -248,6 +253,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           incrementalRawCss: rawCss,
           classSet: new Set(cached.classSet),
           rawCandidates: new Set(cached.seenCandidates),
+          customPropertyValues: new Map(cached.customPropertyValues),
           dependencies: cached.dependencies,
           sources: cached.sources,
           root: cached.root,
