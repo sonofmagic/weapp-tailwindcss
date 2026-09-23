@@ -24,7 +24,7 @@ export function createViteCssCalcStage(
     const finalOptions = resolveFinalOptions()
     // 原生样式可能嵌入 JS/UTS，不能延迟到只处理 CSS 资产的阶段。
     return finalOptions.uniAppX !== true
-      && !(original.appType === 'uni-app-x' && resolveUniUtsPlatform(finalOptions.platform).isApp)
+      && !resolveUniUtsPlatform(finalOptions.platform).isApp
   }
   const defer = (options?: Partial<IStyleHandlerOptions>): Partial<IStyleHandlerOptions> | undefined => shouldDefer()
     ? { ...options, ...deferredOptions, cssOptions: { ...options?.cssOptions, ...deferredOptions } }
