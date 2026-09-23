@@ -83,26 +83,44 @@ function collectSourceComponents(graph: CssGraph) {
 /** 按最终入口及 CSS 导入关系收集每个样式产物可见的变量上下文。 */
 export function collectCssCalcScopes(bundle: OutputBundle, options: {
   matchesCss: (file: string) => boolean
+  onConditionalSource?: (file: string) => void
 }): Map<string, Set<string>> {
   const assets = new Map(Object.entries(bundle).flatMap(([key, output]) => {
     const file = outputKey(output.fileName || key)
     return output.type === 'asset' && options.matchesCss(file) ? [[file, output] as const] : []
   }))
   const graph: CssGraph = new Map()
+  const conditionalRoots = new Set<string>()
   for (const [file, asset] of assets) {
     const targets = new Set<string>()
     const source = typeof asset.source === 'string' ? asset.source : Buffer.from(asset.source).toString()
     postcss.parse(source).walkAtRules('import', (rule) => {
-      const request = parseCssImportSpecifier(rule.params)?.specifier
-      if (!request || /^(?:[a-z][a-z\d+.-]*:|\/|\\\\|#)/i.test(request)) {
+      const params = rule.raws.params?.raw ?? rule.params
+      const parsed = parseCssImportSpecifier(params)
+      const request = parsed?.specifier
+      if (!parsed || !request || /^(?:[a-z][a-z\d+.-]*:|\/|\\\\|#)/i.test(request)) {
         return
       }
       const target = outputKey(path.posix.join(path.posix.dirname(file), outputKey(request.replace(/[?#].*$/, ''))))
       if (assets.has(target)) {
         targets.add(target)
+        const trailingParams = params.slice(params.indexOf(parsed.raw) + parsed.raw.length).trim()
+        let conditional = trailingParams.length > 0 || Boolean(rule.raws.between?.trim())
+        let ancestor = rule.parent
+        while (ancestor && !conditional) {
+          conditional = ancestor.type === 'atrule'
+          ancestor = ancestor.parent
+        }
+        if (conditional) {
+          conditionalRoots.add(target)
+        }
       }
     })
     graph.set(file, targets)
+  }
+  // 条件通过导入链传递，只标记目标闭包，不沿消费者作用域反向传播。
+  for (const file of collectReachable(graph, conditionalRoots)) {
+    options.onConditionalSource?.(file)
   }
 
   const scopes = new Map<string, Set<string>>()

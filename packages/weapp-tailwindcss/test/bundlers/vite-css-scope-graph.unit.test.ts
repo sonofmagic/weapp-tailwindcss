@@ -33,6 +33,16 @@ function visible(scopes: Map<string, Set<string>>, file: string) {
   return [...scopes.get(file)!].sort()
 }
 
+function collectConditional(...outputs: (OutputAsset | OutputChunk)[]) {
+  const bundle: OutputBundle = Object.fromEntries(outputs.map(output => [output.fileName, output]))
+  const conditional: string[] = []
+  const scopes = collectCssCalcScopes(bundle, {
+    matchesCss: file => file.endsWith('.css'),
+    onConditionalSource: file => conditional.push(file),
+  })
+  return { scopes, conditional }
+}
+
 describe('vite CSS calc output scopes', () => {
   it('includes author overrides imported beside utilities by the same output root', () => {
     const scopes = collect(
@@ -183,5 +193,48 @@ describe('vite CSS calc output scopes', () => {
     expect(visible(scopes, 'root.css')).toEqual(['root.css', 'theme.css'])
     expect(root.source).toEqual(original)
     expect(scopes.has('ignored.json')).toBe(false)
+  })
+
+  it.each(['screen', 'supports(display: grid)', 'layer', 'layer(theme)', '/* retained comment */'])(
+    'marks the imported theme and its dependencies conditional for %s',
+    (condition) => {
+      const { scopes, conditional } = collectConditional(
+        asset('root.css', `@import './theme.css' ${condition}; .w-32 { width: calc(var(--spacing) * 32) }`),
+        asset('theme.css', '@import "tokens.css"; :root { --spacing: 1rpx }'),
+        asset('tokens.css', ':root { --other: 2rpx }'),
+        asset('independent.css', ':root { --spacing: 3rpx }'),
+      )
+      expect(conditional.sort()).toEqual(['theme.css', 'tokens.css'])
+      expect(visible(scopes, 'root.css')).toEqual(['root.css', 'theme.css', 'tokens.css'])
+      expect(visible(scopes, 'independent.css')).toEqual(['independent.css'])
+    },
+  )
+
+  it('propagates nested import conditions through cycles without marking sibling assets', () => {
+    const { scopes, conditional } = collectConditional(
+      asset('root.css', '@media screen { @layer theme { @import "./theme.css"; } } @import "./author.css";'),
+      asset('theme.css', '@import "./tokens.css";'),
+      asset('tokens.css', '@import "./theme.css";'),
+      asset('author.css'),
+      asset('independent.css'),
+    )
+    expect(conditional.sort()).toEqual(['theme.css', 'tokens.css'])
+    expect(visible(scopes, 'author.css')).toEqual(['author.css', 'root.css', 'theme.css', 'tokens.css'])
+    expect(visible(scopes, 'independent.css')).toEqual(['independent.css'])
+  })
+
+  it('does not mark plain imports or unresolved conditional URLs', () => {
+    const { conditional } = collectConditional(
+      asset('root.css', `
+        @import /* before request */ "./theme.css";
+        @import url('./author.css')   ;
+        @import "./missing.css" screen;
+        @import "https://example.test/remote.css" screen;
+      `),
+      asset('theme.css'),
+      asset('author.css'),
+      asset('remote.css'),
+    )
+    expect(conditional).toEqual([])
   })
 })
