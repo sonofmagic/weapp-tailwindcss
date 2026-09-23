@@ -62,6 +62,8 @@ pnpm e2e:preflight verify --report <本轮-report.json>
 pnpm e2e:local:full-report --preflight-report <本轮-report.json>
 ```
 
+需要同时执行全仓质量检查与 demo 多端验收时，使用 `pnpm e2e:demo:workflow:local --quality --preflight-report <本轮-report.json>`。`--quality` 只允许与 `--local` 一起使用；根构建、全量单测、lint、类型、架构、文档、规则和 release 检查与后续多端阶段共享同一次门禁领取，任一步失败即停止。不要嵌套两个全面入口重复领取同一报告。
+
 也可以把本轮报告交给 `pnpm e2e:demo:workflow:local --preflight-report <本轮-report.json>`。两者只能选择一个消费同一报告；再次运行必须新建预检。prepare 前台服务要保持运行，测试结束后自动释放会话和锁。
 
 verify 会重新检查环境并合并 computer use 证据。全面入口在任何测试/构建子进程启动前，向活动预检服务领取一次性会话；所有检查必须在 15 分钟以内，且 checkout、SHA、源码、主机与相关配置一致。领取复查结束时再次验证时效和证据。修改 JSON、传入旧报告、关闭 prepare 服务均不能放行。测试进程固定已检查的设备 ID、微信 CLI、IDE host 和浏览器，进入设备阶段前再次检查；失败则停止后续调度。Web 同时检查测试默认 Chromium 与 HBuilderX 实际选用的浏览器；指定 `E2E_HBUILDERX_CHROME_PATH` 时不能回退到其他安装。HBuilderX 检查所选安装的编译器入口和运行基座，实际编译仍由门禁之后的测试验证。smoke/hmr-smoke 为独立局部验证，不构成全面验收。

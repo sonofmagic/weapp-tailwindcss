@@ -163,3 +163,29 @@ it.each(['win32', 'darwin', 'linux'] as const)('%s 信息查询 API 保留真实
     Object.defineProperty(process, 'platform', descriptor)
   }
 })
+
+const stoppedDiagnostics = [
+  '没有可用的命令，尝试使用 cli open',
+  '没有可用的命令，尝试使用 cli open\n未检测到已打开的HBuilderX，请先执行cli open启动HBuilderX后再重试',
+  '未检测到已打开的HBuilderX，请先执行cli open启动HBuilderX后再重试',
+]
+
+it.each(stoppedDiagnostics)('识别中文未启动响应并启动目标 IDE：%s', async (output) => {
+  let opened = false
+  onCommand = ({ args }) => {
+    if (args[0] === 'open') {
+      opened = true
+    }
+    return opened ? {} : { code: 1, output }
+  }
+  await expect(createHBuilderXRunner({ hbuilderxCliPath: cli })).resolves.toMatchObject({ resolution: { host: 'host-a' } })
+  expect(vi.mocked(runCommand).mock.calls.map(([options]) => options.args)).toEqual([
+    ['listhost'], ['open'], ['listhost'], ['version', '--host', 'host-a'],
+  ])
+})
+
+it('中文未启动提示不能覆盖命令超时', async () => {
+  onCommand = () => ({ code: null, kind: 'timeout', output: stoppedDiagnostics[0] })
+  await expect(createHBuilderXRunner({ hbuilderxCliPath: cli })).rejects.toMatchObject({ result: { issue: { kind: 'timeout' } } })
+  expect(vi.mocked(runCommand).mock.calls.some(([options]) => options.args[0] === 'open')).toBe(false)
+})
