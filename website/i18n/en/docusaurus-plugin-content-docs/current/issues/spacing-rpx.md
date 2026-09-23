@@ -22,12 +22,23 @@ Tailwind CSS 4 accepts `--spacing: 1rpx` inside `@theme`. However, valid generat
 }
 ```
 
-```css title="Example generated declarations"
+```css title="Declarations before static evaluation"
 .w-32 { width: calc(var(--spacing) * 32); }
 .p-4 { padding: calc(var(--spacing) * 4); }
 ```
 
-See [Issue #1214](https://github.com/sonofmagic/weapp-tailwindcss/issues/1214) for reproductions, environments, and fix progress. This page distinguishes WeChat runtime limitations from the build issue confirmed with `weapp-tailwindcss@5.5.6`. Check the actual output when using other versions.
+See [Issue #1214](https://github.com/sonofmagic/weapp-tailwindcss/issues/1214) for reproductions, environments, and fix progress. This page distinguishes WeChat runtime limitations from the library build-pipeline fix. After the fixed patch is released, still inspect the actual output for the version you use.
+
+## Current build fix
+
+The current mainline fixes the missing theme-variable context in the Tailwind CSS 4 mini-program deferred and incremental generation paths. When a build-time fixed variable is explicitly selected with `cssOptions.cssCalc: ['--spacing']`, the generator carries `customPropertyValues` and the complete raw CSS context into deferred processing, then evaluates it before mini-program theme scoping:
+
+```css title="Declarations after static evaluation"
+.w-32 { width: 32rpx; }
+.p-4 { padding: 4rpx; }
+```
+
+This fixes the library's context propagation and processing order, avoiding WeChat's intermediate runtime multiplication of a small `rpx` base. With `cssCalc` disabled or unconfigured, runtime overrides, unresolved variable chains, or later plugins that recreate the expression, the output can still retain `calc()`. A dynamic theme must not be frozen into static values.
 
 ## Build-time advisory warning
 
@@ -89,7 +100,7 @@ WeappTailwindcss({
 
 The intended result is to reduce a known `calc(1rpx * 32)` to `32rpx`, so WeChat converts only the final length. Keep these limitations in mind:
 
-- **Precomputation needs variable values.** In the `5.5.6` uni-app WeChat reproduction, both top-level and nested `cssCalc: ['--spacing']` still produced `calc(var(--spacing)*32)`. The deferred mini program pipeline rewrites theme selectors before evaluation without passing the variable values to the final evaluator. The evaluator supports `rpx`, but enabling the option alone does not guarantee static output on this path.
+- **Precomputation needs variable values.** The current pipeline preserves values from the Tailwind v4 generation result and the complete `rawCss`, then evaluates fixed variables before rewriting mini-program theme selectors. With `--spacing: 1rpx` and `cssCalc: ['--spacing']`, deferred and incremental output can produce final lengths such as `32rpx`. Runtime overrides, unresolved variable chains, or variables that are not explicitly selected remain runtime expressions.
 - **The original declaration can override a static fallback.** `cssCalc: true` can retain a later `var()` / `calc()` declaration. When WeChat accepts that expression, it can override the static value even if the calculated size differs. The array form cleans up matching original declarations after successful precomputation; unresolved declarations cannot be assumed to have been replaced.
 - **Unit conversion does not imply precomputation.** Enabling `rem2rpx` or `px2rpx`, or finding an `rpx` variable in the output, does not by itself establish that runtime `calc` has been removed.
 
@@ -99,7 +110,7 @@ Inspect the final utility property value and any later declaration that could ov
 
 Using only `@theme inline { --spacing: 1rpx; }` can still produce `calc(1rpx * 32)`. The native WXSS control confirmed a size difference with this expression too.
 
-Combining `@theme inline` with `cssCalc: ['--spacing']` produced `32rpx` in memory checks of the published `5.5.6` generator and deferred processing path. This combination has not been verified through a full uni-app build and device run. It is not a confirmed general fix; inspect the output and test the target device before relying on it.
+Combining `@theme inline` with `cssCalc: ['--spacing']` uses the same static evaluation path when the variable is resolvable at build time. `@theme inline` alone can still leave `calc(1rpx * 32)`; do not use static evaluation when the theme value changes at runtime. Inspect the output and test the target device before relying on it.
 
 ## Choosing between fixed sizes and runtime themes
 

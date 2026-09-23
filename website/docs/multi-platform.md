@@ -228,7 +228,7 @@ WeappTailwindcss({
 Tailwind CSS 4 下，CSS 变量与 `calc()` 的预计算默认关闭。这样可以避免 `var()` 中的大体积值被展开后，再被 Autoprefixer 复制到兼容声明中。例如图标插件生成的 `--svg` data URI 默认只会保留一份。
 
 :::warning 微信小程序的 --spacing 与 rpx 限制
-`--spacing: 1rpx` 可以生成工具类，但运行时 `calc` 的尺寸可能与直接 `rpx` 不同，原生 WXSS 对照也复现了 `3rpx` 基数的偏差。固定像素尺寸优先使用 `px`；需要随窗口缩放时，优先输出最终静态 `rpx` 长度。保留运行时基数时可以尝试较大或偶数 `rpx`，但偶数也不保证准确，仍需设备验证。在 `5.5.6` 的 uni-app 微信构建复现中，显式配置 `cssCalc: ['--spacing']` 仍可能保留表达式。以下预计算示例以成功取得变量值为前提，不能仅凭开启选项判断问题已解决。具体对照、版本范围和处理方式见 [微信小程序 --spacing 与 rpx 计算限制](./issues/spacing-rpx.md)。
+`--spacing: 1rpx` 可以生成工具类，但运行时 `calc` 的尺寸可能与直接 `rpx` 不同，原生 WXSS 对照也复现了 `3rpx` 基数的偏差。固定像素尺寸优先使用 `px`；需要随窗口缩放时，优先输出最终静态 `rpx` 长度。保留运行时基数时可以尝试较大或偶数 `rpx`，但偶数也不保证准确，仍需设备验证。当前主线已修复小程序 deferred/incremental 链路丢失固定主题变量上下文的问题：显式配置 `cssCalc: ['--spacing']` 且变量可在构建期解析时，会在主题作用域改写前静态化为最终长度，例如 `--spacing: 1rpx` 下的 `w-32` 和 `p-4` 分别输出 `32rpx` 和 `4rpx`。动态覆盖、无法解析或未选择的变量仍可能保留表达式。具体对照、版本范围和处理方式见 [微信小程序 --spacing 与 rpx 计算限制](./issues/spacing-rpx.md)。
 :::
 
 微信目标还会对 Tailwind CSS 4 的 `@theme` / `@theme inline` 中所有 `rpx` 自定义属性输出建议性构建 warning，不限于 `--spacing`。它不阻断构建，同一构建会话最多提示一次，watch/HMR 不重复输出。`logLevel: 'warn'` 保留提示，`'silent'` 或 `'error'` 隐藏提示。只有 `weapp` 输出且明确识别为微信平台时启用，H5/Web、其他平台及未知平台不提示。
@@ -375,7 +375,7 @@ WeappTailwindcss({
 }
 ```
 
-`cssCalc: false` 不生成预计算 fallback；`cssCalc: ['--spacing']` 则在成功预计算后保留静态结果并清理重复的变量声明。修改后请重新构建目标端，检查实际 WXSS/CSS 中的最终属性值，并在目标设备上与直接长度对照。若仍保留 `calc(var(--spacing) * N)`，请按 [已知限制](./issues/spacing-rpx.md) 排查，不要假定配置已生效。
+`cssCalc: false` 不生成预计算 fallback；`cssCalc: ['--spacing']` 则在成功预计算后保留静态结果并清理重复的变量声明。修改后请重新构建目标端，检查实际 WXSS/CSS 中的最终属性值，并在目标设备上与直接长度对照。若仍保留 `calc(var(--spacing) * N)`，请检查变量是否动态覆盖、是否能从完整主题上下文解析，以及是否有后续插件重新生成表达式；不要把静态化配置当作微信运行时算法的修复。
 
 ## 多端单位转换
 

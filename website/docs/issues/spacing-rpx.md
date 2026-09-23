@@ -22,12 +22,23 @@ Tailwind CSS 4 允许在 `@theme` 中设置 `--spacing: 1rpx`，但微信小程�
 }
 ```
 
-```css title="生成的声明示例"
+```css title="未静态化时的声明示例"
 .w-32 { width: calc(var(--spacing) * 32); }
 .p-4 { padding: calc(var(--spacing) * 4); }
 ```
 
-相关复现、环境和修复进度见 [Issue #1214](https://github.com/sonofmagic/weapp-tailwindcss/issues/1214)。下面分别说明微信运行时的限制和 `weapp-tailwindcss@5.5.6` 已确认的构建问题；其他版本应检查实际产物。
+相关复现、环境和修复进度见 [Issue #1214](https://github.com/sonofmagic/weapp-tailwindcss/issues/1214)。下面分别说明微信运行时的限制和库侧构建链路的修复；包含该修复的版本发布后，仍应检查实际产物。
+
+## 当前构建修复
+
+当前主线已经修复 Tailwind CSS 4 小程序 deferred/incremental 生成路径丢失主题变量上下文的问题。对构建期固定且可解析的变量显式配置 `cssOptions.cssCalc: ['--spacing']` 时，生成器会把 `customPropertyValues` 和完整的原始 CSS 上下文传递到延后处理阶段，并在主题作用域改写前完成计算：
+
+```css title="静态化后的声明示例"
+.w-32 { width: 32rpx; }
+.p-4 { padding: 4rpx; }
+```
+
+这只修复库侧的变量传递和处理顺序，绕开微信对小 `rpx` 基数执行运行时乘法时的中间换算。未配置 `cssCalc`、变量由运行时覆盖、变量链无法解析，或后续插件重新生成表达式时，产物仍可能保留 `calc()`；动态主题不能用该配置冻结成静态值。
 
 ## 构建期风险提示
 
@@ -89,7 +100,7 @@ WeappTailwindcss({
 
 这个配置的目标是把已知的 `calc(1rpx * 32)` 归约成 `32rpx`，让微信只换算最终长度。使用时需要注意：
 
-- **预计算需要变量值上下文。** 在 `5.5.6` 的 uni-app 微信构建复现中，顶层和嵌套 `cssCalc: ['--spacing']` 都仍输出 `calc(var(--spacing)*32)`。小程序延后处理链路提前改写主题选择器，同时没有向最终求值阶段传递变量值；求值器本身支持 `rpx`，但仅开启选项不能保证这条链路输出静态值。
+- **预计算需要变量值上下文。** 当前构建链路会从 Tailwind v4 生成结果和完整 `rawCss` 保留变量值，并在小程序主题选择器改写前计算固定变量。因此，`--spacing: 1rpx` 配合 `cssCalc: ['--spacing']` 时，deferred 和增量输出可以得到 `32rpx` 等最终长度。动态覆盖、变量链无法解析或没有显式选择变量时，仍会保留运行时表达式。
 - **静态 fallback 可能被覆盖。** `cssCalc: true` 可以保留后面的原始 `var()` / `calc()` 声明。如果微信接受该表达式，后续声明仍会覆盖前面的静态值，即使它的尺寸计算有偏差。数组形式用于在成功预计算后清理匹配的原始声明；无法求值时不能假定原声明已被替换。
 - **单位转换不等于乘法预计算。** 开启 `rem2rpx`、`px2rpx`，或确认最终变量已变成 `rpx`，都不能单独证明运行时 `calc` 已消除。
 
@@ -99,7 +110,7 @@ WeappTailwindcss({
 
 单独改为 `@theme inline { --spacing: 1rpx; }`，仍可能输出 `calc(1rpx * 32)`。原生 WXSS 对照已确认这种写法也有偏差。
 
-`@theme inline` 同时开启 `cssCalc: ['--spacing']`，在 `5.5.6` 发布版生成器及延后处理的内存验证中能得到 `32rpx`。该组合尚未完成真实 uni-app 构建及设备验证，不能作为已确认的通用修复；使用前仍需检查产物和目标设备。
+`@theme inline` 同时开启 `cssCalc: ['--spacing']` 时，只要变量在构建期可解析，也会经过相同的静态计算路径。单独使用 `@theme inline` 仍可能留下 `calc(1rpx * 32)`；如果主题值会在运行时变化，则不应使用静态化配置。使用前仍需检查产物和目标设备。
 
 ## 固定尺寸与运行时主题如何选择
 
