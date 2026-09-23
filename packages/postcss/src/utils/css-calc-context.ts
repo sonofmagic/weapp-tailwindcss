@@ -52,6 +52,10 @@ function getDependencies(value: string) {
   return dependencies
 }
 
+function isCssWideValue(value: string) {
+  return /^(?:initial|inherit|unset|revert|revert-layer)$/i.test(value)
+}
+
 /**
  * 推导可供 calc 静态化的主题变量；局部、条件、冲突及未解析依赖一律保留运行时语义。
  * 原始 @theme 由编译器处理，此处只消费其生成的有效主题根。
@@ -71,7 +75,7 @@ export function analyzeCssCalcContext(css: string, explicitValues?: ReadonlyMap<
         return
       }
       const value = decl.value.trim()
-      if (!isCssCalcThemeDeclaration(decl)
+      if (!isCssCalcThemeDeclaration(decl) || isCssWideValue(value)
         || (customPropertyValues.has(decl.prop) && customPropertyValues.get(decl.prop) !== value)) {
         unsafeCustomProperties.add(decl.prop)
       }
@@ -85,12 +89,17 @@ export function analyzeCssCalcContext(css: string, explicitValues?: ReadonlyMap<
     return { customPropertyValues, unsafeCustomProperties }
   }
 
+  // 显式值只替换求值候选，源码依赖不能因此消失，否则会掩盖动态覆盖、循环和未解析别名。
+  const dependencies = new Map([...customPropertyValues].map(([name, value]) => [name, getDependencies(value)]))
   for (const [name, value] of explicitValues ?? []) {
     if (!unsafeCustomProperties.has(name)) {
       customPropertyValues.set(name, value)
+      dependencies.set(name, new Set([
+        ...dependencies.get(name) ?? [],
+        ...getDependencies(value),
+      ]))
     }
   }
-  const dependencies = new Map([...customPropertyValues].map(([name, value]) => [name, getDependencies(value)]))
   const visiting = new Set<string>()
   const resolved = new Set<string>()
   function isSafe(name: string): boolean {
@@ -101,7 +110,7 @@ export function analyzeCssCalcContext(css: string, explicitValues?: ReadonlyMap<
       return true
     }
     const value = customPropertyValues.get(name)
-    if (value === undefined || /^(?:initial|inherit|unset|revert|revert-layer)$/i.test(value)
+    if (value === undefined || isCssWideValue(value)
       || visiting.has(name) || visiting.size >= 256) {
       unsafeCustomProperties.add(name)
       return false
