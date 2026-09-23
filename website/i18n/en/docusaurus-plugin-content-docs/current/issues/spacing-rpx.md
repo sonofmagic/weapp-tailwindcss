@@ -56,12 +56,12 @@ Each build session (`runtimeState`) emits at most one warning. Subsequent watch/
 
 The message also reports the CSS state after the shared generation pipeline. This sample can precede static evaluation of Vite's final assets:
 
-| Result                                                                     | Meaning                                                                                                                           |
-| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| An `rpx` theme variable was found                                          | A configuration compatibility advisory, not proof of incorrect dimensions                                                         |
+| Result                                                                                                     | Meaning                                                                                                                                                         |
+| ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| An `rpx` theme variable was found                                                                          | A configuration compatibility advisory, not proof of incorrect dimensions                                                                                       |
 | A related `calc(var(--name) * ...)` or an inline `rpx` calculation remains at the current generation stage | Later build processing may make it static; this does not prove final WXSS retains runtime arithmetic, or that an inline expression came from the theme variable |
-| No related `calc` was detected at the current generation stage              | This stage may be static or may not use the variable; it does not verify final assets, every scope, or every device                |
-| Output diagnosis could not complete                                        | Output analysis is skipped without failing the build or claiming safety                                                           |
+| No related `calc` was detected at the current generation stage                                             | This stage may be static or may not use the variable; it does not verify final assets, every scope, or every device                                             |
+| Output diagnosis could not complete                                                                        | Output analysis is skipped without failing the build or claiming safety                                                                                         |
 
 Even when `cssCalc` successfully makes final WXSS static, an earlier warning may still report expressions at the generation stage; inspect final WXSS to determine the result. `@theme inline` alone usually substitutes the literal and may leave `calc(3rpx * 8)`, which is not static `24rpx`. An unparseable source is skipped. One warning is not a complete inventory of every build artifact. Later minification or custom plugins may still change CSS; inspect final WXSS and verify on target devices.
 
