@@ -98,6 +98,21 @@ function createWorkflowSteps(includeLocal: boolean, includeQuality: boolean): Wo
       args: ['exec', 'vitest', 'run', '-c', './e2e/vitest.e2e.config.ts', 'e2e/e2e-matrix.test.ts'],
     },
     {
+      name: 'demo static build snapshots',
+      command: 'pnpm',
+      args: ['e2e:static'],
+    },
+    {
+      name: 'default multi-platform build outputs',
+      command: 'pnpm',
+      args: ['e2e:multiplatform-build'],
+      env: {
+        E2E_MULTIPLATFORM_BUILD_STATUS: 'ci',
+        E2E_MULTIPLATFORM_BUILD_CASE: '',
+        E2E_MULTIPLATFORM_BUILD_SKIP_BUILD: '0',
+      },
+    },
+    {
       name: 'WeChat DevTools IDE + visible hot update',
       command: 'pnpm',
       args: ['e2e:mp:ide'],
@@ -105,12 +120,17 @@ function createWorkflowSteps(includeLocal: boolean, includeQuality: boolean): Wo
     {
       name: 'demo mini-program watch hot-update',
       command: 'pnpm',
-      args: ['e2e:mp'],
+      args: ['e2e:hot-update:demo'],
     },
     {
       name: 'H5 browser build and HMR',
       command: 'pnpm',
       args: ['e2e:h5'],
+    },
+    {
+      name: 'uni-app Vite H5 build and browser HMR',
+      command: 'pnpm',
+      args: ['e2e:uni:h5'],
     },
   ]
 

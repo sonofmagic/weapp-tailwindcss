@@ -74,15 +74,26 @@ describe('本地质量验证的全面测试门禁', () => {
     ])
     expect(commands.slice(9)).toEqual([
       'pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts',
+      'pnpm e2e:static',
+      'pnpm e2e:multiplatform-build',
       'pnpm e2e:mp:ide',
-      'pnpm e2e:mp',
+      'pnpm e2e:hot-update:demo',
       'pnpm e2e:h5',
+      'pnpm e2e:uni:h5',
       'pnpm e2e:hbuilderx:mp',
       'pnpm e2e:hbuilderx:h5',
       'pnpm e2e:android',
       'pnpm e2e:ios',
       'pnpm e2e:harmony',
     ])
+    const multiPlatformStep = mocks.spawn.mock.calls.find(([, args]) => args[0] === 'e2e:multiplatform-build')
+    expect(multiPlatformStep?.[2].env).toMatchObject({
+      E2E_MULTIPLATFORM_BUILD_STATUS: 'ci',
+      E2E_MULTIPLATFORM_BUILD_CASE: '',
+      E2E_MULTIPLATFORM_BUILD_SKIP_BUILD: '0',
+    })
+    expect(commands.filter(command => command === 'pnpm e2e:static')).toHaveLength(1)
+    expect(commands).not.toContain('pnpm e2e:mp')
     expect(mocks.enter).toHaveBeenCalledExactlyOnceWith('current-report.json')
     expect(gate.close).toHaveBeenCalledTimes(1)
     expect(events[0]).toBe('claim')
@@ -94,6 +105,20 @@ describe('本地质量验证的全面测试门禁', () => {
     for (const [, , options] of mocks.spawn.mock.calls) {
       expect(options.env.E2E_PREFLIGHT_WECHAT_CLI).toBe(gate.env.E2E_PREFLIGHT_WECHAT_CLI)
     }
+  })
+
+  it.each(['e2e:static', 'e2e:multiplatform-build'])('%s 失败后停止，不进入 IDE 或设备阶段', async (failedCommand) => {
+    mocks.spawn.mockImplementation((_command: string, args: string[]) => {
+      const child = new EventEmitter()
+      queueMicrotask(() => child.emit('close', args[0] === failedCommand ? 1 : 0))
+      return child
+    })
+    await expect(runDemoE2eWorkflow(['--local', '--quality'])).rejects.toThrow('failed with exit=1')
+    const commands = mocks.spawn.mock.calls.map(([, args]) => args[0])
+    expect(commands.at(-1)).toBe(failedCommand)
+    expect(commands).not.toContain('e2e:mp:ide')
+    expect(commands).not.toContain('e2e:hbuilderx:mp')
+    expect(gate.close).toHaveBeenCalledOnce()
   })
 
   it('质量步骤失败时记录失败并释放门禁，不继续设备验收', async () => {
@@ -119,7 +144,7 @@ describe('本地质量验证的全面测试门禁', () => {
   it('默认 hosted 工作流不新增质量步骤或本地门禁', async () => {
     await runDemoE2eWorkflow([])
     expect(mocks.enter).not.toHaveBeenCalled()
-    expect(mocks.spawn).toHaveBeenCalledTimes(4)
+    expect(mocks.spawn).toHaveBeenCalledTimes(7)
     expect(mocks.spawn.mock.calls[0]?.[1]).toEqual(['exec', 'vitest', 'run', '-c', './e2e/vitest.e2e.config.ts', 'e2e/e2e-matrix.test.ts'])
   })
 })
