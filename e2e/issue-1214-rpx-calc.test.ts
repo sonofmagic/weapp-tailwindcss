@@ -24,6 +24,11 @@ const runtimeCases: Array<{ name: string, options: FixtureOptions, override?: Re
     options: { overrides: '@media (min-width: 400px) { :root { --spacing: 2rpx; } }' },
     override: /@media\s*\(min-width:\s*400px\)[\s\S]*--spacing:\s*2rpx/,
   },
+  {
+    name: 'external-author-override',
+    options: { authorCss: '.scope { --spacing: 2rpx; }' },
+    override: /\.scope\s*\{\s*--spacing:\s*2rpx/,
+  },
 ]
 
 const multipliers: Record<string, number> = {

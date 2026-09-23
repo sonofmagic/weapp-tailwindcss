@@ -17,6 +17,7 @@ export interface FixtureOptions {
   calc?: 'top-level' | 'nested' | 'off' | 'default'
   inline?: boolean
   overrides?: string
+  authorCss?: string
 }
 
 export const initialClasses = 'w-32 h-32 p-4 mt-4 gap-4 -mt-4 p-0.5 -mt-0.5'
@@ -80,6 +81,7 @@ export default defineConfig({
 import { createSSRApp } from 'vue'
 import App from './App.vue'
 import './tailwind.css'
+${options.authorCss ? 'import \'./author.css\'' : ''}
 export function createApp() { return { app: createSSRApp(App) } }
 `,
       'src/App.vue': '<script>export default {}</script>',
@@ -87,6 +89,7 @@ export function createApp() { return { app: createSSRApp(App) } }
       'src/pages.json': JSON.stringify({ pages: [{ path: 'pages/index' }] }),
       'src/pages/index.vue': pageSource(),
       'src/tailwind.css': themeSource(options),
+      ...(options.authorCss ? { 'src/author.css': options.authorCss } : {}),
     }
     for (const [name, content] of Object.entries(files)) {
       const file = path.resolve(root, name)
