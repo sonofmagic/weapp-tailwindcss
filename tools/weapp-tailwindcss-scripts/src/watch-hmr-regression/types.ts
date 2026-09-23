@@ -204,6 +204,13 @@ export interface ClassMutationConfig {
   forbidBgHexTruncationIn?: Array<'wxml' | 'js'>
   roundConfigs?: MutationRoundConfig[]
   skipExtendedHmr?: boolean
+  /**
+   * comment-carrier 热更新是否要求新增候选同时出现在全局样式中。
+   *
+   * JavaScript 注释不会被 Tailwind v4 的候选扫描器视为 class 候选，
+   * 因此这类场景可以只验证 marker 传播和回滚结果。
+   */
+  commentCarrierMinRequiredGlobalStyleEscapedClasses?: number
   mutate: (source: string, payload: ClassMutationPayload) => string
   mutateCommentCarrier?: (source: string, payload: ClassMutationPayload) => string
 }
