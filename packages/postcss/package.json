@@ -142,6 +142,7 @@
     "@csstools/postcss-is-pseudo-class": "^6.0.0",
     "fast-check": "^4.10.2",
     "lightningcss": "^1.33.0",
-    "postcss-custom-properties": "^15.0.1"
+    "postcss-custom-properties": "^15.0.1",
+    "tsx": "catalog:tsx"
   }
 }

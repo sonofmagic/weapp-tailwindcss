@@ -86,5 +86,8 @@
     "@weapp-tailwindcss/shared": "workspace:*",
     "micromatch": "catalog:buildUtilities"
   },
+  "devDependencies": {
+    "tsx": "catalog:tsx"
+  },
   "publishConfig": {}
 }
