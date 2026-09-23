@@ -1,4 +1,4 @@
-import { isWatchReadyOutput, resolveWatchPlatform, shouldBuildBeforeDev } from '../../../../scripts/weapp-vite-e2e-watch.mjs'
+import { isWatchReadyOutput, resolveOutputSettleOptions, resolveWatchPlatform, shouldBuildBeforeDev } from '../../../../scripts/weapp-vite-e2e-watch.mjs'
 import { buildDemoBaseCases } from '../../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
 
 describe('weapp-vite e2e watch platform', () => {
@@ -26,6 +26,23 @@ describe('weapp-vite e2e watch platform', () => {
   it('completes the fallback build before starting the dev watcher', () => {
     expect(shouldBuildBeforeDev(true)).toBe(true)
     expect(shouldBuildBeforeDev(false)).toBe(false)
+  })
+
+  it('waits for a complete output settle window after the dev ready signal', () => {
+    expect(resolveOutputSettleOptions({})).toEqual({
+      settleMs: 3_000,
+      timeoutMs: 30_000,
+      pollMs: 100,
+    })
+    expect(resolveOutputSettleOptions({
+      WEAPP_VITE_E2E_WATCH_OUTPUT_SETTLE_MS: '4500',
+      WEAPP_VITE_E2E_WATCH_OUTPUT_SETTLE_TIMEOUT_MS: '45000',
+      WEAPP_VITE_E2E_WATCH_OUTPUT_SETTLE_POLL_MS: '250',
+    })).toEqual({
+      settleMs: 4_500,
+      timeoutMs: 45_000,
+      pollMs: 250,
+    })
   })
 
   it('locks the fallback-build regression case to classic HMR', () => {

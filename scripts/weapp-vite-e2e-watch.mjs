@@ -27,6 +27,17 @@ export function shouldBuildBeforeDev(runFallbackBuild) {
   return runFallbackBuild
 }
 
+export function resolveOutputSettleOptions(env = process.env) {
+  const settleMs = Number(env.WEAPP_VITE_E2E_WATCH_OUTPUT_SETTLE_MS ?? 3_000)
+  const timeoutMs = Number(env.WEAPP_VITE_E2E_WATCH_OUTPUT_SETTLE_TIMEOUT_MS ?? 30_000)
+  const pollMs = Number(env.WEAPP_VITE_E2E_WATCH_OUTPUT_SETTLE_POLL_MS ?? 100)
+  return {
+    settleMs: Number.isFinite(settleMs) && settleMs > 0 ? settleMs : 3_000,
+    timeoutMs: Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : 30_000,
+    pollMs: Number.isFinite(pollMs) && pollMs > 0 ? pollMs : 100,
+  }
+}
+
 function spawnPnpm(args, options = {}) {
   const { command, args: commandArgs, shell } = createPnpmCommand(args)
   return spawn(command, commandArgs, {
@@ -145,6 +156,48 @@ function hasSnapshotChanged(previous, next) {
   return false
 }
 
+async function collectOutputSnapshot(dir) {
+  const files = []
+  await collectFiles(dir, files)
+  const snapshot = new Map()
+  await Promise.all(files.map(async (file) => {
+    try {
+      const item = await stat(file)
+      snapshot.set(file, `${item.mtimeMs}:${item.size}`)
+    }
+    catch {
+      snapshot.set(file, 'missing')
+    }
+  }))
+  return snapshot
+}
+
+async function waitForOutputSettle(dir, options) {
+  const startedAt = Date.now()
+  let previous = await collectOutputSnapshot(dir)
+  let stableSince = previous.size > 0 ? startedAt : undefined
+
+  while (Date.now() - startedAt < options.timeoutMs) {
+    await new Promise(resolve => setTimeout(resolve, options.pollMs))
+    const next = await collectOutputSnapshot(dir)
+    if (next.size === 0) {
+      stableSince = undefined
+      previous = next
+      continue
+    }
+    if (previous.size === 0 || hasSnapshotChanged(previous, next)) {
+      stableSince = Date.now()
+      previous = next
+      continue
+    }
+    if (stableSince != null && Date.now() - stableSince >= options.settleMs) {
+      return
+    }
+  }
+
+  throw new Error(`weapp-vite output did not settle within ${options.timeoutMs}ms: ${dir}`)
+}
+
 async function main() {
   const runFallbackBuild = process.env.WEAPP_VITE_E2E_WATCH_BUILD_FALLBACK === '1'
   const watchPlatform = resolveWatchPlatform()
@@ -197,6 +250,10 @@ async function main() {
   })
 
   await ready
+  if (!stopping && runFallbackBuild) {
+    const outputDir = path.resolve(process.cwd(), process.env.WEAPP_VITE_E2E_WATCH_OUTPUT_DIR || 'dist')
+    await waitForOutputSettle(outputDir, resolveOutputSettleOptions())
+  }
   if (!stopping && runFallbackBuild) {
     const rebuild = async () => {
       if (stopping) {
