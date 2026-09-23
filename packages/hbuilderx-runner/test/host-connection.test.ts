@@ -38,6 +38,36 @@ it.each(['candidate', 'env'] as const)('显式 %s 通过 host 连接，不依赖
   expect(vi.mocked(runCommand).mock.calls.map(([options]) => options.args)).toEqual([['listhost'], ['version', '--host', 'host-a']])
 })
 
+it('显式设置的进程环境仍能绑定 CLI、channel 和 host', async () => {
+  vi.stubEnv('HBUILDERX_CLI_PATH', 'environment-cli')
+  vi.stubEnv('HBUILDERX_CHANNEL', 'alpha')
+  vi.stubEnv('HBUILDERX_HOST', 'host-b')
+  hosts.push('host-b')
+  version += '-alpha'
+
+  const runner = await createHBuilderXRunner()
+  expect(runner.resolution).toMatchObject({
+    path: 'environment-cli', channel: 'alpha', host: 'host-b', source: 'env',
+  })
+  expect(vi.mocked(runCommand).mock.calls.map(([options]) => options.args)).toEqual([
+    ['listhost'], ['version', '--host', 'host-b'],
+  ])
+  expect(spawnSync).not.toHaveBeenCalled()
+})
+
+it('显式实例选项优先于进程环境，环境不跨测试保留', async () => {
+  expect(process.env.HBUILDERX_HOST).toBeUndefined()
+  expect(process.env.HBUILDERX_CHANNEL).toBeUndefined()
+  expect(process.env.HBUILDERX_CLI_PATH).toBeUndefined()
+  vi.stubEnv('HBUILDERX_CLI_PATH', 'other-cli')
+  vi.stubEnv('HBUILDERX_CHANNEL', 'alpha')
+  vi.stubEnv('HBUILDERX_HOST', 'other-host')
+
+  const runner = await createHBuilderXRunner({ hbuilderxCliPath: cli, channel: 'stable', host: 'host-a' })
+  expect(runner.resolution).toMatchObject({ path: cli, channel: 'stable', host: 'host-a', source: 'candidate' })
+  expect(spawnSync).not.toHaveBeenCalled()
+})
+
 it('只有确认没有 host 时才 open 一次，并等待实例注册', async () => {
   hosts = []
   let opened = false
