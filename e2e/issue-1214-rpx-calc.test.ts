@@ -6,6 +6,7 @@ import { buildProject, createProject, probeProperties, readOutput, readProbeDecl
 const staticCases: Array<{ name: string, options: FixtureOptions, base: number }> = [
   { name: 'top-level-1rpx', options: { calc: 'top-level', spacing: '1rpx' }, base: 1 },
   { name: 'nested-2rpx', options: { calc: 'nested', spacing: '2rpx' }, base: 2 },
+  { name: 'odd-3rpx', options: { calc: 'nested', spacing: '3rpx' }, base: 3 },
   { name: 'inline-8rpx', options: { calc: 'nested', inline: true, spacing: '8rpx' }, base: 8 },
   { name: 'fractional-base', options: { calc: 'nested', spacing: '0.5rpx' }, base: 0.5 },
 ]
@@ -76,7 +77,10 @@ describe('Issue #1214 真实 uni-app 微信 WXSS', () => {
       const declarations = readProbeDeclarations(css)
       expect(Object.keys(declarations).sort()).toEqual(Object.keys(probeProperties).sort())
       for (const [selector, values] of Object.entries(declarations)) {
-        expect(values.at(-1), selector).toMatch(/calc\(var\(--(?:spacing|runtime-spacing)\)/)
+        expect(values.at(-1), selector).toMatch(/calc\(var\(--spacing\)/)
+      }
+      if (name === 'unresolved') {
+        expect(css).toMatch(/--spacing:\s*var\(--runtime-spacing\)/)
       }
       if (override) {
         expect(css).toMatch(override)
