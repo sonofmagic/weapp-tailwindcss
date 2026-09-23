@@ -141,14 +141,17 @@ export function createCompiler(options: CreateCompilerOptions = {}): Compiler {
       const previousGenerator = entry.generator
       commitCompilerGeneration(entry, prepared, source, dependencies, generated.classSet)
       entry.generator = generator
-      entry.generationCache = { key: generationCacheKey, result: generated }
+      entry.generationCache = {
+        key: generationCacheKey,
+        result: { ...generated, sources: [...snapshot.sources] },
+      }
       entry.source = source
       entry.sourceFingerprint = sourceFingerprint
       entry.sourceInputFingerprint = sourceInputFingerprint
       entry.appliedInvalidation = invalidation
       entry.latestSnapshot = snapshot
       rootStore.attachDependencies(entry, dependencies)
-      rootStore.attachSources(entry, sources)
+      rootStore.attachSources(entry, snapshot.sources)
       if (!engineReused && previousGenerator !== generator) {
         previousGenerator?.dispose?.()
       }

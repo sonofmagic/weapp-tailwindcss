@@ -8,10 +8,10 @@ export interface CompilerGenerationCacheEntry {
 }
 
 interface CompilerGenerationCacheKey {
-  bareArbitraryValues: CompilerGenerateRequest['bareArbitraryValues']
+  bareArbitraryValuesFingerprint: string | undefined
   candidateSignature: string
   incrementalCache: CompilerGenerateRequest['incrementalCache']
-  scanSources: CompilerGenerateRequest['scanSources']
+  scanSourcesFingerprint: string | undefined
   scanMode: CompilerGenerateRequest['scanMode']
   excludeFilesFingerprint: string | undefined
   sourcesFingerprint: string | undefined
@@ -25,10 +25,14 @@ export function createCompilerGenerationCacheKey(
   target: CompilerTarget,
 ): CompilerGenerationCacheKey {
   return {
-    bareArbitraryValues: request.bareArbitraryValues,
+    bareArbitraryValuesFingerprint: request.bareArbitraryValues === undefined
+      ? undefined
+      : createCompilerValueFingerprint(request.bareArbitraryValues),
     candidateSignature: [...candidates].sort().join('\0'),
     incrementalCache: request.incrementalCache,
-    scanSources: request.scanSources,
+    scanSourcesFingerprint: request.scanSources === undefined
+      ? undefined
+      : createCompilerValueFingerprint(request.scanSources),
     scanMode: request.scanMode,
     excludeFilesFingerprint: request.excludeFiles === undefined ? undefined : createCompilerValueFingerprint(request.excludeFiles),
     sourcesFingerprint: request.sources === undefined
@@ -45,10 +49,10 @@ export function isSameCompilerGenerationCacheKey(
   left: CompilerGenerationCacheKey,
   right: CompilerGenerationCacheKey,
 ) {
-  return left.bareArbitraryValues === right.bareArbitraryValues
+  return left.bareArbitraryValuesFingerprint === right.bareArbitraryValuesFingerprint
     && left.candidateSignature === right.candidateSignature
     && left.incrementalCache === right.incrementalCache
-    && left.scanSources === right.scanSources
+    && left.scanSourcesFingerprint === right.scanSourcesFingerprint
     && left.scanMode === right.scanMode
     && left.excludeFilesFingerprint === right.excludeFilesFingerprint
     && left.sourcesFingerprint === right.sourcesFingerprint
