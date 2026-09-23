@@ -4,6 +4,14 @@ issue: https://github.com/sonofmagic/weapp-tailwindcss/issues/1214
 baseline: f13230380e8474011ac752d578440b4d1d15caf9
 regressions:
   - packages/postcss/test/calc-static-context.test.ts
+  - packages/postcss/test/calc-explicit-alias-context.test.ts
+  - packages/postcss/test/calc-escaped-identifiers.test.ts
+  - packages/weapp-tailwindcss/test/tailwindcss/v4-calc-escaped-context.test.ts
+  - packages/weapp-tailwindcss/test/compiler/core-compiler-generation-cache.test.ts
+  - packages/weapp-tailwindcss/test/tailwindcss/v4-incremental-artifact.test.ts
+  - packages/weapp-tailwindcss/test/tailwindcss/v4-incremental-config-mutation.test.ts
+  - packages/weapp-tailwindcss/test/compiler/core-compiler-source-cache.test.ts
+  - e2e/issue-1214-layout.test.ts
   - packages/weapp-tailwindcss/test/tailwindcss/v4-calc-context.test.ts
   - packages/weapp-tailwindcss/test/tailwindcss/v4-engine-calc-cache.test.ts
   - e2e/issue-1214-rpx-calc.test.ts
@@ -42,6 +50,9 @@ regressions:
 - 移除 `cssCalc` 隐式开启的全局变量展开及启发式原声明删除；保持用户显式 preset-env 配置和 `preserve: true` 的独立语义。
 - 保留布尔 `cssCalc: true` 的选择语义，不在 Tailwind v4 归一化时变成空白名单；顶层和嵌套配置合入同一份默认值，避免嵌套的未指定字段意外清空安全 preset。
 - 增量颜色降级与 UVUE 使用独立的推导主题上下文，不重新把推导 Map 当作 calc 显式常量。作者插件内部处理器完成后，通过公开 `markDirty()` 恢复全部节点的外层 visitor，保证选择器转义和 `@property` 清理继续执行。
+- 显式常量只能覆盖求值候选，不能擦除 CSS 原始声明的依赖图；动态依赖、循环、未解析别名和 CSS-wide 值仍阻止静态化。compiler 来源缓存按内容、输入类型与解析工作目录生成签名，并保存自有快照，避免调用方原地修改 source/sourceOptions 后复用旧生成器。
+- 声明名、依赖、`@property`、显式 Map 和字符串白名单按 CSS token 统一转义身份；等价拼写的局部覆盖不能绕过安全判断。名称保持大小写敏感，正则匹配使用独立实例，既不读取也不改写调用方的 `lastIndex`。
+- 候选增量以原生编译器的完整产物核对依赖和节点顺序；新增主题、keyframes、`@property`、颜色降级结构或级联顺序变化时完整转换。不能仅靠 `candidatesToCss` 追加工具类，否则从 `block` 新增 `w-32`、清空后重加等场景会漏主题；规则集合相同但顺序不同也不能视为安全追加。
 - 可选 `--quality` 把质量检查和本地 demo 多端测试放在同一个真实预检会话内，缺证或失败即停止。
 - 真实 watch 进一步发现普通作者 CSS 没有进入小程序任务缓存签名，删除覆盖后仍输出旧声明；现在缓存包含本轮完整 bundle 原文，普通兼容处理结果也不能登记为生成来源。导入关系变化由实际模块图驱动。
 
@@ -73,11 +84,21 @@ static 差异逐项对照后同步对应基线，不批量接受未知输出：T
 
 生成模式的 Taro Webpack 小程序报告同步上述变化：CSS 总字节数由 322016 降为 315522，选择器数量仍为 2222，H5 两种模式未变。独立环境完整构建中全部产物快照通过，但 uni-app 两种 H5 构建因该工作树缺失 `vue-router` 失败，末尾聚合报告断言尚未执行，不能记录为整文件通过；补齐依赖后该项目 11/11 不更新复验通过。主工作树同项目小程序、H5 两种模式与 App 样式也独立 11/11 通过。下一轮完整 static 仍需验证最终聚合报告。
 
+第五次真实预检后，九项质量检查与矩阵再次通过；完整 static 为 112 文件、648 条通过，12 文件和 34 条跳过，零失败。默认多平台构建的 51 个真实 case 与矩阵断言全部通过。微信 DevTools 的首个尺寸探针随后失败，工作流停止，后续 HMR/H5/HBuilderX 原生阶段没有运行。
+
+本轮原始尺寸证据来自 DevTools 2.02.2608070、基础库 3.16.3、iPhone 12/13 (Pro) 模拟器，窗口宽度 390、DPR 3。主题基数 8rpx；工具类与直接最终 rpx 的宽高均为 133px，padding/gap 均为 16px，负 margin 均为 -16px，截图两列一致。失败来自探针自行假定原生换算偏差必须小于 0.51px：直接 32rpx 也测得 16px，与理论 16.64px 差 0.64px。微信文档未保证这一误差上限，不能据此判库侧计算失败。
+
+修正探针使用单次 `wx.createSelectorQuery().boundingClientRect()` 取得全部 14 个矩形，避免混用 automator 整数 size 和坐标；以直接 rpx 作为原生对照，理论换算仅记录诊断。实测对照容差收紧至仅浮点运算误差，仍拒绝无效矩形、零间距与错误方向。16 项测量回归通过，新增覆盖合法原生量化和小于旧阈值的工具类独有偏差；页面与 WXSS 没有变更，无须更新 static 基线。原失败报告与截图保留，后续真实复验单独记录，不能将修订判据后重新解释的旧结果算作通过。
+
+独立审查另发现显式常量覆盖别名会丢失动态依赖，新增 55 个组合在旧实现中 42 失败，修复后 PostCSS 1092 通过、3 项原有跳过。source/sourceOptions、扫描来源和裸任意值配置原地变更的 compiler 缓存回归与相关用例共 47 项通过，缓存键与来源快照不再保留调用方可变对象的身份引用。转义变量完整修复后 PostCSS 为 1130 通过、3 跳过，底层 calc 为 216 通过、3 跳过；主包相关及架构检查 40 项通过。上述修复均需要进入下一轮完整验收。
+
+增量产物修复增加依赖完整性、顺序一致性、空候选重加、主题变更和 Map/RegExp 原地修改回归，相关 117 项经分组验证通过。调用次数断言证明未变候选没有新增原生生成或样式转换；有序的安全追加只转换 delta，新依赖或顺序变化仅生成一次完整原生产物并转换。另纠正本轮先前加入的颜色预期：基线完整生成在主题声明存在时输出白色，旧增量因为丢失主题而错误采用补充 Map 的黑色。新回归要求同一输入完整与增量 CSS 一致，Map 元数据仍独立保留，不改变既有完整颜色转换合同。
+
 ## 适用边界
 
 静态分析不能预测未来 JavaScript、内联样式或外部运行时注入的变量覆盖。`cssCalc` 仍默认关闭，只应选择构建期固定变量；普通 `var()` 不会因为该配置被全局展开。显式开启其他变量替换插件的行为需另行验证。
 
-本次修复库侧的静态化与缓存链路，不修改微信的 `rpx` 换算算法。新的 DevTools 尺寸、截图和 gap 间距探针，以及微信 Android/iOS 真机和 Skyline 均未完成；旧 DevTools 证据只保留在 [原问题文档](../../../website/docs/issues/spacing-rpx.md)，不作为本轮通过证据。
+本次修复库侧的静态化与缓存链路，不修改微信的 `rpx` 换算算法。本轮 DevTools 尺寸和截图已取得，但旧探针的错误理论阈值导致该轮失败，新探针的真实复验仍待完成；微信 Android/iOS 真机和 Skyline 均未完成。旧 DevTools 证据只保留在 [原问题文档](../../../website/docs/issues/spacing-rpx.md)，不作为本轮通过证据。
 
 ## 规则评估
 
