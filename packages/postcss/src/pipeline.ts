@@ -142,11 +142,11 @@ function appendUniAppXNativeAuthorDeclarationNodes(
   }
 
   const declarationPlugins = [
+    ['normal:calc', getCalcPlugin(options)],
     ['normal:units-to-px', getUnitsToPxPlugin(options)],
     ['normal:px-transform', getPxTransformPlugin(options)],
     ['normal:rem-transform', getRemTransformPlugin(options)],
     ['normal:unit-conversion', getUnitConversionPlugin(options)],
-    ['normal:calc', getCalcPlugin(options)],
   ] as const
 
   for (const [id, plugin] of declarationPlugins) {
@@ -184,6 +184,12 @@ function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSign
     preparedNodes.push(createPreparedNode('normal:color-functional-fallback', 'normal', () => createColorFunctionalFallback()))
   }
 
+  // 先静态化变量，再转换单位，保证外部上下文与字面量走相同转换路径。
+  const calcPlugin = getCalcPlugin(options)
+  if (calcPlugin) {
+    preparedNodes.push(createPreparedNode('normal:calc', 'normal', () => calcPlugin))
+  }
+
   const unitsToPxPlugin = getUnitsToPxPlugin(options)
   if (unitsToPxPlugin) {
     preparedNodes.push(createPreparedNode('normal:units-to-px', 'normal', () => unitsToPxPlugin))
@@ -202,11 +208,6 @@ function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSign
   const unitConversionPlugin = getUnitConversionPlugin(options)
   if (unitConversionPlugin) {
     preparedNodes.push(createPreparedNode('normal:unit-conversion', 'normal', () => unitConversionPlugin))
-  }
-
-  const calcPlugin = getCalcPlugin(options)
-  if (calcPlugin) {
-    preparedNodes.push(createPreparedNode('normal:calc', 'normal', () => calcPlugin))
   }
 
   const calcDuplicateCleaner = getCalcDuplicateCleaner(options)

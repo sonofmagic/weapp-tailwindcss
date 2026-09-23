@@ -20,7 +20,7 @@ const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host
 const MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR = '::before,\n::after'
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 
-export interface PruneMiniProgramGeneratedCssOptions extends Pick<ApplyConfiguredCssCalcOptions, 'cssCalc' | 'cssOptions' | 'customPropertyValues' | 'contextCss'> {
+export interface PruneMiniProgramGeneratedCssOptions extends Pick<ApplyConfiguredCssCalcOptions, 'cssCalc' | 'cssOptions' | 'customPropertyValues' | 'customPropertyContextCss' | 'contextCss'> {
   preserveContentInit?: boolean
   preservePreflight?: boolean
   preserveConditionalComments?: boolean
@@ -38,6 +38,7 @@ export async function normalizeMiniProgramGeneratedCssForPostcss(
     cssCalc: options.cssCalc,
     cssOptions: options.cssOptions,
     customPropertyValues: options.customPropertyValues,
+    customPropertyContextCss: options.customPropertyContextCss,
     contextCss: options.contextCss ?? css,
   })
   const result = await postcss([
