@@ -1,8 +1,8 @@
-import { postcss } from '@weapp-tailwindcss/postcss'
-import path from 'node:path'
 import { mkdir, mkdtemp, symlink, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
+import path from 'node:path'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { createCompiler } from '@/core/compiler'
 import { getInternalCompilerSnapshot } from '@/core/compiler/snapshot'
 import { resolveTailwindV4Source } from '@/generator'
@@ -149,7 +149,7 @@ describe('createCompiler', () => {
     await compiler.dispose()
   }, 30000)
 
-  it('reuses the engine for candidate additions and rebuilds exact output after deletion', async () => {
+  it('reuses the engine and preserves complete output when additions change rule order or candidates are deleted', async () => {
     const compiler = createCompiler()
     const source = await createSource()
     const request = {
@@ -161,10 +161,20 @@ describe('createCompiler', () => {
     const first = await compiler.generate({ ...request, candidates: ['p-4'] })
     const added = await compiler.generate({ ...request, candidates: ['p-4', 'm-2'] })
     const removed = await compiler.generate({ ...request, candidates: ['m-2'] })
+    const complete = await compiler.generate({
+      ...request,
+      id: 'styles:complete-control',
+      candidates: ['p-4', 'm-2'],
+      incrementalCache: false,
+    })
 
     expect(first.css).toContain('.p-4')
     expect(added.cache.engine).toBe(true)
-    expect(added.incrementalCss).toContain('.m-2')
+    expect(added.incrementalCss).toBeUndefined()
+    expect(added.css).toBe(complete.css)
+    expect(added.rawCss).toBe(complete.rawCss)
+    expect(added.css.indexOf('.m-2')).toBeGreaterThanOrEqual(0)
+    expect(added.css.indexOf('.m-2')).toBeLessThan(added.css.indexOf('.p-4'))
     expect(removed.cache.engine).toBe(true)
     expect(removed.css).toContain('.m-2')
     expect(removed.css).not.toContain('.p-4')

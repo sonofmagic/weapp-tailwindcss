@@ -8,6 +8,7 @@ regressions:
   - packages/postcss/test/calc-escaped-identifiers.test.ts
   - packages/weapp-tailwindcss/test/tailwindcss/v4-calc-escaped-context.test.ts
   - packages/weapp-tailwindcss/test/compiler/core-compiler-generation-cache.test.ts
+  - packages/weapp-tailwindcss/test/compiler/core-compiler.test.ts
   - packages/weapp-tailwindcss/test/tailwindcss/v4-incremental-artifact.test.ts
   - packages/weapp-tailwindcss/test/tailwindcss/v4-incremental-config-mutation.test.ts
   - packages/weapp-tailwindcss/test/compiler/core-compiler-source-cache.test.ts
@@ -93,6 +94,8 @@ static 差异逐项对照后同步对应基线，不批量接受未知输出：T
 独立审查另发现显式常量覆盖别名会丢失动态依赖，新增 55 个组合在旧实现中 42 失败，修复后 PostCSS 1092 通过、3 项原有跳过。source/sourceOptions、扫描来源和裸任意值配置原地变更的 compiler 缓存回归与相关用例共 47 项通过，缓存键与来源快照不再保留调用方可变对象的身份引用。转义变量完整修复后 PostCSS 为 1130 通过、3 跳过，底层 calc 为 216 通过、3 跳过；主包相关及架构检查 40 项通过。上述修复均需要进入下一轮完整验收。
 
 增量产物修复增加依赖完整性、顺序一致性、空候选重加、主题变更和 Map/RegExp 原地修改回归，相关 117 项经分组验证通过。调用次数断言证明未变候选没有新增原生生成或样式转换；有序的安全追加只转换 delta，新依赖或顺序变化仅生成一次完整原生产物并转换。另纠正本轮先前加入的颜色预期：基线完整生成在主题声明存在时输出白色，旧增量因为丢失主题而错误采用补充 Map 的黑色。新回归要求同一输入完整与增量 CSS 一致，Map 元数据仍独立保留，不改变既有完整颜色转换合同。
+
+整合提交后三个受影响包构建通过，主包 130、PostCSS 135、测量逻辑 16 项定向测试通过，规则与 release status 通过。第六次真实预检后根构建 68/68 通过、0 缓存命中；全量单测 6405 通过、1 失败、43 跳过，后续检查与设备阶段未运行。唯一失败是既有 compiler 测试要求 `p-4` 后新增 `m-2` 必须返回 delta，忽略了 Tailwind 规则顺序。修正该断言为引擎仍复用、完整 CSS/rawCss 与独立全量生成一致，且 margin 规则位于 padding 之前；这验证级联正确性，不强迫使用追加路径。
 
 ## 适用边界
 
