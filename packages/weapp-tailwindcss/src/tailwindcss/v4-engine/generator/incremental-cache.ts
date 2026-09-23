@@ -64,6 +64,13 @@ function createStableJson(value: unknown): string {
   if (value === null || typeof value !== 'object') {
     return JSON.stringify(value)
   }
+  if (value instanceof RegExp) {
+    return `RegExp(${JSON.stringify(value.source)},${JSON.stringify(value.flags)})`
+  }
+  if (value instanceof Map) {
+    const entries = [...value].map(([key, item]) => `[${createStableJson(key)},${createStableJson(item)}]`)
+    return `Map(${entries.sort().join(',')})`
+  }
   if (Array.isArray(value)) {
     return `[${value.map(item => createStableJson(item)).join(',')}]`
   }
@@ -235,10 +242,6 @@ export function seedIncrementalGenerateCache(options: TailwindV4IncrementalCache
     options.styleOptions,
   )
   const customPropertyValues = new Map(options.generated.customPropertyValues ?? [])
-  if (customPropertyValues.size === 0) {
-    mergeCustomPropertyValues(customPropertyValues, options.compatibleSource.css)
-    mergeCustomPropertyValues(customPropertyValues, options.generated.css)
-  }
   incrementalGenerateCache.set(cacheKey, {
     seenCandidates: collectSeenCandidates(options.generated),
     classSet: new Set(options.generated.classSet),
