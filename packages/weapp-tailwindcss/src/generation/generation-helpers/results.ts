@@ -96,6 +96,12 @@ export function mergeGeneratorResults(generatedResults: GeneratorResult[]) {
   const incrementalRawCssResults = generatedResults
     .map(item => item.incrementalRawCss)
     .filter((css): css is string => typeof css === 'string')
+  const customPropertyValues = new Map<string, string>()
+  for (const result of generatedResults) {
+    for (const [name, value] of result.customPropertyValues ?? []) {
+      customPropertyValues.set(name, value)
+    }
+  }
   return {
     ...firstGenerated,
     css: deduplicateGeneratedCssRules(generatedResults.map(item => item.css).join('\n')),
@@ -109,6 +115,7 @@ export function mergeGeneratorResults(generatedResults: GeneratorResult[]) {
     classSet: new Set(generatedResults.flatMap(item => [...item.classSet])),
     dependencies: [...new Set(generatedResults.flatMap(item => item.dependencies))],
     sources: generatedResults.flatMap(item => item.sources),
+    ...(customPropertyValues.size > 0 ? { customPropertyValues } : {}),
   }
 }
 export type GeneratorResult = Omit<CompilerGenerateResult, 'cache' | 'revision' | 'snapshot'> & {

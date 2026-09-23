@@ -1,5 +1,7 @@
+import type { ApplyConfiguredCssCalcOptions } from '../../plugins/applyConfiguredCssCalc'
 import postcss from 'postcss'
 import postcssPresetEnv from 'postcss-preset-env'
+import { applyConfiguredCssCalc } from '../../plugins/applyConfiguredCssCalc'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../mini-program-prefixes'
 import { removeUnsupportedCascadeLayers } from './at-rules'
 import {
@@ -18,7 +20,7 @@ const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host
 const MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR = '::before,\n::after'
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 
-export interface PruneMiniProgramGeneratedCssOptions {
+export interface PruneMiniProgramGeneratedCssOptions extends Pick<ApplyConfiguredCssCalcOptions, 'cssCalc' | 'cssOptions' | 'customPropertyValues' | 'contextCss'> {
   preserveContentInit?: boolean
   preservePreflight?: boolean
   preserveConditionalComments?: boolean
@@ -26,12 +28,18 @@ export interface PruneMiniProgramGeneratedCssOptions {
 }
 
 /**
- * 在交给框架 PostCSS 前展开 Tailwind 生成的嵌套规则，并裁剪 Web-only 结构。
+ * 在主题作用域改写前按配置预计算 calc，再展开 Tailwind 生成的嵌套规则并裁剪 Web-only 结构。
  */
 export async function normalizeMiniProgramGeneratedCssForPostcss(
   css: string,
   options: PruneMiniProgramGeneratedCssOptions = {},
 ) {
+  const calculatedCss = await applyConfiguredCssCalc(css, {
+    cssCalc: options.cssCalc,
+    cssOptions: options.cssOptions,
+    customPropertyValues: options.customPropertyValues,
+    contextCss: options.contextCss ?? css,
+  })
   const result = await postcss([
     postcssPresetEnv({
       stage: false,
@@ -40,7 +48,7 @@ export async function normalizeMiniProgramGeneratedCssForPostcss(
       },
       autoprefixer: false,
     }),
-  ]).process(css, { from: undefined })
+  ]).process(calculatedCss, { from: undefined })
   return pruneMiniProgramGeneratedCss(result.css, options)
 }
 
