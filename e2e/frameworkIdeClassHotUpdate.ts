@@ -1,7 +1,6 @@
 import type { createWatchSession } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session'
 import type { CliOptions, WatchCase } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import process from 'node:process'
-import { Launcher } from '@weapp-vite/miniprogram-automator'
 import { buildHexScriptRoundConfigs } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/round-configs'
 import {
   createClassMutationScenario,
@@ -21,70 +20,16 @@ import {
 } from './frameworkIdeHotUpdateArtifacts'
 import {
   getDevToolsBestEffortVisibleTimeoutMs,
-  getDevToolsRelaunchTimeoutMs,
   getDevToolsVisibleTimeoutMs,
   readCurrentPageLiveContent,
-  readPageLiveContent,
 } from './frameworkIdeLivePage'
+import { readFreshDevToolsPageContent, withDevToolsRelaunchTimeout } from './frameworkIdeReopen'
 
 const IDE_LIVE_PAGE_VISIBILITY_RELAXED_CASES = new Set<WatchCase['name']>([
   'taro-webpack-react-tailwindcss-v4',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
   'uni-app-x-vdom-tailwindcss-v4',
 ])
-
-async function withDevToolsRelaunchTimeout<T>(options: CliOptions, pageUrl: string, task: Promise<T>) {
-  const timeoutMs = getDevToolsRelaunchTimeoutMs(options)
-  let timer: ReturnType<typeof setTimeout> | undefined
-  try {
-    return await Promise.race([
-      task,
-      new Promise<T>((_, reject) => {
-        timer = setTimeout(() => {
-          reject(new Error(`DevTools reLaunch timed out after ${timeoutMs}ms: ${pageUrl}`))
-        }, timeoutMs)
-      }),
-    ])
-  }
-  finally {
-    if (timer) {
-      clearTimeout(timer)
-    }
-  }
-}
-
-async function readFreshDevToolsPageContent(projectPath: string, options: CliOptions, pageUrl: string) {
-  const launcher = new Launcher()
-  let freshMiniProgram: any
-  return await waitFor(
-    async () => {
-      try {
-        if (!freshMiniProgram) {
-          freshMiniProgram = await withDevToolsRelaunchTimeout(
-            options,
-            pageUrl,
-            launcher.launch({ projectPath, timeout: getDevToolsRelaunchTimeoutMs(options) }),
-          )
-        }
-        const page: any = await withDevToolsRelaunchTimeout(options, pageUrl, freshMiniProgram.reLaunch(pageUrl))
-        if (!page) {
-          return undefined
-        }
-        return await readPageLiveContent(page, pageUrl)
-      }
-      catch {
-        return undefined
-      }
-    },
-    {
-      timeoutMs: getDevToolsVisibleTimeoutMs(options),
-      pollMs: options.pollMs,
-      message: `DevTools page did not recover after reopening project for IDE hot update: ${pageUrl}`,
-    },
-  ).finally(async () => {
-    await freshMiniProgram?.close?.().catch(() => undefined)
-  })
-}
 
 function resolveRoundConfig(watchCase: WatchCase) {
   const roundConfigs = watchCase.templateMutation.roundConfigs ?? buildHexScriptRoundConfigs()
@@ -274,7 +219,7 @@ export async function runIdeClassHotUpdate(
         : undefined
       if (freshContent == null || !freshContent.includes(scenario.marker)) {
         process.stdout.write(`[e2e:ide] ${watchCase.label} ${mutationKind} HMR reopen DevTools project for visibility fallback\n`)
-        const reopenedContent = await readFreshDevToolsPageContent(launchProjectPath, options, pageUrl).catch(() => undefined)
+        const reopenedContent = await readFreshDevToolsPageContent(launchProjectPath, options, pageUrl, scenario.marker).catch(() => undefined)
         if (reopenedContent == null || !reopenedContent.includes(scenario.marker)) {
           throw new Error([
             `[${watchCase.label}] DevTools page did not show ${mutationKind} HMR marker after reLaunch/reopen: ${scenario.marker}`,
