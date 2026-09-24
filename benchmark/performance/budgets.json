@@ -20,51 +20,51 @@
   },
   "cases": {
     "postcss-v4-main-1000": {
-      "medianMs": 51,
-      "p95Ms": 55,
-      "peakRssMb": 342,
+      "medianMs": 52,
+      "p95Ms": 56,
+      "peakRssMb": 341,
       "outputBytes": 64667
     },
     "postcss-v4-main-2000": {
-      "medianMs": 92,
-      "p95Ms": 94,
-      "peakRssMb": 460,
+      "medianMs": 89,
+      "p95Ms": 91,
+      "peakRssMb": 459,
       "outputBytes": 130667
     },
     "postcss-v4-main-5000": {
-      "medianMs": 232,
-      "p95Ms": 255,
-      "peakRssMb": 537,
+      "medianMs": 226,
+      "p95Ms": 242,
+      "peakRssMb": 530,
       "outputBytes": 328667
     },
     "postcss-v4-main-10000": {
-      "medianMs": 485,
-      "p95Ms": 517,
-      "peakRssMb": 662,
+      "medianMs": 481,
+      "p95Ms": 510,
+      "peakRssMb": 615,
       "outputBytes": 658667
     },
     "postcss-v4-content-1000": {
       "medianMs": 48,
       "p95Ms": 50,
-      "peakRssMb": 349,
+      "peakRssMb": 348,
       "outputBytes": 64751
     },
     "postcss-v4-content-2000": {
-      "medianMs": 94,
-      "p95Ms": 106,
-      "peakRssMb": 520,
+      "medianMs": 92,
+      "p95Ms": 101,
+      "peakRssMb": 519,
       "outputBytes": 130751
     },
     "postcss-v4-content-5000": {
-      "medianMs": 242,
-      "p95Ms": 263,
-      "peakRssMb": 594,
+      "medianMs": 233,
+      "p95Ms": 253,
+      "peakRssMb": 575,
       "outputBytes": 328751
     },
     "postcss-v4-content-10000": {
       "medianMs": 496,
-      "p95Ms": 558,
-      "peakRssMb": 672,
+      "p95Ms": 525,
+      "peakRssMb": 645,
       "outputBytes": 658751
     },
     "core-wxss-50": {
@@ -150,42 +150,42 @@
       "outputBytes": 1048576
     },
     "postcss-v4-structured-1000": {
-      "medianMs": 67,
-      "p95Ms": 68,
-      "peakRssMb": 669,
+      "medianMs": 68,
+      "p95Ms": 69,
+      "peakRssMb": 645,
       "outputBytes": 89764
     },
     "postcss-v4-structured-2000": {
-      "medianMs": 134,
-      "p95Ms": 143,
-      "peakRssMb": 669,
+      "medianMs": 133,
+      "p95Ms": 136,
+      "peakRssMb": 647,
       "outputBytes": 182164
     },
     "postcss-v4-structured-5000": {
-      "medianMs": 342,
-      "p95Ms": 366,
-      "peakRssMb": 665,
+      "medianMs": 348,
+      "p95Ms": 362,
+      "peakRssMb": 652,
       "outputBytes": 459364
     },
     "postcss-v4-cache-hit-1000": {
       "medianMs": 1,
       "p95Ms": 1,
-      "peakRssMb": 665,
+      "peakRssMb": 651,
       "outputBytes": 64667
     },
     "postcss-v4-cache-hit-2000": {
       "medianMs": 1,
       "p95Ms": 1,
-      "peakRssMb": 665,
+      "peakRssMb": 651,
       "outputBytes": 130667
     },
     "postcss-v4-cache-hit-5000": {
       "medianMs": 3,
       "p95Ms": 3,
-      "peakRssMb": 666,
+      "peakRssMb": 652,
       "outputBytes": 328667
     }
   },
-  "generatedAt": "2026-09-24T05:53:36.328Z",
-  "commit": "cfb57db4ec28ae26a62bbf3e81dc662b4c654460"
+  "generatedAt": "2026-09-24T07:04:51.106Z",
+  "commit": "883bd559cb36827b7c4c9fedffd578afcd56ec49"
 }
