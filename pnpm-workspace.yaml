@@ -115,12 +115,12 @@ catalogs:
     debug: ~4.4.3
     defu: ^6.1.7
     fast-glob: ^3.3.3
-    fs-extra: ^11.4.0
+    fs-extra: ^11.4.1
     htmlparser2: ^12.0.0
     local-pkg: ^1.2.1
     lightningcss: ^1.33.0
     lru-cache: 11.5.3
-    magic-string: ^1.4.1
+    magic-string: ^1.4.2
     micromatch: ^4.0.8
     pathe: ^2.0.3
     picocolors: ^1.1.1
@@ -134,8 +134,8 @@ catalogs:
     oxc-walker: ^1.1.1
     semver: ~7.8.5
   postcssCompat:
-    postcss-pxtrans: ^1.0.4
-    postcss-rule-unit-converter: ^0.2.3
+    postcss-pxtrans: ^1.0.5
+    postcss-rule-unit-converter: ^0.2.4
     postcss-scss: ^4.0.9
     postcss-value-parser: ^4.2.0
   runtimeVariants:
@@ -218,14 +218,14 @@ catalogs:
   postcssComment2:
     postcss-comment: ^2.0.0
   postcssRem:
-    postcss-rem-to-responsive-pixel: ^7.0.5
+    postcss-rem-to-responsive-pixel: ^7.0.6
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
   postcssUtilities:
     es-toolkit: ^1.52.0
     postcss-preset-env: ^11.5.3
   prettier371:
-    prettier: ^3.9.8
+    prettier: ^3.9.9
   react18:
     '@types/react': ^19.2.18
     '@types/react-dom': 18.2.7
@@ -239,11 +239,11 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   rsbuild2:
-    '@rsbuild/core': ^2.2.8
+    '@rsbuild/core': ^2.2.9
     '@rsbuild/plugin-react': ^2.1.0
     '@rsbuild/plugin-vue': ^2.0.1
   sass195:
-    sass: ^1.104.1
+    sass: ^1.105.0
     sass-embedded: ^1.104.1
   storybook:
     '@storybook/addon-a11y': ^10.6.0
@@ -376,9 +376,9 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^6.1.6
+    weapp-ide-cli: ^6.1.7
   weappVite:
-    weapp-vite: ^7.1.4
+    weapp-vite: ^7.2.2
   webpackTools:
     '@pmmmwh/react-refresh-webpack-plugin': ^0.6.3
     '@types/webpack-env': ^1.18.8
