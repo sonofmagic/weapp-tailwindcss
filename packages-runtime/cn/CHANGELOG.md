@@ -1,5 +1,15 @@
 # @weapp-tailwindcss/cn
 
+## 0.1.3
+
+### Patch Changes
+
+- 更新依赖。
+
+  ### @weapp-tailwindcss/cn
+
+  - 更新 dependencies 中的 `cn`：`^0.3.2`，`锁定 0.3.2` → `^0.4.0`，`锁定 0.4.0`。
+
 ## 0.1.2
 
 ### Patch Changes
