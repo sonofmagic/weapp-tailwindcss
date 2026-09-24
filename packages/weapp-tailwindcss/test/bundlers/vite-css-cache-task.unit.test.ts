@@ -5,6 +5,7 @@ import {
   applyViteCssCacheResult,
   processViteCssCacheTask,
 } from '../../src/bundlers/vite/generate-bundle/css-cache-task'
+import { recordViteCssContribution } from '../../src/bundlers/vite/generate-bundle/css-transform-result'
 import { resolveViteCssTransformCachePlan } from '../../src/bundlers/vite/generate-bundle/css-transform-decision-plan'
 
 function createOutputAsset(): OutputAsset {
@@ -95,6 +96,56 @@ describe('vite css cache task', () => {
       rawSource: '@import "tailwindcss";',
       sourceFile: '/project/src/app.css',
     }, 'runtime-signature')
+  })
+
+  it('回滚命中缓存时同步替换产物与框架注入贡献', async () => {
+    const cache = createCache()
+    const assets = new Map<string, string>()
+    const contributions = new Map<string, string>()
+    const transform = vi.fn(async (css: string) => css)
+    const run = (css: string) => processViteCssCacheTask({
+      cache,
+      cacheKey: css,
+      hashKey: css,
+      taskHash: css,
+      sharedResultCache: new Map(),
+      onCacheHit: vi.fn(),
+      onSharedCacheHit: vi.fn(),
+      onSharedResult: vi.fn(),
+      onTransformResult: vi.fn(),
+      transform: () => transform(css),
+      applyResult: result => applyViteCssCacheResult({
+        applyCssResult: value => assets.set('merged.wxss', value),
+        recordCssResult: value => recordViteCssContribution({
+          file: 'entry.wxss',
+          outputIsMainChunk: false,
+          recordViteProcessedCssAssetResult: (file, value) => contributions.set(file, value),
+          shouldRecordVitePipelineCssByOutput: true,
+          shouldInjectVitePipelineCssIntoMain: true,
+          vitePipelineCssAsset: true,
+          vitePipelineCssInjectionOutputFile: 'merged.wxss',
+        }, value),
+        cssRuntimeAffectingHash: 'source',
+        generatorRawSource: '@import "tailwindcss";',
+        generatorSourceFile: '/project/entry.css',
+        lastCssResultByFile: new Map(),
+        lastCssSourceHashByFile: new Map(),
+        originalSource: createOutputAsset(),
+        outputFile: 'merged.wxss',
+        rememberedCssRuntimeSignature: css,
+        rememberedSourcesCount: 2,
+        vitePipelineCssInjectionOutputFile: 'merged.wxss',
+      }, result),
+    })
+    const initial = '.p-4{padding:8rpx}'
+    const added = `${initial}.w-32{width:64rpx}`
+    await run(initial)
+    await run(added)
+    await run(initial)
+    expect(transform).toHaveBeenCalledTimes(2)
+    expect(assets.get('merged.wxss')).toBe(initial)
+    expect(contributions.get('merged.wxss')).toBe(initial)
+    expect(contributions.get('entry.wxss')).toBe(initial)
   })
 
   it('uses the process cache before running the transform again', async () => {

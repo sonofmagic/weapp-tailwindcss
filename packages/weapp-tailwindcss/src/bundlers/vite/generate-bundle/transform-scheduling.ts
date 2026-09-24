@@ -1,3 +1,5 @@
+import { recordViteCssContribution } from './css-transform-result'
+
 export function scheduleViteCssTransform(options: any) {
   const {
     addWatchFile,
@@ -128,6 +130,20 @@ export function scheduleViteCssTransform(options: any) {
     applyResult(source: string) {
       applyViteCssCacheResult({
         applyCssResult,
+        recordCssResult: vitePipelineCssAsset
+          ? (css: string) => {
+              recordCssAssetResult?.(outputFile, css)
+              recordViteCssContribution({
+                file,
+                outputIsMainChunk: outputCssHandlerOptions.isMainChunk === true,
+                recordViteProcessedCssAssetResult,
+                shouldRecordVitePipelineCssByOutput,
+                shouldInjectVitePipelineCssIntoMain,
+                vitePipelineCssAsset,
+                vitePipelineCssInjectionOutputFile,
+              }, css)
+            }
+          : undefined,
         cssRuntimeAffectingHash,
         generatorRawSource,
         generatorSourceFile,

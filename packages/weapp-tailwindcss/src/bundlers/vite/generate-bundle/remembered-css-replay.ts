@@ -2,6 +2,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { ViteFrameworkCssPipelineContext, ViteFrameworkCssPipelineStrategy } from '../shared/framework-strategy'
 import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext, PendingRememberedCssReplayUpdate, RememberedCssSource } from './types'
+import { sourcePathApi } from '@weapp-tailwindcss/source-scan'
 import { AssetEmissionPlan } from '@/compiler'
 import { isPureLocalCssImportWrapper } from '../../../generation/local-imports'
 import { normalizeMiniProgramGeneratorCssSource, normalizeMiniProgramImportShell } from '../../../generation/output-import-shell'
@@ -20,6 +21,7 @@ import { registerGeneratorDependencies } from './rollup-assets'
 import { isRootMiniProgramStyleOutputFile, shouldPreserveFrameworkRootMiniProgramImportShell } from './root-style-output'
 import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTraceMap } from './scoped-generator'
 import { createCandidateSignature } from './signatures'
+import { createMergedCssSourceTraceMap } from './source-trace'
 import { getLastCssResult, getLastCssSourceHash, rememberLastCssResult } from './vite-css-cache'
 
 interface ProcessRememberedCssReplayOptions {
@@ -234,25 +236,34 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
     activeViteCssCacheFiles.add(normalizeViteCssCacheKey(sourceFile))
     const outputCssHandlerOptions = getCssHandlerOptions(rememberedOutputFile)
+    const ownedSources = replayableRememberedGroup.map(item => item.remembered)
     const cssHandlerOptions = {
       ...getCssHandlerOptions(sourceFile),
       isMainChunk: outputCssHandlerOptions.isMainChunk,
+      ...(ownedSources.length > 1
+        ? { sourceOptions: {
+            ...getCssHandlerOptions(sourceFile).sourceOptions,
+            cssEntries: ownedSources.map(source => source.sourceFile),
+            cssSources: ownedSources.map(source => ({ file: source.sourceFile, base: sourcePathApi(source.sourceFile).dirname(source.sourceFile), css: source.rawSource })),
+          } }
+        : {}),
     }
     const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)
     const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, cssHandlerOptions)
-    const scopedGeneratorRuntime = await createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, generatorRawSource, sourceFile)
+    const signatureSources = ownedSources.length > 1 ? ownedSources : [{ rawSource: generatorRawSource, sourceFile }]
+    const scopedGeneratorRuntime = new Set((await Promise.all(signatureSources.map(source =>
+      createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, source.rawSource, source.sourceFile),
+    ))).flatMap(candidates => [...candidates]))
+    const candidateSignatures = await Promise.all(signatureSources.map(async source => [
+      source.sourceFile,
+      await createScopedGeneratorCandidateSignature(source.rawSource, source.sourceFile, createCandidateSignature(scopedGeneratorRuntime), scopedSourceCandidateGetter, {
+        includeFallbackSignature: cssHandlerOptions.isMainChunk,
+        majorVersion: runtimeState.tailwindRuntime.majorVersion,
+      }),
+    ]))
     const cssRuntimeSignature = createCssRuntimeSignature(
       createCandidateSignature(scopedGeneratorRuntime),
-      await createScopedGeneratorCandidateSignature(
-        generatorRawSource,
-        sourceFile,
-        createCandidateSignature(scopedGeneratorRuntime),
-        scopedSourceCandidateGetter,
-        {
-          includeFallbackSignature: cssHandlerOptions.isMainChunk,
-          majorVersion: runtimeState.tailwindRuntime.majorVersion,
-        },
-      ),
+      ownedSources.length > 1 ? JSON.stringify(candidateSignatures) : candidateSignatures[0]![1]!,
     )
     const cssRuntimeAffectingHash = cache.computeHash(createRuntimeAffectingSourceSignature(rawSource, 'css'))
     const rememberedCssRuntimeSignature = createRememberedCssRuntimeSignature(cssRuntimeSignature, cssRuntimeAffectingHash)
@@ -284,7 +295,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       continue
     }
     const sourceTraceSources = scopedSourceCandidateSourceGetter
-      ? await createScopedGeneratorSourceTraceMap(generatorRawSource, sourceFile, scopedSourceCandidateSourceGetter)
+      ? await createMergedCssSourceTraceMap(signatureSources, source => createScopedGeneratorSourceTraceMap(source.rawSource, source.sourceFile, scopedSourceCandidateSourceGetter))
       : undefined
     const sourceTraceTokenSources = sourceTraceSources
       ? createCssTokenSourceMap(sourceTraceSources, opts)

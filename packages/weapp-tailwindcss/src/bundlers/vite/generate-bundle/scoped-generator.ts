@@ -1,6 +1,6 @@
 import type { SourceCandidateFilterOptions } from '../source-candidates'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
-import path from 'node:path'
+import { sourcePathApi } from '@weapp-tailwindcss/source-scan'
 import { hasCssMacroTailwindV4CustomVariantConditionalComments } from '@/css-macro/auto'
 import { resolveTailwindV4EntriesFromCssCached } from '../source-scan'
 import { createCandidateSignature } from './signatures'
@@ -11,7 +11,7 @@ function hasOwnSourceDirectives(rawSource: string) {
 
 function createLocalSourceEntries(sourceFile: string): TailwindSourceEntry[] {
   return [{
-    base: path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, ''))),
+    base: sourcePathApi(sourceFile).dirname(sourcePathApi(sourceFile).resolve(sourceFile.replace(/[?#].*$/, ''))),
     negated: false,
     pattern: '**/*',
   }]
@@ -59,7 +59,7 @@ function resolveScopedSourceEntries(rawSource: string, sourceFile: string, resol
 }
 
 async function resolveScopedGeneratorSourceEntries(rawSource: string, sourceFile: string) {
-  const sourceBase = path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, '')))
+  const sourceBase = sourcePathApi(sourceFile).dirname(sourcePathApi(sourceFile).resolve(sourceFile.replace(/[?#].*$/, '')))
   const resolved = await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
   return resolveScopedSourceEntries(rawSource, sourceFile, resolved?.entries)
 }

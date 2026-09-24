@@ -126,10 +126,14 @@ export async function prepareGeneratorInputs(context: GeneratorPipelineExecution
             ...source,
             css: sourceCss,
           }
+    const hasOwnedCssSources = Boolean(cssHandlerOptions.sourceOptions?.cssSources?.length)
+    const entryCssCandidates = hasOwnedCssSources
+      ? collectGeneratorCssCandidates(sourceMetadata.sourceCss ?? source.css)
+      : currentCssCandidates
     const sourceEntries = getSourceCandidatesForEntries
       ? await resolveGeneratorSourceEntries(record, runtimeState)
       : undefined
-    const sourceScopedRuntime = sourceEntries && sourceEntries.length > 0
+    const sourceScopedRuntime = sourceEntries !== undefined
       ? getSourceCandidatesForEntries?.(sourceEntries)
       : undefined
     const scopedRuntime = resolveScopedRuntimeCandidates(options.sourceCandidates, sourceScopedRuntime)
@@ -152,7 +156,7 @@ export async function prepareGeneratorInputs(context: GeneratorPipelineExecution
       ? isolateCurrentCssCandidates
         ? runtimeWithCurrentCss
         : mergeScopedRuntimeWithCurrentRuntime(scopedRuntime ?? new Set(), runtimeWithCurrentCss, {
-            currentCssCandidates,
+            currentCssCandidates: entryCssCandidates,
             cssHandlerOptions,
             isolateCssSource,
             majorVersion,

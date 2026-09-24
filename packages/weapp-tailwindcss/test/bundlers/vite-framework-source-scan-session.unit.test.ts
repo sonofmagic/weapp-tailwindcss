@@ -64,6 +64,25 @@ describe('vite framework source scan session', () => {
     await Promise.all(createdDirs.splice(0).map(dir => rm(dir, { recursive: true, force: true })))
   })
 
+  it('监听依赖来自当前 source 扫描，改指向后移除旧文件和排除文件', async () => {
+    const { appRoot } = await createTempWorkspace()
+    const first = path.join(appRoot, 'first.html')
+    const second = path.join(appRoot, 'second.html')
+    await writeFile(first, 'first-candidate')
+    await writeFile(second, 'second-candidate')
+    const sources = [{ base: appRoot, pattern: 'first.html', negated: false }]
+    const { session, sourceCandidateCollector } = createSession({ appRoot, sources, extractor: async source => [source] })
+    await session.sync()
+    expect([...session.getWatchFiles()].map(file => path.basename(file))).toContain('first.html')
+    expect([...session.getWatchFiles()].map(file => path.basename(file))).not.toContain('second.html')
+    sources[0]!.pattern = 'second.html'
+    session.invalidate()
+    await session.sync()
+    expect([...session.getWatchFiles()].map(file => path.basename(file))).toContain('second.html')
+    expect([...session.getWatchFiles()].map(file => path.basename(file))).not.toContain('first.html')
+    expect(sourceCandidateCollector.valuesForEntries(sources)).toEqual(new Set(['second-candidate']))
+  })
+
   it('serializes explicit source snapshots for the same HMR file', async () => {
     let releaseFirstExtraction!: () => void
     const firstExtractionBlocked = new Promise<void>((resolve) => {

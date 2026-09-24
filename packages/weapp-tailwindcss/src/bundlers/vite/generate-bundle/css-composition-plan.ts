@@ -1,4 +1,5 @@
 import type { RememberedCssSource } from './types'
+import { sourcePathApi } from '@weapp-tailwindcss/source-scan'
 import {
   hasTailwindApplyDirective,
   hasTailwindRootDirectives,
@@ -196,7 +197,12 @@ export function resolveViteCssCompositionPlan<HandlerOptions extends CssComposit
     sourceOptions: {
       ...cssHandlerOptions.sourceOptions,
       sourceFile: generatorSourceFile,
-      cssEntries: generatorCssEntries,
+      cssEntries: rememberedSources.length > 1 ? rememberedSources.map(source => source.sourceFile) : generatorCssEntries,
+      ...(rememberedSources.length > 1
+        ? {
+            cssSources: rememberedSources.map(source => ({ file: source.sourceFile, base: sourcePathApi(source.sourceFile).dirname(source.sourceFile), css: source.rawSource })),
+          }
+        : {}),
     },
   }
   return {

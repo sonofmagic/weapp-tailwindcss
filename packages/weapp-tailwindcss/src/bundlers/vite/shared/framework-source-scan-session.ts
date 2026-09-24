@@ -433,6 +433,7 @@ export function createFrameworkSourceScanSession(options: FrameworkSourceScanSes
       pendingHotUpdateChangeByFile: pendingHotUpdateChangeByFile.size,
       sourceCandidateScanCache: sourceCandidateScanCache.size,
     }),
+    getWatchFiles: () => new Set([...sourceScanEligibleFiles, ...sourceScanDependencies]),
     invalidate,
     isDependency,
     // 首次 source scan 完成前保留 Vite 原有的 transform 行为；sync() 完成后由统一 matcher 负责边界判断。

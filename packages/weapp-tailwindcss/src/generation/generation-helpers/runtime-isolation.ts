@@ -58,7 +58,7 @@ export function shouldIsolateScopedCssSource(
   if (metadata?.isolateCssSource) {
     return true
   }
-  if (metadata?.matchedCssSourceFile && (sourceEntries?.length ?? 0) > 0) {
+  if (metadata?.matchedCssSourceFile && sourceEntries !== undefined) {
     return true
   }
   if (sourceEntries?.length === 0) {

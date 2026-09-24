@@ -2,7 +2,7 @@ import type { Plugin } from 'vite'
 import type { CssStage } from '@/compiler'
 import type { AppType } from '@/types'
 import path from 'node:path'
-import { stripTailwindConfigDirectives } from '@weapp-tailwindcss/postcss/transform'
+import { createDeferredCssSourceMarker, stripTailwindConfigDirectives } from '@weapp-tailwindcss/postcss/transform'
 import { vitePluginName } from '@/constants'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, normalizeTailwindConfigDirectives } from '../../generation/directives'
 import { isSourceStyleRequest } from '../../generation/style-requests'
@@ -100,9 +100,12 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
         }
 
         if (!options.shouldRewrite) {
-          if (normalizedCode !== code) {
+          const deferredCode = shouldOwnTailwindGeneration && hasTailwindRoot && !shouldGenerateInPreTransform
+            ? `${normalizedCode}\n${createDeferredCssSourceMarker(id)}`
+            : normalizedCode
+          if (deferredCode !== code) {
             return {
-              code: normalizedCode,
+              code: deferredCode,
               map: null,
             }
           }
@@ -113,9 +116,12 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
           appType: resolveAppType(),
           rootImport,
         })
-        const nextCode = shouldOwnTailwindGeneration
+        const transformed = shouldOwnTailwindGeneration
           ? stripTailwindConfigDirectives(rewritten ?? normalizedCode)
           : rewritten
+        const nextCode = shouldOwnTailwindGeneration && hasTailwindRoot && !shouldGenerateInPreTransform
+          ? `${transformed ?? normalizedCode}\n${createDeferredCssSourceMarker(id)}`
+          : transformed
         if (!nextCode || nextCode === code) {
           return null
         }

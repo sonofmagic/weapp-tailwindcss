@@ -70,6 +70,7 @@ describe('bundlers/vite bundle markup candidates', () => {
 
     expect(extractSourceCandidates).toHaveBeenCalledTimes(2)
     expect(collection.values).toEqual(new Set(['source-only', 'bundle-added', 'second-added']))
+    expect(collection.valuesForEntries([])).toEqual(new Set())
     expect(collection.valuesForEntries([{
       base: path.join(rootDir, 'src'),
       negated: false,
