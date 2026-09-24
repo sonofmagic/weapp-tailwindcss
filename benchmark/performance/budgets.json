@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "generatedFrom": "ubuntu-canonical",
+  "headroomPercent": 20,
+  "default": { "medianMs": 120000, "p95Ms": 180000, "peakRssMb": 4096, "outputBytes": 8388608 },
+  "bundles": {
+    "@weapp-tailwindcss/cn": { "gzipBytes": 20000, "brotliBytes": 18000 },
+    "@weapp-tailwindcss/merge": { "gzipBytes": 20000, "brotliBytes": 18000 }
+  },
+  "cases": {
+    "postcss-v4-main-1000": { "medianMs": 5000, "p95Ms": 8000, "peakRssMb": 2048, "outputBytes": 1048576 },
+    "postcss-v4-main-2000": { "medianMs": 12000, "p95Ms": 18000, "peakRssMb": 2048, "outputBytes": 2097152 },
+    "postcss-v4-main-5000": { "medianMs": 30000, "p95Ms": 45000, "peakRssMb": 3072, "outputBytes": 5242880 },
+    "postcss-v4-main-10000": { "medianMs": 120000, "p95Ms": 180000, "peakRssMb": 4096, "outputBytes": 10485760 },
+    "postcss-v4-content-1000": { "medianMs": 5000, "p95Ms": 8000, "peakRssMb": 2048, "outputBytes": 1048576 },
+    "postcss-v4-content-2000": { "medianMs": 12000, "p95Ms": 18000, "peakRssMb": 2048, "outputBytes": 2097152 },
+    "postcss-v4-content-5000": { "medianMs": 30000, "p95Ms": 45000, "peakRssMb": 3072, "outputBytes": 5242880 },
+    "postcss-v4-content-10000": { "medianMs": 120000, "p95Ms": 180000, "peakRssMb": 4096, "outputBytes": 10485760 },
+    "core-wxss-50": { "medianMs": 60000, "p95Ms": 90000, "peakRssMb": 4096, "outputBytes": 4194304 },
+    "core-wxss-100": { "medianMs": 60000, "p95Ms": 90000, "peakRssMb": 4096, "outputBytes": 4194304 },
+    "core-wxss-200": { "medianMs": 60000, "p95Ms": 90000, "peakRssMb": 4096, "outputBytes": 4194304 },
+    "core-wxml-50": { "medianMs": 5000, "p95Ms": 8000, "peakRssMb": 4096, "outputBytes": 4194304 },
+    "core-wxml-100": { "medianMs": 5000, "p95Ms": 8000, "peakRssMb": 4096, "outputBytes": 4194304 },
+    "core-wxml-200": { "medianMs": 5000, "p95Ms": 8000, "peakRssMb": 4096, "outputBytes": 4194304 },
+    "core-js-50": { "medianMs": 15000, "p95Ms": 25000, "peakRssMb": 4096, "outputBytes": 4194304 },
+    "core-js-100": { "medianMs": 15000, "p95Ms": 25000, "peakRssMb": 4096, "outputBytes": 4194304 },
+    "core-js-200": { "medianMs": 15000, "p95Ms": 25000, "peakRssMb": 4096, "outputBytes": 4194304 },
+    "runtime-cn-100": { "medianMs": 2000, "p95Ms": 4000, "peakRssMb": 4096, "rssDeltaMb": 512, "outputBytes": 1048576 },
+    "runtime-cn-1000": { "medianMs": 10000, "p95Ms": 16000, "peakRssMb": 4096, "rssDeltaMb": 512, "outputBytes": 1048576 },
+    "runtime-merge-100": { "medianMs": 2000, "p95Ms": 4000, "peakRssMb": 4096, "rssDeltaMb": 512, "outputBytes": 1048576 },
+    "runtime-merge-1000": { "medianMs": 10000, "p95Ms": 16000, "peakRssMb": 4096, "rssDeltaMb": 512, "outputBytes": 1048576 }
+  }
+}
