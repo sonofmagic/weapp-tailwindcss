@@ -9,6 +9,11 @@ import { hasTwVars } from './utils/tw-vars'
 
 const DEFAULT_ROOT_SELECTORS = ['page', '.tw-root', 'wx-root-portal-content'] as const
 
+export interface PreflightContentUsage {
+  read: () => boolean
+  invalidate: () => void
+}
+
 // ':not(template) ~ :not(template)'
 // ':not(template)~:not(template)'
 // const regexp1 = /:not\(template\)\s*~\s*:not\(template\)/g
@@ -79,13 +84,15 @@ function removeTailwindV4EmptyContentInit(node: Rule) {
   })
 }
 
-function injectPreflightDeclarations(node: Rule, options: IStyleHandlerOptions) {
+function injectPreflightDeclarations(node: Rule, options: IStyleHandlerOptions, contentUsage?: PreflightContentUsage) {
   const preflightDeclarations = options.cssInjectPreflight?.()
   if (!preflightDeclarations || preflightDeclarations.length === 0) {
     return
   }
   node.prepend(...preflightDeclarations)
   node.raws.semicolon = true
+  // 注入回调也可能修改已有节点，后续规则必须重新查询当前 Root。
+  contentUsage?.invalidate()
 }
 
 function hasClassSelector(node: Rule) {
@@ -144,7 +151,7 @@ function resolveUniAppXVariableScopeSelectors(options: IStyleHandlerOptions) {
 export function commonChunkPreflight(
   node: Rule,
   options: IStyleHandlerOptions,
-  contentVariableUsedInRoot?: boolean,
+  contentUsage?: PreflightContentUsage,
 ) {
   const { ctx, injectAdditionalCssVarScope } = options
   const uniAppXEnabled = isUniAppXEnabled(options)
@@ -177,9 +184,8 @@ export function commonChunkPreflight(
   }
   // 标记 CSS 变量作用域
   // node.selector = remakeCombinatorSelector(node.selector, options)
-  const canRemoveTailwindV4EmptyContentInit = !hasClassSelector(node) || isRootThemeScopeRule(node)
-  if (isTailwindcss4 && canRemoveTailwindV4EmptyContentInit) {
-    const rootUsesContentVariable = contentVariableUsedInRoot
+  if (isTailwindcss4 && (!hasClassSelector(node) || isRootThemeScopeRule(node))) {
+    const rootUsesContentVariable = contentUsage?.read()
       ?? usesTailwindcssV4ContentVariable(node.root())
     if (!rootUsesContentVariable) {
       removeTailwindV4EmptyContentInit(node)
@@ -197,7 +203,7 @@ export function commonChunkPreflight(
       phase: 'pre',
       reason: 'rewrite-variable-scope',
     })
-    injectPreflightDeclarations(node, options)
+    injectPreflightDeclarations(node, options, contentUsage)
   }
   if (injectAdditionalCssVarScope && isTailwindcss4 && testIfRootHostForV4(node)) {
     const nodes = createUsedCssVarsV4Nodes(collectUsedTailwindcssV4Variables(node.root()))
@@ -215,6 +221,7 @@ export function commonChunkPreflight(
       })
     }
     node.before(syntheticRule)
-    injectPreflightDeclarations(syntheticRule, options)
+    contentUsage?.invalidate()
+    injectPreflightDeclarations(syntheticRule, options, contentUsage)
   }
 }

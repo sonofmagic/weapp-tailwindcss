@@ -166,11 +166,16 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
         }
       })
       consumeCascadeLayers(root)
-      const contentVariableUsedInRoot = isTailwindcssV4(opts)
+      let contentVariableUsedInRoot = isTailwindcssV4(opts)
         ? usesTailwindcssV4ContentVariable(root)
         : undefined
+      // 状态只属于本轮 Once；注入后按需重算，不跨 Root 或处理请求缓存。
+      const contentUsage = {
+        read: () => contentVariableUsedInRoot ??= usesTailwindcssV4ContentVariable(root),
+        invalidate: () => { contentVariableUsedInRoot = undefined },
+      }
       root.walkRules((rule) => {
-        commonChunkPreflight(rule, opts, contentVariableUsedInRoot)
+        commonChunkPreflight(rule, opts, contentUsage)
       })
     }
   }
