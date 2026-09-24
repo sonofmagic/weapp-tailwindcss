@@ -237,13 +237,13 @@ describe('tailwindcss/v4/config', () => {
     expect(result).toBe(false)
   })
 
-  it('applies cssCalc defaults when users explicitly enable it', async () => {
+  it('preserves boolean cssCalc selection when users explicitly enable it', async () => {
     const runtime = createRuntime(4)
     const { applyV4CssCalcDefaults } = await loadModule()
 
     const result = applyV4CssCalcDefaults(true, runtime)
 
-    expect(result).toEqual({ includeCustomProperties: [] })
+    expect(result).toBe(true)
   })
 
   it('merges missing custom properties when defaults are provided', async () => {

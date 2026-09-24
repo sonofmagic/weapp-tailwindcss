@@ -390,7 +390,12 @@ describeIde('issues 909/916/928 IDE runtime', () => {
     expect(appWxss).not.toMatch(/transform:\s*var\(--tw-rotate-x,\) var\(--tw-rotate-y,\)/)
     assertMiniProgramPreflight(appWxss)
     expect(appWxss).toMatch(/background-image:\s*linear-gradient\(var\(--tw-gradient-stops\)\)/)
-    expect(appWxss).toMatch(/\.bg-linear-to-r\s*\{\s*--tw-gradient-position:\s*to right;\s*background-image:\s*-webkit-linear-gradient\(var\(--tw-gradient-stops\)\);\s*background-image:\s*linear-gradient\(var\(--tw-gradient-stops\)\)/)
+    const bgLinearToRRule = appWxss.match(/\.bg-linear-to-r\s*\{(?<declarations>[^}]*)\}/)?.groups?.declarations
+    expect(bgLinearToRRule, 'issue 928 should emit the variable-driven gradient rule').toBeTruthy()
+    expect(bgLinearToRRule).toMatch(/--tw-gradient-position:\s*to right;/)
+    expect(bgLinearToRRule).toMatch(/background-image:\s*linear-gradient\(var\(--tw-gradient-stops\)\)/)
+    // 小程序主产物按前缀白名单清理冗余的 -webkit-linear-gradient。
+    expect(bgLinearToRRule).not.toContain('-webkit-linear-gradient')
     if (isTailwindcssV4GradientFallbackEnabled) {
       expect(appWxss).toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
       expect(appWxss).toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')

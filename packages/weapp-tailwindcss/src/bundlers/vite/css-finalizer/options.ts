@@ -23,6 +23,7 @@ interface RememberedMainCssSource {
 export interface CssFinalizerContext {
   frameworkName?: string | undefined
   opts: InternalUserDefinedOptions
+  getFinalCssCalcOptions?: (() => Partial<IStyleHandlerOptions> | undefined) | undefined
   runtimeState: {
     tailwindRuntime: InternalUserDefinedOptions['tailwindRuntime']
     readyPromise: Promise<void>

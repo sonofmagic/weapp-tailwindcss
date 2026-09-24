@@ -91,6 +91,7 @@ export {
   applyConfiguredCssCalc,
   type ApplyConfiguredCssCalcOptions,
 } from './plugins/applyConfiguredCssCalc'
+export { applyConfiguredCssUnits, type ApplyConfiguredCssUnitsOptions } from './plugins/applyConfiguredCssUnits'
 export { createFallbackPlaceholderReplacer } from './plugins/post/specificity-cleaner'
 
 export {
@@ -173,6 +174,8 @@ export { rewriteCssImportSpecifiers } from './syntax/rewrite-imports'
 
 export { canProcessSourceStyleAsCss } from './syntax/source-style'
 export * from './types'
+export { analyzeCssCalcContext, type CssCalcContext } from './utils/css-calc-context'
+export { isCssCalcCustomPropertySelected } from './utils/css-custom-property'
 export { annotateCssTokenSources, type CssTokenSource, type CssTokenSourceMap } from './utils/css-source-trace'
 export { collectCustomPropertyValues, mergeCustomPropertyValues } from './utils/custom-property-values'
 export { replaceViteGeneratedCssModule } from './utils/generated-css-marker'

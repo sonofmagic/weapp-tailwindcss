@@ -363,7 +363,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 322016,
+      "bytes": 315522,
       "selectors": [
         ".-bg-conic-180",
         ".-bg-linear-65",

@@ -218,6 +218,8 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/pages/index/index.ts'),
       verifyEscapedIn: ['js'],
       verifyClassLiteralIn: ['js'],
+      // Tailwind v4 的 JS 候选扫描只读取字符串，注释载体只验证 HMR marker。
+      commentCarrierMinRequiredGlobalStyleEscapedClasses: 0,
       roundConfigs: buildTailwindV4JsContentRoundConfigs(),
       mutate(source, payload) {
         return mutateScriptByDataAnchor(source, '  data: {', payload)

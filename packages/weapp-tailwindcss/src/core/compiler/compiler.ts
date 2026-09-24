@@ -8,7 +8,7 @@ import type {
 } from './types'
 import type { UserDefinedOptions } from '@/types'
 import { finalizeMiniProgramCss, finalizeMiniProgramCssRoot } from '@weapp-tailwindcss/postcss/transform'
-import { createWeappTailwindcssGenerator, resolveTailwindV4Source } from '@/generator'
+import { createWeappTailwindcssGenerator } from '@/generator'
 import { createCompilerGenerationCacheKey, isSameCompilerGenerationCacheKey, reuseCompilerGenerationResult } from './generation-cache'
 import { commitCompilerGeneration, prepareCompilerGeneration } from './generation-state'
 import { CompilerRootStore } from './root-store'
@@ -18,7 +18,7 @@ import {
   getInternalCompilerSnapshot,
   mergeRegisteredCompilerSnapshots,
 } from './snapshot'
-import { createSourceFingerprint } from './source-fingerprint'
+import { resolveCompilerSource } from './source'
 import { createCompilerTransforms } from './transforms'
 
 const DEFAULT_MAX_ROOTS = 128
@@ -56,35 +56,12 @@ export function createCompiler(options: CreateCompilerOptions = {}): Compiler {
     userOptions: userOptions as UserDefinedOptions,
   })
 
-  async function resolveRequestSource(entry: CompilerRootSession, request: CompilerGenerateRequest) {
-    if (request.source && request.sourceOptions) {
-      throw new Error('generate() 的 source 与 sourceOptions 互斥。')
-    }
-    if (!request.source && !request.sourceOptions) {
-      throw new Error('generate() 必须提供 source 或 sourceOptions。')
-    }
-    const sourceInput = (request.source ?? request.sourceOptions) as object
-    const canReuseResolvedSource = entry.source !== undefined
-      && entry.sourceInput === sourceInput
-      && entry.appliedInvalidation === entry.invalidation
-    const source = canReuseResolvedSource
-      ? entry.source!
-      : request.source ?? await resolveTailwindV4Source(request.sourceOptions)
-    return { source, sourceInput }
-  }
-
   async function runGenerate(entry: CompilerRootSession, request: CompilerGenerateRequest): Promise<CompilerGenerateResult> {
     if (!entry.active) {
       throw new Error(`Compiler root 已被移除：${entry.id}`)
     }
     const invalidation = entry.invalidation
-    const { source, sourceInput } = await resolveRequestSource(entry, request)
-    const canReuseSourceFingerprint = entry.sourceInput === sourceInput
-      && entry.sourceFingerprint !== undefined
-      && entry.appliedInvalidation === invalidation
-    const sourceFingerprint = canReuseSourceFingerprint
-      ? entry.sourceFingerprint!
-      : createSourceFingerprint(source)
+    const { source, sourceFingerprint, sourceInputFingerprint } = await resolveCompilerSource(entry, request, invalidation)
     const sourceReused = entry.sourceFingerprint === sourceFingerprint
     const engineReused = sourceReused
       && entry.generator !== undefined
@@ -164,14 +141,17 @@ export function createCompiler(options: CreateCompilerOptions = {}): Compiler {
       const previousGenerator = entry.generator
       commitCompilerGeneration(entry, prepared, source, dependencies, generated.classSet)
       entry.generator = generator
-      entry.generationCache = { key: generationCacheKey, result: generated }
+      entry.generationCache = {
+        key: generationCacheKey,
+        result: { ...generated, sources: [...snapshot.sources] },
+      }
       entry.source = source
       entry.sourceFingerprint = sourceFingerprint
-      entry.sourceInput = sourceInput
+      entry.sourceInputFingerprint = sourceInputFingerprint
       entry.appliedInvalidation = invalidation
       entry.latestSnapshot = snapshot
       rootStore.attachDependencies(entry, dependencies)
-      rootStore.attachSources(entry, sources)
+      rootStore.attachSources(entry, snapshot.sources)
       if (!engineReused && previousGenerator !== generator) {
         previousGenerator?.dispose?.()
       }

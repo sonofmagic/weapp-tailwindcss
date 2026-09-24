@@ -185,12 +185,12 @@ export interface UserDefinedOptionsImportantPart {
    */
   cssPreflightRange?: 'all' | undefined
   /**
-   * 预计算 CSS 变量或 `calc` 表达式的结果。
+   * 预计算构建期可确定的 `calc()` 表达式。
    *
    * @group 0.重要配置
    * @since ^4.3.0
    * @remarks
-   * 解决部分机型对 `calc` 计算不一致的问题，可传入布尔值、选项对象或自定义匹配列表（支持正则）。该能力默认关闭；启用后会补充预计算声明并保留原始 `calc()` 声明。需要避免后续原始声明覆盖预计算结果时，可通过 `includeCustomProperties` 指定要清理的 CSS 变量。
+   * 可传入布尔值、选项对象或变量匹配列表（支持正则），默认关闭。仅静态化可确定的表达式：局部、条件或冲突覆盖及无法解析的变量保留运行时表达式。成功求值时默认替换原声明；显式设置 `preserve: true` 才同时保留原声明。普通 `var()` 不会因此全局展开，JavaScript 或内联样式的未来覆盖无法由 CSS 静态分析预测。
    * @default false
    * @example
    * ```css
@@ -205,22 +205,22 @@ export interface UserDefinedOptionsImportantPart {
    * ```
    *
    * ```css
-   * // 显式启用 cssCalc 后，默认保留原始 calc 声明
+   * // cssCalc: ['--spacing']，变量固定时默认替换为最终值
    * .h-2 {
    *   height: 16rpx;
-   *   height: calc(var(--spacing) * 2);
    * }
    * ```
    *
    * ```js
    * cssCalc: ['--spacing']
-   * cssCalc: { includeCustomProperties: ['--spacing'] }
+   * cssCalc: { includeCustomProperties: ['--spacing'], preserve: true }
    * ```
    *
    * ```css
-   * // 指定 --spacing 后，会删除匹配变量的原始 calc 声明
+   * // preserve: true 时保留原声明；后声明仍参与运行时层叠
    * .h-2 {
    *   height: 16rpx;
+   *   height: calc(var(--spacing) * 2);
    * }
    * ```
    * @deprecated 请使用 `cssOptions.cssCalc`。

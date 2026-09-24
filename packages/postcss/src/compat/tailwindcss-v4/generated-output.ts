@@ -36,7 +36,10 @@ export async function transformTailwindV4CssToWeapp(
     ? await transformCssMacroCss(css, options)
     : css
   const compatibleCss = normalizeTailwindV4GeneratedUrlValues(macroCss)
-  const customPropertyValues = options?.customPropertyValues
+  const customPropertyValues = new Map([
+    ...options?.customPropertyCompatibilityValues ?? [],
+    ...options?.customPropertyValues ?? [],
+  ])
   const protectedCss = protectDynamicColorMixAlpha(compatibleCss, { customPropertyValues })
   const result = await defaultStyleHandler(protectedCss.css, {
     cssChildCombinatorReplaceValue: ['view', 'text'],

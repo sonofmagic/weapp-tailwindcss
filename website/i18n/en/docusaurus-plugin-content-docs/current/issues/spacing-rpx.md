@@ -31,14 +31,18 @@ See [Issue #1214](https://github.com/sonofmagic/weapp-tailwindcss/issues/1214) f
 
 ## Current build fix
 
-The current mainline fixes the missing theme-variable context in the Tailwind CSS 4 mini-program deferred and incremental generation paths. When a build-time fixed variable is explicitly selected with `cssOptions.cssCalc: ['--spacing']`, the generator carries `customPropertyValues` and the complete raw CSS context into deferred processing, then evaluates it before mini-program theme scoping:
+The current fix preserves variable declarations and their scopes throughout Tailwind CSS 4 mini-program deferred and incremental generation. When a build-time fixed variable is explicitly selected with `cssOptions.cssCalc: ['--spacing']`, the build pipeline checks whether static evaluation is safe using the complete context, then computes the final length:
 
 ```css title="Declarations after static evaluation"
 .w-32 { width: 32rpx; }
 .p-4 { padding: 4rpx; }
 ```
 
-This fixes the library's context propagation and processing order, avoiding WeChat's intermediate runtime multiplication of a small `rpx` base. With `cssCalc` disabled or unconfigured, runtime overrides, unresolved variable chains, or later plugins that recreate the expression, the output can still retain `calc()`. A dynamic theme must not be frozen into static values.
+This fixes context propagation, scope analysis, and cache invalidation in the library, avoiding WeChat's intermediate runtime multiplication of a small `rpx` base. Known local selector overrides, conditional declarations, or conflicting source values within a shared style scope keep the affected variables and their dependency chains as runtime expressions. Theme or configuration changes cause affected rules to be recalculated during incremental generation.
+
+Vite builds preserve expressions until the final CSS asset graph is available. Entry points, static imports, and CSS imports determine shared style scopes; static evaluation then runs before unit conversion. Separate output files are not automatically isolated: styles loaded together participate in the same analysis, while independent entry scopes are evaluated separately. The Vite development server and styles embedded in native App code do not use this deferred stage.
+
+Static analysis cannot predict future JavaScript or inline-style changes. Select only variables that will remain fixed at runtime. Disabled or unconfigured `cssCalc`, unresolved variables, and later plugins that recreate expressions can still leave runtime `calc()`. This does not change WeChat's own conversion algorithm.
 
 ## Build-time advisory warning
 
@@ -50,16 +54,16 @@ H5, ordinary Web, other mini programs, and builds with an unknown platform do no
 Each build session (`runtimeState`) emits at most one warning. Subsequent watch/HMR generations do not repeat it; a new session can warn again. Existing `logLevel` controls apply: `'warn'` retains it, while `'silent'` or `'error'` suppresses it. No new configuration is needed. Diagnosis does not change CSS, the class set, or the exit status.
 :::
 
-The message also reports the CSS state after the shared generation pipeline:
+The message also reports the CSS state after the shared generation pipeline. This sample can precede static evaluation of Vite's final assets:
 
-| Result                                                                     | Meaning                                                                                                                           |
-| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| An `rpx` theme variable was found                                          | A configuration compatibility advisory, not proof of incorrect dimensions                                                         |
-| A related `calc(var(--name) * ...)` or an inline `rpx` calculation remains | Runtime arithmetic needs closer verification; the inline hint does not establish that the expression came from the theme variable |
-| No related runtime `calc` was detected                                     | Current output may be static or may not use the variable; this does not verify every scope or device                              |
-| Output diagnosis could not complete                                        | Output analysis is skipped without failing the build or claiming safety                                                           |
+| Result                                                                                                     | Meaning                                                                                                                                                         |
+| ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| An `rpx` theme variable was found                                                                          | A configuration compatibility advisory, not proof of incorrect dimensions                                                                                       |
+| A related `calc(var(--name) * ...)` or an inline `rpx` calculation remains at the current generation stage | Later build processing may make it static; this does not prove final WXSS retains runtime arithmetic, or that an inline expression came from the theme variable |
+| No related `calc` was detected at the current generation stage                                             | This stage may be static or may not use the variable; it does not verify final assets, every scope, or every device                                             |
+| Output diagnosis could not complete                                                                        | Output analysis is skipped without failing the build or claiming safety                                                                                         |
 
-When `cssCalc` successfully precomputes and removes the original declaration, the message reflects that no related runtime expression was detected. `@theme inline` alone usually substitutes the literal and may leave `calc(3rpx * 8)`, which is not static `24rpx`. An unparseable source is skipped. One warning is not a complete inventory of every build artifact. Later minification or custom plugins may still change CSS; inspect final WXSS and verify on target devices.
+Even when `cssCalc` successfully makes final WXSS static, an earlier warning may still report expressions at the generation stage; inspect final WXSS to determine the result. `@theme inline` alone usually substitutes the literal and may leave `calc(3rpx * 8)`, which is not static `24rpx`. An unparseable source is skipped. One warning is not a complete inventory of every build artifact. Later minification or custom plugins may still change CSS; inspect final WXSS and verify on target devices.
 
 ## rpx conversion can amplify errors in the base length
 
@@ -100,8 +104,8 @@ WeappTailwindcss({
 
 The intended result is to reduce a known `calc(1rpx * 32)` to `32rpx`, so WeChat converts only the final length. Keep these limitations in mind:
 
-- **Precomputation needs variable values.** The current pipeline preserves values from the Tailwind v4 generation result and the complete `rawCss`, then evaluates fixed variables before rewriting mini-program theme selectors. With `--spacing: 1rpx` and `cssCalc: ['--spacing']`, deferred and incremental output can produce final lengths such as `32rpx`. Runtime overrides, unresolved variable chains, or variables that are not explicitly selected remain runtime expressions.
-- **The original declaration can override a static fallback.** `cssCalc: true` can retain a later `var()` / `calc()` declaration. When WeChat accepts that expression, it can override the static value even if the calculated size differs. The array form cleans up matching original declarations after successful precomputation; unresolved declarations cannot be assumed to have been replaced.
+- **Precomputation needs fixed variable context.** The pipeline retains the effective Tailwind v4 theme and complete raw declarations, then checks fixed variables within shared style scopes; Vite builds defer evaluation until the final CSS asset stage. With `--spacing: 1rpx` and `cssCalc: ['--spacing']`, the output can contain final lengths such as `32rpx`. Known dynamic overrides, source conflicts, unresolved variables, and unselected variables remain expressions; a `var()` fallback alone does not make an unknown variable constant.
+- **Preserving the original declaration is a separate choice.** `cssCalc: true` and array options replace resolvable calculations by default. Object options with `preserve: true` retain the original declaration, which may override the static result. `cssCalc` no longer implicitly enables global variable expansion through `cssPresetEnv`. If you explicitly enable that independent feature, verify its output and dynamic-theme behavior separately.
 - **Unit conversion does not imply precomputation.** Enabling `rem2rpx` or `px2rpx`, or finding an `rpx` variable in the output, does not by itself establish that runtime `calc` has been removed.
 
 Inspect the final utility property value and any later declaration that could override it. Finding `--spacing: 1rpx` and the class name in WXSS is not enough.

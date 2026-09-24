@@ -1,4 +1,5 @@
 import type { DemoE2eMemorySample, DemoE2eMemoryStepReport } from './demo-e2e-memory'
+import type { WorkflowStep } from './demo-e2e-workflow/quality-steps'
 import { spawn } from 'node:child_process'
 import path from 'node:path'
 import process from 'node:process'
@@ -10,19 +11,8 @@ import {
   summarizeMemorySamples,
   writeDemoE2eMemoryReport,
 } from './demo-e2e-memory'
+import { createQualityWorkflowSteps } from './demo-e2e-workflow/quality-steps'
 import { enterFullTestGate } from './e2e-preflight/gate'
-
-interface WorkflowStep {
-  name: string
-  command: string
-  args: string[]
-  env?: Record<string, string>
-  local?: boolean
-}
-
-function hasFlag(name: string) {
-  return process.argv.slice(2).includes(name)
-}
 
 function formatStep(step: WorkflowStep, index: number, total: number) {
   const local = step.local ? ' local' : ''
@@ -99,27 +89,49 @@ async function runStep(step: WorkflowStep, index: number, total: number, preflig
   return report
 }
 
-function createWorkflowSteps(includeLocal: boolean): WorkflowStep[] {
+function createWorkflowSteps(includeLocal: boolean, includeQuality: boolean): WorkflowStep[] {
   const steps: WorkflowStep[] = [
+    ...(includeQuality ? createQualityWorkflowSteps() : []),
     {
       name: 'matrix assertions',
       command: 'pnpm',
       args: ['exec', 'vitest', 'run', '-c', './e2e/vitest.e2e.config.ts', 'e2e/e2e-matrix.test.ts'],
     },
     {
+      name: 'demo static build snapshots',
+      command: 'pnpm',
+      args: ['e2e:static'],
+    },
+    {
+      name: 'default multi-platform build outputs',
+      command: 'pnpm',
+      args: ['e2e:multiplatform-build'],
+      env: {
+        E2E_MULTIPLATFORM_BUILD_STATUS: 'ci',
+        E2E_MULTIPLATFORM_BUILD_CASE: '',
+        E2E_MULTIPLATFORM_BUILD_SKIP_BUILD: '0',
+      },
+    },
+    {
       name: 'WeChat DevTools IDE + visible hot update',
       command: 'pnpm',
       args: ['e2e:mp:ide'],
+      env: includeLocal ? { DEMO_VISUAL_REPORT_RESET: '1' } : undefined,
     },
     {
       name: 'demo mini-program watch hot-update',
       command: 'pnpm',
-      args: ['e2e:mp'],
+      args: ['e2e:hot-update:demo'],
     },
     {
       name: 'H5 browser build and HMR',
       command: 'pnpm',
       args: ['e2e:h5'],
+    },
+    {
+      name: 'uni-app Vite H5 build and browser HMR',
+      command: 'pnpm',
+      args: ['e2e:uni:h5'],
     },
   ]
 
@@ -141,12 +153,14 @@ function createWorkflowSteps(includeLocal: boolean): WorkflowStep[] {
         name: 'HBuilderX uni-app/uni-app x Android HMR',
         command: 'pnpm',
         args: ['e2e:android'],
+        env: { DEMO_VISUAL_REPORT_RESET: '0' },
         local: true,
       },
       {
         name: 'HBuilderX uni-app/uni-app x iOS HMR',
         command: 'pnpm',
         args: ['e2e:ios'],
+        env: { DEMO_VISUAL_REPORT_RESET: '0' },
         local: true,
       },
       {
@@ -155,6 +169,16 @@ function createWorkflowSteps(includeLocal: boolean): WorkflowStep[] {
         args: ['e2e:harmony'],
         local: true,
       },
+      ...(['h5', 'harmony'] as const).map(platform => ({
+        name: `visual-weapp-h5-app ${platform} screenshots and comparison`,
+        command: 'pnpm',
+        args: ['exec', 'tsx', 'scripts/demo-visual-e2e-report.ts', `--${platform}-only`, '--fail-on-incomplete'],
+        env: {
+          DEMO_VISUAL_REPORT_RESET: '0',
+          DEMO_VISUAL_MAX_CROSS_PLATFORM_DIFF_RATIO: '0.05',
+        },
+        local: true,
+      })),
     )
   }
   else {
@@ -164,12 +188,16 @@ function createWorkflowSteps(includeLocal: boolean): WorkflowStep[] {
   return steps
 }
 
-async function main() {
-  const includeLocal = hasFlag('--local')
-  const reportIndex = process.argv.indexOf('--preflight-report')
-  const gate = includeLocal ? await enterFullTestGate(reportIndex < 0 ? undefined : process.argv[reportIndex + 1]) : undefined
+export async function runDemoE2eWorkflow(argv = process.argv.slice(2)) {
+  const includeLocal = argv.includes('--local')
+  const includeQuality = argv.includes('--quality')
+  if (includeQuality && !includeLocal) {
+    throw new Error('--quality 必须配合 --local 和本轮 --preflight-report，在全面测试门禁内执行。')
+  }
+  const reportIndex = argv.indexOf('--preflight-report')
+  const gate = includeLocal ? await enterFullTestGate(reportIndex < 0 ? undefined : argv[reportIndex + 1]) : undefined
   try {
-    const steps = createWorkflowSteps(includeLocal)
+    const steps = createWorkflowSteps(includeLocal, includeQuality)
     const stepReports: DemoE2eMemoryStepReport[] = []
     let exitCode = 0
     const writeReport = async () => {
@@ -206,7 +234,7 @@ async function main() {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  main().catch((error) => {
+  runDemoE2eWorkflow().catch((error) => {
     process.stderr.write(`${error instanceof Error ? error.stack ?? error.message : String(error)}\n`)
     process.exitCode = 1
   })

@@ -9,11 +9,16 @@ export function stripAnsi(value: string) {
   return value.replace(ansiRE, '')
 }
 
+/** CLI 的未启动协议响应因界面语言不同而变化，不能作为 host 名称解析。 */
+function isStoppedHostDiagnostic(line: string) {
+  return /^(?:HBuilderX is not detected running\. Please execute cli open.*|没有可用的命令[，,]尝试使用\s*cli open|未检测到已打开的\s*HBuilderX[，,]请先执行\s*cli open.*)$/i.test(line.trim())
+}
+
 export function parseHBuilderXHosts(output: string) {
   return [...new Set(stripAnsi(output)
     .split(/\r?\n/)
     .map(line => line.trim())
-    .filter(line => line.length > 0 && !/^-?\d+:cli:|命令.+(?:不存在|错误)|not detected running/i.test(line)))]
+    .filter(line => line.length > 0 && !isStoppedHostDiagnostic(line) && !/^-?\d+:cli:|命令.+(?:不存在|错误)|not detected running/i.test(line)))]
 }
 
 export function parseHBuilderXVersion(output: string) {
@@ -96,7 +101,7 @@ export async function connectHBuilderXHost(options: HostOptions) {
   const probe = async () => {
     const listed = await command(['listhost'])
     // 原生 CLI 用诊断文本表示没有实例；该有效协议响应可以带非零退出码。
-    const absent = listed.issue.kind !== 'timeout' && /HBuilderX is not detected running\. Please execute cli open/i.test(stripAnsi(listed.output))
+    const absent = listed.issue.kind !== 'timeout' && stripAnsi(listed.output).split(/\r?\n/).some(isStoppedHostDiagnostic)
     if (!absent) {
       assertCommand(listed)
     }

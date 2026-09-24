@@ -383,7 +383,9 @@ export async function writeDemoE2eMemoryReport(options: {
   report: DemoE2eMemoryReport
   outDir?: string
 }): Promise<WriteReportResult> {
-  const outDir = path.resolve(options.outDir ?? 'e2e/benchmark/demo-e2e-memory')
+  const outDir = options.outDir
+    ? path.resolve(options.outDir)
+    : path.resolve(options.report.repositoryRoot, 'e2e', '.artifacts', 'demo-e2e-memory')
   await mkdir(outDir, { recursive: true })
   const jsonFile = path.join(outDir, 'demo-e2e-memory-report.json')
   const markdownFile = path.join(outDir, 'demo-e2e-memory-report.md')

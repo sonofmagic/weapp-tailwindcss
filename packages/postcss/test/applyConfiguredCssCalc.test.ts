@@ -46,12 +46,19 @@ ${UTILITY_CSS}`, { cssCalc: ['--spacing'] })
     }
   })
 
-  it('resolves fallbacks, chains, and keeps cycles unresolved', async () => {
+  it('preserves unknown fallbacks and cycles while resolving fixed chains', async () => {
     const fallback = await applyConfiguredCssCalc(
       '.x { gap: calc(var(--spacing, .25rem) * 2); }',
       { cssCalc: ['--spacing'] },
     )
-    expect(fallback).toContain('gap: 0.5rem')
+    expect(fallback).toBe('.x { gap: calc(var(--spacing, .25rem)*2); }')
+
+    const fixed = await applyConfiguredCssCalc(
+      ':root { --spacing: .5rem; } .x { gap: calc(var(--spacing, .25rem) * 2); }',
+      { cssCalc: ['--spacing'] },
+    )
+    expect(fixed).toContain('gap: 1rem')
+    expect(fixed).not.toContain('calc(')
 
     const chained = await applyConfiguredCssCalc(
       '.x { width: calc(var(--space-lg) * 2); }',

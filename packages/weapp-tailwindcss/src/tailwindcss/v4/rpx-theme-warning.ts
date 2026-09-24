@@ -35,18 +35,18 @@ export function collectRpxThemeRiskSources(sources: Iterable<string>) {
   return [...variables]
 }
 
-export function warnRpxThemeRisk(session: object, variables: readonly string[], outputCss: string) {
+export function warnRpxThemeRisk(session: object, variables: readonly string[], generatedCss: string) {
   if (warnedSessions.has(session) || variables.length === 0) {
     return
   }
-  const usage = inspectRpxCalcUsage(outputCss, new Set(variables))
-  const runtimeHint = usage === undefined
-    ? '当前 CSS 无法完成诊断，请检查最终 WXSS。'
+  const usage = inspectRpxCalcUsage(generatedCss, new Set(variables))
+  const generationHint = usage === undefined
+    ? '当前生成阶段的 CSS 无法完成诊断，请检查最终 WXSS。'
     : usage.variables.length > 0 || usage.inlineRpx
-      ? `当前输出仍含运行时 calc：${[...usage.variables, ...(usage.inlineRpx ? ['内联 rpx'] : [])].join(', ')}。`
-      : '当前输出未检测到相关运行时 calc；这不代表已验证所有作用域和设备。'
+      ? `当前生成阶段仍含 calc：${[...usage.variables, ...(usage.inlineRpx ? ['内联 rpx'] : [])].join(', ')}；后续构建处理可能将其静态化，最终状态以 WXSS 为准。`
+      : '当前生成阶段未检测到相关 calc；这不代表已验证最终产物、所有作用域和设备。'
   warnedSessions.add(session)
   logger.warn(
-    `[tailwindcss@4][rpx-theme] @theme 中使用 rpx 的主题变量：${variables.join(', ')}。${runtimeHint} 微信 WXSS 可能先独立换算或量化基数再乘法，造成尺寸偏差，具体取整算法尚未确认。固定像素尺寸优先使用 px，需要缩放时在构建期输出最终静态 rpx；偶数或较大 rpx 也不保证准确。请检查最终 WXSS 并在目标设备验证：https://tw.weapp.dev/docs/issues/spacing-rpx`,
+    `[tailwindcss@4][rpx-theme] @theme 中使用 rpx 的主题变量：${variables.join(', ')}。${generationHint} 微信 WXSS 可能先独立换算或量化基数再乘法，造成尺寸偏差，具体取整算法尚未确认。固定像素尺寸优先使用 px，需要缩放时在构建期输出最终静态 rpx；偶数或较大 rpx 也不保证准确。请检查最终 WXSS 并在目标设备验证：https://tw.weapp.dev/docs/issues/spacing-rpx`,
   )
 }

@@ -746,7 +746,7 @@ describe('e2e matrix', () => {
     expect(scripts['e2e:ci']).not.toContain('e2e:hbuilderx:local:demo:mp-extra')
     expect(workflow).toContain('writeDemoE2eMemoryReport')
     expect(workflow).toContain('sampleProcessTree')
-    expect(memoryReport).toContain('e2e/benchmark/demo-e2e-memory')
+    expect(memoryReport).toContain('\'e2e\', \'.artifacts\', \'demo-e2e-memory\'')
     expect(weappMemoryReport).toContain('buildScriptCommand')
     expect(weappMemoryReport).toContain('--filter')
     expect(weappMemoryReport).toContain('--from-raw')
@@ -777,7 +777,7 @@ describe('e2e matrix', () => {
     expect(localFullReport).toContain('build source/note')
     expect(localFullReport).toContain('runtime/HMR source/note')
 
-    for (const scriptName of ['e2e:mp', 'e2e:h5', 'e2e:hbuilderx:mp', 'e2e:hbuilderx:h5', 'e2e:android', 'e2e:ios', 'e2e:harmony']) {
+    for (const scriptName of ['e2e:static', 'e2e:multiplatform-build', 'e2e:hot-update:demo', 'e2e:h5', 'e2e:uni:h5', 'e2e:hbuilderx:mp', 'e2e:hbuilderx:h5', 'e2e:android', 'e2e:ios', 'e2e:harmony']) {
       expect(workflow).toContain(`args: ['${scriptName}']`)
     }
   })

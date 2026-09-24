@@ -243,6 +243,16 @@ export type IStyleHandlerOptions = {
    * @internal
    */
   customPropertyValues?: ReadonlyMap<string, string> | undefined
+  /**
+   * 增量生成的主题值，仅供颜色降级和 UVUE 兼容转换，不作为 calc 的显式常量。
+   * @internal
+   */
+  customPropertyCompatibilityValues?: ReadonlyMap<string, string> | undefined
+  /**
+   * 用于 calc 安全分析的完整 CSS 作用域，须在主题选择器改写前传入。
+   * @internal
+   */
+  customPropertyContextCss?: string | undefined
   majorVersion?: 4 | undefined
 } & RequiredStyleHandlerOptions
 

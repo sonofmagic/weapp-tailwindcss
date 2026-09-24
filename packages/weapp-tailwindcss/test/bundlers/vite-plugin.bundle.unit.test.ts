@@ -11409,7 +11409,8 @@ const trace = "at App.vue:4"
 
     await generateBundle.call({ addWatchFile: vi.fn() }, {} as any, bundle)
 
-    expect(generateCssByGeneratorMock).toHaveBeenCalledTimes(2)
+    // 每个分包的空样式壳与编译后作者样式是独立输入，不能只按生成入口共享结果。
+    expect(generateCssByGeneratorMock).toHaveBeenCalledTimes(4)
     expect(generatedOptions).toEqual(expect.arrayContaining([
       expect.objectContaining({
         file: normalSourceFile,

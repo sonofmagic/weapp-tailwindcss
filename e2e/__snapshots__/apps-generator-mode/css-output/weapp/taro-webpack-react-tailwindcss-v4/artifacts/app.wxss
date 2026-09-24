@@ -1198,7 +1198,6 @@ wx-root-portal-content {
   background: var(--nutui-tag-background-color, var(--nutui-color-title, #1a1a1a));
 }
 .nut-tag-primary {
-  background: -webkit-linear-gradient(315deg, #ff475d 0, #ff0f23 100%);
   background: var(--nutui-tag-primary-background-color, linear-gradient(135deg, var(--nutui-color-primary-stop-1, #ff475d) 0, var(--nutui-color-primary-stop-2, #ff0f23) 100%));
 }
 .nut-tag-info {
@@ -1515,8 +1514,6 @@ wx-root-portal-content {
   background-color: var(--nutui-tabs-titles-item-active-background-color, var(--nutui-color-background-overlay, #fff));
 }
 .nut-tabs-vertical .nut-tabs-titles-item-active .nut-tabs-titles-item-line {
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ff475d), to(#ffd6e1));
-  background: -webkit-linear-gradient(top, #ff475d 0, #ffd6e1 100%);
   background: var(
     --nutui-tabs-vertical-tab-line-color,
     linear-gradient(180deg, var(--nutui-color-primary-stop-1, #ff475d) 0, var(--nutui-color-primary-light-pressed, #ffebf1) 100%)
@@ -1661,7 +1658,6 @@ wx-root-portal-content {
   overflow-x: auto;
   position: relative;
   table-layout: fixed;
-  width: -moz-max-content;
   width: max-content;
 }
 .nut-table-main-striped .nut-table-main-head-tr {
@@ -2182,7 +2178,6 @@ wx-root-portal-content {
 }
 .nut-steps-horizontal-single .nut-step-special .nut-step-title {
   padding-right: 8rpx;
-  width: -moz-fit-content;
   width: fit-content;
 }
 .nut-steps-horizontal-single.nut-steps-horizontal-count-3 .nut-step-special {
@@ -2590,8 +2585,6 @@ wx-root-portal-content {
   animation-name: nut-skeleton;
   animation-play-state: running;
   animation-timing-function: linear;
-  background: -webkit-gradient(linear, left top, right top, from(#0000), color-stop(#00000005), to(#0000));
-  background: -webkit-linear-gradient(left, #0000, #00000005, #0000);
   background: linear-gradient(90deg, #0000, #00000005, #0000);
   height: 100%;
   left: 0;
@@ -2816,8 +2809,6 @@ wx-root-portal-content {
   padding: 8rpx 38rpx;
 }
 .nut-shortpassword-footer-sure {
-  background: -webkit-linear-gradient(315deg, #ff0f23 0, #ff0f23 100%);
-  background: -webkit-linear-gradient(315deg, var(--nutui-color-primary, #ff0f23) 0, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   background: linear-gradient(135deg, var(--nutui-color-primary, #ff0f23) 0, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   border-radius: 15rpx;
   color: #fff;
@@ -2837,8 +2828,6 @@ wx-root-portal-content {
 }
 .nut-rtl .nut-shortpassword-footer-sure,
 [dir='rtl'] .nut-shortpassword-footer-sure {
-  background: -webkit-linear-gradient(225deg, #ff0f23 0, #ff0f23 100%);
-  background: -webkit-linear-gradient(225deg, var(--nutui-color-primary, #ff0f23) 0, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   background: linear-gradient(-135deg, var(--nutui-color-primary, #ff0f23) 0, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
 }
 .nut-segmented {
@@ -3827,7 +3816,6 @@ wx-root-portal-content {
   top: 0;
 }
 .nut-progress-inner {
-  background: -webkit-linear-gradient(315deg, #ff475d 0, #ff0f23 100%);
   background: var(--nutui-progress-color, linear-gradient(135deg, var(--nutui-color-primary-stop-1, #ff475d) 0, var(--nutui-color-primary-stop-2, #ff0f23) 100%));
   border-radius: var(--nutui-progress-border-radius, 12rpx);
   display: flex;
@@ -3936,7 +3924,6 @@ wx-root-portal-content {
   font-size: var(--nutui-price-decimal-small-size, 12rpx);
 }
 .nut-price-line {
-  text-decoration: line-through;
   text-decoration: line-through var(--nutui-price-line-color, var(--nutui-color-text-help));
 }
 .nut-popup {
@@ -4546,12 +4533,6 @@ wx-root-portal-content {
   z-index: 3;
 }
 .nut-pickerview-mask {
-  background-image:
-    -webkit-gradient(linear, left top, left bottom, from(hsla(0, 0%, 100%, 0.9)), to(hsla(0, 0%, 100%, 0.4))),
-    -webkit-gradient(linear, left bottom, left top, from(hsla(0, 0%, 100%, 0.9)), to(hsla(0, 0%, 100%, 0.4)));
-  background-image:
-    -webkit-linear-gradient(top, hsla(0, 0%, 100%, 0.9), hsla(0, 0%, 100%, 0.4)),
-    -webkit-linear-gradient(bottom, hsla(0, 0%, 100%, 0.9), hsla(0, 0%, 100%, 0.4));
   background-image: var(
     --picker-mask-background,
     linear-gradient(180deg, var(--nutui-white-12), var(--nutui-white-7)),
@@ -6365,7 +6346,6 @@ wx-root-portal-content {
   top: -999999rpx;
 }
 .nut-ellipsis-width {
-  width: -moz-fit-content;
   width: fit-content;
 }
 .nut-elevator {
@@ -6472,8 +6452,6 @@ wx-root-portal-content {
   width: 16rpx;
 }
 .nut-elevator-bars-inner-item-active {
-  background: -webkit-gradient(linear, left top, right top, from(#ff475d), to(#ff0f23));
-  background: -webkit-linear-gradient(left, #ff475d, #ff0f23);
   background: linear-gradient(90deg, #ff475d, #ff0f23);
   background: #ff0f23;
   color: var(--nutui-elevator-bars-active-color, #fff);
@@ -6520,10 +6498,8 @@ wx-root-portal-content {
 .nut-drag-inner {
   display: flex;
   display: inline-flex;
-  height: -moz-fit-content;
   height: fit-content;
   touch-action: none;
-  width: -moz-fit-content;
   width: fit-content;
 }
 .nut-empty {
@@ -8132,9 +8108,6 @@ wx-root-portal-content {
   width: 100%;
 }
 .nut-calendar-footer .calendar-confirm-btn {
-  background: -webkit-gradient(linear, left top, right top, color-stop(0, #ff475d), to(#ff0f23));
-  background: -webkit-linear-gradient(left, #ff475d 0, #ff0f23 100%);
-  background: -webkit-linear-gradient(left, var(--nutui-color-primary-stop-1, #ff475d) 0, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   background: linear-gradient(90deg, var(--nutui-color-primary-stop-1, #ff475d) 0, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   border-radius: var(--nutui-radius-base, 8rpx);
   color: #fff;
@@ -8348,9 +8321,6 @@ wx-root-portal-content {
   color: var(--nutui-button-primary-color, #fff);
 }
 .nut-button-primary-solid {
-  background: -webkit-gradient(linear, left top, right top, color-stop(0, #ff475d), to(#ff0f23));
-  background: -webkit-linear-gradient(left, #ff475d 0, #ff0f23 100%);
-  background: -webkit-linear-gradient(left, var(--nutui-color-primary-stop-1, #ff475d) 0, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   background: linear-gradient(90deg, var(--nutui-color-primary-stop-1, #ff475d) 0, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   border-color: transparent;
   color: var(--nutui-button-primary-color, #fff);
@@ -8562,9 +8532,6 @@ wx-root-portal-content {
   width: 100%;
 }
 .nut-barrage .barrage-item {
-  background: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0.08)), to(rgba(0, 0, 0, 0)));
-  background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0));
-  background: -webkit-linear-gradient(left, var(--nutui-black-3), var(--nutui-black-1));
   background: linear-gradient(to right, var(--nutui-black-3), var(--nutui-black-1));
   border-radius: 16rpx;
   box-sizing: border-box;
@@ -8598,9 +8565,6 @@ wx-root-portal-content {
 }
 .nut-rtl .nut-barrage .barrage-item,
 [dir='rtl'] .nut-barrage .barrage-item {
-  background: -webkit-gradient(linear, right top, left top, from(rgba(0, 0, 0, 0.08)), to(rgba(0, 0, 0, 0)));
-  background: -webkit-linear-gradient(right, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0));
-  background: -webkit-linear-gradient(right, var(--nutui-black-3), var(--nutui-black-1));
   background: linear-gradient(to left, var(--nutui-black-3), var(--nutui-black-1));
   transform: translate(-100%);
 }
@@ -9143,7 +9107,6 @@ wx-root-portal-content {
 }
 .nut-animate .nut-animate-flicker::after {
   animation: flicker 1.5s linear infinite;
-  background-image: -webkit-linear-gradient(344deg, #e8e0ff00 24%, #e8e0ff 91%);
   background-image: linear-gradient(106deg, #e8e0ff00 24%, #e8e0ff 91%);
   content: '';
   filter: blur(3rpx);
@@ -9296,9 +9259,6 @@ wx-root-portal-content {
   width: 100%;
 }
 .nut-address-footer-btn {
-  background: -webkit-gradient(linear, left top, right top, color-stop(0, #ff475d), to(#ff0f23));
-  background: -webkit-linear-gradient(left, #ff475d 0, #ff0f23 100%);
-  background: -webkit-linear-gradient(left, var(--nutui-color-primary-stop-1, #ff475d) 0, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   background: linear-gradient(90deg, var(--nutui-color-primary-stop-1, #ff475d) 0, var(--nutui-color-primary-stop-2, #ff0f23) 100%);
   border-radius: 21rpx;
   color: #fff;
@@ -9563,67 +9523,56 @@ wx-root-portal-content {
  /* tokens: -bg-linear-65 <= src/pages/issue-928/index.tsx */
 .-bg-linear-65 {
   --tw-gradient-position: -65deg;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-linear-65 <= src/pages/issue-928/index.tsx */
 .bg-linear-65 {
   --tw-gradient-position: 65deg;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-linear-to-r <= src/pages/issue-928/index.tsx */
 .bg-linear-to-r {
   --tw-gradient-position: to right;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-linear-to-r/hsl <= src/pages/issue-928/index.tsx */
 .bg-linear-to-r_fhsl {
   --tw-gradient-position: to right;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-linear-to-r/increasing <= src/pages/issue-928/index.tsx */
 .bg-linear-to-r_fincreasing {
   --tw-gradient-position: to right;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-linear-to-r/longer <= src/pages/issue-928/index.tsx */
 .bg-linear-to-r_flonger {
   --tw-gradient-position: to right;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-linear-to-r/oklab <= src/pages/issue-928/index.tsx */
 .bg-linear-to-r_foklab {
   --tw-gradient-position: to right;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-linear-to-r/oklch <= src/pages/issue-928/index.tsx */
 .bg-linear-to-r_foklch {
   --tw-gradient-position: to right;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-linear-to-r/shorter <= src/pages/issue-928/index.tsx */
 .bg-linear-to-r_fshorter {
   --tw-gradient-position: to right;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-linear-to-r/srgb <= src/pages/issue-928/index.tsx */
 .bg-linear-to-r_fsrgb {
   --tw-gradient-position: to right;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-linear-to-tr <= src/pages/issue-928/index.tsx */
 .bg-linear-to-tr {
   --tw-gradient-position: to top right;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: -bg-conic-180 <= src/pages/issue-928/index.tsx */
@@ -9659,39 +9608,31 @@ wx-root-portal-content {
  /* tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
 .bg-gradient-to-r {
   --tw-gradient-position: to right;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-linear-(--issue-928-linear) <= src/pages/issue-928/index.tsx */
 .bg-linear-_p--issue-928-linear_P {
   --tw-gradient-position: var(--issue-928-linear);
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops, var(--issue-928-linear)));
   background-image: linear-gradient(var(--tw-gradient-stops, var(--issue-928-linear)));
 }
  /* tokens: bg-linear-[25deg,#ef4444_5%,#eab308_60%,#22c55e_90%,#14b8a6] <= src/pages/issue-928/index.tsx */
 .bg-linear-_b25deg_m_hef4444_5_v_m_heab308_60_v_m_h22c55e_90_v_m_h14b8a6_B {
   --tw-gradient-position: 25deg, #ef4444 5%, #eab308 60%, #22c55e 90%, #14b8a6;
-  background-image: -webkit-linear-gradient(65deg, #ef4444 5%, #eab308 60%, #22c55e 90%, #14b8a6);
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops, 25deg, #ef4444 5%, #eab308 60%, #22c55e 90%, #14b8a6));
   background-image: linear-gradient(var(--tw-gradient-stops, 25deg, #ef4444 5%, #eab308 60%, #22c55e 90%, #14b8a6));
 }
  /* tokens: bg-radial <= src/pages/issue-928/index.tsx */
 .bg-radial {
-  --tw-gradient-position:;
-  background-image: -webkit-radial-gradient(var(--tw-gradient-stops));
+  --tw-gradient-position: at center;
   background-image: radial-gradient(var(--tw-gradient-stops));
 }
  /* tokens: bg-radial-(--issue-928-radial) <= src/pages/issue-928/index.tsx */
 .bg-radial-_p--issue-928-radial_P {
   --tw-gradient-position: var(--issue-928-radial);
-  background-image: -webkit-radial-gradient(var(--tw-gradient-stops, var(--issue-928-radial)));
   background-image: radial-gradient(var(--tw-gradient-stops, var(--issue-928-radial)));
 }
  /* tokens: bg-radial-[at_50%_75%] <= src/pages/issue-928/index.tsx */
 .bg-radial-_bat_50_v_75_v_B {
   --tw-gradient-position: at 50% 75%;
-  background-image: -webkit-radial-gradient(at 50% 75%);
-  background-image: -webkit-radial-gradient(var(--tw-gradient-stops, at 50% 75%));
   background-image: radial-gradient(var(--tw-gradient-stops, at 50% 75%));
 }
  /* tokens: bg-(image:--issue-928-image) <= src/pages/issue-928/index.tsx */
@@ -9700,8 +9641,6 @@ wx-root-portal-content {
 }
  /* tokens: bg-[image:linear-gradient(to_right,#06b6d4,#3b82f6)] <= src/pages/issue-928/index.tsx */
 .bg-_bimage_clinear-gradient_pto_right_m_h06b6d4_m_h3b82f6_P_B {
-  background-image: -webkit-gradient(linear, left top, right top, from(#06b6d4), to(#3b82f6));
-  background-image: -webkit-linear-gradient(left, #06b6d4, #3b82f6);
   background-image: linear-gradient(90deg, #06b6d4, #3b82f6);
 }
  /* tokens: bg-none <= src/pages/issue-928/index.tsx */

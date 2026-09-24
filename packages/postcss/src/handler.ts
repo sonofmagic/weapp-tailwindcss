@@ -12,9 +12,9 @@ import { removeEmptyBlockAtRules } from './compat/mini-program-css/root-cleanups
 import { splitUnresolvedAuthorVariableFallbacks } from './compat/uni-app-x-uvue/theme'
 import { probeFeatures, signalToCacheKey } from './content-probe'
 import { getDefaultOptions } from './defaults'
-import { fingerprintOptions } from './fingerprint'
+import { fingerprintStyleOptions } from './fingerprint'
 import { resolvePostcssFrameworkProfile } from './frameworks'
-import { createOptionsResolver } from './options-resolver'
+import { createOptionsResolver, normalizeCssOptions } from './options-resolver'
 import { createInjectPreflight } from './preflight'
 import { StyleProcessorCache } from './processor-cache'
 
@@ -36,12 +36,14 @@ function simpleHash(str: string): string {
 
 // createStyleHandler 提供带缓存的高阶处理器，同时暴露 getPipeline 供外部调试/扩展
 export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): StyleHandler {
+  const normalizedOptions = normalizeCssOptions(options ?? {})
   const cachedOptions = defuOverrideArray<
     IStyleHandlerOptions,
     Partial<IStyleHandlerOptions>[]
   >(
-    options as IStyleHandlerOptions,
-    getDefaultOptions(options),
+    normalizedOptions as IStyleHandlerOptions,
+    // 嵌套配置也必须合入同一份默认值，避免后续归一化用 undefined/部分对象覆盖默认值。
+    normalizeCssOptions(getDefaultOptions(normalizedOptions), normalizedOptions.cssOptions !== undefined),
   )
 
   cachedOptions.cssInjectPreflight = createInjectPreflight(cachedOptions.cssPreflight)
@@ -50,22 +52,6 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
   const base = resolver.resolve()
   processorCache.getProcessor(base)
   processorCache.getProcessOptions(base)
-
-  /** 选项指纹缓存，避免重复序列化 */
-  const optionsFingerprintCache = new WeakMap<IStyleHandlerOptions, string>()
-
-  /**
-   * 获取选项指纹（带缓存）
-   */
-  function getOptionsFingerprint(opts: IStyleHandlerOptions): string {
-    const cached = optionsFingerprintCache.get(opts)
-    if (cached) {
-      return cached
-    }
-    const fp = fingerprintOptions(opts)
-    optionsFingerprintCache.set(opts, fp)
-    return fp
-  }
 
   /** CSS 处理结果 LRU 缓存 */
   const resultCache = new LRUCache<string, PostcssResult>({ max: CSS_RESULT_CACHE_MAX })
@@ -123,7 +109,7 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     }
 
     // 构建缓存键：选项指纹 + 信号 + 内容哈希
-    const optsFp = getOptionsFingerprint(resolvedOptions)
+    const optsFp = fingerprintStyleOptions(resolvedOptions)
     const signalKey = signal ? signalToCacheKey(signal) : ''
     const contentHash = simpleHash(source)
     const cacheKey = `${optsFp}|${signalKey}|${contentHash}`

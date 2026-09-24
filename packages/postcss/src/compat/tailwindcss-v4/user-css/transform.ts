@@ -84,6 +84,8 @@ export async function transformGeneratorUserCss(
         ?? options.cssUserHandlerOptions.cssCalc,
       customPropertyValues: options.generatorStyleOptions.customPropertyValues
         ?? options.cssUserHandlerOptions.customPropertyValues,
+      customPropertyContextCss: options.generatorStyleOptions.customPropertyContextCss
+        ?? options.cssUserHandlerOptions.customPropertyContextCss,
       contextCss: typeof options.generatedSource === 'string' ? options.generatedSource : undefined,
     })
   }

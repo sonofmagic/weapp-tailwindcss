@@ -4,7 +4,7 @@ import type { StyleProcessingPipeline } from './pipeline'
 import type { IStyleHandlerOptions } from './types'
 import postcss from 'postcss'
 import { signalToCacheKey } from './content-probe'
-import { fingerprintOptions } from './fingerprint'
+import { fingerprintOptions, fingerprintStyleOptions } from './fingerprint'
 import { createStylePipeline } from './pipeline'
 
 function createProcessOptions(options: IStyleHandlerOptions): ProcessOptions {
@@ -50,15 +50,14 @@ export class StyleProcessorCache {
   private readonly pipelineCacheByKey = new Map<string, StyleProcessingPipeline>()
   private readonly processOptionsCache = new WeakMap<IStyleHandlerOptions, { value: ProcessOptions, cacheKey?: string | undefined }>()
   private readonly processorCacheByKey = new Map<string, Processor>()
-  private readonly processorKeyCache = new WeakMap<IStyleHandlerOptions, string>()
 
   private createProcessorCacheKey(options: IStyleHandlerOptions) {
     const from = options.postcssOptions?.options?.from
     if (from == null) {
-      return fingerprintOptions(options)
+      return fingerprintStyleOptions(options)
     }
 
-    return fingerprintOptions({
+    return fingerprintStyleOptions({
       ...options,
       postcssOptions: {
         ...(options.postcssOptions ?? {}),
@@ -81,11 +80,7 @@ export class StyleProcessorCache {
   }
 
   getPipeline(options: IStyleHandlerOptions, signal?: FeatureSignal) {
-    let optionsKey = this.processorKeyCache.get(options)
-    if (!optionsKey) {
-      optionsKey = this.createProcessorCacheKey(options)
-      this.processorKeyCache.set(options, optionsKey)
-    }
+    const optionsKey = this.createProcessorCacheKey(options)
     const compositeKey = this.createCompositeCacheKey(optionsKey, signal)
     let pipeline = this.pipelineCacheByKey.get(compositeKey)
     if (!pipeline) {
@@ -112,11 +107,7 @@ export class StyleProcessorCache {
   }
 
   getProcessor(options: IStyleHandlerOptions, signal?: FeatureSignal) {
-    let optionsKey = this.processorKeyCache.get(options)
-    if (!optionsKey) {
-      optionsKey = this.createProcessorCacheKey(options)
-      this.processorKeyCache.set(options, optionsKey)
-    }
+    const optionsKey = this.createProcessorCacheKey(options)
     const compositeKey = this.createCompositeCacheKey(optionsKey, signal)
 
     let processor = this.processorCacheByKey.get(compositeKey)

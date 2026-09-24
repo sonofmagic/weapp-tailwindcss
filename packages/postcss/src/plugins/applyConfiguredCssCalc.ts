@@ -1,11 +1,10 @@
 import type { IStyleHandlerOptions } from '../types'
 import { postcss } from '../postcss-runtime'
-import { collectCustomPropertyValues, mergeCustomPropertyValues as mergeValues } from '../utils/custom-property-values'
 import { getCalcPlugin } from './getCalcPlugin'
 
 export type ApplyConfiguredCssCalcOptions = Pick<
   IStyleHandlerOptions,
-  'cssCalc' | 'cssOptions' | 'customPropertyValues'
+  'cssCalc' | 'cssOptions' | 'customPropertyValues' | 'customPropertyContextCss'
 > & {
   /** 额外用于收集自定义属性的 CSS，例如生成器完整产物。 */
   contextCss?: string | undefined
@@ -13,18 +12,6 @@ export type ApplyConfiguredCssCalcOptions = Pick<
 
 function resolveCssCalcOption(options: ApplyConfiguredCssCalcOptions) {
   return options.cssOptions?.cssCalc ?? options.cssCalc
-}
-
-function mergeCustomPropertyValues(
-  css: string,
-  options: ApplyConfiguredCssCalcOptions,
-) {
-  const values = collectCustomPropertyValues(options.contextCss ?? '')
-  mergeValues(values, css)
-  for (const [name, value] of options.customPropertyValues ?? []) {
-    values.set(name, value)
-  }
-  return values
 }
 
 /**
@@ -41,7 +28,8 @@ export async function applyConfiguredCssCalc(
 
   const plugin = getCalcPlugin({
     cssCalc,
-    customPropertyValues: mergeCustomPropertyValues(css, options),
+    customPropertyValues: options.customPropertyValues,
+    customPropertyContextCss: [options.customPropertyContextCss ?? '', options.contextCss ?? ''].join('\n'),
   } as IStyleHandlerOptions)
   if (!plugin) {
     return css

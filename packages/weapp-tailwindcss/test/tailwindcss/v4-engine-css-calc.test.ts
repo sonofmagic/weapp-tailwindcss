@@ -20,7 +20,7 @@ describe('tailwindcss v4 engine cssCalc', () => {
       base: process.cwd(),
     })
     const result = await createTailwindV4Engine(source).generate({
-      candidates: ['gap-2', 'p-2', 'mt-2'],
+      candidates: ['mt-2', 'gap-2', 'p-2'],
       scanSources: false,
       target: 'web',
     })
@@ -35,7 +35,7 @@ describe('tailwindcss v4 engine cssCalc', () => {
       base: process.cwd(),
     })
     const result = await createTailwindV4Engine(source).generate({
-      candidates: ['gap-2', 'p-2', 'mt-2'],
+      candidates: ['mt-2', 'gap-2', 'p-2'],
       scanSources: false,
       target,
       styleOptions: {
@@ -82,14 +82,14 @@ describe('tailwindcss v4 engine cssCalc', () => {
     }
 
     await engine.generate({
-      candidates: ['gap-2'],
+      candidates: ['mt-2', 'gap-2'],
       incrementalCache: true,
       scanSources: false,
       target: 'web',
       styleOptions,
     })
     const result = await engine.generate({
-      candidates: ['gap-2', 'p-2', 'mt-2'],
+      candidates: ['mt-2', 'gap-2', 'p-2'],
       incrementalCache: true,
       scanSources: false,
       target: 'web',

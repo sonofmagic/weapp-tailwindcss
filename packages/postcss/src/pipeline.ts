@@ -16,6 +16,7 @@ import { getUnitConversionPlugin } from './plugins/getUnitConversionPlugin'
 import { getUnitsToPxPlugin } from './plugins/getUnitsToPxPlugin'
 import { postcssWeappTailwindcssPostPlugin } from './plugins/post'
 import { postcssWeappTailwindcssPrePlugin } from './plugins/pre'
+import { createUserPluginStage } from './plugins/user-plugin-stage'
 
 export type PipelineStage = 'pre' | 'normal' | 'post'
 
@@ -142,11 +143,11 @@ function appendUniAppXNativeAuthorDeclarationNodes(
   }
 
   const declarationPlugins = [
+    ['normal:calc', getCalcPlugin(options)],
     ['normal:units-to-px', getUnitsToPxPlugin(options)],
     ['normal:px-transform', getPxTransformPlugin(options)],
     ['normal:rem-transform', getRemTransformPlugin(options)],
     ['normal:unit-conversion', getUnitConversionPlugin(options)],
-    ['normal:calc', getCalcPlugin(options)],
   ] as const
 
   for (const [id, plugin] of declarationPlugins) {
@@ -171,9 +172,18 @@ function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSign
       'cascade-layers': false,
     },
   } as Parameters<typeof postcssPresetEnv>[0]
-  userPlugins.forEach((plugin, index) => {
+  const stagedUserPlugins = options.cssCalc && userPlugins.length > 0
+    ? [createUserPluginStage(userPlugins)]
+    : userPlugins
+  stagedUserPlugins.forEach((plugin, index) => {
     preparedNodes.push(createPreparedNode(`pre:user-${index}`, 'pre', () => plugin))
   })
+
+  // 作者插件完成后、选择器和单位改写前求值，保留原始作用域及层叠上下文。
+  const calcPlugin = getCalcPlugin(options)
+  if (calcPlugin) {
+    preparedNodes.push(createPreparedNode('pre:calc', 'pre', () => calcPlugin))
+  }
 
   preparedNodes.push(createPreparedNode('pre:core', 'pre', () => postcssWeappTailwindcssPrePlugin(options)))
 
@@ -202,11 +212,6 @@ function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSign
   const unitConversionPlugin = getUnitConversionPlugin(options)
   if (unitConversionPlugin) {
     preparedNodes.push(createPreparedNode('normal:unit-conversion', 'normal', () => unitConversionPlugin))
-  }
-
-  const calcPlugin = getCalcPlugin(options)
-  if (calcPlugin) {
-    preparedNodes.push(createPreparedNode('normal:calc', 'normal', () => calcPlugin))
   }
 
   const calcDuplicateCleaner = getCalcDuplicateCleaner(options)

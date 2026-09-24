@@ -1,129 +1,23 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV4Engine, TailwindV4GenerateOptions, TailwindV4ResolvedSource } from '../types'
-import { createTailwindV4Engine as createEngineTailwindV4Engine, extractRawCandidates } from '@weapp-tailwindcss/engine'
+import { createTailwindV4Engine as createEngineTailwindV4Engine } from '@weapp-tailwindcss/engine'
+import { createCssRuntimeAffectingSignature } from '@weapp-tailwindcss/postcss/transform'
 import { resolveCssMacroTailwindV4Source } from '../css-macro-source'
 import { transformTailwindV4CssByTarget } from '../miniprogram'
 import { createCompatibleSource } from './css-compat'
-import { collectCandidates, createIncrementalGenerateCacheKey, createIncrementalStyleOptions, createTailwindV4SourceCacheKey, hasRemovedCandidates, incrementalGenerateCache, mergeCustomPropertyValues, normalizeTargetRpxLengthCandidates, resolveStyleOptions, resolveTargetCandidates, runIncrementalGenerateTask, seedIncrementalGenerateCache, shouldRebuildIncrementalEntry } from './incremental-cache'
-import { createEngineSourceEntries, serializeTailwindGenerationArtifact, TailwindV4NativeSessionPool } from './native-session'
-import { restoreRpxLengthCandidates, restoreRpxLengthCssSelectors } from './rpx-candidates'
-import { resolveCompiledSourceRoot, resolveScanSources } from './scan-sources'
-import { resolveGenerationStyleContext } from './style-context'
-
-function isCssSyntaxError(error: unknown) {
-  return error instanceof Error && error.name === 'CssSyntaxError'
-}
+import { createIncrementalGenerateCacheKey, createIncrementalStyleOptions, hasRemovedCandidates, incrementalGenerateCache, normalizeTargetRpxLengthCandidates, resolveStyleOptions, resolveTargetCandidates, runIncrementalGenerateTask, seedIncrementalGenerateCache, shouldRebuildIncrementalEntry } from './incremental-cache'
+import { TailwindV4NativeSessionPool } from './native-session'
+import { generateRawArtifact, transformGeneratedArtifact } from './raw-generation'
+import { restoreRpxLengthCssSelectors } from './rpx-candidates'
+import { hasChangedCssCalcContext, resolveGenerationStyleContext, resolveIncrementalStyleContext } from './style-context'
 
 export function createTailwindV4Engine(source: TailwindV4ResolvedSource): TailwindV4Engine {
   const generationSessions = new TailwindV4NativeSessionPool()
   const incrementalCacheKeys = new Set<string>()
   const validationEngine = createEngineTailwindV4Engine(source)
 
-  async function generateOnce(
-    generateSource: TailwindV4ResolvedSource,
-    options: TailwindV4GenerateOptions = {},
-  ) {
-    const {
-      scanSources = true,
-      styleOptions,
-      target = 'weapp',
-      ...patchOptions
-    } = options
-    const resolvedStyleOptions = resolveStyleOptions(generateSource, styleOptions)
-    const cssMacroSource = resolveCssMacroTailwindV4Source(generateSource)
-    const compatibleSource = createCompatibleSource(cssMacroSource, target)
-    const compiledScan = options.scanMode === 'compiled'
-    const resolvedScanSources = compiledScan ? undefined : await resolveScanSources(generateSource, scanSources)
-    const filesystemCandidates = Array.isArray(resolvedScanSources)
-      ? new Set(await extractRawCandidates(resolvedScanSources, {
-          ...(patchOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: patchOptions.bareArbitraryValues }),
-        }))
-      : undefined
-    const resolvedCandidates = resolveTargetCandidates(new Set([
-      ...collectCandidates(patchOptions.candidates),
-      ...(filesystemCandidates ?? []),
-    ]), target)
-    let normalizedCandidates = normalizeTargetRpxLengthCandidates(resolvedCandidates, target, resolvedStyleOptions)
-    const sourceId = compatibleSource.dependencies[0] ?? compatibleSource.base
-    const generationRequest = {
-      ...(compiledScan
-        ? {
-            scanSources,
-            excludeFiles: options.excludeFiles ?? [],
-            prepareCandidates: (candidates: Set<string>) => {
-              normalizedCandidates = normalizeTargetRpxLengthCandidates(resolveTargetCandidates(candidates, target), target, resolvedStyleOptions)
-              return normalizedCandidates.candidates
-            },
-          }
-        : {}),
-      ...(patchOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: patchOptions.bareArbitraryValues }),
-      ...(patchOptions.sources === undefined
-        ? {}
-        : { sourceEntries: createEngineSourceEntries(patchOptions.sources, sourceId) }),
-      candidates: compiledScan ? resolvedCandidates : normalizedCandidates.candidates,
-    }
-    let generatedCss: string
-    let classSet: Set<string>
-    let rawCandidates: Set<string>
-    let dependencies: string[]
-    try {
-      const artifact = await generationSessions.generate(
-        target,
-        createTailwindV4SourceCacheKey(compatibleSource),
-        compatibleSource,
-        generationRequest,
-      )
-      generatedCss = serializeTailwindGenerationArtifact(artifact)
-      classSet = artifact.classSet
-      rawCandidates = artifact.rawCandidates
-      dependencies = artifact.dependencies
-    }
-    catch (error) {
-      if (compiledScan || !isCssSyntaxError(error)) {
-        throw error
-      }
-      const legacyEngine = createEngineTailwindV4Engine(compatibleSource)
-      try {
-        const legacyResult = await legacyEngine.generate({
-          ...(patchOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: patchOptions.bareArbitraryValues }),
-          ...(patchOptions.sources === undefined ? {} : { sources: patchOptions.sources }),
-          candidates: normalizedCandidates.candidates,
-          scanSources: false,
-        })
-        generatedCss = legacyResult.css
-        classSet = legacyResult.classSet
-        rawCandidates = legacyResult.rawCandidates
-        dependencies = legacyResult.dependencies
-      }
-      finally {
-        legacyEngine.dispose?.()
-      }
-    }
-    const sources = Array.isArray(resolvedScanSources) ? resolvedScanSources : []
-    const rawCss = restoreRpxLengthCssSelectors(
-      generatedCss,
-      normalizedCandidates.restoreCandidates,
-    )
-    const styleContext = resolveGenerationStyleContext(compatibleSource.css, rawCss, resolvedStyleOptions)
-    const css = await transformTailwindV4CssByTarget(
-      rawCss,
-      target,
-      styleContext,
-    )
-
-    return {
-      classSet: restoreRpxLengthCandidates(classSet, normalizedCandidates.restoreCandidates),
-      rawCandidates: restoreRpxLengthCandidates(rawCandidates, normalizedCandidates.restoreCandidates),
-      dependencies,
-      root: resolveCompiledSourceRoot(compatibleSource),
-      sources,
-      css,
-      rawCss,
-      target,
-      ...(styleContext?.customPropertyValues
-        ? { customPropertyValues: new Map(styleContext.customPropertyValues) }
-        : {}),
-    }
+  async function generateOnce(generateSource: TailwindV4ResolvedSource, options: TailwindV4GenerateOptions = {}) {
+    return transformGeneratedArtifact(await generateRawArtifact(generationSessions, generateSource, options))
   }
 
   async function generateWithIncrementalCache(options: TailwindV4GenerateOptions = {}) {
@@ -190,6 +84,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           classSet: new Set(cached.classSet),
           rawCandidates: new Set(cached.seenCandidates),
           customPropertyValues: new Map(cached.customPropertyValues),
+          customPropertyContextCss: resolveGenerationStyleContext(compatibleSource.css, cached.rawCss, styleOptions)?.customPropertyContextCss,
           dependencies: cached.dependencies,
           sources: cached.sources,
           root: cached.root,
@@ -230,10 +125,24 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           }
         }
         const rawCss = rawCssParts.join('\n')
+        const fullRawCss = [cached.rawCss, rawCss].filter(Boolean).join('\n')
+        // 完整产物同时确认主题、keyframes、@property 依赖及规则顺序，追加不能改变层叠结果。
+        const artifact = await generateRawArtifact(generationSessions, cssMacroSource, options)
+        if (createCssRuntimeAffectingSignature(fullRawCss) !== createCssRuntimeAffectingSignature(artifact.rawCss)
+          || hasChangedCssCalcContext(cached.rawCss, artifact.rawCss, styleOptions)) {
+          const generated = await transformGeneratedArtifact(artifact)
+          const admitted = seedIncrementalGenerateCache({ compatibleSource, generated, requestedCandidates, styleOptions, target })
+          if (!admitted) {
+            incrementalGenerateCache.delete(cacheKey)
+          }
+          return generated
+        }
+        const styleContext = target === 'weapp'
+          ? resolveIncrementalStyleContext(compatibleSource.css, fullRawCss, styleOptions)
+          : resolveGenerationStyleContext(compatibleSource.css, fullRawCss, styleOptions)
         const incrementalCss = rawCss.length > 0
           ? await transformTailwindV4CssByTarget(rawCss, target, {
-              ...createIncrementalStyleOptions(styleOptions),
-              customPropertyValues: cached.customPropertyValues,
+              ...createIncrementalStyleOptions(styleContext),
             } as Partial<IStyleHandlerOptions>)
           : ''
 
@@ -244,8 +153,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           cached.classSet.add(className)
         }
         cached.css = [cached.css, incrementalCss].filter(Boolean).join('\n')
-        cached.rawCss = [cached.rawCss, rawCss].filter(Boolean).join('\n')
-        mergeCustomPropertyValues(cached.customPropertyValues, incrementalCss)
+        cached.rawCss = fullRawCss
         return {
           css: cached.css,
           rawCss: cached.rawCss,
@@ -254,6 +162,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           classSet: new Set(cached.classSet),
           rawCandidates: new Set(cached.seenCandidates),
           customPropertyValues: new Map(cached.customPropertyValues),
+          customPropertyContextCss: styleContext?.customPropertyContextCss,
           dependencies: cached.dependencies,
           sources: cached.sources,
           root: cached.root,

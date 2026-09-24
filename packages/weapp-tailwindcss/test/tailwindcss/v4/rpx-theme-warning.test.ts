@@ -4,7 +4,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { collectRpxThemeRiskSources, shouldCheckRpxThemeRisk, warnRpxThemeRisk } from '@/tailwindcss/v4/rpx-theme-warning'
 
 describe('rpx theme warning policy', () => {
-  afterEach(() => { vi.restoreAllMocks(); vi.unstubAllEnvs() })
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllEnvs()
+  })
 
   it.each(['mp-weixin', 'weapp', 'wx', 'weixin'])('enables known WeChat platform %s', (platform) => {
     expect(shouldCheckRpxThemeRisk({}, 'weapp', { platform })).toBe(true)
@@ -35,7 +38,8 @@ describe('rpx theme warning policy', () => {
     const inspect = vi.spyOn(css, 'inspectRpxCalcUsage')
     warnRpxThemeRisk(session, variables, '.a { width: 24rpx }')
     expect(warn).toHaveBeenCalledTimes(1)
-    expect(warn.mock.calls[0]?.[0]).toContain('仍含运行时 calc：--spacing')
+    expect(warn.mock.calls[0]?.[0]).toContain('当前生成阶段仍含 calc：--spacing')
+    expect(warn.mock.calls[0]?.[0]).toContain('后续构建处理可能将其静态化，最终状态以 WXSS 为准')
     expect(inspect).not.toHaveBeenCalled()
     expect(shouldCheckRpxThemeRisk(session, 'weapp', { platform: 'mp-weixin' })).toBe(false)
   })
@@ -45,7 +49,8 @@ describe('rpx theme warning policy', () => {
     warnRpxThemeRisk({}, ['--gap'], '.a { width: calc(3rpx * 8) }')
     expect(warn.mock.lastCall?.[0]).toContain('内联 rpx')
     warnRpxThemeRisk({}, ['--gap'], '.a { width: 24rpx }')
-    expect(warn.mock.lastCall?.[0]).toContain('未检测到相关运行时 calc')
+    expect(warn.mock.lastCall?.[0]).toContain('当前生成阶段未检测到相关 calc')
+    expect(warn.mock.lastCall?.[0]).toContain('不代表已验证最终产物、所有作用域和设备')
     warnRpxThemeRisk({}, ['--gap'], '.a { width: calc(3rpx * 8)')
     expect(warn.mock.lastCall?.[0]).toContain('无法完成诊断')
   })

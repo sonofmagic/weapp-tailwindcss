@@ -395,7 +395,8 @@ export async function processViteCssBundleEntry(options: any) {
     if (vitePipelineCssAsset && rememberedCssSource) {
       rememberCssSource?.({ outputFile: vitePipelineCssInjectionOutputFile, rawSource: generatorRawSource, sourceFile: generatorSourceFile })
     }
-    if (shouldRecordVitePipelineCssByOutput) {
+    // 普通作者样式的兼容处理不能升级为生成来源，否则回滚时会误用旧 remembered source。
+    if (vitePipelineCssAsset && shouldRecordVitePipelineCssByOutput) {
       recordViteProcessedCssAssetResult?.(vitePipelineCssInjectionOutputFile, nextCss, { injectIntoMain: outputCssHandlerOptions.isMainChunk ? false : shouldInjectVitePipelineCssIntoMain, outputFile: vitePipelineCssInjectionOutputFile })
     }
     if (vitePipelineCssAsset && shouldInjectVitePipelineCssIntoMain) {
@@ -408,7 +409,8 @@ export async function processViteCssBundleEntry(options: any) {
   const trackedGeneratorCandidateSignature = shouldTrackGeneratorRuntime ? createCandidateSignature(scopedGeneratorRuntime) : 'generator:stable'
   const scopedGeneratorCandidateSignature = shouldTrackGeneratorRuntime ? await createScopedGeneratorCandidateSignature(generatorRawSource, generatorSourceFile, trackedGeneratorCandidateSignature, scopedSourceCandidateGetter, { includeFallbackSignature: generatorCssHandlerOptions.isMainChunk, majorVersion: runtimeState.tailwindRuntime.majorVersion }) : trackedGeneratorCandidateSignature
   const linkedImpactSignature = isRuntimeLinkedCss ? resolveViteCssLinkedImpactSignature({ changedHtmlFiles: snapshot.runtimeAffectingChangedByType.html, changedJsFiles: snapshot.runtimeAffectingChangedByType.js, runtimeAffectingSignatureByFile: snapshot.runtimeAffectingSignatureByFile }) : ''
-  const cssTransformCachePlan = resolveViteCssTransformCachePlan({ cssBundleSourceHash: isWebGeneratorTarget ? cache.computeHash(rawSource) : undefined, cssIsMainChunk: cssHandlerOptions2.isMainChunk === true, cssRuntimeAffectingHash, cssShareScope, linkedImpactSignature, outputFile, runtimeSignature, scopedGeneratorCandidateSignature, sourceTraceSignature, tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion })
+  // 同一生成入口的产物还可合并普通作者样式，必须按本轮完整内容校验缓存。
+  const cssTransformCachePlan = resolveViteCssTransformCachePlan({ cssBundleSourceHash: cache.computeHash(rawSource), cssIsMainChunk: cssHandlerOptions2.isMainChunk === true, cssRuntimeAffectingHash, cssShareScope, linkedImpactSignature, outputFile, runtimeSignature, scopedGeneratorCandidateSignature, sourceTraceSignature, tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion })
   const { cssCacheKey, cssHashKey, cssSharedCacheKey, cssTaskHash, rememberedCssRuntimeSignature } = cssTransformCachePlan
   if (shouldReplayLastCss) {
     const lastCss = getLastCssResult(lastCssResultByFile, outputFile, file)

@@ -175,7 +175,7 @@ export function applyUniAppXUvueCompatibility(
   result: PostcssResult,
   options?: Pick<
     IStyleHandlerOptions,
-    'customPropertyValues' | 'isMainChunk' | 'uniAppX' | 'uniAppXCssTarget' | 'uniAppXUnsupported'
+    'customPropertyValues' | 'customPropertyCompatibilityValues' | 'isMainChunk' | 'uniAppX' | 'uniAppXCssTarget' | 'uniAppXUnsupported'
   >,
 ) {
   if (!isUniAppXUvueTarget(options)) {
@@ -189,7 +189,10 @@ export function applyUniAppXUvueCompatibility(
   let root = result.root
   let calcMessages: PostcssResult['messages'] = []
 
-  consumeUniAppXSystemRootTheme(root, options?.customPropertyValues)
+  consumeUniAppXSystemRootTheme(root, new Map([
+    ...options?.customPropertyCompatibilityValues ?? [],
+    ...options?.customPropertyValues ?? [],
+  ]))
   if (root.type === 'root' && Array.isArray(root.nodes) && typeof root.walkDecls === 'function') {
     root.walkDecls((decl) => {
       normalizeTailwindcssV4Declaration(decl)

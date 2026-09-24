@@ -1060,7 +1060,8 @@ export async function runClassMutation(
         sourcePath,
         classVariableName,
         globalStyleOutputs,
-        minRequiredGlobalStyleEscapedClasses,
+        minRequiredGlobalStyleEscapedClasses: mutation.commentCarrierMinRequiredGlobalStyleEscapedClasses
+          ?? minRequiredGlobalStyleEscapedClasses,
         roundConfig: roundConfigs[0],
         baselineMtime,
       })

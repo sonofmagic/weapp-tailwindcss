@@ -196,7 +196,7 @@ describe('calc', () => {
     const { css } = await styleHandler(code)
     const fallbackCount = css.match(MARGIN_LEFT_32RPX_RE)?.length ?? 0
     expect(fallbackCount).toBe(1)
-    expect(css).toContain('margin-left: calc(var(--spacing)*4);')
+    expect(css).not.toContain('margin-left: calc(var(--spacing)*4);')
   })
 
   it('removes duplicate literal declarations when cssCalc is enabled', async () => {
@@ -236,9 +236,11 @@ describe('calc', () => {
     })
 
     expect(css.match(/margin-bottom:\s*0rpx;/g)).toHaveLength(1)
-    expect(css.match(/margin-bottom:\s*calc\(/g)).toHaveLength(2)
+    expect(css.match(/margin-bottom:\s*calc\(/g)).toHaveLength(1)
     expect(css.match(/margin-top:\s*32rpx;/g)).toHaveLength(1)
-    expect(css.match(/margin-top:\s*calc\(/g)).toHaveLength(2)
+    expect(css.match(/margin-top:\s*calc\(/g)).toHaveLength(1)
+    expect(css).toContain('calc(32rpx*var(--tw-space-y-reverse))')
+    expect(css).toContain('calc(32rpx*(1 - var(--tw-space-y-reverse)))')
     expect(css).not.toContain('calc(var(--spacing)*4*0)')
     expect(css).not.toContain('calc(var(--spacing)*4*var(--tw-space-y-reverse))')
     expect(css).not.toContain('calc(var(--spacing)*4*1)')

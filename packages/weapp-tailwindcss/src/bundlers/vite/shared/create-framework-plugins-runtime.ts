@@ -38,6 +38,7 @@ import { createHmrTimingRecorder } from '../../shared/hmr-timing'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { frameworkViteCapabilityProfile } from '../capability-profile'
 import { createViteCssAssetIdentityResolver } from '../css-asset-identity'
+import { createViteCssCalcStage } from '../css-calc-stage'
 import { createViteCssFinalizerOutputPlugin } from '../css-finalizer'
 import { createViteWebCssFinalizerOutputPlugin } from '../css-finalizer/web-plugin'
 import { createCssHandlerOptionsCache, resolveViteCssHandlerExtraOptions } from '../css-handler-options'
@@ -84,7 +85,10 @@ function createViteFrameworkPlugins(options: ViteFrameworkRuntimeOptions = {}, f
   const hasExplicitTailwindcssBasedir = typeof options.__internalViteRawExplicitTailwindcssBasedir === 'boolean' ? options.__internalViteRawExplicitTailwindcssBasedir : typeof options.tailwindcssBasedir === 'string' && options.tailwindcssBasedir.trim().length > 0
   const rawCssEntries = collectConfiguredCssEntries(rawOptions)
   const deferredOptions = { ...options, __internalDeferMissingCssEntriesWarning: true }
-  const opts = isInternalUserDefinedOptions(options) ? options : getCompilerContext(deferredOptions)
+  let resolvedConfig: ResolvedConfig | undefined
+  const originalOpts = isInternalUserDefinedOptions(options) ? options : getCompilerContext(deferredOptions)
+  const cssCalcStage = createViteCssCalcStage(originalOpts, () => resolvedConfig?.command === 'build', () => resolveFrameworkStylePlatform(originalOpts, resolvedConfig?.build?.outDir))
+  const opts = cssCalcStage.options
   const syncCssEntriesFromAnchor = createFrameworkCssEntrySync(opts, rawCssEntries)
   syncCssEntriesFromAnchor(opts.tailwindcssBasedir)
   const { disabled, customAttributes, onLoad, mainCssChunkMatcher, styleHandler, jsHandler, tailwindRuntime, refreshTailwindcssRuntime, uniAppX, disabledDefaultTemplateHandler, styleInjector } = opts
@@ -99,7 +103,6 @@ function createViteFrameworkPlugins(options: ViteFrameworkRuntimeOptions = {}, f
     throw new Error('weapp-tailwindcss/vite \u65B0\u751F\u6210\u7BA1\u7EBF\u4EC5\u652F\u6301 Tailwind CSS v4\uFF0C\u8BF7\u5347\u7EA7 tailwindcss \u6216\u505C\u7559\u5728\u65E7\u7248 weapp-tailwindcss\u3002')
   }
   const shouldRewriteCssImports = opts.rewriteCssImports === true
-  let resolvedConfig: ResolvedConfig | undefined
   const { observer: webCssEntryDiagnostics, plugin: webCssEntryObserverPlugin } = createConfiguredCssEntryDiagnostics({ getEntries: () => opts.cssEntries, getRoot: () => resolvedConfig?.root, isWeb: () => resolveCurrentGeneratorBranch().isWeb }); const hmrCssModuleVersions = createViteHmrCssModuleVersionTracker()
   const resolveViteStylePlatform = () => resolveFrameworkStylePlatform(opts, resolvedConfig?.build?.outDir)
   const resolveGeneratorPlatform = () => opts.cssOptions?.platform ?? opts.platform ?? resolveViteStylePlatform()
@@ -420,7 +423,7 @@ ${tracedCss}${currentGeneratorBranch.isWeb ? `\n${createBundlerGeneratedCssEndMa
   const shouldSplitGenerateBundlePhases = () => opts.appType === 'weapp-vite' && getResolvedConfig()?.mode !== 'production'
   const preGenerateBundleHook = capability.cssOnly ? undefined : createGenerateBundleHook({ ...generateBundleContext, processMarkupAndScripts: false, shouldProcessBundle: shouldSplitGenerateBundlePhases })
   const generateBundleHook = capability.cssOnly ? undefined : createGenerateBundleHook({ ...generateBundleContext, ...createGenericWebProductionBundleHooks({ frameworkName: frameworkBranch.frameworkName, getHasProcessedCss: () => processedCssRegistry.getStats().viteProcessedCssAssetResults > 0, getIsWebGeneratorTarget: () => resolveCurrentGeneratorBranch().isWeb, getResolvedConfig, onEnd: opts.onEnd, onStart: opts.onStart }), shouldProcessStyles: () => !shouldSplitGenerateBundlePhases() })
-  const cssFinalizerContext: CssFinalizerContext = { opts, runtimeState, ensureRuntimeClassSet, cssPipelineStrategy: frameworkCssPipelineStrategy, debug, frameworkName: frameworkBranch.frameworkName, getResolvedConfig, hmrTimingRecorder, markCssAssetProcessed, isCssAssetProcessed, isViteProcessedCssAsset, resolveCssAssetIdentity, recordCssAssetResult, recordViteProcessedCssAssetResult, getViteProcessedCssAssetResults, getRecordedGeneratorCandidates, getSourceCandidates, getSourceCandidatesForEntries, getSourceCandidateSourcesForEntries, waitForSourceCandidateSyncs: sourceScanSession.waitForPendingSyncs, frameworkRootImportShellTargetByFile, rememberMainCssSource: (file, rawSource) => cssMemory.rememberCssSource({ outputFile: file, rawSource, sourceFile: file }), getRememberedMainCssSource: cssMemory.getRememberedCssSourceEntry }
+  const cssFinalizerContext: CssFinalizerContext = { opts, getFinalCssCalcOptions: cssCalcStage.getFinalOptions, runtimeState, ensureRuntimeClassSet, cssPipelineStrategy: frameworkCssPipelineStrategy, debug, frameworkName: frameworkBranch.frameworkName, getResolvedConfig, hmrTimingRecorder, markCssAssetProcessed, isCssAssetProcessed, isViteProcessedCssAsset, resolveCssAssetIdentity, recordCssAssetResult, recordViteProcessedCssAssetResult, getViteProcessedCssAssetResults, getRecordedGeneratorCandidates, getSourceCandidates, getSourceCandidatesForEntries, getSourceCandidateSourcesForEntries, waitForSourceCandidateSyncs: sourceScanSession.waitForPendingSyncs, frameworkRootImportShellTargetByFile, rememberMainCssSource: (file, rawSource) => cssMemory.rememberCssSource({ outputFile: file, rawSource, sourceFile: file }), getRememberedMainCssSource: cssMemory.getRememberedCssSourceEntry }
   const cssFinalizerOutputPlugin = capability.cssOnly ? createViteWebCssFinalizerOutputPlugin(cssFinalizerContext) : createViteCssFinalizerOutputPlugin(cssFinalizerContext)
   const extraPluginPlatform = frameworkBranch.getExtraPluginPlatform?.() ?? {}; const syncSourceCandidatesForHotUpdate = (ctx: HmrContext) => syncFrameworkSourceCandidatesForHotUpdate(sourceScanSession, ctx); const registerModuleGraphCandidates = createFrameworkModuleCandidateRegistrar({ cacheCurrent: sourceScanSession.cacheCurrent, debug, getCssHandlerOptions: transformCssHandlerOptions.getCssHandlerOptions, getGeneratorPlatform: resolveGeneratorPlatform, invalidateRecordedGeneratorCandidates, opts, runtimeState, sourceCandidateCollector, styleHandler })
   const prepareTailwindGeneration = async () => {

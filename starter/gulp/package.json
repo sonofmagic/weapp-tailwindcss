@@ -6,8 +6,8 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "build": "gulp --preload tsx/dist/loader.cjs -f gulpfile.ts",
-    "build:tt": "cross-env PLATFORM=tt gulp --preload tsx/dist/loader.cjs -f gulpfile.ts",
+    "build": "node --import tsx ./node_modules/gulp/bin/gulp.js -f gulpfile.ts",
+    "build:tt": "cross-env PLATFORM=tt node --import tsx ./node_modules/gulp/bin/gulp.js -f gulpfile.ts",
     "prebuild": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
     "prebuild:tt": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
   },
