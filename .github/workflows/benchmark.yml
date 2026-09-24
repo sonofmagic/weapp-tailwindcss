@@ -65,6 +65,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build workspace packages for synthetic scenarios
+        run: pnpm build:pkgs
+
       - name: Run synthetic performance gate
         run: pnpm perf:synthetic:guard -- --runs 3 --warmups 2 --out-dir .tmp/performance-report
 
