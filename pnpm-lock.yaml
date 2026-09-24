@@ -1370,6 +1370,37 @@ importers:
         specifier: workspace:*
         version: link:../../packages/weapp-tailwindcss
 
+  benchmark/performance:
+    dependencies:
+      '@weapp-tailwindcss/cn':
+        specifier: workspace:*
+        version: link:../../packages-runtime/cn
+      '@weapp-tailwindcss/engine':
+        specifier: workspace:*
+        version: link:../../packages/engine
+      '@weapp-tailwindcss/merge':
+        specifier: workspace:*
+        version: link:../../packages-runtime/merge
+      '@weapp-tailwindcss/postcss':
+        specifier: workspace:*
+        version: link:../../packages/postcss
+      '@weapp-tailwindcss/runtime':
+        specifier: workspace:*
+        version: link:../../packages-runtime/runtime
+      esbuild:
+        specifier: ^0.28.2
+        version: 0.28.2
+      postcss:
+        specifier: catalog:postcss85
+        version: 8.5.28
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../packages/weapp-tailwindcss
+    devDependencies:
+      vitest:
+        specifier: catalog:vitest
+        version: 5.0.1(@types/node@26.6.2)(@vitest/coverage-v8@5.0.0)(@vitest/ui@5.0.0)(jsdom@29.1.1)(vite@7.3.6(@types/node@26.6.2)(jiti@2.7.0)(less@4.6.6)(lightningcss@1.33.0)(sass-embedded@1.104.1)(sass@1.104.1)(stylus@0.63.0(supports-color@10.2.2))(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
+
   benchmark/runtime-cn-vs-merge:
     dependencies:
       '@weapp-tailwindcss/cn':
