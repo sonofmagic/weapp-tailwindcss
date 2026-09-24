@@ -20,50 +20,50 @@
   },
   "cases": {
     "postcss-v4-main-1000": {
-      "medianMs": 52,
-      "p95Ms": 56,
+      "medianMs": 102,
+      "p95Ms": 111,
       "peakRssMb": 341,
       "outputBytes": 64667
     },
     "postcss-v4-main-2000": {
-      "medianMs": 89,
-      "p95Ms": 91,
+      "medianMs": 156,
+      "p95Ms": 159,
       "peakRssMb": 459,
       "outputBytes": 130667
     },
     "postcss-v4-main-5000": {
-      "medianMs": 226,
-      "p95Ms": 242,
+      "medianMs": 396,
+      "p95Ms": 400,
       "peakRssMb": 530,
       "outputBytes": 328667
     },
     "postcss-v4-main-10000": {
-      "medianMs": 481,
-      "p95Ms": 510,
+      "medianMs": 800,
+      "p95Ms": 900,
       "peakRssMb": 615,
       "outputBytes": 658667
     },
     "postcss-v4-content-1000": {
-      "medianMs": 48,
-      "p95Ms": 50,
+      "medianMs": 92,
+      "p95Ms": 111,
       "peakRssMb": 348,
       "outputBytes": 64751
     },
     "postcss-v4-content-2000": {
-      "medianMs": 92,
-      "p95Ms": 101,
+      "medianMs": 166,
+      "p95Ms": 167,
       "peakRssMb": 519,
       "outputBytes": 130751
     },
     "postcss-v4-content-5000": {
-      "medianMs": 233,
-      "p95Ms": 253,
+      "medianMs": 428,
+      "p95Ms": 459,
       "peakRssMb": 575,
       "outputBytes": 328751
     },
     "postcss-v4-content-10000": {
-      "medianMs": 496,
-      "p95Ms": 525,
+      "medianMs": 900,
+      "p95Ms": 1000,
       "peakRssMb": 645,
       "outputBytes": 658751
     },
@@ -150,20 +150,20 @@
       "outputBytes": 1048576
     },
     "postcss-v4-structured-1000": {
-      "medianMs": 68,
-      "p95Ms": 69,
+      "medianMs": 119,
+      "p95Ms": 124,
       "peakRssMb": 645,
       "outputBytes": 89764
     },
     "postcss-v4-structured-2000": {
-      "medianMs": 133,
-      "p95Ms": 136,
+      "medianMs": 236,
+      "p95Ms": 237,
       "peakRssMb": 647,
       "outputBytes": 182164
     },
     "postcss-v4-structured-5000": {
-      "medianMs": 348,
-      "p95Ms": 362,
+      "medianMs": 597,
+      "p95Ms": 600,
       "peakRssMb": 652,
       "outputBytes": 459364
     },
@@ -186,6 +186,6 @@
       "outputBytes": 328667
     }
   },
-  "generatedAt": "2026-09-24T07:04:51.106Z",
-  "commit": "883bd559cb36827b7c4c9fedffd578afcd56ec49"
+  "generatedAt": "2026-09-24T07:22:13.714Z",
+  "commit": "13d6a7c01b2053422595e6efa5286a745ba45077"
 }
