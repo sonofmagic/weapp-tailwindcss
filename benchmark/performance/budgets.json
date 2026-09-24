@@ -20,50 +20,50 @@
   },
   "cases": {
     "postcss-v4-main-1000": {
-      "medianMs": 102,
-      "p95Ms": 111,
+      "medianMs": 152,
+      "p95Ms": 155,
       "peakRssMb": 341,
       "outputBytes": 64667
     },
     "postcss-v4-main-2000": {
-      "medianMs": 156,
-      "p95Ms": 159,
+      "medianMs": 215,
+      "p95Ms": 222,
       "peakRssMb": 459,
       "outputBytes": 130667
     },
     "postcss-v4-main-5000": {
-      "medianMs": 396,
-      "p95Ms": 400,
+      "medianMs": 540,
+      "p95Ms": 541,
       "peakRssMb": 530,
       "outputBytes": 328667
     },
     "postcss-v4-main-10000": {
-      "medianMs": 800,
-      "p95Ms": 900,
+      "medianMs": 1100,
+      "p95Ms": 1200,
       "peakRssMb": 615,
       "outputBytes": 658667
     },
     "postcss-v4-content-1000": {
-      "medianMs": 92,
-      "p95Ms": 111,
+      "medianMs": 126,
+      "p95Ms": 183,
       "peakRssMb": 348,
       "outputBytes": 64751
     },
     "postcss-v4-content-2000": {
-      "medianMs": 166,
-      "p95Ms": 167,
+      "medianMs": 227,
+      "p95Ms": 229,
       "peakRssMb": 519,
       "outputBytes": 130751
     },
     "postcss-v4-content-5000": {
-      "medianMs": 428,
-      "p95Ms": 459,
+      "medianMs": 582,
+      "p95Ms": 653,
       "peakRssMb": 575,
       "outputBytes": 328751
     },
     "postcss-v4-content-10000": {
-      "medianMs": 900,
-      "p95Ms": 1000,
+      "medianMs": 1200,
+      "p95Ms": 1400,
       "peakRssMb": 645,
       "outputBytes": 658751
     },
@@ -150,20 +150,20 @@
       "outputBytes": 1048576
     },
     "postcss-v4-structured-1000": {
-      "medianMs": 119,
-      "p95Ms": 124,
+      "medianMs": 171,
+      "p95Ms": 176,
       "peakRssMb": 645,
       "outputBytes": 89764
     },
     "postcss-v4-structured-2000": {
-      "medianMs": 236,
-      "p95Ms": 237,
+      "medianMs": 336,
+      "p95Ms": 336,
       "peakRssMb": 647,
       "outputBytes": 182164
     },
     "postcss-v4-structured-5000": {
-      "medianMs": 597,
-      "p95Ms": 600,
+      "medianMs": 860,
+      "p95Ms": 867,
       "peakRssMb": 652,
       "outputBytes": 459364
     },
