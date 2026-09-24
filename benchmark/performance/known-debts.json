@@ -1,17 +1,4 @@
 {
   "version": 1,
-  "debts": [
-    {
-      "id": "postcss-v4-root-content-scan",
-      "issue": "https://github.com/sonofmagic/weapp-tailwindcss/issues/1238",
-      "casePrefix": "postcss-v4-main-",
-      "maxComplexityExponent": 1.25,
-      "baselineComplexityExponent": 2.15,
-      "worseningTolerancePercent": 10,
-      "blocking": false,
-      "status": "observed",
-      "confirmAfterStableRuns": 3,
-      "reason": "Tailwind v4 主样式逐条规则重复扫描整棵 CSS AST。"
-    }
-  ]
+  "debts": []
 }

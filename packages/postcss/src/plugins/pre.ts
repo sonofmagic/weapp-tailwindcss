@@ -4,11 +4,13 @@ import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
 import { consumeCascadeLayers } from '../compat/mini-program-css/cascade-layers'
 import {
+  isTailwindcssV4,
   isTailwindcssV4DisplayP3Declaration,
   isTailwindcssV4DisplayP3Media,
   isTailwindcssV4DisplayP3Supports,
   isTailwindcssV4LinearGradientSupports,
   isTailwindcssV4ModernCheck,
+  usesTailwindcssV4ContentVariable,
 } from '../compat/tailwindcss-v4'
 import { postcssPlugin } from '../constants'
 import { commonChunkPreflight } from '../mp'
@@ -164,8 +166,11 @@ const postcssWeappTailwindcssPrePlugin: PostcssWeappTailwindcssRenamePlugin = (
         }
       })
       consumeCascadeLayers(root)
+      const contentVariableUsedInRoot = isTailwindcssV4(opts)
+        ? usesTailwindcssV4ContentVariable(root)
+        : undefined
       root.walkRules((rule) => {
-        commonChunkPreflight(rule, opts)
+        commonChunkPreflight(rule, opts, contentVariableUsedInRoot)
       })
     }
   }

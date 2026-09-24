@@ -141,7 +141,11 @@ function resolveUniAppXVariableScopeSelectors(options: IStyleHandlerOptions) {
 }
 
 // 在通用预处理节点中注入变量、预设声明，并标记上下文状态
-export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
+export function commonChunkPreflight(
+  node: Rule,
+  options: IStyleHandlerOptions,
+  contentVariableUsedInRoot?: boolean,
+) {
   const { ctx, injectAdditionalCssVarScope } = options
   const uniAppXEnabled = isUniAppXEnabled(options)
   const isTailwindcss4 = isTailwindcssV4(options)
@@ -173,8 +177,13 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
   }
   // 标记 CSS 变量作用域
   // node.selector = remakeCombinatorSelector(node.selector, options)
-  if (isTailwindcss4 && !usesTailwindcssV4ContentVariable(node.root()) && (!hasClassSelector(node) || isRootThemeScopeRule(node))) {
-    removeTailwindV4EmptyContentInit(node)
+  const canRemoveTailwindV4EmptyContentInit = !hasClassSelector(node) || isRootThemeScopeRule(node)
+  if (isTailwindcss4 && canRemoveTailwindV4EmptyContentInit) {
+    const rootUsesContentVariable = contentVariableUsedInRoot
+      ?? usesTailwindcssV4ContentVariable(node.root())
+    if (!rootUsesContentVariable) {
+      removeTailwindV4EmptyContentInit(node)
+    }
   }
   // 变量注入和 preflight
   if (

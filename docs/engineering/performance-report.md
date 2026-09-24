@@ -17,8 +17,10 @@
 
 默认报告不会写入仓库中的 benchmark 数据文件。CI 将 JSON、Markdown、失败重放参数和诊断 profile 上传为 artifact；仓库只保存场景、预算和已知债务。
 
-## 当前已知性能债务
+## 已解决性能债务
 
-Issue #1238（[Tailwind v4 主样式重复扫描 CSS AST](https://github.com/sonofmagic/weapp-tailwindcss/issues/1238)）登记为非阻断债务。`postcss-v4-main-*` 场景会报告复杂度指数；修复后应移除 `benchmark/performance/known-debts.json` 条目，并将新的线性预算写入 `budgets.json`。
+Issue #1238（[Tailwind v4 主样式重复扫描 CSS AST](https://github.com/sonofmagic/weapp-tailwindcss/issues/1238)）已在 PostCSS v4 主样式预处理阶段修复。处理流程在每个 Root 中只计算一次 `--tw-content` 使用情况，并跳过不可能清理初始化的普通 class 规则；1k、2k、5k、10k 规模的冷处理复杂度恢复到线性范围，输出哈希保持稳定。
+
+`benchmark/performance/known-debts.json` 只登记尚未解决的债务。修复后的复杂度、预算、样本完整性和输出稳定性继续由合成门禁检查。
 
 PR 中新产生的预算违规、输出不稳定、样本不足和已知债务继续恶化会阻断；跨平台 nightly/manual 任务只用于比较 Linux、macOS 和 Windows 的趋势。

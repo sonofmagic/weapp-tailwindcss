@@ -70,7 +70,7 @@ function makePostcssCase(size, variant, cacheHit = false) {
   return {
     id,
     group: 'postcss',
-    complexityGroup: 'postcss-v4',
+    complexityGroup: cacheHit ? 'postcss-v4-cache-hit' : 'postcss-v4',
     size,
     fresh: !cacheHit,
     async create() {

@@ -14,6 +14,7 @@ describe('performance scenarios', () => {
     expect(ids.has('core-incremental-append-50')).toBe(true)
     expect(ids.has('hmr-class-churn-100')).toBe(true)
     expect(ids.has('bundler-esbuild-200')).toBe(true)
-    expect(cases.filter(item => item.complexityGroup === 'postcss-v4')).toHaveLength(12)
+    expect(cases.filter(item => item.complexityGroup === 'postcss-v4')).toHaveLength(9)
+    expect(cases.filter(item => item.complexityGroup === 'postcss-v4-cache-hit')).toHaveLength(3)
   })
 })

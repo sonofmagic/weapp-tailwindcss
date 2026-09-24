@@ -71,4 +71,25 @@ describe('mp', () => {
     expect(css).toContain('content: var(--tw-content)')
     expect(css).not.toContain('--tw-gradient-stops')
   })
+
+  it('does not scan the root for ordinary class rules when removing content init', () => {
+    const root = postcss.parse('.utility { --tw-content: ""; color: red; }')
+    commonChunkPreflight(root.first as postcss.Rule, { majorVersion: 4 })
+
+    expect(root.toString()).toBe('.utility { --tw-content: ""; color: red; }')
+  })
+
+  it('uses the precomputed root content usage for large Tailwind v4 roots', () => {
+    const root = postcss.parse([
+      ':root { --tw-content: ""; }',
+      '.before::before { content: var(--tw-content); }',
+    ].join('\n'))
+
+    commonChunkPreflight(root.first as postcss.Rule, { majorVersion: 4 }, true)
+    expect(root.toString()).toContain('--tw-content: ""')
+
+    const unusedRoot = postcss.parse(':root { --tw-content: ""; }')
+    commonChunkPreflight(unusedRoot.first as postcss.Rule, { majorVersion: 4 }, false)
+    expect(unusedRoot.toString()).not.toContain('--tw-content')
+  })
 })
