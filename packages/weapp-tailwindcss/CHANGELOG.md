@@ -1,5 +1,14 @@
 # weapp-tailwindcss
 
+## 5.5.10
+
+### Patch Changes
+
+- 修复多个 CSS 入口合并后文件型 @source 的来源丢失与候选归属错误，保留空范围及主题冲突语义，并监听扫描文件变化。Refs #1241
+
+- Updated dependencies:
+  - @weapp-tailwindcss/postcss@3.3.9
+
 ## 5.5.9
 
 ### Patch Changes
