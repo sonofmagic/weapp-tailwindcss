@@ -1,5 +1,6 @@
 import type { RememberedCssSource } from './types'
 import { normalizeMiniProgramImportShell } from '../../../generation/output-import-shell'
+import { hasScopedSourceDirectives } from './scoped-generator-sources'
 import { createMergedCssSourceTraceMap } from './source-trace'
 import { scheduleViteCssTransform } from './transform-scheduling'
 
@@ -361,14 +362,15 @@ export async function processViteCssBundleEntry(options: any) {
   const { cssHandlerOptions: cssHandlerOptions2, generatorCssHandlerOptions, generatorRawSource, generatorSourceFile, generatorUserLayerRawSource, hasCurrentTailwindGenerationDirective, hasRememberedApplySource, hasSameOutputRememberedTailwindGenerationSource, hasStaleViteProcessedCssSource, usesConfiguredTailwindV4FallbackSource, vitePipelineCssAsset, webviewRootCssInjectionTarget } = cssCompositionPlan
   const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, generatorCssHandlerOptions)
   const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, generatorCssHandlerOptions)
+  const hasScopedSources = hasScopedSourceDirectives(rememberedCssSources)
   const sourceTraceSources = scopedSourceCandidateSourceGetter
-    ? rememberedCssSources.length > 1
+    ? hasScopedSources
       ? await createMergedCssSourceTraceMap(rememberedCssSources, source => createScopedGeneratorSourceTraceMap(source.rawSource, source.sourceFile, scopedSourceCandidateSourceGetter))
       : await createScopedGeneratorSourceTraceMap(generatorRawSource, generatorSourceFile, scopedSourceCandidateSourceGetter)
     : undefined
   const sourceTraceTokenSources = sourceTraceSources ? createCssTokenSourceMap(sourceTraceSources, opts) : void 0
   const sourceTraceSignature = createCssSourceTraceCacheSignature(sourceTraceTokenSources, opts)
-  const scopedGeneratorRuntime = rememberedCssSources.length > 1 ? new Set<string>((await Promise.all(rememberedCssSources.map((source: RememberedCssSource) => createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, source.rawSource, source.sourceFile)))).flatMap(candidates => [...candidates] as string[])) : await createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, generatorRawSource, generatorSourceFile)
+  const scopedGeneratorRuntime = hasScopedSources ? new Set<string>((await Promise.all(rememberedCssSources.map((source: RememberedCssSource) => createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, source.rawSource, source.sourceFile)))).flatMap(candidates => [...candidates] as string[])) : await createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, generatorRawSource, generatorSourceFile)
   const annotateCss = (css: string) => annotateCssSourceTrace(css, { opts, tokenSources: sourceTraceTokenSources })
   const removeRootCoveredCssFromScopedAsset = (css: string) => {
     const normalizedOutputFile = normalizeOutputPathKey(outputFile.replace(/[?#].*$/, ''))
@@ -412,7 +414,7 @@ export async function processViteCssBundleEntry(options: any) {
     return
   }
   const trackedGeneratorCandidateSignature = shouldTrackGeneratorRuntime ? createCandidateSignature(scopedGeneratorRuntime) : 'generator:stable'
-  const signatureSources = rememberedCssSources.length > 1 ? rememberedCssSources : [{ rawSource: generatorRawSource, sourceFile: generatorSourceFile }]
+  const signatureSources = hasScopedSources ? rememberedCssSources : [{ rawSource: generatorRawSource, sourceFile: generatorSourceFile }]
   const scopedGeneratorCandidateSignature = shouldTrackGeneratorRuntime
     ? signatureSources.length > 1
       ? JSON.stringify(await Promise.all(signatureSources.map(async (source: RememberedCssSource) => [source.sourceFile, await createScopedGeneratorCandidateSignature(source.rawSource, source.sourceFile, trackedGeneratorCandidateSignature, scopedSourceCandidateGetter, { includeFallbackSignature: generatorCssHandlerOptions.isMainChunk, majorVersion: runtimeState.tailwindRuntime.majorVersion })])))

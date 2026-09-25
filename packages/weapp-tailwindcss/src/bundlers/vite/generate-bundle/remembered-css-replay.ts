@@ -20,6 +20,7 @@ import { collectRememberedCssReplayGroups, createGeneratedReplayCacheKey, create
 import { registerGeneratorDependencies } from './rollup-assets'
 import { isRootMiniProgramStyleOutputFile, shouldPreserveFrameworkRootMiniProgramImportShell } from './root-style-output'
 import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTraceMap } from './scoped-generator'
+import { hasScopedSourceDirectives } from './scoped-generator-sources'
 import { createCandidateSignature } from './signatures'
 import { createMergedCssSourceTraceMap } from './source-trace'
 import { getLastCssResult, getLastCssSourceHash, rememberLastCssResult } from './vite-css-cache'
@@ -248,10 +249,11 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     activeViteCssCacheFiles.add(normalizeViteCssCacheKey(sourceFile))
     const outputCssHandlerOptions = getCssHandlerOptions(rememberedOutputFile)
     const ownedSources = replayableRememberedGroup.map(item => item.remembered)
+    const hasScopedSources = hasScopedSourceDirectives(ownedSources)
     const cssHandlerOptions = {
       ...getCssHandlerOptions(sourceFile),
       isMainChunk: outputCssHandlerOptions.isMainChunk,
-      ...(ownedSources.length > 1
+      ...(hasScopedSources
         ? { sourceOptions: {
             ...getCssHandlerOptions(sourceFile).sourceOptions,
             cssEntries: ownedSources.map(source => source.sourceFile),
@@ -261,13 +263,13 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     }
     const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)
     const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, cssHandlerOptions)
-    const signatureSources = ownedSources.length > 1 ? ownedSources : [{ rawSource: generatorRawSource, sourceFile }]
-    const scopedGeneratorRuntime = ownedSources.length > 1
+    const signatureSources = hasScopedSources ? ownedSources : [{ rawSource: generatorRawSource, sourceFile }]
+    const scopedGeneratorRuntime = hasScopedSources
       ? new Set((await Promise.all(signatureSources.map(source =>
           createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, source.rawSource, source.sourceFile),
         ))).flatMap(candidates => [...candidates]))
       : await createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, generatorRawSource, sourceFile)
-    const candidateSignatures = ownedSources.length > 1
+    const candidateSignatures = hasScopedSources
       ? await Promise.all(signatureSources.map(async source => [
           source.sourceFile,
           await createScopedGeneratorCandidateSignature(source.rawSource, source.sourceFile, createCandidateSignature(scopedGeneratorRuntime), scopedSourceCandidateGetter, {
@@ -276,7 +278,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
           }),
         ]))
       : undefined
-    const scopedGeneratorCandidateSignature = ownedSources.length > 1
+    const scopedGeneratorCandidateSignature = hasScopedSources
       ? JSON.stringify(candidateSignatures)
       : await createScopedGeneratorCandidateSignature(
           generatorRawSource,
@@ -322,7 +324,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       continue
     }
     const sourceTraceSources = scopedSourceCandidateSourceGetter
-      ? ownedSources.length > 1
+      ? hasScopedSources
         ? await createMergedCssSourceTraceMap(signatureSources, source => createScopedGeneratorSourceTraceMap(source.rawSource, source.sourceFile, scopedSourceCandidateSourceGetter))
         : await createScopedGeneratorSourceTraceMap(generatorRawSource, sourceFile, scopedSourceCandidateSourceGetter)
       : undefined

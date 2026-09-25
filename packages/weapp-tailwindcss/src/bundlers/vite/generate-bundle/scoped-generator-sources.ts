@@ -8,8 +8,12 @@ type SourceTraceResolver = (rawSource: string, sourceFile: string) => Promise<Ma
 type RuntimeResolver = (outputFile: string, options: GeneratorCssHandlerOptions, runtime: Set<string>, rawSource?: string, sourceFile?: string) => Promise<Set<string>>
 type CandidateSignatureResolver = (rawSource: string, sourceFile: string, fallbackSignature: string, getCandidates: ((entries: unknown) => Set<string>) | undefined, options: { includeFallbackSignature?: boolean, majorVersion?: number }) => Promise<string>
 
+export function hasScopedSourceDirectives(sources: readonly RememberedCssSource[]) {
+  return sources.length > 1 && sources.some(source => source.rawSource.includes('@source') || source.rawSource.includes('@config'))
+}
+
 function getSignatureSources(rememberedCssSources: RememberedCssSource[], generatorRawSource: string, generatorSourceFile: string) {
-  return rememberedCssSources.length > 1
+  return hasScopedSourceDirectives(rememberedCssSources)
     ? rememberedCssSources
     : [{ rawSource: generatorRawSource, sourceFile: generatorSourceFile }]
 }
@@ -30,7 +34,7 @@ export async function createScopedGeneratorSourceData(options: {
   const sourceTraceSources = scopedSourceCandidateSourceGetter
     ? await createMergedCssSourceTraceMap(signatureSources, source => createScopedGeneratorSourceTraceMap(source.rawSource, source.sourceFile))
     : undefined
-  const scopedGeneratorRuntime = rememberedCssSources.length > 1
+  const scopedGeneratorRuntime = hasScopedSourceDirectives(rememberedCssSources)
     ? new Set<string>((await Promise.all(rememberedCssSources.map(source => createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, source.rawSource, source.sourceFile)))).flatMap(candidates => [...candidates]))
     : await createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, generatorRawSource, generatorSourceFile)
   return { scopedGeneratorRuntime, signatureSources, sourceTraceSources }
