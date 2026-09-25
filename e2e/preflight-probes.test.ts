@@ -99,6 +99,28 @@ describe('真实探针的阻断条件', () => {
     await expect(base(context)).resolves.toHaveProperty('binding.pnpm')
   })
 
+  it('微信预检使用仓库项目的授权 AppID', async () => {
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'wt-preflight-wechat-'))
+    dirs.push(dir)
+    const cli = path.join(dir, 'cli')
+    await writeFile(cli, '')
+    await mkdir(path.join(dir, 'package.nw'))
+    await writeFile(path.join(dir, 'package.nw', 'package.json'), JSON.stringify({ name: '微信开发者工具', version: '2.02.2608070' }))
+    run.mockImplementation(async (_file, args) => {
+      if (args[0] === 'islogin') {
+        return '{"login":true}'
+      }
+      if (args[0] === 'auto') {
+        const project = args[args.indexOf('--project') + 1]!
+        const config = JSON.parse(await readFile(path.join(project, 'project.config.json'), 'utf8'))
+        expect(config.appid).toBe('wx6ffee4673b257014')
+        throw new Error('停止本轮探针')
+      }
+      return ''
+    })
+    await expect(wechat({ ...context, dir, phase: 'prepare', binding: { command: cli } })).rejects.toThrow('停止本轮探针')
+  })
+
   it('微信返回旧页面时不得点击或重启旧页面，只关闭本轮项目', async () => {
     const dir = await mkdtemp(path.join(os.tmpdir(), 'wt-preflight-wechat-'))
     dirs.push(dir)

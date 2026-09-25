@@ -15,6 +15,8 @@ import { waitForProbe } from './wait'
 import { connectWechat } from './wechat-connect'
 import { wechatVersion } from './wechat-version'
 
+const defaultWechatAppId = 'wx6ffee4673b257014'
+
 export async function base(ctx: ProbeContext): Promise<ProbeOutput> {
   const manifest = JSON.parse(await readFile(path.join(ctx.root, 'package.json'), 'utf8'))
   const pnpm = await command('pnpm', ['--version'])
@@ -85,7 +87,7 @@ export async function wechat(ctx: ProbeContext): Promise<ProbeOutput> {
   const project = path.join(ctx.dir, 'wechat-project')
   await mkdir(path.join(project, 'pages', 'probe'), { recursive: true })
   const files: Record<string, string> = {
-    'project.config.json': JSON.stringify({ appid: 'touristappid', projectname: `preflight-${ctx.runId}`, compileType: 'miniprogram', miniprogramRoot: './', setting: { es6: true } }),
+    'project.config.json': JSON.stringify({ appid: process.env.E2E_PREFLIGHT_WECHAT_APPID ?? defaultWechatAppId, projectname: `preflight-${ctx.runId}`, compileType: 'miniprogram', miniprogramRoot: './', setting: { es6: true } }),
     'app.json': JSON.stringify({ pages: ['pages/probe/index'], window: { navigationBarTitleText: '环境预检' } }),
     'app.js': 'App({})',
     [path.join('pages', 'probe', 'index.js')]: `Page({data:{marker:${JSON.stringify(ctx.runId)},clicked:false},tap(){this.setData({clicked:true})}})`,
