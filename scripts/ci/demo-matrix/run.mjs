@@ -115,7 +115,7 @@ async function runCase(item) {
       return result
     }
     await rm(outputDir, { recursive: true, force: true })
-    session = start(command.dev, dir, developmentEnvironment(command.env), path.join(artifactDir, 'dev-live.log'))
+    session = start(command.dev, dir, developmentEnvironment({ ...command.env, DEMO_MATRIX_NATIVE_WATCH_FILE: process.env.DEMO_MATRIX_PROCESS_DIAGNOSTICS === '1' ? sourceFile : '' }), path.join(artifactDir, 'dev-live.log'))
     activeSession = session
     if (isWeb(item) || item.name.startsWith('web/')) {
       browser = await openBrowser(`http://127.0.0.1:${port}${item.route ?? '/'}`, session, artifactDir)
