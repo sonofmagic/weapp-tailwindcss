@@ -5,6 +5,7 @@ baseline: dc05668dddd951b1b74bddf9fca3ae0ccac8bcb1
 regressions:
   - scripts/ci/demo-matrix/rollup-file-identity.test.mjs
   - scripts/ci/demo-matrix/rollup-watch.test.mjs
+  - scripts/ci/demo-matrix/rollup-source-identity.test.mjs
   - scripts/ci/demo-matrix/source-file.test.mjs
   - scripts/ci/demo-matrix/watch.test.mjs
 ---
@@ -80,6 +81,27 @@ Chokidar 的 50ms change 去重没有区分文件版本；现在只有状态相�
 相对事件路径与 Windows 反斜杠事件路径的确定性回归均先失败，要求旧/新 closer 各关闭一次，
 且注册表始终只保留原入口键。修复后本地 96 项设施回归全部通过，微信/京东 production 和
 initial、replace、add、restore 再次通过，static 基线无差异；Windows 原生目录删除恢复仍由 CI 验证。
+
+### 第四轮定位：增量依赖图移除路径别名
+
+[9a0cee88c 的 Windows 京东诊断](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36127037161/job/108045426098)
+已经通过 97 项设施回归，但真实构建仍在 add 阶段停止。
+原生事件记录确认：11:07:04.085 新句柄 id=3 绑定新 inode，旧 id=1 正常关闭；
+11:07:05.785 本轮模块转换完成后 id=3 又被关闭；11:07:09 第二次保存只有父目录事件。
+这纠正了“剩余故障仍是原子替换无法重绑”的推断：句柄重绑成功，之后被依赖清理关闭。
+
+新增真实 Rollup 回归让同一文件同时以模块绝对路径和临时相对依赖存在，第一轮更新后移除相对别名。
+修复前 CJS/ESM 均在第二次保存（`value: 2`）停止，与 Windows 阶段一致。
+Rollup 的原始依赖 ID 集合与 Chokidar 的文件系统身份并非一一对应；移除一个别名时直接 unwatch，
+会关闭其他仍然有效的依赖共用的文件监听。
+现在按 `path.resolve` 后的文件系统身份管理别名引用，最后一个别名退出时才 unwatch；
+收到事件后仍按原始依赖 ID 触发模块和 transform 缓存失效，目录依赖按同一文件系统边界匹配。
+补丁保持 CJS/ESM 一致，99 项设施回归通过。本地显式关闭 fsevents 和 polling 后，
+真实 Taro 微信/京东 production、initial、replace、add、restore 全部通过，static 基线无差异。
+Windows 的最终结论仍以修复提交的真实连续构建为准。
+
+另一次 Gulp Windows 首次保存没有收到 change，未出现 Rollup 路径；保留该独立失败并限同 SHA
+单作业重跑一次，不能归并为本次 Rollup 根因或仅凭重跑推断环境抖动。
 
 Rsbuild 两份基线单独重新生成，差异只有 spacing 集合增加 `0.25rem`；
 工具类、单位及动态表达式未发生差异。复验保持 `CI=1 --update=none`。

@@ -67,7 +67,7 @@ jobs:
           if [[ "$DEMO_CASE" == mpx-* ]]; then
             unset DEBUG
           fi
-          if [[ "$DEMO_CASE" == *vite* ]]; then
+          if [[ "$DEMO_CASE" == *vite* || "$DEMO_CASE" == gulp-* ]]; then
             export NODE_OPTIONS="$NODE_OPTIONS --require=$GITHUB_WORKSPACE/scripts/ci/demo-matrix/native-watch-diagnostic.cjs"
           fi
           if [[ "$DEMO_CASE" == *webpack* ]]; then
