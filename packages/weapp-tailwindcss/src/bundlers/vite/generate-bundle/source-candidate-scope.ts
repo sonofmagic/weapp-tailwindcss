@@ -143,14 +143,25 @@ export function createSubpackageSourceCandidateScope(options: CreateSubpackageSo
     && subpackageSourceExcludeEntries.length > 0
     && isMainPackageStyleOutputFile(outputFile)
 
+  const resolveScopedOutputFile = (outputFile: string, sourceFile?: string) => {
+    if (!options.subpackageRoots || isSubpackageOutputFile(outputFile, options.subpackageRoots)) {
+      return outputFile
+    }
+    return sourceFile && isSubpackageOutputFile(sourceFile, options.subpackageRoots)
+      ? sourceFile
+      : outputFile
+  }
+
   const createScopedSourceCandidateGetter = (
     outputFile: string,
     cssHandlerOptions: { isMainChunk?: boolean | undefined },
+    sourceFile?: string,
   ) => {
     if (!options.getSourceCandidatesForEntries) {
       return undefined
     }
-    const subpackageEntries = resolveSubpackageOutputSourceEntries(outputFile)
+    const scopedOutputFile = resolveScopedOutputFile(outputFile, sourceFile)
+    const subpackageEntries = resolveSubpackageOutputSourceEntries(scopedOutputFile)
     if (subpackageEntries) {
       return (entries: TailwindSourceEntry[] | undefined, filterOptions?: SourceCandidateFilterOptions) => {
         if (entries !== undefined) {
@@ -186,11 +197,13 @@ export function createSubpackageSourceCandidateScope(options: CreateSubpackageSo
   const createScopedSourceCandidateSourceGetter = (
     outputFile: string,
     cssHandlerOptions: { isMainChunk?: boolean | undefined },
+    sourceFile?: string,
   ) => {
     if (!options.getSourceCandidateSourcesForEntries) {
       return undefined
     }
-    const subpackageEntries = resolveSubpackageOutputSourceEntries(outputFile)
+    const scopedOutputFile = resolveScopedOutputFile(outputFile, sourceFile)
+    const subpackageEntries = resolveSubpackageOutputSourceEntries(scopedOutputFile)
     if (subpackageEntries) {
       return (entries: TailwindSourceEntry[] | undefined, filterOptions?: SourceCandidateFilterOptions) => {
         if (entries !== undefined) {

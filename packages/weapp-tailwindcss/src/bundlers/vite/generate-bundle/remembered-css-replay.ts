@@ -52,10 +52,12 @@ interface ProcessRememberedCssReplayOptions {
   createScopedSourceCandidateGetter: (
     outputFile: string,
     cssHandlerOptions: { isMainChunk?: boolean | undefined },
+    sourceFile?: string | undefined,
   ) => GenerateBundleContext['getSourceCandidatesForEntries']
   createScopedSourceCandidateSourceGetter: (
     outputFile: string,
     cssHandlerOptions: { isMainChunk?: boolean | undefined },
+    sourceFile?: string | undefined,
   ) => GenerateBundleContext['getSourceCandidateSourcesForEntries']
   cssTaskFactories: Array<() => Promise<void>>
   cssPipelineContext: ViteFrameworkCssPipelineContext
@@ -261,8 +263,8 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
           } }
         : {}),
     }
-    const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)
-    const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, cssHandlerOptions)
+    const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions, sourceFile)
+    const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, cssHandlerOptions, sourceFile)
     const signatureSources = hasScopedSources ? ownedSources : [{ rawSource: generatorRawSource, sourceFile }]
     const scopedGeneratorRuntime = hasScopedSources
       ? new Set((await Promise.all(signatureSources.map(source =>
