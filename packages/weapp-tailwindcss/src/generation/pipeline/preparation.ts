@@ -133,7 +133,9 @@ export async function prepareGeneratorInputs(context: GeneratorPipelineExecution
     const sourceEntries = getSourceCandidatesForEntries
       ? await resolveGeneratorSourceEntries(record, runtimeState)
       : undefined
-    const sourceScopedRuntime = sourceEntries !== undefined
+    const hasOwnedSourceScope = sourceEntries !== undefined
+      && (sourceEntries.length > 0 || sourceMetadata.isolateCssSource === true)
+    const sourceScopedRuntime = hasOwnedSourceScope
       ? getSourceCandidatesForEntries?.(sourceEntries)
       : undefined
     const scopedRuntime = resolveScopedRuntimeCandidates(options.sourceCandidates, sourceScopedRuntime)

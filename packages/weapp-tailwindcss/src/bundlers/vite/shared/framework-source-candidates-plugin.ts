@@ -325,7 +325,7 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
       await options.hmrTimingRecorder.measure('sourceCandidates.buildStart', options.prepareTailwindGeneration, { emit: false })
       // 文件型 @source 可以不在模块图中；监听扫描层已确认的文件，交由 watchChange 更新候选。
       for (const file of options.sourceScanSession.getWatchFiles?.() ?? []) {
-        this.addWatchFile(file)
+        this.addWatchFile?.(file)
       }
     },
     async generateBundle(...args: any[]) {

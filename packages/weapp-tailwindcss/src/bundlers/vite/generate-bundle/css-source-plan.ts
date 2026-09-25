@@ -87,13 +87,23 @@ export async function resolveViteCssSourcePlan(
     if (source === undefined) {
       throw new Error(`Missing transformed CSS source for deferred generation: ${file}`)
     }
-    return { sourceFile: file, rawSource: source, outputFile: options.outputFile }
+    return {
+      sourceFile: file,
+      rawSource: source,
+      // Rollup 临时 CSS 资产仍需先写回当前资产，再由既有的临时资产映射
+      // 交给框架生成最终文件；直接改写为页面输出会让 emitFile 产生一个
+      // 未纳入当前 bundle 的重复资产（Taro 等框架最终保留空页面样式）。
+      outputFile: options.temporaryOutput
+        ? options.outputFile
+        : options.resolveMatchedOutputFile(file) ?? options.outputFile,
+    }
   })
   if (markedSources.length > 0) {
+    options.debug('deferred css source markers: %O', markedSources.map(source => ({ sourceFile: source.sourceFile, outputFile: source.outputFile })))
     return {
       forceNonMainChunk: false,
       hasUsableTailwindSource: true,
-      outputFile: options.outputFile,
+      outputFile: markedSources[0]?.outputFile ?? options.outputFile,
       resolution: 'remembered',
       resolvedFromTemporarySource: false,
       sources: markedSources,

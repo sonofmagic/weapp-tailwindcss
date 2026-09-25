@@ -31,7 +31,13 @@ async function resolveGeneratorResolvedSources(
     return Promise.all(ownedSources.map(async (source, index) => {
       const resolved = await resolveSingleTailwindV4CssSource(source, sourceOptions, { index, matched: true, primary: index === 0 })
       return normalizeResolvedTailwindV4SourceConfig(
-        withGeneratorSourceMetadata(generatorOptions?.config ? { ...resolved, css: prependConfigDirective(resolved.css, generatorOptions.config) } : resolved, { ...getGeneratorSourceMetadata(resolved), isolateCssSource: true }),
+        withGeneratorSourceMetadata(
+          generatorOptions?.config ? { ...resolved, css: prependConfigDirective(resolved.css, generatorOptions.config) } : resolved,
+          {
+            ...getGeneratorSourceMetadata(resolved),
+            isolateCssSource: ownedSources.length > 1 || /source\(\s*none\s*\)/i.test(source.css),
+          },
+        ),
         source.file,
         sourceOptions,
       )

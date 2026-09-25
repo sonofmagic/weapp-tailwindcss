@@ -24,6 +24,17 @@ import { createCandidateSignature } from './signatures'
 import { createMergedCssSourceTraceMap } from './source-trace'
 import { getLastCssResult, getLastCssSourceHash, rememberLastCssResult } from './vite-css-cache'
 
+function dedupeRememberedCssReplayGroup(
+  group: Array<{ key: string, remembered: RememberedCssSource }>,
+) {
+  const bySourceAndOutput = new Map<string, { key: string, remembered: RememberedCssSource }>()
+  for (const item of group) {
+    const sourceKey = `${normalizeOutputPathKey(item.remembered.sourceFile)}\0${normalizeOutputPathKey(item.remembered.outputFile)}`
+    bySourceAndOutput.set(sourceKey, item)
+  }
+  return [...bySourceAndOutput.values()]
+}
+
 interface ProcessRememberedCssReplayOptions {
   addWatchFile: (id: string) => void
   bundle: Record<string, OutputAsset | OutputChunk>
@@ -198,7 +209,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     if (isHTMLRequest(outputFile) || options.opts.htmlMatcher(outputFile)) {
       continue
     }
-    const replayableRememberedGroup = rememberedGroup.filter(({ remembered }) => {
+    const replayableRememberedGroup = dedupeRememberedCssReplayGroup(rememberedGroup).filter(({ remembered }) => {
       const shouldSkip = shouldSkipRawRememberedCssSource(remembered.rawSource, remembered.sourceFile)
       if (shouldSkip) {
         debug('css replay skip raw source style: %s -> %s', remembered.sourceFile, outputFile)
