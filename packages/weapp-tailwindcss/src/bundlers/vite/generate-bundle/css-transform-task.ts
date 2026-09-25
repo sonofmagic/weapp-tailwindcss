@@ -1,4 +1,5 @@
 import type { TailwindV4GenerationCoreInput, TailwindV4GenerationCoreResult } from '../../../generation/service'
+import { stripDeferredCssSourceMarkers } from '@weapp-tailwindcss/postcss/transform'
 import { hasTailwindRootDirectives } from '../../../generation/directives'
 import { isPureLocalCssImportWrapper } from '../../../generation/local-imports'
 import { generateTailwindV4Css } from '../../../generation/service'
@@ -117,7 +118,7 @@ export async function executeViteCssTransformTask(
       )
       return {
         classSet: generated.classSet,
-        css,
+        css: stripDeferredCssSourceMarkers(css),
         dependencies: generated.dependencies,
         diffSource: options.generatorRawSource,
         generatorTarget: generated.target,

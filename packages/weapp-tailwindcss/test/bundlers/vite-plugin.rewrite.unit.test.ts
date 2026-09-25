@@ -235,7 +235,8 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     const source = '@import "tailwindcss";'
     const result = await transform?.(source, '/src/app.css') as TransformResult
 
-    expect(result).toBeNull()
+    expect(result?.code).toContain(source)
+    expect(result?.code).toContain('deferred-source:%2Fsrc%2Fapp.css')
     expect(onTailwindRootCss).toHaveBeenCalledWith('/src/app.css', source)
     expect(generateTailwindCss).not.toHaveBeenCalled()
   })

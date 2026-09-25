@@ -13,6 +13,7 @@ import { cleanUrl, isCSSRequest } from '../utils'
 import { readViteHmrSource } from './hmr-source'
 
 export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plugin['apply']): Plugin {
+  const watchedSourceFiles = new Set<string>()
   const shouldSkipSourceCandidateState = () => options.shouldSkipSourceCandidateState?.() === true
   const hasDifferentHotModules = (left: ModuleNode[], right: ModuleNode[]) => left.length !== right.length
     || left.some((mod, index) => mod !== right[index])
@@ -323,6 +324,14 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
         return
       }
       await options.hmrTimingRecorder.measure('sourceCandidates.buildStart', options.prepareTailwindGeneration, { emit: false })
+      // 文件型 @source 可以不在模块图中；监听扫描层已确认的文件，交由 watchChange 更新候选。
+      for (const file of options.sourceScanSession.getWatchFiles?.() ?? []) {
+        if (watchedSourceFiles.has(file)) {
+          continue
+        }
+        this.addWatchFile?.(file)
+        watchedSourceFiles.add(file)
+      }
     },
     async generateBundle(...args: any[]) {
       if (shouldSkipSourceCandidateState()) {

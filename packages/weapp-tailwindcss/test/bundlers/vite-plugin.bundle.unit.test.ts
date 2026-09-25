@@ -4463,9 +4463,21 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const scopedGetter = scope.createScopedSourceCandidateGetter('sub-independent/pages/index.acss', { isMainChunk: false })
     const scopedSourceGetter = scope.createScopedSourceCandidateSourceGetter('sub-independent/pages/index.acss', { isMainChunk: false })
+    const temporaryScopedGetter = scope.createScopedSourceCandidateGetter(
+      'index2.css',
+      { isMainChunk: false },
+      independentCssFile,
+    )
+    const temporaryScopedSourceGetter = scope.createScopedSourceCandidateSourceGetter(
+      'index2.css',
+      { isMainChunk: false },
+      independentCssFile,
+    )
 
     expect(scopedGetter?.(broadEntries)).toEqual(new Set(['bg-independent-subpackage-marker']))
     expect([...(scopedSourceGetter?.(broadEntries).keys() ?? [])]).toEqual(['bg-independent-subpackage-marker'])
+    expect(temporaryScopedGetter?.(broadEntries)).toEqual(new Set(['bg-independent-subpackage-marker']))
+    expect([...(temporaryScopedSourceGetter?.(broadEntries).keys() ?? [])]).toEqual(['bg-independent-subpackage-marker'])
   }, TEST_TIMEOUT_MS)
 
   it('falls back to scoped source candidates when subpackage entries cannot narrow broad matches', () => {

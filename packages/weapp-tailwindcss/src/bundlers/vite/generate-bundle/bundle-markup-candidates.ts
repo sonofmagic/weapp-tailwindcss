@@ -58,7 +58,7 @@ export async function collectBundleMarkupCandidates(options: CollectBundleMarkup
   const valuesForEntries = (entries: TailwindSourceEntry[] | undefined, filterOptions: SourceCandidateFilterOptions = {}) => {
     const values = new Set<string>()
     for (const { sourceFile: file, candidates } of candidatesByFile.values()) {
-      if (entries !== undefined && !isFileMatchedByTailwindSourceEntries(file, entries)) {
+      if (entries !== undefined && (entries.length === 0 || !isFileMatchedByTailwindSourceEntries(file, entries))) {
         continue
       }
       if (filterOptions.excludeEntries?.length && isFileMatchedByTailwindSourceEntries(file, filterOptions.excludeEntries)) {

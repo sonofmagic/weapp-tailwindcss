@@ -1,0 +1,286 @@
+diff --git a/dist/es/shared/watch.js b/dist/es/shared/watch.js
+index dc419c2d423cdfa2479b2cd9c6343b05d936c741..da51a7f33c29d0802f654aea42aee80123e05a7b 100644
+--- a/dist/es/shared/watch.js
++++ b/dist/es/shared/watch.js
+@@ -2775,7 +2775,15 @@ _handleFile(file, stats, initialAdd) {
+   if (parent.has(basename)) return;
+
+   const listener = async (path, newStats) => {
+-    if (!this.fsw._throttle(THROTTLE_MODE_WATCH, file, 5)) return;
++    if (this.fsw.closed) return;
++    if (!this.fsw._throttle(THROTTLE_MODE_WATCH, file, 5)) {
++      // 节流期间可能已替换文件；窗口结束后必须读取最后状态。
++      const pending = this.fsw._throttled.get(THROTTLE_MODE_WATCH).get(file);
++      if (!pending.retry) {
++        pending.retry = setTimeout(() => listener(file), 5);
++      }
++      return;
++    }
+     if (!newStats || newStats.mtimeMs === 0) {
+       try {
+         const newStats = await stat$2(file);
+@@ -2786,10 +2794,12 @@ _handleFile(file, stats, initialAdd) {
+         if (!at || at <= mt || mt !== prevStats.mtimeMs) {
+           this.fsw._emit(EV_CHANGE$2, file, newStats);
+         }
+-        if (isLinux && prevStats.ino !== newStats.ino) {
+-          this.fsw._closeFile(path);
++        // 原子保存会替换文件身份；各平台都必须重新绑定原生监听句柄。
++        if (prevStats.ino !== newStats.ino) {
++          // 注册身份与目录广播的原生路径可能不同，关闭和重绑必须使用同一键。
++          this.fsw._closeFile(file);
+           prevStats = newStats;
+-          this.fsw._addPathCloser(path, this._watchWithNodeFs(file, listener));
++          this.fsw._addPathCloser(file, this._watchWithNodeFs(file, listener));
+         } else {
+           prevStats = newStats;
+         }
+@@ -4212,8 +4222,15 @@ async _emit(event, path, val1, val2, val3) {
+   }
+
+   if (event === EV_CHANGE) {
+-    const isThrottled = !this._throttle(EV_CHANGE, path, 50);
+-    if (isThrottled) return this;
++    // 只合并同一文件状态的重复通知，不丢弃窗口内的新版本。
++    const previous = this._throttled.get(EV_CHANGE)?.get(path);
++    const stats = val1;
++    if (previous?.stats && stats && ['dev', 'ino', 'size', 'mtimeMs', 'ctimeMs'].some(key => previous.stats[key] !== stats[key])) {
++      previous.clear();
++    }
++    const throttle = this._throttle(EV_CHANGE, path, 50);
++    if (!throttle) return this;
++    throttle.stats = stats;
+   }
+
+   if (opts.alwaysStat && val1 === undefined &&
+@@ -4573,49 +4590,57 @@ chokidar.watch = watch;
+
+ class FileWatcher {
+     constructor(task, chokidarOptions) {
+-        this.transformWatchers = new Map();
++        this.transformDependencies = new Set();
++        this.fileAliases = new Map();
+         this.chokidarOptions = chokidarOptions;
+         this.task = task;
+-        this.watcher = this.createWatcher(null);
++        this.watcher = this.createWatcher();
+     }
+     close() {
+         this.watcher.close();
+-        for (const watcher of this.transformWatchers.values()) {
+-            watcher.close();
+-        }
+     }
+     unwatch(id) {
+-        this.watcher.unwatch(id);
+-        const transformWatcher = this.transformWatchers.get(id);
+-        if (transformWatcher) {
+-            this.transformWatchers.delete(id);
+-            transformWatcher.close();
++        const key = path.resolve(id);
++        const aliases = this.fileAliases.get(key);
++        this.transformDependencies.delete(id);
++        if (!aliases) return;
++        aliases.delete(id);
++        // 同一文件可能同时来自规范化模块 ID 与原生路径，移除别名不能关闭仍被使用的文件。
++        if (aliases.size === 0) {
++            this.fileAliases.delete(key);
++            this.watcher.unwatch(key);
+         }
+     }
+     watch(id, isTransformDependency) {
+-        if (isTransformDependency) {
+-            const watcher = this.transformWatchers.get(id) ?? this.createWatcher(id);
+-            watcher.add(id);
+-            this.transformWatchers.set(id, watcher);
+-        }
+-        else {
+-            this.watcher.add(id);
+-        }
++        const key = path.resolve(id);
++        let aliases = this.fileAliases.get(key);
++        if (!aliases) this.fileAliases.set(key, aliases = new Set());
++        aliases.add(id);
++        if (isTransformDependency) this.transformDependencies.add(id);
++        else this.transformDependencies.delete(id);
++        this.watcher.add(key);
+     }
+-    createWatcher(transformWatcherId) {
++    createWatcher() {
+         const task = this.task;
+         const isLinux = platform() === 'linux';
+-        const isTransformDependency = transformWatcherId !== null;
++        const isFreeBSD = platform() === 'freebsd';
+         const handleChange = (id, event) => {
+-            const changedId = transformWatcherId || id;
+-            if (isLinux) {
+-                // unwatching and watching fixes an issue with chokidar where on certain systems,
+-                // a file that was unlinked and immediately recreated would create a change event
+-                // but then no longer any further events
+-                watcher.unwatch(changedId);
+-                watcher.add(changedId);
++            const key = path.resolve(id);
++            if (isLinux || isFreeBSD) {
++                // 删除并立即恢复文件后，重新注册监听以继续接收后续事件。
++                watcher.unwatch(key);
++                watcher.add(key);
++            }
++            // 文件系统身份用于管理句柄，原始依赖 ID 用于使对应模块缓存失效。
++            for (const alias of this.fileAliases.get(key) || [id]) {
++                task.invalidate(alias, { event, isTransformDependency: this.transformDependencies.has(alias) });
++            }
++            for (const dependency of this.transformDependencies) {
++                const relative = path.relative(path.resolve(dependency), key);
++                if (relative && relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative)) {
++                    task.invalidate(dependency, { event, isTransformDependency: true });
++                }
+             }
+-            task.invalidate(changedId, { event, isTransformDependency });
+         };
+         const watcher = chokidar
+             .watch([], this.chokidarOptions)
+diff --git a/dist/shared/index.js b/dist/shared/index.js
+index b38d5dcdc1bf50b5aff481dee32bbb3297075f78..0cddb0a2e2e91b97753ed44db50a0a512dfb7c1b 100644
+--- a/dist/shared/index.js
++++ b/dist/shared/index.js
+@@ -2771,7 +2771,15 @@ _handleFile(file, stats, initialAdd) {
+   if (parent.has(basename)) return;
+
+   const listener = async (path, newStats) => {
+-    if (!this.fsw._throttle(THROTTLE_MODE_WATCH, file, 5)) return;
++    if (this.fsw.closed) return;
++    if (!this.fsw._throttle(THROTTLE_MODE_WATCH, file, 5)) {
++      // 节流期间可能已替换文件；窗口结束后必须读取最后状态。
++      const pending = this.fsw._throttled.get(THROTTLE_MODE_WATCH).get(file);
++      if (!pending.retry) {
++        pending.retry = setTimeout(() => listener(file), 5);
++      }
++      return;
++    }
+     if (!newStats || newStats.mtimeMs === 0) {
+       try {
+         const newStats = await stat$2(file);
+@@ -2782,10 +2790,12 @@ _handleFile(file, stats, initialAdd) {
+         if (!at || at <= mt || mt !== prevStats.mtimeMs) {
+           this.fsw._emit(EV_CHANGE$2, file, newStats);
+         }
+-        if (isLinux && prevStats.ino !== newStats.ino) {
+-          this.fsw._closeFile(path);
++        // 原子保存会替换文件身份；各平台都必须重新绑定原生监听句柄。
++        if (prevStats.ino !== newStats.ino) {
++          // 注册身份与目录广播的原生路径可能不同，关闭和重绑必须使用同一键。
++          this.fsw._closeFile(file);
+           prevStats = newStats;
+-          this.fsw._addPathCloser(path, this._watchWithNodeFs(file, listener));
++          this.fsw._addPathCloser(file, this._watchWithNodeFs(file, listener));
+         } else {
+           prevStats = newStats;
+         }
+@@ -4208,8 +4218,15 @@ async _emit(event, path, val1, val2, val3) {
+   }
+
+   if (event === EV_CHANGE) {
+-    const isThrottled = !this._throttle(EV_CHANGE, path, 50);
+-    if (isThrottled) return this;
++    // 只合并同一文件状态的重复通知，不丢弃窗口内的新版本。
++    const previous = this._throttled.get(EV_CHANGE)?.get(path);
++    const stats = val1;
++    if (previous?.stats && stats && ['dev', 'ino', 'size', 'mtimeMs', 'ctimeMs'].some(key => previous.stats[key] !== stats[key])) {
++      previous.clear();
++    }
++    const throttle = this._throttle(EV_CHANGE, path, 50);
++    if (!throttle) return this;
++    throttle.stats = stats;
+   }
+
+   if (opts.alwaysStat && val1 === undefined &&
+diff --git a/dist/shared/watch.js b/dist/shared/watch.js
+index b7ac9010156c0fc2a71fcd23cbaa5dc5230508f5..fbef62f4f58dc1a629995eeb94583fd5e8b27a4f 100644
+--- a/dist/shared/watch.js
++++ b/dist/shared/watch.js
+@@ -30,49 +30,57 @@ require('events');
+
+ class FileWatcher {
+     constructor(task, chokidarOptions) {
+-        this.transformWatchers = new Map();
++        this.transformDependencies = new Set();
++        this.fileAliases = new Map();
+         this.chokidarOptions = chokidarOptions;
+         this.task = task;
+-        this.watcher = this.createWatcher(null);
++        this.watcher = this.createWatcher();
+     }
+     close() {
+         this.watcher.close();
+-        for (const watcher of this.transformWatchers.values()) {
+-            watcher.close();
+-        }
+     }
+     unwatch(id) {
+-        this.watcher.unwatch(id);
+-        const transformWatcher = this.transformWatchers.get(id);
+-        if (transformWatcher) {
+-            this.transformWatchers.delete(id);
+-            transformWatcher.close();
++        const key = node_path.resolve(id);
++        const aliases = this.fileAliases.get(key);
++        this.transformDependencies.delete(id);
++        if (!aliases) return;
++        aliases.delete(id);
++        // 同一文件可能同时来自规范化模块 ID 与原生路径，移除别名不能关闭仍被使用的文件。
++        if (aliases.size === 0) {
++            this.fileAliases.delete(key);
++            this.watcher.unwatch(key);
+         }
+     }
+     watch(id, isTransformDependency) {
+-        if (isTransformDependency) {
+-            const watcher = this.transformWatchers.get(id) ?? this.createWatcher(id);
+-            watcher.add(id);
+-            this.transformWatchers.set(id, watcher);
+-        }
+-        else {
+-            this.watcher.add(id);
+-        }
++        const key = node_path.resolve(id);
++        let aliases = this.fileAliases.get(key);
++        if (!aliases) this.fileAliases.set(key, aliases = new Set());
++        aliases.add(id);
++        if (isTransformDependency) this.transformDependencies.add(id);
++        else this.transformDependencies.delete(id);
++        this.watcher.add(key);
+     }
+-    createWatcher(transformWatcherId) {
++    createWatcher() {
+         const task = this.task;
+         const isLinux = node_os.platform() === 'linux';
+-        const isTransformDependency = transformWatcherId !== null;
++        const isFreeBSD = node_os.platform() === 'freebsd';
+         const handleChange = (id, event) => {
+-            const changedId = transformWatcherId || id;
+-            if (isLinux) {
+-                // unwatching and watching fixes an issue with chokidar where on certain systems,
+-                // a file that was unlinked and immediately recreated would create a change event
+-                // but then no longer any further events
+-                watcher.unwatch(changedId);
+-                watcher.add(changedId);
++            const key = node_path.resolve(id);
++            if (isLinux || isFreeBSD) {
++                // 删除并立即恢复文件后，重新注册监听以继续接收后续事件。
++                watcher.unwatch(key);
++                watcher.add(key);
++            }
++            // 文件系统身份用于管理句柄，原始依赖 ID 用于使对应模块缓存失效。
++            for (const alias of this.fileAliases.get(key) || [id]) {
++                task.invalidate(alias, { event, isTransformDependency: this.transformDependencies.has(alias) });
++            }
++            for (const dependency of this.transformDependencies) {
++                const relative = node_path.relative(node_path.resolve(dependency), key);
++                if (relative && relative !== '..' && !relative.startsWith(`..${node_path.sep}`) && !node_path.isAbsolute(relative)) {
++                    task.invalidate(dependency, { event, isTransformDependency: true });
++                }
+             }
+-            task.invalidate(changedId, { event, isTransformDependency });
+         };
+         const watcher = index.chokidar
+             .watch([], this.chokidarOptions)

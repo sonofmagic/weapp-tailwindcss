@@ -1,3 +1,5 @@
+import { stripDeferredCssSourceMarkers } from './deferred-css-source'
+
 const BUNDLER_GENERATED_CSS_MARKER_RE = /\/\*!?\s*weapp-tailwindcss (?:gulp|vite|webpack)-generated-css(?:\s*:\s*[^\s*]+)?\s*\*\/\s*/i
 const BUNDLER_GENERATED_CSS_MARKER_GLOBAL_RE = /\/\*!?\s*weapp-tailwindcss (?:gulp|vite|webpack)-generated-css(?:\s*:\s*[^\s*]+)?\s*\*\/\s*/gi
 const BUNDLER_GENERATED_CSS_MARKER_CAPTURE_RE = /\/\*!?\s*weapp-tailwindcss (gulp|vite|webpack)-generated-css(?:\s*:\s*([^\s*]+))?\s*\*\/\s*/gi
@@ -23,7 +25,7 @@ export function hasBundlerGeneratedCssMarker(source: unknown) {
 }
 
 export function stripBundlerGeneratedCssMarkers(source: string) {
-  return source
+  return stripDeferredCssSourceMarkers(source)
     .replace(BUNDLER_GENERATED_CSS_MARKER_GLOBAL_RE, '')
     .replace(BUNDLER_GENERATED_CSS_END_MARKER_GLOBAL_RE, '')
     .replace(VITE_INTERNAL_CSS_MARKER_GLOBAL_RE, '')

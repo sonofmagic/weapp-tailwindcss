@@ -7,7 +7,7 @@ import { expect, it } from 'vitest'
 import { repo } from './catalog.mjs'
 import { replaceSourceFile } from './source-file.mjs'
 
-const scenarios = ['uni-app-vite-tailwindcss-v4', 'issue-uview-plus-cssentries'].flatMap(demo =>
+const scenarios = ['uni-app-vite-tailwindcss-v4', 'issue-uview-plus-cssentries', 'taro-vite-react-tailwindcss-v4'].flatMap(demo =>
   ['cjs', 'esm'].flatMap(format => ['file', 'directory'].map(dependency => ({ demo, format, dependency }))),
 )
 
@@ -33,6 +33,8 @@ it.each(scenarios)('keeps module and transform dependencies live after atomic re
     watcher = rollup.watch({
       input: entry,
       output: { file: output, format: 'es' },
+      // Taro 使用原生句柄，避免目录级 fsevents 掩盖重复监听同一文件的问题。
+      ...(demo.startsWith('taro-') ? { watch: { chokidar: { useFsEvents: false, usePolling: false } } } : {}),
       plugins: [{
         name: 'shared-transform-dependency',
         resolveId(id) { return id === 'virtual:derived' ? id : null },

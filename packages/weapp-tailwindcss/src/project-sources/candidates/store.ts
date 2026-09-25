@@ -6,6 +6,7 @@ import { resolveSourceCandidateScanFiles } from './scan-root'
 import { createCandidateSnapshot, restoreCandidateSnapshot } from './snapshot'
 import { mergeSourcesByPriority } from './source-priority'
 import { addCandidateSet, cleanUrl, createSourceCandidateContentCacheKey, diffCandidateSets, extractCandidates, isSourceCandidateRequest, removeCandidateSet, resolveSourceCandidateExtension, sourceCandidateContentCache } from './types-and-cache'
+import { createCandidateViewMemo } from './view-memo'
 import { collectCandidateSources, collectCandidateValues } from './views'
 
 const SOURCE_CANDIDATE_FILE_MEMO_MAX = 4096
@@ -40,6 +41,7 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
   const moduleSourceById = new Map<string, string>()
   const candidateCount = new Map<string, number>()
   const fileCandidateMemo = new Map<string, FileCandidateMemo>()
+  const candidateViewMemo = createCandidateViewMemo()
   let inlineIncludedCandidates = new Set<string>()
   let inlineExcludedCandidates = new Set<string>()
   let revision = 0
@@ -365,11 +367,13 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
   }
 
   function valuesForEntries(entries: TailwindSourceEntry[] | undefined, options: SourceCandidateFilterOptions = {}) {
-    return collectCandidateValues({ candidatesById, moduleCandidatesById, candidateCount, inlineIncludedCandidates, inlineExcludedCandidates }, entries, options.excludeEntries)
+    return candidateViewMemo('values', revision, entries, options.excludeEntries, () =>
+      collectCandidateValues({ candidatesById, moduleCandidatesById, candidateCount, inlineIncludedCandidates, inlineExcludedCandidates }, entries, options.excludeEntries))
   }
 
   function sourcesForEntries(entries: TailwindSourceEntry[] | undefined, options: SourceCandidateFilterOptions = {}) {
-    return collectCandidateSources({ candidatesById, moduleCandidatesById, candidateCount, inlineIncludedCandidates, inlineExcludedCandidates }, entries, options.excludeEntries)
+    return candidateViewMemo('sources', revision, entries, options.excludeEntries, () =>
+      collectCandidateSources({ candidatesById, moduleCandidatesById, candidateCount, inlineIncludedCandidates, inlineExcludedCandidates }, entries, options.excludeEntries))
   }
 
   function clear() {

@@ -178,9 +178,10 @@ export { analyzeCssCalcContext, type CssCalcContext } from './utils/css-calc-con
 export { isCssCalcCustomPropertySelected } from './utils/css-custom-property'
 export { annotateCssTokenSources, type CssTokenSource, type CssTokenSourceMap } from './utils/css-source-trace'
 export { collectCustomPropertyValues, mergeCustomPropertyValues } from './utils/custom-property-values'
+export { createDeferredCssSourceMarker, readDeferredCssSourceMarkers, stripDeferredCssSourceMarkers } from './utils/deferred-css-source'
 export { replaceViteGeneratedCssModule } from './utils/generated-css-marker'
-export { type BundlerGeneratedCssMarkerBlock, createBundlerGeneratedCssEndMarker, createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker, parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from './utils/generated-css-marker'
 
+export { type BundlerGeneratedCssMarkerBlock, createBundlerGeneratedCssEndMarker, createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker, parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from './utils/generated-css-marker'
 export {
   containsCssAfterMinify,
   createCssRuleMatcher,
@@ -190,6 +191,7 @@ export {
   mergeMiniProgramPreflightRuleDeclarations,
   mergeMiniProgramThemeScopeRuleDeclarations,
 } from './vite-css-rules'
+
 export {
   composeRules as unitConversionComposeRules,
   presets as unitConversionPresets,

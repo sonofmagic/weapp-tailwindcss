@@ -1,4 +1,5 @@
 import type { RememberedCssSource } from './types'
+import { sourcePathApi } from '@weapp-tailwindcss/source-scan'
 import {
   hasTailwindApplyDirective,
   hasTailwindRootDirectives,
@@ -8,6 +9,7 @@ import { hasUserCssLayerBlocks } from '../../../generation/user-css'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { normalizeCssSourceForCompare } from '../css-output'
 import { mergeRememberedCssSources } from './remembered-css'
+import { hasScopedSourceDirectives } from './scoped-generator-sources'
 import { hasTailwindGenerationSource } from './sfc-style-source'
 
 export interface CssCompositionHandlerOptions {
@@ -191,12 +193,18 @@ export function resolveViteCssCompositionPlan<HandlerOptions extends CssComposit
   const generatorCssEntries = isExplicitGeneratorCssEntry || shouldUsePipelineSourceAsCssEntry
     ? [generatorSourceFile]
     : options.cssEntries
+  const hasScopedSources = hasScopedSourceDirectives(rememberedSources)
   const generatorCssHandlerOptions = {
     ...cssHandlerOptions,
     sourceOptions: {
       ...cssHandlerOptions.sourceOptions,
       sourceFile: generatorSourceFile,
-      cssEntries: generatorCssEntries,
+      cssEntries: hasScopedSources ? rememberedSources.map(source => source.sourceFile) : generatorCssEntries,
+      ...(hasScopedSources
+        ? {
+            cssSources: rememberedSources.map(source => ({ file: source.sourceFile, base: sourcePathApi(source.sourceFile).dirname(source.sourceFile), css: source.rawSource })),
+          }
+        : {}),
     },
   }
   return {

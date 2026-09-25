@@ -10,10 +10,10 @@ import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSource
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../markers'
 import { resolveSourceSideCssEntrySource } from '../source-files'
 import { canResolveSourceSideCssEntry, hasConfiguredTailwindV4CssSource, mergeCssSources, normalizeResolvedTailwindV4SourceConfig, normalizeTailwindV4CssSourceConfigs, resolveTailwindV4CssEntrySource } from './configuration'
-import { createGeneratorSourceRecord, getGeneratorSourceMetadata } from './metadata'
+import { createGeneratorSourceRecord, getGeneratorSourceMetadata, withGeneratorSourceMetadata } from './metadata'
 import { resolveCssHandlerSourceOptions, resolveCssSourceBase, resolvePostcssSourceFile } from './postcss-source'
 import { resolveGeneratorSource } from './resolve-source'
-import { createTailwindV4CssSourceResolver, resolveCandidateMatchedTailwindV4CssEntry, resolveCandidateMatchedTailwindV4CssSource, resolveTailwindV4SourceSideEntrySource } from './single-source'
+import { createTailwindV4CssSourceResolver, resolveCandidateMatchedTailwindV4CssEntry, resolveCandidateMatchedTailwindV4CssSource, resolveSingleTailwindV4CssSource, resolveTailwindV4SourceSideEntrySource } from './single-source'
 import { resolveMatchingTailwindV4CssEntry, resolveMatchingTailwindV4CssSource } from './source-matching'
 
 async function resolveGeneratorResolvedSources(
@@ -25,6 +25,24 @@ async function resolveGeneratorResolvedSources(
   generatorOptions?: NormalizedWeappTailwindcssGeneratorOptions,
   selectionOptions?: GeneratorSourceSelectionOptions,
 ): Promise<TailwindResolvedSource[]> {
+  const ownedSources = resolveCssHandlerSourceOptions(cssHandlerOptions)?.cssSources
+  if (ownedSources?.length) {
+    const sourceOptions = { ...resolveTailwindV4SourceOptionsFromRuntime(runtimeState.tailwindRuntime), cssEntries: [], cssSources: ownedSources }
+    return Promise.all(ownedSources.map(async (source, index) => {
+      const resolved = await resolveSingleTailwindV4CssSource(source, sourceOptions, { index, matched: true, primary: index === 0 })
+      return normalizeResolvedTailwindV4SourceConfig(
+        withGeneratorSourceMetadata(
+          generatorOptions?.config ? { ...resolved, css: prependConfigDirective(resolved.css, generatorOptions.config) } : resolved,
+          {
+            ...getGeneratorSourceMetadata(resolved),
+            isolateCssSource: ownedSources.length > 1 || /source\(\s*none\s*\)/i.test(source.css),
+          },
+        ),
+        source.file,
+        sourceOptions,
+      )
+    }))
+  }
   const base = resolveCssSourceBase(file, cssHandlerOptions)
   const cssEntrySource = resolveCssEntrySource(rawSource, base, {
     importFallback: generatorOptions?.importFallback ?? false,

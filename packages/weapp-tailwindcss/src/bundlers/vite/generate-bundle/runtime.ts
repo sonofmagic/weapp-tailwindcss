@@ -56,6 +56,7 @@ import { createConfiguredCssRootResolvers, createConfiguredCssSourceRegistry } f
 import { collectCssExtensionByStem, collectJsImportedCssFiles, collectRuntimeLinkedCssFiles } from './runtime-linked-css'
 import { rememberRuntimeLinkedCssSources } from './runtime-linked-source-memory'
 import { createScopedGeneratorCandidateSignature, createScopedGeneratorSourceTraceMap, createScopedGeneratorRuntime as resolveScopedGeneratorRuntime } from './scoped-generator'
+import { memoizeScopedGeneratorRuntime } from './scoped-generator-runtime-cache'
 import { hasSfcStyleSources, resolveSourceStyleSourceFromOutputFile } from './sfc-style-source'
 import { createCandidateSignature, hasRuntimeAffectingSourceChanges } from './signatures'
 import { createSubpackageSourceCandidateScope } from './source-candidate-scope'
@@ -202,7 +203,7 @@ function createGenerateBundleHook(context: GenerateBundleContext) {
     const getCombinedSourceCandidatesForEntries: SourceCandidateCollector['valuesForEntries'] | undefined = getSourceCandidatesForEntries || bundleMarkupCandidates.values.size > 0 ? (entries, options) => new Set([...getSourceCandidatesForEntries?.(entries, options) ?? [], ...bundleMarkupCandidates.valuesForEntries(entries, options)]) : void 0
     const sourceCandidates = new Set([...getSourceCandidates?.() ?? [], ...bundleMarkupCandidates.values])
     const { createScopedSourceCandidateGetter, createScopedSourceCandidateSourceGetter, shouldExcludeSubpackageSourceCandidates, shouldInjectCssIntoMainFromOutput } = createSubpackageSourceCandidateScope({ cssSourceFiles: configuredTailwindV4CssSourceEntriesForScope.map(entry => entry.file), getSourceCandidateSourcesForEntries, getSourceCandidatesForEntries: getCombinedSourceCandidatesForEntries, projectRoot: opts.tailwindcssRuntimeOptions?.projectRoot, rootDir, snapshot, sourceRoot, subpackageRoots: currentSubpackageRoots, tailwindcssBasedir: opts.tailwindcssBasedir, useIncrementalMode })
-    const createScopedGeneratorRuntime = (outputFile: string, cssHandlerOptions2: { isMainChunk?: boolean | undefined }, runtime2: Set<string>, rawSource?: string, sourceFile?: string) => resolveScopedGeneratorRuntime({ cssHandlerOptions: cssHandlerOptions2, fallbackRuntime: runtime2, getSourceCandidatesForEntries: getCombinedSourceCandidatesForEntries, majorVersion: runtimeState.tailwindRuntime.majorVersion, outputFile, rawSource, shouldExcludeSubpackageSourceCandidates, sourceFile, scopedSourceCandidateGetter: createScopedSourceCandidateGetter(outputFile, cssHandlerOptions2) })
+    const createScopedGeneratorRuntime = memoizeScopedGeneratorRuntime((outputFile, cssHandlerOptions2, runtime2, rawSource, sourceFile) => resolveScopedGeneratorRuntime({ cssHandlerOptions: cssHandlerOptions2, fallbackRuntime: runtime2, getSourceCandidatesForEntries: getCombinedSourceCandidatesForEntries, majorVersion: runtimeState.tailwindRuntime.majorVersion, outputFile, rawSource, shouldExcludeSubpackageSourceCandidates, sourceFile, scopedSourceCandidateGetter: createScopedSourceCandidateGetter(outputFile, cssHandlerOptions2, sourceFile) }))
     const jsEntries = snapshot.jsEntries
     const getJsEntry = createJsEntryResolver(jsEntries)
     const transformFilterSignature = createTransformFilterSignature(opts.transform)
