@@ -1,6 +1,6 @@
 import type { RememberedCssSource } from './types'
 import { normalizeMiniProgramImportShell } from '../../../generation/output-import-shell'
-import { createMergedCssSourceTraceMap } from './source-trace'
+import { createScopedGeneratorCandidateSignatureForSources, createScopedGeneratorSourceData } from './scoped-generator-sources'
 import { scheduleViteCssTransform } from './transform-scheduling'
 
 export async function processViteCssBundleEntry(options: any) {
@@ -361,17 +361,9 @@ export async function processViteCssBundleEntry(options: any) {
   const { cssHandlerOptions: cssHandlerOptions2, generatorCssHandlerOptions, generatorRawSource, generatorSourceFile, generatorUserLayerRawSource, hasCurrentTailwindGenerationDirective, hasRememberedApplySource, hasSameOutputRememberedTailwindGenerationSource, hasStaleViteProcessedCssSource, usesConfiguredTailwindV4FallbackSource, vitePipelineCssAsset, webviewRootCssInjectionTarget } = cssCompositionPlan
   const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, generatorCssHandlerOptions)
   const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, generatorCssHandlerOptions)
-  const sourceTraceSources = scopedSourceCandidateSourceGetter
-    ? await createMergedCssSourceTraceMap(
-        rememberedCssSources.length > 1 ? rememberedCssSources : [{ rawSource: generatorRawSource, sourceFile: generatorSourceFile }],
-        source => createScopedGeneratorSourceTraceMap(source.rawSource, source.sourceFile, scopedSourceCandidateSourceGetter),
-      )
-    : undefined
+  const { scopedGeneratorRuntime, signatureSources, sourceTraceSources } = await createScopedGeneratorSourceData({ createScopedGeneratorRuntime, createScopedGeneratorSourceTraceMap: (rawSource, sourceFile) => createScopedGeneratorSourceTraceMap(rawSource, sourceFile, scopedSourceCandidateSourceGetter), generatorCssHandlerOptions, generatorRawSource, generatorRuntime, generatorSourceFile, rememberedCssSources, scopedSourceCandidateSourceGetter, outputFile })
   const sourceTraceTokenSources = sourceTraceSources ? createCssTokenSourceMap(sourceTraceSources, opts) : void 0
   const sourceTraceSignature = createCssSourceTraceCacheSignature(sourceTraceTokenSources, opts)
-  const scopedGeneratorRuntime = rememberedCssSources.length > 1
-    ? new Set<string>((await Promise.all(rememberedCssSources.map((source: RememberedCssSource) => createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, source.rawSource, source.sourceFile)))).flatMap(candidates => [...candidates] as string[]))
-    : await createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, generatorRawSource, generatorSourceFile)
   const annotateCss = (css: string) => annotateCssSourceTrace(css, { opts, tokenSources: sourceTraceTokenSources })
   const removeRootCoveredCssFromScopedAsset = (css: string) => {
     const normalizedOutputFile = normalizeOutputPathKey(outputFile.replace(/[?#].*$/, ''))
@@ -415,15 +407,8 @@ export async function processViteCssBundleEntry(options: any) {
     return
   }
   const trackedGeneratorCandidateSignature = shouldTrackGeneratorRuntime ? createCandidateSignature(scopedGeneratorRuntime) : 'generator:stable'
-  const signatureSources = rememberedCssSources.length > 1
-    ? rememberedCssSources
-    : [{ rawSource: generatorRawSource, sourceFile: generatorSourceFile }]
-  // 合集相同也可能发生入口之间的候选迁移，缓存必须保留每个来源的归属。
   const scopedGeneratorCandidateSignature = shouldTrackGeneratorRuntime
-    ? JSON.stringify(await Promise.all(signatureSources.map(async (source: RememberedCssSource) => [
-        source.sourceFile,
-        await createScopedGeneratorCandidateSignature(source.rawSource, source.sourceFile, trackedGeneratorCandidateSignature, scopedSourceCandidateGetter, { includeFallbackSignature: generatorCssHandlerOptions.isMainChunk, majorVersion: runtimeState.tailwindRuntime.majorVersion }),
-      ])))
+    ? await createScopedGeneratorCandidateSignatureForSources({ createScopedGeneratorCandidateSignature, generatorCssHandlerOptions, majorVersion: runtimeState.tailwindRuntime.majorVersion, scopedSourceCandidateGetter, signatureSources, trackedGeneratorCandidateSignature })
     : trackedGeneratorCandidateSignature
   const linkedImpactSignature = isRuntimeLinkedCss ? resolveViteCssLinkedImpactSignature({ changedHtmlFiles: snapshot.runtimeAffectingChangedByType.html, changedJsFiles: snapshot.runtimeAffectingChangedByType.js, runtimeAffectingSignatureByFile: snapshot.runtimeAffectingSignatureByFile }) : ''
   // 同一生成入口的产物还可合并普通作者样式，必须按本轮完整内容校验缓存。
