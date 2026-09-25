@@ -276,12 +276,21 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
           }),
         ]))
       : undefined
+    const scopedGeneratorCandidateSignature = ownedSources.length > 1
+      ? JSON.stringify(candidateSignatures)
+      : await createScopedGeneratorCandidateSignature(
+          generatorRawSource,
+          sourceFile,
+          createCandidateSignature(scopedGeneratorRuntime),
+          scopedSourceCandidateGetter,
+          {
+            includeFallbackSignature: cssHandlerOptions.isMainChunk,
+            majorVersion: runtimeState.tailwindRuntime.majorVersion,
+          },
+        )
     const cssRuntimeSignature = createCssRuntimeSignature(
       createCandidateSignature(scopedGeneratorRuntime),
-      ownedSources.length > 1 ? JSON.stringify(candidateSignatures) : await createScopedGeneratorCandidateSignature(generatorRawSource, sourceFile, createCandidateSignature(scopedGeneratorRuntime), scopedSourceCandidateGetter, {
-        includeFallbackSignature: cssHandlerOptions.isMainChunk,
-        majorVersion: runtimeState.tailwindRuntime.majorVersion,
-      }),
+      scopedGeneratorCandidateSignature,
     )
     const cssRuntimeAffectingHash = cache.computeHash(createRuntimeAffectingSourceSignature(rawSource, 'css'))
     const rememberedCssRuntimeSignature = createRememberedCssRuntimeSignature(cssRuntimeSignature, cssRuntimeAffectingHash)
