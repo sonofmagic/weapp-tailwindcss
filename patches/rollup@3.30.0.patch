@@ -1,0 +1,28 @@
+diff --git a/dist/es/shared/watch.js b/dist/es/shared/watch.js
+index dc419c2d423cdfa2479b2cd9c6343b05d936c741..a6c5387df9fc21d47ef9781fc64d29b92a013651 100644
+--- a/dist/es/shared/watch.js
++++ b/dist/es/shared/watch.js
+@@ -2786,7 +2786,8 @@ _handleFile(file, stats, initialAdd) {
+         if (!at || at <= mt || mt !== prevStats.mtimeMs) {
+           this.fsw._emit(EV_CHANGE$2, file, newStats);
+         }
+-        if (isLinux && prevStats.ino !== newStats.ino) {
++        // 原子保存会替换文件身份；各平台都必须重新绑定原生监听句柄。
++        if (prevStats.ino !== newStats.ino) {
+           this.fsw._closeFile(path);
+           prevStats = newStats;
+           this.fsw._addPathCloser(path, this._watchWithNodeFs(file, listener));
+diff --git a/dist/shared/index.js b/dist/shared/index.js
+index b38d5dcdc1bf50b5aff481dee32bbb3297075f78..31cfdea5cd91845162e836e452c63be717ff00d3 100644
+--- a/dist/shared/index.js
++++ b/dist/shared/index.js
+@@ -2782,7 +2782,8 @@ _handleFile(file, stats, initialAdd) {
+         if (!at || at <= mt || mt !== prevStats.mtimeMs) {
+           this.fsw._emit(EV_CHANGE$2, file, newStats);
+         }
+-        if (isLinux && prevStats.ino !== newStats.ino) {
++        // 原子保存会替换文件身份；各平台都必须重新绑定原生监听句柄。
++        if (prevStats.ino !== newStats.ino) {
+           this.fsw._closeFile(path);
+           prevStats = newStats;
+           this.fsw._addPathCloser(path, this._watchWithNodeFs(file, listener));
