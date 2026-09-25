@@ -32,7 +32,9 @@ export async function createScopedGeneratorSourceData(options: {
   const { createScopedGeneratorRuntime, createScopedGeneratorSourceTraceMap, generatorCssHandlerOptions, generatorRawSource, generatorRuntime, generatorSourceFile, rememberedCssSources, scopedSourceCandidateSourceGetter, outputFile } = options
   const signatureSources = getSignatureSources(rememberedCssSources, generatorRawSource, generatorSourceFile)
   const sourceTraceSources = scopedSourceCandidateSourceGetter
-    ? await createMergedCssSourceTraceMap(signatureSources, source => createScopedGeneratorSourceTraceMap(source.rawSource, source.sourceFile))
+    ? signatureSources.length > 1
+      ? await createMergedCssSourceTraceMap(signatureSources, source => createScopedGeneratorSourceTraceMap(source.rawSource, source.sourceFile))
+      : await createScopedGeneratorSourceTraceMap(generatorRawSource, generatorSourceFile)
     : undefined
   const scopedGeneratorRuntime = hasScopedSourceDirectives(rememberedCssSources)
     ? new Set<string>((await Promise.all(rememberedCssSources.map(source => createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, source.rawSource, source.sourceFile)))).flatMap(candidates => [...candidates]))
