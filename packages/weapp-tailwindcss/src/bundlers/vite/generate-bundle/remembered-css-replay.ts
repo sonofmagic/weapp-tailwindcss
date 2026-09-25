@@ -209,7 +209,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     if (isHTMLRequest(outputFile) || options.opts.htmlMatcher(outputFile)) {
       continue
     }
-    const replayableRememberedGroup = dedupeRememberedCssReplayGroup(rememberedGroup).filter(({ remembered }) => {
+    const replayableRememberedGroup = (rememberedGroup.length > 1 ? dedupeRememberedCssReplayGroup(rememberedGroup) : rememberedGroup).filter(({ remembered }) => {
       const shouldSkip = shouldSkipRawRememberedCssSource(remembered.rawSource, remembered.sourceFile)
       if (shouldSkip) {
         debug('css replay skip raw source style: %s -> %s', remembered.sourceFile, outputFile)
@@ -262,19 +262,26 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)
     const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, cssHandlerOptions)
     const signatureSources = ownedSources.length > 1 ? ownedSources : [{ rawSource: generatorRawSource, sourceFile }]
-    const scopedGeneratorRuntime = new Set((await Promise.all(signatureSources.map(source =>
-      createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, source.rawSource, source.sourceFile),
-    ))).flatMap(candidates => [...candidates]))
-    const candidateSignatures = await Promise.all(signatureSources.map(async source => [
-      source.sourceFile,
-      await createScopedGeneratorCandidateSignature(source.rawSource, source.sourceFile, createCandidateSignature(scopedGeneratorRuntime), scopedSourceCandidateGetter, {
+    const scopedGeneratorRuntime = ownedSources.length > 1
+      ? new Set((await Promise.all(signatureSources.map(source =>
+          createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, source.rawSource, source.sourceFile),
+        ))).flatMap(candidates => [...candidates]))
+      : await createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, generatorRawSource, sourceFile)
+    const candidateSignatures = ownedSources.length > 1
+      ? await Promise.all(signatureSources.map(async source => [
+          source.sourceFile,
+          await createScopedGeneratorCandidateSignature(source.rawSource, source.sourceFile, createCandidateSignature(scopedGeneratorRuntime), scopedSourceCandidateGetter, {
+            includeFallbackSignature: cssHandlerOptions.isMainChunk,
+            majorVersion: runtimeState.tailwindRuntime.majorVersion,
+          }),
+        ]))
+      : undefined
+    const cssRuntimeSignature = createCssRuntimeSignature(
+      createCandidateSignature(scopedGeneratorRuntime),
+      ownedSources.length > 1 ? JSON.stringify(candidateSignatures) : await createScopedGeneratorCandidateSignature(generatorRawSource, sourceFile, createCandidateSignature(scopedGeneratorRuntime), scopedSourceCandidateGetter, {
         includeFallbackSignature: cssHandlerOptions.isMainChunk,
         majorVersion: runtimeState.tailwindRuntime.majorVersion,
       }),
-    ]))
-    const cssRuntimeSignature = createCssRuntimeSignature(
-      createCandidateSignature(scopedGeneratorRuntime),
-      ownedSources.length > 1 ? JSON.stringify(candidateSignatures) : candidateSignatures[0]![1]!,
     )
     const cssRuntimeAffectingHash = cache.computeHash(createRuntimeAffectingSourceSignature(rawSource, 'css'))
     const rememberedCssRuntimeSignature = createRememberedCssRuntimeSignature(cssRuntimeSignature, cssRuntimeAffectingHash)
@@ -306,7 +313,9 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       continue
     }
     const sourceTraceSources = scopedSourceCandidateSourceGetter
-      ? await createMergedCssSourceTraceMap(signatureSources, source => createScopedGeneratorSourceTraceMap(source.rawSource, source.sourceFile, scopedSourceCandidateSourceGetter))
+      ? ownedSources.length > 1
+        ? await createMergedCssSourceTraceMap(signatureSources, source => createScopedGeneratorSourceTraceMap(source.rawSource, source.sourceFile, scopedSourceCandidateSourceGetter))
+        : await createScopedGeneratorSourceTraceMap(generatorRawSource, sourceFile, scopedSourceCandidateSourceGetter)
       : undefined
     const sourceTraceTokenSources = sourceTraceSources
       ? createCssTokenSourceMap(sourceTraceSources, opts)

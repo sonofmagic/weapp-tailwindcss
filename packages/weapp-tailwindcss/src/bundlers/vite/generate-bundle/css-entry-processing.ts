@@ -361,7 +361,11 @@ export async function processViteCssBundleEntry(options: any) {
   const { cssHandlerOptions: cssHandlerOptions2, generatorCssHandlerOptions, generatorRawSource, generatorSourceFile, generatorUserLayerRawSource, hasCurrentTailwindGenerationDirective, hasRememberedApplySource, hasSameOutputRememberedTailwindGenerationSource, hasStaleViteProcessedCssSource, usesConfiguredTailwindV4FallbackSource, vitePipelineCssAsset, webviewRootCssInjectionTarget } = cssCompositionPlan
   const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, generatorCssHandlerOptions)
   const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, generatorCssHandlerOptions)
-  const sourceTraceSources = scopedSourceCandidateSourceGetter ? await createMergedCssSourceTraceMap(rememberedCssSources.length > 1 ? rememberedCssSources : [{ rawSource: generatorRawSource, sourceFile: generatorSourceFile }], source => createScopedGeneratorSourceTraceMap(source.rawSource, source.sourceFile, scopedSourceCandidateSourceGetter)) : undefined
+  const sourceTraceSources = scopedSourceCandidateSourceGetter
+    ? rememberedCssSources.length > 1
+      ? await createMergedCssSourceTraceMap(rememberedCssSources, source => createScopedGeneratorSourceTraceMap(source.rawSource, source.sourceFile, scopedSourceCandidateSourceGetter))
+      : await createScopedGeneratorSourceTraceMap(generatorRawSource, generatorSourceFile, scopedSourceCandidateSourceGetter)
+    : undefined
   const sourceTraceTokenSources = sourceTraceSources ? createCssTokenSourceMap(sourceTraceSources, opts) : void 0
   const sourceTraceSignature = createCssSourceTraceCacheSignature(sourceTraceTokenSources, opts)
   const scopedGeneratorRuntime = rememberedCssSources.length > 1 ? new Set<string>((await Promise.all(rememberedCssSources.map((source: RememberedCssSource) => createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, source.rawSource, source.sourceFile)))).flatMap(candidates => [...candidates] as string[])) : await createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, generatorRawSource, generatorSourceFile)

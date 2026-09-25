@@ -82,22 +82,24 @@ function finalizeSourcePlan(
 export async function resolveViteCssSourcePlan(
   options: ResolveViteCssSourcePlanOptions,
 ): Promise<ViteCssSourcePlan> {
-  const markedSources = readDeferredCssSourceMarkers(options.rawSource).map((file) => {
-    const source = options.getSourceStyleSource?.(file)
-    if (source === undefined) {
-      throw new Error(`Missing transformed CSS source for deferred generation: ${file}`)
-    }
-    return {
-      sourceFile: file,
-      rawSource: source,
-      // Rollup 临时 CSS 资产以及 Web/页面 CSS 仍需先写回当前资产，再由
-      // 各自的 bundler 映射交给最终输出；这里只修正真实小程序根样式入口，
-      // 避免 emitFile 产生未纳入当前 bundle 的重复资产。
-      outputFile: options.temporaryOutput || !options.isCurrentRootMiniProgramStyleOutput
-        ? options.outputFile
-        : options.resolveMatchedOutputFile(file) ?? options.outputFile,
-    }
-  })
+  const markedSources = options.rawSource.includes('weapp-tailwindcss deferred-source:')
+    ? readDeferredCssSourceMarkers(options.rawSource).map((file) => {
+        const source = options.getSourceStyleSource?.(file)
+        if (source === undefined) {
+          throw new Error(`Missing transformed CSS source for deferred generation: ${file}`)
+        }
+        return {
+          sourceFile: file,
+          rawSource: source,
+          // Rollup 临时 CSS 资产以及 Web/页面 CSS 仍需先写回当前资产，再由
+          // 各自的 bundler 映射交给最终输出；这里只修正真实小程序根样式入口，
+          // 避免 emitFile 产生未纳入当前 bundle 的重复资产。
+          outputFile: options.temporaryOutput || !options.isCurrentRootMiniProgramStyleOutput
+            ? options.outputFile
+            : options.resolveMatchedOutputFile(file) ?? options.outputFile,
+        }
+      })
+    : []
   if (markedSources.length > 0) {
     options.debug('deferred css source markers: %O', markedSources.map(source => ({ sourceFile: source.sourceFile, outputFile: source.outputFile })))
     return {
