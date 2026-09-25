@@ -4,6 +4,7 @@ issue: https://github.com/sonofmagic/weapp-tailwindcss/pull/1242
 baseline: dc05668dddd951b1b74bddf9fca3ae0ccac8bcb1
 regressions:
   - scripts/ci/demo-matrix/rollup-file-identity.test.mjs
+  - scripts/ci/demo-matrix/rollup-watch.test.mjs
   - scripts/ci/demo-matrix/source-file.test.mjs
   - scripts/ci/demo-matrix/watch.test.mjs
 ---
@@ -47,6 +48,27 @@ macOS 修复前两项均失败：保存后的句柄仍指向旧 `ino`；补丁�
 临时补丁严格限定 Rollup 3.30.0；Taro 升级实际 Rollup 后，应以同一 CJS/ESM 回归和
 Windows 连续保存矩阵确认上游修复覆盖，再移除补丁及锁文件登记。
 
+### 第二轮定位：共享监听与两层节流
+
+[5d76b7b4a 的 Windows 京东作业](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36122744604/job/108031819603)
+仍在第二次保存后停止。第一轮修复只证明独立 watcher 会更新 inode，尚未覆盖真实构建中
+同一文件同时作为模块和 transform 依赖的情形。
+Rollup 为两种依赖各建一个 Chokidar watcher，而它们共享原生 `fs.watch` 句柄。
+一个 watcher 解绑后，另一个仍持有旧句柄；前者重绑时重新加入旧容器，两者始终无法关闭旧句柄。
+扩展真实模块与 transform 文件依赖回归后，CJS/ESM 均在 `value: 2` 时无新构建；
+新增共享依赖的句柄回归也明确显示旧 inode。
+
+将仓库已有 Rollup 4 的单 watcher 设计移植到精确版本 Rollup 3.30.0：
+模块和 transform 依赖共用监听，文件事件同时使对应文件依赖及其所属目录依赖失效。
+回归覆盖 CJS/ESM、文件/目录、连续三次原子替换及删除恢复。
+
+另一个 Windows 作业在快速保存单测中丢失最后一次更新。
+Chokidar 的 50ms change 去重没有区分文件版本；现在只有状态相同的通知合并，
+`dev/ino/size/mtimeMs/ctimeMs` 任一变化都会通知。
+更底层的 5ms 原生事件节流也可能丢弃新状态；保留节流，但在收到被合并的通知后补读最后状态。
+确定性回归使用受控时钟与实际临时文件，修复前仅收到尺寸 2，修复后还必须收到最终尺寸 3。
+真实 watch 测试不增加固定等待，也不改用 polling；关闭后的补读回调立即退出。
+
 Rsbuild 两份基线单独重新生成，差异只有 spacing 集合增加 `0.25rem`；
 工具类、单位及动态表达式未发生差异。复验保持 `CI=1 --update=none`。
 
@@ -60,13 +82,15 @@ CI=1 pnpm exec vitest run -c scripts/ci/demo-matrix/vitest.config.mts scripts/ci
 CI=1 pnpm test:demo:matrix
 CI=1 pnpm e2e:demo:matrix taro-vite-react-tailwindcss-v4:weapp taro-vite-react-tailwindcss-v4:alipay --update=none
 pnpm install --frozen-lockfile --offline
-pnpm exec eslint scripts/ci/demo-matrix/rollup-file-identity.test.mjs
+CI=1 pnpm e2e:demo:matrix taro-vite-react-tailwindcss-v4:weapp taro-vite-vue3-tailwindcss-v4:jd --update=none
+pnpm exec eslint scripts/ci/demo-matrix/rollup-file-identity.test.mjs scripts/ci/demo-matrix/rollup-watch.test.mjs
 ```
 
-本地：Node 24.18.0、pnpm 12.6.0、macOS。86 项矩阵设施回归通过；
+本地：Node 24.18.0、pnpm 12.6.0、macOS。第一轮 86 项矩阵设施回归通过；
 Rsbuild 两目标 production、initial、replace、add、restore、refresh 通过。
 Taro 微信/支付宝 production、initial、replace、add、restore 通过，static 基线没有差异。
-Windows 以 PR 最新提交的 CI 为准。
+第二轮 94 项矩阵设施回归全部通过；Taro React 微信与 Vue 京东的 production、initial、replace、add、restore
+在 `CI=1 --update=none` 下全部通过，static 基线无差异。Windows 以 PR 最新提交的 CI 为准。
 
 ## 适用边界
 

@@ -8,7 +8,70 @@ import { expect, it, vi } from 'vitest'
 import { repo } from './catalog.mjs'
 import { replaceSourceFile } from './source-file.mjs'
 
-it.each(['cjs', 'esm'])('Taro Rollup 原生监听在原子保存后绑定当前文件身份并继续更新 (%s)', async (format) => {
+it('Taro Rollup 去重窗口保留不同文件状态，仅合并相同状态通知', async () => {
+  const demoRequire = createRequire(path.join(repo, 'demo/taro-vite-react-tailwindcss-v4/package.json'))
+  const viteRequire = createRequire(demoRequire.resolve('vite/package.json'))
+  const { chokidar } = viteRequire(path.join(path.dirname(viteRequire.resolve('rollup')), 'shared/index.js'))
+  const watcher = chokidar.watch([], { ignoreInitial: true })
+  const file = path.join(tmpdir(), 'rollup3-change-probe.js')
+  const events = []
+  watcher.on('change', (_, stats) => events.push(stats))
+  const initial = { dev: 1, ino: 1, size: 10, mtimeMs: 1, ctimeMs: 1 }
+  try {
+    await watcher._emit('change', file, initial)
+    await watcher._emit('change', file, { ...initial })
+    expect(events).toEqual([initial])
+    for (const key of ['dev', 'ino', 'size', 'mtimeMs', 'ctimeMs']) {
+      const changed = { ...events.at(-1), [key]: events.at(-1)[key] + 1 }
+      await watcher._emit('change', file, changed)
+      expect(events.at(-1)).toEqual(changed)
+      const count = events.length
+      await watcher._emit('change', file, { ...changed })
+      expect(events).toHaveLength(count)
+    }
+    expect(events).toHaveLength(6)
+  }
+  finally { await watcher.close() }
+})
+
+it('Taro 原生监听节流后读取窗口内最后一次文件状态', async () => {
+  const demoRequire = createRequire(path.join(repo, 'demo/taro-vite-react-tailwindcss-v4/package.json'))
+  const viteRequire = createRequire(demoRequire.resolve('vite/package.json'))
+  const { chokidar } = viteRequire(path.join(path.dirname(viteRequire.resolve('rollup')), 'shared/index.js'))
+  const watcher = chokidar.watch([], { ignoreInitial: true, useFsEvents: false, usePolling: false })
+  const dir = await realpath(await mkdtemp(path.join(tmpdir(), 'rollup-throttle-')))
+  const file = path.join(dir, 'value.js')
+  const events = []
+  let listener
+  const bind = vi.spyOn(watcher._nodeFsHandler, '_watchWithNodeFs').mockImplementation((_, callback) => {
+    listener = callback
+    return () => {}
+  })
+  watcher.on('change', (_, stats) => events.push(stats.size))
+  try {
+    await replaceSourceFile(file, '0')
+    const initial = await stat(file)
+    watcher._nodeFsHandler._handleFile(file, initial, true)
+    watcher._getWatchedDir(dir).add(path.basename(file))
+    vi.useFakeTimers()
+    await listener(file, { ...initial, size: 2, mtimeMs: initial.mtimeMs + 1 })
+    await replaceSourceFile(file, '333')
+    await listener(file)
+    await listener(file)
+    expect(events).toEqual([2])
+    await vi.advanceTimersByTimeAsync(5)
+    vi.useRealTimers()
+    await expect.poll(() => events, { timeout: 1000 }).toEqual([2, 3])
+  }
+  finally {
+    vi.useRealTimers()
+    bind.mockRestore()
+    await watcher.close()
+    await rm(dir, { recursive: true, force: true })
+  }
+})
+
+it.each(['cjs', 'esm'].flatMap(format => [false, true].map(shared => ({ format, shared }))))('Taro Rollup 原生监听持续绑定当前文件身份 ($format, 共享依赖=$shared)', async ({ format, shared }) => {
   const demoRequire = createRequire(path.join(repo, 'demo/taro-vite-react-tailwindcss-v4/package.json'))
   const viteRequire = createRequire(demoRequire.resolve('vite/package.json'))
   const rollup = format === 'cjs'
@@ -32,7 +95,19 @@ it.each(['cjs', 'esm'])('Taro Rollup 原生监听在原子保存后绑定当前�
   try {
     await replaceSourceFile(entry, 'export const value = 0')
     watcher = rollup.watch({
-      input: entry,
+      input: shared ? 'virtual:entry' : entry,
+      plugins: shared
+        ? [{
+            name: 'shared-file-identity',
+            resolveId(id) { return id === 'virtual:entry' ? id : null },
+            load(id) { return id === 'virtual:entry' ? `export { value } from ${JSON.stringify(entry)}` : null },
+            transform(_, id) {
+              if (id === 'virtual:entry') {
+                this.addWatchFile(entry)
+              }
+            },
+          }]
+        : [],
       output: { file: output, format: 'es' },
       // 显式使用 fs.watch，避免 macOS 的目录级 fsevents 掩盖 Windows 文件句柄失效。
       watch: { chokidar: { useFsEvents: false, usePolling: false } },

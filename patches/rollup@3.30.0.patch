@@ -1,8 +1,25 @@
 diff --git a/dist/es/shared/watch.js b/dist/es/shared/watch.js
-index dc419c2d423cdfa2479b2cd9c6343b05d936c741..a6c5387df9fc21d47ef9781fc64d29b92a013651 100644
+index dc419c2d423cdfa2479b2cd9c6343b05d936c741..ec476447cfbed0f934aebfc256e9f48c864b0859 100644
 --- a/dist/es/shared/watch.js
 +++ b/dist/es/shared/watch.js
-@@ -2786,7 +2786,8 @@ _handleFile(file, stats, initialAdd) {
+@@ -2775,7 +2775,15 @@ _handleFile(file, stats, initialAdd) {
+   if (parent.has(basename)) return;
+
+   const listener = async (path, newStats) => {
+-    if (!this.fsw._throttle(THROTTLE_MODE_WATCH, file, 5)) return;
++    if (this.fsw.closed) return;
++    if (!this.fsw._throttle(THROTTLE_MODE_WATCH, file, 5)) {
++      // 节流期间可能已替换文件；窗口结束后必须读取最后状态。
++      const pending = this.fsw._throttled.get(THROTTLE_MODE_WATCH).get(file);
++      if (!pending.retry) {
++        pending.retry = setTimeout(() => listener(file), 5);
++      }
++      return;
++    }
+     if (!newStats || newStats.mtimeMs === 0) {
+       try {
+         const newStats = await stat$2(file);
+@@ -2786,7 +2794,8 @@ _handleFile(file, stats, initialAdd) {
          if (!at || at <= mt || mt !== prevStats.mtimeMs) {
            this.fsw._emit(EV_CHANGE$2, file, newStats);
          }
@@ -12,11 +29,114 @@ index dc419c2d423cdfa2479b2cd9c6343b05d936c741..a6c5387df9fc21d47ef9781fc64d29b9
            this.fsw._closeFile(path);
            prevStats = newStats;
            this.fsw._addPathCloser(path, this._watchWithNodeFs(file, listener));
+@@ -4212,8 +4221,15 @@ async _emit(event, path, val1, val2, val3) {
+   }
+
+   if (event === EV_CHANGE) {
+-    const isThrottled = !this._throttle(EV_CHANGE, path, 50);
+-    if (isThrottled) return this;
++    // 只合并同一文件状态的重复通知，不丢弃窗口内的新版本。
++    const previous = this._throttled.get(EV_CHANGE)?.get(path);
++    const stats = val1;
++    if (previous?.stats && stats && ['dev', 'ino', 'size', 'mtimeMs', 'ctimeMs'].some(key => previous.stats[key] !== stats[key])) {
++      previous.clear();
++    }
++    const throttle = this._throttle(EV_CHANGE, path, 50);
++    if (!throttle) return this;
++    throttle.stats = stats;
+   }
+
+   if (opts.alwaysStat && val1 === undefined &&
+@@ -4573,49 +4589,41 @@ chokidar.watch = watch;
+
+ class FileWatcher {
+     constructor(task, chokidarOptions) {
+-        this.transformWatchers = new Map();
++        this.transformDependencies = new Set();
+         this.chokidarOptions = chokidarOptions;
+         this.task = task;
+-        this.watcher = this.createWatcher(null);
++        this.watcher = this.createWatcher();
+     }
+     close() {
+         this.watcher.close();
+-        for (const watcher of this.transformWatchers.values()) {
+-            watcher.close();
+-        }
+     }
+     unwatch(id) {
+         this.watcher.unwatch(id);
+-        const transformWatcher = this.transformWatchers.get(id);
+-        if (transformWatcher) {
+-            this.transformWatchers.delete(id);
+-            transformWatcher.close();
+-        }
++        this.transformDependencies.delete(id);
+     }
+     watch(id, isTransformDependency) {
+         if (isTransformDependency) {
+-            const watcher = this.transformWatchers.get(id) ?? this.createWatcher(id);
+-            watcher.add(id);
+-            this.transformWatchers.set(id, watcher);
+-        }
+-        else {
+-            this.watcher.add(id);
++            this.transformDependencies.add(id);
+         }
++        this.watcher.add(id);
+     }
+-    createWatcher(transformWatcherId) {
++    createWatcher() {
+         const task = this.task;
+         const isLinux = platform() === 'linux';
+-        const isTransformDependency = transformWatcherId !== null;
++        const isFreeBSD = platform() === 'freebsd';
+         const handleChange = (id, event) => {
+-            const changedId = transformWatcherId || id;
+-            if (isLinux) {
+-                // unwatching and watching fixes an issue with chokidar where on certain systems,
+-                // a file that was unlinked and immediately recreated would create a change event
+-                // but then no longer any further events
+-                watcher.unwatch(changedId);
+-                watcher.add(changedId);
++            if (isLinux || isFreeBSD) {
++                // 删除并立即恢复文件后，重新注册监听以继续接收后续事件。
++                watcher.unwatch(id);
++                watcher.add(id);
++            }
++            task.invalidate(id, { event, isTransformDependency: this.transformDependencies.has(id) });
++            for (const dependency of this.transformDependencies) {
++                const relative = path.relative(dependency, id);
++                if (relative && relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative)) {
++                    task.invalidate(dependency, { event, isTransformDependency: true });
++                }
+             }
+-            task.invalidate(changedId, { event, isTransformDependency });
+         };
+         const watcher = chokidar
+             .watch([], this.chokidarOptions)
 diff --git a/dist/shared/index.js b/dist/shared/index.js
-index b38d5dcdc1bf50b5aff481dee32bbb3297075f78..31cfdea5cd91845162e836e452c63be717ff00d3 100644
+index b38d5dcdc1bf50b5aff481dee32bbb3297075f78..dcfb60aa0fef2b0997f5e29a0ecdd50a9a96aa95 100644
 --- a/dist/shared/index.js
 +++ b/dist/shared/index.js
-@@ -2782,7 +2782,8 @@ _handleFile(file, stats, initialAdd) {
+@@ -2771,7 +2771,15 @@ _handleFile(file, stats, initialAdd) {
+   if (parent.has(basename)) return;
+
+   const listener = async (path, newStats) => {
+-    if (!this.fsw._throttle(THROTTLE_MODE_WATCH, file, 5)) return;
++    if (this.fsw.closed) return;
++    if (!this.fsw._throttle(THROTTLE_MODE_WATCH, file, 5)) {
++      // 节流期间可能已替换文件；窗口结束后必须读取最后状态。
++      const pending = this.fsw._throttled.get(THROTTLE_MODE_WATCH).get(file);
++      if (!pending.retry) {
++        pending.retry = setTimeout(() => listener(file), 5);
++      }
++      return;
++    }
+     if (!newStats || newStats.mtimeMs === 0) {
+       try {
+         const newStats = await stat$2(file);
+@@ -2782,7 +2790,8 @@ _handleFile(file, stats, initialAdd) {
          if (!at || at <= mt || mt !== prevStats.mtimeMs) {
            this.fsw._emit(EV_CHANGE$2, file, newStats);
          }
@@ -26,3 +146,93 @@ index b38d5dcdc1bf50b5aff481dee32bbb3297075f78..31cfdea5cd91845162e836e452c63be7
            this.fsw._closeFile(path);
            prevStats = newStats;
            this.fsw._addPathCloser(path, this._watchWithNodeFs(file, listener));
+@@ -4208,8 +4217,15 @@ async _emit(event, path, val1, val2, val3) {
+   }
+
+   if (event === EV_CHANGE) {
+-    const isThrottled = !this._throttle(EV_CHANGE, path, 50);
+-    if (isThrottled) return this;
++    // 只合并同一文件状态的重复通知，不丢弃窗口内的新版本。
++    const previous = this._throttled.get(EV_CHANGE)?.get(path);
++    const stats = val1;
++    if (previous?.stats && stats && ['dev', 'ino', 'size', 'mtimeMs', 'ctimeMs'].some(key => previous.stats[key] !== stats[key])) {
++      previous.clear();
++    }
++    const throttle = this._throttle(EV_CHANGE, path, 50);
++    if (!throttle) return this;
++    throttle.stats = stats;
+   }
+
+   if (opts.alwaysStat && val1 === undefined &&
+diff --git a/dist/shared/watch.js b/dist/shared/watch.js
+index b7ac9010156c0fc2a71fcd23cbaa5dc5230508f5..4d922ad61633c99653a44f3b6475fd2537e941ba 100644
+--- a/dist/shared/watch.js
++++ b/dist/shared/watch.js
+@@ -30,49 +30,41 @@ require('events');
+
+ class FileWatcher {
+     constructor(task, chokidarOptions) {
+-        this.transformWatchers = new Map();
++        this.transformDependencies = new Set();
+         this.chokidarOptions = chokidarOptions;
+         this.task = task;
+-        this.watcher = this.createWatcher(null);
++        this.watcher = this.createWatcher();
+     }
+     close() {
+         this.watcher.close();
+-        for (const watcher of this.transformWatchers.values()) {
+-            watcher.close();
+-        }
+     }
+     unwatch(id) {
+         this.watcher.unwatch(id);
+-        const transformWatcher = this.transformWatchers.get(id);
+-        if (transformWatcher) {
+-            this.transformWatchers.delete(id);
+-            transformWatcher.close();
+-        }
++        this.transformDependencies.delete(id);
+     }
+     watch(id, isTransformDependency) {
+         if (isTransformDependency) {
+-            const watcher = this.transformWatchers.get(id) ?? this.createWatcher(id);
+-            watcher.add(id);
+-            this.transformWatchers.set(id, watcher);
+-        }
+-        else {
+-            this.watcher.add(id);
++            this.transformDependencies.add(id);
+         }
++        this.watcher.add(id);
+     }
+-    createWatcher(transformWatcherId) {
++    createWatcher() {
+         const task = this.task;
+         const isLinux = node_os.platform() === 'linux';
+-        const isTransformDependency = transformWatcherId !== null;
++        const isFreeBSD = node_os.platform() === 'freebsd';
+         const handleChange = (id, event) => {
+-            const changedId = transformWatcherId || id;
+-            if (isLinux) {
+-                // unwatching and watching fixes an issue with chokidar where on certain systems,
+-                // a file that was unlinked and immediately recreated would create a change event
+-                // but then no longer any further events
+-                watcher.unwatch(changedId);
+-                watcher.add(changedId);
++            if (isLinux || isFreeBSD) {
++                // 删除并立即恢复文件后，重新注册监听以继续接收后续事件。
++                watcher.unwatch(id);
++                watcher.add(id);
++            }
++            task.invalidate(id, { event, isTransformDependency: this.transformDependencies.has(id) });
++            for (const dependency of this.transformDependencies) {
++                const relative = node_path.relative(dependency, id);
++                if (relative && relative !== '..' && !relative.startsWith(`..${node_path.sep}`) && !node_path.isAbsolute(relative)) {
++                    task.invalidate(dependency, { event, isTransformDependency: true });
++                }
+             }
+-            task.invalidate(changedId, { event, isTransformDependency });
+         };
+         const watcher = index.chokidar
+             .watch([], this.chokidarOptions)
