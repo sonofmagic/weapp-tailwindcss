@@ -142,6 +142,19 @@ describe('双入口的构建图来源归属', () => {
     expect(plan.sources[0]?.outputFile).toBe('index.css')
   })
 
+  it('Web 或页面 CSS 保留当前输出资产，不复用小程序根入口映射', async () => {
+    const sourceFile = '/project/pages/index.css'
+    const plan = await resolveViteCssSourcePlan(createCssSourceOptions({
+      file: 'assets/index.css',
+      outputFile: 'assets/index.css',
+      rawSource: createDeferredCssSourceMarker(sourceFile),
+      getSourceStyleSource: () => '@import "tailwindcss";',
+      resolveMatchedOutputFile: () => 'main.css',
+    }))
+    expect(plan.outputFile).toBe('assets/index.css')
+    expect(plan.sources[0]?.outputFile).toBe('assets/index.css')
+  })
+
   it('同一缓存按当前资产标记隔离来源，导入移除和恢复不沿用旧入口', async () => {
     const sources = new Map([['/alpha.css', '@import "tailwindcss";'], ['/beta.css', '@import "tailwindcss"; @source "./beta.vue";']])
     for (const files of [['/alpha.css', '/beta.css'], ['/alpha.css'], ['/beta.css'], ['/beta.css', '/alpha.css']]) {
