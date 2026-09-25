@@ -69,6 +69,18 @@ Chokidar 的 50ms change 去重没有区分文件版本；现在只有状态相�
 确定性回归使用受控时钟与实际临时文件，修复前仅收到尺寸 2，修复后还必须收到最终尺寸 3。
 真实 watch 测试不增加固定等待，也不改用 polling；关闭后的补读回调立即退出。
 
+### 第三轮定位：目录广播路径与注册键
+
+[0344f7fdd 的 Windows 作业](https://github.com/sonofmagic/weapp-tailwindcss/actions/runs/36125019449/job/108039020210)
+中，94 项设施回归已有 92 项通过，CJS/ESM 文件依赖连续更新正常；
+目录依赖在最终关闭时出现 `Cannot read properties of undefined (reading 'close')`。
+目录 watcher 广播携带原生路径，而 Chokidar 的 closer 注册表使用入口路径。
+重绑若以广播路径为键，旧 closer 不会移除，又为同一底层句柄增加一份 closer，关闭时重复释放。
+重绑现在始终使用 `_handleFile` 接收的注册身份 `file`，不再用事件路径 `path`。
+相对事件路径与 Windows 反斜杠事件路径的确定性回归均先失败，要求旧/新 closer 各关闭一次，
+且注册表始终只保留原入口键。修复后本地 96 项设施回归全部通过，微信/京东 production 和
+initial、replace、add、restore 再次通过，static 基线无差异；Windows 原生目录删除恢复仍由 CI 验证。
+
 Rsbuild 两份基线单独重新生成，差异只有 spacing 集合增加 `0.25rem`；
 工具类、单位及动态表达式未发生差异。复验保持 `CI=1 --update=none`。
 

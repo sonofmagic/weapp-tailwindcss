@@ -71,6 +71,43 @@ it('Taro 原生监听节流后读取窗口内最后一次文件状态', async ()
   }
 })
 
+it.each(['relative', 'windows'])('Taro 重绑使用注册身份，避免目录广播路径产生重复 closer (%s)', async (style) => {
+  const demoRequire = createRequire(path.join(repo, 'demo/taro-vite-react-tailwindcss-v4/package.json'))
+  const viteRequire = createRequire(demoRequire.resolve('vite/package.json'))
+  const { chokidar } = viteRequire(path.join(path.dirname(viteRequire.resolve('rollup')), 'shared/index.js'))
+  const watcher = chokidar.watch([], { ignoreInitial: true, useFsEvents: false, usePolling: false })
+  const dir = await realpath(await mkdtemp(path.join(tmpdir(), 'rollup-listener-key-')))
+  const file = path.join(dir, 'value.js')
+  const closers = []
+  let listener
+  const bind = vi.spyOn(watcher._nodeFsHandler, '_watchWithNodeFs').mockImplementation((_, callback) => {
+    listener = callback
+    const close = vi.fn()
+    closers.push(close)
+    return close
+  })
+  try {
+    await replaceSourceFile(file, '0')
+    watcher._addPathCloser(file, watcher._nodeFsHandler._handleFile(file, await stat(file), true))
+    await replaceSourceFile(file, '1')
+    // 目录广播携带平台原生路径，注册表则使用 Chokidar 的入口身份。
+    const eventPath = style === 'relative' ? path.relative(process.cwd(), file) : path.win32.normalize(file)
+    await listener(eventPath)
+    expect(closers[0]).toHaveBeenCalledTimes(1)
+    expect([...watcher._closers.keys()]).toEqual([file])
+    await watcher.close()
+    expect(closers).toHaveLength(2)
+    for (const closer of closers) {
+      expect(closer).toHaveBeenCalledTimes(1)
+    }
+  }
+  finally {
+    bind.mockRestore()
+    await watcher.close()
+    await rm(dir, { recursive: true, force: true })
+  }
+})
+
 it.each(['cjs', 'esm'].flatMap(format => [false, true].map(shared => ({ format, shared }))))('Taro Rollup 原生监听持续绑定当前文件身份 ($format, 共享依赖=$shared)', async ({ format, shared }) => {
   const demoRequire = createRequire(path.join(repo, 'demo/taro-vite-react-tailwindcss-v4/package.json'))
   const viteRequire = createRequire(demoRequire.resolve('vite/package.json'))

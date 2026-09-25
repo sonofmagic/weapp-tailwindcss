@@ -1,5 +1,5 @@
 diff --git a/dist/es/shared/watch.js b/dist/es/shared/watch.js
-index dc419c2d423cdfa2479b2cd9c6343b05d936c741..ec476447cfbed0f934aebfc256e9f48c864b0859 100644
+index dc419c2d423cdfa2479b2cd9c6343b05d936c741..4151233ed7f27a7de07a83c948cef6ea3868b638 100644
 --- a/dist/es/shared/watch.js
 +++ b/dist/es/shared/watch.js
 @@ -2775,7 +2775,15 @@ _handleFile(file, stats, initialAdd) {
@@ -19,17 +19,23 @@ index dc419c2d423cdfa2479b2cd9c6343b05d936c741..ec476447cfbed0f934aebfc256e9f48c
      if (!newStats || newStats.mtimeMs === 0) {
        try {
          const newStats = await stat$2(file);
-@@ -2786,7 +2794,8 @@ _handleFile(file, stats, initialAdd) {
+@@ -2786,10 +2794,12 @@ _handleFile(file, stats, initialAdd) {
          if (!at || at <= mt || mt !== prevStats.mtimeMs) {
            this.fsw._emit(EV_CHANGE$2, file, newStats);
          }
 -        if (isLinux && prevStats.ino !== newStats.ino) {
+-          this.fsw._closeFile(path);
 +        // 原子保存会替换文件身份；各平台都必须重新绑定原生监听句柄。
 +        if (prevStats.ino !== newStats.ino) {
-           this.fsw._closeFile(path);
++          // 注册身份与目录广播的原生路径可能不同，关闭和重绑必须使用同一键。
++          this.fsw._closeFile(file);
            prevStats = newStats;
-           this.fsw._addPathCloser(path, this._watchWithNodeFs(file, listener));
-@@ -4212,8 +4221,15 @@ async _emit(event, path, val1, val2, val3) {
+-          this.fsw._addPathCloser(path, this._watchWithNodeFs(file, listener));
++          this.fsw._addPathCloser(file, this._watchWithNodeFs(file, listener));
+         } else {
+           prevStats = newStats;
+         }
+@@ -4212,8 +4222,15 @@ async _emit(event, path, val1, val2, val3) {
    }
 
    if (event === EV_CHANGE) {
@@ -47,7 +53,7 @@ index dc419c2d423cdfa2479b2cd9c6343b05d936c741..ec476447cfbed0f934aebfc256e9f48c
    }
 
    if (opts.alwaysStat && val1 === undefined &&
-@@ -4573,49 +4589,41 @@ chokidar.watch = watch;
+@@ -4573,49 +4590,41 @@ chokidar.watch = watch;
 
  class FileWatcher {
      constructor(task, chokidarOptions) {
@@ -116,7 +122,7 @@ index dc419c2d423cdfa2479b2cd9c6343b05d936c741..ec476447cfbed0f934aebfc256e9f48c
          const watcher = chokidar
              .watch([], this.chokidarOptions)
 diff --git a/dist/shared/index.js b/dist/shared/index.js
-index b38d5dcdc1bf50b5aff481dee32bbb3297075f78..dcfb60aa0fef2b0997f5e29a0ecdd50a9a96aa95 100644
+index b38d5dcdc1bf50b5aff481dee32bbb3297075f78..0cddb0a2e2e91b97753ed44db50a0a512dfb7c1b 100644
 --- a/dist/shared/index.js
 +++ b/dist/shared/index.js
 @@ -2771,7 +2771,15 @@ _handleFile(file, stats, initialAdd) {
@@ -136,17 +142,23 @@ index b38d5dcdc1bf50b5aff481dee32bbb3297075f78..dcfb60aa0fef2b0997f5e29a0ecdd50a
      if (!newStats || newStats.mtimeMs === 0) {
        try {
          const newStats = await stat$2(file);
-@@ -2782,7 +2790,8 @@ _handleFile(file, stats, initialAdd) {
+@@ -2782,10 +2790,12 @@ _handleFile(file, stats, initialAdd) {
          if (!at || at <= mt || mt !== prevStats.mtimeMs) {
            this.fsw._emit(EV_CHANGE$2, file, newStats);
          }
 -        if (isLinux && prevStats.ino !== newStats.ino) {
+-          this.fsw._closeFile(path);
 +        // 原子保存会替换文件身份；各平台都必须重新绑定原生监听句柄。
 +        if (prevStats.ino !== newStats.ino) {
-           this.fsw._closeFile(path);
++          // 注册身份与目录广播的原生路径可能不同，关闭和重绑必须使用同一键。
++          this.fsw._closeFile(file);
            prevStats = newStats;
-           this.fsw._addPathCloser(path, this._watchWithNodeFs(file, listener));
-@@ -4208,8 +4217,15 @@ async _emit(event, path, val1, val2, val3) {
+-          this.fsw._addPathCloser(path, this._watchWithNodeFs(file, listener));
++          this.fsw._addPathCloser(file, this._watchWithNodeFs(file, listener));
+         } else {
+           prevStats = newStats;
+         }
+@@ -4208,8 +4218,15 @@ async _emit(event, path, val1, val2, val3) {
    }
 
    if (event === EV_CHANGE) {
