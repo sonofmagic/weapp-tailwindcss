@@ -287,6 +287,28 @@ describe('bundlers/vite source candidates', () => {
     ]))
   })
 
+  it('invalidates scoped candidate views after a source update', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const collector = createSourceCandidateCollector({
+      extractor: source => source.split(/\s+/).filter(Boolean),
+    })
+    const file = '/project/src/pages/index.wxml'
+    const entries = [{
+      base: '/project',
+      negated: false,
+      pattern: 'src/pages/**/*',
+    }]
+
+    await collector.sync(file, 'bg-before')
+    expect(collector.valuesForEntries(entries)).toEqual(new Set(['bg-before']))
+    expect(collector.sourcesForEntries(entries).get('bg-before')).toEqual(new Set([file]))
+
+    await collector.sync(file, 'bg-after')
+    expect(collector.valuesForEntries(entries)).toEqual(new Set(['bg-after']))
+    expect(collector.sourcesForEntries(entries).get('bg-after')).toEqual(new Set([file]))
+    expect(collector.sourcesForEntries(entries).has('bg-before')).toBe(false)
+  })
+
   it('refreshes Tailwind v4 Vue arbitrary candidates after a source update', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const root = await createTempDir('weapp-tw-vite-v4-vue-hmr-candidates')

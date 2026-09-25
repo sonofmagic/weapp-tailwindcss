@@ -9,11 +9,25 @@ import { addCandidateSet, cleanUrl, createSourceCandidateContentCacheKey, diffCa
 import { collectCandidateSources, collectCandidateValues } from './views'
 
 const SOURCE_CANDIDATE_FILE_MEMO_MAX = 4096
+const SOURCE_CANDIDATE_VIEW_MEMO_MAX = 64
 
 interface FileCandidateMemo {
   extension: string
   source: string
   candidates: Set<string>
+}
+
+interface CandidateViewMemo {
+  values?: Set<string>
+  sources?: Map<string, Set<string>>
+}
+
+function createCandidateViewMemoKey(
+  revision: number,
+  entries: TailwindSourceEntry[] | undefined,
+  excludeEntries: TailwindSourceEntry[] | undefined,
+) {
+  return `${revision}\0${JSON.stringify(entries ?? null)}\0${JSON.stringify(excludeEntries ?? null)}`
 }
 
 function areSetsEqual(left: Set<string> | undefined, right: Set<string>) {
@@ -40,6 +54,7 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
   const moduleSourceById = new Map<string, string>()
   const candidateCount = new Map<string, number>()
   const fileCandidateMemo = new Map<string, FileCandidateMemo>()
+  const candidateViewMemo = new Map<string, CandidateViewMemo>()
   let inlineIncludedCandidates = new Set<string>()
   let inlineExcludedCandidates = new Set<string>()
   let revision = 0
@@ -365,11 +380,49 @@ export function createSourceCandidateStore(options: SourceCandidateCollectorOpti
   }
 
   function valuesForEntries(entries: TailwindSourceEntry[] | undefined, options: SourceCandidateFilterOptions = {}) {
-    return collectCandidateValues({ candidatesById, moduleCandidatesById, candidateCount, inlineIncludedCandidates, inlineExcludedCandidates }, entries, options.excludeEntries)
+    const excludeEntries = options.excludeEntries
+    if (entries === undefined && !excludeEntries?.length) {
+      return collectCandidateValues({ candidatesById, moduleCandidatesById, candidateCount, inlineIncludedCandidates, inlineExcludedCandidates }, entries, excludeEntries)
+    }
+    const key = createCandidateViewMemoKey(revision, entries, excludeEntries)
+    const cached = candidateViewMemo.get(key)
+    if (cached?.values) {
+      return cached.values
+    }
+    const values = collectCandidateValues({ candidatesById, moduleCandidatesById, candidateCount, inlineIncludedCandidates, inlineExcludedCandidates }, entries, excludeEntries)
+    candidateViewMemo.delete(key)
+    candidateViewMemo.set(key, { ...cached, values })
+    while (candidateViewMemo.size > SOURCE_CANDIDATE_VIEW_MEMO_MAX) {
+      const oldest = candidateViewMemo.keys().next().value
+      if (oldest === undefined) {
+        break
+      }
+      candidateViewMemo.delete(oldest)
+    }
+    return values
   }
 
   function sourcesForEntries(entries: TailwindSourceEntry[] | undefined, options: SourceCandidateFilterOptions = {}) {
-    return collectCandidateSources({ candidatesById, moduleCandidatesById, candidateCount, inlineIncludedCandidates, inlineExcludedCandidates }, entries, options.excludeEntries)
+    const excludeEntries = options.excludeEntries
+    if (entries === undefined && !excludeEntries?.length) {
+      return collectCandidateSources({ candidatesById, moduleCandidatesById, candidateCount, inlineIncludedCandidates, inlineExcludedCandidates }, entries, excludeEntries)
+    }
+    const key = createCandidateViewMemoKey(revision, entries, excludeEntries)
+    const cached = candidateViewMemo.get(key)
+    if (cached?.sources) {
+      return cached.sources
+    }
+    const sources = collectCandidateSources({ candidatesById, moduleCandidatesById, candidateCount, inlineIncludedCandidates, inlineExcludedCandidates }, entries, excludeEntries)
+    candidateViewMemo.delete(key)
+    candidateViewMemo.set(key, { ...cached, sources })
+    while (candidateViewMemo.size > SOURCE_CANDIDATE_VIEW_MEMO_MAX) {
+      const oldest = candidateViewMemo.keys().next().value
+      if (oldest === undefined) {
+        break
+      }
+      candidateViewMemo.delete(oldest)
+    }
+    return sources
   }
 
   function clear() {
