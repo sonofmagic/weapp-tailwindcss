@@ -32,7 +32,6 @@
   "import-added": {
     "declarations": {
       ".-mt-0_d5": [
-        "calc(var(--spacing)*-0.5)",
         "calc(var(--spacing)*-0.5)"
       ],
       ".-mt-4": [
@@ -51,7 +50,6 @@
         "calc(var(--spacing)*4)"
       ],
       ".p-0_d5": [
-        "calc(var(--spacing)*0.5)",
         "calc(var(--spacing)*0.5)"
       ],
       ".p-4": [
@@ -64,7 +62,6 @@
   "override-removed": {
     "declarations": {
       ".-mt-0_d5": [
-        "-0.5rpx",
         "-0.5rpx"
       ],
       ".-mt-4": [
@@ -83,7 +80,6 @@
         "4rpx"
       ],
       ".p-0_d5": [
-        "0.5rpx",
         "0.5rpx"
       ],
       ".p-4": [
@@ -96,7 +92,6 @@
   "override-restored": {
     "declarations": {
       ".-mt-0_d5": [
-        "calc(var(--spacing)*-0.5)",
         "calc(var(--spacing)*-0.5)"
       ],
       ".-mt-4": [
@@ -115,7 +110,6 @@
         "calc(var(--spacing)*4)"
       ],
       ".p-0_d5": [
-        "calc(var(--spacing)*0.5)",
         "calc(var(--spacing)*0.5)"
       ],
       ".p-4": [
@@ -128,7 +122,6 @@
   "import-removed": {
     "declarations": {
       ".-mt-0_d5": [
-        "-0.5rpx",
         "-0.5rpx"
       ],
       ".-mt-4": [
@@ -147,7 +140,6 @@
         "4rpx"
       ],
       ".p-0_d5": [
-        "0.5rpx",
         "0.5rpx"
       ],
       ".p-4": [
@@ -160,7 +152,6 @@
   "import-restored": {
     "declarations": {
       ".-mt-0_d5": [
-        "calc(var(--spacing)*-0.5)",
         "calc(var(--spacing)*-0.5)"
       ],
       ".-mt-4": [
@@ -179,7 +170,6 @@
         "calc(var(--spacing)*4)"
       ],
       ".p-0_d5": [
-        "calc(var(--spacing)*0.5)",
         "calc(var(--spacing)*0.5)"
       ],
       ".p-4": [
@@ -192,7 +182,6 @@
   "override-final-removed": {
     "declarations": {
       ".-mt-0_d5": [
-        "-0.5rpx",
         "-0.5rpx"
       ],
       ".-mt-4": [
@@ -211,7 +200,6 @@
         "4rpx"
       ],
       ".p-0_d5": [
-        "0.5rpx",
         "0.5rpx"
       ],
       ".p-4": [
