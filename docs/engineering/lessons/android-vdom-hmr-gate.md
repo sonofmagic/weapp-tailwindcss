@@ -1,0 +1,43 @@
+---
+status: partial
+issue: https://github.com/sonofmagic/weapp-tailwindcss/pull/1244
+baseline: 2782d70998846829d6c137d6d47e5e0a3f8a334d
+regressions:
+  - e2e/hbuilderx-hmr-lifecycle.test.ts
+  - e2e/hbuilderx-local.test.ts
+---
+
+# Android VDOM 纯 HMR 门槛与工具链重启
+
+## 症状
+
+同一提交的质量、静态、多平台构建、微信 IDE/视觉、8 个 demo 完整 watch、H5、HBuilderX 小程序和 Web 验收通过后，第 19 阶段 Android 在 uni-app x VDOM 首次保存时失败：`纯 HMR 验收失败：restarted`。后续 Android 视觉、iOS、Harmony 和最终跨端比较没有放行。
+
+环境为 HBuilderX stable 5.26.2026091802、uni-app x VDOM、样式隔离 2.0、Android API 30 模拟器。首次 App Launch 后，差量编译和同步又触发第二次 App Launch。两次运行分别在完整链路与同配置定向复现中出现同样结果。
+
+## 根因与纠正
+
+生命周期断言没有误计首次启动：观察器在首次产物、运行时 marker 和截图就绪之后才开始监听保存过程。现有 16 项生命周期回归全部通过。
+
+进一步建立没有 package.json、vite.config、Tailwind 或仓库插件的原生 uni-app x 最小项目，仅包含 manifest.json、pages.json、main.uts、App.uvue 和一个页面。页面使用合法 `.probe` class 选择器，显式设置样式隔离 2.0。首次启动后只将页面文字 `native-before` 改为 `native-after`，颜色 `#123456` 改为 `#654321`：编译无错误，应用仍再次触发 onLaunch。初次对照曾用不受支持的标签选择器；该结果保留，但结论以纠正后的合法 class 对照为依据。
+
+最终对照日志为首次 `02:19:19.005 NATIVE_DIAG_APP_LAUNCH`，保存后 `02:19:23.999 NATIVE_DIAG_APP_LAUNCH`。说明当前工具链在无插件场景也执行应用重启，不能通过修改 weapp-tailwindcss 的样式生成来保证保持运行状态。
+
+不将 uni-app x 改为 native-reload，不删除 App Launch 断言，不放宽门槛。恢复需要取得支持本次纯 HMR 要求的工具链/运行模式证据，再新建全端预检；当前证据不能证明其他平台通过。
+
+## 验证
+
+- 完整运行 `d1983685-5a8c-4e0f-a851-7769ac35cf82`：6470 项单测通过、43 项既有跳过；699 项 static 通过、35 项按专项开关跳过；52 项多平台产物通过，质量门禁通过。微信视觉中一次 DevTools 连接/reLaunch 超时阻断，官方 CLI 定向诊断恢复后没有改变源码。
+- 新预检 `d49abc54-919b-43f9-9baf-10eb23a91df6` 按同 SHA 从失败子阶段续跑：11 个微信视觉结果通过；8/8 demo watch 通过，约 45 分钟；H5 构建 5 项、Taro Web HMR 4 项、Web Vite HMR 18 项、uni-app H5 3 项通过；HBuilderX 小程序 5 项和 Web 3 项通过。
+- HBuilderX 套件按平台筛选产生的 skip 只表示其它组本阶段不执行。Android 两个普通 uni-app 用例仅有产物/传输断言，日志明确未配置运行时探针，不能写成已取得设备视觉与完整运行时证据。
+- `E2E_HBUILDERX_CASE='uni-app-x-vdom-tailwindcss-v4 android' pnpm e2e:hbuilderx:local:android` 在相同工具链和设备绑定下复现 restarted。
+- `pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/hbuilderx-hmr-lifecycle.test.ts --update=none`：16 项通过。
+- 原始日志、运行前后截图、定向复现与无插件最小项目均保存在 `e2e/.artifacts/preflight/d49abc54-919b-43f9-9baf-10eb23a91df6/`，其中有效无插件对照为 `native-hmr-class-diagnostic/`。所有诊断进程已停止，仓库测试源码已恢复。
+
+## 适用边界
+
+该结论仅针对已验证版本的 Android VDOM 保存行为，不外推到 iOS、Harmony、Vapor 或其它工具链版本。预检通过只证明环境可运行，不证明编译器支持纯 HMR。
+
+## 规则评估
+
+保留原有生命周期门槛。另将已实际验证的后台应用内 computer use 入口写入多端手册：用户正在使用 Chrome 时可完成取证且不抢占其窗口，仍要求截图、输入、点击、回执和 verify 全部通过。

@@ -37,6 +37,8 @@ Chrome 默认使用原生应用控制入口。macOS 使用 `cua.getApp('com.goog
 
 普通网页自动化测试可以使用 Playwright CLI；它不能代替这里要求的当前会话 computer use 证据。原生入口同样必须满足完整交互、截图、回执和 verify 检查，不能仅凭“应用可读取”宣称预检通过。
 
+用户正在使用 Chrome 且要求不中断其操作时，不继续抢占原生应用窗口。当前工具支持时，可通过 `cua.createBrowserTab('iab', 'about:blank', { visible: false })` 创建后台应用内标签页，再用该标签页的 `goto`、`getAXState`、`getScreenshot`、`typeText` 和 `click` 完成本轮交互。此路径仍是当前会话的 computer use，必须保存实际 provider、调用 ID、截图和完整动作结果；不能使用页面脚本、HTTP 或独立 Playwright 代做。Chrome 专用接口认证失败不代表应用内入口不可用，二者分别验证。此入口不可用时仍阻断，不切回用户正在操作的窗口。
+
 把原始工具输出与 PNG 截图保存到本轮目录，再写入 `computer-use.json`：
 
 ```json
