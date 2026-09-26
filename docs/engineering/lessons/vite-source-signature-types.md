@@ -26,6 +26,7 @@ regressions:
 
 - 修复前：全面流程第 4 阶段稳定报告上述两处类型错误并停止。
 - 修复后：`pnpm typecheck` 通过。
+- 在修复提交 `172c25e33a15713dcc4c1128d65c1cbd99ab54c4` 上重新通过全端预检后，完整 workflow 的构建、6454 项单测（37 项既有跳过）、lint、typecheck、architecture、文档构建、规则、release status、diff 检查及矩阵断言均通过；随后在 static 基线比较停止，相关后续修复见 [CSS 快照层叠顺序复盘](css-snapshot-cascade.md)。
 - `pnpm exec vitest run --project=weapp-tailwindcss packages/weapp-tailwindcss/test/bundlers/vite-scoped-generator-sources.unit.test.ts packages/weapp-tailwindcss/test/bundlers/vite-scoped-generator.unit.test.ts packages/weapp-tailwindcss/test/bundlers/vite-plugin.bundle.unit.test.ts --update=none`：223 项通过，无跳过。
 - 改动源码的 ESLint 检查通过；测试目录被现有 lint 配置忽略，测试通过 Vitest 验证。
 - `pnpm release status` 通过。此次修复统一内部类型与签名编排，未改变公开 API 或输出语义，不新增包版本 intent。

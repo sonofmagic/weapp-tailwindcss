@@ -727,3 +727,4 @@ taro-input-core:where([type='button'], [type='reset'], [type='submit']),
 .issue-998-page {
   padding: calc(var(--spacing) * 4);
 }
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
