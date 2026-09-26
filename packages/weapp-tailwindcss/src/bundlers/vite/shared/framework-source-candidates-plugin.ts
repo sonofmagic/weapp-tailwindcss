@@ -323,16 +323,21 @@ export function createFrameworkSourceCandidatesPlugin(options: any, apply?: Plug
         return
       }
       await options.hmrTimingRecorder.measure('sourceCandidates.buildStart', options.prepareTailwindGeneration, { emit: false })
-      // 文件型 @source 可以不在模块图中；每轮重新注册扫描文件，避免 Rollup 重建监听集合后丢失后续变化。
-      for (const file of options.sourceScanSession.getWatchFiles?.() ?? []) {
-        this.addWatchFile?.(file)
-      }
     },
     async generateBundle(...args: any[]) {
       if (shouldSkipSourceCandidateState()) {
         return
       }
-      return options.preGenerateBundleHook?.apply(this, args)
+      const result = await options.preGenerateBundleHook?.apply(this, args)
+      // 仅让实际消费 Tailwind CSS 的构建图监听候选；uni-app 的空 nvue 图不能抢先触发设备同步。
+      const roots = options.tailwindRootCssModuleIds as Set<string> | undefined
+      if (roots && [...roots].some(id => this.getModuleInfo(id) != null)) {
+        // 文件型 @source 可以不在模块图中，每轮生成后重新注册，避免增量监听丢失。
+        for (const file of options.sourceScanSession.getWatchFiles?.() ?? []) {
+          this.addWatchFile(file)
+        }
+      }
+      return result
     },
   }
 }
