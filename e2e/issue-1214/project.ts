@@ -13,6 +13,7 @@ const demoRoot = path.join(repositoryRoot, 'demo/uni-app-vite-tailwindcss-v4')
 const linkType = process.platform === 'win32' ? 'junction' : 'dir'
 
 export interface FixtureOptions {
+  wechatAppId?: string
   spacing?: string
   calc?: 'top-level' | 'nested' | 'off' | 'default'
   inline?: boolean
@@ -85,7 +86,7 @@ ${options.authorCss ? 'import \'./author.css\'' : ''}
 export function createApp() { return { app: createSSRApp(App) } }
 `,
       'src/App.vue': '<script>export default {}</script>',
-      'src/manifest.json': JSON.stringify({ 'name': 'issue-1214', 'appid': '', 'versionName': '1.0.0', 'mp-weixin': { appid: 'touristappid' } }),
+      'src/manifest.json': JSON.stringify({ 'name': 'issue-1214', 'appid': '', 'versionName': '1.0.0', 'mp-weixin': { appid: options.wechatAppId ?? 'touristappid' } }),
       'src/pages.json': JSON.stringify({ pages: [{ path: 'pages/index' }] }),
       'src/pages/index.vue': pageSource(),
       'src/tailwind.css': themeSource(options),

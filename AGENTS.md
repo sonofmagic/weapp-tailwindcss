@@ -70,6 +70,7 @@
 
 ## 本地多端 E2E 入口
 - H5、微信小程序、Android、iOS、Harmony 的本地 E2E、HBuilderX、设备环境、截图、HMR、结构探针和阻塞记录统一遵循 [`e2e/LOCAL-MULTI-PLATFORM-E2E.md`](e2e/LOCAL-MULTI-PLATFORM-E2E.md)。换电脑时只重新配置工具链和设备 ID，不在规则文件或测试中写入本机绝对路径。
+- 当前会话的 Chrome computer use 默认使用原生应用控制入口；入口选择、证据和失败恢复统一见上述手册的“当前会话的 computer use 证据”，不得以专用浏览器认证作为原生入口的前置条件。
 
 ## 关键约束索引
 - `packages/weapp-tailwindcss` 的 JS 转译必须遵循 `classNameSet` 精确命中原则，禁止启发式兜底转译。

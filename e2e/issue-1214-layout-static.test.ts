@@ -16,6 +16,7 @@ it('Issue #1214 尺寸对照页的真实 uni-app WXSS 基线', async () => {
     const declarations = readProbeDeclarations(css)
     expect(declarations).toEqual({ '.w-32': ['256rpx'], '.h-32': ['256rpx'], '.p-4': ['32rpx'], '.-mt-4': ['-32rpx'], '.gap-4': ['32rpx'] })
     expect(JSON.parse(await readFile(path.join(project.output, 'app.json'), 'utf8')).pages).toContain('pages/index')
+    expect(JSON.parse(await readFile(path.join(project.output, 'project.config.json'), 'utf8')).appid).toMatch(/^wx[\da-f]{16}$/i)
     const evidence = { declarations, wxml }
     await expect(`${JSON.stringify(evidence, null, 2)}\n`).toMatchFileSnapshot('__snapshots__/issue-1214/ide-layout.json')
   }

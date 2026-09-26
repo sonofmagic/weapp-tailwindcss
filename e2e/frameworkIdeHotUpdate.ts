@@ -161,13 +161,18 @@ async function waitForIdeWatchReady(
   }
 }
 
-export async function runFrameworkIdeHotUpdateProbe(
-  entry: FrameworkSupportCase,
+export type FrameworkIdeHotUpdateProbe = (
   miniProgram: any,
   page: any,
   pageUrl: string,
   launchProjectPath: string,
   runtimeErrors?: { assertNoErrors: (stage: string) => Promise<void> },
+) => Promise<void>
+
+/** 首轮构建与 watcher 就绪后再打开 IDE，避免运行时观察到清理中的产物图。 */
+export async function withFrameworkIdeHotUpdateProbe<T>(
+  entry: FrameworkSupportCase,
+  run: (probe: FrameworkIdeHotUpdateProbe) => Promise<T>,
 ) {
   const watchCase = resolveFrameworkWatchCase(entry)
   const options = createWatchOptions()
@@ -192,19 +197,19 @@ export async function runFrameworkIdeHotUpdateProbe(
   }, watchCase.env)
 
   try {
-    await withHotUpdateTotalTimeout(
+    process.stdout.write(`[e2e:ide] ${watchCase.label} wait for watch ready before IDE launch\n`)
+    await waitForIdeWatchReady(watchCase, options, session, sessionStartedAt)
+    if ((watchCase.initialMutationDelayMs ?? 0) > 0) {
+      await sleep(watchCase.initialMutationDelayMs!)
+      session.ensureRunning()
+    }
+
+    return await run(async (miniProgram, page, pageUrl, launchProjectPath, runtimeErrors) => withHotUpdateTotalTimeout(
       watchCase,
       options,
       (async () => {
-        process.stdout.write(`[e2e:ide] ${watchCase.label} wait for watch ready\n`)
-        await waitForIdeWatchReady(watchCase, options, session, sessionStartedAt)
+        session.ensureRunning()
         await runtimeErrors?.assertNoErrors('watch ready')
-
-        if ((watchCase.initialMutationDelayMs ?? 0) > 0) {
-          await sleep(watchCase.initialMutationDelayMs!)
-          session.ensureRunning()
-          await runtimeErrors?.assertNoErrors('initial mutation delay')
-        }
 
         await runIdeClassHotUpdate(
           options,
@@ -243,7 +248,7 @@ export async function runFrameworkIdeHotUpdateProbe(
           process.stdout.write(`[e2e:ide] ${watchCase.label} style HMR skipped for IDE stability; watch-HMR keeps style coverage\n`)
         }
       })(),
-    )
+    ))
   }
   catch (error) {
     const message = error instanceof Error ? error.message : String(error)

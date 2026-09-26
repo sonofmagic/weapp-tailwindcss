@@ -48,6 +48,7 @@ interface ProcessRememberedCssReplayOptions {
     runtime: Set<string>,
     rawSource?: string | undefined,
     sourceFile?: string | undefined,
+    scopeToSource?: boolean | undefined,
   ) => Promise<Set<string>>
   createScopedSourceCandidateGetter: (
     outputFile: string,
@@ -228,9 +229,10 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       continue
     }
     const { sourceFile } = rememberedCssSource
-    // 产物已包含该文件时无需重放，避免先做 scoped runtime / candidate signature。
+    // 异步 CSS 任务尚未写入 bundle 时，本轮输出计划也拥有该目标，不能再排入旧回放。
     if (
-      normalizedBundleFiles.has(normalizeOutputPathKey(rememberedOutputFile))
+      activeViteCssCacheFiles.has(`planned:${normalizeViteCssCacheKey?.(outputFile) ?? normalizeOutputPathKey(outputFile)}`)
+      || normalizedBundleFiles.has(normalizeOutputPathKey(rememberedOutputFile))
       || normalizedBundleFiles.has(normalizeOutputPathKey(sourceFile))
       || bundleFiles.includes(rememberedOutputFile)
       || bundleFiles.includes(sourceFile)
@@ -268,7 +270,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     const signatureSources = hasScopedSources ? ownedSources : [{ rawSource: generatorRawSource, sourceFile }]
     const scopedGeneratorRuntime = hasScopedSources
       ? new Set((await Promise.all(signatureSources.map(source =>
-          createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, source.rawSource, source.sourceFile),
+          createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, source.rawSource, source.sourceFile, true),
         ))).flatMap(candidates => [...candidates]))
       : await createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, generatorRawSource, sourceFile)
     const candidateSignatures = hasScopedSources
@@ -277,6 +279,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
           await createScopedGeneratorCandidateSignature(source.rawSource, source.sourceFile, createCandidateSignature(scopedGeneratorRuntime), scopedSourceCandidateGetter, {
             includeFallbackSignature: cssHandlerOptions.isMainChunk,
             majorVersion: runtimeState.tailwindRuntime.majorVersion,
+            scopeToSource: true,
           }),
         ]))
       : undefined
@@ -327,7 +330,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     }
     const sourceTraceSources = scopedSourceCandidateSourceGetter
       ? hasScopedSources
-        ? await createMergedCssSourceTraceMap(signatureSources, source => createScopedGeneratorSourceTraceMap(source.rawSource, source.sourceFile, scopedSourceCandidateSourceGetter))
+        ? await createMergedCssSourceTraceMap(signatureSources, source => createScopedGeneratorSourceTraceMap(source.rawSource, source.sourceFile, scopedSourceCandidateSourceGetter, { scopeToSource: true }))
         : await createScopedGeneratorSourceTraceMap(generatorRawSource, sourceFile, scopedSourceCandidateSourceGetter)
       : undefined
     const sourceTraceTokenSources = sourceTraceSources
