@@ -52,6 +52,8 @@ E2E_SKIP_OPEN_AUTOMATOR=1 E2E_PROJECT_FILTER='^gulp-tailwindcss-v4$' pnpm exec v
 
 七个项目的 static 测试、全项目 `apps-generator-mode-compare.test.ts` 及两个快照辅助层测试共同以 `--update=none --bail=1` 复验：10 个文件、74 项全部通过，无跳过。对 44 份变更 CSS 快照的 AST 审查未发现选择器删除，原有规则中属性的最终声明值保持一致；这项结构审查不替代后续真实运行时验收。
 
+后续完整运行通过以上对比及动态类名回归后，在 HBuilderX 的 `uni-app-x-vdom-tailwindcss-v4` static 快照发现同类默认变量保留差异。该项目单独通过 `E2E_SKIP_OPEN_AUTOMATOR=1 E2E_PROJECT_FILTER='^uni-app-x-vdom-tailwindcss-v4$' pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/uni-app-x-vdom-tailwindcss-v4.test.ts -u` 更新，再将 `-u` 替换为 `--update=none --bail=1` 复验通过。仅 `app.wxss` 增加 10 行默认声明，后续用户覆盖及其他产物未变。
+
 ## 适用边界
 
 这是测试辅助层的语义修复，不改变发布包的转换行为，也不触发包版本提升。原有不相关归一化策略保持原样；本次不能据此证明整个 CSS 归一化器与浏览器计算样式完全等价。
