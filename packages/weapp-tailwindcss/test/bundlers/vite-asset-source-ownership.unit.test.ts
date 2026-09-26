@@ -62,3 +62,15 @@ it('普通来源元数据不阻止最终资产重新解析归属', () => {
   })
   expect(resolve(sourceFile)).toBe('owned/secondary.acss')
 })
+
+it.each(['entry.wxss', 'entry.acss', 'entry.ttss'])('最终平台资产中的延迟来源仍保留后续输出归属：%s', (file) => {
+  const sourceFile = '/workspace/styles/secondary.css'
+  const resolve = createMatchedCssSourceOutputResolver({
+    assetSourceFile: sourceFile,
+    file,
+    originalFileNames: [sourceFile],
+    ownedSourceFiles: [sourceFile],
+    resolveOutputFileFromMatchedCssSource: () => `generated/${file}`,
+  })
+  expect(resolve(sourceFile)).toBe(`generated/${file}`)
+})

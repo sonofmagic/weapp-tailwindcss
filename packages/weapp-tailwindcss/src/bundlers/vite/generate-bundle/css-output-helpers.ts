@@ -7,6 +7,7 @@ import { isSourceStyleRequest } from '../../../generation/style-requests'
 import { canProcessViteSourceStyleAsCss, resolveViteCssOutputFile, resolveViteCssPipelineOutputFileFromSourceFile, SOURCE_STYLE_OUTPUT_EXT_RE } from '../css-output'
 import { applyViteAssetEmissionPlan } from './asset-emission-plan'
 import { createCssImportShell, createRootMiniProgramOriginStyleOutputFile, isRootMiniProgramStyleOutputFile, shouldKeepRootMiniProgramStyleAsImportShell, shouldMoveRootMiniProgramStyleToImportShellOrigin } from './root-style-output'
+import { isTemporaryCssAssetFile } from './temporary-css-assets'
 
 export function resolveCssBundleOutputFile(options: {
   assetOutputFile?: string | undefined
@@ -130,7 +131,7 @@ export function createMatchedCssSourceOutputResolver(options: {
     const cleanSourceFile = sourceFile.replace(/[?#].*$/, '')
     const sourceHasQuery = cleanSourceFile !== sourceFile
     const resolvedSourceOutputFile = resolveOutputFileFromMatchedCssSource(sourceFile)
-    const ownsDeferredSource = ownedSourceFiles?.some(originalFile =>
+    const ownsDeferredSource = isTemporaryCssAssetFile(file) && ownedSourceFiles?.some(originalFile =>
       normalizeOutputPathKey(originalFile.replace(/[?#].*$/, '')) === normalizeOutputPathKey(cleanSourceFile),
     ) === true
     if (
