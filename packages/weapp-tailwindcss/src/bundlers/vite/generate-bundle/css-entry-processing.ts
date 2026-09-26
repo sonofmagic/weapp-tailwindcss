@@ -1,6 +1,6 @@
 import type { RememberedCssSource } from './types'
 import { normalizeMiniProgramImportShell } from '../../../generation/output-import-shell'
-import { createScopedGeneratorSourceData } from './scoped-generator-sources'
+import { createScopedGeneratorCandidateSignatureForSources, createScopedGeneratorSourceData } from './scoped-generator-sources'
 import { scheduleViteCssTransform } from './transform-scheduling'
 
 export async function processViteCssBundleEntry(options: any) {
@@ -409,7 +409,7 @@ export async function processViteCssBundleEntry(options: any) {
   const trackedGeneratorCandidateSignature = shouldTrackGeneratorRuntime ? createCandidateSignature(scopedGeneratorRuntime) : 'generator:stable'
   const scopedGeneratorCandidateSignature = shouldTrackGeneratorRuntime
     ? signatureSources.length > 1
-      ? JSON.stringify(await Promise.all(signatureSources.map(async (source: RememberedCssSource) => [source.sourceFile, await createScopedGeneratorCandidateSignature(source.rawSource, source.sourceFile, trackedGeneratorCandidateSignature, scopedSourceCandidateGetter, { includeFallbackSignature: generatorCssHandlerOptions.isMainChunk, majorVersion: runtimeState.tailwindRuntime.majorVersion })])))
+      ? await createScopedGeneratorCandidateSignatureForSources({ createScopedGeneratorCandidateSignature, generatorCssHandlerOptions, majorVersion: runtimeState.tailwindRuntime.majorVersion, scopedSourceCandidateGetter, signatureSources, trackedGeneratorCandidateSignature })
       : await createScopedGeneratorCandidateSignature(generatorRawSource, generatorSourceFile, trackedGeneratorCandidateSignature, scopedSourceCandidateGetter, { includeFallbackSignature: generatorCssHandlerOptions.isMainChunk, majorVersion: runtimeState.tailwindRuntime.majorVersion })
     : trackedGeneratorCandidateSignature
   const linkedImpactSignature = isRuntimeLinkedCss ? resolveViteCssLinkedImpactSignature({ changedHtmlFiles: snapshot.runtimeAffectingChangedByType.html, changedJsFiles: snapshot.runtimeAffectingChangedByType.js, runtimeAffectingSignatureByFile: snapshot.runtimeAffectingSignatureByFile }) : ''

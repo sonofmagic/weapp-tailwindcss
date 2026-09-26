@@ -1,3 +1,4 @@
+import type { createScopedGeneratorCandidateSignature } from './scoped-generator'
 import type { RememberedCssSource } from './types'
 import { createMergedCssSourceTraceMap } from './source-trace'
 
@@ -6,13 +7,14 @@ interface GeneratorCssHandlerOptions {
 }
 type SourceTraceResolver = (rawSource: string, sourceFile: string) => Promise<Map<string, Set<string>> | undefined>
 type RuntimeResolver = (outputFile: string, options: GeneratorCssHandlerOptions, runtime: Set<string>, rawSource?: string, sourceFile?: string) => Promise<Set<string>>
-type CandidateSignatureResolver = (rawSource: string, sourceFile: string, fallbackSignature: string, getCandidates: ((entries: unknown) => Set<string>) | undefined, options: { includeFallbackSignature?: boolean, majorVersion?: number }) => Promise<string>
+type CandidateSignatureResolver = typeof createScopedGeneratorCandidateSignature
+type SignatureSource = Pick<RememberedCssSource, 'rawSource' | 'sourceFile'>
 
 export function hasScopedSourceDirectives(sources: readonly RememberedCssSource[]) {
   return sources.length > 1 && sources.some(source => source.rawSource.includes('@source') || source.rawSource.includes('@config'))
 }
 
-function getSignatureSources(rememberedCssSources: RememberedCssSource[], generatorRawSource: string, generatorSourceFile: string) {
+function getSignatureSources(rememberedCssSources: RememberedCssSource[], generatorRawSource: string, generatorSourceFile: string): SignatureSource[] {
   return hasScopedSourceDirectives(rememberedCssSources)
     ? rememberedCssSources
     : [{ rawSource: generatorRawSource, sourceFile: generatorSourceFile }]
@@ -46,8 +48,8 @@ export async function createScopedGeneratorCandidateSignatureForSources(options:
   createScopedGeneratorCandidateSignature: CandidateSignatureResolver
   generatorCssHandlerOptions: GeneratorCssHandlerOptions
   majorVersion: number | undefined
-  scopedSourceCandidateGetter: ((entries: unknown) => Set<string>) | undefined
-  signatureSources: RememberedCssSource[]
+  scopedSourceCandidateGetter: Parameters<CandidateSignatureResolver>[3]
+  signatureSources: readonly SignatureSource[]
   trackedGeneratorCandidateSignature: string
 }) {
   const { createScopedGeneratorCandidateSignature, generatorCssHandlerOptions, majorVersion, scopedSourceCandidateGetter, signatureSources, trackedGeneratorCandidateSignature } = options
