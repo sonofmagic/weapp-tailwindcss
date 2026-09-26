@@ -13,6 +13,7 @@ export async function processViteCssBundleEntry(options: any) {
     applyViteCssTransformTaskResult,
     bundle,
     bundleFiles,
+    plannedCssOutputFiles,
     cache,
     collectedBundlerGeneratedCssFiles,
     configuredTailwindV4CssSourceFileKeysForScope,
@@ -338,6 +339,7 @@ export async function processViteCssBundleEntry(options: any) {
     viteProcessedCssAsset,
   })
   outputFile = cssCompositionPlan.outputFile
+  plannedCssOutputFiles?.add(normalizeOutputPathKey(outputFile))
   outputCssHandlerOptions = cssCompositionPlan.outputCssHandlerOptions
   rememberedCssSources = cssCompositionPlan.rememberedSources
   const rememberedCssSource = cssCompositionPlan.rememberedSource

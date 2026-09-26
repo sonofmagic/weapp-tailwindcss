@@ -162,7 +162,6 @@
     "phase": "reimport",
     "declarations": {
       ".-mt-0_d5": [
-        "-0.5rpx",
         "-0.5rpx"
       ],
       ".-mt-4": [
@@ -181,7 +180,6 @@
         "4rpx"
       ],
       ".p-0_d5": [
-        "0.5rpx",
         "0.5rpx"
       ],
       ".p-4": [
@@ -194,7 +192,6 @@
     "phase": "source-restored",
     "declarations": {
       ".-mt-0_d5": [
-        "calc(var(--spacing)*-0.5)",
         "calc(var(--spacing)*-0.5)"
       ],
       ".-mt-4": [
@@ -213,7 +210,6 @@
         "calc(var(--spacing)*4)"
       ],
       ".p-0_d5": [
-        "calc(var(--spacing)*0.5)",
         "calc(var(--spacing)*0.5)"
       ],
       ".p-4": [
@@ -226,7 +222,6 @@
     "phase": "themes-match",
     "declarations": {
       ".-mt-0_d5": [
-        "-1rpx",
         "-1rpx"
       ],
       ".-mt-4": [
@@ -245,7 +240,6 @@
         "8rpx"
       ],
       ".p-0_d5": [
-        "1rpx",
         "1rpx"
       ],
       ".p-4": [
@@ -258,7 +252,6 @@
     "phase": "author-add",
     "declarations": {
       ".-mt-0_d5": [
-        "calc(var(--spacing)*-0.5)",
         "calc(var(--spacing)*-0.5)"
       ],
       ".-mt-4": [
@@ -277,7 +270,6 @@
         "calc(var(--spacing)*4)"
       ],
       ".p-0_d5": [
-        "calc(var(--spacing)*0.5)",
         "calc(var(--spacing)*0.5)"
       ],
       ".p-4": [
@@ -292,7 +284,6 @@
     "phase": "author-remove",
     "declarations": {
       ".-mt-0_d5": [
-        "-1rpx",
         "-1rpx"
       ],
       ".-mt-4": [
@@ -311,7 +302,6 @@
         "8rpx"
       ],
       ".p-0_d5": [
-        "1rpx",
         "1rpx"
       ],
       ".p-4": [

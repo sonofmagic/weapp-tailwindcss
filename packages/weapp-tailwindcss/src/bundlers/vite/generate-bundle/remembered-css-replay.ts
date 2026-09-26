@@ -40,6 +40,7 @@ interface ProcessRememberedCssReplayOptions {
   addWatchFile: (id: string) => void
   bundle: Record<string, OutputAsset | OutputChunk>
   bundleFiles: string[]
+  plannedCssOutputFiles?: ReadonlySet<string> | undefined
   cache: GenerateBundleContext['opts']['cache']
   changedCssFiles: Set<string>
   createScopedGeneratorRuntime: (
@@ -228,9 +229,10 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       continue
     }
     const { sourceFile } = rememberedCssSource
-    // 产物已包含该文件时无需重放，避免先做 scoped runtime / candidate signature。
+    // 异步 CSS 任务尚未写入 bundle 时，本轮输出计划也拥有该目标，不能再排入旧回放。
     if (
-      normalizedBundleFiles.has(normalizeOutputPathKey(rememberedOutputFile))
+      options.plannedCssOutputFiles?.has(normalizeOutputPathKey(outputFile))
+      || normalizedBundleFiles.has(normalizeOutputPathKey(rememberedOutputFile))
       || normalizedBundleFiles.has(normalizeOutputPathKey(sourceFile))
       || bundleFiles.includes(rememberedOutputFile)
       || bundleFiles.includes(sourceFile)

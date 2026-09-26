@@ -21,6 +21,17 @@ it('检查 pnpm filter、脚本、exec 与占位命令', () => {
   assert.equal(validateCommand('pnpm exec vitest run test/missing.test.ts', dir, manifests).length, 1)
 })
 
+it('接受 pnpm 内置 change，但 run 仍须对应真实脚本', () => {
+  const dir = path.resolve('fixture')
+  const manifest = { dir, name: 'demo', scripts: {} }
+  assert.deepEqual(validateCommand('pnpm change status', dir, [manifest]), [])
+  assert.deepEqual(validateCommand('pnpm --filter demo change --bump patch', dir, [manifest]), [])
+  assert.equal(validateCommand('pnpm run change status', dir, [manifest]).length, 1)
+  assert.equal(validateCommand('pnpm run install', dir, [manifest]).length, 1)
+  manifest.scripts.change = 'repo change'
+  assert.deepEqual(validateCommand('pnpm run change status', dir, [manifest]), [])
+})
+
 it.each([path.posix.resolve('/repo'), path.win32.resolve('C:\\repo')])('显式包命令不依赖宿主路径分隔符：%s', (dir) => {
   const manifests = [{ dir, name: 'demo', scripts: { test: 'vitest run' } }]
   assert.deepEqual(validateCommand('pnpm --filter demo test', dir, manifests), [])

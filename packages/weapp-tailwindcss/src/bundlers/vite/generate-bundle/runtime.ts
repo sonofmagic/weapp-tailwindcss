@@ -302,6 +302,7 @@ function createGenerateBundleHook(context: GenerateBundleContext) {
     const rememberProcessCacheKey = (cacheKey: string, hashKey: string | number = cacheKey) => { activeProcessCacheKeys.add(cacheKey); activeProcessHashKeys.add(hashKey) }
     const tasks: Promise<void>[] = []
     const cssTaskFactories: Array<() => Promise<void>> = []
+    const plannedCssOutputFiles = new Set<string>()
     const jsTaskFactories: Array<() => Promise<void>> = []
     const pendingRememberedCssReplayUpdates: PendingRememberedCssReplayUpdate[] = []
     const entryPlanningStartedAt = performance.now()
@@ -326,6 +327,7 @@ function createGenerateBundleHook(context: GenerateBundleContext) {
       }
       if (processStyles && type === 'css' && originalSource.type === 'asset') {
         await processViteCssBundleEntry({
+          plannedCssOutputFiles,
           activeViteCssCacheFiles,
           addWatchFile,
           annotateCssSourceTrace,
@@ -471,7 +473,7 @@ function createGenerateBundleHook(context: GenerateBundleContext) {
     recordTimingDetail('entries.plan', entryPlanningStartedAt)
     const rememberedCssStartedAt = performance.now()
     if (processStyles && (shouldProcessTailwindGeneration || useIncrementalMode || isNativeAppStyleTarget)) {
-      await processRememberedCssReplay({ addWatchFile, activeViteCssCacheFiles, bundle, bundleFiles, cache, changedCssFiles: snapshot.changedByType.css, cssTaskFactories, cssPipelineContext, cssPipelineStrategy: context.cssPipelineStrategy, createScopedGeneratorRuntime, createScopedSourceCandidateGetter, createScopedSourceCandidateSourceGetter, debug, defaultStyleOutputExtension, emitOrReplayCssAsset, frameworkRootImportShellTargetByFile, generatorPlatform, generatorRuntime, getCssHandlerOptions, getCssUserHandlerOptions, getRememberedCssSignature, getRememberedCssSources, isNativeAppStyleTarget, isWebGeneratorTarget, lastCssRawSourceHashByFile, lastCssResultByFile, lastCssSourceHashByFile, markCssAssetProcessed, metrics, normalizeViteCssCacheKey, onUpdate, opts, pendingRememberedCssReplayUpdates, recordCssAssetResult, recordViteProcessedCssAssetResult, rootDir, runtimeState, setRememberedCssSignature, shouldInjectCssIntoMainFromOutput, shouldPreserveAppCssExtension, sourceRoot, styleHandler, timeTask, useIncrementalMode })
+      await processRememberedCssReplay({ addWatchFile, activeViteCssCacheFiles, bundle, bundleFiles, plannedCssOutputFiles, cache, changedCssFiles: snapshot.changedByType.css, cssTaskFactories, cssPipelineContext, cssPipelineStrategy: context.cssPipelineStrategy, createScopedGeneratorRuntime, createScopedSourceCandidateGetter, createScopedSourceCandidateSourceGetter, debug, defaultStyleOutputExtension, emitOrReplayCssAsset, frameworkRootImportShellTargetByFile, generatorPlatform, generatorRuntime, getCssHandlerOptions, getCssUserHandlerOptions, getRememberedCssSignature, getRememberedCssSources, isNativeAppStyleTarget, isWebGeneratorTarget, lastCssRawSourceHashByFile, lastCssResultByFile, lastCssSourceHashByFile, markCssAssetProcessed, metrics, normalizeViteCssCacheKey, onUpdate, opts, pendingRememberedCssReplayUpdates, recordCssAssetResult, recordViteProcessedCssAssetResult, rootDir, runtimeState, setRememberedCssSignature, shouldInjectCssIntoMainFromOutput, shouldPreserveAppCssExtension, sourceRoot, styleHandler, timeTask, useIncrementalMode })
     }
     recordTimingDetail('rememberedCss.plan', rememberedCssStartedAt)
     const prepareJsTransformRuntime = isWebGeneratorTarget && shouldTransformJsBundle
