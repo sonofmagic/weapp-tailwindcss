@@ -130,17 +130,20 @@ export function createMatchedCssSourceOutputResolver(options: {
     const cleanSourceFile = sourceFile.replace(/[?#].*$/, '')
     const sourceHasQuery = cleanSourceFile !== sourceFile
     const resolvedSourceOutputFile = resolveOutputFileFromMatchedCssSource(sourceFile)
-    const ownedByCurrentAsset = [...originalFileNames ?? [], ...ownedSourceFiles ?? []].some(originalFile =>
+    const ownsDeferredSource = ownedSourceFiles?.some(originalFile =>
       normalizeOutputPathKey(originalFile.replace(/[?#].*$/, '')) === normalizeOutputPathKey(cleanSourceFile),
     ) === true
     if (
       normalizeOutputPathKey(cleanAssetSourceFile) === normalizeOutputPathKey(cleanSourceFile)
-      || ownedByCurrentAsset
+      || ownsDeferredSource
+      || originalFileNames?.some(originalFile =>
+        normalizeOutputPathKey(originalFile.replace(/[?#].*$/, '')) === normalizeOutputPathKey(cleanSourceFile),
+      )
     ) {
       if (
         !sourceHasQuery
-        // 来源元数据归属当前资产时，由 bundler 决定最终文件名，不能提前搬运并清空它。
-        && !ownedByCurrentAsset
+        // 延迟标记证明本轮仍待 bundler 映射；普通来源元数据不能阻止最终资产的归属解析。
+        && !ownsDeferredSource
         && normalizeOutputPathKey(cleanAssetSourceFile) === normalizeOutputPathKey(cleanSourceFile)
         && typeof resolvedSourceOutputFile === 'string'
         && normalizeOutputPathKey(resolvedSourceOutputFile) !== normalizeOutputPathKey(file)

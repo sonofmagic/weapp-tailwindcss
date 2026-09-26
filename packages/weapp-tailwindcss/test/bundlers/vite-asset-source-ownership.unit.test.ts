@@ -1,9 +1,9 @@
 import type { OutputAsset } from 'rollup'
 import { describe, expect, it, vi } from 'vitest'
 import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
-import { applyCssResultToBundle, resolveCssAssetOutputPlan } from '@/bundlers/vite/generate-bundle/css-output-helpers'
+import { applyCssResultToBundle, createMatchedCssSourceOutputResolver, resolveCssAssetOutputPlan } from '@/bundlers/vite/generate-bundle/css-output-helpers'
 
-describe.each(['originalFileNames', 'deferred-source'])('来源归属：%s', (provenance) => {
+describe.each(['originalFileNames', 'deferred-source'])('延迟来源元数据：%s', (provenance) => {
   it.each([
     ['/workspace/styles/secondary.css', '/workspace/styles/secondary.css', 'feature/leaf.wxss'],
     ['C:\\workspace\\styles\\secondary.css', 'C:/workspace/styles/secondary.css', 'feature/leaf.acss'],
@@ -24,7 +24,7 @@ describe.each(['originalFileNames', 'deferred-source'])('来源归属：%s', (pr
       normalizeConfiguredSourceFile: normalizeOutputPathKey,
       opts: { cssMatcher: () => true } as any,
       originalFileNames: provenance === 'originalFileNames' ? [originalFile] : undefined,
-      ownedSourceFiles: provenance === 'deferred-source' ? [originalFile] : undefined,
+      ownedSourceFiles: [originalFile],
       pipelineContext: {} as any,
       resolveOutputFileFromMatchedCssSource: () => finalFile,
       rootImportShellOutputFile: file,
@@ -50,4 +50,15 @@ describe.each(['originalFileNames', 'deferred-source'])('来源归属：%s', (pr
     expect(emit).not.toHaveBeenCalled()
     expect(plan.resolveMatchedOutputFile(sourceFile)).toBe(file)
   })
+})
+
+it('普通来源元数据不阻止最终资产重新解析归属', () => {
+  const sourceFile = '/workspace/styles/secondary.css'
+  const resolve = createMatchedCssSourceOutputResolver({
+    assetSourceFile: sourceFile,
+    file: 'already-emitted.acss',
+    originalFileNames: [sourceFile],
+    resolveOutputFileFromMatchedCssSource: () => 'owned/secondary.acss',
+  })
+  expect(resolve(sourceFile)).toBe('owned/secondary.acss')
 })

@@ -198,8 +198,8 @@ describe('bundlers/vite helper modules', () => {
       shouldPreserveAppCssExtension: false,
       shouldReuseRootImportShell: () => false,
     })
-    expect(configuredPlan.outputFile).toBe('bundle.css')
-    expect(configuredPlan.resolvedFromConfiguredOriginalCssEntry).toBe(false)
+    expect(configuredPlan.outputFile).toBe('app.css')
+    expect(configuredPlan.resolvedFromConfiguredOriginalCssEntry).toBe(true)
     expect(configuredPlan.reusedRootImportShellTarget).toBe(false)
   })
 
