@@ -12,7 +12,7 @@ describe('Vite 本轮 CSS 写入与历史回放', () => {
       throw new Error('当前产物已有生成计划，不应读取旧来源生成候选')
     })
     await expect(processRememberedCssReplay({
-      activeViteCssCacheFiles: new Set(),
+      activeViteCssCacheFiles: new Set(['planned:theme-bundle.acss']),
       bundle: {},
       bundleFiles: ['current-shell.acss'],
       createScopedGeneratorRuntime,
@@ -33,7 +33,6 @@ describe('Vite 本轮 CSS 写入与历史回放', () => {
         cssMatcher: (file: string) => file.endsWith('.acss'),
         htmlMatcher: (file: string) => file.endsWith('.axml'),
       },
-      plannedCssOutputFiles: new Set(['theme-bundle.acss']),
       rootDir: '/project',
       shouldPreserveAppCssExtension: false,
       createScopedSourceCandidateGetter: () => undefined,
