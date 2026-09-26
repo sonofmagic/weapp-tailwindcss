@@ -1,0 +1,40 @@
+---
+status: partial
+issue: https://github.com/sonofmagic/weapp-tailwindcss/pull/1244
+baseline: 88e349a22ef365cbd20ed3716b12688ce418b4ef
+regressions:
+  - packages/weapp-tailwindcss/test/bundlers/vite-asset-source-ownership.unit.test.ts
+  - e2e/watch/hot-update/demo/taro-vite-react-tailwindcss-v4.test.ts
+  - e2e/watch/hot-update/demo/taro-vite-vue3-tailwindcss-v4.test.ts
+---
+
+# Vite 临时 CSS 资产的归属
+
+## 症状
+
+全面 watch 验收中，Taro Vite React 普通分包新增 class 后，JS 已正确转译，最终 WXSS 却没有对应选择器。仅跑分包也能稳定复现，排除了主包长链路状态累积。
+
+## 根因与纠正
+
+调试日志证明引擎生成了分包样式：临时 `index3.css` 的生成结果约 7 KB。插件随后根据源码推导最终输出路径，提前搬运结果并清空临时资产。Taro 后续使用该临时资产创建最终 WXSS，因此最终得到空内容。
+
+来源与当前资产存在明确关联时，保持当前资产身份，由 bundler 完成后续命名和平台后缀映射。关联既包括 Rollup 的 `originalFileNames`，也包括此前 transform 留下的延迟生成来源标记。两者共享相同判断，不通过目录名、固定后缀或后置读源码推断归属。
+
+没有明确归属的资产继续使用既有来源解析；根样式 import shell 的独立目标映射保持原契约。变更使用同一 bundle 的资产 API，没有直接写输出目录。
+
+## 验证
+
+- 新回归在修复前收到空字符串，修复后保留完整 CSS。两类来源 × POSIX、Windows 反斜杠、盘符根目录及相对路径共 8 项，连同 helpers 共 27 项通过。
+- CSS 延迟生成、组合、import、最终资产与缓存贡献的 7 个测试文件、90 项回归通过。
+- `pnpm --filter @weapp-tailwindcss/scripts test:watch-hmr --case taro-vite-react-tailwindcss-v4 --mini-program-scope subpackages --skip-build --timeout 30000`：普通和独立分包全部通过。
+- 同样的定向命令分别使用 `--case taro-vite-react-tailwindcss-v4:alipay` 和 `--case taro-vite-vue3-tailwindcss-v4`：支付宝 React 与微信 Vue3 的两种分包全部通过，覆盖真实 `.acss` 与 `.wxss`。
+- `pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/taro-vite-react-tailwindcss-v4.test.ts e2e/taro-vite-vue3-tailwindcss-v4.test.ts --update=none`：8 项静态验收通过，产物基线无变化。
+- 证据保存在 `e2e/.artifacts/preflight/b2597d4d-c7ca-4078-8424-620deac4f67b/`，包含原始超时日志、暂停时源码与产物、调试日志及三个通过报告。完整验收需在本次生产源码修改后的新预检下执行。
+
+## 适用边界
+
+只在来源元数据明确证明当前资产归属时保留 bundler 命名。不依赖临时资产是否恰好叫 `index3.css`，也不能把旧输出路径当作当前构建图的所有权证明。
+
+## 规则评估
+
+不新增 AGENTS 条目。现有 bundler 生命周期、模块图和资产图约束已覆盖该问题，新增回归负责防止提前搬运资产的行为再次出现。

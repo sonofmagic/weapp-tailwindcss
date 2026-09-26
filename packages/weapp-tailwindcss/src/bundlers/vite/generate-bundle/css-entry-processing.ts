@@ -1,4 +1,5 @@
 import type { RememberedCssSource } from './types'
+import { readDeferredCssSourceMarkers } from '@weapp-tailwindcss/postcss/transform'
 import { normalizeMiniProgramImportShell } from '../../../generation/output-import-shell'
 import { createScopedGeneratorCandidateSignatureForSources, createScopedGeneratorSourceData } from './scoped-generator-sources'
 import { scheduleViteCssTransform } from './transform-scheduling'
@@ -180,6 +181,7 @@ export async function processViteCssBundleEntry(options: any) {
     normalizeConfiguredSourceFile: normalizeConfiguredTailwindV4CssEntryFileKey,
     opts,
     originalFileNames: originalSource.originalFileNames,
+    ownedSourceFiles: readDeferredCssSourceMarkers(rawSource),
     pipelineContext: cssPipelineContext2,
     resolveOutputFileFromMatchedCssSource: resolveMatchedCssSourceOutputFile,
     rootImportShellOutputFile,

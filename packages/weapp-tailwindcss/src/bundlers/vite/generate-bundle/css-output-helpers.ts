@@ -112,12 +112,14 @@ export function createMatchedCssSourceOutputResolver(options: {
   assetSourceFile: string
   file: string
   originalFileNames?: string[] | undefined
+  ownedSourceFiles?: string[] | undefined
   resolveOutputFileFromMatchedCssSource: (sourceFile: string | undefined) => string | undefined
 }) {
   const {
     assetSourceFile,
     file,
     originalFileNames,
+    ownedSourceFiles,
     resolveOutputFileFromMatchedCssSource,
   } = options
   return (sourceFile: string | undefined) => {
@@ -128,14 +130,17 @@ export function createMatchedCssSourceOutputResolver(options: {
     const cleanSourceFile = sourceFile.replace(/[?#].*$/, '')
     const sourceHasQuery = cleanSourceFile !== sourceFile
     const resolvedSourceOutputFile = resolveOutputFileFromMatchedCssSource(sourceFile)
+    const ownedByCurrentAsset = [...originalFileNames ?? [], ...ownedSourceFiles ?? []].some(originalFile =>
+      normalizeOutputPathKey(originalFile.replace(/[?#].*$/, '')) === normalizeOutputPathKey(cleanSourceFile),
+    ) === true
     if (
       normalizeOutputPathKey(cleanAssetSourceFile) === normalizeOutputPathKey(cleanSourceFile)
-      || originalFileNames?.some(originalFile =>
-        normalizeOutputPathKey(originalFile.replace(/[?#].*$/, '')) === normalizeOutputPathKey(cleanSourceFile),
-      )
+      || ownedByCurrentAsset
     ) {
       if (
         !sourceHasQuery
+        // 来源元数据归属当前资产时，由 bundler 决定最终文件名，不能提前搬运并清空它。
+        && !ownedByCurrentAsset
         && normalizeOutputPathKey(cleanAssetSourceFile) === normalizeOutputPathKey(cleanSourceFile)
         && typeof resolvedSourceOutputFile === 'string'
         && normalizeOutputPathKey(resolvedSourceOutputFile) !== normalizeOutputPathKey(file)
@@ -153,6 +158,7 @@ export type ResolveCssAssetOutputPlanOptions = Parameters<typeof resolveCssBundl
   configuredEntries: Array<{ file: string }>
   normalizeConfiguredSourceFile: (file: string) => string
   originalFileNames: string[] | undefined
+  ownedSourceFiles?: string[] | undefined
   resolveOutputFileFromMatchedCssSource: (sourceFile: string | undefined) => string | undefined
   rootImportShellOutputFile: string
   rootImportShellTarget: string | undefined
@@ -183,6 +189,7 @@ export function resolveCssAssetOutputPlan(
     assetSourceFile: options.assetSourceFile,
     file: options.file,
     originalFileNames: options.originalFileNames,
+    ownedSourceFiles: options.ownedSourceFiles,
     resolveOutputFileFromMatchedCssSource: options.resolveOutputFileFromMatchedCssSource,
   })
   const configuredOriginalSourceEntry = outputFile.replace(/[?#].*$/, '').endsWith('.css')
