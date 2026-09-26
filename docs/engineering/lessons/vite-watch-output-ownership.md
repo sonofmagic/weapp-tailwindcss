@@ -8,6 +8,7 @@ regressions:
   - packages/weapp-tailwindcss/test/bundlers/vite-plugin.bundle.unit.test.ts
   - e2e/issue-1241-watch.test.ts
   - scripts/agents/check.test.mjs
+  - e2e/issue-1241.test.ts
 ---
 
 # Vite watch 的输出归属与监听生命周期
@@ -24,7 +25,7 @@ regressions:
 
 第二个问题发生在监听生命周期。文件型 `@source` 可以不属于模块图，必须通过 `addWatchFile` 注册。旧实现用插件实例级 Set 跳过曾经注册的文件，Rollup 重建本轮监听集合后，连续第二次编辑便可能丢失通知。现在每次 `buildStart` 都注册当前扫描层给出的文件，不把上轮已注册当作本轮已注册。
 
-排查最初怀疑 `source(none)` 候选范围，但调试日志证明本轮 CSS 生成结果已正确收窄。普通生成仍需要接受调用方提供的运行时候选，因此没有更改该契约，也没有保留额外的来源模式或产物缓存类型扩展。最终改动收敛为输出计划与监听生命周期两个边界。
+排查同时确认 `source(none)` 在多 CSS 入口的空范围语义：普通单入口生成仍可接受调用方提供的运行时候选，但多入口来源隔离必须把 `source(none)` 识别为显式空范围，不能把 bundle 候选或历史运行集合当作来源候选。最终修复收敛为输出计划、来源范围识别和监听生命周期三个边界。
 
 记录验证命令时，规则检查器将 pnpm 12 原生 `change` 误认为缺失脚本。同步登记该内置命令，并区分显式 run 子命令的脚本调用与原生命令；前者仍要求 manifest 中存在对应脚本，没有扩大未知命令的放行范围。
 
@@ -38,6 +39,7 @@ regressions:
 - 基线更新限定到 `pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/issue-1241-watch.test.ts -u`；验收仍使用同一文件的 `--update=none --bail=1`。
 - 更新后同一 watch 用例以 `--update=none --bail=1` 完整通过，耗时约 49 秒。
 - `pnpm agents:test --update=none`：13 项通过；`pnpm agents:check`：0 错误。
+- issue #1241 的 `both-empty` 构建回归曾在修复前输出 `.w-32`/`.h-32`，修复后以 `--update=none` 通过且输出为空；该场景保留在 `e2e/issue-1241.test.ts`。
 
 ## 适用边界
 
