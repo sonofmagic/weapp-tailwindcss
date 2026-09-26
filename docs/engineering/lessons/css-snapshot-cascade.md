@@ -56,6 +56,8 @@ E2E_SKIP_OPEN_AUTOMATOR=1 E2E_PROJECT_FILTER='^gulp-tailwindcss-v4$' pnpm exec v
 
 ## 适用边界
 
+完整 static 后续跑完 131 个文件时，剩余两处基线差异为 uni-app 分包的默认变量/注释空格和 issue #1214 rpx watch 的同值重复声明。限定 `E2E_PROJECT_FILTER='^subpackage-uni-app-vite-tailwindcss-v4$'`，运行 `pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/subpackage-uni-app-vite-tailwindcss-v4.test.ts e2e/issue-1214-rpx-calc-watch.test.ts -u` 更新这两项；再使用 `--update=none --bail=1` 复验。分包只更新 main.wxss，watch 仅删除 5 条同值重复记录，未更改行为断言。
+
 这是测试辅助层的语义修复，不改变发布包的转换行为，也不触发包版本提升。原有不相关归一化策略保持原样；本次不能据此证明整个 CSS 归一化器与浏览器计算样式完全等价。
 
 旧 workflow 在 static 首次失败后由本任务发送 SIGINT 停止继续调度，退出码 130 是中断结果，首个真实失败保留在单文件复现日志中。后续多端、HMR、视觉阶段尚待完整验证。
