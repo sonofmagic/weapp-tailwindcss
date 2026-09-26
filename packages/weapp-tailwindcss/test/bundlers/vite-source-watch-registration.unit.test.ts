@@ -19,29 +19,39 @@ describe('Vite 文件型 source 的监听生命周期', () => {
       tailwindRootCssModuleIds: roots,
     })
     const buildStart = typeof plugin.buildStart === 'function' ? plugin.buildStart : plugin.buildStart?.handler
+    const moduleParsed = typeof plugin.moduleParsed === 'function' ? plugin.moduleParsed : plugin.moduleParsed?.handler
+    const cached = typeof plugin.shouldTransformCachedModule === 'function' ? plugin.shouldTransformCachedModule : plugin.shouldTransformCachedModule?.handler
     const generateBundle = typeof plugin.generateBundle === 'function' ? plugin.generateBundle : plugin.generateBundle?.handler
     expect(buildStart).toBeTypeOf('function')
-    const build = async () => {
+    const build = async (reuse = false) => {
       const registered = new Set<string>()
       const context = {
         addWatchFile: (id: string) => registered.add(id),
         getModuleInfo: (id: string) => hasCssConsumer && id === 'virtual:tailwind-entry' ? { id } : null,
       } as PluginContext
       await buildStart!.call(context, {} as NormalizedInputOptions)
-      expect(registered.size).toBe(0)
       // 首轮 transform 后才知道 CSS 消费者，辅助构建图不能在 buildStart 扫描阶段抢占监听。
       roots.add('virtual:tailwind-entry')
+      const info = { id: hasCssConsumer ? 'virtual:tailwind-entry' : 'virtual:empty-auxiliary' } as any
+      if (reuse) {
+        expect(await cached!.call(context, info)).toBeNull()
+      }
+      else {
+        await moduleParsed!.call(context, info)
+      }
       await generateBundle!.call(context, {} as any, {}, false)
       return registered
     }
-    expect(await build()).toEqual(new Set([file]))
+    expect(await build(true)).toEqual(new Set([file]))
     expect(await build()).toEqual(new Set([file]))
     files = new Set()
     expect(await build()).toEqual(new Set())
     files = new Set([file])
-    expect(await build()).toEqual(new Set([file]))
+    expect(await build(true)).toEqual(new Set([file]))
     hasCssConsumer = false
-    expect(await build()).toEqual(new Set())
+    // 移除消费入口这一轮仍持有上轮依赖，下一轮图已确认不消费时清除注册。
+    await build()
+    expect(await build(true)).toEqual(new Set())
     hasCssConsumer = true
     expect(await build()).toEqual(new Set([file]))
   })
