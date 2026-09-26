@@ -25,6 +25,12 @@ regressions:
 
 不将 uni-app x 改为 native-reload，不删除 App Launch 断言，不放宽门槛。恢复需要取得支持本次纯 HMR 要求的工具链/运行模式证据，再新建全端预检；当前证据不能证明其他平台通过。
 
+后续用户明确授权忽略已确认非插件引起的 Android 重启问题并继续验收。本轮通过忽略产物目录内的任务适配器，仅将 Android VDOM 用例按 native-reload 执行，保留更新失败、重装、产物、运行时及视觉断言；仓库默认模式没有改变。报告标为用户接受的工具链例外，不计作纯 HMR 通过。
+
+该续跑又发现普通 uni-app Android 同步旧产物，已按 [候选监听归属复盘](uni-app-watch-consumer-ownership.md) 修复。提交 `99701d08bbe46ecfd677e0cf7ae829df7eec0f53` 的全部质量门禁、6470 项单测（43 项既有跳过）、11 项受影响 watch/static 验证通过，Android VDOM 全部增量步骤及 4 个 Android 视觉结果通过。证据位于 `e2e/.artifacts/preflight/402a8f20-06ef-4297-9e7d-2a9c77498445/`。
+
+第 20 阶段 iOS 尚未进入页面运行，HBuilderX 提示 App 真机运行插件包含 Intel 程序、需要 Rosetta 2。系统安装记录不存在，`arch -x86_64 /usr/bin/true` 返回 `Bad CPU type in executable`，确认当前机器缺少该运行条件。原始日志和只读系统检查保存在同轮 `ios-rosetta-block/`。停止本任务进程、恢复源码后等待用户处理系统组件安装；iOS、Harmony 和最终跨端比较仍未完成。此阻塞不属于已经授权的 Android 重启例外。
+
 ## 验证
 
 - 完整运行 `d1983685-5a8c-4e0f-a851-7769ac35cf82`：6470 项单测通过、43 项既有跳过；699 项 static 通过、35 项按专项开关跳过；52 项多平台产物通过，质量门禁通过。微信视觉中一次 DevTools 连接/reLaunch 超时阻断，官方 CLI 定向诊断恢复后没有改变源码。
