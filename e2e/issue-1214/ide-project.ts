@@ -1,4 +1,5 @@
 import { writeFile } from 'node:fs/promises'
+import { resolveWechatAppId } from '../../scripts/wechat-app-id'
 import { createProject } from './project'
 
 export const runtimeSpacing = 8
@@ -40,7 +41,7 @@ page { background:#fff; color:#111; }
 }
 
 export async function createLayoutProject(marker: string) {
-  const project = await createProject({ spacing: `${runtimeSpacing}rpx`, calc: 'nested' })
+  const project = await createProject({ spacing: `${runtimeSpacing}rpx`, calc: 'nested', wechatAppId: resolveWechatAppId() })
   try {
     await writeFile(project.pageFile, layoutPageSource(marker))
     return project
