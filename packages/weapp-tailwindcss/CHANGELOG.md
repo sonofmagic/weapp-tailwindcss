@@ -1,5 +1,25 @@
 # weapp-tailwindcss
 
+## 5.5.10
+
+### Patch Changes
+
+- 修复多 CSS 入口 watch 中当前生成结果被旧样式缓存重复回放的问题；显式 `source(none)` 多入口按空范围隔离；并在每轮构建重新注册文件型 @source 监听，避免切换来源或连续增删候选后旧类重新出现，使增量产物与干净构建保持一致。Refs #1241
+
+  保留由本轮延迟生成标记关联的 CSS 资产身份，避免提前搬运并清空临时资产，导致 Taro Vite 分包的新增样式在后续输出映射中丢失；普通来源元数据仍按最终资产原有契约解析。
+
+  候选文件监听仅注册到实际消费 Tailwind CSS 的构建图，避免普通 uni-app App 的空 nvue 辅助构建被页面变化触发，提前通知 HBuilderX 同步旧产物。文件型 @source 在每轮模块解析或缓存复用阶段重新注册，兼容 Rollup 3。
+
+- 修复多个 CSS 入口合并后文件型 @source 的来源丢失与候选归属错误，保留空范围及主题冲突语义，并监听扫描文件变化。Refs #1241
+
+- 修复 uni-app x 每个 SFC 转换都强制重建运行时、反复扫描项目的问题：同一失效版本共享类名集合和刷新任务，watch 与 HMR 在生命周期入口登记失效，模块转换继续补充生成器确认的当前候选。加入过期任务隔离、失败重试和会话释放，保留局部样式、自定义属性和动态类名更新。Refs #1245
+
+  修复 Tailwind CSS 4 的 design system 未随配置间接依赖变化而失效的问题，并让候选有效性缓存绑定实际 design system，避免缓存复用后旧类残留或新类缺失。
+
+- Updated dependencies:
+  - @weapp-tailwindcss/engine@0.1.2
+  - @weapp-tailwindcss/postcss@3.3.9
+
 ## 5.5.9
 
 ### Patch Changes
