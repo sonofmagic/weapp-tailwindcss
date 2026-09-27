@@ -229,6 +229,17 @@ For an explicitly identified WeChat target with Tailwind CSS 4, an omitted `cssO
 
 Automatic mode does not expand plain var references or calculate unrelated units. Known overrides and incomplete scopes preserve variable expressions. For future JS or inline-style theme updates, explicitly set `cssOptions: { cssCalc: false }`. See [WeChat rpx calculation](./issues/spacing-rpx.md) for compatibility boundaries and diagnostics.
 
+The default targets fixed rpx lengths; it does not also freeze px variables. This comparison uses ordinary `@theme`, Tailwind CSS 4 targeting WeChat, and a complete Vite style context without known overrides, additional unit conversions, or custom plugin rewrites:
+
+| Theme configuration        | `cssOptions.cssCalc` | `mt-2`                                 | `gap-2`                         |
+| -------------------------- | -------------------- | -------------------------------------- | ------------------------------- |
+| `--spacing: 1rpx`          | Omitted or `'auto'`  | `margin-top: 2rpx`                     | `gap: 2rpx`                     |
+| `--spacing: 1px`           | Omitted or `'auto'`  | `margin-top: calc(var(--spacing) * 2)` | `gap: calc(var(--spacing) * 2)` |
+| `--spacing: 1px`           | `true`               | `margin-top: 2px`                      | `gap: 2px`                      |
+| `--spacing: 1rpx` or `1px` | `false`              | `margin-top: calc(var(--spacing) * 2)` | `gap: calc(var(--spacing) * 2)` |
+
+`false` disables only this plugin's calculation; other plugins may still rewrite expressions. Bind Vue's `style` to update px spacing dynamically. For dynamic rpx sizes, calculate final lengths in JS and consume them through plain `var()` references. See [Choosing between fixed sizes and runtime themes](./issues/spacing-rpx.md#choosing-between-fixed-sizes-and-runtime-themes) for complete uni-app examples.
+
 `cssCalc: true` evaluates `calc()` using variables that can be proven fixed, replacing the original expression by default. For an unconditional Tailwind root theme:
 
 ```css
