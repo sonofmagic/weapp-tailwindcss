@@ -83,6 +83,10 @@ export class StyleProcessorCache {
   getPipeline(options: IStyleHandlerOptions, signal?: FeatureSignal) {
     const optionsKey = this.createProcessorCacheKey(options)
     const compositeKey = this.createCompositeCacheKey(optionsKey, signal)
+    return this.getPipelineByKey(compositeKey, options, signal)
+  }
+
+  private getPipelineByKey(compositeKey: string, options: IStyleHandlerOptions, signal?: FeatureSignal) {
     let pipeline = this.pipelineCacheByKey.get(compositeKey)
     if (!pipeline) {
       pipeline = createStylePipeline(options, signal)
@@ -113,7 +117,8 @@ export class StyleProcessorCache {
 
     let processor = this.processorCacheByKey.get(compositeKey)
     if (!processor) {
-      const pipeline = this.getPipeline(options, signal)
+      // 同次处理的选项快照未变，直接传递签名，避免 miss 路径重复遍历嵌套配置。
+      const pipeline = this.getPipelineByKey(compositeKey, options, signal)
       processor = postcss(pipeline.plugins)
       this.processorCacheByKey.set(compositeKey, processor)
     }
