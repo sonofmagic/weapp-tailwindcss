@@ -22,6 +22,7 @@ export {
 export { CSS_MACRO_POSTCSS_PLUGIN_NAME, default as cssMacroPostcssPlugin } from './css-macro/postcss'
 // 统一导出入口，供外部调用端按需引用核心能力
 export { collectRpxThemeVariables, inspectRpxCalcUsage, type RpxCalcUsage } from './diagnostics/rpx-theme'
+export { fingerprintStyleOptions } from './fingerprint'
 export { processFrameworkCss } from './framework-pipeline'
 export {
   type PostcssFrameworkProfile,
@@ -92,6 +93,7 @@ export {
   type ApplyConfiguredCssCalcOptions,
 } from './plugins/applyConfiguredCssCalc'
 export { applyConfiguredCssUnits, type ApplyConfiguredCssUnitsOptions } from './plugins/applyConfiguredCssUnits'
+export { isWechatAutoCssCalc } from './plugins/auto-calc'
 export { createFallbackPlaceholderReplacer } from './plugins/post/specificity-cleaner'
 
 export {

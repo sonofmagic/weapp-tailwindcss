@@ -84,6 +84,7 @@ function collectSourceComponents(graph: CssGraph) {
 export function collectCssCalcScopes(bundle: OutputBundle, options: {
   matchesCss: (file: string) => boolean
   onConditionalSource?: (file: string) => void
+  onUnresolvedSource?: (file: string) => void
 }): Map<string, Set<string>> {
   const assets = new Map(Object.entries(bundle).flatMap(([key, output]) => {
     const file = outputKey(output.fileName || key)
@@ -99,6 +100,7 @@ export function collectCssCalcScopes(bundle: OutputBundle, options: {
       const parsed = parseCssImportSpecifier(params)
       const request = parsed?.specifier
       if (!parsed || !request || /^(?:[a-z][a-z\d+.-]*:|\/|\\\\|#)/i.test(request)) {
+        options.onUnresolvedSource?.(file)
         return
       }
       const target = outputKey(path.posix.join(path.posix.dirname(file), outputKey(request.replace(/[?#].*$/, ''))))
@@ -114,6 +116,9 @@ export function collectCssCalcScopes(bundle: OutputBundle, options: {
         if (conditional) {
           conditionalRoots.add(target)
         }
+      }
+      else {
+        options.onUnresolvedSource?.(file)
       }
     })
     graph.set(file, targets)
@@ -163,6 +168,9 @@ export function collectCssCalcScopes(bundle: OutputBundle, options: {
         const key = outputKey(css)
         if (assets.has(key)) {
           roots.add(key)
+        }
+        else {
+          options.onUnresolvedSource?.(file)
         }
       }
       // 动态入口可能属于互斥页面，不把 dynamicImports 当作同时可见的样式。

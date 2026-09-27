@@ -10,6 +10,15 @@ describe('mp', () => {
     expect(root.toString()).toBe('.foo { color: red; }')
   })
 
+  it('splits ordinary rule selectors only once per preflight visit', () => {
+    const root = postcss.parse('.foo::before,.foo:hover { color: red; }')
+    const rule = root.first as postcss.Rule
+    const selectors = vi.spyOn(rule, 'selectors', 'get')
+    commonChunkPreflight(rule, { majorVersion: 4 })
+    expect(selectors).toHaveBeenCalledTimes(1)
+    expect(root.toString()).toBe('.foo::before,.foo:hover { color: red; }')
+  })
+
   it('commonChunkPreflight case 1', () => {
     const root = postcss.parse(':root,:host { color: red; }')
     commonChunkPreflight(root.first as postcss.Rule, {})

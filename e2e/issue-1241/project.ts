@@ -69,7 +69,7 @@ export async function createProject(name: string, options: Options = {}) {
   // 沿用 Issue 的非 type:module 工程；旧 uni 插件经 Vite 的 CJS 互操作加载。
   delete manifest.type
   await writeFile(path.join(root, 'package.json'), JSON.stringify(manifest, null, 2))
-  const calc = options.calc ?? 'nested'
+  const calc = options.calc ?? 'default'
   const config = calc === 'top'
     ? 'cssCalc: [\'--spacing\'],'
     : calc === 'boolean'

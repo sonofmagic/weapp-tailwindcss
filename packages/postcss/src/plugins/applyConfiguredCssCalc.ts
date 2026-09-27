@@ -5,6 +5,7 @@ import { getCalcPlugin } from './getCalcPlugin'
 export type ApplyConfiguredCssCalcOptions = Pick<
   IStyleHandlerOptions,
   'cssCalc' | 'cssOptions' | 'customPropertyValues' | 'customPropertyContextCss'
+  | 'cssCalcContextComplete' | 'cssCalcContextValues' | 'majorVersion' | 'platform' | 'uniAppX'
 > & {
   /** 额外用于收集自定义属性的 CSS，例如生成器完整产物。 */
   contextCss?: string | undefined
@@ -27,6 +28,11 @@ export async function applyConfiguredCssCalc(
   }
 
   const plugin = getCalcPlugin({
+    majorVersion: options.majorVersion,
+    platform: options.cssOptions?.platform ?? options.platform,
+    uniAppX: options.uniAppX,
+    cssCalcContextComplete: options.cssCalcContextComplete,
+    cssCalcContextValues: options.cssCalcContextValues,
     cssCalc,
     customPropertyValues: options.customPropertyValues,
     customPropertyContextCss: [options.customPropertyContextCss ?? '', options.contextCss ?? ''].join('\n'),

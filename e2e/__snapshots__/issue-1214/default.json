@@ -1,26 +1,26 @@
 {
   ".-mt-0_d5": [
-    "calc(var(--spacing)*-0.5)"
+    "-0.5rpx"
   ],
   ".-mt-4": [
-    "calc(var(--spacing)*-4)"
+    "-4rpx"
   ],
   ".mt-4": [
-    "calc(var(--spacing)*4)"
+    "4rpx"
   ],
   ".h-32": [
-    "calc(var(--spacing)*32)"
+    "32rpx"
   ],
   ".w-32": [
-    "calc(var(--spacing)*32)"
+    "32rpx"
   ],
   ".gap-4": [
-    "calc(var(--spacing)*4)"
+    "4rpx"
   ],
   ".p-0_d5": [
-    "calc(var(--spacing)*0.5)"
+    "0.5rpx"
   ],
   ".p-4": [
-    "calc(var(--spacing)*4)"
+    "4rpx"
   ]
 }

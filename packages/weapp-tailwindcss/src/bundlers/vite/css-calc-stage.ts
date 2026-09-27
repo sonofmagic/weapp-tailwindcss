@@ -19,17 +19,19 @@ export function createViteCssCalcStage(
   isBuild: () => boolean,
   getPlatform: () => string | undefined = () => undefined,
 ): ViteCssCalcStage {
-  const resolveFinalOptions = () => resolveStyleOptionsFromContext({
-    ...original,
-    platform: original.cssOptions?.platform ?? original.platform ?? getPlatform(),
-  }, original.tailwindRuntime.majorVersion)
+  const resolveFinalOptions = () => resolveStyleOptionsFromContext(
+    original,
+    original.tailwindRuntime.majorVersion,
+    original.cssOptions?.platform ?? original.platform ?? getPlatform(),
+  )
   const shouldDefer = () => {
-    if (!isBuild() || !(original.cssOptions?.cssCalc ?? original.cssCalc)) {
+    if (!isBuild()) {
       return false
     }
     const finalOptions = resolveFinalOptions()
     // 原生样式可能嵌入 JS/UTS，不能延迟到只处理 CSS 资产的阶段。
-    return finalOptions.uniAppX !== true
+    return Boolean(finalOptions.cssCalc)
+      && finalOptions.uniAppX !== true
       && !resolveUniUtsPlatform(finalOptions.platform).isApp
   }
   const defer = (options?: Partial<IStyleHandlerOptions>): Partial<IStyleHandlerOptions> | undefined => shouldDefer()
@@ -48,7 +50,8 @@ export function createViteCssCalcStage(
       if (key === 'styleHandler') {
         return styleHandler
       }
-      if (shouldDefer()) {
+      // 其他选项不受延后阶段影响，不能每次读取都重新构造完整平台/样式配置。
+      if ((key === 'cssOptions' || deferredKeySet.has(key)) && shouldDefer()) {
         if (deferredKeySet.has(key)) {
           return false
         }

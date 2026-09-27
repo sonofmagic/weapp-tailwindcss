@@ -49,9 +49,7 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
   cachedOptions.cssInjectPreflight = createInjectPreflight(cachedOptions.cssPreflight)
   const resolver = createOptionsResolver(cachedOptions)
   const processorCache = new StyleProcessorCache()
-  const base = resolver.resolve()
-  processorCache.getProcessor(base)
-  processorCache.getProcessOptions(base)
+  // 首次处理拿到内容信号后再创建管线，避免提前构建一条不会使用的完整管线。
 
   /** CSS 处理结果 LRU 缓存 */
   const resultCache = new LRUCache<string, PostcssResult>({ max: CSS_RESULT_CACHE_MAX })

@@ -18,6 +18,7 @@ it('Issue 1241 同进程双入口主题、source、导入及候选变化与干�
   const results = []
   let since = Date.now()
   let candidates = classes
+  let pageStyle = ''
   const phases = [
     { name: 'initial', width: '32rpx' },
     { name: 'theme-2', width: 'calc(var(--spacing)*32)', file: author, source: themeSource({ spacing: '2rpx' }) },
@@ -35,6 +36,10 @@ it('Issue 1241 同进程双入口主题、source、导入及候选变化与干�
     { name: 'alternate-add', width: '64rpx', file: path.join(project.root, 'src', 'alternate.vue'), source: pageSource('alternate-add', 'w-32 p-4') },
     { name: 'alternate-remove', width: undefined, file: path.join(project.root, 'src', 'alternate.vue'), source: pageSource('alternate-remove', 'p-4') },
     { name: 'source-retarget-restore', width: '64rpx', file: author, source: themeSource({ spacing: '2rpx' }) },
+    { name: 'page-author-add', width: 'calc(var(--spacing)*32)', pageStyle: '<style>.scope{--spacing:3rpx}</style>' },
+    { name: 'page-author-remove', width: '64rpx', pageStyle: '' },
+    { name: 'page-author-restore', width: 'calc(var(--spacing)*32)', pageStyle: '<style>.scope{--spacing:3rpx}</style>' },
+    { name: 'page-author-empty', width: '64rpx', pageStyle: '<style></style>' },
   ]
   try {
     for (const phase of phases) {
@@ -45,8 +50,11 @@ it('Issue 1241 同进程双入口主题、source、导入及候选变化与干�
       if (phase.candidates) {
         candidates = phase.candidates
       }
+      if (phase.pageStyle !== undefined) {
+        pageStyle = phase.pageStyle
+      }
       const marker = `watch-${phase.name}`
-      await writeFile(project.pageFile, pageSource(marker, candidates))
+      await writeFile(project.pageFile, `${pageSource(marker, candidates)}${pageStyle}`)
       let output: Awaited<ReturnType<typeof readOutput>> | undefined
       await waitFor(async () => {
         if (session.lastCompileSuccessAt() < since) {

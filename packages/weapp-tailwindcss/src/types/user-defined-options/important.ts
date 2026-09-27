@@ -190,8 +190,9 @@ export interface UserDefinedOptionsImportantPart {
    * @group 0.重要配置
    * @since ^4.3.0
    * @remarks
-   * 可传入布尔值、选项对象或变量匹配列表（支持正则），默认关闭。仅静态化可确定的表达式：局部、条件或冲突覆盖及无法解析的变量保留运行时表达式。成功求值时默认替换原声明；显式设置 `preserve: true` 才同时保留原声明。普通 `var()` 不会因此全局展开，JavaScript 或内联样式的未来覆盖无法由 CSS 静态分析预测。
-   * @default false
+   * 可传入 'auto'、布尔值、选项对象或变量匹配列表（支持正则）。明确的微信 v4 默认采用 'auto'，只在完整样式作用域下静态化固定 rpx 主题及字面量计算；其他平台不默认计算。
+   * 局部、条件或冲突覆盖及无法解析的变量保留运行时表达式。成功求值时默认替换原声明；显式设置 `preserve: true` 才同时保留原声明。
+   * 普通 `var()` 不会因此全局展开。需要 JavaScript 或内联样式动态修改主题时，请显式设置 `cssOptions.cssCalc: false`，自动分析无法预测这些未来覆盖。
    * @example
    * ```css
    * // 原始输出
@@ -225,7 +226,7 @@ export interface UserDefinedOptionsImportantPart {
    * ```
    * @deprecated 请使用 `cssOptions.cssCalc`。
    */
-  cssCalc?: boolean | CssCalcOptions | (string | RegExp)[] | undefined
+  cssCalc?: 'auto' | boolean | CssCalcOptions | (string | RegExp)[] | undefined
 
   /**
    * 是否额外注入 `tailwindcss css var scope`。

@@ -4,6 +4,14 @@ import { describe, expect, it } from 'vitest'
 import { buildProject, createProject, probeProperties, readOutput, readProbeDeclarations } from './issue-1214/project'
 
 const staticCases: Array<{ name: string, options: FixtureOptions, base: number }> = [
+  { name: 'default', options: {}, base: 1 },
+  { name: 'default-2rpx', options: { spacing: '2rpx' }, base: 2 },
+  { name: 'default-3rpx', options: { spacing: '3rpx' }, base: 3 },
+  { name: 'default-8rpx', options: { spacing: '8rpx' }, base: 8 },
+  { name: 'default-inline', options: { inline: true, spacing: '3rpx' }, base: 3 },
+  { name: 'default-fraction', options: { spacing: '0.5rpx' }, base: 0.5 },
+  { name: 'default-negative', options: { spacing: '-0.5rpx' }, base: -0.5 },
+  { name: 'default-alias', options: { spacing: 'var(--base)', overrides: '@theme { --base: 3rpx; }' }, base: 3 },
   { name: 'top-level-1rpx', options: { calc: 'top-level', spacing: '1rpx' }, base: 1 },
   { name: 'nested-2rpx', options: { calc: 'nested', spacing: '2rpx' }, base: 2 },
   { name: 'odd-3rpx', options: { calc: 'nested', spacing: '3rpx' }, base: 3 },
@@ -12,7 +20,6 @@ const staticCases: Array<{ name: string, options: FixtureOptions, base: number }
 ]
 
 const runtimeCases: Array<{ name: string, options: FixtureOptions, override?: RegExp }> = [
-  { name: 'default', options: { calc: 'default' } },
   { name: 'disabled', options: { calc: 'off' } },
   { name: 'unresolved', options: { spacing: 'var(--runtime-spacing)' } },
   {

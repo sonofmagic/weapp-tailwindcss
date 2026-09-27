@@ -90,10 +90,15 @@ export async function openBrowser(url, session, artifactDir) {
         startupReloads++
         await page.reload({ waitUntil: 'domcontentloaded', timeout: 15_000 })
       }
+      const version = documentVersion
       await page.locator('#tw-matrix-height').waitFor({ timeout: 5000 })
+      // requestfinished 只证明响应已下载，async 脚本可能尚未执行；load 不等待后台 fetch。
+      await page.waitForLoadState('load', { timeout: 5000 })
+      assert.equal(documentVersion, version, 'Document changed while waiting for local scripts')
       assert.equal(pendingModules.size, 0, `Local modules still loading: ${[...pendingModules].map(request => request.url()).join(', ')}`)
+      assert.ok(documentResponse?.ok(), 'Current document navigation is not complete')
+      assert.ok(transportReady, 'Development update transport is not ready')
     }, session)
-    await until(() => assert.ok(transportReady, 'Development update transport is not ready'), session)
     return {
       events,
       async inspect(item, round) {

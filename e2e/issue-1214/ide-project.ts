@@ -41,7 +41,7 @@ page { background:#fff; color:#111; }
 }
 
 export async function createLayoutProject(marker: string) {
-  const project = await createProject({ spacing: `${runtimeSpacing}rpx`, calc: 'nested', wechatAppId: resolveWechatAppId() })
+  const project = await createProject({ spacing: `${runtimeSpacing}rpx`, calc: 'default', wechatAppId: resolveWechatAppId() })
   try {
     await writeFile(project.pageFile, layoutPageSource(marker))
     return project

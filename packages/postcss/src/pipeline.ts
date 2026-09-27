@@ -172,7 +172,8 @@ function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSign
       'cascade-layers': false,
     },
   } as Parameters<typeof postcssPresetEnv>[0]
-  const stagedUserPlugins = options.cssCalc && userPlugins.length > 0
+  const calcPlugin = getCalcPlugin(options)
+  const stagedUserPlugins = calcPlugin && userPlugins.length > 0
     ? [createUserPluginStage(userPlugins)]
     : userPlugins
   stagedUserPlugins.forEach((plugin, index) => {
@@ -180,7 +181,6 @@ function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSign
   })
 
   // 作者插件完成后、选择器和单位改写前求值，保留原始作用域及层叠上下文。
-  const calcPlugin = getCalcPlugin(options)
   if (calcPlugin) {
     preparedNodes.push(createPreparedNode('pre:calc', 'pre', () => calcPlugin))
   }

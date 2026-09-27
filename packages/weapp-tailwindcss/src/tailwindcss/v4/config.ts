@@ -123,7 +123,8 @@ export function applyV4CssCalcDefaults(
   cssCalc: InternalUserDefinedOptions['cssCalc'],
   tailwindRuntime: TailwindcssRuntimeLike | undefined,
 ): InternalUserDefinedOptions['cssCalc'] {
-  const cssCalcOptions = cssCalc ?? false
+  // 未指定的策略留到平台解析完成后决定，不能与显式关闭合并。
+  const cssCalcOptions = cssCalc
 
   if (tailwindRuntime && cssCalcOptions) {
     return ensureDefaultsIncluded(cssCalcOptions)
