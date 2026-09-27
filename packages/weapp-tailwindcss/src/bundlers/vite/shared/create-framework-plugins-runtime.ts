@@ -1,6 +1,6 @@
 /* eslint-disable style/max-statements-per-line, style/no-mixed-operators */
 import type { OutputAsset } from 'rollup'
-import type { HmrContext, ResolvedConfig } from 'vite'
+import type { HmrContext, Plugin, ResolvedConfig } from 'vite'
 import type { ViteCapabilityProfile } from '../capability-profile'
 import type { CssFinalizerContext } from '../css-finalizer/options'
 import type { GenerateBundleContext } from '../generate-bundle/types'
@@ -51,7 +51,7 @@ import { isMissingInternalCssSource, normalizeVitePersistentCacheKey, summarizeS
 import { removeScopedTailwindPreflightCss } from '../processed-css-assets'
 import { createRewriteCssImportsPlugins, hasVitePipelineTailwindGenerationDirective } from '../rewrite-css-imports'
 import { createViteRuntimeClassSet } from '../runtime-class-set'
-import { createRuntimeClassSetInvalidationPlugin } from '../runtime-class-set/invalidation-plugin'
+import { installRuntimeClassSetLifecycle } from '../runtime-class-set/lifecycle'
 import { createViteCssGenerationPlugins } from '../serve-css-generation'
 import { createViteServeJsTransformPlugin } from '../serve-js-transform'
 import { resolveViteServeRootMiniProgramImportShell } from '../serve-root-import-shell'
@@ -78,7 +78,7 @@ import { createGenericWebProductionBundleHooks, createGenericWebProductionSource
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss'); const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir); const generatorPlaceholderCssFile = path.join(weappTailwindcssPackageDir, 'generator-placeholder.css')
-function createViteFrameworkPlugins(options: ViteFrameworkRuntimeOptions = {}, frameworkBranch: ViteFrameworkBranchContext): any {
+export function createViteFrameworkPlugins(options: ViteFrameworkRuntimeOptions = {}, frameworkBranch: ViteFrameworkBranchContext): any {
   debug('create vite framework plugins framework=%s', frameworkBranch.frameworkName)
   const capability: ViteCapabilityProfile = options.__internalViteCapabilityProfile ?? frameworkViteCapabilityProfile
   const rawOptions = options.__internalViteRawOptions ?? options
@@ -491,29 +491,10 @@ ${tracedCss}${currentGeneratorBranch.isWeb ? `\n${createBundlerGeneratedCssEndMa
   })
   const sourceAndRewritePlugins = orderFrameworkSourceCandidatePlugins(extraPlugins, rewritePlugins, sourceCandidatesPlugin, frameworkBranch.sourceCandidatesBeforeExtraPlugin)
   const serveJsPlugin = capability.serveJsTransform ? createViteServeJsTransformPlugin({ createHandlerOptions: file => serveJsHandlerOptions(file, frameworkCssPipelineStrategy?.getServeJsHandlerOptions?.({ ...createCssPipelineContext(), file })), getCommand: () => resolvedConfig?.command, jsHandler, shouldTransform: () => shouldOwnTailwindGeneration && (frameworkCssPipelineStrategy?.shouldTransformServeJs?.(createCssPipelineContext()) ?? !resolveCurrentGeneratorBranch().isWeb), transformRuntime: (id, code) => registerModuleGraphCandidates(id, code, 'js') }) : undefined
-  const runtimeInvalidationPlugins = frameworkBranch.frameworkName === 'uni-app-x'
-    ? [createRuntimeClassSetInvalidationPlugin({
-        invalidate: invalidateRuntimeClassSet,
-        isEnabled: shouldEnableFrameworkExtraPlugins,
-        isRelevant: id => sourceScanSession.isDependency(id) || isSourceCandidateRequest(id),
-      })]
-    : []
-  const plugins = [...runtimeInvalidationPlugins, ...sourceAndRewritePlugins, webCssEntryObserverPlugin, ...createViteCssGenerationPlugins({ generateCss: generateTailwindCssForVitePipeline, getCommand: () => resolvedConfig?.command, onTailwindRootCss: registerTailwindRootCss, shouldDeferGeneration: shouldDeferFrameworkPreTransformGeneration, shouldGenerate: () => shouldOwnTailwindGeneration, shouldGenerateBuild: () => resolveCurrentGeneratorBranch().isWeb }), ...(serveJsPlugin ? [serveJsPlugin] : []), ...(capability.cssOnly ? [] : [{ name: `${vitePluginName}:watch-css-cache`, configResolved: { order: 'post', handler: installFrameworkWatchCssCacheAdapter } }]), postPlugin]
-  plugins.push({
-    name: 'weapp-tailwindcss:runtime-dispose',
-    closeWatcher: () => runtimeState.dispose(),
-    closeBundle() {
-      if (!resolvedConfig?.build?.watch && resolvedConfig?.command !== 'serve') {
-        runtimeState.dispose()
-      }
-    },
-    configureServer(server) {
-      server.httpServer?.once('close', () => runtimeState.dispose())
-    },
-  })
+  const plugins: Plugin[] = [...sourceAndRewritePlugins, webCssEntryObserverPlugin, ...createViteCssGenerationPlugins({ generateCss: generateTailwindCssForVitePipeline, getCommand: () => resolvedConfig?.command, onTailwindRootCss: registerTailwindRootCss, shouldDeferGeneration: shouldDeferFrameworkPreTransformGeneration, shouldGenerate: () => shouldOwnTailwindGeneration, shouldGenerateBuild: () => resolveCurrentGeneratorBranch().isWeb }), ...(serveJsPlugin ? [serveJsPlugin] : []), ...(capability.cssOnly ? [] : [{ name: `${vitePluginName}:watch-css-cache`, configResolved: { order: 'post' as const, handler: installFrameworkWatchCssCacheAdapter } }]), postPlugin]
+  installRuntimeClassSetLifecycle({ plugins, uniAppX: frameworkBranch.frameworkName === 'uni-app-x', invalidate: invalidateRuntimeClassSet, isEnabled: shouldEnableFrameworkExtraPlugins, isRelevant: id => sourceScanSession.isDependency(id) || isSourceCandidateRequest(id), dispose: runtimeState.dispose, getResolvedConfig })
   plugins.push(cssFinalizerOutputPlugin)
   plugins.push(createViteHmrCssModuleVersionFilterPlugin(hmrCssModuleVersions))
   if (capability.styleInjector) { plugins.push(...capability.cssOnly && typeof (options as any).__internalViteWebStyleInjectorFactory === 'function' ? (options as any).__internalViteWebStyleInjectorFactory(styleInjector) : createBuiltinViteStyleInjectorPlugins(styleInjector, () => frameworkBranch.styleInjectorDelegate)) }
   return plugins
 }
-export { createViteFrameworkPlugins }
