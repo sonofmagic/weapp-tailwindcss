@@ -5,8 +5,12 @@ import type { IStyleHandlerOptions } from '../types'
 import postcssCalc from '@weapp-tailwindcss/postcss-calc'
 import { analyzeCssCalcContext } from '../utils/css-calc-context'
 import { getCssCalcVariableReferences, isCssCalcCustomPropertySelected } from '../utils/css-custom-property'
+import { getAutoCalcPlugin } from './auto-calc'
 
 export function getCalcPlugin(options: IStyleHandlerOptions): AcceptedPlugin | null {
+  if (options.cssCalc === 'auto') {
+    return getAutoCalcPlugin(options)
+  }
   if (!options.cssCalc) {
     return null
   }

@@ -47,6 +47,6 @@ export function warnRpxThemeRisk(session: object, variables: readonly string[], 
       : '当前生成阶段未检测到相关 calc；这不代表已验证最终产物、所有作用域和设备。'
   warnedSessions.add(session)
   logger.warn(
-    `[tailwindcss@4][rpx-theme] @theme 中使用 rpx 的主题变量：${variables.join(', ')}。${generationHint} 微信 WXSS 可能先独立换算或量化基数再乘法，造成尺寸偏差，具体取整算法尚未确认。固定像素尺寸优先使用 px，需要缩放时在构建期输出最终静态 rpx；偶数或较大 rpx 也不保证准确。请检查最终 WXSS 并在目标设备验证：https://tw.weapp.dev/docs/issues/spacing-rpx`,
+    `[tailwindcss@4][rpx-theme] @theme 中使用 rpx 的主题变量：${variables.join(', ')}。${generationHint} 微信 v4 默认采用 cssCalc: 'auto'：完整样式作用域中固定的 rpx 主题会输出最终静态长度；局部或条件覆盖、来源冲突及不完整上下文仍保留运行时表达式。需要通过 JS 或内联样式动态修改主题时，请显式设置 cssOptions.cssCalc: false。微信 WXSS 可能先独立换算或量化基数再乘法，造成尺寸偏差，具体取整算法尚未确认。固定像素尺寸优先使用 px，需要缩放时在构建期输出最终静态 rpx；偶数或较大 rpx 也不保证准确。请检查最终 WXSS 并在目标设备验证：https://tw.weapp.dev/docs/issues/spacing-rpx`,
   )
 }

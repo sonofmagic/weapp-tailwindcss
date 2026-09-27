@@ -56,7 +56,7 @@ export async function createProject(options: FixtureOptions = {}) {
     const runtimeRequire = createRequire(runtimeDom)
     await symlink(path.dirname(path.dirname(runtimeDom)), path.join(modules, '@vue'), linkType)
     const manifest = JSON.parse(await readFile(path.join(demoRoot, 'package.json'), 'utf8'))
-    const calc = options.calc ?? 'nested'
+    const calc = options.calc ?? 'default'
     const calcConfig = calc === 'top-level'
       ? 'cssCalc: [\'--spacing\'],'
       : calc === 'nested'

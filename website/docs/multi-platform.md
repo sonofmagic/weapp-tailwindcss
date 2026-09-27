@@ -225,25 +225,9 @@ WeappTailwindcss({
 
 ## CSS 变量计算模式
 
-Tailwind CSS 4 下，CSS 变量与 `calc()` 的预计算默认关闭。这样可以避免 `var()` 中的大体积值被展开后，再被 Autoprefixer 复制到兼容声明中。例如图标插件生成的 `--svg` data URI 默认只会保留一份。
+明确的微信平台与 Tailwind CSS 4 下，未指定 `cssOptions.cssCalc` 默认采用 `'auto'`：在 Vite 完整产物作用域内计算固定 rpx 主题，并归约 rpx 字面量 calc。H5、原生 App、其他及未知平台保留原默认行为。本变更晚于 5.5.10。
 
-:::warning 微信小程序的 --spacing 与 rpx 限制
-`--spacing: 1rpx` 可以生成工具类，但运行时 `calc` 的尺寸可能与直接 `rpx` 不同，原生 WXSS 对照也复现了 `3rpx` 基数的偏差。固定像素尺寸优先使用 `px`；需要随窗口缩放时，优先输出最终静态 `rpx` 长度。保留运行时基数时可以尝试较大或偶数 `rpx`，但偶数也不保证准确，仍需设备验证。当前修复为小程序 deferred/incremental 链路保留固定主题变量及其作用域上下文：显式配置 `cssCalc: ['--spacing']` 且变量可在构建期解析时，会根据完整上下文静态化为最终长度，例如 `--spacing: 1rpx` 下的 `w-32` 和 `p-4` 分别输出 `32rpx` 和 `4rpx`。Vite 构建会在最终 CSS 产物阶段合并共同样式作用域，再计算长度和转换单位。已知作用域覆盖、无法解析或未选择的变量保留表达式；JavaScript 和内联样式的未来修改无法由构建期预测。具体对照、版本范围和处理方式见 [微信小程序 --spacing 与 rpx 计算限制](./issues/spacing-rpx.md)。
-:::
-
-微信目标还会对 Tailwind CSS 4 的 `@theme` / `@theme inline` 中所有 `rpx` 自定义属性输出建议性构建 warning，不限于 `--spacing`。它不阻断构建，同一构建会话最多提示一次，watch/HMR 不重复输出。`logLevel: 'warn'` 保留提示，`'silent'` 或 `'error'` 隐藏提示。只有 `weapp` 输出且明确识别为微信平台时启用，H5/Web、其他平台及未知平台不提示。
-
-提示会区分主题变量本身，以及当前生成阶段是否检测到相关 `calc`。该阶段可能早于 Vite 最终静态计算，提示中存在表达式不代表最终 WXSS 仍有运行时计算。`cssCalc` 成功静态化后仍保留配置提醒；`@theme inline` 单独使用不保证静态化。诊断失败会跳过，未提示也不代表已验证安全。触发范围和设备验证边界见 [构建期风险提示](./issues/spacing-rpx.md#构建期风险提示)。
-
-需要对构建期已知的值预计算时，可以显式开启：
-
-```ts
-WeappTailwindcss({
-  cssOptions: {
-    cssCalc: true,
-  },
-})
-```
+自动模式不展开普通 var，也不计算无关单位。已知覆盖和不完整作用域会保留变量表达式；需要未来 JS 或内联样式动态修改主题时，请显式设置 `cssOptions: { cssCalc: false }`。兼容边界和诊断见[微信 rpx 计算说明](./issues/spacing-rpx.md)。
 
 `cssCalc: true` 只对能够证明固定的变量计算 `calc()`，默认用静态结果替换原表达式。例如 Tailwind 生成的无条件根主题：
 
@@ -281,7 +265,7 @@ WeappTailwindcss({
 
 构建期无法预测 JavaScript 或内联样式未来对变量的修改。只选择确定固定的变量；动态主题不应启用冻结策略。`@theme inline` 已移除变量引用，单独使用它仍不保证消除 `calc()`。
 
-关闭预计算使用 `cssCalc: false`，默认配置也是关闭状态。`cssCalc` 不再隐式启用 `cssPresetEnv` 的全局变量展开；显式启用该独立功能时，需要另行验证它的输出。
+关闭预计算使用 `cssCalc: false`，这也是动态主题退出自动适配的方式。`cssCalc` 不再隐式启用 `cssPresetEnv` 的全局变量展开；显式启用该独立功能时，需要另行验证它的输出。
 
 ### 检查最终间距声明
 

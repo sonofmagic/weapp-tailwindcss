@@ -6,7 +6,7 @@ type GenerationStyleOptions = Partial<IStyleHandlerOptions>
 export function hasCssCalcVariables(options?: GenerationStyleOptions) {
   const calc = options?.cssOptions?.cssCalc ?? options?.cssCalc
   const include = Array.isArray(calc) ? calc : calc && typeof calc === 'object' ? calc.includeCustomProperties : undefined
-  return calc === true || Boolean(include?.length)
+  return calc === true || calc === 'auto' || Boolean(include?.length)
 }
 
 export function resolveGenerationStyleContext(
@@ -46,7 +46,7 @@ export function hasChangedCssCalcContext(previousCss: string, nextCss: string, o
   }
   const calc = options?.cssOptions?.cssCalc ?? options?.cssCalc
   const include = Array.isArray(calc) ? calc : calc && typeof calc === 'object' ? calc.includeCustomProperties : undefined
-  const selected = (name: string) => calc === true || isCssCalcCustomPropertySelected(name, include)
+  const selected = (name: string) => calc === true || calc === 'auto' || isCssCalcCustomPropertySelected(name, include)
   const values = (css: string) => {
     const context = [options?.customPropertyContextCss, css].filter(Boolean).join('\n')
     return new Map([...analyzeCssCalcContext(context, options?.customPropertyValues ?? (calc && typeof calc === 'object' && !Array.isArray(calc) ? calc.customPropertyValues : undefined)).customPropertyValues].filter(([name]) => selected(name)))

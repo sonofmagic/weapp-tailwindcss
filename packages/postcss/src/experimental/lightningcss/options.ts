@@ -68,7 +68,7 @@ function getLightningDefaultOptions(options?: Partial<IStyleHandlerOptions>): Pa
   const customPropertiesFeature = options?.cssPresetEnv?.features?.['custom-properties']
   const shouldPreserveCustomProperties = customPropertiesFeature !== undefined
     ? customPropertiesFeature
-    : options?.cssCalc
+    : options?.cssCalc && options.cssCalc !== 'auto'
       ? { preserve: true }
       : false
 

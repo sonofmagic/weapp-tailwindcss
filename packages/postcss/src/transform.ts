@@ -92,6 +92,7 @@ export {
   type ApplyConfiguredCssCalcOptions,
 } from './plugins/applyConfiguredCssCalc'
 export { applyConfiguredCssUnits, type ApplyConfiguredCssUnitsOptions } from './plugins/applyConfiguredCssUnits'
+export { isWechatAutoCssCalc } from './plugins/auto-calc'
 export { createFallbackPlaceholderReplacer } from './plugins/post/specificity-cleaner'
 
 export {

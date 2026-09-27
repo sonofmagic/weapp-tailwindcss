@@ -1,5 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { InternalUserDefinedOptions } from '@/types'
+import { isWechatAutoCssCalc } from '@weapp-tailwindcss/postcss/transform'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { shouldUseUniAppWebRpxCompatibility } from '@/runtime-branch/generator-target-env'
@@ -15,7 +16,7 @@ export function normalizeStyleHandlerMajorVersion(majorVersion: number | undefin
 
 export function resolveStyleOptionsFromContext(
   ctx: InternalUserDefinedOptions,
-  tailwindcssMajorVersion?: number,
+  tailwindcssMajorVersion: number | undefined = ctx.tailwindRuntime?.majorVersion,
 ): ResolvedStyleOptions {
   const resolvedUniAppXOptions = resolveUniAppXOptions(ctx.uniAppX)
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(ctx.generator, {
@@ -35,6 +36,13 @@ export function resolveStyleOptionsFromContext(
   const rem2rpx = branch.isWeb && shouldUseUniAppWebRpxCompatibility(ctx.appType)
     ? false
     : configuredRem2rpx
+  const platform = branch.platform ?? ctx.cssOptions?.platform ?? ctx.platform
+  const majorVersion = normalizeStyleHandlerMajorVersion(tailwindcssMajorVersion)
+  const configuredCalc = ctx.cssOptions?.cssCalc ?? ctx.cssCalc
+  const autoCalc = !branch.isWeb && isWechatAutoCssCalc({ platform, majorVersion, uniAppX: branch.isNativeApp })
+  const cssCalc = configuredCalc === 'auto' || configuredCalc === undefined
+    ? autoCalc ? 'auto' : undefined
+    : configuredCalc
   const cssOptions = {
     cssPreflight: ctx.cssOptions?.cssPreflight ?? ctx.cssPreflight,
     cssPreflightRange: ctx.cssOptions?.cssPreflightRange ?? ctx.cssPreflightRange,
@@ -49,8 +57,8 @@ export function resolveStyleOptionsFromContext(
     cssPresetEnv: ctx.cssOptions?.cssPresetEnv ?? ctx.cssPresetEnv,
     atRules: ctx.cssOptions?.atRules ?? ctx.atRules,
     autoprefixer: ctx.cssOptions?.autoprefixer ?? ctx.autoprefixer,
-    cssCalc: ctx.cssOptions?.cssCalc ?? ctx.cssCalc,
-    platform: branch.platform ?? ctx.cssOptions?.platform ?? ctx.platform,
+    cssCalc,
+    platform,
     px2rpx: ctx.cssOptions?.px2rpx ?? ctx.px2rpx,
     unitsToPx: ctx.cssOptions?.unitsToPx ?? ctx.unitsToPx,
     unitConversion: ctx.cssOptions?.unitConversion ?? ctx.unitConversion,
@@ -58,6 +66,7 @@ export function resolveStyleOptionsFromContext(
   } satisfies NonNullable<IStyleHandlerOptions['cssOptions']>
 
   return {
+    majorVersion,
     appType: ctx.appType,
     postcssOptions: ctx.postcssOptions,
     cssPreflight: cssOptions.cssPreflight,

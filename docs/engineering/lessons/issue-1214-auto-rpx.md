@@ -1,0 +1,78 @@
+---
+status: partial
+issue: https://github.com/sonofmagic/weapp-tailwindcss/issues/1214
+baseline: 7fa8c3ac8243e6468a407622ea173c86a3a51ed4
+regressions:
+  - packages/postcss/test/calc-auto.test.ts
+  - packages/weapp-tailwindcss/test/bundlers/vite-auto-rpx-calc.test.ts
+  - e2e/issue-1214-rpx-calc.test.ts
+  - e2e/issue-1241.test.ts
+  - e2e/issue-1241-watch.test.ts
+  - e2e/issue-1214-ide.test.ts
+  - e2e/issue-1241-ide.test.ts
+---
+
+# Issue #1214：微信固定 rpx 主题的默认自动计算
+
+## 症状
+
+npm 5.5.10 在显式 cssCalc 下已能输出最终 rpx，但默认配置仍保留运行时乘法。此前独立发布包验证在微信 DevTools 中测得工具类宽高32px、直接32rpx对照16px，padding/gap为4px对2px。此记录不覆盖或删除此前发布版证据。
+
+## 根因与纠正
+
+配置入口过早把未指定值归并为false，后续平台解析和Vite延后阶段无法区分默认行为与用户退出。新增cssCalc:'auto'，保留未指定状态，在明确微信v4时选择自动模式；嵌套配置优先，显式false、true、白名单和对象的语义保持独立。
+
+CSS解析和归约归PostCSS所有。自动模式只选择安全的rpx长度及其别名，只替换能完整归约为rpx的calc；普通var、其他单位、数字标量变量和未知表达式不被顺便展开。保留细小长度精度。完整作用域标记默认缺失，未提供完整上下文的单文件处理只归约字面量。
+
+Vite在作者插件完成后使用本轮产物图，保留原始表达式到最终阶段，计算后再转换单位。完整作用域每轮分析一次，结果只在本轮资产之间共享，不写入生成缓存。未知CSS导入及消费元数据缺失都会阻止自动推导。watch从实际复用的资产恢复原始表达式，退出自动模式也不留下旧常量。
+
+真实页面样式回归揭示了仅凭CSS导入图判断隔离的缺口：全局工具类和页面WXSS没有导入边，但宿主会共同加载。最初自动实现错误生成32rpx，而页面有--spacing:3rpx覆盖。现自动模式保守纳入同轮全部CSS资产；局部、条件、冲突、循环、未知依赖和property注册阻止静态化。即使产物实际隔离，不同值也可能保守阻止自动计算；不能为追求静态化率而猜测源码目录或布局。显式配置沿用原作用域策略。
+
+## 验证
+
+本轮使用独立工作树和当前工作树构建产物，Node24.18.0、pnpm12.6.0；未以旧npm包替代本地修复。最初新增PostCSS回归12失败、Vite默认策略回归2失败；修复后重新验证。
+
+定向命令设置CI=1，普通验证均为--update=none。主要入口：
+
+```sh
+pnpm --filter weapp-tailwindcss... run build
+pnpm --filter @weapp-tailwindcss/postcss exec vitest run --update=none
+pnpm --filter weapp-tailwindcss exec vitest run test/context test/bundlers/vite-auto-rpx-calc.test.ts test/bundlers/vite-final-css-calc.test.ts --update=none
+pnpm exec vitest run -c e2e/vitest.e2e.config.ts e2e/issue-1214-rpx-calc.test.ts e2e/issue-1214-rpx-calc-watch.test.ts e2e/issue-1214-author-css-watch.test.ts e2e/issue-1214-layout-static.test.ts e2e/issue-1241.test.ts e2e/issue-1241-watch.test.ts e2e/issue-1241-layout.test.ts --update=none
+pnpm --filter weapp-tailwindcss exec tsc -p tsconfig.build.json --noEmit --noCheck false --pretty false
+pnpm architecture:check
+pnpm agents:check
+pnpm release check
+pnpm release status
+```
+
+#1214真实构建固定uni-app 3.0.0-5020620260917001（Compiler5.26）、Vue3.5.43；#1241保留原Issue的uni-app 3.0.0-5010520260709002（Compiler5.15）、Vue3.5.42；两者均Tailwind4.3.3、Vite5.2.8。#1241允许通过E2E_ISSUE_1241_DEPENDENCIES复用已安装精确框架版本；helper核对版本，插件始终链接当前工作树。
+
+static更新限定上述Issue用例加-u；新增7份默认主题基线和独立页面覆盖基线，原default的8条calc改为最终rpx；watch增加页面覆盖增删两个阶段。原有显式配置、动态覆盖等基线仍保留。更新与不更新复验日志分开保存，不能把更新快照当作验收。
+
+单独IDE入口需E2E_IDE=1及E2E_PREFLIGHT_WECHAT_CLI：运行e2e/issue-1214-ide.test.ts和e2e/issue-1241-ide.test.ts。每轮核对新marker、当前临时项目、DevTools后端、同批原生矩形和截图。未开启全端全面测试，没有复用历史预检放行。
+
+本轮原始日志集中在e2e/.artifacts/issue-1214-auto/，真实产物身份、watch对照和IDE截图分别在e2e/.artifacts/issue-1241/与e2e/.artifacts/issue-1214-ide/。
+
+### 最终本地结果
+
+- 通过：PostCSS 110文件、1167测试；主包定向30文件、268测试。既有跳过分别为3和1，不计为通过。
+- 通过：两个受影响包构建及声明生成、主包严格类型检查、架构、ESLint（0错误）、规则与change intent检查；四个修改的中英文页面MDX编译和配置/翻译完整性检查。
+- 通过：本轮非更新static运行中其余6文件的37项断言，以及随后单独不更新复验的18轮watch，共38条定向E2E测试完成。先前聚合运行有1条watch失败，不能将该次命令本身写成全绿；失败和上游对照见下文。
+- 通过：最终串行DevTools复验2条测试完成，单入口8rpx及双入口1/2/3/8rpx的尺寸与直接rpx对照一致。DevTools2.02.2609231、基础库3.16.3、WebView、窗口390、DPR3；双入口宽高分别16/33/49/133px，padding、正负margin、gap均一致。截图已逐张核对。原始记录为issue-1214-ide/run-unYxhm/evidence.json和issue-1241/workspace/ide/evidence.json，串行日志为ide-serial-verified.log。
+- 失败并保留：最初回归、旧mock/类型/格式检查与缺失新快照的中间失败；已修正并复验。独立的uni-app整块style删除对照仍失败，本次未修改上游编译器。
+- 未验证：微信真机、Skyline、Windows原生构建和全面全端工作流。未发布或关闭Issue。
+
+## 适用边界
+
+自动模式把通过分析的rpx主题视为固定。未来JS或内联样式覆盖无法静态预测，动态主题必须显式cssOptions.cssCalc:false。此取舍已在实现前确认，并写入中英文文档与诊断。关闭后仍存在微信自身的运行时单位计算限制。
+
+额外watch实验删除整个Vue style块时，旧pages/index.wxss残留，导致与干净构建不一致。移除weapp-tailwindcss并移除Tailwind入口后的独立uni-app5.15对照仍得到同样结果：删除前后均保留.scope{--spacing:3rpx}。原始记录为sfc-delete-control.json/.log与page-scope-before.log、host-scope-static-update.log。该上游样式模块删除问题未在本次修复；正式新增watch回归明确保留非空style模块，仅增加和删除主题覆盖声明，不把整块删除算作通过。
+
+一次IDE复验在前两种基数通过后收到SIGTERM（退出143）；中断报告不算完整通过，随后串行定向复验已完整通过，见上方最终记录。没有推断未经证实的进程终止原因。
+
+微信Android/iOS真机、Skyline、Windows原生构建及全仓/全端全面工作流未验收。包构建声明生成通过不等于PostCSS全源码严格类型检查；本轮严格源码检查针对主包。未发布npm，也不将本地修复作为关闭Issue的发布版证据。
+
+## 规则评估
+
+不新增AGENTS规则。现有AST所有权、构建图与生命周期、不能以单文件猜测全局作用域、真实产物及static基线要求足以约束本次修复。需要保留的教训是：没有导入边不代表宿主不会共同加载，默认适配必须比显式用户选择更保守。

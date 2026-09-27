@@ -3,6 +3,18 @@ import path from 'node:path'
 import { expect, it } from 'vitest'
 import { build, createProject, evidence, multipliers, pageSource, themeSource } from './issue-1241/project'
 
+it('默认计算识别独立页面样式中的主题覆盖', async () => {
+  const project = await createProject('page-override', { secondTheme: '1rpx' })
+  await writeFile(project.pageFile, `${pageSource(project.name)}\n<style>.scope{--spacing:3rpx}</style>`)
+  await build(project)
+  const result = await evidence(project)
+  expect(Object.keys(result.declarations).sort()).toEqual(Object.keys(multipliers).sort())
+  for (const [selector, multiple] of Object.entries(multipliers)) {
+    expect(result.declarations[selector]).toEqual([`calc(var(--spacing)*${multiple})`])
+  }
+  await expect(JSON.stringify(result.declarations, null, 2)).toMatchFileSnapshot('./__snapshots__/issue-1241/page-override.json')
+})
+
 it.each([
   ['same-theme', { secondTheme: '1rpx' }, false],
   ['conflict', { secondTheme: '2rpx' }, true],

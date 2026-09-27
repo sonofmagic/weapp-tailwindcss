@@ -24,12 +24,13 @@ export function createViteCssCalcStage(
     platform: original.cssOptions?.platform ?? original.platform ?? getPlatform(),
   }, original.tailwindRuntime.majorVersion)
   const shouldDefer = () => {
-    if (!isBuild() || !(original.cssOptions?.cssCalc ?? original.cssCalc)) {
+    if (!isBuild()) {
       return false
     }
     const finalOptions = resolveFinalOptions()
     // 原生样式可能嵌入 JS/UTS，不能延迟到只处理 CSS 资产的阶段。
-    return finalOptions.uniAppX !== true
+    return Boolean(finalOptions.cssCalc)
+      && finalOptions.uniAppX !== true
       && !resolveUniUtsPlatform(finalOptions.platform).isApp
   }
   const defer = (options?: Partial<IStyleHandlerOptions>): Partial<IStyleHandlerOptions> | undefined => shouldDefer()

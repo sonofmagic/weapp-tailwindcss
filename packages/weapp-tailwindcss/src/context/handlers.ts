@@ -41,7 +41,7 @@ export function createHandlersFromContext(
     injectAdditionalCssVarScope: resolvedInjectAdditionalCssVarScope,
     postcssOptions,
     uniAppXUnsupported: resolvedUniAppXOptions.uvueUnsupported,
-    cssCalc: cssCalcOptions,
+    cssCalc: styleOptions.cssCalc ?? cssCalcOptions,
     majorVersion: normalizeStyleHandlerMajorVersion(tailwindcssMajorVersion),
   })
 

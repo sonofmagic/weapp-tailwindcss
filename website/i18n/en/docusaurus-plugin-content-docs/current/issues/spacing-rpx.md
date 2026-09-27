@@ -29,20 +29,27 @@ Tailwind CSS 4 accepts `--spacing: 1rpx` inside `@theme`. However, valid generat
 
 See [Issue #1214](https://github.com/sonofmagic/weapp-tailwindcss/issues/1214) for reproductions, environments, and fix progress. This page distinguishes WeChat runtime limitations from the library build-pipeline fix. After the fixed patch is released, still inspect the actual output for the version you use.
 
-## Current build fix
+## Default automatic adaptation
 
-The current fix preserves variable declarations and their scopes throughout Tailwind CSS 4 mini-program deferred and incremental generation. When a build-time fixed variable is explicitly selected with `cssOptions.cssCalc: ['--spacing']`, the build pipeline checks whether static evaluation is safe using the complete context, then computes the final length:
+Current source adds `cssCalc: 'auto'`. When Tailwind CSS 4 and a WeChat target are explicitly identified, an omitted option selects this mode. Vite WeChat builds resolve fixed rpx themes within the complete output CSS scope, producing `width: 32rpx` from `--spacing: 1rpx` and `w-32` without extra configuration.
 
-```css title="Declarations after static evaluation"
-.w-32 { width: 32rpx; }
-.p-4 { padding: 4rpx; }
+This changes the 5.5.10 default, which still retains runtime calc. Verify that the installed release includes this change and inspect its final WXSS.
+
+Automatic mode only replaces calc expressions that fully reduce to an rpx length, including safe aliases and inline literals. It leaves plain var references and unrelated units unchanged. Explicit booleans, variable lists and option objects keep their existing meaning; nested `cssOptions.cssCalc` takes precedence.
+
+Vite evaluates after author plugins and before unit conversion. Mini-program hosts can load page or component styles together without CSS import edges, so automatic mode conservatively includes every CSS asset in the current bundle. Conflicting values prevent automatic evaluation even when those assets are actually isolated. Explicit configuration keeps its existing entry and import scopes. Local or conditional overrides, conflicting sources, unresolved or cyclic dependencies and property registrations prevent variable evaluation. Missing imported assets make the scope incomplete. Adapters without complete scope metadata only simplify literals. Watch changes restore original expressions before reassessing safety.
+
+:::warning Opt out for runtime themes
+Automatic mode treats statically eligible rpx themes as fixed. Future JavaScript and inline-style updates cannot be predicted; a generated `width: 32rpx` will no longer respond to changes of `--spacing`. Use:
+
+```ts
+WeappTailwindcss({
+  cssOptions: { cssCalc: false },
+})
 ```
 
-This fixes context propagation, scope analysis, and cache invalidation in the library, avoiding WeChat's intermediate runtime multiplication of a small `rpx` base. Known local selector overrides, conditional declarations, or conflicting source values within a shared style scope keep the affected variables and their dependency chains as runtime expressions. Theme or configuration changes cause affected rules to be recalculated during incremental generation.
-
-Vite builds preserve expressions until the final CSS asset graph is available. Entry points, static imports, and CSS imports determine shared style scopes; static evaluation then runs before unit conversion. Separate output files are not automatically isolated: styles loaded together participate in the same analysis, while independent entry scopes are evaluated separately. The Vite development server and styles embedded in native App code do not use this deferred stage.
-
-Static analysis cannot predict future JavaScript or inline-style changes. Select only variables that will remain fixed at runtime. Disabled or unconfigured `cssCalc`, unresolved variables, and later plugins that recreate expressions can still leave runtime `calc()`. This does not change WeChat's own conversion algorithm.
+Opting out preserves runtime references and their WeChat rpx calc limitations. Applications can supply final rpx lengths themselves. This feature does not change WeChat's conversion algorithm. Web, native App, other mini-program platforms and unknown targets are not enabled by default.
+:::
 
 ## Build-time advisory warning
 
@@ -63,7 +70,7 @@ The message also reports the CSS state after the shared generation pipeline. Thi
 | No related `calc` was detected at the current generation stage                                             | This stage may be static or may not use the variable; it does not verify final assets, every scope, or every device                                             |
 | Output diagnosis could not complete                                                                        | Output analysis is skipped without failing the build or claiming safety                                                                                         |
 
-Even when `cssCalc` successfully makes final WXSS static, an earlier warning may still report expressions at the generation stage; inspect final WXSS to determine the result. `@theme inline` alone usually substitutes the literal and may leave `calc(3rpx * 8)`, which is not static `24rpx`. An unparseable source is skipped. One warning is not a complete inventory of every build artifact. Later minification or custom plugins may still change CSS; inspect final WXSS and verify on target devices.
+Even when `cssCalc` successfully makes final WXSS static, an earlier warning may still report expressions at the generation stage; inspect final WXSS to determine the result. With automatic calculation disabled or the target unmatched, `@theme inline` only substitutes the literal and may leave `calc(3rpx * 8)`. Active automatic mode reduces this literal to `24rpx`. An unparseable source is skipped. One warning is not a complete inventory of every build artifact. Later minification or custom plugins may still change CSS; inspect final WXSS and verify on target devices.
 
 ## rpx conversion can amplify errors in the base length
 
@@ -92,7 +99,7 @@ The earlier user report of `calc(1rpx * 8) = 8px` and `calc(1 * 8rpx) = 4px` has
 
 ## cssCalc capabilities and known limitations
 
-`cssOptions.cssCalc` is disabled by default. To precompute fixed theme values, select the variables explicitly:
+On WeChat v4, the default is now `'auto'`; on other targets it remains disabled. To precompute fixed theme values, select the variables explicitly:
 
 ```ts
 WeappTailwindcss({
@@ -110,11 +117,9 @@ The intended result is to reduce a known `calc(1rpx * 32)` to `32rpx`, so WeChat
 
 Inspect the final utility property value and any later declaration that could override it. Finding `--spacing: 1rpx` and the class name in WXSS is not enough.
 
-## @theme inline does not automatically remove calc
+## @theme inline and automatic mode
 
-Using only `@theme inline { --spacing: 1rpx; }` can still produce `calc(1rpx * 32)`. The native WXSS control confirmed a size difference with this expression too.
-
-Combining `@theme inline` with `cssCalc: ['--spacing']` uses the same static evaluation path when the variable is resolvable at build time. `@theme inline` alone can still leave `calc(1rpx * 32)`; do not use static evaluation when the theme value changes at runtime. Inspect the output and test the target device before relying on it.
+WeChat v4 automatic mode reduces literal expressions such as `calc(1rpx * 32)` to `32rpx`. With calculation explicitly disabled, inline alone still leaves runtime multiplication and its sizing limitation. Explicit variable-list configuration continues to work. Inline themes do not preserve runtime variable references.
 
 ## Choosing between fixed sizes and runtime themes
 
