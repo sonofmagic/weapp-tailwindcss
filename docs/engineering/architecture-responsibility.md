@@ -16,7 +16,13 @@
 
 依赖方向为适配器到核心，再到基础包。主包的 generation 拥有通用生成编排，project-sources/candidates 拥有候选集合与扫描缓存；旧 bundlers/shared 的对应路径只保留兼容重导出。PostCSS 根导出继续兼容，内部消费者改用独立子路径。weapp-style-injector/types 提供与适配实现解耦的类型入口。
 
-## 扫描与兼容
+## 客户端与状态生命周期
+
+客户端值依赖检查覆盖 runtime、cn、merge（含 slim/lite）、cva、variants、theme-transition 根入口、UI 的 variants/components/utils/hooks/adapters 和主包 escape。类型引用不视为运行时加载；typography、theme-transition/tailwindcss 和 UI preset 是构建时入口，UI 根入口是 CSS。包名、公开子路径和发布形式保持兼容。
+
+Vite 的来源发现、候选刷新、CSS 资产和生成队列各自持有状态，组装层只连接依赖与生命周期。普通构建结束和 watcher 关闭时先排空生成任务，再释放来源与资产；watch 中间轮次不清空。跨实例共享的解析缓存保持有界：design system/模块 64、CSS 入口 128、PostCSS 选项 256、管线/处理器各 64。无 watcher 的程序化入口继续校验依赖内容，不以容量优化取消失效检查。
+
+## 扫描语义
 
 共享描述是 base、pattern、negated。默认扩展名包含 qxml，绝对 glob 拆成静态根和相对模式，Windows 盘符、UNC 与反斜杠在共享边界处理。
 

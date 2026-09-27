@@ -2,6 +2,7 @@ import type { Graph } from './graph'
 import fs from 'node:fs'
 import path from 'node:path'
 import ts from 'typescript'
+import { auditClientBoundaries } from './client-boundaries'
 import { findCycles, findPath } from './graph'
 import { readImports } from './imports'
 import { inside, readWorkspace, resolveWorkspaceEntry } from './workspace'
@@ -25,6 +26,9 @@ export function auditArchitecture(root: string) {
         const resolved = ts.resolveModuleName(edge.specifier, file, pkg.options, ts.sys).resolvedModule
         const candidate = dependency ? resolveWorkspaceEntry(dependency, edge.specifier) : resolved?.resolvedFileName
         const target = candidate ? path.resolve(candidate) : undefined
+        if (!edge.typeOnly && !dependency && !edge.specifier.startsWith('.') && !edge.specifier.startsWith('@/') && (!target || resolved?.isExternalLibraryImport)) {
+          valueEdges.add(`external:${edge.specifier}`)
+        }
         if (dependency && dependency !== pkg && !edge.typeOnly && !/\.d\.[cm]?ts$/.test(file)) {
           packageGraph.get(pkg.name)!.add(dependency.name)
         }
@@ -96,5 +100,6 @@ export function auditArchitecture(root: string) {
       }
     }
   }
+  errors.push(...auditClientBoundaries(root, packages, values))
   return { errors, files: files.size, packages: packages.length }
 }
