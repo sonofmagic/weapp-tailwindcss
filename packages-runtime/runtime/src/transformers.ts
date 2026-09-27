@@ -5,8 +5,10 @@ import {
   MappingChars2String,
   unescape as unescapeSelectors,
 } from '@weapp-core/escape'
+import { registerTransformProbe } from './transformer-probes'
 
 const identity = (value: string) => value
+registerTransformProbe(identity, 'identity')
 
 function isConfig<T extends object>(value: boolean | T | undefined): value is T {
   return typeof value === 'object' && value !== null
@@ -82,6 +84,15 @@ export function resolveTransformers(options?: CreateOptions): Transformers {
   const unescapeFn = unescapeEnabled
     ? (value: string) => unescapeSelectors(value, unescapeOptions)
     : identity
+
+  if (sharedMap === MappingChars2String) {
+    if (escapeEnabled && !isConfig(escapeConfig)) {
+      registerTransformProbe(escapeFn, 'escape')
+    }
+    if (unescapeEnabled && !isConfig(unescapeConfig)) {
+      registerTransformProbe(unescapeFn, 'unescape')
+    }
+  }
 
   return {
     escape: escapeFn,

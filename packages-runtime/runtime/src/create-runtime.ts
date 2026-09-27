@@ -6,8 +6,8 @@ import type {
   TailwindMergeVersion,
   Transformers,
 } from './types'
-import { MappingChars2String } from '@weapp-core/escape'
 import { clsx } from 'clsx'
+import { needsTransform } from './transformer-probes'
 import { resolveTransformers } from './transformers'
 
 type TailwindMergeFactoryFn = (...args: any[]) => TailwindMergeLibraryFn
@@ -40,9 +40,6 @@ interface CreateRuntimeFactoryOptions<
 
 const CACHE_LIMIT = 256
 
-const UNESCAPE_RE = /u[0-9a-f]{3,}/i
-const ESCAPE_NEEDLES = Object.keys(MappingChars2String).filter(Boolean)
-
 function hasWhitespace(value: string) {
   return value.includes(' ')
     || value.includes('\t')
@@ -50,19 +47,6 @@ function hasWhitespace(value: string) {
     || value.includes('\r')
     || value.includes('\f')
     || value.includes('\v')
-}
-
-function shouldUnescape(value: string) {
-  return value.includes('_') || UNESCAPE_RE.test(value)
-}
-
-function shouldEscape(value: string) {
-  for (const needle of ESCAPE_NEEDLES) {
-    if (value.includes(needle)) {
-      return true
-    }
-  }
-  return false
 }
 
 function transformTokens(value: string, transformFn: (token: string) => string): string {
@@ -103,10 +87,12 @@ export function wrapRuntimeAggregator(
 
     const cached = cache.get(rawInput)
     if (cached !== undefined) {
+      cache.delete(rawInput)
+      cache.set(rawInput, cached)
       return cached
     }
 
-    const normalized = shouldUnescape(rawInput) ? transformTokens(rawInput, transformers.unescape) : rawInput
+    const normalized = needsTransform(transformers.unescape, rawInput) ? transformTokens(rawInput, transformers.unescape) : rawInput
     let metadata: unknown
     let preparedValue = normalized
     if (prepareValue) {
@@ -122,7 +108,7 @@ export function wrapRuntimeAggregator(
     const merged = fn(preparedValue)
     const restored = restoreValue ? restoreValue(merged, metadata) : merged
 
-    const escaped = shouldEscape(restored)
+    const escaped = needsTransform(transformers.escape, restored)
       ? transformTokens(restored, transformers.escape)
       : restored
 
