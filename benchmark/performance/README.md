@@ -11,3 +11,7 @@ runtime 场景分别创建 cn 与 tailwind-merge 的真实实例：cold 包含�
 支持 `--source-root` 指向已安装并构建的独立基线工作树，以及 `--output` 指定报告路径。比较时使用同一份基准脚本，两个工作树各自解析自己的插件与依赖，串行测量，报告记录 SHA、工作树状态、Node、CPU、median、p95、RSS 和 GC 后堆占用。报告写入忽略目录，不自动更新预算。
 
 这项验证覆盖构建器真实 watch 产物，不包含浏览器渲染、IDE 或设备。设备验收仍执行仓库的环境预检与多端流程。
+
+## 静态基线
+
+`pnpm --filter benchmark-performance watch:baseline` 单独生成 3 个来源片段的 Vite/Webpack CSS 基线，写入 `test/fixtures/watch/`。普通测试只读取这些基线，仍要求连续三轮恢复后的完整输出一致。更新后需运行 `pnpm --filter benchmark-performance test -- --update=none` 验证，不能以更新基线掩盖动态内容残留。

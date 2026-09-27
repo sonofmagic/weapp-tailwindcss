@@ -17,6 +17,10 @@ const sizes = arg('--sizes', '10,50,100').split(',').map(Number)
 if (!Number.isInteger(warmups) || warmups < 0 || !Number.isInteger(runs) || runs < 1 || kinds.some(kind => !['vite', 'webpack'].includes(kind)) || sizes.some(size => !Number.isInteger(size) || size < 1)) {
   throw new Error('无效的采样配置')
 }
+const updateStatic = process.argv.includes('--update-static')
+if (updateStatic && (sizes.length !== 1 || sizes[0] !== 3)) {
+  throw new Error('静态基线只接受 --sizes 3')
+}
 const output = path.resolve(arg('--output', path.join(sourceRoot, '.tmp', 'watch-lifecycle.json')))
 const report = {
   commit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: sourceRoot, encoding: 'utf8' }).trim(),
@@ -28,7 +32,13 @@ try {
   for (const kind of kinds) {
     for (const size of sizes) {
       console.log(`[watch-lifecycle] ${kind} size=${size}`)
-      report.cases.push(await measureWatchLifecycle({ sourceRoot, kind, size, warmups, runs }))
+      const result = await measureWatchLifecycle({ sourceRoot, kind, size, warmups, runs })
+      report.cases.push(result)
+      if (updateStatic) {
+        const directory = fileURLToPath(new URL('../test/fixtures/watch', import.meta.url))
+        await fs.mkdir(directory, { recursive: true })
+        await fs.writeFile(path.join(directory, `${kind}.css`), result.outputCss)
+      }
     }
   }
 }

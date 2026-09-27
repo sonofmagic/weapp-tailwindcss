@@ -7,6 +7,7 @@ import type { WebpackStyleInjectorDelegateFactory } from '@/style-injector/inter
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
+import { createCompilationDependencyChanges, recordCompilationDependencyChanges } from '@/compiler'
 import { COMPILATION_EVENT_SCHEMA_VERSION } from '@/compiler/events'
 import { createCompilerRuntimeState } from '@/compiler/runtime-state'
 import { pluginName } from '@/constants'
@@ -116,10 +117,21 @@ export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
     const currentWebpackCssSourceFiles = new Set<string>()
     const currentWebpackCssSourceModules = new Set<string>()
     let runtimeMetadataPrepared = false
+    let compilationChangeRecord: {
+      changes: ReturnType<typeof createCompilationDependencyChanges>
+      affectedScopes: Set<string>
+    } | undefined
 
     const updateRuntimeWatchDependencies = async () => {
       runtimeWatchDependencyFiles.clear()
       runtimeWatchDependencyContexts.clear()
+
+      // 配置和插件的间接依赖由生成器发现，来源配置本身未必包含它们。
+      for (const source of webpackGeneratedCssSources.values()) {
+        for (const dependency of source.dependencies) {
+          runtimeWatchDependencyFiles.add(dependency)
+        }
+      }
 
       const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
       if (tailwindOptions?.config) {
@@ -216,6 +228,9 @@ export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
     const resetRuntimePreparation = () => {
       runtimeSetPrepared = false
       syncRuntimeRefreshRequirement()
+      const changes = createCompilationDependencyChanges(collectWatchChangedFiles())
+      // loader 会消费生成会话，必须在它执行前失效；processAssets 只复用本轮记录。
+      compilationChangeRecord = { changes, affectedScopes: recordCompilationDependencyChanges(runtimeState, changes) }
     }
 
     const registerAutoCssSource = async (source: TailwindV4CssSource) => {
@@ -261,11 +276,15 @@ export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
     }
     const registerWebpackGeneratedCss = (source: WebpackGeneratedCssRegistration) => {
       const file = path.resolve(source.file)
+      debug('webpack generated css dependencies: %s count=%d', file, source.dependencies.length)
       webpackGeneratedCssSources.set(file, {
         ...source,
         file,
       })
       currentWebpackCssSourceFiles.add(file)
+      for (const dependency of source.dependencies) {
+        runtimeWatchDependencyFiles.add(dependency)
+      }
     }
     const updateWebpackGeneratedCss = (source: { css: string, file: string }) => {
       const file = path.resolve(source.file)
@@ -446,6 +465,7 @@ export class WebpackFrameworkPlugin implements IBaseWebpackPlugin {
       },
       isWatchMode: () => watchRunObserved || compiler.options?.watch === true,
       getWatchChangedFiles: collectWatchChangedFiles,
+      getCompilationChangeRecord: () => compilationChangeRecord,
       runtimeClassSetManager: (this.options as any).__internalWebpackRuntimeClassSetManager,
       getWebpackCssSources: () => webpackCssSources,
       getWebpackGeneratedCssSources: () => webpackGeneratedCssSources,

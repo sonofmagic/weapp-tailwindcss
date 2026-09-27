@@ -24,7 +24,7 @@ export async function measureWatchLifecycle({ sourceRoot, kind, size, warmups, r
     waiting?.()
   }
   const nextBuild = (previous) => new Promise((resolve, reject) => {
-    const timer = setTimeout(() => { waiting = undefined; reject(new Error(`${kind} watch timed out at ${phase} after build ${completed}`)) }, 15000)
+    const timer = setTimeout(() => { waiting = undefined; reject(new Error(`${kind} watch timed out at ${phase} after build ${completed}; colors=${[...new Set(latestCss.match(/#[0-9a-f]{6}/gi) ?? [])].join(',')}`)) }, 15000)
     const check = () => {
       if (failure || completed > previous) {
         clearTimeout(timer)
@@ -89,8 +89,12 @@ export async function measureWatchLifecycle({ sourceRoot, kind, size, warmups, r
           },
         }],
       })
-      const watcher = compiler.watch({ aggregateTimeout: 5 }, (error, stats) => {
-        notify(error ?? (stats?.hasErrors() ? new Error(stats.toString({ all: false, errors: true })) : undefined))
+      // watch 回调早于下一轮监听注册；afterDone 后让 nextTick 完成，才能写下一份输入。
+      compiler.hooks.afterDone.tap('BenchmarkWatchReady', (stats) => {
+        setImmediate(() => notify(stats.hasErrors() ? new Error(stats.toString({ all: false, errors: true })) : undefined))
+      })
+      const watcher = compiler.watch({ aggregateTimeout: 5 }, (error) => {
+        if (error) { notify(error) }
       })
       close = async () => {
         await new Promise((resolve, reject) => watcher.close(error => error ? reject(error) : resolve()))
@@ -104,7 +108,7 @@ export async function measureWatchLifecycle({ sourceRoot, kind, size, warmups, r
     const samples = []
     const outputs = []
     const change = async (updates, predicate) => {
-      phase = updates.map(([file]) => file).join(',')
+      phase = updates.map(([file, content]) => `${file}:${content.includes('#654321') ? 'blue' : content.includes('#123456') ? 'red' : ''}`).join(',')
       const before = completed
       await Promise.all(updates.map(([file, content]) => write(file, content)))
       let observed = before
@@ -135,7 +139,7 @@ export async function measureWatchLifecycle({ sourceRoot, kind, size, warmups, r
       await Promise.all(outputs.map((css, index) => fs.writeFile(path.join(artifacts, `${index}.css`), css)))
       throw new Error(`恢复后 CSS 产物不一致，证据：${artifacts}`)
     }
-    return { kind, size, startupMs, warmups, runs, time: summarize(measured.map(sample => sample.milliseconds)), peakRssMb: process.resourceUsage().maxRSS / 1024, peakHeapMb: Math.max(...measured.map(sample => sample.heapMb)), samples }
+    return { kind, size, startupMs, warmups, runs, time: summarize(measured.map(sample => sample.milliseconds)), peakRssMb: process.resourceUsage().maxRSS / 1024, peakHeapMb: Math.max(...measured.map(sample => sample.heapMb)), outputCss: outputs.at(-1), samples }
   }
   finally {
     await close()

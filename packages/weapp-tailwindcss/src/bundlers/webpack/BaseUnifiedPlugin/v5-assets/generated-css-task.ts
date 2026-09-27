@@ -57,13 +57,16 @@ export async function processWebpackGeneratedCssAsset(element: any, context: Web
   const cssSourceHash = (() => {
     const sourceFile = resolveWebpackCssSourceFile(file, currentRawSource)
     const sourceCss = sourceFile ? cssSources.get(sourceFile)?.css : undefined
+    const loaderCss = sourceFile ? generatedCssSources.get(sourceFile)?.css : undefined
+    const loaderHash = loaderCss === undefined ? 'loader:0' : compilerOptions.cache.computeHash(loaderCss)
     const generatorSourceCss = removeWebpackGeneratorNonTailwindImports(sourceCss)
     if (sourceCss === undefined) {
       return sourceFile === undefined
-        ? 'webpack-css-source:0'
-        : `webpack-css-source:0:${sourceFile}`
+        ? `webpack-css-source:0:${loaderHash}`
+        : `webpack-css-source:0:${sourceFile}:${loaderHash}`
     }
-    return `webpack-css-source:1:${compilerOptions.cache.computeHash(sourceCss)}:${generatorSourceCss === sourceCss || generatorSourceCss === undefined ? 'generator-source:0' : compilerOptions.cache.computeHash(generatorSourceCss)}`
+    // @config 变化不一定改变入口文本或类名，但会改变 loader 已生成的样式值。
+    return `webpack-css-source:1:${compilerOptions.cache.computeHash(sourceCss)}:${generatorSourceCss === sourceCss || generatorSourceCss === undefined ? 'generator-source:0' : compilerOptions.cache.computeHash(generatorSourceCss)}:${loaderHash}`
   })()
   const runtimeAwareHash = createRuntimeAwareCssHash(
     cssChunkHash,
